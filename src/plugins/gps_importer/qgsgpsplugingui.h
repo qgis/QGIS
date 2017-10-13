@@ -49,13 +49,13 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
 
     void on_pbnGPXSelectFile_clicked();
 
-    void on_pbnIMPInput_clicked();
-    void on_pbnIMPOutput_clicked();
+    void pbnIMPInput_clicked();
+    void pbnIMPOutput_clicked();
 
-    void on_pbnCONVInput_clicked();
-    void on_pbnCONVOutput_clicked();
+    void pbnCONVInput_clicked();
+    void pbnCONVOutput_clicked();
 
-    void on_pbnDLOutput_clicked();
+    void pbnDLOutput_clicked();
 
   private:
     void populateDeviceComboBox();
@@ -77,9 +77,9 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
 
   private slots:
 
-    void on_pbnRefresh_clicked();
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+    void pbnRefresh_clicked();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
 
   signals:
     void drawRasterLayer( const QString & );

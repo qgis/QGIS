@@ -30,7 +30,7 @@ QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocatorWidget *locator, QWi
   mFiltersTreeView->setModel( mModel );
 
   mFiltersTreeView->header()->setStretchLastSection( false );
-  mFiltersTreeView->header()->setResizeMode( 0, QHeaderView::Stretch );
+  mFiltersTreeView->header()->setSectionResizeMode( 0, QHeaderView::Stretch );
 
   mConfigureFilterButton->setEnabled( false );
   connect( mFiltersTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [ = ]( const QItemSelection & selected, const QItemSelection & )

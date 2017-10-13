@@ -48,7 +48,7 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = nullptr;
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {
   public:
-    QgsNetworkProxyFactory() {}
+    QgsNetworkProxyFactory() = default;
 
     QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery &query = QNetworkProxyQuery() ) override
     {
@@ -118,8 +118,6 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::instance()
 
 QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
   : QNetworkAccessManager( parent )
-  , mUseSystemProxy( false )
-  , mInitialized( false )
 {
   setProxyFactory( new QgsNetworkProxyFactory() );
 }
@@ -323,6 +321,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
     //read type, host, port, user, passw from settings
     QString proxyHost = settings.value( QStringLiteral( "proxy/proxyHost" ), "" ).toString();
     int proxyPort = settings.value( QStringLiteral( "proxy/proxyPort" ), "" ).toString().toInt();
+
     QString proxyUser = settings.value( QStringLiteral( "proxy/proxyUser" ), "" ).toString();
     QString proxyPassword = settings.value( QStringLiteral( "proxy/proxyPassword" ), "" ).toString();
 
@@ -358,13 +357,21 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
       {
         proxyType = QNetworkProxy::FtpCachingProxy;
       }
-      QgsDebugMsg( QString( "setting proxy %1 %2:%3 %4/%5" )
+      QgsDebugMsg( QStringLiteral( "setting proxy %1 %2:%3 %4/%5" )
                    .arg( proxyType )
                    .arg( proxyHost ).arg( proxyPort )
                    .arg( proxyUser, proxyPassword )
                  );
       proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
     }
+  }
+
+  // Setup network proxy authentication configuration
+  QString authcfg = settings.value( QStringLiteral( "proxy/authcfg" ), "" ).toString();
+  if ( !authcfg.isEmpty( ) )
+  {
+    QgsDebugMsg( QStringLiteral( "setting proxy from stored authentication configuration %1" ).arg( authcfg ) );
+    QgsAuthManager::instance()->updateNetworkProxy( proxy, authcfg );
   }
 
   setFallbackProxyAndExcludes( proxy, excludes );

@@ -56,12 +56,6 @@ def show_console():
         if _console.isVisible():
             _console.activate()
 
-    # Shows help on first launch of the console
-    settings = QgsSettings()
-    if settings.value('pythonConsole/contextHelpOnFirstLaunch', True, type=bool):
-        QgsHelp.openHelp("plugins/python_console.html")
-        settings.setValue('pythonConsole/contextHelpOnFirstLaunch', False)
-
     return _console
 
 
@@ -244,7 +238,7 @@ class PythonConsoleWidget(QWidget):
         self.pasteEditorButton.setToolTip(pasteEditorBt)
         self.pasteEditorButton.setText(pasteEditorBt)
         # Action Run Script (subprocess)
-        runScriptEditorBt = QCoreApplication.translate("PythonConsole", "Run script")
+        runScriptEditorBt = QCoreApplication.translate("PythonConsole", "Run Script")
         self.runScriptEditorButton = QAction(self)
         self.runScriptEditorButton.setCheckable(False)
         self.runScriptEditorButton.setEnabled(True)
@@ -629,7 +623,7 @@ class PythonConsoleWidget(QWidget):
             index = self.tabEditorWidget.currentIndex()
         if not tabWidget.path:
             fileName = self.tabEditorWidget.tabText(index) + '.py'
-            folder = self.settings.value("pythonConsole/lastDirPath", QDir.home())
+            folder = self.settings.value("pythonConsole/lastDirPath", QDir.homePath())
             pathFileName = os.path.join(folder, fileName)
             fileNone = True
         else:

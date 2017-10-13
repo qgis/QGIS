@@ -141,7 +141,7 @@ bool dwgReader::checkSentinel( dwgBuffer *buf, enum secEnum::DWGSection, bool st
   for ( int i = 0; i < 16; i++ )
   {
     int t = buf->getRawChar8();
-    l << QString( "0x%1" ).arg( t, 0, 16 );
+    l << QStringLiteral( "0x%1" ).arg( t, 0, 16 );
   }
   QgsDebugMsg( l.join( " " ) );
   return true;

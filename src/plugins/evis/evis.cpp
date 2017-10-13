@@ -85,15 +85,8 @@ static const QString sIcon = QStringLiteral( ":/evis/eVisEventBrowser.png" );
 eVis::eVis( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
   , mQGisIface( qgisInterface )
-  , mDatabaseConnectionActionPointer( nullptr )
-  , mEventIdToolActionPointer( nullptr )
-  , mEventBrowserActionPointer( nullptr )
 {
   mIdTool = nullptr;
-}
-
-eVis::~eVis()
-{
 }
 
 void eVis::initGui()

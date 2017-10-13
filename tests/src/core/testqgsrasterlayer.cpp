@@ -45,23 +45,16 @@
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
-#include "qgstestutils.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
 class TestQgsRasterLayer : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsRasterLayer()
-      : mpRasterLayer( nullptr )
-      , mpLandsatRasterLayer( nullptr )
-      , mpFloat32RasterLayer( nullptr )
-      , mPngRasterLayer( nullptr )
-      , mGeoJp2RasterLayer( nullptr )
-      , mMapSettings( nullptr )
-    {}
+    TestQgsRasterLayer() = default;
     ~TestQgsRasterLayer()
     {
       delete mMapSettings;
@@ -120,9 +113,8 @@ class TestSignalReceiver : public QObject
   public:
     TestSignalReceiver()
       : QObject( nullptr )
-      , rendererChanged( false )
     {}
-    bool rendererChanged;
+    bool rendererChanged =  false ;
   public slots:
     void onRendererChanged()
     {
@@ -398,11 +390,11 @@ void TestQgsRasterLayer::checkStats()
   //QVERIFY( myStatistics.elementCount == 100 );
   QVERIFY( myStatistics.minimumValue == 0 );
   QVERIFY( myStatistics.maximumValue == 9 );
-  QVERIFY( qgsDoubleNear( myStatistics.mean, 4.5 ) );
+  QGSCOMPARENEAR( myStatistics.mean, 4.5, 4 * DBL_EPSILON );
   double stdDev = 2.87228132326901431;
   // TODO: verify why GDAL stdDev is so different from generic (2.88675)
   mReport += QStringLiteral( "stdDev = %1 expected = %2<br>\n" ).arg( myStatistics.stdDev ).arg( stdDev );
-  QVERIFY( qgsDoubleNear( myStatistics.stdDev, stdDev, 0.00000000000001 ) );
+  QGSCOMPARENEAR( myStatistics.stdDev, stdDev, 0.00000000000001 );
   mReport += QLatin1String( "<p>Passed</p>" );
 }
 

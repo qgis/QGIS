@@ -1,7 +1,6 @@
 // Include auto-generated SIP files
 %Include qgsattributeeditorcontext.sip
 %Include qgsattributeforminterface.sip
-%Include qgscustomdrophandler.sip
 %Include qgsdetaileditemdata.sip
 %Include qgsexpressionbuilderdialog.sip
 %Include qgsgeometryrubberband.sip
@@ -21,6 +20,8 @@
 %Include qgsvertexmarker.sip
 %Include qgsfiledownloader.sip
 %Include qgsabstractdatasourcewidget.sip
+%Include qgssourceselectprovider.sip
+%Include qgssourceselectproviderregistry.sip
 %Include attributetable/qgsfeaturemodel.sip
 %Include auth/qgsauthauthoritieseditor.sip
 %Include auth/qgsauthcertificateinfo.sip
@@ -28,6 +29,7 @@
 %Include auth/qgsauthcerttrustpolicycombobox.sip
 %Include auth/qgsauthconfigeditor.sip
 %Include auth/qgsauthconfigselect.sip
+%Include auth/qgsauthsettingswidget.sip
 %Include auth/qgsautheditorwidgets.sip
 %Include auth/qgsauthidentitieseditor.sip
 %Include auth/qgsauthimportcertdialog.sip
@@ -44,7 +46,6 @@
 %Include layertree/qgslayertreeembeddedwidgetregistry.sip
 %Include layout/qgslayoutviewmouseevent.sip
 %Include layout/qgslayoutviewrubberband.sip
-%Include locator/qgslocatorcontext.sip
 %Include raster/qgsrasterrendererwidget.sip
 %Include symbology/qgssymbolwidgetcontext.sip
 %Include qgisinterface.sip
@@ -90,6 +91,7 @@
 %Include qgsconfigureshortcutsdialog.sip
 %Include qgscredentialdialog.sip
 %Include qgscurveeditorwidget.sip
+%Include qgscustomdrophandler.sip
 %Include qgsdetaileditemdelegate.sip
 %Include qgsdetaileditemwidget.sip
 %Include qgsdial.sip
@@ -149,6 +151,9 @@
 %Include qgsmessagebaritem.sip
 %Include qgsmessagelogviewer.sip
 %Include qgsmessageviewer.sip
+%Include qgsmetadatawidget.sip
+%Include qgsnewauxiliarylayerdialog.sip
+%Include qgsnewauxiliaryfielddialog.sip
 %Include qgsnewhttpconnection.sip
 %Include qgsnewmemorylayerdialog.sip
 %Include qgsnewnamedialog.sip
@@ -293,7 +298,5 @@
 %Include layout/qgslayoutviewtooltemporarykeyzoom.sip
 %Include layout/qgslayoutviewtooltemporarymousepan.sip
 %Include layout/qgslayoutviewtoolzoom.sip
-%Include locator/qgslocator.sip
-%Include locator/qgslocatorfilter.sip
 %Include locator/qgslocatorwidget.sip
 %Include qgsadvanceddigitizingcanvasitem.sip

@@ -22,6 +22,7 @@ from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsWkbTypes,
                        QgsAction,
+                       QgsDefaultValue,
                        QgsEditorWidgetSetup,
                        QgsVectorLayer,
                        QgsRectangle,
@@ -54,6 +55,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsDiagramLayerSettings,
                        QgsTextFormat,
                        QgsVectorLayerSelectedFeatureSource,
+                       QgsExpression,
                        NULL)
 from qgis.gui import (QgsAttributeTableModel,
                       QgsGui
@@ -452,6 +454,53 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         checkAfter2()
 
         self.assertEqual(layer.dataProvider().featureCount(), 0)
+
+    def test_DeleteJoinedFeature(self):
+        joinLayer = createJoinLayer()
+        joinLayer2 = createJoinLayer()
+        QgsProject.instance().addMapLayers([joinLayer, joinLayer2])
+
+        layer = createLayerWithOnePoint()
+
+        join = QgsVectorLayerJoinInfo()
+        join.setTargetFieldName("fldint")
+        join.setJoinLayer(joinLayer)
+        join.setJoinFieldName("y")
+        join.setUsingMemoryCache(True)
+        join.setEditable(True)
+        join.setCascadedDelete(True)
+
+        layer.addJoin(join)
+
+        join2 = QgsVectorLayerJoinInfo()
+        join2.setTargetFieldName("fldint")
+        join2.setJoinLayer(joinLayer2)
+        join2.setJoinFieldName("y")
+        join2.setUsingMemoryCache(True)
+        join2.setPrefix("custom-prefix_")
+        join2.setEditable(True)
+        join2.setCascadedDelete(False)
+
+        layer.addJoin(join2)
+
+        # check number of features
+        self.assertEqual(layer.featureCount(), 1)
+        self.assertEqual(joinLayer.featureCount(), 4)
+        self.assertEqual(joinLayer2.featureCount(), 4)
+
+        # delete a feature which is also in joined layers
+        layer.startEditing()
+        joinLayer.startEditing()
+        joinLayer2.startEditing()
+
+        filter = QgsExpression.createFieldEqualityExpression('fldint', '123')
+        feature = next(layer.getFeatures(QgsFeatureRequest().setFilterExpression(filter)))
+        layer.deleteFeature(feature.id())
+
+        # check number of features
+        self.assertEqual(layer.featureCount(), 0)
+        self.assertEqual(joinLayer.featureCount(), 3)  # deleteCascade activated
+        self.assertEqual(joinLayer2.featureCount(), 4)  # deleteCascade deactivated
 
     # CHANGE ATTRIBUTE
 
@@ -1949,22 +1998,25 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         """ test getting and setting default expressions """
         layer = createLayerWithOnePoint()
 
-        self.assertFalse(layer.defaultValueExpression(0))
-        self.assertFalse(layer.defaultValueExpression(1))
-        self.assertFalse(layer.defaultValueExpression(2))
+        self.assertFalse(layer.defaultValueDefinition(0))
+        self.assertFalse(layer.defaultValueDefinition(0).expression())
+        self.assertFalse(layer.defaultValueDefinition(0).applyOnUpdate())
+        self.assertFalse(layer.defaultValueDefinition(1))
+        self.assertFalse(layer.defaultValueDefinition(2))
 
-        layer.setDefaultValueExpression(0, "'test'")
-        self.assertEqual(layer.defaultValueExpression(0), "'test'")
-        self.assertFalse(layer.defaultValueExpression(1))
-        self.assertFalse(layer.defaultValueExpression(2))
-        self.assertEqual(layer.fields().at(0).defaultValueExpression(), "'test'")
+        layer.setDefaultValueDefinition(0, QgsDefaultValue("'test'"))
+        self.assertTrue(layer.defaultValueDefinition(0))
+        self.assertEqual(layer.defaultValueDefinition(0).expression(), "'test'")
+        self.assertFalse(layer.defaultValueDefinition(1))
+        self.assertFalse(layer.defaultValueDefinition(2))
+        self.assertEqual(layer.fields().at(0).defaultValueDefinition().expression(), "'test'")
 
-        layer.setDefaultValueExpression(1, "2+2")
-        self.assertEqual(layer.defaultValueExpression(0), "'test'")
-        self.assertEqual(layer.defaultValueExpression(1), "2+2")
-        self.assertFalse(layer.defaultValueExpression(2))
-        self.assertEqual(layer.fields().at(0).defaultValueExpression(), "'test'")
-        self.assertEqual(layer.fields().at(1).defaultValueExpression(), "2+2")
+        layer.setDefaultValueDefinition(1, QgsDefaultValue("2+2"))
+        self.assertEqual(layer.defaultValueDefinition(0).expression(), "'test'")
+        self.assertEqual(layer.defaultValueDefinition(1).expression(), "2+2")
+        self.assertFalse(layer.defaultValueDefinition(2))
+        self.assertEqual(layer.fields().at(0).defaultValueDefinition().expression(), "'test'")
+        self.assertEqual(layer.fields().at(1).defaultValueDefinition().expression(), "2+2")
 
     def testSaveRestoreDefaults(self):
         """ test saving and restoring default expressions from xml"""
@@ -1977,12 +2029,12 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         layer2 = createLayerWithOnePoint()
         self.assertTrue(layer2.readXml(elem, QgsReadWriteContext()))
-        self.assertFalse(layer2.defaultValueExpression(0))
-        self.assertFalse(layer2.defaultValueExpression(1))
+        self.assertFalse(layer2.defaultValueDefinition(0))
+        self.assertFalse(layer2.defaultValueDefinition(1))
 
         # set some default expressions
-        layer.setDefaultValueExpression(0, "'test'")
-        layer.setDefaultValueExpression(1, "2+2")
+        layer.setDefaultValueDefinition(0, QgsDefaultValue("'test'"))
+        layer.setDefaultValueDefinition(1, QgsDefaultValue("2+2"))
 
         doc = QDomDocument("testdoc")
         elem = doc.createElement("maplayer")
@@ -1990,21 +2042,21 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         layer3 = createLayerWithOnePoint()
         self.assertTrue(layer3.readXml(elem, QgsReadWriteContext()))
-        self.assertEqual(layer3.defaultValueExpression(0), "'test'")
-        self.assertEqual(layer3.defaultValueExpression(1), "2+2")
-        self.assertEqual(layer3.fields().at(0).defaultValueExpression(), "'test'")
-        self.assertEqual(layer3.fields().at(1).defaultValueExpression(), "2+2")
+        self.assertEqual(layer3.defaultValueDefinition(0).expression(), "'test'")
+        self.assertEqual(layer3.defaultValueDefinition(1).expression(), "2+2")
+        self.assertEqual(layer3.fields().at(0).defaultValueDefinition().expression(), "'test'")
+        self.assertEqual(layer3.fields().at(1).defaultValueDefinition().expression(), "2+2")
 
     def testEvaluatingDefaultExpressions(self):
         """ tests calculation of default values"""
         layer = createLayerWithOnePoint()
-        layer.setDefaultValueExpression(0, "'test'")
-        layer.setDefaultValueExpression(1, "2+2")
+        layer.setDefaultValueDefinition(0, QgsDefaultValue("'test'"))
+        layer.setDefaultValueDefinition(1, QgsDefaultValue("2+2"))
         self.assertEqual(layer.defaultValue(0), 'test')
         self.assertEqual(layer.defaultValue(1), 4)
 
         # using feature
-        layer.setDefaultValueExpression(1, '$id * 2')
+        layer.setDefaultValueDefinition(1, QgsDefaultValue('$id * 2'))
         feature = QgsFeature(4)
         feature.setValid(True)
         feature.setFields(layer.fields())
@@ -2015,7 +2067,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(layer.defaultValue(1, feature), 8)
 
         # using feature geometry
-        layer.setDefaultValueExpression(1, '$x * 2')
+        layer.setDefaultValueDefinition(1, QgsDefaultValue('$x * 2'))
         feature.setGeometry(QgsGeometry(QgsPoint(6, 7)))
         self.assertEqual(layer.defaultValue(1, feature), 12)
 
@@ -2024,18 +2076,58 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         scope.setVariable('var1', 16)
         context = QgsExpressionContext()
         context.appendScope(scope)
-        layer.setDefaultValueExpression(1, '$id + @var1')
+        layer.setDefaultValueDefinition(1, QgsDefaultValue('$id + @var1'))
         self.assertEqual(layer.defaultValue(1, feature, context), 20)
 
         # if no scope passed, should use a default constructed one including layer variables
         QgsExpressionContextUtils.setLayerVariable(layer, 'var2', 4)
         QgsExpressionContextUtils.setProjectVariable(QgsProject.instance(), 'var3', 8)
-        layer.setDefaultValueExpression(1, 'to_int(@var2) + to_int(@var3) + $id')
+        layer.setDefaultValueDefinition(1, QgsDefaultValue('to_int(@var2) + to_int(@var3) + $id'))
         self.assertEqual(layer.defaultValue(1, feature), 16)
 
         # bad expression
-        layer.setDefaultValueExpression(1, 'not a valid expression')
+        layer.setDefaultValueDefinition(1, QgsDefaultValue('not a valid expression'))
         self.assertFalse(layer.defaultValue(1))
+
+    def testApplyOnUpdateDefaultExpressions(self):
+        """tests apply on update of default values"""
+        layer = createLayerWithOnePoint()
+
+        layer.setDefaultValueDefinition(0, QgsDefaultValue("CONCAT('l: ', @number, ',f: ', \"fldint\" )", True))
+        layer.setDefaultValueDefinition(1, QgsDefaultValue("1 * @number", False))
+
+        QgsExpressionContextUtils.setLayerVariable(layer, 'number', 4)
+
+        layer.startEditing()
+        feature = QgsFeature()
+        feature.setFields(layer.fields())
+        feature.setValid(True)
+
+        # Both default values should be set on feature create
+        feature.setAttribute(1, layer.defaultValue(1, feature))
+        feature.setAttribute(0, layer.defaultValue(0, feature))
+
+        self.assertTrue(layer.addFeature(feature))
+        fid = feature.id()
+        self.assertEqual(layer.getFeature(fid)['fldtxt'], 'l: 4,f: 4')
+        self.assertEqual(layer.getFeature(fid)['fldint'], 4)
+
+        # ApplyOnUpdateDefaultValue should be set on changeAttributeValue
+        layer.changeAttributeValue(fid, 1, 20)
+        self.assertEqual(layer.getFeature(fid)['fldtxt'], 'l: 4,f: 20')
+        self.assertEqual(layer.getFeature(fid)['fldint'], 20)
+
+        # When changing the value of the "derived" attribute, only this one
+        # should be updated
+        QgsExpressionContextUtils.setLayerVariable(layer, 'number', 8)
+        layer.changeAttributeValue(fid, 0, 0)
+        self.assertEqual(layer.getFeature(fid)['fldtxt'], 'l: 8,f: 20')
+        self.assertEqual(layer.getFeature(fid)['fldint'], 20)
+
+        # Check update on geometry change
+        layer.setDefaultValueDefinition(1, QgsDefaultValue("x($geometry)", True))
+        layer.changeGeometry(fid, QgsGeometry.fromPoint(QgsPointXY(300, 200)))
+        self.assertEqual(layer.getFeature(fid)['fldint'], 300)
 
     def testGetSetConstraints(self):
         """ test getting and setting field constraints """
@@ -2356,7 +2448,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         layer.setConstraintExpression(0, "MyFieldConstraintExpression")
         layer.setFieldConstraint(0, QgsFieldConstraints.ConstraintUnique, QgsFieldConstraints.ConstraintStrengthHard)
-        layer.setDefaultValueExpression(0, "MyDefaultValueExpression")
+        layer.setDefaultValueDefinition(0, QgsDefaultValue("MyDefaultValueExpression"))
 
         action = QgsAction(QgsAction.Unix, "MyActionDescription", "MyActionCmd")
         layer.actions().addAction(action)

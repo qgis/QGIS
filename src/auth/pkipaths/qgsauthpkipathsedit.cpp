@@ -31,13 +31,11 @@
 
 QgsAuthPkiPathsEdit::QgsAuthPkiPathsEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
-  , mValid( 0 )
 {
   setupUi( this );
-}
-
-QgsAuthPkiPathsEdit::~QgsAuthPkiPathsEdit()
-{
+  connect( chkPkiPathsPassShow, &QCheckBox::stateChanged, this, &QgsAuthPkiPathsEdit::chkPkiPathsPassShow_stateChanged );
+  connect( btnPkiPathsCert, &QToolButton::clicked, this, &QgsAuthPkiPathsEdit::btnPkiPathsCert_clicked );
+  connect( btnPkiPathsKey, &QToolButton::clicked, this, &QgsAuthPkiPathsEdit::btnPkiPathsKey_clicked );
 }
 
 bool QgsAuthPkiPathsEdit::validateConfig()
@@ -163,10 +161,7 @@ void QgsAuthPkiPathsEdit::writePkiMessage( QLineEdit *lineedit, const QString &m
       txt = tr( "Invalid: %1" ).arg( msg );
       break;
     case Unknown:
-      ss = QLatin1String( "" );
       break;
-    default:
-      ss = QLatin1String( "" );
   }
   lineedit->setStyleSheet( ss );
   lineedit->setText( txt );
@@ -193,12 +188,12 @@ void QgsAuthPkiPathsEdit::clearPkiPathsKeyPass()
   chkPkiPathsPassShow->setChecked( false );
 }
 
-void QgsAuthPkiPathsEdit::on_chkPkiPathsPassShow_stateChanged( int state )
+void QgsAuthPkiPathsEdit::chkPkiPathsPassShow_stateChanged( int state )
 {
   lePkiPathsKeyPass->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
-void QgsAuthPkiPathsEdit::on_btnPkiPathsCert_clicked()
+void QgsAuthPkiPathsEdit::btnPkiPathsCert_clicked()
 {
   const QString &fn = QgsAuthGuiUtils::getOpenFileName( this, tr( "Open Client Certificate File" ),
                       tr( "PEM (*.pem);;DER (*.der)" ) );
@@ -209,7 +204,7 @@ void QgsAuthPkiPathsEdit::on_btnPkiPathsCert_clicked()
   }
 }
 
-void QgsAuthPkiPathsEdit::on_btnPkiPathsKey_clicked()
+void QgsAuthPkiPathsEdit::btnPkiPathsKey_clicked()
 {
   const QString &fn = QgsAuthGuiUtils::getOpenFileName( this, tr( "Open Private Key File" ),
                       tr( "PEM (*.pem);;DER (*.der)" ) );

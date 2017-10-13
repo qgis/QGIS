@@ -74,10 +74,6 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem *item, QWid
   mFrameStyleButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
 }
 
-QgsAnnotationWidget::~QgsAnnotationWidget()
-{
-}
-
 void QgsAnnotationWidget::apply()
 {
   if ( mItem )

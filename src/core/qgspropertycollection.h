@@ -346,9 +346,9 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
 
     QHash<int, QgsProperty> mProperties;
 
-    mutable bool mDirty;
-    mutable bool mHasActiveProperties;
-    mutable bool mHasDynamicProperties;
+    mutable bool mDirty = false;
+    mutable bool mHasActiveProperties = false;
+    mutable bool mHasDynamicProperties = false;
     mutable int mCount = 0;
 
     //! Scans through properties and updates cached values
@@ -368,7 +368,10 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
 {
   public:
 
-    QgsPropertyCollectionStack();
+    /**
+     * Constructor for QgsPropertyCollectionStack.
+     */
+    QgsPropertyCollectionStack() = default;
 
     ~QgsPropertyCollectionStack();
 

@@ -24,7 +24,8 @@ class QgsMapLayer;
 class QgsMapLayerConfigWidget;
 class QgsMapCanvas;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsMapLayerConfigWidgetFactory
  * \since QGIS 2.16
  * Factory class for creating custom map layer property pages
@@ -34,7 +35,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
   public:
 
     //! Constructor
-    QgsMapLayerConfigWidgetFactory();
+    QgsMapLayerConfigWidgetFactory() = default;
 
     //! Constructor
     QgsMapLayerConfigWidgetFactory( const QString &title, const QIcon &icon );
@@ -70,6 +71,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 
     /**
      * Flag if widget is supported for use in style dock.
+     * The default implementation returns false.
      * \returns True if supported
      */
     virtual bool supportsStyleDock() const { return false; }
@@ -82,6 +84,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 
     /**
      * Flag if widget is supported for use in layer properties dialog.
+     * The default implementation returns false.
      * \returns True if supported
      */
     virtual bool supportLayerPropertiesDialog() const { return false; }
@@ -112,8 +115,8 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
   private:
     QIcon mIcon;
     QString mTitle;
-    bool mSupportsDock;
-    bool mSupportsProperties;
+    bool mSupportsDock = true;
+    bool mSupportsProperties = true;
 };
 
 #endif // QGSMAPLAYERCONFIGWIDGETFACTORY_H

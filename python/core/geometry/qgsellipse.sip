@@ -25,7 +25,13 @@ class QgsEllipse
 #include "qgsellipse.h"
 %End
   public:
+
     QgsEllipse();
+%Docstring
+ Constructor for QgsEllipse.
+%End
+
+    virtual ~QgsEllipse();
 
     QgsEllipse( const QgsPoint &center, const double semiMajorAxis, const double semiMinorAxis, const double azimuth = 90 );
 %Docstring

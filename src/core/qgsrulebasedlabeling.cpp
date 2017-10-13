@@ -22,11 +22,6 @@ QgsRuleBasedLabelProvider::QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling
   mRules->rootRule()->createSubProviders( layer, mSubProviders, this );
 }
 
-QgsRuleBasedLabelProvider::~QgsRuleBasedLabelProvider()
-{
-  // sub-providers owned by labeling engine
-}
-
 QgsVectorLayerLabelProvider *QgsRuleBasedLabelProvider::createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings )
 {
   return new QgsVectorLayerLabelProvider( layer, providerId, withFeatureLoop, settings );
@@ -68,7 +63,7 @@ QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings *settings, int scaleMinDen
   , mDescription( description )
   , mElseRule( elseRule )
   , mIsActive( true )
-  , mFilter( nullptr )
+
 {
   mRuleKey = QUuid::createUuid().toString();
   initFilter();
@@ -176,6 +171,20 @@ const QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::findRuleByKey( con
   Q_FOREACH ( Rule *rule, mChildren )
   {
     const Rule *r = rule->findRuleByKey( key );
+    if ( r )
+      return r;
+  }
+  return nullptr;
+}
+
+QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::findRuleByKey( const QString &key )
+{
+  if ( key == mRuleKey )
+    return this;
+
+  for ( Rule *rule : mChildren )
+  {
+    Rule *r = rule->findRuleByKey( key );
     if ( r )
       return r;
   }
@@ -455,4 +464,14 @@ QgsPalLayerSettings QgsRuleBasedLabeling::settings( const QString &providerId ) 
 bool QgsRuleBasedLabeling::requiresAdvancedEffects() const
 {
   return mRootRule->requiresAdvancedEffects();
+}
+
+void QgsRuleBasedLabeling::setSettings( QgsPalLayerSettings *settings, const QString &providerId )
+{
+  if ( settings )
+  {
+    Rule *rule = mRootRule->findRuleByKey( providerId );
+    if ( rule && rule->settings() )
+      return rule->setSettings( settings );
+  }
 }

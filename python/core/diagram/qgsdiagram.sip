@@ -19,6 +19,7 @@ class QgsDiagram
 #include "qgsdiagram.h"
 %End
   public:
+
     virtual ~QgsDiagram();
 
     virtual QgsDiagram *clone() const = 0 /Factory/;
@@ -71,7 +72,11 @@ Returns the size in map units the diagram will use to render. Interpolate size
 %End
 
   protected:
+
     QgsDiagram();
+%Docstring
+ Constructor for QgsDiagram.
+%End
     QgsDiagram( const QgsDiagram &other );
 
     void setPenWidth( QPen &pen, const QgsDiagramSettings &s, const QgsRenderContext &c );

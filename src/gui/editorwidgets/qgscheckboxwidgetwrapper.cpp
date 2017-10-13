@@ -17,8 +17,7 @@
 
 QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mCheckBox( nullptr )
-  , mGroupBox( nullptr )
+
 {
 }
 

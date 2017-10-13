@@ -95,13 +95,7 @@ class TestQgsLegendRenderer : public QObject
     Q_OBJECT
 
   public:
-    TestQgsLegendRenderer()
-      : mRoot( 0 )
-      , mVL1( 0 )
-      , mVL2( 0 )
-      , mVL3( 0 )
-      , mRL( 0 )
-    {}
+    TestQgsLegendRenderer() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -131,9 +125,9 @@ class TestQgsLegendRenderer : public QObject
 
   private:
     QgsLayerTree *mRoot = nullptr;
-    QgsVectorLayer *mVL1; // line
-    QgsVectorLayer *mVL2; // polygon
-    QgsVectorLayer *mVL3; // point
+    QgsVectorLayer *mVL1 =  0 ; // line
+    QgsVectorLayer *mVL2 =  0 ; // polygon
+    QgsVectorLayer *mVL3 =  0 ; // point
     QgsRasterLayer *mRL = nullptr;
     QString mReport;
     bool _testLegendColumns( int itemCount, int columnCount, const QString &testName );
@@ -365,24 +359,24 @@ void TestQgsLegendRenderer::testTallSymbol()
 
 void TestQgsLegendRenderer::testLineSpacing()
 {
-  QString testName = "legend_line_spacing";
+  QString testName = QStringLiteral( "legend_line_spacing" );
 
   QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
-  catRenderer->updateCategoryLabel( 1, "This is\nthree lines\nlong label" );
+  catRenderer->updateCategoryLabel( 1, QStringLiteral( "This is\nthree lines\nlong label" ) );
 
-  mVL2->setName( "This is a two lines\nlong label" );
+  mVL2->setName( QStringLiteral( "This is a two lines\nlong label" ) );
 
   QgsLayerTreeModel legendModel( mRoot );
 
   QgsLegendSettings settings;
-  settings.setWrapChar( "\n" );
+  settings.setWrapChar( QStringLiteral( "\n" ) );
   settings.setLineSpacing( 3 );
   _setStandardTestFont( settings );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
 
-  mVL2->setName( "Polygon Layer" );
+  mVL2->setName( QStringLiteral( "Polygon Layer" ) );
 }
 
 void TestQgsLegendRenderer::testLongSymbolText()
@@ -703,7 +697,7 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
   dr->setLowerSize( QSizeF( 1, 1 ) );
   dr->setUpperValue( 10 );
   dr->setUpperSize( QSizeF( 20, 20 ) );
-  dr->setClassificationField( QString( "a" ) );
+  dr->setClassificationField( QStringLiteral( "a" ) );
   dr->setDiagram( new QgsPieDiagram() );
   dr->setDiagramSettings( ds );
   dr->setDataDefinedSizeLegend( new QgsDataDefinedSizeLegend() );
@@ -760,11 +754,11 @@ void TestQgsLegendRenderer::testDataDefinedSizeCollapsed()
   }
 
   QgsStringMap props;
-  props["name"] = "circle";
-  props["color"] = "200,200,200";
-  props["outline_color"] = "0,0,0";
+  props[QStringLiteral( "name" )] = QStringLiteral( "circle" );
+  props[QStringLiteral( "color" )] = QStringLiteral( "200,200,200" );
+  props[QStringLiteral( "outline_color" )] = QStringLiteral( "0,0,0" );
   QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( props );
-  QgsProperty ddsProperty = QgsProperty::fromField( "test_attr" );
+  QgsProperty ddsProperty = QgsProperty::fromField( QStringLiteral( "test_attr" ) );
   ddsProperty.setTransformer( new QgsSizeScaleTransformer( QgsSizeScaleTransformer::Linear, 100, 300, 10, 30 ) );  // takes ownership
   symbol->setDataDefinedSize( ddsProperty );
 

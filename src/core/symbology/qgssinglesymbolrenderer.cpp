@@ -40,10 +40,6 @@ QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( QgsSymbol *symbol )
   Q_ASSERT( symbol );
 }
 
-QgsSingleSymbolRenderer::~QgsSingleSymbolRenderer()
-{
-}
-
 QgsSymbol *QgsSingleSymbolRenderer::symbolForFeature( QgsFeature &, QgsRenderContext & )
 {
   return mSymbol.get();
@@ -160,7 +156,7 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::create( QDomElement &element, const
                             sizeScaleElem.attribute( QStringLiteral( "field" ) ) );
   }
 
-  QDomElement ddsLegendSizeElem = element.firstChildElement( "data-defined-size-legend" );
+  QDomElement ddsLegendSizeElem = element.firstChildElement( QStringLiteral( "data-defined-size-legend" ) );
   if ( !ddsLegendSizeElem.isNull() )
   {
     r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
@@ -262,8 +258,8 @@ QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsReadWrite
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "singleSymbol" ) );
-  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? "1" : "0" ) );
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   QgsSymbolMap symbols;
   symbols[QStringLiteral( "0" )] = mSymbol.get();
@@ -285,7 +281,7 @@ QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsReadWrite
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   if ( mDataDefinedSizeLegend )
   {

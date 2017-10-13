@@ -39,8 +39,6 @@ email                : hugo dot mercier at oslandia dot com
 
 QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
-  , mSrid( 0 )
-  , mTreeView( nullptr )
 {
   setupUi( this );
   setupButtons( buttonBox );
@@ -65,7 +63,8 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   }
   // It needs to find the layertree view without relying on the parent
   // being the main window
-  for ( const QWidget *widget : qApp->allWidgets() )
+  const QList< QWidget * > widgets = qApp->allWidgets();
+  for ( const QWidget *widget : widgets )
   {
     if ( ! mTreeView )
     {

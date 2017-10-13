@@ -87,6 +87,9 @@ class OffsetLine(QgisFeatureBasedAlgorithm):
     def outputName(self):
         return self.tr('Offset')
 
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine]
+
     def outputType(self):
         return QgsProcessing.TypeVectorLine
 

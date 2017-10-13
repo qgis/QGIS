@@ -28,7 +28,8 @@
 
 class QEvent;
 
-/** \class QgsCheckableItemModel
+/**
+ * \class QgsCheckableItemModel
  * \ingroup gui
  * QStandardItemModel subclass which makes all items checkable
  * by default.
@@ -42,26 +43,30 @@ class QgsCheckableItemModel : public QStandardItemModel
 
   public:
 
-    /** Constructor for QgsCheckableItemModel.
+    /**
+     * Constructor for QgsCheckableItemModel.
      * \param parent parent object
      */
     QgsCheckableItemModel( QObject *parent = nullptr );
 
-    /** Returns a combination of the item flags: items are enabled
+    /**
+     * Returns a combination of the item flags: items are enabled
      * (ItemIsEnabled), selectable (ItemIsSelectable) and checkable
      * (ItemIsUserCheckable).
      * \param index item index
      */
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
-    /** Returns the data stored under the given role for the item
+    /**
+     * Returns the data stored under the given role for the item
      * referred to by the index.
      * \param index item index
      * \param role data role
      */
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
 
-    /** Sets the role data for the item at index to value.
+    /**
+     * Sets the role data for the item at index to value.
      * \param index item index
      * \param value data value
      * \param role data role
@@ -71,13 +76,15 @@ class QgsCheckableItemModel : public QStandardItemModel
 
   signals:
 
-    /** This signal is emitted whenever the items checkstate has changed.
+    /**
+     * This signal is emitted whenever the items checkstate has changed.
      */
     void itemCheckStateChanged();
 };
 
 
-/** \class QgsCheckBoxDelegate
+/**
+ * \class QgsCheckBoxDelegate
  * \ingroup gui
  * QStyledItemDelegate subclass for QgsCheckableComboBox. Needed for
  * correct drawing of the checkable items on Mac and GTK.
@@ -91,12 +98,14 @@ class QgsCheckBoxDelegate : public QStyledItemDelegate
 
   public:
 
-    /** Constructor for QgsCheckBoxDelegate.
+    /**
+     * Constructor for QgsCheckBoxDelegate.
      * \param parent parent object
      */
     QgsCheckBoxDelegate( QObject *parent = nullptr );
 
-    /** Renders the delegate using the given painter and style option
+    /**
+     * Renders the delegate using the given painter and style option
      * for the item specified by index.
      * \param painter painter to use
      * \param option style option
@@ -106,7 +115,8 @@ class QgsCheckBoxDelegate : public QStyledItemDelegate
 };
 #endif
 
-/** \class QgsCheckableComboBox
+/**
+ * \class QgsCheckableComboBox
  * \ingroup gui
  * QComboBox subclass which allows selecting multiple items.
  * \since QGIS 3.0
@@ -122,47 +132,55 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
 
   public:
 
-    /** Constructor for QgsCheckableComboBox.
+    /**
+     * Constructor for QgsCheckableComboBox.
      */
     QgsCheckableComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Returns separator used to separate items in the display text.
+    /**
+     * Returns separator used to separate items in the display text.
      * \see setSeparator()
      */
     QString separator() const;
 
-    /** Set separator used to separate items in the display text.
+    /**
+     * Set separator used to separate items in the display text.
      * \param separator separator to use
      * \see separator()
      */
     void setSeparator( const QString &separator );
 
-    /** Returns default text which will be displayed in the widget
+    /**
+     * Returns default text which will be displayed in the widget
      * when no items selected.
      * \see setDefaultText()
      */
     QString defaultText() const;
 
-    /** Set default text which will be displayed in the widget when
+    /**
+     * Set default text which will be displayed in the widget when
      * no items selected.
      * \param text default text
      * \see defaultText()
      */
     void setDefaultText( const QString &text );
 
-    /** Returns currently checked items.
+    /**
+     * Returns currently checked items.
      * \see setCheckedItems()
      */
     QStringList checkedItems() const;
 
-    /** Returns the checked state of the item identified by index
+    /**
+     * Returns the checked state of the item identified by index
      * \param index item index
      * \see setItemCheckState()
      * \see toggleItemCheckState()
      */
     Qt::CheckState itemCheckState( int index ) const;
 
-    /** Sets the item check state to state
+    /**
+     * Sets the item check state to state
      * \param index item index
      * \param state check state
      * \see itemCheckState()
@@ -170,31 +188,36 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      */
     void setItemCheckState( int index, Qt::CheckState state );
 
-    /** Toggles the item check state
+    /**
+     * Toggles the item check state
      * \param index item index
      * \see itemCheckState()
      * \see setItemCheckState()
      */
     void toggleItemCheckState( int index );
 
-    /** Hides the list of items in the combobox if it is currently
+    /**
+     * Hides the list of items in the combobox if it is currently
      * visible and resets the internal state.
      */
     virtual void hidePopup() override;
 
-    /** Filters events to enable context menu
+    /**
+     * Filters events to enable context menu
      */
     virtual bool eventFilter( QObject *object, QEvent *event ) override;
 
   signals:
 
-    /** This signal is emitted whenever the checked items list changed.
+    /**
+     * This signal is emitted whenever the checked items list changed.
      */
     void checkedItemsChanged( const QStringList &items );
 
   public slots:
 
-    /** Set items which should be checked/selected.
+    /**
+     * Set items which should be checked/selected.
      * \param items items to select
      * \see checkedItems()
      */
@@ -202,22 +225,26 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
 
   protected:
 
-    /** Handler for widget resizing
+    /**
+     * Handler for widget resizing
      */
     virtual void resizeEvent( QResizeEvent *event ) override;
 
   protected slots:
 
-    /** Display context menu which allows selecting/deselecting
+    /**
+     * Display context menu which allows selecting/deselecting
      * all items at once.
      */
     void showContextMenu( const QPoint &pos );
 
-    /** Selects all items.
+    /**
+     * Selects all items.
      */
     void selectAllOptions();
 
-    /** Removes selection from all items.
+    /**
+     * Removes selection from all items.
      */
     void deselectAllOptions();
 

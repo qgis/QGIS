@@ -23,8 +23,8 @@ class QgsGrassAddFeature : public QgsMapToolAddFeature
 {
     Q_OBJECT
   public:
-    QgsGrassAddFeature( QgsMapCanvas *canvas, CaptureMode mode = CaptureNone );
-    virtual ~QgsGrassAddFeature() override;
+    QgsGrassAddFeature( QgsMapCanvas *canvas, CaptureMode mode );
+
 };
 
 #endif // QGSGRASSADDFEATURE_H

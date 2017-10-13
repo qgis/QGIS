@@ -128,7 +128,9 @@ void QgsLayoutPagePropertiesWidget::orientationChanged( int )
 
 void QgsLayoutPagePropertiesWidget::updatePageSize()
 {
+  mPage->layout()->undoStack()->beginCommand( mPage, tr( "Change Page Size" ), 1 + mPage->layout()->pageCollection()->pageNumber( mPage ) );
   mPage->setPageSize( QgsLayoutSize( mWidthSpin->value(), mHeightSpin->value(), mSizeUnitsComboBox->unit() ) );
+  mPage->layout()->undoStack()->endCommand();
   mPage->layout()->pageCollection()->reflow();
 }
 
@@ -147,8 +149,6 @@ void QgsLayoutPagePropertiesWidget::showCurrentPageSize()
   if ( !pageSize.isEmpty() )
   {
     mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->findData( pageSize ) );
-    mWidthSpin->setEnabled( false );
-    mHeightSpin->setEnabled( false );
     mLockAspectRatio->setEnabled( false );
     mLockAspectRatio->setLocked( false );
     mSizeUnitsComboBox->setEnabled( false );
@@ -158,8 +158,6 @@ void QgsLayoutPagePropertiesWidget::showCurrentPageSize()
   {
     // custom
     mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->count() - 1 );
-    mWidthSpin->setEnabled( true );
-    mHeightSpin->setEnabled( true );
     mLockAspectRatio->setEnabled( true );
     mSizeUnitsComboBox->setEnabled( true );
     mPageOrientationComboBox->setEnabled( false );

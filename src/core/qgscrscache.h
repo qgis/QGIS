@@ -25,7 +25,8 @@
 
 class QgsCoordinateTransform;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Cache coordinate transform by authid of source/dest transformation to avoid the
 overhead of initialization for each redraw*/
 class CORE_EXPORT QgsCoordinateTransformCache
@@ -38,7 +39,8 @@ class CORE_EXPORT QgsCoordinateTransformCache
     //! QgsCoordinateTransformCache cannot be copied
     QgsCoordinateTransformCache &operator=( const QgsCoordinateTransformCache &rh ) = delete;
 
-    /** Returns coordinate transformation. Cache keeps ownership
+    /**
+     * Returns coordinate transformation. Cache keeps ownership
         \param srcAuthId auth id string of source crs
         \param destAuthId auth id string of dest crs
         \param srcDatumTransform id of source's datum transform
@@ -53,7 +55,7 @@ class CORE_EXPORT QgsCoordinateTransformCache
   private:
     QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > mTransforms; //same auth_id pairs might have different datum transformations
 
-    QgsCoordinateTransformCache();
+    QgsCoordinateTransformCache() = default;
 
 #ifdef SIP_RUN
     QgsCoordinateTransformCache( const QgsCoordinateTransformCache &rh );

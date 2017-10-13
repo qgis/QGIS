@@ -33,36 +33,6 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 
-///@cond PRIVATE
-
-/** In order to support embedded widgets in layer tree view, the model
- * generates one placeholder legend node for each embedded widget.
- * The placeholder will be replaced by an embedded widget in QgsLayerTreeView
- */
-class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
-{
-  public:
-    EmbeddedWidgetLegendNode( QgsLayerTreeLayer *nodeL )
-      : QgsLayerTreeModelLegendNode( nodeL )
-    {
-      // we need a valid rule key to allow the model to build a tree out of legend nodes
-      // if that's possible (if there is a node without a rule key, building of tree is canceled)
-      mRuleKey = QStringLiteral( "embedded-widget-" ) + QUuid::createUuid().toString();
-    }
-
-    QVariant data( int role ) const override
-    {
-      if ( role == RuleKeyRole )
-        return mRuleKey;
-      return QVariant();
-    }
-
-  private:
-    QString mRuleKey;
-};
-
-///@endcond
-
 QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QAbstractItemModel( parent )
   , mRootNode( rootNode )
@@ -334,7 +304,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         if ( !layer->abstract().isEmpty() )
           parts << "<br/>" + layer->abstract().replace( QLatin1String( "\n" ), QLatin1String( "<br/>" ) );
         parts << "<i>" + layer->publicSource() + "</i>";
-        return parts.join( "<br/>" );
+        return parts.join( QStringLiteral( "<br/>" ) );
       }
     }
   }
@@ -797,6 +767,9 @@ void QgsLayerTreeModel::nodeLayerWillBeUnloaded()
 
 void QgsLayerTreeModel::layerLegendChanged()
 {
+  if ( !mRootNode )
+    return;
+
   if ( !testFlag( ShowLegend ) )
     return;
 
@@ -1453,7 +1426,7 @@ Qt::ItemFlags QgsLayerTreeModel::legendNodeFlags( QgsLayerTreeModelLegendNode *n
 
 bool QgsLayerTreeModel::legendEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const
 {
-  return mLegend[nodeLayer].embeddedNodeInParent != nullptr;
+  return static_cast< bool >( mLegend[nodeLayer].embeddedNodeInParent );
 }
 
 QgsLayerTreeModelLegendNode *QgsLayerTreeModel::legendNodeEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const

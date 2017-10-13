@@ -58,7 +58,6 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   mTempStyle->createMemoryDatabase();
 
   // TODO validate
-  mFileName = QLatin1String( "" );
   mProgressDlg = nullptr;
   mGroupSelectionDlg = nullptr;
   mTempFile = nullptr;
@@ -74,7 +73,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
     importTypeCombo->addItem( tr( "URL specified below" ), QVariant( "url" ) );
     connect( importTypeCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsStyleExportImportDialog::importTypeChanged );
 
-    mSymbolTags->setText( "imported" );
+    mSymbolTags->setText( QStringLiteral( "imported" ) );
 
     btnBrowse->setText( QStringLiteral( "Browse" ) );
     connect( btnBrowse, &QAbstractButton::clicked, this, &QgsStyleExportImportDialog::browse );
@@ -113,6 +112,8 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   disconnect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsStyleExportImportDialog::doExportImport );
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsStyleExportImportDialog::showHelp );
 }
 
 void QgsStyleExportImportDialog::doExportImport()
@@ -167,7 +168,7 @@ void QgsStyleExportImportDialog::doExportImport()
     accept();
   }
 
-  mFileName = QLatin1String( "" );
+  mFileName.clear();
   mTempStyle->clear();
 }
 
@@ -200,7 +201,7 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle *style )
     QStandardItem *item = new QStandardItem( name );
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, listItems->iconSize(), 15 );
     item->setIcon( icon );
-    item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( name ).arg( tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
+    item->setToolTip( QStringLiteral( "<b>%1</b><br><i>%2</i>" ).arg( name, tags.count() > 0 ? tags.join( QStringLiteral( ", " ) ) : tr( "Not tagged" ) ) );
     // Set font to 10points to show reasonable text
     QFont itemFont = item->font();
     itemFont.setPointSize( 10 );
@@ -456,7 +457,7 @@ void QgsStyleExportImportDialog::importTypeChanged( int index )
 {
   QString type = importTypeCombo->itemData( index ).toString();
 
-  locationLineEdit->setText( QLatin1String( "" ) );
+  locationLineEdit->clear();
 
   if ( type == QLatin1String( "file" ) )
   {
@@ -546,7 +547,7 @@ void QgsStyleExportImportDialog::httpFinished()
   if ( mNetReply->error() )
   {
     mTempFile->remove();
-    mFileName = QLatin1String( "" );
+    mFileName.clear();
     mProgressDlg->hide();
     QMessageBox::information( this, tr( "HTTP Error!" ),
                               tr( "Download failed: %1." ).arg( mNetReply->errorString() ) );
@@ -575,7 +576,7 @@ void QgsStyleExportImportDialog::downloadCanceled()
 {
   mNetReply->abort();
   mTempFile->remove();
-  mFileName = QLatin1String( "" );
+  mFileName.clear();
 }
 
 void QgsStyleExportImportDialog::selectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
@@ -584,4 +585,9 @@ void QgsStyleExportImportDialog::selectionChanged( const QItemSelection &selecte
   Q_UNUSED( deselected );
   bool nothingSelected = listItems->selectionModel()->selectedIndexes().empty();
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( nothingSelected );
+}
+
+void QgsStyleExportImportDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#share-symbols" ) );
 }

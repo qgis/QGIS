@@ -20,8 +20,6 @@
 QgsComposerFrame::QgsComposerFrame( QgsComposition *c, QgsComposerMultiFrame *mf, qreal x, qreal y, qreal width, qreal height )
   : QgsComposerItem( x, y, width, height, c )
   , mMultiFrame( mf )
-  , mHidePageIfEmpty( false )
-  , mHideBackgroundIfEmpty( false )
 {
 
   //default to no background
@@ -38,9 +36,6 @@ QgsComposerFrame::QgsComposerFrame( QgsComposition *c, QgsComposerMultiFrame *mf
 
 QgsComposerFrame::QgsComposerFrame()
   : QgsComposerItem( 0, 0, 0, 0, nullptr )
-  , mMultiFrame( nullptr )
-  , mHidePageIfEmpty( false )
-  , mHideBackgroundIfEmpty( false )
 {
   //default to no background
   setBackgroundEnabled( false );

@@ -31,9 +31,6 @@
 
 QgsJsonExporter::QgsJsonExporter( QgsVectorLayer *vectorLayer, int precision )
   : mPrecision( precision )
-  , mIncludeGeometry( true )
-  , mIncludeAttributes( true )
-  , mIncludeRelatedAttributes( false )
   , mLayer( vectorLayer )
 {
   if ( vectorLayer )
@@ -130,7 +127,7 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
 
         if ( attributeCounter > 0 )
           properties += QLatin1String( ",\n" );
-        QVariant val =  feature.attributes().at( i );
+        QVariant val = feature.attributes().at( i );
 
         if ( mLayer )
         {
@@ -178,7 +175,7 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
           QgsFeatureIterator it = childLayer->getFeatures( req );
           QVector<QVariant> attributeWidgetCaches;
           int fieldIndex = 0;
-          Q_FOREACH ( const QgsField &field, childLayer->fields() )
+          for ( const auto &field : childLayer->fields() )
           {
             QgsEditorWidgetSetup setup = field.editorWidgetSetup();
             QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
@@ -287,7 +284,7 @@ QString QgsJsonUtils::encodeValue( const QVariant &value )
   }
 }
 
-QString QgsJsonUtils::exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer, QVector<QVariant> attributeWidgetCaches )
+QString QgsJsonUtils::exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer, const QVector<QVariant> &attributeWidgetCaches )
 {
   QgsFields fields = feature.fields();
   QString attrs;

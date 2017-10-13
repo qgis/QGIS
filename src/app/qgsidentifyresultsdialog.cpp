@@ -113,12 +113,12 @@ void QgsIdentifyResultsWebView::handleDownload( QUrl url )
   }
   else
   {
-    const QString DOWNLOADER_LAST_DIR_KEY( "Qgis/fileDownloaderLastDir" );
+    const QString DOWNLOADER_LAST_DIR_KEY( QStringLiteral( "Qgis/fileDownloaderLastDir" ) );
     QgsSettings settings;
     // Try to get some information from the URL
     QFileInfo info( url.toString() );
     QString savePath = settings.value( DOWNLOADER_LAST_DIR_KEY ).toString();
-    QString fileName = info.fileName().replace( QRegExp( "[^A-z0-9\\-_\\.]" ), "_" );
+    QString fileName = info.fileName().replace( QRegExp( "[^A-z0-9\\-_\\.]" ), QStringLiteral( "_" ) );
     if ( ! savePath.isEmpty() && ! fileName.isEmpty() )
     {
       savePath = QDir::cleanPath( savePath + QDir::separator() + fileName );
@@ -312,11 +312,16 @@ void QgsIdentifyResultsWebViewItem::loadFinished( bool ok )
 
 QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
-  , mActionPopup( nullptr )
   , mCanvas( canvas )
-  , mDock( nullptr )
 {
   setupUi( this );
+  connect( cmbIdentifyMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsIdentifyResultsDialog::cmbIdentifyMode_currentIndexChanged );
+  connect( cmbViewMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsIdentifyResultsDialog::cmbViewMode_currentIndexChanged );
+  connect( mExpandNewAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::mExpandNewAction_triggered );
+  connect( cbxAutoFeatureForm, &QCheckBox::toggled, this, &QgsIdentifyResultsDialog::cbxAutoFeatureForm_toggled );
+  connect( mExpandAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::mExpandAction_triggered );
+  connect( mCollapseAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::mCollapseAction_triggered );
+  connect( mActionCopy, &QAction::triggered, this, &QgsIdentifyResultsDialog::mActionCopy_triggered );
 
   mOpenFormAction->setDisabled( true );
 
@@ -447,7 +452,7 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
 void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes )
 {
   QTreeWidgetItem *layItem = layerItem( vlayer );
-  lstResults->header()->setResizeMode( QHeaderView::ResizeToContents );
+  lstResults->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
   lstResults->header()->setStretchLastSection( false );
 
   if ( !layItem )
@@ -1780,7 +1785,7 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
 
     const QgsFields &fields = vlayer->fields();
 
-    for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+    for ( QgsAttributeMap::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )
     {
       int attrIdx = it.key();
       if ( attrIdx < 0 || attrIdx >= fields.count() )
@@ -1840,30 +1845,30 @@ void QgsIdentifyResultsDialog::printCurrentItem()
   wv->webView()->print();
 }
 
-void QgsIdentifyResultsDialog::on_cmbIdentifyMode_currentIndexChanged( int index )
+void QgsIdentifyResultsDialog::cmbIdentifyMode_currentIndexChanged( int index )
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Map/identifyMode" ), cmbIdentifyMode->itemData( index ).toInt() );
 }
 
-void QgsIdentifyResultsDialog::on_cmbViewMode_currentIndexChanged( int index )
+void QgsIdentifyResultsDialog::cmbViewMode_currentIndexChanged( int index )
 {
   stackedWidget->setCurrentIndex( index );
 }
 
-void QgsIdentifyResultsDialog::on_cbxAutoFeatureForm_toggled( bool checked )
+void QgsIdentifyResultsDialog::cbxAutoFeatureForm_toggled( bool checked )
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Map/identifyAutoFeatureForm" ), checked );
 }
 
-void QgsIdentifyResultsDialog::on_mExpandNewAction_triggered( bool checked )
+void QgsIdentifyResultsDialog::mExpandNewAction_triggered( bool checked )
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Map/identifyExpand" ), checked );
 }
 
-void QgsIdentifyResultsDialog::on_mActionCopy_triggered( bool checked )
+void QgsIdentifyResultsDialog::mActionCopy_triggered( bool checked )
 {
   Q_UNUSED( checked );
   copyFeature();

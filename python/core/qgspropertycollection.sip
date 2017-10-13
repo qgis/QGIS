@@ -21,7 +21,6 @@ class QgsAbstractPropertyCollection
 %TypeHeaderCode
 #include "qgspropertycollection.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsPropertyCollection *>( sipCpp ) )
       sipType = sipType_QgsPropertyCollection;
@@ -368,6 +367,9 @@ class QgsPropertyCollectionStack : QgsAbstractPropertyCollection
   public:
 
     QgsPropertyCollectionStack();
+%Docstring
+ Constructor for QgsPropertyCollectionStack.
+%End
 
     ~QgsPropertyCollectionStack();
 

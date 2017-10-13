@@ -27,7 +27,8 @@
 class QDomNode;
 class QDomElement;
 
-/** \class QgsGrassModule
+/**
+ * \class QgsGrassModule
  *  \brief Interface to GRASS modules.
  *
  */
@@ -41,10 +42,10 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
       public:
         QString label;
         // supported by GRASS Direct
-        bool direct;
-        Description(): direct( true ) {}
+        bool direct = true;
+        Description() = default;
         Description( QString lab, bool dir = false ): label( lab ), direct( dir ) { }
-        Description( const Description &desc ) { label = desc.label; direct =  desc.direct; }
+        Description( const Description &desc ) { label = desc.label; direct = desc.direct; }
     };
 
     //! Constructor
@@ -62,7 +63,8 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     //! Returns module label for module description path
     static QString label( QString path );
 
-    /** \brief Returns pixmap representing the module
+    /**
+     * \brief Returns pixmap representing the module
      * \param path module path without .qgm extension
      */
     static QPixmap pixmap( QString path, int height );
@@ -101,15 +103,15 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
 
   public slots:
     //! Run the module with current options
-    void on_mRunButton_clicked() { run(); }
+    void mRunButton_clicked() { run(); }
     void run();
 
     //! Close the module tab
-    void on_mCloseButton_clicked() { close(); }
+    void mCloseButton_clicked() { close(); }
     void close();
 
     //! Show output in map view
-    void on_mViewButton_clicked() { viewOutput(); }
+    void mViewButton_clicked() { viewOutput(); }
     void viewOutput();
 
     //! Running process finished
@@ -126,7 +128,8 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
 
   private:
 
-    /** Set progress bar or busy indicator if percent is 100
+    /**
+     * Set progress bar or busy indicator if percent is 100
      * \param percent progress to show in %
      * \param force to set progress for 100% */
     void setProgress( int percent, bool force = false );

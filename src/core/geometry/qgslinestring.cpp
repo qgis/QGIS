@@ -34,7 +34,7 @@
  * See details in QEP #17
  ****************************************************************************/
 
-QgsLineString::QgsLineString(): QgsCurve()
+QgsLineString::QgsLineString()
 {
   mWkbType = QgsWkbTypes::LineString;
 }
@@ -65,7 +65,7 @@ QgsLineString::QgsLineString( const QVector<QgsPoint> &points )
     m = mM.data();
   }
 
-  Q_FOREACH ( const QgsPoint &pt, points )
+  for ( const QgsPoint &pt : points )
   {
     *x++ = pt.x();
     *y++ = pt.y();
@@ -127,7 +127,7 @@ QgsLineString::QgsLineString( const QList<QgsPointXY> &points )
   mWkbType = QgsWkbTypes::LineString;
   mX.reserve( points.size() );
   mY.reserve( points.size() );
-  Q_FOREACH ( const QgsPointXY &p, points )
+  for ( const QgsPointXY &p : points )
   {
     mX << p.x();
     mY << p.y();
@@ -217,14 +217,14 @@ QgsRectangle QgsLineString::calculateBoundingBox() const
   double xmax = -std::numeric_limits<double>::max();
   double ymax = -std::numeric_limits<double>::max();
 
-  Q_FOREACH ( double x, mX )
+  for ( double x : mX )
   {
     if ( x < xmin )
       xmin = x;
     if ( x > xmax )
       xmax = x;
   }
-  Q_FOREACH ( double y, mY )
+  for ( double y : mY )
   {
     if ( y < ymin )
       ymin = y;
@@ -366,6 +366,11 @@ QgsLineString *QgsLineString::curveToLine( double tolerance, SegmentationToleran
 }
 
 int QgsLineString::numPoints() const
+{
+  return mX.size();
+}
+
+int QgsLineString::nCoordinates() const
 {
   return mX.size();
 }
@@ -535,11 +540,13 @@ void QgsLineString::setPoints( const QgsPointSequence &points )
     mY[i] = points.at( i ).y();
     if ( hasZ )
     {
-      mZ[i] = points.at( i ).z();
+      double z = points.at( i ).z();
+      mZ[i] = std::isnan( z ) ? 0 : z;
     }
     if ( hasM )
     {
-      mM[i] = points.at( i ).m();
+      double m = points.at( i ).m();
+      mM[i] = std::isnan( m ) ? 0 : m;
     }
   }
 }
@@ -663,7 +670,7 @@ void QgsLineString::drawAsPolygon( QPainter &p ) const
   p.drawPolygon( asQPolygonF() );
 }
 
-QgsAbstractGeometry *QgsLineString::toCurveType() const
+QgsCompoundCurve *QgsLineString::toCurveType() const
 {
   QgsCompoundCurve *compoundCurve = new QgsCompoundCurve();
   compoundCurve->addCurve( clone() );
@@ -694,6 +701,16 @@ void QgsLineString::extend( double startDistance, double endDistance )
     mX[ last ] = mX.at( last - 1 ) + ( mX.at( last ) - mX.at( last - 1 ) ) / currentLen * newLen;
     mY[ last ] = mY.at( last - 1 ) + ( mY.at( last ) - mY.at( last - 1 ) ) / currentLen * newLen;
   }
+}
+
+QString QgsLineString::geometryType() const
+{
+  return QStringLiteral( "LineString" );
+}
+
+int QgsLineString::dimension() const
+{
+  return 1;
 }
 
 /***************************************************************************

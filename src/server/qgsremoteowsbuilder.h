@@ -36,7 +36,7 @@ class QgsRemoteOWSBuilder: public QgsMSLayerBuilder
     QgsMapLayer *createMapLayer( const QDomElement &elem, const QString &layerName, QList<QTemporaryFile *> &filesToRemove, QList<QgsMapLayer *> &layersToRemove, bool allowCaching = true ) const override;
 
   private:
-    QgsRemoteOWSBuilder(); //forbidden
+    QgsRemoteOWSBuilder() = delete;
     //! Creates a wms layer from a complete wms url (using http get). Returns 0 in case of error
     QgsRasterLayer *wmsLayerFromUrl( const QString &url, const QString &layerName, QList<QgsMapLayer *> &layersToRemove, bool allowCaching = true ) const;
     //! Creates a temporary file such that the gdal library can read from wcs

@@ -26,7 +26,8 @@
 #include "qgsfields.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFieldValidator
  */
 class GUI_EXPORT QgsFieldValidator : public QValidator
@@ -52,5 +53,7 @@ class GUI_EXPORT QgsFieldValidator : public QValidator
     QString mDefaultValue;
     QString mDateFormat;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSFIELDVALIDATOR_H

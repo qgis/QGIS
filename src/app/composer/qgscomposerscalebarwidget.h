@@ -22,7 +22,8 @@
 
 class QgsComposerScaleBar;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * A widget to define the properties of a QgsComposerScaleBarItem.
  */
 class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerScaleBarWidgetBase
@@ -31,30 +32,29 @@ class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::Q
 
   public:
     explicit QgsComposerScaleBarWidget( QgsComposerScaleBar *scaleBar );
-    ~QgsComposerScaleBarWidget();
 
   public slots:
 
-    void on_mHeightSpinBox_valueChanged( int i );
-    void on_mLineWidthSpinBox_valueChanged( double d );
-    void on_mSegmentSizeSpinBox_valueChanged( double d );
-    void on_mSegmentsLeftSpinBox_valueChanged( int i );
-    void on_mNumberOfSegmentsSpinBox_valueChanged( int i );
-    void on_mUnitLabelLineEdit_textChanged( const QString &text );
-    void on_mMapUnitsPerBarUnitSpinBox_valueChanged( double d );
-    void on_mFontColorButton_colorChanged( const QColor &newColor );
-    void on_mFillColorButton_colorChanged( const QColor &newColor );
-    void on_mFillColor2Button_colorChanged( const QColor &newColor );
-    void on_mStrokeColorButton_colorChanged( const QColor &newColor );
-    void on_mStyleComboBox_currentIndexChanged( const QString &text );
-    void on_mLabelBarSpaceSpinBox_valueChanged( double d );
-    void on_mBoxSizeSpinBox_valueChanged( double d );
-    void on_mAlignmentComboBox_currentIndexChanged( int index );
-    void on_mUnitsComboBox_currentIndexChanged( int index );
-    void on_mLineJoinStyleCombo_currentIndexChanged( int index );
-    void on_mLineCapStyleCombo_currentIndexChanged( int index );
-    void on_mMinWidthSpinBox_valueChanged( int i );
-    void on_mMaxWidthSpinBox_valueChanged( int i );
+    void mHeightSpinBox_valueChanged( double d );
+    void mLineWidthSpinBox_valueChanged( double d );
+    void mSegmentSizeSpinBox_valueChanged( double d );
+    void mSegmentsLeftSpinBox_valueChanged( int i );
+    void mNumberOfSegmentsSpinBox_valueChanged( int i );
+    void mUnitLabelLineEdit_textChanged( const QString &text );
+    void mMapUnitsPerBarUnitSpinBox_valueChanged( double d );
+    void mFontColorButton_colorChanged( const QColor &newColor );
+    void mFillColorButton_colorChanged( const QColor &newColor );
+    void mFillColor2Button_colorChanged( const QColor &newColor );
+    void mStrokeColorButton_colorChanged( const QColor &newColor );
+    void mStyleComboBox_currentIndexChanged( const QString &text );
+    void mLabelBarSpaceSpinBox_valueChanged( double d );
+    void mBoxSizeSpinBox_valueChanged( double d );
+    void mAlignmentComboBox_currentIndexChanged( int index );
+    void mUnitsComboBox_currentIndexChanged( int index );
+    void mLineJoinStyleCombo_currentIndexChanged( int index );
+    void mLineCapStyleCombo_currentIndexChanged( int index );
+    void mMinWidthSpinBox_valueChanged( double d );
+    void mMaxWidthSpinBox_valueChanged( double d );
 
   private slots:
     void setGuiElements();

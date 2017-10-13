@@ -23,7 +23,7 @@
 /CMakeLists.txt.user
 /CMakeLists.txt.user.*
 api_doc
-build*
+*build*
 debian/*.debhelper
 debian/*.substvars
 desktop.ini
@@ -52,7 +52,6 @@ scripts/astyle.exe
 scripts/Debug
 scripts/qgisstyle*
 scripts/RelWithDebInfo
-src/core/qgscontexthelp_texts.cpp
 src/core/qgsexpression_texts.cpp
 tests/testdata/cache/
 tests/testdata/checker360by180.asc.aux.xml
@@ -61,6 +60,7 @@ tests/testdata/grass/wgs84/test/.gislock
 tests/testdata/grass/wgs84/test6/.gislock
 tests/testdata/grass/wgs84/test7/.gislock
 tests/testdata/*.aux.xml
+tests/testdata/landsat-int16-b1.tif.aux.xml
 tests/testdata/raster/*.aux.xml
 tests/testdata/raster/band1_byte_noct_epsg4326.tif.aux.xml
 tests/testdata/raster/band1_float32_noct_epsg4326.tif.aux.xml

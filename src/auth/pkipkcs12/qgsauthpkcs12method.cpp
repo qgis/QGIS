@@ -25,6 +25,7 @@
 #include <QSslConfiguration>
 #include <QSslError>
 #endif
+#include <QMutexLocker>
 
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
@@ -38,7 +39,6 @@ QMap<QString, QgsPkiConfigBundle *> QgsAuthPkcs12Method::sPkiConfigBundleCache =
 
 
 QgsAuthPkcs12Method::QgsAuthPkcs12Method()
-  : QgsAuthMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
@@ -52,6 +52,7 @@ QgsAuthPkcs12Method::QgsAuthPkcs12Method()
 
 QgsAuthPkcs12Method::~QgsAuthPkcs12Method()
 {
+  QMutexLocker locker( &mConfigMutex );
   qDeleteAll( sPkiConfigBundleCache );
   sPkiConfigBundleCache.clear();
 }
@@ -222,6 +223,7 @@ void QgsAuthPkcs12Method::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 
 QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &authcfg )
 {
+  QMutexLocker locker( &mConfigMutex );
   QgsPkiConfigBundle *bundle = nullptr;
 
   // check if it is cached
@@ -272,6 +274,7 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
 
   bundle = new QgsPkiConfigBundle( mconfig, clientcert, clientkey );
 
+  locker.unlock();
   // cache bundle
   putPkiConfigBundle( authcfg, bundle );
 
@@ -280,12 +283,14 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
 
 void QgsAuthPkcs12Method::putPkiConfigBundle( const QString &authcfg, QgsPkiConfigBundle *pkibundle )
 {
+  QMutexLocker locker( &mConfigMutex );
   QgsDebugMsg( QString( "Putting PKI bundle for authcfg %1" ).arg( authcfg ) );
   sPkiConfigBundleCache.insert( authcfg, pkibundle );
 }
 
 void QgsAuthPkcs12Method::removePkiConfigBundle( const QString &authcfg )
 {
+  QMutexLocker locker( &mConfigMutex );
   if ( sPkiConfigBundleCache.contains( authcfg ) )
   {
     QgsPkiConfigBundle *pkibundle = sPkiConfigBundleCache.take( authcfg );
@@ -308,7 +313,8 @@ QGISEXTERN QgsAuthPkcs12Method *classFactory()
   return new QgsAuthPkcs12Method();
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
  */
 QGISEXTERN QString authMethodKey()
 {

@@ -17,7 +17,6 @@
 
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
-#include <qgstestutils.h>
 #include <qgstracer.h>
 #include <qgsvectorlayer.h>
 
@@ -35,6 +34,7 @@ class TestQgsTracer : public QObject
     void testExtent();
     void testReprojection();
     void testCurved();
+    void testOffset();
 
   private:
 
@@ -348,6 +348,45 @@ void TestQgsTracer::testCurved()
 
   QCOMPARE( points1[0], QgsPointXY( 0, 0 ) );
   QCOMPARE( points1[points1.count() - 1], QgsPointXY( 10, 10 ) );
+
+  delete vl;
+}
+
+void TestQgsTracer::testOffset()
+{
+  QStringList wkts;
+  wkts  << QStringLiteral( "LINESTRING(0 0, 0 10)" )
+        << QStringLiteral( "LINESTRING(0 0, 10 0)" )
+        << QStringLiteral( "LINESTRING(0 10, 20 10)" )
+        << QStringLiteral( "LINESTRING(10 0, 20 10)" );
+
+  /* This shape - nearly a square (one side is shifted to have exactly one shortest
+   * path between corners):
+   * 0,10 +----+  20,10
+   *      |   /
+   * 0,0  +--+  10,0
+   */
+
+  QgsVectorLayer *vl = make_layer( wkts );
+
+  QgsTracer tracer;
+  tracer.setLayers( QList<QgsVectorLayer *>() << vl );
+
+  // curve on the right side
+  tracer.setOffset( -1 );
+  QgsPolyline points1 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 20, 10 ) );
+  QCOMPARE( points1.count(), 3 );
+  QCOMPARE( points1[0], QgsPointXY( 0, -1 ) );
+  QCOMPARE( points1[1], QgsPointXY( 10 + sqrt( 2 ) - 1, -1 ) );
+  QCOMPARE( points1[2], QgsPointXY( 20 + sqrt( 2 ) / 2, 10 - sqrt( 2 ) / 2 ) );
+
+  // curve on the left side
+  tracer.setOffset( 1 );
+  QgsPolyline points2 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 20, 10 ) );
+  QCOMPARE( points2.count(), 3 );
+  QCOMPARE( points2[0], QgsPointXY( 0, 1 ) );
+  QCOMPARE( points2[1], QgsPointXY( 10 - sqrt( 2 ) + 1, 1 ) );
+  QCOMPARE( points2[2], QgsPointXY( 20 - sqrt( 2 ) / 2, 10 + sqrt( 2 ) / 2 ) );
 
   delete vl;
 }

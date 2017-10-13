@@ -26,16 +26,12 @@
 #include "qgsauthmanager.h"
 #include "qgsauthconfigedit.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &dataprovider )
   : QWidget( parent )
-  , mAuthCfg( QString() )
   , mDataProvider( dataprovider )
-  , mConfigs( QgsAuthMethodConfigsMap() )
-  , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -48,6 +44,22 @@ QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &datapr
   else
   {
     setupUi( this );
+    connect( cmbConfigSelect, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAuthConfigSelect::cmbConfigSelect_currentIndexChanged );
+    connect( btnConfigAdd, &QToolButton::clicked, this, &QgsAuthConfigSelect::btnConfigAdd_clicked );
+    connect( btnConfigEdit, &QToolButton::clicked, this, &QgsAuthConfigSelect::btnConfigEdit_clicked );
+    connect( btnConfigRemove, &QToolButton::clicked, this, &QgsAuthConfigSelect::btnConfigRemove_clicked );
+    connect( btnConfigMsgClear, &QToolButton::clicked, this, &QgsAuthConfigSelect::btnConfigMsgClear_clicked );
+
+    // Set icons and remove texts
+    btnConfigAdd->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
+    btnConfigRemove->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyRemove.svg" ) ) );
+    btnConfigEdit->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+    btnConfigMsgClear->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClose.svg" ) ) );
+
+    btnConfigAdd->setText( QStringLiteral( "" ) );
+    btnConfigRemove->setText( QStringLiteral( "" ) );
+    btnConfigEdit->setText( QStringLiteral( "" ) );
+    btnConfigMsgClear->setText( QStringLiteral( "" ) );
 
     leConfigMsg->setStyleSheet( QStringLiteral( "QLineEdit{background-color: %1}" )
                                 .arg( QgsAuthGuiUtils::yellowColor().name() ) );
@@ -99,9 +111,8 @@ void QgsAuthConfigSelect::loadConfig()
     {
       methoddesc = authmethod->description();
     }
-    leConfigMethodDesc->setText( methoddesc );
-    leConfigMethodDesc->setCursorPosition( 0 ); // left justify
-    leConfigId->setText( config.id() );
+    cmbConfigSelect->setToolTip( tr( "<ul><li><b>Method type:</b> %1</li>"
+                                     "<li><b>Configuration ID:</b> %2</li></ul>" ).arg( methoddesc, config.id( ) ) );
     btnConfigEdit->setEnabled( true );
     btnConfigRemove->setEnabled( true );
   }
@@ -110,8 +121,7 @@ void QgsAuthConfigSelect::loadConfig()
 
 void QgsAuthConfigSelect::clearConfig()
 {
-  leConfigMethodDesc->clear();
-  leConfigId->clear();
+  cmbConfigSelect->setToolTip( QStringLiteral( "" ) );
   btnConfigEdit->setEnabled( false );
   btnConfigRemove->setEnabled( false );
 }
@@ -139,7 +149,7 @@ void QgsAuthConfigSelect::populateConfigSelector()
   for ( cit = mConfigs.constBegin(); cit != mConfigs.constEnd(); ++cit )
   {
     QgsAuthMethodConfig config = cit.value();
-    sortmap.insert( config.name(), cit.key() );
+    sortmap.insert( QStringLiteral( "%1 (%2)" ).arg( config.name(), config.method() ), cit.key() );
   }
 
   QgsStringMap::const_iterator sm = sortmap.constBegin();
@@ -183,14 +193,14 @@ void QgsAuthConfigSelect::loadAvailableConfigs()
   mConfigs = QgsAuthManager::instance()->availableAuthMethodConfigs( mDataProvider );
 }
 
-void QgsAuthConfigSelect::on_cmbConfigSelect_currentIndexChanged( int index )
+void QgsAuthConfigSelect::cmbConfigSelect_currentIndexChanged( int index )
 {
   QString authcfg = cmbConfigSelect->itemData( index ).toString();
   mAuthCfg = ( !authcfg.isEmpty() && authcfg != QLatin1String( "0" ) ) ? authcfg : QString();
   loadConfig();
 }
 
-void QgsAuthConfigSelect::on_btnConfigAdd_clicked()
+void QgsAuthConfigSelect::btnConfigAdd_clicked()
 {
   if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
     return;
@@ -204,7 +214,7 @@ void QgsAuthConfigSelect::on_btnConfigAdd_clicked()
   ace->deleteLater();
 }
 
-void QgsAuthConfigSelect::on_btnConfigEdit_clicked()
+void QgsAuthConfigSelect::btnConfigEdit_clicked()
 {
   if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
     return;
@@ -219,7 +229,7 @@ void QgsAuthConfigSelect::on_btnConfigEdit_clicked()
   ace->deleteLater();
 }
 
-void QgsAuthConfigSelect::on_btnConfigRemove_clicked()
+void QgsAuthConfigSelect::btnConfigRemove_clicked()
 {
   if ( QMessageBox::warning( this, tr( "Remove Authentication" ),
                              tr( "Are you sure that you want to permanently remove this configuration right now?\n\n"
@@ -237,7 +247,7 @@ void QgsAuthConfigSelect::on_btnConfigRemove_clicked()
   }
 }
 
-void QgsAuthConfigSelect::on_btnConfigMsgClear_clicked()
+void QgsAuthConfigSelect::btnConfigMsgClear_clicked()
 {
   clearMessage();
 }
@@ -249,12 +259,6 @@ void QgsAuthConfigSelect::on_btnConfigMsgClear_clicked()
 
 QgsAuthConfigUriEdit::QgsAuthConfigUriEdit( QWidget *parent, const QString &datauri, const QString &dataprovider )
   : QDialog( parent )
-  , mAuthCfg( QString() )
-  , mDataUri( QString() )
-  , mDataUriOrig( QString() )
-  , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

@@ -210,7 +210,7 @@ void QgsGlobePluginDialog::readProjectSettings()
 {
   // Imagery settings
   mImageryTreeView->clear();
-  foreach ( const LayerDataSource &ds, getImageryDataSources() )
+  for ( const LayerDataSource &ds : getImageryDataSources() )
   {
     QTreeWidgetItem *item = new QTreeWidgetItem( QStringList() << ds.type << ds.uri );
     item->setFlags( item->flags() & ~Qt::ItemIsDropEnabled );
@@ -220,7 +220,7 @@ void QgsGlobePluginDialog::readProjectSettings()
 
   // Elevation settings
   mElevationTreeView->clear();
-  foreach ( const LayerDataSource &ds, getElevationDataSources() )
+  for ( const LayerDataSource &ds : getElevationDataSources() )
   {
     QTreeWidgetItem *item = new QTreeWidgetItem( QStringList() << ds.type << ds.uri );
     item->setFlags( item->flags() & ~Qt::ItemIsDropEnabled );
@@ -236,7 +236,7 @@ void QgsGlobePluginDialog::readProjectSettings()
   groupBoxSky->setChecked( QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/skyEnabled", true ) );
   checkBoxDateTime->setChecked( QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/overrideDateTime", false ) );
   dateTimeEditSky->setDateTime( QDateTime::fromString( QgsProject::instance()->readEntry( "Globe-Plugin", "/skyDateTime", QDateTime::currentDateTime().toString() ) ) );
-  checkBoxSkyAutoAmbient->setChecked( QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/skyAutoAmbient", true ) );
+  checkBoxSkyAutoAmbient->setChecked( QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/skyAutoAmbient", false ) );
   horizontalSliderMinAmbient->setValue( QgsProject::instance()->readDoubleEntry( "Globe-Plugin", "/skyMinAmbient", 30. ) );
 }
 
@@ -485,7 +485,7 @@ QDateTime QgsGlobePluginDialog::getSkyDateTime() const
 
 bool QgsGlobePluginDialog::getSkyAutoAmbience() const
 {
-  return QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/skyAutoAmbient", true );
+  return QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/skyAutoAmbient", false );
 }
 
 double QgsGlobePluginDialog::getSkyMinAmbient() const

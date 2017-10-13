@@ -40,16 +40,8 @@
 #include "qgsmapcanvas.h"
 
 QgsClipboard::QgsClipboard()
-  : QObject()
-  , mFeatureClipboard()
-  , mFeatureFields()
-  , mUseSystemClipboard( false )
 {
   connect( QApplication::clipboard(), &QClipboard::dataChanged, this, &QgsClipboard::systemClipboardChanged );
-}
-
-QgsClipboard::~QgsClipboard()
-{
 }
 
 void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )

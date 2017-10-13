@@ -108,26 +108,34 @@ Sets item box to the whole content
 
     void setLegendFilterByMapEnabled( bool enabled );
 %Docstring
+ Set whether legend items should be filtered to show just the ones visible in the associated map
 .. versionadded:: 2.6
 %End
+
     bool legendFilterByMapEnabled() const;
 %Docstring
+ Find out whether legend items are filtered to show just the ones visible in the associated map
 .. versionadded:: 2.6
  :rtype: bool
 %End
 
     virtual void updateItem();
 %Docstring
+ Update() overloading. Use it rather than update()
 .. versionadded:: 2.12
 %End
 
     void setLegendFilterOutAtlas( bool doFilter );
 %Docstring
+ When set to true, during an atlas rendering, it will filter out legend elements
+ where features are outside the current atlas feature.
 .. versionadded:: 2.14
 %End
 
     bool legendFilterOutAtlas() const;
 %Docstring
+ Whether to filter out legend elements outside of the current atlas feature
+.. seealso:: setLegendFilterOutAtlas()
 .. versionadded:: 2.14
  :rtype: bool
 %End

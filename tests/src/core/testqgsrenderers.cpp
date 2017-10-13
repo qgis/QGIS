@@ -30,7 +30,8 @@
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
 class TestQgsRenderers : public QObject
@@ -38,13 +39,7 @@ class TestQgsRenderers : public QObject
     Q_OBJECT
 
   public:
-    TestQgsRenderers()
-      : mTestHasError( false )
-      , mMapSettings( 0 )
-      , mpPointsLayer( 0 )
-      , mpLinesLayer( 0 )
-      , mpPolysLayer( 0 )
-    {}
+    TestQgsRenderers() = default;
     ~TestQgsRenderers()
     {
       delete mMapSettings;
@@ -61,7 +56,7 @@ class TestQgsRenderers : public QObject
 //    void graduatedSymbol();
 //    void continuousSymbol();
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
     bool setQml( const QString &type ); //uniquevalue / continuous / single /
     bool imageCheck( const QString &type ); //as above
     QgsMapSettings *mMapSettings = nullptr;

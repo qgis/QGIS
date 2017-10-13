@@ -20,6 +20,9 @@
 
 #include "ui_qgsgrasstoolsbase.h"
 
+#include <QSortFilterProxyModel>
+#include <QStandardItem>
+
 class QDomElement;
 class QSortFilterProxyModel;
 class QStandardItem;
@@ -31,7 +34,8 @@ class QgsMapCanvas;
 class QgsGrassRegion;
 class QgsGrassToolsTreeFilterProxyModel;
 
-/** \class QgsGrassTools
+/**
+ * \class QgsGrassTools
  *  \brief Interface to GRASS modules.
  *
  */
@@ -92,14 +96,14 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
     void closeTools();
 
     //! Update the regex used to filter the modules list (autoconnect to ui)
-    void on_mFilterInput_textChanged( QString text );
+    void mFilterInput_textChanged( QString text );
     //! Run a module when its entry is clicked in the list view
     void itemClicked( const QModelIndex &index );
     //! Run a module given its module name e.g. r.in.gdal
     void runModule( QString name, bool direct );
-    void on_mDebugButton_clicked();
-    void on_mCloseDebugButton_clicked();
-    void on_mViewModeButton_clicked();
+    void mDebugButton_clicked();
+    void mCloseDebugButton_clicked();
+    void mViewModeButton_clicked();
 
   signals:
     void regionChanged();
@@ -138,6 +142,40 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
 
     // Show (fill) / hide tabs according to direct/indirect mode
     void showTabs();
+};
+
+
+// TODO: searching acros the tree is taken from QgsDockBrowserTreeView -> create common base class
+class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsGrassToolsTreeFilterProxyModel( QObject *parent );
+
+    void setSourceModel( QAbstractItemModel *sourceModel ) override;
+
+    void setFilter( const QString &filter );
+
+  protected:
+
+    QAbstractItemModel *mModel = nullptr;
+    QString mFilter; // filter string provided
+    QRegExp mRegExp; // regular expression constructed from filter string
+
+    bool filterAcceptsString( const QString &value ) const;
+
+    // It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
+
+    // returns true if at least one ancestor is accepted by filter
+    bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const;
+
+    // returns true if at least one descendant s accepted by filter
+    bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const;
+
+    // filter accepts item name
+    bool filterAcceptsItem( const QModelIndex &sourceIndex ) const;
 };
 
 #endif // QGSGRASSTOOLS_H

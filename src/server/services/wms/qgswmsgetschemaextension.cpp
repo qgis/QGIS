@@ -20,7 +20,9 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsgetschemaextension.h"
+#include "qgsapplication.h"
 
+#include <QDir>
 #include <QFileInfo>
 
 namespace QgsWms
@@ -44,7 +46,9 @@ namespace QgsWms
 
     QDomDocument xsdDoc;
 
-    QFileInfo xsdFileInfo( QStringLiteral( "schemaExtension.xsd" ) );
+    QDir resourcesDir = QFileInfo( QgsApplication::serverResourcesPath() ).absoluteDir();
+    QFileInfo xsdFileInfo( resourcesDir, QStringLiteral( "schemaExtension.xsd" ) );
+
     if ( !xsdFileInfo.exists() )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Error, xsd file 'schemaExtension.xsd' does not exist" ),

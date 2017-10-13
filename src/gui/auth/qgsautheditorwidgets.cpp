@@ -30,8 +30,7 @@
 
 QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget *parent )
   : QDialog( parent )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
+
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -63,7 +62,7 @@ void QgsAuthMethodPlugins::setupTable()
   tblAuthPlugins->setColumnWidth( 0, 150 );
   tblAuthPlugins->setColumnWidth( 1, 300 );
   tblAuthPlugins->setRowCount( QgsAuthManager::instance()->authMethodsKeys().size() );
-  tblAuthPlugins->verticalHeader()->setResizeMode( QHeaderView::ResizeToContents );
+  tblAuthPlugins->verticalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
   tblAuthPlugins->setSortingEnabled( true );
   tblAuthPlugins->setSelectionBehavior( QAbstractItemView::SelectRows );
 }
@@ -100,15 +99,11 @@ void QgsAuthMethodPlugins::populateTable()
 
 QgsAuthEditorWidgets::QgsAuthEditorWidgets( QWidget *parent )
   : QWidget( parent )
-  , mAuthUtilitiesMenu( nullptr )
-  , mActionSetMasterPassword( nullptr )
-  , mActionClearCachedMasterPassword( nullptr )
-  , mActionResetMasterPassword( nullptr )
-  , mActionClearCachedAuthConfigs( nullptr )
-  , mActionRemoveAuthConfigs( nullptr )
-  , mActionEraseAuthDatabase( nullptr )
+
 {
   setupUi( this );
+  connect( btnCertManager, &QPushButton::clicked, this, &QgsAuthEditorWidgets::btnCertManager_clicked );
+  connect( btnAuthPlugins, &QPushButton::clicked, this, &QgsAuthEditorWidgets::btnAuthPlugins_clicked );
   if ( !QgsAuthManager::instance()->isDisabled() )
   {
     wdgtConfigEditor->setRelayMessages( false );
@@ -121,7 +116,7 @@ QgsAuthEditorWidgets::QgsAuthEditorWidgets( QWidget *parent )
   }
 }
 
-void QgsAuthEditorWidgets::on_btnCertManager_clicked()
+void QgsAuthEditorWidgets::btnCertManager_clicked()
 {
   QgsAuthCertManager *dlg = new QgsAuthCertManager( this );
   dlg->setWindowModality( Qt::ApplicationModal );
@@ -130,7 +125,7 @@ void QgsAuthEditorWidgets::on_btnCertManager_clicked()
   dlg->deleteLater();
 }
 
-void QgsAuthEditorWidgets::on_btnAuthPlugins_clicked()
+void QgsAuthEditorWidgets::btnAuthPlugins_clicked()
 {
   QgsAuthMethodPlugins *dlg = new QgsAuthMethodPlugins( this );
   dlg->setWindowModality( Qt::WindowModal );

@@ -21,7 +21,8 @@
 
 #include "qgssymbollayerutils.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsColorBrewerPalette
  */
 class CORE_EXPORT QgsColorBrewerPalette
@@ -83,5 +84,7 @@ class CORE_EXPORT QgsColorBrewerPalette
     // extracted ColorBrewer data
     static const char *BREWER_STRING;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSCOLORBREWERPALETTE_H

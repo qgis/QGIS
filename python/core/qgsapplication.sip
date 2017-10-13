@@ -29,7 +29,6 @@ to change due to centralization.
 %TypeHeaderCode
 #include "qgsapplication.h"
 %End
-
 %TypeCode
     // Convert a Python argv list to a conventional C argc count and argv array.
     static char **qtgui_ArgvToC( PyObject *argvlist, int &argc )
@@ -211,6 +210,12 @@ Returns the path to the donors file.
  :rtype: str
 %End
 
+    static QString serverResourcesPath();
+%Docstring
+Returns the path to the server resources directory.
+ :rtype: str
+%End
+
     static QString translatorsFilePath();
 %Docstring
  Returns the path to the sponsors file.
@@ -226,6 +231,13 @@ Returns the path to the licence file.
     static QString i18nPath();
 %Docstring
 Returns the path to the translation directory.
+ :rtype: str
+%End
+
+    static QString metadataPath();
+%Docstring
+ Returns the path to the metadata directory.
+.. versionadded:: 3.0
  :rtype: str
 %End
 
@@ -321,19 +333,22 @@ Returns the path to the default theme directory.
 
     static QString iconPath( const QString &iconFile );
 %Docstring
-First it tries to use the active theme path, then default theme path
+ Returns path to the desired icon file.
+ First it tries to use the active theme path, then default theme path
  :rtype: str
 %End
 
     static QIcon getThemeIcon( const QString &name );
 %Docstring
-default theme if the active theme does not have the required icon.
+ Helper to get a theme icon. It will fall back to the
+ default theme if the active theme does not have the required icon.
  :rtype: QIcon
 %End
 
     static QPixmap getThemePixmap( const QString &name );
 %Docstring
-default theme if the active theme does not have the required icon.
+ Helper to get a theme icon as a pixmap. It will fall back to the
+ default theme if the active theme does not have the required icon.
  :rtype: QPixmap
 %End
 
@@ -704,6 +719,16 @@ Returns path to the build output directory. Valid only when running from build d
  :rtype: QgsFieldFormatterRegistry
 %End
 
+    static Qgs3DRendererRegistry *renderer3DRegistry();
+%Docstring
+ Returns registry of available 3D renderers.
+.. note::
+
+   not available in Python bindings
+.. versionadded:: 3.0
+ :rtype: Qgs3DRendererRegistry
+%End
+
     static QString nullRepresentation();
 %Docstring
  This string is used to represent the value `NULL` throughout QGIS.
@@ -770,6 +795,7 @@ Returns path to the build output directory. Valid only when running from build d
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

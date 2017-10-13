@@ -20,13 +20,7 @@ class QgsLayoutGuide : QObject
 %End
   public:
 
-    enum Orientation
-    {
-      Horizontal,
-      Vertical,
-    };
-
-    QgsLayoutGuide( Orientation orientation, const QgsLayoutMeasurement &position, QgsLayoutItemPage *page );
+    QgsLayoutGuide( Qt::Orientation orientation, const QgsLayoutMeasurement &position, QgsLayoutItemPage *page );
 %Docstring
  Constructor for a new guide with the specified ``orientation`` and
  initial ``position``.
@@ -57,10 +51,10 @@ class QgsLayoutGuide : QObject
 .. seealso:: layout()
 %End
 
-    Orientation orientation() const;
+    Qt::Orientation orientation() const;
 %Docstring
  Returns the guide's orientation.
- :rtype: Orientation
+ :rtype: Qt.Orientation
 %End
 
     QgsLayoutMeasurement position() const;
@@ -132,7 +126,7 @@ class QgsLayoutGuide : QObject
 
 };
 
-class QgsLayoutGuideCollection : QAbstractTableModel
+class QgsLayoutGuideCollection : QAbstractTableModel, QgsLayoutSerializableObject
 {
 %Docstring
  Stores and manages the snap guides used by a layout.
@@ -159,6 +153,10 @@ class QgsLayoutGuideCollection : QAbstractTableModel
  and linked to the specified ``pageCollection``.
 %End
     ~QgsLayoutGuideCollection();
+
+    virtual QString stringType() const;
+    virtual QgsLayout *layout();
+
 
     virtual int rowCount( const QModelIndex & ) const;
 
@@ -188,6 +186,11 @@ class QgsLayoutGuideCollection : QAbstractTableModel
 .. seealso:: clear()
 %End
 
+    void setGuideLayoutPosition( QgsLayoutGuide *guide, double position );
+%Docstring
+ Sets the absolute ``position`` (in layout coordinates) for ``guide`` within the layout.
+%End
+
     void clear();
 %Docstring
  Removes all guides from the collection.
@@ -204,7 +207,7 @@ class QgsLayoutGuideCollection : QAbstractTableModel
  Updates the position (and visibility) of all guide line items.
 %End
 
-    QList< QgsLayoutGuide * > guides( QgsLayoutGuide::Orientation orientation, int page = -1 );
+    QList< QgsLayoutGuide * > guides( Qt::Orientation orientation, int page = -1 );
 %Docstring
  Returns the list of guides contained in the collection with the specified
  ``orientation`` and on a matching ``page``.
@@ -233,6 +236,22 @@ class QgsLayoutGuideCollection : QAbstractTableModel
 .. seealso:: visible()
 %End
 
+    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+%Docstring
+ Stores the collection's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
+.. seealso:: readXml()
+ :rtype: bool
+%End
+
+    virtual bool readXml( const QDomElement &collectionElement, const QDomDocument &document, const QgsReadWriteContext &context );
+
+%Docstring
+ Sets the collection's state from a DOM element. collectionElement is the DOM node corresponding to the collection.
+.. seealso:: writeXml()
+ :rtype: bool
+%End
+
 };
 
 
@@ -248,7 +267,7 @@ class QgsLayoutGuideProxyModel : QSortFilterProxyModel
 %End
   public:
 
-    explicit QgsLayoutGuideProxyModel( QObject *parent /TransferThis/, QgsLayoutGuide::Orientation orientation, int page );
+    explicit QgsLayoutGuideProxyModel( QObject *parent /TransferThis/, Qt::Orientation orientation, int page );
 %Docstring
  Constructor for QgsLayoutGuideProxyModel, filtered to guides of the specified ``orientation`` and ``page`` only.
 

@@ -20,9 +20,6 @@
 #include "qgspoint.h"
 #include "qgsmultipoint.h"
 
-QgsCurve::QgsCurve(): QgsAbstractGeometry()
-{}
-
 bool QgsCurve::isClosed() const
 {
   if ( numPoints() == 0 )
@@ -124,6 +121,11 @@ QgsPoint QgsCurve::vertexAt( QgsVertexId id ) const
   QgsVertexId::VertexType type;
   pointAt( id.vertex, v, type );
   return v;
+}
+
+QgsCurve *QgsCurve::toCurveType() const
+{
+  return clone();
 }
 
 QgsRectangle QgsCurve::boundingBox() const

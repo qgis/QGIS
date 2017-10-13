@@ -28,7 +28,7 @@
 class QgsVectorLayer;
 
 /**
- * \ingroup gui
+ * \ingroup core
  * \brief The QgsFieldModel class is a model to display the list of fields of a layer in widgets.
  * If allowed, expressions might be added to the end of the model.
  * It can be associated with a QgsMapLayerModel to dynamically display a layer and its fields.
@@ -151,8 +151,8 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
     QList<QString> mExpression;
 
     QgsVectorLayer *mLayer = nullptr;
-    bool mAllowExpression;
-    bool mAllowEmpty;
+    bool mAllowExpression = false;
+    bool mAllowEmpty = false;
 
   private:
     void fetchFeature();

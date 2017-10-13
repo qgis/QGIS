@@ -23,9 +23,6 @@
 
 QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *parent )
   : QWidget( parent )
-  , mLayer( nullptr )
-  , mEditIndex( 0 )
-  , mEditing( false )
 {
   setupUi( this );
   mDeleteButton->hide();
@@ -53,10 +50,6 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   setPresets( defaultPresets() );
 }
 
-QgsFieldConditionalFormatWidget::~QgsFieldConditionalFormatWidget()
-{
-}
-
 void QgsFieldConditionalFormatWidget::setExpression()
 {
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
@@ -68,7 +61,7 @@ void QgsFieldConditionalFormatWidget::setExpression()
 
   if ( dlg.exec() )
   {
-    QString expression =  dlg.expressionBuilder()->expressionText();
+    QString expression = dlg.expressionBuilder()->expressionText();
     mRuleEdit->setText( expression );
   }
 }
@@ -153,7 +146,7 @@ void QgsFieldConditionalFormatWidget::deleteRule()
   QString fieldName;
   if ( fieldRadio->isChecked() )
   {
-    fieldName =  mFieldCombo->currentField();
+    fieldName = mFieldCombo->currentField();
     mLayer->conditionalStyles()->setFieldStyles( fieldName, styles );
   }
   if ( rowRadio->isChecked() )
@@ -291,7 +284,7 @@ void QgsFieldConditionalFormatWidget::saveRule()
   QString fieldName;
   if ( fieldRadio->isChecked() )
   {
-    fieldName =  mFieldCombo->currentField();
+    fieldName = mFieldCombo->currentField();
     mLayer->conditionalStyles()->setFieldStyles( fieldName, styles );
   }
   if ( rowRadio->isChecked() )

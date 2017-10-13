@@ -58,7 +58,7 @@ class QgsGeometryCheck : public QObject
 
     struct Change
     {
-      Change() {}
+      Change() = default;
       Change( ChangeWhat _what, ChangeType _type, QgsVertexId _vidx = QgsVertexId() )
         : what( _what )
         , type( _type )
@@ -105,7 +105,7 @@ class QgsGeometryCheckError
                            QgsVertexId vidx = QgsVertexId(),
                            const QVariant &value = QVariant(),
                            ValueType valueType = ValueOther );
-    virtual ~QgsGeometryCheckError();
+    virtual ~QgsGeometryCheckError() = default;
 
     const QgsGeometryCheckError &operator=( const QgsGeometryCheckError & ) = delete;
 

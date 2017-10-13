@@ -62,7 +62,8 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 };
 #endif
 
-/** \ingroup server
+/**
+ * \ingroup server
  * QgsServerSettings provides a way to retrieve settings by prioritizing
  * according to environment variables, ini file and default values.
  * \since QGIS 3.0
@@ -81,34 +82,41 @@ class SERVER_EXPORT QgsServerSettings
       QVariant val;
     };
 
-    /** Constructor.
+    /**
+     * Constructor.
       */
     QgsServerSettings();
 
-    /** Load settings according to current environment variables.
+    /**
+     * Load settings according to current environment variables.
       */
     void load();
 
-    /** Load setting for a specific environment variable name.
+    /**
+     * Load setting for a specific environment variable name.
       * \returns true if loading is successful, false in case of an invalid name.
       */
     bool load( const QString &envVarName );
 
-    /** Log a summary of settings currently loaded.
+    /**
+     * Log a summary of settings currently loaded.
       */
     void logSummary() const;
 
-    /** Returns the ini file loaded by QSetting.
+    /**
+     * Returns the ini file loaded by QSetting.
       * \returns the path of the ini file or an empty string if none is loaded.
       */
     QString iniFile() const;
 
-    /** Returns parallel rendering setting.
+    /**
+     * Returns parallel rendering setting.
       * \returns true if parallel rendering is activated, false otherwise.
       */
     bool parallelRendering() const;
 
-    /** Returns the maximum number of threads to use.
+    /**
+     * Returns the maximum number of threads to use.
       * \returns the number of threads.
       */
     int maxThreads() const;
@@ -119,27 +127,32 @@ class SERVER_EXPORT QgsServerSettings
       */
     int maxCacheLayers() const;
 
-    /** Returns the log level.
+    /**
+     * Returns the log level.
       * \returns the log level.
       */
     QgsMessageLog::MessageLevel logLevel() const;
 
-    /** Returns the QGS project file to use.
+    /**
+     * Returns the QGS project file to use.
       * \returns the path of the QGS project or an empty string if none is defined.
       */
     QString projectFile() const;
 
-    /** Returns the log file.
+    /**
+     * Returns the log file.
       * \returns the path of the log file or an empty string if none is defined.
       */
     QString logFile() const;
 
-    /** Returns the cache size.
+    /**
+     * Returns the cache size.
       * \returns the cache size.
       */
     qint64 cacheSize() const;
 
-    /** Returns the cache directory.
+    /**
+     * Returns the cache directory.
       * \returns the directory.
       */
     QString cacheDirectory() const;

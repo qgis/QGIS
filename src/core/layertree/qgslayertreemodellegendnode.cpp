@@ -137,6 +137,7 @@ QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const Qg
 {
   updateLabel();
   connect( qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ), &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsSymbolLegendNode::updateLabel );
+  connect( nodeLayer, &QObject::destroyed, this, [ = ]() { mLayerNode = nullptr; } );
 
   if ( mItem.symbol() )
     mSymbolUsesMapUnits = ( mItem.symbol()->outputUnit() != QgsUnitTypes::RenderMillimeters );
@@ -444,6 +445,9 @@ void QgsSymbolLegendNode::invalidateMapBasedData()
 
 void QgsSymbolLegendNode::updateLabel()
 {
+  if ( !mLayerNode )
+    return;
+
   bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
@@ -795,6 +799,6 @@ void QgsDataDefinedSizeLegendNode::cacheImage() const
       context.reset( new QgsRenderContext );
       context->setScaleFactor( 96 / 25.4 );
     }
-    mImage = mSettings->collapsedLegendImage( *context.get() );
+    mImage = mSettings->collapsedLegendImage( *context );
   }
 }

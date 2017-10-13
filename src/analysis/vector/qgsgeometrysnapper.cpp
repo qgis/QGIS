@@ -79,10 +79,7 @@ bool QgsSnapIndex::SegmentSnapItem::getIntersection( const QgsPoint &p1, const Q
     return false;
 
   double lambdaw = QgsVector( inter.x() - q1.x(), inter.y() - q1.y() ) * w;
-  if ( lambdaw < 0. + 1E-8 || lambdaw >= wl - 1E-8 )
-    return false;
-
-  return true;
+  return !( lambdaw < 0. + 1E-8 || lambdaw >= wl - 1E-8 );
 }
 
 bool QgsSnapIndex::SegmentSnapItem::getProjection( const QgsPoint &p, QgsPoint &pProj )
@@ -356,7 +353,7 @@ void QgsSnapIndex::addGeometry( const QgsAbstractGeometry *geom )
 QgsPoint QgsSnapIndex::getClosestSnapToPoint( const QgsPoint &p, const QgsPoint &q )
 {
   // Look for intersections on segment from the target point to the point opposite to the point reference point
-  // p2 =  p1 + 2 * (q - p1)
+  // p2 = p1 + 2 * (q - p1)
   QgsPoint p2( 2 * q.x() - p.x(), 2 * q.y() - p.y() );
 
   // Raytrace along the grid, get touched cells

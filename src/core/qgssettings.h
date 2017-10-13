@@ -21,7 +21,8 @@
 #include "qgis_core.h"
 #include "qgis.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSettings
  *
  * This class is a composition of two QSettings instances:
@@ -70,13 +71,15 @@ class CORE_EXPORT QgsSettings : public QObject
       Misc
     };
 
-    /** Construct a QgsSettings object for accessing settings of the application
+    /**
+     * Construct a QgsSettings object for accessing settings of the application
      * called application from the organization called organization, and with parent parent.
      */
     explicit QgsSettings( const QString &organization,
                           const QString &application = QString(), QObject *parent = nullptr );
 
-    /** Construct a QgsSettings object for accessing settings of the application called application
+    /**
+     * Construct a QgsSettings object for accessing settings of the application called application
      * from the organization called organization, and with parent parent.
      * If scope is QSettings::UserScope, the QSettings object searches user-specific settings first,
      * before it searches system-wide settings as a fallback. If scope is QSettings::SystemScope,
@@ -91,7 +94,8 @@ class CORE_EXPORT QgsSettings : public QObject
     QgsSettings( QSettings::Scope scope, const QString &organization,
                  const QString &application = QString(), QObject *parent = nullptr );
 
-    /** Construct a QgsSettings object for accessing settings of the application called application
+    /**
+     * Construct a QgsSettings object for accessing settings of the application called application
      * from the organization called organization, and with parent parent.
      * If scope is QSettings::UserScope, the QSettings object searches user-specific settings first,
      * before it searches system-wide settings as a fallback. If scope is QSettings::SystemScope,
@@ -105,7 +109,8 @@ class CORE_EXPORT QgsSettings : public QObject
     QgsSettings( QSettings::Format format, QSettings::Scope scope, const QString &organization,
                  const QString &application = QString(), QObject *parent = nullptr );
 
-    /** Construct a QgsSettings object for accessing the settings stored in the file called fileName,
+    /**
+     * Construct a QgsSettings object for accessing the settings stored in the file called fileName,
      * with parent parent. If the file doesn't already exist, it is created.
      *
      * If format is QSettings::NativeFormat, the meaning of fileName depends on the platform. On Unix,
@@ -125,7 +130,8 @@ class CORE_EXPORT QgsSettings : public QObject
      */
     QgsSettings( const QString &fileName, QSettings::Format format, QObject *parent = nullptr );
 
-    /** Constructs a QgsSettings object for accessing settings of the application and organization
+    /**
+     * Constructs a QgsSettings object for accessing settings of the application and organization
      * set previously with a call to QCoreApplication::setOrganizationName(),
      * QCoreApplication::setOrganizationDomain(), and QCoreApplication::setApplicationName().
      *
@@ -136,12 +142,13 @@ class CORE_EXPORT QgsSettings : public QObject
     explicit QgsSettings( QObject *parent = 0 );
     ~QgsSettings();
 
-    /** Appends prefix to the current group.
+    /**
+     * Appends prefix to the current group.
      * The current group is automatically prepended to all keys specified to QSettings.
      * In addition, query functions such as childGroups(), childKeys(), and allKeys()
      * are based on the group. By default, no group is set.
      */
-    void beginGroup( const QString &prefix );
+    void beginGroup( const QString &prefix, const QgsSettings::Section section = QgsSettings::NoSection );
     //! Resets the group to what it was before the corresponding beginGroup() call.
     void endGroup();
     //! Returns a list of all keys, including subkeys, that can be read using the QSettings object.
@@ -150,32 +157,38 @@ class CORE_EXPORT QgsSettings : public QObject
     QStringList childKeys() const;
     //! Returns a list of all key top-level groups that contain keys that can be read using the QSettings object.
     QStringList childGroups() const;
+    //! Returns a list of all key top-level groups (same as childGroups) but only for groups defined in global settings.
+    QStringList globalChildGroups() const;
     //! Return the path to the Global Settings QSettings storage file
     static QString globalSettingsPath() { return sGlobalSettingsPath; }
     //! Set the Global Settings QSettings storage file
-    static bool setGlobalSettingsPath( QString path );
+    static bool setGlobalSettingsPath( const QString &path );
     //! Adds prefix to the current group and starts reading from an array. Returns the size of the array.
     int beginReadArray( const QString &prefix );
 
-    /** Adds prefix to the current group and starts writing an array of size size.
+    /**
+     * Adds prefix to the current group and starts writing an array of size size.
      * If size is -1 (the default), it is automatically determined based on the indexes of the entries written.
-     * @note This will completely shadow any existing array with the same name in the global settings
+     * \note This will completely shadow any existing array with the same name in the global settings
      */
     void beginWriteArray( const QString &prefix, int size = -1 );
     //! Closes the array that was started using beginReadArray() or beginWriteArray().
     void endArray();
 
-    /** Sets the current array index to i. Calls to functions such as setValue(), value(),
+    /**
+     * Sets the current array index to i. Calls to functions such as setValue(), value(),
      * remove(), and contains() will operate on the array entry at that index.
      */
     void setArrayIndex( int i );
 
-    /** Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
+    /**
+     * Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
      * An optional Section argument can be used to set a value to a specific Section.
      */
     void setValue( const QString &key, const QVariant &value, const QgsSettings::Section section = QgsSettings::NoSection );
 
-    /** Returns the value for setting key. If the setting doesn't exist, it will be
+    /**
+     * Returns the value for setting key. If the setting doesn't exist, it will be
      * searched in the Global Settings and if not found, returns defaultValue.
      * If no default value is specified, a default QVariant is returned.
      * An optional Section argument can be used to get a value from a specific Section.
@@ -203,21 +216,23 @@ class CORE_EXPORT QgsSettings : public QObject
     % End
 #endif
 
-    /** Returns true if there exists a setting called key; returns false otherwise.
+    /**
+     * Returns true if there exists a setting called key; returns false otherwise.
      * If a group is set using beginGroup(), key is taken to be relative to that group.
      */
     bool contains( const QString &key, const QgsSettings::Section section = QgsSettings::NoSection ) const;
     //! Returns the path where settings written using this QSettings object are stored.
     QString fileName() const;
 
-    /** Writes any unsaved changes to permanent storage, and reloads any settings that have been
+    /**
+     * Writes any unsaved changes to permanent storage, and reloads any settings that have been
      * changed in the meantime by another application.
      * This function is called automatically from QSettings's destructor and by the event
      * loop at regular intervals, so you normally don't need to call it yourself.
      */
     void sync();
-    //! Removes the setting key and any sub-settings of key.
-    void remove( const QString &key );
+    //! Removes the setting key and any sub-settings of key in a section.
+    void remove( const QString &key, const QgsSettings::Section section = QgsSettings::NoSection );
     //! Return the sanitized and prefixed key
     QString prefixedKey( const QString &key, const QgsSettings::Section section ) const;
     //! Removes all entries in the user settings
@@ -227,7 +242,7 @@ class CORE_EXPORT QgsSettings : public QObject
 
     static QString sGlobalSettingsPath;
     void init();
-    QString sanitizeKey( QString key ) const;
+    QString sanitizeKey( const QString &key ) const;
     QSettings *mUserSettings = nullptr;
     QSettings *mGlobalSettings = nullptr;
     bool mUsingGlobalArray = false;

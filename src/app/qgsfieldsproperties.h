@@ -46,11 +46,9 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     struct RelationEditorConfiguration
     {
       RelationEditorConfiguration()
-        : showLinkButton( true )
-        , showUnlinkButton( true )
       {}
-      bool showLinkButton;
-      bool showUnlinkButton;
+      bool showLinkButton = true;
+      bool showUnlinkButton = true;
     };
 
     class DesignerTreeItemData
@@ -64,18 +62,11 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         };
 
         DesignerTreeItemData()
-          : mType( Field )
-          , mColumnCount( 1 )
-          , mShowAsGroupBox( false )
-          , mShowLabel( true )
         {}
 
         DesignerTreeItemData( Type type, const QString &name )
           : mType( type )
           , mName( name )
-          , mColumnCount( 1 )
-          , mShowAsGroupBox( false )
-          , mShowLabel( true )
         {}
 
         QString name() const { return mName; }
@@ -102,11 +93,11 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         void setRelationEditorConfiguration( RelationEditorConfiguration relationEditorConfiguration );
 
       private:
-        Type mType;
+        Type mType = Field;
         QString mName;
-        int mColumnCount;
-        bool mShowAsGroupBox;
-        bool mShowLabel;
+        int mColumnCount = 1;
+        bool mShowAsGroupBox = false;
+        bool mShowLabel = true;
         QgsOptionalExpression mVisibilityExpression;
         RelationEditorConfiguration mRelationEditorConfiguration;
     };
@@ -120,9 +111,9 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         FieldConfig();
         FieldConfig( QgsVectorLayer *layer, int idx );
 
-        bool mEditable;
-        bool mEditableEnabled;
-        bool mLabelOnTop;
+        bool mEditable = true;
+        bool mEditableEnabled = true;
+        bool mLabelOnTop = false;
         QgsFieldConstraints::Constraints mConstraints;
         QHash< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength > mConstraintStrength;
         QString mConstraint;
@@ -137,12 +128,14 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
 
     ~QgsFieldsProperties();
 
-    /** Adds an attribute to the table (but does not commit it yet)
+    /**
+     * Adds an attribute to the table (but does not commit it yet)
     \param field the field to add
     \returns false in case of a name conflict, true in case of success */
     bool addAttribute( const QgsField &field );
 
-    /** Creates the a proper item to save from the tree
+    /**
+     * Creates the a proper item to save from the tree
      * \returns A widget definition. Containing another container or the final field
      */
     QgsAttributeEditorElement *createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool forceGroup = true );
@@ -176,23 +169,23 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
     void toggleEditing();
 
   private slots:
-    void on_mAddAttributeButton_clicked();
-    void on_mDeleteAttributeButton_clicked();
-    void on_mCalculateFieldButton_clicked();
+    void mAddAttributeButton_clicked();
+    void mDeleteAttributeButton_clicked();
+    void mCalculateFieldButton_clicked();
     void onAttributeSelectionChanged();
-    void on_pbtnSelectInitFilePath_clicked();
-    void on_pbnSelectEditForm_clicked();
-    void on_mEditorLayoutComboBox_currentIndexChanged( int index );
-    void on_mInitCodeSourceComboBox_currentIndexChanged( int codeSource );
+    void pbtnSelectInitFilePath_clicked();
+    void pbnSelectEditForm_clicked();
+    void mEditorLayoutComboBox_currentIndexChanged( int index );
+    void mInitCodeSourceComboBox_currentIndexChanged( int codeSource );
     void attributeAdded( int idx );
     void attributeDeleted( int idx );
     void attributeTypeDialog();
 
-    void on_mAddTabOrGroupButton_clicked();
-    void on_mAddItemButton_clicked();
-    void on_mRemoveTabGroupItemButton_clicked();
-    void on_mMoveDownItem_clicked();
-    void on_mMoveUpItem_clicked();
+    void mAddTabOrGroupButton_clicked();
+    void mAddItemButton_clicked();
+    void mRemoveTabGroupItemButton_clicked();
+    void mMoveDownItem_clicked();
+    void mMoveUpItem_clicked();
 
     void attributesListCellChanged( int row, int column );
 

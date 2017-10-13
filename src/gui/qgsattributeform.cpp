@@ -50,21 +50,14 @@
 #include <QMessageBox>
 #include <QToolButton>
 #include <QMenu>
-#include <QSvgWidget>
 
 int QgsAttributeForm::sFormCounter = 0;
 
 QgsAttributeForm::QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature, const QgsAttributeEditorContext &context, QWidget *parent )
   : QWidget( parent )
   , mLayer( vl )
-  , mMessageBar( nullptr )
   , mOwnsMessageBar( true )
-  , mMultiEditUnsavedMessageBarItem( nullptr )
-  , mMultiEditMessageBarItem( nullptr )
-  , mInvalidConstraintMessage( nullptr )
   , mContext( context )
-  , mButtonBox( nullptr )
-  , mSearchButtonBox( nullptr )
   , mFormNr( sFormCounter++ )
   , mIsSaving( false )
   , mPreventFeatureRefresh( false )
@@ -298,8 +291,7 @@ bool QgsAttributeForm::saveEdits()
         // be careful- sometimes two null qvariants will be reported as not equal!! (e.g., different types)
         bool changed = ( dstVar != srcVar && !dstVar.isNull() && !srcVar.isNull() )
                        || ( dstVar.isNull() != srcVar.isNull() );
-        if ( changed && srcVar.isValid()
-             && !mLayer->editFormConfig().readOnly( eww->fieldIdx() ) )
+        if ( changed && srcVar.isValid() && fieldIsEditable( eww->fieldIdx() ) )
         {
           dst[eww->fieldIdx()] = srcVar;
 
@@ -344,7 +336,7 @@ bool QgsAttributeForm::saveEdits()
         {
           if ( ( dst.at( i ) == src.at( i ) && dst.at( i ).isNull() == src.at( i ).isNull() ) // If field is not changed...
                || !dst.at( i ).isValid()                                     // or the widget returns invalid (== do not change)
-               || mLayer->editFormConfig().readOnly( i ) )                           // or the field cannot be edited ...
+               || !fieldIsEditable( i ) )                           // or the field cannot be edited ...
           {
             continue;
           }
@@ -416,6 +408,15 @@ void QgsAttributeForm::searchZoomTo()
     return;
 
   emit zoomToFeatures( filter );
+}
+
+void QgsAttributeForm::searchFlash()
+{
+  QString filter = createFilterExpression();
+  if ( filter.isEmpty() )
+    return;
+
+  emit flashFeatures( filter );
 }
 
 void QgsAttributeForm::filterAndTriggered()
@@ -824,7 +825,7 @@ void QgsAttributeForm::displayInvalidConstraintMessage( const QStringList &f,
   for ( int i = 0; i < size; i++ )
     descriptions += QStringLiteral( "<li>%1: <i>%2</i></li>" ).arg( f[i], d[i] );
 
-  QString msg = QStringLiteral( "<b>%1</b><ul>%2</ul>" ).arg( tr( "Invalid fields" ), descriptions ) ;
+  QString msg = QStringLiteral( "<b>%1</b><ul>%2</ul>" ).arg( tr( "Invalid fields" ), descriptions );
 
   mInvalidConstraintMessage->setText( msg );
   mTopMessageWidget->show();
@@ -961,7 +962,7 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString &constraint,
 QList<QgsEditorWidgetWrapper *> QgsAttributeForm::constraintDependencies( QgsEditorWidgetWrapper *w )
 {
   QList<QgsEditorWidgetWrapper *> wDeps;
-  QString name =  w->field().name();
+  QString name = w->field().name();
 
   // for each widget in the current form
   Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )
@@ -1019,15 +1020,14 @@ void QgsAttributeForm::synchronizeEnabledState()
 
   Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )
   {
-    bool fieldEditable = true;
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
     {
-      fieldEditable = !mLayer->editFormConfig().readOnly( eww->fieldIdx() ) &&
-                      ( ( mLayer->dataProvider() && layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) ||
-                        FID_IS_NEW( mFeature.id() ) );
+      bool enabled = isEditable && fieldIsEditable( eww->fieldIdx() );
+      ww->setEnabled( enabled );
+
+      updateIcon( eww );
     }
-    ww->setEnabled( isEditable && fieldEditable );
   }
 
   // push a message and disable the OK button if constraints are invalid
@@ -1234,6 +1234,8 @@ void QgsAttributeForm::init()
 
   // Autogenerate Layout
   // If there is still no layout loaded (defined as autogenerate or other methods failed)
+  mIconMap.clear();
+
   if ( !formWidget )
   {
     formWidget = new QWidget( this );
@@ -1275,6 +1277,9 @@ void QgsAttributeForm::init()
 
       // This will also create the widget
       QLabel *l = new QLabel( fieldName );
+      QSvgWidget *i = new QSvgWidget();
+      i->setFixedSize( 18, 18 );
+
       QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( widgetSetup.type(), mLayer, idx, widgetSetup.config(), nullptr, this, mContext );
 
       QWidget *w = nullptr;
@@ -1297,17 +1302,22 @@ void QgsAttributeForm::init()
         w->setObjectName( field.name() );
 
       if ( eww )
+      {
         addWidgetWrapper( eww );
+        mIconMap[eww->widget()] = i;
+      }
 
       if ( labelOnTop )
       {
         gridLayout->addWidget( l, row++, 0, 1, 2 );
         gridLayout->addWidget( w, row++, 0, 1, 2 );
+        gridLayout->addWidget( i, row++, 0, 1, 2 );
       }
       else
       {
         gridLayout->addWidget( l, row, 0 );
-        gridLayout->addWidget( w, row++, 1 );
+        gridLayout->addWidget( w, row, 1 );
+        gridLayout->addWidget( i, row++, 2 );
       }
     }
 
@@ -1351,6 +1361,12 @@ void QgsAttributeForm::init()
     connect( clearButton, &QPushButton::clicked, this, &QgsAttributeForm::resetSearch );
     boxLayout->addWidget( clearButton );
     boxLayout->addStretch( 1 );
+
+    QPushButton *flashButton = new QPushButton();
+    flashButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+    flashButton->setText( tr( "&Flash features" ) );
+    connect( flashButton, &QToolButton::clicked, this, &QgsAttributeForm::searchFlash );
+    boxLayout->addWidget( flashButton );
 
     QPushButton *zoomButton = new QPushButton();
     zoomButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
@@ -1593,8 +1609,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       const QgsAttributeEditorRelation *relDef = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
 
       QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, relDef->relation(), nullptr, this );
-      const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, relDef->relation().id() );
-      rww->setConfig( widgetSetup.config() );
+      rww->setConfig( mLayer->editFormConfig().widgetConfig( relDef->relation().id() ) );
       rww->setContext( context );
       newWidgetInfo.widget = rww->widget();
       rww->setShowLabel( relDef->showLabel() );
@@ -1756,8 +1771,7 @@ void QgsAttributeForm::createWrappers()
       if ( relation.isValid() )
       {
         QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, relation, myWidget, this );
-        const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, relation.id() );
-        rww->setConfig( widgetSetup.config() );
+        rww->setConfig( mLayer->editFormConfig().widgetConfig( relation.id() ) );
         rww->setContext( mContext );
         rww->widget(); // Will initialize the widget
         mWidgets.append( rww );
@@ -1982,10 +1996,11 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
 
     mJoinedFeatures[info] = joinFeature;
 
-    QStringList *subsetFields = info->joinFieldNamesSubset();
-    if ( subsetFields )
+    if ( info->hasSubset() )
     {
-      Q_FOREACH ( const QString &field, *subsetFields )
+      const QStringList subsetNames = QgsVectorLayerJoinInfo::joinFieldNamesSubset( *info );
+
+      Q_FOREACH ( const QString &field, subsetNames )
       {
         QString prefixedName = info->prefixedFieldName( field );
         QVariant val;
@@ -2002,7 +2017,8 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
     }
     else
     {
-      Q_FOREACH ( const QgsField &field, joinFeature.fields() )
+      const QgsFields joinFields = joinFeature.fields();
+      for ( const QgsField &field : joinFields )
       {
         QString prefixedName = info->prefixedFieldName( field );
         QVariant val;
@@ -2018,4 +2034,77 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
       }
     }
   }
+}
+
+bool QgsAttributeForm::fieldIsEditable( int fieldIndex ) const
+{
+  bool editable = false;
+
+  if ( mLayer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginJoin )
+  {
+    int srcFieldIndex;
+    const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( fieldIndex, mLayer->fields(), srcFieldIndex );
+
+    if ( info && !info->hasUpsertOnEdit() && mMode == QgsAttributeForm::AddFeatureMode )
+      editable = false;
+    else if ( info && info->isEditable() && info->joinLayer()->isEditable() )
+      editable = fieldIsEditable( *( info->joinLayer() ), srcFieldIndex, mFeature.id() );
+  }
+  else
+    editable = fieldIsEditable( *mLayer, fieldIndex, mFeature.id() );
+
+  return editable;
+}
+
+bool QgsAttributeForm::fieldIsEditable( const QgsVectorLayer &layer, int fieldIndex,  QgsFeatureId fid ) const
+{
+  return !layer.editFormConfig().readOnly( fieldIndex ) &&
+         ( ( layer.dataProvider() && layer.dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) || FID_IS_NEW( fid ) );
+}
+
+void QgsAttributeForm::updateIcon( QgsEditorWidgetWrapper *eww )
+{
+  if ( !eww->widget() || !mIconMap[eww->widget()] )
+    return;
+
+  // no icon by default
+  mIconMap[eww->widget()]->hide();
+
+  if ( !eww->widget()->isEnabled() && mLayer->isEditable() )
+  {
+    if ( mLayer->fields().fieldOrigin( eww->fieldIdx() ) == QgsFields::OriginJoin )
+    {
+      int srcFieldIndex;
+      const QgsVectorLayerJoinInfo *info = mLayer->joinBuffer()->joinForFieldIndex( eww->fieldIdx(), mLayer->fields(), srcFieldIndex );
+
+      if ( !info )
+        return;
+
+      if ( !info->isEditable() )
+      {
+        const QString file = QStringLiteral( "/mIconJoinNotEditable.svg" );
+        const QString tooltip = tr( "Join settings do not allow editing" );
+        reloadIcon( file, tooltip, mIconMap[eww->widget()] );
+      }
+      else if ( mMode == QgsAttributeForm::AddFeatureMode && !info->hasUpsertOnEdit() )
+      {
+        const QString file = QStringLiteral( "mIconJoinHasNotUpsertOnEdit.svg" );
+        const QString tooltip = tr( "Join settings do not allow upsert on edit" );
+        reloadIcon( file, tooltip, mIconMap[eww->widget()] );
+      }
+      else if ( !info->joinLayer()->isEditable() )
+      {
+        const QString file = QStringLiteral( "/mIconJoinedLayerNotEditable.svg" );
+        const QString tooltip = tr( "Joined layer is not toggled editable" );
+        reloadIcon( file, tooltip, mIconMap[eww->widget()] );
+      }
+    }
+  }
+}
+
+void QgsAttributeForm::reloadIcon( const QString &file, const QString &tooltip, QSvgWidget *sw )
+{
+  sw->load( QgsApplication::iconPath( file ) );
+  sw->setToolTip( tooltip );
+  sw->show();
 }

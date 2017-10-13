@@ -161,21 +161,16 @@ QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( unsigned int maxFrames )
 }
 #endif
 
-QgsStackTrace::QgsStackTrace()
-{
-
-}
-
 bool QgsStackTrace::StackLine::isQgisModule() const
 {
-  return moduleName.toLower().contains( "qgis" );
+  return moduleName.contains( QLatin1String( "qgis" ), Qt::CaseInsensitive );
 }
 
 bool QgsStackTrace::StackLine::isValid() const
 {
-  return !( fileName.toLower().contains( "exe_common" ) ||
-            fileName.toLower().contains( "unknown" ) ||
-            lineNumber.toLower().contains( "unknown" ) );
+  return !( fileName.contains( QLatin1String( "exe_common" ), Qt::CaseInsensitive ) ||
+            fileName.contains( QLatin1String( "unknown" ), Qt::CaseInsensitive ) ||
+            lineNumber.contains( QLatin1String( "unknown" ), Qt::CaseInsensitive ) );
 
 }
 ///@endcond

@@ -53,13 +53,10 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
     void onTableRowChanged( const QModelIndex &current, const QModelIndex &previous );
     void updateLayersList();
 
-  signals:
-    //! Old_id, source, name, provider
-    void replaceVectorLayer( QString, QString, QString, QString );
 
   private:
     QgsVirtualLayerDefinition getVirtualLayerDef();
-    long mSrid;
+    long mSrid = 0;
     QStringList mProviderList;
     QgsEmbeddedLayerSelectDialog *mEmbeddedSelectionDialog = nullptr;
     void addEmbeddedLayer( const QString &name, const QString &provider, const QString &encoding, const QString &source );

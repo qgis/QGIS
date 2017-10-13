@@ -30,7 +30,8 @@
 class QToolButton;
 class QScrollArea;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsGroupBoxCollapseButton
  */
 class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
@@ -40,8 +41,6 @@ class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
   public:
     QgsGroupBoxCollapseButton( QWidget *parent SIP_TRANSFERTHIS = nullptr )
       : QToolButton( parent )
-      , mAltDown( false )
-      , mShiftDown( false )
     {}
 
     bool altDown() const { return mAltDown; }
@@ -59,11 +58,12 @@ class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
     }
 
   private:
-    bool mAltDown;
-    bool mShiftDown;
+    bool mAltDown = false;
+    bool mShiftDown = false;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsCollapsibleGroupBoxBasic
  * A groupbox that collapses/expands when toggled.
  * Basic class QgsCollapsibleGroupBoxBasic does not auto-save collapsed or checked state
@@ -168,7 +168,8 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     QIcon mExpandIcon;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsCollapsibleGroupBox
  * A groupbox that collapses/expands when toggled and can save its collapsed and checked states.
  * By default, it auto-saves only its collapsed state to the global settings based on the widget and it's parent names.
@@ -204,7 +205,8 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     //! set this to false to not save/restore collapsed state
     void setSaveCollapsedState( bool save ) { mSaveCollapsedState = save; }
 
-    /** Set this to true to save/restore checked state
+    /**
+     * Set this to true to save/restore checked state
      * \note only turn on mSaveCheckedState for groupboxes NOT used
      * in multiple places or used as options for different parent objects */
     void setSaveCheckedState( bool save ) { mSaveCheckedState = save; }

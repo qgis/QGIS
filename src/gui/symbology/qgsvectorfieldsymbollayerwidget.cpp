@@ -16,9 +16,20 @@
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
 
-QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent ): QgsSymbolLayerWidget( parent, vl ), mLayer( nullptr )
+QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent ): QgsSymbolLayerWidget( parent, vl )
 {
   setupUi( this );
+  connect( mScaleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsVectorFieldSymbolLayerWidget::mScaleSpinBox_valueChanged );
+  connect( mXAttributeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVectorFieldSymbolLayerWidget::mXAttributeComboBox_currentIndexChanged );
+  connect( mYAttributeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVectorFieldSymbolLayerWidget::mYAttributeComboBox_currentIndexChanged );
+  connect( mCartesianRadioButton, &QRadioButton::toggled, this, &QgsVectorFieldSymbolLayerWidget::mCartesianRadioButton_toggled );
+  connect( mPolarRadioButton, &QRadioButton::toggled, this, &QgsVectorFieldSymbolLayerWidget::mPolarRadioButton_toggled );
+  connect( mHeightRadioButton, &QRadioButton::toggled, this, &QgsVectorFieldSymbolLayerWidget::mHeightRadioButton_toggled );
+  connect( mDegreesRadioButton, &QRadioButton::toggled, this, &QgsVectorFieldSymbolLayerWidget::mDegreesRadioButton_toggled );
+  connect( mRadiansRadioButton, &QRadioButton::toggled, this, &QgsVectorFieldSymbolLayerWidget::mRadiansRadioButton_toggled );
+  connect( mClockwiseFromNorthRadioButton, &QRadioButton::toggled, this, &QgsVectorFieldSymbolLayerWidget::mClockwiseFromNorthRadioButton_toggled );
+  connect( mCounterclockwiseFromEastRadioButton, &QRadioButton::toggled, this, &QgsVectorFieldSymbolLayerWidget::mCounterclockwiseFromEastRadioButton_toggled );
+  connect( mDistanceUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsVectorFieldSymbolLayerWidget::mDistanceUnitWidget_changed );
 
   mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                  << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
@@ -101,7 +112,7 @@ QgsSymbolLayer *QgsVectorFieldSymbolLayerWidget::symbolLayer()
   return mLayer;
 }
 
-void QgsVectorFieldSymbolLayerWidget::on_mScaleSpinBox_valueChanged( double d )
+void QgsVectorFieldSymbolLayerWidget::mScaleSpinBox_valueChanged( double d )
 {
   if ( mLayer )
   {
@@ -110,7 +121,7 @@ void QgsVectorFieldSymbolLayerWidget::on_mScaleSpinBox_valueChanged( double d )
   }
 }
 
-void QgsVectorFieldSymbolLayerWidget::on_mXAttributeComboBox_currentIndexChanged( int index )
+void QgsVectorFieldSymbolLayerWidget::mXAttributeComboBox_currentIndexChanged( int index )
 {
   if ( mLayer )
   {
@@ -119,7 +130,7 @@ void QgsVectorFieldSymbolLayerWidget::on_mXAttributeComboBox_currentIndexChanged
   }
 }
 
-void QgsVectorFieldSymbolLayerWidget::on_mYAttributeComboBox_currentIndexChanged( int index )
+void QgsVectorFieldSymbolLayerWidget::mYAttributeComboBox_currentIndexChanged( int index )
 {
   if ( mLayer )
   {
@@ -128,7 +139,7 @@ void QgsVectorFieldSymbolLayerWidget::on_mYAttributeComboBox_currentIndexChanged
   }
 }
 
-void QgsVectorFieldSymbolLayerWidget::on_mCartesianRadioButton_toggled( bool checked )
+void QgsVectorFieldSymbolLayerWidget::mCartesianRadioButton_toggled( bool checked )
 {
   if ( mLayer && checked )
   {
@@ -141,7 +152,7 @@ void QgsVectorFieldSymbolLayerWidget::on_mCartesianRadioButton_toggled( bool che
   }
 }
 
-void QgsVectorFieldSymbolLayerWidget::on_mPolarRadioButton_toggled( bool checked )
+void QgsVectorFieldSymbolLayerWidget::mPolarRadioButton_toggled( bool checked )
 {
   if ( mLayer && checked )
   {
@@ -154,19 +165,19 @@ void QgsVectorFieldSymbolLayerWidget::on_mPolarRadioButton_toggled( bool checked
   }
 }
 
-void QgsVectorFieldSymbolLayerWidget::on_mHeightRadioButton_toggled( bool checked )
+void QgsVectorFieldSymbolLayerWidget::mHeightRadioButton_toggled( bool checked )
 {
   if ( mLayer && checked )
   {
     mLayer->setVectorFieldType( QgsVectorFieldSymbolLayer::Height );
-    mXAttributeLabel->setText( QLatin1String( "" ) );
+    mXAttributeLabel->clear();
     mXAttributeComboBox->setEnabled( false );
     mYAttributeLabel->setText( tr( "Height attribute" ) );
     emit changed();
   }
 }
 
-void QgsVectorFieldSymbolLayerWidget::on_mDegreesRadioButton_toggled( bool checked )
+void QgsVectorFieldSymbolLayerWidget::mDegreesRadioButton_toggled( bool checked )
 {
   if ( mLayer && checked )
   {
@@ -175,7 +186,7 @@ void QgsVectorFieldSymbolLayerWidget::on_mDegreesRadioButton_toggled( bool check
   }
 }
 
-void QgsVectorFieldSymbolLayerWidget::on_mRadiansRadioButton_toggled( bool checked )
+void QgsVectorFieldSymbolLayerWidget::mRadiansRadioButton_toggled( bool checked )
 {
   if ( mLayer && checked )
   {
@@ -184,7 +195,7 @@ void QgsVectorFieldSymbolLayerWidget::on_mRadiansRadioButton_toggled( bool check
   }
 }
 
-void QgsVectorFieldSymbolLayerWidget::on_mClockwiseFromNorthRadioButton_toggled( bool checked )
+void QgsVectorFieldSymbolLayerWidget::mClockwiseFromNorthRadioButton_toggled( bool checked )
 {
   if ( mLayer && checked )
   {
@@ -193,7 +204,7 @@ void QgsVectorFieldSymbolLayerWidget::on_mClockwiseFromNorthRadioButton_toggled(
   }
 }
 
-void QgsVectorFieldSymbolLayerWidget::on_mCounterclockwiseFromEastRadioButton_toggled( bool checked )
+void QgsVectorFieldSymbolLayerWidget::mCounterclockwiseFromEastRadioButton_toggled( bool checked )
 {
   if ( mLayer && checked )
   {
@@ -202,7 +213,7 @@ void QgsVectorFieldSymbolLayerWidget::on_mCounterclockwiseFromEastRadioButton_to
   }
 }
 
-void QgsVectorFieldSymbolLayerWidget::on_mDistanceUnitWidget_changed()
+void QgsVectorFieldSymbolLayerWidget::mDistanceUnitWidget_changed()
 {
   if ( !mLayer )
   {

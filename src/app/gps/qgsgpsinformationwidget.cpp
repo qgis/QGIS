@@ -62,10 +62,22 @@
 
 QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWidget *parent, Qt::WindowFlags f )
   : QWidget( parent, f )
-  , mNmea( nullptr )
   , mpCanvas( thepCanvas )
 {
   setupUi( this );
+  connect( mConnectButton, &QPushButton::toggled, this, &QgsGPSInformationWidget::mConnectButton_toggled );
+  connect( mBtnTrackColor, &QPushButton::clicked, this, &QgsGPSInformationWidget::mBtnTrackColor_clicked );
+  connect( mSpinTrackWidth, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsGPSInformationWidget::mSpinTrackWidth_valueChanged );
+  connect( mBtnPosition, &QToolButton::clicked, this, &QgsGPSInformationWidget::mBtnPosition_clicked );
+  connect( mBtnSignal, &QToolButton::clicked, this, &QgsGPSInformationWidget::mBtnSignal_clicked );
+  connect( mBtnSatellites, &QToolButton::clicked, this, &QgsGPSInformationWidget::mBtnSatellites_clicked );
+  connect( mBtnOptions, &QToolButton::clicked, this, &QgsGPSInformationWidget::mBtnOptions_clicked );
+  connect( mBtnDebug, &QToolButton::clicked, this, &QgsGPSInformationWidget::mBtnDebug_clicked );
+  connect( mBtnRefreshDevices, &QToolButton::clicked, this, &QgsGPSInformationWidget::mBtnRefreshDevices_clicked );
+  connect( mBtnAddVertex, &QPushButton::clicked, this, &QgsGPSInformationWidget::mBtnAddVertex_clicked );
+  connect( mBtnCloseFeature, &QPushButton::clicked, this, &QgsGPSInformationWidget::mBtnCloseFeature_clicked );
+  connect( mBtnResetFeature, &QToolButton::clicked, this, &QgsGPSInformationWidget::mBtnResetFeature_clicked );
+  connect( mBtnLogFile, &QPushButton::clicked, this, &QgsGPSInformationWidget::mBtnLogFile_clicked );
 
   mpLastLayer = nullptr;
 
@@ -308,7 +320,7 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
 
 }
 
-void QgsGPSInformationWidget::on_mSpinTrackWidth_valueChanged( int value )
+void QgsGPSInformationWidget::mSpinTrackWidth_valueChanged( int value )
 {
   if ( mpRubberBand )
   {
@@ -316,7 +328,7 @@ void QgsGPSInformationWidget::on_mSpinTrackWidth_valueChanged( int value )
   }
 }
 
-void QgsGPSInformationWidget::on_mBtnTrackColor_clicked()
+void QgsGPSInformationWidget::mBtnTrackColor_clicked()
 {
   QColor myColor = QColorDialog::getColor( mTrackColor, this );
   if ( myColor.isValid() )  // check that a color was picked
@@ -329,38 +341,38 @@ void QgsGPSInformationWidget::on_mBtnTrackColor_clicked()
   }
 }
 
-void QgsGPSInformationWidget::on_mBtnPosition_clicked()
+void QgsGPSInformationWidget::mBtnPosition_clicked()
 {
   mStackedWidget->setCurrentIndex( 0 );
   if ( mNmea )
     displayGPSInformation( mNmea->currentGPSInformation() );
 }
 
-void QgsGPSInformationWidget::on_mBtnSignal_clicked()
+void QgsGPSInformationWidget::mBtnSignal_clicked()
 {
   mStackedWidget->setCurrentIndex( 1 );
   if ( mNmea )
     displayGPSInformation( mNmea->currentGPSInformation() );
 }
 
-void QgsGPSInformationWidget::on_mBtnSatellites_clicked()
+void QgsGPSInformationWidget::mBtnSatellites_clicked()
 {
   mStackedWidget->setCurrentIndex( 2 );
   if ( mNmea )
     displayGPSInformation( mNmea->currentGPSInformation() );
 }
 
-void QgsGPSInformationWidget::on_mBtnOptions_clicked()
+void QgsGPSInformationWidget::mBtnOptions_clicked()
 {
   mStackedWidget->setCurrentIndex( 3 );
 }
 
-void QgsGPSInformationWidget::on_mBtnDebug_clicked()
+void QgsGPSInformationWidget::mBtnDebug_clicked()
 {
   mStackedWidget->setCurrentIndex( 4 );
 }
 
-void QgsGPSInformationWidget::on_mConnectButton_toggled( bool flag )
+void QgsGPSInformationWidget::mConnectButton_toggled( bool flag )
 {
   if ( flag )
   {
@@ -722,7 +734,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation &in
   } // show marker
 }
 
-void QgsGPSInformationWidget::on_mBtnAddVertex_clicked()
+void QgsGPSInformationWidget::mBtnAddVertex_clicked()
 {
   addVertex();
 }
@@ -757,7 +769,7 @@ void QgsGPSInformationWidget::addVertex()
   mpRubberBand->addPoint( myPoint );
 }
 
-void QgsGPSInformationWidget::on_mBtnResetFeature_clicked()
+void QgsGPSInformationWidget::mBtnResetFeature_clicked()
 {
   mNmea->disconnect( this, SLOT( displayGPSInformation( const QgsGPSInformation & ) ) );
   createRubberBand(); //deletes existing rubberband
@@ -765,7 +777,7 @@ void QgsGPSInformationWidget::on_mBtnResetFeature_clicked()
   connectGpsSlot();
 }
 
-void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
+void QgsGPSInformationWidget::mBtnCloseFeature_clicked()
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mpCanvas->currentLayer() );
   QgsWkbTypes::Type layerWKBType = vlayer->wkbType();
@@ -961,7 +973,7 @@ void QgsGPSInformationWidget::connectGpsSlot()
            this, &QgsGPSInformationWidget::displayGPSInformation );
 }
 
-void QgsGPSInformationWidget::on_mBtnRefreshDevices_clicked()
+void QgsGPSInformationWidget::mBtnRefreshDevices_clicked()
 {
   populateDevices();
 }
@@ -999,7 +1011,7 @@ void QgsGPSInformationWidget::createRubberBand()
   mpRubberBand->show();
 }
 
-void QgsGPSInformationWidget::on_mBtnLogFile_clicked()
+void QgsGPSInformationWidget::mBtnLogFile_clicked()
 {
 //=========================
   // This does not allow for an extension other than ".nmea"

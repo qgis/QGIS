@@ -15,10 +15,12 @@ import qgis  # NOQA
 
 import os
 
-from qgis.gui import (QgsLocator,
-                      QgsLocatorFilter,
-                      QgsLocatorContext,
-                      QgsLocatorResult)
+from qgis.core import (QgsLocator,
+                       QgsLocatorFilter,
+                       QgsLocatorContext,
+                       QgsLocatorResult,
+                       QgsLocatorModel,
+                       QgsLocatorAutomaticModel)
 from qgis.PyQt.QtCore import QVariant, pyqtSignal, QCoreApplication
 from time import sleep
 from qgis.testing import start_app, unittest
@@ -31,6 +33,12 @@ class test_filter(QgsLocatorFilter):
     def __init__(self, prefix, parent=None):
         super().__init__(parent)
         self.prefix = prefix
+
+    def name(self):
+        return 'test'
+
+    def displayName(self):
+        return 'test'
 
     def fetchResults(self, string, context, feedback):
         for i in range(3):
@@ -151,6 +159,102 @@ class TestQgsLocator(unittest.TestCase):
         l.foundResult.connect(got_hit)
         l.fetchResults('a', context)
         l.cancel()
+
+    def testModel(self):
+        m = QgsLocatorModel()
+        l = QgsLocator()
+
+        filter_a = test_filter('a')
+        l.registerFilter(filter_a)
+        l.foundResult.connect(m.addResult)
+        context = QgsLocatorContext()
+
+        l.fetchResults('a', context)
+
+        for i in range(100):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+
+        # 4 results - one is locator name
+        self.assertEqual(m.rowCount(), 4)
+        self.assertEqual(m.data(m.index(0, 0)), 'test')
+        self.assertEqual(m.data(m.index(0, 0), QgsLocatorModel.ResultTypeRole), 0)
+        self.assertEqual(m.data(m.index(0, 0), QgsLocatorModel.ResultFilterNameRole), 'test')
+        self.assertEqual(m.data(m.index(1, 0)), 'a0')
+        self.assertEqual(m.data(m.index(1, 0), QgsLocatorModel.ResultTypeRole), 1)
+        self.assertEqual(m.data(m.index(1, 0), QgsLocatorModel.ResultFilterNameRole), 'test')
+        self.assertEqual(m.data(m.index(2, 0)), 'a1')
+        self.assertEqual(m.data(m.index(2, 0), QgsLocatorModel.ResultTypeRole), 1)
+        self.assertEqual(m.data(m.index(2, 0), QgsLocatorModel.ResultFilterNameRole), 'test')
+        self.assertEqual(m.data(m.index(3, 0)), 'a2')
+        self.assertEqual(m.data(m.index(3, 0), QgsLocatorModel.ResultTypeRole), 1)
+        self.assertEqual(m.data(m.index(3, 0), QgsLocatorModel.ResultFilterNameRole), 'test')
+
+        m.clear()
+        self.assertEqual(m.rowCount(), 0)
+        l.fetchResults('b', context)
+
+        for i in range(100):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+
+        self.assertEqual(m.rowCount(), 4)
+        self.assertEqual(m.data(m.index(1, 0)), 'a0')
+        self.assertEqual(m.data(m.index(2, 0)), 'a1')
+        self.assertEqual(m.data(m.index(3, 0)), 'a2')
+
+        m.deferredClear()
+        # should not be immediately cleared!
+        self.assertEqual(m.rowCount(), 4)
+        for i in range(100):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+        self.assertEqual(m.rowCount(), 0)
+
+    def testAutoModel(self):
+        """
+        Test automatic model, QgsLocatorAutomaticModel - should be no need
+        for any manual connections
+        """
+        l = QgsLocator()
+        m = QgsLocatorAutomaticModel(l)
+
+        filter_a = test_filter('a')
+        l.registerFilter(filter_a)
+
+        m.search('a')
+
+        for i in range(100):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+
+        # 4 results - one is locator name
+        self.assertEqual(m.rowCount(), 4)
+        self.assertEqual(m.data(m.index(0, 0)), 'test')
+        self.assertEqual(m.data(m.index(0, 0), QgsLocatorModel.ResultTypeRole), 0)
+        self.assertEqual(m.data(m.index(0, 0), QgsLocatorModel.ResultFilterNameRole), 'test')
+        self.assertEqual(m.data(m.index(1, 0)), 'a0')
+        self.assertEqual(m.data(m.index(1, 0), QgsLocatorModel.ResultTypeRole), 1)
+        self.assertEqual(m.data(m.index(1, 0), QgsLocatorModel.ResultFilterNameRole), 'test')
+        self.assertEqual(m.data(m.index(2, 0)), 'a1')
+        self.assertEqual(m.data(m.index(2, 0), QgsLocatorModel.ResultTypeRole), 1)
+        self.assertEqual(m.data(m.index(2, 0), QgsLocatorModel.ResultFilterNameRole), 'test')
+        self.assertEqual(m.data(m.index(3, 0)), 'a2')
+        self.assertEqual(m.data(m.index(3, 0), QgsLocatorModel.ResultTypeRole), 1)
+        self.assertEqual(m.data(m.index(3, 0), QgsLocatorModel.ResultFilterNameRole), 'test')
+
+        m.search('a')
+
+        for i in range(100):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+
+        # 4 results - one is locator name
+        self.assertEqual(m.rowCount(), 4)
+        self.assertEqual(m.data(m.index(0, 0)), 'test')
+        self.assertEqual(m.data(m.index(1, 0)), 'a0')
+        self.assertEqual(m.data(m.index(2, 0)), 'a1')
+        self.assertEqual(m.data(m.index(3, 0)), 'a2')
 
 
 if __name__ == '__main__':

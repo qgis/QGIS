@@ -29,16 +29,14 @@
 
 QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *parent )
   : QWidget( parent )
-  , mUserProjList( nullptr )
-  , mGeoList( nullptr )
-  , mProjList( nullptr )
-  , mProjListDone( false )
-  , mUserProjListDone( false )
-  , mRecentProjListDone( false )
-  , mSearchColumn( QgsProjectionSelectionTreeWidget::None )
-  , mPushProjectionToFront( false )
 {
   setupUi( this );
+  connect( lstCoordinateSystems, &QTreeWidget::itemDoubleClicked, this, &QgsProjectionSelectionTreeWidget::lstCoordinateSystems_itemDoubleClicked );
+  connect( lstRecent, &QTreeWidget::itemDoubleClicked, this, &QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked );
+  connect( lstCoordinateSystems, &QTreeWidget::currentItemChanged, this, &QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged );
+  connect( lstRecent, &QTreeWidget::currentItemChanged, this, &QgsProjectionSelectionTreeWidget::lstRecent_currentItemChanged );
+  connect( cbxHideDeprecated, &QCheckBox::stateChanged, this, &QgsProjectionSelectionTreeWidget::cbxHideDeprecated_stateChanged );
+  connect( leSearch, &QgsFilterLineEdit::textChanged, this, &QgsProjectionSelectionTreeWidget::leSearch_textChanged );
 
   if ( QDialog *dlg = qobject_cast<QDialog *>( parent ) )
   {
@@ -49,16 +47,16 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   // Get the full path name to the sqlite3 spatial reference database.
   mSrsDatabaseFileName = QgsApplication::srsDatabaseFilePath();
 
-  lstCoordinateSystems->header()->setResizeMode( AuthidColumn, QHeaderView::Stretch );
+  lstCoordinateSystems->header()->setSectionResizeMode( AuthidColumn, QHeaderView::Stretch );
   lstCoordinateSystems->header()->resizeSection( QgisCrsIdColumn, 0 );
-  lstCoordinateSystems->header()->setResizeMode( QgisCrsIdColumn, QHeaderView::Fixed );
+  lstCoordinateSystems->header()->setSectionResizeMode( QgisCrsIdColumn, QHeaderView::Fixed );
 
   // Hide (internal) ID column
   lstCoordinateSystems->setColumnHidden( QgisCrsIdColumn, true );
 
-  lstRecent->header()->setResizeMode( AuthidColumn, QHeaderView::Stretch );
+  lstRecent->header()->setSectionResizeMode( AuthidColumn, QHeaderView::Stretch );
   lstRecent->header()->resizeSection( QgisCrsIdColumn, 0 );
-  lstRecent->header()->setResizeMode( QgisCrsIdColumn, QHeaderView::Fixed );
+  lstRecent->header()->setSectionResizeMode( QgisCrsIdColumn, QHeaderView::Fixed );
 
   // Hide (internal) ID column
   lstRecent->setColumnHidden( QgisCrsIdColumn, true );
@@ -191,12 +189,12 @@ QString QgsProjectionSelectionTreeWidget::ogcWmsCrsFilterAsSqlExpression( QSet<Q
   if ( !authParts.isEmpty() )
   {
     QString prefix = QStringLiteral( " AND (" );
-    Q_FOREACH ( const QString &auth_name, authParts.keys() )
+    for ( auto it = authParts.constBegin(); it != authParts.constEnd(); ++it )
     {
       sqlExpression += QStringLiteral( "%1(upper(auth_name)='%2' AND upper(auth_id) IN ('%3'))" )
                        .arg( prefix,
-                             auth_name,
-                             authParts[auth_name].join( QStringLiteral( "','" ) ) );
+                             it.key(),
+                             it.value().join( QStringLiteral( "','" ) ) );
       prefix = QStringLiteral( " OR " );
     }
     sqlExpression += ')';
@@ -242,8 +240,8 @@ void QgsProjectionSelectionTreeWidget::applySelection( int column, QString value
     // deselect the selected item to avoid confusing the user
     lstCoordinateSystems->clearSelection();
     lstRecent->clearSelection();
-    teProjection->setText( QLatin1String( "" ) );
-    teSelected->setText( QLatin1String( "" ) );
+    teProjection->clear();
+    teSelected->clear();
   }
 }
 
@@ -431,7 +429,7 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
 
   int srid = getSelectedExpression( QStringLiteral( "srs_id" ) ).toLong();
   if ( srid >= USER_CRS_START_ID )
-    return QgsCoordinateReferenceSystem::fromOgcWmsCrs( QString( "USER:%1" ).arg( srid ) );
+    return QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "USER:%1" ).arg( srid ) );
   else
     return QgsCoordinateReferenceSystem::fromOgcWmsCrs( getSelectedExpression( QStringLiteral( "upper(auth_name||':'||auth_id)" ) ) );
 }
@@ -693,7 +691,7 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
 }
 
 // New coordinate system selected from the list
-void QgsProjectionSelectionTreeWidget::on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
+void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
   QgsDebugMsgLevel( "Entered.", 4 );
 
@@ -732,13 +730,13 @@ void QgsProjectionSelectionTreeWidget::on_lstCoordinateSystems_currentItemChange
   {
     // Not an CRS - remove the highlight so the user doesn't get too confused
     current->setSelected( false );
-    teProjection->setText( QLatin1String( "" ) );
-    teSelected->setText( QLatin1String( "" ) );
+    teProjection->clear();
+    teSelected->clear();
     lstRecent->clearSelection();
   }
 }
 
-void QgsProjectionSelectionTreeWidget::on_lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column )
+void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_itemDoubleClicked( QTreeWidgetItem *current, int column )
 {
   Q_UNUSED( column );
 
@@ -756,7 +754,7 @@ void QgsProjectionSelectionTreeWidget::on_lstCoordinateSystems_itemDoubleClicked
     emit projectionDoubleClicked();
 }
 
-void QgsProjectionSelectionTreeWidget::on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
+void QgsProjectionSelectionTreeWidget::lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
   QgsDebugMsgLevel( "Entered.", 4 );
 
@@ -773,7 +771,7 @@ void QgsProjectionSelectionTreeWidget::on_lstRecent_currentItemChanged( QTreeWid
     lstCoordinateSystems->setCurrentItem( nodes.first() );
 }
 
-void QgsProjectionSelectionTreeWidget::on_lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column )
+void QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column )
 {
   Q_UNUSED( column );
 
@@ -798,8 +796,8 @@ void QgsProjectionSelectionTreeWidget::hideDeprecated( QTreeWidgetItem *item )
     if ( item->isSelected() && item->isHidden() )
     {
       item->setSelected( false );
-      teProjection->setText( QLatin1String( "" ) );
-      teSelected->setText( QLatin1String( "" ) );
+      teProjection->clear();
+      teSelected->clear();
     }
   }
 
@@ -807,13 +805,13 @@ void QgsProjectionSelectionTreeWidget::hideDeprecated( QTreeWidgetItem *item )
     hideDeprecated( item->child( i ) );
 }
 
-void QgsProjectionSelectionTreeWidget::on_cbxHideDeprecated_stateChanged()
+void QgsProjectionSelectionTreeWidget::cbxHideDeprecated_stateChanged()
 {
   for ( int i = 0; i < lstCoordinateSystems->topLevelItemCount(); i++ )
     hideDeprecated( lstCoordinateSystems->topLevelItem( i ) );
 }
 
-void QgsProjectionSelectionTreeWidget::on_leSearch_textChanged( const QString &filterTxt )
+void QgsProjectionSelectionTreeWidget::leSearch_textChanged( const QString &filterTxt )
 {
   QString filterTxtCopy = filterTxt;
   filterTxtCopy.replace( QRegExp( "\\s+" ), QStringLiteral( ".*" ) );
@@ -993,7 +991,7 @@ QStringList QgsProjectionSelectionTreeWidget::authorities()
   return authorities;
 }
 
-const QString QgsProjectionSelectionTreeWidget::sqlSafeString( const QString &theSQL )
+QString QgsProjectionSelectionTreeWidget::sqlSafeString( const QString &theSQL ) const
 {
   QString retval = theSQL;
   retval.replace( '\\', QLatin1String( "\\\\" ) );

@@ -25,11 +25,6 @@ QgsMapToolTextAnnotation::QgsMapToolTextAnnotation( QgsMapCanvas *canvas ): QgsM
 
 }
 
-QgsMapToolTextAnnotation::~QgsMapToolTextAnnotation()
-{
-
-}
-
 QgsAnnotation *QgsMapToolTextAnnotation::createItem() const
 {
   return new QgsTextAnnotation();

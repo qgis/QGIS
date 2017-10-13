@@ -34,7 +34,7 @@
 QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget *parent, QgsMapCanvas *mapCanvas )
   : QWidget( parent )
   , mMapCanvas( mapCanvas )
-  , mJob( nullptr )
+
 {
   setAutoFillBackground( true );
   setObjectName( QStringLiteral( "theOverviewCanvas" ) );

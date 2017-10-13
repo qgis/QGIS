@@ -15,6 +15,7 @@
 typedef QMap<QString, QgsColorRamp * > QgsVectorColorRampMap;
 typedef QMap<int, QString> QgsSymbolGroupMap;
 
+
 typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
 enum SymbolTable { SymbolId, SymbolName, SymbolXML, SymbolFavoriteId };
@@ -30,7 +31,11 @@ class QgsStyle : QObject
 #include "qgsstyle.h"
 %End
   public:
+
     QgsStyle();
+%Docstring
+ Constructor for QgsStyle.
+%End
     ~QgsStyle();
 
     enum StyleEntity { SymbolEntity, TagEntity, ColorrampEntity, SmartgroupEntity };

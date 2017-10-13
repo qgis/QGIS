@@ -163,9 +163,9 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     bool mUseEstimatedMetadata;
     bool mSkipFailures;
 
-    long mNumberFeatures;
+    long mNumberFeatures = 0;
     QString mFidColName;
-    int mFidColIdx;
+    int mFidColIdx = -1;
     mutable long mSRId;
     QString mGeometryColName;
     QString mGeometryColType;
@@ -176,7 +176,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     // Coordinate reference system
     mutable QgsCoordinateReferenceSystem mCrs;
 
-    mutable QgsWkbTypes::Type mWkbType;
+    mutable QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
 
     // The database object
     QSqlDatabase mDatabase;

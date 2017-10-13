@@ -26,7 +26,7 @@ __copyright__ = '(C) 2016, Matthias Kuhn'
 __revision__ = ':%H$'
 
 import AlgorithmsTestBase
-from processing.algs.gdal.ogr2ogrtopostgis import Ogr2OgrToPostGis
+from processing.algs.gdal.OgrToPostGis import OgrToPostGis
 from processing.algs.gdal.GdalUtils import GdalUtils
 from qgis.core import QgsProcessingContext
 import nose2
@@ -99,7 +99,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertEqual(name, 'city_data.edge')
 
 
-class TestGdalOgr2OgrToPostgis(unittest.TestCase):
+class TestGdalOgrToPostGis(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -114,7 +114,7 @@ class TestGdalOgr2OgrToPostgis(unittest.TestCase):
     # See https://issues.qgis.org/issues/15706
     def test_getConnectionString(self):
 
-        obj = Ogr2OgrToPostGis()
+        obj = OgrToPostGis()
         obj.initAlgorithm({})
 
         parameters = {}

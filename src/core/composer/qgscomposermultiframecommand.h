@@ -26,7 +26,8 @@
 
 class QgsComposerMultiFrame;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsComposerMultiFrameCommand
  */
 class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
@@ -54,7 +55,7 @@ class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
     QDomDocument mPreviousState;
     QDomDocument mAfterState;
 
-    bool mFirstRun;
+    bool mFirstRun = false;
 
     QgsComposerMultiFrameCommand(); //forbidden
     void saveState( QDomDocument &stateDoc );
@@ -62,7 +63,8 @@ class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
     bool checkFirstRun();
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A composer command that merges together with other commands having the same context (=id)
  * for multi frame items. Keeps the oldest previous state and uses the newest after state.
  * The purpose is to avoid too many micro changes in the history*/

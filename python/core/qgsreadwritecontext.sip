@@ -20,7 +20,11 @@ class QgsReadWriteContext
 #include "qgsreadwritecontext.h"
 %End
   public:
+
     QgsReadWriteContext();
+%Docstring
+ Constructor for QgsReadWriteContext.
+%End
 
     const QgsPathResolver &pathResolver() const;
 %Docstring

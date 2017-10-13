@@ -202,7 +202,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( const QgsPointSeq
     geometry = f.geometry();
   }
 
-  QgsGeometry::OperationResult errorCode = geometry.addPart( points,  mLayer->geometryType() ) ;
+  QgsGeometry::OperationResult errorCode = geometry.addPart( points,  mLayer->geometryType() );
   if ( errorCode == QgsGeometry::Success )
   {
     if ( firstPart && QgsWkbTypes::isSingleType( mLayer->wkbType() )
@@ -237,7 +237,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, Q
     geometry = f.geometry();
   }
 
-  QgsGeometry::OperationResult errorCode = geometry.addPart( ring, mLayer->geometryType() ) ;
+  QgsGeometry::OperationResult errorCode = geometry.addPart( ring, mLayer->geometryType() );
   if ( errorCode == QgsGeometry::Success )
   {
     if ( firstPart && QgsWkbTypes::isSingleType( mLayer->wkbType() )
@@ -615,7 +615,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )
   double segmentSearchEpsilon = mLayer->crs().isGeographic() ? 1e-12 : 1e-8;
 
   //work with a tolerance because coordinate projection may introduce some rounding
-  double threshold =  0.0000001;
+  double threshold = 0.0000001;
   if ( mLayer->crs().mapUnits() == QgsUnitTypes::DistanceMeters )
   {
     threshold = 0.001;
@@ -678,7 +678,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPointXY &p )
 
 bool QgsVectorLayerEditUtils::boundingBoxFromPointList( const QList<QgsPointXY> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const
 {
-  if ( list.size() < 1 )
+  if ( list.empty() )
   {
     return false;
   }

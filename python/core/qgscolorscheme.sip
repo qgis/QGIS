@@ -26,7 +26,6 @@ class QgsColorScheme
 %TypeHeaderCode
 #include "qgscolorscheme.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsUserColorScheme *>( sipCpp ) != NULL )
       sipType = sipType_QgsUserColorScheme;
@@ -131,6 +130,9 @@ class QgsGplColorScheme : QgsColorScheme
   public:
 
     QgsGplColorScheme();
+%Docstring
+ Constructor for QgsGplColorScheme.
+%End
 
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                            const QColor &baseColor = QColor() );
@@ -216,6 +218,9 @@ class QgsRecentColorScheme : QgsColorScheme
   public:
 
     QgsRecentColorScheme();
+%Docstring
+ Constructor for QgsRecentColorScheme.
+%End
 
     virtual QString schemeName() const;
 
@@ -257,6 +262,9 @@ class QgsCustomColorScheme : QgsColorScheme
   public:
 
     QgsCustomColorScheme();
+%Docstring
+ Constructor for QgsCustomColorScheme.
+%End
 
     virtual QString schemeName() const;
 
@@ -286,6 +294,9 @@ class QgsProjectColorScheme : QgsColorScheme
   public:
 
     QgsProjectColorScheme();
+%Docstring
+ Constructor for QgsProjectColorScheme.
+%End
 
     virtual QString schemeName() const;
 

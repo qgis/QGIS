@@ -53,9 +53,7 @@ bool QgsMapToPixelSimplifier::equalSnapToGrid( double x1, double y1, double x2, 
 
   int grid_y1 = std::round( ( y1 - gridOriginY ) * gridInverseSizeXY );
   int grid_y2 = std::round( ( y2 - gridOriginY ) * gridInverseSizeXY );
-  if ( grid_y1 != grid_y2 ) return false;
-
-  return true;
+  return grid_y1 == grid_y2;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +105,9 @@ static QgsGeometry generalizeWkbGeometryByBoundingBox(
 template<class T>
 static T *createEmptySameTypeGeom( const T &geom )
 {
+  // TODO - this is inefficient - we clone the geometry's content only to throw it away immediately
   T *output( qgsgeometry_cast<T *>( geom.clone() ) );
+  Q_ASSERT( output );
   output->clear();
   return output;
 }

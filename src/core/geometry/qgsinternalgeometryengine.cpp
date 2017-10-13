@@ -64,14 +64,15 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
 
   if ( !linesToProcess.empty() )
   {
-    Q_FOREACH ( QgsLineString *line, linesToProcess )
+    std::unique_ptr< QgsLineString > secondline;
+    for ( QgsLineString *line : qgsAsConst( linesToProcess ) )
     {
       QTransform transform = QTransform::fromTranslate( x, y );
 
-      QgsLineString *secondline = line->reversed();
+      secondline.reset( line->reversed() );
       secondline->transform( transform );
 
-      line->append( secondline );
+      line->append( secondline.get() );
       line->addVertex( line->pointN( 0 ) );
 
       polygon = new QgsPolygonV2();
@@ -79,8 +80,6 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
 
       if ( multipolygon )
         multipolygon->addGeometry( polygon );
-
-      delete secondline;
     }
 
     if ( multipolygon )
@@ -373,7 +372,7 @@ QgsVector calcMotion( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c,
 
   // wonderful nasty hack which has survived through JOSM -> id -> QGIS
   // to deal with almost-straight segments (angle is closer to 180 than to 90/270).
-  if ( dotProduct < -0.707106781186547 )
+  if ( dotProduct < -M_SQRT1_2 )
     dotProduct += 1.0;
 
   QgsVector new_v = p + q;
@@ -505,7 +504,7 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    Q_FOREACH ( QgsAbstractGeometry *g, geometryList )
+    for ( QgsAbstractGeometry *g : qgsAsConst( geometryList ) )
     {
       first.addPart( g );
     }
@@ -663,7 +662,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment 
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    Q_FOREACH ( QgsAbstractGeometry *g, geometryList )
+    for ( QgsAbstractGeometry *g : qgsAsConst( geometryList ) )
     {
       first.addPart( g );
     }
@@ -698,7 +697,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    Q_FOREACH ( QgsAbstractGeometry *g, geometryList )
+    for ( QgsAbstractGeometry *g : qgsAsConst( geometryList ) )
     {
       first.addPart( g );
     }

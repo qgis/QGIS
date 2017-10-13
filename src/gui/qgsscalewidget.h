@@ -26,7 +26,8 @@
 
 class QgsMapCanvas;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A combobox which lets the user select map scale from predefined list
  * and highlights nearest to current scale value
  **/
@@ -149,7 +150,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
     QgsScaleComboBox *mScaleComboBox = nullptr;
     QToolButton *mCurrentScaleButton = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
-    bool mShowCurrentScaleButton;
+    bool mShowCurrentScaleButton = false;
 };
 
 #endif // QGSSCALEWIDGET_H

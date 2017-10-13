@@ -30,10 +30,6 @@
 
 QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
   : QWidget( parent )
-  , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
-  , mRootSslConfigItem( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -46,6 +42,10 @@ QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
   else
   {
     setupUi( this );
+    connect( btnAddServer, &QToolButton::clicked, this, &QgsAuthServersEditor::btnAddServer_clicked );
+    connect( btnRemoveServer, &QToolButton::clicked, this, &QgsAuthServersEditor::btnRemoveServer_clicked );
+    connect( btnEditServer, &QToolButton::clicked, this, &QgsAuthServersEditor::btnEditServer_clicked );
+    connect( btnGroupByOrg, &QToolButton::toggled, this, &QgsAuthServersEditor::btnGroupByOrg_toggled );
 
     connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
              this, &QgsAuthServersEditor::authMessageOut );
@@ -143,7 +143,7 @@ void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSsl
     QgsAuthServersEditor::ConfigType conftype,
     QTreeWidgetItem *parent )
 {
-  if ( configs.size() < 1 )
+  if ( configs.empty() )
     return;
 
   if ( !parent )
@@ -182,7 +182,7 @@ void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslS
     QgsAuthServersEditor::ConfigType conftype,
     QTreeWidgetItem *parent )
 {
-  if ( configs.size() < 1 )
+  if ( configs.empty() )
     return;
 
   if ( !parent )
@@ -265,11 +265,11 @@ void QgsAuthServersEditor::handleDoubleClick( QTreeWidgetItem *item, int col )
 
   if ( isconfig )
   {
-    on_btnEditServer_clicked();
+    btnEditServer_clicked();
   }
 }
 
-void QgsAuthServersEditor::on_btnAddServer_clicked()
+void QgsAuthServersEditor::btnAddServer_clicked()
 {
   QgsAuthSslImportDialog *dlg = new QgsAuthSslImportDialog( this );
   dlg->setWindowModality( Qt::WindowModal );
@@ -281,7 +281,7 @@ void QgsAuthServersEditor::on_btnAddServer_clicked()
   dlg->deleteLater();
 }
 
-void QgsAuthServersEditor::on_btnRemoveServer_clicked()
+void QgsAuthServersEditor::btnRemoveServer_clicked()
 {
   QTreeWidgetItem *item( treeServerConfigs->currentItem() );
 
@@ -337,7 +337,7 @@ void QgsAuthServersEditor::on_btnRemoveServer_clicked()
   delete item;
 }
 
-void QgsAuthServersEditor::on_btnEditServer_clicked()
+void QgsAuthServersEditor::btnEditServer_clicked()
 {
   QTreeWidgetItem *item( treeServerConfigs->currentItem() );
 
@@ -383,7 +383,7 @@ void QgsAuthServersEditor::on_btnEditServer_clicked()
   dlg->deleteLater();
 }
 
-void QgsAuthServersEditor::on_btnGroupByOrg_toggled( bool checked )
+void QgsAuthServersEditor::btnGroupByOrg_toggled( bool checked )
 {
   if ( !QgsAuthManager::instance()->storeAuthSetting( QStringLiteral( "serverssortby" ), QVariant( checked ) ) )
   {

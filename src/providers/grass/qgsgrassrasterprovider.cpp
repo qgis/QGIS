@@ -45,11 +45,6 @@
 
 QgsGrassRasterProvider::QgsGrassRasterProvider( QString const &uri )
   : QgsRasterDataProvider( uri )
-  , mValid( false )
-  , mGrassDataType( 0 )
-  , mCols( 0 )
-  , mRows( 0 )
-  , mYBlockSize( 0 )
   , mNoDataValue( std::numeric_limits<double>::quiet_NaN() )
 {
   QgsDebugMsg( "QgsGrassRasterProvider: constructing with uri '" + uri + "'." );
@@ -604,11 +599,6 @@ void QgsGrassRasterProvider::thaw()
 }
 
 //-------------------------------- QgsGrassRasterValue ----------------------------------------
-
-QgsGrassRasterValue::QgsGrassRasterValue()
-  : mProcess( 0 )
-{
-}
 
 QgsGrassRasterValue::~QgsGrassRasterValue()
 {

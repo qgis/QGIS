@@ -43,9 +43,7 @@ const QString QgsMapRendererJob::LABEL_CACHE_ID = QStringLiteral( "_labels_" );
 
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings &settings )
   : mSettings( settings )
-  , mCache( nullptr )
-  , mRenderingTime( 0 )
-  , mFeatureFilterProvider( nullptr )
+
 {
 }
 
@@ -186,7 +184,7 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
     {
       if ( ct.destinationCrs().isGeographic() &&
            ( extent.xMinimum() <= -180 || extent.xMaximum() >= 180 ||
-             extent.yMinimum() <=  -90 || extent.yMaximum() >=  90 ) )
+             extent.yMinimum() <= -90 || extent.yMaximum() >= 90 ) )
         // Use unlimited rectangle because otherwise we may end up transforming wrong coordinates.
         // E.g. longitude -200 to +160 would be understood as +40 to +160 due to periodicity.
         // We could try to clamp coords to (-180,180) for lon resp. (-90,90) for lat,
@@ -221,7 +219,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
   {
     bool cacheValid = mCache->init( mSettings.visibleExtent(), mSettings.scale() );
     Q_UNUSED( cacheValid );
-    QgsDebugMsg( QString( "CACHE VALID: %1" ).arg( cacheValid ) );
+    QgsDebugMsgLevel( QString( "CACHE VALID: %1" ).arg( cacheValid ), 4 );
   }
 
   bool requiresLabelRedraw = !( mCache && mCache->hasCacheImage( LABEL_CACHE_ID ) );

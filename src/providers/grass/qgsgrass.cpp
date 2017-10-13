@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <qglobal.h>
+
 #ifdef _MSC_VER
 // to avoid conflicting SF_UNKNOWN
 #define _OLE2_H_
@@ -253,11 +255,6 @@ bool QgsGrassObject::operator==( const QgsGrassObject &other ) const
 {
   return mGisdbase == other.mGisdbase && mLocation == other.mLocation && mMapset == other.mMapset
          && mName == other.mName && mType == other.mType;
-}
-
-QgsGrass::QgsGrass()
-  : mMapsetSearchPathWatcher( 0 )
-{
 }
 
 QString QgsGrass::pathSeparator()
@@ -940,7 +937,7 @@ QString QgsGrass::openMapset( const QString &gisdbase,
   }
 
   // Create GISRC file
-  QString globalGisrc =  QDir::home().path() + "/.grassrc6";
+  QString globalGisrc = QDir::home().path() + "/.grassrc6";
   sGisrc = sTmp + "/gisrc";
 
   QgsDebugMsg( QString( "globalGisrc = %1" ).arg( globalGisrc ) );
@@ -1345,7 +1342,7 @@ QStringList QgsGrass::vectorLayers( const QString &gisdbase, const QString &loca
 
   // TODO: add option in GUI to set listTopoLayers
   QgsSettings settings;
-  bool listTopoLayers =  settings.value( QStringLiteral( "GRASS/showTopoLayers" ), false ).toBool();
+  bool listTopoLayers = settings.value( QStringLiteral( "GRASS/showTopoLayers" ), false ).toBool();
   if ( listTopoLayers )
   {
     // add topology layers
@@ -2061,7 +2058,7 @@ QString QgsGrass::getInfo( const QString  &info, const QString  &gisdbase,
     arguments.append( QStringLiteral( "cols=%1" ).arg( sampleCols ) );
   }
 
-  //QByteArray data =  runModule( gisdbase, location, mapset, cmd, arguments, timeOut );
+  //QByteArray data = runModule( gisdbase, location, mapset, cmd, arguments, timeOut );
   // Run module with empty mapset so that it tries to find a mapset owned by user
   QByteArray data = runModule( gisdbase, location, QLatin1String( "" ), cmd, arguments, timeOut );
   QgsDebugMsg( data );
@@ -2268,7 +2265,7 @@ QMap<QString, QString> QgsGrass::query( const QString &gisdbase, const QString &
 
 void QgsGrass::renameObject( const QgsGrassObject &object, const QString &newName )
 {
-  QString cmd =  gisbase() + "/bin/g.rename";
+  QString cmd = gisbase() + "/bin/g.rename";
   QStringList arguments;
 
   arguments << object.elementShort() + "=" + object.name() + "," + newName;
@@ -2369,7 +2366,7 @@ void QgsGrass::createTable( dbDriver *driver, const QString &tableName, const Qg
   }
 
   QStringList fieldsStringList;
-  Q_FOREACH ( const QgsField &field, fields )
+  for ( const QgsField &field : fields )
   {
     QString name = field.name().toLower().replace( QLatin1String( " " ), QLatin1String( "_" ) );
     if ( name.at( 0 ).isDigit() )
@@ -2927,7 +2924,7 @@ QgsGrass::ModuleOutput QgsGrass::parseModuleOutput( const QString &input, QStrin
   {
     text = rxerror.cap( 1 );
     QString img = QgsApplication::pkgDataPath() + "/themes/default/grass/grass_module_error.png";
-    html =  "<img src=\"" + img + "\">" + text;
+    html = "<img src=\"" + img + "\">" + text;
     return OutputError;
   }
   else if ( rxend.indexIn( input ) != -1 )

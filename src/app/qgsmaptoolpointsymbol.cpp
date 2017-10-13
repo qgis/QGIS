@@ -24,7 +24,6 @@
 
 QgsMapToolPointSymbol::QgsMapToolPointSymbol( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mActiveLayer( nullptr )
   , mFeatureNumber( -1 )
 {}
 

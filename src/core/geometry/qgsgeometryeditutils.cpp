@@ -223,7 +223,7 @@ bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometry *geom, int partNum )
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry &geom,
     const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
-    QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures )
+    const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures )
 {
   std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( &geom ) );
   if ( !geomEngine )
@@ -245,10 +245,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
   QList< QgsAbstractGeometry * > nearGeometries;
 
   //go through list, convert each layer to vector layer and call QgsVectorLayer::removePolygonIntersections for each
-  Q_FOREACH ( QgsVectorLayer *currentLayer, avoidIntersectionsLayers )
+  for ( QgsVectorLayer *currentLayer : avoidIntersectionsLayers )
   {
     QgsFeatureIds ignoreIds;
-    QHash<QgsVectorLayer *, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.find( currentLayer );
+    QHash<QgsVectorLayer *, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.constFind( currentLayer );
     if ( ignoreIt != ignoreFeatures.constEnd() )
       ignoreIds = ignoreIt.value();
 
@@ -274,15 +274,14 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
   }
 
 
-  QgsAbstractGeometry *combinedGeometries = geomEngine->combine( nearGeometries );
+  std::unique_ptr< QgsAbstractGeometry > combinedGeometries( geomEngine->combine( nearGeometries ) );
   qDeleteAll( nearGeometries );
   if ( !combinedGeometries )
   {
     return nullptr;
   }
 
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geomEngine->difference( combinedGeometries ) );
+  std::unique_ptr< QgsAbstractGeometry > diffGeom( geomEngine->difference( combinedGeometries.get() ) );
 
-  delete combinedGeometries;
   return diffGeom;
 }

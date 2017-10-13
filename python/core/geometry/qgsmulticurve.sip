@@ -21,11 +21,14 @@ class QgsMultiCurve: QgsGeometryCollection
   public:
     QgsMultiCurve();
     virtual QString geometryType() const;
+
     virtual QgsMultiCurve *clone() const /Factory/;
 
+    virtual void clear();
+
+    virtual QgsMultiCurve *toCurveType() const /Factory/;
 
     virtual bool fromWkt( const QString &wkt );
-
 
     virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
@@ -33,12 +36,10 @@ class QgsMultiCurve: QgsGeometryCollection
 
     virtual QString asJSON( int precision = 17 ) const;
 
-
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
-%Docstring
-Adds a geometry and takes ownership. Returns true in case of success
- :rtype: bool
-%End
+
+    virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
+
 
     QgsMultiCurve *reversed() const /Factory/;
 %Docstring
@@ -50,7 +51,9 @@ Adds a geometry and takes ownership. Returns true in case of success
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
 
+
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

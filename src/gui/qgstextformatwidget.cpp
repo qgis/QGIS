@@ -31,17 +31,7 @@
 
 QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent )
   : QWidget( parent )
-  , mQuadrantBtnGrp( nullptr )
-  , mDirectSymbBtnGrp( nullptr )
-  , mUpsidedownBtnGrp( nullptr )
-  , mPlacePointBtnGrp( nullptr )
-  , mPlaceLineBtnGrp( nullptr )
-  , mPlacePolygonBtnGrp( nullptr )
-  , mMinPixelLimit( 0 )
-  , mWidgetMode( Text )
   , mMapCanvas( mapCanvas )
-  , mCharDlg( nullptr )
-  , mLoadSvgParams( false )
 {
   initWidget();
   setWidgetMode( Text );
@@ -50,17 +40,8 @@ QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCan
 
 QgsTextFormatWidget::QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Mode mode )
   : QWidget( parent )
-  , mQuadrantBtnGrp( nullptr )
-  , mDirectSymbBtnGrp( nullptr )
-  , mUpsidedownBtnGrp( nullptr )
-  , mPlacePointBtnGrp( nullptr )
-  , mPlaceLineBtnGrp( nullptr )
-  , mPlacePolygonBtnGrp( nullptr )
-  , mMinPixelLimit( 0 )
   , mWidgetMode( mode )
   , mMapCanvas( mapCanvas )
-  , mCharDlg( nullptr )
-  , mLoadSvgParams( false )
 {
   initWidget();
   setWidgetMode( mode );
@@ -69,6 +50,33 @@ QgsTextFormatWidget::QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *pare
 void QgsTextFormatWidget::initWidget()
 {
   setupUi( this );
+  connect( mShapeSVGPathLineEdit, &QLineEdit::textChanged, this, &QgsTextFormatWidget::mShapeSVGPathLineEdit_textChanged );
+  connect( mFontSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsTextFormatWidget::mFontSizeSpinBox_valueChanged );
+  connect( mFontCapitalsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mFontCapitalsComboBox_currentIndexChanged );
+  connect( mFontFamilyCmbBx, &QFontComboBox::currentFontChanged, this, &QgsTextFormatWidget::mFontFamilyCmbBx_currentFontChanged );
+  connect( mFontStyleComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mFontStyleComboBox_currentIndexChanged );
+  connect( mFontUnderlineBtn, &QToolButton::toggled, this, &QgsTextFormatWidget::mFontUnderlineBtn_toggled );
+  connect( mFontStrikethroughBtn, &QToolButton::toggled, this, &QgsTextFormatWidget::mFontStrikethroughBtn_toggled );
+  connect( mFontWordSpacingSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsTextFormatWidget::mFontWordSpacingSpinBox_valueChanged );
+  connect( mFontLetterSpacingSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsTextFormatWidget::mFontLetterSpacingSpinBox_valueChanged );
+  connect( mFontSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsTextFormatWidget::mFontSizeUnitWidget_changed );
+  connect( mFontMinPixelSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsTextFormatWidget::mFontMinPixelSpinBox_valueChanged );
+  connect( mFontMaxPixelSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsTextFormatWidget::mFontMaxPixelSpinBox_valueChanged );
+  connect( mBufferUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsTextFormatWidget::mBufferUnitWidget_changed );
+  connect( mCoordXDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCoordXDDBtn_activated );
+  connect( mCoordYDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::mCoordYDDBtn_activated );
+  connect( mShapeTypeCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged );
+  connect( mShapeRotationCmbBx, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::mShapeRotationCmbBx_currentIndexChanged );
+  connect( mShapeSVGParamsBtn, &QPushButton::clicked, this, &QgsTextFormatWidget::mShapeSVGParamsBtn_clicked );
+  connect( mShapeSVGSelectorBtn, &QPushButton::clicked, this, &QgsTextFormatWidget::mShapeSVGSelectorBtn_clicked );
+  connect( mPreviewTextEdit, &QLineEdit::textChanged, this, &QgsTextFormatWidget::mPreviewTextEdit_textChanged );
+  connect( mPreviewTextBtn, &QToolButton::clicked, this, &QgsTextFormatWidget::mPreviewTextBtn_clicked );
+  connect( mPreviewBackgroundBtn, &QgsColorButton::colorChanged, this, &QgsTextFormatWidget::mPreviewBackgroundBtn_colorChanged );
+  connect( mDirectSymbLeftToolBtn, &QToolButton::clicked, this, &QgsTextFormatWidget::mDirectSymbLeftToolBtn_clicked );
+  connect( mDirectSymbRightToolBtn, &QToolButton::clicked, this, &QgsTextFormatWidget::mDirectSymbRightToolBtn_clicked );
+  connect( mChkNoObstacle, &QCheckBox::toggled, this, &QgsTextFormatWidget::mChkNoObstacle_toggled );
+  connect( chkLineOrientationDependent, &QCheckBox::toggled, this, &QgsTextFormatWidget::chkLineOrientationDependent_toggled );
+  connect( mToolButtonConfigureSubstitutes, &QToolButton::clicked, this, &QgsTextFormatWidget::mToolButtonConfigureSubstitutes_clicked );
 
   mPreviewScaleComboBox->setMapCanvas( mMapCanvas );
   mPreviewScaleComboBox->setShowCurrentScaleButton( true );
@@ -694,7 +702,7 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
   mShapeBlendCmbBx->setBlendMode( background.blendMode() );
 
   mLoadSvgParams = false;
-  on_mShapeTypeCmbBx_currentIndexChanged( background.type() ); // force update of shape background gui
+  mShapeTypeCmbBx_currentIndexChanged( background.type() ); // force update of shape background gui
 
   if ( background.paintEffect() )
     mBackgroundEffect.reset( background.paintEffect()->clone() );
@@ -1036,56 +1044,56 @@ void QgsTextFormatWidget::populateFontStyleComboBox()
   mFontStyleComboBox->setCurrentIndex( curIndx );
 }
 
-void QgsTextFormatWidget::on_mFontSizeSpinBox_valueChanged( double d )
+void QgsTextFormatWidget::mFontSizeSpinBox_valueChanged( double d )
 {
   mRefFont.setPointSizeF( d );
   updateFont( mRefFont );
 }
 
-void QgsTextFormatWidget::on_mFontCapitalsComboBox_currentIndexChanged( int index )
+void QgsTextFormatWidget::mFontCapitalsComboBox_currentIndexChanged( int index )
 {
   int capitalsindex = mFontCapitalsComboBox->itemData( index ).toUInt();
   mRefFont.setCapitalization( ( QFont::Capitalization ) capitalsindex );
   updateFont( mRefFont );
 }
 
-void QgsTextFormatWidget::on_mFontFamilyCmbBx_currentFontChanged( const QFont &f )
+void QgsTextFormatWidget::mFontFamilyCmbBx_currentFontChanged( const QFont &f )
 {
   mRefFont.setFamily( f.family() );
   updateFont( mRefFont );
 }
 
-void QgsTextFormatWidget::on_mFontStyleComboBox_currentIndexChanged( const QString &text )
+void QgsTextFormatWidget::mFontStyleComboBox_currentIndexChanged( const QString &text )
 {
   QgsFontUtils::updateFontViaStyle( mRefFont, text );
   updateFont( mRefFont );
 }
 
-void QgsTextFormatWidget::on_mFontUnderlineBtn_toggled( bool ckd )
+void QgsTextFormatWidget::mFontUnderlineBtn_toggled( bool ckd )
 {
   mRefFont.setUnderline( ckd );
   updateFont( mRefFont );
 }
 
-void QgsTextFormatWidget::on_mFontStrikethroughBtn_toggled( bool ckd )
+void QgsTextFormatWidget::mFontStrikethroughBtn_toggled( bool ckd )
 {
   mRefFont.setStrikeOut( ckd );
   updateFont( mRefFont );
 }
 
-void QgsTextFormatWidget::on_mFontWordSpacingSpinBox_valueChanged( double spacing )
+void QgsTextFormatWidget::mFontWordSpacingSpinBox_valueChanged( double spacing )
 {
   mRefFont.setWordSpacing( spacing );
   updateFont( mRefFont );
 }
 
-void QgsTextFormatWidget::on_mFontLetterSpacingSpinBox_valueChanged( double spacing )
+void QgsTextFormatWidget::mFontLetterSpacingSpinBox_valueChanged( double spacing )
 {
   mRefFont.setLetterSpacing( QFont::AbsoluteSpacing, spacing );
   updateFont( mRefFont );
 }
 
-void QgsTextFormatWidget::on_mFontSizeUnitWidget_changed()
+void QgsTextFormatWidget::mFontSizeUnitWidget_changed()
 {
   // disable pixel size limiting for labels defined in points
   if ( mFontSizeUnitWidget->unit() != QgsUnitTypes::RenderMapUnits )
@@ -1101,14 +1109,14 @@ void QgsTextFormatWidget::on_mFontSizeUnitWidget_changed()
   updateFont( mRefFont );
 }
 
-void QgsTextFormatWidget::on_mFontMinPixelSpinBox_valueChanged( int px )
+void QgsTextFormatWidget::mFontMinPixelSpinBox_valueChanged( int px )
 {
   // ensure max font pixel size for map unit labels can't be lower than min
   mFontMaxPixelSpinBox->setMinimum( px );
   mFontMaxPixelSpinBox->update();
 }
 
-void QgsTextFormatWidget::on_mFontMaxPixelSpinBox_valueChanged( int px )
+void QgsTextFormatWidget::mFontMaxPixelSpinBox_valueChanged( int px )
 {
   // ensure max font pixel size for map unit labels can't be lower than min
   if ( px < mFontMinPixelSpinBox->value() )
@@ -1120,12 +1128,12 @@ void QgsTextFormatWidget::on_mFontMaxPixelSpinBox_valueChanged( int px )
   mFontMaxPixelSpinBox->setMinimum( mFontMinPixelSpinBox->value() );
 }
 
-void QgsTextFormatWidget::on_mBufferUnitWidget_changed()
+void QgsTextFormatWidget::mBufferUnitWidget_changed()
 {
   updateFont( mRefFont );
 }
 
-void QgsTextFormatWidget::on_mCoordXDDBtn_activated( bool active )
+void QgsTextFormatWidget::mCoordXDDBtn_activated( bool active )
 {
   if ( !active ) //no data defined alignment without data defined position
   {
@@ -1137,7 +1145,7 @@ void QgsTextFormatWidget::on_mCoordXDDBtn_activated( bool active )
   }
 }
 
-void QgsTextFormatWidget::on_mCoordYDDBtn_activated( bool active )
+void QgsTextFormatWidget::mCoordYDDBtn_activated( bool active )
 {
   if ( !active ) //no data defined alignment without data defined position
   {
@@ -1149,7 +1157,7 @@ void QgsTextFormatWidget::on_mCoordYDDBtn_activated( bool active )
   }
 }
 
-void QgsTextFormatWidget::on_mShapeTypeCmbBx_currentIndexChanged( int index )
+void QgsTextFormatWidget::mShapeTypeCmbBx_currentIndexChanged( int index )
 {
   // shape background
   bool isRect = ( ( QgsTextBackgroundSettings::ShapeType )index == QgsTextBackgroundSettings::ShapeRectangle
@@ -1197,7 +1205,7 @@ void QgsTextFormatWidget::on_mShapeTypeCmbBx_currentIndexChanged( int index )
   mShapeStrokeUnitsDDBtn->setEnabled( !isSVG );
 }
 
-void QgsTextFormatWidget::on_mShapeSVGPathLineEdit_textChanged( const QString &text )
+void QgsTextFormatWidget::mShapeSVGPathLineEdit_textChanged( const QString &text )
 {
   updateSvgWidgets( text );
 }
@@ -1283,7 +1291,7 @@ void QgsTextFormatWidget::updateSvgWidgets( const QString &svgPath )
   mShapeSVGUnitsLabel->setEnabled( validSVG && strokeWidthParam );
 }
 
-void QgsTextFormatWidget::on_mShapeSVGSelectorBtn_clicked()
+void QgsTextFormatWidget::mShapeSVGSelectorBtn_clicked()
 {
   QgsSvgSelectorDialog svgDlg( this );
   svgDlg.setWindowTitle( tr( "Select SVG file" ) );
@@ -1299,7 +1307,7 @@ void QgsTextFormatWidget::on_mShapeSVGSelectorBtn_clicked()
   }
 }
 
-void QgsTextFormatWidget::on_mShapeSVGParamsBtn_clicked()
+void QgsTextFormatWidget::mShapeSVGParamsBtn_clicked()
 {
   QString svgPath = mShapeSVGPathLineEdit->text();
   mLoadSvgParams = true;
@@ -1307,30 +1315,30 @@ void QgsTextFormatWidget::on_mShapeSVGParamsBtn_clicked()
   mLoadSvgParams = false;
 }
 
-void QgsTextFormatWidget::on_mShapeRotationCmbBx_currentIndexChanged( int index )
+void QgsTextFormatWidget::mShapeRotationCmbBx_currentIndexChanged( int index )
 {
   mShapeRotationDblSpnBx->setEnabled( ( QgsTextBackgroundSettings::RotationType )index != QgsTextBackgroundSettings::RotationSync );
   mShapeRotationDDBtn->setEnabled( ( QgsTextBackgroundSettings::RotationType )index != QgsTextBackgroundSettings::RotationSync );
 }
 
-void QgsTextFormatWidget::on_mPreviewTextEdit_textChanged( const QString &text )
+void QgsTextFormatWidget::mPreviewTextEdit_textChanged( const QString &text )
 {
   lblFontPreview->setText( text );
   updatePreview();
 }
 
-void QgsTextFormatWidget::on_mPreviewTextBtn_clicked()
+void QgsTextFormatWidget::mPreviewTextBtn_clicked()
 {
   mPreviewTextEdit->setText( QStringLiteral( "Lorem Ipsum" ) );
   updatePreview();
 }
 
-void QgsTextFormatWidget::on_mPreviewBackgroundBtn_colorChanged( const QColor &color )
+void QgsTextFormatWidget::mPreviewBackgroundBtn_colorChanged( const QColor &color )
 {
   setPreviewBackground( color );
 }
 
-void QgsTextFormatWidget::on_mDirectSymbLeftToolBtn_clicked()
+void QgsTextFormatWidget::mDirectSymbLeftToolBtn_clicked()
 {
   bool gotChar = false;
   QChar dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ) );
@@ -1342,7 +1350,7 @@ void QgsTextFormatWidget::on_mDirectSymbLeftToolBtn_clicked()
     mDirectSymbLeftLineEdit->setText( QString( dirSymb ) );
 }
 
-void QgsTextFormatWidget::on_mDirectSymbRightToolBtn_clicked()
+void QgsTextFormatWidget::mDirectSymbRightToolBtn_clicked()
 {
   bool gotChar = false;
   QChar dirSymb = mCharDlg->selectCharacter( &gotChar, mRefFont, mFontDB.styleString( mRefFont ) );
@@ -1354,13 +1362,13 @@ void QgsTextFormatWidget::on_mDirectSymbRightToolBtn_clicked()
     mDirectSymbRightLineEdit->setText( QString( dirSymb ) );
 }
 
-void QgsTextFormatWidget::on_mChkNoObstacle_toggled( bool active )
+void QgsTextFormatWidget::mChkNoObstacle_toggled( bool active )
 {
   mPolygonObstacleTypeFrame->setEnabled( active );
   mObstaclePriorityFrame->setEnabled( active );
 }
 
-void QgsTextFormatWidget::on_chkLineOrientationDependent_toggled( bool active )
+void QgsTextFormatWidget::chkLineOrientationDependent_toggled( bool active )
 {
   if ( active )
   {
@@ -1375,7 +1383,7 @@ void QgsTextFormatWidget::on_chkLineOrientationDependent_toggled( bool active )
 }
 
 
-void QgsTextFormatWidget::on_mToolButtonConfigureSubstitutes_clicked()
+void QgsTextFormatWidget::mToolButtonConfigureSubstitutes_clicked()
 {
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )

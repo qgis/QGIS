@@ -29,10 +29,6 @@ QgsFeatureListModel::QgsFeatureListModel( QgsAttributeTableFilterModel *sourceMo
   setSourceModel( sourceModel );
 }
 
-QgsFeatureListModel::~QgsFeatureListModel()
-{
-}
-
 void QgsFeatureListModel::setSourceModel( QgsAttributeTableFilterModel *sourceModel )
 {
   QAbstractProxyModel::setSourceModel( sourceModel );
@@ -197,9 +193,9 @@ void QgsFeatureListModel::setInjectNull( bool injectNull )
 {
   if ( mInjectNull != injectNull )
   {
-    emit beginResetModel();
+    beginResetModel();
     mInjectNull = injectNull;
-    emit endResetModel();
+    endResetModel();
   }
 }
 

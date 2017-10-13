@@ -31,7 +31,7 @@ QgsMapToolZoom::QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut )
   : QgsMapTool( canvas )
   , mZoomOut( zoomOut )
   , mDragging( false )
-  , mRubberBand( nullptr )
+
 {
   mToolName = tr( "Zoom" );
   // set the cursor

@@ -259,7 +259,8 @@ QgsProviderRegistry::~QgsProviderRegistry()
 }
 
 
-/** Convenience function for finding any existing data providers that match "providerKey"
+/**
+ * Convenience function for finding any existing data providers that match "providerKey"
 
   Necessary because [] map operator will create a QgsProviderMetadata
   instance.  Also you cannot use the map [] operator in const members for that
@@ -316,7 +317,7 @@ QString QgsProviderRegistry::pluginList( bool asHTML ) const
     list += it->second->description();
 
     if ( asHTML )
-      list += "<br></li>";
+      list += QLatin1String( "<br></li>" );
     else
       list += '\n';
 

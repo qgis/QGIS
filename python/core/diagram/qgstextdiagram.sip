@@ -44,6 +44,7 @@ class QgsTextDiagram: QgsDiagram
 
     virtual QString diagramName() const;
 
+
 };
 
 /************************************************************************

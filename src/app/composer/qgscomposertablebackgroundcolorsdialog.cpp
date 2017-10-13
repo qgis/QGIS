@@ -28,6 +28,8 @@ QgsComposerTableBackgroundColorsDialog::QgsComposerTableBackgroundColorsDialog( 
   , mComposerTable( table )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsComposerTableBackgroundColorsDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsComposerTableBackgroundColorsDialog::buttonBox_rejected );
 
   mCheckBoxMap.insert( QgsComposerTableV2::OddColumns, mOddColumnsCheckBox );
   mCheckBoxMap.insert( QgsComposerTableV2::EvenColumns, mEvenColumnsCheckBox );
@@ -95,13 +97,13 @@ void QgsComposerTableBackgroundColorsDialog::apply()
   mComposerTable->update();
 }
 
-void QgsComposerTableBackgroundColorsDialog::on_buttonBox_accepted()
+void QgsComposerTableBackgroundColorsDialog::buttonBox_accepted()
 {
   apply();
   accept();
 }
 
-void QgsComposerTableBackgroundColorsDialog::on_buttonBox_rejected()
+void QgsComposerTableBackgroundColorsDialog::buttonBox_rejected()
 {
   reject();
 }

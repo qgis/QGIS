@@ -20,7 +20,6 @@
 #include "qgsproject.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemshape.h"
-#include "qgstestutils.h"
 
 class TestQgsLayout: public QObject
 {
@@ -40,6 +39,8 @@ class TestQgsLayout: public QObject
     void referenceMap();
     void bounds();
     void addItem();
+    void layoutItems();
+    void layoutItemByUuid();
 
   private:
     QString mReport;
@@ -48,7 +49,7 @@ class TestQgsLayout: public QObject
 
 void TestQgsLayout::initTestCase()
 {
-  mReport = "<h1>Layout Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Layout Tests</h1>\n" );
 }
 
 void TestQgsLayout::cleanupTestCase()
@@ -135,7 +136,7 @@ void TestQgsLayout::name()
 {
   QgsProject p;
   QgsLayout layout( &p );
-  QString layoutName = "test name";
+  QString layoutName = QStringLiteral( "test name" );
   layout.setName( layoutName );
   QCOMPARE( layout.name(), layoutName );
 }
@@ -190,19 +191,19 @@ void TestQgsLayout::scope()
 
   // no crash
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::layoutScope( nullptr ) );
-  l.setName( "test" );
+  l.setName( QStringLiteral( "test" ) );
   scope.reset( QgsExpressionContextUtils::layoutScope( &l ) );
   QCOMPARE( scope->variable( "layout_name" ).toString(), QStringLiteral( "test" ) );
 
-  QgsExpressionContextUtils::setLayoutVariable( &l, "new_var", 5 );
-  QgsExpressionContextUtils::setLayoutVariable( &l, "new_var2", 15 );
+  QgsExpressionContextUtils::setLayoutVariable( &l, QStringLiteral( "new_var" ), 5 );
+  QgsExpressionContextUtils::setLayoutVariable( &l, QStringLiteral( "new_var2" ), 15 );
   scope.reset( QgsExpressionContextUtils::layoutScope( &l ) );
   QCOMPARE( scope->variable( "layout_name" ).toString(), QStringLiteral( "test" ) );
   QCOMPARE( scope->variable( "new_var" ).toInt(), 5 );
   QCOMPARE( scope->variable( "new_var2" ).toInt(), 15 );
 
   QVariantMap newVars;
-  newVars.insert( "new_var3", 17 );
+  newVars.insert( QStringLiteral( "new_var3" ), 17 );
   QgsExpressionContextUtils::setLayoutVariables( &l, newVars );
   scope.reset( QgsExpressionContextUtils::layoutScope( &l ) );
   QCOMPARE( scope->variable( "layout_name" ).toString(), QStringLiteral( "test" ) );
@@ -210,7 +211,7 @@ void TestQgsLayout::scope()
   QVERIFY( !scope->hasVariable( "new_var2" ) );
   QCOMPARE( scope->variable( "new_var3" ).toInt(), 17 );
 
-  p.setTitle( "my title" );
+  p.setTitle( QStringLiteral( "my title" ) );
   QgsExpressionContext c = l.createExpressionContext();
   // should contain project variables
   QCOMPARE( c.variable( "project_title" ).toString(), QStringLiteral( "my title" ) );
@@ -298,10 +299,10 @@ void TestQgsLayout::bounds()
   QGSCOMPARENEAR( layoutBounds.top(), 0.00000, 0.01 );
 
   QRectF compositionBoundsNoPage = l.layoutBounds( true );
-  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 175.704581, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 125.704581, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 84.795419, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 24.795419, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 174.497475, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 124.497475, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 85.502525, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 25.502525, 0.01 );
 
 #if 0
   QRectF page1Bounds = composition->pageItemBounds( 0, true );
@@ -331,34 +332,91 @@ void TestQgsLayout::addItem()
   l.pageCollection()->deletePage( 0 );
 
   QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  shape1->setFrameEnabled( false );
   shape1->attemptResize( QgsLayoutSize( 140, 70 ) );
   shape1->attemptMove( QgsLayoutPoint( 90, 50 ) );
 
   l.addLayoutItem( shape1 );
   QVERIFY( l.items().contains( shape1 ) );
   // bounds should be updated to include item
-  QGSCOMPARENEAR( l.sceneRect().left(), 89.5, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().top(), 49.5, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().width(), 141, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().height(), 71, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().left(), 90, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().top(), 50, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().width(), 140, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().height(), 70, 0.001 );
 
   QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
   shape2->attemptResize( QgsLayoutSize( 240, 170 ) );
   shape2->attemptMove( QgsLayoutPoint( 30, 20 ) );
+  shape2->setFrameEnabled( false );
 
   // don't use addLayoutItem - we want to manually trigger a bounds update
   l.addItem( shape2 );
-  QGSCOMPARENEAR( l.sceneRect().left(), 89.5, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().top(), 49.5, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().width(), 141, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().height(), 71, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().left(), 90, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().top(), 50, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().width(), 140, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().height(), 70, 0.001 );
 
   l.updateBounds();
   // bounds should be updated to include item
-  QGSCOMPARENEAR( l.sceneRect().left(), 29.5, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().top(), 19.5, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().width(), 241, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().height(), 171, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().left(), 30, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().top(), 20, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().width(), 240, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().height(), 170, 0.001 );
+}
+
+void TestQgsLayout::layoutItems()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  l.pageCollection()->deletePage( 0 );
+
+  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( shape1 );
+
+  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( shape2 );
+
+  QgsLayoutItemMap *map1 = new QgsLayoutItemMap( &l );
+  l.addLayoutItem( map1 );
+
+  QList< QgsLayoutItem * > items;
+  l.layoutItems( items );
+  QCOMPARE( items.count(), 3 );
+  QVERIFY( items.contains( shape1 ) );
+  QVERIFY( items.contains( shape2 ) );
+  QVERIFY( items.contains( map1 ) );
+
+  QList< QgsLayoutItemRectangularShape * > shapes;
+  l.layoutItems( shapes );
+  QCOMPARE( shapes.count(), 2 );
+  QVERIFY( shapes.contains( shape1 ) );
+  QVERIFY( shapes.contains( shape2 ) );
+
+  QList< QgsLayoutItemMap * > maps;
+  l.layoutItems( maps );
+  QCOMPARE( maps.count(), 1 );
+  QVERIFY( maps.contains( map1 ) );
+}
+
+void TestQgsLayout::layoutItemByUuid()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  l.pageCollection()->deletePage( 0 );
+
+  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( shape1 );
+
+  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  l.addLayoutItem( shape2 );
+
+  QgsLayoutItemMap *map1 = new QgsLayoutItemMap( &l );
+  l.addLayoutItem( map1 );
+
+  QVERIFY( !l.itemByUuid( QStringLiteral( "xxx" ) ) );
+  QCOMPARE( l.itemByUuid( shape1->uuid() ), shape1 );
+  QCOMPARE( l.itemByUuid( shape2->uuid() ), shape2 );
+  QCOMPARE( l.itemByUuid( map1->uuid() ), map1 );
 }
 
 

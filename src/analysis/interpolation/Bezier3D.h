@@ -21,8 +21,13 @@
 #include "qgslogger.h"
 #include "qgis_analysis.h"
 
-/** \ingroup analysis
- * Class Bezier3D represents a bezier curve, represented by control points. Parameter t is running from 0 to 1. The class is capable to calculate the curve point and the first two derivatives belonging to t.*/
+#define SIP_NO_FILE
+
+/**
+ * \ingroup analysis
+ * Class Bezier3D represents a bezier curve, represented by control points. Parameter t is running from 0 to 1. The class is capable to calculate the curve point and the first two derivatives belonging to it.
+ * \note Not available in Python bindings
+*/
 class ANALYSIS_EXPORT Bezier3D: public ParametricLine
 {
   protected:

@@ -39,10 +39,6 @@ QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas *canvas )
   mCursor = QCursor( Qt::ArrowCursor );
 }
 
-QgsMapToolAnnotation::~QgsMapToolAnnotation()
-{
-}
-
 QDialog *QgsMapToolAnnotation::createItemEditor( QgsMapCanvasAnnotationItem *item )
 {
   if ( !item || !item->annotation() )
@@ -94,12 +90,12 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  mLastMousePosition = e->posF();
+  mLastMousePosition = e->pos();
 
   QgsMapCanvasAnnotationItem *item = selectedItem();
   if ( item )
   {
-    mCurrentMoveAction = item->moveActionForPosition( e->posF() );
+    mCurrentMoveAction = item->moveActionForPosition( e->pos() );
     if ( mCurrentMoveAction != QgsMapCanvasAnnotationItem::NoAction )
     {
       return;
@@ -110,7 +106,7 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent *e )
   {
     //select a new item if there is one at this position
     mCanvas->scene()->clearSelection();
-    QgsMapCanvasAnnotationItem *existingItem = itemAtPos( e->posF() );
+    QgsMapCanvasAnnotationItem *existingItem = itemAtPos( e->pos() );
     if ( existingItem )
     {
       existingItem->setSelected( true );
@@ -124,8 +120,8 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent *e )
         QgsPointXY mapPos = transformCanvasToAnnotation( toMapCoordinates( e->pos() ), annotation );
         annotation->setMapPosition( mapPos );
         annotation->setMapPositionCrs( mCanvas->mapSettings().destinationCrs() );
-        annotation->setRelativePosition( QPointF( e->posF().x() / mCanvas->width(),
-                                         e->posF().y() / mCanvas->height() ) );
+        annotation->setRelativePosition( QPointF( e->pos().x() / mCanvas->width(),
+                                         e->pos().y() / mCanvas->height() ) );
         annotation->setFrameSize( QSizeF( 200, 100 ) );
 
         QgsProject::instance()->annotationManager()->addAnnotation( annotation );
@@ -184,17 +180,17 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
     {
       QgsPointXY mapPos = transformCanvasToAnnotation( e->snapPoint(), annotation );
       annotation->setMapPosition( mapPos );
-      annotation->setRelativePosition( QPointF( e->posF().x() / mCanvas->width(),
-                                       e->posF().y() / mCanvas->height() ) );
+      annotation->setRelativePosition( QPointF( e->pos().x() / mCanvas->width(),
+                                       e->pos().y() / mCanvas->height() ) );
       item->update();
       QgsProject::instance()->setDirty( true );
     }
     else if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::MoveFramePosition )
     {
-      QPointF newCanvasPos = item->pos() + ( e->posF() - mLastMousePosition );
+      QPointF newCanvasPos = item->pos() + ( e->pos() - mLastMousePosition );
       if ( annotation->hasFixedMapPosition() )
       {
-        annotation->setFrameOffsetFromReferencePoint( annotation->frameOffsetFromReferencePoint() + ( e->posF() - mLastMousePosition ) );
+        annotation->setFrameOffsetFromReferencePoint( annotation->frameOffsetFromReferencePoint() + ( e->pos() - mLastMousePosition ) );
         annotation->setRelativePosition( QPointF( newCanvasPos.x() / mCanvas->width(),
                                          newCanvasPos.y() / mCanvas->height() ) );
       }
@@ -223,27 +219,27 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightDown ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightUp )
       {
-        xmax += e->posF().x() - mLastMousePosition.x();
+        xmax += e->pos().x() - mLastMousePosition.x();
       }
       if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeft ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftDown ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftUp )
       {
-        xmin += e->posF().x() - mLastMousePosition.x();
-        relPosX = ( relPosX * mCanvas->width() + e->posF().x() - mLastMousePosition.x() ) / ( double )mCanvas->width();
+        xmin += e->pos().x() - mLastMousePosition.x();
+        relPosX = ( relPosX * mCanvas->width() + e->pos().x() - mLastMousePosition.x() ) / ( double )mCanvas->width();
       }
       if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameUp ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftUp ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightUp )
       {
-        ymin += e->posF().y() - mLastMousePosition.y();
-        relPosY = ( relPosY * mCanvas->height() + e->posF().y() - mLastMousePosition.y() ) / ( double )mCanvas->height();
+        ymin += e->pos().y() - mLastMousePosition.y();
+        relPosY = ( relPosY * mCanvas->height() + e->pos().y() - mLastMousePosition.y() ) / ( double )mCanvas->height();
       }
       if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameDown ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameLeftDown ||
            mCurrentMoveAction == QgsMapCanvasAnnotationItem::ResizeFrameRightDown )
       {
-        ymax += e->posF().y() - mLastMousePosition.y();
+        ymax += e->pos().y() - mLastMousePosition.y();
       }
 
       //switch min / max if necessary
@@ -270,18 +266,18 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
   }
   else if ( item )
   {
-    QgsMapCanvasAnnotationItem::MouseMoveAction moveAction = item->moveActionForPosition( e->posF() );
+    QgsMapCanvasAnnotationItem::MouseMoveAction moveAction = item->moveActionForPosition( e->pos() );
     if ( mCanvas )
     {
       mCanvas->setCursor( QCursor( item->cursorShapeForAction( moveAction ) ) );
     }
   }
-  mLastMousePosition = e->posF();
+  mLastMousePosition = e->pos();
 }
 
 void QgsMapToolAnnotation::canvasDoubleClickEvent( QgsMapMouseEvent *e )
 {
-  QgsMapCanvasAnnotationItem *item = itemAtPos( e->posF() );
+  QgsMapCanvasAnnotationItem *item = itemAtPos( e->pos() );
   if ( !item )
   {
     return;

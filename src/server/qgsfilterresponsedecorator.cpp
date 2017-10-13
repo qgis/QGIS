@@ -26,11 +26,6 @@ QgsFilterResponseDecorator::QgsFilterResponseDecorator( QgsServerFiltersMap filt
 {
 }
 
-QgsFilterResponseDecorator::~QgsFilterResponseDecorator()
-{
-
-}
-
 void QgsFilterResponseDecorator::start()
 {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS

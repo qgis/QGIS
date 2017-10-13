@@ -33,7 +33,6 @@ extern "C"
 
 QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const char *name )
   : QFrame( parent )
-  , mTerminal( 0 )
   , mTools( tools )
   , mTabWidget( parent )
 {
@@ -74,10 +73,6 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const ch
   mTerminal->setStyleSheet( QStringLiteral( "font-family: Monospace; font-size: 10pt;" ) );
 }
 
-QgsGrassShell::~QgsGrassShell()
-{
-}
-
 void QgsGrassShell::closeShell()
 {
   int index = mTabWidget->indexOf( this );
@@ -114,7 +109,7 @@ void QgsGrassShell::initTerminal( QTermWidget *terminal )
   env << QStringLiteral( "TERM=vt100" );
   env << QStringLiteral( "GISRC_MODE_MEMORY" );
   // TODO: we should check if these environment variable were set by user before QGIS was started
-  env << "GRASS_HTML_BROWSER=" + QgsGrassUtils::htmlBrowserPath() ;
+  env << "GRASS_HTML_BROWSER=" + QgsGrassUtils::htmlBrowserPath();
   env << QStringLiteral( "GRASS_WISH=wish" );
   env << QStringLiteral( "GRASS_TCLSH=tclsh" );
   env << QStringLiteral( "GRASS_PYTHON=python" );

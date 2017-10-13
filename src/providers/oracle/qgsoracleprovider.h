@@ -89,7 +89,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
     virtual QgsCoordinateReferenceSystem crs() const override;
     QgsWkbTypes::Type wkbType() const override;
 
-    /** Return the number of layers for the current data source
+    /**
+     * Return the number of layers for the current data source
      * \note Should this be subLayerCount() instead?
      */
     size_t layerCount() const;
@@ -115,14 +116,16 @@ class QgsOracleProvider : public QgsVectorDataProvider
     virtual QgsRectangle extent() const override;
     virtual void updateExtents() override;
 
-    /** Determine the fields making up the primary key
+    /**
+     * Determine the fields making up the primary key
      */
     bool determinePrimaryKey();
 
     QgsFields fields() const override;
     QString dataComment() const override;
 
-    /** Reset the layer
+    /**
+     * Reset the layer
      */
     void rewind();
 
@@ -178,7 +181,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     QgsField field( int index ) const;
 
-    /** Load the field list
+    /**
+     * Load the field list
      */
     bool loadFields();
 
@@ -330,7 +334,8 @@ class QgsOracleUtils
 };
 
 
-/** Data shared between provider class and its feature sources. Ideally there should
+/**
+ * Data shared between provider class and its feature sources. Ideally there should
  *  be as few members as possible because there could be simultaneous reads/writes
  *  from different threads and therefore locking has to be involved. */
 class QgsOracleSharedData

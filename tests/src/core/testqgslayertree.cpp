@@ -31,7 +31,7 @@ class TestQgsLayerTree : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsLayerTree() : mRoot( 0 ) {}
+    TestQgsLayerTree() = default;
   private slots:
     void initTestCase();
     void cleanupTestCase();
@@ -93,7 +93,7 @@ void TestQgsLayerTree::testGroupNameChanged()
   QgsLayerTreeNode *secondGroup = mRoot->children()[1];
 
   QSignalSpy spy( mRoot, SIGNAL( nameChanged( QgsLayerTreeNode *, QString ) ) );
-  secondGroup->setName( "grp2+" );
+  secondGroup->setName( QStringLiteral( "grp2+" ) );
 
   QCOMPARE( secondGroup->name(), QString( "grp2+" ) );
 
@@ -102,7 +102,7 @@ void TestQgsLayerTree::testGroupNameChanged()
   QCOMPARE( arguments.at( 0 ).value<QgsLayerTreeNode *>(), secondGroup );
   QCOMPARE( arguments.at( 1 ).toString(), QString( "grp2+" ) );
 
-  secondGroup->setName( "grp2" );
+  secondGroup->setName( QStringLiteral( "grp2" ) );
   QCOMPARE( secondGroup->name(), QString( "grp2" ) );
 }
 
@@ -117,7 +117,7 @@ void TestQgsLayerTree::testLayerNameChanged()
   QSignalSpy spy( mRoot, SIGNAL( nameChanged( QgsLayerTreeNode *, QString ) ) );
 
   QCOMPARE( n->name(), QString( "vl" ) );
-  n->setName( "changed 1" );
+  n->setName( QStringLiteral( "changed 1" ) );
 
   QCOMPARE( n->name(), QString( "changed 1" ) );
   QCOMPARE( spy.count(), 1 );
@@ -130,7 +130,7 @@ void TestQgsLayerTree::testLayerNameChanged()
   n->resolveReferences( &project );
 
   // set name via map layer
-  vl->setName( "changed 2" );
+  vl->setName( QStringLiteral( "changed 2" ) );
   QCOMPARE( n->name(), QString( "changed 2" ) );
   QCOMPARE( spy.count(), 1 );
   arguments = spy.takeFirst();
@@ -138,7 +138,7 @@ void TestQgsLayerTree::testLayerNameChanged()
   QCOMPARE( arguments.at( 1 ).toString(), QString( "changed 2" ) );
 
   // set name via layer tree
-  n->setName( "changed 3" );
+  n->setName( QStringLiteral( "changed 3" ) );
   QCOMPARE( n->name(), QString( "changed 3" ) );
   QCOMPARE( spy.count(), 1 );
   arguments = spy.takeFirst();
@@ -426,13 +426,13 @@ void TestQgsLayerTree::testResolveReferences()
   QVERIFY( vl->isValid() );
 
   QString n1id = vl->id();
-  QString n2id = "XYZ";
+  QString n2id = QStringLiteral( "XYZ" );
 
   QgsMapLayer *nullLayer = nullptr; // QCOMPARE does not like nullptr directly
 
   QgsLayerTreeGroup *root = new QgsLayerTreeGroup();
   QgsLayerTreeLayer *n1 = new QgsLayerTreeLayer( n1id, vl->name() );
-  QgsLayerTreeLayer *n2 = new QgsLayerTreeLayer( n2id, "invalid layer" );
+  QgsLayerTreeLayer *n2 = new QgsLayerTreeLayer( n2id, QStringLiteral( "invalid layer" ) );
   root->addChildNode( n1 );
   root->addChildNode( n2 );
 

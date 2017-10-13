@@ -27,9 +27,11 @@
 QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mItem( item )
-  , mEmbeddedWidget( nullptr )
+
 {
   setupUi( this );
+  connect( mBrowseToolButton, &QToolButton::clicked, this, &QgsHtmlAnnotationDialog::mBrowseToolButton_clicked );
+  connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsHtmlAnnotationDialog::mButtonBox_clicked );
   setWindowTitle( tr( "HTML Annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
   mStackedWidget->addWidget( mEmbeddedWidget );
@@ -45,11 +47,6 @@ QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *it
   QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
   QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsHtmlAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
-}
-
-QgsHtmlAnnotationDialog::~QgsHtmlAnnotationDialog()
-{
-
 }
 
 void QgsHtmlAnnotationDialog::applySettingsToItem()
@@ -68,7 +65,7 @@ void QgsHtmlAnnotationDialog::applySettingsToItem()
   }
 }
 
-void QgsHtmlAnnotationDialog::on_mBrowseToolButton_clicked()
+void QgsHtmlAnnotationDialog::mBrowseToolButton_clicked()
 {
   QString directory;
   QFileInfo fi( mFileLineEdit->text() );
@@ -91,7 +88,7 @@ void QgsHtmlAnnotationDialog::deleteItem()
   mItem = nullptr;
 }
 
-void QgsHtmlAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
+void QgsHtmlAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
   {

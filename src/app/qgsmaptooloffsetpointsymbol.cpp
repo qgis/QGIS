@@ -31,7 +31,6 @@
 QgsMapToolOffsetPointSymbol::QgsMapToolOffsetPointSymbol( QgsMapCanvas *canvas )
   : QgsMapToolPointSymbol( canvas )
   , mOffsetting( false )
-  , mOffsetItem( nullptr )
   , mSymbolRotation( 0.0 )
 {}
 
@@ -229,15 +228,15 @@ QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPointXY &startPoi
   switch ( unit )
   {
     case QgsUnitTypes::RenderMillimeters:
-      factor = 25.4 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel() ;
+      factor = 25.4 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel();
       break;
 
     case QgsUnitTypes::RenderPoints:
-      factor = 2.83464567 * 25.4 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel() ;
+      factor = 2.83464567 * 25.4 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel();
       break;
 
     case QgsUnitTypes::RenderInches:
-      factor = 1.0 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel() ;
+      factor = 1.0 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel();
       break;
 
     case QgsUnitTypes::RenderPixels:

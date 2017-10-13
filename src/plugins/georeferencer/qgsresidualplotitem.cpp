@@ -20,12 +20,9 @@
 #include <cfloat>
 #include <cmath>
 
-QgsResidualPlotItem::QgsResidualPlotItem( QgsComposition *c ): QgsComposerItem( c ), mConvertScaleToMapUnits( false )
-{
-
-}
-
-QgsResidualPlotItem::~QgsResidualPlotItem()
+QgsResidualPlotItem::QgsResidualPlotItem( QgsComposition *c )
+  : QgsComposerItem( c )
+  , mConvertScaleToMapUnits( false )
 {
 
 }

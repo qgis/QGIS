@@ -73,7 +73,7 @@ QgsExpressionContext QgsStatisticalSummaryDockWidget::createExpressionContext() 
 
 QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
-  , mLayer( nullptr )
+
 {
   setupUi( this );
 
@@ -99,11 +99,6 @@ QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *paren
   mFieldType = DataType::Numeric;
   mPreviousFieldType = DataType::Numeric;
   refreshStatisticsMenu();
-}
-
-QgsStatisticalSummaryDockWidget::~QgsStatisticalSummaryDockWidget()
-{
-
 }
 
 void QgsStatisticalSummaryDockWidget::refreshStatistics()
@@ -241,7 +236,7 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics( bool selectedOnly 
 
 void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer *layer )
 {
-  QgsVectorLayer *newLayer = dynamic_cast< QgsVectorLayer * >( layer );
+  QgsVectorLayer *newLayer = qobject_cast< QgsVectorLayer * >( layer );
   if ( mLayer && mLayer != newLayer )
   {
     disconnect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsStatisticalSummaryDockWidget::layerSelectionChanged );

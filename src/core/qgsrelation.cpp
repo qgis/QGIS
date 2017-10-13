@@ -21,13 +21,6 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
-QgsRelation::QgsRelation()
-  : mReferencingLayer( nullptr )
-  , mReferencedLayer( nullptr )
-  , mValid( false )
-{
-}
-
 QgsRelation QgsRelation::createFromXml( const QDomNode &node )
 {
   QDomElement elem = node.toElement();

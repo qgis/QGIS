@@ -19,7 +19,7 @@
 
 #include <QPainter>
 
-QgsTextDiagram::QgsTextDiagram(): mOrientation( Vertical ), mShape( Circle )
+QgsTextDiagram::QgsTextDiagram()
 {
   mPen.setWidthF( 2.0 );
   mPen.setColor( QColor( 0, 0, 0 ) );
@@ -64,6 +64,11 @@ double QgsTextDiagram::legendSize( double value, const QgsDiagramSettings &s, co
 {
   QSizeF size = sizeForValue( value, s, is );
   return std::max( size.width(), size.height() );
+}
+
+QString QgsTextDiagram::diagramName() const
+{
+  return DIAGRAM_NAME_TEXT;
 }
 
 QSizeF QgsTextDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )

@@ -32,7 +32,8 @@
 #define CONN_POOL_EXPIRATION_TIME           60    // in seconds
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Template that stores data related to one server.
  *
  * It is assumed that following functions exist:
@@ -68,7 +69,6 @@ class QgsConnectionPoolGroup
     QgsConnectionPoolGroup( const QString &ci )
       : connInfo( ci )
       , sem( CONN_POOL_MAX_CONCURRENT_CONNS )
-      , expirationTimer( nullptr )
     {
     }
 
@@ -224,7 +224,8 @@ class QgsConnectionPoolGroup
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Template class responsible for keeping a pool of open connections.
  * This is desired to avoid the overhead of creation of new connection every time.
  *
@@ -257,8 +258,10 @@ class QgsConnectionPool
       mMutex.unlock();
     }
 
-    //! Try to acquire a connection: if no connections are available, the thread will get blocked.
-    //! \returns initialized connection or null on error
+    /**
+     * Try to acquire a connection: if no connections are available, the thread will get blocked.
+     * \returns initialized connection or null on error
+     */
     T acquireConnection( const QString &connInfo )
     {
       mMutex.lock();
@@ -285,11 +288,13 @@ class QgsConnectionPool
       group->release( conn );
     }
 
-    //! Invalidates all connections to the specified resource.
-    //! The internal state of certain handles (for instance OGR) are altered
-    //! when a dataset is modified. Consquently, all open handles need to be
-    //! invalidated when such datasets are changed to ensure the handles are
-    //! refreshed. See the OGR provider for an example where this is needed.
+    /**
+     * Invalidates all connections to the specified resource.
+     * The internal state of certain handles (for instance OGR) are altered
+     * when a dataset is modified. Consquently, all open handles need to be
+     * invalidated when such datasets are changed to ensure the handles are
+     * refreshed. See the OGR provider for an example where this is needed.
+     */
     void invalidateConnections( const QString &connInfo )
     {
       mMutex.lock();

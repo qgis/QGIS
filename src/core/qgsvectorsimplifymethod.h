@@ -19,7 +19,8 @@
 #include "qgis_core.h"
 #include <QFlags>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class contains information how to simplify geometries fetched from a vector layer
  * \since QGIS 2.2
  */
@@ -81,15 +82,15 @@ class CORE_EXPORT QgsVectorSimplifyMethod
     //! Simplification hints for fast rendering of features of the vector layer managed
     SimplifyHints mSimplifyHints;
     //! Simplification algorithm
-    SimplifyAlgorithm mSimplifyAlgorithm;
+    SimplifyAlgorithm mSimplifyAlgorithm = QgsVectorSimplifyMethod::Distance;
     //! Simplification tolerance, it represents the maximum distance between two coordinates which can be considered equal
-    double mTolerance;
+    double mTolerance = 1;
     //! Simplification threshold
     float mThreshold;
     //! Simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
-    bool mLocalOptimization;
+    bool mLocalOptimization = true;
     //! Maximum scale at which the layer should be simplified (Maximum scale at which generalisation should be carried out)
-    float mMaximumScale;
+    float mMaximumScale = 1;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorSimplifyMethod::SimplifyHints )

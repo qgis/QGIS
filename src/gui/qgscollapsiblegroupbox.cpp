@@ -49,7 +49,6 @@ void QgsCollapsibleGroupBoxBasic::init()
   mShown = false;
   mParentScrollArea = nullptr;
   mSyncParent = nullptr;
-  mSyncGroup = QLatin1String( "" );
   mAltDown = false;
   mShiftDown = false;
   mTitleClicked = false;
@@ -92,16 +91,16 @@ void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent *event )
 
   // find parent QScrollArea - this might not work in complex layouts - should we look deeper?
   if ( parent() && parent()->parent() )
-    mParentScrollArea = dynamic_cast<QScrollArea *>( parent()->parent()->parent() );
+    mParentScrollArea = qobject_cast<QScrollArea *>( parent()->parent()->parent() );
   else
     mParentScrollArea = nullptr;
   if ( mParentScrollArea )
   {
-    QgsDebugMsg( "found a QScrollArea parent: " + mParentScrollArea->objectName() );
+    QgsDebugMsgLevel( "found a QScrollArea parent: " + mParentScrollArea->objectName(), 5 );
   }
   else
   {
-    QgsDebugMsg( "did not find a QScrollArea parent" );
+    QgsDebugMsgLevel( "did not find a QScrollArea parent", 5 );
   }
 
   updateStyle();
@@ -314,7 +313,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
   int offsetLeft = 0;   // offset for oxygen theme
   int offsetStyle = QApplication::style()->objectName().contains( QLatin1String( "macintosh" ) ) ? ( usingQgsStyle ? 1 : 8 ) : 0;
   int topBuffer = ( usingQgsStyle ? 3 : 1 ) + offsetStyle; // space between top of title or triangle and widget above
-  int offsetTop =  topBuffer;
+  int offsetTop = topBuffer;
   int offsetTopTri = topBuffer; // offset for triangle
 
   if ( mCollapseButton->height() < rectTitle.height() ) // triangle's height > title text's, offset triangle
@@ -356,8 +355,8 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
     }
   }
 
-  QgsDebugMsg( QString( "groupbox: %1 style: %2 offset: left=%3 top=%4 top2=%5" ).arg(
-                 objectName(), QApplication::style()->objectName() ).arg( offsetLeft ).arg( offsetTop ).arg( offsetTopTri ) );
+  QgsDebugMsgLevel( QString( "groupbox: %1 style: %2 offset: left=%3 top=%4 top2=%5" ).arg(
+                      objectName(), QApplication::style()->objectName() ).arg( offsetLeft ).arg( offsetTop ).arg( offsetTopTri ), 5 );
 
   // customize style sheet for collapse/expand button and force left-aligned title
   QString ss;
@@ -516,7 +515,6 @@ void QgsCollapsibleGroupBox::init()
   // NOTE: only turn on mSaveCheckedState for groupboxes NOT used
   // in multiple places or used as options for different parent objects
   mSaveCheckedState = false;
-  mSettingGroup = QLatin1String( "" ); // if not set, use window object name
 
   connect( this, &QObject::objectNameChanged, this, &QgsCollapsibleGroupBox::loadState );
 }

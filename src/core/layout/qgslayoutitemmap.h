@@ -38,8 +38,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * Constructor for QgsLayoutItemMap, with the specified parent \a layout.
      */
     explicit QgsLayoutItemMap( QgsLayout *layout );
-    int type() const override { return QgsLayoutItemRegistry::LayoutMap; }
-    QString stringType() const override { return QStringLiteral( "ItemMap" ); }
+    int type() const override;
+    QString stringType() const override;
 
   protected:
 

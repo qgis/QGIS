@@ -25,16 +25,9 @@
 #include <QPainter>
 #include <cmath>
 
-#ifndef M_SQRT2
-#define M_SQRT2 1.41421356237309504880
-#endif
-
 QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString &labelAttributeName )
   : QgsPointDistanceRenderer( QStringLiteral( "pointDisplacement" ), labelAttributeName )
-  , mPlacement( Ring )
-  , mCircleWidth( 0.4 )
   , mCircleColor( QColor( 125, 125, 125 ) )
-  , mCircleRadiusAddition( 0 )
 {
   mCenterSymbol.reset( new QgsMarkerSymbol() );
 }
@@ -175,7 +168,7 @@ QgsMarkerSymbol *QgsPointDisplacementRenderer::centerSymbol()
 QDomElement QgsPointDisplacementRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElement = doc.createElement( RENDERER_TAG_NAME );
-  rendererElement.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
+  rendererElement.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
   rendererElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "pointDisplacement" ) );
   rendererElement.setAttribute( QStringLiteral( "labelAttributeName" ), mLabelAttributeName );
   rendererElement.appendChild( QgsFontUtils::toXmlElement( mLabelFont, doc, QStringLiteral( "labelFontProperties" ) ) );
@@ -209,7 +202,7 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument &doc, const QgsRead
     mOrderBy.save( orderBy );
     rendererElement.appendChild( orderBy );
   }
-  rendererElement.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElement.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   return rendererElement;
 }

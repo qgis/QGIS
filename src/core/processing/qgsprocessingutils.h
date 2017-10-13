@@ -116,6 +116,11 @@ class CORE_EXPORT QgsProcessingUtils
     static QString normalizeLayerSource( const QString &source );
 
     /**
+     * Converts a string to a Python string literal. E.g. by replacing ' with \'.
+     */
+    static QString stringToPythonLiteral( const QString &string );
+
+    /**
      * Creates a feature sink ready for adding features. The \a destination specifies a destination
      * URI for the resultant layer. It may be updated in place to reflect the actual destination
      * for the layer.
@@ -223,6 +228,18 @@ class CORE_EXPORT QgsProcessingUtils
         const QString &preferredFormat,
         QgsProcessingContext &context,
         QgsProcessingFeedback *feedback );
+
+    /**
+     * Combines two field lists, avoiding duplicate field names (in a case-insensitive manner).
+     *
+     * Duplicate field names will be altered to "name_2", "name_3", etc, finding the first
+     * non-duplicate name.
+     *
+     * \note Some output file formats (e.g. shapefiles) have restrictions on the maximum
+     * length of field names, so be aware that the results of calling this method may
+     * be truncated when saving to these formats.
+     */
+    static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB );
 
   private:
 

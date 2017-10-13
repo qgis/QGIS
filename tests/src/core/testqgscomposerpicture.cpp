@@ -73,12 +73,7 @@ class TestQgsComposerPicture : public QObject
     QString mSvgParamsImage;
 };
 
-TestQgsComposerPicture::TestQgsComposerPicture()
-  : mComposition( 0 )
-  , mComposerPicture( 0 )
-{
-
-}
+TestQgsComposerPicture::TestQgsComposerPicture() = default;
 
 void TestQgsComposerPicture::initTestCase()
 {

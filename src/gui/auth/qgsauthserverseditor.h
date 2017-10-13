@@ -26,7 +26,8 @@
 
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for viewing and editing servers in authentication database
  */
 class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServersEditor
@@ -54,13 +55,13 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
 
     void handleDoubleClick( QTreeWidgetItem *item, int col );
 
-    void on_btnAddServer_clicked();
+    void btnAddServer_clicked();
 
-    void on_btnRemoveServer_clicked();
+    void btnRemoveServer_clicked();
 
-    void on_btnEditServer_clicked();
+    void btnEditServer_clicked();
 
-    void on_btnGroupByOrg_toggled( bool checked );
+    void btnGroupByOrg_toggled( bool checked );
 
     //! Relay messages to widget's messagebar
     void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
@@ -94,7 +95,7 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
     QgsMessageBar *messageBar();
     int messageTimeout();
 
-    bool mDisabled;
+    bool mDisabled = false;
     QVBoxLayout *mAuthNotifyLayout = nullptr;
     QLabel *mAuthNotify = nullptr;
 

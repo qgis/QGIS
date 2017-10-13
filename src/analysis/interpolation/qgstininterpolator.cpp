@@ -28,15 +28,11 @@
 #include "qgsvectorlayer.h"
 #include "qgswkbptr.h"
 #include "qgsfeedback.h"
-#include <QProgressDialog>
 
 QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData> &inputData, TINInterpolation interpolation, QgsFeedback *feedback )
   : QgsInterpolator( inputData )
-  , mTriangulation( nullptr )
-  , mTriangleInterpolator( nullptr )
   , mIsInitialized( false )
   , mFeedback( feedback )
-  , mExportTriangulationToFile( false )
   , mInterpolation( interpolation )
 {
 }
@@ -66,6 +62,16 @@ int QgsTINInterpolator::interpolatePoint( double x, double y, double &result )
   }
   result = r.z();
   return 0;
+}
+
+QgsFields QgsTINInterpolator::triangulationFields()
+{
+  return Triangulation::triangulationFields();
+}
+
+void QgsTINInterpolator::setTriangulationSink( QgsFeatureSink *sink )
+{
+  mTriangulationSink = sink;
 }
 
 void QgsTINInterpolator::initialize()
@@ -117,7 +123,8 @@ void QgsTINInterpolator::initialize()
           {
             break;
           }
-          mFeedback->setProgress( 100.0 * static_cast< double >( nProcessedFeatures ) / nFeatures );
+          if ( nFeatures > 0 )
+            mFeedback->setProgress( 100.0 * static_cast< double >( nProcessedFeatures ) / nFeatures );
         }
         insertData( &f, layer.zCoordInterpolation, layer.interpolationAttribute, layer.mInputType );
         ++nProcessedFeatures;
@@ -144,9 +151,9 @@ void QgsTINInterpolator::initialize()
   mIsInitialized = true;
 
   //debug
-  if ( mExportTriangulationToFile )
+  if ( mTriangulationSink )
   {
-    dualEdgeTriangulation->saveAsShapefile( mTriangulationFilePath );
+    dualEdgeTriangulation->saveTriangulation( mTriangulationSink, mFeedback );
   }
 }
 

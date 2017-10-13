@@ -24,10 +24,6 @@
 
 QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent )
   : QAbstractItemModel( parent )
-  , mLayersChecked( QMap<QString, Qt::CheckState>() )
-  , mItemCheckable( false )
-  , mAllowEmpty( false )
-  , mShowCrs( false )
 {
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   addLayers( layers );
@@ -35,10 +31,6 @@ QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject 
 
 QgsMapLayerModel::QgsMapLayerModel( QObject *parent )
   : QAbstractItemModel( parent )
-  , mLayersChecked( QMap<QString, Qt::CheckState>() )
-  , mItemCheckable( false )
-  , mAllowEmpty( false )
-  , mShowCrs( false )
 {
   connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
@@ -52,9 +44,10 @@ void QgsMapLayerModel::setItemsCheckable( bool checkable )
 
 void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
 {
-  Q_FOREACH ( const QString &key, mLayersChecked.keys() )
+  QMap<QString, Qt::CheckState>::iterator i = mLayersChecked.begin();
+  for ( ; i != mLayersChecked.end(); ++i )
   {
-    mLayersChecked[key] = checkState;
+    *i = checkState;
   }
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
@@ -297,7 +290,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
         if ( !layer->abstract().isEmpty() )
           parts << "<br/>" + layer->abstract().replace( QLatin1String( "\n" ), QLatin1String( "<br/>" ) );
         parts << "<i>" + layer->publicSource() + "</i>";
-        return parts.join( "<br/>" );
+        return parts.join( QStringLiteral( "<br/>" ) );
       }
       return QVariant();
     }

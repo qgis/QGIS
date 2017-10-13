@@ -34,7 +34,8 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for line fill symbol types.
  */
 class TestQgsCentroidFillSymbol : public QObject
@@ -42,13 +43,7 @@ class TestQgsCentroidFillSymbol : public QObject
     Q_OBJECT
 
   public:
-    TestQgsCentroidFillSymbol()
-      : mTestHasError( false )
-      , mpPolysLayer( 0 )
-      , mCentroidFill( 0 )
-      , mFillSymbol( 0 )
-      , mSymbolRenderer( 0 )
-    {}
+    TestQgsCentroidFillSymbol() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -60,7 +55,7 @@ class TestQgsCentroidFillSymbol : public QObject
     void centroidFillSymbolPartBiggest();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
 
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

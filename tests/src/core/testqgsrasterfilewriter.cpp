@@ -34,7 +34,8 @@
 #include "qgsrasterprojector.h"
 #include <qgsapplication.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsRasterFileWriter class.
  */
 class TestQgsRasterFileWriter: public QObject
@@ -192,7 +193,7 @@ void TestQgsRasterFileWriter::testCreateOneBandRaster()
   int width = 200, height = 100;
 
   QgsRasterFileWriter writer( filename );
-  QgsRasterDataProvider *dp = writer.createOneBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QgsRasterDataProvider *dp = writer.createOneBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   QVERIFY( dp );
   QCOMPARE( dp->xSize(), width );
   QCOMPARE( dp->ySize(), height );
@@ -202,7 +203,7 @@ void TestQgsRasterFileWriter::testCreateOneBandRaster()
   QVERIFY( dp->isEditable() );
   delete dp;
 
-  QgsRasterLayer *rlayer = new QgsRasterLayer( filename, "tmp", "gdal" );
+  QgsRasterLayer *rlayer = new QgsRasterLayer( filename, QStringLiteral( "tmp" ), QStringLiteral( "gdal" ) );
   QVERIFY( rlayer->isValid() );
   QCOMPARE( rlayer->width(), width );
   QCOMPARE( rlayer->height(), height );
@@ -224,7 +225,7 @@ void TestQgsRasterFileWriter::testCreateMultiBandRaster()
   int width = 200, height = 100, nBands = 1;
 
   QgsRasterFileWriter writer( filename );
-  QgsRasterDataProvider *dp = writer.createMultiBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( "EPSG:4326" ), nBands );
+  QgsRasterDataProvider *dp = writer.createMultiBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), nBands );
   QVERIFY( dp );
   QCOMPARE( dp->xSize(), width );
   QCOMPARE( dp->ySize(), height );
@@ -234,7 +235,7 @@ void TestQgsRasterFileWriter::testCreateMultiBandRaster()
   QVERIFY( dp->isEditable() );
   delete dp;
 
-  QgsRasterLayer *rlayer = new QgsRasterLayer( filename, "tmp", "gdal" );
+  QgsRasterLayer *rlayer = new QgsRasterLayer( filename, QStringLiteral( "tmp" ), QStringLiteral( "gdal" ) );
   QVERIFY( rlayer->isValid() );
   QCOMPARE( rlayer->width(), width );
   QCOMPARE( rlayer->height(), height );
@@ -244,7 +245,7 @@ void TestQgsRasterFileWriter::testCreateMultiBandRaster()
   delete rlayer;
 
   nBands = 3;
-  dp = writer.createMultiBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( "EPSG:4326" ), nBands );
+  dp = writer.createMultiBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), nBands );
   QVERIFY( dp );
   QCOMPARE( dp->xSize(), width );
   QCOMPARE( dp->ySize(), height );
@@ -257,7 +258,7 @@ void TestQgsRasterFileWriter::testCreateMultiBandRaster()
   QVERIFY( dp->isEditable() );
   delete dp;
 
-  rlayer = new QgsRasterLayer( filename, "tmp", "gdal" );
+  rlayer = new QgsRasterLayer( filename, QStringLiteral( "tmp" ), QStringLiteral( "gdal" ) );
   QVERIFY( rlayer->isValid() );
   QCOMPARE( rlayer->width(), width );
   QCOMPARE( rlayer->height(), height );

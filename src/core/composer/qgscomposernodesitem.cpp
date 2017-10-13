@@ -189,6 +189,11 @@ void QgsComposerNodesItem::paint( QPainter *painter,
   if ( !painter )
     return;
 
+  if ( !shouldDrawItem() )
+  {
+    return;
+  }
+
   painter->save();
   painter->setPen( Qt::NoPen );
   painter->setBrush( Qt::NoBrush );
@@ -306,8 +311,8 @@ void QgsComposerNodesItem::rescaleToFitBoundingBox()
   const QRectF boundingRect = mPolygon.boundingRect();
 
   // compute x/y ratio
-  const float ratioX =  rect().width() / boundingRect.width();
-  const float ratioY =  rect().height() / boundingRect.height();
+  const float ratioX = rect().width() / boundingRect.width();
+  const float ratioY = rect().height() / boundingRect.height();
 
   // scaling
   QTransform trans;

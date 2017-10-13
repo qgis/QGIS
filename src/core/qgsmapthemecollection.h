@@ -59,7 +59,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     {
       public:
         //! Initialize layer record with a map layer - it will be stored as a weak pointer
-        MapThemeLayerRecord( QgsMapLayer *l = nullptr ): usingCurrentStyle( false ), usingLegendItems( false ), mLayer( l ) {}
+        MapThemeLayerRecord( QgsMapLayer *l = nullptr ): mLayer( l ) {}
 
         bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const
         {
@@ -79,11 +79,11 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         void setLayer( QgsMapLayer *layer );
 
         //! Whether current style is valid and should be applied
-        bool usingCurrentStyle;
+        bool usingCurrentStyle = false;
         //! Name of the current style of the layer
         QString currentStyle;
         //! Whether checkedLegendItems should be applied
-        bool usingLegendItems;
+        bool usingLegendItems = false;
         //! Rule keys of check legend items in layer tree model
         QSet<QString> checkedLegendItems;
       private:
@@ -122,8 +122,10 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         //! Add a new record for a layer.
         void addLayerRecord( const QgsMapThemeCollection::MapThemeLayerRecord &record );
 
-        //! Return set with only records for valid layers
-        //! \note not available in Python bindings
+        /**
+         * Return set with only records for valid layers
+         * \note not available in Python bindings
+         */
         QHash<QgsMapLayer *, QgsMapThemeCollection::MapThemeLayerRecord> validLayerRecords() const SIP_SKIP;
 
       private:
@@ -210,7 +212,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      */
     void readXml( const QDomDocument &doc );
 
-    /** Writes the map theme collection state to XML.
+    /**
+     * Writes the map theme collection state to XML.
      * \param doc DOM document
      * \see readXml
      */

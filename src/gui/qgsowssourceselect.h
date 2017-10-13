@@ -39,7 +39,8 @@ class QDomDocument;
 class QDomElement;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief  Dialog to create connections and add layers WCS etc.
  *
  * This dialog allows the user to define and save connection information
@@ -70,41 +71,12 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
 
-    //! Opens the create connection dialog to build a new connection
-    void on_mNewButton_clicked();
-    //! Opens a dialog to edit an existing connection
-    void on_mEditButton_clicked();
-    //! Deletes the selected connection
-    void on_mDeleteButton_clicked();
-    //! Saves connections to the file
-    void on_mSaveButton_clicked();
-    //! Loads connections from the file
-    void on_mLoadButton_clicked();
-
-    /** Connects to the database using the stored connection parameters.
-     * Once connected, available layers are displayed.
-     */
-    void on_mConnectButton_clicked();
-
-    void searchFinished();
-
-    //! Opens the Spatial Reference System dialog.
-    void on_mChangeCRSButton_clicked();
-
-    //! Signaled when a layer selection is changed.
-    virtual void on_mLayersTreeWidget_itemSelectionChanged();
-
-    //! Set status message to theMessage
-    void showStatusMessage( const QString &message );
-
+  protected slots:
     //! show whatever error is exposed.
     void showError( const QString &title, const QString &format, const QString &error );
 
-    //! Stores the selected datasource whenerver it is changed
-    void on_mConnectionsComboBox_activated( int );
-
-    //! Add some default wms servers to the list
-    void on_mAddDefaultButton_clicked();
+    //! Set status message to theMessage
+    void showStatusMessage( const QString &message );
 
   protected:
 
@@ -168,8 +140,10 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
      */
     virtual void populateLayerList();
 
-    //! create an item including possible parents
-    //! \note not available in Python bindings
+    /**
+     * create an item including possible parents
+     * \note not available in Python bindings
+     */
     QgsTreeWidgetItem *createItem( int id,
                                    const QStringList &names,
                                    QMap<int, QgsTreeWidgetItem *> &items,
@@ -214,6 +188,39 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! URI for selected connection
     QgsDataSourceUri mUri;
 
+  private slots:
+
+    //! Opens the create connection dialog to build a new connection
+    void mNewButton_clicked();
+    //! Opens a dialog to edit an existing connection
+    void mEditButton_clicked();
+    //! Deletes the selected connection
+    void mDeleteButton_clicked();
+    //! Saves connections to the file
+    void mSaveButton_clicked();
+    //! Loads connections from the file
+    void mLoadButton_clicked();
+
+    /**
+     * Connects to the database using the stored connection parameters.
+     * Once connected, available layers are displayed.
+     */
+    void mConnectButton_clicked();
+
+    void searchFinished();
+
+    //! Opens the Spatial Reference System dialog.
+    void mChangeCRSButton_clicked();
+
+    //! Signaled when a layer selection is changed.
+    virtual void mLayersTreeWidget_itemSelectionChanged();
+
+    //! Stores the selected datasource whenerver it is changed
+    void mConnectionsComboBox_activated( int );
+
+    //! Add some default wms servers to the list
+    void mAddDefaultButton_clicked();
+
 
   private:
     //! Selected CRS
@@ -229,11 +236,11 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     QMap<QString, QString> mMimeLabelMap;
 
   private slots:
-    void on_mSearchButton_clicked();
-    void on_mSearchTableWidget_itemSelectionChanged();
-    void on_mTilesetsTableWidget_itemClicked( QTableWidgetItem *item );
-    void on_mLayerUpButton_clicked();
-    void on_mLayerDownButton_clicked();
+    void mSearchButton_clicked();
+    void mSearchTableWidget_itemSelectionChanged();
+    void mTilesetsTableWidget_itemClicked( QTableWidgetItem *item );
+    void mLayerUpButton_clicked();
+    void mLayerDownButton_clicked();
     virtual void updateButtons();
 };
 

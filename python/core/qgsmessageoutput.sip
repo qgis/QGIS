@@ -67,7 +67,8 @@ display the message to the user and deletes itself
 
     static QgsMessageOutput *createMessageOutput();
 %Docstring
-(don't forget to delete it then if showMessage(bool) is not used showMessage(bool) deletes the instance)
+ function that returns new class derived from QgsMessageOutput
+ (don't forget to delete it then if showMessage(bool) is not used showMessage(bool) deletes the instance)
  :rtype: QgsMessageOutput
 %End
 
@@ -89,6 +90,9 @@ be the right choice for apps without GUI.
   public:
 
     QgsMessageOutputConsole();
+%Docstring
+ Constructor for QgsMessageOutputConsole.
+%End
 
     virtual void setMessage( const QString &message, MessageType msgType );
 

@@ -40,9 +40,6 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
   public:
     explicit QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget *parent = 0 );
 
-
-    virtual ~QgsStatusBarScaleWidget();
-
     /**
      * Set the selected \a scale from double.
      * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
@@ -55,7 +52,8 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
      */
     bool isLocked() const;
 
-    /** Set the font of the text
+    /**
+     * Set the font of the text
       * \param font the font to use
       */
     void setFont( const QFont &font );

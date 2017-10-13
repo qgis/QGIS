@@ -33,7 +33,8 @@ static bool _palIsCanceled( void *ctx )
   return ( reinterpret_cast< QgsRenderContext * >( ctx ) )->renderingStopped();
 }
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsLabelSorter
  * Helper class for sorting labels into correct draw order
  */
@@ -365,8 +366,7 @@ QgsAbstractLabelProvider *QgsLabelFeature::provider() const
 }
 
 QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QString &providerId )
-  : mEngine( nullptr )
-  , mLayerId( layer ? layer->id() : QString() )
+  : mLayerId( layer ? layer->id() : QString() )
   , mLayer( layer )
   , mProviderId( providerId )
   , mFlags( DrawLabels )

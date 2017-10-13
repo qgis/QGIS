@@ -35,9 +35,6 @@ QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent,
   : QDialog( parent )
   , mFilter( filter )
   , mInput( input )
-  , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -50,6 +47,8 @@ QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent,
   else
   {
     setupUi( this );
+    connect( btnImportFile, &QToolButton::clicked, this, &QgsAuthImportCertDialog::btnImportFile_clicked );
+    connect( chkAllowInvalid, &QCheckBox::toggled, this, &QgsAuthImportCertDialog::chkAllowInvalid_toggled );
 
     connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
@@ -222,7 +221,7 @@ void QgsAuthImportCertDialog::validateCertificates()
   okButton()->setEnabled( valid );
 }
 
-void QgsAuthImportCertDialog::on_btnImportFile_clicked()
+void QgsAuthImportCertDialog::btnImportFile_clicked()
 {
   const QString &fn = getOpenFileName( tr( "Open Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
@@ -232,7 +231,7 @@ void QgsAuthImportCertDialog::on_btnImportFile_clicked()
   validateCertificates();
 }
 
-void QgsAuthImportCertDialog::on_chkAllowInvalid_toggled( bool checked )
+void QgsAuthImportCertDialog::chkAllowInvalid_toggled( bool checked )
 {
   Q_UNUSED( checked );
   validateCertificates();

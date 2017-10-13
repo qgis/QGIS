@@ -22,7 +22,6 @@
 #include "qgsmultirenderchecker.h"
 #include "qgsfontutils.h"
 #include "qgsproject.h"
-#include "qgstestutils.h"
 #include "qgsproperty.h"
 #include <QObject>
 #include "qgstest.h"
@@ -73,10 +72,7 @@ class TestQgsComposerUtils : public QObject
 
 };
 
-TestQgsComposerUtils::TestQgsComposerUtils()
-  : mComposition( 0 )
-{
-}
+TestQgsComposerUtils::TestQgsComposerUtils() = default;
 
 
 void TestQgsComposerUtils::initTestCase()
@@ -169,8 +165,8 @@ void TestQgsComposerUtils::rotate()
     double x = ( *it ).first.x1();
     double y = ( *it ).first.y1();
     QgsComposerUtils::rotate( ( *it ).second, x, y );
-    QVERIFY( qgsDoubleNear( x, ( *it ).first.x2() ) );
-    QVERIFY( qgsDoubleNear( y, ( *it ).first.y2() ) );
+    QGSCOMPARENEAR( x, ( *it ).first.x2(), 4 * DBL_EPSILON );
+    QGSCOMPARENEAR( y, ( *it ).first.y2(), 4 * DBL_EPSILON );
   }
 }
 
@@ -194,7 +190,7 @@ void TestQgsComposerUtils::normalizedAngle()
   QList< QPair< double, double > >::const_iterator it = testVals.constBegin();
   for ( ; it != testVals.constEnd(); ++it )
   {
-    QVERIFY( qgsDoubleNear( QgsComposerUtils::normalizedAngle( ( *it ).first ), ( *it ).second ) );
+    QGSCOMPARENEAR( QgsComposerUtils::normalizedAngle( ( *it ).first ), ( *it ).second, 4 * DBL_EPSILON );
   }
 }
 
@@ -243,7 +239,7 @@ void TestQgsComposerUtils::snappedAngle()
   QList< QPair< double, double > >::const_iterator it = testVals.constBegin();
   for ( ; it != testVals.constEnd(); ++it )
   {
-    QVERIFY( qgsDoubleNear( QgsComposerUtils::snappedAngle( ( *it ).first ), ( *it ).second ) );
+    QGSCOMPARENEAR( QgsComposerUtils::snappedAngle( ( *it ).first ), ( *it ).second, 4 * DBL_EPSILON );
   }
 }
 
@@ -293,7 +289,7 @@ void TestQgsComposerUtils::largestRotatedRect()
              || ( qgsDoubleNear( rotatedRectBounds.height(), bounds.height(), 0.001 ) && ( rotatedRectBounds.width() <= bounds.width() ) ) );
 
     //also verify that aspect ratio of rectangle has not changed
-    QVERIFY( qgsDoubleNear( result.width() / result.height(), wideRect.width() / wideRect.height() ) );
+    QGSCOMPARENEAR( result.width() / result.height(), wideRect.width() / wideRect.height(), 4 * DBL_EPSILON );
   }
   //and again for the high rectangle
   for ( double rotation = 10; rotation < 360; rotation += 10 )
@@ -308,48 +304,48 @@ void TestQgsComposerUtils::largestRotatedRect()
              || ( qgsDoubleNear( rotatedRectBounds.height(), bounds.height(), 0.001 ) && ( rotatedRectBounds.width() <= bounds.width() ) ) );
 
     //also verify that aspect ratio of rectangle has not changed
-    QVERIFY( qgsDoubleNear( result.width() / result.height(), highRect.width() / highRect.height() ) );
+    QGSCOMPARENEAR( result.width() / result.height(), highRect.width() / highRect.height(), 4 * DBL_EPSILON );
   }
 }
 
 void TestQgsComposerUtils::pointsToMM()
 {
   //test conversion of points to mm, based on 1 point = 1 / 72 of an inch
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::pointsToMM( 72 / 25.4 ), 1, 0.001 ) );
+  QGSCOMPARENEAR( QgsComposerUtils::pointsToMM( 72 / 25.4 ), 1, 0.001 );
 }
 
 void TestQgsComposerUtils::mmToPoints()
 {
   //test conversion of mm to points, based on 1 point = 1 / 72 of an inch
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::mmToPoints( 25.4 / 72 ), 1, 0.001 ) );
+  QGSCOMPARENEAR( QgsComposerUtils::mmToPoints( 25.4 / 72 ), 1, 0.001 );
 }
 
 void TestQgsComposerUtils::relativePosition()
 {
   //+ve gradient
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 1, 0, 2, 0, 4 ), 2, 0.001 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 0, 0, 2, 0, 4 ), 0, 0.001 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 2, 0, 2, 0, 4 ), 4, 0.001 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 4, 0, 2, 0, 4 ), 8, 0.001 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( -2, 0, 2, 0, 4 ), -4, 0.001 ) );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( 1, 0, 2, 0, 4 ), 2, 0.001 );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( 0, 0, 2, 0, 4 ), 0, 0.001 );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( 2, 0, 2, 0, 4 ), 4, 0.001 );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( 4, 0, 2, 0, 4 ), 8, 0.001 );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( -2, 0, 2, 0, 4 ), -4, 0.001 );
   //-ve gradient
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 1, 0, 2, 4, 0 ), 2, 0.001 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 0, 0, 2, 4, 0 ), 4, 0.001 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 2, 0, 2, 4, 0 ), 0, 0.001 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 4, 0, 2, 4, 0 ), -4, 0.001 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( -2, 0, 2, 4, 0 ), 8, 0.001 ) );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( 1, 0, 2, 4, 0 ), 2, 0.001 );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( 0, 0, 2, 4, 0 ), 4, 0.001 );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( 2, 0, 2, 4, 0 ), 0, 0.001 );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( 4, 0, 2, 4, 0 ), -4, 0.001 );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( -2, 0, 2, 4, 0 ), 8, 0.001 );
   //-ve domain
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 1, 2, 0, 0, 4 ), 2, 0.001 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 0, 2, 0, 0, 4 ), 4, 0.001 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 2, 2, 0, 0, 4 ), 0, 0.001 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 4, 2, 0, 0, 4 ), -4, 0.001 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( -2, 2, 0, 0, 4 ), 8, 0.001 ) );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( 1, 2, 0, 0, 4 ), 2, 0.001 );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( 0, 2, 0, 0, 4 ), 4, 0.001 );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( 2, 2, 0, 0, 4 ), 0, 0.001 );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( 4, 2, 0, 0, 4 ), -4, 0.001 );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( -2, 2, 0, 0, 4 ), 8, 0.001 );
   //-ve domain and gradient
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 1, 2, 0, 4, 0 ), 2, 0.001 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 0, 2, 0, 4, 0 ), 0, 0.001 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 2, 2, 0, 4, 0 ), 4, 0.001 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( 4, 2, 0, 4, 0 ), 8, 0.001 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::relativePosition( -2, 2, 0, 4, 0 ), -4, 0.001 ) );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( 1, 2, 0, 4, 0 ), 2, 0.001 );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( 0, 2, 0, 4, 0 ), 0, 0.001 );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( 2, 2, 0, 4, 0 ), 4, 0.001 );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( 4, 2, 0, 4, 0 ), 8, 0.001 );
+  QGSCOMPARENEAR( QgsComposerUtils::relativePosition( -2, 2, 0, 4, 0 ), -4, 0.001 );
 }
 
 void TestQgsComposerUtils::relativeResizeRect()
@@ -528,36 +524,36 @@ void TestQgsComposerUtils::fontAscentMM()
 {
   mTestFont.setPointSize( 12 );
   //platform specific font rendering differences mean these tests need to be very leniant
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::fontAscentMM( mTestFont ), 3.9, 0.5 ) );
+  QGSCOMPARENEAR( QgsComposerUtils::fontAscentMM( mTestFont ), 3.9, 0.5 );
 }
 
 void TestQgsComposerUtils::fontDescentMM()
 {
   mTestFont.setPointSize( 12 );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::fontDescentMM( mTestFont ), 0.9, 0.05 ) );
+  QGSCOMPARENEAR( QgsComposerUtils::fontDescentMM( mTestFont ), 0.9, 0.05 );
 }
 
 void TestQgsComposerUtils::fontHeightMM()
 {
   mTestFont.setPointSize( 12 );
   //platform specific font rendering differences mean these tests need to be very leniant
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::fontHeightMM( mTestFont ), 4.9, 0.5 ) );
+  QGSCOMPARENEAR( QgsComposerUtils::fontHeightMM( mTestFont ), 4.9, 0.5 );
 }
 
 void TestQgsComposerUtils::fontHeightCharacterMM()
 {
   mTestFont.setPointSize( 12 );
   //platform specific font rendering differences mean these tests need to be very leniant
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::fontHeightCharacterMM( mTestFont, QChar( 'a' ) ), 2.4, 0.15 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::fontHeightCharacterMM( mTestFont, QChar( 'l' ) ), 3.15, 0.16 ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::fontHeightCharacterMM( mTestFont, QChar( 'g' ) ), 3.2, 0.11 ) );
+  QGSCOMPARENEAR( QgsComposerUtils::fontHeightCharacterMM( mTestFont, QChar( 'a' ) ), 2.4, 0.15 );
+  QGSCOMPARENEAR( QgsComposerUtils::fontHeightCharacterMM( mTestFont, QChar( 'l' ) ), 3.15, 0.16 );
+  QGSCOMPARENEAR( QgsComposerUtils::fontHeightCharacterMM( mTestFont, QChar( 'g' ) ), 3.2, 0.11 );
 }
 
 void TestQgsComposerUtils::textWidthMM()
 {
   //platform specific font rendering differences mean this test needs to be very leniant
   mTestFont.setPointSize( 12 );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::textWidthMM( mTestFont, QString( "test string" ) ), 20, 2 ) );
+  QGSCOMPARENEAR( QgsComposerUtils::textWidthMM( mTestFont, QString( "test string" ) ), 20, 2 );
 }
 
 void TestQgsComposerUtils::textHeightMM()
@@ -565,13 +561,13 @@ void TestQgsComposerUtils::textHeightMM()
   //platform specific font rendering differences mean this test needs to be very leniant
   mTestFont.setPointSize( 12 );
   QgsDebugMsg( QString( "height: %1" ).arg( QgsComposerUtils::textHeightMM( mTestFont, QString( "test string" ) ) ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::textHeightMM( mTestFont, QString( "test string" ) ), 3.9, 0.2 ) );
+  QGSCOMPARENEAR( QgsComposerUtils::textHeightMM( mTestFont, QString( "test string" ) ), 3.9, 0.2 );
   QgsDebugMsg( QString( "height: %1" ).arg( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring" ) ) ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring" ) ), 8.7, 0.2 ) );
+  QGSCOMPARENEAR( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring" ) ), 8.7, 0.2 );
   QgsDebugMsg( QString( "height: %1" ).arg( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring" ), 2 ) ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring" ), 2 ), 13.5, 0.2 ) );
+  QGSCOMPARENEAR( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring" ), 2 ), 13.5, 0.2 );
   QgsDebugMsg( QString( "height: %1" ).arg( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring\nstring" ) ) ) );
-  QVERIFY( qgsDoubleNear( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring\nstring" ) ), 13.5, 0.2 ) );
+  QGSCOMPARENEAR( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring\nstring" ) ), 13.5, 0.2 );
 }
 
 void TestQgsComposerUtils::drawTextPos()

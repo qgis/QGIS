@@ -30,7 +30,8 @@ class QgsMapLayer;
 class QgsVectorLayer;
 struct sqlite3;
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsOfflineEditing : public QObject
 {
@@ -50,7 +51,8 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
 
     QgsOfflineEditing();
 
-    /** Convert current project for offline editing
+    /**
+     * Convert current project for offline editing
      * \param offlineDataPath Path to offline db file
      * \param offlineDbFile Offline db file name
      * \param layerIds List of layer names to convert
@@ -87,7 +89,8 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
      */
     void progressModeSet( QgsOfflineEditing::ProgressMode mode, int maximum );
 
-    /** Emitted with the progress of the current mode
+    /**
+     * Emitted with the progress of the current mode
      * \param progress current index of processed entities
      */
     void progressUpdated( int progress );

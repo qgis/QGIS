@@ -47,19 +47,23 @@ namespace QgsWfs
     QString geometryName;
   };
 
-  /** Transform Query element to getFeatureQuery
+  /**
+   * Transform Query element to getFeatureQuery
    */
   getFeatureQuery parseQueryElement( QDomElement &queryElem );
 
-  /** Transform RequestBody root element to getFeatureRequest
+  /**
+   * Transform RequestBody root element to getFeatureRequest
    */
   getFeatureRequest parseGetFeatureRequestBody( QDomElement &docElem );
 
-  /** Transform parameters to getFeatureRequest
+  /**
+   * Transform parameters to getFeatureRequest
    */
   getFeatureRequest parseGetFeatureParameters( QgsServerRequest::Parameters parameters );
 
-  /** Output WFS  GetFeature response
+  /**
+   * Output WFS  GetFeature response
    */
   void writeGetFeature( QgsServerInterface *serverIface, const QgsProject *project,
                         const QString &version, const QgsServerRequest &request,

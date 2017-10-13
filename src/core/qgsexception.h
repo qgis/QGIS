@@ -27,7 +27,8 @@
 
 
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Defines a QGIS exception class.
  */
 class CORE_EXPORT QgsException
@@ -58,7 +59,8 @@ class CORE_EXPORT QgsException
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Custom exception class for Coordinate Reference System related exceptions.
  */
 class CORE_EXPORT QgsCsException : public QgsException

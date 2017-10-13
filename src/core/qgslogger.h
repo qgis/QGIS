@@ -38,7 +38,8 @@ class QFile;
 #define QgsDebugMsgLevel(str, level)
 #endif
 
-/** \ingroup core
+/**
+ * \ingroup core
  * QgsLogger is a class to print debug/warning/error messages to the console.
  * The advantage of this class over iostream & co. is that the
  * output can be controlled with environment variables:
@@ -58,7 +59,8 @@ class CORE_EXPORT QgsLogger
 {
   public:
 
-    /** Goes to qDebug.
+    /**
+     * Goes to qDebug.
     \param msg the message to be printed
     \param debuglevel
     \param file file name where the message comes from
@@ -69,12 +71,16 @@ class CORE_EXPORT QgsLogger
     //! Similar to the previous method, but prints a variable int-value pair
     static void debug( const QString &var, int val, int debuglevel = 1, const char *file = nullptr, const char *function = nullptr, int line = -1 );
 
-    //! Similar to the previous method, but prints a variable double-value pair
-    //! \note not available in Python bindings
+    /**
+     * Similar to the previous method, but prints a variable double-value pair
+     * \note not available in Python bindings
+     */
     static void debug( const QString &var, double val, int debuglevel = 1, const char *file = nullptr, const char *function = nullptr, int line = -1 ) SIP_SKIP SIP_SKIP;
 
-    //! Prints out a variable/value pair for types with overloaded operator<<
-    //! \note not available in Python bindings
+    /**
+     * Prints out a variable/value pair for types with overloaded operator<<
+     * \note not available in Python bindings
+     */
     template <typename T> static void debug( const QString &var, T val, const char *file = nullptr, const char *function = nullptr,
         int line = -1, int debuglevel = 1 ) SIP_SKIP SIP_SKIP
     {
@@ -92,14 +98,16 @@ class CORE_EXPORT QgsLogger
     //! Goes to qFatal
     static void fatal( const QString &msg );
 
-    /** Reads the environment variable QGIS_DEBUG and converts it to int. If QGIS_DEBUG is not set,
+    /**
+     * Reads the environment variable QGIS_DEBUG and converts it to int. If QGIS_DEBUG is not set,
      the function returns 1 if QGISDEBUG is defined and 0 if not*/
     static int debugLevel() { init(); return sDebugLevel; }
 
     //! Logs the message passed in to the logfile defined in QGIS_LOG_FILE if any. *
     static void logMessageToFile( const QString &message );
 
-    /** Reads the environment variable QGIS_LOG_FILE. Returns NULL if the variable is not set,
+    /**
+     * Reads the environment variable QGIS_LOG_FILE. Returns NULL if the variable is not set,
      * otherwise returns a file name for writing log messages to.*/
     static const QString logFile() { init(); return sLogFile; }
 
@@ -114,7 +122,8 @@ class CORE_EXPORT QgsLogger
     static QTime sTime;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsScopeLogger // clazy:exclude=rule-of-three
 {

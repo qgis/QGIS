@@ -23,6 +23,7 @@ class QgsRenderContext;
 class QgsLayout;
 class QgsLayoutItemMap;
 class QPainter;
+class QRectF;
 
 /**
  * \ingroup core
@@ -58,6 +59,27 @@ class CORE_EXPORT QgsLayoutUtils
      * \see createRenderContextForMap()
      */
     static QgsRenderContext createRenderContextForLayout( QgsLayout *layout, QPainter *painter, double dpi = -1 );
+
+    /**
+     * Resizes a QRectF relative to a resized bounding rectangle.
+     * \param rectToResize QRectF to resize, contained within boundsBefore. The
+     * rectangle is linearly scaled to retain its relative position and size within
+     * boundsAfter.
+     * \param boundsBefore QRectF of bounds before resize
+     * \param boundsAfter QRectF of bounds after resize
+     */
+    static void relativeResizeRect( QRectF &rectToResize, const QRectF &boundsBefore, const QRectF &boundsAfter );
+
+    /**
+     * Returns a scaled position given a before and after range
+     * \param position initial position within before range to scale
+     * \param beforeMin minimum value in before range
+     * \param beforeMax maximum value in before range
+     * \param afterMin minimum value in after range
+     * \param afterMax maximum value in after range
+     * \returns position scaled to range specified by afterMin and afterMax
+     */
+    static double relativePosition( const double position, const double beforeMin, const double beforeMax, const double afterMin, const double afterMax );
 
 };
 

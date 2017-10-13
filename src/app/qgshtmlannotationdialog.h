@@ -26,7 +26,6 @@ class APP_EXPORT QgsHtmlAnnotationDialog: public QDialog, private Ui::QgsFormAnn
     Q_OBJECT
   public:
     QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsHtmlAnnotationDialog();
 
   private:
     QgsMapCanvasAnnotationItem *mItem = nullptr;
@@ -34,9 +33,9 @@ class APP_EXPORT QgsHtmlAnnotationDialog: public QDialog, private Ui::QgsFormAnn
 
   private slots:
     void applySettingsToItem();
-    void on_mBrowseToolButton_clicked();
+    void mBrowseToolButton_clicked();
     void deleteItem();
-    void on_mButtonBox_clicked( QAbstractButton *button );
+    void mButtonBox_clicked( QAbstractButton *button );
 };
 
 #endif // QgsHTMLAnnotationDialog_H

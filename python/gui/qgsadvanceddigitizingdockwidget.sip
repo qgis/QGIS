@@ -11,7 +11,6 @@
 
 
 
-
 class QgsAdvancedDigitizingDockWidget : QgsDockWidget
 {
 %Docstring
@@ -40,13 +39,6 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
       NoConstraint,
       Perpendicular,
       Parallel
-    };
-
-    enum AdvancedDigitizingMode
-    {
-      SinglePoint,
-      TwoPoints,
-      ManyPoints
     };
 
     class CadConstraint
@@ -158,14 +150,6 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
 
     };
 
-    static bool lineCircleIntersection( const QgsPointXY &center, const double radius, const QList<QgsPointXY> &segment, QgsPointXY &intersection );
-%Docstring
-.. note::
-
-   from the two solutions, the intersection will be set to the closest point
- :rtype: bool
-%End
-
     explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
  Create an advanced digitizing dock widget
@@ -179,34 +163,6 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
  Disables the CAD tools when hiding the dock
 %End
 
-    bool canvasPressEvent( QgsMapMouseEvent *e );
-%Docstring
- Will react on a canvas press event
-
- \param e A mouse event (may be modified)
- :return:  If the event is hidden (construction mode hides events from the maptool)
- :rtype: bool
-%End
-
-    bool canvasReleaseEvent( QgsMapMouseEvent *e, AdvancedDigitizingMode mode );
-%Docstring
- Will react on a canvas release event
-
- \param e A mouse event (may be modified)
- \param mode determines if the dock has to record one, two or many points.
- :return:  If the event is hidden (construction mode hides events from the maptool)
- :rtype: bool
-%End
-
-    bool canvasMoveEvent( QgsMapMouseEvent *e );
-%Docstring
- Will react on a canvas move event
-
- \param e A mouse event (may be modified)
- :return:  If the event is hidden (construction mode hides events from the maptool)
- :rtype: bool
-%End
-
     bool canvasKeyPressEventFilter( QKeyEvent *e );
 %Docstring
  Filter key events to e.g. toggle construction mode or adapt constraints
@@ -216,10 +172,26 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
  :rtype: bool
 %End
 
-    virtual bool applyConstraints( QgsMapMouseEvent *e );
+    bool applyConstraints( QgsMapMouseEvent *e );
 %Docstring
-:return: false if no solution was found (invalid constraints)
+ apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
+ :return: false if no solution was found (invalid constraints)
  :rtype: bool
+%End
+
+    bool alignToSegment( QgsMapMouseEvent *e, QgsAdvancedDigitizingDockWidget::CadConstraint::LockMode lockMode = QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
+%Docstring
+ align to segment for additional constraint.
+ If additional constraints are used, this will determine the angle to be locked depending on the snapped segment.
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void releaseLocks( bool releaseRepeatingLocks = true );
+%Docstring
+ unlock all constraints
+ \param releaseRepeatingLocks set to false to preserve the lock for any constraints set to repeating lock mode
+.. versionadded:: 3.0
 %End
 
     void clear();
@@ -271,6 +243,27 @@ Constraint on the Y coordinate
 %Docstring
 Constraint on a common angle
  :rtype: bool
+%End
+
+    void clearPoints();
+%Docstring
+ Removes all points from the CAD point list
+.. versionadded:: 3.0
+%End
+
+    void addPoint( const QgsPointXY &point );
+%Docstring
+ Adds point to the CAD point list
+.. versionadded:: 3.0
+%End
+
+    void setPoints( const QList<QgsPointXY> &points );
+%Docstring
+ Configures list of current CAD points
+
+ Some map tools may find it useful to override list of CAD points that is otherwise
+ automatically populated when user clicks with left mouse button on map canvas.
+.. versionadded:: 3.0
 %End
 
     QgsPointXY currentPoint( bool *exists  = 0 ) const;
@@ -332,6 +325,12 @@ return the action used to enable/disable the tools
     void disable();
 %Docstring
  Disable the widget. Normally done automatically from QgsMapToolAdvancedDigitizing.deactivate().
+%End
+
+    void updateCadPaintItem();
+%Docstring
+ Updates canvas item that displays constraints on the ma
+.. versionadded:: 3.0
 %End
 
   signals:

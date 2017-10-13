@@ -21,7 +21,8 @@
 
 SIP_NO_FILE
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsColorWidgetFactory
  * \note not available in Python bindings
  */

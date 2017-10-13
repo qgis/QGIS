@@ -27,14 +27,6 @@ class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
 #include "qgsmaptooladvanceddigitizing.h"
 %End
   public:
-    enum CaptureMode
-    {
-      CaptureNone,
-      CapturePoint,
-      CaptureSegment,
-      CaptureLine,
-      CapturePolygon
-    };
 
     explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 %Docstring
@@ -56,22 +48,6 @@ Catch the mouse release event, filters it, transforms it to map coordinates and 
 Catch the mouse move event, filters it, transforms it to map coordinates and send it to virtual method
 %End
 
-    CaptureMode mode() const;
-%Docstring
- The capture mode
-
- :return: Capture mode
- :rtype: CaptureMode
-%End
-
-    void setMode( CaptureMode mode );
-%Docstring
- Set capture mode. This should correspond to the layer on which the digitizing
- happens.
-
- \param mode Capture Mode
-%End
-
     virtual void activate();
 %Docstring
  Registers this maptool with the cad dock widget
@@ -87,8 +63,52 @@ Catch the mouse move event, filters it, transforms it to map coordinates and sen
  :rtype: QgsAdvancedDigitizingDockWidget
 %End
 
+    bool isAdvancedDigitizingAllowed() const;
+%Docstring
+ Returns whether functionality of advanced digitizing dock widget is currently allowed.
+
+ Tools may decide to switch this support on/off based on the current state of the map tool.
+ For example, in node tool before user picks a vertex to move, advanced digitizing dock
+ widget should be disabled and only enabled once a vertex is being moved. Other map tools
+ may keep advanced digitizing allowed all the time.
+
+ If true is returned, that does not mean that advanced digitizing is actually active,
+ because it is up to the user to enable/disable it when it is allowed.
+ \sa setAdvancedDigitizingAllowed()
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    bool isAutoSnapEnabled() const;
+%Docstring
+ Returns whether mouse events (press/move/release) should automatically try to snap mouse position
+ (according to the snapping configuration of map canvas) before passing the mouse coordinates
+ to the tool. This may be desirable default behavior for some map tools, but not for other map tools.
+ It is therefore possible to configure the behavior by the map tool.
+ \sa isAutoSnapEnabled()
+.. versionadded:: 3.0
+ :rtype: bool
+%End
 
   protected:
+
+    void setAdvancedDigitizingAllowed( bool allowed );
+%Docstring
+ Sets whether functionality of advanced digitizing dock widget is currently allowed.
+ This method is protected because it should be a decision of the map tool and not from elsewhere.
+ \sa isAdvancedDigitizingAllowed()
+.. versionadded:: 3.0
+%End
+
+    void setAutoSnapEnabled( bool enabled );
+%Docstring
+ Sets whether mouse events (press/move/release) should automatically try to snap mouse position
+ This method is protected because it should be a decision of the map tool and not from elsewhere.
+ \sa isAutoSnapEnabled()
+.. versionadded:: 3.0
+%End
+
+  public:
 
     virtual void cadCanvasPressEvent( QgsMapMouseEvent *e );
 %Docstring
@@ -121,7 +141,6 @@ Catch the mouse move event, filters it, transforms it to map coordinates and sen
 
  \param e Mouse events prepared by the cad system
 %End
-
 
 };
 

@@ -47,6 +47,13 @@
 #include "qgsexception.h"
 #include "qgssettings.h"
 
+
+#ifdef HAVE_GUI
+#include "qgswmssourceselect.h"
+#include "qgssourceselectprovider.h"
+#endif
+
+
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkProxy>
@@ -99,14 +106,7 @@ struct LessThanTileRequest
 QgsWmsProvider::QgsWmsProvider( QString const &uri, const QgsWmsCapabilities *capabilities )
   : QgsRasterDataProvider( uri )
   , mHttpGetLegendGraphicResponse( nullptr )
-  , mGetLegendGraphicImage()
-  , mGetLegendGraphicScale( 0.0 )
   , mImageCrs( DEFAULT_LATLON_CRS )
-  , mIdentifyReply( nullptr )
-  , mExtentDirty( true )
-  , mTileReqNo( 0 )
-  , mTileLayer( nullptr )
-  , mTileMatrixSet( nullptr )
 {
   QgsDebugMsg( "constructing with uri '" + uri + "'." );
 
@@ -1847,7 +1847,7 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
 
 QString QgsWmsProvider::metadata()
 {
-  QString metadata = QLatin1String( "" );
+  QString metadata;
 
   metadata += QLatin1String( "<tr><td>" );
 
@@ -2574,7 +2574,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
     Q_ASSERT( mTileMatrixSet );
     Q_ASSERT( !mTileMatrixSet->tileMatrices.isEmpty() );
 
-    QMap<double, QgsWmtsTileMatrix> &m =  mTileMatrixSet->tileMatrices;
+    QMap<double, QgsWmtsTileMatrix> &m = mTileMatrixSet->tileMatrices;
 
     // find nearest resolution
     QMap<double, QgsWmtsTileMatrix>::const_iterator prev, it = m.constBegin();
@@ -2713,12 +2713,12 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
       bool isGml = false;
 
       const QgsNetworkReplyParser::RawHeaderMap &headers = mIdentifyResultHeaders.value( 0 );
-      Q_FOREACH ( const QByteArray &v, headers.keys() )
+      for ( auto it = headers.constBegin(); it != headers.constEnd(); ++it )
       {
-        if ( QString( v ).compare( QLatin1String( "Content-Type" ), Qt::CaseInsensitive ) == 0 )
+        if ( QString( it.key() ).compare( QLatin1String( "Content-Type" ), Qt::CaseInsensitive ) == 0 )
         {
-          isXml = QString( headers.value( v ) ).compare( QLatin1String( "text/xml" ), Qt::CaseInsensitive ) == 0;
-          isGml = QString( headers.value( v ) ).compare( QLatin1String( "ogr/gml" ), Qt::CaseInsensitive ) == 0;
+          isXml = QString( it.value() ).compare( QLatin1String( "text/xml" ), Qt::CaseInsensitive ) == 0;
+          isGml = QString( it.value() ).compare( QLatin1String( "ogr/gml" ), Qt::CaseInsensitive ) == 0;
           if ( isXml || isGml )
             break;
         }
@@ -3379,7 +3379,7 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh, const 
   if ( !forceRefresh )
     return mGetLegendGraphicImage;
 
-  mError = QLatin1String( "" );
+  mError.clear();
 
   QUrl url( getLegendGraphicFullURL( scale, mGetLegendGraphicExtent ) );
   if ( !url.isValid() )
@@ -3441,7 +3441,7 @@ QgsImageFetcher *QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings *
   }
   else
   {
-    QgsImageFetcher *fetcher =  new QgsWmsLegendDownloadHandler( *QgsNetworkAccessManager::instance(), mSettings, url );
+    QgsImageFetcher *fetcher = new QgsWmsLegendDownloadHandler( *QgsNetworkAccessManager::instance(), mSettings, url );
     fetcher->setProperty( "legendScale", QVariant::fromValue( scale ) );
     fetcher->setProperty( "legendExtent", QVariant::fromValue( mapExtent.toRectF() ) );
     connect( fetcher, &QgsImageFetcher::finish, this, &QgsWmsProvider::getLegendGraphicReplyFinished );
@@ -3510,7 +3510,8 @@ QGISEXTERN QgsWmsProvider *classFactory( const QString *uri )
   return new QgsWmsProvider( *uri );
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
@@ -3539,7 +3540,6 @@ QGISEXTERN bool isProvider()
 
 QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString &providerUri, const QUrl &url, const QgsWmsAuthorization &auth, QImage *image, QgsRasterBlockFeedback *feedback )
   : mProviderUri( providerUri )
-  , mCacheReply( nullptr )
   , mCachedImage( image )
   , mEventLoop( new QEventLoop )
   , mFeedback( feedback )
@@ -4072,7 +4072,6 @@ void QgsWmsProvider::setSRSQueryItem( QUrl &url )
 QgsWmsLegendDownloadHandler::QgsWmsLegendDownloadHandler( QgsNetworkAccessManager &networkAccessManager, const QgsWmsSettings &settings, const QUrl &url )
   : mNetworkAccessManager( networkAccessManager )
   , mSettings( settings )
-  , mReply( nullptr )
   , mInitialUrl( url )
 {
 }
@@ -4210,11 +4209,38 @@ QgsCachedImageFetcher::QgsCachedImageFetcher( const QImage &img )
 {
 }
 
-QgsCachedImageFetcher::~QgsCachedImageFetcher()
-{
-}
-void
-QgsCachedImageFetcher::start()
+void QgsCachedImageFetcher::start()
 {
   QTimer::singleShot( 1, this, SLOT( send() ) );
 }
+
+
+#ifdef HAVE_GUI
+
+//! Provider for WMS layers source select
+class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "wms" ); }
+    virtual QString text() const override { return QObject::tr( "WMS" ); }
+    virtual int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 10; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWmsLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsWMSSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsWmsSourceSelectProvider;
+
+  return providers;
+}
+#endif
+

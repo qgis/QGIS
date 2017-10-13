@@ -32,7 +32,8 @@ class QgsAuthConfigSslServer;
 
 #define SSL_SUBJECT_INFO( var, prop ) var.subjectInfo( prop ).value(0)
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Utilities for working with certificates and keys
  */
 class CORE_EXPORT QgsAuthCertUtils
@@ -86,16 +87,19 @@ class CORE_EXPORT QgsAuthCertUtils
     //! Map certificate sha1 to certificate as simple cache
     static QMap<QString, QSslCertificate> mapDigestToCerts( const QList<QSslCertificate> &certs );
 
-    /** Map certificates to their oraganization.
+    /**
+     * Map certificates to their oraganization.
      * \note not available in Python bindings
      */
     static QMap< QString, QList<QSslCertificate> > certsGroupedByOrg( const QList<QSslCertificate> &certs ) SIP_SKIP;
 
-    /** Map SSL custom configs' certificate sha1 to custom config as simple cache
+    /**
+     * Map SSL custom configs' certificate sha1 to custom config as simple cache
      */
     static QMap<QString, QgsAuthConfigSslServer> mapDigestToSslConfigs( const QList<QgsAuthConfigSslServer> &configs );
 
-    /** Map SSL custom configs' certificates to their oraganization.
+    /**
+     * Map SSL custom configs' certificates to their oraganization.
      * \note not available in Python bindings
      */
     static QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( const QList<QgsAuthConfigSslServer> &configs ) SIP_SKIP;
@@ -106,7 +110,8 @@ class CORE_EXPORT QgsAuthCertUtils
     //! Return first cert from a PEM or DER formatted file
     static QSslCertificate certFromFile( const QString &certpath );
 
-    /** Return non-encrypted key from a PEM or DER formatted file
+    /**
+     * Return non-encrypted key from a PEM or DER formatted file
      * \param keypath File path to private key
      * \param keypass Passphrase for private key
      * \param algtype QString to set with resolved algorithm type
@@ -118,7 +123,8 @@ class CORE_EXPORT QgsAuthCertUtils
     //! Return list of concatenated certs from a PEM Base64 text block
     static QList<QSslCertificate> certsFromString( const QString &pemtext );
 
-    /** Return list of certificate, private key and algorithm (as PEM text) from file path components
+    /**
+     * Return list of certificate, private key and algorithm (as PEM text) from file path components
      * \param certpath File path to certificate
      * \param keypath File path to private key
      * \param keypass Passphrase for private key
@@ -130,7 +136,8 @@ class CORE_EXPORT QgsAuthCertUtils
                                            const QString &keypass = QString(),
                                            bool reencrypt = true );
 
-    /** Return list of certificate, private key and algorithm (as PEM text) for a PKCS#12 bundle
+    /**
+     * Return list of certificate, private key and algorithm (as PEM text) for a PKCS#12 bundle
      * \param bundlepath File path to the PKCS bundle
      * \param bundlepass Passphrase for bundle
      * \param reencrypt Whether to re-encrypt the private key with the passphrase
@@ -140,14 +147,16 @@ class CORE_EXPORT QgsAuthCertUtils
                                           const QString &bundlepass = QString(),
                                           bool reencrypt = true );
 
-    /** Write a temporary file for a PEM text of cert/key/CAs bundle component
+    /**
+     * Write a temporary file for a PEM text of cert/key/CAs bundle component
      * \param pemtext Component content as PEM text
      * \param name Name of file
      * \returns File path to temporary file
      */
     static QString pemTextToTempFile( const QString &name, const QByteArray &pemtext );
 
-    /** Get the general name for CA source enum type
+    /**
+     * Get the general name for CA source enum type
      * \param source The enum source type for the CA
      * \param single Whether to return singular or plural description
      */
@@ -156,7 +165,8 @@ class CORE_EXPORT QgsAuthCertUtils
     //! Get the general name via RFC 5280 resolution
     static QString resolvedCertName( const QSslCertificate &cert, bool issuer = false );
 
-    /** Get combined distinguished name for certificate
+    /**
+     * Get combined distinguished name for certificate
      * \param qcert Qt SSL cert object
      * \param acert QCA SSL cert object to add more info to the output
      * \param issuer Whether to return cert's subject or issuer combined name
@@ -172,43 +182,51 @@ class CORE_EXPORT QgsAuthCertUtils
     //! Get string with colon delimiters every 2 characters
     static QString getColonDelimited( const QString &txt );
 
-    /** Get the sha1 hash for certificate
+    /**
+     * Get the sha1 hash for certificate
      * \param cert Qt SSL certificate to generate hash from
      * \param formatted Whether to colon-delimit the hash
      */
     static QString shaHexForCert( const QSslCertificate &cert, bool formatted = false );
 
-    /** Convert a QSslCertificate to a QCA::Certificate.
+    /**
+     * Convert a QSslCertificate to a QCA::Certificate.
      * \note not available in Python bindings
      */
     static QCA::Certificate qtCertToQcaCert( const QSslCertificate &cert ) SIP_SKIP;
 
-    /** Convert a QList of QSslCertificate to a QCA::CertificateCollection.
+    /**
+     * Convert a QList of QSslCertificate to a QCA::CertificateCollection.
      * \note not available in Python bindings
      */
     static QCA::CertificateCollection qtCertsToQcaCollection( const QList<QSslCertificate> &certs ) SIP_SKIP;
 
-    /** PKI key/cert bundle from file path, e.g. from .p12 or pfx files.
+    /**
+     * PKI key/cert bundle from file path, e.g. from .p12 or pfx files.
      * \note not available in Python bindings
      */
     static QCA::KeyBundle qcaKeyBundle( const QString &path, const QString &pass ) SIP_SKIP;
 
-    /** Certificate validity check messages per enum.
+    /**
+     * Certificate validity check messages per enum.
      * \note not available in Python bindings
      */
     static QString qcaValidityMessage( QCA::Validity validity ) SIP_SKIP;
 
-    /** Certificate signature algorithm strings per enum.
+    /**
+     * Certificate signature algorithm strings per enum.
      * \note not available in Python bindings
      */
     static QString qcaSignatureAlgorithm( QCA::SignatureAlgorithm algorithm ) SIP_SKIP;
 
-    /** Certificate well-known constraint strings per enum.
+    /**
+     * Certificate well-known constraint strings per enum.
      * \note not available in Python bindings
      */
     static QString qcaKnownConstraint( QCA::ConstraintTypeKnown constraint ) SIP_SKIP;
 
-    /** Certificate usage type strings per enum
+    /**
+     * Certificate usage type strings per enum
      * \note not available in Python bindings
      */
     static QString certificateUsageTypeString( QgsAuthCertUtils::CertUsageType usagetype ) SIP_SKIP;
@@ -234,7 +252,8 @@ class CORE_EXPORT QgsAuthCertUtils
     //! Get short strings describing an SSL error
     static QString sslErrorEnumString( QSslError::SslError errenum );
 
-    /** Get short strings describing SSL errors.
+    /**
+     * Get short strings describing SSL errors.
      * \note not available in Python bindings
      */
     static QList<QPair<QSslError::SslError, QString> > sslErrorEnumStrings() SIP_SKIP;

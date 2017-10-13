@@ -31,7 +31,8 @@ class QgsExpression;
 #define DEFAULT_SIMPLELINE_JOINSTYLE Qt::BevelJoin
 #define DEFAULT_SIMPLELINE_CAPSTYLE  Qt::SquareCap
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSimpleLineSymbolLayer
  */
 class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
@@ -89,13 +90,15 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     bool useCustomDashPattern() const { return mUseCustomDashPattern; }
     void setUseCustomDashPattern( bool b ) { mUseCustomDashPattern = b; }
 
-    /** Sets the units for lengths used in the custom dash pattern.
+    /**
+     * Sets the units for lengths used in the custom dash pattern.
      * \param unit length units
      * \see customDashPatternUnit()
     */
     void setCustomDashPatternUnit( QgsUnitTypes::RenderUnit unit ) { mCustomDashPatternUnit = unit; }
 
-    /** Returns the units for lengths used in the custom dash pattern.
+    /**
+     * Returns the units for lengths used in the custom dash pattern.
      * \see setCustomDashPatternUnit()
     */
     QgsUnitTypes::RenderUnit customDashPatternUnit() const { return mCustomDashPatternUnit; }
@@ -120,20 +123,20 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 
   protected:
     Qt::PenStyle mPenStyle;
-    Qt::PenJoinStyle mPenJoinStyle;
-    Qt::PenCapStyle mPenCapStyle;
+    Qt::PenJoinStyle mPenJoinStyle = DEFAULT_SIMPLELINE_JOINSTYLE;
+    Qt::PenCapStyle mPenCapStyle = DEFAULT_SIMPLELINE_CAPSTYLE;
     QPen mPen;
     QPen mSelPen;
 
     //use a custom dash dot pattern instead of the predefined ones
-    bool mUseCustomDashPattern;
-    QgsUnitTypes::RenderUnit mCustomDashPatternUnit;
+    bool mUseCustomDashPattern = false;
+    QgsUnitTypes::RenderUnit mCustomDashPatternUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mCustomDashPatternMapUnitScale;
 
     //! Vector with an even number of entries for the
     QVector<qreal> mCustomDashVector;
 
-    bool mDrawInsidePolygon;
+    bool mDrawInsidePolygon = false;
 
   private:
     //helper functions for data defined symbology
@@ -145,7 +148,8 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
 #define DEFAULT_MARKERLINE_ROTATE     true
 #define DEFAULT_MARKERLINE_INTERVAL   3
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMarkerLineSymbolLayer
  */
 class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
@@ -255,7 +259,8 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      */
     void setPlacement( Placement p ) { mPlacement = p; }
 
-    /** Returns the offset along the line for the marker placement. For Interval placements, this is the distance
+    /**
+     * Returns the offset along the line for the marker placement. For Interval placements, this is the distance
      * between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
      * distance between the marker and the start of the line or the end of the line respectively.
      * This setting has no effect for Vertex or CentralPoint placements.
@@ -267,7 +272,8 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      */
     double offsetAlongLine() const { return mOffsetAlongLine; }
 
-    /** Sets the the offset along the line for the marker placement. For Interval placements, this is the distance
+    /**
+     * Sets the the offset along the line for the marker placement. For Interval placements, this is the distance
      * between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
      * distance between the marker and the start of the line or the end of the line respectively.
      * This setting has no effect for Vertex or CentralPoint placements.
@@ -280,38 +286,44 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
      */
     void setOffsetAlongLine( double offsetAlongLine ) { mOffsetAlongLine = offsetAlongLine; }
 
-    /** Returns the unit used for calculating the offset along line for markers.
+    /**
+     * Returns the unit used for calculating the offset along line for markers.
      * \returns Offset along line unit type.
      * \see setOffsetAlongLineUnit
      * \see offsetAlongLine
      */
     QgsUnitTypes::RenderUnit offsetAlongLineUnit() const { return mOffsetAlongLineUnit; }
 
-    /** Sets the unit used for calculating the offset along line for markers.
+    /**
+     * Sets the unit used for calculating the offset along line for markers.
      * \param unit Offset along line unit type.
      * \see offsetAlongLineUnit
      * \see setOffsetAlongLine
      */
     void setOffsetAlongLineUnit( QgsUnitTypes::RenderUnit unit ) { mOffsetAlongLineUnit = unit; }
 
-    /** Returns the map unit scale used for calculating the offset in map units along line for markers.
+    /**
+     * Returns the map unit scale used for calculating the offset in map units along line for markers.
      * \returns Offset along line map unit scale.
      */
     const QgsMapUnitScale &offsetAlongLineMapUnitScale() const { return mOffsetAlongLineMapUnitScale; }
 
-    /** Sets the map unit scale used for calculating the offset in map units along line for markers.
+    /**
+     * Sets the map unit scale used for calculating the offset in map units along line for markers.
      * \param scale Offset along line map unit scale.
      */
     void setOffsetAlongLineMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetAlongLineMapUnitScale = scale; }
 
-    /** Sets the units for the interval between markers.
+    /**
+     * Sets the units for the interval between markers.
      * \param unit interval units
      * \see intervalUnit()
      * \see setInterval()
     */
     void setIntervalUnit( QgsUnitTypes::RenderUnit unit ) { mIntervalUnit = unit; }
 
-    /** Returns the units for the interval between markers.
+    /**
+     * Returns the units for the interval between markers.
      * \see setIntervalUnit()
      * \see interval()
     */
@@ -354,7 +366,8 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     QgsMarkerLineSymbolLayer( const QgsMarkerLineSymbolLayer &other );
 #endif
 
-    /** Renders a marker by offsetting a vertex along the line by a specified distance.
+    /**
+     * Renders a marker by offsetting a vertex along the line by a specified distance.
      * \param points vertices making up the line
      * \param vertex vertex number to begin offset at
      * \param distance distance to offset from vertex. If distance is positive, offset is calculated

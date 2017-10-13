@@ -21,7 +21,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgshistogram.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for QgsHistogram
  */
 class TestQgsHistogram : public QObject
@@ -46,10 +47,7 @@ class TestQgsHistogram : public QObject
 
 };
 
-TestQgsHistogram::TestQgsHistogram()
-{
-
-}
+TestQgsHistogram::TestQgsHistogram() = default;
 
 void TestQgsHistogram::initTestCase()
 {
@@ -70,7 +68,7 @@ void TestQgsHistogram::optimalBinWidth()
 
   QgsHistogram h;
   h.setValues( vals );
-  QVERIFY( qgsDoubleNear( h.optimalBinWidth(), 4.641, 0.001 ) );
+  QGSCOMPARENEAR( h.optimalBinWidth(), 4.641, 0.001 );
 }
 
 void TestQgsHistogram::optimalBinCount()

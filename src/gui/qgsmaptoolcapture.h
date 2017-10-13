@@ -30,7 +30,8 @@ class QgsVertexMarker;
 class QgsMapLayer;
 class QgsGeometryValidator;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsMapToolCapture
  */
 class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
@@ -38,13 +39,30 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     Q_OBJECT
 
   public:
+
+    //! Different capture modes
+    enum CaptureMode
+    {
+      CaptureNone,    //!< Do not capture / determine mode from layer geometry type
+      CapturePoint,   //!< Capture points
+      CaptureLine,    //!< Capture lines
+      CapturePolygon  //!< Capture polygons
+    };
+
     //! constructor
-    QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode = CaptureNone );
+    QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 
     virtual ~QgsMapToolCapture();
 
     virtual void activate() override;
     virtual void deactivate() override;
+
+    /**
+     * The capture mode
+     *
+     * \returns Capture mode
+     */
+    CaptureMode mode() const { return mCaptureMode; }
 
     //! Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS
     int addCurve( QgsCurve *c );
@@ -88,7 +106,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
   protected:
 
-    /** Converts a map point to layer coordinates
+    /**
+     * Converts a map point to layer coordinates
      *  \param mapPoint the point in map coordinates
      *  \param[in,out] layerPoint the point in layer coordinates
      *  \returns
@@ -99,7 +118,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
 
-    /** Converts a point to map coordinates and layer coordinates
+    /**
+     * Converts a point to map coordinates and layer coordinates
      * \param p the input point
      * \param[in,out] layerPoint the point in layer coordinates
      * \param[in,out] mapPoint the point in map coordinates
@@ -111,7 +131,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint );
 
-    /** Fetches the original point from the source layer if it has the same
+    /**
+     * Fetches the original point from the source layer if it has the same
      * CRS as the current layer.
      * \returns 0 in case of success, 1 if not applicable (CRS mismatch), 2 in case of failure
      * \since QGIS 2.14
@@ -119,13 +140,15 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
 
-    /** Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
+    /**
+     * Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
      * \returns 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int addVertex( const QgsPointXY &point );
 
-    /** Variant to supply more information in the case of snapping
+    /**
+     * Variant to supply more information in the case of snapping
      * \param mapPoint The vertex to add in map coordinates
      * \param match Data about the snapping match. Can be an invalid match, if point not snapped.
      * \since QGIS 2.14
@@ -190,6 +213,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool tracingAddVertex( const QgsPointXY &point );
 
   private:
+    //! The capture mode in which this tool operates
+    CaptureMode mCaptureMode;
+
     //! Flag to indicate a map canvas capture operation is taking place
     bool mCapturing;
 
@@ -213,6 +239,14 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool mCaptureModeFromLayer;
 
     QgsVertexMarker *mSnappingMarker = nullptr;
+
+    /**
+     * Keeps point (in map units) snapped to a segment where we most recently finished tracing,
+     * so that we can use as the starting point for further tracing. This is useful mainly when
+     * tracing with offset: without knowledge of this point user would need to click a segment
+     * again after every time a new trace with offset is created (to get new "anchor" point)
+     */
+    QgsPointXY mTracingStartPoint;
 
 #ifdef Q_OS_WIN
     int mSkipNextContextMenuEvent;

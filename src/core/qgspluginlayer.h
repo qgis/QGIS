@@ -19,7 +19,8 @@
 #include "qgsmaplayer.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
   Base class for plugin layers. These can be implemented by plugins
   and registered in QgsPluginLayerRegistry.
 
@@ -35,7 +36,8 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     QgsPluginLayer( const QString &layerType, const QString &layerName = QString() );
     ~QgsPluginLayer();
 
-    /** Returns a new instance equivalent to this one.
+    /**
+     * Returns a new instance equivalent to this one.
      * \returns a new layer instance
      * \since QGIS 3.0
      */
@@ -47,7 +49,8 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     //! Set extent of the layer
     void setExtent( const QgsRectangle &extent ) override;
 
-    /** Set source string. This is used for example in layer tree to show tooltip.
+    /**
+     * Set source string. This is used for example in layer tree to show tooltip.
      * \since QGIS 2.16
      */
     void setSource( const QString &source );

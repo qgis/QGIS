@@ -29,8 +29,6 @@
 
 QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *listModel, QObject *parent )
   : QItemDelegate( parent )
-  , mFeatureSelectionModel( nullptr )
-  , mEditSelectionModel( nullptr )
   , mListModel( listModel )
   , mCurrentFeatureEdited( false )
 {

@@ -201,4 +201,4 @@ namespace QgsGuiUtils
     return QFontDialog::getFont( &ok, initial, nullptr, title );
 #endif
   }
-} // namespace QgisGui
+}

@@ -24,7 +24,8 @@
 
 class QgsVectorLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsTransactionGroup
  */
 class CORE_EXPORT QgsTransactionGroup : public QObject
@@ -83,8 +84,8 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     void onRollback();
 
   private:
-    bool mEditingStarting;
-    bool mEditingStopping;
+    bool mEditingStarting = false;
+    bool mEditingStopping = false;
 
     void disableTransaction();
 

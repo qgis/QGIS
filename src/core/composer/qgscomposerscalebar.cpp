@@ -41,8 +41,6 @@
 
 QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition *composition )
   : QgsComposerItem( composition )
-  , mComposerMap( nullptr )
-  , mStyle( nullptr )
   , mSegmentMillimeters( 0.0 )
 {
   applyDefaultSettings();
@@ -426,7 +424,7 @@ void QgsComposerScaleBar::applyDefaultSize( QgsUnitTypes::DistanceUnit u )
     setUnits( u );
     double upperMagnitudeMultiplier = 1.0;
     double widthInSelectedUnits = mapWidth();
-    double initialUnitsPerSegment =  widthInSelectedUnits / 10.0; //default scalebar width equals half the map width
+    double initialUnitsPerSegment = widthInSelectedUnits / 10.0; //default scalebar width equals half the map width
     setNumUnitsPerSegment( initialUnitsPerSegment );
 
     switch ( u )
@@ -728,8 +726,8 @@ bool QgsComposerScaleBar::readXml( const QDomElement &itemElem, const QDomDocume
   mSettings.setNumberOfSegmentsLeft( itemElem.attribute( QStringLiteral( "numSegmentsLeft" ), QStringLiteral( "0" ) ).toInt() );
   mSettings.setUnitsPerSegment( itemElem.attribute( QStringLiteral( "numUnitsPerSegment" ), QStringLiteral( "1.0" ) ).toDouble() );
   mSettings.setSegmentSizeMode( static_cast<QgsScaleBarSettings::SegmentSizeMode>( itemElem.attribute( QStringLiteral( "segmentSizeMode" ), QStringLiteral( "0" ) ).toInt() ) );
-  mSettings.setMinimumBarWidth( itemElem.attribute( QStringLiteral( "minBarWidth" ), QStringLiteral( "50" ) ).toInt() );
-  mSettings.setMaximumBarWidth( itemElem.attribute( QStringLiteral( "maxBarWidth" ), QStringLiteral( "150" ) ).toInt() );
+  mSettings.setMinimumBarWidth( itemElem.attribute( QStringLiteral( "minBarWidth" ), QStringLiteral( "50" ) ).toDouble() );
+  mSettings.setMaximumBarWidth( itemElem.attribute( QStringLiteral( "maxBarWidth" ), QStringLiteral( "150" ) ).toDouble() );
   mSegmentMillimeters = itemElem.attribute( QStringLiteral( "segmentMillimeters" ), QStringLiteral( "0.0" ) ).toDouble();
   mSettings.setMapUnitsPerScaleBarUnit( itemElem.attribute( QStringLiteral( "numMapUnitsPerScaleBarUnit" ), QStringLiteral( "1.0" ) ).toDouble() );
   mSettings.setLineWidth( itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "0.3" ) ).toDouble() );

@@ -1,4 +1,5 @@
-﻿--
+
+--
 -- PostgreSQL database dump
 --
 
@@ -30,7 +31,7 @@ SET default_with_oids = false;
 
 --
 -- TOC entry 171 (class 1259 OID 377761)
--- Name: someData; Type: TABLE; Schema: qgis_test; Owner: postgres; Tablespace: 
+-- Name: someData; Type: TABLE; Schema: qgis_test; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE qgis_test."someData" (
@@ -46,6 +47,11 @@ CREATE TABLE qgis_test."some_poly_data" (
     pk SERIAL NOT NULL,
     geom public.geometry(Polygon,4326)
 );
+
+CREATE OR REPLACE VIEW qgis_test.some_poly_data_view
+  AS
+    SELECT *
+    FROM qgis_test.some_poly_data;
 
 --
 -- TOC entry 4068 (class 0 OID 377761)
@@ -92,7 +98,7 @@ INSERT INTO qgis_test."someDataCompound" ( key1, key2, pk, cnt, name, name2, num
 
 --
 -- TOC entry 3953 (class 2606 OID 377768)
--- Name: someData_pkey; Type: CONSTRAINT; Schema: qgis_test; Owner: postgres; Tablespace: 
+-- Name: someData_pkey; Type: CONSTRAINT; Schema: qgis_test; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY qgis_test."someData"

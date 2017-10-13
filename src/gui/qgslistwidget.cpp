@@ -39,9 +39,9 @@ QgsListModel::QgsListModel( QVariant::Type subType, QObject *parent ) :
 
 void QgsListModel::setList( const QVariantList &list )
 {
-  emit beginResetModel();
+  beginResetModel();
   mLines = list;
-  emit endResetModel();
+  endResetModel();
 }
 
 QVariantList QgsListModel::list() const

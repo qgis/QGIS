@@ -24,11 +24,6 @@ QgsAppPluginManagerInterface::QgsAppPluginManagerInterface( QgsPluginManager *pl
 {
 }
 
-
-QgsAppPluginManagerInterface::~QgsAppPluginManagerInterface()
-{
-}
-
 void QgsAppPluginManagerInterface::showPluginManager( int tabIndex )
 {
   mPluginManager->getCppPluginsMetadata();

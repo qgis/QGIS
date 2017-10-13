@@ -57,9 +57,7 @@ class TestQgsPointLocator : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsPointLocator()
-      : mVL( 0 )
-    {}
+    TestQgsPointLocator() = default;
 
   private:
     QgsVectorLayer *mVL = nullptr;
@@ -265,7 +263,7 @@ class TestQgsPointLocator : public QObject
 
     void testNullGeometries()
     {
-      QgsVectorLayer *vlNullGeom = new QgsVectorLayer( "Polygon", "x", "memory" );
+      QgsVectorLayer *vlNullGeom = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature ff( 0 );
       ff.setGeometry( QgsGeometry() );
       QgsFeatureList flist;
@@ -285,7 +283,7 @@ class TestQgsPointLocator : public QObject
 
     void testEmptyGeometries()
     {
-      QgsVectorLayer *vlEmptyGeom = new QgsVectorLayer( "Polygon", "x", "memory" );
+      QgsVectorLayer *vlEmptyGeom = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature ff( 0 );
       QgsGeometry g;
       g.setGeometry( new QgsPolygonV2() );

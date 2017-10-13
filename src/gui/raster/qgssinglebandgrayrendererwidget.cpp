@@ -23,10 +23,11 @@
 
 QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
-  , mMinMaxWidget( nullptr )
   , mDisableMinMaxWidgetRefresh( false )
 {
   setupUi( this );
+  connect( mMinLineEdit, &QLineEdit::textChanged, this, &QgsSingleBandGrayRendererWidget::mMinLineEdit_textChanged );
+  connect( mMaxLineEdit, &QLineEdit::textChanged, this, &QgsSingleBandGrayRendererWidget::mMaxLineEdit_textChanged );
 
   mGradientComboBox->insertItem( 0, tr( "Black to white" ), QgsSingleBandGrayRenderer::BlackToWhite );
   mGradientComboBox->insertItem( 1, tr( "White to black" ), QgsSingleBandGrayRenderer::WhiteToBlack );
@@ -112,12 +113,12 @@ void QgsSingleBandGrayRendererWidget::setMapCanvas( QgsMapCanvas *canvas )
   mMinMaxWidget->setMapCanvas( canvas );
 }
 
-void QgsSingleBandGrayRendererWidget::on_mMinLineEdit_textChanged( const QString & )
+void QgsSingleBandGrayRendererWidget::mMinLineEdit_textChanged( const QString & )
 {
   minMaxModified();
 }
 
-void QgsSingleBandGrayRendererWidget::on_mMaxLineEdit_textChanged( const QString & )
+void QgsSingleBandGrayRendererWidget::mMaxLineEdit_textChanged( const QString & )
 {
   minMaxModified();
 }

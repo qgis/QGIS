@@ -513,7 +513,7 @@ QList<QgsMapLayer *> QgsComposerMap::layersToRender( const QgsExpressionContext 
     if ( mComposition->project()->mapThemeCollection()->hasMapTheme( presetName ) )
       renderLayers = mComposition->project()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
     else  // fallback to using map canvas layers
-      renderLayers =  mComposition->project()->mapThemeCollection()->masterVisibleLayers();
+      renderLayers = mComposition->project()->mapThemeCollection()->masterVisibleLayers();
   }
   else if ( !layers().isEmpty() )
   {
@@ -521,7 +521,7 @@ QList<QgsMapLayer *> QgsComposerMap::layersToRender( const QgsExpressionContext 
   }
   else
   {
-    renderLayers =  mComposition->project()->mapThemeCollection()->masterVisibleLayers();
+    renderLayers = mComposition->project()->mapThemeCollection()->masterVisibleLayers();
   }
 
   bool ok = false;
@@ -922,8 +922,6 @@ void QgsComposerMap::refreshMapExtents( const QgsExpressionContext *context )
   const QgsExpressionContext *evalContext = context ? context : &scopedContext;
 
   //data defined map extents set?
-  QVariant exprVal;
-
   QgsRectangle newExtent = *currentMapExtent();
   bool useDdXMin = false;
   bool useDdXMax = false;
@@ -1798,7 +1796,7 @@ void QgsComposerMap::transformShift( double &xShift, double &yShift ) const
 QPointF QgsComposerMap::mapToItemCoords( QPointF mapCoords ) const
 {
   QPolygonF mapPoly = transformedMapPolygon();
-  if ( mapPoly.size() < 1 )
+  if ( mapPoly.empty() )
   {
     return QPointF( 0, 0 );
   }

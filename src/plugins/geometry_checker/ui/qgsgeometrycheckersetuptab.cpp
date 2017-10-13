@@ -217,7 +217,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
     }
 
     QString errMsg;
-    QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormat( layer, filename, layer->dataProvider()->encoding(), layer->crs(), mOutputDriverName, selectedOnly, &errMsg );
+    QgsVectorFileWriter::WriterError err = QgsVectorFileWriter::writeAsVectorFormat( layer, filename, layer->dataProvider()->encoding(), layer->crs(), mOutputDriverName, selectedOnly, &errMsg );
     if ( err != QgsVectorFileWriter::NoError )
     {
       QMessageBox::critical( this, tr( "Layer Creation Failed" ), tr( "Failed to create the output layer: %1" ).arg( errMsg ) );
@@ -337,5 +337,5 @@ void QgsGeometryCheckerSetupTab::showCancelFeedback()
   mAbortButton->setEnabled( false );
   ui.labelStatus->setText( tr( "<b>Waiting for running checks to finish...</b>" ) );
   ui.labelStatus->show();
-  ui.progressBar->hide() ;
+  ui.progressBar->hide();
 }

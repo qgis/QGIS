@@ -25,9 +25,9 @@
 #include "qgslinestring.h"
 #include "qgspoint.h"
 #include "qgstest.h"
-#include "qgstestutils.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the operations on curve geometries
  */
 class TestQgsCurve : public QObject
@@ -35,7 +35,7 @@ class TestQgsCurve : public QObject
     Q_OBJECT
 
   public:
-    TestQgsCurve() {};
+    TestQgsCurve() = default;;
 
   private slots:
     //void initTestCase();// will be called before the first testfunction is executed.
@@ -81,7 +81,7 @@ void TestQgsCurve::curveToLine()
 
   /* input: 2 quadrants arc (180 degrees, PI radians) */
   circularString.reset( dynamic_cast< QgsCircularString *>(
-                          QgsGeometryFactory::geomFromWkt( QString(
+                          QgsGeometryFactory::geomFromWkt( QStringLiteral(
                                 "CIRCULARSTRING(0 0,100 100,200 0)"
                               )
                                                          ).release()
@@ -104,7 +104,7 @@ void TestQgsCurve::curveToLine()
 
   /* input: 2 arcs of 2 quadrants each (180 degrees + 180 degrees other direction) */
   circularString.reset( dynamic_cast<QgsCircularString *>(
-                          QgsGeometryFactory::geomFromWkt( QString(
+                          QgsGeometryFactory::geomFromWkt( QStringLiteral(
                                 "CIRCULARSTRING(0 0,100 100,200 0,300 -100,400 0)"
                               ) ).release()
                         ) );

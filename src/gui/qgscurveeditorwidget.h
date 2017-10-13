@@ -43,7 +43,8 @@ typedef QPointF QwtDoublePoint SIP_SKIP;
 // just internal guff - definitely not for exposing to public API!
 ///@cond PRIVATE
 
-/** \class QgsHistogramValuesGatherer
+/**
+ * \class QgsHistogramValuesGatherer
  * Calculates a histogram in a thread.
  * \note not available in Python bindings
  */
@@ -133,7 +134,8 @@ class QgsHistogramValuesGatherer: public QThread
 
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsCurveEditorWidget
  * A widget for manipulating QgsCurveTransform curves.
  * \since QGIS 3.0
@@ -209,7 +211,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 
   protected:
 
-    virtual void keyPressEvent( QKeyEvent *event ) override ;
+    virtual void keyPressEvent( QKeyEvent *event ) override;
 
   private slots:
 
@@ -227,7 +229,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 
     QList< QwtPlotMarker * > mMarkers;
     QgsCurveEditorPlotEventFilter *mPlotFilter = nullptr;
-    int mCurrentPlotMarkerIndex;
+    int mCurrentPlotMarkerIndex = -1;
     //! Background histogram gatherer thread
     std::unique_ptr< QgsHistogramValuesGatherer > mGatherer;
     std::unique_ptr< QgsHistogram > mHistogram;
@@ -273,7 +275,7 @@ class GUI_EXPORT QgsCurveEditorPlotEventFilter: public QObject
 
   private:
 
-    QwtPlot *mPlot;
+    QwtPlot *mPlot = nullptr;
     QPointF mapPoint( QPointF point ) const;
 };
 ///@endcond

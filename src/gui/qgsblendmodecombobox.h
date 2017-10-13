@@ -23,7 +23,8 @@
 #include <QPainter> // For QPainter::CompositionMode enum
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A combobox which lets the user select blend modes from a predefined list
  **/
 class GUI_EXPORT QgsBlendModeComboBox : public QComboBox
@@ -38,7 +39,8 @@ class GUI_EXPORT QgsBlendModeComboBox : public QComboBox
     void setBlendMode( QPainter::CompositionMode blendMode );
   private:
 
-    /** Returns a QStringList of the translated blend modes
+    /**
+     * Returns a QStringList of the translated blend modes
     * "-" is used to indicate the position of a separator in the list
     * This list is designed to emulate GIMP's layer modes, where
     * blending modes are grouped by their effect (lightening, darkening, etc)
@@ -52,7 +54,8 @@ class GUI_EXPORT QgsBlendModeComboBox : public QComboBox
 
   public slots:
 
-    /** Populates the blend mode combo box, and sets up mapping for
+    /**
+     * Populates the blend mode combo box, and sets up mapping for
     * blend modes to combo box indexes
     */
     void updateModes();

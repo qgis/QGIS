@@ -29,7 +29,6 @@ class QgsDataProvider : QObject
 %TypeHeaderCode
 #include "qgsdataprovider.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsVectorDataProvider *>( sipCpp ) )
     {
@@ -45,7 +44,6 @@ class QgsDataProvider : QObject
     }
 %End
   public:
-
 
     enum DataCapability
     {
@@ -362,6 +360,18 @@ Current time stamp of data source
  :rtype: QVariant
 %End
 
+    virtual void setListening( bool isListening );
+%Docstring
+ Set whether the provider will listen to datasource notifications
+ If set, the provider will issue notify signals.
+
+ The default implementation does nothing.
+
+.. seealso:: notify
+
+.. versionadded:: 3.0
+%End
+
   signals:
 
     void fullExtentCalculated();
@@ -379,6 +389,16 @@ Current time stamp of data source
    When emitted from a QgsVectorDataProvider, any cached information such as
    feature ids should be invalidated.
 %End
+
+    void notify( const QString &msg );
+%Docstring
+ Emitted when datasource issues a notification
+
+.. seealso:: setListening
+
+.. versionadded:: 3.0
+%End
+
 
   protected:
 

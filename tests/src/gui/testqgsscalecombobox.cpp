@@ -28,9 +28,7 @@ class TestQgsScaleComboBox : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsScaleComboBox()
-      : s( nullptr )
-    {}
+    TestQgsScaleComboBox() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -191,7 +189,7 @@ void TestQgsScaleComboBox::toDouble()
 void TestQgsScaleComboBox::enterScale( const QString &scale )
 {
   QLineEdit *l = s->lineEdit();
-  l->setText( QLatin1String( "" ) );
+  l->clear();
   QTest::keyClicks( l, scale );
   QTest::keyClick( l, Qt::Key_Return );
 }

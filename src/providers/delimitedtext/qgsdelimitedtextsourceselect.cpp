@@ -36,13 +36,11 @@ const int MAX_SAMPLE_LENGTH = 200;
 QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mFile( new QgsDelimitedTextFile() )
-  , mExampleRowCount( 20 )
-  , mBadRowCount( 0 )
   , mPluginKey( QStringLiteral( "/Plugin-DelimitedText" ) )
-  , mLastFileType( QLatin1String( "" ) )
 {
 
   setupUi( this );
+  connect( btnBrowseForFile, &QPushButton::clicked, this, &QgsDelimitedTextSourceSelect::btnBrowseForFile_clicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDelimitedTextSourceSelect::showHelp );
 
@@ -104,7 +102,7 @@ QgsDelimitedTextSourceSelect::~QgsDelimitedTextSourceSelect()
   delete mFile;
 }
 
-void QgsDelimitedTextSourceSelect::on_btnBrowseForFile_clicked()
+void QgsDelimitedTextSourceSelect::btnBrowseForFile_clicked()
 {
   getOpenFileName();
 }
@@ -193,7 +191,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
 
 
   // add the layer to the map
-  emit addVectorLayer( QString::fromAscii( url.toEncoded() ), txtLayerName->text() );
+  emit addVectorLayer( QString::fromLatin1( url.toEncoded() ), txtLayerName->text() );
   if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
   {
     accept();
@@ -203,7 +201,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
 
 QString QgsDelimitedTextSourceSelect::selectedChars()
 {
-  QString chars = QLatin1String( "" );
+  QString chars;
   if ( cbxDelimComma->isChecked() )
     chars.append( ',' );
   if ( cbxDelimSpace->isChecked() )

@@ -29,7 +29,8 @@
 class QgsCachedFeatureIterator;
 class QgsAbstractCacheIndex;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class caches features of a given QgsVectorLayer.
  *
  * \brief
@@ -149,7 +150,8 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      */
     void setFullCache( bool fullCache );
 
-    /** Returns true if the cache is complete, ie it contains all features. This may happen as
+    /**
+     * Returns true if the cache is complete, ie it contains all features. This may happen as
      * a result of a call to setFullCache() or by through a feature request which resulted in
      * all available features being cached.
      * \see setFullCache()
@@ -221,7 +223,8 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      */
     bool isFidCached( const QgsFeatureId fid ) const;
 
-    /** Returns the set of feature IDs for features which are cached.
+    /**
+     * Returns the set of feature IDs for features which are cached.
      * \since QGIS 3.0
      * \see isFidCached()
      */
@@ -364,6 +367,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
   private slots:
     void onAttributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
+    void onJoinAttributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
     void featureDeleted( QgsFeatureId fid );
     void onFeatureAdded( QgsFeatureId fid );
     void attributeAdded( int field );
@@ -373,6 +377,8 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void invalidate();
 
   private:
+
+    void connectJoinedLayers() const;
 
     inline void cacheFeature( QgsFeature &feat )
     {
@@ -393,7 +399,8 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     friend class QgsCachedFeatureWriterIterator;
     friend class QgsCachedFeature;
 
-    /** Returns true if the cache contains all the features required for a specified request.
+    /**
+     * Returns true if the cache contains all the features required for a specified request.
      * \param featureRequest feature request
      * \param it will be set to iterator for matching features
      * \returns true if cache can satisfy request

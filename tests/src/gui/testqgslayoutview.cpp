@@ -23,7 +23,6 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutitemwidget.h"
-#include "qgstestutils.h"
 #include "qgsproject.h"
 #include "qgsgui.h"
 #include <QtTest/QSignalSpy>
@@ -127,7 +126,7 @@ class LoggingTool : public QgsLayoutViewTool
   public:
 
     LoggingTool( QgsLayoutView *view )
-      : QgsLayoutViewTool( view, "logging" )
+      : QgsLayoutViewTool( view, QStringLiteral( "logging" ) )
     {}
 
     bool receivedMoveEvent = false;
@@ -239,7 +238,7 @@ class TestItem : public QgsLayoutItem
   public:
 
     TestItem( QgsLayout *layout ) : QgsLayoutItem( layout ) {}
-    ~TestItem() {}
+    ~TestItem() = default;
 
     //implement pure virtual methods
     int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }

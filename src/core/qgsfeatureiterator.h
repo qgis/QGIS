@@ -21,7 +21,8 @@
 
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Interface that can be optionally attached to an iterator so its
  * nextFeature() implementaton can check if it must stop as soon as possible.
  * \since QGIS 2.16
@@ -34,7 +35,8 @@ class CORE_EXPORT QgsInterruptionChecker SIP_SKIP
     virtual bool mustStop() const = 0;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Internal feature iterator to be implemented within data providers
  */
 class CORE_EXPORT QgsAbstractFeatureIterator
@@ -63,7 +65,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     //! end of iterating: free the resources / lock
     virtual bool close() = 0;
 
-    /** Attach an object that can be queried regularly by the iterator to check
+    /**
+     * Attach an object that can be queried regularly by the iterator to check
      * if it must stopped. This is mostly useful for iterators where a single
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider. When nextFeature()/fetchFeature() is reasonably fast, it is not necessary
@@ -73,7 +76,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      */
     virtual void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) SIP_SKIP;
 
-    /** Returns the status of expression compilation for filter expression requests.
+    /**
+     * Returns the status of expression compilation for filter expression requests.
      * \since QGIS 2.16
      */
     CompileStatus compileStatus() const { return mCompileStatus; }
@@ -151,8 +155,10 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      */
     bool mZombie;
 
-    //! reference counting (to allow seamless copying of QgsFeatureIterator instances)
-    //! TODO QGIS3: make this private
+    /**
+     * reference counting (to allow seamless copying of QgsFeatureIterator instances)
+     * TODO QGIS3: make this private
+     */
     int refs;
     //! Add reference
     void ref();
@@ -197,7 +203,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
  * \note not available in Python bindings (although present in SIP file)
 */
@@ -275,7 +282,8 @@ class CORE_EXPORT QgsFeatureIterator
     //! find out whether the iterator is still valid or closed already
     bool isClosed() const;
 
-    /** Attach an object that can be queried regularly by the iterator to check
+    /**
+     * Attach an object that can be queried regularly by the iterator to check
      * if it must stopped. This is mostly useful for iterators where a single
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider.
@@ -284,7 +292,8 @@ class CORE_EXPORT QgsFeatureIterator
      */
     void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) SIP_SKIP;
 
-    /** Returns the status of expression compilation for filter expression requests.
+    /**
+     * Returns the status of expression compilation for filter expression requests.
      * \since QGIS 2.16
      */
     QgsAbstractFeatureIterator::CompileStatus compileStatus() const { return mIter->compileStatus(); }
@@ -301,7 +310,6 @@ class CORE_EXPORT QgsFeatureIterator
 #ifndef SIP_RUN
 
 inline QgsFeatureIterator::QgsFeatureIterator()
-  : mIter( nullptr )
 {
 }
 

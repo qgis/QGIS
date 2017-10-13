@@ -28,6 +28,10 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   , mDeco( deco )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationNorthArrowDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationNorthArrowDialog::buttonBox_rejected );
+  connect( spinAngle, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsDecorationNorthArrowDialog::spinAngle_valueChanged );
+  connect( sliderRotation, &QSlider::valueChanged, this, &QgsDecorationNorthArrowDialog::sliderRotation_valueChanged );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationNorthArrow/geometry" ) ).toByteArray() );
@@ -84,24 +88,24 @@ void QgsDecorationNorthArrowDialog::showHelp()
   QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#north-arrow" ) );
 }
 
-void QgsDecorationNorthArrowDialog::on_buttonBox_accepted()
+void QgsDecorationNorthArrowDialog::buttonBox_accepted()
 {
   apply();
   accept();
 }
 
-void QgsDecorationNorthArrowDialog::on_buttonBox_rejected()
+void QgsDecorationNorthArrowDialog::buttonBox_rejected()
 {
   reject();
 }
 
 
-void QgsDecorationNorthArrowDialog::on_spinAngle_valueChanged( int spinAngle )
+void QgsDecorationNorthArrowDialog::spinAngle_valueChanged( int spinAngle )
 {
   Q_UNUSED( spinAngle );
 }
 
-void QgsDecorationNorthArrowDialog::on_sliderRotation_valueChanged( int rotationValue )
+void QgsDecorationNorthArrowDialog::sliderRotation_valueChanged( int rotationValue )
 {
   Q_UNUSED( rotationValue );
 
@@ -152,8 +156,7 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
     myQPainter.rotate( rotation );
     //work out how to shift the image so that it appears in the center of the canvas
     //(x cos a + y sin a - x, -x sin a + y cos a - y)
-    const double PI = 3.14159265358979323846;
-    double myRadiansDouble = ( PI / 180 ) * rotation;
+    double myRadiansDouble = ( M_PI / 180 ) * rotation;
     int xShift = static_cast<int>( (
                                      ( centerXDouble * std::cos( myRadiansDouble ) ) +
                                      ( centerYDouble * std::sin( myRadiansDouble ) )

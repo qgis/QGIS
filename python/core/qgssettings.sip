@@ -130,7 +130,7 @@ class QgsSettings : QObject
 %End
     ~QgsSettings();
 
-    void beginGroup( const QString &prefix );
+    void beginGroup( const QString &prefix, const QgsSettings::Section section = QgsSettings::NoSection );
 %Docstring
  Appends prefix to the current group.
  The current group is automatically prepended to all keys specified to QSettings.
@@ -156,12 +156,17 @@ Returns a list of all top-level keys that can be read using the QSettings object
 Returns a list of all key top-level groups that contain keys that can be read using the QSettings object.
  :rtype: list of str
 %End
+    QStringList globalChildGroups() const;
+%Docstring
+Returns a list of all key top-level groups (same as childGroups) but only for groups defined in global settings.
+ :rtype: list of str
+%End
     static QString globalSettingsPath();
 %Docstring
 Return the path to the Global Settings QSettings storage file
  :rtype: str
 %End
-    static bool setGlobalSettingsPath( QString path );
+    static bool setGlobalSettingsPath( const QString &path );
 %Docstring
 Set the Global Settings QSettings storage file
  :rtype: bool
@@ -240,9 +245,9 @@ Returns the path where settings written using this QSettings object are stored.
  This function is called automatically from QSettings's destructor and by the event
  loop at regular intervals, so you normally don't need to call it yourself.
 %End
-    void remove( const QString &key );
+    void remove( const QString &key, const QgsSettings::Section section = QgsSettings::NoSection );
 %Docstring
-Removes the setting key and any sub-settings of key.
+Removes the setting key and any sub-settings of key in a section.
 %End
     QString prefixedKey( const QString &key, const QgsSettings::Section section ) const;
 %Docstring

@@ -21,19 +21,24 @@
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
 #include "qgscolorramp.h"
+#include "qgsdatadefinedsizelegend.h"
 
 #include <QHash>
 
-class QgsDataDefinedSizeLegend;
 class QgsVectorLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief categorized renderer
 */
 class CORE_EXPORT QgsRendererCategory
 {
   public:
-    QgsRendererCategory();
+
+    /**
+     * Constructor for QgsRendererCategory.
+     */
+    QgsRendererCategory() = default;
 
     //! takes ownership of symbol
     QgsRendererCategory( const QVariant &value, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true );
@@ -64,14 +69,15 @@ class CORE_EXPORT QgsRendererCategory
     QVariant mValue;
     std::unique_ptr<QgsSymbol> mSymbol;
     QString mLabel;
-    bool mRender;
+    bool mRender = true;
 
     void swap( QgsRendererCategory &other );
 };
 
 typedef QList<QgsRendererCategory> QgsCategoryList;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCategorizedSymbolRenderer
  */
 class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
@@ -79,7 +85,6 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
   public:
 
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
-    ~QgsCategorizedSymbolRenderer();
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
@@ -93,7 +98,8 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     virtual QString filter( const QgsFields &fields = QgsFields() ) override;
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
-    /** Update all the symbols but leave categories and colors. This method also sets the source
+    /**
+     * Update all the symbols but leave categories and colors. This method also sets the source
      * symbol for the renderer.
      * \param sym source symbol to use for categories. Ownership is not transferred.
      * \see setSourceSymbol()
@@ -105,8 +111,10 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     //! return index of category with specified value (-1 if not found)
     int categoryIndexForValue( const QVariant &val );
 
-    //! return index of category with specified label (-1 if not found or not unique)
-    //! \since QGIS 2.5
+    /**
+     * return index of category with specified label (-1 if not found or not unique)
+     * \since QGIS 2.5
+     */
     int categoryIndexForLabel( const QString &val );
 
     bool updateCategoryValue( int catIndex, const QVariant &value );
@@ -136,14 +144,16 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     QgsLegendSymbolList legendSymbolItems() const override;
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
 
-    /** Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
+    /**
+     * Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
      * the categories' color.
      * \see setSourceSymbol()
      * \see sourceColorRamp()
      */
     QgsSymbol *sourceSymbol();
 
-    /** Sets the source symbol for the renderer, which is the base symbol used for the each categories' symbol before applying
+    /**
+     * Sets the source symbol for the renderer, which is the base symbol used for the each categories' symbol before applying
      * the categories' color.
      * \param sym source symbol, ownership is transferred to the renderer
      * \see sourceSymbol()
@@ -151,20 +161,23 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      */
     void setSourceSymbol( QgsSymbol *sym SIP_TRANSFER );
 
-    /** Returns the source color ramp, from which each categories' color is derived.
+    /**
+     * Returns the source color ramp, from which each categories' color is derived.
      * \see setSourceColorRamp()
      * \see sourceSymbol()
      */
     QgsColorRamp *sourceColorRamp();
 
-    /** Sets the source color ramp.
+    /**
+     * Sets the source color ramp.
       * \param ramp color ramp. Ownership is transferred to the renderer
       * \see sourceColorRamp()
       * \see setSourceSymbol()
       */
     void setSourceColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
-    /** Update the color ramp used and all symbols colors.
+    /**
+     * Update the color ramp used and all symbols colors.
       * \param ramp color ramp. Ownership is transferred to the renderer
       * \since QGIS 2.5
       */
@@ -176,9 +189,11 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     virtual void checkLegendSymbolItem( const QString &key, bool state = true ) override;
     virtual QString legendClassificationAttribute() const override { return classAttribute(); }
 
-    //! creates a QgsCategorizedSymbolRenderer from an existing renderer.
-    //! \since QGIS 2.5
-    //! \returns a new renderer if the conversion was possible, otherwise 0.
+    /**
+     * creates a QgsCategorizedSymbolRenderer from an existing renderer.
+     * \since QGIS 2.5
+     * \returns a new renderer if the conversion was possible, otherwise 0.
+     */
     static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     /**
@@ -210,11 +225,11 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;
 
     //! attribute index (derived from attribute name in startRender)
-    int mAttrNum;
+    int mAttrNum = -1;
 
     //! hashtable for faster access to symbols
     QHash<QString, QgsSymbol *> mSymbolHash;
-    bool mCounting;
+    bool mCounting = false;
 
     void rebuildHash();
 

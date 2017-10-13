@@ -170,10 +170,10 @@ class QgsTask : QObject
  :rtype: list of QgsMapLayer
 %End
 
-    bool waitForFinished( int timeout = 30000 );
+    bool waitForFinished( unsigned long timeout = 30000 );
 %Docstring
  Blocks the current thread until the task finishes or a maximum of ``timeout`` milliseconds.
- If the ``timeout`` is ``-1`` the thread will be blocked forever.
+ If ``timeout`` is ``0`` the thread will be blocked forever.
  In case of a timeout, the task will still be running.
  In case the task already is finished, the method will return immediately while
  returning ``true``.
@@ -425,36 +425,46 @@ Returns true if all dependencies for the specified task are satisfied
 
     void progressChanged( long taskId, double progress );
 %Docstring
-\param progress percent of progress, from 0.0 - 100.0
+ Will be emitted when a task reports a progress change
+ \param taskId ID of task
+ \param progress percent of progress, from 0.0 - 100.0
 %End
 
     void finalTaskProgressChanged( double progress );
 %Docstring
-\param progress percent of progress, from 0.0 - 100.0
+ Will be emitted when only a single task remains to complete
+ and that task has reported a progress change
+ \param progress percent of progress, from 0.0 - 100.0
 %End
 
     void statusChanged( long taskId, int status );
 %Docstring
-\param status new task status
+ Will be emitted when a task reports a status change
+ \param taskId ID of task
+ \param status new task status
 %End
 
     void taskAdded( long taskId );
 %Docstring
-\param taskId ID of task
+ Emitted when a new task has been added to the manager
+ \param taskId ID of task
 %End
 
     void taskAboutToBeDeleted( long taskId );
 %Docstring
-\param taskId ID of task
+ Emitted when a task is about to be deleted
+ \param taskId ID of task
 %End
 
     void allTasksFinished();
 %Docstring
+ Emitted when all tasks are complete
 .. seealso:: countActiveTasksChanged()
 %End
 
     void countActiveTasksChanged( int count );
 %Docstring
+ Emitted when the number of active tasks changes
 .. seealso:: countActiveTasks()
 %End
 

@@ -15,13 +15,21 @@
     </keywords>
     <fees>None</fees>
     <constraints type="access">None</constraints>
+    <constraints type="other">None</constraints>
     <rights>Copyright foo 2017</rights>
+    <license>License 1</license>
+    <license>License 2</license>
     <encoding>utf-8</encoding>
     <crs>EPSG:4326</crs>
     <extent>
         <spatial dimensions="2" crs="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+        <spatial dimensions="2" crs="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90" minz="10" maxz="50"/>
         <temporal>
             <instant>2001-12-17T09:30:47Z</instant>
+            <period>
+              <start>2001-12-17T09:30:47Z</start>
+              <end>2020-12-17T09:30:47Z</end>
+            </period>
         </temporal>
     </extent>
     <contact>
@@ -46,4 +54,6 @@
         <link name="geonode:roads" type="OGC:WFS" description="my GeoNode road layer" url="http://example.org/wfs"/>
         <link name="roads" type="WWW:LINK" description="full dataset download" url="http://example.org/roads.tgz" format="ESRI Shapefile" mimeType="application/gzip" size="283676"/>
     </links>
+    <history>Buffering</history>
+    <history>Reprojecting</history>
 </ResourceMetadata>

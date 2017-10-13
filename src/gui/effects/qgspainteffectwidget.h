@@ -29,7 +29,8 @@ class QgsTransformEffect;
 class QgsColorEffect;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPaintEffectWidget
  * \brief Base class for effect properties widgets.
  *
@@ -62,7 +63,8 @@ class GUI_EXPORT QgsPaintEffectWidget : public QWidget
 
 #include "ui_widget_drawsource.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsDrawSourceWidget
  */
 class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::WidgetDrawSource
@@ -85,8 +87,8 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
   private slots:
 
     void opacityChanged( double value );
-    void on_mDrawModeComboBox_currentIndexChanged( int index );
-    void on_mBlendCmbBx_currentIndexChanged( int index );
+    void mDrawModeComboBox_currentIndexChanged( int index );
+    void mBlendCmbBx_currentIndexChanged( int index );
 
 };
 
@@ -94,7 +96,8 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
 
 #include "ui_widget_blur.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsBlurWidget
  */
 class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::WidgetBlur
@@ -116,11 +119,11 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
 
   private slots:
 
-    void on_mBlurTypeCombo_currentIndexChanged( int index );
-    void on_mBlurStrengthSpnBx_valueChanged( int value );
+    void mBlurTypeCombo_currentIndexChanged( int index );
+    void mBlurStrengthSpnBx_valueChanged( int value );
     void opacityChanged( double value );
-    void on_mDrawModeComboBox_currentIndexChanged( int index );
-    void on_mBlendCmbBx_currentIndexChanged( int index );
+    void mDrawModeComboBox_currentIndexChanged( int index );
+    void mBlendCmbBx_currentIndexChanged( int index );
 
 };
 
@@ -128,7 +131,8 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
 
 #include "ui_widget_shadoweffect.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsShadowEffectWidget
  */
 class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui::WidgetShadowEffect
@@ -149,21 +153,22 @@ class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui
     void blockSignals( const bool block );
 
   private slots:
-    void on_mShadowOffsetAngleSpnBx_valueChanged( int value );
-    void on_mShadowOffsetAngleDial_valueChanged( int value );
-    void on_mShadowOffsetSpnBx_valueChanged( double value );
-    void on_mOffsetUnitWidget_changed();
+    void mShadowOffsetAngleSpnBx_valueChanged( int value );
+    void mShadowOffsetAngleDial_valueChanged( int value );
+    void mShadowOffsetSpnBx_valueChanged( double value );
+    void mOffsetUnitWidget_changed();
     void opacityChanged( double value );
-    void on_mShadowColorBtn_colorChanged( const QColor &color );
-    void on_mDrawModeComboBox_currentIndexChanged( int index );
-    void on_mShadowBlendCmbBx_currentIndexChanged( int index );
-    void on_mShadowRadiuSpnBx_valueChanged( int value );
+    void mShadowColorBtn_colorChanged( const QColor &color );
+    void mDrawModeComboBox_currentIndexChanged( int index );
+    void mShadowBlendCmbBx_currentIndexChanged( int index );
+    void mShadowRadiuSpnBx_valueChanged( int value );
 };
 
 
 #include "ui_widget_glow.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsGlowWidget
  */
 class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::WidgetGlow
@@ -185,20 +190,21 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
 
   private slots:
     void colorModeChanged();
-    void on_mSpreadSpnBx_valueChanged( double value );
-    void on_mSpreadUnitWidget_changed();
+    void mSpreadSpnBx_valueChanged( double value );
+    void mSpreadUnitWidget_changed();
     void opacityChanged( double value );
-    void on_mColorBtn_colorChanged( const QColor &color );
-    void on_mBlendCmbBx_currentIndexChanged( int index );
-    void on_mDrawModeComboBox_currentIndexChanged( int index );
-    void on_mBlurRadiusSpnBx_valueChanged( int value );
+    void mColorBtn_colorChanged( const QColor &color );
+    void mBlendCmbBx_currentIndexChanged( int index );
+    void mDrawModeComboBox_currentIndexChanged( int index );
+    void mBlurRadiusSpnBx_valueChanged( int value );
     void applyColorRamp();
 
 };
 
 #include "ui_widget_transform.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsTransformWidget
  */
 class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::WidgetTransform
@@ -220,24 +226,25 @@ class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::W
 
   private slots:
 
-    void on_mDrawModeComboBox_currentIndexChanged( int index );
-    void on_mSpinTranslateX_valueChanged( double value );
-    void on_mSpinTranslateY_valueChanged( double value );
-    void on_mTranslateUnitWidget_changed();
-    void on_mReflectXCheckBox_stateChanged( int state );
-    void on_mReflectYCheckBox_stateChanged( int state );
-    void on_mSpinShearX_valueChanged( double value );
-    void on_mSpinShearY_valueChanged( double value );
-    void on_mSpinScaleX_valueChanged( double value );
-    void on_mSpinScaleY_valueChanged( double value );
-    void on_mRotationSpinBox_valueChanged( double value );
+    void mDrawModeComboBox_currentIndexChanged( int index );
+    void mSpinTranslateX_valueChanged( double value );
+    void mSpinTranslateY_valueChanged( double value );
+    void mTranslateUnitWidget_changed();
+    void mReflectXCheckBox_stateChanged( int state );
+    void mReflectYCheckBox_stateChanged( int state );
+    void mSpinShearX_valueChanged( double value );
+    void mSpinShearY_valueChanged( double value );
+    void mSpinScaleX_valueChanged( double value );
+    void mSpinScaleY_valueChanged( double value );
+    void mRotationSpinBox_valueChanged( double value );
 
 };
 
 
 #include "ui_widget_coloreffects.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsColorEffectWidget
  */
 class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui::WidgetColorEffect
@@ -261,15 +268,15 @@ class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui:
   private slots:
 
     void opacityChanged( double value );
-    void on_mBlendCmbBx_currentIndexChanged( int index );
-    void on_mDrawModeComboBox_currentIndexChanged( int index );
-    void on_mBrightnessSpinBox_valueChanged( int value );
-    void on_mContrastSpinBox_valueChanged( int value );
-    void on_mSaturationSpinBox_valueChanged( int value );
-    void on_mColorizeStrengthSpinBox_valueChanged( int value );
-    void on_mColorizeCheck_stateChanged( int state );
-    void on_mColorizeColorButton_colorChanged( const QColor &color );
-    void on_mGrayscaleCombo_currentIndexChanged( int index );
+    void mBlendCmbBx_currentIndexChanged( int index );
+    void mDrawModeComboBox_currentIndexChanged( int index );
+    void mBrightnessSpinBox_valueChanged( int value );
+    void mContrastSpinBox_valueChanged( int value );
+    void mSaturationSpinBox_valueChanged( int value );
+    void mColorizeStrengthSpinBox_valueChanged( int value );
+    void mColorizeCheck_stateChanged( int state );
+    void mColorizeColorButton_colorChanged( const QColor &color );
+    void mGrayscaleCombo_currentIndexChanged( int index );
 
 };
 

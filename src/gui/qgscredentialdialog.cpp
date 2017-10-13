@@ -31,9 +31,12 @@ static QString invalidStyle_( const QString &selector = QStringLiteral( "QLineEd
 
 QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mOkButton( nullptr )
+
 {
   setupUi( this );
+  connect( leMasterPass, &QgsPasswordLineEdit::textChanged, this, &QgsCredentialDialog::leMasterPass_textChanged );
+  connect( leMasterPassVerify, &QgsPasswordLineEdit::textChanged, this, &QgsCredentialDialog::leMasterPassVerify_textChanged );
+  connect( chkbxEraseAuthDb, &QCheckBox::toggled, this, &QgsCredentialDialog::chkbxEraseAuthDb_toggled );
   setInstance( this );
   connect( this, &QgsCredentialDialog::credentialsRequested,
            this, &QgsCredentialDialog::requestCredentials,
@@ -225,7 +228,7 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
   }
 }
 
-void QgsCredentialDialog::on_leMasterPass_textChanged( const QString &pass )
+void QgsCredentialDialog::leMasterPass_textChanged( const QString &pass )
 {
   leMasterPass->setStyleSheet( QLatin1String( "" ) );
   bool passok = !pass.isEmpty(); // regardless of new or comparing existing, empty password disallowed
@@ -243,7 +246,7 @@ void QgsCredentialDialog::on_leMasterPass_textChanged( const QString &pass )
   }
 }
 
-void QgsCredentialDialog::on_leMasterPassVerify_textChanged( const QString &pass )
+void QgsCredentialDialog::leMasterPassVerify_textChanged( const QString &pass )
 {
   if ( leMasterPassVerify->isVisible() )
   {
@@ -261,7 +264,7 @@ void QgsCredentialDialog::on_leMasterPassVerify_textChanged( const QString &pass
   }
 }
 
-void QgsCredentialDialog::on_chkbxEraseAuthDb_toggled( bool checked )
+void QgsCredentialDialog::chkbxEraseAuthDb_toggled( bool checked )
 {
   if ( checked )
     mOkButton->setEnabled( true );

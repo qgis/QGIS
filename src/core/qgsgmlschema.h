@@ -33,13 +33,18 @@ class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 class QgsFeature;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Description of feature class in GML
 */
 class CORE_EXPORT QgsGmlFeatureClass
 {
   public:
-    QgsGmlFeatureClass();
+
+    /**
+     * Constructor for QgsGmlFeatureClass.
+     */
+    QgsGmlFeatureClass() = default;
     QgsGmlFeatureClass( const QString &name, const QString &path );
 
     QList<QgsField> &fields() { return  mFields; }
@@ -70,7 +75,8 @@ class CORE_EXPORT QgsGmlFeatureClass
     QStringList mGeometryAttributes;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGmlSchema
  */
 class CORE_EXPORT QgsGmlSchema : public QObject
@@ -82,7 +88,8 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     //! Get fields info from XSD
     bool parseXSD( const QByteArray &xml );
 
-    /** Guess GML schema from data if XSD does not exist.
+    /**
+     * Guess GML schema from data if XSD does not exist.
       * Currently only recognizes UMN Mapserver GetFeatureInfo GML response.
       * Supports only UTF-8, UTF-16, ISO-8859-1, US-ASCII XML encodings.
       * \param data GML data
@@ -135,7 +142,8 @@ class CORE_EXPORT QgsGmlSchema : public QObject
 
     //helper routines
 
-    /** Reads attribute as string
+    /**
+     * Reads attribute as string
       \returns attribute value or an empty string if no such attribute*/
     QString readAttribute( const QString &attributeName, const XML_Char **attr ) const;
 
@@ -157,7 +165,8 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     //! Strip namespace from element name
     QString stripNS( const QString &name );
 
-    /** Find GML base type for complex type of given name
+    /**
+     * Find GML base type for complex type of given name
      * \param element input element
      * \param name complex type name
      * \returns name of GML base type without NS, e.g. AbstractFeatureType or empty string if not passed on GML type
@@ -181,7 +190,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     QString mStringCash;
     QgsFeature *mCurrentFeature = nullptr;
     QString mCurrentFeatureId;
-    int mFeatureCount;
+    int mFeatureCount = 0;
     QString mAttributeName;
     //! Coordinate separator for coordinate strings. Usually ","
     QString mCoordinateSeparator;
@@ -191,7 +200,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     /* Schema information guessed/parsed from GML in getSchema() */
 
     //! Depth level, root element is 0
-    int mLevel;
+    int mLevel = 0;
 
     //! Skip all levels under this
     int mSkipLevel;

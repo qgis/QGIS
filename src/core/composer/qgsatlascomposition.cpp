@@ -69,7 +69,7 @@ void QgsAtlasComposition::removeLayers( const QStringList &layers )
     return;
   }
 
-  Q_FOREACH ( const QString &layerId, layers )
+  for ( const QString &layerId : layers )
   {
     if ( layerId == mCoverageLayer.layerId )
     {
@@ -602,7 +602,7 @@ QString QgsAtlasComposition::currentFilename() const
 void QgsAtlasComposition::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   QDomElement atlasElem = doc.createElement( QStringLiteral( "Atlas" ) );
-  atlasElem.setAttribute( QStringLiteral( "enabled" ), mEnabled ? "true" : "false" );
+  atlasElem.setAttribute( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   if ( !mEnabled )
   {
     return;
@@ -620,18 +620,18 @@ void QgsAtlasComposition::writeXml( QDomElement &elem, QDomDocument &doc ) const
     atlasElem.setAttribute( QStringLiteral( "coverageLayer" ), QLatin1String( "" ) );
   }
 
-  atlasElem.setAttribute( QStringLiteral( "hideCoverage" ), mHideCoverage ? "true" : "false" );
-  atlasElem.setAttribute( QStringLiteral( "singleFile" ), mSingleFile ? "true" : "false" );
+  atlasElem.setAttribute( QStringLiteral( "hideCoverage" ), mHideCoverage ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  atlasElem.setAttribute( QStringLiteral( "singleFile" ), mSingleFile ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   atlasElem.setAttribute( QStringLiteral( "filenamePattern" ), mFilenamePattern );
   atlasElem.setAttribute( QStringLiteral( "pageNameExpression" ), mPageNameExpression );
 
-  atlasElem.setAttribute( QStringLiteral( "sortFeatures" ), mSortFeatures ? "true" : "false" );
+  atlasElem.setAttribute( QStringLiteral( "sortFeatures" ), mSortFeatures ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   if ( mSortFeatures )
   {
     atlasElem.setAttribute( QStringLiteral( "sortKey" ), mSortKeyAttributeName );
-    atlasElem.setAttribute( QStringLiteral( "sortAscending" ), mSortAscending ? "true" : "false" );
+    atlasElem.setAttribute( QStringLiteral( "sortAscending" ), mSortAscending ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   }
-  atlasElem.setAttribute( QStringLiteral( "filterFeatures" ), mFilterFeatures ? "true" : "false" );
+  atlasElem.setAttribute( QStringLiteral( "filterFeatures" ), mFilterFeatures ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   if ( mFilterFeatures )
   {
     atlasElem.setAttribute( QStringLiteral( "featureFilter" ), mFeatureFilter );

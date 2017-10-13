@@ -23,6 +23,7 @@
 #include "qgswfscapabilities.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
+#include "qgssqlcomposerdialog.h"
 
 #include <QItemDelegate>
 #include <QStandardItemModel>
@@ -30,7 +31,6 @@
 
 class QgsProjectionSelectionDialog;
 class QgsWfsCapabilities;
-class QgsSQLComposerDialog;
 
 class QgsWFSItemDelegate : public QItemDelegate
 {
@@ -41,6 +41,21 @@ class QgsWFSItemDelegate : public QItemDelegate
 
     virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
+};
+
+class QgsWFSValidatorCallback: public QObject, public QgsSQLComposerDialog::SQLValidatorCallback
+{
+    Q_OBJECT
+
+  public:
+    QgsWFSValidatorCallback( QObject *parent,
+                             const QgsWFSDataSourceURI &uri, const QString &allSql,
+                             const QgsWfsCapabilities::Capabilities &caps );
+    bool isValid( const QString &sql, QString &errorReason, QString &warningMsg ) override;
+  private:
+    QgsWFSDataSourceURI mURI;
+    QString mAllSql;
+    const QgsWfsCapabilities::Capabilities &mCaps;
 };
 
 class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFSSourceSelectBase
@@ -56,7 +71,8 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
     QgsWFSSourceSelect(); //default constructor is forbidden
     QgsProjectionSelectionDialog *mProjectionSelector = nullptr;
 
-    /** Stores the available CRS for a server connections.
+    /**
+     * Stores the available CRS for a server connections.
      The first string is the typename, the corresponding list
     stores the CRS for the typename in the form 'EPSG:XXXX'*/
     QMap<QString, QStringList > mAvailableCRS;
@@ -70,7 +86,8 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
     QModelIndex mSQLIndex;
     QgsSQLComposerDialog *mSQLComposerDialog = nullptr;
 
-    /** Returns the best suited CRS from a set of authority ids
+    /**
+     * Returns the best suited CRS from a set of authority ids
        1. project CRS if contained in the set
        2. WGS84 if contained in the set
        3. the first entry in the set else
@@ -93,10 +110,10 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
     void buildQuery( const QModelIndex &index );
     void changeCRS();
     void changeCRSFilter();
-    void on_cmbConnections_activated( int index );
+    void cmbConnections_activated( int index );
     void capabilitiesReplyFinished();
-    void on_btnSave_clicked();
-    void on_btnLoad_clicked();
+    void btnSave_clicked();
+    void btnLoad_clicked();
     void treeWidgetItemDoubleClicked( const QModelIndex &index );
     void treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous );
     void buildQueryButtonClicked();
@@ -107,5 +124,21 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
 
 };
 
+
+class QgsWFSTableSelectedCallback: public QObject, public QgsSQLComposerDialog::TableSelectedCallback
+{
+    Q_OBJECT
+
+  public:
+    QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog,
+                                 const QgsWFSDataSourceURI &uri,
+                                 const QgsWfsCapabilities::Capabilities &caps );
+    void tableSelected( const QString &name ) override;
+
+  private:
+    QgsSQLComposerDialog *mDialog = nullptr;
+    QgsWFSDataSourceURI mURI;
+    const QgsWfsCapabilities::Capabilities &mCaps;
+};
 
 #endif

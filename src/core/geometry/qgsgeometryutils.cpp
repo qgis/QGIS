@@ -301,8 +301,8 @@ double QgsGeometryUtils::sqrDistToLine( double ptX, double ptY, double x1, doubl
     }
     else if ( t > 0 )
     {
-      minDistX += dx * t ;
-      minDistY += dy * t ;
+      minDistX += dx * t;
+      minDistY += dy * t;
     }
   }
 
@@ -360,10 +360,7 @@ bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &
     return false;
 
   double lambdaw = QgsVector( inter.x() - q1.x(), inter.y() - q1.y() ) * w;
-  if ( lambdaw < 0. + tolerance || lambdaw >= wl - tolerance )
-    return false;
-
-  return true;
+  return !( lambdaw < 0. + tolerance || lambdaw >= wl - tolerance );
 }
 
 QList<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance )
@@ -620,14 +617,18 @@ double QgsGeometryUtils::circleTangentDirection( const QgsPoint &tangentPoint, c
   double p1Angle = QgsGeometryUtils::ccwAngle( cp1.y() - mY, cp1.x() - mX );
   double p2Angle = QgsGeometryUtils::ccwAngle( cp2.y() - mY, cp2.x() - mX );
   double p3Angle = QgsGeometryUtils::ccwAngle( cp3.y() - mY, cp3.x() - mX );
+  double angle = 0;
   if ( circleClockwise( p1Angle, p2Angle, p3Angle ) )
   {
-    return lineAngle( tangentPoint.x(), tangentPoint.y(), mX, mY );
+    angle = lineAngle( tangentPoint.x(), tangentPoint.y(), mX, mY ) - M_PI_2;
   }
   else
   {
-    return lineAngle( mX, mY, tangentPoint.x(), tangentPoint.y() );
+    angle = lineAngle( mX, mY, tangentPoint.x(), tangentPoint.y() ) - M_PI_2;
   }
+  if ( angle < 0 )
+    angle += 2 * M_PI;
+  return angle;
 }
 
 void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, QgsPointSequence &points, double tolerance, QgsAbstractGeometry::SegmentationToleranceType toleranceType, bool hasZ, bool hasM )
@@ -658,12 +659,8 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   double centerY = 0;
   circleCenterRadius( circlePoint1, circlePoint2, circlePoint3, radius, centerX, centerY );
 
-  QgsDebugMsg( QString( "Center: POINT(%1 %2) - Radius: %3 - Reversed: %4" )
-               .arg( centerX ) .arg( centerY ) .arg( radius ) .arg( reversed ) );
-
   if ( circlePoint1 != circlePoint3 && ( radius < 0 || qgsDoubleNear( segSide, 0.0 ) ) ) //points are colinear
   {
-    QgsDebugMsg( QString( "Collinear curve" ) );
     points.append( p1 );
     points.append( p2 );
     points.append( p3 );
@@ -676,17 +673,11 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     double halfAngle = std::acos( -tolerance / radius + 1 );
     increment = 2 * halfAngle;
   }
-  QgsDebugMsg( QString( "Increment: %1" ).arg( increment ) );
 
   //angles of pt1, pt2, pt3
   double a1 = std::atan2( circlePoint1.y() - centerY, circlePoint1.x() - centerX );
   double a2 = std::atan2( circlePoint2.y() - centerY, circlePoint2.x() - centerX );
   double a3 = std::atan2( circlePoint3.y() - centerY, circlePoint3.x() - centerX );
-
-  QgsDebugMsg( QString( "a1:%1 (%4) a2:%2 (%5) a3:%3 (%6)" )
-               .arg( a1 ).arg( a2 ).arg( a3 )
-               .arg( a1 * 180 / M_PI ).arg( a2 * 180 / M_PI ).arg( a3 * 180 / M_PI )
-             );
 
   // Make segmentation symmetric
   const bool symmetric = true;
@@ -694,16 +685,11 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   {
     double angle = a3 - a1;
     if ( angle < 0 ) angle += M_PI * 2;
-    QgsDebugMsg( QString( "total angle: %1 (%2)" )
-                 .arg( angle ) .arg( angle * 180 / M_PI )
-               );
 
     /* Number of segments in output */
     int segs = ceil( angle / increment );
     /* Tweak increment to be regular for all the arc */
     increment = angle / segs;
-
-    QgsDebugMsg( QString( "symmetric adjusted increment:%1" ) .arg( increment ) );
   }
 
   /* Adjust a3 up so we can increment from a1 to a3 cleanly */
@@ -711,11 +697,6 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     a3 += 2.0 * M_PI;
   if ( a2 < a1 )
     a2 += 2.0 * M_PI;
-
-  QgsDebugMsg( QString( "ADJUSTED - a1:%1 (%4) a2:%2 (%5) a3:%3 (%6)" )
-               .arg( a1 ).arg( a2 ).arg( a3 )
-               .arg( a1 * 180 / M_PI ).arg( a2 * 180 / M_PI ).arg( a3 * 180 / M_PI )
-             );
 
   double x, y;
   double z = 0;
@@ -731,21 +712,6 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     if ( hasM )
       pointWkbType = QgsWkbTypes::addM( pointWkbType );
 
-    QgsDebugMsg( QString( "a1:%1 (%2), a3:%3 (%4), inc:%5" )
-                 . arg( a1 ).  arg( a1 * 180 / M_PI )
-                 . arg( a3 ).  arg( a3 * 180 / M_PI )
-                 . arg( increment )
-               );
-
-    //make sure the curve point p2 is part of the segmentized vertices. But only if p1 != p3
-    // TODO: make this a parameter
-    bool addP2 = true;
-    if ( qgsDoubleNear( circlePoint1.x(), circlePoint3.x() ) && qgsDoubleNear( circlePoint1.y(), circlePoint3.y() ) )
-    {
-      addP2 = false;
-    }
-    addP2 = false;
-
     // As we're adding the last point in any case, we'll avoid
     // including a point which is at less than 1% increment distance
     // from it (may happen to find them due to numbers approximation).
@@ -754,21 +720,8 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
     //      from requested MaxAngle and less for MaxError.
     double tolError = increment / 100;
     double stopAngle = a3 - tolError;
-    QgsDebugMsg( QString( "stopAngle: %1 (%2)" ) . arg( stopAngle ) .arg( stopAngle * 180 / M_PI ) );
     for ( double angle = a1 + increment; angle < stopAngle; angle += increment )
     {
-      if ( addP2 && angle > a2 )
-      {
-        if ( stringPoints.empty() || stringPoints.back() != circlePoint2 )
-        {
-          QgsDebugMsg( QString( "Adding control point, with angle %1 (%2)" ) . arg( a2 ) .arg( a2 * 180 / M_PI ) );
-          stringPoints.insert( stringPoints.size(), circlePoint2 );
-        }
-        addP2 = false;
-      }
-
-      QgsDebugMsg( QString( "SA - %1 (%2)" ) . arg( angle ) .arg( angle * 180 / M_PI ) );
-
       x = centerX + radius * std::cos( angle );
       y = centerY + radius * std::sin( angle );
 
@@ -781,11 +734,9 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
         m = interpolateArcValue( angle, a1, a2, a3, circlePoint1.m(), circlePoint2.m(), circlePoint3.m() );
       }
 
-      QgsDebugMsg( QString( " -> POINT(%1 %2)" ) . arg( x ) .arg( y ) );
       stringPoints.insert( stringPoints.size(), QgsPoint( pointWkbType, x, y, z, m ) );
     }
   }
-  QgsDebugMsg( QString( " appending last point -> POINT(%1 %2)" ) .  arg( circlePoint3.x() ) .arg( circlePoint3.y() ) );
   stringPoints.insert( stringPoints.size(), circlePoint3 );
 
   // TODO: check if or implement QgsPointSequence directly taking an iterator to append
@@ -842,13 +793,13 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
 {
   int dim = 2 + is3D + isMeasure;
   QgsPointSequence points;
-  QStringList coordList = wktCoordinateList.split( ',', QString::SkipEmptyParts );
+  const QStringList coordList = wktCoordinateList.split( ',', QString::SkipEmptyParts );
 
   //first scan through for extra unexpected dimensions
   bool foundZ = false;
   bool foundM = false;
-  QRegularExpression rx( "\\s" );
-  Q_FOREACH ( const QString &pointCoordinates, coordList )
+  QRegularExpression rx( QStringLiteral( "\\s" ) );
+  for ( const QString &pointCoordinates : coordList )
   {
     QStringList coordinates = pointCoordinates.split( rx, QString::SkipEmptyParts );
     if ( coordinates.size() == 3 && !foundZ && !foundM && !is3D && !isMeasure )
@@ -866,7 +817,7 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
     }
   }
 
-  Q_FOREACH ( const QString &pointCoordinates, coordList )
+  for ( const QString &pointCoordinates : coordList )
   {
     QStringList coordinates = pointCoordinates.split( rx, QString::SkipEmptyParts );
     if ( coordinates.size() < dim )
@@ -909,7 +860,7 @@ QgsPointSequence QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateLi
 void QgsGeometryUtils::pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &points, bool is3D, bool isMeasure )
 {
   wkb << static_cast<quint32>( points.size() );
-  Q_FOREACH ( const QgsPoint &point, points )
+  for ( const QgsPoint &point : points )
   {
     wkb << point.x() << point.y();
     if ( is3D )
@@ -926,7 +877,7 @@ void QgsGeometryUtils::pointsToWKB( QgsWkbPtr &wkb, const QgsPointSequence &poin
 QString QgsGeometryUtils::pointsToWKT( const QgsPointSequence &points, int precision, bool is3D, bool isMeasure )
 {
   QString wkt = QStringLiteral( "(" );
-  Q_FOREACH ( const QgsPoint &p, points )
+  for ( const QgsPoint &p : points )
   {
     wkt += qgsDoubleToString( p.x(), precision );
     wkt += ' ' + qgsDoubleToString( p.y(), precision );
@@ -947,16 +898,16 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
 
   // coordinate separator
-  QString cs = ",";
+  QString cs = QStringLiteral( "," );
   // tupel separator
-  QString ts = " ";
+  QString ts = QStringLiteral( " " );
 
-  elemCoordinates.setAttribute( "cs", cs );
-  elemCoordinates.setAttribute( "ts", ts );
+  elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );
+  elemCoordinates.setAttribute( QStringLiteral( "ts" ), ts );
 
   QString strCoordinates;
 
-  Q_FOREACH ( const QgsPoint &p, points )
+  for ( const QgsPoint &p : points )
     strCoordinates += qgsDoubleToString( p.x(), precision ) + cs + qgsDoubleToString( p.y(), precision ) + ts;
 
   if ( strCoordinates.endsWith( ts ) )
@@ -972,7 +923,7 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDom
   elemPosList.setAttribute( QStringLiteral( "srsDimension" ), is3D ? 3 : 2 );
 
   QString strCoordinates;
-  Q_FOREACH ( const QgsPoint &p, points )
+  for ( const QgsPoint &p : points )
   {
     strCoordinates += qgsDoubleToString( p.x(), precision ) + ' ' + qgsDoubleToString( p.y(), precision ) + ' ';
     if ( is3D )
@@ -988,7 +939,7 @@ QDomElement QgsGeometryUtils::pointsToGML3( const QgsPointSequence &points, QDom
 QString QgsGeometryUtils::pointsToJSON( const QgsPointSequence &points, int precision )
 {
   QString json = QStringLiteral( "[ " );
-  Q_FOREACH ( const QgsPoint &p, points )
+  for ( const QgsPoint &p : points )
   {
     json += '[' + qgsDoubleToString( p.x(), precision ) + ", " + qgsDoubleToString( p.y(), precision ) + "], ";
   }
@@ -1018,7 +969,7 @@ QPair<QgsWkbTypes::Type, QString> QgsGeometryUtils::wktReadBlock( const QString 
 {
   QgsWkbTypes::Type wkbType = QgsWkbTypes::parseType( wkt );
 
-  QRegularExpression cooRegEx( "^[^\\(]*\\((.*)\\)[^\\)]*$" );
+  QRegularExpression cooRegEx( QStringLiteral( "^[^\\(]*\\((.*)\\)[^\\)]*$" ) );
   cooRegEx.setPatternOptions( QRegularExpression::DotMatchesEverythingOption );
   QRegularExpressionMatch match = cooRegEx.match( wkt );
   QString contents = match.hasMatch() ? match.captured( 1 ) : QString();
@@ -1162,7 +1113,7 @@ QgsLineString QgsGeometryUtils::perpendicularSegment( const QgsPoint &p, const Q
 double QgsGeometryUtils::lineAngle( double x1, double y1, double x2, double y2 )
 {
   double at = std::atan2( y2 - y1, x2 - x1 );
-  double a = -at + M_PI / 2.0;
+  double a = -at + M_PI_2;
   return normalizedAngle( a );
 }
 
@@ -1176,7 +1127,7 @@ double QgsGeometryUtils::angleBetweenThreePoints( double x1, double y1, double x
 double QgsGeometryUtils::linePerpendicularAngle( double x1, double y1, double x2, double y2 )
 {
   double a = lineAngle( x1, y1, x2, y2 );
-  a += ( M_PI / 2.0 );
+  a += M_PI_2;
   return normalizedAngle( a );
 }
 

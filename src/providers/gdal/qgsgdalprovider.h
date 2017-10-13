@@ -35,7 +35,8 @@
 
 class QgsRasterPyramid;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A call back function for showing progress of gdal operations.
  */
 int CPL_STDCALL progressCallback( double dfComplete,
@@ -69,7 +70,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QgsGdalProvider( QString const &uri = QString(), bool update = false );
 
     //! Create invalid provider with error
-    QgsGdalProvider( QString const &uri, QgsError error );
+    QgsGdalProvider( QString const &uri, const QgsError &error );
 
 
     ~QgsGdalProvider();
@@ -168,22 +169,23 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /**
      * Flag indicating if the layer data source is a valid layer
      */
-    bool mValid;
+    bool mValid = false;
 
     //! \brief Whether this raster has overviews / pyramids or not
-    bool mHasPyramids;
+    bool mHasPyramids = false;
 
-    /** \brief Gdal data types used to represent data in in QGIS,
+    /**
+     * \brief Gdal data types used to represent data in in QGIS,
      * may be longer than source data type to keep nulls
      * indexed from 0
      */
     QList<GDALDataType> mGdalDataType;
 
     QgsRectangle mExtent;
-    int mWidth;
-    int mHeight;
-    int mXBlockSize;
-    int mYBlockSize;
+    int mWidth = 0;
+    int mHeight = 0;
+    int mXBlockSize = 0;
+    int mYBlockSize = 0;
 
     //mutable QList<bool> mMinMaxComputed;
 
@@ -194,10 +196,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //mutable QList<double> mMaximum;
 
     //! \brief Pointer to the gdaldataset
-    GDALDatasetH mGdalBaseDataset;
+    GDALDatasetH mGdalBaseDataset = nullptr;
 
     //! \brief Pointer to the gdaldataset (possibly warped vrt)
-    GDALDatasetH mGdalDataset;
+    GDALDatasetH mGdalDataset = nullptr;
 
     //! \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform
     double mGeoTransform[6];

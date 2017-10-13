@@ -64,6 +64,7 @@ class TestQgsServerWMS(QgsServerTestBase):
 
         self.assertXMLEqual(response, expected, msg="request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8')))
 
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test is flaky on Travis environment')
     def test_project_wms(self):
         """Test some WMS request"""
         for request in ('GetCapabilities', 'GetProjectSettings', 'GetContext'):
@@ -87,6 +88,16 @@ class TestQgsServerWMS(QgsServerTestBase):
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
                                  'wms_getfeatureinfo-text-html')
 
+        # Test getfeatureinfo response text
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&' +
+                                 'info_format=text/plain',
+                                 'wms_getfeatureinfo-text-plain')
+
         # Test getfeatureinfo default info_format
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
@@ -95,6 +106,16 @@ class TestQgsServerWMS(QgsServerTestBase):
                                  '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
                                  'wms_getfeatureinfo-text-plain')
+
+        # Test getfeatureinfo invalid info_format
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
+                                 'transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320&' +
+                                 'info_format=InvalidFormat',
+                                 'wms_getfeatureinfo-invalid-format')
 
         # Regression for #8656
         # Mind the gap! (the space in the FILTER expression)
@@ -144,6 +165,15 @@ class TestQgsServerWMS(QgsServerTestBase):
                                  'FEATURE_COUNT=10&FILTER_GEOM=POLYGON((8.2035381 44.901459,8.2035562 44.901459,8.2035562 44.901418,8.2035381 44.901418,8.2035381 44.901459))',
                                  'wms_getfeatureinfo_geometry_filter')
 
+        # Test feature info request with invalid query_layer
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'query_layers=InvalidLayer&' +
+                                 'FEATURE_COUNT=10&FILTER_GEOM=POLYGON((8.2035381 44.901459,8.2035562 44.901459,8.2035562 44.901418,8.2035381 44.901418,8.2035381 44.901459))',
+                                 'wms_getfeatureinfo_invalid_query_layers')
+
         # Test DescribeLayer
         self.wms_request_compare('DescribeLayer',
                                  '&layers=testlayer%20%C3%A8%C3%A9&' +
@@ -153,6 +183,11 @@ class TestQgsServerWMS(QgsServerTestBase):
         self.wms_request_compare('GetStyles',
                                  '&layers=testlayer%20%C3%A8%C3%A9&',
                                  'getstyles')
+
+    def test_wms_getschemaextension(self):
+        self.wms_request_compare('GetSchemaExtension',
+                                 '',
+                                 'getschemaextension')
 
     def wms_inspire_request_compare(self, request):
         """WMS INSPIRE tests"""
@@ -175,6 +210,61 @@ class TestQgsServerWMS(QgsServerTestBase):
         """Test some WMS request"""
         for request in ('GetCapabilities',):
             self.wms_inspire_request_compare(request)
+
+    def test_wms_getmap_basic_mode(self):
+        # 1 bits
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png; mode=1bit",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Mode_1bit", 20000)
+
+        # 8 bits
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png; mode=8bit",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Mode_8bit", 20000)
+
+        # 16 bits
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png; mode=16bit",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Mode_16bit", 20000)
 
     def test_wms_getmap_basic(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -983,6 +1073,174 @@ class TestQgsServerWMS(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Basic")
 
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "LAYERS": "Country,Hello",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_Basic")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Country,Hello",
+            "LAYERS": "Country,Hello",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_Basic")
+
+    def test_wms_getprint_style(self):
+        # default style
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Country_Labels",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        assert h.get("Content-Type").startswith('image'), r
+        self._img_diff_error(r, h, "WMS_GetPrint_StyleDefault")
+
+        # custom style
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Country_Labels",
+            "map0:STYLES": "custom",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_StyleCustom")
+
+        # default style
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "LAYERS": "Country_Labels",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_StyleDefault")
+
+        # custom style
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "LAYERS": "Country_Labels",
+            "STYLES": "custom",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_StyleCustom")
+
+        # default style
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Country_Labels",
+            "LAYERS": "Country_Labels",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_StyleDefault")
+
+        # custom style
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Country_Labels",
+            "map0:STYLES": "custom",
+            "LAYERS": "Country_Labels",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_StyleCustom")
+
+    def test_wms_getprint_legend(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4copy",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Country,Hello",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_Legend")
+
     @unittest.skip('Randomly failing to draw the map layer')
     def test_wms_getprint_srs(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
@@ -1078,6 +1336,70 @@ class TestQgsServerWMS(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Selection")
+
+    def test_wms_getprint_highlight(self):
+        # default style
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Country_Labels",
+            "map0:HIGHLIGHT_GEOM": "POLYGON((-15000000 10000000, -15000000 6110620, 2500000 6110620, 2500000 10000000, -15000000 10000000))",
+            "map0:HIGHLIGHT_SYMBOL": "<StyledLayerDescriptor><UserStyle><Name>Highlight</Name><FeatureTypeStyle><Rule><Name>Symbol</Name><LineSymbolizer><Stroke><SvgParameter name=\"stroke\">%23ea1173</SvgParameter><SvgParameter name=\"stroke-opacity\">1</SvgParameter><SvgParameter name=\"stroke-width\">1.6</SvgParameter></Stroke></LineSymbolizer></Rule></FeatureTypeStyle></UserStyle></StyledLayerDescriptor>",
+            "map0:HIGHLIGHT_LABELSTRING": "Highlight Layer!",
+            "map0:HIGHLIGHT_LABELSIZE": "16",
+            "map0:HIGHLIGHT_LABELCOLOR": "%2300FF0000",
+            "map0:HIGHLIGHT_LABELBUFFERCOLOR": "%232300FF00",
+            "map0:HIGHLIGHT_LABELBUFFERSIZE": "1.5",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        assert h.get("Content-Type").startswith('image'), r
+        self._img_diff_error(r, h, "WMS_GetPrint_Highlight")
+
+    def test_wms_getprint_label(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Country,Hello",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "IDTEXTBOX": "Updated QGIS composer label"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_LabelUpdated")
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4",
+            "FORMAT": "png",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Country,Hello",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "IDTEXTBOX": ""
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_LabelRemoved")
 
     def test_getLegendGraphics(self):
         """Test that does not return an exception but an image"""

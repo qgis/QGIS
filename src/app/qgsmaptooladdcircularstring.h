@@ -38,9 +38,9 @@ class QgsMapToolAddCircularString: public QgsMapToolCapture
     void setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool );
 
   protected:
-    explicit QgsMapToolAddCircularString( QgsMapCanvas *canvas ); //forbidden
 
-    /** The parent map tool, e.g. the add feature tool.
+    /**
+     * The parent map tool, e.g. the add feature tool.
      *  Completed circular strings will be added to this tool by calling its addCurve() method.
      * */
     QgsMapToolCapture *mParentTool = nullptr;

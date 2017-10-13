@@ -34,11 +34,6 @@
 #include "qgsunittypes.h"
 #include "qgsexception.h"
 
-// MSVC compiler doesn't have defined M_PI in math.h
-#ifndef M_PI
-#define M_PI          3.14159265358979323846
-#endif
-
 #define DEG2RAD(x)    ((x)*M_PI/180)
 #define RAD2DEG(r) (180.0 * (r) / M_PI)
 #define POW2(x) ((x)*(x))
@@ -89,7 +84,7 @@ bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
 // Also, b = a-(a/invf)
 bool QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
 {
-  mEllipsoid = QStringLiteral( "PARAMETER:%1:%2" ).arg( qgsDoubleToString( semiMajor ) ).arg( qgsDoubleToString( semiMinor ) );
+  mEllipsoid = QStringLiteral( "PARAMETER:%1:%2" ).arg( qgsDoubleToString( semiMajor ), qgsDoubleToString( semiMinor ) );
   mSemiMajor = semiMajor;
   mSemiMinor = semiMinor;
   mInvFlattening = mSemiMajor / ( mSemiMajor - mSemiMinor );
@@ -664,10 +659,10 @@ void QgsDistanceArea::computeAreaInit()
 
   m_QbarA = -1.0 - ( 2.0 / 3.0 ) * e2 - ( 3.0 / 5.0 ) * e4  - ( 4.0 / 7.0 ) * e6;
   m_QbarB = ( 2.0 / 9.0 ) * e2 + ( 2.0 / 5.0 ) * e4  + ( 4.0 / 7.0 ) * e6;
-  m_QbarC =                     - ( 3.0 / 25.0 ) * e4 - ( 12.0 / 35.0 ) * e6;
+  m_QbarC = - ( 3.0 / 25.0 ) * e4 - ( 12.0 / 35.0 ) * e6;
   m_QbarD = ( 4.0 / 49.0 ) * e6;
 
-  m_Qp = getQ( M_PI / 2 );
+  m_Qp = getQ( M_PI_2 );
   m_E  = 4 * M_PI * m_Qp * m_AE;
   if ( m_E < 0.0 )
     m_E = -m_E;

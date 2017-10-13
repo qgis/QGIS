@@ -27,6 +27,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import posixpath
 import re
 import yaml
 import hashlib
@@ -43,6 +44,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterFile,
+                       QgsProcessingParameterBand,
                        QgsProcessingParameterString,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterFeatureSource,
@@ -81,7 +83,8 @@ def extractSchemaPath(filepath):
         if part == 'testdata' and not localpath:
             localparts = parts
             localparts.reverse()
-            localpath = os.path.join(*localparts)
+            # we always want posix style paths here
+            localpath = posixpath.join(*localparts)
 
         parts.append(part)
 
@@ -228,8 +231,13 @@ def createTest(text):
             else:
                 params[param.name()] = float(token)
         elif isinstance(param, QgsProcessingParameterEnum):
+            if isinstance(token, list):
+                params[param.name()] = [int(t) for t in token]
+            else:
+                params[param.name()] = int(token)
+        elif isinstance(param, QgsProcessingParameterBand):
             params[param.name()] = int(token)
-        else:
+        elif token:
             if token[0] == '"':
                 token = token[1:]
             if token[-1] == '"':

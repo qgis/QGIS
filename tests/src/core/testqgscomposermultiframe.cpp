@@ -49,10 +49,7 @@ class TestQgsComposerMultiFrame : public QObject
     QString mReport;
 };
 
-TestQgsComposerMultiFrame::TestQgsComposerMultiFrame()
-  : mComposition( 0 )
-{
-}
+TestQgsComposerMultiFrame::TestQgsComposerMultiFrame() = default;
 
 void TestQgsComposerMultiFrame::initTestCase()
 {

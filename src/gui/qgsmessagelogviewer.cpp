@@ -28,7 +28,7 @@
 #include <QToolTip>
 #include <QPlainTextEdit>
 #include <QScrollBar>
-
+#include <QDebug>
 
 QgsMessageLogViewer::QgsMessageLogViewer( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -57,8 +57,7 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
     cleanedTag = tr( "General" );
 
   int i;
-  for ( i = 0; i < tabWidget->count() && tabWidget->tabText( i ) != cleanedTag; i++ )
-    ;
+  for ( i = 0; i < tabWidget->count() && tabWidget->tabText( i ).remove( QChar( '&' ) ) != cleanedTag; i++ );
 
   QPlainTextEdit *w = nullptr;
   if ( i < tabWidget->count() )
@@ -79,22 +78,21 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   switch ( level )
   {
     case QgsMessageLog::INFO:
-      levelString = "INFO";
+      levelString = QStringLiteral( "INFO" );
       break;
     case QgsMessageLog::WARNING:
-      levelString = "WARNING";
+      levelString = QStringLiteral( "WARNING" );
       break;
     case QgsMessageLog::CRITICAL:
-      levelString = "CRITICAL";
+      levelString = QStringLiteral( "CRITICAL" );
       break;
     case QgsMessageLog::NONE:
-      levelString = "NONE";
+      levelString = QStringLiteral( "NONE" );
       break;
   }
 
   QString prefix = QStringLiteral( "%1\t%2\t" )
-                   .arg( QDateTime::currentDateTime().toString( Qt::ISODate ) )
-                   .arg( levelString );
+                   .arg( QDateTime::currentDateTime().toString( Qt::ISODate ), levelString );
   QString cleanedMessage = message;
   cleanedMessage = cleanedMessage.prepend( prefix ).replace( '\n', QLatin1String( "\n\t\t\t" ) );
   w->appendPlainText( cleanedMessage );

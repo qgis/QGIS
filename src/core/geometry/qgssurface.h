@@ -25,7 +25,8 @@
 
 class QgsPolygonV2;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSurface
  */
 class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
@@ -38,7 +39,8 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
      */
     virtual QgsPolygonV2 *surfaceToPolygon() const = 0 SIP_FACTORY;
 
-    /** Returns the minimal bounding box for the geometry
+    /**
+     * Returns the minimal bounding box for the geometry
      */
     virtual QgsRectangle boundingBox() const override
     {
@@ -63,7 +65,7 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
       if ( !geom )
         return nullptr;
 
-      QgsWkbTypes::Type flatType = geom->wkbType();
+      QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( geom->wkbType() );
       if ( flatType == QgsWkbTypes::CurvePolygon
            || flatType == QgsWkbTypes::Polygon
            || flatType == QgsWkbTypes::Triangle )

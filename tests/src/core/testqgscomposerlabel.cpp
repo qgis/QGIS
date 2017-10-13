@@ -32,11 +32,7 @@ class TestQgsComposerLabel : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerLabel()
-      : mComposition( 0 )
-      , mComposerLabel( 0 )
-      , mVectorLayer( 0 )
-    {}
+    TestQgsComposerLabel() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

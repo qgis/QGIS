@@ -97,3 +97,8 @@ QString QgsAmsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
   ds.setParam( QStringLiteral( "format" ), getSelectedImageEncoding() );
   return ds.uri();
 }
+
+void QgsAmsSourceSelect::addServiceLayer( QString uri, QString typeName )
+{
+  emit addRasterLayer( uri, typeName, QStringLiteral( "arcgismapserver" ) );
+}

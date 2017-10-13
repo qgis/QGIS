@@ -53,8 +53,6 @@ email                : sbr00pwb@users.sourceforge.net
 
 QgsDecorationScaleBar::QgsDecorationScaleBar( QObject *parent )
   : QgsDecorationItem( parent )
-  , mMarginHorizontal( 0 )
-  , mMarginVertical( 0 )
 {
   mPlacement = TopLeft;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;
@@ -63,11 +61,6 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject *parent )
 
   setName( "Scale Bar" );
   projectRead();
-}
-
-QgsDecorationScaleBar::~QgsDecorationScaleBar()
-{
-
 }
 
 void QgsDecorationScaleBar::projectRead()

@@ -35,6 +35,15 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
+  connect( radioSrcFile, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcFile_toggled );
+  connect( radioSrcDirectory, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcDirectory_toggled );
+  connect( radioSrcDatabase, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcDatabase_toggled );
+  connect( radioSrcProtocol, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcProtocol_toggled );
+  connect( btnNew, &QPushButton::clicked, this, &QgsOgrSourceSelect::btnNew_clicked );
+  connect( btnEdit, &QPushButton::clicked, this, &QgsOgrSourceSelect::btnEdit_clicked );
+  connect( btnDelete, &QPushButton::clicked, this, &QgsOgrSourceSelect::btnDelete_clicked );
+  connect( cmbDatabaseTypes, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOgrSourceSelect::cmbDatabaseTypes_currentIndexChanged );
+  connect( cmbConnections, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOgrSourceSelect::cmbConnections_currentIndexChanged );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOgrSourceSelect::showHelp );
 
@@ -353,7 +362,7 @@ void QgsOgrSourceSelect::addButtonClicked()
 
 //********************auto connected slots *****************/
 
-void QgsOgrSourceSelect::on_radioSrcFile_toggled( bool checked )
+void QgsOgrSourceSelect::radioSrcFile_toggled( bool checked )
 {
   if ( checked )
   {
@@ -372,7 +381,7 @@ void QgsOgrSourceSelect::on_radioSrcFile_toggled( bool checked )
   }
 }
 
-void QgsOgrSourceSelect::on_radioSrcDirectory_toggled( bool checked )
+void QgsOgrSourceSelect::radioSrcDirectory_toggled( bool checked )
 {
   if ( checked )
   {
@@ -390,7 +399,7 @@ void QgsOgrSourceSelect::on_radioSrcDirectory_toggled( bool checked )
   }
 }
 
-void QgsOgrSourceSelect::on_radioSrcDatabase_toggled( bool checked )
+void QgsOgrSourceSelect::radioSrcDatabase_toggled( bool checked )
 {
   if ( checked )
   {
@@ -406,7 +415,7 @@ void QgsOgrSourceSelect::on_radioSrcDatabase_toggled( bool checked )
   }
 }
 
-void QgsOgrSourceSelect::on_radioSrcProtocol_toggled( bool checked )
+void QgsOgrSourceSelect::radioSrcProtocol_toggled( bool checked )
 {
   if ( checked )
   {
@@ -418,31 +427,31 @@ void QgsOgrSourceSelect::on_radioSrcProtocol_toggled( bool checked )
 }
 
 // Slot for adding a new connection
-void QgsOgrSourceSelect::on_btnNew_clicked()
+void QgsOgrSourceSelect::btnNew_clicked()
 {
   addNewConnection();
 }
 // Slot for deleting an existing connection
-void QgsOgrSourceSelect::on_btnDelete_clicked()
+void QgsOgrSourceSelect::btnDelete_clicked()
 {
   deleteConnection();
 }
 
 
 // Slot for editing a connection
-void QgsOgrSourceSelect::on_btnEdit_clicked()
+void QgsOgrSourceSelect::btnEdit_clicked()
 {
   editConnection();
 }
 
-void QgsOgrSourceSelect::on_cmbDatabaseTypes_currentIndexChanged( const QString &text )
+void QgsOgrSourceSelect::cmbDatabaseTypes_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
   populateConnectionList();
   setSelectedConnectionType();
 }
 
-void QgsOgrSourceSelect::on_cmbConnections_currentIndexChanged( const QString &text )
+void QgsOgrSourceSelect::cmbConnections_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
   setSelectedConnection();

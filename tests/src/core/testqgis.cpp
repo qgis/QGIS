@@ -22,7 +22,8 @@
 //qgis includes...
 #include <qgis.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * Includes unit tests for the Qgis namespace
  */
 class TestQgis : public QObject
@@ -41,6 +42,7 @@ class TestQgis : public QObject
     void signalBlocker();
     void qVariantCompare_data();
     void qVariantCompare();
+    void testQgsAsConst();
 
   private:
     QString mReport;
@@ -276,6 +278,32 @@ void TestQgis::qVariantCompare()
 
   QCOMPARE( qgsVariantLessThan( lhs, rhs ), lessThan );
   QCOMPARE( qgsVariantGreaterThan( lhs, rhs ), greaterThan );
+}
+
+class ConstTester
+{
+  public:
+
+    void doSomething()
+    {
+      mVal = 1;
+    }
+
+    void doSomething() const
+    {
+      mVal = 2;
+    }
+
+    mutable int mVal = 0;
+};
+
+void TestQgis::testQgsAsConst()
+{
+  ConstTester ct;
+  ct.doSomething();
+  QCOMPARE( ct.mVal, 1 );
+  qgsAsConst( ct ).doSomething();
+  QCOMPARE( ct.mVal, 2 );
 }
 
 

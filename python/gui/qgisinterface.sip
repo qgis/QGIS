@@ -106,188 +106,18 @@ Constructor
  :rtype: QSize
 %End
 
-  public slots: // TODO: do these functions really need to be slots?
-
-
-    virtual void zoomFull() = 0;
+    virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
 %Docstring
-Zoom to full extent of map layers
-%End
-
-    virtual void zoomToPrevious() = 0;
-%Docstring
-Zoom to previous view extent
-%End
-
-    virtual void zoomToNext() = 0;
-%Docstring
-Zoom to next view extent
-%End
-
-    virtual void zoomToActiveLayer() = 0;
-%Docstring
-Zoom to extent of the active layer
-%End
-
-    virtual QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey ) = 0;
-%Docstring
-Add a vector layer
- :rtype: QgsVectorLayer
-%End
-
-    virtual QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName = QString() ) = 0;
-%Docstring
-Add a raster layer given a raster layer file name
- :rtype: QgsRasterLayer
-%End
-
-    virtual QgsRasterLayer *addRasterLayer( const QString &url, const QString &layerName, const QString &providerKey ) = 0;
-%Docstring
-Add a WMS layer
- :rtype: QgsRasterLayer
-%End
-
-    virtual bool addProject( const QString &project ) = 0;
-%Docstring
-Add a project
- :rtype: bool
-%End
-    virtual void newProject( bool promptToSaveFlag = false ) = 0;
-%Docstring
-Start a blank project
+ Return vector layers in edit mode
+ \param modified whether to return only layers that have been modified
+ :return: list of layers in legend order, or empty list *
+ :rtype: list of QgsMapLayer
 %End
 
     virtual QgsMapLayer *activeLayer() = 0;
 %Docstring
 Get pointer to the active layer (layer selected in the legend)
  :rtype: QgsMapLayer
-%End
-
-    virtual bool setActiveLayer( QgsMapLayer * ) = 0;
-%Docstring
-returns true if the layer exists, false otherwise
- :rtype: bool
-%End
-
-    virtual int addToolBarIcon( QAction *qAction ) = 0;
-%Docstring
-Add an icon to the plugins toolbar
- :rtype: int
-%End
-
-    virtual QAction *addToolBarWidget( QWidget *widget /Transfer/ ) = 0;
-%Docstring
- Add a widget to the plugins toolbar.
- To remove this widget again, call removeToolBarIcon()
- with the returned QAction.
-
- \param widget widget to add. The toolbar will take ownership of this widget
- :return: the QAction you can use to remove this widget from the toolbar
- :rtype: QAction
-%End
-
-    virtual void removeToolBarIcon( QAction *qAction ) = 0;
-%Docstring
-Remove an action (icon) from the plugin toolbar
-%End
-
-    virtual QAction *addRasterToolBarWidget( QWidget *widget /Transfer/ ) = 0;
-%Docstring
- Add a widget to the raster toolbar.
- To remove this widget again, call removeRasterToolBarIcon()
- with the returned QAction.
-
- \param widget widget to add. The toolbar will take ownership of this widget
- :return: the QAction you can use to remove this widget from the toolbar
- :rtype: QAction
-%End
-
-    virtual int addRasterToolBarIcon( QAction *qAction ) = 0;
-%Docstring
-Add an icon to the Raster toolbar
- :rtype: int
-%End
-
-    virtual void removeRasterToolBarIcon( QAction *qAction ) = 0;
-%Docstring
-Remove an action (icon) from the Raster toolbar
-%End
-
-    virtual int addVectorToolBarIcon( QAction *qAction ) = 0;
-%Docstring
-Add an icon to the Vector toolbar
- :rtype: int
-%End
-
-    virtual QAction *addVectorToolBarWidget( QWidget *widget /Transfer/ ) = 0;
-%Docstring
- Add a widget to the vector toolbar.
- To remove this widget again, call removeVectorToolBarIcon()
- with the returned QAction.
-
- \param widget widget to add. The toolbar will take ownership of this widget
- :return: the QAction you can use to remove this widget from the toolbar
- :rtype: QAction
-%End
-
-    virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;
-%Docstring
-Remove an action (icon) from the Vector toolbar
-%End
-
-    virtual int addDatabaseToolBarIcon( QAction *qAction ) = 0;
-%Docstring
-Add an icon to the Database toolbar
- :rtype: int
-%End
-
-    virtual QAction *addDatabaseToolBarWidget( QWidget *widget /Transfer/ ) = 0;
-%Docstring
- Add a widget to the database toolbar.
- To remove this widget again, call removeDatabaseToolBarIcon()
- with the returned QAction.
-
- \param widget widget to add. The toolbar will take ownership of this widget
- :return: the QAction you can use to remove this widget from the toolbar
- :rtype: QAction
-%End
-
-    virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
-%Docstring
-Remove an action (icon) from the Database toolbar
-%End
-
-    virtual int addWebToolBarIcon( QAction *qAction ) = 0;
-%Docstring
-Add an icon to the Web toolbar
- :rtype: int
-%End
-
-    virtual QAction *addWebToolBarWidget( QWidget *widget /Transfer/ ) = 0;
-%Docstring
- Add a widget to the web toolbar.
- To remove this widget again, call removeWebToolBarIcon()
- with the returned QAction.
-
- \param widget widget to add. The toolbar will take ownership of this widget
- :return: the QAction you can use to remove this widget from the toolbar
- :rtype: QAction
-%End
-
-    virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
-%Docstring
-Remove an action (icon) from the Web toolbar
-%End
-
-    virtual QToolBar *addToolBar( const QString &name ) = 0 /Factory/;
-%Docstring
-Add toolbar with specified name
- :rtype: QToolBar
-%End
-
-    virtual void addToolBar( QToolBar *toolbar /Transfer/, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
-%Docstring
-.. versionadded:: 2.3
 %End
 
     virtual QgsMapCanvas *mapCanvas() = 0;
@@ -316,39 +146,11 @@ Return the message bar of the main app
  :rtype: QgsMessageBar
 %End
 
-    virtual void openMessageLog() = 0;
-%Docstring
-Open the message log dock widget *
-%End
-
-    virtual void addUserInputWidget( QWidget *widget ) = 0;
-%Docstring
-Adds a widget to the user input tool bar.
-%End
-
     virtual QList<QgsComposerInterface *> openComposers() = 0;
 %Docstring
  Returns all currently open composer windows.
 .. versionadded:: 3.0
  :rtype: list of QgsComposerInterface
-%End
-
-    virtual QgsComposerInterface *openComposer( QgsComposition *composition ) = 0;
-%Docstring
- Opens a new composer window for the specified ``composition``, or
- brings an already open composer window to the foreground if one
- is already created for the composition.
-.. versionadded:: 3.0
-.. seealso:: closeComposer()
- :rtype: QgsComposerInterface
-%End
-
-    virtual void closeComposer( QgsComposition *composition ) = 0;
-%Docstring
- Closes an open composer window showing the specified ``composition``.
- The composition remains unaffected.
-.. versionadded:: 3.0
-.. seealso:: openComposer()
 %End
 
     virtual QList<QgsLayoutDesignerInterface *> openLayoutDesigners() = 0;
@@ -358,38 +160,11 @@ Adds a widget to the user input tool bar.
  :rtype: list of QgsLayoutDesignerInterface
 %End
 
-    virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) = 0;
-%Docstring
- Opens a new layout designer dialog for the specified ``layout``, or
- brings an already open designer window to the foreground if one
- is already created for the layout.
-.. versionadded:: 3.0
-.. seealso:: closeComposer()
- :rtype: QgsLayoutDesignerInterface
-%End
-
-    virtual void showOptionsDialog( QWidget *parent = 0, const QString &currentPage = QString() ) = 0;
-%Docstring
- Opens the options dialog. The ``currentPage`` argument can be used to force
- the dialog to open at a specific page.
-.. versionadded:: 3.0
-%End
 
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
 %Docstring
 Return changeable options built from settings and/or defaults
  :rtype: QMap<str, QVariant>
-%End
-
-    virtual void buildStyleSheet( const QMap<QString, QVariant> &opts ) = 0;
-%Docstring
- Generate stylesheet
- \param opts generated default option values, or a changed copy of them
-%End
-
-    virtual void saveStyleSheetOptions( const QMap<QString, QVariant> &opts ) = 0;
-%Docstring
-Save changed default option keys/values to user settings
 %End
 
     virtual QFont defaultStyleSheetFont() = 0;
@@ -398,182 +173,11 @@ Get reference font for initial qApp (may not be same as QgisApp)
  :rtype: QFont
 %End
 
-    virtual void addPluginToMenu( const QString &name, QAction *action ) = 0;
-%Docstring
-Add action to the plugins menu
-%End
-
-    virtual void removePluginMenu( const QString &name, QAction *action ) = 0;
-%Docstring
-Remove action from the plugins menu
-%End
-
-    virtual void insertAddLayerAction( QAction *action ) = 0;
-%Docstring
-Add "add layer" action to layer menu
-%End
-
-    virtual void removeAddLayerAction( QAction *action ) = 0;
-%Docstring
-Remove "add layer" action from layer menu
-%End
-
-    virtual void addPluginToDatabaseMenu( const QString &name, QAction *action ) = 0;
-%Docstring
-Add action to the Database menu
-%End
-
-    virtual void removePluginDatabaseMenu( const QString &name, QAction *action ) = 0;
-%Docstring
-Remove action from the Database menu
-%End
-
-    virtual void addPluginToRasterMenu( const QString &name, QAction *action ) = 0;
-%Docstring
-Add action to the Raster menu
-%End
-
-    virtual void removePluginRasterMenu( const QString &name, QAction *action ) = 0;
-%Docstring
-Remove action from the Raster menu
-%End
-
-    virtual void addPluginToVectorMenu( const QString &name, QAction *action ) = 0;
-%Docstring
-Add action to the Vector menu
-%End
-
-    virtual void removePluginVectorMenu( const QString &name, QAction *action ) = 0;
-%Docstring
-Remove action from the Vector menu
-%End
-
-    virtual void addPluginToWebMenu( const QString &name, QAction *action ) = 0;
-%Docstring
-Add action to the Web menu
-%End
-
-    virtual void removePluginWebMenu( const QString &name, QAction *action ) = 0;
-%Docstring
-Remove action from the Web menu
-%End
-
-    virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
-%Docstring
-Add a dock widget to the main window
-%End
-
-    virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;
-%Docstring
-Remove specified dock widget from main window (doesn't delete it).
-%End
-
     virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0;
 %Docstring
  Advanced digitizing dock widget
 .. versionadded:: 2.12
  :rtype: QgsAdvancedDigitizingDockWidget
-%End
-
-    virtual void showLayerProperties( QgsMapLayer *l ) = 0;
-%Docstring
-Open layer properties dialog
-%End
-
-    virtual QDialog *showAttributeTable( QgsVectorLayer *l, const QString &filterExpression = QString() ) = 0;
-%Docstring
-Open attribute table dialog
- :rtype: QDialog
-%End
-
-    virtual void addWindow( QAction *action ) = 0;
-%Docstring
- Add window to Window menu. The action title is the window title
- and the action should raise, unminimize and activate the window. *
-%End
-
-    virtual void removeWindow( QAction *action ) = 0;
-%Docstring
- Remove window from Window menu. Calling this is necessary only for
- windows which are hidden rather than deleted when closed. *
-%End
-
-    virtual bool registerMainWindowAction( QAction *action, const QString &defaultShortcut ) = 0;
-%Docstring
-Register action to the shortcuts manager so its shortcut can be changed in GUI
- :rtype: bool
-%End
-
-    virtual bool unregisterMainWindowAction( QAction *action ) = 0;
-%Docstring
-Unregister a previously registered action. (e.g. when plugin is going to be unloaded)
- :rtype: bool
-%End
-
-    virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
-%Docstring
- Register a new tab in the vector layer properties dialog.
-.. versionadded:: 2.16
-.. note::
-
-   Ownership of the factory is not transferred, and the factory must
-       be unregistered when plugin is unloaded.
-.. seealso:: unregisterMapLayerPropertiesFactory() *
-%End
-
-    virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
-%Docstring
- Unregister a previously registered tab in the vector layer properties dialog.
-.. versionadded:: 2.16
-.. seealso:: registerMapLayerPropertiesFactory()
-%End
-
-    virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
-%Docstring
- Register a new tab in the options dialog.
-.. versionadded:: 3.0
-.. note::
-
-   Ownership of the factory is not transferred, and the factory must
-       be unregistered when plugin is unloaded.
-.. seealso:: unregisterOptionsWidgetFactory() *
-%End
-
-    virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
-%Docstring
- Unregister a previously registered tab in the options dialog.
-.. versionadded:: 3.0
-.. seealso:: registerOptionsWidgetFactory()
-%End
-
-    virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
-%Docstring
- Register a new custom drop handler.
-.. versionadded:: 3.0
-.. note::
-
-   Ownership of the factory is not transferred, and the factory must
-       be unregistered when plugin is unloaded.
-.. seealso:: unregisterCustomDropHandler() *
-%End
-
-    virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
-%Docstring
- Unregister a previously registered custom drop handler.
-.. versionadded:: 3.0
-.. seealso:: registerCustomDropHandler() *
-%End
-
-
-    virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 /Deprecated/;
-%Docstring
- Open a url in the users browser. By default the QGIS doc directory is used
- as the base for the URL. To open a URL that is not relative to the installed
- QGIS documentation, set useQgisDocDirectory to false.
- \param url URL to open
- \param useQgisDocDirectory If true, the URL will be formed by concatenating
- url to the QGIS documentation directory path (prefix/share/doc)
- \deprecated
 %End
 
 
@@ -1071,6 +675,447 @@ Get access to the native Add ArcGIS MapServer action.
  :rtype: QAction
 %End
 
+    virtual QgsVectorLayerTools *vectorLayerTools() = 0;
+%Docstring
+ Access the vector layer tools instance.
+ With the help of this you can access methods like addFeature, startEditing
+ or stopEditing while giving the user the appropriate dialogs.
+
+ :return: An instance of the vector layer tools
+ :rtype: QgsVectorLayerTools
+%End
+
+    virtual int messageTimeout() = 0;
+%Docstring
+Get timeout for timed messages: default of 5 seconds
+ :rtype: int
+%End
+
+    virtual QgsStatusBar *statusBarIface() = 0;
+%Docstring
+ Returns a pointer to the app's status bar interface. This should be
+ used for interacting and adding widgets and messages to the app's
+ status bar (do not use the native Qt statusBar() method).
+.. versionadded:: 3.0
+ :rtype: QgsStatusBar
+%End
+
+  public slots: // TODO: do these functions really need to be slots?
+
+
+    virtual void zoomFull() = 0;
+%Docstring
+Zoom to full extent of map layers
+%End
+
+    virtual void zoomToPrevious() = 0;
+%Docstring
+Zoom to previous view extent
+%End
+
+    virtual void zoomToNext() = 0;
+%Docstring
+Zoom to next view extent
+%End
+
+    virtual void zoomToActiveLayer() = 0;
+%Docstring
+Zoom to extent of the active layer
+%End
+
+    virtual QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey ) = 0;
+%Docstring
+Add a vector layer
+ :rtype: QgsVectorLayer
+%End
+
+    virtual QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName = QString() ) = 0;
+%Docstring
+Add a raster layer given a raster layer file name
+ :rtype: QgsRasterLayer
+%End
+
+    virtual QgsRasterLayer *addRasterLayer( const QString &url, const QString &layerName, const QString &providerKey ) = 0;
+%Docstring
+Add a WMS layer
+ :rtype: QgsRasterLayer
+%End
+
+    virtual bool addProject( const QString &project ) = 0;
+%Docstring
+Add a project
+ :rtype: bool
+%End
+    virtual void newProject( bool promptToSaveFlag = false ) = 0;
+%Docstring
+Start a blank project
+%End
+
+    virtual void reloadConnections( ) = 0;
+%Docstring
+ Triggered when connections have changed.
+ This calls reloadConnections in the main application and triggers a signal that is
+ forwarded to the GUI elements that needs to be updated (i.e. the source
+ select dialogs and the browser widgets)
+.. versionadded:: 3.0
+%End
+
+    virtual bool setActiveLayer( QgsMapLayer * ) = 0;
+%Docstring
+ Set the active layer (layer gets selected in the legend)
+ returns true if the layer exists, false otherwise
+ :rtype: bool
+%End
+
+    virtual int addToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Add an icon to the plugins toolbar
+ :rtype: int
+%End
+
+    virtual QAction *addToolBarWidget( QWidget *widget /Transfer/ ) = 0;
+%Docstring
+ Add a widget to the plugins toolbar.
+ To remove this widget again, call removeToolBarIcon()
+ with the returned QAction.
+
+ \param widget widget to add. The toolbar will take ownership of this widget
+ :return: the QAction you can use to remove this widget from the toolbar
+ :rtype: QAction
+%End
+
+    virtual void removeToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Remove an action (icon) from the plugin toolbar
+%End
+
+    virtual QAction *addRasterToolBarWidget( QWidget *widget /Transfer/ ) = 0;
+%Docstring
+ Add a widget to the raster toolbar.
+ To remove this widget again, call removeRasterToolBarIcon()
+ with the returned QAction.
+
+ \param widget widget to add. The toolbar will take ownership of this widget
+ :return: the QAction you can use to remove this widget from the toolbar
+ :rtype: QAction
+%End
+
+    virtual int addRasterToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Add an icon to the Raster toolbar
+ :rtype: int
+%End
+
+    virtual void removeRasterToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Remove an action (icon) from the Raster toolbar
+%End
+
+    virtual int addVectorToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Add an icon to the Vector toolbar
+ :rtype: int
+%End
+
+    virtual QAction *addVectorToolBarWidget( QWidget *widget /Transfer/ ) = 0;
+%Docstring
+ Add a widget to the vector toolbar.
+ To remove this widget again, call removeVectorToolBarIcon()
+ with the returned QAction.
+
+ \param widget widget to add. The toolbar will take ownership of this widget
+ :return: the QAction you can use to remove this widget from the toolbar
+ :rtype: QAction
+%End
+
+    virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Remove an action (icon) from the Vector toolbar
+%End
+
+    virtual int addDatabaseToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Add an icon to the Database toolbar
+ :rtype: int
+%End
+
+    virtual QAction *addDatabaseToolBarWidget( QWidget *widget /Transfer/ ) = 0;
+%Docstring
+ Add a widget to the database toolbar.
+ To remove this widget again, call removeDatabaseToolBarIcon()
+ with the returned QAction.
+
+ \param widget widget to add. The toolbar will take ownership of this widget
+ :return: the QAction you can use to remove this widget from the toolbar
+ :rtype: QAction
+%End
+
+    virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Remove an action (icon) from the Database toolbar
+%End
+
+    virtual int addWebToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Add an icon to the Web toolbar
+ :rtype: int
+%End
+
+    virtual QAction *addWebToolBarWidget( QWidget *widget /Transfer/ ) = 0;
+%Docstring
+ Add a widget to the web toolbar.
+ To remove this widget again, call removeWebToolBarIcon()
+ with the returned QAction.
+
+ \param widget widget to add. The toolbar will take ownership of this widget
+ :return: the QAction you can use to remove this widget from the toolbar
+ :rtype: QAction
+%End
+
+    virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
+%Docstring
+Remove an action (icon) from the Web toolbar
+%End
+
+    virtual QToolBar *addToolBar( const QString &name ) = 0 /Factory/;
+%Docstring
+Add toolbar with specified name
+ :rtype: QToolBar
+%End
+
+    virtual void addToolBar( QToolBar *toolbar /Transfer/, Qt::ToolBarArea area = Qt::TopToolBarArea ) = 0;
+%Docstring
+ Add a toolbar
+.. versionadded:: 2.3
+%End
+
+    virtual void openMessageLog() = 0;
+%Docstring
+Open the message log dock widget *
+%End
+
+    virtual void addUserInputWidget( QWidget *widget ) = 0;
+%Docstring
+Adds a widget to the user input tool bar.
+%End
+
+    virtual QgsComposerInterface *openComposer( QgsComposition *composition ) = 0;
+%Docstring
+ Opens a new composer window for the specified ``composition``, or
+ brings an already open composer window to the foreground if one
+ is already created for the composition.
+.. versionadded:: 3.0
+.. seealso:: closeComposer()
+ :rtype: QgsComposerInterface
+%End
+
+    virtual void closeComposer( QgsComposition *composition ) = 0;
+%Docstring
+ Closes an open composer window showing the specified ``composition``.
+ The composition remains unaffected.
+.. versionadded:: 3.0
+.. seealso:: openComposer()
+%End
+
+    virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) = 0;
+%Docstring
+ Opens a new layout designer dialog for the specified ``layout``, or
+ brings an already open designer window to the foreground if one
+ is already created for the layout.
+.. versionadded:: 3.0
+.. seealso:: closeComposer()
+ :rtype: QgsLayoutDesignerInterface
+%End
+
+    virtual void showOptionsDialog( QWidget *parent = 0, const QString &currentPage = QString() ) = 0;
+%Docstring
+ Opens the options dialog. The ``currentPage`` argument can be used to force
+ the dialog to open at a specific page.
+.. versionadded:: 3.0
+%End
+
+    virtual void buildStyleSheet( const QMap<QString, QVariant> &opts ) = 0;
+%Docstring
+ Generate stylesheet
+ \param opts generated default option values, or a changed copy of them
+%End
+
+    virtual void saveStyleSheetOptions( const QMap<QString, QVariant> &opts ) = 0;
+%Docstring
+Save changed default option keys/values to user settings
+%End
+
+    virtual void addPluginToMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Add action to the plugins menu
+%End
+
+    virtual void removePluginMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Remove action from the plugins menu
+%End
+
+    virtual void insertAddLayerAction( QAction *action ) = 0;
+%Docstring
+Add "add layer" action to layer menu
+%End
+
+    virtual void removeAddLayerAction( QAction *action ) = 0;
+%Docstring
+Remove "add layer" action from layer menu
+%End
+
+    virtual void addPluginToDatabaseMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Add action to the Database menu
+%End
+
+    virtual void removePluginDatabaseMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Remove action from the Database menu
+%End
+
+    virtual void addPluginToRasterMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Add action to the Raster menu
+%End
+
+    virtual void removePluginRasterMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Remove action from the Raster menu
+%End
+
+    virtual void addPluginToVectorMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Add action to the Vector menu
+%End
+
+    virtual void removePluginVectorMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Remove action from the Vector menu
+%End
+
+    virtual void addPluginToWebMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Add action to the Web menu
+%End
+
+    virtual void removePluginWebMenu( const QString &name, QAction *action ) = 0;
+%Docstring
+Remove action from the Web menu
+%End
+
+    virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget *dockwidget ) = 0;
+%Docstring
+Add a dock widget to the main window
+%End
+
+    virtual void removeDockWidget( QDockWidget *dockwidget ) = 0;
+%Docstring
+Remove specified dock widget from main window (doesn't delete it).
+%End
+
+    virtual void showLayerProperties( QgsMapLayer *l ) = 0;
+%Docstring
+Open layer properties dialog
+%End
+
+    virtual QDialog *showAttributeTable( QgsVectorLayer *l, const QString &filterExpression = QString() ) = 0;
+%Docstring
+Open attribute table dialog
+ :rtype: QDialog
+%End
+
+    virtual void addWindow( QAction *action ) = 0;
+%Docstring
+ Add window to Window menu. The action title is the window title
+ and the action should raise, unminimize and activate the window. *
+%End
+
+    virtual void removeWindow( QAction *action ) = 0;
+%Docstring
+ Remove window from Window menu. Calling this is necessary only for
+ windows which are hidden rather than deleted when closed. *
+%End
+
+    virtual bool registerMainWindowAction( QAction *action, const QString &defaultShortcut ) = 0;
+%Docstring
+Register action to the shortcuts manager so its shortcut can be changed in GUI
+ :rtype: bool
+%End
+
+    virtual bool unregisterMainWindowAction( QAction *action ) = 0;
+%Docstring
+Unregister a previously registered action. (e.g. when plugin is going to be unloaded)
+ :rtype: bool
+%End
+
+    virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
+%Docstring
+ Register a new tab in the vector layer properties dialog.
+.. versionadded:: 2.16
+.. note::
+
+   Ownership of the factory is not transferred, and the factory must
+       be unregistered when plugin is unloaded.
+.. seealso:: unregisterMapLayerPropertiesFactory() *
+%End
+
+    virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
+%Docstring
+ Unregister a previously registered tab in the vector layer properties dialog.
+.. versionadded:: 2.16
+.. seealso:: registerMapLayerPropertiesFactory()
+%End
+
+    virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+%Docstring
+ Register a new tab in the options dialog.
+.. versionadded:: 3.0
+.. note::
+
+   Ownership of the factory is not transferred, and the factory must
+       be unregistered when plugin is unloaded.
+.. seealso:: unregisterOptionsWidgetFactory() *
+%End
+
+    virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+%Docstring
+ Unregister a previously registered tab in the options dialog.
+.. versionadded:: 3.0
+.. seealso:: registerOptionsWidgetFactory()
+%End
+
+    virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
+%Docstring
+ Register a new custom drop handler.
+.. versionadded:: 3.0
+.. note::
+
+   Ownership of the factory is not transferred, and the factory must
+       be unregistered when plugin is unloaded.
+.. seealso:: unregisterCustomDropHandler() *
+%End
+
+    virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
+%Docstring
+ Unregister a previously registered custom drop handler.
+.. versionadded:: 3.0
+.. seealso:: registerCustomDropHandler() *
+%End
+
+
+    virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 /Deprecated/;
+%Docstring
+ Open a url in the users browser. By default the QGIS doc directory is used
+ as the base for the URL. To open a URL that is not relative to the installed
+ QGIS documentation, set useQgisDocDirectory to false.
+ \param url URL to open
+ \param useQgisDocDirectory If true, the URL will be formed by concatenating
+ url to the QGIS documentation directory path (prefix/share/doc)
+ \deprecated
+%End
+
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
 %Docstring
  Open feature form
@@ -1092,16 +1137,6 @@ Get access to the native Add ArcGIS MapServer action.
  :rtype: QgsAttributeDialog
 %End
 
-    virtual QgsVectorLayerTools *vectorLayerTools() = 0;
-%Docstring
- Access the vector layer tools instance.
- With the help of this you can access methods like addFeature, startEditing
- or stopEditing while giving the user the appropriate dialogs.
-
- :return: An instance of the vector layer tools
- :rtype: QgsVectorLayerTools
-%End
-
     virtual void preloadForm( const QString &uifile ) = 0;
 %Docstring
  This method is only needed when using a UI form with a custom widget plugin and calling
@@ -1114,29 +1149,6 @@ Get access to the native Add ArcGIS MapServer action.
  like normal
 
  More information here: http://qt-project.org/forums/viewthread/27098
-%End
-
-    virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
-%Docstring
- Return vector layers in edit mode
- \param modified whether to return only layers that have been modified
- :return: list of layers in legend order, or empty list *
- :rtype: list of QgsMapLayer
-%End
-
-    virtual int messageTimeout() = 0;
-%Docstring
-Get timeout for timed messages: default of 5 seconds
- :rtype: int
-%End
-
-    virtual QgsStatusBar *statusBarIface() = 0;
-%Docstring
- Returns a pointer to the app's status bar interface. This should be
- used for interacting and adding widgets and messages to the app's
- status bar (do not use the native Qt statusBar() method).
-.. versionadded:: 3.0
- :rtype: QgsStatusBar
 %End
 
     virtual void registerLocatorFilter( QgsLocatorFilter *filter /Transfer/ ) = 0;
@@ -1160,7 +1172,6 @@ Get timeout for timed messages: default of 5 seconds
 .. seealso:: registerLocatorFilter()
 .. versionadded:: 3.0
 %End
-
 
   signals:
 
@@ -1256,6 +1267,7 @@ Get timeout for timed messages: default of 5 seconds
  \note
  added in version 2.7
 %End
+
 };
 
 /************************************************************************

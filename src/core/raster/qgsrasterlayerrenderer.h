@@ -23,7 +23,6 @@
 class QPainter;
 
 class QgsMapToPixel;
-class QgsRasterBlockFeedback;
 class QgsRasterLayer;
 class QgsRasterPipe;
 struct QgsRasterViewPort;
@@ -33,14 +32,40 @@ class QgsRasterLayerRenderer;
 
 #include "qgsrasterinterface.h"
 
+///@cond PRIVATE
 
-/** \ingroup core
+/**
+ * \ingroup core
+ * Specific internal feedback class to provide preview of raster layer rendering.
+ * \since QGIS 3.0
+ * \note not available in Python bindings
+ */
+class CORE_EXPORT QgsRasterLayerRendererFeedback : public QgsRasterBlockFeedback
+{
+    Q_OBJECT
+
+  public:
+    //! Create feedback object based on our layer renderer
+    explicit QgsRasterLayerRendererFeedback( QgsRasterLayerRenderer *r );
+
+    //! when notified of new data in data provider it launches a preview draw of the raster
+    virtual void onNewData() override;
+  private:
+    QgsRasterLayerRenderer *mR = nullptr;   //!< Parent renderer instance
+    int mMinimalPreviewInterval;  //!< In milliseconds
+    QTime mLastPreview;           //!< When last preview has been generated
+};
+
+///@endcond
+
+/**
+ * \ingroup core
  * Implementation of threaded rendering for raster layers.
  *
  * \since QGIS 2.4
  * \note not available in Python bindings
  */
-class QgsRasterLayerRenderer : public QgsMapLayerRenderer
+class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
 {
   public:
     QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext );
@@ -50,7 +75,7 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
     virtual QgsFeedback *feedback() const override;
 
-  protected:
+  private:
 
     QPainter *mPainter = nullptr;
     const QgsMapToPixel *mMapToPixel = nullptr;
@@ -59,27 +84,10 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
     QgsRasterPipe *mPipe = nullptr;
     QgsRenderContext &mContext;
 
-    /** \ingroup core
-     * Specific internal feedback class to provide preview of raster layer rendering.
-     * \since QGIS 3.0
-     * \note not available in Python bindings
-     */
-    class Feedback : public QgsRasterBlockFeedback
-    {
-      public:
-        //! Create feedback object based on our layer renderer
-        explicit Feedback( QgsRasterLayerRenderer *r );
-
-        //! when notified of new data in data provider it launches a preview draw of the raster
-        virtual void onNewData() override;
-      private:
-        QgsRasterLayerRenderer *mR;   //!< Parent renderer instance
-        int mMinimalPreviewInterval;  //!< In milliseconds
-        QTime mLastPreview;           //!< When last preview has been generated
-    };
-
     //! feedback class for cancelation and preview generation
-    Feedback *mFeedback = nullptr;
+    QgsRasterLayerRendererFeedback *mFeedback = nullptr;
+
+    friend class QgsRasterLayerRendererFeedback;
 };
 
 

@@ -134,14 +134,22 @@ Refresh item children
     virtual void fetchMore( const QModelIndex &parent );
 
 
+    bool initialized( ) const;
+%Docstring
+Returns true if the model has been initialized
+ :rtype: bool
+%End
+
   signals:
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
 %Docstring
 Emitted when item children fetch was finished
 %End
+
     void connectionsChanged();
 %Docstring
-notify the provider dialogs of a changed connection
+ Connections changed in the browser, forwarded to the widget and used to
+ notify the provider dialogs of a changed connection
 %End
 
   public slots:
@@ -177,12 +185,18 @@ Reload the whole model
 Hide the given path in the browser model
 %End
 
+    void initialize();
+%Docstring
+Delayed initialization, needed because the provider registry must be already populated
+%End
+
   protected:
     void addRootItems();
 %Docstring
 Populates the model
 %End
     void removeRootItems();
+
 
 };
 

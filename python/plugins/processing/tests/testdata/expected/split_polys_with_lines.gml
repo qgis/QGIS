@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ogr:FeatureCollection
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation=""
+     xsi:schemaLocation="http://ogr.maptools.org/ split_polys_with_lines.xsd"
      xmlns:ogr="http://ogr.maptools.org/"
      xmlns:gml="http://www.opengis.net/gml">
   <gml:boundedBy>
@@ -36,7 +36,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:split_polys_with_lines fid="polys.3">
-      <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>7,-2 6,-3 6,1 10,1 9,0 7,0 7,-2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>6,-3 7,-2 9,-2 9,0 10,1 10,-3 6,-3</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>6,-3 7,-2 9,-2 9,0 10,1 10,-3 6,-3</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>7,-2 6,-3 6,1 10,1 9,0 7,0 7,-2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
     </ogr:split_polys_with_lines>

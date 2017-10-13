@@ -22,7 +22,7 @@ class QgsBusyIndicatorDialog : QDialog
 %End
   public:
 
-    QgsBusyIndicatorDialog( const QString &message = "", QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsBusyIndicatorDialog( const QString &message = QString(), QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
  Constructor
  Modal busy indicator dialog with no buttons.
@@ -38,6 +38,7 @@ class QgsBusyIndicatorDialog : QDialog
     void setMessage( const QString &message );
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

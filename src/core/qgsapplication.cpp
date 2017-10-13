@@ -41,6 +41,8 @@
 #include "qgsunittypes.h"
 #include "qgsuserprofile.h"
 #include "qgsuserprofilemanager.h"
+#include "qgsreferencedgeometry.h"
+#include "qgs3drendererregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -148,6 +150,9 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
   qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
   qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
+  qRegisterMetaType<QgsMessageLog::MessageLevel>( "QgsMessageLog::MessageLevel" );
+  qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
+  qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
 
   QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
   // QgsDebugMsg( QString( "prefixPath(): %1" ).arg( prefixPath ) );
@@ -166,9 +171,9 @@ void QgsApplication::init( QString profileFolder )
     ABISYM( mRunningFromBuildDir ) = true;
     ABISYM( mBuildSourcePath ) = f.readLine().trimmed();
     ABISYM( mBuildOutputPath ) = f.readLine().trimmed();
-    qDebug( "Running from build directory!" );
-    qDebug( "- source directory: %s", ABISYM( mBuildSourcePath ).toUtf8().data() );
-    qDebug( "- output directory of the build: %s", ABISYM( mBuildOutputPath ).toUtf8().data() );
+    QgsDebugMsgLevel( QStringLiteral( "Running from build directory!" ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( ABISYM( mBuildSourcePath ).toUtf8().data() ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( ABISYM( mBuildOutputPath ).toUtf8().data() ), 4 );
 #ifdef _MSC_VER
     ABISYM( mCfgIntDir ) = prefixPath.split( '/', QString::SkipEmptyParts ).last();
     qDebug( "- cfg: %s", ABISYM( mCfgIntDir ).toUtf8().data() );
@@ -317,7 +322,7 @@ bool QgsApplication::notify( QObject *receiver, QEvent *event )
   }
   catch ( std::exception &e )
   {
-    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
+    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromLatin1( e.what() ) );
     if ( qApp->thread() == QThread::currentThread() )
       QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
   }
@@ -622,6 +627,11 @@ QString QgsApplication::i18nPath()
     return ABISYM( mPkgDataPath ) + QStringLiteral( "/i18n/" );
 }
 
+QString QgsApplication::metadataPath()
+{
+  return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/metadata-ISO/" );
+}
+
 QString QgsApplication::qgisMasterDatabaseFilePath()
 {
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/qgis.db" );
@@ -834,6 +844,11 @@ QString QgsApplication::defaultStylePath()
 QString QgsApplication::defaultThemesFolder()
 {
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/themes" );
+}
+
+QString QgsApplication::serverResourcesPath()
+{
+  return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/server/" );
 }
 
 QString QgsApplication::libraryPath()
@@ -1570,6 +1585,11 @@ QgsFieldFormatterRegistry *QgsApplication::fieldFormatterRegistry()
   return members()->mFieldFormatterRegistry;
 }
 
+Qgs3DRendererRegistry *QgsApplication::renderer3DRegistry()
+{
+  return members()->m3DRendererRegistry;
+}
+
 QgsApplication::ApplicationMembers::ApplicationMembers()
 {
   // don't use initializer lists or scoped pointers - as more objects are added here we
@@ -1594,11 +1614,13 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mLayoutItemRegistry->populate();
   mProcessingRegistry->addProvider( new QgsNativeAlgorithms( mProcessingRegistry ) );
   mAnnotationRegistry = new QgsAnnotationRegistry();
+  m3DRendererRegistry = new Qgs3DRendererRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
 {
   delete mActionScopeRegistry;
+  delete m3DRendererRegistry;
   delete mAnnotationRegistry;
   delete mColorSchemeRegistry;
   delete mFieldFormatterRegistry;

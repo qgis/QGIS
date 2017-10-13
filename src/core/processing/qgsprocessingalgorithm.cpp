@@ -44,7 +44,7 @@ QgsProcessingAlgorithm *QgsProcessingAlgorithm::create( const QVariantMap &confi
 QString QgsProcessingAlgorithm::id() const
 {
   if ( mProvider )
-    return QString( "%1:%2" ).arg( mProvider->id(), name() );
+    return QStringLiteral( "%1:%2" ).arg( mProvider->id(), name() );
   else
     return name();
 }
@@ -71,7 +71,7 @@ QIcon QgsProcessingAlgorithm::icon() const
 
 QString QgsProcessingAlgorithm::svgIconPath() const
 {
-  return QgsApplication::iconPath( "processingAlgorithm.svg" );
+  return QgsApplication::iconPath( QStringLiteral( "processingAlgorithm.svg" ) );
 }
 
 QgsProcessingAlgorithm::Flags QgsProcessingAlgorithm::flags() const
@@ -550,14 +550,29 @@ QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsCrs( const QVari
   return QgsProcessingParameters::parameterAsCrs( parameterDefinition( name ), parameters, context );
 }
 
-QgsRectangle QgsProcessingAlgorithm::parameterAsExtent( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsExtentCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
-  return QgsProcessingParameters::parameterAsExtent( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsCrs( parameterDefinition( name ), parameters, context );
 }
 
-QgsPointXY QgsProcessingAlgorithm::parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
+QgsRectangle QgsProcessingAlgorithm::parameterAsExtent( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs ) const
 {
-  return QgsProcessingParameters::parameterAsPoint( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsExtent( parameterDefinition( name ), parameters, context, crs );
+}
+
+QgsGeometry QgsProcessingAlgorithm::parameterAsExtentGeometry( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs )
+{
+  return QgsProcessingParameters::parameterAsExtentGeometry( parameterDefinition( name ), parameters, context, crs );
+}
+
+QgsPointXY QgsProcessingAlgorithm::parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs ) const
+{
+  return QgsProcessingParameters::parameterAsPoint( parameterDefinition( name ), parameters, context, crs );
+}
+
+QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsPointCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+{
+  return QgsProcessingParameters::parameterAsPointCrs( parameterDefinition( name ), parameters, context );
 }
 
 QString QgsProcessingAlgorithm::parameterAsFile( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
@@ -614,9 +629,43 @@ bool QgsProcessingAlgorithm::createAutoOutputForParameter( QgsProcessingParamete
 
 void QgsProcessingFeatureBasedAlgorithm::initAlgorithm( const QVariantMap &config )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), inputLayerTypes() ) );
   initParameters( config );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), outputName(), outputLayerType() ) );
+}
+
+QList<int> QgsProcessingFeatureBasedAlgorithm::inputLayerTypes() const
+{
+  return QList<int>();
+}
+
+QgsProcessing::SourceType QgsProcessingFeatureBasedAlgorithm::outputLayerType() const
+{
+  return QgsProcessing::TypeVectorAnyGeometry;
+}
+
+QgsProcessingFeatureSource::Flag QgsProcessingFeatureBasedAlgorithm::sourceFlags() const
+{
+  return static_cast<QgsProcessingFeatureSource::Flag>( 0 );
+}
+
+QgsWkbTypes::Type QgsProcessingFeatureBasedAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+{
+  return inputWkbType;
+}
+
+QgsFields QgsProcessingFeatureBasedAlgorithm::outputFields( const QgsFields &inputFields ) const
+{
+  return inputFields;
+}
+
+QgsCoordinateReferenceSystem QgsProcessingFeatureBasedAlgorithm::outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const
+{
+  return inputCrs;
+}
+
+void QgsProcessingFeatureBasedAlgorithm::initParameters( const QVariantMap & )
+{
 }
 
 QgsCoordinateReferenceSystem QgsProcessingFeatureBasedAlgorithm::sourceCrs() const
@@ -644,7 +693,7 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
   long count = mSource->featureCount();
 
   QgsFeature f;
-  QgsFeatureIterator it = mSource->getFeatures();
+  QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest(), sourceFlags() );
 
   double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
@@ -668,4 +717,9 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;
+}
+
+QgsFeatureRequest QgsProcessingFeatureBasedAlgorithm::request() const
+{
+  return QgsFeatureRequest();
 }

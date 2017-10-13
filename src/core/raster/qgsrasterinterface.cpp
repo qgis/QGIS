@@ -30,7 +30,6 @@
 
 QgsRasterInterface::QgsRasterInterface( QgsRasterInterface *input )
   : mInput( input )
-  , mOn( true )
 {
 }
 

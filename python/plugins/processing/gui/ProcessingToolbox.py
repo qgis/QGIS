@@ -299,7 +299,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 context = dataobjects.createContext(feedback)
                 parameters = {}
                 ret, results = execute(alg, parameters, context, feedback)
-                handleAlgorithmResults(alg, parameters, context, feedback)
+                handleAlgorithmResults(alg, context, feedback)
                 feedback.close()
         if isinstance(item, TreeActionItem):
             action = item.action
@@ -430,7 +430,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 label = QLabel(text + "&nbsp;&nbsp;&nbsp;&nbsp;<a href='%s'>Activate</a>")
                 label.setStyleSheet("QLabel {background-color: white; color: grey;}")
                 label.linkActivated.connect(activateProvider)
-                self.algorithmTree.setItemWidget(item, 0, label)
+                self.algorithmTree.setItemWidget(parent, 0, label)
 
             else:
                 text += QCoreApplication.translate("TreeProviderItem", " [{0} geoalgorithms]").format(count)

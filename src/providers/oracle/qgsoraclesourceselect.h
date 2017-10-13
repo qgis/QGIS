@@ -75,7 +75,8 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
 };
 
 
-/** \class QgsOracleSourceSelect
+/**
+ * \class QgsOracleSourceSelect
  * \brief Dialog to create connections and add tables from Oracle.
  *
  * This dialog allows the user to define and save connection information
@@ -106,7 +107,8 @@ class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qg
     void addButtonClicked() override;
     void buildQuery();
 
-    /** Connects to the database using the stored connection parameters.
+    /**
+     * Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
      */
     void on_btnConnect_clicked();

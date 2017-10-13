@@ -34,6 +34,14 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap &importers,
   , mDevices( devices )
 {
   setupUi( this );
+  connect( pbnIMPInput, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnIMPInput_clicked );
+  connect( pbnIMPOutput, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnIMPOutput_clicked );
+  connect( pbnCONVInput, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnCONVInput_clicked );
+  connect( pbnCONVOutput, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnCONVOutput_clicked );
+  connect( pbnDLOutput, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnDLOutput_clicked );
+  connect( pbnRefresh, &QPushButton::clicked, this, &QgsGPSPluginGui::pbnRefresh_clicked );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsGPSPluginGui::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsGPSPluginGui::buttonBox_rejected );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsGPSPluginGui::showHelp );
 
   // restore size, position and active tab
@@ -85,7 +93,7 @@ QgsGPSPluginGui::~QgsGPSPluginGui()
   settings.setValue( QStringLiteral( "Plugin-GPS/lastTab" ), tabWidget->currentIndex() );
 }
 
-void QgsGPSPluginGui::on_buttonBox_accepted()
+void QgsGPSPluginGui::buttonBox_accepted()
 {
   // what should we do?
   switch ( tabWidget->currentIndex() )
@@ -155,7 +163,7 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
   // accept();
 }
 
-void QgsGPSPluginGui::on_pbnDLOutput_clicked()
+void QgsGPSPluginGui::pbnDLOutput_clicked()
 {
   QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
@@ -205,8 +213,8 @@ void QgsGPSPluginGui::enableRelevantControls()
   // import other file
   else if ( tabWidget->currentIndex() == 1 )
   {
-    if ( ( leIMPInput->text() == QLatin1String( "" ) ) || ( leIMPOutput->text() == QLatin1String( "" ) ) ||
-         ( leIMPLayer->text() == QLatin1String( "" ) ) )
+    if ( ( leIMPInput->text().isEmpty() ) || ( leIMPOutput->text().isEmpty() ) ||
+         ( leIMPLayer->text().isEmpty() ) )
       pbnOK->setEnabled( false );
     else
       pbnOK->setEnabled( true );
@@ -215,8 +223,8 @@ void QgsGPSPluginGui::enableRelevantControls()
   // download from device
   else if ( tabWidget->currentIndex() == 2 )
   {
-    if ( cmbDLDevice->currentText() == QLatin1String( "" ) || leDLBasename->text() == QLatin1String( "" ) ||
-         leDLOutput->text() == QLatin1String( "" ) )
+    if ( cmbDLDevice->currentText().isEmpty() || leDLBasename->text().isEmpty() ||
+         leDLOutput->text().isEmpty() )
       pbnOK->setEnabled( false );
     else
       pbnOK->setEnabled( true );
@@ -225,7 +233,7 @@ void QgsGPSPluginGui::enableRelevantControls()
   // upload to device
   else if ( tabWidget->currentIndex() == 3 )
   {
-    if ( cmbULDevice->currentText() == QLatin1String( "" ) || cmbULLayer->currentText() == QLatin1String( "" ) )
+    if ( cmbULDevice->currentText().isEmpty() || cmbULLayer->currentText().isEmpty() )
       pbnOK->setEnabled( false );
     else
       pbnOK->setEnabled( true );
@@ -234,15 +242,15 @@ void QgsGPSPluginGui::enableRelevantControls()
   // convert between waypoint/routes
   else if ( tabWidget->currentIndex() == 4 )
   {
-    if ( ( leCONVInput->text() == QLatin1String( "" ) ) || ( leCONVOutput->text() == QLatin1String( "" ) ) ||
-         ( leCONVLayer->text() == QLatin1String( "" ) ) )
+    if ( ( leCONVInput->text().isEmpty() ) || ( leCONVOutput->text().isEmpty() ) ||
+         ( leCONVLayer->text().isEmpty() ) )
       pbnOK->setEnabled( false );
     else
       pbnOK->setEnabled( true );
   }
 }
 
-void QgsGPSPluginGui::on_buttonBox_rejected()
+void QgsGPSPluginGui::buttonBox_rejected()
 {
   reject();
 }
@@ -264,7 +272,7 @@ void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
   }
 }
 
-void QgsGPSPluginGui::on_pbnIMPInput_clicked()
+void QgsGPSPluginGui::pbnIMPInput_clicked()
 {
   QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/importdirectory" ), QDir::homePath() ).toString();
@@ -305,7 +313,7 @@ void QgsGPSPluginGui::on_pbnIMPInput_clicked()
   }
 }
 
-void QgsGPSPluginGui::on_pbnIMPOutput_clicked()
+void QgsGPSPluginGui::pbnIMPOutput_clicked()
 {
   QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
@@ -325,7 +333,7 @@ void QgsGPSPluginGui::on_pbnIMPOutput_clicked()
   }
 }
 
-void QgsGPSPluginGui::on_pbnRefresh_clicked()
+void QgsGPSPluginGui::pbnRefresh_clicked()
 {
   populatePortComboBoxes();
 }
@@ -369,7 +377,7 @@ void QgsGPSPluginGui::populateULLayerComboBox()
 
 void QgsGPSPluginGui::populateIMPBabelFormats()
 {
-  mBabelFilter = QLatin1String( "" );
+  mBabelFilter.clear();
   cmbULDevice->clear();
   cmbDLDevice->clear();
   QgsSettings settings;
@@ -396,7 +404,7 @@ void QgsGPSPluginGui::populateIMPBabelFormats()
     cmbDLDevice->setCurrentIndex( d );
 }
 
-void QgsGPSPluginGui::on_pbnCONVInput_clicked()
+void QgsGPSPluginGui::pbnCONVInput_clicked()
 {
   QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
@@ -412,7 +420,7 @@ void QgsGPSPluginGui::on_pbnCONVInput_clicked()
   }
 }
 
-void QgsGPSPluginGui::on_pbnCONVOutput_clicked()
+void QgsGPSPluginGui::pbnCONVOutput_clicked()
 {
   QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();

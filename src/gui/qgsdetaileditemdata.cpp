@@ -16,14 +16,6 @@
  ***************************************************************************/
 
 #include "qgsdetaileditemdata.h"
-QgsDetailedItemData::QgsDetailedItemData()
-  : mCheckableFlag( false )
-  , mCheckedFlag( false )
-  , mEnabledFlag( true )
-  , mRenderAsWidgetFlag( false )
-{
-
-}
 
 void QgsDetailedItemData::setTitle( const QString &title )
 {

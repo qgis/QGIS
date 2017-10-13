@@ -113,8 +113,8 @@ class GridPolygon(QgisAlgorithm):
         hOverlay = self.parameterAsDouble(parameters, self.HOVERLAY, context)
         vOverlay = self.parameterAsDouble(parameters, self.VOVERLAY, context)
 
-        bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
         crs = self.parameterAsCrs(parameters, self.CRS, context)
+        bbox = self.parameterAsExtent(parameters, self.EXTENT, context, crs)
 
         width = bbox.width()
         height = bbox.height()

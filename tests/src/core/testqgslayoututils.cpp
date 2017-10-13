@@ -18,7 +18,6 @@
 #include "qgslayout.h"
 #include "qgstest.h"
 #include "qgslayoututils.h"
-#include "qgstestutils.h"
 #include "qgsproject.h"
 #include "qgslayoutitemmap.h"
 
@@ -34,6 +33,8 @@ class TestQgsLayoutUtils: public QObject
     void normalizedAngle(); //test normalised angle function
     void createRenderContextFromLayout();
     void createRenderContextFromMap();
+    void relativePosition();
+    void relativeResizeRect();
 
   private:
     QString mReport;
@@ -42,7 +43,7 @@ class TestQgsLayoutUtils: public QObject
 
 void TestQgsLayoutUtils::initTestCase()
 {
-  mReport = "<h1>Layout Utils Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Layout Utils Tests</h1>\n" );
 }
 
 void TestQgsLayoutUtils::cleanupTestCase()
@@ -89,8 +90,8 @@ void TestQgsLayoutUtils::normalizedAngle()
 
   {
     double result = QgsLayoutUtils::normalizedAngle( ( *it ).first );
-    qDebug() << QString( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
-    QVERIFY( qgsDoubleNear( result, ( *it ).second ) );
+    qDebug() << QStringLiteral( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
+    QGSCOMPARENEAR( result, ( *it ).second, 4 * DBL_EPSILON );
 
   }
 
@@ -110,8 +111,8 @@ void TestQgsLayoutUtils::normalizedAngle()
 
   {
     double result = QgsLayoutUtils::normalizedAngle( ( *it ).first, true );
-    qDebug() << QString( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
-    QVERIFY( qgsDoubleNear( result, ( *it ).second ) );
+    qDebug() << QStringLiteral( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
+    QGSCOMPARENEAR( result, ( *it ).second, 4 * DBL_EPSILON );
 
   }
 }
@@ -264,6 +265,60 @@ void TestQgsLayoutUtils::createRenderContextFromMap()
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 #endif
   p.end();
+}
+
+
+void TestQgsLayoutUtils::relativePosition()
+{
+  //+ve gradient
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( 1, 0, 2, 0, 4 ), 2, 0.001 );
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( 0, 0, 2, 0, 4 ), 0, 0.001 );
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( 2, 0, 2, 0, 4 ), 4, 0.001 );
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( 4, 0, 2, 0, 4 ), 8, 0.001 );
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( -2, 0, 2, 0, 4 ), -4, 0.001 );
+  //-ve gradient
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( 1, 0, 2, 4, 0 ), 2, 0.001 );
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( 0, 0, 2, 4, 0 ), 4, 0.001 );
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( 2, 0, 2, 4, 0 ), 0, 0.001 );
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( 4, 0, 2, 4, 0 ), -4, 0.001 );
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( -2, 0, 2, 4, 0 ), 8, 0.001 );
+  //-ve domain
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( 1, 2, 0, 0, 4 ), 2, 0.001 );
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( 0, 2, 0, 0, 4 ), 4, 0.001 );
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( 2, 2, 0, 0, 4 ), 0, 0.001 );
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( 4, 2, 0, 0, 4 ), -4, 0.001 );
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( -2, 2, 0, 0, 4 ), 8, 0.001 );
+  //-ve domain and gradient
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( 1, 2, 0, 4, 0 ), 2, 0.001 );
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( 0, 2, 0, 4, 0 ), 0, 0.001 );
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( 2, 2, 0, 4, 0 ), 4, 0.001 );
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( 4, 2, 0, 4, 0 ), 8, 0.001 );
+  QGSCOMPARENEAR( QgsLayoutUtils::relativePosition( -2, 2, 0, 4, 0 ), -4, 0.001 );
+}
+
+void TestQgsLayoutUtils::relativeResizeRect()
+{
+  //test rectangle which fills bounds
+  QRectF testRect = QRectF( 0, 0, 1, 1 );
+  QRectF boundsBefore = QRectF( 0, 0, 1, 1 );
+  QRectF boundsAfter = QRectF( 0, 0, 1, 1 );
+  QgsLayoutUtils::relativeResizeRect( testRect, boundsBefore, boundsAfter );
+  QCOMPARE( testRect, QRectF( 0, 0, 1, 1 ) );
+  testRect = QRectF( 0, 0, 1, 1 );
+  boundsAfter = QRectF( 0, 0, 2, 2 );
+  QgsLayoutUtils::relativeResizeRect( testRect, boundsBefore, boundsAfter );
+  QCOMPARE( testRect, QRectF( 0, 0, 2, 2 ) );
+  testRect = QRectF( 0, 0, 1, 1 );
+  boundsAfter = QRectF( 0, 0, 0.5, 4 );
+  QgsLayoutUtils::relativeResizeRect( testRect, boundsBefore, boundsAfter );
+  QCOMPARE( testRect, QRectF( 0, 0, 0.5, 4 ) );
+
+  //test rectangle which doesn't fill bounds
+  testRect = QRectF( 1, 2, 1, 2 );
+  boundsBefore = QRectF( 0, 0, 4, 8 );
+  boundsAfter = QRectF( 0, 0, 2, 4 );
+  QgsLayoutUtils::relativeResizeRect( testRect, boundsBefore, boundsAfter );
+  QCOMPARE( testRect, QRectF( 0.5, 1, 0.5, 1 ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutUtils )

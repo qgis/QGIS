@@ -26,7 +26,8 @@ class QgsMessageBar;
 #define SIP_NO_FILE
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief Utility functions for use by authentication GUI widgets or standalone apps
  * \note not available in Python bindings
  */
@@ -96,5 +97,7 @@ class GUI_EXPORT QgsAuthGuiUtils
     static void passwordHelperLoggingEnable( bool enabled, QgsMessageBar *msgbar, int timeout = 0 );
 
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSAUTHGUIUTILS_H

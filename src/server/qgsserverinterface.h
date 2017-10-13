@@ -108,7 +108,8 @@ class SERVER_EXPORT QgsServerInterface
      */
     virtual QgsServerFiltersMap filters() = 0;
 
-    /** Register an access control filter
+    /**
+     * Register an access control filter
      * \param accessControl the access control to register
      * \param priority the priority used to order them
      */

@@ -35,7 +35,8 @@ class QgsEditorConfigWidget;
 class QgsVectorLayer;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This class manages all known edit widget factories.
  *
  * QgsEditorWidgetRegistry is not usually directly created, but rather accessed through
@@ -51,7 +52,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      * Constructor for QgsEditorWidgetRegistry. QgsEditorWidgetRegistry is not usually directly created, but rather accessed through
      * QgsGui::editorWidgetRegistry().
      */
-    QgsEditorWidgetRegistry();
+    QgsEditorWidgetRegistry() = default;
 
     /**
      * Registers all the default widgets.

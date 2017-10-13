@@ -18,10 +18,12 @@
 
 #include <QDialog>
 #include "ui_qgsexpressionbuilderdialogbase.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A generic dialog for building expression strings
   * @remarks This class also shows an example on how to use QgsExpressionBuilderWidget
   */
@@ -43,14 +45,16 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
 
     QString expressionText();
 
-    /** Returns the expression context for the dialog. The context is used for the expression
+    /**
+     * Returns the expression context for the dialog. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
      * \see setExpressionContext
      * \since QGIS 2.12
      */
     QgsExpressionContext expressionContext() const;
 
-    /** Sets the expression context for the dialog. The context is used for the expression
+    /**
+     * Sets the expression context for the dialog. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
      * \param context expression context
      * \see expressionContext
@@ -75,6 +79,12 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
 
   private:
     QString mRecentKey;
+
+  private slots:
+    void showHelp();
+
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

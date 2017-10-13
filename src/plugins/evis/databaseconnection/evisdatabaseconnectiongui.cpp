@@ -49,6 +49,13 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile *> *t
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &eVisDatabaseConnectionGui::buttonBox_accepted );
+  connect( cboxDatabaseType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &eVisDatabaseConnectionGui::cboxDatabaseType_currentIndexChanged );
+  connect( cboxPredefinedQueryList, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &eVisDatabaseConnectionGui::cboxPredefinedQueryList_currentIndexChanged );
+  connect( pbtnConnect, &QPushButton::clicked, this, &eVisDatabaseConnectionGui::pbtnConnect_clicked );
+  connect( pbtnLoadPredefinedQueries, &QPushButton::clicked, this, &eVisDatabaseConnectionGui::pbtnLoadPredefinedQueries_clicked );
+  connect( pbtnOpenFile, &QPushButton::clicked, this, &eVisDatabaseConnectionGui::pbtnOpenFile_clicked );
+  connect( pbtnRunQuery, &QPushButton::clicked, this, &eVisDatabaseConnectionGui::pbtnRunQuery_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &eVisDatabaseConnectionGui::showHelp );
 
   QSettings settings;
@@ -115,7 +122,7 @@ void eVisDatabaseConnectionGui::drawNewVectorLayer( const QString &layerName, co
     url.addQueryItem( QStringLiteral( "delimiterType" ), QStringLiteral( "regexp" ) );
     url.addQueryItem( QStringLiteral( "xField" ), xCoordinate );
     url.addQueryItem( QStringLiteral( "yField" ), yCoordinate );
-    emit drawVectorLayer( QString::fromAscii( url.toEncoded() ), layerName, QStringLiteral( "delimitedtext" ) );
+    emit drawVectorLayer( QString::fromLatin1( url.toEncoded() ), layerName, QStringLiteral( "delimitedtext" ) );
     mTempOutputFileList->last()->close();
   }
 }
@@ -123,7 +130,7 @@ void eVisDatabaseConnectionGui::drawNewVectorLayer( const QString &layerName, co
 /**
 * Slot called when the accept button is pressed
 */
-void eVisDatabaseConnectionGui::on_buttonBox_accepted()
+void eVisDatabaseConnectionGui::buttonBox_accepted()
 {
   //Deallocate memory, basically a predescructor
   if ( mDatabaseConnection )
@@ -150,7 +157,7 @@ void eVisDatabaseConnectionGui::on_buttonBox_accepted()
 * Slot called when the cboxDatabaseType combo box index changes
 * @param currentIndex - The new index of the currently selected field
 */
-void eVisDatabaseConnectionGui::on_cboxDatabaseType_currentIndexChanged( int currentIndex )
+void eVisDatabaseConnectionGui::cboxDatabaseType_currentIndexChanged( int currentIndex )
 {
   Q_UNUSED( currentIndex );
   if ( cboxDatabaseType->currentText() == QLatin1String( "MYSQL" ) )
@@ -165,7 +172,7 @@ void eVisDatabaseConnectionGui::on_cboxDatabaseType_currentIndexChanged( int cur
     leDatabaseUsername->setEnabled( true );
     lblDatabasePassword->setEnabled( true );
     leDatabasePassword->setEnabled( true );
-    leDatabaseName->setText( QLatin1String( "" ) );
+    leDatabaseName->clear();
   }
   else if ( cboxDatabaseType->currentText() == QLatin1String( "PostGreSQL" ) )
   {
@@ -179,38 +186,38 @@ void eVisDatabaseConnectionGui::on_cboxDatabaseType_currentIndexChanged( int cur
     leDatabaseUsername->setEnabled( true );
     lblDatabasePassword->setEnabled( true );
     leDatabasePassword->setEnabled( true );
-    leDatabaseName->setText( QLatin1String( "" ) );
+    leDatabaseName->clear();
   }
   else if ( cboxDatabaseType->currentText() == QLatin1String( "SQLITE" ) || cboxDatabaseType->currentText() == QLatin1String( "MSAccess" ) )
   {
     lblDatabaseHost->setEnabled( false );
-    leDatabaseHost->setText( QLatin1String( "" ) );
+    leDatabaseHost->clear();
     leDatabaseHost->setEnabled( false );
     lblDatabasePort->setEnabled( false );
-    leDatabasePort->setText( QLatin1String( "" ) );
+    leDatabasePort->clear();
     leDatabasePort->setEnabled( false );
     pbtnOpenFile->setEnabled( true );
     lblDatabaseUsername->setEnabled( false );
-    leDatabaseUsername->setText( QLatin1String( "" ) );
+    leDatabaseUsername->clear();
     leDatabaseUsername->setEnabled( false );
     lblDatabasePassword->setEnabled( false );
-    leDatabasePassword->setText( QLatin1String( "" ) );
+    leDatabasePassword->clear();
     leDatabasePassword->setEnabled( false );
-    leDatabaseName->setText( QLatin1String( "" ) );
+    leDatabaseName->clear();
   }
   else
   {
     lblDatabaseHost->setEnabled( true );
     leDatabaseHost->setEnabled( true );
     lblDatabasePort->setEnabled( false );
-    leDatabasePort->setText( QLatin1String( "" ) );
+    leDatabasePort->clear();
     leDatabasePort->setEnabled( false );
     pbtnOpenFile->setEnabled( false );
     lblDatabaseUsername->setEnabled( true );
     leDatabaseUsername->setEnabled( true );
     lblDatabasePassword->setEnabled( true );
     leDatabasePassword->setEnabled( true );
-    leDatabaseName->setText( QLatin1String( "" ) );
+    leDatabaseName->clear();
   }
 }
 
@@ -218,7 +225,7 @@ void eVisDatabaseConnectionGui::on_cboxDatabaseType_currentIndexChanged( int cur
 * Slot called when pbtnConnect button pressed. This function does some basic error checking before
 * requesting a new database connection
 */
-void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
+void eVisDatabaseConnectionGui::pbtnConnect_clicked()
 {
   teditConsole->append( tr( "New Database connection requested..." ) );
   bool errors = false;
@@ -305,13 +312,13 @@ void eVisDatabaseConnectionGui::on_pbtnConnect_clicked()
 * Slot called when pbtnLoadPredefinedQueries button is pressed. The method will open a file dialog and then
 * try to parse through an XML file of predefined queries.
 */
-void eVisDatabaseConnectionGui::on_pbtnLoadPredefinedQueries_clicked()
+void eVisDatabaseConnectionGui::pbtnLoadPredefinedQueries_clicked()
 {
   //There probably needs to be some more error checking, but works for now.
 
   //Select the XML file to parse
   QString myFilename = QFileDialog::getOpenFileName( this, tr( "Open File" ), QDir::homePath(), QStringLiteral( "XML ( *.xml )" ) );
-  if ( myFilename != QLatin1String( "" ) )
+  if ( !myFilename.isEmpty() )
   {
     //Display the name of the file being parsed
     lblPredefinedQueryFilename->setText( myFilename );
@@ -347,7 +354,7 @@ void eVisDatabaseConnectionGui::on_pbtnLoadPredefinedQueries_clicked()
             while ( !myChildNodes.isNull() )
             {
               QDomNode myDataNode = myChildNodes.toElement().firstChild();
-              QString myDataNodeContent = QLatin1String( "" );
+              QString myDataNodeContent;
               if ( !myDataNode.isNull() )
               {
                 myDataNodeContent = myDataNode.toText().data();
@@ -355,7 +362,7 @@ void eVisDatabaseConnectionGui::on_pbtnLoadPredefinedQueries_clicked()
 
               if ( myChildNodes.toElement().tagName() == QLatin1String( "shortdescription" ) )
               {
-                if ( myDataNodeContent != QLatin1String( "" ) )
+                if ( !myDataNodeContent.isEmpty() )
                 {
                   myQueryDefinition.setShortDescription( myDataNodeContent );
                   myQueryCount++;
@@ -423,7 +430,7 @@ void eVisDatabaseConnectionGui::on_pbtnLoadPredefinedQueries_clicked()
 * Slot called when cboxPredefinedQueryList combo box index changes
 * @param index - The current index of the selected item
 */
-void eVisDatabaseConnectionGui::on_cboxPredefinedQueryList_currentIndexChanged( int index )
+void eVisDatabaseConnectionGui::cboxPredefinedQueryList_currentIndexChanged( int index )
 {
   if ( !mQueryDefinitionMap->isEmpty() )
   {
@@ -447,7 +454,7 @@ void eVisDatabaseConnectionGui::on_cboxPredefinedQueryList_currentIndexChanged( 
 /**
 * Slot called when pbtnOpenFile button is pressed
 */
-void eVisDatabaseConnectionGui::on_pbtnOpenFile_clicked()
+void eVisDatabaseConnectionGui::pbtnOpenFile_clicked()
 {
   if ( cboxDatabaseType->currentText() == QLatin1String( "MSAccess" ) )
     leDatabaseName->setText( QFileDialog::getOpenFileName( this, tr( "Open File" ), QDir::homePath(), QStringLiteral( "MSAccess ( *.mdb )" ) ) );
@@ -458,7 +465,7 @@ void eVisDatabaseConnectionGui::on_pbtnOpenFile_clicked()
 /**
 * Slot called when the pbtnRunQuery button is pressed
 */
-void eVisDatabaseConnectionGui::on_pbtnRunQuery_clicked()
+void eVisDatabaseConnectionGui::pbtnRunQuery_clicked()
 {
   //Check to see if we have a query
   if ( !teditSqlStatement->toPlainText().isEmpty() )

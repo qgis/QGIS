@@ -30,7 +30,8 @@
 #include <qgsrasterdataprovider.h>
 #include <qgsrectangle.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the gdal provider
  */
 class TestQgsGdalProvider : public QObject
@@ -104,10 +105,10 @@ void TestQgsGdalProvider::warpedVrt()
   qDebug() << "y min: " << rp->extent().yMinimum();
   qDebug() << "y max: " << rp->extent().yMaximum();
 
-  QVERIFY( qgsDoubleNear( rp->extent().xMinimum(), 2058589, 1 ) );
-  QVERIFY( qgsDoubleNear( rp->extent().xMaximum(), 3118999, 1 ) );
-  QVERIFY( qgsDoubleNear( rp->extent().yMinimum(), 2281355, 1 ) );
-  QVERIFY( qgsDoubleNear( rp->extent().yMaximum(), 3129683, 1 ) );
+  QGSCOMPARENEAR( rp->extent().xMinimum(), 2058589, 1 );
+  QGSCOMPARENEAR( rp->extent().xMaximum(), 3118999, 1 );
+  QGSCOMPARENEAR( rp->extent().yMinimum(), 2281355, 1 );
+  QGSCOMPARENEAR( rp->extent().yMaximum(), 3129683, 1 );
   delete provider;
 }
 

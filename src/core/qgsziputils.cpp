@@ -68,7 +68,7 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
   int rc = 0;
   struct zip *z = zip_open( zipFilename.toStdString().c_str(), ZIP_CHECKCONS, &rc );
 
-  if ( rc == ZIP_ER_OK && z != NULL )
+  if ( rc == ZIP_ER_OK && z )
   {
     int count = zip_get_num_files( z );
     if ( count != -1 )
@@ -130,9 +130,9 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
   int rc = 0;
   struct zip *z = zip_open( zipFilename.toStdString().c_str(), ZIP_CREATE, &rc );
 
-  if ( rc == ZIP_ER_OK && z != NULL )
+  if ( rc == ZIP_ER_OK && z )
   {
-    Q_FOREACH ( QString file, files )
+    for ( const auto &file : files )
     {
       QFileInfo fileInfo( file );
       if ( !fileInfo.exists() )
@@ -144,7 +144,7 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
       }
 
       zip_source *src = zip_source_file( z, file.toStdString().c_str(), 0, 0 );
-      if ( src != NULL )
+      if ( src )
       {
 #if LIBZIP_VERSION_MAJOR < 1
         int rc = ( int ) zip_add( z, fileInfo.fileName().toStdString().c_str(), src );

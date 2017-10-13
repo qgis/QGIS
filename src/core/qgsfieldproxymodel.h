@@ -24,7 +24,8 @@
 
 class QgsFieldModel;
 
-/** \ingroup gui
+/**
+ * \ingroup core
  * \brief The QgsFieldProxyModel class provides an easy to use model to display the list of fields of a layer.
  * \since QGIS 2.3
  */
@@ -66,7 +67,8 @@ class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
      */
     QgsFieldProxyModel *setFilters( QgsFieldProxyModel::Filters filters );
 
-    /** Returns the filters controlling displayed fields.
+    /**
+     * Returns the filters controlling displayed fields.
      * \see setFilters()
      */
     const Filters &filters() const { return mFilters; }

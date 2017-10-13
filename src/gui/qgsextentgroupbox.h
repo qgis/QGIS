@@ -33,7 +33,8 @@ class QgsCoordinateReferenceSystem;
 class QgsMapLayerModel;
 class QgsMapLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Collapsible group box for configuration of extent, typically for a save operation.
  *
  * Besides allowing the user to enter the extent manually, it comes with options to use
@@ -148,6 +149,13 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
      */
     void setMapCanvas( QgsMapCanvas *canvas );
 
+    /**
+     * Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
+     * If the aspect ratio isn't fixed, the width and height will be set to zero.
+     * \since QGIS 3.0
+     * */
+    QSize ratio() const { return mRatio; }
+
   public slots:
 
     /**
@@ -177,18 +185,13 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
      */
     void setOutputExtentFromDrawOnCanvas();
 
-    /** Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
+    /**
+     * Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
      * To unset a fixed aspect ratio, set the width and height to zero.
      * \param ratio aspect ratio's width and height
      * \since QGIS 3.0
      * */
     void setRatio( QSize ratio ) { mRatio = ratio; }
-
-    /** Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
-     * If the aspect ratio isn't fixed, the width and height will be set to zero.
-     * \since QGIS 3.0
-     * */
-    QSize ratio() const { return mRatio; }
 
   signals:
 
@@ -198,11 +201,6 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     void extentChanged( const QgsRectangle &r );
 
   private slots:
-
-    void on_mXMinLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-    void on_mXMaxLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-    void on_mYMinLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
-    void on_mYMaxLineEdit_textEdited( const QString & ) { setOutputExtentFromLineEdit(); }
 
     void groupBoxClicked();
     void layerMenuAboutToShow();
@@ -217,7 +215,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     //! Base part of the title used for the extent
     QString mTitleBase;
 
-    ExtentState mExtentState;
+    ExtentState mExtentState = OriginalExtent;
 
     QgsCoordinateReferenceSystem mOutputCrs;
 

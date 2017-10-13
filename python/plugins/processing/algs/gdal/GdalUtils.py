@@ -193,6 +193,8 @@ class GdalUtils(object):
     def escapeAndJoin(strList):
         joined = ''
         for s in strList:
+            if not isinstance(s, str):
+                s = str(s)
             if s and s[0] != '-' and ' ' in s:
                 escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') \
                           + '"'
@@ -322,8 +324,9 @@ class GdalUtils(object):
 
     @staticmethod
     def ogrLayerName(uri):
-        if os.path.isfile(uri):
-            return os.path.basename(os.path.splitext(uri)[0])
+        uri = uri.strip('"')
+        #if os.path.isfile(uri):
+        #    return os.path.basename(os.path.splitext(uri)[0])
 
         if ' table=' in uri:
             # table="schema"."table"

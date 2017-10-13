@@ -24,7 +24,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgscurve.h"
-
+#include "qgscompoundcurve.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -32,7 +32,8 @@
  * See details in QEP #17
  ****************************************************************************/
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsLineString
  * \brief Line string geometry type, with support for z-dimension and m-values.
  * \since QGIS 2.10
@@ -73,7 +74,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool operator==( const QgsCurve &other ) const override;
     bool operator!=( const QgsCurve &other ) const override;
 
-    /** Returns the specified point from inside the line string.
+    /**
+     * Returns the specified point from inside the line string.
      * \param i index of point, starting at 0 for the first point
      */
     QgsPoint pointN( int i ) const;
@@ -81,7 +83,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     double xAt( int index ) const override;
     double yAt( int index ) const override;
 
-    /** Returns the z-coordinate of the specified node in the line string.
+    /**
+     * Returns the z-coordinate of the specified node in the line string.
      * \param index index of node, where the first node in the line is 0
      * \returns z-coordinate of node, or ``nan`` if index is out of bounds or the line
      * does not have a z dimension
@@ -89,7 +92,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     double zAt( int index ) const;
 
-    /** Returns the m value of the specified node in the line string.
+    /**
+     * Returns the m value of the specified node in the line string.
      * \param index index of node, where the first node in the line is 0
      * \returns m value of node, or ``nan`` if index is out of bounds or the line
      * does not have m values
@@ -97,7 +101,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     double mAt( int index ) const;
 
-    /** Sets the x-coordinate of the specified node in the line string.
+    /**
+     * Sets the x-coordinate of the specified node in the line string.
      * \param index index of node, where the first node in the line is 0. Corresponding
      * node must already exist in line string.
      * \param x x-coordinate of node
@@ -105,7 +110,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void setXAt( int index, double x );
 
-    /** Sets the y-coordinate of the specified node in the line string.
+    /**
+     * Sets the y-coordinate of the specified node in the line string.
      * \param index index of node, where the first node in the line is 0. Corresponding
      * node must already exist in line string.
      * \param y y-coordinate of node
@@ -113,7 +119,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void setYAt( int index, double y );
 
-    /** Sets the z-coordinate of the specified node in the line string.
+    /**
+     * Sets the z-coordinate of the specified node in the line string.
      * \param index index of node, where the first node in the line is 0. Corresponding
      * node must already exist in line string, and the line string must have z-dimension.
      * \param z z-coordinate of node
@@ -121,7 +128,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void setZAt( int index, double z );
 
-    /** Sets the m value of the specified node in the line string.
+    /**
+     * Sets the m value of the specified node in the line string.
      * \param index index of node, where the first node in the line is 0. Corresponding
      * node must already exist in line string, and the line string must have m values.
      * \param m m value of node
@@ -129,18 +137,21 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void setMAt( int index, double m );
 
-    /** Resets the line string to match the specified list of points. The line string will
+    /**
+     * Resets the line string to match the specified list of points. The line string will
      * inherit the dimensionality of the first point in the list.
      * \param points new points for line string. If empty, line string will be cleared.
      */
     void setPoints( const QgsPointSequence &points );
 
-    /** Appends the contents of another line string to the end of this line string.
+    /**
+     * Appends the contents of another line string to the end of this line string.
      * \param line line to append. Ownership is not transferred.
      */
     void append( const QgsLineString *line );
 
-    /** Adds a new vertex to the end of the line string.
+    /**
+     * Adds a new vertex to the end of the line string.
      * \param pt vertex to add
      */
     void addVertex( const QgsPoint &pt );
@@ -148,9 +159,10 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     //! Closes the line string by appending the first point to the end of the line, if it is not already closed.
     void close();
 
-    /** Returns the geometry converted to the more generic curve type QgsCompoundCurve
+    /**
+     * Returns the geometry converted to the more generic curve type QgsCompoundCurve
         \returns the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
+    QgsCompoundCurve *toCurveType() const override SIP_FACTORY;
 
     /**
      * Extends the line geometry by extrapolating out the start or end of the line
@@ -162,14 +174,14 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     //reimplemented methods
 
-    virtual QString geometryType() const override { return QStringLiteral( "LineString" ); }
-    virtual int dimension() const override { return 1; }
-    virtual QgsLineString *clone() const override SIP_FACTORY;
-    virtual void clear() override;
+    QString geometryType() const override;
+    int dimension() const override;
+    QgsLineString *clone() const override SIP_FACTORY;
+    void clear() override;
     bool isEmpty() const override;
 
-    virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
-    virtual bool fromWkt( const QString &wkt ) override;
+    bool fromWkb( QgsConstWkbPtr &wkb ) override;
+    bool fromWkt( const QString &wkt ) override;
 
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
@@ -178,18 +190,19 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     QString asJSON( int precision = 17 ) const override;
 
     //curve interface
-    virtual double length() const override;
-    virtual QgsPoint startPoint() const override;
-    virtual QgsPoint endPoint() const override;
+    double length() const override;
+    QgsPoint startPoint() const override;
+    QgsPoint endPoint() const override;
 
-    /** Returns a new line string geometry corresponding to a segmentized approximation
+    /**
+     * Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
      * \param tolerance segmentation tolerance
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override  SIP_FACTORY;
+    QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override  SIP_FACTORY;
 
     int numPoints() const override;
-    virtual int nCoordinates() const override { return mX.size(); }
+    int nCoordinates() const override;
     void points( QgsPointSequence &pt SIP_OUT ) const override;
 
     void draw( QPainter &p ) const override;
@@ -201,27 +214,25 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     void addToPainterPath( QPainterPath &path ) const override;
     void drawAsPolygon( QPainter &p ) const override;
 
-    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
-    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
-    virtual bool deleteVertex( QgsVertexId position ) override;
+    bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
+    bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
+    bool deleteVertex( QgsVertexId position ) override;
 
-    virtual QgsLineString *reversed() const override SIP_FACTORY;
+    QgsLineString *reversed() const override SIP_FACTORY;
 
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
-                                   QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT,
-                                   double epsilon ) const override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
     bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const override;
 
-    virtual QgsPoint centroid() const override;
+    QgsPoint centroid() const override;
 
     void sumUpArea( double &sum SIP_OUT ) const override;
     double vertexAngle( QgsVertexId vertex ) const override;
 
-    virtual bool addZValue( double zValue = 0 ) override;
-    virtual bool addMValue( double mValue = 0 ) override;
+    bool addZValue( double zValue = 0 ) override;
+    bool addMValue( double mValue = 0 ) override;
 
-    virtual bool dropZValue() override;
-    virtual bool dropMValue() override;
+    bool dropZValue() override;
+    bool dropMValue() override;
 
     bool convertTo( QgsWkbTypes::Type type ) override;
 
@@ -243,7 +254,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 #endif
   protected:
 
-    virtual QgsRectangle calculateBoundingBox() const override;
+    QgsRectangle calculateBoundingBox() const override;
 
   private:
     QVector<double> mX;
@@ -253,7 +264,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     void importVerticesFromWkb( const QgsConstWkbPtr &wkb );
 
-    /** Resets the line string to match the line string in a WKB geometry.
+    /**
+     * Resets the line string to match the line string in a WKB geometry.
      * \param type WKB type
      * \param wkb WKB representation of line geometry
      */
@@ -263,5 +275,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     friend class QgsTriangle;
 
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSLINESTRINGV2_H

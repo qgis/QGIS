@@ -28,7 +28,8 @@ class QgsVectorLayer;
 #include <QMap>
 #include <memory>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGeometryEditUtils
  * \brief Convenience functions for geometry editing
  * \since QGIS 2.10
@@ -60,19 +61,21 @@ class QgsGeometryEditUtils
      */
     static bool deleteRing( QgsAbstractGeometry *geom, int ringNum, int partNum = 0 );
 
-    /** Deletes a part from a geometry.
+    /**
+     * Deletes a part from a geometry.
      * \returns true if delete was successful
      */
     static bool deletePart( QgsAbstractGeometry *geom, int partNum );
 
-    /** Alters a geometry so that it avoids intersections with features from all open vector layers.
+    /**
+     * Alters a geometry so that it avoids intersections with features from all open vector layers.
      * \param geom geometry to alter
      * \param avoidIntersectionsLayers list of layers to check for intersections
      * \param ignoreFeatures map of layer to feature id of features to ignore
      */
     static std::unique_ptr< QgsAbstractGeometry > avoidIntersections( const QgsAbstractGeometry &geom,
         const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
-        QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
+        const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
 };
 
 #endif // QGSGEOMETRYEDITUTILS_H

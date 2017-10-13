@@ -44,8 +44,6 @@ email                : tim@linfiniti.com
 
 QgsDecorationCopyright::QgsDecorationCopyright( QObject *parent )
   : QgsDecorationItem( parent )
-  , mMarginHorizontal( 0 )
-  , mMarginVertical( 0 )
 {
   mPlacement = BottomRight;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;
@@ -106,7 +104,7 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
     // To set the text color in a QTextDocument we use a CSS style
 
     QString style = "<style type=\"text/css\"> p {color: " +
-                    QString( "rgba( %1, %2, %3, %4 )" ).arg( mColor.red() ).arg( mColor.green() ).arg( mColor.blue() ).arg( QString::number( mColor.alphaF(), 'f', 2 ) ) + "}</style>";
+                    QStringLiteral( "rgba( %1, %2, %3, %4 )" ).arg( mColor.red() ).arg( mColor.green() ).arg( mColor.blue() ).arg( QString::number( mColor.alphaF(), 'f', 2 ) ) + "}</style>";
     text.setHtml( style + "<p>" + mLabelQString + "</p>" );
     QSizeF size = text.size();
 

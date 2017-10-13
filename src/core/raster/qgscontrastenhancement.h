@@ -33,7 +33,8 @@ class QDomDocument;
 class QDomElement;
 class QString;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Manipulates raster pixel values so that they enhanceContrast or clip into a
  * specified numerical range according to the specified
  * ContrastEnhancementAlgorithm.
@@ -122,13 +123,13 @@ class CORE_EXPORT QgsContrastEnhancement
 #endif
 
     //! \brief Current contrast enhancement algorithm
-    ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm;
+    ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm = NoEnhancement;
 
     //! \brief Pointer to the contrast enhancement function
     std::unique_ptr< QgsContrastEnhancementFunction > mContrastEnhancementFunction;
 
     //! \brief Flag indicating if the lookup table needs to be regenerated
-    bool mEnhancementDirty;
+    bool mEnhancementDirty = false;
 
     //! \brief Scalar so that values can be used as array indices
     double mLookupTableOffset;

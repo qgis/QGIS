@@ -140,9 +140,9 @@ class TestQgsSymbol(unittest.TestCase):
         extent = geom.geometry().boundingBox()
         # buffer extent by 10%
         if extent.width() > 0:
-            extent = extent.buffer((extent.height() + extent.width()) / 20.0)
+            extent = extent.buffered((extent.height() + extent.width()) / 20.0)
         else:
-            extent = extent.buffer(10)
+            extent = extent.buffered(10)
 
         ms.setExtent(extent)
         ms.setOutputSize(image.size())

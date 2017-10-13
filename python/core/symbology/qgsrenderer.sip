@@ -48,7 +48,6 @@ class QgsFeatureRenderer
 %TypeHeaderCode
 #include "qgsrenderer.h"
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->type() == "singleSymbol" )
       sipType = sipType_QgsSingleSymbolRenderer;
@@ -241,6 +240,7 @@ store renderer info to XML element
 
     virtual QDomElement writeSld( QDomDocument &doc, const QString &styleName, const QgsStringMap &props = QgsStringMap() ) const;
 %Docstring
+ create the SLD UserStyle element following the SLD v1.1 specs with the given name
 .. versionadded:: 2.8
  :rtype: QDomElement
 %End
@@ -266,18 +266,21 @@ used from subclasses to create SLD Rule elements following SLD v1.1 specs
 
     virtual bool legendSymbolItemsCheckable() const;
 %Docstring
+ items of symbology items in legend should be checkable
 .. versionadded:: 2.5
  :rtype: bool
 %End
 
     virtual bool legendSymbolItemChecked( const QString &key );
 %Docstring
+ items of symbology items in legend is checked
 .. versionadded:: 2.5
  :rtype: bool
 %End
 
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
 %Docstring
+ item in symbology was checked
 .. versionadded:: 2.5
 %End
 
@@ -291,12 +294,14 @@ used from subclasses to create SLD Rule elements following SLD v1.1 specs
 
     virtual QgsLegendSymbolList legendSymbolItems() const;
 %Docstring
+ Returns a list of symbology items for the legend
 .. versionadded:: 2.6
  :rtype: QgsLegendSymbolList
 %End
 
     virtual QString legendClassificationAttribute() const;
 %Docstring
+ If supported by the renderer, return classification attribute for the use in legend
 .. versionadded:: 2.6
  :rtype: str
 %End

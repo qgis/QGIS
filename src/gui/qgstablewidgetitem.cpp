@@ -15,15 +15,8 @@
  ***************************************************************************/
 #include "qgstablewidgetitem.h"
 
-QgsTableWidgetItem::QgsTableWidgetItem()
-  : QTableWidgetItem()
-  , mSortRole( Qt::DisplayRole )
-{
-}
-
 QgsTableWidgetItem::QgsTableWidgetItem( const QString &text )
   : QTableWidgetItem( text )
-  , mSortRole( Qt::DisplayRole )
 {
 }
 

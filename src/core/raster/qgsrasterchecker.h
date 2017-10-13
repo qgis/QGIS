@@ -21,7 +21,8 @@
 #include <QString>
 class QImage;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This is a helper class for unit tests that need to
  * write an image and compare it to an expected result
  * or render time.
@@ -60,8 +61,10 @@ class CORE_EXPORT QgsRasterChecker
     bool compare( double verifiedVal, double expectedVal, double tolerance );
     void compare( const QString &paramName, int verifiedVal, int expectedVal, QString &report, bool &ok );
     void compare( const QString &paramName, double verifiedVal, double expectedVal, QString &report, bool &ok, double tolerance = 0 );
-    void compareRow( const QString &paramName, const QString &verifiedVal, const QString &expectedVal, QString &report, bool ok, const QString &difference = "", const QString &tolerance = "" );
+    void compareRow( const QString &paramName, const QString &verifiedVal, const QString &expectedVal, QString &report, bool ok, const QString &difference = QString(), const QString &tolerance = QString() );
     double tolerance( double val, int places = 6 );
 }; // class QgsRasterChecker
+
+// clazy:excludeall=qstring-allocations
 
 #endif

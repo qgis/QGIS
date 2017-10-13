@@ -38,22 +38,16 @@
 #include <cmath>
 #include <cfloat>
 
-#ifndef M_PI
-#define M_PI 3.1415926535897931159979634685
-#endif
-
 using namespace pal;
 
 LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, bool isReversed, Quadrant quadrant )
-  : PointSet()
-  , id( id )
+  : id( id )
   , feature( feature )
   , probFeat( 0 )
   , nbOverlap( 0 )
   , alpha( alpha )
   , w( w )
   , h( h )
-  , nextPart( nullptr )
   , partId( -1 )
   , reversed( isReversed )
   , upsideDown( false )
@@ -74,7 +68,7 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   while ( this->alpha < 0 )
     this->alpha += 2 * M_PI;
 
-  double beta = this->alpha + ( M_PI / 2 );
+  double beta = this->alpha + M_PI_2;
 
   double dx1, dx2, dy1, dy2;
 
@@ -98,7 +92,7 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
 
   // upside down ? (curved labels are always correct)
   if ( !feature->layer()->isCurved() &&
-       this->alpha > M_PI / 2 && this->alpha <= 3 * M_PI / 2 )
+       this->alpha > M_PI_2 && this->alpha <= 3 * M_PI_2 )
   {
     if ( feature->showUprightLabels() )
     {

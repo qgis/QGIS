@@ -27,9 +27,11 @@
 QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mItem( item )
-  , mEmbeddedWidget( nullptr )
+
 {
   setupUi( this );
+  connect( mBrowseToolButton, &QToolButton::clicked, this, &QgsFormAnnotationDialog::mBrowseToolButton_clicked );
+  connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsFormAnnotationDialog::mButtonBox_clicked );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
@@ -44,11 +46,6 @@ QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *it
   QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
   QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsFormAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
-}
-
-QgsFormAnnotationDialog::~QgsFormAnnotationDialog()
-{
-
 }
 
 void QgsFormAnnotationDialog::applySettingsToItem()
@@ -67,7 +64,7 @@ void QgsFormAnnotationDialog::applySettingsToItem()
   }
 }
 
-void QgsFormAnnotationDialog::on_mBrowseToolButton_clicked()
+void QgsFormAnnotationDialog::mBrowseToolButton_clicked()
 {
   QString directory;
   QFileInfo fi( mFileLineEdit->text() );
@@ -86,7 +83,7 @@ void QgsFormAnnotationDialog::deleteItem()
   mItem = nullptr;
 }
 
-void QgsFormAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
+void QgsFormAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
   {

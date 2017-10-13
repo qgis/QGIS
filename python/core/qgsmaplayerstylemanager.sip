@@ -150,22 +150,29 @@ Return data of a stored style - accessed by its unique name
 
     bool addStyle( const QString &name, const QgsMapLayerStyle &style );
 %Docstring
-:return: true on success (name is unique and style is valid)
+ Add a style with given name and data
+ :return: true on success (name is unique and style is valid)
  :rtype: bool
 %End
+
     bool addStyleFromLayer( const QString &name );
 %Docstring
-:return: true on success
+ Add style by cloning the current one
+ :return: true on success
  :rtype: bool
 %End
+
     bool removeStyle( const QString &name );
 %Docstring
-:return: true on success (style exists and it is not the last one)
+ Remove a stored style
+ :return: true on success (style exists and it is not the last one)
  :rtype: bool
 %End
+
     bool renameStyle( const QString &name, const QString &newName );
 %Docstring
-:return: true on success (style exists and new name is unique)
+ Rename a stored style to a different name
+ :return: true on success (style exists and new name is unique)
  :rtype: bool
 %End
 
@@ -174,15 +181,19 @@ Return data of a stored style - accessed by its unique name
 Return name of the current style
  :rtype: str
 %End
+
     bool setCurrentStyle( const QString &name );
 %Docstring
-:return: true on success
+ Set a different style as the current style - will apply it to the layer
+ :return: true on success
  :rtype: bool
 %End
 
     bool setOverrideStyle( const QString &styleDef );
 %Docstring
-Each call must be paired with restoreOverrideStyle()
+ Temporarily apply a different style to the layer. The argument
+ can be either a style name or a full QML style definition.
+ Each call must be paired with restoreOverrideStyle()
  :rtype: bool
 %End
     bool restoreOverrideStyle();

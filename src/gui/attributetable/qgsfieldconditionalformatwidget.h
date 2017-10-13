@@ -27,7 +27,8 @@
 #include "qgsconditionalstyle.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFieldConditionalFormatWidget
  * A widget for customising conditional formatting options.
  * \since QGIS 2.12
@@ -37,23 +38,25 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
     Q_OBJECT
   public:
 
-    /** Constructor for QgsFieldConditionalFormatWidget.
+    /**
+     * Constructor for QgsFieldConditionalFormatWidget.
      * \param parent parent widget
      */
     explicit QgsFieldConditionalFormatWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
-    ~QgsFieldConditionalFormatWidget();
-
-    /** Switches the widget to the rules page.
+    /**
+     * Switches the widget to the rules page.
      */
     void viewRules();
 
-    /** Sets the vector layer associated with the widget.
+    /**
+     * Sets the vector layer associated with the widget.
      * \param layer vector layer
      */
     void setLayer( QgsVectorLayer *layer );
 
-    /** Switches the widget to the edit style mode for the specified style.
+    /**
+     * Switches the widget to the edit style mode for the specified style.
      * \param index index of conditional style to edit
      * \param style initial conditional styling options
      */
@@ -64,7 +67,8 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
      */
     void loadStyle( const QgsConditionalStyle &style );
 
-    /** Resets the formatting options to their default state.
+    /**
+     * Resets the formatting options to their default state.
      */
     void reset();
 
@@ -83,7 +87,8 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
 
   signals:
 
-    /** Emitted when the conditional styling rules are updated.
+    /**
+     * Emitted when the conditional styling rules are updated.
      * \param fieldName name of field whose rules have been modified.
      */
     void rulesUpdated( const QString &fieldName );
@@ -92,8 +97,8 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
 
   private:
     QgsVectorLayer *mLayer = nullptr;
-    int mEditIndex;
-    bool mEditing;
+    int mEditIndex = 0;
+    bool mEditing = false;
     QStandardItemModel *mModel = nullptr;
     QStandardItemModel *mPresetsModel = nullptr;
     QList<QgsConditionalStyle> mPresets;

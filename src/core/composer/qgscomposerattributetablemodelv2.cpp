@@ -399,7 +399,8 @@ bool QgsComposerAttributeTableColumnModelV2::moveColumnInSortRank( QgsComposerTa
 
   //find column before this one in sort order
   QList<QgsComposerTableColumn *> sortedColumns;
-  Q_FOREACH ( QgsComposerTableColumn *currentColumn, *mComposerTable->columns() )
+  const QgsComposerTableColumns columns = *mComposerTable->columns();
+  for ( QgsComposerTableColumn *currentColumn : columns )
   {
     if ( currentColumn->sortByRank() > 0 )
     {

@@ -33,19 +33,8 @@
 
 QgsHeatmapRenderer::QgsHeatmapRenderer()
   : QgsFeatureRenderer( QStringLiteral( "heatmapRenderer" ) )
-  , mCalculatedMaxValue( 0 )
-  , mRadius( 10 )
-  , mRadiusPixels( 0 )
-  , mRadiusSquared( 0 )
-  , mRadiusUnit( QgsUnitTypes::RenderMillimeters )
-  , mWeightAttrNum( -1 )
-  , mGradientRamp( nullptr )
-  , mExplicitMax( 0.0 )
-  , mRenderQuality( 3 )
-  , mFeaturesRendered( 0 )
 {
   mGradientRamp = new QgsGradientColorRamp( QColor( 255, 255, 255 ), QColor( 0, 0, 0 ) );
-
 }
 
 QgsHeatmapRenderer::~QgsHeatmapRenderer()
@@ -341,7 +330,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument &doc, const QgsReadWriteConte
     QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), mGradientRamp, doc );
     rendererElem.appendChild( colorRampElem );
   }
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
@@ -352,7 +341,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument &doc, const QgsReadWriteConte
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   return rendererElem;
 }

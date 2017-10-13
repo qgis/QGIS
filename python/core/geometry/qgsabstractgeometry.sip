@@ -24,7 +24,6 @@ class QgsAbstractGeometry
 %TypeHeaderCode
 #include "qgsabstractgeometry.h"
 %End
-
 %ConvertToSubClassCode
     if ( qgsgeometry_cast<QgsPoint *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPoint;
@@ -66,6 +65,9 @@ class QgsAbstractGeometry
     };
 
     QgsAbstractGeometry();
+%Docstring
+ Constructor for QgsAbstractGeometry.
+%End
     virtual ~QgsAbstractGeometry();
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
 
@@ -275,7 +277,7 @@ class QgsAbstractGeometry
 
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
                                    QgsVertexId &vertexAfter /Out/,
-                                   bool *leftOf /Out/, double epsilon ) const = 0;
+                                   bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const = 0;
 %Docstring
  Searches for the closest segment of the geometry to a given point.
  \param pt specifies the point to find closest segment to
@@ -372,12 +374,12 @@ Returns the centroid of the geometry
  :rtype: QgsAbstractGeometry
 %End
 
-    virtual QgsAbstractGeometry *toCurveType() const /Factory/;
+    virtual QgsAbstractGeometry *toCurveType() const = 0 /Factory/;
 %Docstring
  Returns the geometry converted to the more generic curve type.
-E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
-QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
-:return: the converted geometry. Caller takes ownership*
+ E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
+ QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
+ :return: the converted geometry. Caller takes ownership
  :rtype: QgsAbstractGeometry
 %End
 
@@ -393,7 +395,7 @@ QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const = 0;
 %Docstring
- Returns the number of vertexes of which this geometry is built.
+ Returns the number of vertices of which this geometry is built.
  :rtype: int
 %End
 
@@ -526,6 +528,7 @@ struct QgsVertexId
   int vertex;
   VertexType type;
 };
+
 
 
 /************************************************************************

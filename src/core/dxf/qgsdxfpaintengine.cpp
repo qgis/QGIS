@@ -160,10 +160,10 @@ void QgsDxfPaintEngine::endPolygon()
 
 void QgsDxfPaintEngine::endCurve()
 {
-  if ( mCurrentCurve.size() < 1 )
+  if ( mCurrentCurve.empty() )
     return;
 
-  if ( mCurrentPolygon.size() < 1 )
+  if ( mCurrentPolygon.empty() )
   {
     mCurrentCurve.clear();
     return;

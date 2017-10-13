@@ -51,7 +51,6 @@
 
 QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   : qgis( _qgis )
-  , mTimer( nullptr )
   , pluginManagerIface( _qgis->pluginManager() )
 {
   // connect signals
@@ -170,6 +169,11 @@ bool QgisAppInterface::addProject( const QString &projectName )
 void QgisAppInterface::newProject( bool promptToSaveFlag )
 {
   qgis->fileNew( promptToSaveFlag );
+}
+
+void QgisAppInterface::reloadConnections()
+{
+  qgis->reloadConnections( );
 }
 
 QgsMapLayer *QgisAppInterface::activeLayer()
@@ -653,6 +657,7 @@ QAction *QgisAppInterface::actionNewBookmark() { return qgis->actionNewBookmark(
 QAction *QgisAppInterface::actionShowBookmarks() { return qgis->actionShowBookmarks(); }
 QAction *QgisAppInterface::actionDraw() { return qgis->actionDraw(); }
 
+//! Layer menu actions
 QAction *QgisAppInterface::actionNewVectorLayer() { return qgis->actionNewVectorLayer(); }
 QAction *QgisAppInterface::actionAddOgrLayer() { return qgis->actionAddOgrLayer(); }
 QAction *QgisAppInterface::actionAddRasterLayer() { return qgis->actionAddRasterLayer(); }

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1029</width>
-    <height>726</height>
+    <height>878</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -349,8 +349,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>678</height>
+                <width>580</width>
+                <height>672</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -998,8 +998,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>561</width>
-                <height>1079</height>
+                <width>537</width>
+                <height>1128</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1237,7 +1237,7 @@
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="mQSettingsGrpBx">
                  <property name="title">
-                  <string>QgsSettings</string>
+                  <string>Settings</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_13">
                   <item row="0" column="1">
@@ -1528,8 +1528,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>511</width>
-                <height>719</height>
+                <width>499</width>
+                <height>754</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1896,8 +1896,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>692</width>
-                <height>994</height>
+                <width>672</width>
+                <height>1043</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2647,8 +2647,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>146</width>
-                <height>241</height>
+                <width>130</width>
+                <height>322</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2798,8 +2798,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>514</width>
-                <height>334</height>
+                <width>500</width>
+                <height>340</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3141,8 +3141,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>625</width>
-                <height>612</height>
+                <width>623</width>
+                <height>734</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3585,8 +3585,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>487</width>
-                <height>588</height>
+                <width>491</width>
+                <height>610</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3854,8 +3854,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>556</width>
-                <height>740</height>
+                <width>548</width>
+                <height>785</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4432,8 +4432,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>427</width>
-                <height>380</height>
+                <width>431</width>
+                <height>376</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4571,8 +4571,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>429</width>
-                <height>549</height>
+                <width>418</width>
+                <height>544</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4784,8 +4784,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>282</width>
-                <height>234</height>
+                <width>268</width>
+                <height>232</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4893,8 +4893,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>509</width>
-                <height>723</height>
+                <width>866</width>
+                <height>822</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5082,6 +5082,41 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_1">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_47">
+                    <property name="text">
+                     <string>Exclude URLs (starting with)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="4">
+                   <widget class="QToolButton" name="mRemoveUrlPushButton">
+                    <property name="toolTip">
+                     <string>Remove selected URL</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="3">
+                   <widget class="QToolButton" name="mAddUrlPushButton">
+                    <property name="toolTip">
+                     <string>Add URL to exclude</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="0" column="0" colspan="5">
                    <layout class="QGridLayout" name="gridLayout_17">
                     <item row="0" column="1">
@@ -5122,44 +5157,19 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <property name="leftMargin">
                         <number>0</number>
                        </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
                        <property name="rightMargin">
                         <number>0</number>
                        </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
                        <item row="2" column="2">
-                        <widget class="QLineEdit" name="leProxyUser">
-                         <property name="toolTip">
-                          <string>Leave this blank if no proxy username / password are required</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="2">
-                        <widget class="QgsPasswordLineEdit" name="leProxyPassword">
-                         <property name="toolTip">
-                          <string>Leave this blank if no proxy username / password are required</string>
-                         </property>
-                         <property name="echoMode">
-                          <enum>QLineEdit::Password</enum>
-                         </property>
-                        </widget>
+                        <widget class="QLineEdit" name="leProxyPort"/>
                        </item>
                        <item row="2" column="1">
-                        <widget class="QLabel" name="lblUser">
-                         <property name="text">
-                          <string>User</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="3" column="1">
-                        <widget class="QLabel" name="lblPassword">
-                         <property name="text">
-                          <string>Password</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item row="0" column="2">
-                        <widget class="QLineEdit" name="leProxyHost"/>
-                       </item>
-                       <item row="1" column="1">
                         <widget class="QLabel" name="lblProxyPort">
                          <property name="text">
                           <string>Port</string>
@@ -5167,104 +5177,59 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                         </widget>
                        </item>
                        <item row="1" column="2">
-                        <widget class="QLineEdit" name="leProxyPort"/>
+                        <widget class="QLineEdit" name="leProxyHost"/>
                        </item>
-                       <item row="0" column="1">
+                       <item row="1" column="1">
                         <widget class="QLabel" name="lblProxyHost">
                          <property name="text">
                           <string>Host</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="1" column="0">
-                        <spacer name="horizontalSpacer_27">
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
+                       <item row="3" column="1" colspan="2">
+                        <widget class="QGroupBox" name="mAuthGroupBox">
+                         <property name="title">
+                          <string>Authentication</string>
                          </property>
-                         <property name="sizeType">
-                          <enum>QSizePolicy::Fixed</enum>
-                         </property>
-                         <property name="sizeHint" stdset="0">
-                          <size>
-                           <width>12</width>
-                           <height>20</height>
-                          </size>
-                         </property>
-                        </spacer>
+                         <layout class="QVBoxLayout" name="verticalLayout_23">
+                          <property name="leftMargin">
+                           <number>6</number>
+                          </property>
+                          <property name="topMargin">
+                           <number>6</number>
+                          </property>
+                          <property name="rightMargin">
+                           <number>6</number>
+                          </property>
+                          <property name="bottomMargin">
+                           <number>6</number>
+                          </property>
+                          <item>
+                           <widget class="QgsAuthSettingsWidget" name="mAuthSettings" native="true"/>
+                          </item>
+                         </layout>
+                        </widget>
                        </item>
                       </layout>
                      </widget>
                     </item>
                    </layout>
                   </item>
-                  <item row="7" column="0" rowspan="2" colspan="5">
-                   <widget class="QGroupBox" name="grpUrlExclude">
-                    <property name="title">
-                     <string/>
+                  <item row="1" column="1" colspan="2">
+                   <spacer name="horizontalSpacer">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
                     </property>
-                    <property name="flat">
-                     <bool>true</bool>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
                     </property>
-                    <layout class="QGridLayout" name="gridLayout_5">
-                     <property name="leftMargin">
-                      <number>0</number>
-                     </property>
-                     <property name="rightMargin">
-                      <number>0</number>
-                     </property>
-                     <item row="2" column="3">
-                      <widget class="QToolButton" name="mRemoveUrlPushButton">
-                       <property name="toolTip">
-                        <string>Remove selected URL</string>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="2">
-                      <widget class="QToolButton" name="mAddUrlPushButton">
-                       <property name="toolTip">
-                        <string>Add URL to exclude</string>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="icon">
-                        <iconset resource="../../images/images.qrc">
-                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="label_47">
-                       <property name="text">
-                        <string>Exclude URLs (starting with)</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="1">
-                      <spacer name="horizontalSpacer">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>40</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item row="3" column="0" colspan="4">
-                      <widget class="QListWidget" name="mExcludeUrlListWidget"/>
-                     </item>
-                    </layout>
-                   </widget>
+                   </spacer>
+                  </item>
+                  <item row="2" column="0" colspan="5">
+                   <widget class="QListWidget" name="mExcludeUrlListWidget"/>
                   </item>
                  </layout>
                 </widget>
@@ -5276,8 +5241,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
-                   <width>20</width>
-                   <height>40</height>
+                   <width>0</width>
+                   <height>0</height>
                   </size>
                  </property>
                 </spacer>
@@ -5419,10 +5384,21 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
@@ -5453,22 +5429,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
    <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsPasswordLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgspasswordlineedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsColorSchemeList</class>
    <extends>QWidget</extends>
    <header location="global">qgscolorschemelist.h</header>
@@ -5484,6 +5444,12 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
    <class>QgsAuthEditorWidgets</class>
    <extends>QTabWidget</extends>
    <header>qgsautheditorwidgets.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsAuthSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>auth/qgsauthsettingswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -5709,8 +5675,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mProxyTypeComboBox</tabstop>
   <tabstop>leProxyHost</tabstop>
   <tabstop>leProxyPort</tabstop>
-  <tabstop>leProxyUser</tabstop>
-  <tabstop>leProxyPassword</tabstop>
   <tabstop>mAddUrlPushButton</tabstop>
   <tabstop>mRemoveUrlPushButton</tabstop>
   <tabstop>mExcludeUrlListWidget</tabstop>

@@ -21,13 +21,15 @@
 
 #define SIP_NO_FILE
 
-/** CreateDatabaseURI
+/**
+ * CreateDatabaseURI
  * \brief Create database uri from connection parameters
  * \note not available in python bindings
  */
 QString GUI_EXPORT createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &user, const QString &password );
 
-/** CreateProtocolURI
+/**
+ * CreateProtocolURI
  * \brief Create protocol uri from connection parameters
  * \note not available in python bindings
  */

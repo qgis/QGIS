@@ -27,6 +27,7 @@
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
 #include "qgsmultisurface.h"
+#include "qgstriangle.h"
 #include "qgswkbtypes.h"
 #include "qgslogger.h"
 
@@ -196,21 +197,6 @@ std::unique_ptr< QgsMultiPolygonV2 > QgsGeometryFactory::fromMultiPolygon( const
   return mp;
 }
 
-std::unique_ptr<QgsPolygonV2> QgsGeometryFactory::fromRect( const QgsRectangle &rect )
-{
-  QgsPolyline ring;
-  ring.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
-  ring.append( QgsPointXY( rect.xMaximum(), rect.yMinimum() ) );
-  ring.append( QgsPointXY( rect.xMaximum(), rect.yMaximum() ) );
-  ring.append( QgsPointXY( rect.xMinimum(), rect.yMaximum() ) );
-  ring.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
-
-  QgsPolygon polygon;
-  polygon.append( ring );
-
-  return fromPolygon( polygon );
-}
-
 std::unique_ptr<QgsLineString> QgsGeometryFactory::linestringFromPolyline( const QgsPolyline &polyline )
 {
   QVector< double > x;
@@ -256,6 +242,8 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkbType( QgsWkb
       return std::unique_ptr<QgsAbstractGeometry>( new QgsMultiSurface() );
     case QgsWkbTypes::GeometryCollection:
       return std::unique_ptr<QgsAbstractGeometry>( new QgsGeometryCollection() );
+    case QgsWkbTypes::Triangle:
+      return std::unique_ptr<QgsAbstractGeometry>( new QgsTriangle() );
     default:
       return nullptr;
   }

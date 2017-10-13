@@ -955,16 +955,16 @@ bool QgsComposition::readXml( const QDomElement &compositionElem, const QDomDocu
   }
 
   //snapping
-  mSnapToGrid = compositionElem.attribute( QStringLiteral( "snapping" ), QStringLiteral( "0" ) ).toInt() == 0 ? false : true;
-  mGridVisible = compositionElem.attribute( QStringLiteral( "gridVisible" ), QStringLiteral( "0" ) ).toInt() == 0 ? false : true;
+  mSnapToGrid = compositionElem.attribute( QStringLiteral( "snapping" ), QStringLiteral( "0" ) ).toInt() != 0;
+  mGridVisible = compositionElem.attribute( QStringLiteral( "gridVisible" ), QStringLiteral( "0" ) ).toInt() != 0;
 
   mSnapGridResolution = compositionElem.attribute( QStringLiteral( "snapGridResolution" ) ).toDouble();
   mSnapGridOffsetX = compositionElem.attribute( QStringLiteral( "snapGridOffsetX" ) ).toDouble();
   mSnapGridOffsetY = compositionElem.attribute( QStringLiteral( "snapGridOffsetY" ) ).toDouble();
 
-  mAlignmentSnap = compositionElem.attribute( QStringLiteral( "alignmentSnap" ), QStringLiteral( "1" ) ).toInt() == 0 ? false : true;
-  mGuidesVisible = compositionElem.attribute( QStringLiteral( "guidesVisible" ), QStringLiteral( "1" ) ).toInt() == 0 ? false : true;
-  mSmartGuides = compositionElem.attribute( QStringLiteral( "smartGuides" ), QStringLiteral( "1" ) ).toInt() == 0 ? false : true;
+  mAlignmentSnap = compositionElem.attribute( QStringLiteral( "alignmentSnap" ), QStringLiteral( "1" ) ).toInt() != 0;
+  mGuidesVisible = compositionElem.attribute( QStringLiteral( "guidesVisible" ), QStringLiteral( "1" ) ).toInt() != 0;
+  mSmartGuides = compositionElem.attribute( QStringLiteral( "smartGuides" ), QStringLiteral( "1" ) ).toInt() != 0;
   mSnapTolerance = compositionElem.attribute( QStringLiteral( "snapTolerancePixels" ), QStringLiteral( "10" ) ).toInt();
 
   mResizeToContentsMarginTop = compositionElem.attribute( QStringLiteral( "resizeToContentsMarginTop" ), QStringLiteral( "0" ) ).toDouble();
@@ -2200,7 +2200,7 @@ QGraphicsLineItem *QgsComposition::nearestSnapLine( const bool horizontal, const
 int QgsComposition::boundingRectOfSelectedItems( QRectF &bRect )
 {
   QList<QgsComposerItem *> selectedItems = selectedComposerItems();
-  if ( selectedItems.size() < 1 )
+  if ( selectedItems.empty() )
   {
     return 1;
   }
@@ -3207,7 +3207,6 @@ void QgsComposition::refreshPageSize( const QgsExpressionContext *context )
   double pageWidth = mPageWidth;
   double pageHeight = mPageHeight;
 
-  QVariant exprVal;
   //in order of precedence - first consider predefined page size
   bool ok = false;
   QString presetString = mDataDefinedProperties.valueAsString( QgsComposerObject::PresetPaperSize, *evalContext, QString(), &ok );

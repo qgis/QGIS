@@ -43,10 +43,6 @@ QgsDb2ConnectionItem::QgsDb2ConnectionItem( QgsDataItem *parent, const QString n
   populate();
 }
 
-QgsDb2ConnectionItem::~QgsDb2ConnectionItem()
-{
-}
-
 bool QgsDb2ConnectionItem::ConnInfoFromParameters(
   const QString &service,
   const QString &driver,
@@ -185,16 +181,16 @@ QVector<QgsDataItem *> QgsDb2ConnectionItem::createChildren()
   }
 
   QgsDb2GeometryColumns db2GC = QgsDb2GeometryColumns( db );
-  int sqlcode = db2GC.open();
+  QString sqlcode = db2GC.open();
 
   /* Enabling the DB2 Spatial Extender creates the DB2GSE schema and tables,
      so the Extender is either not enabled or set up if SQLCODE -204 is returned. */
-  if ( sqlcode == -204 )
+  if ( sqlcode == QStringLiteral( "-204" ) )
   {
     children.append( new QgsErrorItem( this, tr( "DB2 Spatial Extender is not enabled or set up." ), mPath + "/error" ) );
     return children;
   }
-  else if ( sqlcode != 0 )
+  else if ( !sqlcode.isEmpty() && sqlcode != QStringLiteral( "0" ) )
   {
     children.append( new QgsErrorItem( this, db.lastError().text(), mPath + "/error" ) );
     return children;
@@ -250,19 +246,19 @@ bool QgsDb2ConnectionItem::equal( const QgsDataItem *other )
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsDb2ConnectionItem::actions()
+QList<QAction *> QgsDb2ConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionRefresh = new QAction( tr( "Refresh connection" ), this );
+  QAction *actionRefresh = new QAction( tr( "Refresh Connection" ), parent );
   connect( actionRefresh, &QAction::triggered, this, &QgsDb2ConnectionItem::refreshConnection );
   lst.append( actionRefresh );
 
-  QAction *actionEdit = new QAction( tr( "Edit connection..." ), this );
+  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsDb2ConnectionItem::editConnection );
   lst.append( actionEdit );
 
-  QAction *actionDelete = new QAction( tr( "Delete connection" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete Connection" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsDb2ConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
@@ -413,10 +409,6 @@ QgsDb2RootItem::QgsDb2RootItem( QgsDataItem *parent, QString name, QString path 
   populate();
 }
 
-QgsDb2RootItem::~QgsDb2RootItem()
-{
-}
-
 QVector<QgsDataItem *> QgsDb2RootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
@@ -430,14 +422,13 @@ QVector<QgsDataItem *> QgsDb2RootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsDb2RootItem::actions()
+QList<QAction *> QgsDb2RootItem::actions( QWidget *parent )
 {
   QList<QAction *> actionList;
 
-  QAction *action = new QAction( tr( "New Connection..." ), this );
+  QAction *action = new QAction( tr( "New Connection..." ), parent );
   connect( action, &QAction::triggered, this, &QgsDb2RootItem::newConnection );
   actionList.append( action );
-  QgsDebugMsg( "DB2: Browser Panel; New Connection option added." );
 
   return actionList;
 }
@@ -467,11 +458,6 @@ QgsDb2LayerItem::QgsDb2LayerItem( QgsDataItem *parent, QString name, QString pat
   QgsDebugMsg( QString( "new db2 layer created : %1" ).arg( layerType ) );
   mUri = createUri();
   setState( Populated );
-}
-
-QgsDb2LayerItem::~QgsDb2LayerItem()
-{
-
 }
 
 QgsDb2LayerItem *QgsDb2LayerItem::createClone()
@@ -516,10 +502,6 @@ QVector<QgsDataItem *> QgsDb2SchemaItem::createChildren()
     items.append( ( ( QgsDb2LayerItem * )child )->createClone() );
   }
   return items;
-}
-
-QgsDb2SchemaItem::~QgsDb2SchemaItem()
-{
 }
 
 void QgsDb2SchemaItem::addLayers( QgsDataItem *newLayers )

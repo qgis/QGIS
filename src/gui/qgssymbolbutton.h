@@ -158,7 +158,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      */
     void setColor( const QColor &color );
 
-    /** Copies the current symbol to the clipboard.
+    /**
+     * Copies the current symbol to the clipboard.
      * \see pasteSymbol()
      */
     void copySymbol();
@@ -217,7 +218,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     void updateSymbolFromWidget();
     void cleanUpSymbolSelector( QgsPanelWidget *container );
 
-    /** Creates the drop-down menu entries
+    /**
+     * Creates the drop-down menu entries
      */
     void prepareMenu();
 
@@ -251,7 +253,8 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      */
     void updatePreview( const QColor &color = QColor(), QgsSymbol *tempSymbol = nullptr );
 
-    /** Attempts to parse mimeData as a color, either via the mime data's color data or by
+    /**
+     * Attempts to parse mimeData as a color, either via the mime data's color data or by
      * parsing a textual representation of a color.
      * \returns true if mime data could be intrepreted as a color
      * \param mimeData mime data

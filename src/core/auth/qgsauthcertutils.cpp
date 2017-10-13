@@ -48,7 +48,7 @@ QString QgsAuthCertUtils::getSslProtocolName( QSsl::SslProtocol protocol )
 QMap<QString, QSslCertificate> QgsAuthCertUtils::mapDigestToCerts( const QList<QSslCertificate> &certs )
 {
   QMap<QString, QSslCertificate> digestmap;
-  Q_FOREACH ( const QSslCertificate &cert, certs )
+  for ( const auto &cert : certs )
   {
     digestmap.insert( shaHexForCert( cert ), cert );
   }
@@ -58,7 +58,7 @@ QMap<QString, QSslCertificate> QgsAuthCertUtils::mapDigestToCerts( const QList<Q
 QMap<QString, QList<QSslCertificate> > QgsAuthCertUtils::certsGroupedByOrg( const QList<QSslCertificate> &certs )
 {
   QMap< QString, QList<QSslCertificate> > orgcerts;
-  Q_FOREACH ( const QSslCertificate &cert, certs )
+  for ( const auto &cert : certs )
   {
     QString org( SSL_SUBJECT_INFO( cert, QSslCertificate::Organization ) );
     if ( org.isEmpty() )
@@ -72,7 +72,7 @@ QMap<QString, QList<QSslCertificate> > QgsAuthCertUtils::certsGroupedByOrg( cons
 QMap<QString, QgsAuthConfigSslServer> QgsAuthCertUtils::mapDigestToSslConfigs( const QList<QgsAuthConfigSslServer> &configs )
 {
   QMap<QString, QgsAuthConfigSslServer> digestmap;
-  Q_FOREACH ( const QgsAuthConfigSslServer &config, configs )
+  for ( const auto &config : configs )
   {
     digestmap.insert( shaHexForCert( config.sslCertificate() ), config );
   }
@@ -82,7 +82,7 @@ QMap<QString, QgsAuthConfigSslServer> QgsAuthCertUtils::mapDigestToSslConfigs( c
 QMap<QString, QList<QgsAuthConfigSslServer> > QgsAuthCertUtils::sslConfigsGroupedByOrg( const QList<QgsAuthConfigSslServer> &configs )
 {
   QMap< QString, QList<QgsAuthConfigSslServer> > orgconfigs;
-  Q_FOREACH ( const QgsAuthConfigSslServer &config, configs )
+  for ( const auto &config : configs )
   {
     QString org( SSL_SUBJECT_INFO( config.sslCertificate(), QSslCertificate::Organization ) );
 
@@ -439,7 +439,7 @@ QCA::CertificateCollection QgsAuthCertUtils::qtCertsToQcaCollection( const QList
   if ( QgsAuthManager::instance()->isDisabled() )
     return qcacoll;
 
-  Q_FOREACH ( const QSslCertificate &cert, certs )
+  for ( const auto &cert : certs )
   {
     QCA::Certificate qcacert( qtCertToQcaCert( cert ) );
     if ( !qcacert.isNull() )
@@ -622,8 +622,8 @@ QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( 
     usages << QgsAuthCertUtils::CertAuthorityUsage;
   }
 
-  QList<QCA::ConstraintType> certconsts = qcacert.constraints();
-  Q_FOREACH ( const QCA::ConstraintType &certconst, certconsts )
+  const QList<QCA::ConstraintType> certconsts = qcacert.constraints();
+  for ( const auto &certconst : certconsts )
   {
     if ( certconst.known() == QCA::KeyCertificateSign )
     {
@@ -722,8 +722,8 @@ bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
     return false;
   }
 
-  QList<QCA::ConstraintType> certconsts = qcacert.constraints();
-  Q_FOREACH ( QCA::ConstraintType certconst, certconsts )
+  const QList<QCA::ConstraintType> certconsts = qcacert.constraints();
+  for ( const auto & certconst, certconsts )
   {
     if ( certconst.known() == QCA::KeyCertificateSign )
     {
@@ -737,7 +737,7 @@ bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
   bool serverauth = false;
   bool dsignature = false;
   bool keyencrypt = false;
-  Q_FOREACH ( QCA::ConstraintType certconst, certconsts )
+  for ( const auto &certconst : certconsts )
   {
     if ( certconst.known() == QCA::DigitalSignature )
     {
@@ -791,7 +791,7 @@ bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
     {
       return false;
     }
-    Q_FOREACH ( QCA::ConstraintType certconst, certconsts )
+    for ( const auto &certconst : certconsts )
     {
       if ( certconst.known() == QCA::EncipherOnly )
       {

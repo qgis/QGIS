@@ -27,13 +27,8 @@ __revision__ = '$Format:%H$'
 
 import csv
 
-from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsFields,
-                       QgsField,
-                       QgsGeometry,
-                       QgsWkbTypes,
-                       QgsFeatureRequest,
-                       QgsPointXY)
+from qgis.core import (QgsWkbTypes,
+                       QgsFeatureRequest)
 
 
 def resolveFieldIndex(source, attr):
@@ -95,108 +90,6 @@ def values(source, *attributes):
     return ret
 
 
-def testForUniqueness(fieldList1, fieldList2):
-    '''Returns a modified version of fieldList2, removing naming
-    collisions with fieldList1.'''
-    changed = True
-    while changed:
-        changed = False
-        for i in range(0, len(fieldList1)):
-            for j in range(0, len(fieldList2)):
-                if fieldList1[i].name() == fieldList2[j].name():
-                    field = fieldList2[j]
-                    name = createUniqueFieldName(field.name(), fieldList1)
-                    fieldList2[j] = QgsField(name, field.type(), len=field.length(), prec=field.precision(), comment=field.comment())
-                    changed = True
-    return fieldList2
-
-
-def createUniqueFieldName(fieldName, fieldList):
-    def nextname(name):
-        num = 1
-        while True:
-            returnname = '{name}_{num}'.format(name=name[:8], num=num)
-            yield returnname
-            num += 1
-
-    def found(name):
-        return any(f.name() == name for f in fieldList)
-
-    shortName = fieldName[:10]
-
-    if not fieldList:
-        return shortName
-
-    if not found(shortName):
-        return shortName
-
-    for newname in nextname(shortName):
-        if not found(newname):
-            return newname
-
-
-def findOrCreateField(layer, fieldList, fieldName, fieldLen=24, fieldPrec=15):
-    idx = layer.fields().lookupField(fieldName)
-    if idx == -1:
-        fn = createUniqueFieldName(fieldName, fieldList)
-        field = QgsField(fn, QVariant.Double, '', fieldLen, fieldPrec)
-        idx = len(fieldList)
-        fieldList.append(field)
-
-    return (idx, fieldList)
-
-
-def extractPoints(geom):
-    points = []
-    if geom.type() == QgsWkbTypes.PointGeometry:
-        if geom.isMultipart():
-            points = geom.asMultiPoint()
-        else:
-            points.append(geom.asPoint())
-    elif geom.type() == QgsWkbTypes.LineGeometry:
-        if geom.isMultipart():
-            lines = geom.asMultiPolyline()
-            for line in lines:
-                points.extend(line)
-        else:
-            points = geom.asPolyline()
-    elif geom.type() == QgsWkbTypes.PolygonGeometry:
-        if geom.isMultipart():
-            polygons = geom.asMultiPolygon()
-            for poly in polygons:
-                for line in poly:
-                    points.extend(line)
-        else:
-            polygon = geom.asPolygon()
-            for line in polygon:
-                points.extend(line)
-
-    return points
-
-
-def combineFields(fieldsA, fieldsB):
-    """Create single field map from two input field maps.
-    """
-    fields = []
-    fields.extend(fieldsA)
-    namesA = [str(f.name()).lower() for f in fieldsA]
-    for field in fieldsB:
-        name = str(field.name()).lower()
-        if name in namesA:
-            idx = 2
-            newName = name + '_' + str(idx)
-            while newName in namesA:
-                idx += 1
-                newName = name + '_' + str(idx)
-            field = QgsField(newName, field.type(), field.typeName())
-        fields.append(field)
-
-    real_fields = QgsFields()
-    for f in fields:
-        real_fields.append(f)
-    return real_fields
-
-
 def checkMinDistance(point, index, distance, points):
     """Check if distance from given point to all other points is greater
     than given value.
@@ -214,22 +107,6 @@ def checkMinDistance(point, index, distance, points):
             return False
 
     return True
-
-
-def snapToPrecision(geom, precision):
-    snapped = QgsGeometry(geom)
-    if precision == 0.0:
-        return snapped
-
-    i = 0
-    p = snapped.vertexAt(i)
-    while p.x() != 0.0 and p.y() != 0.0:
-        x = round(p.x() / precision, 0) * precision
-        y = round(p.y() / precision, 0) * precision
-        snapped.moveVertex(x, y, i)
-        i = i + 1
-        p = snapped.vertexAt(i)
-    return QgsPointXY(snapped.x(), snapped.y())
 
 
 NOGEOMETRY_EXTENSIONS = [

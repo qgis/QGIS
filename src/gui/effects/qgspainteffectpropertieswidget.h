@@ -23,7 +23,8 @@
 class QgsPaintEffect;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPaintEffectPropertiesWidget
  * \brief A widget which modifies the properties of a QgsPaintEffect
  *
@@ -36,7 +37,8 @@ class GUI_EXPORT QgsPaintEffectPropertiesWidget : public QWidget, private Ui::Ef
 
   public:
 
-    /** QgsPaintEffectPropertiesWidget constructor
+    /**
+     * QgsPaintEffectPropertiesWidget constructor
      * \param effect QgsPaintEffect to modify in the widget
      * \param parent parent widget
      */
@@ -44,21 +46,25 @@ class GUI_EXPORT QgsPaintEffectPropertiesWidget : public QWidget, private Ui::Ef
 
   public slots:
 
-    /** Update widget when effect type changes
+    /**
+     * Update widget when effect type changes
      */
     void effectTypeChanged();
 
-    /** Emits the changed signal
+    /**
+     * Emits the changed signal
      */
     void emitSignalChanged();
 
   signals:
 
-    /** Emitted when paint effect properties changes
+    /**
+     * Emitted when paint effect properties changes
      */
     void changed();
 
-    /** Emitted when paint effect type changes
+    /**
+     * Emitted when paint effect type changes
      */
     void changeEffect( QgsPaintEffect *effect );
 

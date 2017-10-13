@@ -14,7 +14,7 @@
 typedef QList< QgsVectorLayerJoinInfo > QgsVectorJoinList;
 
 
-class QgsVectorLayerJoinBuffer : QObject
+class QgsVectorLayerJoinBuffer : QObject, QgsFeatureSink
 {
 %Docstring
  Manages joined fields for a vector layer*
@@ -59,11 +59,13 @@ Saves mVectorJoins to xml under the layer node
 
     void readXml( const QDomNode &layer_node );
 %Docstring
-Does not resolve layer IDs to layers - call resolveReferences() afterwards
+ Reads joins from project file.
+ Does not resolve layer IDs to layers - call resolveReferences() afterwards
 %End
 
     void resolveReferences( QgsProject *project );
 %Docstring
+ Resolves layer IDs of joined layers using given project's available layers
 .. versionadded:: 3.0
 %End
 
@@ -89,12 +91,14 @@ Quick way to test if there is any join at all
 
     int joinedFieldsOffset( const QgsVectorLayerJoinInfo *info, const QgsFields &fields );
 %Docstring
+ Find out what is the first index of the join within fields. Returns -1 if join is not present
 .. versionadded:: 2.6
  :rtype: int
 %End
 
     static QVector<int> joinSubsetIndices( QgsVectorLayer *joinLayer, const QStringList &joinFieldsSubset );
 %Docstring
+ Return a vector of indices for use in join based on field names from the layer
 .. versionadded:: 2.6
  :rtype: list of int
 %End
@@ -117,15 +121,101 @@ Quick way to test if there is any join at all
  :rtype: QgsFeature
 %End
 
+    QgsFeature targetedFeatureOf( const QgsVectorLayerJoinInfo *info, const QgsFeature &feature ) const;
+%Docstring
+ Returns the targeted feature corresponding to the joined feature.
+ \param info the vector join information
+ \param feature the feature of the joined layer
+.. versionadded:: 3.0
+ :rtype: QgsFeature
+%End
+
+    bool isAuxiliaryJoin( const QgsVectorLayerJoinInfo &info ) const;
+%Docstring
+ Returns true if the join information is about auxiliary layer, false otherwise
+
+ \param info The join information
+
+ :return: true if the join information is about auxiliary layer, false otherwise
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
     QgsVectorLayerJoinBuffer *clone() const /Factory/;
 %Docstring
+ Create a copy of the join buffer
 .. versionadded:: 2.6
  :rtype: QgsVectorLayerJoinBuffer
 %End
 
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
+
+%Docstring
+ Adds a list of features in joined layers. Features given in parameter
+ are those added in target layer. If a corresponding joined feature yet
+ exists in a joined layer, then this feature is just updated. Note that
+ if a corresponding joined feature has only empty fields, then it's not
+ created nor added.
+
+ \param features The list of features added in the target layer
+ \param flags Unused parameter
+
+ :return: false if an error happened, true otherwise
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
+%Docstring
+ Changes attribute value in joined layers. The feature id given in
+ parameter is the one added in target layer. If the corresponding joined
+ feature does not exist in a joined layer, then it's automatically
+ created if its fields are not empty.
+
+ \param fid The feature id
+ \param field The field to update
+ \param newValue The new value of the attribute
+ \param oldValue The old value of the attribute
+
+ :return: false if an error happened, true otherwise
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    bool deleteFeature( QgsFeatureId fid ) const;
+%Docstring
+ Deletes a feature from joined layers. The feature id given in
+ parameter is the one coming from the target layer.
+
+ \param fid The feature id from the target layer to delete
+
+ :return: false if an error happened, true otherwise
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    bool deleteFeatures( const QgsFeatureIds &fids ) const;
+%Docstring
+ Deletes a list of features from joined layers. Feature ids given
+ in aprameter are those coming from the target layer.
+
+ \param fids Feature ids from the target layer to delete
+
+ :return: false if an error happened, true otherwise
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
   signals:
+
     void joinedFieldsChanged();
 %Docstring
+ Emitted whenever the list of joined fields changes (e.g. added join or joined layer's fields change)
 .. versionadded:: 2.6
 %End
 

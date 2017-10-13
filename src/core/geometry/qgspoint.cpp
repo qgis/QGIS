@@ -32,8 +32,7 @@
  ****************************************************************************/
 
 QgsPoint::QgsPoint( double x, double y, double z, double m, QgsWkbTypes::Type wkbType )
-  : QgsAbstractGeometry()
-  , mX( x )
+  : mX( x )
   , mY( y )
   , mZ( z )
   , mM( m )
@@ -57,8 +56,7 @@ QgsPoint::QgsPoint( double x, double y, double z, double m, QgsWkbTypes::Type wk
 }
 
 QgsPoint::QgsPoint( const QgsPointXY &p )
-  : QgsAbstractGeometry()
-  , mX( p.x() )
+  : mX( p.x() )
   , mY( p.y() )
   , mZ( std::numeric_limits<double>::quiet_NaN() )
   , mM( std::numeric_limits<double>::quiet_NaN() )
@@ -67,8 +65,7 @@ QgsPoint::QgsPoint( const QgsPointXY &p )
 }
 
 QgsPoint::QgsPoint( QPointF p )
-  : QgsAbstractGeometry()
-  , mX( p.x() )
+  : mX( p.x() )
   , mY( p.y() )
   , mZ( std::numeric_limits<double>::quiet_NaN() )
   , mM( std::numeric_limits<double>::quiet_NaN() )
@@ -77,11 +74,10 @@ QgsPoint::QgsPoint( QPointF p )
 }
 
 QgsPoint::QgsPoint( QgsWkbTypes::Type wkbType, double x, double y, double z, double m )
-  : QgsAbstractGeometry()
-  , mX( x )
+  : mX( x )
   , mY( y )
-  , mZ( z )
-  , mM( m )
+  , mZ( QgsWkbTypes::hasZ( wkbType ) ? z : std::numeric_limits<double>::quiet_NaN() )
+  , mM( QgsWkbTypes::hasM( wkbType ) ? m : std::numeric_limits<double>::quiet_NaN() )
 {
   Q_ASSERT( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point );
   mWkbType = wkbType;
@@ -156,7 +152,7 @@ bool QgsPoint::fromWkt( const QString &wkt )
     return false;
   mWkbType = parts.first;
 
-  QRegularExpression rx( "\\s" );
+  QRegularExpression rx( QStringLiteral( "\\s" ) );
   QStringList coordinates = parts.second.split( rx, QString::SkipEmptyParts );
   if ( coordinates.size() < 2 )
   {
@@ -234,12 +230,12 @@ QDomElement QgsPoint::asGML2( QDomDocument &doc, int precision, const QString &n
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
 
   // coordinate separator
-  QString cs = ",";
+  QString cs = QStringLiteral( "," );
   // tupel separator
-  QString ts = " ";
+  QString ts = QStringLiteral( " " );
 
-  elemCoordinates.setAttribute( "cs", cs );
-  elemCoordinates.setAttribute( "ts", ts );
+  elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );
+  elemCoordinates.setAttribute( QStringLiteral( "ts" ), ts );
 
   QString strCoordinates = qgsDoubleToString( mX, precision ) + cs + qgsDoubleToString( mY, precision );
   elemCoordinates.appendChild( doc.createTextNode( strCoordinates ) );
@@ -276,7 +272,7 @@ QString QgsPoint::asJSON( int precision ) const
 
 void QgsPoint::draw( QPainter &p ) const
 {
-  p.drawRect( mX - 2, mY - 2, 4, 4 );
+  p.drawRect( QRectF( mX - 2, mY - 2, 4, 4 ) );
 }
 
 void QgsPoint::clear()
@@ -319,9 +315,21 @@ QgsCoordinateSequence QgsPoint::coordinateSequence() const
   return cs;
 }
 
+int QgsPoint::nCoordinates() const
+{
+  return 1;
+}
+
 QgsAbstractGeometry *QgsPoint::boundary() const
 {
   return nullptr;
+}
+
+bool QgsPoint::insertVertex( QgsVertexId position, const QgsPoint &vertex )
+{
+  Q_UNUSED( position );
+  Q_UNUSED( vertex );
+  return false;
 }
 
 /***************************************************************************
@@ -345,6 +353,12 @@ bool QgsPoint::moveVertex( QgsVertexId position, const QgsPoint &newPos )
     mM = newPos.mM;
   }
   return true;
+}
+
+bool QgsPoint::deleteVertex( QgsVertexId position )
+{
+  Q_UNUSED( position );
+  return false;
 }
 
 double QgsPoint::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
@@ -377,6 +391,37 @@ bool QgsPoint::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
   {
     return false;
   }
+}
+
+double QgsPoint::vertexAngle( QgsVertexId vertex ) const
+{
+  Q_UNUSED( vertex );
+  return 0.0;
+}
+
+int QgsPoint::vertexCount( int, int ) const
+{
+  return 1;
+}
+
+int QgsPoint::ringCount( int ) const
+{
+  return 1;
+}
+
+int QgsPoint::partCount() const
+{
+  return 1;
+}
+
+QgsPoint QgsPoint::vertexAt( QgsVertexId ) const
+{
+  return *this;
+}
+
+QgsPoint *QgsPoint::toCurveType() const
+{
+  return clone();
 }
 
 /***************************************************************************
@@ -495,7 +540,7 @@ double QgsPoint::distanceSquared( double x, double y ) const
 
 double QgsPoint::distanceSquared( const QgsPoint &other ) const
 {
-  return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) ;
+  return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() );
 }
 
 double QgsPoint::distance3D( double x, double y, double z ) const
@@ -578,4 +623,24 @@ QgsPoint QgsPoint::project( double distance, double azimuth, double inclination 
   }
 
   return QgsPoint( mX + dx, mY + dy, mZ + dz, mM, pType );
+}
+
+bool QgsPoint::isEmpty() const
+{
+  return false;
+}
+
+QgsRectangle QgsPoint::boundingBox() const
+{
+  return QgsRectangle( mX, mY, mX, mY );
+}
+
+QString QgsPoint::geometryType() const
+{
+  return QStringLiteral( "Point" );
+}
+
+int QgsPoint::dimension() const
+{
+  return 0;
 }

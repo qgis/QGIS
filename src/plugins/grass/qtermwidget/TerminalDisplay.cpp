@@ -23,6 +23,9 @@
 // Own
 #include "TerminalDisplay.h"
 
+// System
+#include <cstdlib>
+
 // Qt
 #include <QApplication>
 #include <QBoxLayout>

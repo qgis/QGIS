@@ -50,14 +50,14 @@ class GUI_EXPORT QgsFontButton : public QToolButton
 
   public:
 
-    Q_ENUMS( Mode )
-
     //! Available button modes.
     enum Mode
     {
       ModeTextRenderer,  //!< Configure font settings for use with QgsTextRenderer
       ModeQFont, //!< Configure font settings for use with QFont objects
     };
+
+    Q_ENUM( Mode );
 
     /**
      * Construct a new font button.
@@ -147,7 +147,8 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      */
     void setColor( const QColor &color );
 
-    /** Copies the current text format to the clipboard.
+    /**
+     * Copies the current text format to the clipboard.
      * \see pasteFormat()
      */
     void copyFormat();
@@ -208,7 +209,8 @@ class GUI_EXPORT QgsFontButton : public QToolButton
 
     void showSettingsDialog();
 
-    /** Creates the drop-down menu entries
+    /**
+     * Creates the drop-down menu entries
      */
     void prepareMenu();
 
@@ -251,7 +253,8 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      */
     bool fontFromMimeData( const QMimeData *mimeData, QFont &resultFont ) const;
 
-    /** Attempts to parse mimeData as a color, either via the mime data's color data or by
+    /**
+     * Attempts to parse mimeData as a color, either via the mime data's color data or by
      * parsing a textual representation of a color.
      * \returns true if mime data could be intrepreted as a color
      * \param mimeData mime data

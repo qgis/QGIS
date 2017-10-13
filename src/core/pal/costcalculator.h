@@ -29,7 +29,8 @@ namespace pal
 {
   class Feats;
 
-  /** \ingroup core
+  /**
+   * \ingroup core
    */
   class CostCalculator
   {
@@ -45,11 +46,13 @@ namespace pal
       //! Sort candidates by costs, skip the worse ones, evaluate polygon candidates
       static int finalizeCandidatesCosts( Feats *feat, int max_p, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
-      /** Sorts label candidates in ascending order of cost
+      /**
+       * Sorts label candidates in ascending order of cost
        */
       static bool candidateSortGrow( const LabelPosition *c1, const LabelPosition *c2 );
 
-      /** Sorts label candidates in descending order of cost
+      /**
+       * Sorts label candidates in descending order of cost
        */
       static bool candidateSortShrink( const LabelPosition *c1, const LabelPosition *c2 );
   };

@@ -76,8 +76,8 @@ class CreateConstantRaster(QgisAlgorithm):
         return self.tr('Create constant raster layer')
 
     def processAlgorithm(self, parameters, context, feedback):
-        extent = self.parameterAsExtent(parameters, self.EXTENT, context)
         crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
+        extent = self.parameterAsExtent(parameters, self.EXTENT, context, crs)
         value = self.parameterAsDouble(parameters, self.NUMBER, context)
         pixelSize = self.parameterAsDouble(parameters, self.PIXEL_SIZE, context)
 

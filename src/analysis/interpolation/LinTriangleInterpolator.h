@@ -21,8 +21,13 @@
 #include "DualEdgeTriangulation.h"
 #include "qgis_analysis.h"
 
-/** \ingroup analysis
- * LinTriangleInterpolator is a class which interpolates linearly on a triangulation*/
+#define SIP_NO_FILE
+
+/**
+ * \ingroup analysis
+ * LinTriangleInterpolator is a class which interpolates linearly on a triangulation.
+ * \note Not available in Python bindings.
+*/
 class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
 {
   public:
@@ -52,7 +57,6 @@ class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
 #ifndef SIP_RUN
 
 inline LinTriangleInterpolator::LinTriangleInterpolator()
-  : mTIN( nullptr )
 {
 
 }

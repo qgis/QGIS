@@ -23,8 +23,10 @@
 class QgsLayerItem;
 class QgsLayerTreeNode;
 class QgsVectorLayer;
+class QgsRasterLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMimeDataUtils
  */
 class CORE_EXPORT QgsMimeDataUtils
@@ -34,28 +36,41 @@ class CORE_EXPORT QgsMimeDataUtils
     struct CORE_EXPORT Uri
     {
       //! Constructs invalid URI
-      Uri();
+      Uri() = default;
       //! Constructs URI from encoded data
       explicit Uri( QString &encData );
 
-      //! Returns whether the object contains valid data
-      //! \since QGIS 3.0
+      /**
+       * Returns whether the object contains valid data
+       * \since QGIS 3.0
+       */
       bool isValid() const { return !layerType.isEmpty(); }
 
       //! Returns encoded representation of the object
       QString data() const;
 
-      /** Get vector layer from uri if possible, otherwise returns 0 and error is set
+      /**
+       * Get vector layer from uri if possible, otherwise returns 0 and error is set
        * \param owner set to true if caller becomes owner
        * \param error set to error message if cannot get vector
        */
       QgsVectorLayer *vectorLayer( bool &owner, QString &error ) const;
 
+      /**
+       * Get raster layer from uri if possible, otherwise returns 0 and error is set
+       * \param owner set to true if caller becomes owner
+       * \param error set to error message if cannot get raster
+       */
+      QgsRasterLayer *rasterLayer( bool &owner, QString &error ) const;
+
       //! Type of URI. Recognized types: "vector" / "raster" / "plugin" / "custom"
       QString layerType;
-      //! For "vector" / "raster" type: provider id.
-      //! For "plugin" type: plugin layer type name.
-      //! For "custom" type: key of its QgsCustomDropHandler
+
+      /**
+       * For "vector" / "raster" type: provider id.
+       * For "plugin" type: plugin layer type name.
+       * For "custom" type: key of its QgsCustomDropHandler
+       */
       QString providerKey;
       //! Human readable name to be used e.g. in layer tree
       QString name;

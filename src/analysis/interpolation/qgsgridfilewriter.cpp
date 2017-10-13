@@ -30,19 +30,7 @@ QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator *i, const QString &outputP
   , mNumRows( nRows )
   , mCellSizeX( cellSizeX )
   , mCellSizeY( cellSizeY )
-{
-
-}
-
-QgsGridFileWriter::QgsGridFileWriter()
-  : mInterpolator( nullptr )
-  , mNumColumns( 0 )
-  , mNumRows( 0 )
-  , mCellSizeX( 0 )
-  , mCellSizeY( 0 )
-{
-
-}
+{}
 
 int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
 {
@@ -98,7 +86,7 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
 
   // create prj file
   QgsInterpolator::LayerData ld;
-  ld = mInterpolator->layerData().first();
+  ld = mInterpolator->layerData().at( 0 );
   QgsVectorLayer *vl = ld.vectorLayer;
   QString crs = vl->crs().toWkt();
   QFileInfo fi( mOutputFilePath );

@@ -40,17 +40,17 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     ~QgsNewSpatialiteLayerDialog();
 
   protected slots:
-    void on_mAddAttributeButton_clicked();
-    void on_mRemoveAttributeButton_clicked();
-    void on_mTypeBox_currentIndexChanged( int index );
-    void on_pbnFindSRID_clicked();
-    void on_toolButtonNewDatabase_clicked();
+    void mAddAttributeButton_clicked();
+    void mRemoveAttributeButton_clicked();
+    void mTypeBox_currentIndexChanged( int index );
+    void pbnFindSRID_clicked();
+    void toolButtonNewDatabase_clicked();
     void nameChanged( const QString & );
     void selectionChanged();
     void checkOk();
 
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
 
   private:
     //! Returns the selected geometry type

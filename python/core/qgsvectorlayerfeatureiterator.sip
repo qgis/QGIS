@@ -116,7 +116,8 @@ fetch next feature, return true on success
 
     virtual bool nextFeatureFilterExpression( QgsFeature &f );
 %Docstring
-while for others filtering is left to the provider implementation.
+ Overrides default method as we only need to filter features in the edit buffer
+ while for others filtering is left to the provider implementation.
  :rtype: bool
 %End
 

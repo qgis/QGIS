@@ -32,15 +32,6 @@
 
 QgsFileWidget::QgsFileWidget( QWidget *parent )
   : QWidget( parent )
-  , mFilePath( QString() )
-  , mButtonVisible( true )
-  , mUseLink( false )
-  , mFullUrl( false )
-  , mDialogTitle( QString() )
-  , mFilter( QString() )
-  , mDefaultRoot( QString() )
-  , mStorageMode( GetFile )
-  , mRelativeStorage( Absolute )
 {
   setBackgroundRole( QPalette::Window );
   setAutoFillBackground( true );
@@ -80,9 +71,12 @@ QString QgsFileWidget::filePath()
 QStringList QgsFileWidget::splitFilePaths( const QString &path )
 {
   QStringList paths;
-  for ( auto pathsPart : path.split( QRegExp( "\"\\s+\"" ), QString::SkipEmptyParts ) )
+  const QStringList pathParts = path.split( QRegExp( "\"\\s+\"" ), QString::SkipEmptyParts );
+  for ( const auto &pathsPart : pathParts )
   {
-    paths.append( pathsPart.remove( QRegExp( "(^\\s*\")|(\"\\s*)" ) ) );
+    QString cleaned = pathsPart;
+    cleaned.remove( QRegExp( "(^\\s*\")|(\"\\s*)" ) );
+    paths.append( cleaned );
   }
   return paths;
 }
@@ -91,7 +85,7 @@ void QgsFileWidget::setFilePath( QString path )
 {
   if ( path == QgsApplication::nullRepresentation() )
   {
-    path = QLatin1String( "" );
+    path.clear();
   }
 
   //will trigger textEdited slot
@@ -261,7 +255,7 @@ void QgsFileWidget::openFileDialog()
       fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
       break;
     case GetMultipleFiles:
-      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select one ore more files" );
+      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select one or more files" );
       fileNames = QFileDialog::getOpenFileNames( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
       break;
     case GetDirectory:
@@ -281,7 +275,7 @@ void QgsFileWidget::openFileDialog()
   {
     for ( int i = 0; i < fileNames.length(); i++ )
     {
-      fileNames.replace( i, QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileNames.at( i ) ).absoluteFilePath() ) ) ) ;
+      fileNames.replace( i, QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileNames.at( i ) ).absoluteFilePath() ) ) );
     }
   }
 
@@ -313,7 +307,7 @@ void QgsFileWidget::openFileDialog()
     }
     if ( fileNames.length() > 1 )
     {
-      setFilePath( QStringLiteral( "\"%1\"" ).arg( fileNames.join( "\" \"" ) ) );
+      setFilePath( QStringLiteral( "\"%1\"" ).arg( fileNames.join( QStringLiteral( "\" \"" ) ) ) );
     }
     else
     {
@@ -364,7 +358,7 @@ QString QgsFileWidget::toUrl( const QString &path ) const
   if ( !url.isValid() || !url.isLocalFile() )
   {
     QgsDebugMsg( QString( "URL: %1 is not valid or not a local file!" ).arg( path ) );
-    rep =  path;
+    rep = path;
   }
 
   QString pathStr = url.toString();
@@ -400,7 +394,7 @@ void QgsFileDropEdit::setFilters( const QString &filters )
   if ( filters.contains( QStringLiteral( "*.*" ) ) )
     return; // everything is allowed!
 
-  QRegularExpression rx( "\\*\\.(\\w+)" );
+  QRegularExpression rx( QStringLiteral( "\\*\\.(\\w+)" ) );
   QRegularExpressionMatchIterator i = rx.globalMatch( filters );
   while ( i.hasNext() )
   {
@@ -428,7 +422,7 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
   }
   if ( paths.size() > 1 )
   {
-    return QStringLiteral( "\"%1\"" ).arg( paths.join( "\" \"" ) );
+    return QStringLiteral( "\"%1\"" ).arg( paths.join( QStringLiteral( "\" \"" ) ) );
   }
   else if ( paths.size() == 1 )
   {

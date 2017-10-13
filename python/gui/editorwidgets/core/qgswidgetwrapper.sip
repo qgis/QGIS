@@ -32,7 +32,6 @@ class QgsWidgetWrapper : QObject
 %TypeHeaderCode
 #include "qgswidgetwrapper.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsEditorWidgetWrapper *>( sipCpp ) )
       sipType = sipType_QgsEditorWidgetWrapper;

@@ -31,10 +31,6 @@ QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent,
     const QList<QSslCertificate> &trustedCAs )
   : QDialog( parent )
   , mTrustedCAs( trustedCAs )
-  , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
-  , mRootCaSecItem( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -47,6 +43,8 @@ QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent,
   else
   {
     setupUi( this );
+    connect( btnInfoCa, &QToolButton::clicked, this, &QgsAuthTrustedCAsDialog::btnInfoCa_clicked );
+    connect( btnGroupByOrg, &QToolButton::toggled, this, &QgsAuthTrustedCAsDialog::btnGroupByOrg_toggled );
 
     connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
              this, &QgsAuthTrustedCAsDialog::authMessageOut );
@@ -136,7 +134,7 @@ void QgsAuthTrustedCAsDialog::appendCertsToGroup( const QList<QSslCertificate> &
     QgsAuthTrustedCAsDialog::CaType catype,
     QTreeWidgetItem *parent )
 {
-  if ( certs.size() < 1 )
+  if ( certs.empty() )
     return;
 
   if ( !parent )
@@ -175,7 +173,7 @@ void QgsAuthTrustedCAsDialog::appendCertsToItem( const QList<QSslCertificate> &c
     QgsAuthTrustedCAsDialog::CaType catype,
     QTreeWidgetItem *parent )
 {
-  if ( certs.size() < 1 )
+  if ( certs.empty() )
     return;
 
   if ( !parent )
@@ -285,7 +283,7 @@ void QgsAuthTrustedCAsDialog::handleDoubleClick( QTreeWidgetItem *item, int col 
   }
 }
 
-void QgsAuthTrustedCAsDialog::on_btnInfoCa_clicked()
+void QgsAuthTrustedCAsDialog::btnInfoCa_clicked()
 {
   if ( treeTrustedCAs->selectionModel()->selection().length() > 0 )
   {
@@ -294,7 +292,7 @@ void QgsAuthTrustedCAsDialog::on_btnInfoCa_clicked()
   }
 }
 
-void QgsAuthTrustedCAsDialog::on_btnGroupByOrg_toggled( bool checked )
+void QgsAuthTrustedCAsDialog::btnGroupByOrg_toggled( bool checked )
 {
   if ( !QgsAuthManager::instance()->storeAuthSetting( QStringLiteral( "trustedcasortby" ), QVariant( checked ) ) )
   {

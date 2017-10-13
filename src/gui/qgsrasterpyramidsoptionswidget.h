@@ -24,7 +24,8 @@
 
 class QCheckBox;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A widget to select format-specific raster saving options
  */
 class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget, private Ui::QgsRasterPyramidsOptionsWidgetBase
@@ -51,8 +52,8 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget, private Ui::Qgs
 
   private slots:
 
-    void on_cbxPyramidsLevelsCustom_toggled( bool toggled ) SIP_FORCE;
-    void on_cbxPyramidsFormat_currentIndexChanged( int index ) SIP_FORCE;
+    void cbxPyramidsLevelsCustom_toggled( bool toggled ) SIP_FORCE;
+    void cbxPyramidsFormat_currentIndexChanged( int index ) SIP_FORCE;
     void setOverviewList() SIP_FORCE;
     void updateUi() SIP_FORCE;
 
@@ -75,5 +76,7 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget, private Ui::Qgs
     QList< int > mOverviewList;
     QMap< int, QCheckBox * > mOverviewCheckBoxes;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSRASTERLAYERSAVEASDIALOG_H

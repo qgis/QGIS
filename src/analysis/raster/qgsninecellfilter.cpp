@@ -19,29 +19,14 @@
 #include "qgslogger.h"
 #include "cpl_string.h"
 #include "qgsfeedback.h"
-#include <QProgressDialog>
 #include <QFile>
 
 QgsNineCellFilter::QgsNineCellFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
   : mInputFile( inputFile )
   , mOutputFile( outputFile )
   , mOutputFormat( outputFormat )
-  , mCellSizeX( -1.0 )
-  , mCellSizeY( -1.0 )
-  , mInputNodataValue( -1.0 )
-  , mOutputNodataValue( -1.0 )
-  , mZFactor( 1.0 )
 {
 
-}
-
-QgsNineCellFilter::QgsNineCellFilter()
-  : mCellSizeX( -1.0 )
-  , mCellSizeY( -1.0 )
-  , mInputNodataValue( -1.0 )
-  , mOutputNodataValue( -1.0 )
-  , mZFactor( 1.0 )
-{
 }
 
 int QgsNineCellFilter::processRaster( QgsFeedback *feedback )

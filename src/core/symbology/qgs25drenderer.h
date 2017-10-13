@@ -21,7 +21,8 @@
 
 class QgsOuterGlowEffect;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class Qgs25DRenderer
  */
 class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer

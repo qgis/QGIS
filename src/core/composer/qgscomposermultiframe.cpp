@@ -20,9 +20,7 @@
 
 QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition *c, bool createUndoCommands )
   : QgsComposerObject( c )
-  , mResizeMode( UseExistingFrames )
   , mCreateUndoCommands( createUndoCommands )
-  , mIsRecalculatingSize( false )
 {
   mComposition->addMultiFrame( this );
   connect( mComposition, &QgsComposition::nPagesChanged, this, &QgsComposerMultiFrame::handlePageChange );
@@ -30,9 +28,6 @@ QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition *c, bool createUndo
 
 QgsComposerMultiFrame::QgsComposerMultiFrame()
   : QgsComposerObject( nullptr )
-  , mResizeMode( UseExistingFrames )
-  , mCreateUndoCommands( false )
-  , mIsRecalculatingSize( false )
 {
 }
 
@@ -68,7 +63,7 @@ void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
 
 void QgsComposerMultiFrame::recalculateFrameSizes()
 {
-  if ( mFrameItems.size() < 1 )
+  if ( mFrameItems.empty() )
   {
     return;
   }
@@ -182,7 +177,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
 
 void QgsComposerMultiFrame::recalculateFrameRects()
 {
-  if ( mFrameItems.size() < 1 )
+  if ( mFrameItems.empty() )
   {
     //no frames, nothing to do
     return;

@@ -27,7 +27,8 @@ class QDomDocument;
 class QDomElement;
 class QgsRasterShaderFunction;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Interface for all raster shaders.
  */
 class CORE_EXPORT QgsRasterShader
@@ -77,7 +78,8 @@ class CORE_EXPORT QgsRasterShader
                 int *returnBlueValue SIP_OUT,
                 int *returnAlpha SIP_OUT );
 
-    /** \brief A public method that allows the user to set their own shader function
+    /**
+     * \brief A public method that allows the user to set their own shader function
       \note Raster shader takes ownership of the shader function instance */
     void setRasterShaderFunction( QgsRasterShaderFunction *function SIP_TRANSFER );
 

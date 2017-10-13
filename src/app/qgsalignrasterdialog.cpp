@@ -59,7 +59,7 @@ static QString _rasterLayerName( const QString &filename )
 struct QgsAlignRasterDialogProgress : public QgsAlignRaster::ProgressHandler
 {
     explicit QgsAlignRasterDialogProgress( QProgressBar *pb ) : mPb( pb ) {}
-    virtual bool progress( double complete ) override
+    bool progress( double complete ) override
     {
       mPb->setValue( ( int ) std::round( complete * 100 ) );
       qApp->processEvents(); // to actually show the progress in GUI

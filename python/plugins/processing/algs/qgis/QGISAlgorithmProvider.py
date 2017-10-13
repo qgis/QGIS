@@ -43,13 +43,9 @@ from .QgisAlgorithm import QgisAlgorithm
 from .AddTableField import AddTableField
 from .Aggregate import Aggregate
 from .Aspect import Aspect
-from .AutoincrementalField import AutoincrementalField
 from .BasicStatistics import BasicStatisticsForField
-from .Boundary import Boundary
-from .BoundingBox import BoundingBox
 from .CheckValidity import CheckValidity
 from .ConcaveHull import ConcaveHull
-from .ConvexHull import ConvexHull
 from .CreateAttributeIndex import CreateAttributeIndex
 from .CreateConstantRaster import CreateConstantRaster
 from .Datasources2Vrt import Datasources2Vrt
@@ -61,8 +57,6 @@ from .DeleteHoles import DeleteHoles
 from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
-from .DropGeometry import DropGeometry
-from .DropMZValues import DropMZValues
 from .EliminateSelection import EliminateSelection
 from .EquivalentNumField import EquivalentNumField
 from .ExecuteSQL import ExecuteSQL
@@ -77,7 +71,6 @@ from .FieldsCalculator import FieldsCalculator
 from .FieldsMapper import FieldsMapper
 from .FindProjection import FindProjection
 from .FixedDistanceBuffer import FixedDistanceBuffer
-from .FixGeometry import FixGeometry
 from .GeometryConvert import GeometryConvert
 from .GeometryByExpression import GeometryByExpression
 from .Gridify import Gridify
@@ -87,21 +80,16 @@ from .Heatmap import Heatmap
 from .Hillshade import Hillshade
 from .HubDistanceLines import HubDistanceLines
 from .HubDistancePoints import HubDistancePoints
-from .HubLines import HubLines
 from .HypsometricCurves import HypsometricCurves
 from .IdwInterpolation import IdwInterpolation
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
-from .JoinAttributes import JoinAttributes
-from .LinesIntersection import LinesIntersection
 from .LinesToPolygons import LinesToPolygons
-from .MeanCoords import MeanCoords
 from .Merge import Merge
-from .MergeLines import MergeLines
+from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .OffsetLine import OffsetLine
-from .OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
 from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
 from .PointOnSurface import PointOnSurface
@@ -133,7 +121,6 @@ from .RegularPoints import RegularPoints
 from .Relief import Relief
 from .ReverseLineDirection import ReverseLineDirection
 from .Ruggedness import Ruggedness
-from .SaveSelectedFeatures import SaveSelectedFeatures
 from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
 from .ServiceAreaFromLayer import ServiceAreaFromLayer
@@ -145,15 +132,13 @@ from .SetZValue import SetZValue
 from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
 from .ShortestPathPointToLayer import ShortestPathPointToLayer
 from .ShortestPathPointToPoint import ShortestPathPointToPoint
-from .SimplifyGeometries import SimplifyGeometries
-from .SinglePartsToMultiparts import SinglePartsToMultiparts
 from .SingleSidedBuffer import SingleSidedBuffer
 from .Slope import Slope
-from .Smooth import Smooth
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
 from .SpatialIndex import SpatialIndex
-from .SplitWithLines import SplitWithLines
+from .SpatialJoin import SpatialJoin
+from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .SumLines import SumLines
 from .SymmetricalDifference import SymmetricalDifference
@@ -169,10 +154,6 @@ from .VectorSplit import VectorSplit
 from .VoronoiPolygons import VoronoiPolygons
 from .ZonalStatistics import ZonalStatistics
 
-# from .ExtractByLocation import ExtractByLocation
-# from .SelectByLocation import SelectByLocation
-# from .SpatialJoin import SpatialJoin
-# from .SelectByAttributeSum import SelectByAttributeSum
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -186,22 +167,12 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
         self.externalAlgs = []
 
     def getAlgs(self):
-        # algs = [
-        #         SelectByLocation(),
-        #         ExtractByLocation(),
-        #         SpatialJoin(),
-        #         SelectByAttributeSum()
-        #         ]
         algs = [AddTableField(),
                 Aggregate(),
                 Aspect(),
-                AutoincrementalField(),
                 BasicStatisticsForField(),
-                Boundary(),
-                BoundingBox(),
                 CheckValidity(),
                 ConcaveHull(),
-                ConvexHull(),
                 CreateAttributeIndex(),
                 CreateConstantRaster(),
                 Datasources2Vrt(),
@@ -213,8 +184,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 DensifyGeometries(),
                 DensifyGeometriesInterval(),
                 Difference(),
-                DropGeometry(),
-                DropMZValues(),
                 EliminateSelection(),
                 EquivalentNumField(),
                 ExecuteSQL(),
@@ -229,7 +198,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 FieldsPyculator(),
                 FindProjection(),
                 FixedDistanceBuffer(),
-                FixGeometry(),
                 GeometryByExpression(),
                 GeometryConvert(),
                 Gridify(),
@@ -239,21 +207,16 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Hillshade(),
                 HubDistanceLines(),
                 HubDistancePoints(),
-                HubLines(),
                 HypsometricCurves(),
                 IdwInterpolation(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),
-                JoinAttributes(),
-                LinesIntersection(),
                 LinesToPolygons(),
-                MeanCoords(),
                 Merge(),
-                MergeLines(),
+                MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),
                 OffsetLine(),
-                OrientedMinimumBoundingBox(),
                 Orthogonalize(),
                 PointDistance(),
                 PointOnSurface(),
@@ -285,7 +248,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 Relief(),
                 ReverseLineDirection(),
                 Ruggedness(),
-                SaveSelectedFeatures(),
                 SelectByAttribute(),
                 SelectByExpression(),
                 ServiceAreaFromLayer(),
@@ -297,15 +259,13 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ShortestPathLayerToPoint(),
                 ShortestPathPointToLayer(),
                 ShortestPathPointToPoint(),
-                SimplifyGeometries(),
-                SinglePartsToMultiparts(),
                 SingleSidedBuffer(),
                 Slope(),
-                Smooth(),
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
                 SpatialIndex(),
-                SplitWithLines(),
+                SpatialJoin(),
+                SpatialJoinSummary(),
                 StatisticsByCategories(),
                 SumLines(),
                 SymmetricalDifference(),
@@ -323,20 +283,23 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ]
 
         if hasPlotly:
-            #     from .VectorLayerHistogram import VectorLayerHistogram
-            #     from .RasterLayerHistogram import RasterLayerHistogram
-            #     from .VectorLayerScatterplot import VectorLayerScatterplot
-            #     from .MeanAndStdDevPlot import MeanAndStdDevPlot
             from .BarPlot import BarPlot
-        #     from .PolarPlot import PolarPlot
-        #     from .BoxPlot import BoxPlot
-        #     from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
-        #
-            algs.extend([BarPlot()])
-            #[VectorLayerHistogram(), RasterLayerHistogram(),
-        #                  VectorLayerScatterplot(), MeanAndStdDevPlot(),
-        #                  BarPlot(), PolarPlot(), BoxPlot(),
-        #                  VectorLayerScatterplot3D()])
+            from .BoxPlot import BoxPlot
+            from .MeanAndStdDevPlot import MeanAndStdDevPlot
+            from .PolarPlot import PolarPlot
+            from .RasterLayerHistogram import RasterLayerHistogram
+            from .VectorLayerHistogram import VectorLayerHistogram
+            from .VectorLayerScatterplot import VectorLayerScatterplot
+            from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
+
+            algs.extend([BarPlot(),
+                         BoxPlot(),
+                         MeanAndStdDevPlot(),
+                         PolarPlot(),
+                         RasterLayerHistogram(),
+                         VectorLayerHistogram(),
+                         VectorLayerScatterplot(),
+                         VectorLayerScatterplot3D()])
 
         # to store algs added by 3rd party plugins as scripts
         folder = os.path.join(os.path.dirname(__file__), 'scripts')

@@ -122,6 +122,16 @@ int QgsFields::size() const
   return d->fields.count();
 }
 
+QStringList QgsFields::names() const
+{
+  QStringList lst;
+  for ( int i = 0; i < d->fields.count(); ++i )
+  {
+    lst.append( d->fields[i].field.name() );
+  }
+  return lst;
+}
+
 bool QgsFields::exists( int i ) const
 {
   return i >= 0 && i < d->fields.count();

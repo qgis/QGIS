@@ -795,6 +795,40 @@ Returns the number of registered layers.
  :rtype: QgsCoordinateReferenceSystem
 %End
 
+    void setTrustLayerMetadata( bool trust );
+%Docstring
+ Sets the trust option allowing to indicate if the extent has to be
+ read from the XML document when data source has no metadata or if the
+ data provider has to determine it. Moreover, when this option is
+ activated, primary key unicity is not checked for views and
+ materialized views with Postgres provider.
+
+ \param trust True to trust the project, false otherwise
+
+.. versionadded:: 3.0
+%End
+
+    bool trustLayerMetadata() const;
+%Docstring
+ Returns true if the trust option is activated, false otherwise. This
+ option allows indicateing if the extent has to be read from the XML
+ document when data source has no metadata or if the data provider has
+ to determine it. Moreover, when this option is activated, primary key
+ unicity is not checked for views and materialized views with Postgres
+ provider.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+
+    QgsAuxiliaryStorage *auxiliaryStorage();
+%Docstring
+ Returns the current auxiliary storage.
+
+.. versionadded:: 3.0
+ :rtype: QgsAuxiliaryStorage
+%End
 
   signals:
     void readProject( const QDomDocument & );

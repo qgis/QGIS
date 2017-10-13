@@ -261,9 +261,12 @@ class DoxygenParser():
         a = elem.find('argsstring')
         try:
             if a is not None:
-                return elem.find('name').text + a.text
+                signature = elem.find('name').text + a.text
             else:
-                return elem.find('name').text
+                signature = elem.find('name').text
+            if signature.endswith('= default'):
+                signature = signature[:-len('= default')]
+            return signature
         except:
             return None
 
@@ -355,7 +358,7 @@ class DoxygenParser():
 
         # ignore certain obvious operators
         try:
-            if name.text in ('operator=', 'operator==', 'operator!='):
+            if name.text in ('operator=', 'operator==', 'operator!=', 'Q_ENUM'):
                 return False
         except:
             pass

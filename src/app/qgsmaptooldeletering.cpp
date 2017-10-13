@@ -28,8 +28,6 @@
 
 QgsMapToolDeleteRing::QgsMapToolDeleteRing( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , vlayer( nullptr )
-  , mRubberBand( nullptr )
   , mPressedFid( 0 )
   , mPressedPartNum( 0 )
   , mPressedRingNum( 0 )
@@ -87,7 +85,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QgsMapMouseEvent *e )
   {
     QgsFeature f;
     vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mPressedFid ) ).nextFeature( f );
-    mRubberBand = createRubberBand( vlayer->geometryType() ) ;
+    mRubberBand = createRubberBand( vlayer->geometryType() );
 
     mRubberBand->setToGeometry( ringGeom, vlayer );
     mRubberBand->show();

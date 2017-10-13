@@ -21,7 +21,8 @@
 class QgsComposition;
 class QGraphicsLineItem;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A class to show paper scale and the current cursor position
 */
 class GUI_EXPORT QgsComposerRuler: public QWidget
@@ -61,7 +62,7 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     Direction mDirection;
     QTransform mTransform;
     QPointF mMarkerPos;
-    QgsComposition *mComposition; //reference to composition for paper size, nPages
+    QgsComposition *mComposition = nullptr; //reference to composition for paper size, nPages
     QGraphicsLineItem *mLineSnapItem = nullptr;
     //items snapped to the current snap line
     QList< QPair< QgsComposerItem *, QgsComposerItem::ItemPositionMode > > mSnappedItems;

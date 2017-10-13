@@ -289,7 +289,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromStr
 {
   QgsPalettedRasterRenderer::ClassData classes;
 
-  QRegularExpression linePartRx( "[\\s,:]+" );
+  QRegularExpression linePartRx( QStringLiteral( "[\\s,:]+" ) );
 
   QStringList parts = string.split( '\n', QString::SkipEmptyParts );
   Q_FOREACH ( const QString &part, parts )
@@ -389,7 +389,7 @@ QString QgsPalettedRasterRenderer::classDataToString( const QgsPalettedRasterRen
 
   Q_FOREACH ( const Class &c, cd )
   {
-    out << QString( "%1 %2 %3 %4 %5 %6" ).arg( c.value ).arg( c.color.red() )
+    out << QStringLiteral( "%1 %2 %3 %4 %5 %6" ).arg( c.value ).arg( c.color.red() )
         .arg( c.color.green() ).arg( c.color.blue() ).arg( c.color.alpha() ).arg( c.label );
   }
   return out.join( '\n' );

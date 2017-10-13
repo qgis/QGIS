@@ -83,7 +83,8 @@ class AlgorithmsTest(object):
             algorithm_tests = yaml.load(stream)
 
         if 'tests' in algorithm_tests and algorithm_tests['tests'] is not None:
-            for algtest in algorithm_tests['tests']:
+            for idx, algtest in enumerate(algorithm_tests['tests']):
+                print('About to start {} of {}: "{}"'.format(idx, len(algorithm_tests['tests']), algtest['name']))
                 yield self.check_algorithm, algtest['name'], algtest
 
     def check_algorithm(self, name, defs):
@@ -102,6 +103,7 @@ class AlgorithmsTest(object):
             alg = ScriptAlgorithm(filePath)
             alg.initAlgorithm()
         else:
+            print('Running alg: "{}"'.format(defs['algorithm']))
             alg = QgsApplication.processingRegistry().createAlgorithmById(defs['algorithm'])
 
         parameters = {}

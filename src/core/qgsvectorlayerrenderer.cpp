@@ -45,11 +45,8 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   , mInterruptionChecker( context )
   , mLayer( layer )
   , mFields( layer->fields() )
-  , mRenderer( nullptr )
   , mLabeling( false )
   , mDiagrams( false )
-  , mLabelProvider( nullptr )
-  , mDiagramProvider( nullptr )
 {
   mSource = new QgsVectorLayerFeatureSource( layer );
 
@@ -335,7 +332,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
   QgsSingleSymbolRenderer *selRenderer = nullptr;
   if ( !mSelectedFeatureIds.isEmpty() )
   {
-    selRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( mGeometryType ) ) ;
+    selRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( mGeometryType ) );
     selRenderer->symbol()->setColor( mContext.selectionColor() );
     selRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
     selRenderer->startRender( mContext, mFields );

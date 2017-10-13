@@ -27,8 +27,7 @@
 ///@cond NOT_STABLE
 
 QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, const QString &group )
-  : QgsProcessingAlgorithm()
-  , mModelName( name.isEmpty() ? QObject::tr( "model" ) : name )
+  : mModelName( name.isEmpty() ? QObject::tr( "model" ) : name )
   , mModelGroup( group )
 {}
 
@@ -214,6 +213,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QTime totalTime;
   totalTime.start();
 
+  QgsProcessingModelFeedback modelFeedback( toExecute.count(), feedback );
   QgsExpressionContext baseContext = createExpressionContext( parameters, context );
 
   QVariantMap childResults;
@@ -225,6 +225,9 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
     executedAlg = false;
     Q_FOREACH ( const QString &childId, toExecute )
     {
+      if ( feedback && feedback->isCanceled() )
+        break;
+
       if ( executed.contains( childId ) )
         continue;
 
@@ -242,7 +245,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         continue;
 
       executedAlg = true;
-      feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
+      if ( feedback )
+        feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
 
       const QgsProcessingModelChildAlgorithm &child = mChildAlgorithms[ childId ];
 
@@ -251,21 +255,34 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
                  << createExpressionContextScopeForChildAlgorithm( childId, context, parameters, childResults );
 
       QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults, expContext );
-      feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
-      //feedback->pushDebugInfo( "Parameters: " + ', '.join( [str( p ).strip() +
-      //           '=' + str( p.value ) for p in alg.algorithm.parameters] ) )
+      if ( feedback )
+        feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
+
+      QStringList params;
+      for ( auto childParamIt = childParams.constBegin(); childParamIt != childParams.constEnd(); ++childParamIt )
+      {
+        params << QStringLiteral( "%1: %2" ).arg( childParamIt.key(),
+               child.algorithm()->parameterDefinition( childParamIt.key() )->valueAsPythonString( childParamIt.value(), context ) );
+      }
+
+      if ( feedback )
+      {
+        feedback->pushInfo( QObject::tr( "Input Parameters:" ) );
+        feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( params.join( QStringLiteral( ", " ) ) ) );
+      }
 
       QTime childTime;
       childTime.start();
 
       bool ok = false;
       std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
-      QVariantMap results = childAlg->run( childParams, context, feedback, &ok );
+      QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok );
       childAlg.reset( nullptr );
       if ( !ok )
       {
         QString error = QObject::tr( "Error encountered while running %1" ).arg( child.description() );
-        feedback->reportError( error );
+        if ( feedback )
+          feedback->reportError( error );
         throw QgsProcessingException( error );
       }
       childResults.insert( childId, results );
@@ -280,10 +297,16 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       }
 
       executed.insert( childId );
-      feedback->pushDebugInfo( QObject::tr( "OK. Execution took %1 s (%2 outputs)." ).arg( childTime.elapsed() / 1000.0 ).arg( results.count() ) );
+      modelFeedback.setCurrentStep( executed.count() );
+      if ( feedback )
+        feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%2 outputs)." ).arg( childTime.elapsed() / 1000.0 ).arg( results.count() ) );
     }
+
+    if ( feedback && feedback->isCanceled() )
+      break;
   }
-  feedback->pushDebugInfo( QObject::tr( "Model processed OK. Executed %1 algorithms total in %2 s." ).arg( executed.count() ).arg( totalTime.elapsed() / 1000.0 ) );
+  if ( feedback )
+    feedback->pushDebugInfo( QObject::tr( "Model processed OK. Executed %1 algorithms total in %2 s." ).arg( executed.count() ).arg( totalTime.elapsed() / 1000.0 ) );
 
   mResults = finalResults;
   return mResults;
@@ -317,7 +340,7 @@ QString QgsProcessingModelAlgorithm::asPythonCode() const
   auto safeName = []( const QString & name )->QString
   {
     QString n = name.toLower().trimmed();
-    QRegularExpression rx( "[^a-z_]" );
+    QRegularExpression rx( QStringLiteral( "[^a-z_]" ) );
     n.replace( rx, QString() );
     return n;
   };
@@ -392,7 +415,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
   auto safeName = []( const QString & name )->QString
   {
     QString s = name;
-    return s.replace( QRegularExpression( "[\\s'\"\\(\\):]" ), QStringLiteral( "_" ) );
+    return s.replace( QRegularExpression( QStringLiteral( "[\\s'\"\\(\\):]" ) ), QStringLiteral( "_" ) );
   };
 
   // "static"/single value sources
@@ -488,8 +511,6 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
     variables.insert( safeName( QStringLiteral( "%1_miny" ).arg( name ) ), VariableDefinition( layer ? layer->extent().yMinimum() : QVariant(), source, QObject::tr( "Minimum Y of %1" ).arg( description ) ) );
     variables.insert( safeName( QStringLiteral( "%1_maxx" ).arg( name ) ), VariableDefinition( layer ? layer->extent().xMaximum() : QVariant(), source, QObject::tr( "Maximum X of %1" ).arg( description ) ) );
     variables.insert( safeName( QStringLiteral( "%1_maxy" ).arg( name ) ), VariableDefinition( layer ? layer->extent().yMaximum() : QVariant(), source, QObject::tr( "Maximum Y of %1" ).arg( description ) ) );
-
-    continue;
   }
 
   sources = availableSourcesForChild( childId, QStringList()
@@ -767,7 +788,7 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   {
     childMap.insert( childIt.key(), childIt.value().toVariant() );
   }
-  map.insert( "children", childMap );
+  map.insert( QStringLiteral( "children" ), childMap );
 
   QVariantMap paramMap;
   QMap< QString, QgsProcessingModelParameter >::const_iterator paramIt = mParameterComponents.constBegin();
@@ -775,14 +796,14 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   {
     paramMap.insert( paramIt.key(), paramIt.value().toVariant() );
   }
-  map.insert( "parameters", paramMap );
+  map.insert( QStringLiteral( "parameters" ), paramMap );
 
   QVariantMap paramDefMap;
   Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
   {
     paramDefMap.insert( def->name(), def->toVariantMap() );
   }
-  map.insert( "parameterDefinitions", paramDefMap );
+  map.insert( QStringLiteral( "parameterDefinitions" ), paramDefMap );
 
   return map;
 }
@@ -843,7 +864,7 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
 
 bool QgsProcessingModelAlgorithm::toFile( const QString &path ) const
 {
-  QDomDocument doc = QDomDocument( "model" );
+  QDomDocument doc = QDomDocument( QStringLiteral( "model" ) );
   QDomElement elem = QgsXmlUtils::writeVariant( toVariant(), doc );
   doc.appendChild( elem );
 
@@ -1125,4 +1146,65 @@ QgsProcessingAlgorithm *QgsProcessingModelAlgorithm::createInstance() const
   return alg;
 }
 
+
+
+
+//
+// QgsProcessingModelFeedback
+//
+
+QgsProcessingModelFeedback::QgsProcessingModelFeedback( int childAlgorithmCount, QgsProcessingFeedback *feedback )
+  : mChildSteps( childAlgorithmCount )
+  , mFeedback( feedback )
+{
+  connect( mFeedback, &QgsFeedback::canceled, this, &QgsFeedback::cancel, Qt::DirectConnection );
+  connect( this, &QgsFeedback::progressChanged, this, &QgsProcessingModelFeedback::updateOverallProgress );
+}
+
+void QgsProcessingModelFeedback::setCurrentStep( int step )
+{
+  mCurrentStep = step;
+  mFeedback->setProgress( 100.0 * static_cast< double >( mCurrentStep ) / mChildSteps );
+}
+
+void QgsProcessingModelFeedback::setProgressText( const QString &text )
+{
+  mFeedback->setProgressText( text );
+}
+
+void QgsProcessingModelFeedback::reportError( const QString &error )
+{
+  mFeedback->reportError( error );
+}
+
+void QgsProcessingModelFeedback::pushInfo( const QString &info )
+{
+  mFeedback->pushInfo( info );
+}
+
+void QgsProcessingModelFeedback::pushCommandInfo( const QString &info )
+{
+  mFeedback->pushCommandInfo( info );
+}
+
+void QgsProcessingModelFeedback::pushDebugInfo( const QString &info )
+{
+  mFeedback->pushDebugInfo( info );
+}
+
+void QgsProcessingModelFeedback::pushConsoleInfo( const QString &info )
+{
+  mFeedback->pushConsoleInfo( info );
+}
+
+void QgsProcessingModelFeedback::updateOverallProgress( double progress )
+{
+  double baseProgress = 100.0 * static_cast< double >( mCurrentStep ) / mChildSteps;
+  double currentAlgorithmProgress = progress / mChildSteps;
+  mFeedback->setProgress( baseProgress + currentAlgorithmProgress );
+}
+
+
+
 ///@endcond
+

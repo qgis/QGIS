@@ -524,6 +524,16 @@ Returns a list of available encodings
  :rtype: str
 %End
 
+    virtual bool hasMetadata() const;
+%Docstring
+ Returns true if the data source has metadata, false otherwise.
+
+ :return: true if data source has metadata, false otherwise.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
   signals:
 
     void raiseError( const QString &msg ) const;

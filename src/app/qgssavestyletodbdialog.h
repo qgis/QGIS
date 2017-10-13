@@ -19,6 +19,7 @@
 #include "ui_qgssavetodbdialog.h"
 #include "qgsguiutils.h"
 #include "qgis_app.h"
+#include "qgshelp.h"
 
 class APP_EXPORT QgsSaveStyleToDbDialog : public QDialog, private Ui::QgsSaveToDBDialog
 {
@@ -36,8 +37,12 @@ class APP_EXPORT QgsSaveStyleToDbDialog : public QDialog, private Ui::QgsSaveToD
     QString getName();
     QString getDescription();
     bool isDefault();
-    void on_mFilePickButton_clicked();
+    void mFilePickButton_clicked();
     void accept() override;
+
+  private slots:
+    void showHelp();
+
 };
 
 #endif // QGSSAVESTYLETODBDIALOG_H

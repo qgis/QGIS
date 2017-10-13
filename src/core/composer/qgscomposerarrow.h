@@ -26,7 +26,8 @@
 
 class QgsLineSymbol;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * An item that draws an arrow between two points.
 */
 class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
@@ -42,12 +43,14 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
       SVGMarker
     };
 
-    /** Constructor
+    /**
+     * Constructor
      * \param c parent composition
      */
     QgsComposerArrow( QgsComposition *c SIP_TRANSFERTHIS );
 
-    /** Constructor
+    /**
+     * Constructor
      * \param startPoint start point for line
      * \param stopPoint end point for line
      * \param c parent composition
@@ -62,51 +65,59 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     //! \brief Reimplementation of QCanvasItem::paint - draw on canvas
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
-    /** Modifies position of start and endpoint and calls QgsComposerItem::setSceneRect
+    /**
+     * Modifies position of start and endpoint and calls QgsComposerItem::setSceneRect
      */
     void setSceneRect( const QRectF &rectangle ) override;
 
-    /** Sets the width of the arrow head in mm
+    /**
+     * Sets the width of the arrow head in mm
      * \param width width of arrow head
      * \see arrowHeadWidth
      */
     void setArrowHeadWidth( double width );
 
-    /** Returns the width of the arrow head in mm
+    /**
+     * Returns the width of the arrow head in mm
      * \returns width of arrow head
      * \see setArrowHeadWidth
      */
     double arrowHeadWidth() const { return mArrowHeadWidth; }
 
-    /** Sets the marker to draw at the start of the line
+    /**
+     * Sets the marker to draw at the start of the line
      * \param svgPath file path for svg marker graphic to draw
      * \see startMarker
      * \see setEndMarker
      */
     void setStartMarker( const QString &svgPath );
 
-    /** Returns the marker drawn at the start of the line
+    /**
+     * Returns the marker drawn at the start of the line
      * \returns file path for svg marker graphic
      * \see setStartMarker
      * \see endMarker
      */
     QString startMarker() const { return mStartMarkerFile; }
 
-    /** Sets the marker to draw at the end of the line
+    /**
+     * Sets the marker to draw at the end of the line
      * \param svgPath file path for svg marker graphic to draw
      * \see endMarker
      * \see setStartMarker
      */
     void setEndMarker( const QString &svgPath );
 
-    /** Returns the marker drawn at the end of the line
+    /**
+     * Returns the marker drawn at the end of the line
      * \returns file path for svg marker graphic
      * \see setEndMarker
      * \see startMarker
      */
     QString endMarker() const { return mEndMarkerFile; }
 
-    /** Returns the color used to draw stroke around the the arrow head.
+    /**
+     * Returns the color used to draw stroke around the the arrow head.
      * \returns arrow head stroke color
      * \see arrowHeadFillColor
      * \see setArrowHeadStrokeColor
@@ -114,7 +125,8 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      */
     QColor arrowHeadStrokeColor() const { return mArrowHeadStrokeColor; }
 
-    /** Sets the color used to draw the stroke around the arrow head.
+    /**
+     * Sets the color used to draw the stroke around the arrow head.
      * \param color arrow head stroke color
      * \see setArrowHeadFillColor
      * \see arrowHeadStrokeColor
@@ -122,7 +134,8 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      */
     void setArrowHeadStrokeColor( const QColor &color );
 
-    /** Returns the color used to fill the arrow head.
+    /**
+     * Returns the color used to fill the arrow head.
      * \returns arrow head fill color
      * \see arrowHeadStrokeColor
      * \see setArrowHeadFillColor
@@ -130,7 +143,8 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      */
     QColor arrowHeadFillColor() const { return mArrowHeadFillColor; }
 
-    /** Sets the color used to fill the arrow head.
+    /**
+     * Sets the color used to fill the arrow head.
      * \param color arrow head fill color
      * \see arrowHeadFillColor
      * \see setArrowHeadStrokeColor
@@ -138,7 +152,8 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      */
     void setArrowHeadFillColor( const QColor &color );
 
-    /** Sets the pen width for the stroke of the arrow head
+    /**
+     * Sets the pen width for the stroke of the arrow head
      * \param width pen width for arrow head stroke
      * \see arrowHeadStrokeWidth
      * \see setArrowHeadStrokeColor
@@ -146,7 +161,8 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      */
     void setArrowHeadStrokeWidth( const double width );
 
-    /** Returns the pen width for the stroke of the arrow head
+    /**
+     * Returns the pen width for the stroke of the arrow head
      * \returns pen width for arrow head stroke
      * \see setArrowHeadStrokeWidth
      * \see arrowHeadStrokeColor
@@ -154,39 +170,45 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      */
     double arrowHeadStrokeWidth() const { return mArrowHeadStrokeWidth; }
 
-    /** Sets the line symbol used for drawing the line portion of the arrow
+    /**
+     * Sets the line symbol used for drawing the line portion of the arrow
      * \param symbol line symbol
      * \see lineSymbol
      * \since QGIS 2.5
      */
     void setLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
-    /** Returns the line symbol used for drawing the line portion of the arrow
+    /**
+     * Returns the line symbol used for drawing the line portion of the arrow
      * \returns line symbol
      * \see setLineSymbol
      * \since QGIS 2.5
      */
     QgsLineSymbol *lineSymbol() { return mLineSymbol; }
 
-    /** Returns marker mode, which controls how the arrow endpoints are drawn
+    /**
+     * Returns marker mode, which controls how the arrow endpoints are drawn
      * \returns marker mode
      * \see setMarkerMode
      */
     MarkerMode markerMode() const { return mMarkerMode; }
 
-    /** Sets the marker mode, which controls how the arrow endpoints are drawn
+    /**
+     * Sets the marker mode, which controls how the arrow endpoints are drawn
      * \param mode marker mode
      * \see setMarkerMode
      */
     void setMarkerMode( MarkerMode mode );
 
-    /** Stores state in DOM element
+    /**
+     * Stores state in DOM element
      * \param elem is DOM element corresponding to 'Composer' tag
      * \param doc document
      */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
-    /** Sets state from DOM document
+    /**
+     * Sets state from DOM document
      * \param itemElem is DOM node corresponding to item tag
      * \param doc is the document to read
      */
@@ -203,7 +225,8 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     QPointF mStartPoint;
     QPointF mStopPoint;
 
-    /** Considering the rectangle as spanning [x[0], x[1]] x [y[0], y[1]], these
+    /**
+     * Considering the rectangle as spanning [x[0], x[1]] x [y[0], y[1]], these
      * indices specify which index {0, 1} corresponds to the start point
      * coordinate of the respective dimension*/
     int mStartXIdx;
@@ -229,14 +252,16 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     QColor mArrowHeadStrokeColor;
     QColor mArrowHeadFillColor;
 
-    /** Indicates QGIS version to mimic bounding box behavior for. The line placement changed in version 2.4, so a value
+    /**
+     * Indicates QGIS version to mimic bounding box behavior for. The line placement changed in version 2.4, so a value
      * of 22 is used to indicate that the line should be drawn using the older placement routine.
      */
     int mBoundsBehavior;
 
     QgsLineSymbol *mLineSymbol = nullptr;
 
-    /** Adapts the item scene rect to contain the start point, the stop point including the arrow marker and the stroke.
+    /**
+     * Adapts the item scene rect to contain the start point, the stop point including the arrow marker and the stroke.
      *  Needs to be called whenever the arrow width/height, the stroke with or the endpoints are changed
      */
     void adaptItemSceneRect();
@@ -249,12 +274,14 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     //! Apply default graphics settings
     void init();
 
-    /** Creates the default line symbol
+    /**
+     * Creates the default line symbol
      * \since QGIS 2.5
      */
     void createDefaultLineSymbol();
 
-    /** Draws the arrow line
+    /**
+     * Draws the arrow line
      * \since QGIS 2.5
      */
     void drawLine( QPainter *painter );

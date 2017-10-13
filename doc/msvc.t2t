@@ -51,6 +51,7 @@ and from OSGeo4W (select //Advanced Installation//):
 - python3-future
 - python3-pyyaml
 - python3-mock
+- python3-six
 - qca-qt5-devel
 - qca-qt5-libs
 - qscintilla-qt5

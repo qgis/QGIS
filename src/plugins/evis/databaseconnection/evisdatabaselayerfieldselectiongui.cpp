@@ -35,6 +35,8 @@ eVisDatabaseLayerFieldSelectionGui::eVisDatabaseLayerFieldSelectionGui( QWidget 
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &eVisDatabaseLayerFieldSelectionGui::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &eVisDatabaseLayerFieldSelectionGui::buttonBox_rejected );
 }
 
 /**
@@ -80,7 +82,7 @@ void eVisDatabaseLayerFieldSelectionGui::setFieldList( QStringList *fieldList )
 /**
 * Slot called when the OK/Accept button is pressed
 */
-void eVisDatabaseLayerFieldSelectionGui::on_buttonBox_accepted()
+void eVisDatabaseLayerFieldSelectionGui::buttonBox_accepted()
 {
   //emit the signal to draw the layer
   emit eVisDatabaseLayerFieldsSelected( leLayerName->text(), cboxXCoordinate->currentText(), cboxYCoordinate->currentText() );
@@ -89,14 +91,14 @@ void eVisDatabaseLayerFieldSelectionGui::on_buttonBox_accepted()
   close();
 
   //reset the layer name line edit
-  leLayerName->setText( QLatin1String( "" ) );
+  leLayerName->clear();
 }
 
 /**
 * Slot called then the cancel button is pressed
 */
-void eVisDatabaseLayerFieldSelectionGui::on_buttonBox_rejected()
+void eVisDatabaseLayerFieldSelectionGui::buttonBox_rejected()
 {
   close();
-  leLayerName->setText( QLatin1String( "" ) );
+  leLayerName->clear();
 }

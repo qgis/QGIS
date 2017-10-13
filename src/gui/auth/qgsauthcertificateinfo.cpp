@@ -59,16 +59,7 @@ QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate &cert,
   , mTrustCacheRebuilt( false )
   , mDefaultTrustPolicy( QgsAuthCertUtils::DefaultTrust )
   , mCurrentTrustPolicy( QgsAuthCertUtils::DefaultTrust )
-  , mSecGeneral( nullptr )
-  , mSecDetails( nullptr )
-  , mSecPemText( nullptr )
-  , mGrpSubj( nullptr )
-  , mGrpIssu( nullptr )
-  , mGrpCert( nullptr )
-  , mGrpPkey( nullptr )
-  , mGrpExts( nullptr )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
+
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -80,6 +71,7 @@ QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate &cert,
   else
   {
     setupUi( this );
+    connect( btnSaveTrust, &QToolButton::clicked, this, &QgsAuthCertInfo::btnSaveTrust_clicked );
 
     lblError->setHidden( true );
 
@@ -163,7 +155,7 @@ bool QgsAuthCertInfo::populateQcaCertCollection()
     }
   }
 
-  if ( mCaCerts.certificates().size() < 1 )
+  if ( mCaCerts.certificates().empty() )
   {
     setupError( tr( "Could not populate QCA certificate collection" ) );
     return false;
@@ -348,7 +340,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
 
   // add details groups
   mGrpSubj = addGroupItem( mSecDetails, tr( "Subject Info" ) );
-  mGrpIssu = addGroupItem( mSecDetails, tr( "Issuer Info" ) ) ;
+  mGrpIssu = addGroupItem( mSecDetails, tr( "Issuer Info" ) );
   mGrpCert = addGroupItem( mSecDetails, tr( "Certificate Info" ) );
   mGrpPkey = addGroupItem( mSecDetails, tr( "Public Key Info" ) );
   mGrpExts = addGroupItem( mSecDetails, tr( "Extensions" ) );
@@ -839,7 +831,7 @@ void QgsAuthCertInfo::populateInfoPemTextSection()
   item->treeWidget()->setItemWidget( item, 0, pte );
 }
 
-void QgsAuthCertInfo::on_btnSaveTrust_clicked()
+void QgsAuthCertInfo::btnSaveTrust_clicked()
 {
   QgsAuthCertUtils::CertTrustPolicy newpolicy( cmbbxTrust->trustPolicy() );
   if ( !QgsAuthManager::instance()->storeCertTrustPolicy( mCurrentQCert, newpolicy ) )
@@ -917,7 +909,7 @@ QgsAuthCertInfoDialog::QgsAuthCertInfoDialog( const QSslCertificate &cert,
     QWidget *parent,
     const QList<QSslCertificate> &connectionCAs )
   : QDialog( parent )
-  , mCertInfoWdgt( nullptr )
+
 {
   setWindowTitle( tr( "Certificate Information" ) );
   QVBoxLayout *layout = new QVBoxLayout( this );

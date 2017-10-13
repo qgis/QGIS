@@ -67,8 +67,6 @@ namespace QgsWms
   {
     Q_UNUSED( version );
 
-    //QgsWmsConfigParser  *configParser = getConfigParser( serverIface );
-
     QDomDocument doc;
     QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( QStringLiteral( "xml" ),
         QStringLiteral( "version=\"1.0\" encoding=\"utf-8\"" ) );
@@ -278,7 +276,7 @@ namespace QgsWms
           // OWSContext Layer opacity is set to 1
           layerElem.setAttribute( QStringLiteral( "opacity" ), 1 );
 
-          QString wmsName =  l->name();
+          QString wmsName = l->name();
           if ( QgsServerProjectUtils::wmsUseLayerIds( *project ) )
           {
             wmsName = l->id();

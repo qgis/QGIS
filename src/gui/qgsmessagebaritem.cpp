@@ -25,13 +25,9 @@
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
-  , mTitle( QLatin1String( "" ) )
   , mText( text )
   , mLevel( level )
   , mDuration( duration )
-  , mWidget( nullptr )
-  , mUserIcon( QIcon() )
-  , mLayout( nullptr )
 {
   writeContent();
 }
@@ -42,9 +38,6 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text,
   , mText( text )
   , mLevel( level )
   , mDuration( duration )
-  , mWidget( nullptr )
-  , mUserIcon( QIcon() )
-  , mLayout( nullptr )
 {
   writeContent();
 }
@@ -57,20 +50,18 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text,
   , mDuration( duration )
   , mWidget( widget )
   , mUserIcon( QIcon() )
-  , mLayout( nullptr )
+
 {
   writeContent();
 }
 
 QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
-  , mTitle( QLatin1String( "" ) )
-  , mText( QLatin1String( "" ) )
   , mLevel( level )
   , mDuration( duration )
   , mWidget( widget )
   , mUserIcon( QIcon() )
-  , mLayout( nullptr )
+
 {
   writeContent();
 }

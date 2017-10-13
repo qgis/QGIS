@@ -33,11 +33,6 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   } );
 }
 
-QgsGdalSourceSelect::~QgsGdalSourceSelect()
-{
-
-}
-
 void QgsGdalSourceSelect::addButtonClicked()
 {
   Q_FOREACH ( const QString &path, QgsFileWidget::splitFilePaths( mRasterPath ) )

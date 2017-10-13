@@ -37,7 +37,8 @@
 namespace QgsWfs
 {
 
-  /** Return the highest version supported by this implementation
+  /**
+   * Return the highest version supported by this implementation
    */
   QString implementationVersion();
 
@@ -46,7 +47,8 @@ namespace QgsWfs
    */
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project );
 
-  /** Transform a Filter element to a feature request
+  /**
+   * Transform a Filter element to a feature request
    */
   QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem );
 

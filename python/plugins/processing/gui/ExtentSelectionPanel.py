@@ -36,7 +36,11 @@ from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 from qgis.core import (QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
-                       QgsProject)
+                       QgsProcessingParameters,
+                       QgsProject,
+                       QgsCoordinateReferenceSystem,
+                       QgsRectangle,
+                       QgsReferencedRectangle)
 from processing.gui.RectangleMapTool import RectangleMapTool
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.dataobjects import createContext
@@ -54,6 +58,8 @@ class ExtentSelectionPanel(BASE, WIDGET):
 
         self.dialog = dialog
         self.param = param
+        self.crs = QgsProject.instance().crs()
+
         if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
             if hasattr(self.leText, 'setPlaceholderText'):
                 self.leText.setPlaceholderText(
@@ -73,10 +79,14 @@ class ExtentSelectionPanel(BASE, WIDGET):
         if param.defaultValue() is not None:
             context = createContext()
             rect = QgsProcessingParameters.parameterAsExtent(param, {param.name(): param.defaultValue()}, context)
+            crs = QgsProcessingParameters.parameterAsExtentCrs(param, {param.name(): param.defaultValue()}, context)
             if not rect.isNull():
                 try:
                     s = '{},{},{},{}'.format(
                         rect.xMinimum(), rect.xMaximum(), rect.yMinimum(), rect.yMaximum())
+                    if crs.isValid():
+                        s += ' [' + crs.authid() + ']'
+                        self.crs = crs
                     self.leText.setText(s)
                 except:
                     pass
@@ -126,11 +136,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         (item, ok) = QInputDialog.getItem(self, self.tr('Select extent'),
                                           self.tr('Use extent from'), extents, False)
         if ok:
-            self.setValueFromRect(extentsDict[item]["extent"])
-            if extentsDict[item]["authid"] != iface.mapCanvas().mapSettings().destinationCrs().authid():
-                iface.messageBar().pushMessage(self.tr("Warning"),
-                                               self.tr("The projection of the chosen layer is not the same as canvas projection! The selected extent might not be what was intended."),
-                                               QgsMessageBar.WARNING, 8)
+            self.setValueFromRect(QgsReferencedRectangle(extentsDict[item]["extent"], QgsCoordinateReferenceSystem(extentsDict[item]["authid"])))
 
     def selectOnCanvas(self):
         canvas = iface.mapCanvas()
@@ -144,6 +150,13 @@ class ExtentSelectionPanel(BASE, WIDGET):
     def setValueFromRect(self, r):
         s = '{},{},{},{}'.format(
             r.xMinimum(), r.xMaximum(), r.yMinimum(), r.yMaximum())
+
+        try:
+            self.crs = r.crs()
+        except:
+            self.crs = QgsProject.instance().crs()
+        if self.crs.isValid():
+            s += ' [' + self.crs.authid() + ']'
 
         self.leText.setText(s)
         self.tool.reset()

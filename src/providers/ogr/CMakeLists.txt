@@ -5,19 +5,33 @@ SET (OGR_SRCS
     qgsogrfeatureiterator.cpp
     qgsogrconnpool.cpp
     qgsogrexpressioncompiler.cpp
-    qgsogrsourceselect.cpp
     qgsgeopackagedataitems.cpp
-    qgsgeopackageconnection.cpp
+    qgsgeopackagerasterwriter.cpp
+    qgsgeopackagerasterwritertask.cpp
+    qgsogrdbconnection.cpp
+    qgsogrdbtablemodel.cpp
 )
 
 SET(OGR_MOC_HDRS
     qgsogrprovider.h
     qgsogrdataitems.h
     qgsogrconnpool.h
-    qgsogrsourceselect.h
     qgsgeopackagedataitems.h
-    qgsgeopackageconnection.h
+    qgsgeopackagerasterwritertask.h
+    qgsogrdbconnection.h
+    qgsogrdbtablemodel.h
 )
+
+IF (WITH_GUI)
+  SET(OGR_SRCS ${OGR_SRCS}
+    qgsogrdbsourceselect.cpp
+    qgsogrsourceselect.cpp
+  )
+  SET(OGR_MOC_HDRS ${OGR_MOC_HDRS}
+    qgsogrsourceselect.h
+    qgsogrdbsourceselect.h
+  )
+ENDIF ()
 
 ########################################################
 # Build
@@ -40,6 +54,7 @@ INCLUDE_DIRECTORIES(
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
+  ${QSCINTILLA_INCLUDE_DIR}
 )
 
 

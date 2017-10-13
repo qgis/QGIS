@@ -40,7 +40,7 @@ QgsComposerArrow::QgsComposerArrow( QgsComposition *c )
   , mArrowHeadStrokeColor( Qt::black )
   , mArrowHeadFillColor( Qt::black )
   , mBoundsBehavior( 24 )
-  , mLineSymbol( nullptr )
+
 {
   init();
 }
@@ -54,7 +54,7 @@ QgsComposerArrow::QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsCo
   , mArrowHeadStrokeColor( Qt::black )
   , mArrowHeadFillColor( Qt::black )
   , mBoundsBehavior( 24 )
-  , mLineSymbol( nullptr )
+
 {
   mStartXIdx = mStopPoint.x() < mStartPoint.x();
   mStartYIdx = mStopPoint.y() < mStartPoint.y();
@@ -388,18 +388,18 @@ double QgsComposerArrow::computeMarkerMargin() const
   {
     if ( mMarkerMode == DefaultMarker )
     {
-      margin = mPen.widthF() / std::sqrt( 2.0 ) + mArrowHeadWidth / 2.0;
+      margin = mPen.widthF() * M_SQRT1_2 + mArrowHeadWidth / 2.0;
     }
     else if ( mMarkerMode == NoMarker )
     {
-      margin = mPen.widthF() / std::sqrt( 2.0 );
+      margin = mPen.widthF() * M_SQRT1_2;
     }
     else if ( mMarkerMode == SVGMarker )
     {
       double startMarkerMargin = std::sqrt( 0.25 * ( mStartArrowHeadHeight * mStartArrowHeadHeight + mArrowHeadWidth * mArrowHeadWidth ) );
       double stopMarkerMargin = std::sqrt( 0.25 * ( mStopArrowHeadHeight * mStopArrowHeadHeight + mArrowHeadWidth * mArrowHeadWidth ) );
       double markerMargin = std::max( startMarkerMargin, stopMarkerMargin );
-      margin = std::max( mPen.widthF() / std::sqrt( 2.0 ), markerMargin );
+      margin = std::max( mPen.widthF() * M_SQRT1_2, markerMargin );
     }
   }
   return margin;

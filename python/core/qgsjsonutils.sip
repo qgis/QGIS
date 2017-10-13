@@ -248,7 +248,7 @@ class QgsJsonUtils
 %End
 
     static QString exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer = 0,
-                                     QVector<QVariant> attributeWidgetCaches = QVector<QVariant>() );
+                                     const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
 %Docstring
  Exports all attributes from a QgsFeature as a JSON map type.
  \param feature feature to export

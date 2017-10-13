@@ -31,12 +31,12 @@ class QgsFontButton : QToolButton
 %End
   public:
 
-
     enum Mode
     {
       ModeTextRenderer,
       ModeQFont,
     };
+
 
     QgsFontButton( QWidget *parent /TransferThis/ = 0, const QString &dialogTitle = QString() );
 %Docstring

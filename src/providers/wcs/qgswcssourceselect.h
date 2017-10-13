@@ -23,6 +23,8 @@
 #include "qgsowssourceselect.h"
 #include "qgsdatasourceuri.h"
 #include "qgsguiutils.h"
+#include "qgshelp.h"
+
 #include "qgswcscapabilities.h"
 #include "qgsproviderregistry.h"
 #include "qgsdataprovider.h"
@@ -54,15 +56,6 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
     //! Constructor
     QgsWCSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    ~QgsWCSSourceSelect();
-
-  public slots:
-
-  signals:
-    void addRasterLayer( QString const &rasterLayerPath,
-                         QString const &baseName,
-                         QString const &providerKey );
-
   private:
     QgsWcsCapabilities mCapabilities;
 
@@ -71,13 +64,18 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
     // QgsWcsCapabilities virtual methods
     void populateLayerList() override;
     void addButtonClicked() override;
-    void on_mLayersTreeWidget_itemSelectionChanged() override;
+    void mLayersTreeWidget_itemSelectionChanged() override;
     void enableLayersForCrs( QTreeWidgetItem *item ) override;
     void updateButtons() override;
     QList<QgsOWSSourceSelect::SupportedFormat> providerFormats() override;
     QStringList selectedLayersFormats() override;
     QStringList selectedLayersCrses() override;
     QStringList selectedLayersTimes() override;
+
+  private slots:
+
+    //! Open help browser
+    void showHelp();
 };
 #endif // QGSWCSSOURCESELECT_H
 

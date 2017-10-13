@@ -33,6 +33,7 @@ class QgsColorBrewerPalette
     static const char *BREWER_STRING;
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

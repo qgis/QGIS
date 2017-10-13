@@ -23,6 +23,9 @@
 #include "ColorScheme.h"
 #include "tools.h"
 
+// System
+#include <cstdlib>
+
 // Qt
 #include <QBrush>
 #include <QFile>

@@ -59,7 +59,8 @@ struct CORE_EXPORT QgsGPSInformation
   bool satInfoComplete; // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Abstract base class for connection to a GPS device*/
 class CORE_EXPORT QgsGPSConnection : public QObject
 {
@@ -91,7 +92,8 @@ class CORE_EXPORT QgsGPSConnection : public QObject
       GPSDataReceived
     };
 
-    /** Constructor
+    /**
+     * Constructor
         \param dev input device for the connection (e.g. serial device). The class takes ownership of the object
       */
     QgsGPSConnection( QIODevice *dev SIP_TRANSFER );

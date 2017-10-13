@@ -20,7 +20,6 @@ class QgsNMEAConnection: QgsGPSConnection
 %End
   public:
     QgsNMEAConnection( QIODevice *dev );
-    ~QgsNMEAConnection();
 
   protected slots:
     virtual void parseData();

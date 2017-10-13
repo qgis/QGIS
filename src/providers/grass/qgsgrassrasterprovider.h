@@ -53,7 +53,7 @@ class QgsCoordinateTransform;
 class GRASS_LIB_EXPORT QgsGrassRasterValue
 {
   public:
-    QgsGrassRasterValue();
+    QgsGrassRasterValue() = default;
     ~QgsGrassRasterValue();
 
     QgsGrassRasterValue( const QgsGrassRasterValue &other ) = delete;
@@ -104,7 +104,8 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 
     QgsRasterInterface *clone() const override;
 
-    /** Return a provider name
+    /**
+     * Return a provider name
      *
      * Essentially just returns the provider key.  Should be used to build file
      * dialogs so that providers can be shown with their supported types. Thus
@@ -121,7 +122,8 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     QString name() const override;
 
 
-    /** Return description
+    /**
+     * Return description
      *
      * Return a terse string describing what the provider is.
      *
@@ -136,7 +138,8 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 
     virtual QgsCoordinateReferenceSystem crs() const override;
 
-    /** Return the extent for this data layer
+    /**
+     * Return the extent for this data layer
      */
     virtual QgsRectangle extent() const override;
 
@@ -165,7 +168,8 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 
     QString lastError() override;
 
-    /** Returns a bitmask containing the supported capabilities
+    /**
+     * Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on which
         sublayers are visible on this provider, so it may
         be prudent to check this value per intended operation.
@@ -218,18 +222,18 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     /**
      * Flag indicating if the layer data source is a valid layer
      */
-    bool mValid;
+    bool mValid = false;
 
     QString mGisdbase;      // map gisdabase
     QString mLocation;      // map location name (not path!)
     QString mMapset;        // map mapset
     QString mMapName;       // map name
 
-    RASTER_MAP_TYPE mGrassDataType; // CELL_TYPE, DCELL_TYPE, FCELL_TYPE
+    RASTER_MAP_TYPE mGrassDataType = 0; // CELL_TYPE, DCELL_TYPE, FCELL_TYPE
 
-    int mCols;
-    int mRows;
-    int mYBlockSize;
+    int mCols = 0;
+    int mRows = 0;
+    int mYBlockSize = 0;
 
     QHash<QString, QString> mInfo;
 

@@ -111,7 +111,7 @@ QgsCoordinateReferenceSystem QgsVectorLayerFeatureSource::crs() const
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>( source, ownSource, request )
   , mFetchedFid( false )
-  , mInterruptionChecker( nullptr )
+
 {
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
@@ -671,7 +671,7 @@ void QgsVectorLayerFeatureIterator::prepareFields()
   }
 
   //sort joins by dependency
-  if ( mFetchJoinInfo.size() > 0 )
+  if ( !mFetchJoinInfo.empty() )
   {
     createOrderedJoinList();
   }
@@ -944,10 +944,12 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
   // maybe user requested just a subset of layer's attributes
   // so we do not have to cache everything
-  bool hasSubset = joinInfo->joinFieldNamesSubset();
   QVector<int> subsetIndices;
-  if ( hasSubset )
-    subsetIndices = QgsVectorLayerJoinBuffer::joinSubsetIndices( joinLayer, *joinInfo->joinFieldNamesSubset() );
+  if ( joinInfo->hasSubset() )
+  {
+    const QStringList subsetNames = QgsVectorLayerJoinInfo::joinFieldNamesSubset( *joinInfo );
+    subsetIndices = QgsVectorLayerJoinBuffer::joinSubsetIndices( joinLayer, subsetNames );
+  }
 
   // select (no geometry)
   QgsFeatureRequest request;
@@ -963,7 +965,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   {
     int index = indexOffset;
     QgsAttributes attr = fet.attributes();
-    if ( hasSubset )
+    if ( joinInfo->hasSubset() )
     {
       for ( int i = 0; i < subsetIndices.count(); ++i )
         f.setAttribute( index++, attr.at( subsetIndices.at( i ) ) );

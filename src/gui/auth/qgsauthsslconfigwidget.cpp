@@ -45,17 +45,6 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
   : QWidget( parent )
   , mCert( nullptr )
   , mConnectionCAs( connectionCAs )
-  , mProtocolItem( nullptr )
-  , mProtocolCmbBx( nullptr )
-  , mIgnoreErrorsItem( nullptr )
-  , mVerifyModeItem( nullptr )
-  , mVerifyPeerCmbBx( nullptr )
-  , mVerifyDepthItem( nullptr )
-  , mVerifyDepthSpnBx( nullptr )
-  , mCanSave( false )
-  , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -68,6 +57,7 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
   else
   {
     setupUi( this );
+    connect( btnCertInfo, &QToolButton::clicked, this, &QgsAuthSslConfigWidget::btnCertInfo_clicked );
 
     connect( grpbxSslConfig, &QGroupBox::toggled, this, &QgsAuthSslConfigWidget::configEnabledChanged );
     connect( this, &QgsAuthSslConfigWidget::configEnabledChanged, this, &QgsAuthSslConfigWidget::readyToSave );
@@ -76,7 +66,7 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
     setUpSslConfigTree();
 
     lblLoadedConfig->setVisible( false );
-    lblLoadedConfig->setText( QLatin1String( "" ) );
+    lblLoadedConfig->clear();
 
     connect( leHost, &QLineEdit::textChanged,
              this, &QgsAuthSslConfigWidget::validateHostPortText );
@@ -335,7 +325,7 @@ void QgsAuthSslConfigWidget::resetSslCertConfig()
   leHost->clear();
 
   lblLoadedConfig->setVisible( false );
-  lblLoadedConfig->setText( QLatin1String( "" ) );
+  lblLoadedConfig->clear();
   resetSslProtocol();
   resetSslIgnoreErrors();
   resetSslPeerVerify();
@@ -574,7 +564,7 @@ void QgsAuthSslConfigWidget::setConfigCheckable( bool checkable )
   }
 }
 
-void QgsAuthSslConfigWidget::on_btnCertInfo_clicked()
+void QgsAuthSslConfigWidget::btnCertInfo_clicked()
 {
   if ( mCert.isNull() )
   {
@@ -593,7 +583,7 @@ void QgsAuthSslConfigWidget::on_btnCertInfo_clicked()
 
 QgsAuthSslConfigDialog::QgsAuthSslConfigDialog( QWidget *parent, const QSslCertificate &cert, const QString &hostport )
   : QDialog( parent )
-  , mSslConfigWdgt( nullptr )
+
 {
   setWindowTitle( tr( "Custom Certificate Configuration" ) );
   QVBoxLayout *layout = new QVBoxLayout( this );

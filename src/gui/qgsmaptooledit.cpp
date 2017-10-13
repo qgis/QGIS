@@ -59,7 +59,7 @@ QColor QgsMapToolEdit::digitizingFillColor()
     settings.value( QStringLiteral( "qgis/digitizing/fill_color_red" ), 255 ).toInt(),
     settings.value( QStringLiteral( "qgis/digitizing/fill_color_green" ), 0 ).toInt(),
     settings.value( QStringLiteral( "qgis/digitizing/fill_color_blue" ), 0 ).toInt() );
-  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/fill_color_alpha" ), 30 ).toInt() / 255.0 ;
+  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/fill_color_alpha" ), 30 ).toInt() / 255.0;
   fillColor.setAlphaF( myAlpha );
   return fillColor;
 }
@@ -122,7 +122,7 @@ QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::Ge
   QColor color( settings.value( QStringLiteral( "qgis/digitizing/line_color_red" ), 255 ).toInt(),
                 settings.value( QStringLiteral( "qgis/digitizing/line_color_green" ), 0 ).toInt(),
                 settings.value( QStringLiteral( "qgis/digitizing/line_color_blue" ), 0 ).toInt() );
-  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha" ), 200 ).toInt() / 255.0 ;
+  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha" ), 200 ).toInt() / 255.0;
   if ( alternativeBand )
   {
     myAlpha = myAlpha * settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha_scale" ), 0.75 ).toDouble();

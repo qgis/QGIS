@@ -56,6 +56,8 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
 
   mPointRadioButton->setChecked( true );
   mNameLineEdit->setText( tr( "New scratch layer" ) );
+
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsNewMemoryLayerDialog::showHelp );
 }
 
 QgsNewMemoryLayerDialog::~QgsNewMemoryLayerDialog()
@@ -115,4 +117,9 @@ QgsCoordinateReferenceSystem QgsNewMemoryLayerDialog::crs() const
 QString QgsNewMemoryLayerDialog::layerName() const
 {
   return mNameLineEdit->text();
+}
+
+void QgsNewMemoryLayerDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-a-new-temporary-scratch-layer" ) );
 }

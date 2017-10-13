@@ -99,13 +99,14 @@ class QgsCircularString: QgsCurve
 
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
                                    QgsVertexId &vertexAfter /Out/,
-                                   bool *leftOf /Out/, double epsilon ) const;
+                                   bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
 
     virtual bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const;
 
     virtual void sumUpArea( double &sum /Out/ ) const;
 
     virtual bool hasCurvedSegments() const;
+
 
     virtual double vertexAngle( QgsVertexId vertex ) const;
 
@@ -134,6 +135,7 @@ class QgsCircularString: QgsCurve
     virtual QgsRectangle calculateBoundingBox() const;
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

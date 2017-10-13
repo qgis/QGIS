@@ -30,26 +30,34 @@ Construct a new raster block feedback object
 
     virtual void onNewData();
 %Docstring
-and a new preview image may be produced
+ May be emitted by raster data provider to indicate that some partial data are available
+ and a new preview image may be produced
 %End
 
     bool isPreviewOnly() const;
 %Docstring
+ Whether the raster provider should return only data that are already available
+ without waiting for full result. By default this flag is not enabled.
 .. seealso:: setPreviewOnly()
  :rtype: bool
 %End
+
     void setPreviewOnly( bool preview );
 %Docstring
+ set flag whether the block request is for preview purposes only
 .. seealso:: isPreviewOnly()
 %End
 
     bool renderPartialOutput() const;
 %Docstring
+ Whether our painter is drawing to a temporary image used just by this layer
 .. seealso:: setRenderPartialOutput()
  :rtype: bool
 %End
+
     void setRenderPartialOutput( bool enable );
 %Docstring
+ Set whether our painter is drawing to a temporary image used just by this layer
 .. seealso:: renderPartialOutput()
 %End
 
@@ -64,7 +72,6 @@ class QgsRasterInterface
 
 %TypeHeaderCode
 #include "qgsrasterinterface.h"
-
 // QgsRasterInterface subclasses
 #include <qgsbrightnesscontrastfilter.h>
 #include <qgshuesaturationfilter.h>
@@ -82,7 +89,6 @@ class QgsRasterInterface
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsBrightnessContrastFilter *>( sipCpp ) )
       sipType = sipType_QgsBrightnessContrastFilter;

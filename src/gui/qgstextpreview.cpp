@@ -19,7 +19,6 @@
 
 QgsTextPreview::QgsTextPreview( QWidget *parent )
   : QLabel( parent )
-  , mMapUnits( QgsUnitTypes::DistanceMeters )
 {
   // initially use a basic transform with no scale
   QgsMapToPixel newCoordXForm;

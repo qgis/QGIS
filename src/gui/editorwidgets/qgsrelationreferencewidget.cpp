@@ -43,23 +43,9 @@
 QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   : QWidget( parent )
   , mEditorContext( QgsAttributeEditorContext() )
-  , mCanvas( nullptr )
-  , mMessageBar( nullptr )
-  , mForeignKey( QVariant() )
   , mReferencedFieldIdx( -1 )
   , mReferencingFieldIdx( -1 )
   , mAllowNull( true )
-  , mHighlight( nullptr )
-  , mMapTool( nullptr )
-  , mMessageBarItem( nullptr )
-  , mRelationName( QLatin1String( "" ) )
-  , mReferencedAttributeForm( nullptr )
-  , mReferencedLayer( nullptr )
-  , mReferencingLayer( nullptr )
-  , mMasterModel( nullptr )
-  , mFilterModel( nullptr )
-  , mFeatureListModel( nullptr )
-  , mWindowWidget( nullptr )
   , mShown( false )
   , mIsEditable( true )
   , mEmbedForm( false )
@@ -314,9 +300,18 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant &value )
 void QgsRelationReferenceWidget::deleteForeignKey()
 {
   QVariant nullValue = QgsApplication::nullRepresentation();
+
+  // deactivate filter comboboxes
+  if ( mChainFilters && !mFilterComboBoxes.isEmpty() )
+  {
+    QComboBox *cb = mFilterComboBoxes.first();
+    cb->setCurrentIndex( 0 );
+    disableChainedComboBoxes( cb );
+  }
+
   if ( mReadOnlySelector )
   {
-    QString nullText = QLatin1String( "" );
+    QString nullText;
     if ( mAllowNull )
     {
       nullText = tr( "%1 (no selection)" ).arg( nullValue.toString() );
@@ -524,6 +519,13 @@ void QgsRelationReferenceWidget::init()
             QString nf = nv.isNull() ? nullValue.toString() : nv.toString();
             mFilterCache[mFilterFields[i]][cf] << nf;
           }
+        }
+
+        if ( !mFilterComboBoxes.isEmpty() )
+        {
+          QComboBox *cb = mFilterComboBoxes.first();
+          cb->setCurrentIndex( 0 );
+          disableChainedComboBoxes( cb );
         }
       }
     }

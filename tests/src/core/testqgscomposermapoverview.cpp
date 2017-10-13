@@ -33,11 +33,7 @@ class TestQgsComposerMapOverview : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerMapOverview()
-      : mComposition( 0 )
-      , mComposerMap( 0 )
-      , mRasterLayer( 0 )
-    {}
+    TestQgsComposerMapOverview() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

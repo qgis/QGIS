@@ -131,19 +131,27 @@ Hash for QVariant
 
 QString qgsDoubleToString( double a, int precision = 17 );
 %Docstring
-\param precision number of decimal places to retain
+ Returns a string representation of a double
+ \param a double value
+ \param precision number of decimal places to retain
  :rtype: str
 %End
 
 bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON );
 %Docstring
-\param epsilon maximum difference allowable between doubles
+ Compare two doubles (but allow some difference)
+ \param a first double
+ \param b second double
+ \param epsilon maximum difference allowable between doubles
  :rtype: bool
 %End
 
 bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON );
 %Docstring
-\param epsilon maximum difference allowable between floats
+ Compare two floats (but allow some difference)
+ \param a first float
+ \param b second float
+ \param epsilon maximum difference allowable between floats
  :rtype: bool
 %End
 
@@ -160,6 +168,8 @@ double qgsRound( double number, double places );
 .. versionadded:: 3.0
  :rtype: float
 %End
+
+
 
 double qgsPermissiveToDouble( QString string, bool &ok );
 %Docstring
@@ -187,12 +197,18 @@ int qgsPermissiveToInt( QString string, bool &ok );
 
 bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 %Docstring
+ Compares two QVariant values and returns whether the first is less than the second.
+ Useful for sorting lists of variants, correctly handling sorting of the various
+ QVariant data types (such as strings, numeric values, dates and times)
 .. seealso:: qgsVariantGreaterThan()
  :rtype: bool
 %End
 
 bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 %Docstring
+ Compares two QVariant values and returns whether the first is greater than the second.
+ Useful for sorting lists of variants, correctly handling sorting of the various
+ QVariant data types (such as strings, numeric values, dates and times)
 .. seealso:: qgsVariantLessThan()
  :rtype: bool
 %End

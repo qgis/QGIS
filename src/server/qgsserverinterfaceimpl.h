@@ -56,7 +56,8 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     //
     void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 ) override;
 
-    /** Gets the helper over all the registered access control filters
+    /**
+     * Gets the helper over all the registered access control filters
      * \returns the access control helper
      */
     QgsAccessControl *accessControls() const override { return mAccessControls; }

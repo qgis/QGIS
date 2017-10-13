@@ -1,154 +1,14 @@
-# See ../README.md for a description of the file format
-
 tests:
-#  - algorithm: gdal:gdalinfo
-#    name: gdalinfo
-#    params:
-#      INPUT:
-#        name: raster.tif
-#        type: raster
-#      NOGCP: false
-#      NOMETADATA: false
-#    results:
-#      OUTPUT:
-#        name: expected/gdal/raster_info.html
-#        type: regex
-#        rules:
-#          - 'Origin = \(270736.067325068172067,4459029.574521748349071\)'
-#          - 'Band 1 Block=16x14 Type=Float32, ColorInterp=Gray'
-#          - '  NoData Value=-32768'
-#
-#  - algorithm: gdal:ogrinfo
-#    name: ogrinfo
-#    params:
-#      INPUT:
-#        name: lines.gml
-#        type: vector
-#      SUMMARY_ONLY: 'True'
-#    results:
-#      OUTPUT:
-#        name: expected/gdal/vector_info.html
-#        type: regex
-#        rules:
-#          - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
-#          - 'Geometry: Line String'
-#          - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
-#
-#  - algorithm: gdal:buffervectors
-#    name: Buffer lines
-#    params:
-#      DISSOLVEALL: false
-#      DISTANCE: 1.0
-#      GEOMETRY: geometry
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      MULTI: false
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/gdal/buffer_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#    expectedFailure:
-#      - int(1)
-#
-#  - algorithm: gdal:buffervectors
-#    name: Basic polygon buffer
-#    params:
-#      DISSOLVEALL: false
-#      DISTANCE: 0.5
-#      GEOMETRY: geometry
-#      INPUT_LAYER:
-#        name: polys.gml
-#        type: vector
-#      MULTI: false
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/gdal/buffer_polys.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: gdal:buffervectors
-#    name: Polygon buffer with dissolve
-#    params:
-#      DISSOLVEALL: true
-#      DISTANCE: 0.5
-#      GEOMETRY: geometry
-#      INPUT_LAYER:
-#        name: polys.gml
-#        type: vector
-#      MULTI: false
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/gdal/buffer_polys_dissolve.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-  - algorithm: gdal:createpointsalonglines
-    name: Points along lines
-    params:
-      DISTANCE: 0.25
-      GEOMETRY: geometry
-      INPUT:
-        name: lines.gml
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/gdal/points_along_lines.gml
-        type: vector
-        pk: fid
-        compare:
-          ignore_crs_check: true
-
-#  - algorithm: gdal:offsetlinesforlines
-#    name: Offset lines for lines (right-handed)
-#    params:
-#      GEOMETRY: geometry
-#      INPUT_LAYER:
-#         name: lines.gml
-#         type: vector
-#      RADIUS: -0.5
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/gdal/offset_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  - algorithm: gdal:singlesidedbufferforlines
-#    name: One-side buffer for lines (left-handed)
-#    params:
-#      DISSOLVEALL: false
-#      GEOMETRY: geometry
-#      INPUT_LAYER:
-#        name: lines.gml
-#        type: vector
-#      LEFTRIGHT: '1'
-#      MULTI: false
-#      RADIUS: 0.5
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/gdal/one_side_buffer.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
 
   - algorithm: gdal:aspect
-    name: Aspect with standard parameters
+    name: Aspect (gdaldem)
     params:
       BAND: 1
       COMPUTE_EDGES: false
       INPUT:
         name: dem.tif
         type: raster
+      OPTIONS: ''
       TRIG_ANGLE: false
       ZERO_FLAT: false
       ZEVENBERGEN: false
@@ -157,199 +17,271 @@ tests:
         hash: 8436df662a44a00762aa29768e5d6ecfaf2d42e9a4da02d8afc6e3f6
         type: rasterhash
 
-  - algorithm: gdal:aspect
-    name: Aspect without NULL (-9999) values (0 instead)
+  - algorithm: gdal:cliprasterbyextent
+    name: Clip raster by extent (gdal_transform)
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: 0.0
+      OPTIONS: ''
+      PROJWIN: 18.673038221977773,18.699957975064194,45.782253906735804,45.80350236352593
+    results:
+      OUTPUT:
+        hash: f4dd2d3693afe0b95a6b6d0c98a57331b8f7c6a61a372f52da912c07
+        type: rasterhash
+
+  - algorithm: gdal:cliprasterbyextent
+    name: Test (gdal:cliprasterbyextent)
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        name: dem.tif
+        type: raster
+      NODATA: 0.0
+      OPTIONS: ''
+      PROJWIN: 18.674136950224096,18.70011285383855,45.78239420868433,45.80342583519035
+        [EPSG:4326]
+    results:
+      OUTPUT:
+        hash: c71cf9c654ee0f27ea8778576787301a868556e52773cb061a8fff00
+        type: rasterhash
+
+  - algorithm: gdal:cliprasterbymasklayer
+    name: Clip raster by mask layer (gdalwarp)
+    params:
+      ALPHA_BAND: false
+      CROP_TO_CUTLINE: true
+      DATA_TYPE: 5
+      INPUT:
+        name: dem.tif
+        type: raster
+      KEEP_RESOLUTION: false
+      MASK:
+        name: custom/polygon_mask.gml
+        type: vector
+      NODATA: 0.0
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        hash: 4f4720e4efe59a7f238f622659917bbeb5262369d15d5e2917dbcf8b
+        type: rasterhash
+
+  - algorithm: gdal:colorrelief
+    name: Color relief (gdaldem)
     params:
       BAND: 1
+      COLOR_TABLE:
+        name: custom/color_relief.txt
+        type: file
       COMPUTE_EDGES: false
       INPUT:
         name: dem.tif
         type: raster
-      TRIG_ANGLE: false
-      ZERO_FLAT: true
-      ZEVENBERGEN: false
+      MATCH_MODE: 1
+      OPTIONS: ''
     results:
       OUTPUT:
-        hash: 43cccb440c7febb0095103eee3509b740e9f1bf2b3ad3b8a4c25622e
+        hash: 3d1b5ddaf0e9763164b7865e5e4ac2d55c4993aa52de2705f2ba4232
         type: rasterhash
 
-  - algorithm: gdal:aspect
-    name: Aspect with trigonometric angle
+  - algorithm: gdal:contour
+    name: Contour (gdal_contour)
     params:
       BAND: 1
-      COMPUTE_EDGES: false
+      CREATE_3D: false
+      FIELD_NAME: ELEV
+      IGNORE_NODATA: false
       INPUT:
         name: dem.tif
         type: raster
-      TRIG_ANGLE: true
-      ZERO_FLAT: false
-      ZEVENBERGEN: false
+      INTERVAL: 10.0
+      NODATA: 0.0
+      OFFSET: 0.0
     results:
       OUTPUT:
-        hash: a95e8a09a613b551d3f33dfb4975c430f599dc55f761063ae9529124
-        type: rasterhash
+        name: expected/gdal/contour.gml
+        type: vector
 
-  - algorithm: gdal:aspect
-    name: Aspect zevenbergen
+  - algorithm: gdal:gdalinfo
+    name: gdalinfo
     params:
-      BAND: 1
-      COMPUTE_EDGES: false
       INPUT:
         name: dem.tif
         type: raster
-      TRIG_ANGLE: false
-      ZERO_FLAT: false
-      ZEVENBERGEN: true
+      MIN_MAX: false
+      NOGCP: true
+      NO_METADATA: true
+      STATS: false
     results:
       OUTPUT:
-        hash: 2cd5868b21efbd286f4977795143c89df77ac8976f8bc2a2c4e310d8
-        type: rasterhash
+        name: expected/gdal/raster_info.html
+        type: regex
+        rules:
+          - 'Origin = \(18.666297944200000,45.811701437600000\)'
+          - 'Band 1 Block=373x5 Type=Float32, ColorInterp=Gray'
+          - '  NoData Value=-99999'
 
-  - algorithm: gdal:aspect
-    name: Aspect with edges
+# Disabled as gdal2xyz.py is not available on Travis
+#  - algorithm: gdal:gdal2xyz
+#    name: gdal2xyz
+#    params:
+#      BAND: 1
+#      CSV: false
+#      INPUT:
+#        name: dem.tif
+#        type: raster
+#    results:
+#      OUTPUT:
+#        name: expected/gdal/xyz.csv
+#        type: file
+
+  - algorithm: gdal:tileindex
+    name: Tile index (gdaltindex)
     params:
-      BAND: 1
-      COMPUTE_EDGES: true
-      INPUT:
-        name: dem.tif
-        type: raster
-      TRIG_ANGLE: false
-      ZERO_FLAT: false
-      ZEVENBERGEN: false
+      ABSOLUTE_PATH: true
+      CRS_FIELD_NAME: ''
+      CRS_FORMAT: 0
+      LAYERS:
+        params:
+        - name: dem.tif
+          type: raster
+        type: multi
+      PATH_FIELD_NAME: location
+      PROJ_DIFFERENCE: false
     results:
       OUTPUT:
-        hash: d3a354c6e5f207779bb58f9bd23fd89a9f90a77d81aafc661d0ae077
+        name: expected/gdal/tile_index.gml
+        type: vector
+        compare:
+          fields:
+            location: skip
+
+  - algorithm: gdal:gridaverage
+    name: Moving average interpolation (gdal_grid)
+    params:
+      ANGLE: 0.0
+      DATA_TYPE: 5
+      INPUT:
+        name: pointsz.gml
+        type: vector
+      MIN_POINTS: 0
+      NODATA: 0.0
+      OPTIONS: ''
+      RADIUS_1: 5.0
+      RADIUS_2: 5.0
+    results:
+      OUTPUT:
+        hash: 1c3adf57a7e319582736a1a222211e2360115fc930d6a12415dbdec3
         type: rasterhash
 
-#  - algorithm: gdal:cliprasterbyextent
-#    name: Clip raster by extent
-#    params:
-#      BIGTIFF: '0'
-#      COMPRESS: '4'
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      JPEGCOMPRESSION: 75
-#      PREDICTOR: 1
-#      PROJWIN: 18.67551824296977,18.697800756150787,45.78984181545589,45.804309302274866
-#      RTYPE: '5'
-#      TFW: false
-#      TILED: false
-#      ZLEVEL: 6
-#    results:
-#      OUTPUT:
-#        hash: 9913a7c0e1ced2c2ce1cd8f0e8103475bc2b0dd4d1d0adafe4920f93
-#        type: rasterhash
-#
-#  - algorithm: gdal:cliprasterbyextent
-#    name: Clip raster by extent and change no data values
-#    params:
-#      BIGTIFF: '0'
-#      COMPRESS: '4'
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      JPEGCOMPRESSION: 75
-#      NO_DATA: '-9999'
-#      PREDICTOR: 1
-#      PROJWIN: 18.67460436727692,18.698371162148714,45.78995019401027,45.804344168369234
-#      RTYPE: '5'
-#      TFW: false
-#      TILED: false
-#      ZLEVEL: 6
-#    results:
-#      OUTPUT:
-#        hash: df5de501bcec0c10f738d77f3b48d5545b48f0a22e0e028a8b1ccbe7
-#        type: rasterhash
-#
-#  - algorithm: gdal:cliprasterbymasklayer
-#    name: Clip raster by mask layer
-#    params:
-#      ALPHA_BAND: false
-#      BIGTIFF: '0'
-#      COMPRESS: '4'
-#      CROP_TO_CUTLINE: true
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      JPEGCOMPRESSION: 75
-#      KEEP_RESOLUTION: false
-#      MASK:
-#        name: custom/polygon_mask.gml
-#        type: vector
-#      NO_DATA: ''
-#      PREDICTOR: 1
-#      RTYPE: '5'
-#      TFW: false
-#      TILED: false
-#      ZLEVEL: 6
-#    results:
-#      OUTPUT:
-#        hash: 4f4720e4efe59a7f238f622659917bbeb5262369d15d5e2917dbcf8b
-#        type: rasterhash
-#
-#  - algorithm: gdal:cliprasterbymasklayer
-#    name: Clip raster by mask layer and change no data value
-#    params:
-#      ALPHA_BAND: false
-#      BIGTIFF: '0'
-#      COMPRESS: '4'
-#      CROP_TO_CUTLINE: true
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      JPEGCOMPRESSION: 75
-#      KEEP_RESOLUTION: false
-#      MASK:
-#        name: custom/polygon_mask.gml
-#        type: vector
-#      NO_DATA: '-9999'
-#      PREDICTOR: 1
-#      RTYPE: '5'
-#      TFW: false
-#      TILED: false
-#      ZLEVEL: 6
-#    results:
-#      OUTPUT:
-#        hash: 1e0252e63c65dcf4ed1f2b17d2490d3e0331aeb59d8f59b59554f442
-#        type: rasterhash
-#
-#  - algorithm: gdal:cliprasterbymasklayer
-#    name: Clip raster by mask layer and add alpha band
-#    params:
-#      ALPHA_BAND: true
-#      BIGTIFF: '0'
-#      COMPRESS: '4'
-#      CROP_TO_CUTLINE: true
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      JPEGCOMPRESSION: 75
-#      KEEP_RESOLUTION: false
-#      MASK:
-#        name: custom/polygon_mask.gml
-#        type: vector
-#      NO_DATA: ''
-#      PREDICTOR: 1
-#      RTYPE: '5'
-#      TFW: false
-#      TILED: false
-#      ZLEVEL: 6
-#    results:
-#      OUTPUT:
-#        hash: 8f69431c6ff7db5174c1ca8e879ae39582fd4ce86f9b53edae0f38ce
-#        type: rasterhash
+  - algorithm: gdal:griddatametrics
+    name: Data metrics interpolation (gdal_grid)
+    params:
+      ANGLE: 0.0
+      DATA_TYPE: 5
+      INPUT:
+        name: pointsz.gml
+        type: vector
+      METRIC: 2
+      MIN_POINTS: 0
+      NODATA: 0.0
+      OPTIONS: ''
+      RADIUS_1: 5.0
+      RADIUS_2: 5.0
+    results:
+      OUTPUT:
+        hash: 11075786ce1a8f5875c203a881f39bb49e7d9f9adcb83c286c72b644
+        type: rasterhash
+
+  - algorithm: gdal:gridinversedistance
+    name: Inverse distance to a power interpolation (gdal_grid)
+    params:
+      ANGLE: 0.0
+      DATA_TYPE: 5
+      INPUT:
+        name: pointsz.gml
+        type: vector
+      MAX_POINTS: 0
+      MIN_POINTS: 0
+      NODATA: 0.0
+      OPTIONS: ''
+      POWER: 2.0
+      RADIUS_1: 0.0
+      RADIUS_2: 0.0
+      SMOOTHING: 0.0
+    results:
+      OUTPUT:
+        hash: 26658f6dd6a1dd4b576b2e71d3b31f1679d7144b8e53fb58502eff64
+        type: rasterhash
+
+  - algorithm: gdal:gridinversedistancenearestneighbor
+    name: Inverse distance to a power with nearest neighbor searching (gdal_grid)
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        name: pointsz.gml
+        type: vector
+      MAX_POINTS: 0
+      MIN_POINTS: 0
+      NODATA: 0.0
+      OPTIONS: ''
+      POWER: 2.0
+      RADIUS: 5.0
+      SMOOTHING: 0.0
+    results:
+      OUTPUT:
+        hash: 34fb2b6dc92f5f4147bf136a46dd872f4f94d3bca259d10c8c388620
+        type: rasterhash
+
+  - algorithm: gdal:gridlinear
+    name: Linear interpolation (gdal_grid)
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        name: pointsz.gml
+        type: vector
+      NODATA: 0.0
+      OPTIONS: ''
+      RADIUS: -1.0
+    results:
+      OUTPUT:
+        hash:
+        - aca7c839c679613f4910cbdea660359f1551c104c57fea9a61795668
+        - 57e2bc100ec9836e2aa7df4ccf6b5715bd3f3524a524ce47bec52f68
+        type: rasterhash
+
+  - algorithm: gdal:gridnearestneighbor
+    name: Nearest neighbor interpolation (gdal_grid)
+    params:
+      ANGLE: 0.0
+      DATA_TYPE: 5
+      INPUT:
+        name: pointsz.gml
+        type: vector
+      NODATA: 0.0
+      OPTIONS: ''
+      RADIUS_1: 0.0
+      RADIUS_2: 0.0
+    results:
+      OUTPUT:
+        hash: 354f728b1dd133ad3db28a51b956bf3108615d31363f3a55b2ce04b9
+        type: rasterhash
 
   - algorithm: gdal:hillshade
-    name: Hillshade
+    name: Hillshade (gdaldem)
     params:
       ALTITUDE: 45.0
       AZIMUTH: 315.0
       BAND: 1
+      COMBINED: false
       COMPUTE_EDGES: false
       INPUT:
         name: dem.tif
         type: raster
+      MULTIDIRECTIONAL: false
+      OPTIONS: ''
       SCALE: 1.0
       ZEVENBERGEN: false
       Z_FACTOR: 1.0
@@ -358,160 +290,8 @@ tests:
         hash: e5cf91b875b918682e456463165eddc4af4ae8855b143068e198ce2a
         type: rasterhash
 
-  - algorithm: gdal:hillshade
-    name: Hillshade with edges calculation
-    params:
-      ALTITUDE: 45.0
-      AZIMUTH: 315.0
-      BAND: 1
-      COMPUTE_EDGES: true
-      INPUT:
-        name: dem.tif
-        type: raster
-      SCALE: 1.0
-      ZEVENBERGEN: false
-      Z_FACTOR: 1.0
-    results:
-      OUTPUT:
-        hash: 570671408b020c9cc817e876f0e8081e0b11920c7d297abfe1cb3368
-        type: rasterhash
-
-  - algorithm: gdal:hillshade
-    name: Hillshade with Zevenbergen formula
-    params:
-      ALTITUDE: 45.0
-      AZIMUTH: 315.0
-      BAND: 1
-      COMPUTE_EDGES: false
-      INPUT:
-        name: dem.tif
-        type: raster
-      SCALE: 1.0
-      ZEVENBERGEN: true
-      Z_FACTOR: 1.0
-    results:
-      OUTPUT:
-        hash: ce2174ab155023367d38785fb867456c6a1ae3535ea0ec5ad7a694d5
-        type: rasterhash
-
-#  - algorithm: gdal:slope
-#    name: Slope
-#    params:
-#      AS_PERCENT: false
-#      BAND: 1
-#      COMPUTE_EDGES: false
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      SCALE: 1.0
-#      ZEVENBERGEN: false
-#    results:
-#      OUTPUT:
-#        hash: 319c470de3315f440371d5df8a6e478a8ecaf1cf904a013dbf1b3a6a
-#        type: rasterhash
-#
-#  - algorithm: gdal:slope
-#    name: Slope with edges
-#    params:
-#      AS_PERCENT: false
-#      BAND: 1
-#      COMPUTE_EDGES: true
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      SCALE: 1.0
-#      ZEVENBERGEN: false
-#    results:
-#      OUTPUT:
-#        hash: f7f8df8b6517fd8660304f7f2fbd6ade2ae68035f4dd9a224c80b465
-#        type: rasterhash
-#
-#  - algorithm: gdal:slope
-#    name: Slope with Zevenbergen formula
-#    params:
-#      AS_PERCENT: false
-#      BAND: 1
-#      COMPUTE_EDGES: false
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      SCALE: 1.0
-#      ZEVENBERGEN: true
-#    results:
-#      OUTPUT:
-#        hash: 90e42b1bc7be9cf7b4a729c6db44dde0bba39dd33012ade6bc8080e7
-#        type: rasterhash
-#
-#  - algorithm: gdal:slope
-#    name: Slope with percent instead of degree
-#    params:
-#      AS_PERCENT: true
-#      BAND: 1
-#      COMPUTE_EDGES: false
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#      SCALE: 1.0
-#      ZEVENBERGEN: false
-#    results:
-#      OUTPUT:
-#        hash: c9dc888254a571e7fbf66691fb72b35f030f87decf59ce67e32ad89d
-#        type: rasterhash
-#
-#  - algorithm: gdal:roughness
-#    name: standard roughness
-#    params:
-#      BAND: 1
-#      COMPUTE_EDGES: false
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#    results:
-#      OUTPUT:
-#        hash: ee2b317e022da1001378fac60c9b613a74d3566b9870f9d121e6e322
-#        type: rasterhash
-#
-#  - algorithm: gdal:roughness
-#    name: roughness with edges
-#    params:
-#      BAND: 1
-#      COMPUTE_EDGES: true
-#      INPUT:
-#        name: dem.tif
-#        type: raster
-#    results:
-#      OUTPUT:
-#        hash: aba5167b8a2e97a93b22d406e0363f91c151fd353c0fc56ce24ac5fc
-#        type: rasterhash
-
-  - algorithm: gdal:triterrainruggednessindex
-    name: standard TRI
-    params:
-      BAND: 1
-      COMPUTE_EDGES: false
-      INPUT:
-        name: dem.tif
-        type: raster
-    results:
-      OUTPUT:
-        hash: c888764a08fae72a129dfff4947149c3185532373d33d4537ecf409c
-        type: rasterhash
-
-  - algorithm: gdal:triterrainruggednessindex
-    name: TRI with edges
-    params:
-      BAND: 1
-      COMPUTE_EDGES: true
-      INPUT:
-        name: dem.tif
-        type: raster
-    results:
-      OUTPUT:
-        hash: 07376c74de869323125ceacbb5e34438655ff73f63d4b3ff3e268f7f
-        type: rasterhash
-
   - algorithm: gdal:nearblack
-    name: standard near black
+    name: Near black
     params:
       INPUT:
         name: dem.tif
@@ -523,64 +303,135 @@ tests:
         hash: fff4a08498e93494f3f2cf1a9074451e6fd68341849aedc9e2c45e6a
         type: rasterhash
 
-#  - algorithm: gdal:tpitopographicpositionindex
-#    name: standard TPI
+# Disabled as gdal2_poligonize.py is not available on Travis
+#  - algorithm: gdal:polygonize
+#    name: Polygonize
 #    params:
 #      BAND: 1
-#      COMPUTE_EDGES: false
+#      EIGHT_CONNECTEDNESS: false
+#      FIELD: DN
 #      INPUT:
 #        name: dem.tif
 #        type: raster
 #    results:
 #      OUTPUT:
-#        hash: 4af1fe42d2a75c92eb9edcad9d77bd6cae958c0212de11e320fad689
-#        type: rasterhash
-#
-#  - algorithm: gdal:tpitopographicpositionindex
-#    name: TPI with edges
+#        name: expected/gdal/polygonize.gml
+#        type: vector
+
+# Disabled as gdal2_proximity.py is not available on Travis
+#  - algorithm: gdal:proximity
+#    name: Proximity
 #    params:
 #      BAND: 1
-#      COMPUTE_EDGES: true
+#      DATA_TYPE: 5
 #      INPUT:
 #        name: dem.tif
 #        type: raster
+#      MAX_DISTANCE: 0.0
+#      NODATA: 0.0
+#      OPTIONS: ''
+#      REPLACE: 0.0
+#      UNITS: 1
+#      VALUES: '90'
 #    results:
 #      OUTPUT:
-#        hash: f468bb08cbede2b606018a7a45a51cc221307a8421a11daefabeac12
+#        hash: 32802271d1ce083ca14078bfefaef6300ae8809af11f6a4270583d0c
 #        type: rasterhash
 
-  - algorithm: gdal:colorrelief
-    name: Standard Color Relief
+  - algorithm: gdal:roughness
+    name: Roughness
     params:
       BAND: 1
-      COLOR_TABLE:
-        name: custom/color_relief.txt
-        type: file
       COMPUTE_EDGES: false
       INPUT:
         name: dem.tif
         type: raster
-      MATCH_MODE: '0'
+      OPTIONS: ''
     results:
       OUTPUT:
-        hash: f714597fadc9cfc3f5263dc0e35f7c6ba285de238dce439e4988faac
+        hash: ee2b317e022da1001378fac60c9b613a74d3566b9870f9d121e6e322
         type: rasterhash
 
-  - algorithm: gdal:colorrelief
-    name: Color Relief with edges
+# Disabled as gdal_sieve is not available on Travis
+#  - algorithm: gdal:sieve
+#    name: Sieve
+#    params:
+#      EIGHT_CONNECTEDNESS: false
+#      INPUT:
+#        name: dem.tif
+#        type: raster
+#      MASK_LAYER:
+#        name: dem.tif
+#        type: raster
+#      NO_MASK: false
+#      THRESHOLD: 10
+#    results:
+#      OUTPUT:
+#        hash: 1ea6a8c838add299dc3f6f9f529eb5945664f68bae97be9ca80b1754
+#        type: rasterhash
+
+  - algorithm: gdal:slope
+    name: Slope
     params:
+      AS_PERCENT: false
       BAND: 1
-      COLOR_TABLE:
-        name: custom/color_relief.txt
-        type: file
-      COMPUTE_EDGES: true
+      COMPUTE_EDGES: false
       INPUT:
         name: dem.tif
         type: raster
-      MATCH_MODE: '0'
+      OPTIONS: ''
+      SCALE: 1.0
+      ZEVENBERGEN: false
     results:
       OUTPUT:
-        hash: f714597fadc9cfc3f5263dc0e35f7c6ba285de238dce439e4988faac
+        hash: 319c470de3315f440371d5df8a6e478a8ecaf1cf904a013dbf1b3a6a
+        type: rasterhash
+
+  - algorithm: gdal:tpitopographicpositionindex
+    name: Topographic position index
+    params:
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        hash: 4af1fe42d2a75c92eb9edcad9d77bd6cae958c0212de11e320fad689
+        type: rasterhash
+
+  - algorithm: gdal:triterrainruggednessindex
+    name: Terrain ruggedness index
+    params:
+      BAND: 1
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        hash: c888764a08fae72a129dfff4947149c3185532373d33d4537ecf409c
+        type: rasterhash
+
+  - algorithm: gdal:warpreproject
+    name: Warp (gdalwarp)
+    params:
+      DATA_TYPE: 5
+      INPUT:
+        name: dem.tif
+        type: raster
+      MULTITHREADING: false
+      NODATA: 0.0
+      OPTIONS: ''
+      RESAMPLING: 4
+      SOURCE_CRS: EPSG:4326
+      TARGET_CRS: EPSG:3857
+      TARGET_RESOLUTION: 0.0
+    results:
+      OUTPUT:
+        hash: 77045222f6f9d8e5fda795d1d5288eae400c51522e621861aeab68e0
         type: rasterhash
 
 #  - algorithm: gdal:merge
@@ -601,41 +452,6 @@ tests:
 #        hash: fb6f0f4081308cc188eda2fbe106e04e0ebf866fc56853f0cca8db1c
 #        type: rasterhash
 #
-#  - algorithm: gdal:merge
-#    name: Merge layers and separate in bands
-#    params:
-#      INPUT:
-#        params:
-#        - name: custom/dem_to_merge1.tif
-#          type: raster
-#        - name: custom/dem_to_merge2.tif
-#          type: raster
-#        type: multi
-#      PCT: false
-#      RTYPE: '5'
-#      SEPARATE: true
-#    results:
-#      OUTPUT:
-#        hash: cbf7b8ca91e7d6cab5ef76eeed6ce80e5dbe173afb7b8eb4aed2e969
-#        type: rasterhash
-#
-#  - algorithm: gdal:proximity
-#    name: Proximity raster
-#    params:
-#      BUF_VAL: -1
-#      INPUT:
-#        name: custom/dem_boolean.tif
-#        type: raster
-#      MAX_DIST: -1
-#      NODATA: -1
-#      RTYPE: '5'
-#      UNITS: '0'
-#      VALUES: '1'
-#    results:
-#      OUTPUT:
-#        hash: a497763f44380ec33acab572a926a6516e875f2284fc55e702abbdfc
-#        type: rasterhash
-#
 #  - algorithm: gdal:rastercalculator
 #    name: Simple Raster Calculator test with only 1 raster
 #    params:
@@ -649,78 +465,231 @@ tests:
 #      OUTPUT:
 #        hash: 2d0585dc8166fbe3cec7d9e6fd66e95cc9bdb1043b3b0fa7cbdfef4c
 #        type: rasterhash
-#
-#  - algorithm: gdal:gridinvdist
-#    name: IDW interpolation
+
+  - algorithm: gdal:buffervectors
+    name: Buffer lines
+    params:
+      DISSOLVE: false
+      DISTANCE: 0.5
+      EXPLODE_COLLECTIONS: false
+      GEOMETRY: geometry
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/buffer_lines.gml
+        type: vector
+
+  - algorithm: gdal:buffervectors
+    name: BUffer lines with dissolve
+    params:
+      DISSOLVE: true
+      DISTANCE: 1.0
+      EXPLODE_COLLECTIONS: false
+      GEOMETRY: geometry
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/buffer_lines_dissolve.gml
+        type: vector
+
+  - algorithm: gdal:buffervectors
+    name: Buffer polygons
+    params:
+      DISSOLVE: false
+      DISTANCE: 0.5
+      EXPLODE_COLLECTIONS: false
+      GEOMETRY: geometry
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/buffer_polys.gml
+        type: vector
+
+  - algorithm: gdal:buffervectors
+    name: Buffer polygons with dissolve
+    params:
+      DISSOLVE: true
+      DISTANCE: 0.5
+      EXPLODE_COLLECTIONS: false
+      GEOMETRY: geometry
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/buffer_polys_dissolve.gml
+        type: vector
+
+  - algorithm: gdal:clipvectorbyextent
+    name: Clip points by extent
+    params:
+      EXTENT: 0.6180722891566264,5.408433734939758,0.4337349397590362,2.306024096385542
+        [EPSG:4326]
+      INPUT:
+        name: points.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_points.gml
+        type: vector
+
+  - algorithm: gdal:clipvectorbyextent
+    name: Clip lines by extent
+    params:
+      EXTENT: 4.362348178137652,8.698380566801621,-1.193522267206478,3.0914979757085024
+        [EPSG:4326]
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_lines.gml
+        type: vector
+
+  - algorithm: gdal:clipvectorbyextent
+    name: Clip polygons by extent
+    params:
+      EXTENT: 0.7143072289156609,4.718222891566264,1.4430722891566266,5.390060240963856
+        [EPSG:4326]
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_polygons.gml
+        type: vector
+
+# Fail on Travis with
+# ERROR 1: TopologyException: Input geom 1 is invalid: Self-intersection at or near point 2 -1 at 2 -1
+#  - algorithm: gdal:clipvectorbypolygon
+#    name: Clip points by polygons
 #    params:
-#      ANGLE: 0.0
 #      INPUT:
-#        name: custom/points_values.gml
+#        name: points.gml
 #        type: vector
-#      MAX_POINTS: 0.0
-#      MIN_POINTS: 0.0
-#      NODATA: 0.0
-#      POWER: 2.0
-#      RADIUS_1: 0.0
-#      RADIUS_2: 0.0
-#      RTYPE: '5'
-#      SMOTHING: 0.0
-#      Z_FIELD: EC
+#      MASK:
+#        name: polys.gml
+#        type: vector
+#      OPTIONS: ''
 #    results:
 #      OUTPUT:
-#        hash: 2033731d6fd653da391a2633158f0ea755d96e1b2b2c60a9100332b1
-#        type: rasterhash
-#
-#  - algorithm: gdal:griddatametrics
-#    name: Data Metrics interpolation
-#    params:
-#      ANGLE: 0.0
-#      INPUT:
-#        name: custom/points_values.gml
+#        name: expected/gdal/clip_points_by_polygon.gml
 #        type: vector
-#      METRIC: '1'
-#      MIN_POINTS: 0.0
-#      NODATA: 0.0
-#      RADIUS_1: 0.01
-#      RADIUS_2: 0.02
-#      RTYPE: '5'
-#      Z_FIELD: EC
+#
+#  - algorithm: gdal:clipvectorbypolygon
+#    name: Clip lines by polygons
+#    params:
+#      INPUT:
+#        name: lines.gml
+#        type: vector
+#      MASK:
+#        name: polys.gml
+#        type: vector
+#      OPTIONS: ''
 #    results:
 #      OUTPUT:
-#        hash: 220953299b18286b57ce093a054323e59add7c78c0429a02e51b4ad4
-#        type: rasterhash
-#
-#  - algorithm: gdal:gridaverage
-#    name: Moving Average interpolation
-#    params:
-#      ANGLE: 0.0
-#      INPUT:
-#        name: custom/points_values.gml
+#        name: expected/gdal/clip_lines_by_polygon.gml
 #        type: vector
-#      MIN_POINTS: 0.0
-#      NODATA: 0.0
-#      RADIUS_1: 0.01
-#      RADIUS_2: 0.01
-#      RTYPE: '5'
-#      Z_FIELD: EC
-#    results:
-#      OUTPUT:
-#        hash: 3542d928bccee955b1c426cac7b698c603c9a385429ca529758083bf
-#        type: rasterhash
-#
-#  - algorithm: gdal:gridnearestneighbor
-#    name: Nearest Neighbor interpolation
-#    params:
-#      ANGLE: 0.0
-#      INPUT:
-#        name: custom/points_values.gml
-#        type: vector
-#      NODATA: 0.0
-#      RADIUS_1: 0.01
-#      RADIUS_2: 0.02
-#      RTYPE: '5'
-#      Z_FIELD: EC
-#    results:
-#      OUTPUT:
-#        hash: 6ee933d53e1a2ffadfd88333919255e68bb945e833e50d112124bfd5
-#        type: rasterhash
+
+  - algorithm: gdal:clipvectorbypolygon
+    name: Clip lines by multipolygons
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      MASK:
+        name: multipolys.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/clip_lines_by_multipolygon.gml
+        type: vector
+
+  - algorithm: gdal:executesql
+    name: Execute SQL
+    params:
+      DIALECT: 0
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPTIONS: ''
+      SQL: SELECT * FROM polys2 WHERE intval=2
+    results:
+      OUTPUT:
+        name: expected/gdal/execute_sql.gml
+        type: vector
+
+  - algorithm: gdal:offsetcurve
+    name: Offset curve (right-sided)
+    params:
+      DISTANCE: -0.5
+      GEOMETRY: geometry
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/offset_lines.gml
+        type: vector
+
+  - algorithm: gdal:ogrinfo
+    name: ogrinfo
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      SUMMARY_ONLY: 'True'
+    results:
+      OUTPUT:
+        name: expected/gdal/vector_info.html
+        type: regex
+        rules:
+          - 'Extent: \(-1.000000, -3.000000\) - \(11.000000, 5.000000\)'
+          - 'Geometry: Line String'
+          - 'Feature Count: [6|7]' # On some platforms returns 6 instead of 7...
+
+  - algorithm: gdal:onesidebuffer
+    name: One-sided buffer (left-handed)
+    params:
+      BUFFER_SIDE: 1
+      DISSOLVE: false
+      DISTANCE: 0.5
+      EXPLODE_COLLECTIONS: false
+      GEOMETRY: geometry
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/one_side_buffer.gml
+        type: vector
+
+  - algorithm: gdal:pointsalonglines
+    name: Points along lines
+    params:
+      DISTANCE: 0.25
+      GEOMETRY: geometry
+      INPUT:
+        name: lines.gml
+        type: vector
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        name: expected/gdal/points_along_lines.gml
+        type: vector

@@ -334,7 +334,8 @@ QgsColorRamp *QgsLimitedRandomColorRamp::create( const QgsStringMap &props )
 
 double QgsLimitedRandomColorRamp::value( int index ) const
 {
-  if ( mColors.size() < 1 ) return 0;
+  if ( mColors.empty() )
+    return 0;
   return static_cast< double >( index ) / ( mColors.size() - 1 );
 }
 
@@ -410,11 +411,6 @@ void QgsLimitedRandomColorRamp::updateColors()
 }
 
 /////////////
-
-QgsRandomColorRamp::QgsRandomColorRamp()
-  : mTotalColorCount( 0 )
-{
-}
 
 int QgsRandomColorRamp::count() const
 {
@@ -548,7 +544,8 @@ QList<int> QgsColorBrewerColorRamp::listSchemeVariants( const QString &schemeNam
 
 double QgsColorBrewerColorRamp::value( int index ) const
 {
-  if ( mPalette.size() < 1 ) return 0;
+  if ( mPalette.empty() )
+    return 0;
   return static_cast< double >( index ) / ( mPalette.size() - 1 );
 }
 
@@ -593,9 +590,6 @@ QgsCptCityColorRamp::QgsCptCityColorRamp( const QString &schemeName, const QStri
   : QgsGradientColorRamp()
   , mSchemeName( schemeName )
   , mVariantName( variantName )
-  , mVariantList( QStringList() )
-  , mFileLoaded( false )
-  , mMultiStops( false )
   , mInverted( inverted )
 {
   // TODO replace this with hard-coded data in the default case
@@ -610,8 +604,6 @@ QgsCptCityColorRamp::QgsCptCityColorRamp( const QString &schemeName, const QStri
   , mSchemeName( schemeName )
   , mVariantName( variantName )
   , mVariantList( variantList )
-  , mFileLoaded( false )
-  , mMultiStops( false )
   , mInverted( inverted )
 {
   mVariantList = variantList;
@@ -695,7 +687,7 @@ QgsStringMap QgsCptCityColorRamp::properties() const
 
 QString QgsCptCityColorRamp::fileName() const
 {
-  if ( mSchemeName == QLatin1String( "" ) )
+  if ( mSchemeName.isEmpty() )
     return QString();
   else
   {
@@ -865,7 +857,7 @@ QList<QColor> QgsPresetSchemeColorRamp::colors() const
 
 double QgsPresetSchemeColorRamp::value( int index ) const
 {
-  if ( mColors.size() < 1 )
+  if ( mColors.empty() )
     return 0;
   return static_cast< double >( index ) / ( mColors.size() - 1 );
 }

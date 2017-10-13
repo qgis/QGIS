@@ -20,11 +20,13 @@
 #include "ui_qgsnewmemorylayerdialogbase.h"
 #include "qgsguiutils.h"
 #include "qgis.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsNewMemoryLayerDialog
  */
 class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemoryLayerDialogBase
@@ -33,7 +35,8 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
 
   public:
 
-    /** Runs the dialog and creates a new memory layer
+    /**
+     * Runs the dialog and creates a new memory layer
      * \param parent parent widget
      * \param defaultCrs default layer CRS to show in dialog
      * \returns new memory layer
@@ -65,6 +68,10 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
   private:
 
     QString mCrsId;
+
+  private slots:
+
+    void showHelp();
 };
 
 #endif //QGSNEWMEMORYLAYERDIALOG_H

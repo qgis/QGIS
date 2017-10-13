@@ -39,7 +39,7 @@ QGISEXTERN bool deleteSchema( const QString &schema, const QgsDataSourceUri &uri
 
 
 // ---------------------------------------------------------------------------
-QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, QString name, QString path )
+QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
 {
   mIconName = QStringLiteral( "mIconConnect.png" );
@@ -96,19 +96,19 @@ bool QgsPGConnectionItem::equal( const QgsDataItem *other )
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsPGConnectionItem::actions()
+QList<QAction *> QgsPGConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
+  QAction *actionRefresh = new QAction( tr( "Refresh" ), parent );
   connect( actionRefresh, &QAction::triggered, this, &QgsPGConnectionItem::refreshConnection );
   lst.append( actionRefresh );
 
-  QAction *separator = new QAction( this );
+  QAction *separator = new QAction( parent );
   separator->setSeparator( true );
   lst.append( separator );
 
-  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), this );
+  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsPGConnectionItem::editConnection );
   lst.append( actionEdit );
 
@@ -116,11 +116,11 @@ QList<QAction *> QgsPGConnectionItem::actions()
   connect( actionDelete, &QAction::triggered, this, &QgsPGConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
-  QAction *separator2 = new QAction( this );
+  QAction *separator2 = new QAction( parent );
   separator2->setSeparator( true );
   lst.append( separator2 );
 
-  QAction *actionCreateSchema = new QAction( tr( "Create Schema..." ), this );
+  QAction *actionCreateSchema = new QAction( tr( "Create Schema..." ), parent );
   connect( actionCreateSchema, &QAction::triggered, this, &QgsPGConnectionItem::createSchema );
   lst.append( actionCreateSchema );
 
@@ -229,7 +229,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
     QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
     if ( !srcLayer )
     {
-      importResults.append( tr( "%1: %2" ).arg( u.name ).arg( error ) );
+      importResults.append( tr( "%1: %2" ).arg( u.name, error ) );
       hasError = true;
       continue;
     }
@@ -303,23 +303,23 @@ QString QgsPGLayerItem::comments() const
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsPGLayerItem::actions()
+QList<QAction *> QgsPGLayerItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
   QString typeName = mLayerProperty.isView ? tr( "View" ) : tr( "Table" );
 
-  QAction *actionRenameLayer = new QAction( tr( "Rename %1..." ).arg( typeName ), this );
+  QAction *actionRenameLayer = new QAction( tr( "Rename %1..." ).arg( typeName ), parent );
   connect( actionRenameLayer, &QAction::triggered, this, &QgsPGLayerItem::renameLayer );
   lst.append( actionRenameLayer );
 
-  QAction *actionDeleteLayer = new QAction( tr( "Delete %1" ).arg( typeName ), this );
+  QAction *actionDeleteLayer = new QAction( tr( "Delete %1" ).arg( typeName ), parent );
   connect( actionDeleteLayer, &QAction::triggered, this, &QgsPGLayerItem::deleteLayer );
   lst.append( actionDeleteLayer );
 
   if ( !mLayerProperty.isView )
   {
-    QAction *actionTruncateLayer = new QAction( tr( "Truncate %1" ).arg( typeName ), this );
+    QAction *actionTruncateLayer = new QAction( tr( "Truncate %1" ).arg( typeName ), parent );
     connect( actionTruncateLayer, &QAction::triggered, this, &QgsPGLayerItem::truncateTable );
     lst.append( actionTruncateLayer );
   }
@@ -529,23 +529,23 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsPGSchemaItem::actions()
+QList<QAction *> QgsPGSchemaItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
+  QAction *actionRefresh = new QAction( tr( "Refresh" ), parent );
   connect( actionRefresh, &QAction::triggered, this, static_cast<void ( QgsDataItem::* )()>( &QgsDataItem::refresh ) );
   lst.append( actionRefresh );
 
-  QAction *separator = new QAction( this );
+  QAction *separator = new QAction( parent );
   separator->setSeparator( true );
   lst.append( separator );
 
-  QAction *actionRename = new QAction( tr( "Rename Schema..." ), this );
+  QAction *actionRename = new QAction( tr( "Rename Schema..." ), parent );
   connect( actionRename, &QAction::triggered, this, &QgsPGSchemaItem::renameSchema );
   lst.append( actionRename );
 
-  QAction *actionDelete = new QAction( tr( "Delete Schema" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete Schema" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsPGSchemaItem::deleteSchema );
   lst.append( actionDelete );
 
@@ -706,7 +706,7 @@ bool QgsPGSchemaItem::handleDrop( const QMimeData *data, Qt::DropAction )
 }
 
 // ---------------------------------------------------------------------------
-QgsPGRootItem::QgsPGRootItem( QgsDataItem *parent, QString name, QString path )
+QgsPGRootItem::QgsPGRootItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
@@ -725,11 +725,11 @@ QVector<QgsDataItem *> QgsPGRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsPGRootItem::actions()
+QList<QAction *> QgsPGRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsPGRootItem::newConnection );
   lst.append( actionNew );
 
@@ -739,11 +739,11 @@ QList<QAction *> QgsPGRootItem::actions()
 QWidget *QgsPGRootItem::paramWidget()
 {
   QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsPgSourceSelect::connectionsChanged, this, &QgsPGRootItem::connectionsChanged );
+  connect( select, &QgsPgSourceSelect::connectionsChanged, this, &QgsPGRootItem::onConnectionsChanged );
   return select;
 }
 
-void QgsPGRootItem::connectionsChanged()
+void QgsPGRootItem::onConnectionsChanged()
 {
   refresh();
 }

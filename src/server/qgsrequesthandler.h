@@ -48,17 +48,18 @@ class SERVER_EXPORT QgsRequestHandler
 {
   public:
 
-    /** Constructor
+    /**
+     * Constructor
      *
      * Note that QgsServerRequest and QgsServerResponse MUST live in the same scope
      */
     explicit QgsRequestHandler( QgsServerRequest &request, QgsServerResponse &response );
-    ~QgsRequestHandler();
 
     //! Allow plugins to return a QgsMapServiceException
     void setServiceException( const QgsServerException &ex );
 
-    /** Send out HTTP headers and flush output buffer
+    /**
+     * Send out HTTP headers and flush output buffer
      *
      *  This method is intended only for streaming
      *  partial content.
@@ -116,7 +117,8 @@ class SERVER_EXPORT QgsRequestHandler
     //! Return response http status code
     int statusCode() const;
 
-    /** Return the parsed parameters as a key-value pair, to modify
+    /**
+     * Return the parsed parameters as a key-value pair, to modify
      * a parameter setParameter( const QString &key, const QString &value)
      * and removeParameter(const QString &key) must be used
      */
@@ -131,7 +133,8 @@ class SERVER_EXPORT QgsRequestHandler
     //! Remove a request parameter
     void removeParameter( const QString &key );
 
-    /** Parses the input and creates a request neutral Parameter/Value map
+    /**
+     * Parses the input and creates a request neutral Parameter/Value map
      * \note not available in Python bindings
      */
     void parseInput() SIP_SKIP;

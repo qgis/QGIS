@@ -34,8 +34,6 @@ class CoordinateCaptureMapTool : public QgsMapTool
   public:
     explicit CoordinateCaptureMapTool( QgsMapCanvas *thepCanvas );
 
-    ~CoordinateCaptureMapTool();
-
     //! Overridden mouse move event
     virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 

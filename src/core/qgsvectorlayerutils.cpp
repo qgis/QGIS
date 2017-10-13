@@ -88,7 +88,7 @@ QVariant QgsVectorLayerUtils::createUniqueValue( const QgsVectorLayer *layer, in
         if ( !base.isEmpty() )
         {
           // strip any existing _1, _2 from the seed
-          QRegularExpression rx( "(.*)_\\d+" );
+          QRegularExpression rx( QStringLiteral( "(.*)_\\d+" ) );
           QRegularExpressionMatch match = rx.match( base );
           if ( match.hasMatch() )
           {
@@ -259,7 +259,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer *layer, const QgsG
     // in order of priority:
 
     // 1. client side default expression
-    if ( !layer->defaultValueExpression( idx ).isEmpty() )
+    if ( layer->defaultValueDefinition( idx ).isValid() )
     {
       // client side default expression set - takes precedence over all. Why? Well, this is the only default
       // which QGIS users have control over, so we assume that they're deliberately overriding any

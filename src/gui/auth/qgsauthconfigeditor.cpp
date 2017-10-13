@@ -29,17 +29,6 @@
 QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, bool relayMessages )
   : QWidget( parent )
   , mRelayMessages( relayMessages )
-  , mConfigModel( nullptr )
-  , mAuthUtilitiesMenu( nullptr )
-  , mActionSetMasterPassword( nullptr )
-  , mActionClearCachedMasterPassword( nullptr )
-  , mActionResetMasterPassword( nullptr )
-  , mActionClearCachedAuthConfigs( nullptr )
-  , mActionRemoveAuthConfigs( nullptr )
-  , mActionEraseAuthDatabase( nullptr )
-  , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -52,6 +41,9 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
   else
   {
     setupUi( this );
+    connect( btnAddConfig, &QToolButton::clicked, this, &QgsAuthConfigEditor::btnAddConfig_clicked );
+    connect( btnEditConfig, &QToolButton::clicked, this, &QgsAuthConfigEditor::btnEditConfig_clicked );
+    connect( btnRemoveConfig, &QToolButton::clicked, this, &QgsAuthConfigEditor::btnRemoveConfig_clicked );
 
     setShowUtilitiesButton( showUtilities );
 
@@ -83,7 +75,7 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
              this, &QgsAuthConfigEditor::selectionChanged );
 
     connect( tableViewConfigs, &QAbstractItemView::doubleClicked,
-             this, &QgsAuthConfigEditor::on_btnEditConfig_clicked );
+             this, &QgsAuthConfigEditor::btnEditConfig_clicked );
 
     if ( mRelayMessages )
     {
@@ -222,7 +214,7 @@ void QgsAuthConfigEditor::checkSelection()
   btnRemoveConfig->setEnabled( hasselection );
 }
 
-void QgsAuthConfigEditor::on_btnAddConfig_clicked()
+void QgsAuthConfigEditor::btnAddConfig_clicked()
 {
   if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
     return;
@@ -236,7 +228,7 @@ void QgsAuthConfigEditor::on_btnAddConfig_clicked()
   ace->deleteLater();
 }
 
-void QgsAuthConfigEditor::on_btnEditConfig_clicked()
+void QgsAuthConfigEditor::btnEditConfig_clicked()
 {
   QString authcfg = selectedConfigId();
 
@@ -255,7 +247,7 @@ void QgsAuthConfigEditor::on_btnEditConfig_clicked()
   ace->deleteLater();
 }
 
-void QgsAuthConfigEditor::on_btnRemoveConfig_clicked()
+void QgsAuthConfigEditor::btnRemoveConfig_clicked()
 {
   QModelIndexList selection = tableViewConfigs->selectionModel()->selectedRows( 0 );
 

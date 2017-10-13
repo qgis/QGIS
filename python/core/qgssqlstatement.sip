@@ -65,13 +65,18 @@ Returns root node of the statement. Root node is null is parsing has failed
 
     QString statement() const;
 %Docstring
-API calls, dump() will be used to create one instead.
+ Return the original, unmodified statement string.
+ If there was none supplied because it was constructed by sole
+ API calls, dump() will be used to create one instead.
  :rtype: str
 %End
 
     QString dump() const;
 %Docstring
-statement() instead.
+ Return  statement string, constructed from the internal
+ abstract syntax tree. This does not contain any nice whitespace
+ formatting or comments. In general it is preferable to use
+ statement() instead.
  :rtype: str
 %End
 
@@ -186,7 +191,6 @@ statement() instead.
 %TypeHeaderCode
 #include "qgssqlstatement.h"
 %End
-
 %ConvertToSubClassCode
         switch ( sipCpp->nodeType() )
         {

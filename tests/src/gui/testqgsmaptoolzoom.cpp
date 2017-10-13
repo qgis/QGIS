@@ -28,9 +28,7 @@ class TestQgsMapToolZoom : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapToolZoom()
-      : canvas( 0 )
-    {}
+    TestQgsMapToolZoom() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -64,7 +62,8 @@ void TestQgsMapToolZoom::cleanup()
   delete canvas;
 }
 
-/** Zero drag areas can happen on pen based computer when a mouse down,
+/**
+ * Zero drag areas can happen on pen based computer when a mouse down,
   * move, and up, all happened at the same spot due to the pen. In this case
   * QGIS thinks it is in dragging mode but it's not really and fails to zoom in.
   **/

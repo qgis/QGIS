@@ -26,7 +26,8 @@
 #include <QSslError>
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * QgsFileDownloader is a utility class for downloading files.
  *
  * To use this class, it is necessary to pass the URL and an output file name as
@@ -53,7 +54,7 @@ class GUI_EXPORT QgsFileDownloader : public QObject
      * \param guiNotificationsEnabled if false, the downloader will not display any progress bar or error message
      * \param authcfg optionally apply this authentication configuration
      */
-    QgsFileDownloader( const QUrl &url, const QString &outputFileName, bool guiNotificationsEnabled = true, QString authcfg = QString() );
+    QgsFileDownloader( const QUrl &url, const QString &outputFileName, bool guiNotificationsEnabled = true, const QString &authcfg = QString() );
 
   signals:
     //! Emitted when the download has completed successfully

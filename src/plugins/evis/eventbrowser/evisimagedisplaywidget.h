@@ -75,7 +75,7 @@ class eVisImageDisplayWidget : public QWidget
   private:
 
     //! \brief Used to hold the http request to match the correct emits with the correct result
-    int mCurrentHttpImageRequestId;
+    int mCurrentHttpImageRequestId = 0;
 
     //! \brief CUrrent Zoom level
     int mCurrentZoomStep;
@@ -99,7 +99,7 @@ class eVisImageDisplayWidget : public QWidget
     bool mImageLoaded;
 
     //! \brief Ratio if height to width or width to height for the original image, which ever is smaller
-    double mImageSizeRatio;
+    double mImageSizeRatio = 0.0;
 
     //! \brief Boolean to indicate which feature the mImageSizeRation corresponds to
     bool mScaleByHeight;
@@ -108,10 +108,10 @@ class eVisImageDisplayWidget : public QWidget
     bool mScaleByWidth;
 
     //! \brief The increment by which the image is scaled during each scaling event
-    double mScaleFactor;
+    double mScaleFactor = 1.0;
 
     //! \brief The single factor by which the original image needs to be scaled to fit into current display area
-    double mScaleToFit;
+    double mScaleToFit = 0.0;
 
     //! \brief Zoom in button
     QPushButton *pbtnZoomIn = nullptr;
@@ -129,11 +129,11 @@ class eVisImageDisplayWidget : public QWidget
     int ZOOM_STEPS;
 
   private slots:
-    void on_pbtnZoomIn_clicked();
+    void pbtnZoomIn_clicked();
 
-    void on_pbtnZoomOut_clicked();
+    void pbtnZoomOut_clicked();
 
-    void on_pbtnZoomFull_clicked();
+    void pbtnZoomFull_clicked();
 
     //! \brief Slot called when the http request is completed
     void displayUrlImage( int, bool );

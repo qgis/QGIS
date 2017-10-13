@@ -29,7 +29,8 @@ class QgsComposition;
 class QgsComposerItem;
 class QGraphicsView;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Handles drawing of selection outlines and mouse handles. Responsible for mouse
  * interactions such as resizing and moving selected items.
  * \note not available in Python bindings
@@ -156,7 +157,8 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     //! Draw outlines for selected items
     void drawSelectedItemBounds( QPainter *painter );
 
-    /** Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
+    /**
+     * Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
     item border for resizing*/
     double rectHandlerBorderTolerance();
 

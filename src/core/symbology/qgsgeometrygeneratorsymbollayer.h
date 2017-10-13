@@ -19,7 +19,8 @@
 #include "qgis_core.h"
 #include "qgssymbollayer.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGeometryGeneratorSymbolLayer
  */
 class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
@@ -73,9 +74,11 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
-    //! Will always return true.
-    //! This is a hybrid layer, it constructs its own geometry so it does not
-    //! care about the geometry of its parents.
+    /**
+     * Will always return true.
+     * This is a hybrid layer, it constructs its own geometry so it does not
+     * care about the geometry of its parents.
+     */
     bool isCompatibleWithSymbol( QgsSymbol *symbol ) const override;
 
     /**

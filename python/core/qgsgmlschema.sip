@@ -18,7 +18,11 @@ class QgsGmlFeatureClass
 #include "qgsgmlschema.h"
 %End
   public:
+
     QgsGmlFeatureClass();
+%Docstring
+ Constructor for QgsGmlFeatureClass.
+%End
     QgsGmlFeatureClass( const QString &name, const QString &path );
 
     QList<QgsField> &fields();

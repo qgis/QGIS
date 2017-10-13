@@ -36,7 +36,7 @@ for f in $FILES; do
 
 	echo "Checking $f" >>/tmp/ctest-important.log
 	case "$f" in
-	src/core/gps/qextserialport/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|scripts/customwidget_template*)
+	src/core/gps/qextserialport/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|src/3d/poly2tri/*|scripts/customwidget_template*)
 		echo "$f skipped"
 		continue
 		;;

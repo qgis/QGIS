@@ -38,14 +38,12 @@
 QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
   : mURI( uri )
   , mSourceCRS( 0 )
-  , mCacheDataProvider( nullptr )
   , mMaxFeatures( 0 )
   , mMaxFeaturesWasSetFromDefaultForPaging( false )
   , mHideProgressDialog( mURI.hideDownloadProgressDialog() )
   , mDistinctSelect( false )
   , mHasWarnedAboutMissingFeatureId( false )
   , mGetFeatureEPSGDotHonoursEPSGOrder( false )
-  , mDownloader( nullptr )
   , mDownloadFinished( false )
   , mGenCounter( 0 )
   , mFeatureCount( 0 )
@@ -216,7 +214,7 @@ bool QgsWFSSharedData::createCache()
 
   static int sTmpCounter = 0;
   ++sTmpCounter;
-  mCacheDbname =  QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QStringLiteral( "wfs_cache_%1.sqlite" ).arg( sTmpCounter ) );
+  mCacheDbname = QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QStringLiteral( "wfs_cache_%1.sqlite" ).arg( sTmpCounter ) );
 
   QgsFields cacheFields;
   Q_FOREACH ( const QgsField &field, mFields )
@@ -256,8 +254,8 @@ bool QgsWFSSharedData::createCache()
     QStringList layerOptions;
     datasourceOptions.push_back( QStringLiteral( "INIT_WITH_EPSG=NO" ) );
     layerOptions.push_back( QStringLiteral( "LAUNDER=NO" ) ); // to get exact matches for field names, especially regarding case
-    layerOptions.push_back( "FID=__ogc_fid" );
-    layerOptions.push_back( "GEOMETRY_NAME=__spatialite_geometry" );
+    layerOptions.push_back( QStringLiteral( "FID=__ogc_fid" ) );
+    layerOptions.push_back( QStringLiteral( "GEOMETRY_NAME=__spatialite_geometry" ) );
     vsimemFilename.sprintf( "/vsimem/qgis_wfs_cache_template_%p/features.sqlite", this );
     mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
     VSIUnlink( vsimemFilename.toStdString().c_str() );
@@ -371,7 +369,7 @@ bool QgsWFSSharedData::createCache()
     {
       mCacheTablename = QStringLiteral( "features" );
       sql = QStringLiteral( "CREATE TABLE %1 (%2 INTEGER PRIMARY KEY" ).arg( mCacheTablename, fidName );
-      Q_FOREACH ( const QgsField &field, cacheFields )
+      for ( const QgsField &field : qgsAsConst( cacheFields ) )
       {
         QString type( QStringLiteral( "VARCHAR" ) );
         if ( field.type() == QVariant::Int )
@@ -683,7 +681,6 @@ QString QgsWFSSharedData::findGmlId( QgsFeatureId fid )
 
   QgsFeatureIterator iterGmlIds( mCacheDataProvider->getFeatures( request ) );
   QgsFeature gmlidFeature;
-  QSet<QString> setExistingGmlIds;
   while ( iterGmlIds.nextFeature( gmlidFeature ) )
   {
     const QVariant &v = gmlidFeature.attributes().value( gmlidIdx );
@@ -1182,10 +1179,6 @@ QgsWFSFeatureHitsRequest::QgsWFSFeatureHitsRequest( QgsWFSDataSourceURI &uri )
 {
 }
 
-QgsWFSFeatureHitsRequest::~QgsWFSFeatureHitsRequest()
-{
-}
-
 int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
     const QString &filter )
 {
@@ -1221,7 +1214,7 @@ int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
   QDomElement doc = domDoc.documentElement();
   QString numberOfFeatures =
     ( WFSVersion.startsWith( QLatin1String( "1.1" ) ) ) ? doc.attribute( QStringLiteral( "numberOfFeatures" ) ) :
-    /* 2.0 */                         doc.attribute( QStringLiteral( "numberMatched" ) ) ;
+    /* 2.0 */                         doc.attribute( QStringLiteral( "numberMatched" ) );
   if ( !numberOfFeatures.isEmpty() )
   {
     bool isValid;
@@ -1245,10 +1238,6 @@ QString QgsWFSFeatureHitsRequest::errorMessageWithReason( const QString &reason 
 
 QgsWFSSingleFeatureRequest::QgsWFSSingleFeatureRequest( QgsWFSSharedData *shared )
   : QgsWfsRequest( shared->mURI.uri() ), mShared( shared )
-{
-}
-
-QgsWFSSingleFeatureRequest::~QgsWFSSingleFeatureRequest()
 {
 }
 
@@ -1281,7 +1270,6 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
   {
     QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> featurePtrList =
       parser->getAndStealReadyFeatures();
-    QVector<QgsWFSFeatureGmlIdPair> featureList;
     for ( int i = 0; i < featurePtrList.size(); i++ )
     {
       QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair &featPair = featurePtrList[i];

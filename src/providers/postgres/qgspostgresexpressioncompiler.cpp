@@ -114,21 +114,21 @@ QString QgsPostgresExpressionCompiler::sqlFunctionFromFunctionName( const QStrin
 QStringList QgsPostgresExpressionCompiler::sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const
 {
   QStringList args( fnArgs );
-  if ( fnName == "geom_from_wkt" )
+  if ( fnName == QLatin1String( "geom_from_wkt" ) )
   {
     args << ( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
   }
-  else if ( fnName == "geom_from_gml" )
+  else if ( fnName == QLatin1String( "geom_from_gml" ) )
   {
     args << ( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
   }
-  else if ( fnName == "x" || fnName == "y" )
+  else if ( fnName == QLatin1String( "x" ) || fnName == QLatin1String( "y" ) )
   {
     args = QStringList( QStringLiteral( "ST_Centroid(%1)" ).arg( args[0] ) );
   }
-  else if ( fnName == "buffer" && args.length() == 2 )
+  else if ( fnName == QLatin1String( "buffer" ) && args.length() == 2 )
   {
-    args << "8";
+    args << QStringLiteral( "8" );
   }
   // x and y functions have to be adapted
   return args;
@@ -153,7 +153,7 @@ QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( con
       const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>( node );
 
       QgsExpressionFunction *fd = QgsExpression::Functions()[n->fnIndex()];
-      if ( fd->name() == "$geometry" )
+      if ( fd->name() == QLatin1String( "$geometry" ) )
       {
         result = quotedIdentifier( mGeometryColumn );
         return Complete;

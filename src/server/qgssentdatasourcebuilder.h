@@ -30,9 +30,10 @@ class QgsRasterLayer;
 class QgsSentDataSourceBuilder: public QgsMSLayerBuilder
 {
   public:
-    QgsSentDataSourceBuilder();
+    QgsSentDataSourceBuilder() = default;
 
-    /** Creates a maplayer from xml tag
+    /**
+     * Creates a maplayer from xml tag
        \param elem xml element containing description of datasource
        \param filesToRemove list to append files that should be removed after the request
        \param layersToRemove list to append layers that should be removed after the request

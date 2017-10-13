@@ -23,7 +23,8 @@ class QLabel;
 class QPushButton;
 class QgisInterface;
 
-/** \class QgsGrassUtils
+/**
+ * \class QgsGrassUtils
  *  \brief Various utilities.
  */
 class QgsGrassUtils
@@ -31,10 +32,7 @@ class QgsGrassUtils
 
   public:
     //! Constructor
-    QgsGrassUtils();
-
-
-    ~QgsGrassUtils();
+    QgsGrassUtils() = default;
 
   public:
     // Create vector name from map name, layer name and number of layers
@@ -51,7 +49,8 @@ class QgsGrassUtils
     static QString htmlBrowserPath();
 };
 
-/** \class QgsGrassElementDialog
+/**
+ * \class QgsGrassElementDialog
  *  \brief Get name for new element
  */
 class QgsGrassElementDialog: public QObject
@@ -61,9 +60,6 @@ class QgsGrassElementDialog: public QObject
   public:
     //! Constructor
     explicit QgsGrassElementDialog( QWidget *parent );
-
-
-    ~QgsGrassElementDialog();
 
   public:
     //! Get a name for new GRASS element (map)

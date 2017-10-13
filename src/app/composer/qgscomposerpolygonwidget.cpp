@@ -26,6 +26,7 @@ QgsComposerPolygonWidget::QgsComposerPolygonWidget( QgsComposerPolygon *composer
   , mComposerPolygon( composerPolygon )
 {
   setupUi( this );
+  connect( mPolygonStyleButton, &QPushButton::clicked, this, &QgsComposerPolygonWidget::mPolygonStyleButton_clicked );
   setPanelTitle( tr( "Polygon properties" ) );
 
   //add widget for general composer item properties
@@ -45,11 +46,7 @@ QgsComposerPolygonWidget::QgsComposerPolygonWidget( QgsComposerPolygon *composer
   }
 }
 
-QgsComposerPolygonWidget::~QgsComposerPolygonWidget()
-{
-}
-
-void QgsComposerPolygonWidget::on_mPolygonStyleButton_clicked()
+void QgsComposerPolygonWidget::mPolygonStyleButton_clicked()
 {
   if ( !mComposerPolygon )
   {

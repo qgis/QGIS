@@ -32,7 +32,6 @@ QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas *canvas
   , mCurrentMouseAzimut( 0.0 )
   , mCurrentRotationFeature( 0.0 )
   , mRotating( false )
-  , mRotationItem( nullptr )
   , mCtrlPressed( false )
 {}
 

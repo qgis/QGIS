@@ -27,10 +27,6 @@
 
 static const char *QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 
-QgsMimeDataUtils::Uri::Uri()
-{
-}
-
 QgsMimeDataUtils::Uri::Uri( QString &encData )
 {
   QgsDebugMsg( "encData: " + encData );
@@ -98,6 +94,18 @@ QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error 
   }
   owner = true;
   return new QgsVectorLayer( uri, name, providerKey );
+}
+
+QgsRasterLayer *QgsMimeDataUtils::Uri::rasterLayer( bool &owner, QString &error ) const
+{
+  owner = false;
+  if ( layerType != QLatin1String( "raster" ) )
+  {
+    error = QObject::tr( "%1: Not a raster layer." ).arg( name );
+    return nullptr;
+  }
+  owner = true;
+  return new QgsRasterLayer( uri, name, providerKey );
 }
 
 // -----
@@ -213,7 +221,7 @@ QStringList QgsMimeDataUtils::decode( const QString &encoded )
     else if ( c == ':' && !inEscape )
     {
       items.append( item );
-      item = QLatin1String( "" );
+      item.clear();
     }
     else
     {

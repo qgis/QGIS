@@ -48,7 +48,8 @@ int QgisEvent = QEvent::User + 1;
 #endif
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * The Qgis class provides global constants for use throughout the application.
  */
 class CORE_EXPORT Qgis
@@ -68,7 +69,8 @@ class CORE_EXPORT Qgis
     // Enumerations
     //
 
-    /** Raster data types.
+    /**
+     * Raster data types.
      *  This is modified and extended copy of GDALDataType.
      */
     enum DataType
@@ -89,33 +91,39 @@ class CORE_EXPORT Qgis
       ARGB32_Premultiplied = 13 //!< Color, alpha, red, green, blue, 4 bytes  the same as QImage::Format_ARGB32_Premultiplied
     };
 
-    /** Identify search radius in mm
+    /**
+     * Identify search radius in mm
      *  \since QGIS 2.3 */
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     //! Default threshold between map coordinates and device coordinates for map2pixel simplification
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
 
-    /** Default highlight color.  The transparency is expected to only be applied to polygon
+    /**
+     * Default highlight color.  The transparency is expected to only be applied to polygon
      *  fill. Lines and outlines are rendered opaque.
      *  \since QGIS 2.3 */
     static const QColor DEFAULT_HIGHLIGHT_COLOR;
 
-    /** Default highlight buffer in mm.
+    /**
+     * Default highlight buffer in mm.
      *  \since QGIS 2.3 */
     static const double DEFAULT_HIGHLIGHT_BUFFER_MM;
 
-    /** Default highlight line/stroke minimum width in mm.
+    /**
+     * Default highlight line/stroke minimum width in mm.
      *  \since QGIS 2.3 */
     static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 
-    /** Fudge factor used to compare two scales. The code is often going from scale to scale
+    /**
+     * Fudge factor used to compare two scales. The code is often going from scale to scale
      *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
      *  To avoid that, use this factor instead of using <= or >=.
      * \since QGIS 2.15*/
     static const double SCALE_PRECISION;
 
-    /** Default Z coordinate value for 2.5d geometry
+    /**
+     * Default Z coordinate value for 2.5d geometry
      *  This value have to be assigned to the Z coordinate for the new 2.5d geometry vertex.
      *  \since QGIS 3.0 */
     static const double DEFAULT_Z_COORDINATE;
@@ -136,7 +144,8 @@ class CORE_EXPORT Qgis
 #define cast_to_fptr(f) f
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * RAII signal blocking class. Used for temporarily blocking signals from a QObject
  * for the lifetime of QgsSignalBlocker object.
  * \see whileBlocking()
@@ -148,7 +157,8 @@ template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude
 {
   public:
 
-    /** Constructor for QgsSignalBlocker
+    /**
+     * Constructor for QgsSignalBlocker
      * \param object QObject to block signals from
      */
     explicit QgsSignalBlocker( Object *object )
@@ -171,7 +181,8 @@ template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude
 
 };
 
-/** Temporarily blocks signals from a QObject while calling a single method from the object.
+/**
+ * Temporarily blocks signals from a QObject while calling a single method from the object.
  *
  * Usage:
  *   whileBlocking( checkBox )->setChecked( true );
@@ -192,9 +203,11 @@ template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *ob
 //! Hash for QVariant
 CORE_EXPORT uint qHash( const QVariant &variant );
 
-//! Returns a string representation of a double
-//! \param a double value
-//! \param precision number of decimal places to retain
+/**
+ * Returns a string representation of a double
+ * \param a double value
+ * \param precision number of decimal places to retain
+ */
 inline QString qgsDoubleToString( double a, int precision = 17 )
 {
   if ( precision )
@@ -203,20 +216,24 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
     return QString::number( a, 'f', precision );
 }
 
-//! Compare two doubles (but allow some difference)
-//! \param a first double
-//! \param b second double
-//! \param epsilon maximum difference allowable between doubles
+/**
+ * Compare two doubles (but allow some difference)
+ * \param a first double
+ * \param b second double
+ * \param epsilon maximum difference allowable between doubles
+ */
 inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
 {
   const double diff = a - b;
   return diff > -epsilon && diff <= epsilon;
 }
 
-//! Compare two floats (but allow some difference)
-//! \param a first float
-//! \param b second float
-//! \param epsilon maximum difference allowable between floats
+/**
+ * Compare two floats (but allow some difference)
+ * \param a first float
+ * \param b second float
+ * \param epsilon maximum difference allowable between floats
+ */
 inline bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON )
 {
   const float diff = a - b;
@@ -250,7 +267,33 @@ inline double qgsRound( double number, double places )
   return static_cast<double>( static_cast<qlonglong>( number * scaleFactor + 0.5 ) ) / scaleFactor;
 }
 
-/** Converts a string to a double in a permissive way, e.g., allowing for incorrect
+
+#ifndef SIP_RUN
+
+///@cond PRIVATE
+
+/**
+ * Adds const to non-const objects.
+ *
+ * To be used as a proxy for std::as_const until we target c++17 minimum.
+ *
+ * \since QGIS 3.0
+ * \note not available in Python bindings
+ */
+// TODO - remove when we target c++17 minimum and can use std::as_const
+template <typename T> struct QgsAddConst { typedef const T Type; };
+
+template <typename T>
+constexpr typename QgsAddConst<T>::Type &qgsAsConst( T &t ) noexcept { return t; }
+
+template <typename T>
+void qgsAsConst( const T && ) = delete;
+
+///@endcond
+#endif
+
+/**
+ * Converts a string to a double in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * \param string string to convert
  * \param ok will be set to true if conversion was successful
@@ -260,7 +303,8 @@ inline double qgsRound( double number, double places )
  */
 CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
 
-/** Converts a string to an integer in a permissive way, e.g., allowing for incorrect
+/**
+ * Converts a string to an integer in a permissive way, e.g., allowing for incorrect
  * numbers of digits between thousand separators
  * \param string string to convert
  * \param ok will be set to true if conversion was successful
@@ -270,27 +314,33 @@ CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
  */
 CORE_EXPORT int qgsPermissiveToInt( QString string, bool &ok );
 
-//! Compares two QVariant values and returns whether the first is less than the second.
-//! Useful for sorting lists of variants, correctly handling sorting of the various
-//! QVariant data types (such as strings, numeric values, dates and times)
-//! \see qgsVariantGreaterThan()
+/**
+ * Compares two QVariant values and returns whether the first is less than the second.
+ * Useful for sorting lists of variants, correctly handling sorting of the various
+ * QVariant data types (such as strings, numeric values, dates and times)
+ * \see qgsVariantGreaterThan()
+ */
 CORE_EXPORT bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
 
-//! Compares two QVariant values and returns whether the first is greater than the second.
-//! Useful for sorting lists of variants, correctly handling sorting of the various
-//! QVariant data types (such as strings, numeric values, dates and times)
-//! \see qgsVariantLessThan()
+/**
+ * Compares two QVariant values and returns whether the first is greater than the second.
+ * Useful for sorting lists of variants, correctly handling sorting of the various
+ * QVariant data types (such as strings, numeric values, dates and times)
+ * \see qgsVariantLessThan()
+ */
 CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
 CORE_EXPORT QString qgsVsiPrefix( const QString &path );
 
-/** Allocates size bytes and returns a pointer to the allocated  memory.
+/**
+ * Allocates size bytes and returns a pointer to the allocated  memory.
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.
     \param size size in bytes
  */
 void CORE_EXPORT *qgsMalloc( size_t size ) SIP_SKIP;
 
-/** Allocates  memory for an array of nmemb elements of size bytes each and returns
+/**
+ * Allocates  memory for an array of nmemb elements of size bytes each and returns
     a pointer to the allocated memory. Works like C calloc() but prints debug message
     by QgsLogger if allocation fails.
     \param nmemb number of elements
@@ -298,12 +348,14 @@ void CORE_EXPORT *qgsMalloc( size_t size ) SIP_SKIP;
  */
 void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size ) SIP_SKIP;
 
-/** Frees the memory space  pointed  to  by  ptr. Works like C free().
+/**
+ * Frees the memory space  pointed  to  by  ptr. Works like C free().
     \param ptr pointer to memory space
  */
 void CORE_EXPORT qgsFree( void *ptr ) SIP_SKIP;
 
-/** Wkt string that represents a geographic coord sys
+/**
+ * Wkt string that represents a geographic coord sys
  * \since QGIS GEOWkt
  */
 extern CORE_EXPORT const QString GEOWKT;
@@ -320,7 +372,8 @@ const long GEO_EPSG_CRS_ID = 4326;
 //! Geographic coord sys from EPSG authority
 extern CORE_EXPORT const QString GEO_EPSG_CRS_AUTHID;
 
-/** Magick number that determines whether a projection crsid is a system (srs.db)
+/**
+ * Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
 const int USER_CRS_START_ID = 100000;
 
@@ -340,7 +393,8 @@ const double DEFAULT_SEGMENT_EPSILON = 1e-8;
 
 typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
-/** Qgssize is used instead of size_t, because size_t is stdlib type, unknown
+/**
+ * Qgssize is used instead of size_t, because size_t is stdlib type, unknown
  *  by SIP, and it would be hard to define size_t correctly in SIP.
  *  Currently used "unsigned long long" was introduced in C++11 (2011)
  *  but it was supported already before C++11 on common platforms.

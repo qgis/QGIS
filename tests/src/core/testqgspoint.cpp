@@ -25,6 +25,7 @@
 #include <qgsgeometry.h>
 //header for class being tested
 #include <qgspoint.h>
+#include "qgsreferencedgeometry.h"
 
 class TestQgsPointXY: public QObject
 {
@@ -51,6 +52,8 @@ class TestQgsPointXY: public QObject
     void compare();
     void project();
     void vector(); //tests for QgsVector
+    void asVariant();
+    void referenced();
 
   private:
     QgsPointXY mPoint1;
@@ -711,30 +714,30 @@ void TestQgsPointXY::vector()
 
   // length
   QCOMPARE( v1.length(), 0.0 );
-  QVERIFY( qgsDoubleNear( v2.length(), std::sqrt( 5.0 ), 0.000000001 ) );
+  QGSCOMPARENEAR( v2.length(), std::sqrt( 5.0 ), 0.000000001 );
 
   // perpVector
   QCOMPARE( QgsVector( 2, 3 ).perpVector().x(), -3.0 );
   QCOMPARE( QgsVector( 2, 3 ).perpVector().y(), 2.0 );
 
   // angle
-  QVERIFY( qgsDoubleNear( QgsVector( 0, 1 ).angle(), M_PI_2, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 1, 0 ).angle(), 0, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( -1, 0 ).angle(), M_PI, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 0, -1 ).angle(), 3 * M_PI_2, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 0, 0 ).angle(), 0, 0.0000001 ) );
+  QGSCOMPARENEAR( QgsVector( 0, 1 ).angle(), M_PI_2, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 1, 0 ).angle(), 0, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( -1, 0 ).angle(), M_PI, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 0, -1 ).angle(), 3 * M_PI_2, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 0, 0 ).angle(), 0, 0.0000001 );
 
-  QVERIFY( qgsDoubleNear( QgsVector( 0, 1 ).angle( QgsVector( 0, 1 ) ), 0, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 1, 0 ).angle( QgsVector( 0, 1 ) ), M_PI_2, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 0, 1 ).angle( QgsVector( -1, 0 ) ), M_PI_2, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 1, 0 ).angle( QgsVector( -1, 0 ) ), M_PI, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( -1, 0 ).angle( QgsVector( 0, 0 ) ), -M_PI, 0.0000001 ) );
+  QGSCOMPARENEAR( QgsVector( 0, 1 ).angle( QgsVector( 0, 1 ) ), 0, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 1, 0 ).angle( QgsVector( 0, 1 ) ), M_PI_2, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 0, 1 ).angle( QgsVector( -1, 0 ) ), M_PI_2, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 1, 0 ).angle( QgsVector( -1, 0 ) ), M_PI, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( -1, 0 ).angle( QgsVector( 0, 0 ) ), -M_PI, 0.0000001 );
 
   // rotateBy
-  QVERIFY( qgsDoubleNear( QgsVector( 0, 1 ).rotateBy( M_PI_2 ).x(), -1.0, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 0, 1 ).rotateBy( M_PI_2 ).y(), 0.0, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 0, 1 ).rotateBy( M_PI ).x(), 0.0, 0.0000001 ) );
-  QVERIFY( qgsDoubleNear( QgsVector( 0, 1 ).rotateBy( M_PI ).y(), -1.0, 0.0000001 ) );
+  QGSCOMPARENEAR( QgsVector( 0, 1 ).rotateBy( M_PI_2 ).x(), -1.0, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 0, 1 ).rotateBy( M_PI_2 ).y(), 0.0, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 0, 1 ).rotateBy( M_PI ).x(), 0.0, 0.0000001 );
+  QGSCOMPARENEAR( QgsVector( 0, 1 ).rotateBy( M_PI ).y(), -1.0, 0.0000001 );
 
   // normalized
   QCOMPARE( QgsVector( 0, 2 ).normalized().x(), 0.0 );
@@ -758,6 +761,43 @@ void TestQgsPointXY::vector()
   v1 -= v2;
   QCOMPARE( v1.x(), 1.0 );
   QCOMPARE( v1.y(), 3.0 );
+}
+
+void TestQgsPointXY::asVariant()
+{
+  QgsPointXY p1 = QgsPointXY( 10.0, 20.0 );
+
+  //convert to and from a QVariant
+  QVariant var = QVariant::fromValue( p1 );
+  QVERIFY( var.isValid() );
+  QVERIFY( var.canConvert< QgsPointXY >() );
+  QVERIFY( !var.canConvert< QgsReferencedPointXY >() );
+
+  QgsPointXY p2 = qvariant_cast<QgsPointXY>( var );
+  QCOMPARE( p2.x(), p1.x() );
+  QCOMPARE( p2.y(), p1.y() );
+}
+
+void TestQgsPointXY::referenced()
+{
+  QgsReferencedPointXY p1 = QgsReferencedPointXY( QgsPointXY( 10.0, 20.0 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
+  QCOMPARE( p1.crs().authid(), QStringLiteral( "EPSG:3111" ) );
+  p1.setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
+  QCOMPARE( p1.crs().authid(), QStringLiteral( "EPSG:28356" ) );
+
+  //convert to and from a QVariant
+  QVariant var = QVariant::fromValue( p1 );
+  QVERIFY( var.isValid() );
+
+  // not great - we'd ideally like this to pass, but it doesn't:
+  // QVERIFY( !var.canConvert< QgsPointXY >() );
+
+  QVERIFY( var.canConvert< QgsReferencedPointXY >() );
+
+  QgsReferencedPointXY p2 = qvariant_cast<QgsReferencedPointXY>( var );
+  QCOMPARE( p2.x(), p1.x() );
+  QCOMPARE( p2.y(), p1.y() );
+  QCOMPARE( p2.crs().authid(), QStringLiteral( "EPSG:28356" ) );
 }
 
 QGSTEST_MAIN( TestQgsPointXY )

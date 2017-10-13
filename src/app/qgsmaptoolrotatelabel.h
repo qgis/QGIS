@@ -37,14 +37,14 @@ class APP_EXPORT QgsMapToolRotateLabel: public QgsMapToolLabel
   protected:
 
     static int roundTo15Degrees( double n );
-    //! Converts azimuth value to counterclockwise 0 - 360
-    static double azimuthToCCW( double a );
+    //! Converts azimuth value so that 0 is corresponds to East
+    static double convertAzimuth( double a );
 
     QgsRubberBand *createRotationPreviewBox();
     void setRotationPreviewBox( double rotation );
 
-    //! Rotates input point counterclockwise around centerPoint
-    QgsPointXY rotatePointCounterClockwise( const QgsPointXY &input, const QgsPointXY &centerPoint, double degrees );
+    //! Rotates input point clockwise around centerPoint
+    QgsPointXY rotatePointClockwise( const QgsPointXY &input, const QgsPointXY &centerPoint, double degrees ) const;
 
     double mStartRotation; //rotation value prior to start rotating
     double mCurrentRotation;

@@ -80,14 +80,16 @@ namespace pal
 
       PointSet *extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
 
-      /** Tests whether point set contains a specified point.
+      /**
+       * Tests whether point set contains a specified point.
        * \param x x-coordinate of point
        * \param y y-coordinate of point
        * \returns true if point set contains a specified point
        */
       bool containsPoint( double x, double y ) const;
 
-      /** Tests whether a possible label candidate will fit completely within the shape.
+      /**
+       * Tests whether a possible label candidate will fit completely within the shape.
        * \param x x-coordinate of label candidate
        * \param y y-coordinate of label candidate
        * \param width label width
@@ -99,13 +101,15 @@ namespace pal
 
       CHullBox *compute_chull_bbox();
 
-      /** Split a concave shape into several convex shapes.
+      /**
+       * Split a concave shape into several convex shapes.
        */
       static void splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
                                  QLinkedList<PointSet *> &shapes_final,
                                  double xrm, double yrm );
 
-      /** Returns the squared minimum distance between the point set geometry and the point (px,py)
+      /**
+       * Returns the squared minimum distance between the point set geometry and the point (px,py)
        * Optionally, the nearest point is stored in (rx,ry).
        * \param px x coordinate of the point
        * \param py y coordinate of the points
@@ -132,7 +136,8 @@ namespace pal
 
       int getNumPoints() const { return nbPoints; }
 
-      /** Get a point a set distance along a line geometry.
+      /**
+       * Get a point a set distance along a line geometry.
        * \param d array of distances between points
        * \param ad cumulative total distance from pt0 to each point (ad0 = pt0->pt0)
        * \param dl distance to traverse along line
@@ -141,17 +146,19 @@ namespace pal
       */
       void getPointByDistance( double *d, double *ad, double dl, double *px, double *py );
 
-      /** Returns the point set's GEOS geometry.
+      /**
+       * Returns the point set's GEOS geometry.
       */
       const GEOSGeometry *geos() const;
 
-      /** Returns length of line geometry.
+      /**
+       * Returns length of line geometry.
        */
       double length() const;
 
     protected:
-      mutable GEOSGeometry *mGeos;
-      mutable bool mOwnsGeom;
+      mutable GEOSGeometry *mGeos = nullptr;
+      mutable bool mOwnsGeom = false;
 
       int nbPoints;
       double *x = nullptr;
@@ -174,14 +181,14 @@ namespace pal
       const GEOSPreparedGeometry *preparedGeom() const;
       void invalidateGeos();
 
-      double xmin;
-      double xmax;
-      double ymin;
-      double ymax;
+      double xmin = DBL_MAX;
+      double xmax = -DBL_MAX;
+      double ymin = DBL_MAX;
+      double ymax = -DBL_MAX;
 
     private:
 
-      mutable const GEOSPreparedGeometry *mPreparedGeom;
+      mutable const GEOSPreparedGeometry *mPreparedGeom = nullptr;
 
   };
 

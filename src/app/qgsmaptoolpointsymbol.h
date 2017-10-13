@@ -22,7 +22,8 @@
 
 class QgsMarkerSymbol;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * \class QgsMapToolPointSymbol
  * \brief An abstract base class that allows interactive manipulation of the symbols for point layers. Handles
  * snapping the mouse press to a feature, and detecting whether the clicked feature has symbology which is

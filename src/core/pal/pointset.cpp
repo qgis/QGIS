@@ -38,17 +38,8 @@
 using namespace pal;
 
 PointSet::PointSet()
-  : mGeos( nullptr )
-  , mOwnsGeom( false )
-  , holeOf( nullptr )
-  , parent( nullptr )
-  , xmin( DBL_MAX )
-  , xmax( -DBL_MAX )
-  , ymin( DBL_MAX )
-  , ymax( -DBL_MAX )
-  , mPreparedGeom( nullptr )
 {
-  nbPoints = cHullSize =  0;
+  nbPoints = cHullSize = 0;
   x = nullptr;
   y = nullptr;
   cHull = nullptr;
@@ -56,16 +47,7 @@ PointSet::PointSet()
 }
 
 PointSet::PointSet( int nbPoints, double *x, double *y )
-  : mGeos( nullptr )
-  , mOwnsGeom( false )
-  , cHullSize( 0 )
-  , holeOf( nullptr )
-  , parent( nullptr )
-  , xmin( DBL_MAX )
-  , xmax( -DBL_MAX )
-  , ymin( DBL_MAX )
-  , ymax( -DBL_MAX )
-  , mPreparedGeom( nullptr )
+  : cHullSize( 0 )
 {
   this->nbPoints = nbPoints;
   this->x = new double[nbPoints];
@@ -82,13 +64,10 @@ PointSet::PointSet( int nbPoints, double *x, double *y )
 }
 
 PointSet::PointSet( double aX, double aY )
-  : mGeos( nullptr )
-  , mOwnsGeom( false )
-  , xmin( aX )
+  : xmin( aX )
   , xmax( aY )
   , ymin( aX )
   , ymax( aY )
-  , mPreparedGeom( nullptr )
 {
   nbPoints = cHullSize = 1;
   x = new double[1];
@@ -104,14 +83,10 @@ PointSet::PointSet( double aX, double aY )
 }
 
 PointSet::PointSet( const PointSet &ps )
-  : mGeos( nullptr )
-  , mOwnsGeom( false )
-  , parent( nullptr )
-  , xmin( ps.xmin )
+  : xmin( ps.xmin )
   , xmax( ps.xmax )
   , ymin( ps.ymin )
   , ymax( ps.ymax )
-  , mPreparedGeom( nullptr )
 {
   int i;
 
@@ -601,8 +576,8 @@ CHullBox *PointSet::compute_chull_bbox()
   double best_width = 0;
 
 
-  bbox[0] =   DBL_MAX;
-  bbox[1] =   DBL_MAX;
+  bbox[0] = DBL_MAX;
+  bbox[1] = DBL_MAX;
   bbox[2] = - DBL_MAX;
   bbox[3] = - DBL_MAX;
 
@@ -656,7 +631,7 @@ CHullBox *PointSet::compute_chull_bbox()
     for ( i = 0; i < 16; i += 4 )
     {
 
-      alpha_seg = ( ( i / 4 > 0 ? ( i / 4 ) - 1 : 3 ) ) * M_PI / 2 + alpha;
+      alpha_seg = ( ( i / 4 > 0 ? ( i / 4 ) - 1 : 3 ) ) * M_PI_2 + alpha;
 
       best_cp = DBL_MAX;
       for ( j = 0; j < nbPoints; j++ )

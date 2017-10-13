@@ -37,8 +37,8 @@ class APP_EXPORT QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogB
     QgsField field() const;
 
   public slots:
-    void on_mTypeBox_currentIndexChanged( int idx );
-    void on_mLength_editingFinished();
+    void mTypeBox_currentIndexChanged( int idx );
+    void mLength_editingFinished();
     void accept() override;
 
   private:

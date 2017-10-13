@@ -22,7 +22,6 @@ class QgsMapMouseEvent : QMouseEvent
 %TypeHeaderCode
 #include "qgsmapmouseevent.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsMapMouseEvent *>( sipCpp ) )
       sipType = sipType_QgsMapMouseEvent;
@@ -59,16 +58,6 @@ class QgsMapMouseEvent : QMouseEvent
 
    if snapping did not succeeded, the map point will be reset to its original position
  :rtype: QgsPointXY
-%End
-
-    QList<QgsPointXY> snapSegment( bool *snapped = 0, bool allLayers = false ) const;
-%Docstring
- Returns the first snapped segment. If the cached snapped match is a segment, it will simply return it.
- Otherwise it will try to snap a segment according to the event's snapping mode. In this case the cache
- will not be overwritten.
- \param snapped if given, determines if a segment has been snapped
- \param allLayers if true, override snapping mode
- :rtype: list of QgsPointXY
 %End
 
     bool isSnapped() const;

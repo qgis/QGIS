@@ -22,11 +22,7 @@
 
 QgsSnappingUtils::QgsSnappingUtils( QObject *parent )
   : QObject( parent )
-  , mCurrentLayer( nullptr )
   , mSnappingConfig( QgsProject::instance() )
-  , mStrategy( IndexHybrid )
-  , mHybridPerLayerFeatureLimit( 50000 )
-  , mIsIndexing( false )
 {
 }
 
@@ -93,10 +89,7 @@ bool QgsSnappingUtils::isIndexPrepared( QgsVectorLayer *vl, const QgsRectangle &
 
   QgsRectangle aoi( areaOfInterest );
   aoi.scale( 0.999 );
-  if ( ( mStrategy == IndexHybrid || mStrategy == IndexExtent ) && loc->hasIndex() && ( !loc->extent() || loc->extent()->contains( aoi ) ) )
-    return true;
-
-  return false; // the index - even if it exists - is not suitable
+  return ( mStrategy == IndexHybrid || mStrategy == IndexExtent ) && loc->hasIndex() && ( !loc->extent() || loc->extent()->contains( aoi ) ); // the index - even if it exists - is not suitable
 }
 
 
@@ -182,7 +175,7 @@ static void _replaceIfBetter( QgsPointLocator::Match &bestMatch, const QgsPointL
 }
 
 
-static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPointXY &pointMap, QgsPointLocator *loc, int type, double tolerance, QgsPointLocator::MatchFilter *filter )
+static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPointXY &pointMap, QgsPointLocator *loc, QgsPointLocator::Types type, double tolerance, QgsPointLocator::MatchFilter *filter )
 {
   if ( type & QgsPointLocator::Vertex )
   {
@@ -191,6 +184,23 @@ static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPointX
   if ( bestMatch.type() != QgsPointLocator::Vertex && ( type & QgsPointLocator::Edge ) )
   {
     _replaceIfBetter( bestMatch, loc->nearestEdge( pointMap, tolerance, filter ), tolerance );
+  }
+}
+
+
+static QgsPointLocator::Types _snappingTypeToPointLocatorType( QgsSnappingConfig::SnappingType type )
+{
+  // watch out: vertex+segment vs segment are in different order in the two enums
+  switch ( type )
+  {
+    case QgsSnappingConfig::Vertex:
+      return QgsPointLocator::Vertex;
+    case QgsSnappingConfig::VertexAndSegment:
+      return QgsPointLocator::Types( QgsPointLocator::Vertex | QgsPointLocator::Edge );
+    case QgsSnappingConfig::Segment:
+      return QgsPointLocator::Edge;
+    default:
+      return QgsPointLocator::Invalid;
   }
 }
 
@@ -220,7 +230,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
 
     // data from project
     double tolerance = QgsTolerance::toleranceInProjectUnits( mSnappingConfig.tolerance(), mCurrentLayer, mMapSettings, mSnappingConfig.units() );
-    int type = mSnappingConfig.type();
+    QgsPointLocator::Types type = _snappingTypeToPointLocatorType( mSnappingConfig.type() );
 
     prepareIndex( QList<LayerAndAreaOfInterest>() << qMakePair( mCurrentLayer, _areaOfInterest( pointMap, tolerance ) ) );
 
@@ -279,7 +289,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
   {
     // data from project
     double tolerance = QgsTolerance::toleranceInProjectUnits( mSnappingConfig.tolerance(), nullptr, mMapSettings, mSnappingConfig.units() );
-    int type = mSnappingConfig.type();
+    QgsPointLocator::Types type = _snappingTypeToPointLocatorType( mSnappingConfig.type() );
     QgsRectangle aoi = _areaOfInterest( pointMap, tolerance );
 
     QList<LayerAndAreaOfInterest> layers;
@@ -430,7 +440,7 @@ void QgsSnappingUtils::toggleEnabled()
   emit configChanged( mSnappingConfig );
 }
 
-QgsPointLocator::Match QgsSnappingUtils::snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter *filter )
+QgsPointLocator::Match QgsSnappingUtils::snapToCurrentLayer( QPoint point, QgsPointLocator::Types type, QgsPointLocator::MatchFilter *filter )
 {
   if ( !mCurrentLayer )
     return QgsPointLocator::Match();
@@ -482,14 +492,14 @@ QString QgsSnappingUtils::dump()
       return msg;
     }
 
-    layers << LayerConfig( mCurrentLayer, QgsPointLocator::Types( mSnappingConfig.type() ), mSnappingConfig.tolerance(), mSnappingConfig.units() );
+    layers << LayerConfig( mCurrentLayer, _snappingTypeToPointLocatorType( mSnappingConfig.type() ), mSnappingConfig.tolerance(), mSnappingConfig.units() );
   }
   else if ( mSnappingConfig.mode() == QgsSnappingConfig::AllLayers )
   {
     Q_FOREACH ( QgsMapLayer *layer, mMapSettings.layers() )
     {
       if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
-        layers << LayerConfig( vl, QgsPointLocator::Types( mSnappingConfig.type() ), mSnappingConfig.tolerance(), mSnappingConfig.units() );
+        layers << LayerConfig( vl, _snappingTypeToPointLocatorType( mSnappingConfig.type() ), mSnappingConfig.tolerance(), mSnappingConfig.units() );
     }
   }
   else if ( mSnappingConfig.mode() == QgsSnappingConfig::AdvancedConfiguration )
@@ -558,13 +568,7 @@ void QgsSnappingUtils::onIndividualLayerSettingsChanged( const QHash<QgsVectorLa
   {
     if ( i->enabled() )
     {
-      QgsPointLocator::Types t( i->type() == QgsSnappingConfig::Vertex ? QgsPointLocator::Vertex :
-                                ( i->type() == QgsSnappingConfig::Segment ? QgsPointLocator::Edge :
-                                  QgsPointLocator::Vertex | QgsPointLocator::Edge
-                                )
-                              );
-
-      mLayers.append( LayerConfig( i.key(), t, i->tolerance(), i->units() ) );
+      mLayers.append( LayerConfig( i.key(), _snappingTypeToPointLocatorType( i->type() ), i->tolerance(), i->units() ) );
     }
   }
 }

@@ -16,26 +16,6 @@
 #include "qgsarrowsymbollayer.h"
 
 QgsArrowSymbolLayer::QgsArrowSymbolLayer()
-  : QgsLineSymbolLayer()
-  , mArrowWidth( 1.0 )
-  , mArrowWidthUnit( QgsUnitTypes::RenderMillimeters )
-  , mArrowStartWidth( 1.0 )
-  , mArrowStartWidthUnit( QgsUnitTypes::RenderMillimeters )
-  , mHeadLength( 1.5 )
-  , mHeadLengthUnit( QgsUnitTypes::RenderMillimeters )
-  , mHeadThickness( 1.5 )
-  , mHeadThicknessUnit( QgsUnitTypes::RenderMillimeters )
-  , mHeadType( HeadSingle )
-  , mArrowType( ArrowPlain )
-  , mIsCurved( true )
-  , mIsRepeated( true )
-  , mScaledArrowWidth( 1.0 )
-  , mScaledArrowStartWidth( 1.0 )
-  , mScaledHeadLength( 1.5 )
-  , mScaledHeadThickness( 1.5 )
-  , mScaledOffset( 0.0 )
-  , mComputedHeadType( HeadSingle )
-  , mComputedArrowType( ArrowPlain )
 {
   /* default values */
   setOffset( 0.0 );
@@ -802,7 +782,7 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
 
 void QgsArrowSymbolLayer::setColor( const QColor &c )
 {
-  if ( mSymbol.get() )
+  if ( mSymbol )
     mSymbol->setColor( c );
 
   mColor = c;

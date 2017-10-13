@@ -24,7 +24,8 @@
 #include "qgscircle.h"
 #include "qgslinestring.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsTriangle
  * \brief Triangle geometry type.
  * \since QGIS 3.0
@@ -34,7 +35,8 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
   public:
     QgsTriangle();
 
-    /** Construct a QgsTriangle from three QgsPointV2.
+    /**
+     * Construct a QgsTriangle from three QgsPointV2.
      * An empty triangle is returned if there are identical points or if the points are collinear.
      * \param p1 first point
      * \param p2 second point
@@ -42,7 +44,8 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      */
     QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 );
 
-    /** Construct a QgsTriangle from three QgsPoint.
+    /**
+     * Construct a QgsTriangle from three QgsPoint.
      * An empty triangle is returned if there are identical points or if the points are collinear.
      * \param p1 first point
      * \param p2 second point
@@ -50,7 +53,8 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
      */
     explicit QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 );
 
-    /** Construct a QgsTriangle from three QPointF.
+    /**
+     * Construct a QgsTriangle from three QPointF.
      * An empty triangle is returned if there are identical points or if the points are collinear.
      * \param p1 first point
      * \param p2 second point
@@ -61,11 +65,11 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     bool operator==( const QgsTriangle &other ) const;
     bool operator!=( const QgsTriangle &other ) const;
 
-    virtual QString geometryType() const override { return QStringLiteral( "Triangle" ); }
-    virtual QgsTriangle *clone() const override SIP_FACTORY;
+    QString geometryType() const override;
+    QgsTriangle *clone() const override SIP_FACTORY;
     void clear() override;
 
-    virtual bool fromWkb( QgsConstWkbPtr &wkbPtr ) override;
+    bool fromWkb( QgsConstWkbPtr &wkbPtr ) override;
 
     bool fromWkt( const QString &wkt ) override;
 
@@ -76,12 +80,13 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
 
     QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
 
-    QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
+    QgsCurvePolygon *toCurveType() const override SIP_FACTORY;
 
     //! Inherited method not used. You cannot add an interior ring into a triangle.
     void addInteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
 
-    /** Inherited method not used. You cannot add an interior ring into a triangle.
+    /**
+     * Inherited method not used. You cannot add an interior ring into a triangle.
      * \note not available in Python bindings
      */
     void setInteriorRings( const QList< QgsCurve *> &rings ) = delete;
@@ -91,9 +96,9 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
     bool moveVertex( QgsVertexId vId, const QgsPoint &newPos ) override;
 
-    virtual void setExteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
+    void setExteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
 
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QgsCurve *boundary() const override SIP_FACTORY;
 
     // inherited: double pointDistanceToBoundary( double x, double y ) const;
 

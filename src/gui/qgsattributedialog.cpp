@@ -25,7 +25,6 @@
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
   : QDialog( parent )
-  , mHighlight( nullptr )
   , mOwnedFeature( featureOwner ? thepFeature : nullptr )
 {
   init( vl, thepFeature, context, showDialogButtons );
@@ -103,7 +102,7 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAttributeDialog::accept );
   connect( layer, &QObject::destroyed, this, &QWidget::close );
 
-  QgsActionMenu *menu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "AttributeTableRow" ), this );
+  QgsActionMenu *menu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "Feature" ), this );
   if ( !menu->actions().isEmpty() )
   {
     QMenuBar *menuBar = new QMenuBar( this );

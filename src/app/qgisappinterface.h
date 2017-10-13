@@ -25,7 +25,8 @@
 class QgisApp;
 
 
-/** \class QgisAppInterface
+/**
+ * \class QgisAppInterface
  * \brief Interface class to provide access to private methods in QgisApp
  * for use by plugins.
  *
@@ -80,6 +81,14 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     bool addProject( const QString &projectName ) override;
     //! Start a new blank project
     void newProject( bool promptToSaveFlag = false ) override;
+
+    /**
+     * Triggered by plugins when connections have changed.
+     * This is forwarded to the GUI elements that needs to be updated (i.e. the source
+     * select dialogs and the browser widgets)
+     * \since QGIS 3.0
+     */
+    void reloadConnections( ) override;
 
     //! Get pointer to the active layer (layer selected in the legend)
     QgsMapLayer *activeLayer() override;
@@ -161,11 +170,14 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Add toolbar with specified name
     QToolBar *addToolBar( const QString &name ) override;
 
-    //! Add a toolbar
-    //! \since QGIS 2.3
+    /**
+     * Add a toolbar
+     * \since QGIS 2.3
+     */
     void addToolBar( QToolBar *toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea ) override;
 
-    /** Open a url in the users browser. By default the QGIS doc directory is used
+    /**
+     * Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
      * QGIS documentation, set useQgisDocDirectory to false.
      * \param url URL to open
@@ -193,7 +205,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      */
     QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() override;
 
-    /** Gives access to main QgisApp object
+    /**
+     * Gives access to main QgisApp object
 
         Plugins don't need to know about QgisApp, as we pass it as QWidget,
         it can be used for connecting slots and using as widget's parent
@@ -220,7 +233,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Return changeable options built from settings and/or defaults
     QMap<QString, QVariant> defaultStyleSheetOptions() override;
 
-    /** Generate stylesheet
+    /**
+     * Generate stylesheet
      * \param opts generated default option values, or a changed copy of them */
     void buildStyleSheet( const QMap<QString, QVariant> &opts ) override;
 
@@ -269,21 +283,25 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! return CAD dock widget
     QgsAdvancedDigitizingDockWidget *cadDockWidget() override;
 
-    /** Show layer properties dialog for layer
+    /**
+     * Show layer properties dialog for layer
      * \param l layer to show properties table for
      */
     virtual void showLayerProperties( QgsMapLayer *l ) override;
 
-    /** Show layer attribute dialog for layer
+    /**
+     * Show layer attribute dialog for layer
      * \param l layer to show attribute table for
      */
     virtual QDialog *showAttributeTable( QgsVectorLayer *l, const QString &filterExpression = QString() ) override;
 
-    /** Add window to Window menu. The action title is the window title
+    /**
+     * Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */
     virtual void addWindow( QAction *action ) override;
 
-    /** Remove window from Window menu. Calling this is necessary only for
+    /**
+     * Remove window from Window menu. Calling this is necessary only for
      * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action ) override;
 
@@ -299,19 +317,22 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
 
-    /** Register a new custom drop handler.
+    /**
+     * Register a new custom drop handler.
      * \since QGIS 3.0
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * \see unregisterCustomDropHandler() */
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
 
-    /** Unregister a previously registered custom drop handler.
+    /**
+     * Unregister a previously registered custom drop handler.
      * \since QGIS 3.0
      * \see registerCustomDropHandler() */
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) override;
 
-    /** Accessors for inserting items into menus and toolbars.
+    /**
+     * Accessors for inserting items into menus and toolbars.
      * An item can be inserted before any existing action.
      */
 
@@ -479,7 +500,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      */
     virtual QgsVectorLayerTools *vectorLayerTools() override;
 
-    /** This method is only needed when using a UI form with a custom widget plugin and calling
+    /**
+     * This method is only needed when using a UI form with a custom widget plugin and calling
      * openFeatureForm or getFeatureForm from Python (PyQt4) and you haven't used the info tool first.
      * Python will crash bringing QGIS with it
      * if the custom form is not loaded from a C++ method call.
@@ -492,7 +514,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      */
     virtual void preloadForm( const QString &uifile ) override;
 
-    /** Return vector layers in edit mode
+    /**
+     * Return vector layers in edit mode
      * \param modified whether to return only layers that have been modified
      * \returns list of layers in legend order, or empty list
      */

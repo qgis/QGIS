@@ -28,27 +28,26 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     Q_OBJECT
   public:
     QgsComposerHtmlWidget( QgsComposerHtml *html, QgsComposerFrame *frame );
-    ~QgsComposerHtmlWidget();
 
   private slots:
-    void on_mUrlLineEdit_editingFinished();
-    void on_mFileToolButton_clicked();
-    void on_mResizeModeComboBox_currentIndexChanged( int index );
-    void on_mEvaluateExpressionsCheckbox_toggled( bool checked );
-    void on_mUseSmartBreaksCheckBox_toggled( bool checked );
-    void on_mMaxDistanceSpinBox_valueChanged( double val );
+    void mUrlLineEdit_editingFinished();
+    void mFileToolButton_clicked();
+    void mResizeModeComboBox_currentIndexChanged( int index );
+    void mEvaluateExpressionsCheckbox_toggled( bool checked );
+    void mUseSmartBreaksCheckBox_toggled( bool checked );
+    void mMaxDistanceSpinBox_valueChanged( double val );
     void htmlEditorChanged();
     void stylesheetEditorChanged();
-    void on_mUserStylesheetCheckBox_toggled( bool checked );
-    void on_mRadioManualSource_clicked( bool checked );
-    void on_mRadioUrlSource_clicked( bool checked );
-    void on_mInsertExpressionButton_clicked();
+    void mUserStylesheetCheckBox_toggled( bool checked );
+    void mRadioManualSource_clicked( bool checked );
+    void mRadioUrlSource_clicked( bool checked );
+    void mInsertExpressionButton_clicked();
 
-    void on_mReloadPushButton_clicked();
-    void on_mReloadPushButton2_clicked();
-    void on_mAddFramePushButton_clicked();
-    void on_mEmptyFrameCheckBox_toggled( bool checked );
-    void on_mHideEmptyBgCheckBox_toggled( bool checked );
+    void mReloadPushButton_clicked();
+    void mReloadPushButton2_clicked();
+    void mAddFramePushButton_clicked();
+    void mEmptyFrameCheckBox_toggled( bool checked );
+    void mHideEmptyBgCheckBox_toggled( bool checked );
 
     //! Sets the GUI elements to the values of mHtmlItem
     void setGuiElementValues();

@@ -28,16 +28,7 @@ class TestQgsFileDownloader: public QObject
 {
     Q_OBJECT
   public:
-    TestQgsFileDownloader()
-      : mTempFile( nullptr )
-      , mErrorMessage()
-      , mCanceled( false )
-      , mProgress( false )
-      , mError( false )
-      , mCompleted( false )
-      , mExited( false )
-      , mFileDownloader( nullptr )
-    {}
+    TestQgsFileDownloader() = default;
 
   public slots:
     //! Called when the download has completed successfully
@@ -60,7 +51,7 @@ class TestQgsFileDownloader: public QObject
     {
       mError = true;
       errorMessages.sort();
-      mErrorMessage = errorMessages.join( ";" );
+      mErrorMessage = errorMessages.join( QStringLiteral( ";" ) );
     }
     //! Called when data ready to be processed
     void downloadProgress( qint64 bytesReceived, qint64 bytesTotal )
@@ -91,11 +82,11 @@ class TestQgsFileDownloader: public QObject
     void makeCall( QUrl url, QString fileName, bool cancel = false );
     QTemporaryFile *mTempFile = nullptr;
     QString mErrorMessage;
-    bool mCanceled;
-    bool mProgress;
-    bool mError;
-    bool mCompleted;
-    bool mExited;
+    bool mCanceled =  false ;
+    bool mProgress =  false ;
+    bool mError =  false ;
+    bool mCompleted =  false ;
+    bool mExited =  false ;
     QgsFileDownloader *mFileDownloader = nullptr;
 };
 
@@ -154,7 +145,7 @@ void TestQgsFileDownloader::cleanup()
 void TestQgsFileDownloader::testValidDownload()
 {
   QVERIFY( ! mTempFile->fileName().isEmpty() );
-  makeCall( QUrl( "http://www.qgis.org" ), mTempFile->fileName() );
+  makeCall( QUrl( QStringLiteral( "http://www.qgis.org" ) ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( mCompleted );
   QVERIFY( mProgress );
@@ -166,7 +157,7 @@ void TestQgsFileDownloader::testValidDownload()
 void TestQgsFileDownloader::testInValidDownload()
 {
   QVERIFY( ! mTempFile->fileName().isEmpty() );
-  makeCall( QUrl( "http://www.doesnotexistofthatimsure.qgis" ), mTempFile->fileName() );
+  makeCall( QUrl( QStringLiteral( "http://www.doesnotexistofthatimsure.qgis" ) ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
   QVERIFY( mError );
@@ -178,7 +169,7 @@ void TestQgsFileDownloader::testInValidDownload()
 void TestQgsFileDownloader::testCanceledDownload()
 {
   QVERIFY( ! mTempFile->fileName().isEmpty() );
-  makeCall( QUrl( "https://github.com/qgis/QGIS/archive/master.zip" ), mTempFile->fileName(), true );
+  makeCall( QUrl( QStringLiteral( "https://github.com/qgis/QGIS/archive/master.zip" ) ), mTempFile->fileName(), true );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
   QVERIFY( !mError );
@@ -189,7 +180,7 @@ void TestQgsFileDownloader::testCanceledDownload()
 
 void TestQgsFileDownloader::testInvalidFile()
 {
-  makeCall( QUrl( "https://github.com/qgis/QGIS/archive/master.zip" ), QString() );
+  makeCall( QUrl( QStringLiteral( "https://github.com/qgis/QGIS/archive/master.zip" ) ), QString() );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
   QVERIFY( mError );
@@ -200,7 +191,7 @@ void TestQgsFileDownloader::testInvalidFile()
 void TestQgsFileDownloader::testInvalidUrl()
 {
   QVERIFY( ! mTempFile->fileName().isEmpty() );
-  makeCall( QUrl( "xyz://www" ), mTempFile->fileName() );
+  makeCall( QUrl( QStringLiteral( "xyz://www" ) ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
   QVERIFY( mError );
@@ -211,7 +202,7 @@ void TestQgsFileDownloader::testInvalidUrl()
 void TestQgsFileDownloader::testBlankUrl()
 {
   QVERIFY( ! mTempFile->fileName().isEmpty() );
-  makeCall( QUrl( "" ), mTempFile->fileName() );
+  makeCall( QUrl( QLatin1String( "" ) ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
   QVERIFY( mError );
