@@ -2356,13 +2356,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-<<<<<<< b0e97e48f99cbdc53961632df630e1eff78e1612
                 <width>156</width>
                 <height>59</height>
-=======
-                <width>168</width>
-                <height>46</height>
->>>>>>> Move default Z value into project properties.
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2502,8 +2497,6 @@
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
-<<<<<<< b0e97e48f99cbdc53961632df630e1eff78e1612
-=======
   </customwidget>
   <customwidget>
    <class>QgsColorButton</class>
@@ -2515,7 +2508,6 @@
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
->>>>>>> Move default Z value into project properties.
   </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>
@@ -2541,15 +2533,12 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-<<<<<<< b0e97e48f99cbdc53961632df630e1eff78e1612
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-=======
->>>>>>> Move default Z value into project properties.
    <class>QgsColorSchemeList</class>
    <extends>QWidget</extends>
    <header location="global">qgscolorschemelist.h</header>
