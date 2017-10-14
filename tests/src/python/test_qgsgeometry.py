@@ -88,8 +88,8 @@ class TestQgsGeometry(unittest.TestCase):
     def testVertexIterator(self):
         g = QgsGeometry.fromWkt('Linestring(11 12, 13 14)')
         it = g.vertices()
-        self.assertEqual(next(it), QgsPointV2(11, 12))
-        self.assertEqual(next(it), QgsPointV2(13, 14))
+        self.assertEqual(next(it), QgsPoint(11, 12))
+        self.assertEqual(next(it), QgsPoint(13, 14))
         with self.assertRaises(StopIteration):
             next(it)
 
