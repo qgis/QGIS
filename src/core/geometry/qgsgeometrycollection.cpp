@@ -733,3 +733,13 @@ bool QgsGeometryCollection::wktOmitChildType() const
 {
   return false;
 }
+
+int QgsGeometryCollection::childCount() const
+{
+  return mGeometries.count();
+}
+
+QgsAbstractGeometry *QgsGeometryCollection::childGeometry( int index ) const
+{
+  return mGeometries.at( index );
+}

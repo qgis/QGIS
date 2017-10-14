@@ -281,6 +281,27 @@ class CORE_EXPORT QgsGeometry
      */
     double distance( const QgsGeometry &geom ) const;
 
+#ifndef SIP_RUN
+
+    /**
+     * Returns STL-style iterator pointing to the first vertex of the geometry
+     * \since QGIS 3.0
+     */
+    QgsAbstractGeometry::vertex_iterator vertices_begin() const;
+
+    /**
+     * Returns STL-style iterator pointing to the imaginary vertex after the last vertex of the geometry
+     * \since QGIS 3.0
+     */
+    QgsAbstractGeometry::vertex_iterator vertices_end() const;
+#endif
+
+    /**
+     * Returns Java-style iterator for traversal of vertices of the geometry
+     * \since QGIS 3.0
+     */
+    QgsVertexIterator vertices() const;
+
     /**
      * Returns the Hausdorff distance between this geometry and \a geom. This is basically a measure of how similar or dissimilar 2 geometries are.
      *

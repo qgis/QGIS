@@ -989,3 +989,16 @@ QgsCurvePolygon *QgsCurvePolygon::toCurveType() const
 {
   return clone();
 }
+
+int QgsCurvePolygon::childCount() const
+{
+  return 1 + mInteriorRings.count();
+}
+
+QgsAbstractGeometry *QgsCurvePolygon::childGeometry( int index ) const
+{
+  if ( index == 0 )
+    return mExteriorRing.get();
+  else
+    return mInteriorRings.at( index - 1 );
+}

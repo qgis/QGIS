@@ -463,6 +463,56 @@ Returns the centroid of the geometry
  :rtype: bool
 %End
 
+
+    QgsVertexIterator vertices() const;
+%Docstring
+ Returns Java-style iterator for traversal of vertices of the geometry
+.. versionadded:: 3.0
+ :rtype: QgsVertexIterator
+%End
+
+  protected:
+
+    virtual bool hasChildGeometries() const;
+%Docstring
+ Returns whether the geometry has any child geometries (false for point / curve, true otherwise)
+.. note::
+
+   used for vertex_iterator implementation
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    virtual int childCount() const;
+%Docstring
+ Returns number of child geometries (for geometries with child geometries) or child points (for geometries without child geometries - i.e. curve / point)
+.. note::
+
+   used for vertex_iterator implementation
+.. versionadded:: 3.0
+ :rtype: int
+%End
+
+    virtual QgsAbstractGeometry *childGeometry( int index ) const;
+%Docstring
+ Returns pointer to child geometry (for geometries with child geometries - i.e. geom. collection / polygon)
+.. note::
+
+   used for vertex_iterator implementation
+.. versionadded:: 3.0
+ :rtype: QgsAbstractGeometry
+%End
+
+    virtual QgsPoint childPoint( int index ) const;
+%Docstring
+ Returns point at index (for geometries without child geometries - i.e. curve / point)
+.. note::
+
+   used for vertex_iterator implementation
+.. versionadded:: 3.0
+ :rtype: QgsPoint
+%End
+
   protected:
 
     void setZMTypeFromSubGeometry( const QgsAbstractGeometry *subggeom, QgsWkbTypes::Type baseGeomType );
@@ -530,6 +580,54 @@ struct QgsVertexId
 };
 
 
+
+class QgsVertexIterator
+{
+%Docstring
+ Java-style iterator for traversal of vertices of a geometry
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsabstractgeometry.h"
+%End
+  public:
+    QgsVertexIterator();
+
+    QgsVertexIterator( const QgsAbstractGeometry *geometry );
+%Docstring
+Constructs iterator for the given geometry
+%End
+
+    bool hasNext() const;
+%Docstring
+Find out whether there are more vertices
+ :rtype: bool
+%End
+
+    QgsPoint next();
+%Docstring
+Return next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
+ :rtype: QgsPoint
+%End
+
+    QgsVertexIterator *__iter__();
+%Docstring
+ :rtype: QgsVertexIterator
+%End
+%MethodCode
+    sipRes = sipCpp;
+%End
+
+    SIP_PYOBJECT __next__();
+%MethodCode
+    if ( sipCpp->hasNext() )
+      sipRes = sipConvertFromType( new QgsPoint( sipCpp->next() ), sipType_QgsPoint, Py_None );
+    else
+      PyErr_SetString( PyExc_StopIteration, "" );
+%End
+
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *
