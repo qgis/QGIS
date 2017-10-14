@@ -20,6 +20,7 @@
 
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3drenderer.h"
+#include "qgsabstract3dsymbol.h"
 
 #include "qgsphongmaterialsettings.h"
 #include "qgs3dutils.h"
@@ -29,8 +30,6 @@
 #include <QObject>
 
 class QgsVectorLayer;
-
-class QgsAbstract3DSymbol;
 
 
 /**

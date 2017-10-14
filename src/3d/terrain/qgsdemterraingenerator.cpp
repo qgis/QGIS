@@ -26,6 +26,11 @@ QgsDemTerrainGenerator::QgsDemTerrainGenerator()
 {
 }
 
+QgsDemTerrainGenerator::~QgsDemTerrainGenerator()
+{
+  delete mHeightMapGenerator;
+}
+
 void QgsDemTerrainGenerator::setLayer( QgsRasterLayer *layer )
 {
   mLayer = QgsMapLayerRef( layer );
@@ -91,11 +96,13 @@ void QgsDemTerrainGenerator::updateGenerator()
   if ( dem )
   {
     mTerrainTilingScheme = QgsTilingScheme( dem->extent(), dem->crs() );
-    mHeightMapGenerator.reset( new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution ) );
+    delete mHeightMapGenerator;
+    mHeightMapGenerator = new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution );
   }
   else
   {
     mTerrainTilingScheme = QgsTilingScheme();
-    mHeightMapGenerator.reset();
+    delete mHeightMapGenerator;
+    mHeightMapGenerator = nullptr;
   }
 }
