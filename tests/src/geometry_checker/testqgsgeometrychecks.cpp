@@ -50,6 +50,7 @@ class TestQgsGeometryChecks: public QObject
     double layerToMapUnits( const QgsMapLayer *layer, const QString &mapCrs ) const;
     QgsFeaturePool *createFeaturePool( QgsVectorLayer *layer, const QString &mapCrs, bool selectedOnly = false ) const;
     QgsGeometryCheckerContext *createTestContext( QMap<QString, QString> &layers, const QString &mapCrs = "EPSG:4326", double prec = 8 ) const;
+    QgsGeometryCheckerContext *createTestContext( QTemporaryDir& tempDir, QMap<QString, QString> &layers, const QString &mapCrs = "EPSG:4326", double prec = 8 ) const;
     void cleanupTestContext( QgsGeometryCheckerContext *ctx ) const;
     void listErrors( const QList<QgsGeometryCheckError *> &checkErrors, const QStringList &messages ) const;
     QList<QgsGeometryCheckError *> searchCheckErrors( const QList<QgsGeometryCheckError *> &checkErrors, const QString &layerId, const QgsFeatureId &featureId = -1, const QgsPointXY &pos = QgsPointXY(), const QgsVertexId &vid = QgsVertexId(), const QVariant &value = QVariant(), double tol = 1E-4 ) const;
@@ -468,6 +469,29 @@ QgsGeometryCheckerContext *TestQgsGeometryChecks::createTestContext( QMap<QStrin
   for ( const QString &layerFile : layers.keys() )
   {
     QgsVectorLayer *layer = new QgsVectorLayer( testDataDir.absoluteFilePath( layerFile ), layerFile );
+    Q_ASSERT( layer && layer->isValid() );
+    layers[layerFile] = layer->id();
+    featurePools.insert( layer->id(), createFeaturePool( layer, mapCrs ) );
+  }
+  return new QgsGeometryCheckerContext( prec, mapCrs, featurePools );
+}
+
+QgsGeometryCheckerContext *TestQgsGeometryChecks::createTestContext( QTemporaryDir& tempDir, QMap<QString, QString> &layers, const QString &mapCrs, double prec ) const
+{
+  QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
+
+  QMap<QString, QgsFeaturePool *> featurePools;
+  for ( const QString &layerFile : layers.keys() )
+  {
+    QFile(testDataDir.absoluteFilePath( layerFile )).copy(tempDir.filePath(layerFile));
+    if(layerFile.endsWith(".shp", Qt::CaseInsensitive)) {
+      QString baseName = QFileInfo(layerFile).baseName();
+      QFile(testDataDir.absoluteFilePath( baseName + ".dbf" )).copy(tempDir.filePath(baseName + ".dbf"));
+      QFile(testDataDir.absoluteFilePath( baseName + ".pri" )).copy(tempDir.filePath(baseName + ".pri"));
+      QFile(testDataDir.absoluteFilePath( baseName + ".qpj" )).copy(tempDir.filePath(baseName + ".qpj"));
+      QFile(testDataDir.absoluteFilePath( baseName + ".shx" )).copy(tempDir.filePath(baseName + ".shx"));
+    }
+    QgsVectorLayer *layer = new QgsVectorLayer( tempDir.filePath(layerFile), layerFile );
     Q_ASSERT( layer && layer->isValid() );
     layers[layerFile] = layer->id();
     featurePools.insert( layer->id(), createFeaturePool( layer, mapCrs ) );
