@@ -52,7 +52,7 @@ class TestQgsGeometryChecks: public QObject
     QgsGeometryCheckerContext *createTestContext( QMap<QString, QString> &layers, const QString &mapCrs = "EPSG:4326", double prec = 8 ) const;
     void cleanupTestContext( QgsGeometryCheckerContext *ctx ) const;
     void listErrors( const QList<QgsGeometryCheckError *> &checkErrors, const QStringList &messages ) const;
-    int searchCheckError( const QList<QgsGeometryCheckError *> &checkErrors, const QString &layerId, const QgsFeatureId &featureId = -1, const QgsPointXY &pos = QgsPointXY(), const QgsVertexId &vid = QgsVertexId(), const QVariant &value = QVariant(), double tol = 1E-4 ) const;
+    QList<QgsGeometryCheckError *> searchCheckErrors( const QList<QgsGeometryCheckError *> &checkErrors, const QString &layerId, const QgsFeatureId &featureId = -1, const QgsPointXY &pos = QgsPointXY(), const QgsVertexId &vid = QgsVertexId(), const QVariant &value = QVariant(), double tol = 1E-4 ) const;
 
     QMap<QString, QString> mLayers;
     QgsGeometryCheckerContext *mContext;
@@ -112,15 +112,16 @@ void TestQgsGeometryChecks::testAngleCheck()
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 8 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 0, QgsPointXY( -0.2225,  0.5526 ), QgsVertexId( 0, 0, 3 ), 10.5865 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 0, QgsPointXY( -0.94996, 0.99967 ), QgsVertexId( 1, 0, 1 ), 8.3161 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 2, QgsPointXY( -0.4547, -0.3059 ), QgsVertexId( 0, 0, 1 ), 5.4165 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 2, QgsPointXY( -0.7594, -0.1971 ), QgsVertexId( 0, 0, 2 ), 12.5288 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 0, QgsPointXY( 0.2402, 1.0786 ), QgsVertexId( 0, 0, 1 ), 13.5140 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 1, QgsPointXY( 0.6960, 0.5908 ), QgsVertexId( 0, 0, 0 ), 7.0556 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 1, QgsPointXY( 0.98690, 0.55699 ), QgsVertexId( 1, 0, 5 ), 7.7351 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 11, QgsPointXY( -0.3186, 1.6734 ), QgsVertexId( 0, 0, 1 ), 3.5092 ) == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"], 0, QgsPointXY( -0.2225,  0.5526 ), QgsVertexId( 0, 0, 3 ), 10.5865 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"], 0, QgsPointXY( -0.94996, 0.99967 ), QgsVertexId( 1, 0, 1 ), 8.3161 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"], 2, QgsPointXY( -0.4547, -0.3059 ), QgsVertexId( 0, 0, 1 ), 5.4165 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"], 2, QgsPointXY( -0.7594, -0.1971 ), QgsVertexId( 0, 0, 2 ), 12.5288 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 0, QgsPointXY( 0.2402, 1.0786 ), QgsVertexId( 0, 0, 1 ), 13.5140 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 1, QgsPointXY( 0.6960, 0.5908 ), QgsVertexId( 0, 0, 0 ), 7.0556 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 1, QgsPointXY( 0.98690, 0.55699 ), QgsVertexId( 1, 0, 5 ), 7.7351 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"], 11, QgsPointXY( -0.3186, 1.6734 ), QgsVertexId( 0, 0, 1 ), 3.5092 ).size() == 1 );
+
 
 }
 
@@ -133,12 +134,12 @@ void TestQgsGeometryChecks::testAreaCheck()
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 4 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 1, QgsPointXY( 1.0068, 0.3635 ), QgsVertexId( 1 ), 0.0105 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 2, QgsPointXY( 0.9739, 1.0983 ), QgsVertexId( 0 ), 0.0141 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 6, QgsPointXY( 0.9968, 1.7584 ), QgsVertexId( 0 ), 0 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 11, QgsPointXY( -0.2941, 1.4614 ), QgsVertexId( 0 ), 0.0031 ) == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 1, QgsPointXY( 1.0068, 0.3635 ), QgsVertexId( 1 ), 0.0105 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 2, QgsPointXY( 0.9739, 1.0983 ), QgsVertexId( 0 ), 0.0141 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 6, QgsPointXY( 0.9968, 1.7584 ), QgsVertexId( 0 ), 0 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 11, QgsPointXY( -0.2941, 1.4614 ), QgsVertexId( 0 ), 0.0031 ).size() == 1 );
 }
 
 void TestQgsGeometryChecks::testContainedCheck()
@@ -150,10 +151,10 @@ void TestQgsGeometryChecks::testContainedCheck()
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 4 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"], 4, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:5" ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"], 5, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:0" ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 3, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:0" ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 3, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:0" ) ) == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"], 4, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:5" ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"], 5, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:0" ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 3, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:0" ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 3, QgsPointXY(), QgsVertexId(), QVariant( "polygon_layer.shp:0" ) ).size() == 1 );
   QVERIFY( messages.contains( "Contained check failed for (polygon_layer.shp:1): the geometry is invalid" ) );
 }
 
@@ -166,12 +167,12 @@ void TestQgsGeometryChecks::testDangleCheck()
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 4 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 0, QgsPointXY( -0.7558, 0.7648 ), QgsVertexId( 1, 0, 0 ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 2, QgsPointXY( -0.7787, -0.2237 ), QgsVertexId( 0, 0, 0 ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 3, QgsPointXY( -0.2326, 0.9537 ), QgsVertexId( 0, 0, 0 ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 3, QgsPointXY( 0.0715, 0.7830 ), QgsVertexId( 0, 0, 3 ) ) == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 0, QgsPointXY( -0.7558, 0.7648 ), QgsVertexId( 1, 0, 0 ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 2, QgsPointXY( -0.7787, -0.2237 ), QgsVertexId( 0, 0, 0 ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 3, QgsPointXY( -0.2326, 0.9537 ), QgsVertexId( 0, 0, 0 ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 3, QgsPointXY( 0.0715, 0.7830 ), QgsVertexId( 0, 0, 3 ) ).size() == 1 );
 }
 
 void TestQgsGeometryChecks::testDegeneratePolygonCheck()
@@ -183,9 +184,9 @@ void TestQgsGeometryChecks::testDegeneratePolygonCheck()
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 6, QgsPointXY(), QgsVertexId( 0, 0 ) ) == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 6, QgsPointXY(), QgsVertexId( 0, 0 ) ).size() == 1 );
 }
 
 void TestQgsGeometryChecks::testDuplicateCheck()
@@ -198,14 +199,14 @@ void TestQgsGeometryChecks::testDuplicateCheck()
 
   QCOMPARE( checkErrors.size(), 3 );
   QVERIFY(
-    searchCheckError( checkErrors, mLayers["point_layer.shp"], 6, QgsPoint(), QgsVertexId(), QVariant( "point_layer.shp:2" ) ) == 1
-    || searchCheckError( checkErrors, mLayers["point_layer.shp"], 2, QgsPoint(), QgsVertexId(), QVariant( "point_layer.shp:6" ) ) == 1 );
+    searchCheckErrors( checkErrors, mLayers["point_layer.shp"], 6, QgsPoint(), QgsVertexId(), QVariant( "point_layer.shp:2" ) ).size() == 1
+    || searchCheckErrors( checkErrors, mLayers["point_layer.shp"], 2, QgsPoint(), QgsVertexId(), QVariant( "point_layer.shp:6" ) ).size() == 1 );
   QVERIFY(
-    searchCheckError( checkErrors, mLayers["line_layer.shp"], 4, QgsPoint(), QgsVertexId(), QVariant( "line_layer.shp:7" ) ) == 1
-    || searchCheckError( checkErrors, mLayers["line_layer.shp"], 7, QgsPoint(), QgsVertexId(), QVariant( "line_layer.shp:4" ) ) == 1 );
+    searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 4, QgsPoint(), QgsVertexId(), QVariant( "line_layer.shp:7" ) ).size() == 1
+    || searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 7, QgsPoint(), QgsVertexId(), QVariant( "line_layer.shp:4" ) ).size() == 1 );
   QVERIFY(
-    searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 8, QgsPoint(), QgsVertexId(), QVariant( "polygon_layer.shp:7" ) ) == 1
-    || searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 7, QgsPoint(), QgsVertexId(), QVariant( "polygon_layer.shp:8" ) ) == 1 );
+    searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 8, QgsPoint(), QgsVertexId(), QVariant( "polygon_layer.shp:7" ) ).size() == 1
+    || searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 7, QgsPoint(), QgsVertexId(), QVariant( "polygon_layer.shp:8" ) ).size() == 1 );
 }
 
 void TestQgsGeometryChecks::testDuplicateNodesCheck()
@@ -217,11 +218,11 @@ void TestQgsGeometryChecks::testDuplicateNodesCheck()
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 4 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 0, QgsPointXY( -0.6360, 0.6203 ), QgsVertexId( 0, 0, 5 ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 6, QgsPointXY( 0.2473, 2.0821 ), QgsVertexId( 0, 0, 1 ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 6, QgsPointXY( 0.5158, 2.0930 ), QgsVertexId( 0, 0, 3 ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 4, QgsPointXY( 1.6319, 0.5642 ), QgsVertexId( 0, 0, 1 ) ) == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 0, QgsPointXY( -0.6360, 0.6203 ), QgsVertexId( 0, 0, 5 ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 6, QgsPointXY( 0.2473, 2.0821 ), QgsVertexId( 0, 0, 1 ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 6, QgsPointXY( 0.5158, 2.0930 ), QgsVertexId( 0, 0, 3 ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 4, QgsPointXY( 1.6319, 0.5642 ), QgsVertexId( 0, 0, 1 ) ).size() == 1 );
 }
 
 void TestQgsGeometryChecks::testFollowBoundariesCheck()
@@ -238,8 +239,8 @@ void TestQgsGeometryChecks::testFollowBoundariesCheck()
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 2 );
-  QVERIFY( searchCheckError( checkErrors, layers["follow_subj.shp"], 1 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, layers["follow_subj.shp"], 3 ) == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["follow_subj.shp"], 1 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, layers["follow_subj.shp"], 3 ).size() == 1 );
 
   cleanupTestContext( context );
 }
@@ -257,11 +258,11 @@ void TestQgsGeometryChecks::testGapCheck()
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 5 );
-  QVERIFY( searchCheckError( checkErrors, "", -1, QgsPointXY( 0.2924, -0.8798 ), QgsVertexId(), 0.0027 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, "", -1, QgsPointXY( 0.4238, -0.7479 ), QgsVertexId(), 0.0071 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, "", -1, QgsPointXY( 0.0094, -0.4448 ), QgsVertexId(), 0.0033 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, "", -1, QgsPointXY( 0.2939, -0.4694 ), QgsVertexId(), 0.0053 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, "", -1, QgsPointXY( 0.6284, -0.3641 ), QgsVertexId(), 0.0018 ) == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2924, -0.8798 ), QgsVertexId(), 0.0027 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.4238, -0.7479 ), QgsVertexId(), 0.0071 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.0094, -0.4448 ), QgsVertexId(), 0.0033 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.2939, -0.4694 ), QgsVertexId(), 0.0053 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, "", -1, QgsPointXY( 0.6284, -0.3641 ), QgsVertexId(), 0.0018 ).size() == 1 );
 
   cleanupTestContext( context );
 }
@@ -275,9 +276,9 @@ void TestQgsGeometryChecks::testHoleCheck()
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 12, QgsPointXY( 0.1772, 0.10476 ), QgsVertexId( 0, 1 ) ) == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 12, QgsPointXY( 0.1772, 0.10476 ), QgsVertexId( 0, 1 ) ).size() == 1 );
 }
 
 void TestQgsGeometryChecks::testLineIntersectionCheck()
@@ -289,9 +290,9 @@ void TestQgsGeometryChecks::testLineIntersectionCheck()
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 1, QgsPointXY( -0.5594, 0.4098 ), QgsVertexId( 0 ), QVariant( "line_layer.shp:0" ) ) == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 1, QgsPointXY( -0.5594, 0.4098 ), QgsVertexId( 0 ), QVariant( "line_layer.shp:0" ) ).size() == 1 );
 }
 
 void TestQgsGeometryChecks::testLineLayerIntersectionCheck()
@@ -303,13 +304,13 @@ void TestQgsGeometryChecks::testLineLayerIntersectionCheck()
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 5 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 3, QgsPointXY( -0.1890, 0.9043 ), QgsVertexId( 0 ), QVariant( "polygon_layer.shp:3" ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 4, QgsPointXY( 0.9906, 1.1169 ), QgsVertexId( 0 ), QVariant( "polygon_layer.shp:2" ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 4, QgsPointXY( 1.0133, 1.0772 ), QgsVertexId( 0 ), QVariant( "polygon_layer.shp:2" ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 7, QgsPointXY( 0.9906, 1.1169 ), QgsVertexId( 0 ), QVariant( "polygon_layer.shp:2" ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 7, QgsPointXY( 1.0133, 1.0772 ), QgsVertexId( 0 ), QVariant( "polygon_layer.shp:2" ) ) == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 3, QgsPointXY( -0.1890, 0.9043 ), QgsVertexId( 0 ), QVariant( "polygon_layer.shp:3" ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 4, QgsPointXY( 0.9906, 1.1169 ), QgsVertexId( 0 ), QVariant( "polygon_layer.shp:2" ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 4, QgsPointXY( 1.0133, 1.0772 ), QgsVertexId( 0 ), QVariant( "polygon_layer.shp:2" ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 7, QgsPointXY( 0.9906, 1.1169 ), QgsVertexId( 0 ), QVariant( "polygon_layer.shp:2" ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 7, QgsPointXY( 1.0133, 1.0772 ), QgsVertexId( 0 ), QVariant( "polygon_layer.shp:2" ) ).size() == 1 );
 }
 
 void TestQgsGeometryChecks::testMultipartCheck()
@@ -320,15 +321,15 @@ void TestQgsGeometryChecks::testMultipartCheck()
   QgsGeometryMultipartCheck( mContext ).collectErrors( checkErrors, messages );
   listErrors( checkErrors, messages );
 
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"] ) == 0 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"] ).isEmpty() );
   // Easier to ensure that multipart features don't appear as errors than verifying each single-part multi-type feature
   QVERIFY( QgsWkbTypes::isSingleType( mContext->featurePools[mLayers["point_layer.shp"]]->getLayer()->wkbType() ) );
   QVERIFY( QgsWkbTypes::isMultiType( mContext->featurePools[mLayers["line_layer.shp"]]->getLayer()->wkbType() ) );
   QVERIFY( QgsWkbTypes::isMultiType( mContext->featurePools[mLayers["polygon_layer.shp"]]->getLayer()->wkbType() ) );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"] ) > 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"] ) > 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 0 ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 1 ) == 0 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"] ).size() > 0 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"] ).size() > 0 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 0 ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 1 ).isEmpty() );
 }
 
 void TestQgsGeometryChecks::testOverlapCheck()
@@ -340,9 +341,9 @@ void TestQgsGeometryChecks::testOverlapCheck()
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 2 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 10 ) == 2 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"] ).isEmpty());
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 10 ).size() == 2 );
   QVERIFY( messages.contains( "Overlap check failed for (polygon_layer.shp:1): the geometry is invalid" ) );
 }
 
@@ -354,11 +355,11 @@ void TestQgsGeometryChecks::testPointCoveredByLineCheck()
   QgsGeometryPointCoveredByLineCheck( mContext ).collectErrors( checkErrors, messages );
   listErrors( checkErrors, messages );
 
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"] ) == 0 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"] ).isEmpty() );
   // Easier to test that no points which are covered by a line are marked as errors
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"], 0 ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"], 1 ) == 0 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"], 0 ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"], 1 ).isEmpty() );
 }
 
 void TestQgsGeometryChecks::testPointInPolygonCheck()
@@ -369,10 +370,10 @@ void TestQgsGeometryChecks::testPointInPolygonCheck()
   QgsGeometryPointInPolygonCheck( mContext ).collectErrors( checkErrors, messages );
   listErrors( checkErrors, messages );
 
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"] ) == 0 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"] ).isEmpty() );
   // Check that the point which is properly inside a polygon is not listed as error
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"], 5 ) == 0 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"], 5 ).isEmpty() );
   QVERIFY( messages.contains( "Point in polygon check failed for (polygon_layer.shp:1): the geometry is invalid" ) );
 }
 
@@ -385,11 +386,11 @@ void TestQgsGeometryChecks::testSegmentLengthCheck()
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 4 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 3, QgsPointXY( 0.0753, 0.7921 ), QgsVertexId( 0, 0, 3 ), 0.0197 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 2, QgsPointXY( 0.7807, 1.1009 ), QgsVertexId( 0, 0, 0 ), 0.0176 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 10, QgsPointXY( -0.2819, 1.3553 ), QgsVertexId( 0, 0, 2 ), 0.0281 ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 11, QgsPointXY( -0.2819, 1.3553 ), QgsVertexId( 0, 0, 0 ), 0.0281 ) == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 3, QgsPointXY( 0.0753, 0.7921 ), QgsVertexId( 0, 0, 3 ), 0.0197 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 2, QgsPointXY( 0.7807, 1.1009 ), QgsVertexId( 0, 0, 0 ), 0.0176 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 10, QgsPointXY( -0.2819, 1.3553 ), QgsVertexId( 0, 0, 2 ), 0.0281 ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 11, QgsPointXY( -0.2819, 1.3553 ), QgsVertexId( 0, 0, 0 ), 0.0281 ).size() == 1 );
 }
 
 void TestQgsGeometryChecks::testSelfContactCheck()
@@ -401,10 +402,10 @@ void TestQgsGeometryChecks::testSelfContactCheck()
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 3 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 5, QgsPointXY( -1.2280, -0.8654 ), QgsVertexId( 0, 0, 0 ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 5, QgsPointXY( -1.2399, -1.0502 ), QgsVertexId( 0, 0, 6 ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 9, QgsPointXY( -0.2080, 1.9830 ), QgsVertexId( 0, 0, 3 ) ) == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 5, QgsPointXY( -1.2280, -0.8654 ), QgsVertexId( 0, 0, 0 ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 5, QgsPointXY( -1.2399, -1.0502 ), QgsVertexId( 0, 0, 6 ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 9, QgsPointXY( -0.2080, 1.9830 ), QgsVertexId( 0, 0, 3 ) ).size() == 1 );
 }
 
 void TestQgsGeometryChecks::testSelfIntersectionCheck()
@@ -416,10 +417,10 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 3 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 1, QgsPointXY( -0.1199, 0.1440 ), QgsVertexId( 0, 0 ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"], 1, QgsPointXY( -0.1997, 0.1044 ), QgsVertexId( 0, 0 ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 1, QgsPointXY( 1.2592, 0.0888 ), QgsVertexId( 0, 0 ) ) == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 1, QgsPointXY( -0.1199, 0.1440 ), QgsVertexId( 0, 0 ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"], 1, QgsPointXY( -0.1997, 0.1044 ), QgsVertexId( 0, 0 ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 1, QgsPointXY( 1.2592, 0.0888 ), QgsVertexId( 0, 0 ) ).size() == 1 );
 }
 
 void TestQgsGeometryChecks::testSliverPolygonCheck()
@@ -431,10 +432,10 @@ void TestQgsGeometryChecks::testSliverPolygonCheck()
   listErrors( checkErrors, messages );
 
   QCOMPARE( checkErrors.size(), 2 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["point_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["line_layer.shp"] ) == 0 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 6, QgsPointXY(), QgsVertexId( 0 ) ) == 1 );
-  QVERIFY( searchCheckError( checkErrors, mLayers["polygon_layer.shp"], 11, QgsPointXY(), QgsVertexId( 0 ) ) == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["point_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["line_layer.shp"] ).isEmpty() );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 6, QgsPointXY(), QgsVertexId( 0 ) ).size() == 1 );
+  QVERIFY( searchCheckErrors( checkErrors, mLayers["polygon_layer.shp"], 11, QgsPointXY(), QgsVertexId( 0 ) ).size() == 1 );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -497,10 +498,10 @@ void TestQgsGeometryChecks::listErrors( const QList<QgsGeometryCheckError *> &ch
   }
 }
 
-int TestQgsGeometryChecks::searchCheckError( const QList<QgsGeometryCheckError *> &checkErrors, const QString &layerId, const QgsFeatureId &featureId, const QgsPointXY &pos, const QgsVertexId &vid, const QVariant &value, double tol ) const
+QList<QgsGeometryCheckError *> TestQgsGeometryChecks::searchCheckErrors( const QList<QgsGeometryCheckError *> &checkErrors, const QString &layerId, const QgsFeatureId &featureId, const QgsPointXY &pos, const QgsVertexId &vid, const QVariant &value, double tol ) const
 {
-  int matching = 0;
-  for ( const QgsGeometryCheckError *error : checkErrors )
+  QList<QgsGeometryCheckError *> matching;
+  for ( QgsGeometryCheckError *error : checkErrors )
   {
     if ( error->layerId() != layerId )
     {
@@ -532,7 +533,7 @@ int TestQgsGeometryChecks::searchCheckError( const QList<QgsGeometryCheckError *
         continue;
       }
     }
-    ++matching;
+    matching.append(error);
   }
   return matching;
 }
