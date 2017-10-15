@@ -74,6 +74,7 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   connect( buttonUpgradeAll, &QPushButton::clicked, this, &QgsPluginManager::buttonUpgradeAll_clicked );
   connect( buttonInstall, &QPushButton::clicked, this, &QgsPluginManager::buttonInstall_clicked );
   connect( buttonUninstall, &QPushButton::clicked, this, &QgsPluginManager::buttonUninstall_clicked );
+  connect( buttonInstallFromZip, &QPushButton::clicked, this, &QgsPluginManager::buttonInstallFromZip_clicked );
   connect( treeRepositories, &QTreeWidget::itemSelectionChanged, this, &QgsPluginManager::treeRepositories_itemSelectionChanged );
   connect( treeRepositories, &QTreeWidget::doubleClicked, this, &QgsPluginManager::treeRepositories_doubleClicked );
   connect( buttonAddRep, &QPushButton::clicked, this, &QgsPluginManager::buttonAddRep_clicked );
@@ -133,6 +134,7 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   buttonInstall->hide();
   buttonUninstall->hide();
   frameSettings->setHidden( true );
+  mOptionsListWidget->item( PLUGMAN_TAB_INSTALL_FROM_ZIP )->setHidden( true );
 
   voteRating->hide();
   voteLabel->hide();
@@ -167,6 +169,7 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
 
   // Now enable Python support:
   // Show and preset widgets only suitable when Python support active
+  mOptionsListWidget->item( PLUGMAN_TAB_INSTALL_FROM_ZIP )->setHidden( false );
   buttonUpgradeAll->show();
   buttonInstall->show();
   buttonUninstall->show();
@@ -1101,9 +1104,14 @@ void QgsPluginManager::reject()
 
 void QgsPluginManager::setCurrentTab( int idx )
 {
-  if ( idx == ( mOptionsListWidget->count() - 1 ) )
+  if ( idx == PLUGMAN_TAB_SETTINGS )
   {
     QgsDebugMsg( "Switching current tab to Settings" );
+    mOptionsStackedWidget->setCurrentIndex( 2 );
+  }
+  else if ( idx == PLUGMAN_TAB_INSTALL_FROM_ZIP )
+  {
+    QgsDebugMsg( "Switching current tab to Install from ZIP" );
     mOptionsStackedWidget->setCurrentIndex( 1 );
   }
   else
@@ -1309,6 +1317,13 @@ void QgsPluginManager::buttonInstall_clicked()
 void QgsPluginManager::buttonUninstall_clicked()
 {
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().uninstallPlugin('%1')" ).arg( mCurrentlyDisplayedPlugin ) );
+}
+
+
+
+void QgsPluginManager::buttonInstallFromZip_clicked()
+{
+  QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installFromZipFile()" ) );
 }
 
 
