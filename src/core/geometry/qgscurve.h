@@ -184,6 +184,9 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 
     void clearCache() const override;
 
+    virtual int childCount() const override;
+    virtual QgsPoint childPoint( int index ) const override;
+
   private:
 
     mutable QgsRectangle mBoundingBox;

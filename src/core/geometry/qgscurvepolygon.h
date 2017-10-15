@@ -172,6 +172,10 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     }
 #endif
   protected:
+    virtual int childCount() const override;
+    virtual QgsAbstractGeometry *childGeometry( int index ) const override;
+
+  protected:
 
     std::unique_ptr< QgsCurve > mExteriorRing;
     QList<QgsCurve *> mInteriorRings;
