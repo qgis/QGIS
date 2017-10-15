@@ -426,8 +426,6 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   , mRenderer( nullptr )
   , mModel( nullptr )
 {
-
-
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
   if ( renderer )
@@ -501,7 +499,6 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   connect( btnDeleteAllClasses, &QAbstractButton::clicked, this, &QgsGraduatedSymbolRendererWidget::deleteAllClasses );
   connect( btnGraduatedAdd, &QAbstractButton::clicked, this, &QgsGraduatedSymbolRendererWidget::addClass );
   connect( cbxLinkBoundaries, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::toggleBoundariesLink );
-  connect( cbxSymmetricAroundZero, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsGraduatedSymbolRendererWidget::on_mSizeUnitWidget_changed );
 
   connectUpdateHandlers();
@@ -553,7 +550,6 @@ QgsFeatureRenderer *QgsGraduatedSymbolRendererWidget::renderer()
 }
 
 // Connect/disconnect event handlers which trigger updating renderer
-
 void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
 {
   connect( spinGraduatedClasses, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
@@ -567,10 +563,14 @@ void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
 
   connect( mModel, &QgsGraduatedSymbolRendererModel::rowsMoved, this, &QgsGraduatedSymbolRendererWidget::rowsMoved );
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsGraduatedSymbolRendererWidget::modelDataChanged );
+
+  connect( cbxClassifySymmetric, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  connect( cbxAstride, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  connect( cboSymmetryPointForPretty, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  connect( spinSymmetryPointForOtherMethods, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
 }
 
 // Connect/disconnect event handlers which trigger updating renderer
-
 void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
 {
   disconnect( spinGraduatedClasses, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
@@ -584,6 +584,11 @@ void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
 
   disconnect( mModel, &QgsGraduatedSymbolRendererModel::rowsMoved, this, &QgsGraduatedSymbolRendererWidget::rowsMoved );
   disconnect( mModel, &QAbstractItemModel::dataChanged, this, &QgsGraduatedSymbolRendererWidget::modelDataChanged );
+
+  disconnect( cbxClassifySymmetric, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  disconnect( cbxAstride, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  disconnect( cboSymmetryPointForPretty, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  disconnect( spinSymmetryPointForOtherMethods, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
 }
 
 void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
@@ -594,7 +599,31 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
 
   // update UI from the graduated renderer (update combo boxes, view)
   if ( mRenderer->mode() < cboGraduatedMode->count() )
+  {
     cboGraduatedMode->setCurrentIndex( mRenderer->mode() );
+  }
+
+  if ( cboGraduatedMode->currentIndex() == 0 || cboGraduatedMode->currentIndex() == 3 ) // EqualInterval or StdDev
+  {
+    cbxClassifySymmetric->setVisible( true );
+    cbxAstride->setVisible( true );
+    cboSymmetryPointForPretty->setVisible( false );
+    spinSymmetryPointForOtherMethods->setVisible( true );
+  }
+  else if ( cboGraduatedMode->currentIndex() == 4 ) // Pretty
+  {
+    cbxClassifySymmetric->setVisible( true );
+    cbxAstride->setVisible( true );
+    cboSymmetryPointForPretty->setVisible( true );
+    spinSymmetryPointForOtherMethods->setVisible( false );
+  }
+  else // quantile or Jenks
+  {
+    cbxClassifySymmetric->setVisible( false );
+    cbxAstride->setVisible( false );
+    cboSymmetryPointForPretty->setVisible( false );
+    spinSymmetryPointForOtherMethods->setVisible( false );
+  }
 
   // Only update class count if different - otherwise typing value gets very messy
   int nclasses = mRenderer->ranges().count();
@@ -795,18 +824,76 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   }
 
   QgsGraduatedSymbolRenderer::Mode mode;
-  bool useAroundZeroMode = false; 
-  
-  if ( cboGraduatedMode->currentIndex() == 0 )
+  bool useSymmetricMode = false;
+  bool astride = false;
+  double symmetryPoint = 0.0;
+  int attrNum = mLayer->fields().lookupField( attrName );
+  double minimum = mLayer->minimumValue( attrNum ).toDouble();
+  double maximum = mLayer->maximumValue( attrNum ).toDouble();
+  spinSymmetryPointForOtherMethods->setMinimum( minimum );
+  spinSymmetryPointForOtherMethods->setMaximum( maximum );
+
+  if ( cboGraduatedMode->currentIndex() == 0 ) // EqualInterval
+  {
     mode = QgsGraduatedSymbolRenderer::EqualInterval;
-  else if ( cboGraduatedMode->currentIndex() == 2 )
+    if ( cbxClassifySymmetric->isChecked() )
+    {
+      useSymmetricMode = true;
+      symmetryPoint = spinSymmetryPointForOtherMethods->value();
+      cbxAstride->isChecked() ? astride = true : astride = false;
+    }
+  }
+  else if ( cboGraduatedMode->currentIndex() == 2 ) // Jenks
+  {
     mode = QgsGraduatedSymbolRenderer::Jenks;
-  else if ( cboGraduatedMode->currentIndex() == 3 )
+  }
+  else if ( cboGraduatedMode->currentIndex() == 3 ) // StdDev
+  {
     mode = QgsGraduatedSymbolRenderer::StdDev;
-  else if ( cboGraduatedMode->currentIndex() == 4 )
+    if ( cbxClassifySymmetric->isChecked() )
+    {
+      useSymmetricMode = true;
+      symmetryPoint = spinSymmetryPointForOtherMethods->value();
+      cbxAstride->isChecked() ? astride = true : astride = false;
+    }
+  }
+  else if ( cboGraduatedMode->currentIndex() == 4 ) // Pretty
+  {
     mode = QgsGraduatedSymbolRenderer::Pretty;
+    if ( cbxClassifySymmetric->isChecked() )
+    {
+      useSymmetricMode = true;
+      cbxAstride->isChecked() ? astride = true : astride = false;
+
+      // we need breaks to propose as symmetric point
+      // get breaks that we should put
+      QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( minimum, maximum, nclasses );
+      QStringList breaks2put;
+      // get QStringList from QList<double> without maxi break (min is not in)
+      for ( int i = 0; i < breaks.count() - 1; i++ )
+      {
+        breaks2put << QString::number( breaks.at( i ), 'f', 2 );
+      }
+      // get breaks already there
+      QStringList breaksAlreadyThere;
+      for ( int i = 0; i < cboSymmetryPointForPretty->count(); i++ )
+      {
+        breaksAlreadyThere << cboSymmetryPointForPretty->itemText( i );
+      }
+
+      if ( breaks2put != breaksAlreadyThere ) //if not already computed
+      {
+        cboSymmetryPointForPretty->clear();
+        cboSymmetryPointForPretty->addItems( breaks2put );
+        cboSymmetryPointForPretty->setCurrentIndex( qFloor( breaks.count() / 2 ) );
+      }
+      symmetryPoint = cboSymmetryPointForPretty->currentText().toDouble();
+    }
+  }
   else // default should be quantile for now
-    mode = QgsGraduatedSymbolRenderer::Quantile;
+  {
+    mode = QgsGraduatedSymbolRenderer::Quantile; // Quantile, nothing to do
+  }
 
   // Jenks is n^2 complexity, warn for big dataset (more than 50k records)
   // and give the user the chance to cancel
@@ -815,33 +902,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
     if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Warning" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) )
       return;
   }
-  
-  if ( QgsGraduatedSymbolRenderer::Pretty == mode)
-  {
-    cbxSymmetricAroundZero->setVisible(true);
-    
-    int attrNum = mLayer->fields().lookupField( attrName );
-    bool negativeValuesPresent = mLayer->minimumValue( attrNum ).toDouble() < 0;
-    bool positiveValuesPresent = mLayer->maximumValue( attrNum ).toDouble() > 0;
-    //checkbox is displayed only when there is both positive and negative data
-    if ( negativeValuesPresent && positiveValuesPresent ) 
-    {
-      cbxSymmetricAroundZero->setEnabled( true );
-      if ( cbxSymmetricAroundZero->isChecked() )
-      {
-        useAroundZeroMode = true;
-      }
-    }
-    else
-    {
-      cbxSymmetricAroundZero->setEnabled( false );
-    }
-  }
-  else
-  {
-    cbxSymmetricAroundZero->setVisible(false);
-  }
-  
+
   // create and set new renderer
   mRenderer->setClassAttribute( attrName );
   mRenderer->setMode( mode );
@@ -861,7 +922,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   }
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  mRenderer->updateClasses( mLayer, mode, nclasses, useAroundZeroMode );
+  mRenderer->updateClasses( mLayer, mode, nclasses, useSymmetricMode, symmetryPoint, astride );
 
   if ( methodComboBox->currentIndex() == 1 )
     mRenderer->setSymbolSizes( minSizeSpinBox->value(), maxSizeSpinBox->value() );

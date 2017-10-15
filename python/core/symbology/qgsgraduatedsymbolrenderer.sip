@@ -262,8 +262,8 @@ Moves the category at index position from to index position to.
  :rtype: Mode
 %End
     void setMode( Mode mode );
-    
-    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useAroundZeroMode );
+
+    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode, double symmetryPoint, bool astride );
 %Docstring
 \param useAroundZeroMode  A bool indicating if we want to center everything on zero (currently used only with prettyBreaks)
 %End
