@@ -228,9 +228,13 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param mode    The calculation mode
      * \param nclasses The number of classes to calculate (approximate for some modes)
      * \since QGIS 2.6
-     * \param useAroundZeroMode  A bool indicating if we want to center everything on zero (currently used only with prettyBreaks)
+     * \param useSymmetricMode A bool indicating if we want to have classes and hence colors ramp symmetric around a value
+     * \param symmetryPoint The value around which the classes will be symmetric if useSymmetricMode is checked
+     * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+     * \since QGIS 3.0
      */
-    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useAroundZeroMode );
+    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode, double symmetryPoint, bool astride );
+
 
     /**
      * Return the label format used to generate default classification labels

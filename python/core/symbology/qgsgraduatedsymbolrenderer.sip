@@ -268,7 +268,8 @@ Moves the category at index position from to index position to.
 %End
     void setMode( Mode mode );
 
-    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useAroundZeroMode );
+    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode, double symmetryPoint, bool astride );
+
 %Docstring
  Recalculate classes for a layer
  \param vlayer  The layer being rendered (from which data values are calculated)
