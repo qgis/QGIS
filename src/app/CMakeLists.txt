@@ -579,6 +579,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QEXTSERIALPORT_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
+  ../analysis/processing
   ../analysis/raster
   ../core
   ../core/annotations
@@ -591,6 +592,7 @@ INCLUDE_DIRECTORIES(
   ../core/layout
   ../core/metadata
   ../core/layertree
+  ../core/processing
   ../core/providers/memory
   ../core/raster
   ../core/scalebar

@@ -89,6 +89,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/analysis
       ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
       ${CMAKE_SOURCE_DIR}/src/analysis/network
+      ${CMAKE_SOURCE_DIR}/src/analysis/processing
       ${CMAKE_SOURCE_DIR}/src/analysis/raster
       ${CMAKE_SOURCE_DIR}/src/analysis/vector
       ${CMAKE_SOURCE_DIR}/src/3d
