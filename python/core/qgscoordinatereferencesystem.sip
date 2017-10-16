@@ -601,6 +601,17 @@ Returns whether this CRS is correctly initialized and usable
  :rtype: QgsUnitTypes.DistanceUnit
 %End
 
+    QgsRectangle bounds() const;
+%Docstring
+ Returns the approximate bounds for the region the CRS is usable within.
+
+ The returned bounds represent the latitude and longitude extent for the
+ projection in the WGS 84 CRS.
+
+.. versionadded:: 3.0
+ :rtype: QgsRectangle
+%End
+
 
     void setValidationHint( const QString &html );
 %Docstring

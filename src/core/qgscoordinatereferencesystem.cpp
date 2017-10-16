@@ -1061,6 +1061,49 @@ QgsUnitTypes::DistanceUnit QgsCoordinateReferenceSystem::mapUnits() const
   return d->mMapUnits;
 }
 
+QgsRectangle QgsCoordinateReferenceSystem::bounds() const
+{
+  if ( !d->mIsValid )
+    return QgsRectangle();
+
+  //check the db is available
+  QString databaseFileName = QgsApplication::srsDatabaseFilePath();
+
+  sqlite3 *database = nullptr;
+  const char *tail = nullptr;
+  sqlite3_stmt *stmt = nullptr;
+
+  int result = openDatabase( databaseFileName, &database );
+  if ( result != SQLITE_OK )
+  {
+    return QgsRectangle();
+  }
+
+  QString sql = QStringLiteral( "select west_bound_lon, north_bound_lat, east_bound_lon, south_bound_lat from tbl_srs "
+                                "where srs_id=%1" )
+                .arg( d->mSrsId );
+  result = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
+
+  QgsRectangle rect;
+  if ( result == SQLITE_OK )
+  {
+    if ( sqlite3_step( stmt ) == SQLITE_ROW )
+    {
+      double west = sqlite3_column_double( stmt, 0 );
+      double north = sqlite3_column_double( stmt, 1 );
+      double east = sqlite3_column_double( stmt, 2 );
+      double south = sqlite3_column_double( stmt, 3 );
+      rect = QgsRectangle( west, north, east, south );
+    }
+  }
+
+  // close the sqlite3 statement
+  sqlite3_finalize( stmt );
+  sqlite3_close( database );
+
+  return rect;
+}
+
 
 // Mutators -----------------------------------
 

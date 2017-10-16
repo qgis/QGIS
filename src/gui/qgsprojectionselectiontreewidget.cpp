@@ -1019,64 +1019,35 @@ long QgsProjectionSelectionTreeWidget::getLargestCrsIdMatch( const QString &sql 
 
 void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
 {
-  sqlite3      *database = nullptr;
-  const char   *tail = nullptr;
-  sqlite3_stmt *stmt = nullptr;
-
   QTreeWidgetItem *lvi = lstCoordinateSystems->currentItem();
   if ( !lvi || lvi->text( QgisCrsIdColumn ).isEmpty() )
     return;
 
-  int result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
-  if ( result )
-  {
-    QgsDebugMsg( QString( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( database ) ) );
-    //no need for assert because user db may not have been created yet
+  QgsCoordinateReferenceSystem currentCrs = crs();
+  if ( !currentCrs.isValid() )
     return;
-  }
 
-  QString sql = QStringLiteral( "select west_bound_lon, north_bound_lat, east_bound_lon, south_bound_lat from tbl_srs "
-                                "where srs_id=%2" )
-                .arg( lvi->text( QgisCrsIdColumn ) );
-  result = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
-
-  if ( result == SQLITE_OK )
+  QgsRectangle rect = currentCrs.bounds();
+  if ( !rect.isEmpty() )
   {
-    if ( sqlite3_step( stmt ) == SQLITE_ROW )
-    {
-      double west = sqlite3_column_double( stmt, 0 );
-      double north = sqlite3_column_double( stmt, 1 );
-      double east = sqlite3_column_double( stmt, 2 );
-      double south = sqlite3_column_double( stmt, 3 );
-      QgsRectangle rect( west, north, east, south );
-      if ( !rect.isEmpty() )
-      {
-        mPreviewBand->setToGeometry( QgsGeometry::fromRect( rect ), nullptr );
-        mPreviewBand->setColor( QColor( 255, 0, 0, 65 ) );
-        mAreaCanvas->setExtent( rect );
-        mPreviewBand->show();
-        mAreaCanvas->zoomOut();
-        QString extentString = tr( "Extent: %1" ).arg( rect.toString( 2 ) );
-        QString proj4String = tr( "Proj4: %1" ).arg( selectedProj4String() );
-        teProjection->setText( extentString + "\n" + proj4String );
-      }
-      else
-      {
-        mPreviewBand->hide();
-        mAreaCanvas->zoomToFullExtent();
-        QString extentString = tr( "Extent: Extent not known" );
-        QString proj4String = tr( "Proj4: %1" ).arg( selectedProj4String() );
-        teProjection->setText( extentString + "\n" + proj4String );
-      }
-    }
-
+    mPreviewBand->setToGeometry( QgsGeometry::fromRect( rect ), nullptr );
+    mPreviewBand->setColor( QColor( 255, 0, 0, 65 ) );
+    mAreaCanvas->setExtent( rect );
+    mPreviewBand->show();
+    mAreaCanvas->zoomOut();
+    QString extentString = tr( "Extent: %1" ).arg( rect.toString( 2 ) );
+    QString proj4String = tr( "Proj4: %1" ).arg( selectedProj4String() );
+    teProjection->setText( extentString + "\n" + proj4String );
   }
-
-  // close the sqlite3 statement
-  sqlite3_finalize( stmt );
-  sqlite3_close( database );
+  else
+  {
+    mPreviewBand->hide();
+    mAreaCanvas->zoomToFullExtent();
+    QString extentString = tr( "Extent: Extent not known" );
+    QString proj4String = tr( "Proj4: %1" ).arg( selectedProj4String() );
+    teProjection->setText( extentString + "\n" + proj4String );
+  }
 }
-
 
 QStringList QgsProjectionSelectionTreeWidget::authorities()
 {
