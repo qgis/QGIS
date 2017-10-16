@@ -71,7 +71,8 @@ TYPE_MAP_MEMORY_LAYER = {
     QVariant.Int: "integer",
     QVariant.Date: "date",
     QVariant.DateTime: "datetime",
-    QVariant.Time: "time"
+    QVariant.Time: "time",
+    QVariant.LongLong: "integer"
 }
 
 TYPE_MAP_POSTGIS_LAYER = {
@@ -419,6 +420,7 @@ def checkMinDistance(point, index, distance, points):
 def _toQgsField(f):
     if isinstance(f, QgsField):
         return f
+    print f[0], f[1]
     return QgsField(f[0], TYPE_MAP.get(f[1], QVariant.String))
 
 
