@@ -65,6 +65,7 @@ from qgis.core import (
     QgsProcessingFeatureSourceDefinition,
     QgsProcessingOutputRasterLayer,
     QgsProcessingOutputVectorLayer,
+    QgsProcessingOutputFile,
     QgsProcessingOutputString,
     QgsProcessingOutputNumber,
     QgsProcessingModelChildParameterSource,
@@ -319,7 +320,7 @@ class CrsWidgetWrapper(WidgetWrapper):
 
             widget.setLayout(layout)
             self.combo.setEditable(True)
-            crss = self.dialog.getAvailableValuesOfType(QgsProcessingParameterCrs)
+            crss = self.dialog.getAvailableValuesOfType((QgsProcessingParameterCrs, QgsProcessingParameterString), QgsProcessingOutputString)
             for crs in crss:
                 self.combo.addItem(self.dialog.resolveValueDescription(crs), crs)
             raster = self.dialog.getAvailableValuesOfType(QgsProcessingParameterRasterLayer,
@@ -386,7 +387,7 @@ class ExtentWidgetWrapper(WidgetWrapper):
         else:
             widget = QComboBox()
             widget.setEditable(True)
-            extents = self.dialog.getAvailableValuesOfType(QgsProcessingParameterExtent, OutputExtent)
+            extents = self.dialog.getAvailableValuesOfType(QgsProcessingParameterExtent, (OutputExtent, QgsProcessingOutputString))
             if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 widget.addItem(self.USE_MIN_COVERING_EXTENT, None)
             raster = self.dialog.getAvailableValuesOfType(QgsProcessingParameterRasterLayer,
@@ -442,7 +443,7 @@ class PointWidgetWrapper(WidgetWrapper):
         else:
             item = QComboBox()
             item.setEditable(True)
-            points = self.dialog.getAvailableValuesOfType(QgsProcessingParameterPoint)
+            points = self.dialog.getAvailableValuesOfType((QgsProcessingParameterPoint, QgsProcessingParameterString), (QgsProcessingOutputString))
             for p in points:
                 item.addItem(self.dialog.resolveValueDescription(p), p)
             item.setEditText(str(self.param.defaultValue()))
@@ -488,7 +489,7 @@ class FileWidgetWrapper(WidgetWrapper):
         else:
             self.combo = QComboBox()
             self.combo.setEditable(True)
-            files = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFile, OutputFile)
+            files = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFile, (QgsProcessingOutputFile, QgsProcessingOutputString))
             for f in files:
                 self.combo.addItem(self.dialog.resolveValueDescription(f), f)
             if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
@@ -763,8 +764,8 @@ class MapLayerWidgetWrapper(WidgetWrapper):
 
     def getAvailableLayers(self):
         return self.dialog.getAvailableValuesOfType(
-            [QgsProcessingParameterRasterLayer, QgsProcessingParameterVectorLayer, QgsProcessingParameterMapLayer],
-            [QgsProcessingOutputRasterLayer, QgsProcessingOutputVectorLayer])
+            [QgsProcessingParameterRasterLayer, QgsProcessingParameterVectorLayer, QgsProcessingParameterMapLayer, QgsProcessingParameterString],
+            [QgsProcessingOutputRasterLayer, QgsProcessingOutputVectorLayer, QgsProcessingOutputString, QgsProcessingOutputFile])
 
     def selectFile(self):
         filename, selected_filter = self.getFileName(self.combo.currentText())
@@ -810,7 +811,8 @@ class MapLayerWidgetWrapper(WidgetWrapper):
 class RasterWidgetWrapper(MapLayerWidgetWrapper):
 
     def getAvailableLayers(self):
-        return self.dialog.getAvailableValuesOfType(QgsProcessingParameterRasterLayer, QgsProcessingOutputRasterLayer)
+        return self.dialog.getAvailableValuesOfType((QgsProcessingParameterRasterLayer, QgsProcessingParameterString),
+                                                    (QgsProcessingOutputRasterLayer, QgsProcessingOutputFile, QgsProcessingOutputString))
 
     def setComboBoxFilters(self, combo):
         combo.setFilters(QgsMapLayerProxyModel.RasterLayer)
@@ -936,7 +938,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             self.combo = QComboBox()
             layers = self.dialog.getAvailableValuesOfType(
                 (QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer),
-                QgsProcessingOutputVectorLayer, self.param.dataTypes())
+                (QgsProcessingOutputVectorLayer, QgsProcessingOutputString, QgsProcessingOutputFile), self.param.dataTypes())
             self.combo.setEditable(True)
             for layer in layers:
                 self.combo.addItem(self.dialog.resolveValueDescription(layer), layer)
@@ -1115,7 +1117,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
         else:
             strings = self.dialog.getAvailableValuesOfType(
                 [QgsProcessingParameterExpression, QgsProcessingParameterString, QgsProcessingParameterNumber],
-                QgsProcessingOutputString)
+                (QgsProcessingOutputString, QgsProcessingOutputNumber))
             options = [(self.dialog.resolveValueDescription(s), s) for s in strings]
             widget = QComboBox()
             widget.setEditable(True)
@@ -1215,8 +1217,8 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
         else:
             self.combo = QComboBox()
             self.combo.setEditable(True)
-            tables = self.dialog.getAvailableValuesOfType(QgsProcessingParameterVectorLayer,
-                                                          QgsProcessingOutputVectorLayer)
+            tables = self.dialog.getAvailableValuesOfType((QgsProcessingParameterVectorLayer, QgsProcessingParameterString),
+                                                          (QgsProcessingOutputVectorLayer, QgsProcessingOutputFile, QgsProcessingOutputString))
             if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 self.combo.addItem(self.NOT_SELECTED, None)
             for table in tables:
