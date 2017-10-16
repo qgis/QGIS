@@ -140,7 +140,7 @@ class TestQgsLayoutItem(unittest.TestCase):
     def testDisplayName(self):
         layout = QgsLayout(QgsProject.instance())
         item = QgsLayoutItemShape(layout)
-        self.assertEqual(item.displayName(), '<Shape>')
+        self.assertEqual(item.displayName(), '<Rectangle>')
         item.setId('a')
         self.assertEqual(item.displayName(), 'a')
         self.assertEqual(item.id(), 'a')

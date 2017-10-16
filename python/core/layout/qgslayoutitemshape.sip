@@ -86,6 +86,11 @@ class QgsLayoutItemShape : QgsLayoutItem
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
 
 
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+
+
 };
 
 

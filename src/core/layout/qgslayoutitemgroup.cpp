@@ -225,12 +225,10 @@ void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size, bool includes
   resetBoundingRect();
 }
 
-bool QgsLayoutItemGroup::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const
+bool QgsLayoutItemGroup::writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const
 {
   QDomElement element = document.createElement( QStringLiteral( "LayoutItem" ) );
   element.setAttribute( QStringLiteral( "type" ), stringType() );
-
-  writePropertiesToElement( element, document, context );
 
   for ( QgsLayoutItem *item : mItems )
   {
@@ -247,14 +245,12 @@ bool QgsLayoutItemGroup::writeXml( QDomElement &parentElement, QDomDocument &doc
   return true;
 }
 
-bool QgsLayoutItemGroup::readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context )
+bool QgsLayoutItemGroup::readPropertiesFromElement( const QDomElement &itemElement, const QDomDocument &, const QgsReadWriteContext & )
 {
   if ( itemElement.nodeName() != QStringLiteral( "LayoutItem" ) || itemElement.attribute( QStringLiteral( "type" ) ) != stringType() )
   {
     return false;
   }
-
-  bool result = readPropertiesFromElement( itemElement, document, context );
 
   QList<QgsLayoutItem *> items;
   mLayout->layoutItems( items );
@@ -280,8 +276,7 @@ bool QgsLayoutItemGroup::readXml( const QDomElement &itemElement, const QDomDocu
 
   resetBoundingRect();
 
-  emit changed();
-  return result;
+  return true;
 }
 
 void QgsLayoutItemGroup::paint( QPainter *, const QStyleOptionGraphicsItem *, QWidget * )

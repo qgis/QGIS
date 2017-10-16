@@ -293,29 +293,23 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  :rtype: float
 %End
 
-    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
  Stores the item state in a DOM element.
  \param parentElement parent DOM element (e.g. 'Layout' element)
  \param document DOM document
  \param context read write context
 .. seealso:: readXml()
-.. note::
-
-   Subclasses should ensure that they call writePropertiesToElement() in their implementation.
  :rtype: bool
 %End
 
-    virtual bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
+    bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
 %Docstring
  Sets the item state from a DOM element.
  \param itemElement is the DOM node corresponding to item (e.g. 'LayoutItem' element)
  \param document DOM document
  \param context read write context
 .. seealso:: writeXml()
-.. note::
-
-   Subclasses should ensure that they call readPropertiesFromElement() in their implementation.
  :rtype: bool
 %End
 
@@ -687,9 +681,6 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  \param context read write context
 .. seealso:: writeXml()
 .. seealso:: readPropertiesFromElement()
-.. note::
-
-   derived classes must call this base implementation when overriding this method
  :rtype: bool
 %End
 
@@ -701,9 +692,6 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  \param context read write context
 .. seealso:: writePropertiesToElement()
 .. seealso:: readXml()
-.. note::
-
-   derived classes must call this base implementation when overriding this method
  :rtype: bool
 %End
 

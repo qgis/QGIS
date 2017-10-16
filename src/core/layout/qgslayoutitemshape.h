@@ -99,6 +99,9 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
 
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
 
+    bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
+
   private slots:
 
     /**

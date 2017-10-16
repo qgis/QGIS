@@ -189,3 +189,31 @@ void QgsLayoutItemShape::draw( QgsRenderContext &context, const QStyleOptionGrap
   symbol()->renderPolygon( shapePolygon, &rings, nullptr, context );
   symbol()->stopRender( context );
 }
+
+bool QgsLayoutItemShape::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  element.setAttribute( QStringLiteral( "shapeType" ), mShape );
+  element.setAttribute( QStringLiteral( "cornerRadiusMeasure" ), mCornerRadius.encodeMeasurement() );
+
+  QDomElement shapeStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mShapeStyleSymbol.get(), document, context );
+  element.appendChild( shapeStyleElem );
+
+  return true;
+}
+
+bool QgsLayoutItemShape::readPropertiesFromElement( const QDomElement &element, const QDomDocument &, const QgsReadWriteContext &context )
+{
+  mShape = static_cast< Shape >( element.attribute( QStringLiteral( "shapeType" ), QStringLiteral( "0" ) ).toInt() );
+  if ( element.hasAttribute( QStringLiteral( "cornerRadiusMeasure" ) ) )
+    mCornerRadius = QgsLayoutMeasurement::decodeMeasurement( element.attribute( QStringLiteral( "cornerRadiusMeasure" ), QStringLiteral( "0" ) ) );
+  else
+    mCornerRadius = QgsLayoutMeasurement( element.attribute( QStringLiteral( "cornerRadius" ), QStringLiteral( "0" ) ).toDouble() );
+
+  QDomElement shapeStyleSymbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
+  if ( !shapeStyleSymbolElem.isNull() )
+  {
+    mShapeStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( shapeStyleSymbolElem, context ) );
+  }
+
+  return true;
+}

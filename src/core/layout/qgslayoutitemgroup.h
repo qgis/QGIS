@@ -72,13 +72,12 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
     void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false ) override;
     void attemptResize( const QgsLayoutSize &size, bool includesFrame = false ) override;
 
-    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
-    bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
-
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
   protected:
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readPropertiesFromElement( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
 

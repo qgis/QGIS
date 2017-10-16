@@ -453,20 +453,217 @@ bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, con
   QDomElement element = doc.createElement( QStringLiteral( "LayoutItem" ) );
   element.setAttribute( QStringLiteral( "type" ), stringType() );
 
+  element.setAttribute( QStringLiteral( "uuid" ), mUuid );
+  element.setAttribute( QStringLiteral( "id" ), mId );
+  element.setAttribute( QStringLiteral( "referencePoint" ), QString::number( static_cast< int >( mReferencePoint ) ) );
+  element.setAttribute( QStringLiteral( "position" ), mItemPosition.encodePoint() );
+  element.setAttribute( QStringLiteral( "size" ), mItemSize.encodeSize() );
+  element.setAttribute( QStringLiteral( "itemRotation" ), QString::number( mItemRotation ) );
+  element.setAttribute( QStringLiteral( "groupUuid" ), mParentGroupUuid );
+
+  element.setAttribute( "zValue", QString::number( zValue() ) );
+  element.setAttribute( "visibility", isVisible() );
+  //position lock for mouse moves/resizes
+  if ( mIsLocked )
+  {
+    element.setAttribute( "positionLock", "true" );
+  }
+  else
+  {
+    element.setAttribute( "positionLock", "false" );
+  }
+
+  //frame
+  if ( mFrame )
+  {
+    element.setAttribute( QStringLiteral( "frame" ), QStringLiteral( "true" ) );
+  }
+  else
+  {
+    element.setAttribute( QStringLiteral( "frame" ), QStringLiteral( "false" ) );
+  }
+
+  //background
+  if ( mBackground )
+  {
+    element.setAttribute( QStringLiteral( "background" ), QStringLiteral( "true" ) );
+  }
+  else
+  {
+    element.setAttribute( QStringLiteral( "background" ), QStringLiteral( "false" ) );
+  }
+
+  //frame color
+  QDomElement frameColorElem = doc.createElement( QStringLiteral( "FrameColor" ) );
+  frameColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mFrameColor.red() ) );
+  frameColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mFrameColor.green() ) );
+  frameColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mFrameColor.blue() ) );
+  frameColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mFrameColor.alpha() ) );
+  element.appendChild( frameColorElem );
+  element.setAttribute( QStringLiteral( "outlineWidthM" ), mFrameWidth.encodeMeasurement() );
+  element.setAttribute( QStringLiteral( "frameJoinStyle" ), QgsSymbolLayerUtils::encodePenJoinStyle( mFrameJoinStyle ) );
+
+  //background color
+  QDomElement bgColorElem = doc.createElement( QStringLiteral( "BackgroundColor" ) );
+  bgColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mBackgroundColor.red() ) );
+  bgColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mBackgroundColor.green() ) );
+  bgColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mBackgroundColor.blue() ) );
+  bgColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mBackgroundColor.alpha() ) );
+  element.appendChild( bgColorElem );
+
+  //blend mode
+  element.setAttribute( "blendMode", QgsPainting::getBlendModeEnum( mBlendMode ) );
+
+  //opacity
+  element.setAttribute( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
+
+  element.setAttribute( "excludeFromExports", mExcludeFromExports );
+
+  writeObjectPropertiesToElement( element, doc, context );
+
   writePropertiesToElement( element, doc, context );
   parentElement.appendChild( element );
 
   return true;
 }
 
-bool QgsLayoutItem::readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
+bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  if ( itemElem.nodeName() != QStringLiteral( "LayoutItem" ) || itemElem.attribute( QStringLiteral( "type" ) ) != stringType() )
+  if ( element.nodeName() != QStringLiteral( "LayoutItem" ) || element.attribute( QStringLiteral( "type" ) ) != stringType() )
   {
     return false;
   }
 
-  bool result = readPropertiesFromElement( itemElem, doc, context );
+  readObjectPropertiesFromElement( element, doc, context );
+
+  mBlockUndoCommands = true;
+  mUuid = element.attribute( QStringLiteral( "uuid" ), QUuid::createUuid().toString() );
+  setId( element.attribute( QStringLiteral( "id" ) ) );
+  mReferencePoint = static_cast< ReferencePoint >( element.attribute( QStringLiteral( "referencePoint" ) ).toInt() );
+  attemptMove( QgsLayoutPoint::decodePoint( element.attribute( QStringLiteral( "position" ) ) ) );
+  attemptResize( QgsLayoutSize::decodeSize( element.attribute( QStringLiteral( "size" ) ) ) );
+  setItemRotation( element.attribute( QStringLiteral( "itemRotation" ), QStringLiteral( "0" ) ).toDouble() );
+
+  mParentGroupUuid = element.attribute( QStringLiteral( "groupUuid" ) );
+  if ( !mParentGroupUuid.isEmpty() )
+  {
+    if ( QgsLayoutItemGroup *group = parentGroup() )
+    {
+      group->addItem( this );
+    }
+  }
+
+  //TODO
+  /*
+  // temporary for groups imported from templates
+  mTemplateUuid = itemElem.attribute( "templateUuid" );
+  */
+
+  //position lock for mouse moves/resizes
+  QString positionLock = element.attribute( "positionLock" );
+  if ( positionLock.compare( "true", Qt::CaseInsensitive ) == 0 )
+  {
+    setLocked( true );
+  }
+  else
+  {
+    setLocked( false );
+  }
+  //visibility
+  setVisibility( element.attribute( "visibility", "1" ) != "0" );
+  setZValue( element.attribute( "zValue" ).toDouble() );
+
+  //frame
+  QString frame = element.attribute( QStringLiteral( "frame" ) );
+  if ( frame.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  {
+    mFrame = true;
+  }
+  else
+  {
+    mFrame = false;
+  }
+
+  //frame
+  QString background = element.attribute( QStringLiteral( "background" ) );
+  if ( background.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  {
+    mBackground = true;
+  }
+  else
+  {
+    mBackground = false;
+  }
+
+  //pen
+  mFrameWidth = QgsLayoutMeasurement::decodeMeasurement( element.attribute( QStringLiteral( "outlineWidthM" ) ) );
+  mFrameJoinStyle = QgsSymbolLayerUtils::decodePenJoinStyle( element.attribute( QStringLiteral( "frameJoinStyle" ), QStringLiteral( "miter" ) ) );
+  QDomNodeList frameColorList = element.elementsByTagName( QStringLiteral( "FrameColor" ) );
+  if ( !frameColorList.isEmpty() )
+  {
+    QDomElement frameColorElem = frameColorList.at( 0 ).toElement();
+    bool redOk = false;
+    bool greenOk = false;
+    bool blueOk = false;
+    bool alphaOk = false;
+    int penRed, penGreen, penBlue, penAlpha;
+
+#if 0 // TODO, old style
+    double penWidth;
+    penWidth = element.attribute( QStringLiteral( "outlineWidth" ) ).toDouble( &widthOk );
+#endif
+    penRed = frameColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    penGreen = frameColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    penBlue = frameColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    penAlpha = frameColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+
+    if ( redOk && greenOk && blueOk && alphaOk )
+    {
+      mFrameColor = QColor( penRed, penGreen, penBlue, penAlpha );
+    }
+  }
+  refreshFrame( false );
+
+  //brush
+  QDomNodeList bgColorList = element.elementsByTagName( QStringLiteral( "BackgroundColor" ) );
+  if ( !bgColorList.isEmpty() )
+  {
+    QDomElement bgColorElem = bgColorList.at( 0 ).toElement();
+    bool redOk, greenOk, blueOk, alphaOk;
+    int bgRed, bgGreen, bgBlue, bgAlpha;
+    bgRed = bgColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    bgGreen = bgColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    bgBlue = bgColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    bgAlpha = bgColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+    if ( redOk && greenOk && blueOk && alphaOk )
+    {
+      mBackgroundColor = QColor( bgRed, bgGreen, bgBlue, bgAlpha );
+      setBrush( QBrush( mBackgroundColor, Qt::SolidPattern ) );
+    }
+    //apply any data defined settings
+    refreshBackgroundColor( false );
+  }
+
+  //blend mode
+  setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( element.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
+
+  //opacity
+  if ( element.hasAttribute( QStringLiteral( "opacity" ) ) )
+  {
+    setItemOpacity( element.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1" ) ).toDouble() );
+  }
+  else
+  {
+    setItemOpacity( 1.0 - element.attribute( QStringLiteral( "transparency" ), QStringLiteral( "0" ) ).toInt() / 100.0 );
+  }
+
+  mExcludeFromExports = element.attribute( QStringLiteral( "excludeFromExports" ), QStringLiteral( "0" ) ).toInt();
+  mEvaluatedExcludeFromExports = mExcludeFromExports;
+
+  bool result = readPropertiesFromElement( element, doc, context );
+
+  mBlockUndoCommands = false;
+
   emit changed();
   update();
   return result;
@@ -836,207 +1033,14 @@ QgsLayoutPoint QgsLayoutItem::topLeftToReferencePoint( const QgsLayoutPoint &poi
   return mLayout->convertFromLayoutUnits( refPoint, point.units() );
 }
 
-bool QgsLayoutItem::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+bool QgsLayoutItem::writePropertiesToElement( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const
 {
-  element.setAttribute( QStringLiteral( "uuid" ), mUuid );
-  element.setAttribute( QStringLiteral( "id" ), mId );
-  element.setAttribute( QStringLiteral( "referencePoint" ), QString::number( static_cast< int >( mReferencePoint ) ) );
-  element.setAttribute( QStringLiteral( "position" ), mItemPosition.encodePoint() );
-  element.setAttribute( QStringLiteral( "size" ), mItemSize.encodeSize() );
-  element.setAttribute( QStringLiteral( "itemRotation" ), QString::number( mItemRotation ) );
-  element.setAttribute( QStringLiteral( "groupUuid" ), mParentGroupUuid );
-
-  element.setAttribute( "zValue", QString::number( zValue() ) );
-  element.setAttribute( "visibility", isVisible() );
-  //position lock for mouse moves/resizes
-  if ( mIsLocked )
-  {
-    element.setAttribute( "positionLock", "true" );
-  }
-  else
-  {
-    element.setAttribute( "positionLock", "false" );
-  }
-
-  //frame
-  if ( mFrame )
-  {
-    element.setAttribute( QStringLiteral( "frame" ), QStringLiteral( "true" ) );
-  }
-  else
-  {
-    element.setAttribute( QStringLiteral( "frame" ), QStringLiteral( "false" ) );
-  }
-
-  //background
-  if ( mBackground )
-  {
-    element.setAttribute( QStringLiteral( "background" ), QStringLiteral( "true" ) );
-  }
-  else
-  {
-    element.setAttribute( QStringLiteral( "background" ), QStringLiteral( "false" ) );
-  }
-
-  //frame color
-  QDomElement frameColorElem = document.createElement( QStringLiteral( "FrameColor" ) );
-  frameColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mFrameColor.red() ) );
-  frameColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mFrameColor.green() ) );
-  frameColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mFrameColor.blue() ) );
-  frameColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mFrameColor.alpha() ) );
-  element.appendChild( frameColorElem );
-  element.setAttribute( QStringLiteral( "outlineWidthM" ), mFrameWidth.encodeMeasurement() );
-  element.setAttribute( QStringLiteral( "frameJoinStyle" ), QgsSymbolLayerUtils::encodePenJoinStyle( mFrameJoinStyle ) );
-
-  //background color
-  QDomElement bgColorElem = document.createElement( QStringLiteral( "BackgroundColor" ) );
-  bgColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mBackgroundColor.red() ) );
-  bgColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mBackgroundColor.green() ) );
-  bgColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mBackgroundColor.blue() ) );
-  bgColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mBackgroundColor.alpha() ) );
-  element.appendChild( bgColorElem );
-
-  //blend mode
-  element.setAttribute( "blendMode", QgsPainting::getBlendModeEnum( mBlendMode ) );
-
-  //opacity
-  element.setAttribute( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
-
-  element.setAttribute( "excludeFromExports", mExcludeFromExports );
-
-  writeObjectPropertiesToElement( element, document, context );
   return true;
 }
 
-bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context )
+bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &, const QDomDocument &, const QgsReadWriteContext & )
 {
-  readObjectPropertiesFromElement( element, document, context );
 
-  mBlockUndoCommands = true;
-  mUuid = element.attribute( QStringLiteral( "uuid" ), QUuid::createUuid().toString() );
-  setId( element.attribute( QStringLiteral( "id" ) ) );
-  mReferencePoint = static_cast< ReferencePoint >( element.attribute( QStringLiteral( "referencePoint" ) ).toInt() );
-  attemptMove( QgsLayoutPoint::decodePoint( element.attribute( QStringLiteral( "position" ) ) ) );
-  attemptResize( QgsLayoutSize::decodeSize( element.attribute( QStringLiteral( "size" ) ) ) );
-  setItemRotation( element.attribute( QStringLiteral( "itemRotation" ), QStringLiteral( "0" ) ).toDouble() );
-
-  mParentGroupUuid = element.attribute( QStringLiteral( "groupUuid" ) );
-  if ( !mParentGroupUuid.isEmpty() )
-  {
-    if ( QgsLayoutItemGroup *group = parentGroup() )
-    {
-      group->addItem( this );
-    }
-  }
-
-  //TODO
-  /*
-  // temporary for groups imported from templates
-  mTemplateUuid = itemElem.attribute( "templateUuid" );
-  */
-
-  //position lock for mouse moves/resizes
-  QString positionLock = element.attribute( "positionLock" );
-  if ( positionLock.compare( "true", Qt::CaseInsensitive ) == 0 )
-  {
-    setLocked( true );
-  }
-  else
-  {
-    setLocked( false );
-  }
-  //visibility
-  setVisibility( element.attribute( "visibility", "1" ) != "0" );
-  setZValue( element.attribute( "zValue" ).toDouble() );
-
-  //frame
-  QString frame = element.attribute( QStringLiteral( "frame" ) );
-  if ( frame.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
-  {
-    mFrame = true;
-  }
-  else
-  {
-    mFrame = false;
-  }
-
-  //frame
-  QString background = element.attribute( QStringLiteral( "background" ) );
-  if ( background.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
-  {
-    mBackground = true;
-  }
-  else
-  {
-    mBackground = false;
-  }
-
-  //pen
-  mFrameWidth = QgsLayoutMeasurement::decodeMeasurement( element.attribute( QStringLiteral( "outlineWidthM" ) ) );
-  mFrameJoinStyle = QgsSymbolLayerUtils::decodePenJoinStyle( element.attribute( QStringLiteral( "frameJoinStyle" ), QStringLiteral( "miter" ) ) );
-  QDomNodeList frameColorList = element.elementsByTagName( QStringLiteral( "FrameColor" ) );
-  if ( !frameColorList.isEmpty() )
-  {
-    QDomElement frameColorElem = frameColorList.at( 0 ).toElement();
-    bool redOk = false;
-    bool greenOk = false;
-    bool blueOk = false;
-    bool alphaOk = false;
-    int penRed, penGreen, penBlue, penAlpha;
-
-#if 0 // TODO, old style
-    double penWidth;
-    penWidth = element.attribute( QStringLiteral( "outlineWidth" ) ).toDouble( &widthOk );
-#endif
-    penRed = frameColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
-    penGreen = frameColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
-    penBlue = frameColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
-    penAlpha = frameColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
-
-    if ( redOk && greenOk && blueOk && alphaOk )
-    {
-      mFrameColor = QColor( penRed, penGreen, penBlue, penAlpha );
-    }
-  }
-  refreshFrame( false );
-
-  //brush
-  QDomNodeList bgColorList = element.elementsByTagName( QStringLiteral( "BackgroundColor" ) );
-  if ( !bgColorList.isEmpty() )
-  {
-    QDomElement bgColorElem = bgColorList.at( 0 ).toElement();
-    bool redOk, greenOk, blueOk, alphaOk;
-    int bgRed, bgGreen, bgBlue, bgAlpha;
-    bgRed = bgColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
-    bgGreen = bgColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
-    bgBlue = bgColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
-    bgAlpha = bgColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
-    if ( redOk && greenOk && blueOk && alphaOk )
-    {
-      mBackgroundColor = QColor( bgRed, bgGreen, bgBlue, bgAlpha );
-      setBrush( QBrush( mBackgroundColor, Qt::SolidPattern ) );
-    }
-    //apply any data defined settings
-    refreshBackgroundColor( false );
-  }
-
-  //blend mode
-  setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( element.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
-
-  //opacity
-  if ( element.hasAttribute( QStringLiteral( "opacity" ) ) )
-  {
-    setItemOpacity( element.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1" ) ).toDouble() );
-  }
-  else
-  {
-    setItemOpacity( 1.0 - element.attribute( QStringLiteral( "transparency" ), QStringLiteral( "0" ) ).toInt() / 100.0 );
-  }
-
-  mExcludeFromExports = element.attribute( QStringLiteral( "excludeFromExports" ), QStringLiteral( "0" ) ).toInt();
-  mEvaluatedExcludeFromExports = mExcludeFromExports;
-
-  mBlockUndoCommands = false;
   return true;
 }
 

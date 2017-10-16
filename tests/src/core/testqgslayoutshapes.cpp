@@ -24,6 +24,7 @@
 #include "qgssymbol.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsfillsymbollayer.h"
+#include "qgsreadwritecontext.h"
 #include <QObject>
 #include "qgstest.h"
 #include <QColor>
@@ -46,6 +47,7 @@ class TestQgsLayoutShapes : public QObject
     void ellipse(); //test if ellipse shape is functioning
     void roundedRectangle(); //test if rounded rectangle shape is functioning
     void symbol(); //test is styling shapes via symbol is working
+    void readWriteXml();
 
   private:
 
@@ -217,6 +219,38 @@ void TestQgsLayoutShapes::symbol()
   QgsLayoutChecker checker( QStringLiteral( "composershapes_symbol" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_shapes" ) );
   QVERIFY( checker.testLayout( mReport ) );
+}
+
+void TestQgsLayoutShapes::readWriteXml()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  QgsLayoutItemShape *shape = new QgsLayoutItemShape( &l );
+  shape->setShapeType( QgsLayoutItemShape::Triangle );
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( Qt::green );
+  simpleFill->setStrokeColor( Qt::yellow );
+  simpleFill->setStrokeWidth( 6 );
+  shape->setSymbol( fillSymbol );
+
+  //save original item to xml
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  QDomDocument doc( documentType );
+  QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
+
+  shape->writeXml( rootNode, doc, QgsReadWriteContext() );
+
+  //create new item and restore settings from xml
+  QgsLayoutItemShape *copy = new QgsLayoutItemShape( &l );
+  QVERIFY( copy->readXml( rootNode.firstChildElement(), doc, QgsReadWriteContext() ) );
+  QCOMPARE( copy->shapeType(), QgsLayoutItemShape::Triangle );
+  QCOMPARE( copy->symbol()->symbolLayer( 0 )->color().name(), QStringLiteral( "#00ff00" ) );
+  QCOMPARE( copy->symbol()->symbolLayer( 0 )->strokeColor().name(), QStringLiteral( "#ffff00" ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutShapes )

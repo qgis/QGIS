@@ -67,16 +67,15 @@ class QgsLayoutItemGroup: QgsLayoutItem
     virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
 
 
-    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
-
-    virtual bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
-
-
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
 
   protected:
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
+
+    virtual bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
 
 };

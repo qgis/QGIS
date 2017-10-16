@@ -312,9 +312,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \param document DOM document
      * \param context read write context
      * \see readXml()
-     * \note Subclasses should ensure that they call writePropertiesToElement() in their implementation.
      */
-    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     /**
      * Sets the item state from a DOM element.
@@ -322,9 +321,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \param document DOM document
      * \param context read write context
      * \see writeXml()
-     * \note Subclasses should ensure that they call readPropertiesFromElement() in their implementation.
      */
-    virtual bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
+    bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
     QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
 
@@ -677,7 +675,6 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \param context read write context
      * \see writeXml()
      * \see readPropertiesFromElement()
-     * \note derived classes must call this base implementation when overriding this method
      */
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
@@ -688,7 +685,6 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \param context read write context
      * \see writePropertiesToElement()
      * \see readXml()
-     * \note derived classes must call this base implementation when overriding this method
      */
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
