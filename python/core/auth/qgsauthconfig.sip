@@ -309,6 +309,7 @@ class QgsPkiConfigBundle
  \param config Authentication method configuration
  \param cert Certificate to store in bundle
  \param certkey Private key to store in bundle
+ \param cachain list of CA certificates
 %End
 
     bool isValid();
