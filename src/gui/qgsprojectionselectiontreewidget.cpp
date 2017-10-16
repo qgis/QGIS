@@ -315,7 +315,7 @@ void QgsProjectionSelectionTreeWidget::setCrs( const QgsCoordinateReferenceSyste
   }
 }
 
-void QgsProjectionSelectionTreeWidget::setPreviewRect( QgsRectangle rect )
+void QgsProjectionSelectionTreeWidget::setPreviewRect( const QgsRectangle &rect )
 {
   mPreviewRect = rect;
   mPreviewBand2->setToGeometry( QgsGeometry::fromRect( mPreviewRect ), nullptr );
@@ -324,7 +324,7 @@ void QgsProjectionSelectionTreeWidget::setPreviewRect( QgsRectangle rect )
   mVertexMarker->show();
 }
 
-QgsRectangle QgsProjectionSelectionTreeWidget::previewRect()
+const QgsRectangle QgsProjectionSelectionTreeWidget::previewRect()
 {
   return mPreviewRect;
 }

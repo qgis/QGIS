@@ -2130,7 +2130,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       continue;
     }
     const QStringList data = line.split( ',' );
-    if ( data[0] == QStringListIterator( "None" ) )
+    if ( data[0] == QStringLiteral( "None" ) )
       continue;
 
     double west_bound_lon = data[1].toDouble();
