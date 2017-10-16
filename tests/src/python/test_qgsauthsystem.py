@@ -603,6 +603,21 @@ class TestQgsAuthManager(unittest.TestCase):
 
         self.assertTrue(trusted[0] in merged)
 
+    def test_140_cas_remove_self_signed(self):
+        """Test CAs merge """
+        extra_path = PKIDATA + '/alice-cert_w-chain.pem'
+
+        extra = QgsAuthCertUtils.casFromFile(extra_path)
+        filtered = QgsAuthCertUtils.casRemoveSelfSigned(extra)
+
+        self.assertEqual(len(filtered), 1)
+        self.assertEqual(len(extra), 2)
+
+        self.assertTrue(extra[1].isSelfSigned())
+
+        for c in filtered:
+            self.assertFalse(c.isSelfSigned())
+
 
 if __name__ == '__main__':
     unittest.main()

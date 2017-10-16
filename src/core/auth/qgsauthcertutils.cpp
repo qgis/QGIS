@@ -224,6 +224,19 @@ QList<QSslCertificate> QgsAuthCertUtils::certsFromString( const QString &pemtext
   return certs;
 }
 
+QList<QSslCertificate> QgsAuthCertUtils::casRemoveSelfSigned( const QList<QSslCertificate> &caList )
+{
+  QList<QSslCertificate> certs;
+  for ( const auto cert : caList )
+  {
+    if ( ! cert.isSelfSigned( ) )
+    {
+      certs.append( cert );
+    }
+  }
+  return certs;
+}
+
 QStringList QgsAuthCertUtils::certKeyBundleToPem( const QString &certpath,
     const QString &keypath,
     const QString &keypass,

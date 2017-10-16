@@ -136,6 +136,14 @@ class CORE_EXPORT QgsAuthCertUtils
     //! Return list of concatenated certs from a PEM Base64 text block
     static QList<QSslCertificate> certsFromString( const QString &pemtext );
 
+
+    /**
+     * \brief casRemoveSelfSigned remove self-signed CA certificates from \a caList
+     * \param caList list of CA certificates
+     * \return a list of non self-signed certificates
+     */
+    static QList<QSslCertificate> casRemoveSelfSigned( const QList<QSslCertificate> &caList );
+
     /**
      * Return list of certificate, private key and algorithm (as PEM text) from file path components
      * \param certpath File path to certificate

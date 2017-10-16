@@ -127,6 +127,15 @@ Return list of concatenated certs from a PEM Base64 text block
  :rtype: list of QSslCertificate
 %End
 
+
+    static QList<QSslCertificate> casRemoveSelfSigned( const QList<QSslCertificate> &caList );
+%Docstring
+ casRemoveSelfSigned remove self-signed CA certificates from ``caList``
+ \param caList list of CA certificates
+ :return: a list of non self-signed certificates
+ :rtype: list of QSslCertificate
+%End
+
     static QStringList certKeyBundleToPem( const QString &certpath,
                                            const QString &keypath,
                                            const QString &keypass = QString(),
