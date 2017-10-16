@@ -51,6 +51,8 @@ void QgsLayoutExporter::renderRegion( QPainter *painter, const QRectF &region )
     return;
   }
 
+  mLayout->context().mIsPreviewRender = false;
+
 #if 0 //TODO
   setSnapLinesVisible( false );
 #endif
@@ -60,5 +62,7 @@ void QgsLayoutExporter::renderRegion( QPainter *painter, const QRectF &region )
 #if 0 // TODO
   setSnapLinesVisible( true );
 #endif
+
+  mLayout->context().mIsPreviewRender = true;
 }
 

@@ -142,6 +142,13 @@ class CORE_EXPORT QgsLayoutContext : public QObject
     QgsLayoutMeasurementConverter &measurementConverter() { return mMeasurementConverter; }
 
     /**
+     * Returns true if the render current being conducted is a preview render,
+     * i.e. it is being rendered inside a QGraphicsView widget as opposed to a destination
+     * device (such as an image).
+     */
+    bool isPreviewRender() const { return mIsPreviewRender; }
+
+    /**
      * Returns true if the page grid should be drawn.
      * \see setGridVisible()
      */
@@ -198,9 +205,12 @@ class CORE_EXPORT QgsLayoutContext : public QObject
 
     QgsLayoutMeasurementConverter mMeasurementConverter;
 
+    bool mIsPreviewRender = true;
     bool mGridVisible = false;
     bool mBoundingBoxesVisible = true;
     bool mPagesVisible = true;
+
+    friend class QgsLayoutExporter;
 
 
 };

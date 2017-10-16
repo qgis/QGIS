@@ -82,13 +82,6 @@ class CORE_EXPORT QgsLayoutUtils
     static double relativePosition( const double position, const double beforeMin, const double beforeMax, const double afterMin, const double afterMax );
 
 
-    /**
-     * Returns true if the render to the specified \a painter is a preview render,
-     * i.e. is being rendered inside a QGraphicsView widget as opposed to a destination
-     * device (such as an image).
-     */
-    static bool isPreviewRender( QPainter *painter );
-
 };
 
 #endif //QGSLAYOUTUTILS_H

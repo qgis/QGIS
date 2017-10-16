@@ -109,28 +109,3 @@ double QgsLayoutUtils::relativePosition( const double position, const double bef
   //return linearly scaled position
   return m * position + c;
 }
-
-bool QgsLayoutUtils::isPreviewRender( QPainter *painter )
-{
-  if ( !painter || !painter->device() )
-    return false;
-
-  // if rendering to a QGraphicsView, we are in preview mode
-  QPaintDevice *device = painter->device();
-  if ( dynamic_cast< QPixmap * >( device ) )
-    return true;
-
-  QObject *obj = dynamic_cast< QObject *>( device );
-  if ( !obj )
-    return false;
-
-  const QMetaObject *mo = obj->metaObject();
-  while ( mo )
-  {
-    if ( mo->className() == QStringLiteral( "QGraphicsView" ) )
-      return true;
-
-    mo = mo->superClass();
-  }
-  return false;
-}

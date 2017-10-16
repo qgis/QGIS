@@ -125,6 +125,14 @@ class QgsLayoutContext : QObject
  :rtype: QgsLayoutMeasurementConverter
 %End
 
+    bool isPreviewRender() const;
+%Docstring
+ Returns true if the render current being conducted is a preview render,
+ i.e. it is being rendered inside a QGraphicsView widget as opposed to a destination
+ device (such as an image).
+ :rtype: bool
+%End
+
     bool gridVisible() const;
 %Docstring
  Returns true if the page grid should be drawn.

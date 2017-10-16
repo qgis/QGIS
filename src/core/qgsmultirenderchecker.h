@@ -197,7 +197,7 @@ class CORE_EXPORT QgsLayoutChecker : public QgsMultiRenderChecker
      *
      * Returns false if the rendered layout differs from the expected reference image.
      */
-    bool runTest( QString &report, int page = 0, int pixelDiff = 0 );
+    bool testLayout( QString &report, int page = 0, int pixelDiff = 0 );
 
   private:
     QgsLayoutChecker() = delete;

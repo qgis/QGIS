@@ -57,7 +57,7 @@ void QgsLayoutMouseHandles::paint( QPainter *painter, const QStyleOptionGraphics
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
 
-  if ( !QgsLayoutUtils::isPreviewRender( painter ) )
+  if ( !mLayout->context().isPreviewRender() )
   {
     //don't draw selection handles in layout outputs
     return;

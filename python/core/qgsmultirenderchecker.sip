@@ -174,7 +174,7 @@ class QgsLayoutChecker : QgsMultiRenderChecker
  Sets the output (reference) image ``size``.
 %End
 
-    bool runTest( QString &report, int page = 0, int pixelDiff = 0 );
+    bool testLayout( QString &report, int page = 0, int pixelDiff = 0 );
 %Docstring
  Runs a render check on the layout, adding results to the specified ``report``.
 

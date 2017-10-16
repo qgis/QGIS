@@ -188,7 +188,7 @@ QgsLayoutChecker::QgsLayoutChecker( const QString &testName, QgsLayout *layout )
   setColorTolerance( 5 );
 }
 
-bool QgsLayoutChecker::runTest( QString &checkedReport, int page, int pixelDiff )
+bool QgsLayoutChecker::testLayout( QString &checkedReport, int page, int pixelDiff )
 {
   if ( !mLayout )
   {

@@ -224,7 +224,7 @@ void QgsLayoutItem::setParentGroup( QgsLayoutItemGroup *group )
 
 void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )
 {
-  if ( !painter || !painter->device() || !shouldDrawItem( painter ) )
+  if ( !painter || !painter->device() || !shouldDrawItem() )
   {
     return;
   }
@@ -431,9 +431,9 @@ bool QgsLayoutItem::shouldBlockUndoCommands() const
   return !mLayout || mLayout != scene() || mBlockUndoCommands;
 }
 
-bool QgsLayoutItem::shouldDrawItem( QPainter *painter ) const
+bool QgsLayoutItem::shouldDrawItem() const
 {
-  if ( QgsLayoutUtils::isPreviewRender( painter ) )
+  if ( !mLayout || mLayout->context().isPreviewRender() )
   {
     //preview mode so OK to draw item
     return true;

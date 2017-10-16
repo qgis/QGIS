@@ -178,7 +178,7 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
   QPainter *painter = context.painter();
   painter->save();
 
-  if ( QgsLayoutUtils::isPreviewRender( context.painter() ) )
+  if ( mLayout->context().isPreviewRender() )
   {
     //if in preview mode, draw page border and shadow so that it's
     //still possible to tell where pages with a transparent style begin and end
@@ -254,7 +254,7 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
   if ( !mLayout )
     return;
 
-  if ( !QgsLayoutUtils::isPreviewRender( painter ) )
+  if ( !mLayout->context().isPreviewRender() )
     return;
 
   const QgsLayoutContext &context = mLayout->context();

@@ -24,6 +24,7 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgslinesymbollayer.h"
+#include "qgsmultirenderchecker.h"
 #include <QObject>
 #include "qgstest.h"
 
@@ -40,6 +41,7 @@ class TestQgsLayoutPage : public QObject
     void pageSize();
     void decodePageOrientation();
     void grid();
+    void transparentPaper(); //test totally transparent paper style
 
     void hiddenPages(); //test hidden page boundaries
 
@@ -163,6 +165,26 @@ void TestQgsLayoutPage::grid()
   QCOMPARE( page->mGrid->pos().x(), 0.0 );
   QCOMPARE( page->mGrid->pos().y(), 0.0 );
 
+}
+
+void TestQgsLayoutPage::transparentPaper()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
+  page->setPageSize( QgsLayoutSize( 297, 210, QgsUnitTypes::LayoutMillimeters ) );
+  l.pageCollection()->addPage( page.release() );
+
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  std::unique_ptr< QgsFillSymbol > fillSymbol( new QgsFillSymbol() );
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( Qt::transparent );
+  simpleFill->setStrokeColor( Qt::transparent );
+  l.pageCollection()->setPageStyleSymbol( fillSymbol.get() );
+
+  QgsLayoutChecker checker( QStringLiteral( "composerpaper_transparent" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
+  QVERIFY( checker.testLayout( mReport ) );
 }
 
 void TestQgsLayoutPage::hiddenPages()

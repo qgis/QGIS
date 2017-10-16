@@ -769,10 +769,9 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     bool shouldBlockUndoCommands() const;
 
     /**
-     * Returns whether the item should be drawn in the current context
-     * and to the given \a painter.
+     * Returns whether the item should be drawn in the current context.
      */
-    bool shouldDrawItem( QPainter *painter ) const;
+    bool shouldDrawItem() const;
 
     friend class TestQgsLayoutItem;
     friend class TestQgsLayoutView;
