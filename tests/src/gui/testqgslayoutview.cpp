@@ -26,6 +26,7 @@
 #include "qgslayoutitemshape.h"
 #include "qgsproject.h"
 #include "qgsgui.h"
+#include "qgslayoututils.h"
 #include <QtTest/QSignalSpy>
 #include <QSvgGenerator>
 #include <QPrinter>
@@ -344,7 +345,7 @@ class TestViewItem : public QgsLayoutItem
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * ) override
     {
       mDrawn = true;
-      mPreview = isPreviewRender( painter );
+      mPreview = QgsLayoutUtils::isPreviewRender( painter );
     }
     void draw( QgsRenderContext &, const QStyleOptionGraphicsItem * ) override
     {
@@ -369,18 +370,18 @@ void TestQgsLayoutView::isPreviewRender()
 
 
   // render to image
-  QVERIFY( !item->isPreviewRender( nullptr ) );
+  QVERIFY( !QgsLayoutUtils::isPreviewRender( nullptr ) );
   QImage im = QImage( 250, 250, QImage::Format_RGB32 );
   QPainter painter;
   QVERIFY( painter.begin( &im ) );
-  QVERIFY( !item->isPreviewRender( &painter ) );
+  QVERIFY( !QgsLayoutUtils::isPreviewRender( &painter ) );
   painter.end();
 
   // render to svg
   QSvgGenerator generator;
   generator.setFileName( QDir::tempPath() + "/layout_text.svg" );
   QVERIFY( painter.begin( &generator ) );
-  QVERIFY( !item->isPreviewRender( &painter ) );
+  QVERIFY( !QgsLayoutUtils::isPreviewRender( &painter ) );
   painter.end();
 
   // render to pdf
@@ -389,7 +390,7 @@ void TestQgsLayoutView::isPreviewRender()
   printer.setOutputFormat( QPrinter::PdfFormat );
   printer.setOutputFileName( QDir::tempPath() + "/layout_text.pdf" );
   QVERIFY( painter.begin( &printer ) );
-  QVERIFY( !item->isPreviewRender( &painter ) );
+  QVERIFY( !QgsLayoutUtils::isPreviewRender( &painter ) );
   painter.end();
 
   // render in view - kinda gross!

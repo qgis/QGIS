@@ -165,6 +165,48 @@ class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
     QSize mSize;
     int mDotsPerMeter;
 };
+
+/**
+ * \ingroup core
+ * \class QgsLayoutChecker
+ * Renders a layout to an image and compares with an expected output
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsLayoutChecker : public QgsMultiRenderChecker
+{
+  public:
+
+    /**
+     * Constructor for QgsLayoutChecker.
+     */
+    QgsLayoutChecker( const QString &testName, QgsLayout *layout );
+
+    /**
+     * Sets the output (reference) image \a size.
+     */
+    void setSize( QSize size ) { mSize = size; }
+
+    /**
+     * Runs a render check on the layout, adding results to the specified \a report.
+     *
+     * The maximum number of allowable pixels differing from the reference image is
+     * specified via the \a pixelDiff argument.
+     *
+     * The page number is specified via \a page, where 0 corresponds to the first
+     * page in the layout.
+     *
+     * Returns false if the rendered layout differs from the expected reference image.
+     */
+    bool runTest( QString &report, int page = 0, int pixelDiff = 0 );
+
+  private:
+    QgsLayoutChecker() = delete;
+
+    QString mTestName;
+    QgsLayout *mLayout = nullptr;
+    QSize mSize;
+    int mDotsPerMeter;
+};
 ///@endcond
 
 SIP_END

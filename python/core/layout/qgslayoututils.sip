@@ -72,6 +72,15 @@ class QgsLayoutUtils
  :rtype: float
 %End
 
+
+    static bool isPreviewRender( QPainter *painter );
+%Docstring
+ Returns true if the render to the specified ``painter`` is a preview render,
+ i.e. is being rendered inside a QGraphicsView widget as opposed to a destination
+ device (such as an image).
+ :rtype: bool
+%End
+
 };
 
 /************************************************************************

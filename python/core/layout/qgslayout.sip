@@ -62,6 +62,13 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  :rtype: QgsLayoutModel
 %End
 
+    QgsLayoutExporter &exporter();
+%Docstring
+ Returns the layout's exporter, which is used for rendering the layout and exporting
+ to various formats.
+ :rtype: QgsLayoutExporter
+%End
+
     QString name() const;
 %Docstring
  Returns the layout's name.

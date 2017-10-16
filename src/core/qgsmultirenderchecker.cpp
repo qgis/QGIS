@@ -15,6 +15,7 @@
 
 #include "qgsmultirenderchecker.h"
 #include "qgscomposition.h"
+#include "qgslayout.h"
 #include <QDebug>
 
 void QgsMultiRenderChecker::setControlName( const QString &name )
@@ -169,6 +170,70 @@ bool QgsCompositionChecker::testComposition( QString &checkedReport, int page, i
 
   return testResult;
 }
+
+
+
+//
+// QgsLayoutChecker
+//
+
+QgsLayoutChecker::QgsLayoutChecker( const QString &testName, QgsLayout *layout )
+  : QgsMultiRenderChecker()
+  , mTestName( testName )
+  , mLayout( layout )
+  , mSize( 1122, 794 )
+  , mDotsPerMeter( 96 / 25.4 * 1000 )
+{
+  // Qt has some slight render inconsistencies on the whole image sometimes
+  setColorTolerance( 5 );
+}
+
+bool QgsLayoutChecker::runTest( QString &checkedReport, int page, int pixelDiff )
+{
+  if ( !mLayout )
+  {
+    return false;
+  }
+
+  setControlName( "expected_" + mTestName );
+
+#if 0
+  //fake mode to generate expected image
+  //assume 96 dpi and size of the control image 1122 * 794
+  QImage newImage( QSize( 1122, 794 ), QImage::Format_RGB32 );
+  mComposition->setPlotStyle( QgsComposition::Print );
+  newImage.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  newImage.setDotsPerMeterY( 96 / 25.4 * 1000 );
+  drawBackground( &newImage );
+  QPainter expectedPainter( &newImage );
+  //QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
+  //QRectF targetArea( 0, 0, 3507, 2480 );
+  mComposition->renderPage( &expectedPainter, page );
+  expectedPainter.end();
+  newImage.save( controlImagePath() + QDir::separator() + "expected_" + mTestName + ".png", "PNG" );
+  return true;
+#endif //0
+
+  QImage outputImage( mSize, QImage::Format_RGB32 );
+  outputImage.setDotsPerMeterX( mDotsPerMeter );
+  outputImage.setDotsPerMeterY( mDotsPerMeter );
+  drawBackground( &outputImage );
+  QPainter p( &outputImage );
+  mLayout->exporter().renderPage( &p, page );
+  p.end();
+
+  QString renderedFilePath = QDir::tempPath() + '/' + QFileInfo( mTestName ).baseName() + "_rendered.png";
+  outputImage.save( renderedFilePath, "PNG" );
+
+  setRenderedImage( renderedFilePath );
+
+  bool testResult = runTest( mTestName, pixelDiff );
+
+  checkedReport += report();
+
+  return testResult;
+}
+
 
 ///@endcond
 

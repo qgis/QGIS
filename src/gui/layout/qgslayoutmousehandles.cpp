@@ -57,14 +57,11 @@ void QgsLayoutMouseHandles::paint( QPainter *painter, const QStyleOptionGraphics
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
 
-  //TODO
-#if 0
-  if ( mLayout->plotStyle() != QgsComposition::Preview )
+  if ( !QgsLayoutUtils::isPreviewRender( painter ) )
   {
-    //don't draw selection handles in composition outputs
+    //don't draw selection handles in layout outputs
     return;
   }
-#endif
 
   if ( mLayout->context().boundingBoxesVisible() )
   {

@@ -25,6 +25,7 @@
 #include "qgslayoutgridsettings.h"
 #include "qgslayoutguidecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgslayoutexporter.h"
 
 class QgsLayoutItemMap;
 class QgsLayoutModel;
@@ -82,6 +83,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns the items model attached to the layout.
      */
     QgsLayoutModel *itemsModel();
+
+    /**
+     * Returns the layout's exporter, which is used for rendering the layout and exporting
+     * to various formats.
+     */
+    QgsLayoutExporter &exporter();
 
     /**
      * Returns the layout's name.
@@ -517,6 +524,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     std::unique_ptr< QgsLayoutPageCollection > mPageCollection;
     std::unique_ptr< QgsLayoutUndoStack > mUndoStack;
+    QgsLayoutExporter mExporter;
 
     bool mBlockUndoCommands = false;
 

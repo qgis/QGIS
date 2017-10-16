@@ -584,13 +584,6 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void drawBackground( QgsRenderContext &context );
 
     /**
-     * Returns true if the render to the specified \a painter is a preview render,
-     * i.e. is being rendered inside a QGraphicsView widget as opposed to a destination
-     * device (such as an image).
-     */
-    bool isPreviewRender( QPainter *painter ) const;
-
-    /**
      * Sets a fixed \a size for the layout item, which prevents it from being freely
      * resized. Set an empty size if item can be freely resized.
      * \see fixedSize()

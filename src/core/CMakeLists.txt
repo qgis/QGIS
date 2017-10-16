@@ -363,6 +363,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutaligner.cpp
   layout/qgslayoutcontext.cpp
   layout/qgslayouteffect.cpp
+  layout/qgslayoutexporter.cpp
   layout/qgslayoutgridsettings.cpp
   layout/qgslayoutguidecollection.cpp
   layout/qgslayoutitem.cpp
@@ -975,6 +976,7 @@ SET(QGIS_CORE_HDRS
   composer/qgspaperitem.h
 
   layout/qgslayoutaligner.h
+  layout/qgslayoutexporter.h
   layout/qgslayoutgridsettings.h
   layout/qgslayoutitemundocommand.h
   layout/qgslayoutmeasurement.h
