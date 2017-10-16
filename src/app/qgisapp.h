@@ -1750,6 +1750,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createMapTips();
     void createDecorations();
     void init3D();
+    void initNativeProcessing();
 
     /**
      * Refresh the user profile menu.

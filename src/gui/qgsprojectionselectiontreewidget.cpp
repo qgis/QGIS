@@ -20,6 +20,11 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsrectangle.h"
+#include "qgsrubberband.h"
+#include "qgsvectorlayer.h"
+#include "qgsmaptoolpan.h"
+#include "qgsvertexmarker.h"
 
 //qt includes
 #include <QFileInfo>
@@ -31,12 +36,36 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   : QWidget( parent )
 {
   setupUi( this );
+
   connect( lstCoordinateSystems, &QTreeWidget::itemDoubleClicked, this, &QgsProjectionSelectionTreeWidget::lstCoordinateSystems_itemDoubleClicked );
   connect( lstRecent, &QTreeWidget::itemDoubleClicked, this, &QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked );
   connect( lstCoordinateSystems, &QTreeWidget::currentItemChanged, this, &QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged );
   connect( lstRecent, &QTreeWidget::currentItemChanged, this, &QgsProjectionSelectionTreeWidget::lstRecent_currentItemChanged );
   connect( cbxHideDeprecated, &QCheckBox::stateChanged, this, &QgsProjectionSelectionTreeWidget::cbxHideDeprecated_stateChanged );
   connect( leSearch, &QgsFilterLineEdit::textChanged, this, &QgsProjectionSelectionTreeWidget::leSearch_textChanged );
+
+  mPreviewBand = new QgsRubberBand( mAreaCanvas, QgsWkbTypes::PolygonGeometry );
+  mPreviewBand->setWidth( 4 );
+
+  mPreviewBand2 = new QgsRubberBand( mAreaCanvas, QgsWkbTypes::PolygonGeometry );
+  mPreviewBand2->setWidth( 4 );
+  QColor rectColor =  QColor( 185, 84, 210, 60 );
+  mPreviewBand2->setColor( rectColor );
+
+  mVertexMarker = new QgsVertexMarker( mAreaCanvas );
+  mVertexMarker->setIconType( QgsVertexMarker::ICON_CROSS );
+  mVertexMarker->setColor( Qt::magenta );
+  mVertexMarker->setPenWidth( 3 );
+
+  QgsCoordinateReferenceSystem srs( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+  mAreaCanvas->setDestinationCrs( srs );
+
+  QString layerPath = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.shp" );
+  mLayers << new QgsVectorLayer( layerPath );
+  mAreaCanvas->setLayers( mLayers );
+  mAreaCanvas->setMapTool( new QgsMapToolPan( mAreaCanvas ) );
+
+  mAreaCanvas->setVisible( mShowMap );
 
   if ( QDialog *dlg = qobject_cast<QDialog *>( parent ) )
   {
@@ -70,6 +99,11 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 
 QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
 {
+  qDeleteAll( mLayers );
+  delete mPreviewBand;
+  delete mPreviewBand2;
+  delete mVertexMarker;
+
   if ( !mPushProjectionToFront )
   {
     return;
@@ -281,6 +315,20 @@ void QgsProjectionSelectionTreeWidget::setCrs( const QgsCoordinateReferenceSyste
   }
 }
 
+void QgsProjectionSelectionTreeWidget::setPreviewRect( const QgsRectangle &rect )
+{
+  mPreviewRect = rect;
+  mPreviewBand2->setToGeometry( QgsGeometry::fromRect( mPreviewRect ), nullptr );
+  mPreviewBand2->show();
+  mVertexMarker->setCenter( rect.center() );
+  mVertexMarker->show();
+}
+
+QgsRectangle QgsProjectionSelectionTreeWidget::previewRect() const
+{
+  return mPreviewRect;
+}
+
 // Returns the whole proj4 string for the selected projection node
 QString QgsProjectionSelectionTreeWidget::selectedProj4String()
 {
@@ -439,9 +487,21 @@ void QgsProjectionSelectionTreeWidget::setShowNoProjection( bool show )
   mCheckBoxNoProjection->setHidden( !show );
 }
 
+void QgsProjectionSelectionTreeWidget::setShowBoundsMap( bool show )
+{
+  mShowMap = show;
+  mAreaCanvas->setVisible( show );
+
+}
+
 bool QgsProjectionSelectionTreeWidget::showNoProjection() const
 {
   return !mCheckBoxNoProjection->isHidden();
+}
+
+bool QgsProjectionSelectionTreeWidget::showBoundsMap() const
+{
+  return mShowMap;
 }
 
 bool QgsProjectionSelectionTreeWidget::hasValidSelection() const
@@ -710,8 +770,8 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( 
     // Found a real CRS
     emit crsSelected();
 
-    teProjection->setText( selectedProj4String() );
     teSelected->setText( selectedName() );
+    updateBoundsPreview();
 
     QList<QTreeWidgetItem *> nodes = lstRecent->findItems( current->text( QgisCrsIdColumn ), Qt::MatchExactly, QgisCrsIdColumn );
     if ( !nodes.isEmpty() )
@@ -955,6 +1015,38 @@ long QgsProjectionSelectionTreeWidget::getLargestCrsIdMatch( const QString &sql 
   sqlite3_close( database );
 
   return srsId;
+}
+
+void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
+{
+  QTreeWidgetItem *lvi = lstCoordinateSystems->currentItem();
+  if ( !lvi || lvi->text( QgisCrsIdColumn ).isEmpty() )
+    return;
+
+  QgsCoordinateReferenceSystem currentCrs = crs();
+  if ( !currentCrs.isValid() )
+    return;
+
+  QgsRectangle rect = currentCrs.bounds();
+  if ( !rect.isEmpty() )
+  {
+    mPreviewBand->setToGeometry( QgsGeometry::fromRect( rect ), nullptr );
+    mPreviewBand->setColor( QColor( 255, 0, 0, 65 ) );
+    mAreaCanvas->setExtent( rect );
+    mPreviewBand->show();
+    mAreaCanvas->zoomOut();
+    QString extentString = tr( "Extent: %1" ).arg( rect.toString( 2 ) );
+    QString proj4String = tr( "Proj4: %1" ).arg( selectedProj4String() );
+    teProjection->setText( extentString + "\n" + proj4String );
+  }
+  else
+  {
+    mPreviewBand->hide();
+    mAreaCanvas->zoomToFullExtent();
+    QString extentString = tr( "Extent: Extent not known" );
+    QString proj4String = tr( "Proj4: %1" ).arg( selectedProj4String() );
+    teProjection->setText( extentString + "\n" + proj4String );
+  }
 }
 
 QStringList QgsProjectionSelectionTreeWidget::authorities()

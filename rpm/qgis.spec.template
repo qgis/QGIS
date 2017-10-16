@@ -1,6 +1,11 @@
 # vi:syntax=spec
 # TODO: Run test suite (see debian/rules)
 
+# Template variables
+# - _version
+# - _relver
+# - _timestamp (optional)
+
 Name:           qgis
 Version:        %{_version}
 Release:        %{_relver}%{?dist}
@@ -9,6 +14,9 @@ Group:          Applications/Engineering
 
 License:        GPLv3+ with exceptions
 URL:            http://www.qgis.org
+
+# Epoch is used when building packages from master, otherwise is set to 1
+Epoch: %{_timestamp}
 
 Source0:        http://qgis.org/downloads/%{name}-%{version}.tar.bz2
 
