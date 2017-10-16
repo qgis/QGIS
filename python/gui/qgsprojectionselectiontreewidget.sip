@@ -103,7 +103,7 @@ class QgsProjectionSelectionTreeWidget : QWidget
 .. seealso:: previewRect()
 %End
 
-    const QgsRectangle previewRect();
+    QgsRectangle previewRect() const;
 %Docstring
  The initial "preview" rectangle for the bounds overview map.
 .. versionadded:: 3.0

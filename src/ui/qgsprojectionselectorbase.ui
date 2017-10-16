@@ -309,7 +309,6 @@
               <height>16777215</height>
              </size>
             </property>
-            <zorder>mExtentsLabel</zorder>
            </widget>
           </item>
          </layout>

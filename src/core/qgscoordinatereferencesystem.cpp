@@ -2117,7 +2117,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   }
 
   QTextStream lines( &csv );
-  QString header = lines.readLine();
+  ( void )lines.readLine(); // header line
 
   for ( ;; )
   {

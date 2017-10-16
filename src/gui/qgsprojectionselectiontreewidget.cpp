@@ -324,7 +324,7 @@ void QgsProjectionSelectionTreeWidget::setPreviewRect( const QgsRectangle &rect 
   mVertexMarker->show();
 }
 
-const QgsRectangle QgsProjectionSelectionTreeWidget::previewRect()
+QgsRectangle QgsProjectionSelectionTreeWidget::previewRect() const
 {
   return mPreviewRect;
 }

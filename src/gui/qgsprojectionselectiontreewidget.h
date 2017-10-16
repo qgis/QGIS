@@ -117,7 +117,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * \since QGIS 3.0
      * \see previewRect()
      */
-    const QgsRectangle previewRect();
+    QgsRectangle previewRect() const;
 
     /**
      * \brief filters this widget by the given CRSs
