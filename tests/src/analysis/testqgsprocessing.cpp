@@ -21,6 +21,7 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingmodelalgorithm.h"
+#include "qgsnativealgorithms.h"
 #include <QObject>
 #include <QtTest/QSignalSpy>
 #include "qgis.h"
@@ -368,6 +369,8 @@ void TestQgsProcessing::initTestCase()
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+
+  QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 }
 
 void TestQgsProcessing::cleanupTestCase()

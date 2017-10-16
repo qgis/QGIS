@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #ifndef QGSALGORITHMASSIGNPROJECTION_H
-#define QGSALGORITHMASSIGNPROJECTION_HH
+#define QGSALGORITHMASSIGNPROJECTION_H
 
 #define SIP_NO_FILE
 
