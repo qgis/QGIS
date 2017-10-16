@@ -4073,6 +4073,11 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
     }
   }
 
+  if ( dsUri.database().isEmpty() ) // typically when a service file is used
+  {
+    dsUri.setDatabase( conn->currentDatabase() );
+  }
+
   QString uiFileColumn;
   QString uiFileValue;
   if ( !uiFileContent.isEmpty() )
@@ -4199,6 +4204,11 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
     return "";
   }
 
+  if ( dsUri.database().isEmpty() ) // typically when a service file is used
+  {
+    dsUri.setDatabase( conn->currentDatabase() );
+  }
+
   QString selectQmlQuery = QString( "SELECT styleQML"
                                     " FROM layer_styles"
                                     " WHERE f_table_catalog=%1"
@@ -4230,6 +4240,11 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
     return -1;
+  }
+
+  if ( dsUri.database().isEmpty() ) // typically when a service file is used
+  {
+    dsUri.setDatabase( conn->currentDatabase() );
   }
 
   QString selectRelatedQuery = QString( "SELECT id,styleName,description"
