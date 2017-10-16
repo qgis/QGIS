@@ -148,6 +148,11 @@ called when set as currently active map tool
 called when map tool is being deactivated
 %End
 
+    virtual void clean();
+%Docstring
+convenient method to clean members
+%End
+
     QgsMapCanvas *canvas();
 %Docstring
 returns pointer to the tool's map canvas

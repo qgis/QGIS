@@ -269,7 +269,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
                           int flashes = 3, int duration = 500 );
 
     //! \brief Sets the map tool currently being used on the canvas
-    void setMapTool( QgsMapTool *mapTool );
+    void setMapTool( QgsMapTool *mapTool, bool clean = false );
 
     /** \brief Unset the current map tool or last non zoom tool
      *

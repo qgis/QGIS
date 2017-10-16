@@ -618,6 +618,12 @@ void QgsMapToolCapture::deleteTempRubberBand()
   }
 }
 
+void QgsMapToolCapture::clean()
+{
+  stopCapturing();
+  clearCurve();
+}
+
 void QgsMapToolCapture::closePolygon()
 {
   mCaptureCurve.close();

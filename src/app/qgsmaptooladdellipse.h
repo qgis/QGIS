@@ -35,6 +35,7 @@ class QgsMapToolAddEllipse: public QgsMapToolCapture
     void deactivate() override;
 
     void activate() override;
+    void clean() override;
 
   protected:
     explicit QgsMapToolAddEllipse( QgsMapCanvas *canvas ) = delete; //forbidden
@@ -53,9 +54,6 @@ class QgsMapToolAddEllipse: public QgsMapToolCapture
     //! convenient method to return the number of segments
     unsigned int segments( ) { return QgsSettings().value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt() * 12; }
 
-  private:
-    //! convenient method to clean members
-    void clean();
 };
 
 #endif // QGSMAPTOOLADDELLIPSE_H

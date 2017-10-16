@@ -89,6 +89,11 @@ Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be
  Clean a temporary rubberband
 %End
 
+    virtual void clean();
+%Docstring
+convenient method to clean members
+%End
+
   protected:
 
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );

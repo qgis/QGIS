@@ -36,6 +36,7 @@ class QgsMapToolAddRectangle: public QgsMapToolCapture
     void deactivate( const bool isOriented = false );
 
     void activate() override;
+    void clean() override;
 
   protected:
     explicit QgsMapToolAddRectangle( QgsMapCanvas *canvas ) = delete; //forbidden
@@ -84,8 +85,6 @@ class QgsMapToolAddRectangle: public QgsMapToolCapture
     double mDistance2 = 0.0;
     //! Convenient member for the side where the second distance is drawn or when map is rotated.
     int mSide = 1;
-    //! convenient method to clean members
-    void clean();
 };
 
 #endif // QGSMAPTOOLADDRECTANGLE_H

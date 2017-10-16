@@ -36,6 +36,7 @@ class QgsMapToolAddRegularPolygon: public QgsMapToolCapture
     void deactivate() override;
 
     void activate() override;
+    void clean() override;
 
   protected:
     explicit QgsMapToolAddRegularPolygon( QgsMapCanvas *canvas ) = delete; //forbidden
@@ -60,9 +61,6 @@ class QgsMapToolAddRegularPolygon: public QgsMapToolCapture
     //! Regular shape as a regular polygon
     QgsRegularPolygon mRegularPolygon;
 
-  private:
-    //! convenient method to clean members
-    void clean();
 };
 
 #endif // QGSMAPTOOLADDREGULARPOLYGON_H

@@ -1261,7 +1261,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! shows the snapping Options
     void snappingOptions();
     //! activates the tool
-    void setMapTool( QgsMapTool *tool );
+    void setMapTool( QgsMapTool *tool, bool clean = false );
 
 
     //! activates the rectangle selection tool

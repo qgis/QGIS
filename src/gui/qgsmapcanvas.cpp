@@ -1599,13 +1599,16 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent *e )
   emit xyCoordinates( coord );
 }
 
-void QgsMapCanvas::setMapTool( QgsMapTool *tool )
+void QgsMapCanvas::setMapTool( QgsMapTool *tool, bool clean )
 {
   if ( !tool )
     return;
 
   if ( mMapTool )
   {
+    if ( clean )
+      mMapTool->clean();
+
     disconnect( mMapTool, &QObject::destroyed, this, &QgsMapCanvas::mapToolDestroyed );
     mMapTool->deactivate();
   }

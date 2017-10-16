@@ -104,6 +104,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     void deleteTempRubberBand();
 
+    //! convenient method to clean members
+    virtual void clean() override;
+
   private slots:
     void validationFinished();
     void currentLayerChanged( QgsMapLayer *layer );

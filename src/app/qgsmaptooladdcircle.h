@@ -39,6 +39,7 @@ class QgsMapToolAddCircle: public QgsMapToolCapture
 
     void deactivate() override;
     void activate() override;
+    void clean() override;
 
   protected:
     explicit QgsMapToolAddCircle( QgsMapCanvas *canvas ) = delete; //forbidden
@@ -55,9 +56,6 @@ class QgsMapToolAddCircle: public QgsMapToolCapture
     //! Circle
     QgsCircle mCircle;
 
-  private:
-    //! convenient method to clean members
-    void clean();
 };
 
 #endif // QGSMAPTOOLADDCIRCLE_H
