@@ -74,7 +74,6 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   connect( buttonUpgradeAll, &QPushButton::clicked, this, &QgsPluginManager::buttonUpgradeAll_clicked );
   connect( buttonInstall, &QPushButton::clicked, this, &QgsPluginManager::buttonInstall_clicked );
   connect( buttonUninstall, &QPushButton::clicked, this, &QgsPluginManager::buttonUninstall_clicked );
-  connect( buttonInstallFromZip, &QPushButton::clicked, this, &QgsPluginManager::buttonInstallFromZip_clicked );
   connect( treeRepositories, &QTreeWidget::itemSelectionChanged, this, &QgsPluginManager::treeRepositories_itemSelectionChanged );
   connect( treeRepositories, &QTreeWidget::doubleClicked, this, &QgsPluginManager::treeRepositories_doubleClicked );
   connect( buttonAddRep, &QPushButton::clicked, this, &QgsPluginManager::buttonAddRep_clicked );
@@ -207,12 +206,18 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   // get the QgsSettings group from the installer
   QString settingsGroup;
   QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
+  QgsSettings settings;
+
+  // Initialize the "Install from ZIP" tab widgets
+  mZipFileWidget->setDefaultRoot( settings.value( settingsGroup + "/lastZipDirectory", "." ).toString() );
+  mZipFileWidget->setFilter( tr( "Plugin packages (*.zip *.ZIP)" ) );
+  connect( mZipFileWidget, &QgsFileWidget::fileChanged, this, &QgsPluginManager::mZipFileWidget_fileChanged );
+  connect( buttonInstallFromZip, &QPushButton::clicked, this, &QgsPluginManager::buttonInstallFromZip_clicked );
 
   // Initialize list of allowed checking intervals
   mCheckingOnStartIntervals << 0 << 1 << 3 << 7 << 14 << 30;
 
   // Initialize the "Settings" tab widgets
-  QgsSettings settings;
   if ( settings.value( settingsGroup + "/checkOnStart", false ).toBool() )
   {
     ckbCheckUpdates->setChecked( true );
@@ -227,7 +232,6 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   {
     ckbDeprecated->setChecked( true );
   }
-
 
   int interval = settings.value( settingsGroup + "/checkOnStartInterval", "" ).toInt();
   int indx = mCheckingOnStartIntervals.indexOf( interval ); // if none found, just use -1 index.
@@ -1321,9 +1325,17 @@ void QgsPluginManager::buttonUninstall_clicked()
 
 
 
+void QgsPluginManager::mZipFileWidget_fileChanged( const QString &filePath )
+{
+  buttonInstallFromZip->setEnabled( QFileInfo( filePath ).isFile() );
+}
+
+
+
 void QgsPluginManager::buttonInstallFromZip_clicked()
 {
-  QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installFromZipFile()" ) );
+  QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installFromZipFile('%1')" ).arg( mZipFileWidget->filePath() ) );
+  mZipFileWidget->setFilePath( "" );
 }
 
 

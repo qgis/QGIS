@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>796</width>
-    <height>551</height>
+    <width>791</width>
+    <height>471</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -559,7 +559,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If you are provided with a zip package containing a plugin to install, please use the button below to choose the file and install the plugin.&lt;/p&gt;&lt;p&gt;Please note for most users this function is not applicable, as the preferable way is to install plugins from a repository.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If you are provided with a zip package containing a plugin to install, please select the file below and click the &lt;span style=&quot; font-style:italic;&quot;&gt;Install plugin&lt;/span&gt; button.&lt;/p&gt;&lt;p&gt;Please note for most users this function is not applicable, as the preferable way is to install plugins from a repository.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="textFormat">
               <enum>Qt::AutoText</enum>
@@ -580,10 +580,13 @@
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
              <property name="sizeHint" stdset="0">
               <size>
                <width>20</width>
-               <height>79</height>
+               <height>20</height>
               </size>
              </property>
             </spacer>
@@ -595,18 +598,31 @@
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>40</width>
+                 <width>20</width>
                  <height>20</height>
                 </size>
                </property>
               </spacer>
              </item>
              <item>
-              <widget class="QPushButton" name="buttonInstallFromZip">
+              <widget class="QLabel" name="label">
                <property name="text">
-                <string>Install plugin from a ZIP file</string>
+                <string>ZIP file:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QgsFileWidget" name="mZipFileWidget" native="true">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
                </property>
               </widget>
              </item>
@@ -615,9 +631,86 @@
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Preferred</enum>
+               </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>40</width>
+                 <width>100</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>24</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <spacer name="horizontalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>60</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="buttonInstallFromZip">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>200</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Install plugin</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>60</width>
                  <height>20</height>
                 </size>
                </property>
@@ -634,22 +727,6 @@
               <size>
                <width>20</width>
                <height>78</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_5">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>160</height>
               </size>
              </property>
             </spacer>
@@ -1114,6 +1191,11 @@ p, li { white-space: pre-wrap; }
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>

@@ -133,6 +133,12 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void buttonUninstall_clicked();
 
     /**
+     * Enable the Install button if selected path is valid
+     * \since QGIS 3.0
+     */
+    void mZipFileWidget_fileChanged( const QString &filePath );
+
+    /**
      * Install plugin from ZIP file
      * \since QGIS 3.0
      */
