@@ -51,7 +51,7 @@ class FieldsMappingModel(QAbstractTableModel):
         (QVariant.Double, "Double"),
         (QVariant.String, "String"),
         (QVariant.DateTime, "Date"),
-        (QVariant.LongLong, "Double"),
+        (QVariant.LongLong, "Long integer"),
         (QVariant.Date, "Date")])
 
     columns = [
