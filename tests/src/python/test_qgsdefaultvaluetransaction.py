@@ -22,6 +22,7 @@ from qgis.core import (
     QgsProject,
     QgsTransaction,
     QgsFeatureRequest,
+    QgsMapLayerRegistry,
 )
 
 from qgis.testing import start_app, unittest
@@ -48,16 +49,15 @@ class TestQgsDefaultValueTransaction(unittest.TestCase):
 
         assert(cls.vl.isValid())
 
-
     def setUp(self):
-        self.startTransaction()
+        pass
 
     def tearDown(self):
-        self.rollbackTransaction()
+        pass
 
     def test_transaction_add_feature_with_default_value(self):
         """
-        Check if a feature can be added programmaticaly with a default value in transaction mode
+        Check if a feature can be added programmatically with a default value in transaction mode
         """
 
         transaction = QgsTransaction.create([self.vl.id()])
