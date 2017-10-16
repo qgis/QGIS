@@ -200,9 +200,9 @@ class GPKGDBConnector(DBConnector):
             raise DbError(e)
 
     @classmethod
-    def isValidDatabase(self, path):
+    def isValidDatabase(cls, path):
         if hasattr(gdal, 'OpenEx'):
-            ds = gdal.OpenEx(self.dbname)
+            ds = gdal.OpenEx(path)
             if ds is None or ds.GetDriver().ShortName != 'GPKG':
                 return False
         else:
