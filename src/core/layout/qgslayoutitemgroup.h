@@ -46,7 +46,7 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
      *
      * The caller takes responsibility for deleting the returned object.
      */
-    static QgsLayoutItemGroup *create( QgsLayout *layout, const QVariantMap &settings ) SIP_FACTORY;
+    static QgsLayoutItemGroup *create( QgsLayout *layout ) SIP_FACTORY;
 
     /**
      * Adds an \a item to the group. Ownership of the item

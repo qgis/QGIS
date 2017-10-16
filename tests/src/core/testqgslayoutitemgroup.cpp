@@ -97,9 +97,9 @@ void TestQgsLayoutItemGroup::createGroupDirect()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item );
-  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item2 );
   QVERIFY( !item->parentGroup() );
   QVERIFY( !item->isGroupMember() );
@@ -139,7 +139,7 @@ void TestQgsLayoutItemGroup::createGroupDirect()
   QVERIFY( l.items().contains( item2 ) );
 
   // manually delete an item
-  QPointer< QgsLayoutItemRectangularShape > pItem( item ); // for testing deletion
+  QPointer< QgsLayoutItemShape > pItem( item ); // for testing deletion
   l.removeLayoutItem( item );
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
   QVERIFY( !pItem );
@@ -149,7 +149,7 @@ void TestQgsLayoutItemGroup::createGroupDirect()
   QCOMPARE( group->items().count(), 1 );
   QVERIFY( group->items().contains( item2 ) );
 
-  QPointer< QgsLayoutItemRectangularShape > pItem2( item2 ); // for testing deletion
+  QPointer< QgsLayoutItemShape > pItem2( item2 ); // for testing deletion
   // remove items
   group->removeItems();
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
@@ -167,8 +167,8 @@ void TestQgsLayoutItemGroup::createGroup()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
-  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
+  QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
 
   //group items
   QList<QgsLayoutItem *> items;
@@ -196,9 +196,9 @@ void TestQgsLayoutItemGroup::ungroup()
   //simple tests - check that we don't crash
   l.ungroupItems( nullptr ); //no item
 
-  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item );
-  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item2 );
 
   //group items
@@ -247,11 +247,11 @@ void TestQgsLayoutItemGroup::deleteGroup()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
-  QPointer< QgsLayoutItemRectangularShape > pItem( item ); // for testing deletion
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
+  QPointer< QgsLayoutItemShape > pItem( item ); // for testing deletion
   l.addLayoutItem( item );
-  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
-  QPointer< QgsLayoutItemRectangularShape > pItem2( item2 ); // for testing deletion
+  QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
+  QPointer< QgsLayoutItemShape > pItem2( item2 ); // for testing deletion
   l.addLayoutItem( item2 );
 
   //group items
@@ -282,9 +282,9 @@ void TestQgsLayoutItemGroup::groupVisibility()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item );
-  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item2 );
 
   //group items
@@ -327,11 +327,11 @@ void TestQgsLayoutItemGroup::moveGroup()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item );
   item->attemptMove( QgsLayoutPoint( 0.05, 0.09, QgsUnitTypes::LayoutMeters ) );
 
-  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item2 );
   item2->attemptMove( QgsLayoutPoint( 2, 3, QgsUnitTypes::LayoutInches ) );
 
@@ -361,7 +361,7 @@ void TestQgsLayoutItemGroup::moveGroupReferencePos()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item );
   item->attemptMove( QgsLayoutPoint( 5, 9 ) );
   item->attemptResize( QgsLayoutSize( 4, 7 ) );
@@ -372,7 +372,7 @@ void TestQgsLayoutItemGroup::moveGroupReferencePos()
   QCOMPARE( item->scenePos().x(), 5.0 );
   QCOMPARE( item->scenePos().y(), 9.0 );
 
-  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item2 );
   item2->attemptMove( QgsLayoutPoint( 15, 19 ) );
   item2->attemptResize( QgsLayoutSize( 6, 3 ) );
@@ -424,12 +424,12 @@ void TestQgsLayoutItemGroup::resizeGroup()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item );
   item->attemptMove( QgsLayoutPoint( 0.05, 0.09, QgsUnitTypes::LayoutMeters ) );
   item->attemptResize( QgsLayoutSize( 0.1, 0.15, QgsUnitTypes::LayoutMeters ) );
 
-  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item2 );
   item2->attemptMove( QgsLayoutPoint( 2, 3, QgsUnitTypes::LayoutInches ) );
   item2->attemptResize( QgsLayoutSize( 4, 6, QgsUnitTypes::LayoutInches ) );
@@ -472,7 +472,7 @@ void TestQgsLayoutItemGroup::resizeGroupReferencePos()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item );
   item->attemptMove( QgsLayoutPoint( 5, 9 ) );
   item->attemptResize( QgsLayoutSize( 4, 7 ) );
@@ -483,7 +483,7 @@ void TestQgsLayoutItemGroup::resizeGroupReferencePos()
   QCOMPARE( item->scenePos().x(), 5.0 );
   QCOMPARE( item->scenePos().y(), 9.0 );
 
-  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item2 );
   item2->attemptMove( QgsLayoutPoint( 15, 19 ) );
   item2->attemptResize( QgsLayoutSize( 6, 3 ) );
@@ -539,7 +539,7 @@ void TestQgsLayoutItemGroup::resizeGroupReferencePos()
 }
 
 Q_DECLARE_METATYPE( QgsLayoutItemGroup * )
-Q_DECLARE_METATYPE( QgsLayoutItemRectangularShape * )
+Q_DECLARE_METATYPE( QgsLayoutItemShape * )
 Q_DECLARE_METATYPE( QgsLayoutItem * )
 
 void TestQgsLayoutItemGroup::undoRedo()
@@ -547,14 +547,14 @@ void TestQgsLayoutItemGroup::undoRedo()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  QgsLayoutItemRectangularShape *item1 = nullptr;
-  QgsLayoutItemRectangularShape *item2 = nullptr;
+  QgsLayoutItemShape *item1 = nullptr;
+  QgsLayoutItemShape *item2 = nullptr;
 
 // int shapesAdded = 0;
 // int groupsAdded = 0;
 // int itemsRemoved = 0;
 
-  qRegisterMetaType<QgsLayoutItemRectangularShape *>();
+  qRegisterMetaType<QgsLayoutItemShape *>();
 //  QSignalSpy spyPolygonAdded( &l, &QgsLayout::itemAdded );
 // QCOMPARE( spyPolygonAdded.count(), 0 );
 
@@ -578,7 +578,7 @@ void TestQgsLayoutItemGroup::undoRedo()
   QgsDebugMsg( QString( "clear stack count:%1 index:%2" ) .arg( us->count() ) .arg( us->index() ) );
 
   //create some items
-  item1 = new QgsLayoutItemRectangularShape( &l );
+  item1 = new QgsLayoutItemShape( &l );
   item1->attemptMove( QgsLayoutPoint( 0.05, 0.09, QgsUnitTypes::LayoutMeters ) );
   QPointer< QgsLayoutItem > pItem1( item1 );
   QString item1Uuid = item1->uuid();
@@ -586,7 +586,7 @@ void TestQgsLayoutItemGroup::undoRedo()
 
   l.addLayoutItem( item1 );
 //  QCOMPARE( spyPolygonAdded.count(), ++shapesAdded );
-  item2 = new QgsLayoutItemRectangularShape( &l );
+  item2 = new QgsLayoutItemShape( &l );
   QPointer< QgsLayoutItem > pItem2( item2 );
   QString item2Uuid = item2->uuid();
   item2->attemptMove( QgsLayoutPoint( 2, 3, QgsUnitTypes::LayoutMillimeters ) );
@@ -708,9 +708,9 @@ void TestQgsLayoutItemGroup::undoRedo()
 
   QCOMPARE( group->items().size(), 2 );
   QCOMPARE( items.size(), 3 ); // 2 shapes, 1 group
-  item1 = dynamic_cast< QgsLayoutItemRectangularShape * >( l.itemByUuid( item1Uuid ) );
+  item1 = dynamic_cast< QgsLayoutItemShape * >( l.itemByUuid( item1Uuid ) );
   QCOMPARE( item1->parentGroup(), group );
-  item2 = dynamic_cast< QgsLayoutItemRectangularShape * >( l.itemByUuid( item2Uuid ) );
+  item2 = dynamic_cast< QgsLayoutItemShape * >( l.itemByUuid( item2Uuid ) );
   QCOMPARE( item2->parentGroup(), group );
   QgsDebugMsg( QString( "undo stack count:%1 index:%2" ) .arg( us->count() ) .arg( us->index() ) );
   //dumpUndoStack(*us, "after undo remove group");

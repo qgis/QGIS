@@ -81,7 +81,7 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
      *
      * The caller takes responsibility for deleting the returned object.
      */
-    static QgsLayoutItemPage *create( QgsLayout *layout, const QVariantMap &settings ) SIP_FACTORY;
+    static QgsLayoutItemPage *create( QgsLayout *layout ) SIP_FACTORY;
 
 
     int type() const override { return QgsLayoutItemRegistry::LayoutPage; }

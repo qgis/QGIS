@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgspathresolver.h"
+#include "qgslayoutitemregistry.h"
 #include <QGraphicsItem> //for QGraphicsItem::UserType
 #include <QIcon>
 #include <functional>
@@ -56,11 +57,14 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
     /**
      * Constructor for QgsLayoutItemAbstractGuiMetadata with the specified class \a type.
      *
+     * \a visibleName should be set to a translated, user visible name identifying the corresponding layout item.
+     *
      * An optional \a groupId can be set, which allows grouping of related layout item classes. See QgsLayoutItemGuiMetadata for details.
      */
-    QgsLayoutItemAbstractGuiMetadata( int type, const QString &groupId = QString(), Flags flags = 0 )
+    QgsLayoutItemAbstractGuiMetadata( int type, const QString &visibleName, const QString &groupId = QString(), Flags flags = 0 )
       : mType( type )
       , mGroupId( groupId )
+      , mName( visibleName )
       , mFlags( flags )
     {}
 
@@ -82,6 +86,11 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
     QString groupId() const { return mGroupId; }
 
     /**
+     * Returns a translated, user visible name identifying the corresponding layout item.
+     */
+    QString visibleName() const { return mName; }
+
+    /**
      * Returns an icon representing creation of the layout item type.
      */
     virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
@@ -97,10 +106,16 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
      */
     virtual QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) SIP_FACTORY;
 
+    /**
+     * Creates an instance of the corresponding item type.
+     */
+    virtual QgsLayoutItem *createItem( QgsLayout *layout ) SIP_FACTORY;
+
   private:
 
     int mType = -1;
     QString mGroupId;
+    QString mName;
     Flags mFlags;
 
 };
@@ -128,15 +143,19 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      * and \a creationIcon, and function pointers for the various
      * configuration widget creation functions.
      *
+     * \a visibleName should be set to a translated, user visible name identifying the corresponding layout item.
+     *
      * An optional \a groupId can be set, which allows grouping of related layout item classes. See QgsLayoutItemGuiMetadata for details.
      */
-    QgsLayoutItemGuiMetadata( int type, const QIcon &creationIcon,
+    QgsLayoutItemGuiMetadata( int type, const QString &visibleName, const QIcon &creationIcon,
                               QgsLayoutItemWidgetFunc pfWidget = nullptr,
-                              QgsLayoutItemRubberBandFunc pfRubberBand = nullptr, const QString &groupId = QString(), QgsLayoutItemAbstractGuiMetadata::Flags flags = 0 )
-      : QgsLayoutItemAbstractGuiMetadata( type, groupId, flags )
+                              QgsLayoutItemRubberBandFunc pfRubberBand = nullptr, const QString &groupId = QString(), QgsLayoutItemAbstractGuiMetadata::Flags flags = 0,
+                              QgsLayoutItemCreateFunc pfCreateFunc = nullptr )
+      : QgsLayoutItemAbstractGuiMetadata( type, visibleName, groupId, flags )
       , mIcon( creationIcon )
       , mWidgetFunc( pfWidget )
       , mRubberBandFunc( pfRubberBand )
+      , mCreateFunc( pfCreateFunc )
     {}
 
     /**
@@ -163,14 +182,28 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      */
     void setRubberBandCreationFunction( QgsLayoutItemRubberBandFunc function ) { mRubberBandFunc = function; }
 
+    /**
+     * Returns the classes' item creation function.
+     * \see setItemCreationFunction()
+     */
+    QgsLayoutItemCreateFunc itemCreationFunction() const { return mCreateFunc; }
+
+    /**
+     * Sets the classes' item creation \a function.
+     * \see itemCreationFunction()
+     */
+    void setItemCreationFunction( QgsLayoutItemCreateFunc function ) { mCreateFunc = function; }
+
     QIcon creationIcon() const override { return mIcon.isNull() ? QgsLayoutItemAbstractGuiMetadata::creationIcon() : mIcon; }
     QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) override { return mWidgetFunc ? mWidgetFunc( item ) : nullptr; }
     QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) override { return mRubberBandFunc ? mRubberBandFunc( view ) : nullptr; }
+    QgsLayoutItem *createItem( QgsLayout *layout ) override;
 
   protected:
     QIcon mIcon;
     QgsLayoutItemWidgetFunc mWidgetFunc = nullptr;
     QgsLayoutItemRubberBandFunc mRubberBandFunc = nullptr;
+    QgsLayoutItemCreateFunc mCreateFunc = nullptr;
 
 };
 
@@ -256,10 +289,10 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     QgsLayoutItemGuiRegistry &operator=( const QgsLayoutItemGuiRegistry &rh ) = delete;
 
     /**
-     * Returns the metadata for the specified item \a type. Returns nullptr if
-     * a corresponding type was not found in the registry.
+     * Returns the metadata for the specified item \a uuid. Returns nullptr if
+     * a corresponding uuid was not found in the registry.
      */
-    QgsLayoutItemAbstractGuiMetadata *itemMetadata( int type ) const;
+    QgsLayoutItemAbstractGuiMetadata *itemMetadata( const QString &uuid ) const;
 
     /**
      * Registers the gui metadata for a new layout item type. Takes ownership of the metadata instance.
@@ -284,6 +317,11 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     const QgsLayoutItemGuiGroup &itemGroup( const QString &id );
 
     /**
+     * Creates a new instance of a layout item given the item metadata \a uuid, target \a layout.
+     */
+    QgsLayoutItem *createItem( const QString &uuid, QgsLayout *layout ) const SIP_FACTORY;
+
+    /**
      * Creates a new instance of a layout item configuration widget for the specified \a item.
      */
     QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) const SIP_FACTORY;
@@ -292,27 +330,27 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
      * Creates a new rubber band item for the specified item \a type and destination \a view.
      * \note not available from Python bindings
      */
-    QgsLayoutViewRubberBand *createItemRubberBand( int type, QgsLayoutView *view ) const SIP_SKIP;
+    QgsLayoutViewRubberBand *createItemRubberBand( const QString &uuid, QgsLayoutView *view ) const SIP_SKIP;
 
     /**
-     * Returns a list of available item types handled by the registry.
+     * Returns a list of available item metadata uuids handled by the registry.
      */
-    QList< int > itemTypes() const;
+    QList< QString > itemUuids() const;
 
   signals:
 
     /**
      * Emitted whenever a new item type is added to the registry, with the specified
-     * \a type.
+     * \a uuid.
      */
-    void typeAdded( int type );
+    void typeAdded( const QString &uuid );
 
   private:
 #ifdef SIP_RUN
     QgsLayoutItemGuiRegistry( const QgsLayoutItemGuiRegistry &rh );
 #endif
 
-    QMap<int, QgsLayoutItemAbstractGuiMetadata *> mMetadata;
+    QMap<QString, QgsLayoutItemAbstractGuiMetadata *> mMetadata;
 
     QMap< QString, QgsLayoutItemGuiGroup > mItemGroups;
 

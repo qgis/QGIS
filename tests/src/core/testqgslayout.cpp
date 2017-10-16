@@ -258,12 +258,12 @@ void TestQgsLayout::bounds()
   QgsLayout l( &p );
   l.initializeDefaults();
 
-  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
   shape1->attemptResize( QgsLayoutSize( 90, 50 ) );
   shape1->attemptMove( QgsLayoutPoint( 90, 50 ) );
   shape1->setItemRotation( 45 );
   l.addLayoutItem( shape1 );
-  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   shape2->attemptResize( QgsLayoutSize( 110, 50 ) );
   shape2->attemptMove( QgsLayoutPoint( 100, 150 ) );
   l.addLayoutItem( shape2 );
@@ -331,7 +331,7 @@ void TestQgsLayout::addItem()
   QgsLayout l( &p );
   l.pageCollection()->deletePage( 0 );
 
-  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
   shape1->setFrameEnabled( false );
   shape1->attemptResize( QgsLayoutSize( 140, 70 ) );
   shape1->attemptMove( QgsLayoutPoint( 90, 50 ) );
@@ -344,7 +344,7 @@ void TestQgsLayout::addItem()
   QGSCOMPARENEAR( l.sceneRect().width(), 140, 0.001 );
   QGSCOMPARENEAR( l.sceneRect().height(), 70, 0.001 );
 
-  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   shape2->attemptResize( QgsLayoutSize( 240, 170 ) );
   shape2->attemptMove( QgsLayoutPoint( 30, 20 ) );
   shape2->setFrameEnabled( false );
@@ -370,10 +370,10 @@ void TestQgsLayout::layoutItems()
   QgsLayout l( &p );
   l.pageCollection()->deletePage( 0 );
 
-  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape1 );
 
-  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape2 );
 
   QgsLayoutItemMap *map1 = new QgsLayoutItemMap( &l );
@@ -386,7 +386,7 @@ void TestQgsLayout::layoutItems()
   QVERIFY( items.contains( shape2 ) );
   QVERIFY( items.contains( map1 ) );
 
-  QList< QgsLayoutItemRectangularShape * > shapes;
+  QList< QgsLayoutItemShape * > shapes;
   l.layoutItems( shapes );
   QCOMPARE( shapes.count(), 2 );
   QVERIFY( shapes.contains( shape1 ) );
@@ -404,10 +404,10 @@ void TestQgsLayout::layoutItemByUuid()
   QgsLayout l( &p );
   l.pageCollection()->deletePage( 0 );
 
-  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape1 );
 
-  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape2 );
 
   QgsLayoutItemMap *map1 = new QgsLayoutItemMap( &l );

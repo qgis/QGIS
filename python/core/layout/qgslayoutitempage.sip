@@ -38,7 +38,7 @@ class QgsLayoutItemPage : QgsLayoutItem
  Constructor for QgsLayoutItemPage, with the specified parent ``layout``.
 %End
 
-    static QgsLayoutItemPage *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
+    static QgsLayoutItemPage *create( QgsLayout *layout ) /Factory/;
 %Docstring
  Returns a new page item for the specified ``layout``.
 

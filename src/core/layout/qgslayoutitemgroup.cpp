@@ -59,7 +59,7 @@ QString QgsLayoutItemGroup::displayName() const
   return tr( "<Group>" );
 }
 
-QgsLayoutItemGroup *QgsLayoutItemGroup::create( QgsLayout *layout, const QVariantMap & )
+QgsLayoutItemGroup *QgsLayoutItemGroup::create( QgsLayout *layout )
 {
   return new QgsLayoutItemGroup( layout );
 }

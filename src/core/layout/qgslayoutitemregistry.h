@@ -72,9 +72,9 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
     QString visibleName() const { return mVisibleName; }
 
     /**
-     * Creates a layout item of this class for a specified \a layout, given the map of \a properties.
+     * Creates a layout item of this class for a specified \a layout.
      */
-    virtual QgsLayoutItem *createItem( QgsLayout *layout, const QVariantMap &properties ) = 0 SIP_FACTORY;
+    virtual QgsLayoutItem *createItem( QgsLayout *layout ) = 0 SIP_FACTORY;
 
     /**
      * Resolve paths in the item's \a properties (if there are any paths).
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
 };
 
 //! Layout item creation function
-typedef std::function<QgsLayoutItem *( QgsLayout *, const QVariantMap & )> QgsLayoutItemCreateFunc SIP_SKIP;
+typedef std::function<QgsLayoutItem *( QgsLayout * )> QgsLayoutItemCreateFunc SIP_SKIP;
 
 //! Layout item path resolver function
 typedef std::function<void( QVariantMap &, const QgsPathResolver &, bool )> QgsLayoutItemPathResolverFunc SIP_SKIP;
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
     QgsLayoutItemPathResolverFunc pathResolverFunction() const { return mPathResolverFunc; }
 
     QIcon icon() const override { return mIcon.isNull() ? QgsLayoutItemAbstractMetadata::icon() : mIcon; }
-    QgsLayoutItem *createItem( QgsLayout *layout, const QVariantMap &properties ) override { return mCreateFunc ? mCreateFunc( layout, properties ) : nullptr; }
+    QgsLayoutItem *createItem( QgsLayout *layout ) override { return mCreateFunc ? mCreateFunc( layout ) : nullptr; }
 
     void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) override
     {
@@ -185,9 +185,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
       // known item types
       LayoutPage, //!< Page items
       LayoutMap, //!< Map item
-      LayoutRectangle, //!< Rectangular shape item
-      LayoutEllipse, //!< Ellipse shape item
-      LayoutTriangle, //!< Triangle shape item
+      LayoutShape, //!< Shape item
 
       // item types provided by plugins
       PluginItem, //!< Starting point for plugin item types
@@ -228,9 +226,9 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
     bool addLayoutItemType( QgsLayoutItemAbstractMetadata *metadata SIP_TRANSFER );
 
     /**
-     * Creates a new instance of a layout item given the item \a type, target \a layout and \a properties.
+     * Creates a new instance of a layout item given the item \a type, and target \a layout.
      */
-    QgsLayoutItem *createItem( int type, QgsLayout *layout, const QVariantMap &properties = QVariantMap() ) const SIP_FACTORY;
+    QgsLayoutItem *createItem( int type, QgsLayout *layout ) const SIP_FACTORY;
 
     /**
      * Resolve paths in properties of a particular symbol layer.

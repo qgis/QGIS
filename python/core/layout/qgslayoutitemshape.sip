@@ -11,7 +11,7 @@
 class QgsLayoutItemShape : QgsLayoutItem
 {
 %Docstring
- Base class for layout items which are basic shapes (e.g. rectangles, ellipses).
+ Layout item for basic filled shapes (e.g. rectangles, ellipses).
 .. versionadded:: 3.0
 %End
 
@@ -19,6 +19,35 @@ class QgsLayoutItemShape : QgsLayoutItem
 #include "qgslayoutitemshape.h"
 %End
   public:
+
+    enum Shape
+    {
+      Ellipse,
+      Rectangle,
+      Triangle
+    };
+
+
+    explicit QgsLayoutItemShape( QgsLayout *layout );
+%Docstring
+ Constructor for QgsLayoutItemShape, with the specified parent ``layout``.
+%End
+
+    virtual int type() const;
+    virtual QString stringType() const;
+
+    QgsLayoutItemShape::Shape shapeType() const;
+%Docstring
+ Returns the type of shape (e.g. rectangle, ellipse, etc).
+.. seealso:: setShapeType()
+ :rtype: QgsLayoutItemShape.Shape
+%End
+
+    void setShapeType( QgsLayoutItemShape::Shape type );
+%Docstring
+ Sets the ``type`` of shape (e.g. rectangle, ellipse, etc).
+.. seealso:: shapeType()
+%End
 
     void setSymbol( QgsFillSymbol *symbol );
 %Docstring
@@ -34,46 +63,6 @@ class QgsLayoutItemShape : QgsLayoutItem
  :rtype: QgsFillSymbol
 %End
 
-    virtual QRectF boundingRect() const;
-
-
-  protected:
-
-    explicit QgsLayoutItemShape( QgsLayout *layout );
-%Docstring
- Constructor for QgsLayoutItemShape, with the specified parent ``layout``.
-%End
-
-};
-
-
-class QgsLayoutItemRectangularShape : QgsLayoutItemShape
-{
-%Docstring
- A rectangular shape item for layouts.
-.. versionadded:: 3.0
-%End
-
-%TypeHeaderCode
-#include "qgslayoutitemshape.h"
-%End
-  public:
-
-    explicit QgsLayoutItemRectangularShape( QgsLayout *layout );
-%Docstring
- Constructor for QgsLayoutItemRectangularShape, with the specified parent ``layout``.
-%End
-    virtual int type() const;
-    virtual QString stringType() const;
-
-    static QgsLayoutItemRectangularShape *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
-%Docstring
- Returns a new rectangular item for the specified ``layout``.
-
- The caller takes responsibility for deleting the returned object.
- :rtype: QgsLayoutItemRectangularShape
-%End
-
     void setCornerRadius( QgsLayoutMeasurement radius );
 %Docstring
  Sets the corner ``radius`` for rounded rectangle corners.
@@ -87,39 +76,8 @@ class QgsLayoutItemRectangularShape : QgsLayoutItemShape
  :rtype: QgsLayoutMeasurement
 %End
 
-  protected:
+    virtual QRectF boundingRect() const;
 
-    virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
-
-
-};
-
-class QgsLayoutItemEllipseShape : QgsLayoutItemShape
-{
-%Docstring
- A ellipse shape item for layouts.
-.. versionadded:: 3.0
-%End
-
-%TypeHeaderCode
-#include "qgslayoutitemshape.h"
-%End
-  public:
-
-    explicit QgsLayoutItemEllipseShape( QgsLayout *layout );
-%Docstring
- Constructor for QgsLayoutItemEllipseShape, with the specified parent ``layout``.
-%End
-    virtual int type() const;
-    virtual QString stringType() const;
-
-    static QgsLayoutItemEllipseShape *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
-%Docstring
- Returns a new ellipse item for the specified ``layout``.
-
- The caller takes responsibility for deleting the returned object.
- :rtype: QgsLayoutItemEllipseShape
-%End
 
   protected:
 
@@ -128,39 +86,6 @@ class QgsLayoutItemEllipseShape : QgsLayoutItemShape
 
 };
 
-class QgsLayoutItemTriangleShape : QgsLayoutItemShape
-{
-%Docstring
- A triangle shape item for layouts.
-.. versionadded:: 3.0
-%End
-
-%TypeHeaderCode
-#include "qgslayoutitemshape.h"
-%End
-  public:
-
-    explicit QgsLayoutItemTriangleShape( QgsLayout *layout );
-%Docstring
- Constructor for QgsLayoutItemTriangleShape, with the specified parent ``layout``.
-%End
-    virtual int type() const;
-    virtual QString stringType() const;
-
-    static QgsLayoutItemTriangleShape *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
-%Docstring
- Returns a new triangle item for the specified ``layout``.
-
- The caller takes responsibility for deleting the returned object.
- :rtype: QgsLayoutItemTriangleShape
-%End
-
-  protected:
-
-    virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
-
-
-};
 
 /************************************************************************
  * This file has been generated automatically from                      *

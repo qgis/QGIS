@@ -29,7 +29,7 @@ class QgsLayoutItemMap : QgsLayoutItem
     virtual QString stringType() const;
 
 
-    static QgsLayoutItemMap *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
+    static QgsLayoutItemMap *create( QgsLayout *layout ) /Factory/;
 %Docstring
  Returns a new map item for the specified ``layout``.
 

@@ -43,9 +43,8 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   mGrid->setParentItem( this );
 }
 
-QgsLayoutItemPage *QgsLayoutItemPage::create( QgsLayout *layout, const QVariantMap &settings )
+QgsLayoutItemPage *QgsLayoutItemPage::create( QgsLayout *layout )
 {
-  Q_UNUSED( settings );
   return new QgsLayoutItemPage( layout );
 }
 

@@ -33,7 +33,7 @@ class QgsLayoutItemGroup: QgsLayoutItem
     virtual QString displayName() const;
 
 
-    static QgsLayoutItemGroup *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
+    static QgsLayoutItemGroup *create( QgsLayout *layout ) /Factory/;
 %Docstring
  Returns a new group item for the specified ``layout``.
 

@@ -39,22 +39,21 @@ bool QgsLayoutItemRegistry::populate()
     return false;
 
   // add temporary item to register
-  auto createTemporaryItem = []( QgsLayout * layout, const QVariantMap & )->QgsLayoutItem*
+  auto createTemporaryItem = []( QgsLayout * layout )->QgsLayoutItem*
   {
     return new TestLayoutItem( layout );
   };
 
   addLayoutItemType( new QgsLayoutItemMetadata( QgsLayoutItemRegistry::LayoutItem + 1002, QStringLiteral( "temp type" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), createTemporaryItem ) );
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutGroup, QStringLiteral( "Group" ), QIcon(), QgsLayoutItemGroup::create ) );
-
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutPage, QStringLiteral( "Page" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileNew.svg" ) ), QgsLayoutItemPage::create ) );
-
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutMap, QStringLiteral( "Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMap.svg" ) ), QgsLayoutItemMap::create ) );
-
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutRectangle, QStringLiteral( "Rectangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), QgsLayoutItemRectangularShape::create ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutEllipse, QStringLiteral( "Ellipse" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicCircle.svg" ) ), QgsLayoutItemEllipseShape::create ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutTriangle, QStringLiteral( "Triangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicTriangle.svg" ) ), QgsLayoutItemTriangleShape::create ) );
-
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutShape, QStringLiteral( "Shape" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), []( QgsLayout * layout )
+  {
+    QgsLayoutItemShape *shape = new QgsLayoutItemShape( layout );
+    shape->setShapeType( QgsLayoutItemShape::Rectangle );
+    return shape;
+  } ) );
 
   return true;
 }
@@ -74,12 +73,12 @@ bool QgsLayoutItemRegistry::addLayoutItemType( QgsLayoutItemAbstractMetadata *me
   return true;
 }
 
-QgsLayoutItem *QgsLayoutItemRegistry::createItem( int type, QgsLayout *layout, const QVariantMap &properties ) const
+QgsLayoutItem *QgsLayoutItemRegistry::createItem( int type, QgsLayout *layout ) const
 {
   if ( !mMetadata.contains( type ) )
     return nullptr;
 
-  return mMetadata[type]->createItem( layout, properties );
+  return mMetadata[type]->createItem( layout );
 }
 
 void QgsLayoutItemRegistry::resolvePaths( int type, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const

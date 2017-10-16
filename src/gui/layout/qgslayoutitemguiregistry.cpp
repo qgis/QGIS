@@ -25,6 +25,10 @@ QgsLayoutViewRubberBand *QgsLayoutItemAbstractGuiMetadata::createRubberBand( Qgs
   return new QgsLayoutViewRectangularRubberBand( view );
 }
 
+QgsLayoutItem *QgsLayoutItemAbstractGuiMetadata::createItem( QgsLayout * )
+{
+  return nullptr;
+}
 
 QgsLayoutItemGuiRegistry::QgsLayoutItemGuiRegistry( QObject *parent )
   : QObject( parent )
@@ -36,18 +40,19 @@ QgsLayoutItemGuiRegistry::~QgsLayoutItemGuiRegistry()
   qDeleteAll( mMetadata );
 }
 
-QgsLayoutItemAbstractGuiMetadata *QgsLayoutItemGuiRegistry::itemMetadata( int type ) const
+QgsLayoutItemAbstractGuiMetadata *QgsLayoutItemGuiRegistry::itemMetadata( const QString &uuid ) const
 {
-  return mMetadata.value( type );
+  return mMetadata.value( uuid );
 }
 
 bool QgsLayoutItemGuiRegistry::addLayoutItemGuiMetadata( QgsLayoutItemAbstractGuiMetadata *metadata )
 {
-  if ( !metadata || mMetadata.contains( metadata->type() ) )
+  if ( !metadata )
     return false;
 
-  mMetadata[metadata->type()] = metadata;
-  emit typeAdded( metadata->type() );
+  QString uuid = QUuid::createUuid().toString();
+  mMetadata[uuid] = metadata;
+  emit typeAdded( uuid );
   return true;
 }
 
@@ -65,26 +70,47 @@ const QgsLayoutItemGuiGroup &QgsLayoutItemGuiRegistry::itemGroup( const QString 
   return mItemGroups[ id ];
 }
 
+QgsLayoutItem *QgsLayoutItemGuiRegistry::createItem( const QString &uuid, QgsLayout *layout ) const
+{
+  if ( !mMetadata.contains( uuid ) )
+    return nullptr;
+
+  std::unique_ptr< QgsLayoutItem > item( mMetadata.value( uuid )->createItem( layout ) );
+  if ( item )
+    return item.release();
+
+  int type = mMetadata.value( uuid )->type();
+  return QgsApplication::layoutItemRegistry()->createItem( type, layout );
+}
+
 QgsLayoutItemBaseWidget *QgsLayoutItemGuiRegistry::createItemWidget( QgsLayoutItem *item ) const
 {
   if ( !item )
     return nullptr;
 
-  if ( !mMetadata.contains( item->type() ) )
-    return nullptr;
+  for ( auto it = mMetadata.constBegin(); it != mMetadata.constEnd(); ++it )
+  {
+    if ( it.value()->type() == item->type() )
+      return it.value()->createItemWidget( item );
+  }
 
-  return mMetadata[item->type()]->createItemWidget( item );
+  return nullptr;
 }
 
-QgsLayoutViewRubberBand *QgsLayoutItemGuiRegistry::createItemRubberBand( int type, QgsLayoutView *view ) const
+QgsLayoutViewRubberBand *QgsLayoutItemGuiRegistry::createItemRubberBand( const QString &uuid, QgsLayoutView *view ) const
 {
-  if ( !mMetadata.contains( type ) )
+  if ( !mMetadata.contains( uuid ) )
     return nullptr;
 
-  return mMetadata[type]->createRubberBand( view );
+  return mMetadata[uuid]->createRubberBand( view );
 }
 
-QList<int> QgsLayoutItemGuiRegistry::itemTypes() const
+QList<QString> QgsLayoutItemGuiRegistry::itemUuids() const
 {
   return mMetadata.keys();
+}
+
+QgsLayoutItem *QgsLayoutItemGuiMetadata::createItem( QgsLayout *layout )
+{
+  return mCreateFunc ? mCreateFunc( layout ) : QgsLayoutItemAbstractGuiMetadata::createItem( layout );
 }

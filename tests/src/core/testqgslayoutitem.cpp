@@ -232,7 +232,7 @@ void TestQgsLayoutItem::registry()
   QVERIFY( registry.itemTypes().isEmpty() );
   QVERIFY( !registry.createItem( 1, nullptr ) );
 
-  auto create = []( QgsLayout * layout, const QVariantMap & )->QgsLayoutItem*
+  auto create = []( QgsLayout * layout )->QgsLayoutItem*
   {
     return new TestItem( layout );
   };
@@ -1449,9 +1449,9 @@ void TestQgsLayoutItem::undoRedo()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   QString uuid = item->uuid();
-  QPointer< QgsLayoutItemRectangularShape > pItem( item ); // for testing deletion
+  QPointer< QgsLayoutItemShape > pItem( item ); // for testing deletion
   item->setFrameStrokeColor( QColor( 255, 100, 200 ) );
   l.addLayoutItem( item );
 
@@ -1469,7 +1469,7 @@ void TestQgsLayoutItem::undoRedo()
   // redo should restore
   l.undoStack()->stack()->redo();
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
-  item = dynamic_cast< QgsLayoutItemRectangularShape * >( l.itemByUuid( uuid ) );
+  item = dynamic_cast< QgsLayoutItemShape * >( l.itemByUuid( uuid ) );
   QVERIFY( item );
   QVERIFY( l.items().contains( item ) );
   pItem = item;
@@ -1487,7 +1487,7 @@ void TestQgsLayoutItem::undoRedo()
   // redo should restore
   l.undoStack()->stack()->redo();
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
-  item = dynamic_cast< QgsLayoutItemRectangularShape * >( l.itemByUuid( uuid ) );
+  item = dynamic_cast< QgsLayoutItemShape * >( l.itemByUuid( uuid ) );
   QVERIFY( item );
   QVERIFY( l.items().contains( item ) );
   pItem = item;
@@ -1504,7 +1504,7 @@ void TestQgsLayoutItem::undoRedo()
   // undo should restore
   l.undoStack()->stack()->undo();
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
-  item = dynamic_cast< QgsLayoutItemRectangularShape * >( l.itemByUuid( uuid ) );
+  item = dynamic_cast< QgsLayoutItemShape * >( l.itemByUuid( uuid ) );
   QVERIFY( item );
   QVERIFY( l.items().contains( item ) );
   pItem = item;
@@ -1520,7 +1520,7 @@ void TestQgsLayoutItem::undoRedo()
   // redo should restore
   l.undoStack()->stack()->redo();
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
-  item = dynamic_cast< QgsLayoutItemRectangularShape * >( l.itemByUuid( uuid ) );
+  item = dynamic_cast< QgsLayoutItemShape * >( l.itemByUuid( uuid ) );
   QVERIFY( item );
   QVERIFY( l.items().contains( item ) );
   pItem = item;
@@ -1540,10 +1540,10 @@ void TestQgsLayoutItem::multiItemUndo()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item );
   item->attemptMove( QgsLayoutPoint( 10, 10 ) );
-  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item2 );
   item2->attemptMove( QgsLayoutPoint( 20, 20 ) );
 
@@ -1569,10 +1569,10 @@ void TestQgsLayoutItem::overlappingUndo()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item );
   item->attemptMove( QgsLayoutPoint( 10, 10 ) );
-  QgsLayoutItemRectangularShape *item2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item2 );
   item2->attemptMove( QgsLayoutPoint( 20, 20 ) );
 
@@ -1599,7 +1599,7 @@ void TestQgsLayoutItem::blendMode()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item );
 
   item->setBlendMode( QPainter::CompositionMode_Darken );
@@ -1622,7 +1622,7 @@ void TestQgsLayoutItem::opacity()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item );
 
   item->setItemOpacity( 0.75 );
@@ -1640,7 +1640,7 @@ void TestQgsLayoutItem::excludeFromExports()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  QgsLayoutItemRectangularShape *item = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item );
 
   item->setExcludeFromExports( true );

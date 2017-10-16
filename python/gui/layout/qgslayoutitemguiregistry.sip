@@ -35,9 +35,11 @@ class QgsLayoutItemAbstractGuiMetadata
     typedef QFlags<QgsLayoutItemAbstractGuiMetadata::Flag> Flags;
 
 
-    QgsLayoutItemAbstractGuiMetadata( int type, const QString &groupId = QString(), Flags flags = 0 );
+    QgsLayoutItemAbstractGuiMetadata( int type, const QString &visibleName, const QString &groupId = QString(), Flags flags = 0 );
 %Docstring
  Constructor for QgsLayoutItemAbstractGuiMetadata with the specified class ``type``.
+
+ ``visibleName`` should be set to a translated, user visible name identifying the corresponding layout item.
 
  An optional ``groupId`` can be set, which allows grouping of related layout item classes. See QgsLayoutItemGuiMetadata for details.
 %End
@@ -62,6 +64,12 @@ class QgsLayoutItemAbstractGuiMetadata
  :rtype: str
 %End
 
+    QString visibleName() const;
+%Docstring
+ Returns a translated, user visible name identifying the corresponding layout item.
+ :rtype: str
+%End
+
     virtual QIcon creationIcon() const;
 %Docstring
  Returns an icon representing creation of the layout item type.
@@ -79,6 +87,12 @@ class QgsLayoutItemAbstractGuiMetadata
  Creates a rubber band for use when creating layout items of this type. Can return None if no rubber band
  should be created. The default behavior is to create a rectangular rubber band.
  :rtype: QgsLayoutViewRubberBand
+%End
+
+    virtual QgsLayoutItem *createItem( QgsLayout *layout ) /Factory/;
+%Docstring
+ Creates an instance of the corresponding item type.
+ :rtype: QgsLayoutItem
 %End
 
 };
@@ -160,10 +174,10 @@ class QgsLayoutItemGuiRegistry : QObject
     ~QgsLayoutItemGuiRegistry();
 
 
-    QgsLayoutItemAbstractGuiMetadata *itemMetadata( int type ) const;
+    QgsLayoutItemAbstractGuiMetadata *itemMetadata( const QString &uuid ) const;
 %Docstring
- Returns the metadata for the specified item ``type``. Returns None if
- a corresponding type was not found in the registry.
+ Returns the metadata for the specified item ``uuid``. Returns None if
+ a corresponding uuid was not found in the registry.
  :rtype: QgsLayoutItemAbstractGuiMetadata
 %End
 
@@ -192,6 +206,12 @@ class QgsLayoutItemGuiRegistry : QObject
  :rtype: QgsLayoutItemGuiGroup
 %End
 
+    QgsLayoutItem *createItem( const QString &uuid, QgsLayout *layout ) const /Factory/;
+%Docstring
+ Creates a new instance of a layout item given the item metadata ``uuid``, target ``layout``.
+ :rtype: QgsLayoutItem
+%End
+
     QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) const /Factory/;
 %Docstring
  Creates a new instance of a layout item configuration widget for the specified ``item``.
@@ -199,18 +219,18 @@ class QgsLayoutItemGuiRegistry : QObject
 %End
 
 
-    QList< int > itemTypes() const;
+    QList< QString > itemUuids() const;
 %Docstring
- Returns a list of available item types handled by the registry.
- :rtype: list of int
+ Returns a list of available item metadata uuids handled by the registry.
+ :rtype: list of str
 %End
 
   signals:
 
-    void typeAdded( int type );
+    void typeAdded( const QString &uuid );
 %Docstring
  Emitted whenever a new item type is added to the registry, with the specified
- ``type``.
+ ``uuid``.
 %End
 
   private:

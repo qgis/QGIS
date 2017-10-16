@@ -37,16 +37,20 @@ class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
     QgsLayoutViewToolAddItem( QgsLayoutView *view SIP_TRANSFERTHIS );
 
     /**
-     * Returns the item type for items created by the tool.
-     * \see setItemType()
+     * Returns the item metadata uuid for items created by the tool.
+     * \see setItemMetadataUuid()
      */
-    int itemType() const;
+    QString itemMetadataUuid() const;
 
     /**
-     * Sets the item \a type for items created by the tool.
-     * \see itemType()
+     * Sets the item metadata \a uuid for items created by the tool.
+     *
+     * The \uuid associates the current tool behavior with a metadata entry
+     * from QgsLayoutItemGuiRegistry.
+     *
+     * \see itemMetadataUuid()
      */
-    void setItemType( int type );
+    void setItemMetadataUuid( const QString &uuid );
 
     void layoutPressEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutMoveEvent( QgsLayoutViewMouseEvent *event ) override;
@@ -64,7 +68,7 @@ class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
 
     bool mDrawing = false;
 
-    int mItemType = 0;
+    QString mItemMetadataUuid;
 
     //! Rubber band item
     std::unique_ptr< QgsLayoutViewRubberBand > mRubberBand;

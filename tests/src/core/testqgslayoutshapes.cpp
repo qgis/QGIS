@@ -89,7 +89,7 @@ void TestQgsLayoutShapes::rectangle()
   QgsLayout l( &p );
   l.initializeDefaults();
 
-  QgsLayoutItemRectangularShape *shape = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape = new QgsLayoutItemShape( &l );
   shape->attemptMove( QgsLayoutPoint( 20, 20 ) );
   shape->attemptResize( QgsLayoutSize( 150, 100 ) );
 
@@ -116,7 +116,8 @@ void TestQgsLayoutShapes::triangle()
   QgsLayout l( &p );
   l.initializeDefaults();
 
-  QgsLayoutItemTriangleShape *shape = new QgsLayoutItemTriangleShape( &l );
+  QgsLayoutItemShape *shape = new QgsLayoutItemShape( &l );
+  shape->setShapeType( QgsLayoutItemShape::Triangle );
   shape->attemptMove( QgsLayoutPoint( 20, 20 ) );
   shape->attemptResize( QgsLayoutSize( 150, 100 ) );
 
@@ -143,7 +144,8 @@ void TestQgsLayoutShapes::ellipse()
   QgsLayout l( &p );
   l.initializeDefaults();
 
-  QgsLayoutItemEllipseShape *shape = new QgsLayoutItemEllipseShape( &l );
+  QgsLayoutItemShape *shape = new QgsLayoutItemShape( &l );
+  shape->setShapeType( QgsLayoutItemShape::Ellipse );
   shape->attemptMove( QgsLayoutPoint( 20, 20 ) );
   shape->attemptResize( QgsLayoutSize( 150, 100 ) );
 
@@ -169,7 +171,7 @@ void TestQgsLayoutShapes::roundedRectangle()
   QgsLayout l( &p );
   l.initializeDefaults();
 
-  QgsLayoutItemRectangularShape *shape = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape = new QgsLayoutItemShape( &l );
   shape->attemptMove( QgsLayoutPoint( 20, 20 ) );
   shape->attemptResize( QgsLayoutSize( 150, 100 ) );
 
@@ -197,7 +199,7 @@ void TestQgsLayoutShapes::symbol()
   QgsLayout l( &p );
   l.initializeDefaults();
 
-  QgsLayoutItemRectangularShape *shape = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape = new QgsLayoutItemShape( &l );
   shape->attemptMove( QgsLayoutPoint( 20, 20 ) );
   shape->attemptResize( QgsLayoutSize( 150, 100 ) );
 

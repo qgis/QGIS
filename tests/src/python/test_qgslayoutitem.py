@@ -17,7 +17,7 @@ from qgis.testing import start_app, unittest
 from qgis.core import (QgsProject,
                        QgsLayout,
                        QgsLayoutItemMap,
-                       QgsLayoutItemEllipseShape,
+                       QgsLayoutItemShape,
                        QgsLayoutObject,
                        QgsProperty,
                        QgsLayoutMeasurement,
@@ -139,8 +139,8 @@ class TestQgsLayoutItem(unittest.TestCase):
 
     def testDisplayName(self):
         layout = QgsLayout(QgsProject.instance())
-        item = QgsLayoutItemEllipseShape(layout)
-        self.assertEqual(item.displayName(), '<Ellipse>')
+        item = QgsLayoutItemShape(layout)
+        self.assertEqual(item.displayName(), '<Shape>')
         item.setId('a')
         self.assertEqual(item.displayName(), 'a')
         self.assertEqual(item.id(), 'a')

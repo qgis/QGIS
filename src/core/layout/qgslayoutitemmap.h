@@ -46,7 +46,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      *
      * The caller takes responsibility for deleting the returned object.
      */
-    static QgsLayoutItemMap *create( QgsLayout *layout, const QVariantMap &settings ) SIP_FACTORY;
+    static QgsLayoutItemMap *create( QgsLayout *layout ) SIP_FACTORY;
 
   protected:
 
