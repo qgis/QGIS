@@ -65,6 +65,12 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
       Landscape //!< Landscape orientation
     };
 
+    //! Page item undo commands, used for collapsing undo commands
+    enum UndoCommand
+    {
+      UndoPageSymbol = 3000, //!< Layout page symbol change
+    };
+
     /**
      * Constructor for QgsLayoutItemPage, with the specified parent \a layout.
      */

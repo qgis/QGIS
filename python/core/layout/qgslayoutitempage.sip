@@ -28,6 +28,11 @@ class QgsLayoutItemPage : QgsLayoutItem
       Landscape
     };
 
+    enum UndoCommand
+    {
+      UndoPageSymbol,
+    };
+
     explicit QgsLayoutItemPage( QgsLayout *layout /TransferThis/ );
 %Docstring
  Constructor for QgsLayoutItemPage, with the specified parent ``layout``.

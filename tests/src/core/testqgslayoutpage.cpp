@@ -42,6 +42,8 @@ class TestQgsLayoutPage : public QObject
     void decodePageOrientation();
     void grid();
     void transparentPaper(); //test totally transparent paper style
+    void borderedPaper(); //test page with border
+    void markerLinePaper(); //test page with marker line borde
 
     void hiddenPages(); //test hidden page boundaries
 
@@ -187,6 +189,45 @@ void TestQgsLayoutPage::transparentPaper()
   QVERIFY( checker.testLayout( mReport ) );
 }
 
+void TestQgsLayoutPage::borderedPaper()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
+  page->setPageSize( QgsLayoutSize( 297, 210, QgsUnitTypes::LayoutMillimeters ) );
+  l.pageCollection()->addPage( page.release() );
+
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  std::unique_ptr< QgsFillSymbol > fillSymbol = qgis::make_unique< QgsFillSymbol >();
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( Qt::white );
+  simpleFill->setStrokeColor( Qt::black );
+  simpleFill->setStrokeWidth( 6 );
+  l.pageCollection()->setPageStyleSymbol( fillSymbol.get() );
+
+  QgsLayoutChecker checker( QStringLiteral( "composerpaper_bordered" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
+  QVERIFY( checker.testLayout( mReport ) );
+}
+
+void TestQgsLayoutPage::markerLinePaper()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
+  page->setPageSize( QgsLayoutSize( 297, 210, QgsUnitTypes::LayoutMillimeters ) );
+  l.pageCollection()->addPage( page.release() );
+
+  QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
+  std::unique_ptr< QgsFillSymbol > markerLineSymbol = qgis::make_unique< QgsFillSymbol >();
+  markerLineSymbol->changeSymbolLayer( 0, markerLine );
+  l.pageCollection()->setPageStyleSymbol( markerLineSymbol.get() );
+
+  QgsLayoutChecker checker( QStringLiteral( "composerpaper_markerborder" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
 void TestQgsLayoutPage::hiddenPages()
 {
   QgsProject p;
@@ -195,24 +236,20 @@ void TestQgsLayoutPage::hiddenPages()
   page->setPageSize( QgsLayoutSize( 297, 210, QgsUnitTypes::LayoutMillimeters ) );
   l.pageCollection()->addPage( page.release() );
 
-#if 0 //TODO
   QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
-  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  std::unique_ptr< QgsFillSymbol > fillSymbol = qgis::make_unique< QgsFillSymbol >();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::blue );
   simpleFill->setStrokeColor( Qt::transparent );
-  mComposition->setPageStyleSymbol( fillSymbol );
-  delete fillSymbol;
-#endif
+  l.pageCollection()->setPageStyleSymbol( fillSymbol.get() );
 
   l.context().setPagesVisible( false );
-#if 0 //TODO
-  QgsCompositionChecker checker( QStringLiteral( "composerpaper_hidden" ), mComposition );
+
+  QgsLayoutChecker checker( QStringLiteral( "composerpaper_hidden" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
-  bool result = checker.testComposition( mReport );
-  mComposition->setPagesVisible( true );
+  bool result = checker.testLayout( mReport );
   QVERIFY( result );
-#endif
+
 }
 
 QGSTEST_MAIN( TestQgsLayoutPage )
