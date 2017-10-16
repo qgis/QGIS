@@ -849,7 +849,7 @@ class PostGisDBConnector(DBConnector):
         if self.isGeometryColumn(table, column):
             # use PostGIS function to delete geometry column correctly
             schema, tablename = self.getSchemaTableName(table)
-            schema_part = u"%s, " % self._quote_unicode(schema) if schema else ""
+            schema_part = u"%s, " % self.quoteString(schema) if schema else ""
             sql = u"SELECT DropGeometryColumn(%s%s, %s)" % (
                 schema_part, self.quoteString(tablename), self.quoteString(column))
         else:
