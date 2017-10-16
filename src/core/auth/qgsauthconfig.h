@@ -288,9 +288,16 @@ class CORE_EXPORT QgsPkiConfigBundle
     //! Set private key object
     void setClientCertKey( const QSslKey &certkey ) { mCertKey = certkey; }
 
-    //! Return CA chain
+    /**
+     * \brief caChain return the CA chain
+     * \return list of CA certificates
+     */
     QList<QSslCertificate> caChain() const { return mCaChain; }
-    //! Set CA chain
+
+    /**
+     * \brief setCaChain set the CA chain
+     * \param caChain
+     */
     void setCaChain( const QList<QSslCertificate> &caChain ) { mCaChain = caChain; }
 
   private:

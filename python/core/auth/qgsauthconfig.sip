@@ -349,12 +349,15 @@ Set private key object
 
     QList<QSslCertificate> caChain() const;
 %Docstring
-Return CA chain
+ caChain return the CA chain
+ :return: list of CA certificates
  :rtype: list of QSslCertificate
 %End
+
     void setCaChain( const QList<QSslCertificate> &caChain );
 %Docstring
-Set CA chain
+ setCaChain set the CA chain
+ \param caChain
 %End
 
 };
