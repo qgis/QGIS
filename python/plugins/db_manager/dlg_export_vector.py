@@ -199,12 +199,3 @@ class DlgExportVector(QDialog, Ui_Dialog):
 
         QMessageBox.information(self, self.tr("Export to file"), self.tr("Export finished."))
         return QDialog.accept(self)
-
-
-if __name__ == '__main__':
-    import sys
-
-    a = QApplication(sys.argv)
-    dlg = DlgExportVector()
-    dlg.show()
-    sys.exit(a.exec_())
