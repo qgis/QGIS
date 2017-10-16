@@ -36,9 +36,11 @@ QgsAuthPkiPathsEdit::QgsAuthPkiPathsEdit( QWidget *parent )
   connect( chkPkiPathsPassShow, &QCheckBox::stateChanged, this, &QgsAuthPkiPathsEdit::chkPkiPathsPassShow_stateChanged );
   connect( btnPkiPathsCert, &QToolButton::clicked, this, &QgsAuthPkiPathsEdit::btnPkiPathsCert_clicked );
   connect( btnPkiPathsKey, &QToolButton::clicked, this, &QgsAuthPkiPathsEdit::btnPkiPathsKey_clicked );
+  connect( cbAddCas, &QCheckBox::stateChanged, this, [ = ]( int state ) {  cbAddRootCa->setEnabled( state == Qt::Checked ); } );
   lblCas->hide();
   twCas->hide();
   cbAddCas->hide();
+  cbAddRootCa->hide();
 }
 
 bool QgsAuthPkiPathsEdit::validateConfig()
@@ -107,6 +109,7 @@ bool QgsAuthPkiPathsEdit::validateConfig()
   lblCas->setVisible( showCas );
   twCas->setVisible( showCas );
   cbAddCas->setVisible( showCas );
+  cbAddRootCa->setVisible( showCas );
 
   return validityChange( certvalid );
 }
@@ -118,6 +121,7 @@ QgsStringMap QgsAuthPkiPathsEdit::configMap() const
   config.insert( QStringLiteral( "keypath" ), lePkiPathsKey->text() );
   config.insert( QStringLiteral( "keypass" ), lePkiPathsKeyPass->text() );
   config.insert( QStringLiteral( "addcas" ), cbAddCas->isChecked() ? QStringLiteral( "true" ) :  QStringLiteral( "false" ) );
+  config.insert( QStringLiteral( "addrootca" ), cbAddRootCa->isChecked() ? QStringLiteral( "true" ) :  QStringLiteral( "false" ) );
 
   return config;
 }
@@ -131,6 +135,7 @@ void QgsAuthPkiPathsEdit::loadConfig( const QgsStringMap &configmap )
   lePkiPathsKey->setText( configmap.value( QStringLiteral( "keypath" ) ) );
   lePkiPathsKeyPass->setText( configmap.value( QStringLiteral( "keypass" ) ) );
   cbAddCas->setChecked( configmap.value( QStringLiteral( "addcas" ), QStringLiteral( "false " ) ) == QStringLiteral( "true" ) );
+  cbAddRootCa->setChecked( configmap.value( QStringLiteral( "addrootca" ), QStringLiteral( "false " ) ) == QStringLiteral( "true" ) );
 
   validateConfig();
 }

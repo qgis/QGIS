@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>449</width>
-    <height>260</height>
+    <width>415</width>
+    <height>268</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -51,7 +51,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="2" column="1" rowspan="2">
     <widget class="QTreeWidget" name="twCas">
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
@@ -75,17 +75,7 @@
      </column>
     </widget>
    </item>
-   <item row="2" column="2" colspan="2">
-    <widget class="QCheckBox" name="cbAddCas">
-     <property name="toolTip">
-      <string>Add bundle CAs to the connection</string>
-     </property>
-     <property name="text">
-      <string>Add</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <widget class="QLabel" name="lblPkiPathsKey">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -98,7 +88,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="4" column="1">
     <widget class="QLineEdit" name="lePkiPathsKey">
      <property name="readOnly">
       <bool>true</bool>
@@ -108,7 +98,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="5" column="1">
     <widget class="QLineEdit" name="lePkiPathsKeyPass">
      <property name="echoMode">
       <enum>QLineEdit::Password</enum>
@@ -118,7 +108,7 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="1" colspan="2">
+   <item row="6" column="1" colspan="3">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -131,8 +121,8 @@
      </property>
     </spacer>
    </item>
-   <item row="3" column="2">
-    <widget class="QToolButton" name="btnPkiPathsKey">
+   <item row="0" column="2">
+    <widget class="QToolButton" name="btnPkiPathsCert">
      <property name="text">
       <string>…</string>
      </property>
@@ -142,6 +132,16 @@
     </widget>
    </item>
    <item row="4" column="2">
+    <widget class="QToolButton" name="btnPkiPathsKey">
+     <property name="text">
+      <string>…</string>
+     </property>
+     <property name="popupMode">
+      <enum>QToolButton::InstantPopup</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="2">
     <widget class="QCheckBox" name="chkPkiPathsPassShow">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -154,18 +154,57 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QToolButton" name="btnPkiPathsCert">
-     <property name="text">
-      <string>…</string>
-     </property>
-     <property name="popupMode">
-      <enum>QToolButton::InstantPopup</enum>
-     </property>
-    </widget>
+   <item row="2" column="2" rowspan="2">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QCheckBox" name="cbAddCas">
+       <property name="toolTip">
+        <string>Add bundle CAs to the connection</string>
+       </property>
+       <property name="text">
+        <string>Add</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="cbAddRootCa">
+       <property name="toolTip">
+        <string>Add also root (self-signed) CA</string>
+       </property>
+       <property name="text">
+        <string>Root</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>lePkiPathsCert</tabstop>
+  <tabstop>btnPkiPathsCert</tabstop>
+  <tabstop>twCas</tabstop>
+  <tabstop>cbAddCas</tabstop>
+  <tabstop>cbAddRootCa</tabstop>
+  <tabstop>lePkiPathsKey</tabstop>
+  <tabstop>btnPkiPathsKey</tabstop>
+  <tabstop>lePkiPathsKeyPass</tabstop>
+  <tabstop>chkPkiPathsPassShow</tabstop>
+  <tabstop>lePkiPathsMsg</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
