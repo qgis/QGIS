@@ -726,8 +726,8 @@ class Table(DbItemObject):
     def tableDataModel(self, parent):
         pass
 
-    def tableFieldsFactory(self):
-        return None
+    def tableFieldsFactory(self, row, table):
+        raise NotImplementedError('Needs to be implemented by subclasses')
 
     def fields(self):
         if self._fields is None:
