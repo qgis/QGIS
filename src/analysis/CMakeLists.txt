@@ -21,6 +21,42 @@ SET(QGIS_ANALYSIS_SRCS
   interpolation/TriDecorator.cpp
   interpolation/Vector3D.cpp
 
+  processing/qgsalgorithmaddincrementalfield.cpp
+  processing/qgsalgorithmassignprojection.cpp
+  processing/qgsalgorithmboundary.cpp
+  processing/qgsalgorithmboundingbox.cpp
+  processing/qgsalgorithmbuffer.cpp
+  processing/qgsalgorithmcentroid.cpp
+  processing/qgsalgorithmclip.cpp
+  processing/qgsalgorithmconvexhull.cpp
+  processing/qgsalgorithmdissolve.cpp
+  processing/qgsalgorithmdropgeometry.cpp
+  processing/qgsalgorithmdropmzvalues.cpp
+  processing/qgsalgorithmextenttolayer.cpp
+  processing/qgsalgorithmextractbyattribute.cpp
+  processing/qgsalgorithmextractbyexpression.cpp
+  processing/qgsalgorithmextractbyextent.cpp
+  processing/qgsalgorithmextractbylocation.cpp
+  processing/qgsalgorithmfixgeometries.cpp
+  processing/qgsalgorithmjoinbyattribute.cpp
+  processing/qgsalgorithmjoinwithlines.cpp
+  processing/qgsalgorithmlineintersection.cpp
+  processing/qgsalgorithmmeancoordinates.cpp
+  processing/qgsalgorithmmergelines.cpp
+  processing/qgsalgorithmminimumenclosingcircle.cpp
+  processing/qgsalgorithmmultiparttosinglepart.cpp
+  processing/qgsalgorithmorientedminimumboundingbox.cpp
+  processing/qgsalgorithmrasterlayeruniquevalues.cpp
+  processing/qgsalgorithmremovenullgeometry.cpp
+  processing/qgsalgorithmpromotetomultipart.cpp
+  processing/qgsalgorithmsaveselectedfeatures.cpp
+  processing/qgsalgorithmsimplify.cpp
+  processing/qgsalgorithmsmooth.cpp
+  processing/qgsalgorithmsplitwithlines.cpp
+  processing/qgsalgorithmsubdivide.cpp
+  processing/qgsalgorithmtransform.cpp
+  processing/qgsnativealgorithms.cpp
+
   raster/qgsalignraster.cpp
   raster/qgsninecellfilter.cpp
   raster/qgsruggednessfilter.cpp
@@ -47,6 +83,8 @@ SET(QGIS_ANALYSIS_SRCS
 )
 
 SET(QGIS_ANALYSIS_MOC_HDRS
+  processing/qgsnativealgorithms.h
+
   vector/qgsgeometrysnapper.h
 
   network/qgsgraphdirector.h
@@ -142,6 +180,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/metadata

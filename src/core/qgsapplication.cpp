@@ -46,7 +46,6 @@
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
-#include "processing/qgsnativealgorithms.h"
 
 #include "layout/qgspagesizeregistry.h"
 
@@ -1612,7 +1611,6 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mPageSizeRegistry = new QgsPageSizeRegistry();
   mLayoutItemRegistry = new QgsLayoutItemRegistry();
   mLayoutItemRegistry->populate();
-  mProcessingRegistry->addProvider( new QgsNativeAlgorithms( mProcessingRegistry ) );
   mAnnotationRegistry = new QgsAnnotationRegistry();
   m3DRendererRegistry = new Qgs3DRendererRegistry();
 }
