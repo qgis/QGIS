@@ -195,6 +195,15 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     QList<QgsPoint> points();
 
     /**
+     * List of digitized points with z support
+     *
+     * @return List of points
+     *
+     * @note added in 2.18
+     */
+    QgsPointSequenceV2 pointsV2();
+
+    /**
      * Set the points on which to work
      *
      * @param pointList A list of points

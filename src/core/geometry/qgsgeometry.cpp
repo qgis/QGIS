@@ -801,27 +801,34 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
 /** Replaces a part of this geometry with another line*/
 int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
 {
+  QgsPointSequenceV2 reshapeLine;
+  convertPointList( reshapeWithLine, reshapeLine );
+  return reshapeGeometry( reshapeLine );
+}
+
+int QgsGeometry::reshapeGeometry( const QList<QgsPointV2>& reshapeLine )
+{
   if ( !d->geometry )
   {
     return 0;
   }
 
-  QgsPointSequenceV2 reshapeLine;
-  convertPointList( reshapeWithLine, reshapeLine );
   QgsLineStringV2 reshapeLineString;
   reshapeLineString.setPoints( reshapeLine );
-
   QgsGeos geos( d->geometry );
   int errorCode = 0;
   QgsAbstractGeometryV2* geom = geos.reshapeGeometry( reshapeLineString, &errorCode );
+
   if ( errorCode == 0 && geom )
   {
     detach( false );
-    delete d->geometry;
-    d->geometry = geom;
     removeWkbGeos();
+    d->geometry = geom;
     return 0;
   }
+
+  delete geom;
+
   return errorCode;
 }
 

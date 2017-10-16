@@ -722,6 +722,13 @@ QList<QgsPoint> QgsMapToolCapture::points()
   return points;
 }
 
+QgsPointSequenceV2 QgsMapToolCapture::pointsV2()
+{
+  QgsPointSequenceV2 pts;
+  mCaptureCurve.points( pts );
+  return pts;
+}
+
 void QgsMapToolCapture::setPoints( const QList<QgsPoint>& pointList )
 {
   QgsPointSequenceV2 pts;

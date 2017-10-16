@@ -97,7 +97,7 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       QgsGeometry* geom = f.geometry();
       if ( geom )
       {
-        reshapeReturn = geom->reshapeGeometry( points() );
+        reshapeReturn = geom->reshapeGeometry( pointsV2() );
         if ( reshapeReturn == 0 )
         {
           //avoid intersections on polygon layers

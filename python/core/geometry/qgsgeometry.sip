@@ -396,6 +396,15 @@ class QgsGeometry
      */
     int reshapeGeometry( const QList<QgsPoint>& reshapeWithLine );
 
+    /**
+      * Replaces a part of this geometry with another line with Z support
+      *
+      * @return 0 in case of success
+      *
+      * @note added in 2.18
+      */
+    int reshapeGeometry( const QList<QgsPointV2>& reshapeWithLine );
+
     /** Changes this geometry such that it does not intersect the other geometry
      * @param other geometry that should not be intersect
      * @return 0 in case of success
