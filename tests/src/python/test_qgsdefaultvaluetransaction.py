@@ -6,9 +6,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Matthias Kuhn'
-__date__ = '28/11/2015'
-__copyright__ = 'Copyright 2015, The QGIS Project'
+__author__ = 'Denis Rouzaud'
+__date__ = '16/10/2017'
+__copyright__ = 'Copyright 2017, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
@@ -20,20 +20,10 @@ from qgis.core import (
     QgsFeature,
     QgsVectorLayer,
     QgsProject,
-    QgsRelation,
     QgsTransaction,
     QgsFeatureRequest,
-    QgsVectorLayerTools
 )
 
-from qgis.gui import (
-    QgsGui,
-    QgsRelationWidgetWrapper,
-    QgsAttributeEditorContext
-)
-
-from qgis.PyQt.QtCore import QTimer
-from qgis.PyQt.QtWidgets import QToolButton, QTableView, QApplication
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -53,7 +43,7 @@ class TestQgsDefaultValueTransaction(unittest.TestCase):
         # Create test layer
         cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."someData" sql=', 'points', 'postgres')
 
-        QgsProject.instance().addMapLayer(cls.vl)
+        QgsMapLayerRegistry.instance().addMapLayer(cls.vl)
         QgsProject.instance().setAutoTransaction(True)
 
         assert(cls.vl.isValid())
@@ -70,16 +60,21 @@ class TestQgsDefaultValueTransaction(unittest.TestCase):
         Check if a feature can be added programmaticaly with a default value in transaction mode
         """
 
-        with edit(self.vl):
-            f = QgsFeature()
-            init_fields = self.vl.dataProvider().fields()
-            f.setFields(init_fields)
-            f.initAttributes(init_fields.size())
-            f['name'] = 'test_transaction_add_feature_with_default_value'
-            self.assertTrue(self.vl.addFeature(f))
+        transaction = QgsTransaction.create([self.vl.id()])
+        transaction.begin()
+        self.vl.startEditing()
+
+        init_fields = self.vl.fields()
+        f = QgsFeature(init_fields)
+        f.initAttributes(init_fields.size())
+        f['name'] = 'test_transaction_add_feature_with_default_value'
+        self.assertTrue(self.vl.addFeature(f))
 
         f = next(self.vl.getFeatures(QgsFeatureRequest().setFilterExpression('"name" = \'test_transaction_add_feature_with_default_value\'')))
         self.assertTrue(f.isValid())
+
+        self.vl.commitChanges()
+        transaction.rollback()
 
     def startEditing(self, layer):
         pass
