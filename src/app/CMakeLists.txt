@@ -182,6 +182,7 @@ SET(QGIS_APP_SRCS
   layout/qgslayoutmapwidget.cpp
   layout/qgslayoutpagepropertieswidget.cpp
   layout/qgslayoutpropertieswidget.cpp
+  layout/qgslayoutshapewidget.cpp
 
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
@@ -379,6 +380,7 @@ SET (QGIS_APP_MOC_HDRS
   layout/qgslayoutmapwidget.h
   layout/qgslayoutpagepropertieswidget.h
   layout/qgslayoutpropertieswidget.h
+  layout/qgslayoutshapewidget.h
 
   locator/qgsinbuiltlocatorfilters.h
   locator/qgslocatoroptionswidget.h

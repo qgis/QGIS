@@ -93,6 +93,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoOpacity, //!< Opacity adjustment
       UndoSetId, //!< Change item ID
       UndoRotation, //!< Rotation adjustment
+      UndoShapeStyle, //!< Shape symbol style
+      UndoShapeCornerRadius, //!< Shape corner radius
     };
 
     /**
