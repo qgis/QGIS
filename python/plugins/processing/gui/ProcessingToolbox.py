@@ -452,9 +452,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 label.setStyleSheet("QLabel {background-color: white; color: grey;}")
                 label.linkActivated.connect(activateProvider)
                 self.algorithmTree.setItemWidget(parent, 0, label)
-
             else:
-                text += QCoreApplication.translate("TreeProviderItem", " [{0} geoalgorithms]").format(count)
                 parent.setText(0, text)
             parent.setToolTip(0, parent.text(0))
 

@@ -122,8 +122,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
         ProcessingConfig.setSettingValue('ACTIVATE_GDAL', active)
 
     def name(self):
-        version = GdalUtils.readableVersion()
-        return 'GDAL ({})'.format(version)
+        return 'GDAL'
 
     def id(self):
         return 'gdal'
