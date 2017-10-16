@@ -971,7 +971,7 @@ class PostGisDBConnector(DBConnector):
     def deleteSpatialIndex(self, table, geom_column='geom'):
         schema, tablename = self.getSchemaTableName(table)
         idx_name = self.quoteId(u"sidx_%s_%s" % (tablename, geom_column))
-        return self.dropTableIndex(table, idx_name)
+        return self.deleteTableIndex(table, idx_name)
 
     def execution_error_types(self):
         return psycopg2.Error, psycopg2.ProgrammingError, psycopg2.Warning
