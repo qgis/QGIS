@@ -19,6 +19,11 @@
 
 ///@cond PRIVATE
 
+QString QgsExtentToLayerAlgorithm::name() const
+{
+  return QStringLiteral( "extenttolayer" );
+}
+
 void QgsExtentToLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "INPUT" ), QObject::tr( "Extent" ) ) );
@@ -64,7 +69,3 @@ QVariantMap QgsExtentToLayerAlgorithm::processAlgorithm( const QVariantMap &para
 
 ///@endcond
 
-
-
-
-QString QgsExtentToLayerAlgorithm::name() const { return QStringLiteral( "extenttolayer" ); }
