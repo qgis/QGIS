@@ -80,7 +80,7 @@ void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError *error, int meth
   QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
   QSharedPointer<QgsGeometryEngine> geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureB.geometry(), mContext->tolerance );
 
-  if ( !( geomEngineA->contains( layerFeatureB.geometry() ) && !geomEngineB->contains( layerFeatureA.geometry() ) ) )
+  if ( !( geomEngineB->contains( layerFeatureA.geometry() ) && !geomEngineA->contains( layerFeatureB.geometry() ) ) )
   {
     error->setObsolete();
     return;
