@@ -299,10 +299,10 @@ void TestQgsLayout::bounds()
   QGSCOMPARENEAR( layoutBounds.top(), 0.00000, 0.01 );
 
   QRectF compositionBoundsNoPage = l.layoutBounds( true );
-  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 174.497475, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 124.497475, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 85.502525, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 25.502525, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 174.859607, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 124.859607, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 85.290393, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 25.290393, 0.01 );
 
 #if 0
   QRectF page1Bounds = composition->pageItemBounds( 0, true );
@@ -339,10 +339,10 @@ void TestQgsLayout::addItem()
   l.addLayoutItem( shape1 );
   QVERIFY( l.items().contains( shape1 ) );
   // bounds should be updated to include item
-  QGSCOMPARENEAR( l.sceneRect().left(), 90, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().top(), 50, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().width(), 140, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().height(), 70, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().left(), 89.850, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().top(), 49.85, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().width(), 140.30, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().height(), 70.3, 0.001 );
 
   QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   shape2->attemptResize( QgsLayoutSize( 240, 170 ) );
@@ -351,17 +351,17 @@ void TestQgsLayout::addItem()
 
   // don't use addLayoutItem - we want to manually trigger a bounds update
   l.addItem( shape2 );
-  QGSCOMPARENEAR( l.sceneRect().left(), 90, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().top(), 50, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().width(), 140, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().height(), 70, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().left(), 89.85, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().top(), 49.85, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().width(), 140.3, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().height(), 70.3, 0.001 );
 
   l.updateBounds();
   // bounds should be updated to include item
-  QGSCOMPARENEAR( l.sceneRect().left(), 30, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().top(), 20, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().width(), 240, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().height(), 170, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().left(), 29.85, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().top(), 19.85, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().width(), 240.3, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().height(), 170.3, 0.001 );
 }
 
 void TestQgsLayout::layoutItems()

@@ -36,6 +36,8 @@ class QgsLayoutItemShape : QgsLayoutItem
     virtual int type() const;
     virtual QString stringType() const;
 
+    virtual QString displayName() const;
+
     QgsLayoutItemShape::Shape shapeType() const;
 %Docstring
  Returns the type of shape (e.g. rectangle, ellipse, etc).

@@ -52,6 +52,9 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
     int type() const override { return QgsLayoutItemRegistry::LayoutShape; }
     QString stringType() const override { return QStringLiteral( "ItemShape" ); }
 
+    //Overridden to return shape type
+    virtual QString displayName() const override;
+
     /**
      * Returns the type of shape (e.g. rectangle, ellipse, etc).
      * \see setShapeType()

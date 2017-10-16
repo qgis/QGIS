@@ -54,6 +54,26 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
 #endif
 }
 
+QString QgsLayoutItemShape::displayName() const
+{
+  if ( !id().isEmpty() )
+  {
+    return id();
+  }
+
+  switch ( mShape )
+  {
+    case Ellipse:
+      return tr( "<Ellipse>" );
+    case Rectangle:
+      return tr( "<Rectangle>" );
+    case Triangle:
+      return tr( "<Triangle>" );
+  }
+
+  return tr( "<Shape>" );
+}
+
 void QgsLayoutItemShape::setShapeType( QgsLayoutItemShape::Shape type )
 {
   if ( type == mShape )

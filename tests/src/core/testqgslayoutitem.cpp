@@ -26,6 +26,7 @@
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemshape.h"
 #include "qgslayouteffect.h"
+#include "qgsfillsymbollayer.h"
 #include <QObject>
 #include <QPainter>
 #include <QImage>
@@ -1640,6 +1641,17 @@ void TestQgsLayoutItem::excludeFromExports()
   QgsProject proj;
   QgsLayout l( &proj );
 
+  std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
+  page->setPageSize( QgsLayoutSize( 297, 210, QgsUnitTypes::LayoutMillimeters ) );
+  l.pageCollection()->addPage( page.release() );
+
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  std::unique_ptr< QgsFillSymbol > fillSymbol( new QgsFillSymbol() );
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( Qt::transparent );
+  simpleFill->setStrokeColor( Qt::transparent );
+  l.pageCollection()->setPageStyleSymbol( fillSymbol.get() );
+
   QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   l.addLayoutItem( item );
 
@@ -1653,17 +1665,14 @@ void TestQgsLayoutItem::excludeFromExports()
   QVERIFY( !item->excludeFromExports() ); // should not change
   QVERIFY( item->mEvaluatedExcludeFromExports );
 
-  item->setPos( 100, 100 );
-  item->setRect( 0, 0, 200, 200 );
-  l.setSceneRect( 0, 0, 400, 400 );
-  l.context().setFlag( QgsLayoutContext::FlagDebug, true );
-  QImage image( l.sceneRect().size().toSize(), QImage::Format_ARGB32 );
-  image.fill( 0 );
-  QPainter painter( &image );
-  l.render( &painter );
-  painter.end();
+  item->attemptMove( QgsLayoutPoint( 100, 100 ) );
+  item->attemptResize( QgsLayoutSize( 200, 200 ) );
+  l.updateBounds();
 
-  QVERIFY( renderCheck( QStringLiteral( "layoutitem_excluded" ), image, 0 ) );
+  QgsLayoutChecker checker( QStringLiteral( "layoutitem_excluded" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layouts" ) );
+  checker.setSize( QSize( 400, 400 ) );
+  QVERIFY( checker.testLayout( mReport ) );
 }
 
 QgsLayoutItem *TestQgsLayoutItem::createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original )

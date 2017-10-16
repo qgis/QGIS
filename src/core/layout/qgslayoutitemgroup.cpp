@@ -158,7 +158,7 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useRefer
     QgsLayoutPoint deltaPos = mLayout->convertFromLayoutUnits( QPointF( deltaX, deltaY ), itemPos.units() );
     itemPos.setX( itemPos.x() + deltaPos.x() );
     itemPos.setY( itemPos.y() + deltaPos.y() );
-    item->attemptMove( itemPos, includesFrame );
+    item->attemptMove( itemPos, true, includesFrame );
 
     if ( command )
     {
