@@ -161,7 +161,6 @@ SET(TESTS
  testqgspointlocator.cpp
  testqgspointpatternfillsymbol.cpp
  testqgspoint.cpp
- testqgsprocessing.cpp
  testqgsproject.cpp
  testqgsproperty.cpp
  testqgis.cpp
