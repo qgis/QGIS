@@ -103,7 +103,14 @@ bool QgsAuthPkcs12Method::updateNetworkRequest( QNetworkRequest &request, const 
 
   if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
   {
-    sslConfig.setCaCertificates( pkibundle->caChain() );
+    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+    {
+      sslConfig.setCaCertificates( pkibundle->caChain() );
+    }
+    else
+    {
+      sslConfig.setCaCertificates( QgsAuthCertUtils::casRemoveSelfSigned( pkibundle->caChain() ) );
+    }
   }
 
   request.setSslConfiguration( sslConfig );

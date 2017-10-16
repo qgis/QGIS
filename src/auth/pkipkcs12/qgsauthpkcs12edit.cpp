@@ -36,9 +36,11 @@ QgsAuthPkcs12Edit::QgsAuthPkcs12Edit( QWidget *parent )
   connect( lePkcs12KeyPass, &QLineEdit::textChanged, this, &QgsAuthPkcs12Edit::lePkcs12KeyPass_textChanged );
   connect( chkPkcs12PassShow, &QCheckBox::stateChanged, this, &QgsAuthPkcs12Edit::chkPkcs12PassShow_stateChanged );
   connect( btnPkcs12Bundle, &QToolButton::clicked, this, &QgsAuthPkcs12Edit::btnPkcs12Bundle_clicked );
+  connect( cbAddCas, &QCheckBox::stateChanged, this, [ = ]( int state ) {  cbAddRootCa->setEnabled( state == Qt::Checked ); } );
   lblCas->hide();
   twCas->hide();
   cbAddCas->hide();
+  cbAddRootCa->hide();
 }
 
 bool QgsAuthPkcs12Edit::validateConfig()
@@ -115,6 +117,7 @@ bool QgsAuthPkcs12Edit::validateConfig()
   lblCas->setVisible( showCas );
   twCas->setVisible( showCas );
   cbAddCas->setVisible( showCas );
+  cbAddRootCa->setVisible( showCas );
 
   return validityChange( bundlevalid );
 }
@@ -127,6 +130,7 @@ QgsStringMap QgsAuthPkcs12Edit::configMap() const
   config.insert( QStringLiteral( "bundlepath" ), lePkcs12Bundle->text() );
   config.insert( QStringLiteral( "bundlepass" ), lePkcs12KeyPass->text() );
   config.insert( QStringLiteral( "addcas" ), cbAddCas->isChecked() ? QStringLiteral( "true" ) :  QStringLiteral( "false" ) );
+  config.insert( QStringLiteral( "addrootca" ), cbAddRootCa->isChecked() ? QStringLiteral( "true" ) :  QStringLiteral( "false" ) );
 
   return config;
 }
@@ -139,6 +143,7 @@ void QgsAuthPkcs12Edit::loadConfig( const QgsStringMap &configmap )
   lePkcs12Bundle->setText( configmap.value( QStringLiteral( "bundlepath" ) ) );
   lePkcs12KeyPass->setText( configmap.value( QStringLiteral( "bundlepass" ) ) );
   cbAddCas->setChecked( configmap.value( QStringLiteral( "addcas" ), QStringLiteral( "false " ) ) == QStringLiteral( "true" ) );
+  cbAddRootCa->setChecked( configmap.value( QStringLiteral( "addrootca" ), QStringLiteral( "false " ) ) == QStringLiteral( "true" ) );
 
   validateConfig();
 }

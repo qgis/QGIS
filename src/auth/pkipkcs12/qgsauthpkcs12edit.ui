@@ -6,23 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>365</width>
-    <height>224</height>
+    <width>397</width>
+    <height>202</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="leftMargin">
-    <number>6</number>
-   </property>
-   <property name="topMargin">
-    <number>6</number>
-   </property>
-   <property name="rightMargin">
-    <number>6</number>
-   </property>
-   <property name="bottomMargin">
-    <number>6</number>
-   </property>
+   <item row="0" column="0">
+    <widget class="QLabel" name="lblPkcs12Bundle">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Bundle</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="1">
     <widget class="QLineEdit" name="lePkcs12Bundle">
      <property name="readOnly">
@@ -33,20 +34,34 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="lblPkcs12Key">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
+   <item row="0" column="3">
+    <widget class="QToolButton" name="btnPkcs12Bundle">
      <property name="text">
-      <string>Key</string>
+      <string>…</string>
+     </property>
+     <property name="popupMode">
+      <enum>QToolButton::InstantPopup</enum>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="lePkcs12Msg">
+     <property name="styleSheet">
+      <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="lblCas">
+     <property name="text">
+      <string>CAs</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" rowspan="2">
     <widget class="QTreeWidget" name="twCas">
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
@@ -70,8 +85,8 @@
      </column>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="lblPkcs12Bundle">
+   <item row="4" column="0">
+    <widget class="QLabel" name="lblPkcs12Key">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -79,11 +94,21 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Bundle</string>
+      <string>Key</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="2">
+   <item row="4" column="1">
+    <widget class="QLineEdit" name="lePkcs12KeyPass">
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="placeholderText">
+      <string>Optional passphrase</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3">
     <widget class="QCheckBox" name="chkPkcs12PassShow">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -96,27 +121,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QToolButton" name="btnPkcs12Bundle">
-     <property name="text">
-      <string>…</string>
-     </property>
-     <property name="popupMode">
-      <enum>QToolButton::InstantPopup</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QLineEdit" name="lePkcs12KeyPass">
-     <property name="echoMode">
-      <enum>QLineEdit::Password</enum>
-     </property>
-     <property name="placeholderText">
-      <string>Optional passphrase</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
+   <item row="5" column="1" colspan="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -129,35 +134,55 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="1">
-    <widget class="QLineEdit" name="lePkcs12Msg">
-     <property name="styleSheet">
-      <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QCheckBox" name="cbAddCas">
-     <property name="toolTip">
-      <string>Add bundle CAs to the connection</string>
-     </property>
-     <property name="text">
-      <string>Add</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="lblCas">
-     <property name="text">
-      <string>CAs</string>
-     </property>
-    </widget>
+   <item row="2" column="2" rowspan="2" colspan="2">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QCheckBox" name="cbAddCas">
+       <property name="toolTip">
+        <string>Add bundle CAs to the connection</string>
+       </property>
+       <property name="text">
+        <string>Add</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="cbAddRootCa">
+       <property name="toolTip">
+        <string>Add also root (self-signed) CA</string>
+       </property>
+       <property name="text">
+        <string>Root</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>lePkcs12Bundle</tabstop>
+  <tabstop>btnPkcs12Bundle</tabstop>
+  <tabstop>twCas</tabstop>
+  <tabstop>cbAddCas</tabstop>
+  <tabstop>cbAddRootCa</tabstop>
+  <tabstop>lePkcs12KeyPass</tabstop>
+  <tabstop>chkPkcs12PassShow</tabstop>
+  <tabstop>lePkcs12Msg</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
