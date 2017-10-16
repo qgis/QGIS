@@ -29,9 +29,9 @@
 //@todo use setObsolete instead of mHasError when upgrading qt version, this will allow auto removal of the command
 // for the moment a errored command is left on the stack
 
-QgsVectorLayerUndoPassthroughCommand::QgsVectorLayerUndoPassthroughCommand( QgsVectorLayerEditBuffer *buffer, const QString &text )
+QgsVectorLayerUndoPassthroughCommand::QgsVectorLayerUndoPassthroughCommand( QgsVectorLayerEditBuffer *buffer, const QString &text, bool autocreate )
   : QgsVectorLayerUndoCommand( buffer )
-  , mSavePointId( mBuffer->L->isEditCommandActive()
+  , mSavePointId( mBuffer->L->isEditCommandActive() || !autocreate
                   ? mBuffer->L->dataProvider()->transaction()->savePoints().last()
                   : mBuffer->L->dataProvider()->transaction()->createSavepoint( mError ) )
   , mHasError( !mError.isEmpty() )
@@ -331,5 +331,51 @@ void QgsVectorLayerUndoPassthroughCommandRenameAttribute::redo()
   else
   {
     setError();
+  }
+}
+
+QgsVectorLayerUndoPassthroughCommandUpdate::QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer, QgsTransaction *transaction, const QString &sql )
+  : QgsVectorLayerUndoPassthroughCommand( buffer, QObject::tr( "custom transaction" ), false )
+  , mTransaction( transaction )
+  , mSql( sql )
+{
+}
+
+void QgsVectorLayerUndoPassthroughCommandUpdate::undo()
+{
+  if ( rollBackToSavePoint() )
+  {
+    mUndone = true;
+    emit mBuffer->L->layerModified();
+  }
+  else
+  {
+    setError();
+  }
+}
+
+void QgsVectorLayerUndoPassthroughCommandUpdate::redo()
+{
+  // the first time that the sql query is execute is within QgsTransaction
+  // itself. So the redo has to be executed only after an undo action.
+  if ( mUndone )
+  {
+    mSavePointId = mTransaction->createSavepoint( mError );
+
+    if ( mError.isEmpty() )
+    {
+      if ( mTransaction->executeSql( mSql, mError ) )
+      {
+        mUndone = false;
+      }
+      else
+      {
+        setError();
+      }
+    }
+    else
+    {
+      setError();
+    }
   }
 }

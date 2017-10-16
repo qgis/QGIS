@@ -20,6 +20,7 @@
 
 class QgsVectorLayer;
 class QgsVectorLayerUndoPassthroughCommand;
+class QgsTransaction;
 
 /**
  * \ingroup core
@@ -42,6 +43,18 @@ class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffe
     bool renameAttribute( int attr, const QString &newName ) override;
     bool commitChanges( QStringList &commitErrors ) override;
     void rollBack() override;
+
+    /**
+     * Update underlying data with a SQL query embedded in a transaction.
+     *
+     * \param transaction Transaction in which the sql query has been run
+     * \param sql The SQL query updating data
+     *
+     * \returns true if the undo/redo command is well added to the stack, false otherwise
+     *
+     * \since QGIS 3.0
+     */
+    bool update( QgsTransaction *transaction, const QString &sql );
 
   private:
     bool mModified;

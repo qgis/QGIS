@@ -267,6 +267,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     friend class QgsVectorLayerUndoPassthroughCommandAddAttribute;
     friend class QgsVectorLayerUndoPassthroughCommandDeleteAttribute;
     friend class QgsVectorLayerUndoPassthroughCommandRenameAttribute;
+    friend class QgsVectorLayerUndoPassthroughCommandUpdate;
 
     /**
      * Deleted feature IDs which are not committed.  Note a feature can be added and then deleted

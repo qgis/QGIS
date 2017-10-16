@@ -2066,6 +2066,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void onFeatureDeleted( QgsFeatureId fid );
     void onRelationsLoaded();
     void onSymbolsCounted();
+    void onDirtyTransaction( const QString &sql );
 
   protected:
     //! Set the extent

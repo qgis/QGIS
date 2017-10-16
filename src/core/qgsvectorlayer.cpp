@@ -1345,6 +1345,8 @@ bool QgsVectorLayer::startEditing()
   if ( mDataProvider->transaction() )
   {
     mEditBuffer = new QgsVectorLayerEditPassthrough( this );
+
+    connect( mDataProvider->transaction(), &QgsTransaction::dirty, this, &QgsVectorLayer::onDirtyTransaction, Qt::UniqueConnection );
   }
   else
   {
@@ -4575,3 +4577,11 @@ bool QgsVectorLayer::readExtentFromXml() const
   return mReadExtentFromXml;
 }
 
+void QgsVectorLayer::onDirtyTransaction( const QString &sql )
+{
+  QgsTransaction *tr = dataProvider()->transaction();
+  if ( tr && mEditBuffer )
+  {
+    dynamic_cast<QgsVectorLayerEditPassthrough *>( mEditBuffer )->update( tr, sql );
+  }
+}

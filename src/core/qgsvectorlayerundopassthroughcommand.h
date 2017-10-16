@@ -36,19 +36,14 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommand : public QgsVectorLayerUn
      * Constructor for QgsVectorLayerUndoPassthroughCommand
      * \param buffer associated edit buffer
      * \param text text associated with command
+     * \param autocreate flag allowing to automatically create a savepoint if necessary
      */
-    QgsVectorLayerUndoPassthroughCommand( QgsVectorLayerEditBuffer *buffer, const QString &text );
+    QgsVectorLayerUndoPassthroughCommand( QgsVectorLayerEditBuffer *buffer, const QString &text, bool autocreate = true );
 
     /**
      * Returns error status
      */
     bool hasError() const { return mHasError; }
-
-  private:
-    QString mError;
-    QString mSavePointId;
-    bool mHasError;
-    bool mRecreateSavePoint;
 
   protected:
 
@@ -70,6 +65,14 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommand : public QgsVectorLayerUn
      */
     void setError();
 
+    QString mSavePointId;
+
+  protected:
+    QString mError;
+
+  private:
+    bool mHasError;
+    bool mRecreateSavePoint;
 };
 
 /**
@@ -263,6 +266,34 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandRenameAttribute : public Q
     const int mAttr;
     const QString mNewName;
     const QString mOldName;
+};
+
+/**
+ * \ingroup core
+ * \class QgsVectorLayerUndoPassthroughCommandUpdate
+ * \brief Undo command for running a specific sql query in transaction group.
+ * \since QGIS 3.0
+ */
+
+class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandUpdate : public QgsVectorLayerUndoPassthroughCommand
+{
+  public:
+
+    /**
+     * Constructor for QgsVectorLayerUndoCommandUpdate
+     * \param buffer associated edit buffer
+     * \param transaction transaction running the sql query
+     * \param sql the query
+     */
+    QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsTransaction *transaction, const QString &sql );
+
+    virtual void undo() override;
+    virtual void redo() override;
+
+  private:
+    QgsTransaction *mTransaction = nullptr;
+    QString mSql;
+    bool mUndone = false;
 };
 
 #endif

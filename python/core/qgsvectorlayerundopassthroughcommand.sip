@@ -23,11 +23,12 @@ class QgsVectorLayerUndoPassthroughCommand : QgsVectorLayerUndoCommand
 %End
   public:
 
-    QgsVectorLayerUndoPassthroughCommand( QgsVectorLayerEditBuffer *buffer, const QString &text );
+    QgsVectorLayerUndoPassthroughCommand( QgsVectorLayerEditBuffer *buffer, const QString &text, bool autocreate = true );
 %Docstring
  Constructor for QgsVectorLayerUndoPassthroughCommand
  \param buffer associated edit buffer
  \param text text associated with command
+ \param autocreate flag allowing to automatically create a savepoint if necessary
 %End
 
     bool hasError() const;
@@ -57,6 +58,9 @@ class QgsVectorLayerUndoPassthroughCommand : QgsVectorLayerUndoCommand
 %Docstring
  Set error flag and append "failed" to text
 %End
+
+
+  protected:
 
 };
 
@@ -239,6 +243,32 @@ class QgsVectorLayerUndoPassthroughCommandRenameAttribute : QgsVectorLayerUndoPa
  \param buffer associated edit buffer
  \param attr
  \param newName
+%End
+
+    virtual void undo();
+    virtual void redo();
+
+};
+
+
+class QgsVectorLayerUndoPassthroughCommandUpdate : QgsVectorLayerUndoPassthroughCommand
+{
+%Docstring
+ Undo command for running a specific sql query in transaction group.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayerundopassthroughcommand.h"
+%End
+  public:
+
+    QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsTransaction *transaction, const QString &sql );
+%Docstring
+ Constructor for QgsVectorLayerUndoCommandUpdate
+ \param buffer associated edit buffer
+ \param transaction transaction running the sql query
+ \param sql the query
 %End
 
     virtual void undo();
