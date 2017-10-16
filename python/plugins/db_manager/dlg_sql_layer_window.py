@@ -155,7 +155,7 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
             schema = uri.schema()
             if schema and schema.upper() != 'PUBLIC':
                 sql = 'SELECT * FROM ' + schema + '.' + sql
-            else
+            else:
                 sql = 'SELECT * FROM ' + sql
         self.editSql.setText(sql)
         self.executeSql()
