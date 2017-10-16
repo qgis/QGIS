@@ -31,7 +31,7 @@ class ANALYSIS_EXPORT QgsGeometryDangleCheck : public QgsGeometryCheck
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Dangle" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryDangleCheck" ); }
-  private:
+
     enum ResolutionMethod { NoChange };
 };
 

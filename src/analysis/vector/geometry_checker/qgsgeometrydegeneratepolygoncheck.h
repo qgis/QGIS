@@ -31,8 +31,8 @@ class ANALYSIS_EXPORT QgsGeometryDegeneratePolygonCheck : public QgsGeometryChec
     QString errorDescription() const override { return tr( "Polygon with less than three nodes" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryDegeneratePolygonCheck" ); }
 
-  private:
     enum ResolutionMethod { DeleteRing, NoChange };
+  private:
 };
 
 #endif // QGS_GEOMETRY_DEGENERATEPOLYGON_CHECK_H

@@ -56,7 +56,7 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheck : public QgsGeometryCheck
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Within" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryContainedCheck" ); }
-  private:
+
     enum ResolutionMethod { Delete, NoChange };
 };
 

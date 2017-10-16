@@ -58,7 +58,6 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateCheck : public QgsGeometryCheck
     QString errorDescription() const override { return tr( "Duplicate" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryDuplicateCheck" ); }
 
-  private:
     enum ResolutionMethod { NoChange, RemoveDuplicates };
 };
 

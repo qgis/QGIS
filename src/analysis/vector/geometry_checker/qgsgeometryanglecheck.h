@@ -32,8 +32,10 @@ class ANALYSIS_EXPORT QgsGeometryAngleCheck : public QgsGeometryCheck
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Minimal angle" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryAngleCheck" ); }
-  private:
+
     enum ResolutionMethod { DeleteNode, NoChange };
+
+  private:
     double mMinAngle;
 };
 

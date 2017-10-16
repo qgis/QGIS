@@ -60,6 +60,10 @@ class ANALYSIS_EXPORT QgsGeometryCheck : public QObject
       ChangeWhat what;
       ChangeType type;
       QgsVertexId vidx;
+      bool operator==( const Change &other )
+      {
+        return what == other.what && type == other.type && vidx == other.vidx;
+      }
     };
 
     typedef QMap<QString, QMap<QgsFeatureId, QList<Change>>> Changes;

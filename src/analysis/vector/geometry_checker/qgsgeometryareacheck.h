@@ -34,8 +34,9 @@ class ANALYSIS_EXPORT QgsGeometryAreaCheck : public QgsGeometryCheck
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Minimal area" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryAreaCheck" ); }
-  private:
     enum ResolutionMethod { MergeLongestEdge, MergeLargestArea, MergeIdenticalAttribute, Delete, NoChange };
+
+  private:
 
     virtual bool checkThreshold( double layerToMapUnits, const QgsAbstractGeometry *geom, double &value ) const;
     bool mergeWithNeighbor( const QString &layerId, QgsFeature &feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString &errMsg ) const;
