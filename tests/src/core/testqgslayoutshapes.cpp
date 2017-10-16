@@ -1,0 +1,221 @@
+/***************************************************************************
+                         testqgslayoutshapes.cpp
+                         ----------------------
+    begin                : October 2017
+    copyright            : (C) 2017 by Nyall Dawson
+    email                : nyall dot dawson at gmail.com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsapplication.h"
+#include "qgslayout.h"
+#include "qgsmultirenderchecker.h"
+#include "qgslayoutitemshape.h"
+#include "qgsmapsettings.h"
+#include "qgsproject.h"
+#include "qgssymbol.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgsfillsymbollayer.h"
+#include <QObject>
+#include "qgstest.h"
+#include <QColor>
+#include <QPainter>
+
+class TestQgsLayoutShapes : public QObject
+{
+    Q_OBJECT
+
+  public:
+    TestQgsLayoutShapes() = default;
+
+  private slots:
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
+    void rectangle(); //test if rectangle shape is functioning
+    void triangle(); //test if triange shape is functioning
+    void ellipse(); //test if ellipse shape is functioning
+    void roundedRectangle(); //test if rounded rectangle shape is functioning
+    void symbol(); //test is styling shapes via symbol is working
+
+  private:
+
+    QString mReport;
+};
+
+void TestQgsLayoutShapes::initTestCase()
+{
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
+  mReport = QStringLiteral( "<h1>Composer Shape Tests</h1>\n" );
+}
+
+void TestQgsLayoutShapes::cleanupTestCase()
+{
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
+  QgsApplication::exitQgis();
+}
+
+void TestQgsLayoutShapes::init()
+{
+
+}
+
+void TestQgsLayoutShapes::cleanup()
+{
+
+}
+
+void TestQgsLayoutShapes::rectangle()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  l.initializeDefaults();
+
+  QgsLayoutItemRectangularShape *shape = new QgsLayoutItemRectangularShape( &l );
+  shape->attemptMove( QgsLayoutPoint( 20, 20 ) );
+  shape->attemptResize( QgsLayoutSize( 150, 100 ) );
+
+
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  std::unique_ptr< QgsFillSymbol > fillSymbol( new QgsFillSymbol() );
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( QColor( 255, 150, 0 ) );
+  simpleFill->setStrokeColor( QColor( 0, 0, 0 ) );
+  simpleFill->setStrokeWidth( 0.3 );
+  simpleFill->setPenJoinStyle( Qt::MiterJoin );
+  shape->setSymbol( fillSymbol.get() );
+
+  l.addLayoutItem( shape );
+
+  QgsLayoutChecker checker( QStringLiteral( "composershapes_rectangle" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_shapes" ) );
+  QVERIFY( checker.testLayout( mReport ) );
+}
+
+void TestQgsLayoutShapes::triangle()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  l.initializeDefaults();
+
+  QgsLayoutItemTriangleShape *shape = new QgsLayoutItemTriangleShape( &l );
+  shape->attemptMove( QgsLayoutPoint( 20, 20 ) );
+  shape->attemptResize( QgsLayoutSize( 150, 100 ) );
+
+
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  std::unique_ptr< QgsFillSymbol > fillSymbol( new QgsFillSymbol() );
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( QColor( 255, 150, 0 ) );
+  simpleFill->setStrokeColor( QColor( 0, 0, 0 ) );
+  simpleFill->setStrokeWidth( 0.3 );
+  simpleFill->setPenJoinStyle( Qt::MiterJoin );
+  shape->setSymbol( fillSymbol.get() );
+
+  l.addLayoutItem( shape );
+
+  QgsLayoutChecker checker( QStringLiteral( "composershapes_triangle" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_shapes" ) );
+  QVERIFY( checker.testLayout( mReport ) );
+}
+
+void TestQgsLayoutShapes::ellipse()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  l.initializeDefaults();
+
+  QgsLayoutItemEllipseShape *shape = new QgsLayoutItemEllipseShape( &l );
+  shape->attemptMove( QgsLayoutPoint( 20, 20 ) );
+  shape->attemptResize( QgsLayoutSize( 150, 100 ) );
+
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  std::unique_ptr< QgsFillSymbol > fillSymbol( new QgsFillSymbol() );
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( QColor( 255, 150, 0 ) );
+  simpleFill->setStrokeColor( QColor( 0, 0, 0 ) );
+  simpleFill->setStrokeWidth( 0.3 );
+  simpleFill->setPenJoinStyle( Qt::MiterJoin );
+  shape->setSymbol( fillSymbol.get() );
+
+  l.addLayoutItem( shape );
+
+  QgsLayoutChecker checker( QStringLiteral( "composershapes_ellipse" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_shapes" ) );
+  QVERIFY( checker.testLayout( mReport ) );
+}
+
+void TestQgsLayoutShapes::roundedRectangle()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  l.initializeDefaults();
+
+  QgsLayoutItemRectangularShape *shape = new QgsLayoutItemRectangularShape( &l );
+  shape->attemptMove( QgsLayoutPoint( 20, 20 ) );
+  shape->attemptResize( QgsLayoutSize( 150, 100 ) );
+
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  std::unique_ptr< QgsFillSymbol > fillSymbol( new QgsFillSymbol() );
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( QColor( 255, 150, 0 ) );
+  simpleFill->setStrokeColor( QColor( 0, 0, 0 ) );
+  simpleFill->setStrokeWidth( 0.3 );
+  simpleFill->setPenJoinStyle( Qt::MiterJoin );
+  shape->setSymbol( fillSymbol.get() );
+
+  l.addLayoutItem( shape );
+
+  shape->setCornerRadius( QgsLayoutMeasurement( 30 ) );
+
+  QgsLayoutChecker checker( QStringLiteral( "composershapes_roundedrect" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_shapes" ) );
+  QVERIFY( checker.testLayout( mReport ) );
+}
+
+void TestQgsLayoutShapes::symbol()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  l.initializeDefaults();
+
+  QgsLayoutItemRectangularShape *shape = new QgsLayoutItemRectangularShape( &l );
+  shape->attemptMove( QgsLayoutPoint( 20, 20 ) );
+  shape->attemptResize( QgsLayoutSize( 150, 100 ) );
+
+  //setup simple fill
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( Qt::green );
+  simpleFill->setStrokeColor( Qt::yellow );
+  simpleFill->setStrokeWidth( 6 );
+  shape->setSymbol( fillSymbol );
+  delete fillSymbol;
+
+  l.addLayoutItem( shape );
+  QgsLayoutChecker checker( QStringLiteral( "composershapes_symbol" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_shapes" ) );
+  QVERIFY( checker.testLayout( mReport ) );
+}
+
+QGSTEST_MAIN( TestQgsLayoutShapes )
+#include "testqgslayoutshapes.moc"

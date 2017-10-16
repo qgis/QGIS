@@ -17,6 +17,7 @@
 #include "qgslayoutitemshape.h"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 
@@ -33,6 +34,38 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
   properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
   mShapeStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
+  refreshSymbol();
+
+  connect( this, &QgsLayoutItemShape::sizePositionChanged, this, [ = ]
+  {
+    updateBoundingRect();
+    update();
+  } );
+}
+
+void QgsLayoutItemShape::refreshSymbol()
+{
+  if ( layout() )
+  {
+    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( layout(), nullptr, layout()->context().dpi() );
+    mMaxSymbolBleed = ( 25.4 / layout()->context().dpi() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol.get(), rc );
+  }
+
+  updateBoundingRect();
+
+  update();
+  emit frameChanged();
+}
+
+void QgsLayoutItemShape::updateBoundingRect()
+{
+  QRectF rectangle = rect();
+  rectangle.adjust( -mMaxSymbolBleed, -mMaxSymbolBleed, mMaxSymbolBleed, mMaxSymbolBleed );
+  if ( rectangle != mCurrentRectangle )
+  {
+    prepareGeometryChange();
+    mCurrentRectangle = rectangle;
+  }
 }
 
 void QgsLayoutItemShape::setSymbol( QgsFillSymbol *symbol )
@@ -41,6 +74,12 @@ void QgsLayoutItemShape::setSymbol( QgsFillSymbol *symbol )
     return;
 
   mShapeStyleSymbol.reset( symbol->clone() );
+  refreshSymbol();
+}
+
+QRectF QgsLayoutItemShape::boundingRect() const
+{
+  return mCurrentRectangle;
 }
 
 //

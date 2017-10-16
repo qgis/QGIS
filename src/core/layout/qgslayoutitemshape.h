@@ -48,6 +48,9 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
      */
     QgsFillSymbol *symbol() { return mShapeStyleSymbol.get(); }
 
+    // Depending on the symbol style, the bounding rectangle can be larger than the shape
+    QRectF boundingRect() const override;
+
   protected:
 
     /**
@@ -55,8 +58,25 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
      */
     explicit QgsLayoutItemShape( QgsLayout *layout );
 
+  private slots:
+
+    /**
+     * Should be called after the shape's symbol is changed. Redraws the shape and recalculates
+     * its selection bounds.
+    */
+    void refreshSymbol();
+
+    //! Updates the bounding rect of this item
+    void updateBoundingRect();
+
   private:
     std::unique_ptr< QgsFillSymbol > mShapeStyleSymbol;
+
+    double mMaxSymbolBleed = 0.0;
+    //! Current bounding rectangle of shape
+    QRectF mCurrentRectangle;
+
+
 };
 
 

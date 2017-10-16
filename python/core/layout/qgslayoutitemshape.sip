@@ -34,6 +34,9 @@ class QgsLayoutItemShape : QgsLayoutItem
  :rtype: QgsFillSymbol
 %End
 
+    virtual QRectF boundingRect() const;
+
+
   protected:
 
     explicit QgsLayoutItemShape( QgsLayout *layout );
