@@ -49,12 +49,12 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 
   mPreviewBand2 = new QgsRubberBand( mAreaCanvas, QgsWkbTypes::PolygonGeometry );
   mPreviewBand2->setWidth( 4 );
-  QColor rectColor =  QColor( 185, 84, 210, 60 );
+  QColor rectColor = QColor( 185, 84, 210, 60 );
   mPreviewBand2->setColor( rectColor );
 
   mVertexMarker = new QgsVertexMarker( mAreaCanvas );
   mVertexMarker->setIconType( QgsVertexMarker::ICON_CROSS );
-  mVertexMarker->setColor( Qt::magenta );
+  mVertexMarker->setColor( QColor( 185, 84, 210 ) );
   mVertexMarker->setPenWidth( 3 );
 
   QgsCoordinateReferenceSystem srs( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
