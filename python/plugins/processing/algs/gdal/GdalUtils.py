@@ -113,7 +113,7 @@ class GdalUtils(object):
                     retry_count += 1
                 else:
                     raise IOError(
-                        e.message + u'\nTried 5 times without success. Last iteration stopped after reading {} line(s).\nLast line(s):\n{}'.format(
+                        str(e) + u'\nTried 5 times without success. Last iteration stopped after reading {} line(s).\nLast line(s):\n{}'.format(
                             len(loglines), u'\n'.join(loglines[-10:])))
 
             QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)
