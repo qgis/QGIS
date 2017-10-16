@@ -23,9 +23,12 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutitemwidget.h"
+#include "qgslayoutitemshape.h"
 #include "qgsproject.h"
 #include "qgsgui.h"
 #include <QtTest/QSignalSpy>
+#include <QSvgGenerator>
+#include <QPrinter>
 
 class TestQgsLayoutView: public QObject
 {
@@ -40,6 +43,7 @@ class TestQgsLayoutView: public QObject
     void events();
     void guiRegistry();
     void rubberBand();
+    void isPreviewRender();
 
   private:
 
@@ -318,6 +322,89 @@ void TestQgsLayoutView::rubberBand()
   QCOMPARE( band.brush().color(), QColor( 255, 0, 0 ) );
   band.setPen( QPen( QColor( 0, 255, 0 ) ) );
   QCOMPARE( band.pen().color(), QColor( 0, 255, 0 ) );
+}
+
+class TestViewItem : public QgsLayoutItem
+{
+    Q_OBJECT
+
+  public:
+
+    TestViewItem( QgsLayout *layout ) : QgsLayoutItem( layout )
+    {
+    }
+
+    //implement pure virtual methods
+    int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }
+    QString stringType() const override { return QStringLiteral( "TestItemType" ); }
+    bool mDrawn = false;
+    bool mPreview = false;
+
+  protected:
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * ) override
+    {
+      mDrawn = true;
+      mPreview = isPreviewRender( painter );
+    }
+    void draw( QgsRenderContext &, const QStyleOptionGraphicsItem * ) override
+    {
+
+    }
+
+};
+
+void TestQgsLayoutView::isPreviewRender()
+{
+  // test if items can detect whether a preview render is occurring
+  QgsProject p;
+  QgsLayoutView *view = new QgsLayoutView();
+  QgsLayout *layout = new QgsLayout( &p );
+  view->setCurrentLayout( layout );
+
+  TestViewItem *item = new TestViewItem( layout );
+  layout->addLayoutItem( item );
+  item->attemptMove( QgsLayoutPoint( 0, 0 ) );
+  item->attemptResize( QgsLayoutSize( 100, 100 ) );
+  layout->updateBounds();
+
+
+  // render to image
+  QVERIFY( !item->isPreviewRender( nullptr ) );
+  QImage im = QImage( 250, 250, QImage::Format_RGB32 );
+  QPainter painter;
+  QVERIFY( painter.begin( &im ) );
+  QVERIFY( !item->isPreviewRender( &painter ) );
+  painter.end();
+
+  // render to svg
+  QSvgGenerator generator;
+  generator.setFileName( QDir::tempPath() + "/layout_text.svg" );
+  QVERIFY( painter.begin( &generator ) );
+  QVERIFY( !item->isPreviewRender( &painter ) );
+  painter.end();
+
+  // render to pdf
+  QPrinter printer;
+  printer.setOutputFileName( QString() );
+  printer.setOutputFormat( QPrinter::PdfFormat );
+  printer.setOutputFileName( QDir::tempPath() + "/layout_text.pdf" );
+  QVERIFY( painter.begin( &printer ) );
+  QVERIFY( !item->isPreviewRender( &painter ) );
+  painter.end();
+
+  // render in view - kinda gross!
+  item->mDrawn = false;
+  item->mPreview = false;
+  view->show();
+  view->zoomFull();
+  while ( !item->mDrawn )
+  {
+    QApplication::processEvents();
+  }
+
+  QVERIFY( item->mDrawn );
+  QVERIFY( item->mPreview );
+
 }
 
 QGSTEST_MAIN( TestQgsLayoutView )

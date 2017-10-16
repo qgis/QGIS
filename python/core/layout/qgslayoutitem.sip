@@ -589,6 +589,14 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  Draws the background for the item.
 %End
 
+    bool isPreviewRender( QPainter *painter ) const;
+%Docstring
+ Returns true if the render to the specified ``painter`` is a preview render,
+ i.e. is being rendered inside a QGraphicsView widget as opposed to a destination
+ device (such as an image).
+ :rtype: bool
+%End
+
     virtual void setFixedSize( const QgsLayoutSize &size );
 %Docstring
  Sets a fixed ``size`` for the layout item, which prevents it from being freely
