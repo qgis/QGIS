@@ -792,7 +792,7 @@ bool QgsStyleManagerDialog::removeColorRamp()
 {
   QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm removal" ),
-       QString( tr( "Do you really want to remove %n ramps(s)?", nullptr, indexes.count() ) ),
+       QString( tr( "Do you really want to remove %n ramp(s)?", nullptr, indexes.count() ) ),
        QMessageBox::Yes,
        QMessageBox::No ) )
     return false;
