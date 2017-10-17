@@ -166,6 +166,11 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
      */
     QgsLayout *layout() const;
 
+    /**
+     * Returns a list of items which should be ignored while snapping events
+     * for this tool.
+     */
+    virtual QList< QgsLayoutItem * > ignoredSnapItems() const;
 
   signals:
 

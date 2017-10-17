@@ -769,7 +769,7 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
     std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, false ) );
     if ( mTool->flags() & QgsLayoutViewTool::FlagSnaps )
     {
-      me->snapPoint( mHorizontalSnapLine.get(), mVerticalSnapLine.get() );
+      me->snapPoint( mHorizontalSnapLine.get(), mVerticalSnapLine.get(), mTool->ignoredSnapItems() );
     }
     if ( mTool->flags() & QgsLayoutViewTool::FlagSnaps )
     {

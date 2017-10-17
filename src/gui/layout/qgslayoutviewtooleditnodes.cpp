@@ -229,6 +229,14 @@ void QgsLayoutViewToolEditNodes::deactivate()
   QgsLayoutViewTool::deactivate();
 }
 
+QList<QgsLayoutItem *> QgsLayoutViewToolEditNodes::ignoredSnapItems() const
+{
+  QList< QgsLayoutItem * > items;
+  if ( mNodesItem )
+    items << mNodesItem;
+  return items;
+}
+
 void QgsLayoutViewToolEditNodes::displayNodes( bool display )
 {
   QList<QgsLayoutNodesItem *> nodesShapes;

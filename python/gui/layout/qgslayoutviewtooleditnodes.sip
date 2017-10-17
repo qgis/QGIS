@@ -45,6 +45,8 @@ class QgsLayoutViewToolEditNodes : QgsLayoutViewTool
 
     virtual void deactivate();
 
+    virtual QList< QgsLayoutItem * > ignoredSnapItems() const;
+
 
 };
 

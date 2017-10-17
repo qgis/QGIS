@@ -44,6 +44,11 @@ QgsLayout *QgsLayoutViewTool::layout() const
   return mView->currentLayout();
 }
 
+QList<QgsLayoutItem *> QgsLayoutViewTool::ignoredSnapItems() const
+{
+  return QList<QgsLayoutItem *>();
+}
+
 QgsLayoutViewTool::~QgsLayoutViewTool()
 {
   mView->unsetTool( this );
