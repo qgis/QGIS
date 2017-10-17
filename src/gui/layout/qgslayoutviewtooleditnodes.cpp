@@ -26,6 +26,34 @@ QgsLayoutViewToolEditNodes::QgsLayoutViewToolEditNodes( QgsLayoutView *view )
   setFlags( QgsLayoutViewTool::FlagSnaps );
 }
 
+void QgsLayoutViewToolEditNodes::deleteSelectedNode()
+{
+  if ( mNodesItem && mNodesItemIndex != -1 )
+  {
+    layout()->undoStack()->beginCommand( mNodesItem, tr( "Remove Item Node" ) );
+    if ( mNodesItem->removeNode( mNodesItemIndex ) )
+    {
+      layout()->undoStack()->endCommand();
+      if ( mNodesItem->nodesSize() > 0 )
+      {
+        mNodesItemIndex = mNodesItem->selectedNode();
+        // setSelectedNode( mNodesItem, mNodesItemIndex );
+      }
+      else
+      {
+        mNodesItemIndex = -1;
+        mNodesItem = nullptr;
+      }
+      if ( mNodesItem )
+        mNodesItem->update();
+    }
+    else
+    {
+      layout()->undoStack()->cancelCommand();
+    }
+  }
+}
+
 void QgsLayoutViewToolEditNodes::activate()
 {
   displayNodes( true );
@@ -65,7 +93,7 @@ void QgsLayoutViewToolEditNodes::layoutPressEvent( QgsLayoutViewMouseEvent *even
       }
     }
 
-    if ( mNodesItemIndex != -1 )
+    if ( mNodesItem && mNodesItemIndex != -1 )
     {
       layout()->undoStack()->beginCommand( mNodesItem, tr( "Move Item Node" ) );
       setSelectedNode( mNodesItem, mNodesItemIndex );
@@ -83,7 +111,7 @@ void QgsLayoutViewToolEditNodes::layoutMoveEvent( QgsLayoutViewMouseEvent *event
     return;
   }
 
-  if ( mNodesItemIndex != -1 && event->layoutPoint() != mMoveContentStartPos )
+  if ( mNodesItem &&  mNodesItemIndex != -1 && event->layoutPoint() != mMoveContentStartPos )
   {
     mNodesItem->moveNode( mNodesItemIndex, event->snappedPoint() );
   }
@@ -111,6 +139,89 @@ void QgsLayoutViewToolEditNodes::layoutReleaseEvent( QgsLayoutViewMouseEvent *ev
   }
 }
 
+void QgsLayoutViewToolEditNodes::layoutDoubleClickEvent( QgsLayoutViewMouseEvent *event )
+{
+  if ( event->button() != Qt::LeftButton )
+  {
+    event->ignore();
+    return;
+  }
+
+  // erase status previously set by the mousePressEvent method
+  if ( mNodesItemIndex != -1 )
+  {
+    mNodesItem = nullptr;
+    mNodesItemIndex = -1;
+    deselectNodes();
+  }
+
+  // search items in layout
+  const QList<QGraphicsItem *> itemsAtCursorPos = view()->items( event->pos().x(), event->pos().y(),
+      mMoveContentSearchRadius,
+      mMoveContentSearchRadius );
+
+  if ( itemsAtCursorPos.isEmpty() )
+    return;
+
+  bool rc = false;
+  for ( QGraphicsItem *graphicsItem : itemsAtCursorPos )
+  {
+    QgsLayoutNodesItem *item = dynamic_cast<QgsLayoutNodesItem *>( graphicsItem );
+
+    if ( item && !item->isLocked() )
+    {
+      layout()->undoStack()->beginCommand( item, tr( "Add Item Node" ) );
+      rc = item->addNode( event->layoutPoint() );
+
+      if ( rc )
+      {
+        layout()->undoStack()->endCommand();
+        mNodesItem = item;
+        mNodesItemIndex = mNodesItem->nodeAtPosition( event->layoutPoint() );
+      }
+      else
+        layout()->undoStack()->cancelCommand();
+    }
+
+    if ( rc )
+      break;
+  }
+
+  if ( rc )
+  {
+    setSelectedNode( mNodesItem, mNodesItemIndex );
+    mNodesItem->update();
+  }
+}
+
+void QgsLayoutViewToolEditNodes::keyPressEvent( QKeyEvent *event )
+{
+  if ( mNodesItem && mNodesItemIndex != -1 && ( event->key() == Qt::Key_Left
+       || event->key() == Qt::Key_Right
+       || event->key() == Qt::Key_Up
+       || event->key() == Qt::Key_Down ) )
+  {
+    QPointF currentPos;
+
+    if ( mNodesItem->nodePosition( mNodesItemIndex, currentPos ) )
+    {
+      QPointF delta = view()->deltaForKeyEvent( event );
+
+      currentPos.setX( currentPos.x() + delta.x() );
+      currentPos.setY( currentPos.y() + delta.y() );
+
+      layout()->undoStack()->beginCommand( mNodesItem, tr( "Move Item Node" ), QgsLayoutItem::UndoNodeMove );
+      mNodesItem->moveNode( mNodesItemIndex, currentPos );
+      layout()->undoStack()->endCommand();
+      layout()->update();
+    }
+  }
+  else
+  {
+    event->ignore();
+  }
+}
+
 void QgsLayoutViewToolEditNodes::deactivate()
 {
   displayNodes( false );
@@ -126,9 +237,8 @@ void QgsLayoutViewToolEditNodes::displayNodes( bool display )
   for ( QgsLayoutNodesItem *item : qgis::as_const( nodesShapes ) )
   {
     item->setDisplayNodes( display );
+    item->update();
   }
-
-  layout()->update();
 }
 
 void QgsLayoutViewToolEditNodes::deselectNodes()
@@ -139,9 +249,8 @@ void QgsLayoutViewToolEditNodes::deselectNodes()
   for ( QgsLayoutNodesItem *item : qgis::as_const( nodesShapes ) )
   {
     item->deselectNode();
+    item->update();
   }
-
-  layout()->update();
 }
 
 void QgsLayoutViewToolEditNodes::setSelectedNode( QgsLayoutNodesItem *shape, int index )

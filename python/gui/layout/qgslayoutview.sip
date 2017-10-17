@@ -179,6 +179,13 @@ class QgsLayoutView: QGraphicsView
 .. seealso:: distributeSelectedItems()
 %End
 
+    QPointF deltaForKeyEvent( QKeyEvent *event );
+%Docstring
+ Returns the delta (in layout coordinates) by which to move items
+ for the given key ``event``.
+ :rtype: QPointF
+%End
+
   public slots:
 
     void zoomFull();

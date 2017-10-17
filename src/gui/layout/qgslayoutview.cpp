@@ -274,6 +274,48 @@ void QgsLayoutView::resizeSelectedItems( QgsLayoutAligner::Resize resize )
   QgsLayoutAligner::resizeItems( currentLayout(), selectedItems, resize );
 }
 
+QPointF QgsLayoutView::deltaForKeyEvent( QKeyEvent *event )
+{
+  // increment used for cursor key item movement
+  double increment = 1.0;
+  if ( event->modifiers() & Qt::ShiftModifier )
+  {
+    //holding shift while pressing cursor keys results in a big step
+    increment = 10.0;
+  }
+  else if ( event->modifiers() & Qt::AltModifier )
+  {
+    //holding alt while pressing cursor keys results in a 1 pixel step
+    double viewScale = transform().m11();
+    if ( viewScale > 0 )
+    {
+      increment = 1 / viewScale;
+    }
+  }
+
+  double deltaX = 0;
+  double deltaY = 0;
+  switch ( event->key() )
+  {
+    case Qt::Key_Left:
+      deltaX = -increment;
+      break;
+    case Qt::Key_Right:
+      deltaX = increment;
+      break;
+    case Qt::Key_Up:
+      deltaY = -increment;
+      break;
+    case Qt::Key_Down:
+      deltaY = increment;
+      break;
+    default:
+      break;
+  }
+
+  return QPointF( deltaX, deltaY );
+}
+
 void QgsLayoutView::zoomFull()
 {
   fitInView( scene()->sceneRect(), Qt::KeepAspectRatio );
@@ -811,47 +853,11 @@ void QgsLayoutView::keyPressEvent( QKeyEvent *event )
     QgsLayout *l = currentLayout();
     const QList<QgsLayoutItem *> layoutItemList = l->selectedLayoutItems();
 
-    // increment used for cursor key item movement
-    double increment = 1.0;
-    if ( event->modifiers() & Qt::ShiftModifier )
-    {
-      //holding shift while pressing cursor keys results in a big step
-      increment = 10.0;
-    }
-    else if ( event->modifiers() & Qt::AltModifier )
-    {
-      //holding alt while pressing cursor keys results in a 1 pixel step
-      double viewScale = transform().m11();
-      if ( viewScale > 0 )
-      {
-        increment = 1 / viewScale;
-      }
-    }
-
-    double deltaX = 0;
-    double deltaY = 0;
-    switch ( event->key() )
-    {
-      case Qt::Key_Left:
-        deltaX = -increment;
-        break;
-      case Qt::Key_Right:
-        deltaX = increment;
-        break;
-      case Qt::Key_Up:
-        deltaY = -increment;
-        break;
-      case Qt::Key_Down:
-        deltaY = increment;
-        break;
-      default:
-        break;
-    }
-
-    auto moveItem = [ l, deltaX, deltaY ]( QgsLayoutItem * item )
+    QPointF delta = deltaForKeyEvent( event );
+    auto moveItem = [ l, delta ]( QgsLayoutItem * item )
     {
       QgsLayoutPoint itemPos = item->positionWithUnits();
-      QgsLayoutPoint deltaPos = l->convertFromLayoutUnits( QPointF( deltaX, deltaY ), itemPos.units() );
+      QgsLayoutPoint deltaPos = l->convertFromLayoutUnits( delta, itemPos.units() );
       itemPos.setX( itemPos.x() + deltaPos.x() );
       itemPos.setY( itemPos.y() + deltaPos.y() );
       item->attemptMove( itemPos );

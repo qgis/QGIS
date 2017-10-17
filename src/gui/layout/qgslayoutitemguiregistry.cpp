@@ -25,7 +25,7 @@ QgsLayoutViewRubberBand *QgsLayoutItemAbstractGuiMetadata::createRubberBand( Qgs
   return new QgsLayoutViewRectangularRubberBand( view );
 }
 
-QAbstractGraphicsShapeItem *QgsLayoutItemAbstractGuiMetadata::createNodeRubberBand( QgsLayoutView *view )
+QAbstractGraphicsShapeItem *QgsLayoutItemAbstractGuiMetadata::createNodeRubberBand( QgsLayoutView * )
 {
   return nullptr;
 }

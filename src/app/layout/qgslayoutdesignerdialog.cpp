@@ -385,7 +385,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   connect( mActionDeleteSelection, &QAction::triggered, this, [ = ]
   {
-    mView->deleteSelectedItems();
+    if ( mView->tool() == mNodesTool )
+      mNodesTool->deleteSelectedNode();
+    else
+      mView->deleteSelectedItems();
   } );
   connect( mActionGroupItems, &QAction::triggered, this, [ = ]
   {

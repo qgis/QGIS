@@ -62,6 +62,7 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
       UndoRotation,
       UndoShapeStyle,
       UndoShapeCornerRadius,
+      UndoNodeMove,
     };
 
     explicit QgsLayoutItem( QgsLayout *layout, bool manageZValue = true );

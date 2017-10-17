@@ -208,6 +208,12 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void resizeSelectedItems( QgsLayoutAligner::Resize resize );
 
+    /**
+     * Returns the delta (in layout coordinates) by which to move items
+     * for the given key \a event.
+     */
+    QPointF deltaForKeyEvent( QKeyEvent *event );
+
   public slots:
 
     /**

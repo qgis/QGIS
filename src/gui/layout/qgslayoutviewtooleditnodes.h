@@ -39,18 +39,24 @@ class GUI_EXPORT QgsLayoutViewToolEditNodes : public QgsLayoutViewTool
      */
     QgsLayoutViewToolEditNodes( QgsLayoutView *view SIP_TRANSFERTHIS );
 
-    void activate() override;
+    /**
+     * Deletes the selected node from the item.
+     */
+    void deleteSelectedNode();
 
+    void activate() override;
     void layoutPressEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutMoveEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutReleaseEvent( QgsLayoutViewMouseEvent *event ) override;
+    void layoutDoubleClickEvent( QgsLayoutViewMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
     void deactivate() override;
 
   private:
 
     const double mMoveContentSearchRadius = 25;
 
-    QgsLayoutNodesItem *mNodesItem = nullptr;
+    QPointer< QgsLayoutNodesItem > mNodesItem;
     int mNodesItemIndex = -1;
 
     //! Start position of content move

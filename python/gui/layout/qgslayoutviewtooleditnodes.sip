@@ -26,14 +26,22 @@ class QgsLayoutViewToolEditNodes : QgsLayoutViewTool
  Constructor for QgsLayoutViewToolEditNodes.
 %End
 
-    virtual void activate();
+    void deleteSelectedNode();
+%Docstring
+ Deletes the selected node from the item.
+%End
 
+    virtual void activate();
 
     virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );
 
     virtual void layoutMoveEvent( QgsLayoutViewMouseEvent *event );
 
     virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
+
+    virtual void layoutDoubleClickEvent( QgsLayoutViewMouseEvent *event );
+
+    virtual void keyPressEvent( QKeyEvent *event );
 
     virtual void deactivate();
 
