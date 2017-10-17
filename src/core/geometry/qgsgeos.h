@@ -29,6 +29,45 @@ class QgsGeometry;
 class QgsGeometryCollection;
 
 /**
+ * Contains geos related utilities and functions.
+ * \since QGIS 3.0
+ * \note not available in Python bindings.
+ */
+namespace geos
+{
+
+  /**
+   * Destroys the GEOS geometry \a geom, using the static QGIS
+   * geos context.
+   */
+  struct GeosDeleter
+  {
+
+    /**
+     * Destroys the GEOS geometry \a geom, using the static QGIS
+     * geos context.
+     */
+    void operator()( GEOSGeometry *geom );
+
+    /**
+     * Destroys the GEOS prepared geometry \a geom, using the static QGIS
+     * geos context.
+     */
+    void operator()( const GEOSPreparedGeometry *geom );
+  };
+
+  /**
+   * Scoped GEOS pointer.
+   */
+  using unique_ptr = std::unique_ptr< GEOSGeometry, GeosDeleter>;
+
+  /**
+   * Scoped GEOS prepared geometry pointer.
+   */
+  using prepared_unique_ptr = std::unique_ptr< const GEOSPreparedGeometry, GeosDeleter>;
+}
+
+/**
  * \ingroup core
  * Does vector analysis using the geos library and handles import, export, exception handling*
  * \note not available in Python bindings
@@ -43,7 +82,6 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
      */
     QgsGeos( const QgsAbstractGeometry *geometry, double precision = 0 );
-    ~QgsGeos();
 
     void geometryChanged() override;
     void prepareGeometry() override;
@@ -253,16 +291,16 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      */
     static std::unique_ptr< QgsAbstractGeometry > fromGeos( const GEOSGeometry *geos );
     static std::unique_ptr< QgsPolygonV2 > fromGeosPolygon( const GEOSGeometry *geos );
-    static GEOSGeometry *asGeos( const QgsAbstractGeometry *geom, double precision = 0 );
+    static geos::unique_ptr asGeos( const QgsAbstractGeometry *geom, double precision = 0 );
     static QgsPoint coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM );
 
     static GEOSContextHandle_t getGEOSHandler();
 
 
   private:
-    mutable GEOSGeometry *mGeos = nullptr;
-    const GEOSPreparedGeometry *mGeosPrepared = nullptr;
-    double mPrecision;
+    mutable geos::unique_ptr mGeos;
+    geos::prepared_unique_ptr mGeosPrepared;
+    double mPrecision = 0.0;
 
     enum Overlay
     {
@@ -290,28 +328,28 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static GEOSCoordSequence *createCoordinateSequence( const QgsCurve *curve, double precision, bool forceClose = false );
     static std::unique_ptr< QgsLineString > sequenceToLinestring( const GEOSGeometry *geos, bool hasZ, bool hasM );
     static int numberOfGeometries( GEOSGeometry *g );
-    static GEOSGeometry *nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom );
+    static geos::unique_ptr nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom );
     int mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry *> &splitResult ) const;
 
     /**
      * Ownership of geoms is transferred
      */
-    static GEOSGeometry *createGeosCollection( int typeId, const QVector<GEOSGeometry *> &geoms );
+    static geos::unique_ptr createGeosCollection( int typeId, const QVector<GEOSGeometry *> &geoms );
 
-    static GEOSGeometry *createGeosPointXY( double x, double y, bool hasZ, double z, bool hasM, double m, int coordDims, double precision );
-    static GEOSGeometry *createGeosPoint( const QgsAbstractGeometry *point, int coordDims, double precision );
-    static GEOSGeometry *createGeosLinestring( const QgsAbstractGeometry *curve, double precision );
-    static GEOSGeometry *createGeosPolygon( const QgsAbstractGeometry *poly, double precision );
+    static geos::unique_ptr createGeosPointXY( double x, double y, bool hasZ, double z, bool hasM, double m, int coordDims, double precision );
+    static geos::unique_ptr createGeosPoint( const QgsAbstractGeometry *point, int coordDims, double precision );
+    static geos::unique_ptr createGeosLinestring( const QgsAbstractGeometry *curve, double precision );
+    static geos::unique_ptr createGeosPolygon( const QgsAbstractGeometry *poly, double precision );
 
     //utils for geometry split
     bool topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPointSequence &testPoints, QString *errorMsg = nullptr ) const;
-    GEOSGeometry *linePointDifference( GEOSGeometry *GEOSsplitPoint ) const;
+    geos::unique_ptr linePointDifference( GEOSGeometry *GEOSsplitPoint ) const;
     EngineOperationResult splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry > &newGeometries ) const;
     EngineOperationResult splitPolygonGeometry( GEOSGeometry *splitLine, QList<QgsGeometry > &newGeometries ) const;
 
     //utils for reshape
-    static GEOSGeometry *reshapeLine( const GEOSGeometry *line, const GEOSGeometry *reshapeLineGeos, double precision );
-    static GEOSGeometry *reshapePolygon( const GEOSGeometry *polygon, const GEOSGeometry *reshapeLineGeos, double precision );
+    static geos::unique_ptr reshapeLine( const GEOSGeometry *line, const GEOSGeometry *reshapeLineGeos, double precision );
+    static geos::unique_ptr reshapePolygon( const GEOSGeometry *polygon, const GEOSGeometry *reshapeLineGeos, double precision );
     static int lineContainedInLine( const GEOSGeometry *line1, const GEOSGeometry *line2 );
     static int pointContainedInLine( const GEOSGeometry *point, const GEOSGeometry *line );
     static int geomDigits( const GEOSGeometry *geom );

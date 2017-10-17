@@ -905,7 +905,7 @@ std::unique_ptr< QgsAbstractGeometry > _qgis_lwgeom_make_valid( const QgsAbstrac
   // otherwise (adding only duplicates of existing points)
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
-  GEOSGeometry *geosgeom = QgsGeos::asGeos( lwgeom_in );
+  geos::unique_ptr geosgeom = QgsGeos::asGeos( lwgeom_in );
   if ( !geosgeom )
   {
     QgsDebugMsg( "Original geom can't be converted to GEOS - will try cleaning that up first" );
@@ -931,8 +931,7 @@ std::unique_ptr< QgsAbstractGeometry > _qgis_lwgeom_make_valid( const QgsAbstrac
     QgsDebugMsgLevel( "original geom converted to GEOS", 4 );
   }
 
-  GEOSGeometry *geosout = LWGEOM_GEOS_makeValid( geosgeom, errorMessage );
-  GEOSGeom_destroy_r( handle, geosgeom );
+  GEOSGeometry *geosout = LWGEOM_GEOS_makeValid( geosgeom.get(), errorMessage );
   if ( !geosout )
     return nullptr;
 

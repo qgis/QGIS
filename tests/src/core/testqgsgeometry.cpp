@@ -35,6 +35,7 @@
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgstriangle.h"
+#include "qgsgeometryengine.h"
 #include "qgscircle.h"
 #include "qgsellipse.h"
 #include "qgsregularpolygon.h"
@@ -14746,6 +14747,12 @@ void TestQgsGeometry::simplifyCheck1()
 void TestQgsGeometry::intersectionCheck1()
 {
   QVERIFY( mpPolygonGeometryA.intersects( mpPolygonGeometryB ) );
+
+  std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( mpPolygonGeometryA.geometry() ) );
+  QVERIFY( engine->intersects( mpPolygonGeometryB.geometry() ) );
+  engine->prepareGeometry();
+  QVERIFY( engine->intersects( mpPolygonGeometryB.geometry() ) );
+
   // should be a single polygon as A intersect B
   QgsGeometry mypIntersectionGeometry  =  mpPolygonGeometryA.intersection( mpPolygonGeometryB );
   qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypIntersectionGeometry.wkbType() );

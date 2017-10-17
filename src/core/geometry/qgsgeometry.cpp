@@ -264,7 +264,7 @@ GEOSGeometry *QgsGeometry::exportToGeos( double precision ) const
     return nullptr;
   }
 
-  return QgsGeos::asGeos( d->geometry.get(), precision );
+  return QgsGeos::asGeos( d->geometry.get(), precision ).release();
 }
 
 
