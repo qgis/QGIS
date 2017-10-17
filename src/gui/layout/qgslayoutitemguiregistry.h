@@ -289,10 +289,10 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     QgsLayoutItemGuiRegistry &operator=( const QgsLayoutItemGuiRegistry &rh ) = delete;
 
     /**
-     * Returns the metadata for the specified item \a uuid. Returns nullptr if
-     * a corresponding uuid was not found in the registry.
+     * Returns the metadata for the specified item \a metadataId. Returns nullptr if
+     * a corresponding \a metadataId was not found in the registry.
      */
-    QgsLayoutItemAbstractGuiMetadata *itemMetadata( const QString &uuid ) const;
+    QgsLayoutItemAbstractGuiMetadata *itemMetadata( int metadataId ) const;
 
     /**
      * Registers the gui metadata for a new layout item type. Takes ownership of the metadata instance.
@@ -317,9 +317,9 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     const QgsLayoutItemGuiGroup &itemGroup( const QString &id );
 
     /**
-     * Creates a new instance of a layout item given the item metadata \a uuid, target \a layout.
+     * Creates a new instance of a layout item given the item metadata \a metadataId, target \a layout.
      */
-    QgsLayoutItem *createItem( const QString &uuid, QgsLayout *layout ) const SIP_FACTORY;
+    QgsLayoutItem *createItem( int metadataId, QgsLayout *layout ) const SIP_FACTORY;
 
     /**
      * Creates a new instance of a layout item configuration widget for the specified \a item.
@@ -327,30 +327,30 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) const SIP_FACTORY;
 
     /**
-     * Creates a new rubber band item for the specified item \a type and destination \a view.
+     * Creates a new rubber band item for the specified item \a metadataId and destination \a view.
      * \note not available from Python bindings
      */
-    QgsLayoutViewRubberBand *createItemRubberBand( const QString &uuid, QgsLayoutView *view ) const SIP_SKIP;
+    QgsLayoutViewRubberBand *createItemRubberBand( int metadataId, QgsLayoutView *view ) const SIP_SKIP;
 
     /**
-     * Returns a list of available item metadata uuids handled by the registry.
+     * Returns a list of available item metadata ids handled by the registry.
      */
-    QList< QString > itemUuids() const;
+    QList< int > itemMetadataIds() const;
 
   signals:
 
     /**
      * Emitted whenever a new item type is added to the registry, with the specified
-     * \a uuid.
+     * \a metadataId.
      */
-    void typeAdded( const QString &uuid );
+    void typeAdded( int metadataId );
 
   private:
 #ifdef SIP_RUN
     QgsLayoutItemGuiRegistry( const QgsLayoutItemGuiRegistry &rh );
 #endif
 
-    QMap<QString, QgsLayoutItemAbstractGuiMetadata *> mMetadata;
+    QMap< int, QgsLayoutItemAbstractGuiMetadata *> mMetadata;
 
     QMap< QString, QgsLayoutItemGuiGroup > mItemGroups;
 

@@ -226,7 +226,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
   private slots:
 
-    void itemTypeAdded( const QString &uuid );
+    void itemTypeAdded( int id );
     void statusZoomCombo_currentIndexChanged( int index );
     void statusZoomCombo_zoomEntered();
     void sliderZoomChanged( int value );
@@ -312,8 +312,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     //! Restore the window and toolbar state
     void restoreWindowState();
 
-    //! Switch to new item creation tool, for a new item of the specified \a type.
-    void activateNewItemCreationTool( const QString &uuid );
+    //! Switch to new item creation tool, for a new item of the specified \a id.
+    void activateNewItemCreationTool( int id );
 
     void createLayoutPropertiesWidget();
 

@@ -169,10 +169,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionClose, &QAction::triggered, this, &QWidget::close );
 
   // populate with initial items...
-  const QStringList itemUuids = QgsGui::layoutItemGuiRegistry()->itemUuids();
-  for ( const QString &uuid : itemUuids )
+  const QList< int > itemMetadataIds = QgsGui::layoutItemGuiRegistry()->itemMetadataIds();
+  for ( int id : itemMetadataIds )
   {
-    itemTypeAdded( uuid );
+    itemTypeAdded( id );
   }
   //..and listen out for new item types
   connect( QgsGui::layoutItemGuiRegistry(), &QgsLayoutItemGuiRegistry::typeAdded, this, &QgsLayoutDesignerDialog::itemTypeAdded );
@@ -840,13 +840,13 @@ void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )
   saveWindowState();
 }
 
-void QgsLayoutDesignerDialog::itemTypeAdded( const QString &uuid )
+void QgsLayoutDesignerDialog::itemTypeAdded( int id )
 {
-  if ( QgsGui::layoutItemGuiRegistry()->itemMetadata( uuid )->flags() & QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools )
+  if ( QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->flags() & QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools )
     return;
 
-  QString name = QgsGui::layoutItemGuiRegistry()->itemMetadata( uuid )->visibleName();
-  QString groupId = QgsGui::layoutItemGuiRegistry()->itemMetadata( uuid )->groupId();
+  QString name = QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->visibleName();
+  QString groupId = QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->groupId();
   QToolButton *groupButton = nullptr;
   QMenu *itemSubmenu = nullptr;
   if ( !groupId.isEmpty() )
@@ -891,8 +891,8 @@ void QgsLayoutDesignerDialog::itemTypeAdded( const QString &uuid )
   QAction *action = new QAction( tr( "Add %1" ).arg( name ), this );
   action->setToolTip( tr( "Adds a new %1 to the layout" ).arg( name ) );
   action->setCheckable( true );
-  action->setData( uuid );
-  action->setIcon( QgsGui::layoutItemGuiRegistry()->itemMetadata( uuid )->creationIcon() );
+  action->setData( id );
+  action->setIcon( QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->creationIcon() );
 
   mToolsActionGroup->addAction( action );
   if ( itemSubmenu )
@@ -905,9 +905,9 @@ void QgsLayoutDesignerDialog::itemTypeAdded( const QString &uuid )
   else
     mToolsToolbar->addAction( action );
 
-  connect( action, &QAction::triggered, this, [this, uuid]()
+  connect( action, &QAction::triggered, this, [this, id]()
   {
-    activateNewItemCreationTool( uuid );
+    activateNewItemCreationTool( id );
   } );
 }
 
@@ -1084,9 +1084,9 @@ void QgsLayoutDesignerDialog::restoreWindowState()
   }
 }
 
-void QgsLayoutDesignerDialog::activateNewItemCreationTool( const QString &uuid )
+void QgsLayoutDesignerDialog::activateNewItemCreationTool( int id )
 {
-  mAddItemTool->setItemMetadataUuid( uuid );
+  mAddItemTool->setItemMetadataId( id );
   if ( mView )
   {
     mView->setTool( mAddItemTool );

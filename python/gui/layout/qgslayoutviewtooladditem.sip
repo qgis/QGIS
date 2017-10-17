@@ -22,21 +22,21 @@ class QgsLayoutViewToolAddItem : QgsLayoutViewTool
 
     QgsLayoutViewToolAddItem( QgsLayoutView *view /TransferThis/ );
 
-    QString itemMetadataUuid() const;
+    int itemMetadataId() const;
 %Docstring
- Returns the item metadata uuid for items created by the tool.
-.. seealso:: setItemMetadataUuid()
- :rtype: str
+ Returns the item metadata id for items created by the tool.
+.. seealso:: setItemMetadataId()
+ :rtype: int
 %End
 
-    void setItemMetadataUuid( const QString &uuid );
+    void setItemMetadataId( int metadataId );
 %Docstring
- Sets the item metadata ``uuid`` for items created by the tool.
+ Sets the item metadata ``metadataId`` for items created by the tool.
 
- The \uuid associates the current tool behavior with a metadata entry
+ The ``metadataId`` associates the current tool behavior with a metadata entry
  from QgsLayoutItemGuiRegistry.
 
-.. seealso:: itemMetadataUuid()
+.. seealso:: itemMetadataId()
 %End
 
     virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );

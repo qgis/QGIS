@@ -40,9 +40,9 @@ QgsLayoutItemGuiRegistry::~QgsLayoutItemGuiRegistry()
   qDeleteAll( mMetadata );
 }
 
-QgsLayoutItemAbstractGuiMetadata *QgsLayoutItemGuiRegistry::itemMetadata( const QString &uuid ) const
+QgsLayoutItemAbstractGuiMetadata *QgsLayoutItemGuiRegistry::itemMetadata( int metadataId ) const
 {
-  return mMetadata.value( uuid );
+  return mMetadata.value( metadataId );
 }
 
 bool QgsLayoutItemGuiRegistry::addLayoutItemGuiMetadata( QgsLayoutItemAbstractGuiMetadata *metadata )
@@ -50,9 +50,9 @@ bool QgsLayoutItemGuiRegistry::addLayoutItemGuiMetadata( QgsLayoutItemAbstractGu
   if ( !metadata )
     return false;
 
-  QString uuid = QUuid::createUuid().toString();
-  mMetadata[uuid] = metadata;
-  emit typeAdded( uuid );
+  int id = mMetadata.count();
+  mMetadata[id] = metadata;
+  emit typeAdded( id );
   return true;
 }
 
@@ -70,16 +70,16 @@ const QgsLayoutItemGuiGroup &QgsLayoutItemGuiRegistry::itemGroup( const QString 
   return mItemGroups[ id ];
 }
 
-QgsLayoutItem *QgsLayoutItemGuiRegistry::createItem( const QString &uuid, QgsLayout *layout ) const
+QgsLayoutItem *QgsLayoutItemGuiRegistry::createItem( int metadataId, QgsLayout *layout ) const
 {
-  if ( !mMetadata.contains( uuid ) )
+  if ( !mMetadata.contains( metadataId ) )
     return nullptr;
 
-  std::unique_ptr< QgsLayoutItem > item( mMetadata.value( uuid )->createItem( layout ) );
+  std::unique_ptr< QgsLayoutItem > item( mMetadata.value( metadataId )->createItem( layout ) );
   if ( item )
     return item.release();
 
-  int type = mMetadata.value( uuid )->type();
+  int type = mMetadata.value( metadataId )->type();
   return QgsApplication::layoutItemRegistry()->createItem( type, layout );
 }
 
@@ -97,15 +97,15 @@ QgsLayoutItemBaseWidget *QgsLayoutItemGuiRegistry::createItemWidget( QgsLayoutIt
   return nullptr;
 }
 
-QgsLayoutViewRubberBand *QgsLayoutItemGuiRegistry::createItemRubberBand( const QString &uuid, QgsLayoutView *view ) const
+QgsLayoutViewRubberBand *QgsLayoutItemGuiRegistry::createItemRubberBand( int metadataId, QgsLayoutView *view ) const
 {
-  if ( !mMetadata.contains( uuid ) )
+  if ( !mMetadata.contains( metadataId ) )
     return nullptr;
 
-  return mMetadata[uuid]->createRubberBand( view );
+  return mMetadata[metadataId]->createRubberBand( view );
 }
 
-QList<QString> QgsLayoutItemGuiRegistry::itemUuids() const
+QList<int> QgsLayoutItemGuiRegistry::itemMetadataIds() const
 {
   return mMetadata.keys();
 }

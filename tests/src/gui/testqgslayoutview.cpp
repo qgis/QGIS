@@ -264,8 +264,8 @@ void TestQgsLayoutView::guiRegistry()
   QgsLayoutItemGuiRegistry registry;
 
   // empty registry
-  QVERIFY( !registry.itemMetadata( "a" ) );
-  QVERIFY( registry.itemUuids().isEmpty() );
+  QVERIFY( !registry.itemMetadata( -1 ) );
+  QVERIFY( registry.itemMetadataIds().isEmpty() );
   QVERIFY( !registry.createItemWidget( nullptr ) );
   QVERIFY( !registry.createItemWidget( nullptr ) );
   TestItem *testItem = new TestItem( nullptr );
@@ -287,16 +287,16 @@ void TestQgsLayoutView::guiRegistry()
   QgsLayoutItemGuiMetadata *metadata = new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 101, QStringLiteral( "mytype" ), QIcon(), createWidget, createRubberBand );
   QVERIFY( registry.addLayoutItemGuiMetadata( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
-  QString uuid = registry.itemUuids().value( 0 );
-  QCOMPARE( spyTypeAdded.value( 0 ).at( 0 ).toString(), uuid );
+  int uuid = registry.itemMetadataIds().value( 0 );
+  QCOMPARE( spyTypeAdded.value( 0 ).at( 0 ).toInt(), uuid );
 
   // duplicate type id is allowed
   metadata = new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 101, QStringLiteral( "mytype" ), QIcon(), createWidget, createRubberBand );
   QVERIFY( registry.addLayoutItemGuiMetadata( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 2 );
   //retrieve metadata
-  QVERIFY( !registry.itemMetadata( "a" ) );
-  QCOMPARE( registry.itemUuids().count(), 2 );
+  QVERIFY( !registry.itemMetadata( -1 ) );
+  QCOMPARE( registry.itemMetadataIds().count(), 2 );
 
   QVERIFY( registry.itemMetadata( uuid ) );
   QCOMPARE( registry.itemMetadata( uuid )->visibleName(), QStringLiteral( "mytype" ) );
@@ -342,7 +342,7 @@ void TestQgsLayoutView::guiRegistry()
     return item;
   } );
   QVERIFY( registry.addLayoutItemGuiMetadata( metadata ) );
-  uuid = spyTypeAdded.at( spyTypeAdded.count() - 1 ).at( 0 ).toString();
+  uuid = spyTypeAdded.at( spyTypeAdded.count() - 1 ).at( 0 ).toInt();
   item = registry.createItem( uuid, nullptr );
   QVERIFY( item );
   QCOMPARE( item->type(), QgsLayoutItemRegistry::LayoutItem + 101 );

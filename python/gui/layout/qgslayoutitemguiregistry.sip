@@ -174,10 +174,10 @@ class QgsLayoutItemGuiRegistry : QObject
     ~QgsLayoutItemGuiRegistry();
 
 
-    QgsLayoutItemAbstractGuiMetadata *itemMetadata( const QString &uuid ) const;
+    QgsLayoutItemAbstractGuiMetadata *itemMetadata( int metadataId ) const;
 %Docstring
- Returns the metadata for the specified item ``uuid``. Returns None if
- a corresponding uuid was not found in the registry.
+ Returns the metadata for the specified item ``metadataId``. Returns None if
+ a corresponding ``metadataId`` was not found in the registry.
  :rtype: QgsLayoutItemAbstractGuiMetadata
 %End
 
@@ -206,9 +206,9 @@ class QgsLayoutItemGuiRegistry : QObject
  :rtype: QgsLayoutItemGuiGroup
 %End
 
-    QgsLayoutItem *createItem( const QString &uuid, QgsLayout *layout ) const /Factory/;
+    QgsLayoutItem *createItem( int metadataId, QgsLayout *layout ) const /Factory/;
 %Docstring
- Creates a new instance of a layout item given the item metadata ``uuid``, target ``layout``.
+ Creates a new instance of a layout item given the item metadata ``metadataId``, target ``layout``.
  :rtype: QgsLayoutItem
 %End
 
@@ -219,18 +219,18 @@ class QgsLayoutItemGuiRegistry : QObject
 %End
 
 
-    QList< QString > itemUuids() const;
+    QList< int > itemMetadataIds() const;
 %Docstring
- Returns a list of available item metadata uuids handled by the registry.
- :rtype: list of str
+ Returns a list of available item metadata ids handled by the registry.
+ :rtype: list of int
 %End
 
   signals:
 
-    void typeAdded( const QString &uuid );
+    void typeAdded( int metadataId );
 %Docstring
  Emitted whenever a new item type is added to the registry, with the specified
- ``uuid``.
+ ``metadataId``.
 %End
 
   private:

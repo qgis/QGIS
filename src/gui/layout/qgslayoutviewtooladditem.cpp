@@ -39,9 +39,9 @@ QgsLayoutViewToolAddItem::QgsLayoutViewToolAddItem( QgsLayoutView *view )
   setCursor( QCursor( crosshairQPixmap, 8, 8 ) );
 }
 
-void QgsLayoutViewToolAddItem::setItemMetadataUuid( const QString &uuid )
+void QgsLayoutViewToolAddItem::setItemMetadataId( int metadataId )
 {
-  mItemMetadataUuid = uuid;
+  mItemMetadataId = metadataId;
 }
 
 void QgsLayoutViewToolAddItem::layoutPressEvent( QgsLayoutViewMouseEvent *event )
@@ -54,7 +54,7 @@ void QgsLayoutViewToolAddItem::layoutPressEvent( QgsLayoutViewMouseEvent *event 
 
   mDrawing = true;
   mMousePressStartPos = event->pos();
-  mRubberBand.reset( QgsGui::layoutItemGuiRegistry()->createItemRubberBand( mItemMetadataUuid, view() ) );
+  mRubberBand.reset( QgsGui::layoutItemGuiRegistry()->createItemRubberBand( mItemMetadataId, view() ) );
   if ( mRubberBand )
   {
     mRubberBand->start( event->snappedPoint(), event->modifiers() );
@@ -84,7 +84,7 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
 
   QRectF rect = mRubberBand->finish( event->snappedPoint(), event->modifiers() );
 
-  QgsLayoutItem *item = QgsGui::layoutItemGuiRegistry()->createItem( mItemMetadataUuid, layout() );
+  QgsLayoutItem *item = QgsGui::layoutItemGuiRegistry()->createItem( mItemMetadataId, layout() );
   if ( !item )
     return;
 
@@ -135,7 +135,7 @@ void QgsLayoutViewToolAddItem::deactivate()
   QgsLayoutViewTool::deactivate();
 }
 
-QString QgsLayoutViewToolAddItem::itemMetadataUuid() const
+int QgsLayoutViewToolAddItem::itemMetadataId() const
 {
-  return mItemMetadataUuid;
+  return mItemMetadataId;
 }
