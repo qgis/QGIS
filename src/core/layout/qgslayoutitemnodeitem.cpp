@@ -295,8 +295,10 @@ void QgsLayoutNodesItem::rescaleToFitBoundingBox()
   const QRectF boundingRect = mPolygon.boundingRect();
 
   // compute x/y ratio
-  const float ratioX = rect().width() / boundingRect.width();
-  const float ratioY = rect().height() / boundingRect.height();
+  const float ratioX = !qgsDoubleNear( boundingRect.width(), 0.0 )
+                       ? rect().width() / boundingRect.width() : 0;
+  const float ratioY = !qgsDoubleNear( boundingRect.height(), 0.0 )
+                       ? rect().height() / boundingRect.height() : 0;
 
   // scaling
   QTransform trans;

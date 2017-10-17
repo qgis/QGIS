@@ -306,6 +306,56 @@ class TestQgsLayoutPolyline(unittest.TestCase):
         self.assertEqual(bounds.top(), -3.0)
         self.assertEqual(bounds.bottom(), 93.0)
 
+    def testHorizontalLine(self):
+        pr = QgsProject()
+        l = QgsLayout(pr)
+        l.initializeDefaults()
+
+        p = QPolygonF()
+        p.append(QPointF(50.0, 100.0))
+        p.append(QPointF(100.0, 100.0))
+        shape = QgsLayoutItemPolyline(p, l)
+        l.addLayoutItem(shape)
+
+        props = {}
+        props["color"] = "0,0,0,255"
+        props["width"] = "10.0"
+        props["capstyle"] = "square"
+
+        style = QgsLineSymbol.createSimple(props)
+        shape.setSymbol(style)
+
+        checker = QgsLayoutChecker(
+            'composerpolyline_hozline', l)
+        checker.setControlPathPrefix("composer_polyline")
+        myTestResult, myMessage = checker.testLayout()
+        assert myTestResult, myMessage
+
+    def testVerticalLine(self):
+        pr = QgsProject()
+        l = QgsLayout(pr)
+        l.initializeDefaults()
+
+        p = QPolygonF()
+        p.append(QPointF(100.0, 50.0))
+        p.append(QPointF(100.0, 100.0))
+        shape = QgsLayoutItemPolyline(p, l)
+        l.addLayoutItem(shape)
+
+        props = {}
+        props["color"] = "0,0,0,255"
+        props["width"] = "10.0"
+        props["capstyle"] = "square"
+
+        style = QgsLineSymbol.createSimple(props)
+        shape.setSymbol(style)
+
+        checker = QgsLayoutChecker(
+            'composerpolyline_vertline', l)
+        checker.setControlPathPrefix("composer_polyline")
+        myTestResult, myMessage = checker.testLayout()
+        assert myTestResult, myMessage
+
 
 if __name__ == '__main__':
     unittest.main()
