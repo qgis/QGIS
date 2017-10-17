@@ -36,6 +36,46 @@ double QgsLayoutUtils::normalizedAngle( const double angle, const bool allowNega
   return clippedAngle;
 }
 
+double QgsLayoutUtils::snappedAngle( double angle )
+{
+  //normalize angle to 0-360 degrees
+  double clippedAngle = normalizedAngle( angle );
+
+  //snap angle to 45 degree
+  if ( clippedAngle >= 22.5 && clippedAngle < 67.5 )
+  {
+    return 45.0;
+  }
+  else if ( clippedAngle >= 67.5 && clippedAngle < 112.5 )
+  {
+    return 90.0;
+  }
+  else if ( clippedAngle >= 112.5 && clippedAngle < 157.5 )
+  {
+    return 135.0;
+  }
+  else if ( clippedAngle >= 157.5 && clippedAngle < 202.5 )
+  {
+    return 180.0;
+  }
+  else if ( clippedAngle >= 202.5 && clippedAngle < 247.5 )
+  {
+    return 225.0;
+  }
+  else if ( clippedAngle >= 247.5 && clippedAngle < 292.5 )
+  {
+    return 270.0;
+  }
+  else if ( clippedAngle >= 292.5 && clippedAngle < 337.5 )
+  {
+    return 315.0;
+  }
+  else
+  {
+    return 0.0;
+  }
+}
+
 QgsRenderContext QgsLayoutUtils::createRenderContextForMap( QgsLayoutItemMap *map, QPainter *painter, double dpi )
 {
   if ( !map )

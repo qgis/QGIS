@@ -29,6 +29,13 @@ class QgsLayoutUtils
  :rtype: float
 %End
 
+    static double snappedAngle( double angle );
+%Docstring
+ Snaps an ``angle`` (in degrees) to its closest 45 degree angle.
+ :return: angle snapped to 0, 45/90/135/180/225/270 or 315 degrees
+ :rtype: float
+%End
+
     static QgsRenderContext createRenderContextForMap( QgsLayoutItemMap *map, QPainter *painter, double dpi = -1 );
 %Docstring
  Creates a render context suitable for the specified layout ``map`` and ``painter`` destination.

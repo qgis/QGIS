@@ -42,6 +42,12 @@ class CORE_EXPORT QgsLayoutUtils
     static double normalizedAngle( const double angle, const bool allowNegative = false );
 
     /**
+     * Snaps an \a angle (in degrees) to its closest 45 degree angle.
+     * \returns angle snapped to 0, 45/90/135/180/225/270 or 315 degrees
+     */
+    static double snappedAngle( double angle );
+
+    /**
      * Creates a render context suitable for the specified layout \a map and \a painter destination.
      * This method returns a new QgsRenderContext which matches the scale and settings of the
      * target map. If the \a dpi argument is not specified then the dpi will be taken from the destination

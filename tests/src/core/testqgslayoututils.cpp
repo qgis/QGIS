@@ -31,6 +31,7 @@ class TestQgsLayoutUtils: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void normalizedAngle(); //test normalised angle function
+    void snappedAngle();
     void createRenderContextFromLayout();
     void createRenderContextFromMap();
     void relativePosition();
@@ -114,6 +115,55 @@ void TestQgsLayoutUtils::normalizedAngle()
     qDebug() << QStringLiteral( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
     QGSCOMPARENEAR( result, ( *it ).second, 4 * DBL_EPSILON );
 
+  }
+}
+
+void TestQgsLayoutUtils::snappedAngle()
+{
+  QList< QPair< double, double > > testVals;
+  testVals << qMakePair( 0.0, 0.0 );
+  testVals << qMakePair( 10.0, 0.0 );
+  testVals << qMakePair( 20.0, 0.0 );
+  testVals << qMakePair( 30.0, 45.0 );
+  testVals << qMakePair( 40.0, 45.0 );
+  testVals << qMakePair( 50.0, 45.0 );
+  testVals << qMakePair( 60.0, 45.0 );
+  testVals << qMakePair( 70.0, 90.0 );
+  testVals << qMakePair( 80.0, 90.0 );
+  testVals << qMakePair( 90.0, 90.0 );
+  testVals << qMakePair( 100.0, 90.0 );
+  testVals << qMakePair( 110.0, 90.0 );
+  testVals << qMakePair( 120.0, 135.0 );
+  testVals << qMakePair( 130.0, 135.0 );
+  testVals << qMakePair( 140.0, 135.0 );
+  testVals << qMakePair( 150.0, 135.0 );
+  testVals << qMakePair( 160.0, 180.0 );
+  testVals << qMakePair( 170.0, 180.0 );
+  testVals << qMakePair( 180.0, 180.0 );
+  testVals << qMakePair( 190.0, 180.0 );
+  testVals << qMakePair( 200.0, 180.0 );
+  testVals << qMakePair( 210.0, 225.0 );
+  testVals << qMakePair( 220.0, 225.0 );
+  testVals << qMakePair( 230.0, 225.0 );
+  testVals << qMakePair( 240.0, 225.0 );
+  testVals << qMakePair( 250.0, 270.0 );
+  testVals << qMakePair( 260.0, 270.0 );
+  testVals << qMakePair( 270.0, 270.0 );
+  testVals << qMakePair( 280.0, 270.0 );
+  testVals << qMakePair( 290.0, 270.0 );
+  testVals << qMakePair( 300.0, 315.0 );
+  testVals << qMakePair( 310.0, 315.0 );
+  testVals << qMakePair( 320.0, 315.0 );
+  testVals << qMakePair( 330.0, 315.0 );
+  testVals << qMakePair( 340.0, 0.0 );
+  testVals << qMakePair( 350.0, 0.0 );
+  testVals << qMakePair( 360.0, 0.0 );
+
+  //test snapped angle helper function
+  QList< QPair< double, double > >::const_iterator it = testVals.constBegin();
+  for ( ; it != testVals.constEnd(); ++it )
+  {
+    QGSCOMPARENEAR( QgsLayoutUtils::snappedAngle( ( *it ).first ), ( *it ).second, 4 * DBL_EPSILON );
   }
 }
 
