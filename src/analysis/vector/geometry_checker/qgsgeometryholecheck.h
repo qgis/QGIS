@@ -30,7 +30,7 @@ class ANALYSIS_EXPORT QgsGeometryHoleCheck : public QgsGeometryCheck
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Polygon with hole" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryHoleCheck" ); }
-  private:
+
     enum ResolutionMethod { RemoveHoles, NoChange };
 };
 

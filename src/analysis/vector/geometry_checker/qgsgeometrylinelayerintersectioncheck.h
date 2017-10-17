@@ -31,8 +31,10 @@ class ANALYSIS_EXPORT QgsGeometryLineLayerIntersectionCheck : public QgsGeometry
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Intersection" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryLineLayerIntersectionCheck" ); }
-  private:
+
     enum ResolutionMethod { NoChange };
+
+  private:
     QString mCheckLayer;
 };
 

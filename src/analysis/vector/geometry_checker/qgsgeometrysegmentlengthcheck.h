@@ -32,8 +32,10 @@ class ANALYSIS_EXPORT QgsGeometrySegmentLengthCheck : public QgsGeometryCheck
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Minimal segment length" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometrySegmentLengthCheck" ); }
-  private:
+
     enum ResolutionMethod { NoChange };
+
+  private:
     double mMinLengthMapUnits;
 };
 

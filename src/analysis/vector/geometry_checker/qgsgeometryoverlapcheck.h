@@ -69,8 +69,10 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheck : public QgsGeometryCheck
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Overlap" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryOverlapCheck" ); }
-  private:
+
     enum ResolutionMethod { Subtract, NoChange };
+
+  private:
     double mThresholdMapUnits;
 };
 

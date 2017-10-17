@@ -57,7 +57,7 @@ class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheck : public QgsGeometryCheck
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Self intersection" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometrySelfIntersectionCheck" ); }
-  private:
+
     enum ResolutionMethod { ToMultiObject, ToSingleObjects, NoChange };
 };
 

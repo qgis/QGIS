@@ -31,7 +31,7 @@ class ANALYSIS_EXPORT QgsGeometryPointCoveredByLineCheck : public QgsGeometryChe
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Point not covered by line" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryPointCoveredByLineCheck" ); }
-  private:
+
     enum ResolutionMethod { NoChange };
 };
 

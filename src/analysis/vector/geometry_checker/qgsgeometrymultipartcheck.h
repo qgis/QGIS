@@ -30,7 +30,7 @@ class ANALYSIS_EXPORT QgsGeometryMultipartCheck : public QgsGeometryCheck
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Multipart object with only one feature" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryMultipartCheck" ); }
-  private:
+
     enum ResolutionMethod { ConvertToSingle, RemoveObject, NoChange };
 };
 

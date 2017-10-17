@@ -22,7 +22,7 @@ class ANALYSIS_EXPORT QgsGeometrySelfContactCheck : public QgsGeometryCheck
     QStringList getResolutionMethods() const;
     QString errorDescription() const { return tr( "Self contact" ); }
     QString errorName() const { return QStringLiteral( "QgsGeometrySelfContactCheck" ); }
-  private:
+
     enum ResolutionMethod { NoChange };
 };
 

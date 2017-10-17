@@ -31,7 +31,7 @@ class ANALYSIS_EXPORT QgsGeometryPointInPolygonCheck : public QgsGeometryCheck
     QStringList getResolutionMethods() const override;
     QString errorDescription() const override { return tr( "Point not in polygon" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryPointInPolygonCheck" ); }
-  private:
+
     enum ResolutionMethod { NoChange };
 };
 

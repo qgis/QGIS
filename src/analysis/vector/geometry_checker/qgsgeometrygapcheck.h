@@ -86,8 +86,9 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     QString errorDescription() const override { return tr( "Gap" ); }
     QString errorName() const override { return QStringLiteral( "QgsGeometryGapCheck" ); }
 
-  private:
     enum ResolutionMethod { MergeLongestEdge, NoChange };
+
+  private:
 
     double mThresholdMapUnits;
 
