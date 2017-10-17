@@ -156,7 +156,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError *err, Chan
   // Search for touching neighboring geometries
   for ( const QString &layerId : err->neighbors().keys() )
   {
-    QgsFeaturePool *featurePool = mContext->featurePools[ err->layerId() ];
+    QgsFeaturePool *featurePool = mContext->featurePools[ layerId ];
     QgsAbstractGeometry *errLayerGeom = errGeometry->clone();
     errLayerGeom->transform( featurePool->getLayerToMapTransform(), QgsCoordinateTransform::ReverseTransform );
 
@@ -205,7 +205,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError *err, Chan
   }
 
   // Add merged polygon to destination geometry
-  replaceFeatureGeometryPart( err->layerId(), mergeFeature, mergePartIdx, combinedGeom, changes );
+  replaceFeatureGeometryPart( mergeLayerId, mergeFeature, mergePartIdx, combinedGeom, changes );
 
   return true;
 }
