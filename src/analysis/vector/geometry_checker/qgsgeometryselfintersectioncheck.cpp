@@ -179,7 +179,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
     if ( dynamic_cast<QgsCurvePolygon *>( part ) )
     {
       QgsCurvePolygon *poly = static_cast<QgsCurvePolygon *>( part );
-      // If ring is interior ring, create separate holes
+      // If self-intersecting ring is an interior ring, create separate holes
       if ( vidx.ring > 0 )
       {
         poly->removeInteriorRing( vidx.ring );
@@ -213,7 +213,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
               // No point in adding ChangeAdded changes, since the entire poly2 is added anyways later on
             }
             poly->removeInteriorRing( i );
-            changes[error->layerId()][feature.id()].append( Change( ChangeRing, ChangeRemoved, QgsVertexId( vidx.part, i ) ) );
+            changes[error->layerId()][feature.id()].append( Change( ChangeRing, ChangeRemoved, QgsVertexId( vidx.part, 1 + i ) ) );
           }
         }
 
