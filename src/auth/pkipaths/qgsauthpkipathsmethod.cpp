@@ -102,7 +102,6 @@ bool QgsAuthPkiPathsMethod::updateNetworkRequest( QNetworkRequest &request, cons
   sslConfig.setLocalCertificate( pkibundle->clientCert() );
 
   // add extra CAs from the bundle
-  // this does not work due to the fact that QNAM overrides it in createRequest!
   if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
   {
     if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
@@ -157,10 +156,17 @@ bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionIte
 
   // add extra CAs from the bundle
   QList<QSslCertificate> cas;
-
   if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
   {
-    cas = QgsAuthCertUtils::casMerge( QgsAuthManager::instance()->getTrustedCaCerts(), pkibundle->caChain() );
+    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+    {
+      cas = QgsAuthCertUtils::casMerge( QgsAuthManager::instance()->getTrustedCaCerts(), pkibundle->caChain() );
+    }
+    else
+    {
+      cas = QgsAuthCertUtils::casMerge( QgsAuthManager::instance()->getTrustedCaCerts(),
+                                        QgsAuthCertUtils::casRemoveSelfSigned( pkibundle->caChain() ) );
+    }
   }
   else
   {
