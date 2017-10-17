@@ -415,6 +415,9 @@
                  </property>
                  <item row="1" column="1">
                   <widget class="QSlider" name="voteSlider">
+                   <property name="focusPolicy">
+                    <enum>Qt::ClickFocus</enum>
+                   </property>
                    <property name="minimum">
                     <number>1</number>
                    </property>
@@ -437,6 +440,9 @@
                  </item>
                  <item row="1" column="2">
                   <widget class="QPushButton" name="voteSubmit">
+                   <property name="focusPolicy">
+                    <enum>Qt::ClickFocus</enum>
+                   </property>
                    <property name="text">
                     <string>Vote!</string>
                    </property>
@@ -471,6 +477,9 @@
                    <property name="enabled">
                     <bool>false</bool>
                    </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::ClickFocus</enum>
+                   </property>
                    <property name="toolTip">
                     <string>Upgrade all upgradeable plugins</string>
                    </property>
@@ -496,6 +505,9 @@
                   <widget class="QPushButton" name="buttonUninstall">
                    <property name="enabled">
                     <bool>false</bool>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::ClickFocus</enum>
                    </property>
                    <property name="toolTip">
                     <string>Uninstall the selected plugin</string>
@@ -802,7 +814,7 @@
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-297</y>
+                   <y>0</y>
                    <width>646</width>
                    <height>638</height>
                   </rect>
