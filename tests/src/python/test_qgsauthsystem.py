@@ -563,32 +563,32 @@ class TestQgsAuthManager(unittest.TestCase):
 
     def test_110_pkcs12_cas(self):
         """Test if CAs can be read from a pkcs12 bundle"""
-        path = PKIDATA + '/alice_w-chain.p12'
+        path = PKIDATA + '/fra_w-chain.p12'
         cas = QgsAuthCertUtils.pkcs12BundleCas(path, 'password')
 
-        self.assertEqual(cas[0].issuerInfo(b'CN'), ['Boundless Test Root CA'])
-        self.assertEqual(cas[0].subjectInfo(b'CN'), ['Boundless Test Issuer CA'])
+        self.assertEqual(cas[0].issuerInfo(b'CN'), ['QGIS Test Root CA'])
+        self.assertEqual(cas[0].subjectInfo(b'CN'), ['QGIS Test Issuer CA'])
         self.assertEqual(cas[0].serialNumber(), b'02')
-        self.assertEqual(cas[1].issuerInfo(b'CN'), ['Boundless Test Root CA'])
-        self.assertEqual(cas[1].subjectInfo(b'CN'), ['Boundless Test Root CA'])
+        self.assertEqual(cas[1].issuerInfo(b'CN'), ['QGIS Test Root CA'])
+        self.assertEqual(cas[1].subjectInfo(b'CN'), ['QGIS Test Root CA'])
         self.assertEqual(cas[1].serialNumber(), b'01')
 
     def test_120_pem_cas_from_file(self):
         """Test if CAs can be read from a pem bundle"""
-        path = PKIDATA + '/alice-cert_w-chain.pem'
+        path = PKIDATA + '/fra_w-chain.pem'
         cas = QgsAuthCertUtils.casFromFile(path)
 
-        self.assertEqual(cas[0].issuerInfo(b'CN'), ['Boundless Test Root CA'])
-        self.assertEqual(cas[0].subjectInfo(b'CN'), ['Boundless Test Issuer CA'])
+        self.assertEqual(cas[0].issuerInfo(b'CN'), ['QGIS Test Root CA'])
+        self.assertEqual(cas[0].subjectInfo(b'CN'), ['QGIS Test Issuer CA'])
         self.assertEqual(cas[0].serialNumber(), b'02')
-        self.assertEqual(cas[1].issuerInfo(b'CN'), ['Boundless Test Root CA'])
-        self.assertEqual(cas[1].subjectInfo(b'CN'), ['Boundless Test Root CA'])
+        self.assertEqual(cas[1].issuerInfo(b'CN'), ['QGIS Test Root CA'])
+        self.assertEqual(cas[1].subjectInfo(b'CN'), ['QGIS Test Root CA'])
         self.assertEqual(cas[1].serialNumber(), b'01')
 
     def test_130_cas_merge(self):
         """Test CAs merge """
         trusted_path = PKIDATA + '/subissuer_ca_cert.pem'
-        extra_path = PKIDATA + '/alice-cert_w-chain.pem'
+        extra_path = PKIDATA + '/fra_w-chain.pem'
 
         trusted = QgsAuthCertUtils.casFromFile(trusted_path)
         extra = QgsAuthCertUtils.casFromFile(extra_path)
@@ -605,7 +605,7 @@ class TestQgsAuthManager(unittest.TestCase):
 
     def test_140_cas_remove_self_signed(self):
         """Test CAs merge """
-        extra_path = PKIDATA + '/alice-cert_w-chain.pem'
+        extra_path = PKIDATA + '/fra_w-chain.pem'
 
         extra = QgsAuthCertUtils.casFromFile(extra_path)
         filtered = QgsAuthCertUtils.casRemoveSelfSigned(extra)
