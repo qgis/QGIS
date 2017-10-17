@@ -167,7 +167,7 @@ class QgsTransaction : QObject /Abstract/
  Emitted after a rollback
 %End
 
-    void dirty( const QString &sql );
+    void dirtied( const QString &sql );
 %Docstring
  Emitted if a sql query is executed and the underlying data is modified
 %End

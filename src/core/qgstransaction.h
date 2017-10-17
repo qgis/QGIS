@@ -174,7 +174,7 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     /**
      * Emitted if a sql query is executed and the underlying data is modified
      */
-    void dirty( const QString &sql );
+    void dirtied( const QString &sql );
 
   protected:
     QgsTransaction( const QString &connString ) SIP_SKIP;

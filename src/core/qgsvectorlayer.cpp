@@ -1346,7 +1346,7 @@ bool QgsVectorLayer::startEditing()
   {
     mEditBuffer = new QgsVectorLayerEditPassthrough( this );
 
-    connect( mDataProvider->transaction(), &QgsTransaction::dirty, this, &QgsVectorLayer::onDirtyTransaction, Qt::UniqueConnection );
+    connect( mDataProvider->transaction(), &QgsTransaction::dirtied, this, &QgsVectorLayer::onDirtyTransaction, Qt::UniqueConnection );
   }
   else
   {

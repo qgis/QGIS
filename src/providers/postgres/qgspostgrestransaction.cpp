@@ -90,7 +90,7 @@ bool QgsPostgresTransaction::executeSql( const QString &sql, QString &errorMsg, 
   if ( isDirty )
   {
     dirtyLastSavePoint();
-    emit dirty( sql );
+    emit dirtied( sql );
   }
 
   QgsDebugMsg( QString( "Status %1 (OK)" ).arg( r.PQresultStatus() ) );
