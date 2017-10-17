@@ -38,6 +38,8 @@ const int PLUGMAN_TAB_NOT_INSTALLED = 2;
 const int PLUGMAN_TAB_UPGRADEABLE = 3;
 const int PLUGMAN_TAB_NEW = 4;
 const int PLUGMAN_TAB_INVALID = 5;
+const int PLUGMAN_TAB_INSTALL_FROM_ZIP = 7;
+const int PLUGMAN_TAB_SETTINGS = 8;
 
 /**
  * \brief Plugin manager for browsing, (un)installing and (un)loading plugins
@@ -129,6 +131,18 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
     //! Uninstall selected plugin
     void buttonUninstall_clicked();
+
+    /**
+     * Enable the Install button if selected path is valid
+     * \since QGIS 3.0
+     */
+    void mZipFileWidget_fileChanged( const QString &filePath );
+
+    /**
+     * Install plugin from ZIP file
+     * \since QGIS 3.0
+     */
+    void buttonInstallFromZip_clicked();
 
     //! Enable/disable buttons according to selected repository
     void treeRepositories_itemSelectionChanged();

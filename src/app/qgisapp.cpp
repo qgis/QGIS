@@ -1036,15 +1036,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     mPluginManager->setPythonUtils( mPythonUtils );
     endProfile();
   }
-  else if ( mActionShowPythonDialog || mActionInstallFromZip )
+  else if ( mActionShowPythonDialog )
 #endif
   {
     // python is disabled so get rid of the action for python console
     // and installing plugin from ZUIP
     delete mActionShowPythonDialog;
-    delete mActionInstallFromZip;
     mActionShowPythonDialog = nullptr;
-    mActionInstallFromZip = nullptr;
   }
 
   // Set icon size of toolbars
@@ -1878,7 +1876,6 @@ void QgisApp::createActions()
   // Plugin Menu Items
 
   connect( mActionManagePlugins, &QAction::triggered, this, &QgisApp::showPluginManager );
-  connect( mActionInstallFromZip, &QAction::triggered, this, &QgisApp::installPluginFromZip );
   connect( mActionShowPythonDialog, &QAction::triggered, this, &QgisApp::showPythonDialog );
 
   // Settings Menu Items
@@ -2833,7 +2830,6 @@ void QgisApp::setTheme( const QString &themeName )
   mActionToggleFullScreen->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleFullScreen.png" ) ) );
   mActionProjectProperties->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionProjectProperties.png" ) ) );
   mActionManagePlugins->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowPluginManager.svg" ) ) );
-  mActionInstallFromZip->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInstallPluginFromZip.svg" ) ) );
   mActionShowPythonDialog->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconRunConsole.png" ) ) );
   mActionCheckQgisVersion->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSuccess.svg" ) ) );
   mActionOptions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
@@ -9225,16 +9221,6 @@ void QgisApp::showPluginManager()
     // Call the pluginManagerInterface directly
     mQgisInterface->pluginManagerInterface()->showPluginManager();
   }
-}
-
-void QgisApp::installPluginFromZip()
-{
-#ifdef WITH_BINDINGS
-  if ( mPythonUtils && mPythonUtils->isEnabled() )
-  {
-    QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installFromZipFile()" ) );
-  }
-#endif
 }
 
 
