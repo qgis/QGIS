@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgsgeometryholecheck.h"
+#include "qgscurve.h"
+#include "qgscurvepolygon.h"
 #include "qgsfeaturepool.h"
 
 void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors, QStringList &/*messages*/, QAtomicInt *progressCounter, const QMap<QString, QgsFeatureIds> &ids ) const
@@ -25,10 +27,16 @@ void QgsGeometryHoleCheck::collectErrors( QList<QgsGeometryCheckError *> &errors
     const QgsAbstractGeometry *geom = layerFeature.geometry();
     for ( int iPart = 0, nParts = geom->partCount(); iPart < nParts; ++iPart )
     {
-      // Rings after the first one are interiors
-      for ( int iRing = 1, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
+      const QgsCurvePolygon *poly = dynamic_cast<const QgsCurvePolygon *>( QgsGeometryCheckerUtils::getGeomPart( geom, iPart ) );
+      if ( !poly )
       {
-        QgsPoint pos = QgsGeometryCheckerUtils::getGeomPart( geom, iPart )->centroid();
+        continue;
+      }
+      // Rings after the first one are interiors
+      for ( int iRing = 1, nRings = poly->ringCount( iPart ); iRing < nRings; ++iRing )
+      {
+
+        QgsPoint pos = poly->interiorRing( iRing - 1 )->centroid();
         errors.append( new QgsGeometryCheckError( this, layerFeature, pos, QgsVertexId( iPart, iRing ) ) );
       }
     }
