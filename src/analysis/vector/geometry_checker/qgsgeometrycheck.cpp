@@ -102,7 +102,7 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &chan
     }
     else if ( change.what == QgsGeometryCheck::ChangePart )
     {
-      if ( change.type == QgsGeometryCheck::ChangeChanged || mVidx.part == change.vidx.part )
+      if ( mVidx.part == change.vidx.part )
       {
         return false;
       }
@@ -115,7 +115,7 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &chan
     {
       if ( mVidx.partEqual( change.vidx ) )
       {
-        if ( change.type == QgsGeometryCheck::ChangeChanged || mVidx.ring == change.vidx.ring )
+        if ( mVidx.ring == change.vidx.ring )
         {
           return false;
         }
