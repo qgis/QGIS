@@ -45,6 +45,8 @@ class QgsLayoutViewToolAddNodeItem : QgsLayoutViewTool
 
     virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
 
+    virtual void keyPressEvent( QKeyEvent *event );
+
     virtual void deactivate();
 
 

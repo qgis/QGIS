@@ -55,6 +55,7 @@ class GUI_EXPORT QgsLayoutViewToolAddNodeItem : public QgsLayoutViewTool
     void layoutPressEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutMoveEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutReleaseEvent( QgsLayoutViewMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
     void deactivate() override;
 
   signals:

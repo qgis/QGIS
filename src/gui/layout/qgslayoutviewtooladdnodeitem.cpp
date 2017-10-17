@@ -111,6 +111,38 @@ void QgsLayoutViewToolAddNodeItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *
   }
 }
 
+void QgsLayoutViewToolAddNodeItem::keyPressEvent( QKeyEvent *event )
+{
+  if ( !mRubberBand || event->isAutoRepeat() )
+  {
+    event->ignore();
+    return;
+  }
+
+  if ( event->key() == Qt::Key_Delete || event->key() == Qt::Key_Backspace )
+  {
+    if ( mPolygon.size() > 2 )
+    {
+      //remove last added vertex
+      mPolygon.pop_back();
+      setRubberBandNodes();
+    }
+    else
+    {
+      // all deleted, cancel
+      mRubberBand.reset();
+    }
+  }
+  else if ( event->key() == Qt::Key_Escape )
+  {
+    mRubberBand.reset();
+  }
+  else
+  {
+    event->ignore();
+  }
+}
+
 void QgsLayoutViewToolAddNodeItem::deactivate()
 {
   if ( mRubberBand )
