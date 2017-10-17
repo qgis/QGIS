@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>791</width>
+    <width>875</width>
     <height>471</height>
    </rect>
   </property>
@@ -632,11 +632,11 @@
                 <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeType">
-                <enum>QSizePolicy::Preferred</enum>
+                <enum>QSizePolicy::Fixed</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>100</width>
+                 <width>20</width>
                  <height>20</height>
                 </size>
                </property>
@@ -802,8 +802,8 @@
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>0</y>
-                   <width>589</width>
+                   <y>-297</y>
+                   <width>646</width>
                    <height>638</height>
                   </rect>
                  </property>
@@ -1039,7 +1039,7 @@ p, li { white-space: pre-wrap; }
                        <property name="maximumSize">
                         <size>
                          <width>16777215</width>
-                         <height>100</height>
+                         <height>150</height>
                         </size>
                        </property>
                        <property name="rootIsDecorated">
@@ -1145,6 +1145,9 @@ p, li { white-space: pre-wrap; }
                    <spacer name="verticalSpacer">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Expanding</enum>
                     </property>
                     <property name="sizeHint" stdset="0">
                      <size>
