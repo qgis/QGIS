@@ -274,6 +274,9 @@ namespace QgsWms
       //! configure the composition for the GetPrint request
       bool configureComposition( QgsComposition *c, const QgsMapSettings &mapSettings );
 
+      //! Creates external WMS layer. Caller takes ownership
+      QgsMapLayer *createExternalWMSLayer( const QString &externalLayerId ) const;
+
     private:
 
       const QgsServerRequest::Parameters &mParameters;
