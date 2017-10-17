@@ -306,7 +306,7 @@ QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDat
 
       QgsWFSDataSourceURI sourceUri( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WFS" ) )[0] );
 
-      QgsDebugMsg( QString( "WFS full uri: '%1'." ).arg( QString( sourceUri.uri() ) ) );
+      QgsDebugMsgLevel( QString( "WFS full uri: '%1'." ).arg( QString( sourceUri.uri() ) ), 4 );
 
       return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, sourceUri.uri( false ) );
     }
@@ -335,7 +335,7 @@ QVector<QgsDataItem *> QgsWfsDataItemProvider::createDataItems( const QString &p
         for ( const QString &encodedUri : encodedUris )
         {
           QgsWFSDataSourceURI uri( encodedUri );
-          QgsDebugMsg( QStringLiteral( "WFS full uri: '%1'." ).arg( uri.uri( false ) ) );
+          QgsDebugMsgLevel( QStringLiteral( "WFS full uri: '%1'." ).arg( uri.uri( false ) ), 4 );
 
           QgsDataItem *item = new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, uri.uri( false ) );
           if ( item )
