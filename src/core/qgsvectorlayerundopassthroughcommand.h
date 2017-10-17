@@ -55,20 +55,35 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommand : public QgsVectorLayerUn
     bool rollBackToSavePoint();
 
     /**
-     * Set the command savepoint or set error status
-     * error satus should be false prior to call
+     * Set the command savepoint or set error status.
+     * Error satus should be false prior to call. If the savepoint given in
+     * parameter is empty, then a new one is created if none is currently
+     * available in the transaction.
      */
-    bool setSavePoint();
+    bool setSavePoint( const QString &savePointId = QString() );
 
     /**
      * Set error flag and append "failed" to text
      */
     void setError();
 
-    QString mSavePointId;
-    QString mError;
+    /**
+     * Sets the error message.
+     *
+     * \since QGIS 3.0
+     */
+    void setErrorMessage( const QString &errorMessage );
+
+    /**
+     * Returns the error message or an empty string if there's none.
+     *
+     * \since QGIS 3.0
+     */
+    QString errorMessage() const;
 
   private:
+    QString mSavePointId;
+    QString mError;
     bool mHasError;
     bool mRecreateSavePoint;
 };

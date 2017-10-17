@@ -47,10 +47,12 @@ class QgsVectorLayerUndoPassthroughCommand : QgsVectorLayerUndoCommand
  :rtype: bool
 %End
 
-    bool setSavePoint();
+    bool setSavePoint( const QString &savePointId = QString() );
 %Docstring
- Set the command savepoint or set error status
- error satus should be false prior to call
+ Set the command savepoint or set error status.
+ Error satus should be false prior to call. If the savepoint given in
+ parameter is empty, then a new one is created if none is currently
+ available in the transaction.
  :rtype: bool
 %End
 
@@ -59,6 +61,20 @@ class QgsVectorLayerUndoPassthroughCommand : QgsVectorLayerUndoCommand
  Set error flag and append "failed" to text
 %End
 
+    void setErrorMessage( const QString &errorMessage );
+%Docstring
+ Sets the error message.
+
+.. versionadded:: 3.0
+%End
+
+    QString errorMessage() const;
+%Docstring
+ Returns the error message or an empty string if there's none.
+
+.. versionadded:: 3.0
+ :rtype: str
+%End
 
 };
 
