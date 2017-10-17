@@ -2624,6 +2624,7 @@ namespace QgsWms
         if ( externalWMSLayer )
         {
           layers.append( externalWMSLayer );
+          mNicknameLayers[nickname] = externalWMSLayer; //might be used later in GetPrint request
           mTemporaryLayers.append( externalWMSLayer );
         }
       }
