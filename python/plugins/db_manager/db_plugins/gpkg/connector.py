@@ -200,9 +200,9 @@ class GPKGDBConnector(DBConnector):
             raise DbError(e)
 
     @classmethod
-    def isValidDatabase(self, path):
+    def isValidDatabase(cls, path):
         if hasattr(gdal, 'OpenEx'):
-            ds = gdal.OpenEx(self.dbname)
+            ds = gdal.OpenEx(path)
             if ds is None or ds.GetDriver().ShortName != 'GPKG':
                 return False
         else:
@@ -631,9 +631,9 @@ class GPKGDBConnector(DBConnector):
             return True
 
         if tablename.find('"') >= 0:
-            tablename = self.quotedId(tablename)
+            tablename = self.quoteId(tablename)
         if new_table.find('"') >= 0:
-            new_table = self.quotedId(new_table)
+            new_table = self.quoteId(new_table)
 
         gdal.ErrorReset()
         self.gdal_ds.ExecuteSQL('ALTER TABLE %s RENAME TO %s' % (tablename, new_table))
