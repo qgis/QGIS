@@ -44,7 +44,7 @@ class PointOnSurface(QgisFeatureBasedAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'centroids.png'))
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()

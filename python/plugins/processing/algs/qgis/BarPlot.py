@@ -29,10 +29,7 @@ import plotly as plt
 import plotly.graph_objs as go
 
 
-from qgis.core import (QgsApplication,
-                       QgsFeatureSink,
-                       QgsProcessingUtils,
-                       QgsProcessingParameterFeatureSource,
+from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingOutputHtml)
@@ -63,7 +60,7 @@ class BarPlot(QgisAlgorithm):
                                                       self.tr('Value field'),
                                                       None, self.INPUT, QgsProcessingParameterField.Numeric))
 
-        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Added'), self.tr('HTML files (*.html)')))
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Bar plot'), self.tr('HTML files (*.html)')))
 
         self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Bar plot')))
 

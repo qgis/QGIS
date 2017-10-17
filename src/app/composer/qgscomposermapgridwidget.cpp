@@ -105,10 +105,6 @@ QgsComposerMapGridWidget::QgsComposerMapGridWidget( QgsComposerMapGrid *mapGrid,
   connect( mAnnotationFontButton, &QgsFontButton::changed, this, &QgsComposerMapGridWidget::annotationFontChanged );
 }
 
-QgsComposerMapGridWidget::~QgsComposerMapGridWidget()
-{
-}
-
 void QgsComposerMapGridWidget::populateDataDefinedButtons()
 {
   // none for now
@@ -442,7 +438,7 @@ bool QgsComposerMapGridWidget::hasPredefinedScales() const
     QgsSettings settings;
     QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString() );
     QStringList myScalesList = scalesStr.split( ',' );
-    return !myScalesList.isEmpty() && myScalesList[0] != QLatin1String( "" );
+    return !myScalesList.isEmpty() && !myScalesList[0].isEmpty();
   }
   return true;
 }
@@ -1079,7 +1075,7 @@ void QgsComposerMapGridWidget::on_mAnnotationFormatButton_clicked()
 
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression =  exprDlg.expressionText();
+    QString expression = exprDlg.expressionText();
     mComposerMap->beginCommand( tr( "Annotation format changed" ) );
     mComposerMapGrid->setAnnotationExpression( expression );
     mComposerMap->updateBoundingRect();

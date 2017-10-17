@@ -150,10 +150,12 @@ class CORE_EXPORT QgsSettings : public QObject
     QStringList childKeys() const;
     //! Returns a list of all key top-level groups that contain keys that can be read using the QSettings object.
     QStringList childGroups() const;
+    //! Returns a list of all key top-level groups (same as childGroups) but only for groups defined in global settings.
+    QStringList globalChildGroups() const;
     //! Return the path to the Global Settings QSettings storage file
     static QString globalSettingsPath() { return sGlobalSettingsPath; }
     //! Set the Global Settings QSettings storage file
-    static bool setGlobalSettingsPath( QString path );
+    static bool setGlobalSettingsPath( const QString &path );
     //! Adds prefix to the current group and starts reading from an array. Returns the size of the array.
     int beginReadArray( const QString &prefix );
 
@@ -227,7 +229,7 @@ class CORE_EXPORT QgsSettings : public QObject
 
     static QString sGlobalSettingsPath;
     void init();
-    QString sanitizeKey( QString key ) const;
+    QString sanitizeKey( const QString &key ) const;
     QSettings *mUserSettings = nullptr;
     QSettings *mGlobalSettings = nullptr;
     bool mUsingGlobalArray = false;

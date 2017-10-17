@@ -47,6 +47,11 @@ CREATE TABLE qgis_test."some_poly_data" (
     geom public.geometry(Polygon,4326)
 );
 
+CREATE OR REPLACE VIEW qgis_test.some_poly_data_view
+  AS
+    SELECT *
+    FROM qgis_test.some_poly_data;
+
 --
 -- TOC entry 4068 (class 0 OID 377761)
 -- Dependencies: 171

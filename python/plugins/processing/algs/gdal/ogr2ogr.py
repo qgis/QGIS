@@ -37,7 +37,6 @@ from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 
 FORMATS = [
@@ -102,6 +101,8 @@ class Ogr2Ogr(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
                                           self.tr('Input layer')))
         self.addParameter(ParameterSelection(self.FORMAT,
@@ -120,9 +121,9 @@ class Ogr2Ogr(GdalAlgorithm):
     def group(self):
         return self.tr('Vector conversion')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
@@ -134,7 +135,7 @@ class Ogr2Ogr(GdalAlgorithm):
             outFile += ext
             output.value = outFile
 
-        output = ogrConnectionString(outFile)
+        output = GdalUtils.ogrConnectionString(outFile, context)
         options = str(self.getParameterValue(self.OPTIONS))
 
         if outFormat == 'SQLite' and os.path.isfile(output):
@@ -149,7 +150,7 @@ class Ogr2Ogr(GdalAlgorithm):
 
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(ogrLayerName(inLayer))
+        arguments.append(GdalUtils.ogrLayerName(inLayer))
 
         commands = []
         if isWindows():

@@ -69,6 +69,28 @@ class TestQgsFieldModel(unittest.TestCase):
         i = m.indexFromName('not a field')
         self.assertFalse(i.isValid())
 
+        # test with alias
+        i = m.indexFromName('text field')
+        self.assertFalse(i.isValid())
+        l.setFieldAlias(0, 'text field')
+        i = m.indexFromName('text field')
+        self.assertTrue(i.isValid())
+        self.assertEqual(i.row(), 0)
+        i = m.indexFromName('int field')
+        self.assertFalse(i.isValid())
+        l.setFieldAlias(1, 'int field')
+        i = m.indexFromName('int field')
+        self.assertTrue(i.isValid())
+        self.assertEqual(i.row(), 1)
+
+        # should be case insensitive
+        i = m.indexFromName('FLDTXT')
+        self.assertTrue(i.isValid())
+        self.assertEqual(i.row(), 0)
+        i = m.indexFromName('FLDINT')
+        self.assertTrue(i.isValid())
+        self.assertEqual(i.row(), 1)
+
         # try with expression
         m.setAllowExpression(True)
         i = m.indexFromName('not a field')
@@ -90,6 +112,8 @@ class TestQgsFieldModel(unittest.TestCase):
         self.assertEqual(m.indexFromName('fldtxt').row(), 1)
         self.assertEqual(m.indexFromName('fldint').row(), 2)
         self.assertEqual(m.indexFromName('not a field').row(), 3)
+        self.assertEqual(m.indexFromName('FLDTXT').row(), 1)
+        self.assertEqual(m.indexFromName('FLDINT').row(), 2)
 
     def testIsField(self):
         l, m = create_model()

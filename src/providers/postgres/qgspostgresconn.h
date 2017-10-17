@@ -414,5 +414,6 @@ class QgsPostgresConn : public QObject
     QMutex mLock;
 };
 
+// clazy:excludeall=qstring-allocations
 
 #endif

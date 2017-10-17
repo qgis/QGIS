@@ -51,8 +51,6 @@ class QgsStandardItem : public QStandardItem
 
 QgsGCPListModel::QgsGCPListModel( QObject *parent )
   : QStandardItemModel( parent )
-  , mGCPList( nullptr )
-  , mGeorefTransform( nullptr )
 {
   // Use data provided by Qt::UserRole as sorting key (needed for numerical sorting).
   setSortRole( Qt::UserRole );
@@ -171,7 +169,7 @@ void QgsGCPListModel::updateModel()
         }
       }
     }
-    residual = sqrt( dX * dX + dY * dY );
+    residual = std::sqrt( dX * dX + dY * dY );
 
     p->setResidual( QPointF( dX, dY ) );
 

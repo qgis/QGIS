@@ -47,7 +47,6 @@ class TestQgsVectorLayerSaveAsDialog : public QObject
 };
 
 TestQgsVectorLayerSaveAsDialog::TestQgsVectorLayerSaveAsDialog()
-  : mQgisApp( nullptr )
 {
 
 }

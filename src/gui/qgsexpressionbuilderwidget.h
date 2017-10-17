@@ -31,6 +31,7 @@
 
 class QgsFields;
 class QgsExpressionHighlighter;
+class QgsRelation;
 
 /** \ingroup gui
  * An expression item that can be used in the QgsExpressionBuilderWidget tree.
@@ -187,7 +188,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       * \param sortOrder sort ranking for item
       */
     void registerItem( const QString &group, const QString &label, const QString &expressionText,
-                       const QString &helpText = "",
+                       const QString &helpText = QString(),
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
                        bool highlightedItem = false, int sortOrder = 1 );
 
@@ -224,6 +225,28 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     /** Update the list of function files found at the given path
      */
     void updateFunctionFileList( const QString &path );
+
+    /**
+     * Returns a pointer to the dialog's function item model.
+     * This method is exposed for testing purposes only - it should not be used to modify the model.
+     * \since QGIS 3.0
+     */
+    QStandardItemModel *model();
+
+    /**
+     * Returns the project currently associated with the widget.
+     * \see setProject()
+     * \since QGIS 3.0
+     */
+    QgsProject *project();
+
+    /**
+     * Sets the \a project currently associated with the widget. This
+     * controls which layers and relations and other project-specific items are shown in the widget.
+     * \see project()
+     * \since QGIS 3.0
+     */
+    void setProject( QgsProject *project );
 
   public slots:
 
@@ -286,6 +309,12 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     void loadExpressionContext();
 
+    //! Loads current project relations names/id into the expression help tree
+    void loadRelations();
+
+    //! Loads current project layer names/ids into the expression help tree
+    void loadLayers();
+
     /** Registers a node item for the expression builder, adding multiple items when the function exists in multiple groups
       * \param groups The groups the item will be show in the tree view.  If a group doesn't exist it will be created.
       * \param label The label that is show to the user for the item in the tree.
@@ -296,11 +325,21 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       * \param sortOrder sort ranking for item
       */
     void registerItemForAllGroups( const QStringList &groups, const QString &label, const QString &expressionText,
-                                   const QString &helpText = "",
+                                   const QString &helpText = QString(),
                                    QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
                                    bool highlightedItem = false, int sortOrder = 1 );
 
-    bool mAutoSave;
+    /**
+     * Returns a HTML formatted string for use as a \a relation item help.
+     */
+    QString formatRelationHelp( const QgsRelation &relation ) const;
+
+    /**
+     * Returns a HTML formatted string for use as a \a layer item help.
+     */
+    QString formatLayerHelp( const QgsMapLayer *layer ) const;
+
+    bool mAutoSave = true;
     QString mFunctionsPath;
     QgsVectorLayer *mLayer = nullptr;
     QStandardItemModel *mModel = nullptr;
@@ -309,11 +348,14 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsExpressionItemSearchProxy *mProxyModel = nullptr;
     QMap<QString, QgsExpressionItem *> mExpressionGroups;
     QgsExpressionHighlighter *highlighter = nullptr;
-    bool mExpressionValid;
+    bool mExpressionValid = false;
     QgsDistanceArea mDa;
     QString mRecentKey;
     QMap<QString, QStringList> mFieldValues;
     QgsExpressionContext mExpressionContext;
+    QPointer< QgsProject > mProject;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSEXPRESSIONBUILDER_H

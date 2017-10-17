@@ -21,6 +21,7 @@ class QgsLabelPosition
   public:
     QgsLabelPosition( int id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString() );
     QgsLabelPosition();
+
     int featureId;
     double rotation;
     QVector< QgsPointXY > cornerPoints;
@@ -701,9 +702,9 @@ Z-Index of label, where labels with a higher z-index are rendered on top of labe
     QgsPointXY ptZero;
     QgsPointXY ptOne;
     QgsGeometry extentGeom;
-    int mFeaturesToLabel; // total features that will probably be labeled, may be less (figured before PAL)
-    int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
-    int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
+    int mFeaturesToLabel;
+    int mFeatsSendingToPal;
+    int mFeatsRegPal;
 
 };
 

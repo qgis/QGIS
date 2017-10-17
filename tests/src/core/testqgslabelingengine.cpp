@@ -32,7 +32,7 @@ class TestQgsLabelingEngine : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsLabelingEngine() : vl( 0 ) {}
+    TestQgsLabelingEngine() {}
 
   private slots:
     void initTestCase();
@@ -101,7 +101,7 @@ void TestQgsLabelingEngine::setDefaultLabelParams( QgsPalLayerSettings &settings
   QgsTextFormat format;
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( "Bold" );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
 }
@@ -128,7 +128,7 @@ void TestQgsLabelingEngine::testBasic()
   context.setPainter( &p );
 
   QgsPalLayerSettings settings;
-  settings.fieldName = "Class";
+  settings.fieldName = QStringLiteral( "Class" );
   setDefaultLabelParams( settings );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
@@ -590,22 +590,22 @@ bool TestQgsLabelingEngine::imageCheck( const QString &testName, QImage &image, 
 void TestQgsLabelingEngine::testRegisterFeatureUnprojectible()
 {
   QgsPalLayerSettings settings;
-  settings.fieldName = QString( "'aa label'" );
+  settings.fieldName = QStringLiteral( "'aa label'" );
   settings.isExpression = true;
   settings.fitInPolygonOnly = true;
 
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( "polygon?crs=epsg:4326&field=id:integer", "vl", "memory" ) );
-  QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl2.get(), "test", true, &settings );
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
   QgsFeature f( vl2->fields(), 1 );
 
-  QString wkt1 = "POLYGON((0 0,8 0,8 -90,0 0))";
+  QString wkt1 = QStringLiteral( "POLYGON((0 0,8 0,8 -90,0 0))" );
   f.setGeometry( QgsGeometry().fromWkt( wkt1 ) );
 
   // make a fake render context
   QSize size( 640, 480 );
   QgsMapSettings mapSettings;
   QgsCoordinateReferenceSystem tgtCrs;
-  tgtCrs.createFromString( "EPSG:3857" );
+  tgtCrs.createFromString( QStringLiteral( "EPSG:3857" ) );
   mapSettings.setDestinationCrs( tgtCrs );
 
   mapSettings.setOutputSize( size );

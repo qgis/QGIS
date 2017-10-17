@@ -68,6 +68,9 @@ class QgsPluginLayerRegistry
   public:
 
     QgsPluginLayerRegistry();
+%Docstring
+ Constructor for QgsPluginLayerRegistry.
+%End
     ~QgsPluginLayerRegistry();
 
 

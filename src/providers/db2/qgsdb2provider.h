@@ -20,7 +20,7 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayerexporter.h"
-#include <qgscoordinatereferencesystem.h>
+#include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
 #include "qgsfields.h"
 #include <QtSql>
@@ -125,8 +125,8 @@ class QgsDb2Provider : public QgsVectorDataProvider
     bool mValid;
     bool mUseEstimatedMetadata;
     bool mSkipFailures;
-    long mNumberFeatures;
-    int mFidColIdx;
+    long mNumberFeatures = 0;
+    int mFidColIdx = -1;
     QString mFidColName;
     QString mExtents;
     mutable long mSRId;
@@ -135,7 +135,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     mutable QString mGeometryColName, mGeometryColType;
     QString mLastError; //string containing the last reported error message
     mutable QgsCoordinateReferenceSystem mCrs; //coordinate reference system
-    QgsWkbTypes::Type mWkbType;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
     QSqlQuery mQuery; //current SQL query
     QString mConnInfo; // full connection information
     QString mSchemaName, mTableName; //current layer schema/name

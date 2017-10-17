@@ -275,7 +275,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
   for ( int i = 0; i < fet.geometry().geometry()->nCoordinates(); ++i )
   {
     QRectF bounds;
-    QgsPoint p =  fet.geometry().geometry()->vertexAt( QgsVertexId( i, 0, 0 ) );
+    QgsPoint p = fet.geometry().geometry()->vertexAt( QgsVertexId( i, 0, 0 ) );
     double x = p.x();
     double y = p.y();
     double z = 0; // dummy variable for coordinate transforms
@@ -509,8 +509,8 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     double yc = outPt2.y() - outPt.y();
 
     double angle = -component.rotation;
-    double xd = xc * cos( angle ) - yc * sin( angle );
-    double yd = xc * sin( angle ) + yc * cos( angle );
+    double xd = xc * std::cos( angle ) - yc * std::sin( angle );
+    double yd = xc * std::sin( angle ) + yc * std::cos( angle );
 
     centerPt.setX( centerPt.x() + xd );
     centerPt.setY( centerPt.y() + yd );

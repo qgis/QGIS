@@ -20,10 +20,6 @@
 
 #include "qgsgraph.h"
 
-QgsGraph::QgsGraph()
-{
-}
-
 int QgsGraph::addVertex( const QgsPointXY &pt )
 {
   mGraphVertexes.append( QgsGraphVertex( pt ) );
@@ -80,8 +76,6 @@ int QgsGraph::findVertex( const QgsPointXY &pt ) const
 }
 
 QgsGraphEdge::QgsGraphEdge()
-  : mOut( 0 )
-  , mIn( 0 )
 {
 
 }

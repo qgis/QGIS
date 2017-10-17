@@ -63,7 +63,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = nullptr );
 
     //! Snap to current layer
-    QgsPointLocator::Match snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter *filter = nullptr );
+    QgsPointLocator::Match snapToCurrentLayer( QPoint point, QgsPointLocator::Types type, QgsPointLocator::MatchFilter *filter = nullptr );
 
     // environment setup
 
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     QgsSnappingConfig mSnappingConfig;
 
     // configuration
-    IndexingStrategy mStrategy;
+    IndexingStrategy mStrategy = IndexHybrid;
     QList<LayerConfig> mLayers;
 
     // internal data
@@ -229,10 +229,10 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //!   and a new one is built in the different area.
     QHash<QString, double> mHybridMaxAreaPerLayer;
     //! if using hybrid strategy, how many features of one layer may be indexed (to limit amount of consumed memory)
-    int mHybridPerLayerFeatureLimit;
+    int mHybridPerLayerFeatureLimit = 50000;
 
     //! internal flag that an indexing process is going on. Prevents starting two processes in parallel.
-    bool mIsIndexing;
+    bool mIsIndexing = false;
 };
 
 

@@ -41,7 +41,7 @@ class GUI_EXPORT QgsBusyIndicatorDialog : public QDialog
      * \param parent parent object (owner)
      * \param fl widget flags
      */
-    QgsBusyIndicatorDialog( const QString &message = "", QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsBusyIndicatorDialog( const QString &message = QString(), QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     QString message() const { return mMessage; }
     void setMessage( const QString &message );
@@ -50,5 +50,7 @@ class GUI_EXPORT QgsBusyIndicatorDialog : public QDialog
     QString mMessage;
     QLabel *mMsgLabel = nullptr;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSBUSYINDICATORDIALOG_H

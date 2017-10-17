@@ -33,3 +33,38 @@ QString QgsVectorLayerJoinInfo::prefixedFieldName( const QgsField &f ) const
 
   return name;
 }
+
+void QgsVectorLayerJoinInfo::setEditable( bool enabled )
+{
+  mEditable = enabled;
+
+  if ( ! mEditable )
+  {
+    setCascadedDelete( false );
+    setUpsertOnEdit( false );
+  }
+}
+
+QgsFeature QgsVectorLayerJoinInfo::extractJoinedFeature( const QgsFeature &feature ) const
+{
+  QgsFeature joinFeature;
+
+  if ( joinLayer() )
+  {
+    const QVariant idFieldValue = feature.attribute( targetFieldName() );
+    joinFeature.initAttributes( joinLayer()->fields().count() );
+    joinFeature.setFields( joinLayer()->fields() );
+    joinFeature.setAttribute( joinFieldName(), idFieldValue );
+
+    const QgsFields joinFields = joinFeature.fields();
+    for ( const auto &field : joinFields )
+    {
+      const QString prefixedName = prefixedFieldName( field );
+
+      if ( feature.fieldNameIndex( prefixedName ) != -1 )
+        joinFeature.setAttribute( field.name(), feature.attribute( prefixedName ) );
+    }
+  }
+
+  return joinFeature;
+}

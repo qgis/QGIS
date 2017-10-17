@@ -22,7 +22,6 @@ QgsVertexEntry::QgsVertexEntry( QgsMapCanvas *canvas, QgsMapLayer *layer, const 
   , mPenWidth( penWidth )
   , mToolTip( tooltip )
   , mType( type )
-  , mMarker( nullptr )
   , mCanvas( canvas )
   , mLayer( layer )
 {

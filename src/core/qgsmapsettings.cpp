@@ -34,21 +34,11 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 QgsMapSettings::QgsMapSettings()
   : mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
   , mSize( QSize( 0, 0 ) )
-  , mExtent()
-  , mRotation( 0.0 )
-  , mMagnificationFactor( 1.0 )
-  , mDestCRS()
   , mDatumTransformStore( mDestCRS )
   , mBackgroundColor( Qt::white )
   , mSelectionColor( Qt::yellow )
   , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling | DrawSelection )
-  , mImageFormat( QImage::Format_ARGB32_Premultiplied )
   , mSegmentationTolerance( M_PI_2 / 90 )
-  , mSegmentationToleranceType( QgsAbstractGeometry::MaximumAngle )
-  , mValid( false )
-  , mVisibleExtent()
-  , mMapUnitsPerPixel( 1 )
-  , mScale( 1 )
 {
   mScaleCalculator.setMapUnits( QgsUnitTypes::DistanceUnknownUnit );
 
@@ -143,8 +133,8 @@ void QgsMapSettings::updateDerived()
   {
     // Use abs() on the extent to avoid the case where the extent is
     // symmetrical about 0.
-    double xMean = ( qAbs( extent.xMinimum() ) + qAbs( extent.xMaximum() ) ) * 0.5;
-    double yMean = ( qAbs( extent.yMinimum() ) + qAbs( extent.yMaximum() ) ) * 0.5;
+    double xMean = ( std::fabs( extent.xMinimum() ) + std::fabs( extent.xMaximum() ) ) * 0.5;
+    double yMean = ( std::fabs( extent.yMinimum() ) + std::fabs( extent.yMaximum() ) ) * 0.5;
 
     double xRange = extent.width() / xMean;
     double yRange = extent.height() / yMean;
@@ -216,14 +206,14 @@ void QgsMapSettings::updateDerived()
   }
 #endif
 
-  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ), qgsDoubleToString( mapUnitsPerPixelY ) ) );
-  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mSize.width() ), qgsDoubleToString( mSize.height() ) ) );
-  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ), qgsDoubleToString( mExtent.height() ) ) );
-  QgsDebugMsg( mExtent.toString() );
-  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / myWidth ), qgsDoubleToString( mVisibleExtent.height() / myHeight ) ) );
-  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ), qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ) );
-  QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ) );
-  QgsDebugMsg( QString( "Rotation: %1 degrees" ).arg( mRotation ) );
+  QgsDebugMsgLevel( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ), qgsDoubleToString( mapUnitsPerPixelY ) ), 5 );
+  QgsDebugMsgLevel( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mSize.width() ), qgsDoubleToString( mSize.height() ) ), 5 );
+  QgsDebugMsgLevel( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ), qgsDoubleToString( mExtent.height() ) ), 5 );
+  QgsDebugMsgLevel( mExtent.toString(), 5 );
+  QgsDebugMsgLevel( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / myWidth ), qgsDoubleToString( mVisibleExtent.height() / myHeight ) ), 5 );
+  QgsDebugMsgLevel( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ), qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ), 5 );
+  QgsDebugMsgLevel( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ), 5 );
+  QgsDebugMsgLevel( QString( "Rotation: %1 degrees" ).arg( mRotation ), 5 );
 
   mValid = true;
 }
@@ -511,8 +501,6 @@ QgsRectangle QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, Qg
 
 QgsRectangle QgsMapSettings::fullExtent() const
 {
-  QgsDebugMsg( "called." );
-
   // reset the map canvas extent since the extent may now be smaller
   // We can't use a constructor since QgsRectangle normalizes the rectangle upon construction
   QgsRectangle fullExtent;
@@ -520,13 +508,13 @@ QgsRectangle QgsMapSettings::fullExtent() const
 
   // iterate through the map layers and test each layers extent
   // against the current min and max values
-  QgsDebugMsg( QString( "Layer count: %1" ).arg( mLayers.count() ) );
+  QgsDebugMsgLevel( QString( "Layer count: %1" ).arg( mLayers.count() ), 5 );
   Q_FOREACH ( const QgsWeakMapLayerPointer &layerPtr, mLayers )
   {
     if ( QgsMapLayer *lyr = layerPtr.data() )
     {
-      QgsDebugMsg( "Updating extent using " + lyr->name() );
-      QgsDebugMsg( "Input extent: " + lyr->extent().toString() );
+      QgsDebugMsgLevel( "Updating extent using " + lyr->name(), 5 );
+      QgsDebugMsgLevel( "Input extent: " + lyr->extent().toString(), 5 );
 
       if ( lyr->extent().isNull() )
         continue;
@@ -535,7 +523,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
       // layer. The extent must be projected to the canvas CS
       QgsRectangle extent = layerExtentToOutputExtent( lyr, lyr->extent() );
 
-      QgsDebugMsg( "Output extent: " + extent.toString() );
+      QgsDebugMsgLevel( "Output extent: " + extent.toString(), 5 );
       fullExtent.combineExtentWith( extent );
     }
   }
@@ -564,7 +552,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
     }
   }
 
-  QgsDebugMsg( "Full extent: " + fullExtent.toString() );
+  QgsDebugMsgLevel( "Full extent: " + fullExtent.toString(), 5 );
   return fullExtent;
 }
 

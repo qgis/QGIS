@@ -22,8 +22,8 @@
 #include "qgsrasterlayer.h"
 #include "qgsrastermatrix.h"
 #include "qgsrasterprojector.h"
+#include "qgsfeedback.h"
 
-#include <QProgressDialog>
 #include <QFile>
 
 #include <cpl_string.h>
@@ -56,7 +56,7 @@ QgsRasterCalculator::QgsRasterCalculator( const QString &formulaString, const QS
 {
 }
 
-int QgsRasterCalculator::processCalculation( QProgressDialog *p )
+int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
 {
   //prepare search string / tree
   QString errorString;
@@ -117,23 +117,18 @@ int QgsRasterCalculator::processCalculation( QProgressDialog *p )
   float outputNodataValue = -FLT_MAX;
   GDALSetRasterNoDataValue( outputRasterBand, outputNodataValue );
 
-  if ( p )
-  {
-    p->setMaximum( mNumOutputRows );
-  }
-
   QgsRasterMatrix resultMatrix;
   resultMatrix.setNodataValue( outputNodataValue );
 
   //read / write line by line
   for ( int i = 0; i < mNumOutputRows; ++i )
   {
-    if ( p )
+    if ( feedback )
     {
-      p->setValue( i );
+      feedback->setProgress( 100.0 * static_cast< double >( i ) / mNumOutputRows );
     }
 
-    if ( p && p->wasCanceled() )
+    if ( feedback && feedback->isCanceled() )
     {
       break;
     }
@@ -159,9 +154,9 @@ int QgsRasterCalculator::processCalculation( QProgressDialog *p )
 
   }
 
-  if ( p )
+  if ( feedback )
   {
-    p->setValue( mNumOutputRows );
+    feedback->setProgress( 100.0 );
   }
 
   //close datasets and release memory
@@ -169,7 +164,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog *p )
   qDeleteAll( inputBlocks );
   inputBlocks.clear();
 
-  if ( p && p->wasCanceled() )
+  if ( feedback && feedback->isCanceled() )
   {
     //delete the dataset without closing (because it is faster)
     GDALDeleteDataset( outputDriver, mOutputFile.toUtf8().constData() );
@@ -181,8 +176,6 @@ int QgsRasterCalculator::processCalculation( QProgressDialog *p )
 }
 
 QgsRasterCalculator::QgsRasterCalculator()
-  : mNumOutputColumns( 0 )
-  , mNumOutputRows( 0 )
 {
 }
 

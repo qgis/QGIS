@@ -22,7 +22,7 @@ class QgsAuthCertTrustPolicyComboBox : QComboBox
     explicit QgsAuthCertTrustPolicyComboBox(
       QWidget *parent /TransferThis/ = 0,
       QgsAuthCertUtils::CertTrustPolicy policy = QgsAuthCertUtils::DefaultTrust,
-      QgsAuthCertUtils::CertTrustPolicy defaultpolicy =  QgsAuthCertUtils::DefaultTrust );
+      QgsAuthCertUtils::CertTrustPolicy defaultpolicy = QgsAuthCertUtils::DefaultTrust );
 %Docstring
  Construct a combo box for defining certificate trust policy
  \param parent Parent widget

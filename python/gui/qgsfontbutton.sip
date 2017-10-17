@@ -31,12 +31,12 @@ class QgsFontButton : QToolButton
 %End
   public:
 
-
     enum Mode
     {
       ModeTextRenderer,
       ModeQFont,
     };
+
 
     QgsFontButton( QWidget *parent /TransferThis/ = 0, const QString &dialogTitle = QString() );
 %Docstring
@@ -46,6 +46,7 @@ class QgsFontButton : QToolButton
 %End
 
     virtual QSize minimumSizeHint() const;
+    virtual QSize sizeHint() const;
 
     QgsFontButton::Mode mode() const;
 %Docstring

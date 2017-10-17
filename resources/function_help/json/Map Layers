@@ -1,0 +1,5 @@
+{
+  "name": "Map Layers",
+  "type": "group",
+  "description": "Contains a list of map layers available in the current project."
+}

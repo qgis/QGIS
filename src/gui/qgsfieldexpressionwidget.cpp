@@ -29,7 +29,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   : QWidget( parent )
   , mExpressionDialogTitle( tr( "Expression Dialog" ) )
   , mDa( nullptr )
-  , mExpressionContextGenerator( nullptr )
+
 {
   QHBoxLayout *layout = new QHBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );

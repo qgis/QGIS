@@ -59,7 +59,7 @@ class RandomPointsAlongLines(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def group(self):
-        return self.tr('Vector creation tools')
+        return self.tr('Vector creation')
 
     def __init__(self):
         super().__init__()

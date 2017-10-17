@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsLayoutItemPage : QgsLayoutItem
 {
 %Docstring
@@ -30,6 +32,16 @@ class QgsLayoutItemPage : QgsLayoutItem
 %Docstring
  Constructor for QgsLayoutItemPage, with the specified parent ``layout``.
 %End
+
+    static QgsLayoutItemPage *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
+%Docstring
+ Returns a new page item for the specified ``layout``.
+
+ The caller takes responsibility for deleting the returned object.
+ :rtype: QgsLayoutItemPage
+%End
+
+
     virtual int type() const;
     virtual QString stringType() const;
 
@@ -74,6 +86,17 @@ class QgsLayoutItemPage : QgsLayoutItem
  page orientation.
  :rtype: QgsLayoutItemPage.Orientation
 %End
+
+    virtual void attemptResize( const QgsLayoutSize &size );
+
+
+    virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;
+
+
+  public slots:
+
+    virtual void redraw();
+
 
   protected:
 

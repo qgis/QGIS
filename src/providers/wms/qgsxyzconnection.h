@@ -32,6 +32,7 @@ struct QgsXyzConnection
   QString password;
   // Referer
   QString referer;
+  bool hidden = false;
 
   QString encodedUri() const;
 };
@@ -40,7 +41,7 @@ struct QgsXyzConnection
 class QgsXyzConnectionUtils
 {
   public:
-    //! Returns list of existing connections
+    //! Returns list of existing connections, unless the hidden ones
     static QStringList connectionList();
 
     //! Returns connection details

@@ -74,9 +74,9 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
 
     struct LabelDetails
     {
-      LabelDetails(): valid( false ), layer( nullptr ) {}
+      LabelDetails() {}
       explicit LabelDetails( const QgsLabelPosition &p );
-      bool valid;
+      bool valid = false;
       QgsLabelPosition pos;
       QgsVectorLayer *layer = nullptr;
       QgsPalLayerSettings settings;

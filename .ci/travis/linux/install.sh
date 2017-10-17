@@ -52,9 +52,9 @@ CMAKE_FLAGS="
       -DWITH_QWTPOLAR=OFF
       -DWITH_APIDOC=OFF
       -DWITH_ASTYLE=OFF
-      -DWITH_INTERNAL_YAML=OFF
       -DDISABLE_DEPRECATED=ON
       -DCXX_EXTRA_FLAGS=${CLANG_WARNINGS}
+      -DPYTHON_TEST_WRAPPER="timeout -sSIGSEGV 55s"
       "
 
 # The following options trigger a minimalized build to

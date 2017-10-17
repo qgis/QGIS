@@ -130,7 +130,6 @@ class TestQgsPaintEffect: public QObject
 
 
 TestQgsPaintEffect::TestQgsPaintEffect()
-  : mPicture( 0 )
 {
 
 }

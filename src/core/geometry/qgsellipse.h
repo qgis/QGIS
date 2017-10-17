@@ -41,6 +41,8 @@ class CORE_EXPORT QgsEllipse
   public:
     QgsEllipse();
 
+    virtual ~QgsEllipse() = default;
+
     /** Constructs an ellipse by defining all the members.
      * \param center The center of the ellipse.
      * \param semiMajorAxis Semi-major axis of the ellipse.
@@ -208,9 +210,9 @@ class CORE_EXPORT QgsEllipse
 
   protected:
     QgsPoint mCenter;
-    double mSemiMajorAxis;
-    double mSemiMinorAxis;
-    double mAzimuth;
+    double mSemiMajorAxis = 0.0;
+    double mSemiMinorAxis = 0.0;
+    double mAzimuth = 90.0;
 
   private:
     //! The semi-minor axis is always smaller than the semi-major axis. If it is set larger, it will be swapped and the azimuth will increase by 90 degrees.

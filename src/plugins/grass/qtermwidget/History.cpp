@@ -314,7 +314,7 @@ void HistoryScrollBuffer::addCellsVector(const QVector<Character>& cells)
 void HistoryScrollBuffer::addCells(const Character a[], int count)
 {
   HistoryLine newLine(count);
-  qCopy(a,a+count,newLine.begin());
+  std::copy(a,a+count,newLine.begin());
 
   addCellsVector(newLine);
 }
@@ -384,12 +384,12 @@ void HistoryScrollBuffer::setMaxNbLines(unsigned int lineCount)
     HistoryLine* oldBuffer = _historyBuffer;
     HistoryLine* newBuffer = new HistoryLine[lineCount];
 
-    for ( int i = 0 ; i < qMin(_usedLines,(int)lineCount) ; i++ )
+    for ( int i = 0 ; i < std::min(_usedLines,(int)lineCount) ; i++ )
     {
         newBuffer[i] = oldBuffer[bufferIndex(i)];
     }
 
-    _usedLines = qMin(_usedLines,(int)lineCount);
+    _usedLines = std::min(_usedLines,(int)lineCount);
     _maxLineCount = lineCount;
     _head = ( _usedLines == _maxLineCount ) ? 0 : _usedLines-1;
 
@@ -730,7 +730,7 @@ void CompactHistoryScroll::addCellsVector ( const TextLine& cells )
 void CompactHistoryScroll::addCells ( const Character a[], int count )
 {
   TextLine newLine ( count );
-  qCopy ( a,a+count,newLine.begin() );
+  std::copy ( a,a+count,newLine.begin() );
   addCellsVector ( newLine );
 }
 

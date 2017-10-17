@@ -97,4 +97,6 @@ class GUI_EXPORT QgsAuthGuiUtils
 
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSAUTHGUIUTILS_H

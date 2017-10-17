@@ -17,8 +17,8 @@
 
 #include <QWidget>
 
-#include <ui_qgslabelingwidget.h>
-#include <qgspallabeling.h>
+#include "ui_qgslabelingwidget.h"
+#include "qgspallabeling.h"
 #include "qgsvectorlayerlabeling.h"
 
 #include "qgsmaplayerconfigwidget.h"
@@ -50,9 +50,6 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     void adaptToLayer();
 
     void resetSettings();
-
-  signals:
-    void widgetChanged();
 
   protected slots:
     void labelModeChanged( int index );

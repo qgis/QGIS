@@ -41,7 +41,7 @@ class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
 
   private:
 
-    QPainter::CompositionMode mCompositionMode;
+    QPainter::CompositionMode mCompositionMode = QPainter::CompositionMode_SourceOver;
 };
 
 #endif // QGSCOMPOSEREFFECT_H

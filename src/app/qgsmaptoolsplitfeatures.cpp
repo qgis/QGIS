@@ -29,11 +29,6 @@ QgsMapToolSplitFeatures::QgsMapToolSplitFeatures( QgsMapCanvas *canvas )
   mToolName = tr( "Split features" );
 }
 
-QgsMapToolSplitFeatures::~QgsMapToolSplitFeatures()
-{
-
-}
-
 void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //check if we operate on a vector layer

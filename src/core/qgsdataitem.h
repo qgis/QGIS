@@ -28,6 +28,7 @@
 #include <QString>
 #include <QTreeWidget>
 #include <QVector>
+#include <QDateTime>
 
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
@@ -69,8 +70,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 #endif
 
     Q_OBJECT
-    Q_ENUMS( Type )
-    Q_ENUMS( State )
+
   public:
     enum Type
     {
@@ -79,8 +79,11 @@ class CORE_EXPORT QgsDataItem : public QObject
       Layer,
       Error,
       Favorites, //!< Represents a favorite item
-      Project //!< Represents a QGIS project
+      Project, //!< Represents a QGIS project
+      Custom, //!< Custom item type
     };
+
+    Q_ENUM( Type );
 
     //! Create new data item.
     QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path );
@@ -100,6 +103,7 @@ class CORE_EXPORT QgsDataItem : public QObject
       Populating,   //!< Creating children in separate thread (populating or refreshing)
       Populated     //!< Children created
     };
+    Q_ENUM( State );
 
     //! \since QGIS 2.8
     State state() const;
@@ -135,10 +139,23 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual QWidget *paramWidget() SIP_FACTORY { return nullptr; }
 
-    /** Returns the list of actions available for this item. This is usually used for the popup menu on right-clicking
+    /**
+     * Returns the list of actions available for this item. This is usually used for the popup menu on right-clicking
      * the item. Subclasses should override this to provide actions.
+     *
+     * Subclasses should ensure that ownership of created actions is correctly handled by parenting them
+     * to the specified parent widget.
      */
-    virtual QList<QAction *> actions() { return QList<QAction *>(); }
+    virtual QList<QAction *> actions( QWidget *parent );
+
+    /** Returns the list of menus available for this item. This is usually used for the popup menu on right-clicking
+     * the item. Subclasses should override this to provide actions. Subclasses should ensure that ownership of
+     * created menus is correctly handled by parenting them to the specified parent widget.
+     * \param parent a parent widget of the menu
+     * \returns list of menus
+     * \since QGIS 3.0
+     */
+    virtual QList<QMenu *> menus( QWidget *parent );
 
     /** Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
      * Subclasses should override this and handleDrop() to accept dropped layers.
@@ -151,6 +168,14 @@ class CORE_EXPORT QgsDataItem : public QObject
      * \see acceptDrop()
      */
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) { return false; }
+
+    /**
+     * Called when a user double clicks on the item. Subclasses should return true
+     * if they have implemented a double-click handler and do not want the default
+     * double-click behavior for items.
+     * \since QGIS 3.0
+     */
+    virtual bool handleDoubleClick();
 
     /** Returns true if the item may be dragged.
      * Default implementation returns false.
@@ -328,6 +353,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataItem::Capabilities )
 class CORE_EXPORT QgsLayerItem : public QgsDataItem
 {
     Q_OBJECT
+
   public:
     enum LayerType
     {
@@ -342,6 +368,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       Table,
       Plugin     //!< Added in 2.10
     };
+
+    Q_ENUM( LayerType );
 
     QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey );
 
@@ -378,6 +406,16 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
      * \since QGIS 2.12
      */
     virtual QString comments() const { return QString(); }
+
+    /** Returns the string representation of the given \a layerType
+     * \since QGIS 3
+     */
+    static QString layerTypeAsString( const LayerType &layerType );
+
+    /** Returns the icon name of the given \a layerType
+     * \since QGIS 3
+     */
+    static QString iconName( const LayerType &layerType );
 
   protected:
 
@@ -460,6 +498,9 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     //! Check if the given path is hidden from the browser model
     static bool hiddenPath( const QString &path );
 
+    QList<QAction *> actions( QWidget *parent ) override;
+
+
   public slots:
     virtual void childrenCreated() override;
     void directoryChanged();
@@ -471,6 +512,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
   private:
     QFileSystemWatcher *mFileSystemWatcher = nullptr;
     bool mRefreshLater;
+    QDateTime mLastScan;
 };
 
 /** \ingroup core

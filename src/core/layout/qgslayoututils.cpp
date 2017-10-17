@@ -20,14 +20,14 @@
 #include "qgsrendercontext.h"
 #include "qgslayoutitemmap.h"
 #include <QPainter>
-#include <math.h>
+#include <cmath>
 
 double QgsLayoutUtils::normalizedAngle( const double angle, const bool allowNegative )
 {
   double clippedAngle = angle;
   if ( clippedAngle >= 360.0 || clippedAngle <= -360.0 )
   {
-    clippedAngle = fmod( clippedAngle, 360.0 );
+    clippedAngle = std::fmod( clippedAngle, 360.0 );
   }
   if ( !allowNegative && clippedAngle < 0.0 )
   {

@@ -20,7 +20,6 @@ email                : sherman at mrcc.com
 
 #include "qgslogger.h"
 #include "qgsapplication.h"
-#include "qgscontexthelp.h"
 #include "qgspostgresprovider.h"
 #include "qgspgnewconnection.h"
 #include "qgsmanageconnectionsdialog.h"
@@ -144,7 +143,7 @@ void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelInde
     bool ok;
     value.toInt( &ok );
     if ( index.column() == QgsPgTableModel::DbtmSrid && !ok )
-      value = QLatin1String( "" );
+      value.clear();
 
     le->setText( value );
   }
@@ -195,14 +194,13 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
 
 QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
-  , mColumnTypeThread( nullptr )
-  , mUseEstimatedMetadata( false )
 {
   setupUi( this );
+  setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPgSourceSelect::showHelp );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->hide();
   }
   else
@@ -210,18 +208,12 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
     setWindowTitle( tr( "Add PostGIS Table(s)" ) );
   }
 
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  mAddButton->setEnabled( false );
-
   mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
   mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
-    buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-    connect( mAddButton, &QAbstractButton::clicked, this, &QgsPgSourceSelect::addTables );
-
     buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
     connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsPgSourceSelect::buildQuery );
   }
@@ -371,7 +363,7 @@ void QgsPgSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &ind
   QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/addPostgisDC" ), false ).toBool() )
   {
-    addTables();
+    addButtonClicked();
   }
   else
   {
@@ -485,7 +477,7 @@ void QgsPgSourceSelect::populateConnectionList()
 }
 
 // Slot for performing action when the Add button is clicked
-void QgsPgSourceSelect::addTables()
+void QgsPgSourceSelect::addButtonClicked()
 {
   mSelectedTables.clear();
 
@@ -628,7 +620,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
 
 QString QgsPgSourceSelect::fullDescription( const QString &schema, const QString &table, const QString &column, const QString &type )
 {
-  QString full_desc = QLatin1String( "" );
+  QString full_desc;
   if ( !schema.isEmpty() )
     full_desc = QgsPostgresConn::quotedIdentifier( schema ) + '.';
   full_desc += QgsPostgresConn::quotedIdentifier( table ) + " (" + column + ") " + type;
@@ -660,5 +652,10 @@ void QgsPgSourceSelect::treeWidgetSelectionChanged( const QItemSelection &select
 {
   Q_UNUSED( deselected )
   Q_UNUSED( selected )
-  mAddButton->setEnabled( !mTablesTreeView->selectionModel()->selection().isEmpty() );
+  emit enableButtons( !mTablesTreeView->selectionModel()->selection().isEmpty() );
+}
+
+void QgsPgSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-database-layer" ) );
 }

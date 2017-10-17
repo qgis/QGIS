@@ -59,10 +59,6 @@ QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget *parent, QgsCompos
   updateGuiElements();
 }
 
-QgsAtlasCompositionWidget::~QgsAtlasCompositionWidget()
-{
-}
-
 void QgsAtlasCompositionWidget::on_mUseAtlasCheckBox_stateChanged( int state )
 {
   QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
@@ -135,7 +131,7 @@ void QgsAtlasCompositionWidget::on_mAtlasFilenameExpressionButton_clicked()
 
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression =  exprDlg.expressionText();
+    QString expression = exprDlg.expressionText();
     if ( !expression.isEmpty() )
     {
       //set atlas filename expression
@@ -308,7 +304,7 @@ void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterButton_clicked()
 
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression =  exprDlg.expressionText();
+    QString expression = exprDlg.expressionText();
     if ( !expression.isEmpty() )
     {
       mAtlasFeatureFilterEdit->setText( expression );

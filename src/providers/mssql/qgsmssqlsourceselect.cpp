@@ -20,7 +20,6 @@
 
 #include "qgslogger.h"
 #include "qgsapplication.h"
-#include "qgscontexthelp.h"
 #include "qgsmssqlgeomcolumntypethread.h"
 #include "qgsmssqlprovider.h"
 #include "qgsmssqlnewconnection.h"
@@ -120,14 +119,13 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
 
 QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
-  , mColumnTypeThread( nullptr )
-  , mUseEstimatedMetadata( false )
 {
   setupUi( this );
+  setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMssqlSourceSelect::showHelp );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
     mHoldDialogOpen->hide();
   }
   else
@@ -135,17 +133,12 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
     setWindowTitle( tr( "Add MSSQL Table(s)" ) );
   }
 
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  mAddButton->setEnabled( false );
-
   mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
   mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
-    buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-    connect( mAddButton, &QAbstractButton::clicked, this, &QgsMssqlSourceSelect::addTables );
 
     buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
     connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsMssqlSourceSelect::buildQuery );
@@ -316,7 +309,7 @@ void QgsMssqlSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &
   QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/addMSSQLDC" ), false ).toBool() )
   {
-    addTables();
+    addButtonClicked();
   }
   else
   {
@@ -431,7 +424,7 @@ void QgsMssqlSourceSelect::populateConnectionList()
 }
 
 // Slot for performing action when the Add button is clicked
-void QgsMssqlSourceSelect::addTables()
+void QgsMssqlSourceSelect::addButtonClicked()
 {
   QgsDebugMsg( QString( "mConnInfo:%1" ).arg( mConnInfo ) );
   mSelectedTables.clear();
@@ -499,7 +492,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
 
   bool estimateMetadata = settings.value( key + "/estimatedMetadata", true ).toBool();
 
-  mConnInfo =  "dbname='" + database + '\'';
+  mConnInfo = "dbname='" + database + '\'';
   if ( !host.isEmpty() )
     mConnInfo += " host='" + host + '\'';
   if ( !username.isEmpty() )
@@ -588,8 +581,8 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
         if ( type == QLatin1String( "GEOMETRY" ) || type.isNull() || srid.isEmpty() )
         {
           addSearchGeometryColumn( connectionName, layer, estimateMetadata );
-          type = QLatin1String( "" );
-          srid = QLatin1String( "" );
+          type.clear();
+          srid.clear();
         }
       }
 
@@ -714,7 +707,7 @@ void QgsMssqlSourceSelect::addSearchGeometryColumn( const QString &connectionNam
 
 QString QgsMssqlSourceSelect::fullDescription( const QString &schema, const QString &table, const QString &column, const QString &type )
 {
-  QString full_desc = QLatin1String( "" );
+  QString full_desc;
   if ( !schema.isEmpty() )
     full_desc = schema + '.';
   full_desc += table + " (" + column + ") " + type;
@@ -745,5 +738,10 @@ void QgsMssqlSourceSelect::setSearchExpression( const QString &regexp )
 void QgsMssqlSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
 {
   Q_UNUSED( deselected )
-  mAddButton->setEnabled( !selected.isEmpty() );
+  emit enableButtons( !selected.isEmpty() );
+}
+
+void QgsMssqlSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-database-layer" ) );
 }

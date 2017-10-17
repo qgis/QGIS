@@ -38,7 +38,6 @@ extern "C"
 
 QgsGrassVectorLayer::QgsGrassVectorLayer( QObject *parent )
   : QObject( parent )
-  , mNumber( 0 )
 {
 }
 
@@ -60,11 +59,11 @@ QgsGrassVectorLayer::QgsGrassVectorLayer( const QgsGrassObject &grassObject, int
 int QgsGrassVectorLayer::typeCount( int type ) const
 {
   int count = 0;
-  Q_FOREACH ( int t, mTypeCounts.keys() )
+  for ( auto it = mTypeCounts.constBegin(); it != mTypeCounts.constEnd(); ++it )
   {
-    if ( t & type )
+    if ( it.key() & type )
     {
-      count += mTypeCounts.value( t );
+      count += it.value();
     }
   }
   return count;
@@ -73,11 +72,11 @@ int QgsGrassVectorLayer::typeCount( int type ) const
 int QgsGrassVectorLayer::type() const
 {
   int type = 0;
-  Q_FOREACH ( int t, mTypeCounts.keys() )
+  for ( auto it = mTypeCounts.constBegin(); it != mTypeCounts.constEnd(); ++it )
   {
-    if ( mTypeCounts.value( t ) > 0 )
+    if ( it.value() > 0 )
     {
-      type |= t;
+      type |= it.key();
     }
   }
   return type;
@@ -86,11 +85,11 @@ int QgsGrassVectorLayer::type() const
 QList<int> QgsGrassVectorLayer::types() const
 {
   QList<int> types;
-  Q_FOREACH ( int t, mTypeCounts.keys() )
+  for ( auto it = mTypeCounts.constBegin(); it != mTypeCounts.constEnd(); ++it )
   {
-    if ( mTypeCounts.value( t ) > 0 )
+    if ( it.value() > 0 )
     {
-      types << t;
+      types << it.key();
     }
   }
   return types;
@@ -285,13 +284,14 @@ bool QgsGrassVector::openHead()
       struct field_info *fieldInfo = Vect_get_field( map, field ); // should work also with field = 0
 
       QgsGrassVectorLayer *layer = new QgsGrassVectorLayer( mGrassObject, field, fieldInfo, this );
-      Q_FOREACH ( int type, QgsGrass::vectorTypeMap().keys() )
+      const auto typeMap = QgsGrass::vectorTypeMap();
+      for ( auto it = typeMap.constBegin(); it != typeMap.constEnd(); ++it )
       {
-        int count = Vect_cidx_get_type_count( map, field, type );
+        int count = Vect_cidx_get_type_count( map, field, it.key() );
         if ( count > 0 )
         {
-          QgsDebugMsg( QString( "type = %1 count = %2" ).arg( type ).arg( count ) );
-          layer->setTypeCount( type, count );
+          QgsDebugMsg( QString( "type = %1 count = %2" ).arg( it.key() ).arg( count ) );
+          layer->setTypeCount( it.key(), count );
         }
       }
       mLayers.append( layer );
@@ -299,17 +299,18 @@ bool QgsGrassVector::openHead()
     QgsDebugMsg( "standard layers listed: " + list.join( "," ) );
 
     // Get primitives
-    Q_FOREACH ( int type, QgsGrass::vectorTypeMap().keys() )
+    const auto typeMap = QgsGrass::vectorTypeMap();
+    for ( auto it = typeMap.constBegin(); it != typeMap.constEnd(); ++it )
     {
-      if ( type == GV_AREA )
+      if ( it.key() == GV_AREA )
       {
         continue;
       }
-      int count = Vect_get_num_primitives( map, type );
+      int count = Vect_get_num_primitives( map, it.key() );
       if ( count > 0 )
       {
-        QgsDebugMsg( QString( "primitive type = %1 count = %2" ).arg( type ).arg( count ) );
-        mTypeCounts[type] = count;
+        QgsDebugMsg( QString( "primitive type = %1 count = %2" ).arg( it.key() ).arg( count ) );
+        mTypeCounts[it.key()] = count;
       }
     }
     mNodeCount = Vect_get_num_nodes( map );
@@ -333,11 +334,11 @@ bool QgsGrassVector::openHead()
 int QgsGrassVector::typeCount( int type ) const
 {
   int count = 0;
-  Q_FOREACH ( int t, mTypeCounts.keys() )
+  for ( auto it = mTypeCounts.constBegin(); it != mTypeCounts.constEnd(); ++it )
   {
-    if ( t & type )
+    if ( it.key() & type )
     {
-      count += mTypeCounts.value( t );
+      count += it.value();
     }
   }
   return count;
@@ -348,7 +349,7 @@ int QgsGrassVector::maxLayerNumber() const
   int max = 0;
   Q_FOREACH ( QgsGrassVectorLayer *layer, mLayers )
   {
-    max = qMax( max, layer->number() );
+    max = std::max( max, layer->number() );
   }
   return max;
 }

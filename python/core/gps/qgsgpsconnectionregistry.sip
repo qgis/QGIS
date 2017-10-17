@@ -25,7 +25,11 @@ class QgsGPSConnectionRegistry
 #include "qgsgpsconnectionregistry.h"
 %End
   public:
+
     QgsGPSConnectionRegistry();
+%Docstring
+ Constructor for QgsGPSConnectionRegistry.
+%End
     ~QgsGPSConnectionRegistry();
 
 

@@ -18,9 +18,6 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-from __future__ import print_function
-from builtins import str
-from builtins import range
 from qgis.PyQt.QtCore import Qt, QObject, QEvent, QCoreApplication, QFileInfo, QSize
 from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor, QFontDatabase
 from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
@@ -37,6 +34,7 @@ from operator import itemgetter
 import traceback
 import codecs
 import re
+import importlib
 
 
 class KeyFilter(QObject):
@@ -523,7 +521,7 @@ class Editor(QsciScintilla):
         if dir not in sys.path:
             sys.path.append(dir)
         if name in sys.modules:
-            reload(sys.modules[name])  # NOQA
+            importlib.reload(sys.modules[name])  # NOQA
         try:
             # set creationflags for running command without shell window
             if sys.platform.startswith('win'):
@@ -1177,7 +1175,7 @@ class EditorTabWidget(QTabWidget):
                     sys.path.append(pathFile)
                     found = True
                 try:
-                    reload(pyclbr)  # NOQA
+                    importlib.reload(pyclbr)  # NOQA
                     dictObject = {}
                     readModule = pyclbr.readmodule(module)
                     readModuleFunction = pyclbr.readmodule_ex(module)
@@ -1239,10 +1237,10 @@ class EditorTabWidget(QTabWidget):
                     iconWarning = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
                     msgItem.setIcon(0, iconWarning)
                     self.parent.listClassMethod.addTopLevelItem(msgItem)
-#                     s = traceback.format_exc()
-#                     print '## Error: '
-#                     sys.stderr.write(s)
-#                     pass
+                    # s = traceback.format_exc()
+                    # print('## Error: ')
+                    # sys.stderr.write(s)
+                    # pass
 
     def refreshSettingsEditor(self):
         countTab = self.count()

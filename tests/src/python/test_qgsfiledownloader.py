@@ -10,16 +10,13 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from __future__ import print_function
-from future import standard_library
+
 import os
 import tempfile
 from functools import partial
 from qgis.PyQt.QtCore import QEventLoop, QUrl
 from qgis.gui import (QgsFileDownloader,)
 from qgis.testing import start_app, unittest
-
-standard_library.install_aliases()
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '08/11/2016'

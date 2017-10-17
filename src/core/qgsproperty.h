@@ -164,7 +164,7 @@ class CORE_EXPORT QgsPropertyDefinition
 
     QString mName;
     QString mDescription;
-    DataType mTypes;
+    DataType mTypes = DataTypeString;
     QString mHelpText;
     StandardPropertyTemplate mStandardType = Custom;
 

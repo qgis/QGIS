@@ -119,14 +119,9 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend *legend )
   connect( mItemFontButton, &QgsFontButton::changed, this, &QgsComposerLegendWidget::itemFontChanged );
 }
 
-QgsComposerLegendWidget::QgsComposerLegendWidget(): QgsComposerItemBaseWidget( nullptr, nullptr ), mLegend( nullptr )
+QgsComposerLegendWidget::QgsComposerLegendWidget(): QgsComposerItemBaseWidget( nullptr, nullptr )
 {
   setupUi( this );
-}
-
-QgsComposerLegendWidget::~QgsComposerLegendWidget()
-{
-
 }
 
 void QgsComposerLegendWidget::setGuiElements()

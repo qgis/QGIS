@@ -19,7 +19,7 @@
 #define QGSDB2TABLEMODEL_H
 
 #include <QStandardItemModel>
-#include <qgsdataitem.h>
+#include "qgsdataitem.h"
 #include "qgis.h"
 
 //! Layer Property structure
@@ -86,6 +86,6 @@ class QgsDb2TableModel : public QStandardItemModel
 
   private:
     //! Number of tables in the model
-    int mTableCount;
+    int mTableCount = 0;
 };
 #endif

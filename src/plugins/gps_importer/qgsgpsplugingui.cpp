@@ -13,7 +13,6 @@
 #include "qgsgpsdevicedialog.h"
 #include "qgsmaplayer.h"
 #include "qgsdataprovider.h"
-#include "qgscontexthelp.h"
 #include "qgslogger.h"
 #include "qgsgpsdetector.h"
 #include "qgssettings.h"
@@ -35,6 +34,7 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap &importers,
   , mDevices( devices )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsGPSPluginGui::showHelp );
 
   // restore size, position and active tab
   restoreState();
@@ -51,7 +51,7 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap &importers,
   // click it
   pbnOK = buttonBox->button( QDialogButtonBox::Ok );
   pbnOK->setEnabled( false );
-  connect( leGPXFile, &QLineEdit::textChanged,
+  connect( mFileWidget, &QgsFileWidget::fileChanged,
            this, &QgsGPSPluginGui::enableRelevantControls );
   connect( leIMPInput, &QLineEdit::textChanged,
            this, &QgsGPSPluginGui::enableRelevantControls );
@@ -75,7 +75,7 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap &importers,
            this, &QgsGPSPluginGui::enableRelevantControls );
 
   // drag and drop filter
-  leGPXFile->setSuffixFilter( QStringLiteral( "gpx" ) );
+  mFileWidget->setFilter( tr( "GPX files (*.gpx)" ) );
 }
 
 QgsGPSPluginGui::~QgsGPSPluginGui()
@@ -92,7 +92,7 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
   {
     case 0:
       // add a GPX layer?
-      emit loadGPXFile( leGPXFile->text(), cbGPXWaypoints->isChecked(),
+      emit loadGPXFile( mFileWidget->filePath(), cbGPXWaypoints->isChecked(),
                         cbGPXRoutes->isChecked(), cbGPXTracks->isChecked() );
       break;
 
@@ -180,7 +180,7 @@ void QgsGPSPluginGui::enableRelevantControls()
   // load GPX
   if ( tabWidget->currentIndex() == 0 )
   {
-    if ( ( leGPXFile->text() == QLatin1String( "" ) ) )
+    if ( !mFileWidget->filePath().isEmpty() )
     {
       pbnOK->setEnabled( false );
       cbGPXWaypoints->setEnabled( false );
@@ -205,8 +205,8 @@ void QgsGPSPluginGui::enableRelevantControls()
   // import other file
   else if ( tabWidget->currentIndex() == 1 )
   {
-    if ( ( leIMPInput->text() == QLatin1String( "" ) ) || ( leIMPOutput->text() == QLatin1String( "" ) ) ||
-         ( leIMPLayer->text() == QLatin1String( "" ) ) )
+    if ( ( leIMPInput->text().isEmpty() ) || ( leIMPOutput->text().isEmpty() ) ||
+         ( leIMPLayer->text().isEmpty() ) )
       pbnOK->setEnabled( false );
     else
       pbnOK->setEnabled( true );
@@ -215,8 +215,8 @@ void QgsGPSPluginGui::enableRelevantControls()
   // download from device
   else if ( tabWidget->currentIndex() == 2 )
   {
-    if ( cmbDLDevice->currentText() == QLatin1String( "" ) || leDLBasename->text() == QLatin1String( "" ) ||
-         leDLOutput->text() == QLatin1String( "" ) )
+    if ( cmbDLDevice->currentText().isEmpty() || leDLBasename->text().isEmpty() ||
+         leDLOutput->text().isEmpty() )
       pbnOK->setEnabled( false );
     else
       pbnOK->setEnabled( true );
@@ -225,7 +225,7 @@ void QgsGPSPluginGui::enableRelevantControls()
   // upload to device
   else if ( tabWidget->currentIndex() == 3 )
   {
-    if ( cmbULDevice->currentText() == QLatin1String( "" ) || cmbULLayer->currentText() == QLatin1String( "" ) )
+    if ( cmbULDevice->currentText().isEmpty() || cmbULLayer->currentText().isEmpty() )
       pbnOK->setEnabled( false );
     else
       pbnOK->setEnabled( true );
@@ -234,8 +234,8 @@ void QgsGPSPluginGui::enableRelevantControls()
   // convert between waypoint/routes
   else if ( tabWidget->currentIndex() == 4 )
   {
-    if ( ( leCONVInput->text() == QLatin1String( "" ) ) || ( leCONVOutput->text() == QLatin1String( "" ) ) ||
-         ( leCONVLayer->text() == QLatin1String( "" ) ) )
+    if ( ( leCONVInput->text().isEmpty() ) || ( leCONVOutput->text().isEmpty() ) ||
+         ( leCONVLayer->text().isEmpty() ) )
       pbnOK->setEnabled( false );
     else
       pbnOK->setEnabled( true );
@@ -259,7 +259,7 @@ void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
                                 tr( "GPS eXchange format" ) + " (*.gpx)" );
   if ( !myFileNameQString.isEmpty() )
   {
-    leGPXFile->setText( myFileNameQString );
+    mFileWidget->setFilePath( myFileNameQString );
     settings.setValue( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QFileInfo( myFileNameQString ).absolutePath() );
   }
 }
@@ -369,7 +369,7 @@ void QgsGPSPluginGui::populateULLayerComboBox()
 
 void QgsGPSPluginGui::populateIMPBabelFormats()
 {
-  mBabelFilter = QLatin1String( "" );
+  mBabelFilter.clear();
   cmbULDevice->clear();
   cmbDLDevice->clear();
   QgsSettings settings;
@@ -449,4 +449,9 @@ void QgsGPSPluginGui::restoreState()
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Plugin-GPS/geometry" ) ).toByteArray() );
   tabWidget->setCurrentIndex( settings.value( QStringLiteral( "Plugin-GPS/lastTab" ), 4 ).toInt() );
+}
+
+void QgsGPSPluginGui::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_gps/plugins_gps.html" ) );
 }

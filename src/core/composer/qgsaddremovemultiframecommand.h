@@ -53,8 +53,8 @@ class CORE_EXPORT QgsAddRemoveMultiFrameCommand: public QUndoCommand
 
     QgsComposerMultiFrame *mMultiFrame = nullptr;
     QgsComposition *mComposition = nullptr;
-    State mState;
-    bool mFirstRun;
+    State mState = Added;
+    bool mFirstRun = true;
 };
 
 #endif // QGSADDREMOVEMULTIFRAMECOMMAND_H

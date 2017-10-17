@@ -51,7 +51,7 @@ void QgsMapRendererTask::addAnnotations( QList< QgsAnnotation * > annotations )
   }
 }
 
-void QgsMapRendererTask::addDecorations( QList< QgsMapDecoration * > decorations )
+void QgsMapRendererTask::addDecorations( const QList< QgsMapDecoration * > &decorations )
 {
   mDecorations = decorations;
 }

@@ -23,7 +23,7 @@
 QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent )
   : QgsSnappingUtils( parent )
   , mCanvas( canvas )
-  , mProgress( nullptr )
+
 {
   connect( canvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasSnappingUtils::canvasMapSettingsChanged );
   connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasSnappingUtils::canvasMapSettingsChanged );

@@ -42,8 +42,6 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
      */
     explicit QgsFieldConditionalFormatWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
-    ~QgsFieldConditionalFormatWidget();
-
     /** Switches the widget to the rules page.
      */
     void viewRules();
@@ -92,8 +90,8 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
 
   private:
     QgsVectorLayer *mLayer = nullptr;
-    int mEditIndex;
-    bool mEditing;
+    int mEditIndex = 0;
+    bool mEditing = false;
     QStandardItemModel *mModel = nullptr;
     QStandardItemModel *mPresetsModel = nullptr;
     QList<QgsConditionalStyle> mPresets;

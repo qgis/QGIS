@@ -154,7 +154,7 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
     int removedColumnCount = 0;
 
     // Check if there have a contiguous set of columns have been removed or if we require a full reset
-    for ( int i = 0; i < qMin( newColumnMapping.size(), mColumnMapping.size() - removedColumnCount ); ++i )
+    for ( int i = 0; i < std::min( newColumnMapping.size(), mColumnMapping.size() - removedColumnCount ); ++i )
     {
       if ( newColumnMapping.at( i ) == mColumnMapping.at( i + removedColumnCount ) )
         continue;
@@ -227,7 +227,7 @@ void QgsAttributeTableFilterModel::sort( const QString &expression, Qt::SortOrde
 
   QSortFilterProxyModel::sort( -1 );
   masterModel()->prefetchSortData( expression );
-  QSortFilterProxyModel::sort( 0, order ) ;
+  QSortFilterProxyModel::sort( 0, order );
 }
 
 QString QgsAttributeTableFilterModel::sortExpression() const

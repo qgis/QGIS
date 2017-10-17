@@ -202,8 +202,8 @@
                  <string>…</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="../plugins/georeferencer/georeferencer.qrc">
-                  <normaloff>:/icons/default/mActionTransformSettings.png</normaloff>:/icons/default/mActionTransformSettings.png</iconset>
+                 <iconset resource="../../images/images.qrc">
+                  <normaloff>:/images/themes/default/propertyicons/settings.svg</normaloff>:/images/themes/default/propertyicons/settings.svg</iconset>
                 </property>
                 <property name="popupMode">
                  <enum>QToolButton::InstantPopup</enum>

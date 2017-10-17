@@ -14,7 +14,6 @@
 #include "qgsdelimitedtextsourceselect.h"
 
 #include "qgisinterface.h"
-#include "qgscontexthelp.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
 #include "qgsdelimitedtextprovider.h"
@@ -37,22 +36,15 @@ const int MAX_SAMPLE_LENGTH = 200;
 QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mFile( new QgsDelimitedTextFile() )
-  , mExampleRowCount( 20 )
-  , mBadRowCount( 0 )
   , mPluginKey( QStringLiteral( "/Plugin-DelimitedText" ) )
-  , mLastFileType( QLatin1String( "" ) )
 {
 
   setupUi( this );
+  setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDelimitedTextSourceSelect::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( mPluginKey + "/geometry" ).toByteArray() );
-
-  if ( widgetMode() !=  QgsProviderRegistry::WidgetMode::None )
-  {
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Cancel ) );
-    buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Add" ) );
-  }
 
   bgFileFormat = new QButtonGroup( this );
   bgFileFormat->addButton( delimiterCSV, swFileFormat->indexOf( swpCSVOptions ) );
@@ -114,7 +106,7 @@ void QgsDelimitedTextSourceSelect::on_btnBrowseForFile_clicked()
   getOpenFileName();
 }
 
-void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
+void QgsDelimitedTextSourceSelect::addButtonClicked()
 {
   // The following conditions should not be hit! OK will not be enabled...
   if ( txtLayerName->text().isEmpty() )
@@ -198,21 +190,17 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
 
 
   // add the layer to the map
-  emit addVectorLayer( QString::fromAscii( url.toEncoded() ), txtLayerName->text(), QStringLiteral( "delimitedtext" ) );
+  emit addVectorLayer( QString::fromLatin1( url.toEncoded() ), txtLayerName->text() );
   if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
   {
     accept();
   }
 }
 
-void QgsDelimitedTextSourceSelect::on_buttonBox_rejected()
-{
-  reject();
-}
 
 QString QgsDelimitedTextSourceSelect::selectedChars()
 {
-  QString chars = QLatin1String( "" );
+  QString chars;
   if ( cbxDelimComma->isChecked() )
     chars.append( ',' );
   if ( cbxDelimSpace->isChecked() )
@@ -745,6 +733,10 @@ bool QgsDelimitedTextSourceSelect::validate()
 
 void QgsDelimitedTextSourceSelect::enableAccept()
 {
-  bool enabled = validate();
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+  emit enableButtons( validate() );
+}
+
+void QgsDelimitedTextSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#importing-a-delimited-text-file" ) );
 }

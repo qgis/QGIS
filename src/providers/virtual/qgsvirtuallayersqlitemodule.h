@@ -44,7 +44,7 @@ int qgsvlayerModuleInit( sqlite3 *db,
 #ifdef __cplusplus
 }
 
-#include <qgsgeometry.h>
+#include "qgsgeometry.h"
 
 /**
  * Init the SQLite file with proper metadata tables

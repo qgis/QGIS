@@ -205,7 +205,7 @@ void QgsAnnotation::updateBalloon()
   mBalloonSegment = minEdgeIndex;
   QPointF minEdgeEnd = minEdge.p2();
   mBalloonSegmentPoint1 = QPointF( minEdgePoint.x(), minEdgePoint.y() );
-  if ( sqrt( minEdgePoint.sqrDist( minEdgeEnd.x(), minEdgeEnd.y() ) ) < segmentPointWidth )
+  if ( std::sqrt( minEdgePoint.sqrDist( minEdgeEnd.x(), minEdgeEnd.y() ) ) < segmentPointWidth )
   {
     mBalloonSegmentPoint1 = pointOnLineWithDistance( minEdge.p2(), minEdge.p1(), segmentPointWidth );
   }
@@ -261,7 +261,7 @@ QPointF QgsAnnotation::pointOnLineWithDistance( QPointF startPoint, QPointF dire
 {
   double dx = directionPoint.x() - startPoint.x();
   double dy = directionPoint.y() - startPoint.y();
-  double length = sqrt( dx * dx + dy * dy );
+  double length = std::sqrt( dx * dx + dy * dy );
   double scaleFactor = distance / length;
   return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }

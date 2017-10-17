@@ -18,16 +18,16 @@ email                : hugo dot mercier at oslandia dot com
 
 #include "qgsvirtuallayersourceselect.h"
 
-#include <layertree/qgslayertreeview.h>
-#include <qgsvectorlayer.h>
-#include <qgsvectordataprovider.h>
-#include <qgsproject.h>
-#include <qgsprojectionselectiondialog.h>
-#include <layertree/qgslayertreemodel.h>
-#include <layertree/qgslayertreegroup.h>
-#include <layertree/qgslayertreelayer.h>
-#include <layertree/qgslayertree.h>
-#include <qgsproviderregistry.h>
+#include "layertree/qgslayertreeview.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsproject.h"
+#include "qgsprojectionselectiondialog.h"
+#include "layertree/qgslayertreemodel.h"
+#include "layertree/qgslayertreegroup.h"
+#include "layertree/qgslayertreelayer.h"
+#include "layertree/qgslayertree.h"
+#include "qgsproviderregistry.h"
 
 #include "qgsembeddedlayerselectdialog.h"
 
@@ -39,16 +39,9 @@ email                : hugo dot mercier at oslandia dot com
 
 QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
-  , mSrid( 0 )
-  , mTreeView( nullptr )
 {
   setupUi( this );
-
-  if ( widgetMode != QgsProviderRegistry::WidgetMode::None )
-  {
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Cancel ) );
-    buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Add" ) );
-  }
+  setupButtons( buttonBox );
 
   connect( mTestButton, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::onTestQuery );
   connect( mBrowseCRSBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::onBrowseCRS );
@@ -70,7 +63,8 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   }
   // It needs to find the layertree view without relying on the parent
   // being the main window
-  for ( const QWidget *widget : qApp->allWidgets() )
+  const QList< QWidget * > widgets = qApp->allWidgets();
+  for ( const QWidget *widget : widgets )
   {
     if ( ! mTreeView )
     {
@@ -92,6 +86,9 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
     connect( mTreeView->model(), &QAbstractItemModel::rowsRemoved, this, &QgsVirtualLayerSourceSelect::updateLayersList );
     connect( mTreeView->model(), &QAbstractItemModel::dataChanged, this, &QgsVirtualLayerSourceSelect::updateLayersList );
   }
+  // There is no validation logic to enable/disable the buttons
+  // so they must be enabled by default
+  emit enableButtons( true );
 }
 
 void QgsVirtualLayerSourceSelect::refresh()
@@ -346,7 +343,7 @@ void QgsVirtualLayerSourceSelect::onImportLayer()
   }
 }
 
-void QgsVirtualLayerSourceSelect::on_buttonBox_accepted()
+void QgsVirtualLayerSourceSelect::addButtonClicked()
 {
   QString layerName = QStringLiteral( "virtual_layer" );
   QString id;
@@ -378,7 +375,7 @@ void QgsVirtualLayerSourceSelect::on_buttonBox_accepted()
   }
   else
   {
-    emit addVectorLayer( def.toString(), layerName, QStringLiteral( "virtual" ) );
+    emit addVectorLayer( def.toString(), layerName );
   }
   if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
   {

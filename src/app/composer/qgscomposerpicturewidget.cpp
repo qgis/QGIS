@@ -85,11 +85,6 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture *picture 
   registerDataDefinedButton( mStrokeWidthDDBtn, QgsComposerObject::PictureSvgStrokeWidth );
 }
 
-QgsComposerPictureWidget::~QgsComposerPictureWidget()
-{
-
-}
-
 void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
 {
   QgsSettings s;
@@ -569,7 +564,7 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString &path )
       listItem->setIcon( icon );
     }
 
-    listItem->setText( QLatin1String( "" ) );
+    listItem->setText( QString() );
     //store the absolute icon file path as user data
     listItem->setData( Qt::UserRole, fileIt->absoluteFilePath() );
     ++counter;

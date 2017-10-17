@@ -185,13 +185,13 @@ class CORE_EXPORT QgsJsonExporter
     QgsAttributeList mExcludedAttributeIndexes;
 
     //! Whether to include geometry in JSON export
-    bool mIncludeGeometry;
+    bool mIncludeGeometry = true;
 
     //! Whether to include attributes in JSON export
-    bool mIncludeAttributes;
+    bool mIncludeAttributes = true;
 
     //! Whether to include attributes from related features in JSON export
-    bool mIncludeRelatedAttributes;
+    bool mIncludeRelatedAttributes = false;
 
     //! Associated vector layer. Required for related attribute export.
     QPointer< QgsVectorLayer > mLayer;
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsJsonUtils
      * to speed up exporting the attributes for multiple features from the same layer.
      */
     static QString exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
-                                     QVector<QVariant> attributeWidgetCaches = QVector<QVariant>() );
+                                     const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>() );
 
     /** Parse a simple array (depth=1).
      * \param json the JSON to parse

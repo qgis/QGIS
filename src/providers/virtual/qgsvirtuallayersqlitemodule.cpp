@@ -16,22 +16,22 @@ email                : hugo dot mercier at oslandia dot com
 
 #include <string.h>
 #include <iostream>
-#include <stdint.h>
+#include <cstdint>
 #include <stdexcept>
 
 #include <QCoreApplication>
 #include <QBuffer>
 
-#include <qgsapplication.h>
-#include <qgsvectorlayer.h>
-#include <qgsvectordataprovider.h>
-#include <qgsgeometry.h>
-#include <qgsproject.h>
-#include <qgsproviderregistry.h>
+#include "qgsapplication.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsgeometry.h"
+#include "qgsproject.h"
+#include "qgsproviderregistry.h"
 #include "qgsinterval.h"
 #include <sqlite3.h>
 #include <spatialite.h>
-#include <stdio.h>
+#include <cstdio>
 #include "qgsvirtuallayersqlitemodule.h"
 #include "qgsvirtuallayerblob.h"
 #include "qgsslottofunction.h"
@@ -91,7 +91,6 @@ struct VTable
       , nRef( 0 )
       , zErrMsg( nullptr )
       , mSql( db )
-      , mProvider( nullptr )
       , mLayer( layer )
       , mSlotToFunction( invalidateTable, this )
       , mName( layer->name() )
@@ -111,7 +110,6 @@ struct VTable
       , nRef( 0 )
       , zErrMsg( nullptr )
       , mSql( db )
-      , mLayer( nullptr )
       , mName( name )
       , mEncoding( encoding )
       , mPkColumn( -1 )

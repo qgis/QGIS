@@ -71,7 +71,7 @@ point features or be used to define the path of a way.
 class ANALYSIS_EXPORT QgsOSMNode : public QgsOSMElement
 {
   public:
-    QgsOSMNode() : mPoint() {}
+    QgsOSMNode() {}
     QgsOSMNode( QgsOSMId id, const QgsPointXY &point )
       : QgsOSMElement( QgsOSMElementID::Node, id )
       , mPoint( point )

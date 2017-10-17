@@ -218,18 +218,18 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     /**
      * Flag indicating if the layer data source is a valid layer
      */
-    bool mValid;
+    bool mValid = false;
 
     QString mGisdbase;      // map gisdabase
     QString mLocation;      // map location name (not path!)
     QString mMapset;        // map mapset
     QString mMapName;       // map name
 
-    RASTER_MAP_TYPE mGrassDataType; // CELL_TYPE, DCELL_TYPE, FCELL_TYPE
+    RASTER_MAP_TYPE mGrassDataType = 0; // CELL_TYPE, DCELL_TYPE, FCELL_TYPE
 
-    int mCols;
-    int mRows;
-    int mYBlockSize;
+    int mCols = 0;
+    int mRows = 0;
+    int mYBlockSize = 0;
 
     QHash<QString, QString> mInfo;
 

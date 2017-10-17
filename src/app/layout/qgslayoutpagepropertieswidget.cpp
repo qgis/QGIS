@@ -55,6 +55,10 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
   connect( mWidthSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPagePropertiesWidget::setToCustomSize );
   connect( mHeightSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPagePropertiesWidget::setToCustomSize );
 
+  registerDataDefinedButton( mPaperSizeDDBtn, QgsLayoutObject::PresetPaperSize );
+  registerDataDefinedButton( mWidthDDBtn, QgsLayoutObject::ItemWidth );
+  registerDataDefinedButton( mHeightDDBtn, QgsLayoutObject::ItemHeight );
+
   showCurrentPageSize();
 }
 
@@ -124,7 +128,9 @@ void QgsLayoutPagePropertiesWidget::orientationChanged( int )
 
 void QgsLayoutPagePropertiesWidget::updatePageSize()
 {
+  mPage->layout()->undoStack()->beginCommand( mPage, tr( "Changed page size" ), 1 + mPage->layout()->pageCollection()->pageNumber( mPage ) );
   mPage->setPageSize( QgsLayoutSize( mWidthSpin->value(), mHeightSpin->value(), mSizeUnitsComboBox->unit() ) );
+  mPage->layout()->undoStack()->endCommand();
   mPage->layout()->pageCollection()->reflow();
 }
 
@@ -143,8 +149,6 @@ void QgsLayoutPagePropertiesWidget::showCurrentPageSize()
   if ( !pageSize.isEmpty() )
   {
     mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->findData( pageSize ) );
-    mWidthSpin->setEnabled( false );
-    mHeightSpin->setEnabled( false );
     mLockAspectRatio->setEnabled( false );
     mLockAspectRatio->setLocked( false );
     mSizeUnitsComboBox->setEnabled( false );
@@ -154,8 +158,6 @@ void QgsLayoutPagePropertiesWidget::showCurrentPageSize()
   {
     // custom
     mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->count() - 1 );
-    mWidthSpin->setEnabled( true );
-    mHeightSpin->setEnabled( true );
     mLockAspectRatio->setEnabled( true );
     mSizeUnitsComboBox->setEnabled( true );
     mPageOrientationComboBox->setEnabled( false );

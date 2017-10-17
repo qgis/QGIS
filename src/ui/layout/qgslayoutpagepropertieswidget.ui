@@ -33,46 +33,64 @@
       <string>Page size</string>
      </property>
      <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Size</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0">
-       <widget class="QLabel" name="mWidthLabel">
-        <property name="text">
-         <string>Width</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="mPageOrientationComboBox"/>
-      </item>
-      <item row="1" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
          <string>Orientation</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="mPageSizeComboBox"/>
-      </item>
       <item row="3" column="0">
-       <widget class="QLabel" name="mHeightLabel">
+       <widget class="QLabel" name="mWidthLabel">
         <property name="text">
-         <string>Height</string>
+         <string>Width</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" rowspan="2">
-       <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,0,0,0,1">
-        <item row="0" column="4" rowspan="2">
+      <item row="3" column="1" rowspan="2">
+       <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,0,0,0,0,0">
+        <item row="0" column="5" rowspan="2">
          <widget class="QgsLayoutUnitsComboBox" name="mSizeUnitsComboBox"/>
         </item>
-        <item row="0" column="3" rowspan="2">
+        <item row="1" column="0" colspan="3">
+         <widget class="QgsDoubleSpinBox" name="mHeightSpin">
+          <property name="suffix">
+           <string/>
+          </property>
+          <property name="decimals">
+           <number>3</number>
+          </property>
+          <property name="maximum">
+           <double>9999999.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>100.000000000000000</double>
+          </property>
+          <property name="showClearButton" stdset="0">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="3">
+         <widget class="QgsDoubleSpinBox" name="mWidthSpin">
+          <property name="suffix">
+           <string/>
+          </property>
+          <property name="decimals">
+           <number>3</number>
+          </property>
+          <property name="maximum">
+           <double>9999999.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>100.000000000000000</double>
+          </property>
+          <property name="showClearButton" stdset="0">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="4" rowspan="2">
          <layout class="QHBoxLayout" name="_2">
           <property name="leftMargin">
            <number>2</number>
@@ -104,45 +122,55 @@
           </item>
          </layout>
         </item>
-        <item row="0" column="0" colspan="3">
-         <widget class="QgsDoubleSpinBox" name="mWidthSpin">
-          <property name="suffix">
-           <string/>
-          </property>
-          <property name="decimals">
-           <number>3</number>
-          </property>
-          <property name="maximum">
-           <double>9999999.000000000000000</double>
-          </property>
-          <property name="value">
-           <double>100.000000000000000</double>
-          </property>
-          <property name="showClearButton" stdset="0">
-           <bool>false</bool>
+        <item row="0" column="3">
+         <widget class="QgsPropertyOverrideButton" name="mWidthDDBtn">
+          <property name="text">
+           <string>…</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="0" colspan="3">
-         <widget class="QgsDoubleSpinBox" name="mHeightSpin">
-          <property name="suffix">
-           <string/>
-          </property>
-          <property name="decimals">
-           <number>3</number>
-          </property>
-          <property name="maximum">
-           <double>9999999.000000000000000</double>
-          </property>
-          <property name="value">
-           <double>100.000000000000000</double>
-          </property>
-          <property name="showClearButton" stdset="0">
-           <bool>false</bool>
+        <item row="1" column="3">
+         <widget class="QgsPropertyOverrideButton" name="mHeightDDBtn">
+          <property name="text">
+           <string>…</string>
           </property>
          </widget>
         </item>
        </layout>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="mHeightLabel">
+        <property name="text">
+         <string>Height</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="mPageOrientationComboBox"/>
+      </item>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QComboBox" name="mPageSizeComboBox"/>
+        </item>
+        <item>
+         <widget class="QgsPropertyOverrideButton" name="mPaperSizeDDBtn">
+          <property name="text">
+           <string>…</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Size</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -166,13 +194,21 @@
    <extends>QComboBox</extends>
    <header>qgslayoutunitscombobox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mPageSizeComboBox</tabstop>
+  <tabstop>mPaperSizeDDBtn</tabstop>
   <tabstop>mPageOrientationComboBox</tabstop>
   <tabstop>mWidthSpin</tabstop>
-  <tabstop>mHeightSpin</tabstop>
+  <tabstop>mWidthDDBtn</tabstop>
   <tabstop>mLockAspectRatio</tabstop>
+  <tabstop>mHeightSpin</tabstop>
+  <tabstop>mHeightDDBtn</tabstop>
   <tabstop>mSizeUnitsComboBox</tabstop>
  </tabstops>
  <resources/>

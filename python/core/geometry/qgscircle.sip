@@ -112,6 +112,19 @@ class QgsCircle : QgsEllipse
  :rtype: QgsCircle
 %End
 
+    static QgsCircle minimalCircleFrom3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 );
+%Docstring
+ Constructs the smallest circle from 3 points.
+ Z and m values are dropped for the center point.
+ The azimuth always takes the default value.
+ If the points are colinear an empty circle is returned.
+ \param pt1 First point.
+ \param pt2 Second point.
+ \param pt3 Third point.
+ \param epsilon Value used to compare point.
+ :rtype: QgsCircle
+%End
+
     virtual double area() const;
 
     virtual double perimeter() const;
@@ -120,6 +133,7 @@ class QgsCircle : QgsEllipse
 
 
     virtual void setSemiMajorAxis( const double semiMajorAxis );
+
 %Docstring
  Inherited method. Use setRadius instead.
 .. seealso:: radius()
@@ -127,6 +141,7 @@ class QgsCircle : QgsEllipse
 %End
 
     virtual void setSemiMinorAxis( const double semiMinorAxis );
+
 %Docstring
  Inherited method. Use setRadius instead.
 .. seealso:: radius()
@@ -159,6 +174,11 @@ Set the radius of the circle
  :rtype: QgsCircularString
 %End
 
+    bool contains( const QgsPoint &point, double epsilon = 1E-8 ) const;
+%Docstring
+Returns true if the circle contains the ``point``.
+ :rtype: bool
+%End
 
     virtual QgsRectangle boundingBox() const;
 

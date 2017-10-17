@@ -32,7 +32,7 @@ namespace QgsWms
 
     Q_UNUSED( version );
 
-    QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
+    QgsRenderer renderer( serverIface, project, params );
 
     QString format = params.value( "FORMAT" );
     QString contentType;
@@ -63,9 +63,8 @@ namespace QgsWms
                                  QString( "Output format %1 is not supported by the GetPrint request" ).arg( format ) );
     }
 
-    std::unique_ptr<QByteArray> result( renderer.getPrint( format ) );
     response.setHeader( QStringLiteral( "Content-Type" ), contentType );
-    response.write( *result );
+    response.write( renderer.getPrint( format ) );
   }
 
 } // samespace QgsWms

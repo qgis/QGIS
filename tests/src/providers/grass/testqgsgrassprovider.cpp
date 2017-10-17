@@ -55,10 +55,10 @@ extern "C"
 class TestQgsGrassFeature : public QgsFeature
 {
   public:
-    TestQgsGrassFeature() : grassType( 0 ) { setValid( true ); }
+    TestQgsGrassFeature() { setValid( true ); }
     explicit TestQgsGrassFeature( int type ) : grassType( type ) { setValid( true ); }
 
-    int grassType;
+    int grassType =  0 ;
 };
 
 // Command which can be composed of more GRASS features, e.g. boundaries + centroid equivalent
@@ -82,26 +82,19 @@ class TestQgsGrassCommand
     };
 
     TestQgsGrassCommand()
-      : command( AddFeature )
-      , verify( true )
-      , fid( 0 )
-      , geometry( 0 )
     {}
     explicit TestQgsGrassCommand( Command c )
       : command( c )
-      , verify( true )
-      , fid( 0 )
-      , geometry( 0 )
     {}
 
     QString toString() const;
-    Command command;
+    Command command =  AddFeature ;
     // some commands (in case of multiple commands making single change) must not be verified
-    bool verify;
+    bool verify =  true ;
 
     QList<TestQgsGrassFeature> grassFeatures;
     QgsFeature expectedFeature; // simple feature for verification
-    QgsFeatureId fid;
+    QgsFeatureId fid =  0 ;
     QgsField field;
     QgsGeometry *geometry = nullptr;
     QVariant value;
@@ -340,7 +333,7 @@ bool TestQgsGrassProvider::compare( const QStringList &expected, const QStringLi
 
 bool TestQgsGrassProvider::compare( double expected, double got, bool &ok )
 {
-  if ( qAbs( got - expected ) > TINY_VALUE )
+  if ( std::fabs( got - expected ) > TINY_VALUE )
   {
     ok = false;
     return false;

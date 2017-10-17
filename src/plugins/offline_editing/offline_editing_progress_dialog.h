@@ -36,7 +36,7 @@ class QgsOfflineEditingProgressDialog : public QDialog, private Ui::QgsOfflineEd
     void setProgressValue( int value );
 
   private:
-    int mProgressUpdate;
+    int mProgressUpdate = 0;
 };
 
 #endif // QGS_OFFLINE_EDITING_PROGRESS_DIALOG_H

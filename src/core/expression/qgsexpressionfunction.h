@@ -179,7 +179,7 @@ class CORE_EXPORT QgsExpressionFunction
         return mParams;
 
       int min = 0;
-      Q_FOREACH ( const Parameter &param, mParameterList )
+      for ( const Parameter &param : mParameterList )
       {
         if ( !param.optional() )
           min++;
@@ -369,8 +369,8 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
                                  FcnEval fcn,
                                  const QString &group,
                                  const QString &helpText,
-                                 std::function < bool ( const QgsExpressionNodeFunction *node ) > usesGeometry,
-                                 std::function < QSet<QString>( const QgsExpressionNodeFunction *node ) > referencedColumns,
+                                 const std::function< bool( const QgsExpressionNodeFunction * )> &usesGeometry,
+                                 const std::function< QSet<QString>( const QgsExpressionNodeFunction * )> &referencedColumns,
                                  bool lazyEval = false,
                                  const QStringList &aliases = QStringList(),
                                  bool handlesNull = false );
@@ -423,7 +423,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
      * By default this is set to a function that checks all arguments that have been passed to the variable
      * and if all of them are static, it will be assumed that the function is static as well.
      */
-    void setIsStaticFunction( std::function < bool( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) > isStatic );
+    void setIsStaticFunction( const std::function< bool ( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) > &isStatic );
 
     /**
      * Tag this function as either static or not static.
@@ -440,7 +440,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
      * By default this is set to a function that checks all arguments that have been passed to the variable
      * and if all of them are static, it will be assumed that the function is static as well.
      */
-    void setPrepareFunction( std::function < bool( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) > prepareFunc );
+    void setPrepareFunction( const std::function< bool( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * )> &prepareFunc );
 
     static const QList<QgsExpressionFunction *> &functions();
 

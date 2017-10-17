@@ -129,13 +129,13 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
   private:
 
-    bool mAllowAlpha;
+    bool mAllowAlpha = true;
 
-    int mLastCustomColorIndex;
+    int mLastCustomColorIndex = 0;
 
-    bool mPickingColor;
+    bool mPickingColor = false;
 
-    bool mDiscarded;
+    bool mDiscarded = false;
 
     /** Saves all widget settings
      */

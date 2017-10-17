@@ -40,8 +40,6 @@ class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
   public:
     QgsGroupBoxCollapseButton( QWidget *parent SIP_TRANSFERTHIS = nullptr )
       : QToolButton( parent )
-      , mAltDown( false )
-      , mShiftDown( false )
     {}
 
     bool altDown() const { return mAltDown; }
@@ -59,8 +57,8 @@ class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
     }
 
   private:
-    bool mAltDown;
-    bool mShiftDown;
+    bool mAltDown = false;
+    bool mShiftDown = false;
 };
 
 /** \ingroup gui

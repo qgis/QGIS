@@ -38,8 +38,8 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     virtual bool operator==( const QgsCurve &other ) const override;
     virtual bool operator!=( const QgsCurve &other ) const override;
 
-    virtual QString geometryType() const override { return QStringLiteral( "CircularString" ); }
-    virtual int dimension() const override { return 1; }
+    virtual QString geometryType() const override;
+    virtual int dimension() const override;
     virtual QgsCircularString *clone() const override SIP_FACTORY;
     virtual void clear() override;
 
@@ -93,11 +93,11 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
                                    QgsVertexId &vertexAfter SIP_OUT,
-                                   bool *leftOf SIP_OUT, double epsilon ) const override;
+                                   bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
 
     bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const override;
     void sumUpArea( double &sum SIP_OUT ) const override;
-    bool hasCurvedSegments() const override { return true; }
+    bool hasCurvedSegments() const override;
 
     /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
         \param vertex the vertex id
@@ -114,6 +114,22 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 
     double xAt( int index ) const override;
     double yAt( int index ) const override;
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsCircularString.
+     * Should be used by qgsgeometry_cast<QgsCircularString *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsCircularString *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::CircularString )
+        return static_cast<const QgsCircularString *>( geom );
+      return nullptr;
+    }
+#endif
 
   protected:
 
@@ -125,7 +141,9 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     QVector<double> mZ;
     QVector<double> mM;
 
+#if 0
     static void arcTo( QPainterPath &path, QPointF pt1, QPointF pt2, QPointF pt3 );
+#endif
     //bounding box of a single segment
     static QgsRectangle segmentBoundingBox( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3 );
     static QgsPointSequence compassPointsOnSegment( double p1Angle, double p2Angle, double p3Angle, double centerX, double centerY, double radius );
@@ -135,5 +153,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     void deleteVertex( int i );
 
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSCIRCULARSTRING_H

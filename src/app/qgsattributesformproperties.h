@@ -24,7 +24,6 @@
 #include <QSpinBox>
 #include <QTreeWidgetItem>
 #include <QDropEvent>
-#include <QPushButton>
 #include <QTableWidgetItem>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -57,7 +56,8 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     enum FieldPropertiesRoles
     {
       DnDTreeRole = Qt::UserRole,
-      FieldConfigRole
+      FieldConfigRole,
+      FieldNameRole
     };
 
     struct RelationEditorConfiguration
@@ -102,7 +102,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         Type type() const { return mType; }
         void setType( Type type ) { mType = type; }
 
-        QVariant asQVariant() { return QVariant::fromValue<DnDTreeItemData>( *this ); }
+        operator QVariant() { return QVariant::fromValue<DnDTreeItemData>( *this ); }
 
         int columnCount() const { return mColumnCount; }
         void setColumnCount( int count ) { mColumnCount = count; }
@@ -133,22 +133,23 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     /**
      * Holds the configuration for a field
      */
-    class FieldConfig
+    struct FieldConfig
     {
-      public:
-        FieldConfig();
-        FieldConfig( QgsVectorLayer *layer, int idx );
+      FieldConfig();
+      FieldConfig( QgsVectorLayer *layer, int idx );
 
-        bool mEditable;
-        bool mEditableEnabled;
-        bool mLabelOnTop;
-        QgsFieldConstraints::Constraints mConstraints;
-        QHash< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength > mConstraintStrength;
-        QString mConstraint;
-        QString mConstraintDescription;
-        QPushButton *mButton = nullptr;
-        QString mEditorWidgetType;
-        QMap<QString, QVariant> mEditorWidgetConfig;
+      bool mEditable;
+      bool mEditableEnabled;
+      bool mLabelOnTop;
+      QgsFieldConstraints::Constraints mConstraints;
+      QHash< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength > mConstraintStrength;
+      QString mConstraint;
+      QString mConstraintDescription;
+      QPushButton *mButton = nullptr;
+      QString mEditorWidgetType;
+      QMap<QString, QVariant> mEditorWidgetConfig;
+
+      operator QVariant();
     };
 
   public:
@@ -164,8 +165,9 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
 
     void loadRelations();
 
-    void loadAttributeEditorTree( DnDTree *mTree );
-    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, DnDTree* mTree);
+    void initAvailableWidgetsTree();
+    void initFormLayoutTree();
+    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, DnDTree *tree );
 
   protected:
     void updateButtons();
@@ -176,21 +178,19 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     //QList<QgsRelation> mRelations;
     QgsVectorLayer *mLayer = nullptr;
 
-    DnDTree *mDragTree = nullptr;
-    DnDTree *mDropTree = nullptr;
+    DnDTree *mAvailableWidgetsTree = nullptr;
+    DnDTree *mFormLayoutTree = nullptr;
 
     QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
 
 
   private:
-
-  signals:
+    void loadAttributeTypeDialog();
+    void storeAttributeTypeDialog( );
 
   private slots:
-  void addTabOrGroupButton();
-  void removeTabOrGroupButton();
-  void loadAttributeTypeDialog( );
-  void storeAttributeTypeDialog( );
+    void addTabOrGroupButton();
+    void removeTabOrGroupButton();
 };
 
 
@@ -222,9 +222,10 @@ class DnDTree : public QTreeWidget
       Drop
     };
 
-    Type type;
 
-    QList<QTreeWidgetItem *> mIndexedWidgets;
+    Type type() const;
+    void setType( const Type &value );
+
   protected:
     virtual void dragMoveEvent( QDragMoveEvent *event ) override;
     virtual void dropEvent( QDropEvent *event ) override;
@@ -242,6 +243,7 @@ class DnDTree : public QTreeWidget
 
   private:
     QgsVectorLayer *mLayer = nullptr;
+    Type mType;
 };
 
 

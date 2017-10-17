@@ -73,10 +73,6 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
   connect( mLockButton, &QAbstractButton::toggled, mScale, &QWidget::setDisabled );
 }
 
-QgsStatusBarScaleWidget::~QgsStatusBarScaleWidget()
-{
-}
-
 void QgsStatusBarScaleWidget::setScale( double scale )
 {
   mScale->blockSignals( true );

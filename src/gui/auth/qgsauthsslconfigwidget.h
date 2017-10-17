@@ -173,9 +173,9 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     QTreeWidgetItem *mVerifyDepthItem = nullptr;
     QSpinBox *mVerifyDepthSpnBx = nullptr;
 
-    bool mCanSave;
+    bool mCanSave = false;
 
-    bool mDisabled;
+    bool mDisabled = false;
     QVBoxLayout *mAuthNotifyLayout = nullptr;
     QLabel *mAuthNotify = nullptr;
 };

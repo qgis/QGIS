@@ -52,9 +52,6 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<
   , mLayerPage( 1 )
   , mMapCanvas( canvas )
   , mBlockAutoApply( false )
-  , mCurrentLayer( nullptr )
-  , mLabelingWidget( nullptr )
-  , mRasterStyleWidget( nullptr )
   , mPageFactories( pages )
 {
   setupUi( this );
@@ -74,7 +71,6 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<
 
   mStyleManagerFactory = new QgsLayerStyleManagerWidgetFactory();
 
-  QList<QgsMapLayerConfigWidgetFactory *> l;
   setPageFactories( pages );
 
   connect( mUndoButton, &QAbstractButton::pressed, this, &QgsLayerStylingWidget::undo );
@@ -139,7 +135,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   bool sameLayerType = false;
   if ( mCurrentLayer )
   {
-    sameLayerType =  mCurrentLayer->type() == layer->type();
+    sameLayerType = mCurrentLayer->type() == layer->type();
   }
 
   mCurrentLayer = layer;
@@ -187,7 +183,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   {
     if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
     {
-      QListWidgetItem *item =  new QListWidgetItem( factory->icon(), QString() );
+      QListWidgetItem *item = new QListWidgetItem( factory->icon(), QString() );
       item->setToolTip( factory->title() );
       mOptionsListWidget->addItem( item );
       int row = mOptionsListWidget->row( item );
@@ -365,7 +361,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       {
         if ( !mLabelingWidget )
         {
-          mLabelingWidget = new QgsLabelingWidget( 0, mMapCanvas, mWidgetStack );
+          mLabelingWidget = new QgsLabelingWidget( nullptr, mMapCanvas, mWidgetStack );
           mLabelingWidget->setDockMode( true );
           connect( mLabelingWidget, &QgsLabelingWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
         }

@@ -18,7 +18,16 @@ class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
 #include "qgsmaptoolcapture.h"
 %End
   public:
-    QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode = CaptureNone );
+
+    enum CaptureMode
+    {
+      CaptureNone,
+      CapturePoint,
+      CaptureLine,
+      CapturePolygon
+    };
+
+    QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 %Docstring
 constructor
 %End
@@ -27,6 +36,14 @@ constructor
 
     virtual void activate();
     virtual void deactivate();
+
+    CaptureMode mode() const;
+%Docstring
+ The capture mode
+
+ :return: Capture mode
+ :rtype: CaptureMode
+%End
 
     int addCurve( QgsCurve *c );
 %Docstring
@@ -114,11 +131,6 @@ Removes the last vertex from mRubberBand and mCaptureList
  :rtype: bool
 %End
 
-    void stopCapturing();
-%Docstring
- Stop capturing
-%End
-
     int size();
 %Docstring
  Number of points digitized
@@ -144,6 +156,13 @@ Removes the last vertex from mRubberBand and mCaptureList
     void closePolygon();
 %Docstring
  Close an open polygon
+%End
+
+  protected slots:
+
+    void stopCapturing();
+%Docstring
+ Stop capturing
 %End
 
 };

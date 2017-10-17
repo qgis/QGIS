@@ -34,9 +34,6 @@
 
 QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
-  , mViewMode( QgsDualView::AttributeEditor )
-  , mShowLabel( true )
-  , mVisible( false )
 {
   QVBoxLayout *topLayout = new QVBoxLayout( this );
   topLayout->setContentsMargins( 0, 9, 0, 0 );
@@ -207,9 +204,10 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
 
   mToggleEditingButton->setVisible( true );
 
-  Q_FOREACH ( QgsTransactionGroup *tg, QgsProject::instance()->transactionGroups().values() )
+  const auto transactionGroups = QgsProject::instance()->transactionGroups();
+  for ( auto it = transactionGroups.constBegin(); it != transactionGroups.constEnd(); ++it )
   {
-    if ( tg->layers().contains( mRelation.referencingLayer() ) )
+    if ( it.value()->layers().contains( mRelation.referencingLayer() ) )
     {
       mToggleEditingButton->setVisible( false );
       mSaveEditsButton->setVisible( false );

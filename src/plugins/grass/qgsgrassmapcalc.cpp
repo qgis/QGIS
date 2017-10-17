@@ -43,8 +43,6 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   , QgsGrassMapcalcBase()
   , QgsGrassModuleOptions( tools, module, iface, false )
   , mTool( -1 )
-  , mObject( 0 )
-  , mConnector( 0 )
 {
   Q_UNUSED( parent );
   Q_UNUSED( f );
@@ -421,8 +419,8 @@ void QgsGrassMapcalc::mouseReleaseEvent( QMouseEvent *e )
       if ( mToolStep == 1 )
       {
         QPoint p0 = mConnector->point( 0 );
-        double d = sqrt( pow( ( double )( p.x() - p0.x() ), 2.0 )
-                         + pow( ( double )( p.y() - p0.y() ), 2.0 ) );
+        double d = std::sqrt( std::pow( ( double )( p.x() - p0.x() ), 2.0 )
+                              + std::pow( ( double )( p.y() - p0.y() ), 2.0 ) );
         QgsDebugMsg( QString( "d = %1" ).arg( d ) );
         if ( d <  5 ) // filter 'single' clicks
         {
@@ -1349,7 +1347,7 @@ void QgsGrassMapcalc::load()
 
         int socket = e2.attribute( QStringLiteral( "socket" ), QStringLiteral( "0" ) ).toInt();
 
-        QgsDebugMsg( QString( "end =  %1 objId = %2 socketType = %3 socket = %4" ).arg( n2 ).arg( objId ).arg( socketType ).arg( socket ) );
+        QgsDebugMsg( QString( "end = %1 objId = %2 socketType = %3 socket = %4" ).arg( n2 ).arg( objId ).arg( socketType ).arg( socket ) );
 
         con->setSocket( n2, objects[objId], socketType, socket );
 
@@ -1385,8 +1383,6 @@ void QgsGrassMapcalc::clear()
 
 /******************** CANVAS ITEMS ******************************/
 QgsGrassMapcalcItem::QgsGrassMapcalcItem()
-  : mSelected( false )
-  , mId( -1 )
 {
 }
 
@@ -1407,7 +1403,6 @@ QgsGrassMapcalcObject::QgsGrassMapcalcObject( int type )
   , mTextHeight( 0 )
   , mInputTextWidth( 0 )
   , mSelectionBoxSize( 5 )
-  , mOutputConnector( 0 )
   , mOutputConnectorEnd( 0 )
 {
 
@@ -1697,8 +1692,8 @@ bool QgsGrassMapcalcObject::tryConnect( QgsGrassMapcalcConnector *connector,
       if ( mInputConnectors[i] )
         continue; // used
 
-      double d = sqrt( pow( ( double )( mInputPoints[i].x() + pos().x() - p.x() ), 2.0 )
-                       + pow( ( double )( mInputPoints[i].y() + pos().y() - p.y() ), 2.0 ) );
+      double d = std::sqrt( std::pow( ( double )( mInputPoints[i].x() + pos().x() - p.x() ), 2.0 )
+                            + std::pow( ( double )( mInputPoints[i].y() + pos().y() - p.y() ), 2.0 ) );
 
       if ( d <= mSocketHalf )
       {
@@ -1713,8 +1708,8 @@ bool QgsGrassMapcalcObject::tryConnect( QgsGrassMapcalcConnector *connector,
   // Output
   if ( !connector->connected( Out ) && !mOutputConnector )
   {
-    double d = sqrt( pow( ( double )( mOutputPoint.x() + pos().x() - p.x() ), 2.0 )
-                     + pow( ( double )( mOutputPoint.y() + pos().y() - p.y() ), 2.0 ) );
+    double d = std::sqrt( std::pow( ( double )( mOutputPoint.x() + pos().x() - p.x() ), 2.0 )
+                          + std::pow( ( double )( mOutputPoint.y() + pos().y() - p.y() ), 2.0 ) );
 
     if ( d <= mSocketHalf )
     {
@@ -1899,11 +1894,11 @@ void QgsGrassMapcalcConnector::selectEnd( QPoint point )
 {
   mSelectedEnd = -1;
 
-  double d0 = sqrt( pow( ( double )( point.x() - mPoints[0].x() ), 2.0 )
-                    + pow( ( double )( point.y() - mPoints[0].y() ), 2.0 ) );
+  double d0 = std::sqrt( std::pow( ( double )( point.x() - mPoints[0].x() ), 2.0 )
+                         + std::pow( ( double )( point.y() - mPoints[0].y() ), 2.0 ) );
 
-  double d1 = sqrt( pow( ( double )( point.x() - mPoints[1].x() ), 2.0 )
-                    + pow( ( double )( point.y() - mPoints[1].y() ), 2.0 ) );
+  double d1 = std::sqrt( std::pow( ( double )( point.x() - mPoints[1].x() ), 2.0 )
+                         + std::pow( ( double )( point.y() - mPoints[1].y() ), 2.0 ) );
 
 
   if ( d0 < 15 || d1 < 15 )
@@ -2023,9 +2018,6 @@ QgsGrassMapcalcFunction::QgsGrassMapcalcFunction( int type, QString name,
 }
 
 QgsGrassMapcalcFunction::QgsGrassMapcalcFunction()
-  : mType( 0 )
-  , mInputCount( 0 )
-  , mDrawLabel( false )
 {
 }
 

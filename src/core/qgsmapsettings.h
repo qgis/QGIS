@@ -339,8 +339,8 @@ class CORE_EXPORT QgsMapSettings
 
     QgsRectangle mExtent;
 
-    double mRotation;
-    double mMagnificationFactor;
+    double mRotation = 0.0;
+    double mMagnificationFactor = 1.0;
 
     //! list of layers to be rendered (stored as weak pointers)
     QgsWeakMapLayerPointerList mLayers;
@@ -358,18 +358,18 @@ class CORE_EXPORT QgsMapSettings
 
     Flags mFlags;
 
-    QImage::Format mImageFormat;
+    QImage::Format mImageFormat = QImage::Format_ARGB32_Premultiplied;
 
     double mSegmentationTolerance;
-    QgsAbstractGeometry::SegmentationToleranceType mSegmentationToleranceType;
+    QgsAbstractGeometry::SegmentationToleranceType mSegmentationToleranceType = QgsAbstractGeometry::MaximumAngle;
 
     QgsLabelingEngineSettings mLabelingEngineSettings;
 
     // derived properties
-    bool mValid; //!< Whether the actual settings are valid (set in updateDerived())
+    bool mValid = false; //!< Whether the actual settings are valid (set in updateDerived())
     QgsRectangle mVisibleExtent; //!< Extent with some additional white space that matches the output aspect ratio
-    double mMapUnitsPerPixel;
-    double mScale;
+    double mMapUnitsPerPixel = 1;
+    double mScale = 1;
 
     // utiity stuff
     QgsScaleCalculator mScaleCalculator;

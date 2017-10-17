@@ -232,7 +232,7 @@ class CORE_EXPORT QgsConditionalStyle
 
   private:
 
-    bool mValid;
+    bool mValid = false;
     QString mName;
     QString mRule;
     std::unique_ptr<QgsSymbol> mSymbol;

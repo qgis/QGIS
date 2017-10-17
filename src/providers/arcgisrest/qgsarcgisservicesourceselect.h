@@ -23,6 +23,8 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsabstractdatasourcewidget.h"
 
+#include <QItemDelegate>
+
 class QStandardItemModel;
 class QSortFilterProxyModel;
 class QgsProjectionSelectionDialog;
@@ -46,10 +48,6 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     //! Destructor
     ~QgsArcGisServiceSourceSelect() override;
 
-  signals:
-    //! Emitted when a layer is added from the dialog
-    void addLayer( QString uri, QString typeName );
-
   protected:
     QString mServiceName;
     ServiceType mServiceType;
@@ -59,7 +57,6 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     QStandardItemModel *mModel = nullptr;
     QSortFilterProxyModel *mModelProxy = nullptr;
     QPushButton *mBuildQueryButton = nullptr;
-    QPushButton *mAddButton = nullptr;
     QButtonGroup *mImageEncodingGroup = nullptr;
     QgsRectangle mCanvasExtent;
     QgsCoordinateReferenceSystem mCanvasCrs;
@@ -83,6 +80,9 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
   private:
     void populateConnectionList();
 
+    //! A layer is added from the dialog
+    virtual void addServiceLayer( QString uri, QString typeName ) = 0;
+
     /** Returns the best suited CRS from a set of authority ids
        1. project CRS if contained in the set
        2. WGS84 if contained in the set
@@ -105,17 +105,29 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     void addEntryToServerList();
     void deleteEntryOfServerList();
     void modifyEntryOfServerList();
-    void addButtonClicked();
+    void addButtonClicked() override;
     void buildQueryButtonClicked();
     void changeCrs();
     void changeCrsFilter();
     void connectToServer();
     void filterChanged( const QString &text );
     void on_cmbConnections_activated( int index );
-    void on_buttonBox_helpRequested() const;
+    void showHelp();
     void treeWidgetItemDoubleClicked( const QModelIndex &index );
     void treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous );
 };
 
+/**
+ * Item delegate with tweaked sizeHint.
+ */
+class QgsAbstractDataSourceWidgetItemDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    //! Constructor
+    QgsAbstractDataSourceWidgetItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }
+    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+};
 
 #endif // QGSARCGISSERVICESOURCESELECT_H

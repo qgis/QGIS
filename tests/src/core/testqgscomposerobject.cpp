@@ -32,7 +32,6 @@ class TestQgsComposerObject : public QObject
 
   public:
     TestQgsComposerObject()
-      : mComposition( 0 )
     {
     }
 

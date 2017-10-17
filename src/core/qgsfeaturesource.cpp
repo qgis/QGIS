@@ -103,3 +103,20 @@ QgsRectangle QgsFeatureSource::sourceExtent() const
   return r;
 }
 
+QgsFeatureIds QgsFeatureSource::allFeatureIds() const
+{
+  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                        .setFlags( QgsFeatureRequest::NoGeometry )
+                                        .setSubsetOfAttributes( QgsAttributeList() ) );
+
+  QgsFeatureIds ids;
+
+  QgsFeature fet;
+  while ( fit.nextFeature( fet ) )
+  {
+    ids << fet.id();
+  }
+
+  return ids;
+}
+

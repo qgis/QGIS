@@ -109,6 +109,8 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
       IsNull = 1 << 11, //!< Supports searching for null values
       IsNotBetween = 1 << 12, //!< Supports searching for values outside of a set range
       IsNotNull = 1 << 13, //!< Supports searching for non-null values
+      StartsWith = 1 << 14, //!< Supports searching for strings that start with
+      EndsWith = 1 << 15, //!< Supports searching for strings that end with
     };
     Q_DECLARE_FLAGS( FilterFlags, FilterFlag )
 

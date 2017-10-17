@@ -12,17 +12,13 @@
   </gml:boundedBy>
                                                                                                                                                                 
   <gml:featureMember>
-    <ogr:extract_by_location_within fid="points.0">
+    <ogr:extract_by_location_within fid="extract_by_location_within.0">
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>1,1</gml:coordinates></gml:Point></ogr:geometryProperty>
-      <ogr:id>1</ogr:id>
-      <ogr:id2>2</ogr:id2>
     </ogr:extract_by_location_within>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:extract_by_location_within fid="points.4">
+    <ogr:extract_by_location_within fid="extract_by_location_within.1">
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>4,1</gml:coordinates></gml:Point></ogr:geometryProperty>
-      <ogr:id>5</ogr:id>
-      <ogr:id2>1</ogr:id2>
     </ogr:extract_by_location_within>
   </gml:featureMember>
 </ogr:FeatureCollection>

@@ -139,8 +139,8 @@ void QgsRasterShader::writeXml( QDomDocument &doc, QDomElement &parent ) const
   if ( colorRampShader )
   {
     QDomElement colorRampShaderElem = doc.createElement( QStringLiteral( "colorrampshader" ) );
-    colorRampShaderElem.setAttribute( "colorRampType", colorRampShader->colorRampTypeAsQString() );
-    colorRampShaderElem.setAttribute( "classificationMode", colorRampShader->classificationMode() );
+    colorRampShaderElem.setAttribute( QStringLiteral( "colorRampType" ), colorRampShader->colorRampTypeAsQString() );
+    colorRampShaderElem.setAttribute( QStringLiteral( "classificationMode" ), colorRampShader->classificationMode() );
     colorRampShaderElem.setAttribute( QStringLiteral( "clip" ), colorRampShader->clip() );
 
     // save source color ramp

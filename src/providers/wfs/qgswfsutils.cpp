@@ -204,7 +204,7 @@ QSharedMemory *QgsWFSUtils::createAndAttachSHM()
 void QgsWFSUtils::init()
 {
   QSharedMemory *sharedMemory = createAndAttachSHM();
-  sKeepAliveWorks = sharedMemory != nullptr;
+  sKeepAliveWorks = static_cast< bool >( sharedMemory );
   delete sharedMemory;
 
   if ( sKeepAliveWorks )

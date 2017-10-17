@@ -18,8 +18,6 @@
 #include <QStringList>
 
 QgsAttributeTableConfig::QgsAttributeTableConfig()
-  : mActionWidgetStyle( DropDown )
-  , mSortOrder( Qt::AscendingOrder )
 {
 
 }
@@ -80,7 +78,7 @@ void QgsAttributeTableConfig::update( const QgsFields &fields )
     }
   }
 
-  Q_FOREACH ( const QgsField &field, fields )
+  for ( const auto &field : fields )
   {
     if ( !columns.contains( field.name() ) )
     {

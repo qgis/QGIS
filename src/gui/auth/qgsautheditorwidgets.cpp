@@ -30,8 +30,7 @@
 
 QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget *parent )
   : QDialog( parent )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
+
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -63,7 +62,7 @@ void QgsAuthMethodPlugins::setupTable()
   tblAuthPlugins->setColumnWidth( 0, 150 );
   tblAuthPlugins->setColumnWidth( 1, 300 );
   tblAuthPlugins->setRowCount( QgsAuthManager::instance()->authMethodsKeys().size() );
-  tblAuthPlugins->verticalHeader()->setResizeMode( QHeaderView::ResizeToContents );
+  tblAuthPlugins->verticalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
   tblAuthPlugins->setSortingEnabled( true );
   tblAuthPlugins->setSelectionBehavior( QAbstractItemView::SelectRows );
 }
@@ -100,13 +99,7 @@ void QgsAuthMethodPlugins::populateTable()
 
 QgsAuthEditorWidgets::QgsAuthEditorWidgets( QWidget *parent )
   : QWidget( parent )
-  , mAuthUtilitiesMenu( nullptr )
-  , mActionSetMasterPassword( nullptr )
-  , mActionClearCachedMasterPassword( nullptr )
-  , mActionResetMasterPassword( nullptr )
-  , mActionClearCachedAuthConfigs( nullptr )
-  , mActionRemoveAuthConfigs( nullptr )
-  , mActionEraseAuthDatabase( nullptr )
+
 {
   setupUi( this );
   if ( !QgsAuthManager::instance()->isDisabled() )

@@ -163,12 +163,12 @@ class QgsServerTestBase(unittest.TestCase):
         control.setRenderedImage(temp_image)
         if max_size_diff.isValid():
             control.setSizeTolerance(max_size_diff.width(), max_size_diff.height())
-        return control.compareImages(control_image), control.report()
+        return control.compareImages(control_image, max_diff), control.report()
 
     def _img_diff_error(self, response, headers, image, max_diff=10, max_size_diff=QSize()):
         self.assertEqual(
             headers.get("Content-Type"), "image/png",
-            "Content type is wrong: %s" % headers.get("Content-Type"))
+            "Content type is wrong: %s\n%s" % (headers.get("Content-Type"), response))
 
         test, report = self._img_diff(response, image, max_diff, max_size_diff)
 

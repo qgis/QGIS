@@ -84,8 +84,8 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
   private:
     QWidget *mWidget = nullptr;
     QString mStyleSheet;
-    bool mValid;
-    bool mChangedStyle;
+    bool mValid = true;
+    bool mChangedStyle = false;
     std::function < QString() > mText;
 };
 

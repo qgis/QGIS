@@ -6,6 +6,7 @@ SET(QGIS_APP_SRCS
   qgisappstylesheet.cpp
   qgsabout.cpp
   qgsalignrasterdialog.cpp
+  qgsappbrowserproviders.cpp
   qgsapplayertreeviewmenuprovider.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
@@ -126,8 +127,6 @@ SET(QGIS_APP_SRCS
   qgstextannotationdialog.cpp
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
-  qgstipgui.cpp
-  qgstipfactory.cpp
   qgsvectorlayerproperties.cpp
   qgsmapthemes.cpp
   qgshandlebadlayers.cpp
@@ -159,8 +158,10 @@ SET(QGIS_APP_SRCS
 
   layout/qgslayoutaddpagesdialog.cpp
   layout/qgslayoutdesignerdialog.cpp
+  layout/qgslayoutguidewidget.cpp
   layout/qgslayoutappmenuprovider.cpp
   layout/qgslayoutpagepropertieswidget.cpp
+  layout/qgslayoutpropertieswidget.cpp
 
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
@@ -196,6 +197,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsabout.h
   qgsaddattrdialog.h
   qgsalignrasterdialog.h
+  qgsappbrowserproviders.h
   qgsjoindialog.h
   qgsaddtaborgroup.h
   qgsannotationwidget.h
@@ -310,8 +312,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsstatisticalsummarydockwidget.h
   qgssvgannotationdialog.h
   qgstextannotationdialog.h
-  qgstipgui.h
-  qgstipfactory.h
   qgsundowidget.h
   qgsvectorlayerproperties.h
   qgsmapthemes.h
@@ -342,7 +342,9 @@ SET (QGIS_APP_MOC_HDRS
   layout/qgslayoutaddpagesdialog.h
   layout/qgslayoutappmenuprovider.h
   layout/qgslayoutdesignerdialog.h
+  layout/qgslayoutguidewidget.h
   layout/qgslayoutpagepropertieswidget.h
+  layout/qgslayoutpropertieswidget.h
 
   locator/qgsinbuiltlocatorfilters.h
   locator/qgslocatoroptionswidget.h
@@ -484,6 +486,15 @@ IF(PEDANTIC)
   ENDIF(MSVC)
 ENDIF(PEDANTIC)
 
+IF(MSVC)
+# -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in DbgHelp.h
+SET_SOURCE_FILES_PROPERTIES(
+  qgisapp.cpp
+  main.cpp
+  qgscrashhandler.cpp
+  PROPERTIES COMPILE_FLAGS -wd4091)
+ENDIF(MSVC)
+
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/composer
@@ -504,14 +515,16 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/dxf
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/locator
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
-  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/gui/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
@@ -549,15 +562,16 @@ INCLUDE_DIRECTORIES(
   ../core/composer
   ../core/dxf
   ../core/geometry
+  ../core/geocms/geonode
   ../core/layout
   ../core/metadata
   ../core/layertree
   ../core/providers/memory
   ../core/raster
   ../core/scalebar
-  ../core/symbology-ng
+  ../core/symbology
   ../gui
-  ../gui/symbology-ng
+  ../gui/symbology
   ../gui/attributetable
   ../gui/auth
   ../gui/ogr
@@ -650,6 +664,14 @@ ENDIF(APPLE)
 if(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET_TARGET_PROPERTIES(qgis_app PROPERTIES STATIC_LIBRARY_FLAGS "/machine:x64")
 ENDIF(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
+
+# clang-tidy
+IF(CLANG_TIDY_EXE)
+  SET_TARGET_PROPERTIES(
+    qgis_app PROPERTIES
+    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+ENDIF(CLANG_TIDY_EXE)
 
 IF(NOT WIN32)
   TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} qgis_app)

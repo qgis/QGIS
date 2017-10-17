@@ -118,10 +118,10 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
 
   private:
 
-    int mBlurLevel;
-    BlurMethod mBlurMethod;
+    int mBlurLevel = 10;
+    BlurMethod mBlurMethod = StackBlur;
     double mOpacity = 1.0;
-    QPainter::CompositionMode mBlendMode;
+    QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
 
     void drawStackBlur( QgsRenderContext &context );
     void drawGaussianBlur( QgsRenderContext &context );

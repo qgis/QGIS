@@ -18,7 +18,7 @@
 
 #include <QMap>
 #include <QVariant>
-
+#include <cmath>
 #include "qgis_core.h"
 
 /***************************************************************************
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsStatisticalSummary
     /** Returns calculated range (difference between maximum and minimum values). A NaN value may be returned if the range cannot
      * be calculated.
      */
-    double range() const { return qIsNaN( mMax ) || qIsNaN( mMin ) ? std::numeric_limits<double>::quiet_NaN() : mMax - mMin; }
+    double range() const { return std::isnan( mMax ) || std::isnan( mMin ) ? std::numeric_limits<double>::quiet_NaN() : mMax - mMin; }
 
     /** Returns population standard deviation. This is only calculated if Statistic::StDev has
      * been specified in the constructor or via setStatistics. A NaN value may be returned if the standard deviation cannot
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsStatisticalSummary
      * \see firstQuartile
      * \see thirdQuartile
      */
-    double interQuartileRange() const { return qIsNaN( mThirdQuartile ) || qIsNaN( mFirstQuartile ) ? std::numeric_limits<double>::quiet_NaN() : mThirdQuartile - mFirstQuartile; }
+    double interQuartileRange() const { return std::isnan( mThirdQuartile ) || std::isnan( mFirstQuartile ) ? std::numeric_limits<double>::quiet_NaN() : mThirdQuartile - mFirstQuartile; }
 
     /** Returns the friendly display name for a statistic
      * \param statistic statistic to return name for

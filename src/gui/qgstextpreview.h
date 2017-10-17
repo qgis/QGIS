@@ -96,7 +96,7 @@ class GUI_EXPORT QgsTextPreview : public QLabel
     QgsTextFormat mFormat;
     QgsRenderContext mContext;
     double mScale = -1;
-    QgsUnitTypes::DistanceUnit mMapUnits;
+    QgsUnitTypes::DistanceUnit mMapUnits = QgsUnitTypes::DistanceMeters;
     void updateContext();
 };
 

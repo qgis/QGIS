@@ -9,7 +9,7 @@
 
 
 
-class QgsLayoutPageCollection : QObject
+class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 {
 %Docstring
  A manager for a collection of pages in a layout.
@@ -28,11 +28,9 @@ class QgsLayoutPageCollection : QObject
 
     ~QgsLayoutPageCollection();
 
-    QgsLayout *layout() const;
-%Docstring
- Returns the layout this collection belongs to.
- :rtype: QgsLayout
-%End
+    virtual QString stringType() const;
+    virtual QgsLayout *layout();
+
 
     QList< QgsLayoutItemPage * > pages();
 %Docstring
@@ -57,6 +55,29 @@ class QgsLayoutPageCollection : QObject
  A None is returned if an invalid page number is specified.
 .. seealso:: pages()
  :rtype: QgsLayoutItemPage
+%End
+
+    int pageNumber( QgsLayoutItemPage *page ) const;
+%Docstring
+ Returns the page number for the specified ``page``, or -1 if the page
+ is not contained in the collection.
+ :rtype: int
+%End
+
+    QList< QgsLayoutItemPage * > visiblePages( QRectF region ) const;
+%Docstring
+ Returns a list of the pages which are visible within the specified
+ ``region`` (in layout coordinates).
+.. seealso:: visiblePageNumbers()
+ :rtype: list of QgsLayoutItemPage
+%End
+
+    QList< int > visiblePageNumbers( QRectF region ) const;
+%Docstring
+ Returns a list of the page numbers which are visible within the specified
+ ``region`` (in layout coordinates).
+.. seealso:: visiblePages()
+ :rtype: list of int
 %End
 
     void addPage( QgsLayoutItemPage *page /Transfer/ );
@@ -105,6 +126,12 @@ class QgsLayoutPageCollection : QObject
  from the collection's layout().
 
  Calling deletePage() automatically triggers a reflow() of pages.
+%End
+
+    QgsLayoutItemPage *takePage( QgsLayoutItemPage *page ) /TransferBack/;
+%Docstring
+ Takes a ``page`` from the collection, returning ownership of the page to the caller.
+ :rtype: QgsLayoutItemPage
 %End
 
     void setPageStyleSymbol( QgsFillSymbol *symbol );
@@ -188,11 +215,49 @@ class QgsLayoutPageCollection : QObject
  :rtype: float
 %End
 
+    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+%Docstring
+ Stores the collection's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
+.. seealso:: readXml()
+ :rtype: bool
+%End
+
+    virtual bool readXml( const QDomElement &collectionElement, const QDomDocument &document, const QgsReadWriteContext &context );
+
+%Docstring
+ Sets the collection's state from a DOM element. collectionElement is the DOM node corresponding to the collection.
+.. seealso:: writeXml()
+ :rtype: bool
+%End
+
+    QgsLayoutGuideCollection &guides();
+%Docstring
+ Returns a reference to the collection's guide collection, which manages page snap guides.
+ :rtype: QgsLayoutGuideCollection
+%End
+
+
+  public slots:
+
+    void redraw();
+%Docstring
+ Triggers a redraw for all pages.
+%End
+
   signals:
 
     void changed();
 %Docstring
  Emitted when pages are added or removed from the collection.
+%End
+
+    void pageAboutToBeRemoved( int pageNumber );
+%Docstring
+ Emitted just before a page is removed from the collection.
+
+ Page numbers in collections begin at 0 - so a page number of 0 indicates the
+ first page.
 %End
 
 };

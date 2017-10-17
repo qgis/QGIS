@@ -32,6 +32,7 @@ class QgsGeometry;
 class QgsPostgresFeatureIterator;
 class QgsPostgresSharedData;
 class QgsPostgresTransaction;
+class QgsPostgresListener;
 
 #include "qgsdatasourceuri.h"
 
@@ -48,6 +49,19 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+    enum Relkind
+    {
+      Unknown,
+      OrdinaryTable, // r
+      Index, // i
+      Sequence, // s
+      View, // v
+      MaterializedView, // m
+      CompositeType, // c
+      ToastTable, // t
+      ForeignTable // f
+    };
+    Q_ENUM( Relkind );
 
     /** Import a vector layer into the database
      * \param options options for provider, specified via a map of option name
@@ -72,7 +86,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * \param uri String containing the required parameters to connect to the database
      * and query the table.
      */
-    explicit QgsPostgresProvider( QString const &uri = "" );
+    explicit QgsPostgresProvider( QString const &uri = QString() );
 
 
     virtual ~QgsPostgresProvider();
@@ -184,14 +198,26 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
     virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
 
-  signals:
+    /** Returns true if the data source has metadata, false otherwise. For
+     * example, if the kind of relation for the layer is a view or a
+     * materialized view, then no metadata are associated with the data
+     * source.
+     *
+     * \returns true if data source has metadata, false otherwise.
+     *
+     * \since QGIS 3.0
+     */
+    virtual bool hasMetadata() const override;
 
     /**
-     *   This is emitted whenever the worker thread has fully calculated the
-     *   PostGIS extents for this layer, and its event has been received by this
-     *   provider.
+     * Launch a listening thead to listen to postgres NOTIFY on "qgis" channel
+     * the notification is transformed into a Qt signal.
+     *
+     * \since QGIS 3.0
      */
-    void fullExtentCalculated();
+    void setListening( bool isListening ) override;
+
+  signals:
 
     /**
      *   This is emitted when this provider is satisfied that all objects
@@ -206,6 +232,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void repaintRequested();
 
   private:
+    Relkind relkind() const;
 
     bool declareCursor( const QString &cursorName,
                         const QgsAttributeList &fetchAttributes,
@@ -285,7 +312,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Flag indicating if the layer data source is a valid PostgreSQL layer
      */
-    bool mValid;
+    bool mValid = false;
 
     /**
      * provider references query (instead of a table)
@@ -315,12 +342,12 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Data type for the primary key
      */
-    QgsPostgresPrimaryKeyType mPrimaryKeyType;
+    QgsPostgresPrimaryKeyType mPrimaryKeyType = PktUnknown;
 
     /**
      * Data type for the spatial column
      */
-    QgsPostgresGeometryColumnType mSpatialColType;
+    QgsPostgresGeometryColumnType mSpatialColType = SctNone;
 
     /**
      * List of primary key attributes for fetching features.
@@ -331,9 +358,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString mGeometryColumn;          //! name of the geometry column
     mutable QgsRectangle mLayerExtent;        //! Rectangle that contains the extent (bounding box) of the layer
 
-    QgsWkbTypes::Type mDetectedGeomType;  //! geometry type detected in the database
-    bool mForce2d;                    //! geometry type needs to be forced to 2d (e.g., ZM)
-    QgsWkbTypes::Type mRequestedGeomType; //! geometry type requested in the uri
+    QgsWkbTypes::Type mDetectedGeomType = QgsWkbTypes::Unknown ;  //! geometry type detected in the database
+    bool mForce2d = false;                    //! geometry type needs to be forced to 2d (e.g., ZM)
+    QgsWkbTypes::Type mRequestedGeomType = QgsWkbTypes::Unknown ; //! geometry type requested in the uri
     QString mDetectedSrid;            //! Spatial reference detected in the database
     QString mRequestedSrid;           //! Spatial reference requested in the uri
 
@@ -358,9 +385,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     //! @}
 
     /* Use estimated metadata. Uses fast table counts, geometry type and extent determination */
-    bool mUseEstimatedMetadata;
+    bool mUseEstimatedMetadata = false;
 
-    bool mSelectAtIdDisabled; //! Disable support for SelectAtId
+    bool mSelectAtIdDisabled = false; //! Disable support for SelectAtId
 
     struct PGFieldNotFound {}; //! Exception to throw
 
@@ -389,8 +416,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QString paramValue( const QString &fieldvalue, const QString &defaultValue ) const;
 
-    QgsPostgresConn *mConnectionRO; //! read-only database connection (initially)
-    QgsPostgresConn *mConnectionRW; //! read-write database connection (on update)
+    QgsPostgresConn *mConnectionRO = nullptr ; //! read-only database connection (initially)
+    QgsPostgresConn *mConnectionRW = nullptr ; //! read-write database connection (on update)
 
     QgsPostgresConn *connectionRO() const;
     QgsPostgresConn *connectionRW();
@@ -407,6 +434,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void setTransaction( QgsTransaction *transaction ) override;
 
     QHash<int, QString> mDefaultValues;
+
+    bool mCheckPrimaryKeyUnicity = true;
+
+    std::unique_ptr< QgsPostgresListener > mListener;
 };
 
 
@@ -469,11 +500,13 @@ class QgsPostgresSharedData
   protected:
     QMutex mMutex; //!< Access to all data members is guarded by the mutex
 
-    long mFeaturesCounted;    //! Number of features in the layer
+    long mFeaturesCounted = -1 ;    //! Number of features in the layer
 
-    QgsFeatureId mFidCounter;                    // next feature id if map is used
+    QgsFeatureId mFidCounter = 0;                    // next feature id if map is used
     QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id
     QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature id back to key values
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

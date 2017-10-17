@@ -168,7 +168,7 @@ void usage( const QString &appName )
 // AppleEvent handler as well as by the main routine argv processing
 
 // This behavior will cause QGIS to autoload a project
-static QString sProjectFileName = QLatin1String( "" );
+static QString sProjectFileName;
 
 // This is the 'leftover' arguments collection
 static QStringList sFileList;
@@ -492,8 +492,8 @@ int main( int argc, char *argv[] )
 
   // This behavior is used to load the app, snapshot the map,
   // save the image to disk and then exit
-  QString mySnapshotFileName = "";
-  QString configLocalStorageLocation =  "";
+  QString mySnapshotFileName;
+  QString configLocalStorageLocation;
   QString profileName;
   int mySnapshotWidth = 800;
   int mySnapshotHeight = 600;
@@ -520,7 +520,7 @@ int main( int argc, char *argv[] )
   // there are no command line arguments. This gives a usable map
   // extent when qgis starts with no layers loaded. When layers are
   // loaded, we let the layers define the initial extent.
-  QString myInitialExtent = QLatin1String( "" );
+  QString myInitialExtent;
   if ( argc == 1 )
     myInitialExtent = QStringLiteral( "-1,-1,1,1" );
 
@@ -785,35 +785,6 @@ int main( int argc, char *argv[] )
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
 
-
-  // SetUp the QgsSettings Global Settings:
-  // - use the path specified with --globalsettingsfile path,
-  // - use the environment if not found
-  // - use a default location as a fallback
-  if ( globalsettingsfile.isEmpty() )
-  {
-    globalsettingsfile = getenv( "QGIS_GLOBAL_SETTINGS_FILE" );
-  }
-  if ( globalsettingsfile.isEmpty() )
-  {
-    QString default_globalsettingsfile = QgsApplication::pkgDataPath() + "/qgis_global_settings.ini";
-    if ( QFile::exists( default_globalsettingsfile ) )
-    {
-      globalsettingsfile = default_globalsettingsfile;
-    }
-  }
-  if ( !globalsettingsfile.isEmpty() )
-  {
-    if ( ! QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
-    {
-      QgsMessageLog::logMessage( QString( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
-    }
-    else
-    {
-      QgsMessageLog::logMessage( QString( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
-    }
-  }
-
   QgsSettings settings;
   if ( configLocalStorageLocation.isEmpty() )
   {
@@ -821,9 +792,9 @@ int main( int argc, char *argv[] )
     {
       configLocalStorageLocation = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
     }
-    else if ( settings.contains( "profilesPath", QgsSettings::Core ) )
+    else if ( settings.contains( QStringLiteral( "profilesPath" ), QgsSettings::Core ) )
     {
-      configLocalStorageLocation = settings.value( "profilesPath", "", QgsSettings::Core ).toString();
+      configLocalStorageLocation = settings.value( QStringLiteral( "profilesPath" ), "", QgsSettings::Core ).toString();
       QgsDebugMsg( QString( "Loading profiles path from global config at %1" ).arg( configLocalStorageLocation ) );
     }
 
@@ -847,6 +818,34 @@ int main( int argc, char *argv[] )
   QgsDebugMsg( QString( "\t - %1" ).arg( rootProfileFolder ) );
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, profileFolder );
+
+  // SetUp the QgsSettings Global Settings:
+  // - use the path specified with --globalsettingsfile path,
+  // - use the environment if not found
+  // - use a default location as a fallback
+  if ( globalsettingsfile.isEmpty() )
+  {
+    globalsettingsfile = getenv( "QGIS_GLOBAL_SETTINGS_FILE" );
+  }
+  if ( globalsettingsfile.isEmpty() )
+  {
+    QString default_globalsettingsfile = QgsApplication::pkgDataPath() + "/qgis_global_settings.ini";
+    if ( QFile::exists( default_globalsettingsfile ) )
+    {
+      globalsettingsfile = default_globalsettingsfile;
+    }
+  }
+  if ( !globalsettingsfile.isEmpty() )
+  {
+    if ( ! QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+    }
+    else
+    {
+      QgsMessageLog::logMessage( QStringLiteral( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+    }
+  }
 
 #ifdef Q_OS_MAC
   // Set hidpi icons; use SVG icons, as PNGs will be relatively too small
@@ -999,7 +998,7 @@ int main( int argc, char *argv[] )
   if ( activeStyleName.isEmpty() ) // not set, using default style
   {
     //not set, check default
-    activeStyleName = QApplication::style()->metaObject()->className() ;
+    activeStyleName = QApplication::style()->metaObject()->className();
   }
   if ( activeStyleName.contains( QStringLiteral( "adwaita" ), Qt::CaseInsensitive ) )
   {
@@ -1165,15 +1164,13 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
-  QgsDebugMsg( QString( "Number of files in myFileList: %1" ).arg( sFileList.count() ) );
-  for ( QStringList::Iterator myIterator = sFileList.begin(); myIterator != sFileList.end(); ++myIterator )
+  for ( const QString &layerName : qgsAsConst( sFileList ) )
   {
-    QgsDebugMsg( QString( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
-    QString myLayerName = *myIterator;
+    QgsDebugMsg( QString( "Trying to load file : %1" ).arg( layerName ) );
     // don't load anything with a .qgs extension - these are project files
-    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
+    if ( !layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
     {
-      qgis->openLayer( myLayerName );
+      qgis->openLayer( layerName );
     }
   }
 
@@ -1239,7 +1236,7 @@ int main( int argc, char *argv[] )
   /////////////////////////////////`////////////////////////////////////
   // Take a snapshot of the map view then exit if snapshot mode requested
   /////////////////////////////////////////////////////////////////////
-  if ( mySnapshotFileName != QLatin1String( "" ) )
+  if ( !mySnapshotFileName.isEmpty() )
   {
     /*You must have at least one paintEvent() delivered for the window to be
       rendered properly.

@@ -17,9 +17,9 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUALLAYER_QUERY_PARSER_H
 #define QGSVIRTUALLAYER_QUERY_PARSER_H
 
-#include <qgis.h>
-#include <qgswkbtypes.h>
-#include <qgsvectorlayer.h>
+#include "qgis.h"
+#include "qgswkbtypes.h"
+#include "qgsvectorlayer.h"
 
 namespace QgsVirtualLayerQueryParser
 {
@@ -38,9 +38,6 @@ namespace QgsVirtualLayerQueryParser
   {
     public:
       ColumnDef()
-        : mType( QVariant::Invalid )
-        , mWkbType( QgsWkbTypes::Unknown )
-        , mSrid( -1 )
       {}
       ColumnDef( const QString &name, QgsWkbTypes::Type aWkbType, long aSrid )
         : mName( name )
@@ -52,7 +49,6 @@ namespace QgsVirtualLayerQueryParser
         : mName( name )
         , mType( aType )
         , mWkbType( QgsWkbTypes::NoGeometry )
-        , mSrid( -1 )
       {}
 
       QString name() const { return mName; }
@@ -69,9 +65,9 @@ namespace QgsVirtualLayerQueryParser
 
     private:
       QString mName;
-      QVariant::Type mType;
-      QgsWkbTypes::Type mWkbType;
-      long mSrid;
+      QVariant::Type mType = QVariant::Invalid;
+      QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+      long mSrid = -1;
   };
 
   //!

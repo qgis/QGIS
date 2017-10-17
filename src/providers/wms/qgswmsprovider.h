@@ -253,10 +253,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     } TilePosition;
     typedef QList<TilePosition> TilePositions;
 
-  signals:
-
-    void dataChanged();
-
   private slots:
     void identifyReplyFinished();
     void getLegendGraphicReplyFinished( const QImage & );
@@ -391,7 +387,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * GetLegendGraphic scale for the WMS Pixmap result
      */
-    double mGetLegendGraphicScale;
+    double mGetLegendGraphicScale = 0.0;
 
     QgsRectangle mGetLegendGraphicExtent;
 
@@ -438,12 +434,12 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString mErrorFormat;
 
     //! See if calculateExtents() needs to be called before extent() returns useful data
-    mutable bool mExtentDirty;
+    mutable bool mExtentDirty = true;
 
     QString mServiceMetadataURL;
 
     //! tile request number, cache hits and misses
-    int mTileReqNo;
+    int mTileReqNo = 0;
 
     //! chosen tile layer
     QgsWmtsTileLayer        *mTileLayer = nullptr;
@@ -546,13 +542,10 @@ class QgsWmsStatistics
     struct Stat
     {
       Stat()
-        : errors( 0 )
-        , cacheHits( 0 )
-        , cacheMisses( 0 )
       {}
-      int errors;
-      int cacheHits;
-      int cacheMisses;
+      int errors = 0;
+      int cacheHits = 0;
+      int cacheMisses = 0;
     };
 
     //! get reference to layer's statistics - insert to map if does not exist yet

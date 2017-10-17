@@ -19,7 +19,9 @@
 #include "qgslayoututils.h"
 #include "qgspagesizeregistry.h"
 #include "qgssymbollayerutils.h"
+#include "qgslayoutitemundocommand.h"
 #include <QPainter>
+#include <QStyleOptionGraphicsItem>
 
 QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   : QgsLayoutItem( layout )
@@ -35,7 +37,16 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
 
   QFont font;
   QFontMetrics fm( font );
-  mMaximumShadowWidth = fm.width( "X" );
+  mMaximumShadowWidth = fm.width( QStringLiteral( "X" ) );
+
+  mGrid.reset( new QgsLayoutItemPageGrid( pos().x(), pos().y(), rect().width(), rect().height(), mLayout ) );
+  mGrid->setParentItem( this );
+}
+
+QgsLayoutItemPage *QgsLayoutItemPage::create( QgsLayout *layout, const QVariantMap &settings )
+{
+  Q_UNUSED( settings );
+  return new QgsLayoutItemPage( layout );
 }
 
 void QgsLayoutItemPage::setPageSize( const QgsLayoutSize &size )
@@ -106,6 +117,52 @@ QgsLayoutItemPage::Orientation QgsLayoutItemPage::decodePageOrientation( const Q
   return Landscape;
 }
 
+void QgsLayoutItemPage::attemptResize( const QgsLayoutSize &size )
+{
+  QgsLayoutItem::attemptResize( size );
+  //update size of attached grid to reflect new page size and position
+  mGrid->setRect( 0, 0, rect().width(), rect().height() );
+
+  mLayout->guides().update();
+}
+
+///@cond PRIVATE
+class QgsLayoutItemPageUndoCommand: public QgsLayoutItemUndoCommand
+{
+  public:
+
+    QgsLayoutItemPageUndoCommand( QgsLayoutItemPage *page, const QString &text, int id = 0, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr )
+      : QgsLayoutItemUndoCommand( page, text, id, parent )
+    {}
+
+    void restoreState( QDomDocument &stateDoc ) override
+    {
+      QgsLayoutItemUndoCommand::restoreState( stateDoc );
+      layout()->pageCollection()->reflow();
+    }
+
+  protected:
+
+    QgsLayoutItem *recreateItem( int, QgsLayout *layout ) override
+    {
+      QgsLayoutItemPage *page = new QgsLayoutItemPage( layout );
+      layout->pageCollection()->addPage( page );
+      return page;
+    }
+};
+///@endcond
+
+QgsAbstractLayoutUndoCommand *QgsLayoutItemPage::createCommand( const QString &text, int id, QUndoCommand *parent )
+{
+  return new QgsLayoutItemPageUndoCommand( this, text, id, parent );
+}
+
+void QgsLayoutItemPage::redraw()
+{
+  QgsLayoutItem::redraw();
+  mGrid->update();
+}
+
 void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
 {
   if ( !context.painter() || !mLayout /*|| !mLayout->pagesVisible() */ )
@@ -122,7 +179,7 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
   painter->save();
 
 #if 0 //TODO
-  if ( mComposition->plotStyle() ==  QgsComposition::Preview )
+  if ( mComposition->plotStyle() == QgsComposition::Preview )
 #endif
   {
     //if in preview mode, draw page border and shadow so that it's
@@ -134,8 +191,8 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
     //shadow
     painter->setBrush( QBrush( QColor( 150, 150, 150 ) ) );
     painter->setPen( Qt::NoPen );
-    painter->drawRect( pageRect.translated( qMin( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ),
-                                            qMin( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ) ) );
+    painter->drawRect( pageRect.translated( std::min( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ),
+                                            std::min( scale * mLayout->pageCollection()->pageShadowWidth(), mMaximumShadowWidth ) ) );
 
     //page area
     painter->setBrush( QColor( 215, 215, 215 ) );
@@ -166,3 +223,104 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
 
   painter->restore();
 }
+
+
+//
+// QgsLayoutItemPageGrid
+//
+///@cond PRIVATE
+
+QgsLayoutItemPageGrid::QgsLayoutItemPageGrid( double x, double y, double width, double height, QgsLayout *layout )
+  : QGraphicsRectItem( 0, 0, width, height )
+  , mLayout( layout )
+{
+  // needed to access current view transform during paint operations
+  setFlags( flags() | QGraphicsItem::ItemUsesExtendedStyleOption );
+  setCacheMode( QGraphicsItem::DeviceCoordinateCache );
+  setFlag( QGraphicsItem::ItemIsSelectable, false );
+  setFlag( QGraphicsItem::ItemIsMovable, false );
+  setZValue( QgsLayout::ZGrid );
+  setPos( x, y );
+}
+
+void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
+{
+  Q_UNUSED( pWidget );
+
+  //draw grid
+  if ( !mLayout )
+    return;
+
+  const QgsLayoutContext &context = mLayout->context();
+  const QgsLayoutGridSettings &grid = mLayout->gridSettings();
+
+  if ( !context.gridVisible() || grid.resolution().length() <= 0 )
+    return;
+
+  QPointF gridOffset = mLayout->convertToLayoutUnits( grid.offset() );
+  double gridResolution = mLayout->convertToLayoutUnits( grid.resolution() );
+  int gridMultiplyX = static_cast< int >( gridOffset.x() / gridResolution );
+  int gridMultiplyY = static_cast< int >( gridOffset.y() / gridResolution );
+  double currentXCoord = gridOffset.x() - gridMultiplyX * gridResolution;
+  double currentYCoord;
+  double minYCoord = gridOffset.y() - gridMultiplyY * gridResolution;
+
+  painter->save();
+  //turn of antialiasing so grid is nice and sharp
+  painter->setRenderHint( QPainter::Antialiasing, false );
+
+  switch ( grid.style() )
+  {
+    case QgsLayoutGridSettings::StyleLines:
+    {
+      painter->setPen( grid.pen() );
+
+      //draw vertical lines
+      for ( ; currentXCoord <= rect().width(); currentXCoord += gridResolution )
+      {
+        painter->drawLine( QPointF( currentXCoord, 0 ), QPointF( currentXCoord, rect().height() ) );
+      }
+
+      //draw horizontal lines
+      currentYCoord = minYCoord;
+      for ( ; currentYCoord <= rect().height(); currentYCoord += gridResolution )
+      {
+        painter->drawLine( QPointF( 0, currentYCoord ), QPointF( rect().width(), currentYCoord ) );
+      }
+      break;
+    }
+
+    case QgsLayoutGridSettings::StyleDots:
+    case QgsLayoutGridSettings::StyleCrosses:
+    {
+      QPen gridPen = grid.pen();
+      painter->setPen( gridPen );
+      painter->setBrush( QBrush( gridPen.color() ) );
+      double halfCrossLength = 1;
+      if ( grid.style() == QgsLayoutGridSettings::StyleDots )
+      {
+        //dots are actually drawn as tiny crosses a few pixels across
+        //set halfCrossLength to equivalent of 1 pixel
+        halfCrossLength = 1 / itemStyle->matrix.m11();
+      }
+      else
+      {
+        halfCrossLength = gridResolution / 6;
+      }
+
+      for ( ; currentXCoord <= rect().width(); currentXCoord += gridResolution )
+      {
+        currentYCoord = minYCoord;
+        for ( ; currentYCoord <= rect().height(); currentYCoord += gridResolution )
+        {
+          painter->drawLine( QPointF( currentXCoord - halfCrossLength, currentYCoord ), QPointF( currentXCoord + halfCrossLength, currentYCoord ) );
+          painter->drawLine( QPointF( currentXCoord, currentYCoord - halfCrossLength ), QPointF( currentXCoord, currentYCoord + halfCrossLength ) );
+        }
+      }
+      break;
+    }
+  }
+  painter->restore();
+}
+
+///@endcond

@@ -139,6 +139,18 @@ class CORE_EXPORT QgsLayoutContext
      */
     QgsLayoutMeasurementConverter &measurementConverter() { return mMeasurementConverter; }
 
+    /**
+     * Returns true if the page grid should be drawn.
+     * \see setGridVisible()
+     */
+    bool gridVisible() const;
+
+    /**
+     * Sets whether the page grid should be \a visible.
+     * \see gridVisible()
+     */
+    void setGridVisible( bool visible );
+
   private:
 
     Flags mFlags = 0;
@@ -147,6 +159,9 @@ class CORE_EXPORT QgsLayoutContext
     QPointer< QgsVectorLayer > mLayer;
 
     QgsLayoutMeasurementConverter mMeasurementConverter;
+
+    bool mGridVisible = false;
+
 
 };
 

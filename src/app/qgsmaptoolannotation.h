@@ -30,7 +30,6 @@ class APP_EXPORT QgsMapToolAnnotation: public QgsMapTool
 
   public:
     QgsMapToolAnnotation( QgsMapCanvas *canvas );
-    ~QgsMapToolAnnotation();
 
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
@@ -60,7 +59,7 @@ class APP_EXPORT QgsMapToolAnnotation: public QgsMapTool
     QgsPointXY transformCanvasToAnnotation( QgsPointXY p, QgsAnnotation *annotation ) const;
 
     QgsMapCanvasAnnotationItem::MouseMoveAction mCurrentMoveAction = QgsMapCanvasAnnotationItem::NoAction;
-    QPointF mLastMousePosition = QPointF( 0, 0 );
+    QPoint mLastMousePosition = QPoint( 0, 0 );
 };
 
 #endif // QGSMAPTOOLANNOTATION_H

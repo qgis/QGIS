@@ -181,4 +181,6 @@ class CORE_EXPORT QgsFontUtils
     static QStringList recentFontFamilies();
 };
 
+// clazy:excludeall=qstring-allocations
+
 #endif // QGSFONTUTILS_H

@@ -22,9 +22,11 @@
 #include "qgseditorconfigwidget.h"
 #include "qgsfeature.h"
 #include "qgsvectordataprovider.h"
+#include "qgshelp.h"
 #include "qgis_app.h"
 
 class QWidget;
+class QStandardItem;
 
 class APP_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttributeTypeDialog, QgsExpressionContextGenerator
 {
@@ -176,9 +178,11 @@ class APP_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
      * Slot to handle change of index in combobox to select correct page
      * \param index index of value in combobox
      */
-    void on_selectionListWidget_currentRowChanged( int index );
+    void onCurrentWidgetChanged( int index );
 
     void defaultExpressionChanged();
+
+    void showHelp();
 
   private:
     QgsVectorLayer *mLayer = nullptr;
@@ -188,6 +192,8 @@ class APP_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
 
     //! Cached configuration dialog (lazy loaded)
     QMap< QString, QgsEditorConfigWidget * > mEditorConfigWidgets;
+
+    QStandardItem *currentItem() const;
 
     QgsFeature mPreviewFeature;
 };

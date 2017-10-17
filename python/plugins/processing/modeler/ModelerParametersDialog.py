@@ -44,6 +44,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelChildAlgorithm,
                        QgsProcessingModelChildParameterSource,
                        QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFolderDestination,
@@ -69,8 +70,6 @@ class ModelerParametersDialog(QDialog):
         self.setModal(True)
         # The algorithm to define in this dialog. It is an instance of GeoAlgorithm
         self._alg = alg
-        # The resulting algorithm after the user clicks on OK. it is an instance of the container Algorithm class
-        self.alg = None
         # The model this algorithm is going to be added to
         self.model = model
         # The name of the algorithm in the model, in case we are editing it and not defining it for the first time
@@ -236,15 +235,17 @@ class ModelerParametersDialog(QDialog):
         # upgrade paramType to list
         if paramType is None:
             paramType = []
-        elif not isinstance(paramType, list):
+        elif not isinstance(paramType, (tuple, list)):
             paramType = [paramType]
         if outTypes is None:
             outTypes = []
-        elif not isinstance(outTypes, list):
+        elif not isinstance(outTypes, (tuple, list)):
             outTypes = [outTypes]
 
-        return self.model.availableSourcesForChild(self.childId, [p.typeName() for p in paramType if issubclass(p, QgsProcessingParameterDefinition)],
-                                                   [o.typeName() for o in outTypes if issubclass(o, QgsProcessingOutputDefinition)], dataTypes)
+        return self.model.availableSourcesForChild(self.childId, [p.typeName() for p in paramType if
+                                                                  issubclass(p, QgsProcessingParameterDefinition)],
+                                                   [o.typeName() for o in outTypes if
+                                                    issubclass(o, QgsProcessingOutputDefinition)], dataTypes)
 
     def resolveValueDescription(self, value):
         if isinstance(value, QgsProcessingModelChildParameterSource):
@@ -276,7 +277,8 @@ class ModelerParametersDialog(QDialog):
                 if value is None:
                     value = param.defaultValue()
 
-                if isinstance(value, QgsProcessingModelChildParameterSource) and value.source() == QgsProcessingModelChildParameterSource.StaticValue:
+                if isinstance(value,
+                              QgsProcessingModelChildParameterSource) and value.source() == QgsProcessingModelChildParameterSource.StaticValue:
                     value = value.staticValue()
 
                 self.wrappers[param.name()].setValue(value)
@@ -302,22 +304,29 @@ class ModelerParametersDialog(QDialog):
         for param in self._alg.parameterDefinitions():
             if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
-            val = self.wrappers[param.name()].value()
-            if (isinstance(val,
-                           QgsProcessingModelChildParameterSource) and val.source() == QgsProcessingModelChildParameterSource.StaticValue and not param.checkValueIsAcceptable(
-                    val.staticValue())) \
-                    or (val is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
-                self.bar.pushMessage("Error", "Wrong or missing value for parameter '%s'" % param.description(),
+            try:
+                val = self.wrappers[param.name()].value()
+            except InvalidParameterValue:
+                self.bar.pushMessage(self.tr("Error"),
+                                     self.tr("Wrong or missing value for parameter '{}'").format(param.description()),
                                      level=QgsMessageBar.WARNING)
                 return None
-            if val is None:
-                continue
-            elif isinstance(val, QgsProcessingModelChildParameterSource):
-                alg.addParameterSources(param.name(), [val])
-            elif isinstance(val, list):
-                alg.addParameterSources(param.name(), val)
-            else:
-                alg.addParameterSources(param.name(), [QgsProcessingModelChildParameterSource.fromStaticValue(val)])
+
+            if isinstance(val, QgsProcessingModelChildParameterSource):
+                val = [val]
+            elif not (isinstance(val, list) and all(
+                    [isinstance(subval, QgsProcessingModelChildParameterSource) for subval in val])):
+                val = [QgsProcessingModelChildParameterSource.fromStaticValue(val)]
+            for subval in val:
+                if (isinstance(subval, QgsProcessingModelChildParameterSource) and
+                    subval.source() == QgsProcessingModelChildParameterSource.StaticValue and
+                        not param.checkValueIsAcceptable(subval.staticValue())) \
+                        or (subval is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
+                    self.bar.pushMessage(self.tr("Error"), self.tr("Wrong or missing value for parameter '{}'").format(
+                        param.description()),
+                        level=QgsMessageBar.WARNING)
+                    return None
+            alg.addParameterSources(param.name(), val)
 
         outputs = {}
         for dest in self._alg.destinationParameterDefinitions():
@@ -337,21 +346,20 @@ class ModelerParametersDialog(QDialog):
             dep_ids.append(availableDependencies[selected].childId())  # spellok
         alg.setDependencies(dep_ids)
 
-        try:
-            self._alg.processBeforeAddingToModeler(alg, self.model)
-        except:
-            pass
+        #try:
+        #    self._alg.processBeforeAddingToModeler(alg, self.model)
+        #except:
+        #    pass
 
         return alg
 
     def okPressed(self):
-        self.alg = self.createAlgorithm()
-        if self.alg is not None:
-            self.close()
+        alg = self.createAlgorithm()
+        if alg is not None:
+            self.accept()
 
     def cancelPressed(self):
-        self.alg = None
-        self.close()
+        self.reject()
 
     def openHelp(self):
         algHelp = self._alg.help()

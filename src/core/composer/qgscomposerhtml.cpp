@@ -40,17 +40,12 @@
 QgsComposerHtml::QgsComposerHtml( QgsComposition *c, bool createUndoCommands )
   : QgsComposerMultiFrame( c, createUndoCommands )
   , mContentMode( QgsComposerHtml::Url )
-  , mWebPage( nullptr )
   , mLoaded( false )
   , mHtmlUnitsToMM( 1.0 )
-  , mRenderedPage( nullptr )
   , mEvaluateExpressions( true )
   , mUseSmartBreaks( true )
   , mMaxBreakDistance( 10 )
-  , mExpressionLayer( nullptr )
-  , mDistanceArea( nullptr )
   , mEnableUserStylesheet( false )
-  , mFetcher( nullptr )
 {
   mDistanceArea = new QgsDistanceArea();
   mHtmlUnitsToMM = htmlUnitsToMM();
@@ -231,7 +226,7 @@ double QgsComposerHtml::maxFrameWidth() const
   QList<QgsComposerFrame *>::const_iterator frameIt = mFrameItems.constBegin();
   for ( ; frameIt != mFrameItems.constEnd(); ++frameIt )
   {
-    maxWidth = qMax( maxWidth, static_cast< double >( ( *frameIt )->boundingRect().width() ) );
+    maxWidth = std::max( maxWidth, static_cast< double >( ( *frameIt )->boundingRect().width() ) );
   }
 
   return maxWidth;
@@ -379,7 +374,7 @@ double QgsComposerHtml::findNearbyPageBreak( double yPos )
   bool previousPixelTransparent = false;
   QRgb pixelColor;
   QList< QPair<int, int> > candidates;
-  int minRow = qMax( idealPos - maxSearchDistance, 0 );
+  int minRow = std::max( idealPos - maxSearchDistance, 0 );
   for ( int candidateRow = idealPos; candidateRow >= minRow; --candidateRow )
   {
     changes = 0;

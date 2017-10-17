@@ -162,7 +162,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * \note This property is only used for image exports.
      * \since QGIS 3.0
      */
-    void setFileFormat( QString format ) { mFileFormat = format; }
+    void setFileFormat( const QString &format ) { mFileFormat = format; }
 
     bool sortFeatures() const { return mSortFeatures; }
     void setSortFeatures( bool doSort ) { mSortFeatures = doSort; }

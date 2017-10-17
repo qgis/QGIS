@@ -20,12 +20,15 @@
 #include "qgscomposition.h"
 #include "qgsproject.h"
 
-QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand( QgsComposerMultiFrame *multiFrame, const QString &text, QUndoCommand *parent ):
-  QUndoCommand( text, parent ), mMultiFrame( multiFrame ), mFirstRun( true )
+QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand( QgsComposerMultiFrame *multiFrame, const QString &text, QUndoCommand *parent )
+  : QUndoCommand( text, parent )
+  , mMultiFrame( multiFrame )
+  , mFirstRun( true )
 {
 }
 
-QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand(): QUndoCommand( QLatin1String( "" ), nullptr ), mMultiFrame( nullptr ), mFirstRun( false )
+QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand()
+  : QUndoCommand( QString(), nullptr )
 {
 }
 

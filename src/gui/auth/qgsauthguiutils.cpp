@@ -197,14 +197,14 @@ void QgsAuthGuiUtils::eraseAuthenticationDatabase( QgsMessageBar *msgbar, int ti
   if ( QgsAuthGuiUtils::isDisabled( msgbar, timeout ) )
     return;
 
-  QMessageBox::StandardButton btn =  QMessageBox::warning(
-                                       parent,
-                                       QObject::tr( "Erase Database" ),
-                                       QObject::tr( "Are you sure you want to ERASE the entire authentication database?\n\n"
-                                           "Operation can NOT be undone!\n\n"
-                                           "(Current database will be backed up and new one created.)" ),
-                                       QMessageBox::Ok | QMessageBox::Cancel,
-                                       QMessageBox::Cancel );
+  QMessageBox::StandardButton btn = QMessageBox::warning(
+                                      parent,
+                                      QObject::tr( "Erase Database" ),
+                                      QObject::tr( "Are you sure you want to ERASE the entire authentication database?\n\n"
+                                          "Operation can NOT be undone!\n\n"
+                                          "(Current database will be backed up and new one created.)" ),
+                                      QMessageBox::Ok | QMessageBox::Cancel,
+                                      QMessageBox::Cancel );
 
   QgsAuthManager::instance()->setScheduledAuthDatabaseErase( false );
 
@@ -276,7 +276,7 @@ void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, int timeout, 
   QgsMessageBar::MessageLevel level;
   if ( ! QgsAuthManager::instance()->passwordHelperDelete() )
   {
-    msg =  QgsAuthManager::instance()->passwordHelperErrorMessage();
+    msg = QgsAuthManager::instance()->passwordHelperErrorMessage();
     level = QgsMessageBar::WARNING;
   }
   else
@@ -301,7 +301,7 @@ void QgsAuthGuiUtils::passwordHelperSync( QgsMessageBar *msgbar, int timeout )
   }
   else if ( ! QgsAuthManager::instance()->passwordHelperSync() )
   {
-    msg =  QgsAuthManager::instance()->passwordHelperErrorMessage();
+    msg = QgsAuthManager::instance()->passwordHelperErrorMessage();
     level = QgsMessageBar::WARNING;
   }
   else

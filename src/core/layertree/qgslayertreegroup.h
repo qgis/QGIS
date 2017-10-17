@@ -211,16 +211,16 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 
     QString mName;
 
-    bool mChangingChildVisibility;
+    bool mChangingChildVisibility = false;
 
     //! Whether the group is mutually exclusive (i.e. only one child can be checked at a time)
-    bool mMutuallyExclusive;
+    bool mMutuallyExclusive = false;
 
     /**
      * Keeps track which child has been most recently selected
      * (so if the whole group is unchecked and checked again, we know which child to check)
      */
-    int mMutuallyExclusiveChildIndex;
+    int mMutuallyExclusiveChildIndex = -1;
 
   private:
 

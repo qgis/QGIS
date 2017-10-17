@@ -34,7 +34,7 @@ namespace QgsWms
     Q_UNUSED( version );
 
     QgsServerRequest::Parameters params = request.parameters();
-    QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
+    QgsRenderer renderer( serverIface, project, params );
 
     std::unique_ptr<QImage> result( renderer.getMap() );
     if ( result )

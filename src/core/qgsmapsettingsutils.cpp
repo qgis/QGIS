@@ -92,12 +92,12 @@ QString QgsMapSettingsUtils::worldFileContent( const QgsMapSettings &mapSettings
 
   // rotation matrix
   double r[6];
-  r[0] = cos( alpha );
-  r[1] = -sin( alpha );
-  r[2] = xCenter * ( 1 - cos( alpha ) ) + yCenter * sin( alpha );
-  r[3] = sin( alpha );
-  r[4] = cos( alpha );
-  r[5] = - xCenter * sin( alpha ) + yCenter * ( 1 - cos( alpha ) );
+  r[0] = std::cos( alpha );
+  r[1] = -std::sin( alpha );
+  r[2] = xCenter * ( 1 - std::cos( alpha ) ) + yCenter * std::sin( alpha );
+  r[3] = std::sin( alpha );
+  r[4] = std::cos( alpha );
+  r[5] = - xCenter * std::sin( alpha ) + yCenter * ( 1 - std::cos( alpha ) );
 
   // result = rotation x scaling = rotation(scaling(X))
   double a = r[0] * s[0] + r[1] * s[3];

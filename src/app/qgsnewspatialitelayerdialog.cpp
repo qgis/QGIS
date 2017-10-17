@@ -83,6 +83,8 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   connect( leLayerName, &QLineEdit::textChanged, this, &QgsNewSpatialiteLayerDialog::checkOk );
   connect( checkBoxPrimaryKey, &QAbstractButton::clicked, this, &QgsNewSpatialiteLayerDialog::checkOk );
 
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewSpatialiteLayerDialog::showHelp );
+
   mAddAttributeButton->setEnabled( false );
   mRemoveAttributeButton->setEnabled( false );
 
@@ -338,7 +340,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
 {
   // Build up the sql statement for creating the table
   QString sql = QStringLiteral( "create table %1(" ).arg( quotedIdentifier( leLayerName->text() ) );
-  QString delim = QLatin1String( "" );
+  QString delim;
 
   if ( checkBoxPrimaryKey->isChecked() )
   {
@@ -456,4 +458,8 @@ QString QgsNewSpatialiteLayerDialog::quotedValue( QString value )
   return value.prepend( '\'' ).append( '\'' );
 }
 
+void QgsNewSpatialiteLayerDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-a-new-spatialite-layer" ) );
+}
 

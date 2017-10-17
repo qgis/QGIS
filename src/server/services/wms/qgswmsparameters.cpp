@@ -23,6 +23,11 @@ namespace QgsWms
 {
   QgsWmsParameters::QgsWmsParameters()
   {
+    // Available version number
+    mVersions.append( QgsProjectVersion( 1, 1, 1 ) );
+    mVersions.append( QgsProjectVersion( 1, 3, 0 ) );
+
+    // WMS parameters definition
     const Parameter pBoxSpace = { ParameterName::BOXSPACE,
                                   QVariant::Double,
                                   QVariant( 2.0 ),
@@ -184,6 +189,13 @@ namespace QgsWms
                            };
     save( pCRS );
 
+    const Parameter pSRS = { ParameterName::SRS,
+                             QVariant::String,
+                             QVariant( "" ),
+                             QVariant()
+                           };
+    save( pSRS );
+
     const Parameter pFormat = { ParameterName::FORMAT,
                                 QVariant::String,
                                 QVariant( "" ),
@@ -242,7 +254,7 @@ namespace QgsWms
 
     const Parameter pScale = { ParameterName::SCALE,
                                QVariant::Double,
-                               QVariant( "" ),
+                               QVariant( -1 ),
                                QVariant()
                              };
     save( pScale );
@@ -350,7 +362,7 @@ namespace QgsWms
                                QVariant( "" ),
                                QVariant()
                              };
-    save( pLayers );
+    save( pStyle );
 
     const Parameter pStyles = { ParameterName::STYLES,
                                 QVariant::String,
@@ -393,6 +405,62 @@ namespace QgsWms
                                       QVariant()
                                     };
     save( pWmsPrecision );
+
+    const Parameter pTransparent = { ParameterName::TRANSPARENT,
+                                     QVariant::Bool,
+                                     QVariant( false ),
+                                     QVariant()
+                                   };
+    save( pTransparent );
+
+    const Parameter pBgColor = { ParameterName::BGCOLOR,
+                                 QVariant::String,
+                                 QVariant( "white" ),
+                                 QVariant()
+                               };
+    save( pBgColor );
+
+    const Parameter pDpi = { ParameterName::DPI,
+                             QVariant::Int,
+                             QVariant( -1 ),
+                             QVariant()
+                           };
+    save( pDpi );
+
+    const Parameter pTemplate = { ParameterName::TEMPLATE,
+                                  QVariant::String,
+                                  QVariant(),
+                                  QVariant()
+                                };
+    save( pTemplate );
+
+    const Parameter pExtent = { ParameterName::EXTENT,
+                                QVariant::String,
+                                QVariant( "" ),
+                                QVariant()
+                              };
+    save( pExtent );
+
+    const Parameter pRotation = { ParameterName::ROTATION,
+                                  QVariant::Double,
+                                  QVariant( 0.0 ),
+                                  QVariant()
+                                };
+    save( pRotation );
+
+    const Parameter pGridX = { ParameterName::GRID_INTERVAL_X,
+                               QVariant::Double,
+                               QVariant( 0.0 ),
+                               QVariant()
+                             };
+    save( pGridX );
+
+    const Parameter pGridY = { ParameterName::GRID_INTERVAL_Y,
+                               QVariant::Double,
+                               QVariant( 0.0 ),
+                               QVariant()
+                             };
+    save( pGridY );
   }
 
   QgsWmsParameters::QgsWmsParameters( const QgsServerRequest::Parameters &parameters )
@@ -405,19 +473,44 @@ namespace QgsWms
     mRequestParameters = parameters;
 
     const QMetaEnum metaEnum( QMetaEnum::fromType<ParameterName>() );
+    static QRegExp composerParamRegExp( "^MAP\\d+:" );
+
     foreach ( QString key, parameters.keys() )
     {
-      const ParameterName name = ( ParameterName ) metaEnum.keyToValue( key.toStdString().c_str() );
-      if ( name >= 0 )
+      if ( key.contains( composerParamRegExp ) )
       {
-        QVariant value( parameters[key] );
-        if ( value.canConvert( mParameters[name].mType ) )
+        const int mapId = key.mid( 3, key.indexOf( ':' ) - 3 ).toInt();
+        const QString theKey = key.mid( key.indexOf( ':' ) + 1 );
+        const ParameterName name = ( ParameterName ) metaEnum.keyToValue( theKey.toStdString().c_str() );
+        if ( name >= 0 )
         {
-          mParameters[name].mValue = value;
+          QVariant value( parameters[key] );
+          Parameter param = mParameters[name];
+          Parameter nParam =
+          {
+            param.mName,
+            param.mType,
+            param.mDefaultValue,
+            value
+          };
+          save( nParam, mapId );
+          if ( !value.canConvert( nParam.mType ) )
+          {
+            raiseError( name, mapId );
+          }
         }
-        else
+      }
+      else
+      {
+        const ParameterName name = ( ParameterName ) metaEnum.keyToValue( key.toStdString().c_str() );
+        if ( name >= 0 )
         {
-          raiseError( name );
+          QVariant value( parameters[key] );
+          mParameters[name].mValue = value;
+          if ( !value.canConvert( mParameters[name].mType ) )
+          {
+            raiseError( name );
+          }
         }
       }
     }
@@ -438,6 +531,24 @@ namespace QgsWms
         log( " - " + name + " : " + value );
       }
     }
+    for ( auto map : mComposerParameters.toStdMap() )
+    {
+      const int mapId = map.first;
+      log( " - MAP" + QString::number( mapId ) );
+      for ( auto param : mComposerParameters[map.first].toStdMap() )
+      {
+        const QString value = param.second.mValue.toString();
+
+        if ( ! value.isEmpty() )
+        {
+          const QString name = metaEnum.valueToKey( param.first );
+          log( " - MAP" + QString::number( mapId ) + ":" + name + " : " + value );
+        }
+      }
+    }
+
+    if ( !version().isEmpty() )
+      log( " - VERSION : " + version() );
   }
 
   void QgsWmsParameters::save( const Parameter &parameter )
@@ -455,6 +566,27 @@ namespace QgsWms
     return mParameters[name].mDefaultValue;
   }
 
+  void QgsWmsParameters::save( const Parameter &parameter, int mapId )
+  {
+    mComposerParameters[ mapId ][ parameter.mName ] = parameter;
+  }
+
+  QVariant QgsWmsParameters::value( ParameterName name, int mapId ) const
+  {
+    if ( mComposerParameters.contains( mapId ) && mComposerParameters[ mapId ].contains( name ) )
+      return mComposerParameters[ mapId ][ name ].mValue;
+    else
+      return value( name );
+  }
+
+  QVariant QgsWmsParameters::defaultValue( ParameterName name, int mapId ) const
+  {
+    if ( mComposerParameters.contains( mapId ) && mComposerParameters[ mapId ].contains( name ) )
+      return mComposerParameters[ mapId ][ name ].mDefaultValue;
+    else
+      return defaultValue( name );
+  }
+
   QStringList QgsWmsParameters::highlightGeom() const
   {
     return toStringList( ParameterName::HIGHLIGHT_GEOM, ';' );
@@ -462,25 +594,7 @@ namespace QgsWms
 
   QList<QgsGeometry> QgsWmsParameters::highlightGeomAsGeom() const
   {
-    QList<QgsGeometry> geometries;
-
-    Q_FOREACH ( QString wkt, highlightGeom() )
-    {
-      QgsGeometry g( QgsGeometry::fromWkt( wkt ) );
-
-      if ( g.isGeosValid() )
-      {
-        geometries.append( g );
-      }
-      else
-      {
-        QString val = value( ParameterName::HIGHLIGHT_GEOM ).toString();
-        QString msg = "HIGHLIGHT_GEOM ('" + val + "') cannot be converted into a list of geometries";
-        raiseError( msg );
-      }
-    }
-
-    return geometries;
+    return toGeomList( highlightGeom(), ParameterName::HIGHLIGHT_GEOM );
   }
 
   QStringList QgsWmsParameters::highlightSymbol() const
@@ -490,7 +604,25 @@ namespace QgsWms
 
   QString QgsWmsParameters::crs() const
   {
-    return value( ParameterName::CRS ).toString();
+    QString rs;
+    QString srs = value( ParameterName::SRS ).toString();
+    QString crs = value( ParameterName::CRS ).toString();
+
+    // both SRS/CRS are supported but there's a priority according to the
+    // specified version when both are defined in the request
+    if ( !srs.isEmpty() && crs.isEmpty() )
+      rs = srs;
+    else if ( srs.isEmpty() && !crs.isEmpty() )
+      rs = crs;
+    else if ( !srs.isEmpty() && !crs.isEmpty() )
+    {
+      if ( versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) )
+        rs = crs;
+      else
+        rs = srs;
+    }
+
+    return rs;
   }
 
   QString QgsWmsParameters::bbox() const
@@ -500,36 +632,7 @@ namespace QgsWms
 
   QgsRectangle QgsWmsParameters::bboxAsRectangle() const
   {
-    QgsRectangle extent;
-
-    if ( !bbox().isEmpty() )
-    {
-      QStringList corners = bbox().split( "," );
-
-      if ( corners.size() == 4 )
-      {
-        double d[4];
-        bool ok;
-
-        for ( int i = 0; i < 4; i++ )
-        {
-          corners[i].replace( QLatin1String( " " ), QLatin1String( "+" ) );
-          d[i] = corners[i].toDouble( &ok );
-          if ( !ok )
-          {
-            raiseError( "BBOX ('" + bbox() + "') cannot be converted into a rectangle" );
-          }
-        }
-
-        extent = QgsRectangle( d[0], d[1], d[2], d[3] );
-      }
-      else
-      {
-        raiseError( "BBOX ('" + bbox() + "') cannot be converted into a rectangle" );
-      }
-    }
-
-    return extent;
+    return toRectangle( ParameterName::BBOX );
   }
 
   QString QgsWmsParameters::height() const
@@ -552,57 +655,266 @@ namespace QgsWms
     return toInt( ParameterName::WIDTH );
   }
 
+  QString QgsWmsParameters::dpi() const
+  {
+    return value( ParameterName::DPI ).toString();
+  }
+
+  int QgsWmsParameters::dpiAsInt() const
+  {
+    return toInt( ParameterName::DPI );
+  }
+
+  QString QgsWmsParameters::version() const
+  {
+    // VERSION parameter is not managed with other parameters because
+    // there's a conflict with qgis VERSION defined in qgsconfig.h
+    if ( mRequestParameters.contains( "VERSION" ) )
+      return mRequestParameters["VERSION"];
+    else
+      return QString();
+  }
+
+  QgsProjectVersion QgsWmsParameters::versionAsNumber() const
+  {
+    QString vStr = version();
+    QgsProjectVersion version;
+
+    if ( vStr.isEmpty() )
+      version = QgsProjectVersion( 1, 3, 0 ); // default value
+    else if ( mVersions.contains( QgsProjectVersion( vStr ) ) )
+      version = QgsProjectVersion( vStr );
+
+    return version;
+  }
+
+  double QgsWmsParameters::toDouble( const QVariant &value, const QVariant &defaultValue, bool *error ) const
+  {
+    double val = defaultValue.toDouble();
+    QString valStr = value.toString();
+    bool ok = true;
+
+    if ( !valStr.isEmpty() )
+    {
+      val = value.toDouble( &ok );
+    }
+    *error = !ok;
+
+    return val;
+  }
+
   double QgsWmsParameters::toDouble( ParameterName p ) const
   {
-    double val = defaultValue( p ).toDouble();
-    QString valStr = value( p ).toString();
+    bool error;
+    double val = toDouble( value( p ), defaultValue( p ), &error );
+    if ( error )
+    {
+      QString n = name( p );
+      QString valStr = value( p ).toString();
+      QString msg = n + " ('" + valStr + "') cannot be converted into a double";
+      raiseError( msg );
+    }
+
+    return val;
+  }
+
+  double QgsWmsParameters::toDouble( ParameterName p, int mapId ) const
+  {
+    bool error;
+    double val = toDouble( value( p, mapId ), defaultValue( p, mapId ), &error );
+    if ( error )
+    {
+      QString n = name( p );
+      QString valStr = value( p, mapId ).toString();
+      QString msg = "MAP" + QString::number( mapId ) + ":" + n + " ('" + valStr + "') cannot be converted into a double";
+      raiseError( msg );
+    }
+
+    return val;
+  }
+
+  bool QgsWmsParameters::toBool( const QVariant &value, const QVariant &defaultValue ) const
+  {
+    bool val = defaultValue.toBool();
+    QString valStr = value.toString();
 
     if ( ! valStr.isEmpty() )
-    {
-      bool ok;
-      val = value( p ).toDouble( &ok );
-
-      if ( !ok )
-      {
-        QString n = name( p );
-        QString msg = n + " ('" + valStr + "') cannot be converted into a double";
-        raiseError( msg );
-      }
-    }
+      val = value.toBool();
 
     return val;
   }
 
   bool QgsWmsParameters::toBool( ParameterName p ) const
   {
-    bool val = defaultValue( p ).toBool();
-    QString valStr = value( p ).toString();
+    return toBool( value( p ), defaultValue( p ) );
+  }
 
-    if ( ! valStr.isEmpty() )
-      val = value( p ).toBool();
+  bool QgsWmsParameters::toBool( ParameterName p, int mapId ) const
+  {
+    return toBool( value( p, mapId ), defaultValue( p, mapId ) );
+  }
+
+  int QgsWmsParameters::toInt( const QVariant &value, const QVariant &defaultValue, bool *error ) const
+  {
+    int val = defaultValue.toInt();
+    QString valStr = value.toString();
+    bool ok = true;
+
+    if ( !valStr.isEmpty() )
+    {
+      val = value.toInt( &ok );
+    }
+    *error = !ok;
 
     return val;
   }
 
   int QgsWmsParameters::toInt( ParameterName p ) const
   {
-    int val = defaultValue( p ).toInt();
-    QString valStr = value( p ).toString();
-
-    if ( ! valStr.isEmpty() )
+    bool error;
+    int val = toInt( value( p ), defaultValue( p ), &error );
+    if ( error )
     {
-      bool ok;
-      val = value( p ).toInt( &ok );
-
-      if ( !ok )
-      {
-        QString n = name( p );
-        QString msg = n + " ('" + valStr + "') cannot be converted into int";
-        raiseError( msg );
-      }
+      QString n = name( p );
+      QString valStr = value( p ).toString();
+      QString msg = n + " ('" + valStr + "') cannot be converted into int";
+      raiseError( msg );
     }
 
     return val;
+  }
+
+  int QgsWmsParameters::toInt( ParameterName p, int mapId ) const
+  {
+    bool error;
+    int val = toInt( value( p, mapId ), defaultValue( p, mapId ), &error );
+    if ( error )
+    {
+      QString n = name( p );
+      QString valStr = value( p, mapId ).toString();
+      QString msg = "MAP" + QString::number( mapId ) + ":" + n + " ('" + valStr + "') cannot be converted into int";
+      raiseError( msg );
+    }
+
+    return val;
+  }
+
+  QColor QgsWmsParameters::toColor( const QVariant &value, const QVariant &defaultValue, bool *error ) const
+  {
+    *error = false;
+    QColor c = defaultValue.value<QColor>();
+    QString cStr = value.toString();
+
+    if ( !cStr.isEmpty() )
+    {
+      // support hexadecimal notation to define colors
+      if ( cStr.startsWith( "0x", Qt::CaseInsensitive ) )
+        cStr.replace( 0, 2, "#" );
+
+      c = QColor( cStr );
+
+      *error = !c.isValid();
+    }
+
+    return c;
+  }
+
+  QColor QgsWmsParameters::toColor( ParameterName p ) const
+  {
+    bool error;
+    QColor c = toColor( value( p ), defaultValue( p ), &error );
+    if ( error )
+    {
+      QString n = name( p );
+      QString valStr = value( p ).toString();
+      QString msg = n + " ('" + valStr + "') cannot be converted into a color";
+      raiseError( msg );
+    }
+
+    return c;
+  }
+
+  QColor QgsWmsParameters::toColor( ParameterName p, int mapId ) const
+  {
+    bool error;
+    QColor c = toColor( value( p, mapId ), defaultValue( p, mapId ), &error );
+    if ( error )
+    {
+      QString n = name( p );
+      QString valStr = value( p, mapId ).toString();
+      QString msg = "MAP" + QString::number( mapId ) + ":" + n + " ('" + valStr + "') cannot be converted into a color";
+      raiseError( msg );
+    }
+
+    return c;
+  }
+
+  QgsRectangle QgsWmsParameters::toRectangle( const QVariant &value, bool *error ) const
+  {
+    *error = false;
+    QString bbox = value.toString();
+    QgsRectangle extent;
+
+    if ( !bbox.isEmpty() )
+    {
+      QStringList corners = bbox.split( "," );
+
+      if ( corners.size() == 4 )
+      {
+        double d[4];
+        bool ok;
+
+        for ( int i = 0; i < 4; i++ )
+        {
+          corners[i].replace( QLatin1String( " " ), QLatin1String( "+" ) );
+          d[i] = corners[i].toDouble( &ok );
+          if ( !ok )
+          {
+            *error = !ok;
+            return extent;
+          }
+        }
+
+        extent = QgsRectangle( d[0], d[1], d[2], d[3] );
+      }
+      else
+      {
+        *error = true;
+        return extent;
+      }
+    }
+
+    return extent;
+  }
+
+  QgsRectangle QgsWmsParameters::toRectangle( ParameterName p ) const
+  {
+    bool error;
+    QgsRectangle extent = toRectangle( value( p ), &error );
+    if ( error )
+    {
+      QString n = name( p );
+      QString valStr = value( p ).toString();
+      QString msg = n + " ('" + valStr + "') cannot be converted into a rectangle";
+      raiseError( msg );
+    }
+
+    return extent;
+  }
+
+  QgsRectangle QgsWmsParameters::toRectangle( ParameterName p, int mapId ) const
+  {
+    bool error;
+    QgsRectangle extent = toRectangle( value( p, mapId ), &error );
+    if ( error )
+    {
+      QString n = name( p );
+      QString valStr = value( p, mapId ).toString();
+      QString msg = "MAP" + QString::number( mapId ) + ":" + n + " ('" + valStr + "') cannot be converted into a rectangle";
+      raiseError( msg );
+    }
+
+    return extent;
   }
 
   QStringList QgsWmsParameters::toStringList( ParameterName name, char delimiter ) const
@@ -610,11 +922,17 @@ namespace QgsWms
     return value( name ).toString().split( delimiter, QString::SkipEmptyParts );
   }
 
-  QList<int> QgsWmsParameters::toIntList( QStringList l, ParameterName p ) const
+  QStringList QgsWmsParameters::toStringList( ParameterName name, int mapId, char delimiter ) const
   {
+    return value( name, mapId ).toString().split( delimiter, QString::SkipEmptyParts );
+  }
+
+  QList<int> QgsWmsParameters::toIntList( const QStringList &l, bool *error ) const
+  {
+    *error = false;
     QList<int> elements;
 
-    Q_FOREACH ( QString element, l )
+    for ( const QString &element : l )
     {
       bool ok;
       int e = element.toInt( &ok );
@@ -625,21 +943,50 @@ namespace QgsWms
       }
       else
       {
-        QString val = value( p ).toString();
-        QString n = name( p );
-        QString msg = n + " ('" + val + "') cannot be converted into a list of int";
-        raiseError( msg );
+        *error = !ok;
+        return elements;
       }
     }
 
     return elements;
   }
 
-  QList<float> QgsWmsParameters::toFloatList( QStringList l, ParameterName p ) const
+  QList<int> QgsWmsParameters::toIntList( const QStringList &l, ParameterName p ) const
   {
+    bool error;
+    QList<int> elements = toIntList( l, &error );
+    if ( error )
+    {
+      QString n = name( p );
+      QString valStr = value( p ).toString();
+      QString msg = n + " ('" + valStr + "') cannot be converted into a list of int";
+      raiseError( msg );
+    }
+
+    return elements;
+  }
+
+  QList<int> QgsWmsParameters::toIntList( const QStringList &l, ParameterName p, int mapId ) const
+  {
+    bool error;
+    QList<int> elements = toIntList( l, &error );
+    if ( error )
+    {
+      QString n = name( p );
+      QString valStr = value( p, mapId ).toString();
+      QString msg = "MAP" + QString::number( mapId ) + ":" + n + " ('" + valStr + "') cannot be converted into a list of int";
+      raiseError( msg );
+    }
+
+    return elements;
+  }
+
+  QList<float> QgsWmsParameters::toFloatList( const QStringList &l, bool *error ) const
+  {
+    *error = false;
     QList<float> elements;
 
-    Q_FOREACH ( QString element, l )
+    for ( const QString &element : l )
     {
       bool ok;
       float e = element.toFloat( &ok );
@@ -650,21 +997,50 @@ namespace QgsWms
       }
       else
       {
-        QString val = value( p ).toString();
-        QString n = name( p );
-        QString msg = n + " ('" + val + "') cannot be converted into a list of float";
-        raiseError( msg );
+        *error = !ok;
+        return elements;
       }
     }
 
     return elements;
   }
 
-  QList<QColor> QgsWmsParameters::toColorList( QStringList l, ParameterName p ) const
+  QList<float> QgsWmsParameters::toFloatList( const QStringList &l, ParameterName p ) const
   {
+    bool error;
+    QList<float> elements = toFloatList( l, &error );
+    if ( error )
+    {
+      QString n = name( p );
+      QString valStr = value( p ).toString();
+      QString msg = n + " ('" + valStr + "') cannot be converted into a list of float";
+      raiseError( msg );
+    }
+
+    return elements;
+  }
+
+  QList<float> QgsWmsParameters::toFloatList( const QStringList &l, ParameterName p, int mapId ) const
+  {
+    bool error;
+    QList<float> elements = toFloatList( l, &error );
+    if ( error )
+    {
+      QString n = name( p );
+      QString valStr = value( p ).toString();
+      QString msg = "MAP" + QString::number( mapId ) + ":" + n + " ('" + valStr + "') cannot be converted into a list of float";
+      raiseError( msg );
+    }
+
+    return elements;
+  }
+
+  QList<QColor> QgsWmsParameters::toColorList( const QStringList &l, bool *error ) const
+  {
+    *error = false;
     QList<QColor> elements;
 
-    Q_FOREACH ( QString element, l )
+    for ( const QString &element : l )
     {
       QColor c = QColor( element );
 
@@ -674,11 +1050,92 @@ namespace QgsWms
       }
       else
       {
-        QString val = value( p ).toString();
-        QString n = name( p );
-        QString msg = n + " ('" + val + "') cannot be converted into a list of colors";
-        raiseError( msg );
+        *error = !c.isValid();
+        return elements;
       }
+    }
+
+    return elements;
+  }
+
+  QList<QColor> QgsWmsParameters::toColorList( const QStringList &l, ParameterName p ) const
+  {
+    bool error;
+    QList<QColor> elements = toColorList( l, &error );
+    if ( error )
+    {
+      QString n = name( p );
+      QString valStr = value( p ).toString();
+      QString msg = n + " ('" + valStr + "') cannot be converted into a list of colors";
+      raiseError( msg );
+    }
+
+    return elements;
+  }
+
+  QList<QColor> QgsWmsParameters::toColorList( const QStringList &l, ParameterName p, int mapId ) const
+  {
+    bool error;
+    QList<QColor> elements = toColorList( l, &error );
+    if ( error )
+    {
+      QString n = name( p );
+      QString valStr = value( p ).toString();
+      QString msg = "MAP" + QString::number( mapId ) + ":" + n + " ('" + valStr + "') cannot be converted into a list of colors";
+      raiseError( msg );
+    }
+
+    return elements;
+  }
+
+  QList<QgsGeometry> QgsWmsParameters::toGeomList( const QStringList &l, bool *error ) const
+  {
+    *error = false;
+    QList<QgsGeometry> geometries;
+
+    for ( const QString &wkt : l )
+    {
+      QgsGeometry g( QgsGeometry::fromWkt( wkt ) );
+
+      if ( g.isGeosValid() )
+      {
+        geometries.append( g );
+      }
+      else
+      {
+        *error = true;
+        return geometries;
+      }
+    }
+
+    return geometries;
+  }
+
+  QList<QgsGeometry> QgsWmsParameters::toGeomList( const QStringList &l, ParameterName p ) const
+  {
+    bool error;
+    QList<QgsGeometry> elements = toGeomList( l, &error );
+    if ( error )
+    {
+      QString n = name( p );
+      QString valStr = value( p ).toString();
+      QString msg = n + " ('" + valStr + "') cannot be converted into a list of geometries";
+      raiseError( msg );
+    }
+
+    return elements;
+  }
+
+  QList<QgsGeometry> QgsWmsParameters::toGeomList( const QStringList &l, ParameterName p, int mapId ) const
+  {
+    bool error;
+    QList<QgsGeometry> elements = toGeomList( l, &error );
+    if ( error )
+    {
+      QString n = name( p );
+      QString valStr = value( p, mapId ).toString();
+      QString msg = "MAP" + QString::number( mapId ) + ":" + n + " ('" + valStr + "') cannot be converted into a list of geometries";
+      raiseError( msg );
     }
 
     return elements;
@@ -793,6 +1250,16 @@ namespace QgsWms
   bool QgsWmsParameters::ruleLabelAsBool() const
   {
     return toBool( ParameterName::RULELABEL );
+  }
+
+  QString QgsWmsParameters::transparent() const
+  {
+    return value( ParameterName::TRANSPARENT ).toString();
+  }
+
+  bool QgsWmsParameters::transparentAsBool() const
+  {
+    return toBool( ParameterName::TRANSPARENT );
   }
 
   QString QgsWmsParameters::scale() const
@@ -962,23 +1429,7 @@ namespace QgsWms
 
   QColor QgsWmsParameters::layerFontColorAsColor() const
   {
-    ParameterName p = ParameterName::LAYERFONTCOLOR;
-    QColor c = defaultValue( p ).value<QColor>();
-
-    if ( !layerFontColor().isEmpty() )
-    {
-      c = QColor( layerFontColor() );
-
-      if ( !c.isValid() )
-      {
-        QString val = value( p ).toString();
-        QString n = name( p );
-        QString msg = n + " ('" + val + "') cannot be converted into a color";
-        raiseError( msg );
-      }
-    }
-
-    return c;
+    return toColor( ParameterName::LAYERFONTCOLOR );
   }
 
   QString QgsWmsParameters::itemFontSize() const
@@ -1165,8 +1616,8 @@ namespace QgsWms
 
   QStringList QgsWmsParameters::allStyles() const
   {
-    QStringList style = value( ParameterName::STYLE ).toString().split( ",", QString::SkipEmptyParts );
-    QStringList styles = value( ParameterName::STYLES ).toString().split( "," );
+    QStringList style = toStringList( ParameterName::STYLE );
+    QStringList styles = toStringList( ParameterName::STYLES );
     return style << styles;
   }
 
@@ -1266,7 +1717,7 @@ namespace QgsWms
     QList<QColor> bufferColors = highlightLabelBufferColorAsColor();
     QList<float> bufferSizes = highlightLabelBufferSizeAsFloat();
 
-    int nLayers = qMin( geoms.size(), slds.size() );
+    int nLayers = std::min( geoms.size(), slds.size() );
     for ( int i = 0; i < nLayers; i++ )
     {
       QgsWmsParametersHighlightLayer param;
@@ -1301,6 +1752,124 @@ namespace QgsWms
     return params;
   }
 
+  QString QgsWmsParameters::backgroundColor() const
+  {
+    return value( ParameterName::BGCOLOR ).toString();
+  }
+
+  QColor QgsWmsParameters::backgroundColorAsColor() const
+  {
+    return toColor( ParameterName::BGCOLOR );
+  }
+
+  QString QgsWmsParameters::composerTemplate() const
+  {
+    return value( ParameterName::TEMPLATE ).toString();
+  }
+
+  QgsWmsParametersComposerMap QgsWmsParameters::composerMapParameters( int mapId ) const
+  {
+    QgsWmsParametersComposerMap param;
+    param.mId = mapId;
+
+    //map extent is mandatory
+    QString extentStr = value( ParameterName::EXTENT, mapId ).toString();
+    if ( extentStr.isEmpty() )
+      return param;
+
+    QString pMapId = "MAP" + QString::number( mapId );
+
+    QgsRectangle extent = toRectangle( ParameterName::EXTENT, mapId );
+    if ( extent.isEmpty() )
+      return param;
+
+    param.mHasExtent = !extent.isEmpty();
+    param.mExtent = extent;
+
+    // scale
+    if ( !value( ParameterName::SCALE, mapId ).toString().isEmpty() )
+    {
+      param.mScale = toDouble( ParameterName::SCALE, mapId );
+    }
+
+    // rotation
+    if ( !value( ParameterName::ROTATION, mapId ).toString().isEmpty() )
+    {
+      param.mRotation = toDouble( ParameterName::ROTATION, mapId );
+    }
+
+    //grid space x / y
+    if ( !value( ParameterName::GRID_INTERVAL_X, mapId ).toString().isEmpty() && !value( ParameterName::GRID_INTERVAL_Y, mapId ).toString().isEmpty() )
+    {
+      param.mGridX = toDouble( ParameterName::GRID_INTERVAL_X, mapId );
+      param.mGridY = toDouble( ParameterName::GRID_INTERVAL_Y, mapId );
+    }
+
+    //layers
+    QList<QgsWmsParametersLayer> lParams;
+    QStringList layers = toStringList( ParameterName::LAYERS, mapId, ',' );
+    QStringList styles = toStringList( ParameterName::STYLES, mapId, ',' );
+    for ( int i = 0; i < layers.size(); i++ )
+    {
+      QString layer = layers[i];
+      QgsWmsParametersLayer lParam;
+      lParam.mNickname = layer;
+
+      if ( i < styles.count() )
+        lParam.mStyle = styles[i];
+
+      lParams.append( lParam );
+    }
+    param.mLayers = lParams;
+
+    //highlight layers
+    QList<QgsWmsParametersHighlightLayer> hParams;
+    QList<QgsGeometry> geoms = toGeomList( toStringList( ParameterName::HIGHLIGHT_GEOM, mapId, ';' ), ParameterName::HIGHLIGHT_GEOM, mapId );
+    QStringList slds = toStringList( ParameterName::HIGHLIGHT_SYMBOL, mapId, ';' );
+    QStringList labels = toStringList( ParameterName::HIGHLIGHT_LABELSTRING, mapId, ';' );
+    QList<QColor> colors = toColorList( toStringList( ParameterName::HIGHLIGHT_LABELCOLOR, mapId, ';' ), ParameterName::HIGHLIGHT_LABELCOLOR, mapId );
+    QList<int> sizes = toIntList( toStringList( ParameterName::HIGHLIGHT_LABELSIZE, mapId, ';' ), ParameterName::HIGHLIGHT_LABELSIZE, mapId );
+    QList<int> weights = toIntList( toStringList( ParameterName::HIGHLIGHT_LABELWEIGHT, mapId, ';' ), ParameterName::HIGHLIGHT_LABELWEIGHT, mapId );
+    QStringList fonts = toStringList( ParameterName::HIGHLIGHT_LABELFONT, mapId, ';' );
+    QList<QColor> bufferColors = toColorList( toStringList( ParameterName::HIGHLIGHT_LABELBUFFERCOLOR, mapId, ';' ), ParameterName::HIGHLIGHT_LABELBUFFERCOLOR, mapId );
+    QList<float> bufferSizes = toFloatList( toStringList( ParameterName::HIGHLIGHT_LABELBUFFERSIZE, mapId, ';' ), ParameterName::HIGHLIGHT_LABELBUFFERSIZE, mapId );
+
+    int nHLayers = qMin( geoms.size(), slds.size() );
+    for ( int i = 0; i < nHLayers; i++ )
+    {
+      QgsWmsParametersHighlightLayer hParam;
+      hParam.mName = pMapId + "_highlight_" + QString::number( i );
+      hParam.mGeom = geoms[i];
+      hParam.mSld = slds[i];
+
+      if ( i < labels.count() )
+        hParam.mLabel = labels[i];
+
+      if ( i < colors.count() )
+        hParam.mColor = colors[i];
+
+      if ( i < sizes.count() )
+        hParam.mSize = sizes[i];
+
+      if ( i < weights.count() )
+        hParam.mWeight = weights[i];
+
+      if ( i < fonts.count() )
+        hParam.mFont = fonts[ i ];
+
+      if ( i < bufferColors.count() )
+        hParam.mBufferColor = bufferColors[i];
+
+      if ( i < bufferSizes.count() )
+        hParam.mBufferSize = bufferSizes[i];
+
+      hParams.append( hParam );
+    }
+    param.mHighlightLayers = hParams;
+
+    return param;
+  }
+
   QString QgsWmsParameters::name( ParameterName name ) const
   {
     const QMetaEnum metaEnum( QMetaEnum::fromType<ParameterName>() );
@@ -1318,6 +1887,14 @@ namespace QgsWms
     const QString param = name( paramName );
     const QString type = QVariant::typeToName( mParameters[paramName].mType );
     raiseError( param + " ('" + value + "') cannot be converted into " + type );
+  }
+
+  void QgsWmsParameters::raiseError( ParameterName paramName, int mapId ) const
+  {
+    const QString value = mComposerParameters[mapId][paramName].mValue.toString();
+    const QString param = name( paramName );
+    const QString type = QVariant::typeToName( mComposerParameters[mapId][paramName].mType );
+    raiseError( "MAP" + QString::number( mapId ) + ":" + param + " ('" + value + "') cannot be converted into " + type );
   }
 
   void QgsWmsParameters::raiseError( const QString &msg ) const

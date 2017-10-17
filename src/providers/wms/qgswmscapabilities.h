@@ -305,7 +305,7 @@ struct QgsWmtsTheme
   QgsWmtsTheme *subTheme = nullptr;
   QStringList layerRefs;
 
-  QgsWmtsTheme() : subTheme( nullptr ) {}
+  QgsWmtsTheme() {}
   ~QgsWmtsTheme() { delete subTheme; }
 };
 
@@ -700,7 +700,7 @@ class QgsWmsCapabilities
     bool detectTileLayerBoundingBox( QgsWmtsTileLayer &l );
 
   protected:
-    bool mValid;
+    bool mValid = false;
 
     QString mError;
     QString mErrorCaption;
@@ -709,7 +709,7 @@ class QgsWmsCapabilities
     QgsWmsParserSettings mParserSettings;
 
     //! number of layers and parents
-    int mLayerCount;
+    int mLayerCount = -1;
     QMap<int, int> mLayerParents;
     QMap<int, QStringList> mLayerParentNames;
 

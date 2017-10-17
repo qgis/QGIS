@@ -17,7 +17,6 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsbookmarks.h"
-#include "qgscontexthelp.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsmessagelog.h"
@@ -35,8 +34,7 @@
 
 QgsBookmarks::QgsBookmarks( QWidget *parent )
   : QgsDockWidget( parent )
-  , mQgisModel( nullptr )
-  , mProjectModel( nullptr )
+
 {
   setupUi( this );
   restorePosition();
@@ -446,10 +444,10 @@ bool QgsProjectBookmarksTableModel::setData( const QModelIndex &index, const QVa
   switch ( index.column() )
   {
     case 1:
-      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Name" ).arg( index.row() ), value.value<QString>() );
+      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Name" ).arg( index.row() ), value.toString() );
       return true;
     case 2:
-      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Project" ).arg( index.row() ), value.value<QString>() );
+      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Project" ).arg( index.row() ), value.toString() );
       return true;
     case 3:
       QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinX" ).arg( index.row() ), value.toDouble() );
@@ -485,7 +483,7 @@ bool QgsProjectBookmarksTableModel::removeRows( int row, int count, const QModel
 
   for ( int newRow = row ; newRow < rowCount() - count ; newRow++ )
   {
-    for ( int column = 0 ; column < columnCount() ; column++ )
+    for ( int column = 0; column < columnCount() ; column++ )
     {
       setData( index( newRow, column ), data( index( newRow + count, column ) ) );
     }
@@ -662,7 +660,7 @@ QAbstractTableModel *QgsMergedBookmarksTableModel::qgisModel()
 void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom, QAbstractTableModel &modelTo, int row )
 {
   QSqlTableModel *qgisModel = dynamic_cast<QSqlTableModel *>( &modelTo );
-  if ( qgisModel == NULL )
+  if ( !qgisModel )
   {
     modelTo.insertRow( -1 );
     for ( int column = 1 ; column < modelFrom.columnCount() ; column++ )

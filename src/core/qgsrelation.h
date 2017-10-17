@@ -350,7 +350,7 @@ class CORE_EXPORT QgsRelation
      *  The first field is on the referencing layer, the second on the referenced */
     QList< FieldPair > mFieldPairs;
 
-    bool mValid;
+    bool mValid = false;
 };
 
 // Register QgsRelation for usage with QVariant

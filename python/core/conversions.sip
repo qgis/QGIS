@@ -1213,38 +1213,42 @@ template<TYPE2>
     if (!d)
         return NULL;
 
-    const sipMappedType *qlist_type = sipFindMappedType("QList<TYPE2>");
-
     // Set the dictionary elements.
     QMap<QString, QList< TYPE2 > >::const_iterator i;
 
     for (i = sipCpp->constBegin(); i != sipCpp->constEnd(); ++i)
     {
         QString *t1 = new QString(i.key());
-
         PyObject *t1obj = sipConvertFromNewType(t1, sipType_QString, sipTransferObj);
 
-        QList< TYPE2 > *t2 = new QList< TYPE2 >( i.value() );
+        // build list for dictionary value
+        QList< TYPE2 > sourceList = i.value();
+        PyObject *t2list = PyList_New( sourceList.size() );
+        if ( t2list )
+        {
+            for ( int j = 0; j < sourceList.size(); j++ )
+            {
+                TYPE2 *t = new TYPE2(sourceList.at(j));
+                PyObject *lobj = sipConvertFromNewType(t, sipType_TYPE2, sipTransferObj);
+                PyList_SetItem( t2list, j, lobj );
+            }
+        }
 
-        PyObject *t2obj = sipConvertFromMappedType(t2, qlist_type, sipTransferObj);
-
-        if (t1obj == NULL || t2obj == NULL || PyDict_SetItem(d, t1obj, t2obj) < 0)
+        if (t1obj == NULL || t2list == NULL || PyDict_SetItem(d, t1obj, t2list) < 0)
         {
             Py_DECREF(d);
 
             if (t1obj)
                 Py_DECREF(t1obj);
 
-            if (t2obj)
-                Py_DECREF(t2obj);
-            else
-                delete t2;
+            if (t2list)
+                Py_DECREF(t2list);
 
             return NULL;
         }
 
         Py_DECREF(t1obj);
-        Py_DECREF(t2obj);
+        Py_DECREF(t2list);
     }
 
     return d;

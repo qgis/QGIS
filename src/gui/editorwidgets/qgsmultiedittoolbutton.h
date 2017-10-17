@@ -103,9 +103,9 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
 
   private:
 
-    bool mIsMixedValues;
-    bool mIsChanged;
-    State mState;
+    bool mIsMixedValues = false;
+    bool mIsChanged = false;
+    State mState = Default;
     QgsField mField;
 
     QMenu *mMenu = nullptr;

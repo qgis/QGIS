@@ -115,16 +115,16 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     bool log10();
 
   private:
-    int mColumns;
-    int mRows;
+    int mColumns = 0;
+    int mRows = 0;
     double *mData = nullptr;
-    double mNodataValue;
+    double mNodataValue = -1;
 
     //! +,-,*,/,^,<,>,<=,>=,=,!=, and, or
     bool twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix &other );
     double calculateTwoArgumentOp( TwoArgOperator op, double arg1, double arg2 ) const;
 
-    /*sqrt, sin, cos, tan, asin, acos, atan*/
+    /*sqrt, std::sin, std::cos, tan, asin, acos, atan*/
     bool oneArgumentOperation( OneArgOperator op );
     bool testPowerValidity( double base, double power ) const;
 };

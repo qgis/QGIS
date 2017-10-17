@@ -18,7 +18,7 @@
 #include "qgsdb2provider.h"
 #include "qgsdb2tablemodel.h"
 
-#include <qgsdataitem.h>
+#include "qgsdataitem.h"
 
 class QgsDb2RootItem;
 class QgsDb2Connection;
@@ -45,7 +45,7 @@ class QgsDb2RootItem : public QgsDataCollectionItem
 #ifdef HAVE_GUI
     virtual QWidget *paramWidget() override;
 
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   public slots:
@@ -90,10 +90,7 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
 
 #ifdef HAVE_GUI
 
-    /**
-     * Add Refresh, Edit, and Delete actions for every QgsDb2ConnectionItem.
-     */
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
     virtual bool acceptDrop() override { return true; }

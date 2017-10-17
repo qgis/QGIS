@@ -42,14 +42,22 @@ QgsSymbolButton::QgsSymbolButton( QWidget *parent, const QString &dialogTitle )
   connect( mMenu, &QMenu::aboutToShow, this, &QgsSymbolButton::prepareMenu );
   setMenu( mMenu );
   setPopupMode( QToolButton::MenuButtonPopup );
+
+  //make sure height of button looks good under different platforms
+  QSize size = QToolButton::minimumSizeHint();
+  int fontHeight = fontMetrics().height() * 1.4;
+  mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
 }
 
 QSize QgsSymbolButton::minimumSizeHint() const
 {
-  //make sure height of button looks good under different platforms
-  QSize size = QToolButton::minimumSizeHint();
-  int fontHeight = fontMetrics().height() * 1.4;
-  return QSize( size.width(), qMax( size.height(), fontHeight ) );
+
+  return mSizeHint;
+}
+
+QSize QgsSymbolButton::sizeHint() const
+{
+  return mSizeHint;
 }
 
 void QgsSymbolButton::setSymbolType( QgsSymbol::SymbolType type )

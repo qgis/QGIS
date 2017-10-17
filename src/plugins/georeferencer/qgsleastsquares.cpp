@@ -57,8 +57,8 @@ void QgsLeastSquares::linear( const QVector<QgsPointXY> &mapCoords,
   origin.setX( aX );
   origin.setY( aY );
 
-  pixelXSize = qAbs( bX );
-  pixelYSize = qAbs( bY );
+  pixelXSize = std::fabs( bX );
+  pixelYSize = std::fabs( bY );
 }
 
 
@@ -197,11 +197,11 @@ void normalizeCoordinates( const QVector<QgsPointXY> &coords, QVector<QgsPointXY
   {
     double X = ( coords[i].x() - cogX );
     double Y = ( coords[i].y() - cogY );
-    meanDist += sqrt( X * X + Y * Y );
+    meanDist += std::sqrt( X * X + Y * Y );
   }
   meanDist *= 1.0 / coords.size();
 
-  double OOD = meanDist / sqrt( 2.0 );
+  double OOD = meanDist * M_SQRT1_2;
   double D   = 1.0 / OOD;
   normalizedCoords.resize( coords.size() );
   for ( int i = 0; i < coords.size(); i++ )
@@ -209,15 +209,15 @@ void normalizeCoordinates( const QVector<QgsPointXY> &coords, QVector<QgsPointXY
     normalizedCoords[i] = QgsPointXY( ( coords[i].x() - cogX ) * D, ( coords[i].y() - cogY ) * D );
   }
 
-  normalizeMatrix[0] =   D;
+  normalizeMatrix[0] = D;
   normalizeMatrix[1] = 0.0;
   normalizeMatrix[2] = -cogX * D;
   normalizeMatrix[3] = 0.0;
-  normalizeMatrix[4] =   D;
+  normalizeMatrix[4] = D;
   normalizeMatrix[5] = -cogY * D;
   normalizeMatrix[6] = 0.0;
   normalizeMatrix[7] = 0.0;
-  normalizeMatrix[8] =   1.0;
+  normalizeMatrix[8] = 1.0;
 
   denormalizeMatrix[0] = OOD;
   denormalizeMatrix[1] = 0.0;
@@ -227,7 +227,7 @@ void normalizeCoordinates( const QVector<QgsPointXY> &coords, QVector<QgsPointXY
   denormalizeMatrix[5] = cogY;
   denormalizeMatrix[6] = 0.0;
   denormalizeMatrix[7] = 0.0;
-  denormalizeMatrix[8] =  1.0;
+  denormalizeMatrix[8] = 1.0;
 }
 
 // Fits a homography to the given corresponding points, and
@@ -255,7 +255,7 @@ void QgsLeastSquares::projective( QVector<QgsPointXY> mapCoords,
 
   // GSL does not support a full SVD, so we artificially add a linear dependent row
   // to the matrix in case the system is underconstrained.
-  uint m = qMax( 9u, ( uint )mapCoords.size() * 2u );
+  uint m = std::max( 9u, ( uint )mapCoords.size() * 2u );
   uint n = 9;
   gsl_matrix *S = gsl_matrix_alloc( m, n );
 

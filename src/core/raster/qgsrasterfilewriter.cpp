@@ -29,6 +29,9 @@
 #include <QTextStream>
 #include <QMessageBox>
 
+#include <gdal.h>
+#include <cpl_string.h>
+
 QgsRasterDataProvider *QgsRasterFileWriter::createOneBandRaster( Qgis::DataType dataType, int width, int height, const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs )
 {
   if ( mTiledMode )
@@ -54,32 +57,16 @@ QgsRasterDataProvider *QgsRasterFileWriter::createMultiBandRaster( Qgis::DataTyp
 }
 
 QgsRasterFileWriter::QgsRasterFileWriter( const QString &outputUrl )
-  : mMode( Raw )
-  , mOutputUrl( outputUrl )
+  : mOutputUrl( outputUrl )
   , mOutputProviderKey( QStringLiteral( "gdal" ) )
   , mOutputFormat( QStringLiteral( "GTiff" ) )
-  , mTiledMode( false )
-  , mMaxTileWidth( 500 )
-  , mMaxTileHeight( 500 )
-  , mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo )
-  , mPyramidsFormat( QgsRaster::PyramidsGTiff )
-  , mPipe( nullptr )
-  , mInput( nullptr )
 {
 
 }
 
 QgsRasterFileWriter::QgsRasterFileWriter()
-  : mMode( Raw )
-  , mOutputProviderKey( QStringLiteral( "gdal" ) )
+  : mOutputProviderKey( QStringLiteral( "gdal" ) )
   , mOutputFormat( QStringLiteral( "GTiff" ) )
-  , mTiledMode( false )
-  , mMaxTileWidth( 500 )
-  , mMaxTileHeight( 500 )
-  , mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo )
-  , mPyramidsFormat( QgsRaster::PyramidsGTiff )
-  , mPipe( nullptr )
-  , mInput( nullptr )
 {
 
 }
@@ -323,16 +310,14 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       destDataTypeList.replace( i, destDataType );
       destNoDataValueList.replace( i, destNoDataValue );
     }
-    destDataType =  destDataTypeList.value( 0 );
+    destDataType = destDataTypeList.value( 0 );
 
     // Try again
     destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands, destDataType, destHasNoDataValueList, destNoDataValueList );
     error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, feedback );
   }
 
-  if ( destProvider )
-    delete destProvider;
-
+  delete destProvider;
   return error;
 }
 
@@ -615,8 +600,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     ++fileIndex;
   }
 
-  if ( destProvider )
-    delete destProvider;
+  delete destProvider;
 
   qgsFree( redData );
   qgsFree( greenData );
@@ -990,4 +974,38 @@ QString QgsRasterFileWriter::vrtFileName()
 {
   QFileInfo outputInfo( mOutputUrl );
   return QStringLiteral( "%1.vrt" ).arg( outputInfo.fileName() );
+}
+
+QString QgsRasterFileWriter::driverForExtension( const QString &extension )
+{
+  QString ext = extension.trimmed();
+  if ( ext.isEmpty() )
+    return QString();
+
+  if ( ext.startsWith( '.' ) )
+    ext.remove( 0, 1 );
+
+  GDALAllRegister();
+  int const drvCount = GDALGetDriverCount();
+
+  for ( int i = 0; i < drvCount; ++i )
+  {
+    GDALDriverH drv = GDALGetDriver( i );
+    if ( drv )
+    {
+      char **driverMetadata = GDALGetMetadata( drv, nullptr );
+      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
+      {
+        QString drvName = GDALGetDriverShortName( drv );
+        QStringList driverExtensions = QString( GDALGetMetadataItem( drv, GDAL_DMD_EXTENSIONS, nullptr ) ).split( ' ' );
+
+        Q_FOREACH ( const QString &driver, driverExtensions )
+        {
+          if ( driver.compare( ext, Qt::CaseInsensitive ) == 0 )
+            return drvName;
+        }
+      }
+    }
+  }
+  return QString();
 }

@@ -30,12 +30,7 @@
 
 QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &dataprovider )
   : QWidget( parent )
-  , mAuthCfg( QString() )
   , mDataProvider( dataprovider )
-  , mConfigs( QgsAuthMethodConfigsMap() )
-  , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -249,12 +244,6 @@ void QgsAuthConfigSelect::on_btnConfigMsgClear_clicked()
 
 QgsAuthConfigUriEdit::QgsAuthConfigUriEdit( QWidget *parent, const QString &datauri, const QString &dataprovider )
   : QDialog( parent )
-  , mAuthCfg( QString() )
-  , mDataUri( QString() )
-  , mDataUriOrig( QString() )
-  , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {

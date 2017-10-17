@@ -211,15 +211,15 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
      */
     virtual bool shadeExterior() const = 0;
 
-    double mSpread;
-    QgsUnitTypes::RenderUnit mSpreadUnit;
+    double mSpread = 2.0;
+    QgsUnitTypes::RenderUnit mSpreadUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mSpreadMapUnitScale;
     QgsColorRamp *mRamp = nullptr;
-    int mBlurLevel;
+    int mBlurLevel = 3;
     double mOpacity = 0.5;
     QColor mColor;
-    QPainter::CompositionMode mBlendMode;
-    GlowColorType mColorType;
+    QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
+    GlowColorType mColorType = SingleColor;
 
 };
 

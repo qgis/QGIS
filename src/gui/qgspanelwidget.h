@@ -161,9 +161,9 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     void keyPressEvent( QKeyEvent *event );
 
   private:
-    bool mAutoDelete;
+    bool mAutoDelete = true;
     QString mPanelTitle;
-    bool mDockMode;
+    bool mDockMode = false;
 
 };
 

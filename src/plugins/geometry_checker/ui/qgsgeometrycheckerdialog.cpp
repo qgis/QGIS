@@ -35,7 +35,7 @@ QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidge
   restoreGeometry( s.value( QStringLiteral( "/Plugin-GeometryChecker/Window/geometry" ) ).toByteArray() );
 
   mTabWidget = new QTabWidget();
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Close, Qt::Horizontal );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Close | QDialogButtonBox::Help, Qt::Horizontal );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->addWidget( mTabWidget );
@@ -46,6 +46,7 @@ QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidge
   mTabWidget->setTabEnabled( 1, false );
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsGeometryCheckerDialog::showHelp );
   connect( dynamic_cast< QgsGeometryCheckerSetupTab * >( mTabWidget->widget( 0 ) ), &QgsGeometryCheckerSetupTab::checkerStarted, this, &QgsGeometryCheckerDialog::onCheckerStarted );
   connect( dynamic_cast< QgsGeometryCheckerSetupTab * >( mTabWidget->widget( 0 ) ), &QgsGeometryCheckerSetupTab::checkerFinished, this, &QgsGeometryCheckerDialog::onCheckerFinished );
 }
@@ -96,4 +97,9 @@ void QgsGeometryCheckerDialog::closeEvent( QCloseEvent *ev )
   {
     QDialog::closeEvent( ev );
   }
+}
+
+void QgsGeometryCheckerDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_geometry_checker.html" ) );
 }

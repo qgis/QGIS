@@ -119,6 +119,18 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      */
     static QgsCircle fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 );
 
+    /**
+     * Constructs the smallest circle from 3 points.
+     * Z and m values are dropped for the center point.
+     * The azimuth always takes the default value.
+     * If the points are colinear an empty circle is returned.
+     * \param pt1 First point.
+     * \param pt2 Second point.
+     * \param pt3 Third point.
+     * \param epsilon Value used to compare point.
+     */
+    static QgsCircle minimalCircleFrom3Points( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double epsilon = 1E-8 );
+
     double area() const override;
     double perimeter() const override;
 
@@ -131,28 +143,20 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \see radius()
      * \see setRadius()
      */
-    void setSemiMajorAxis( const double semiMajorAxis ) override
-    {
-      mSemiMajorAxis = qAbs( semiMajorAxis );
-      mSemiMinorAxis = mSemiMajorAxis;
-    }
+    void setSemiMajorAxis( const double semiMajorAxis ) override;
 
     /** Inherited method. Use setRadius instead.
      * \see radius()
      * \see setRadius()
      */
-    void setSemiMinorAxis( const double semiMinorAxis ) override
-    {
-      mSemiMajorAxis = qAbs( semiMinorAxis );
-      mSemiMinorAxis = mSemiMajorAxis;
-    }
+    void setSemiMinorAxis( const double semiMinorAxis ) override;
 
     //! Returns the radius of the circle
     double radius() const {return mSemiMajorAxis;}
     //! Set the radius of the circle
     void setRadius( double radius )
     {
-      mSemiMajorAxis = qAbs( radius );
+      mSemiMajorAxis = std::fabs( radius );
       mSemiMinorAxis = mSemiMajorAxis;
     }
 
@@ -168,6 +172,8 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      */
     QgsCircularString *toCircularString( bool oriented = false ) const;
 
+    //! Returns true if the circle contains the \a point.
+    bool contains( const QgsPoint &point, double epsilon = 1E-8 ) const;
 
     QgsRectangle boundingBox() const override;
 

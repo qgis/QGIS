@@ -20,7 +20,6 @@
 #include "qgsnewhttpconnection.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsexpressionbuilderdialog.h"
-#include "qgscontexthelp.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
@@ -30,38 +29,22 @@
 #include "qgssettings.h"
 #include "qgsmapcanvas.h"
 
-#include <QItemDelegate>
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QRadioButton>
 #include <QImageReader>
+#include "qgshelp.h"
 
-/**
- * Item delegate with tweaked sizeHint.
- */
-class QgsAbstractDataSourceWidgetItemDelegate : public QItemDelegate
-{
-  public:
-    //! Constructor
-    QgsAbstractDataSourceWidgetItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-};
-
-
-QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
-  QgsAbstractDataSourceWidget( parent, fl, widgetMode ),
-  mServiceName( serviceName ),
-  mServiceType( serviceType ),
-  mBuildQueryButton( 0 ),
-  mImageEncodingGroup( 0 )
+QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
+  , mServiceName( serviceName )
+  , mServiceType( serviceType )
 {
   setupUi( this );
+  setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsArcGisServiceSourceSelect::showHelp );
   setWindowTitle( QStringLiteral( "Add %1 Layer from a Server" ).arg( mServiceName ) );
-
-  mAddButton = buttonBox->addButton( tr( "&Add" ), QDialogButtonBox::ActionRole );
-  mAddButton->setEnabled( false );
-  connect( mAddButton, &QAbstractButton::clicked, this, &QgsArcGisServiceSourceSelect::addButtonClicked );
 
   if ( mServiceType == FeatureService )
   {
@@ -127,7 +110,7 @@ QgsArcGisServiceSourceSelect::~QgsArcGisServiceSourceSelect()
 void QgsArcGisServiceSourceSelect::populateImageEncodings( const QStringList &availableEncodings )
 {
   QLayoutItem *item = nullptr;
-  while ( ( item = gbImageEncoding->layout()->takeAt( 0 ) ) != nullptr )
+  while ( ( item = gbImageEncoding->layout()->takeAt( 0 ) ) )
   {
     delete item->widget();
     delete item;
@@ -223,8 +206,7 @@ void QgsArcGisServiceSourceSelect::refresh()
 
 void QgsArcGisServiceSourceSelect::addEntryToServerList()
 {
-
-  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
+  QgsNewHttpConnection nc( 0, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
   nc.setWindowTitle( tr( "Create a New %1 Connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
@@ -236,7 +218,7 @@ void QgsArcGisServiceSourceSelect::addEntryToServerList()
 
 void QgsArcGisServiceSourceSelect::modifyEntryOfServerList()
 {
-  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText() );
+  QgsNewHttpConnection nc( 0, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText() );
   nc.setWindowTitle( tr( "Modify %1 Connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
@@ -300,7 +282,7 @@ void QgsArcGisServiceSourceSelect::connectToServer()
   }
 
   btnConnect->setEnabled( true );
-  mAddButton->setEnabled( haveLayers );
+  emit enableButtons( haveLayers );
   if ( mServiceType == FeatureService )
   {
     mBuildQueryButton->setEnabled( haveLayers );
@@ -369,7 +351,7 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
     QString uri = getLayerURI( connection, layerTitle, layerName, pCrsString, filter, layerExtent );
 
     QgsDebugMsg( "Layer " + layerName + ", uri: " + uri );
-    emit addLayer( uri, layerName );
+    addServiceLayer( uri, layerName );
   }
   accept();
 }
@@ -393,8 +375,8 @@ void QgsArcGisServiceSourceSelect::changeCrsFilter()
     QString currentTypename = currentIndex.sibling( currentIndex.row(), 1 ).data().toString();
     QgsDebugMsg( QString( "the current typename is: %1" ).arg( currentTypename ) );
 
-    QMap<QString, QStringList>::const_iterator crsIterator = mAvailableCRS.find( currentTypename );
-    if ( crsIterator != mAvailableCRS.end() )
+    QMap<QString, QStringList>::const_iterator crsIterator = mAvailableCRS.constFind( currentTypename );
+    if ( crsIterator != mAvailableCRS.constEnd() )
     {
       QSet<QString> crsNames;
       foreach ( const QString &crsName, crsIterator.value() )
@@ -439,7 +421,7 @@ void QgsArcGisServiceSourceSelect::treeWidgetCurrentRowChanged( const QModelInde
   {
     mBuildQueryButton->setEnabled( current.isValid() );
   }
-  mAddButton->setEnabled( current.isValid() );
+  emit enableButtons( current.isValid() );
 }
 
 void QgsArcGisServiceSourceSelect::buildQueryButtonClicked()
@@ -471,7 +453,7 @@ QSize QgsAbstractDataSourceWidgetItemDelegate::sizeHint( const QStyleOptionViewI
   return size;
 }
 
-void QgsArcGisServiceSourceSelect::on_buttonBox_helpRequested() const
+void QgsArcGisServiceSourceSelect::showHelp()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/index.html" ) );
 }

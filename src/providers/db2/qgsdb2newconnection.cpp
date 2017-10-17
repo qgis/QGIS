@@ -26,14 +26,13 @@
 #include "qgsdb2newconnection.h"
 #include "qgsdb2dataitems.h"
 #include "qgsdb2provider.h"
-#include "qgscontexthelp.h"
 
 QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mOriginalConnName( connName )
-  , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDb2NewConnection::showHelp );
 
   mAuthConfigSelect = new QgsAuthConfigSelect( this, QStringLiteral( "db2" ) );
   tabAuthentication->insertTab( 1, mAuthConfigSelect, tr( "Configurations" ) );
@@ -194,4 +193,9 @@ bool QgsDb2NewConnection::testConnection()
 
 void QgsDb2NewConnection::listDatabases()
 {
+}
+
+void QgsDb2NewConnection::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-db2-spatial" ) );
 }

@@ -65,9 +65,6 @@ class TestQgsComposerMapGrid : public QObject
 };
 
 TestQgsComposerMapGrid::TestQgsComposerMapGrid()
-  : mComposition( 0 )
-  , mComposerMap( 0 )
-  , mMapSettings( 0 )
 {
 }
 

@@ -27,29 +27,14 @@
 QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
-  , mRubberBand( nullptr )
-  , mTempRubberBand( nullptr )
   , mShowCenterPointRubberBand( false )
-  , mCenterPointRubberBand( nullptr )
 {
   if ( mCanvas )
   {
     connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircularString::setParentTool );
   }
-}
-
-QgsMapToolAddCircularString::QgsMapToolAddCircularString( QgsMapCanvas *canvas )
-  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
-  , mParentTool( nullptr )
-  , mRubberBand( nullptr )
-  , mTempRubberBand( nullptr )
-  , mShowCenterPointRubberBand( false )
-  , mCenterPointRubberBand( nullptr )
-{
-  if ( mCanvas )
-  {
-    connect( mCanvas, &QgsMapCanvas::mapToolSet, this, &QgsMapToolAddCircularString::setParentTool );
-  }
+  connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddCircularString::stopCapturing );
+  connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddCircularString::stopCapturing );
 }
 
 QgsMapToolAddCircularString::~QgsMapToolAddCircularString()

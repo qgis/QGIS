@@ -16,7 +16,6 @@
 #include "qgsstringutils.h"
 #include <QVector>
 #include <QRegExp>
-#include <QTextDocument> // for Qt::escape
 #include <QStringList>
 #include <QTextBoundaryFinder>
 
@@ -135,7 +134,7 @@ int QgsStringUtils::levenshteinDistance( const QString &string1, const QString &
     s2Char = s2start;
     for ( int j = 0; j < length2; ++j )
     {
-      col[j + 1] = qMin( qMin( 1 + col[j], 1 + prevCol[1 + j] ), prevCol[j] + ( ( *s1Char == *s2Char ) ? 0 : 1 ) );
+      col[j + 1] = std::min( std::min( 1 + col[j], 1 + prevCol[1 + j] ), prevCol[j] + ( ( *s1Char == *s2Char ) ? 0 : 1 ) );
       s2Char++;
     }
     col.swap( prevCol );
@@ -362,7 +361,7 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
     {
       protoUrl.prepend( "http://" );
     }
-    QString anchor = QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( Qt::escape( protoUrl ), Qt::escape( url ) );
+    QString anchor = QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( protoUrl.toHtmlEscaped(), url.toHtmlEscaped() );
     converted.replace( urlRegEx.pos( 1 ), url.length(), anchor );
     offset = urlRegEx.pos( 1 ) + anchor.length();
   }
@@ -371,7 +370,7 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
   {
     found = true;
     QString email = emailRegEx.cap( 1 );
-    QString anchor = QStringLiteral( "<a href=\"mailto:%1\">%1</a>" ).arg( Qt::escape( email ), Qt::escape( email ) );
+    QString anchor = QStringLiteral( "<a href=\"mailto:%1\">%1</a>" ).arg( email.toHtmlEscaped(), email.toHtmlEscaped() );
     converted.replace( emailRegEx.pos( 1 ), email.length(), anchor );
     offset = emailRegEx.pos( 1 ) + anchor.length();
   }

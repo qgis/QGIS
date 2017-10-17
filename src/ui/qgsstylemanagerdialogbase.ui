@@ -339,6 +339,9 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+     </property>
      <property name="centerButtons">
       <bool>false</bool>
      </property>
@@ -551,22 +554,6 @@
    <hints>
     <hint type="sourcelabel">
      <x>46</x>
-     <y>362</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnRemoveGroup</sender>
-   <signal>clicked()</signal>
-   <receiver>actnRemoveGroup</receiver>
-   <slot>trigger()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>133</x>
      <y>362</y>
     </hint>
     <hint type="destinationlabel">

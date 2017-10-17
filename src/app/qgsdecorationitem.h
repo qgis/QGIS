@@ -46,8 +46,6 @@ class APP_EXPORT QgsDecorationItem : public QObject, public QgsMapDecoration
     //! Constructor
     QgsDecorationItem( QObject *parent = nullptr );
 
-    virtual ~ QgsDecorationItem();
-
     void setEnabled( bool enabled ) { mEnabled = enabled; }
     bool enabled() const { return mEnabled; }
 
@@ -83,12 +81,12 @@ class APP_EXPORT QgsDecorationItem : public QObject, public QgsMapDecoration
     void setName( const char *name );
 
     //! True if decoration item has to be displayed
-    bool mEnabled;
+    bool mEnabled = false;
 
     //! Placement of the decoration
-    Placement mPlacement;
+    Placement mPlacement = TopLeft;
     //! Units used for the decoration placement margin
-    QgsUnitTypes::RenderUnit mMarginUnit;
+    QgsUnitTypes::RenderUnit mMarginUnit = QgsUnitTypes::RenderMillimeters;
 
     QString mName;
     QString mNameConfig;

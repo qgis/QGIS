@@ -58,7 +58,7 @@ class PoleOfInaccessibility(QgisAlgorithm):
         return self.tr('furthest,point,distant,extreme,maximum,centroid,center,centre').split(',')
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -78,7 +78,7 @@ class PoleOfInaccessibility(QgisAlgorithm):
         return 'poleofinaccessibility'
 
     def displayName(self):
-        return self.tr('Pole of Inaccessibility')
+        return self.tr('Pole of inaccessibility')
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)

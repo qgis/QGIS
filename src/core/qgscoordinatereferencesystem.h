@@ -142,7 +142,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  * Sometimes it happens that users need to use a CRS definition that is not well known
  * or that has been only created with a specific purpose (and thus its definition is not
  * available in our database of CRS). Whenever a new CRS definition is seen, it will
- * be added to the local databse (in user's home directory, see QgsApplication::qgisUserDatabaseFilePath()).
+ * be added to the local database (in user's home directory, see QgsApplication::qgisUserDatabaseFilePath()).
  * QGIS also features a GUI for management of local custom CRS definitions.
  *
  * There are therefore two databases: one for shipped CRS definitions and one for custom CRS definitions.

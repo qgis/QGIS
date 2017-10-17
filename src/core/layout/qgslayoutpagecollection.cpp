@@ -16,10 +16,15 @@
 
 #include "qgslayoutpagecollection.h"
 #include "qgslayout.h"
+#include "qgsreadwritecontext.h"
+#include "qgsproject.h"
+#include "qgslayoutitemundocommand.h"
+#include "qgssymbollayerutils.h"
 
 QgsLayoutPageCollection::QgsLayoutPageCollection( QgsLayout *layout )
   : QObject( layout )
   , mLayout( layout )
+  , mGuideCollection( new QgsLayoutGuideCollection( layout, this ) )
 {
   createDefaultPageStyleSymbol();
 }
@@ -60,7 +65,7 @@ double QgsLayoutPageCollection::maximumPageWidth() const
   double maxWidth = 0;
   Q_FOREACH ( QgsLayoutItemPage *page, mPages )
   {
-    maxWidth = qMax( maxWidth, mLayout->convertToLayoutUnits( page->pageSize() ).width() );
+    maxWidth = std::max( maxWidth, mLayout->convertToLayoutUnits( page->pageSize() ).width() );
   }
   return maxWidth;
 }
@@ -135,7 +140,92 @@ double QgsLayoutPageCollection::pageShadowWidth() const
   return spaceBetweenPages() / 2;
 }
 
-QgsLayout *QgsLayoutPageCollection::layout() const
+bool QgsLayoutPageCollection::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  QDomElement element = document.createElement( QStringLiteral( "PageCollection" ) );
+
+  QDomElement pageStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mPageStyleSymbol.get(), document, context );
+  element.appendChild( pageStyleElem );
+
+  for ( const QgsLayoutItemPage *page : mPages )
+  {
+    page->writeXml( element, document, context );
+  }
+
+  mGuideCollection->writeXml( element, document, context );
+
+  parentElement.appendChild( element );
+  return true;
+}
+
+bool QgsLayoutPageCollection::readXml( const QDomElement &e, const QDomDocument &document, const QgsReadWriteContext &context )
+{
+  QDomElement element = e;
+  if ( element.nodeName() != QStringLiteral( "PageCollection" ) )
+  {
+    element = element.firstChildElement( QStringLiteral( "PageCollection" ) );
+  }
+
+  if ( element.nodeName() != QStringLiteral( "PageCollection" ) )
+  {
+    return false;
+  }
+
+  mBlockUndoCommands = true;
+
+  int i = 0;
+  for ( QgsLayoutItemPage *page : qgsAsConst( mPages ) )
+  {
+    emit pageAboutToBeRemoved( i );
+    mLayout->removeItem( page );
+    page->deleteLater();
+    ++i;
+  }
+  mPages.clear();
+
+  QDomElement pageStyleSymbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
+  if ( !pageStyleSymbolElem.isNull() )
+  {
+    mPageStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( pageStyleSymbolElem, context ) );
+  }
+
+  QDomNodeList pageList = element.elementsByTagName( QStringLiteral( "LayoutItem" ) );
+  for ( int i = 0; i < pageList.size(); ++i )
+  {
+    QDomElement pageElement = pageList.at( i ).toElement();
+    std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( mLayout ) );
+    page->readXml( pageElement, document, context );
+    mPages.append( page.get() );
+    mLayout->addItem( page.release() );
+  }
+
+  reflow();
+
+  mGuideCollection->readXml( element, document, context );
+
+  mBlockUndoCommands = false;
+  return true;
+}
+
+QgsLayoutGuideCollection &QgsLayoutPageCollection::guides()
+{
+  return *mGuideCollection;
+}
+
+const QgsLayoutGuideCollection &QgsLayoutPageCollection::guides() const
+{
+  return *mGuideCollection;
+}
+
+void QgsLayoutPageCollection::redraw()
+{
+  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  {
+    page->redraw();
+  }
+}
+
+QgsLayout *QgsLayoutPageCollection::layout()
 {
   return mLayout;
 }
@@ -155,15 +245,51 @@ QgsLayoutItemPage *QgsLayoutPageCollection::page( int pageNumber )
   return mPages.value( pageNumber );
 }
 
+int QgsLayoutPageCollection::pageNumber( QgsLayoutItemPage *page ) const
+{
+  return mPages.indexOf( page );
+}
+
+QList<QgsLayoutItemPage *> QgsLayoutPageCollection::visiblePages( QRectF region ) const
+{
+  QList<QgsLayoutItemPage *> pages;
+  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  {
+    if ( page->mapToScene( page->rect() ).boundingRect().intersects( region ) )
+      pages << page;
+  }
+  return pages;
+}
+
+QList<int> QgsLayoutPageCollection::visiblePageNumbers( QRectF region ) const
+{
+  QList< int > pages;
+  int p = 0;
+  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  {
+    if ( page->mapToScene( page->rect() ).boundingRect().intersects( region ) )
+      pages << p;
+    p++;
+  }
+  return pages;
+}
+
 void QgsLayoutPageCollection::addPage( QgsLayoutItemPage *page )
 {
+  if ( !mBlockUndoCommands )
+    mLayout->undoStack()->beginCommand( this, tr( "Add page" ) );
   mPages.append( page );
   mLayout->addItem( page );
   reflow();
+  if ( !mBlockUndoCommands )
+    mLayout->undoStack()->endCommand();
 }
 
 void QgsLayoutPageCollection::insertPage( QgsLayoutItemPage *page, int beforePage )
 {
+  if ( !mBlockUndoCommands )
+    mLayout->undoStack()->beginCommand( this, tr( "Add page" ) );
+
   if ( beforePage < 0 )
     beforePage = 0;
 
@@ -177,6 +303,8 @@ void QgsLayoutPageCollection::insertPage( QgsLayoutItemPage *page, int beforePag
   }
   mLayout->addItem( page );
   reflow();
+  if ( ! mBlockUndoCommands )
+    mLayout->undoStack()->endCommand();
 }
 
 void QgsLayoutPageCollection::deletePage( int pageNumber )
@@ -184,10 +312,21 @@ void QgsLayoutPageCollection::deletePage( int pageNumber )
   if ( pageNumber < 0 || pageNumber >= mPages.count() )
     return;
 
+  if ( !mBlockUndoCommands )
+  {
+    mLayout->undoStack()->beginMacro( tr( "Remove page" ) );
+    mLayout->undoStack()->beginCommand( this, tr( "Remove page" ) );
+  }
+  emit pageAboutToBeRemoved( pageNumber );
   QgsLayoutItemPage *page = mPages.takeAt( pageNumber );
   mLayout->removeItem( page );
   page->deleteLater();
   reflow();
+  if ( ! mBlockUndoCommands )
+  {
+    mLayout->undoStack()->endCommand();
+    mLayout->undoStack()->endMacro();
+  }
 }
 
 void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
@@ -195,9 +334,26 @@ void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
   if ( !mPages.contains( page ) )
     return;
 
+  if ( !mBlockUndoCommands )
+  {
+    mLayout->undoStack()->beginMacro( tr( "Remove page" ) );
+    mLayout->undoStack()->beginCommand( this, tr( "Remove page" ) );
+  }
+  emit pageAboutToBeRemoved( mPages.indexOf( page ) );
   mPages.removeAll( page );
   page->deleteLater();
   reflow();
+  if ( !mBlockUndoCommands )
+  {
+    mLayout->undoStack()->endCommand();
+    mLayout->undoStack()->endMacro();
+  }
+}
+
+QgsLayoutItemPage *QgsLayoutPageCollection::takePage( QgsLayoutItemPage *page )
+{
+  mPages.removeAll( page );
+  return page;
 }
 
 void QgsLayoutPageCollection::createDefaultPageStyleSymbol()

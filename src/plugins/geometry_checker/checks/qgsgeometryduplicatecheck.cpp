@@ -48,7 +48,7 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
         continue;
       }
       QString errMsg;
-      QgsAbstractGeometry *diffGeom = geomEngine->symDifference( *testFeature.geometry().geometry(), &errMsg );
+      QgsAbstractGeometry *diffGeom = geomEngine->symDifference( testFeature.geometry().geometry(), &errMsg );
       if ( diffGeom && diffGeom->area() < QgsGeometryCheckPrecision::tolerance() )
       {
         duplicates.append( id );
@@ -94,7 +94,7 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
       {
         continue;
       }
-      QgsAbstractGeometry *diffGeom = geomEngine->symDifference( *testFeature.geometry().geometry() );
+      QgsAbstractGeometry *diffGeom = geomEngine->symDifference( testFeature.geometry().geometry() );
       if ( diffGeom && diffGeom->area() < QgsGeometryCheckPrecision::tolerance() )
       {
         mFeaturePool->deleteFeature( testFeature );

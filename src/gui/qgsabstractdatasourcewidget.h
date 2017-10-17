@@ -26,6 +26,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsguiutils.h"
 #include <QDialog>
+#include <QDialogButtonBox>
 
 class QgsMapCanvas;
 
@@ -58,6 +59,17 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      */
     virtual void refresh() {}
 
+    /** Triggered when the add button is clicked, the add layer signal is emitted
+     * Concrete classes should implement the right behavior depending on the layer
+     * being added.
+     */
+    virtual void addButtonClicked() { }
+
+    /** Triggered when the dialog is accepted, call addButtonClicked() and
+     * emit the accepted() signal
+     */
+    virtual void okButtonClicked();
+
   signals:
 
     /** Emitted when the provider's connections have changed
@@ -71,14 +83,39 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     //! Emitted when a raster layer has been selected for addition
     void addRasterLayer( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey );
 
-    //! Emitted when a vector layer has been selected for addition
-    void addVectorLayer( const QString &uri, const QString &layerName );
+    /**
+     * Emitted when a vector layer has been selected for addition.
+     *
+     * If \a providerKey is not specified, the default provider key associated with the source
+     * will be used.
+     */
+    void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() );
+
+    /** Emitted when one or more OGR supported layers are selected for addition
+     * \param layerList list of layers protocol URIs
+     * \param encoding encoding
+     * \param dataSourceType string (can be "file" or "database")
+     */
+    void addVectorLayers( const QStringList &layerList, const QString &encoding, const QString &dataSourceType );
+
+    /** Emitted when a layer needs to be replaced
+     * \param oldId old layer ID
+     * \param source URI of the layer
+     * \param name of the layer
+     * \param provider key
+     */
+    void replaceVectorLayer( const QString &oldId, const QString &source, const QString &name, const QString &provider );
+
 
     //! Emitted when a progress dialog is shown by the provider dialog
     void progress( int, int );
 
     //! Emitted when a progress dialog is shown by the provider dialog
     void progressMessage( QString message );
+
+    //! Emitted when the ok/add buttons should be enabled/disabled
+    void enableButtons( bool enable );
+
 
   protected:
 
@@ -88,12 +125,17 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     //! Return the widget mode
     QgsProviderRegistry::WidgetMode widgetMode() const;
 
-    /** Return the map canvas (can be null)
-     */
+    //! Return the map canvas (can be null)
     const QgsMapCanvas *mapCanvas() const;
 
-  private:
+    //! Connect the ok and apply/add buttons to the slots
+    void setupButtons( QDialogButtonBox *buttonBox );
 
+    //! Return the add Button
+    QPushButton *addButton( ) const { return mAddButton; }
+
+  private:
+    QPushButton *mAddButton  = nullptr;
     QgsProviderRegistry::WidgetMode mWidgetMode;
     QgsMapCanvas const *mMapCanvas = nullptr;
 

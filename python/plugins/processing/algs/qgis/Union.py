@@ -34,7 +34,7 @@ from qgis.core import (QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsGeometry,
                        QgsWkbTypes,
-                       QgsMessageLog,
+                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsSpatialIndex)
@@ -43,15 +43,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
-
-wkbTypeGroups = {
-    'Point': (QgsWkbTypes.Point, QgsWkbTypes.MultiPoint, QgsWkbTypes.Point25D, QgsWkbTypes.MultiPoint25D,),
-    'LineString': (QgsWkbTypes.LineString, QgsWkbTypes.MultiLineString, QgsWkbTypes.LineString25D, QgsWkbTypes.MultiLineString25D,),
-    'Polygon': (QgsWkbTypes.Polygon, QgsWkbTypes.MultiPolygon, QgsWkbTypes.Polygon25D, QgsWkbTypes.MultiPolygon25D,),
-}
-for key, value in list(wkbTypeGroups.items()):
-    for const in value:
-        wkbTypeGroups[const] = key
 
 
 class Union(QgisAlgorithm):
@@ -64,7 +55,7 @@ class Union(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'union.png'))
 
     def group(self):
-        return self.tr('Vector overlay tools')
+        return self.tr('Vector overlay')
 
     def __init__(self):
         super().__init__()
@@ -88,7 +79,7 @@ class Union(QgisAlgorithm):
         sourceB = self.parameterAsSource(parameters, self.OVERLAY, context)
 
         geomType = QgsWkbTypes.multiType(sourceA.wkbType())
-        fields = vector.combineFields(sourceA.fields(), sourceB.fields())
+        fields = QgsProcessingUtils.combineFields(sourceA.fields(), sourceB.fields())
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, geomType, sourceA.sourceCrs())
@@ -113,6 +104,7 @@ class Union(QgisAlgorithm):
             intersects = indexB.intersects(geom.boundingBox())
             if len(intersects) < 1:
                 try:
+                    geom.convertToMultiType()
                     outFeat.setGeometry(geom)
                     outFeat.setAttributes(atMapA)
                     sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
@@ -149,6 +141,7 @@ class Union(QgisAlgorithm):
                                 if i.type() == geom.type():
                                     int_geom = QgsGeometry(i)
                                     try:
+                                        int_geom.convertToMultiType()
                                         outFeat.setGeometry(int_geom)
                                         outFeat.setAttributes(atMapA + atMapB)
                                         sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
@@ -159,8 +152,9 @@ class Union(QgisAlgorithm):
                             # in geometries of different types
                             # produced by the intersection
                             # fix #3549
-                            if int_geom.wkbType() in wkbTypeGroups[wkbTypeGroups[int_geom.wkbType()]]:
+                            if QgsWkbTypes.geometryType(int_geom.wkbType()) == QgsWkbTypes.geometryType(geomType):
                                 try:
+                                    int_geom.convertToMultiType()
                                     outFeat.setGeometry(int_geom)
                                     outFeat.setAttributes(atMapA + atMapB)
                                     sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
@@ -180,6 +174,7 @@ class Union(QgisAlgorithm):
                         if i.type() == geom.type():
                             diff_geom = QgsGeometry(i)
                 try:
+                    diff_geom.convertToMultiType()
                     outFeat.setGeometry(diff_geom)
                     outFeat.setAttributes(atMapA)
                     sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
@@ -205,6 +200,7 @@ class Union(QgisAlgorithm):
 
             if len(intersects) < 1:
                 try:
+                    geom.convertToMultiType()
                     outFeat.setGeometry(geom)
                     outFeat.setAttributes(atMap)
                     sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
@@ -229,6 +225,7 @@ class Union(QgisAlgorithm):
                         try:
                             # Ihis only happens if the bounding box
                             # intersects, but the geometry doesn't
+                            diff_geom.convertToMultiType()
                             outFeat.setGeometry(diff_geom)
                             outFeat.setAttributes(atMap)
                             sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
@@ -237,6 +234,7 @@ class Union(QgisAlgorithm):
 
             if add:
                 try:
+                    diff_geom.convertToMultiType()
                     outFeat.setGeometry(diff_geom)
                     outFeat.setAttributes(atMap)
                     sink.addFeature(outFeat, QgsFeatureSink.FastInsert)

@@ -60,7 +60,6 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
     };
 
     QgsSnappingLayerTreeModel( QgsProject *project, QObject *parent = nullptr );
-    ~QgsSnappingLayerTreeModel();
 
     int columnCount( const QModelIndex &parent ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;

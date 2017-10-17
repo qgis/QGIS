@@ -50,9 +50,6 @@
 
 QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceUri const &uri )
   : mUri( uri )
-  , mCapabilitiesReply( nullptr )
-  , mCoverageCount( 0 )
-  , mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
   QgsDebugMsg( "uri = " + mUri.encodedUri() );
 
@@ -62,10 +59,6 @@ QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceUri const &uri )
 }
 
 QgsWcsCapabilities::QgsWcsCapabilities()
-  : mCapabilities()
-  , mCapabilitiesReply( nullptr )
-  , mCoverageCount( 0 )
-  , mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
 }
 
@@ -143,7 +136,7 @@ QString QgsWcsCapabilities::getCoverageUrl() const
 bool QgsWcsCapabilities::sendRequest( QString const &url )
 {
   QgsDebugMsg( "url = " + url );
-  mError = QLatin1String( "" );
+  mError.clear();
   QNetworkRequest request( url );
   if ( !setAuthorization( request ) )
   {
@@ -905,11 +898,12 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
   // Find native bounding box
   if ( !coverage->nativeCrs.isEmpty() )
   {
-    Q_FOREACH ( const QString &srsName, coverage->boundingBoxes.keys() )
+    const auto boundingBoxes = coverage->boundingBoxes;
+    for ( auto it = boundingBoxes.constBegin(); it != boundingBoxes.constEnd(); ++it )
     {
-      if ( srsName == coverage->nativeCrs )
+      if ( it.key() == coverage->nativeCrs )
       {
-        coverage->nativeBoundingBox = coverage->boundingBoxes.value( srsName );
+        coverage->nativeBoundingBox = it.value();
       }
     }
   }

@@ -32,7 +32,7 @@ from qgis.core import (QgsFeature,
 
 
 def buffering(feedback, context, sink, distance, field, useField, source, dissolve, segments, endCapStyle=1,
-              joinStyle=1, mitreLimit=2):
+              joinStyle=1, miterLimit=2):
 
     if useField:
         field = source.fields().lookupField(field)
@@ -62,7 +62,7 @@ def buffering(feedback, context, sink, distance, field, useField, source, dissol
 
             inGeom = inFeat.geometry()
 
-            buffered_geometries.append(inGeom.buffer(float(value), segments, endCapStyle, joinStyle, mitreLimit))
+            buffered_geometries.append(inGeom.buffer(float(value), segments, endCapStyle, joinStyle, miterLimit))
 
             current += 1
             feedback.setProgress(int(current * total))
@@ -86,7 +86,7 @@ def buffering(feedback, context, sink, distance, field, useField, source, dissol
                 value = distance
             inGeom = inFeat.geometry()
             outFeat = QgsFeature()
-            outGeom = inGeom.buffer(float(value), segments, endCapStyle, joinStyle, mitreLimit)
+            outGeom = inGeom.buffer(float(value), segments, endCapStyle, joinStyle, miterLimit)
             outFeat.setGeometry(outGeom)
             outFeat.setAttributes(attrs)
             sink.addFeature(outFeat, QgsFeatureSink.FastInsert)

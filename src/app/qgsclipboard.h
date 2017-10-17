@@ -46,11 +46,6 @@
 class QgsVectorLayer;
 class QgsFeatureStore;
 
-/*
- * Constants used to describe copy-paste MIME types
- */
-#define QGSCLIPBOARD_STYLE_MIME "application/qgis.style"
-
 class APP_EXPORT QgsClipboard : public QObject
 {
     Q_OBJECT
@@ -68,8 +63,6 @@ class APP_EXPORT QgsClipboard : public QObject
      * Constructor for the clipboard.
      */
     QgsClipboard();
-
-    virtual ~QgsClipboard();
 
     /**
      *  Place a copy of the selected features from the specified layer on
@@ -184,7 +177,7 @@ class APP_EXPORT QgsClipboard : public QObject
     QPointer<QgsVectorLayer> mSrcLayer;
 
     //! True when the data from the system clipboard should be read
-    bool mUseSystemClipboard;
+    bool mUseSystemClipboard = false;
 
     friend class TestQgisAppClipboard;
 

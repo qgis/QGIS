@@ -41,6 +41,9 @@ class CORE_EXPORT QgsCredentials
 {
   public:
 
+    /**
+     * Destructor.
+     */
     virtual ~QgsCredentials() = default;
 
     bool get( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString() );
@@ -72,7 +75,11 @@ class CORE_EXPORT QgsCredentials
     QMutex *mutex() { return &mMutex; }
 
   protected:
-    QgsCredentials();
+
+    /**
+     * Constructor for QgsCredentials.
+     */
+    QgsCredentials() = default;
 
     //! request a password
     virtual bool request( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString() ) = 0;

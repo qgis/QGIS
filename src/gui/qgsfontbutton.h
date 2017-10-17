@@ -50,14 +50,14 @@ class GUI_EXPORT QgsFontButton : public QToolButton
 
   public:
 
-    Q_ENUMS( Mode )
-
     //! Available button modes.
     enum Mode
     {
       ModeTextRenderer,  //!< Configure font settings for use with QgsTextRenderer
       ModeQFont, //!< Configure font settings for use with QFont objects
     };
+
+    Q_ENUM( Mode );
 
     /**
      * Construct a new font button.
@@ -67,6 +67,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     QgsFontButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &dialogTitle = QString() );
 
     virtual QSize minimumSizeHint() const override;
+    virtual QSize sizeHint() const override;
 
     /**
      * Returns the current button mode.
@@ -214,6 +215,8 @@ class GUI_EXPORT QgsFontButton : public QToolButton
     void addRecentColor( const QColor &color );
 
   private:
+
+    QSize mSizeHint;
 
     Mode mMode = ModeTextRenderer;
 

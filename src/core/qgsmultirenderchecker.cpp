@@ -18,7 +18,6 @@
 #include <QDebug>
 
 QgsMultiRenderChecker::QgsMultiRenderChecker()
-  : mColorTolerance( 0 )
 {
 }
 
@@ -123,8 +122,7 @@ QgsCompositionChecker::QgsCompositionChecker( const QString &testName, QgsCompos
 }
 
 QgsCompositionChecker::QgsCompositionChecker()
-  : mComposition( nullptr )
-  , mDotsPerMeter( 96 / 25.4 * 1000 )
+  : mDotsPerMeter( 96 / 25.4 * 1000 )
 {
 }
 

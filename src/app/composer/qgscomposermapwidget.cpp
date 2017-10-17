@@ -122,10 +122,6 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap *composerMap )
   blockAllSignals( false );
 }
 
-QgsComposerMapWidget::~QgsComposerMapWidget()
-{
-}
-
 void QgsComposerMapWidget::populateDataDefinedButtons()
 {
   updateDataDefinedButton( mScaleDDBtn );
@@ -444,7 +440,7 @@ void QgsComposerMapWidget::on_mScaleLineEdit_editingFinished()
     return;
   }
 
-  if ( qRound( scaleDenominator ) == qRound( mComposerMap->scale() ) )
+  if ( std::round( scaleDenominator ) == std::round( mComposerMap->scale() ) )
     return;
 
   mComposerMap->beginCommand( tr( "Map scale changed" ) );
@@ -1055,7 +1051,7 @@ bool QgsComposerMapWidget::hasPredefinedScales() const
     QgsSettings settings;
     QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString() );
     QStringList myScalesList = scalesStr.split( ',' );
-    return !myScalesList.isEmpty() && myScalesList[0] != QLatin1String( "" );
+    return !myScalesList.isEmpty() && !myScalesList[0].isEmpty();
   }
   return true;
 }

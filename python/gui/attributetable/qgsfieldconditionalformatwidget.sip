@@ -28,8 +28,6 @@ class QgsFieldConditionalFormatWidget : QWidget
  \param parent parent widget
 %End
 
-    ~QgsFieldConditionalFormatWidget();
-
     void viewRules();
 %Docstring
  Switches the widget to the rules page.

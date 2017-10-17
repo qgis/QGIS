@@ -124,7 +124,7 @@ class CORE_EXPORT QgsVector
     bool operator!=( QgsVector other ) const;
 
   private:
-    double mX, mY;
+    double mX = 0.0, mY = 0.0;
 
 };
 

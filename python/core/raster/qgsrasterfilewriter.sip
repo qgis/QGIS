@@ -156,6 +156,15 @@ class QgsRasterFileWriter
  :rtype: list of str
 %End
 
+    static QString driverForExtension( const QString &extension );
+%Docstring
+ Returns the GDAL driver name for a specified file ``extension``. E.g. the
+ driver name for the ".tif" extension is "GTiff".
+ If no suitable drivers are found then an empty string is returned.
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
 };
 
 /************************************************************************

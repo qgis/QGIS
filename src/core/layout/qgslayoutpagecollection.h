@@ -21,10 +21,12 @@
 #include "qgis_sip.h"
 #include "qgssymbol.h"
 #include "qgslayoutitempage.h"
+#include "qgslayoutserializableobject.h"
 #include <QObject>
 #include <memory>
 
 class QgsLayout;
+class QgsLayoutGuideCollection;
 
 /**
  * \ingroup core
@@ -32,7 +34,7 @@ class QgsLayout;
  * \brief A manager for a collection of pages in a layout.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutPageCollection : public QObject
+class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSerializableObject
 {
 
     Q_OBJECT
@@ -46,10 +48,8 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
 
     ~QgsLayoutPageCollection();
 
-    /**
-     * Returns the layout this collection belongs to.
-     */
-    QgsLayout *layout() const;
+    QString stringType() const override { return QStringLiteral( "LayoutPageCollection" ); }
+    QgsLayout *layout() override;
 
     /**
      * Returns a list of pages in the collection.
@@ -72,6 +72,26 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
      * \see pages()
      */
     QgsLayoutItemPage *page( int pageNumber );
+
+    /**
+     * Returns the page number for the specified \a page, or -1 if the page
+     * is not contained in the collection.
+     */
+    int pageNumber( QgsLayoutItemPage *page ) const;
+
+    /**
+     * Returns a list of the pages which are visible within the specified
+     * \a region (in layout coordinates).
+     * \see visiblePageNumbers()
+     */
+    QList< QgsLayoutItemPage * > visiblePages( QRectF region ) const;
+
+    /**
+     * Returns a list of the page numbers which are visible within the specified
+     * \a region (in layout coordinates).
+     * \see visiblePages()
+     */
+    QList< int > visiblePageNumbers( QRectF region ) const;
 
     /**
      * Adds a \a page to the collection. Ownership of the \a page is transferred
@@ -120,6 +140,11 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
      * Calling deletePage() automatically triggers a reflow() of pages.
      */
     void deletePage( QgsLayoutItemPage *page );
+
+    /**
+     * Takes a \a page from the collection, returning ownership of the page to the caller.
+     */
+    QgsLayoutItemPage *takePage( QgsLayoutItemPage *page ) SIP_TRANSFERBACK;
 
     /**
      * Sets the \a symbol to use for drawing pages in the collection.
@@ -191,6 +216,35 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
      */
     double pageShadowWidth() const;
 
+    /**
+     * Stores the collection's state in a DOM element. The \a parentElement should refer to the parent layout's DOM element.
+     * \see readXml()
+     */
+    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+
+    /**
+     * Sets the collection's state from a DOM element. collectionElement is the DOM node corresponding to the collection.
+     * \see writeXml()
+     */
+    bool readXml( const QDomElement &collectionElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
+
+    /**
+     * Returns a reference to the collection's guide collection, which manages page snap guides.
+     */
+    QgsLayoutGuideCollection &guides();
+
+    /**
+     * Returns a reference to the collection's guide collection, which manages page snap guides.
+     */
+    SIP_SKIP const QgsLayoutGuideCollection &guides() const;
+
+  public slots:
+
+    /**
+     * Triggers a redraw for all pages.
+     */
+    void redraw();
+
   signals:
 
     /**
@@ -198,16 +252,30 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject
      */
     void changed();
 
+    /**
+     * Emitted just before a page is removed from the collection.
+     *
+     * Page numbers in collections begin at 0 - so a page number of 0 indicates the
+     * first page.
+     */
+    void pageAboutToBeRemoved( int pageNumber );
+
   private:
 
     QgsLayout *mLayout = nullptr;
+
+    std::unique_ptr< QgsLayoutGuideCollection > mGuideCollection;
 
     //! Symbol for drawing pages
     std::unique_ptr< QgsFillSymbol > mPageStyleSymbol;
 
     QList< QgsLayoutItemPage * > mPages;
 
+    bool mBlockUndoCommands = false;
+
     void createDefaultPageStyleSymbol();
+
+    friend class QgsLayoutPageCollectionUndoCommand;
 };
 
 #endif //QGSLAYOUTPAGECOLLECTION_H

@@ -415,9 +415,9 @@ class CORE_EXPORT QgsAuthConfigSslServer
     QSsl::SslProtocol mSslProtocol;
     int mQtVersion;
     QList<QSslError::SslError> mSslIgnoredErrors;
-    QSslSocket::PeerVerifyMode mSslPeerVerifyMode;
-    int mSslPeerVerifyDepth;
-    int mVersion;
+    QSslSocket::PeerVerifyMode mSslPeerVerifyMode = QSslSocket::VerifyPeer;
+    int mSslPeerVerifyDepth = 0;
+    int mVersion = 1;
 
     static const QString CONF_SEP;
 };

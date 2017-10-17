@@ -104,11 +104,6 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar *scale
   connect( mFontButton, &QgsFontButton::changed, this, &QgsComposerScaleBarWidget::fontChanged );
 }
 
-QgsComposerScaleBarWidget::~QgsComposerScaleBarWidget()
-{
-
-}
-
 void QgsComposerScaleBarWidget::setGuiElements()
 {
   if ( !mComposerScaleBar )
@@ -233,7 +228,7 @@ void QgsComposerScaleBarWidget::on_mNumberOfSegmentsSpinBox_valueChanged( int i 
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mHeightSpinBox_valueChanged( int i )
+void QgsComposerScaleBarWidget::on_mHeightSpinBox_valueChanged( double d )
 {
   if ( !mComposerScaleBar )
   {
@@ -241,7 +236,7 @@ void QgsComposerScaleBarWidget::on_mHeightSpinBox_valueChanged( int i )
   }
   mComposerScaleBar->beginCommand( tr( "Scalebar height changed" ), QgsComposerMergeCommand::ScaleBarHeight );
   disconnectUpdateSignal();
-  mComposerScaleBar->setHeight( i );
+  mComposerScaleBar->setHeight( d );
   mComposerScaleBar->update();
   connectUpdateSignal();
   mComposerScaleBar->endCommand();
@@ -562,6 +557,8 @@ void QgsComposerScaleBarWidget::blockMemberSignals( bool block )
   mSegmentSizeRadioGroup.blockSignals( block );
   mMapItemComboBox->blockSignals( block );
   mFontButton->blockSignals( block );
+  mMinWidthSpinBox->blockSignals( block );
+  mMaxWidthSpinBox->blockSignals( block );
 }
 
 void QgsComposerScaleBarWidget::connectUpdateSignal()
@@ -651,7 +648,7 @@ void QgsComposerScaleBarWidget::composerMapChanged( QgsComposerItem *item )
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mMinWidthSpinBox_valueChanged( int )
+void QgsComposerScaleBarWidget::on_mMinWidthSpinBox_valueChanged( double )
 {
   if ( !mComposerScaleBar )
   {
@@ -666,7 +663,7 @@ void QgsComposerScaleBarWidget::on_mMinWidthSpinBox_valueChanged( int )
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mMaxWidthSpinBox_valueChanged( int )
+void QgsComposerScaleBarWidget::on_mMaxWidthSpinBox_valueChanged( double )
 {
   if ( !mComposerScaleBar )
   {

@@ -34,7 +34,7 @@
 
 #define LWDEBUG //
 #define LWDEBUGF //
-#define FP_MAX qMax
+#define FP_MAX std::max
 #define FLAGS_GET_Z( flags ) ( ( flags ) & 0x01 )
 #define LW_MSG_MAXLEN 256
 #define lwalloc qgsMalloc
@@ -74,8 +74,6 @@ struct EFFECTIVE_AREAS
 {
   EFFECTIVE_AREAS( const QgsCurve &curve )
     : is3d( curve.is3D() )
-    , initial_arealist( nullptr )
-    , res_arealist( nullptr )
   {
     curve.points( inpts );
     initial_arealist = new areanode[ inpts.size()];

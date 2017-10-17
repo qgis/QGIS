@@ -130,6 +130,14 @@ class CORE_EXPORT QgsRasterFileWriter
     void setPyramidsConfigOptions( const QStringList &list ) { mPyramidsConfigOptions = list; }
     QStringList pyramidsConfigOptions() const { return mPyramidsConfigOptions; }
 
+    /**
+     * Returns the GDAL driver name for a specified file \a extension. E.g. the
+     * driver name for the ".tif" extension is "GTiff".
+     * If no suitable drivers are found then an empty string is returned.
+     * \since QGIS 3.0
+     */
+    static QString driverForExtension( const QString &extension );
+
   private:
     QgsRasterFileWriter(); //forbidden
     WriterError writeDataRaster( const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
@@ -194,7 +202,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QString partFileName( int fileIndex );
     QString vrtFileName();
 
-    Mode mMode;
+    Mode mMode = Raw;
     QString mOutputUrl;
     QString mOutputProviderKey;
     QString mOutputFormat;
@@ -202,14 +210,14 @@ class CORE_EXPORT QgsRasterFileWriter
     QgsCoordinateReferenceSystem mOutputCRS;
 
     //! False: Write one file, true: create a directory and add the files numbered
-    bool mTiledMode;
-    double mMaxTileWidth;
-    double mMaxTileHeight;
+    bool mTiledMode = false;
+    double mMaxTileWidth = 500;
+    double mMaxTileHeight = 500;
 
     QList< int > mPyramidsList;
     QString mPyramidsResampling;
-    QgsRaster::RasterBuildPyramids mBuildPyramidsFlag;
-    QgsRaster::RasterPyramidsFormat mPyramidsFormat;
+    QgsRaster::RasterBuildPyramids mBuildPyramidsFlag = QgsRaster::PyramidsFlagNo;
+    QgsRaster::RasterPyramidsFormat mPyramidsFormat = QgsRaster::PyramidsGTiff;
     QStringList mPyramidsConfigOptions;
 
     QDomDocument mVRTDocument;

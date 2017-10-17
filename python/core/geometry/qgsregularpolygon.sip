@@ -35,7 +35,7 @@ class QgsRegularPolygon
 
     QgsRegularPolygon();
 
-    QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const int numberSides, const ConstructionOption circle );
+    QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const unsigned int numberSides, const ConstructionOption circle );
 %Docstring
  Constructs a regular polygon by ``center`` and parameters for the first vertex. An empty regular polygon is returned if ``numberSides`` < 3 or ``ConstructionOption`` isn't valid.
  \param center The center of the regular polygon.
@@ -45,7 +45,7 @@ class QgsRegularPolygon
 .. seealso:: ConstructionOption
 %End
 
-    QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt1, const int  numberSides, const ConstructionOption circle );
+    QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt1, const unsigned int numberSides, const ConstructionOption circle );
 %Docstring
  Constructs a regular polygon by ``center`` and another point.
  \param center The center of the regular polygon.
@@ -54,7 +54,7 @@ class QgsRegularPolygon
  \param circle Option to create the polygon inscribed in circle (the radius is the distance between the center and vertices) or circumscribed about circle (the radius is the distance from the center to the midpoints of the sides).
 %End
 
-    QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, const int  numberSides );
+    QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, const unsigned int numberSides );
 %Docstring
  Constructs a regular polygon by two points of the first side.
  \param pt1 The first vertex of the first side, also first vertex of the regular polygon.
@@ -102,11 +102,10 @@ A regular polygon is empty if radius equal to 0 or number of sides < 3
  :rtype: float
 %End
 
-    int numberSides() const;
+    unsigned int numberSides() const;
 %Docstring
  Returns the number of sides of the regular polygon.
 .. seealso:: setNumberSides()
- :rtype: int
 %End
 
     void setCenter( const QgsPoint &center );
@@ -130,7 +129,7 @@ A regular polygon is empty if radius equal to 0 or number of sides < 3
 .. seealso:: firstVertex()
 %End
 
-    void setNumberSides( const int numberSides );
+    void setNumberSides( const unsigned int numberSides );
 %Docstring
  Sets the number of sides.
  If numberSides < 3, the number of sides is unchanged.

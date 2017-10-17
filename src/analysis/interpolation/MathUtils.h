@@ -23,6 +23,8 @@
 class QgsPoint;
 class Vector3D;
 
+#define SIP_NO_FILE
+
 namespace MathUtils
 {
   //! Calculates the barycentric coordinates of a point (x,y) with respect to p1, p2, p3 and stores the three barycentric coordinates in 'result'. Thus the u-coordinate is stored in result::x, the v-coordinate in result::y and the w-coordinate in result::z. Attention: p1, p2 and p3 have to be ordered counterclockwise
@@ -54,12 +56,6 @@ namespace MathUtils
   bool ANALYSIS_EXPORT lineIntersection( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *p4, QgsPoint *intersection_point );
   //! Lower function
   int ANALYSIS_EXPORT lower( int n, int i );
-  //! Returns the maximum of two doubles or the first argument if both are equal
-  double ANALYSIS_EXPORT max( double x, double y );
-  //! Returns the minimum of two doubles or the first argument if both are equal
-  double ANALYSIS_EXPORT min( double x, double y );
-  //! Power function for integer coefficients
-  double ANALYSIS_EXPORT power( double a, int b );//calculates a power b
   //! Returns the area of a triangle. If the points are ordered counterclockwise, the value will be positiv. If they are ordered clockwise, the value will be negativ
   double ANALYSIS_EXPORT triArea( QgsPoint *pa, QgsPoint *pb, QgsPoint *pc );
   //! Calculates the z-component of a vector with coordinates 'x' and 'y'which is in the same tangent plane as the tangent vectors 'v1' and 'v2'. The result is assigned to 'result'

@@ -33,13 +33,13 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
     const QgsVectorLayer *layer )
   : QToolButton( parent )
   , mVectorLayer( layer )
-  , mExpressionContextGenerator( nullptr )
+
 {
   setFocusPolicy( Qt::StrongFocus );
 
   // set default tool button icon properties
   setFixedSize( 30, 26 );
-  setStyleSheet( QString( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }" ) );
+  setStyleSheet( QStringLiteral( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }" ) );
   setIconSize( QSize( 24, 24 ) );
   setPopupMode( QToolButton::InstantPopup );
 
@@ -114,7 +114,7 @@ void QgsPropertyOverrideButton::init( int propertyKey, const QgsProperty &proper
 
   if ( !ts.isEmpty() )
   {
-    mDataTypesString = ts.join( ", " );
+    mDataTypesString = ts.join( QStringLiteral( ", " ) );
     mActionDataTypes->setText( tr( "Field type: " ) + mDataTypesString );
   }
 
@@ -319,7 +319,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
     ddTitleAct->setText( ddTitle + " (" + ( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty ? tr( "expression" ) : tr( "field" ) ) + ')' );
     mDefineMenu->addAction( mActionActive );
     mActionActive->setText( mProperty.isActive() ? tr( "Deactivate" ) : tr( "Activate" ) );
-    mActionActive->setData( QVariant( mProperty.isActive() ? false : true ) );
+    mActionActive->setData( QVariant( !mProperty.isActive() ) );
   }
 
   if ( !mFullDescription.isEmpty() )
@@ -597,7 +597,7 @@ void QgsPropertyOverrideButton::showAssistant()
   {
     // Show the dialog version if not in a panel
     QDialog *dlg = new QDialog( this );
-    QString key =  QStringLiteral( "/UI/paneldialog/%1" ).arg( widget->panelTitle() );
+    QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( widget->panelTitle() );
     QgsSettings settings;
     dlg->restoreGeometry( settings.value( key ).toByteArray() );
     dlg->setWindowTitle( widget->panelTitle() );
@@ -670,10 +670,10 @@ void QgsPropertyOverrideButton::updateGui()
     mFullDescription += tr( "<b>Valid input types:</b><br>%1<br>" ).arg( mDataTypesString );
   }
 
-  QString deftype( "" );
+  QString deftype( QLatin1String( "" ) );
   if ( deftip != tr( "undefined" ) )
   {
-    deftype = QString( " (%1)" ).arg( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty ? tr( "expression" ) : tr( "field" ) );
+    deftype = QStringLiteral( " (%1)" ).arg( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty ? tr( "expression" ) : tr( "field" ) );
   }
 
   // truncate long expressions, or tool tip may be too wide for screen

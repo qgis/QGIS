@@ -45,11 +45,6 @@ class TestQgsEllipseMarkerSymbol : public QObject
 
   public:
     TestQgsEllipseMarkerSymbol()
-      : mTestHasError( false )
-      , mpPointsLayer( 0 )
-      , mEllipseMarkerLayer( 0 )
-      , mMarkerSymbol( 0 )
-      , mSymbolRenderer( 0 )
     {}
 
   private slots:
@@ -65,7 +60,7 @@ class TestQgsEllipseMarkerSymbol : public QObject
     void bounds();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
 
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

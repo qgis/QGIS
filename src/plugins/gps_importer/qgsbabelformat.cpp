@@ -24,11 +24,6 @@
 
 QgsBabelFormat::QgsBabelFormat( const QString &name )
   : mName( name )
-  , mSupportsImport( false )
-  , mSupportsExport( false )
-  , mSupportsWaypoints( false )
-  , mSupportsRoutes( false )
-  , mSupportsTracks( false )
 {
 }
 

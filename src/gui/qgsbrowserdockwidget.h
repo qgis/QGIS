@@ -15,10 +15,10 @@
 #ifndef QGSBROWSERDOCKWIDGET_H
 #define QGSBROWSERDOCKWIDGET_H
 
-#include <ui_qgsbrowserdockwidgetbase.h>
-#include <ui_qgsbrowserlayerpropertiesbase.h>
-#include <ui_qgsbrowserdirectorypropertiesbase.h>
-#include <ui_qgsbrowserpropertiesdialogbase.h>
+#include "ui_qgsbrowserdockwidgetbase.h"
+#include "ui_qgsbrowserlayerpropertiesbase.h"
+#include "ui_qgsbrowserdirectorypropertiesbase.h"
+#include "ui_qgsbrowserpropertiesdialogbase.h"
 
 #include "qgsdataitem.h"
 #include "qgsbrowsertreeview.h"
@@ -47,9 +47,10 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     /**
       * Constructor for QgsBrowserDockWidget
       * \param name name of the widget
+      * \param browserModel instance of the (shared) browser model
       * \param parent parent widget
       */
-    explicit QgsBrowserDockWidget( const QString &name, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsBrowserDockWidget();
     //! Add directory to favorites
     void addFavoriteDirectory( const QString &favDir );
@@ -108,6 +109,9 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
   protected:
     //! Show event override
     void showEvent( QShowEvent *event ) override;
+
+  private slots:
+    void itemDoubleClicked( const QModelIndex &index );
 
   private:
     //! Refresh the model

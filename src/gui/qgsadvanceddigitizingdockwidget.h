@@ -20,7 +20,7 @@
 #include "qgsmapmouseevent.h"
 #include "qgsmessagebaritem.h"
 
-#include <ui_qgsadvanceddigitizingdockwidgetbase.h>
+#include "ui_qgsadvanceddigitizingdockwidgetbase.h"
 #include "qgis_gui.h"
 #include "qgis.h"
 #include <memory>
@@ -71,16 +71,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
       NoConstraint,  //!< No additional constraint
       Perpendicular, //!< Perpendicular
       Parallel       //!< Parallel
-    };
-
-    /**
-     * Determines if the dock has to record one, two or many points.
-     */
-    enum AdvancedDigitizingMode
-    {
-      SinglePoint, //!< Capture a single point (e.g. for point digitizing)
-      TwoPoints,   //!< Capture two points (e.g. for translation)
-      ManyPoints   //!< Capture two or more points (e.g. line or polygon digitizing)
     };
 
     /** \ingroup gui
@@ -215,31 +205,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void hideEvent( QHideEvent * ) override;
 
     /**
-     * Will react on a canvas press event
-     *
-     * \param e A mouse event (may be modified)
-     * \returns  If the event is hidden (construction mode hides events from the maptool)
-     */
-    bool canvasPressEvent( QgsMapMouseEvent *e );
-
-    /**
-     * Will react on a canvas release event
-     *
-     * \param e A mouse event (may be modified)
-     * \param mode determines if the dock has to record one, two or many points.
-     * \returns  If the event is hidden (construction mode hides events from the maptool)
-     */
-    bool canvasReleaseEvent( QgsMapMouseEvent *e, AdvancedDigitizingMode mode );
-
-    /**
-     * Will react on a canvas move event
-     *
-     * \param e A mouse event (may be modified)
-     * \returns  If the event is hidden (construction mode hides events from the maptool)
-     */
-    bool canvasMoveEvent( QgsMapMouseEvent *e );
-
-    /**
      * Filter key events to e.g. toggle construction mode or adapt constraints
      *
      * \param e A mouse event (may be modified)
@@ -249,18 +214,22 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     //! apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
     //! \returns false if no solution was found (invalid constraints)
-    virtual bool applyConstraints( QgsMapMouseEvent *e );
+    bool applyConstraints( QgsMapMouseEvent *e );
+
+    //! align to segment for additional constraint.
+    //! If additional constraints are used, this will determine the angle to be locked depending on the snapped segment.
+    //! \since QGIS 3.0
+    bool alignToSegment( QgsMapMouseEvent *e, QgsAdvancedDigitizingDockWidget::CadConstraint::LockMode lockMode = QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
+
+    //! unlock all constraints
+    //! \param releaseRepeatingLocks set to false to preserve the lock for any constraints set to repeating lock mode
+    //! \since QGIS 3.0
+    void releaseLocks( bool releaseRepeatingLocks = true );
 
     /**
      * Clear any cached previous clicks and helper lines
      */
     void clear();
-
-    /**
-     * The snapping mode
-     * \returns Snapping mode
-     */
-    QgsMapMouseEvent::SnappingMode snappingMode() { return mSnappingMode; }
 
     void keyPressEvent( QKeyEvent *e ) override;
 
@@ -282,6 +251,25 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     const CadConstraint *constraintY() const { return mYConstraint.get(); }
     //! Constraint on a common angle
     bool commonAngleConstraint() const { return mCommonAngleConstraint; }
+
+    /** Removes all points from the CAD point list
+     * \since QGIS 3.0
+     */
+    void clearPoints();
+
+    /** Adds point to the CAD point list
+     * \since QGIS 3.0
+     */
+    void addPoint( const QgsPointXY &point );
+
+    /**
+     * Configures list of current CAD points
+     *
+     * Some map tools may find it useful to override list of CAD points that is otherwise
+     * automatically populated when user clicks with left mouse button on map canvas.
+     * \since QGIS 3.0
+     */
+    void setPoints( const QList<QgsPointXY> &points );
 
     /**
      * The last point.
@@ -335,6 +323,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     void disable();
 
+    //! Updates canvas item that displays constraints on the ma
+    //! \since QGIS 3.0
+    void updateCadPaintItem();
+
   signals:
 
     /**
@@ -372,10 +364,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! will be converted to their calculated value
     void constraintFocusOut();
 
-    //! unlock all constraints
-    //! \param releaseRepeatingLocks set to false to preserve the lock for any constraints set to repeating lock mode
-    void releaseLocks( bool releaseRepeatingLocks = true );
-
     //! set the relative properties of constraints
     void setConstraintRelative( bool activate );
 
@@ -407,18 +395,18 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     QList<QgsPointXY> snapSegment( const QgsPointLocator::Match &snapMatch );
 
-    //! align to segment for additional constraint.
-    //! If additional constraints are used, this will determine the angle to be locked depending on the snapped segment.
-    bool alignToSegment( QgsMapMouseEvent *e, CadConstraint::LockMode lockMode = CadConstraint::HardLock );
+    /**
+     * Returns the first snapped segment. Will try to snap a segment according to the event's snapping mode.
+     * \param originalMapPoint point to be snapped (in map coordinates)
+     * \param snapped if given, determines if a segment has been snapped
+     * \param allLayers if true, override snapping mode
+     */
+    QList<QgsPointXY> snapSegment( const QgsPointXY &originalMapPoint, bool *snapped = nullptr, bool allLayers = false ) const;
 
-    //! add point to the CAD point list
-    void addPoint( const QgsPointXY &point );
     //! update the current point in the CAD point list
     void updateCurrentPoint( const QgsPointXY &point );
     //! remove previous point in the CAD point list
     void removePreviousPoint();
-    //! remove all points from the CAD point list
-    void clearPoints();
 
     //! filters key press
     //! \note called by eventFilter (filter on line edits), canvasKeyPressEvent (filter on map tool) and keyPressEvent (filter on dock)
@@ -455,7 +443,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! is CAD currently enabled for current map tool
     bool mCadEnabled;
     bool mConstructionMode;
-    QgsMapMouseEvent::SnappingMode mSnappingMode;
 
     // constraints
     std::unique_ptr< CadConstraint > mAngleConstraint;
@@ -478,7 +465,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     // UI
     QAction *mEnableAction = nullptr;
     QMap< QAction *, int > mCommonAngleActions; // map the common angle actions with their angle values
-    QMap< QAction *, QgsMapMouseEvent::SnappingMode > mSnappingActions; // map the snapping mode actions with their values
 
   private:
 #ifdef SIP_RUN

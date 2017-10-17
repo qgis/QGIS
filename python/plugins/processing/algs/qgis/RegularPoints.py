@@ -65,7 +65,7 @@ class RegularPoints(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'regular_points.png'))
 
     def group(self):
-        return self.tr('Vector creation tools')
+        return self.tr('Vector creation')
 
     def __init__(self):
         super().__init__()
@@ -93,13 +93,12 @@ class RegularPoints(QgisAlgorithm):
         return self.tr('Regular points')
 
     def processAlgorithm(self, parameters, context, feedback):
-        extent = self.parameterAsExtent(parameters, self.EXTENT, context)
-
         spacing = self.parameterAsDouble(parameters, self.SPACING, context)
         inset = self.parameterAsDouble(parameters, self.INSET, context)
         randomize = self.parameterAsBool(parameters, self.RANDOMIZE, context)
         isSpacing = self.parameterAsBool(parameters, self.IS_SPACING, context)
         crs = self.parameterAsCrs(parameters, self.CRS, context)
+        extent = self.parameterAsExtent(parameters, self.EXTENT, context, crs)
 
         fields = QgsFields()
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))

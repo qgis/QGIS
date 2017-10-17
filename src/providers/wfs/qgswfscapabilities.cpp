@@ -66,7 +66,7 @@ void QgsWfsCapabilities::Capabilities::clear()
   supportsHits = false;
   supportsPaging = false;
   supportsJoins = false;
-  version = QLatin1String( "" );
+  version.clear();
   featureTypes.clear();
   spatialPredicatesList.clear();
   functionList.clear();
@@ -294,11 +294,11 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   }
   else // WFS 2.0.0 tested on GeoServer
   {
-    QDomNodeList operationNodes = doc.elementsByTagName( "Operation" );
+    QDomNodeList operationNodes = doc.elementsByTagName( QStringLiteral( "Operation" ) );
     for ( int i = 0; i < operationNodes.count(); i++ )
     {
       QDomElement operationElement = operationNodes.at( i ).toElement();
-      if ( operationElement.isElement() && "Transaction" == operationElement.attribute( "name" ) )
+      if ( operationElement.isElement() && "Transaction" == operationElement.attribute( QStringLiteral( "name" ) ) )
       {
         insertCap = true;
         updateCap = true;
@@ -403,10 +403,10 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
           QgsDebugMsg( ptMinBack.toString() );
           QgsDebugMsg( ptMaxBack.toString() );
 
-          if ( fabs( featureType.bbox.xMinimum() - ptMinBack.x() ) < 1e-5 &&
-               fabs( featureType.bbox.yMinimum() - ptMinBack.y() ) < 1e-5 &&
-               fabs( featureType.bbox.xMaximum() - ptMaxBack.x() ) < 1e-5 &&
-               fabs( featureType.bbox.yMaximum() - ptMaxBack.y() ) < 1e-5 )
+          if ( std::fabs( featureType.bbox.xMinimum() - ptMinBack.x() ) < 1e-5 &&
+               std::fabs( featureType.bbox.yMinimum() - ptMinBack.y() ) < 1e-5 &&
+               std::fabs( featureType.bbox.xMaximum() - ptMaxBack.x() ) < 1e-5 &&
+               std::fabs( featureType.bbox.yMaximum() - ptMaxBack.y() ) < 1e-5 )
           {
             QgsDebugMsg( "Values of LatLongBoundingBox are consistent with WGS84 long/lat bounds, so as the CRS is projected, assume they are indeed in WGS84 and not in the CRS units" );
             featureType.bboxSRSIsWGS84 = true;

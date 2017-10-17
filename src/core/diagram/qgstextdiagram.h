@@ -58,11 +58,11 @@ class CORE_EXPORT QgsTextDiagram: public QgsDiagram
     QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) override;
     double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const override;
 
-    QString diagramName() const override { return DIAGRAM_NAME_TEXT; }
+    QString diagramName() const override;
 
   private:
-    Orientation mOrientation;
-    Shape mShape;
+    Orientation mOrientation = Vertical;
+    Shape mShape = Circle;
     QBrush mBrush; //transparent brush
     QPen mPen;
 

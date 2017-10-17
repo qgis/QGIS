@@ -31,17 +31,7 @@
 
 QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent )
   : QWidget( parent )
-  , mQuadrantBtnGrp( nullptr )
-  , mDirectSymbBtnGrp( nullptr )
-  , mUpsidedownBtnGrp( nullptr )
-  , mPlacePointBtnGrp( nullptr )
-  , mPlaceLineBtnGrp( nullptr )
-  , mPlacePolygonBtnGrp( nullptr )
-  , mMinPixelLimit( 0 )
-  , mWidgetMode( Text )
   , mMapCanvas( mapCanvas )
-  , mCharDlg( nullptr )
-  , mLoadSvgParams( false )
 {
   initWidget();
   setWidgetMode( Text );
@@ -50,17 +40,8 @@ QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCan
 
 QgsTextFormatWidget::QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Mode mode )
   : QWidget( parent )
-  , mQuadrantBtnGrp( nullptr )
-  , mDirectSymbBtnGrp( nullptr )
-  , mUpsidedownBtnGrp( nullptr )
-  , mPlacePointBtnGrp( nullptr )
-  , mPlaceLineBtnGrp( nullptr )
-  , mPlacePolygonBtnGrp( nullptr )
-  , mMinPixelLimit( 0 )
   , mWidgetMode( mode )
   , mMapCanvas( mapCanvas )
-  , mCharDlg( nullptr )
-  , mLoadSvgParams( false )
 {
   initWidget();
   setWidgetMode( mode );

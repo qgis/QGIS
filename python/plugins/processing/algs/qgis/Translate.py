@@ -36,7 +36,7 @@ class Translate(QgisFeatureBasedAlgorithm):
     DELTA_Y = 'DELTA_Y'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()

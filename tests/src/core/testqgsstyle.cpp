@@ -70,7 +70,6 @@ class TestStyle : public QObject
 };
 
 TestStyle::TestStyle()
-  : mStyle( nullptr )
 {
 
 }
@@ -258,9 +257,9 @@ void TestStyle::testFavorites()
   std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  mStyle->saveSymbol( "symbolA", sym1.get(), true, QStringList() );
-  mStyle->saveSymbol( "symbolB", sym2.get(), false, QStringList() );
-  mStyle->saveSymbol( "symbolC", sym3.get(), true, QStringList() );
+  mStyle->saveSymbol( QStringLiteral( "symbolA" ), sym1.get(), true, QStringList() );
+  mStyle->saveSymbol( QStringLiteral( "symbolB" ), sym2.get(), false, QStringList() );
+  mStyle->saveSymbol( QStringLiteral( "symbolC" ), sym3.get(), true, QStringList() );
 
   // check for added symbols to favorites
   favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
@@ -269,7 +268,7 @@ void TestStyle::testFavorites()
   QVERIFY( favorites.contains( "symbolC" ) );
 
   // remove one symbol from favorites
-  mStyle->removeFavorite( QgsStyle::SymbolEntity, "symbolA" );
+  mStyle->removeFavorite( QgsStyle::SymbolEntity, QStringLiteral( "symbolA" ) );
 
   // insure favorites updated after removal
   favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );

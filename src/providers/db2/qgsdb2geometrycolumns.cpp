@@ -17,7 +17,7 @@
 #include "qgsdb2geometrycolumns.h"
 #include "qgsdb2tablemodel.h" // needed for QgsDB2LayerProperty
 #include <QtSql>
-#include <qgslogger.h>
+#include "qgslogger.h"
 
 
 QgsDb2GeometryColumns::QgsDb2GeometryColumns( const QSqlDatabase &db )
@@ -32,12 +32,12 @@ QgsDb2GeometryColumns::~QgsDb2GeometryColumns()
   mQuery.clear();
 }
 
-int QgsDb2GeometryColumns::open()
+QString QgsDb2GeometryColumns::open()
 {
   return open( QString(), QString() );
 }
 
-int QgsDb2GeometryColumns::open( const QString &schemaName, const QString &tableName )
+QString QgsDb2GeometryColumns::open( const QString &schemaName, const QString &tableName )
 {
   QString queryExtents( "SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME, TYPE_NAME, "
                         "SRS_ID, SRS_NAME, MIN_X, MIN_Y, MAX_X, MAX_Y "
@@ -46,7 +46,7 @@ int QgsDb2GeometryColumns::open( const QString &schemaName, const QString &table
                           "SRS_ID, SRS_NAME "
                           "FROM DB2GSE.ST_GEOMETRY_COLUMNS" );
   mQuery = QSqlQuery( mDatabase );
-  int sqlcode = 0;
+  QString nativeError;
   mEnvironment = ENV_LUW;
 
   if ( !schemaName.isEmpty() && !tableName.isEmpty() )
@@ -61,30 +61,30 @@ int QgsDb2GeometryColumns::open( const QString &schemaName, const QString &table
   if ( !mQuery.exec( queryExtents ) )
   {
     QgsDebugMsg( "ST_Geometry_Columns query failed: " + mDatabase.lastError().text() );
-    sqlcode =  mQuery.lastError().number();
-    QgsDebugMsg( QString( "SQLCODE: %1" ).arg( sqlcode ) );
+    nativeError = mQuery.lastError().nativeErrorCode();
+    QgsDebugMsg( QString( "SQLCODE: %1" ).arg( nativeError ) );
     /* The MIN_X, MIN_Y, MAX_X, and MAX_Y columns are not available on z/OS (and LUW 9.5)
        so SQLCODE -206 is returned when specifying non-existent columns. */
-    if ( mQuery.lastError().number() == -206 )
+    if ( mQuery.lastError().nativeErrorCode() == QStringLiteral( "-206" ) )
     {
       QgsDebugMsg( "Try query with no extents" );
       mQuery.clear();
 
       if ( !mQuery.exec( queryNoExtents ) )
       {
-        QgsDebugMsg( QString( "SQLCODE: %1" ).arg( mQuery.lastError().number() ) );
+        QgsDebugMsg( QString( "SQLCODE: %1" ).arg( mQuery.lastError().nativeErrorCode() ) );
       }
       else
       {
         QgsDebugMsg( "success; must be z/OS" );
         mEnvironment = ENV_ZOS;
-        sqlcode = 0;
+        nativeError.clear();
       }
     }
   }
 //  QgsDebugMsg( QString( "sqlcode: %1" ).arg( sqlcode ) );
 
-  return sqlcode;
+  return nativeError;
 }
 
 bool QgsDb2GeometryColumns::isActive()
@@ -110,8 +110,8 @@ bool QgsDb2GeometryColumns::populateLayerProperty( QgsDb2LayerProperty &layer )
   layer.type = mQuery.value( 3 ).toString();
   if ( mQuery.value( 4 ).isNull() )
   {
-    layer.srid = QLatin1String( "" );
-    layer.srsName = QLatin1String( "" );
+    layer.srid.clear();
+    layer.srsName.clear();
   }
   else
   {

@@ -47,8 +47,8 @@ class CORE_EXPORT QgsComposerAttributeTableCompareV2
     void setAscending( bool asc ) { mAscending = asc; }
 
   private:
-    int mCurrentSortColumn;
-    bool mAscending;
+    int mCurrentSortColumn = 0;
+    bool mAscending = true;
 };
 
 

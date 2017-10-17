@@ -136,11 +136,11 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
 
     QgsSpinBoxLineEdit *mLineEdit = nullptr;
 
-    bool mShowClearButton;
-    ClearValueMode mClearValueMode;
-    double mCustomClearValue;
+    bool mShowClearButton = true;
+    ClearValueMode mClearValueMode = MinimumValue;
+    double mCustomClearValue = 0.0;
 
-    bool mExpressionsEnabled;
+    bool mExpressionsEnabled = true;
 
     QString stripped( const QString &originalText ) const;
 };

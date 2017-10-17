@@ -21,7 +21,6 @@
  ***************************************************************************/
 
 #include "qgis.h" // GEO_EPSG_CRS_ID
-#include "qgscontexthelp.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
 #include "qgsprojectionselectiondialog.h"
@@ -57,22 +56,13 @@
 QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mService( service )
-  , mCurrentTileset( nullptr )
+
 {
   setupUi( this );
-
-  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
-  {
-    buttonBox->removeButton( buttonBox->button( QDialogButtonBox::Close ) );
-  }
+  setupButtons( buttonBox );
 
 
   setWindowTitle( tr( "Add Layer(s) from a %1 Server" ).arg( service ) );
-
-  mAddButton = buttonBox->button( QDialogButtonBox::Apply );
-  mAddButton->setText( tr( "&Add" ) );
-  mAddButton->setToolTip( tr( "Add selected layers to map" ) );
-  mAddButton->setEnabled( false );
 
   clearCrs();
 
@@ -90,7 +80,6 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
 
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
-    connect( mAddButton, &QAbstractButton::clicked, this, &QgsOWSSourceSelect::addClicked );
     //set the current project CRS if available
     QgsCoordinateReferenceSystem currentRefSys = QgsProject::instance()->crs();
     //convert CRS id to epsg
@@ -106,7 +95,6 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
     mTimeWidget->hide();
     mFormatWidget->hide();
     mCRSWidget->hide();
-    mAddButton->hide();
     mCacheWidget->hide();
   }
 
@@ -241,9 +229,23 @@ void QgsOWSSourceSelect::populateConnectionList()
 
   setConnectionListPosition();
 }
+
+QgsNewHttpConnection::ConnectionType connectionTypeFromServiceString( const QString &string )
+{
+  if ( string.compare( QStringLiteral( "wms" ), Qt::CaseInsensitive ) == 0 )
+    return QgsNewHttpConnection::ConnectionWms;
+  else if ( string.compare( QStringLiteral( "wfs" ), Qt::CaseInsensitive ) == 0 )
+    return QgsNewHttpConnection::ConnectionWfs;
+  else if ( string.compare( QStringLiteral( "wcs" ), Qt::CaseInsensitive ) == 0 )
+    return QgsNewHttpConnection::ConnectionWcs;
+  else
+    return QgsNewHttpConnection::ConnectionWms;
+}
+
 void QgsOWSSourceSelect::on_mNewButton_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + '/' );
+  QgsNewHttpConnection::ConnectionType type = connectionTypeFromServiceString( mService );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, type, "/qgis/connections-" + mService.toLower() + '/' );
 
   if ( nc->exec() )
   {
@@ -256,7 +258,8 @@ void QgsOWSSourceSelect::on_mNewButton_clicked()
 
 void QgsOWSSourceSelect::on_mEditButton_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
+  QgsNewHttpConnection::ConnectionType type = connectionTypeFromServiceString( mService );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, type, "/qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
 
   if ( nc->exec() )
   {
@@ -361,10 +364,6 @@ void QgsOWSSourceSelect::on_mConnectButton_clicked()
   QApplication::restoreOverrideCursor();
 }
 
-void QgsOWSSourceSelect::addClicked()
-{
-}
-
 void QgsOWSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )
 {
 }
@@ -429,7 +428,7 @@ void QgsOWSSourceSelect::populateCrs()
         break;
 
       // save first CRS in case the current CRS is not available
-      if ( it == mSelectedLayersCRSs.begin() )
+      if ( it == mSelectedLayersCRSs.constBegin() )
         defaultCRS = *it;
 
       // prefer value of DEFAULT_GEO_EPSG_CRS_ID if available
@@ -437,7 +436,7 @@ void QgsOWSSourceSelect::populateCrs()
         defaultCRS = *it;
     }
 
-    if ( it == mSelectedLayersCRSs.end() )
+    if ( it == mSelectedLayersCRSs.constEnd() )
     {
       // not found
       mSelectedCRS = defaultCRS;
@@ -451,8 +450,8 @@ void QgsOWSSourceSelect::populateCrs()
 void QgsOWSSourceSelect::clearCrs()
 {
   mCRSLabel->setText( tr( "Coordinate Reference System" ) + ':' );
-  mSelectedCRS = QLatin1String( "" );
-  mSelectedCRSLabel->setText( QLatin1String( "" ) );
+  mSelectedCRS.clear();
+  mSelectedCRSLabel->clear();
   mChangeCRSButton->setEnabled( false );
 }
 
@@ -597,12 +596,12 @@ void QgsOWSSourceSelect::addDefaultServers()
 {
   QMap<QString, QString> exampleServers;
   exampleServers[QStringLiteral( "DM Solutions GMap" )] = QStringLiteral( "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap" );
-  exampleServers[QStringLiteral( "Lizardtech server" )] =  QStringLiteral( "http://wms.lizardtech.com/lizardtech/iserv/ows" );
+  exampleServers[QStringLiteral( "Lizardtech server" )] = QStringLiteral( "http://wms.lizardtech.com/lizardtech/iserv/ows" );
   // Nice to have the qgis users map, but I'm not sure of the URL at the moment.
   //  exampleServers["Qgis users map"] = "http://qgis.org/wms.cgi";
 
   QgsSettings settings;
-  settings.beginGroup( "/Qgis/connections-" + mService.toLower() );
+  settings.beginGroup( "/qgis/connections-" + mService.toLower() );
   QMap<QString, QString>::const_iterator i = exampleServers.constBegin();
   for ( ; i != exampleServers.constEnd(); ++i )
   {
@@ -717,7 +716,7 @@ void QgsOWSSourceSelect::on_mSearchTableWidget_itemSelectionChanged()
 void QgsOWSSourceSelect::on_mLayerUpButton_clicked()
 {
   QList<QTreeWidgetItem *> selectionList = mLayerOrderTreeWidget->selectedItems();
-  if ( selectionList.size() < 1 )
+  if ( selectionList.empty() )
   {
     return;
   }
@@ -736,7 +735,7 @@ void QgsOWSSourceSelect::on_mLayerUpButton_clicked()
 void QgsOWSSourceSelect::on_mLayerDownButton_clicked()
 {
   QList<QTreeWidgetItem *> selectionList = mLayerOrderTreeWidget->selectedItems();
-  if ( selectionList.size() < 1 )
+  if ( selectionList.empty() )
   {
     return;
   }

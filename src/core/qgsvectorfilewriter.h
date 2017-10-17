@@ -276,7 +276,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         const QgsCoordinateReferenceSystem &destCRS = QgsCoordinateReferenceSystem(),
         const QString &driverName = "ESRI Shapefile",
         bool onlySelected = false,
-        QString *errorMessage = nullptr,
+        QString *errorMessage SIP_OUT = nullptr,
         const QStringList &datasourceOptions = QStringList(),
         const QStringList &layerOptions = QStringList(),
         bool skipAttributeCreation = false,
@@ -321,7 +321,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         const QgsCoordinateTransform &ct,
         const QString &driverName = "ESRI Shapefile",
         bool onlySelected = false,
-        QString *errorMessage = nullptr,
+        QString *errorMessage SIP_OUT = nullptr,
         const QStringList &datasourceOptions = QStringList(),
         const QStringList &layerOptions = QStringList(),
         bool skipAttributeCreation = false,
@@ -356,7 +356,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         QString layerName;
 
         //! Action on existing file
-        QgsVectorFileWriter::ActionOnExistingFile actionOnExistingFile;
+        QgsVectorFileWriter::ActionOnExistingFile actionOnExistingFile = CreateOrOverwriteFile;
 
         //! Encoding to use
         QString fileEncoding;
@@ -366,7 +366,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         QgsCoordinateTransform ct;
 
         //! Write only selected features of layer
-        bool onlySelectedFeatures;
+        bool onlySelectedFeatures = false;
 
         //! List of OGR data source creation options
         QStringList datasourceOptions;
@@ -375,29 +375,29 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         QStringList layerOptions;
 
         //! Only write geometries
-        bool skipAttributeCreation;
+        bool skipAttributeCreation = false;
 
         //! Attributes to export (empty means all unless skipAttributeCreation is set)
         QgsAttributeList attributes;
 
         //! Symbology to export
-        QgsVectorFileWriter::SymbologyExport symbologyExport;
+        QgsVectorFileWriter::SymbologyExport symbologyExport = NoSymbology;
 
         //! Scale of symbology
-        double symbologyScale;
+        double symbologyScale = 1.0;
 
         //! If not empty, only features intersecting the extent will be saved
         QgsRectangle filterExtent;
 
         /** Set to a valid geometry type to override the default geometry type for the layer. This parameter
          * allows for conversion of geometryless tables to null geometries, etc */
-        QgsWkbTypes::Type overrideGeometryType;
+        QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown;
 
         //! Set to true to force creation of multi* geometries
-        bool forceMulti;
+        bool forceMulti = false;
 
         //! Set to true to include z dimension in output. This option is only valid if overrideGeometryType is set
-        bool includeZ;
+        bool includeZ = false;
 
         /**
          * Field value converter.
@@ -423,7 +423,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         const QString &fileName,
         const QgsVectorFileWriter::SaveVectorOptions &options,
         QString *newFilename = nullptr,
-        QString *errorMessage = nullptr );
+        QString *errorMessage SIP_OUT = nullptr );
 
     //! Create a new vector file writer
     QgsVectorFileWriter( const QString &vectorFileName,
@@ -606,9 +606,9 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     //! \note not available in Python bindings
     OGRGeometryH createEmptyGeometry( QgsWkbTypes::Type wkbType ) SIP_SKIP;
 
-    OGRDataSourceH mDS;
-    OGRLayerH mLayer;
-    OGRSpatialReferenceH mOgrRef;
+    OGRDataSourceH mDS = nullptr;
+    OGRLayerH mLayer = nullptr;
+    OGRSpatialReferenceH mOgrRef = nullptr;
 
     QgsFields mFields;
 
@@ -675,5 +675,6 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorFileWriter::EditionCapabilities )
 
+// clazy:excludeall=qstring-allocations
 
 #endif

@@ -40,6 +40,7 @@
 #include "qgsprojectproperty.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerstore.h"
+#include "qgsarchive.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -575,6 +576,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QMap<QString, QgsMapLayer *> mapLayers() const;
 
+    /**
+     * Returns true if the project comes from a zip archive, false otherwise.
+     */
+    bool isZipped() const;
+
 #ifndef SIP_RUN
 
     /** Returns a list of registered map layers with a specified layer type.
@@ -743,6 +749,36 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see QgsMapLayer::reload()
      */
     void reloadAllLayers();
+
+    /** Returns the default CRS for new layers based on the settings and
+     * the current project CRS
+     */
+    QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
+
+    /**
+     * Sets the trust option allowing to indicate if the extent has to be
+     * read from the XML document when data source has no metadata or if the
+     * data provider has to determine it. Moreover, when this option is
+     * activated, primary key unicity is not checked for views and
+     * materialized views with Postgres provider.
+     *
+     * \param trust True to trust the project, false otherwise
+     *
+     * \since QGIS 3.0
+     */
+    void setTrustLayerMetadata( bool trust );
+
+    /**
+     * Returns true if the trust option is activated, false otherwise. This
+     * option allows indicateing if the extent has to be read from the XML
+     * document when data source has no metadata or if the data provider has
+     * to determine it. Moreover, when this option is activated, primary key
+     * unicity is not checked for views and materialized views with Postgres
+     * provider.
+     *
+     * \since QGIS 3.0
+     */
+    bool trustLayerMetadata() const { return mTrustLayerMetadata; }
 
   signals:
     //! emitted when project is being read
@@ -961,6 +997,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void legendLayersAdded( const QList<QgsMapLayer *> &layers );
 
+
+
   public slots:
 
     /**
@@ -1016,6 +1054,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! \note not available in Python bindings
     void loadEmbeddedNodes( QgsLayerTreeGroup *group ) SIP_SKIP;
 
+    //! Read .qgs file
+    bool readProjectFile( const QString &filename );
+
+    //! Write .qgs file
+    bool writeProjectFile( const QString &filename );
+
+    //! Unzip .qgz file then read embedded .qgs file
+    bool unzip( const QString &filename );
+
+    //! Zip project
+    bool zip( const QString &filename );
+
     std::unique_ptr< QgsMapLayerStore > mLayerStore;
 
     QString mErrorMessage;
@@ -1048,13 +1098,16 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QVariantMap mCustomVariables;
 
+    std::unique_ptr<QgsProjectArchive> mArchive;
+
     QFile mFile;                 // current physical project file
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
     QString mTitle;              // project title
-    bool mAutoTransaction;       // transaction grouped editing
-    bool mEvaluateDefaultValues; // evaluate default values immediately
+    bool mAutoTransaction = false;       // transaction grouped editing
+    bool mEvaluateDefaultValues = false; // evaluate default values immediately
     QgsCoordinateReferenceSystem mCrs;
-    bool mDirty;                 // project has been modified since it has been read or saved
+    bool mDirty = false;                 // project has been modified since it has been read or saved
+    bool mTrustLayerMetadata = false;
 };
 
 /** Return the version string found in the given DOM document

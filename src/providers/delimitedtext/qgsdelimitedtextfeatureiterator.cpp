@@ -194,7 +194,7 @@ bool QgsDelimitedTextFeatureIterator::fetchFeature( QgsFeature &feature )
   bool gotFeature = false;
   if ( mMode == FileScan )
   {
-    gotFeature =  nextFeatureInternal( feature );
+    gotFeature = nextFeatureInternal( feature );
   }
   else
   {
@@ -360,7 +360,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature &feature )
     if ( ! mTestSubset && ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) )
     {
       QgsAttributeList attrs = mRequest.subsetOfAttributes();
-      for ( QgsAttributeList::const_iterator i = attrs.begin(); i != attrs.end(); ++i )
+      for ( QgsAttributeList::const_iterator i = attrs.constBegin(); i != attrs.constEnd(); ++i )
       {
         int fieldIdx = *i;
         fetchAttribute( feature, fieldIdx, tokens );

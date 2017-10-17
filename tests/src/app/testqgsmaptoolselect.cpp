@@ -33,7 +33,6 @@ class TestQgsMapToolSelect : public QObject
     Q_OBJECT
   public:
     TestQgsMapToolSelect()
-      : canvas( 0 )
     {}
 
   private slots:

@@ -155,7 +155,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void on_ckbDeprecated_toggled( bool state );
 
     //! Open help browser
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "plugins/plugins.html#the-plugins-dialog" ) ); }
+    void showHelp();
 
     //! Reimplement QgsOptionsDialogBase method to prevent modifying the tab list by signals from the stacked widget
     void optionsStackedWidget_CurrentChanged( int indx ) { Q_UNUSED( indx ) }

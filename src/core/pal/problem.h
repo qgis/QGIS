@@ -190,7 +190,7 @@ namespace pal
       /**
        * How many layers are labelled ?
        */
-      int nbLabelledLayers;
+      int nbLabelledLayers = 0;
 
       /**
        * Names of the labelled layers
@@ -200,23 +200,23 @@ namespace pal
       /**
        * # active candidates (remaining after reduce())
        */
-      int nblp;
+      int nblp = 0;
 
       /**
        * # candidates (all, including)
        */
-      int all_nblp;
+      int all_nblp = 0;
 
       /**
        * # feature to label
        */
-      int nbft;
+      int nbft = 0;
 
 
       /**
        * if true, special value -1 is prohibited
        */
-      bool displayAll;
+      bool displayAll = false;
 
       /**
        * Map extent (xmin, ymin, xmax, ymax)
@@ -228,19 +228,19 @@ namespace pal
 
       QList< LabelPosition * > mLabelPositions;
 
-      RTree<LabelPosition *, double, 2, double> *candidates; // index all candidates
-      RTree<LabelPosition *, double, 2, double> *candidates_sol; // index active candidates
-      RTree<LabelPosition *, double, 2, double> *candidates_subsol; // idem for subparts
+      RTree<LabelPosition *, double, 2, double> *candidates = nullptr; // index all candidates
+      RTree<LabelPosition *, double, 2, double> *candidates_sol = nullptr; // index active candidates
+      RTree<LabelPosition *, double, 2, double> *candidates_subsol = nullptr; // idem for subparts
 
       //int *feat;        // [nblp]
-      int *featStartId; // [nbft]
-      int *featNbLp;    // [nbft]
-      double *inactiveCost; //
+      int *featStartId = nullptr; // [nbft]
+      int *featNbLp = nullptr;    // [nbft]
+      double *inactiveCost = nullptr; //
 
-      Sol *sol;         // [nbft]
-      int nbActive;
+      Sol *sol = nullptr;         // [nbft]
+      int nbActive = 0;
 
-      double nbOverlap;
+      double nbOverlap = 0.0;
 
       int *featWrap = nullptr;
 

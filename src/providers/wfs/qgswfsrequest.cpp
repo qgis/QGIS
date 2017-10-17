@@ -27,7 +27,6 @@
 
 QgsWfsRequest::QgsWfsRequest( const QString &uri )
   : mUri( uri )
-  , mReply( nullptr )
   , mErrorCode( QgsWfsRequest::NoError )
   , mIsAborted( false )
   , mForceRefresh( false )

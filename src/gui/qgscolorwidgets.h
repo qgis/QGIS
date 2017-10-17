@@ -132,7 +132,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     /** QColor wipes the hue information when it is ambiguous (e.g., for saturation = 0). So
      * the hue is stored in mExplicit hue to keep it around, as it is useful when modifying colors
      */
-    int mExplicitHue;
+    int mExplicitHue = 0;
 
     /** Returns the range of valid values for the color widget's component
      * \returns maximum value allowed for color component, or -1 if widget has multiple components
@@ -295,13 +295,13 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
     };
 
     /*Margin between outer ring and edge of widget*/
-    int mMargin;
+    int mMargin = 4;
 
     /*Thickness of hue ring in pixels*/
-    int mWheelThickness;
+    int mWheelThickness = 18;
 
     /*Part of the wheel where the mouse was originally depressed*/
-    ControlPart mClickedPart;
+    ControlPart mClickedPart = QgsColorWheel::None;
 
     /*Cached image of hue wheel*/
     QImage *mWheelImage = nullptr;
@@ -313,10 +313,10 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
     QImage *mWidgetImage = nullptr;
 
     /*Whether the color wheel image requires redrawing*/
-    bool mWheelDirty;
+    bool mWheelDirty = true;
 
     /*Whether the inner triangle image requires redrawing*/
-    bool mTriangleDirty;
+    bool mTriangleDirty = true;
 
     /*Conical gradient brush used for drawing hue wheel*/
     QBrush mWheelBrush;
@@ -381,13 +381,13 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
   private:
 
     /*Margin between outer ring and edge of widget*/
-    int mMargin;
+    int mMargin = 2;
 
     /*Cached image for color box*/
     QImage *mBoxImage = nullptr;
 
     /*Whether the cached image requires redrawing*/
-    bool mDirty;
+    bool mDirty = true;
 
     /** Creates the color box background cached image
      */
@@ -521,10 +521,10 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
     Orientation mOrientation;
 
     /*Margin around ramp*/
-    int mMargin;
+    int mMargin = 4;
 
     /*Whether to draw a frame around the ramp*/
-    bool mShowFrame;
+    bool mShowFrame = false;
 
     /*Polygon for upper triangle marker*/
     QPolygonF mTopTriangle;
@@ -643,7 +643,7 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
     QToolButton *mMenuButton = nullptr;
 
     /*Display format for colors*/
-    ColorTextFormat mFormat;
+    ColorTextFormat mFormat = QgsColorTextWidget::HexRgb;
 
     /** Updates the text based on the current color
      */

@@ -17,7 +17,7 @@ import shutil
 import sys
 import tempfile
 
-from qgis.core import QgsVectorLayer, QgsVectorDataProvider, QgsWkbTypes
+from qgis.core import QgsVectorLayer, QgsVectorDataProvider, QgsWkbTypes, QgsFeature
 from qgis.testing import (
     start_app,
     unittest
@@ -112,7 +112,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.dataProvider().subLayers()), 1)
-        self.assertEqual(vl.dataProvider().subLayers()[0], '0:testMixOfPolygonCurvePolygon:4:CurvePolygon')
+        self.assertEqual(vl.dataProvider().subLayers()[0], '0:testMixOfPolygonCurvePolygon:4:CurvePolygon:')
 
     def testMixOfLineStringCompoundCurve(self):
 
@@ -128,7 +128,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.dataProvider().subLayers()), 1)
-        self.assertEqual(vl.dataProvider().subLayers()[0], '0:testMixOfLineStringCompoundCurve:5:CompoundCurve')
+        self.assertEqual(vl.dataProvider().subLayers()[0], '0:testMixOfLineStringCompoundCurve:5:CompoundCurve:')
 
     def testGpxElevation(self):
         # GPX without elevation data
@@ -237,6 +237,23 @@ class PyQgsOGRProvider(unittest.TestCase):
 
         os.unlink(datasource)
         self.assertFalse(os.path.exists(datasource))
+
+    def testGdb(self):
+        """ Test opening a GDB database layer"""
+        gdb_path = os.path.join(unitTestDataPath(), 'test_gdb.gdb')
+        for i in range(3):
+            l = QgsVectorLayer(gdb_path + '|layerid=' + str(i), 'test', 'ogr')
+            self.assertTrue(l.isValid())
+
+    def testGdbFilter(self):
+        """ Test opening a GDB database layer with filter"""
+        gdb_path = os.path.join(unitTestDataPath(), 'test_gdb.gdb')
+        l = QgsVectorLayer(gdb_path + '|layerid=1|subset="text" = \'shape 2\'', 'test', 'ogr')
+        self.assertTrue(l.isValid())
+        it = l.getFeatures()
+        f = QgsFeature()
+        while it.nextFeature(f):
+            self.assertTrue(f.attribute("text") == "shape 2")
 
 
 if __name__ == '__main__':

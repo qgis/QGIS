@@ -79,14 +79,13 @@ class QgsPgSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbS
 
   signals:
     void addGeometryColumn( const QgsPostgresLayerProperty & );
-    void progress( int, int );
     void progressMessage( const QString & );
 
   public slots:
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
     //! Determines the tables the user selected and closes the dialog
-    void addTables();
+    void addButtonClicked() override;
     void buildQuery();
 
     /** Connects to the database using the stored connection parameters.
@@ -118,8 +117,6 @@ class QgsPgSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbS
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#postgis-layers" ) ); }
-
     void columnThreadFinished();
 
   private:
@@ -141,7 +138,7 @@ class QgsPgSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbS
     QgsGeomColumnTypeThread *mColumnTypeThread = nullptr;
     QgsDataSourceUri mDataSrcUri;
     QStringList mSelectedTables;
-    bool mUseEstimatedMetadata;
+    bool mUseEstimatedMetadata = false;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
 
@@ -150,9 +147,10 @@ class QgsPgSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbS
     QgsDatabaseFilterProxyModel mProxyModel;
 
     QPushButton *mBuildQueryButton = nullptr;
-    QPushButton *mAddButton = nullptr;
 
     void finishList();
+
+    void showHelp();
 };
 
 #endif // QGSPGSOURCESELECT_H

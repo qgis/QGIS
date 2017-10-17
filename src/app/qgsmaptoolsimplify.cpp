@@ -66,7 +66,6 @@ void QgsSimplifyDialog::closeEvent( QCloseEvent *e )
 
 QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mSelectionRubberBand( nullptr )
   , mDragging( false )
   , mOriginalVertexCount( 0 )
   , mReducedVertexCount( 0 )

@@ -85,7 +85,7 @@ class AlgorithmDialogFeedback(QgsProcessingFeedback):
 class AlgorithmDialogBase(BASE, WIDGET):
 
     def __init__(self, alg):
-        super(AlgorithmDialogBase, self).__init__(iface.mainWindow())
+        super(AlgorithmDialogBase, self).__init__(iface.mainWindow() if iface else None)
         self.setupUi(self)
 
         # don't collapse parameters panel
@@ -238,7 +238,7 @@ class AlgorithmDialogBase(BASE, WIDGET):
         self._saveGeometry()
         super(AlgorithmDialogBase, self).reject()
 
-    def finish(self, context, feedback):
+    def finish(self, successful, result, context, feedback):
         pass
 
     def toggleCollapsed(self):

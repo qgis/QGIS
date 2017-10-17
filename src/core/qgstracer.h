@@ -70,7 +70,7 @@ class CORE_EXPORT QgsTracer : public QObject
     bool init();
 
     //! Whether the internal data structures have been initialized
-    bool isInitialized() const { return mGraph != nullptr; }
+    bool isInitialized() const { return static_cast< bool >( mGraph ); }
 
     //! Whether there was an error during graph creation due to noding exception,
     //! indicating some input data topology problems
@@ -125,10 +125,10 @@ class CORE_EXPORT QgsTracer : public QObject
     QgsRectangle mExtent;
     //! Limit of how many features can be in the graph (0 means no limit).
     //! This is to avoid possibly long graph preparation for complicated layers
-    int mMaxFeatureCount;
+    int mMaxFeatureCount = 0;
     //! A flag indicating that there was an error during graph creation
     //! due to noding exception, indicating some input data topology problems
-    bool mHasTopologyProblem;
+    bool mHasTopologyProblem = false;
 };
 
 

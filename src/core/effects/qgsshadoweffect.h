@@ -168,14 +168,14 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
      */
     virtual bool exteriorShadow() const = 0;
 
-    int mBlurLevel;
-    int mOffsetAngle;
-    double mOffsetDist;
-    QgsUnitTypes::RenderUnit mOffsetUnit;
+    int mBlurLevel = 10;
+    int mOffsetAngle = 135;
+    double mOffsetDist = 2.0;
+    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
     double mOpacity = 1.0;
     QColor mColor;
-    QPainter::CompositionMode mBlendMode;
+    QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_Multiply;
 
 };
 

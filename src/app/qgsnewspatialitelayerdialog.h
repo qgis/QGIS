@@ -49,7 +49,6 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     void selectionChanged();
     void checkOk();
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/editing_geometry_attributes.html#vector-create-spatialite" ) ); }
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
 
@@ -61,6 +60,8 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     bool createDb();
 
     bool apply();
+
+    void showHelp();
 
     static QString quotedIdentifier( QString id );
     static QString quotedValue( QString value );

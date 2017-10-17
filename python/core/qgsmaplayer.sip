@@ -90,8 +90,7 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
 
     void setName( const QString &name );
 %Docstring
- Set the display name of the layer
- \param name new name for the layer
+ Set the display ``name`` of the layer.
 .. versionadded:: 2.16
 .. seealso:: name()
 %End
@@ -114,7 +113,6 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
     QString originalName() const;
 %Docstring
  Returns the original name of the layer.
- :return: the original layer name
  :rtype: str
 %End
 
@@ -130,7 +128,6 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
 %Docstring
  Returns the short name of the layer
   used by QGIS Server to identify the layer.
- :return: the layer short name
 .. seealso:: setShortName()
  :rtype: str
 %End
@@ -139,7 +136,6 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
 %Docstring
  Sets the title of the layer
   used by QGIS Server in GetCapabilities request.
- :return: the layer title
 .. seealso:: title()
 %End
 
@@ -957,6 +953,39 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
  :rtype: bool
 %End
 
+    void setRefreshOnNotifyEnabled( bool enabled );
+%Docstring
+ Set whether provider notification is connected to triggerRepaint
+
+.. versionadded:: 3.0
+%End
+
+    void setRefreshOnNofifyMessage( const QString &message );
+%Docstring
+ Set the notification message that triggers repaine
+ If refresh on notification is enabled, the notification will triggerRepaint only
+ if the notification message is equal to \param message
+
+.. versionadded:: 3.0
+%End
+
+    QString refreshOnNotifyMessage() const;
+%Docstring
+ Returns the message that should be notified by the provider to triggerRepaint
+
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    bool isRefreshOnNotifyEnabled() const;
+%Docstring
+ Returns true if the refresh on provider nofification is enabled
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+
   signals:
 
     void statusChanged( const QString &status );
@@ -1137,6 +1166,7 @@ Set error message
 Checks whether a new set of dependencies will introduce a cycle
  :rtype: bool
 %End
+
 
 };
 

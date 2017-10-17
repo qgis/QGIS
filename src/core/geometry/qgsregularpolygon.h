@@ -60,7 +60,7 @@ class CORE_EXPORT QgsRegularPolygon
      * \param numberSides Number of sides of the regular polygon.
      * \param circle Option to create the polygon. \see ConstructionOption
      */
-    QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const int numberSides, const ConstructionOption circle );
+    QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const unsigned int numberSides, const ConstructionOption circle );
 
     /** Constructs a regular polygon by \a center and another point.
      * \param center The center of the regular polygon.
@@ -68,14 +68,14 @@ class CORE_EXPORT QgsRegularPolygon
      * \param numberSides Number of sides of the regular polygon.
      * \param circle Option to create the polygon inscribed in circle (the radius is the distance between the center and vertices) or circumscribed about circle (the radius is the distance from the center to the midpoints of the sides).
      */
-    QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt1, const int  numberSides, const ConstructionOption circle );
+    QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt1, const unsigned int numberSides, const ConstructionOption circle );
 
     /** Constructs a regular polygon by two points of the first side.
      * \param pt1 The first vertex of the first side, also first vertex of the regular polygon.
      * \param pt2 The second vertex of the first side.
      * \param numberSides Number of sides of the regular polygon.
      */
-    QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, const int  numberSides );
+    QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, const unsigned int numberSides );
 
     bool operator ==( const QgsRegularPolygon &rp ) const;
     bool operator !=( const QgsRegularPolygon &rp ) const;
@@ -104,12 +104,12 @@ class CORE_EXPORT QgsRegularPolygon
      * The apothem is the radius of the inscribed circle.
      * \see radius()
      */
-    double apothem() const { return mRadius * cos( M_PI / mNumberSides ); }
+    double apothem() const { return mRadius * std::cos( M_PI / mNumberSides ); }
 
     /** Returns the number of sides of the regular polygon.
      * \see setNumberSides()
      */
-    int numberSides() const { return mNumberSides; }
+    unsigned int numberSides() const { return mNumberSides; }
 
     /** Sets the center point.
      * Radius is unchanged. The first vertex is reprojected from the new center.
@@ -133,7 +133,7 @@ class CORE_EXPORT QgsRegularPolygon
      * If numberSides < 3, the number of sides is unchanged.
      * \see numberSides()
      */
-    void setNumberSides( const int numberSides );
+    void setNumberSides( const unsigned int numberSides );
 
     /** Returns a list including the vertices of the regular polygon.
      */
@@ -197,8 +197,8 @@ class CORE_EXPORT QgsRegularPolygon
   private:
     QgsPoint mCenter;
     QgsPoint mFirstVertex;
-    unsigned int mNumberSides;
-    double mRadius;
+    unsigned int mNumberSides = 0;
+    double mRadius = 0.0;
 
     /** Convenient method to convert an apothem to a radius.
      */

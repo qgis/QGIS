@@ -77,3 +77,13 @@ double QgsLayoutContext::dpi() const
 {
   return mMeasurementConverter.dpi();
 }
+
+bool QgsLayoutContext::gridVisible() const
+{
+  return mGridVisible;
+}
+
+void QgsLayoutContext::setGridVisible( bool visible )
+{
+  mGridVisible = visible;
+}

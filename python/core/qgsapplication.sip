@@ -223,15 +223,16 @@ Returns the path to the licence file.
  :rtype: str
 %End
 
-    static QString helpAppPath();
-%Docstring
-Returns the path to the help application.
- :rtype: str
-%End
-
     static QString i18nPath();
 %Docstring
 Returns the path to the translation directory.
+ :rtype: str
+%End
+
+    static QString metadataPath();
+%Docstring
+ Returns the path to the metadata directory.
+.. versionadded:: 3.0
  :rtype: str
 %End
 
@@ -776,6 +777,7 @@ Returns path to the build output directory. Valid only when running from build d
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

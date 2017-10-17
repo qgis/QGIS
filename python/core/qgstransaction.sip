@@ -110,6 +110,50 @@ class QgsTransaction : QObject /Abstract/
  :rtype: bool
 %End
 
+    QString createSavepoint( QString &error /Out/ );
+%Docstring
+ creates a save point
+ returns empty string on error
+ returns the last created savepoint if it's not dirty
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    QString createSavepoint( const QString &savePointId, QString &error /Out/ );
+%Docstring
+ creates a save point
+ returns empty string on error
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    bool rollbackToSavepoint( const QString &name, QString &error /Out/ );
+%Docstring
+ rollback to save point, the save point is maintained and is "undertied"
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void dirtyLastSavePoint();
+%Docstring
+ dirty save point such that next call to createSavepoint will create a new one
+.. versionadded:: 3.0
+%End
+
+    QList< QString > savePoints() const;
+%Docstring
+ returns savepoints
+.. versionadded:: 3.0
+ :rtype: list of str
+%End
+
+    bool lastSavePointIsDirty() const;
+%Docstring
+ returns the last created savepoint
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
   signals:
 
     void afterRollback();

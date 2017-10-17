@@ -48,8 +48,8 @@ class QgsBabelFormat
   protected:
 
     QString mName;
-    bool mSupportsImport, mSupportsExport;
-    bool mSupportsWaypoints, mSupportsRoutes, mSupportsTracks;
+    bool mSupportsImport = false, mSupportsExport = false;
+    bool mSupportsWaypoints = false, mSupportsRoutes = false, mSupportsTracks = false;
 };
 
 

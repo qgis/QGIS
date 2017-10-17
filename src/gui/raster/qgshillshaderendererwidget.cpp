@@ -120,7 +120,7 @@ void QgsHillshadeRendererWidget::on_mLightAzimuthDail_updated( int value )
 {
   int newvalue = ( int )value + 180;
   if ( newvalue > 360 )
-    newvalue -= 360 ;
+    newvalue -= 360;
   whileBlocking( mLightAzimuth )->setValue( newvalue );
   emit widgetChanged();
 }

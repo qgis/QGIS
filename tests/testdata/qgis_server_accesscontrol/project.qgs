@@ -142,178 +142,7 @@
       </filegroup>
     </legendlayer>
   </legend>
-  <Composer title="layoutA4">
-    <Composition snapTolerancePixels="10" guidesVisible="1" numPages="1" smartGuides="1" gridVisible="0" printAsRaster="0" snapGridOffsetX="0" resizeToContentsMarginTop="0" snapGridOffsetY="0" resizeToContentsMarginRight="0" paperHeight="210" resizeToContentsMarginLeft="0" alignmentSnap="1" printResolution="300" paperWidth="297" showPages="1" worldFileMap="" snapGridResolution="0" generateWorldFile="0" snapping="0" resizeToContentsMarginBottom="0">
-      <symbol alpha="1" name="" type="fill" clip_to_extent="1">
-        <layer class="SimpleFill" enabled="1" locked="0" pass="0">
-          <prop v="0,0,0,0,0,0" k="border_width_map_unit_scale"/>
-          <prop v="255,255,255,255" k="color"/>
-          <prop v="miter" k="joinstyle"/>
-          <prop v="0,0" k="offset"/>
-          <prop v="0,0,0,0,0,0" k="offset_map_unit_scale"/>
-          <prop v="MM" k="offset_unit"/>
-          <prop v="0,0,0,255" k="outline_color"/>
-          <prop v="no" k="outline_style"/>
-          <prop v="0.26" k="outline_width"/>
-          <prop v="MM" k="outline_width_unit"/>
-          <prop v="solid" k="style"/>
-          <data_defined_properties>
-            <Option type="Map">
-              <Option name="name" type="QString" value=""/>
-              <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
-            </Option>
-          </data_defined_properties>
-        </layer>
-      </symbol>
-      <ComposerLabel halign="1" marginY="1" labelText="QGIS" valign="32" htmlState="0" marginX="1">
-        <LabelFont style="" description="DejaVu Sans,10,-1,5,50,0,0,0,0,0"/>
-        <FontColor blue="0" green="0" red="0"/>
-        <ComposerItem transparency="0" height="35.0992" background="false" itemRotation="0" blendMode="0" zValue="4" positionLock="false" frame="false" pagey="157.547" lastValidViewScaleFactor="-1" excludeFromExports="0" positionMode="0" x="21.5381" uuid="{df61fc2f-86dc-402e-a37a-bc577e6349cd}" pagex="21.5381" width="120.853" y="157.547" frameJoinStyle="miter" outlineWidth="0.3" id="idtextbox" visibility="1" page="1">
-          <FrameColor alpha="255" blue="0" green="0" red="0"/>
-          <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
-          <dataDefinedProperties>
-            <Option type="Map">
-              <Option name="name" type="QString" value=""/>
-              <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
-            </Option>
-          </dataDefinedProperties>
-          <customproperties/>
-        </ComposerItem>
-      </ComposerLabel>
-      <ComposerMap id="0" mapRotation="0" followPreset="false" previewMode="Cache" keepLayerSet="false" followPresetName="" drawCanvasItems="true">
-        <Extent ymin="-13032965.18542143888771534" xmin="-33626185.49808585643768311" ymax="16020257.03109830431640148" xmax="33978427.73650816082954407"/>
-        <LayerSet>
-          <Layer>points20150803121107046</Layer>
-          <Layer>hello20131022151106574</Layer>
-          <Layer>Hello_copy20150804164427541</Layer>
-          <Layer>Hello_SubsetString_copy20160222085231770</Layer>
-          <Layer>Hello_Project_SubsetString_copy20160223113949592</Layer>
-          <Layer>dem20150730091219559</Layer>
-          <Layer>country20131022151106556</Layer>
-          <Layer>Country_copy20161127151800736</Layer>
-          <Layer>country20170328164317226</Layer>
-        </LayerSet>
-        <Grid/>
-        <ComposerMapGrid bottomAnnotationDisplay="0" leftAnnotationDisplay="0" blendMode="0" annotationFontColor="0,0,0,255" frameAnnotationDistance="1" annotationPrecision="3" gridFrameWidth="2" annotationExpression="" intervalX="0" bottomFrameDivisions="0" crossLength="3" leftAnnotationPosition="1" rightFrameDivisions="0" bottomAnnotationPosition="1" rightAnnotationPosition="1" bottomAnnotationDirection="0" rightAnnotationDirection="0" topFrameDivisions="0" gridFramePenThickness="0.5" intervalY="0" uuid="{2097ba82-73aa-4cf8-911e-b3472427ff3f}" gridFrameStyle="0" gridFrameSideFlags="15" topAnnotationPosition="1" offsetY="0" offsetX="0" frameFillColor1="255,255,255,255" unit="0" topAnnotationDisplay="0" leftAnnotationDirection="0" frameFillColor2="0,0,0,255" show="1" name="Grid 1" gridFramePenColor="0,0,0,255" topAnnotationDirection="0" annotationFormat="0" leftFrameDivisions="0" rightAnnotationDisplay="0" showAnnotation="0" gridStyle="0">
-          <lineStyle>
-            <symbol alpha="1" name="" type="line" clip_to_extent="1">
-              <layer class="SimpleLine" enabled="1" locked="0" pass="0">
-                <prop v="square" k="capstyle"/>
-                <prop v="5;2" k="customdash"/>
-                <prop v="0,0,0,0,0,0" k="customdash_map_unit_scale"/>
-                <prop v="MM" k="customdash_unit"/>
-                <prop v="0" k="draw_inside_polygon"/>
-                <prop v="bevel" k="joinstyle"/>
-                <prop v="0,0,0,255" k="line_color"/>
-                <prop v="solid" k="line_style"/>
-                <prop v="0" k="line_width"/>
-                <prop v="MM" k="line_width_unit"/>
-                <prop v="0" k="offset"/>
-                <prop v="0,0,0,0,0,0" k="offset_map_unit_scale"/>
-                <prop v="MM" k="offset_unit"/>
-                <prop v="0" k="use_custom_dash"/>
-                <prop v="0,0,0,0,0,0" k="width_map_unit_scale"/>
-                <data_defined_properties>
-                  <Option type="Map">
-                    <Option name="name" type="QString" value=""/>
-                    <Option name="properties"/>
-                    <Option name="type" type="QString" value="collection"/>
-                  </Option>
-                </data_defined_properties>
-              </layer>
-            </symbol>
-          </lineStyle>
-          <markerStyle>
-            <symbol alpha="1" name="" type="marker" clip_to_extent="1">
-              <layer class="SimpleMarker" enabled="1" locked="0" pass="0">
-                <prop v="0" k="angle"/>
-                <prop v="0,0,0,255" k="color"/>
-                <prop v="1" k="horizontal_anchor_point"/>
-                <prop v="bevel" k="joinstyle"/>
-                <prop v="circle" k="name"/>
-                <prop v="0,0" k="offset"/>
-                <prop v="0,0,0,0,0,0" k="offset_map_unit_scale"/>
-                <prop v="MM" k="offset_unit"/>
-                <prop v="0,0,0,255" k="outline_color"/>
-                <prop v="solid" k="outline_style"/>
-                <prop v="0" k="outline_width"/>
-                <prop v="0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
-                <prop v="MM" k="outline_width_unit"/>
-                <prop v="area" k="scale_method"/>
-                <prop v="2" k="size"/>
-                <prop v="0,0,0,0,0,0" k="size_map_unit_scale"/>
-                <prop v="MM" k="size_unit"/>
-                <prop v="1" k="vertical_anchor_point"/>
-                <data_defined_properties>
-                  <Option type="Map">
-                    <Option name="name" type="QString" value=""/>
-                    <Option name="properties"/>
-                    <Option name="type" type="QString" value="collection"/>
-                  </Option>
-                </data_defined_properties>
-              </layer>
-            </symbol>
-          </markerStyle>
-          <annotationFontProperties style="" description=",11,-1,5,50,0,0,0,0,0"/>
-        </ComposerMapGrid>
-        <AtlasMap margin="0.10000000000000001" atlasDriven="0" scalingMode="2"/>
-        <ComposerItem transparency="0" height="104" background="true" itemRotation="0" blendMode="0" zValue="3" positionLock="false" frame="false" pagey="46" lastValidViewScaleFactor="1.92319" excludeFromExports="0" positionMode="0" x="21.3911" uuid="{e2138dff-8012-45c7-9a52-a543ca96ac60}" pagex="21.3911" width="242" y="46" frameJoinStyle="miter" outlineWidth="0.3" id="" visibility="1" page="1">
-          <FrameColor alpha="255" blue="0" green="0" red="0"/>
-          <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
-          <dataDefinedProperties>
-            <Option type="Map">
-              <Option name="name" type="QString" value=""/>
-              <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
-            </Option>
-          </dataDefinedProperties>
-          <customproperties/>
-        </ComposerItem>
-      </ComposerMap>
-      <ComposerLabel halign="1" marginY="1" labelText="Welcome to our world...." valign="32" htmlState="0" marginX="1">
-        <LabelFont style="" description="DejaVu Sans,12,-1,5,75,0,0,0,0,0"/>
-        <FontColor blue="0" green="0" red="0"/>
-        <ComposerItem transparency="0" height="11.0626" background="false" itemRotation="0" blendMode="0" zValue="2" positionLock="false" frame="false" pagey="161.791" lastValidViewScaleFactor="2.89262" excludeFromExports="0" positionMode="0" x="213.302" uuid="{b3f8da1e-352d-4ea6-b8c1-c2464bfdd050}" pagex="213.302" width="64.3016" y="161.791" frameJoinStyle="miter" outlineWidth="0.3" id="" visibility="1" page="1">
-          <FrameColor alpha="255" blue="0" green="0" red="0"/>
-          <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
-          <dataDefinedProperties>
-            <Option type="Map">
-              <Option name="name" type="QString" value=""/>
-              <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
-            </Option>
-          </dataDefinedProperties>
-          <customproperties/>
-        </ComposerItem>
-      </ComposerLabel>
-      <ComposerLabel halign="1" marginY="1" labelText="QGIS Mapserver" valign="32" htmlState="0" marginX="1">
-        <LabelFont style="" description="DejaVu Sans,48,-1,5,75,0,0,0,0,0"/>
-        <FontColor blue="0" green="0" red="0"/>
-        <ComposerItem transparency="0" height="28.0023" background="false" itemRotation="0" blendMode="0" zValue="1" positionLock="false" frame="false" pagey="9.33411" lastValidViewScaleFactor="2.89262" excludeFromExports="0" positionMode="0" x="49.9838" uuid="{4f60a368-b33d-4bd1-950a-76a48f3c8695}" pagex="49.9838" width="215.03" y="9.33411" frameJoinStyle="miter" outlineWidth="0.3" id="" visibility="1" page="1">
-          <FrameColor alpha="255" blue="0" green="0" red="0"/>
-          <BackgroundColor alpha="255" blue="255" green="255" red="255"/>
-          <dataDefinedProperties>
-            <Option type="Map">
-              <Option name="name" type="QString" value=""/>
-              <Option name="properties"/>
-              <Option name="type" type="QString" value="collection"/>
-            </Option>
-          </dataDefinedProperties>
-          <customproperties/>
-        </ComposerItem>
-      </ComposerLabel>
-      <dataDefinedProperties>
-        <Option type="Map">
-          <Option name="name" type="QString" value=""/>
-          <Option name="properties"/>
-          <Option name="type" type="QString" value="collection"/>
-        </Option>
-      </dataDefinedProperties>
-      <customproperties/>
-    </Composition>
-  </Composer>
+  <mapViewDocks/>
   <projectlayers>
     <maplayer autoRefreshEnabled="0" simplifyMaxScale="1" readOnly="0" simplifyAlgorithm="0" simplifyLocal="1" type="vector" hasScaleBasedVisibilityFlag="0" maximumScale="1e+8" autoRefreshTime="0" simplifyDrawingHints="1" simplifyDrawingTol="1" minimumScale="0" geometry="Polygon">
       <extent>
@@ -4195,4 +4024,381 @@ def my_form_open(dialog, layer, feature):
   </properties>
   <visibility-presets/>
   <Annotations/>
+  <Layouts>
+    <Composer>
+      <Composition resizeToContentsMarginLeft="0" resizeToContentsMarginRight="0" generateWorldFile="0" numPages="1" paperHeight="210" resizeToContentsMarginTop="0" snapTolerancePixels="10" gridVisible="0" guidesVisible="1" smartGuides="1" paperWidth="297" name="layoutA4" printAsRaster="0" snapGridOffsetY="0" snapGridResolution="0" alignmentSnap="1" snapping="0" snapGridOffsetX="0" showPages="1" printResolution="300" resizeToContentsMarginBottom="0" worldFileMap="">
+        <symbol alpha="1" type="fill" clip_to_extent="1" name="">
+          <layer pass="0" locked="0" enabled="1" class="SimpleFill">
+            <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
+            <prop v="255,255,255,255" k="color"/>
+            <prop v="miter" k="joinstyle"/>
+            <prop v="0,0" k="offset"/>
+            <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+            <prop v="MM" k="offset_unit"/>
+            <prop v="0,0,0,255" k="outline_color"/>
+            <prop v="no" k="outline_style"/>
+            <prop v="0.26" k="outline_width"/>
+            <prop v="MM" k="outline_width_unit"/>
+            <prop v="solid" k="style"/>
+            <data_defined_properties>
+              <Option type="Map">
+                <Option value="" type="QString" name="name"/>
+                <Option name="properties"/>
+                <Option value="collection" type="QString" name="type"/>
+              </Option>
+            </data_defined_properties>
+          </layer>
+        </symbol>
+        <ComposerLabel labelText="QGIS" marginY="1" halign="1" htmlState="0" marginX="1" valign="32">
+          <LabelFont description="DejaVu Sans,10,-1,5,50,0,0,0,0,0" style=""/>
+          <FontColor green="0" blue="0" red="0"/>
+          <ComposerItem x="21.5381" pagey="157.547" excludeFromExports="0" uuid="{df61fc2f-86dc-402e-a37a-bc577e6349cd}" pagex="21.5381" positionLock="false" lastValidViewScaleFactor="-1" frameJoinStyle="miter" opacity="1" y="157.547" width="120.853" itemRotation="0" background="false" height="35.0992" outlineWidth="0.3" frame="false" positionMode="0" zValue="4" id="idtextbox" visibility="1" blendMode="0" page="1">
+            <FrameColor alpha="255" green="0" blue="0" red="0"/>
+            <BackgroundColor alpha="255" green="255" blue="255" red="255"/>
+            <dataDefinedProperties>
+              <Option type="Map">
+                <Option value="" type="QString" name="name"/>
+                <Option name="properties"/>
+                <Option value="collection" type="QString" name="type"/>
+              </Option>
+            </dataDefinedProperties>
+            <customproperties/>
+          </ComposerItem>
+        </ComposerLabel>
+        <ComposerMap followPresetName="" keepLayerSet="false" followPreset="false" id="0" drawCanvasItems="true" mapRotation="0">
+          <Extent xmin="-33626185.49808585643768311" xmax="33978427.73650816082954407" ymax="16020257.03109830431640148" ymin="-13032965.18542143888771534"/>
+          <LayerSet>
+            <Layer provider="spatialite" source="dbname='/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/helloworld.db' table=&quot;points&quot; (geom) sql=" name="db_point">points20150803121107046</Layer>
+            <Layer provider="spatialite" source="dbname='/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/helloworld.db' table=&quot;hello&quot; (geom) sql=" name="Hello">hello20131022151106574</Layer>
+            <Layer provider="spatialite" source="dbname='/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/helloworld.db' table=&quot;hello&quot; (geom) sql=" name="Hello_SubsetString">Hello_copy20150804164427541</Layer>
+            <Layer provider="spatialite" source="dbname='/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/helloworld.db' table=&quot;hello&quot; (geom) sql=&quot;pkuid&quot; in ( 7, 8 )" name="Hello_Project_SubsetString">Hello_SubsetString_copy20160222085231770</Layer>
+            <Layer provider="spatialite" source="dbname='/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/helloworld.db' table=&quot;hello&quot; (geom) sql=" name="Hello_Filter_SubsetString">Hello_Project_SubsetString_copy20160223113949592</Layer>
+            <Layer provider="gdal" source="/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/dem.tif" name="dem">dem20150730091219559</Layer>
+            <Layer provider="spatialite" source="dbname='/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/helloworld.db' table=&quot;country&quot; (geom) sql=" name="Country">country20131022151106556</Layer>
+            <Layer provider="spatialite" source="dbname='/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/helloworld.db' table=&quot;country&quot; (geom) sql=" name="Country_Labels">Country_copy20161127151800736</Layer>
+            <Layer provider="spatialite" source="dbname='/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/helloworld.db' table=&quot;country&quot; (geom) sql=" name="Country_Diagrams">country20170328164317226</Layer>
+          </LayerSet>
+          <Grid/>
+          <ComposerMapGrid gridFrameSideFlags="15" gridFramePenThickness="0.5" crossLength="3" gridFrameStyle="0" blendMode="0" leftAnnotationPosition="1" name="Grid 1" rightAnnotationDisplay="0" gridStyle="0" topAnnotationDisplay="0" gridFramePenColor="0,0,0,255" intervalY="0" intervalX="0" leftAnnotationDirection="0" show="1" rightAnnotationDirection="0" topAnnotationPosition="1" annotationFontColor="0,0,0,255" rightAnnotationPosition="1" annotationFormat="0" showAnnotation="0" offsetY="0" frameAnnotationDistance="1" bottomAnnotationDirection="0" frameFillColor1="255,255,255,255" frameFillColor2="0,0,0,255" annotationPrecision="3" unit="0" leftFrameDivisions="0" bottomFrameDivisions="0" bottomAnnotationDisplay="0" topAnnotationDirection="0" annotationExpression="" topFrameDivisions="0" bottomAnnotationPosition="1" gridFrameWidth="2" uuid="{2097ba82-73aa-4cf8-911e-b3472427ff3f}" rightFrameDivisions="0" offsetX="0" leftAnnotationDisplay="0">
+            <lineStyle>
+              <symbol alpha="1" type="line" clip_to_extent="1" name="">
+                <layer pass="0" locked="0" enabled="1" class="SimpleLine">
+                  <prop v="square" k="capstyle"/>
+                  <prop v="5;2" k="customdash"/>
+                  <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
+                  <prop v="MM" k="customdash_unit"/>
+                  <prop v="0" k="draw_inside_polygon"/>
+                  <prop v="bevel" k="joinstyle"/>
+                  <prop v="0,0,0,255" k="line_color"/>
+                  <prop v="solid" k="line_style"/>
+                  <prop v="0" k="line_width"/>
+                  <prop v="MM" k="line_width_unit"/>
+                  <prop v="0" k="offset"/>
+                  <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+                  <prop v="MM" k="offset_unit"/>
+                  <prop v="0" k="use_custom_dash"/>
+                  <prop v="3x:0,0,0,0,0,0" k="width_map_unit_scale"/>
+                  <data_defined_properties>
+                    <Option type="Map">
+                      <Option value="" type="QString" name="name"/>
+                      <Option name="properties"/>
+                      <Option value="collection" type="QString" name="type"/>
+                    </Option>
+                  </data_defined_properties>
+                </layer>
+              </symbol>
+            </lineStyle>
+            <markerStyle>
+              <symbol alpha="1" type="marker" clip_to_extent="1" name="">
+                <layer pass="0" locked="0" enabled="1" class="SimpleMarker">
+                  <prop v="0" k="angle"/>
+                  <prop v="0,0,0,255" k="color"/>
+                  <prop v="1" k="horizontal_anchor_point"/>
+                  <prop v="bevel" k="joinstyle"/>
+                  <prop v="circle" k="name"/>
+                  <prop v="0,0" k="offset"/>
+                  <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+                  <prop v="MM" k="offset_unit"/>
+                  <prop v="0,0,0,255" k="outline_color"/>
+                  <prop v="solid" k="outline_style"/>
+                  <prop v="0" k="outline_width"/>
+                  <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+                  <prop v="MM" k="outline_width_unit"/>
+                  <prop v="area" k="scale_method"/>
+                  <prop v="2" k="size"/>
+                  <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+                  <prop v="MM" k="size_unit"/>
+                  <prop v="1" k="vertical_anchor_point"/>
+                  <data_defined_properties>
+                    <Option type="Map">
+                      <Option value="" type="QString" name="name"/>
+                      <Option name="properties"/>
+                      <Option value="collection" type="QString" name="type"/>
+                    </Option>
+                  </data_defined_properties>
+                </layer>
+              </symbol>
+            </markerStyle>
+            <annotationFontProperties description=",11,-1,5,50,0,0,0,0,0" style=""/>
+          </ComposerMapGrid>
+          <AtlasMap margin="0.10000000000000001" atlasDriven="0" scalingMode="2"/>
+          <ComposerItem x="21.3911" pagey="46" excludeFromExports="0" uuid="{e2138dff-8012-45c7-9a52-a543ca96ac60}" pagex="21.3911" positionLock="false" lastValidViewScaleFactor="1.92319" frameJoinStyle="miter" opacity="1" y="46" width="242" itemRotation="0" background="true" height="104" outlineWidth="0.3" frame="false" positionMode="0" zValue="3" id="" visibility="1" blendMode="0" page="1">
+            <FrameColor alpha="255" green="0" blue="0" red="0"/>
+            <BackgroundColor alpha="255" green="255" blue="255" red="255"/>
+            <dataDefinedProperties>
+              <Option type="Map">
+                <Option value="" type="QString" name="name"/>
+                <Option name="properties"/>
+                <Option value="collection" type="QString" name="type"/>
+              </Option>
+            </dataDefinedProperties>
+            <customproperties/>
+          </ComposerItem>
+        </ComposerMap>
+        <ComposerLabel labelText="Welcome to our world...." marginY="1" halign="1" htmlState="0" marginX="1" valign="32">
+          <LabelFont description="DejaVu Sans,12,-1,5,75,0,0,0,0,0" style=""/>
+          <FontColor green="0" blue="0" red="0"/>
+          <ComposerItem x="213.302" pagey="161.791" excludeFromExports="0" uuid="{b3f8da1e-352d-4ea6-b8c1-c2464bfdd050}" pagex="213.302" positionLock="false" lastValidViewScaleFactor="2.89262" frameJoinStyle="miter" opacity="1" y="161.791" width="64.3016" itemRotation="0" background="false" height="11.0626" outlineWidth="0.3" frame="false" positionMode="0" zValue="2" id="" visibility="1" blendMode="0" page="1">
+            <FrameColor alpha="255" green="0" blue="0" red="0"/>
+            <BackgroundColor alpha="255" green="255" blue="255" red="255"/>
+            <dataDefinedProperties>
+              <Option type="Map">
+                <Option value="" type="QString" name="name"/>
+                <Option name="properties"/>
+                <Option value="collection" type="QString" name="type"/>
+              </Option>
+            </dataDefinedProperties>
+            <customproperties/>
+          </ComposerItem>
+        </ComposerLabel>
+        <ComposerLabel labelText="QGIS Mapserver" marginY="1" halign="1" htmlState="0" marginX="1" valign="32">
+          <LabelFont description="DejaVu Sans,48,-1,5,75,0,0,0,0,0" style=""/>
+          <FontColor green="0" blue="0" red="0"/>
+          <ComposerItem x="49.9838" pagey="9.33411" excludeFromExports="0" uuid="{4f60a368-b33d-4bd1-950a-76a48f3c8695}" pagex="49.9838" positionLock="false" lastValidViewScaleFactor="2.89262" frameJoinStyle="miter" opacity="1" y="9.33411" width="215.03" itemRotation="0" background="false" height="28.0023" outlineWidth="0.3" frame="false" positionMode="0" zValue="1" id="" visibility="1" blendMode="0" page="1">
+            <FrameColor alpha="255" green="0" blue="0" red="0"/>
+            <BackgroundColor alpha="255" green="255" blue="255" red="255"/>
+            <dataDefinedProperties>
+              <Option type="Map">
+                <Option value="" type="QString" name="name"/>
+                <Option name="properties"/>
+                <Option value="collection" type="QString" name="type"/>
+              </Option>
+            </dataDefinedProperties>
+            <customproperties/>
+          </ComposerItem>
+        </ComposerLabel>
+        <dataDefinedProperties>
+          <Option type="Map">
+            <Option value="" type="QString" name="name"/>
+            <Option name="properties"/>
+            <Option value="collection" type="QString" name="type"/>
+          </Option>
+        </dataDefinedProperties>
+        <customproperties/>
+      </Composition>
+    </Composer>
+    <Composer>
+      <Composition resizeToContentsMarginLeft="0" resizeToContentsMarginRight="0" generateWorldFile="0" numPages="1" paperHeight="210" resizeToContentsMarginTop="0" snapTolerancePixels="10" gridVisible="0" guidesVisible="1" smartGuides="1" paperWidth="297" name="layoutA4copy" printAsRaster="0" snapGridOffsetY="0" snapGridResolution="0" alignmentSnap="1" snapping="0" snapGridOffsetX="0" showPages="1" printResolution="300" resizeToContentsMarginBottom="0" worldFileMap="">
+        <symbol alpha="1" type="fill" clip_to_extent="1" name="">
+          <layer pass="0" locked="0" enabled="1" class="SimpleFill">
+            <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
+            <prop v="255,255,255,255" k="color"/>
+            <prop v="miter" k="joinstyle"/>
+            <prop v="0,0" k="offset"/>
+            <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+            <prop v="MM" k="offset_unit"/>
+            <prop v="0,0,0,255" k="outline_color"/>
+            <prop v="no" k="outline_style"/>
+            <prop v="0.26" k="outline_width"/>
+            <prop v="MM" k="outline_width_unit"/>
+            <prop v="solid" k="style"/>
+            <data_defined_properties>
+              <Option type="Map">
+                <Option value="" type="QString" name="name"/>
+                <Option name="properties"/>
+                <Option value="collection" type="QString" name="type"/>
+              </Option>
+            </data_defined_properties>
+          </layer>
+        </symbol>
+        <ComposerLegend wmsLegendHeight="25" lineSpacing="1" rasterBorder="1" legendFilterByAtlas="0" columnCount="1" boxSpace="2" rasterBorderWidth="0" titleAlignment="1" symbolWidth="7" equalColumnWidth="0" map="0" symbolHeight="4" splitLayer="0" resizeToContents="1" columnSpace="2" fontColor="#000000" title="" wrapChar="" rasterBorderColor="0,0,0,255" wmsLegendWidth="50">
+          <styles>
+            <style name="title" marginBottom="3.5">
+              <styleFont description="Ubuntu,16,-1,5,50,0,0,0,0,0" style=""/>
+            </style>
+            <style name="group" marginTop="3">
+              <styleFont description="Ubuntu,14,-1,5,50,0,0,0,0,0" style=""/>
+            </style>
+            <style name="subgroup" marginTop="3">
+              <styleFont description="Ubuntu,12,-1,5,50,0,0,0,0,0" style=""/>
+            </style>
+            <style name="symbol" marginTop="2.5">
+              <styleFont description="Ubuntu,11,-1,5,50,0,0,0,0,0" style=""/>
+            </style>
+            <style marginLeft="2" name="symbolLabel" marginTop="2">
+              <styleFont description="Ubuntu,12,-1,5,50,0,0,0,0,0" style=""/>
+            </style>
+          </styles>
+          <ComposerItem x="147.933" pagey="150" excludeFromExports="0" uuid="{3d056e83-9087-450b-81e7-b343a652139d}" pagex="147.933" positionLock="false" lastValidViewScaleFactor="-1" frameJoinStyle="miter" opacity="1" y="150" width="65.3688" itemRotation="0" background="true" height="96.2" outlineWidth="0.3" frame="false" positionMode="0" zValue="5" id="" visibility="1" blendMode="0" page="1">
+            <FrameColor alpha="255" green="0" blue="0" red="0"/>
+            <BackgroundColor alpha="255" green="255" blue="255" red="255"/>
+            <dataDefinedProperties>
+              <Option type="Map">
+                <Option value="" type="QString" name="name"/>
+                <Option name="properties"/>
+                <Option value="collection" type="QString" name="type"/>
+              </Option>
+            </dataDefinedProperties>
+            <customproperties/>
+          </ComposerItem>
+        </ComposerLegend>
+        <ComposerLabel labelText="QGIS" marginY="1" halign="1" htmlState="0" marginX="1" valign="32">
+          <LabelFont description="DejaVu Sans,10,-1,5,50,0,0,0,0,0" style=""/>
+          <FontColor green="0" blue="0" red="0"/>
+          <ComposerItem x="21.5381" pagey="157.547" excludeFromExports="0" uuid="{aaaf60fd-943b-463a-b2e5-162b0f7931a5}" pagex="21.5381" positionLock="false" lastValidViewScaleFactor="-1" frameJoinStyle="miter" opacity="1" y="157.547" width="120.853" itemRotation="0" background="false" height="35.0992" outlineWidth="0.3" frame="false" positionMode="0" zValue="4" id="idtextbox" visibility="1" blendMode="0" page="1">
+            <FrameColor alpha="255" green="0" blue="0" red="0"/>
+            <BackgroundColor alpha="255" green="255" blue="255" red="255"/>
+            <dataDefinedProperties>
+              <Option type="Map">
+                <Option value="" type="QString" name="name"/>
+                <Option name="properties"/>
+                <Option value="collection" type="QString" name="type"/>
+              </Option>
+            </dataDefinedProperties>
+            <customproperties/>
+          </ComposerItem>
+        </ComposerLabel>
+        <ComposerMap followPresetName="" keepLayerSet="false" followPreset="false" id="0" drawCanvasItems="true" mapRotation="0">
+          <Extent xmin="-33626185.49808585643768311" xmax="33978427.73650816082954407" ymax="16020257.03109830431640148" ymin="-13032965.18542143888771534"/>
+          <LayerSet>
+            <Layer provider="spatialite" source="dbname='/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/helloworld.db' table=&quot;points&quot; (geom) sql=" name="db_point">points20150803121107046</Layer>
+            <Layer provider="spatialite" source="dbname='/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/helloworld.db' table=&quot;hello&quot; (geom) sql=" name="Hello">hello20131022151106574</Layer>
+            <Layer provider="spatialite" source="dbname='/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/helloworld.db' table=&quot;hello&quot; (geom) sql=" name="Hello_SubsetString">Hello_copy20150804164427541</Layer>
+            <Layer provider="spatialite" source="dbname='/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/helloworld.db' table=&quot;hello&quot; (geom) sql=&quot;pkuid&quot; in ( 7, 8 )" name="Hello_Project_SubsetString">Hello_SubsetString_copy20160222085231770</Layer>
+            <Layer provider="spatialite" source="dbname='/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/helloworld.db' table=&quot;hello&quot; (geom) sql=" name="Hello_Filter_SubsetString">Hello_Project_SubsetString_copy20160223113949592</Layer>
+            <Layer provider="gdal" source="/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/dem.tif" name="dem">dem20150730091219559</Layer>
+            <Layer provider="spatialite" source="dbname='/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/helloworld.db' table=&quot;country&quot; (geom) sql=" name="Country">country20131022151106556</Layer>
+            <Layer provider="spatialite" source="dbname='/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/helloworld.db' table=&quot;country&quot; (geom) sql=" name="Country_Labels">Country_copy20161127151800736</Layer>
+            <Layer provider="spatialite" source="dbname='/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server_accesscontrol/helloworld.db' table=&quot;country&quot; (geom) sql=" name="Country_Diagrams">country20170328164317226</Layer>
+          </LayerSet>
+          <Grid/>
+          <ComposerMapGrid gridFrameSideFlags="15" gridFramePenThickness="0.5" crossLength="3" gridFrameStyle="0" blendMode="0" leftAnnotationPosition="1" name="Grid 1" rightAnnotationDisplay="0" gridStyle="0" topAnnotationDisplay="0" gridFramePenColor="0,0,0,255" intervalY="0" intervalX="0" leftAnnotationDirection="0" show="1" rightAnnotationDirection="0" topAnnotationPosition="1" annotationFontColor="0,0,0,255" rightAnnotationPosition="1" annotationFormat="0" showAnnotation="0" offsetY="0" frameAnnotationDistance="1" bottomAnnotationDirection="0" frameFillColor1="255,255,255,255" frameFillColor2="0,0,0,255" annotationPrecision="3" unit="0" leftFrameDivisions="0" bottomFrameDivisions="0" bottomAnnotationDisplay="0" topAnnotationDirection="0" annotationExpression="" topFrameDivisions="0" bottomAnnotationPosition="1" gridFrameWidth="2" uuid="{2097ba82-73aa-4cf8-911e-b3472427ff3f}" rightFrameDivisions="0" offsetX="0" leftAnnotationDisplay="0">
+            <lineStyle>
+              <symbol alpha="1" type="line" clip_to_extent="1" name="">
+                <layer pass="0" locked="0" enabled="1" class="SimpleLine">
+                  <prop v="square" k="capstyle"/>
+                  <prop v="5;2" k="customdash"/>
+                  <prop v="3x:0,0,0,0,0,0" k="customdash_map_unit_scale"/>
+                  <prop v="MM" k="customdash_unit"/>
+                  <prop v="0" k="draw_inside_polygon"/>
+                  <prop v="bevel" k="joinstyle"/>
+                  <prop v="0,0,0,255" k="line_color"/>
+                  <prop v="solid" k="line_style"/>
+                  <prop v="0" k="line_width"/>
+                  <prop v="MM" k="line_width_unit"/>
+                  <prop v="0" k="offset"/>
+                  <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+                  <prop v="MM" k="offset_unit"/>
+                  <prop v="0" k="use_custom_dash"/>
+                  <prop v="3x:0,0,0,0,0,0" k="width_map_unit_scale"/>
+                  <data_defined_properties>
+                    <Option type="Map">
+                      <Option value="" type="QString" name="name"/>
+                      <Option name="properties"/>
+                      <Option value="collection" type="QString" name="type"/>
+                    </Option>
+                  </data_defined_properties>
+                </layer>
+              </symbol>
+            </lineStyle>
+            <markerStyle>
+              <symbol alpha="1" type="marker" clip_to_extent="1" name="">
+                <layer pass="0" locked="0" enabled="1" class="SimpleMarker">
+                  <prop v="0" k="angle"/>
+                  <prop v="0,0,0,255" k="color"/>
+                  <prop v="1" k="horizontal_anchor_point"/>
+                  <prop v="bevel" k="joinstyle"/>
+                  <prop v="circle" k="name"/>
+                  <prop v="0,0" k="offset"/>
+                  <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+                  <prop v="MM" k="offset_unit"/>
+                  <prop v="0,0,0,255" k="outline_color"/>
+                  <prop v="solid" k="outline_style"/>
+                  <prop v="0" k="outline_width"/>
+                  <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+                  <prop v="MM" k="outline_width_unit"/>
+                  <prop v="area" k="scale_method"/>
+                  <prop v="2" k="size"/>
+                  <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+                  <prop v="MM" k="size_unit"/>
+                  <prop v="1" k="vertical_anchor_point"/>
+                  <data_defined_properties>
+                    <Option type="Map">
+                      <Option value="" type="QString" name="name"/>
+                      <Option name="properties"/>
+                      <Option value="collection" type="QString" name="type"/>
+                    </Option>
+                  </data_defined_properties>
+                </layer>
+              </symbol>
+            </markerStyle>
+            <annotationFontProperties description=",11,-1,5,50,0,0,0,0,0" style=""/>
+          </ComposerMapGrid>
+          <AtlasMap margin="0.10000000000000001" atlasDriven="0" scalingMode="2"/>
+          <ComposerItem x="21.3911" pagey="46" excludeFromExports="0" uuid="{98195e4d-0084-4747-b15b-507220be6d8a}" pagex="21.3911" positionLock="false" lastValidViewScaleFactor="2.01648" frameJoinStyle="miter" opacity="1" y="46" width="242" itemRotation="0" background="true" height="104" outlineWidth="0.3" frame="false" positionMode="0" zValue="3" id="" visibility="1" blendMode="0" page="1">
+            <FrameColor alpha="255" green="0" blue="0" red="0"/>
+            <BackgroundColor alpha="255" green="255" blue="255" red="255"/>
+            <dataDefinedProperties>
+              <Option type="Map">
+                <Option value="" type="QString" name="name"/>
+                <Option name="properties"/>
+                <Option value="collection" type="QString" name="type"/>
+              </Option>
+            </dataDefinedProperties>
+            <customproperties/>
+          </ComposerItem>
+        </ComposerMap>
+        <ComposerLabel labelText="Welcome to our world...." marginY="1" halign="1" htmlState="0" marginX="1" valign="32">
+          <LabelFont description="DejaVu Sans,12,-1,5,75,0,0,0,0,0" style=""/>
+          <FontColor green="0" blue="0" red="0"/>
+          <ComposerItem x="213.302" pagey="161.791" excludeFromExports="0" uuid="{05c05681-4df2-4c58-b5d7-cea8e08dd782}" pagex="213.302" positionLock="false" lastValidViewScaleFactor="2.89262" frameJoinStyle="miter" opacity="1" y="161.791" width="64.3016" itemRotation="0" background="false" height="11.0626" outlineWidth="0.3" frame="false" positionMode="0" zValue="2" id="" visibility="1" blendMode="0" page="1">
+            <FrameColor alpha="255" green="0" blue="0" red="0"/>
+            <BackgroundColor alpha="255" green="255" blue="255" red="255"/>
+            <dataDefinedProperties>
+              <Option type="Map">
+                <Option value="" type="QString" name="name"/>
+                <Option name="properties"/>
+                <Option value="collection" type="QString" name="type"/>
+              </Option>
+            </dataDefinedProperties>
+            <customproperties/>
+          </ComposerItem>
+        </ComposerLabel>
+        <ComposerLabel labelText="QGIS Mapserver" marginY="1" halign="1" htmlState="0" marginX="1" valign="32">
+          <LabelFont description="DejaVu Sans,48,-1,5,75,0,0,0,0,0" style=""/>
+          <FontColor green="0" blue="0" red="0"/>
+          <ComposerItem x="49.9838" pagey="9.33411" excludeFromExports="0" uuid="{faa8706c-3878-455c-9fd5-607cdd8739f3}" pagex="49.9838" positionLock="false" lastValidViewScaleFactor="2.89262" frameJoinStyle="miter" opacity="1" y="9.33411" width="215.03" itemRotation="0" background="false" height="28.0023" outlineWidth="0.3" frame="false" positionMode="0" zValue="1" id="" visibility="1" blendMode="0" page="1">
+            <FrameColor alpha="255" green="0" blue="0" red="0"/>
+            <BackgroundColor alpha="255" green="255" blue="255" red="255"/>
+            <dataDefinedProperties>
+              <Option type="Map">
+                <Option value="" type="QString" name="name"/>
+                <Option name="properties"/>
+                <Option value="collection" type="QString" name="type"/>
+              </Option>
+            </dataDefinedProperties>
+            <customproperties/>
+          </ComposerItem>
+        </ComposerLabel>
+        <dataDefinedProperties>
+          <Option type="Map">
+            <Option value="" type="QString" name="name"/>
+            <Option name="properties"/>
+            <Option value="collection" type="QString" name="type"/>
+          </Option>
+        </dataDefinedProperties>
+        <customproperties/>
+      </Composition>
+    </Composer>
+  </Layouts>
 </qgis>

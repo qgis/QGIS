@@ -19,6 +19,7 @@
 #define QGSDWGIMPORTDIALOG_H
 
 #include "ui_qgsdwgimportbase.h"
+#include "qgshelp.h"
 
 class QgsVectorLayer;
 class QgsLayerTreeGroup;
@@ -40,10 +41,11 @@ class QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
     void on_pbDeselectAll_clicked();
     void on_leDatabase_textChanged( const QString &text );
     void on_leLayerGroup_textChanged( const QString &text );
+    void showHelp();
 
   private:
-    QgsVectorLayer *layer( QgsLayerTreeGroup *layerGroup, QString layer, QString table );
-    void createGroup( QgsLayerTreeGroup *group, QString name, QStringList layers, bool visible );
+    QgsVectorLayer *layer( QgsLayerTreeGroup *layerGroup, const QString &layer, const QString &table );
+    void createGroup( QgsLayerTreeGroup *group, const QString &name, const QStringList &layers, bool visible );
     void updateUI();
     void expandInserts();
     void updateCheckState( Qt::CheckState state );

@@ -23,21 +23,19 @@
 #include "qgswkbptr.h"
 
 QgsInterpolator::QgsInterpolator( const QList<LayerData> &layerData )
-  : mDataIsCached( false )
-  , mLayerData( layerData )
+  : mLayerData( layerData )
 {
 
 }
 
 QgsInterpolator::QgsInterpolator()
-  : mDataIsCached( false )
 {
 
 }
 
 int QgsInterpolator::cacheBaseData()
 {
-  if ( mLayerData.size() < 1 )
+  if ( mLayerData.empty() )
   {
     return 0;
   }
@@ -82,7 +80,7 @@ int QgsInterpolator::cacheBaseData()
           continue;
         }
         attributeValue = attributeVariant.toDouble( &attributeConversionOk );
-        if ( !attributeConversionOk || qIsNaN( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
+        if ( !attributeConversionOk || std::isnan( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
         {
           continue;
         }
@@ -208,7 +206,7 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry &geom, bool zCoord, d
       wkbPtr >> nPoints;
       for ( int index = 0; index < nPoints; ++index )
       {
-        wkbPtr +=  1 + sizeof( int ); //skip endian and point type
+        wkbPtr += 1 + sizeof( int ); //skip endian and point type
 
         double x, y;
         wkbPtr >> x >> y;

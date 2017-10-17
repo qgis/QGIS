@@ -21,8 +21,6 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
-from __future__ import absolute_import
-from builtins import range
 
 import functools
 
@@ -59,6 +57,7 @@ class DBManager(QMainWindow):
 
         self.tabs.currentChanged.connect(self.tabChanged)
         self.tree.selectedItemChanged.connect(self.itemChanged)
+        self.tree.model().dataChanged.connect(self.iface.reloadConnections)
         self.itemChanged(None)
 
     def closeEvent(self, e):

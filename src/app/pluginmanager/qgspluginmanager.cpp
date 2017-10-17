@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <math.h>
+#include <cmath>
 
 #include <QApplication>
 #include <QFileDialog>
@@ -67,6 +67,7 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   mPythonUtils = nullptr;
 
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPluginManager::showHelp );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -621,20 +622,19 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     return;
   }
 
-  QString html = QLatin1String( "" );
-  html += "<style>"
-          "  body, table {"
-          "    padding:0px;"
-          "    margin:0px;"
-          "    font-family:verdana;"
-          "    font-size: 10pt;"
-          "  }"
-          "  div#votes {"
-          "    width:360px;"
-          "    margin-left:98px;"
-          "    padding-top:3px;"
-          "  }"
-          "</style>";
+  QString html = "<style>"
+                 "  body, table {"
+                 "    padding:0px;"
+                 "    margin:0px;"
+                 "    font-family:verdana;"
+                 "    font-size: 10pt;"
+                 "  }"
+                 "  div#votes {"
+                 "    width:360px;"
+                 "    margin-left:98px;"
+                 "    padding-top:3px;"
+                 "  }"
+                 "</style>";
 
   if ( !metadata->value( QStringLiteral( "plugin_id" ) ).isEmpty() )
   {
@@ -698,8 +698,8 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     voteLabel->show();
     voteSlider->show();
     voteSubmit->show();
-    QgsDebugMsg( QString( "vote slider:%1" ).arg( qRound( metadata->value( "average_vote" ).toFloat() ) ) );
-    voteSlider->setValue( qRound( metadata->value( "average_vote" ).toFloat() ) );
+    QgsDebugMsg( QString( "vote slider:%1" ).arg( std::round( metadata->value( "average_vote" ).toFloat() ) ) );
+    voteSlider->setValue( std::round( metadata->value( "average_vote" ).toFloat() ) );
     mCurrentPluginId = metadata->value( "plugin_id" ).toInt();
   }
   else
@@ -899,7 +899,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   if ( ! metadata->value( QStringLiteral( "changelog" ) ).isEmpty() )
   {
     html += QLatin1String( "<br/>" );
-    QString changelog = tr( "changelog:<br/>%1 <br/>" ).arg( metadata->value( QStringLiteral( "changelog" ) ) );
+    QString changelog = QStringLiteral( "%1:<br/>%2 <br/>" ).arg( tr( "Changelog" ), metadata->value( QStringLiteral( "changelog" ) ) );
     html += changelog.replace( '\n', QLatin1String( "<br/>" ) );
   }
 
@@ -1134,7 +1134,7 @@ void QgsPluginManager::setCurrentTab( int idx )
     mModelProxy->setAcceptedStatuses( acceptedStatuses );
 
     // load tab description HTML to the detail browser
-    QString tabInfoHTML = QLatin1String( "" );
+    QString tabInfoHTML;
     QMap<QString, QString>::const_iterator it = mTabDescriptions.constFind( tabTitle );
     if ( it != mTabDescriptions.constEnd() )
     {
@@ -1576,4 +1576,7 @@ void QgsPluginManager::pushMessage( const QString &text, QgsMessageBar::MessageL
   msgBar->pushMessage( text, level, duration );
 }
 
-
+void QgsPluginManager::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "plugins/plugins.html" ) );
+}

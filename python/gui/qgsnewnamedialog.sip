@@ -114,6 +114,7 @@ class QgsNewNameDialog : QgsDialog
 
     QString highlightText( const QString &text );
 %Docstring
+List of names with extensions
  :rtype: str
 %End
     static QStringList fullNames( const QString &name, const QStringList &extensions );

@@ -23,7 +23,11 @@ class QgsObjectCustomProperties
 #include "qgsobjectcustomproperties.h"
 %End
   public:
+
     QgsObjectCustomProperties();
+%Docstring
+ Constructor for QgsObjectCustomProperties.
+%End
 
     QStringList keys() const;
 %Docstring

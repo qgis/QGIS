@@ -21,8 +21,6 @@
 QgsGeometryCheckerPlugin::QgsGeometryCheckerPlugin( QgisInterface *iface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
   , mIface( iface )
-  , mDialog( nullptr )
-  , mMenuAction( nullptr )
 {
 }
 

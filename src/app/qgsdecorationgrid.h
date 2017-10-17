@@ -19,7 +19,7 @@
 #define QGSDECORATIONGRID_H
 
 #include "qgsdecorationitem.h"
-#include <qgis.h>
+#include "qgis.h"
 
 class QPainter;
 class QgsLineSymbol;

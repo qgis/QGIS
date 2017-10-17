@@ -31,10 +31,6 @@ QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas *canvas )
 {
 }
 
-QgsMapToolFillRing::~QgsMapToolFillRing()
-{
-}
-
 void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //check if we operate on a vector layer

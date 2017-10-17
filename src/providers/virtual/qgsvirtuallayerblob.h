@@ -19,7 +19,7 @@ email                : hugo dot mercier at oslandia dot com
 
 #include <stdint.h>
 
-#include <qgsgeometry.h>
+#include "qgsgeometry.h"
 
 // BLOB header
 // name    size    value
@@ -33,14 +33,14 @@ email                : hugo dot mercier at oslandia dot com
 // mbr_end   1      7C
 struct SpatialiteBlobHeader
 {
-  unsigned char start;
-  unsigned char endianness;
-  int32_t srid;
-  double mbrMinX;
-  double mbrMinY;
-  double mbrMaxX;
-  double mbrMaxY;
-  unsigned char end;
+  unsigned char start = 0x00;
+  unsigned char endianness = 0x01;
+  int32_t srid = -1;
+  double mbrMinX = -DBL_MAX;
+  double mbrMinY = -DBL_MAX;
+  double mbrMaxX = DBL_MAX;
+  double mbrMaxY = DBL_MAX;
+  unsigned char end = 0x7C;
 
   SpatialiteBlobHeader();
 

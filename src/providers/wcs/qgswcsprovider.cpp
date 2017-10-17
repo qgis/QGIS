@@ -32,6 +32,11 @@
 #include "qgsmessagelog.h"
 #include "qgsexception.h"
 
+#ifdef HAVE_GUI
+#include "qgswcssourceselect.h"
+#include "qgssourceselectprovider.h"
+#endif
+
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkProxy>
@@ -62,27 +67,7 @@ static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
 
 QgsWcsProvider::QgsWcsProvider( const QString &uri )
   : QgsRasterDataProvider( uri )
-  , QgsGdalProviderBase()
-  , mHttpUri( QString() )
-  , mCoverageSummary()
-  , mWidth( 0 )
-  , mHeight( 0 )
-  , mXBlockSize( 0 )
-  , mYBlockSize( 0 )
-  , mHasSize( false )
-  , mBandCount( 0 )
-  , mCoverageCrs()
-  , mCachedMemFile( nullptr )
-  , mCachedGdalDataset( nullptr )
   , mCachedViewExtent( 0 )
-  , mCachedViewWidth( 0 )
-  , mCachedViewHeight( 0 )
-  , mExtentDirty( true )
-  , mGetFeatureInfoUrlBase( QLatin1String( "" ) )
-  , mErrors( 0 )
-  , mFixBox( false )
-  , mFixRotate( false )
-  , mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
 
@@ -1002,7 +987,7 @@ void QgsWcsProvider::parseServiceException( QDomElement const &e, const QString 
       seCode = e.attribute( QStringLiteral( "locator" ) );
       if ( ! exceptions.contains( seCode ) )
       {
-        seCode = QLatin1String( "" );
+        seCode.clear();
       }
     }
     seText = QgsWcsCapabilities::firstChildText( e, QStringLiteral( "ExceptionText" ) );
@@ -1218,7 +1203,7 @@ QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage 
   // TODO(?): supportedCrs and supportedFormat are not available in 1.0
   // until coverage is described - it would be confusing to show it only if available
 #if 0
-  for ( int j = 0; j < qMin( coverage.supportedCrs.size(), 10 ); j++ )
+  for ( int j = 0; j < std::min( coverage.supportedCrs.size(), 10 ); j++ )
   {
     metadata += htmlRow( tr( "Available in CRS" ), coverage.supportedCrs.value( j ) );
   }
@@ -1228,7 +1213,7 @@ QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage 
     metadata += htmlRow( tr( "Available in CRS" ), tr( "(and %n more)", "crs", coverage.supportedCrs.size() - 10 ) );
   }
 
-  for ( int j = 0; j < qMin( coverage.supportedFormat.size(), 10 ); j++ )
+  for ( int j = 0; j < std::min( coverage.supportedFormat.size(), 10 ); j++ )
   {
     metadata += htmlRow( tr( "Available in format" ), coverage.supportedFormat.value( j ) );
   }
@@ -1248,7 +1233,7 @@ QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage 
 
 QString QgsWcsProvider::metadata()
 {
-  QString metadata = QLatin1String( "" );
+  QString metadata;
 
   metadata += QLatin1String( "<tr><td>" );
 
@@ -1284,7 +1269,7 @@ QString QgsWcsProvider::metadata()
 
   metadata += htmlRow( ( "WCS Version" ), mCapabilities.version() );
   metadata += htmlRow( tr( "Title" ), mCapabilities.capabilities().title );
-  metadata +=  htmlRow( tr( "Abstract" ), mCapabilities.capabilities().abstract );
+  metadata += htmlRow( tr( "Abstract" ), mCapabilities.capabilities().abstract );
 #if 0
   // TODO: probably apply stylesheet in QgsWcsCapabilities and save as html
   metadata += htmlRow( tr( "Keywords" ), mCapabilities.service.keywordList.join( "<br />" ) );
@@ -1340,7 +1325,7 @@ QString QgsWcsProvider:: htmlRow( const QString &text1, const QString &text2 )
 
 QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
-  QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( point.x(), 0, 'g', 10 ).arg( point.y(), 0, 'g', 10 ) );
+  QgsDebugMsg( QString( "thePoint = %1 %2" ).arg( point.x(), 0, 'g', 10 ).arg( point.y(), 0, 'g', 10 ) );
   QgsDebugMsg( QString( "theWidth = %1 height = %2" ).arg( width ).arg( height ) );
   QgsDebugMsg( "boundingBox = " + boundingBox.toString() );
   QMap<int, QVariant> results;
@@ -1413,8 +1398,8 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPointXY &point, QgsRa
                                 point.x() + xRes * width / 2,
                                 point.y() + yRes * height / 2 );
 
-    double xResDiff = qAbs( mCachedViewExtent.width() / mCachedViewWidth - xRes );
-    double yResDiff = qAbs( mCachedViewExtent.height() / mCachedViewHeight - yRes );
+    double xResDiff = std::fabs( mCachedViewExtent.width() / mCachedViewWidth - xRes );
+    double yResDiff = std::fabs( mCachedViewExtent.height() / mCachedViewHeight - yRes );
 
     if ( !mCachedGdalDataset ||
          !mCachedViewExtent.contains( point ) ||
@@ -1434,8 +1419,8 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPointXY &point, QgsRa
     double xRes = finalExtent.width() / width;
     double yRes = finalExtent.height() / height;
     QgsDebugMsg( QString( "width = %1 height = %2 xRes = %3 yRes = %4" ).arg( finalExtent.width() ).arg( finalExtent.height() ).arg( xRes ).arg( yRes ) );
-    double xResDiff = qAbs( mCachedViewExtent.width() / mCachedViewWidth - xRes );
-    double yResDiff = qAbs( mCachedViewExtent.height() / mCachedViewHeight - yRes );
+    double xResDiff = std::fabs( mCachedViewExtent.width() / mCachedViewWidth - xRes );
+    double yResDiff = std::fabs( mCachedViewExtent.height() / mCachedViewHeight - yRes );
     QgsDebugMsg( QString( "xRes diff = %1 yRes diff = %2 relative xResDiff = %3 relative yResDiff = %4" ).arg( xResDiff ).arg( yResDiff ).arg( xResDiff / xRes ).arg( yResDiff / yRes ) );
     if ( !mCachedGdalDataset ||
          !mCachedViewExtent.contains( point ) ||
@@ -1479,8 +1464,8 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPointXY &point, QgsRa
   double yRes = mCachedViewExtent.height() / mCachedViewHeight;
 
   // Offset, not the cell index -> flor
-  int col = ( int ) floor( ( x - mCachedViewExtent.xMinimum() ) / xRes );
-  int row = ( int ) floor( ( mCachedViewExtent.yMaximum() - y ) / yRes );
+  int col = ( int ) std::floor( ( x - mCachedViewExtent.xMinimum() ) / xRes );
+  int row = ( int ) std::floor( ( mCachedViewExtent.yMaximum() - y ) / yRes );
 
   QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
 
@@ -1500,7 +1485,7 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPointXY &point, QgsRa
 
     // Apply no data and user no data
     if ( ( sourceHasNoDataValue( i ) && useSourceNoDataValue( i ) &&
-           ( qIsNaN( value ) || qgsDoubleNear( value, sourceNoDataValue( i ) ) ) ) ||
+           ( std::isnan( value ) || qgsDoubleNear( value, sourceNoDataValue( i ) ) ) ) ||
          ( QgsRasterRange::contains( value, userNoDataValues( i ) ) ) )
     {
       results.insert( i, QVariant() );
@@ -1626,7 +1611,6 @@ int QgsWcsDownloadHandler::sErrors = 0;
 QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl &url, QgsWcsAuthorization &auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray &cachedData, const QString &wcsVersion, QgsError &cachedError, QgsRasterBlockFeedback *feedback )
   : mAuth( auth )
   , mEventLoop( new QEventLoop )
-  , mCacheReply( nullptr )
   , mCachedData( cachedData )
   , mWcsVersion( wcsVersion )
   , mCachedError( cachedError )
@@ -1925,3 +1909,32 @@ void QgsWcsDownloadHandler::canceled()
     mCacheReply->abort();
   }
 }
+
+#ifdef HAVE_GUI
+
+//! Provider for WCS layers source select
+class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "wcs" ); }
+    virtual QString text() const override { return QObject::tr( "WCS" ); }
+    virtual int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 20; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWcsLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsWCSSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsWcsSourceSelectProvider;
+
+  return providers;
+}
+#endif

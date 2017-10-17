@@ -170,23 +170,23 @@ bool QgsOracleConnectionItem::equal( const QgsDataItem *other )
   return ( mPath == o->mPath && mName == o->mName && o->parent() == parent() );
 }
 
-QList<QAction *> QgsOracleConnectionItem::actions()
+QList<QAction *> QgsOracleConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
+  QAction *actionRefresh = new QAction( tr( "Refresh" ), parent );
   connect( actionRefresh, SIGNAL( triggered() ), this, SLOT( refreshConnection() ) );
   lst.append( actionRefresh );
 
-  QAction *separator = new QAction( this );
+  QAction *separator = new QAction( parent );
   separator->setSeparator( true );
   lst.append( separator );
 
-  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), this );
+  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), parent );
   connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
   lst.append( actionEdit );
 
-  QAction *actionDelete = new QAction( tr( "Delete Connection" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete Connection" ), parent );
   connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
   lst.append( actionDelete );
 
@@ -320,11 +320,11 @@ QgsOracleLayerItem::~QgsOracleLayerItem()
 {
 }
 
-QList<QAction *> QgsOracleLayerItem::actions()
+QList<QAction *> QgsOracleLayerItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionDeleteLayer = new QAction( tr( "Delete Table" ), this );
+  QAction *actionDeleteLayer = new QAction( tr( "Delete Table" ), parent );
   connect( actionDeleteLayer, SIGNAL( triggered() ), this, SLOT( deleteLayer() ) );
   lst.append( actionDeleteLayer );
 
@@ -459,11 +459,11 @@ QVector<QgsDataItem *> QgsOracleRootItem::createChildren()
   return connections;
 }
 
-QList<QAction *> QgsOracleRootItem::actions()
+QList<QAction *> QgsOracleRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
 

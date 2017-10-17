@@ -52,7 +52,7 @@ class Merge(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'merge_shapes.png'))
 
     def group(self):
-        return self.tr('Vector general tools')
+        return self.tr('Vector general')
 
     def __init__(self):
         super().__init__()
@@ -60,7 +60,7 @@ class Merge(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterMultipleLayers(self.LAYERS,
                                                                self.tr('Layers to merge'),
-                                                               QgsProcessing.TypeVectorAny))
+                                                               QgsProcessing.TypeVectorAnyGeometry))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Merged')))
 

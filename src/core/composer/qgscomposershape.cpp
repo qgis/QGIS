@@ -31,7 +31,6 @@ QgsComposerShape::QgsComposerShape( QgsComposition *composition )
   , mShape( Ellipse )
   , mCornerRadius( 0 )
   , mUseSymbol( false ) //default to not using symbol for shapes, to preserve 2.0 api
-  , mShapeStyleSymbol( nullptr )
   , mMaxSymbolBleed( 0 )
 {
   setFrameEnabled( true );
@@ -50,7 +49,6 @@ QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height,
   , mShape( Ellipse )
   , mCornerRadius( 0 )
   , mUseSymbol( false ) //default to not using Symbol for shapes, to preserve 2.0 api
-  , mShapeStyleSymbol( nullptr )
   , mMaxSymbolBleed( 0 )
 {
   setSceneRect( QRectF( x, y, width, height ) );

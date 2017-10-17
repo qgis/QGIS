@@ -188,14 +188,14 @@ class CORE_EXPORT QgsTask : public QObject
 
     /**
      * Blocks the current thread until the task finishes or a maximum of \a timeout milliseconds.
-     * If the \a timeout is ``-1`` the thread will be blocked forever.
+     * If \a timeout is ``0`` the thread will be blocked forever.
      * In case of a timeout, the task will still be running.
      * In case the task already is finished, the method will return immediately while
      * returning ``true``.
      *
      * The result will be false if the wait timed out and true in any other case.
      */
-    bool waitForFinished( int timeout = 30000 );
+    bool waitForFinished( unsigned long timeout = 30000 );
 
   signals:
 
@@ -286,16 +286,22 @@ class CORE_EXPORT QgsTask : public QObject
     Flags mFlags;
     QString mDescription;
     //! Status of this (parent) task alone
-    TaskStatus mStatus;
+    TaskStatus mStatus = Queued;
     //! Status of this task and all subtasks
-    TaskStatus mOverallStatus;
+    TaskStatus mOverallStatus = Queued;
+
+    //! This mutex remains locked from initialization until the task finishes,
+    //! it's used as a trigger for waitForFinished.
+    QMutex mNotFinishedMutex;
 
     //! Progress of this (parent) task alone
-    double mProgress;
+    double mProgress = 0.0;
     //! Overall progress of this task and all subtasks
-    double mTotalProgress;
-    bool mShouldTerminate;
-    int mStartCount;
+    double mTotalProgress = 0.0;
+    bool mShouldTerminate = false;
+    int mStartCount = 0;
+
+    QWaitCondition mTaskFinished;
 
     struct SubTask
     {
@@ -523,7 +529,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     QMap< long, QgsWeakMapLayerPointerList > mLayerDependencies;
 
     //! Tracks the next unique task ID
-    long mNextTaskId;
+    long mNextTaskId = 0;
 
     //! List of active (queued or running) tasks. Includes subtasks.
     QSet< QgsTask * > mActiveTasks;

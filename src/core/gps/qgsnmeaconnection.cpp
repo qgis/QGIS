@@ -35,11 +35,6 @@ QgsNMEAConnection::QgsNMEAConnection( QIODevice *dev ): QgsGPSConnection( dev )
 {
 }
 
-QgsNMEAConnection::~QgsNMEAConnection()
-{
-  //connection will be closed by base class
-}
-
 void QgsNMEAConnection::parseData()
 {
   if ( !mSource )

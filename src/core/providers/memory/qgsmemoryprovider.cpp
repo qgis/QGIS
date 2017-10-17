@@ -33,7 +33,7 @@ static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Memory provide
 
 QgsMemoryProvider::QgsMemoryProvider( const QString &uri )
   : QgsVectorDataProvider( uri )
-  , mSpatialIndex( nullptr )
+
 {
   // Initialize the geometry with the uri to support old style uri's
   // (ie, just 'point', 'line', 'polygon')
@@ -158,22 +158,22 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri )
           length = -1;
         }
 
-        if ( reFieldDef.cap( 2 ) != QLatin1String( "" ) )
+        if ( !reFieldDef.cap( 2 ).isEmpty() )
         {
           length = reFieldDef.cap( 2 ).toInt();
         }
-        if ( reFieldDef.cap( 3 ) != QLatin1String( "" ) )
+        if ( !reFieldDef.cap( 3 ).isEmpty() )
         {
           precision = reFieldDef.cap( 3 ).toInt();
         }
-        if ( reFieldDef.cap( 4 ) != QLatin1String( "" ) )
+        if ( !reFieldDef.cap( 4 ).isEmpty() )
         {
           //array
           subType = type;
           type = ( subType == QVariant::String ? QVariant::StringList : QVariant::List );
         }
       }
-      if ( name != QLatin1String( "" ) )
+      if ( !name.isEmpty() )
         attributes.append( QgsField( name, type, typeName, length, precision, QLatin1String( "" ), subType ) );
     }
     addAttributes( attributes );

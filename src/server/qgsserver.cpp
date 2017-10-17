@@ -60,7 +60,7 @@ QString *QgsServer::sConfigFilePath = nullptr;
 QgsCapabilitiesCache *QgsServer::sCapabilitiesCache = nullptr;
 QgsServerInterfaceImpl *QgsServer::sServerInterface = nullptr;
 // Initialization must run once for all servers
-bool QgsServer::sInitialized =  false;
+bool QgsServer::sInitialized = false;
 QgsServerSettings QgsServer::sSettings;
 
 QgsServiceRegistry QgsServer::sServiceRegistry;
@@ -274,7 +274,7 @@ bool QgsServer::init()
   sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache, &sServiceRegistry, &sSettings );
 
   // Load service module
-  QString modulePath =  QgsApplication::libexecPath() + "server";
+  QString modulePath = QgsApplication::libexecPath() + "server";
   qDebug() << "Initializing server modules from " << modulePath << endl;
   sServiceRegistry.init( modulePath,  sServerInterface );
 
@@ -305,7 +305,6 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
 {
   QgsMessageLog::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
-  QgsProject::instance()->removeAllMapLayers();
 
   qApp->processEvents();
 
@@ -389,7 +388,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       else
       {
         throw QgsOgcServiceException( QStringLiteral( "Service configuration error" ),
-                                      QStringLiteral( "Service unknown or unsupported" ) ) ;
+                                      QStringLiteral( "Service unknown or unsupported" ) );
       }
     }
     catch ( QgsServerException &ex )

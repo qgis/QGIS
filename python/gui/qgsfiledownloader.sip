@@ -32,7 +32,7 @@ class QgsFileDownloader : QObject
 %End
   public:
 
-    QgsFileDownloader( const QUrl &url, const QString &outputFileName, bool guiNotificationsEnabled = true, QString authcfg = QString() );
+    QgsFileDownloader( const QUrl &url, const QString &outputFileName, bool guiNotificationsEnabled = true, const QString &authcfg = QString() );
 %Docstring
  QgsFileDownloader
  \param url the download url

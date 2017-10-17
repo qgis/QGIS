@@ -192,14 +192,14 @@ void Vt102Emulation::addDigit(int digit)
 
 void Vt102Emulation::addArgument()
 {
-  argc = qMin(argc+1,MAXARGS-1);
+  argc = std::min(argc+1,MAXARGS-1);
   argv[argc] = 0;
 }
 
 void Vt102Emulation::addToCurrentToken(int cc)
 {
   tokenBuffer[tokenBufferPos] = cc;
-  tokenBufferPos = qMin(tokenBufferPos+1,MAX_TOKEN_LENGTH-1);
+  tokenBufferPos = std::min(tokenBufferPos+1,MAX_TOKEN_LENGTH-1);
 }
 
 // Character Class flags used while decoding

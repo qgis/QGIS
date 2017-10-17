@@ -29,14 +29,9 @@ QgsComposerLegendLayersDialog::QgsComposerLegendLayersDialog( QList<QgsMapLayer 
   }
 }
 
-QgsComposerLegendLayersDialog::QgsComposerLegendLayersDialog(): QDialog( nullptr )
+QgsComposerLegendLayersDialog::QgsComposerLegendLayersDialog()
+  : QDialog( nullptr )
 {
-
-}
-
-QgsComposerLegendLayersDialog::~QgsComposerLegendLayersDialog()
-{
-
 }
 
 QgsMapLayer *QgsComposerLegendLayersDialog::selectedLayer()

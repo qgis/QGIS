@@ -29,7 +29,6 @@ class CORE_EXPORT QgsNMEAConnection: public QgsGPSConnection
     Q_OBJECT
   public:
     QgsNMEAConnection( QIODevice *dev );
-    ~QgsNMEAConnection();
 
   protected slots:
     //! Parse available data source content

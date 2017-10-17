@@ -27,7 +27,7 @@
 #ifndef eVisDatabaseConnectionGUI_H
 #define eVisDatabaseConnectionGUI_H
 
-#include <ui_evisdatabaseconnectionguibase.h>
+#include "ui_evisdatabaseconnectionguibase.h"
 #include "evisdatabaseconnection.h"
 #include "evisdatabaselayerfieldselectiongui.h"
 #include "evisquerydefinition.h"
@@ -72,7 +72,7 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
     void drawNewVectorLayer( const QString &, const QString &, const QString & );
 
     void on_buttonBox_accepted();
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "plugins/plugins_evis.html#database-connection" ) ); }
+    void showHelp();
 
     void on_cboxDatabaseType_currentIndexChanged( int );
     void on_cboxPredefinedQueryList_currentIndexChanged( int );

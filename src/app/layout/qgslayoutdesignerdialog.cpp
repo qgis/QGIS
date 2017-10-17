@@ -30,18 +30,21 @@
 #include "qgslayoutitemwidget.h"
 #include "qgsgui.h"
 #include "qgslayoutitemguiregistry.h"
+#include "qgslayoutpropertieswidget.h"
 #include "qgslayoutruler.h"
 #include "qgslayoutaddpagesdialog.h"
 #include "qgspanelwidgetstack.h"
 #include "qgspanelwidget.h"
 #include "qgsdockwidget.h"
 #include "qgslayoutpagepropertieswidget.h"
+#include "qgslayoutguidewidget.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
 #include <QDesktopWidget>
 #include <QSlider>
 #include <QLabel>
+#include <QUndoView>
 
 
 //add some nice zoom levels for zoom comboboxes
@@ -91,7 +94,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   setAttribute( Qt::WA_DeleteOnClose );
 #if QT_VERSION >= 0x050600
-  setDockOptions( dockOptions() | QMainWindow::GroupedDragging ) ;
+  setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
 #endif
 
   //create layout view
@@ -121,6 +124,22 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mRulerLayoutFix->setVisible( showRulers );
   mActionShowRulers->blockSignals( false );
   connect( mActionShowRulers, &QAction::triggered, this, &QgsLayoutDesignerDialog::showRulers );
+
+  QMenu *rulerMenu = new QMenu( this );
+  rulerMenu->addAction( mActionShowGuides );
+  rulerMenu->addAction( mActionSnapGuides );
+  rulerMenu->addAction( mActionManageGuides );
+  rulerMenu->addAction( mActionClearGuides );
+  rulerMenu->addSeparator();
+  rulerMenu->addAction( mActionShowRulers );
+  mHorizontalRuler->setContextMenu( rulerMenu );
+  mVerticalRuler->setContextMenu( rulerMenu );
+
+  connect( mActionShowGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGrid );
+  connect( mActionSnapGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGrid );
+
+  connect( mActionShowGuides, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGuides );
+  connect( mActionSnapGuides, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGuides );
 
   mView = new QgsLayoutView();
   //mView->setMapCanvas( mQgis->mapCanvas() );
@@ -189,7 +208,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mStatusZoomCombo->setCompleter( nullptr );
   mStatusZoomCombo->setMinimumWidth( 100 );
   //zoom combo box accepts decimals in the range 1-9999, with an optional decimal point and "%" sign
-  QRegularExpression zoomRx( "\\s*\\d{1,4}(\\.\\d?)?\\s*%?" );
+  QRegularExpression zoomRx( QStringLiteral( "\\s*\\d{1,4}(\\.\\d?)?\\s*%?" ) );
   QValidator *zoomValidator = new QRegularExpressionValidator( zoomRx, mStatusZoomCombo );
   mStatusZoomCombo->lineEdit()->setValidator( zoomValidator );
 
@@ -238,6 +257,18 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   int minDockWidth( fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ) );
 
+  setTabPosition( Qt::AllDockWidgetAreas, QTabWidget::North );
+  mGeneralDock = new QgsDockWidget( tr( "Layout" ), this );
+  mGeneralDock->setObjectName( QStringLiteral( "LayoutDock" ) );
+  mGeneralDock->setMinimumWidth( minDockWidth );
+  mGeneralPropertiesStack = new QgsPanelWidgetStack();
+  mGeneralDock->setWidget( mGeneralPropertiesStack );
+  mPanelsMenu->addAction( mGeneralDock->toggleViewAction() );
+  connect( mActionLayoutProperties, &QAction::triggered, this, [ = ]
+  {
+    mGeneralDock->setUserVisible( true );
+  } );
+
   mItemDock = new QgsDockWidget( tr( "Item properties" ), this );
   mItemDock->setObjectName( QStringLiteral( "ItemDock" ) );
   mItemDock->setMinimumWidth( minDockWidth );
@@ -245,9 +276,40 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mItemDock->setWidget( mItemPropertiesStack );
   mPanelsMenu->addAction( mItemDock->toggleViewAction() );
 
-  addDockWidget( Qt::RightDockWidgetArea, mItemDock );
+  mGuideDock = new QgsDockWidget( tr( "Guides" ), this );
+  mGuideDock->setObjectName( QStringLiteral( "GuideDock" ) );
+  mGuideDock->setMinimumWidth( minDockWidth );
+  mGuideStack = new QgsPanelWidgetStack();
+  mGuideDock->setWidget( mGuideStack );
+  mPanelsMenu->addAction( mGuideDock->toggleViewAction() );
+  connect( mActionManageGuides, &QAction::triggered, this, [ = ]
+  {
+    mGuideDock->setUserVisible( true );
+  } );
 
+  mUndoDock = new QgsDockWidget( tr( "Command history" ), this );
+  mUndoDock->setObjectName( QStringLiteral( "CommandDock" ) );
+  mPanelsMenu->addAction( mUndoDock->toggleViewAction() );
+  mUndoView = new QUndoView( this );
+  mUndoDock->setWidget( mUndoView );
+
+  addDockWidget( Qt::RightDockWidgetArea, mItemDock );
+  addDockWidget( Qt::RightDockWidgetArea, mGeneralDock );
+  addDockWidget( Qt::RightDockWidgetArea, mGuideDock );
+  addDockWidget( Qt::RightDockWidgetArea, mUndoDock );
+
+  createLayoutPropertiesWidget();
+
+  mUndoDock->show();
   mItemDock->show();
+  mGeneralDock->show();
+
+  mActionUndo->setEnabled( false );
+  mActionRedo->setEnabled( false );
+
+  tabifyDockWidget( mGeneralDock, mUndoDock );
+  tabifyDockWidget( mItemDock, mUndoDock );
+  tabifyDockWidget( mGeneralDock, mItemDock );
 
   restoreWindowState();
 }
@@ -266,6 +328,24 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 {
   mLayout = layout;
   mView->setCurrentLayout( layout );
+
+  connect( mActionClearGuides, &QAction::triggered, &mLayout->guides(), [ = ]
+  {
+    mLayout->guides().clear();
+  } );
+
+  mActionShowGrid->setChecked( mLayout->context().gridVisible() );
+  mActionSnapGrid->setChecked( mLayout->snapper().snapToGrid() );
+  mActionShowGuides->setChecked( mLayout->guides().visible() );
+  mActionSnapGuides->setChecked( mLayout->snapper().snapToGuides() );
+
+  connect( mLayout->undoStack()->stack(), &QUndoStack::canUndoChanged, mActionUndo, &QAction::setEnabled );
+  connect( mLayout->undoStack()->stack(), &QUndoStack::canRedoChanged, mActionRedo, &QAction::setEnabled );
+  connect( mActionUndo, &QAction::triggered, mLayout->undoStack()->stack(), &QUndoStack::undo );
+  connect( mActionRedo, &QAction::triggered, mLayout->undoStack()->stack(), &QUndoStack::redo );
+  mUndoView->setStack( mLayout->undoStack()->stack() );
+
+  createLayoutPropertiesWidget();
 }
 
 void QgsLayoutDesignerDialog::setIconSizes( int size )
@@ -297,7 +377,14 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item )
 
   delete mItemPropertiesStack->takeMainPanel();
   widget->setDockMode( true );
+  connect( item, &QgsLayoutItem::destroyed, widget.get(), [this]
+  {
+    delete mItemPropertiesStack->takeMainPanel();
+  } );
+
   mItemPropertiesStack->setMainPanel( widget.release() );
+  mItemDock->setUserVisible( true );
+
 }
 
 void QgsLayoutDesignerDialog::open()
@@ -335,6 +422,27 @@ void QgsLayoutDesignerDialog::showRulers( bool visible )
 
   QgsSettings settings;
   settings.setValue( QStringLiteral( "LayoutDesigner/showRulers" ), visible );
+}
+
+void QgsLayoutDesignerDialog::showGrid( bool visible )
+{
+  mLayout->context().setGridVisible( visible );
+  mLayout->pageCollection()->redraw();
+}
+
+void QgsLayoutDesignerDialog::snapToGrid( bool enabled )
+{
+  mLayout->snapper().setSnapToGrid( enabled );
+}
+
+void QgsLayoutDesignerDialog::showGuides( bool visible )
+{
+  mLayout->guides().setVisible( visible );
+}
+
+void QgsLayoutDesignerDialog::snapToGuides( bool enabled )
+{
+  mLayout->snapper().setSnapToGuides( enabled );
 }
 
 void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )
@@ -530,12 +638,17 @@ void QgsLayoutDesignerDialog::addPages()
 
     }
 
+    if ( dlg.numberPages() > 1 )
+      mLayout->undoStack()->beginMacro( tr( "Add pages" ) );
     for ( int i = 0; i < dlg.numberPages(); ++i )
     {
       QgsLayoutItemPage *page = new QgsLayoutItemPage( mLayout );
       page->setPageSize( dlg.pageSize() );
       mLayout->pageCollection()->insertPage( page, firstPagePosition + i );
     }
+    if ( dlg.numberPages() > 1 )
+      mLayout->undoStack()->endMacro();
+
   }
 }
 
@@ -576,6 +689,28 @@ void QgsLayoutDesignerDialog::activateNewItemCreationTool( int type )
   {
     mView->setTool( mAddItemTool );
   }
+}
+
+void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
+{
+  if ( !mLayout )
+  {
+    return;
+  }
+
+  // update layout based widgets
+  QgsLayoutPropertiesWidget *oldCompositionWidget = qobject_cast<QgsLayoutPropertiesWidget *>( mGeneralPropertiesStack->takeMainPanel() );
+  delete oldCompositionWidget;
+  QgsLayoutGuideWidget *oldGuideWidget = qobject_cast<QgsLayoutGuideWidget *>( mGuideStack->takeMainPanel() );
+  delete oldGuideWidget;
+
+  QgsLayoutPropertiesWidget *widget = new QgsLayoutPropertiesWidget( mGeneralDock, mLayout );
+  widget->setDockMode( true );
+  mGeneralPropertiesStack->setMainPanel( widget );
+
+  QgsLayoutGuideWidget *guideWidget = new QgsLayoutGuideWidget( mGuideDock, mLayout, mView );
+  guideWidget->setDockMode( true );
+  mGuideStack->setMainPanel( guideWidget );
 }
 
 void QgsLayoutDesignerDialog::initializeRegistry()

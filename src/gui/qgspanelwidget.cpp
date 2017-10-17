@@ -23,8 +23,6 @@
 
 QgsPanelWidget::QgsPanelWidget( QWidget *parent )
   : QWidget( parent )
-  , mAutoDelete( true )
-  , mDockMode( false )
 {
 }
 
@@ -80,7 +78,7 @@ void QgsPanelWidget::openPanel( QgsPanelWidget *panel )
   {
     // Show the dialog version if no one is connected
     QDialog *dlg = new QDialog();
-    QString key =  QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
+    QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
     QgsSettings settings;
     dlg->restoreGeometry( settings.value( key ).toByteArray() );
     dlg->setWindowTitle( panel->panelTitle() );

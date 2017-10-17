@@ -55,7 +55,7 @@
 QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent )
   : QgsMapLayerConfigWidget( lyr, nullptr, parent )
   , mRasterLayer( lyr )
-  , mRendererWidget( nullptr )
+
 {
   setupUi( this );
 
@@ -502,7 +502,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
       mypCurve->setPen( QPen( mHistoColors.at( myIteratorInt ) ) );
     }
 
-    QwtPlotHistogram *mypHisto = 0;
+    QwtPlotHistogram *mypHisto = nullptr;
     if ( ! myDrawLines )
     {
       mypHisto = new QwtPlotHistogram( tr( "Band %1" ).arg( myIteratorInt ) );
@@ -629,7 +629,7 @@ void QgsRasterHistogramWidget::on_mSaveAsImageButton_clicked()
 
   QPair< QString, QString> myFileNameAndFilter = QgsGuiUtils::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
   QFileInfo myInfo( myFileNameAndFilter.first );
-  if ( myInfo.baseName() != QLatin1String( "" ) )
+  if ( !myInfo.baseName().isEmpty() )
   {
     histoSaveAsImage( myFileNameAndFilter.first );
   }
@@ -708,7 +708,7 @@ void QgsRasterHistogramWidget::histoActionTriggered( QAction *action )
 
 void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool actionFlag )
 {
-  if ( actionName == QLatin1String( "" ) )
+  if ( actionName.isEmpty() )
     return;
 
   // this approach is a bit of a hack, but this way we don't have to define slots for each action
@@ -1005,7 +1005,7 @@ QString findClosestTickVal( double target, const QwtScaleDiv *scale, int div = 1
     current += diff;
     if ( current > target )
     {
-      closest = ( qAbs( target - current + diff ) < qAbs( target - current ) ) ? current - diff : current;
+      closest = ( std::fabs( target - current + diff ) < std::fabs( target - current ) ) ? current - diff : current;
       break;
     }
   }
@@ -1067,9 +1067,9 @@ void QgsRasterHistogramWidget::updateHistoMarkers()
   double maxVal = mHistoMax;
   QString minStr = leHistoMin->text();
   QString maxStr = leHistoMax->text();
-  if ( minStr != QLatin1String( "" ) )
+  if ( !minStr.isEmpty() )
     minVal = minStr.toDouble();
-  if ( maxStr != QLatin1String( "" ) )
+  if ( !maxStr.isEmpty() )
     maxVal = maxStr.toDouble();
 
   QPen linePen = QPen( mHistoColors.at( bandNo ) );

@@ -34,11 +34,6 @@ class TestQgsComposerGroup : public QObject
 
   public:
     TestQgsComposerGroup()
-      : mComposition( 0 )
-      , mMapSettings( 0 )
-      , mItem1( 0 )
-      , mItem2( 0 )
-      , mGroup( 0 )
     {}
 
   private slots:
@@ -53,7 +48,7 @@ class TestQgsComposerGroup : public QObject
 
   private:
 
-    void dumpUndoStack( const QUndoStack &, QString prefix = QLatin1String( QLatin1String( "" ) ) ) const;
+    void dumpUndoStack( const QUndoStack &, QString prefix = QString() ) const;
 
     QgsComposition *mComposition = nullptr;
     QgsMapSettings *mMapSettings = nullptr;

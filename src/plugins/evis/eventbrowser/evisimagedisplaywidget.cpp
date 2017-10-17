@@ -41,10 +41,6 @@
 */
 eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget *parent, Qt::WindowFlags fl )
   : QWidget( parent, fl )
-  , mCurrentHttpImageRequestId( 0 )
-  , mImageSizeRatio( 0.0 )
-  , mScaleFactor( 1.0 )
-  , mScaleToFit( 0.0 )
 {
   //Setup zoom buttons
   pbtnZoomIn = new QPushButton();

@@ -24,7 +24,7 @@
 #include "qgisapp.h"
 #include "qgshelp.h"
 
-#include <qgscoordinatereferencesystem.h>
+#include "qgscoordinatereferencesystem.h"
 
 #include <QList>
 #include "qgis_app.h"
@@ -32,6 +32,7 @@
 class QgsExpressionContext;
 class QgsOptionsPageWidget;
 class QgsLocatorOptionsWidget;
+class QgsAuthConfigSelect;
 
 /**
  * \class QgsOptions
@@ -180,9 +181,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      * for the browser */
     void on_mBtnRemoveHiddenPath_clicked();
 
-
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#options" ) ); }
-
     void on_mBrowseCacheDirectory_clicked();
     void on_mClearCache_clicked();
 
@@ -241,6 +239,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void saveDefaultDatumTransformations();
 
+    void showHelp();
+
     QListWidgetItem *addScaleToScaleList( const QString &newScale );
     void addScaleToScaleList( QListWidgetItem *newItem );
 
@@ -256,6 +256,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     QList< QgsOptionsPageWidget * > mAdditionalOptionWidgets;
     QgsLocatorOptionsWidget *mLocatorOptionsWidget = nullptr;
+    QgsAuthConfigSelect *mProxyAuthConfigSelect = nullptr;
 
 };
 

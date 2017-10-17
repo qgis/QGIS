@@ -24,7 +24,6 @@
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
-#include "qgstestutils.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the measure tool
@@ -51,8 +50,6 @@ class TestQgsMeasureTool : public QObject
 };
 
 TestQgsMeasureTool::TestQgsMeasureTool()
-  : mQgisApp( nullptr )
-  , mCanvas( nullptr )
 {
 
 }

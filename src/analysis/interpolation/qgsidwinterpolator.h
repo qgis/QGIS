@@ -45,7 +45,7 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
     /** The parameter that sets how the values are weighted with distance.
        Smaller values mean sharper peaks at the data points. The default is a
        value of 2*/
-    double mDistanceCoefficient;
+    double mDistanceCoefficient = 2.0;
 };
 
 #endif
