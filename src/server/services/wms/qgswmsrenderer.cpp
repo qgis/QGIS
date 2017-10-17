@@ -132,6 +132,11 @@ namespace QgsWms
     initNicknameLayers();
   }
 
+  QgsRenderer::~QgsRenderer()
+  {
+    removeTemporaryLayers();
+  }
+
 
   QImage *QgsRenderer::getLegendGraphics()
   {
@@ -2557,6 +2562,7 @@ namespace QgsWms
       }
     }
 
+    mTemporaryLayers.append( highlightLayers );
     return highlightLayers;
   }
 
@@ -2602,7 +2608,7 @@ namespace QgsWms
     return layers;
   }
 
-  QList<QgsMapLayer *> QgsRenderer::stylizedLayers( const QList<QgsWmsParametersLayer> &params ) const
+  QList<QgsMapLayer *> QgsRenderer::stylizedLayers( const QList<QgsWmsParametersLayer> &params )
   {
     QList<QgsMapLayer *> layers;
 
@@ -2618,6 +2624,7 @@ namespace QgsWms
         if ( externalWMSLayer )
         {
           layers.append( externalWMSLayer );
+          mTemporaryLayers.append( externalWMSLayer );
         }
       }
       else if ( mNicknameLayers.contains( nickname ) && !mRestrictedLayers.contains( nickname ) )
@@ -2670,6 +2677,12 @@ namespace QgsWms
     }
 
     return wmsLayer;
+  }
+
+  void QgsRenderer::removeTemporaryLayers()
+  {
+    qDeleteAll( mTemporaryLayers );
+    mTemporaryLayers.clear();
   }
 
   QPainter *QgsRenderer::layersRendering( const QgsMapSettings &mapSettings, QImage &image, HitTest *hitTest ) const

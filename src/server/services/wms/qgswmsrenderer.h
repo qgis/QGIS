@@ -84,6 +84,8 @@ namespace QgsWms
                    const QgsProject *project,
                    const QgsServerRequest::Parameters &parameters );
 
+      ~QgsRenderer();
+
       /**
        * Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership
       of the image object*/
@@ -154,7 +156,7 @@ namespace QgsWms
       void annotationsRendering( QPainter *painter ) const;
 
       // Return a list of layers stylized with LAYERS/STYLES parameters
-      QList<QgsMapLayer *> stylizedLayers( const QList<QgsWmsParametersLayer> &params ) const;
+      QList<QgsMapLayer *> stylizedLayers( const QList<QgsWmsParametersLayer> &params );
 
       // Return a list of layers stylized with SLD parameter
       QList<QgsMapLayer *> sldStylizedLayers( const QString &sld ) const;
@@ -277,6 +279,8 @@ namespace QgsWms
       //! Creates external WMS layer. Caller takes ownership
       QgsMapLayer *createExternalWMSLayer( const QString &externalLayerId ) const;
 
+      void removeTemporaryLayers();
+
     private:
 
       const QgsServerRequest::Parameters &mParameters;
@@ -289,6 +293,7 @@ namespace QgsWms
       QgsWmsParameters mWmsParameters;
       QStringList mRestrictedLayers;
       QMap<QString, QgsMapLayer *> mNicknameLayers;
+      QList<QgsMapLayer *> mTemporaryLayers;
 
     public:
 
