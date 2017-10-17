@@ -148,7 +148,7 @@ void QgsGeometryCheckerResultTab::addError( QgsGeometryCheckError *error )
   ui.tableWidgetErrors->insertRow( row );
   QTableWidgetItem *idItem = new QTableWidgetItem();
   idItem->setData( Qt::EditRole, error->featureId() != FEATUREID_NULL ? QVariant( error->featureId() ) : QVariant() );
-  ui.tableWidgetErrors->setItem( row, 0, new QTableWidgetItem( mChecker->getContext()->featurePools[error->layerId()]->getLayer()->name() ) );
+  ui.tableWidgetErrors->setItem( row, 0, new QTableWidgetItem( !error->layerId().isEmpty() ? mChecker->getContext()->featurePools[error->layerId()]->getLayer()->name() : "" ) );
   ui.tableWidgetErrors->setItem( row, 1, idItem );
   ui.tableWidgetErrors->setItem( row, 2, new QTableWidgetItem( error->description() ) );
   ui.tableWidgetErrors->setItem( row, 3, new QTableWidgetItem( posStr ) );
