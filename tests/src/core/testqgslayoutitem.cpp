@@ -155,6 +155,7 @@ class TestQgsLayoutItem: public QObject
     void blendMode();
     void opacity();
     void excludeFromExports();
+    void setSceneRect();
 
   private:
 
@@ -1189,6 +1190,48 @@ void TestQgsLayoutItem::move()
   item->attemptMove( QgsLayoutPoint( 4, 6 ), false, true );
   QCOMPARE( item->positionWithUnits().x(), 4.5 );
   QCOMPARE( item->positionWithUnits().y(), 6.5 );
+}
+
+void TestQgsLayoutItem::setSceneRect()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+
+  //resize test item (no restrictions), same units as layout
+  l.setUnits( QgsUnitTypes::LayoutMillimeters );
+  std::unique_ptr< TestItem > item( new TestItem( &l ) );
+  QSignalSpy spySizeChanged( item.get(), &QgsLayoutItem::sizePositionChanged );
+
+  item->attemptSetSceneRect( QRectF( 27.0, 29.0, 100, 200 ) );
+  QCOMPARE( spySizeChanged.count(), 1 );
+  QCOMPARE( item->rect().width(), 100.0 );
+  QCOMPARE( item->rect().height(), 200.0 );
+  QCOMPARE( item->scenePos().x(), 27.0 );
+  QCOMPARE( item->scenePos().y(), 29.0 );
+  QCOMPARE( item->positionWithUnits().x(), 27.0 );
+  QCOMPARE( item->positionWithUnits().y(), 29.0 );
+  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+  QCOMPARE( item->sizeWithUnits().width(), 100.0 );
+  QCOMPARE( item->sizeWithUnits().height(), 200.0 );
+  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutMillimeters );
+
+  //test conversion of units
+  item->attemptMove( QgsLayoutPoint( 1, 2, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptResize( QgsLayoutSize( 3, 4, QgsUnitTypes::LayoutCentimeters ) );
+  QCOMPARE( spySizeChanged.count(), 3 );
+  item->attemptSetSceneRect( QRectF( 27.0, 29.0, 100, 200 ) );
+  QCOMPARE( item->rect().width(), 100.0 );
+  QCOMPARE( item->rect().height(), 200.0 );
+  QCOMPARE( item->scenePos().x(), 27.0 );
+  QCOMPARE( item->scenePos().y(), 29.0 );
+  QCOMPARE( spySizeChanged.count(), 4 );
+
+  QCOMPARE( item->positionWithUnits().x(), 2.70 );
+  QCOMPARE( item->positionWithUnits().y(), 2.90 );
+  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->sizeWithUnits().width(), 10.0 );
+  QCOMPARE( item->sizeWithUnits().height(), 20.0 );
+  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
 }
 
 void TestQgsLayoutItem::rotation()

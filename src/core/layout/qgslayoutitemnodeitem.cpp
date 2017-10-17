@@ -150,7 +150,9 @@ bool QgsLayoutNodesItem::addNode( QPointF pt,
 
 void QgsLayoutNodesItem::drawNodes( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle ) const
 {
-  double rectSize = 3.0 / itemStyle->matrix.m11();
+  context.painter()->setRenderHint( QPainter::Antialiasing, false );
+
+  double rectSize = 9.0 / itemStyle->matrix.m11();
 
   QgsStringMap properties;
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "cross" ) );
@@ -163,7 +165,7 @@ void QgsLayoutNodesItem::drawNodes( QgsRenderContext &context, const QStyleOptio
 
   symbol->startRender( context );
   for ( QPointF pt : mPolygon )
-    symbol->renderPoint( pt, nullptr, context );
+    symbol->renderPoint( pt * itemStyle->matrix.m11(), nullptr, context );
   symbol->stopRender( context );
 
   if ( mSelectedNode >= 0 && mSelectedNode < mPolygon.size() )
@@ -172,7 +174,7 @@ void QgsLayoutNodesItem::drawNodes( QgsRenderContext &context, const QStyleOptio
 
 void QgsLayoutNodesItem::drawSelectedNode( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle ) const
 {
-  double rectSize = 3.0 / itemStyle->matrix.m11();
+  double rectSize = 9.0 / itemStyle->matrix.m11();
 
   QgsStringMap properties;
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "square" ) );
@@ -185,7 +187,7 @@ void QgsLayoutNodesItem::drawSelectedNode( QgsRenderContext &context, const QSty
   symbol->setSize( rectSize );
 
   symbol->startRender( context );
-  symbol->renderPoint( mPolygon.at( mSelectedNode ), nullptr, context );
+  symbol->renderPoint( mPolygon.at( mSelectedNode ) * itemStyle->matrix.m11(), nullptr, context );
   symbol->stopRender( context );
 }
 
@@ -317,7 +319,6 @@ void QgsLayoutNodesItem::updateSceneRect()
   // update
   prepareGeometryChange();
   update();
-  emit sizePositionChanged();
 }
 
 

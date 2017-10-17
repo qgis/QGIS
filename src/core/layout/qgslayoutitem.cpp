@@ -418,7 +418,7 @@ void QgsLayoutItem::attemptMove( const QgsLayoutPoint &p, bool useReferencePoint
 
 void QgsLayoutItem::attemptSetSceneRect( const QRectF &rect, bool includesFrame )
 {
-  QPointF newPos = mapToScene( rect.topLeft() );
+  QPointF newPos = rect.topLeft();
 
   blockSignals( true );
   // translate new size to current item units

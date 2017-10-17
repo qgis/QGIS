@@ -76,6 +76,7 @@
    <addaction name="mActionPan"/>
    <addaction name="mActionZoomTool"/>
    <addaction name="mActionSelectMoveItem"/>
+   <addaction name="mActionEditNodesItem"/>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -1007,6 +1008,21 @@
    </property>
    <property name="shortcut">
     <string>F5</string>
+   </property>
+  </action>
+  <action name="mActionEditNodesItem">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNodeTool.svg</normaloff>:/images/themes/default/mActionNodeTool.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Nodes Item</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit Nodes Item</string>
    </property>
   </action>
  </widget>
