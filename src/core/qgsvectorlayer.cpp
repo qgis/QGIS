@@ -4582,6 +4582,6 @@ void QgsVectorLayer::onDirtyTransaction( const QString &sql )
   QgsTransaction *tr = dataProvider()->transaction();
   if ( tr && mEditBuffer )
   {
-    dynamic_cast<QgsVectorLayerEditPassthrough *>( mEditBuffer )->update( tr, sql );
+    qobject_cast<QgsVectorLayerEditPassthrough *>( mEditBuffer )->update( tr, sql );
   }
 }
