@@ -519,7 +519,7 @@ void QgsGeoPackageCollectionItem::addTable()
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Cannot add Table: connection %1 does not exists or the path is empy!" ).arg( connName ) );
+    QgsDebugMsg( QStringLiteral( "Cannot add Table: connection %1 does not exist or the path is empty!" ).arg( connName ) );
   }
 }
 
@@ -593,7 +593,7 @@ QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *par
 
 bool QgsGeoPackageAbstractLayerItem::executeDeleteLayer( QString &errCause )
 {
-  errCause = QObject::tr( "The layer <b>%1</b> cannot be deleted because the this feature is not yet implemented for this kind of layers." ).arg( mName );
+  errCause = QObject::tr( "The layer <b>%1</b> cannot be deleted because this feature is not yet implemented for this kind of layers." ).arg( mName );
   return false;
 }
 
