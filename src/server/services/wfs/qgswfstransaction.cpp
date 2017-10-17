@@ -36,7 +36,7 @@ namespace QgsWfs
 {
   namespace
   {
-    void addTransactionResult( QDomDocument &responseDoc, QDomElement &responseElem, const QString &status,
+    void addTransactionResult( QDomDocument &responseDoc, QDomElement &resultsElem,
                                const QString &locator, const QString &message );
   }
 
@@ -84,18 +84,58 @@ namespace QgsWfs
     // It's time to make the transaction
     // Create the response document
     QDomDocument resp;
-    //wfs:WFS_TransactionRespone element
-    QDomElement respElem = resp.createElement( QStringLiteral( "WFS_TransactionResponse" )/*wfs:WFS_TransactionResponse*/ );
+    //wfs:TransactionRespone element
+    QDomElement respElem = resp.createElement( QStringLiteral( "TransactionResponse" )/*wfs:TransactionResponse*/ );
     respElem.setAttribute( QStringLiteral( "xmlns" ), WFS_NAMESPACE );
     respElem.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
-    respElem.setAttribute( QStringLiteral( "xsi:schemaLocation" ), WFS_NAMESPACE + " http://schemas.opengis.net/wfs/1.0.0/wfs.xsd" );
+    respElem.setAttribute( QStringLiteral( "xsi:schemaLocation" ), WFS_NAMESPACE + " http://schemas.opengis.net/wfs/1.1.0/wfs.xsd" );
     respElem.setAttribute( QStringLiteral( "xmlns:ogc" ), OGC_NAMESPACE );
-    respElem.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0.0" ) );
+    respElem.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1.0" ) );
     resp.appendChild( respElem );
 
+    int totalInserted = 0;
+    int totalUpdated = 0;
+    int totalDeleted = 0;
     int errorCount = 0;
-    QStringList errorLocators;
-    QStringList errorMessages;
+
+    //wfs:TransactionResults element
+    QDomElement trsElem = doc.createElement( QStringLiteral( "TransactionResults" ) );
+
+    //wfs:InsertResults element
+    QDomElement irsElem = doc.createElement( QStringLiteral( "InsertResults" ) );
+    QList<transactionInsert>::iterator tiIt = aRequest.inserts.begin();
+    for ( ; tiIt != aRequest.inserts.end(); ++tiIt )
+    {
+      transactionInsert &action = *tiIt;
+      if ( action.error )
+      {
+        errorCount += 1;
+        QString locator = action.handle;
+        if ( locator.isEmpty() )
+        {
+          locator = QStringLiteral( "Insert:%1" ).arg( action.typeName );
+        }
+        addTransactionResult( resp, trsElem, locator, action.errorMsg );
+      }
+      else
+      {
+        QStringList::const_iterator fidIt = action.insertFeatureIds.constBegin();
+        for ( ; fidIt != action.insertFeatureIds.constEnd(); ++fidIt )
+        {
+          QString fidStr = *fidIt;
+          QDomElement irElem = doc.createElement( QStringLiteral( "Feature" ) );
+          if ( !action.handle.isEmpty() )
+          {
+            irElem.setAttribute( QStringLiteral( "handle" ), action.handle );
+          }
+          QDomElement fiElem = doc.createElement( QStringLiteral( "ogc:FeatureId" ) );
+          fiElem.setAttribute( QStringLiteral( "fid" ), fidStr );
+          irElem.appendChild( fiElem );
+          irsElem.appendChild( irElem );
+        }
+      }
+      totalInserted += action.insertFeatureIds.count();
+    }
 
     QList<transactionUpdate>::iterator tuIt = aRequest.updates.begin();
     for ( ; tuIt != aRequest.updates.end(); ++tuIt )
@@ -104,16 +144,14 @@ namespace QgsWfs
       if ( action.error )
       {
         errorCount += 1;
-        if ( action.handle.isEmpty() )
+        QString locator = action.handle;
+        if ( locator.isEmpty() )
         {
-          errorLocators << QStringLiteral( "Update:%1" ).arg( action.typeName );
+          locator = QStringLiteral( "Update:%1" ).arg( action.typeName );
         }
-        else
-        {
-          errorLocators << action.handle;
-        }
-        errorMessages << action.errorMsg;
+        addTransactionResult( resp, trsElem, locator, action.errorMsg );
       }
+      totalUpdated += action.totalUpdated;
     }
 
     QList<transactionDelete>::iterator tdIt = aRequest.deletes.begin();
@@ -123,71 +161,48 @@ namespace QgsWfs
       if ( action.error )
       {
         errorCount += 1;
-        if ( action.handle.isEmpty() )
+        QString locator = action.handle;
+        if ( locator.isEmpty() )
         {
-          errorLocators << QStringLiteral( "Delete:%1" ).arg( action.typeName );
+          locator = QStringLiteral( "Delete:%1" ).arg( action.typeName );
         }
-        else
-        {
-          errorLocators << action.handle;
-        }
-        errorMessages << action.errorMsg;
+        addTransactionResult( resp, trsElem, locator, action.errorMsg );
       }
+      totalDeleted += action.totalDeleted;
     }
 
-    QList<transactionInsert>::iterator tiIt = aRequest.inserts.begin();
-    for ( ; tiIt != aRequest.inserts.end(); ++tiIt )
+    //wfs:TransactionSummary element
+    QDomElement summaryElem = doc.createElement( QStringLiteral( "TransactionSummary" ) );
+    if ( aRequest.inserts.size() > 0 )
     {
-      transactionInsert &action = *tiIt;
-      if ( action.error )
-      {
-        errorCount += 1;
-        if ( action.handle.isEmpty() )
-        {
-          errorLocators << QStringLiteral( "Insert:%1" ).arg( action.typeName );
-        }
-        else
-        {
-          errorLocators << action.handle;
-        }
-        errorMessages << action.errorMsg;
-      }
-      else
-      {
-        QStringList::const_iterator fidIt = action.insertFeatureIds.constBegin();
-        for ( ; fidIt != action.insertFeatureIds.constEnd(); ++fidIt )
-        {
-          QString fidStr = *fidIt;
-          QDomElement irElem = doc.createElement( QStringLiteral( "InsertResult" ) );
-          if ( !action.handle.isEmpty() )
-          {
-            irElem.setAttribute( QStringLiteral( "handle" ), action.handle );
-          }
-          QDomElement fiElem = doc.createElement( QStringLiteral( "ogc:FeatureId" ) );
-          fiElem.setAttribute( QStringLiteral( "fid" ), fidStr );
-          irElem.appendChild( fiElem );
-          respElem.appendChild( irElem );
-        }
-      }
+      QDomElement totalInsertedElem = doc.createElement( QStringLiteral( "TotalInserted" ) );
+      totalInsertedElem.appendChild( doc.createTextNode( QString::number( totalInserted ) ) );
+      summaryElem.appendChild( totalInsertedElem );
+    }
+    if ( aRequest.updates.size() > 0 )
+    {
+      QDomElement totalUpdatedElem = doc.createElement( QStringLiteral( "TotalUpdated" ) );
+      totalUpdatedElem.appendChild( doc.createTextNode( QString::number( totalUpdated ) ) );
+      summaryElem.appendChild( totalUpdatedElem );
+    }
+    if ( aRequest.deletes.size() > 0 )
+    {
+      QDomElement totalDeletedElem = doc.createElement( QStringLiteral( "TotalDeleted" ) );
+      totalDeletedElem.appendChild( doc.createTextNode( QString::number( totalDeleted ) ) );
+      summaryElem.appendChild( totalDeletedElem );
+    }
+    respElem.appendChild( summaryElem );
+
+    // add TransactionResults
+    if ( errorCount > 0 && trsElem.hasChildNodes() )
+    {
+      respElem.appendChild( trsElem );
     }
 
-    // addTransactionResult
-    if ( errorCount == 0 )
+    // add InsertResults
+    if ( aRequest.inserts.size() > 0 && irsElem.hasChildNodes() )
     {
-      addTransactionResult( resp, respElem, QStringLiteral( "SUCCESS" ), QString(), QString() );
-    }
-    else
-    {
-      QString locator = errorLocators.join( QStringLiteral( "; " ) );
-      QString message = errorMessages.join( QStringLiteral( "; " ) );
-      if ( errorCount != actionCount )
-      {
-        addTransactionResult( resp, respElem, QStringLiteral( "PARTIAL" ), locator, message );
-      }
-      else
-      {
-        addTransactionResult( resp, respElem, QStringLiteral( "ERROR" ), locator, message );
-      }
+      respElem.appendChild( irsElem );
     }
     return resp;
   }
@@ -356,6 +371,7 @@ namespace QgsWfs
       // get iterator
       QgsFeatureIterator fit = vlayer->getFeatures( featureRequest );
       QgsFeature feature;
+      int totalUpdated = 0;
       // get action properties
       QMap<QString, QString> propertyMap = action.propertyMap;
       QDomElement geometryElem = action.geometryElement;
@@ -433,6 +449,7 @@ namespace QgsWfs
             break;
           }
         }
+        totalUpdated += 1;
       }
       if ( action.error )
       {
@@ -467,6 +484,7 @@ namespace QgsWfs
         continue;
       }
       // all the changes are OK!
+      action.totalUpdated = totalUpdated;
       action.error = false;
 
     }
@@ -564,6 +582,7 @@ namespace QgsWfs
         continue;
       }
       // all the changes are OK!
+      action.totalDeleted = fids.count();
       action.error = false;
     }
 
@@ -1159,21 +1178,15 @@ namespace QgsWfs
   namespace
   {
 
-    void addTransactionResult( QDomDocument &responseDoc, QDomElement &responseElem, const QString &status,
+    void addTransactionResult( QDomDocument &responseDoc, QDomElement &resultsElem,
                                const QString &locator, const QString &message )
     {
-      QDomElement trElem = responseDoc.createElement( QStringLiteral( "TransactionResult" ) );
-      QDomElement stElem = responseDoc.createElement( QStringLiteral( "Status" ) );
-      QDomElement successElem = responseDoc.createElement( status );
-      stElem.appendChild( successElem );
-      trElem.appendChild( stElem );
-      responseElem.appendChild( trElem );
+      QDomElement trElem = responseDoc.createElement( QStringLiteral( "Action" ) );
+      resultsElem.appendChild( trElem );
 
       if ( !locator.isEmpty() )
       {
-        QDomElement locElem = responseDoc.createElement( QStringLiteral( "Locator" ) );
-        locElem.appendChild( responseDoc.createTextNode( locator ) );
-        trElem.appendChild( locElem );
+        trElem.setAttribute( QStringLiteral( "locator" ), locator );
       }
 
       if ( !message.isEmpty() )

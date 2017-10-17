@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgswfsgetfeature.h
+                              qgswfsgecapabilities_1_0_0.h
                               -------------------------
   begin                : December 20 , 2016
   copyright            : (C) 2007 by Marco Hugentobler  (original code)
@@ -19,65 +19,47 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSWFSGETFEATURE_H
-#define QGSWFSGETFEATURE_H
+#ifndef QGSWFSGETCAPABILITIES_1_0_0_H
+#define QGSWFSGETCAPABILITIES_1_0_0_H
 
-#include "qgswfsparameters.h"
+#include <QDomDocument>
 
 namespace QgsWfs
 {
-  struct getFeatureQuery
+  namespace v1_0_0
   {
-    QString typeName;
 
-    QString srsName;
+    /**
+     * Create FeatureTypeList element for get capabilities document
+     */
+    QDomElement getFeatureTypeListElement( QDomDocument &doc, QgsServerInterface *serverIface, const QgsProject *project );
 
-    QgsFeatureRequest featureRequest;
+    /**
+     * Create Capability element for get capabilities document
+     */
+    QDomElement getCapabilityElement( QDomDocument &doc, const QgsProject *project, const QgsServerRequest &request );
 
-    QStringList propertyList;
-  };
+    /**
+     * Create Service element for get capabilities document
+     */
+    QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project );
 
-  struct getFeatureRequest
-  {
-    long maxFeatures;
+    /**
+     * Create get capabilities document
+     */
+    QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface,
+        const QgsProject *project, const QString &version,
+        const QgsServerRequest &request );
 
-    long startIndex;
+    /**
+     * Output WFS GetCapabilities response
+     */
+    void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
+                               const QString &version, const QgsServerRequest &request,
+                               QgsServerResponse &response );
 
-    QgsWfsParameters::Format outputFormat;
-
-    QList< getFeatureQuery > queries;
-
-    QString geometryName;
-  };
-
-  /**
-   * Add SortBy element to featureRequest
-   */
-  void parseSortByElement( QDomElement &sortByElem, QgsFeatureRequest &featureRequest, const QString &typeName );
-
-  /**
-   * Transform Query element to getFeatureQuery
-   */
-  getFeatureQuery parseQueryElement( QDomElement &queryElem );
-
-  /**
-   * Transform RequestBody root element to getFeatureRequest
-   */
-  getFeatureRequest parseGetFeatureRequestBody( QDomElement &docElem );
-
-  /**
-   * Transform parameters to getFeatureRequest
-   */
-  getFeatureRequest parseGetFeatureParameters();
-
-  /**
-   * Output WFS  GetFeature response
-   */
-  void writeGetFeature( QgsServerInterface *serverIface, const QgsProject *project,
-                        const QString &version, const QgsServerRequest &request,
-                        QgsServerResponse &response );
-
-} // samespace QgsWfs
+  } // namespace v1_0_0
+} // namespace QgsWfs
 
 #endif
 

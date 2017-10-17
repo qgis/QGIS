@@ -72,9 +72,18 @@ namespace QgsWfs
       {}
   };
 
-
-
-
+  /**
+   * \ingroup server
+   * \class  QgsBadRequestException
+   * \brief Exception thrown in case of malformed request
+   */
+  class QgsBadRequestException: public QgsServiceException
+  {
+    public:
+      QgsBadRequestException( const QString &code, const QString &message, const QString &locator = QString() )
+        : QgsServiceException( code, message, locator, 400 )
+      {}
+  };
 
 
 } // namespace QgsWfs
