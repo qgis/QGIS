@@ -32,7 +32,7 @@ QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, const QgsDa
 {
   QSettings settings;
   bool useCurrentViewExtent = settings.value( "/Windows/WFSSourceSelect/FeatureCurrentViewExtent", true ).toBool();
-  mUri = QgsWFSDataSourceURI::build( uri.uri(), featureType, crsString, QString(), useCurrentViewExtent );
+  mUri = QgsWFSDataSourceURI::build( uri.uri( false ), featureType, crsString, QString(), useCurrentViewExtent );
   setState( Populated );
   mIconName = "mIconConnect.png";
 }
@@ -146,7 +146,7 @@ QVector<QgsDataItem*> QgsWFSRootItem::createChildren()
   {
     QgsWFSConnection connection( connName );
     QString path = "wfs:/" + connName;
-    QgsDataItem * conn = new QgsWFSConnectionItem( this, connName, path, connection.uri().uri() );
+    QgsDataItem * conn = new QgsWFSConnectionItem( this, connName, path, connection.uri().uri( false ) );
     connections.append( conn );
   }
   return connections;
@@ -213,7 +213,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     if ( QgsWFSConnection::connectionList().contains( connectionName ) )
     {
       QgsWFSConnection connection( connectionName );
-      return new QgsWFSConnectionItem( parentItem, "WFS", thePath, connection.uri().uri() );
+      return new QgsWFSConnectionItem( parentItem, "WFS", thePath, connection.uri().uri( false ) );
     }
   }
 
