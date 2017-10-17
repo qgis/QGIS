@@ -60,8 +60,6 @@ class QgsVectorLayerUndoPassthroughCommand : QgsVectorLayerUndoCommand
 %End
 
 
-  protected:
-
 };
 
 
