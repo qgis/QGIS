@@ -28,7 +28,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
       ZGuide,
       ZSmartGuide,
       ZMouseHandles,
-      ZMapTool,
+      ZViewTool,
       ZSnapIndicator,
     };
 

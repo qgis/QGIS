@@ -35,13 +35,15 @@ class QgsLayoutItemAbstractGuiMetadata
     typedef QFlags<QgsLayoutItemAbstractGuiMetadata::Flag> Flags;
 
 
-    QgsLayoutItemAbstractGuiMetadata( int type, const QString &visibleName, const QString &groupId = QString(), Flags flags = 0 );
+    QgsLayoutItemAbstractGuiMetadata( int type, const QString &visibleName, const QString &groupId = QString(), bool isNodeBased = false, Flags flags = 0 );
 %Docstring
  Constructor for QgsLayoutItemAbstractGuiMetadata with the specified class ``type``.
 
  ``visibleName`` should be set to a translated, user visible name identifying the corresponding layout item.
 
  An optional ``groupId`` can be set, which allows grouping of related layout item classes. See QgsLayoutItemGuiMetadata for details.
+
+ If ``isNodeBased`` is true, then the corresponding item is a node based item.
 %End
 
     virtual ~QgsLayoutItemAbstractGuiMetadata();
@@ -62,6 +64,12 @@ class QgsLayoutItemAbstractGuiMetadata
 %Docstring
  Returns the item group ID, if set.
  :rtype: str
+%End
+
+    bool isNodeBased() const;
+%Docstring
+ Returns true if the associated item is a node based item.
+ :rtype: bool
 %End
 
     QString visibleName() const;
@@ -86,7 +94,16 @@ class QgsLayoutItemAbstractGuiMetadata
 %Docstring
  Creates a rubber band for use when creating layout items of this type. Can return None if no rubber band
  should be created. The default behavior is to create a rectangular rubber band.
+.. seealso:: createNodeRubberBand()
  :rtype: QgsLayoutViewRubberBand
+%End
+
+    virtual QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) /Factory/;
+%Docstring
+ Creates a rubber band for use when creating layout node based items of this type. Can return None if no rubber band
+ should be created. The default behavior is to return None.
+.. seealso:: createRubberBand()
+ :rtype: QAbstractGraphicsShapeItem
 %End
 
     virtual QgsLayoutItem *createItem( QgsLayout *layout ) /Factory/;
@@ -96,6 +113,7 @@ class QgsLayoutItemAbstractGuiMetadata
 %End
 
 };
+
 
 
 
@@ -217,6 +235,7 @@ class QgsLayoutItemGuiRegistry : QObject
  Creates a new instance of a layout item configuration widget for the specified ``item``.
  :rtype: QgsLayoutItemBaseWidget
 %End
+
 
 
     QList< int > itemMetadataIds() const;

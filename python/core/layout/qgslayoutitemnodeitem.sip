@@ -22,6 +22,19 @@ class QgsLayoutNodesItem: QgsLayoutItem
 %End
   public:
 
+    void setNodes( const QPolygonF &nodes );
+%Docstring
+ Sets the ``nodes`` the shape consists of.
+.. seealso:: nodes()
+%End
+
+    QPolygonF nodes() const;
+%Docstring
+ Returns the nodes the shape consists of.
+.. seealso:: setNodes()
+ :rtype: QPolygonF
+%End
+
     bool addNode( QPointF point, bool checkArea = true, double radius = 10 );
 %Docstring
  Add a node in current shape.
@@ -93,12 +106,6 @@ Returns the number of nodes in the shape.
     void deselectNode();
 %Docstring
  Deselects any selected nodes.
-%End
-
-    QPolygonF nodes() const;
-%Docstring
- Returns the nodes the shape consists of.
- :rtype: QPolygonF
 %End
 
   protected:

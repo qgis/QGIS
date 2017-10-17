@@ -33,6 +33,18 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
   public:
 
     /**
+     * Sets the \a nodes the shape consists of.
+     * \see nodes()
+     */
+    void setNodes( const QPolygonF &nodes );
+
+    /**
+     * Returns the nodes the shape consists of.
+     * \see setNodes()
+     */
+    QPolygonF nodes() const { return mPolygon; }
+
+    /**
      * Add a node in current shape.
      * \param point is the location of the new node (in scene coordinates)
      * \param checkArea is a flag to indicate if there's a space constraint.
@@ -95,11 +107,6 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
      */
     void deselectNode() { mSelectedNode = -1; }
 
-    /**
-     * Returns the nodes the shape consists of.
-     */
-    QPolygonF nodes() const { return mPolygon; }
-
   protected:
 
     /**
@@ -153,6 +160,8 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
     void updateSceneRect();
 
   private:
+
+    void init();
 
     //! The index of the node currently selected.
     int mSelectedNode = -1;

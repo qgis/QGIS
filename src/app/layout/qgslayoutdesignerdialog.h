@@ -24,6 +24,7 @@
 class QgsLayoutDesignerDialog;
 class QgsLayoutView;
 class QgsLayoutViewToolAddItem;
+class QgsLayoutViewToolAddNodeItem;
 class QgsLayoutViewToolPan;
 class QgsLayoutViewToolZoom;
 class QgsLayoutViewToolSelect;
@@ -270,6 +271,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     static QList<double> sStatusZoomLevelsList;
 
     QgsLayoutViewToolAddItem *mAddItemTool = nullptr;
+    QgsLayoutViewToolAddNodeItem *mAddNodeItemTool = nullptr;
     QgsLayoutViewToolPan *mPanTool = nullptr;
     QgsLayoutViewToolZoom *mZoomTool = nullptr;
     QgsLayoutViewToolSelect *mSelectTool = nullptr;
@@ -313,7 +315,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void restoreWindowState();
 
     //! Switch to new item creation tool, for a new item of the specified \a id.
-    void activateNewItemCreationTool( int id );
+    void activateNewItemCreationTool( int id, bool nodeBasedItem );
 
     void createLayoutPropertiesWidget();
 

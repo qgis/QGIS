@@ -64,6 +64,25 @@ class TestQgsLayoutPolyline(unittest.TestCase):
         style = QgsLineSymbol.createSimple(props)
         self.polyline.setSymbol(style)
 
+    def testNodes(self):
+        polygon = QPolygonF()
+        polygon.append(QPointF(0.0, 0.0))
+        polygon.append(QPointF(100.0, 0.0))
+        polygon.append(QPointF(200.0, 100.0))
+        polygon.append(QPointF(100.0, 200.0))
+
+        p = QgsLayoutItemPolyline(polygon, self.layout)
+        self.assertEqual(p.nodes(), polygon)
+
+        polygon = QPolygonF()
+        polygon.append(QPointF(0.0, 0.0))
+        polygon.append(QPointF(1000.0, 0.0))
+        polygon.append(QPointF(2000.0, 100.0))
+        polygon.append(QPointF(1000.0, 200.0))
+
+        p.setNodes(polygon)
+        self.assertEqual(p.nodes(), polygon)
+
     def testDisplayName(self):
         """Test if displayName is valid"""
 

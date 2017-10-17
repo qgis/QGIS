@@ -23,27 +23,38 @@
 #include <cmath>
 #include <QStyleOptionGraphicsItem>
 
+void QgsLayoutNodesItem::setNodes( const QPolygonF &nodes )
+{
+  mPolygon = nodes;
+  updateSceneRect();
+}
+
 QgsLayoutNodesItem::QgsLayoutNodesItem( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {
-  // no cache - the node based items cannot reliably determine their real bounds (e.g. due to mitred corners).
-  // this blocks use of the pixmap based cache for these
-  setCacheMode( QGraphicsItem::NoCache );
+  init();
 }
 
 QgsLayoutNodesItem::QgsLayoutNodesItem( const QPolygonF &polygon,
                                         QgsLayout *layout )
   : QgsLayoutItem( layout )
 {
-  // no cache - the node based items cannot reliably determine their real bounds (e.g. due to mitred corners).
-  // this blocks use of the pixmap based cache for these
-  setCacheMode( QGraphicsItem::NoCache );
+  init();
 
   const QRectF boundingRect = polygon.boundingRect();
   attemptSetSceneRect( boundingRect );
 
   const QPointF topLeft = boundingRect.topLeft();
   mPolygon = polygon.translated( -topLeft );
+}
+
+void QgsLayoutNodesItem::init()
+{
+  // no cache - the node based items cannot reliably determine their real bounds (e.g. due to mitred corners).
+  // this blocks use of the pixmap based cache for these
+  setCacheMode( QGraphicsItem::NoCache );
+  setBackgroundEnabled( false );
+  setFrameEnabled( false );
 }
 
 void QgsLayoutNodesItem::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *style )
@@ -308,6 +319,8 @@ void QgsLayoutNodesItem::updateSceneRect()
   update();
   emit sizePositionChanged();
 }
+
+
 
 bool QgsLayoutNodesItem::writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {

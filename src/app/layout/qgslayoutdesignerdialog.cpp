@@ -24,6 +24,7 @@
 #include "qgslayoutappmenuprovider.h"
 #include "qgslayoutview.h"
 #include "qgslayoutviewtooladditem.h"
+#include "qgslayoutviewtooladdnodeitem.h"
 #include "qgslayoutviewtoolpan.h"
 #include "qgslayoutviewtoolzoom.h"
 #include "qgslayoutviewtoolselect.h"
@@ -227,6 +228,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionsToolbar->addWidget( resizeToolButton );
 
   mAddItemTool = new QgsLayoutViewToolAddItem( mView );
+  mAddNodeItemTool = new QgsLayoutViewToolAddNodeItem( mView );
   mPanTool = new QgsLayoutViewToolPan( mView );
   mPanTool->setAction( mActionPan );
   mToolsActionGroup->addAction( mActionPan );
@@ -241,6 +243,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionSelectMoveItem, &QAction::triggered, mSelectTool, [ = ] { mView->setTool( mSelectTool ); } );
   // after creating an item with the add item tool, switch immediately to select tool
   connect( mAddItemTool, &QgsLayoutViewToolAddItem::createdItem, this, [ = ] { mView->setTool( mSelectTool ); } );
+  connect( mAddNodeItemTool, &QgsLayoutViewToolAddNodeItem::createdItem, this, [ = ] { mView->setTool( mSelectTool ); } );
 
   //Ctrl+= should also trigger zoom in
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
@@ -847,6 +850,7 @@ void QgsLayoutDesignerDialog::itemTypeAdded( int id )
 
   QString name = QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->visibleName();
   QString groupId = QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->groupId();
+  bool nodeBased = QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->isNodeBased();
   QToolButton *groupButton = nullptr;
   QMenu *itemSubmenu = nullptr;
   if ( !groupId.isEmpty() )
@@ -905,9 +909,9 @@ void QgsLayoutDesignerDialog::itemTypeAdded( int id )
   else
     mToolsToolbar->addAction( action );
 
-  connect( action, &QAction::triggered, this, [this, id]()
+  connect( action, &QAction::triggered, this, [this, id, nodeBased]()
   {
-    activateNewItemCreationTool( id );
+    activateNewItemCreationTool( id, nodeBased );
   } );
 }
 
@@ -1084,12 +1088,19 @@ void QgsLayoutDesignerDialog::restoreWindowState()
   }
 }
 
-void QgsLayoutDesignerDialog::activateNewItemCreationTool( int id )
+void QgsLayoutDesignerDialog::activateNewItemCreationTool( int id, bool nodeBasedItem )
 {
-  mAddItemTool->setItemMetadataId( id );
-  if ( mView )
+  if ( !nodeBasedItem )
   {
-    mView->setTool( mAddItemTool );
+    mAddItemTool->setItemMetadataId( id );
+    if ( mView )
+      mView->setTool( mAddItemTool );
+  }
+  else
+  {
+    mAddNodeItemTool->setItemMetadataId( id );
+    if ( mView )
+      mView->setTool( mAddNodeItemTool );
   }
 }
 
@@ -1123,7 +1134,7 @@ void QgsLayoutDesignerDialog::initializeRegistry()
     return new QgsLayoutPagePropertiesWidget( nullptr, item );
   } );
 
-  QgsGui::layoutItemGuiRegistry()->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPage, QObject::tr( "Page" ), QIcon(), createPageWidget, nullptr, QString(), QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools ) );
+  QgsGui::layoutItemGuiRegistry()->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPage, QObject::tr( "Page" ), QIcon(), createPageWidget, nullptr, QString(), false, QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools ) );
 
 }
 

@@ -25,6 +25,11 @@ QgsLayoutViewRubberBand *QgsLayoutItemAbstractGuiMetadata::createRubberBand( Qgs
   return new QgsLayoutViewRectangularRubberBand( view );
 }
 
+QAbstractGraphicsShapeItem *QgsLayoutItemAbstractGuiMetadata::createNodeRubberBand( QgsLayoutView *view )
+{
+  return nullptr;
+}
+
 QgsLayoutItem *QgsLayoutItemAbstractGuiMetadata::createItem( QgsLayout * )
 {
   return nullptr;
@@ -103,6 +108,14 @@ QgsLayoutViewRubberBand *QgsLayoutItemGuiRegistry::createItemRubberBand( int met
     return nullptr;
 
   return mMetadata[metadataId]->createRubberBand( view );
+}
+
+QAbstractGraphicsShapeItem *QgsLayoutItemGuiRegistry::createNodeItemRubberBand( int metadataId, QgsLayoutView *view )
+{
+  if ( !mMetadata.contains( metadataId ) )
+    return nullptr;
+
+  return mMetadata[metadataId]->createNodeRubberBand( view );
 }
 
 QList<int> QgsLayoutItemGuiRegistry::itemMetadataIds() const

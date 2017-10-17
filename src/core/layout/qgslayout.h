@@ -51,7 +51,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
       ZGuide = 9998, //!< Z-value for page guides
       ZSmartGuide = 9999, //!< Z-value for smart (item bounds based) guides
       ZMouseHandles = 10000, //!< Z-value for mouse handles
-      ZMapTool = 10001, //!< Z-value for temporary map tool items
+      ZViewTool = 10001, //!< Z-value for temporary view tool items
       ZSnapIndicator = 10002, //!< Z-value for snapping indicator
     };
 

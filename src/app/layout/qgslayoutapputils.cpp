@@ -15,6 +15,7 @@
 
 #include "qgslayoutapputils.h"
 #include "qgsgui.h"
+#include "qgslayout.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutviewrubberband.h"
@@ -59,35 +60,56 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     return new QgsLayoutShapeWidget( qobject_cast< QgsLayoutItemShape * >( item ) );
   };
 
-  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutShape, QObject::tr( "Rectangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), createShapeWidget, createRubberBand, QStringLiteral( "shapes" ), 0, []( QgsLayout * layout )->QgsLayoutItem*
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutShape, QObject::tr( "Rectangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), createShapeWidget, createRubberBand, QStringLiteral( "shapes" ), false, 0, []( QgsLayout * layout )->QgsLayoutItem*
   {
     std::unique_ptr< QgsLayoutItemShape > shape = qgis::make_unique< QgsLayoutItemShape >( layout );
     shape->setShapeType( QgsLayoutItemShape::Rectangle );
     return shape.release();
   } ) );
-  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutShape, QObject::tr( "Ellipse" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicCircle.svg" ) ), createShapeWidget, createEllipseBand, QStringLiteral( "shapes" ), 0, []( QgsLayout * layout )->QgsLayoutItem*
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutShape, QObject::tr( "Ellipse" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicCircle.svg" ) ), createShapeWidget, createEllipseBand, QStringLiteral( "shapes" ), false, 0, []( QgsLayout * layout )->QgsLayoutItem*
   {
     std::unique_ptr< QgsLayoutItemShape > shape = qgis::make_unique< QgsLayoutItemShape >( layout );
     shape->setShapeType( QgsLayoutItemShape::Ellipse );
     return shape.release();
   } ) );
-  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutShape, QObject::tr( "Triangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicTriangle.svg" ) ), createShapeWidget, createTriangleBand, QStringLiteral( "shapes" ), 0, []( QgsLayout * layout )->QgsLayoutItem*
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutShape, QObject::tr( "Triangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicTriangle.svg" ) ), createShapeWidget, createTriangleBand, QStringLiteral( "shapes" ), false, 0, []( QgsLayout * layout )->QgsLayoutItem*
   {
     std::unique_ptr< QgsLayoutItemShape > shape = qgis::make_unique< QgsLayoutItemShape >( layout );
     shape->setShapeType( QgsLayoutItemShape::Triangle );
     return shape.release();
   } ) );
 
-  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPolygon, QObject::tr( "Polygon" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolygon.svg" ) ),
-                                      [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+
+  std::unique_ptr< QgsLayoutItemGuiMetadata > polygonMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >(
+        QgsLayoutItemRegistry::LayoutPolygon, QObject::tr( "Polygon" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolygon.svg" ) ),
+        [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
     return nullptr;
     //return new QgsLayoutMapWidget( qobject_cast< QgsLayoutItemMap * >( item ) );
-  }, createRubberBand, QStringLiteral( "nodes" ) ) );
-  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPolyline, QObject::tr( "Polyline" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolyline.svg" ) ),
-                                      [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  }, createRubberBand, QStringLiteral( "nodes" ), true );
+  polygonMetadata->setNodeRubberBandCreationFunction( []( QgsLayoutView * )->QGraphicsPolygonItem*
+  {
+    std::unique_ptr< QGraphicsPolygonItem > band = qgis::make_unique< QGraphicsPolygonItem >();
+    band->setBrush( Qt::NoBrush );
+    band->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
+    band->setZValue( QgsLayout::ZViewTool );
+    return band.release();
+  } );
+  registry->addLayoutItemGuiMetadata( polygonMetadata.release() );
+
+  std::unique_ptr< QgsLayoutItemGuiMetadata > polylineMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata>(
+        QgsLayoutItemRegistry::LayoutPolyline, QObject::tr( "Polyline" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolyline.svg" ) ),
+        [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
     return nullptr;
     //return new QgsLayoutMapWidget( qobject_cast< QgsLayoutItemMap * >( item ) );
-  }, createRubberBand, QStringLiteral( "nodes" ) ) );
+  }, createRubberBand, QStringLiteral( "nodes" ), true );
+  polylineMetadata->setNodeRubberBandCreationFunction( []( QgsLayoutView * )->QGraphicsPathItem*
+  {
+    std::unique_ptr< QGraphicsPathItem > band = qgis::make_unique< QGraphicsPathItem >();
+    band->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
+    band->setZValue( QgsLayout::ZViewTool );
+    return band.release();
+  } );
+  registry->addLayoutItemGuiMetadata( polylineMetadata.release() );
 }
