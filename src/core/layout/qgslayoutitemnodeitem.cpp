@@ -29,6 +29,16 @@ void QgsLayoutNodesItem::setNodes( const QPolygonF &nodes )
   updateSceneRect();
 }
 
+QRectF QgsLayoutNodesItem::boundingRect() const
+{
+  return mCurrentRectangle;
+}
+
+double QgsLayoutNodesItem::estimatedFrameBleed() const
+{
+  return mMaxSymbolBleed;
+}
+
 QgsLayoutNodesItem::QgsLayoutNodesItem( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {
@@ -55,6 +65,8 @@ void QgsLayoutNodesItem::init()
   setCacheMode( QGraphicsItem::NoCache );
   setBackgroundEnabled( false );
   setFrameEnabled( false );
+
+  connect( this, &QgsLayoutNodesItem::sizePositionChanged, this, &QgsLayoutNodesItem::updateBoundingRect );
 }
 
 void QgsLayoutNodesItem::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *style )
@@ -311,17 +323,23 @@ void QgsLayoutNodesItem::updateSceneRect()
   const QRectF br = mPolygon.boundingRect();
 
   const QPointF topLeft = mapToScene( br.topLeft() );
+  //will trigger updateBoundingRect if necessary
   attemptSetSceneRect( QRectF( topLeft.x(), topLeft.y(), br.width(), br.height() ) );
 
   // update polygon position
   mPolygon.translate( -br.topLeft().x(), -br.topLeft().y() );
+}
+
+void QgsLayoutNodesItem::updateBoundingRect()
+{
+  QRectF br = rect();
+  br.adjust( -mMaxSymbolBleed, -mMaxSymbolBleed, mMaxSymbolBleed, mMaxSymbolBleed );
+  mCurrentRectangle = br;
 
   // update
   prepareGeometryChange();
   update();
 }
-
-
 
 bool QgsLayoutNodesItem::writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {

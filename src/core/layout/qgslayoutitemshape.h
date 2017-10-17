@@ -95,6 +95,10 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
     // Depending on the symbol style, the bounding rectangle can be larger than the shape
     QRectF boundingRect() const override;
 
+    // Reimplement estimatedFrameBleed, since frames on shapes are drawn using symbology
+    // rather than the item's pen
+    double estimatedFrameBleed() const override;
+
   protected:
 
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;

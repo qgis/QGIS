@@ -48,6 +48,7 @@ class TestQgsLayoutShapes : public QObject
     void roundedRectangle(); //test if rounded rectangle shape is functioning
     void symbol(); //test is styling shapes via symbol is working
     void readWriteXml();
+    void bounds();
 
   private:
 
@@ -251,6 +252,37 @@ void TestQgsLayoutShapes::readWriteXml()
   QCOMPARE( copy->shapeType(), QgsLayoutItemShape::Triangle );
   QCOMPARE( copy->symbol()->symbolLayer( 0 )->color().name(), QStringLiteral( "#00ff00" ) );
   QCOMPARE( copy->symbol()->symbolLayer( 0 )->strokeColor().name(), QStringLiteral( "#ffff00" ) );
+}
+
+void TestQgsLayoutShapes::bounds()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  QgsLayoutItemShape *shape = new QgsLayoutItemShape( &l );
+  shape->attemptMove( QgsLayoutPoint( 20, 20 ) );
+  shape->attemptResize( QgsLayoutSize( 150, 100 ) );
+
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( Qt::green );
+  simpleFill->setStrokeColor( Qt::yellow );
+  simpleFill->setStrokeWidth( 6 );
+  shape->setSymbol( fillSymbol );
+
+  // scene bounding rect should include symbol outline
+  QRectF bounds = shape->sceneBoundingRect();
+  QCOMPARE( bounds.left(), 17.0 );
+  QCOMPARE( bounds.right(), 173.0 );
+  QCOMPARE( bounds.top(), 17.0 );
+  QCOMPARE( bounds.bottom(), 123.0 );
+
+  // rectWithFrame should include symbol outline too
+  bounds = shape->rectWithFrame();
+  QCOMPARE( bounds.left(), -3.0 );
+  QCOMPARE( bounds.right(), 153.0 );
+  QCOMPARE( bounds.top(), -3.0 );
+  QCOMPARE( bounds.bottom(), 103.0 );
 }
 
 QGSTEST_MAIN( TestQgsLayoutShapes )

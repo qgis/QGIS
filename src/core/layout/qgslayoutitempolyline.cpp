@@ -18,7 +18,9 @@
 #include "qgslayoutitemregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
+#include "qgslayout.h"
 #include "qgsmapsettings.h"
+#include "qgslayoututils.h"
 #include <limits>
 
 QgsLayoutItemPolyline::QgsLayoutItemPolyline( QgsLayout *layout )
@@ -96,6 +98,18 @@ void QgsLayoutItemPolyline::createDefaultPolylineStyleSymbol()
   properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "square" ) );
 
   mPolylineStyleSymbol.reset( QgsLineSymbol::createSimple( properties ) );
+  refreshSymbol();
+}
+
+void QgsLayoutItemPolyline::refreshSymbol()
+{
+  if ( layout() )
+  {
+    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( layout(), nullptr, layout()->context().dpi() );
+    mMaxSymbolBleed = ( 25.4 / layout()->context().dpi() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mPolylineStyleSymbol.get(), rc );
+  }
+
+  updateSceneRect();
 
   emit frameChanged();
 }
@@ -127,8 +141,7 @@ void QgsLayoutItemPolyline::_readXmlStyle( const QDomElement &elmt, const QgsRea
 void QgsLayoutItemPolyline::setSymbol( QgsLineSymbol *symbol )
 {
   mPolylineStyleSymbol.reset( static_cast<QgsLineSymbol *>( symbol->clone() ) );
-  update();
-  emit frameChanged();
+  refreshSymbol();
 }
 
 void QgsLayoutItemPolyline::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt, const QgsReadWriteContext &context ) const

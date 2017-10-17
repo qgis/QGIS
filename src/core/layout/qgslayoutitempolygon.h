@@ -81,6 +81,12 @@ class CORE_EXPORT QgsLayoutItemPolygon: public QgsLayoutNodesItem
     std::unique_ptr<QgsFillSymbol> mPolygonStyleSymbol;
     //! Create a default symbol.
     void createDefaultPolygonStyleSymbol();
+
+    /**
+     * Should be called after the shape's symbol is changed. Redraws the shape and recalculates
+     * its selection bounds.
+    */
+    void refreshSymbol();
 };
 
 #endif // QGSLAYOUTITEMPOLYGON_H

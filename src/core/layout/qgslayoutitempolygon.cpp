@@ -73,6 +73,19 @@ void QgsLayoutItemPolygon::createDefaultPolygonStyleSymbol()
 
   mPolygonStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
 
+  refreshSymbol();
+}
+
+void QgsLayoutItemPolygon::refreshSymbol()
+{
+  if ( layout() )
+  {
+    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( layout(), nullptr, layout()->context().dpi() );
+    mMaxSymbolBleed = ( 25.4 / layout()->context().dpi() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mPolygonStyleSymbol.get(), rc );
+  }
+
+  updateSceneRect();
+
   emit frameChanged();
 }
 
@@ -108,8 +121,7 @@ void QgsLayoutItemPolygon::_readXmlStyle( const QDomElement &elmt, const QgsRead
 void QgsLayoutItemPolygon::setSymbol( QgsFillSymbol *symbol )
 {
   mPolygonStyleSymbol.reset( static_cast<QgsFillSymbol *>( symbol->clone() ) );
-  update();
-  emit frameChanged();
+  refreshSymbol();
 }
 
 void QgsLayoutItemPolygon::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt, const QgsReadWriteContext &context ) const

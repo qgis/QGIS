@@ -107,6 +107,13 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
      */
     void deselectNode() { mSelectedNode = -1; }
 
+    // Depending on the symbol style, the bounding rectangle can be larger than the shape
+    QRectF boundingRect() const override;
+
+    // Reimplement estimatedFrameBleed, since frames on shapes are drawn using symbology
+    // rather than the item's pen
+    double estimatedFrameBleed() const override;
+
   protected:
 
     /**
@@ -131,6 +138,9 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
 
     //! Shape's nodes.
     QPolygonF mPolygon;
+
+    //! Max symbol bleed
+    double mMaxSymbolBleed = 0.0;
 
     //! Method called in addNode.
     virtual bool _addNode( const int nodeIndex, QPointF newNode, const double radius ) = 0;
@@ -159,6 +169,10 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
     //! Update the current scene rectangle for this item.
     void updateSceneRect();
 
+  private slots:
+
+    void updateBoundingRect();
+
   private:
 
     void init();
@@ -170,6 +184,9 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
      * This tag is used to indicate if we have to draw nodes or not during
      * the painting. */
     bool mDrawNodes = false;
+
+    //! Current bounding rectangle of shape
+    QRectF mCurrentRectangle;
 
     //! Draw nodes
     void drawNodes( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) const;

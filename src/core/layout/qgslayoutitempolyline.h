@@ -82,6 +82,12 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
 
     //! Create a default symbol.
     void createDefaultPolylineStyleSymbol();
+
+    /**
+     * Should be called after the shape's symbol is changed. Redraws the shape and recalculates
+     * its selection bounds.
+    */
+    void refreshSymbol();
 };
 
 #endif // QGSLAYOUTITEMPOLYLINE_H

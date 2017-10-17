@@ -274,6 +274,38 @@ class TestQgsLayoutPolyline(unittest.TestCase):
         self.assertEqual(shape2.nodes(), shape.nodes())
         self.assertEqual(shape2.symbol().symbolLayer(0).color().name(), '#ff0000')
 
+    def testBounds(self):
+        pr = QgsProject()
+        l = QgsLayout(pr)
+
+        p = QPolygonF()
+        p.append(QPointF(50.0, 30.0))
+        p.append(QPointF(100.0, 10.0))
+        p.append(QPointF(200.0, 100.0))
+        shape = QgsLayoutItemPolyline(p, l)
+
+        props = {}
+        props["color"] = "255,0,0,255"
+        props["width"] = "6.0"
+        props["capstyle"] = "square"
+
+        style = QgsLineSymbol.createSimple(props)
+        shape.setSymbol(style)
+
+        # scene bounding rect should include symbol outline
+        bounds = shape.sceneBoundingRect()
+        self.assertEqual(bounds.left(), 47.0)
+        self.assertEqual(bounds.right(), 203.0)
+        self.assertEqual(bounds.top(), 7.0)
+        self.assertEqual(bounds.bottom(), 103.0)
+
+        # rectWithFrame should include symbol outline too
+        bounds = shape.rectWithFrame()
+        self.assertEqual(bounds.left(), -3.0)
+        self.assertEqual(bounds.right(), 153.0)
+        self.assertEqual(bounds.top(), -3.0)
+        self.assertEqual(bounds.bottom(), 93.0)
+
 
 if __name__ == '__main__':
     unittest.main()

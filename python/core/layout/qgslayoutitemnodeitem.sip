@@ -108,6 +108,12 @@ Returns the number of nodes in the shape.
  Deselects any selected nodes.
 %End
 
+    virtual QRectF boundingRect() const;
+
+
+    virtual double estimatedFrameBleed() const;
+
+
   protected:
 
     QgsLayoutNodesItem( QgsLayout *layout );
@@ -130,6 +136,7 @@ Returns the number of nodes in the shape.
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+
 
 
 

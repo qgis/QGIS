@@ -129,6 +129,11 @@ QRectF QgsLayoutItemShape::boundingRect() const
   return mCurrentRectangle;
 }
 
+double QgsLayoutItemShape::estimatedFrameBleed() const
+{
+  return mMaxSymbolBleed;
+}
+
 void QgsLayoutItemShape::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
 {
   QPainter *painter = context.painter();

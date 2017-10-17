@@ -81,6 +81,9 @@ class QgsLayoutItemShape : QgsLayoutItem
     virtual QRectF boundingRect() const;
 
 
+    virtual double estimatedFrameBleed() const;
+
+
   protected:
 
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );

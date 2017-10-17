@@ -279,6 +279,41 @@ class TestQgsLayoutPolygon(unittest.TestCase):
         self.assertEqual(shape2.symbol().symbolLayer(0).color().name(), '#008000')
         self.assertEqual(shape2.symbol().symbolLayer(0).strokeColor().name(), '#ff0000')
 
+    def testBounds(self):
+        pr = QgsProject()
+        l = QgsLayout(pr)
+
+        p = QPolygonF()
+        p.append(QPointF(50.0, 30.0))
+        p.append(QPointF(100.0, 10.0))
+        p.append(QPointF(200.0, 100.0))
+        shape = QgsLayoutItemPolygon(p, l)
+
+        props = {}
+        props["color"] = "green"
+        props["style"] = "solid"
+        props["style_border"] = "solid"
+        props["color_border"] = "red"
+        props["width_border"] = "6.0"
+        props["joinstyle"] = "miter"
+
+        style = QgsFillSymbol.createSimple(props)
+        shape.setSymbol(style)
+
+        # scene bounding rect should include symbol outline
+        bounds = shape.sceneBoundingRect()
+        self.assertEqual(bounds.left(), 47.0)
+        self.assertEqual(bounds.right(), 203.0)
+        self.assertEqual(bounds.top(), 7.0)
+        self.assertEqual(bounds.bottom(), 103.0)
+
+        # rectWithFrame should include symbol outline too
+        bounds = shape.rectWithFrame()
+        self.assertEqual(bounds.left(), -3.0)
+        self.assertEqual(bounds.right(), 153.0)
+        self.assertEqual(bounds.top(), -3.0)
+        self.assertEqual(bounds.bottom(), 93.0)
+
 
 if __name__ == '__main__':
     unittest.main()
