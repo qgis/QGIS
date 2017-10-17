@@ -25,6 +25,8 @@
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempolygon.h"
 #include "qgslayoutitempolyline.h"
+#include "qgslayoutpolygonwidget.h"
+#include "qgslayoutpolylinewidget.h"
 
 void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
 {
@@ -84,8 +86,7 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
         QgsLayoutItemRegistry::LayoutPolygon, QObject::tr( "Polygon" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolygon.svg" ) ),
         [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
-    return nullptr;
-    //return new QgsLayoutMapWidget( qobject_cast< QgsLayoutItemMap * >( item ) );
+    return new QgsLayoutPolygonWidget( qobject_cast< QgsLayoutItemPolygon * >( item ) );
   }, createRubberBand, QStringLiteral( "nodes" ), true );
   polygonMetadata->setNodeRubberBandCreationFunction( []( QgsLayoutView * )->QGraphicsPolygonItem*
   {
@@ -101,8 +102,7 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
         QgsLayoutItemRegistry::LayoutPolyline, QObject::tr( "Polyline" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolyline.svg" ) ),
         [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
-    return nullptr;
-    //return new QgsLayoutMapWidget( qobject_cast< QgsLayoutItemMap * >( item ) );
+    return new QgsLayoutPolylineWidget( qobject_cast< QgsLayoutItemPolyline * >( item ) );
   }, createRubberBand, QStringLiteral( "nodes" ), true );
   polylineMetadata->setNodeRubberBandCreationFunction( []( QgsLayoutView * )->QGraphicsPathItem*
   {
