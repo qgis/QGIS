@@ -17,6 +17,8 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemshape.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutitempolygon.h"
+#include "qgslayoutitempolyline.h"
 #include "qgslayoutitempage.h"
 #include "qgslayoutitemgroup.h"
 #include "qgsgloweffect.h"
@@ -54,6 +56,8 @@ bool QgsLayoutItemRegistry::populate()
     shape->setShapeType( QgsLayoutItemShape::Rectangle );
     return shape;
   } ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPolygon, QStringLiteral( "Polygon" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolygon.svg" ) ), QgsLayoutItemPolygon::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPolyline, QStringLiteral( "Polyline" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolyline.svg" ) ), QgsLayoutItemPolyline::create ) );
 
   return true;
 }

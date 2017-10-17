@@ -311,6 +311,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
     painter->save();
     preparePainter( painter );
     QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, destinationDpi );
+    context.setExpressionContext( createExpressionContext() );
     drawBackground( context );
 
     // scale painter from mm to dots
@@ -412,6 +413,22 @@ void QgsLayoutItem::attemptMove( const QgsLayoutPoint &p, bool useReferencePoint
   QgsLayoutPoint referencePointTargetUnits = mLayout->convertFromLayoutUnits( evaluatedPointLayoutUnits, point.units() );
   mItemPosition = referencePointTargetUnits;
   setScenePos( topLeftPointLayoutUnits );
+  emit sizePositionChanged();
+}
+
+void QgsLayoutItem::attemptSetSceneRect( const QRectF &rect, bool includesFrame )
+{
+  QPointF newPos = mapToScene( rect.topLeft() );
+
+  blockSignals( true );
+  // translate new size to current item units
+  QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( rect.size(), mItemSize.units() );
+  attemptResize( newSize, includesFrame );
+
+  // translate new position to current item units
+  QgsLayoutPoint itemPos = mLayout->convertFromLayoutUnits( newPos, mItemPosition.units() );
+  attemptMove( itemPos, false, includesFrame );
+  blockSignals( false );
   emit sizePositionChanged();
 }
 

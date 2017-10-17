@@ -279,6 +279,24 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     */
     virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false );
 
+
+    /**
+     * Attempts to update the item's position and size to match the passed \a rect in layout
+     * coordinates.
+     *
+     * If \a includesFrame is true, then the position and size specified by \a rect represents the
+     * position and size at for the outside of the item's frame.
+     *
+     * Note that the final position and size of the item may not match the specified target rect,
+     * as data defined item position and size may override the specified value.
+     *
+     * \see attemptResize()
+     * \see attemptMove()
+     * \see referencePoint()
+     * \see positionWithUnits()
+     */
+    void attemptSetSceneRect( const QRectF &rect, bool includesFrame = false );
+
     /**
      * Returns the item's current position, including units. The position returned
      * is the position of the item's reference point, which may not necessarily be the top

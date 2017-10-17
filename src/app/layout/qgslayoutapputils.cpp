@@ -22,12 +22,15 @@
 #include "qgslayoutmapwidget.h"
 #include "qgslayoutshapewidget.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutitempolygon.h"
+#include "qgslayoutitempolyline.h"
 
 void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
 {
   QgsLayoutItemGuiRegistry *registry = QgsGui::layoutItemGuiRegistry();
 
   registry->addItemGroup( QgsLayoutItemGuiGroup( QStringLiteral( "shapes" ), QObject::tr( "Shape" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicShape.svg" ) ) ) );
+  registry->addItemGroup( QgsLayoutItemGuiGroup( QStringLiteral( "nodes" ), QObject::tr( "Node Item" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddNodesItem.svg" ) ) ) );
 
   auto createRubberBand = ( []( QgsLayoutView * view )->QgsLayoutViewRubberBand *
   {
@@ -74,4 +77,17 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     shape->setShapeType( QgsLayoutItemShape::Triangle );
     return shape.release();
   } ) );
+
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPolygon, QObject::tr( "Polygon" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolygon.svg" ) ),
+                                      [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return nullptr;
+    //return new QgsLayoutMapWidget( qobject_cast< QgsLayoutItemMap * >( item ) );
+  }, createRubberBand, QStringLiteral( "nodes" ) ) );
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPolyline, QObject::tr( "Polyline" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolyline.svg" ) ),
+                                      [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return nullptr;
+    //return new QgsLayoutMapWidget( qobject_cast< QgsLayoutItemMap * >( item ) );
+  }, createRubberBand, QStringLiteral( "nodes" ) ) );
 }

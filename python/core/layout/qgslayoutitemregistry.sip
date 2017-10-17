@@ -104,6 +104,8 @@ class QgsLayoutItemRegistry : QObject
       LayoutPage,
       LayoutMap,
       LayoutShape,
+      LayoutPolygon,
+      LayoutPolyline,
 
       // item
       PluginItem,

@@ -409,7 +409,10 @@
 %Include layout/qgslayoutitem.sip
 %Include layout/qgslayoutitemgroup.sip
 %Include layout/qgslayoutitemmap.sip
+%Include layout/qgslayoutitemnodeitem.sip
 %Include layout/qgslayoutitempage.sip
+%Include layout/qgslayoutitempolygon.sip
+%Include layout/qgslayoutitempolyline.sip
 %Include layout/qgslayoutitemregistry.sip
 %Include layout/qgslayoutitemshape.sip
 %Include layout/qgslayoutmodel.sip

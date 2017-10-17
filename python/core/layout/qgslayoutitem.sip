@@ -263,6 +263,24 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: positionWithUnits()
 %End
 
+
+    void attemptSetSceneRect( const QRectF &rect, bool includesFrame = false );
+%Docstring
+ Attempts to update the item's position and size to match the passed ``rect`` in layout
+ coordinates.
+
+ If ``includesFrame`` is true, then the position and size specified by ``rect`` represents the
+ position and size at for the outside of the item's frame.
+
+ Note that the final position and size of the item may not match the specified target rect,
+ as data defined item position and size may override the specified value.
+
+.. seealso:: attemptResize()
+.. seealso:: attemptMove()
+.. seealso:: referencePoint()
+.. seealso:: positionWithUnits()
+%End
+
     QgsLayoutPoint positionWithUnits() const;
 %Docstring
  Returns the item's current position, including units. The position returned
