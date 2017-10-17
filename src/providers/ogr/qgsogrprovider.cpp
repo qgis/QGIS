@@ -254,7 +254,7 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
     {
       if ( !overwrite && !layerName.isEmpty() )
       {
-        GDALDatasetH hDS = GDALOpenEx( uri.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_VECTOR, nullptr, nullptr, nullptr );
+        GDALDatasetH hDS = GDALOpenEx( uri.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr );
         if ( hDS )
         {
           if ( GDALDatasetGetLayerByName( hDS, layerName.toUtf8().constData() ) )
@@ -308,7 +308,7 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
     bool firstFieldIsFid = false;
     if ( !layerName.isEmpty() )
     {
-      GDALDatasetH hDS = GDALOpenEx( uri.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_VECTOR, nullptr, nullptr, nullptr );
+      GDALDatasetH hDS = GDALOpenEx( uri.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr );
       if ( hDS )
       {
         OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, layerName.toUtf8().constData() );
