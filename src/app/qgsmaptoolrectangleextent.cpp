@@ -18,6 +18,7 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsgeometryutils.h"
 #include "qgsmapcanvas.h"
+#include "qgslinestring.h"
 #include "qgspoint.h"
 #include <QMouseEvent>
 #include <memory>
@@ -69,9 +70,11 @@ void QgsMapToolRectangleExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         }
         else
         {
-          emit messageEmitted( tr( "Cannot use this tool when the map canvas is rotated" ), QgsMessageBar::WARNING );
-          mPoints.clear();
-          break;
+          double dist = mPoints.at( 0 ).distance( mapPoint );
+          double angle = mPoints.at( 0 ).azimuth( mapPoint );
+
+          mRectangle = QgsRectangle( mPoints.at( 0 ), mPoints.at( 0 ).project( dist, angle ) );
+          mTempRubberBand->setGeometry( QgsMapToolAddRectangle::rectangleToPolygon() );
         }
       }
       break;

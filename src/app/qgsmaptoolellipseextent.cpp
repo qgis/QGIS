@@ -18,6 +18,8 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"
+#include "qgsgeometryutils.h"
+#include "qgslinestring.h"
 #include <QMouseEvent>
 
 QgsMapToolEllipseExtent::QgsMapToolEllipseExtent( QgsMapToolCapture *parentTool,
@@ -67,9 +69,11 @@ void QgsMapToolEllipseExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
         }
         else
         {
-          emit messageEmitted( tr( "Cannot use this tool when the map canvas is rotated" ), QgsMessageBar::WARNING );
-          mPoints.clear();
-          break;
+          double dist = mPoints.at( 0 ).distance( mapPoint );
+          double angle = mPoints.at( 0 ).azimuth( mapPoint );
+
+          mEllipse = QgsEllipse().fromExtent( mPoints.at( 0 ), mPoints.at( 0 ).project( dist, angle ) );
+          mTempRubberBand->setGeometry( mEllipse.toPolygon( segments() ) );
         }
       }
       break;
