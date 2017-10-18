@@ -107,7 +107,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         self.assertFalse(self.completed_was_called)
         self.assertFalse(self.canceled_was_called)
         self.assertTrue(self.error_was_called)
-        self.assertEqual(self.error_args[1], [u"Cannot open output file: "])
+        self.assertEqual(self.error_args[1], [u"No output filename specified"])
 
     def test_BlankUrl(self):
         destination = tempfile.mktemp()

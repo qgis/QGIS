@@ -25,14 +25,14 @@
 #include <QSslError>
 #endif
 
-QgsFileDownloader::QgsFileDownloader(const QUrl &url, const QString &outputFileName, const QString &authcfg , bool delayStart)
+QgsFileDownloader::QgsFileDownloader( const QUrl &url, const QString &outputFileName, const QString &authcfg, bool delayStart )
   : mUrl( url )
   , mDownloadCanceled( false )
 {
   mFile.setFileName( outputFileName );
   mAuthCfg = authcfg;
   if ( !delayStart )
-  startDownload();
+    startDownload();
 }
 
 
@@ -124,7 +124,12 @@ void QgsFileDownloader::error( const QString &errorMessage )
 void QgsFileDownloader::onReadyRead()
 {
   Q_ASSERT( mReply );
-  if ( ! mFile.isOpen() && ! mFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  if ( mFile.fileName().isEmpty() )
+  {
+    error( tr( "No output filename specified" ) );
+    onFinished();
+  }
+  else if ( ! mFile.isOpen() && ! mFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     error( tr( "Cannot open output file: %1" ).arg( mFile.fileName() ) );
     onFinished();
@@ -141,14 +146,19 @@ void QgsFileDownloader::onFinished()
   // when canceled
   if ( ! mErrors.isEmpty() || mDownloadCanceled )
   {
-    mFile.close();
-    mFile.remove();
+    if ( mFile.isOpen() )
+      mFile.close();
+    if ( mFile.exists() )
+      mFile.remove();
   }
   else
   {
     // download finished normally
-    mFile.flush();
-    mFile.close();
+    if ( mFile.isOpen() )
+    {
+      mFile.flush();
+      mFile.close();
+    }
 
     // get redirection url
     QVariant redirectionTarget = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );

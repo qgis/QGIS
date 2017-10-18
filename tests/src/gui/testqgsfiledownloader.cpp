@@ -185,7 +185,7 @@ void TestQgsFileDownloader::testInvalidFile()
   QVERIFY( !mCompleted );
   QVERIFY( mError );
   QVERIFY( !mCanceled );
-  QCOMPARE( mErrorMessage, QString( "Cannot open output file: " ) );
+  QCOMPARE( mErrorMessage, QString( "No output filename specified" ) );
 }
 
 void TestQgsFileDownloader::testInvalidUrl()
