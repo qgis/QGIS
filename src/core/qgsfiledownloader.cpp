@@ -21,18 +21,17 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QMessageBox>
 #ifndef QT_NO_SSL
 #include <QSslError>
 #endif
 
-QgsFileDownloader::QgsFileDownloader( const QUrl &url, const QString &outputFileName, bool enableGuiNotifications, const QString &authcfg )
+QgsFileDownloader::QgsFileDownloader(const QUrl &url, const QString &outputFileName, const QString &authcfg , bool delayStart)
   : mUrl( url )
   , mDownloadCanceled( false )
-  , mGuiNotificationsEnabled( enableGuiNotifications )
 {
   mFile.setFileName( outputFileName );
   mAuthCfg = authcfg;
+  if ( !delayStart )
   startDownload();
 }
 
@@ -43,10 +42,6 @@ QgsFileDownloader::~QgsFileDownloader()
   {
     mReply->abort();
     mReply->deleteLater();
-  }
-  if ( mProgressDialog )
-  {
-    mProgressDialog->deleteLater();
   }
 }
 
@@ -83,14 +78,6 @@ void QgsFileDownloader::startDownload()
 #ifndef QT_NO_SSL
   connect( nam, &QgsNetworkAccessManager::sslErrors, this, &QgsFileDownloader::onSslErrors, Qt::UniqueConnection );
 #endif
-  if ( mGuiNotificationsEnabled )
-  {
-    mProgressDialog = new QProgressDialog();
-    mProgressDialog->setWindowTitle( tr( "Download" ) );
-    mProgressDialog->setLabelText( tr( "Downloading %1." ).arg( mFile.fileName() ) );
-    mProgressDialog->show();
-    connect( mProgressDialog, &QProgressDialog::canceled, this, &QgsFileDownloader::onDownloadCanceled );
-  }
 }
 
 void QgsFileDownloader::onDownloadCanceled()
@@ -126,11 +113,6 @@ void QgsFileDownloader::error( const QStringList &errorMessages )
   {
     mErrors << errorMessages[i];
   }
-  // Show error
-  if ( mGuiNotificationsEnabled )
-  {
-    QMessageBox::warning( nullptr, tr( "Download failed" ), mErrors.join( QStringLiteral( "<br>" ) ) );
-  }
   emit downloadError( mErrors );
 }
 
@@ -161,14 +143,10 @@ void QgsFileDownloader::onFinished()
   {
     mFile.close();
     mFile.remove();
-    if ( mGuiNotificationsEnabled )
-      mProgressDialog->hide();
   }
   else
   {
     // download finished normally
-    if ( mGuiNotificationsEnabled )
-      mProgressDialog->hide();
     mFile.flush();
     mFile.close();
 
@@ -205,11 +183,6 @@ void QgsFileDownloader::onDownloadProgress( qint64 bytesReceived, qint64 bytesTo
   if ( mDownloadCanceled )
   {
     return;
-  }
-  if ( mGuiNotificationsEnabled )
-  {
-    mProgressDialog->setMaximum( bytesTotal );
-    mProgressDialog->setValue( bytesReceived );
   }
   emit downloadProgress( bytesReceived, bytesTotal );
 }

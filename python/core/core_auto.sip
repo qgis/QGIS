@@ -310,6 +310,7 @@
 %Include qgsfieldformatterregistry.sip
 %Include qgsfieldmodel.sip
 %Include qgsfieldproxymodel.sip
+%Include qgsfiledownloader.sip
 %Include qgsgeometryvalidator.sip
 %Include qgsgml.sip
 %Include qgsgmlschema.sip

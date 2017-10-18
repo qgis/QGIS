@@ -15,7 +15,7 @@ import os
 import tempfile
 from functools import partial
 from qgis.PyQt.QtCore import QEventLoop, QUrl
-from qgis.gui import (QgsFileDownloader,)
+from qgis.core import (QgsFileDownloader,)
 from qgis.testing import start_app, unittest
 
 __author__ = 'Alessandro Pasotti'
@@ -43,7 +43,7 @@ class TestQgsFileDownloader(unittest.TestCase):
 
         loop = QEventLoop()
 
-        downloader = QgsFileDownloader(QUrl(url), destination, False)
+        downloader = QgsFileDownloader(QUrl(url), destination)
         downloader.downloadCompleted.connect(partial(self._set_slot, 'completed'))
         downloader.downloadExited.connect(partial(self._set_slot, 'exited'))
         downloader.downloadCanceled.connect(partial(self._set_slot, 'canceled'))

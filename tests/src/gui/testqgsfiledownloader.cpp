@@ -94,7 +94,7 @@ void TestQgsFileDownloader::makeCall( QUrl url, QString fileName, bool cancel )
 {
   QEventLoop loop;
 
-  mFileDownloader = new QgsFileDownloader( url, fileName, false );
+  mFileDownloader = new QgsFileDownloader( url, fileName );
   connect( mFileDownloader, &QgsFileDownloader::downloadCompleted, this, &TestQgsFileDownloader::downloadCompleted );
   connect( mFileDownloader, &QgsFileDownloader::downloadCanceled, this, &TestQgsFileDownloader::downloadCanceled );
   connect( mFileDownloader, &QgsFileDownloader::downloadExited, this, &TestQgsFileDownloader::downloadExited );
