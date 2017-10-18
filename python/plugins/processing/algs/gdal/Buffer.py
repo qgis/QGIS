@@ -104,7 +104,7 @@ class Buffer(GdalAlgorithm):
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
-        dissolve = self.parameterAsString(parameters, self.DISSOLVE, context)
+        dissolve = self.parameterAsBool(parameters, self.DISSOLVE, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
@@ -123,12 +123,18 @@ class Buffer(GdalAlgorithm):
         arguments.append('sqlite')
         arguments.append('-sql')
 
-        if dissolve or fieldName:
-            sql = "SELECT ST_Union(ST_Buffer({}, {})) AS {}, {} FROM '{}'".format(geometry, distance, geometry, ','.join(other_fields), layerName)
+        if dissolve == True or len(fieldName) > 0:
+            if len(other_fields) > 0:
+               sql = "SELECT ST_Union(ST_Buffer({}, {})) AS {}, {} FROM '{}'".format(geometry, distance, geometry, ','.join(other_fields), layerName)
+            else:
+               sql = "SELECT ST_Union(ST_Buffer({}, {})) AS {} FROM '{}'".format(geometry, distance, geometry, layerName)
         else:
-            sql = "SELECT ST_Buffer({}, {}) AS {}, {} FROM '{}'".format(geometry, distance, geometry, ','.join(other_fields), layerName)
+            if len(other_fields) > 0:
+               sql = "SELECT ST_Buffer({}, {}) AS {}, {} FROM '{}'".format(geometry, distance, geometry, ','.join(other_fields), layerName)
+            else:
+               sql = "SELECT ST_Buffer({}, {}) AS {} FROM '{}'".format(geometry, distance, geometry, layerName)
 
-        if fieldName:
+        if len(fieldName) > 0:
             sql = '{} GROUP BY {}'.format(sql, fieldName)
 
         arguments.append(sql)

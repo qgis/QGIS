@@ -114,7 +114,7 @@ class OneSideBuffer(GdalAlgorithm):
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         side = self.parameterAsEnum(parameters, self.BUFFER_SIDE, context)
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
-        dissolve = self.parameterAsString(parameters, self.DISSOLVE, context)
+        dissolve = self.parameterAsBool(parameters, self.DISSOLVE, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
@@ -133,13 +133,19 @@ class OneSideBuffer(GdalAlgorithm):
         arguments.append('sqlite')
         arguments.append('-sql')
 
-        if dissolve or fieldName:
-            sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})) AS {}, {} FROM '{}'".format(geometry, distance, side, geometry, ','.join(other_fields), layerName)
+        if dissolve == True or len(fieldName) > 0:
+            if len(other_fields) > 0:		
+               sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})) AS {}, {} FROM '{}'".format(geometry, distance, side, geometry, ','.join(other_fields), layerName)
+            else:
+               sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})) AS {} FROM '{}'".format(geometry, distance, side, geometry, layerName)			
         else:
-            sql = "SELECT ST_SingleSidedBuffer({}, {}, {}) AS {}, {} FROM '{}'".format(geometry, distance, side, geometry, ','.join(other_fields), layerName)
-
-        if fieldName:
-            sql = '"{} GROUP BY {}"'.format(sql, fieldName)
+            if len(other_fields) > 0:		
+               sql = "SELECT ST_SingleSidedBuffer({}, {}, {}) AS {}, {} FROM '{}'".format(geometry, distance, side, geometry, ','.join(other_fields), layerName)
+            else:
+               sql = "SELECT ST_SingleSidedBuffer({}, {}, {}) AS {} FROM '{}'".format(geometry, distance, side, geometry, layerName)
+			
+        if len(fieldName) > 0:
+            sql = '{} GROUP BY {}'.format(sql, fieldName)
 
         arguments.append(sql)
 
