@@ -136,6 +136,7 @@ class TestQgsGeometry : public QObject
     void createCollectionOfType();
 
     void minimalEnclosingCircle( );
+    void splitGeometry();
 
   private:
     //! A helper method to do a render check to see if the geometry op is as expected
@@ -15551,6 +15552,16 @@ void TestQgsGeometry::minimalEnclosingCircle()
   resultTest.setGeometry( QgsCircle( QgsPoint( center ), radius ).toPolygon( 36 ) );
   QCOMPARE( result, resultTest );
 
+}
+
+void TestQgsGeometry::splitGeometry()
+{
+  QgsGeometry g1 = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((492980.38648063864093274 7082334.45244149677455425, 493082.65415841294452548 7082319.87918917648494244, 492980.38648063858272508 7082334.45244149677455425, 492980.38648063864093274 7082334.45244149677455425))" ) );
+  QList<QgsGeometry> newGeoms;
+  QList<QgsPointXY> testPoints;
+  QCOMPARE( g1.splitGeometry( QList< QgsPointXY >() << QgsPointXY( 493825.46541286131832749, 7082214.02779923938214779 ) << QgsPointXY( 492955.04876351181883365, 7082338.06309300474822521 ),
+                              newGeoms, false, testPoints ), QgsGeometry::NothingHappened );
+  QVERIFY( newGeoms.isEmpty() );
 }
 
 

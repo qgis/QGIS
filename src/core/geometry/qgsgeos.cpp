@@ -888,24 +888,18 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeom
   }
   GEOSGeom_destroy_r( geosinit.ctxt, polygons );
 
-  bool splitDone = true;
   int nGeometriesThis = numberOfGeometries( mGeos ); //original number of geometries
-  if ( testedGeometries.size() == nGeometriesThis )
+  if ( testedGeometries.empty() || testedGeometries.size() == nGeometriesThis )
   {
-    splitDone = false;
-  }
-
-  mergeGeometriesMultiTypeSplit( testedGeometries );
-
-  //no split done, preserve original geometry
-  if ( !splitDone )
-  {
+    //no split done, preserve original geometry
     for ( int i = 0; i < testedGeometries.size(); ++i )
     {
       GEOSGeom_destroy_r( geosinit.ctxt, testedGeometries[i] );
     }
     return NothingHappened;
   }
+
+  mergeGeometriesMultiTypeSplit( testedGeometries );
 
   int i;
   for ( i = 0; i < testedGeometries.size() && GEOSisValid_r( geosinit.ctxt, testedGeometries[i] ); ++i )
