@@ -64,7 +64,8 @@ namespace QgsWms
   QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project, const QString &version,
                                  const QgsServerRequest &request );
 
-  /** Output GetCapabilities response
+  /**
+   * Output GetCapabilities response
    */
   void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
                              const QString &version, const QgsServerRequest &request,

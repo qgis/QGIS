@@ -56,15 +56,22 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     QgsLayerTree *rootGroup() const { return mRoot; }
     QgsMapCanvas *mapCanvas() const { return mCanvas; }
 
-    //! Associates overview canvas with the bridge, so the overview will be updated whenever main canvas is updated
-    //! \since QGIS 3.0
+    /**
+     * Associates overview canvas with the bridge, so the overview will be updated whenever main canvas is updated
+     * \since QGIS 3.0
+     */
     void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas ) { mOverviewCanvas = overviewCanvas; }
-    //! Returns associated overview canvas (may be null)
-    //! \since QGIS 3.0
+
+    /**
+     * Returns associated overview canvas (may be null)
+     * \since QGIS 3.0
+     */
     QgsMapOverviewCanvas *overviewCanvas() const { return mOverviewCanvas; }
 
-    //! if enabled, will automatically set full canvas extent and destination CRS + map units
-    //! when first layer(s) are added
+    /**
+     * if enabled, will automatically set full canvas extent and destination CRS + map units
+     * when first layer(s) are added
+     */
     void setAutoSetupOnFirstLayer( bool enabled ) { mAutoSetupOnFirstLayer = enabled; }
     bool autoSetupOnFirstLayer() const { return mAutoSetupOnFirstLayer; }
 

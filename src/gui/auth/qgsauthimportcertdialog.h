@@ -26,7 +26,8 @@
 
 class QPushButton;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for importing a certificate into the authentication database
  */
 class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthImportCertDialog
@@ -79,9 +80,9 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
 
     void validateCertificates();
 
-    void on_btnImportFile_clicked();
+    void btnImportFile_clicked();
 
-    void on_chkAllowInvalid_toggled( bool checked );
+    void chkAllowInvalid_toggled( bool checked );
 
   private:
     QString getOpenFileName( const QString &title, const QString &extfilter );
@@ -92,7 +93,7 @@ class GUI_EXPORT QgsAuthImportCertDialog : public QDialog, private Ui::QgsAuthIm
     QgsAuthImportCertDialog::CertFilter mFilter;
     QgsAuthImportCertDialog::CertInput mInput;
 
-    bool mDisabled;
+    bool mDisabled = false;
     QVBoxLayout *mAuthNotifyLayout = nullptr;
     QLabel *mAuthNotify = nullptr;
 };

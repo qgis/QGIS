@@ -63,7 +63,6 @@ class QgsSipifyHeader : QtClassQVariantBase
 #include "qtclass.h"
 typedef QtClass<QVariant> QtClassQVariantBase;
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->headerType() == QgsSipifyHeader::Special )
       sipType = sipType_QgsSpecialSipifyHeader;

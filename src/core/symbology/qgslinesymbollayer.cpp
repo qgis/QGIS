@@ -34,11 +34,6 @@
 
 QgsSimpleLineSymbolLayer::QgsSimpleLineSymbolLayer( const QColor &color, double width, Qt::PenStyle penStyle )
   : mPenStyle( penStyle )
-  , mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE )
-  , mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE )
-  , mUseCustomDashPattern( false )
-  , mCustomDashPatternUnit( QgsUnitTypes::RenderMillimeters )
-  , mDrawInsidePolygon( false )
 {
   mColor = color;
   mWidth = width;

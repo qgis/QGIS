@@ -25,7 +25,6 @@
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
-  , mTitle( QLatin1String( "" ) )
   , mText( text )
   , mLevel( level )
   , mDuration( duration )
@@ -58,8 +57,6 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text,
 
 QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
-  , mTitle( QLatin1String( "" ) )
-  , mText( QLatin1String( "" ) )
   , mLevel( level )
   , mDuration( duration )
   , mWidget( widget )

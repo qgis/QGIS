@@ -35,7 +35,8 @@
 
 #define SIP_NO_FILE
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure.
  * \note Not available in Python bindings.
 */
@@ -107,13 +108,13 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
 
   protected:
     //! X-coordinate of the upper right corner of the bounding box
-    double xMax;
+    double xMax = 0;
     //! X-coordinate of the lower left corner of the bounding box
-    double xMin;
+    double xMin = 0;
     //! Y-coordinate of the upper right corner of the bounding box
-    double yMax;
+    double yMax = 0;
     //! Y-coordinate of the lower left corner of the bounding box
-    double yMin;
+    double yMin = 0;
     //! Default value for the number of storable points at the beginning
     static const unsigned int DEFAULT_STORAGE_FOR_POINTS = 100000;
     //! Stores pointers to all points in the triangulations (including the points contained in the lines)
@@ -125,7 +126,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Association to an interpolator object
     TriangleInterpolator *mTriangleInterpolator = nullptr;
     //! Member to store the behavior in case of crossing forced segments
-    Triangulation::ForcedCrossBehavior mForcedCrossBehavior;
+    Triangulation::ForcedCrossBehavior mForcedCrossBehavior = Triangulation::DeleteFirst;
     //! Color to paint the normal edges
     QColor mEdgeColor;
     //! Color to paint the forced edges
@@ -153,15 +154,15 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Swaps 'edge' and does no recursiv testing
     void doOnlySwap( unsigned int edge );
     //! Number of an edge which does not point to the virtual point. It continuously updated for a fast search
-    unsigned int mEdgeInside;
+    unsigned int mEdgeInside = 0;
     //! Number of an edge on the outside of the convex hull. It is updated in method 'baseEdgeOfTriangle' to enable insertion of points outside the convex hull
-    unsigned int mEdgeOutside;
+    unsigned int mEdgeOutside = 0;
     //! If an inserted point is exactly on an existing edge, 'baseEdgeOfTriangle' returns -20 and sets the variable 'mEdgeWithPoint'
-    unsigned int mEdgeWithPoint;
+    unsigned int mEdgeWithPoint = 0;
     //! If an instability occurs in 'baseEdgeOfTriangle', mUnstableEdge is set to the value of the current edge
-    unsigned int mUnstableEdge;
+    unsigned int mUnstableEdge = 0;
     //! If a point has been inserted twice, its number is stored in this member
-    int mTwiceInsPoint;
+    int mTwiceInsPoint = 0;
     //! Returns true, if it is possible to swap an edge, otherwise false(concave quad or edge on (or outside) the convex hull)
     bool swapPossible( unsigned int edge );
     //! Divides a polygon in a triangle and two polygons and calls itself recursively for these two polygons. 'poly' is a pointer to a list with the numbers of the edges of the polygon, 'free' is a pointer to a list of free halfedges, and 'mainedge' is the number of the edge, towards which the new triangle is inserted. Mainedge has to be the same as poly->begin(), otherwise the recursion does not work
@@ -181,42 +182,20 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
 #ifndef SIP_RUN
 
 inline DualEdgeTriangulation::DualEdgeTriangulation()
-  : xMax( 0 )
-  , xMin( 0 )
-  , yMax( 0 )
-  , yMin( 0 )
-  , mTriangleInterpolator( nullptr )
-  , mForcedCrossBehavior( Triangulation::DeleteFirst )
-  , mEdgeColor( 0, 255, 0 )
+  : mEdgeColor( 0, 255, 0 )
   , mForcedEdgeColor( 0, 0, 255 )
   , mBreakEdgeColor( 100, 100, 0 )
   , mDecorator( this )
-  , mEdgeInside( 0 )
-  , mEdgeOutside( 0 )
-  , mEdgeWithPoint( 0 )
-  , mUnstableEdge( 0 )
-  , mTwiceInsPoint( 0 )
 {
   mPointVector.reserve( DEFAULT_STORAGE_FOR_POINTS );
   mHalfEdge.reserve( DEFAULT_STORAGE_FOR_HALF_EDGES );
 }
 
 inline DualEdgeTriangulation::DualEdgeTriangulation( int nop, Triangulation *decorator )
-  : xMax( 0 )
-  , xMin( 0 )
-  , yMax( 0 )
-  , yMin( 0 )
-  , mTriangleInterpolator( nullptr )
-  , mForcedCrossBehavior( Triangulation::DeleteFirst )
-  , mEdgeColor( 0, 255, 0 )
+  : mEdgeColor( 0, 255, 0 )
   , mForcedEdgeColor( 0, 0, 255 )
   , mBreakEdgeColor( 100, 100, 0 )
   , mDecorator( decorator ? decorator : this )
-  , mEdgeInside( 0 )
-  , mEdgeOutside( 0 )
-  , mEdgeWithPoint( 0 )
-  , mUnstableEdge( 0 )
-  , mTwiceInsPoint( 0 )
 {
   mPointVector.reserve( nop );
   mHalfEdge.reserve( nop );

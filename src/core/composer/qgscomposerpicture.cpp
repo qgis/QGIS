@@ -46,14 +46,6 @@
 
 QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
   : QgsComposerItem( composition )
-  , mMode( Unknown )
-  , mPictureRotation( 0 )
-  , mNorthMode( GridNorth )
-  , mNorthOffset( 0.0 )
-  , mResizeMode( QgsComposerPicture::Zoom )
-  , mPictureAnchor( UpperLeft )
-  , mHasExpressionError( false )
-  , mLoadingSvg( false )
 {
   mPictureWidth = rect().width();
   init();
@@ -61,14 +53,6 @@ QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
 
 QgsComposerPicture::QgsComposerPicture()
   : QgsComposerItem( nullptr )
-  , mMode( Unknown )
-  , mPictureRotation( 0 )
-  , mNorthMode( GridNorth )
-  , mNorthOffset( 0.0 )
-  , mResizeMode( QgsComposerPicture::Zoom )
-  , mPictureAnchor( UpperLeft )
-  , mHasExpressionError( false )
-  , mLoadingSvg( false )
 {
   mPictureHeight = rect().height();
   init();
@@ -261,7 +245,7 @@ QRect QgsComposerPicture::clippedImageRect( double &boundRectWidthMM, double &bo
     case UpperRight:
     case MiddleRight:
     case LowerRight:
-      leftClip =  imageRectPixels.width() - boundRectWidthPixels;
+      leftClip = imageRectPixels.width() - boundRectWidthPixels;
       break;
   }
 
@@ -480,7 +464,7 @@ QRectF QgsComposerPicture::boundedImageRect( double deviceWidth, double deviceHe
   double imageToDeviceRatio;
   if ( mImage.width() / deviceWidth > mImage.height() / deviceHeight )
   {
-    imageToDeviceRatio =  deviceWidth / mImage.width();
+    imageToDeviceRatio = deviceWidth / mImage.width();
     double height = imageToDeviceRatio * mImage.height();
     return QRectF( 0, 0, deviceWidth, height );
   }

@@ -119,7 +119,7 @@ Content-Type: text/xml; charset=utf-8
     <inspire_common:Language>ita</inspire_common:Language>
    </inspire_common:ResponseLanguage>
   </inspire_vs:ExtendedCapabilities>
-  <Layer queryable="1">
+  <Layer>
    <Name>QGIS Test Project</Name>
    <Title>QGIS Test Project</Title>
    <CRS>CRS:84</CRS>

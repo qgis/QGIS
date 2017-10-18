@@ -875,6 +875,12 @@ namespace QgsWms
           }
         }
 
+        if ( d[0] > d[2] || d[1] > d[3] )
+        {
+          *error = true;
+          return extent;
+        }
+
         extent = QgsRectangle( d[0], d[1], d[2], d[3] );
       }
       else
@@ -1179,8 +1185,12 @@ namespace QgsWms
       f = Format::XML;
     else if ( fStr.startsWith( QLatin1String( "text/html" ), Qt::CaseInsensitive ) )
       f = Format::HTML;
+    else if ( fStr.startsWith( QLatin1String( "text/plain" ), Qt::CaseInsensitive ) )
+      f = Format::TEXT;
     else if ( fStr.startsWith( QLatin1String( "application/vnd.ogc.gml" ), Qt::CaseInsensitive ) )
       f = Format::GML;
+    else
+      f = Format::NONE;
 
     return f;
   }

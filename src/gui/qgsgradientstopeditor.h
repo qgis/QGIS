@@ -22,7 +22,8 @@
 #include "qgis_gui.h"
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsGradientStopEditor
  * An interactive editor for previewing a gradient color ramp and modifying the position of color
  * stops along the gradient.
@@ -35,30 +36,35 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
 
   public:
 
-    /** Constructor for QgsGradientStopEditor.
+    /**
+     * Constructor for QgsGradientStopEditor.
      * \param parent parent widget
      * \param ramp optional initial gradient ramp
      */
     QgsGradientStopEditor( QWidget *parent SIP_TRANSFERTHIS = 0, QgsGradientColorRamp *ramp = nullptr );
 
-    /** Sets the current ramp shown in the editor.
+    /**
+     * Sets the current ramp shown in the editor.
      * \param ramp color ramp
      * \see gradientRamp()
      */
     void setGradientRamp( const QgsGradientColorRamp &ramp );
 
-    /** Returns the current ramp created by the editor.
+    /**
+     * Returns the current ramp created by the editor.
      * \see setGradientRamp()
      */
     QgsGradientColorRamp gradientRamp() const { return mGradient; }
 
-    /** Sets the currently selected stop.
+    /**
+     * Sets the currently selected stop.
      * \param index index of stop, where 0 corresponds to the first stop
      * \see selectedStop()
      */
     void selectStop( int index );
 
-    /** Returns details about the currently selected stop.
+    /**
+     * Returns details about the currently selected stop.
      * \see selectStop()
      */
     QgsGradientStop selectedStop() const;
@@ -68,7 +74,8 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
 
   public slots:
 
-    /** Sets the color for the current selected stop.
+    /**
+     * Sets the color for the current selected stop.
      * \param color new stop color
      * \see setSelectedStopOffset()
      * \see setSelectedStopDetails()
@@ -77,7 +84,8 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
      */
     void setSelectedStopColor( const QColor &color );
 
-    /** Sets the offset for the current selected stop. This slot has no effect if either the
+    /**
+     * Sets the offset for the current selected stop. This slot has no effect if either the
      * first or last stop is selected, as they cannot be repositioned.
      * \param offset new stop offset
      * \see setSelectedStopColor()
@@ -85,7 +93,8 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
      */
     void setSelectedStopOffset( double offset );
 
-    /** Sets the color and offset for the current selected stop.
+    /**
+     * Sets the color and offset for the current selected stop.
      * \param color new stop color
      * \param offset new stop offset
      * \see setSelectedStopColor()
@@ -93,19 +102,22 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
      */
     void setSelectedStopDetails( const QColor &color, double offset );
 
-    /** Deletes the current selected stop. This slot has no effect if either the
+    /**
+     * Deletes the current selected stop. This slot has no effect if either the
      * first or last stop is selected, as they cannot be deleted.
      */
     void deleteSelectedStop();
 
-    /** Sets the color for the first stop.
+    /**
+     * Sets the color for the first stop.
      * \param color new stop color
      * \see setColor2()
      * \see setSelectedStopColor()
      */
     void setColor1( const QColor &color );
 
-    /** Sets the color for the last stop.
+    /**
+     * Sets the color for the last stop.
      * \param color new stop color
      * \see setColor1()
      * \see setSelectedStopColor()
@@ -117,7 +129,8 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     //! Emitted when the gradient ramp is changed by a user
     void changed();
 
-    /** Emitted when the current selected stop changes.
+    /**
+     * Emitted when the current selected stop changes.
      * \param stop details about newly selected stop
      */
     void selectedStopChanged( const QgsGradientStop &stop );
@@ -137,12 +150,14 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
 
   private:
 
-    /** Generates a checkboard pattern pixmap for use as a background to transparent colors
+    /**
+     * Generates a checkboard pattern pixmap for use as a background to transparent colors
      * \returns checkerboard pixmap
      */
     QPixmap transparentBackground();
 
-    /** Draws a stop marker on the specified painter.
+    /**
+     * Draws a stop marker on the specified painter.
      * \param painter destination painter
      * \param topMiddle coordinate corresponding to top middle point of desired marker
      * \param color color of marker
@@ -168,7 +183,7 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     QgsGradientStopsList mStops;
 
     //! Stop number of selected stop, where 0 = first stop
-    int mSelectedStop;
+    int mSelectedStop = 0;
 
     //! Polygon for stop triangle marker outer
     QPolygonF sOuterTriangle;

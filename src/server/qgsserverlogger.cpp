@@ -37,7 +37,6 @@ QgsServerLogger *QgsServerLogger::instance()
 
 QgsServerLogger::QgsServerLogger()
   : mLogFile( nullptr )
-  , mLogLevel( QgsMessageLog::NONE )
 {
   connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &, const QString &, QgsMessageLog::MessageLevel )>( &QgsMessageLog::messageReceived ), this,
            &QgsServerLogger::logMessage );

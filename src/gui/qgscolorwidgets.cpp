@@ -41,7 +41,6 @@ QgsColorWidget::QgsColorWidget( QWidget *parent, const ColorComponent component 
   : QWidget( parent )
   , mCurrentColor( Qt::red )
   , mComponent( component )
-  , mExplicitHue( 0 )
 {
   setAcceptDrops( true );
 }
@@ -366,11 +365,6 @@ void QgsColorWidget::setColor( const QColor &color, const bool emitSignals )
 
 QgsColorWheel::QgsColorWheel( QWidget *parent )
   : QgsColorWidget( parent )
-  , mMargin( 4 )
-  , mWheelThickness( 18 )
-  , mClickedPart( QgsColorWheel::None )
-  , mWheelDirty( true )
-  , mTriangleDirty( true )
 {
   //create wheel hue brush - only do this once
   QConicalGradient wheelGradient = QConicalGradient( 0, 0, 0 );
@@ -738,8 +732,6 @@ void QgsColorWheel::createTriangle()
 
 QgsColorBox::QgsColorBox( QWidget *parent, const ColorComponent component )
   : QgsColorWidget( parent, component )
-  , mMargin( 2 )
-  , mDirty( true )
 {
   setFocusPolicy( Qt::StrongFocus );
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
@@ -972,8 +964,6 @@ QgsColorRampWidget::QgsColorRampWidget( QWidget *parent,
                                         const QgsColorWidget::ColorComponent component,
                                         const Orientation orientation )
   : QgsColorWidget( parent, component )
-  , mMargin( 4 )
-  , mShowFrame( false )
 {
   setFocusPolicy( Qt::StrongFocus );
   setOrientation( orientation );
@@ -1395,7 +1385,6 @@ int QgsColorSliderWidget::convertDisplayToReal( const int displayValue ) const
 
 QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
   : QgsColorWidget( parent )
-  , mFormat( QgsColorTextWidget::HexRgb )
 {
   QHBoxLayout *hLayout = new QHBoxLayout();
   hLayout->setMargin( 0 );

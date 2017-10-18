@@ -36,8 +36,7 @@
 #include <QFileDialog>
 
 QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
-  : QDialog()
-  , mLayer( vl )
+  : mLayer( vl )
 {
   setupUi( this );
 

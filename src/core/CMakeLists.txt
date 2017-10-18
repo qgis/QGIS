@@ -98,7 +98,6 @@ SET(QGIS_CORE_SRCS
   locator/qgslocatorfilter.cpp
   locator/qgslocatormodel.cpp
 
-  processing/qgsnativealgorithms.cpp
   processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingalgrunnertask.cpp
   processing/qgsprocessingoutputs.cpp
@@ -134,11 +133,13 @@ SET(QGIS_CORE_SRCS
   qgsattributes.cpp
   qgsattributetableconfig.cpp
   qgsattributeeditorelement.cpp
+  qgsauxiliarystorage.cpp
   qgsbearingutils.cpp
   qgsbrowsermodel.cpp
   qgscachedfeatureiterator.cpp
   qgscacheindex.cpp
   qgscacheindexfeatureid.cpp
+  qgscadutils.cpp
   qgsclipper.cpp
   qgscolorramp.cpp
   qgscolorscheme.cpp
@@ -161,6 +162,7 @@ SET(QGIS_CORE_SRCS
   qgsdatetimestatisticalsummary.cpp
   qgsdatumtransformstore.cpp
   qgsdbfilterproxymodel.cpp
+  qgsdefaultvalue.cpp
   qgsdiagramrenderer.cpp
   qgsdistancearea.cpp
   qgseditformconfig.cpp
@@ -358,10 +360,13 @@ SET(QGIS_CORE_SRCS
   dxf/qgsdxfpallabeling.cpp
 
   layout/qgslayout.cpp
+  layout/qgslayoutaligner.cpp
   layout/qgslayoutcontext.cpp
   layout/qgslayoutgridsettings.cpp
   layout/qgslayoutguidecollection.cpp
   layout/qgslayoutitem.cpp
+  layout/qgslayoutitemgroup.cpp
+  layout/qgslayoutitemgroupundocommand.cpp
   layout/qgslayoutitemmap.cpp
   layout/qgslayoutitempage.cpp
   layout/qgslayoutitemregistry.cpp
@@ -369,6 +374,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutitemundocommand.cpp
   layout/qgslayoutmeasurement.cpp
   layout/qgslayoutmeasurementconverter.cpp
+  layout/qgslayoutmodel.cpp
   layout/qgslayoutobject.cpp
   layout/qgslayoutpagecollection.cpp
   layout/qgslayoutserializableobject.cpp
@@ -464,6 +470,9 @@ SET(QGIS_CORE_SRCS
   geometry/qgstriangle.cpp
   geometry/qgswkbptr.cpp
   geometry/qgswkbtypes.cpp
+
+  3d/qgs3drendererregistry.cpp
+  3d/qgsabstract3drenderer.cpp
 
   fieldformatter/qgsdatetimefieldformatter.cpp
   fieldformatter/qgsfallbackfieldformatter.cpp
@@ -566,6 +575,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsactionmanager.h
   qgsactionscoperegistry.h
   qgsanimatedicon.h
+  qgsauxiliarystorage.h
   qgsbrowsermodel.h
   qgscontextaction.h
   qgscoordinatereferencesystem.h
@@ -680,7 +690,6 @@ SET(QGIS_CORE_MOC_HDRS
   locator/qgslocatorfilter.h
   locator/qgslocatormodel.h
 
-  processing/qgsnativealgorithms.h
   processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingprovider.h
@@ -707,10 +716,13 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayout.h
   layout/qgslayoutguidecollection.h
   layout/qgslayoutitem.h
+  layout/qgslayoutitemgroup.h
+  layout/qgslayoutitemgroupundocommand.h
   layout/qgslayoutitemmap.h
   layout/qgslayoutitempage.h
   layout/qgslayoutitemregistry.h
   layout/qgslayoutitemshape.h
+  layout/qgslayoutmodel.h
   layout/qgslayoutpagecollection.h
   layout/qgslayoutobject.h
 
@@ -790,6 +802,7 @@ SET(QGIS_CORE_HDRS
   qgscachedfeatureiterator.h
   qgscacheindex.h
   qgscacheindexfeatureid.h
+  qgscadutils.h
   qgsclipper.h
   qgscolorramp.h
   qgscolorscheme.h
@@ -807,6 +820,7 @@ SET(QGIS_CORE_HDRS
   qgsdatetimestatisticalsummary.h
   qgsdatumtransformstore.h
   qgsdbfilterproxymodel.h
+  qgsdefaultvalue.h
   qgsdiagramrenderer.h
   qgsdistancearea.h
   qgseditformconfig.h
@@ -958,6 +972,7 @@ SET(QGIS_CORE_HDRS
   composer/qgscomposertexttable.h
   composer/qgspaperitem.h
 
+  layout/qgslayoutaligner.h
   layout/qgslayoutcontext.h
   layout/qgslayoutgridsettings.h
   layout/qgslayoutitemundocommand.h
@@ -1098,6 +1113,9 @@ SET(QGIS_CORE_HDRS
   geometry/qgswkbptr.h
   geometry/qgswkbtypes.h
 
+  3d/qgs3drendererregistry.h
+  3d/qgsabstract3drenderer.h
+
   fieldformatter/qgsdatetimefieldformatter.h
   fieldformatter/qgsfallbackfieldformatter.h
   fieldformatter/qgskeyvaluefieldformatter.h
@@ -1123,6 +1141,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${LIBZIP_INCLUDE_DIR}
+  3d
   annotations
   auth
   composer

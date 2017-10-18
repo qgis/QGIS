@@ -44,10 +44,6 @@ QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWCSSourceSelect::showHelp );
 }
 
-QgsWCSSourceSelect::~QgsWCSSourceSelect()
-{
-}
-
 void QgsWCSSourceSelect::populateLayerList()
 {
 
@@ -155,7 +151,7 @@ void QgsWCSSourceSelect::addButtonClicked()
 }
 
 
-void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
+void QgsWCSSourceSelect::mLayersTreeWidget_itemSelectionChanged()
 {
 
   QString identifier = selectedIdentifier();

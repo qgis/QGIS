@@ -27,15 +27,7 @@ QgsPaintEffect *QgsColorEffect::create( const QgsStringMap &map )
 }
 
 QgsColorEffect::QgsColorEffect()
-  : QgsPaintEffect()
-  , mBlendMode( QPainter::CompositionMode_SourceOver )
-  , mBrightness( 0 )
-  , mContrast( 0 )
-  , mSaturation( 1.0 )
-  , mGrayscaleMode( QgsImageOperation::GrayscaleOff )
-  , mColorizeOn( false )
-  , mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
-  , mColorizeStrength( 100 )
+  : mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
 {
 
 }

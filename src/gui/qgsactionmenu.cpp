@@ -168,9 +168,3 @@ QgsActionMenu::ActionData::ActionData( const QgsAction &action, QgsFeatureId fea
   , featureId( featureId )
   , mapLayer( mapLayer )
 {}
-
-QgsActionMenu::ActionData::ActionData()
-  : actionType( Invalid )
-  , featureId( 0 )
-
-{}

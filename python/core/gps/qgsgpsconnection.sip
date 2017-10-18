@@ -51,11 +51,9 @@ class QgsGPSConnection : QObject
 
 %TypeHeaderCode
 #include "qgsgpsconnection.h"
-
 #include <qgsgpsdconnection.h>
 #include <qgsnmeaconnection.h>
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->inherits( "QgsGpsdConnection" ) )
       sipType = sipType_QgsGpsdConnection;

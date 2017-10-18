@@ -735,7 +735,7 @@ class GeoDB(object):
 
         sql = "SELECT has_database_privilege('%(d)s', 'CREATE'), \
                       has_database_privilege('%(d)s', 'TEMP')" \
-              % {'d': self._quote_unicode(self.dbname)}
+              % {'d': self._quote_unicode(self.uri.database())}
         c = self.con.cursor()
         self._exec_sql(c, sql)
         return c.fetchone()

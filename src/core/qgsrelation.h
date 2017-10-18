@@ -31,7 +31,8 @@ class QgsFeature;
 class QgsFeatureRequest;
 class QgsAttributes;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsRelation
  */
 class CORE_EXPORT QgsRelation
@@ -61,8 +62,7 @@ class CORE_EXPORT QgsRelation
     {
       public:
         //! Default constructor: NULL strings
-        FieldPair()
-          : QPair< QString, QString >() {}
+        FieldPair() {}
 
         //! Constructor which takes two fields
         FieldPair( const QString &referencingField, const QString &referencedField )
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsRelation
     /**
      * Default constructor. Creates an invalid relation.
      */
-    QgsRelation();
+    QgsRelation() = default;
 
     /**
      * Creates a relation from an XML structure. Used for reading .qgs projects.
@@ -163,7 +163,8 @@ class CORE_EXPORT QgsRelation
      */
     QgsFeatureRequest getRelatedFeaturesRequest( const QgsFeature &feature ) const;
 
-    /** Returns a filter expression which returns all the features on the referencing (child) layer
+    /**
+     * Returns a filter expression which returns all the features on the referencing (child) layer
      * which have a foreign key pointing to the provided feature.
      * \param feature A feature from the referenced (parent) layer
      * \returns expression filter string for all the referencing features
@@ -344,13 +345,14 @@ class CORE_EXPORT QgsRelation
     //! The parent layer
     QgsVectorLayer *mReferencedLayer = nullptr;
 
-    /** A list of fields which define the relation.
+    /**
+     * A list of fields which define the relation.
      *  In most cases there will be only one value, but multiple values
      *  are supported for composited foreign keys.
      *  The first field is on the referencing layer, the second on the referenced */
     QList< FieldPair > mFieldPairs;
 
-    bool mValid;
+    bool mValid = false;
 };
 
 // Register QgsRelation for usage with QVariant

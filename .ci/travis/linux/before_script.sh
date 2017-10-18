@@ -13,7 +13,22 @@
 #                                                                         #
 ###########################################################################
 
-printf "[qgis_test]\nhost=localhost\ndbname=qgis_test\nuser=postgres" > ~/.pg_service.conf
+set -e
 
-export PGUSER=postgres
-$TRAVIS_BUILD_DIR/tests/testdata/provider/testdata_pg.sh
+pushd .docker
+
+docker --version
+docker-compose --version
+docker-compose -f $DOCKER_COMPOSE config
+#docker pull ubuntu:16.04
+docker pull "qgis/qgis3-build-deps:${DOCKER_TAG}" || true
+docker build --cache-from "qgis/qgis3-build-deps:${DOCKER_TAG}" -t "qgis/qgis3-build-deps:${DOCKER_TAG}" .
+# image should be pushed even if QGIS build fails
+# but push is achieved only on branches (not for PRs)
+if [[ $DOCKER_PUSH =~ true ]]; then
+  docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  #docker tag "qgis/qgis3-build-deps:${DOCKER_TAG}" "qgis/qgis3-build-deps:latest"
+  docker push "qgis/qgis3-build-deps:${DOCKER_TAG}"
+fi
+
+popd

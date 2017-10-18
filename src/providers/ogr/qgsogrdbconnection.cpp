@@ -29,7 +29,7 @@
 QgsOgrDbConnection::QgsOgrDbConnection( const QString &connName, const QString &settingsKey )
   : mConnName( connName )
 {
-  mSettingsKey = settingsKey ;
+  mSettingsKey = settingsKey;
   QgsSettings settings;
   QString key = QStringLiteral( "%1/%2/path" ).arg( connectionsPath( settingsKey ), mConnName );
   mPath = settings.value( key ).toString();

@@ -422,6 +422,9 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
 {
   setupUi( this );
+  connect( mFileSelectionButton, &QToolButton::clicked, this, &QgsDxfExportDialog::mFileSelectionButton_clicked );
+  connect( mVisibilityPresets, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDxfExportDialog::mVisibilityPresets_currentIndexChanged );
+  connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsDxfExportDialog::mCrsSelector_crsChanged );
 
   mLayerTreeGroup = QgsProject::instance()->layerTreeRoot()->clone();
   cleanGroup( mLayerTreeGroup );
@@ -485,7 +488,7 @@ QgsDxfExportDialog::~QgsDxfExportDialog()
   QgsSettings().setValue( QStringLiteral( "/Windows/DxfExport/geometry" ), saveGeometry() );
 }
 
-void QgsDxfExportDialog::on_mVisibilityPresets_currentIndexChanged( int index )
+void QgsDxfExportDialog::mVisibilityPresets_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
   QgsVectorLayerAndAttributeModel *model = qobject_cast< QgsVectorLayerAndAttributeModel * >( mTreeView->model() );
@@ -564,7 +567,7 @@ QgsDxfExport::SymbologyExport QgsDxfExportDialog::symbologyMode() const
 }
 
 
-void QgsDxfExportDialog::on_mFileSelectionButton_clicked()
+void QgsDxfExportDialog::mFileSelectionButton_clicked()
 {
   //get last dxf save directory
   QgsSettings s;
@@ -635,7 +638,7 @@ QString QgsDxfExportDialog::encoding() const
   return mEncoding->currentText();
 }
 
-void QgsDxfExportDialog::on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
+void QgsDxfExportDialog::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
   mCRS = crs;
 }

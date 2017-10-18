@@ -24,8 +24,6 @@
 
 QgsTransactionGroup::QgsTransactionGroup( QObject *parent )
   : QObject( parent )
-  , mEditingStarting( false )
-  , mEditingStopping( false )
 {
 
 }

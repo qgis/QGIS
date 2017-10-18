@@ -23,7 +23,6 @@
 #include <memory>
 
 QgsTriangle::QgsTriangle()
-  : QgsPolygonV2()
 {
   mWkbType = QgsWkbTypes::Triangle;
 }
@@ -46,7 +45,6 @@ QgsTriangle::QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint
 }
 
 QgsTriangle::QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 )
-  : QgsPolygonV2()
 {
   mWkbType = QgsWkbTypes::Triangle;
   QgsPoint pt1( p1 );
@@ -66,7 +64,6 @@ QgsTriangle::QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsP
 }
 
 QgsTriangle::QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 )
-  : QgsPolygonV2()
 {
   mWkbType = QgsWkbTypes::Triangle;
   QgsPoint pt1( p1 );
@@ -164,10 +161,7 @@ bool QgsTriangle::fromWkb( QgsConstWkbPtr &wkbPtr )
 
   QgsLineString *line = new QgsLineString();
   line->fromWkbPoints( ringType, wkbPtr );
-  if ( !mExteriorRing )
-  {
-    mExteriorRing.reset( line );
-  }
+  mExteriorRing.reset( line );
 
   return true;
 }
@@ -260,7 +254,7 @@ bool QgsTriangle::insertVertex( QgsVertexId position, const QgsPoint &vertex )
   Q_UNUSED( vertex );
   return false;
 }
-#include <iostream>
+
 bool QgsTriangle::moveVertex( QgsVertexId vId, const QgsPoint &newPos )
 {
   if ( !mExteriorRing || vId.part != 0 || vId.ring != 0 || vId.vertex < 0 || vId.vertex > 4 )

@@ -24,7 +24,8 @@ class QgsProject;
 class QgsVectorLayer;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This is a container for configuration of the snapping of the project
  * \since QGIS 3.0
  */
@@ -56,7 +57,8 @@ class CORE_EXPORT QgsSnappingConfig
       Segment = 3, //!< On segments only
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * This is a container of advanced configuration (per layer) of the snapping of the project
      * \since QGIS 3.0
      */
@@ -76,7 +78,7 @@ class CORE_EXPORT QgsSnappingConfig
         /**
          * Constructs an invalid setting
          */
-        IndividualLayerSettings();
+        IndividualLayerSettings() = default;
 
         //! return if settings are valid
         bool valid() const;
@@ -113,11 +115,11 @@ class CORE_EXPORT QgsSnappingConfig
         bool operator== ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 
       private:
-        bool mValid;
-        bool mEnabled;
-        SnappingType mType;
-        double mTolerance;
-        QgsTolerance::UnitType mUnits;
+        bool mValid = false;
+        bool mEnabled = false;
+        SnappingType mType = Vertex;
+        double mTolerance = 0;
+        QgsTolerance::UnitType mUnits = QgsTolerance::Pixels;
     };
 
     /**

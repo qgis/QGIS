@@ -240,9 +240,15 @@ bool QgsExpression::isValid() const
   return d->mRootNode;
 }
 
-bool QgsExpression::hasParserError() const { return !d->mParserErrorString.isNull(); }
+bool QgsExpression::hasParserError() const
+{
+  return !d->mParserErrorString.isNull();
+}
 
-QString QgsExpression::parserErrorString() const { return d->mParserErrorString; }
+QString QgsExpression::parserErrorString() const
+{
+  return d->mParserErrorString;
+}
 
 QSet<QString> QgsExpression::referencedColumns() const
 {
@@ -465,7 +471,9 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
 {
   bool ok;
   //first test if text is directly convertible to double
-  double convertedValue = text.toDouble( &ok );
+  // use system locale: e.g. in German locale, user is presented with numbers "1,23" instead of "1.23" in C locale
+  // so we also want to allow user to rewrite it to "5,23" and it is still accepted
+  double convertedValue = QLocale::system().toDouble( text, &ok );
   if ( ok )
   {
     return convertedValue;
@@ -508,7 +516,7 @@ QString QgsExpression::helpText( QString name )
                         .arg( tr( "%1 %2" ).arg( f.mType, name ),
                               f.mDescription ) );
 
-  for ( const HelpVariant &v : qgsAsConst( f.mVariants ) )
+  for ( const HelpVariant &v : qgis::as_const( f.mVariants ) )
   {
     if ( f.mVariants.size() > 1 )
     {
@@ -540,7 +548,7 @@ QString QgsExpression::helpText( QString name )
         helpContents += '(';
 
         QString delim;
-        for ( const HelpArg &a : qgsAsConst( v.mArguments ) )
+        for ( const HelpArg &a : qgis::as_const( v.mArguments ) )
         {
           helpContents += delim;
           delim = QStringLiteral( ", " );
@@ -553,7 +561,7 @@ QString QgsExpression::helpText( QString name )
 
         if ( v.mVariableLenArguments )
         {
-          helpContents += QStringLiteral( "…" );
+          helpContents += QStringLiteral( "\u2026" );
         }
 
         helpContents += ')';
@@ -566,7 +574,7 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QStringLiteral( "<h4>%1</h4>\n<div class=\"arguments\">\n<table>" ).arg( tr( "Arguments" ) );
 
-      for ( const HelpArg &a : qgsAsConst( v.mArguments ) )
+      for ( const HelpArg &a : qgis::as_const( v.mArguments ) )
       {
         if ( a.mSyntaxOnly )
           continue;
@@ -581,7 +589,7 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QStringLiteral( "<h4>%1</h4>\n<div class=\"examples\">\n<ul>\n" ).arg( tr( "Examples" ) );
 
-      for ( const HelpExample &e : qgsAsConst( v.mExamples ) )
+      for ( const HelpExample &e : qgis::as_const( v.mExamples ) )
       {
         helpContents += "<li><code>" + e.mExpression + "</code> &rarr; <code>" + e.mReturns + "</code>";
 
@@ -705,7 +713,7 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "algorithm_id" ), QCoreApplication::translate( "algorithm_id", "Unique ID for algorithm." ) );
 
   //provider notification
-  sVariableHelpTexts.insert( QStringLiteral( "notification_message" ), QCoreApplication::translate( "notification_message", "Contend of the notification message sent by the provider (available only for actions triggered by provider notifications)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "notification_message" ), QCoreApplication::translate( "notification_message", "Content of the notification message sent by the provider (available only for actions triggered by provider notifications)." ) );
 }
 
 QString QgsExpression::variableHelpText( const QString &variableName )

@@ -86,6 +86,9 @@ class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
     def outputName(self):
         return self.tr('Buffers')
 
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine]
+
     def outputType(self):
         return QgsProcessing.TypeVectorPolygon
 

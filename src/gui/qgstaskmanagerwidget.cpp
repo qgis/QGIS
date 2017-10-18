@@ -369,7 +369,6 @@ QgsTaskStatusWidget::QgsTaskStatusWidget( QWidget *parent, QgsTask::TaskStatus s
   : QWidget( parent )
   , mCanCancel( canCancel )
   , mStatus( status )
-  , mInside( false )
 {
   setMouseTracking( true );
 }

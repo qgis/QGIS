@@ -436,21 +436,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
 
 QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   : QgsVectorDataProvider( uri )
-  , mValid( false )
-  , mIsQuery( false )
-  , mTableBased( false )
-  , mViewBased( false )
-  , mVShapeBased( false )
-  , mReadOnly( false )
-  , mGeomType( QgsWkbTypes::Unknown )
-  , mSrid( -1 )
-  , mNumberFeatures( 0 )
-  , mSpatialIndexRTree( false )
-  , mSpatialIndexMbrCache( false )
   , mEnabledCapabilities( 0 )
-  , mGotSpatialiteVersion( false )
-  , mSpatialiteVersionMajor( 0 )
-  , mSpatialiteVersionMinor( 0 )
 {
   nDims = GAIA_XY;
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );
@@ -3854,7 +3840,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
     sql = QStringLiteral( "INSERT INTO %1(" ).arg( quotedIdentifier( mTableName ) );
     values = QStringLiteral( ") VALUES (" );
-    separator = QLatin1String( "" );
+    separator.clear();
 
     if ( !mGeometryColumn.isEmpty() )
     {
@@ -5257,7 +5243,8 @@ QGISEXTERN QgsSpatiaLiteProvider *classFactory( const QString *uri )
   return new QgsSpatiaLiteProvider( *uri );
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
@@ -5724,7 +5711,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
 {
   QgsDataSourceUri dsUri( uri );
   QString sqlitePath = dsUri.database();
-  QgsDebugMsg( "Database is: " + sqlitePath );
+  QgsDebugMsgLevel( "Database is: " + sqlitePath, 5 );
 
   // trying to open the SQLite DB
   QgsSqliteHandle *handle = QgsSqliteHandle::openDb( sqlitePath );
@@ -5732,7 +5719,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   {
     QgsDebugMsg( "Connection to database failed. Save style aborted." );
     errCause = QObject::tr( "Connection to database failed" );
-    return QLatin1String( "" );
+    return QString();
   }
 
   sqlite3 *sqliteHandle = handle->handle();
@@ -5756,9 +5743,9 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   if ( SQLITE_OK != ret )
   {
     QgsSqliteHandle::closeDb( handle );
-    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectQmlQuery ) );
+    QgsMessageLog::logMessage( QObject::tr( "Could not load styles from %1 (Query: %2)" ).arg( sqlitePath, selectQmlQuery ) );
     errCause = QObject::tr( "Error executing loading style. The query was logged" );
-    return QLatin1String( "" );
+    return QString();
   }
 
   QString style = ( rows == 1 ) ? QString::fromUtf8( results[( rows * columns ) + 0 ] ) : QLatin1String( "" );
@@ -5907,7 +5894,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   }
   else
   {
-    QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectQmlQuery ) );
+    QgsMessageLog::logMessage( QObject::tr( "Style with id %1 not found in %2 (Query: %3)" ).arg( styleId, sqlitePath, selectQmlQuery ) );
     errCause = QObject::tr( "Error executing the select query. The query was logged" );
   }
 

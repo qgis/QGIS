@@ -23,7 +23,8 @@
 class QComboBox;
 class QPushButton;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A file dialog which lets the user select the preferred encoding type for a data provider.
  **/
 class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog

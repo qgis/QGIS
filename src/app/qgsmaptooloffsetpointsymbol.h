@@ -23,7 +23,8 @@
 class QgsMarkerSymbol;
 class QgsPointMarkerItem;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * \class QgsMapToolOffsetPointSymbol
  * \brief A class that allows interactive manipulation of the offset field(s) for point layers.
  */
@@ -40,7 +41,8 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    /** Returns true if the symbols of a map layer can be offset. This means the layer
+    /**
+     * Returns true if the symbols of a map layer can be offset. This means the layer
      *  is a vector layer, has type point or multipoint and has at least one offset attribute in the renderer.
     */
     static bool layerIsOffsetable( QgsMapLayer *ml );
@@ -74,17 +76,22 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
     //! Create item with the point symbol for a specific feature. This will be used to show the offset to the user.
     void createPreviewItem( QgsMarkerSymbol *markerSymbol );
 
-    //! Calculates the new values for offset attributes, respecting the symbol's offset units
-    //! \note start and end point are in map units
+    /**
+     * Calculates the new values for offset attributes, respecting the symbol's offset units
+     * \note start and end point are in map units
+     */
     QMap< int, QVariant > calculateNewOffsetAttributes( const QgsPointXY &startPoint, const QgsPointXY &endPoint ) const;
 
-    /** Updates the preview item to reflect a new offset.
+    /**
+     * Updates the preview item to reflect a new offset.
      * \note start and end points are in map units
      */
     void updateOffsetPreviewItem( const QgsPointXY &startPoint, const QgsPointXY &endPoint );
 
-    //! Calculates the required offset from the start to end points, in the specified unit
-    //! \note start and end points are in map units
+    /**
+     * Calculates the required offset from the start to end points, in the specified unit
+     * \note start and end points are in map units
+     */
     QPointF calculateOffset( const QgsPointXY &startPoint, const QgsPointXY &endPoint, QgsUnitTypes::RenderUnit unit ) const;
 
     //! Adjusts the calculated offset to account for the symbol's rotation

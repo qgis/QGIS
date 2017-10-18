@@ -27,7 +27,8 @@ class QgsSymbol;
 class QgsVectorLayer;
 class QgsExpression;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Class that runs a hit test with given map settings. Based on the hit test it returns which symbols
  * will be visible on the map - this is useful for content based legend.
  *
@@ -39,9 +40,11 @@ class CORE_EXPORT QgsMapHitTest
     //! Maps an expression string to a layer id
     typedef QMap<QString, QString> LayerFilterExpression;
 
-    //! \param settings Map settings used to evaluate symbols
-    //! \param polygon Polygon geometry to refine the hit test
-    //! \param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
+    /**
+     * \param settings Map settings used to evaluate symbols
+     * \param polygon Polygon geometry to refine the hit test
+     * \param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
+     */
     QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const QgsMapHitTest::LayerFilterExpression &layerFilterExpression = QgsMapHitTest::LayerFilterExpression() );
 
     //! Constructor version used with only expressions to filter symbols (no extent or polygon intersection)
@@ -50,7 +53,8 @@ class CORE_EXPORT QgsMapHitTest
     //! Runs the map hit test
     void run();
 
-    /** Tests whether a symbol is visible for a specified layer.
+    /**
+     * Tests whether a symbol is visible for a specified layer.
      * \param symbol symbol to find
      * \param layer vector layer
      * \since QGIS 2.12
@@ -58,7 +62,8 @@ class CORE_EXPORT QgsMapHitTest
      */
     bool symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const;
 
-    /** Tests whether a given legend key is visible for a specified layer.
+    /**
+     * Tests whether a given legend key is visible for a specified layer.
      * \param ruleKey legend rule key
      * \param layer vector layer
      * \since QGIS 2.14
@@ -74,7 +79,8 @@ class CORE_EXPORT QgsMapHitTest
     //! \note not available in Python bindings
     typedef QMap<QgsVectorLayer *, SymbolSet> HitTest;
 
-    /** Runs test for visible symbols within a layer
+    /**
+     * Runs test for visible symbols within a layer
      * \param vl vector layer
      * \param usedSymbols set for storage of visible symbols
      * \param usedSymbolsRuleKey set of storage of visible legend rule keys

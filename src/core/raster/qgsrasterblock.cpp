@@ -28,28 +28,15 @@
 const QRgb QgsRasterBlock::NO_DATA_COLOR = qRgba( 0, 0, 0, 0 );
 
 QgsRasterBlock::QgsRasterBlock()
-  : mValid( true )
-  , mDataType( Qgis::UnknownDataType )
-  , mTypeSize( 0 )
-  , mWidth( 0 )
-  , mHeight( 0 )
-  , mHasNoDataValue( false )
-  , mNoDataValue( std::numeric_limits<double>::quiet_NaN() )
-  , mNoDataBitmapWidth( 0 )
-  , mNoDataBitmapSize( 0 )
+  : mNoDataValue( std::numeric_limits<double>::quiet_NaN() )
 {
 }
 
 QgsRasterBlock::QgsRasterBlock( Qgis::DataType dataType, int width, int height )
-  : mValid( true )
-  , mDataType( dataType )
-  , mTypeSize( 0 )
+  : mDataType( dataType )
   , mWidth( width )
   , mHeight( height )
-  , mHasNoDataValue( false )
   , mNoDataValue( std::numeric_limits<double>::quiet_NaN() )
-  , mNoDataBitmapWidth( 0 )
-  , mNoDataBitmapSize( 0 )
 {
   ( void )reset( mDataType, mWidth, mHeight );
 }

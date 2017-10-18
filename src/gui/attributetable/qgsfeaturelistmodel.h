@@ -32,7 +32,8 @@ class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;
 class QgsVectorLayerCache;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFeatureListModel
  */
 class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFeatureModel
@@ -43,13 +44,14 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     struct FeatureInfo
     {
       public:
-        FeatureInfo()
-          : isNew( false )
-          , isEdited( false )
-        {}
 
-        bool isNew;
-        bool isEdited;
+        /**
+         * Constructor for FeatureInfo.
+         */
+        FeatureInfo() = default;
+
+        bool isNew = false;
+        bool isEdited = false;
     };
 
     enum Role

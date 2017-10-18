@@ -18,12 +18,6 @@
 #include "qgis.h"
 #include "qgsexception.h"
 
-QgsVector::QgsVector()
-  : mX( 0.0 )
-  , mY( 0.0 )
-{
-}
-
 QgsVector::QgsVector( double x, double y )
   : mX( x )
   , mY( y )

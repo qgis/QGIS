@@ -58,6 +58,8 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, c
   else
   {
     setupUi( this );
+    connect( btnClear, &QToolButton::clicked, this, &QgsAuthConfigEdit::btnClear_clicked );
+    connect( leName, &QLineEdit::textChanged, this, &QgsAuthConfigEdit::leName_textChanged );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
     connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAuthConfigEdit::saveConfig );
     connect( buttonBox->button( QDialogButtonBox::Reset ), &QAbstractButton::clicked, this, &QgsAuthConfigEdit::resetConfig );
@@ -309,7 +311,7 @@ void QgsAuthConfigEdit::saveConfig()
   this->accept();
 }
 
-void QgsAuthConfigEdit::on_btnClear_clicked()
+void QgsAuthConfigEdit::btnClear_clicked()
 {
   QgsAuthMethodEdit *editWidget = currentEditWidget();
   if ( !editWidget )
@@ -359,7 +361,7 @@ void QgsAuthConfigEdit::validateAuth()
   buttonBox->button( QDialogButtonBox::Save )->setEnabled( authok );
 }
 
-void QgsAuthConfigEdit::on_leName_textChanged( const QString &txt )
+void QgsAuthConfigEdit::leName_textChanged( const QString &txt )
 {
   Q_UNUSED( txt );
   validateAuth();

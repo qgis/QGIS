@@ -7,7 +7,8 @@
 
 class QgsProject;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Stores global configuration for labeling engine
  * \since QGIS 3.0
  */
@@ -25,8 +26,10 @@ class CORE_EXPORT QgsLabelingEngineSettings
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    //! Search methods in the PAL library to remove colliding labels
-    //! (methods have different processing speed and number of labels placed)
+    /**
+     * Search methods in the PAL library to remove colliding labels
+     * (methods have different processing speed and number of labels placed)
+     */
     enum Search
     {
       Chain,
@@ -69,9 +72,9 @@ class CORE_EXPORT QgsLabelingEngineSettings
     //! Flags
     Flags mFlags;
     //! search method to use for removal collisions between labels
-    Search mSearchMethod;
+    Search mSearchMethod = Chain;
     //! Number of candedate positions that will be generated for features
-    int mCandPoint, mCandLine, mCandPolygon;
+    int mCandPoint = 16, mCandLine = 50, mCandPolygon = 30;
 
 };
 

@@ -38,14 +38,12 @@
 QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
   : mURI( uri )
   , mSourceCRS( 0 )
-  , mCacheDataProvider( nullptr )
   , mMaxFeatures( 0 )
   , mMaxFeaturesWasSetFromDefaultForPaging( false )
   , mHideProgressDialog( mURI.hideDownloadProgressDialog() )
   , mDistinctSelect( false )
   , mHasWarnedAboutMissingFeatureId( false )
   , mGetFeatureEPSGDotHonoursEPSGOrder( false )
-  , mDownloader( nullptr )
   , mDownloadFinished( false )
   , mGenCounter( 0 )
   , mFeatureCount( 0 )
@@ -216,7 +214,7 @@ bool QgsWFSSharedData::createCache()
 
   static int sTmpCounter = 0;
   ++sTmpCounter;
-  mCacheDbname =  QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QStringLiteral( "wfs_cache_%1.sqlite" ).arg( sTmpCounter ) );
+  mCacheDbname = QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QStringLiteral( "wfs_cache_%1.sqlite" ).arg( sTmpCounter ) );
 
   QgsFields cacheFields;
   Q_FOREACH ( const QgsField &field, mFields )
@@ -371,7 +369,7 @@ bool QgsWFSSharedData::createCache()
     {
       mCacheTablename = QStringLiteral( "features" );
       sql = QStringLiteral( "CREATE TABLE %1 (%2 INTEGER PRIMARY KEY" ).arg( mCacheTablename, fidName );
-      for ( const QgsField &field : qgsAsConst( cacheFields ) )
+      for ( const QgsField &field : qgis::as_const( cacheFields ) )
       {
         QString type( QStringLiteral( "VARCHAR" ) );
         if ( field.type() == QVariant::Int )
@@ -1181,10 +1179,6 @@ QgsWFSFeatureHitsRequest::QgsWFSFeatureHitsRequest( QgsWFSDataSourceURI &uri )
 {
 }
 
-QgsWFSFeatureHitsRequest::~QgsWFSFeatureHitsRequest()
-{
-}
-
 int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
     const QString &filter )
 {
@@ -1220,7 +1214,7 @@ int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
   QDomElement doc = domDoc.documentElement();
   QString numberOfFeatures =
     ( WFSVersion.startsWith( QLatin1String( "1.1" ) ) ) ? doc.attribute( QStringLiteral( "numberOfFeatures" ) ) :
-    /* 2.0 */                         doc.attribute( QStringLiteral( "numberMatched" ) ) ;
+    /* 2.0 */                         doc.attribute( QStringLiteral( "numberMatched" ) );
   if ( !numberOfFeatures.isEmpty() )
   {
     bool isValid;
@@ -1244,10 +1238,6 @@ QString QgsWFSFeatureHitsRequest::errorMessageWithReason( const QString &reason 
 
 QgsWFSSingleFeatureRequest::QgsWFSSingleFeatureRequest( QgsWFSSharedData *shared )
   : QgsWfsRequest( shared->mURI.uri() ), mShared( shared )
-{
-}
-
-QgsWFSSingleFeatureRequest::~QgsWFSSingleFeatureRequest()
 {
 }
 

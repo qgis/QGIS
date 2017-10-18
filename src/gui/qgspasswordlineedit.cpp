@@ -20,7 +20,6 @@
 
 QgsPasswordLineEdit::QgsPasswordLineEdit( QWidget *parent, bool passwordVisible )
   : QLineEdit( parent )
-  , mLockIconVisible( false )
 {
   mShowPasswordIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) );
   mHidePasswordIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionHideAllLayers.svg" ) );

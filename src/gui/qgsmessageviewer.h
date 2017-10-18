@@ -25,7 +25,8 @@
 #include <QString>
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A generic message view for displaying QGIS messages.
  */
 class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, private Ui::QgsMessageViewer
@@ -65,7 +66,7 @@ class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, priv
     void setCheckBoxQgsSettingsLabel( const QString &label );
 
   private slots:
-    void on_checkBox_toggled( bool );
+    void checkBox_toggled( bool );
 
 
   private:

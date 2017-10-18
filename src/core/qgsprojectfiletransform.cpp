@@ -865,7 +865,7 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
     QDomElement noDataRangeList = doc.createElement( QStringLiteral( "noDataRangeList" ) );
     noDataRangeList.setAttribute( QStringLiteral( "bandNo" ), 1 );
 
-    QDomElement noDataRange =  doc.createElement( QStringLiteral( "noDataRange" ) );
+    QDomElement noDataRange = doc.createElement( QStringLiteral( "noDataRange" ) );
     noDataRange.setAttribute( QStringLiteral( "min" ), noDataElement.text() );
     noDataRange.setAttribute( QStringLiteral( "max" ), noDataElement.text() );
     noDataRangeList.appendChild( noDataRange );

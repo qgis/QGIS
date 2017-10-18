@@ -109,8 +109,10 @@ int adjacentVertexIndexToEndpoint( const QgsGeometry &geom, int vertexIndex )
 }
 
 
-//! Determine whether a vertex is in the middle of a circular edge or not
-//! (wrapper for slightly awkward API)
+/**
+ * Determine whether a vertex is in the middle of a circular edge or not
+ * (wrapper for slightly awkward API)
+ */
 static bool isCircularVertex( const QgsGeometry &geom, int vertexIndex )
 {
   QgsVertexId vid;
@@ -152,7 +154,7 @@ class OneFeatureFilter : public QgsPointLocator::MatchFilter
     }
 
   private:
-    const QgsVectorLayer *layer;
+    const QgsVectorLayer *layer = nullptr;
     QgsFeatureId fid;
 };
 
@@ -162,7 +164,7 @@ class MatchCollectingFilter : public QgsPointLocator::MatchFilter
 {
   public:
     QList<QgsPointLocator::Match> matches;
-    QgsNodeTool *nodetool;
+    QgsNodeTool *nodetool = nullptr;
 
     MatchCollectingFilter( QgsNodeTool *nodetool )
       : nodetool( nodetool ) {}
@@ -330,11 +332,11 @@ void QgsNodeTool::clearDragBands()
   mDragPointMarkers.clear();
   mDragPointMarkersOffset.clear();
 
-  for ( const StraightBand &b : qgsAsConst( mDragStraightBands ) )
+  for ( const StraightBand &b : qgis::as_const( mDragStraightBands ) )
     delete b.band;
   mDragStraightBands.clear();
 
-  for ( const CircularBand &b : qgsAsConst( mDragCircularBands ) )
+  for ( const CircularBand &b : qgis::as_const( mDragCircularBands ) )
     delete b.band;
   mDragCircularBands.clear();
 }
@@ -350,7 +352,7 @@ void QgsNodeTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
     QgsPointLocator::Match m = snapToEditableLayer( e );
     if ( m.hasVertex() )
     {
-      for ( const Vertex &selectedNode : qgsAsConst( mSelectedNodes ) )
+      for ( const Vertex &selectedNode : qgis::as_const( mSelectedNodes ) )
       {
         if ( selectedNode.layer == m.layer() && selectedNode.fid == m.featureId() && selectedNode.vertexId == m.vertexIndex() )
         {
@@ -781,7 +783,7 @@ void QgsNodeTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
       QgsPointSequence points;
       QgsGeometryUtils::segmentizeArc( QgsPoint( pX ), QgsPoint( p0 ), QgsPoint( p1 ), points );
       mEdgeBand->reset();
-      for ( const QgsPoint &pt : qgsAsConst( points ) )
+      for ( const QgsPoint &pt : qgis::as_const( points ) )
         mEdgeBand->addPoint( pt );
     }
     else if ( isCircularVertex( geom, m.vertexIndex() + 1 ) )
@@ -792,7 +794,7 @@ void QgsNodeTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
       QgsPointSequence points;
       QgsGeometryUtils::segmentizeArc( QgsPoint( p0 ), QgsPoint( p1 ), QgsPoint( pX ), points );
       mEdgeBand->reset();
-      for ( const QgsPoint &pt : qgsAsConst( points ) )
+      for ( const QgsPoint &pt : qgis::as_const( points ) )
         mEdgeBand->addPoint( pt );
     }
     else
@@ -972,7 +974,7 @@ void QgsNodeTool::deleteNodeEditorSelection()
   QgsVectorLayer *layer = mSelectedFeature->vlayer();
   QgsFeatureId fid = mSelectedFeature->featureId();
   QgsGeometry geometry = cachedGeometry( layer, fid );
-  for ( QgsVertexEntry *vertex : qgsAsConst( selFeatureVertices ) )
+  for ( QgsVertexEntry *vertex : qgis::as_const( selFeatureVertices ) )
   {
     if ( vertex->isSelected() )
     {
@@ -1051,7 +1053,7 @@ void QgsNodeTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
   QgsPointXY origDraggingVertexPoint = geom.vertexAt( mDraggingVertex->vertexId );
 
   // if there are other highlighted nodes, they should be dragged as well with their offset
-  for ( const Vertex &v : qgsAsConst( mSelectedNodes ) )
+  for ( const Vertex &v : qgis::as_const( mSelectedNodes ) )
   {
     if ( v != *mDraggingVertex )
     {
@@ -1098,7 +1100,7 @@ void QgsNodeTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
 
   QSet<Vertex> movingVertices;
   movingVertices << *mDraggingVertex;
-  for ( const Vertex &v : qgsAsConst( mDraggingExtraVertices ) )
+  for ( const Vertex &v : qgis::as_const( mDraggingExtraVertices ) )
     movingVertices << v;
 
   QgsPointXY dragVertexMapPoint = m.point();
@@ -1114,7 +1116,7 @@ void QgsNodeTool::buildDragBandsForVertices( const QSet<Vertex> &movingVertices,
   // i.e. every circular band is defined by its middle circular vertex
   QSet<Vertex> verticesInCircularBands;
 
-  for ( const Vertex &v : qgsAsConst( movingVertices ) )
+  for ( const Vertex &v : qgis::as_const( movingVertices ) )
   {
     int v0idx, v1idx;
     QgsGeometry geom = cachedGeometry( v.layer, v.fid );
@@ -1326,7 +1328,7 @@ void QgsNodeTool::startDraggingEdge( const QgsPointLocator::Match &m, const QgsP
 
   QgsPointXY layerPoint = toLayerCoordinates( m.layer(), mapPoint );
 
-  for ( const Vertex &v : qgsAsConst( movingVertices ) )
+  for ( const Vertex &v : qgis::as_const( movingVertices ) )
   {
     mDraggingExtraVertices << v;
     mDraggingExtraVerticesOffset << ( geom.vertexAt( v.vertexId ) - QgsPoint( layerPoint ) );
@@ -1533,7 +1535,7 @@ void QgsNodeTool::deleteVertex()
   {
     // if topo editing is enabled, delete all the vertices that are on the same location
     QSet<Vertex> topoVerticesToDelete;
-    for ( const Vertex &vertexToDelete : qgsAsConst( toDelete ) )
+    for ( const Vertex &vertexToDelete : qgis::as_const( toDelete ) )
     {
       QgsPointXY layerPt = cachedGeometryForVertex( vertexToDelete ).vertexAt( vertexToDelete.vertexId );
       QgsPointXY mapPt = toMapCoordinates( vertexToDelete.layer, layerPt );
@@ -1553,7 +1555,7 @@ void QgsNodeTool::deleteVertex()
 
   // switch from a plain list to dictionary { layer: { fid: [vertexNr1, vertexNr2, ...] } }
   QHash<QgsVectorLayer *, QHash<QgsFeatureId, QList<int> > > toDeleteGrouped;
-  for ( const Vertex &vertex : qgsAsConst( toDelete ) )
+  for ( const Vertex &vertex : qgis::as_const( toDelete ) )
   {
     toDeleteGrouped[vertex.layer][vertex.fid].append( vertex.vertexId );
   }
@@ -1589,7 +1591,7 @@ void QgsNodeTool::deleteVertex()
           }
         }
         // now delete the duplicities
-        for ( int duplicateVertexIndex : qgsAsConst( duplicateVertexIndices ) )
+        for ( int duplicateVertexIndex : qgis::as_const( duplicateVertexIndices ) )
           vertexIds.removeOne( duplicateVertexIndex );
       }
     }
@@ -1668,7 +1670,7 @@ void QgsNodeTool::setHighlightedNodes( QList<Vertex> listNodes )
   mSelectedNodesMarkers.clear();
   mSelectedNodes.clear();
 
-  for ( const Vertex &node : qgsAsConst( listNodes ) )
+  for ( const Vertex &node : qgis::as_const( listNodes ) )
   {
     QgsGeometry geom = cachedGeometryForVertex( node );
     QgsVertexId vid;
@@ -1687,7 +1689,7 @@ void QgsNodeTool::setHighlightedNodes( QList<Vertex> listNodes )
 
 void QgsNodeTool::setHighlightedNodesVisible( bool visible )
 {
-  for ( QgsVertexMarker *marker : qgsAsConst( mSelectedNodesMarkers ) )
+  for ( QgsVertexMarker *marker : qgis::as_const( mSelectedNodesMarkers ) )
     marker->setVisible( visible );
 }
 
@@ -1782,7 +1784,7 @@ void QgsNodeTool::CircularBand::updateRubberBand( const QgsPointXY &mapPoint )
   QgsGeometryUtils::segmentizeArc( QgsPoint( v0 ), QgsPoint( v1 ), QgsPoint( v2 ), points );
   // it would be useful to have QgsRubberBand::setPoints() call
   band->reset();
-  for ( const QgsPoint &p : qgsAsConst( points ) )
+  for ( const QgsPoint &p : qgis::as_const( points ) )
     band->addPoint( p );
 }
 

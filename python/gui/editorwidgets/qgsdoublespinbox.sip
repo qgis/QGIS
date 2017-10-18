@@ -29,7 +29,6 @@ class QgsDoubleSpinBox : QDoubleSpinBox
 %TypeHeaderCode
 #include "qgsdoublespinbox.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsDoubleSpinBox *>( sipCpp ) )
       sipType = sipType_QgsDoubleSpinBox;

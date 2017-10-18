@@ -24,7 +24,8 @@
 
 #include <QMap>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Class for storing the component parts of a PostgreSQL/RDBMS datasource URI.
  * This structure stores the database connection information, including host, database,
  * user name, password, schema, password, and sql where clause
@@ -79,14 +80,18 @@ class CORE_EXPORT QgsDataSourceUri
     //! quoted table name
     QString quotedTablename() const;
 
-    //! Set generic param (generic mode)
-    //! \note if key exists, another is inserted
+    /**
+     * Set generic param (generic mode)
+     * \note if key exists, another is inserted
+     */
     void setParam( const QString &key, const QString &value );
     //! \note available in Python as setParamList
     void setParam( const QString &key, const QStringList &value ) SIP_PYNAME( setParamList );
 
-    //! Remove generic param (generic mode)
-    //! \note remove all occurrences of key, returns number of params removed
+    /**
+     * Remove generic param (generic mode)
+     * \note remove all occurrences of key, returns number of params removed
+     */
     int removeParam( const QString &key );
 
     //! Get generic param (generic mode)
@@ -201,7 +206,8 @@ class CORE_EXPORT QgsDataSourceUri
     //! Sets the name of the (primary) key column
     void setKeyColumn( const QString &column );
 
-    /** The wkb type.
+    /**
+     * The wkb type.
      */
     QgsWkbTypes::Type wkbType() const;
 
@@ -245,15 +251,15 @@ class CORE_EXPORT QgsDataSourceUri
     //! password
     QString mPassword;
     //! ssl mode
-    SslMode mSSLmode;
+    SslMode mSSLmode = SslPrefer;
     //! key column
     QString mKeyColumn;
     //! Use estimated metadata flag
-    bool mUseEstimatedMetadata;
+    bool mUseEstimatedMetadata = false;
     //! Disable SelectAtId capability (e.g., to trigger the attribute table memory model for expensive views)
-    bool mSelectAtIdDisabled;
+    bool mSelectAtIdDisabled = false;
     //! geometry type (or QgsWkbTypes::Unknown if not specified)
-    QgsWkbTypes::Type mWkbType;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
     //! SRID or a null string if not specified
     QString mSrid;
     //! Generic params store

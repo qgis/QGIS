@@ -23,9 +23,9 @@
 #include "qgswkbptr.h"
 #include <QPainter>
 #include <QPainterPath>
+#include <memory>
 
-
-QgsCompoundCurve::QgsCompoundCurve(): QgsCurve()
+QgsCompoundCurve::QgsCompoundCurve()
 {
   mWkbType = QgsWkbTypes::CompoundCurve;
 }
@@ -200,7 +200,7 @@ bool QgsCompoundCurve::fromWkt( const QString &wkt )
   //if so, update the type dimensionality of the compound curve to match
   bool hasZ = false;
   bool hasM = false;
-  for ( const QgsCurve *curve : qgsAsConst( mCurves ) )
+  for ( const QgsCurve *curve : qgis::as_const( mCurves ) )
   {
     hasZ = hasZ || curve->is3D();
     hasM = hasM || curve->isMeasure();
@@ -232,7 +232,7 @@ QByteArray QgsCompoundCurve::asWkb() const
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   wkb << static_cast<quint32>( mCurves.size() );
-  for ( const QByteArray &wkbForCurve : qgsAsConst( wkbForCurves ) )
+  for ( const QByteArray &wkbForCurve : qgis::as_const( wkbForCurves ) )
   {
     wkb << wkbForCurve;
   }
@@ -263,9 +263,8 @@ QString QgsCompoundCurve::asWkt( int precision ) const
 QDomElement QgsCompoundCurve::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   // GML2 does not support curves
-  QgsLineString *line = curveToLine();
+  std::unique_ptr< QgsLineString > line( curveToLine() );
   QDomElement gml = line->asGML2( doc, precision, ns );
-  delete line;
   return gml;
 }
 
@@ -286,9 +285,8 @@ QDomElement QgsCompoundCurve::asGML3( QDomDocument &doc, int precision, const QS
 QString QgsCompoundCurve::asJSON( int precision ) const
 {
   // GeoJSON does not support curves
-  QgsLineString *line = curveToLine();
+  std::unique_ptr< QgsLineString > line( curveToLine() );
   QString json = line->asJSON( precision );
-  delete line;
   return json;
 }
 
@@ -373,12 +371,11 @@ QgsLineString *QgsCompoundCurve::curveToLine( double tolerance, SegmentationTole
 {
   QList< QgsCurve * >::const_iterator curveIt = mCurves.constBegin();
   QgsLineString *line = new QgsLineString();
-  QgsLineString *currentLine = nullptr;
+  std::unique_ptr< QgsLineString > currentLine;
   for ( ; curveIt != mCurves.constEnd(); ++curveIt )
   {
-    currentLine = ( *curveIt )->curveToLine( tolerance, toleranceType );
-    line->append( currentLine );
-    delete currentLine;
+    currentLine.reset( ( *curveIt )->curveToLine( tolerance, toleranceType ) );
+    line->append( currentLine.get() );
   }
   return line;
 }
@@ -478,7 +475,7 @@ void QgsCompoundCurve::draw( QPainter &p ) const
 
 void QgsCompoundCurve::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
-  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
+  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
   {
     curve->transform( ct, d, transformZ );
   }
@@ -487,7 +484,7 @@ void QgsCompoundCurve::transform( const QgsCoordinateTransform &ct, QgsCoordinat
 
 void QgsCompoundCurve::transform( const QTransform &t )
 {
-  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
+  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
   {
     curve->transform( t );
   }
@@ -798,7 +795,7 @@ bool QgsCompoundCurve::addZValue( double zValue )
 
   mWkbType = QgsWkbTypes::addZ( mWkbType );
 
-  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
+  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
   {
     curve->addZValue( zValue );
   }
@@ -813,7 +810,7 @@ bool QgsCompoundCurve::addMValue( double mValue )
 
   mWkbType = QgsWkbTypes::addM( mWkbType );
 
-  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
+  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
   {
     curve->addMValue( mValue );
   }
@@ -827,7 +824,7 @@ bool QgsCompoundCurve::dropZValue()
     return false;
 
   mWkbType = QgsWkbTypes::dropZ( mWkbType );
-  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
+  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
   {
     curve->dropZValue();
   }
@@ -841,7 +838,7 @@ bool QgsCompoundCurve::dropMValue()
     return false;
 
   mWkbType = QgsWkbTypes::dropM( mWkbType );
-  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
+  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
   {
     curve->dropMValue();
   }

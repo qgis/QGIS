@@ -31,7 +31,7 @@ class TestQgsLayerTree : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsLayerTree() : mRoot( 0 ) {}
+    TestQgsLayerTree() = default;
   private slots:
     void initTestCase();
     void cleanupTestCase();

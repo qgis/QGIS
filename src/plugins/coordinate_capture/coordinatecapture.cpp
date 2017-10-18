@@ -67,21 +67,10 @@ static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
  */
 CoordinateCapture::CoordinateCapture( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-  , mpMapTool( nullptr )
-  , mpTrackMouseButton( nullptr )
-  , mpCaptureButton( nullptr )
-  , mypUserCrsToolButton( nullptr )
-  , mypCRSLabel( nullptr )
   , mCanvasDisplayPrecision( 5 )
   , mUserCrsDisplayPrecision( 5 )
   , mQGisIface( qgisInterface )
-  , mQActionPointer( nullptr )
 {
-}
-
-CoordinateCapture::~CoordinateCapture()
-{
-
 }
 
 /*

@@ -77,14 +77,10 @@ QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface *qgisInterface, QWidget *p
   , mMousePrecisionDecimalPlaces( 0 )
   , mTransformParam( QgsGeorefTransform::InvalidTransform )
   , mIface( qgisInterface )
-  , mLayer( nullptr )
   , mAgainAddRaster( false )
-  , mMovingPoint( nullptr )
-  , mMovingPointQgis( nullptr )
   , mMapCoordsDialog( nullptr )
   , mUseZeroForTrans( false )
   , mLoadInQgis( false )
-  , mDock( nullptr )
 {
   setupUi( this );
 
@@ -177,7 +173,7 @@ void QgsGeorefPluginGui::closeEvent( QCloseEvent *e )
       writeSettings();
       clearGCPData();
       removeOldLayer();
-      mRasterFileName = QLatin1String( "" );
+      mRasterFileName.clear();
       e->accept();
       return;
     case QgsGeorefPluginGui::GCPSILENTSAVE:
@@ -185,13 +181,13 @@ void QgsGeorefPluginGui::closeEvent( QCloseEvent *e )
         saveGCPs();
       clearGCPData();
       removeOldLayer();
-      mRasterFileName = QLatin1String( "" );
+      mRasterFileName.clear();
       return;
     case QgsGeorefPluginGui::GCPDISCARD:
       writeSettings();
       clearGCPData();
       removeOldLayer();
-      mRasterFileName = QLatin1String( "" );
+      mRasterFileName.clear();
       e->accept();
       return;
     case QgsGeorefPluginGui::GCPCANCEL:
@@ -251,7 +247,7 @@ void QgsGeorefPluginGui::openRaster()
   filters.prepend( otherFiles + ";;" );
   filters.chop( otherFiles.size() + 2 );
   mRasterFileName = QFileDialog::getOpenFileName( this, tr( "Open raster" ), dir, filters, &lastUsedFilter );
-  mModifiedRasterFileName = QLatin1String( "" );
+  mModifiedRasterFileName.clear();
 
   if ( mRasterFileName.isEmpty() )
     return;
@@ -1511,7 +1507,7 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString &fileName, const QgsGeor
   {
     return false;
   }
-  double mapRatio =  rlayer->extent().width() / rlayer->extent().height();
+  double mapRatio = rlayer->extent().width() / rlayer->extent().height();
 
   QPrinter printer;
   printer.setOutputFormat( QPrinter::PdfFormat );
@@ -1758,7 +1754,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString &fileName, const QgsG
     }
     currentGCPStrings << QString::number( ( *gcpIt )->pixelCoords().x(), 'f', 0 ) << QString::number( ( *gcpIt )->pixelCoords().y(), 'f', 0 ) << QString::number( ( *gcpIt )->mapCoords().x(), 'f', 3 )
                       <<  QString::number( ( *gcpIt )->mapCoords().y(), 'f', 3 ) <<  QString::number( residual.x() ) <<  QString::number( residual.y() ) << QString::number( residualTot );
-    gcpTableContents << currentGCPStrings ;
+    gcpTableContents << currentGCPStrings;
   }
 
   gcpTable->setContents( gcpTableContents );
@@ -1987,7 +1983,7 @@ QgsRectangle QgsGeorefPluginGui::transformViewportBoundingBox( const QgsRectangl
 {
   double minX, minY;
   double maxX, maxY;
-  minX = minY =  std::numeric_limits<double>::max();
+  minX = minY = std::numeric_limits<double>::max();
   maxX = maxY = -std::numeric_limits<double>::max();
 
   double oX = canvasExtent.xMinimum();
@@ -2087,7 +2083,7 @@ int QgsGeorefPluginGui::polynomialOrder( QgsGeorefTransform::TransformParametris
 
 QString QgsGeorefPluginGui::guessWorldFileName( const QString &rasterFileName )
 {
-  QString worldFileName = QLatin1String( "" );
+  QString worldFileName;
   int point = rasterFileName.lastIndexOf( '.' );
   if ( point != -1 && point != rasterFileName.length() - 1 )
     worldFileName = rasterFileName.left( point + 1 ) + "wld";

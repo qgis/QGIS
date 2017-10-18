@@ -37,10 +37,10 @@ Constructor for ColumnConfig
 %End
 
 
-      QgsAttributeTableConfig::Type type;    //!< The type of this column.
+      QgsAttributeTableConfig::Type type;
       QString name; //!< The name of the attribute if this column represents a field
-      bool hidden;  //!< Flag that controls if the column is hidden
-      int width; //!< Width of column, or -1 for default width
+      bool hidden;
+      int width;
     };
 
     enum ActionWidgetStyle
@@ -50,6 +50,9 @@ Constructor for ColumnConfig
     };
 
     QgsAttributeTableConfig();
+%Docstring
+ Constructor for QgsAttributeTableConfig.
+%End
 
     QVector<QgsAttributeTableConfig::ColumnConfig> columns() const;
 %Docstring

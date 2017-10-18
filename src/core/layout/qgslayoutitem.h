@@ -23,10 +23,12 @@
 #include "qgslayoutpoint.h"
 #include "qgsrendercontext.h"
 #include "qgslayoutundocommand.h"
+#include "qgslayoutmeasurement.h"
 #include <QGraphicsRectItem>
 
 class QgsLayout;
 class QPainter;
+class QgsLayoutItemGroup;
 
 /**
  * \ingroup core
@@ -60,6 +62,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 #endif
 
     Q_OBJECT
+    Q_PROPERTY( bool locked READ isLocked WRITE setLocked NOTIFY lockChanged )
 
   public:
 
@@ -77,16 +80,27 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       LowerRight, //!< Lower right corner of item
     };
 
+    //! Layout item undo commands, used for collapsing undo commands
+    enum UndoCommand
+    {
+      UndoIncrementalMove = 1, //!< Layout item incremental movement, e.g. as a result of a keypress
+    };
+
     /**
      * Constructor for QgsLayoutItem, with the specified parent \a layout.
+     *
+     * If \a manageZValue is true, the z-Value of this item will be managed by the layout.
+     * Generally this is the desired behavior.
      */
-    explicit QgsLayoutItem( QgsLayout *layout );
+    explicit QgsLayoutItem( QgsLayout *layout, bool manageZValue = true );
+
+    ~QgsLayoutItem();
 
     /**
      * Return correct graphics item type
      * \see stringType()
      */
-    virtual int type() const override = 0;
+    int type() const override;
 
     /**
      * Return the item type as a string.
@@ -120,6 +134,62 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see uuid()
      */
     virtual void setId( const QString &id );
+
+    /**
+     * Get item display name. This is the item's id if set, and if
+     * not, a user-friendly string identifying item type.
+     * \see id()
+     * \see setId()
+     */
+    virtual QString displayName() const;
+
+    /**
+     * Sets whether the item should be selected.
+     */
+    virtual void setSelected( bool selected );
+
+    /**
+     * Sets whether the item is \a visible.
+     * \note QGraphicsItem::setVisible should not be called directly
+     * on a QgsLayoutItem, as some item types (e.g., groups) need to override
+     * the visibility toggle.
+     */
+    virtual void setVisibility( const bool visible );
+
+    /**
+     * Sets whether the item is \a locked, preventing mouse interactions with the item.
+     * \see isLocked()
+     * \see lockChanged()
+     */
+    void setLocked( const bool locked );
+
+    /**
+     * Returns true if the item is locked, and cannot be interacted with using the mouse.
+     * \see setLocked()
+     * \see lockChanged()
+     */
+    bool isLocked() const { return mIsLocked; }
+
+    /**
+     * Returns true if the item is part of a QgsLayoutItemGroup group.
+     * \see parentGroup()
+     * \see setParentGroup()
+     */
+    bool isGroupMember() const;
+
+    /**
+     * Returns the item's parent group, if the item is part of a QgsLayoutItemGroup group.
+     * \see isGroupMember()
+     * \see setParentGroup()
+     */
+    QgsLayoutItemGroup *parentGroup() const;
+
+    /**
+     * Sets the item's parent \a group.
+     * \see isGroupMember()
+     * \see parentGroup()
+     */
+    void setParentGroup( QgsLayoutItemGroup *group );
 
     /**
      * Handles preparing a paint surface for the layout item and painting the item's
@@ -230,6 +300,130 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
 
+    /**
+     * Returns true if the item includes a frame.
+     * \see setFrameEnabled()
+     * \see frameStrokeWidth()
+     * \see frameJoinStyle()
+     * \see frameStrokeColor()
+     */
+    bool hasFrame() const { return mFrame; }
+
+    /**
+     * Sets whether this item has a frame drawn around it or not.
+     * \see hasFrame()
+     * \see setFrameStrokeWidth()
+     * \see setFrameJoinStyle()
+     * \see setFrameStrokeColor()
+     */
+    virtual void setFrameEnabled( bool drawFrame );
+
+    /**
+     * Sets the frame stroke \a color.
+     * \see frameStrokeColor()
+     * \see setFrameEnabled()
+     * \see setFrameJoinStyle()
+     * \see setFrameStrokeWidth()
+     */
+    void setFrameStrokeColor( const QColor &color );
+
+    /**
+     * Returns the frame's stroke color. This is only used if hasFrame() returns true.
+     * \see hasFrame()
+     * \see setFrameStrokeColor()
+     * \see frameJoinStyle()
+     * \see setFrameStrokeColor()
+     */
+    QColor frameStrokeColor() const { return mFrameColor; }
+
+    /**
+     * Sets the frame stroke \a width.
+     * \see frameStrokeWidth()
+     * \see setFrameEnabled()
+     * \see setFrameJoinStyle()
+     * \see setFrameStrokeColor()
+     */
+    virtual void setFrameStrokeWidth( const QgsLayoutMeasurement &width );
+
+    /**
+     * Returns the frame's stroke width. This is only used if hasFrame() returns true.
+     * \see hasFrame()
+     * \see setFrameStrokeWidth()
+     * \see frameJoinStyle()
+     * \see frameStrokeColor()
+     */
+    QgsLayoutMeasurement frameStrokeWidth() const { return mFrameWidth; }
+
+    /**
+     * Returns the join style used for drawing the item's frame.
+     * \see hasFrame()
+     * \see setFrameJoinStyle()
+     * \see frameStrokeWidth()
+     * \see frameStrokeColor()
+     */
+    Qt::PenJoinStyle frameJoinStyle() const { return mFrameJoinStyle; }
+
+    /**
+     * Sets the join \a style used when drawing the item's frame.
+     * \see setFrameEnabled()
+     * \see frameJoinStyle()
+     * \see setFrameStrokeWidth()
+     * \see setFrameStrokeColor()
+     */
+    void setFrameJoinStyle( const Qt::PenJoinStyle style );
+
+    /**
+     * Returns true if the item has a background.
+     * \see setBackgroundEnabled()
+     * \see backgroundColor()
+     */
+    bool hasBackground() const { return mBackground; }
+
+    /**
+     * Sets whether this item has a background drawn under it or not.
+     * \see hasBackground()
+     * \see setBackgroundColor()
+     */
+    void setBackgroundEnabled( bool drawBackground ) { mBackground = drawBackground; }
+
+    /**
+     * Returns the background color for this item. This is only used if hasBackground()
+     * returns true.
+     * \see setBackgroundColor()
+     * \see hasBackground()
+     */
+    QColor backgroundColor() const { return mBackgroundColor; }
+
+    /**
+     * Sets the background \a color for this item.
+     * \see backgroundColor()
+     * \see setBackgroundEnabled()
+     */
+    void setBackgroundColor( const QColor &color );
+
+    /**
+     * Returns the estimated amount the item's frame bleeds outside the item's
+     * actual rectangle. For instance, if the item has a 2mm frame stroke, then
+     * 1mm of this frame is drawn outside the item's rect. In this case the
+     * return value will be 1.0.
+     *
+     * Returned values are in layout units.
+
+     * \see rectWithFrame()
+     */
+    virtual double estimatedFrameBleed() const;
+
+    /**
+     * Returns the item's rectangular bounds, including any bleed caused by the item's frame.
+     * The bounds are returned in the item's coordinate system (see Qt's QGraphicsItem docs for
+     * more details about QGraphicsItem coordinate systems). The results differ from Qt's rect()
+     * function, as rect() makes no allowances for the portion of outlines which are drawn
+     * outside of the item.
+     *
+     * \see estimatedFrameBleed()
+     */
+    virtual QRectF rectWithFrame() const;
+
   public slots:
 
     /**
@@ -265,9 +459,34 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     */
     virtual void rotateItem( const double angle, const QPointF &transformOrigin );
 
+  signals:
+
+    /**
+     * Emitted if the item's frame style changes.
+     */
+    void frameChanged();
+
+    /**
+     * Emitted if the item's lock status changes.
+     * \see isLocked()
+     * \see setLocked()
+     */
+    void lockChanged();
+
+    /**
+     * Emitted on item rotation change.
+     */
+    void rotationChanged( double newRotation );
+
+    /**
+     * Emitted when the item's size or position changes.
+     */
+    void sizePositionChanged();
+
   protected:
 
-    /** Draws a debugging rectangle of the item's current bounds within the specified
+    /**
+     * Draws a debugging rectangle of the item's current bounds within the specified
      * painter.
      * @param painter destination QPainter
      */
@@ -279,6 +498,16 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * Use the QgsRenderContext methods to convert from millimeters or other units to the painter's units.
      */
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) = 0;
+
+    /**
+     * Draws the frame around the item.
+     */
+    virtual void drawFrame( QgsRenderContext &context );
+
+    /**
+     * Draws the background for the item.
+     */
+    virtual void drawBackground( QgsRenderContext &context );
 
     /**
      * Sets a fixed \a size for the layout item, which prevents it from being freely
@@ -321,6 +550,20 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void refreshItemRotation();
 
     /**
+     * Refresh item's frame, considering data defined colors and frame size.
+     * If \a updateItem is set to false, the item will not be automatically updated
+     * after the frame is set and a later call to update() must be made.
+     */
+    void refreshFrame( bool updateItem = true );
+
+    /**
+     * Refresh item's background color, considering data defined colors.
+     * If \a updateItem is set to false, the item will not be automatically updated
+     * after the frame color is set and a later call to update() must be made.
+     */
+    void refreshBackgroundColor( bool updateItem = true );
+
+    /**
      * Adjusts the specified \a point at which a \a reference position of the item
      * sits and returns the top left corner of the item, if reference point where placed at the specified position.
      */
@@ -355,11 +598,17 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
   private:
 
+    // true if layout manages the z value for this item
+    bool mLayoutManagesZValue = false;
+
     //! id (not necessarily unique)
     QString mId;
 
     //! Unique id
     QString mUuid;
+
+    //! Parent group unique id
+    QString mParentGroupUuid;
 
     ReferencePoint mReferencePoint = UpperLeft;
     QgsLayoutSize mFixedSize;
@@ -371,6 +620,24 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     QImage mItemCachedImage;
     double mItemCacheDpi = -1;
+
+    bool mIsLocked = false;
+
+    //! True if item has a frame
+    bool mFrame = false;
+    //! Item frame color
+    QColor mFrameColor = QColor( 0, 0, 0 );
+    //! Item frame width
+    QgsLayoutMeasurement mFrameWidth = QgsLayoutMeasurement( 0.3, QgsUnitTypes::LayoutMillimeters );
+    //! Frame join style
+    Qt::PenJoinStyle mFrameJoinStyle = Qt::MiterJoin;
+
+    //! True if item has a background
+    bool mBackground = true;
+    //! Background color
+    QColor mBackgroundColor = QColor( 255, 255, 255 );
+
+    bool mBlockUndoCommands = false;
 
     void initConnectionsToLayout();
 
@@ -387,8 +654,10 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void updateStoredItemPosition();
     QPointF itemPositionAtReferencePoint( const ReferencePoint reference, const QSizeF &size ) const;
     void setScenePos( const QPointF &destinationPos );
+    bool shouldBlockUndoCommands() const;
 
     friend class TestQgsLayoutItem;
+    friend class QgsLayoutItemGroup;
 };
 
 #endif //QGSLAYOUTITEM_H

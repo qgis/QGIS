@@ -55,6 +55,10 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
   }
 
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::clicked, this, &QgsAuthSslErrorsDialog::buttonBox_clicked );
+  connect( btnChainInfo, &QToolButton::clicked, this, &QgsAuthSslErrorsDialog::btnChainInfo_clicked );
+  connect( btnChainCAs, &QToolButton::clicked, this, &QgsAuthSslErrorsDialog::btnChainCAs_clicked );
+  connect( grpbxSslErrors, &QgsCollapsibleGroupBoxBasic::collapsedStateChanged, this, &QgsAuthSslErrorsDialog::grpbxSslErrors_collapsedStateChanged );
   QStyle *style = QApplication::style();
   lblWarningIcon->setPixmap( style->standardIcon( QStyle::SP_MessageBoxWarning ).pixmap( 48, 48 ) );
   lblWarningIcon->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
@@ -158,7 +162,7 @@ void QgsAuthSslErrorsDialog::clearCertificateConfig()
   checkCanSave();
 }
 
-void QgsAuthSslErrorsDialog::on_buttonBox_clicked( QAbstractButton *button )
+void QgsAuthSslErrorsDialog::buttonBox_clicked( QAbstractButton *button )
 {
   QDialogButtonBox::StandardButton btnenum( buttonBox->standardButton( button ) );
   switch ( btnenum )
@@ -209,17 +213,17 @@ QPushButton *QgsAuthSslErrorsDialog::abortButton()
   return buttonBox->button( QDialogButtonBox::Abort );
 }
 
-void QgsAuthSslErrorsDialog::on_btnChainInfo_clicked()
+void QgsAuthSslErrorsDialog::btnChainInfo_clicked()
 {
   showCertificateChainInfo();
 }
 
-void QgsAuthSslErrorsDialog::on_btnChainCAs_clicked()
+void QgsAuthSslErrorsDialog::btnChainCAs_clicked()
 {
   showCertificateChainCAsInfo();
 }
 
-void QgsAuthSslErrorsDialog::on_grpbxSslErrors_collapsedStateChanged( bool collapsed )
+void QgsAuthSslErrorsDialog::grpbxSslErrors_collapsedStateChanged( bool collapsed )
 {
   if ( !collapsed && QgsAuthManager::instance()->isDisabled() )
   {

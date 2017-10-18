@@ -428,7 +428,7 @@ QString QgsRasterLayer::htmlMetadata() const
   QgsRasterDataProvider *provider = const_cast< QgsRasterDataProvider * >( mDataProvider );
   for ( int i = 1; i <= bandCount(); i++ )
   {
-    QString rowClass = QLatin1String( "" );
+    QString rowClass;
     if ( i % 2 )
       rowClass = QStringLiteral( "class=\"odd-row\"" );
     myMetadata += "<tr " + rowClass + "><td>" + QString::number( i ) + "</td><td>" + bandName( i ) + "</td><td>";
@@ -1390,7 +1390,7 @@ bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage, con
 
   Raster layer project file XML of form:
 
-  @note Called by QgsMapLayer::readXml().
+  \note Called by QgsMapLayer::readXml().
 */
 bool QgsRasterLayer::readXml( const QDomNode &layer_node, const QgsReadWriteContext &context )
 {
@@ -1568,7 +1568,7 @@ bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
 
 /*
  *  virtual
- *  @note Called by QgsMapLayer::writeXml().
+ *  \note Called by QgsMapLayer::writeXml().
  */
 bool QgsRasterLayer::writeXml( QDomNode &layer_node,
                                QDomDocument &document,
@@ -1604,7 +1604,7 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
 
     Q_FOREACH ( QgsRasterRange range, mDataProvider->userNoDataValues( bandNo ) )
     {
-      QDomElement noDataRange =  document.createElement( QStringLiteral( "noDataRange" ) );
+      QDomElement noDataRange = document.createElement( QStringLiteral( "noDataRange" ) );
 
       noDataRange.setAttribute( QStringLiteral( "min" ), QgsRasterBlock::printValue( range.min() ) );
       noDataRange.setAttribute( QStringLiteral( "max" ), QgsRasterBlock::printValue( range.max() ) );

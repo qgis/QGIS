@@ -36,7 +36,8 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for point pattern fill symbol types.
  */
 class TestQgsPointPatternFillSymbol : public QObject
@@ -44,13 +45,7 @@ class TestQgsPointPatternFillSymbol : public QObject
     Q_OBJECT
 
   public:
-    TestQgsPointPatternFillSymbol()
-      : mTestHasError( false )
-      , mpPolysLayer( 0 )
-      , mPointPatternFill( 0 )
-      , mFillSymbol( 0 )
-      , mSymbolRenderer( 0 )
-    {}
+    TestQgsPointPatternFillSymbol() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -62,7 +57,7 @@ class TestQgsPointPatternFillSymbol : public QObject
     void dataDefinedSubSymbol();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
 
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

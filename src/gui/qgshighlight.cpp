@@ -186,7 +186,7 @@ double QgsHighlight::getSymbolWidth( const QgsRenderContext &context, double wid
   {
     scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters ) / context.convertToPainterUnits( 1, QgsUnitTypes::RenderMapUnits );
   }
-  width =  std::max( width + 2 * mBuffer * scale, mMinWidth * scale );
+  width = std::max( width + 2 * mBuffer * scale, mMinWidth * scale );
   return width;
 }
 
@@ -256,7 +256,7 @@ void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
 
 void QgsHighlight::updatePosition()
 {
-  updateRect();
+  if ( isVisible() ) updateRect();
 }
 
 void QgsHighlight::paint( QPainter *p )

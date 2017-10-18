@@ -39,7 +39,8 @@
 #include "qgspallabeling.h"
 #include "qgsproject.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * Unit tests for the diagram renderer
  */
 class TestQgsDiagram : public QObject
@@ -47,14 +48,10 @@ class TestQgsDiagram : public QObject
     Q_OBJECT
 
   public:
-    TestQgsDiagram()
-      : mTestHasError( false )
-      , mMapSettings( 0 )
-      , mPointsLayer( 0 )
-    {}
+    TestQgsDiagram() = default;
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
     QgsMapSettings *mMapSettings = nullptr;
     QgsVectorLayer *mPointsLayer = nullptr;
     QString mTestDataDir;

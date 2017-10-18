@@ -19,7 +19,8 @@
 class QIcon;
 #include "qgis.h"
 
-/** A model that holds the tables of a database in a hierarchy where the
+/**
+ * A model that holds the tables of a database in a hierarchy where the
 SQLite DB is the root elements that contain the individual tables as children.
 The tables have the following columns: Type, Tablename, Geometry Column*/
 class QgsSpatiaLiteTableModel: public QStandardItemModel
@@ -32,7 +33,8 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
     //! Sets an sql statement that belongs to a cell specified by a model index
     void setSql( const QModelIndex &index, const QString &sql );
 
-    /** Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
+    /**
+     * Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
        This is for tables where the type is detected later by thread*/
     void setGeometryTypesForTable( const QString &table, const QString &attribute, const QString &type );
     //! Returns the number of tables in the model
@@ -48,7 +50,7 @@ class QgsSpatiaLiteTableModel: public QStandardItemModel
 
   private:
     //! Number of tables in the model
-    int mTableCount;
+    int mTableCount = 0;
     QString mSqliteDb;
 
     QIcon iconForType( QgsWkbTypes::Type type ) const;

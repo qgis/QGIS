@@ -22,7 +22,8 @@
 class QgsFeatureRequest;
 class QgsFeatureIterator;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief
  * Abstract base class for cache indices
  */

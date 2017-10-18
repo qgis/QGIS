@@ -28,7 +28,8 @@ class QgsPointXY;
 class QgsRectangle;
 class QPolygonF;
 
-/** \ingroup core
+/**
+ * \ingroup core
 * Class for doing transforms between two map coordinate systems.
 *
 * This class can convert map coordinates to a different coordinate reference system.
@@ -57,7 +58,8 @@ class CORE_EXPORT QgsCoordinateTransform
     //! Default constructor, creates an invalid QgsCoordinateTransform.
     QgsCoordinateTransform();
 
-    /** Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
+    /**
+     * Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
      * \param source source CRS, typically of the layer's coordinate system
      * \param destination CRS, typically of the map canvas coordinate system
      */
@@ -99,21 +101,24 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 
-    /** Returns the source coordinate reference system, which the transform will
+    /**
+     * Returns the source coordinate reference system, which the transform will
      * transform coordinates from.
      * \see setSourceCrs()
      * \see destinationCrs()
      */
     QgsCoordinateReferenceSystem sourceCrs() const;
 
-    /** Returns the destination coordinate reference system, which the transform will
+    /**
+     * Returns the destination coordinate reference system, which the transform will
      * transform coordinates to.
      * \see setDestinationCrs()
      * \see sourceCrs()
      */
     QgsCoordinateReferenceSystem destinationCrs() const;
 
-    /** Transform the point from the source CRS to the destination CRS.
+    /**
+     * Transform the point from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
      * \param point point to transform
@@ -122,7 +127,8 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     QgsPointXY transform( const QgsPointXY &point, TransformDirection direction = ForwardTransform ) const;
 
-    /** Transform the point specified by x,y from the source CRS to the destination CRS.
+    /**
+     * Transform the point specified by x,y from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
      * \param x x coordinate of point to transform
@@ -132,7 +138,8 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     QgsPointXY transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const;
 
-    /** Transforms a rectangle from the source CRS to the destination CRS.
+    /**
+     * Transforms a rectangle from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
      * This method assumes that the rectangle is a bounding box, and creates a bounding box
@@ -146,7 +153,8 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const;
 
-    /** Transforms an array of x, y and z double coordinates in place, from the source CRS to the destination CRS.
+    /**
+     * Transforms an array of x, y and z double coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
      * \param x array of x coordinates of points to transform
@@ -158,7 +166,8 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     void transformInPlace( double &x, double &y, double &z, TransformDirection direction = ForwardTransform ) const;
 
-    /** Transforms an array of x, y and z float coordinates in place, from the source CRS to the destination CRS.
+    /**
+     * Transforms an array of x, y and z float coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
      * \param x array of x coordinates of points to transform
@@ -171,7 +180,8 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     void transformInPlace( float &x, float &y, double &z, TransformDirection direction = ForwardTransform ) const SIP_SKIP;
 
-    /** Transforms an array of x, y and z float coordinates in place, from the source CRS to the destination CRS.
+    /**
+     * Transforms an array of x, y and z float coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
      * \param x array of x coordinates of points to transform
@@ -184,7 +194,8 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     void transformInPlace( float &x, float &y, float &z, TransformDirection direction = ForwardTransform ) const SIP_SKIP;
 
-    /** Transforms a vector of x, y and z float coordinates in place, from the source CRS to the destination CRS.
+    /**
+     * Transforms a vector of x, y and z float coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
      * \param x vector of x coordinates of points to transform
@@ -198,7 +209,8 @@ class CORE_EXPORT QgsCoordinateTransform
     void transformInPlace( QVector<float> &x, QVector<float> &y, QVector<float> &z,
                            TransformDirection direction = ForwardTransform ) const SIP_SKIP;
 
-    /** Transforms a vector of x, y and z double coordinates in place, from the source CRS to the destination CRS.
+    /**
+     * Transforms a vector of x, y and z double coordinates in place, from the source CRS to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
      * \param x vector of x coordinates of points to transform
@@ -212,13 +224,15 @@ class CORE_EXPORT QgsCoordinateTransform
     void transformInPlace( QVector<double> &x, QVector<double> &y, QVector<double> &z,
                            TransformDirection direction = ForwardTransform ) const SIP_SKIP;
 
-    /** Transforms a polygon to the destination coordinate system.
+    /**
+     * Transforms a polygon to the destination coordinate system.
      * \param polygon polygon to transform (occurs in place)
      * \param direction transform direction (defaults to forward transformation)
      */
     void transformPolygon( QPolygonF &polygon, TransformDirection direction = ForwardTransform ) const;
 
-    /** Transforms a rectangle to the destination CRS.
+    /**
+     * Transforms a rectangle to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
      * \param rectangle rectangle to transform
@@ -227,7 +241,8 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const SIP_SKIP;
 
-    /** Transform an array of coordinates to the destination CRS.
+    /**
+     * Transform an array of coordinates to the destination CRS.
      * If the direction is ForwardTransform then coordinates are transformed from source to destination,
      * otherwise points are transformed from destination to source CRS.
      * \param numPoint number of coordinates in arrays
@@ -238,18 +253,21 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     void transformCoords( int numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const;
 
-    /** Returns true if the transform short circuits because the source and destination are equivalent.
+    /**
+     * Returns true if the transform short circuits because the source and destination are equivalent.
      */
     bool isShortCircuited() const;
 
-    /** Returns list of datum transformations for the given src and dest CRS
+    /**
+     * Returns list of datum transformations for the given src and dest CRS
      * \note not available in Python bindings
      */
     static QList< QList< int > > datumTransformations( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destinationCrs ) SIP_SKIP;
 
     static QString datumTransformString( int datumTransform );
 
-    /** Gets name of source and dest geographical CRS (to show in a tooltip)
+    /**
+     * Gets name of source and dest geographical CRS (to show in a tooltip)
         \returns epsgNr epsg code of the transformation (or 0 if not in epsg db)*/
     static bool datumTransformCrsInfo( int datumTransform, int &epsgNr, QString &srcProjection, QString &dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated );
 
@@ -261,14 +279,16 @@ class CORE_EXPORT QgsCoordinateTransform
     //!initialize is used to actually create the Transformer instance
     void initialize();
 
-    /** Restores state from the given Dom node.
+    /**
+     * Restores state from the given Dom node.
      * \param node The node from which state will be restored
      * \returns bool True on success, False on failure
      * \see writeXml()
      */
     bool readXml( const QDomNode &node );
 
-    /** Stores state to the given Dom node in the given document
+    /**
+     * Stores state to the given Dom node in the given document
      * \param node The node in which state will be restored
      * \param document The document in which state will be stored
      * \returns bool True on success, False on failure

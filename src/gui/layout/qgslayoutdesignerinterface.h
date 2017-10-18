@@ -23,7 +23,8 @@
 class QgsLayout;
 class QgsLayoutView;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsLayoutDesignerInterface
  * A common interface for layout designer dialogs and widgets.
  *

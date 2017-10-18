@@ -30,6 +30,7 @@ from qgis.core import (
     QgsExpression,
     QgsField,
     QgsFields,
+    QgsProcessing,
     QgsProcessingException,
     QgsProcessingParameterDefinition)
 
@@ -66,11 +67,11 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
                 for field_def in value:
                     if not isinstance(field_def, dict):
                         return False
-                    if not field_def.get('name', False):
+                    if 'name' not in field_def.keys():
                         return False
-                    if not field_def.get('type', False):
+                    if 'type' not in field_def.keys():
                         return False
-                    if not field_def.get('expression', False):
+                    if 'expression' not in field_def.keys():
                         return False
                 return True
 
@@ -102,6 +103,9 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
 
     def outputName(self):
         return self.tr('Refactored')
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVector]
 
     def parameterAsFieldsMapping(self, parameters, name, context):
         return parameters[name]

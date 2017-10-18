@@ -26,15 +26,8 @@
 //
 
 QgsTask::QgsTask( const QString &name, const Flags &flags )
-  : QObject()
-  , mFlags( flags )
+  : mFlags( flags )
   , mDescription( name )
-  , mStatus( Queued )
-  , mOverallStatus( Queued )
-  , mProgress( 0.0 )
-  , mTotalProgress( 0.0 )
-  , mShouldTerminate( false )
-  , mStartCount( 0 )
 {
   mNotFinishedMutex.lock();
 }
@@ -326,8 +319,7 @@ class QgsTaskRunnableWrapper : public QRunnable
   public:
 
     explicit QgsTaskRunnableWrapper( QgsTask *task )
-      : QRunnable()
-      , mTask( task )
+      : mTask( task )
     {
       setAutoDelete( true );
     }
@@ -355,7 +347,6 @@ class QgsTaskRunnableWrapper : public QRunnable
 QgsTaskManager::QgsTaskManager( QObject *parent )
   : QObject( parent )
   , mTaskMutex( new QMutex( QMutex::Recursive ) )
-  , mNextTaskId( 0 )
 {
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList< QgsMapLayer * >& ) > ( &QgsProject::layersWillBeRemoved ),
            this, &QgsTaskManager::layersWillBeRemoved );

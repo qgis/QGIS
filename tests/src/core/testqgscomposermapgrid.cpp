@@ -64,12 +64,7 @@ class TestQgsComposerMapGrid : public QObject
     QString mReport;
 };
 
-TestQgsComposerMapGrid::TestQgsComposerMapGrid()
-  : mComposition( 0 )
-  , mComposerMap( 0 )
-  , mMapSettings( 0 )
-{
-}
+TestQgsComposerMapGrid::TestQgsComposerMapGrid() = default;
 
 void TestQgsComposerMapGrid::initTestCase()
 {

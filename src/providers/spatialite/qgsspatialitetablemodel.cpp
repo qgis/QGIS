@@ -19,7 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsdataitem.h" // for icons
 
-QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel(): QStandardItemModel(), mTableCount( 0 )
+QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel()
 {
   QStringList headerLabels;
   headerLabels << tr( "Table" );

@@ -26,6 +26,8 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
       ZItem,
       ZGrid,
       ZGuide,
+      ZSmartGuide,
+      ZMouseHandles,
       ZMapTool,
       ZSnapIndicator,
     };
@@ -39,6 +41,8 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  called on the new layout.
 %End
 
+    ~QgsLayout();
+
     void initializeDefaults();
 %Docstring
  Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
@@ -50,6 +54,12 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  The project associated with the layout. Used to get access to layers, map themes,
  relations and various other bits. It is never null.
  :rtype: QgsProject
+%End
+
+    QgsLayoutModel *itemsModel();
+%Docstring
+ Returns the items model attached to the layout.
+ :rtype: QgsLayoutModel
 %End
 
     QString name() const;
@@ -66,10 +76,112 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %End
 
 
+    QList<QgsLayoutItem *> selectedLayoutItems( const bool includeLockedItems = true );
+%Docstring
+ Returns list of selected layout items.
+
+ If ``includeLockedItems`` is set to true, then locked items will also be included
+ in the returned list.
+ :rtype: list of QgsLayoutItem
+%End
+
+    void setSelectedItem( QgsLayoutItem *item );
+%Docstring
+ Clears any selected items and sets ``item`` as the current selection.
+%End
+
+    void deselectAll();
+%Docstring
+ Clears any selected items in the layout.
+
+ Call this method rather than QGraphicsScene.clearSelection, as the latter does
+ not correctly emit signals to allow the layout's model to update.
+%End
+
+    bool raiseItem( QgsLayoutItem *item, bool deferUpdate = false );
+%Docstring
+ Raises an ``item`` up the z-order.
+ Returns true if the item was successfully raised.
+
+ If ``deferUpdate`` is true, the scene will not be visibly updated
+ to reflect the new stacking order. This allows multiple
+ raiseItem() calls to be made in sequence without the cost of
+ updating the scene for each one.
+
+.. seealso:: lowerItem()
+.. seealso:: updateZValues()
+ :rtype: bool
+%End
+
+    bool lowerItem( QgsLayoutItem *item, bool deferUpdate = false );
+%Docstring
+ Lowers an ``item`` down the z-order.
+ Returns true if the item was successfully lowered.
+
+ If ``deferUpdate`` is true, the scene will not be visibly updated
+ to reflect the new stacking order. This allows multiple
+ raiseItem() calls to be made in sequence without the cost of
+ updating the scene for each one.
+
+.. seealso:: raiseItem()
+.. seealso:: updateZValues()
+ :rtype: bool
+%End
+
+    bool moveItemToTop( QgsLayoutItem *item, bool deferUpdate = false );
+%Docstring
+ Raises an ``item`` up to the top of the z-order.
+ Returns true if the item was successfully raised.
+
+ If ``deferUpdate`` is true, the scene will not be visibly updated
+ to reflect the new stacking order. This allows multiple
+ raiseItem() calls to be made in sequence without the cost of
+ updating the scene for each one.
+
+.. seealso:: moveItemToBottom()
+.. seealso:: updateZValues()
+ :rtype: bool
+%End
+
+    bool moveItemToBottom( QgsLayoutItem *item, bool deferUpdate = false );
+%Docstring
+ Lowers an ``item`` down to the bottom of the z-order.
+ Returns true if the item was successfully lowered.
+ If ``deferUpdate`` is true, the scene will not be visibly updated
+ to reflect the new stacking order. This allows multiple
+ raiseItem() calls to be made in sequence without the cost of
+ updating the scene for each one.
+
+.. seealso:: moveItemToTop()
+.. seealso:: updateZValues()
+ :rtype: bool
+%End
+
+    void updateZValues( const bool addUndoCommands = true );
+%Docstring
+ Resets the z-values of items based on their position in the internal
+ z order list. This should be called after any stacking changes
+ which deferred z-order updates.
+%End
+
     QgsLayoutItem *itemByUuid( const QString &uuid );
 %Docstring
  Returns the layout item with matching ``uuid`` unique identifier, or a None
  if a matching item could not be found.
+ :rtype: QgsLayoutItem
+%End
+
+    QgsLayoutItem *layoutItemAt( QPointF position, const bool ignoreLocked = false ) const;
+%Docstring
+ Returns the topmost layout item at a specified ``position``. Ignores paper items.
+ If ``ignoreLocked`` is set to true any locked items will be ignored.
+ :rtype: QgsLayoutItem
+%End
+
+    QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, const bool ignoreLocked = false ) const;
+%Docstring
+ Returns the topmost composer item at a specified ``position`` which is below a specified ``item``. Ignores paper items.
+ If ``ignoreLocked`` is set to true any locked items will be ignored.
  :rtype: QgsLayoutItem
 %End
 
@@ -253,6 +365,13 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  method. Ownership of the item is transferred to the layout.
 %End
 
+    void removeLayoutItem( QgsLayoutItem *item );
+%Docstring
+ Removes an ``item`` from the layout. This should be called instead of the base class removeItem()
+ method.
+ The item will also be deleted.
+%End
+
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
  Returns the layout's state encapsulated in a DOM element.
@@ -278,6 +397,25 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id = 0, QUndoCommand *parent = 0 ) /Factory/;
 
 
+    QgsLayoutItemGroup *groupItems( const QList<QgsLayoutItem *> &items );
+%Docstring
+ Creates a new group from a list of layout ``items`` and adds the group to the layout.
+ If grouping was not possible, a None will be returned.
+.. seealso:: ungroupItems()
+ :rtype: QgsLayoutItemGroup
+%End
+
+    QList<QgsLayoutItem *> ungroupItems( QgsLayoutItemGroup *group );
+%Docstring
+ Ungroups items by removing them from an item ``group`` and removing the group from the
+ layout. Child items will remain in the layout and will not be deleted.
+
+ Returns a list of the items removed from the group, or an empty list if ungrouping
+ was not successful.
+
+.. seealso:: groupItems()
+ :rtype: list of QgsLayoutItem
+%End
 
   public slots:
 
@@ -291,6 +429,12 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
     void variablesChanged();
 %Docstring
  Emitted whenever the expression variables stored in the layout have been changed.
+%End
+
+    void selectedItemChanged( QgsLayoutItem *selected );
+%Docstring
+ Emitted whenever the selected item changes.
+ If None, no item is selected.
 %End
 
 };

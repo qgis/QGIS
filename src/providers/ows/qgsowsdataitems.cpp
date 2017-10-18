@@ -36,10 +36,6 @@ QgsOWSConnectionItem::QgsOWSConnectionItem( QgsDataItem *parent, QString name, Q
   mCapabilities |= Collapse;
 }
 
-QgsOWSConnectionItem::~QgsOWSConnectionItem()
-{
-}
-
 QVector<QgsDataItem *> QgsOWSConnectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
@@ -183,10 +179,6 @@ QgsOWSRootItem::QgsOWSRootItem( QgsDataItem *parent, QString name, QString path 
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconOws.svg" );
   populate();
-}
-
-QgsOWSRootItem::~QgsOWSRootItem()
-{
 }
 
 QVector<QgsDataItem *> QgsOWSRootItem::createChildren()

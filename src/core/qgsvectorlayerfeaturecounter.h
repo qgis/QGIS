@@ -6,7 +6,8 @@
 #include "qgsrenderer.h"
 #include "qgstaskmanager.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  *
  * Counts the features in a QgsVectorLayer in task.
  * You should most likely not use this directly and instead call

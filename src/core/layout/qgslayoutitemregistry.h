@@ -180,6 +180,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
     enum ItemType
     {
       LayoutItem = QGraphicsItem::UserType + 100, //!< Base class for items
+      LayoutGroup, //!< Grouped item
 
       // known item types
       LayoutPage, //!< Page items
@@ -276,10 +277,10 @@ class TestLayoutItem : public QgsLayoutItem
   public:
 
     TestLayoutItem( QgsLayout *layout );
-    ~TestLayoutItem() {}
+    ~TestLayoutItem() = default;
 
     //implement pure virtual methods
-    int type() const override { return QgsLayoutItemRegistry::LayoutItem + 102; }
+    int type() const override { return QgsLayoutItemRegistry::LayoutItem + 1002; }
     virtual QString stringType() const override { return QStringLiteral( "ItemTest" ); }
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
 

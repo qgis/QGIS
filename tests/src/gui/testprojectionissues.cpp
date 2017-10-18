@@ -28,10 +28,7 @@ class TestProjectionIssues : public QObject
 {
     Q_OBJECT
   public:
-    TestProjectionIssues()
-      : mRasterLayer( 0 )
-      , mMapCanvas( 0 )
-    {}
+    TestProjectionIssues() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

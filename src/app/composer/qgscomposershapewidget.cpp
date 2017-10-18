@@ -27,6 +27,8 @@
 QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape *composerShape ): QgsComposerItemBaseWidget( nullptr, composerShape ), mComposerShape( composerShape )
 {
   setupUi( this );
+  connect( mShapeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsComposerShapeWidget::mShapeComboBox_currentIndexChanged );
+  connect( mCornerRadiusSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerShapeWidget::mCornerRadiusSpinBox_valueChanged );
   setPanelTitle( tr( "Shape properties" ) );
 
   //add widget for general composer item properties
@@ -110,7 +112,7 @@ void QgsComposerShapeWidget::symbolChanged()
   mComposerShape->endCommand();
 }
 
-void QgsComposerShapeWidget::on_mCornerRadiusSpinBox_valueChanged( double val )
+void QgsComposerShapeWidget::mCornerRadiusSpinBox_valueChanged( double val )
 {
   if ( mComposerShape )
   {
@@ -121,7 +123,7 @@ void QgsComposerShapeWidget::on_mCornerRadiusSpinBox_valueChanged( double val )
   }
 }
 
-void QgsComposerShapeWidget::on_mShapeComboBox_currentIndexChanged( const QString &text )
+void QgsComposerShapeWidget::mShapeComboBox_currentIndexChanged( const QString &text )
 {
   if ( !mComposerShape )
   {

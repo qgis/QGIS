@@ -26,7 +26,8 @@
 class QgsMapLayer;
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsFieldComboBox is a combo box which displays the list of fields of a given layer.
  * It might be combined with a QgsMapLayerComboBox to automatically update fields according to a chosen layer.
  * If expression must be used, QgsFieldExpressionWidget shall be used instead.

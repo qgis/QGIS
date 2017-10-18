@@ -54,7 +54,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
 
   OGRRegisterAll();
   GDALDriverH hDriver;
-  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( mPath.toUtf8().constData(), true, &hDriver );
+  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( mPath.toUtf8().constData(), true, false, &hDriver );
 
   if ( hDataSource )
   {
@@ -408,7 +408,7 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
   QVector<QgsDataItem *> children;
 
   GDALDriverH hDriver;
-  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( mPath.toUtf8().constData(), false, &hDriver );
+  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( mPath.toUtf8().constData(), false, false, &hDriver );
   if ( !hDataSource )
     return children;
   int numLayers = GDALDatasetGetLayerCount( hDataSource );
@@ -513,7 +513,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
   // allow only normal files, supported directories, or VSIFILE items to continue
   bool isOgrSupportedDirectory = info.isDir() && dirExtensions.contains( suffix );
-  if ( !isOgrSupportedDirectory && !info.isFile() && vsiPrefix == QLatin1String( "" ) )
+  if ( !isOgrSupportedDirectory && !info.isFile() && vsiPrefix.isEmpty() )
     return nullptr;
 
   // skip *.aux.xml files (GDAL auxiliary metadata files),
@@ -556,7 +556,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   }
 
   // fix vsifile path and name
-  if ( vsiPrefix != QLatin1String( "" ) )
+  if ( !vsiPrefix.isEmpty() )
   {
     // add vsiPrefix to path if needed
     if ( !path.startsWith( vsiPrefix ) )
@@ -612,7 +612,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     }
     // Handle collections
     // Check if the layer has sublayers by comparing the extension
-    QgsDataItem *item;
+    QgsDataItem *item = nullptr;
     if ( ! ogrSupportedDbLayersExtensions.contains( suffix ) )
     {
       item = new QgsOgrLayerItem( parentItem, name, path, path, QgsLayerItem::Vector );
@@ -639,7 +639,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  OGRDataSourceH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( path.toUtf8().constData(), false, &hDriver );
+  OGRDataSourceH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( path.toUtf8().constData(), false, false, &hDriver );
   CPLPopErrorHandler();
 
   if ( ! hDataSource )

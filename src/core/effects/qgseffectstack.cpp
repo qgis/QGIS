@@ -20,12 +20,6 @@
 #include "qgsrendercontext.h"
 #include <QPicture>
 
-QgsEffectStack::QgsEffectStack()
-  : QgsPaintEffect()
-{
-
-}
-
 QgsEffectStack::QgsEffectStack( const QgsEffectStack &other )
   : QgsPaintEffect( other )
 {
@@ -37,7 +31,6 @@ QgsEffectStack::QgsEffectStack( const QgsEffectStack &other )
 }
 
 QgsEffectStack::QgsEffectStack( const QgsPaintEffect &effect )
-  : QgsPaintEffect()
 {
   appendEffect( effect.clone() );
 }

@@ -51,10 +51,7 @@ int QgsGmlFeatureClass::fieldIndex( const QString &name )
 
 // --------------------------- QgsGmlSchema -------------------------------
 QgsGmlSchema::QgsGmlSchema()
-  : QObject()
-  , mFeatureCount( 0 )
-  , mLevel( 0 )
-  , mSkipLevel( std::numeric_limits<int>::max() )
+  : mSkipLevel( std::numeric_limits<int>::max() )
 {
   mGeometryTypes << QStringLiteral( "Point" ) << QStringLiteral( "MultiPoint" )
                  << QStringLiteral( "LineString" ) << QStringLiteral( "MultiLineString" )
@@ -358,7 +355,7 @@ void QgsGmlSchema::startElement( const XML_Char *el, const XML_Char **attr )
   mParsePathStack.append( elementName );
   QString path = mParsePathStack.join( QStringLiteral( "." ) );
 
-  QStringList splitName =  elementName.split( NS_SEPARATOR );
+  QStringList splitName = elementName.split( NS_SEPARATOR );
   QString localName = splitName.last();
   QString ns = splitName.size() > 1 ? splitName.first() : QLatin1String( "" );
   //QgsDebugMsg( "ns = " + ns + " localName = " + localName );
@@ -460,7 +457,7 @@ void QgsGmlSchema::endElement( const XML_Char *el )
     mSkipLevel = std::numeric_limits<int>::max();
   }
 
-  QStringList splitName =  elementName.split( NS_SEPARATOR );
+  QStringList splitName = elementName.split( NS_SEPARATOR );
   QString localName = splitName.last();
   QString ns = splitName.size() > 1 ? splitName.first() : QLatin1String( "" );
 

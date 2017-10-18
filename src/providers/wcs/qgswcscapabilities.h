@@ -37,16 +37,9 @@ class QNetworkReply;
 //! CoverageSummary structure
 struct QgsWcsCoverageSummary
 {
-  QgsWcsCoverageSummary()
-    : orderId( 0 )
-    , valid( false )
-    , described( false )
-    , width( 0 )
-    , height( 0 )
-    , hasSize( false )
-  { }
+  QgsWcsCoverageSummary() = default;
 
-  int           orderId;
+  int           orderId = 0;
   QString       identifier;
   QString       title;
   QString       abstract;
@@ -62,12 +55,12 @@ struct QgsWcsCoverageSummary
   QStringList times;
   QVector<QgsWcsCoverageSummary> coverageSummary;
   // non reflecting Capabilities structure:
-  bool valid;
-  bool described;
+  bool valid = false;
+  bool described = false;
   // native size
-  int width;
-  int height;
-  bool hasSize;
+  int width = 0;
+  int height = 0;
+  bool hasSize = false;
 };
 
 //! Capability Property structure
@@ -98,10 +91,7 @@ class QgsWcsCapabilities : public QObject
      *
      */
     explicit QgsWcsCapabilities( QgsDataSourceUri const &uri );
-    QgsWcsCapabilities();
-
-
-    ~QgsWcsCapabilities();
+    QgsWcsCapabilities() = default;
 
     void setUri( QgsDataSourceUri const &uri );
 
@@ -135,7 +125,8 @@ class QgsWcsCapabilities : public QObject
      */
     static QString prepareUri( QString uri );
 
-    /** \brief Returns the GetCoverage full url
+    /**
+     * \brief Returns the GetCoverage full url
      *  \param version optional version, e.g. 1.0.0 or 1.1.0 */
     QString getCapabilitiesUrl( const QString &version ) const;
 
@@ -151,7 +142,8 @@ class QgsWcsCapabilities : public QObject
     //! Send request to server
     bool sendRequest( QString const &url );
 
-    /** Get additional coverage info from server. Version 1.0 GetCapabilities
+    /**
+     * Get additional coverage info from server. Version 1.0 GetCapabilities
      *  response does not contain all info (CRS, formats).
      */
     bool describeCoverage( QString const &identifier, bool forceRefresh = false );
@@ -202,11 +194,13 @@ class QgsWcsCapabilities : public QObject
     //! Get first child of specified name, NS is ignored
     static QDomElement firstChild( const QDomElement &element, const QString &name );
 
-    /** Find sub elements by path which is string of dot separated tag names.
+    /**
+     * Find sub elements by path which is string of dot separated tag names.
      *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
     static QList<QDomElement> domElements( const QDomElement &element, const QString &path );
 
-    /** Find first sub element by path which is string of dot separated tag names.
+    /**
+     * Find first sub element by path which is string of dot separated tag names.
      *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
     static QDomElement domElement( const QDomElement &element, const QString &path );
 
@@ -328,11 +322,12 @@ class QgsWcsCapabilities : public QObject
      */
     QString mError;
 
-    /** The mime type of the message
+    /**
+     * The mime type of the message
      */
     QString mErrorFormat;
 
-    int mCoverageCount;
+    int mCoverageCount = 0;
 
     //! number of layers and parents
     QMap<int, int> mCoverageParents;
@@ -345,7 +340,7 @@ class QgsWcsCapabilities : public QObject
     QString mPassword;
 
     //! Cache load control
-    QNetworkRequest::CacheLoadControl mCacheLoadControl;
+    QNetworkRequest::CacheLoadControl mCacheLoadControl = QNetworkRequest::PreferNetwork;
 };
 
 

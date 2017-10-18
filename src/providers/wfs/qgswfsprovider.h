@@ -32,7 +32,8 @@ class QgsRectangle;
 class QgsWFSSharedData;
 
 
-/** \ingroup WFSProvider
+/**
+ * \ingroup WFSProvider
  *
  * A provider reading/write features from/into a WFS server.
  *
@@ -145,13 +146,15 @@ class QgsWFSProvider : public QgsVectorDataProvider
     QString mProcessSQLErrorMsg;
     QString mProcessSQLWarningMsg;
 
-    /** Collects information about the field types. Is called internally from QgsWFSProvider ctor.
+    /**
+     * Collects information about the field types. Is called internally from QgsWFSProvider ctor.
        The method gives back the name of
        the geometry attribute and the thematic attributes with their types*/
     bool describeFeatureType( QString &geometryAttribute,
                               QgsFields &fields, QgsWkbTypes::Type &geomType );
 
-    /** For a given typename, reads the name of the geometry attribute, the
+    /**
+     * For a given typename, reads the name of the geometry attribute, the
         thematic attributes and their types from a dom document. Returns true in case of success*/
     bool readAttributesFromSchema( QDomDocument &schemaDoc,
                                    const QString &prefixedTypename,
@@ -160,7 +163,8 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     //helper methods for WFS-T
 
-    /** Sends the transaction document to the server using HTTP POST
+    /**
+     * Sends the transaction document to the server using HTTP POST
       \returns true if transmission to the server succeeded, otherwise false
         note: true does not automatically mean that the transaction succeeded*/
     bool sendTransactionDocument( const QDomDocument &doc, QDomDocument &serverResponse );

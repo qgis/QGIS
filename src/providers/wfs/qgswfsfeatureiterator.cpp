@@ -40,10 +40,6 @@ QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceUR
   connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished );
 }
 
-QgsWFSFeatureHitsAsyncRequest::~QgsWFSFeatureHitsAsyncRequest()
-{
-}
-
 void QgsWFSFeatureHitsAsyncRequest::launch( const QUrl &url )
 {
   sendGET( url,
@@ -83,13 +79,10 @@ QgsWFSFeatureDownloader::QgsWFSFeatureDownloader( QgsWFSSharedData *shared )
   : QgsWfsRequest( shared->mURI.uri() )
   , mShared( shared )
   , mStop( false )
-  , mProgressDialog( nullptr )
   , mProgressDialogShowImmediately( false )
   , mSupportsPaging( shared->mCaps.supportsPaging )
   , mRemoveNSPrefix( false )
   , mNumberMatched( -1 )
-  , mMainWindow( nullptr )
-  , mTimer( nullptr )
   , mFeatureHitsAsyncRequest( shared->mURI )
   , mTotalDownloadedFeatureCount( 0 )
 {
@@ -743,7 +736,6 @@ QString QgsWFSFeatureDownloader::errorMessageWithReason( const QString &reason )
 
 QgsWFSThreadedFeatureDownloader::QgsWFSThreadedFeatureDownloader( QgsWFSSharedData *shared )
   : mShared( shared )
-  , mDownloader( nullptr )
 {
 }
 
@@ -780,14 +772,8 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource *source,
   : QgsAbstractFeatureIteratorFromSource<QgsWFSFeatureSource>( source, ownSource, request )
   , mShared( source->mShared )
   , mDownloadFinished( false )
-  , mLoop( nullptr )
-  , mInterruptionChecker( nullptr )
   , mCounter( 0 )
   , mWriteTransferThreshold( 1024 * 1024 )
-  , mWriterFile( nullptr )
-  , mWriterStream( nullptr )
-  , mReaderFile( nullptr )
-  , mReaderStream( nullptr )
   , mFetchGeometry( false )
 {
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
@@ -1289,11 +1275,6 @@ QgsWFSFeatureSource::QgsWFSFeatureSource( const QgsWFSProvider *p )
   : mShared( p->mShared )
   , mCrs( p->crs() )
 {
-}
-
-QgsWFSFeatureSource::~QgsWFSFeatureSource()
-{
-
 }
 
 QgsFeatureIterator QgsWFSFeatureSource::getFeatures( const QgsFeatureRequest &request )

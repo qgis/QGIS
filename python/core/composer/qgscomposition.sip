@@ -971,6 +971,24 @@ Prepare the printer for printing in a PDF
  :rtype: QRectF
 %End
 
+    virtual QgsExpressionContext createExpressionContext() const;
+
+%Docstring
+ Creates an expression context relating to the compositions's current state. The context includes
+ scopes for global, project, composition and atlas properties.
+.. versionadded:: 2.12
+ :rtype: QgsExpressionContext
+%End
+
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+ Returns a reference to the composition's property collection, used for data defined overrides.
+.. versionadded:: 3.0
+.. seealso:: setDataDefinedProperties()
+ :rtype: QgsPropertyCollection
+%End
+
+
   public slots:
     void sendItemAddedSignal( QgsComposerItem *item );
 %Docstring
@@ -1017,24 +1035,6 @@ Casts object to the proper subclass type and calls corresponding itemAdded signa
  \param context expression context for evaluating data defined expressions
 .. versionadded:: 2.5
 %End
-
-    virtual QgsExpressionContext createExpressionContext() const;
-
-%Docstring
- Creates an expression context relating to the compositions's current state. The context includes
- scopes for global, project, composition and atlas properties.
-.. versionadded:: 2.12
- :rtype: QgsExpressionContext
-%End
-
-    QgsPropertyCollection &dataDefinedProperties();
-%Docstring
- Returns a reference to the composition's property collection, used for data defined overrides.
-.. versionadded:: 3.0
-.. seealso:: setDataDefinedProperties()
- :rtype: QgsPropertyCollection
-%End
-
 
     void setDataDefinedProperties( const QgsPropertyCollection &collection );
 %Docstring

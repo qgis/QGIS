@@ -205,7 +205,7 @@ struct sqlstatement_parser_context
 %%
 
 root: select_statement { parser_ctx->rootNode = $1; }
-    ;
+   ;
 
 /* We have to separate expr from expr_non_logical to avoid */
 /* grammar ambiguities with the AND of the "BETWEEN x AND y" and the */

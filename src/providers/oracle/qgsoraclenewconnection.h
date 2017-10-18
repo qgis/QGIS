@@ -20,7 +20,8 @@
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 
-/** \class QgsOracleNewConnection
+/**
+ * \class QgsOracleNewConnection
  * \brief Dialog to allow the user to configure and save connection
  * information for a Oracle database
  */

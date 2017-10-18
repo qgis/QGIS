@@ -19,9 +19,9 @@
 #include "ui_qgspgnewconnectionbase.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-#include "qgsauthconfigselect.h"
 
-/** \class QgsPgNewConnection
+/**
+ * \class QgsPgNewConnection
  * \brief Dialog to allow the user to configure and save connection
  * information for a PostgreSQL database
  */
@@ -36,11 +36,10 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     void testConnection();
   public slots:
     void accept() override;
-    void on_btnConnect_clicked();
-    void on_cb_geometryColumnsOnly_clicked();
+    void btnConnect_clicked();
+    void cb_geometryColumnsOnly_clicked();
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
-    QgsAuthConfigSelect *mAuthConfigSelect = nullptr;
     void showHelp();
 
 };

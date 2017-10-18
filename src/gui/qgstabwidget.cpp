@@ -19,7 +19,6 @@
 
 QgsTabWidget::QgsTabWidget( QWidget *parent )
   : QTabWidget( parent )
-  , mSetTabVisibleFlag( false )
 {
 }
 

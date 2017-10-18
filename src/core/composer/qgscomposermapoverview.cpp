@@ -31,20 +31,12 @@
 
 QgsComposerMapOverview::QgsComposerMapOverview( const QString &name, QgsComposerMap *map )
   : QgsComposerMapItem( name, map )
-  , mFrameMapId( -1 )
-  , mBlendMode( QPainter::CompositionMode_SourceOver )
-  , mInverted( false )
-  , mCentered( false )
 {
   createDefaultFrameSymbol();
 }
 
 QgsComposerMapOverview::QgsComposerMapOverview()
   : QgsComposerMapItem( QString(), nullptr )
-  , mFrameMapId( -1 )
-  , mBlendMode( QPainter::CompositionMode_SourceOver )
-  , mInverted( false )
-  , mCentered( false )
 {
 }
 

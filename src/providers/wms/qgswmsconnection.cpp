@@ -33,11 +33,6 @@ QgsWMSConnection::QgsWMSConnection( const QString &connName )
 {
 }
 
-QgsWMSConnection::~QgsWMSConnection()
-{
-
-}
-
 QStringList QgsWMSConnection::connectionList()
 {
   QgsSettings settings;

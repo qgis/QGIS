@@ -315,6 +315,13 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   , mCanvas( canvas )
 {
   setupUi( this );
+  connect( cmbIdentifyMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsIdentifyResultsDialog::cmbIdentifyMode_currentIndexChanged );
+  connect( cmbViewMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsIdentifyResultsDialog::cmbViewMode_currentIndexChanged );
+  connect( mExpandNewAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::mExpandNewAction_triggered );
+  connect( cbxAutoFeatureForm, &QCheckBox::toggled, this, &QgsIdentifyResultsDialog::cbxAutoFeatureForm_toggled );
+  connect( mExpandAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::mExpandAction_triggered );
+  connect( mCollapseAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::mCollapseAction_triggered );
+  connect( mActionCopy, &QAction::triggered, this, &QgsIdentifyResultsDialog::mActionCopy_triggered );
 
   mOpenFormAction->setDisabled( true );
 
@@ -1846,30 +1853,30 @@ void QgsIdentifyResultsDialog::printCurrentItem()
   wv->webView()->print();
 }
 
-void QgsIdentifyResultsDialog::on_cmbIdentifyMode_currentIndexChanged( int index )
+void QgsIdentifyResultsDialog::cmbIdentifyMode_currentIndexChanged( int index )
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Map/identifyMode" ), cmbIdentifyMode->itemData( index ).toInt() );
 }
 
-void QgsIdentifyResultsDialog::on_cmbViewMode_currentIndexChanged( int index )
+void QgsIdentifyResultsDialog::cmbViewMode_currentIndexChanged( int index )
 {
   stackedWidget->setCurrentIndex( index );
 }
 
-void QgsIdentifyResultsDialog::on_cbxAutoFeatureForm_toggled( bool checked )
+void QgsIdentifyResultsDialog::cbxAutoFeatureForm_toggled( bool checked )
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Map/identifyAutoFeatureForm" ), checked );
 }
 
-void QgsIdentifyResultsDialog::on_mExpandNewAction_triggered( bool checked )
+void QgsIdentifyResultsDialog::mExpandNewAction_triggered( bool checked )
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Map/identifyExpand" ), checked );
 }
 
-void QgsIdentifyResultsDialog::on_mActionCopy_triggered( bool checked )
+void QgsIdentifyResultsDialog::mActionCopy_triggered( bool checked )
 {
   Q_UNUSED( checked );
   copyFeature();

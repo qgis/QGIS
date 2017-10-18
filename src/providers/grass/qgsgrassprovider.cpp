@@ -101,19 +101,6 @@ int QgsGrassProvider::sEditedCount = 0;
 
 QgsGrassProvider::QgsGrassProvider( const QString &uri )
   : QgsVectorDataProvider( uri )
-  , mLayerField( -1 )
-  , mLayerType( Point )
-  , mGrassType( 0 )
-  , mQgisType( QgsWkbTypes::Unknown )
-  , mLayer( 0 )
-  , mMapVersion( 0 )
-  , mNumberFeatures( 0 )
-  , mEditBuffer( 0 )
-  , mEditLayer( 0 )
-  , mNewFeatureType( 0 )
-  , mPoints( 0 )
-  , mCats( 0 )
-  , mLastType( 0 )
 {
   QgsDebugMsg( "uri = " + uri );
 

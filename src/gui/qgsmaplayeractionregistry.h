@@ -27,7 +27,8 @@
 
 class QgsFeature;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
 * An action which can run on map layers
 */
 class GUI_EXPORT QgsMapLayerAction : public QAction
@@ -45,8 +46,10 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     };
     Q_DECLARE_FLAGS( Targets, Target )
 
-    //! Creates a map layer action which can run on any layer
-    //! \note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
+    /**
+     * Creates a map layer action which can run on any layer
+     * \note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
+     */
     QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, Targets targets = AllActions, const QIcon &icon = QIcon() );
 
     //! Creates a map layer action which can run only on a specific layer
@@ -102,7 +105,8 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerAction::Targets )
 
-/** \ingroup gui
+/**
+ * \ingroup gui
 * This class tracks map layer actions.
 *
 * QgsMapLayerActionRegistry is not usually directly created, but rather accessed through

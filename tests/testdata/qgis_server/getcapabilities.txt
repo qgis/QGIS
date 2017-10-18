@@ -97,7 +97,7 @@ Content-Type: text/xml; charset=utf-8
   <Exception>
    <Format>XML</Format>
   </Exception>
-  <Layer queryable="1">
+  <Layer>
    <Name>QGIS Test Project</Name>
    <Title>QGIS Test Project</Title>
    <CRS>CRS:84</CRS>

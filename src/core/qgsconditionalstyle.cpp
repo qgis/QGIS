@@ -118,16 +118,12 @@ bool QgsConditionalLayerStyles::readXml( const QDomNode &node, const QgsReadWrit
 }
 
 QgsConditionalStyle::QgsConditionalStyle()
-  : mValid( false )
-  , mSymbol( nullptr )
-  , mBackColor( QColor( 0, 0, 0, 0 ) )
+  : mBackColor( QColor( 0, 0, 0, 0 ) )
   , mTextColor( QColor( 0, 0, 0, 0 ) )
 {}
 
 QgsConditionalStyle::QgsConditionalStyle( const QString &rule )
-  : mValid( false )
-  , mSymbol( nullptr )
-  , mBackColor( QColor( 0, 0, 0, 0 ) )
+  : mBackColor( QColor( 0, 0, 0, 0 ) )
   , mTextColor( QColor( 0, 0, 0, 0 ) )
 {
   setRule( rule );

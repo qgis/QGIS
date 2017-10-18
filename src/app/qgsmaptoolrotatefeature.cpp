@@ -272,7 +272,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     {
       mRotatedFeatures = vlayer->selectedFeatureIds();
 
-      mRubberBand = createRubberBand( vlayer->geometryType() ) ;
+      mRubberBand = createRubberBand( vlayer->geometryType() );
 
       QgsFeature feat;
       QgsFeatureIterator it = vlayer->getSelectedFeatures();
@@ -287,7 +287,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     mRubberBand->show();
 
     double XDistance = mInitialPos.x() - mAnchorPoint->x();
-    double YDistance = mInitialPos.y() - mAnchorPoint->y() ;
+    double YDistance = mInitialPos.y() - mAnchorPoint->y();
     mRotationOffset = std::atan2( YDistance, XDistance ) * ( 180 / M_PI );
 
     createRotationWidget();

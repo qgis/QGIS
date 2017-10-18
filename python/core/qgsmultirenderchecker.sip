@@ -45,7 +45,11 @@ class QgsMultiRenderChecker
 #include "qgsmultirenderchecker.h"
 %End
   public:
+
     QgsMultiRenderChecker();
+%Docstring
+ Constructor for QgsMultiRenderChecker.
+%End
 
     virtual ~QgsMultiRenderChecker();
 

@@ -75,6 +75,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void createFromProj4Invalid();
     void validSrsIds();
     void asVariant();
+    void bounds();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -388,7 +389,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 
     // do test with shapefiles
     CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configOld );
-    if ( myFiles[i] != QLatin1String( "" ) )
+    if ( !myFiles[i].isEmpty() )
     {
       // use ogr to open file, make sure CRS is OK
       // this probably could be in another test, but leaving it here since it deals with CRS
@@ -732,16 +733,23 @@ void TestQgsCoordinateReferenceSystem::createFromProj4Invalid()
 
 void TestQgsCoordinateReferenceSystem::validSrsIds()
 {
-  QList< long > ids = QgsCoordinateReferenceSystem::validSrsIds();
+  const QList< long > ids = QgsCoordinateReferenceSystem::validSrsIds();
   QVERIFY( ids.contains( 3857 ) );
   QVERIFY( ids.contains( 28356 ) );
 
+  int validCount = 0;
+
   // check that all returns ids are valid
-  Q_FOREACH ( long id, ids )
+  for ( long id : ids )
   {
     QgsCoordinateReferenceSystem c = QgsCoordinateReferenceSystem::fromSrsId( id );
-    QVERIFY( c.isValid() );
+    if ( c.isValid() )
+      validCount++;
+    else
+      qDebug() << QStringLiteral( "QgsCoordinateReferenceSystem::fromSrsId( %1 ) is not valid (%2 of %3 IDs returned by QgsCoordinateReferenceSystem::validSrsIds())." ).arg( id ).arg( ids.indexOf( id ) ).arg( ids.length() );
   }
+
+  QVERIFY( validCount > ids.size() - 100 );
 }
 
 void TestQgsCoordinateReferenceSystem::asVariant()
@@ -755,6 +763,40 @@ void TestQgsCoordinateReferenceSystem::asVariant()
 
   QgsCoordinateReferenceSystem fromVar = qvariant_cast<QgsCoordinateReferenceSystem>( var );
   QCOMPARE( fromVar.authid(), original.authid() );
+}
+
+void TestQgsCoordinateReferenceSystem::bounds()
+{
+  QgsCoordinateReferenceSystem invalid;
+  QVERIFY( invalid.bounds().isNull() );
+
+  QgsCoordinateReferenceSystem crs3111( "EPSG:3111" );
+  QgsRectangle bounds = crs3111.bounds();
+  QGSCOMPARENEAR( bounds.xMinimum(), 140.960000, 0.0001 );
+  QGSCOMPARENEAR( bounds.xMaximum(), 150.040000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMinimum(), -39.200000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMaximum(), -33.980000, 0.0001 );
+
+  QgsCoordinateReferenceSystem crs28356( "EPSG:28356" );
+  bounds = crs28356.bounds();
+  QGSCOMPARENEAR( bounds.xMinimum(), 150.000000, 0.0001 );
+  QGSCOMPARENEAR( bounds.xMaximum(), 156.000000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMinimum(), -58.960000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMaximum(), -13.870000, 0.0001 );
+
+  QgsCoordinateReferenceSystem crs3857( "EPSG:3857" );
+  bounds = crs3857.bounds();
+  QGSCOMPARENEAR( bounds.xMinimum(), -180.000000, 0.0001 );
+  QGSCOMPARENEAR( bounds.xMaximum(), 180.000000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMinimum(), -85.060000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMaximum(), 85.060000, 0.0001 );
+
+  QgsCoordinateReferenceSystem crs4326( "EPSG:4326" );
+  bounds = crs4326.bounds();
+  QGSCOMPARENEAR( bounds.xMinimum(), -180.000000, 0.0001 );
+  QGSCOMPARENEAR( bounds.xMaximum(), 180.000000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMinimum(), -90.00000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMaximum(), 90.00000, 0.0001 );
 }
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )

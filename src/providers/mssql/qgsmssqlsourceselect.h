@@ -51,7 +51,8 @@ class QgsMssqlSourceSelectDelegate : public QItemDelegate
 
 
 
-/** \class QgsMssqlSourceSelect
+/**
+ * \class QgsMssqlSourceSelect
  * \brief Dialog to create connections and add tables from MSSQL.
  *
  * This dialog allows the user to define and save connection information
@@ -90,31 +91,32 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
     void addButtonClicked() override;
     void buildQuery();
 
-    /** Connects to the database using the stored connection parameters.
+    /**
+     * Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
      */
-    void on_btnConnect_clicked();
-    void on_cbxAllowGeometrylessTables_stateChanged( int );
+    void btnConnect_clicked();
+    void cbxAllowGeometrylessTables_stateChanged( int );
     //! Opens the create connection dialog to build a new connection
-    void on_btnNew_clicked();
+    void btnNew_clicked();
     //! Opens a dialog to edit an existing connection
-    void on_btnEdit_clicked();
+    void btnEdit_clicked();
     //! Deletes the selected connection
-    void on_btnDelete_clicked();
+    void btnDelete_clicked();
     //! Saves the selected connections to file
-    void on_btnSave_clicked();
+    void btnSave_clicked();
     //! Loads the selected connections from file
-    void on_btnLoad_clicked();
-    void on_mSearchGroupBox_toggled( bool );
-    void on_mSearchTableEdit_textChanged( const QString &text );
-    void on_mSearchColumnComboBox_currentIndexChanged( const QString &text );
-    void on_mSearchModeComboBox_currentIndexChanged( const QString &text );
+    void btnLoad_clicked();
+    void mSearchGroupBox_toggled( bool );
+    void mSearchTableEdit_textChanged( const QString &text );
+    void mSearchColumnComboBox_currentIndexChanged( const QString &text );
+    void mSearchModeComboBox_currentIndexChanged( const QString &text );
     void setSql( const QModelIndex &index );
     //! Store the selected database
-    void on_cmbConnections_activated( int );
+    void cmbConnections_activated( int );
     void setLayerType( const QgsMssqlLayerProperty &layerProperty );
-    void on_mTablesTreeView_clicked( const QModelIndex &index );
-    void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
+    void mTablesTreeView_clicked( const QModelIndex &index );
+    void mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
@@ -141,7 +143,7 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
     QgsMssqlGeomColumnTypeThread *mColumnTypeThread = nullptr;
     QString mConnInfo;
     QStringList mSelectedTables;
-    bool mUseEstimatedMetadata;
+    bool mUseEstimatedMetadata = false;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
 

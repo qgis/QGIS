@@ -39,9 +39,6 @@ class QgsPropertyPrivate : public QSharedData
   public:
 
     QgsPropertyPrivate()
-      : type( 0 )
-      , active( true )
-      , transformer( nullptr )
     {}
 
     QgsPropertyPrivate( const QgsPropertyPrivate &other )

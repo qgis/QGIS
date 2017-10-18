@@ -25,7 +25,9 @@ class QgsLayoutItemMap : QgsLayoutItem
  Constructor for QgsLayoutItemMap, with the specified parent ``layout``.
 %End
     virtual int type() const;
+
     virtual QString stringType() const;
+
 
   protected:
 

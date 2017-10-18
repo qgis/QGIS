@@ -20,7 +20,11 @@ Cubic Raster Resampler
 #include "qgscubicrasterresampler.h"
 %End
   public:
+
     QgsCubicRasterResampler();
+%Docstring
+ Constructor for QgsCubicRasterResampler.
+%End
     virtual QgsCubicRasterResampler *clone() const /Factory/;
 
     virtual void resample( const QImage &srcImage, QImage &dstImage );

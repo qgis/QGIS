@@ -23,8 +23,7 @@ email                : jef at norbit dot de
 #include <climits>
 
 QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( const QString &name, bool useEstimatedMetaData, bool allowGeometrylessTables )
-  : QThread()
-  , mName( name )
+  : mName( name )
   , mUseEstimatedMetadata( useEstimatedMetaData )
   , mAllowGeometrylessTables( allowGeometrylessTables )
   , mStopped( false )

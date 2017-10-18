@@ -29,13 +29,12 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import (QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingOutputRasterLayer)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterString
-from processing.core.outputs import OutputRaster
-
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -46,41 +45,50 @@ class gdaladdo(GdalAlgorithm):
     INPUT = 'INPUT'
     LEVELS = 'LEVELS'
     CLEAN = 'CLEAN'
-    RESAMPLING_METHOD = 'RESAMPLING_METHOD'
+    RESAMPLING = 'RESAMPLING'
     FORMAT = 'FORMAT'
     OUTPUT = 'OUTPUT'
-
-    METHODS = [
-        'nearest',
-        'average',
-        'gauss',
-        'cubic',
-        'average_mp',
-        'average_magphase',
-        'mode',
-    ]
-
-    FORMATS = ['Internal (if possible)', 'External (GTiff .ovr)',
-               'External (ERDAS Imagine .aux)']
-
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-overview.png'))
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterRaster(
-            self.INPUT, self.tr('Input layer'), False))
-        self.addParameter(ParameterString(self.LEVELS,
-                                          self.tr('Overview levels'), '2 4 8 16'))
-        self.addParameter(ParameterBoolean(self.CLEAN,
-                                           self.tr('Remove all existing overviews'), False))
-        self.addParameter(ParameterSelection(self.RESAMPLING_METHOD,
-                                             self.tr('Resampling method'), self.METHODS, 0))
-        self.addParameter(ParameterSelection(self.FORMAT,
-                                             self.tr('Overview format'), self.FORMATS, 0))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Pyramidized'), True))
+        self.methods = ((self.tr('Nearest neighbour'), 'nearest'),
+                        (self.tr('Average'), 'average'),
+                        (self.tr('Gaussian'), 'gauss'),
+                        (self.tr('Cubic convolution.'), 'cubic'),
+                        (self.tr('B-Spline convolution'), 'cubicspline'),
+                        (self.tr('Lanczos windowed sinc'), 'lanczos'),
+                        (self.tr('Average MP'), 'average_mp'),
+                        (self.tr('Average in mag/phase space'), 'average_magphase'),
+                        (self.tr('Mode'), 'mode'))
+
+        self.formats = (self.tr('Internal (if possible)'),
+                        self.tr('External (GTiff .ovr)'),
+                        self.tr('External (ERDAS Imagine .aux)'))
+
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
+                                                            self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterString(self.LEVELS,
+                                                       self.tr('Overview levels'),
+                                                       defaultValue='2 4 8 16'))
+        self.addParameter(QgsProcessingParameterBoolean(self.CLEAN,
+                                                        self.tr('Remove all existing overviews'),
+                                                        defaultValue=False))
+
+        params = []
+        params.append(QgsProcessingParameterEnum(self.RESAMPLING,
+                                                 self.tr('Resampling method'),
+                                                 options=[i[0] for i in self.methods],
+                                                 allowMultiple=False,
+                                                 defaultValue=0))
+        params.append(QgsProcessingParameterEnum(self.FORMAT,
+                                                 self.tr('Overviews format'),
+                                                 options=self.formats,
+                                                 allowMultiple=False,
+                                                 defaultValue=0))
+
+        self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT, self.tr('Pyramidized')))
 
     def name(self):
         return 'overviews'
@@ -91,26 +99,30 @@ class gdaladdo(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
+    def icon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-overview.png'))
+
     def getConsoleCommands(self, parameters, context, feedback):
-        inFile = self.getParameterValue(self.INPUT)
-        clearOverviews = self.getParameterValue(self.CLEAN)
-        ovrFormat = self.getParameterValue(self.FORMAT)
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        fileName = inLayer.source()
 
         arguments = []
-        arguments.append(inFile)
-        if clearOverviews:
-            arguments.append('-clean')
-        arguments.append('-r')
-        arguments.append(self.METHODS[self.getParameterValue(self.RESAMPLING_METHOD)])
+        arguments.append(fileName)
 
+        arguments.append('-r')
+        arguments.append(self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1])
+
+        ovrFormat = self.parameterAsEnum(parameters, self.FORMAT, context)
         if ovrFormat == 1:
-            # external .ovr
             arguments.append('-ro')
         elif ovrFormat == 2:
-            # external .aux
             arguments.extend('--config USE_RRD YES'.split(' '))
 
-        arguments.extend(self.getParameterValue(self.LEVELS).split(' '))
-        self.setOutputValue(self.OUTPUT, inFile)
+        if self.parameterAsBool(parameters, self.CLEAN, context):
+            arguments.append('-clean')
+
+        arguments.extend(self.parameterAsString(parameters, self.LEVELS, context).split(' '))
+
+        self.setOutputValue(self.OUTPUT, fileName)
 
         return ['gdaladdo', GdalUtils.escapeAndJoin(arguments)]

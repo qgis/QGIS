@@ -30,9 +30,7 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #include <QDomElement>
 
 QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType dataType )
-  : mContrastEnhancementAlgorithm( NoEnhancement )
-  , mEnhancementDirty( false )
-  , mRasterDataType( dataType )
+  : mRasterDataType( dataType )
 {
   mMinimumValue = minimumValuePossible( mRasterDataType );
   mMaximumValue = maximumValuePossible( mRasterDataType );

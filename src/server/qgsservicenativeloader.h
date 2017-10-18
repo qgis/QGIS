@@ -45,10 +45,7 @@ class SERVER_EXPORT QgsServiceNativeLoader
   public:
 
     //! Constructor
-    QgsServiceNativeLoader();
-
-    //! Destructor
-    ~QgsServiceNativeLoader();
+    QgsServiceNativeLoader() = default;
 
     /**
      * Lead all medules from path

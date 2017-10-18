@@ -24,7 +24,8 @@
 class QgsMapCanvas;
 class QgsScaleRangeWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsScaleVisibilityDialog
  * A dialog allowing users to enter a scale visibility range.
  */

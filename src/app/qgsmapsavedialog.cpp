@@ -322,8 +322,8 @@ void QgsMapSaveDialog::copyToClipboard()
   QgsMapSettings ms = QgsMapSettings();
   applyMapSettings( ms );
 
-  QPainter *p;
-  QImage *img;
+  QPainter *p = nullptr;
+  QImage *img = nullptr;
 
   img = new QImage( ms.outputSize(), QImage::Format_ARGB32 );
   if ( img->isNull() )
@@ -380,7 +380,7 @@ void QgsMapSaveDialog::onAccepted()
   if ( mDialogType == Image )
   {
     QPair< QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( QgisApp::instance(), tr( "Choose a file name to save the map image as" ) );
-    if ( fileNameAndFilter.first != QLatin1String( "" ) )
+    if ( !fileNameAndFilter.first.isEmpty() )
     {
       QgsMapSettings ms = QgsMapSettings();
       applyMapSettings( ms );

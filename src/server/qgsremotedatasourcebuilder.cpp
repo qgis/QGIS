@@ -24,10 +24,6 @@
 #include <QFile>
 #include <QTemporaryFile>
 
-QgsRemoteDataSourceBuilder::QgsRemoteDataSourceBuilder(): QgsMSLayerBuilder()
-{
-}
-
 QgsMapLayer *QgsRemoteDataSourceBuilder::createMapLayer( const QDomElement &elem, const QString &layerName, QList<QTemporaryFile *> &filesToRemove, QList<QgsMapLayer *> &layersToRemove, bool allowCaching ) const
 {
   QgsMapLayer *layer = nullptr;
@@ -135,11 +131,11 @@ QgsVectorLayer *QgsRemoteDataSourceBuilder::vectorLayerFromRemoteVDS( const QDom
   if ( formatString.compare( QLatin1String( "SOS" ), Qt::CaseInsensitive ) == 0 )
   {
     QString url = "url=" + tmpFile->fileName() + " method=FILE xml=";
-    vl =  new QgsVectorLayer( url, layerNameFromUri( tmpFile->fileName() ), providerString );
+    vl = new QgsVectorLayer( url, layerNameFromUri( tmpFile->fileName() ), providerString );
   }
   else
   {
-    vl =  new QgsVectorLayer( tmpFile->fileName(), layerNameFromUri( tmpFile->fileName() ), providerString );
+    vl = new QgsVectorLayer( tmpFile->fileName(), layerNameFromUri( tmpFile->fileName() ), providerString );
   }
 
   if ( !( vl->isValid() ) )

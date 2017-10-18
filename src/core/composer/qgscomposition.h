@@ -67,7 +67,8 @@ class QgsFillSymbol;
 class QgsComposerModel;
 class QgsPaperItem;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Graphics scene for map printing. The class manages the paper item which always
  * is the item in the back (z-value 0). It maintains the z-Values of the items and stores
  * them in a list in ascending z-Order. This list can be changed to lower/raise items one position
@@ -145,7 +146,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     void setName( const QString &name );
 
-    /** Changes size of paper item.
+    /**
+     * Changes size of paper item.
      * \param width page width in mm
      * \param height page height in mm
      * \param keepRelativeItemPosition if true, all items and guides will be moved so that they retain
@@ -156,21 +158,24 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void setPaperSize( double width, double height,
                        bool keepRelativeItemPosition = true );
 
-    /** Height of paper item
+    /**
+     * Height of paper item
      * \returns height in mm
      * \see paperWidth
      * \see setPaperSize
      */
     double paperHeight() const;
 
-    /** Width of paper item
+    /**
+     * Width of paper item
      * \returns width in mm
      * \see paperHeight
      * \see setPaperSize
      */
     double paperWidth() const;
 
-    /** Resizes the composition page to fit the current contents of the composition.
+    /**
+     * Resizes the composition page to fit the current contents of the composition.
      * Calling this method resets the number of pages to 1, with the size set to the
      * minimum size required to fit all existing composer items. Items will also be
      * repositioned so that the new top-left bounds of the composition is at the point
@@ -186,7 +191,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void resizePageToContents( double marginTop = 0.0, double marginRight = 0.0,
                                double marginBottom = 0.0, double marginLeft = 0.0 );
 
-    /** Sets the resize to contents margins. These margins are saved in the composition
+    /**
+     * Sets the resize to contents margins. These margins are saved in the composition
      * so that they can be restored with the composer.
      * \param marginTop top margin (millimeters)
      * \param marginRight right margin  (millimeters)
@@ -199,7 +205,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void setResizeToContentsMargins( double marginTop, double marginRight,
                                      double marginBottom, double marginLeft );
 
-    /** Returns the resize to contents margins. These margins are saved in the composition
+    /**
+     * Returns the resize to contents margins. These margins are saved in the composition
      * so that they can be restored with the composer.
      * \param marginTop reference for top margin (millimeters)
      * \param marginRight reference for right margin  (millimeters)
@@ -212,24 +219,28 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void resizeToContentsMargins( double &marginTop SIP_OUT, double &marginRight SIP_OUT,
                                   double &marginBottom SIP_OUT, double &marginLeft SIP_OUT ) const;
 
-    /** Returns the vertical space between pages in a composer view
+    /**
+     * Returns the vertical space between pages in a composer view
      * \returns space between pages in mm
      */
     double spaceBetweenPages() const { return mSpaceBetweenPages; }
 
-    /** Sets the number of pages for the composition.
+    /**
+     * Sets the number of pages for the composition.
      * \param pages number of pages
      * \see numPages
      */
     void setNumPages( const int pages );
 
-    /** Returns the number of pages in the composition.
+    /**
+     * Returns the number of pages in the composition.
      * \returns number of pages
      * \see setNumPages
      */
     int numPages() const;
 
-    /** Returns whether a page is empty, ie, it contains no items except for the background
+    /**
+     * Returns whether a page is empty, ie, it contains no items except for the background
      * paper item.
      * \param page page number, starting with 1
      * \returns true if page is empty
@@ -240,7 +251,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     bool pageIsEmpty( const int page ) const;
 
-    /** Returns whether a specified page number should be included in exports of the composition.
+    /**
+     * Returns whether a specified page number should be included in exports of the composition.
      * \param page page number, starting with 1
      * \returns true if page should be exported
      * \since QGIS 2.5
@@ -254,22 +266,26 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Note: added in version 2.1
     QgsFillSymbol *pageStyleSymbol() { return mPageStyleSymbol; }
 
-    /** Returns the position within a page of a point in the composition
+    /**
+     * Returns the position within a page of a point in the composition
       \since QGIS 2.1
      */
     QPointF positionOnPage( QPointF position ) const;
 
-    /** Returns the page number corresponding to a point in the composition
+    /**
+     * Returns the page number corresponding to a point in the composition
       \since QGIS 2.1
      */
     int pageNumberForPoint( QPointF position ) const;
 
-    /** Sets the status bar message for the composer window
+    /**
+     * Sets the status bar message for the composer window
       \since QGIS 2.1
      */
     void setStatusMessage( const QString &message );
 
-    /** Refreshes the composition when composer related options change
+    /**
+     * Refreshes the composition when composer related options change
      \since QGIS 2.1
      */
     void updateSettings();
@@ -290,7 +306,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void setSmartGuidesEnabled( const bool b ) { mSmartGuides = b; }
     bool smartGuidesEnabled() const {return mSmartGuides;}
 
-    /** Sets whether the page items should be visible in the composition. Removing
+    /**
+     * Sets whether the page items should be visible in the composition. Removing
      * them will prevent both display of the page boundaries in composer views and
      * will also prevent them from being rendered in composition exports.
      * \param visible set to true to show pages, false to hide pages
@@ -299,7 +316,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     void setPagesVisible( bool visible );
 
-    /** Returns whether the page items are be visible in the composition. This setting
+    /**
+     * Returns whether the page items are be visible in the composition. This setting
      * effects both display of the page boundaries in composer views and
      * whether they will be rendered in composition exports.
      * \since QGIS 2.12
@@ -325,7 +343,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void setGridStyle( const GridStyle s );
     GridStyle gridStyle() const {return mGridStyle;}
 
-    /** Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
+    /**
+     * Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
      * and the edges and centers of other items.
      * \param snapTolerance snap tolerance in pixels
      * \see alignmentSnapTolerance
@@ -333,7 +352,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     void setSnapTolerance( const int snapTolerance ) { mSnapTolerance = snapTolerance; }
 
-    /** Returns the snap tolerance to use when automatically snapping items during movement and resizing to guides
+    /**
+     * Returns the snap tolerance to use when automatically snapping items during movement and resizing to guides
      * and the edges and centers of other items.
      * \returns snap tolerance in pixels
      * \see setAlignmentSnapTolerance
@@ -341,14 +361,16 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     int snapTolerance() const { return mSnapTolerance; }
 
-    /** Sets whether selection bounding boxes should be shown in the composition
+    /**
+     * Sets whether selection bounding boxes should be shown in the composition
      * \param boundsVisible set to true to show selection bounding box
      * \see boundingBoxesVisible
      * \since QGIS 2.7
      */
     void setBoundingBoxesVisible( const bool boundsVisible );
 
-    /** Returns whether selection bounding boxes should be shown in the composition
+    /**
+     * Returns whether selection bounding boxes should be shown in the composition
      * \returns true if selection bounding boxes should be shown
      * \see setBoundingBoxesVisible
      * \since QGIS 2.7
@@ -358,14 +380,16 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Returns pointer to undo/redo command storage
     QUndoStack *undoStack() { return mUndoStack; }
 
-    /** Returns the topmost composer item at a specified position. Ignores paper items.
+    /**
+     * Returns the topmost composer item at a specified position. Ignores paper items.
      * \param position point to search for item at
      * \param ignoreLocked set to true to ignore locked items
      * \returns composer item at position
      */
     QgsComposerItem *composerItemAt( QPointF position, const bool ignoreLocked = false ) const;
 
-    /** Returns the topmost composer item at a specified position which is below a specified item. Ignores paper items.
+    /**
+     * Returns the topmost composer item at a specified position which is below a specified item. Ignores paper items.
      * \param position point to search for item at
      * \param belowItem item to search below
      * \param ignoreLocked set to true to ignore locked items
@@ -379,24 +403,28 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Returns on which page number (0-based) is displayed an item
     int itemPageNumber( const QgsComposerItem * ) const;
 
-    /** Returns list of selected composer items
+    /**
+     * Returns list of selected composer items
      * \param includeLockedItems set to true to include locked items in list
      * \returns list of selected items
      */
     QList<QgsComposerItem *> selectedComposerItems( const bool includeLockedItems = true );
 
-    /** Returns pointers to all composer maps in the scene
+    /**
+     * Returns pointers to all composer maps in the scene
       \note available in Python bindings only with PyQt >= 4.8.4
       */
     QList<const QgsComposerMap *> composerMapItems() const;
 
-    /** Return composer items of a specific type
+    /**
+     * Return composer items of a specific type
      * \param itemList list of item type to store matching items in
      * \note not available in Python bindings
      */
     template<class T> void composerItems( QList<T *> &itemList ) SIP_SKIP;
 
-    /** Return composer items of a specific type on a specified page
+    /**
+     * Return composer items of a specific type on a specified page
      * \param itemList list of item type to store matching items in
      * \param pageNumber page number (0 based)
      * \note not available in Python bindings
@@ -404,19 +432,22 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     template<class T> void composerItemsOnPage( QList<T *> &itemList, const int pageNumber ) const SIP_SKIP;
 
-    /** Returns the composer map with specified id
+    /**
+     * Returns the composer map with specified id
      * \returns QgsComposerMap or 0 pointer if the composer map item does not exist
      */
     const QgsComposerMap *getComposerMapById( const int id ) const;
 
-    /** Returns a composer item given its text identifier.
+    /**
+     * Returns a composer item given its text identifier.
      *  Ids are not necessarely unique, but this function returns only one element.
      * \param id - A QString representing the identifier of the item to retrieve.
      * \returns QgsComposerItem pointer or 0 pointer if no such item exists.
      */
     const QgsComposerItem *getComposerItemById( const QString &id ) const;
 
-    /** Returns a composer item given its unique identifier.
+    /**
+     * Returns a composer item given its unique identifier.
      * \param uuid A QString representing the UUID of the item to
      */
     const QgsComposerItem *getComposerItemByUuid( const QString &uuid ) const;
@@ -427,14 +458,16 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     bool printAsRaster() const {return mPrintAsRaster;}
     void setPrintAsRaster( const bool enabled ) { mPrintAsRaster = enabled; }
 
-    /** Returns true if the composition will generate corresponding world files when pages
+    /**
+     * Returns true if the composition will generate corresponding world files when pages
      * are exported.
      * \see setGenerateWorldFile()
      * \see referenceMap()
      */
     bool generateWorldFile() const { return mGenerateWorldFile; }
 
-    /** Sets whether the composition will generate corresponding world files when pages
+    /**
+     * Sets whether the composition will generate corresponding world files when pages
      * are exported.
      * \param enabled set to true to generate world files
      * \see generateWorldFile()
@@ -442,7 +475,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     void setGenerateWorldFile( bool enabled ) { mGenerateWorldFile = enabled; }
 
-    /** Returns the map item which will be used to generate corresponding world files when the
+    /**
+     * Returns the map item which will be used to generate corresponding world files when the
      * composition is exported. If no map was explicitly set via setReferenceMap(), the largest
      * map in the composition will be returned (or nullptr if there are no maps in the composition).
      * \see setReferenceMap()
@@ -450,7 +484,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     QgsComposerMap *referenceMap() const;
 
-    /** Sets the map item which will be used to generate corresponding world files when the
+    /**
+     * Sets the map item which will be used to generate corresponding world files when the
      * composition is exported.
      * \param map composer map item
      * \see referenceMap()
@@ -472,7 +507,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Reads settings from xml file
     bool readXml( const QDomElement &compositionElem, const QDomDocument &doc );
 
-    /** Load a template document
+    /**
+     * Load a template document
      * \param doc template document
      * \param substitutionMap map with text to replace. Text needs to be enclosed by brackets (e.g. '[text]' )
      * \param addUndoCommands whether or not to add undo commands
@@ -483,7 +519,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     bool loadFromTemplate( const QDomDocument &doc, QMap<QString, QString> *substitutionMap = nullptr,
                            bool addUndoCommands = false, const bool clearComposition = true );
 
-    /** Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
+    /**
+     * Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
      * \param elem items parent element, e.g. \verbatim <Composer> \endverbatim or \verbatim <ComposerItemClipboard> \endverbatim
      * \param doc xml document
      * \param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
@@ -532,14 +569,16 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Unlock all items
     void unlockAllItems();
 
-    /** Creates a new group from a list of composer items and adds it to the composition.
+    /**
+     * Creates a new group from a list of composer items and adds it to the composition.
      * \param items items to include in group
      * \returns QgsComposerItemGroup of grouped items, if grouping was possible
      * \since QGIS 2.6
      */
     QgsComposerItemGroup *groupItems( QList<QgsComposerItem *> items );
 
-    /** Ungroups items by removing them from an item group and removing the group from the
+    /**
+     * Ungroups items by removing them from an item group and removing the group from the
      * composition.
      * \param group item group to ungroup
      * \returns list of items removed from the group, or an empty list if ungrouping
@@ -548,7 +587,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     QList<QgsComposerItem *> ungroupItems( QgsComposerItemGroup *group );
 
-    /** Rebuilds the z order list by adding any item which are present in the composition
+    /**
+     * Rebuilds the z order list by adding any item which are present in the composition
      * but missing from the z order list.
      */
     void refreshZList();
@@ -559,7 +599,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Returns pointer to snap lines collection
     QList< QGraphicsLineItem * > *snapLines() {return &mSnapLines;}
 
-    /** Returns pointer to selection handles
+    /**
+     * Returns pointer to selection handles
      * \note not available in Python bindings
      */
     QgsComposerMouseHandles *selectionHandles() {return mSelectionHandles;} SIP_SKIP
@@ -569,12 +610,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Remove custom snap line (and delete the object)
     void removeSnapLine( QGraphicsLineItem *line );
 
-    /** Get nearest snap line
+    /**
+     * Get nearest snap line
      * \note not available in Python bindings
      */
     QGraphicsLineItem *nearestSnapLine( const bool horizontal, const double x, const double y, const double tolerance, QList< QPair< QgsComposerItem *, QgsComposerItem::ItemPositionMode > > &snappedItems ) const SIP_SKIP;
 
-    /** Allocates new item command and saves initial state in it
+    /**
+     * Allocates new item command and saves initial state in it
      * \param item target item
      * \param commandText descriptive command text
      * \param c context for merge commands (unknown for non-mergeable commands)
@@ -625,7 +668,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack
     void pushAddRemoveCommand( QgsComposerItem *item, const QString &text, const QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
 
-    /** If true, prevents any mouse cursor changes by the composition or by any composer items
+    /**
+     * If true, prevents any mouse cursor changes by the composition or by any composer items
      * Used by QgsComposer and QgsComposerView to prevent unwanted cursor changes
      */
     void setPreventCursorChange( const bool preventChange ) { mPreventCursorChange = preventChange; }
@@ -638,25 +682,29 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Prepare the printer for printing in a PDF
     void beginPrintAsPDF( QPrinter &printer, const QString &file );
 
-    /** Print on a preconfigured printer
+    /**
+     * Print on a preconfigured printer
      * \param printer QPrinter destination
      * \param painter QPainter source
      * \param startNewPage set to true to begin the print on a new page
      */
     void doPrint( QPrinter &printer, QPainter &painter, bool startNewPage = false );
 
-    /** Convenience function that prepares the printer and prints
+    /**
+     * Convenience function that prepares the printer and prints
      * \returns true if print was successful
      */
     bool print( QPrinter &printer, const bool evaluateDDPageSize = false );
 
-    /** Convenience function that prepares the printer for printing in PDF and prints
+    /**
+     * Convenience function that prepares the printer for printing in PDF and prints
      * \returns true if export was successful
      */
     bool exportAsPDF( const QString &file );
 #endif
 
-    /** Renders a composer page to an image.
+    /**
+     * Renders a composer page to an image.
      * \param page page number, 0 based such that the first page is page 0
      * \param imageSize optional target image size, in pixels. It is the caller's responsibility
      * to ensure that the ratio of the target image size matches the ratio of the composition
@@ -669,7 +717,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     QImage printPageAsRaster( int page, QSize imageSize = QSize(), int dpi = 0 );
 
-    /** Renders a portion of the composition to an image. This method can be used to render
+    /**
+     * Renders a portion of the composition to an image. This method can be used to render
      * sections of pages rather than full pages.
      * \param rect region of composition to render
      * \param imageSize optional target image size, in pixels. It is the caller's responsibility
@@ -684,7 +733,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     QImage renderRectAsRaster( const QRectF &rect, QSize imageSize = QSize(), int dpi = 0 );
 
-    /** Renders a full page to a paint device.
+    /**
+     * Renders a full page to a paint device.
      * \param p destination painter
      * \param page page number, 0 based such that the first page is page 0
      * \see renderRect()
@@ -692,7 +742,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     void renderPage( QPainter *p, int page );
 
-    /** Renders a portion of the composition to a paint device. This method can be used
+    /**
+     * Renders a portion of the composition to a paint device. This method can be used
      * to render sections of pages rather than full pages.
      * \param p destination painter
      * \param rect region of composition to render
@@ -702,7 +753,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     void renderRect( QPainter *p, const QRectF &rect );
 
-    /** Georeferences a file (image of PDF) exported from the composition.
+    /**
+     * Georeferences a file (image of PDF) exported from the composition.
      * \param file filename of exported file
      * \param referenceMap map item to use for georeferencing, or leave as nullptr to use the
      * currently defined referenceMap().
@@ -714,12 +766,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     void georeferenceOutput( const QString &file, QgsComposerMap *referenceMap = nullptr,
                              const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
 
-    /** Compute world file parameters. Assumes the whole page containing the associated map item
+    /**
+     * Compute world file parameters. Assumes the whole page containing the associated map item
      * will be exported.
      */
     void computeWorldFileParameters( double &a, double &b, double &c, double &d, double &e, double &f ) const;
 
-    /** Computes the world file parameters for a specified region of the composition.
+    /**
+     * Computes the world file parameters for a specified region of the composition.
      * \param exportRegion region of the composition which will be associated with world file
      * \param a
      * \param b
@@ -733,32 +787,37 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
 
     QgsAtlasComposition &atlasComposition() { return mAtlasComposition; }
 
-    /** Returns the current atlas mode of the composition
+    /**
+     * Returns the current atlas mode of the composition
      * \returns current atlas mode
      * \see setAtlasMode
      */
     QgsComposition::AtlasMode atlasMode() const { return mAtlasMode; }
 
-    /** Sets the current atlas mode of the composition.
+    /**
+     * Sets the current atlas mode of the composition.
      * \param mode atlas mode to switch to
      * \returns false if the mode could not be changed.
      * \see atlasMode
      */
     bool setAtlasMode( const QgsComposition::AtlasMode mode );
 
-    /** Return pages in the correct order
+    /**
+     * Return pages in the correct order
      * \note composerItems(QList< QgsPaperItem* > &) may not return pages in the correct order
      * \since QGIS 2.4
      */
     QList< QgsPaperItem * > pages() { return mPages; }
 
-    /** Returns the items model attached to the composition
+    /**
+     * Returns the items model attached to the composition
      * \returns QgsComposerModel for composition
      * \since QGIS 2.5
      */
     QgsComposerModel *itemsModel() { return mItemsModel; }
 
-    /** Set a custom property for the composition.
+    /**
+     * Set a custom property for the composition.
      * \param key property key. If a property with the same key already exists it will be overwritten.
      * \param value property value
      * \see customProperty()
@@ -768,7 +827,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     void setCustomProperty( const QString &key, const QVariant &value );
 
-    /** Read a custom property from the composition.
+    /**
+     * Read a custom property from the composition.
      * \param key property key
      * \param defaultValue default value to return if property with matching key does not exist
      * \returns value of matching property
@@ -779,7 +839,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 
-    /** Remove a custom property from the composition.
+    /**
+     * Remove a custom property from the composition.
      * \param key property key
      * \see setCustomProperty()
      * \see customProperty()
@@ -788,7 +849,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     void removeCustomProperty( const QString &key );
 
-    /** Return list of keys stored in custom properties for composition.
+    /**
+     * Return list of keys stored in custom properties for composition.
      * \see setCustomProperty()
      * \see customProperty()
      * \see removeCustomProperty()
@@ -796,46 +858,74 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     QStringList customProperties() const;
 
-    /** Returns the bounding box of the items contained on a specified page.
+    /**
+     * Returns the bounding box of the items contained on a specified page.
      * \param pageNumber page number, where 0 is the first page
      * \param visibleOnly set to true to only include visible items
      * \since QGIS 2.12
      */
     QRectF pageItemBounds( int pageNumber, bool visibleOnly = false ) const;
 
-    /** Calculates the bounds of all non-gui items in the composition. Ignores snap lines and mouse handles.
+    /**
+     * Calculates the bounds of all non-gui items in the composition. Ignores snap lines and mouse handles.
      * \param ignorePages set to true to ignore page items
      * \param margin optional marginal (in percent, e.g., 0.05 = 5% ) to add around items
      */
     QRectF compositionBounds( bool ignorePages = false, double margin = 0.0 ) const;
 
+    /**
+     * Creates an expression context relating to the compositions's current state. The context includes
+     * scopes for global, project, composition and atlas properties.
+     * \since QGIS 2.12
+     */
+    QgsExpressionContext createExpressionContext() const override;
+
+    /**
+     * Returns a reference to the composition's property collection, used for data defined overrides.
+     * \since QGIS 3.0
+     * \see setDataDefinedProperties()
+     */
+    QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
+
+    /**
+     * Returns a reference to the composition's property collection, used for data defined overrides.
+     * \since QGIS 3.0
+     * \see setDataDefinedProperties()
+     */
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+
   public slots:
     //! Casts object to the proper subclass type and calls corresponding itemAdded signal
     void sendItemAddedSignal( QgsComposerItem *item );
 
-    /** Updates the scene bounds of the composition
+    /**
+     * Updates the scene bounds of the composition
     \since QGIS 2.2*/
     void updateBounds();
 
-    /** Forces items in the composition to refresh. For instance, this causes maps to redraw
+    /**
+     * Forces items in the composition to refresh. For instance, this causes maps to redraw
      * and rebuild cached images, html items to reload their source url, and attribute tables
      * to refresh their contents. Calling this also triggers a recalculation of all data defined
      * attributes within the composition.
      * \since QGIS 2.3*/
     void refreshItems();
 
-    /** Clears any selected items and sets an item as the current selection.
+    /**
+     * Clears any selected items and sets an item as the current selection.
      * \param item item to set as selected
      * \since QGIS 2.3*/
     void setSelectedItem( QgsComposerItem *item );
 
-    /** Clears any selected items in the composition. Call this method rather than
+    /**
+     * Clears any selected items in the composition. Call this method rather than
      * QGraphicsScene::clearSelection, as the latter does not correctly emit signals to allow
      * the composition's model to update.
      * \since QGIS 2.5*/
     void setAllDeselected();
 
-    /** Refreshes a data defined property for the composition by reevaluating the property's value
+    /**
+     * Refreshes a data defined property for the composition by reevaluating the property's value
      * and redrawing the composition with this new value.
      * \param property data defined property to refresh. If property is set to
      * QgsComposerItem::AllProperties then all data defined properties for the composition will be
@@ -845,25 +935,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
      */
     void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr );
 
-    /** Creates an expression context relating to the compositions's current state. The context includes
-     * scopes for global, project, composition and atlas properties.
-     * \since QGIS 2.12
-     */
-    QgsExpressionContext createExpressionContext() const override;
-
-    /** Returns a reference to the composition's property collection, used for data defined overrides.
-     * \since QGIS 3.0
-     * \see setDataDefinedProperties()
-     */
-    QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
-
-    /** Returns a reference to the composition's property collection, used for data defined overrides.
-     * \since QGIS 3.0
-     * \see setDataDefinedProperties()
-     */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
-
-    /** Sets the composition's property collection, used for data defined overrides.
+    /**
+     * Sets the composition's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
      * \since QGIS 3.0
      * \see dataDefinedProperties()
@@ -959,7 +1032,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Reset z-values of items based on position in z list
     void updateZValues( const bool addUndoCommands = true );
 
-    /** Returns the bounding rectangle of the selected items in scene coordinates
+    /**
+     * Returns the bounding rectangle of the selected items in scene coordinates
      \returns 0 in case of success*/
     int boundingRectOfSelectedItems( QRectF &bRect );
 
@@ -984,18 +1058,21 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //tries to return the current QGraphicsView attached to the composition
     QGraphicsView *graphicsView() const;
 
-    /** Recalculates the page size using data defined page settings
+    /**
+     * Recalculates the page size using data defined page settings
      * \param context expression context for data defined page sizes
      */
     void refreshPageSize( const QgsExpressionContext *context = nullptr );
 
-    /** Check whether any data defined page settings are active.
+    /**
+     * Check whether any data defined page settings are active.
      * \returns true if any data defined page settings are active.
      * \since QGIS 2.5
      */
     bool ddPageSizeActive() const;
 
-    /** Computes a GDAL style geotransform for georeferencing a composition.
+    /**
+     * Computes a GDAL style geotransform for georeferencing a composition.
      * \param referenceMap map item to use for georeferencing, or leave as nullptr to use the
      * currently defined referenceMap().
      * \param exportRegion set to a valid rectangle to indicate that only part of the composition is
@@ -1046,7 +1123,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
     //! Is emitted when the composition has an updated status bar message for the composer window
     void statusMsgChanged( const QString &message );
 
-    /** Emitted whenever the expression variables stored in the composition have been changed.
+    /**
+     * Emitted whenever the expression variables stored in the composition have been changed.
      * \since QGIS 3.0
      */
     void variablesChanged();

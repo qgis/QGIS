@@ -107,9 +107,6 @@ bool QgsAbstractPropertyCollection::readXml( const QDomElement &collectionElem, 
 
 QgsPropertyCollection::QgsPropertyCollection( const QString &name )
   : QgsAbstractPropertyCollection( name )
-  , mDirty( false )
-  , mHasActiveProperties( false )
-  , mHasDynamicProperties( false )
 {}
 
 QgsPropertyCollection::QgsPropertyCollection( const QgsPropertyCollection &other )

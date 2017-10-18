@@ -100,8 +100,8 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QList<QNetworkProxyFactory *> mProxyFactories;
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
-    bool mUseSystemProxy;
-    bool mInitialized;
+    bool mUseSystemProxy = false;
+    bool mInitialized = false;
     static QgsNetworkAccessManager *sMainNAM;
 };
 

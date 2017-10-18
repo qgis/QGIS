@@ -63,8 +63,8 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
     QColor mOutlineColor;
 
     //! Margin percentage values
-    int mMarginHorizontal;
-    int mMarginVertical;
+    int mMarginHorizontal = 0;
+    int mMarginVertical = 0;
 
     friend class QgsDecorationScaleBarDialog;
 };

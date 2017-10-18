@@ -35,9 +35,8 @@ class TestSignalReceiver : public QObject
   public:
     TestSignalReceiver()
       : QObject( 0 )
-      , blendMode( QPainter::CompositionMode_SourceOver )
     {}
-    QPainter::CompositionMode blendMode;
+    QPainter::CompositionMode blendMode =  QPainter::CompositionMode_SourceOver ;
   public slots:
     void onBlendModeChanged( const QPainter::CompositionMode blendMode )
     {
@@ -45,7 +44,8 @@ class TestSignalReceiver : public QObject
     }
 };
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsMapLayer class.
  */
 class TestQgsMapLayer : public QObject
@@ -53,9 +53,7 @@ class TestQgsMapLayer : public QObject
     Q_OBJECT
 
   public:
-    TestQgsMapLayer()
-      : mpLayer( 0 )
-    {}
+    TestQgsMapLayer() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

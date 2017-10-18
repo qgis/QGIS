@@ -26,7 +26,8 @@
 
 class QgsPointClusterRenderer;
 
-/** \class QgsPointClusterRendererWidget
+/**
+ * \class QgsPointClusterRendererWidget
  * \ingroup gui
  * A widget which allows configuration of the properties for a QgsPointClusterRenderer.
  * \since QGIS 3.0
@@ -38,7 +39,8 @@ class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, public
 
   public:
 
-    /** Returns a new QgsPointClusterRendererWidget.
+    /**
+     * Returns a new QgsPointClusterRendererWidget.
      * \param layer associated vector layer
      * \param style style collection
      * \param renderer source QgsPointClusterRenderer renderer
@@ -46,7 +48,8 @@ class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, public
      */
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
-    /** Constructor for QgsPointClusterRendererWidget.
+    /**
+     * Constructor for QgsPointClusterRendererWidget.
      * \param layer associated vector layer
      * \param style style collection
      * \param renderer source QgsPointClusterRenderer renderer
@@ -68,10 +71,10 @@ class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, public
 
   private slots:
 
-    void on_mRendererComboBox_currentIndexChanged( int index );
-    void on_mDistanceSpinBox_valueChanged( double d );
-    void on_mDistanceUnitWidget_changed();
-    void on_mRendererSettingsButton_clicked();
+    void mRendererComboBox_currentIndexChanged( int index );
+    void mDistanceSpinBox_valueChanged( double d );
+    void mDistanceUnitWidget_changed();
+    void mRendererSettingsButton_clicked();
     void centerSymbolChanged();
     void updateRendererFromWidget();
 };

@@ -27,7 +27,8 @@ class QgsWkbPtr;
 class QgsConstWkbPtr;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Implementation of GeometrySimplifier using the "MapToPixel" algorithm
  *
  * Simplifies a geometry removing points within of the maximum distance difference that defines the MapToPixel info of a RenderContext request.

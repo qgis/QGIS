@@ -30,7 +30,8 @@ class QgsReadWriteContext;
 class QgsRelationManager;
 class QgsEditFormConfigPrivate;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsEditFormConfig
  */
 class CORE_EXPORT QgsEditFormConfig
@@ -249,7 +250,8 @@ class CORE_EXPORT QgsEditFormConfig
      */
     void setInitFilePath( const QString &filePath );
 
-    /** Return Python code source for edit form initialization
+    /**
+     * Return Python code source for edit form initialization
      *  (if it shall be loaded from a file, read from the
      *  provided dialog editor or inherited from the environment)
      */

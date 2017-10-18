@@ -62,7 +62,6 @@ QgsComposerItem::QgsComposerItem( QgsComposition *composition, bool manageZValue
   , mLastUsedPositionMode( UpperLeft )
   , mIsGroupMember( false )
   , mCurrentExportLayer( -1 )
-  , mId( QLatin1String( "" ) )
   , mUuid( QUuid::createUuid().toString() )
 {
   init( manageZValue );
@@ -87,7 +86,6 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
   , mLastUsedPositionMode( UpperLeft )
   , mIsGroupMember( false )
   , mCurrentExportLayer( -1 )
-  , mId( QLatin1String( "" ) )
   , mUuid( QUuid::createUuid().toString() )
 {
   init( manageZValue );

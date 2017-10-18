@@ -31,10 +31,6 @@ QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri )
   connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWfsCapabilities::capabilitiesReplyFinished );
 }
 
-QgsWfsCapabilities::~QgsWfsCapabilities()
-{
-}
-
 bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefresh )
 {
   QUrl url( baseURL() );
@@ -66,7 +62,7 @@ void QgsWfsCapabilities::Capabilities::clear()
   supportsHits = false;
   supportsPaging = false;
   supportsJoins = false;
-  version = QLatin1String( "" );
+  version.clear();
   featureTypes.clear();
   spatialPredicatesList.clear();
   functionList.clear();

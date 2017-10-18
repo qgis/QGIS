@@ -42,7 +42,6 @@ QgsOptionsDialogBase::QgsOptionsDialogBase( const QString &settingsKey, QWidget 
   : QDialog( parent, fl )
   , mOptsKey( settingsKey )
   , mInit( false )
-  , mDialogTitle( QLatin1String( "" ) )
   , mIconOnly( false )
   , mSettings( settings )
   , mDelSettings( false )
@@ -227,7 +226,7 @@ void QgsOptionsDialogBase::searchText( const QString &text )
     mOptListWidget->setRowHidden( r, !text.isEmpty() );
   }
 
-  for ( const QPair< QgsSearchHighlightOptionWidget *, int > &rsw : qgsAsConst( mRegisteredSearchWidgets ) )
+  for ( const QPair< QgsSearchHighlightOptionWidget *, int > &rsw : qgis::as_const( mRegisteredSearchWidgets ) )
   {
     rsw.first->reset();
     if ( !text.isEmpty() && rsw.first->searchHighlight( text ) )
@@ -395,9 +394,6 @@ void QgsOptionsDialogBase::warnAboutMissingObjects()
 QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget )
   : QObject( widget )
   , mWidget( widget )
-  , mStyleSheet( QString() )
-  , mValid( true )
-  , mChangedStyle( false )
   , mText( [ = ]() {return QString();} )
 {
   if ( qobject_cast<QLabel *>( widget ) )

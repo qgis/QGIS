@@ -32,7 +32,8 @@
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
 class TestQgsInvertedPolygon : public QObject
@@ -58,7 +59,7 @@ class TestQgsInvertedPolygon : public QObject
 #endif
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
     bool setQml( QgsVectorLayer *vlayer, const QString &qmlFile );
     bool imageCheck( const QString &type, const QgsRectangle * = 0 );
     QgsMapSettings mMapSettings;
@@ -68,12 +69,7 @@ class TestQgsInvertedPolygon : public QObject
 };
 
 
-TestQgsInvertedPolygon::TestQgsInvertedPolygon()
-  : mTestHasError( false )
-  , mpPolysLayer( nullptr )
-{
-
-}
+TestQgsInvertedPolygon::TestQgsInvertedPolygon() = default;
 
 void TestQgsInvertedPolygon::initTestCase()
 {

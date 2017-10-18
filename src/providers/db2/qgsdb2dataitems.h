@@ -35,7 +35,6 @@ class QgsDb2RootItem : public QgsDataCollectionItem
 
   public:
     QgsDb2RootItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsDb2RootItem();
 
     /**
      * Add saved connections as children.
@@ -64,7 +63,6 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsDb2ConnectionItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsDb2ConnectionItem();
 
     static bool ConnInfoFromSettings( const QString connName,
                                       QString &connInfo, QString &errorMsg );
@@ -140,7 +138,6 @@ class QgsDb2SchemaItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsDb2SchemaItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsDb2SchemaItem();
 
     QVector<QgsDataItem *> createChildren() override;
 
@@ -162,7 +159,6 @@ class QgsDb2LayerItem : public QgsLayerItem
 
   public:
     QgsDb2LayerItem( QgsDataItem *parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsDb2LayerProperty layerProperties );
-    ~QgsDb2LayerItem();
 
     QString createUri();
 

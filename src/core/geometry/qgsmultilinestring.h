@@ -20,7 +20,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis.h"
 #include "qgsmulticurve.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMultiLineString
  * \brief Multi line string geometry collection.
  * \since QGIS 2.10
@@ -29,22 +30,19 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 {
   public:
     QgsMultiLineString();
+
     QString geometryType() const override;
     QgsMultiLineString *clone() const override SIP_FACTORY;
-
+    void clear() override;
     bool fromWkt( const QString &wkt ) override;
-
-    // inherited: int wkbSize() const;
-    // inherited: unsigned char* asWkb( int& binarySize ) const;
-    // inherited: QString asWkt( int precision = 17 ) const;
     QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
-
-    //! Adds a geometry and takes ownership. Returns true in case of success
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
 
-    /** Returns the geometry converted to the more generic curve type QgsMultiCurve
+    /**
+     * Returns the geometry converted to the more generic curve type QgsMultiCurve
     \returns the converted geometry. Caller takes ownership*/
     QgsMultiCurve *toCurveType() const override SIP_FACTORY;
 

@@ -29,7 +29,8 @@
 #include "qgsauthconfig.h"
 #include "qgssettings.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * Unit tests for QgsAuthManager
  */
 class TestQgsAuthManager: public QObject

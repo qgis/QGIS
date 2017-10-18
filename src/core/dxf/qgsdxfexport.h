@@ -35,12 +35,17 @@ class QgsSymbolLayer;
 class QIODevice;
 class QgsPalLayerSettings;
 
+#define DXF_HANDSEED 100
+#define DXF_HANDMAX 9999999
+#define DXF_HANDPLOTSTYLE 0xf
+
 namespace pal SIP_SKIP
 {
   class LabelPosition;
 }
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsDxfExport
  */
 class CORE_EXPORT QgsDxfExport
@@ -53,7 +58,10 @@ class CORE_EXPORT QgsDxfExport
       SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
     };
 
-    QgsDxfExport();
+    /**
+     * Constructor for QgsDxfExport.
+     */
+    QgsDxfExport() = default;
     QgsDxfExport( const QgsDxfExport &dxfExport ) SIP_SKIP;
     QgsDxfExport &operator=( const QgsDxfExport &dxfExport );
 
@@ -288,33 +296,45 @@ class CORE_EXPORT QgsDxfExport
      */
     void writePolygon( const QgsRingSequence &polygon, const QString &layer, const QString &hatchPattern, const QColor &color ) SIP_SKIP;
 
-    //! Write line (as a polyline)
-    //! \since QGIS 2.15
+    /**
+     * Write line (as a polyline)
+     * \since QGIS 2.15
+     */
     void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
 
-    //! Write point
-    //! \note available in Python bindings as writePointV2
-    //! \since QGIS 2.15
+    /**
+     * Write point
+     * \note available in Python bindings as writePointV2
+     * \since QGIS 2.15
+     */
     void writePoint( const QString &layer, const QColor &color, const QgsPoint &pt ) SIP_PYNAME( writePointV2 );
 
-    //! Write filled circle (as hatch)
-    //! \note available in Python bindings as writePointV2
-    //! \since QGIS 2.15
+    /**
+     * Write filled circle (as hatch)
+     * \note available in Python bindings as writePointV2
+     * \since QGIS 2.15
+     */
     void writeFilledCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius ) SIP_PYNAME( writeFillCircleV2 );
 
-    //! Write circle (as polyline)
-    //! \note available in Python bindings as writeCircleV2
-    //! \since QGIS 2.15
+    /**
+     * Write circle (as polyline)
+     * \note available in Python bindings as writeCircleV2
+     * \since QGIS 2.15
+     */
     void writeCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius, const QString &lineStyleName, double width ) SIP_PYNAME( writeCircleV2 );
 
-    //! Write text (TEXT)
-    //! \note available in Python bindings as writeTextV2
-    //! \since QGIS 2.15
+    /**
+     * Write text (TEXT)
+     * \note available in Python bindings as writeTextV2
+     * \since QGIS 2.15
+     */
     void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color ) SIP_PYNAME( writeTextV2 );
 
-    //! Write mtext (MTEXT)
-    //! \note available in Python bindings as writeMTextV2
-    //! \since QGIS 2.15
+    /**
+     * Write mtext (MTEXT)
+     * \note available in Python bindings as writeMTextV2
+     * \since QGIS 2.15
+     */
     void writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor &color );
 
     /**
@@ -332,7 +352,8 @@ class CORE_EXPORT QgsDxfExport
     //! return list of available DXF encodings
     static QStringList encodings();
 
-    /** Output the label
+    /**
+     * Output the label
      * \param layerId id of the layer
      * \param context render context
      * \param label position of label
@@ -341,7 +362,8 @@ class CORE_EXPORT QgsDxfExport
      */
     void drawLabel( const QString &layerId, QgsRenderContext &context, pal::LabelPosition *label, const QgsPalLayerSettings &settings ) SIP_SKIP;
 
-    /** Register name of layer for feature
+    /**
+     * Register name of layer for feature
      * \param layerId id of layer
      * \param fid id of feature
      * \param layer dxf layer of feature
@@ -352,19 +374,19 @@ class CORE_EXPORT QgsDxfExport
     //! Extent for export, only intersecting features are exported. If the extent is an empty rectangle, all features are exported
     QgsRectangle mExtent;
     //! Scale for symbology export (used if symbols units are mm)
-    double mSymbologyScale;
-    SymbologyExport mSymbologyExport;
-    QgsUnitTypes::DistanceUnit mMapUnits;
-    bool mLayerTitleAsName;
+    double mSymbologyScale = 1.0;
+    SymbologyExport mSymbologyExport = NoSymbology;
+    QgsUnitTypes::DistanceUnit mMapUnits = QgsUnitTypes::DistanceMeters;
+    bool mLayerTitleAsName = false;
 
     QTextStream mTextStream;
 
     static int sDxfColors[][3];
     static const char *DXF_ENCODINGS[][2];
 
-    int mSymbolLayerCounter; //internal counter
-    int mNextHandleId;
-    int mBlockCounter;
+    int mSymbolLayerCounter = 0; //internal counter
+    int mNextHandleId = DXF_HANDSEED;
+    int mBlockCounter = 0;
 
     QHash< const QgsSymbolLayer *, QString > mLineStyles; //symbol layer name types
     QHash< const QgsSymbolLayer *, QString > mPointSymbolBlocks; //reference to point symbol blocks

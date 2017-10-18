@@ -590,7 +590,7 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
     void setType( ScaleType type );
 
   private:
-    ScaleType mType;
+    ScaleType mType = Linear;
     double mMinSize;
     double mMaxSize;
     double mNullSize;

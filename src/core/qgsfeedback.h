@@ -21,7 +21,8 @@
 #include "qgis_core.h"
 #include "qgis.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Base class for feedback objects to be used for cancelation of something running in a worker thread.
  * The class may be used as is or it may be subclassed for extended functionality
  * for a particular operation (e.g. report progress or pass some data for preview).
@@ -47,7 +48,6 @@ class CORE_EXPORT QgsFeedback : public QObject
     //! Construct a feedback object
     QgsFeedback( QObject *parent SIP_TRANSFERTHIS = nullptr )
       : QObject( parent )
-      , mCanceled( false )
     {}
 
     //! Tells whether the operation has been canceled already
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsFeedback : public QObject
 
   private:
     //! Whether the operation has been canceled already. False by default.
-    bool mCanceled;
+    bool mCanceled = false;
 
     double mProgress = 0.0;
 };

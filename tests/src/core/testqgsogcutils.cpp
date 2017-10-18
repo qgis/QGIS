@@ -22,7 +22,8 @@
 #include <qgsogcutils.h>
 #include "qgsapplication.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for OGC utilities
  */
 class TestQgsOgcUtils : public QObject
@@ -33,13 +34,12 @@ class TestQgsOgcUtils : public QObject
     void initTestCase()
     {
       // Needed on Qt 5 so that the serialization of XML is consistent among all executions
-#if QT_VERSION < QT_VERSION_CHECK( 5, 6 ,0)
+#if QT_VERSION >= 0x50600
+      qSetGlobalQHashSeed( 0 );
+#else
       extern Q_CORE_EXPORT QBasicAtomicInt qt_qhash_seed;
       qt_qhash_seed.store( 0 );
-#else
-      qSetGlobalQHashSeed( 0 );
 #endif
-
 
       //
       // Runs once before any tests are run

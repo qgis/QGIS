@@ -24,6 +24,7 @@
 #include <QTransform>
 #include <QRegExp>
 
+#include "qgsgeometry.h"
 #include "qgspointxy.h"
 #include "qgsrectangle.h"
 #include "qgslogger.h"
@@ -57,6 +58,24 @@ QgsRectangle::QgsRectangle( const QgsRectangle &r )
   mYmin = r.yMinimum();
   mXmax = r.xMaximum();
   mYmax = r.yMaximum();
+}
+
+QgsRectangle QgsRectangle::fromWkt( const QString &wkt )
+{
+  QgsGeometry geom = QgsGeometry::fromWkt( wkt );
+  if ( geom.isMultipart() )
+    return QgsRectangle();
+
+  QgsPolygon poly = geom.asPolygon();
+
+  if ( poly.size() != 1 )
+    return QgsRectangle();
+
+  QgsPolyline polyline = geom.asPolygon().at( 0 );
+  if ( polyline.size() == 5 && polyline.at( 0 ) == polyline.at( 4 ) && geom.isGeosValid() )
+    return QgsRectangle( polyline.at( 0 ).x(), polyline.at( 0 ).y(), polyline.at( 2 ).x(), polyline.at( 2 ).y() );
+  else
+    return QgsRectangle();
 }
 
 void QgsRectangle::set( const QgsPointXY &p1, const QgsPointXY &p2 )
@@ -387,13 +406,8 @@ bool QgsRectangle::isFinite() const
 
 void QgsRectangle::invert()
 {
-  double tmp;
-  tmp = mXmin;
-  mXmin = mYmin;
-  mYmin = tmp;
-  tmp = mXmax;
-  mXmax = mYmax;
-  mYmax = tmp;
+  std::swap( mXmin, mYmin );
+  std::swap( mXmax, mYmax );
 }
 
 QgsBox3d QgsRectangle::toBox3d( double zMin, double zMax ) const

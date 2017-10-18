@@ -45,8 +45,6 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
   : QWidget( parent )
   , mCert( nullptr )
   , mConnectionCAs( connectionCAs )
-  , mCanSave( false )
-  , mDisabled( false )
 {
   if ( QgsAuthManager::instance()->isDisabled() )
   {
@@ -59,6 +57,7 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
   else
   {
     setupUi( this );
+    connect( btnCertInfo, &QToolButton::clicked, this, &QgsAuthSslConfigWidget::btnCertInfo_clicked );
 
     connect( grpbxSslConfig, &QGroupBox::toggled, this, &QgsAuthSslConfigWidget::configEnabledChanged );
     connect( this, &QgsAuthSslConfigWidget::configEnabledChanged, this, &QgsAuthSslConfigWidget::readyToSave );
@@ -67,7 +66,7 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
     setUpSslConfigTree();
 
     lblLoadedConfig->setVisible( false );
-    lblLoadedConfig->setText( QLatin1String( "" ) );
+    lblLoadedConfig->clear();
 
     connect( leHost, &QLineEdit::textChanged,
              this, &QgsAuthSslConfigWidget::validateHostPortText );
@@ -326,7 +325,7 @@ void QgsAuthSslConfigWidget::resetSslCertConfig()
   leHost->clear();
 
   lblLoadedConfig->setVisible( false );
-  lblLoadedConfig->setText( QLatin1String( "" ) );
+  lblLoadedConfig->clear();
   resetSslProtocol();
   resetSslIgnoreErrors();
   resetSslPeerVerify();
@@ -565,7 +564,7 @@ void QgsAuthSslConfigWidget::setConfigCheckable( bool checkable )
   }
 }
 
-void QgsAuthSslConfigWidget::on_btnCertInfo_clicked()
+void QgsAuthSslConfigWidget::btnCertInfo_clicked()
 {
   if ( mCert.isNull() )
   {

@@ -30,18 +30,7 @@ QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator *i, const QString &outputP
   , mNumRows( nRows )
   , mCellSizeX( cellSizeX )
   , mCellSizeY( cellSizeY )
-{
-
-}
-
-QgsGridFileWriter::QgsGridFileWriter()
-  : mNumColumns( 0 )
-  , mNumRows( 0 )
-  , mCellSizeX( 0 )
-  , mCellSizeY( 0 )
-{
-
-}
+{}
 
 int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
 {

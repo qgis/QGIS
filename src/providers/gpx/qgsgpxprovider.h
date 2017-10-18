@@ -104,14 +104,14 @@ class QgsGPXProvider : public QgsVectorDataProvider
 
     QString mFileName;
 
-    DataType mFeatureType;
+    DataType mFeatureType = WaypointType;
 
     static const char *ATTR[];
     static QVariant::Type attrType[];
     static DataType attrUsed[];
     static const int ATTR_COUNT;
 
-    bool mValid;
+    bool mValid = false;
 
     friend class QgsGPXFeatureSource;
 };

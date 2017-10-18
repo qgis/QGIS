@@ -28,7 +28,6 @@ class QgsNetworkStrategy
 %TypeHeaderCode
 #include "qgsnetworkstrategy.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast< QgsNetworkDistanceStrategy * >( sipCpp ) != NULL )
       sipType = sipType_QgsNetworkDistanceStrategy;

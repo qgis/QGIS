@@ -49,20 +49,10 @@ bool QgsComposerTableStyle::readXml( const QDomElement &styleElem )
 
 QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool createUndoCommands )
   : QgsComposerMultiFrame( composition, createUndoCommands )
-  , mCellMargin( 1.0 )
-  , mEmptyTableMode( HeadersOnly )
-  , mShowEmptyRows( false )
   , mHeaderFontColor( Qt::black )
-  , mHeaderHAlignment( FollowColumn )
-  , mHeaderMode( FirstFrame )
   , mContentFontColor( Qt::black )
-  , mShowGrid( true )
-  , mGridStrokeWidth( 0.5 )
   , mGridColor( Qt::black )
-  , mHorizontalGrid( true )
-  , mVerticalGrid( true )
   , mBackgroundColor( Qt::white )
-  , mWrapBehavior( TruncateText )
 {
 
   if ( mComposition )
@@ -84,20 +74,10 @@ QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool create
 
 QgsComposerTableV2::QgsComposerTableV2()
   : QgsComposerMultiFrame( nullptr, false )
-  , mCellMargin( 1.0 )
-  , mEmptyTableMode( HeadersOnly )
-  , mShowEmptyRows( false )
   , mHeaderFontColor( Qt::black )
-  , mHeaderHAlignment( FollowColumn )
-  , mHeaderMode( FirstFrame )
   , mContentFontColor( Qt::black )
-  , mShowGrid( true )
-  , mGridStrokeWidth( 0.5 )
   , mGridColor( Qt::black )
-  , mHorizontalGrid( true )
-  , mVerticalGrid( true )
   , mBackgroundColor( Qt::white )
-  , mWrapBehavior( TruncateText )
 {
   initStyles();
 }
@@ -207,7 +187,7 @@ bool QgsComposerTableV2::readXml( const QDomElement &itemElem, const QDomDocumen
   QDomNodeList columnsList = itemElem.elementsByTagName( QStringLiteral( "displayColumns" ) );
   if ( !columnsList.isEmpty() )
   {
-    QDomElement columnsElem =  columnsList.at( 0 ).toElement();
+    QDomElement columnsElem = columnsList.at( 0 ).toElement();
     QDomNodeList columnEntryList = columnsElem.elementsByTagName( QStringLiteral( "column" ) );
     for ( int i = 0; i < columnEntryList.size(); ++i )
     {

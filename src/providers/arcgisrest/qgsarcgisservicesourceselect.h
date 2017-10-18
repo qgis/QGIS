@@ -83,14 +83,16 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     //! A layer is added from the dialog
     virtual void addServiceLayer( QString uri, QString typeName ) = 0;
 
-    /** Returns the best suited CRS from a set of authority ids
+    /**
+     * Returns the best suited CRS from a set of authority ids
        1. project CRS if contained in the set
        2. WGS84 if contained in the set
        3. the first entry in the set else
     \returns the authority id of the crs or an empty string in case of error*/
     QString getPreferredCrs( const QSet<QString> &crsSet ) const;
 
-    /** Store a pointer to map canvas to retrieve extent and CRS
+    /**
+     * Store a pointer to map canvas to retrieve extent and CRS
      * Used to select an appropriate CRS and possibly to retrieve data only in the current extent
      */
     QgsMapCanvas *mMapCanvas = nullptr;
@@ -111,7 +113,7 @@ class QgsArcGisServiceSourceSelect : public QgsAbstractDataSourceWidget, protect
     void changeCrsFilter();
     void connectToServer();
     void filterChanged( const QString &text );
-    void on_cmbConnections_activated( int index );
+    void cmbConnections_activated( int index );
     void showHelp();
     void treeWidgetItemDoubleClicked( const QModelIndex &index );
     void treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous );

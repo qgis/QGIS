@@ -38,23 +38,19 @@
 
 QgsSvgCacheEntry::QgsSvgCacheEntry()
   : path( QString() )
-  , size( 0.0 )
-  , strokeWidth( 0 )
-  , widthScaleFactor( 1.0 )
   , fill( Qt::black )
   , stroke( Qt::black )
-
 {
 }
 
-QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &p, double s, double ow, double wsf, const QColor &fi, const QColor &ou )
+QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &p, double s, double ow, double wsf, const QColor &fi, const QColor &ou, double far )
   : path( p )
   , size( s )
   , strokeWidth( ow )
   , widthScaleFactor( wsf )
+  , fixedAspectRatio( far )
   , fill( fi )
   , stroke( ou )
-
 {
 }
 
@@ -87,8 +83,6 @@ int QgsSvgCacheEntry::dataSize() const
 
 QgsSvgCache::QgsSvgCache( QObject *parent )
   : QObject( parent )
-  , mTotalSize( 0 )
-
 {
   mMissingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
 }
@@ -100,12 +94,12 @@ QgsSvgCache::~QgsSvgCache()
 
 
 QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                double widthScaleFactor, bool &fitsInCache )
+                                double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio )
 {
   QMutexLocker locker( &mMutex );
 
   fitsInCache = true;
-  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, stroke, strokeWidth, widthScaleFactor );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio );
 
   //if current entry image is 0: cache image for entry
   // checks to see if image will fit into cache
@@ -116,7 +110,14 @@ QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &
     double hwRatio = 1.0;
     if ( r.viewBoxF().width() > 0 )
     {
-      hwRatio = r.viewBoxF().height() / r.viewBoxF().width();
+      if ( currentEntry->fixedAspectRatio > 0 )
+      {
+        hwRatio = currentEntry->fixedAspectRatio;
+      }
+      else
+      {
+        hwRatio = r.viewBoxF().height() / r.viewBoxF().width();
+      }
     }
     long cachedDataSize = 0;
     cachedDataSize += currentEntry->svgContent.size();
@@ -145,11 +146,11 @@ QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &
 }
 
 QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                    double widthScaleFactor, bool forceVectorOutput )
+                                    double widthScaleFactor, bool forceVectorOutput, double fixedAspectRatio )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio );
 
   //if current entry picture is 0: cache picture for entry
   //update stats for memory usage
@@ -163,28 +164,28 @@ QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QCol
 }
 
 QByteArray QgsSvgCache::svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                    double widthScaleFactor )
+                                    double widthScaleFactor, double fixedAspectRatio )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio );
 
   return currentEntry->svgContent;
 }
 
-QSizeF QgsSvgCache::svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor )
+QSizeF QgsSvgCache::svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth, double widthScaleFactor, double fixedAspectRatio )
 {
   QMutexLocker locker( &mMutex );
 
-  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor );
+  QgsSvgCacheEntry *currentEntry = cacheEntry( path, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio );
 
   return currentEntry->viewboxSize;
 }
 
 QgsSvgCacheEntry *QgsSvgCache::insertSvg( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-    double widthScaleFactor )
+    double widthScaleFactor, double fixedAspectRatio )
 {
-  QgsSvgCacheEntry *entry = new QgsSvgCacheEntry( path, size, strokeWidth, widthScaleFactor, fill, stroke );
+  QgsSvgCacheEntry *entry = new QgsSvgCacheEntry( path, size, strokeWidth, widthScaleFactor, fill, stroke, fixedAspectRatio );
 
   replaceParamsAndCacheSvg( entry );
 
@@ -319,7 +320,7 @@ double QgsSvgCache::calcSizeScaleFactor( QgsSvgCacheEntry *entry, const QDomElem
   }
   else
   {
-    QDomElement svgElem = docElem.firstChildElement( QStringLiteral( "svg" ) ) ;
+    QDomElement svgElem = docElem.firstChildElement( QStringLiteral( "svg" ) );
     if ( !svgElem.isNull() )
     {
       if ( svgElem.hasAttribute( QStringLiteral( "viewBox" ) ) )
@@ -478,11 +479,20 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
   delete entry->image;
   entry->image = nullptr;
 
+  bool isFixedAR = entry->fixedAspectRatio > 0;
+
   QSvgRenderer r( entry->svgContent );
   double hwRatio = 1.0;
   if ( r.viewBoxF().width() > 0 )
   {
-    hwRatio = r.viewBoxF().height() / r.viewBoxF().width();
+    if ( isFixedAR )
+    {
+      hwRatio = entry->fixedAspectRatio;
+    }
+    else
+    {
+      hwRatio = r.viewBoxF().height() / r.viewBoxF().width();
+    }
   }
   double wSize = entry->size;
   int wImgSize = static_cast< int >( wSize );
@@ -528,6 +538,8 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
   delete entry->picture;
   entry->picture = nullptr;
 
+  bool isFixedAR = entry->fixedAspectRatio > 0;
+
   //correct QPictures dpi correction
   QPicture *picture = new QPicture();
   QRectF rect;
@@ -535,13 +547,21 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
   double hwRatio = 1.0;
   if ( r.viewBoxF().width() > 0 )
   {
-    hwRatio = r.viewBoxF().height() / r.viewBoxF().width();
+    if ( isFixedAR )
+    {
+      hwRatio = entry->fixedAspectRatio;
+    }
+    else
+    {
+      hwRatio = r.viewBoxF().height() / r.viewBoxF().width();
+    }
   }
 
   double wSize = entry->size;
   double hSize = wSize * hwRatio;
+
   QSizeF s( r.viewBoxF().size() );
-  s.scale( wSize, hSize, Qt::KeepAspectRatio );
+  s.scale( wSize, hSize, isFixedAR ? Qt::IgnoreAspectRatio : Qt::KeepAspectRatio );
   rect = QRectF( -s.width() / 2.0, -s.height() / 2.0, s.width(), s.height() );
 
   QPainter p( picture );
@@ -551,7 +571,7 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
 }
 
 QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-    double widthScaleFactor )
+    double widthScaleFactor, double fixedAspectRatio )
 {
   //search entries in mEntryLookup
   QgsSvgCacheEntry *currentEntry = nullptr;
@@ -562,7 +582,8 @@ QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, con
   {
     QgsSvgCacheEntry *cacheEntry = *entryIt;
     if ( qgsDoubleNear( cacheEntry->size, size ) && cacheEntry->fill == fill && cacheEntry->stroke == stroke &&
-         qgsDoubleNear( cacheEntry->strokeWidth, strokeWidth ) && qgsDoubleNear( cacheEntry->widthScaleFactor, widthScaleFactor ) )
+         qgsDoubleNear( cacheEntry->strokeWidth, strokeWidth ) && qgsDoubleNear( cacheEntry->widthScaleFactor, widthScaleFactor ) &&
+         qgsDoubleNear( cacheEntry->fixedAspectRatio, fixedAspectRatio ) )
     {
       currentEntry = cacheEntry;
       break;
@@ -573,7 +594,7 @@ QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, con
   //cache and replace params in svg content
   if ( !currentEntry )
   {
-    currentEntry = insertSvg( path, size, fill, stroke, strokeWidth, widthScaleFactor );
+    currentEntry = insertSvg( path, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio );
   }
   else
   {

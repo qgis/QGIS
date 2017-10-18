@@ -41,8 +41,6 @@ class QgsBufferServerRequest : QgsServerRequest
  \param data optional POST data
 %End
 
-    ~QgsBufferServerRequest();
-
     virtual QByteArray data() const;
 
 };

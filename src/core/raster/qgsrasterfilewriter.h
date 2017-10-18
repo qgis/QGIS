@@ -31,7 +31,8 @@ class QgsRectangle;
 class QgsRasterDataProvider;
 class QgsRasterInterface;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * The raster file writer which allows you to save a raster to a new file.
  */
 class CORE_EXPORT QgsRasterFileWriter
@@ -55,7 +56,8 @@ class CORE_EXPORT QgsRasterFileWriter
 
     QgsRasterFileWriter( const QString &outputUrl );
 
-    /** Create a raster file with one band without initializing the pixel data.
+    /**
+     * Create a raster file with one band without initializing the pixel data.
      * Returned provider may be used to initialize the raster using writeBlock() calls.
      * Ownership of the returned provider is passed to the caller.
      * \note Does not work with tiled mode enabled.
@@ -67,7 +69,8 @@ class CORE_EXPORT QgsRasterFileWriter
         const QgsRectangle &extent,
         const QgsCoordinateReferenceSystem &crs ) SIP_FACTORY;
 
-    /** Create a raster file with given number of bands without initializing the pixel data.
+    /**
+     * Create a raster file with given number of bands without initializing the pixel data.
      * Returned provider may be used to initialize the raster using writeBlock() calls.
      * Ownership of the returned provider is passed to the caller.
      * \note Does not work with tiled mode enabled.
@@ -80,7 +83,8 @@ class CORE_EXPORT QgsRasterFileWriter
         const QgsCoordinateReferenceSystem &crs,
         int nBands ) SIP_FACTORY;
 
-    /** Write raster file
+    /**
+     * Write raster file
         \param pipe raster pipe
         \param nCols number of output columns
         \param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)
@@ -159,7 +163,8 @@ class CORE_EXPORT QgsRasterFileWriter
                                   const QgsCoordinateReferenceSystem &crs,
                                   QgsRasterBlockFeedback *feedback = nullptr );
 
-    /** \brief Initialize vrt member variables
+    /**
+     * \brief Initialize vrt member variables
      *  \param xSize width of vrt
      *  \param ySize height of vrt
      *  \param crs coordinate system of vrt
@@ -181,7 +186,8 @@ class CORE_EXPORT QgsRasterFileWriter
         const QString &outputUrl, int fileIndex, int nBands, Qgis::DataType type,
         const QgsCoordinateReferenceSystem &crs );
 
-    /** \brief Init VRT (for tiled mode) or create global output provider (single-file mode)
+    /**
+     * \brief Init VRT (for tiled mode) or create global output provider (single-file mode)
      *  \param nCols number of tile columns
      *  \param nRows number of tile rows
      *  \param crs coordinate system of vrt
@@ -202,7 +208,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QString partFileName( int fileIndex );
     QString vrtFileName();
 
-    Mode mMode;
+    Mode mMode = Raw;
     QString mOutputUrl;
     QString mOutputProviderKey;
     QString mOutputFormat;
@@ -210,14 +216,14 @@ class CORE_EXPORT QgsRasterFileWriter
     QgsCoordinateReferenceSystem mOutputCRS;
 
     //! False: Write one file, true: create a directory and add the files numbered
-    bool mTiledMode;
-    double mMaxTileWidth;
-    double mMaxTileHeight;
+    bool mTiledMode = false;
+    double mMaxTileWidth = 500;
+    double mMaxTileHeight = 500;
 
     QList< int > mPyramidsList;
     QString mPyramidsResampling;
-    QgsRaster::RasterBuildPyramids mBuildPyramidsFlag;
-    QgsRaster::RasterPyramidsFormat mPyramidsFormat;
+    QgsRaster::RasterBuildPyramids mBuildPyramidsFlag = QgsRaster::PyramidsFlagNo;
+    QgsRaster::RasterPyramidsFormat mPyramidsFormat = QgsRaster::PyramidsGTiff;
     QStringList mPyramidsConfigOptions;
 
     QDomDocument mVRTDocument;

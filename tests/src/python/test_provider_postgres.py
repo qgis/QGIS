@@ -31,7 +31,9 @@ from qgis.core import (
     QgsSettings,
     QgsTransactionGroup,
     QgsReadWriteContext,
-    QgsRectangle
+    QgsRectangle,
+    QgsDefaultValue,
+    QgsDataSourceUri
 )
 from qgis.gui import QgsGui
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject
@@ -589,7 +591,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", "'qgis'::text", None, None])
 
         # test take vector layer default value expression overrides postgres provider default clause
-        vl.setDefaultValueExpression(3, "'mappy'")
+        vl.setDefaultValueDefinition(3, QgsDefaultValue("'mappy'"))
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5, 3: 'map'})
         self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'mappy', None, None])
 
@@ -845,6 +847,27 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         vl0.dataProvider().setListening(False)
 
         self.assertTrue(ok)
+
+    def testStyleDatabaseWithService(self):
+
+        myconn = 'service=\'qgis_test\''
+        if 'QGIS_PGTEST_DB' in os.environ:
+            myconn = os.environ['QGIS_PGTEST_DB']
+        myvl = QgsVectorLayer(myconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
+
+        styles = myvl.listStylesInDatabase()
+        ids = styles[1]
+        self.assertEqual(len(ids), 0)
+
+        myvl.saveStyleToDatabase('mystyle', '', False, '')
+        styles = myvl.listStylesInDatabase()
+        ids = styles[1]
+        self.assertEqual(len(ids), 1)
+
+        myvl.deleteStyleFromDatabase(ids[0])
+        styles = myvl.listStylesInDatabase()
+        ids = styles[1]
+        self.assertEqual(len(ids), 0)
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):

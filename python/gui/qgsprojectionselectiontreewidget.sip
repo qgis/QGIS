@@ -11,6 +11,7 @@
 
 
 
+
 class QgsProjectionSelectionTreeWidget : QWidget
 {
 %Docstring
@@ -53,12 +54,27 @@ class QgsProjectionSelectionTreeWidget : QWidget
 .. versionadded:: 3.0
 %End
 
+    void setShowBoundsMap( bool show );
+%Docstring
+ Sets whether to show the bounnds preview map.
+.. seealso:: showBoundsMap()
+.. versionadded:: 3.0
+%End
+
     bool showNoProjection() const;
 %Docstring
  Returns whether the "no/invalid" projection option is shown. If this
  option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
 .. versionadded:: 3.0
 .. seealso:: setShowNoProjection()
+ :rtype: bool
+%End
+
+    bool showBoundsMap() const;
+%Docstring
+ Returns whether the bounds preview map is shown.
+.. versionadded:: 3.0
+.. seealso:: setShowBoundsMap()
  :rtype: bool
 %End
 
@@ -78,6 +94,21 @@ class QgsProjectionSelectionTreeWidget : QWidget
  Sets the initial ``crs`` to show within the dialog.
 .. versionadded:: 3.0
 .. seealso:: crs()
+%End
+
+    void setPreviewRect( const QgsRectangle &rect );
+%Docstring
+ Sets the initial "preview" rectangle for the bounds overview map.
+.. versionadded:: 3.0
+.. seealso:: previewRect()
+%End
+
+    QgsRectangle previewRect() const;
+%Docstring
+ The initial "preview" rectangle for the bounds overview map.
+.. versionadded:: 3.0
+.. seealso:: previewRect()
+ :rtype: QgsRectangle
 %End
 
     void setOgcWmsCrsFilter( const QSet<QString> &crsFilter );

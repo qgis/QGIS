@@ -150,7 +150,7 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex &index, int role ) co
     case PathRole:
       return QDir::toNativeSeparators( mRecentProjects.at( index.row() ).path );
     case CrsRole:
-      if ( mRecentProjects.at( index.row() ).crs != QLatin1String( "" ) )
+      if ( !mRecentProjects.at( index.row() ).crs.isEmpty() )
       {
         QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
         return  QStringLiteral( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.description() );

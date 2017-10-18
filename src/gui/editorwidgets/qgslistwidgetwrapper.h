@@ -23,7 +23,8 @@ SIP_NO_FILE
 
 class QgsListWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a list widget.
  * \since QGIS 3.0
  * \note not available in Python bindings

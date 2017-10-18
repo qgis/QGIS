@@ -77,10 +77,7 @@ class TestQgsComposition : public QObject
 
 };
 
-TestQgsComposition::TestQgsComposition()
-  : mComposition( 0 )
-{
-}
+TestQgsComposition::TestQgsComposition() = default;
 
 void TestQgsComposition::initTestCase()
 {

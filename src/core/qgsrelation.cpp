@@ -21,11 +21,6 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
-QgsRelation::QgsRelation()
-  : mValid( false )
-{
-}
-
 QgsRelation QgsRelation::createFromXml( const QDomNode &node )
 {
   QDomElement elem = node.toElement();

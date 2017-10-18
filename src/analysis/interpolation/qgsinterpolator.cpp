@@ -23,14 +23,7 @@
 #include "qgswkbptr.h"
 
 QgsInterpolator::QgsInterpolator( const QList<LayerData> &layerData )
-  : mDataIsCached( false )
-  , mLayerData( layerData )
-{
-
-}
-
-QgsInterpolator::QgsInterpolator()
-  : mDataIsCached( false )
+  : mLayerData( layerData )
 {
 
 }
@@ -208,7 +201,7 @@ int QgsInterpolator::addVerticesToCache( const QgsGeometry &geom, bool zCoord, d
       wkbPtr >> nPoints;
       for ( int index = 0; index < nPoints; ++index )
       {
-        wkbPtr +=  1 + sizeof( int ); //skip endian and point type
+        wkbPtr += 1 + sizeof( int ); //skip endian and point type
 
         double x, y;
         wkbPtr >> x >> y;

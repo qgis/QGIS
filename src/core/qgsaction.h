@@ -28,7 +28,8 @@
 
 class QgsExpressionContextScope;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Utility class that encapsulates an action based on vector attributes.
  */
 class CORE_EXPORT QgsAction
@@ -48,7 +49,6 @@ class CORE_EXPORT QgsAction
      * Default constructor
      */
     QgsAction()
-      : mType( Generic )
     {}
 
     /**
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsAction
     void writeXml( QDomNode &actionsNode ) const;
 
   private:
-    ActionType mType;
+    ActionType mType = Generic;
     QString mDescription;
     QString mShortTitle;
     QString mIcon;

@@ -116,7 +116,7 @@ class APP_EXPORT QgsBookmarks : public QgsDockWidget, private Ui::QgsBookmarksBa
     void exportToXml();
     void importFromXml();
 
-    void on_lstBookmarks_doubleClicked( const QModelIndex & );
+    void lstBookmarks_doubleClicked( const QModelIndex & );
 
   private:
     QSqlTableModel *mQgisModel = nullptr;

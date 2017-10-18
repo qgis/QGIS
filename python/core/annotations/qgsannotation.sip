@@ -30,7 +30,6 @@ class QgsAnnotation : QObject
 %TypeHeaderCode
 #include "qgsannotation.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast< QgsTextAnnotation * >( sipCpp ) )
       sipType = sipType_QgsTextAnnotation;

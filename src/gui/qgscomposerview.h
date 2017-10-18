@@ -43,7 +43,8 @@ class QgsComposerNodesItem;
 class QgsComposerAttributeTableV2;
 class QgsMapCanvas;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget to display the composer items. Manages the composer tools and the
  * mouse/key events.
  * Creates the composer items according to the current map tools and keeps track
@@ -137,7 +138,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QgsComposerView::Tool currentTool() const {return mCurrentTool;}
     void setCurrentTool( QgsComposerView::Tool t );
 
-    /** Sets the composition for the view. If the composition is being set manually and not by a QgsComposer, then this must
+    /**
+     * Sets the composition for the view. If the composition is being set manually and not by a QgsComposer, then this must
      * be set BEFORE adding any items to the composition.
      */
     void setComposition( QgsComposition *c SIP_KEEPREFERENCE );
@@ -160,21 +162,24 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     //! Set zoom level, where a zoom level of 1.0 corresponds to 100%
     void setZoomLevel( double zoomLevel );
 
-    /** Scales the view in a safe way, by limiting the acceptable range
+    /**
+     * Scales the view in a safe way, by limiting the acceptable range
      * of the scale applied.
      * \param scale factor to scale view by
      * \since QGIS 2.16
      */
     void scaleSafe( double scale );
 
-    /** Sets whether a preview effect should be used to alter the view's appearance
+    /**
+     * Sets whether a preview effect should be used to alter the view's appearance
      * \param enabled Set to true to enable the preview effect on the view
      * \since QGIS 2.3
      * \see setPreviewMode
      */
     void setPreviewModeEnabled( bool enabled );
 
-    /** Sets the preview mode which should be used to modify the view's appearance. Preview modes are only used
+    /**
+     * Sets the preview mode which should be used to modify the view's appearance. Preview modes are only used
      * if setPreviewMode is set to true.
      * \param mode PreviewMode to be used to draw the view
      * \since QGIS 2.3
@@ -182,7 +187,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
      */
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 
-    /** Sets the map canvas associated with the view. This allows the
+    /**
+     * Sets the map canvas associated with the view. This allows the
      * view to retrieve map settings from the canvas.
      * \since QGIS 3.0
      * \see mapCanvas()
@@ -217,9 +223,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
   private:
     //! Current composer tool
-    QgsComposerView::Tool mCurrentTool;
+    QgsComposerView::Tool mCurrentTool = Select;
     //! Previous composer tool
-    QgsComposerView::Tool mPreviousTool;
+    QgsComposerView::Tool mPreviousTool = Select;
 
     //! Rubber band item
     QGraphicsRectItem *mRubberBandItem = nullptr;
@@ -233,13 +239,13 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QPointF mRubberBandStartPos;
 
     //! True if user is currently selecting by marquee
-    bool mMarqueeSelect;
+    bool mMarqueeSelect = false;
     //! True if user is currently zooming by marquee
-    bool mMarqueeZoom;
+    bool mMarqueeZoom = false;
     //! True if user is currently temporarily activating the zoom tool by holding control+space
-    QgsComposerView::ToolStatus mTemporaryZoomStatus;
+    QgsComposerView::ToolStatus mTemporaryZoomStatus = QgsComposerView::Inactive;
 
-    bool mPaintingEnabled;
+    bool mPaintingEnabled = true;
 
     QgsComposerRuler *mHorizontalRuler = nullptr;
     QgsComposerRuler *mVerticalRuler = nullptr;
@@ -256,21 +262,21 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void setSelectedNode( QgsComposerNodesItem *shape, const int index );
     void deselectNode();
 
-    float mMoveContentSearchRadius;
+    float mMoveContentSearchRadius = 25;
     QgsComposerNodesItem *mNodesItem = nullptr;
-    int mNodesItemIndex;
+    int mNodesItemIndex = -1;
     std::unique_ptr<QGraphicsPolygonItem> mPolygonItem;
     std::unique_ptr<QGraphicsPathItem> mPolylineItem;
 
     //! True if user is currently panning by clicking and dragging with the pan tool
-    bool mToolPanning;
+    bool mToolPanning = false;
     //! True if user is currently panning by holding the middle mouse button
-    bool mMousePanning;
+    bool mMousePanning = false;
     //! True if user is currently panning by holding the space key
-    bool mKeyPanning;
+    bool mKeyPanning = false;
 
     //! True if user is currently dragging with the move item content tool
-    bool mMovingItemContent;
+    bool mMovingItemContent = false;
 
     QPoint mMouseLastXY;
     QPoint mMouseCurrentXY;
@@ -307,7 +313,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     //! Is emitted when a composer item has been removed from the scene
     void itemRemoved( QgsComposerItem * );
 
-    /** Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
+    /**
+     * Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
      QgsComposer may set the selection tool again*/
     void actionFinished();
     //! Is emitted when mouse cursor coordinates change

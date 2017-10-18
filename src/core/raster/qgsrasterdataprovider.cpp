@@ -207,14 +207,12 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 
 QgsRasterDataProvider::QgsRasterDataProvider()
   : QgsRasterInterface( nullptr )
-  , mDpi( -1 )
 {
 }
 
 QgsRasterDataProvider::QgsRasterDataProvider( QString const &uri )
   : QgsDataProvider( uri )
   , QgsRasterInterface( nullptr )
-  , mDpi( -1 )
 {
 }
 

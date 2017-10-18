@@ -30,11 +30,7 @@ class TestQgsComposerEffects : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerEffects()
-      : mComposition( 0 )
-      , mComposerRect1( 0 )
-      , mComposerRect2( 0 )
-    {}
+    TestQgsComposerEffects() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

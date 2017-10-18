@@ -30,7 +30,6 @@ class QgsExternalResourceWidget : QWidget
 %TypeHeaderCode
 #include "qgsexternalresourcewidget.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsExternalResourceWidget *>( sipCpp ) )
       sipType = sipType_QgsExternalResourceWidget;
@@ -97,7 +96,7 @@ returns the height of the document viewer
  setDocumentViewerWidth set the height of the document viewer.
  \param height the height. Use 0 for automatic best display.
 %End
-    int documentViewerWidth() const ;
+    int documentViewerWidth() const;
 %Docstring
 returns the width of the document viewer
  :rtype: int

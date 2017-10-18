@@ -32,15 +32,6 @@
 
 QgsFileWidget::QgsFileWidget( QWidget *parent )
   : QWidget( parent )
-  , mFilePath( QString() )
-  , mButtonVisible( true )
-  , mUseLink( false )
-  , mFullUrl( false )
-  , mDialogTitle( QString() )
-  , mFilter( QString() )
-  , mDefaultRoot( QString() )
-  , mStorageMode( GetFile )
-  , mRelativeStorage( Absolute )
 {
   setBackgroundRole( QPalette::Window );
   setAutoFillBackground( true );
@@ -65,7 +56,7 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   mLayout->addWidget( mLineEdit );
 
   mFileWidgetButton = new QToolButton( this );
-  mFileWidgetButton->setText( QStringLiteral( "…" ) );
+  mFileWidgetButton->setText( QStringLiteral( "\u2026" ) );
   connect( mFileWidgetButton, &QAbstractButton::clicked, this, &QgsFileWidget::openFileDialog );
   mLayout->addWidget( mFileWidgetButton );
 
@@ -94,7 +85,7 @@ void QgsFileWidget::setFilePath( QString path )
 {
   if ( path == QgsApplication::nullRepresentation() )
   {
-    path = QLatin1String( "" );
+    path.clear();
   }
 
   //will trigger textEdited slot
@@ -284,7 +275,7 @@ void QgsFileWidget::openFileDialog()
   {
     for ( int i = 0; i < fileNames.length(); i++ )
     {
-      fileNames.replace( i, QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileNames.at( i ) ).absoluteFilePath() ) ) ) ;
+      fileNames.replace( i, QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileNames.at( i ) ).absoluteFilePath() ) ) );
     }
   }
 
@@ -367,7 +358,7 @@ QString QgsFileWidget::toUrl( const QString &path ) const
   if ( !url.isValid() || !url.isLocalFile() )
   {
     QgsDebugMsg( QString( "URL: %1 is not valid or not a local file!" ).arg( path ) );
-    rep =  path;
+    rep = path;
   }
 
   QString pathStr = url.toString();

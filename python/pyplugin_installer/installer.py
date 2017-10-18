@@ -528,17 +528,12 @@ class QgsPluginInstaller(QObject):
         QgsNetworkAccessManager.instance().post(req, params)
         return True
 
-    def installFromZipFile(self):
-        settings = QgsSettings()
-        lastDirectory = settings.value('/Qgis/plugin-installer/lastZipDirectory', '.')
-        filePath, _ = QFileDialog.getOpenFileName(iface.mainWindow(),
-                                                  self.tr('Open file'),
-                                                  lastDirectory,
-                                                  self.tr('Plugin packages (*.zip *.ZIP)'))
-        if filePath == '':
+    def installFromZipFile(self, filePath):
+        if not os.path.isfile(filePath):
             return
 
-        settings.setValue('/Qgis/plugin-installer/lastZipDirectory',
+        settings = QgsSettings()
+        settings.setValue(settingsGroup + '/lastZipDirectory',
                           QFileInfo(filePath).absoluteDir().absolutePath())
 
         error = False
@@ -591,4 +586,4 @@ class QgsPluginInstaller(QObject):
         if infoString[0]:
             level = error and QgsMessageBar.CRITICAL or QgsMessageBar.INFO
             msg = "<b>%s:</b>%s" % (infoString[0], infoString[1])
-            iface.messageBar().pushMessage(msg, level)
+            iface.pluginManagerInterface().pushMessage(msg, level)

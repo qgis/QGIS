@@ -286,7 +286,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   {
     QString parserErrorString( sql.parserErrorString() );
     QStringList parts( parserErrorString.split( QStringLiteral( "," ) ) );
-    parserErrorString = QLatin1String( "" );
+    parserErrorString.clear();
     Q_FOREACH ( const QString &part, parts )
     {
       QString newPart( part );

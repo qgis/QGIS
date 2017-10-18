@@ -43,10 +43,6 @@ QgsDb2ConnectionItem::QgsDb2ConnectionItem( QgsDataItem *parent, const QString n
   populate();
 }
 
-QgsDb2ConnectionItem::~QgsDb2ConnectionItem()
-{
-}
-
 bool QgsDb2ConnectionItem::ConnInfoFromParameters(
   const QString &service,
   const QString &driver,
@@ -189,7 +185,7 @@ QVector<QgsDataItem *> QgsDb2ConnectionItem::createChildren()
 
   /* Enabling the DB2 Spatial Extender creates the DB2GSE schema and tables,
      so the Extender is either not enabled or set up if SQLCODE -204 is returned. */
-  if ( sqlcode ==  QStringLiteral( "-204" ) )
+  if ( sqlcode == QStringLiteral( "-204" ) )
   {
     children.append( new QgsErrorItem( this, tr( "DB2 Spatial Extender is not enabled or set up." ), mPath + "/error" ) );
     return children;
@@ -413,10 +409,6 @@ QgsDb2RootItem::QgsDb2RootItem( QgsDataItem *parent, QString name, QString path 
   populate();
 }
 
-QgsDb2RootItem::~QgsDb2RootItem()
-{
-}
-
 QVector<QgsDataItem *> QgsDb2RootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
@@ -468,11 +460,6 @@ QgsDb2LayerItem::QgsDb2LayerItem( QgsDataItem *parent, QString name, QString pat
   setState( Populated );
 }
 
-QgsDb2LayerItem::~QgsDb2LayerItem()
-{
-
-}
-
 QgsDb2LayerItem *QgsDb2LayerItem::createClone()
 {
   return new QgsDb2LayerItem( mParent, mName, mPath, mLayerType, mLayerProperty );
@@ -515,10 +502,6 @@ QVector<QgsDataItem *> QgsDb2SchemaItem::createChildren()
     items.append( ( ( QgsDb2LayerItem * )child )->createClone() );
   }
   return items;
-}
-
-QgsDb2SchemaItem::~QgsDb2SchemaItem()
-{
 }
 
 void QgsDb2SchemaItem::addLayers( QgsDataItem *newLayers )

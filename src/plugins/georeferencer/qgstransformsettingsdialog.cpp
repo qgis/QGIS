@@ -31,6 +31,11 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   , mCountGCPpoints( countGCPpoints )
 {
   setupUi( this );
+  connect( tbnOutputRaster, &QToolButton::clicked, this, &QgsTransformSettingsDialog::tbnOutputRaster_clicked );
+  connect( tbnMapFile, &QToolButton::clicked, this, &QgsTransformSettingsDialog::tbnMapFile_clicked );
+  connect( tbnReportFile, &QToolButton::clicked, this, &QgsTransformSettingsDialog::tbnReportFile_clicked );
+  connect( cmbTransformType, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged );
+  connect( mWorldFileCheckBox, &QCheckBox::stateChanged, this, &QgsTransformSettingsDialog::mWorldFileCheckBox_stateChanged );
 
   QgsSettings s;
   restoreGeometry( s.value( QStringLiteral( "/Plugin-GeoReferencer/TransformSettingsWindow/geometry" ) ).toByteArray() );
@@ -101,7 +106,7 @@ void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::Trans
   comprMethod = mListCompression.at( cmbCompressionComboBox->currentIndex() ).toUpper();
   if ( mWorldFileCheckBox->isChecked() )
   {
-    raster = QLatin1String( "" );
+    raster.clear();
   }
   else
   {
@@ -195,7 +200,7 @@ void QgsTransformSettingsDialog::accept()
   QDialog::accept();
 }
 
-void QgsTransformSettingsDialog::on_tbnOutputRaster_clicked()
+void QgsTransformSettingsDialog::tbnOutputRaster_clicked()
 {
   QString selectedFile = leOutputRaster->text();
   if ( selectedFile.isEmpty() )
@@ -212,7 +217,7 @@ void QgsTransformSettingsDialog::on_tbnOutputRaster_clicked()
   leOutputRaster->setToolTip( rasterFileName );
 }
 
-void QgsTransformSettingsDialog::on_tbnMapFile_clicked()
+void QgsTransformSettingsDialog::tbnMapFile_clicked()
 {
   QgsSettings s;
   QString myLastUsedDir = s.value( QStringLiteral( "/Plugin-GeoReferencer/lastPDFReportDir" ), QDir::homePath() ).toString();
@@ -228,7 +233,7 @@ void QgsTransformSettingsDialog::on_tbnMapFile_clicked()
   }
 }
 
-void QgsTransformSettingsDialog::on_tbnReportFile_clicked()
+void QgsTransformSettingsDialog::tbnReportFile_clicked()
 {
   QgsSettings s;
   QString myLastUsedDir = s.value( QStringLiteral( "/Plugin-GeoReferencer/lastPDFReportDir" ), QDir::homePath() ).toString();
@@ -244,7 +249,7 @@ void QgsTransformSettingsDialog::on_tbnReportFile_clicked()
   }
 }
 
-void QgsTransformSettingsDialog::on_cmbTransformType_currentIndexChanged( const QString &text )
+void QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged( const QString &text )
 {
   if ( text == tr( "Linear" ) )
   {
@@ -258,7 +263,7 @@ void QgsTransformSettingsDialog::on_cmbTransformType_currentIndexChanged( const 
   }
 }
 
-void QgsTransformSettingsDialog::on_mWorldFileCheckBox_stateChanged( int state )
+void QgsTransformSettingsDialog::mWorldFileCheckBox_stateChanged( int state )
 {
   bool enableOutputRaster = true;
   if ( state == Qt::Checked )

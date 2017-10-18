@@ -21,8 +21,6 @@ class QgsBufferServerResponse: QgsServerResponse
   public:
 
     QgsBufferServerResponse();
-    ~QgsBufferServerResponse();
-
 
     virtual void setHeader( const QString &key, const QString &value );
 

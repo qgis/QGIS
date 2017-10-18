@@ -28,7 +28,8 @@ class QString;
 typedef bool handlesDirectoryPath_t( const QString &path ) SIP_SKIP;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This is the interface for those who want to add custom data items to the browser tree.
  *
  * The method createDataItem() is ever called only if capabilities() return non-zero value.
@@ -51,12 +52,16 @@ class CORE_EXPORT QgsDataItemProvider
     //! Return combination of flags from QgsDataProvider::DataCapabilities
     virtual int capabilities() = 0;
 
-    //! Create a new instance of QgsDataItem (or null) for given path and parent item.
-    //! Caller takes responsibility of deleting created items.
+    /**
+     * Create a new instance of QgsDataItem (or null) for given path and parent item.
+     * Caller takes responsibility of deleting created items.
+     */
     virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) = 0 SIP_FACTORY;
 
-    //! Create a vector of instances of QgsDataItem (or null) for given path and parent item.
-    //! Caller takes responsibility of deleting created items.
+    /**
+     * Create a vector of instances of QgsDataItem (or null) for given path and parent item.
+     * Caller takes responsibility of deleting created items.
+     */
     virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) { Q_UNUSED( path ); Q_UNUSED( parentItem ); return QVector<QgsDataItem *>(); }
 
     /**

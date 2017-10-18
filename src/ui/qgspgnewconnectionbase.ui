@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>447</width>
-    <height>599</height>
+    <height>554</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,15 +25,11 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout3">
-   <item row="2" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QgsMessageBar" name="bar" native="true"/>
    </item>
-   <item row="1" column="0">
+   <item>
     <widget class="QGroupBox" name="GroupBox1">
      <property name="title">
       <string>Connection Information</string>
@@ -44,7 +40,7 @@
         <item row="0" column="0">
          <widget class="QLabel" name="TextLabel1_2">
           <property name="text">
-           <string>Name</string>
+           <string>&amp;Name</string>
           </property>
           <property name="buddy">
            <cstring>txtName</cstring>
@@ -74,7 +70,7 @@
         <item row="2" column="0">
          <widget class="QLabel" name="TextLabel1">
           <property name="text">
-           <string>Host</string>
+           <string>Hos&amp;t</string>
           </property>
           <property name="buddy">
            <cstring>txtHost</cstring>
@@ -104,7 +100,7 @@
         <item row="4" column="0">
          <widget class="QLabel" name="TextLabel2">
           <property name="text">
-           <string>Database</string>
+           <string>&amp;Database</string>
           </property>
           <property name="buddy">
            <cstring>txtDatabase</cstring>
@@ -117,7 +113,7 @@
         <item row="5" column="0">
          <widget class="QLabel" name="TextLabel3_3">
           <property name="text">
-           <string>SSL mode</string>
+           <string>SSL &amp;mode</string>
           </property>
           <property name="buddy">
            <cstring>cbxSSLmode</cstring>
@@ -130,79 +126,27 @@
        </layout>
       </item>
       <item>
-       <widget class="QTabWidget" name="tabAuthentication">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <widget class="QGroupBox" name="mAuthGroupBox">
+        <property name="title">
+         <string>Authentication</string>
         </property>
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <widget class="QWidget" name="tabBasic">
-         <attribute name="title">
-          <string>Authentication</string>
-         </attribute>
-         <layout class="QGridLayout" name="gridLayout">
-          <property name="leftMargin">
-           <number>5</number>
-          </property>
-          <property name="topMargin">
-           <number>5</number>
-          </property>
-          <property name="rightMargin">
-           <number>5</number>
-          </property>
-          <property name="bottomMargin">
-           <number>5</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="TextLabel3">
-            <property name="text">
-             <string>Username</string>
-            </property>
-            <property name="buddy">
-             <cstring>txtUsername</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QgsPasswordLineEdit" name="txtPassword">
-            <property name="echoMode">
-             <enum>QLineEdit::Password</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QCheckBox" name="chkStoreUsername">
-            <property name="text">
-             <string>Save</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="TextLabel3_2">
-            <property name="text">
-             <string>Password</string>
-            </property>
-            <property name="buddy">
-             <cstring>txtPassword</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="txtUsername"/>
-          </item>
-          <item row="1" column="2">
-           <widget class="QCheckBox" name="chkStorePassword">
-            <property name="text">
-             <string>Save</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+        <layout class="QGridLayout" name="gridLayout">
+         <property name="leftMargin">
+          <number>6</number>
+         </property>
+         <property name="topMargin">
+          <number>6</number>
+         </property>
+         <property name="rightMargin">
+          <number>6</number>
+         </property>
+         <property name="bottomMargin">
+          <number>6</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QgsAuthSettingsWidget" name="mAuthSettings" native="true"/>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>
@@ -292,44 +236,30 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QgsMessageBar" name="bar" native="true"/>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsPasswordLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgspasswordlineedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsMessageBar</class>
    <extends>QWidget</extends>
    <header>qgsmessagebar.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsAuthSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>auth/qgsauthsettingswidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>txtName</tabstop>
-  <tabstop>txtService</tabstop>
-  <tabstop>txtHost</tabstop>
-  <tabstop>txtPort</tabstop>
-  <tabstop>txtDatabase</tabstop>
-  <tabstop>cbxSSLmode</tabstop>
-  <tabstop>tabAuthentication</tabstop>
-  <tabstop>txtUsername</tabstop>
-  <tabstop>chkStoreUsername</tabstop>
-  <tabstop>txtPassword</tabstop>
-  <tabstop>chkStorePassword</tabstop>
-  <tabstop>btnConnect</tabstop>
-  <tabstop>cb_geometryColumnsOnly</tabstop>
-  <tabstop>cb_dontResolveType</tabstop>
-  <tabstop>cb_publicSchemaOnly</tabstop>
-  <tabstop>cb_allowGeometrylessTables</tabstop>
-  <tabstop>cb_useEstimatedMetadata</tabstop>
- </tabstops>
  <resources/>
  <connections>
   <connection>

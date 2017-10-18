@@ -40,9 +40,7 @@ class TestQgsSnappingUtils : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsSnappingUtils()
-      : mVL( 0 )
-    {}
+    TestQgsSnappingUtils() = default;
 
   private:
     QgsVectorLayer *mVL = nullptr;

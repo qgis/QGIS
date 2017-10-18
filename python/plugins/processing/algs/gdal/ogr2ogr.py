@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
@@ -28,89 +27,37 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputVector
-
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterVectorDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-from processing.tools.system import isWindows
 
+class ogr2ogr(GdalAlgorithm):
 
-FORMATS = [
-    'ESRI Shapefile',
-    'GeoJSON',
-    'GeoRSS',
-    'SQLite',
-    'GMT',
-    'MapInfo File',
-    'INTERLIS 1',
-    'INTERLIS 2',
-    'GML',
-    'Geoconcept',
-    'DXF',
-    'DGN',
-    'CSV',
-    'BNA',
-    'S57',
-    'KML',
-    'GPX',
-    'PGDump',
-    'GPSTrackMaker',
-    'ODS',
-    'XLSX',
-    'PDF',
-    'GPKG',
-]
-
-EXTS = [
-    '.shp',
-    '.geojson',
-    '.xml',
-    '.sqlite',
-    '.gmt',
-    '.tab',
-    '.ili',
-    '.ili',
-    '.gml',
-    '.txt',
-    '.dxf',
-    '.dgn',
-    '.csv',
-    '.bna',
-    '.000',
-    '.kml',
-    '.gpx',
-    '.pgdump',
-    '.gtm',
-    '.ods',
-    '.xlsx',
-    '.pdf',
-    '.gpkg',
-]
-
-
-class Ogr2Ogr(GdalAlgorithm):
-
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
-    INPUT_LAYER = 'INPUT_LAYER'
-    FORMAT = 'FORMAT'
+    INPUT = 'INPUT'
     OPTIONS = 'OPTIONS'
+    OUTPUT = 'OUTPUT'
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterSelection(self.FORMAT,
-                                             self.tr('Destination Format'), FORMATS))
-        self.addParameter(ParameterString(self.OPTIONS,
-                                          self.tr('Creation options'), '', optional=True))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Converted')))
+        options_param = QgsProcessingParameterString(self.OPTIONS,
+                                                     self.tr('Additional creation options'),
+                                                     defaultValue='',
+                                                     optional=True)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(options_param)
+
+        self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
+                                                                  self.tr('Converted')))
 
     def name(self):
         return 'convertformat'
@@ -121,45 +68,28 @@ class Ogr2Ogr(GdalAlgorithm):
     def group(self):
         return self.tr('Vector conversion')
 
+    def commandName(self):
+        return 'ogr2ogr'
+
     def getConsoleCommands(self, parameters, context, feedback):
-        inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
+        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
-        output = self.getOutputFromName(self.OUTPUT_LAYER)
-        outFile = output.value
+        output, outputFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
-        formatIdx = self.getParameterValue(self.FORMAT)
-        outFormat = FORMATS[formatIdx]
-        ext = EXTS[formatIdx]
-        if not outFile.endswith(ext):
-            outFile += ext
-            output.value = outFile
-
-        output = GdalUtils.ogrConnectionString(outFile, context)
-        options = str(self.getParameterValue(self.OPTIONS))
-
-        if outFormat == 'SQLite' and os.path.isfile(output):
-            os.remove(output)
+        if outputFormat == 'SQLite' and os.path.isfile(output):
+            raise QgsProcessinException(self.tr('Output file "{}" already exists.'.format(output)))
 
         arguments = []
-        arguments.append('-f')
-        arguments.append(outFormat)
+        if outputFormat:
+            arguments.append('-f {}'.format(outputFormat))
 
-        if options is not None and len(options.strip()) > 0:
+        if options:
             arguments.append(options)
 
         arguments.append(output)
         arguments.append(ogrLayer)
-        arguments.append(GdalUtils.ogrLayerName(inLayer))
+        arguments.append(layerName)
 
-        commands = []
-        if isWindows():
-            commands = ['cmd.exe', '/C ', 'ogr2ogr.exe',
-                        GdalUtils.escapeAndJoin(arguments)]
-        else:
-            commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
-
-        return commands
-
-    def commandName(self):
-        return "ogr2ogr"
+        return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]

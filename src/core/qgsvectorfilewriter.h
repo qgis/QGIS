@@ -35,7 +35,8 @@ class QgsSymbolLayer;
 class QTextCodec;
 class QgsFeatureIterator;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * A convenience class for writing vector files to disk.
  There are two possibilities how to use this class:
  1. static call to QgsVectorFileWriter::writeAsVectorFormat(...) which saves the whole vector layer
@@ -52,7 +53,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       Hidden
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class Option
     {
@@ -66,7 +68,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         QgsVectorFileWriter::OptionType type;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class SetOption : public QgsVectorFileWriter::Option
     {
@@ -83,7 +86,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         bool allowNone;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class StringOption: public QgsVectorFileWriter::Option
     {
@@ -96,7 +100,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         QString defaultValue;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class IntOption: public QgsVectorFileWriter::Option
     {
@@ -109,7 +114,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         int defaultValue;
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class BoolOption : public QgsVectorFileWriter::SetOption
     {
@@ -119,7 +125,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         {}
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class HiddenOption : public QgsVectorFileWriter::Option
     {
@@ -178,7 +185,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Interface to convert raw field values to their user-friendly value.
      * \since QGIS 2.16
      */
@@ -186,17 +194,19 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     {
       public:
         //! Constructor
-        FieldValueConverter();
+        FieldValueConverter() = default;
 
         virtual ~FieldValueConverter() = default;
 
-        /** Return a possibly modified field definition. Default implementation will return provided field unmodified.
+        /**
+         * Return a possibly modified field definition. Default implementation will return provided field unmodified.
          * \param field original field definition
          * \returns possibly modified field definition
          */
         virtual QgsField fieldDefinition( const QgsField &field );
 
-        /** Convert the provided value, for field fieldIdxInLayer. Default implementation will return provided value unmodified.
+        /**
+         * Convert the provided value, for field fieldIdxInLayer. Default implementation will return provided value unmodified.
          * \param fieldIdxInLayer field index
          * \param value original raw value
          * \returns possibly modified value.
@@ -209,7 +219,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         virtual QgsVectorFileWriter::FieldValueConverter *clone() const SIP_FACTORY;
     };
 
-    /** Edition capability flags
+    /**
+     * Edition capability flags
       * \since QGIS 3.0 */
     enum EditionCapability
     {
@@ -226,11 +237,13 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       CanDeleteLayer                 = 1 << 3
     };
 
-    /** Combination of CanAddNewLayer, CanAppendToExistingLayer, CanAddNewFieldsToExistingLayer or CanDeleteLayer
+    /**
+     * Combination of CanAddNewLayer, CanAppendToExistingLayer, CanAddNewFieldsToExistingLayer or CanDeleteLayer
       * \since QGIS 3.0 */
     Q_DECLARE_FLAGS( EditionCapabilities, EditionCapability )
 
-    /** Enumeration to describe how to handle existing files
+    /**
+     * Enumeration to describe how to handle existing files
         \since QGIS 3.0
      */
     enum ActionOnExistingFile
@@ -248,7 +261,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       AppendToLayerAddFields
     };
 
-    /** Write contents of vector layer to an (OGR supported) vector formt
+    /**
+     * Write contents of vector layer to an (OGR supported) vector formt
      * \param layer layer to write
      * \param fileName file name to write to
      * \param fileEncoding encoding to use
@@ -291,7 +305,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = nullptr
                                                                );
 
-    /** Writes a layer out to a vector file.
+    /**
+     * Writes a layer out to a vector file.
      * \param layer layer to write
      * \param fileName file name to write to
      * \param fileEncoding encoding to use
@@ -337,7 +352,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                                                                );
 
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Options to pass to writeAsVectorFormat()
      * \since QGIS 3.0
      */
@@ -356,17 +372,18 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         QString layerName;
 
         //! Action on existing file
-        QgsVectorFileWriter::ActionOnExistingFile actionOnExistingFile;
+        QgsVectorFileWriter::ActionOnExistingFile actionOnExistingFile = CreateOrOverwriteFile;
 
         //! Encoding to use
         QString fileEncoding;
 
-        /** Transform to reproject exported geometries with, or invalid transform
+        /**
+         * Transform to reproject exported geometries with, or invalid transform
          * for no transformation */
         QgsCoordinateTransform ct;
 
         //! Write only selected features of layer
-        bool onlySelectedFeatures;
+        bool onlySelectedFeatures = false;
 
         //! List of OGR data source creation options
         QStringList datasourceOptions;
@@ -375,29 +392,30 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         QStringList layerOptions;
 
         //! Only write geometries
-        bool skipAttributeCreation;
+        bool skipAttributeCreation = false;
 
         //! Attributes to export (empty means all unless skipAttributeCreation is set)
         QgsAttributeList attributes;
 
         //! Symbology to export
-        QgsVectorFileWriter::SymbologyExport symbologyExport;
+        QgsVectorFileWriter::SymbologyExport symbologyExport = NoSymbology;
 
         //! Scale of symbology
-        double symbologyScale;
+        double symbologyScale = 1.0;
 
         //! If not empty, only features intersecting the extent will be saved
         QgsRectangle filterExtent;
 
-        /** Set to a valid geometry type to override the default geometry type for the layer. This parameter
+        /**
+         * Set to a valid geometry type to override the default geometry type for the layer. This parameter
          * allows for conversion of geometryless tables to null geometries, etc */
-        QgsWkbTypes::Type overrideGeometryType;
+        QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown;
 
         //! Set to true to force creation of multi* geometries
-        bool forceMulti;
+        bool forceMulti = false;
 
         //! Set to true to include z dimension in output. This option is only valid if overrideGeometryType is set
-        bool includeZ;
+        bool includeZ = false;
 
         /**
          * Field value converter.
@@ -411,7 +429,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         QgsFeedback *feedback = nullptr;
     };
 
-    /** Writes a layer out to a vector file.
+    /**
+     * Writes a layer out to a vector file.
      * \param layer source layer to write
      * \param fileName file name to write to
      * \param options options.
@@ -438,7 +457,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                          QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology
                        );
 
-    /** Create a new vector file writer.
+    /**
+     * Create a new vector file writer.
      * \param vectorFileName file name to write to
      * \param fileEncoding encoding to use
      * \param fields fields to write
@@ -487,7 +507,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      */
     static QStringList supportedFormatExtensions();
 
-    /** Returns driver list that can be used for dialogs. It contains all OGR drivers
+    /**
+     * Returns driver list that can be used for dialogs. It contains all OGR drivers
      * + some additional internal QGIS driver names to distinguish between more
      * supported formats of the same OGR driver
      */
@@ -531,7 +552,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     //! Close opened shapefile for writing
     ~QgsVectorFileWriter();
 
-    /** Delete a shapefile (and its accompanying shx / dbf / prf)
+    /**
+     * Delete a shapefile (and its accompanying shx / dbf / prf)
      * \param fileName /path/to/file.shp
      * \returns bool true if the file was deleted successfully
      */
@@ -558,14 +580,16 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     static bool driverMetadata( const QString &driverName, MetaData &driverMetadata );
 
-    /** Returns a list of the default dataset options for a specified driver.
+    /**
+     * Returns a list of the default dataset options for a specified driver.
      * \param driverName name of OGR driver
      * \since QGIS 3.0
      * \see defaultLayerOptions()
      */
     static QStringList defaultDatasetOptions( const QString &driverName );
 
-    /** Returns a list of the default layer options for a specified driver.
+    /**
+     * Returns a list of the default layer options for a specified driver.
      * \param driverName name of OGR driver
      * \since QGIS 3.0
      * \see defaultDatasetOptions()

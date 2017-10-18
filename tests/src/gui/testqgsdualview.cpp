@@ -34,11 +34,7 @@ class TestQgsDualView : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsDualView()
-      : mCanvas( 0 )
-      , mPointsLayer( 0 )
-      , mDualView( 0 )
-    {}
+    TestQgsDualView() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.

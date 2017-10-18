@@ -17,11 +17,6 @@
 #include "qgscomposition.h"
 #include <QDebug>
 
-QgsMultiRenderChecker::QgsMultiRenderChecker()
-  : mColorTolerance( 0 )
-{
-}
-
 void QgsMultiRenderChecker::setControlName( const QString &name )
 {
   mControlName = name;

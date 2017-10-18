@@ -57,7 +57,7 @@ class SERVER_EXPORT QgsServerRequest
     /**
      * Constructor
      */
-    QgsServerRequest();
+    QgsServerRequest() = default;
 
     /**
      * Constructor
@@ -156,12 +156,12 @@ class SERVER_EXPORT QgsServerRequest
 
   private:
     QUrl       mUrl;
-    Method     mMethod;
+    Method     mMethod = GetMethod;
     // We mark as mutable in order
     // to support lazy initialization
     // Use QMap here because it will be faster for small
     // number of elements
-    mutable bool mDecoded;
+    mutable bool mDecoded = false;
     mutable Parameters mParams;
     mutable Headers mHeaders;
 };

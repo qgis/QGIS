@@ -43,6 +43,8 @@ QgsDualView::QgsDualView( QWidget *parent )
   : QStackedWidget( parent )
 {
   setupUi( this );
+  connect( mFeatureList, &QgsFeatureListView::aboutToChangeEditSelection, this, &QgsDualView::mFeatureList_aboutToChangeEditSelection );
+  connect( mFeatureList, &QgsFeatureListView::currentEditSelectionChanged, this, &QgsDualView::mFeatureList_currentEditSelectionChanged );
 
   mConditionalFormatWidget->hide();
 
@@ -395,13 +397,13 @@ void QgsDualView::insertRecentlyUsedDisplayExpression( const QString &expression
   mLastDisplayExpressionAction = previewAction;
 }
 
-void QgsDualView::on_mFeatureList_aboutToChangeEditSelection( bool &ok )
+void QgsDualView::mFeatureList_aboutToChangeEditSelection( bool &ok )
 {
   if ( mLayer->isEditable() && !mAttributeForm->save() )
     ok = false;
 }
 
-void QgsDualView::on_mFeatureList_currentEditSelectionChanged( const QgsFeature &feat )
+void QgsDualView::mFeatureList_currentEditSelectionChanged( const QgsFeature &feat )
 {
   if ( !mLayer->isEditable() || mAttributeForm->save() )
   {
@@ -540,6 +542,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
   {
     menu->addAction( tr( "Zoom to feature" ), this, SLOT( zoomToCurrentFeature() ) );
     menu->addAction( tr( "Pan to feature" ), this, SLOT( panToCurrentFeature() ) );
+    menu->addAction( tr( "Flash feature" ), this, SLOT( flashCurrentFeature() ) );
   }
 
   //add user-defined actions to context menu
@@ -777,6 +780,23 @@ void QgsDualView::panToCurrentFeature()
   if ( canvas )
   {
     canvas->panToFeatureIds( mLayer, ids );
+  }
+}
+
+void QgsDualView::flashCurrentFeature()
+{
+  QModelIndex currentIndex = mTableView->currentIndex();
+  if ( !currentIndex.isValid() )
+  {
+    return;
+  }
+
+  QgsFeatureIds ids;
+  ids.insert( mFilterModel->rowToId( currentIndex ) );
+  QgsMapCanvas *canvas = mFilterModel->mapCanvas();
+  if ( canvas )
+  {
+    canvas->flashFeatureIds( mLayer, ids );
   }
 }
 

@@ -29,9 +29,12 @@
 QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
   , mTitleBase( tr( "Extent" ) )
-  , mExtentState( OriginalExtent )
 {
   setupUi( this );
+  connect( mXMinLineEdit, &QLineEdit::textEdited, this, &QgsExtentGroupBox::setOutputExtentFromLineEdit );
+  connect( mXMaxLineEdit, &QLineEdit::textEdited, this, &QgsExtentGroupBox::setOutputExtentFromLineEdit );
+  connect( mYMinLineEdit, &QLineEdit::textEdited, this, &QgsExtentGroupBox::setOutputExtentFromLineEdit );
+  connect( mYMaxLineEdit, &QLineEdit::textEdited, this, &QgsExtentGroupBox::setOutputExtentFromLineEdit );
 
   mLayerMenu = new QMenu( this );
   mButtonCalcFromLayer->setMenu( mLayerMenu );

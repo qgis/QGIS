@@ -28,7 +28,7 @@
 #include <QToolTip>
 #include <QPlainTextEdit>
 #include <QScrollBar>
-
+#include <QDebug>
 
 QgsMessageLogViewer::QgsMessageLogViewer( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -57,8 +57,7 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
     cleanedTag = tr( "General" );
 
   int i;
-  for ( i = 0; i < tabWidget->count() && tabWidget->tabText( i ) != cleanedTag; i++ )
-    ;
+  for ( i = 0; i < tabWidget->count() && tabWidget->tabText( i ).remove( QChar( '&' ) ) != cleanedTag; i++ );
 
   QPlainTextEdit *w = nullptr;
   if ( i < tabWidget->count() )

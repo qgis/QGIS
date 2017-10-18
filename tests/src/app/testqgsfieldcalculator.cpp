@@ -25,7 +25,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the field calculator
  */
 class TestQgsFieldCalculator : public QObject
@@ -46,11 +47,7 @@ class TestQgsFieldCalculator : public QObject
     QgisApp *mQgisApp = nullptr;
 };
 
-TestQgsFieldCalculator::TestQgsFieldCalculator()
-  : mQgisApp( nullptr )
-{
-
-}
+TestQgsFieldCalculator::TestQgsFieldCalculator() = default;
 
 //runs before all tests
 void TestQgsFieldCalculator::initTestCase()
