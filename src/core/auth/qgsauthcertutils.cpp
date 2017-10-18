@@ -94,22 +94,26 @@ QMap<QString, QList<QgsAuthConfigSslServer> > QgsAuthCertUtils::sslConfigsGroupe
   return orgconfigs;
 }
 
-static QByteArray fileData_( const QString &path, bool astext = false )
+QByteArray QgsAuthCertUtils::fileData( const QString &path, bool astext )
 {
   QByteArray data;
   QFile file( path );
-  if ( file.exists() )
+  if ( !file.exists() )
   {
-    QFile::OpenMode openflags( QIODevice::ReadOnly );
-    if ( astext )
-      openflags |= QIODevice::Text;
-    bool ret = file.open( openflags );
-    if ( ret )
-    {
-      data = file.readAll();
-    }
-    file.close();
+    QgsDebugMsg( QStringLiteral( "Read file error, file not found: %1" ).arg( path ) );
+    return data;
   }
+  // TODO: add checks for locked file, etc., to ensure it can be read
+  QFile::OpenMode openflags( QIODevice::ReadOnly );
+  if ( astext )
+    openflags |= QIODevice::Text;
+  bool ret = file.open( openflags );
+  if ( ret )
+  {
+    data = file.readAll();
+  }
+  file.close();
+
   return data;
 }
 
@@ -117,7 +121,7 @@ QList<QSslCertificate> QgsAuthCertUtils::certsFromFile( const QString &certspath
 {
   QList<QSslCertificate> certs;
   bool pem = certspath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-  certs = QSslCertificate::fromData( fileData_( certspath, pem ), pem ? QSsl::Pem : QSsl::Der );
+  certs = QSslCertificate::fromData( QgsAuthCertUtils::fileData( certspath, pem ), pem ? QSsl::Pem : QSsl::Der );
   if ( certs.isEmpty() )
   {
     QgsDebugMsg( QString( "Parsed cert(s) EMPTY for path: %1" ).arg( certspath ) );
@@ -181,7 +185,7 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
                                        QString *algtype )
 {
   bool pem = keypath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-  QByteArray keydata( fileData_( keypath, pem ) );
+  QByteArray keydata( QgsAuthCertUtils::fileData( keypath, pem ) );
 
   QSslKey clientkey;
   clientkey = QSslKey( keydata,
@@ -260,6 +264,13 @@ QStringList QgsAuthCertUtils::certKeyBundleToPem( const QString &certpath,
   }
 
   return QStringList() << certpem << keypem << algtype;
+}
+
+bool QgsAuthCertUtils::pemIsPkcs8( const QString &keyPemTxt )
+{
+  QString pkcs8Header = QStringLiteral( "-----BEGIN PRIVATE KEY-----" );
+  QString pkcs8Footer = QStringLiteral( "-----END PRIVATE KEY-----" );
+  return keyPemTxt.contains( pkcs8Header ) && keyPemTxt.contains( pkcs8Footer );
 }
 
 QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString &bundlepath,
