@@ -106,6 +106,7 @@ class CORE_EXPORT QgsAuthCertUtils
 
     /**
      * Return data from a local file via a read-only operation
+     * \param path Path to file to read
      * \param astext Whether to open the file as text, otherwise as binary
      * \returns All data contained in file or empty contents if file does not exist
      */

@@ -84,6 +84,7 @@ Map certificate sha1 to certificate as simple cache
     static QByteArray fileData( const QString &path, bool astext = false );
 %Docstring
  Return data from a local file via a read-only operation
+ \param path Path to file to read
  \param astext Whether to open the file as text, otherwise as binary
  :return: All data contained in file or empty contents if file does not exist
  :rtype: QByteArray
