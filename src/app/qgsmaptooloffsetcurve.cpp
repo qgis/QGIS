@@ -25,6 +25,7 @@
 #include "qgssnappingconfig.h"
 #include "qgssettings.h"
 #include "qgisapp.h"
+#include "qgsgeos.h"
 
 #include <QGraphicsProxyWidget>
 #include <QMouseEvent>
@@ -367,7 +368,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
   }
 
   QgsGeometry geomCopy( mOriginalGeometry );
-  GEOSGeometry *geosGeom = geomCopy.exportToGeos();
+  geos::unique_ptr geosGeom( geomCopy.exportToGeos() );
   if ( geosGeom )
   {
     QgsSettings s;
@@ -375,8 +376,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
     int quadSegments = s.value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt();
     double miterLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
 
-    GEOSGeometry *offsetGeom = GEOSOffsetCurve_r( QgsGeometry::getGEOSHandler(), geosGeom, offset, quadSegments, joinStyle, miterLimit );
-    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), geosGeom );
+    geos::unique_ptr offsetGeom( GEOSOffsetCurve_r( QgsGeometry::getGEOSHandler(), geosGeom.get(), offset, quadSegments, joinStyle, miterLimit ) );
     if ( !offsetGeom )
     {
       deleteRubberBandAndGeometry();
@@ -392,7 +392,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
 
     if ( offsetGeom )
     {
-      mModifiedGeometry.fromGeos( offsetGeom );
+      mModifiedGeometry.fromGeos( offsetGeom.release() );
       mRubberBand->setToGeometry( mModifiedGeometry, sourceLayer );
     }
   }
