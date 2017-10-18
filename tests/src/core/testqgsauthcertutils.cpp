@@ -72,6 +72,63 @@ void TestQgsAuthCertUtils::testPkcsUtils()
   pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key-pkcs8-rsa.pem", false );
   QVERIFY( !pkcs.isEmpty() );
   QVERIFY( QgsAuthCertUtils::pemIsPkcs8( QString( pkcs ) ) );
+
+
+#ifdef Q_OS_MAC
+  QByteArray pkcs1;
+  pkcs.clear();
+
+  // Nothing should return nothing
+  pkcs1 = QgsAuthCertUtils::pkcs8PrivateKey( pkcs );
+  QVERIFY( pkcs1.isEmpty() );
+
+  pkcs.clear();
+  pkcs1.clear();
+  // Is actually a PKCS#1 key, not #8
+  pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key.der", false );
+  QVERIFY( !pkcs.isEmpty() );
+  pkcs1 = QgsAuthCertUtils::pkcs8PrivateKey( pkcs );
+  QVERIFY( pkcs1.isEmpty() );
+
+  pkcs.clear();
+  pkcs1.clear();
+  // Is PKCS#1 PEM text, not DER
+  pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key.pem", false );
+  QVERIFY( !pkcs.isEmpty() );
+  pkcs1 = QgsAuthCertUtils::pkcs8PrivateKey( pkcs );
+  QVERIFY( pkcs1.isEmpty() );
+
+  pkcs.clear();
+  pkcs1.clear();
+  // Is PKCS#8 PEM text, not DER
+  pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key-pkcs8-rsa.pem", false );
+  QVERIFY( !pkcs.isEmpty() );
+  pkcs1 = QgsAuthCertUtils::pkcs8PrivateKey( pkcs );
+  QVERIFY( pkcs1.isEmpty() );
+
+  pkcs.clear();
+  pkcs1.clear();
+  // Correct PKCS#8 DER input
+  pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key-pkcs8-rsa.der", false );
+  QVERIFY( !pkcs.isEmpty() );
+  pkcs1 = QgsAuthCertUtils::pkcs8PrivateKey( pkcs );
+  QVERIFY( !pkcs1.isEmpty() );
+
+  // PKCS#8 DER format should fail, and the reason for QgsAuthCertUtils::pkcs8PrivateKey
+  // (as of Qt5.9.0, and where macOS Qt5 SSL backend is not OpenSSL, and
+  //  where PKCS#8 is *still* unsupported for macOS)
+  QSslKey pkcs8Key( pkcs, QSsl::Rsa, QSsl::Der, QSsl::PrivateKey );
+  QVERIFY( pkcs8Key.isNull() );
+
+  // PKCS#1 DER format should work
+  QSslKey pkcs1Key( pkcs1, QSsl::Rsa, QSsl::Der, QSsl::PrivateKey );
+  QVERIFY( !pkcs1Key.isNull() );
+
+  // Converted PKCS#8 DER should match PKCS#1 PEM
+  QByteArray pkcs1PemRef = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key.pem", true );
+  QVERIFY( !pkcs1PemRef.isEmpty() );
+  QCOMPARE( pkcs1Key.toPem(), pkcs1PemRef );
+#endif
 }
 
 QGSTEST_MAIN( TestQgsAuthCertUtils )

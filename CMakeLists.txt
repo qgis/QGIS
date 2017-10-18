@@ -320,6 +320,11 @@ IF(WITH_CORE)
   FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
   ENDIF(NOT MSVC)
 
+  IF (APPLE)
+    # Libtasn1 is for DER-encoded PKI ASN.1 parsing/extracting workarounds
+    FIND_PACKAGE(Libtasn1 REQUIRED)
+  ENDIF (APPLE)
+
   IF (SUPPRESS_QT_WARNINGS)
     # Newer versions of UseQt4.cmake include Qt with -isystem automatically
     # This can be used to force this behavior on older systems
