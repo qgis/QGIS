@@ -64,12 +64,16 @@ class TestQgsServerWMS(QgsServerTestBase):
 
         self.assertXMLEqual(response, expected, msg="request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8')))
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test is flaky on Travis environment')
-    def test_project_wms(self):
-        """Test some WMS request"""
-        for request in ('GetCapabilities', 'GetProjectSettings', 'GetContext'):
-            self.wms_request_compare(request)
+    def test_getcapabilities(self):
+        self.wms_request_compare('GetCapabilities')
 
+    def test_getprojectsettings(self):
+        self.wms_request_compare('GetProjectSettings')
+
+    def test_getcontext(self):
+        self.wms_request_compare('GetContext')
+
+    def test_getfeatureinfo(self):
         # Test getfeatureinfo response xml
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
@@ -174,11 +178,14 @@ class TestQgsServerWMS(QgsServerTestBase):
                                  'FEATURE_COUNT=10&FILTER_GEOM=POLYGON((8.2035381 44.901459,8.2035562 44.901459,8.2035562 44.901418,8.2035381 44.901418,8.2035381 44.901459))',
                                  'wms_getfeatureinfo_invalid_query_layers')
 
+    def test_describelayer(self):
         # Test DescribeLayer
         self.wms_request_compare('DescribeLayer',
                                  '&layers=testlayer%20%C3%A8%C3%A9&' +
                                  'SLD_VERSION=1.1.0',
                                  'describelayer')
+
+    def test_getstyles(self):
         # Test GetStyles
         self.wms_request_compare('GetStyles',
                                  '&layers=testlayer%20%C3%A8%C3%A9&',
