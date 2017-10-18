@@ -146,7 +146,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
     if ( trunc > 0 && labelText.length() > trunc )
     {
       labelText.truncate( trunc );
-      labelText += QStringLiteral( "…" );
+      labelText += QStringLiteral( "\u2026" );
     }
     return labelText;
   }
@@ -169,7 +169,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
         if ( trunc > 0 && labelText.length() > trunc )
         {
           labelText.truncate( trunc );
-          labelText += QStringLiteral( "…" );
+          labelText += QStringLiteral( "\u2026" );
         }
         return labelText;
       }
