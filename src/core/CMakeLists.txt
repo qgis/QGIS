@@ -115,6 +115,12 @@ SET(QGIS_CORE_SRCS
   providers/memory/qgsmemoryfeatureiterator.cpp
   providers/memory/qgsmemoryprovider.cpp
   providers/memory/qgsmemoryproviderutils.cpp
+  providers/spatialite/qgsslconnect.cpp
+  providers/spatialite/qgssqlitehandle.cpp
+  providers/spatialite/qgsspatialiteutils.cpp
+  providers/spatialite/qgsspatialiteconnection.cpp
+  providers/spatialite/qgsspatialiteconnpool.cpp
+  providers/spatialite/qgsspatialitetablemodel.cpp
 
   scalebar/qgsdoubleboxscalebarrenderer.cpp
   scalebar/qgsnumericscalebarrenderer.cpp
@@ -265,7 +271,6 @@ SET(QGIS_CORE_SRCS
   qgsscalecalculator.cpp
   qgsscaleutils.cpp
   qgssimplifymethod.cpp
-  qgsslconnect.cpp
   qgssnappingutils.cpp
   qgsspatialindex.cpp
   qgssqlexpressioncompiler.cpp
@@ -695,6 +700,10 @@ SET(QGIS_CORE_MOC_HDRS
   processing/models/qgsprocessingmodelalgorithm.h
 
   providers/memory/qgsmemoryprovider.h
+  providers/spatialite/qgsspatialiteutils.h
+  providers/spatialite/qgsspatialiteconnection.h
+  providers/spatialite/qgsspatialiteconnpool.h
+  providers/spatialite/qgsspatialitetablemodel.h
 
   raster/qgsrasterfilewritertask.h
   raster/qgsrasterlayer.h
@@ -1003,6 +1012,11 @@ SET(QGIS_CORE_HDRS
 
   providers/memory/qgsmemoryfeatureiterator.h
   providers/memory/qgsmemoryproviderutils.h
+  providers/spatialite/qgsslconnect.h
+  providers/spatialite/qgsspatialiteutils.h
+  providers/spatialite/qgsspatialiteconnection.h
+  providers/spatialite/qgsspatialiteconnpool.h
+  providers/spatialite/qgsspatialitetablemodel.h
 
   raster/qgsbilinearrasterresampler.h
   raster/qgsbrightnesscontrastfilter.h
@@ -1159,6 +1173,7 @@ INCLUDE_DIRECTORIES(
   processing/models
   providers
   providers/memory
+  providers/spatialite
   raster
   renderer
   scalebar
@@ -1175,6 +1190,9 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${EXPAT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${SPATIALITE_INCLUDE_DIR}
+IF(RASTERLITE2_INCLUDE_DIR)
+  ${RASTERLITE2_INCLUDE_DIR}
+ENDIF(RASTERLITE2_INCLUDE_DIR)
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
@@ -1260,6 +1278,28 @@ IF (QT_MOBILITY_LOCATION_FOUND)
   TARGET_LINK_LIBRARIES(qgis_core ${QT_MOBILITY_LOCATION_LIBRARY})
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
 
+IF(RASTERLITE2_LIBRARY)
+TARGET_LINK_LIBRARIES(qgis_core
+  ${QT_QTXML_LIBRARY}
+  ${QT_QTCORE_LIBRARY}
+  ${QT_QTGUI_LIBRARY}
+  ${QT_QTNETWORK_LIBRARY}
+  ${QT_QTSVG_LIBRARY}
+  ${OPTIONAL_QTWEBKIT}
+  ${QT_QTSQL_LIBRARY}
+  ${QCA_LIBRARY}
+  ${QTKEYCHAIN_LIBRARY}
+  ${PROJ_LIBRARY}
+  ${GEOS_LIBRARY}
+  ${GDAL_LIBRARY}
+  ${SPATIALINDEX_LIBRARY}
+  ${EXPAT_LIBRARY}
+  ${SQLITE3_LIBRARY}
+  ${SPATIALITE_LIBRARY}
+  ${RASTERLITE2_LIBRARY}
+  ${LIBZIP_LIBRARY}
+)
+ELSE(RASTERLITE2_LIBRARY)
 TARGET_LINK_LIBRARIES(qgis_core
   ${QT_QTXML_LIBRARY}
   ${QT_QTCORE_LIBRARY}
@@ -1279,6 +1319,7 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${SPATIALITE_LIBRARY}
   ${LIBZIP_LIBRARY}
 )
+ENDIF(RASTERLITE2_LIBRARY)
 
 IF (Qt5Positioning_FOUND)
   TARGET_LINK_LIBRARIES(qgis_core

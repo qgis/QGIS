@@ -16,34 +16,38 @@
 #define QGSSPATIALITEDATAITEMS_H
 
 #include "qgsdataitem.h"
+class SpatialiteDbInfo;
 
 class QgsSLLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
-    QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType );
+    QgsSLLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType );
+    QgsSLLayerItem( QgsDataItem *parent, QString path, QString sLayerName, QString sLayerInfo, SpatialiteDbInfo *spatialiteDbInfo );
 
 #ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override;
+    QList<QAction *> actions() override;
 #endif
 
   public slots:
 #ifdef HAVE_GUI
     void deleteLayer();
 #endif
+  private:
+    SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
 };
 
 class QgsSLConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsSLConnectionItem( QgsDataItem *parent, const QString &name, const QString &path );
+    QgsSLConnectionItem( QgsDataItem *parent, QString name, QString path );
 
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
 
 #ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override;
+    virtual QList<QAction *> actions() override;
 #endif
 
     virtual bool acceptDrop() override { return true; }
@@ -63,18 +67,18 @@ class QgsSLRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsSLRootItem( QgsDataItem *parent, const QString &name, const QString &path );
+    QgsSLRootItem( QgsDataItem *parent, QString name, QString path );
 
     QVector<QgsDataItem *> createChildren() override;
 
 #ifdef HAVE_GUI
     virtual QWidget *paramWidget() override;
-    QList<QAction *> actions( QWidget *parent ) override;
+    virtual QList<QAction *> actions() override;
 #endif
 
   public slots:
 #ifdef HAVE_GUI
-    void onConnectionsChanged();
+    void connectionsChanged();
     void newConnection();
 #endif
     void createDatabase();

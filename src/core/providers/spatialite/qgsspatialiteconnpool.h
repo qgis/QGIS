@@ -48,7 +48,7 @@ inline bool qgsConnectionPool_ConnectionIsValid( QgsSqliteHandle *c )
 }
 
 
-class QgsSpatiaLiteConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsSqliteHandle *>
+class CORE_EXPORT QgsSpatiaLiteConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsSqliteHandle *>
 {
     Q_OBJECT
 

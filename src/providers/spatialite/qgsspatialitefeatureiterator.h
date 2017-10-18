@@ -17,6 +17,7 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
+#include "qgsspatialiteutils.h"
 
 extern "C"
 {
@@ -35,16 +36,34 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
-    QString mGeometryColumn;
+    //! wrapper of the SQLite database connection
+    QgsSqliteHandle *mHandle = nullptr;
+    SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
+    SpatialiteDbLayer *mDbLayer = nullptr;
+    //! The active Layer
+    SpatialiteDbLayer *getDbLayer() const { return mDbLayer; }
+    //! The sqlite handler
+    sqlite3 *dbSqliteHandle() const { return getDbLayer()->dbSqliteHandle(); }
+    QgsSqliteHandle *getQSqliteHandle() const { return mHandle; }
+    //! Name of the geometry column in the table
+    QString getGeometryColumn() const { return getDbLayer()->getGeometryColumn(); }
+    //! List of layer fields in the table
+    QgsFields getAttributeFields() const { return getDbLayer()->getAttributeFields(); }
+    //! Name of the primary key column in the table
+    QString getPrimaryKey() const { return getDbLayer()->getPrimaryKey(); }
+    //! Name of the Layer format: 'table_name(geometry_name)'
+    QString getLayerName() const { return getDbLayer()->getLayerName(); }
+    //! The Spatialite Geometry-Type being read (as String)
+    QString getGeometryTypeString() const { return getDbLayer()->getGeometryTypeString(); }
+    //! The SpatialiIndex used for the Geometry
+    int getSpatialIndexType() const { return getDbLayer()->getSpatialIndexType(); }
     QString mSubsetString;
-    QgsFields mFields;
     QString mQuery;
     bool mIsQuery;
     bool mViewBased;
     bool mVShapeBased;
     QString mIndexTable;
     QString mIndexGeometry;
-    QString mPrimaryKey;
     bool mSpatialIndexRTree;
     bool mSpatialIndexMbrCache;
     QString mSqlitePath;

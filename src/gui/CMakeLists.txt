@@ -182,6 +182,7 @@ SET(QGIS_GUI_SRCS
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsnewogrconnection.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
+  providers/spatialite/qgsspatialitesourceselect.cpp
 
   qgisinterface.cpp
   qgsactionmenu.cpp
@@ -515,6 +516,7 @@ SET(QGIS_GUI_MOC_HDRS
 
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
+  providers/spatialite/qgsspatialitesourceselect.h
 
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
@@ -725,6 +727,7 @@ SET(QGIS_GUI_HDRS
   ogr/qgsogrhelperfunctions.h
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
+  providers/spatialite/qgsspatialitesourceselect.h
 
   attributetable/qgsfeaturemodel.h
 
