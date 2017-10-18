@@ -513,6 +513,21 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     virtual QRectF rectWithFrame() const;
 
+    /**
+     * Moves the content of the item, by a specified \a dx and \a dy in layout units.
+     * The default implementation has no effect.
+     * \see zoomContent()
+     */
+    virtual void moveContent( double dx, double dy );
+
+    /**
+     * Zooms content of item. Does nothing by default.
+     * \param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
+     * \param point item point for zoom center
+     * \see moveContent()
+     */
+    virtual void zoomContent( double factor, QPointF point );
+
   public slots:
 
     /**

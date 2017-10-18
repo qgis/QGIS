@@ -96,6 +96,17 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     };
 
     /**
+     * Specifies whether the value returned by a function should be the original, user
+     * set value, or the current evaluated value for the property. This may differ if
+     * a property has a data defined expression active.
+     */
+    enum PropertyValueType
+    {
+      EvaluatedValue = 0, //!< Return the current evaluated value for the property
+      OriginalValue //!< Return the original, user set value
+    };
+
+    /**
      * Returns the layout object property definitions.
      */
     static const QgsPropertiesDefinition &propertyDefinitions();

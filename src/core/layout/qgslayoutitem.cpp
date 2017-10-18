@@ -797,6 +797,16 @@ QRectF QgsLayoutItem::rectWithFrame() const
   return rect().adjusted( -frameBleed, -frameBleed, frameBleed, frameBleed );
 }
 
+void QgsLayoutItem::moveContent( double, double )
+{
+
+}
+
+void QgsLayoutItem::zoomContent( double, QPointF )
+{
+
+}
+
 QgsLayoutPoint QgsLayoutItem::applyDataDefinedPosition( const QgsLayoutPoint &position )
 {
   if ( !mLayout )
