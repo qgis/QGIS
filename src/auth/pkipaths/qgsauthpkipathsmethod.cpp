@@ -98,13 +98,26 @@ bool QgsAuthPkiPathsMethod::updateNetworkRequest( QNetworkRequest &request, cons
   QSslConfiguration sslConfig = request.sslConfiguration();
   //QSslConfiguration sslConfig( QSslConfiguration::defaultConfiguration() );
 
-  sslConfig.setLocalCertificate( pkibundle->clientCert() );
   sslConfig.setPrivateKey( pkibundle->clientCertKey() );
+  sslConfig.setLocalCertificate( pkibundle->clientCert() );
 
+  // add extra CAs from the bundle
+  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+  {
+    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+    {
+      sslConfig.setCaCertificates( pkibundle->caChain() );
+    }
+    else
+    {
+      sslConfig.setCaCertificates( QgsAuthCertUtils::casRemoveSelfSigned( pkibundle->caChain() ) );
+    }
+  }
   request.setSslConfiguration( sslConfig );
 
   return true;
 }
+
 
 bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
     const QString &dataprovider )
@@ -141,10 +154,29 @@ bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionIte
     return false;
   }
 
+  // add extra CAs from the bundle
+  QList<QSslCertificate> cas;
+  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+  {
+    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+    {
+      cas = QgsAuthCertUtils::casMerge( QgsAuthManager::instance()->getTrustedCaCerts(), pkibundle->caChain() );
+    }
+    else
+    {
+      cas = QgsAuthCertUtils::casMerge( QgsAuthManager::instance()->getTrustedCaCerts(),
+                                        QgsAuthCertUtils::casRemoveSelfSigned( pkibundle->caChain() ) );
+    }
+  }
+  else
+  {
+    cas = QgsAuthManager::instance()->getTrustedCaCerts();
+  }
+
   // save CAs to temp file
   QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
                          pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-                         QgsAuthManager::instance()->getTrustedCaCertsPemText() );
+                         QgsAuthCertUtils::certsToPemText( cas ) );
   if ( caFilePath.isEmpty() )
   {
     return false;
@@ -266,7 +298,7 @@ QgsPkiConfigBundle *QgsAuthPkiPathsMethod::getPkiConfigBundle( const QString &au
     return bundle;
   }
 
-  bundle = new QgsPkiConfigBundle( mconfig, clientcert, clientkey );
+  bundle = new QgsPkiConfigBundle( mconfig, clientcert, clientkey, QgsAuthCertUtils::casFromFile( mconfig.config( QStringLiteral( "certpath" ) ) ) );
 
   locker.unlock();
   // cache bundle
