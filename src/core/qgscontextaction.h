@@ -23,7 +23,8 @@
 
 #define SIP_NO_FILE
 
-/** \ingroup core
+/**
+ * \ingroup core
  * QgsContextAction is derived from QAction and contains a context expression scope.
  *
  * \since QGIS 3.0
