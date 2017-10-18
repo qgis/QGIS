@@ -356,9 +356,8 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
 
   try
   {
-    GEOSGeometry *bboxGeos = GEOSGeom_createLinearRing_r( geosctxt, coord );
-    bool result = ( GEOSPreparedContainsProperly_r( geosctxt, geom, bboxGeos ) == 1 );
-    GEOSGeom_destroy_r( geosctxt, bboxGeos );
+    geos::unique_ptr bboxGeos( GEOSGeom_createLinearRing_r( geosctxt, coord ) );
+    bool result = ( GEOSPreparedContainsProperly_r( geosctxt, geom, bboxGeos.get() ) == 1 );
     return result;
   }
   catch ( GEOSException &e )

@@ -526,17 +526,14 @@ bool QgsTracer::initGraph()
   {
     t2a.start();
     // GEOSNode_r may throw an exception
-    GEOSGeometry *allGeomGeos = allGeom.exportToGeos();
-    GEOSGeometry *allNoded = GEOSNode_r( QgsGeometry::getGEOSHandler(), allGeomGeos );
-    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), allGeomGeos );
+    geos::unique_ptr allGeomGeos( allGeom.exportToGeos() );
+    geos::unique_ptr allNoded( GEOSNode_r( QgsGeometry::getGEOSHandler(), allGeomGeos.get() ) );
     timeNodingCall = t2a.elapsed();
 
-    QgsGeometry *noded = new QgsGeometry;
-    noded->fromGeos( allNoded );
+    QgsGeometry noded;
+    noded.fromGeos( allNoded.release() );
 
-    mpl = noded->asMultiPolyline();
-
-    delete noded;
+    mpl = noded.asMultiPolyline();
   }
   catch ( GEOSException &e )
   {

@@ -40,7 +40,7 @@ namespace geos
    * Destroys the GEOS geometry \a geom, using the static QGIS
    * geos context.
    */
-  struct GeosDeleter
+  struct CORE_EXPORT GeosDeleter
   {
 
     /**
