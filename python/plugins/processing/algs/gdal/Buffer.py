@@ -104,7 +104,7 @@ class Buffer(GdalAlgorithm):
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
-        dissolve = self.parameterAsString(parameters, self.DISSOLVE, context)
+        dissolve = self.parameterAsBool(parameters, self.DISSOLVE, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
