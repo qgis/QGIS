@@ -130,7 +130,7 @@ void QgsGeometryCheckerSetupTab::validateInput()
 
 void QgsGeometryCheckerSetupTab::selectOutputFile()
 {
-  QString filterString = QgsVectorFileWriter::filterForDriver( QStringLiteral( "ESRI Shapefile" ) );
+  QString filterString = QgsVectorFileWriter::filterForDriver( QStringLiteral( "GPKG" ) );
   QMap<QString, QString> filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
   Q_FOREACH ( const QString &filter, filterFormatMap.keys() )
   {

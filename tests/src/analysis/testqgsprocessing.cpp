@@ -376,7 +376,7 @@ void TestQgsProcessing::initTestCase()
 void TestQgsProcessing::cleanupTestCase()
 {
   QFile::remove( QDir::tempPath() + "/create_feature_sink.tab" );
-  QgsVectorFileWriter::deleteShapeFile( QDir::tempPath() + "/create_feature_sink2.shp" );
+  QgsVectorFileWriter::deleteShapeFile( QDir::tempPath() + "/create_feature_sink2.gpkg" );
 
   QgsApplication::exitQgis();
 }
@@ -1211,7 +1211,7 @@ void TestQgsProcessing::createFeatureSink()
 
   // no extension, should default to shp
   destination = QDir::tempPath() + "/create_feature_sink2";
-  prevDest = QDir::tempPath() + "/create_feature_sink2.shp";
+  prevDest = QDir::tempPath() + "/create_feature_sink2.gpkg";
   sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, QgsWkbTypes::Point25D, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
   QVERIFY( sink.get() );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PointZ(1 2 3)" ) ) );
@@ -1222,9 +1222,10 @@ void TestQgsProcessing::createFeatureSink()
   layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, true ) );
   QCOMPARE( layer->wkbType(), QgsWkbTypes::Point25D );
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:3111" ) );
-  QCOMPARE( layer->fields().size(), 1 );
-  QCOMPARE( layer->fields().at( 0 ).name(), QStringLiteral( "my_field" ) );
-  QCOMPARE( layer->fields().at( 0 ).type(), QVariant::String );
+  QCOMPARE( layer->fields().size(), 2 );
+  QCOMPARE( layer->fields().at( 0 ).name(), QStringLiteral( "fid" ) );
+  QCOMPARE( layer->fields().at( 1 ).name(), QStringLiteral( "my_field" ) );
+  QCOMPARE( layer->fields().at( 1 ).type(), QVariant::String );
   QCOMPARE( layer->featureCount(), 1L );
   delete layer;
   layer = nullptr;

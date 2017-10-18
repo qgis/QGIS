@@ -322,8 +322,8 @@ void parseDestinationString( QString &destination, QString &providerKey, QString
 
     if ( format.isEmpty() )
     {
-      format = QStringLiteral( "ESRI Shapefile" );
-      destination = destination + QStringLiteral( ".shp" );
+      format = QStringLiteral( "GPKG" );
+      destination = destination + QStringLiteral( ".gpkg" );
     }
 
     options.insert( QStringLiteral( "driverName" ), format );

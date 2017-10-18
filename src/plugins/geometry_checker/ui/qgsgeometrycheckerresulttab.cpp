@@ -227,7 +227,7 @@ void QgsGeometryCheckerResultTab::exportErrors()
     initialdir = dir.absolutePath();
   }
 
-  QString file = QFileDialog::getSaveFileName( this, tr( "Select Output File" ), initialdir, tr( "ESRI Shapefile (*.shp);;" ) );
+  QString file = QFileDialog::getSaveFileName( this, tr( "Select Output File" ), initialdir, tr( "GeoPackage (*.gpkg);;" ) );
   if ( file.isEmpty() )
   {
     return;

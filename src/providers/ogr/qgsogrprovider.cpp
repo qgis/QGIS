@@ -217,7 +217,7 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
     const QMap<QString, QVariant> *options )
 {
   QString encoding;
-  QString driverName = QStringLiteral( "ESRI Shapefile" );
+  QString driverName = QStringLiteral( "GPKG" );
   QStringList dsOptions, layerOptions;
   QString layerName;
 
