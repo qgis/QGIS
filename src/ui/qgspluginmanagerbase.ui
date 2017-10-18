@@ -190,18 +190,6 @@
          </item>
          <item>
           <property name="text">
-           <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/spacer.svg</normaloff>:/images/themes/default/propertyicons/spacer.svg</iconset>
-          </property>
-          <property name="flags">
-           <set>NoItemFlags</set>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Install from ZIP</string>
           </property>
           <property name="icon">
