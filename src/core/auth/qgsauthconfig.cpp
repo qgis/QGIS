@@ -23,6 +23,8 @@
 #include <QCryptographicHash>
 #include <QUrl>
 
+#include "qgsauthcertutils.h"
+
 
 //////////////////////////////////////////////
 // QgsAuthMethodConfig
@@ -172,25 +174,6 @@ QgsPkiBundle::QgsPkiBundle( const QSslCertificate &clientCert,
   setClientKey( clientKey );
 }
 
-static QByteArray fileData_( const QString &path, bool astext = false )
-{
-  QByteArray data;
-  QFile file( path );
-  if ( file.exists() )
-  {
-    QFile::OpenMode openflags( QIODevice::ReadOnly );
-    if ( astext )
-      openflags |= QIODevice::Text;
-    bool ret = file.open( openflags );
-    if ( ret )
-    {
-      data = file.readAll();
-    }
-    file.close();
-  }
-  return data;
-}
-
 const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath,
     const QString &keyPath,
     const QString &keyPass,
@@ -207,12 +190,12 @@ const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath,
   {
     // client cert
     bool pem = certPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-    QSslCertificate clientcert( fileData_( certPath, pem ), pem ? QSsl::Pem : QSsl::Der );
+    QSslCertificate clientcert( QgsAuthCertUtils::fileData( certPath, pem ), pem ? QSsl::Pem : QSsl::Der );
     pkibundle.setClientCert( clientcert );
 
     // client key
     bool pem_key = keyPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-    QByteArray keydata( fileData_( keyPath, pem_key ) );
+    QByteArray keydata( QgsAuthCertUtils::fileData( keyPath, pem_key ) );
 
     QSslKey clientkey;
     clientkey = QSslKey( keydata,

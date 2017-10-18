@@ -104,6 +104,13 @@ class CORE_EXPORT QgsAuthCertUtils
      */
     static QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( const QList<QgsAuthConfigSslServer> &configs ) SIP_SKIP;
 
+    /**
+     * Return data from a local file via a read-only operation
+     * \param astext Whether to open the file as text, otherwise as binary
+     * \returns All data contained in file or empty contents if file does not exist
+     */
+    static QByteArray fileData( const QString &path, bool astext = false );
+
     //! Return list of concatenated certs from a PEM or DER formatted file
     static QList<QSslCertificate> certsFromFile( const QString &certspath );
 
@@ -158,6 +165,12 @@ class CORE_EXPORT QgsAuthCertUtils
                                            bool reencrypt = true );
 
     /**
+     * Determine if the PEM-encoded text of a key is PKCS#8 format
+     * \param keyPemTxt PEM-encoded text
+     * \returns True if PKCS#8, otherwise false
+     */
+    static bool pemIsPkcs8( const QString &keyPemTxt );
+
      * Return list of certificate, private key and algorithm (as PEM text) for a PKCS#12 bundle
      * \param bundlepath File path to the PKCS bundle
      * \param bundlepass Passphrase for bundle

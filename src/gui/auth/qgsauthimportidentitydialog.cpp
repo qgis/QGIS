@@ -29,26 +29,6 @@
 #include "qgslogger.h"
 
 
-static QByteArray fileData_( const QString &path, bool astext = false )
-{
-  QByteArray data;
-  QFile file( path );
-  if ( file.exists() )
-  {
-    QFile::OpenMode openflags( QIODevice::ReadOnly );
-    if ( astext )
-      openflags |= QIODevice::Text;
-    bool ret = file.open( openflags );
-    if ( ret )
-    {
-      data = file.readAll();
-    }
-    file.close();
-  }
-  return data;
-}
-
-
 QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
     QWidget *parent )
   : QDialog( parent )
@@ -306,7 +286,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPaths()
 
   // check for valid private key and that any supplied password works
   bool keypem = keypath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-  QByteArray keydata( fileData_( keypath, keypem ) );
+  QByteArray keydata( QgsAuthCertUtils::fileData( keypath, keypem ) );
 
   QSslKey clientkey;
   QString keypass = lePkiPathsKeyPass->text();
