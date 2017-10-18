@@ -80,7 +80,7 @@ void QgsFileDownloader::startDownload()
 #endif
 }
 
-void QgsFileDownloader::onDownloadCanceled()
+void QgsFileDownloader::cancelDownload()
 {
   mDownloadCanceled = true;
   emit downloadCanceled();

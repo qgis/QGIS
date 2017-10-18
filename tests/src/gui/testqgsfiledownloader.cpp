@@ -104,7 +104,7 @@ void TestQgsFileDownloader::makeCall( QUrl url, QString fileName, bool cancel )
   connect( mFileDownloader, &QgsFileDownloader::downloadExited, &loop, &QEventLoop::quit );
 
   if ( cancel )
-    QTimer::singleShot( 1000, mFileDownloader, &QgsFileDownloader::onDownloadCanceled );
+    QTimer::singleShot( 1000, mFileDownloader, &QgsFileDownloader::cancelDownload );
 
   loop.exec();
 

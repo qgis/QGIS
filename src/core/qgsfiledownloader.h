@@ -37,7 +37,8 @@
  * The object will destroy itself when the request completes, errors or is canceled.
  * An optional authentication configuration can be specified.
  *
- * \since QGIS 2.18.1
+ * \note This class was part of the GUI library from QGIS 2.18.1 until QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsFileDownloader : public QObject
 {
@@ -61,8 +62,13 @@ class CORE_EXPORT QgsFileDownloader : public QObject
     void downloadCompleted();
     //! Emitted always when the downloader exits
     void downloadExited();
-    //! Emitted when the download was canceled by the user
+
+    /**
+     * Emitted when the download was canceled by the user.
+     * \see cancelDownload()
+     */
     void downloadCanceled();
+
     //! Emitted when an error makes the download fail
     void downloadError( QStringList errorMessages );
     //! Emitted when data are ready to be processed
@@ -71,13 +77,11 @@ class CORE_EXPORT QgsFileDownloader : public QObject
   public slots:
 
     /**
-     * Called when a download is canceled by the user
-     * this slot aborts the download and deletes
-     * the object.
-     * Never call this slot directly: this is meant to
-     * be managed by the signal-slot system.
+     * Call to abort the download and delete this object after the cancelation
+     * has been processed.
+     * \see downloadCanceled()
      */
-    void onDownloadCanceled();
+    void cancelDownload();
 
     //! Called to start the download
     void startDownload();

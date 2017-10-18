@@ -24,7 +24,7 @@ QgsFileDownloaderDialog::QgsFileDownloaderDialog( const QUrl &url, const QString
   setLabelText( tr( "Downloading %1." ).arg( outputFileName ) );
   show();
 
-  connect( this, &QProgressDialog::canceled, mDownloader, &QgsFileDownloader::onDownloadCanceled );
+  connect( this, &QProgressDialog::canceled, mDownloader, &QgsFileDownloader::cancelDownload );
   connect( mDownloader, &QgsFileDownloader::downloadError, this, &QgsFileDownloaderDialog::onError );
   connect( mDownloader, &QgsFileDownloader::downloadProgress, this, &QgsFileDownloaderDialog::onDownloadProgress );
   connect( mDownloader, &QgsFileDownloader::downloadExited, this, &QgsFileDownloaderDialog::deleteLater );

@@ -19,6 +19,10 @@ class QgsFileDownloaderDialog : QProgressDialog
  while showing progress via a progress dialog and supporting
  cancelation.
 
+.. note::
+
+   Until QGIS 3.0 this functionality was available via QgsFileDownloader.
+
 .. versionadded:: 3.0
 %End
 

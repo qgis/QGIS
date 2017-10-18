@@ -22,7 +22,10 @@ class QgsFileDownloader : QObject
  The object will destroy itself when the request completes, errors or is canceled.
  An optional authentication configuration can be specified.
 
-.. versionadded:: 2.18.1
+.. note::
+
+   This class was part of the GUI library from QGIS 2.18.1 until QGIS 3.0
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -51,10 +54,13 @@ Emitted when the download has completed successfully
 %Docstring
 Emitted always when the downloader exits
 %End
+
     void downloadCanceled();
 %Docstring
-Emitted when the download was canceled by the user
+ Emitted when the download was canceled by the user.
+.. seealso:: cancelDownload()
 %End
+
     void downloadError( QStringList errorMessages );
 %Docstring
 Emitted when an error makes the download fail
@@ -66,13 +72,11 @@ Emitted when data are ready to be processed
 
   public slots:
 
-    void onDownloadCanceled();
+    void cancelDownload();
 %Docstring
- Called when a download is canceled by the user
- this slot aborts the download and deletes
- the object.
- Never call this slot directly: this is meant to
- be managed by the signal-slot system.
+ Call to abort the download and delete this object after the cancelation
+ has been processed.
+.. seealso:: downloadCanceled()
 %End
 
     void startDownload();
