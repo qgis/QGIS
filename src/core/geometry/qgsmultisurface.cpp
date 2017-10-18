@@ -101,7 +101,7 @@ QString QgsMultiSurface::asJSON( int precision ) const
     {
       json += '[';
 
-      QgsPolygonV2 *polygon = static_cast<const QgsSurface *>( geom )->surfaceToPolygon();
+      std::unique_ptr< QgsPolygonV2 >polygon( static_cast<const QgsSurface *>( geom )->surfaceToPolygon() );
 
       std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;
