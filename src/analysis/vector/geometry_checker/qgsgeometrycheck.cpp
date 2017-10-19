@@ -160,11 +160,11 @@ void QgsGeometryCheck::replaceFeatureGeometryPart( const QString &layerId, QgsFe
   QgsAbstractGeometry *geom = featureGeom.geometry();
   if ( dynamic_cast<QgsGeometryCollection *>( geom ) )
   {
-    QgsGeometryCollection *GeomCollection = static_cast<QgsGeometryCollection *>( geom );
-    GeomCollection->removeGeometry( partIdx );
-    GeomCollection->addGeometry( newPartGeom );
-    changes[layerId][feature.id()].append( Change( ChangeFeature, ChangeRemoved, QgsVertexId( partIdx ) ) );
-    changes[layerId][feature.id()].append( Change( ChangeFeature, ChangeAdded, QgsVertexId( GeomCollection->partCount() - 1 ) ) );
+    QgsGeometryCollection *geomCollection = static_cast<QgsGeometryCollection *>( geom );
+    geomCollection->removeGeometry( partIdx );
+    geomCollection->addGeometry( newPartGeom );
+    changes[layerId][feature.id()].append( Change( ChangePart, ChangeRemoved, QgsVertexId( partIdx ) ) );
+    changes[layerId][feature.id()].append( Change( ChangePart, ChangeAdded, QgsVertexId( geomCollection->partCount() - 1 ) ) );
     feature.setGeometry( featureGeom );
   }
   else

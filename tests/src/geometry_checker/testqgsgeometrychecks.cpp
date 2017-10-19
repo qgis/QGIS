@@ -231,8 +231,8 @@ void TestQgsGeometryChecks::testAreaCheck()
                           QgsGeometryAreaCheck::MergeLargestArea, QgsGeometryCheckError::StatusFixed,
   {
     {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId()},
-    {layers["polygon_layer.shp"], 15, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0 )},
-    {layers["polygon_layer.shp"], 15, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeAdded, QgsVertexId( 0 )}
+    {layers["polygon_layer.shp"], 15, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0 )},
+    {layers["polygon_layer.shp"], 15, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 0 )}
   } ) );
   context->featurePools[layers["polygon_layer.shp"]]->get( 15, f );
   QVERIFY( f.geometry().area() > area15 );
@@ -245,8 +245,8 @@ void TestQgsGeometryChecks::testAreaCheck()
                           QgsGeometryAreaCheck::MergeLongestEdge, QgsGeometryCheckError::StatusFixed,
   {
     {errs3[0]->layerId(), errs3[0]->featureId(), QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId()},
-    {layers["polygon_layer.shp"], 18, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0 )},
-    {layers["polygon_layer.shp"], 18, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeAdded, QgsVertexId( 0 )}
+    {layers["polygon_layer.shp"], 18, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0 )},
+    {layers["polygon_layer.shp"], 18, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 0 )}
   } ) );
   context->featurePools[layers["polygon_layer.shp"]]->get( 18, f );
   QVERIFY( f.geometry().area() > area18 );
@@ -261,8 +261,8 @@ void TestQgsGeometryChecks::testAreaCheck()
                           QgsGeometryAreaCheck::MergeIdenticalAttribute, QgsGeometryCheckError::StatusFixed,
   {
     {errs4[0]->layerId(), errs4[0]->featureId(), QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId()},
-    {layers["polygon_layer.shp"], 21, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0 )},
-    {layers["polygon_layer.shp"], 21, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeAdded, QgsVertexId( 0 )}
+    {layers["polygon_layer.shp"], 21, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0 )},
+    {layers["polygon_layer.shp"], 21, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 0 )}
   }, mergeIdx ) );
   context->featurePools[layers["polygon_layer.shp"]]->get( 21, f );
   QVERIFY( f.geometry().area() > area21 );
@@ -520,8 +520,8 @@ void TestQgsGeometryChecks::testGapCheck()
   QVERIFY( fixCheckError( errs1[0],
                           QgsGeometryGapCheck::MergeLongestEdge, QgsGeometryCheckError::StatusFixed,
   {
-    {layers["gap_layer.shp"], 0, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0 )},
-    {layers["gap_layer.shp"], 0, QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeAdded, QgsVertexId( 0 )}
+    {layers["gap_layer.shp"], 0, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0 )},
+    {layers["gap_layer.shp"], 0, QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeAdded, QgsVertexId( 0 )}
   } ) );
   context->featurePools[layers["gap_layer.shp"]]->get( 0, f );
   QVERIFY( f.geometry().area() > areaOld );
