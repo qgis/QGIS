@@ -199,38 +199,25 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
 
     QgsGeometryCheckError::Status oldStatus = err->status();
 
-    // Update error, if this fails, mark the errors as obsolete
-    if ( !err->handleChanges( changes ) )
-    {
-      err->setObsolete();
-      emit errorUpdated( err, err->status() != oldStatus );
-      continue;
-    }
+    bool handled = err->handleChanges( changes );
 
     // Check if this error now matches one found when rechecking the feature/area
     QgsGeometryCheckError *matchErr = nullptr;
     int nMatch = 0;
     for ( QgsGeometryCheckError *recheckErr : recheckErrors )
     {
-      if ( recheckErr->isEqual( err ) )
-      {
-        matchErr = recheckErr;
-        nMatch = 1;
-        break;
-      }
-      else if ( recheckErr->closeMatch( err ) )
+      if ( recheckErr->isEqual( err ) || recheckErr->closeMatch( err ) )
       {
         ++nMatch;
         matchErr = recheckErr;
       }
     }
+    // If just one close match was found, take it
     if ( nMatch == 1 && matchErr )
     {
       err->update( matchErr );
       emit errorUpdated( err, err->status() != oldStatus );
-      int nRemoved = recheckErrors.removeAll( matchErr );
-      Q_UNUSED( nRemoved );
-      Q_ASSERT( nRemoved == 1 );
+      recheckErrors.removeAll( matchErr );
       delete matchErr;
       continue;
     }
@@ -238,7 +225,9 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
     // If no match is found and the error is not fixed or obsolete, set it to obsolete if...
     if ( err->status() < QgsGeometryCheckError::StatusFixed &&
          (
-           // it is a FeatureNodeCheck or FeatureCheck error whose feature was rechecked
+           // changes weren't handled
+           !handled ||
+           // or if it is a FeatureNodeCheck or FeatureCheck error whose feature was rechecked
            ( err->check()->getCheckType() <= QgsGeometryCheck::FeatureCheck && recheckFeatures[err->layerId()].contains( err->featureId() ) ) ||
            // or if it is a LayerCheck error within the rechecked area
            ( err->check()->getCheckType() == QgsGeometryCheck::LayerCheck && recheckArea.contains( err->affectedAreaBBox() ) )
