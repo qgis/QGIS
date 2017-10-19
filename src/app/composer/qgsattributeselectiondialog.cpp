@@ -280,6 +280,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
   connect( mColumnUpPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mColumnUpPushButton_clicked );
   connect( mColumnDownPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mColumnDownPushButton_clicked );
   connect( mResetColumnsPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mResetColumnsPushButton_clicked );
+  connect( mEmptyColumnsPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mEmptyColumnsPushButton_clicked );
   connect( mAddSortColumnPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mAddSortColumnPushButton_clicked );
   connect( mRemoveSortColumnPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mRemoveSortColumnPushButton_clicked );
   connect( mSortColumnUpPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mSortColumnUpPushButton_clicked );
@@ -371,6 +372,13 @@ void QgsAttributeSelectionDialog::mResetColumnsPushButton_clicked()
 {
   //reset columns to match vector layer's fields
   mColumnModel->resetToLayer();
+  mSortColumnComboBox->setCurrentIndex( 0 );
+}
+
+void QgsAttributeSelectionDialog::mEmptyColumnsPushButton_clicked()
+{
+  //remove all columns
+  mColumnModel->removeRows(0, mColumnModel->rowCount());
   mSortColumnComboBox->setCurrentIndex( 0 );
 }
 

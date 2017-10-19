@@ -77,6 +77,13 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QPushButton" name="mEmptyColumnsPushButton">
+           <property name="text">
+            <string>Empty</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item row="1" column="1">
