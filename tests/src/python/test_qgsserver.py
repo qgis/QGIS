@@ -214,6 +214,17 @@ class QgsServerTestBase(unittest.TestCase):
             headers.append(("%s: %s" % (k, rh[k])).encode('utf-8'))
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
 
+    def _execute_request_project(self, qs, project, requestMethod=QgsServerRequest.GetMethod, data=None):
+        request = QgsBufferServerRequest(qs, requestMethod, {}, data)
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, project)
+        headers = []
+        rh = response.headers()
+        rk = sorted(rh.keys())
+        for k in rk:
+            headers.append(("%s: %s" % (k, rh[k])).encode('utf-8'))
+        return b"\n".join(headers) + b"\n\n", bytes(response.body())
+
 
 class TestQgsServerTestBase(unittest.TestCase):
 
@@ -281,6 +292,16 @@ class TestQgsServer(QgsServerTestBase):
         request = QgsBufferServerRequest('http://somesite.com/somepath', QgsServerRequest.GetMethod, headers)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response)
+        self.assertEqual(bytes(response.body()), b'<ServerException>Project file error</ServerException>\n')
+        self.assertEqual(response.headers(), {'Content-Length': '54', 'Content-Type': 'text/xml; charset=utf-8'})
+        self.assertEqual(response.statusCode(), 500)
+
+    def test_requestHandlerProject(self):
+        """Test request handler with none project"""
+        headers = {'header-key-1': 'header-value-1', 'header-key-2': 'header-value-2'}
+        request = QgsBufferServerRequest('http://somesite.com/somepath', QgsServerRequest.GetMethod, headers)
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response, None)
         self.assertEqual(bytes(response.body()), b'<ServerException>Project file error</ServerException>\n')
         self.assertEqual(response.headers(), {'Content-Length': '54', 'Content-Type': 'text/xml; charset=utf-8'})
         self.assertEqual(response.statusCode(), 500)
