@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrulebasedlabeling.h"
-
+#include "qgssymbollayerutils.h"
 
 QgsRuleBasedLabelProvider::QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, bool withFeatureLoop )
   : QgsVectorLayerLabelProvider( layer, QString(), withFeatureLoop, nullptr )
@@ -474,4 +474,45 @@ void QgsRuleBasedLabeling::setSettings( QgsPalLayerSettings *settings, const QSt
     if ( rule && rule->settings() )
       return rule->setSettings( settings );
   }
+}
+
+void QgsRuleBasedLabeling::toSld( QDomNode &parent, const QgsStringMap &props ) const
+{
+  if ( !mRootRule )
+  {
+    return;
+  }
+
+  const QgsRuleBasedLabeling::RuleList rules = mRootRule->children();
+  for ( Rule *rule : rules )
+  {
+    QgsPalLayerSettings *settings = rule->settings();
+
+    if ( settings->drawLabels )
+    {
+      QDomDocument doc = parent.ownerDocument();
+
+      QDomElement ruleElement = doc.createElement( QStringLiteral( "se:Rule" ) );
+      parent.appendChild( ruleElement );
+
+      if ( !rule->filterExpression().isEmpty() )
+      {
+        QgsSymbolLayerUtils::createFunctionElement( doc, ruleElement, rule->filterExpression() );
+      }
+
+      // scale dependencies, the actual behavior is that the PAL settings min/max and
+      // the rule min/max get intersected
+      QgsStringMap localProps = QgsStringMap( props );
+      QgsSymbolLayerUtils::mergeScaleDependencies( rule->maximumScale(), rule->minimumScale(), localProps );
+      if ( settings->scaleVisibility )
+      {
+        QgsSymbolLayerUtils::mergeScaleDependencies( settings->maximumScale, settings->minimumScale, localProps );
+      }
+      QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElement, localProps );
+
+      QgsAbstractVectorLayerLabeling::writeTextSymbolizer( ruleElement, *settings, props );
+    }
+
+  }
+
 }
