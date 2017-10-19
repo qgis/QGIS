@@ -230,7 +230,8 @@ void QgsRequestHandler::parseInput()
       QList<pair_t> items = query.queryItems();
       Q_FOREACH ( const pair_t &pair, items )
       {
-        mRequest.setParameter( pair.first.toUpper(), pair.second );
+        const QString value = QUrl::fromPercentEncoding( pair.second.toUtf8() );
+        mRequest.setParameter( pair.first.toUpper(), value );
       }
       setupParameters();
     }
