@@ -65,6 +65,10 @@ QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( const St
 
 void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget *table, QgsGeometryCheckError *error )
 {
+  bool sortingWasEnabled = table->isSortingEnabled();
+  if ( sortingWasEnabled )
+    table->setSortingEnabled( false );
+
   int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
   QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
 
@@ -80,6 +84,9 @@ void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget *table, QgsGeome
   valueItem->setData( Qt::EditRole, error->value() );
   table->setItem( row, 4, valueItem );
   table->item( row, 0 )->setData( Qt::UserRole, QVariant::fromValue( reinterpret_cast<void *>( error ) ) );
+
+  if ( sortingWasEnabled )
+    table->setSortingEnabled( true );
 }
 
 void QgsGeometryCheckerFixSummaryDialog::setupTable( QTableWidget *table )
