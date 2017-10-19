@@ -41,6 +41,7 @@ class QgsRenderContext
       RenderMapTile,
       Antialiasing,
       RenderPartialOutput,
+      RenderPreviewJob,
     };
     typedef QFlags<QgsRenderContext::Flag> Flags;
 

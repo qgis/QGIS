@@ -135,6 +135,11 @@ void QgsAuthSslErrorsDialog::showCertificateChainInfo()
 
 void QgsAuthSslErrorsDialog::showCertificateChainCAsInfo()
 {
+  for ( const auto &cert : mSslConfiguration.caCertificates() )
+  {
+    qDebug() << cert.subjectInfo( QSslCertificate::SubjectInfo::CommonName );
+  }
+
   QgsAuthTrustedCAsDialog *dlg = new QgsAuthTrustedCAsDialog( this, mSslConfiguration.caCertificates() );
   dlg->setWindowModality( Qt::WindowModal );
   dlg->resize( 675, 500 );

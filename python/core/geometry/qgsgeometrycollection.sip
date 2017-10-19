@@ -169,6 +169,10 @@ Adds a geometry and takes ownership. Returns true in case of success.
 
 
   protected:
+    virtual int childCount() const;
+    virtual QgsAbstractGeometry *childGeometry( int index ) const;
+
+  protected:
 
     virtual bool wktOmitChildType() const;
 %Docstring

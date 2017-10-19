@@ -15,6 +15,8 @@
 
 #include "qgscameracontroller.h"
 
+#include "qgis.h"
+
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
 
@@ -161,6 +163,28 @@ void QgsCameraController::setCameraData( float x, float y, float dist, float pit
 }
 
 
+static QVector3D unproject( const QVector3D &v, const QMatrix4x4 &modelView, const QMatrix4x4 &projection, const QRect &viewport )
+{
+  // Reimplementation of QVector3D::unproject() - see qtbase/src/gui/math3d/qvector3d.cpp
+  // The only difference is that the original implementation uses tolerance 1e-5
+  // (see qFuzzyIsNull()) as a protection against division by zero. For us it is however
+  // common to get lower values (e.g. as low as 1e-8 when zoomed out to the whole Earth with web mercator).
+
+  QMatrix4x4 inverse = QMatrix4x4( projection * modelView ).inverted();
+
+  QVector4D tmp( v, 1.0f );
+  tmp.setX( ( tmp.x() - float( viewport.x() ) ) / float( viewport.width() ) );
+  tmp.setY( ( tmp.y() - float( viewport.y() ) ) / float( viewport.height() ) );
+  tmp = tmp * 2.0f - QVector4D( 1.0f, 1.0f, 1.0f, 1.0f );
+
+  QVector4D obj = inverse * tmp;
+  if ( qgsDoubleNear( obj.w(), 0, 1e-10 ) )
+    obj.setW( 1.0f );
+  obj /= obj.w();
+  return obj.toVector3D();
+}
+
+
 float find_x_on_line( float x0, float y0, float x1, float y1, float y )
 {
   float d_x = x1 - x0;
@@ -172,8 +196,8 @@ float find_x_on_line( float x0, float y0, float x1, float y1, float y )
 QPointF screen_point_to_point_on_plane( const QPointF &pt, const QRect &viewport, Qt3DRender::QCamera *camera, float y )
 {
   // get two points of the ray
-  QVector3D l0 = QVector3D( pt.x(), viewport.height() - pt.y(), 0 ).unproject( camera->viewMatrix(), camera->projectionMatrix(), viewport );
-  QVector3D l1 = QVector3D( pt.x(), viewport.height() - pt.y(), 1 ).unproject( camera->viewMatrix(), camera->projectionMatrix(), viewport );
+  QVector3D l0 = unproject( QVector3D( pt.x(), viewport.height() - pt.y(), 0 ), camera->viewMatrix(), camera->projectionMatrix(), viewport );
+  QVector3D l1 = unproject( QVector3D( pt.x(), viewport.height() - pt.y(), 1 ), camera->viewMatrix(), camera->projectionMatrix(), viewport );
 
   QVector3D p0( 0, y, 0 ); // a point on the plane
   QVector3D n( 0, 1, 0 ); // normal of the plane

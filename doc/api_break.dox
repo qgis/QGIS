@@ -1253,6 +1253,15 @@ QgsFieldProxyModel        {#qgis_api_break_3_0_QgsFieldProxyModel}
 - In QgsFieldProxyModel::Filter, All has been renamed to AllTypes
 
 
+QgsFileDownloader       {#qgis_api_break_3_0_QgsFileDownloader}
+-----------------
+
+- In 2.x QgsFileDownloader was a gui library class. In 3.0 its functionality has been split into
+two new classes - a core QgsFileDownloader class, which handles just the file download functionality
+and contains no GUI progress bar dialog, and a separate QgsFileDownloaderDialog class which
+incorporates a QgsFileDownloader together with a user-visible progress bar dialog
+
+
 QgsGeometry        {#qgis_api_break_3_0_QgsGeometry}
 -----------
 
@@ -1288,6 +1297,8 @@ QgsGeometryEngine        {#qgis_api_break_3_0_QgsGeometryEngine}
 - `QgsAbstractGeometry&` parameters have been changed to `QgsAbstractGeometry*` (Affects C++ only)
 - `centroid()` returns the point instead of working on a parameter. The return value is a `nullptr` when `false` has been returned in the past.
 - `pointOnSurface()` returns the point instead of working on a parameter. The return value is a `nullptr` when `false` has been returned in the past.
+- splitGeometry() now returns new geometries as QgsGeometry, instead of QgsAbstractGeometry
+- combine() now requires a list of QgsGeometry, instead of QgsAbstractGeometry
 
 
 QgsGeometrySimplifier        {#qgis_api_break_3_0_QgsGeometrySimplifier}

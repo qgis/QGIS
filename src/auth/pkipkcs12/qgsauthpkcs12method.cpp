@@ -101,6 +101,19 @@ bool QgsAuthPkcs12Method::updateNetworkRequest( QNetworkRequest &request, const 
   sslConfig.setLocalCertificate( pkibundle->clientCert() );
   sslConfig.setPrivateKey( pkibundle->clientCertKey() );
 
+  // add extra CAs from the bundle, QNAM will prepend the trusted CAs in createRequest()
+  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+  {
+    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+    {
+      sslConfig.setCaCertificates( pkibundle->caChain() );
+    }
+    else
+    {
+      sslConfig.setCaCertificates( QgsAuthCertUtils::casRemoveSelfSigned( pkibundle->caChain() ) );
+    }
+  }
+
   request.setSslConfiguration( sslConfig );
 
   return true;
@@ -141,10 +154,30 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
     return false;
   }
 
+  // add extra CAs from the bundle
+  QList<QSslCertificate> cas;
+  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+  {
+    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+    {
+      cas = QgsAuthCertUtils::casMerge( QgsAuthManager::instance()->getTrustedCaCerts(), pkibundle->caChain() );
+    }
+    else
+    {
+      cas = QgsAuthCertUtils::casMerge( QgsAuthManager::instance()->getTrustedCaCerts(),
+                                        QgsAuthCertUtils::casRemoveSelfSigned( pkibundle->caChain() ) );
+    }
+  }
+  else
+  {
+    cas = QgsAuthManager::instance()->getTrustedCaCerts();
+  }
+
   // save CAs to temp file
   QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
                          pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-                         QgsAuthManager::instance()->getTrustedCaCertsPemText() );
+                         QgsAuthCertUtils::certsToPemText( cas ) );
+
   if ( caFilePath.isEmpty() )
   {
     return false;
@@ -272,7 +305,10 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
     return bundle;
   }
 
-  bundle = new QgsPkiConfigBundle( mconfig, clientcert, clientkey );
+  bundle = new QgsPkiConfigBundle( mconfig, clientcert, clientkey,
+                                   QgsAuthCertUtils::pkcs12BundleCas(
+                                     mconfig.config( QStringLiteral( "bundlepath" ) ),
+                                     mconfig.config( QStringLiteral( "bundlepass" ) ) ) );
 
   locker.unlock();
   // cache bundle

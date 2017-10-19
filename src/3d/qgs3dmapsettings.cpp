@@ -38,6 +38,7 @@ Qgs3DMapSettings::Qgs3DMapSettings()
   , mMaxTerrainGroundError( 1.f )
   , mShowTerrainBoundingBoxes( false )
   , mShowTerrainTileInfo( false )
+  , mShowLabels( false )
   , mSkyboxEnabled( false )
 {
 }
@@ -87,6 +88,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mMapTileResolution = elemTerrain.attribute( "texture-size", "512" ).toInt();
   mMaxTerrainScreenError = elemTerrain.attribute( "max-terrain-error", "3" ).toFloat();
   mMaxTerrainGroundError = elemTerrain.attribute( "max-ground-error", "1" ).toFloat();
+  mShowLabels = elemTerrain.attribute( "show-labels", "0" ).toInt();
   QDomElement elemMapLayers = elemTerrain.firstChildElement( "layers" );
   QDomElement elemMapLayer = elemMapLayers.firstChildElement( "layer" );
   QList<QgsMapLayerRef> mapLayers;
@@ -168,6 +170,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemTerrain.setAttribute( "texture-size", mMapTileResolution );
   elemTerrain.setAttribute( "max-terrain-error", QString::number( mMaxTerrainScreenError ) );
   elemTerrain.setAttribute( "max-ground-error", QString::number( mMaxTerrainGroundError ) );
+  elemTerrain.setAttribute( "show-labels", mShowLabels ? 1 : 0 );
   QDomElement elemMapLayers = doc.createElement( "layers" );
   Q_FOREACH ( const QgsMapLayerRef &layerRef, mLayers )
   {
@@ -375,4 +378,13 @@ void Qgs3DMapSettings::setShowTerrainTilesInfo( bool enabled )
 
   mShowTerrainTileInfo = enabled;
   emit showTerrainTilesInfoChanged();
+}
+
+void Qgs3DMapSettings::setShowLabels( bool enabled )
+{
+  if ( mShowLabels == enabled )
+    return;
+
+  mShowLabels = enabled;
+  emit showLabelsChanged();
 }

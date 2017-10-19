@@ -56,8 +56,22 @@ class QgsProcessingProvider : QObject
 
     virtual QString name() const = 0;
 %Docstring
- Returns the full provider name, which is used to describe the provider within the GUI.
+ Returns the provider name, which is used to describe the provider within the GUI.
+ This string should be short (e.g. "Lastools") and localised.
+.. seealso:: longName()
+.. seealso:: id()
+ :rtype: str
+%End
+
+    virtual QString longName() const;
+%Docstring
+ Returns the a longer version of the provider name, which can include extra details
+ such as version numbers. E.g. "Lastools LIDAR tools (version 2.2.1)".
  This string should be localised.
+
+ The default implementation returns the same string as name().
+
+.. seealso:: name()
 .. seealso:: id()
  :rtype: str
 %End

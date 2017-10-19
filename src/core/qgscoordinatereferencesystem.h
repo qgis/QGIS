@@ -31,6 +31,7 @@
 //qgis includes
 #include "qgis.h"
 #include "qgsunittypes.h"
+#include "qgsrectangle.h"
 
 class QDomNode;
 class QDomDocument;
@@ -579,6 +580,16 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Returns the units for the projection used by the CRS.
      */
     QgsUnitTypes::DistanceUnit mapUnits() const;
+
+    /**
+     * Returns the approximate bounds for the region the CRS is usable within.
+     *
+     * The returned bounds represent the latitude and longitude extent for the
+     * projection in the WGS 84 CRS.
+     *
+     * \since QGIS 3.0
+     */
+    QgsRectangle bounds() const;
 
     // Mutators -----------------------------------
 

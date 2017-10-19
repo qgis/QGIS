@@ -167,10 +167,6 @@ SET(QGIS_APP_SRCS
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
 
-  openstreetmap/qgsosmdownloaddialog.cpp
-  openstreetmap/qgsosmimportdialog.cpp
-  openstreetmap/qgsosmexportdialog.cpp
-
   dwg/qgsdwgimportdialog.cpp
   dwg/qgsdwgimporter.cpp
 
@@ -347,10 +343,6 @@ SET (QGIS_APP_MOC_HDRS
 
   gps/qgsgpsinformationwidget.h
 
-  openstreetmap/qgsosmdownloaddialog.h
-  openstreetmap/qgsosmimportdialog.h
-  openstreetmap/qgsosmexportdialog.h
-
   dwg/qgsdwgimportdialog.h
 
   pluginmanager/qgspluginmanager.h
@@ -525,12 +517,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app/layout
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/app/gps
-  ${CMAKE_SOURCE_DIR}/src/app/openstreetmap
   ${CMAKE_SOURCE_DIR}/src/app/dwg
   ${CMAKE_SOURCE_DIR}/src/app/dwg/libdxfrw
   ${CMAKE_SOURCE_DIR}/src/app/locator
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
-  ${CMAKE_SOURCE_DIR}/src/analysis/openstreetmap
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
@@ -589,8 +579,8 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QEXTSERIALPORT_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
+  ../analysis/processing
   ../analysis/raster
-  ../analysis/openstreetmap
   ../core
   ../core/annotations
   ../core/auth
@@ -602,6 +592,7 @@ INCLUDE_DIRECTORIES(
   ../core/layout
   ../core/metadata
   ../core/layertree
+  ../core/processing
   ../core/providers/memory
   ../core/raster
   ../core/scalebar
@@ -619,7 +610,6 @@ INCLUDE_DIRECTORIES(
   ../plugins
   ../python
   gps
-  openstreetmap
   dwg
   dwg/libdxfrw
   ${CMAKE_SOURCE_DIR}/src/native

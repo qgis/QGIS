@@ -45,7 +45,7 @@ def multipleOutputDir(alg, field, basename=None):
         commands = ["for r in $(g.list type=rast pattern='{}*'); do".format(basename)]
     # Otherwise, export everything
     else:
-        commands = ["for r in $(g.list type=rast); do".format(basename)]
+        commands = ["for r in $(g.list type=rast); do"]
     commands.append("  r.out.gdal -c -t -f input=${{r}} output={}/${{r}}.tif createopt=\"TFW=YES,COMPRESS=LZW\"".format(outputDir))
     commands.append("done")
     alg.commands.extend(commands)

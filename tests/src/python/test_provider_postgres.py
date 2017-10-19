@@ -32,7 +32,8 @@ from qgis.core import (
     QgsTransactionGroup,
     QgsReadWriteContext,
     QgsRectangle,
-    QgsDefaultValue
+    QgsDefaultValue,
+    QgsDataSourceUri
 )
 from qgis.gui import QgsGui
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject
@@ -846,6 +847,27 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         vl0.dataProvider().setListening(False)
 
         self.assertTrue(ok)
+
+    def testStyleDatabaseWithService(self):
+
+        myconn = 'service=\'qgis_test\''
+        if 'QGIS_PGTEST_DB' in os.environ:
+            myconn = os.environ['QGIS_PGTEST_DB']
+        myvl = QgsVectorLayer(myconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
+
+        styles = myvl.listStylesInDatabase()
+        ids = styles[1]
+        self.assertEqual(len(ids), 0)
+
+        myvl.saveStyleToDatabase('mystyle', '', False, '')
+        styles = myvl.listStylesInDatabase()
+        ids = styles[1]
+        self.assertEqual(len(ids), 1)
+
+        myvl.deleteStyleFromDatabase(ids[0])
+        styles = myvl.listStylesInDatabase()
+        ids = styles[1]
+        self.assertEqual(len(ids), 0)
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):

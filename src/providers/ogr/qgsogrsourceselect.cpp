@@ -114,7 +114,14 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
     mVectorPath = path;
-    emit enableButtons( ! mVectorPath.isEmpty() );
+    if ( radioSrcFile->isChecked() || radioSrcDirectory->isChecked() )
+      emit enableButtons( ! mVectorPath.isEmpty() );
+  } );
+
+  connect( protocolURI, &QLineEdit::textChanged, this, [ = ]( const QString & text )
+  {
+    if ( radioSrcProtocol->isChecked() )
+      emit enableButtons( !text.isEmpty() );
   } );
 }
 
@@ -378,6 +385,8 @@ void QgsOgrSourceSelect::radioSrcFile_toggled( bool checked )
     mFileWidget->setFilePath( QString() );
 
     mDataSourceType = QStringLiteral( "file" );
+
+    emit enableButtons( ! mFileWidget->filePath().isEmpty() );
   }
 }
 
@@ -396,6 +405,8 @@ void QgsOgrSourceSelect::radioSrcDirectory_toggled( bool checked )
     mFileWidget->setFilePath( QString() );
 
     mDataSourceType = QStringLiteral( "directory" );
+
+    emit enableButtons( ! mFileWidget->filePath().isEmpty() );
   }
 }
 
@@ -412,6 +423,8 @@ void QgsOgrSourceSelect::radioSrcDatabase_toggled( bool checked )
     populateConnectionList();
     setConnectionListPosition();
     mDataSourceType = QStringLiteral( "database" );
+
+    emit enableButtons( true );
   }
 }
 
@@ -423,6 +436,8 @@ void QgsOgrSourceSelect::radioSrcProtocol_toggled( bool checked )
     dbGroupBox->hide();
     protocolGroupBox->show();
     mDataSourceType = QStringLiteral( "protocol" );
+
+    emit enableButtons( ! protocolURI->text().isEmpty() );
   }
 }
 

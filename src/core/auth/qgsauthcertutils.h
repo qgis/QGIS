@@ -107,8 +107,21 @@ class CORE_EXPORT QgsAuthCertUtils
     //! Return list of concatenated certs from a PEM or DER formatted file
     static QList<QSslCertificate> certsFromFile( const QString &certspath );
 
+    //! Return list of concatenated CAs from a PEM or DER formatted file
+    static QList<QSslCertificate> casFromFile( const QString &certspath );
+
     //! Return first cert from a PEM or DER formatted file
     static QSslCertificate certFromFile( const QString &certpath );
+
+    /**
+     * \brief casMerge merges two certificate bundles in a single one removing duplicates, the certificates
+     * from the \a bundle2 are appended to \a bundle1 if not already there
+     * \param bundle1 first bundle
+     * \param bundle2 second bundle
+     * \return a list of unique certificates
+     */
+    static QList<QSslCertificate> casMerge( const QList<QSslCertificate> &bundle1,
+                                            const QList<QSslCertificate> &bundle2 );
 
     /**
      * Return non-encrypted key from a PEM or DER formatted file
@@ -122,6 +135,14 @@ class CORE_EXPORT QgsAuthCertUtils
 
     //! Return list of concatenated certs from a PEM Base64 text block
     static QList<QSslCertificate> certsFromString( const QString &pemtext );
+
+
+    /**
+     * \brief casRemoveSelfSigned remove self-signed CA certificates from \a caList
+     * \param caList list of CA certificates
+     * \return a list of non self-signed certificates
+     */
+    static QList<QSslCertificate> casRemoveSelfSigned( const QList<QSslCertificate> &caList );
 
     /**
      * Return list of certificate, private key and algorithm (as PEM text) from file path components
@@ -146,6 +167,23 @@ class CORE_EXPORT QgsAuthCertUtils
     static QStringList pkcs12BundleToPem( const QString &bundlepath,
                                           const QString &bundlepass = QString(),
                                           bool reencrypt = true );
+
+    /**
+     * Return list of CA certificates (as QSslCertificate) for a PKCS#12 bundle
+     * \param bundlepath File path to the PKCS bundle
+     * \param bundlepass Passphrase for bundle
+     * \returns list of certificate
+     */
+    static QList<QSslCertificate> pkcs12BundleCas( const QString &bundlepath,
+        const QString &bundlepass = QString() );
+
+
+    /**
+     * \brief certsToPemText dump a list of QSslCertificates to PEM text
+     * \param certs list of certs
+     * \return a byte array of concatenated certificates as PEM text
+     */
+    static QByteArray certsToPemText( const QList<QSslCertificate> &certs );
 
     /**
      * Write a temporary file for a PEM text of cert/key/CAs bundle component

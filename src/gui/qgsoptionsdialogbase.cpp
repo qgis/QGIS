@@ -226,7 +226,7 @@ void QgsOptionsDialogBase::searchText( const QString &text )
     mOptListWidget->setRowHidden( r, !text.isEmpty() );
   }
 
-  for ( const QPair< QgsSearchHighlightOptionWidget *, int > &rsw : qgsAsConst( mRegisteredSearchWidgets ) )
+  for ( const QPair< QgsSearchHighlightOptionWidget *, int > &rsw : qgis::as_const( mRegisteredSearchWidgets ) )
   {
     rsw.first->reset();
     if ( !text.isEmpty() && rsw.first->searchHighlight( text ) )

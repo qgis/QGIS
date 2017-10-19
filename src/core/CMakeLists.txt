@@ -98,7 +98,6 @@ SET(QGIS_CORE_SRCS
   locator/qgslocatorfilter.cpp
   locator/qgslocatormodel.cpp
 
-  processing/qgsnativealgorithms.cpp
   processing/qgsprocessingalgorithm.cpp
   processing/qgsprocessingalgrunnertask.cpp
   processing/qgsprocessingoutputs.cpp
@@ -183,6 +182,7 @@ SET(QGIS_CORE_SRCS
   qgsfieldmodel.cpp
   qgsfieldproxymodel.cpp
   qgsfields.cpp
+  qgsfiledownloader.cpp
   qgsfontutils.cpp
   qgsgeometrysimplifier.cpp
   qgsgeometryvalidator.cpp
@@ -589,6 +589,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsfieldformatterregistry.h
   qgsfieldmodel.h
   qgsfieldproxymodel.h
+  qgsfiledownloader.h
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
@@ -689,7 +690,6 @@ SET(QGIS_CORE_MOC_HDRS
   locator/qgslocatorfilter.h
   locator/qgslocatormodel.h
 
-  processing/qgsnativealgorithms.h
   processing/qgsprocessingalgrunnertask.h
   processing/qgsprocessingfeedback.h
   processing/qgsprocessingprovider.h

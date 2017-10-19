@@ -146,7 +146,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
     if ( trunc > 0 && labelText.length() > trunc )
     {
       labelText.truncate( trunc );
-      labelText += QStringLiteral( "…" );
+      labelText += QStringLiteral( "\u2026" );
     }
     return labelText;
   }
@@ -169,7 +169,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
         if ( trunc > 0 && labelText.length() > trunc )
         {
           labelText.truncate( trunc );
-          labelText += QStringLiteral( "…" );
+          labelText += QStringLiteral( "\u2026" );
         }
         return labelText;
       }
@@ -732,7 +732,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexe
   if ( !vlayer->auxiliaryLayer() )
     return false;
 
-  for ( const QgsPalLayerSettings::Property &p : qgsAsConst( mPalProperties ) )
+  for ( const QgsPalLayerSettings::Property &p : qgis::as_const( mPalProperties ) )
   {
     int index = -1;
 
@@ -779,7 +779,7 @@ bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIn
   if ( !vlayer->auxiliaryLayer() )
     return false;
 
-  for ( const QgsDiagramLayerSettings::Property &p : qgsAsConst( mDiagramProperties ) )
+  for ( const QgsDiagramLayerSettings::Property &p : qgis::as_const( mDiagramProperties ) )
   {
     int index = -1;
 

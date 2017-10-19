@@ -174,7 +174,7 @@ bool QgsLayoutPageCollection::readXml( const QDomElement &e, const QDomDocument 
   mBlockUndoCommands = true;
 
   int i = 0;
-  for ( QgsLayoutItemPage *page : qgsAsConst( mPages ) )
+  for ( QgsLayoutItemPage *page : qgis::as_const( mPages ) )
   {
     emit pageAboutToBeRemoved( i );
     mLayout->removeItem( page );

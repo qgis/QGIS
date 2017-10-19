@@ -17,6 +17,7 @@ email                : jef at norbit dot de
 #include "qgsgeometryvalidator.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsgeos.h"
 
 QgsGeometryValidator::QgsGeometryValidator( const QgsGeometry &geometry, QList<QgsGeometry::Error> *errors, QgsGeometry::ValidationMethod method )
   : mGeometry( geometry )
@@ -217,7 +218,7 @@ void QgsGeometryValidator::run()
     case QgsGeometry::ValidatorGeos:
     {
       char *r = nullptr;
-      GEOSGeometry *g0 = mGeometry.exportToGeos();
+      geos::unique_ptr g0( mGeometry.exportToGeos() );
       GEOSContextHandle_t handle = QgsGeometry::getGEOSHandler();
       if ( !g0 )
       {
@@ -226,8 +227,7 @@ void QgsGeometryValidator::run()
       else
       {
         GEOSGeometry *g1 = nullptr;
-        char res = GEOSisValidDetail_r( handle, g0, GEOSVALID_ALLOW_SELFTOUCHING_RING_FORMING_HOLE, &r, &g1 );
-        GEOSGeom_destroy_r( handle, g0 );
+        char res = GEOSisValidDetail_r( handle, g0.get(), GEOSVALID_ALLOW_SELFTOUCHING_RING_FORMING_HOLE, &r, &g1 );
         if ( res != 1 )
         {
           if ( g1 )

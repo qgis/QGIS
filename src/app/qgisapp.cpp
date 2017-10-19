@@ -85,6 +85,7 @@
 #include "qgsabstract3drenderer.h"
 #include "qgs3dmapcanvasdockwidget.h"
 #include "qgs3drendererregistry.h"
+#include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsvectorlayer3drenderer.h"
@@ -228,6 +229,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmessagelog.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsnative.h"
+#include "qgsnativealgorithms.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsnewmemorylayerdialog.h"
 #include "qgsoptions.h"
@@ -238,6 +240,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgspointxy.h"
 #include "qgsruntimeprofiler.h"
 #include "qgshandlebadlayers.h"
+#include "qgsprocessingregistry.h"
 #include "qgsproject.h"
 #include "qgsprojectlayergroupdialog.h"
 #include "qgsprojectproperties.h"
@@ -307,10 +310,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
-
-#include "qgsosmdownloaddialog.h"
-#include "qgsosmimportdialog.h"
-#include "qgsosmexportdialog.h"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -818,6 +817,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::updateProjectFromTemplates, this, QStringLiteral( "Update project from templates" ) );
   functionProfile( &QgisApp::legendLayerSelectionChanged, this, QStringLiteral( "Legend layer selection changed" ) );
   functionProfile( &QgisApp::init3D, this, QStringLiteral( "Initialize 3D support" ) );
+  functionProfile( &QgisApp::initNativeProcessing, this, QStringLiteral( "Initialize native processing" ) );
 
   QgsApplication::annotationRegistry()->addAnnotationType( QgsAnnotationMetadata( QStringLiteral( "FormAnnotationItem" ), &QgsFormAnnotation::create ) );
   connect( QgsProject::instance()->annotationManager(), &QgsAnnotationManager::annotationAdded, this, &QgisApp::annotationCreated );
@@ -1037,15 +1037,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     mPluginManager->setPythonUtils( mPythonUtils );
     endProfile();
   }
-  else if ( mActionShowPythonDialog || mActionInstallFromZip )
+  else if ( mActionShowPythonDialog )
 #endif
   {
     // python is disabled so get rid of the action for python console
     // and installing plugin from ZUIP
     delete mActionShowPythonDialog;
-    delete mActionInstallFromZip;
     mActionShowPythonDialog = nullptr;
-    mActionInstallFromZip = nullptr;
   }
 
   // Set icon size of toolbars
@@ -1427,7 +1425,7 @@ void QgisApp::dropEvent( QDropEvent *event )
   {
     freezeCanvases();
 
-    for ( const QString &file : qgsAsConst( files ) )
+    for ( const QString &file : qgis::as_const( files ) )
     {
       bool handled = false;
 
@@ -1879,7 +1877,6 @@ void QgisApp::createActions()
   // Plugin Menu Items
 
   connect( mActionManagePlugins, &QAction::triggered, this, &QgisApp::showPluginManager );
-  connect( mActionInstallFromZip, &QAction::triggered, this, &QgisApp::installPluginFromZip );
   connect( mActionShowPythonDialog, &QAction::triggered, this, &QgisApp::showPythonDialog );
 
   // Settings Menu Items
@@ -1933,11 +1930,6 @@ void QgisApp::createActions()
   connect( mActionDecreaseBrightness, &QAction::triggered, this, &QgisApp::decreaseBrightness );
   connect( mActionIncreaseContrast, &QAction::triggered, this, &QgisApp::increaseContrast );
   connect( mActionDecreaseContrast, &QAction::triggered, this, &QgisApp::decreaseContrast );
-
-  // Vector Menu Items
-  connect( mActionOSMDownload, &QAction::triggered, this, &QgisApp::osmDownloadDialog );
-  connect( mActionOSMImport, &QAction::triggered, this, &QgisApp::osmImportDialog );
-  connect( mActionOSMExport, &QAction::triggered, this, &QgisApp::osmExportDialog );
 
   // Help Menu Items
 
@@ -2839,7 +2831,6 @@ void QgisApp::setTheme( const QString &themeName )
   mActionToggleFullScreen->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleFullScreen.png" ) ) );
   mActionProjectProperties->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionProjectProperties.png" ) ) );
   mActionManagePlugins->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowPluginManager.svg" ) ) );
-  mActionInstallFromZip->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInstallPluginFromZip.svg" ) ) );
   mActionShowPythonDialog->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconRunConsole.png" ) ) );
   mActionCheckQgisVersion->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSuccess.svg" ) ) );
   mActionOptions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
@@ -3267,6 +3258,8 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
   if ( !dock )
     return nullptr;
 
+  setupDockWidget( dock );  // use default dock position settings
+
   dock->mapCanvas()->setLayers( mMapCanvas->layers() );
   dock->mapCanvas()->setExtent( mMapCanvas->extent() );
   QgsDebugMsgLevel( QString( "QgisApp::createNewMapCanvas -2- : QgsProject::instance()->crs().description[%1]ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
@@ -3275,7 +3268,7 @@ QgsMapCanvas *QgisApp::createNewMapCanvas( const QString &name )
   return dock->mapCanvas();
 }
 
-QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bool isFloating, const QRect &dockGeometry, Qt::DockWidgetArea area )
+QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name )
 {
   Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
   {
@@ -3310,31 +3303,36 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::closed, this, &QgisApp::markDirty );
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::renameTriggered, this, &QgisApp::renameView );
 
-  mapCanvasWidget->setFloating( isFloating );
+  return mapCanvasWidget;
+}
+
+
+void QgisApp::setupDockWidget( QDockWidget *dockWidget, bool isFloating, const QRect &dockGeometry, Qt::DockWidgetArea area )
+{
+  dockWidget->setFloating( isFloating );
   if ( dockGeometry.isEmpty() )
   {
     // try to guess a nice initial placement for view - about 3/4 along, half way down
-    mapCanvasWidget->setGeometry( QRect( rect().width() * 0.75, rect().height() * 0.5, 400, 400 ) );
-    addDockWidget( area, mapCanvasWidget );
+    dockWidget->setGeometry( QRect( rect().width() * 0.75, rect().height() * 0.5, 400, 400 ) );
+    addDockWidget( area, dockWidget );
   }
   else
   {
     if ( !isFloating )
     {
       // ugly hack, but only way to set dock size correctly for Qt < 5.6
-      mapCanvasWidget->setFixedSize( dockGeometry.size() );
-      addDockWidget( area, mapCanvasWidget );
-      mapCanvasWidget->resize( dockGeometry.size() );
+      dockWidget->setFixedSize( dockGeometry.size() );
+      addDockWidget( area, dockWidget );
+      dockWidget->resize( dockGeometry.size() );
       QgsApplication::processEvents(); // required!
-      mapCanvasWidget->setFixedSize( QWIDGETSIZE_MAX, QWIDGETSIZE_MAX );
+      dockWidget->setFixedSize( QWIDGETSIZE_MAX, QWIDGETSIZE_MAX );
     }
     else
     {
-      mapCanvasWidget->setGeometry( dockGeometry );
-      addDockWidget( area, mapCanvasWidget );
+      dockWidget->setGeometry( dockGeometry );
+      addDockWidget( area, dockWidget );
     }
   }
-  return mapCanvasWidget;
 }
 
 void QgisApp::closeMapCanvas( const QString &name )
@@ -3359,6 +3357,17 @@ void QgisApp::closeAdditionalMapCanvases()
     delete w;
   }
   freezeCanvases( false );
+}
+
+void QgisApp::closeAdditional3DMapCanvases()
+{
+#ifdef HAVE_3D
+  for ( Qgs3DMapCanvasDockWidget *w : findChildren< Qgs3DMapCanvasDockWidget * >() )
+  {
+    w->close();
+    delete w;
+  }
+#endif
 }
 
 void QgisApp::freezeCanvases( bool frozen )
@@ -3471,7 +3480,7 @@ void QgisApp::initLayerTreeView()
   connect( actionCollapseAll, &QAction::triggered, mLayerTreeView, &QgsLayerTreeView::collapseAllNodes );
 
   QToolBar *toolbar = new QToolBar();
-  toolbar->setIconSize( QSize( 16, 16 ) );
+  toolbar->setIconSize( iconSize( true ) );
   toolbar->addAction( mActionStyleDock );
   toolbar->addAction( actionAddGroup );
   toolbar->addWidget( btnVisibilityPresets );
@@ -7935,7 +7944,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
   pasteVectorLayer->addFeatures( newFeatures );
   QgsFeatureIds newIds;
-  for ( const QgsFeature &f : qgsAsConst( newFeatures ) )
+  for ( const QgsFeature &f : qgis::as_const( newFeatures ) )
   {
     newIds << f.id();
   }
@@ -9233,16 +9242,6 @@ void QgisApp::showPluginManager()
   }
 }
 
-void QgisApp::installPluginFromZip()
-{
-#ifdef WITH_BINDINGS
-  if ( mPythonUtils && mPythonUtils->isEnabled() )
-  {
-    QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installFromZipFile()" ) );
-  }
-#endif
-}
-
 
 // implementation of the python runner
 class QgsPythonRunnerImpl : public QgsPythonRunner
@@ -9927,9 +9926,10 @@ void QgisApp::newMapCanvas()
     }
   }
 
-  QgsMapCanvasDockWidget *dock = createNewMapCanvasDock( name, true );
+  QgsMapCanvasDockWidget *dock = createNewMapCanvasDock( name );
   if ( dock )
   {
+    setupDockWidget( dock, true );
     dock->mapCanvas()->setLayers( mMapCanvas->layers() );
     dock->mapCanvas()->setExtent( mMapCanvas->extent() );
     QgsDebugMsgLevel( QString( "QgisApp::newMapCanvas() -4- : QgsProject::instance()->crs().description[%1] ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
@@ -9948,6 +9948,11 @@ void QgisApp::init3D()
 #endif
 }
 
+void QgisApp::initNativeProcessing()
+{
+  QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
+}
+
 void QgisApp::new3DMapCanvas()
 {
 #ifdef HAVE_3D
@@ -9964,26 +9969,68 @@ void QgisApp::new3DMapCanvas()
     return;
   }
 
-  Qgs3DMapSettings *map = new Qgs3DMapSettings;
-  map->setCrs( prj->crs() );
-  map->setOrigin( fullExtent.center().x(), fullExtent.center().y(), 0 );
-  map->setSelectionColor( mMapCanvas->selectionColor() );
-  map->setBackgroundColor( mMapCanvas->canvasColor() );
-  map->setLayers( mMapCanvas->layers() );
+  int i = 1;
 
-  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
-  flatTerrain->setExtent( fullExtent );
-  map->setTerrainGenerator( flatTerrain );
+  bool existing = true;
+  const QList< Qgs3DMapCanvas * > existingCanvases = findChildren< Qgs3DMapCanvas * >();
+  QString name;
+  while ( existing )
+  {
+    name = tr( "3D Map %1" ).arg( i++ );
+    existing = false;
+    for ( Qgs3DMapCanvas *canvas : existingCanvases )
+    {
+      if ( canvas->objectName() == name )
+      {
+        existing = true;
+        break;
+      }
+    }
+  }
 
-  // TODO: combine with code in createNewMapCanvasDock()
+  Qgs3DMapCanvasDockWidget *dock = createNew3DMapCanvasDock( name );
+  if ( dock )
+  {
+    setupDockWidget( dock, true );
+
+    Qgs3DMapSettings *map = new Qgs3DMapSettings;
+    map->setCrs( prj->crs() );
+    map->setOrigin( fullExtent.center().x(), fullExtent.center().y(), 0 );
+    map->setSelectionColor( mMapCanvas->selectionColor() );
+    map->setBackgroundColor( mMapCanvas->canvasColor() );
+    map->setLayers( mMapCanvas->layers() );
+
+    QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+    flatTerrain->setCrs( map->crs() );
+    flatTerrain->setExtent( fullExtent );
+    map->setTerrainGenerator( flatTerrain );
+
+    dock->setMapSettings( map );
+  }
+#endif
+}
+
+Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name )
+{
+#ifdef HAVE_3D
+  const QList<Qgs3DMapCanvas *> mapCanvases = findChildren<Qgs3DMapCanvas *>();
+  for ( Qgs3DMapCanvas *canvas : mapCanvases )
+  {
+    if ( canvas->objectName() == name )
+    {
+      QgsDebugMsg( tr( "A map canvas with name '%1' already exists!" ).arg( name ) );
+      return nullptr;
+    }
+  }
+
   Qgs3DMapCanvasDockWidget *map3DWidget = new Qgs3DMapCanvasDockWidget( this );
-  map3DWidget->setWindowTitle( "3D Map" );
   map3DWidget->setAllowedAreas( Qt::AllDockWidgetAreas );
-  map3DWidget->setGeometry( QRect( rect().width() * 0.75, rect().height() * 0.5, 400, 400 ) );
-  map3DWidget->setMap( map );
+  map3DWidget->setWindowTitle( name );
+  map3DWidget->mapCanvas3D()->setObjectName( name );
   map3DWidget->setMainCanvas( mMapCanvas );
-  addDockWidget( Qt::BottomDockWidgetArea, map3DWidget );
+  return map3DWidget;
+#else
+  Q_UNUSED( name );
 #endif
 }
 
@@ -10107,6 +10154,7 @@ void QgisApp::closeProject()
   mActionFilterLegend->setChecked( false );
 
   closeAdditionalMapCanvases();
+  closeAdditional3DMapCanvases();
 
   deletePrintComposers();
   removeAnnotationItems();
@@ -12003,24 +12051,58 @@ void QgisApp::writeProject( QDomDocument &doc )
   {
     QDomElement node = doc.createElement( QStringLiteral( "view" ) );
     node.setAttribute( QStringLiteral( "name" ), w->mapCanvas()->objectName() );
-    node.setAttribute( QStringLiteral( "x" ), w->x() );
-    node.setAttribute( QStringLiteral( "y" ), w->y() );
-    node.setAttribute( QStringLiteral( "width" ), w->width() );
-    node.setAttribute( QStringLiteral( "height" ), w->height() );
-    node.setAttribute( QStringLiteral( "floating" ), w->isFloating() );
-    node.setAttribute( QStringLiteral( "area" ), dockWidgetArea( w ) );
     node.setAttribute( QStringLiteral( "synced" ), w->isViewCenterSynchronized() );
     node.setAttribute( QStringLiteral( "showCursor" ), w->isCursorMarkerVisible() );
     node.setAttribute( QStringLiteral( "showExtent" ), w->isMainCanvasExtentVisible() );
     node.setAttribute( QStringLiteral( "scaleSynced" ), w->isViewScaleSynchronized() );
     node.setAttribute( QStringLiteral( "scaleFactor" ), w->scaleFactor() );
     node.setAttribute( QStringLiteral( "showLabels" ), w->labelsVisible() );
+    writeDockWidgetSettings( w, node );
     mapViewNode.appendChild( node );
   }
   qgisNode.appendChild( mapViewNode );
 
+#ifdef HAVE_3D
+  QgsReadWriteContext readWriteContext;
+  readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
+  QDomElement elem3DMaps = doc.createElement( QStringLiteral( "mapViewDocks3D" ) );
+  for ( Qgs3DMapCanvasDockWidget *w : findChildren<Qgs3DMapCanvasDockWidget *>() )
+  {
+    QDomElement elem3DMap = doc.createElement( QStringLiteral( "view" ) );
+    elem3DMap.setAttribute( QStringLiteral( "name" ), w->mapCanvas3D()->objectName() );
+    QDomElement elem3DMapSettings = w->mapCanvas3D()->map()->writeXml( doc, readWriteContext );
+    elem3DMap.appendChild( elem3DMapSettings );
+    writeDockWidgetSettings( w, elem3DMap );
+    elem3DMaps.appendChild( elem3DMap );
+  }
+  qgisNode.appendChild( elem3DMaps );
+#endif
+
   projectChanged( doc );
 }
+
+void QgisApp::writeDockWidgetSettings( QDockWidget *dockWidget, QDomElement &elem )
+{
+  elem.setAttribute( QStringLiteral( "x" ), dockWidget->x() );
+  elem.setAttribute( QStringLiteral( "y" ), dockWidget->y() );
+  elem.setAttribute( QStringLiteral( "width" ), dockWidget->width() );
+  elem.setAttribute( QStringLiteral( "height" ), dockWidget->height() );
+  elem.setAttribute( QStringLiteral( "floating" ), dockWidget->isFloating() );
+  elem.setAttribute( QStringLiteral( "area" ), dockWidgetArea( dockWidget ) );
+}
+
+void QgisApp::readDockWidgetSettings( QDockWidget *dockWidget, const QDomElement &elem )
+{
+  int x = elem.attribute( QStringLiteral( "x" ), QStringLiteral( "0" ) ).toInt();
+  int y = elem.attribute( QStringLiteral( "y" ), QStringLiteral( "0" ) ).toInt();
+  int w = elem.attribute( QStringLiteral( "width" ), QStringLiteral( "400" ) ).toInt();
+  int h = elem.attribute( QStringLiteral( "height" ), QStringLiteral( "400" ) ).toInt();
+  bool floating = elem.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
+  Qt::DockWidgetArea area = static_cast< Qt::DockWidgetArea >( elem.attribute( QStringLiteral( "area" ), QString::number( Qt::RightDockWidgetArea ) ).toInt() );
+
+  setupDockWidget( dockWidget, floating, QRect( x, y, w, h ), area );
+}
+
 
 void QgisApp::readProject( const QDomDocument &doc )
 {
@@ -12045,20 +12127,15 @@ void QgisApp::readProject( const QDomDocument &doc )
     {
       QDomElement elementNode = nodes.at( i ).toElement();
       QString mapName = elementNode.attribute( QStringLiteral( "name" ) );
-      int x = elementNode.attribute( QStringLiteral( "x" ), QStringLiteral( "0" ) ).toInt();
-      int y = elementNode.attribute( QStringLiteral( "y" ), QStringLiteral( "0" ) ).toInt();
-      int w = elementNode.attribute( QStringLiteral( "width" ), QStringLiteral( "400" ) ).toInt();
-      int h = elementNode.attribute( QStringLiteral( "height" ), QStringLiteral( "400" ) ).toInt();
-      bool floating = elementNode.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
       bool synced = elementNode.attribute( QStringLiteral( "synced" ), QStringLiteral( "0" ) ).toInt();
       bool showCursor = elementNode.attribute( QStringLiteral( "showCursor" ), QStringLiteral( "0" ) ).toInt();
       bool showExtent = elementNode.attribute( QStringLiteral( "showExtent" ), QStringLiteral( "0" ) ).toInt();
       bool scaleSynced = elementNode.attribute( QStringLiteral( "scaleSynced" ), QStringLiteral( "0" ) ).toInt();
       double scaleFactor = elementNode.attribute( QStringLiteral( "scaleFactor" ), QStringLiteral( "1" ) ).toDouble();
       bool showLabels = elementNode.attribute( QStringLiteral( "showLabels" ), QStringLiteral( "1" ) ).toInt();
-      Qt::DockWidgetArea area = static_cast< Qt::DockWidgetArea >( elementNode.attribute( QStringLiteral( "area" ), QString::number( Qt::RightDockWidgetArea ) ).toInt() );
 
-      QgsMapCanvasDockWidget *mapCanvasDock = createNewMapCanvasDock( mapName, floating, QRect( x, y, w, h ), area );
+      QgsMapCanvasDockWidget *mapCanvasDock = createNewMapCanvasDock( mapName );
+      readDockWidgetSettings( mapCanvasDock, elementNode );
       QgsMapCanvas *mapCanvas = mapCanvasDock->mapCanvas();
       mapCanvasDock->setViewCenterSynchronized( synced );
       mapCanvasDock->setCursorMarkerVisible( showCursor );
@@ -12070,6 +12147,42 @@ void QgisApp::readProject( const QDomDocument &doc )
       views << mapCanvas;
     }
   }
+
+#ifdef HAVE_3D
+  QgsReadWriteContext readWriteContext;
+  readWriteContext.setPathResolver( QgsProject::instance()->pathResolver() );
+  QDomElement elem3DMaps = doc.documentElement().firstChildElement( QStringLiteral( "mapViewDocks3D" ) );
+  if ( !elem3DMaps.isNull() )
+  {
+    QDomElement elem3DMap = elem3DMaps.firstChildElement( QStringLiteral( "view" ) );
+    while ( !elem3DMap.isNull() )
+    {
+      QString mapName = elem3DMap.attribute( QStringLiteral( "name" ) );
+
+      Qgs3DMapCanvasDockWidget *mapCanvasDock3D = createNew3DMapCanvasDock( mapName );
+      readDockWidgetSettings( mapCanvasDock3D, elem3DMap );
+
+      QDomElement elem3D = elem3DMap.firstChildElement( QStringLiteral( "qgis3d" ) );
+      Qgs3DMapSettings *map = new Qgs3DMapSettings;
+      map->readXml( elem3D, readWriteContext );
+      map->resolveReferences( *QgsProject::instance() );
+
+      // these things are not saved in project
+      map->setSelectionColor( mMapCanvas->selectionColor() );
+      map->setBackgroundColor( mMapCanvas->canvasColor() );
+      if ( map->terrainGenerator()->type() == QgsTerrainGenerator::Flat )
+      {
+        QgsFlatTerrainGenerator *flatTerrainGen = static_cast<QgsFlatTerrainGenerator *>( map->terrainGenerator() );
+        flatTerrainGen->setExtent( mMapCanvas->fullExtent() );
+      }
+
+      mapCanvasDock3D->setMapSettings( map );
+
+      elem3DMap = elem3DMap.nextSiblingElement( QStringLiteral( "view" ) );
+    }
+  }
+#endif
+
   // unfreeze all new views at once. We don't do this as they are created since additional
   // views which may exist in project could rearrange the docks and cause the canvases to resize
   // resulting in multiple redraws
@@ -12592,24 +12705,6 @@ void QgisApp::showSystemNotification( const QString &title, const QString &messa
   mTray->showMessage( title, message );
   // Re-hide menubar icon
   mTray->hide();
-}
-
-void QgisApp::osmDownloadDialog()
-{
-  QgsOSMDownloadDialog dlg;
-  dlg.exec();
-}
-
-void QgisApp::osmImportDialog()
-{
-  QgsOSMImportDialog dlg;
-  dlg.exec();
-}
-
-void QgisApp::osmExportDialog()
-{
-  QgsOSMExportDialog dlg;
-  dlg.exec();
 }
 
 void QgisApp::showStatisticsDockWidget()

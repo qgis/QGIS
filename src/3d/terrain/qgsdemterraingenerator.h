@@ -20,11 +20,11 @@
 
 #include "qgsterraingenerator.h"
 
+
 #include <memory>
 
-class QgsDemHeightMapGenerator;
-
 class QgsRasterLayer;
+class QgsDemHeightMapGenerator;
 
 #include "qgsmaplayerref.h"
 
@@ -37,6 +37,7 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
 {
   public:
     QgsDemTerrainGenerator();
+    ~QgsDemTerrainGenerator();
 
     //! Sets raster layer with elevation model to be used for terrain generation
     void setLayer( QgsRasterLayer *layer );
@@ -49,7 +50,7 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     int resolution() const { return mResolution; }
 
     //! Returns height map generator object - takes care of extraction of elevations from the layer)
-    QgsDemHeightMapGenerator *heightMapGenerator() { return mHeightMapGenerator.get(); }
+    QgsDemHeightMapGenerator *heightMapGenerator() { return mHeightMapGenerator; }
 
     virtual QgsTerrainGenerator *clone() const override SIP_FACTORY;
     Type type() const override;
@@ -64,7 +65,7 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
   private:
     void updateGenerator();
 
-    std::unique_ptr<QgsDemHeightMapGenerator> mHeightMapGenerator;
+    QgsDemHeightMapGenerator *mHeightMapGenerator = nullptr;
 
     //! source layer for heights
     QgsMapLayerRef mLayer;

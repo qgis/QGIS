@@ -301,7 +301,6 @@
         <file>themes/default/mActionShowHideLabels.svg</file>
         <file>themes/default/mActionShowPinnedLabels.svg</file>
         <file>themes/default/mActionShowPluginManager.svg</file>
-        <file>themes/default/mActionInstallPluginFromZip.svg</file>
         <file>themes/default/mActionShowRasterCalculator.png</file>
         <file>themes/default/mActionShowSelectedLayers.svg</file>
         <file>themes/default/mActionSimplify.svg</file>
@@ -445,6 +444,7 @@
         <file>themes/default/propertyicons/plugin-installed.svg</file>
         <file>themes/default/propertyicons/plugin-new.svg</file>
         <file>themes/default/propertyicons/plugin-upgrade.svg</file>
+        <file>themes/default/propertyicons/plugin-install_from_zip.svg</file>
         <file>themes/default/propertyicons/plugins.svg</file>
         <file>themes/default/propertyicons/pyramids.png</file>
         <file>themes/default/propertyicons/rendering.svg</file>
@@ -454,6 +454,7 @@
         <file>themes/default/propertyicons/symbology.svg</file>
         <file>themes/default/propertyicons/system.svg</file>
         <file>themes/default/propertyicons/transparency.png</file>
+        <file>themes/default/propertyicons/spacer.svg</file>
         <file>themes/default/rendererCategorizedSymbol.svg</file>
         <file>themes/default/rendererGraduatedSymbol.svg</file>
         <file>themes/default/rendererNullSymbol.svg</file>

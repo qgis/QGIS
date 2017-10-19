@@ -1522,6 +1522,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
                         mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * signedWheelFactor ) );
 
   zoomByFactor( signedWheelFactor, &newCenter );
+  e->accept();
 }
 
 void QgsMapCanvas::setWheelFactor( double factor )
@@ -2265,6 +2266,7 @@ void QgsMapCanvas::startPreviewJob( int number )
 
   jobSettings.setExtent( jobExtent );
   jobSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+  jobSettings.setFlag( QgsMapSettings::RenderPreviewJob, true );
 
   QgsMapRendererQImageJob *job = new QgsMapRendererSequentialJob( jobSettings );
   mPreviewJobs.append( job );

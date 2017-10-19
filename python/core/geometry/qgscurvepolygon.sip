@@ -193,6 +193,10 @@ Adds an interior ring to the geometry (takes ownership)
     virtual QgsCurvePolygon *toCurveType() const /Factory/;
 
   protected:
+    virtual int childCount() const;
+    virtual QgsAbstractGeometry *childGeometry( int index ) const;
+
+  protected:
 
 
     virtual QgsRectangle calculateBoundingBox() const;

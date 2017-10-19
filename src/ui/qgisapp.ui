@@ -193,7 +193,6 @@
      <string>&amp;Plugins</string>
     </property>
     <addaction name="mActionManagePlugins"/>
-    <addaction name="mActionInstallFromZip"/>
     <addaction name="separator"/>
     <addaction name="mActionShowPythonDialog"/>
    </widget>
@@ -238,15 +237,6 @@
     <property name="title">
      <string>Vect&amp;or</string>
     </property>
-    <widget class="QMenu" name="menuOpenStreetMap">
-     <property name="title">
-      <string>&amp;OpenStreetMap</string>
-     </property>
-     <addaction name="mActionOSMDownload"/>
-     <addaction name="mActionOSMImport"/>
-     <addaction name="mActionOSMExport"/>
-    </widget>
-    <addaction name="menuOpenStreetMap"/>
    </widget>
    <widget class="QMenu" name="mEditMenu">
     <property name="title">
@@ -2233,21 +2223,6 @@ Acts on currently active editable layer</string>
     <string>Rotate Feature(s)</string>
    </property>
   </action>
-  <action name="mActionOSMDownload">
-   <property name="text">
-    <string>&amp;Download Data...</string>
-   </property>
-  </action>
-  <action name="mActionOSMImport">
-   <property name="text">
-    <string>&amp;Import Topology from XML...</string>
-   </property>
-  </action>
-  <action name="mActionOSMExport">
-   <property name="text">
-    <string>&amp;Export Topology to SpatiaLite...</string>
-   </property>
-  </action>
   <action name="mActionIncreaseBrightness">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -2633,15 +2608,6 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Copy and Move Feature(s)</string>
-   </property>
-  </action>
-  <action name="mActionInstallFromZip">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionInstallPluginFromZip.svg</normaloff>:/images/themes/default/mActionInstallPluginFromZip.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Install plugin from ZIP...</string>
    </property>
   </action>
   <action name="mActionDecorationLayoutExtent">

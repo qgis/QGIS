@@ -30,6 +30,8 @@
 #include <QHash>
 #include <cstdlib>
 #include <cfloat>
+#include <memory>
+#include <type_traits>
 #include <cmath>
 #include <qnumeric.h>
 
@@ -273,22 +275,69 @@ inline double qgsRound( double number, double places )
 ///@cond PRIVATE
 
 /**
- * Adds const to non-const objects.
+ * Contains "polyfills" for backporting c++ features from standards > c++11.
  *
- * To be used as a proxy for std::as_const until we target c++17 minimum.
+ * To be removed when minimum c++ build requirement includes the std implementation
+ * for these features.
  *
- * \since QGIS 3.0
- * \note not available in Python bindings
+ * \note not available in Python bindings.
  */
-// TODO - remove when we target c++17 minimum and can use std::as_const
-template <typename T> struct QgsAddConst { typedef const T Type; };
+namespace qgis
+{
+  // as_const
 
-template <typename T>
-constexpr typename QgsAddConst<T>::Type &qgsAsConst( T &t ) noexcept { return t; }
+  /**
+   * Adds const to non-const objects.
+   *
+   * To be used as a proxy for std::as_const until we target c++17 minimum.
+   *
+   * \since QGIS 3.0
+   * \note not available in Python bindings
+   */
+  template <typename T> struct QgsAddConst { typedef const T Type; };
 
-template <typename T>
-void qgsAsConst( const T && ) = delete;
+  template <typename T>
+  constexpr typename QgsAddConst<T>::Type &as_const( T &t ) noexcept { return t; }
 
+  template <typename T>
+  void as_const( const T && ) = delete;
+
+  // make_unique - from https://stackoverflow.com/a/17902439/1861260
+
+  template<class T> struct _Unique_if
+  {
+    typedef std::unique_ptr<T> _Single_object;
+  };
+
+  template<class T> struct _Unique_if<T[]>
+  {
+    typedef std::unique_ptr<T[]> _Unknown_bound;
+  };
+
+  template<class T, size_t N> struct _Unique_if<T[N]>
+  {
+    typedef void _Known_bound;
+  };
+
+  template<class T, class... Args>
+  typename _Unique_if<T>::_Single_object
+  make_unique( Args &&... args )
+  {
+    return std::unique_ptr<T>( new T( std::forward<Args>( args )... ) );
+  }
+
+  template<class T>
+  typename _Unique_if<T>::_Unknown_bound
+  make_unique( size_t n )
+  {
+    typedef typename std::remove_extent<T>::type U;
+    return std::unique_ptr<T>( new U[n]() );
+  }
+
+  template<class T, class... Args>
+  typename _Unique_if<T>::_Known_bound
+  make_unique( Args &&... ) = delete;
+}
 ///@endcond
 #endif
 

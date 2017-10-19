@@ -449,6 +449,11 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       return nullptr;
     }
 #endif
+
+  protected:
+    virtual int childCount() const override;
+    virtual QgsPoint childPoint( int index ) const override;
+
   private:
     double mX;
     double mY;

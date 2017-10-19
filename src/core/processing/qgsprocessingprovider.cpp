@@ -39,6 +39,11 @@ QString QgsProcessingProvider::svgIconPath() const
   return QgsApplication::iconPath( QStringLiteral( "processingAlgorithm.svg" ) );
 }
 
+QString QgsProcessingProvider::longName() const
+{
+  return name();
+}
+
 void QgsProcessingProvider::refreshAlgorithms()
 {
   qDeleteAll( mAlgorithms );

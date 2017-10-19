@@ -849,7 +849,7 @@ class PostGisDBConnector(DBConnector):
         if self.isGeometryColumn(table, column):
             # use PostGIS function to delete geometry column correctly
             schema, tablename = self.getSchemaTableName(table)
-            schema_part = u"%s, " % self._quote_unicode(schema) if schema else ""
+            schema_part = u"%s, " % self.quoteString(schema) if schema else ""
             sql = u"SELECT DropGeometryColumn(%s%s, %s)" % (
                 schema_part, self.quoteString(tablename), self.quoteString(column))
         else:
@@ -971,7 +971,7 @@ class PostGisDBConnector(DBConnector):
     def deleteSpatialIndex(self, table, geom_column='geom'):
         schema, tablename = self.getSchemaTableName(table)
         idx_name = self.quoteId(u"sidx_%s_%s" % (tablename, geom_column))
-        return self.dropTableIndex(table, idx_name)
+        return self.deleteTableIndex(table, idx_name)
 
     def execution_error_types(self):
         return psycopg2.Error, psycopg2.ProgrammingError, psycopg2.Warning

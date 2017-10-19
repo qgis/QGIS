@@ -24,6 +24,7 @@ email                : morb at ozemail dot com dot au
 #include <geos_c.h>
 #include <climits>
 #include <limits>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -136,6 +137,12 @@ class CORE_EXPORT QgsGeometry
      */
     explicit QgsGeometry( QgsAbstractGeometry *geom SIP_TRANSFER );
 
+    /**
+     * Creates a geometry from an abstract geometry object. Ownership of
+     * geom is transferred.
+     * \note Not available in Python bindings
+     */
+    explicit QgsGeometry( std::unique_ptr< QgsAbstractGeometry > geom ) SIP_SKIP;
 
     ~QgsGeometry();
 
@@ -273,6 +280,27 @@ class CORE_EXPORT QgsGeometry
      * \param geom geometry to find minimum distance to
      */
     double distance( const QgsGeometry &geom ) const;
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns STL-style iterator pointing to the first vertex of the geometry
+     * \since QGIS 3.0
+     */
+    QgsAbstractGeometry::vertex_iterator vertices_begin() const;
+
+    /**
+     * Returns STL-style iterator pointing to the imaginary vertex after the last vertex of the geometry
+     * \since QGIS 3.0
+     */
+    QgsAbstractGeometry::vertex_iterator vertices_end() const;
+#endif
+
+    /**
+     * Returns Java-style iterator for traversal of vertices of the geometry
+     * \since QGIS 3.0
+     */
+    QgsVertexIterator vertices() const;
 
     /**
      * Returns the Hausdorff distance between this geometry and \a geom. This is basically a measure of how similar or dissimilar 2 geometries are.
@@ -1154,7 +1182,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.0
      */
-    QgsGeometry makeValid();
+    QgsGeometry makeValid() const;
 
     /**
      * \ingroup core
@@ -1200,7 +1228,7 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 1.5
      * \note Available in Python bindings since QGIS 1.6
      **/
-    void validateGeometry( QList<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal );
+    void validateGeometry( QList<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal ) const;
 
     /**
      * Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
@@ -1526,7 +1554,17 @@ class CORE_EXPORT QgsGeometry
     //! Last error encountered
     mutable QString mLastError;
 
-    void detach( bool cloneGeom = true ); //make sure mGeometry only referenced from this instance
+    /**
+     * Detaches the private geometry container from this instance, and clones
+     * the existing geometry ready for modification.
+     */
+    void detach();
+
+    /**
+     * Detaches the private geometry container from this instance, and resets it
+     * to a new abstract geometry pointer.
+     */
+    void reset( std::unique_ptr< QgsAbstractGeometry > newGeometry );
 
     static void convertToPolyline( const QgsPointSequence &input, QgsPolyline &output );
     static void convertPolygon( const QgsPolygonV2 &input, QgsPolygon &output );
@@ -1549,8 +1587,8 @@ class CORE_EXPORT QgsGeometry
      * \param minimumDistance minimum segment length to apply smoothing to
      * \param maxAngle maximum angle at node (0-180) at which smoothing will be applied
     */
-    QgsLineString *smoothLine( const QgsLineString &line, const unsigned int iterations = 1, const double offset = 0.25,
-                               double minimumDistance = -1, double maxAngle = 180.0 ) const;
+    std::unique_ptr< QgsLineString > smoothLine( const QgsLineString &line, const unsigned int iterations = 1, const double offset = 0.25,
+        double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
     /**
      * Smooths a polygon using the Chaikin algorithm
@@ -1563,8 +1601,8 @@ class CORE_EXPORT QgsGeometry
      * \param minimumDistance minimum segment length to apply smoothing to
      * \param maxAngle maximum angle at node (0-180) at which smoothing will be applied
     */
-    QgsPolygonV2 *smoothPolygon( const QgsPolygonV2 &polygon, const unsigned int iterations = 1, const double offset = 0.25,
-                                 double minimumDistance = -1, double maxAngle = 180.0 ) const;
+    std::unique_ptr< QgsPolygonV2 > smoothPolygon( const QgsPolygonV2 &polygon, const unsigned int iterations = 1, const double offset = 0.25,
+        double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
 
 }; // class QgsGeometry

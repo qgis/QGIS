@@ -133,6 +133,7 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   buttonInstall->hide();
   buttonUninstall->hide();
   frameSettings->setHidden( true );
+  mOptionsListWidget->item( PLUGMAN_TAB_INSTALL_FROM_ZIP )->setHidden( true );
 
   voteRating->hide();
   voteLabel->hide();
@@ -167,6 +168,7 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
 
   // Now enable Python support:
   // Show and preset widgets only suitable when Python support active
+  mOptionsListWidget->item( PLUGMAN_TAB_INSTALL_FROM_ZIP )->setHidden( false );
   buttonUpgradeAll->show();
   buttonInstall->show();
   buttonUninstall->show();
@@ -204,12 +206,18 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   // get the QgsSettings group from the installer
   QString settingsGroup;
   QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
+  QgsSettings settings;
+
+  // Initialize the "Install from ZIP" tab widgets
+  mZipFileWidget->setDefaultRoot( settings.value( settingsGroup + "/lastZipDirectory", "." ).toString() );
+  mZipFileWidget->setFilter( tr( "Plugin packages (*.zip *.ZIP)" ) );
+  connect( mZipFileWidget, &QgsFileWidget::fileChanged, this, &QgsPluginManager::mZipFileWidget_fileChanged );
+  connect( buttonInstallFromZip, &QPushButton::clicked, this, &QgsPluginManager::buttonInstallFromZip_clicked );
 
   // Initialize list of allowed checking intervals
   mCheckingOnStartIntervals << 0 << 1 << 3 << 7 << 14 << 30;
 
   // Initialize the "Settings" tab widgets
-  QgsSettings settings;
   if ( settings.value( settingsGroup + "/checkOnStart", false ).toBool() )
   {
     ckbCheckUpdates->setChecked( true );
@@ -224,7 +232,6 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   {
     ckbDeprecated->setChecked( true );
   }
-
 
   int interval = settings.value( settingsGroup + "/checkOnStartInterval", "" ).toInt();
   int indx = mCheckingOnStartIntervals.indexOf( interval ); // if none found, just use -1 index.
@@ -1101,9 +1108,14 @@ void QgsPluginManager::reject()
 
 void QgsPluginManager::setCurrentTab( int idx )
 {
-  if ( idx == ( mOptionsListWidget->count() - 1 ) )
+  if ( idx == PLUGMAN_TAB_SETTINGS )
   {
     QgsDebugMsg( "Switching current tab to Settings" );
+    mOptionsStackedWidget->setCurrentIndex( 2 );
+  }
+  else if ( idx == PLUGMAN_TAB_INSTALL_FROM_ZIP )
+  {
+    QgsDebugMsg( "Switching current tab to Install from ZIP" );
     mOptionsStackedWidget->setCurrentIndex( 1 );
   }
   else
@@ -1309,6 +1321,21 @@ void QgsPluginManager::buttonInstall_clicked()
 void QgsPluginManager::buttonUninstall_clicked()
 {
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().uninstallPlugin('%1')" ).arg( mCurrentlyDisplayedPlugin ) );
+}
+
+
+
+void QgsPluginManager::mZipFileWidget_fileChanged( const QString &filePath )
+{
+  buttonInstallFromZip->setEnabled( QFileInfo( filePath ).isFile() );
+}
+
+
+
+void QgsPluginManager::buttonInstallFromZip_clicked()
+{
+  QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installFromZipFile('%1')" ).arg( mZipFileWidget->filePath() ) );
+  mZipFileWidget->setFilePath( "" );
 }
 
 

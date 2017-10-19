@@ -203,8 +203,8 @@ void Qgs3DMapScene::onCameraChanged()
   {
     Qt3DRender::QCamera *camera = cameraController()->camera();
     QMatrix4x4 viewMatrix = camera->viewMatrix();
-    float near = 1e9;
-    float far = 0;
+    float fnear = 1e9;
+    float ffar = 0;
 
     QList<QgsChunkNode *> activeNodes = mTerrain->activeNodes();
 
@@ -227,27 +227,27 @@ void Qgs3DMapScene::onCameraChanged()
         QVector4D pc = viewMatrix * p;
 
         float dst = -pc.z();  // in camera coordinates, x grows right, y grows down, z grows to the back
-        if ( dst < near )
-          near = dst;
-        if ( dst > far )
-          far = dst;
+        if ( dst < fnear )
+          fnear = dst;
+        if ( dst > ffar )
+          ffar = dst;
       }
     }
-    if ( near < 1 )
-      near = 1;  // does not really make sense to use negative far plane (behind camera)
+    if ( fnear < 1 )
+      fnear = 1;  // does not really make sense to use negative far plane (behind camera)
 
-    if ( near == 1e9 && far == 0 )
+    if ( fnear == 1e9 && ffar == 0 )
     {
       // the update didn't work out... this should not happen
       // well at least temprarily use some conservative starting values
       qDebug() << "oops... this should not happen! couldn't determine near/far plane. defaulting to 1...1e9";
-      near = 1;
-      far = 1e9;
+      fnear = 1;
+      ffar = 1e9;
     }
 
     // set near/far plane - with some tolerance in front/behind expected near/far planes
-    camera->setFarPlane( far * 2 );
-    camera->setNearPlane( near / 2 );
+    camera->setFarPlane( ffar * 2 );
+    camera->setNearPlane( fnear / 2 );
   }
   else
     qDebug() << "no terrain - not setting near/far plane";

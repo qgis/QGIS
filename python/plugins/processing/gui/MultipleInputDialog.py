@@ -53,8 +53,6 @@ class MultipleInputDialog(BASE, WIDGET):
         self.datatype = datatype
         self.model = None
 
-        self.lstLayers.setSelectionMode(QAbstractItemView.NoSelection)
-
         self.options = []
         for i, option in enumerate(options):
             if option is None or isinstance(option, basestring):
@@ -88,6 +86,8 @@ class MultipleInputDialog(BASE, WIDGET):
         self.restoreGeometry(self.settings.value("/Processing/multipleInputDialogGeometry", QByteArray()))
 
         self.lstLayers.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.lstLayers.setDragDropMode(QAbstractItemView.InternalMove)
+
         self.populateList()
         self.finished.connect(self.saveWindowGeometry)
 

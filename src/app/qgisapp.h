@@ -99,6 +99,8 @@ class QgsStatusBar;
 
 class QgsUserProfileManagerWidgetFactory;
 
+class Qgs3DMapCanvasDockWidget;
+
 class QDomDocument;
 class QNetworkReply;
 class QNetworkProxy;
@@ -250,15 +252,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapCanvas *createNewMapCanvas( const QString &name );
 
     /**
-     * Create a new map canvas dock widget with the specified unique \a name. The \a isFloating
-     * and \a dockGeometry arguments can be used to specify an initial floating state
-     * and widget geometry rect for the dock.
+     * Create a new map canvas dock widget with the specified unique \a name.
      * \note the mapCanvas() inside the dock widget will initially be frozen to avoid multiple
      * unwanted map redraws. Callers must manually unfreeze the map canvas when they have finished
      * setting the initial state of the canvas and are ready for it to begin rendering.
      */
-    QgsMapCanvasDockWidget *createNewMapCanvasDock( const QString &name, bool isFloating = false, const QRect &dockGeometry = QRect(),
-        Qt::DockWidgetArea area = Qt::RightDockWidgetArea );
+    QgsMapCanvasDockWidget *createNewMapCanvasDock( const QString &name );
 
     /**
      * Closes the additional map canvas with matching \a name.
@@ -1045,11 +1044,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! load Python support if possible
     void loadPythonSupport();
 
-    /**
-     * Install plugin from ZIP file
-     * \since QGIS 3.0
-     */
-    void installPluginFromZip();
     //! Find the QMenu with the given name within plugin menu (ie the user visible text on the menu item)
     QMenu *getPluginMenu( const QString &menuName );
     //! Add the action to the submenu with the given name under the plugin menu
@@ -1510,10 +1504,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! trust and load project macros
     void enableProjectMacros();
 
-    void osmDownloadDialog();
-    void osmImportDialog();
-    void osmExportDialog();
-
     void clipboardChanged();
 
     //! catch MapCanvas keyPress event so we can check if selected feature collection must be deleted
@@ -1759,6 +1749,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createMapTips();
     void createDecorations();
     void init3D();
+    void initNativeProcessing();
+
+    //! Creates a new 3D map dock without initializing its position or contents
+    Qgs3DMapCanvasDockWidget *createNew3DMapCanvasDock( const QString &name );
+
+    //! Closes any existing 3D map docks
+    void closeAdditional3DMapCanvases();
 
     /**
      * Refresh the user profile menu.
@@ -1786,6 +1783,26 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Applies global qgis settings to the specified canvas
      */
     void applyDefaultSettingsToCanvas( QgsMapCanvas *canvas );
+
+    /**
+     * Configures positioning of a newly created dock widget.
+     * The \a isFloating and \a dockGeometry arguments can be used to specify an initial floating state
+     * and widget geometry rect for the dock.
+     */
+    void setupDockWidget( QDockWidget *dockWidget, bool isFloating = false, const QRect &dockGeometry = QRect(),
+                          Qt::DockWidgetArea area = Qt::RightDockWidgetArea );
+
+    /**
+     * Reads dock widget's position settings from a DOM element and calls setupDockWidget()
+     * \sa writeDockWidgetSettings()
+     */
+    void readDockWidgetSettings( QDockWidget *dockWidget, const QDomElement &elem );
+
+    /**
+     * Writes dock widget's position settings to a DOM element
+     * \sa readDockWidgetSettings()
+     */
+    void writeDockWidgetSettings( QDockWidget *dockWidget, QDomElement &elem );
 
     QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
 

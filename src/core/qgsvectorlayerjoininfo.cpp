@@ -78,7 +78,7 @@ QStringList QgsVectorLayerJoinInfo::joinFieldNamesSubset( const QgsVectorLayerJo
     QStringList *lst = info.joinFieldNamesSubset();
     if ( lst )
     {
-      for ( const QString &s : qgsAsConst( *lst ) )
+      for ( const QString &s : qgis::as_const( *lst ) )
       {
         if ( !info.joinFieldNamesBlackList().contains( s ) )
           fieldNames.append( s );

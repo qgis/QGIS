@@ -222,6 +222,7 @@ Get color that is used for drawing of selected vector features
       DrawSymbolBounds,
       RenderMapTile,
       RenderPartialOutput,
+      RenderPreviewJob,
       // TODO
     };
     typedef QFlags<QgsMapSettings::Flag> Flags;
