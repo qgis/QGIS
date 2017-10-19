@@ -454,7 +454,6 @@ class ProcessingToolbox(BASE, WIDGET):
                 self.algorithmTree.setItemWidget(parent, 0, label)
             else:
                 parent.setText(0, text)
-            parent.setToolTip(0, parent.text(0))
 
         for groupItem in list(groups.values()):
             parent.addChild(groupItem)
@@ -512,6 +511,7 @@ class TreeProviderItem(QTreeWidgetItem):
         self.provider = provider
         self.setIcon(0, self.provider.icon())
         self.setData(0, ProcessingToolbox.TYPE_ROLE, ProcessingToolbox.PROVIDER_ITEM)
+        self.setToolTip(0, self.provider.longName())
         self.populate()
 
     def refresh(self):
