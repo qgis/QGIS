@@ -40,20 +40,20 @@ namespace geos
    * Destroys the GEOS geometry \a geom, using the static QGIS
    * geos context.
    */
-  struct CORE_EXPORT GeosDeleter
+  struct GeosDeleter
   {
 
     /**
      * Destroys the GEOS geometry \a geom, using the static QGIS
      * geos context.
      */
-    void operator()( GEOSGeometry *geom );
+    void CORE_EXPORT operator()( GEOSGeometry *geom );
 
     /**
      * Destroys the GEOS prepared geometry \a geom, using the static QGIS
      * geos context.
      */
-    void operator()( const GEOSPreparedGeometry *geom );
+    void CORE_EXPORT operator()( const GEOSPreparedGeometry *geom );
   };
 
   /**
@@ -304,21 +304,21 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     enum Overlay
     {
-      INTERSECTION,
-      DIFFERENCE,
-      UNION,
-      SYMDIFFERENCE
+      OverlayIntersection,
+      OverlayDifference,
+      OverlayUnion,
+      OverlaySymDifference
     };
 
     enum Relation
     {
-      INTERSECTS,
-      TOUCHES,
-      CROSSES,
-      WITHIN,
-      OVERLAPS,
-      CONTAINS,
-      DISJOINT
+      RelationIntersects,
+      RelationTouches,
+      RelationCrosses,
+      RelationWithin,
+      RelationOverlaps,
+      RelationContains,
+      RelationDisjoint
     };
 
     //geos util functions

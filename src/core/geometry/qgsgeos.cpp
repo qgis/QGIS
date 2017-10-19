@@ -151,12 +151,12 @@ void QgsGeos::cacheGeos() const
 
 QgsAbstractGeometry *QgsGeos::intersection( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
-  return overlay( geom, INTERSECTION, errorMsg ).release();
+  return overlay( geom, OverlayIntersection, errorMsg ).release();
 }
 
 QgsAbstractGeometry *QgsGeos::difference( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
-  return overlay( geom, DIFFERENCE, errorMsg ).release();
+  return overlay( geom, OverlayDifference, errorMsg ).release();
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeos::clip( const QgsRectangle &rect, QString *errorMsg ) const
@@ -295,7 +295,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::subdivide( int maxNodes, QString *
 
 QgsAbstractGeometry *QgsGeos::combine( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
-  return overlay( geom, UNION, errorMsg ).release();
+  return overlay( geom, OverlayUnion, errorMsg ).release();
 }
 
 QgsAbstractGeometry *QgsGeos::combine( const QList<QgsGeometry> &geomList, QString *errorMsg ) const
@@ -324,7 +324,7 @@ QgsAbstractGeometry *QgsGeos::combine( const QList<QgsGeometry> &geomList, QStri
 
 QgsAbstractGeometry *QgsGeos::symDifference( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
-  return overlay( geom, SYMDIFFERENCE, errorMsg ).release();
+  return overlay( geom, OverlaySymDifference, errorMsg ).release();
 }
 
 double QgsGeos::distance( const QgsAbstractGeometry *geom, QString *errorMsg ) const
@@ -398,37 +398,37 @@ double QgsGeos::hausdorffDistanceDensify( const QgsAbstractGeometry *geom, doubl
 
 bool QgsGeos::intersects( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
-  return relation( geom, INTERSECTS, errorMsg );
+  return relation( geom, RelationIntersects, errorMsg );
 }
 
 bool QgsGeos::touches( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
-  return relation( geom, TOUCHES, errorMsg );
+  return relation( geom, RelationTouches, errorMsg );
 }
 
 bool QgsGeos::crosses( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
-  return relation( geom, CROSSES, errorMsg );
+  return relation( geom, RelationCrosses, errorMsg );
 }
 
 bool QgsGeos::within( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
-  return relation( geom, WITHIN, errorMsg );
+  return relation( geom, RelationWithin, errorMsg );
 }
 
 bool QgsGeos::overlaps( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
-  return relation( geom, OVERLAPS, errorMsg );
+  return relation( geom, RelationOverlaps, errorMsg );
 }
 
 bool QgsGeos::contains( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
-  return relation( geom, CONTAINS, errorMsg );
+  return relation( geom, RelationContains, errorMsg );
 }
 
 bool QgsGeos::disjoint( const QgsAbstractGeometry *geom, QString *errorMsg ) const
 {
-  return relation( geom, DISJOINT, errorMsg );
+  return relation( geom, RelationDisjoint, errorMsg );
 }
 
 QString QgsGeos::relate( const QgsAbstractGeometry *geom, QString *errorMsg ) const
@@ -1298,13 +1298,13 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
     geos::unique_ptr opGeom;
     switch ( op )
     {
-      case INTERSECTION:
+      case OverlayIntersection:
         opGeom.reset( GEOSIntersection_r( geosinit.ctxt, mGeos.get(), geosGeom.get() ) );
         break;
-      case DIFFERENCE:
+      case OverlayDifference:
         opGeom.reset( GEOSDifference_r( geosinit.ctxt, mGeos.get(), geosGeom.get() ) );
         break;
-      case UNION:
+      case OverlayUnion:
       {
         geos::unique_ptr unionGeometry( GEOSUnion_r( geosinit.ctxt, mGeos.get(), geosGeom.get() ) );
 
@@ -1320,7 +1320,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::overlay( const QgsAbstractGeometry
         opGeom = std::move( unionGeometry );
       }
       break;
-      case SYMDIFFERENCE:
+      case OverlaySymDifference:
         opGeom.reset( GEOSSymDifference_r( geosinit.ctxt, mGeos.get(), geosGeom.get() ) );
         break;
       default:    //unknown op
@@ -1358,25 +1358,25 @@ bool QgsGeos::relation( const QgsAbstractGeometry *geom, Relation r, QString *er
     {
       switch ( r )
       {
-        case INTERSECTS:
+        case RelationIntersects:
           result = ( GEOSPreparedIntersects_r( geosinit.ctxt, mGeosPrepared.get(), geosGeom.get() ) == 1 );
           break;
-        case TOUCHES:
+        case RelationTouches:
           result = ( GEOSPreparedTouches_r( geosinit.ctxt, mGeosPrepared.get(), geosGeom.get() ) == 1 );
           break;
-        case CROSSES:
+        case RelationCrosses:
           result = ( GEOSPreparedCrosses_r( geosinit.ctxt, mGeosPrepared.get(), geosGeom.get() ) == 1 );
           break;
-        case WITHIN:
+        case RelationWithin:
           result = ( GEOSPreparedWithin_r( geosinit.ctxt, mGeosPrepared.get(), geosGeom.get() ) == 1 );
           break;
-        case CONTAINS:
+        case RelationContains:
           result = ( GEOSPreparedContains_r( geosinit.ctxt, mGeosPrepared.get(), geosGeom.get() ) == 1 );
           break;
-        case DISJOINT:
+        case RelationDisjoint:
           result = ( GEOSPreparedDisjoint_r( geosinit.ctxt, mGeosPrepared.get(), geosGeom.get() ) == 1 );
           break;
-        case OVERLAPS:
+        case RelationOverlaps:
           result = ( GEOSPreparedOverlaps_r( geosinit.ctxt, mGeosPrepared.get(), geosGeom.get() ) == 1 );
           break;
         default:
@@ -1387,25 +1387,25 @@ bool QgsGeos::relation( const QgsAbstractGeometry *geom, Relation r, QString *er
 
     switch ( r )
     {
-      case INTERSECTS:
+      case RelationIntersects:
         result = ( GEOSIntersects_r( geosinit.ctxt, mGeos.get(), geosGeom.get() ) == 1 );
         break;
-      case TOUCHES:
+      case RelationTouches:
         result = ( GEOSTouches_r( geosinit.ctxt, mGeos.get(), geosGeom.get() ) == 1 );
         break;
-      case CROSSES:
+      case RelationCrosses:
         result = ( GEOSCrosses_r( geosinit.ctxt, mGeos.get(), geosGeom.get() ) == 1 );
         break;
-      case WITHIN:
+      case RelationWithin:
         result = ( GEOSWithin_r( geosinit.ctxt, mGeos.get(), geosGeom.get() ) == 1 );
         break;
-      case CONTAINS:
+      case RelationContains:
         result = ( GEOSContains_r( geosinit.ctxt, mGeos.get(), geosGeom.get() ) == 1 );
         break;
-      case DISJOINT:
+      case RelationDisjoint:
         result = ( GEOSDisjoint_r( geosinit.ctxt, mGeos.get(), geosGeom.get() ) == 1 );
         break;
-      case OVERLAPS:
+      case RelationOverlaps:
         result = ( GEOSOverlaps_r( geosinit.ctxt, mGeos.get(), geosGeom.get() ) == 1 );
         break;
       default:
