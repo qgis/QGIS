@@ -308,7 +308,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>13</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -3942,29 +3942,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="mDefaultZValueLabel">
-                    <property name="text">
-                     <string>Default Z value</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="2">
-                   <widget class="QDoubleSpinBox" name="mDefaultZValueSpinBox">
-                    <property name="decimals">
-                     <number>3</number>
-                    </property>
-                    <property name="minimum">
-                     <double>-999999.998999999952503</double>
-                    </property>
-                    <property name="maximum">
-                     <double>1000000.000000000000000</double>
-                    </property>
-                    <property name="singleStep">
-                     <double>1.000000000000000</double>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="2" column="2">
                    <widget class="QComboBox" name="mValidateGeometries">
                     <property name="sizePolicy">
@@ -5145,6 +5122,51 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                          </layout>
                         </widget>
                        </item>
+                       <item row="4" column="1" colspan="2">
+                        <widget class="QTabWidget" name="tabAuth">
+                         <property name="currentIndex">
+                          <number>0</number>
+                         </property>
+                         <widget class="QWidget" name="authLegacy">
+                          <attribute name="title">
+                           <string>Authentication</string>
+                          </attribute>
+                          <layout class="QGridLayout" name="gridLayout_25">
+                           <item row="0" column="0">
+                            <widget class="QLabel" name="lblUser">
+                             <property name="text">
+                              <string>User name</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="2" column="0">
+                            <widget class="QLabel" name="lblPassword">
+                             <property name="text">
+                              <string>Password</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="0" column="1">
+                            <widget class="QLineEdit" name="leProxyUser">
+                             <property name="toolTip">
+                              <string>Leave this blank if no proxy username / password are required</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="2" column="1">
+                            <widget class="QgsPasswordLineEdit" name="leProxyPassword">
+                             <property name="toolTip">
+                              <string>Leave this blank if no proxy username / password are required</string>
+                             </property>
+                             <property name="echoMode">
+                              <enum>QLineEdit::Password</enum>
+                             </property>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
+                        </widget>
+                       </item>
                       </layout>
                      </widget>
                     </item>
@@ -5342,6 +5364,18 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
@@ -5362,6 +5396,22 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgspasswordlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorSchemeList</class>

@@ -174,6 +174,14 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         g = QgsGeometry::fromPoint( savePoint );
       }
 
+      // Use default Z-value if coordinates is enabled.
+      if ( QgsWkbTypes::hasZ( layerWKBType ) )
+        g.geometry()->addZValue( defaultZValue() );
+
+      // Use default M-value if coordinates is enabled.
+      if ( QgsWkbTypes::hasM( layerWKBType ) )
+        g.geometry()->addMValue( std::numeric_limits<double>::quiet_NaN() /* No default M-value yet. */ );
+
       f.setGeometry( g );
       f.setValid( true );
 

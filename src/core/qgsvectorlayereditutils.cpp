@@ -24,6 +24,7 @@
 #include "qgis.h"
 #include "qgswkbtypes.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsproject.h"
 
 #include <limits>
 
@@ -83,6 +84,16 @@ bool QgsVectorLayerEditUtils::moveVertex( const QgsPoint &p, QgsFeatureId atFeat
     return false; // geometry not found
 
   QgsGeometry geometry = f.geometry();
+
+  QgsAbstractGeometry *abstractGeometry = geometry.geometry();
+
+  // Support Z value.
+  if ( abstractGeometry && QgsWkbTypes::hasZ( p.wkbType() ) )
+    abstractGeometry->addZValue( defaultZValue() );
+
+  // Support M value.
+  if ( abstractGeometry && QgsWkbTypes::hasM( p.wkbType() ) )
+    abstractGeometry->addMValue( std::numeric_limits<double>::quiet_NaN() );
 
   geometry.moveVertex( p, atVertex );
 
@@ -709,4 +720,9 @@ bool QgsVectorLayerEditUtils::boundingBoxFromPointList( const QList<QgsPointXY> 
   }
 
   return true;
+}
+
+double QgsVectorLayerEditUtils::defaultZValue() const
+{
+  return QgsProject::instance()->readDoubleEntry( QStringLiteral( "Defaults" ), QStringLiteral( "/ZValue" ), Qgis::DEFAULT_Z_COORDINATE );
 }
