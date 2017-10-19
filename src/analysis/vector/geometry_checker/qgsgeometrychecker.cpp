@@ -166,11 +166,6 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
     QgsFeaturePool *featurePool = mContext->featurePools[layerId];
     QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( mContext->mapCrs, featurePool->getLayer()->crs().authid() );
     recheckAreaFeatures[layerId] = featurePool->getIntersects( t.transform( recheckArea ) );
-    // If only selected features were checked, confine the recheck areas to the selected features
-    if ( featurePool->getSelectedOnly() )
-    {
-      recheckAreaFeatures[layerId] = recheckAreaFeatures[layerId].intersect( featurePool->getLayer()->selectedFeatureIds() );
-    }
   }
 
   // Recheck feature / changed area to detect new errors

@@ -48,7 +48,7 @@ QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer, double layerToMapUnits, c
   QgsFeatureIterator it = layer->getFeatures( req );
   while ( it.nextFeature( feature ) )
   {
-    if ( feature.geometry() )
+    if ( mFeatureIds.contains( feature.id() ) && feature.geometry() )
     {
       mIndex.insertFeature( feature );
     }
