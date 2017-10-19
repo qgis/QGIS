@@ -38,6 +38,7 @@ class TestQgsRelationReferenceWidget : public QObject
 
     void testChainFilter();
     void testChainFilterRefreshed();
+    void testChainFilterDeleteForeignKey();
 
   private:
     QgsVectorLayer* mLayer1;
@@ -218,6 +219,49 @@ void TestQgsRelationReferenceWidget::testChainFilterRefreshed()
   QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
   QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
   QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
+}
+
+void TestQgsRelationReferenceWidget::testChainFilterDeleteForeignKey()
+{
+  // init a relation reference widget
+  QStringList filterFields = QStringList() << "material" << "diameter" << "raccord";
+
+  QgsRelationReferenceWidget w( new QWidget() );
+  w.setChainFilters( true );
+  w.setFilterFields( filterFields );
+  w.setRelation( *mRelation, true );
+  w.init();
+
+  // check the default status of filter comboboxes
+  QList<QComboBox *> cbs = w.mFilterComboBoxes;
+
+  QCOMPARE( cbs[0]->currentText(), QString( "material" ) );
+  QCOMPARE( cbs[0]->isEnabled(), true );
+
+  QCOMPARE( cbs[1]->currentText(), QString( "diameter" ) );
+  QCOMPARE( cbs[1]->isEnabled(), false );
+
+  QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
+  QCOMPARE( cbs[2]->isEnabled(), false );
+
+  // set a foreign key
+  w.setForeignKey( QVariant( 11 ) );
+
+  QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
+  QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
+  QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
+
+  // delete the foreign key
+  w.deleteForeignKey();
+
+  QCOMPARE( cbs[0]->currentText(), QString( "material" ) );
+  QCOMPARE( cbs[0]->isEnabled(), true );
+
+  QCOMPARE( cbs[1]->currentText(), QString( "diameter" ) );
+  QCOMPARE( cbs[1]->isEnabled(), false );
+
+  QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
+  QCOMPARE( cbs[2]->isEnabled(), false );
 }
 
 QTEST_MAIN( TestQgsRelationReferenceWidget )
