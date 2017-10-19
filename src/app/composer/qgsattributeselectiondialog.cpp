@@ -331,13 +331,12 @@ QgsAttributeSelectionDialog::~QgsAttributeSelectionDialog()
 
 void QgsAttributeSelectionDialog::mRemoveColumnPushButton_clicked()
 {
-  //remove selected row from model
-  QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-  if ( viewSelection.length() > 0 )
-  {
-    int selectedRow = viewSelection.indexes().at( 0 ).row();
-    mColumnModel->removeRow( selectedRow );
-  }
+    //remove selected rows from model
+      QModelIndexList indexes =  mColumnsTableView->selectionModel()->selectedRows();
+      int count = indexes.count();
+
+      for( int i = count; i > 0; --i )
+             mColumnModel->removeRow( indexes.at(i-1).row(), QModelIndex());
 }
 
 void QgsAttributeSelectionDialog::mAddColumnPushButton_clicked()
