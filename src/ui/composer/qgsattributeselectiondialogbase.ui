@@ -78,9 +78,9 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="mEmptyColumnsPushButton">
+          <widget class="QPushButton" name="mClearColumnsPushButton">
            <property name="text">
-            <string>Empty</string>
+            <string>Clear</string>
            </property>
           </widget>
          </item>

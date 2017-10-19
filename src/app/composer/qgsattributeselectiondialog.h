@@ -123,7 +123,7 @@ class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelec
     void mColumnUpPushButton_clicked();
     void mColumnDownPushButton_clicked();
     void mResetColumnsPushButton_clicked();
-    void mEmptyColumnsPushButton_clicked();
+    void mClearColumnsPushButton_clicked();
     void mAddSortColumnPushButton_clicked();
     void mRemoveSortColumnPushButton_clicked();
     void mSortColumnUpPushButton_clicked();
