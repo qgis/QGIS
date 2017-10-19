@@ -49,6 +49,19 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
       return err && other->layerId() == layerId() && other->featureId() == featureId() && err->overlappedFeature() == overlappedFeature();
     }
 
+    bool handleChanges( const QgsGeometryCheck::Changes &changes ) override
+    {
+      if ( !QgsGeometryCheckError::handleChanges( changes ) )
+      {
+        return false;
+      }
+      if ( changes.value( mOverlappedFeature.first ).keys().contains( mOverlappedFeature.second ) )
+      {
+        return false;
+      }
+      return true;
+    }
+
     virtual QString description() const override { return QApplication::translate( "QgsGeometryTypeCheckError", "Overlap with %1:%2" ).arg( mOverlappedFeature.first ).arg( mOverlappedFeature.second ); }
 
   private:
