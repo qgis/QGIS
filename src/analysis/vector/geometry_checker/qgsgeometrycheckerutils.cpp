@@ -124,7 +124,7 @@ namespace QgsGeometryCheckerUtils
       if ( mParent->mProgressCounter )
         mParent->mProgressCounter->fetchAndAddRelaxed( 1 );
       QgsFeature feature;
-      if ( featurePool->get( *mFeatureIt, feature ) )
+      if ( featurePool->get( *mFeatureIt, feature ) && feature.geometry() && feature.geometry().geometry() )
       {
         delete mCurrentFeature;
         mCurrentFeature = new LayerFeature( mParent->mFeaturePools[*mLayerIt], feature, mParent->mUseMapCrs );
