@@ -378,7 +378,7 @@ void QgsAttributeSelectionDialog::mResetColumnsPushButton_clicked()
 void QgsAttributeSelectionDialog::mEmptyColumnsPushButton_clicked()
 {
   //remove all columns
-  mColumnModel->removeRows(0, mColumnModel->rowCount());
+  mColumnModel->removeRows( 0, mColumnModel->rowCount() );
   mSortColumnComboBox->setCurrentIndex( 0 );
 }
 
