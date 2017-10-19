@@ -64,6 +64,11 @@ void QgsActionMenu::setFeature( const QgsFeature &feature )
   mFeature = feature;
 }
 
+void QgsActionMenu::setExpressionContextScope( const QgsExpressionContextScope &expressionContextScope )
+{
+  mExpressionContextScope = expressionContextScope;
+}
+
 void QgsActionMenu::triggerAction()
 {
   if ( !feature().isValid() )
@@ -94,6 +99,7 @@ void QgsActionMenu::triggerAction()
     QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
     actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), mActionScope, true ) );
     context << actionScope;
+    context << new QgsExpressionContextScope( mExpressionContextScope );
 
     QgsContextAction *contextAction = dynamic_cast<QgsContextAction *>( action );
     if ( contextAction )
@@ -115,9 +121,10 @@ void QgsActionMenu::reloadActions()
 
   Q_FOREACH ( const QgsAction &action, mActions )
   {
-    QAction *qAction = new QAction( action.icon(), action.name(), this );
+    QgsContextAction *qAction = new QgsContextAction( action.icon(), action.name(), this );
     qAction->setData( QVariant::fromValue<ActionData>( ActionData( action, mFeatureId, mLayer ) ) );
     qAction->setIcon( action.icon() );
+    qAction->setExpressionContextScope( mExpressionContextScope );
 
     // Only enable items on supported platforms
     if ( !action.runable() )
