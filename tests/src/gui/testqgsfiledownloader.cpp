@@ -94,7 +94,7 @@ void TestQgsFileDownloader::makeCall( QUrl url, QString fileName, bool cancel )
 {
   QEventLoop loop;
 
-  mFileDownloader = new QgsFileDownloader( url, fileName, false );
+  mFileDownloader = new QgsFileDownloader( url, fileName );
   connect( mFileDownloader, &QgsFileDownloader::downloadCompleted, this, &TestQgsFileDownloader::downloadCompleted );
   connect( mFileDownloader, &QgsFileDownloader::downloadCanceled, this, &TestQgsFileDownloader::downloadCanceled );
   connect( mFileDownloader, &QgsFileDownloader::downloadExited, this, &TestQgsFileDownloader::downloadExited );
@@ -104,7 +104,7 @@ void TestQgsFileDownloader::makeCall( QUrl url, QString fileName, bool cancel )
   connect( mFileDownloader, &QgsFileDownloader::downloadExited, &loop, &QEventLoop::quit );
 
   if ( cancel )
-    QTimer::singleShot( 1000, mFileDownloader, &QgsFileDownloader::onDownloadCanceled );
+    QTimer::singleShot( 1000, mFileDownloader, &QgsFileDownloader::cancelDownload );
 
   loop.exec();
 
@@ -185,7 +185,7 @@ void TestQgsFileDownloader::testInvalidFile()
   QVERIFY( !mCompleted );
   QVERIFY( mError );
   QVERIFY( !mCanceled );
-  QCOMPARE( mErrorMessage, QString( "Cannot open output file: " ) );
+  QCOMPARE( mErrorMessage, QString( "No output filename specified" ) );
 }
 
 void TestQgsFileDownloader::testInvalidUrl()

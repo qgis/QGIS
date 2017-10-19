@@ -18,7 +18,6 @@
 %Include qgsuserinputdockwidget.sip
 %Include qgsbrowserdockwidget.sip
 %Include qgsvertexmarker.sip
-%Include qgsfiledownloader.sip
 %Include qgsabstractdatasourcewidget.sip
 %Include qgssourceselectprovider.sip
 %Include qgssourceselectproviderregistry.sip
@@ -201,6 +200,7 @@
 %Include qgstreewidgetitem.sip
 %Include qgsunitselectionwidget.sip
 %Include qgsvariableeditorwidget.sip
+%Include qgsfiledownloaderdialog.sip
 %Include raster/qgsmultibandcolorrendererwidget.sip
 %Include raster/qgspalettedrendererwidget.sip
 %Include raster/qgsrasterbandcombobox.sip

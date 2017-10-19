@@ -42,7 +42,7 @@
 #include "qgswebframe.h"
 #include "qgsstringutils.h"
 #include "qgstreewidgetitem.h"
-#include "qgsfiledownloader.h"
+#include "qgsfiledownloaderdialog.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
 #include "qgssettings.h"
@@ -132,7 +132,7 @@ void QgsIdentifyResultsWebView::handleDownload( QUrl url )
     {
       settings.setValue( DOWNLOADER_LAST_DIR_KEY, QFileInfo( targetFile ).dir().absolutePath() );
       // Start the download
-      new QgsFileDownloader( url, targetFile );
+      new QgsFileDownloaderDialog( url, targetFile );
     }
   }
 }

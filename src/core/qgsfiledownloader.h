@@ -19,30 +19,28 @@
 #include <QObject>
 #include <QFile>
 #include <QNetworkReply>
-#include <QProgressDialog>
-#include "qgis_gui.h"
+#include "qgis_core.h"
 
 #ifndef QT_NO_SSL
 #include <QSslError>
 #endif
 
 /**
- * \ingroup gui
+ * \ingroup core
  * QgsFileDownloader is a utility class for downloading files.
  *
  * To use this class, it is necessary to pass the URL and an output file name as
  * arguments to the constructor, the download will start immediately.
- * The download is asynchronous and depending on the guiNotificationsEnabled
- * parameter accepted by the constructor (default = true) the class will
- * show a progress dialog and report all errors in a QMessageBox::warning dialog.
- * If the guiNotificationsEnabled parameter is set to false, the class can still
- * be used through the signals and slots mechanism.
+ *
+ * The download is asynchronous.
+ *
  * The object will destroy itself when the request completes, errors or is canceled.
  * An optional authentication configuration can be specified.
  *
- * \since QGIS 2.18.1
+ * \note This class was part of the GUI library from QGIS 2.18.1 until QGIS 3.0
+ * \since QGIS 3.0
  */
-class GUI_EXPORT QgsFileDownloader : public QObject
+class CORE_EXPORT QgsFileDownloader : public QObject
 {
     Q_OBJECT
   public:
@@ -51,18 +49,26 @@ class GUI_EXPORT QgsFileDownloader : public QObject
      * QgsFileDownloader
      * \param url the download url
      * \param outputFileName file name where the downloaded content will be stored
-     * \param guiNotificationsEnabled if false, the downloader will not display any progress bar or error message
      * \param authcfg optionally apply this authentication configuration
+     * \param delayStart if true, the download will not be commenced immediately and must
+     * be triggered by a later call to startDownload(). This can be useful if connections need
+     * to be made to the downloader and there's a chance the download will emit
+     * signals before these connections have been made.
      */
-    QgsFileDownloader( const QUrl &url, const QString &outputFileName, bool guiNotificationsEnabled = true, const QString &authcfg = QString() );
+    QgsFileDownloader( const QUrl &url, const QString &outputFileName, const QString &authcfg = QString(), bool delayStart = false );
 
   signals:
     //! Emitted when the download has completed successfully
     void downloadCompleted();
     //! Emitted always when the downloader exits
     void downloadExited();
-    //! Emitted when the download was canceled by the user
+
+    /**
+     * Emitted when the download was canceled by the user.
+     * \see cancelDownload()
+     */
     void downloadCanceled();
+
     //! Emitted when an error makes the download fail
     void downloadError( QStringList errorMessages );
     //! Emitted when data are ready to be processed
@@ -71,13 +77,14 @@ class GUI_EXPORT QgsFileDownloader : public QObject
   public slots:
 
     /**
-     * Called when a download is canceled by the user
-     * this slot aborts the download and deletes
-     * the object.
-     * Never call this slot directly: this is meant to
-     * be managed by the signal-slot system.
+     * Call to abort the download and delete this object after the cancelation
+     * has been processed.
+     * \see downloadCanceled()
      */
-    void onDownloadCanceled();
+    void cancelDownload();
+
+    //! Called to start the download
+    void startDownload();
 
   private slots:
     //! Called when the network reply data are ready
@@ -88,8 +95,7 @@ class GUI_EXPORT QgsFileDownloader : public QObject
     void onDownloadProgress( qint64 bytesReceived, qint64 bytesTotal );
     //! Called when a network request times out
     void onRequestTimedOut();
-    //! Called to start the download
-    void startDownload();
+
 #ifndef QT_NO_SSL
 
     /**
@@ -114,10 +120,8 @@ class GUI_EXPORT QgsFileDownloader : public QObject
     QUrl mUrl;
     QNetworkReply *mReply = nullptr;
     QFile mFile;
-    QProgressDialog *mProgressDialog = nullptr;
     bool mDownloadCanceled;
     QStringList mErrors;
-    bool mGuiNotificationsEnabled;
     QString mAuthCfg;
 };
 
