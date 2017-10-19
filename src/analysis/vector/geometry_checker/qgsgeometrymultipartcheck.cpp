@@ -64,7 +64,7 @@ void QgsGeometryMultipartCheck::fixError( QgsGeometryCheckError *error, int meth
   }
   else if ( method == RemoveObject )
   {
-    featurePool->deleteFeature( feature );
+    featurePool->deleteFeature( feature.id() );
     error->setFixed( method );
     changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeRemoved ) );
   }

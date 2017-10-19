@@ -94,7 +94,7 @@ void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError *error, int meth
   else if ( method == Delete )
   {
     changes[error->layerId()][featureA.id()].append( Change( ChangeFeature, ChangeRemoved ) );
-    featurePoolA->deleteFeature( featureA );
+    featurePoolA->deleteFeature( featureA.id() );
     error->setFixed( method );
   }
   else

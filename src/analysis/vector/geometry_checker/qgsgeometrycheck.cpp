@@ -185,7 +185,7 @@ void QgsGeometryCheck::deleteFeatureGeometryPart( const QString &layerId, QgsFea
     static_cast<QgsGeometryCollection *>( geom )->removeGeometry( partIdx );
     if ( static_cast<QgsGeometryCollection *>( geom )->numGeometries() == 0 )
     {
-      featurePool->deleteFeature( feature );
+      featurePool->deleteFeature( feature.id() );
       changes[layerId][feature.id()].append( Change( ChangeFeature, ChangeRemoved ) );
     }
     else
@@ -197,7 +197,7 @@ void QgsGeometryCheck::deleteFeatureGeometryPart( const QString &layerId, QgsFea
   }
   else
   {
-    featurePool->deleteFeature( feature );
+    featurePool->deleteFeature( feature.id() );
     changes[layerId][feature.id()].append( Change( ChangeFeature, ChangeRemoved ) );
   }
 }

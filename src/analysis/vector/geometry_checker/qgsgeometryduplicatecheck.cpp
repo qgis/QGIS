@@ -117,7 +117,7 @@ void QgsGeometryDuplicateCheck::fixError( QgsGeometryCheckError *error, int meth
         QgsAbstractGeometry *diffGeom = geomEngineA->symDifference( layerFeatureB.geometry() );
         if ( diffGeom && diffGeom->isEmpty() )
         {
-          featurePoolB->deleteFeature( featureB );
+          featurePoolB->deleteFeature( featureB.id() );
           changes[layerIdB][idB].append( Change( ChangeFeature, ChangeRemoved ) );
         }
 

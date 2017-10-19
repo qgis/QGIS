@@ -132,14 +132,14 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, c
     // Delete feature
     else
     {
-      featurePool->deleteFeature( feature );
+      featurePool->deleteFeature( feature.id() );
       changes[error->layerId()][error->featureId()].append( Change( ChangeFeature, ChangeRemoved ) );
     }
     error->setFixed( method );
   }
   else if ( method == Delete )
   {
-    featurePool->deleteFeature( feature );
+    featurePool->deleteFeature( feature.id() );
     error->setFixed( method );
     changes[error->layerId()][error->featureId()].append( Change( ChangeFeature, ChangeRemoved ) );
   }

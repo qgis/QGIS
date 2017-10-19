@@ -105,6 +105,9 @@ void QgsFeaturePool::addFeature( QgsFeature &feature )
 
 void QgsFeaturePool::updateFeature( QgsFeature &feature )
 {
+  QgsFeature origFeature;
+  get( feature.id(), origFeature );
+
   QgsGeometryMap geometryMap;
   geometryMap.insert( feature.id(), QgsGeometry( feature.geometry().geometry()->clone() ) );
   QgsChangedAttributesMap changedAttributesMap;
@@ -120,19 +123,23 @@ void QgsFeaturePool::updateFeature( QgsFeature &feature )
   mLayer->dataProvider()->changeAttributeValues( changedAttributesMap );
   mLayerMutex.unlock();
   mIndexMutex.lock();
-  mIndex.deleteFeature( feature );
+  mIndex.deleteFeature( origFeature );
   mIndex.insertFeature( feature );
   mIndexMutex.unlock();
 }
 
-void QgsFeaturePool::deleteFeature( QgsFeature &feature )
+void QgsFeaturePool::deleteFeature( const QgsFeatureId &fid )
 {
-  mIndexMutex.lock();
-  mIndex.deleteFeature( feature );
-  mIndexMutex.unlock();
+  QgsFeature origFeature;
+  if ( get( fid, origFeature ) )
+  {
+    mIndexMutex.lock();
+    mIndex.deleteFeature( origFeature );
+    mIndexMutex.unlock();
+  }
   mLayerMutex.lock();
-  mFeatureCache.remove( feature.id() );
-  mLayer->dataProvider()->deleteFeatures( QgsFeatureIds() << feature.id() );
+  mFeatureCache.remove( origFeature.id() );
+  mLayer->dataProvider()->deleteFeatures( QgsFeatureIds() << fid );
   mLayerMutex.unlock();
 }
 
