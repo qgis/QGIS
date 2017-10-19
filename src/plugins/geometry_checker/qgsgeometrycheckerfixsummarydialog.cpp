@@ -80,7 +80,6 @@ void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget *table, QgsGeome
   valueItem->setData( Qt::EditRole, error->value() );
   table->setItem( row, 4, valueItem );
   table->item( row, 0 )->setData( Qt::UserRole, QVariant::fromValue( reinterpret_cast<void *>( error ) ) );
-  QTextStream( stdout ) << "Set data: " << row << " = " << error << endl;
 }
 
 void QgsGeometryCheckerFixSummaryDialog::setupTable( QTableWidget *table )
