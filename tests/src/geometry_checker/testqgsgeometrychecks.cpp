@@ -47,7 +47,7 @@ class TestQgsGeometryChecks: public QObject
 {
     Q_OBJECT
   private:
-    struct ExpectedChange
+    struct Change
     {
       QString layerId;
       QgsFeatureId fid;
@@ -61,7 +61,8 @@ class TestQgsGeometryChecks: public QObject
     void cleanupTestContext( QgsGeometryCheckerContext *ctx ) const;
     void listErrors( const QList<QgsGeometryCheckError *> &checkErrors, const QStringList &messages ) const;
     QList<QgsGeometryCheckError *> searchCheckErrors( const QList<QgsGeometryCheckError *> &checkErrors, const QString &layerId, const QgsFeatureId &featureId = -1, const QgsPointXY &pos = QgsPointXY(), const QgsVertexId &vid = QgsVertexId(), const QVariant &value = QVariant(), double tol = 1E-4 ) const;
-    bool fixCheckError( QgsGeometryCheckError *error, int method, const QgsGeometryCheckError::Status &expectedStatus, const QVector<ExpectedChange> &expectedChanges, const QMap<QString, int> &mergeAttr = QMap<QString, int>() );
+    bool fixCheckError( QgsGeometryCheckError *error, int method, const QgsGeometryCheckError::Status &expectedStatus, const QVector<Change> &expectedChanges, const QMap<QString, int> &mergeAttr = QMap<QString, int>() );
+    QgsGeometryCheck::Changes change2changes( const Change &change ) const;
 
   private slots:
     // will be called before the first testfunction is executed.
@@ -156,6 +157,25 @@ void TestQgsGeometryChecks::testAngleCheck()
   context->featurePools[errs2[0]->layerId()]->get( errs2[0]->featureId(), f );
   n2 = f.geometry().geometry()->vertexCount( errs2[0]->vidx().part, errs2[0]->vidx().ring );
   QCOMPARE( n1, n2 + 1 );
+
+  // Test change tracking
+  QVERIFY( !errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeRemoved, QgsVertexId()} ) ) );
+  QVERIFY( !errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeFeature, QgsGeometryCheck::ChangeChanged, QgsVertexId()} ) ) );
+  QVERIFY( !errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeRemoved, QgsVertexId( errs2[0]->vidx().part )} ) ) );
+  QVERIFY( !errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeChanged, QgsVertexId( errs2[0]->vidx().part )} ) ) );
+  QVERIFY( errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeRemoved, QgsVertexId( errs2[0]->vidx().part + 1 )} ) ) );
+  QVERIFY( errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeChanged, QgsVertexId( errs2[0]->vidx().part + 1 )} ) ) );
+  QVERIFY( !errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeRing, QgsGeometryCheck::ChangeRemoved, QgsVertexId( errs2[0]->vidx().part, errs2[0]->vidx().ring )} ) ) );
+  QVERIFY( !errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeRing, QgsGeometryCheck::ChangeChanged, QgsVertexId( errs2[0]->vidx().part, errs2[0]->vidx().ring )} ) ) );
+  QVERIFY( errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeRing, QgsGeometryCheck::ChangeRemoved, QgsVertexId( errs2[0]->vidx().part, errs2[0]->vidx().ring + 1 )} ) ) );
+  QVERIFY( errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeRing, QgsGeometryCheck::ChangeChanged, QgsVertexId( errs2[0]->vidx().part, errs2[0]->vidx().ring + 1 )} ) ) );
+  QVERIFY( !errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, errs2[0]->vidx()} ) ) );
+  QVERIFY( !errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeChanged, errs2[0]->vidx()} ) ) );
+  QVERIFY( errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, QgsVertexId( errs2[0]->vidx().part, errs2[0]->vidx().ring, errs2[0]->vidx().vertex + 1 )} ) ) );
+  QVERIFY( errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeChanged, QgsVertexId( errs2[0]->vidx().part, errs2[0]->vidx().ring, errs2[0]->vidx().vertex + 1 )} ) ) );
+  QgsVertexId oldVidx = errs2[0]->vidx();
+  QVERIFY( errs2[0]->handleChanges( change2changes( {errs2[0]->layerId(), errs2[0]->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, QgsVertexId( errs2[0]->vidx().part, errs2[0]->vidx().ring, errs2[0]->vidx().vertex - 1 )} ) ) );
+  QVERIFY( errs2[0]->vidx().vertex == oldVidx.vertex - 1 );
 
   cleanupTestContext( context );
 }
@@ -306,15 +326,22 @@ void TestQgsGeometryChecks::testDangleCheck()
   check.collectErrors( checkErrors, messages );
   listErrors( checkErrors, messages );
 
+  QList<QgsGeometryCheckError *> errs1;
+
   QCOMPARE( checkErrors.size(), 6 );
   QVERIFY( searchCheckErrors( checkErrors, layers["point_layer.shp"] ).isEmpty() );
   QVERIFY( searchCheckErrors( checkErrors, layers["polygon_layer.shp"] ).isEmpty() );
-  QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"], 0, QgsPointXY( -0.7558, 0.7648 ), QgsVertexId( 1, 0, 0 ) ).size() == 1 );
+  QVERIFY( ( errs1 = searchCheckErrors( checkErrors, layers["line_layer.shp"], 0, QgsPointXY( -0.7558, 0.7648 ), QgsVertexId( 1, 0, 0 ) ) ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"], 2, QgsPointXY( -0.7787, -0.2237 ), QgsVertexId( 0, 0, 0 ) ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"], 3, QgsPointXY( -0.2326, 0.9537 ), QgsVertexId( 0, 0, 0 ) ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"], 3, QgsPointXY( 0.0715, 0.7830 ), QgsVertexId( 0, 0, 3 ) ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"], 8, QgsPointXY( -1.5974, 0.5237 ), QgsVertexId( 0, 0, 0 ) ).size() == 1 );
   QVERIFY( searchCheckErrors( checkErrors, layers["line_layer.shp"], 8, QgsPointXY( -0.9315, 0.3146 ), QgsVertexId( 0, 0, 5 ) ).size() == 1 );
+
+  // Test change tracking
+  QgsVertexId oldVidx = errs1[0]->vidx();
+  QVERIFY( errs1[0]->handleChanges( change2changes( {errs1[0]->layerId(), errs1[0]->featureId(), QgsGeometryCheck::ChangePart, QgsGeometryCheck::ChangeRemoved, QgsVertexId( 0 )} ) ) );
+  QVERIFY( errs1[0]->vidx().part == oldVidx.part - 1 );
 
   cleanupTestContext( context );
 }
@@ -887,6 +914,18 @@ void TestQgsGeometryChecks::testSelfIntersectionCheck()
   QCOMPARE( f.geometry().geometry()->vertexCount( 1, 0 ), 5 );
   QCOMPARE( f.geometry().geometry()->vertexCount( 1, 1 ), 5 );
 
+  // Test change tracking
+  QgsGeometrySelfIntersectionCheckError *err = static_cast<QgsGeometrySelfIntersectionCheckError *>( errs4[0] );
+  QgsGeometryUtils::SelfIntersection  oldInter = err->intersection();
+  QVERIFY( err->handleChanges( change2changes( {err->layerId(), err->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeRemoved, QgsVertexId( errs4[0]->vidx().part, errs4[0]->vidx().ring, 0 )} ) ) );
+  QgsGeometryUtils::SelfIntersection  newInter = err->intersection();
+  QVERIFY( oldInter.segment1 == newInter.segment1 + 1 );
+  QVERIFY( oldInter.segment2 == newInter.segment2 + 1 );
+  QVERIFY( err->handleChanges( change2changes( {err->layerId(), err->featureId(), QgsGeometryCheck::ChangeNode, QgsGeometryCheck::ChangeAdded, QgsVertexId( errs4[0]->vidx().part, errs4[0]->vidx().ring, 0 )} ) ) );
+  newInter = err->intersection();
+  QVERIFY( oldInter.segment1 == newInter.segment1 );
+  QVERIFY( oldInter.segment2 == newInter.segment2 );
+
   cleanupTestContext( context );
 }
 
@@ -1028,7 +1067,7 @@ QList<QgsGeometryCheckError *> TestQgsGeometryChecks::searchCheckErrors( const Q
   return matching;
 }
 
-bool TestQgsGeometryChecks::fixCheckError( QgsGeometryCheckError *error, int method, const QgsGeometryCheckError::Status &expectedStatus, const QVector<ExpectedChange> &expectedChanges, const QMap<QString, int> &mergeAttrs )
+bool TestQgsGeometryChecks::fixCheckError( QgsGeometryCheckError *error, int method, const QgsGeometryCheckError::Status &expectedStatus, const QVector<Change> &expectedChanges, const QMap<QString, int> &mergeAttrs )
 {
   QTextStream( stdout ) << " - Fixing " << error->layerId() << ":" << error->featureId() << " @[" << error->vidx().part << ", " << error->vidx().ring << ", " << error->vidx().vertex << "](" << error->location().x() << ", " << error->location().y() << ") = " << error->value().toString() << endl;
   QgsGeometryCheck::Changes changes;
@@ -1057,7 +1096,7 @@ bool TestQgsGeometryChecks::fixCheckError( QgsGeometryCheckError *error, int met
   {
     return false;
   }
-  for ( const ExpectedChange &expectedChange : expectedChanges )
+  for ( const Change &expectedChange : expectedChanges )
   {
     if ( !changes.contains( expectedChange.layerId ) )
     {
@@ -1074,6 +1113,15 @@ bool TestQgsGeometryChecks::fixCheckError( QgsGeometryCheckError *error, int met
     }
   }
   return true;
+}
+
+QgsGeometryCheck::Changes TestQgsGeometryChecks::change2changes( const Change &change ) const
+{
+  QgsGeometryCheck::Changes changes;
+  QMap<QgsFeatureId, QList<QgsGeometryCheck::Change>> featureChanges;
+  featureChanges.insert( change.fid, {QgsGeometryCheck::Change( change.what, change.type, change.vidx )} );
+  changes.insert( change.layerId, featureChanges );
+  return changes;
 }
 
 QGSTEST_MAIN( TestQgsGeometryChecks )
