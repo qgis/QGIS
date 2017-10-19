@@ -135,6 +135,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     std::unique_ptr< QgsAbstractGeometry > subdivide( int maxNodes, QString *errorMsg = nullptr ) const;
 
     QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *combine( const QList<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const override;
     QgsAbstractGeometry *combine( const QList< QgsGeometry > &, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const override;
