@@ -10031,6 +10031,7 @@ Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name
   return map3DWidget;
 #else
   Q_UNUSED( name );
+  return nullptr;
 #endif
 }
 
