@@ -230,7 +230,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -259,8 +259,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>565</width>
-                <height>697</height>
+                <width>685</width>
+                <height>781</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -279,36 +279,6 @@
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_26">
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="label_3">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Save paths</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>cbxAbsolutePath</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="1">
-                   <widget class="QComboBox" name="cbxAbsolutePath">
-                    <item>
-                     <property name="text">
-                      <string>absolute</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>relative</string>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
                   <item row="0" column="0">
                    <widget class="QLabel" name="label_4">
                     <property name="sizePolicy">
@@ -324,6 +294,84 @@
                      <cstring>titleEdit</cstring>
                     </property>
                    </widget>
+                  </item>
+                  <item row="1" column="1" colspan="4">
+                   <widget class="QLineEdit" name="titleEdit">
+                    <property name="toolTip">
+                     <string>Descriptive project name</string>
+                    </property>
+                    <property name="text">
+                     <string>Default project title</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_2">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Project title</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1" colspan="4">
+                   <layout class="QHBoxLayout" name="horizontalLayout_13">
+                    <item>
+                     <widget class="QLineEdit" name="mProjectFileLineEdit">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QToolButton" name="mButtonOpenProjectFolder">
+                      <property name="toolTip">
+                       <string>Open folder containing the project</string>
+                      </property>
+                      <property name="text">
+                       <string>…</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
+                      </property>
+                      <property name="autoRaise">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QComboBox" name="cbxAbsolutePath">
+                    <item>
+                     <property name="text">
+                      <string>absolute</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>relative</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item row="3" column="3" colspan="2">
+                   <spacer>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                   <item row="2" column="0" colspan="5">
                    <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -412,8 +460,8 @@
                     </item>
                    </layout>
                   </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_2">
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="label_3">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                       <horstretch>0</horstretch>
@@ -421,24 +469,14 @@
                      </sizepolicy>
                     </property>
                     <property name="text">
-                     <string>Project title</string>
+                     <string>Save paths</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>cbxAbsolutePath</cstring>
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="3" colspan="2">
-                   <spacer>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item row="4" column="0" colspan="5">
+                  <item row="5" column="0" colspan="5">
                    <widget class="QCheckBox" name="mMapTileRenderingCheckBox">
                     <property name="toolTip">
                      <string>Checking this setting avoids visible edge artifacts when rendering this project as separate map tiles. Rendering performance will be degraded.</string>
@@ -448,43 +486,25 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="1" colspan="4">
-                   <widget class="QLineEdit" name="titleEdit">
-                    <property name="toolTip">
-                     <string>Descriptive project name</string>
-                    </property>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="mDefaultZValueLabel">
                     <property name="text">
-                     <string>Default project title</string>
+                     <string>Default Z value</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="1" colspan="4">
-                   <layout class="QHBoxLayout" name="horizontalLayout_13">
-                    <item>
-                     <widget class="QLineEdit" name="mProjectFileLineEdit">
-                      <property name="readOnly">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QToolButton" name="mButtonOpenProjectFolder">
-                      <property name="toolTip">
-                       <string>Open folder containing the project</string>
-                      </property>
-                      <property name="text">
-                       <string>…</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
-                      </property>
-                      <property name="autoRaise">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
+                  <item row="4" column="1">
+                   <widget class="QDoubleSpinBox" name="mDefaultZValueEdit">
+                    <property name="decimals">
+                     <number>3</number>
+                    </property>
+                    <property name="minimum">
+                     <double>-999999.989999999990687</double>
+                    </property>
+                    <property name="maximum">
+                     <double>1000000.000000000000000</double>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -770,8 +790,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>676</width>
-                <height>764</height>
+                <width>685</width>
+                <height>781</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -829,7 +849,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>132</width>
+                <width>139</width>
                 <height>100</height>
                </rect>
               </property>
@@ -915,8 +935,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>269</width>
-                <height>597</height>
+                <width>290</width>
+                <height>543</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1338,8 +1358,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>598</width>
-                <height>2361</height>
+                <width>643</width>
+                <height>2316</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2418,8 +2438,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>156</width>
-                <height>59</height>
+                <width>168</width>
+                <height>54</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2573,15 +2593,10 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
@@ -2590,15 +2605,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2608,9 +2617,20 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorSchemeList</class>
    <extends>QWidget</extends>
    <header location="global">qgscolorschemelist.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
