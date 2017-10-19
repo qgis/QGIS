@@ -21,10 +21,23 @@
 #include "qgis_gui.h"
 #include <QScrollArea>
 
+/**
+ * \ingroup gui
+ * QgsVScrollArea is a QScrollArea subclass which only displays a vertical
+ * scrollbar and fits the width to the contents.
+ *
+ * \since QGIS 3.0
+ */
 class GUI_EXPORT QgsVScrollArea : public QScrollArea
 {
   public:
+
+    /**
+     * QgsVScrollArea
+     * \param parent The parent widget
+     */
     QgsVScrollArea( QWidget *parent = 0 );
+
     bool eventFilter( QObject *o, QEvent *e ) override;
 };
 
