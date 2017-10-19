@@ -54,7 +54,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
 
   OGRRegisterAll();
   GDALDriverH hDriver;
-  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( mPath.toUtf8().constData(), true, false, &hDriver );
+  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( mPath.toUtf8().constData(), true, nullptr,  &hDriver );
 
   if ( hDataSource )
   {
@@ -408,7 +408,7 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
   QVector<QgsDataItem *> children;
 
   GDALDriverH hDriver;
-  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( mPath.toUtf8().constData(), false, false, &hDriver );
+  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( mPath.toUtf8().constData(), false, nullptr, &hDriver );
   if ( !hDataSource )
     return children;
   int numLayers = GDALDatasetGetLayerCount( hDataSource );
@@ -639,7 +639,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  OGRDataSourceH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( path.toUtf8().constData(), false, false, &hDriver );
+  OGRDataSourceH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( path.toUtf8().constData(), false, nullptr, &hDriver );
   CPLPopErrorHandler();
 
   if ( ! hDataSource )
