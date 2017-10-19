@@ -4187,3 +4187,55 @@ tests:
       OUTPUT:
         name: expected/assign_projection.gml
         type: vector
+  - algorithm: qgis:transect
+    name: Test (qgis:transect)
+    params:
+      ANGLE: 90.0
+      DISTANCE: 1.0
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      SIDE: 0
+    results:
+      OUTPUT:
+        name: expected/transect_single_left_1.gml
+        type: vector
+  - algorithm: qgis:transect
+    name: Test (qgis:transect)
+    params:
+      ANGLE: 90.0
+      DISTANCE: 0.5
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      SIDE: 1
+    results:
+      OUTPUT:
+        name: expected/transect_single_right_05.gml
+        type: vector
+  - algorithm: qgis:transect
+    name: Test (qgis:transect)
+    params:
+      ANGLE: 90.0
+      DISTANCE: 1.0
+      INPUT:
+        name: custom/transect_multi.gml
+        type: vector
+      SIDE: 0
+    results:
+      OUTPUT:
+        name: expected/transect_multi_left_1.gml
+        type: vector
+  - algorithm: qgis:transect
+    name: Test (qgis:transect)
+    params:
+      ANGLE: 90.0
+      DISTANCE: 0.5
+      INPUT:
+        name: custom/transect_multi.gml
+        type: vector
+      SIDE: 1
+    results:
+      OUTPUT:
+        name: expected/transect_multi_right_05.gml
+        type: vector

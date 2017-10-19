@@ -551,6 +551,18 @@ qgis:topologicalcoloring: >
 
   A minimum number of colors can be specified if desired. The color index is saved to a new attribute named color_id.
 
+qgis:transect: >
+  This algorithm creates transect on vertices for (multi)linestring.
+
+  Field(s) from feature(s) are returned in the transect with new fields:
+
+  - TR_FID: Original ID of the feature
+  - TR_ID: ID of transect
+  - TR_SEGMENT: Number of the transect for the TR_FID
+  - TR_ANGLE: Rotation in degrees from the original line (by default: 90)
+  - TR_LENGTH: Length of the transect
+  - TR_ORIENT: Side of the transect (only on the left or right of the line, or both side)
+
 qgis:translate: >
   This algorithm moves the geometries within a layer, by offsetting them with a specified x and y displacement.
 
