@@ -113,7 +113,8 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
     return false;
   }
 
-  if ( error->resolutionMessage() == tr( "No action" ) )
+  // If nothing was changed, stop here
+  if ( changes.isEmpty() )
   {
     return true;
   }
@@ -184,20 +185,6 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
       if ( !recheckFeatures.isEmpty() )
       {
         check->collectErrors( recheckErrors, mMessages, nullptr, recheckFeatures );
-      }
-    }
-  }
-
-  // Remove just-fixed error from newly-found errors if no changes occurred (needed in case error was fixed with "no change")
-  if ( changes.isEmpty() )
-  {
-    for ( QgsGeometryCheckError *recheckErr : recheckErrors )
-    {
-      if ( recheckErr->isEqual( error ) )
-      {
-        recheckErrors.removeAll( recheckErr );
-        delete recheckErr;
-        break;
       }
     }
   }
