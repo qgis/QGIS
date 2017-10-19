@@ -1692,6 +1692,17 @@ namespace QgsWms
 
         layerElem.appendChild( attributesElem );
       }
+      else if ( currentLayer->type() == QgsMapLayer::RasterLayer )
+      {
+        QVariant wmsPrintLayer = currentLayer->customProperty( QStringLiteral( "WMSPrintLayer" ) );
+        if ( wmsPrintLayer.isValid() )
+        {
+          QDomElement wmsPrintLayerElem = doc.createElement( "WMSPrintLayer" );
+          QDomText wmsPrintLayerText = doc.createTextNode( wmsPrintLayer.toString() );
+          wmsPrintLayerElem.appendChild( wmsPrintLayerText );
+          layerElem.appendChild( wmsPrintLayerElem );
+        }
+      }
     }
 
   }

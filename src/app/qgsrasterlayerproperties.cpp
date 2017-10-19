@@ -786,6 +786,13 @@ void QgsRasterLayerProperties::sync()
   mLayerLegendUrlLineEdit->setText( mRasterLayer->legendUrl() );
   mLayerLegendUrlFormatComboBox->setCurrentIndex( mLayerLegendUrlFormatComboBox->findText( mRasterLayer->legendUrlFormat() ) );
 
+  //WMS print layer
+  QVariant wmsPrintLayer = mRasterLayer->customProperty( QStringLiteral( "WMSPrintLayer" ) );
+  if ( wmsPrintLayer.isValid() )
+  {
+    mWMSPrintLayerLineEdit->setText( wmsPrintLayer.toString() );
+  }
+
   /*
    * Legend Tab
    */
@@ -1012,6 +1019,12 @@ void QgsRasterLayerProperties::apply()
   if ( mRasterLayer->legendUrlFormat() != mLayerLegendUrlFormatComboBox->currentText() )
     mMetadataFilled = false;
   mRasterLayer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
+
+  QString wmsPrintLayer = mWMSPrintLayerLineEdit->text();
+  if ( !wmsPrintLayer.isEmpty() )
+  {
+    mRasterLayer->setCustomProperty( QStringLiteral( "WMSPrintLayer" ), mWMSPrintLayerLineEdit->text() );
+  }
 
   // update symbology
   emit refreshLegend( mRasterLayer->id(), false );
