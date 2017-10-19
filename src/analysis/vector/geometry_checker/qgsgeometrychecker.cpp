@@ -179,11 +179,17 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   {
     if ( check->getCheckType() == QgsGeometryCheck::LayerCheck )
     {
-      check->collectErrors( recheckErrors, mMessages, nullptr, recheckAreaFeatures );
+      if ( !recheckAreaFeatures.isEmpty() )
+      {
+        check->collectErrors( recheckErrors, mMessages, nullptr, recheckAreaFeatures );
+      }
     }
     else
     {
-      check->collectErrors( recheckErrors, mMessages, nullptr, recheckFeatures );
+      if ( !recheckFeatures.isEmpty() )
+      {
+        check->collectErrors( recheckErrors, mMessages, nullptr, recheckFeatures );
+      }
     }
   }
 
