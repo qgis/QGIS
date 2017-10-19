@@ -44,6 +44,7 @@ from qgis.core import (QgsFeature,
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 from math import radians, cos, sin
 
+
 class Transect(QgisFeatureBasedAlgorithm):
 
     INPUT = 'INPUT'
@@ -92,7 +93,7 @@ class Transect(QgisFeatureBasedAlgorithm):
 
     def inputLayerTypes(self):
         return [QgsProcessing.TypeVectorLine]
-        
+
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
@@ -100,15 +101,15 @@ class Transect(QgisFeatureBasedAlgorithm):
         side = self.parameterAsEnum(parameters, self.SIDE, context)
         fields = source.fields()
         fields.append(QgsField("TR_FID", QVariant.Int))
-        fields.append(QgsField("TR_ID",  QVariant.Int))
+        fields.append(QgsField("TR_ID", QVariant.Int))
         fields.append(QgsField("TR_SEGMENT", QVariant.Int))
         fields.append(QgsField("TR_ANGLE", QVariant.Double))
         fields.append(QgsField("TR_LENGTH", QVariant.Double))
         fields.append(QgsField("TR_ORIENT", QVariant.String))
-        
+
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.LineString, source.sourceCrs())
-        
+
         features = source.getFeatures()
         total = 100.0 / source.featureCount() if source.featureCount() else 0
 
@@ -139,16 +140,15 @@ class Transect(QgisFeatureBasedAlgorithm):
                         else:
                             for i in range(length - 2):
                                 feat = QgsFeature()
-                                attrs = f.attributes() + [current, number, i+1, angle, distance, self.sides[side]]
+                                attrs = f.attributes() + [current, number, i + 1, angle, distance, self.sides[side]]
                                 feat.setAttributes(attrs)
-                                g = self.calcTransect(line[i], line[i+1], line[i+2], distance, side, angle)
+                                g = self.calcTransect(line[i], line[i + 1], line[i + 2], distance, side, angle)
                                 feat.setGeometry(g)
                                 sink.addFeature(feat, QgsFeatureSink.FastInsert)
                                 number += 1
             feedback.setProgress(int(current * total))
-        
 
-        return {self.OUTPUT: dest_id}     
+        return {self.OUTPUT: dest_id}
 
     def calcTransect(self, p1, point, p2, length, orientation, angle):
         """
