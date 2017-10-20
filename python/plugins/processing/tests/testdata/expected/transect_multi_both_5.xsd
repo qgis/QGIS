@@ -10,12 +10,19 @@
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
-<xs:element name="transect_single_right_05" type="ogr:transect_single_right_05_Type" substitutionGroup="gml:_Feature"/>
-<xs:complexType name="transect_single_right_05_Type">
+<xs:element name="transect_multi_both_5" type="ogr:transect_multi_both_5_Type" substitutionGroup="gml:_Feature"/>
+<xs:complexType name="transect_multi_both_5_Type">
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
         <xs:element name="geometryProperty" type="gml:LineStringPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
+        <xs:element name="id" nillable="true" minOccurs="0" maxOccurs="1">
+          <xs:simpleType>
+            <xs:restriction base="xs:integer">
+              <xs:totalDigits value="10"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
         <xs:element name="TR_FID" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:integer">

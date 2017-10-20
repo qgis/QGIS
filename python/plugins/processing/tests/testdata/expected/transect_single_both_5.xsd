@@ -10,8 +10,8 @@
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
-<xs:element name="transect_single_right_05" type="ogr:transect_single_right_05_Type" substitutionGroup="gml:_Feature"/>
-<xs:complexType name="transect_single_right_05_Type">
+<xs:element name="transect_single_both_5" type="ogr:transect_single_both_5_Type" substitutionGroup="gml:_Feature"/>
+<xs:complexType name="transect_single_both_5_Type">
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>

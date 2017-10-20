@@ -4187,8 +4187,9 @@ tests:
       OUTPUT:
         name: expected/assign_projection.gml
         type: vector
-  - algorithm: qgis:transect
-    name: Test (qgis:transect)
+
+  - algorithm: native:transect
+    name: Test (native:transect)
     params:
       ANGLE: 90.0
       DISTANCE: 1.0
@@ -4200,8 +4201,9 @@ tests:
       OUTPUT:
         name: expected/transect_single_left_1.gml
         type: vector
-  - algorithm: qgis:transect
-    name: Test (qgis:transect)
+
+  - algorithm: native:transect
+    name: Test (native:transect)
     params:
       ANGLE: 90.0
       DISTANCE: 0.5
@@ -4213,8 +4215,23 @@ tests:
       OUTPUT:
         name: expected/transect_single_right_05.gml
         type: vector
-  - algorithm: qgis:transect
-    name: Test (qgis:transect)
+
+  - algorithm: native:transect
+    name: Test (native:transect)
+    params:
+      ANGLE: 90.0
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      LENGTH: 0.5
+      SIDE: 1
+    results:
+      OUTPUT:
+        name: expected/transect_single_right_05.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Test (native:transect)
     params:
       ANGLE: 90.0
       DISTANCE: 1.0
@@ -4226,14 +4243,29 @@ tests:
       OUTPUT:
         name: expected/transect_multi_left_1.gml
         type: vector
-  - algorithm: qgis:transect
-    name: Test (qgis:transect)
+
+  - algorithm: native:transect
+    name: Test (native:transect)
     params:
       ANGLE: 90.0
       DISTANCE: 0.5
       INPUT:
         name: custom/transect_multi.gml
         type: vector
+      SIDE: 1
+    results:
+      OUTPUT:
+        name: expected/transect_multi_right_05.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Test (native:transect)
+    params:
+      ANGLE: 90.0
+      INPUT:
+        name: custom/transect_multi.gml
+        type: vector
+      LENGTH: 0.5
       SIDE: 1
     results:
       OUTPUT:
