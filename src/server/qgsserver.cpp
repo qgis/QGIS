@@ -300,8 +300,7 @@ void QgsServer::putenv( const QString &var, const QString &val )
  * @param queryString
  * @return response headers and body
  */
-
-void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response )
+void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project )
 {
   QgsMessageLog::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
@@ -346,16 +345,23 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       printRequestParameters( parameterMap, logLevel );
 
       //Config file path
-      QString configFilePath = configPath( *sConfigFilePath, parameterMap );
-
-      // load the project if needed and not empty
-      const QgsProject *project = mConfigCache->project( configFilePath );
       if ( ! project )
       {
-        throw QgsServerException( QStringLiteral( "Project file error" ) );
-      }
+        QString configFilePath = configPath( *sConfigFilePath, parameterMap );
 
-      sServerInterface->setConfigFilePath( configFilePath );
+        // load the project if needed and not empty
+        project = mConfigCache->project( configFilePath );
+        if ( ! project )
+        {
+          throw QgsServerException( QStringLiteral( "Project file error" ) );
+        }
+
+        sServerInterface->setConfigFilePath( configFilePath );
+      }
+      else
+      {
+        sServerInterface->setConfigFilePath( project->fileName() );
+      }
 
       //Service parameter
       QString serviceString = parameterMap.value( QStringLiteral( "SERVICE" ) );

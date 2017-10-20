@@ -32,6 +32,7 @@ from qgis.PyQt.QtCore import QSize
 import osgeo.gdal  # NOQA
 
 from test_qgsserver import QgsServerTestBase
+from qgis.core import QgsProject
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
@@ -195,6 +196,31 @@ class TestQgsServerWMS(QgsServerTestBase):
         self.wms_request_compare('GetSchemaExtension',
                                  '',
                                  'getschemaextension')
+
+    def wms_request_compare_project(self, request, extra=None, reference_file=None):
+        projectPath = self.testdata_path + "test_project.qgs"
+        assert os.path.exists(projectPath), "Project file not found: " + projectPath
+
+        project = QgsProject()
+        project.read(projectPath)
+
+        query_string = 'https://www.qgis.org/?SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (request)
+        if extra is not None:
+            query_string += extra
+        header, body = self._execute_request_project(query_string, project)
+        response = header + body
+        reference_path = self.testdata_path + (request.lower() if not reference_file else reference_file) + '.txt'
+        self.store_reference(reference_path, response)
+        f = open(reference_path, 'rb')
+        expected = f.read()
+        f.close()
+        response = re.sub(RE_STRIP_UNCHECKABLE, b'*****', response)
+        expected = re.sub(RE_STRIP_UNCHECKABLE, b'*****', expected)
+
+        self.assertXMLEqual(response, expected, msg="request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8')))
+
+    def test_wms_getcapabilities_project(self):
+        self.wms_request_compare_project('GetCapabilities')
 
     def wms_inspire_request_compare(self, request):
         """WMS INSPIRE tests"""

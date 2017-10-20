@@ -75,8 +75,11 @@ class SERVER_EXPORT QgsServer
      *
      * \param request a QgsServerRequest holding request parameters
      * \param response a QgsServerResponse for handling response I/O)
+     * \param project a QgsProject or nullptr, if it is nullptr the project
+     *        is created from the MAP param specified in request or from
+     *        the QGIS_PROJECT_FILE setting
      */
-    void handleRequest( QgsServerRequest &request, QgsServerResponse &response );
+    void handleRequest( QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project = nullptr );
 
 
     //! Returns a pointer to the server interface
