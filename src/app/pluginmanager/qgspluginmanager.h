@@ -38,8 +38,8 @@ const int PLUGMAN_TAB_NOT_INSTALLED = 2;
 const int PLUGMAN_TAB_UPGRADEABLE = 3;
 const int PLUGMAN_TAB_NEW = 4;
 const int PLUGMAN_TAB_INVALID = 5;
-const int PLUGMAN_TAB_INSTALL_FROM_ZIP = 7;
-const int PLUGMAN_TAB_SETTINGS = 8;
+const int PLUGMAN_TAB_INSTALL_FROM_ZIP = 6;
+const int PLUGMAN_TAB_SETTINGS = 7;
 
 /**
  * \brief Plugin manager for browsing, (un)installing and (un)loading plugins
