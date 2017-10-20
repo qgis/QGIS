@@ -956,6 +956,16 @@ namespace QgsWms
     else
       layers = stylizedLayers( params );
 
+    // add QUERY_LAYERS to list of available layers for more flexibility
+    for ( const QString &queryLayer : queryLayers )
+    {
+      if ( mNicknameLayers.contains( queryLayer )
+           && !layers.contains( mNicknameLayers[queryLayer] ) )
+      {
+        layers.append( mNicknameLayers[queryLayer] );
+      }
+    }
+
     // create the mapSettings and the output image
     QgsMapSettings mapSettings;
     std::unique_ptr<QImage> outputImage( createImage() );
