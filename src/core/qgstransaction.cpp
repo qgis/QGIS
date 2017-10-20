@@ -24,6 +24,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpression.h"
+#include "qgsmessagelog.h"
 #include <QUuid>
 
 typedef QgsTransaction *createTransaction_t( const QString &connString );
@@ -195,7 +196,10 @@ QString QgsTransaction::createSavepoint( QString &error SIP_OUT )
   const QString name( QUuid::createUuid().toString() );
 
   if ( !executeSql( QStringLiteral( "SAVEPOINT %1" ).arg( QgsExpression::quotedColumnRef( name ) ), error ) )
+  {
+    QgsMessageLog::logMessage( tr( "Could not create savepoint (%1)" ).arg( error ) );
     return QString();
+  }
 
   mSavepoints.push( name );
   mLastSavePointIsDirty = false;
@@ -208,7 +212,10 @@ QString QgsTransaction::createSavepoint( const QString &savePointId, QString &er
     return QString();
 
   if ( !executeSql( QStringLiteral( "SAVEPOINT %1" ).arg( QgsExpression::quotedColumnRef( savePointId ) ), error ) )
+  {
+    QgsMessageLog::logMessage( tr( "Could not create savepoint (%1)" ).arg( error ) );
     return QString();
+  }
 
   mSavepoints.push( savePointId );
   mLastSavePointIsDirty = false;
