@@ -54,6 +54,18 @@ namespace geos
      * geos context.
      */
     void CORE_EXPORT operator()( const GEOSPreparedGeometry *geom );
+
+    /**
+     * Destroys the GEOS buffer params \a params, using the static QGIS
+     * geos context.
+     */
+    void CORE_EXPORT operator()( GEOSBufferParams *params );
+
+    /**
+     * Destroys the GEOS coordinate sequence \a sequence, using the static QGIS
+     * geos context.
+     */
+    void CORE_EXPORT operator()( GEOSCoordSequence *sequence );
   };
 
   /**
@@ -65,6 +77,17 @@ namespace geos
    * Scoped GEOS prepared geometry pointer.
    */
   using prepared_unique_ptr = std::unique_ptr< const GEOSPreparedGeometry, GeosDeleter>;
+
+  /**
+   * Scoped GEOS buffer params pointer.
+   */
+  using buffer_params_unique_ptr = std::unique_ptr< GEOSBufferParams, GeosDeleter>;
+
+  /**
+   * Scoped GEOS coordinate sequence pointer.
+   */
+  using coord_sequence_unique_ptr = std::unique_ptr< GEOSCoordSequence, GeosDeleter>;
+
 }
 
 /**
