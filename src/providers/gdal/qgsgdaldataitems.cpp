@@ -259,13 +259,13 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       // do not print errors, but write to debug
       CPLPushErrorHandler( CPLQuietErrorHandler );
       CPLErrorReset();
-      if ( ! GDALIdentifyDriver( TO8F( thePath ), nullptr ) )
+      GDALDriverH hDriver = GDALIdentifyDriver( TO8F( thePath ), nullptr );
+      CPLPopErrorHandler();
+      if ( !hDriver || GDALGetDriverShortName( hDriver ) == QString( "OGR_VRT" ) )
       {
         QgsDebugMsgLevel( "Skipping VRT file because root is not a GDAL VRT", 2 );
-        CPLPopErrorHandler();
         return nullptr;
       }
-      CPLPopErrorHandler();
     }
     // add the item
     QStringList sublayers;

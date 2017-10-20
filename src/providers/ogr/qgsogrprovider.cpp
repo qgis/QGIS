@@ -2402,7 +2402,7 @@ QString createFilters( QString type )
       {
         myDirectoryDrivers += QObject::tr( "U.S. Census TIGER/Line" ) + ",TIGER;";
       }
-      else if ( driverName.startsWith( "VRT" ) )
+      else if ( driverName.contains( "VRT" ) ) // match both GDAL 1.x "VRT" and GDAL 2.x "OGR_VRT"
       {
         myFileFilters += createFileFilter_( QObject::tr( "VRT - Virtual Datasource" ),
                                             "*.vrt *.ovf" );
