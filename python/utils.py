@@ -33,6 +33,7 @@ from qgis.PyQt.QtWidgets import QPushButton, QApplication
 from qgis.core import Qgis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput, QgsWkbTypes
 from qgis.gui import QgsMessageBar
 
+import os
 import sys
 import traceback
 import glob
@@ -76,7 +77,8 @@ def showWarning(message, category, filename, lineno, file=None, line=None):
     )
 
 
-warnings.showwarning = showWarning
+if not os.environ.get('QGIS_DISABLE_MESSAGE_HOOKS'):
+    warnings.showwarning = showWarning
 
 
 def showException(type, value, tb, msg, messagebar=False):
@@ -204,7 +206,8 @@ def uninstallErrorHook():
 
 
 # install error hook() on module load
-installErrorHook()
+if not os.environ.get('QGIS_DISABLE_MESSAGE_HOOKS'):
+    installErrorHook()
 
 # initialize 'iface' object
 iface = None
@@ -683,7 +686,8 @@ def _import(name, globals={}, locals={}, fromlist=[], level=None):
     return mod
 
 
-if _uses_builtins:
-    builtins.__import__ = _import
-else:
-    __builtin__.__import__ = _import
+if not os.environ.get('QGIS_NO_OVERRIDE_IMPORT'):
+    if _uses_builtins:
+        builtins.__import__ = _import
+    else:
+        __builtin__.__import__ = _import
