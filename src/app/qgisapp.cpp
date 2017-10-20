@@ -1317,8 +1317,6 @@ QgisApp::~QgisApp()
   // cancel request for FileOpen events
   QgsApplication::setFileOpenEventReceiver( nullptr );
 
-  delete QgsProject::instance();
-
   delete mPythonUtils;
 
   delete mTray;

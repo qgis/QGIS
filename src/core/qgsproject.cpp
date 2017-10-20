@@ -373,6 +373,10 @@ QgsProject::~QgsProject()
   delete mRelationManager;
   delete mLayerTreeRegistryBridge;
   delete mRootGroup;
+  if ( this == sProject )
+  {
+    sProject = nullptr;
+  }
 }
 
 
