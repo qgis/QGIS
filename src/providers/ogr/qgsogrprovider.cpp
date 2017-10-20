@@ -99,6 +99,8 @@ QMap< QgsOgrProviderUtils::DatasetIdentification,
 
 QMap< QString, int > QgsOgrProviderUtils::mapCountOpenedDS;
 
+QMap< GDALDatasetH, bool> QgsOgrProviderUtils::mapDSHandleToUpdateMode;
+
 QMap< QString, QDateTime > QgsOgrProviderUtils::mapDSNameToLastModifiedDate;
 
 bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
@@ -3222,6 +3224,7 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   }
 
   QString filePath( QString::fromUtf8( pszPath ) );
+  bool bIsLocalGpkg = false;
   if ( QFileInfo( filePath ).suffix().compare( QLatin1String( "gpkg" ), Qt::CaseInsensitive ) == 0 &&
        IsLocalFile( filePath ) &&
        !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr ) &&
@@ -3233,6 +3236,7 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
     // But only do that on a local file since WAL is advertized not to work
     // on network shares
     CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "WAL" );
+    bIsLocalGpkg = true;
   }
 
   const int nOpenFlags = GDAL_OF_VECTOR | ( bUpdate ? GDAL_OF_UPDATE : 0 );
@@ -3248,10 +3252,11 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
     return nullptr;
   }
   GDALDriverH hDrv = GDALGetDatasetDriver( hDS );
-  if ( strcmp( GDALGetDriverShortName( hDrv ), "GPKG" ) == 0 )
+  if ( bIsLocalGpkg && strcmp( GDALGetDriverShortName( hDrv ), "GPKG" ) == 0 )
   {
     QMutexLocker locker( &globalMutex );
     mapCountOpenedDS[ filePath ]++;
+    mapDSHandleToUpdateMode[ hDS ] = bUpdate;
   }
   if ( phDriver )
     *phDriver = hDrv;
@@ -3308,53 +3313,65 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
        IsLocalFile( datasetName ) &&
        !CPLGetConfigOption( "OGR_SQLITE_JOURNAL", nullptr ) )
   {
+    bool openedAsUpdate = false;
     bool tryReturnToWall = false;
     {
       QMutexLocker locker( &globalMutex );
       mapCountOpenedDS[ datasetName ] --;
       if ( mapCountOpenedDS[ datasetName ] == 0 )
+      {
+        mapCountOpenedDS.remove( datasetName );
+        openedAsUpdate = mapDSHandleToUpdateMode[hDS];
         tryReturnToWall = true;
+      }
+      mapDSHandleToUpdateMode.remove( hDS );
     }
     if ( tryReturnToWall )
     {
-      // We need to reset all iterators on layers, otherwise we will not
-      // be able to change journal_mode.
-      int layerCount = GDALDatasetGetLayerCount( hDS );
-      for ( int i = 0; i < layerCount; i ++ )
-      {
-        OGR_L_ResetReading( GDALDatasetGetLayer( hDS, i ) );
-      }
-
-      CPLPushErrorHandler( CPLQuietErrorHandler );
-      QgsDebugMsg( "GPKG: Trying to return to delete mode" );
       bool bSuccess = false;
-      OGRLayerH hSqlLyr = GDALDatasetExecuteSQL( hDS,
-                          "PRAGMA journal_mode = delete",
-                          nullptr, nullptr );
-      if ( hSqlLyr )
+      if ( openedAsUpdate )
       {
-        OGRFeatureH hFeat = OGR_L_GetNextFeature( hSqlLyr );
-        if ( hFeat )
+        // We need to reset all iterators on layers, otherwise we will not
+        // be able to change journal_mode.
+        int layerCount = GDALDatasetGetLayerCount( hDS );
+        for ( int i = 0; i < layerCount; i ++ )
         {
-          const char *pszRet = OGR_F_GetFieldAsString( hFeat, 0 );
-          bSuccess = EQUAL( pszRet, "delete" );
-          QgsDebugMsg( QString( "Return: %1" ).arg( pszRet ) );
-          OGR_F_Destroy( hFeat );
+          OGR_L_ResetReading( GDALDatasetGetLayer( hDS, i ) );
         }
+
+        CPLPushErrorHandler( CPLQuietErrorHandler );
+        QgsDebugMsg( "GPKG: Trying to return to delete mode" );
+        OGRLayerH hSqlLyr = GDALDatasetExecuteSQL( hDS,
+                            "PRAGMA journal_mode = delete",
+                            nullptr, nullptr );
+        if ( hSqlLyr )
+        {
+          OGRFeatureH hFeat = OGR_L_GetNextFeature( hSqlLyr );
+          if ( hFeat )
+          {
+            const char *pszRet = OGR_F_GetFieldAsString( hFeat, 0 );
+            bSuccess = EQUAL( pszRet, "delete" );
+            QgsDebugMsg( QString( "Return: %1" ).arg( pszRet ) );
+            OGR_F_Destroy( hFeat );
+          }
+        }
+        else if ( CPLGetLastErrorType() != CE_None )
+        {
+          QgsDebugMsg( QString( "Return: %1" ).arg( CPLGetLastErrorMsg() ) );
+        }
+        GDALDatasetReleaseResultSet( hDS, hSqlLyr );
+        CPLPopErrorHandler();
       }
-      else if ( CPLGetLastErrorType() != CE_None )
-      {
-        QgsDebugMsg( QString( "Return: %1" ).arg( CPLGetLastErrorMsg() ) );
-      }
-      GDALDatasetReleaseResultSet( hDS, hSqlLyr );
-      CPLPopErrorHandler();
       GDALClose( hDS );
 
-      // This may have not worked if the file was opened in read-only mode,
-      // so retry in update mode
+      // If the file was opened in read-only mode, or if the above failed,
+      // we need to reopen it in update mode
       if ( !bSuccess )
       {
-        QgsDebugMsg( "GPKG: Trying again" );
+        if ( openedAsUpdate )
+          QgsDebugMsg( "GPKG: Trying again" );
+        else
+          QgsDebugMsg( "GPKG: Trying to return to delete mode" );
         CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "DELETE" );
         hDS = GDALOpenEx( datasetName.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
         CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", nullptr );

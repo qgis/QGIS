@@ -308,8 +308,11 @@ class QgsOgrProviderUtils
     //! Map dataset identification to a list of corresponding DatasetWithLayers*
     static QMap< DatasetIdentification, QList<DatasetWithLayers *> > mapSharedDS;
 
-    //! Map a dataset name to the number of opened GDAL dataset objects on it (if opened with GDALOpenWrapper)
+    //! Map a dataset name to the number of opened GDAL dataset objects on it (if opened with GDALOpenWrapper, only for GPKG)
     static QMap< QString, int > mapCountOpenedDS;
+
+    //! Map a dataset handle to its update open mode (if opened with GDALOpenWrapper, only for GPKG)
+    static QMap< GDALDatasetH, bool> mapDSHandleToUpdateMode;
 
     //! Map a dataset name to its last modified data
     static QMap< QString, QDateTime > mapDSNameToLastModifiedDate;
