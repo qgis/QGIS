@@ -592,21 +592,14 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     // if this is a VRT file make sure it is vector VRT to avoid duplicates
     if ( suffix == QLatin1String( "vrt" ) )
     {
-      GDALDriverH hDriver = GDALGetDriverByName( "OGR_VRT" );
-      if ( hDriver )
+      CPLPushErrorHandler( CPLQuietErrorHandler );
+      CPLErrorReset();
+      GDALDriverH hDriver = GDALIdentifyDriver( path.toUtf8().constData(), nullptr );
+      CPLPopErrorHandler();
+      if ( !hDriver || GDALGetDriverShortName( hDriver ) == QLatin1String( "VRT" ) )
       {
-        // do not print errors, but write to debug
-        CPLPushErrorHandler( CPLQuietErrorHandler );
-        CPLErrorReset();
-        GDALDatasetH hDataSource = GDALOpenEx(
-                                     path.toLocal8Bit().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr );
-        CPLPopErrorHandler();
-        if ( ! hDataSource )
-        {
-          QgsDebugMsgLevel( "Skipping VRT file because root is not a OGR VRT", 2 );
-          return nullptr;
-        }
-        GDALClose( hDataSource );
+        QgsDebugMsgLevel( "Skipping VRT file because root is not a OGR VRT", 2 );
+        return nullptr;
       }
     }
     // Handle collections
