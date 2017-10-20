@@ -45,14 +45,14 @@ typedef QString protocolDrivers_t();
 //typedef int dataCapabilities_t();
 //typedef QgsDataItem * dataItem_t(QString);
 
-static QMutex mutex;
 static QgsProviderRegistry *sInstance = nullptr;
 
 QgsProviderRegistry *QgsProviderRegistry::instance( const QString &pluginPath )
 {
   if ( !sInstance )
   {
-    QMutexLocker locker( &mutex );
+    static QMutex sMutex;
+    QMutexLocker locker( &sMutex );
     if ( !sInstance )
     {
       sInstance = new QgsProviderRegistry( pluginPath );
