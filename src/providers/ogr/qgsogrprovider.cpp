@@ -696,9 +696,9 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
   // Get first column name,
   // TODO: add support for multiple
   QString geometryColumnName;
-  OGRGeomFieldDefnH geomH = fdef.GetGeomFieldDefn( 0 );
-  if ( geomH )
+  if ( fdef.GetGeomFieldCount() )
   {
+    OGRGeomFieldDefnH geomH = fdef.GetGeomFieldDefn( 0 );
     geometryColumnName = QString::fromUtf8( OGR_GFld_GetNameRef( geomH ) );
   }
   QString layerName = QString::fromUtf8( layer->name() );
@@ -4646,6 +4646,12 @@ int QgsOgrFeatureDefn::GetFieldIndex( const QByteArray &name )
 {
   QMutexLocker locker( &mutex() );
   return OGR_FD_GetFieldIndex( get(), name.constData() );
+}
+
+int QgsOgrFeatureDefn::GetGeomFieldCount()
+{
+  QMutexLocker locker( &mutex() );
+  return OGR_FD_GetGeomFieldCount( get() );
 }
 
 OGRGeomFieldDefnH  QgsOgrFeatureDefn::GetGeomFieldDefn( int idx )

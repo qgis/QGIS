@@ -402,6 +402,9 @@ class QgsOgrFeatureDefn
     //! Wrapper of OGR_FD_GetFieldIndex
     int GetFieldIndex( const QByteArray & );
 
+    //! Wrapper of OGR_FD_GetGeomFieldCount
+    int GetGeomFieldCount();
+
     //! Wrapper of OGR_FD_GetGeomFieldDefn
     OGRGeomFieldDefnH GetGeomFieldDefn( int idx );
 
