@@ -53,11 +53,11 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
   setState( Populated ); // children are not expected
 
   OGRRegisterAll();
-  GDALDriverH hDriver;
-  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( mPath.toUtf8().constData(), true, nullptr,  &hDriver );
+  GDALDatasetH hDataSource = GDALOpenEx( mPath.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr );
 
   if ( hDataSource )
   {
+    GDALDriverH hDriver = GDALGetDatasetDriver( hDataSource );
     QString driverName = GDALGetDriverShortName( hDriver );
     GDALClose( hDataSource );
 
@@ -407,8 +407,7 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
 
-  GDALDriverH hDriver;
-  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( mPath.toUtf8().constData(), false, nullptr, &hDriver );
+  GDALDatasetH hDataSource = GDALOpenEx( mPath.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr );
   if ( !hDataSource )
     return children;
   int numLayers = GDALDatasetGetLayerCount( hDataSource );
@@ -635,38 +634,38 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
   // test that file is valid with OGR
   OGRRegisterAll();
-  OGRSFDriverH hDriver;
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  OGRDataSourceH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( path.toUtf8().constData(), false, nullptr, &hDriver );
+  GDALDatasetH hDS = GDALOpenEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr );
   CPLPopErrorHandler();
 
-  if ( ! hDataSource )
+  if ( ! hDS )
   {
     QgsDebugMsg( QString( "GDALOpen error # %1 : %2 on %3" ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ).arg( path ) );
     return nullptr;
   }
 
-  QgsDebugMsgLevel( QString( "GDAL Driver : %1" ).arg( OGR_Dr_GetName( hDriver ) ), 2 );
-  QString ogrDriverName = OGR_Dr_GetName( hDriver );
-  int numLayers = OGR_DS_GetLayerCount( hDataSource );
+  GDALDriverH hDriver = GDALGetDatasetDriver( hDS );
+  QString driverName = GDALGetDriverShortName( hDriver );
+  QgsDebugMsgLevel( QString( "GDAL Driver : %1" ).arg( driverName ), 2 );
+  int numLayers = GDALDatasetGetLayerCount( hDS );
 
   // GeoPackage needs a specialized data item, mainly because of raster deletion not
   // yet implemented in GDAL (2.2.1)
-  if ( ogrDriverName == QLatin1String( "GPKG" ) )
+  if ( driverName == QLatin1String( "GPKG" ) )
   {
     item = new QgsGeoPackageCollectionItem( parentItem, name, path );
   }
-  else if ( numLayers > 1 || ogrSupportedDbDriverNames.contains( ogrDriverName ) )
+  else if ( numLayers > 1 || ogrSupportedDbDriverNames.contains( driverName ) )
   {
     item = new QgsOgrDataCollectionItem( parentItem, name, path );
   }
   else
   {
-    item = dataItemForLayer( parentItem, name, path, hDataSource, 0 );
+    item = dataItemForLayer( parentItem, name, path, hDS, 0 );
   }
-  OGR_DS_Destroy( hDataSource );
+  GDALClose( hDS );
   return item;
 }
 
