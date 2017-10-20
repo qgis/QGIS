@@ -718,12 +718,11 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
       //for polygons, we want distance to exterior ring (not an interior point)
       extRing = GEOSGetExteriorRing_r( geosctxt, mGeos );
     }
-    GEOSCoordSequence *nearestCoord = GEOSNearestPoints_r( geosctxt, extRing, geosPt.get() );
+    geos::coord_sequence_unique_ptr nearestCoord( GEOSNearestPoints_r( geosctxt, extRing, geosPt.get() ) );
     double nx;
     double ny;
-    ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord, 0, &nx );
-    ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord, 0, &ny );
-    GEOSCoordSeq_destroy_r( geosctxt, nearestCoord );
+    ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord.get(), 0, &nx );
+    ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord.get(), 0, &ny );
 
     if ( rx )
       *rx = nx;

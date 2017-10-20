@@ -111,6 +111,16 @@ void geos::GeosDeleter::operator()( const GEOSPreparedGeometry *geom )
   GEOSPreparedGeom_destroy_r( geosinit.ctxt, geom );
 }
 
+void geos::GeosDeleter::operator()( GEOSBufferParams *params )
+{
+  GEOSBufferParams_destroy_r( geosinit.ctxt, params );
+}
+
+void geos::GeosDeleter::operator()( GEOSCoordSequence *sequence )
+{
+  GEOSCoordSeq_destroy_r( geosinit.ctxt, sequence );
+}
+
 
 ///@endcond
 
@@ -1851,18 +1861,17 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::singleSidedBuffer( double distance
   geos::unique_ptr geos;
   try
   {
-    GEOSBufferParams *bp  = GEOSBufferParams_create_r( geosinit.ctxt );
-    GEOSBufferParams_setSingleSided_r( geosinit.ctxt, bp, 1 );
-    GEOSBufferParams_setQuadrantSegments_r( geosinit.ctxt, bp, segments );
-    GEOSBufferParams_setJoinStyle_r( geosinit.ctxt, bp, joinStyle );
-    GEOSBufferParams_setMitreLimit_r( geosinit.ctxt, bp, miterLimit );  //#spellok
+    geos::buffer_params_unique_ptr bp( GEOSBufferParams_create_r( geosinit.ctxt ) );
+    GEOSBufferParams_setSingleSided_r( geosinit.ctxt, bp.get(), 1 );
+    GEOSBufferParams_setQuadrantSegments_r( geosinit.ctxt, bp.get(), segments );
+    GEOSBufferParams_setJoinStyle_r( geosinit.ctxt, bp.get(), joinStyle );
+    GEOSBufferParams_setMitreLimit_r( geosinit.ctxt, bp.get(), miterLimit );  //#spellok
 
     if ( side == 1 )
     {
       distance = -distance;
     }
-    geos.reset( GEOSBufferWithParams_r( geosinit.ctxt, mGeos.get(), bp, distance ) );
-    GEOSBufferParams_destroy_r( geosinit.ctxt, bp );
+    geos.reset( GEOSBufferWithParams_r( geosinit.ctxt, mGeos.get(), bp.get(), distance ) );
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr );
   return fromGeos( geos.get() );
@@ -2020,11 +2029,10 @@ QgsGeometry QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg )
   double ny = 0.0;
   try
   {
-    GEOSCoordSequence *nearestCoord = GEOSNearestPoints_r( geosinit.ctxt, mGeos.get(), otherGeom.get() );
+    geos::coord_sequence_unique_ptr nearestCoord( GEOSNearestPoints_r( geosinit.ctxt, mGeos.get(), otherGeom.get() ) );
 
-    ( void )GEOSCoordSeq_getX_r( geosinit.ctxt, nearestCoord, 0, &nx );
-    ( void )GEOSCoordSeq_getY_r( geosinit.ctxt, nearestCoord, 0, &ny );
-    GEOSCoordSeq_destroy_r( geosinit.ctxt, nearestCoord );
+    ( void )GEOSCoordSeq_getX_r( geosinit.ctxt, nearestCoord.get(), 0, &nx );
+    ( void )GEOSCoordSeq_getY_r( geosinit.ctxt, nearestCoord.get(), 0, &ny );
   }
   catch ( GEOSException &e )
   {
@@ -2057,14 +2065,12 @@ QgsGeometry QgsGeos::shortestLine( const QgsGeometry &other, QString *errorMsg )
   double ny2 = 0.0;
   try
   {
-    GEOSCoordSequence *nearestCoord = GEOSNearestPoints_r( geosinit.ctxt, mGeos.get(), otherGeom.get() );
+    geos::coord_sequence_unique_ptr nearestCoord( GEOSNearestPoints_r( geosinit.ctxt, mGeos.get(), otherGeom.get() ) );
 
-    ( void )GEOSCoordSeq_getX_r( geosinit.ctxt, nearestCoord, 0, &nx1 );
-    ( void )GEOSCoordSeq_getY_r( geosinit.ctxt, nearestCoord, 0, &ny1 );
-    ( void )GEOSCoordSeq_getX_r( geosinit.ctxt, nearestCoord, 1, &nx2 );
-    ( void )GEOSCoordSeq_getY_r( geosinit.ctxt, nearestCoord, 1, &ny2 );
-
-    GEOSCoordSeq_destroy_r( geosinit.ctxt, nearestCoord );
+    ( void )GEOSCoordSeq_getX_r( geosinit.ctxt, nearestCoord.get(), 0, &nx1 );
+    ( void )GEOSCoordSeq_getY_r( geosinit.ctxt, nearestCoord.get(), 0, &ny1 );
+    ( void )GEOSCoordSeq_getX_r( geosinit.ctxt, nearestCoord.get(), 1, &nx2 );
+    ( void )GEOSCoordSeq_getY_r( geosinit.ctxt, nearestCoord.get(), 1, &ny2 );
   }
   catch ( GEOSException &e )
   {
