@@ -737,7 +737,7 @@ void QgsMapToolCapture::validateGeometry()
   connect( mValidator, &QgsGeometryValidator::errorFound, this, &QgsMapToolCapture::addError );
   connect( mValidator, &QThread::finished, this, &QgsMapToolCapture::validationFinished );
   mValidator->start();
-  emit messageEmitted( tr( "Validation started" ) );
+  QgsDebugMsgLevel( "Validation started", 4 );
 }
 
 void QgsMapToolCapture::addError( QgsGeometry::Error e )
