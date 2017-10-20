@@ -881,7 +881,7 @@ geos::unique_ptr QgsGeos::nodeGeometries( const GEOSGeometry *splitLine, const G
   geos::unique_ptr splitLineClone( GEOSGeom_clone_r( geosinit.ctxt, splitLine ) );
   geos::unique_ptr unionGeometry( GEOSUnion_r( geosinit.ctxt, splitLineClone.get(), geometryBoundary.get() ) );
 
-  return std::move( unionGeometry );
+  return unionGeometry;
 }
 
 int QgsGeos::mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry *> &splitResult ) const
@@ -984,7 +984,7 @@ geos::unique_ptr QgsGeos::createGeosCollection( int typeId, const QVector<GEOSGe
 
   delete [] geomarr;
 
-  return std::move( geom );
+  return geom;
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos )
@@ -1767,7 +1767,7 @@ geos::unique_ptr QgsGeos::createGeosPointXY( double x, double y, bool hasZ, doub
     geosPoint.reset( GEOSGeom_createPoint_r( geosinit.ctxt, coordSeq ) );
   }
   CATCH_GEOS( nullptr )
-  return std::move( geosPoint );
+  return geosPoint;
 }
 
 geos::unique_ptr QgsGeos::createGeosLinestring( const QgsAbstractGeometry *curve, double precision )
@@ -1786,7 +1786,7 @@ geos::unique_ptr QgsGeos::createGeosLinestring( const QgsAbstractGeometry *curve
     geosGeom.reset( GEOSGeom_createLineString_r( geosinit.ctxt, coordSeq ) );
   }
   CATCH_GEOS( nullptr )
-  return std::move( geosGeom );
+  return geosGeom;
 }
 
 geos::unique_ptr QgsGeos::createGeosPolygon( const QgsAbstractGeometry *poly, double precision )
@@ -1823,7 +1823,7 @@ geos::unique_ptr QgsGeos::createGeosPolygon( const QgsAbstractGeometry *poly, do
   }
   CATCH_GEOS( nullptr )
 
-  return std::move( geosPolygon );
+  return geosPolygon;
 }
 
 QgsAbstractGeometry *QgsGeos::offsetCurve( double distance, int segments, int joinStyle, double miterLimit, QString *errorMsg ) const
@@ -2253,7 +2253,7 @@ static geos::unique_ptr _mergeLinestrings( const GEOSGeometry *line1, const GEOS
     GEOSGeometry *geoms[2] = { g1.release(), g2.release() };
     geos::unique_ptr multiGeom( GEOSGeom_createCollection_r( geosinit.ctxt, GEOS_MULTILINESTRING, geoms, 2 ) );
     geos::unique_ptr res( GEOSLineMerge_r( geosinit.ctxt, multiGeom.get() ) );
-    return std::move( res );
+    return res;
   }
   else
     return nullptr;
@@ -2335,7 +2335,7 @@ geos::unique_ptr QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeome
     if ( numMergedLines == 1 ) //reshape line is from begin to endpoint. So we keep the reshapeline
     {
       geos::unique_ptr result( GEOSGeom_clone_r( geosinit.ctxt, reshapeLineGeos ) );
-      return std::move( result );
+      return result;
     }
     else
       return nullptr;
@@ -2469,7 +2469,7 @@ geos::unique_ptr QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeome
     return nullptr;
   }
 
-  return std::move( result );
+  return result;
 }
 
 geos::unique_ptr QgsGeos::reshapePolygon( const GEOSGeometry *polygon, const GEOSGeometry *reshapeLineGeos, double precision )
@@ -2582,7 +2582,7 @@ geos::unique_ptr QgsGeos::reshapePolygon( const GEOSGeometry *polygon, const GEO
   geos::unique_ptr reshapedPolygon( GEOSGeom_createPolygon_r( geosinit.ctxt, newOuterRing, newInnerRings, ringList.size() ) );
   delete[] newInnerRings;
 
-  return std::move( reshapedPolygon );
+  return reshapedPolygon;
 }
 
 int QgsGeos::lineContainedInLine( const GEOSGeometry *line1, const GEOSGeometry *line2 )
