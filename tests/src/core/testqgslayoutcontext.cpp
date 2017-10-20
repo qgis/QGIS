@@ -39,6 +39,7 @@ class TestQgsLayoutContext: public QObject
     void dpi();
     void renderContextFlags();
     void boundingBoxes();
+    void exportLayer();
 
   private:
     QString mReport;
@@ -178,6 +179,15 @@ void TestQgsLayoutContext::boundingBoxes()
   QVERIFY( !context.boundingBoxesVisible() );
   context.setBoundingBoxesVisible( true );
   QVERIFY( context.boundingBoxesVisible() );
+}
+
+void TestQgsLayoutContext::exportLayer()
+{
+  QgsLayoutContext context;
+  // must default to -1
+  QCOMPARE( context.currentExportLayer(), -1 );
+  context.setCurrentExportLayer( 1 );
+  QCOMPARE( context.currentExportLayer(), 1 );
 }
 
 QGSTEST_MAIN( TestQgsLayoutContext )

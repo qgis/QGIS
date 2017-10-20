@@ -188,6 +188,28 @@ class CORE_EXPORT QgsLayoutContext : public QObject
      */
     bool pagesVisible() const { return mPagesVisible; }
 
+    /**
+     * Sets the current item \a layer to draw while exporting. QgsLayoutItem subclasses
+     * which support multi-layer SVG exports must check the currentExportLayer()
+     * and customise their rendering based on the layer.
+     *
+     * If \a layer is -1, all item layers will be rendered.
+     *
+     * \see currentExportLayer()
+     */
+    void setCurrentExportLayer( int layer = -1 ) { mCurrentExportLayer = layer; }
+
+    /**
+     * Returns the current item layer to draw while exporting. QgsLayoutItem subclasses
+     * which support multi-layer SVG exports must check this
+     * and customise their rendering based on the layer.
+     *
+     * If \a layer is -1, all item layers should be rendered.
+     *
+     * \see setCurrentExportLayer()
+     */
+    int currentExportLayer() const { return mCurrentExportLayer; }
+
   signals:
 
     /**
@@ -199,6 +221,8 @@ class CORE_EXPORT QgsLayoutContext : public QObject
   private:
 
     Flags mFlags = 0;
+
+    int mCurrentExportLayer = -1;
 
     QgsFeature mFeature;
     QPointer< QgsVectorLayer > mLayer;

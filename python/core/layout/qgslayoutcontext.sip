@@ -176,6 +176,29 @@ class QgsLayoutContext : QObject
  :rtype: bool
 %End
 
+    void setCurrentExportLayer( int layer = -1 );
+%Docstring
+ Sets the current item ``layer`` to draw while exporting. QgsLayoutItem subclasses
+ which support multi-layer SVG exports must check the currentExportLayer()
+ and customise their rendering based on the layer.
+
+ If ``layer`` is -1, all item layers will be rendered.
+
+.. seealso:: currentExportLayer()
+%End
+
+    int currentExportLayer() const;
+%Docstring
+ Returns the current item layer to draw while exporting. QgsLayoutItem subclasses
+ which support multi-layer SVG exports must check this
+ and customise their rendering based on the layer.
+
+ If ``layer`` is -1, all item layers should be rendered.
+
+.. seealso:: setCurrentExportLayer()
+ :rtype: int
+%End
+
   signals:
 
     void flagsChanged( QgsLayoutContext::Flags flags );
