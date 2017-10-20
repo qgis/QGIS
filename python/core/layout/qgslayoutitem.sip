@@ -183,6 +183,17 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: parentGroup()
 %End
 
+    virtual int numberExportLayers() const;
+%Docstring
+ Returns the number of layers that this item requires for exporting during layered exports (e.g. SVG).
+ Returns 0 if this item is to be placed on the same layer as the previous item,
+ 1 if it should be placed on its own layer, and >1 if it requires multiple export layers.
+
+ Items which require multiply layers should check QgsLayoutContext.currentExportLayer() during
+ their rendering to determine which layer should be drawn.
+ :rtype: int
+%End
+
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
 %Docstring
@@ -514,6 +525,21 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  :rtype: QRectF
 %End
 
+    virtual void moveContent( double dx, double dy );
+%Docstring
+ Moves the content of the item, by a specified ``dx`` and ``dy`` in layout units.
+ The default implementation has no effect.
+.. seealso:: zoomContent()
+%End
+
+    virtual void zoomContent( double factor, QPointF point );
+%Docstring
+ Zooms content of item. Does nothing by default.
+ \param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
+ \param point item point for zoom center
+.. seealso:: moveContent()
+%End
+
   public slots:
 
     virtual void refresh();
@@ -713,6 +739,12 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  \param context read write context
 .. seealso:: writePropertiesToElement()
 .. seealso:: readXml()
+ :rtype: bool
+%End
+
+    bool shouldDrawItem() const;
+%Docstring
+ Returns whether the item should be drawn in the current context.
  :rtype: bool
 %End
 

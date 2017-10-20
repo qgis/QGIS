@@ -30,6 +30,7 @@ class TestQgsLayoutUtils: public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
+    void rotate();
     void normalizedAngle(); //test normalised angle function
     void snappedAngle();
     void createRenderContextFromLayout();
@@ -67,6 +68,28 @@ void TestQgsLayoutUtils::init()
 void TestQgsLayoutUtils::cleanup()
 {
 
+}
+
+void TestQgsLayoutUtils::rotate()
+{
+  // pairs of lines from before -> expected after position and angle to rotate
+  QList< QPair< QLineF, double > > testVals;
+  testVals << qMakePair( QLineF( 0, 1, 0, 1 ), 0.0 );
+  testVals << qMakePair( QLineF( 0, 1, -1, 0 ), 90.0 );
+  testVals << qMakePair( QLineF( 0, 1, 0, -1 ), 180.0 );
+  testVals << qMakePair( QLineF( 0, 1, 1, 0 ), 270.0 );
+  testVals << qMakePair( QLineF( 0, 1, 0, 1 ), 360.0 );
+
+  //test rotate helper function
+  QList< QPair< QLineF, double > >::const_iterator it = testVals.constBegin();
+  for ( ; it != testVals.constEnd(); ++it )
+  {
+    double x = ( *it ).first.x1();
+    double y = ( *it ).first.y1();
+    QgsLayoutUtils::rotate( ( *it ).second, x, y );
+    QGSCOMPARENEAR( x, ( *it ).first.x2(), 4 * DBL_EPSILON );
+    QGSCOMPARENEAR( y, ( *it ).first.y2(), 4 * DBL_EPSILON );
+  }
 }
 
 void TestQgsLayoutUtils::normalizedAngle()

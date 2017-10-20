@@ -72,6 +72,12 @@ class QgsLayoutObject: QObject, QgsExpressionContextGenerator
       ScalebarLineWidth,
     };
 
+    enum PropertyValueType
+    {
+      EvaluatedValue,
+      OriginalValue
+    };
+
     static const QgsPropertiesDefinition &propertyDefinitions();
 %Docstring
  Returns the layout object property definitions.

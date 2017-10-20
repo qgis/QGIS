@@ -69,6 +69,12 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     int type() const override;
     QString stringType() const override;
+
+    /**
+     * Sets the map id() to a number not yet used in the layout. The existing id() is kept if it is not in use.
+    */
+    void assignFreeId();
+
     //overridden to show "Map 1" type names
     virtual QString displayName() const override;
 
@@ -78,6 +84,11 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * The caller takes responsibility for deleting the returned object.
      */
     static QgsLayoutItemMap *create( QgsLayout *layout ) SIP_FACTORY;
+
+    // for now, map items behave a bit differently and don't implement draw. TODO - see if we can avoid this
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
+    int numberExportLayers() const override;
+    void setFrameStrokeWidth( const QgsLayoutMeasurement &width ) override;
 
 
     /**
@@ -351,26 +362,12 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      */
     void setAtlasMargin( double margin ) { mAtlasMargin = margin; }
 
-
   protected:
 
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
 
-
     /**
-     * \brief Draw to paint device
-     *  \param painter painter
-     *  \param extent map extent
-     *  \param size size in scene coordinates
-     *  \param dpi scene dpi
-     *  \param forceWidthScale force wysiwyg line widths / marker sizes
-     */
-    void draw( QPainter *painter, const QgsRectangle &extent, QSizeF size, double dpi, double *forceWidthScale = nullptr );
-
-    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
-
-    /**
-     * Return map settings that would be used for drawing of the map
+     * Return map settings that will be used for drawing of the map.
      */
     QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const;
 
@@ -397,6 +394,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void setOffset( double xOffset, double yOffset );
 
 #if 0
+
     /**
      * Stores state in Dom node
      * \param elem is Dom element corresponding to 'Composer' tag
@@ -451,31 +449,14 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 #endif
     QgsExpressionContext createExpressionContext() const override;
 
-
-  signals:
-    void extentChanged();
-
-    //! Is emitted on rotation change to notify north arrow pictures
-    void mapRotationChanged( double newRotation );
-
-    //! Is emitted when the map has been prepared for atlas rendering, just before actual rendering
-    void preparedForAtlas();
-
     /**
-     * Emitted when layer style overrides are changed... a means to let
-     * associated legend items know they should update
+     * Returns the conversion factor from map units to layout units.
+     * This is calculated using the width of the map item and the width of the
+     * current visible map extent.
      */
-    void layerStyleOverridesChanged();
+    double mapUnitsToLayoutUnits() const;
 
 #if 0
-
-    //! Returns the conversion factor map units -> mm
-    double mapUnitsToMM() const;
-
-    /**
-     * Sets mId to a number not yet used in the composition. mId is kept if it is not in use.
-        Usually, this function is called before adding the composer map to the composition*/
-    void assignFreeId();
 
     /**
      * Get the number of layers that this item requires for exporting as layers
@@ -494,7 +475,23 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     /**
      * Calculates the extent to request and the yShift of the top-left point in case of rotation.
      */
-    void requestedExtent( QgsRectangle &extent ) const;
+    QgsRectangle requestedExtent() const;
+
+  signals:
+    void extentChanged();
+
+    //! Is emitted on rotation change to notify north arrow pictures
+    void mapRotationChanged( double newRotation );
+
+    //! Is emitted when the map has been prepared for atlas rendering, just before actual rendering
+    void preparedForAtlas();
+
+    /**
+     * Emitted when layer style overrides are changed... a means to let
+     * associated legend items know they should update
+     */
+    void layerStyleOverridesChanged();
+
 
   public slots:
 
@@ -505,18 +502,19 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     //! Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
     void updateBoundingRect();
-#if 0
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
-#endif
+
+    void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
+
   private slots:
-    void layersAboutToBeRemoved( QList<QgsMapLayer *> layers );
+    void layersAboutToBeRemoved( const QList<QgsMapLayer *> &layers );
 
     void painterJobFinished();
 
   private:
 
+
     //! Unique identifier
-    int mId = 0;
+    int mMapId = 1;
 #if 0
     QgsComposerMapGridStack *mGridStack = nullptr;
 
@@ -544,6 +542,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     // background
     std::unique_ptr< QImage > mCacheFinalImage;
     std::unique_ptr< QImage > mCacheRenderingImage;
+    bool mUpdatesEnabled = true;
 
     //! True if cached map image must be recreated
     bool mCacheInvalidated = true;
@@ -591,8 +590,18 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      *  is true. May be overridden by data-defined expression. */
     QString mFollowVisibilityPresetName;
 
-    //! \brief Create cache image
-    void recreateCachedImageInBackground();
+    /**
+     * \brief Draw to paint device
+     *  \param painter painter
+     *  \param extent map extent
+     *  \param size size in scene coordinates
+     *  \param dpi scene dpi
+     */
+    void drawMap( QPainter *painter, const QgsRectangle &extent, QSizeF size, double dpi );
+
+
+    //! Create cache image
+    void recreateCachedImageInBackground( double viewScaleFactor );
 
     //! Establishes signal/slot connection for update in case of layer change
     void connectUpdateSlot();
@@ -647,14 +656,18 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void mapPolygon( const QgsRectangle &extent, QPolygonF &poly ) const;
 
     /**
-     * Scales a composer map shift (in MM) and rotates it by mRotation
-        \param xShift in: shift in x direction (in item units), out: xShift in map units
-        \param yShift in: shift in y direction (in item units), out: yShift in map units*/
+     * Scales a layout map shift (in layout units) and rotates it by mRotation
+     * \param xShift in: shift in x direction (in item units), out: xShift in map units
+     * \param yShift in: shift in y direction (in item units), out: yShift in map units
+    */
     void transformShift( double &xShift, double &yShift ) const;
 
     void drawAnnotations( QPainter *painter );
     void drawAnnotation( const QgsAnnotation *item, QgsRenderContext &context );
-    QPointF composerMapPosForItem( const QgsAnnotation *item ) const;
+    QPointF layoutMapPosForItem( const QgsAnnotation *item ) const;
+
+    void drawMapFrame( QPainter *p );
+    void drawMapBackground( QPainter *p );
 
     enum PartType
     {
@@ -666,7 +679,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
       SelectionBoxes
     };
 
-    //! Test if a part of the copmosermap needs to be drawn, considering mCurrentExportLayer
+    //! Test if a part of the item needs to be drawn, considering the context's current export layer
     bool shouldDrawPart( PartType part ) const;
 
     /**
@@ -675,8 +688,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      */
     void refreshMapExtents( const QgsExpressionContext *context = nullptr );
 
-    friend class QgsComposerMapOverview; //to access mXOffset, mYOffset
-    friend class TestQgsComposerMap;
+    friend class QgsLayoutMapOverview; //to access mXOffset, mYOffset
+    friend class TestQgsLayoutMap;
 
 };
 

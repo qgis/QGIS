@@ -135,6 +135,7 @@ SET(TESTS
  testqgslayoutcontext.cpp
  testqgslayoutitem.cpp
  testqgslayoutitemgroup.cpp
+ testqgslayoutmap.cpp
  testqgslayoutmodel.cpp
  testqgslayoutobject.cpp
  testqgslayoutpage.cpp

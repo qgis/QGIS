@@ -35,6 +35,14 @@ class CORE_EXPORT QgsLayoutUtils
   public:
 
     /**
+     * Rotates a point / vector around the origin.
+     * \param angle rotation angle in degrees, counterclockwise
+     * \param x in/out: x coordinate before / after the rotation
+     * \param y in/out: y coordinate before / after the rotation
+     */
+    static void rotate( double angle, double &x, double &y );
+
+    /**
      * Ensures that an \a angle (in degrees) is in the range 0 <= angle < 360.
      * If \a allowNegative is true then angles between (-360, 360) are allowed. If false,
      * angles are converted to positive angles in the range [0, 360).

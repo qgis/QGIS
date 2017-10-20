@@ -22,6 +22,16 @@
 #include <QPainter>
 #include <cmath>
 
+void QgsLayoutUtils::rotate( double angle, double &x, double &y )
+{
+  double rotToRad = angle * M_PI / 180.0;
+  double xRot, yRot;
+  xRot = x * std::cos( rotToRad ) - y * std::sin( rotToRad );
+  yRot = x * std::sin( rotToRad ) + y * std::cos( rotToRad );
+  x = xRot;
+  y = yRot;
+}
+
 double QgsLayoutUtils::normalizedAngle( const double angle, const bool allowNegative )
 {
   double clippedAngle = angle;

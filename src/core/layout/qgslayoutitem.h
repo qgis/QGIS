@@ -204,6 +204,16 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void setParentGroup( QgsLayoutItemGroup *group );
 
     /**
+     * Returns the number of layers that this item requires for exporting during layered exports (e.g. SVG).
+     * Returns 0 if this item is to be placed on the same layer as the previous item,
+     * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers.
+     *
+     * Items which require multiply layers should check QgsLayoutContext::currentExportLayer() during
+     * their rendering to determine which layer should be drawn.
+     */
+    virtual int numberExportLayers() const { return 0; }
+
+    /**
      * Handles preparing a paint surface for the layout item and painting the item's
      * content. Derived classes must not override this method, but instead implement
      * the pure virtual method QgsLayoutItem::draw.
@@ -724,6 +734,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
+    /**
+     * Returns whether the item should be drawn in the current context.
+     */
+    bool shouldDrawItem() const;
+
   private:
 
     // true if layout manages the z value for this item
@@ -799,11 +814,6 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QPointF itemPositionAtReferencePoint( const ReferencePoint reference, const QSizeF &size ) const;
     void setScenePos( const QPointF &destinationPos );
     bool shouldBlockUndoCommands() const;
-
-    /**
-     * Returns whether the item should be drawn in the current context.
-     */
-    bool shouldDrawItem() const;
 
     friend class TestQgsLayoutItem;
     friend class TestQgsLayoutView;

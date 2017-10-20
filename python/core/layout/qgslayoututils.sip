@@ -21,6 +21,14 @@ class QgsLayoutUtils
 %End
   public:
 
+    static void rotate( double angle, double &x, double &y );
+%Docstring
+ Rotates a point / vector around the origin.
+ \param angle rotation angle in degrees, counterclockwise
+ \param x in/out: x coordinate before / after the rotation
+ \param y in/out: y coordinate before / after the rotation
+%End
+
     static double normalizedAngle( const double angle, const bool allowNegative = false );
 %Docstring
  Ensures that an ``angle`` (in degrees) is in the range 0 <= angle < 360.
