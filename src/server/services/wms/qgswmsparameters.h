@@ -909,6 +909,13 @@ namespace QgsWms
        */
       QgsWmsParametersComposerMap composerMapParameters( int mapId ) const;
 
+      /**
+       * @brief externalWMSUri
+       * @param id the id of the external wms
+       * @return uri string or an empty string if the external wms id does not exist
+       */
+      QString externalWMSUri( const QString &id ) const;
+
     private:
       QString name( ParameterName name ) const;
       void raiseError( ParameterName name ) const;
@@ -955,6 +962,7 @@ namespace QgsWms
       QgsServerRequest::Parameters mRequestParameters;
       QMap<ParameterName, Parameter> mParameters;
       QMap<int, QMap<ParameterName, Parameter>> mComposerParameters;
+      QMap<QString, QMap<QString, QString> > mExternalWMSParameters;
       QList<QgsProjectVersion> mVersions;
   };
 }

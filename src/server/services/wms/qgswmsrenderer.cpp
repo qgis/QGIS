@@ -2653,24 +2653,8 @@ namespace QgsWms
 
   QgsMapLayer *QgsRenderer::createExternalWMSLayer( const QString &externalLayerId ) const
   {
-    QgsMapLayer *wmsLayer = 0;
-    QgsDataSourceUri wmsUri;
-
-    QgsServerRequest::Parameters::const_iterator it = mParameters.lowerBound( externalLayerId.toUpper() + ":" );
-    while ( it != mParameters.constEnd() )
-    {
-      if ( !it.key().startsWith( externalLayerId.toUpper() + ":" ) )
-      {
-        break;
-      }
-
-      QString paramKey = it.key();
-      paramKey.remove( 0, externalLayerId.size() + 1 );
-      wmsUri.setParam( paramKey.toLower(), it.value() );
-      ++it;
-    }
-
-    wmsLayer = new QgsRasterLayer( wmsUri.encodedUri(), externalLayerId, QStringLiteral( "wms" ) );
+    QString wmsUri = mWmsParameters.externalWMSUri( externalLayerId.toUpper() );
+    QgsMapLayer *wmsLayer = new QgsRasterLayer( wmsUri, externalLayerId, QStringLiteral( "wms" ) );
     if ( !wmsLayer->isValid() )
     {
       delete wmsLayer;
