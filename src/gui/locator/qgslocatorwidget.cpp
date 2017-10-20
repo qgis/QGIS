@@ -369,9 +369,8 @@ void QgsLocatorResultsView::recalculateSize()
   // resize the floating widget this is contained within
   parentWidget()->resize( newSize );
   QTreeView::resize( newSize );
-
-  header()->resizeSection( 0, width / 2 );
-  header()->resizeSection( 1, 0 );
+  header()->setStretchLastSection(false);
+  header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
 
 void QgsLocatorResultsView::selectNextResult()
