@@ -96,6 +96,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoShapeStyle, //!< Shape symbol style
       UndoShapeCornerRadius, //!< Shape corner radius
       UndoNodeMove, //!< Node move
+      UndoAtlasMargin, //!< Map atlas margin changed
+      UndoMapRotation, //!< Map rotation changed
     };
 
     /**

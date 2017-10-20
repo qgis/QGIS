@@ -112,7 +112,16 @@ class QgsLayoutItemAbstractGuiMetadata
  :rtype: QgsLayoutItem
 %End
 
+    virtual void newItemAddedToLayout( QgsLayoutItem *item );
+%Docstring
+ Called when a newly created item of the associated type has been added to a layout.
+
+ This is only called for additions which result from GUI operations - i.e. it is not
+ called for items added from templates.
+%End
+
 };
+
 
 
 
@@ -228,6 +237,14 @@ class QgsLayoutItemGuiRegistry : QObject
 %Docstring
  Creates a new instance of a layout item given the item metadata ``metadataId``, target ``layout``.
  :rtype: QgsLayoutItem
+%End
+
+    void newItemAddedToLayout( int metadataId, QgsLayoutItem *item );
+%Docstring
+ Called when a newly created item of the associated metadata ``metadataId`` has been added to a layout.
+
+ This is only called for additions which result from GUI operations - i.e. it is not
+ called for items added from templates.
 %End
 
     QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) const /Factory/;

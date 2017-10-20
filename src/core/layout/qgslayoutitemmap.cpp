@@ -858,6 +858,9 @@ QgsRectangle QgsLayoutItemMap::requestedExtent() const
 
 void QgsLayoutItemMap::invalidateCache()
 {
+  if ( mDrawing )
+    return;
+
   mCacheInvalidated = true;
   update();
 }

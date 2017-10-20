@@ -35,6 +35,11 @@ QgsLayoutItem *QgsLayoutItemAbstractGuiMetadata::createItem( QgsLayout * )
   return nullptr;
 }
 
+void QgsLayoutItemAbstractGuiMetadata::newItemAddedToLayout( QgsLayoutItem * )
+{
+
+}
+
 QgsLayoutItemGuiRegistry::QgsLayoutItemGuiRegistry( QObject *parent )
   : QObject( parent )
 {
@@ -88,6 +93,14 @@ QgsLayoutItem *QgsLayoutItemGuiRegistry::createItem( int metadataId, QgsLayout *
   return QgsApplication::layoutItemRegistry()->createItem( type, layout );
 }
 
+void QgsLayoutItemGuiRegistry::newItemAddedToLayout( int metadataId, QgsLayoutItem *item )
+{
+  if ( !mMetadata.contains( metadataId ) )
+    return;
+
+  mMetadata.value( metadataId )->newItemAddedToLayout( item );
+}
+
 QgsLayoutItemBaseWidget *QgsLayoutItemGuiRegistry::createItemWidget( QgsLayoutItem *item ) const
 {
   if ( !item )
@@ -126,4 +139,10 @@ QList<int> QgsLayoutItemGuiRegistry::itemMetadataIds() const
 QgsLayoutItem *QgsLayoutItemGuiMetadata::createItem( QgsLayout *layout )
 {
   return mCreateFunc ? mCreateFunc( layout ) : QgsLayoutItemAbstractGuiMetadata::createItem( layout );
+}
+
+void QgsLayoutItemGuiMetadata::newItemAddedToLayout( QgsLayoutItem *item )
+{
+  if ( mAddedToLayoutFunc )
+    mAddedToLayoutFunc( item );
 }

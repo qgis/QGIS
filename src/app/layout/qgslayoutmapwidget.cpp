@@ -20,6 +20,11 @@
 #include "qgslayoutitemmap.h"
 #include "qgsproject.h"
 #include "qgsmapthemecollection.h"
+#include "qgsmapthemes.h"
+#include "qgslayout.h"
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
+
 #include <QMenu>
 #include <QMessageBox>
 
@@ -167,6 +172,7 @@ void QgsLayoutMapWidget::populateDataDefinedButtons()
 
 void QgsLayoutMapWidget::compositionAtlasToggled( bool atlasEnabled )
 {
+  Q_UNUSED( atlasEnabled );
 #if 0 //TODO
   if ( atlasEnabled &&
        mMapItem && mMapItem->composition() && mMapItem->composition()->atlasComposition().coverageLayer()
@@ -215,15 +221,15 @@ void QgsLayoutMapWidget::followVisibilityPresetSelected( int currentIndex )
     presetName = mFollowVisibilityPresetCombo->currentText();
   }
 
-#if 0 //TODO
   if ( presetName == mMapItem->followVisibilityPresetName() )
     return;
 
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Map Preset" ) );
   mFollowVisibilityPresetCheckBox->setChecked( true );
   mMapItem->setFollowVisibilityPresetName( presetName );
+  mMapItem->layout()->undoStack()->endCommand();
 
   mMapItem->invalidateCache();
-#endif
 }
 
 void QgsLayoutMapWidget::keepLayersVisibilityPresetSelected()
@@ -232,7 +238,6 @@ void QgsLayoutMapWidget::keepLayersVisibilityPresetSelected()
   if ( !action )
     return;
 
-#if 0 //TODO
   QString presetName = action->text();
   QList<QgsMapLayer *> lst = QgsMapThemes::instance()->orderedPresetVisibleLayers( presetName );
   if ( mMapItem )
@@ -242,16 +247,16 @@ void QgsLayoutMapWidget::keepLayersVisibilityPresetSelected()
 
     mKeepLayerStylesCheckBox->setChecked( true );
 
+    mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Map Preset" ) );
     mMapItem->setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( presetName ) );
+    mMapItem->layout()->undoStack()->endCommand();
 
     mMapItem->invalidateCache();
   }
-#endif
 }
 
 void QgsLayoutMapWidget::onMapThemesChanged()
 {
-#if 0 //TODO
   if ( QStringListModel *model = qobject_cast<QStringListModel *>( mFollowVisibilityPresetCombo->model() ) )
   {
     QStringList lst;
@@ -265,7 +270,6 @@ void QgsLayoutMapWidget::onMapThemesChanged()
     mFollowVisibilityPresetCombo->setCurrentIndex( presetModelIndex != -1 ? presetModelIndex : 0 ); // 0 == none
     mFollowVisibilityPresetCombo->blockSignals( false );
   }
-#endif
 }
 
 void QgsLayoutMapWidget::updateOverviewFrameStyleFromWidget()
@@ -285,6 +289,7 @@ void QgsLayoutMapWidget::updateOverviewFrameStyleFromWidget()
 
 void QgsLayoutMapWidget::cleanUpOverviewFrameStyleSelector( QgsPanelWidget *container )
 {
+  Q_UNUSED( container );
 #if 0 //TODO
   QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( container );
   if ( !w )
@@ -310,7 +315,6 @@ void QgsLayoutMapWidget::mapCrsChanged( const QgsCoordinateReferenceSystem &crs 
     return;
   }
 
-#if 0 //TODO
   if ( mMapItem->presetCrs() == crs )
     return;
 
@@ -322,7 +326,7 @@ void QgsLayoutMapWidget::mapCrsChanged( const QgsCoordinateReferenceSystem &crs 
   try
   {
     QgsCoordinateTransform xForm( oldCrs, crs.isValid() ? crs : QgsProject::instance()->crs() );
-    QgsRectangle prevExtent = *mMapItem->currentMapExtent();
+    QgsRectangle prevExtent = mMapItem->extent();
     newExtent = xForm.transformBoundingBox( prevExtent );
     updateExtent = true;
   }
@@ -331,13 +335,12 @@ void QgsLayoutMapWidget::mapCrsChanged( const QgsCoordinateReferenceSystem &crs 
     //transform failed, don't update extent
   }
 
-  mMapItem->beginCommand( tr( "Map CRS changed" ) );
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Map CRS" ) );
   mMapItem->setCrs( crs );
   if ( updateExtent )
     mMapItem->zoomToExtent( newExtent );
-  mMapItem->endCommand();
+  mMapItem->layout()->undoStack()->endCommand();
   mMapItem->invalidateCache();
-#endif
 }
 
 void QgsLayoutMapWidget::mAtlasCheckBox_toggled( bool checked )
@@ -346,7 +349,7 @@ void QgsLayoutMapWidget::mAtlasCheckBox_toggled( bool checked )
   {
     return;
   }
-#if 0 //TODO
+
   mAtlasFixedScaleRadio->setEnabled( checked );
   mAtlasMarginRadio->setEnabled( checked );
 
@@ -364,8 +367,7 @@ void QgsLayoutMapWidget::mAtlasCheckBox_toggled( bool checked )
   if ( checked )
   {
     //check atlas coverage layer type
-    QgsComposition *composition = mMapItem->composition();
-    if ( composition )
+    if ( mMapItem->layout() )
     {
       toggleAtlasScalingOptionsByLayerType();
     }
@@ -377,9 +379,10 @@ void QgsLayoutMapWidget::mAtlasCheckBox_toggled( bool checked )
     mAtlasPredefinedScaleRadio->setEnabled( false );
   }
 
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Set Atlas Driven" ) );
   mMapItem->setAtlasDriven( checked );
+  mMapItem->layout()->undoStack()->endCommand();
   updateMapForAtlas();
-#endif
 }
 
 void QgsLayoutMapWidget::updateMapForAtlas()
@@ -413,15 +416,15 @@ void QgsLayoutMapWidget::updateMapForAtlas()
 
 void QgsLayoutMapWidget::mAtlasMarginRadio_toggled( bool checked )
 {
-#if 0 //TODO
   mAtlasMarginSpinBox->setEnabled( checked );
 
   if ( checked && mMapItem )
   {
-    mMapItem->setAtlasScalingMode( QgsComposerMap::Auto );
+    mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Atlas Mode" ) );
+    mMapItem->setAtlasScalingMode( QgsLayoutItemMap::Auto );
+    mMapItem->layout()->undoStack()->endCommand();
     updateMapForAtlas();
   }
-#endif
 }
 
 void QgsLayoutMapWidget::mAtlasMarginSpinBox_valueChanged( int value )
@@ -431,10 +434,10 @@ void QgsLayoutMapWidget::mAtlasMarginSpinBox_valueChanged( int value )
     return;
   }
 
-#if 0 //TODO
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Atlas Margin" ), QgsLayoutItem::UndoAtlasMargin );
   mMapItem->setAtlasMargin( value / 100. );
+  mMapItem->layout()->undoStack()->endCommand();
   updateMapForAtlas();
-#endif
 }
 
 void QgsLayoutMapWidget::mAtlasFixedScaleRadio_toggled( bool checked )
@@ -444,13 +447,13 @@ void QgsLayoutMapWidget::mAtlasFixedScaleRadio_toggled( bool checked )
     return;
   }
 
-#if 0 //TODO
   if ( checked )
   {
-    mMapItem->setAtlasScalingMode( QgsComposerMap::Fixed );
+    mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Atlas Mode" ) );
+    mMapItem->setAtlasScalingMode( QgsLayoutItemMap::Fixed );
+    mMapItem->layout()->undoStack()->endCommand();
     updateMapForAtlas();
   }
-#endif
 }
 
 void QgsLayoutMapWidget::mAtlasPredefinedScaleRadio_toggled( bool checked )
@@ -460,24 +463,24 @@ void QgsLayoutMapWidget::mAtlasPredefinedScaleRadio_toggled( bool checked )
     return;
   }
 
-#if 0 //TODO
   if ( hasPredefinedScales() )
   {
     if ( checked )
     {
-      mMapItem->setAtlasScalingMode( QgsComposerMap::Predefined );
+      mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Atlas Scales" ) );
+      mMapItem->setAtlasScalingMode( QgsLayoutItemMap::Predefined );
+      mMapItem->layout()->undoStack()->endCommand();
       updateMapForAtlas();
     }
   }
   else
   {
     // restore to fixed scale if no predefined scales exist
-    mAtlasFixedScaleRadio->blockSignals( true );
-    mAtlasFixedScaleRadio->setChecked( true );
-    mAtlasFixedScaleRadio->blockSignals( false );
-    mMapItem->setAtlasScalingMode( QgsComposerMap::Fixed );
+    whileBlocking( mAtlasFixedScaleRadio )->setChecked( true );
+    mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Atlas Mode" ) );
+    mMapItem->setAtlasScalingMode( QgsLayoutItemMap::Fixed );
+    mMapItem->layout()->undoStack()->endCommand();
   }
-#endif
 }
 
 void QgsLayoutMapWidget::mScaleLineEdit_editingFinished()
@@ -498,11 +501,9 @@ void QgsLayoutMapWidget::mScaleLineEdit_editingFinished()
   if ( std::round( scaleDenominator ) == std::round( mMapItem->scale() ) )
     return;
 
-#if 0 //TODO
-  mMapItem->beginCommand( tr( "Map scale changed" ) );
-  mMapItem->setNewScale( scaleDenominator );
-  mMapItem->endCommand();
-#endif
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Map Scale" ) );
+  mMapItem->setScale( scaleDenominator );
+  mMapItem->layout()->undoStack()->endCommand();
 }
 
 void QgsLayoutMapWidget::rotationChanged( double value )
@@ -512,12 +513,10 @@ void QgsLayoutMapWidget::rotationChanged( double value )
     return;
   }
 
-#if 0 //TODO
-  mMapItem->beginCommand( tr( "Map rotation changed" ), QgsComposerMergeCommand::ComposerMapRotation );
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Map Rotation" ), QgsLayoutItem::UndoMapRotation );
   mMapItem->setMapRotation( value );
-  mMapItem->endCommand();
+  mMapItem->layout()->undoStack()->endCommand();
   mMapItem->invalidateCache();
-#endif
 }
 
 void QgsLayoutMapWidget::mSetToMapCanvasExtentButton_clicked()
@@ -527,7 +526,6 @@ void QgsLayoutMapWidget::mSetToMapCanvasExtentButton_clicked()
     return;
   }
 
-#if 0 //TODO
   QgsRectangle newExtent = QgisApp::instance()->mapCanvas()->mapSettings().visibleExtent();
 
   //transform?
@@ -547,10 +545,9 @@ void QgsLayoutMapWidget::mSetToMapCanvasExtentButton_clicked()
     }
   }
 
-  mMapItem->beginCommand( tr( "Map extent changed" ) );
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Map Extent" ) );
   mMapItem->zoomToExtent( newExtent );
-  mMapItem->endCommand();
-#endif
+  mMapItem->layout()->undoStack()->endCommand();
 }
 
 void QgsLayoutMapWidget::mViewExtentInCanvasButton_clicked()
@@ -560,8 +557,7 @@ void QgsLayoutMapWidget::mViewExtentInCanvasButton_clicked()
     return;
   }
 
-#if 0 //TODO
-  QgsRectangle currentMapExtent = *( mMapItem->currentMapExtent() );
+  QgsRectangle currentMapExtent = mMapItem->extent();
 
   if ( !currentMapExtent.isEmpty() )
   {
@@ -585,7 +581,6 @@ void QgsLayoutMapWidget::mViewExtentInCanvasButton_clicked()
     QgisApp::instance()->mapCanvas()->setExtent( currentMapExtent );
     QgisApp::instance()->mapCanvas()->refresh();
   }
-#endif
 }
 
 void QgsLayoutMapWidget::mXMinLineEdit_editingFinished()
@@ -624,7 +619,6 @@ void QgsLayoutMapWidget::updateGuiElements()
 
   blockAllSignals( true );
 
-#if 0 //TODO
   whileBlocking( mCrsSelector )->setCrs( mMapItem->presetCrs() );
 
   //width, height, scale
@@ -648,13 +642,13 @@ void QgsLayoutMapWidget::updateGuiElements()
   }
 
   //composer map extent
-  QgsRectangle composerMapExtent = *( mMapItem->currentMapExtent() );
+  QgsRectangle composerMapExtent = mMapItem->extent();
   mXMinLineEdit->setText( QString::number( composerMapExtent.xMinimum(), 'f', 3 ) );
   mXMaxLineEdit->setText( QString::number( composerMapExtent.xMaximum(), 'f', 3 ) );
   mYMinLineEdit->setText( QString::number( composerMapExtent.yMinimum(), 'f', 3 ) );
   mYMaxLineEdit->setText( QString::number( composerMapExtent.yMaximum(), 'f', 3 ) );
 
-  mMapRotationSpinBox->setValue( mMapItem->mapRotation( QgsComposerObject::OriginalValue ) );
+  mMapRotationSpinBox->setValue( mMapItem->mapRotation( QgsLayoutObject::OriginalValue ) );
 
   // follow preset checkbox
   mFollowVisibilityPresetCheckBox->setCheckState(
@@ -687,15 +681,15 @@ void QgsLayoutMapWidget::updateGuiElements()
 
   //atlas controls
   mAtlasCheckBox->setChecked( mMapItem->atlasDriven() );
-  mAtlasMarginSpinBox->setValue( static_cast<int>( mMapItem->atlasMargin( QgsComposerObject::OriginalValue ) * 100 ) );
+  mAtlasMarginSpinBox->setValue( static_cast<int>( mMapItem->atlasMargin( QgsLayoutObject::OriginalValue ) * 100 ) );
 
   mAtlasFixedScaleRadio->setEnabled( mMapItem->atlasDriven() );
-  mAtlasFixedScaleRadio->setChecked( mMapItem->atlasScalingMode() == QgsComposerMap::Fixed );
-  mAtlasMarginSpinBox->setEnabled( mMapItem->atlasScalingMode() == QgsComposerMap::Auto );
+  mAtlasFixedScaleRadio->setChecked( mMapItem->atlasScalingMode() == QgsLayoutItemMap::Fixed );
+  mAtlasMarginSpinBox->setEnabled( mMapItem->atlasScalingMode() == QgsLayoutItemMap::Auto );
   mAtlasMarginRadio->setEnabled( mMapItem->atlasDriven() );
-  mAtlasMarginRadio->setChecked( mMapItem->atlasScalingMode() == QgsComposerMap::Auto );
+  mAtlasMarginRadio->setChecked( mMapItem->atlasScalingMode() == QgsLayoutItemMap::Auto );
   mAtlasPredefinedScaleRadio->setEnabled( mMapItem->atlasDriven() );
-  mAtlasPredefinedScaleRadio->setChecked( mMapItem->atlasScalingMode() == QgsComposerMap::Predefined );
+  mAtlasPredefinedScaleRadio->setChecked( mMapItem->atlasScalingMode() == QgsLayoutItemMap::Predefined );
 
   if ( mMapItem->atlasDriven() )
   {
@@ -706,7 +700,6 @@ void QgsLayoutMapWidget::updateGuiElements()
   {
     mAtlasPredefinedScaleRadio->setEnabled( false );
   }
-#endif
 
   populateDataDefinedButtons();
   loadGridEntries();
@@ -759,26 +752,24 @@ void QgsLayoutMapWidget::updateComposerExtentFromGui()
   double xmin, ymin, xmax, ymax;
   bool conversionSuccess;
 
-  xmin = mXMinLineEdit->text().toDouble( &conversionSuccess );
+  xmin = QLocale::system().toDouble( mXMinLineEdit->text(), &conversionSuccess );
   if ( !conversionSuccess )
     return;
-  xmax = mXMaxLineEdit->text().toDouble( &conversionSuccess );
+  xmax = QLocale::system().toDouble( mXMaxLineEdit->text(), &conversionSuccess );
   if ( !conversionSuccess )
     return;
-  ymin = mYMinLineEdit->text().toDouble( &conversionSuccess );
+  ymin = QLocale::system().toDouble( mYMinLineEdit->text(), &conversionSuccess );
   if ( !conversionSuccess )
     return;
-  ymax = mYMaxLineEdit->text().toDouble( &conversionSuccess );
+  ymax = QLocale::system().toDouble( mYMaxLineEdit->text(), &conversionSuccess );
   if ( !conversionSuccess )
     return;
 
   QgsRectangle newExtent( xmin, ymin, xmax, ymax );
 
-#if 0 //TODO
-  mMapItem->beginCommand( tr( "Map extent changed" ) );
-  mMapItem->setNewExtent( newExtent );
-  mMapItem->endCommand();
-#endif
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Map Extent" ) );
+  mMapItem->setExtent( newExtent );
+  mMapItem->layout()->undoStack()->endCommand();
 }
 
 void QgsLayoutMapWidget::blockAllSignals( bool b )
@@ -861,18 +852,7 @@ void QgsLayoutMapWidget::mUpdatePreviewButton_clicked()
   {
     return;
   }
-
-#if 0 //TODO
-  if ( mMapItem->isDrawing() )
-  {
-    return;
-  }
-
-  mUpdatePreviewButton->setEnabled( false ); //prevent crashes because of many button clicks
-
   mMapItem->invalidateCache();
-#endif
-  mUpdatePreviewButton->setEnabled( true );
 }
 
 void QgsLayoutMapWidget::mFollowVisibilityPresetCheckBox_stateChanged( int state )
@@ -881,7 +861,8 @@ void QgsLayoutMapWidget::mFollowVisibilityPresetCheckBox_stateChanged( int state
   {
     return;
   }
-#if 0 //TODO
+
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Map Preset" ) );
   if ( state == Qt::Checked )
   {
     mMapItem->setFollowVisibilityPreset( true );
@@ -896,7 +877,7 @@ void QgsLayoutMapWidget::mFollowVisibilityPresetCheckBox_stateChanged( int state
   {
     mMapItem->setFollowVisibilityPreset( false );
   }
-#endif
+  mMapItem->layout()->undoStack()->endCommand();
 }
 
 void QgsLayoutMapWidget::mKeepLayerListCheckBox_stateChanged( int state )
@@ -906,14 +887,15 @@ void QgsLayoutMapWidget::mKeepLayerListCheckBox_stateChanged( int state )
     return;
   }
 
-#if 0 //TODO
   // update map
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Map Preset Changed" ) );
   storeCurrentLayerSet();
   mMapItem->setKeepLayerSet( state == Qt::Checked );
   if ( state == Qt::Unchecked )
   {
     mMapItem->setLayers( QList< QgsMapLayer * >() );
   }
+  mMapItem->layout()->undoStack()->endCommand();
 
   // update gui
   if ( state == Qt::Checked )
@@ -927,7 +909,6 @@ void QgsLayoutMapWidget::mKeepLayerListCheckBox_stateChanged( int state )
     mMapItem->invalidateCache();
   }
 
-#endif
   mKeepLayerStylesCheckBox->setEnabled( state == Qt::Checked );
 }
 
@@ -938,7 +919,7 @@ void QgsLayoutMapWidget::mKeepLayerStylesCheckBox_stateChanged( int state )
     return;
   }
 
-#if 0 //TODO
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Map Preset" ) );
   if ( state == Qt::Checked )
   {
     mMapItem->storeCurrentLayerStyles();
@@ -949,7 +930,7 @@ void QgsLayoutMapWidget::mKeepLayerStylesCheckBox_stateChanged( int state )
     mMapItem->setLayerStyleOverrides( QMap<QString, QString>() );
     mMapItem->setKeepLayerStyles( false );
   }
-#endif
+  mMapItem->layout()->undoStack()->endCommand();
 }
 
 void QgsLayoutMapWidget::mDrawCanvasItemsCheckBox_stateChanged( int state )
@@ -959,21 +940,10 @@ void QgsLayoutMapWidget::mDrawCanvasItemsCheckBox_stateChanged( int state )
     return;
   }
 
-#if 0 //TODO
-  mMapItem->beginCommand( tr( "Canvas items toggled" ) );
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Toggle Map Item" ) );
   mMapItem->setDrawAnnotations( state == Qt::Checked );
-  mUpdatePreviewButton->setEnabled( false ); //prevent crashes because of many button clicks
   mMapItem->invalidateCache();
-  mUpdatePreviewButton->setEnabled( true );
-  mMapItem->endCommand();
-#endif
-}
-
-void QgsLayoutMapWidget::addPageToToolbox( QWidget *widget, const QString &name )
-{
-  Q_UNUSED( name );
-  //TODO : wrap the widget in a collapsibleGroupBox to be more consistent with previous implementation
-  mainLayout->addWidget( widget );
+  mMapItem->layout()->undoStack()->endCommand();
 }
 
 void QgsLayoutMapWidget::insertAnnotationPositionEntries( QComboBox *c )
@@ -1587,7 +1557,6 @@ void QgsLayoutMapWidget::storeCurrentLayerSet()
   if ( !mMapItem )
     return;
 
-#if 0 //TODO
   QList<QgsMapLayer *> layers = QgisApp::instance()->mapCanvas()->mapSettings().layers();
   mMapItem->setLayers( layers );
 
@@ -1596,7 +1565,6 @@ void QgsLayoutMapWidget::storeCurrentLayerSet()
     // also store styles associated with the layers
     mMapItem->storeCurrentLayerStyles();
   }
-#endif
 }
 
 QListWidgetItem *QgsLayoutMapWidget::addOverviewListItem( const QString &id, const QString &name )

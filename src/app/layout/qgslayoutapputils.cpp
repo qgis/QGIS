@@ -27,6 +27,8 @@
 #include "qgslayoutitempolyline.h"
 #include "qgslayoutpolygonwidget.h"
 #include "qgslayoutpolylinewidget.h"
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
 
 void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
 {
@@ -50,11 +52,21 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
 
   registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 1002, QStringLiteral( "test" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), nullptr, createRubberBand ) );
 
-  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutMap, QObject::tr( "Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMap.svg" ) ),
-                                      [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  auto mapItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutMap, QObject::tr( "Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMap.svg" ) ),
+                         [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
     return new QgsLayoutMapWidget( qobject_cast< QgsLayoutItemMap * >( item ) );
-  }, createRubberBand ) );
+  }, createRubberBand );
+  mapItemMetadata->setItemAddedToLayoutFunction( [ = ]( QgsLayoutItem * item )
+  {
+    QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( item );
+    Q_ASSERT( map );
+    if ( QgisApp::instance()->mapCanvas() )
+    {
+      map->zoomToExtent( QgisApp::instance()->mapCanvas()->mapSettings().visibleExtent() );
+    }
+  } );
+  registry->addLayoutItemGuiMetadata( mapItemMetadata.release() );
 
   auto createShapeWidget =
     []( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *

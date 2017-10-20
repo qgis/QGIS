@@ -91,8 +91,6 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
   protected:
     bool setNewItem( QgsLayoutItem *item ) override;
 
-    void addPageToToolbox( QWidget *widget, const QString &name );
-
     //! Sets the current composer map values to the GUI elements
     virtual void updateGuiElements();
 

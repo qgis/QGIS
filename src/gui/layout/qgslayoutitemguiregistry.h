@@ -127,6 +127,14 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
      */
     virtual QgsLayoutItem *createItem( QgsLayout *layout ) SIP_FACTORY;
 
+    /**
+     * Called when a newly created item of the associated type has been added to a layout.
+     *
+     * This is only called for additions which result from GUI operations - i.e. it is not
+     * called for items added from templates.
+     */
+    virtual void newItemAddedToLayout( QgsLayoutItem *item );
+
   private:
 
     int mType = -1;
@@ -145,6 +153,9 @@ typedef std::function<QgsLayoutViewRubberBand *( QgsLayoutView * )> QgsLayoutIte
 
 //! Layout node based rubber band creation function
 typedef std::function<QAbstractGraphicsShapeItem *( QgsLayoutView * )> QgsLayoutNodeItemRubberBandFunc SIP_SKIP;
+
+//! Layout item added to layout callback
+typedef std::function<void ( QgsLayoutItem * )> QgsLayoutItemAddedToLayoutFunc SIP_SKIP;
 
 #ifndef SIP_RUN
 
@@ -230,11 +241,24 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      */
     void setItemCreationFunction( QgsLayoutItemCreateFunc function ) { mCreateFunc = function; }
 
+    /**
+     * Returns the classes' item added to layout function.
+     * \see setItemAddedToLayoutFunction()
+     */
+    QgsLayoutItemAddedToLayoutFunc itemAddToLayoutFunction() const { return mAddedToLayoutFunc; }
+
+    /**
+     * Sets the classes' item creation \a function.
+     * \see itemAddToLayoutFunction()
+     */
+    void setItemAddedToLayoutFunction( QgsLayoutItemAddedToLayoutFunc function ) { mAddedToLayoutFunc = function; }
+
     QIcon creationIcon() const override { return mIcon.isNull() ? QgsLayoutItemAbstractGuiMetadata::creationIcon() : mIcon; }
     QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) override { return mWidgetFunc ? mWidgetFunc( item ) : nullptr; }
     QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) override { return mRubberBandFunc ? mRubberBandFunc( view ) : nullptr; }
     QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) override { return mNodeRubberBandFunc ? mNodeRubberBandFunc( view ) : nullptr; }
     QgsLayoutItem *createItem( QgsLayout *layout ) override;
+    void newItemAddedToLayout( QgsLayoutItem *item ) override;
 
   protected:
     QIcon mIcon;
@@ -242,6 +266,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
     QgsLayoutItemRubberBandFunc mRubberBandFunc = nullptr;
     QgsLayoutNodeItemRubberBandFunc mNodeRubberBandFunc = nullptr;
     QgsLayoutItemCreateFunc mCreateFunc = nullptr;
+    QgsLayoutItemAddedToLayoutFunc mAddedToLayoutFunc = nullptr;
 
 };
 
@@ -358,6 +383,14 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
      * Creates a new instance of a layout item given the item metadata \a metadataId, target \a layout.
      */
     QgsLayoutItem *createItem( int metadataId, QgsLayout *layout ) const SIP_FACTORY;
+
+    /**
+     * Called when a newly created item of the associated metadata \a metadataId has been added to a layout.
+     *
+     * This is only called for additions which result from GUI operations - i.e. it is not
+     * called for items added from templates.
+     */
+    void newItemAddedToLayout( int metadataId, QgsLayoutItem *item );
 
     /**
      * Creates a new instance of a layout item configuration widget for the specified \a item.
