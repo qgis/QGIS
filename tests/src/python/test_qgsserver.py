@@ -215,6 +215,46 @@ class QgsServerTestBase(unittest.TestCase):
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
 
 
+class TestQgsServerTestBase(unittest.TestCase):
+
+    def test_assert_xml_equal(self):
+        engine = QgsServerTestBase()
+
+        # test bad assertion
+        expected = b'</WFSLayers>\n<Layer queryable="1">\n'
+        response = b'<Layer>\n'
+        self.assertRaises(AssertionError, engine.assertXMLEqual, response, expected)
+
+        expected = b'</WFSLayers>\n<Layer queryable="1">\n'
+        response = b'</WFSLayers>\n<Layer>\n'
+        self.assertRaises(AssertionError, engine.assertXMLEqual, response, expected)
+
+        expected = b'</WFSLayers>\n<Layer queryable="1">\n'
+        response = b'</WFSLayers>\n<Layer fake="1">\n'
+        self.assertRaises(AssertionError, engine.assertXMLEqual, response, expected)
+
+        expected = b'</WFSLayers>\n<Layer queryable="1">\n'
+        response = b'</WFSLayers>\n<Layer queryable="2">\n'
+        self.assertRaises(AssertionError, engine.assertXMLEqual, response, expected)
+
+        expected = b'<TreeName>QGIS Test Project</TreeName>\n<Layer geometryType="Point" queryable="1" displayField="name" visible="1">\n'
+        response = b'<TreeName>QGIS Test Project</TreeName>\n<Layer geometryType="Point" queryable="1" displayField="name">\n'
+        self.assertRaises(AssertionError, engine.assertXMLEqual, response, expected)
+
+        expected = b'<TreeName>QGIS Test Project</TreeName>\n<Layer geometryType="Point" queryable="1" displayField="name" visible="1">\n'
+        response = b'<TreeName>QGIS Test Project</TreeName>\n<Layer geometryType="Point" queryable="1" displayField="name" visible="0">\n'
+        self.assertRaises(AssertionError, engine.assertXMLEqual, response, expected)
+
+        # test valid assertion
+        expected = b'</WFSLayers>\n<Layer queryable="1">\n'
+        response = b'</WFSLayers>\n<Layer queryable="1">\n'
+        self.assertFalse(engine.assertXMLEqual(response, expected))
+
+        expected = b'<TreeName>QGIS Test Project</TreeName>\n<Layer geometryType="Point" queryable="1" displayField="name" visible="1">\n'
+        response = b'<TreeName>QGIS Test Project</TreeName>\n<Layer geometryType="Point" queryable="1" displayField="name" visible="1">\n'
+        self.assertFalse(engine.assertXMLEqual(response, expected))
+
+
 class TestQgsServer(QgsServerTestBase):
 
     """Tests container"""
