@@ -1317,8 +1317,6 @@ QgisApp::~QgisApp()
   // cancel request for FileOpen events
   QgsApplication::setFileOpenEventReceiver( nullptr );
 
-  QgsApplication::exitQgis();
-
   delete QgsProject::instance();
 
   delete mPythonUtils;
@@ -1326,6 +1324,12 @@ QgisApp::~QgisApp()
   delete mTray;
 
   delete mDataSourceManagerDialog;
+
+  // This function *MUST* be the last one called, as it destroys in
+  // particular GDAL. As above objects can hold GDAL/OGR objects, it is not
+  // safe destroying them afterwards
+  QgsApplication::exitQgis();
+  // Do *NOT* add anything here !
 }
 
 void QgisApp::dragEnterEvent( QDragEnterEvent *event )
