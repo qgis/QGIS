@@ -17,6 +17,8 @@ import qgis  # NOQA
 import os
 import tempfile
 import shutil
+import sys
+import time
 from osgeo import gdal, ogr
 
 from qgis.core import QgsVectorLayer, QgsVectorLayerExporter, QgsFeature, QgsGeometry, QgsRectangle, QgsSettings
@@ -35,6 +37,21 @@ class ErrorReceiver():
 
     def receiveError(self, msg):
         self.msg = msg
+
+
+def count_opened_filedescriptors(filename_to_test):
+    count = -1
+    if sys.platform.startswith('linux'):
+        count = 0
+        open_files_dirname = '/proc/%d/fd' % os.getpid()
+        filenames = os.listdir(open_files_dirname)
+        for filename in filenames:
+            full_filename = open_files_dirname + '/' + filename
+            if os.path.exists(full_filename):
+                link = os.readlink(full_filename)
+                if os.path.basename(link) == os.path.basename(filename_to_test):
+                    count += 1
+    return count
 
 
 class TestPyQgsOGRProviderGpkg(unittest.TestCase):
@@ -512,6 +529,74 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(got['attr'], 101)
         reference = QgsGeometry.fromWkt('Point (5 5)')
         self.assertEqual(got_geom.exportToWkb(), reference.exportToWkb(), 'Expected {}, got {}'.format(reference.exportToWkt(), got_geom.exportToWkt()))
+
+    def testGeopackageManyLayers(self):
+        ''' test opening more than 64 layers without running out of Spatialite connections '''
+
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageManyLayers.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        for i in range(70):
+            lyr = ds.CreateLayer('layer%d' % i, geom_type=ogr.wkbPoint)
+            f = ogr.Feature(lyr.GetLayerDefn())
+            f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(%d 0)' % i))
+            lyr.CreateFeature(f)
+            f = None
+        ds = None
+
+        vl_tab = []
+        for i in range(70):
+            layername = 'layer%d' % i
+            vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + layername, layername, u'ogr')
+            self.assertTrue(vl.isValid())
+            vl_tab += [vl]
+
+        count = count_opened_filedescriptors(tmpfile)
+        if count > 0:
+            self.assertEqual(count, 1)
+
+        for i in range(70):
+            got = [feat for feat in vl.getFeatures()]
+            self.assertTrue(len(got) == 1)
+
+        # We shouldn't have more than 2 file handles opened:
+        # one shared by the QgsOgrProvider object
+        # one shared by the feature iterators
+        count = count_opened_filedescriptors(tmpfile)
+        if count > 0:
+            self.assertEqual(count, 2)
+
+        # Re-open an already opened layers. We should get a new handle
+        layername = 'layer%d' % 0
+        vl_extra0 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + layername, layername, u'ogr')
+        self.assertTrue(vl_extra0.isValid())
+        countNew = count_opened_filedescriptors(tmpfile)
+        if countNew > 0:
+            self.assertLessEqual(countNew, 4) # for some reason we get 4 and not 3
+
+        layername = 'layer%d' % 1
+        vl_extra1 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + layername, layername, u'ogr')
+        self.assertTrue(vl_extra1.isValid())
+        countNew2 = count_opened_filedescriptors(tmpfile)
+        self.assertEqual(countNew2, countNew)
+
+    def testGeopackageRefreshIfTableListUpdated(self):
+        ''' test that creating/deleting a layer is reflected when opening a new layer '''
+
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageRefreshIfTableListUpdated.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        ds = None
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+
+        time.sleep(1) # so timestamp gets updated
+        ds = ogr.Open(tmpfile, update=1)
+        ds.CreateLayer('test2', geom_type=ogr.wkbPoint)
+        ds = None
+
+        vl2 = QgsVectorLayer(u'{}'.format(tmpfile), 'test', u'ogr')
+        vl2.subLayers()
+        self.assertEqual(vl2.dataProvider().subLayers(), ['0:test:0:Point:geom', '1:test2:0:Point:geom'])
 
 
 if __name__ == '__main__':

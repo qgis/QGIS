@@ -47,7 +47,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   , mFilterFids( mRequest.filterFids() )
   , mFilterFidsIt( mFilterFids.constBegin() )
 {
-  mConn = QgsOgrConnPool::instance()->acquireConnection( mSource->mDataSource );
+  //QgsDebugMsg( "Feature iterator of " + mSource->mLayerName + ": acquiring connection");
+  mConn = QgsOgrConnPool::instance()->acquireConnection( QgsOgrProviderUtils::connectionPoolId( mSource->mDataSource ) );
   if ( !mConn->ds )
   {
     return;
@@ -316,7 +317,10 @@ bool QgsOgrFeatureIterator::close()
   }
 
   if ( mConn )
+  {
+    //QgsDebugMsg( "Feature iterator of " + mSource->mLayerName + ": releasing connection");
     QgsOgrConnPool::instance()->releaseConnection( mConn );
+  }
 
   mConn = nullptr;
   ogrLayer = nullptr;
@@ -437,12 +441,12 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
 {
   for ( int i = ( p->mFirstFieldIsFid ) ? 1 : 0; i < mFields.size(); i++ )
     mFieldsWithoutFid.append( mFields.at( i ) );
-  QgsOgrConnPool::instance()->ref( mDataSource );
+  QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( mDataSource ) );
 }
 
 QgsOgrFeatureSource::~QgsOgrFeatureSource()
 {
-  QgsOgrConnPool::instance()->unref( mDataSource );
+  QgsOgrConnPool::instance()->unref( QgsOgrProviderUtils::connectionPoolId( mDataSource ) );
 }
 
 QgsFeatureIterator QgsOgrFeatureSource::getFeatures( const QgsFeatureRequest &request )
