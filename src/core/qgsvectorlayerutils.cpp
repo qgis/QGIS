@@ -22,12 +22,12 @@ bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer *layer, int fieldInd
   if ( !layer )
     return false;
 
-  QgsFields fields = layer->fields();
+  const QgsFields fields = layer->fields();
 
   if ( fieldIndex < 0 || fieldIndex >= fields.count() )
     return false;
 
-  QString fieldName = fields.at( fieldIndex ).name();
+  const QgsField field = fields.at( fieldIndex );
 
   // build up an optimised feature request
   QgsFeatureRequest request;
@@ -38,8 +38,8 @@ bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer *layer, int fieldInd
   int limit = ignoreIds.size() + 1;
   request.setLimit( limit );
 
-  request.setFilterExpression( QStringLiteral( "%1=%2" ).arg( QgsExpression::quotedColumnRef( fieldName ),
-                               QgsExpression::quotedValue( value ) ) );
+  request.setFilterExpression( QStringLiteral( "%1=%2" ).arg( QgsExpression::quotedColumnRef( field.name() ),
+                               QgsExpression::quotedValue( value, field.type() ) ) );
 
   QgsFeature feat;
   QgsFeatureIterator it = layer->getFeatures( request );
