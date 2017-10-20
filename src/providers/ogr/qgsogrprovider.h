@@ -178,6 +178,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! Commits a transaction
     bool commitTransaction();
 
+    void addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer ) const;
+
     QgsFields mAttributeFields;
 
     //! Map of field index to default value
