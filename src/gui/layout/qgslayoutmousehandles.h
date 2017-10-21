@@ -159,8 +159,8 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
     bool mIsResizing = false;
 
     //! Align snap lines
-    std::unique_ptr< QGraphicsLineItem > mHorizontalSnapLine;
-    std::unique_ptr< QGraphicsLineItem > mVerticalSnapLine;
+    QGraphicsLineItem *mHorizontalSnapLine = nullptr;
+    QGraphicsLineItem *mVerticalSnapLine = nullptr;
 
     QSizeF mCursorOffset;
 

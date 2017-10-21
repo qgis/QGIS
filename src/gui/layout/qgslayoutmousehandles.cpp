@@ -44,12 +44,12 @@ QgsLayoutMouseHandles::QgsLayoutMouseHandles( QgsLayout *layout, QgsLayoutView *
   //accept hover events, required for changing cursor to resize cursors
   setAcceptHoverEvents( true );
 
-  mHorizontalSnapLine.reset( mView->createSnapLine() );
+  mHorizontalSnapLine = mView->createSnapLine();
   mHorizontalSnapLine->hide();
-  layout->addItem( mHorizontalSnapLine.get() );
-  mVerticalSnapLine.reset( mView->createSnapLine() );
+  layout->addItem( mHorizontalSnapLine );
+  mVerticalSnapLine = mView->createSnapLine();
   mVerticalSnapLine->hide();
-  layout->addItem( mVerticalSnapLine.get() );
+  layout->addItem( mVerticalSnapLine );
 }
 
 void QgsLayoutMouseHandles::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
@@ -722,12 +722,12 @@ QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseH
   switch ( mode )
   {
     case Item:
-      snappedPoint = mLayout->snapper().snapRect( rect().translated( originalPoint ), mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine.get() : nullptr,
-                     snapVertical ? mVerticalSnapLine.get() : nullptr, &itemsToExclude ).topLeft();
+      snappedPoint = mLayout->snapper().snapRect( rect().translated( originalPoint ), mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine : nullptr,
+                     snapVertical ? mVerticalSnapLine : nullptr, &itemsToExclude ).topLeft();
       break;
     case Point:
-      snappedPoint = mLayout->snapper().snapPoint( originalPoint, mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine.get() : nullptr,
-                     snapVertical ? mVerticalSnapLine.get() : nullptr, &itemsToExclude );
+      snappedPoint = mLayout->snapper().snapPoint( originalPoint, mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine : nullptr,
+                     snapVertical ? mVerticalSnapLine : nullptr, &itemsToExclude );
       break;
   }
 
