@@ -105,9 +105,8 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   if ( item )
   {
     mLabel->setText( tr( "Map %1" ).arg( item->id() ) );
-#if 0 //TODO
-    connect( item, &QgsLayoutObject::itemChanged, this, &QgsLayoutMapWidget::setGuiElementValues );
-#endif
+    connect( item, &QgsLayoutObject::changed, this, &QgsLayoutMapWidget::updateGuiElements );
+
 #if 0 //TODO
     QgsAtlasComposition *atlas = atlasComposition();
     if ( atlas )
@@ -153,6 +152,8 @@ bool QgsLayoutMapWidget::setNewItem( QgsLayoutItem *item )
 
   mMapItem = qobject_cast< QgsLayoutItemMap * >( item );
   mItemPropertiesWidget->setItem( mMapItem );
+
+  updateGuiElements();
 
   return true;
 }
@@ -601,13 +602,6 @@ void QgsLayoutMapWidget::mYMinLineEdit_editingFinished()
 void QgsLayoutMapWidget::mYMaxLineEdit_editingFinished()
 {
   updateComposerExtentFromGui();
-}
-
-void QgsLayoutMapWidget::setGuiElementValues()
-{
-  mScaleLineEdit->blockSignals( true );
-  updateGuiElements();
-  mScaleLineEdit->blockSignals( false );
 }
 
 void QgsLayoutMapWidget::updateGuiElements()
