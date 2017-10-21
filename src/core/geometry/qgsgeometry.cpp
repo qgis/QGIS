@@ -368,31 +368,7 @@ double QgsGeometry::angleAtVertex( int vertex ) const
     return 0;
   }
 
-  QgsVertexId v1;
-  QgsVertexId v3;
-  QgsGeometryUtils::adjacentVertices( *d->geometry, v2, v1, v3 );
-  if ( v1.isValid() && v3.isValid() )
-  {
-    QgsPoint p1 = d->geometry->vertexAt( v1 );
-    QgsPoint p2 = d->geometry->vertexAt( v2 );
-    QgsPoint p3 = d->geometry->vertexAt( v3 );
-    double angle1 = QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
-    double angle2 = QgsGeometryUtils::lineAngle( p2.x(), p2.y(), p3.x(), p3.y() );
-    return QgsGeometryUtils::averageAngle( angle1, angle2 );
-  }
-  else if ( v3.isValid() )
-  {
-    QgsPoint p1 = d->geometry->vertexAt( v2 );
-    QgsPoint p2 = d->geometry->vertexAt( v3 );
-    return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
-  }
-  else if ( v1.isValid() )
-  {
-    QgsPoint p1 = d->geometry->vertexAt( v1 );
-    QgsPoint p2 = d->geometry->vertexAt( v2 );
-    return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
-  }
-  return 0.0;
+  return d->geometry->vertexAngle( v2 );
 }
 
 void QgsGeometry::adjacentVertices( int atVertex, int &beforeVertex, int &afterVertex ) const

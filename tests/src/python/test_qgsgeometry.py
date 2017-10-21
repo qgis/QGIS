@@ -3618,6 +3618,11 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertAlmostEqual(linestring.angleAtVertex(0), math.radians(270), places=3)
         self.assertAlmostEqual(linestring.angleAtVertex(2), math.radians(180), places=3)
 
+        # closed linestring - angle at first/last vertex should be average angle
+        linestring = QgsGeometry.fromWkt('LineString (-1007697 1334641, -1007697 1334643, -1007695 1334643, -1007695 1334641, -1007696 1334641, -1007697 1334641)')
+        self.assertAlmostEqual(linestring.angleAtVertex(0), math.radians(315), places=3)
+        self.assertAlmostEqual(linestring.angleAtVertex(5), math.radians(315), places=3)
+
         # polygon
         polygon = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0))')
         self.assertAlmostEqual(polygon.angleAtVertex(0), math.radians(135.0), places=3)
