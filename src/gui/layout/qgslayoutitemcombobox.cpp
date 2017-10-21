@@ -47,12 +47,10 @@ void QgsLayoutItemComboBox::setItem( const QgsLayoutItem *item )
     if ( proxyIdx.isValid() )
     {
       setCurrentIndex( proxyIdx.row() );
-      emit itemChanged( currentItem() );
       return;
     }
   }
   setCurrentIndex( -1 );
-  emit itemChanged( currentItem() );
 }
 
 QgsLayoutItem *QgsLayoutItemComboBox::currentItem() const

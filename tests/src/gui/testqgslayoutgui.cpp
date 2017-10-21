@@ -27,6 +27,8 @@
 
 #include <QApplication>
 #include <QMainWindow>
+#include <QtTest/QSignalSpy>
+
 
 class TestQgsLayoutGui: public QObject
 {
@@ -37,6 +39,7 @@ class TestQgsLayoutGui: public QObject
     void init(); // will be called before each testfunction is executed.
     void cleanup(); // will be called after every testfunction.
 
+    void itemTypeComboBox();
     void testProxyCrash();
 
   private:
@@ -57,6 +60,122 @@ void TestQgsLayoutGui::init()
 
 void TestQgsLayoutGui::cleanup()
 {
+}
+
+void TestQgsLayoutGui::itemTypeComboBox()
+{
+  // test QgsLayoutItemComboBox
+  QgsLayout *layout = new QgsLayout( QgsProject::instance() );
+
+  // create a composer item combobox
+  QgsLayoutItemComboBox *cb = new QgsLayoutItemComboBox( nullptr, layout );
+  QgsLayoutItemComboBox *cb2 = new QgsLayoutItemComboBox( nullptr, layout );
+  cb2->setItemType( QgsLayoutItemRegistry::LayoutShape );
+
+  qRegisterMetaType<QgsLayoutItem *>();
+  QSignalSpy spy1( cb, &QgsLayoutItemComboBox::itemChanged );
+  QSignalSpy spy2( cb2, &QgsLayoutItemComboBox::itemChanged );
+
+  // add some items to composition
+  QgsLayoutItemMap *item1 = new QgsLayoutItemMap( layout );
+  item1->setId( "item 1" );
+  layout->addLayoutItem( item1 );
+
+  QCOMPARE( cb->count(), 1 );
+  QCOMPARE( cb2->count(), 0 );
+  QCOMPARE( cb->itemText( 0 ), QStringLiteral( "item 1" ) );
+  QCOMPARE( cb->item( 0 ), item1 );
+  QCOMPARE( cb->currentItem(), item1 );
+  QVERIFY( !cb2->currentItem() );
+
+  int expectedSpy1Count = 2;// ideally only one, but we'll settle for 2
+  int expectedSpy2Count = 0;
+  QCOMPARE( spy1.count(), 2 );
+  QCOMPARE( qvariant_cast<QObject *>( spy1.at( 1 ).at( 0 ) ), item1 );
+  QCOMPARE( spy2.count(), 0 );
+
+  QgsLayoutItemShape *item2 = new QgsLayoutItemShape( layout );
+  item2->setId( "item 2" );
+  layout->addLayoutItem( item2 );
+
+  QCOMPARE( cb->count(), 2 );
+  QCOMPARE( cb2->count(), 1 );
+  QCOMPARE( cb->itemText( 0 ), QStringLiteral( "item 1" ) );
+  QCOMPARE( cb->itemText( 1 ), QStringLiteral( "item 2" ) );
+  QCOMPARE( cb2->itemText( 0 ), QStringLiteral( "item 2" ) );
+  QCOMPARE( cb->item( 0 ), item1 );
+  QCOMPARE( cb->item( 1 ), item2 );
+  QCOMPARE( cb2->item( 0 ), item2 );
+  QCOMPARE( cb->currentItem(), item1 );
+  QCOMPARE( cb2->currentItem(), item2 );
+
+  QCOMPARE( spy1.count(), expectedSpy1Count ); // must be unchanged from earlier
+  expectedSpy2Count = 2;// ideally only one, but we'll settle for 2
+  QCOMPARE( spy2.count(), expectedSpy2Count );
+  QCOMPARE( qvariant_cast<QObject *>( spy2.at( 1 ).at( 0 ) ), item2 );
+
+  QgsLayoutItemMap *item3 = new QgsLayoutItemMap( layout );
+  item3->setId( "item 3" );
+  layout->addLayoutItem( item3 );
+
+  QCOMPARE( cb->count(), 3 );
+  QCOMPARE( cb2->count(), 1 );
+  QCOMPARE( cb->itemText( 0 ), QStringLiteral( "item 1" ) );
+  QCOMPARE( cb->itemText( 1 ), QStringLiteral( "item 2" ) );
+  QCOMPARE( cb->itemText( 2 ), QStringLiteral( "item 3" ) );
+  QCOMPARE( cb2->itemText( 0 ), QStringLiteral( "item 2" ) );
+  QCOMPARE( cb->item( 0 ), item1 );
+  QCOMPARE( cb->item( 1 ), item2 );
+  QCOMPARE( cb->item( 2 ), item3 );
+  QCOMPARE( cb2->item( 0 ), item2 );
+  QCOMPARE( cb->currentItem(), item1 );
+  QCOMPARE( cb2->currentItem(), item2 );
+  QCOMPARE( spy1.count(), expectedSpy1Count ); // must be unchanged from earlier
+  QCOMPARE( spy2.count(), expectedSpy2Count );
+
+  //manually change item
+  cb->setItem( item3 );
+  expectedSpy1Count++;
+  QCOMPARE( spy1.count(), expectedSpy1Count );
+  QCOMPARE( qvariant_cast<QObject *>( spy1.at( expectedSpy1Count - 1 ).at( 0 ) ), item3 );
+  QCOMPARE( cb->currentItem(), item3 );
+
+  cb2->setItem( nullptr );
+  QVERIFY( !cb2->currentItem() );
+  expectedSpy2Count++;
+  QCOMPARE( spy2.count(), expectedSpy2Count );
+  QVERIFY( !qvariant_cast<QObject *>( spy2.at( expectedSpy2Count - 1 ).at( 0 ) ) );
+
+  // remove item
+  layout->removeLayoutItem( item3 );
+  expectedSpy1Count++;
+  QCOMPARE( spy1.count(), expectedSpy1Count );
+  QCOMPARE( qvariant_cast<QObject *>( spy1.at( expectedSpy1Count - 1 ).at( 0 ) ), item2 );
+  QCOMPARE( cb->currentItem(), item2 );
+  QCOMPARE( spy2.count(), expectedSpy2Count );
+  QCOMPARE( cb->count(), 2 );
+  QCOMPARE( cb2->count(), 1 );
+
+  layout->removeLayoutItem( item2 );
+  expectedSpy1Count += 2; // ideally just one signal, but we want at LEAST 1...
+  QCOMPARE( spy1.count(), expectedSpy1Count );
+  QCOMPARE( qvariant_cast<QObject *>( spy1.at( expectedSpy1Count - 1 ).at( 0 ) ), item1 );
+  QCOMPARE( cb->currentItem(), item1 );
+  QCOMPARE( cb->count(), 1 );
+  QCOMPARE( cb2->count(), 0 );
+  expectedSpy2Count++;
+  QCOMPARE( spy2.count(), expectedSpy2Count );
+  QVERIFY( !qvariant_cast<QObject *>( spy2.at( expectedSpy2Count - 1 ).at( 0 ) ) );
+  QVERIFY( !cb2->currentItem() );
+
+  layout->removeLayoutItem( item1 );
+  expectedSpy1Count += 2; // ideally just one signal, but we want at LEAST 1...
+  QCOMPARE( spy1.count(), expectedSpy1Count );
+  QVERIFY( !qvariant_cast<QObject *>( spy1.at( expectedSpy1Count - 1 ).at( 0 ) ) );
+  QVERIFY( !cb->currentItem() );
+  QCOMPARE( cb->count(), 0 );
+  QCOMPARE( cb2->count(), 0 );
+  QCOMPARE( spy2.count(), expectedSpy2Count );
 }
 
 void TestQgsLayoutGui::testProxyCrash()
