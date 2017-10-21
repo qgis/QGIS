@@ -84,6 +84,7 @@ class TestQgsComposerMap(unittest.TestCase):
         overviewMap.setExtent(myRectangle2)
         overviewMap.overview().setFrameMap(self.map)
         checker = QgsLayoutChecker('composermap_overview', self.layout)
+        checker.setColorTolerance(6)
         checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testLayout()
         self.layout.removeLayoutItem(overviewMap)

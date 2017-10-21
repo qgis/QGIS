@@ -38,11 +38,10 @@ QgsLayoutItemMapOverview::QgsLayoutItemMapOverview( const QString &name, QgsLayo
 void QgsLayoutItemMapOverview::createDefaultFrameSymbol()
 {
   QgsStringMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,75" ) );
   properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
   properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
   mFrameSymbol.reset( QgsFillSymbol::createSimple( properties ) );
-  mFrameSymbol->setOpacity( 0.3 );
 }
 
 void QgsLayoutItemMapOverview::draw( QPainter *painter )
