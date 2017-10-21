@@ -152,7 +152,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
           {
             fid = match.featureId();
             partNum = part;
-            return QgsGeometry::fromPolyline( mline[part] );
+            return QgsGeometry::fromPolylineXY( mline[part] );
           }
           snapVertex -= mline[part].count();
         }

@@ -160,7 +160,7 @@ QgsGeometry QgsGeometry::fromPoint( const QgsPointXY &point )
   return QgsGeometry();
 }
 
-QgsGeometry QgsGeometry::fromPolyline( const QgsPolyline &polyline )
+QgsGeometry QgsGeometry::fromPolylineXY( const QgsPolylineXY &polyline )
 {
   std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromPolyline( polyline );
   if ( geom )
@@ -168,6 +168,11 @@ QgsGeometry QgsGeometry::fromPolyline( const QgsPolyline &polyline )
     return QgsGeometry( std::move( geom ) );
   }
   return QgsGeometry();
+}
+
+QgsGeometry QgsGeometry::fromPolyline( const QgsPolyline &polyline )
+{
+  return QgsGeometry( qgis::make_unique< QgsLineString >( polyline ) );
 }
 
 QgsGeometry QgsGeometry::fromPolygon( const QgsPolygon &polygon )
@@ -212,7 +217,7 @@ QgsGeometry QgsGeometry::fromMultiPolygon( const QgsMultiPolygon &multipoly )
 
 QgsGeometry QgsGeometry::fromRect( const QgsRectangle &rect )
 {
-  QgsPolyline ring;
+  QgsPolylineXY ring;
   ring.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
   ring.append( QgsPointXY( rect.xMaximum(), rect.yMinimum() ) );
   ring.append( QgsPointXY( rect.xMaximum(), rect.yMaximum() ) );
@@ -1269,9 +1274,9 @@ QgsPointXY QgsGeometry::asPoint() const
   return QgsPointXY( pt->x(), pt->y() );
 }
 
-QgsPolyline QgsGeometry::asPolyline() const
+QgsPolylineXY QgsGeometry::asPolyline() const
 {
-  QgsPolyline polyLine;
+  QgsPolylineXY polyLine;
   if ( !d->geometry )
   {
     return polyLine;
@@ -1407,7 +1412,7 @@ QgsMultiPolyline QgsGeometry::asMultiPolyline() const
 
     QgsPointSequence lineCoords;
     line->points( lineCoords );
-    QgsPolyline polyLine;
+    QgsPolylineXY polyLine;
     convertToPolyline( lineCoords, polyLine );
     mpl.append( polyLine );
   }
@@ -2097,7 +2102,7 @@ QPointF QgsGeometry::asQPointF() const
 QPolygonF QgsGeometry::asQPolygonF() const
 {
   QPolygonF result;
-  QgsPolyline polyline;
+  QgsPolylineXY polyline;
   QgsWkbTypes::Type type = wkbType();
   if ( type == QgsWkbTypes::LineString || type == QgsWkbTypes::LineString25D )
   {
@@ -2502,7 +2507,7 @@ QgsGeometry::operator bool() const
   return d->geometry.get();
 }
 
-void QgsGeometry::convertToPolyline( const QgsPointSequence &input, QgsPolyline &output )
+void QgsGeometry::convertToPolyline( const QgsPointSequence &input, QgsPolylineXY &output )
 {
   output.clear();
   output.resize( input.size() );
@@ -2549,7 +2554,7 @@ QgsGeometry QgsGeometry::fromQPolygonF( const QPolygonF &polygon )
   }
   else
   {
-    return QgsGeometry::fromPolyline( createPolylineFromQPolygonF( polygon ) );
+    return QgsGeometry::fromPolylineXY( createPolylineFromQPolygonF( polygon ) );
   }
 }
 
@@ -2560,9 +2565,9 @@ QgsPolygon QgsGeometry::createPolygonFromQPolygonF( const QPolygonF &polygon )
   return result;
 }
 
-QgsPolyline QgsGeometry::createPolylineFromQPolygonF( const QPolygonF &polygon )
+QgsPolylineXY QgsGeometry::createPolylineFromQPolygonF( const QPolygonF &polygon )
 {
-  QgsPolyline result;
+  QgsPolylineXY result;
   for ( const QPointF &p : polygon )
   {
     result.append( QgsPointXY( p ) );
@@ -2570,7 +2575,7 @@ QgsPolyline QgsGeometry::createPolylineFromQPolygonF( const QPolygonF &polygon )
   return result;
 }
 
-bool QgsGeometry::compare( const QgsPolyline &p1, const QgsPolyline &p2, double epsilon )
+bool QgsGeometry::compare( const QgsPolylineXY &p1, const QgsPolylineXY &p2, double epsilon )
 {
   if ( p1.count() != p2.count() )
     return false;
@@ -2826,7 +2831,7 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
       {
         const QgsMultiPolyline multiLine = asMultiPolyline();
         QgsMultiPoint multiPoint;
-        for ( const QgsPolyline &l : multiLine )
+        for ( const QgsPolylineXY &l : multiLine )
           for ( const QgsPointXY &p : l )
             multiPoint << p;
         return fromMultiPoint( multiPoint );
@@ -2834,7 +2839,7 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
       // input geometry is not multipart: copy directly the line into a multipoint
       else
       {
-        QgsPolyline line = asPolyline();
+        QgsPolylineXY line = asPolyline();
         if ( !line.isEmpty() )
           return fromMultiPoint( line );
       }
@@ -2853,7 +2858,7 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
         const QgsMultiPolygon multiPolygon = asMultiPolygon();
         QgsMultiPoint multiPoint;
         for ( const QgsPolygon &poly : multiPolygon )
-          for ( const QgsPolyline &line : poly )
+          for ( const QgsPolylineXY &line : poly )
             for ( const QgsPointXY &pt : line )
               multiPoint << pt;
         return fromMultiPoint( multiPoint );
@@ -2863,7 +2868,7 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
       {
         const QgsPolygon polygon = asPolygon();
         QgsMultiPoint multiPoint;
-        for ( const QgsPolyline &line : polygon )
+        for ( const QgsPolylineXY &line : polygon )
           for ( const QgsPointXY &pt : line )
             multiPoint << pt;
         return fromMultiPoint( multiPoint );
@@ -2891,7 +2896,7 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
       if ( destMultipart )
         return fromMultiPolyline( QgsMultiPolyline() << multiPoint );
       else
-        return fromPolyline( multiPoint );
+        return fromPolylineXY( multiPoint );
     }
 
     case QgsWkbTypes::LineGeometry:
@@ -2907,7 +2912,7 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
       if ( destMultipart )
       {
         // destination is multipart => makes a multipoint with a single line
-        QgsPolyline line = asPolyline();
+        QgsPolylineXY line = asPolyline();
         if ( !line.isEmpty() )
           return fromMultiPolyline( QgsMultiPolyline() << line );
       }
@@ -2916,7 +2921,7 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
         // destination is singlepart => make a single part if possible
         QgsMultiPolyline multiLine = asMultiPolyline();
         if ( multiLine.count() == 1 )
-          return fromPolyline( multiLine[0] );
+          return fromPolylineXY( multiLine[0] );
       }
       return QgsGeometry();
     }
@@ -2929,7 +2934,7 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
         const QgsMultiPolygon multiPolygon = asMultiPolygon();
         QgsMultiPolyline multiLine;
         for ( const QgsPolygon &poly : multiPolygon )
-          for ( const QgsPolyline &line : poly )
+          for ( const QgsPolylineXY &line : poly )
             multiLine << line;
 
         if ( destMultipart )
@@ -2940,7 +2945,7 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
         else if ( multiLine.count() == 1 )
         {
           // destination is singlepart => make a single part if possible
-          return fromPolyline( multiLine[0] );
+          return fromPolylineXY( multiLine[0] );
         }
       }
       // input geometry is single polygon
@@ -2956,7 +2961,7 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
           {
             const QgsPolygon polygon = asPolygon();
             QgsMultiPolyline multiLine;
-            for ( const QgsPolyline &line : polygon )
+            for ( const QgsPolylineXY &line : polygon )
               multiLine << line;
             return fromMultiPolyline( multiLine );
           }
@@ -2970,7 +2975,7 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
           }
           else
           {
-            return fromPolyline( polygon[0] );
+            return fromPolylineXY( polygon[0] );
           }
         }
       }
@@ -3042,7 +3047,7 @@ QgsGeometry QgsGeometry::convertToPolygon( bool destMultipart ) const
       // input geometry is single line
       else
       {
-        QgsPolyline line = asPolyline();
+        QgsPolylineXY line = asPolyline();
 
         // do not create polygon for a 1 segment line
         if ( line.count() < 3 )

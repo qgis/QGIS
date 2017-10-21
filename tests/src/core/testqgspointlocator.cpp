@@ -81,7 +81,7 @@ class TestQgsPointLocator : public QObject
       mVL = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature ff( 0 );
       QgsPolygon polygon;
-      QgsPolyline polyline;
+      QgsPolylineXY polyline;
       polyline << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 0 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 0, 1 );
       polygon << polyline;
       QgsGeometry ffGeom = QgsGeometry::fromPolygon( polygon );
@@ -199,7 +199,7 @@ class TestQgsPointLocator : public QObject
       // add a new feature
       QgsFeature ff( 0 );
       QgsPolygon polygon;
-      QgsPolyline polyline;
+      QgsPolylineXY polyline;
       polyline << QgsPointXY( 10, 11 ) << QgsPointXY( 11, 10 ) << QgsPointXY( 11, 11 ) << QgsPointXY( 10, 11 );
       polygon << polyline;
       QgsGeometry ffGeom = QgsGeometry::fromPolygon( polygon ) ;

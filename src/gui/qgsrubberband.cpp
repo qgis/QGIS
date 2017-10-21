@@ -289,7 +289,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     case QgsWkbTypes::LineString:
     case QgsWkbTypes::LineString25D:
     {
-      const QgsPolyline line = geom.asPolyline();
+      const QgsPolylineXY line = geom.asPolyline();
       for ( QgsPointXY pt : line )
       {
         addPoint( pt, false, idx );
@@ -302,7 +302,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     {
 
       const QgsMultiPolyline mline = geom.asMultiPolyline();
-      for ( const QgsPolyline &line : mline )
+      for ( const QgsPolylineXY &line : mline )
       {
         if ( line.isEmpty() )
         {
@@ -322,7 +322,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     case QgsWkbTypes::Polygon25D:
     {
       const QgsPolygon poly = geom.asPolygon();
-      const QgsPolyline line = poly.at( 0 );
+      const QgsPolylineXY line = poly.at( 0 );
       for ( QgsPointXY pt : line )
       {
         addPoint( pt, false, idx );
@@ -340,7 +340,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
         if ( poly.empty() )
           continue;
 
-        const QgsPolyline line = poly.at( 0 );
+        const QgsPolylineXY line = poly.at( 0 );
         for ( QgsPointXY pt : line )
         {
           addPoint( pt, false, idx );
@@ -644,7 +644,7 @@ QgsGeometry QgsRubberBand::asGeometry() const
         }
         else
         {
-          geom = QgsGeometry::fromPolyline( getPolyline( mPoints.at( 0 ) ) );
+          geom = QgsGeometry::fromPolylineXY( getPolyline( mPoints.at( 0 ) ) );
         }
       }
       break;
@@ -653,9 +653,9 @@ QgsGeometry QgsRubberBand::asGeometry() const
   return geom;
 }
 
-QgsPolyline QgsRubberBand::getPolyline( const QList<QgsPointXY> &points )
+QgsPolylineXY QgsRubberBand::getPolyline( const QList<QgsPointXY> &points )
 {
-  QgsPolyline polyline;
+  QgsPolylineXY polyline;
   QList<QgsPointXY>::const_iterator iter = points.constBegin();
   for ( ; iter != points.constEnd(); ++iter )
   {

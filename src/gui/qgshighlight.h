@@ -108,7 +108,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     //! Get renderer for current color mode and colors. The renderer should be freed by caller.
     QgsFeatureRenderer *getRenderer( QgsRenderContext &context, const QColor &color, const QColor &fillColor );
     void paintPoint( QPainter *p, const QgsPointXY &point );
-    void paintLine( QPainter *p, QgsPolyline line );
+    void paintLine( QPainter *p, QgsPolylineXY line );
     void paintPolygon( QPainter *p, QgsPolygon polygon );
 
     QBrush mBrush;

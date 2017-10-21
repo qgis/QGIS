@@ -567,23 +567,23 @@ void QgsComposerMapGrid::calculateCrsTransformLines()
     QList< QPair< double, QPolygonF > >::const_iterator yGridIt = mTransformedYLines.constBegin();
     for ( ; yGridIt != mTransformedYLines.constEnd(); ++yGridIt )
     {
-      QgsPolyline yLine;
+      QgsPolylineXY yLine;
       for ( int i = 0; i < ( *yGridIt ).second.size(); ++i )
       {
         yLine.append( QgsPointXY( ( *yGridIt ).second.at( i ).x(), ( *yGridIt ).second.at( i ).y() ) );
       }
-      yLines << QgsGeometry::fromPolyline( yLine );
+      yLines << QgsGeometry::fromPolylineXY( yLine );
     }
     QList< QgsGeometry > xLines;
     QList< QPair< double, QPolygonF > >::const_iterator xGridIt = mTransformedXLines.constBegin();
     for ( ; xGridIt != mTransformedXLines.constEnd(); ++xGridIt )
     {
-      QgsPolyline xLine;
+      QgsPolylineXY xLine;
       for ( int i = 0; i < ( *xGridIt ).second.size(); ++i )
       {
         xLine.append( QgsPointXY( ( *xGridIt ).second.at( i ).x(), ( *xGridIt ).second.at( i ).y() ) );
       }
-      xLines << QgsGeometry::fromPolyline( xLine );
+      xLines << QgsGeometry::fromPolylineXY( xLine );
     }
 
     //now, loop through geometries and calculate intersection points

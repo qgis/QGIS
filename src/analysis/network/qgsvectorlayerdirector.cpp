@@ -175,7 +175,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
     {
       QgsPointXY pt1, pt2;
       bool isFirstPoint = true;
-      QgsPolyline::iterator pointIt;
+      QgsPolylineXY::iterator pointIt;
       for ( pointIt = mplIt->begin(); pointIt != mplIt->end(); ++pointIt )
       {
         pt2 = ct.transform( *pointIt );
@@ -319,7 +319,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
       QgsPointXY pt1, pt2;
 
       bool isFirstPoint = true;
-      QgsPolyline::iterator pointIt;
+      QgsPolylineXY::iterator pointIt;
       for ( pointIt = mplIt->begin(); pointIt != mplIt->end(); ++pointIt )
       {
         pt2 = ct.transform( *pointIt );

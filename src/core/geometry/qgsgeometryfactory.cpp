@@ -149,7 +149,7 @@ std::unique_ptr<QgsMultiPointV2> QgsGeometryFactory::fromMultiPoint( const QgsMu
   return mp;
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromPolyline( const QgsPolyline &polyline )
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromPolyline( const QgsPolylineXY &polyline )
 {
   return linestringFromPolyline( polyline );
 }
@@ -197,13 +197,13 @@ std::unique_ptr< QgsMultiPolygonV2 > QgsGeometryFactory::fromMultiPolygon( const
   return mp;
 }
 
-std::unique_ptr<QgsLineString> QgsGeometryFactory::linestringFromPolyline( const QgsPolyline &polyline )
+std::unique_ptr<QgsLineString> QgsGeometryFactory::linestringFromPolyline( const QgsPolylineXY &polyline )
 {
   QVector< double > x;
   x.reserve( polyline.size() );
   QVector< double > y;
   y.reserve( polyline.size() );
-  QgsPolyline::const_iterator it = polyline.constBegin();
+  QgsPolylineXY::const_iterator it = polyline.constBegin();
   for ( ; it != polyline.constEnd(); ++it )
   {
     x << it->x();

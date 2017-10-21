@@ -36,10 +36,10 @@ class QgsMultiPolygonV2;
 
 //compatibility with old classes
 #include "qgspointxy.h"
-typedef QVector<QgsPointXY> QgsPolyline;
-typedef QVector<QgsPolyline> QgsPolygon;
+typedef QVector<QgsPointXY> QgsPolylineXY;
+typedef QVector<QgsPolylineXY> QgsPolygon;
 typedef QVector<QgsPointXY> QgsMultiPoint;
-typedef QVector<QgsPolyline> QgsMultiPolyline;
+typedef QVector<QgsPolylineXY> QgsMultiPolyline;
 typedef QVector<QgsPolygon> QgsMultiPolygon;
 
 /**
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsGeometryFactory
     //! Construct geometry from a multipoint
     static std::unique_ptr<QgsMultiPointV2> fromMultiPoint( const QgsMultiPoint &multipoint );
     //! Construct geometry from a polyline
-    static std::unique_ptr< QgsAbstractGeometry > fromPolyline( const QgsPolyline &polyline );
+    static std::unique_ptr< QgsAbstractGeometry > fromPolyline( const QgsPolylineXY &polyline );
     //! Construct geometry from a multipolyline
     static std::unique_ptr<QgsMultiLineString> fromMultiPolyline( const QgsMultiPolyline &multiline );
     //! Construct geometry from a polygon
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsGeometryFactory
     static std::unique_ptr< QgsGeometryCollection > createCollectionOfType( QgsWkbTypes::Type type );
 
   private:
-    static std::unique_ptr< QgsLineString > linestringFromPolyline( const QgsPolyline &polyline );
+    static std::unique_ptr< QgsLineString > linestringFromPolyline( const QgsPolylineXY &polyline );
 };
 
 #endif // QGSGEOMETRYFACTORY_H

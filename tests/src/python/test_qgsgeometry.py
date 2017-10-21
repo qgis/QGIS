@@ -129,7 +129,7 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(myMultiPoint.wkbType(), QgsWkbTypes.MultiPoint)
 
     def testFromLine(self):
-        myLine = QgsGeometry.fromPolyline([QgsPointXY(1, 1), QgsPointXY(2, 2)])
+        myLine = QgsGeometry.fromPolylineXY([QgsPointXY(1, 1), QgsPointXY(2, 2)])
         self.assertEqual(myLine.wkbType(), QgsWkbTypes.LineString)
 
     def testFromMultiLine(self):
@@ -241,7 +241,7 @@ class TestQgsGeometry(unittest.TestCase):
                 self.assertAlmostEqual(result, exp, 5, "Perimeter {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
 
     def testIntersection(self):
-        myLine = QgsGeometry.fromPolyline([
+        myLine = QgsGeometry.fromPolylineXY([
             QgsPointXY(0, 0),
             QgsPointXY(1, 1),
             QgsPointXY(2, 2)])
@@ -278,7 +278,7 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(QgsGeometry.contains(myPoly, myPoint))
 
     def testTouches(self):
-        myLine = QgsGeometry.fromPolyline([
+        myLine = QgsGeometry.fromPolylineXY([
             QgsPointXY(0, 0),
             QgsPointXY(1, 1),
             QgsPointXY(2, 2)])
@@ -310,7 +310,7 @@ class TestQgsGeometry(unittest.TestCase):
         assert overlapsGeom, myMessage
 
     def testWithin(self):
-        myLine = QgsGeometry.fromPolyline([
+        myLine = QgsGeometry.fromPolylineXY([
             QgsPointXY(0.5, 0.5),
             QgsPointXY(1, 1),
             QgsPointXY(1.5, 1.5)
@@ -335,7 +335,7 @@ class TestQgsGeometry(unittest.TestCase):
         assert equalsGeom, myMessage
 
     def testCrosses(self):
-        myLine = QgsGeometry.fromPolyline([
+        myLine = QgsGeometry.fromPolylineXY([
             QgsPointXY(0, 0),
             QgsPointXY(1, 1),
             QgsPointXY(3, 3)])
@@ -395,7 +395,7 @@ class TestQgsGeometry(unittest.TestCase):
         assert myProvider is not None
 
         myFeature1 = QgsFeature()
-        myFeature1.setGeometry(QgsGeometry.fromPolyline([
+        myFeature1.setGeometry(QgsGeometry.fromPolylineXY([
             QgsPointXY(10, 10),
             QgsPointXY(20, 10),
             QgsPointXY(30, 10),
@@ -404,7 +404,7 @@ class TestQgsGeometry(unittest.TestCase):
         myFeature1.setAttributes(['Johny'])
 
         myFeature2 = QgsFeature()
-        myFeature2.setGeometry(QgsGeometry.fromPolyline([
+        myFeature2.setGeometry(QgsGeometry.fromPolylineXY([
             QgsPointXY(10, 10),
             QgsPointXY(20, 20),
             QgsPointXY(30, 30),
@@ -413,7 +413,7 @@ class TestQgsGeometry(unittest.TestCase):
         myFeature2.setAttributes(['Be'])
 
         myFeature3 = QgsFeature()
-        myFeature3.setGeometry(QgsGeometry.fromPolyline([
+        myFeature3.setGeometry(QgsGeometry.fromPolylineXY([
             QgsPointXY(10, 10),
             QgsPointXY(10, 20),
             QgsPointXY(10, 30),
@@ -488,7 +488,7 @@ class TestQgsGeometry(unittest.TestCase):
         # ! 5-+-+-+-4 !
         # |
         # 1-+-+-+-+-0 !
-        polyline = QgsGeometry.fromPolyline(
+        polyline = QgsGeometry.fromPolylineXY(
             [QgsPointXY(5, 0), QgsPointXY(0, 0), QgsPointXY(0, 4), QgsPointXY(5, 4), QgsPointXY(5, 1), QgsPointXY(1, 1), QgsPointXY(1, 3), QgsPointXY(4, 3), QgsPointXY(4, 2), QgsPointXY(2, 2)]
         )
 
@@ -632,7 +632,7 @@ class TestQgsGeometry(unittest.TestCase):
         # ! 5-+-+-+-4 !
         # |
         # 1-+-+-+-+-0 !
-        polyline = QgsGeometry.fromPolyline(
+        polyline = QgsGeometry.fromPolylineXY(
             [QgsPointXY(5, 0), QgsPointXY(0, 0), QgsPointXY(0, 4), QgsPointXY(5, 4), QgsPointXY(5, 1), QgsPointXY(1, 1), QgsPointXY(1, 3), QgsPointXY(4, 3), QgsPointXY(4, 2), QgsPointXY(2, 2)]
         )
 
@@ -772,7 +772,7 @@ class TestQgsGeometry(unittest.TestCase):
         # |
         # 1-+-+-+-+-0 !
         points = [QgsPointXY(5, 0), QgsPointXY(0, 0), QgsPointXY(0, 4), QgsPointXY(5, 4), QgsPointXY(5, 1), QgsPointXY(1, 1), QgsPointXY(1, 3), QgsPointXY(4, 3), QgsPointXY(4, 2), QgsPointXY(2, 2)]
-        polyline = QgsGeometry.fromPolyline(points)
+        polyline = QgsGeometry.fromPolylineXY(points)
 
         for i in range(0, len(points)):
             self.assertEqual(QgsPoint(points[i]), polyline.vertexAt(i), "Mismatch at %d" % i)
@@ -1223,7 +1223,7 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(g.extrude(1, 2).isNull())
 
         points = [QgsPointXY(1, 2), QgsPointXY(3, 2), QgsPointXY(4, 3)]
-        line = QgsGeometry.fromPolyline(points)
+        line = QgsGeometry.fromPolylineXY(points)
         expected = QgsGeometry.fromWkt('Polygon ((1 2, 3 2, 4 3, 5 5, 4 4, 2 4, 1 2))')
         self.assertEqual(line.extrude(1, 2).exportToWkt(), expected.exportToWkt())
 
@@ -1305,7 +1305,7 @@ class TestQgsGeometry(unittest.TestCase):
         # |
         # 1-+-+-+-+-0 !
         points = [QgsPointXY(5, 0), QgsPointXY(0, 0), QgsPointXY(0, 4), QgsPointXY(5, 4), QgsPointXY(5, 1), QgsPointXY(1, 1), QgsPointXY(1, 3), QgsPointXY(4, 3), QgsPointXY(4, 2), QgsPointXY(2, 2)]
-        polyline = QgsGeometry.fromPolyline(points)
+        polyline = QgsGeometry.fromPolylineXY(points)
         expbb = QgsRectangle(0, 0, 5, 4)
         bb = polyline.boundingBox()
         self.assertEqual(expbb, bb, "Expected:\n%s\nGot:\n%s\n" % (expbb.toString(), bb.toString()))
@@ -1368,7 +1368,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # NULL
         points = []
-        line = QgsGeometry.fromPolyline(points)
+        line = QgsGeometry.fromPolylineXY(points)
         assert line.boundingBox().isNull()
 
     def testCollectGeometry(self):
@@ -1384,7 +1384,7 @@ class TestQgsGeometry(unittest.TestCase):
             [QgsPointXY(0, 0), QgsPointXY(1, 0)],
             [QgsPointXY(2, 0), QgsPointXY(3, 0)]
         ]
-        geometries = [QgsGeometry.fromPolyline(points[0]), QgsGeometry.fromPolyline(points[1])]
+        geometries = [QgsGeometry.fromPolylineXY(points[0]), QgsGeometry.fromPolylineXY(points[1])]
         geometry = QgsGeometry.collectGeometry(geometries)
         expwkt = "MultiLineString ((0 0, 1 0), (2 0, 3 0))"
         wkt = geometry.exportToWkt()
@@ -1436,21 +1436,21 @@ class TestQgsGeometry(unittest.TestCase):
             [QgsPointXY(3, 0), QgsPointXY(3, 1), QgsPointXY(5, 1), QgsPointXY(5, 0), QgsPointXY(6, 0), ]
         ]
 
-        polyline = QgsGeometry.fromPolyline(points[0])
+        polyline = QgsGeometry.fromPolylineXY(points[0])
         self.assertEqual(polyline.addPoints(points[1][0:1]), QgsGeometry.InvalidInput, "addPoints with one point line unexpectedly succeeded.")
         self.assertEqual(polyline.addPoints(points[1][0:2]), QgsGeometry.Success, "addPoints with two point line failed.")
         expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1))"
         wkt = polyline.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
-        polyline = QgsGeometry.fromPolyline(points[0])
+        polyline = QgsGeometry.fromPolylineXY(points[0])
         self.assertEqual(polyline.addPoints(points[1]), QgsGeometry.Success, "addPoints with %d point line failed." % len(points[1]))
         expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1, 5 1, 5 0, 6 0))"
         wkt = polyline.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         # test adding a part with Z values
-        polyline = QgsGeometry.fromPolyline(points[0])
+        polyline = QgsGeometry.fromPolylineXY(points[0])
         polyline.geometry().addZValue(4.0)
         points2 = [QgsPoint(p[0], p[1], 3.0, wkbType=QgsWkbTypes.PointZ) for p in points[1]]
         self.assertEqual(polyline.addPointsV2(points2), QgsGeometry.Success)
@@ -1566,7 +1566,7 @@ class TestQgsGeometry(unittest.TestCase):
         expWkt = "MultiPoint ((1 1))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from point to multipoint. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         # LINE TO MultiPoint
-        line = QgsGeometry.fromPolyline(points[0][0])
+        line = QgsGeometry.fromPolylineXY(points[0][0])
         wkt = line.convertToType(QgsWkbTypes.PointGeometry, True).exportToWkt()
         expWkt = "MultiPoint ((0 0),(1 0),(1 1),(2 1),(2 2),(0 2),(0 0))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from line to multipoint. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
@@ -1606,7 +1606,7 @@ class TestQgsGeometry(unittest.TestCase):
         expWkt = "LineString (0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
         assert compareWkt(expWkt, wkt), "convertToType failed: from multiline to line. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         # LINE TO MULTILINE
-        line = QgsGeometry.fromPolyline(points[0][0])
+        line = QgsGeometry.fromPolylineXY(points[0][0])
         wkt = line.convertToType(QgsWkbTypes.LineGeometry, True).exportToWkt()
         expWkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from line to multiline. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
@@ -1648,18 +1648,18 @@ class TestQgsGeometry(unittest.TestCase):
         expWkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from multipoint to multipolygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         # LINE TO Polygon
-        line = QgsGeometry.fromPolyline(points[0][0])
+        line = QgsGeometry.fromPolylineXY(points[0][0])
         wkt = line.convertToType(QgsWkbTypes.PolygonGeometry, False).exportToWkt()
         expWkt = "Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from line to polygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         # LINE ( 3 vertices, with first = last ) TO Polygon
-        line = QgsGeometry.fromPolyline([QgsPointXY(1, 1), QgsPointXY(0, 0), QgsPointXY(1, 1)])
+        line = QgsGeometry.fromPolylineXY([QgsPointXY(1, 1), QgsPointXY(0, 0), QgsPointXY(1, 1)])
         self.assertFalse(line.convertToType(QgsWkbTypes.PolygonGeometry, False), "convertToType to polygon of a 3 vertices lines with first and last vertex identical should return a null geometry")
         # MULTILINE ( with a part of 3 vertices, with first = last ) TO MultiPolygon
         multiline = QgsGeometry.fromMultiPolyline([points[0][0], [QgsPointXY(1, 1), QgsPointXY(0, 0), QgsPointXY(1, 1)]])
         self.assertFalse(multiline.convertToType(QgsWkbTypes.PolygonGeometry, True), "convertToType to polygon of a 3 vertices lines with first and last vertex identical should return a null geometry")
         # LINE TO MultiPolygon
-        line = QgsGeometry.fromPolyline(points[0][0])
+        line = QgsGeometry.fromPolylineXY(points[0][0])
         wkt = line.convertToType(QgsWkbTypes.PolygonGeometry, True).exportToWkt()
         expWkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from line to multipolygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)

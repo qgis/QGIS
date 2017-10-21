@@ -149,13 +149,13 @@ void TestQgsNodeTool::initTestCase()
   QVERIFY( mLayerPoint->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint );
 
-  QgsPolyline line1;
+  QgsPolylineXY line1;
   line1 << QgsPointXY( 2, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 3 );
   QgsFeature lineF1;
-  lineF1.setGeometry( QgsGeometry::fromPolyline( line1 ) );
+  lineF1.setGeometry( QgsGeometry::fromPolylineXY( line1 ) );
 
   QgsPolygon polygon1;
-  QgsPolyline polygon1exterior;
+  QgsPolylineXY polygon1exterior;
   polygon1exterior << QgsPointXY( 4, 1 ) << QgsPointXY( 7, 1 ) << QgsPointXY( 7, 4 ) << QgsPointXY( 4, 4 ) << QgsPointXY( 4, 1 );
   polygon1 << polygon1exterior;
   QgsFeature polygonF1;
@@ -538,10 +538,10 @@ void TestQgsNodeTool::testActiveLayerPriority()
   // create a temporary line layer that has a common vertex with existing line layer at (1, 1)
   QgsVectorLayer *layerLine2 = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line 2" ), QStringLiteral( "memory" ) );
   QVERIFY( layerLine2->isValid() );
-  QgsPolyline line1;
+  QgsPolylineXY line1;
   line1 << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 0 );
   QgsFeature lineF1;
-  lineF1.setGeometry( QgsGeometry::fromPolyline( line1 ) );
+  lineF1.setGeometry( QgsGeometry::fromPolylineXY( line1 ) );
   layerLine2->startEditing();
   layerLine2->addFeature( lineF1 );
   QgsFeatureId fidLineF1 = lineF1.id();

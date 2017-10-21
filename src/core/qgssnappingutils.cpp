@@ -106,9 +106,9 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
   {
     if ( m.hasEdge() )
     {
-      QgsPolyline pl( 2 );
+      QgsPolylineXY pl( 2 );
       m.edgePoints( pl[0], pl[1] );
-      geoms << QgsGeometry::fromPolyline( pl );
+      geoms << QgsGeometry::fromPolylineXY( pl );
       endpoints << pl[0] << pl[1];
     }
   }
@@ -127,7 +127,7 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
   }
   if ( g.wkbType() == QgsWkbTypes::MultiLineString )
   {
-    Q_FOREACH ( const QgsPolyline &pl, g.asMultiPolyline() )
+    Q_FOREACH ( const QgsPolylineXY &pl, g.asMultiPolyline() )
     {
       Q_FOREACH ( const QgsPointXY &p, pl )
       {

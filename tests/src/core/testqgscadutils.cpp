@@ -78,7 +78,7 @@ void TestQgsCadUtils::initTestCase()
   QVERIFY( mLayerPolygon->isValid() );
 
   QgsPolygon polygon1;
-  QgsPolyline polygon1exterior;
+  QgsPolylineXY polygon1exterior;
   polygon1exterior << QgsPointXY( 10, 10 ) << QgsPointXY( 30, 10 ) << QgsPointXY( 10, 20 ) << QgsPointXY( 10, 10 );
   polygon1 << polygon1exterior;
   QgsFeature polygonF1;

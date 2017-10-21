@@ -721,7 +721,7 @@ void QgsSymbolLayerUtils::drawStippledBackground( QPainter *painter, QRect rect 
 #include <cmath>
 #include <cfloat>
 
-static QPolygonF makeOffsetGeometry( const QgsPolyline &polyline )
+static QPolygonF makeOffsetGeometry( const QgsPolylineXY &polyline )
 {
   int i, pointCount = polyline.count();
 
@@ -756,12 +756,12 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
 
   unsigned int i, pointCount = polyline.count();
 
-  QgsPolyline tempPolyline( pointCount );
+  QgsPolylineXY tempPolyline( pointCount );
   QPointF *tempPtr = polyline.data();
   for ( i = 0; i < pointCount; ++i, tempPtr++ )
     tempPolyline[i] = QgsPointXY( tempPtr->rx(), tempPtr->ry() );
 
-  QgsGeometry tempGeometry = geometryType == QgsWkbTypes::PolygonGeometry ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolyline( tempPolyline );
+  QgsGeometry tempGeometry = geometryType == QgsWkbTypes::PolygonGeometry ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolylineXY( tempPolyline );
   if ( !tempGeometry.isNull() )
   {
     int quadSegments = 0; // we want miter joins, not round joins
@@ -779,7 +779,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
 
       if ( QgsWkbTypes::flatType( tempGeometry.wkbType() ) == QgsWkbTypes::LineString )
       {
-        QgsPolyline line = tempGeometry.asPolyline();
+        QgsPolylineXY line = tempGeometry.asPolyline();
         // Reverse the line if offset was negative, see
         // https://issues.qgis.org/issues/13811
         if ( dist < 0 ) std::reverse( line.begin(), line.end() );
@@ -3782,7 +3782,7 @@ QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points )
   {
     unsigned int i, pointCount = points.count();
 
-    QgsPolyline polyline( pointCount );
+    QgsPolylineXY polyline( pointCount );
     for ( i = 0; i < pointCount; ++i ) polyline[i] = QgsPointXY( points[i].x(), points[i].y() );
 
     QgsGeometry geom = QgsGeometry::fromPolygon( QgsPolygon() << polyline );

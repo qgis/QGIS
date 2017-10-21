@@ -184,9 +184,9 @@ void TestQgsVectorFileWriter::createLine()
   //
   // Create a feature
   //
-  QgsPolyline myPolyline;
+  QgsPolylineXY myPolyline;
   myPolyline << mPoint1 << mPoint2 << mPoint3;
-  QgsGeometry mypLineGeometry = QgsGeometry::fromPolyline( myPolyline );
+  QgsGeometry mypLineGeometry = QgsGeometry::fromPolylineXY( myPolyline );
   QgsFeature myFeature;
   myFeature.setGeometry( mypLineGeometry );
   myFeature.initAttributes( 1 );
@@ -229,7 +229,7 @@ void TestQgsVectorFileWriter::createPolygon()
   //
   // Create a polygon feature
   //
-  QgsPolyline myPolyline;
+  QgsPolylineXY myPolyline;
   myPolyline << mPoint1 << mPoint2 << mPoint3 << mPoint1;
   QgsPolygon myPolygon;
   myPolygon << myPolyline;
@@ -282,7 +282,7 @@ void TestQgsVectorFileWriter::polygonGridTest()
       //
       // Create a polygon feature
       //
-      QgsPolyline myPolyline;
+      QgsPolylineXY myPolyline;
       QgsPointXY myPoint1 = QgsPointXY( i, j );
       QgsPointXY myPoint2 = QgsPointXY( i + myInterval, j );
       QgsPointXY myPoint3 = QgsPointXY( i + myInterval, j + myInterval );
@@ -352,7 +352,7 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
       //
       // Create a polygon feature
       //
-      QgsPolyline myPolyline;
+      QgsPolylineXY myPolyline;
       QgsPointXY myPoint1 = QgsPointXY( i, j );
       QgsPointXY myPoint2 = QgsPointXY( i + myInterval, j );
       QgsPointXY myPoint3 = QgsPointXY( i + myInterval, j + myInterval );

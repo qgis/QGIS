@@ -132,7 +132,7 @@ void TestQgsMapRendererJob::initTestCase()
         //
         // Create a polygon feature
         //
-        QgsPolyline myPolyline;
+        QgsPolylineXY myPolyline;
         QgsPointXY myPoint1 = QgsPointXY( i, j );
         QgsPointXY myPoint2 = QgsPointXY( i + myInterval, j );
         QgsPointXY myPoint3 = QgsPointXY( i + myInterval, j + myInterval );

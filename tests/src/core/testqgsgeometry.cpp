@@ -95,6 +95,7 @@ class TestQgsGeometry : public QObject
     void fromQgsPointXY();
     void fromQPoint();
     void fromQPolygonF();
+    void fromPolyline();
     void asQPointF();
     void asQPolygonF();
 
@@ -147,7 +148,7 @@ class TestQgsGeometry : public QObject
     //! A helper method to dump to qdebug the geometry of a polygon
     void dumpPolygon( QgsPolygon &polygon );
     //! A helper method to dump to qdebug the geometry of a polyline
-    void dumpPolyline( QgsPolyline &polyline );
+    void dumpPolyline( QgsPolylineXY &polyline );
 
     // Release return with delete []
     unsigned char *hex2bytes( const char *hex, int *size )
@@ -181,9 +182,9 @@ class TestQgsGeometry : public QObject
     QgsPointXY mPointX;
     QgsPointXY mPointY;
     QgsPointXY mPointZ;
-    QgsPolyline mPolylineA;
-    QgsPolyline mPolylineB;
-    QgsPolyline mPolylineC;
+    QgsPolylineXY mPolylineA;
+    QgsPolylineXY mPolylineB;
+    QgsPolylineXY mPolylineC;
     QgsGeometry mpPolylineGeometryD;
     QgsPolygon mPolygonA;
     QgsPolygon mPolygonB;
@@ -424,9 +425,9 @@ void TestQgsGeometry::vertexIterator()
   QgsVertexIterator it = geom.vertices();
   QVERIFY( !it.hasNext() );
 
-  QgsPolyline polyline;
+  QgsPolylineXY polyline;
   polyline << QgsPoint( 1, 2 ) << QgsPoint( 3, 4 );
-  QgsGeometry geom2 = QgsGeometry::fromPolyline( polyline );
+  QgsGeometry geom2 = QgsGeometry::fromPolylineXY( polyline );
   QgsVertexIterator it2 = geom2.vertices();
   QVERIFY( it2.hasNext() );
   QCOMPARE( it2.next(), QgsPoint( 1, 2 ) );
@@ -14612,7 +14613,7 @@ void TestQgsGeometry::fromQPolygonF()
   polyline << QPointF( 1.0, 2.0 ) << QPointF( 4.0, 6.0 ) << QPointF( 4.0, 3.0 ) << QPointF( 2.0, 2.0 );
   QgsGeometry result( QgsGeometry::fromQPolygonF( polyline ) );
   QCOMPARE( result.wkbType(), QgsWkbTypes::LineString );
-  QgsPolyline resultLine = result.asPolyline();
+  QgsPolylineXY resultLine = result.asPolyline();
   QCOMPARE( resultLine.size(), 4 );
   QCOMPARE( resultLine.at( 0 ), QgsPointXY( 1.0, 2.0 ) );
   QCOMPARE( resultLine.at( 1 ), QgsPointXY( 4.0, 6.0 ) );
@@ -14631,6 +14632,29 @@ void TestQgsGeometry::fromQPolygonF()
   QCOMPARE( resultPolygon.at( 0 ).at( 2 ), QgsPointXY( 4.0, 3.0 ) );
   QCOMPARE( resultPolygon.at( 0 ).at( 3 ), QgsPointXY( 2.0, 2.0 ) );
   QCOMPARE( resultPolygon.at( 0 ).at( 4 ), QgsPointXY( 1.0, 2.0 ) );
+}
+
+void TestQgsGeometry::fromPolyline()
+{
+  QgsPolyline polyline;
+  QgsGeometry fromPolyline = QgsGeometry::fromPolyline( polyline );
+  QVERIFY( fromPolyline.isEmpty() );
+  QCOMPARE( fromPolyline.wkbType(), QgsWkbTypes::LineString );
+  polyline << QgsPoint( 10, 20 ) << QgsPoint( 30, 40 );
+  fromPolyline = QgsGeometry::fromPolyline( polyline );
+  QCOMPARE( fromPolyline.exportToWkt(), QStringLiteral( "LineString (10 20, 30 40)" ) );
+  QgsPolyline polyline3d;
+  polyline3d << QgsPoint( QgsWkbTypes::PointZ, 10, 20, 100 ) << QgsPoint( QgsWkbTypes::PointZ, 30, 40, 200 );
+  fromPolyline = QgsGeometry::fromPolyline( polyline3d );
+  QCOMPARE( fromPolyline.exportToWkt(), QStringLiteral( "LineStringZ (10 20 100, 30 40 200)" ) );
+  QgsPolyline polylineM;
+  polylineM << QgsPoint( QgsWkbTypes::PointM, 10, 20, 0, 100 ) << QgsPoint( QgsWkbTypes::PointM, 30, 40, 0, 200 );
+  fromPolyline = QgsGeometry::fromPolyline( polylineM );
+  QCOMPARE( fromPolyline.exportToWkt(), QStringLiteral( "LineStringM (10 20 100, 30 40 200)" ) );
+  QgsPolyline polylineZM;
+  polylineZM << QgsPoint( QgsWkbTypes::PointZM, 10, 20, 4, 100 ) << QgsPoint( QgsWkbTypes::PointZM, 30, 40, 5, 200 );
+  fromPolyline = QgsGeometry::fromPolyline( polylineZM );
+  QCOMPARE( fromPolyline.exportToWkt(), QStringLiteral( "LineStringZM (10 20 4 100, 30 40 5 200)" ) );
 }
 
 void TestQgsGeometry::asQPointF()
@@ -14663,9 +14687,9 @@ void TestQgsGeometry::asQPolygonF()
   QCOMPARE( fromPoly.at( 4 ).y(), mPoint1.y() );
 
   //test polyline
-  QgsPolyline testline;
+  QgsPolylineXY testline;
   testline << mPoint1 << mPoint2 << mPoint3;
-  QgsGeometry lineGeom( QgsGeometry::fromPolyline( testline ) );
+  QgsGeometry lineGeom( QgsGeometry::fromPolylineXY( testline ) );
   QPolygonF fromLine = lineGeom.asQPolygonF();
   QVERIFY( !fromLine.isClosed() );
   QCOMPARE( fromLine.size(), 3 );
@@ -14684,28 +14708,28 @@ void TestQgsGeometry::asQPolygonF()
 
 void TestQgsGeometry::comparePolylines()
 {
-  QgsPolyline line1;
+  QgsPolylineXY line1;
   line1 << mPoint1 << mPoint2 << mPoint3;
-  QgsPolyline line2;
+  QgsPolylineXY line2;
   line2 << mPoint1 << mPoint2 << mPoint3;
   QVERIFY( QgsGeometry::compare( line1, line2 ) );
 
   //different number of nodes
-  QgsPolyline line3;
+  QgsPolylineXY line3;
   line3 << mPoint1 << mPoint2 << mPoint3 << mPoint4;
   QVERIFY( !QgsGeometry::compare( line1, line3 ) );
 
   //different nodes
-  QgsPolyline line4;
+  QgsPolylineXY line4;
   line3 << mPoint1 << mPointA << mPoint3 << mPoint4;
   QVERIFY( !QgsGeometry::compare( line3, line4 ) );
 }
 
 void TestQgsGeometry::comparePolygons()
 {
-  QgsPolyline ring1;
+  QgsPolylineXY ring1;
   ring1 << mPoint1 << mPoint2 << mPoint3 << mPoint1;
-  QgsPolyline ring2;
+  QgsPolylineXY ring2;
   ring2 << mPoint4 << mPointA << mPointB << mPoint4;
   QgsPolygon poly1;
   poly1 << ring1 << ring2;
@@ -14914,8 +14938,8 @@ void TestQgsGeometry::smoothCheck()
   wkt = QStringLiteral( "LineString(0 0, 10 0, 10 10, 20 10)" );
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.25 );
-  QgsPolyline line = result.asPolyline();
-  QgsPolyline expectedLine;
+  QgsPolylineXY line = result.asPolyline();
+  QgsPolylineXY expectedLine;
   expectedLine << QgsPointXY( 0, 0 ) << QgsPointXY( 7.5, 0 ) << QgsPointXY( 10.0, 2.5 )
                << QgsPointXY( 10.0, 7.5 ) << QgsPointXY( 12.5, 10.0 ) << QgsPointXY( 20.0, 10.0 );
   QVERIFY( QgsGeometry::compare( line, expectedLine ) );
@@ -14964,9 +14988,9 @@ void TestQgsGeometry::smoothCheck()
   result = geom.smooth( 1, 0.25 );
   QgsMultiPolyline multiLine = result.asMultiPolyline();
   QgsMultiPolyline expectedMultiline;
-  expectedMultiline << ( QgsPolyline() << QgsPointXY( 0, 0 ) << QgsPointXY( 7.5, 0 ) << QgsPointXY( 10.0, 2.5 )
+  expectedMultiline << ( QgsPolylineXY() << QgsPointXY( 0, 0 ) << QgsPointXY( 7.5, 0 ) << QgsPointXY( 10.0, 2.5 )
                          <<  QgsPointXY( 10.0, 7.5 ) << QgsPointXY( 12.5, 10.0 ) << QgsPointXY( 20.0, 10.0 ) )
-                    << ( QgsPolyline() << QgsPointXY( 30.0, 30.0 ) << QgsPointXY( 37.5, 30.0 ) << QgsPointXY( 40.0, 32.5 )
+                    << ( QgsPolylineXY() << QgsPointXY( 30.0, 30.0 ) << QgsPointXY( 37.5, 30.0 ) << QgsPointXY( 40.0, 32.5 )
                          << QgsPointXY( 40.0, 37.5 ) << QgsPointXY( 42.5, 40.0 ) << QgsPointXY( 50.0, 40.0 ) );
   QVERIFY( QgsGeometry::compare( multiLine, expectedMultiline ) );
 
@@ -14976,10 +15000,10 @@ void TestQgsGeometry::smoothCheck()
   result = geom.smooth( 1, 0.25 );
   QgsPolygon poly = result.asPolygon();
   QgsPolygon expectedPolygon;
-  expectedPolygon << ( QgsPolyline() << QgsPointXY( 2.5, 0 ) << QgsPointXY( 7.5, 0 ) << QgsPointXY( 10.0, 2.5 )
+  expectedPolygon << ( QgsPolylineXY() << QgsPointXY( 2.5, 0 ) << QgsPointXY( 7.5, 0 ) << QgsPointXY( 10.0, 2.5 )
                        <<  QgsPointXY( 10.0, 7.5 ) << QgsPointXY( 7.5, 10.0 ) << QgsPointXY( 2.5, 10.0 ) << QgsPointXY( 0, 7.5 )
                        << QgsPointXY( 0, 2.5 ) << QgsPointXY( 2.5, 0 ) )
-                  << ( QgsPolyline() << QgsPointXY( 2.5, 2.0 ) << QgsPointXY( 3.5, 2.0 ) << QgsPointXY( 4.0, 2.5 )
+                  << ( QgsPolylineXY() << QgsPointXY( 2.5, 2.0 ) << QgsPointXY( 3.5, 2.0 ) << QgsPointXY( 4.0, 2.5 )
                        << QgsPointXY( 4.0, 3.5 ) << QgsPointXY( 3.5, 4.0 ) << QgsPointXY( 2.5, 4.0 )
                        << QgsPointXY( 2.0, 3.5 ) << QgsPointXY( 2.0, 2.5 ) << QgsPointXY( 2.5, 2.0 ) );
   QVERIFY( QgsGeometry::compare( poly, expectedPolygon ) );
@@ -14990,7 +15014,7 @@ void TestQgsGeometry::smoothCheck()
   result = geom.smooth( 1, 0.25, -1, 50 );
   poly = result.asPolygon();
   expectedPolygon.clear();
-  expectedPolygon << ( QgsPolyline() << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 ) << QgsPointXY( 10.0, 10 )
+  expectedPolygon << ( QgsPolylineXY() << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 ) << QgsPointXY( 10.0, 10 )
                        <<  QgsPointXY( 0, 10 ) << QgsPointXY( 0, 0 ) );
   QVERIFY( QgsGeometry::compare( poly, expectedPolygon ) );
 
@@ -15001,10 +15025,10 @@ void TestQgsGeometry::smoothCheck()
   QgsMultiPolygon multipoly = result.asMultiPolygon();
   QgsMultiPolygon expectedMultiPoly;
   expectedMultiPoly
-      << ( QgsPolygon() << ( QgsPolyline() << QgsPointXY( 1.0, 0 ) << QgsPointXY( 9, 0 ) << QgsPointXY( 10.0, 1 )
+      << ( QgsPolygon() << ( QgsPolylineXY() << QgsPointXY( 1.0, 0 ) << QgsPointXY( 9, 0 ) << QgsPointXY( 10.0, 1 )
                              <<  QgsPointXY( 10.0, 9 ) << QgsPointXY( 9, 10.0 ) << QgsPointXY( 1, 10.0 ) << QgsPointXY( 0, 9 )
                              << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 0 ) ) )
-      << ( QgsPolygon() << ( QgsPolyline() << QgsPointXY( 2.2, 2.0 ) << QgsPointXY( 3.8, 2.0 ) << QgsPointXY( 4.0, 2.2 )
+      << ( QgsPolygon() << ( QgsPolylineXY() << QgsPointXY( 2.2, 2.0 ) << QgsPointXY( 3.8, 2.0 ) << QgsPointXY( 4.0, 2.2 )
                              <<  QgsPointXY( 4.0, 3.8 ) << QgsPointXY( 3.8, 4.0 ) << QgsPointXY( 2.2, 4.0 ) << QgsPointXY( 2.0, 3.8 )
                              << QgsPointXY( 2, 2.2 ) << QgsPointXY( 2.2, 2 ) ) );
   QVERIFY( QgsGeometry::compare( multipoly, expectedMultiPoly ) );
@@ -15135,7 +15159,7 @@ void TestQgsGeometry::dumpPolygon( QgsPolygon &polygon )
   QVector<QPointF> myPoints;
   for ( int j = 0; j < polygon.size(); j++ )
   {
-    QgsPolyline myPolyline = polygon.at( j ); //rings of polygon
+    QgsPolylineXY myPolyline = polygon.at( j ); //rings of polygon
     qDebug( "\t\tRing in polygon: %d", j );
 
     for ( int k = 0; k < myPolyline.size(); k++ )
@@ -15148,7 +15172,7 @@ void TestQgsGeometry::dumpPolygon( QgsPolygon &polygon )
   mpPainter->drawPolygon( myPoints );
 }
 
-void TestQgsGeometry::dumpPolyline( QgsPolyline &polyline )
+void TestQgsGeometry::dumpPolyline( QgsPolylineXY &polyline )
 {
   QVector<QPointF> myPoints;
 //  QgsPolyline myPolyline = polyline.at( j ); //rings of polygon
