@@ -54,11 +54,18 @@ class CORE_EXPORT QgsRectangle
     ~QgsRectangle() = default;
 
     /**
-    * Creates a new rectangle from a WKT string.
+    * Creates a new rectangle from a \a wkt string.
     * The WKT must contain only 5 vertices, representing a rectangle aligned with X and Y axes.
     * \since QGIS 3.0
     */
     static QgsRectangle fromWkt( const QString &wkt );
+
+    /**
+     * Creates a new rectangle, given the specified \a center point
+     * and \a width and \a height.
+     * \since QGIS 3.0
+     */
+    static QgsRectangle fromCenterAndSize( QgsPointXY center, double width, double height );
 
     /**
      * Sets the rectangle from two QgsPoints. The rectangle is
