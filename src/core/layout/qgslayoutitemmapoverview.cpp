@@ -217,6 +217,7 @@ void QgsLayoutItemMapOverview::setFrameMapUuid( const QString &mapId )
   if ( QgsLayoutItemMap *map = frameMap() )
   {
     disconnect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
+    disconnect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
   }
   mFrameMapId = mapId;
   //connect to new map signals
@@ -248,6 +249,7 @@ void QgsLayoutItemMapOverview::connectSignals()
   if ( QgsLayoutItemMap *map = frameMap() )
   {
     connect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
+    connect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemMapOverview::overviewExtentChanged );
   }
 }
 
