@@ -157,7 +157,7 @@ class PostGisDBConnector(DBConnector):
 
     def _checkGeometryColumnsTable(self):
         c = self._execute(None,
-                          u"SELECT relkind = 'v' OR relkind = 'm' FROM pg_class WHERE relname = 'geometry_columns' AND relkind IN ('v', 'r', 'm')")
+                          u"SELECT relkind = 'v' OR relkind = 'm' FROM pg_class WHERE relname = 'geometry_columns' AND relkind IN ('v', 'r', 'm', 'p')")
         res = self._fetchone(c)
         self._close_cursor(c)
         self.has_geometry_columns = (res is not None and len(res) != 0)
@@ -173,7 +173,7 @@ class PostGisDBConnector(DBConnector):
 
     def _checkRasterColumnsTable(self):
         c = self._execute(None,
-                          u"SELECT relkind = 'v' OR relkind = 'm' FROM pg_class WHERE relname = 'raster_columns' AND relkind IN ('v', 'r', 'm')")
+                          u"SELECT relkind = 'v' OR relkind = 'm' FROM pg_class WHERE relname = 'raster_columns' AND relkind IN ('v', 'r', 'm', 'p')")
         res = self._fetchone(c)
         self._close_cursor(c)
         self.has_raster_columns = (res is not None and len(res) != 0)
@@ -322,7 +322,7 @@ class PostGisDBConnector(DBConnector):
                                                 pg_catalog.obj_description(cla.oid)
                                         FROM pg_class AS cla
                                         JOIN pg_namespace AS nsp ON nsp.oid = cla.relnamespace
-                                        WHERE cla.relkind IN ('v', 'r', 'm') """ + schema_where + """
+                                        WHERE cla.relkind IN ('v', 'r', 'm', 'p') """ + schema_where + """
                                         ORDER BY nsp.nspname, cla.relname"""
 
         c = self._execute(None, sql)
@@ -389,7 +389,7 @@ class PostGisDBConnector(DBConnector):
 
                                         """ + geometry_column_from + """
 
-                                        WHERE cla.relkind IN ('v', 'r', 'm') """ + schema_where + """
+                                        WHERE cla.relkind IN ('v', 'r', 'm', 'p') """ + schema_where + """
                                         ORDER BY nsp.nspname, cla.relname, att.attname"""
 
         items = []
@@ -461,7 +461,7 @@ class PostGisDBConnector(DBConnector):
 
                                         """ + raster_column_from + """
 
-                                        WHERE cla.relkind IN ('v', 'r', 'm') """ + schema_where + """
+                                        WHERE cla.relkind IN ('v', 'r', 'm', 'p') """ + schema_where + """
                                         ORDER BY nsp.nspname, cla.relname, att.attname"""
 
         items = []
@@ -1019,7 +1019,7 @@ class PostGisDBConnector(DBConnector):
         # get schemas, tables and field names
         items = []
         sql = u"""SELECT nspname FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema'
-UNION SELECT relname FROM pg_class WHERE relkind IN ('v', 'r', 'm')
+UNION SELECT relname FROM pg_class WHERE relkind IN ('v', 'r', 'm', 'p')
 UNION SELECT attname FROM pg_attribute WHERE attnum > 0"""
         c = self._execute(None, sql)
         for row in self._fetchall(c):

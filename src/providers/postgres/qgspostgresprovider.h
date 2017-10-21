@@ -59,7 +59,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       MaterializedView, // m
       CompositeType, // c
       ToastTable, // t
-      ForeignTable // f
+      ForeignTable, // f
+      PartitionedTable // p - PostgreSQL 10
     };
     Q_ENUM( Relkind );
 

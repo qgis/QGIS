@@ -1339,7 +1339,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
           }
         }
       }
-      else if ( type == Relkind::View || type == Relkind::MaterializedView )
+      else if ( type == Relkind::View || type == Relkind::MaterializedView || type == Relkind::PartitionedTable )
       {
         determinePrimaryKeyFromUriKeyColumn();
       }
@@ -4330,6 +4330,10 @@ QgsPostgresProvider::Relkind QgsPostgresProvider::relkind() const
   else if ( type == QLatin1String( "f" ) )
   {
     kind = Relkind::ForeignTable;
+  }
+  else if ( type == QLatin1String( "p" ) )
+  {
+    kind = Relkind::PartitionedTable;
   }
 
   return kind;
