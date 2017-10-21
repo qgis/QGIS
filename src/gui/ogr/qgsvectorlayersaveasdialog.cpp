@@ -94,7 +94,7 @@ void QgsVectorLayerSaveAsDialog::setup()
     mFormatComboBox->addItem( it.key(), it.value() );
   }
 
-  QString format = settings.value( QStringLiteral( "UI/lastVectorFormat" ), "ESRI Shapefile" ).toString();
+  QString format = settings.value( QStringLiteral( "UI/lastVectorFormat" ), "GPKG" ).toString();
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( format ) );
   mFormatComboBox->blockSignals( false );
 

@@ -134,9 +134,9 @@
      <property name="title">
       <string>Create Layer</string>
      </property>
+     <addaction name="mActionNewGeoPackageLayer"/>
      <addaction name="mActionNewVectorLayer"/>
      <addaction name="mActionNewSpatiaLiteLayer"/>
-     <addaction name="mActionNewGeoPackageLayer"/>
      <addaction name="mActionNewMemoryLayer"/>
     </widget>
     <widget class="QMenu" name="mAddLayerMenu">
@@ -594,9 +594,9 @@
     <bool>false</bool>
    </attribute>
    <addaction name="mActionDataSourceManager"/>
+   <addaction name="mActionNewGeoPackageLayer"/>
    <addaction name="mActionNewVectorLayer"/>
    <addaction name="mActionNewSpatiaLiteLayer"/>
-   <addaction name="mActionNewGeoPackageLayer"/>
    <addaction name="mActionNewMemoryLayer"/>
   </widget>
   <action name="mActionNewProject">
@@ -1325,9 +1325,6 @@
    </property>
    <property name="text">
     <string>New Shapefile Layer...</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+N</string>
    </property>
   </action>
   <action name="mActionNewSpatiaLiteLayer">
@@ -2542,6 +2539,9 @@ Acts on currently active editable layer</string>
    </property>
    <property name="text">
     <string>New GeoPackage Layer...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+N</string>
    </property>
   </action>
   <action name="mActionMultiEditAttributes">

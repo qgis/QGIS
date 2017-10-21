@@ -117,7 +117,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
 
         # set the last used filter
         settings = QgsSettings()
-        filt = settings.value(self.lastUsedVectorFilterSettingsKey, "ESRI Shapefile")
+        filt = settings.value(self.lastUsedVectorFilterSettingsKey, "GPKG")
 
         idx = self.cboFileFormat.findText(filt)
         if idx < 0:

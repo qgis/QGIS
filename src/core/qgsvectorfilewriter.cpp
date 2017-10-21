@@ -2306,7 +2306,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
 }
 
 QgsVectorFileWriter::SaveVectorOptions::SaveVectorOptions()
-  : driverName( QStringLiteral( "ESRI Shapefile" ) )
+  : driverName( QStringLiteral( "GPKG" ) )
 {
 }
 
