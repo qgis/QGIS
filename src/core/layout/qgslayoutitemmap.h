@@ -507,6 +507,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     void painterJobFinished();
 
+    void shapeChanged();
+
   private:
 
 
@@ -618,11 +620,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     QRectF mCurrentRectangle;
     //! True if annotation items, rubber band, etc. from the main canvas should be displayed
     bool mDrawAnnotations = true;
-
-    /**
-     * Adjusts an extent rectangle to match the provided item width and height, so that extent
-     * center of extent remains the same */
-    void adjustExtentToItemShape( double itemWidth, double itemHeight, QgsRectangle &extent ) const;
 
     //! True if map is being controlled by an atlas
     bool mAtlasDriven = false;

@@ -50,8 +50,7 @@ QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
 
   connect( this, &QgsLayoutItem::sizePositionChanged, this, [ = ]
   {
-    updateBoundingRect();
-    update();
+    shapeChanged();
   } );
 
 # if 0
@@ -943,6 +942,29 @@ void QgsLayoutItemMap::painterJobFinished()
   mLastRenderedImageOffsetX = 0;
   mLastRenderedImageOffsetY = 0;
   update();
+}
+
+void QgsLayoutItemMap::shapeChanged()
+{
+  // keep center as center
+  QgsPointXY oldCenter = mExtent.center();
+
+  double w = rect().width();
+  double h = rect().height();
+
+  // keep same width as before
+  double newWidth = mExtent.width();
+  // but scale height to match item's aspect ratio
+  double newHeight = newWidth * h / w;
+
+  mExtent = QgsRectangle::fromCenterAndSize( oldCenter, newWidth, newHeight );
+
+  //recalculate data defined scale and extents
+  refreshMapExtents();
+  updateBoundingRect();
+  invalidateCache();
+  emit changed();
+  emit extentChanged();
 }
 
 void QgsLayoutItemMap::connectUpdateSlot()
