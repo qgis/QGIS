@@ -1304,7 +1304,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
 
       QgsPostgresProvider::Relkind type = relkind();
 
-      if ( type == Relkind::OrdinaryTable )
+      if ( type == Relkind::OrdinaryTable || type == Relkind::PartitionedTable )
       {
         QgsDebugMsg( "Relation is a table. Checking to see if it has an oid column." );
 
@@ -1339,7 +1339,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
           }
         }
       }
-      else if ( type == Relkind::View || type == Relkind::MaterializedView || type == Relkind::PartitionedTable )
+      else if ( type == Relkind::View || type == Relkind::MaterializedView )
       {
         determinePrimaryKeyFromUriKeyColumn();
       }
