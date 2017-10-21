@@ -495,10 +495,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
   public slots:
 
-    /**
-     * Forces a deferred update of the cached map image on next paint.
-     */
-    void invalidateCache();
+    void invalidateCache() override;
 
     //! Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
     void updateBoundingRect();

@@ -327,20 +327,8 @@ void QgsLayoutItemPropertiesWidget::mBackgroundColorButton_colorChanged( const Q
   }
   mItem->layout()->undoStack()->beginCommand( mItem, tr( "Change Background Color" ), QgsLayoutItem::UndoBackgroundColor );
   mItem->setBackgroundColor( newBackgroundColor );
-
-#if 0 //TODO
-  //if the item is a composer map, we need to regenerate the map image
-  //because it usually is cached
-  if ( QgsComposerMap *cm = qobject_cast<QgsComposerMap *>( mItem ) )
-  {
-    cm->invalidateCache();
-  }
-  else
-  {
-    mItem->updateItem();
-  }
-#endif
   mItem->layout()->undoStack()->endCommand();
+  mItem->invalidateCache();
 }
 
 void QgsLayoutItemPropertiesWidget::changeItemPosition()
@@ -477,20 +465,8 @@ void QgsLayoutItemPropertiesWidget::mBackgroundGroupBox_toggled( bool state )
 
   mItem->layout()->undoStack()->beginCommand( mItem, state ? tr( "Enable Background" ) : tr( "Disable Background" ) );
   mItem->setBackgroundEnabled( state );
-
-#if 0 //TODO
-  //if the item is a composer map, we need to regenerate the map image
-  //because it usually is cached
-  if ( QgsComposerMap *cm = qobject_cast<QgsComposerMap *>( mItem ) )
-  {
-    cm->invalidateCache();
-  }
-  else
-  {
-    mItem->updateItem();
-  }
-#endif
   mItem->layout()->undoStack()->endCommand();
+  mItem->invalidateCache();
 }
 
 

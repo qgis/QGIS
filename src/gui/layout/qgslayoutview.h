@@ -451,6 +451,8 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 
   private slots:
 
+    void invalidateCachedRenders();
+
   private:
 
     //! Zoom layout from a mouse wheel event

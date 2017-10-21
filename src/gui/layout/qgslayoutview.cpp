@@ -58,6 +58,8 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
 
   mPreviewEffect = new QgsPreviewEffect( this );
   viewport()->setGraphicsEffect( mPreviewEffect );
+
+  connect( this, &QgsLayoutView::zoomLevelChanged, this, &QgsLayoutView::invalidateCachedRenders );
 }
 
 QgsLayout *QgsLayoutView::currentLayout()
@@ -897,6 +899,21 @@ void QgsLayoutView::scrollContentsBy( int dx, int dy )
 {
   QGraphicsView::scrollContentsBy( dx, dy );
   viewChanged();
+}
+
+void QgsLayoutView::invalidateCachedRenders()
+{
+  if ( !currentLayout() )
+    return;
+
+  //redraw cached map items
+  QList< QgsLayoutItem *> items;
+  currentLayout()->layoutItems( items );
+
+  for ( QgsLayoutItem *item : qgis::as_const( items ) )
+  {
+    item->invalidateCache();
+  }
 }
 
 void QgsLayoutView::viewChanged()

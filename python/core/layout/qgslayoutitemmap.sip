@@ -447,10 +447,8 @@ Is emitted when the map has been prepared for atlas rendering, just before actua
 
   public slots:
 
-    void invalidateCache();
-%Docstring
- Forces a deferred update of the cached map image on next paint.
-%End
+    virtual void invalidateCache();
+
 
     void updateBoundingRect();
 %Docstring

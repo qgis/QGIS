@@ -551,6 +551,11 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  recalculation of its position and size.
 %End
 
+    virtual void invalidateCache();
+%Docstring
+ Forces a deferred update of any cached image the item uses.
+%End
+
     virtual void redraw();
 %Docstring
  Triggers a redraw (update) of the item.

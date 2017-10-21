@@ -549,6 +549,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void refresh() override;
 
     /**
+     * Forces a deferred update of any cached image the item uses.
+     */
+    virtual void invalidateCache();
+
+    /**
      * Triggers a redraw (update) of the item.
      */
     virtual void redraw();

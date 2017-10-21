@@ -945,6 +945,16 @@ void QgsLayoutItem::refresh()
   refreshDataDefinedProperty();
 }
 
+void QgsLayoutItem::invalidateCache()
+{
+  if ( !mItemCachedImage.isNull() )
+  {
+    mItemCachedImage = QImage();
+    mItemCacheDpi = -1;
+    update();
+  }
+}
+
 void QgsLayoutItem::redraw()
 {
   update();
