@@ -76,6 +76,7 @@
    <addaction name="mActionPan"/>
    <addaction name="mActionZoomTool"/>
    <addaction name="mActionSelectMoveItem"/>
+   <addaction name="mActionMoveItemContent"/>
    <addaction name="mActionEditNodesItem"/>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -84,7 +85,7 @@
      <x>0</x>
      <y>0</y>
      <width>1083</width>
-     <height>25</height>
+     <height>42</height>
     </rect>
    </property>
    <widget class="QMenu" name="mLayoutMenu">
@@ -1025,9 +1026,26 @@
     <string>Edit Nodes Item</string>
    </property>
   </action>
+  <action name="mActionMoveItemContent">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMoveItemContent.svg</normaloff>:/images/themes/default/mActionMoveItemContent.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Move &amp;Content</string>
+   </property>
+   <property name="toolTip">
+    <string>Move item content</string>
+   </property>
+   <property name="shortcut">
+    <string>C</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>

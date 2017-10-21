@@ -26,6 +26,7 @@
 #include "qgslayoutviewtooladditem.h"
 #include "qgslayoutviewtooladdnodeitem.h"
 #include "qgslayoutviewtoolpan.h"
+#include "qgslayoutviewtoolmoveitemcontent.h"
 #include "qgslayoutviewtoolzoom.h"
 #include "qgslayoutviewtoolselect.h"
 #include "qgslayoutviewtooleditnodes.h"
@@ -250,6 +251,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mNodesTool->setAction( mActionEditNodesItem );
   mToolsActionGroup->addAction( mActionEditNodesItem );
   connect( mActionEditNodesItem, &QAction::triggered, mNodesTool, [ = ] { mView->setTool( mNodesTool ); } );
+
+  mMoveContentTool = new QgsLayoutViewToolMoveItemContent( mView );
+  mMoveContentTool->setAction( mActionMoveItemContent );
+  mToolsActionGroup->addAction( mActionMoveItemContent );
+  connect( mActionMoveItemContent, &QAction::triggered, mMoveContentTool, [ = ] { mView->setTool( mMoveContentTool ); } );
 
   //Ctrl+= should also trigger zoom in
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );

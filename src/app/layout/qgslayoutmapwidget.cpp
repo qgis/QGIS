@@ -104,7 +104,6 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
 
   if ( item )
   {
-    mLabel->setText( tr( "Map %1" ).arg( item->id() ) );
     connect( item, &QgsLayoutObject::changed, this, &QgsLayoutMapWidget::updateGuiElements );
 
 #if 0 //TODO
@@ -491,9 +490,8 @@ void QgsLayoutMapWidget::mScaleLineEdit_editingFinished()
     return;
   }
 
-  bool conversionSuccess;
-  double scaleDenominator = mScaleLineEdit->text().toDouble( &conversionSuccess );
-
+  bool conversionSuccess = false;
+  double scaleDenominator = QLocale::system().toDouble( mScaleLineEdit->text(), &conversionSuccess );
   if ( !conversionSuccess )
   {
     return;
@@ -612,6 +610,7 @@ void QgsLayoutMapWidget::updateGuiElements()
   }
 
   blockAllSignals( true );
+  mLabel->setText( tr( "Map %1" ).arg( item->id() ) );
 
   whileBlocking( mCrsSelector )->setCrs( mMapItem->presetCrs() );
 

@@ -29,6 +29,7 @@ class QgsLayoutViewToolPan;
 class QgsLayoutViewToolZoom;
 class QgsLayoutViewToolSelect;
 class QgsLayoutViewToolEditNodes;
+class QgsLayoutViewToolMoveItemContent;
 class QgsLayoutRuler;
 class QComboBox;
 class QSlider;
@@ -277,6 +278,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsLayoutViewToolZoom *mZoomTool = nullptr;
     QgsLayoutViewToolSelect *mSelectTool = nullptr;
     QgsLayoutViewToolEditNodes *mNodesTool = nullptr;
+    QgsLayoutViewToolMoveItemContent *mMoveContentTool = nullptr;
 
     QMap< QString, QToolButton * > mItemGroupToolButtons;
     QMap< QString, QMenu * > mItemGroupSubmenus;

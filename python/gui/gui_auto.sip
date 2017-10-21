@@ -297,6 +297,7 @@
 %Include layout/qgslayoutviewtooladditem.sip
 %Include layout/qgslayoutviewtooladdnodeitem.sip
 %Include layout/qgslayoutviewtooleditnodes.sip
+%Include layout/qgslayoutviewtoolmoveitemcontent.sip
 %Include layout/qgslayoutviewtoolpan.sip
 %Include layout/qgslayoutviewtoolselect.sip
 %Include layout/qgslayoutviewtooltemporarykeypan.sip

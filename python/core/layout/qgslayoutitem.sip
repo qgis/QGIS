@@ -65,6 +65,7 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
       UndoNodeMove,
       UndoAtlasMargin,
       UndoMapRotation,
+      UndoZoomContent,
     };
 
     explicit QgsLayoutItem( QgsLayout *layout, bool manageZValue = true );
@@ -531,7 +532,16 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 %Docstring
  Moves the content of the item, by a specified ``dx`` and ``dy`` in layout units.
  The default implementation has no effect.
+.. seealso:: setMoveContentPreviewOffset()
 .. seealso:: zoomContent()
+%End
+
+    virtual void setMoveContentPreviewOffset( double dx, double dy );
+%Docstring
+ Sets temporary offset for the item, by a specified ``dx`` and ``dy`` in layout units.
+ This is useful for live updates when moving item content in a QgsLayoutView.
+ The default implementation has no effect.
+.. seealso:: moveContent()
 %End
 
     virtual void zoomContent( double factor, QPointF point );

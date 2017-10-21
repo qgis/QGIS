@@ -802,6 +802,11 @@ void QgsLayoutItem::moveContent( double, double )
 
 }
 
+void QgsLayoutItem::setMoveContentPreviewOffset( double, double )
+{
+
+}
+
 void QgsLayoutItem::zoomContent( double, QPointF )
 {
 

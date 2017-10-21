@@ -172,6 +172,7 @@ SET(QGIS_GUI_SRCS
   layout/qgslayoutviewtooladditem.cpp
   layout/qgslayoutviewtooladdnodeitem.cpp
   layout/qgslayoutviewtooleditnodes.cpp
+  layout/qgslayoutviewtoolmoveitemcontent.cpp
   layout/qgslayoutviewtoolpan.cpp
   layout/qgslayoutviewtoolselect.cpp
   layout/qgslayoutviewtooltemporarykeypan.cpp
@@ -677,6 +678,7 @@ SET(QGIS_GUI_MOC_HDRS
   layout/qgslayoutviewtooladditem.h
   layout/qgslayoutviewtooladdnodeitem.h
   layout/qgslayoutviewtooleditnodes.h
+  layout/qgslayoutviewtoolmoveitemcontent.h
   layout/qgslayoutviewtoolpan.h
   layout/qgslayoutviewtoolselect.h
   layout/qgslayoutviewtooltemporarykeypan.h

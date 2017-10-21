@@ -98,6 +98,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoNodeMove, //!< Node move
       UndoAtlasMargin, //!< Map atlas margin changed
       UndoMapRotation, //!< Map rotation changed
+      UndoZoomContent, //!< Item content zoomed
     };
 
     /**
@@ -528,9 +529,18 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     /**
      * Moves the content of the item, by a specified \a dx and \a dy in layout units.
      * The default implementation has no effect.
+     * \see setMoveContentPreviewOffset()
      * \see zoomContent()
      */
     virtual void moveContent( double dx, double dy );
+
+    /**
+     * Sets temporary offset for the item, by a specified \a dx and \a dy in layout units.
+     * This is useful for live updates when moving item content in a QgsLayoutView.
+     * The default implementation has no effect.
+     * \see moveContent()
+     */
+    virtual void setMoveContentPreviewOffset( double dx, double dy );
 
     /**
      * Zooms content of item. Does nothing by default.

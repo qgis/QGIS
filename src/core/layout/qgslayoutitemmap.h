@@ -265,6 +265,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void setFollowVisibilityPresetName( const QString &name ) { mFollowVisibilityPresetName = name; }
 
     void moveContent( double dx, double dy ) override;
+    void setMoveContentPreviewOffset( double dx, double dy ) override;
+
     void zoomContent( double factor, QPointF point ) override;
 
 
@@ -389,9 +391,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 #if 0
     QgsRectangle extent() const {return mExtent;}
 #endif
-
-    //! Sets offset values to shift image (useful for live updates when moving item content)
-    void setOffset( double xOffset, double yOffset );
 
 #if 0
 

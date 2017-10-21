@@ -300,7 +300,7 @@ void QgsLayoutItemMap::moveContent( double dx, double dy )
     transformShift( dx, dy );
     mExtent.setXMinimum( mExtent.xMinimum() + dx );
     mExtent.setXMaximum( mExtent.xMaximum() + dx );
-    mExtent.setYMinimum( mExtent.xMinimum() + dy );
+    mExtent.setYMinimum( mExtent.yMinimum() + dy );
     mExtent.setYMaximum( mExtent.yMaximum() + dy );
 
     //in case data defined extents are set, these override the calculated values
@@ -746,7 +746,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   return jobMapSettings;
 }
 
-void QgsLayoutItemMap::setOffset( double xOffset, double yOffset )
+void QgsLayoutItemMap::setMoveContentPreviewOffset( double xOffset, double yOffset )
 {
   mXOffset = xOffset;
   mYOffset = yOffset;

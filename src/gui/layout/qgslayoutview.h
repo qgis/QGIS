@@ -470,10 +470,10 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     QgsLayoutRuler *mVerticalRuler = nullptr;
     std::unique_ptr< QgsLayoutViewMenuProvider > mMenuProvider;
 
-    std::unique_ptr< QgsLayoutViewSnapMarker > mSnapMarker;
+    QgsLayoutViewSnapMarker *mSnapMarker = nullptr;
 
-    std::unique_ptr< QGraphicsLineItem > mHorizontalSnapLine;
-    std::unique_ptr< QGraphicsLineItem > mVerticalSnapLine;
+    QGraphicsLineItem *mHorizontalSnapLine = nullptr;
+    QGraphicsLineItem *mVerticalSnapLine = nullptr;
 
     int mCurrentPage = 0;
 

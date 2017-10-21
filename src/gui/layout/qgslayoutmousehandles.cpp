@@ -689,11 +689,13 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 
 void QgsLayoutMouseHandles::resetStatusBar()
 {
+  if ( !mView )
+    return;
+
   const QList<QgsLayoutItem *> selectedItems = mLayout->selectedLayoutItems( false );
   int selectedCount = selectedItems.size();
   if ( selectedCount > 1 )
   {
-
     //set status bar message to count of selected items
     mView->pushStatusMessage( tr( "%1 items selected" ).arg( selectedCount ) );
   }

@@ -250,6 +250,9 @@ class QgsLayoutItemMap : QgsLayoutItem
 
     virtual void moveContent( double dx, double dy );
 
+    virtual void setMoveContentPreviewOffset( double dx, double dy );
+
+
     virtual void zoomContent( double factor, QPointF point );
 
 
@@ -385,11 +388,6 @@ True if a draw is already in progress
 %End
 
 
-
-    void setOffset( double xOffset, double yOffset );
-%Docstring
-Sets offset values to shift image (useful for live updates when moving item content)
-%End
 
 
     virtual QRectF boundingRect() const;

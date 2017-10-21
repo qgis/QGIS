@@ -54,7 +54,7 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   mSpacePanTool = new QgsLayoutViewToolTemporaryKeyPan( this );
   mMidMouseButtonPanTool = new QgsLayoutViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsLayoutViewToolTemporaryKeyZoom( this );
-  mSnapMarker.reset( new QgsLayoutViewSnapMarker() );
+  mSnapMarker = new QgsLayoutViewSnapMarker();
 
   mPreviewEffect = new QgsPreviewEffect( this );
   viewport()->setGraphicsEffect( mPreviewEffect );
@@ -81,16 +81,19 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
 
   viewChanged();
 
-  mSnapMarker.reset( new QgsLayoutViewSnapMarker() );
+  delete mSnapMarker;
+  mSnapMarker = new QgsLayoutViewSnapMarker();
   mSnapMarker->hide();
-  layout->addItem( mSnapMarker.get() );
+  layout->addItem( mSnapMarker );
 
-  mHorizontalSnapLine.reset( createSnapLine() );
+  delete mHorizontalSnapLine;
+  mHorizontalSnapLine = createSnapLine();
   mHorizontalSnapLine->hide();
-  layout->addItem( mHorizontalSnapLine.get() );
-  mVerticalSnapLine.reset( createSnapLine() );
+  layout->addItem( mHorizontalSnapLine );
+  delete mVerticalSnapLine;
+  mVerticalSnapLine = createSnapLine();
   mVerticalSnapLine->hide();
-  layout->addItem( mVerticalSnapLine.get() );
+  layout->addItem( mVerticalSnapLine );
 
   if ( mHorizontalRuler )
   {
@@ -771,7 +774,7 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
     std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, false ) );
     if ( mTool->flags() & QgsLayoutViewTool::FlagSnaps )
     {
-      me->snapPoint( mHorizontalSnapLine.get(), mVerticalSnapLine.get(), mTool->ignoredSnapItems() );
+      me->snapPoint( mHorizontalSnapLine, mVerticalSnapLine, mTool->ignoredSnapItems() );
     }
     if ( mTool->flags() & QgsLayoutViewTool::FlagSnaps )
     {
