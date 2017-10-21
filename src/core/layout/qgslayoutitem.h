@@ -100,6 +100,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoAtlasMargin, //!< Map atlas margin changed
       UndoMapRotation, //!< Map rotation changed
       UndoZoomContent, //!< Item content zoomed
+      UndoOverviewStyle, //!< Map overview style
     };
 
     /**

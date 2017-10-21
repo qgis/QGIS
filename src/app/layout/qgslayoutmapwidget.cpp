@@ -43,7 +43,6 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   connect( mKeepLayerListCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutMapWidget::mKeepLayerListCheckBox_stateChanged );
   connect( mKeepLayerStylesCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutMapWidget::mKeepLayerStylesCheckBox_stateChanged );
   connect( mDrawCanvasItemsCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutMapWidget::mDrawCanvasItemsCheckBox_stateChanged );
-  connect( mOverviewFrameStyleButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::mOverviewFrameStyleButton_clicked );
   connect( mOverviewBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapWidget::mOverviewBlendModeComboBox_currentIndexChanged );
   connect( mOverviewInvertCheckbox, &QCheckBox::toggled, this, &QgsLayoutMapWidget::mOverviewInvertCheckbox_toggled );
   connect( mOverviewCenterCheckbox, &QCheckBox::toggled, this, &QgsLayoutMapWidget::mOverviewCenterCheckbox_toggled );
@@ -90,6 +89,8 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   mCrsSelector->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
   mCrsSelector->setNotSetText( tr( "Use project CRS" ) );
 
+  mOverviewFrameStyleButton->setSymbolType( QgsSymbol::Fill );
+
   // follow preset combo
   mFollowVisibilityPresetCombo->setModel( new QStringListModel( mFollowVisibilityPresetCombo ) );
   connect( mFollowVisibilityPresetCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapWidget::followVisibilityPresetSelected );
@@ -103,6 +104,8 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   mLayerListFromPresetButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
   mLayerListFromPresetButton->setToolTip( tr( "Set layer list from a map theme" ) );
   connect( menuKeepLayers, &QMenu::aboutToShow, this, &QgsLayoutMapWidget::aboutToShowKeepLayersVisibilityPresetsMenu );
+
+  mOverviewFrameMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
 
   if ( item )
   {
@@ -120,12 +123,12 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
     }
 #endif
     mOverviewFrameMapComboBox->setCurrentLayout( item->layout() );
-    mOverviewFrameMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
-
-    connect( mOverviewFrameMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutMapWidget::overviewMapChanged );
+    mOverviewFrameStyleButton->registerExpressionContextGenerator( item );
   }
 
+  connect( mOverviewFrameMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutMapWidget::overviewMapChanged );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsLayoutMapWidget::mapCrsChanged );
+  connect( mOverviewFrameStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutMapWidget::overviewSymbolChanged );
 
   registerDataDefinedButton( mScaleDDBtn, QgsLayoutObject::MapScale );
   registerDataDefinedButton( mMapRotationDDBtn, QgsLayoutObject::MapRotation );
@@ -151,8 +154,19 @@ bool QgsLayoutMapWidget::setNewItem( QgsLayoutItem *item )
   if ( item->type() != QgsLayoutItemRegistry::LayoutMap )
     return false;
 
+  if ( mMapItem )
+  {
+    disconnect( mMapItem, &QgsLayoutObject::changed, this, &QgsLayoutMapWidget::updateGuiElements );
+  }
+
   mMapItem = qobject_cast< QgsLayoutItemMap * >( item );
   mItemPropertiesWidget->setItem( mMapItem );
+
+  if ( mMapItem )
+  {
+    connect( mMapItem, &QgsLayoutObject::changed, this, &QgsLayoutMapWidget::updateGuiElements );
+    mOverviewFrameStyleButton->registerExpressionContextGenerator( mMapItem );
+  }
 
   updateGuiElements();
 
@@ -274,40 +288,6 @@ void QgsLayoutMapWidget::onMapThemesChanged()
   }
 }
 
-void QgsLayoutMapWidget::updateOverviewFrameStyleFromWidget()
-{
-  QgsLayoutItemMapOverview *overview = currentOverview();
-  if ( !overview )
-  {
-    return;
-  }
-
-  QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
-  overview->setFrameSymbol( dynamic_cast< QgsFillSymbol * >( w->symbol()->clone() ) );
-  mMapItem->update();
-}
-
-void QgsLayoutMapWidget::cleanUpOverviewFrameStyleSelector( QgsPanelWidget *container )
-{
-  Q_UNUSED( container );
-  QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( container );
-  if ( !w )
-    return;
-
-  delete w->symbol();
-
-  QgsLayoutItemMapOverview *overview = currentOverview();
-  if ( !overview )
-  {
-    return;
-  }
-
-  updateOverviewFrameSymbolMarker( overview );
-#if 0 //TODO
-  mMapItem->endCommand();
-#endif
-}
-
 void QgsLayoutMapWidget::mapCrsChanged( const QgsCoordinateReferenceSystem &crs )
 {
   if ( !mMapItem )
@@ -341,6 +321,18 @@ void QgsLayoutMapWidget::mapCrsChanged( const QgsCoordinateReferenceSystem &crs 
     mMapItem->zoomToExtent( newExtent );
   mMapItem->layout()->undoStack()->endCommand();
   mMapItem->invalidateCache();
+}
+
+void QgsLayoutMapWidget::overviewSymbolChanged()
+{
+  QgsLayoutItemMapOverview *overview = currentOverview();
+  if ( !overview )
+    return;
+
+  mMapItem->beginCommand( tr( "Change Overview Style" ), QgsLayoutItem::UndoOverviewStyle );
+  overview->setFrameSymbol( mOverviewFrameStyleButton->clonedSymbol<QgsFillSymbol>() );
+  mMapItem->endCommand();
+  mMapItem->update();
 }
 
 void QgsLayoutMapWidget::mAtlasCheckBox_toggled( bool checked )
@@ -1505,20 +1497,9 @@ void QgsLayoutMapWidget::setOverviewItems( QgsLayoutItemMapOverview *overview )
   //center overview
   mOverviewCenterCheckbox->setChecked( overview->centered() );
 
-  //frame style
-  updateOverviewFrameSymbolMarker( overview );
+  mOverviewFrameStyleButton->setSymbol( overview->frameSymbol()->clone() );
 
   blockOverviewItemsSignals( false );
-}
-
-void QgsLayoutMapWidget::updateOverviewFrameSymbolMarker( const QgsLayoutItemMapOverview *overview )
-{
-  if ( overview )
-  {
-    QgsFillSymbol *nonConstSymbol = const_cast<QgsFillSymbol *>( overview->frameSymbol() ); //bad
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( nonConstSymbol, mOverviewFrameStyleButton->iconSize() );
-    mOverviewFrameStyleButton->setIcon( icon );
-  }
 }
 
 void QgsLayoutMapWidget::storeCurrentLayerSet()
@@ -1624,34 +1605,6 @@ void QgsLayoutMapWidget::overviewMapChanged( QgsLayoutItem *item )
   overview->setFrameMapUuid( map->uuid() );
   mMapItem->update();
   mMapItem->endCommand();
-}
-
-void QgsLayoutMapWidget::mOverviewFrameStyleButton_clicked()
-{
-  QgsLayoutItemMapOverview *overview = currentOverview();
-  if ( !overview )
-  {
-    return;
-  }
-
-  QgsVectorLayer *coverageLayer = nullptr;
-#if 0 //TODO
-  // use the atlas coverage layer, if any
-  QgsVectorLayer *coverageLayer = atlasCoverageLayer();
-#endif
-
-  QgsFillSymbol *newSymbol = static_cast<QgsFillSymbol *>( overview->frameSymbol()->clone() );
-  QgsExpressionContext context = mMapItem->createExpressionContext();
-
-  QgsSymbolSelectorWidget *d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
-  QgsSymbolWidgetContext symbolContext;
-  symbolContext.setExpressionContext( &context );
-  d->setContext( symbolContext );
-
-  connect( d, &QgsPanelWidget::widgetChanged, this, &QgsLayoutMapWidget::updateOverviewFrameStyleFromWidget );
-  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsLayoutMapWidget::cleanUpOverviewFrameStyleSelector );
-  openPanel( d );
-  mMapItem->beginCommand( tr( "Change Overview Style" ) );
 }
 
 void QgsLayoutMapWidget::mOverviewBlendModeComboBox_currentIndexChanged( int index )

@@ -41,6 +41,7 @@ QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polylin
   if ( mPolyline )
   {
     connect( mPolyline, &QgsLayoutObject::changed, this, &QgsLayoutPolylineWidget::setGuiElementValues );
+    mLineStyleButton->registerExpressionContextGenerator( mPolyline );
   }
   setGuiElementValues();
 
@@ -54,8 +55,19 @@ bool QgsLayoutPolylineWidget::setNewItem( QgsLayoutItem *item )
   if ( item->type() != QgsLayoutItemRegistry::LayoutPolyline )
     return false;
 
+  if ( mPolyline )
+  {
+    disconnect( mPolyline, &QgsLayoutObject::changed, this, &QgsLayoutPolylineWidget::setGuiElementValues );
+  }
+
   mPolyline = qobject_cast< QgsLayoutItemPolyline * >( item );
   mItemPropertiesWidget->setItem( mPolyline );
+
+  if ( mPolyline )
+  {
+    connect( mPolyline, &QgsLayoutObject::changed, this, &QgsLayoutPolylineWidget::setGuiElementValues );
+    mLineStyleButton->registerExpressionContextGenerator( mPolyline );
+  }
 
   setGuiElementValues();
 

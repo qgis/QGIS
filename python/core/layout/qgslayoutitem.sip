@@ -67,6 +67,7 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
       UndoAtlasMargin,
       UndoMapRotation,
       UndoZoomContent,
+      UndoOverviewStyle,
     };
 
     explicit QgsLayoutItem( QgsLayout *layout, bool manageZValue = true );

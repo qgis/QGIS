@@ -41,6 +41,7 @@ QgsLayoutPolygonWidget::QgsLayoutPolygonWidget( QgsLayoutItemPolygon *polygon )
   if ( mPolygon )
   {
     connect( mPolygon, &QgsLayoutObject::changed, this, &QgsLayoutPolygonWidget::setGuiElementValues );
+    mPolygonStyleButton->registerExpressionContextGenerator( mPolygon );
   }
 
   setGuiElementValues();
@@ -54,9 +55,19 @@ bool QgsLayoutPolygonWidget::setNewItem( QgsLayoutItem *item )
   if ( item->type() != QgsLayoutItemRegistry::LayoutPolygon )
     return false;
 
+  if ( mPolygon )
+  {
+    disconnect( mPolygon, &QgsLayoutObject::changed, this, &QgsLayoutPolygonWidget::setGuiElementValues );
+  }
+
   mPolygon = qobject_cast< QgsLayoutItemPolygon * >( item );
   mItemPropertiesWidget->setItem( mPolygon );
 
+  if ( mPolygon )
+  {
+    connect( mPolygon, &QgsLayoutObject::changed, this, &QgsLayoutPolygonWidget::setGuiElementValues );
+    mPolygonStyleButton->registerExpressionContextGenerator( mPolygon );
+  }
   setGuiElementValues();
 
   return true;

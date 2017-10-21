@@ -70,8 +70,19 @@ bool QgsLayoutShapeWidget::setNewItem( QgsLayoutItem *item )
   if ( item->type() != QgsLayoutItemRegistry::LayoutShape )
     return false;
 
+  if ( mShape )
+  {
+    disconnect( mShape, &QgsLayoutObject::changed, this, &QgsLayoutShapeWidget::setGuiElementValues );
+  }
+
   mShape = qobject_cast< QgsLayoutItemShape * >( item );
   mItemPropertiesWidget->setItem( mShape );
+
+  if ( mShape )
+  {
+    connect( mShape, &QgsLayoutObject::changed, this, &QgsLayoutShapeWidget::setGuiElementValues );
+    mShapeStyleButton->registerExpressionContextGenerator( mShape );
+  }
 
   setGuiElementValues();
 

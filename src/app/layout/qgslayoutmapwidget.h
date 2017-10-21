@@ -47,7 +47,6 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     void mKeepLayerStylesCheckBox_stateChanged( int state );
     void mDrawCanvasItemsCheckBox_stateChanged( int state );
     void overviewMapChanged( QgsLayoutItem *item );
-    void mOverviewFrameStyleButton_clicked();
     void mOverviewBlendModeComboBox_currentIndexChanged( int index );
     void mOverviewInvertCheckbox_toggled( bool state );
     void mOverviewCenterCheckbox_toggled( bool state );
@@ -113,11 +112,8 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
 
     void onMapThemesChanged();
 
-    void updateOverviewFrameStyleFromWidget();
-    void cleanUpOverviewFrameStyleSelector( QgsPanelWidget *container );
-
     void mapCrsChanged( const QgsCoordinateReferenceSystem &crs );
-
+    void overviewSymbolChanged();
   private:
     QgsLayoutItemMap *mMapItem = nullptr;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
@@ -161,8 +157,6 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     QListWidgetItem *addOverviewListItem( const QString &id, const QString &name );
 
     void loadOverviewEntries();
-
-    void updateOverviewFrameSymbolMarker( const QgsLayoutItemMapOverview *overview );
 
     void storeCurrentLayerSet();
 
