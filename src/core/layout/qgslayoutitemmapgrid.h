@@ -1001,7 +1001,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     bool shouldShowDivisionForSide( AnnotationCoordinate coordinate, BorderSide side ) const;
     bool shouldShowDivisionForDisplayMode( AnnotationCoordinate coordinate, DisplayMode mode ) const;
 
-    friend class TestQgsLayoutItemMapGrid;
+    friend class TestQgsLayoutMapGrid;
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutItemMapGrid::FrameSideFlags )

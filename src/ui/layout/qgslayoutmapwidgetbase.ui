@@ -726,7 +726,7 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QgsComposerItemComboBox" name="mOverviewFrameMapComboBox"/>
+              <widget class="QgsLayoutItemComboBox" name="mOverviewFrameMapComboBox"/>
              </item>
              <item row="1" column="0">
               <widget class="QLabel" name="mOverviewFrameStyleLabel">
@@ -813,9 +813,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsComposerItemComboBox</class>
+   <class>QgsLayoutItemComboBox</class>
    <extends>QComboBox</extends>
-   <header>qgscomposeritemcombobox.h</header>
+   <header>qgslayoutitemcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>

@@ -53,10 +53,9 @@ QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
     shapeChanged();
   } );
 
-# if 0
-  mGridStack = new QgsComposerMapGridStack( this );
-  mOverviewStack = new QgsComposerMapOverviewStack( this );
-#endif
+  mGridStack = qgis::make_unique< QgsLayoutItemMapGridStack >( this );
+  mOverviewStack = qgis::make_unique< QgsLayoutItemMapOverviewStack >( this );
+
   if ( layout )
     connectUpdateSlot();
 }

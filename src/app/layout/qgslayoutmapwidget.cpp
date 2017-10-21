@@ -118,11 +118,11 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
 
       compositionAtlasToggled( atlas->enabled() );
     }
-    mOverviewFrameMapComboBox->setComposition( composerMap->composition() );
-    mOverviewFrameMapComboBox->setItemType( QgsComposerItem::ComposerMap );
-    mOverviewFrameMapComboBox->setExceptedItemList( QList< QgsComposerItem * >() << composerMap );
-    connect( mOverviewFrameMapComboBox, &QgsComposerItemComboBox::itemChanged, this, &QgsLayoutMapWidget::overviewMapChanged );
 #endif
+    mOverviewFrameMapComboBox->setCurrentLayout( item->layout() );
+    mOverviewFrameMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
+
+    connect( mOverviewFrameMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutMapWidget::overviewMapChanged );
   }
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsLayoutMapWidget::mapCrsChanged );
@@ -1496,9 +1496,8 @@ void QgsLayoutMapWidget::setOverviewItems( QgsLayoutItemMapOverview *overview )
   mOverviewCheckBox->setChecked( overview->enabled() );
 
   //overview frame
-#if 0 //TODO
   mOverviewFrameMapComboBox->setItem( overview->frameMap() );
-#endif
+
   //overview frame blending mode
   mOverviewBlendModeComboBox->setBlendMode( overview->blendMode() );
   //overview inverted
@@ -1562,6 +1561,8 @@ void QgsLayoutMapWidget::loadOverviewEntries()
   {
     return;
   }
+
+  mOverviewFrameMapComboBox->setExceptedItemList( QList< QgsLayoutItem * >() << mMapItem );
 
   //load all composer overviews into list widget
   QList< QgsLayoutItemMapOverview * > overviews = mMapItem->overviews()->asList();

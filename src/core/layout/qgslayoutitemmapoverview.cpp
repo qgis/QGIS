@@ -221,16 +221,17 @@ void QgsLayoutItemMapOverview::setFrameMapUuid( const QString &mapId )
   mFrameMapId = mapId;
   //connect to new map signals
   connectSignals();
+  mMap->update();
 }
 
 void QgsLayoutItemMapOverview::setFrameMap( QgsLayoutItemMap *map )
 {
-  mFrameMapId = map ? map->uuid() : QString();
+  setFrameMapUuid( map ? map->uuid() : QString() );
 }
 
 QgsLayoutItemMap *QgsLayoutItemMapOverview::frameMap()
 {
-  if ( mFrameMapId.isEmpty() && mMap && mMap->layout() )
+  if ( !mFrameMapId.isEmpty() && mMap && mMap->layout() )
   {
     return dynamic_cast< QgsLayoutItemMap * >( mMap->layout()->itemByUuid( mFrameMapId ) );
   }
