@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgsalgorithmtransect.h"
+#include "qgsmultilinestring.h"
+#include "qgslinestring.h"
 
 ///@cond PRIVATE
 
@@ -31,7 +33,7 @@ QString QgsTransectAlgorithm::displayName() const
 
 QStringList QgsTransectAlgorithm::tags() const
 {
-  return QObject::tr( "transect,line,extend," ).split( ',' );
+  return QObject::tr( "transect,station,lines,extend," ).split( ',' );
 }
 
 QString QgsTransectAlgorithm::group() const
@@ -56,7 +58,7 @@ QString QgsTransectAlgorithm::shortHelpString() const
 {
 
   return QObject::tr( "This algorithm creates transects on vertices for (multi)linestring.\n" ) +
-         QObject::tr( "A transect is a line oriented from an angle (by default perpendicular) to the input polylines (at vertices)." )
+         QObject::tr( "A transect is a line oriented from an angle (by default perpendicular) to the input polylines (at vertices)." ) +
          QStringLiteral( "\n\n" )  +
          QObject::tr( "Field(s) from feature(s) are returned in the transect with these new fields:\n" ) +
          QObject::tr( "- TR_FID: ID of the original feature\n" ) +
@@ -105,7 +107,7 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
 
   int current = -1;
   int number = 0;
-  double step =  1 / source->featureCount();
+  double step =  source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
   QgsFeature feat;
 
 
@@ -121,29 +123,29 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
     if ( !feat.hasGeometry() )
       continue;
 
-    QgsGeometry input_geometry = feat.geometry();
+    QgsGeometry inputGeometry = feat.geometry();
 
-    input_geometry.convertToMultiType();
-    QgsMultiPolyline multiLine = input_geometry.asMultiPolyline();
-    QgsMultiPolyline::const_iterator it = multiLine.constBegin();
-    for ( int id = 0; it != multiLine.constEnd(); it++, id++ )
+    inputGeometry.convertToMultiType();
+    const QgsMultiLineString *multiLine = static_cast< QgsMultiLineString *  >( inputGeometry.geometry() );
+    for ( int id = 0; id < multiLine->numGeometries(); ++id )
     {
-      QgsGeometry line = QgsGeometry().fromPolyline( *it );
-      int len = ( *it ).count();
-      int i = 0;
-      while ( i < len )
+      const QgsLineString *line = static_cast< const QgsLineString * >( multiLine->geometryN( id ) );
+      QgsAbstractGeometry::vertex_iterator it = line->vertices_begin();
+      while ( it != line->vertices_end() )
       {
+        QgsVertexId vertexId = it.vertexId();
+        int i = vertexId.vertex;
         QgsFeature outFeat;
         QgsAttributes attrs = feat.attributes();
         attrs << current << number << i + 1 << angle <<
               ( ( orientation == QgsTransectAlgorithm::Both ) ? length * 2 : length ) <<
               orientation;
         outFeat.setAttributes( attrs );
-        double angleAtVertex = line.angleAtVertex( i );
-        outFeat.setGeometry( calcTransect( line.vertexAt( i ), angleAtVertex, length, orientation, angle ) );
-        number++;
-        i++;
+        double angleAtVertex = line->vertexAngle( vertexId );
+        outFeat.setGeometry( calcTransect( line->pointN( i ), angleAtVertex, length, orientation, angle ) );
         sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
+        number++;
+        it++;
       }
     }
   }
@@ -154,29 +156,31 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
 }
 
 
-QgsGeometry QgsTransectAlgorithm::calcTransect( const QgsPointXY &point, const double angleAtVertex, const double length, const QgsTransectAlgorithm::Side orientation, const double angle )
+QgsGeometry QgsTransectAlgorithm::calcTransect( const QgsPoint &point, const double angleAtVertex, const double length, const QgsTransectAlgorithm::Side orientation, const double angle )
 {
-  QgsPointXY p_l; // left point of the line
-  QgsPointXY p_r; // right point of the line
+  QgsPoint pLeft; // left point of the line
+  QgsPoint pRight; // right point of the line
 
   QgsPolyline line;
 
-  if ( ( orientation == QgsTransectAlgorithm::Right ) or ( orientation == QgsTransectAlgorithm::Both ) )
+  if ( ( orientation == QgsTransectAlgorithm::Right ) || ( orientation == QgsTransectAlgorithm::Both ) )
   {
-    p_l = QgsPointXY( QgsPoint( point ).project( length, angle + 180.0 / M_PI * angleAtVertex ) );
+    pLeft = point.project( length, angle + 180.0 / M_PI * angleAtVertex );
     if ( orientation != QgsTransectAlgorithm::Both )
-      p_r = point;
+      pRight = point;
   }
 
-  if ( ( orientation == QgsTransectAlgorithm::Left ) or ( orientation == QgsTransectAlgorithm::Both ) )
+  if ( ( orientation == QgsTransectAlgorithm::Left ) || ( orientation == QgsTransectAlgorithm::Both ) )
   {
-    p_r = QgsPointXY( QgsPoint( point ).project( -length, angle + 180.0 / M_PI * angleAtVertex ) );
+    pRight = point.project( -length, angle + 180.0 / M_PI * angleAtVertex );
     if ( orientation != QgsTransectAlgorithm::Both )
-      p_l = point;
+      pLeft = point;
   }
 
-  line.append( p_l );
-  line.append( p_r );
+  line.append( pLeft );
+  line.append( pRight );
 
-  return QgsGeometry().fromPolyline( line );
+  return QgsGeometry::fromPolyline( line );
 }
+
+///@endcond
