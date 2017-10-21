@@ -812,6 +812,26 @@ void QgsLayoutItem::zoomContent( double, QPointF )
 
 }
 
+void QgsLayoutItem::beginCommand( const QString &commandText, UndoCommand command )
+{
+  if ( !mLayout )
+    return;
+
+  mLayout->undoStack()->beginCommand( this, commandText, command );
+}
+
+void QgsLayoutItem::endCommand()
+{
+  if ( mLayout )
+    mLayout->undoStack()->endCommand();
+}
+
+void QgsLayoutItem::cancelCommand()
+{
+  if ( mLayout )
+    mLayout->undoStack()->cancelCommand();
+}
+
 QgsLayoutPoint QgsLayoutItem::applyDataDefinedPosition( const QgsLayoutPoint &position )
 {
   if ( !mLayout )

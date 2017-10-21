@@ -95,7 +95,6 @@ class CORE_EXPORT QgsLayoutUtils
      */
     static double relativePosition( const double position, const double beforeMin, const double beforeMax, const double afterMin, const double afterMax );
 
-
 };
 
 #endif //QGSLAYOUTUTILS_H

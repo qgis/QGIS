@@ -409,6 +409,9 @@
 %Include layout/qgslayoutitem.sip
 %Include layout/qgslayoutitemgroup.sip
 %Include layout/qgslayoutitemmap.sip
+%Include layout/qgslayoutitemmapgrid.sip
+%Include layout/qgslayoutitemmapitem.sip
+%Include layout/qgslayoutitemmapoverview.sip
 %Include layout/qgslayoutitemnodeitem.sip
 %Include layout/qgslayoutitempage.sip
 %Include layout/qgslayoutitempolygon.sip

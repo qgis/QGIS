@@ -24,7 +24,9 @@
 #include "qgslayout.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
-
+#include "qgssymbolselectordialog.h"
+#include "qgssymbollayerutils.h"
+#include "qgsstyle.h"
 #include <QMenu>
 #include <QMessageBox>
 
@@ -274,8 +276,7 @@ void QgsLayoutMapWidget::onMapThemesChanged()
 
 void QgsLayoutMapWidget::updateOverviewFrameStyleFromWidget()
 {
-#if 0 //TODO
-  QgsComposerMapOverview *overview = currentOverview();
+  QgsLayoutItemMapOverview *overview = currentOverview();
   if ( !overview )
   {
     return;
@@ -284,26 +285,25 @@ void QgsLayoutMapWidget::updateOverviewFrameStyleFromWidget()
   QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
   overview->setFrameSymbol( dynamic_cast< QgsFillSymbol * >( w->symbol()->clone() ) );
   mMapItem->update();
-#endif
 }
 
 void QgsLayoutMapWidget::cleanUpOverviewFrameStyleSelector( QgsPanelWidget *container )
 {
   Q_UNUSED( container );
-#if 0 //TODO
   QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( container );
   if ( !w )
     return;
 
   delete w->symbol();
 
-  QgsComposerMapOverview *overview = currentOverview();
+  QgsLayoutItemMapOverview *overview = currentOverview();
   if ( !overview )
   {
     return;
   }
 
   updateOverviewFrameSymbolMarker( overview );
+#if 0 //TODO
   mMapItem->endCommand();
 #endif
 }
@@ -610,7 +610,7 @@ void QgsLayoutMapWidget::updateGuiElements()
   }
 
   blockAllSignals( true );
-  mLabel->setText( tr( "Map %1" ).arg( item->id() ) );
+  mLabel->setText( tr( "Map %1" ).arg( mMapItem->id() ) );
 
   whileBlocking( mCrsSelector )->setCrs( mMapItem->presetCrs() );
 
@@ -792,52 +792,50 @@ void QgsLayoutMapWidget::blockAllSignals( bool b )
   blockOverviewItemsSignals( b );
 }
 
-#if 0 //TODO
-void QgsLayoutMapWidget::handleChangedFrameDisplay( QgsComposerMapGrid::BorderSide border, const QgsComposerMapGrid::DisplayMode mode )
+void QgsLayoutMapWidget::handleChangedFrameDisplay( QgsLayoutItemMapGrid::BorderSide border, const QgsLayoutItemMapGrid::DisplayMode mode )
 {
-  QgsComposerMapGrid *grid = currentGrid();
+  QgsLayoutItemMapGrid *grid = currentGrid();
   if ( !grid )
   {
     return;
   }
 
-  mMapItem->beginCommand( tr( "Frame divisions changed" ) );
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Frame Divisions" ) );
   grid->setFrameDivisions( mode, border );
-  mMapItem->endCommand();
+  mMapItem->layout()->undoStack()->endCommand();
   mMapItem->updateBoundingRect();
 }
 
-void QgsLayoutMapWidget::handleChangedAnnotationDisplay( QgsComposerMapGrid::BorderSide border, const QString &text )
+void QgsLayoutMapWidget::handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::BorderSide border, const QString &text )
 {
-  QgsComposerMapGrid *grid = currentGrid();
+  QgsLayoutItemMapGrid *grid = currentGrid();
   if ( !grid )
   {
     return;
   }
 
-  mMapItem->beginCommand( tr( "Annotation display changed" ) );
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Annotation Display" ) );
   if ( text == tr( "Show all" ) )
   {
-    grid->setAnnotationDisplay( QgsComposerMapGrid::ShowAll, border );
+    grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, border );
   }
   else if ( text == tr( "Show latitude only" ) )
   {
-    grid->setAnnotationDisplay( QgsComposerMapGrid::LatitudeOnly, border );
+    grid->setAnnotationDisplay( QgsLayoutItemMapGrid::LatitudeOnly, border );
   }
   else if ( text == tr( "Show longitude only" ) )
   {
-    grid->setAnnotationDisplay( QgsComposerMapGrid::LongitudeOnly, border );
+    grid->setAnnotationDisplay( QgsLayoutItemMapGrid::LongitudeOnly, border );
   }
   else //disabled
   {
-    grid->setAnnotationDisplay( QgsComposerMapGrid::HideAll, border );
+    grid->setAnnotationDisplay( QgsLayoutItemMapGrid::HideAll, border );
   }
 
   mMapItem->updateBoundingRect();
   mMapItem->update();
-  mMapItem->endCommand();
+  mMapItem->layout()->undoStack()->endCommand();
 }
-#endif
 
 void QgsLayoutMapWidget::mUpdatePreviewButton_clicked()
 {
@@ -947,14 +945,12 @@ void QgsLayoutMapWidget::insertAnnotationPositionEntries( QComboBox *c )
 
 void QgsLayoutMapWidget::insertAnnotationDirectionEntries( QComboBox *c )
 {
-#if 0 //TODO
-  c->addItem( tr( "Horizontal" ), QgsComposerMapGrid::Horizontal );
-  c->addItem( tr( "Vertical ascending" ), QgsComposerMapGrid::Vertical );
-  c->addItem( tr( "Vertical descending" ), QgsComposerMapGrid::VerticalDescending );
-#endif
+  c->addItem( tr( "Horizontal" ), QgsLayoutItemMapGrid::Horizontal );
+  c->addItem( tr( "Vertical ascending" ), QgsLayoutItemMapGrid::Vertical );
+  c->addItem( tr( "Vertical descending" ), QgsLayoutItemMapGrid::VerticalDescending );
 }
-#if 0 //TODO
-void QgsLayoutMapWidget::initFrameDisplayBox( QComboBox *c, QgsComposerMapGrid::DisplayMode display )
+
+void QgsLayoutMapWidget::initFrameDisplayBox( QComboBox *c, QgsLayoutItemMapGrid::DisplayMode display )
 {
   if ( !c )
   {
@@ -963,22 +959,22 @@ void QgsLayoutMapWidget::initFrameDisplayBox( QComboBox *c, QgsComposerMapGrid::
   c->setCurrentIndex( c->findData( display ) );
 }
 
-void QgsLayoutMapWidget::initAnnotationDisplayBox( QComboBox *c, QgsComposerMapGrid::DisplayMode display )
+void QgsLayoutMapWidget::initAnnotationDisplayBox( QComboBox *c, QgsLayoutItemMapGrid::DisplayMode display )
 {
   if ( !c )
   {
     return;
   }
 
-  if ( display == QgsComposerMapGrid::ShowAll )
+  if ( display == QgsLayoutItemMapGrid::ShowAll )
   {
     c->setCurrentIndex( c->findText( tr( "Show all" ) ) );
   }
-  else if ( display == QgsComposerMapGrid::LatitudeOnly )
+  else if ( display == QgsLayoutItemMapGrid::LatitudeOnly )
   {
     c->setCurrentIndex( c->findText( tr( "Show latitude only" ) ) );
   }
-  else if ( display == QgsComposerMapGrid::LongitudeOnly )
+  else if ( display == QgsLayoutItemMapGrid::LongitudeOnly )
   {
     c->setCurrentIndex( c->findText( tr( "Show longitude only" ) ) );
   }
@@ -988,52 +984,49 @@ void QgsLayoutMapWidget::initAnnotationDisplayBox( QComboBox *c, QgsComposerMapG
   }
 }
 
-void QgsLayoutMapWidget::handleChangedAnnotationPosition( QgsComposerMapGrid::BorderSide border, const QString &text )
+void QgsLayoutMapWidget::handleChangedAnnotationPosition( QgsLayoutItemMapGrid::BorderSide border, const QString &text )
 {
-  QgsComposerMapGrid *grid = currentGrid();
+  QgsLayoutItemMapGrid *grid = currentGrid();
   if ( !grid )
   {
     return;
   }
 
-  mMapItem->beginCommand( tr( "Annotation position changed" ) );
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Annotation Position" ) );
   if ( text == tr( "Inside frame" ) )
   {
-    grid->setAnnotationPosition( QgsComposerMapGrid::InsideMapFrame, border );
+    grid->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, border );
   }
   else //Outside frame
   {
-    grid->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, border );
+    grid->setAnnotationPosition( QgsLayoutItemMapGrid::OutsideMapFrame, border );
   }
 
   mMapItem->updateBoundingRect();
   mMapItem->update();
-  mMapItem->endCommand();
+  mMapItem->layout()->undoStack()->endCommand();
 }
 
-void QgsLayoutMapWidget::handleChangedAnnotationDirection( QgsComposerMapGrid::BorderSide border, QgsComposerMapGrid::AnnotationDirection direction )
+void QgsLayoutMapWidget::handleChangedAnnotationDirection( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::AnnotationDirection direction )
 {
-  QgsComposerMapGrid *grid = currentGrid();
+  QgsLayoutItemMapGrid *grid = currentGrid();
   if ( !grid )
   {
     return;
   }
 
-  mMapItem->beginCommand( tr( "Changed annotation direction" ) );
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Annotation Direction" ) );
   grid->setAnnotationDirection( direction, border );
   mMapItem->updateBoundingRect();
   mMapItem->update();
-  mMapItem->endCommand();
+  mMapItem->layout()->undoStack()->endCommand();
 }
 
-#endif
 void QgsLayoutMapWidget::insertFrameDisplayEntries( QComboBox *c )
 {
-#if 0 //TODO
-  c->addItem( tr( "All" ), QgsComposerMapGrid::ShowAll );
-  c->addItem( tr( "Latitude/Y only" ), QgsComposerMapGrid::LatitudeOnly );
-  c->addItem( tr( "Longitude/X only" ), QgsComposerMapGrid::LongitudeOnly );
-#endif
+  c->addItem( tr( "All" ), QgsLayoutItemMapGrid::ShowAll );
+  c->addItem( tr( "Latitude/Y only" ), QgsLayoutItemMapGrid::LatitudeOnly );
+  c->addItem( tr( "Longitude/X only" ), QgsLayoutItemMapGrid::LongitudeOnly );
 }
 
 void QgsLayoutMapWidget::insertAnnotationDisplayEntries( QComboBox *c )
@@ -1044,15 +1037,14 @@ void QgsLayoutMapWidget::insertAnnotationDisplayEntries( QComboBox *c )
   c->insertItem( 3, tr( "Disabled" ) );
 }
 
-#if 0 //TODO
-void QgsLayoutMapWidget::initAnnotationPositionBox( QComboBox *c, QgsComposerMapGrid::AnnotationPosition pos )
+void QgsLayoutMapWidget::initAnnotationPositionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationPosition pos )
 {
   if ( !c )
   {
     return;
   }
 
-  if ( pos == QgsComposerMapGrid::InsideMapFrame )
+  if ( pos == QgsLayoutItemMapGrid::InsideMapFrame )
   {
     c->setCurrentIndex( c->findText( tr( "Inside frame" ) ) );
   }
@@ -1062,7 +1054,7 @@ void QgsLayoutMapWidget::initAnnotationPositionBox( QComboBox *c, QgsComposerMap
   }
 }
 
-void QgsLayoutMapWidget::initAnnotationDirectionBox( QComboBox *c, QgsComposerMapGrid::AnnotationDirection dir )
+void QgsLayoutMapWidget::initAnnotationDirectionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationDirection dir )
 {
   if ( !c )
   {
@@ -1071,10 +1063,10 @@ void QgsLayoutMapWidget::initAnnotationDirectionBox( QComboBox *c, QgsComposerMa
   c->setCurrentIndex( c->findData( dir ) );
 }
 
-#endif
 
 void QgsLayoutMapWidget::atlasLayerChanged( QgsVectorLayer *layer )
 {
+  Q_UNUSED( layer );
 #if 0 //TODO
   if ( !layer || layer->wkbType() == QgsWkbTypes::NoGeometry )
   {
@@ -1116,19 +1108,18 @@ void QgsLayoutMapWidget::mAddGridPushButton_clicked()
   {
     return;
   }
-#if 0 //TODO
+
   QString itemName = tr( "Grid %1" ).arg( mMapItem->grids()->size() + 1 );
-  QgsComposerMapGrid *grid = new QgsComposerMapGrid( itemName, mMapItem );
-  mMapItem->beginCommand( tr( "Add map grid" ) );
+  QgsLayoutItemMapGrid *grid = new QgsLayoutItemMapGrid( itemName, mMapItem );
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Add Map Grid" ) );
   mMapItem->grids()->addGrid( grid );
-  mMapItem->endCommand();
+  mMapItem->layout()->undoStack()->endCommand();
   mMapItem->updateBoundingRect();
   mMapItem->update();
 
   addGridListItem( grid->id(), grid->name() );
   mGridListWidget->setCurrentRow( 0 );
   mGridListWidget_currentItemChanged( mGridListWidget->currentItem(), nullptr );
-#endif
 }
 
 void QgsLayoutMapWidget::mRemoveGridPushButton_clicked()
@@ -1139,13 +1130,13 @@ void QgsLayoutMapWidget::mRemoveGridPushButton_clicked()
     return;
   }
 
-#if 0 //TODO
+  mMapItem->beginCommand( tr( "Remove Grid" ) );
   mMapItem->grids()->removeGrid( item->data( Qt::UserRole ).toString() );
   QListWidgetItem *delItem = mGridListWidget->takeItem( mGridListWidget->row( item ) );
   delete delItem;
+  mMapItem->endCommand();
   mMapItem->updateBoundingRect();
   mMapItem->update();
-#endif
 }
 
 void QgsLayoutMapWidget::mGridUpButton_clicked()
@@ -1164,9 +1155,9 @@ void QgsLayoutMapWidget::mGridUpButton_clicked()
   mGridListWidget->takeItem( row );
   mGridListWidget->insertItem( row - 1, item );
   mGridListWidget->setCurrentItem( item );
-#if 0 //TODO
+  mMapItem->beginCommand( tr( "Move Grid Up" ) );
   mMapItem->grids()->moveGridUp( item->data( Qt::UserRole ).toString() );
-#endif
+  mMapItem->endCommand();
   mMapItem->update();
 }
 
@@ -1186,13 +1177,13 @@ void QgsLayoutMapWidget::mGridDownButton_clicked()
   mGridListWidget->takeItem( row );
   mGridListWidget->insertItem( row + 1, item );
   mGridListWidget->setCurrentItem( item );
-#if 0 //TODO
+  mMapItem->beginCommand( tr( "Move Grid Down" ) );
   mMapItem->grids()->moveGridDown( item->data( Qt::UserRole ).toString() );
-#endif
+  mMapItem->endCommand();
   mMapItem->update();
 }
 
-QgsLayoutMapGrid *QgsLayoutMapWidget::currentGrid()
+QgsLayoutItemMapGrid *QgsLayoutMapWidget::currentGrid()
 {
   if ( !mMapItem )
   {
@@ -1204,9 +1195,7 @@ QgsLayoutMapGrid *QgsLayoutMapWidget::currentGrid()
   {
     return nullptr;
   }
-#if 0 //TODO
   return mMapItem->grids()->grid( item->data( Qt::UserRole ).toString() );
-#endif
   return nullptr;
 }
 
@@ -1221,13 +1210,11 @@ void QgsLayoutMapWidget::mGridListWidget_currentItemChanged( QListWidgetItem *cu
     return;
   }
 
-#if 0 //TODO
   mDrawGridCheckBox->setEnabled( true );
   mDrawGridCheckBox->setChecked( currentGrid()->enabled() );
   mGridPropertiesButton->setEnabled( currentGrid()->enabled() );
 
   mDrawGridCheckBox->setText( QString( tr( "Draw \"%1\" grid" ) ).arg( currentGrid()->name() ) );
-#endif
 }
 
 void QgsLayoutMapWidget::mGridListWidget_itemChanged( QListWidgetItem *item )
@@ -1237,20 +1224,20 @@ void QgsLayoutMapWidget::mGridListWidget_itemChanged( QListWidgetItem *item )
     return;
   }
 
-#if 0 //TODO
-  QgsComposerMapGrid *grid = mMapItem->grids()->grid( item->data( Qt::UserRole ).toString() );
+  QgsLayoutItemMapGrid *grid = mMapItem->grids()->grid( item->data( Qt::UserRole ).toString() );
   if ( !grid )
   {
     return;
   }
 
+  mMapItem->beginCommand( tr( "Rename Grid" ) );
   grid->setName( item->text() );
+  mMapItem->endCommand();
   if ( item->isSelected() )
   {
     //update checkbox title if item is current item
     mDrawGridCheckBox->setText( QString( tr( "Draw \"%1\" grid" ) ).arg( grid->name() ) );
   }
-#endif
 }
 
 void QgsLayoutMapWidget::mGridPropertiesButton_clicked()
@@ -1259,14 +1246,14 @@ void QgsLayoutMapWidget::mGridPropertiesButton_clicked()
   {
     return;
   }
-#if 0 //TODO
-  QgsComposerMapGrid *grid = currentGrid();
+  QgsLayoutItemMapGrid *grid = currentGrid();
   if ( !grid )
   {
     return;
   }
 
-  QgsComposerMapGridWidget *w = new QgsComposerMapGridWidget( grid, mMapItem );
+#if 0 //TODO
+  QgsLayoutItemMapGridWidget *w = new QgsLayoutItemMapGridWidget( grid, mMapItem );
   openPanel( w );
 #endif
 }
@@ -1296,10 +1283,9 @@ void QgsLayoutMapWidget::loadGridEntries()
   {
     return;
   }
-#if 0 //TODO
   //load all composer grids into list widget
-  QList< QgsComposerMapGrid * > grids = mMapItem->grids()->asList();
-  QList< QgsComposerMapGrid * >::const_iterator gridIt = grids.constBegin();
+  QList< QgsLayoutItemMapGrid * > grids = mMapItem->grids()->asList();
+  QList< QgsLayoutItemMapGrid * >::const_iterator gridIt = grids.constBegin();
   for ( ; gridIt != grids.constEnd(); ++gridIt )
   {
     QListWidgetItem *item = addGridListItem( ( *gridIt )->id(), ( *gridIt )->name() );
@@ -1318,13 +1304,11 @@ void QgsLayoutMapWidget::loadGridEntries()
   {
     mGridListWidget_currentItemChanged( nullptr, nullptr );
   }
-#endif
 }
 
 void QgsLayoutMapWidget::mDrawGridCheckBox_toggled( bool state )
 {
-#if 0 //TODO
-  QgsComposerMapGrid *grid = currentGrid();
+  QgsLayoutItemMapGrid *grid = currentGrid();
   if ( !grid )
   {
     return;
@@ -1332,7 +1316,7 @@ void QgsLayoutMapWidget::mDrawGridCheckBox_toggled( bool state )
 
   mGridPropertiesButton->setEnabled( state );
 
-  mMapItem->beginCommand( tr( "Grid checkbox toggled" ) );
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Toggle Grid Display" ) );
   if ( state )
   {
     grid->setEnabled( true );
@@ -1343,8 +1327,7 @@ void QgsLayoutMapWidget::mDrawGridCheckBox_toggled( bool state )
   }
   mMapItem->updateBoundingRect();
   mMapItem->update();
-  mMapItem->endCommand();
-#endif
+  mMapItem->layout()->undoStack()->endCommand();
 }
 
 void QgsLayoutMapWidget::mAddOverviewPushButton_clicked()
@@ -1354,16 +1337,15 @@ void QgsLayoutMapWidget::mAddOverviewPushButton_clicked()
     return;
   }
 
-#if 0 //TODO
   QString itemName = tr( "Overview %1" ).arg( mMapItem->overviews()->size() + 1 );
-  QgsComposerMapOverview *overview = new QgsComposerMapOverview( itemName, mMapItem );
-  mMapItem->beginCommand( tr( "Add map overview" ) );
+  QgsLayoutItemMapOverview *overview = new QgsLayoutItemMapOverview( itemName, mMapItem );
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Add Map Overview" ) );
   mMapItem->overviews()->addOverview( overview );
-  mMapItem->endCommand();
+  mMapItem->layout()->undoStack()->endCommand();
   mMapItem->update();
 
   addOverviewListItem( overview->id(), overview->name() );
-#endif
+
   mOverviewListWidget->setCurrentRow( 0 );
 }
 
@@ -1374,12 +1356,12 @@ void QgsLayoutMapWidget::mRemoveOverviewPushButton_clicked()
   {
     return;
   }
-#if 0 //TODO
+  mMapItem->beginCommand( tr( "Remove Map Overview" ) );
   mMapItem->overviews()->removeOverview( item->data( Qt::UserRole ).toString() );
+  mMapItem->endCommand();
   QListWidgetItem *delItem = mOverviewListWidget->takeItem( mOverviewListWidget->row( item ) );
   delete delItem;
   mMapItem->update();
-#endif
 }
 
 void QgsLayoutMapWidget::mOverviewUpButton_clicked()
@@ -1398,9 +1380,9 @@ void QgsLayoutMapWidget::mOverviewUpButton_clicked()
   mOverviewListWidget->takeItem( row );
   mOverviewListWidget->insertItem( row - 1, item );
   mOverviewListWidget->setCurrentItem( item );
-#if 0 //TODO
+  mMapItem->beginCommand( tr( "Move Overview Up" ) );
   mMapItem->overviews()->moveOverviewUp( item->data( Qt::UserRole ).toString() );
-#endif
+  mMapItem->endCommand();
   mMapItem->update();
 }
 
@@ -1420,13 +1402,13 @@ void QgsLayoutMapWidget::mOverviewDownButton_clicked()
   mOverviewListWidget->takeItem( row );
   mOverviewListWidget->insertItem( row + 1, item );
   mOverviewListWidget->setCurrentItem( item );
-#if 0 //TODO
+  mMapItem->beginCommand( tr( "Move Overview Down" ) );
   mMapItem->overviews()->moveOverviewDown( item->data( Qt::UserRole ).toString() );
-#endif
+  mMapItem->endCommand();
   mMapItem->update();
 }
 
-QgsLayoutMapOverview *QgsLayoutMapWidget::currentOverview()
+QgsLayoutItemMapOverview *QgsLayoutMapWidget::currentOverview()
 {
   if ( !mMapItem )
   {
@@ -1439,9 +1421,7 @@ QgsLayoutMapOverview *QgsLayoutMapWidget::currentOverview()
     return nullptr;
   }
 
-#if 0 //TODO
   return mMapItem->overviews()->overview( item->data( Qt::UserRole ).toString() );
-#endif
   return nullptr;
 }
 
@@ -1455,9 +1435,7 @@ void QgsLayoutMapWidget::mOverviewListWidget_currentItemChanged( QListWidgetItem
   }
 
   mOverviewCheckBox->setEnabled( true );
-#if 0 //TODO
-  setOverviewItems( mMapItem->overviews()->constOverview( current->data( Qt::UserRole ).toString() ) );
-#endif
+  setOverviewItems( mMapItem->overviews()->overview( current->data( Qt::UserRole ).toString() ) );
 }
 
 void QgsLayoutMapWidget::mOverviewListWidget_itemChanged( QListWidgetItem *item )
@@ -1467,20 +1445,20 @@ void QgsLayoutMapWidget::mOverviewListWidget_itemChanged( QListWidgetItem *item 
     return;
   }
 
-#if 0 //TODO
-  QgsComposerMapOverview *overview = mMapItem->overviews()->overview( item->data( Qt::UserRole ).toString() );
+  QgsLayoutItemMapOverview *overview = mMapItem->overviews()->overview( item->data( Qt::UserRole ).toString() );
   if ( !overview )
   {
     return;
   }
 
+  mMapItem->beginCommand( "Rename Overview" );
   overview->setName( item->text() );
+  mMapItem->endCommand();
   if ( item->isSelected() )
   {
     //update checkbox title if item is current item
     mOverviewCheckBox->setTitle( QString( tr( "Draw \"%1\" overview" ) ).arg( overview->name() ) );
   }
-#endif
 }
 
 void QgsLayoutMapWidget::setOverviewItemsEnabled( bool enabled )
@@ -1505,7 +1483,7 @@ void QgsLayoutMapWidget::blockOverviewItemsSignals( bool block )
   mOverviewCenterCheckbox->blockSignals( block );
 }
 
-void QgsLayoutMapWidget::setOverviewItems( const QgsLayoutMapOverview *overview )
+void QgsLayoutMapWidget::setOverviewItems( QgsLayoutItemMapOverview *overview )
 {
   if ( !overview )
   {
@@ -1514,35 +1492,34 @@ void QgsLayoutMapWidget::setOverviewItems( const QgsLayoutMapOverview *overview 
 
   blockOverviewItemsSignals( true );
 
-#if 0 //TODO
   mOverviewCheckBox->setTitle( QString( tr( "Draw \"%1\" overview" ) ).arg( overview->name() ) );
   mOverviewCheckBox->setChecked( overview->enabled() );
 
   //overview frame
-  mOverviewFrameMapComboBox->setItem( mMapItem->composition()->getComposerMapById( overview->frameMapId() ) );
+#if 0 //TODO
+  mOverviewFrameMapComboBox->setItem( overview->frameMap() );
+#endif
   //overview frame blending mode
   mOverviewBlendModeComboBox->setBlendMode( overview->blendMode() );
   //overview inverted
   mOverviewInvertCheckbox->setChecked( overview->inverted() );
   //center overview
   mOverviewCenterCheckbox->setChecked( overview->centered() );
-#endif
+
   //frame style
   updateOverviewFrameSymbolMarker( overview );
 
   blockOverviewItemsSignals( false );
 }
 
-void QgsLayoutMapWidget::updateOverviewFrameSymbolMarker( const QgsLayoutMapOverview *overview )
+void QgsLayoutMapWidget::updateOverviewFrameSymbolMarker( const QgsLayoutItemMapOverview *overview )
 {
-#if 0 //TODO
   if ( overview )
   {
     QgsFillSymbol *nonConstSymbol = const_cast<QgsFillSymbol *>( overview->frameSymbol() ); //bad
     QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( nonConstSymbol, mOverviewFrameStyleButton->iconSize() );
     mOverviewFrameStyleButton->setIcon( icon );
   }
-#endif
 }
 
 void QgsLayoutMapWidget::storeCurrentLayerSet()
@@ -1586,10 +1563,9 @@ void QgsLayoutMapWidget::loadOverviewEntries()
     return;
   }
 
-#if 0 //TODO
   //load all composer overviews into list widget
-  QList< QgsComposerMapOverview * > overviews = mMapItem->overviews()->asList();
-  QList< QgsComposerMapOverview * >::const_iterator overviewIt = overviews.constBegin();
+  QList< QgsLayoutItemMapOverview * > overviews = mMapItem->overviews()->asList();
+  QList< QgsLayoutItemMapOverview * >::const_iterator overviewIt = overviews.constBegin();
   for ( ; overviewIt != overviews.constEnd(); ++overviewIt )
   {
     QListWidgetItem *item = addOverviewListItem( ( *overviewIt )->id(), ( *overviewIt )->name() );
@@ -1599,7 +1575,6 @@ void QgsLayoutMapWidget::loadOverviewEntries()
       mOverviewListWidget->setCurrentItem( item );
     }
   }
-#endif
 
   if ( mOverviewListWidget->currentItem() )
   {
@@ -1613,14 +1588,13 @@ void QgsLayoutMapWidget::loadOverviewEntries()
 
 void QgsLayoutMapWidget::mOverviewCheckBox_toggled( bool state )
 {
-#if 0 //TODO
-  QgsComposerMapOverview *overview = currentOverview();
+  QgsLayoutItemMapOverview *overview = currentOverview();
   if ( !overview )
   {
     return;
   }
 
-  mMapItem->beginCommand( tr( "Overview checkbox toggled" ) );
+  mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Overview Display Toggled" ) );
   if ( state )
   {
     overview->setEnabled( true );
@@ -1630,41 +1604,40 @@ void QgsLayoutMapWidget::mOverviewCheckBox_toggled( bool state )
     overview->setEnabled( false );
   }
   mMapItem->update();
-  mMapItem->endCommand();
-#endif
+  mMapItem->layout()->undoStack()->endCommand();
 }
 
-void QgsLayoutMapWidget::overviewMapChanged( QgsComposerItem *item )
+void QgsLayoutMapWidget::overviewMapChanged( QgsLayoutItem *item )
 {
-#if 0 //TODO
-  QgsComposerMapOverview *overview = currentOverview();
+  QgsLayoutItemMapOverview *overview = currentOverview();
   if ( !overview )
   {
     return;
   }
 
-  QgsComposerMap *map = dynamic_cast< QgsComposerMap * >( item );
+  QgsLayoutItemMap *map = dynamic_cast< QgsLayoutItemMap * >( item );
   if ( !map )
     return;
 
-  mMapItem->beginCommand( tr( "Overview map changed" ) );
-  overview->setFrameMap( map->id() );
+  mMapItem->beginCommand( tr( "Change Overview Map" ) );
+  overview->setFrameMapUuid( map->uuid() );
   mMapItem->update();
   mMapItem->endCommand();
-#endif
 }
 
 void QgsLayoutMapWidget::mOverviewFrameStyleButton_clicked()
 {
-#if 0 //TODO
-  QgsComposerMapOverview *overview = currentOverview();
+  QgsLayoutItemMapOverview *overview = currentOverview();
   if ( !overview )
   {
     return;
   }
 
+  QgsVectorLayer *coverageLayer = nullptr;
+#if 0 //TODO
   // use the atlas coverage layer, if any
   QgsVectorLayer *coverageLayer = atlasCoverageLayer();
+#endif
 
   QgsFillSymbol *newSymbol = static_cast<QgsFillSymbol *>( overview->frameSymbol()->clone() );
   QgsExpressionContext context = mMapItem->createExpressionContext();
@@ -1677,55 +1650,48 @@ void QgsLayoutMapWidget::mOverviewFrameStyleButton_clicked()
   connect( d, &QgsPanelWidget::widgetChanged, this, &QgsLayoutMapWidget::updateOverviewFrameStyleFromWidget );
   connect( d, &QgsPanelWidget::panelAccepted, this, &QgsLayoutMapWidget::cleanUpOverviewFrameStyleSelector );
   openPanel( d );
-  mMapItem->beginCommand( tr( "Overview frame style changed" ) );
-#endif
+  mMapItem->beginCommand( tr( "Change Overview Style" ) );
 }
 
 void QgsLayoutMapWidget::mOverviewBlendModeComboBox_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
-#if 0 //TODO
-  QgsComposerMapOverview *overview = currentOverview();
+  QgsLayoutItemMapOverview *overview = currentOverview();
   if ( !overview )
   {
     return;
   }
 
-  mMapItem->beginCommand( tr( "Overview blend mode changed" ) );
+  mMapItem->beginCommand( tr( "Change Overview Blend Mode" ) );
   overview->setBlendMode( mOverviewBlendModeComboBox->blendMode() );
   mMapItem->update();
   mMapItem->endCommand();
-#endif
 }
 
 void QgsLayoutMapWidget::mOverviewInvertCheckbox_toggled( bool state )
 {
-#if 0 //TODO
-  QgsComposerMapOverview *overview = currentOverview();
+  QgsLayoutItemMapOverview *overview = currentOverview();
   if ( !overview )
   {
     return;
   }
 
-  mMapItem->beginCommand( tr( "Overview inverted toggled" ) );
+  mMapItem->beginCommand( tr( "Toggle Overview Inverted" ) );
   overview->setInverted( state );
   mMapItem->update();
   mMapItem->endCommand();
-#endif
 }
 
 void QgsLayoutMapWidget::mOverviewCenterCheckbox_toggled( bool state )
 {
-#if 0 //TODO
-  QgsComposerMapOverview *overview = currentOverview();
+  QgsLayoutItemMapOverview *overview = currentOverview();
   if ( !overview )
   {
     return;
   }
 
-  mMapItem->beginCommand( tr( "Overview centered toggled" ) );
+  mMapItem->beginCommand( tr( "Toggle Overview Centered" ) );
   overview->setCentered( state );
   mMapItem->update();
   mMapItem->endCommand();
-#endif
 }

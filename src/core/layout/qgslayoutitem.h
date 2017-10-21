@@ -85,6 +85,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     //! Layout item undo commands, used for collapsing undo commands
     enum UndoCommand
     {
+      UndoNone = -1, //!< No command suppression
       UndoIncrementalMove = 1, //!< Layout item incremental movement, e.g. as a result of a keypress
       UndoIncrementalResize, //!< Incremental resize
       UndoStrokeColor, //!< Stroke color adjustment
@@ -549,6 +550,30 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see moveContent()
      */
     virtual void zoomContent( double factor, QPointF point );
+
+    /**
+     * Starts new undo command for this item.
+     * The \a commandText should be a capitalized, imperative tense description (e.g. "Add Map Item").
+     * If specified, multiple consecutive commands for this item with the same \a command will
+     * be collapsed into a single undo command in the layout history.
+     * \see endCommand()
+     * \see cancelCommand()
+    */
+    void beginCommand( const QString &commandText, UndoCommand command = UndoNone );
+
+    /**
+     * Completes the current item command and push it onto the layout's undo stack.
+     * \see beginCommand()
+     * \see cancelCommand()
+     */
+    void endCommand();
+
+    /**
+     * Cancels the current item command and discards it.
+     * \see beginCommand()
+     * \see endCommand()
+     */
+    void cancelCommand();
 
   public slots:
 

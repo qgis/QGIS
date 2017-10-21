@@ -52,6 +52,7 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 
     enum UndoCommand
     {
+      UndoNone,
       UndoIncrementalMove,
       UndoIncrementalResize,
       UndoStrokeColor,
@@ -550,6 +551,30 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  \param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
  \param point item point for zoom center
 .. seealso:: moveContent()
+%End
+
+    void beginCommand( const QString &commandText, UndoCommand command = UndoNone );
+%Docstring
+ Starts new undo command for this item.
+ The ``commandText`` should be a capitalized, imperative tense description (e.g. "Add Map Item").
+ If specified, multiple consecutive commands for this item with the same ``command`` will
+ be collapsed into a single undo command in the layout history.
+.. seealso:: endCommand()
+.. seealso:: cancelCommand()
+%End
+
+    void endCommand();
+%Docstring
+ Completes the current item command and push it onto the layout's undo stack.
+.. seealso:: beginCommand()
+.. seealso:: cancelCommand()
+%End
+
+    void cancelCommand();
+%Docstring
+ Cancels the current item command and discards it.
+.. seealso:: beginCommand()
+.. seealso:: endCommand()
 %End
 
   public slots:

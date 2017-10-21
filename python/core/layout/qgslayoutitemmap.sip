@@ -370,6 +370,41 @@ Returns true if the map contains layers with blend modes or flattened layers for
 .. seealso:: atlasMargin
 %End
 
+    QgsLayoutItemMapGridStack *grids();
+%Docstring
+ Returns the map item's grid stack, which is used to control how grids
+ are drawn over the map's contents.
+.. seealso:: grid()
+ :rtype: QgsLayoutItemMapGridStack
+%End
+
+    QgsLayoutItemMapGrid *grid();
+%Docstring
+ Returns the map item's first grid. This is a convenience function.
+.. seealso:: grids()
+ :rtype: QgsLayoutItemMapGrid
+%End
+
+    QgsLayoutItemMapOverviewStack *overviews();
+%Docstring
+ Returns the map item's overview stack, which is used to control how overviews
+ are drawn over the map's contents.
+ :return: pointer to overview stack
+.. seealso:: overview()
+ :rtype: QgsLayoutItemMapOverviewStack
+%End
+
+    QgsLayoutItemMapOverview *overview();
+%Docstring
+ Returns the map item's first overview. This is a convenience function.
+ :return: pointer to first overview for map item
+.. seealso:: overviews()
+ :rtype: QgsLayoutItemMapOverview
+%End
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
   protected:
 
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
@@ -389,11 +424,7 @@ True if a draw is already in progress
 
 
 
-
     virtual QRectF boundingRect() const;
-
-
-    virtual QgsExpressionContext createExpressionContext() const;
 
 
     double mapUnitsToLayoutUnits() const;
@@ -403,7 +434,6 @@ True if a draw is already in progress
  current visible map extent.
  :rtype: float
 %End
-
 
     QPolygonF transformedMapPolygon() const;
 %Docstring

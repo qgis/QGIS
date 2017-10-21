@@ -385,7 +385,7 @@ bool QgsLayoutItemMap::containsWmsLayer() const
 bool QgsLayoutItemMap::containsAdvancedEffects() const
 {
   //check easy things first
-#if 0 //TODO
+
   //overviews
   if ( mOverviewStack->containsAdvancedEffects() )
   {
@@ -397,7 +397,6 @@ bool QgsLayoutItemMap::containsAdvancedEffects() const
   {
     return true;
   }
-#endif
 
   QgsMapSettings ms;
   ms.setLayers( layersToRender() );
@@ -454,6 +453,26 @@ double QgsLayoutItemMap::atlasMargin( const QgsLayoutObject::PropertyValueType v
   {
     return mAtlasMargin;
   }
+}
+
+QgsLayoutItemMapGrid *QgsLayoutItemMap::grid()
+{
+  if ( mGridStack->size() < 1 )
+  {
+    QgsLayoutItemMapGrid *grid = new QgsLayoutItemMapGrid( tr( "Grid %1" ).arg( 1 ), this );
+    mGridStack->addGrid( grid );
+  }
+  return mGridStack->grid( 0 );
+}
+
+QgsLayoutItemMapOverview *QgsLayoutItemMap::overview()
+{
+  if ( mOverviewStack->size() < 1 )
+  {
+    QgsLayoutItemMapOverview *overview = new QgsLayoutItemMapOverview( tr( "Overview %1" ).arg( 1 ), this );
+    mOverviewStack->addOverview( overview );
+  }
+  return mOverviewStack->overview( 0 );
 }
 
 void QgsLayoutItemMap::draw( QgsRenderContext &, const QStyleOptionGraphicsItem * )
@@ -555,7 +574,6 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
   painter->setClipRect( thisPaintRect, Qt::NoClip );
 
-#if 0 //TODO
   if ( shouldDrawPart( OverviewMapExtent ) )
   {
     mOverviewStack->drawItems( painter );
@@ -564,7 +582,6 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
   {
     mGridStack->drawItems( painter );
   }
-#endif
 
   //draw canvas items
   drawAnnotations( painter );
@@ -801,13 +818,7 @@ QPolygonF QgsLayoutItemMap::transformedMapPolygon() const
 {
   double dx = mXOffset;
   double dy = mYOffset;
-  //qWarning("offset");
-  //qWarning(QString::number(dx).toLocal8Bit().data());
-  //qWarning(QString::number(dy).toLocal8Bit().data());
   transformShift( dx, dy );
-  //qWarning("transformed:");
-  //qWarning(QString::number(dx).toLocal8Bit().data());
-  //qWarning(QString::number(dy).toLocal8Bit().data());
   QPolygonF poly = visibleExtentPolygon();
   poly.translate( -dx, -dy );
   return poly;
@@ -874,10 +885,8 @@ void QgsLayoutItemMap::updateBoundingRect()
   double bottomExtension = 0.0;
   double leftExtension = 0.0;
 
-#if 0 //TODO
   if ( mGridStack )
     mGridStack->calculateMaxGridExtension( topExtension, rightExtension, bottomExtension, leftExtension );
-#endif
 
   topExtension = std::max( topExtension, frameExtension );
   rightExtension = std::max( rightExtension, frameExtension );

@@ -22,6 +22,8 @@
 #include "qgslayoutitemregistry.h"
 #include "qgsmaplayerref.h"
 #include "qgsmaprenderercustompainterjob.h"
+#include "qgslayoutitemmapgrid.h"
+#include "qgslayoutitemmapoverview.h"
 
 class QgsAnnotation;
 
@@ -364,6 +366,36 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      */
     void setAtlasMargin( double margin ) { mAtlasMargin = margin; }
 
+    /**
+     * Returns the map item's grid stack, which is used to control how grids
+     * are drawn over the map's contents.
+     * \see grid()
+     */
+    QgsLayoutItemMapGridStack *grids() { return mGridStack.get(); }
+
+    /**
+     * Returns the map item's first grid. This is a convenience function.
+     * \see grids()
+     */
+    QgsLayoutItemMapGrid *grid();
+
+    /**
+     * Returns the map item's overview stack, which is used to control how overviews
+     * are drawn over the map's contents.
+     * \returns pointer to overview stack
+     * \see overview()
+     */
+    QgsLayoutItemMapOverviewStack *overviews() { return mOverviewStack.get(); }
+
+    /**
+     * Returns the map item's first overview. This is a convenience function.
+     * \returns pointer to first overview for map item
+     * \see overviews()
+     */
+    QgsLayoutItemMapOverview *overview();
+
+    QgsExpressionContext createExpressionContext() const override;
+
   protected:
 
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
@@ -376,23 +408,13 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     //! True if a draw is already in progress
     bool isDrawing() const {return mDrawing;}
 
-#if 0
-    //! Sets new scene rectangle bounds and recalculates hight and extent
-    void setSceneRect( const QRectF &rectangle ) override;
-
+#if 0 //TODO
 
     /**
      * Sets new Extent for the current atlas preview and changes width, height (and implicitly also scale).
       Atlas preview extents are only temporary, and are regenerated whenever the atlas feature changes
      */
     void setNewAtlasFeatureExtent( const QgsRectangle &extent );
-#endif
-
-#if 0
-    QgsRectangle extent() const {return mExtent;}
-#endif
-
-#if 0
 
     /**
      * Stores state in Dom node
@@ -407,46 +429,11 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * \param doc is Dom document
      */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
-
-    /**
-     * Returns the map item's grid stack, which is used to control how grids
-     * are drawn over the map's contents.
-     * \returns pointer to grid stack
-     * \see grid()
-     */
-    QgsComposerMapGridStack *grids() { return mGridStack; }
-
-    /**
-     * Returns the map item's first grid. This is a convenience function.
-     * \returns pointer to first grid for map item
-     * \see grids()
-     */
-    QgsComposerMapGrid *grid();
-
-    /**
-     * Returns the map item's overview stack, which is used to control how overviews
-     * are drawn over the map's contents.
-     * \returns pointer to overview stack
-     * \see overview()
-     */
-    QgsComposerMapOverviewStack *overviews() { return mOverviewStack; }
-
-    /**
-     * Returns the map item's first overview. This is a convenience function.
-     * \returns pointer to first overview for map item
-     * \see overviews()
-     */
-    QgsComposerMapOverview *overview();
 #endif
+
 
     // In case of annotations, the bounding rectangle can be larger than the map item rectangle
     QRectF boundingRect() const override;
-
-#if 0
-    // reimplement setFrameStrokeWidth, so that updateBoundingRect() is called after setting the frame width
-    virtual void setFrameStrokeWidth( const double strokeWidth ) override;
-#endif
-    QgsExpressionContext createExpressionContext() const override;
 
     /**
      * Returns the conversion factor from map units to layout units.
@@ -454,16 +441,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * current visible map extent.
      */
     double mapUnitsToLayoutUnits() const;
-
-#if 0
-
-    /**
-     * Get the number of layers that this item requires for exporting as layers
-     * \returns 0 if this item is to be placed on the same layer as the previous item,
-     * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
-     */
-    int numberExportLayers() const override;
-#endif
 
     //! Returns extent that considers rotation and shift with mOffsetX / mOffsetY
     QPolygonF transformedMapPolygon() const;
@@ -513,11 +490,10 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     //! Unique identifier
     int mMapId = 1;
-#if 0
-    QgsComposerMapGridStack *mGridStack = nullptr;
 
-    QgsComposerMapOverviewStack *mOverviewStack = nullptr;
-#endif
+    std::unique_ptr< QgsLayoutItemMapGridStack > mGridStack;
+    std::unique_ptr< QgsLayoutItemMapOverviewStack > mOverviewStack;
+
     // Map region in map units really used for rendering
     // It can be the same as mUserExtent, but it can be bigger in on dimension if mCalculate==Scale,
     // so that full rectangle in paper is used.
@@ -607,13 +583,11 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     //! Removes layer ids from mLayerSet that are no longer present in the qgis main map
     void syncLayerSet();
 
-#if 0
     //! Returns first map grid or creates an empty one if none
-    const QgsComposerMapGrid *constFirstMapGrid() const;
+    const QgsLayoutItemMapGrid *constFirstMapGrid() const;
 
     //! Returns first map overview or creates an empty one if none
-    const QgsComposerMapOverview *constFirstMapOverview() const;
-#endif
+    const QgsLayoutItemMapOverview *constFirstMapOverview() const;
 
     //! Current bounding rectangle. This is used to check if notification to the graphics scene is necessary
     QRectF mCurrentRectangle;
@@ -681,7 +655,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      */
     void refreshMapExtents( const QgsExpressionContext *context = nullptr );
 
-    friend class QgsLayoutMapOverview; //to access mXOffset, mYOffset
+    friend class QgsLayoutItemMapGrid;
+    friend class QgsLayoutItemMapOverview;
     friend class TestQgsLayoutMap;
 
 };

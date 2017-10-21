@@ -20,11 +20,11 @@
 
 #include "ui_qgslayoutmapwidgetbase.h"
 #include "qgslayoutitemwidget.h"
+#include "qgslayoutitemmapgrid.h"
 
 class QgsMapLayer;
 class QgsLayoutItemMap;
-class QgsLayoutMapGrid;
-class QgsLayoutMapOverview;
+class QgsLayoutItemMapOverview;
 
 /**
  * \ingroup app
@@ -46,7 +46,7 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     void mKeepLayerListCheckBox_stateChanged( int state );
     void mKeepLayerStylesCheckBox_stateChanged( int state );
     void mDrawCanvasItemsCheckBox_stateChanged( int state );
-    void overviewMapChanged( QgsComposerItem *item );
+    void overviewMapChanged( QgsLayoutItem *item );
     void mOverviewFrameStyleButton_clicked();
     void mOverviewBlendModeComboBox_currentIndexChanged( int index );
     void mOverviewInvertCheckbox_toggled( bool state );
@@ -69,7 +69,7 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     void mGridUpButton_clicked();
     void mGridDownButton_clicked();
 
-    QgsLayoutMapGrid *currentGrid();
+    QgsLayoutItemMapGrid *currentGrid();
     void mDrawGridCheckBox_toggled( bool state );
     void mGridListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
     void mGridListWidget_itemChanged( QListWidgetItem *item );
@@ -80,12 +80,12 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     void mRemoveOverviewPushButton_clicked();
     void mOverviewUpButton_clicked();
     void mOverviewDownButton_clicked();
-    QgsLayoutMapOverview *currentOverview();
+    QgsLayoutItemMapOverview *currentOverview();
     void mOverviewCheckBox_toggled( bool state );
     void mOverviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
     void mOverviewListWidget_itemChanged( QListWidgetItem *item );
     void setOverviewItemsEnabled( bool enabled );
-    void setOverviewItems( const QgsLayoutMapOverview *overview );
+    void setOverviewItems( QgsLayoutItemMapOverview *overview );
     void blockOverviewItemsSignals( bool block );
 
   protected:
@@ -130,23 +130,21 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
 
     void rotationChanged( double value );
 
-#if 0 //TODO
-    void handleChangedFrameDisplay( QgsComposerMapGrid::BorderSide border, const QgsComposerMapGrid::DisplayMode mode );
-    void handleChangedAnnotationDisplay( QgsComposerMapGrid::BorderSide border, const QString &text );
-    void handleChangedAnnotationPosition( QgsComposerMapGrid::BorderSide border, const QString &text );
-    void handleChangedAnnotationDirection( QgsComposerMapGrid::BorderSide border, QgsComposerMapGrid::AnnotationDirection direction );
-#endif
+    void handleChangedFrameDisplay( QgsLayoutItemMapGrid::BorderSide border, const QgsLayoutItemMapGrid::DisplayMode mode );
+    void handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::BorderSide border, const QString &text );
+    void handleChangedAnnotationPosition( QgsLayoutItemMapGrid::BorderSide border, const QString &text );
+    void handleChangedAnnotationDirection( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::AnnotationDirection direction );
+
     void insertFrameDisplayEntries( QComboBox *c );
     void insertAnnotationDisplayEntries( QComboBox *c );
     void insertAnnotationPositionEntries( QComboBox *c );
     void insertAnnotationDirectionEntries( QComboBox *c );
 
-#if 0 //TODO
-    void initFrameDisplayBox( QComboBox *c, QgsComposerMapGrid::DisplayMode display );
-    void initAnnotationDisplayBox( QComboBox *c, QgsComposerMapGrid::DisplayMode display );
-    void initAnnotationPositionBox( QComboBox *c, QgsComposerMapGrid::AnnotationPosition pos );
-    void initAnnotationDirectionBox( QComboBox *c, QgsComposerMapGrid::AnnotationDirection dir );
-#endif
+    void initFrameDisplayBox( QComboBox *c, QgsLayoutItemMapGrid::DisplayMode display );
+    void initAnnotationDisplayBox( QComboBox *c, QgsLayoutItemMapGrid::DisplayMode display );
+    void initAnnotationPositionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationPosition pos );
+    void initAnnotationDirectionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationDirection dir );
+
     //! Enables or disables the atlas margin and predefined scales radio depending on the atlas coverage layer type
     void toggleAtlasScalingOptionsByLayerType();
 
@@ -164,7 +162,7 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
 
     void loadOverviewEntries();
 
-    void updateOverviewFrameSymbolMarker( const QgsLayoutMapOverview *overview );
+    void updateOverviewFrameSymbolMarker( const QgsLayoutItemMapOverview *overview );
 
     void storeCurrentLayerSet();
 
