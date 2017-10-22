@@ -103,6 +103,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 
     QgsCoordinateSequence coordinateSequence() const override;
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
+    void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) override;
 
     /**
      * Returns the point and vertex id of a point within the curve.

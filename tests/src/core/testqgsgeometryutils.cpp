@@ -43,7 +43,6 @@ class TestQgsGeometryUtils: public QObject
     void testLinePerpendicularAngle();
     void testAverageAngle_data();
     void testAverageAngle();
-    void testAdjacentVertices();
     void testDistanceToVertex();
     void testVerticesAtDistance();
     void testCircleCenterRadius_data();
@@ -340,27 +339,6 @@ void TestQgsGeometryUtils::testAverageAngle()
 
   double averageAngle = QgsGeometryUtils::averageAngle( angle1 * M_PI / 180.0, angle2 * M_PI / 180.0 ) * 180.0 / M_PI;
   QGSCOMPARENEAR( averageAngle, expected, 0.0000000001 );
-}
-
-void TestQgsGeometryUtils::testAdjacentVertices()
-{
-  // test polygon - should wrap around!
-  QgsLineString *closedRing1 = new QgsLineString();
-  closedRing1->setPoints( QList<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
-  QgsPolygonV2 polygon1;
-  polygon1.setExteriorRing( closedRing1 );
-  QgsVertexId previous;
-  QgsVertexId next;
-
-  QgsGeometryUtils::adjacentVertices( polygon1, QgsVertexId( 0, 0, 0 ), previous, next );
-  QCOMPARE( previous, QgsVertexId( 0, 0, 3 ) );
-  QCOMPARE( next, QgsVertexId( 0, 0, 1 ) );
-
-  // test point - both vertices should be invalid
-  QgsPoint point( 1, 2 );
-  QgsGeometryUtils::adjacentVertices( point, QgsVertexId( 0, 0, 0 ), previous, next );
-  QVERIFY( !previous.isValid() );
-  QVERIFY( !next.isValid() );
 }
 
 void TestQgsGeometryUtils::testDistanceToVertex()

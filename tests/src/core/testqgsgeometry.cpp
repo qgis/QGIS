@@ -789,6 +789,13 @@ void TestQgsGeometry::point()
   QCOMPARE( p22, p21 );
   QCOMPARE( v, QgsVertexId( 1, 0, 0 ) );
 
+  //adjacent vertices - both should be invalid
+  QgsVertexId prev( 1, 2, 3 ); // start with something
+  QgsVertexId next( 4, 5, 6 );
+  p21.adjacentVertices( v, prev, next );
+  QCOMPARE( prev, QgsVertexId() );
+  QCOMPARE( next, QgsVertexId() );
+
   // vertex iterator
   QgsAbstractGeometry::vertex_iterator it1 = p21.vertices_begin();
   QgsAbstractGeometry::vertex_iterator it1end = p21.vertices_end();
@@ -3964,7 +3971,43 @@ void TestQgsGeometry::lineString()
   QCOMPARE( curveType->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 1, 2 ) );
   QCOMPARE( curveType->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( 11, 12 ) );
 
+  //adjacent vertices
+  QgsLineString vertexLine1;
+  vertexLine1.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 112 ) );
+  QgsVertexId prev( 1, 2, 3 ); // start with something
+  QgsVertexId next( 4, 5, 6 );
+  vertexLine1.adjacentVertices( QgsVertexId( 0, 0, -1 ), prev, next );
+  QCOMPARE( prev, QgsVertexId() );
+  QCOMPARE( next, QgsVertexId() );
+  vertexLine1.adjacentVertices( QgsVertexId( 0, 0, 3 ), prev, next );
+  QCOMPARE( prev, QgsVertexId() );
+  QCOMPARE( next, QgsVertexId() );
+  vertexLine1.adjacentVertices( QgsVertexId( 0, 0, 0 ), prev, next );
+  QCOMPARE( prev, QgsVertexId() );
+  QCOMPARE( next, QgsVertexId( 0, 0, 1 ) );
+  vertexLine1.adjacentVertices( QgsVertexId( 0, 0, 1 ), prev, next );
+  QCOMPARE( prev, QgsVertexId( 0, 0, 0 ) );
+  QCOMPARE( next, QgsVertexId( 0, 0, 2 ) );
+  vertexLine1.adjacentVertices( QgsVertexId( 0, 0, 2 ), prev, next );
+  QCOMPARE( prev, QgsVertexId( 0, 0, 1 ) );
+  QCOMPARE( next, QgsVertexId() );
+  // ring, part should be maintained
+  vertexLine1.adjacentVertices( QgsVertexId( 1, 0, 1 ), prev, next );
+  QCOMPARE( prev, QgsVertexId( 1, 0, 0 ) );
+  QCOMPARE( next, QgsVertexId( 1, 0, 2 ) );
+  vertexLine1.adjacentVertices( QgsVertexId( 1, 2, 1 ), prev, next );
+  QCOMPARE( prev, QgsVertexId( 1, 2, 0 ) );
+  QCOMPARE( next, QgsVertexId( 1, 2, 2 ) );
+  // closed ring
+  vertexLine1.close();
+  vertexLine1.adjacentVertices( QgsVertexId( 0, 0, 0 ), prev, next );
+  QCOMPARE( prev, QgsVertexId() );
+  QCOMPARE( next, QgsVertexId( 0, 0, 1 ) );
+  vertexLine1.adjacentVertices( QgsVertexId( 0, 0, 3 ), prev, next );
+  QCOMPARE( prev, QgsVertexId( 0, 0, 2 ) );
+  QCOMPARE( next, QgsVertexId() );
 }
+
 void TestQgsGeometry::polygon()
 {
   //test constructor
@@ -5527,6 +5570,66 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p27.numInteriorRings(), 0 );
   QVERIFY( p27.exteriorRing() );
 
+  // test adjacent vertices - should wrap around!
+  QgsLineString *closedRing1 = new QgsLineString();
+  closedRing1->setPoints( QList<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
+  QgsPolygonV2 p28;
+  QgsVertexId previous( 1, 2, 3 );
+  QgsVertexId next( 4, 5, 6 );
+  p28.adjacentVertices( QgsVertexId( 0, 0, 0 ), previous, next );
+  QCOMPARE( previous, QgsVertexId( ) );
+  QCOMPARE( next, QgsVertexId( ) );
+  p28.adjacentVertices( QgsVertexId( 0, 1, 0 ), previous, next );
+  QCOMPARE( previous, QgsVertexId( ) );
+  QCOMPARE( next, QgsVertexId( ) );
+  p28.adjacentVertices( QgsVertexId( 0, 0, 1 ), previous, next );
+  QCOMPARE( previous, QgsVertexId( ) );
+  QCOMPARE( next, QgsVertexId( ) );
+
+  p28.setExteriorRing( closedRing1 );
+  p28.adjacentVertices( QgsVertexId( 0, 0, 0 ), previous, next );
+  QCOMPARE( previous, QgsVertexId( 0, 0, 3 ) );
+  QCOMPARE( next, QgsVertexId( 0, 0, 1 ) );
+  p28.adjacentVertices( QgsVertexId( 0, 0, 1 ), previous, next );
+  QCOMPARE( previous, QgsVertexId( 0, 0, 0 ) );
+  QCOMPARE( next, QgsVertexId( 0, 0, 2 ) );
+  p28.adjacentVertices( QgsVertexId( 0, 0, 2 ), previous, next );
+  QCOMPARE( previous, QgsVertexId( 0, 0, 1 ) );
+  QCOMPARE( next, QgsVertexId( 0, 0, 3 ) );
+  p28.adjacentVertices( QgsVertexId( 0, 0, 3 ), previous, next );
+  QCOMPARE( previous, QgsVertexId( 0, 0, 2 ) );
+  QCOMPARE( next, QgsVertexId( 0, 0, 4 ) );
+  p28.adjacentVertices( QgsVertexId( 0, 0, 4 ), previous, next );
+  QCOMPARE( previous, QgsVertexId( 0, 0, 3 ) );
+  QCOMPARE( next, QgsVertexId( 0, 0, 1 ) );
+  p28.adjacentVertices( QgsVertexId( 0, 1, 0 ), previous, next );
+  QCOMPARE( previous, QgsVertexId( ) );
+  QCOMPARE( next, QgsVertexId( ) );
+  // part number should be retained
+  p28.adjacentVertices( QgsVertexId( 1, 0, 0 ), previous, next );
+  QCOMPARE( previous, QgsVertexId( 1, 0, 3 ) );
+  QCOMPARE( next, QgsVertexId( 1, 0, 1 ) );
+
+  // interior ring
+  p28.addInteriorRing( closedRing1->clone() );
+  p28.adjacentVertices( QgsVertexId( 0, 1, 0 ), previous, next );
+  QCOMPARE( previous, QgsVertexId( 0, 1, 3 ) );
+  QCOMPARE( next, QgsVertexId( 0, 1, 1 ) );
+  p28.adjacentVertices( QgsVertexId( 0, 1, 1 ), previous, next );
+  QCOMPARE( previous, QgsVertexId( 0, 1, 0 ) );
+  QCOMPARE( next, QgsVertexId( 0, 1, 2 ) );
+  p28.adjacentVertices( QgsVertexId( 0, 1, 2 ), previous, next );
+  QCOMPARE( previous, QgsVertexId( 0, 1, 1 ) );
+  QCOMPARE( next, QgsVertexId( 0, 1, 3 ) );
+  p28.adjacentVertices( QgsVertexId( 0, 1, 3 ), previous, next );
+  QCOMPARE( previous, QgsVertexId( 0, 1, 2 ) );
+  QCOMPARE( next, QgsVertexId( 0, 1, 4 ) );
+  p28.adjacentVertices( QgsVertexId( 0, 1, 4 ), previous, next );
+  QCOMPARE( previous, QgsVertexId( 0, 1, 3 ) );
+  QCOMPARE( next, QgsVertexId( 0, 1, 1 ) );
+  p28.adjacentVertices( QgsVertexId( 0, 2, 0 ), previous, next );
+  QCOMPARE( previous, QgsVertexId( ) );
+  QCOMPARE( next, QgsVertexId( ) );
 }
 
 void TestQgsGeometry::triangle()
@@ -10418,6 +10521,20 @@ void TestQgsGeometry::multiPoint()
   QVERIFY( it2.hasNext() );
   QCOMPARE( it2.next(), QgsPoint( 1, 1 ) );
   QVERIFY( !it2.hasNext() );
+
+  //adjacent vertices - both should be invalid
+  QgsMultiPointV2 c21;
+  c21.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
+  c21.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
+  QgsVertexId prev( 1, 2, 3 ); // start with something
+  QgsVertexId next( 4, 5, 6 );
+  c21.adjacentVertices( QgsVertexId( 0, 0, 0 ), prev, next );
+  QCOMPARE( prev, QgsVertexId() );
+  QCOMPARE( next, QgsVertexId() );
+  c21.adjacentVertices( QgsVertexId( 1, 0, 0 ), prev, next );
+  QCOMPARE( prev, QgsVertexId() );
+  QCOMPARE( next, QgsVertexId() );
+
 }
 
 void TestQgsGeometry::multiLineString()
@@ -14102,6 +14219,40 @@ void TestQgsGeometry::geometryCollection()
   QVERIFY( !c30.hasCurvedSegments() );
   c30.addGeometry( toSegment.clone() );
   QVERIFY( c30.hasCurvedSegments() );
+
+
+  //adjacent vertices
+  QgsGeometryCollection c31;
+  QgsLineString vertexLine1;
+  QgsVertexId prev( 1, 2, 3 ); // start with something
+  QgsVertexId next( 4, 5, 6 );
+  c31.adjacentVertices( QgsVertexId( 0, 0, -1 ), prev, next );
+  QCOMPARE( prev, QgsVertexId() );
+  QCOMPARE( next, QgsVertexId() );
+  c31.adjacentVertices( QgsVertexId( -1, 0, -1 ), prev, next );
+  QCOMPARE( prev, QgsVertexId() );
+  QCOMPARE( next, QgsVertexId() );
+  c31.adjacentVertices( QgsVertexId( 10, 0, -1 ), prev, next );
+  QCOMPARE( prev, QgsVertexId() );
+  QCOMPARE( next, QgsVertexId() );
+  vertexLine1.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 112 ) );
+  c31.addGeometry( vertexLine1.clone() );
+  c31.addGeometry( vertexLine1.clone() );
+  c31.adjacentVertices( QgsVertexId( -1, 0, -1 ), prev, next );
+  QCOMPARE( prev, QgsVertexId() );
+  QCOMPARE( next, QgsVertexId() );
+  c31.adjacentVertices( QgsVertexId( 10, 0, -1 ), prev, next );
+  QCOMPARE( prev, QgsVertexId() );
+  QCOMPARE( next, QgsVertexId() );
+  c31.adjacentVertices( QgsVertexId( 0, 0, 0 ), prev, next );
+  QCOMPARE( prev, QgsVertexId() );
+  QCOMPARE( next, QgsVertexId( 0, 0, 1 ) );
+  c31.adjacentVertices( QgsVertexId( 0, 0, 1 ), prev, next );
+  QCOMPARE( prev, QgsVertexId( 0, 0, 0 ) );
+  QCOMPARE( next, QgsVertexId( 0, 0, 2 ) );
+  c31.adjacentVertices( QgsVertexId( 1, 0, 1 ), prev, next );
+  QCOMPARE( prev, QgsVertexId( 1, 0, 0 ) );
+  QCOMPARE( next, QgsVertexId( 1, 0, 2 ) );
 }
 
 void TestQgsGeometry::triangle2()
