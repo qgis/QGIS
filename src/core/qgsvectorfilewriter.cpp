@@ -630,6 +630,13 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
   if ( newFilename )
     *newFilename = vectorFileName;
+
+  // enabling transaction on databases that support it
+  mUsingTransaction = true;
+  if ( OGRERR_NONE != OGR_L_StartTransaction( mLayer ) )
+  {
+    mUsingTransaction = false;
+  }
 }
 
 OGRGeometryH QgsVectorFileWriter::createEmptyGeometry( QgsWkbTypes::Type wkbType )
@@ -2219,6 +2226,15 @@ bool QgsVectorFileWriter::writeFeature( OGRLayerH layer, OGRFeatureH feature )
 
 QgsVectorFileWriter::~QgsVectorFileWriter()
 {
+  if ( mUsingTransaction )
+  {
+    if ( OGRERR_NONE != OGR_L_CommitTransaction( mLayer ) )
+    {
+      QgsDebugMsg( "Error while committing transaction on OGRLayer." );
+    }
+  }
+
+
   if ( mDS )
   {
     OGR_DS_Destroy( mDS );
@@ -2545,15 +2561,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
 
   writer->startRender( layer );
 
-  // enabling transaction on databases that support it
-  bool transactionsEnabled = true;
-
-  if ( OGRERR_NONE != OGR_L_StartTransaction( writer->mLayer ) )
-  {
-    QgsDebugMsg( "Error when trying to enable transactions on OGRLayer." );
-    transactionsEnabled = false;
-  }
-
   writer->resetMap( attributes );
   // Reset mFields to layer fields, and not just exported fields
   writer->mFields = layer->fields();
@@ -2639,14 +2646,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       }
     }
     n++;
-  }
-
-  if ( transactionsEnabled )
-  {
-    if ( OGRERR_NONE != OGR_L_CommitTransaction( writer->mLayer ) )
-    {
-      QgsDebugMsg( "Error while committing transaction on OGRLayer." );
-    }
   }
 
   writer->stopRender( layer );

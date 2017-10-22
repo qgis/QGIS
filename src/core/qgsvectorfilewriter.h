@@ -676,6 +676,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     QgsRenderContext mRenderContext;
 
+    bool mUsingTransaction = false;
+
     static QMap<QString, MetaData> initMetaData();
     void createSymbolLayerTable( QgsVectorLayer *vl, const QgsCoordinateTransform &ct, OGRDataSourceH ds );
     OGRFeatureH createFeature( const QgsFeature &feature );
