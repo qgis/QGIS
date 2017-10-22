@@ -1293,24 +1293,30 @@ Returns an extruded version of this geometry.
 .. versionadded:: 2.10
 %End
 
-    bool vertexIdFromVertexNr( int nr, QgsVertexId &id /Out/ ) const;
+    bool vertexIdFromVertexNr( int number, QgsVertexId &id /Out/ ) const;
 %Docstring
- Calculates the vertex ID from a vertex number
- \param nr vertex number
- \param id reference to QgsVertexId for storing result
- :return: true if vertex was found
+ Calculates the vertex ID from a vertex ``number``.
+
+ If a matching vertex was found, it will be stored in ``id``.
+
+ Returns true if vertex was found.
+
 .. versionadded:: 2.10
-.. seealso:: vertexNrFromVertexId
+.. seealso:: vertexNrFromVertexId()
  :rtype: bool
 %End
 
-    int vertexNrFromVertexId( QgsVertexId i ) const;
+    int vertexNrFromVertexId( QgsVertexId id ) const;
 %Docstring
- Returns the vertex number corresponding to a vertex idd
- \param i vertex id
- :return: vertex number
+ Returns the vertex number corresponding to a vertex ``id``.
+
+ The vertex numbers start at 0, so a return value of 0 corresponds
+ to the first vertex.
+
+ Returns -1 if a corresponding vertex could not be found.
+
 .. versionadded:: 2.10
-.. seealso:: vertexIdFromVertexNr
+.. seealso:: vertexIdFromVertexNr()
  :rtype: int
 %End
 

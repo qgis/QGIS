@@ -154,6 +154,14 @@ QgsAbstractGeometry *QgsMultiPointV2::boundary() const
   return nullptr;
 }
 
+int QgsMultiPointV2::vertexNumberFromVertexId( QgsVertexId id ) const
+{
+  if ( id.part < 0 || id.part >= mGeometries.count() || id.vertex != 0 || id.ring != 0 )
+    return -1;
+
+  return id.part; // can shortcut the calculation, since each part will have 1 vertex
+}
+
 bool QgsMultiPointV2::wktOmitChildType() const
 {
   return true;

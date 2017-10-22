@@ -1277,23 +1277,29 @@ class CORE_EXPORT QgsGeometry
     void draw( QPainter &p ) const;
 
     /**
-     * Calculates the vertex ID from a vertex number
-     * \param nr vertex number
-     * \param id reference to QgsVertexId for storing result
-     * \returns true if vertex was found
+     * Calculates the vertex ID from a vertex \a number.
+     *
+     * If a matching vertex was found, it will be stored in \a id.
+     *
+     * Returns true if vertex was found.
+     *
      * \since QGIS 2.10
-     * \see vertexNrFromVertexId
+     * \see vertexNrFromVertexId()
      */
-    bool vertexIdFromVertexNr( int nr, QgsVertexId &id SIP_OUT ) const;
+    bool vertexIdFromVertexNr( int number, QgsVertexId &id SIP_OUT ) const;
 
     /**
-     * Returns the vertex number corresponding to a vertex idd
-     * \param i vertex id
-     * \returns vertex number
+     * Returns the vertex number corresponding to a vertex \a id.
+     *
+     * The vertex numbers start at 0, so a return value of 0 corresponds
+     * to the first vertex.
+     *
+     * Returns -1 if a corresponding vertex could not be found.
+     *
      * \since QGIS 2.10
-     * \see vertexIdFromVertexNr
+     * \see vertexIdFromVertexNr()
      */
-    int vertexNrFromVertexId( QgsVertexId i ) const;
+    int vertexNrFromVertexId( QgsVertexId id ) const;
 
     /**
      * Returns an error string referring to the last error encountered

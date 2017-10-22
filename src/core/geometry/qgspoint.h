@@ -405,6 +405,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     void transform( const QTransform &t ) override;
     QgsCoordinateSequence coordinateSequence() const override;
     int nCoordinates() const override;
+    int vertexNumberFromVertexId( QgsVertexId id ) const override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     //low-level editing

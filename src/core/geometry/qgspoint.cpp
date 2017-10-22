@@ -320,6 +320,14 @@ int QgsPoint::nCoordinates() const
   return 1;
 }
 
+int QgsPoint::vertexNumberFromVertexId( QgsVertexId id ) const
+{
+  if ( id.vertex != 0 )
+    return -1;
+  else
+    return 0;
+}
+
 QgsAbstractGeometry *QgsPoint::boundary() const
 {
   return nullptr;

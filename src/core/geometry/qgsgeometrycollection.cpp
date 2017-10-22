@@ -92,6 +92,32 @@ void QgsGeometryCollection::adjacentVertices( QgsVertexId vertex, QgsVertexId &p
   mGeometries.at( vertex.part )->adjacentVertices( vertex, previousVertex, nextVertex );
 }
 
+int QgsGeometryCollection::vertexNumberFromVertexId( QgsVertexId id ) const
+{
+  if ( id.part < 0 || id.part >= mGeometries.count() )
+    return -1;
+
+  int number = 0;
+  int part = 0;
+  for ( QgsAbstractGeometry *geometry : mGeometries )
+  {
+    if ( part == id.part )
+    {
+      int partNumber =  geometry->vertexNumberFromVertexId( QgsVertexId( 0, id.ring, id.vertex ) );
+      if ( partNumber == -1 )
+        return -1;
+      return number + partNumber;
+    }
+    else
+    {
+      number += geometry->nCoordinates();
+    }
+
+    part++;
+  }
+  return -1; // should not happen
+}
+
 int QgsGeometryCollection::numGeometries() const
 {
   return mGeometries.size();

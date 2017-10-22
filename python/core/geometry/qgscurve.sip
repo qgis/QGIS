@@ -104,6 +104,8 @@ class QgsCurve: QgsAbstractGeometry
 
     virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ );
 
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
+
 
     virtual bool pointAt( int node, QgsPoint &point /Out/, QgsVertexId::VertexType &type /Out/ ) const = 0;
 %Docstring

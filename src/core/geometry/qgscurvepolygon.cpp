@@ -717,6 +717,41 @@ int QgsCurvePolygon::nCoordinates() const
   return count;
 }
 
+int QgsCurvePolygon::vertexNumberFromVertexId( QgsVertexId id ) const
+{
+  if ( id.part != 0 )
+    return -1;
+
+  if ( id.ring < 0 || id.ring >= ringCount() )
+    return -1;
+
+  int number = 0;
+  if ( id.ring == 0 && mExteriorRing )
+  {
+    return mExteriorRing->vertexNumberFromVertexId( QgsVertexId( 0, 0, id.vertex ) );
+  }
+  else
+  {
+    number += mExteriorRing->numPoints();
+  }
+
+  for ( int i = 0; i < mInteriorRings.count(); ++i )
+  {
+    if ( id.ring == i + 1 )
+    {
+      int partNumber = mInteriorRings.at( i )->vertexNumberFromVertexId( QgsVertexId( 0, 0, id.vertex ) );
+      if ( partNumber == -1 )
+        return -1;
+      return number + partNumber;
+    }
+    else
+    {
+      number += mInteriorRings.at( i )->numPoints();
+    }
+  }
+  return -1; // should not happen
+}
+
 bool QgsCurvePolygon::isEmpty() const
 {
   if ( !mExteriorRing )
