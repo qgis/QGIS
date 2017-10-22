@@ -55,6 +55,8 @@ class QgsGeometryCollection: QgsAbstractGeometry
 
     virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ );
 
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
+
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 %Docstring

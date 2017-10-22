@@ -274,6 +274,18 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual void draw( QPainter &p ) const = 0;
 
     /**
+     * Returns the vertex number corresponding to a vertex \a id.
+     *
+     * The vertex numbers start at 0, so a return value of 0 corresponds
+     * to the first vertex.
+     *
+     * Returns -1 if a corresponding vertex could not be found.
+     *
+     * \since QGIS 3.0
+     */
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const = 0;
+
+    /**
      * Returns next vertex id and coordinates
      * \param id initial value should be the starting vertex id. The next vertex id will be stored
      * in this variable if found.

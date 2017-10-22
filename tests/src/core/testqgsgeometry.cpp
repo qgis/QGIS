@@ -1028,6 +1028,10 @@ void TestQgsGeometry::point()
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPoint( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, 45 ) ), 45.0 );
   QCOMPARE( QgsPoint( QgsWkbTypes::PointZ, 1, 2, 2 ).inclination( QgsPoint( QgsWkbTypes::PointZ, 1, 2, 2 ).project( 5, 90, 135 ) ), 135.0 );
 
+  // vertex number
+  QCOMPARE( QgsPoint( 1, 2 ).vertexNumberFromVertexId( QgsVertexId( 0, 0, -1 ) ), -1 );
+  QCOMPARE( QgsPoint( 1, 2 ).vertexNumberFromVertexId( QgsVertexId( 0, 0, 1 ) ), -1 );
+  QCOMPARE( QgsPoint( 1, 2 ).vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), 0 );
 }
 
 void TestQgsGeometry::circularString()
@@ -4006,6 +4010,22 @@ void TestQgsGeometry::lineString()
   vertexLine1.adjacentVertices( QgsVertexId( 0, 0, 3 ), prev, next );
   QCOMPARE( prev, QgsVertexId( 0, 0, 2 ) );
   QCOMPARE( next, QgsVertexId() );
+
+  // vertex number
+  QgsLineString vertexLine2;
+  QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
+  QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), -1 );
+  QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( 1, 0, 0 ) ), -1 );
+  vertexLine2.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 112 ) );
+  QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
+  QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( 1, 0, 0 ) ), -1 );
+  QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( 0, -1, 0 ) ), -1 );
+  QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( 0, 1, 0 ) ), -1 );
+  QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( 0, 0, -1 ) ), -1 );
+  QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), 0 );
+  QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( 0, 0, 1 ) ), 1 );
+  QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( 0, 0, 2 ) ), 2 );
+  QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( 0, 0, 3 ) ), -1 );
 }
 
 void TestQgsGeometry::polygon()
@@ -5630,6 +5650,46 @@ void TestQgsGeometry::polygon()
   p28.adjacentVertices( QgsVertexId( 0, 2, 0 ), previous, next );
   QCOMPARE( previous, QgsVertexId( ) );
   QCOMPARE( next, QgsVertexId( ) );
+
+  // vertex number
+  QgsLineString vertexLine2;
+  QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
+
+  QgsLineString *closedRing2 = new QgsLineString();
+  closedRing2->setPoints( QList<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
+  QgsPolygonV2 p29;
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 1, 0, 0 ) ), -1 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, -1, 0 ) ), -1 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 1, 0 ) ), -1 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 0, -1 ) ), -1 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), -1 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 0, 1 ) ), -1 );
+  p29.setExteriorRing( closedRing2 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 1, 0, 0 ) ), -1 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, -1, 0 ) ), -1 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 1, 0 ) ), -1 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 0, -1 ) ), -1 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), 0 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 0, 1 ) ), 1 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 0, 2 ) ), 2 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 0, 3 ) ), 3 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 0, 4 ) ), 4 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 0, 5 ) ), -1 );
+  p29.addInteriorRing( closedRing2->clone() );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), 0 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 0, 1 ) ), 1 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 0, 2 ) ), 2 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 0, 3 ) ), 3 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 0, 4 ) ), 4 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 0, 5 ) ), -1 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 1, 0 ) ), 5 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 1, 1 ) ), 6 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 1, 2 ) ), 7 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 1, 3 ) ), 8 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 1, 4 ) ), 9 );
+  QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 1, 5 ) ), -1 );
 }
 
 void TestQgsGeometry::triangle()
@@ -10535,6 +10595,21 @@ void TestQgsGeometry::multiPoint()
   QCOMPARE( prev, QgsVertexId() );
   QCOMPARE( next, QgsVertexId() );
 
+  // vertex number
+  QgsMultiPointV2 c22;
+  QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
+  QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), -1 );
+  QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( 1, 0, 0 ) ), -1 );
+  c22.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
+  c22.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
+  QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
+  QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( 2, 0, 0 ) ), -1 );
+  QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), 0 );
+  QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( 0, 0, 1 ) ), -1 );
+  QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( 0, 1, 0 ) ), -1 );
+  QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( 1, 0, 0 ) ), 1 );
+  QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( 1, 0, 1 ) ), -1 );
+  QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
 }
 
 void TestQgsGeometry::multiLineString()
@@ -14253,6 +14328,78 @@ void TestQgsGeometry::geometryCollection()
   c31.adjacentVertices( QgsVertexId( 1, 0, 1 ), prev, next );
   QCOMPARE( prev, QgsVertexId( 1, 0, 0 ) );
   QCOMPARE( next, QgsVertexId( 1, 0, 2 ) );
+
+
+  // vertex number
+  QgsGeometryCollection c32;
+  QgsLineString vertexLine2;
+  vertexLine2.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 112 ) );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 1, 0, 0 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, -1, 0 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 1, 0 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 0, -1 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 0, 1 ) ), -1 );
+  c32.addGeometry( vertexLine2.clone() );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 1, 0, 0 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, -1, 0 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 1, 0 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 0, -1 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), 0 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 0, 1 ) ), 1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 0, 2 ) ), 2 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 0, 3 ) ), -1 );
+  c32.addGeometry( vertexLine2.clone() );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), 0 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 0, 1 ) ), 1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 0, 2 ) ), 2 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 0, 3 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 1, 0, 0 ) ), 3 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 1, 0, 1 ) ), 4 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 1, 0, 2 ) ), 5 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 1, 0, 3 ) ), -1 );
+  QgsPolygonV2 polyPart;
+  vertexLine2.close();
+  polyPart.setExteriorRing( vertexLine2.clone() );
+  c32.addGeometry( polyPart.clone() );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), 0 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 0, 1 ) ), 1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 0, 2 ) ), 2 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 0, 0, 3 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 1, 0, 0 ) ), 3 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 1, 0, 1 ) ), 4 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 1, 0, 2 ) ), 5 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 1, 0, 3 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 2, -1, 0 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 2, 1, 0 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 2, 0, -1 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 2, 0, 0 ) ), 6 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 2, 0, 1 ) ), 7 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 2, 0, 2 ) ), 8 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 2, 0, 3 ) ), 9 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 2, 0, 4 ) ), -1 );
+  polyPart.addInteriorRing( vertexLine2.clone() );
+  c32.addGeometry( polyPart.clone() );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 2, 0, 0 ) ), 6 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 2, 0, 1 ) ), 7 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 2, 0, 2 ) ), 8 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 2, 0, 3 ) ), 9 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 2, 0, 4 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 3, -1, 0 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 3, 2, 0 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 3, 0, 0 ) ), 10 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 3, 0, 1 ) ), 11 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 3, 0, 2 ) ), 12 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 3, 0, 3 ) ), 13 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 3, 0, 4 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 3, 1, 0 ) ), 14 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 3, 1, 1 ) ), 15 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 3, 1, 2 ) ), 16 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 3, 1, 3 ) ), 17 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 3, 1, 4 ) ), -1 );
+  QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 3, 2, 0 ) ), -1 );
 }
 
 void TestQgsGeometry::triangle2()

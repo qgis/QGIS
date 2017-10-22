@@ -106,6 +106,15 @@ void QgsCurve::adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex
   }
 }
 
+int QgsCurve::vertexNumberFromVertexId( QgsVertexId id ) const
+{
+  if ( id.part != 0 || id.ring != 0 )
+    return -1;
+  if ( id.vertex < 0 || id.vertex >= numPoints() )
+    return -1;
+  return id.vertex;
+}
+
 QgsAbstractGeometry *QgsCurve::boundary() const
 {
   if ( isEmpty() )

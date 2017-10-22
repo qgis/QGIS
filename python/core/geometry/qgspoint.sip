@@ -364,6 +364,8 @@ class QgsPoint: QgsAbstractGeometry
 
     virtual int nCoordinates() const;
 
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
+
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
 

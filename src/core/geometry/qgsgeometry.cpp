@@ -334,8 +334,12 @@ QgsPointXY QgsGeometry::closestVertex( const QgsPointXY &point, int &atVertex, i
   }
   sqrDist = QgsGeometryUtils::sqrDistance2D( pt, vp );
 
+  QgsVertexId prevVertex;
+  QgsVertexId nextVertex;
+  d->geometry->adjacentVertices( id, prevVertex, nextVertex );
   atVertex = vertexNrFromVertexId( id );
-  adjacentVertices( atVertex, beforeVertex, afterVertex );
+  beforeVertex = vertexNrFromVertexId( prevVertex );
+  afterVertex = vertexNrFromVertexId( nextVertex );
   return QgsPointXY( vp.x(), vp.y() );
 }
 
@@ -2451,27 +2455,7 @@ int QgsGeometry::vertexNrFromVertexId( QgsVertexId id ) const
   {
     return -1;
   }
-
-  QgsCoordinateSequence coords = d->geometry->coordinateSequence();
-
-  int vertexCount = 0;
-  for ( int part = 0; part < coords.size(); ++part )
-  {
-    const QgsRingSequence &featureCoords = coords.at( part );
-    for ( int ring = 0; ring < featureCoords.size(); ++ring )
-    {
-      const QgsPointSequence &ringCoords = featureCoords.at( ring );
-      for ( int vertex = 0; vertex < ringCoords.size(); ++vertex )
-      {
-        if ( vertex == id.vertex && ring == id.ring && part == id.part )
-        {
-          return vertexCount;
-        }
-        ++vertexCount;
-      }
-    }
-  }
-  return -1;
+  return d->geometry->vertexNumberFromVertexId( id );
 }
 
 QString QgsGeometry::lastError() const

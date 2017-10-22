@@ -246,6 +246,19 @@ class QgsAbstractGeometry
  \param p destination QPainter
 %End
 
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const = 0;
+%Docstring
+ Returns the vertex number corresponding to a vertex ``id``.
+
+ The vertex numbers start at 0, so a return value of 0 corresponds
+ to the first vertex.
+
+ Returns -1 if a corresponding vertex could not be found.
+
+.. versionadded:: 3.0
+ :rtype: int
+%End
+
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const = 0;
 %Docstring
  Returns next vertex id and coordinates

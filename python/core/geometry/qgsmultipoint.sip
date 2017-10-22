@@ -45,6 +45,9 @@ class QgsMultiPointV2: QgsGeometryCollection
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
+
+
 
   protected:
 
