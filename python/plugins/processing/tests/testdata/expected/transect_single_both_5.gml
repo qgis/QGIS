@@ -134,7 +134,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:transect_single_both_5 fid="4">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:2154"><gml:coordinates>-1007695.38013693,1334641.37803237 -1007700.38013693,1334641.37803237</gml:coordinates></gml:LineString></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:2154"><gml:coordinates>-1007696.10902512,1334643.14244812 -1007699.65124874,1334639.61361662</gml:coordinates></gml:LineString></ogr:geometryProperty>
       <ogr:TR_FID>3</ogr:TR_FID>
       <ogr:TR_ID>11</ogr:TR_ID>
       <ogr:TR_SEGMENT>1</ogr:TR_SEGMENT>
@@ -189,7 +189,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:transect_single_both_5 fid="4">
-      <ogr:geometryProperty><gml:LineString srsName="EPSG:2154"><gml:coordinates>-1007697.87066728,1334643.87801444 -1007697.88960658,1334638.8780503</gml:coordinates></gml:LineString></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:LineString srsName="EPSG:2154"><gml:coordinates>-1007696.10902512,1334643.14244812 -1007699.65124874,1334639.61361662</gml:coordinates></gml:LineString></ogr:geometryProperty>
       <ogr:TR_FID>3</ogr:TR_FID>
       <ogr:TR_ID>16</ogr:TR_ID>
       <ogr:TR_SEGMENT>6</ogr:TR_SEGMENT>

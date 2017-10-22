@@ -97,9 +97,15 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
   fields.append( QgsField( QStringLiteral( "TR_LENGTH" ), QVariant::Double, QString(), 20, 6 ) );
   fields.append( QgsField( QStringLiteral( "TR_ORIENT" ), QVariant::Int, QString(), 1 ) );
 
+  QgsWkbTypes::Type outputWkb = QgsWkbTypes::LineString;
+  if ( QgsWkbTypes::hasZ( source->wkbType() ) )
+    outputWkb = QgsWkbTypes::addZ( outputWkb );
+  if ( QgsWkbTypes::hasM( source->wkbType() ) )
+    outputWkb = QgsWkbTypes::addM( outputWkb );
+
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields,
-                                          QgsWkbTypes::LineString, source->sourceCrs() ) );
+                                          outputWkb, source->sourceCrs() ) );
   if ( !sink )
     return QVariantMap();
 
@@ -142,7 +148,7 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
               orientation;
         outFeat.setAttributes( attrs );
         double angleAtVertex = line->vertexAngle( vertexId );
-        outFeat.setGeometry( calcTransect( line->pointN( i ), angleAtVertex, length, orientation, angle ) );
+        outFeat.setGeometry( calcTransect( *it, angleAtVertex, length, orientation, angle ) );
         sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
         number++;
         it++;
