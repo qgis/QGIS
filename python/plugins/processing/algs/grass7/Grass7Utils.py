@@ -385,47 +385,32 @@ class Grass7Utils(object):
 
     @staticmethod
     def checkGrass7IsInstalled(ignorePreviousState=False):
-        if isWindows():
-            path = Grass7Utils.grassPath()
-            if path == '':
-                return Grass7Utils.tr(
-                    'GRASS GIS 7 folder is not configured. Please configure '
-                    'it before running GRASS GIS 7 algorithms.')
-            cmdpath = os.path.join(path, 'bin', 'r.out.gdal.exe')
-            if not os.path.exists(cmdpath):
-                return Grass7Utils.tr(
-                    'The specified GRASS 7 folder "{}" does not contain '
-                    'a valid set of GRASS 7 modules.\nPlease, go to the '
-                    'Processing settings dialog, and check that the '
-                    'GRASS 7\nfolder is correctly configured'.format(os.path.join(path, 'bin')))
-
         if not ignorePreviousState:
             if Grass7Utils.isGrass7Installed:
                 return
-        #try:
-        #    from processing import run
-        #    result = run(
-        #        'grass7:v.voronoi',
-        #        points(),
-        #        False,
-        #        False,
-        #        None,
-        #        -1,
-        #        0.0001,
-        #        0,
-        #        None,
-        #    )
-        #    if not os.path.exists(result['output']):
-        #        return Grass7Utils.tr(
-        #            'It seems that GRASS GIS 7 is not correctly installed and '
-        #            'configured in your system.\nPlease install it before '
-        #            'running GRASS GIS 7 algorithms.')
-        #except:
-        #    return Grass7Utils.tr(
-        #        'Error while checking GRASS GIS 7 installation. GRASS GIS 7 '
-        #        'might not be correctly configured.\n')
 
-        Grass7Utils.isGrass7Installed = True
+        # We check the version of Grass7
+        if Grass7Utils.installedVersion() is not None:
+            Grass7Utils.isGrass7Installed = True
+            return
+        else:
+            if not isWindows():
+                return Grass7Utils.tr(
+                    'GRASS 7 can\'t be found on this system from a shell.'
+                    'Please install it or configure your PATH environment variable.')
+            else:
+                path = Grass7Utils.grassPath()
+                if path == '':
+                    return Grass7Utils.tr(
+                        'GRASS GIS 7 folder is not configured. Please configure '
+                        'it before running GRASS GIS 7 algorithms.')
+                cmdpath = os.path.join(path, 'bin', 'r.out.gdal.exe')
+                if not os.path.exists(cmdpath):
+                    return Grass7Utils.tr(
+                        'The specified GRASS 7 folder "{}" does not contain '
+                        'a valid set of GRASS 7 modules.\nPlease, go to the '
+                        'Processing settings dialog, and check that the '
+                        'GRASS 7\nfolder is correctly configured'.format(os.path.join(path, 'bin')))
 
     @staticmethod
     def tr(string, context=''):
