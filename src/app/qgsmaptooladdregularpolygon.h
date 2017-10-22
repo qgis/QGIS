@@ -18,7 +18,7 @@
 
 #include "qgsregularpolygon.h"
 #include "qgsmaptoolcapture.h"
-#include "qspinbox.h"
+#include "qgsspinbox.h"
 
 class QSpinBox;
 
@@ -41,7 +41,7 @@ class QgsMapToolAddRegularPolygon: public QgsMapToolCapture
   protected:
     explicit QgsMapToolAddRegularPolygon( QgsMapCanvas *canvas ) = delete; //forbidden
 
-    std::unique_ptr<QSpinBox> mNumberSidesSpinBox;
+    std::unique_ptr<QgsSpinBox> mNumberSidesSpinBox;
     int mNumberSides = 6;
 
     //! (re-)create the spin box to enter the number of sides

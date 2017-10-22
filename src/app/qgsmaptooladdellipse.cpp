@@ -28,6 +28,8 @@ QgsMapToolAddEllipse::QgsMapToolAddEllipse( QgsMapToolCapture *parentTool, QgsMa
   , mParentTool( parentTool )
 {
   clean();
+  connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddEllipse::stopCapturing );
+  connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddEllipse::stopCapturing );
 }
 
 QgsMapToolAddEllipse::~QgsMapToolAddEllipse()

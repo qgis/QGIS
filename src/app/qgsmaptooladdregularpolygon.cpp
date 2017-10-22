@@ -22,13 +22,14 @@
 #include "qgspoint.h"
 #include "qgisapp.h"
 #include "qgsstatusbar.h"
-#include "qgsspinbox.h"
 
 QgsMapToolAddRegularPolygon::QgsMapToolAddRegularPolygon( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mParentTool( parentTool )
 {
   clean();
+  connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddRegularPolygon::stopCapturing );
+  connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddRegularPolygon::stopCapturing );
 }
 
 QgsMapToolAddRegularPolygon::~QgsMapToolAddRegularPolygon()

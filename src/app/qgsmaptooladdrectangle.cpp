@@ -29,6 +29,8 @@ QgsMapToolAddRectangle::QgsMapToolAddRectangle( QgsMapToolCapture *parentTool, Q
   , mParentTool( parentTool )
 {
   clean();
+  connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddRectangle::stopCapturing );
+  connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddRectangle::stopCapturing );
 }
 
 void QgsMapToolAddRectangle::setAzimuth( const double azimuth )

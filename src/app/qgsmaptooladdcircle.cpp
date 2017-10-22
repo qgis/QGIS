@@ -28,6 +28,8 @@ QgsMapToolAddCircle::QgsMapToolAddCircle( QgsMapToolCapture *parentTool, QgsMapC
   , mParentTool( parentTool )
 {
   clean();
+  connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddCircle::stopCapturing );
+  connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddCircle::stopCapturing );
 }
 
 QgsMapToolAddCircle::~QgsMapToolAddCircle()
