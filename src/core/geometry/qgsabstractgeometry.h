@@ -283,6 +283,12 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const = 0;
 
     /**
+     * Returns the vertices adjacent to a specified \a vertex within a geometry.
+     * \since QGIS 3.0
+     */
+    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) = 0;
+
+    /**
      * Retrieves the sequence of geometries, rings and nodes.
      * \returns coordinate sequence
      */

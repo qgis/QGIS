@@ -256,6 +256,12 @@ class QgsAbstractGeometry
  :rtype: bool
 %End
 
+    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) = 0;
+%Docstring
+ Returns the vertices adjacent to a specified ``vertex`` within a geometry.
+.. versionadded:: 3.0
+%End
+
     virtual QgsCoordinateSequence coordinateSequence() const = 0;
 %Docstring
  Retrieves the sequence of geometries, rings and nodes.

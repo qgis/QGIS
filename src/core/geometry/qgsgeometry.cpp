@@ -387,7 +387,7 @@ void QgsGeometry::adjacentVertices( int atVertex, int &beforeVertex, int &afterV
   }
 
   QgsVertexId beforeVertexId, afterVertexId;
-  QgsGeometryUtils::adjacentVertices( *( d->geometry ), id, beforeVertexId, afterVertexId );
+  d->geometry->adjacentVertices( id, beforeVertexId, afterVertexId );
   beforeVertex = vertexNrFromVertexId( beforeVertexId );
   afterVertex = vertexNrFromVertexId( afterVertexId );
 }
@@ -1918,7 +1918,7 @@ double QgsGeometry::interpolateAngle( double distance ) const
     QgsVertexId v2 = previous;
     QgsVertexId v1;
     QgsVertexId v3;
-    QgsGeometryUtils::adjacentVertices( *segmentized.geometry(), v2, v1, v3 );
+    segmentized.geometry()->adjacentVertices( v2, v1, v3 );
     if ( v1.isValid() && v3.isValid() )
     {
       QgsPoint p1 = segmentized.geometry()->vertexAt( v1 );

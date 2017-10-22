@@ -773,6 +773,61 @@ bool QgsCurvePolygon::nextVertex( QgsVertexId &vId, QgsPoint &vertex ) const
   }
 }
 
+void ringAdjacentVertices( const QgsCurve *curve, QgsVertexId vertex, QgsVertexId &previousVertex, QgsVertexId &nextVertex )
+{
+  int n = curve->numPoints();
+  if ( vertex.vertex < 0 || vertex.vertex >= n )
+  {
+    previousVertex = QgsVertexId();
+    nextVertex = QgsVertexId();
+    return;
+  }
+
+  if ( vertex.vertex == 0 && n < 3 )
+  {
+    previousVertex = QgsVertexId();
+  }
+  else if ( vertex.vertex == 0 )
+  {
+    previousVertex = QgsVertexId( vertex.part, vertex.ring, n - 2 );
+  }
+  else
+  {
+    previousVertex = QgsVertexId( vertex.part, vertex.ring, vertex.vertex - 1 );
+  }
+  if ( vertex.vertex == n - 1 && n < 3 )
+  {
+    nextVertex = QgsVertexId();
+  }
+  else if ( vertex.vertex == n - 1 )
+  {
+    nextVertex = QgsVertexId( vertex.part, vertex.ring, 1 );
+  }
+  else
+  {
+    nextVertex = QgsVertexId( vertex.part, vertex.ring, vertex.vertex + 1 );
+  }
+}
+
+void QgsCurvePolygon::adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex, QgsVertexId &nextVertex )
+{
+  if ( !mExteriorRing || vertex.ring < 0 || vertex.ring >= 1 + mInteriorRings.size() )
+  {
+    previousVertex = QgsVertexId();
+    nextVertex = QgsVertexId();
+    return;
+  }
+
+  if ( vertex.ring == 0 )
+  {
+    ringAdjacentVertices( mExteriorRing.get(), vertex, previousVertex, nextVertex );
+  }
+  else
+  {
+    ringAdjacentVertices( mInteriorRings.at( vertex.ring - 1 ), vertex, previousVertex, nextVertex );
+  }
+}
+
 bool QgsCurvePolygon::insertVertex( QgsVertexId vId, const QgsPoint &vertex )
 {
   if ( !mExteriorRing || vId.ring < 0 || vId.ring >= 1 + mInteriorRings.size() )

@@ -78,6 +78,34 @@ bool QgsCurve::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
   return pointAt( id.vertex, vertex, id.type );
 }
 
+void QgsCurve::adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex, QgsVertexId &nextVertex )
+{
+  int n = numPoints();
+  if ( vertex.vertex < 0 || vertex.vertex >= n )
+  {
+    previousVertex = QgsVertexId();
+    nextVertex = QgsVertexId();
+    return;
+  }
+
+  if ( vertex.vertex == 0 )
+  {
+    previousVertex = QgsVertexId();
+  }
+  else
+  {
+    previousVertex = QgsVertexId( vertex.part, vertex.ring, vertex.vertex - 1 );
+  }
+  if ( vertex.vertex == n - 1 )
+  {
+    nextVertex = QgsVertexId();
+  }
+  else
+  {
+    nextVertex = QgsVertexId( vertex.part, vertex.ring, vertex.vertex + 1 );
+  }
+}
+
 QgsAbstractGeometry *QgsCurve::boundary() const
 {
   if ( isEmpty() )

@@ -393,6 +393,12 @@ bool QgsPoint::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
   }
 }
 
+void QgsPoint::adjacentVertices( QgsVertexId, QgsVertexId &previousVertex, QgsVertexId &nextVertex )
+{
+  previousVertex = QgsVertexId();
+  nextVertex = QgsVertexId();
+}
+
 double QgsPoint::vertexAngle( QgsVertexId vertex ) const
 {
   Q_UNUSED( vertex );

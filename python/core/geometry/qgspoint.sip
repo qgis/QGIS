@@ -378,6 +378,8 @@ class QgsPoint: QgsAbstractGeometry
 
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const;
 
+    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ );
+
 
     virtual double vertexAngle( QgsVertexId vertex ) const;
 

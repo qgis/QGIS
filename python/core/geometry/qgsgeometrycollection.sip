@@ -53,6 +53,8 @@ class QgsGeometryCollection: QgsAbstractGeometry
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
+    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ );
+
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 %Docstring

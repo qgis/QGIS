@@ -80,11 +80,6 @@ class CORE_EXPORT QgsGeometryUtils
                                     QgsVertexId &nextVertex SIP_OUT );
 
     /**
-     * Returns vertices adjacent to a specified vertex within a geometry.
-     */
-    static void adjacentVertices( const QgsAbstractGeometry &geom, QgsVertexId atVertex, QgsVertexId &beforeVertex SIP_OUT, QgsVertexId &afterVertex SIP_OUT );
-
-    /**
      * Returns the squared 2D distance between two points.
      */
     static double sqrDistance2D( const QgsPoint &pt1, const QgsPoint &pt2 );

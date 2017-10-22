@@ -80,6 +80,18 @@ QgsAbstractGeometry *QgsGeometryCollection::boundary() const
   return nullptr;
 }
 
+void QgsGeometryCollection::adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex, QgsVertexId &nextVertex )
+{
+  if ( vertex.part < 0 || vertex.part >= mGeometries.count() )
+  {
+    previousVertex = QgsVertexId();
+    nextVertex = QgsVertexId();
+    return;
+  }
+
+  mGeometries.at( vertex.part )->adjacentVertices( vertex, previousVertex, nextVertex );
+}
+
 int QgsGeometryCollection::numGeometries() const
 {
   return mGeometries.size();
