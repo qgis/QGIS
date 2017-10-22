@@ -380,7 +380,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             paramName = param.name()
             if not paramName in parameters:
                 continue
-            if len(parameters[paramName]) == 0:
+            if isinstance(parameters[paramName], str) and len(parameters[paramName]) == 0:
                 continue
             # Raster inputs needs to be imported into temp GRASS DB
             if isinstance(param, QgsProcessingParameterRasterLayer):
@@ -675,12 +675,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         fileName = self.parameterAsOutputLayer(parameters, name, context)
         # Find if there is a dataType
         dataType = self.outType
-        QgsMessageLog.logMessage('outType: {}'.format(dataType), 'DEBUG', QgsMessageLog.INFO)
         if self.outType == 'auto':
             parameter = self.parameterDefinition(name)
             if parameter:
                 layerType = parameter.dataType()
-                QgsMessageLog.logMessage('layerType: {}'.format(layerType), 'DEBUG', QgsMessageLog.INFO)
                 if layerType in self.QGIS_OUTPUT_TYPES:
                     dataType = self.QGIS_OUTPUT_TYPES[layerType]
 
@@ -696,13 +694,12 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         """
         for cmd in [self.commands, self.outputCommands]:
             cmd.append(
-                'v.out.ogr{0} type={1}{2}input="{3}" output="{4}"{5}'.format(
+                'v.out.ogr{0} type={1} {2} input="{3}" output="{4}" {5}'.format(
                     '' if nocats else ' -c',
                     dataType,
-                    ' layer={}'.format(layer) if layer else '',
+                    'layer={}'.format(layer) if layer else '',
                     grassName,
                     fileName,
-                    os.path.splitext(os.path.basename(fileName))[0],
                     'format=ESRI_Shapefile --overwrite'
                 )
             )
