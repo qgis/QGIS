@@ -6,5 +6,5 @@ QgsProcessingParameterEnum|method|Neighborhood operation|average;median;mode;min
 QgsProcessingParameterNumber|size|Neighborhood size|QgsProcessingParameterNumber.Double|3|False|None|1
 QgsProcessingParameterBoolean|-c|Use circular neighborhood|False
 *QgsProcessingParameterBoolean|-a|Do not align output with the input|False
-*QgsProcessingParameterFile|weight|File containing weights|False
+*QgsProcessingParameterFile|weight|File containing weights|0|txt|None|True
 QgsProcessingParameterRasterDestination|output|Neighbors

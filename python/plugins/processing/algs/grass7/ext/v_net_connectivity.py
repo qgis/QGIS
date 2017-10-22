@@ -29,13 +29,19 @@ __revision__ = '$Format:%H$'
 from .v_net import incorporatePoints, variableOutput
 
 
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
     params = [u'where', u'cats']
     values = []
     for param in params:
         for i in range(1, 3):
-            values.append(alg.getParameterValue(u'set{}_{}'.format(i, param)))
+            values.append(
+                alg.parameterAsString(
+                    parameters,
+                    u'set{}_{}'.format(i, param),
+                    context
+                )
+            )
 
     if (values[0] or values[2]) and (values[1] or values[3]):
         return None
@@ -43,10 +49,10 @@ def checkParameterValuesBeforeExecuting(alg):
     return alg.tr("You need to set at least setX_where or setX_cats parameters for each set!")
 
 
-def processCommand(alg, parameters):
-    incorporatePoints(alg, parameters)
+def processCommand(alg, parameters, context):
+    incorporatePoints(alg, parameters, context)
 
 
-def processOutputs(alg):
-    outputParameter = {u"output": [u"point", 2]}
-    variableOutput(alg, outputParameter)
+def processOutputs(alg, parameters, context):
+    outputParameter = {'output': ['point', 2]}
+    variableOutput(alg, outputParameter, parameters, context)

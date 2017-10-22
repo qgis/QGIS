@@ -5,4 +5,4 @@ QgsProcessingParameterVectorLayer|map|Input layer|-1|None|False
 QgsProcessingParameterEnum|option|Value to calculate|area;length;coor
 QgsProcessingParameterEnum|units|units|miles;feet;meters;kilometers;acres;hectares;percent
 QgsProcessingParameterEnum|sort|Sort the result (ascending, descending)|asc;desc
-OutputHTML|html|Report
+QgsProcessingParameterFileDestination|html|Report|Html files (*.html)|report.html|False

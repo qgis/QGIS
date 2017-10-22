@@ -10,4 +10,4 @@ QgsProcessingParameterNumber|end|End angle for multidirectional horizon [degrees
 QgsProcessingParameterNumber|maxdistance|The maximum distance to consider when finding the horizon height|QgsProcessingParameterNumber.Double|10000|False|None|0
 QgsProcessingParameterString|distance|Sampling distance step coefficient (0.5-1.5)|1.0
 QgsProcessingParameterBoolean|-d|Write output in degrees (default is radians)|False
-OutputHTML|html|Horizon
+QgsProcessingParameterFileDestination|html|Horizon|Html files (*.html)|report.html|False

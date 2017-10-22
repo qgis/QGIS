@@ -45,9 +45,9 @@ def rliPath():
         return os.path.join(os.path.expanduser("~"), '.grass7', 'r.li')
 
 
-def removeConfigFile(alg):
+def removeConfigFile(alg, parameters, context):
     """ Remove the r.li user dir config file """
-    configPath = alg.getParameterValue('config')
+    configPath = alg.parameterAsString(parameters, 'config', context)
     if isWindows():
         command = "DEL {}".format(os.path.join(rliPath(), configPath))
     else:
@@ -55,10 +55,10 @@ def removeConfigFile(alg):
     alg.commands.append(command)
 
 
-def checkMovingWindow(alg, outputTxt=False):
+def checkMovingWindow(alg, parameters, context, outputTxt=False):
     """ Verify if we have the right parameters """
-    configTxt = alg.getParameterValue('config_txt')
-    config = alg.getParameterValue('config')
+    configTxt = alg.parameterAsString(parameters, 'config_txt', context)
+    config = alg.parameterAsString(parameters, 'config', context)
     if configTxt and config:
         return alg.tr("You need to set either inline configuration or a configuration file!")
 
@@ -84,7 +84,7 @@ def checkMovingWindow(alg, outputTxt=False):
     return None
 
 
-def configFile(alg, parameters, outputTxt=False):
+def configFile(alg, parameters, context, outputTxt=False):
     """ Handle inline configuration
     :param parameters:
     """
@@ -127,17 +127,17 @@ def configFile(alg, parameters, outputTxt=False):
         new_parameters[param.name()] = origOutput.value
         alg.removeOutputFromName('output')
 
-    alg.processCommand(new_parameters)
+    alg.processCommand(new_parameters, context)
 
     # Remove Config file:
-    removeConfigFile(alg)
+    removeConfigFile(alg, new_parameters, context)
 
     # re-add configTxt
     if outputTxt:
         alg.addOutput(origOutput)
 
 
-def moveOutputTxtFile(alg):
+def moveOutputTxtFile(alg, parameters, context):
     # Find output file name:
     origOutput = alg.getOutputValue('output')
     userGrass7Path = rliPath()

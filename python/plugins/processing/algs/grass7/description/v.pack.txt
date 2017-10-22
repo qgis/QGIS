@@ -3,4 +3,4 @@ Exports a vector map as GRASS GIS specific archive file.
 Vector (v.*)
 QgsProcessingParameterVectorLayer|input|Name of input vector map to pack|-1|None|False
 *QgsProcessingParameterBoolean|-c|Switch the compression off|False
-OutputFile|output|Packed archive
+QgsProcessingParameterFileDestination|output|Packed archive|Pack files (*.pack)|output.pack|False

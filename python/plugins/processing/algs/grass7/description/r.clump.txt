@@ -3,4 +3,5 @@ Recategorizes data in a raster map by grouping cells that form physically discre
 Raster (r.*)
 QgsProcessingParameterRasterLayer|input|Input layer|None|False
 QgsProcessingParameterString|title|Title for output raster map|
+*QgsProcessingParameterBoolean|-d|Clump also diagonal cells|False
 QgsProcessingParameterRasterDestination|output|Clumps

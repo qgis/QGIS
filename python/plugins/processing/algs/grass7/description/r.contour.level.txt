@@ -3,5 +3,5 @@ r.contour.level - Create vector contour from raster at specified levels
 Raster (r.*)
 QgsProcessingParameterRasterLayer|input|Input raster|None|False
 QgsProcessingParameterString|levels|List of contour levels|
-QgsProcessingParameterString|cut|Minimum number of points for a contour line (0 -> no limit)|0
+QgsProcessingParameterNumber|cut|Minimum number of points for a contour line (0 -> no limit)|QgsProcessingParameterNumber.Integer|0|True|0|None
 QgsProcessingParameterVectorDestination|output|Contours

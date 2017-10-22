@@ -5,5 +5,5 @@ QgsProcessingParameterRasterLayer|map|Raster map to be queried|None|False
 QgsProcessingParameterString|line|Transect definition: east,north,azimuth,distance[,east,north,azimuth,distance,...]|None|False|False
 QgsProcessingParameterString|null_value|String representing NULL value|*|False|True
 *QgsProcessingParameterBoolean|-g|Output easting and northing in first two columns of four column output|False
-OutputFile|output|Transect file
+QgsProcessingParameterFileDestination|output|Transect file|Txt files (*.txt)|None|False
 

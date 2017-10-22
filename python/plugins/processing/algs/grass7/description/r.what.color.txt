@@ -4,5 +4,5 @@ Raster (r.*)
 QgsProcessingParameterRasterLayer|input|Raster map to query colors|None|False
 QgsProcessingParameterString|value|Values to query colors for (comma separated list)|None|False|False
 QgsProcessingParameterString|format|Output format (printf-style)|None|False|True
-OutputFile|output|Colors file
+QgsProcessingParameterFileDestination|output|Colors file|Txt files (*.txt)|None|False
 

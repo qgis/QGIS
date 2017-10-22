@@ -4,4 +4,4 @@ Raster (r.*)
 QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
 QgsProcessingParameterNumber|quantiles|Number of quantiles|QgsProcessingParameterNumber.Double|4|False|None|2
 *QgsProcessingParameterBoolean|-r|Generate recode rules based on quantile-defined intervals|False
-OutputHTML|html|Quantiles
+QgsProcessingParameterFileDestination|html|Quantiles|Html files (*.html)|report.html|False

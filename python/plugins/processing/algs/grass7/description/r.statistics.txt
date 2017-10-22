@@ -5,4 +5,4 @@ QgsProcessingParameterRasterLayer|base|Base raster layer|None|False
 QgsProcessingParameterRasterLayer|cover|Cover raster layer|None|False
 QgsProcessingParameterEnum|method|method|diversity;average;mode;median;avedev;stddev;variance;skewness;kurtosis;min;max;sum
 QgsProcessingParameterBoolean|-c|Cover values extracted from the category labels of the cover map|False
-QgsProcessingParameterRasterDestination|output|Statistics
+QgsProcessingParameterRasterDestination|routput|Statistics

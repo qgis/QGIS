@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    v_what_vect.py
-    --------------
-    Date                 : March 2016
-    Copyright            : (C) 2016 by Médéric Ribreux
+    r_statistics.py
+    ---------------
+    Date                 : September 2017
+    Copyright            : (C) 2017 by Médéric Ribreux
     Email                : medspx at medspx dot fr
 ***************************************************************************
 *                                                                         *
@@ -16,24 +16,38 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Médéric Ribreux'
-__date__ = 'March 2016'
-__copyright__ = '(C) 2016, Médéric Ribreux'
+__date__ = 'September 2017'
+__copyright__ = '(C) 2017, Médéric Ribreux'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import QgsProcessingParameterString
+
 
 def processCommand(alg, parameters, context):
-    # Exclude outputs from commands
+    # We had a new "output" parameter
+    out = 'output{}'.format(alg.uniqueSuffix)
+    p = QgsProcessingParameterString('output', None, out, False, False)
+    alg.addParameter(p)
+
+    # We need to remove all outputs
     alg.processCommand(parameters, context, True)
+
+    # Then we add a new command for treating results
+    calcExpression = 'correctedoutput{}=@{}'.format(
+        alg.uniqueSuffix, out)
+    command = 'r.mapcalc expression="{}"'.format(calcExpression)
+    alg.commands.append(command)
 
 
 def processOutputs(alg, parameters, context):
-    # We need to add the initial vector layer to outputs:
-    fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
-    grassName = '{}{}'.format('map', alg.uniqueSuffix)
-    dataType = 'point'
-    alg.exportVectorLayer(grassName, fileName, dataType)
+    # Export the results from correctedoutput
+    grassName = 'correctedoutput{}'.format(alg.uniqueSuffix)
+    fileName = alg.parameterAsOutputLayer(
+        parameters, 'routput', context)
+    alg.exportRasterLayer(grassName, fileName)

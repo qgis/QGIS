@@ -26,13 +26,14 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    if alg.getParameterValue('start_coordinates') and alg.getParameterValue('start_points'):
+    if (alg.parameterAsString(parameters, 'start_coordinates', context)
+            and alg.parameterAsVectorLayer(parameters, 'start_points', context)):
         return alg.tr("You need to set either start coordinates OR a start points vector layer!")
 
-    parameters = [alg.getParameterValue(f) for f in ['-c', '-a', '-n']]
-    paramscore = [f for f in parameters if f]
+    paramscore = [f for f in ['-c', '-a', '-n']
+                  if alg.parameterAsBool(parameters, f, context)]
     if len(paramscore) > 1:
         return alg.tr("-c, -a, -n parameters are mutually exclusive!")
     return None

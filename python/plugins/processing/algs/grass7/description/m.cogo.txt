@@ -1,8 +1,8 @@
 m.cogo
 A simple utility for converting bearing and distance measurements to coordinates and vice versa. It assumes a Cartesian coordinate system
 Miscellaneous (m.*)
-QgsProcessingParameterFile|input|Name of input file|False
-OutputFile|output|Output text file
+QgsProcessingParameterFile|input|Name of input file|0|txt|None|False
+QgsProcessingParameterFileDestination|output|Output text file|Txt files (*.txt)|None|False
 QgsProcessingParameterPoint|coordinates|Starting coordinate pair|0.0,0.0
 *QgsProcessingParameterBoolean|-l|Lines are labelled|False
 *QgsProcessingParameterBoolean|-q|Suppress warnings|False

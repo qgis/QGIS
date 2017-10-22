@@ -10,5 +10,5 @@ QgsProcessingParameterString|vdatum|Text to use for map vertical datum|None|Fals
 QgsProcessingParameterString|source1|Text to use for data source, line 1|None|False|True
 QgsProcessingParameterString|source2|Text to use for data source, line 2|None|False|True
 QgsProcessingParameterString|description|Text to use for data description or keyword(s)|None|False|True
-*QgsProcessingParameterFile|loadhistory|Text file from which to load history|False
+*QgsProcessingParameterFile|loadhistory|Text file from which to load history|0|txt|None|True
 QgsProcessingParameterRasterDestination|output|Metadata

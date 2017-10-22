@@ -5,4 +5,5 @@ QgsProcessingParameterVectorLayer|map|Name of input vector map|-1|None|False
 QgsProcessingParameterBoolean|-c|Print types/names of table columns for specified layer instead of info|False
 QgsProcessingParameterBoolean|-g|Print map region only|False
 QgsProcessingParameterBoolean|-t|Print topology information only|False
-OutputHTML|html|Information
+QgsProcessingOutputString|html|Information
+QgsProcessingParameterFileDestination|html|Information report|Html files (*.html)|report.html|False

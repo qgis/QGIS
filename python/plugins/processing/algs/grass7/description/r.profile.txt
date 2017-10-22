@@ -7,4 +7,4 @@ QgsProcessingParameterNumber|res|Resolution along profile|QgsProcessingParameter
 QgsProcessingParameterString|null_value|Character to represent no data cell|*
 QgsProcessingParameterBoolean|-g|Output easting and northing in first two columns of four column output|False
 QgsProcessingParameterBoolean|-c|Output RRR:GGG:BBB color values for each profile point|False
-OutputFile|output|Profile
+QgsProcessingParameterFileDestination|output|Profile|Txt files (*.txt)|None|False

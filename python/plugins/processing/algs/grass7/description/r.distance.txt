@@ -7,4 +7,4 @@ QgsProcessingParameterEnum|sort|Sort output by distance|asc;desc
 *QgsProcessingParameterBoolean|-l|Include category labels in the output|False|True
 *QgsProcessingParameterBoolean|-o|Report zero distance if rasters are overlapping|False|True
 *QgsProcessingParameterBoolean|-n|Report null objects as *|False|True
-OutputFile|output|Distance
+QgsProcessingParameterFileDestination|output|Distance|Txt files (*.txt)|None|False

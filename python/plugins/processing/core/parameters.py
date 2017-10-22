@@ -44,6 +44,7 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinat
                        QgsProject,
                        QgsRectangle,
                        QgsVectorFileWriter,
+                       QgsProcessing,
                        QgsProcessingParameters,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
@@ -58,10 +59,10 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinat
                        QgsProcessingParameterFile,
                        QgsProcessingParameterField,
                        QgsProcessingParameterRasterDestination,  # NOQA
-                       QgsProcessingParameterVectorDestination,  # NOQA
+                       QgsProcessingParameterVectorDestination,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFolderDestination,
-                       QgsProcessingParameterString,  # NOQA
+                       QgsProcessingParameterString,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber)
@@ -680,6 +681,20 @@ def getParameterFromString(s):
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
             elif clazz == QgsProcessingParameterFileDestination:
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterVectorDestination:
+                if len(params) > 2:
+                    if params[2].lower().endswith('point'):
+                        params[2] = QgsProcessing.TypeVectorPoint
+                    elif params[2].lower().endswith('line'):
+                        params[2] = QgsProcessing.TypeVectorLine
+                    elif params[2].lower().endswith('polygon'):
+                        params[2] = QgsProcessing.TypeVectorPolygon
+                    elif params[2].lower().endswith('geometry'):
+                        params[2] = QgsProcessing.TypeVectorAnyGeometry
+                    elif params[2].lower().endswith('vector'):
+                        params[2] = QgsProcessing.TypeVector
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
 

@@ -6,4 +6,4 @@ QgsProcessingParameterString|precision|Number of significant digits (floating po
 QgsProcessingParameterNumber|zscale|Scale factor for elevation|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
 *QgsProcessingParameterBoolean|-c|Correct the coordinates to fit the VTK-OpenGL precision|False
 *QgsProcessingParameterBoolean|-n|Export numeric attribute table fields as VTK scalar variables|False
-OutputFile|output|VTK File
+QgsProcessingParameterFileDestination|output|VTK File|Vtk files (*.vtk)|None|False

@@ -5,4 +5,4 @@ QgsProcessingParameterRasterLayer|mapx|Map for x coefficient|None|False
 QgsProcessingParameterRasterLayer|mapy|Map for y coefficient|None|False
 QgsProcessingParameterRasterDestination|residual|Residual Map
 QgsProcessingParameterRasterDestination|estimates|Estimates Map
-OutputHTML|html|Regression coefficients
+QgsProcessingParameterFileDestination|html|Regression coefficients|Html files (*.html)|report.html|False

@@ -11,4 +11,4 @@ QgsProcessingParameterNumber|cache|Size of point cache|QgsProcessingParameterNum
 *QgsProcessingParameterBoolean|-r|Output color values as RRR:GGG:BBB|False|True
 *QgsProcessingParameterBoolean|-i|Output integer category values, not cell values|False|True
 *QgsProcessingParameterBoolean|-c|Turn on cache reporting|False|True
-OutputFile|output|Raster Values File
+QgsProcessingParameterFileDestination|output|Raster Values File|Txt files (*.txt)|None|False

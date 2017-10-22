@@ -7,5 +7,5 @@ QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'wh
 QgsProcessingParameterEnum|algorithm|Algorithm to use for classification|int;std;qua;equ;dis
 QgsProcessingParameterNumber|nbclasses|Number of classes to define|QgsProcessingParameterNumber.Double|3|False|None|2.0
 QgsProcessingParameterBoolean|-g|Print only class breaks (without min and max)|True
-OutputHTML|html|Classification
+QgsProcessingParameterFileDestination|html|Classification|Html files (*.html)|report.html|False
 

@@ -11,4 +11,4 @@ QgsProcessingParameterString|separator|Output field separator|,|False|True
 *QgsProcessingParameterString|null_value|Null value indicator|None|False|True
 *QgsProcessingParameterBoolean|-v|Vertical output (instead of horizontal)|False
 *QgsProcessingParameterBoolean|-r|Print minimal region extent of selected vector features instead of attributes|False
-OutputFile|file|Attributes
+QgsProcessingParameterFileDestination|file|Attributes|Txt files (*.txt)|None|False

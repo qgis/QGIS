@@ -3,4 +3,4 @@ Exports the color table associated with a raster map.
 Raster (r.*)
 QgsProcessingParameterRasterLayer|map|Name of raster map|None|False
 *QgsProcessingParameterBoolean|-p|Output values as percentages|False|True
-OutputFile|rules|Color Table
+QgsProcessingParameterFileDestination|rules|Color Table|Txt files (*.txt)|None|False

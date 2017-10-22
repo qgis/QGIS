@@ -3,5 +3,5 @@ Generates statistics for i.maxlik from raster map.
 Imagery (i.*)
 QgsProcessingParameterRasterLayer|trainingmap|Ground truth training map|None|False
 QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False
-OutputFile|signaturefile|Signature File
+QgsProcessingParameterFileDestination|signaturefile|Signature File|Txt files (*.txt)|None|False
 

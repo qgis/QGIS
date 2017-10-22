@@ -41,6 +41,7 @@ from qgis.core import (QgsDataSourceUri,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingOutputLayerDefinition,
                        QgsProcessingParameterDefinition,
+                       QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFolderDestination)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.dataobjects import createContext
@@ -277,6 +278,9 @@ class DestinationSelectionPanel(BASE, WIDGET):
 
         if isinstance(self.parameter, QgsProcessingParameterFolderDestination):
             return self.leText.text()
+
+        if isinstance(self.parameter, QgsProcessingParameterFileDestination):
+            return key
 
         value = QgsProcessingOutputLayerDefinition(key)
         value.createOptions = {'fileEncoding': self.encoding}

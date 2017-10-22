@@ -52,6 +52,7 @@ class Grass7Utils(object):
     GRASS_LOG_COMMANDS = 'GRASS7_LOG_COMMANDS'
     GRASS_LOG_CONSOLE = 'GRASS7_LOG_CONSOLE'
     GRASS_HELP_PATH = 'GRASS_HELP_PATH'
+    GRASS_USE_VEXTERNAL = 'GRASS_USE_VEXTERNAL'
 
     sessionRunning = False
     sessionLayers = {}
@@ -118,11 +119,11 @@ class Grass7Utils(object):
         # Grab folder from Processing configuration
         if not isWindows() and not isMac():
             return ''
-        
+
         folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_FOLDER) or ''
         if not os.path.exists(folder):
             folder = None
-            
+
         # If no folder is declared, search for it
         if folder is None:
             # Under MSWindows, we use OSGEO4W

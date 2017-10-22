@@ -8,6 +8,6 @@ QgsProcessingParameterNumber|bound|Maximum number of segments per flowline|QgsPr
 QgsProcessingParameterBoolean|-u|Compute upslope flowlines instead of default downhill flowlines|False
 QgsProcessingParameterBoolean|-3|3-D lengths instead of 2-D|False
 *QgsProcessingParameterBoolean|-m|Use less memory, at a performance penalty|False
-QgsProcessingParameterVectorDestination|flowline|Flow line
+QgsProcessingParameterVectorDestination|flowline|Flow line|QgsProcessing.TypeVectorLine|None|True
 QgsProcessingParameterRasterDestination|flowlength|Flow path length
 QgsProcessingParameterRasterDestination|flowaccumulation|Flow accumulation

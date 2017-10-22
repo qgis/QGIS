@@ -6,8 +6,8 @@ QgsProcessingParameterPoint|start_coordinates|Coordinates of starting point(s) (
 QgsProcessingParameterPoint|stop_coordinates|Coordinates of stopping point(s) (E,N)|0,0
 QgsProcessingParameterBoolean|-k|Use the 'Knight's move'; slower, but more accurate|False
 QgsProcessingParameterBoolean|-n|Keep null values in output raster layer|True
-QgsProcessingParameterNumber|max_cost|Maximum cumulative cost|QgsProcessingParameterNumber.Double|0|False|None|0
-QgsProcessingParameterNumber|null_cost|Cost assigned to null cells. By default, null cells are excluded|QgsProcessingParameterNumber.Double|0|False|None|None
+QgsProcessingParameterNumber|max_cost|Maximum cumulative cost|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterNumber|null_cost|Cost assigned to null cells. By default, null cells are excluded|QgsProcessingParameterNumber.Double|0.0|False|None|None
 QgsProcessingParameterNumber|memory|Maximum memory to be used in MB|QgsProcessingParameterNumber.Double|300|False|None|0
 QgsProcessingParameterRasterDestination|output|Cumulative cost
 QgsProcessingParameterRasterDestination|nearest|Cost allocation map

@@ -2,4 +2,4 @@ v.out.dxf
 Exports GRASS vector map layers to DXF file format.
 Vector (v.*)
 QgsProcessingParameterVectorLayer|input|Name of input vector map|-1|None|False
-OutputFile|output|DXF vector
+QgsProcessingParameterFileDestination|output|DXF vector|Dxf files (*.dxf)|None|False

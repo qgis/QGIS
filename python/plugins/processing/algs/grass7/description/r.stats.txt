@@ -18,4 +18,4 @@ QgsProcessingParameterBoolean|-n|Suppress reporting of any NULLs|False
 QgsProcessingParameterBoolean|-N|Suppress reporting of NULLs when all values are NULL|False
 QgsProcessingParameterBoolean|-C|Report for cats fp ranges (fp maps only)|False
 QgsProcessingParameterBoolean|-i|Read fp map as integer (use map's quant rules)|False
-OutputHTML|html|Statistics
+QgsProcessingParameterFileDestination|html|Statistics|Html files (*.html)|report.html|False

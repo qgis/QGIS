@@ -31,21 +31,10 @@ def processInputs(alg, parameters, context):
         return
 
     for name in ['first', 'second']:
-        raster = alg.parameterAsRasterLayer(parameters, name, context)
-        alg.setSessionProjectionFromLayer(raster)
-    
-        # We need to import all the bands and color tables of the input raster
-        alg.commands.append(
-            alg.loadRasterLayer(name,
-                                  parameters[name],
-                                  False, None
-            )
-        )
-        alg.inputLayers.append(raster)
-        
-    alg.postInputs(parameters, context)
+        alg.loadRasterLayerFromParameter(name, parameters, context, False, None)
+    alg.postInputs()
+
 
 def processOutputs(alg, parameters, context):
     # Keep color table
-    self.exportRasterLayer('output', parameters, context, True)
-
+    alg.exportRasterLayerFromParameter('output', parameters, context)

@@ -3,4 +3,4 @@ Converts a raster layer to a PPM image file at the pixel resolution of the curre
 Raster (r.*)
 QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
 QgsProcessingParameterBoolean|-g|Output greyscale instead of color|True
-OutputFile|output|PPM
+QgsProcessingParameterFileDestination|output|PPM|Txt files (*.txt)|None|False

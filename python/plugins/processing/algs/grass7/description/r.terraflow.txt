@@ -8,4 +8,4 @@ QgsProcessingParameterRasterDestination|direction|Flow direction
 QgsProcessingParameterRasterDestination|swatershed|Sink-watershed
 QgsProcessingParameterRasterDestination|accumulation|Flow accumulation
 QgsProcessingParameterRasterDestination|tci|Topographic convergence index (tci)
-OutputFile|stats|Runtime statistics
+QgsProcessingParameterFileDestination|stats|Runtime statistics|Txt files (*.txt)|None|False

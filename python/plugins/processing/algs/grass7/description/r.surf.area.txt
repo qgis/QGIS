@@ -4,4 +4,4 @@ Raster (r.*)
 QgsProcessingParameterRasterLayer|map|Input layer|None|False
 QgsProcessingParameterNumber|vscale|Vertical scale|QgsProcessingParameterNumber.Double|1|False|None|None
 QgsProcessingParameterEnum|units|Units|miles;feet;meters;kilometers;acres;hectares
-OutputHTML|html|Area
+QgsProcessingParameterFileDestination|html|Area|Html files (*.html)|report.html|False

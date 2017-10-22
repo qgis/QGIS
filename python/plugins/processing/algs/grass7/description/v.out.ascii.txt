@@ -7,4 +7,4 @@ QgsProcessingParameterEnum|separator|Field separator|pipe;comma;space;tab;newlin
 QgsProcessingParameterNumber|precision|Number of significant digits (floating point only)|QgsProcessingParameterNumber.Integer|8|True|0|32
 *QgsProcessingParameterBoolean|-o|Create old (version 4) ASCII file|False
 *QgsProcessingParameterBoolean|-c|Include column names in output (points mode)|False
-OutputFile|output|Name for output ASCII file or ASCII vector name if '-o' is defined
+QgsProcessingParameterFileDestination|output|Name for output ASCII file or ASCII vector name if '-o' is defined|Txt files (*.txt)|None|False

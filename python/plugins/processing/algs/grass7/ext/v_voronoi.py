@@ -2,9 +2,9 @@
 
 """
 ***************************************************************************
-    v_what_rast.py
-    ---------------------
-    Date                 : January 2016
+    v_voronoi.py
+    ------------
+    Date                 : February 2016
     Copyright            : (C) 2016 by Médéric Ribreux
     Email                : medspx at medspx dot fr
 ***************************************************************************
@@ -15,41 +15,32 @@
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************
-
-This Python module handles output for v.what.rast.* GRASS7 modules.
 """
 
 __author__ = 'Médéric Ribreux'
-__date__ = 'January 2016'
+__date__ = 'February 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
 __revision__ = '$Format:%H$'
 
-import os
+
+def processInputs(alg, parameters, context):
+    if 'input' in alg.exportedLayers:
+        return
+
+    # We need to use v.in.ogr instead of v.external
+    alg.loadVectorLayerFromParameter('input', parameters, context, False)
+    alg.processInputs(parameters, context)
 
 
-def removeOutput(alg):
-    """Remove the output fo v.what.rast"""
-    # We temporary remove the output 'sequence'
-    output = alg.getOutputFromName(u'output')
-    alg.removeOutputFromName(u'output')
+def processOutputs(alg, parameters, context):
+    fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
+    grassName = '{}{}'.format('output', alg.uniqueSuffix)
+    dataType = 'auto'
+    # if we export a graph, output type will be a line
+    if alg.parameterAsBool(parameters, '-l', context):
+        dataType = 'line'
 
-    # Launch the algorithm
-    alg.processCommand()
-
-    # We re-add the previous output
-    alg.addOutput(output)
-
-
-def outputInput(alg):
-    """Make output the initial point/polygon layer"""
-    output = alg.getOutputValue(u'output')
-    command = u"v.out.ogr -c type=auto -s -e input={} output=\"{}\" format=ESRI_Shapefile output_layer={}".format(
-        alg.exportedLayers[alg.getParameterValue(u'map')],
-        os.path.dirname(output),
-        os.path.basename(output)[:-4]
-    )
-    alg.commands.append(command)
-    alg.outputCommands.append(command)
+    alg.exportVectorLayer(grassName, fileName, dataType)

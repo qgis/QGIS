@@ -11,4 +11,4 @@ QgsProcessingParameterBoolean|-u|Print raster map data units only|False
 QgsProcessingParameterBoolean|-d|Print raster map vertical datum only|False
 QgsProcessingParameterBoolean|-m|Print map title only|False
 QgsProcessingParameterBoolean|-p|Print raster map timestamp (day.month.year hour:minute:seconds) only|False
-OutputHTML|html|Basic information
+QgsProcessingParameterFileDestination|html|Basic information|Html files (*.html)|report.html|False

@@ -4,7 +4,7 @@ Vector (v.*)
 QgsProcessingParameterVectorLayer|input|Name of input 2D vector map|-1|None|False
 QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
 QgsProcessingParameterNumber|zshift|Shifting value for z coordinates|QgsProcessingParameterNumber.Double|0.0|True|0.0|None
-QgsProcessingParameterString|height|Fixed height for 3D vector objects (float)|None|False|True
+QgsProcessingParameterNumber|height|Fixed height for 3D vector objects|QgsProcessingParameterNumber.Double|None|True|None|None
 QgsProcessingParameterField|height_column|Name of attribute column with object heights|None|input|0|False|True
 QgsProcessingParameterRasterLayer|elevation|Elevation raster for height extraction|None|True
 QgsProcessingParameterEnum|method|Sampling interpolation method|nearest;bilinear;bicubic|False|0

@@ -2,9 +2,9 @@
 
 """
 ***************************************************************************
-    v_build_polylines.py
-    --------------------
-    Date                 : March 2016
+    v_sample.py
+    -----------
+    Date                 : February 2016
     Copyright            : (C) 2016 by Médéric Ribreux
     Email                : medspx at medspx dot fr
 ***************************************************************************
@@ -18,7 +18,7 @@
 """
 
 __author__ = 'Médéric Ribreux'
-__date__ = 'March 2016'
+__date__ = 'February 2016'
 __copyright__ = '(C) 2016, Médéric Ribreux'
 
 # This will get replaced with a git SHA1 when you do a git archive
@@ -26,15 +26,11 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-import os
+def processInputs(alg, parameters, context):
+    if 'input' in alg.exportedLayers:
+        return
 
-
-def processOutputs(alg):
-    out = alg.getOutputValue('output')
-    command = u"v.out.ogr -c -s -e input={} output=\"{}\" format=ESRI_Shapefile output_layer={}".format(
-        alg.exportedLayers[out],
-        os.path.dirname(out),
-        os.path.splitext(os.path.basename(out))[0]
-    )
-    alg.commands.append(command)
-    alg.outputCommands.append(command)
+    # We need to import all the bands and color tables of the input raster
+    alg.loadVectorLayerFromParameter('input', parameters, context, False)
+    alg.loadRasterLayerFromParameter('raster', parameters, context, True)
+    alg.postInputs()
