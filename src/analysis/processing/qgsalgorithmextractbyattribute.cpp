@@ -66,7 +66,7 @@ void QgsExtractByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsExtractByAttributeAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "  This algorithm creates a new vector layer that only contains matching features from an input layer. "
+  return QObject::tr( "This algorithm creates a new vector layer that only contains matching features from an input layer. "
                       "The criteria for adding features to the resulting layer is defined based on the values "
                       "of an attribute from the input layer." );
 }

@@ -32,6 +32,7 @@
 #include "qgsalgorithmextractbyexpression.h"
 #include "qgsalgorithmextractbyextent.h"
 #include "qgsalgorithmextractbylocation.h"
+#include "qgsalgorithmfiledownloader.h"
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsalgorithmjoinbyattribute.h"
 #include "qgsalgorithmjoinwithlines.h"
@@ -92,6 +93,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsCollectAlgorithm() );
   addAlgorithm( new QgsExtractByAttributeAlgorithm() );
   addAlgorithm( new QgsExtractByExpressionAlgorithm() );
+  addAlgorithm( new QgsFileDownloaderAlgorithm() );
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
   addAlgorithm( new QgsSubdivideAlgorithm() );
   addAlgorithm( new QgsTransformAlgorithm() );
