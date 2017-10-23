@@ -198,7 +198,7 @@ bool QgsOgrFeatureIterator::nextFeatureFilterExpression( QgsFeature &f )
 bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &feature ) const
 {
   feature.setValid( false );
-  OGRFeatureH fet = 0;
+  gdal::ogr_feature_unique_ptr fet;
   if ( mOrigFidAdded )
   {
     OGR_L_ResetReading( ogrLayer );
@@ -206,19 +206,18 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &fea
     int lastField = OGR_FD_GetFieldCount( fdef ) - 1;
     if ( lastField >= 0 )
     {
-      while ( ( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
+      while ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
       {
-        if ( OGR_F_GetFieldAsInteger64( fet, lastField ) == id )
+        if ( OGR_F_GetFieldAsInteger64( fet.get(), lastField ) == id )
         {
           break;
         }
-        OGR_F_Destroy( fet );
       }
     }
   }
   else
   {
-    fet = OGR_L_GetFeature( ogrLayer, FID_TO_NUMBER( id ) );
+    fet.reset( OGR_L_GetFeature( ogrLayer, FID_TO_NUMBER( id ) ) );
   }
 
   if ( !fet )
@@ -226,8 +225,7 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &fea
     return false;
   }
 
-  if ( readFeature( fet, feature ) )
-    OGR_F_Destroy( fet );
+  readFeature( std::move( fet ), feature );
 
   feature.setValid( true );
   geometryToDestinationCrs( feature, mTransform );
@@ -261,14 +259,12 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
     return false;
   }
 
-  OGRFeatureH fet;
+  gdal::ogr_feature_unique_ptr fet;
 
-  while ( ( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
+  while ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
   {
-    if ( !readFeature( fet, feature ) )
+    if ( !readFeature( std::move( fet ), feature ) )
       continue;
-    else
-      OGR_F_Destroy( fet );
 
     if ( !mFilterRect.isNull() && !feature.hasGeometry() )
       continue;
@@ -347,20 +343,20 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
   f.setAttribute( attindex, value );
 }
 
-bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) const
+bool QgsOgrFeatureIterator::readFeature( gdal::ogr_feature_unique_ptr fet, QgsFeature &feature ) const
 {
   if ( mOrigFidAdded )
   {
     OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
     int lastField = OGR_FD_GetFieldCount( fdef ) - 1;
     if ( lastField >= 0 )
-      feature.setId( OGR_F_GetFieldAsInteger64( fet, lastField ) );
+      feature.setId( OGR_F_GetFieldAsInteger64( fet.get(), lastField ) );
     else
-      feature.setId( OGR_F_GetFID( fet ) );
+      feature.setId( OGR_F_GetFID( fet.get() ) );
   }
   else
   {
-    feature.setId( OGR_F_GetFID( fet ) );
+    feature.setId( OGR_F_GetFID( fet.get() ) );
   }
   feature.initAttributes( mSource->mFields.count() );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
@@ -369,7 +365,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) 
   bool geometryTypeFilter = mSource->mOgrGeometryTypeFilter != wkbUnknown;
   if ( mFetchGeometry || useIntersect || geometryTypeFilter )
   {
-    OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
+    OGRGeometryH geom = OGR_F_GetGeometryRef( fet.get() );
 
     if ( geom )
     {
@@ -394,7 +390,6 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) 
     else if ( ( useIntersect && ( !feature.hasGeometry() || !feature.geometry().intersects( mFilterRect ) ) )
               || ( geometryTypeFilter && ( !feature.hasGeometry() || QgsOgrProvider::ogrWkbSingleFlatten( ( OGRwkbGeometryType )feature.geometry().wkbType() ) != mSource->mOgrGeometryTypeFilter ) ) )
     {
-      OGR_F_Destroy( fet );
       return false;
     }
   }
@@ -410,7 +405,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) 
     QgsAttributeList attrs = mRequest.subsetOfAttributes();
     for ( QgsAttributeList::const_iterator it = attrs.constBegin(); it != attrs.constEnd(); ++it )
     {
-      getFeatureAttribute( fet, feature, *it );
+      getFeatureAttribute( fet.get(), feature, *it );
     }
   }
   else
@@ -418,7 +413,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature &feature ) 
     // all attributes
     for ( int idx = 0; idx < mSource->mFields.count(); ++idx )
     {
-      getFeatureAttribute( fet, feature, idx );
+      getFeatureAttribute( fet.get(), feature, idx );
     }
   }
 

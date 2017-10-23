@@ -25,6 +25,82 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
+namespace gdal
+{
+
+  /**
+   * Destroys OGR data sources.
+   */
+  struct OGRDataSourceDeleter
+  {
+
+    /**
+     * Destroys an OGR data \a source, using the correct gdal calls.
+     */
+    void CORE_EXPORT operator()( void *source );
+
+  };
+
+  /**
+   * Destroys OGR geometries.
+   */
+  struct OGRGeometryDeleter
+  {
+
+    /**
+     * Destroys an OGR \a geometry, using the correct gdal calls.
+     */
+    void CORE_EXPORT operator()( void *geometry );
+
+  };
+
+  /**
+   * Destroys OGR field definition.
+   */
+  struct OGRFldDeleter
+  {
+
+    /**
+     * Destroys an OGR field \a definition, using the correct gdal calls.
+     */
+    void CORE_EXPORT operator()( void *definition );
+
+  };
+
+  /**
+   * Destroys OGR feature.
+   */
+  struct OGRFeatureDeleter
+  {
+
+    /**
+     * Destroys an OGR \a feature, using the correct gdal calls.
+     */
+    void CORE_EXPORT operator()( void *feature );
+
+  };
+
+  /**
+   * Scoped OGR data source.
+   */
+  using ogr_datasource_unique_ptr = std::unique_ptr< void, OGRDataSourceDeleter>;
+
+  /**
+   * Scoped OGR geometry.
+   */
+  using ogr_geometry_unique_ptr = std::unique_ptr< void, OGRGeometryDeleter>;
+
+  /**
+   * Scoped OGR field definition.
+   */
+  using ogr_field_def_unique_ptr = std::unique_ptr< void, OGRFldDeleter >;
+
+  /**
+   * Scoped OGR feature.
+   */
+  using ogr_feature_unique_ptr = std::unique_ptr< void, OGRFeatureDeleter >;
+}
+
 /**
  * \ingroup core
  * \class QgsOgrUtils

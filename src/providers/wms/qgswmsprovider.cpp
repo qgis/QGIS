@@ -46,7 +46,7 @@
 #include "qgswmscapabilities.h"
 #include "qgsexception.h"
 #include "qgssettings.h"
-
+#include "qgsogrutils.h"
 
 #ifdef HAVE_GUI
 #include "qgswmssourceselect.h"
@@ -3045,13 +3045,12 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
               QScriptValue geom = json_stringify.call( QScriptValue(), QScriptValueList() << f.property( QStringLiteral( "geometry" ) ) );
               if ( geom.isString() )
               {
-                OGRGeometryH ogrGeom = OGR_G_CreateGeometryFromJson( geom.toString().toUtf8() );
+                gdal::ogr_geometry_unique_ptr ogrGeom( OGR_G_CreateGeometryFromJson( geom.toString().toUtf8() ) );
                 if ( ogrGeom )
                 {
-                  int wkbSize = OGR_G_WkbSize( ogrGeom );
+                  int wkbSize = OGR_G_WkbSize( ogrGeom.get() );
                   unsigned char *wkb = new unsigned char[ wkbSize ];
-                  OGR_G_ExportToWkb( ogrGeom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
-                  OGR_G_DestroyGeometry( ogrGeom );
+                  OGR_G_ExportToWkb( ogrGeom.get(), ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
 
                   QgsGeometry g;
                   g.fromWkb( wkb, wkbSize );

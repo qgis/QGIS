@@ -28,6 +28,29 @@
 #define OGR_F_IsFieldSetAndNotNull OGR_F_IsFieldSet
 #endif
 
+
+
+void gdal::OGRDataSourceDeleter::operator()( void *source )
+{
+  OGR_DS_Destroy( source );
+}
+
+
+void gdal::OGRGeometryDeleter::operator()( void *geometry )
+{
+  OGR_G_DestroyGeometry( geometry );
+}
+
+void gdal::OGRFldDeleter::operator()( void *definition )
+{
+  OGR_Fld_Destroy( definition );
+}
+
+void gdal::OGRFeatureDeleter::operator()( void *feature )
+{
+  OGR_F_Destroy( feature );
+}
+
 QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec *encoding )
 {
   QgsFeature feature;
@@ -297,32 +320,30 @@ QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString &string, const Qg
   VSIFCloseL( VSIFileFromMemBuffer( randomFileName.toUtf8().constData(), reinterpret_cast< GByte * >( ba.data() ),
                                     static_cast< vsi_l_offset >( ba.size() ), FALSE ) );
 
-  OGRDataSourceH hDS = OGROpen( randomFileName.toUtf8().constData(), false, nullptr );
+  gdal::ogr_datasource_unique_ptr hDS( OGROpen( randomFileName.toUtf8().constData(), false, nullptr ) );
   if ( !hDS )
   {
     VSIUnlink( randomFileName.toUtf8().constData() );
     return features;
   }
 
-  OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS, 0 );
+  OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS.get(), 0 );
   if ( !ogrLayer )
   {
-    OGR_DS_Destroy( hDS );
+    hDS.reset();
     VSIUnlink( randomFileName.toUtf8().constData() );
     return features;
   }
 
-  OGRFeatureH oFeat;
-  while ( ( oFeat = OGR_L_GetNextFeature( ogrLayer ) ) )
+  gdal::ogr_feature_unique_ptr oFeat;
+  while ( oFeat.reset( OGR_L_GetNextFeature( ogrLayer ) ), oFeat )
   {
-    QgsFeature feat = readOgrFeature( oFeat, fields, encoding );
+    QgsFeature feat = readOgrFeature( oFeat.get(), fields, encoding );
     if ( feat.isValid() )
       features << feat;
-
-    OGR_F_Destroy( oFeat );
   }
 
-  OGR_DS_Destroy( hDS );
+  hDS.reset();
   VSIUnlink( randomFileName.toUtf8().constData() );
 
   return features;
@@ -341,30 +362,30 @@ QgsFields QgsOgrUtils::stringToFields( const QString &string, QTextCodec *encodi
   VSIFCloseL( VSIFileFromMemBuffer( randomFileName.toUtf8().constData(), reinterpret_cast< GByte * >( ba.data() ),
                                     static_cast< vsi_l_offset >( ba.size() ), FALSE ) );
 
-  OGRDataSourceH hDS = OGROpen( randomFileName.toUtf8().constData(), false, nullptr );
+  gdal::ogr_datasource_unique_ptr hDS( OGROpen( randomFileName.toUtf8().constData(), false, nullptr ) );
   if ( !hDS )
   {
     VSIUnlink( randomFileName.toUtf8().constData() );
     return fields;
   }
 
-  OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS, 0 );
+  OGRLayerH ogrLayer = OGR_DS_GetLayer( hDS.get(), 0 );
   if ( !ogrLayer )
   {
-    OGR_DS_Destroy( hDS );
+    hDS.reset();
     VSIUnlink( randomFileName.toUtf8().constData() );
     return fields;
   }
 
-  OGRFeatureH oFeat;
+  gdal::ogr_feature_unique_ptr oFeat;
   //read in the first feature only
-  if ( ( oFeat = OGR_L_GetNextFeature( ogrLayer ) ) )
+  if ( oFeat.reset( OGR_L_GetNextFeature( ogrLayer ) ), oFeat )
   {
-    fields = readOgrFields( oFeat, encoding );
-    OGR_F_Destroy( oFeat );
+    fields = readOgrFields( oFeat.get(), encoding );
   }
 
-  OGR_DS_Destroy( hDS );
+  hDS.reset();
   VSIUnlink( randomFileName.toUtf8().constData() );
   return fields;
 }
+

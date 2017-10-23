@@ -731,16 +731,15 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
     // TODO: avoid reading attributes, setRelevantFields cannot be called here because it is not constant
 
     layer->ResetReading();
-    OGRFeatureH fet;
-    while ( ( fet = layer->GetNextFeature() ) )
+    gdal::ogr_feature_unique_ptr fet;
+    while ( fet.reset( layer->GetNextFeature() ), fet )
     {
-      OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
+      OGRGeometryH geom = OGR_F_GetGeometryRef( fet.get() );
       if ( geom )
       {
         OGRwkbGeometryType gType = ogrWkbSingleFlatten( OGR_G_GetGeometryType( geom ) );
         fCount[gType] = fCount.value( gType ) + 1;
       }
-      OGR_F_Destroy( fet );
     }
     layer->ResetReading();
     // it may happen that there are no features in the layer, in that case add unknown type
@@ -867,16 +866,15 @@ OGRwkbGeometryType QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
       OGR_L_ResetReading( ogrLayer );
       for ( int i = 0; i < 10; i++ )
       {
-        OGRFeatureH nextFeature = OGR_L_GetNextFeature( ogrLayer );
+        gdal::ogr_feature_unique_ptr nextFeature( OGR_L_GetNextFeature( ogrLayer ) );
         if ( !nextFeature )
           break;
 
-        OGRGeometryH geometry = OGR_F_GetGeometryRef( nextFeature );
+        OGRGeometryH geometry = OGR_F_GetGeometryRef( nextFeature.get() );
         if ( geometry )
         {
           geomType = OGR_G_GetGeometryType( geometry );
         }
-        OGR_F_Destroy( nextFeature );
         if ( geomType != wkbNone )
           break;
       }
@@ -1108,12 +1106,12 @@ QgsRectangle QgsOgrProvider::extent() const
       mExtent->MaxX = -std::numeric_limits<double>::max();
       mExtent->MaxY = -std::numeric_limits<double>::max();
 
-      OGRFeatureH f;
+      gdal::ogr_feature_unique_ptr f;
 
       mOgrLayer->ResetReading();
-      while ( ( f = mOgrLayer->GetNextFeature() ) )
+      while ( f.reset( mOgrLayer->GetNextFeature() ), f )
       {
-        OGRGeometryH g = OGR_F_GetGeometryRef( f );
+        OGRGeometryH g = OGR_F_GetGeometryRef( f.get() );
         if ( g )
         {
           OGREnvelope env;
@@ -1124,8 +1122,6 @@ QgsRectangle QgsOgrProvider::extent() const
           mExtent->MaxX = std::max( mExtent->MaxX, env.MaxX );
           mExtent->MaxY = std::max( mExtent->MaxY, env.MaxY );
         }
-
-        OGR_F_Destroy( f );
       }
       mOgrLayer->ResetReading();
     }
@@ -1260,7 +1256,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
 {
   bool returnValue = true;
   QgsOgrFeatureDefn &fdef = mOgrLayer->GetLayerDefn();
-  OGRFeatureH feature = fdef.CreateFeature();
+  gdal::ogr_feature_unique_ptr feature( fdef.CreateFeature() );
 
   if ( f.hasGeometry() )
   {
@@ -1277,7 +1273,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
 
       geom = ConvertGeometryIfNecessary( geom );
 
-      OGR_F_SetGeometryDirectly( feature, geom );
+      OGR_F_SetGeometryDirectly( feature.get(), geom );
     }
   }
 
@@ -1296,7 +1292,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
       qlonglong id = attrFid.toLongLong( &ok );
       if ( ok )
       {
-        OGR_F_SetFID( feature, static_cast<GIntBig>( id ) );
+        OGR_F_SetFID( feature.get(), static_cast<GIntBig>( id ) );
       }
     }
   }
@@ -1327,7 +1323,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
 #ifdef OGRNullMarker
       OGR_F_SetFieldNull( feature, ogrAttId );
 #else
-      OGR_F_UnsetField( feature, ogrAttId );
+      OGR_F_UnsetField( feature.get(), ogrAttId );
 #endif
     }
     else
@@ -1335,20 +1331,20 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
       switch ( type )
       {
         case OFTInteger:
-          OGR_F_SetFieldInteger( feature, ogrAttId, attrVal.toInt() );
+          OGR_F_SetFieldInteger( feature.get(), ogrAttId, attrVal.toInt() );
           break;
 
 
         case OFTInteger64:
-          OGR_F_SetFieldInteger64( feature, ogrAttId, attrVal.toLongLong() );
+          OGR_F_SetFieldInteger64( feature.get(), ogrAttId, attrVal.toLongLong() );
           break;
 
         case OFTReal:
-          OGR_F_SetFieldDouble( feature, ogrAttId, attrVal.toDouble() );
+          OGR_F_SetFieldDouble( feature.get(), ogrAttId, attrVal.toDouble() );
           break;
 
         case OFTDate:
-          OGR_F_SetFieldDateTime( feature, ogrAttId,
+          OGR_F_SetFieldDateTime( feature.get(), ogrAttId,
                                   attrVal.toDate().year(),
                                   attrVal.toDate().month(),
                                   attrVal.toDate().day(),
@@ -1357,7 +1353,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
           break;
 
         case OFTTime:
-          OGR_F_SetFieldDateTime( feature, ogrAttId,
+          OGR_F_SetFieldDateTime( feature.get(), ogrAttId,
                                   0, 0, 0,
                                   attrVal.toTime().hour(),
                                   attrVal.toTime().minute(),
@@ -1366,7 +1362,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
           break;
 
         case OFTDateTime:
-          OGR_F_SetFieldDateTime( feature, ogrAttId,
+          OGR_F_SetFieldDateTime( feature.get(), ogrAttId,
                                   attrVal.toDateTime().date().year(),
                                   attrVal.toDateTime().date().month(),
                                   attrVal.toDateTime().date().day(),
@@ -1381,7 +1377,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
                        .arg( qgisAttId )
                        .arg( attrVal.toString(),
                              textEncoding()->name().data() ) );
-          OGR_F_SetFieldString( feature, ogrAttId, textEncoding()->fromUnicode( attrVal.toString() ).constData() );
+          OGR_F_SetFieldString( feature.get(), ogrAttId, textEncoding()->fromUnicode( attrVal.toString() ).constData() );
           break;
 
         default:
@@ -1391,14 +1387,14 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
     }
   }
 
-  if ( mOgrLayer->CreateFeature( feature ) != OGRERR_NONE )
+  if ( mOgrLayer->CreateFeature( feature.get() ) != OGRERR_NONE )
   {
     pushError( tr( "OGR error creating feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
     returnValue = false;
   }
   else if ( !( flags & QgsFeatureSink::FastInsert ) )
   {
-    QgsFeatureId id = static_cast<QgsFeatureId>( OGR_F_GetFID( feature ) );
+    QgsFeatureId id = static_cast<QgsFeatureId>( OGR_F_GetFID( feature.get() ) );
     if ( id >= 0 )
     {
       f.setId( id );
@@ -1409,7 +1405,6 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
       }
     }
   }
-  OGR_F_Destroy( feature );
 
   return returnValue;
 }
@@ -1510,19 +1505,18 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
         continue;
     }
 
-    OGRFieldDefnH fielddefn = OGR_Fld_Create( textEncoding()->fromUnicode( iter->name() ).constData(), type );
+    gdal::ogr_field_def_unique_ptr fielddefn( OGR_Fld_Create( textEncoding()->fromUnicode( iter->name() ).constData(), type ) );
     int width = iter->length();
     if ( iter->precision() )
       width += 1;
-    OGR_Fld_SetWidth( fielddefn, width );
-    OGR_Fld_SetPrecision( fielddefn, iter->precision() );
+    OGR_Fld_SetWidth( fielddefn.get(), width );
+    OGR_Fld_SetPrecision( fielddefn.get(), iter->precision() );
 
-    if ( mOgrLayer->CreateField( fielddefn, true ) != OGRERR_NONE )
+    if ( mOgrLayer->CreateField( fielddefn.get(), true ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error creating field %1: %2" ).arg( iter->name(), CPLGetLastErrorMsg() ) );
       returnvalue = false;
     }
-    OGR_Fld_Destroy( fielddefn );
   }
   loadFields();
 
@@ -1618,13 +1612,12 @@ bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes 
     }
 
     //type does not matter, it will not be used
-    OGRFieldDefnH fld = OGR_Fld_Create( textEncoding()->fromUnicode( renameIt.value() ), OFTReal );
-    if ( mOgrLayer->AlterFieldDefn( ogrFieldIndex, fld, ALTER_NAME_FLAG ) != OGRERR_NONE )
+    gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( textEncoding()->fromUnicode( renameIt.value() ), OFTReal ) );
+    if ( mOgrLayer->AlterFieldDefn( ogrFieldIndex, fld.get(), ALTER_NAME_FLAG ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error renaming field %1: %2" ).arg( fieldIndex ).arg( CPLGetLastErrorMsg() ) );
       result = false;
     }
-    OGR_Fld_Destroy( fld );
   }
   loadFields();
   return result;
@@ -1678,7 +1671,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     if ( attr.isEmpty() )
       continue;
 
-    OGRFeatureH of = mOgrLayer->GetFeature( FID_TO_NUMBER( fid ) );
+    gdal::ogr_feature_unique_ptr of( mOgrLayer->GetFeature( FID_TO_NUMBER( fid ) ) );
     if ( !of )
     {
       pushError( tr( "Feature %1 for attribute update not found." ).arg( fid ) );
@@ -1707,7 +1700,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
         }
       }
 
-      OGRFieldDefnH fd = OGR_F_GetFieldDefnRef( of, f );
+      OGRFieldDefnH fd = OGR_F_GetFieldDefnRef( of.get(), f );
       if ( !fd )
       {
         pushError( tr( "Field %1 of feature %2 doesn't exist." ).arg( f ).arg( fid ) );
@@ -1728,7 +1721,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 #ifdef OGRNullMarker
         OGR_F_SetFieldNull( of, f );
 #else
-        OGR_F_UnsetField( of, f );
+        OGR_F_UnsetField( of.get(), f );
 #endif
       }
       else
@@ -1737,16 +1730,16 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
         switch ( type )
         {
           case OFTInteger:
-            OGR_F_SetFieldInteger( of, f, it2->toInt() );
+            OGR_F_SetFieldInteger( of.get(), f, it2->toInt() );
             break;
           case OFTInteger64:
-            OGR_F_SetFieldInteger64( of, f, it2->toLongLong() );
+            OGR_F_SetFieldInteger64( of.get(), f, it2->toLongLong() );
             break;
           case OFTReal:
-            OGR_F_SetFieldDouble( of, f, it2->toDouble() );
+            OGR_F_SetFieldDouble( of.get(), f, it2->toDouble() );
             break;
           case OFTDate:
-            OGR_F_SetFieldDateTime( of, f,
+            OGR_F_SetFieldDateTime( of.get(), f,
                                     it2->toDate().year(),
                                     it2->toDate().month(),
                                     it2->toDate().day(),
@@ -1754,7 +1747,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
                                     0 );
             break;
           case OFTTime:
-            OGR_F_SetFieldDateTime( of, f,
+            OGR_F_SetFieldDateTime( of.get(), f,
                                     0, 0, 0,
                                     it2->toTime().hour(),
                                     it2->toTime().minute(),
@@ -1762,7 +1755,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
                                     0 );
             break;
           case OFTDateTime:
-            OGR_F_SetFieldDateTime( of, f,
+            OGR_F_SetFieldDateTime( of.get(), f,
                                     it2->toDateTime().date().year(),
                                     it2->toDateTime().date().month(),
                                     it2->toDateTime().date().day(),
@@ -1772,7 +1765,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
                                     0 );
             break;
           case OFTString:
-            OGR_F_SetFieldString( of, f, textEncoding()->fromUnicode( it2->toString() ).constData() );
+            OGR_F_SetFieldString( of.get(), f, textEncoding()->fromUnicode( it2->toString() ).constData() );
             break;
           default:
             pushError( tr( "Type %1 of attribute %2 of feature %3 unknown." ).arg( type ).arg( fid ).arg( f ) );
@@ -1781,12 +1774,10 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       }
     }
 
-    if ( mOgrLayer->SetFeature( of ) != OGRERR_NONE )
+    if ( mOgrLayer->SetFeature( of.get() ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error setting feature %1: %2" ).arg( fid ).arg( CPLGetLastErrorMsg() ) );
     }
-
-    OGR_F_Destroy( of );
   }
 
   if ( inTransaction )
@@ -1813,7 +1804,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 
   for ( QgsGeometryMap::const_iterator it = geometry_map.constBegin(); it != geometry_map.constEnd(); ++it )
   {
-    OGRFeatureH theOGRFeature = mOgrLayer->GetFeature( static_cast<long>( FID_TO_NUMBER( it.key() ) ) );
+    gdal::ogr_feature_unique_ptr theOGRFeature( mOgrLayer->GetFeature( static_cast<long>( FID_TO_NUMBER( it.key() ) ) ) );
     if ( !theOGRFeature )
     {
       pushError( tr( "OGR error changing geometry: feature %1 not found" ).arg( it.key() ) );
@@ -1836,14 +1827,12 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
         pushError( tr( "OGR error creating geometry for feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
         OGR_G_DestroyGeometry( newGeometry );
         newGeometry = nullptr;
-        OGR_F_Destroy( theOGRFeature );
         continue;
       }
 
       if ( !newGeometry )
       {
         pushError( tr( "OGR error in feature %1: geometry is null" ).arg( it.key() ) );
-        OGR_F_Destroy( theOGRFeature );
         continue;
       }
 
@@ -1851,28 +1840,24 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     }
 
     //set the new geometry
-    if ( OGR_F_SetGeometryDirectly( theOGRFeature, newGeometry ) != OGRERR_NONE )
+    if ( OGR_F_SetGeometryDirectly( theOGRFeature.get(), newGeometry ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error setting geometry of feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
       // Shouldn't happen normally. If it happens, ownership of the geometry
       // may be not really well defined, so better not destroy it, but just
       // the feature.
-      OGR_F_Destroy( theOGRFeature );
       continue;
     }
 
 
-    if ( mOgrLayer->SetFeature( theOGRFeature ) != OGRERR_NONE )
+    if ( mOgrLayer->SetFeature( theOGRFeature.get() ) != OGRERR_NONE )
     {
       pushError( tr( "OGR error setting feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
-      OGR_F_Destroy( theOGRFeature );
       continue;
     }
     mShapefileMayBeCorrupted = true;
 
     invalidateCachedExtent( true );
-
-    OGR_F_Destroy( theOGRFeature );
   }
 
   if ( inTransaction )
@@ -3030,11 +3015,10 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
     return QgsVectorDataProvider::uniqueValues( index, limit );
   }
 
-  OGRFeatureH f;
-  while ( ( f = l->GetNextFeature() ) )
+  gdal::ogr_feature_unique_ptr f;
+  while ( f.reset( l->GetNextFeature() ), f )
   {
-    uniqueValues << ( OGR_F_IsFieldSetAndNotNull( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() ) );
-    OGR_F_Destroy( f );
+    uniqueValues << ( OGR_F_IsFieldSetAndNotNull( f.get(), 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f.get(), 0 ) ) ) : QVariant( fld.type() ) );
 
     if ( limit >= 0 && uniqueValues.size() >= limit )
       break;
@@ -3077,12 +3061,11 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
     return QgsVectorDataProvider::uniqueStringsMatching( index, substring, limit, feedback );
   }
 
-  OGRFeatureH f;
-  while ( ( f = l->GetNextFeature() ) )
+  gdal::ogr_feature_unique_ptr f;
+  while ( f.reset( l->GetNextFeature() ), f )
   {
-    if ( OGR_F_IsFieldSetAndNotNull( f, 0 ) )
-      results << textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) );
-    OGR_F_Destroy( f );
+    if ( OGR_F_IsFieldSetAndNotNull( f.get(), 0 ) )
+      results << textEncoding()->toUnicode( OGR_F_GetFieldAsString( f.get(), 0 ) );
 
     if ( ( limit >= 0 && results.size() >= limit ) || ( feedback && feedback->isCanceled() ) )
       break;
@@ -3116,15 +3099,14 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
     return QgsVectorDataProvider::minimumValue( index );
   }
 
-  OGRFeatureH f = l->GetNextFeature();
+  gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
   if ( !f )
   {
     QgsOgrProviderUtils::release( l );
     return QVariant();
   }
 
-  QVariant value = OGR_F_IsFieldSetAndNotNull( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
-  OGR_F_Destroy( f );
+  QVariant value = OGR_F_IsFieldSetAndNotNull( f.get(), 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f.get(), 0 ) ) ) : QVariant( fld.type() );
 
   QgsOgrProviderUtils::release( l );
 
@@ -3155,15 +3137,14 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
     return QgsVectorDataProvider::maximumValue( index );
   }
 
-  OGRFeatureH f = l->GetNextFeature();
+  gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
   if ( !f )
   {
     QgsOgrProviderUtils::release( l );
     return QVariant();
   }
 
-  QVariant value = OGR_F_IsFieldSetAndNotNull( f, 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
-  OGR_F_Destroy( f );
+  QVariant value = OGR_F_IsFieldSetAndNotNull( f.get(), 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f.get(), 0 ) ) ) : QVariant( fld.type() );
 
   QgsOgrProviderUtils::release( l );
 
@@ -3346,13 +3327,12 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
                             nullptr, nullptr );
         if ( hSqlLyr )
         {
-          OGRFeatureH hFeat = OGR_L_GetNextFeature( hSqlLyr );
+          gdal::ogr_feature_unique_ptr hFeat( OGR_L_GetNextFeature( hSqlLyr ) );
           if ( hFeat )
           {
-            const char *pszRet = OGR_F_GetFieldAsString( hFeat, 0 );
+            const char *pszRet = OGR_F_GetFieldAsString( hFeat.get(), 0 );
             bSuccess = EQUAL( pszRet, "delete" );
             QgsDebugMsg( QString( "Return: %1" ).arg( pszRet ) );
-            OGR_F_Destroy( hFeat );
           }
         }
         else if ( CPLGetLastErrorType() != CE_None )
@@ -3385,12 +3365,11 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
           CPLPopErrorHandler();
           if ( hSqlLyr != NULL )
           {
-            OGRFeatureH hFeat = OGR_L_GetNextFeature( hSqlLyr );
+            gdal::ogr_feature_unique_ptr hFeat( OGR_L_GetNextFeature( hSqlLyr ) );
             if ( hFeat != NULL )
             {
-              const char *pszRet = OGR_F_GetFieldAsString( hFeat, 0 );
+              const char *pszRet = OGR_F_GetFieldAsString( hFeat.get(), 0 );
               QgsDebugMsg( QString( "Return: %1" ).arg( pszRet ) );
-              OGR_F_Destroy( hFeat );
             }
             GDALDatasetReleaseResultSet( hDS, hSqlLyr );
           }
@@ -3536,19 +3515,18 @@ void QgsOgrProvider::recalculateFeatureCount()
     mOgrLayer->ResetReading();
     setRelevantFields( true, QgsAttributeList() );
     mOgrLayer->ResetReading();
-    OGRFeatureH fet;
+    gdal::ogr_feature_unique_ptr fet;
     const OGRwkbGeometryType flattenGeomTypeFilter =
       QgsOgrProvider::ogrWkbSingleFlatten( mOgrGeometryTypeFilter );
-    while ( ( fet = mOgrLayer->GetNextFeature() ) )
+    while ( fet.reset( mOgrLayer->GetNextFeature() ), fet )
     {
-      OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
+      OGRGeometryH geom = OGR_F_GetGeometryRef( fet.get() );
       if ( geom )
       {
         OGRwkbGeometryType gType = OGR_G_GetGeometryType( geom );
         gType = QgsOgrProvider::ogrWkbSingleFlatten( gType );
         if ( gType == flattenGeomTypeFilter ) mFeaturesCounted++;
       }
-      OGR_F_Destroy( fet );
     }
     mOgrLayer->ResetReading();
 
@@ -4737,73 +4715,61 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     }
     bool ok = true;
     {
-      OGRFieldDefnH fld = OGR_Fld_Create( "f_table_catalog", OFTString );
-      OGR_Fld_SetWidth( fld, 256 );
-      ok &= OGR_L_CreateField( hLayer, fld, true ) == OGRERR_NONE;
-      OGR_Fld_Destroy( fld );
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "f_table_catalog", OFTString ) );
+      OGR_Fld_SetWidth( fld.get(), 256 );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
     }
     {
-      OGRFieldDefnH fld = OGR_Fld_Create( "f_table_schema", OFTString );
-      OGR_Fld_SetWidth( fld, 256 );
-      ok &= OGR_L_CreateField( hLayer, fld, true ) == OGRERR_NONE;
-      OGR_Fld_Destroy( fld );
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "f_table_schema", OFTString ) );
+      OGR_Fld_SetWidth( fld.get(), 256 );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
     }
     {
-      OGRFieldDefnH fld = OGR_Fld_Create( "f_table_name", OFTString );
-      OGR_Fld_SetWidth( fld, 256 );
-      ok &= OGR_L_CreateField( hLayer, fld, true ) == OGRERR_NONE;
-      OGR_Fld_Destroy( fld );
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "f_table_name", OFTString ) );
+      OGR_Fld_SetWidth( fld.get(), 256 );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
     }
     {
-      OGRFieldDefnH fld = OGR_Fld_Create( "f_geometry_column", OFTString );
-      OGR_Fld_SetWidth( fld, 256 );
-      ok &= OGR_L_CreateField( hLayer, fld, true ) == OGRERR_NONE;
-      OGR_Fld_Destroy( fld );
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "f_geometry_column", OFTString ) );
+      OGR_Fld_SetWidth( fld.get(), 256 );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
     }
     {
-      OGRFieldDefnH fld = OGR_Fld_Create( "styleName", OFTString );
-      OGR_Fld_SetWidth( fld, 30 );
-      ok &= OGR_L_CreateField( hLayer, fld, true ) == OGRERR_NONE;
-      OGR_Fld_Destroy( fld );
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "styleName", OFTString ) );
+      OGR_Fld_SetWidth( fld.get(), 30 );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
     }
     {
-      OGRFieldDefnH fld = OGR_Fld_Create( "styleQML", OFTString );
-      ok &= OGR_L_CreateField( hLayer, fld, true ) == OGRERR_NONE;
-      OGR_Fld_Destroy( fld );
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "styleQML", OFTString ) );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
     }
     {
-      OGRFieldDefnH fld = OGR_Fld_Create( "styleSLD", OFTString );
-      ok &= OGR_L_CreateField( hLayer, fld, true ) == OGRERR_NONE;
-      OGR_Fld_Destroy( fld );
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "styleSLD", OFTString ) );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
     }
     {
-      OGRFieldDefnH fld = OGR_Fld_Create( "useAsDefault", OFTInteger );
-      OGR_Fld_SetSubType( fld, OFSTBoolean );
-      ok &= OGR_L_CreateField( hLayer, fld, true ) == OGRERR_NONE;
-      OGR_Fld_Destroy( fld );
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "useAsDefault", OFTInteger ) );
+      OGR_Fld_SetSubType( fld.get(), OFSTBoolean );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
     }
     {
-      OGRFieldDefnH fld = OGR_Fld_Create( "description", OFTString );
-      ok &= OGR_L_CreateField( hLayer, fld, true ) == OGRERR_NONE;
-      OGR_Fld_Destroy( fld );
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "description", OFTString ) );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
     }
     {
-      OGRFieldDefnH fld = OGR_Fld_Create( "owner", OFTString );
-      OGR_Fld_SetWidth( fld, 30 );
-      ok &= OGR_L_CreateField( hLayer, fld, true ) == OGRERR_NONE;
-      OGR_Fld_Destroy( fld );
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "owner", OFTString ) );
+      OGR_Fld_SetWidth( fld.get(), 30 );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
     }
     {
-      OGRFieldDefnH fld = OGR_Fld_Create( "ui", OFTString );
-      OGR_Fld_SetWidth( fld, 30 );
-      ok &= OGR_L_CreateField( hLayer, fld, true ) == OGRERR_NONE;
-      OGR_Fld_Destroy( fld );
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "ui", OFTString ) );
+      OGR_Fld_SetWidth( fld.get(), 30 );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
     }
     {
-      OGRFieldDefnH fld = OGR_Fld_Create( "update_time", OFTDateTime );
-      OGR_Fld_SetDefault( fld, "CURRENT_TIMESTAMP" );
-      ok &= OGR_L_CreateField( hLayer, fld, true ) == OGRERR_NONE;
-      OGR_Fld_Destroy( fld );
+      gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( "update_time", OFTDateTime ) );
+      OGR_Fld_SetDefault( fld.get(), "CURRENT_TIMESTAMP" );
+      ok &= OGR_L_CreateField( hLayer, fld.get(), true ) == OGRERR_NONE;
     }
     if ( !ok )
     {
@@ -4827,14 +4793,13 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
                               .arg( QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetName( hUserLayer ) ) ) )
                               .arg( QgsOgrProviderUtils::quotedValue( QString( OGR_L_GetGeometryColumn( hUserLayer ) ) ) );
     OGR_L_SetAttributeFilter( hLayer, oldDefaultQuery.toUtf8().constData() );
-    OGRFeatureH hFeature = OGR_L_GetNextFeature( hLayer );
+    gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
     if ( hFeature )
     {
-      OGR_F_SetFieldInteger( hFeature,
+      OGR_F_SetFieldInteger( hFeature.get(),
                              OGR_FD_GetFieldIndex( hLayerDefn, "useAsDefault" ),
                              0 );
-      bool ok = OGR_L_SetFeature( hLayer, hFeature ) == 0;
-      OGR_F_Destroy( hFeature );
+      bool ok = OGR_L_SetFeature( hLayer, hFeature.get() ) == 0;
       if ( !ok )
       {
         QgsDebugMsg( "Could not unset previous useAsDefault style" );
@@ -4851,7 +4816,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
                        .arg( QgsOgrProviderUtils::quotedValue( realStyleName ) );
   OGR_L_SetAttributeFilter( hLayer, checkQuery.toUtf8().constData() );
   OGR_L_ResetReading( hLayer );
-  OGRFeatureH hFeature = OGR_L_GetNextFeature( hLayer );
+  gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
   bool bNew = true;
 
   if ( hFeature )
@@ -4867,7 +4832,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
                                   QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No ) )
     {
       errCause = QObject::tr( "Operation aborted" );
-      OGR_F_Destroy( hFeature );
       mutex->unlock();
       QgsOgrProviderUtils::release( userLayer );
       return false;
@@ -4876,52 +4840,50 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   }
   else
   {
-    hFeature = OGR_F_Create( hLayerDefn );
-    OGR_F_SetFieldString( hFeature,
+    hFeature.reset( OGR_F_Create( hLayerDefn ) );
+    OGR_F_SetFieldString( hFeature.get(),
                           OGR_FD_GetFieldIndex( hLayerDefn, "f_table_catalog" ),
                           "" );
-    OGR_F_SetFieldString( hFeature,
+    OGR_F_SetFieldString( hFeature.get(),
                           OGR_FD_GetFieldIndex( hLayerDefn, "f_table_schema" ),
                           "" );
-    OGR_F_SetFieldString( hFeature,
+    OGR_F_SetFieldString( hFeature.get(),
                           OGR_FD_GetFieldIndex( hLayerDefn, "f_table_name" ),
                           OGR_L_GetName( hUserLayer ) );
-    OGR_F_SetFieldString( hFeature,
+    OGR_F_SetFieldString( hFeature.get(),
                           OGR_FD_GetFieldIndex( hLayerDefn, "f_geometry_column" ),
                           OGR_L_GetGeometryColumn( hUserLayer ) );
-    OGR_F_SetFieldString( hFeature,
+    OGR_F_SetFieldString( hFeature.get(),
                           OGR_FD_GetFieldIndex( hLayerDefn, "styleName" ),
                           realStyleName.toUtf8().constData() );
     if ( !uiFileContent.isEmpty() )
     {
-      OGR_F_SetFieldString( hFeature,
+      OGR_F_SetFieldString( hFeature.get(),
                             OGR_FD_GetFieldIndex( hLayerDefn, "ui" ),
                             uiFileContent.toUtf8().constData() );
     }
   }
-  OGR_F_SetFieldString( hFeature,
+  OGR_F_SetFieldString( hFeature.get(),
                         OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ),
                         qmlStyle.toUtf8().constData() );
-  OGR_F_SetFieldString( hFeature,
+  OGR_F_SetFieldString( hFeature.get(),
                         OGR_FD_GetFieldIndex( hLayerDefn, "styleSLD" ),
                         sldStyle.toUtf8().constData() );
-  OGR_F_SetFieldInteger( hFeature,
+  OGR_F_SetFieldInteger( hFeature.get(),
                          OGR_FD_GetFieldIndex( hLayerDefn, "useAsDefault" ),
                          useAsDefault ? 1 : 0 );
-  OGR_F_SetFieldString( hFeature,
+  OGR_F_SetFieldString( hFeature.get(),
                         OGR_FD_GetFieldIndex( hLayerDefn, "description" ),
                         ( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ).toUtf8().constData() );
-  OGR_F_SetFieldString( hFeature,
+  OGR_F_SetFieldString( hFeature.get(),
                         OGR_FD_GetFieldIndex( hLayerDefn, "owner" ),
                         "" );
 
   bool bFeatureOK;
   if ( bNew )
-    bFeatureOK = OGR_L_CreateFeature( hLayer, hFeature ) == OGRERR_NONE;
+    bFeatureOK = OGR_L_CreateFeature( hLayer, hFeature.get() ) == OGRERR_NONE;
   else
-    bFeatureOK = OGR_L_SetFeature( hLayer, hFeature ) == OGRERR_NONE;
-
-  OGR_F_Destroy( hFeature );
+    bFeatureOK = OGR_L_SetFeature( hLayer, hFeature.get() ) == OGRERR_NONE;
 
   mutex->unlock();
   QgsOgrProviderUtils::release( userLayer );
@@ -5010,19 +4972,18 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   qlonglong moreRecentTimestamp = 0;
   while ( true )
   {
-    OGRFeatureH hFeat = OGR_L_GetNextFeature( hLayer );
+    gdal::ogr_feature_unique_ptr hFeat( OGR_L_GetNextFeature( hLayer ) );
     if ( !hFeat )
       break;
-    if ( OGR_F_GetFieldAsInteger( hFeat, OGR_FD_GetFieldIndex( hLayerDefn, "useAsDefault" ) ) )
+    if ( OGR_F_GetFieldAsInteger( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "useAsDefault" ) ) )
     {
       styleQML = QString::fromUtf8(
-                   OGR_F_GetFieldAsString( hFeat, OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ) ) );
-      OGR_F_Destroy( hFeat );
+                   OGR_F_GetFieldAsString( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ) ) );
       break;
     }
 
     int  year, month, day, hour, minute, second, TZ;
-    OGR_F_GetFieldAsDateTime( hFeat, OGR_FD_GetFieldIndex( hLayerDefn, "update_time" ),
+    OGR_F_GetFieldAsDateTime( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "update_time" ),
                               &year, &month, &day, &hour, &minute, &second, &TZ );
     qlonglong ts = second + minute * 60 + hour * 3600 + day * 24 * 3600 +
                    ( qlonglong )month * 31 * 24 * 3600 + ( qlonglong )year * 12 * 31 * 24 * 3600;
@@ -5030,10 +4991,9 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
     {
       moreRecentTimestamp = ts;
       styleQML = QString::fromUtf8(
-                   OGR_F_GetFieldAsString( hFeat, OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ) ) );
+                   OGR_F_GetFieldAsString( hFeat.get(), OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ) ) );
 
     }
-    OGR_F_Destroy( hFeat );
   }
 
   mutex1->unlock();
@@ -5112,23 +5072,23 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   int numberOfRelatedStyles = 0;
   while ( true )
   {
-    OGRFeatureH hFeature = OGR_L_GetNextFeature( hLayer );
+    gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetNextFeature( hLayer ) );
     if ( !hFeature )
       break;
 
     QString tableName( QString::fromUtf8(
-                         OGR_F_GetFieldAsString( hFeature,
+                         OGR_F_GetFieldAsString( hFeature.get(),
                              OGR_FD_GetFieldIndex( hLayerDefn, "f_table_name" ) ) ) );
     QString geometryColumn( QString::fromUtf8(
-                              OGR_F_GetFieldAsString( hFeature,
+                              OGR_F_GetFieldAsString( hFeature.get(),
                                   OGR_FD_GetFieldIndex( hLayerDefn, "f_geometry_column" ) ) ) );
     QString styleName( QString::fromUtf8(
-                         OGR_F_GetFieldAsString( hFeature,
+                         OGR_F_GetFieldAsString( hFeature.get(),
                              OGR_FD_GetFieldIndex( hLayerDefn, "styleName" ) ) ) );
     QString description( QString::fromUtf8(
-                           OGR_F_GetFieldAsString( hFeature,
+                           OGR_F_GetFieldAsString( hFeature.get(),
                                OGR_FD_GetFieldIndex( hLayerDefn, "description" ) ) ) );
-    int fid = static_cast<int>( OGR_F_GetFID( hFeature ) );
+    int fid = static_cast<int>( OGR_F_GetFID( hFeature.get() ) );
     if ( tableName == QString::fromUtf8( OGR_L_GetName( hUserLayer ) ) &&
          geometryColumn == QString::fromUtf8( OGR_L_GetGeometryColumn( hUserLayer ) ) )
     {
@@ -5142,7 +5102,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
     else
     {
       int  year, month, day, hour, minute, second, TZ;
-      OGR_F_GetFieldAsDateTime( hFeature, OGR_FD_GetFieldIndex( hLayerDefn, "update_time" ),
+      OGR_F_GetFieldAsDateTime( hFeature.get(), OGR_FD_GetFieldIndex( hLayerDefn, "update_time" ),
                                 &year, &month, &day, &hour, &minute, &second, &TZ );
       qlonglong ts = second + minute * 60 + hour * 3600 + day * 24 * 3600 +
                      ( qlonglong )month * 31 * 24 * 3600 + ( qlonglong )year * 12 * 31 * 24 * 3600;
@@ -5152,8 +5112,6 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
       mapIdToDescription[fid] = styleName;
       mapTimestampToId[ts].append( fid );
     }
-
-    OGR_F_Destroy( hFeature );
   }
 
   std::sort( listTimestamp.begin(), listTimestamp.end() );
@@ -5203,7 +5161,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
     return QLatin1String( "" );
   }
 
-  OGRFeatureH hFeature = OGR_L_GetFeature( hLayer, id );
+  gdal::ogr_feature_unique_ptr hFeature( OGR_L_GetFeature( hLayer, id ) );
   if ( !hFeature )
   {
     errCause = QObject::tr( "No style corresponding to style identifier" );
@@ -5215,10 +5173,8 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
 
   OGRFeatureDefnH hLayerDefn = OGR_L_GetLayerDefn( hLayer );
   QString styleQML( QString::fromUtf8(
-                      OGR_F_GetFieldAsString( hFeature,
+                      OGR_F_GetFieldAsString( hFeature.get(),
                           OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ) ) ) );
-
-  OGR_F_Destroy( hFeature );
 
   mutex1->unlock();
   QgsOgrProviderUtils::release( layerStyles );
