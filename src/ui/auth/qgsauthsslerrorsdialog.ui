@@ -6,9 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>568</width>
-    <height>550</height>
+    <width>493</width>
+    <height>430</height>
    </rect>
+  </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::PreventContextMenu</enum>
   </property>
   <property name="windowTitle">
    <string>Custom Certificate Configuration</string>
@@ -220,16 +223,6 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QCheckBox" name="cbClearAuthCacheOnErrors">
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The authentication cache stores all connections even when the connection fails. &lt;/p&gt;&lt;p&gt;If you make any change to the authentication configuration or to the CAs you should clear the authentication cache or restart QGIS. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;When this option is checked, it will clear the authentication cache when this dialog is closed.&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Clear authentication cache</string>
-       </property>
-      </widget>
-     </item>
      <item>
       <widget class="QDialogButtonBox" name="buttonBox">
        <property name="orientation">
