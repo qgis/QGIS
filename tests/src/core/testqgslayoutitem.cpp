@@ -50,6 +50,8 @@ class TestItem : public QgsLayoutItem
     int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }
     QString stringType() const override { return QStringLiteral( "TestItemType" ); }
 
+    bool forceResize = false;
+
   protected:
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * = nullptr ) override
     {
@@ -60,6 +62,14 @@ class TestItem : public QgsLayoutItem
       painter->setBrush( QColor( 255, 100, 100, 200 ) );
       painter->drawRect( rect() );
       painter->restore();
+    }
+
+    QSizeF applyItemSizeConstraint( const QSizeF &targetSize ) override
+    {
+      if ( !forceResize )
+        return targetSize;
+
+      return QSizeF( 17, 27 );
     }
 };
 
@@ -753,6 +763,12 @@ void TestQgsLayoutItem::resize()
   QCOMPARE( spySizeChanged.count(), 13 );
 
   l.setUnits( QgsUnitTypes::LayoutMillimeters );
+
+  // try override item size in item
+  item->forceResize = true;
+  item->attemptResize( QgsLayoutSize( 10.0, 15.0, QgsUnitTypes::LayoutMillimeters ) );
+  QCOMPARE( item->rect().width(), 17.0 );
+  QCOMPARE( item->rect().height(), 27.0 );
 }
 
 void TestQgsLayoutItem::referencePoint()
