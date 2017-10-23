@@ -126,6 +126,11 @@ class OneSideBuffer(GdalAlgorithm):
                 continue
             other_fields.append(f.name())
 
+        if other_fields:
+            other_fields = ', {}'.format(','.join(other_fields))
+        else:
+            other_fields = ''
+
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
@@ -134,9 +139,9 @@ class OneSideBuffer(GdalAlgorithm):
         arguments.append('-sql')
 
         if dissolve or fieldName:
-            sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})) AS {}, {} FROM '{}'".format(geometry, distance, side, geometry, ','.join(other_fields), layerName)
+            sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})) AS {}{} FROM '{}'".format(geometry, distance, side, geometry, other_fields, layerName)
         else:
-            sql = "SELECT ST_SingleSidedBuffer({}, {}, {}) AS {}, {} FROM '{}'".format(geometry, distance, side, geometry, ','.join(other_fields), layerName)
+            sql = "SELECT ST_SingleSidedBuffer({}, {}, {}) AS {}{} FROM '{}'".format(geometry, distance, side, geometry, other_fields, layerName)
 
         if fieldName:
             sql = '"{} GROUP BY {}"'.format(sql, fieldName)
