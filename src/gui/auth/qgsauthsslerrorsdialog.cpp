@@ -189,7 +189,7 @@ void QgsAuthSslErrorsDialog::buttonBox_clicked( QAbstractButton *button )
       reject();
       break;
   }
-  // Clear access cache if the user choose ignore and the
+  // Clear access cache if the user choose abort and the
   // setting allows it
   if ( btnenum == QDialogButtonBox::Abort &&
        QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ),
