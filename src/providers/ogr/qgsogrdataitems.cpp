@@ -157,12 +157,24 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
     // Collect mixed-geom layers
     QMultiMap<int, QStringList> subLayersMap;
     const QStringList subLayersList( layer.dataProvider()->subLayers( ) );
+    QMap< QString, int > mapLayerNameToCount;
+    bool uniqueNames = true;
+    int prevIdx = -1;
     for ( const QString &descriptor : subLayersList )
     {
       QStringList pieces = descriptor.split( ':' );
-      subLayersMap.insert( pieces[0].toInt(), pieces );
+      int idx = pieces[0].toInt();
+      subLayersMap.insert( idx, pieces );
+      if ( pieces.count() >= 4 && idx != prevIdx )
+      {
+        QString layerName = pieces[1];
+        int count = ++mapLayerNameToCount[layerName];
+        if ( count > 1 || layerName.isEmpty() )
+          uniqueNames = false;
+      }
+      prevIdx = idx;
     }
-    int prevIdx = -1;
+    prevIdx = -1;
     const auto subLayerKeys = subLayersMap.keys( );
     for ( const int &idx : subLayerKeys )
     {
@@ -194,13 +206,13 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
           }
           else
           {
+            if ( uniqueNames )
+              uri = QStringLiteral( "%1|layername=%2" ).arg( path, name );
+            else
+              uri = QStringLiteral( "%1|layerid=%2" ).arg( path, layerId );
             if ( values.size() > 1 )
             {
-              uri = QStringLiteral( "%1|layerid=%2|geometrytype=%3" ).arg( path, layerId, geometryType );
-            }
-            else
-            {
-              uri = QStringLiteral( "%1|layerid=%2" ).arg( path, layerId );
+              uri += QStringLiteral( "|geometrytype=" ) + geometryType;
             }
             QgsDebugMsgLevel( QStringLiteral( "Adding %1 Vector item %2 %3 %4" ).arg( driver, name, uri, geometryType ), 3 );
             children.append( new QgsOgrDbLayerInfo( path, uri, name, geometryColumn, geometryType, layerType ) );
