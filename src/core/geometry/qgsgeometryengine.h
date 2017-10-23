@@ -96,6 +96,13 @@ class CORE_EXPORT QgsGeometryEngine
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
+    virtual QgsAbstractGeometry *combine( const QList<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const = 0 SIP_FACTORY;
+
+    /**
+     * Calculate the combination of this and \a geometries.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
     virtual QgsAbstractGeometry *combine( const QList< QgsGeometry > &geometries, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
 
     /**

@@ -308,6 +308,30 @@ QgsAbstractGeometry *QgsGeos::combine( const QgsAbstractGeometry *geom, QString 
   return overlay( geom, OverlayUnion, errorMsg ).release();
 }
 
+QgsAbstractGeometry *QgsGeos::combine( const QList<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const
+{
+  QVector< GEOSGeometry * > geosGeometries;
+  geosGeometries.reserve( geomList.size() );
+  for ( const QgsAbstractGeometry *g : geomList )
+  {
+    if ( !g )
+      continue;
+
+    geosGeometries << asGeos( g, mPrecision ).release();
+  }
+
+  geos::unique_ptr geomUnion;
+  try
+  {
+    geos::unique_ptr geomCollection = createGeosCollection( GEOS_GEOMETRYCOLLECTION, geosGeometries );
+    geomUnion.reset( GEOSUnaryUnion_r( geosinit.ctxt, geomCollection.get() ) );
+  }
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+
+  std::unique_ptr< QgsAbstractGeometry > result = fromGeos( geomUnion.get() );
+  return result.release();
+}
+
 QgsAbstractGeometry *QgsGeos::combine( const QList<QgsGeometry> &geomList, QString *errorMsg ) const
 {
   QVector< GEOSGeometry * > geosGeometries;
