@@ -4189,10 +4189,10 @@ tests:
         type: vector
 
   - algorithm: native:transect
-    name: Test (native:transect)
+    name: Transect single left 90.0 1m
     params:
       ANGLE: 90.0
-      DISTANCE: 1.0
+      LENGTH: 1.0
       INPUT:
         name: custom/transect_single.gml
         type: vector
@@ -4203,10 +4203,10 @@ tests:
         type: vector
 
   - algorithm: native:transect
-    name: Test (native:transect)
+    name: Transect single right 90.0 0.5m
     params:
       ANGLE: 90.0
-      DISTANCE: 0.5
+      LENGTH: 0.5
       INPUT:
         name: custom/transect_single.gml
         type: vector
@@ -4217,24 +4217,38 @@ tests:
         type: vector
 
   - algorithm: native:transect
-    name: Test (native:transect)
+    name: Transect single both 90.0 5m
     params:
       ANGLE: 90.0
       INPUT:
         name: custom/transect_single.gml
         type: vector
       LENGTH: 0.5
-      SIDE: 1
+      SIDE: 2
     results:
       OUTPUT:
-        name: expected/transect_single_right_05.gml
+        name: expected/transect_single_both_5.gml
         type: vector
 
   - algorithm: native:transect
-    name: Test (native:transect)
+    name: Transect single both 30.0 2m
+    params:
+      ANGLE: 30.0
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      LENGTH: 2.0
+      SIDE: 2
+    results:
+      OUTPUT:
+        name: expected/transect_single_both_2_30.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Transect multi left 90.0 1m
     params:
       ANGLE: 90.0
-      DISTANCE: 1.0
+      LENGTH: 1.0
       INPUT:
         name: custom/transect_multi.gml
         type: vector
@@ -4245,10 +4259,10 @@ tests:
         type: vector
 
   - algorithm: native:transect
-    name: Test (native:transect)
+    name: Transect multi right 90.0 0.5m
     params:
       ANGLE: 90.0
-      DISTANCE: 0.5
+      LENGTH: 0.5
       INPUT:
         name: custom/transect_multi.gml
         type: vector
@@ -4259,15 +4273,29 @@ tests:
         type: vector
 
   - algorithm: native:transect
-    name: Test (native:transect)
+    name: Transect multi both 90.0 5m
     params:
       ANGLE: 90.0
       INPUT:
         name: custom/transect_multi.gml
         type: vector
       LENGTH: 0.5
-      SIDE: 1
+      SIDE: 2
     results:
       OUTPUT:
-        name: expected/transect_multi_right_05.gml
+        name: expected/transect_multi_both_5.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Transect multi both 30.0 2m
+    params:
+      ANGLE: 30.0
+      INPUT:
+        name: custom/transect_multi.gml
+        type: vector
+      LENGTH: 2.0
+      SIDE: 2
+    results:
+      OUTPUT:
+        name: expected/transect_multi_both_2_30.gml
         type: vector
