@@ -1694,6 +1694,30 @@ namespace QgsWms
       }
       else if ( currentLayer->type() == QgsMapLayer::RasterLayer )
       {
+        const QgsDataProvider *provider = currentLayer->dataProvider();
+        if ( provider && provider->name() == "wms" )
+        {
+          //advertise as web map background layer
+          QVariant wmsBackgroundLayer = currentLayer->customProperty( QStringLiteral( "WMSBackgroundLayer" ), false );
+          QDomElement wmsBackgroundLayerElem = doc.createElement( "WMSBackgroundLayer" );
+          QDomText wmsBackgroundLayerText = doc.createTextNode( wmsBackgroundLayer.toBool() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+          wmsBackgroundLayerElem.appendChild( wmsBackgroundLayerText );
+          layerElem.appendChild( wmsBackgroundLayerElem );
+
+          //publish datasource
+          QVariant wmsPublishDataSourceUrl = currentLayer->customProperty( QStringLiteral( "WMSPublishDataSourceUrl" ), false );
+          if ( wmsPublishDataSourceUrl.toBool() )
+          {
+            QList< QVariant > resolutionList = provider->property( "resolutions" ).toList();
+            bool tiled = resolutionList.size() > 0;
+
+            QDomElement dataSourceElem = doc.createElement( tiled ? QStringLiteral( "WMTSDataSource" ) : QStringLiteral( "WMSDataSource" ) );
+            QDomText dataSourceUri = doc.createTextNode( provider->dataSourceUri() );
+            dataSourceElem.appendChild( dataSourceUri );
+            layerElem.appendChild( dataSourceElem );
+          }
+        }
+
         QVariant wmsPrintLayer = currentLayer->customProperty( QStringLiteral( "WMSPrintLayer" ) );
         if ( wmsPrintLayer.isValid() )
         {
