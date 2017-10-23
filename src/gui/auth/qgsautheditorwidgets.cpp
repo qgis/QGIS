@@ -26,6 +26,7 @@
 #include "qgsauthcertificatemanager.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
+#include "qgsnetworkaccessmanager.h"
 
 
 QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget *parent )
@@ -147,6 +148,11 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   mActionRemoveAuthConfigs = new QAction( QStringLiteral( "Remove all authentication configurations" ), this );
   mActionEraseAuthDatabase = new QAction( QStringLiteral( "Erase authentication database" ), this );
 
+  mActionClearAccessCacheNow = new QAction( QStringLiteral( "Clear network authentication access cache" ), this );
+  mActionAutoClearAccessCache = new QAction( QStringLiteral( "Automatically clear network authentication access cache on SSL errors" ), this );
+  mActionAutoClearAccessCache->setCheckable( true );
+  mActionAutoClearAccessCache->setChecked( QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ), false, QgsSettings::Section::Auth ).toBool( ) );
+
   mActionPasswordHelperSync = new QAction( tr( "Store/update the master password in your %1" )
       .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ), this );
   mActionPasswordHelperDelete = new QAction( tr( "Clear the master password from your %1" )
@@ -173,10 +179,23 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   connect( mActionPasswordHelperEnable, &QAction::triggered, this, &QgsAuthEditorWidgets::passwordHelperEnableTriggered );
   connect( mActionPasswordHelperLoggingEnable, &QAction::triggered, this, &QgsAuthEditorWidgets::passwordHelperLoggingEnableTriggered );
 
+  connect( mActionClearAccessCacheNow, &QAction::triggered, this, [ = ]
+  {
+    QgsNetworkAccessManager::instance()->clearAccessCache();
+    messageBar()->pushSuccess( tr( "Auth cache cleared" ), tr( "Network authentication cache has been cleared" ) );
+  } );
+  connect( mActionAutoClearAccessCache, &QAction::triggered, this, [ ]( bool checked )
+  {
+    QgsSettings().setValue( QStringLiteral( "clear_auth_cache_on_errors" ), checked, QgsSettings::Section::Auth );
+  } );
+
   mAuthUtilitiesMenu = new QMenu( this );
   mAuthUtilitiesMenu->addAction( mActionSetMasterPassword );
   mAuthUtilitiesMenu->addAction( mActionClearCachedMasterPassword );
   mAuthUtilitiesMenu->addAction( mActionResetMasterPassword );
+  mAuthUtilitiesMenu->addSeparator();
+  mAuthUtilitiesMenu->addAction( mActionClearAccessCacheNow );
+  mAuthUtilitiesMenu->addAction( mActionAutoClearAccessCache );
   mAuthUtilitiesMenu->addSeparator();
   mAuthUtilitiesMenu->addAction( mActionPasswordHelperEnable );
   mAuthUtilitiesMenu->addAction( mActionPasswordHelperSync );
