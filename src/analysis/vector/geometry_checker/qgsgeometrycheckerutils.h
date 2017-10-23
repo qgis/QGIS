@@ -24,8 +24,6 @@
 #include "geometry/qgsabstractgeometry.h"
 #include "geometry/qgspoint.h"
 #include <qmath.h>
-#include <QScrollArea>
-#include <QScrollBar>
 
 class QgsGeometryEngine;
 class QgsFeaturePool;
