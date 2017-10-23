@@ -71,6 +71,7 @@ class QgsMapLayerConfigWidgetFactory;
 class QgsMapOverviewCanvas;
 class QgsMapTip;
 class QgsMapTool;
+class QgsMapToolAddFeature;
 class QgsMapToolAdvancedDigitizing;
 class QgsMapToolIdentifyAction;
 class QgsPluginLayer;
@@ -1258,10 +1259,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void newBookmark();
     //! activates the add feature tool
     void addFeature();
-    //! activates the add circular string tool
-    void circularStringCurvePoint();
-    //! activates the circular string radius tool
-    void circularStringRadius();
     //! activates the move feature tool
     void moveFeature();
     //! activates the copy and move feature tool
@@ -1300,6 +1297,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void offsetPointSymbol();
     //! shows the snapping Options
     void snappingOptions();
+    //! activates the tool
+    void setMapTool( QgsMapTool *tool, bool clean = false );
+
 
     //! activates the rectangle selection tool
     void selectFeatures();
@@ -1870,9 +1870,24 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mMeasureDist = nullptr;
         QgsMapTool *mMeasureArea = nullptr;
         QgsMapTool *mMeasureAngle = nullptr;
-        QgsMapTool *mAddFeature = nullptr;
+        QgsMapToolAddFeature *mAddFeature = nullptr;
         QgsMapTool *mCircularStringCurvePoint = nullptr;
         QgsMapTool *mCircularStringRadius = nullptr;
+        QgsMapTool *mCircle2Points = nullptr;
+        QgsMapTool *mCircle3Points = nullptr;
+        QgsMapTool *mCircle3Tangents = nullptr;
+        QgsMapTool *mCircle2TangentsPoint = nullptr;
+        QgsMapTool *mCircleCenterPoint = nullptr;
+        QgsMapTool *mEllipseCenter2Points = nullptr;
+        QgsMapTool *mEllipseCenterPoint = nullptr;
+        QgsMapTool *mEllipseExtent = nullptr;
+        QgsMapTool *mEllipseFoci = nullptr;
+        QgsMapTool *mRectangleCenterPoint = nullptr;
+        QgsMapTool *mRectangleExtent = nullptr;
+        QgsMapTool *mRectangle3Points = nullptr;
+        QgsMapTool *mRegularPolygon2Points = nullptr;
+        QgsMapTool *mRegularPolygonCenterPoint = nullptr;
+        QgsMapTool *mRegularPolygonCenterCorner = nullptr;
         QgsMapTool *mMoveFeature = nullptr;
         QgsMapTool *mMoveFeatureCopy = nullptr;
         QgsMapTool *mOffsetCurve = nullptr;

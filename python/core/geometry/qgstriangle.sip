@@ -114,12 +114,19 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
     QVector<double> lengths() const;
 %Docstring
  Returns the three lengths of the triangle.
- :return: Lengths of triangle ABC where [AB] is at 0, [BC] is at 1, [CA] is at 2
+ :return: Lengths of triangle ABC where [AB] is at 0, [BC] is at 1, [CA] is at 2.
+ An empty list is returned for empty or invalid triangle.
  * Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
    tri.lengths()
    # [5.0, 5.0, 7.0710678118654755]
+   QgsTriangle().lengths()
+   # []
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).lengths()
+   # []
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).lengths()
+   # []
  \endcode
  :rtype: list of float
 %End
@@ -127,12 +134,19 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
     QVector<double> angles() const;
 %Docstring
  Returns the three angles of the triangle.
- :return: Angles in radians of triangle ABC where angle BAC is at 0, angle ABC is at 1, angle BCA is at 2
+ :return: Angles in radians of triangle ABC where angle BAC is at 0, angle ABC is at 1, angle BCA is at 2.
+ An empty list is returned for empty or invalid triangle.
  * Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
    [math.degrees(i) for i in tri.angles()]
    # [45.0, 90.0, 45.0]
+   QgsTriangle().angles()
+   # []
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).angles()
+   # []
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).angles()
+   # []
  \endcode
  :rtype: list of float
 %End
@@ -141,7 +155,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
 %Docstring
  Is the triangle isocele (two sides with the same length)?
  \param lengthTolerance The tolerance to use
- :return: True or False
+ :return: True or False. Always false for empty or invalid triangle.
  * Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
@@ -150,6 +164,12 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
    tri.isIsocele()
    # True
    # length of [AB] == length of [BC]
+   QgsTriangle().isIsocele()
+   # False
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).isIsocele()
+   # False
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).isIsocele()
+   # False
  \endcode
  :rtype: bool
 %End
@@ -158,7 +178,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
 %Docstring
  Is the triangle equilateral (three sides with the same length)?
  \param lengthTolerance The tolerance to use
- :return: True or False
+ :return: True or False. Always false for empty or invalid triangle.
  * Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 10, 10 ), QgsPoint( 16, 10 ), QgsPoint( 13, 15.1962 ) )
@@ -167,6 +187,12 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
    tri.isEquilateral()
    # True
    # All lengths are close to 6.0
+   QgsTriangle().isEquilateral()
+   # False
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).isEquilateral()
+   # False
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).isEquilateral()
+   # False
  \endcode
  :rtype: bool
 %End
@@ -175,7 +201,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
 %Docstring
  Is the triangle right-angled?
  \param angleTolerance The tolerance to use
- :return: True or False
+ :return: True or False. Always false for empty or invalid triangle.
  * Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
@@ -184,6 +210,12 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
    tri.isRight()
    # True
    # angle of ABC == 90
+   QgsTriangle().isRight()
+   # False
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).isRight()
+   # False
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).isRight()
+   # False
  \endcode
  :rtype: bool
 %End
@@ -192,8 +224,7 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
 %Docstring
  Is the triangle scalene (all sides have differen lengths)?
  \param lengthTolerance The tolerance to use
- :return: True or False
- :return: True or False
+ :return: True or False. Always false for empty or invalid triangle.
  * Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 7.2825, 4.2368 ), QgsPoint( 13.0058, 3.3218 ), QgsPoint( 9.2145, 6.5242 ) )
@@ -202,6 +233,12 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
    tri.isScalene()
    # True
    # All lengths are different
+   QgsTriangle().isScalene()
+   # False
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).isScalene()
+   # False
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).isScalene()
+   # False
  \endcode
  :rtype: bool
 %End
@@ -209,12 +246,19 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
     QVector<QgsLineString> altitudes() const;
 %Docstring
  An altitude is a segment (defined by a QgsLineString) from a vertex to the opposite side (or, if necessary, to the extension of the opposite side).
- :return: Three altitudes from this triangle
+ :return: Three altitudes from this triangle.
+ An empty list is returned for empty or invalid triangle.
  * Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
    [alt.asWkt() for alt in tri.altitudes()]
    # ['LineString (0 0, 0 5)', 'LineString (0 5, 2.5 2.5)', 'LineString (5 5, 0 5)']
+   QgsTriangle().altitudes()
+   # []
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).altitudes()
+   # []
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).altitudes()
+   # []
  \endcode
  :rtype: list of QgsLineString
 %End
@@ -222,12 +266,19 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
     QVector<QgsLineString> medians() const;
 %Docstring
  A median is a segment (defined by a QgsLineString) from a vertex to the midpoint of the opposite side.
- :return: Three medians from this triangle
+ :return: Three medians from this triangle.
+ An empty list is returned for empty or invalid triangle.
  * Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
    [med.asWkt() for med in tri.medians()]
    # ['LineString (0 0, 2.5 5)', 'LineString (0 5, 2.5 2.5)', 'LineString (5 5, 0 2.5)']
+   QgsTriangle().medians()
+   # []
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).medians()
+   # []
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).medians()
+   # []
  \endcode
  :rtype: list of QgsLineString
 %End
@@ -235,13 +286,20 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
     QVector<QgsLineString> bisectors( double lengthTolerance = 0.0001 ) const;
 %Docstring
  The segment (defined by a QgsLineString) returned bisect the angle of a vertex to the opposite side.
- \param lengthTolerance The tolerance to use
- :return: Three angle bisector from this triangle
+ \param lengthTolerance The tolerance to use.
+ :return: Three angle bisector from this triangle.
+ An empty list is returned for empty or invalid triangle.
  * Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
    [bis.asWkt() for bis in tri.bisectors()]
    # ['LineString (0 0, 2.07106781186547462 5)', 'LineString (0 5, 2.5 2.5)', 'LineString (5 5, 0 2.92893218813452538)']
+   QgsTriangle().bisectors()
+   # []
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).bisectors()
+   # []
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).bisectors()
+   # []
  \endcode
  :rtype: list of QgsLineString
 %End
@@ -249,12 +307,19 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
     QgsTriangle medial() const;
 %Docstring
  Medial (or midpoint) triangle of a triangle ABC is the triangle with vertices at the midpoints of the triangle's sides.
- :return: The medial from this triangle
+ :return: The medial from this triangle.
+ An empty triangle is returned for empty or invalid triangle.
  * Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
    tri.medial().asWkt()
    # 'Triangle ((0 2.5, 2.5 5, 2.5 2.5, 0 2.5))'
+   QgsTriangle().medial().asWkt()
+   # 'Triangle ( )'
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).medial().asWkt()
+   # 'Triangle ( )'
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).medial().asWkt()
+   # 'Triangle ( )'
  \endcode
  :rtype: QgsTriangle
 %End
@@ -264,11 +329,18 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
  An orthocenter is the point of intersection of the altitudes of a triangle.
  \param lengthTolerance The tolerance to use
  :return: The orthocenter of the triangle.
+ An empty point is returned for empty or invalid triangle.
  * Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
    tri.orthocenter().asWkt()
    # 'Point (0 5)'
+   QgsTriangle().orthocenter().asWkt()
+   # 'Point (0 0)'
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).orthocenter().asWkt()
+   # 'Point (0 0)'
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).orthocenter().asWkt()
+   # 'Point (0 0)'
  \endcode
  :rtype: QgsPoint
 %End
@@ -276,12 +348,19 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
     QgsPoint circumscribedCenter() const;
 %Docstring
  Center of the circumscribed circle of the triangle.
- :return: The center of the circumscribed circle of the triangle
+ :return: The center of the circumscribed circle of the triangle.
+ An empty point is returned for empty or invalid triangle.
  * Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
    tri.circumscribedCenter().asWkt()
    # 'Point (2.5 2.5)'
+   QgsTriangle().circumscribedCenter().asWkt()
+   # 'Point (0 0)'
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).circumscribedCenter().asWkt()
+   # 'Point (0 0)'
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).circumscribedCenter().asWkt()
+   # 'Point (0 0)'
  \endcode
  :rtype: QgsPoint
 %End
@@ -289,12 +368,19 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
     double circumscribedRadius() const;
 %Docstring
  Radius of the circumscribed circle of the triangle.
- :return: The radius of the circumscribed circle of the triangle
+ :return: The radius of the circumscribed circle of the triangle.
+ 0.0 is returned for empty or invalid triangle.
  * Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
    tri.circumscribedRadius()
    # 3.5355339059327378
+   QgsTriangle().circumscribedRadius()
+   # 0.0
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).circumscribedRadius()
+   # 0.0
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).circumscribedRadius()
+   # 0.0
  \endcode
  :rtype: float
 %End
@@ -302,12 +388,19 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
     QgsCircle circumscribedCircle() const;
 %Docstring
  Circumscribed circle of the triangle.
- @return The circumbscribed of the triangle with a QgsCircle.
+ :return: The circumbscribed of the triangle with a QgsCircle.
+ An empty circle is returned for empty or invalid triangle.
  Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
    tri.circumscribedCircle()
    # QgsCircle(Point (2.5 2.5), 3.5355339059327378, 0)
+   QgsTriangle().circumscribedCircle()
+   # QgsCircle()
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).circumscribedCircle()
+   # QgsCircle()
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).circumscribedCircle()
+   # QgsCircle()
  \endcode
  :rtype: QgsCircle
 %End
@@ -315,12 +408,19 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
     QgsPoint inscribedCenter() const;
 %Docstring
  Center of the inscribed circle of the triangle.
- :return: The center of the inscribed circle of the triangle
+ :return: The center of the inscribed circle of the triangle.
+ An empty point is returned for empty or invalid triangle.
  * Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
    tri.inscribedCenter().asWkt()
    # 'Point (1.46446609406726225 3.53553390593273775)'
+   QgsTriangle().inscribedCenter().asWkt()
+   # 'Point (0 0)'
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).inscribedCenter().asWkt()
+   # 'Point (0 0)'
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).inscribedCenter().asWkt()
+   # 'Point (0 0)'
  \endcode
  :rtype: QgsPoint
 %End
@@ -328,12 +428,19 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
     double inscribedRadius() const;
 %Docstring
  Radius of the inscribed circle of the triangle.
- :return: The radius of the inscribed circle of the triangle
+ :return: The radius of the inscribed circle of the triangle.
+ 0.0 is returned for empty or invalid triangle.
  * Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
    tri.inscribedRadius()
    # 1.4644660940672622
+   QgsTriangle().inscribedRadius()
+   # 0.0
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).inscribedRadius()
+   # 0.0
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).inscribedRadius()
+   # 0.0
  \endcode
  :rtype: float
 %End
@@ -341,12 +448,19 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
     QgsCircle inscribedCircle() const;
 %Docstring
  Inscribed circle of the triangle.
- @return The inscribed of the triangle with a QgsCircle.
+ :return: The inscribed of the triangle with a QgsCircle.
+ An empty circle is returned for empty or invalid triangle.
  Example:
  \code{.py}
    tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
    tri.inscribedCircle()
    # QgsCircle(Point (1.46446609406726225 3.53553390593273775), 1.4644660940672622, 0)
+   QgsTriangle().inscribedCircle()
+   # QgsCircle()
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) ).inscribedCircle()
+   # QgsCircle()
+   QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 10, 10 ) ).inscribedCircle()
+   # QgsCircle()
  \endcode
  :rtype: QgsCircle
 %End

@@ -68,6 +68,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     int addCurve( QgsCurve *c );
 
     /**
+     * Clear capture curve.
+     *
+     * \since QGIS 3.0
+     */
+    void clearCurve( );
+
+    /**
      * Get the capture curve
      *
      * \returns Capture curve
@@ -97,6 +104,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * Clean a temporary rubberband
      */
     void deleteTempRubberBand();
+
+    //! convenient method to clean members
+    virtual void clean() override;
 
   private slots:
     void validationFinished();

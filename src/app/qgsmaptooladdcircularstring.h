@@ -34,8 +34,8 @@ class QgsMapToolAddCircularString: public QgsMapToolCapture
 
     void activate() override;
 
-  private slots:
-    void setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool );
+    /*private slots:
+      void setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool );*/
 
   protected:
 

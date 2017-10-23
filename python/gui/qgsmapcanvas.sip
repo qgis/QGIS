@@ -283,7 +283,7 @@ Pan to the selected features of current (vector) layer keeping same extent.
 .. seealso:: flashFeatureIds()
 %End
 
-    void setMapTool( QgsMapTool *mapTool );
+    void setMapTool( QgsMapTool *mapTool, bool clean = false );
 %Docstring
  Sets the map tool currently being used on the canvas
 %End

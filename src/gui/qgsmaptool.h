@@ -155,6 +155,9 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! called when map tool is being deactivated
     virtual void deactivate();
 
+    //! convenient method to clean members
+    virtual void clean();
+
     //! returns pointer to the tool's map canvas
     QgsMapCanvas *canvas();
 

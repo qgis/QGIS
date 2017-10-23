@@ -5969,6 +5969,8 @@ void TestQgsGeometry::triangle()
   QGSCOMPARENEAR( a_tested.at( 0 ), a_t7.at( 0 ), 0.0001 );
   QGSCOMPARENEAR( a_tested.at( 1 ), a_t7.at( 1 ), 0.0001 );
   QGSCOMPARENEAR( a_tested.at( 2 ), a_t7.at( 2 ), 0.0001 );
+  QVector<double> a_empty = QgsTriangle().angles();
+  QVERIFY( a_empty.isEmpty() );
 
   QVector<double> l_tested, l_t7 = t7.lengths();
   l_tested.append( 5 );
@@ -5977,6 +5979,15 @@ void TestQgsGeometry::triangle()
   QGSCOMPARENEAR( l_tested.at( 0 ), l_t7.at( 0 ), 0.0001 );
   QGSCOMPARENEAR( l_tested.at( 1 ), l_t7.at( 1 ), 0.0001 );
   QGSCOMPARENEAR( l_tested.at( 2 ), l_t7.at( 2 ), 0.0001 );
+  QVector<double> l_empty = QgsTriangle().lengths();
+  QVERIFY( l_empty.isEmpty() );
+
+  // type of triangle
+  // Empty triangle returns always false for the types
+  QVERIFY( !QgsTriangle().isRight() );
+  QVERIFY( !QgsTriangle().isIsocele() );
+  QVERIFY( !QgsTriangle().isScalene() );
+  QVERIFY( !QgsTriangle().isEquilateral() );
 
   // type of triangle
   QVERIFY( t7.isRight() );
@@ -6008,17 +6019,23 @@ void TestQgsGeometry::triangle()
 
   // altitudes
   QgsTriangle t10( QgsPoint( 20, 2 ), QgsPoint( 16, 6 ), QgsPoint( 26, 2 ) );
-  QVector<QgsLineString> alt = t10.altitudes();
+  QVector<QgsLineString> alt = QgsTriangle().altitudes();
+  QVERIFY( alt.isEmpty() );
+  alt = t10.altitudes();
   QGSCOMPARENEARPOINT( alt.at( 0 ).pointN( 1 ), QgsPoint( 20.8276, 4.0690 ), 0.0001 );
   QGSCOMPARENEARPOINT( alt.at( 1 ).pointN( 1 ), QgsPoint( 16, 2 ), 0.0001 );
   QGSCOMPARENEARPOINT( alt.at( 2 ).pointN( 1 ), QgsPoint( 23, -1 ), 0.0001 );
 
   // orthocenter
+
+  QCOMPARE( QgsPoint(), QgsTriangle().orthocenter() );
   QCOMPARE( QgsPoint( 16, -8 ), t10.orthocenter() );
   QCOMPARE( QgsPoint( 0, 5 ), t7.orthocenter() );
   QGSCOMPARENEARPOINT( QgsPoint( 13, 11.7321 ), t9.orthocenter(), 0.0001 );
 
   // circumscribed circle
+  QCOMPARE( QgsPoint(), QgsTriangle().circumscribedCenter() );
+  QCOMPARE( 0.0, QgsTriangle().circumscribedRadius() );
   QCOMPARE( QgsPoint( 2.5, 2.5 ), t7.circumscribedCenter() );
   QGSCOMPARENEAR( 3.5355, t7.circumscribedRadius(), 0.0001 );
   QCOMPARE( QgsPoint( 23, 9 ), t10.circumscribedCenter() );
@@ -6029,6 +6046,8 @@ void TestQgsGeometry::triangle()
   QGSCOMPARENEAR( 3.4641, t9.circumscribedCircle().radius(), 0.0001 );
 
   // inscribed circle
+  QCOMPARE( QgsPoint(), QgsTriangle().inscribedCenter() );
+  QCOMPARE( 0.0, QgsTriangle().inscribedRadius() );
   QGSCOMPARENEARPOINT( QgsPoint( 1.4645, 3.5355 ), t7.inscribedCenter(), 0.001 );
   QGSCOMPARENEAR( 1.4645, t7.inscribedRadius(), 0.0001 );
   QGSCOMPARENEARPOINT( QgsPoint( 20.4433, 3.0701 ), t10.inscribedCenter(), 0.001 );
@@ -6039,7 +6058,9 @@ void TestQgsGeometry::triangle()
   QGSCOMPARENEAR( 1.7321, t9.inscribedCircle().radius(), 0.0001 );
 
   // medians
-  QVector<QgsLineString> med = t7.medians();
+  QVector<QgsLineString> med = QgsTriangle().medians();
+  QVERIFY( med.isEmpty() );
+  med = t7.medians();
   QCOMPARE( med.at( 0 ).pointN( 0 ), t7.vertexAt( 0 ) );
   QGSCOMPARENEARPOINT( med.at( 0 ).pointN( 1 ), QgsPoint( 2.5, 5 ), 0.0001 );
   QCOMPARE( med.at( 1 ).pointN( 0 ), t7.vertexAt( 1 ) );
@@ -6068,13 +6089,16 @@ void TestQgsGeometry::triangle()
   QGSCOMPARENEARPOINT( med.at( 2 ).pointN( 1 ), alt.at( 2 ).pointN( 1 ), 0.0001 );
 
   // medial
+  QCOMPARE( QgsTriangle().medial(), QgsTriangle() );
   QCOMPARE( t7.medial(), QgsTriangle( QgsPoint( 0, 2.5 ), QgsPoint( 2.5, 5 ), QgsPoint( 2.5, 2.5 ) ) );
   QCOMPARE( t9.medial(), QgsTriangle( QgsGeometryUtils::midpoint( t9.vertexAt( 0 ), t9.vertexAt( 1 ) ),
                                       QgsGeometryUtils::midpoint( t9.vertexAt( 1 ), t9.vertexAt( 2 ) ),
                                       QgsGeometryUtils::midpoint( t9.vertexAt( 2 ), t9.vertexAt( 0 ) ) ) );
 
   // bisectors
-  QVector<QgsLineString> bis = t7.bisectors();
+  QVector<QgsLineString> bis = QgsTriangle().bisectors();
+  QVERIFY( bis.isEmpty() );
+  bis = t7.bisectors();
   QCOMPARE( bis.at( 0 ).pointN( 0 ), t7.vertexAt( 0 ) );
   QGSCOMPARENEARPOINT( bis.at( 0 ).pointN( 1 ), QgsPoint( 2.0711, 5 ), 0.0001 );
   QCOMPARE( bis.at( 1 ).pointN( 0 ), t7.vertexAt( 1 ) );
@@ -6365,9 +6389,10 @@ void TestQgsGeometry::ellipse()
   QVERIFY( l->isEmpty() ); // segments too low
 
   l.reset( QgsEllipse( QgsPoint( 0, 0 ), 5, 2, 0 ).toLineString( 4 ) );
-  QCOMPARE( l->numPoints(), 4 );
+  QCOMPARE( l->numPoints(), 5 ); // closed linestring
   QgsPointSequence pts_l;
   l->points( pts_l );
+  pts_l.pop_back();
   QCOMPARE( pts, pts_l );
 
   // polygon
@@ -6838,10 +6863,12 @@ void TestQgsGeometry::regularPolygon()
 
   std::unique_ptr< QgsLineString > l( QgsRegularPolygon( QgsPoint(), QgsPoint( 0, 5 ), 1, QgsRegularPolygon::InscribedCircle ).toLineString() );
   QVERIFY( l->isEmpty() );
-  l.reset( rp10.toLineString() );
-  QCOMPARE( l->numPoints(), 4 );
+  l.reset( rp10.toLineString( ) );
+  QCOMPARE( l->numPoints(), 5 );
+  QCOMPARE( l->pointN( 0 ), l->pointN( 4 ) );
   QgsPointSequence pts_l;
   l->points( pts_l );
+  pts_l.pop_back();
   QCOMPARE( ptsPol, pts_l );
 
   //test toString
@@ -10504,6 +10531,7 @@ void TestQgsGeometry::multiPoint()
   exportFloat.addGeometry( new QgsPoint( QgsWkbTypes::Point, 10 / 9.0, 100 / 9.0 ) );
   exportFloat.addGeometry( new QgsPoint( QgsWkbTypes::Point, 4 / 3.0, 2 / 3.0 ) );
 
+
   QString expectedJsonPrec3( QStringLiteral( "{\"type\": \"MultiPoint\", \"coordinates\": [ [1.111, 11.111], [1.333, 0.667]] }" ) );
   res = exportFloat.asJSON( 3 );
   QCOMPARE( res, expectedJsonPrec3 );
@@ -13255,6 +13283,7 @@ void TestQgsGeometry::geometryCollection()
             << ( QgsRingSequence() << ( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 1, 9 ) << QgsPoint( 9, 9 )
                                         << QgsPoint( 9, 1 ) << QgsPoint( 1, 1 ) ) ) );
   QCOMPARE( c6.nCoordinates(), 10 );
+
 
   //clear
   QgsGeometryCollection c7;

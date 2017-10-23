@@ -29,6 +29,8 @@
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 #include "qgsbox3d.h"
+#include "qgspolygon.h"
+#include "qgslinestring.h"
 
 QgsRectangle::QgsRectangle( double xMin, double yMin, double xMax, double yMax )
   : mXmin( xMin )

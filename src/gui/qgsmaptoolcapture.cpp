@@ -554,6 +554,11 @@ int QgsMapToolCapture::addCurve( QgsCurve *c )
   return 0;
 }
 
+void QgsMapToolCapture::clearCurve()
+{
+  mCaptureCurve.clear();
+}
+
 QList<QgsPointLocator::Match> QgsMapToolCapture::snappingMatches() const
 {
   return mSnappingMatches;
@@ -678,6 +683,12 @@ void QgsMapToolCapture::deleteTempRubberBand()
     delete mTempRubberBand;
     mTempRubberBand = nullptr;
   }
+}
+
+void QgsMapToolCapture::clean()
+{
+  stopCapturing();
+  clearCurve();
 }
 
 void QgsMapToolCapture::closePolygon()
