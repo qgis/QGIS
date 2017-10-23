@@ -49,6 +49,7 @@
 #include "qgsalgorithmsmooth.h"
 #include "qgsalgorithmsplitwithlines.h"
 #include "qgsalgorithmsubdivide.h"
+#include "qgsalgorithmtransect.h"
 #include "qgsalgorithmtransform.h"
 
 ///@cond PRIVATE
@@ -120,6 +121,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsBoundaryAlgorithm() );
   addAlgorithm( new QgsDropGeometryAlgorithm() );
   addAlgorithm( new QgsDropMZValuesAlgorithm() );
+  addAlgorithm( new QgsTransectAlgorithm() );
 }
 
 
