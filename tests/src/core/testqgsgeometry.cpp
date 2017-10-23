@@ -5959,6 +5959,32 @@ void TestQgsGeometry::triangle()
   QVERIFY( !t6.fromWkb( wkbPointPtr ) );
   QCOMPARE( t6.wkbType(), QgsWkbTypes::Triangle );
 
+  //asGML2
+  QgsTriangle exportEmptyTriangle( QgsPoint( 1, 2 ),
+                                   QgsPoint( 3, 4 ),
+                                   QgsPoint( 5, 6 ) );
+  QgsTriangle exportTriangle( QgsPoint( 1, 2 ),
+                              QgsPoint( 3, 4 ),
+                              QgsPoint( 6, 5 ) );
+  QgsTriangle exportTriangleFloat( QgsPoint( 1 + 1 / 3.0, 2 + 2 / 3.0 ),
+                                   QgsPoint( 3 + 1 / 3.0, 4 + 2 / 3.0 ),
+                                   QgsPoint( 6 + 1 / 3.0, 5 + 2 / 3.0 ) );
+  QDomDocument doc( QStringLiteral( "gml" ) );
+  QString expectedGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2 3,4 6,5 1,2</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
+  QGSCOMPAREGML( elemToString( exportTriangle.asGML2( doc ) ), expectedGML2 );
+  QString expectedGML2prec3( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.333,2.667 3.333,4.667 6.333,5.667 1.333,2.667</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
+  QGSCOMPAREGML( elemToString( exportTriangleFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
+  QString expectedGML2empty( QStringLiteral( "" ) ); // TODO: FIXME?
+  QGSCOMPAREGML( elemToString( exportEmptyTriangle.asGML2( doc ) ), expectedGML2empty );
+
+  //asGML3
+  QString expectedGML3( QStringLiteral( "<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 2 3 4 6 5 1 2</posList></LinearRing></exterior></Triangle>" ) );
+  QCOMPARE( elemToString( exportTriangle.asGML3( doc ) ), expectedGML3 );
+  QString expectedGML3prec3( QStringLiteral( "<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1.333 2.667 3.333 4.667 6.333 5.667 1.333 2.667</posList></LinearRing></exterior></Triangle>" ) );
+  QCOMPARE( elemToString( exportTriangleFloat.asGML3( doc, 3 ) ), expectedGML3prec3 );
+  QString expectedGML3empty( QStringLiteral( "" ) ); // TODO: FIXME?
+  QGSCOMPAREGML( elemToString( exportEmptyTriangle.asGML3( doc ) ), expectedGML3empty );
+
   // lengths and angles
   QgsTriangle t7( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) );
 
