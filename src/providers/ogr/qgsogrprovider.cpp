@@ -1321,7 +1321,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
 // field to not be present at all in the output, and thus on reading to
 // have disappeared. #16812
 #ifdef OGRNullMarker
-      OGR_F_SetFieldNull( feature, ogrAttId );
+      OGR_F_SetFieldNull( feature.get(), ogrAttId );
 #else
       OGR_F_UnsetField( feature.get(), ogrAttId );
 #endif
@@ -1719,7 +1719,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 // field to not be present at all in the output, and thus on reading to
 // have disappeared. #16812
 #ifdef OGRNullMarker
-        OGR_F_SetFieldNull( of, f );
+        OGR_F_SetFieldNull( of.get(), f );
 #else
         OGR_F_UnsetField( of.get(), f );
 #endif
