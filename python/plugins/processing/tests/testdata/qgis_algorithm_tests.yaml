@@ -4223,7 +4223,7 @@ tests:
       INPUT:
         name: custom/transect_single.gml
         type: vector
-      LENGTH: 0.5
+      LENGTH: 5
       SIDE: 2
     results:
       OUTPUT:
@@ -4279,7 +4279,7 @@ tests:
       INPUT:
         name: custom/transect_multi.gml
         type: vector
-      LENGTH: 0.5
+      LENGTH: 5
       SIDE: 2
     results:
       OUTPUT:
