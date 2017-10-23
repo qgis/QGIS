@@ -2735,6 +2735,10 @@ QStringList QgsVectorFileWriter::supportedFormatExtensions()
       continue;
 
     QString matched = match.captured( 1 );
+
+    // special handling for the two main contenders for glory
+    if ( matched.compare( QStringLiteral( "gpkg" ), Qt::CaseInsensitive ) == 0 )
+      continue;
     if ( matched.compare( QStringLiteral( "shp" ), Qt::CaseInsensitive ) == 0 )
       continue;
 
@@ -2743,8 +2747,9 @@ QStringList QgsVectorFileWriter::supportedFormatExtensions()
 
   std::sort( extensions.begin(), extensions.end() );
 
-  // Make https://twitter.com/shapefiIe a happy little fellow
-  extensions.insert( 0, QStringLiteral( "shp" ) );
+  // Make https://twitter.com/shapefiIe a sad little fellow
+  extensions.insert( 0, QStringLiteral( "gpkg" ) );
+  extensions.insert( 1, QStringLiteral( "shp" ) );
   return extensions;
 }
 
