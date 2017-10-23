@@ -5,6 +5,8 @@
  *  email                : smani@sourcepole.ch                             *
  ***************************************************************************/
 
+#define SIP_NO_FILE
+
 #ifndef QGS_GEOMETRY_SELFCONTACT_CHECK_H
 #define QGS_GEOMETRY_SELFCONTACT_CHECK_H
 

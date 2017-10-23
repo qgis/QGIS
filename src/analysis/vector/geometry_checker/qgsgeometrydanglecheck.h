@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#define SIP_NO_FILE
+
 #ifndef QGSGEOMETRYDANGLECHECK_H
 #define QGSGEOMETRYDANGLECHECK_H
 

@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#define SIP_NO_FILE
+
 #ifndef QGSGEOMETRYLINEINTERSECTIONCHECK_H
 #define QGSGEOMETRYLINEINTERSECTIONCHECK_H
 

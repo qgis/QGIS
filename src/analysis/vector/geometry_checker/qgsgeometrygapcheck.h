@@ -13,11 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#define SIP_NO_FILE
+
 #ifndef QGS_GEOMETRY_GAP_CHECK_H
 #define QGS_GEOMETRY_GAP_CHECK_H
 
 #include "qgsgeometrycheck.h"
-
 
 class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
 {

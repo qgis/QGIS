@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#define SIP_NO_FILE
+
 #ifndef QGSGEOMETRYPOINTINPOLYGONCHECK_H
 #define QGSGEOMETRYPOINTINPOLYGONCHECK_H
 

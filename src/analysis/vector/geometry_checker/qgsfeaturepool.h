@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#define SIP_NO_FILE
+
 #ifndef QGS_FEATUREPOOL_H
 #define QGS_FEATUREPOOL_H
 
