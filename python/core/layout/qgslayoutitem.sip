@@ -68,6 +68,11 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
       UndoMapRotation,
       UndoZoomContent,
       UndoOverviewStyle,
+      UndoGridFramePenColor,
+      UndoMapGridFrameFill1Color,
+      UndoMapGridFrameFill2Color,
+      UndoMapAnnotationDistance,
+      UndoMapGridAnnotationFontColor,
     };
 
     explicit QgsLayoutItem( QgsLayout *layout, bool manageZValue = true );

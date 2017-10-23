@@ -26,6 +26,7 @@
 #include "qgsmapcanvas.h"
 #include "qgssymbolselectordialog.h"
 #include "qgssymbollayerutils.h"
+#include "qgslayoutmapgridwidget.h"
 #include "qgsstyle.h"
 #include <QMenu>
 #include <QMessageBox>
@@ -1244,10 +1245,8 @@ void QgsLayoutMapWidget::mGridPropertiesButton_clicked()
     return;
   }
 
-#if 0 //TODO
-  QgsLayoutItemMapGridWidget *w = new QgsLayoutItemMapGridWidget( grid, mMapItem );
+  QgsLayoutMapGridWidget *w = new QgsLayoutMapGridWidget( grid, mMapItem );
   openPanel( w );
-#endif
 }
 
 QListWidgetItem *QgsLayoutMapWidget::addGridListItem( const QString &id, const QString &name )

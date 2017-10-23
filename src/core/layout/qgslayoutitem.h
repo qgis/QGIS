@@ -101,6 +101,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoMapRotation, //!< Map rotation changed
       UndoZoomContent, //!< Item content zoomed
       UndoOverviewStyle, //!< Map overview style
+      UndoGridFramePenColor, //!< Map grid frame pen color
+      UndoMapGridFrameFill1Color, //!< Map grid frame fill color 1
+      UndoMapGridFrameFill2Color, //!< Map grid frame fill color 2
+      UndoMapAnnotationDistance, //!< Map frame annotation distance
+      UndoMapGridAnnotationFontColor, //!< Map frame annotation color
     };
 
     /**
