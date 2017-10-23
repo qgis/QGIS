@@ -492,7 +492,6 @@ class QgsPluginInstaller(QObject):
         """ delete repository connection """
         if not reposName:
             return
-        reposName = reposName.decode('utf-8')
         settings = QgsSettings()
         settings.beginGroup(reposGroup)
         if settings.value(reposName + "/url", "", type=str) == officialRepo[1]:
@@ -510,8 +509,6 @@ class QgsPluginInstaller(QObject):
     # ----------------------------------------- #
     def setRepositoryInspectionFilter(self, reposName=None):
         """ temporarily block another repositories to fetch only one for inspection """
-        if reposName is not None:
-            reposName = reposName.decode("utf-8")
         repositories.setInspectionFilter(reposName)
         self.reloadAndExportData()
 
