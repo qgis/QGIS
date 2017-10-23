@@ -107,24 +107,6 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     void setSceneRect( const QRectF &rectangle ) override;
 #endif
 
-
-#if 0
-
-    /**
-     * Stores state in Dom element
-     * \param elem is Dom element corresponding to 'Composer' tag
-     * \param doc is Dom document
-     */
-    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
-
-    /**
-     * Sets state from Dom document
-     * \param itemElem is Dom node corresponding to item tag
-     * \param doc is Dom document
-     */
-    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
-#endif
-
     /**
      * Returns the rotation used for drawing the picture within the item's frame,
      * in degrees clockwise.
@@ -300,7 +282,8 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
 
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
     QSizeF applyItemSizeConstraint( const QSizeF &targetSize ) override;
-
+    bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
 

@@ -33,6 +33,7 @@
 #include "qgslogger.h"
 #include "qgsbearingutils.h"
 #include "qgsmapsettings.h"
+#include "qgsreadwritecontext.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -680,63 +681,49 @@ QString QgsLayoutItemPicture::picturePath() const
 {
   return mSourcePath;
 }
-#if 0 //TODO
-bool QgsLayoutItemPicture::writeXml( QDomElement &elem, QDomDocument &doc ) const
+
+bool QgsLayoutItemPicture::writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  if ( elem.isNull() )
-  {
-    return false;
-  }
-  QDomElement composerPictureElem = doc.createElement( QStringLiteral( "ComposerPicture" ) );
   QString imagePath = mSourcePath;
-  if ( mComposition )
-  {
-    // convert from absolute path to relative. For SVG we also need to consider system SVG paths
-    QgsPathResolver pathResolver = mComposition->project()->pathResolver();
-    if ( imagePath.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
-      imagePath = QgsSymbolLayerUtils::svgSymbolPathToName( imagePath, pathResolver );
-    else
-      imagePath = pathResolver.writePath( imagePath );
-  }
-  composerPictureElem.setAttribute( QStringLiteral( "file" ), imagePath );
-  composerPictureElem.setAttribute( QStringLiteral( "pictureWidth" ), QString::number( mPictureWidth ) );
-  composerPictureElem.setAttribute( QStringLiteral( "pictureHeight" ), QString::number( mPictureHeight ) );
-  composerPictureElem.setAttribute( QStringLiteral( "resizeMode" ), QString::number( static_cast< int >( mResizeMode ) ) );
-  composerPictureElem.setAttribute( QStringLiteral( "anchorPoint" ), QString::number( static_cast< int >( mPictureAnchor ) ) );
-  composerPictureElem.setAttribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( mSvgFillColor ) );
-  composerPictureElem.setAttribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSvgStrokeColor ) );
-  composerPictureElem.setAttribute( QStringLiteral( "svgBorderWidth" ), QString::number( mSvgStrokeWidth ) );
+
+  // convert from absolute path to relative. For SVG we also need to consider system SVG paths
+  QgsPathResolver pathResolver = context.pathResolver();
+  if ( imagePath.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
+    imagePath = QgsSymbolLayerUtils::svgSymbolPathToName( imagePath, pathResolver );
+  else
+    imagePath = pathResolver.writePath( imagePath );
+
+  elem.setAttribute( QStringLiteral( "file" ), imagePath );
+  elem.setAttribute( QStringLiteral( "pictureWidth" ), QString::number( mPictureWidth ) );
+  elem.setAttribute( QStringLiteral( "pictureHeight" ), QString::number( mPictureHeight ) );
+  elem.setAttribute( QStringLiteral( "resizeMode" ), QString::number( static_cast< int >( mResizeMode ) ) );
+  elem.setAttribute( QStringLiteral( "anchorPoint" ), QString::number( static_cast< int >( mPictureAnchor ) ) );
+  elem.setAttribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( mSvgFillColor ) );
+  elem.setAttribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSvgStrokeColor ) );
+  elem.setAttribute( QStringLiteral( "svgBorderWidth" ), QString::number( mSvgStrokeWidth ) );
 
   //rotation
-  composerPictureElem.setAttribute( QStringLiteral( "pictureRotation" ), QString::number( mPictureRotation ) );
+  elem.setAttribute( QStringLiteral( "pictureRotation" ), QString::number( mPictureRotation ) );
   if ( !mRotationMap )
   {
-    composerPictureElem.setAttribute( QStringLiteral( "mapId" ), -1 );
+    elem.setAttribute( QStringLiteral( "mapUuid" ), QString() );
   }
   else
   {
-    composerPictureElem.setAttribute( QStringLiteral( "mapId" ), mRotationMap->id() );
+    elem.setAttribute( QStringLiteral( "mapUuid" ), mRotationMap->uuid() );
   }
-  composerPictureElem.setAttribute( QStringLiteral( "northMode" ), mNorthMode );
-  composerPictureElem.setAttribute( QStringLiteral( "northOffset" ), mNorthOffset );
-
-  _writeXml( composerPictureElem, doc );
-  elem.appendChild( composerPictureElem );
+  elem.setAttribute( QStringLiteral( "northMode" ), mNorthMode );
+  elem.setAttribute( QStringLiteral( "northOffset" ), mNorthOffset );
   return true;
 }
 
-bool QgsLayoutItemPicture::readXml( const QDomElement &itemElem, const QDomDocument &doc )
+bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &, const QgsReadWriteContext &context )
 {
-  if ( itemElem.isNull() )
-  {
-    return false;
-  }
-
   mPictureWidth = itemElem.attribute( QStringLiteral( "pictureWidth" ), QStringLiteral( "10" ) ).toDouble();
   mPictureHeight = itemElem.attribute( QStringLiteral( "pictureHeight" ), QStringLiteral( "10" ) ).toDouble();
   mResizeMode = QgsLayoutItemPicture::ResizeMode( itemElem.attribute( QStringLiteral( "resizeMode" ), QStringLiteral( "0" ) ).toInt() );
   //when loading from xml, default to anchor point of middle to match pre 2.4 behavior
-  mPictureAnchor = static_cast< QgsComposerItem::ItemPositionMode >( itemElem.attribute( QStringLiteral( "anchorPoint" ), QString::number( QgsComposerItem::Middle ) ).toInt() );
+  mPictureAnchor = static_cast< QgsLayoutItem::ReferencePoint >( itemElem.attribute( QStringLiteral( "anchorPoint" ), QString::number( QgsLayoutItem::Middle ) ).toInt() );
 
   mSvgFillColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 255, 255, 255 ) ) ) );
   mSvgStrokeColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 0, 0, 0 ) ) ) );
@@ -752,8 +739,6 @@ bool QgsLayoutItemPicture::readXml( const QDomElement &itemElem, const QDomDocum
       //in versions prior to 2.1 picture rotation was stored in the rotation attribute
       mPictureRotation = composerItemElem.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble();
     }
-
-    _readXml( composerItemElem, doc );
   }
 
   mDefaultSvgSize = QSize( 0, 0 );
@@ -766,19 +751,18 @@ bool QgsLayoutItemPicture::readXml( const QDomElement &itemElem, const QDomDocum
     bool expressionActive;
     expressionActive = ( useExpression.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
 
-    mDataDefinedProperties.setProperty( QgsComposerObject::PictureSource, QgsProperty::fromExpression( sourceExpression, expressionActive ) );
+    mDataDefinedProperties.setProperty( QgsLayoutObject::PictureSource, QgsProperty::fromExpression( sourceExpression, expressionActive ) );
   }
 
   QString imagePath = itemElem.attribute( QStringLiteral( "file" ) );
-  if ( mComposition )
-  {
-    // convert from relative path to absolute. For SVG we also need to consider system SVG paths
-    QgsPathResolver pathResolver = mComposition->project()->pathResolver();
-    if ( imagePath.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
-      imagePath = QgsSymbolLayerUtils::svgSymbolNameToPath( imagePath, pathResolver );
-    else
-      imagePath = pathResolver.readPath( imagePath );
-  }
+
+  // convert from relative path to absolute. For SVG we also need to consider system SVG paths
+  QgsPathResolver pathResolver = context.pathResolver();
+  if ( imagePath.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
+    imagePath = QgsSymbolLayerUtils::svgSymbolNameToPath( imagePath, pathResolver );
+  else
+    imagePath = pathResolver.readPath( imagePath );
+
   mSourcePath = imagePath;
 
   //picture rotation
@@ -791,30 +775,31 @@ bool QgsLayoutItemPicture::readXml( const QDomElement &itemElem, const QDomDocum
   mNorthMode = static_cast< NorthMode >( itemElem.attribute( QStringLiteral( "northMode" ), QStringLiteral( "0" ) ).toInt() );
   mNorthOffset = itemElem.attribute( QStringLiteral( "northOffset" ), QStringLiteral( "0" ) ).toDouble();
 
+#if 0 //TODO
   int rotationMapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) ).toInt();
-  if ( rotationMapId == -1 )
+#endif
+
+  QString rotationMapId = itemElem.attribute( QStringLiteral( "mapUuid" ) );
+
+  if ( !mLayout || rotationMapId.isEmpty() )
   {
     mRotationMap = nullptr;
   }
-  else if ( mComposition )
+  else
   {
-
     if ( mRotationMap )
     {
-      disconnect( mRotationMap, &QgsComposerMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-      disconnect( mRotationMap, &QgsComposerMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+      disconnect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+      disconnect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     }
-    mRotationMap = mComposition->getComposerMapById( rotationMapId );
-    connect( mRotationMap, &QgsComposerMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-    connect( mRotationMap, &QgsComposerMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+    mRotationMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( rotationMapId ) );
+    connect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+    connect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
   }
 
   refreshPicture();
-
-  emit itemChanged();
   return true;
 }
-#endif
 
 QString QgsLayoutItemPicture::rotationMap() const
 {

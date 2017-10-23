@@ -706,7 +706,7 @@ void QgsLayoutPictureWidget::mStrokeColorButton_colorChanged( const QColor &colo
 
 void QgsLayoutPictureWidget::mStrokeWidthSpinBox_valueChanged( double d )
 {
-  mPicture->beginCommand( tr( "Change Picture Stroke Width" ) );
+  mPicture->beginCommand( tr( "Change Picture Stroke Width" ), QgsLayoutItem::UndoPictureStrokeWidth );
   mPicture->setSvgStrokeWidth( d );
   mPicture->endCommand();
   mPicture->update();

@@ -111,6 +111,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoPictureRotation, //!< Picture rotation
       UndoPictureFillColor, //!< Picture fill color
       UndoPictureStrokeColor, //!< Picture stroke color
+      UndoPictureStrokeWidth, //!< Picture stroke width
       UndoPictureNorthOffset, //!< Picture north offset
       UndoCustomCommand, //!< Base id for plugin based item undo commands
     };

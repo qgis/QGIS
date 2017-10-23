@@ -81,8 +81,6 @@ class QgsLayoutItemPicture: QgsLayoutItem
 %End
 
 
-
-
     double pictureRotation() const;
 %Docstring
  Returns the rotation used for drawing the picture within the item's frame,
@@ -280,6 +278,9 @@ Is emitted on picture rotation change
 
     virtual QSizeF applyItemSizeConstraint( const QSizeF &targetSize );
 
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
 
 };
