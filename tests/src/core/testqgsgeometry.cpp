@@ -5966,6 +5966,9 @@ void TestQgsGeometry::triangle()
   QgsTriangle exportTriangle( QgsPoint( 1, 2 ),
                               QgsPoint( 3, 4 ),
                               QgsPoint( 6, 5 ) );
+  QgsTriangle exportTriangleZ( QgsPoint( 1, 2, 3 ),
+                               QgsPoint( 11, 12, 13 ),
+                               QgsPoint( 1, 12, 23 ) );
   QgsTriangle exportTriangleFloat( QgsPoint( 1 + 1 / 3.0, 2 + 2 / 3.0 ),
                                    QgsPoint( 3 + 1 / 3.0, 4 + 2 / 3.0 ),
                                    QgsPoint( 6 + 1 / 3.0, 5 + 2 / 3.0 ) );
@@ -5984,6 +5987,9 @@ void TestQgsGeometry::triangle()
   QCOMPARE( elemToString( exportTriangleFloat.asGML3( doc, 3 ) ), expectedGML3prec3 );
   QString expectedGML3empty( QStringLiteral( "" ) ); // TODO: FIXME?
   QGSCOMPAREGML( elemToString( exportEmptyTriangle.asGML3( doc ) ), expectedGML3empty );
+  QString expectedGML3Z( QStringLiteral( "<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">1 2 3 11 12 13 1 12 23 1 2 3</posList></LinearRing></exterior></Triangle>" ) );
+  QCOMPARE( elemToString( exportTriangleZ.asGML3( doc ) ), expectedGML3Z );
+
 
   // lengths and angles
   QgsTriangle t7( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) );

@@ -35,13 +35,12 @@ QgsTriangle::QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint
   {
     return;
   }
-  QVector< double > x;
-  x << p1.x() << p2.x() << p3.x();
-  QVector< double > y;
-  y << p1.y() << p2.y() << p3.y();
-  QgsLineString *ext = new QgsLineString( x, y );
-  setExteriorRing( ext );
 
+  std::unique_ptr<QgsLineString> ext( new QgsLineString() );
+
+  ext->setPoints( QgsPointSequence() << p1 << p2 << p3 );
+
+  setExteriorRing( ext.release() );
 }
 
 QgsTriangle::QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 )
@@ -247,18 +246,6 @@ QDomElement QgsTriangle::asGML3( QDomDocument &doc, int precision, const QString
   elemExterior.appendChild( curveElem );
   elemCurveTriangle.appendChild( elemExterior );
 
-  /* No interior ring for triangle
-  for ( int i = 0, n = numInteriorRings(); i < n; ++i )
-  {
-    QDomElement elemInterior = doc.createElementNS( ns, QStringLiteral( "interior" ) );
-    QDomElement innerRing = interiorRing( i )->asGML3( doc, precision, ns );
-    if ( innerRing.tagName() == QLatin1String( "LineString" ) )
-    {
-      innerRing.setTagName( QStringLiteral( "LinearRing" ) );
-    }
-    elemInterior.appendChild( innerRing );
-    elemCurveTriangle.appendChild( elemInterior );
-  }*/
   return elemCurveTriangle;
 }
 
