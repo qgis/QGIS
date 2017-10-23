@@ -348,23 +348,23 @@ void QgsAttributeSelectionDialog::mAddColumnPushButton_clicked()
 void QgsAttributeSelectionDialog::mColumnUpPushButton_clicked()
 {
   //move selected row up
-  QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-  if ( !viewSelection.empty() )
-  {
-    int selectedRow = viewSelection.indexes().at( 0 ).row();
-    mColumnModel->moveRow( selectedRow, QgsComposerAttributeTableColumnModelV2::ShiftUp );
-  }
+
+  QModelIndexList indexes =  mColumnsTableView->selectionModel()->selectedRows();
+  int count = indexes.count();
+
+  std::reverse( indexes.begin(), indexes.end() );
+  for ( int i = count; i > 0; --i )
+    mColumnModel->moveRow( indexes.at( i - 1 ).row(), QgsComposerAttributeTableColumnModelV2::ShiftUp );
 }
 
 void QgsAttributeSelectionDialog::mColumnDownPushButton_clicked()
 {
   //move selected row down
-  QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-  if ( !viewSelection.empty() )
-  {
-    int selectedRow = viewSelection.indexes().at( 0 ).row();
-    mColumnModel->moveRow( selectedRow, QgsComposerAttributeTableColumnModelV2::ShiftDown );
-  }
+  QModelIndexList indexes =  mColumnsTableView->selectionModel()->selectedRows();
+  int count = indexes.count();
+
+  for ( int i = count; i > 0; --i )
+    mColumnModel->moveRow( indexes.at( i - 1 ).row(), QgsComposerAttributeTableColumnModelV2::ShiftDown );
 }
 
 void QgsAttributeSelectionDialog::mResetColumnsPushButton_clicked()
