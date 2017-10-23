@@ -26,11 +26,12 @@ __copyright__ = '(C) 2017, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 import os
 
+
 def processOutputs(alg, parameters, context):
     # There will be as outputs as the difference between start and end divided by steps
     start = alg.parameterAsDouble(parameters, 'start', context)
     end = alg.parameterAsDouble(parameters, 'end', context)
-    step =  alg.parameterAsDouble(parameters, 'step', context)
+    step = alg.parameterAsDouble(parameters, 'step', context)
     num = start + step
     directory = alg.parameterAsString(parameters, 'output', context)
     while num < end:

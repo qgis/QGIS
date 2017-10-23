@@ -265,7 +265,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         layers = [l for l in self.inputLayers if isinstance(l, QgsRasterLayer)]
 
         # Use this function to calculate cell size
-        cz = lambda l, cellsize: max(cellsize, (l.extent().xMaximum() - l.extent().xMinimum()) / l.width())
+        def cz(l, cellsize): return max(cellsize, (l.extent().xMaximum() - l.extent().xMinimum()) / l.width())
 
         for layer in layers:
             cellsize = cz(layer, cellsize)
