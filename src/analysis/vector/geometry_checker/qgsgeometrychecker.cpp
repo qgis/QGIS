@@ -102,11 +102,29 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   {
     return true;
   }
+#if 0
+  QTextStream( stdout ) << "Fixing " << error->description() << ": " << error->layerId() << ":" << error->featureId() << " @[" << error->vidx().part << ", " << error->vidx().ring << ", " << error->vidx().vertex << "](" << error->location().x() << ", " << error->location().y() << ") = " << error->value().toString() << endl;
+#endif
 
   QgsGeometryCheck::Changes changes;
   QgsRectangle recheckArea = error->affectedAreaBBox();
 
   error->check()->fixError( error, method, mMergeAttributeIndices, changes );
+#if 0
+  QTextStream( stdout ) << " * Status: " << error->resolutionMessage() << endl;
+  static QVector<QString> strChangeWhat = { "ChangeFeature", "ChangePart", "ChangeRing", "ChangeNode" };
+  static QVector<QString> strChangeType = { "ChangeAdded", "ChangeRemoved", "ChangeChanged" };
+  for ( const QString &layerId : changes.keys() )
+  {
+    for ( const QgsFeatureId &fid : changes[layerId].keys() )
+    {
+      for ( const QgsGeometryCheck::Change &change : changes[layerId][fid] )
+      {
+        QTextStream( stdout ) << " * Change: " << layerId << ":" << fid << " :: " << strChangeWhat[change.what] << ":" << strChangeType[change.type] << ":(" << change.vidx.part << "," << change.vidx.ring << "," << change.vidx.vertex << ")" << endl;
+      }
+    }
+  }
+#endif
   emit errorUpdated( error, true );
   if ( error->status() != QgsGeometryCheckError::StatusFixed )
   {
