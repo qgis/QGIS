@@ -106,6 +106,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoMapGridFrameFill2Color, //!< Map grid frame fill color 2
       UndoMapAnnotationDistance, //!< Map frame annotation distance
       UndoMapGridAnnotationFontColor, //!< Map frame annotation color
+      UndoMapGridLineSymbol, //!< Grid line symbol
+      UndoMapGridMarkerSymbol, //!< Grid marker symbol
     };
 
     /**

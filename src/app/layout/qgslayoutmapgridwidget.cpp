@@ -33,8 +33,6 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   , mMapGrid( mapGrid )
 {
   setupUi( this );
-  connect( mGridLineStyleButton, &QPushButton::clicked, this, &QgsLayoutMapGridWidget::mGridLineStyleButton_clicked );
-  connect( mGridMarkerStyleButton, &QPushButton::clicked, this, &QgsLayoutMapGridWidget::mGridMarkerStyleButton_clicked );
   connect( mIntervalXSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsLayoutMapGridWidget::mIntervalXSpinBox_editingFinished );
   connect( mIntervalYSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsLayoutMapGridWidget::mIntervalYSpinBox_editingFinished );
   connect( mOffsetXSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mOffsetXSpinBox_valueChanged );
@@ -139,6 +137,9 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   mGridFrameFill2ColorButton->setNoColorString( tr( "Transparent fill" ) );
   mGridFrameFill2ColorButton->setShowNoColor( true );
 
+  mGridLineStyleButton->setSymbolType( QgsSymbol::Line );
+  mGridMarkerStyleButton->setSymbolType( QgsSymbol::Marker );
+
   //set initial state of frame style controls
   toggleFrameControls( false, false, false );
 
@@ -146,70 +147,13 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
 
   blockAllSignals( false );
   connect( mAnnotationFontButton, &QgsFontButton::changed, this, &QgsLayoutMapGridWidget::annotationFontChanged );
+  connect( mGridLineStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutMapGridWidget::lineSymbolChanged );
+  connect( mGridMarkerStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutMapGridWidget::markerSymbolChanged );
 }
 
 void QgsLayoutMapGridWidget::populateDataDefinedButtons()
 {
   // none for now
-}
-
-
-void QgsLayoutMapGridWidget::updateGridLineStyleFromWidget()
-{
-  if ( !mMapGrid || !mMap )
-  {
-    return;
-  }
-
-  QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
-  mMapGrid->setLineSymbol( dynamic_cast< QgsLineSymbol * >( w->symbol()->clone() ) );
-  mMap->update();
-}
-
-void QgsLayoutMapGridWidget::cleanUpGridLineStyleSelector( QgsPanelWidget *container )
-{
-  QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( container );
-  if ( !w )
-    return;
-
-  delete w->symbol();
-
-  if ( !mMapGrid || !mMap )
-  {
-    return;
-  }
-
-  updateGridLineSymbolMarker();
-  mMap->endCommand();
-}
-
-void QgsLayoutMapGridWidget::updateGridMarkerStyleFromWidget()
-{
-  if ( !mMapGrid || !mMap )
-  {
-    return;
-  }
-
-  QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
-  mMapGrid->setMarkerSymbol( dynamic_cast< QgsMarkerSymbol * >( w->symbol()->clone() ) );
-  mMap->update();
-}
-
-void QgsLayoutMapGridWidget::cleanUpGridMarkerStyleSelector( QgsPanelWidget *container )
-{
-  QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( container );
-  if ( !w )
-    return;
-
-  delete w->symbol();
-
-  if ( !mMapGrid || !mMap )
-  {
-    return;
-  }
-
-  updateGridMarkerSymbolMarker();
-  mMap->endCommand();
 }
 
 void QgsLayoutMapGridWidget::setGuiElementValues()
@@ -256,6 +200,7 @@ void QgsLayoutMapGridWidget::blockAllSignals( bool block )
   mFrameDivisionsRightComboBox->blockSignals( block );
   mFrameDivisionsTopComboBox->blockSignals( block );
   mFrameDivisionsBottomComboBox->blockSignals( block );
+  mGridMarkerStyleButton->blockSignals( block );
 
   //grid annotation
   mDrawAnnotationGroupBox->blockSignals( block );
@@ -493,6 +438,9 @@ void QgsLayoutMapGridWidget::setGridItems()
     return;
   }
 
+  mGridMarkerStyleButton->registerExpressionContextGenerator( mMapGrid );
+  mGridLineStyleButton->registerExpressionContextGenerator( mMapGrid );
+
   mIntervalXSpinBox->setValue( mMapGrid->intervalX() );
   mIntervalYSpinBox->setValue( mMapGrid->intervalY() );
   mOffsetXSpinBox->setValue( mMapGrid->offsetX() );
@@ -595,9 +543,9 @@ void QgsLayoutMapGridWidget::setGridItems()
   initFrameDisplayBox( mFrameDivisionsBottomComboBox, mMapGrid->frameDivisions( QgsLayoutItemMapGrid::Bottom ) );
 
   //line style
-  updateGridLineSymbolMarker();
+  mGridLineStyleButton->setSymbol( mMapGrid->lineSymbol()->clone() );
   //marker style
-  updateGridMarkerSymbolMarker();
+  mGridMarkerStyleButton->setSymbol( mMapGrid->markerSymbol()->clone() );
 
   mGridBlendComboBox->setBlendMode( mMapGrid->blendMode() );
 
@@ -644,80 +592,6 @@ void QgsLayoutMapGridWidget::setGridItems()
   QgsCoordinateReferenceSystem gridCrs = mMapGrid->crs();
   QString crsButtonText = gridCrs.isValid() ? gridCrs.authid() : tr( "change..." );
   mMapGridCRSButton->setText( crsButtonText );
-}
-
-void QgsLayoutMapGridWidget::updateGridLineSymbolMarker()
-{
-  if ( mMapGrid )
-  {
-    QgsLineSymbol *nonConstSymbol = const_cast<QgsLineSymbol *>( mMapGrid->lineSymbol() ); //bad
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( nonConstSymbol, mGridLineStyleButton->iconSize() );
-    mGridLineStyleButton->setIcon( icon );
-  }
-}
-
-void QgsLayoutMapGridWidget::updateGridMarkerSymbolMarker()
-{
-  if ( mMapGrid )
-  {
-    QgsMarkerSymbol *nonConstSymbol = const_cast<QgsMarkerSymbol *>( mMapGrid->markerSymbol() ); //bad
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( nonConstSymbol, mGridMarkerStyleButton->iconSize() );
-    mGridMarkerStyleButton->setIcon( icon );
-  }
-}
-
-void QgsLayoutMapGridWidget::mGridLineStyleButton_clicked()
-{
-  if ( !mMapGrid || !mMap )
-  {
-    return;
-  }
-
-#if 0 //TODO
-  // use the atlas coverage layer, if any
-  QgsVectorLayer *coverageLayer = atlasCoverageLayer();
-#endif
-  QgsVectorLayer *coverageLayer = nullptr;
-
-  QgsLineSymbol *newSymbol = static_cast<QgsLineSymbol *>( mMapGrid->lineSymbol()->clone() );
-  QgsExpressionContext context = mMap->createExpressionContext();
-
-  QgsSymbolSelectorWidget *d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
-  QgsSymbolWidgetContext symbolContext;
-  symbolContext.setExpressionContext( &context );
-  d->setContext( symbolContext );
-
-  connect( d, &QgsPanelWidget::widgetChanged, this, &QgsLayoutMapGridWidget::updateGridLineStyleFromWidget );
-  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsLayoutMapGridWidget::cleanUpGridLineStyleSelector );
-  openPanel( d );
-  mMap->beginCommand( tr( "Grid line style changed" ) );
-}
-
-void QgsLayoutMapGridWidget::mGridMarkerStyleButton_clicked()
-{
-  if ( !mMapGrid || !mMap )
-  {
-    return;
-  }
-
-#if 0 //TODO
-  // use the atlas coverage layer, if any
-  QgsVectorLayer *coverageLayer = atlasCoverageLayer();
-#endif
-  QgsVectorLayer *coverageLayer = nullptr;
-
-  QgsMarkerSymbol *newSymbol = static_cast<QgsMarkerSymbol *>( mMapGrid->markerSymbol()->clone() );
-  QgsExpressionContext context = mMap->createExpressionContext();
-
-  QgsSymbolSelectorWidget *d = new QgsSymbolSelectorWidget( newSymbol, QgsStyle::defaultStyle(), coverageLayer, nullptr );
-  QgsSymbolWidgetContext symbolContext;
-  symbolContext.setExpressionContext( &context );
-  d->setContext( symbolContext );
-
-  connect( d, &QgsPanelWidget::widgetChanged, this, &QgsLayoutMapGridWidget::updateGridMarkerStyleFromWidget );
-  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsLayoutMapGridWidget::cleanUpGridMarkerStyleSelector );
-  openPanel( d );
-  mMap->beginCommand( tr( "Grid markers style changed" ) );
 }
 
 void QgsLayoutMapGridWidget::mIntervalXSpinBox_editingFinished()
@@ -1219,6 +1093,32 @@ void QgsLayoutMapGridWidget::annotationFontChanged()
   mMap->updateBoundingRect();
   mMap->update();
   mMap->endCommand();
+}
+
+void QgsLayoutMapGridWidget::lineSymbolChanged()
+{
+  if ( !mMapGrid || !mMap )
+  {
+    return;
+  }
+
+  mMap->beginCommand( tr( "Change Grid Line Style" ), QgsLayoutItem::UndoMapGridLineSymbol );
+  mMapGrid->setLineSymbol( mGridLineStyleButton->clonedSymbol<QgsLineSymbol>() );
+  mMap->endCommand();
+  mMap->update();
+}
+
+void QgsLayoutMapGridWidget::markerSymbolChanged()
+{
+  if ( !mMapGrid || !mMap )
+  {
+    return;
+  }
+
+  mMap->beginCommand( tr( "Change Grid Marker Style" ), QgsLayoutItem::UndoMapGridMarkerSymbol );
+  mMapGrid->setMarkerSymbol( mGridMarkerStyleButton->clonedSymbol<QgsMarkerSymbol>() );
+  mMap->endCommand();
+  mMap->update();
 }
 
 void QgsLayoutMapGridWidget::mAnnotationFontColorButton_colorChanged( const QColor &color )

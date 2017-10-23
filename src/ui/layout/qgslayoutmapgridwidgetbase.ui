@@ -49,7 +49,7 @@
         <x>0</x>
         <y>0</y>
         <width>389</width>
-        <height>1419</height>
+        <height>1417</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -249,13 +249,6 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="1">
-           <widget class="QPushButton" name="mGridLineStyleButton">
-            <property name="text">
-             <string>change...</string>
-            </property>
-           </widget>
-          </item>
           <item row="7" column="0">
            <widget class="QLabel" name="mMarkerStyleLabel">
             <property name="text">
@@ -263,13 +256,6 @@
             </property>
             <property name="wordWrap">
              <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="1">
-           <widget class="QPushButton" name="mGridMarkerStyleButton">
-            <property name="text">
-             <string>change...</string>
             </property>
            </widget>
           </item>
@@ -282,6 +268,32 @@
           </item>
           <item row="8" column="1">
            <widget class="QgsBlendModeComboBox" name="mGridBlendComboBox"/>
+          </item>
+          <item row="6" column="1">
+           <widget class="QgsSymbolButton" name="mGridLineStyleButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>change...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QgsSymbolButton" name="mGridMarkerStyleButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>change...</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -779,6 +791,11 @@
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

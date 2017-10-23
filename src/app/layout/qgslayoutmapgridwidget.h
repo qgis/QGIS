@@ -36,8 +36,6 @@ class QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
   public slots:
 
     void setGridItems();
-    void mGridLineStyleButton_clicked();
-    void mGridMarkerStyleButton_clicked();
     void mIntervalXSpinBox_editingFinished();
     void mIntervalYSpinBox_editingFinished();
     void mOffsetXSpinBox_valueChanged( double value );
@@ -103,12 +101,9 @@ class QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
 
     //! Sets the GUI elements to the values of mPicture
     void setGuiElementValues();
-
-    void updateGridLineStyleFromWidget();
-    void cleanUpGridLineStyleSelector( QgsPanelWidget *container );
-    void updateGridMarkerStyleFromWidget();
-    void cleanUpGridMarkerStyleSelector( QgsPanelWidget *container );
     void annotationFontChanged();
+    void lineSymbolChanged();
+    void markerSymbolChanged();
 
   private:
     QgsLayoutItemMap *mMap = nullptr;
@@ -131,9 +126,6 @@ class QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
     void initAnnotationDisplayBox( QComboBox *c, QgsLayoutItemMapGrid::DisplayMode display );
     void initAnnotationPositionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationPosition pos );
     void initAnnotationDirectionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationDirection dir );
-
-    void updateGridLineSymbolMarker();
-    void updateGridMarkerSymbolMarker();
 
     //! Enables/disables grid frame related controls
     void toggleFrameControls( bool frameEnabled, bool frameFillEnabled, bool frameSizeEnabled );
