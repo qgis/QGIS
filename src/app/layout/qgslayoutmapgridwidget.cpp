@@ -285,7 +285,7 @@ void QgsLayoutMapGridWidget::handleChangedFrameDisplay( QgsLayoutItemMapGrid::Bo
     return;
   }
 
-  mMap->beginCommand( tr( "Frame divisions changed" ) );
+  mMap->beginCommand( tr( "Change Frame Divisions" ) );
   mMapGrid->setFrameDivisions( mode, border );
   mMap->endCommand();
   mMap->updateBoundingRect();
@@ -298,7 +298,7 @@ void QgsLayoutMapGridWidget::handleChangedAnnotationDisplay( QgsLayoutItemMapGri
     return;
   }
 
-  mMap->beginCommand( tr( "Annotation display changed" ) );
+  mMap->beginCommand( tr( "Change Annotation Format" ) );
   if ( text == tr( "Show all" ) )
   {
     mMapGrid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, border );
@@ -400,7 +400,7 @@ void QgsLayoutMapGridWidget::handleChangedAnnotationPosition( QgsLayoutItemMapGr
     return;
   }
 
-  mMap->beginCommand( tr( "Annotation position changed" ) );
+  mMap->beginCommand( tr( "Change Annotation Position" ) );
   if ( text == tr( "Inside frame" ) )
   {
     mMapGrid->setAnnotationPosition( QgsLayoutItemMapGrid::InsideMapFrame, border );
@@ -422,7 +422,7 @@ void QgsLayoutMapGridWidget::handleChangedAnnotationDirection( QgsLayoutItemMapG
     return;
   }
 
-  mMap->beginCommand( tr( "Changed annotation direction" ) );
+  mMap->beginCommand( tr( "Change Annotation Direction" ) );
   mMapGrid->setAnnotationDirection( direction, border );
   mMap->updateBoundingRect();
   mMap->update();
@@ -727,7 +727,7 @@ void QgsLayoutMapGridWidget::mIntervalXSpinBox_editingFinished()
     return;
   }
 
-  mMap->beginCommand( tr( "Grid interval changed" ) );
+  mMap->beginCommand( tr( "Change Grid Interval" ) );
   mMapGrid->setIntervalX( mIntervalXSpinBox->value() );
   mMap->updateBoundingRect();
   mMap->update();
@@ -741,7 +741,7 @@ void QgsLayoutMapGridWidget::mIntervalYSpinBox_editingFinished()
     return;
   }
 
-  mMap->beginCommand( tr( "Grid interval changed" ) );
+  mMap->beginCommand( tr( "Change Grid Interval" ) );
   mMapGrid->setIntervalY( mIntervalYSpinBox->value() );
   mMap->updateBoundingRect();
   mMap->update();
@@ -755,7 +755,7 @@ void QgsLayoutMapGridWidget::mOffsetXSpinBox_valueChanged( double value )
     return;
   }
 
-  mMap->beginCommand( tr( "Grid offset changed" ) );
+  mMap->beginCommand( tr( "Change Grid Offset" ) );
   mMapGrid->setOffsetX( value );
   mMap->updateBoundingRect();
   mMap->update();
@@ -769,7 +769,7 @@ void QgsLayoutMapGridWidget::mOffsetYSpinBox_valueChanged( double value )
     return;
   }
 
-  mMap->beginCommand( tr( "Grid offset changed" ) );
+  mMap->beginCommand( tr( "Change Grid Offset" ) );
   mMapGrid->setOffsetY( value );
   mMap->updateBoundingRect();
   mMap->update();
@@ -783,7 +783,7 @@ void QgsLayoutMapGridWidget::mCrossWidthSpinBox_valueChanged( double val )
     return;
   }
 
-  mMap->beginCommand( tr( "Cross width changed" ) );
+  mMap->beginCommand( tr( "Change Cross Width" ) );
   mMapGrid->setCrossLength( val );
   mMap->update();
   mMap->endCommand();
@@ -796,7 +796,7 @@ void QgsLayoutMapGridWidget::mFrameWidthSpinBox_valueChanged( double val )
     return;
   }
 
-  mMap->beginCommand( tr( "Frame width changed" ) );
+  mMap->beginCommand( tr( "Change Frame Width" ) );
   mMapGrid->setFrameWidth( val );
   mMap->updateBoundingRect();
   mMap->update();
@@ -810,7 +810,7 @@ void QgsLayoutMapGridWidget::mCheckGridLeftSide_toggled( bool checked )
     return;
   }
 
-  mMap->beginCommand( tr( "Frame left side changed" ) );
+  mMap->beginCommand( tr( "Change Frame Left" ) );
   mMapGrid->setFrameSideFlag( QgsLayoutItemMapGrid::FrameLeft, checked );
   mMap->updateBoundingRect();
   mMap->update();
@@ -824,7 +824,7 @@ void QgsLayoutMapGridWidget::mCheckGridRightSide_toggled( bool checked )
     return;
   }
 
-  mMap->beginCommand( tr( "Frame right side changed" ) );
+  mMap->beginCommand( tr( "Change Frame Right" ) );
   mMapGrid->setFrameSideFlag( QgsLayoutItemMapGrid::FrameRight, checked );
   mMap->updateBoundingRect();
   mMap->update();
@@ -838,7 +838,7 @@ void QgsLayoutMapGridWidget::mCheckGridTopSide_toggled( bool checked )
     return;
   }
 
-  mMap->beginCommand( tr( "Frame top side changed" ) );
+  mMap->beginCommand( tr( "Change Frame Top" ) );
   mMapGrid->setFrameSideFlag( QgsLayoutItemMapGrid::FrameTop, checked );
   mMap->updateBoundingRect();
   mMap->update();
@@ -852,7 +852,7 @@ void QgsLayoutMapGridWidget::mCheckGridBottomSide_toggled( bool checked )
     return;
   }
 
-  mMap->beginCommand( tr( "Frame bottom side changed" ) );
+  mMap->beginCommand( tr( "Change Frame Bottom" ) );
   mMapGrid->setFrameSideFlag( QgsLayoutItemMapGrid::FrameBottom, checked );
   mMap->updateBoundingRect();
   mMap->update();
@@ -886,7 +886,7 @@ void QgsLayoutMapGridWidget::mGridFramePenSizeSpinBox_valueChanged( double d )
     return;
   }
 
-  mMap->beginCommand( tr( "Changed grid frame line thickness" ) );
+  mMap->beginCommand( tr( "Change Frame Thickness" ) );
   mMapGrid->setFramePenSize( d );
   mMap->updateBoundingRect();
   mMap->update();
@@ -900,7 +900,7 @@ void QgsLayoutMapGridWidget::mGridFramePenColorButton_colorChanged( const QColor
     return;
   }
 
-  mMap->beginCommand( tr( "Grid frame color changed" ), QgsLayoutItem::UndoGridFramePenColor );
+  mMap->beginCommand( tr( "Change Frame Color" ), QgsLayoutItem::UndoGridFramePenColor );
   mMapGrid->setFramePenColor( newColor );
   mMap->update();
   mMap->endCommand();
@@ -913,7 +913,7 @@ void QgsLayoutMapGridWidget::mGridFrameFill1ColorButton_colorChanged( const QCol
     return;
   }
 
-  mMap->beginCommand( tr( "Grid frame first fill color changed" ), QgsLayoutItem::UndoMapGridFrameFill1Color );
+  mMap->beginCommand( tr( "Change Frame Fill Color" ), QgsLayoutItem::UndoMapGridFrameFill1Color );
   mMapGrid->setFrameFillColor1( newColor );
   mMap->update();
   mMap->endCommand();
@@ -926,7 +926,7 @@ void QgsLayoutMapGridWidget::mGridFrameFill2ColorButton_colorChanged( const QCol
     return;
   }
 
-  mMap->beginCommand( tr( "Grid frame second fill color changed" ), QgsLayoutItem::UndoMapGridFrameFill2Color );
+  mMap->beginCommand( tr( "Change Frame Fill Color" ), QgsLayoutItem::UndoMapGridFrameFill2Color );
   mMapGrid->setFrameFillColor2( newColor );
   mMap->update();
   mMap->endCommand();
@@ -939,7 +939,7 @@ void QgsLayoutMapGridWidget::mFrameStyleComboBox_currentIndexChanged( const QStr
     return;
   }
 
-  mMap->beginCommand( tr( "Changed grid frame style" ) );
+  mMap->beginCommand( tr( "Change Frame Style" ) );
   if ( text == tr( "Zebra" ) )
   {
     mMapGrid->setFrameStyle( QgsLayoutItemMapGrid::Zebra );
@@ -982,7 +982,7 @@ void QgsLayoutMapGridWidget::mMapGridUnitComboBox_currentIndexChanged( const QSt
     return;
   }
 
-  mMap->beginCommand( tr( "Changed grid unit" ) );
+  mMap->beginCommand( tr( "Change Grid Unit" ) );
   if ( text == tr( "Map unit" ) )
   {
     mMapGrid->setUnits( QgsLayoutItemMapGrid::MapUnit );
@@ -1005,7 +1005,7 @@ void QgsLayoutMapGridWidget::mGridBlendComboBox_currentIndexChanged( int index )
   Q_UNUSED( index );
   if ( mMapGrid )
   {
-    mMap->beginCommand( tr( "Grid blend mode changed" ) );
+    mMap->beginCommand( tr( "Change Grid Blend Mode" ) );
     mMapGrid->setBlendMode( mGridBlendComboBox->blendMode() );
     mMap->update();
     mMap->endCommand();
@@ -1020,7 +1020,7 @@ void QgsLayoutMapGridWidget::mGridTypeComboBox_currentIndexChanged( const QStrin
     return;
   }
 
-  mMap->beginCommand( tr( "Grid type changed" ) );
+  mMap->beginCommand( tr( "Change Grid Type" ) );
   if ( text == tr( "Cross" ) )
   {
     mMapGrid->setStyle( QgsLayoutItemMapGrid::Cross );
@@ -1088,7 +1088,7 @@ void QgsLayoutMapGridWidget::mMapGridCRSButton_clicked()
 
   if ( crsDialog.exec() == QDialog::Accepted )
   {
-    mMap->beginCommand( tr( "Grid CRS changed" ) );
+    mMap->beginCommand( tr( "Change Grid CRS" ) );
     mMapGrid->setCrs( crsDialog.crs() );
     mMap->updateBoundingRect();
     mMapGridCRSButton->setText( crsDialog.crs().authid() );
@@ -1103,7 +1103,7 @@ void QgsLayoutMapGridWidget::mDrawAnnotationGroupBox_toggled( bool state )
     return;
   }
 
-  mMap->beginCommand( tr( "Annotation toggled" ) );
+  mMap->beginCommand( tr( "Toggle Annotations" ) );
   mMapGrid->setAnnotationEnabled( state );
   mMap->updateBoundingRect();
   mMap->update();
@@ -1125,7 +1125,7 @@ void QgsLayoutMapGridWidget::mAnnotationFormatButton_clicked()
   if ( exprDlg.exec() == QDialog::Accepted )
   {
     QString expression = exprDlg.expressionText();
-    mMap->beginCommand( tr( "Annotation format changed" ) );
+    mMap->beginCommand( tr( "Change Annotation Format" ) );
     mMapGrid->setAnnotationExpression( expression );
     mMap->updateBoundingRect();
     mMap->update();
@@ -1200,7 +1200,7 @@ void QgsLayoutMapGridWidget::mDistanceToMapFrameSpinBox_valueChanged( double d )
     return;
   }
 
-  mMap->beginCommand( tr( "Annotation distance changed" ), QgsLayoutItem::UndoMapAnnotationDistance );
+  mMap->beginCommand( tr( "Change Annotation Distance" ), QgsLayoutItem::UndoMapAnnotationDistance );
   mMapGrid->setAnnotationFrameDistance( d );
   mMap->updateBoundingRect();
   mMap->update();
@@ -1214,7 +1214,7 @@ void QgsLayoutMapGridWidget::annotationFontChanged()
     return;
   }
 
-  mMap->beginCommand( tr( "Annotation font changed" ) );
+  mMap->beginCommand( tr( "Change Annotation Font" ) );
   mMapGrid->setAnnotationFont( mAnnotationFontButton->currentFont() );
   mMap->updateBoundingRect();
   mMap->update();
@@ -1228,7 +1228,7 @@ void QgsLayoutMapGridWidget::mAnnotationFontColorButton_colorChanged( const QCol
     return;
   }
 
-  mMap->beginCommand( tr( "Annotation color changed" ), QgsLayoutItem::UndoMapGridAnnotationFontColor );
+  mMap->beginCommand( tr( "Change Annotation Color" ), QgsLayoutItem::UndoMapGridAnnotationFontColor );
   mMapGrid->setAnnotationFontColor( color );
   mMap->update();
   mMap->endCommand();
@@ -1241,7 +1241,7 @@ void QgsLayoutMapGridWidget::mAnnotationFormatComboBox_currentIndexChanged( int 
     return;
   }
 
-  mMap->beginCommand( tr( "Annotation format changed" ) );
+  mMap->beginCommand( tr( "Change Annotation Format" ) );
 
   mMapGrid->setAnnotationFormat( ( QgsLayoutItemMapGrid::AnnotationFormat )mAnnotationFormatComboBox->itemData( index ).toInt() );
   mAnnotationFormatButton->setEnabled( mMapGrid->annotationFormat() == QgsLayoutItemMapGrid::CustomFormat );
@@ -1257,7 +1257,7 @@ void QgsLayoutMapGridWidget::mCoordinatePrecisionSpinBox_valueChanged( int value
   {
     return;
   }
-  mMap->beginCommand( tr( "Changed annotation precision" ) );
+  mMap->beginCommand( tr( "Change Annotation Precision" ) );
   mMapGrid->setAnnotationPrecision( value );
   mMap->updateBoundingRect();
   mMap->update();
