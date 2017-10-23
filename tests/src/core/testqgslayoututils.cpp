@@ -50,6 +50,7 @@ class TestQgsLayoutUtils: public QObject
     void textHeightMM(); //test calculating text height in mm
     void drawTextPos(); //test drawing text at a pos
     void drawTextRect(); //test drawing text in a rect
+    void largestRotatedRect(); //test largest rotated rect helper function
 
   private:
 
@@ -548,6 +549,71 @@ void TestQgsLayoutUtils::drawTextRect()
   QgsLayoutUtils::drawText( &testPainter, QRectF( 5, 15, 20, 50 ), QStringLiteral( "Abc123" ), mTestFont, Qt::white, Qt::AlignLeft, Qt::AlignTop, Qt::TextDontClip );
   testPainter.end();
   QVERIFY( renderCheck( "composerutils_drawtext_rectflag", testImage, 100 ) );
+}
+
+void TestQgsLayoutUtils::largestRotatedRect()
+{
+  QRectF wideRect = QRectF( 0, 0, 2, 1 );
+  QRectF highRect = QRectF( 0, 0, 1, 2 );
+  QRectF bounds = QRectF( 0, 0, 4, 2 );
+
+  //simple cases
+  //0 rotation
+  QRectF result = QgsLayoutUtils::largestRotatedRectWithinBounds( wideRect, bounds, 0 );
+  QCOMPARE( result, QRectF( 0, 0, 4, 2 ) );
+  result = QgsLayoutUtils::largestRotatedRectWithinBounds( highRect, bounds, 0 );
+  QCOMPARE( result, QRectF( 1.5, 0, 1, 2 ) );
+  // 90 rotation
+  result = QgsLayoutUtils::largestRotatedRectWithinBounds( wideRect, bounds, 90 );
+  QCOMPARE( result, QRectF( 1.5, 0, 2, 1 ) );
+  result = QgsLayoutUtils::largestRotatedRectWithinBounds( highRect, bounds, 90 );
+  QCOMPARE( result, QRectF( 0, 0, 2, 4 ) );
+  // 180 rotation
+  result = QgsLayoutUtils::largestRotatedRectWithinBounds( wideRect, bounds, 180 );
+  QCOMPARE( result, QRectF( 0, 0, 4, 2 ) );
+  result = QgsLayoutUtils::largestRotatedRectWithinBounds( highRect, bounds, 0 );
+  QCOMPARE( result, QRectF( 1.5, 0, 1, 2 ) );
+  // 270 rotation
+  result = QgsLayoutUtils::largestRotatedRectWithinBounds( wideRect, bounds, 270 );
+  QCOMPARE( result, QRectF( 1.5, 0, 2, 1 ) );
+  result = QgsLayoutUtils::largestRotatedRectWithinBounds( highRect, bounds, 270 );
+  QCOMPARE( result, QRectF( 0, 0, 2, 4 ) );
+  //360 rotation
+  result = QgsLayoutUtils::largestRotatedRectWithinBounds( wideRect, bounds, 360 );
+  QCOMPARE( result, QRectF( 0, 0, 4, 2 ) );
+  result = QgsLayoutUtils::largestRotatedRectWithinBounds( highRect, bounds, 360 );
+  QCOMPARE( result, QRectF( 1.5, 0, 1, 2 ) );
+
+  //full test, run through a circle in 10 degree increments
+  for ( double rotation = 10; rotation < 360; rotation += 10 )
+  {
+    result = QgsLayoutUtils::largestRotatedRectWithinBounds( wideRect, bounds, rotation );
+    QTransform t;
+    t.rotate( rotation );
+    QRectF rotatedRectBounds = t.mapRect( result );
+    //one of the rotated rects dimensions must equal the bounding rectangles dimensions (ie, it has been constrained by one dimension)
+    //and the other dimension must be less than or equal to bounds dimension
+    QVERIFY( ( qgsDoubleNear( rotatedRectBounds.width(), bounds.width(), 0.001 ) && ( rotatedRectBounds.height() <= bounds.height() ) )
+             || ( qgsDoubleNear( rotatedRectBounds.height(), bounds.height(), 0.001 ) && ( rotatedRectBounds.width() <= bounds.width() ) ) );
+
+    //also verify that aspect ratio of rectangle has not changed
+    QGSCOMPARENEAR( result.width() / result.height(), wideRect.width() / wideRect.height(), 4 * DBL_EPSILON );
+  }
+  //and again for the high rectangle
+  for ( double rotation = 10; rotation < 360; rotation += 10 )
+  {
+    result = QgsLayoutUtils::largestRotatedRectWithinBounds( highRect, bounds, rotation );
+    QTransform t;
+    t.rotate( rotation );
+    QRectF rotatedRectBounds = t.mapRect( result );
+    //one of the rotated rects dimensions must equal the bounding rectangles dimensions (ie, it has been constrained by one dimension)
+    //and the other dimension must be less than or equal to bounds dimension
+    QVERIFY( ( qgsDoubleNear( rotatedRectBounds.width(), bounds.width(), 0.001 ) && ( rotatedRectBounds.height() <= bounds.height() ) )
+             || ( qgsDoubleNear( rotatedRectBounds.height(), bounds.height(), 0.001 ) && ( rotatedRectBounds.width() <= bounds.width() ) ) );
+
+    //also verify that aspect ratio of rectangle has not changed
+    QGSCOMPARENEAR( result.width() / result.height(), highRect.width() / highRect.height(), 4 * DBL_EPSILON );
+  }
 }
 
 bool TestQgsLayoutUtils::renderCheck( const QString &testName, QImage &image, int mismatchCount )

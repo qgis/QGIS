@@ -75,6 +75,11 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
       UndoMapGridAnnotationFontColor,
       UndoMapGridLineSymbol,
       UndoMapGridMarkerSymbol,
+      UndoPictureRotation,
+      UndoPictureFillColor,
+      UndoPictureStrokeColor,
+      UndoPictureNorthOffset,
+      UndoCustomCommand,
     };
 
     explicit QgsLayoutItem( QgsLayout *layout, bool manageZValue = true );
@@ -696,6 +701,17 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: setFixedSize()
 %End
 
+    virtual QSizeF applyItemSizeConstraint( const QSizeF &targetSize );
+%Docstring
+ Applies any item-specific size constraint handling to a given ``targetSize`` in layout units.
+ Subclasses can override this method if they need to apply advanced logic regarding item
+ sizes, which cannot be covered by setFixedSize() or setMinimumSize().
+ Item size constraints are applied after fixed, minimum and data defined size constraints.
+.. seealso:: setFixedSize()
+.. seealso:: setMinimumSize()
+ :rtype: QSizeF
+%End
+
     void refreshItemSize();
 %Docstring
  Refreshes an item's size by rechecking it against any possible item fixed
@@ -796,6 +812,12 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 %Docstring
  Returns whether the item should be drawn in the current context.
  :rtype: bool
+%End
+
+    QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );
+%Docstring
+ Applies any present data defined size overrides to the specified layout ``size``.
+ :rtype: QgsLayoutSize
 %End
 
 };

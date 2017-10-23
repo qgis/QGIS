@@ -414,6 +414,7 @@
 %Include layout/qgslayoutitemmapoverview.sip
 %Include layout/qgslayoutitemnodeitem.sip
 %Include layout/qgslayoutitempage.sip
+%Include layout/qgslayoutitempicture.sip
 %Include layout/qgslayoutitempolygon.sip
 %Include layout/qgslayoutitempolyline.sip
 %Include layout/qgslayoutitemregistry.sip

@@ -108,6 +108,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoMapGridAnnotationFontColor, //!< Map frame annotation color
       UndoMapGridLineSymbol, //!< Grid line symbol
       UndoMapGridMarkerSymbol, //!< Grid marker symbol
+      UndoPictureRotation, //!< Picture rotation
+      UndoPictureFillColor, //!< Picture fill color
+      UndoPictureStrokeColor, //!< Picture stroke color
+      UndoPictureNorthOffset, //!< Picture north offset
+      UndoCustomCommand, //!< Base id for plugin based item undo commands
     };
 
     /**
@@ -694,6 +699,16 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void setMinimumSize( const QgsLayoutSize &size );
 
     /**
+     * Applies any item-specific size constraint handling to a given \a targetSize in layout units.
+     * Subclasses can override this method if they need to apply advanced logic regarding item
+     * sizes, which cannot be covered by setFixedSize() or setMinimumSize().
+     * Item size constraints are applied after fixed, minimum and data defined size constraints.
+     * \see setFixedSize()
+     * \see setMinimumSize()
+     */
+    virtual QSizeF applyItemSizeConstraint( const QSizeF &targetSize );
+
+    /**
      * Refreshes an item's size by rechecking it against any possible item fixed
      * or minimum sizes.
      * \see setFixedSize()
@@ -789,6 +804,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     bool shouldDrawItem() const;
 
+    /**
+     * Applies any present data defined size overrides to the specified layout \a size.
+     */
+    QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );
+
   private:
 
     // true if layout manages the z value for this item
@@ -858,7 +878,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QSizeF applyMinimumSize( const QSizeF &targetSize );
     QSizeF applyFixedSize( const QSizeF &targetSize );
     QgsLayoutPoint applyDataDefinedPosition( const QgsLayoutPoint &position );
-    QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );
+
     double applyDataDefinedRotation( const double rotation );
     void updateStoredItemPosition();
     QPointF itemPositionAtReferencePoint( const ReferencePoint reference, const QSizeF &size ) const;

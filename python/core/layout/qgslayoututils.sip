@@ -185,6 +185,18 @@ class QgsLayoutUtils
  The ``flags`` parameter allows for passing Qt.TextFlags to control appearance of rendered text.
 %End
 
+    static QRectF largestRotatedRectWithinBounds( const QRectF &originalRect, const QRectF &boundsRect, const double rotation );
+%Docstring
+ Calculates the largest scaled version of ``originalRect`` which fits within ``boundsRect``, when it is rotated by
+ the a specified ``rotation`` amount.
+ \param originalRect QRectF to be rotated and scaled
+ \param boundsRect QRectF specifying the bounds which the rotated and scaled rectangle must fit within
+ \param rotation the rotation in degrees to be applied to the rectangle
+ :return: largest scaled version of the rectangle possible
+ :rtype: QRectF
+%End
+
+
 };
 
 /************************************************************************

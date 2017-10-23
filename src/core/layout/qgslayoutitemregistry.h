@@ -185,6 +185,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
       // known item types
       LayoutPage, //!< Page items
       LayoutMap, //!< Map item
+      LayoutPicture, //!< Picture item
       LayoutShape, //!< Shape item
       LayoutPolygon, //!< Polygon shape item
       LayoutPolyline, //!< Polyline shape item

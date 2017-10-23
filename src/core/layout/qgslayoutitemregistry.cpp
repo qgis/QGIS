@@ -20,6 +20,7 @@
 #include "qgslayoutitempolygon.h"
 #include "qgslayoutitempolyline.h"
 #include "qgslayoutitempage.h"
+#include "qgslayoutitempicture.h"
 #include "qgslayoutitemgroup.h"
 #include "qgsgloweffect.h"
 #include "qgseffectstack.h"
@@ -50,6 +51,7 @@ bool QgsLayoutItemRegistry::populate()
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutGroup, QStringLiteral( "Group" ), QIcon(), QgsLayoutItemGroup::create ) );
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutPage, QStringLiteral( "Page" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileNew.svg" ) ), QgsLayoutItemPage::create ) );
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutMap, QStringLiteral( "Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMap.svg" ) ), QgsLayoutItemMap::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPicture, QStringLiteral( "Picture" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ), QgsLayoutItemPicture::create ) );
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutShape, QStringLiteral( "Shape" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), []( QgsLayout * layout )
   {
     QgsLayoutItemShape *shape = new QgsLayoutItemShape( layout );

@@ -103,6 +103,7 @@ class QgsLayoutItemRegistry : QObject
       // known
       LayoutPage,
       LayoutMap,
+      LayoutPicture,
       LayoutShape,
       LayoutPolygon,
       LayoutPolyline,

@@ -182,6 +182,7 @@ SET(QGIS_APP_SRCS
   layout/qgslayoutmapwidget.cpp
   layout/qgslayoutmapgridwidget.cpp
   layout/qgslayoutpagepropertieswidget.cpp
+  layout/qgslayoutpicturewidget.cpp
   layout/qgslayoutpolygonwidget.cpp
   layout/qgslayoutpolylinewidget.cpp
   layout/qgslayoutpropertieswidget.cpp
@@ -383,6 +384,7 @@ SET (QGIS_APP_MOC_HDRS
   layout/qgslayoutmapwidget.h
   layout/qgslayoutmapgridwidget.h
   layout/qgslayoutpagepropertieswidget.h
+  layout/qgslayoutpicturewidget.h
   layout/qgslayoutpolygonwidget.h
   layout/qgslayoutpolylinewidget.h
   layout/qgslayoutpropertieswidget.h

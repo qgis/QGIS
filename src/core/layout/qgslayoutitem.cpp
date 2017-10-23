@@ -362,6 +362,7 @@ void QgsLayoutItem::attemptResize( const QgsLayoutSize &s, bool includesFrame )
   QSizeF targetSizeLayoutUnits = mLayout->convertToLayoutUnits( evaluatedSize );
   QSizeF actualSizeLayoutUnits = applyMinimumSize( targetSizeLayoutUnits );
   actualSizeLayoutUnits = applyFixedSize( actualSizeLayoutUnits );
+  actualSizeLayoutUnits = applyItemSizeConstraint( actualSizeLayoutUnits );
 
   if ( actualSizeLayoutUnits == rect().size() )
   {
@@ -852,6 +853,12 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
     return size;
   }
 
+  if ( !mDataDefinedProperties.isActive( QgsLayoutObject::PresetPaperSize ) &&
+       !mDataDefinedProperties.isActive( QgsLayoutObject::ItemWidth ) &&
+       !mDataDefinedProperties.isActive( QgsLayoutObject::ItemHeight ) )
+    return size;
+
+
   QgsExpressionContext context = createExpressionContext();
 
   // lowest priority is page size
@@ -1036,6 +1043,11 @@ void QgsLayoutItem::setMinimumSize( const QgsLayoutSize &size )
 {
   mMinimumSize = size;
   refreshItemSize();
+}
+
+QSizeF QgsLayoutItem::applyItemSizeConstraint( const QSizeF &targetSize )
+{
+  return targetSize;
 }
 
 void QgsLayoutItem::refreshItemSize()

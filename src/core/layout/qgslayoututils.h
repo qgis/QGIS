@@ -188,6 +188,17 @@ class CORE_EXPORT QgsLayoutUtils
      */
     static void drawText( QPainter *painter, const QRectF &rectangle, const QString &text, const QFont &font, const QColor &color = QColor(), const Qt::AlignmentFlag halignment = Qt::AlignLeft, const Qt::AlignmentFlag valignment = Qt::AlignTop, const int flags = Qt::TextWordWrap );
 
+    /**
+     * Calculates the largest scaled version of \a originalRect which fits within \a boundsRect, when it is rotated by
+     * the a specified \a rotation amount.
+     * \param originalRect QRectF to be rotated and scaled
+     * \param boundsRect QRectF specifying the bounds which the rotated and scaled rectangle must fit within
+     * \param rotation the rotation in degrees to be applied to the rectangle
+     * \returns largest scaled version of the rectangle possible
+     */
+    static QRectF largestRotatedRectWithinBounds( const QRectF &originalRect, const QRectF &boundsRect, const double rotation );
+
+
   private:
 
     //! Scale factor for upscaling fontsize and downscaling painter

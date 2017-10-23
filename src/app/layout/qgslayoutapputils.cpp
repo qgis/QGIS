@@ -27,6 +27,8 @@
 #include "qgslayoutitempolyline.h"
 #include "qgslayoutpolygonwidget.h"
 #include "qgslayoutpolylinewidget.h"
+#include "qgslayoutpicturewidget.h"
+#include "qgslayoutitempicture.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 
@@ -52,6 +54,9 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
 
   registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 1002, QStringLiteral( "test" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), nullptr, createRubberBand ) );
 
+
+  // map item
+
   auto mapItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutMap, QObject::tr( "Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMap.svg" ) ),
                          [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
@@ -67,6 +72,18 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     }
   } );
   registry->addLayoutItemGuiMetadata( mapItemMetadata.release() );
+
+
+  // picture item
+
+  registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPicture, QObject::tr( "Picture" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ),
+                                      [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayoutPictureWidget( qobject_cast< QgsLayoutItemPicture * >( item ) );
+  }, createRubberBand ) );
+
+
+  // shape items
 
   auto createShapeWidget =
     []( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
@@ -93,6 +110,8 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     return shape.release();
   } ) );
 
+
+  // node items
 
   std::unique_ptr< QgsLayoutItemGuiMetadata > polygonMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >(
         QgsLayoutItemRegistry::LayoutPolygon, QObject::tr( "Polygon" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolygon.svg" ) ),
