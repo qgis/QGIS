@@ -56,11 +56,6 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
   }
 
   setupUi( this );
-  cbClearAuthCacheOnErrors->setChecked( QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ), false, QgsSettings::Section::Auth ).toBool( ) );
-  connect( cbClearAuthCacheOnErrors, &QCheckBox::clicked, this, [ ]( bool checked )
-  {
-    QgsSettings().setValue( QStringLiteral( "clear_auth_cache_on_errors" ), checked, QgsSettings::Section::Auth );
-  } );
   connect( buttonBox, &QDialogButtonBox::clicked, this, &QgsAuthSslErrorsDialog::buttonBox_clicked );
   connect( btnChainInfo, &QToolButton::clicked, this, &QgsAuthSslErrorsDialog::btnChainInfo_clicked );
   connect( btnChainCAs, &QToolButton::clicked, this, &QgsAuthSslErrorsDialog::btnChainCAs_clicked );
@@ -194,9 +189,11 @@ void QgsAuthSslErrorsDialog::buttonBox_clicked( QAbstractButton *button )
       reject();
       break;
   }
-  // Clear access cache
-  if ( QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ),
-                            false,
+  // Clear access cache if the user choose ignore and the
+  // setting allows it
+  if ( btnenum == QDialogButtonBox::Abort &&
+       QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ),
+                            true,
                             QgsSettings::Section::Auth ).toBool( ) )
   {
     QgsNetworkAccessManager::instance()->clearAccessCache();

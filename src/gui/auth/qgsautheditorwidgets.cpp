@@ -151,7 +151,7 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   mActionClearAccessCacheNow = new QAction( QStringLiteral( "Clear network authentication access cache" ), this );
   mActionAutoClearAccessCache = new QAction( QStringLiteral( "Automatically clear network authentication access cache on SSL errors" ), this );
   mActionAutoClearAccessCache->setCheckable( true );
-  mActionAutoClearAccessCache->setChecked( QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ), false, QgsSettings::Section::Auth ).toBool( ) );
+  mActionAutoClearAccessCache->setChecked( QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ), true, QgsSettings::Section::Auth ).toBool( ) );
 
   mActionPasswordHelperSync = new QAction( tr( "Store/update the master password in your %1" )
       .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ), this );
