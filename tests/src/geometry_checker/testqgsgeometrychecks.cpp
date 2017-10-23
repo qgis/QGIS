@@ -981,20 +981,21 @@ QgsFeaturePool *TestQgsGeometryChecks::createFeaturePool( QgsVectorLayer *layer,
 QgsGeometryCheckerContext *TestQgsGeometryChecks::createTestContext( QTemporaryDir &tempDir, QMap<QString, QString> &layers, const QString &mapCrs, double prec ) const
 {
   QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
+  QDir tmpDir( tempDir.path() );
 
   QMap<QString, QgsFeaturePool *> featurePools;
   for ( const QString &layerFile : layers.keys() )
   {
-    QFile( testDataDir.absoluteFilePath( layerFile ) ).copy( tempDir.filePath( layerFile ) );
+    QFile( testDataDir.absoluteFilePath( layerFile ) ).copy( tmpDir.absoluteFilePath( layerFile ) );
     if ( layerFile.endsWith( ".shp", Qt::CaseInsensitive ) )
     {
       QString baseName = QFileInfo( layerFile ).baseName();
-      QFile( testDataDir.absoluteFilePath( baseName + ".dbf" ) ).copy( tempDir.filePath( baseName + ".dbf" ) );
-      QFile( testDataDir.absoluteFilePath( baseName + ".pri" ) ).copy( tempDir.filePath( baseName + ".pri" ) );
-      QFile( testDataDir.absoluteFilePath( baseName + ".qpj" ) ).copy( tempDir.filePath( baseName + ".qpj" ) );
-      QFile( testDataDir.absoluteFilePath( baseName + ".shx" ) ).copy( tempDir.filePath( baseName + ".shx" ) );
+      QFile( testDataDir.absoluteFilePath( baseName + ".dbf" ) ).copy( tmpDir.absoluteFilePath( baseName + ".dbf" ) );
+      QFile( testDataDir.absoluteFilePath( baseName + ".pri" ) ).copy( tmpDir.absoluteFilePath( baseName + ".pri" ) );
+      QFile( testDataDir.absoluteFilePath( baseName + ".qpj" ) ).copy( tmpDir.absoluteFilePath( baseName + ".qpj" ) );
+      QFile( testDataDir.absoluteFilePath( baseName + ".shx" ) ).copy( tmpDir.absoluteFilePath( baseName + ".shx" ) );
     }
-    QgsVectorLayer *layer = new QgsVectorLayer( tempDir.filePath( layerFile ), layerFile );
+    QgsVectorLayer *layer = new QgsVectorLayer( tmpDir.absoluteFilePath( layerFile ), layerFile );
     Q_ASSERT( layer && layer->isValid() );
     layers[layerFile] = layer->id();
     layer->dataProvider()->enterUpdateMode();
