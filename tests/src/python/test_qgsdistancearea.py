@@ -47,7 +47,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         #   +-+
         #   | |
         # +-+ +
-        linestring = QgsGeometry.fromPolyline(
+        linestring = QgsGeometry.fromPolylineXY(
             [QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(1, 1), QgsPointXY(2, 1), QgsPointXY(2, 0), ]
         )
         da = QgsDistanceArea()

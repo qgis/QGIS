@@ -209,7 +209,7 @@ void QgsHighlight::paintPoint( QPainter *p, const QgsPointXY &point )
   p->drawPolygon( r );
 }
 
-void QgsHighlight::paintLine( QPainter *p, QgsPolyline line )
+void QgsHighlight::paintLine( QPainter *p, QgsPolylineXY line )
 {
   QPolygonF polygon( line.size() );
 

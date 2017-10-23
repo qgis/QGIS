@@ -73,7 +73,7 @@ QgsRectangle QgsRectangle::fromWkt( const QString &wkt )
   if ( poly.size() != 1 )
     return QgsRectangle();
 
-  QgsPolyline polyline = geom.asPolygon().at( 0 );
+  QgsPolylineXY polyline = geom.asPolygon().at( 0 );
   if ( polyline.size() == 5 && polyline.at( 0 ) == polyline.at( 4 ) && geom.isGeosValid() )
     return QgsRectangle( polyline.at( 0 ).x(), polyline.at( 0 ).y(), polyline.at( 2 ).x(), polyline.at( 2 ).y() );
   else

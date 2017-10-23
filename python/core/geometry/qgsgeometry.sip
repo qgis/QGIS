@@ -15,7 +15,9 @@
 
 
 
-typedef QVector<QgsPointXY> QgsPolyline;
+typedef QVector<QgsPointXY> QgsPolylineXY;
+
+typedef QVector<QgsPoint> QgsPolyline;
 
 typedef QVector<QVector<QgsPointXY>> QgsPolygon;
 
@@ -122,11 +124,35 @@ Creates a new geometry from a QgsPointXY object
 Creates a new geometry from a QgsMultiPoint object
  :rtype: QgsGeometry
 %End
-    static QgsGeometry fromPolyline( const QgsPolyline &polyline );
+
+    static QgsGeometry fromPolylineXY( const QgsPolylineXY &polyline );
 %Docstring
-Creates a new geometry from a QgsPolyline object
+ Creates a new LineString geometry from a list of QgsPointXY points.
+
+ Using fromPolyline() is preferred, as fromPolyline() is more efficient
+ and will respect any Z or M dimensions present in the input points.
+
+.. note::
+
+   In QGIS 2.x this method was available as fromPolyline().
+
+.. versionadded:: 3.0
+.. seealso:: fromPolyline()
  :rtype: QgsGeometry
 %End
+
+    static QgsGeometry fromPolyline( const QgsPolyline &polyline );
+%Docstring
+ Creates a new LineString geometry from a list of QgsPoint points.
+
+ This method will respect any Z or M dimensions present in the input points.
+ E.g. if input points are PointZ type, the resultant linestring will be
+ a LineStringZ type.
+
+.. versionadded:: 3.0
+ :rtype: QgsGeometry
+%End
+
     static QgsGeometry fromMultiPolyline( const QgsMultiPolyline &multiline );
 %Docstring
 Creates a new geometry from a QgsMultiPolyline object
@@ -1065,11 +1091,11 @@ Returns an extruded version of this geometry.
  :rtype: QgsPointXY
 %End
 
-    QgsPolyline asPolyline() const;
+    QgsPolylineXY asPolyline() const;
 %Docstring
  Returns contents of the geometry as a polyline
  if wkbType is WKBLineString, otherwise an empty list
- :rtype: QgsPolyline
+ :rtype: QgsPolylineXY
 %End
 
     QgsPolygon asPolygon() const;
@@ -1349,13 +1375,13 @@ Returns an extruded version of this geometry.
  :rtype: QgsGeometry
 %End
 
-    static QgsPolyline createPolylineFromQPolygonF( const QPolygonF &polygon ) /Factory/;
+    static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) /Factory/;
 %Docstring
- Creates a QgsPolyline from a QPolygonF.
+ Creates a QgsPolylineXY from a QPolygonF.
  \param polygon source polygon
- :return: QgsPolyline
+ :return: QgsPolylineXY
 .. seealso:: createPolygonFromQPolygonF
- :rtype: QgsPolyline
+ :rtype: QgsPolylineXY
 %End
 
     static QgsPolygon createPolygonFromQPolygonF( const QPolygonF &polygon ) /Factory/;
@@ -1371,7 +1397,7 @@ Returns an extruded version of this geometry.
     static bool compare( PyObject *obj1, PyObject *obj2, double epsilon = 4 * DBL_EPSILON );
 %Docstring
  Compares two geometry objects for equality within a specified tolerance.
- The objects can be of type QgsPolyline, QgsPolygon or QgsMultiPolygon.
+ The objects can be of type QgsPolylineXY, QgsPolygon or QgsMultiPolygon.
  The 2 types should match.
  \param p1 first geometry object
  \param p2 second geometry object
@@ -1408,10 +1434,10 @@ Returns an extruded version of this geometry.
                sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
                sipCanConvertToType( a1, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
           {
-            QgsPolyline *p0;
-            QgsPolyline *p1;
-            p0 = reinterpret_cast<QgsPolyline *>( sipConvertToType( a0, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-            p1 = reinterpret_cast<QgsPolyline *>( sipConvertToType( a1, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+            QgsPolylineXY *p0;
+            QgsPolylineXY *p1;
+            p0 = reinterpret_cast<QgsPolylineXY *>( sipConvertToType( a0, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+            p1 = reinterpret_cast<QgsPolylineXY *>( sipConvertToType( a1, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
             if ( sipIsErr )
             {
               sipReleaseType( p0, sipType_QVector_0100QgsPointXY, state0 );

@@ -223,7 +223,7 @@ void TestQgsGML::testLineStringGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::LineString );
-  QgsPolyline line = features[0].first->geometry().asPolyline();
+  QgsPolylineXY line = features[0].first->geometry().asPolyline();
   QCOMPARE( line.size(), 2 );
   QCOMPARE( line[0], QgsPointXY( 10, 20 ) );
   QCOMPARE( line[1], QgsPointXY( 30, 40 ) );
@@ -545,7 +545,7 @@ void TestQgsGML::testLineStringGML3()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::LineString );
-  QgsPolyline line = features[0].first->geometry().asPolyline();
+  QgsPolylineXY line = features[0].first->geometry().asPolyline();
   QCOMPARE( line.size(), 2 );
   QCOMPARE( line[0], QgsPointXY( 10, 20 ) );
   QCOMPARE( line[1], QgsPointXY( 30, 40 ) );
@@ -572,7 +572,7 @@ void TestQgsGML::testLineStringGML3_LineStringSegment()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::LineString );
-  QgsPolyline line = features[0].first->geometry().asPolyline();
+  QgsPolylineXY line = features[0].first->geometry().asPolyline();
   QCOMPARE( line.size(), 2 );
   QCOMPARE( line[0], QgsPointXY( 10, 20 ) );
   QCOMPARE( line[1], QgsPointXY( 30, 40 ) );

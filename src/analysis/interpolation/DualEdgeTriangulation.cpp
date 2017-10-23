@@ -3060,10 +3060,10 @@ bool DualEdgeTriangulation::saveTriangulation( QgsFeatureSink *sink, QgsFeedback
       //geometry
       QgsPoint *p1 = mPointVector[currentEdge->getPoint()];
       QgsPoint *p2 = mPointVector[mHalfEdge[currentEdge->getDual()]->getPoint()];
-      QgsPolyline lineGeom;
+      QgsPolylineXY lineGeom;
       lineGeom.push_back( QgsPointXY( p1->x(), p1->y() ) );
       lineGeom.push_back( QgsPointXY( p2->x(), p2->y() ) );
-      edgeLineFeature.setGeometry( QgsGeometry::fromPolyline( lineGeom ) );
+      edgeLineFeature.setGeometry( QgsGeometry::fromPolylineXY( lineGeom ) );
       edgeLineFeature.initAttributes( 1 );
 
       //attributes

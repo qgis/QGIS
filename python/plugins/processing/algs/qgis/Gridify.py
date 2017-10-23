@@ -91,7 +91,7 @@ class Gridify(QgisFeatureBasedAlgorithm):
                     feedback.reportError(self.tr('Failed to gridify feature with FID {0}').format(feature.id()))
                     newGeom = None
                 else:
-                    newGeom = QgsGeometry.fromPolyline(points)
+                    newGeom = QgsGeometry.fromPolylineXY(points)
             elif geomType == QgsWkbTypes.MultiLineString:
                 polyline = []
                 for line in geom.asMultiPolyline():

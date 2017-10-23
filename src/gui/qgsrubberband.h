@@ -348,7 +348,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     QgsRubberBand();
 
-    static QgsPolyline getPolyline( const QList<QgsPointXY> &points );
+    static QgsPolylineXY getPolyline( const QList<QgsPointXY> &points );
 
 };
 

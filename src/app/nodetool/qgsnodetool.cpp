@@ -800,9 +800,9 @@ void QgsNodeTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
     else
     {
       // straight edge
-      QgsPolyline points;
+      QgsPolylineXY points;
       points << p0 << p1;
-      mEdgeBand->setToGeometry( QgsGeometry::fromPolyline( points ), nullptr );
+      mEdgeBand->setToGeometry( QgsGeometry::fromPolylineXY( points ), nullptr );
     }
 
     QgsPointXY edgeCenter;
@@ -1757,9 +1757,9 @@ bool QgsNodeTool::matchEdgeCenterTest( const QgsPointLocator::Match &m, const Qg
   {
     // clip line segment to the extent so the mid-point marker is always visible
     QgsGeometry extentGeom = QgsGeometry::fromRect( visible_extent );
-    QgsGeometry lineGeom = QgsGeometry::fromPolyline( QgsPolyline() << p0 << p1 );
+    QgsGeometry lineGeom = QgsGeometry::fromPolylineXY( QgsPolylineXY() << p0 << p1 );
     lineGeom = extentGeom.intersection( lineGeom );
-    QgsPolyline polyline = lineGeom.asPolyline();
+    QgsPolylineXY polyline = lineGeom.asPolyline();
     Q_ASSERT( polyline.count() == 2 );
     p0 = polyline[0];
     p1 = polyline[1];

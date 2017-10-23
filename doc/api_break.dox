@@ -1283,6 +1283,9 @@ empty geometry collection)
 - isGeosEmpty() was removed. Use isEmpty() instead.
 - reshapeGeometry() expects QgsLineString as a parameter instead of a list of 2D points (so that it can support 3D geometries)
 - vertexAt() now returns a QgsPoint (previously QgsPointV2) instead of a QgsPointXY (previously QgsPoint)
+- fromPolyline() now requires a list of QgsPoint objects, instead of QgsPointXY 2d points. A new method fromPolylineXY was
+added which uses the old list of 2d QgsPointXY objects. Using the newer method with QgsPoint is greatly preferred, as it
+maintains Z or M dimensions from the input points and is more efficient.
 
 
 QgsGeometryAnalyzer        {#qgis_api_break_3_0_QgsGeometryAnalyzer}
@@ -1890,6 +1893,13 @@ plugins calling this method will need to be updated.
 - destCRS() has been renamed to destinationCrs()
 - destinationCrs() now returns a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
 plugins calling this method will need to be updated.
+
+
+QgsPolyline        {#qgis_api_break_3_0_QgsPolyline}
+-----------
+
+- QgsPolyline now consists of a list of QgsPoint, instead of 2d QgsPointXY objects. The 2d polyline variant has
+been renamed to QgsPolylineXY
 
 
 QgsProject        {#qgis_api_break_3_0_QgsProject}

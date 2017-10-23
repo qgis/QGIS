@@ -40,7 +40,7 @@ struct comp
 
 
 // TODO: move to geometry utils
-double distance2D( const QgsPolyline &coords )
+double distance2D( const QgsPolylineXY &coords )
 {
   int np = coords.count();
   if ( np == 0 )
@@ -62,7 +62,7 @@ double distance2D( const QgsPolyline &coords )
 
 
 // TODO: move to geometry utils
-double closestSegment( const QgsPolyline &pl, const QgsPointXY &pt, int &vertexAfter, double epsilon )
+double closestSegment( const QgsPolylineXY &pl, const QgsPointXY &pt, int &vertexAfter, double epsilon )
 {
   double sqrDist = std::numeric_limits<double>::max();
   const QgsPointXY *pldata = pl.constData();
@@ -123,13 +123,13 @@ struct QgsTracerGraph
 };
 
 
-QgsTracerGraph *makeGraph( const QVector<QgsPolyline> &edges )
+QgsTracerGraph *makeGraph( const QVector<QgsPolylineXY> &edges )
 {
   QgsTracerGraph *g = new QgsTracerGraph();
   g->joinedVertices = 0;
   QHash<QgsPointXY, int> point2vertex;
 
-  Q_FOREACH ( const QgsPolyline &line, edges )
+  Q_FOREACH ( const QgsPolylineXY &line, edges )
   {
     QgsPointXY p1( line[0] );
     QgsPointXY p2( line[line.count() - 1] );
@@ -293,7 +293,7 @@ int point2edge( const QgsTracerGraph &g, const QgsPointXY &pt, int &lineVertexAf
 }
 
 
-void splitLinestring( const QgsPolyline &points, const QgsPointXY &pt, int lineVertexAfter, QgsPolyline &pts1, QgsPolyline &pts2 )
+void splitLinestring( const QgsPolylineXY &points, const QgsPointXY &pt, int lineVertexAfter, QgsPolylineXY &pts1, QgsPolylineXY &pts2 )
 {
   int count1 = lineVertexAfter;
   int count2 = points.count() - lineVertexAfter;
@@ -325,7 +325,7 @@ int joinVertexToGraph( QgsTracerGraph &g, const QgsPointXY &pt )
   QgsTracerGraph::V &v1 = g.v[e.v1];
   QgsTracerGraph::V &v2 = g.v[e.v2];
 
-  QgsPolyline out1, out2;
+  QgsPolylineXY out1, out2;
   splitLinestring( e.coords, pt, lineVertexAfter, out1, out2 );
 
   int vIdx = g.v.count();
@@ -430,18 +430,18 @@ void extractLinework( const QgsGeometry &g, QgsMultiPolyline &mpl )
       break;
 
     case QgsWkbTypes::Polygon:
-      Q_FOREACH ( const QgsPolyline &ring, geom.asPolygon() )
+      Q_FOREACH ( const QgsPolylineXY &ring, geom.asPolygon() )
         mpl << ring;
       break;
 
     case QgsWkbTypes::MultiLineString:
-      Q_FOREACH ( const QgsPolyline &linestring, geom.asMultiPolyline() )
+      Q_FOREACH ( const QgsPolylineXY &linestring, geom.asMultiPolyline() )
         mpl << linestring;
       break;
 
     case QgsWkbTypes::MultiPolygon:
       Q_FOREACH ( const QgsPolygon &polygon, geom.asMultiPolygon() )
-        Q_FOREACH ( const QgsPolyline &ring, polygon )
+        Q_FOREACH ( const QgsPolylineXY &ring, polygon )
           mpl << ring;
       break;
 
@@ -702,7 +702,7 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
 
   QTime t2;
   t2.start();
-  QgsPolyline points = shortestPath( *mGraph, v1, v2 );
+  QgsPolylineXY points = shortestPath( *mGraph, v1, v2 );
   int tPath = t2.elapsed();
 
   Q_UNUSED( tPrep );
