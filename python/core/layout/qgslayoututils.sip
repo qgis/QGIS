@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLayoutUtils
 {
 %Docstring
@@ -85,6 +86,103 @@ class QgsLayoutUtils
  \param afterMax maximum value in after range
  :return: position scaled to range specified by afterMin and afterMax
  :rtype: float
+%End
+
+    static QFont scaledFontPixelSize( const QFont &font );
+%Docstring
+ Returns a ``font`` where size is set in points and the size has been upscaled with FONT_WORKAROUND_SCALE
+ to workaround QT font rendering bugs.
+ Returns a font with size set in pixels.
+ :rtype: QFont
+%End
+
+    static double fontAscentMM( const QFont &font );
+%Docstring
+ Calculates a ``font`` ascent in millimeters, including workarounds for QT font rendering issues.
+.. seealso:: fontDescentMM()
+.. seealso:: fontHeightMM()
+.. seealso:: fontHeightCharacterMM()
+.. seealso:: textWidthMM()
+ :rtype: float
+%End
+
+    static double fontDescentMM( const QFont &font );
+%Docstring
+ Calculate a ``font`` descent in millimeters, including workarounds for QT font rendering issues.
+.. seealso:: fontAscentMM()
+.. seealso:: fontHeightMM()
+.. seealso:: fontHeightCharacterMM()
+.. seealso:: textWidthMM()
+ :rtype: float
+%End
+
+    static double fontHeightMM( const QFont &font );
+%Docstring
+ Calculate a ``font`` height in millimeters, including workarounds for QT font rendering issues.
+ The font height is the font ascent + descent + 1 (for the baseline).
+.. seealso:: fontAscentMM()
+.. seealso:: fontDescentMM()
+.. seealso:: fontHeightCharacterMM()
+.. seealso:: textWidthMM()
+ :rtype: float
+%End
+
+    static double fontHeightCharacterMM( const QFont &font, QChar character );
+%Docstring
+ Calculate a ``font`` height in millimeters of a single ``character``, including workarounds for QT font
+ rendering issues.
+.. seealso:: fontAscentMM()
+.. seealso:: fontDescentMM()
+.. seealso:: fontHeightMM()
+.. seealso:: textWidthMM()
+ :rtype: float
+%End
+
+    static double textWidthMM( const QFont &font, const QString &text );
+%Docstring
+ Calculate a ``font`` width in millimeters for a ``text`` string, including workarounds for QT font
+ rendering issues.
+.. seealso:: fontAscentMM()
+.. seealso:: fontDescentMM()
+.. seealso:: fontHeightMM()
+.. seealso:: fontHeightCharacterMM()
+.. seealso:: textHeightMM()
+ :rtype: float
+%End
+
+    static double textHeightMM( const QFont &font, const QString &text, double multiLineHeight = 1.0 );
+%Docstring
+ Calculate a ``font`` height in millimeters for a ``text`` string, including workarounds for QT font
+ rendering issues. Note that this method uses a non-standard measure of text height,
+ where only the font ascent is considered for the first line of text.
+
+ The ``multiLineHeight`` parameter specifies the line spacing factor.
+
+.. seealso:: textWidthMM()
+ :rtype: float
+%End
+
+    static void drawText( QPainter *painter, QPointF position, const QString &text, const QFont &font, const QColor &color = QColor() );
+%Docstring
+ Draws ``text`` on a ``painter`` at a specific ``position``, taking care of layout specific issues (calculation to pixel,
+ scaling of font and painter to work around Qt font bugs).
+
+ If ``color`` is specified, text will be rendered in that color. If not specified, the current painter pen
+ color will be used instead.
+%End
+
+    static void drawText( QPainter *painter, const QRectF &rectangle, const QString &text, const QFont &font, const QColor &color = QColor(), const Qt::AlignmentFlag halignment = Qt::AlignLeft, const Qt::AlignmentFlag valignment = Qt::AlignTop, const int flags = Qt::TextWordWrap );
+%Docstring
+ Draws ``text`` on a ``painter`` within a ``rectangle``, taking care of layout specific issues (calculation to pixel,
+ scaling of font and painter to work around Qt font bugs).
+
+ If ``color`` is specified, text will be rendered in that color. If not specified, the current painter pen
+ color will be used instead.
+
+ The text alignment within ``rectangle`` can be set via the ``halignment`` and ``valignment``
+ arguments.
+
+ The ``flags`` parameter allows for passing Qt.TextFlags to control appearance of rendered text.
 %End
 
 };

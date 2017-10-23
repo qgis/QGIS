@@ -159,3 +159,136 @@ double QgsLayoutUtils::relativePosition( const double position, const double bef
   //return linearly scaled position
   return m * position + c;
 }
+QFont QgsLayoutUtils::scaledFontPixelSize( const QFont &font )
+{
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont scaledFont = font;
+  double pixelSize = pointsToMM( scaledFont.pointSizeF() ) * FONT_WORKAROUND_SCALE + 0.5;
+  scaledFont.setPixelSize( pixelSize );
+  return scaledFont;
+}
+
+double QgsLayoutUtils::fontAscentMM( const QFont &font )
+{
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.ascent() / FONT_WORKAROUND_SCALE );
+}
+
+double QgsLayoutUtils::fontDescentMM( const QFont &font )
+{
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.descent() / FONT_WORKAROUND_SCALE );
+
+}
+
+double QgsLayoutUtils::fontHeightMM( const QFont &font )
+{
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.height() / FONT_WORKAROUND_SCALE );
+
+}
+
+double QgsLayoutUtils::fontHeightCharacterMM( const QFont &font, QChar character )
+{
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.boundingRect( character ).height() / FONT_WORKAROUND_SCALE );
+}
+
+double QgsLayoutUtils::textWidthMM( const QFont &font, const QString &text )
+{
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
+}
+
+double QgsLayoutUtils::textHeightMM( const QFont &font, const QString &text, double multiLineHeight )
+{
+  QStringList multiLineSplit = text.split( '\n' );
+  int lines = multiLineSplit.size();
+
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+
+  double fontHeight = fontMetrics.ascent() + fontMetrics.descent(); // ignore +1 for baseline
+  double textHeight = fontMetrics.ascent() + static_cast< double >( ( lines - 1 ) * fontHeight * multiLineHeight );
+
+  return textHeight / FONT_WORKAROUND_SCALE;
+}
+
+void QgsLayoutUtils::drawText( QPainter *painter, QPointF position, const QString &text, const QFont &font, const QColor &color )
+{
+  if ( !painter )
+  {
+    return;
+  }
+
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont textFont = scaledFontPixelSize( font );
+
+  painter->save();
+  painter->setFont( textFont );
+  if ( color.isValid() )
+  {
+    painter->setPen( color );
+  }
+  double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
+  painter->scale( scaleFactor, scaleFactor );
+  painter->drawText( position * FONT_WORKAROUND_SCALE, text );
+  painter->restore();
+}
+
+void QgsLayoutUtils::drawText( QPainter *painter, const QRectF &rect, const QString &text, const QFont &font, const QColor &color, const Qt::AlignmentFlag halignment, const Qt::AlignmentFlag valignment, const int flags )
+{
+  if ( !painter )
+  {
+    return;
+  }
+
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont textFont = scaledFontPixelSize( font );
+
+  QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE,
+                     rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
+
+  painter->save();
+  painter->setFont( textFont );
+  if ( color.isValid() )
+  {
+    painter->setPen( color );
+  }
+  double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
+  painter->scale( scaleFactor, scaleFactor );
+  painter->drawText( scaledRect, halignment | valignment | flags, text );
+  painter->restore();
+}
+
+double QgsLayoutUtils::pointsToMM( const double pointSize )
+{
+  //conversion to mm based on 1 point = 1/72 inch
+  return ( pointSize * 0.3527 );
+}
+
+double QgsLayoutUtils::mmToPoints( const double mmSize )
+{
+  //conversion to points based on 1 point = 1/72 inch
+  return ( mmSize / 0.3527 );
+}

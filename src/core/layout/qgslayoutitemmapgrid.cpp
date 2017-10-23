@@ -1013,13 +1013,11 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, c
     return;
   }
 
-  QFontMetricsF fontMetrics( mGridAnnotationFont );
-
   QgsLayoutItemMapGrid::BorderSide frameBorder = borderForLineCoord( pos, coordinateType );
-  double textWidth = fontMetrics.width( annotationString );
+  double textWidth = QgsLayoutUtils::textWidthMM( mGridAnnotationFont, annotationString );
   //relevant for annotations is the height of digits
-  double textHeight = extension ? fontMetrics.ascent()
-                      : fontMetrics.boundingRect( QChar( '0' ) ).height();
+  double textHeight = extension ? QgsLayoutUtils::fontAscentMM( mGridAnnotationFont )
+                      : QgsLayoutUtils::fontHeightCharacterMM( mGridAnnotationFont, QChar( '0' ) );
   double xpos = pos.x();
   double ypos = pos.y();
   int rotation = 0;
@@ -1339,9 +1337,7 @@ void QgsLayoutItemMapGrid::drawAnnotation( QPainter *p, QPointF pos, int rotatio
   p->save();
   p->translate( pos );
   p->rotate( rotation );
-  p->setFont( mGridAnnotationFont );
-  p->setPen( mGridAnnotationFontColor );
-  p->drawText( QPointF( 0, 0 ), annotationText );
+  QgsLayoutUtils::drawText( p, QPointF( 0, 0 ), annotationText, mGridAnnotationFont, mGridAnnotationFontColor );
   p->restore();
 }
 

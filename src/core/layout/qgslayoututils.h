@@ -18,12 +18,15 @@
 #define QGSLAYOUTUTILS_H
 
 #include "qgis_core.h"
+#include <QFont>
+#include <QColor>
 
 class QgsRenderContext;
 class QgsLayout;
 class QgsLayoutItemMap;
 class QPainter;
 class QRectF;
+
 
 /**
  * \ingroup core
@@ -95,6 +98,114 @@ class CORE_EXPORT QgsLayoutUtils
      */
     static double relativePosition( const double position, const double beforeMin, const double beforeMax, const double afterMin, const double afterMax );
 
+    /**
+     * Returns a \a font where size is set in points and the size has been upscaled with FONT_WORKAROUND_SCALE
+     * to workaround QT font rendering bugs.
+     * Returns a font with size set in pixels.
+     */
+    static QFont scaledFontPixelSize( const QFont &font );
+
+    /**
+     * Calculates a \a font ascent in millimeters, including workarounds for QT font rendering issues.
+     * \see fontDescentMM()
+     * \see fontHeightMM()
+     * \see fontHeightCharacterMM()
+     * \see textWidthMM()
+     */
+    static double fontAscentMM( const QFont &font );
+
+    /**
+     * Calculate a \a font descent in millimeters, including workarounds for QT font rendering issues.
+     * \see fontAscentMM()
+     * \see fontHeightMM()
+     * \see fontHeightCharacterMM()
+     * \see textWidthMM()
+     */
+    static double fontDescentMM( const QFont &font );
+
+    /**
+     * Calculate a \a font height in millimeters, including workarounds for QT font rendering issues.
+     * The font height is the font ascent + descent + 1 (for the baseline).
+     * \see fontAscentMM()
+     * \see fontDescentMM()
+     * \see fontHeightCharacterMM()
+     * \see textWidthMM()
+     */
+    static double fontHeightMM( const QFont &font );
+
+    /**
+     * Calculate a \a font height in millimeters of a single \a character, including workarounds for QT font
+     * rendering issues.
+     * \see fontAscentMM()
+     * \see fontDescentMM()
+     * \see fontHeightMM()
+     * \see textWidthMM()
+     */
+    static double fontHeightCharacterMM( const QFont &font, QChar character );
+
+    /**
+     * Calculate a \a font width in millimeters for a \a text string, including workarounds for QT font
+     * rendering issues.
+     * \see fontAscentMM()
+     * \see fontDescentMM()
+     * \see fontHeightMM()
+     * \see fontHeightCharacterMM()
+     * \see textHeightMM()
+     */
+    static double textWidthMM( const QFont &font, const QString &text );
+
+    /**
+     * Calculate a \a font height in millimeters for a \a text string, including workarounds for QT font
+     * rendering issues. Note that this method uses a non-standard measure of text height,
+     * where only the font ascent is considered for the first line of text.
+     *
+     * The \a multiLineHeight parameter specifies the line spacing factor.
+     *
+     * \see textWidthMM()
+     */
+    static double textHeightMM( const QFont &font, const QString &text, double multiLineHeight = 1.0 );
+
+    /**
+     * Draws \a text on a \a painter at a specific \a position, taking care of layout specific issues (calculation to pixel,
+     * scaling of font and painter to work around Qt font bugs).
+     *
+     * If \a color is specified, text will be rendered in that color. If not specified, the current painter pen
+     * color will be used instead.
+     */
+    static void drawText( QPainter *painter, QPointF position, const QString &text, const QFont &font, const QColor &color = QColor() );
+
+    /**
+     * Draws \a text on a \a painter within a \a rectangle, taking care of layout specific issues (calculation to pixel,
+     * scaling of font and painter to work around Qt font bugs).
+     *
+     * If \a color is specified, text will be rendered in that color. If not specified, the current painter pen
+     * color will be used instead.
+     *
+     * The text alignment within \a rectangle can be set via the \a halignment and \a valignment
+     * arguments.
+     *
+     * The \a flags parameter allows for passing Qt::TextFlags to control appearance of rendered text.
+     */
+    static void drawText( QPainter *painter, const QRectF &rectangle, const QString &text, const QFont &font, const QColor &color = QColor(), const Qt::AlignmentFlag halignment = Qt::AlignLeft, const Qt::AlignmentFlag valignment = Qt::AlignTop, const int flags = Qt::TextWordWrap );
+
+  private:
+
+    //! Scale factor for upscaling fontsize and downscaling painter
+    static constexpr double FONT_WORKAROUND_SCALE = 10;
+
+    /**
+     * Returns the size in mm corresponding to a font \a pointSize.
+     * \see mmToPoints()
+     */
+    static double pointsToMM( const double pointSize );
+
+    /**
+     * Returns the size in points corresponding to a font \a mmSize in mm.
+     * \see pointsToMM()
+     */
+    static double mmToPoints( const double mmSize );
+
+    friend class TestQgsLayoutUtils;
 };
 
 #endif //QGSLAYOUTUTILS_H
