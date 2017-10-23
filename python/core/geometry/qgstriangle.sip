@@ -69,6 +69,9 @@ class QgsTriangle : QgsPolygonV2
 
 
 
+    virtual void draw( QPainter &p ) const;
+
+
     virtual QgsPolygonV2 *surfaceToPolygon() const /Factory/;
 
 

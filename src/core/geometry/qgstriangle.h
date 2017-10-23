@@ -78,6 +78,8 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     // inherited: QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     // inherited: QString asJSON( int precision = 17 ) const;
 
+    void draw( QPainter &p ) const override;
+
     QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
 
     QgsCurvePolygon *toCurveType() const override SIP_FACTORY;

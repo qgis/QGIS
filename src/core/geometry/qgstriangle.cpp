@@ -224,6 +224,14 @@ bool QgsTriangle::fromWkt( const QString &wkt )
   return true;
 }
 
+void QgsTriangle::draw( QPainter &p ) const
+{
+  if ( !mExteriorRing )
+    return;
+
+  mExteriorRing->drawAsPolygon( p );
+}
+
 QgsPolygonV2 *QgsTriangle::surfaceToPolygon() const
 {
   return toPolygon();
