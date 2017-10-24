@@ -20,7 +20,7 @@
 #include <QScrollBar>
 
 QgsVScrollArea::QgsVScrollArea( QWidget *parent )
-  : QScrollArea( parent )
+  : QgsScrollArea( parent )
 {
   setWidgetResizable( true );
   setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -32,5 +32,5 @@ bool QgsVScrollArea::eventFilter( QObject *o, QEvent *e )
   // This works because QScrollArea::setWidget installs an eventFilter on the widget
   if ( o && o == widget() && e->type() == QEvent::Resize )
     setMinimumWidth( widget()->minimumSizeHint().width() + verticalScrollBar()->width() );
-  return QScrollArea::eventFilter( o, e );
+  return QgsScrollArea::eventFilter( o, e );
 }

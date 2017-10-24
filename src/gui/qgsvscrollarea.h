@@ -19,7 +19,7 @@
 #define QGSVSCROLLAREA_H
 
 #include "qgis_gui.h"
-#include <QScrollArea>
+#include "qgsscrollarea.h"
 
 /**
  * \ingroup gui
@@ -28,7 +28,7 @@
  *
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsVScrollArea : public QScrollArea
+class GUI_EXPORT QgsVScrollArea : public QgsScrollArea
 {
   public:
 
