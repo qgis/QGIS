@@ -30,6 +30,7 @@
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 static const QString AUTH_METHOD_KEY = QStringLiteral( "PKI-PKCS#12" );
@@ -160,17 +161,17 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
   {
     if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
     {
-      cas = QgsAuthCertUtils::casMerge( QgsAuthManager::instance()->getTrustedCaCerts(), pkibundle->caChain() );
+      cas = QgsAuthCertUtils::casMerge( QgsApplication::authManager()->getTrustedCaCerts(), pkibundle->caChain() );
     }
     else
     {
-      cas = QgsAuthCertUtils::casMerge( QgsAuthManager::instance()->getTrustedCaCerts(),
+      cas = QgsAuthCertUtils::casMerge( QgsApplication::authManager()->getTrustedCaCerts(),
                                         QgsAuthCertUtils::casRemoveSelfSigned( pkibundle->caChain() ) );
     }
   }
   else
   {
-    cas = QgsAuthManager::instance()->getTrustedCaCerts();
+    cas = QgsApplication::authManager()->getTrustedCaCerts();
   }
 
   // save CAs to temp file
@@ -273,7 +274,7 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
   // else build PKI bundle
   QgsAuthMethodConfig mconfig;
 
-  if ( !QgsAuthManager::instance()->loadAuthenticationConfig( authcfg, mconfig, true ) )
+  if ( !QgsApplication::authManager()->loadAuthenticationConfig( authcfg, mconfig, true ) )
   {
     QgsDebugMsg( QString( "PKI bundle for authcfg %1: FAILED to retrieve config" ).arg( authcfg ) );
     return bundle;

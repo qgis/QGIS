@@ -22,6 +22,7 @@
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
@@ -109,9 +110,9 @@ const QString QgsAuthCertTrustPolicyComboBox::defaultTrustText( QgsAuthCertUtils
 {
   if ( defaultpolicy == QgsAuthCertUtils::DefaultTrust )
   {
-    if ( !QgsAuthManager::instance()->isDisabled() )
+    if ( !QgsApplication::authManager()->isDisabled() )
     {
-      defaultpolicy = QgsAuthManager::instance()->defaultCertTrustPolicy();
+      defaultpolicy = QgsApplication::authManager()->defaultCertTrustPolicy();
     }
     else
     {

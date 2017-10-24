@@ -41,7 +41,6 @@
 #include "keychain.h"
 
 // QGIS includes
-#include "qgsapplication.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthcrypto.h"
 #include "qgsauthmethod.h"
@@ -83,13 +82,27 @@ static const QString sDescription = QObject::tr( "Master Password <-> KeyChain s
 #endif
 
 
+
 QgsAuthManager *QgsAuthManager::instance()
 {
   if ( !sInstance )
   {
-    sInstance = new QgsAuthManager();
+    static QMutex sMutex;
+    QMutexLocker locker( &sMutex );
+    if ( !sInstance )
+    {
+      sInstance = new QgsAuthManager( );
+    }
   }
   return sInstance;
+}
+
+
+QgsAuthManager::QgsAuthManager()
+{
+  mMutex = new QMutex( QMutex::Recursive );
+  connect( this, &QgsAuthManager::messageOut,
+           this, &QgsAuthManager::writeToConsole );
 }
 
 QSqlDatabase QgsAuthManager::authDatabaseConnection() const
@@ -121,7 +134,7 @@ QSqlDatabase QgsAuthManager::authDatabaseConnection() const
   return authdb;
 }
 
-bool QgsAuthManager::init( const QString &pluginPath )
+bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabasePath )
 {
   if ( mAuthInit )
     return true;
@@ -184,7 +197,7 @@ bool QgsAuthManager::init( const QString &pluginPath )
     return isDisabled();
   }
 
-  mAuthDbPath = QDir::cleanPath( QgsApplication::qgisAuthDatabaseFilePath() );
+  mAuthDbPath = authDatabasePath;
   QgsDebugMsg( QString( "Auth database path: %1" ).arg( authenticationDatabasePath() ) );
 
   QFileInfo dbinfo( authenticationDatabasePath() );
@@ -2855,12 +2868,6 @@ void QgsAuthManager::tryToStartDbErase()
   QgsDebugMsg( "authDatabaseEraseRequest emit skipped" );
 }
 
-QgsAuthManager::QgsAuthManager()
-{
-  mMutex = new QMutex( QMutex::Recursive );
-  connect( this, &QgsAuthManager::messageOut,
-           this, &QgsAuthManager::writeToConsole );
-}
 
 QgsAuthManager::~QgsAuthManager()
 {

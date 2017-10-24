@@ -62,7 +62,7 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
   QNetworkRequest request( uri );
   if ( !authcfg.isEmpty() )
   {
-    if ( !QgsAuthManager::instance()->updateNetworkRequest( request, authcfg ) )
+    if ( !QgsApplication::authManager()->updateNetworkRequest( request, authcfg ) )
     {
       QgsMessageLog::logMessage(
         tr( "GML Getfeature network request update failed for authcfg %1" ).arg( authcfg ),
@@ -80,7 +80,7 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
 
   if ( !authcfg.isEmpty() )
   {
-    if ( !QgsAuthManager::instance()->updateNetworkReply( reply, authcfg ) )
+    if ( !QgsApplication::authManager()->updateNetworkReply( reply, authcfg ) )
     {
       reply->deleteLater();
       QgsMessageLog::logMessage(

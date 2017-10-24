@@ -17,7 +17,7 @@ __revision__ = '$Format:%H$'
 import os
 import tempfile
 
-from qgis.core import QgsAuthManager, QgsAuthCertUtils, QgsPkiBundle, QgsAuthMethodConfig, QgsAuthMethod, QgsAuthConfigSslServer
+from qgis.core import QgsAuthManager, QgsAuthCertUtils, QgsPkiBundle, QgsAuthMethodConfig, QgsAuthMethod, QgsAuthConfigSslServer, QgsApplication
 from qgis.gui import QgsAuthEditorWidgets
 
 
@@ -45,7 +45,7 @@ class TestQgsAuthManager(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.authm = QgsAuthManager.instance()
+        cls.authm = QgsApplication.authManager()
         assert not cls.authm.isDisabled(), cls.authm.disabledMessage()
 
         cls.mpass = 'pass'  # master password

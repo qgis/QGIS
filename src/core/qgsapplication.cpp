@@ -875,16 +875,28 @@ void QgsApplication::initQgis()
   // create project instance if doesn't exist
   QgsProject::instance();
 
+  // Initialize authentication manager and connect to database
+  instance()->mAuthManager = QgsAuthManager::instance();
+  authManager()->init( pluginPath(), qgisAuthDatabaseFilePath() );
+
   // Make sure we have a NAM created on the main thread.
+  // Note that this might call QgsApplication::authManager to
+  // setup the proxy configuration that's why it needs to be
+  // called after the QgsAuthManager instance has been created
   QgsNetworkAccessManager::instance();
 
-  // initialize authentication manager and connect to database
-  QgsAuthManager::instance()->init( pluginPath() );
 }
+
+
+QgsAuthManager *QgsApplication::authManager()
+{
+  return instance()->mAuthManager;
+}
+
 
 void QgsApplication::exitQgis()
 {
-  delete QgsAuthManager::instance();
+  delete QgsApplication::authManager();
 
   //Ensure that all remaining deleteLater QObjects are actually deleted before we exit.
   //This isn't strictly necessary (since we're exiting anyway) but doing so prevents a lot of

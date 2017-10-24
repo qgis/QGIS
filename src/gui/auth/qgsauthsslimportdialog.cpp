@@ -78,16 +78,17 @@
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
   : QDialog( parent )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
@@ -132,7 +133,7 @@ QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
              this, &QgsAuthSslImportDialog::widgetReadyToSaveChanged );
     wdgtSslConfig->setEnabled( false );
 
-    mTrustedCAs = QgsAuthManager::instance()->getTrustedCaCertsCache();
+    mTrustedCAs = QgsApplication::authManager()->getTrustedCaCertsCache();
   }
 }
 

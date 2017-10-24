@@ -30,6 +30,7 @@
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 static const QString AUTH_METHOD_KEY = QStringLiteral( "Identity-Cert" );
 static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "Identity certificate authentication" );
@@ -143,7 +144,7 @@ bool QgsAuthIdentCertMethod::updateDataSourceUriItems( QStringList &connectionIt
   // save CAs to temp file
   QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
                          pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-                         QgsAuthManager::instance()->getTrustedCaCertsPemText() );
+                         QgsApplication::authManager()->getTrustedCaCertsPemText() );
   if ( caFilePath.isEmpty() )
   {
     return false;
@@ -238,14 +239,14 @@ QgsPkiConfigBundle *QgsAuthIdentCertMethod::getPkiConfigBundle( const QString &a
   // else build PKI bundle
   QgsAuthMethodConfig mconfig;
 
-  if ( !QgsAuthManager::instance()->loadAuthenticationConfig( authcfg, mconfig, true ) )
+  if ( !QgsApplication::authManager()->loadAuthenticationConfig( authcfg, mconfig, true ) )
   {
     QgsDebugMsg( QString( "PKI bundle for authcfg %1: FAILED to retrieve config" ).arg( authcfg ) );
     return bundle;
   }
 
   // get identity from database
-  QPair<QSslCertificate, QSslKey> cibundle( QgsAuthManager::instance()->getCertIdentityBundle( mconfig.config( QStringLiteral( "certid" ) ) ) );
+  QPair<QSslCertificate, QSslKey> cibundle( QgsApplication::authManager()->getCertIdentityBundle( mconfig.config( QStringLiteral( "certid" ) ) ) );
 
   // init client cert
   // Note: if this is not valid, no sense continuing
