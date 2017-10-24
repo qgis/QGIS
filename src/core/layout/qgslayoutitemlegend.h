@@ -434,23 +434,6 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      */
     void updateFilterByMap( bool redraw = true );
 
-#if 0//TODO
-
-    /**
-     * Stores state in Dom node
-       * \param elem is Dom element corresponding to 'Composer' tag
-       * \param doc Dom document
-       */
-    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
-
-    /**
-     * Sets state from Dom document
-       * \param itemElem is Dom node corresponding to item tag
-       * \param doc is Dom document
-       */
-    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
-#endif
-
     /**
      * Returns the legend's renderer settings object.
      */
@@ -465,6 +448,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
   protected:
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private slots:
 

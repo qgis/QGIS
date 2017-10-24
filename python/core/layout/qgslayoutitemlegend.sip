@@ -442,7 +442,6 @@ class QgsLayoutItemLegend : QgsLayoutItem
  Updates the legend content when filtered by map.
 %End
 
-
     const QgsLegendSettings &legendSettings() const;
 %Docstring
  Returns the legend's renderer settings object.
@@ -460,6 +459,10 @@ class QgsLayoutItemLegend : QgsLayoutItem
 
   protected:
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
+
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
 
 };
