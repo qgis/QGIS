@@ -311,6 +311,7 @@
 %Include qgsfieldmodel.sip
 %Include qgsfieldproxymodel.sip
 %Include qgsfiledownloader.sip
+%Include qgsfeaturefiltermodel.sip
 %Include qgsgeometryvalidator.sip
 %Include qgsgml.sip
 %Include qgsgmlschema.sip

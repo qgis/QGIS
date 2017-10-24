@@ -175,6 +175,7 @@ SET(QGIS_CORE_SRCS
   qgsfeaturesink.cpp
   qgsfeaturesource.cpp
   qgsfeaturestore.cpp
+  qgsfeaturefiltermodel.cpp
   qgsfield.cpp
   qgsfieldconstraints.cpp
   qgsfieldformatter.cpp
@@ -590,6 +591,8 @@ SET(QGIS_CORE_MOC_HDRS
   qgsfieldmodel.h
   qgsfieldproxymodel.h
   qgsfiledownloader.h
+  qgsfeaturefiltermodel.h
+  qgsfeaturefiltermodel_p.h
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
