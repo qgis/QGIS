@@ -109,6 +109,11 @@ class TestQgsRasterFileWriter(unittest.TestCase):
         self.assertEqual(QgsRasterFileWriter.driverForExtension('not a format'), '')
         self.assertEqual(QgsRasterFileWriter.driverForExtension(''), '')
 
+    def testExtensionsForFormat(self):
+        self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('not format'), [])
+        self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('GTiff'), ['tiff', 'tif'])
+        self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('GPKG'), ['gpkg'])
+
     def testImportIntoGpkg(self):
         # init target file
         test_gpkg = tempfile.mktemp(suffix='.gpkg', dir=self.testDataDir)
