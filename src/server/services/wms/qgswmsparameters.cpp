@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgswmsparameters.h"
+#include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
 #include <iostream>
 
@@ -510,6 +511,16 @@ namespace QgsWms
           if ( !value.canConvert( mParameters[name].mType ) )
           {
             raiseError( name );
+          }
+        }
+        else //maybe an external wms parameter?
+        {
+          int separator = key.indexOf( ":" );
+          if ( separator >= 1 )
+          {
+            QString id = key.left( separator );
+            QString param = key.right( key.length() - separator - 1 );
+            mExternalWMSParameters[id].insert( param, parameters[key] );
           }
         }
       }
@@ -1878,6 +1889,23 @@ namespace QgsWms
     param.mHighlightLayers = hParams;
 
     return param;
+  }
+
+  QString QgsWmsParameters::externalWMSUri( const QString &id ) const
+  {
+    if ( !mExternalWMSParameters.contains( id ) )
+    {
+      return QString();
+    }
+
+    QgsDataSourceUri wmsUri;
+    const QMap<QString, QString> &paramMap = mExternalWMSParameters[ id ];
+    QMap<QString, QString>::const_iterator paramIt = paramMap.constBegin();
+    for ( ; paramIt != paramMap.constEnd(); ++paramIt )
+    {
+      wmsUri.setParam( paramIt.key().toLower(), paramIt.value() );
+    }
+    return wmsUri.encodedUri();
   }
 
   QString QgsWmsParameters::name( ParameterName name ) const
