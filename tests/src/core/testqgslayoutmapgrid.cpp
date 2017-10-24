@@ -959,7 +959,7 @@ void TestQgsLayoutMapGrid::annotationFormats()
   gridProjected.setAnnotationFormat( QgsLayoutItemMapGrid::CustomFormat );
   gridProjected.setAnnotationExpression( QStringLiteral( "(@grid_number/10) || case when @grid_axis ='x' then 'a' else 'b' end" ) );
   QCOMPARE( gridProjected.gridAnnotationString( 45, QgsLayoutItemMapGrid::Latitude, expressionContext ), QString( "4.5b" ) );
-  QCOMPARE( gridProjected.gridAnnotationString( 34, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "3.4a" ) );
+  QCOMPARE( gridProjected.gridAnnotationString( 35, QgsLayoutItemMapGrid::Longitude, expressionContext ), QString( "3.5a" ) );
 }
 
 void TestQgsLayoutMapGrid::descendingAnnotations()
