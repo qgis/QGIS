@@ -2019,7 +2019,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
 // field to not be present at all in the output, and thus on reading to
 // have disappeared. #16812
 #ifdef OGRNullMarker
-      OGR_F_SetFieldNull( poFeature, ogrField );
+      OGR_F_SetFieldNull( poFeature.get(), ogrField );
 #endif
       continue;
     }
