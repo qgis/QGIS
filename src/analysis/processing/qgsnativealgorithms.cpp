@@ -42,9 +42,9 @@
 #include "qgsalgorithmminimumenclosingcircle.h"
 #include "qgsalgorithmmultiparttosinglepart.h"
 #include "qgsalgorithmorientedminimumboundingbox.h"
+#include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
 #include "qgsalgorithmremovenullgeometry.h"
-#include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmsaveselectedfeatures.h"
 #include "qgsalgorithmsimplify.h"
 #include "qgsalgorithmsmooth.h"
@@ -52,6 +52,7 @@
 #include "qgsalgorithmsubdivide.h"
 #include "qgsalgorithmtransect.h"
 #include "qgsalgorithmtransform.h"
+
 
 ///@cond PRIVATE
 
@@ -86,44 +87,45 @@ bool QgsNativeAlgorithms::supportsNonFileBasedOutput() const
 
 void QgsNativeAlgorithms::loadAlgorithms()
 {
+  addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
+  addAlgorithm( new QgsAssignProjectionAlgorithm() );
+  addAlgorithm( new QgsBoundaryAlgorithm() );
+  addAlgorithm( new QgsBoundingBoxAlgorithm() );
   addAlgorithm( new QgsBufferAlgorithm() );
   addAlgorithm( new QgsCentroidAlgorithm() );
   addAlgorithm( new QgsClipAlgorithm() );
-  addAlgorithm( new QgsDissolveAlgorithm() );
   addAlgorithm( new QgsCollectAlgorithm() );
-  addAlgorithm( new QgsExtractByAttributeAlgorithm() );
-  addAlgorithm( new QgsExtractByExpressionAlgorithm() );
-  addAlgorithm( new QgsFileDownloaderAlgorithm() );
-  addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
-  addAlgorithm( new QgsSubdivideAlgorithm() );
-  addAlgorithm( new QgsTransformAlgorithm() );
-  addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );
-  addAlgorithm( new QgsBoundingBoxAlgorithm() );
-  addAlgorithm( new QgsOrientedMinimumBoundingBoxAlgorithm() );
-  addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsConvexHullAlgorithm() );
-  addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
-  addAlgorithm( new QgsSelectByLocationAlgorithm() );
-  addAlgorithm( new QgsExtractByLocationAlgorithm() );
-  addAlgorithm( new QgsFixGeometriesAlgorithm() );
-  addAlgorithm( new QgsMergeLinesAlgorithm() );
-  addAlgorithm( new QgsSaveSelectedFeatures() );
-  addAlgorithm( new QgsSmoothAlgorithm() );
-  addAlgorithm( new QgsSimplifyAlgorithm() );
-  addAlgorithm( new QgsExtractByExtentAlgorithm() );
-  addAlgorithm( new QgsExtentToLayerAlgorithm() );
-  addAlgorithm( new QgsLineIntersectionAlgorithm() );
-  addAlgorithm( new QgsSplitWithLinesAlgorithm() );
-  addAlgorithm( new QgsMeanCoordinatesAlgorithm() );
-  addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
-  addAlgorithm( new QgsJoinByAttributeAlgorithm() );
-  addAlgorithm( new QgsJoinWithLinesAlgorithm() );
-  addAlgorithm( new QgsAssignProjectionAlgorithm() );
-  addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
-  addAlgorithm( new QgsBoundaryAlgorithm() );
+  addAlgorithm( new QgsDissolveAlgorithm() );
   addAlgorithm( new QgsDropGeometryAlgorithm() );
   addAlgorithm( new QgsDropMZValuesAlgorithm() );
+  addAlgorithm( new QgsExtentToLayerAlgorithm() );
+  addAlgorithm( new QgsExtractByAttributeAlgorithm() );
+  addAlgorithm( new QgsExtractByExpressionAlgorithm() );
+  addAlgorithm( new QgsExtractByExtentAlgorithm() );
+  addAlgorithm( new QgsExtractByLocationAlgorithm() );
+  addAlgorithm( new QgsFileDownloaderAlgorithm() );
+  addAlgorithm( new QgsFixGeometriesAlgorithm() );
+  addAlgorithm( new QgsJoinByAttributeAlgorithm() );
+  addAlgorithm( new QgsJoinWithLinesAlgorithm() );
+  addAlgorithm( new QgsLineIntersectionAlgorithm() );
+  addAlgorithm( new QgsMeanCoordinatesAlgorithm() );
+  addAlgorithm( new QgsMergeLinesAlgorithm() );
+  addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
+  addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
+  addAlgorithm( new QgsOrientedMinimumBoundingBoxAlgorithm() );
+  addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
+  addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
+  addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );
+  addAlgorithm( new QgsSaveSelectedFeatures() );
+  addAlgorithm( new QgsSelectByLocationAlgorithm() );
+  addAlgorithm( new QgsSimplifyAlgorithm() );
+  addAlgorithm( new QgsSmoothAlgorithm() );
+  addAlgorithm( new QgsSplitWithLinesAlgorithm() );
+  addAlgorithm( new QgsSubdivideAlgorithm() );
   addAlgorithm( new QgsTransectAlgorithm() );
+  addAlgorithm( new QgsTransformAlgorithm() );
+
 }
 
 

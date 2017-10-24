@@ -47,9 +47,9 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmminimumenclosingcircle.cpp
   processing/qgsalgorithmmultiparttosinglepart.cpp
   processing/qgsalgorithmorientedminimumboundingbox.cpp
+  processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmremovenullgeometry.cpp
-  processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
   processing/qgsalgorithmsimplify.cpp
   processing/qgsalgorithmsmooth.cpp
@@ -57,6 +57,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsubdivide.cpp
   processing/qgsalgorithmtransect.cpp
   processing/qgsalgorithmtransform.cpp
+
   processing/qgsnativealgorithms.cpp
 
   raster/qgsalignraster.cpp
