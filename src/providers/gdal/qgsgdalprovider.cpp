@@ -2739,6 +2739,7 @@ QGISEXTERN QgsGdalProvider *create(
 
   GDALSetGeoTransform( dataset.get(), geoTransform );
   GDALSetProjection( dataset.get(), crs.toWkt().toLocal8Bit().data() );
+  dataset.reset();
 
   return new QgsGdalProvider( uri, true );
 }
