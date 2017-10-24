@@ -17,7 +17,7 @@
 
 #include "qgslayoutlegendwidget.h"
 #include "qgslayoutitemlegend.h"
-#include "qgscomposerlegendlayersdialog.h"
+#include "qgslayoutlegendlayersdialog.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayout.h"
@@ -693,27 +693,19 @@ void QgsLayoutLegendWidget::mAddToolButton_clicked()
     return;
   }
 
-  QgisApp *app = QgisApp::instance();
-  if ( !app )
+  QgsLayoutLegendLayersDialog addDialog( this );
+  if ( addDialog.exec() == QDialog::Accepted )
   {
-    return;
-  }
-
-  QgsMapCanvas *canvas = app->mapCanvas();
-  if ( canvas )
-  {
-    QList<QgsMapLayer *> layers = canvas->layers();
-
-    QgsComposerLegendLayersDialog addDialog( layers, this );
-    if ( addDialog.exec() == QDialog::Accepted )
+    const QList<QgsMapLayer *> layers = addDialog.selectedLayers();
+    if ( !layers.empty() )
     {
-      QgsMapLayer *layer = addDialog.selectedLayer();
-      if ( layer )
+      mLegend->beginCommand( QStringLiteral( "Add Legend Item(s)" ) );
+      for ( QgsMapLayer *layer : layers )
       {
-        mLegend->beginCommand( QStringLiteral( "Add Legend Item" ) );
         mLegend->model()->rootGroup()->addLayer( layer );
-        mLegend->endCommand();
       }
+      mLegend->updateLegend();
+      mLegend->endCommand();
     }
   }
 }
@@ -770,8 +762,7 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
       mLegend->model()->removeRow( index.row(), index.parent() );
   }
 
-  mLegend->adjustBoxSize();
-  mLegend->updateFilterByMap();
+  mLegend->updateLegend();
   mLegend->endCommand();
 }
 
@@ -824,8 +815,7 @@ void QgsLayoutLegendWidget::resetLayerNodeToDefaults()
 
   mItemTreeView->layerTreeModel()->refreshLayerLegend( nodeLayer );
 
-  mLegend->updateFilterByMap();
-  mLegend->adjustBoxSize();
+  mLegend->updateLegend();
   mLegend->endCommand();
 }
 
@@ -902,7 +892,7 @@ void QgsLayoutLegendWidget::mAddGroupToolButton_clicked()
   {
     mLegend->beginCommand( tr( "Add Legend Group" ) );
     mLegend->model()->rootGroup()->addGroup( tr( "Group" ) );
-    mLegend->updateFilterByMap();
+    mLegend->updateLegend();
     mLegend->endCommand();
   }
 }
