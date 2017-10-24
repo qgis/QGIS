@@ -101,6 +101,10 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
       UndoLegendLineSpacing,
       UndoLegendRasterStrokeWidth,
       UndoLegendRasterStrokeColor,
+      UndoLegendTitleFont,
+      UndoLegendGroupFont,
+      UndoLegendLayerFont,
+      UndoLegendItemFont,
       UndoCustomCommand,
     };
 

@@ -134,6 +134,10 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoLegendLineSpacing, //!< Legend line spacing
       UndoLegendRasterStrokeWidth, //!< Legend raster stroke width
       UndoLegendRasterStrokeColor, //!< Legend raster stroke color
+      UndoLegendTitleFont, //!< Legend title font
+      UndoLegendGroupFont, //!< Legend group font
+      UndoLegendLayerFont, //!< Legend layer font
+      UndoLegendItemFont, //!< Legend item font
       UndoCustomCommand, //!< Base id for plugin based item undo commands
     };
 

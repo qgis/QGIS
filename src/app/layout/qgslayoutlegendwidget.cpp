@@ -400,7 +400,7 @@ void QgsLayoutLegendWidget::titleFontChanged()
 {
   if ( mLegend )
   {
-    mLegend->beginCommand( tr( "Change Title Font" ) );
+    mLegend->beginCommand( tr( "Change Title Font" ), QgsLayoutItem::UndoLegendTitleFont );
     mLegend->setStyleFont( QgsLegendStyle::Title, mTitleFontButton->currentFont() );
     mLegend->adjustBoxSize();
     mLegend->update();
@@ -412,7 +412,7 @@ void QgsLayoutLegendWidget::groupFontChanged()
 {
   if ( mLegend )
   {
-    mLegend->beginCommand( tr( "Change Group Font" ) );
+    mLegend->beginCommand( tr( "Change Group Font" ), QgsLayoutItem::UndoLegendGroupFont );
     mLegend->setStyleFont( QgsLegendStyle::Group, mGroupFontButton->currentFont() );
     mLegend->adjustBoxSize();
     mLegend->update();
@@ -424,7 +424,7 @@ void QgsLayoutLegendWidget::layerFontChanged()
 {
   if ( mLegend )
   {
-    mLegend->beginCommand( tr( "Change Layer Font" ) );
+    mLegend->beginCommand( tr( "Change Layer Font" ), QgsLayoutItem::UndoLegendLayerFont );
     mLegend->setStyleFont( QgsLegendStyle::Subgroup, mLayerFontButton->currentFont() );
     mLegend->adjustBoxSize();
     mLegend->update();
@@ -436,7 +436,7 @@ void QgsLayoutLegendWidget::itemFontChanged()
 {
   if ( mLegend )
   {
-    mLegend->beginCommand( tr( "Change Item Font" ) );
+    mLegend->beginCommand( tr( "Change Item Font" ), QgsLayoutItem::UndoLegendItemFont );
     mLegend->setStyleFont( QgsLegendStyle::SymbolLabel, mItemFontButton->currentFont() );
     mLegend->adjustBoxSize();
     mLegend->update();
