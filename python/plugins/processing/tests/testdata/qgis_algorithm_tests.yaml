@@ -4299,3 +4299,73 @@ tests:
       OUTPUT:
         name: expected/transect_multi_both_2_30.gml
         type: vector
+
+  - algorithm: qgis:distancematrix
+    name: Linear (N*k x 3) distance matrix
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_FIELD: fid
+      MATRIX_TYPE: 0
+      NEAREST_POINTS: 0
+      TARGET:
+        name: points.gml
+        type: vector
+      TARGET_FIELD: fid
+    results:
+      OUTPUT:
+        pk:
+        - InputID
+        - TargetID
+        name: expected/linear_matrix.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+
+  - algorithm: qgis:distancematrix
+    name: Standard (N x T) distance matrix
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_FIELD: fid
+      MATRIX_TYPE: 1
+      NEAREST_POINTS: 0
+      TARGET:
+        name: points.gml
+        type: vector
+      TARGET_FIELD: fid
+    results:
+      OUTPUT:
+        name: expected/standard_matrix.gml
+        type: vector
+        compare:
+          fields:
+            __all__:
+              precision: 7
+
+  - algorithm: qgis:distancematrix
+    name: Summary distance matrix (mean, std. dev., min, max)
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_FIELD: fid
+      MATRIX_TYPE: 2
+      NEAREST_POINTS: 0
+      TARGET:
+        name: points.gml
+        type: vector
+      TARGET_FIELD: fid
+    results:
+      OUTPUT:
+        name: expected/summary_matrix.gml
+        type: vector
+        compare:
+          fields:
+            __all__:
+              precision: 7
+
