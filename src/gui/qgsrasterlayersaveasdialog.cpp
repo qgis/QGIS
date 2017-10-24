@@ -158,6 +158,15 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsRasterLayerSaveAsDialog::extentChanged );
 
   recalcResolutionSize();
+
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/RasterLayerSaveAs/geometry" ) ).toByteArray() );
+}
+
+QgsRasterLayerSaveAsDialog::~QgsRasterLayerSaveAsDialog()
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/RasterLayerSaveAs/geometry" ), saveGeometry() );
 }
 
 void QgsRasterLayerSaveAsDialog::insertAvailableOutputFormats()
