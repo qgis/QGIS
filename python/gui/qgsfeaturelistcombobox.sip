@@ -12,21 +12,12 @@
 class QgsFeatureListComboBox : QComboBox
 {
 %Docstring
-*************************************************************************
-qgsfieldlistcombobox.h - QgsFieldListComboBox
+ This offers a combobox with autocompleter that allows to select features from a layer.
 
----------------------
-begin                : 10.3.2017
-copyright            : (C) 2017 by Matthias Kuhn
-email                : matthias@opengis.ch
-**************************************************************************
-                                                                         *
-   This program is free software; you can redistribute it and/or modify  *
-   it under the terms of the GNU General Public License as published by  *
-   the Free Software Foundation; either version 2 of the License, or     *
-   (at your option) any later version.                                   *
-                                                                         *
-**************************************************************************
+ It will show up to 100 entries at a time. The entries can be chosen based on the displayExpression
+ and whenever text is typed into the combobox, the completer and popup will adjust to features matching the typed text.
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -37,47 +28,92 @@ email                : matthias@opengis.ch
 
     QgsVectorLayer *sourceLayer() const;
 %Docstring
+ The layer from which features should be listed.
  :rtype: QgsVectorLayer
 %End
+
     void setSourceLayer( QgsVectorLayer *sourceLayer );
+%Docstring
+ The layer from which features should be listed.
+%End
 
     QString displayExpression() const;
 %Docstring
+ The display expression will be used to display features as well as
+ the the value to match the typed text against.
  :rtype: str
 %End
+
     void setDisplayExpression( const QString &displayExpression );
+%Docstring
+ The display expression will be used to display features as well as
+ the the value to match the typed text against.
+%End
 
     QString filterExpression() const;
 %Docstring
+ An additional expression to further restrict the available features.
+ This can be used to integrate additional spatial or other constraints.
  :rtype: str
 %End
+
     void setFilterExpression( const QString &filterExpression );
+%Docstring
+ An additional expression to further restrict the available features.
+ This can be used to integrate additional spatial or other constraints.
+
+ TODO!
+%End
 
     QVariant identifierValue() const;
 %Docstring
+ The identifier value of the currently selected feature. A value from the
+ identifierField.
  :rtype: QVariant
 %End
+
     void setIdentifierValue( const QVariant &identifierValue );
+%Docstring
+ The identifier value of the currently selected feature. A value from the
+ identifierField.
+%End
 
     QgsFeatureRequest currentFeatureRequest() const;
 %Docstring
+ Shorthand for getting a feature request to query the currently selected
+ feature.
  :rtype: QgsFeatureRequest
 %End
 
     bool allowNull() const;
 %Docstring
+ Determines if a NULL value should be available in the list.
+
+ TODO!
  :rtype: bool
 %End
+
     void setAllowNull( bool allowNull );
+%Docstring
+ Determines if a NULL value should be available in the list.
+%End
 
     QString identifierField() const;
 %Docstring
+ Field name that will be used to uniquely identify the current feature.
+ Normally the primary key of the layer.
  :rtype: str
 %End
+
     void setIdentifierField( const QString &identifierField );
+%Docstring
+ Field name that will be used to uniquely identify the current feature.
+ Normally the primary key of the layer.
+%End
 
     QModelIndex currentModelIndex() const;
 %Docstring
+ The index of the currently selected item.
  :rtype: QModelIndex
 %End
 
@@ -86,12 +122,40 @@ email                : matthias@opengis.ch
     virtual void keyPressEvent( QKeyEvent *event );
 
   signals:
+
     void sourceLayerChanged();
+%Docstring
+ The layer from which features should be listed.
+%End
+
     void displayExpressionChanged();
+%Docstring
+ The display expression will be used to display features as well as
+ the the value to match the typed text against.
+%End
+
     void filterExpressionChanged();
+%Docstring
+ An additional expression to further restrict the available features.
+ This can be used to integrate additional spatial or other constraints.
+%End
+
     void identifierValueChanged();
+%Docstring
+ The identifier value of the currently selected feature. A value from the
+ identifierField.
+%End
+
     void identifierFieldChanged();
+%Docstring
+ Field name that will be used to uniquely identify the current feature.
+ Normally the primary key of the layer.
+%End
+
     void allowNullChanged();
+%Docstring
+ Determines if a NULL value should be available in the list.
+%End
 
 };
 
