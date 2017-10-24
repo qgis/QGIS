@@ -31,7 +31,7 @@ QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas *canvas )
 
 double QgsMapToolEdit::defaultZValue() const
 {
-  return QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_z_value" ), Qgis::DEFAULT_Z_COORDINATE ).toDouble();
+  return QgsProject::instance()->readDoubleEntry( QStringLiteral( "Defaults" ), QStringLiteral( "/ZValue" ), Qgis::DEFAULT_Z_COORDINATE );
 }
 
 QColor QgsMapToolEdit::digitizingStrokeColor()
