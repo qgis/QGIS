@@ -1009,3 +1009,17 @@ QString QgsRasterFileWriter::driverForExtension( const QString &extension )
   }
   return QString();
 }
+
+QStringList QgsRasterFileWriter::extensionsForFormat( const QString &format )
+{
+  GDALDriverH drv = GDALGetDriverByName( format.toLocal8Bit().data() );
+  if ( drv )
+  {
+    char **driverMetadata = GDALGetMetadata( drv, nullptr );
+    if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
+    {
+      return QString( GDALGetMetadataItem( drv, GDAL_DMD_EXTENSIONS, nullptr ) ).split( ' ' );
+    }
+  }
+  return QStringList();
+}

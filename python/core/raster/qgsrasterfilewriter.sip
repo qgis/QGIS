@@ -165,6 +165,17 @@ class QgsRasterFileWriter
  :rtype: str
 %End
 
+    static QStringList extensionsForFormat( const QString &format );
+%Docstring
+ Returns a list of known file extensions for the given GDAL driver ``format``.
+ E.g. returns "tif", "tiff" for the format "GTiff".
+
+ If no matching format driver is found an empty list will be returned.
+
+.. versionadded:: 3.0
+ :rtype: list of str
+%End
+
 };
 
 /************************************************************************

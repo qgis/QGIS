@@ -139,6 +139,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void adjustNoDataCellWidth( int row, int column );
     bool validate() const;
 
+    void insertAvailableOutputFormats();
 };
 
 
