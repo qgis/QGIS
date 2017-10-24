@@ -25,6 +25,7 @@
 #include <QToolButton>
 
 #include "qgsauthmanager.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthtrustedcasdialog.h"
 #include "qgscollapsiblegroupbox.h"
@@ -187,6 +188,15 @@ void QgsAuthSslErrorsDialog::buttonBox_clicked( QAbstractButton *button )
     default:
       reject();
       break;
+  }
+  // Clear access cache if the user choose abort and the
+  // setting allows it
+  if ( btnenum == QDialogButtonBox::Abort &&
+       QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ),
+                            true,
+                            QgsSettings::Section::Auth ).toBool( ) )
+  {
+    QgsNetworkAccessManager::instance()->clearAccessCache();
   }
 }
 

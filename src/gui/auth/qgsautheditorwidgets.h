@@ -120,6 +120,8 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     QAction *mActionPasswordHelperSync = nullptr;
     QAction *mActionPasswordHelperEnable = nullptr;
     QAction *mActionPasswordHelperLoggingEnable = nullptr;
+    QAction *mActionClearAccessCacheNow = nullptr;
+    QAction *mActionAutoClearAccessCache = nullptr;
 };
 
 #endif // QGSAUTHEDITORWIDGETS_H

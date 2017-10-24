@@ -377,6 +377,15 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mBrowseCacheDirectory, &QAbstractButton::clicked, this, &QgsOptions::browseCacheDirectory );
   connect( mClearCache, &QAbstractButton::clicked, this, &QgsOptions::clearCache );
 
+  // Access (auth) cache settings
+  mAutoClearAccessCache->setChecked( mSettings->value( QStringLiteral( "clear_auth_cache_on_errors" ), true, QgsSettings::Section::Auth ).toBool( ) );
+  connect( mClearAccessCache, &QAbstractButton::clicked, this, &QgsOptions::clearAccessCache );
+
+  connect( mAutoClearAccessCache, &QCheckBox::clicked, this, [ = ]( bool checked )
+  {
+    mSettings->setValue( QStringLiteral( "clear_auth_cache_on_errors" ), checked, QgsSettings::Section::Auth );
+  } );
+
   //wms search server
   leWmsSearch->setText( mSettings->value( QStringLiteral( "/qgis/WMSSearchUrl" ), "http://geopole.org/wms/search?search=%1&type=rss" ).toString() );
 
@@ -1978,6 +1987,13 @@ void QgsOptions::browseCacheDirectory()
 void QgsOptions::clearCache()
 {
   QgsNetworkAccessManager::instance()->cache()->clear();
+  QMessageBox::information( this, tr( "Cache cleared" ), tr( "Content cache has been cleared" ) );
+}
+
+void QgsOptions::clearAccessCache()
+{
+  QgsNetworkAccessManager::instance()->clearAccessCache();
+  QMessageBox::information( this, tr( "Cache cleared" ), tr( "Connection authentication cache has been cleared" ) );
 }
 
 void QgsOptions::mOptionsStackedWidget_currentChanged( int indx )
