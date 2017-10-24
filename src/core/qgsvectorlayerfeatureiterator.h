@@ -139,6 +139,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     };
 
 
+    virtual bool isValid() const override;
+
   protected:
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature &feature ) override;

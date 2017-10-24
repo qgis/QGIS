@@ -625,6 +625,19 @@ Set a subset of attributes by names that will be fetched
  :rtype: bool
 %End
 
+    int connectionTimeout() const;
+%Docstring
+ The timeout for how long we should wait for a connection if none is available from the pool
+ at this moment. A negative value (which is set by default) will wait forever.
+ :rtype: int
+%End
+
+    void setConnectionTimeout( int connectionTimeout );
+%Docstring
+ The timeout for how long we should wait for a connection if none is available from the pool
+ at this moment. A negative value (which is set by default) will wait forever.
+%End
+
   protected:
 };
 

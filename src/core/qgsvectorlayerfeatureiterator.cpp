@@ -211,12 +211,8 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   if ( mSource->mHasEditBuffer )
   {
     mChangedFeaturesRequest = mProviderRequest;
-    QgsFeatureIds changedIds;
-    QgsChangedAttributesMap::const_iterator attIt = mSource->mChangedAttributeValues.constBegin();
-    for ( ; attIt != mSource->mChangedAttributeValues.constEnd(); ++attIt )
-    {
-      changedIds << attIt.key();
-    }
+    const QgsFeatureIds changedIds = mSource->mChangedAttributeValues.keys().toSet();
+
     mChangedFeaturesRequest.setFilterFids( changedIds );
 
     if ( mChangedFeaturesRequest.limit() > 0 )
@@ -406,6 +402,11 @@ void QgsVectorLayerFeatureIterator::setInterruptionChecker( QgsInterruptionCheck
 {
   mProviderIterator.setInterruptionChecker( interruptionChecker );
   mInterruptionChecker = interruptionChecker;
+}
+
+bool QgsVectorLayerFeatureIterator::isValid() const
+{
+  return mProviderIterator.isValid();
 }
 
 bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature &f )

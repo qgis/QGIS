@@ -85,10 +85,11 @@ class QgsConnectionPoolGroup
     //! QgsConnectionPoolGroup cannot be copied
     QgsConnectionPoolGroup &operator=( const QgsConnectionPoolGroup &other ) = delete;
 
-    T acquire()
+    T acquire( int timeout )
     {
       // we are going to acquire a resource - if no resource is available, we will block here
-      sem.acquire();
+      if ( !sem.tryAcquire( 1, timeout ) )
+        return nullptr;
 
       // quick (preferred) way - use cached connection
       {
@@ -259,10 +260,13 @@ class QgsConnectionPool
     }
 
     /**
-     * Try to acquire a connection: if no connections are available, the thread will get blocked.
-     * \returns initialized connection or null on error
+     * Try to acquire a connection for a maximum of \a timeout milliseconds.
+     * If \a timeout is a negative value the calling thread will be blocked
+     * until a connection becomes available. This is the default behavior.
+     *
+     * \returns initialized connection or nullptr if unsuccessful
      */
-    T acquireConnection( const QString &connInfo )
+    T acquireConnection( const QString &connInfo, int timeout = -1 )
     {
       mMutex.lock();
       typename T_Groups::iterator it = mGroups.find( connInfo );
@@ -273,7 +277,7 @@ class QgsConnectionPool
       T_Group *group = *it;
       mMutex.unlock();
 
-      return group->acquire();
+      return group->acquire( timeout );
     }
 
     //! Release an existing connection so it will get back into the pool and can be reused
