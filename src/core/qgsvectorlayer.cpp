@@ -4367,14 +4367,14 @@ void QgsVectorLayer::saveStyleToDatabase( const QString& name, const QString& de
 
   QDomDocument qmlDocument, sldDocument;
   this->exportNamedStyle( qmlDocument, msgError );
-  if ( !msgError.isNull() )
+  if ( !msgError.isEmpty() )
   {
     return;
   }
   qmlStyle = qmlDocument.toString();
 
   this->exportSldStyle( sldDocument, msgError );
-  if ( !msgError.isNull() )
+  if ( !msgError.isEmpty() )
   {
     return;
   }
