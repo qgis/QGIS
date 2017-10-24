@@ -211,8 +211,12 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   if ( mSource->mHasEditBuffer )
   {
     mChangedFeaturesRequest = mProviderRequest;
-    const QgsFeatureIds changedIds = mSource->mChangedAttributeValues.keys().toSet();
-
+    QgsFeatureIds changedIds;
+    QgsChangedAttributesMap::const_iterator attIt = mSource->mChangedAttributeValues.constBegin();
+    for ( ; attIt != mSource->mChangedAttributeValues.constEnd(); ++attIt )
+    {
+      changedIds << attIt.key();
+    }
     mChangedFeaturesRequest.setFilterFids( changedIds );
 
     if ( mChangedFeaturesRequest.limit() > 0 )
