@@ -31,6 +31,8 @@
 #include "qgslayoutitempicture.h"
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutlabelwidget.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutlegendwidget.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 
@@ -108,6 +110,32 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
   } );
 
   registry->addLayoutItemGuiMetadata( labelItemMetadata.release() );
+
+
+  // legend item
+
+  auto legendItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutLegend, QObject::tr( "Legend" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLegend.svg" ) ),
+                            [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayoutLegendWidget( qobject_cast< QgsLayoutItemLegend * >( item ) );
+  }, createRubberBand );
+  legendItemMetadata->setItemAddedToLayoutFunction( [ = ]( QgsLayoutItem * item )
+  {
+    QgsLayoutItemLegend *legend = qobject_cast< QgsLayoutItemLegend * >( item );
+    Q_ASSERT( legend );
+
+    QList<QgsLayoutItemMap *> mapItems;
+    legend->layout()->layoutItems( mapItems );
+
+    if ( !mapItems.isEmpty() )
+    {
+      legend->setMap( mapItems.at( 0 ) );
+    }
+
+    legend->updateLegend();
+  } );
+
+  registry->addLayoutItemGuiMetadata( legendItemMetadata.release() );
 
 
   // shape items

@@ -48,7 +48,6 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
 
   //add widget for general composer item properties
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, label );
-  //shapes don't use background or frame, since the symbol style is set through a QgsSymbolSelectorWidget
   mainLayout->addWidget( mItemPropertiesWidget );
 
   mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );

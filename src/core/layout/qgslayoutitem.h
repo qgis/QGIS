@@ -117,6 +117,23 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoLabelFont, //!< Label font
       UndoLabelMargin, //!< Label margin
       UndoLabelFontColor, //!< Label color
+      UndoLegendText, //!< Legend text
+      UndoLegendColumnCount, //!< Legend column count
+      UndoLegendSymbolWidth, //!< Legend symbol width
+      UndoLegendSymbolHeight, //!< Legend symbol height
+      UndoLegendWmsLegendWidth, //!< Legend WMS width
+      UndoLegendWmsLegendHeight, //!< Legend WMS height
+      UndoLegendTitleSpaceBottom, //!< Legend title space
+      UndoLegendGroupSpace, //!< Legend group spacing
+      UndoLegendLayerSpace, //!< Legend layer spacing
+      UndoLegendSymbolSpace, //!< Legend symbol spacing
+      UndoLegendIconSymbolSpace, //!< Legend icon symbol space
+      UndoLegendFontColor, //!< Legend font color
+      UndoLegendBoxSpace, //!< Legend box space
+      UndoLegendColumnSpace, //!< Legend column space
+      UndoLegendLineSpacing, //!< Legend line spacing
+      UndoLegendRasterStrokeWidth, //!< Legend raster stroke width
+      UndoLegendRasterStrokeColor, //!< Legend raster stroke color
       UndoCustomCommand, //!< Base id for plugin based item undo commands
     };
 

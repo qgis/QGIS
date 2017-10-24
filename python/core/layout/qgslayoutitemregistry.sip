@@ -105,6 +105,7 @@ class QgsLayoutItemRegistry : QObject
       LayoutMap,
       LayoutPicture,
       LayoutLabel,
+      LayoutLegend,
       LayoutShape,
       LayoutPolygon,
       LayoutPolyline,

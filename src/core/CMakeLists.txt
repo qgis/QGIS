@@ -370,6 +370,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutitemgroup.cpp
   layout/qgslayoutitemgroupundocommand.cpp
   layout/qgslayoutitemlabel.cpp
+  layout/qgslayoutitemlegend.cpp
   layout/qgslayoutitemmap.cpp
   layout/qgslayoutitemmapgrid.cpp
   layout/qgslayoutitemmapitem.cpp
@@ -730,6 +731,7 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayoutitemgroup.h
   layout/qgslayoutitemgroupundocommand.h
   layout/qgslayoutitemlabel.h
+  layout/qgslayoutitemlegend.h
   layout/qgslayoutitemmap.h
   layout/qgslayoutitemmapgrid.h
   layout/qgslayoutitemmapitem.h

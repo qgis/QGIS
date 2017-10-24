@@ -25,31 +25,12 @@
 #include "qgslegendsettings.h"
 #include "qgslayertreegroup.h"
 
+
 class QgsLayerTreeModel;
 class QgsSymbol;
 class QgsComposerMap;
 class QgsLegendRenderer;
-
-
-/**
- * \ingroup core
- * Item model implementation based on layer tree model for composer legend.
- * Overrides some functionality of QgsLayerTreeModel to better fit the needs of composer legend.
- *
- * \since QGIS 2.6
- */
-class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
-{
-    Q_OBJECT
-
-  public:
-    //! Construct the model based on the given layer tree
-    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = 0 );
-
-    QVariant data( const QModelIndex &index, int role ) const override;
-
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-};
+class QgsLegendModel;
 
 
 /**
@@ -62,6 +43,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
   public:
     QgsComposerLegend( QgsComposition *composition SIP_TRANSFERTHIS );
+    ~QgsComposerLegend();
 
     //! Return correct graphics item type.
     virtual int type() const override { return ComposerLegend; }
@@ -95,7 +77,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     /**
      * Returns the legend model
      */
-    QgsLegendModel *model() { return mLegendModel.get(); }
+    QgsLegendModel *model();
 
     //! \since QGIS 2.6
     void setAutoUpdateModel( bool autoUpdate );
@@ -336,7 +318,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     //! use new custom layer tree and update model. if new root is null pointer, will use project's tree
     void setCustomLayerTree( QgsLayerTree *rootGroup );
 
-    std::unique_ptr< QgsLegendModel > mLegendModel;
+    QgsLegendModel *mLegendModel = nullptr;
     std::unique_ptr< QgsLayerTreeGroup > mCustomLayerTree;
 
     QgsLegendSettings mSettings;

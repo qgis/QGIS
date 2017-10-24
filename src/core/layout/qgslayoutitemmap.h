@@ -396,16 +396,23 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     QgsExpressionContext createExpressionContext() const override;
 
-  protected:
-
-    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
-    bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
-    bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
+    /**
+     * Returns the conversion factor from map units to layout units.
+     * This is calculated using the width of the map item and the width of the
+     * current visible map extent.
+     */
+    double mapUnitsToLayoutUnits() const;
 
     /**
      * Return map settings that will be used for drawing of the map.
      */
     QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const;
+
+  protected:
+
+    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
     //! True if a draw is already in progress
     bool isDrawing() const {return mDrawing;}
@@ -421,13 +428,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     // In case of annotations, the bounding rectangle can be larger than the map item rectangle
     QRectF boundingRect() const override;
-
-    /**
-     * Returns the conversion factor from map units to layout units.
-     * This is calculated using the width of the map item and the width of the
-     * current visible map extent.
-     */
-    double mapUnitsToLayoutUnits() const;
 
     //! Returns extent that considers rotation and shift with mOffsetX / mOffsetY
     QPolygonF transformedMapPolygon() const;
@@ -644,6 +644,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     friend class QgsLayoutItemMapGrid;
     friend class QgsLayoutItemMapOverview;
+    friend class QgsLayoutItemLegend;
     friend class TestQgsLayoutMap;
 
 };

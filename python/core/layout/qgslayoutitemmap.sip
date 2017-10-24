@@ -405,6 +405,20 @@ Returns true if the map contains layers with blend modes or flattened layers for
     virtual QgsExpressionContext createExpressionContext() const;
 
 
+    double mapUnitsToLayoutUnits() const;
+%Docstring
+ Returns the conversion factor from map units to layout units.
+ This is calculated using the width of the map item and the width of the
+ current visible map extent.
+ :rtype: float
+%End
+
+    QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const;
+%Docstring
+ Return map settings that will be used for drawing of the map.
+ :rtype: QgsMapSettings
+%End
+
   protected:
 
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
@@ -413,12 +427,6 @@ Returns true if the map contains layers with blend modes or flattened layers for
 
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
-
-    QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const;
-%Docstring
- Return map settings that will be used for drawing of the map.
- :rtype: QgsMapSettings
-%End
 
     bool isDrawing() const;
 %Docstring
@@ -429,14 +437,6 @@ True if a draw is already in progress
 
     virtual QRectF boundingRect() const;
 
-
-    double mapUnitsToLayoutUnits() const;
-%Docstring
- Returns the conversion factor from map units to layout units.
- This is calculated using the width of the map item and the width of the
- current visible map extent.
- :rtype: float
-%End
 
     QPolygonF transformedMapPolygon() const;
 %Docstring

@@ -1,9 +1,9 @@
 /***************************************************************************
-                         qgscomposerlegend.cpp  -  description
-                         ---------------------
-    begin                : June 2008
-    copyright            : (C) 2008 by Marco Hugentobler
-    email                : marco dot hugentobler at karto dot baug dot ethz dot ch
+                         qgslayoutitemlegend.cpp
+                         -----------------------
+    begin                : October 2017
+    copyright            : (C) 2017 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,10 +16,11 @@
  ***************************************************************************/
 #include <limits>
 
-#include "qgscomposerlegend.h"
-#include "qgscomposermap.h"
-#include "qgscomposition.h"
-#include "qgscomposermodel.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayout.h"
+#include "qgslayoutmodel.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendrenderer.h"
@@ -32,43 +33,41 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
-#include "qgslayoutitemlegend.h"
 
-QgsComposerLegend::QgsComposerLegend( QgsComposition *composition )
-  : QgsComposerItem( composition )
-  , mLegendModel( new QgsLegendModel( mComposition->project()->layerTreeRoot() ) )
+QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
+  : QgsLayoutItem( layout )
+  , mLegendModel( new QgsLegendModel( layout->project()->layerTreeRoot() ) )
 {
-  connect( &composition->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsComposerLegend::onAtlasEnded );
-  connect( &composition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerLegend::onAtlasFeature );
+#if 0 //TODO
+  connect( &layout->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsLayoutItemLegend::onAtlasEnded );
+  connect( &layout->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsLayoutItemLegend::onAtlasFeature );
+#endif
 
   // Connect to the main layertreeroot.
   // It serves in "auto update mode" as a medium between the main app legend and this one
-  connect( mComposition->project()->layerTreeRoot(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsComposerLegend::nodeCustomPropertyChanged );
+  connect( mLayout->project()->layerTreeRoot(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayoutItemLegend::nodeCustomPropertyChanged );
 }
 
-QgsComposerLegend::~QgsComposerLegend()
+QgsLayoutItemLegend *QgsLayoutItemLegend::create( QgsLayout *layout )
 {
-  delete mLegendModel;
+  return new QgsLayoutItemLegend( layout );
 }
 
-QgsComposerLegend::QgsComposerLegend()
-  : QgsComposerItem( nullptr )
+int QgsLayoutItemLegend::type() const
 {
-
+  return QgsLayoutItemRegistry::LayoutLegend;
 }
 
-void QgsComposerLegend::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
+QString QgsLayoutItemLegend::stringType() const
 {
-  Q_UNUSED( itemStyle );
-  Q_UNUSED( pWidget );
+  return QStringLiteral( "ItemLegend" );
+}
 
+
+void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
+{
   if ( !painter )
     return;
-
-  if ( !shouldDrawItem() )
-  {
-    return;
-  }
 
   if ( mFilterAskedForUpdate )
   {
@@ -79,25 +78,25 @@ void QgsComposerLegend::paint( QPainter *painter, const QStyleOptionGraphicsItem
   int dpi = painter->device()->logicalDpiX();
   double dotsPerMM = dpi / 25.4;
 
-  if ( mComposition )
+  if ( mLayout )
   {
-    mSettings.setUseAdvancedEffects( mComposition->useAdvancedEffects() );
+    mSettings.setUseAdvancedEffects( mLayout->context().flags() & QgsLayoutContext::FlagUseAdvancedEffects );
     mSettings.setDpi( dpi );
   }
-  if ( mComposerMap )
+  if ( mMap && mLayout )
   {
-    mSettings.setMmPerMapUnit( mComposerMap->mapUnitsToMM() );
+    mSettings.setMmPerMapUnit( mLayout->convertFromLayoutUnits( mMap->mapUnitsToLayoutUnits(), QgsUnitTypes::LayoutMillimeters ).length() );
 
     // use a temporary QgsMapSettings to find out real map scale
-    QSizeF mapSizePixels = QSizeF( mComposerMap->rect().width() * dotsPerMM, mComposerMap->rect().height() * dotsPerMM );
-    QgsRectangle mapExtent = *mComposerMap->currentMapExtent();
+    QSizeF mapSizePixels = QSizeF( mMap->rect().width() * dotsPerMM, mMap->rect().height() * dotsPerMM );
+    QgsRectangle mapExtent = mMap->extent();
 
-    QgsMapSettings ms = mComposerMap->mapSettings( mapExtent, mapSizePixels, dpi );
+    QgsMapSettings ms = mMap->mapSettings( mapExtent, mapSizePixels, dpi );
     mSettings.setMapScale( ms.scale() );
   }
   mInitialMapScaleCalculated = true;
 
-  QgsLegendRenderer legendRenderer( mLegendModel, mSettings );
+  QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
   legendRenderer.setLegendSize( mForceResize && mSizeToContents ? QSize() : rect().size() );
 
   //adjust box if width or height is too small
@@ -109,7 +108,7 @@ void QgsComposerLegend::paint( QPainter *painter, const QStyleOptionGraphicsItem
       mForceResize = false;
       //set new rect, respecting position mode and data defined size/position
       QRectF targetRect = QRectF( pos().x(), pos().y(), size.width(), size.height() );
-      setSceneRect( evalItemRect( targetRect, true ) );
+      attemptSetSceneRect( targetRect );
     }
     else if ( size.height() > rect().height() || size.width() > rect().width() )
     {
@@ -121,14 +120,20 @@ void QgsComposerLegend::paint( QPainter *painter, const QStyleOptionGraphicsItem
         targetRect.setWidth( size.width() );
 
       //set new rect, respecting position mode and data defined size/position
-      setSceneRect( evalItemRect( targetRect, true ) );
+      attemptSetSceneRect( targetRect );
     }
   }
+  QgsLayoutItem::paint( painter, itemStyle, pWidget );
+}
 
-  drawBackground( painter );
+void QgsLayoutItemLegend::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
+{
+  QPainter *painter = context.painter();
   painter->save();
-  //antialiasing on
-  painter->setRenderHint( QPainter::Antialiasing, true );
+
+  // painter is scaled to dots, so scale back to layout units
+  painter->scale( context.scaleFactor(), context.scaleFactor() );
+
   painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
 
   if ( !mSizeToContents )
@@ -138,35 +143,15 @@ void QgsComposerLegend::paint( QPainter *painter, const QStyleOptionGraphicsItem
     painter->setClipRect( thisPaintRect );
   }
 
+  QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
+  legendRenderer.setLegendSize( mForceResize && mSizeToContents ? QSize() : rect().size() );
+
   legendRenderer.drawLegend( painter );
 
   painter->restore();
-
-  //draw frame and selection boxes if necessary
-  drawFrame( painter );
-  if ( isSelected() )
-  {
-    drawSelectionBoxes( painter );
-  }
 }
 
-QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter *painter )
-{
-  if ( mFilterAskedForUpdate )
-  {
-    mFilterAskedForUpdate = false;
-    doUpdateFilterByMap();
-  }
-
-  QgsLegendRenderer legendRenderer( mLegendModel, mSettings );
-  QSizeF size = legendRenderer.minimumSize();
-  if ( painter )
-    legendRenderer.drawLegend( painter );
-  return size;
-}
-
-
-void QgsComposerLegend::adjustBoxSize()
+void QgsLayoutItemLegend::adjustBoxSize()
 {
   if ( !mSizeToContents )
     return;
@@ -180,164 +165,291 @@ void QgsComposerLegend::adjustBoxSize()
     return;
   }
 
-  QgsLegendRenderer legendRenderer( mLegendModel, mSettings );
+  QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
   QSizeF size = legendRenderer.minimumSize();
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
   {
     QRectF targetRect = QRectF( pos().x(), pos().y(), size.width(), size.height() );
     //set new rect, respecting position mode and data defined size/position
-    setSceneRect( evalItemRect( targetRect, true ) );
+    attemptSetSceneRect( targetRect );
   }
 }
 
-void QgsComposerLegend::setResizeToContents( bool enabled )
+void QgsLayoutItemLegend::setResizeToContents( bool enabled )
 {
   mSizeToContents = enabled;
 }
 
-bool QgsComposerLegend::resizeToContents() const
+bool QgsLayoutItemLegend::resizeToContents() const
 {
   return mSizeToContents;
 }
 
-QgsLegendModel *QgsComposerLegend::model()
+void QgsLayoutItemLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
 {
-  return mLegendModel;
-}
-
-void QgsComposerLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
-{
-  mLegendModel->setRootGroup( rootGroup ? rootGroup : ( mComposition ? mComposition->project()->layerTreeRoot() : nullptr ) );
+  mLegendModel->setRootGroup( rootGroup ? rootGroup : ( mLayout ? mLayout->project()->layerTreeRoot() : nullptr ) );
 
   mCustomLayerTree.reset( rootGroup );
 }
 
 
-void QgsComposerLegend::setAutoUpdateModel( bool autoUpdate )
+void QgsLayoutItemLegend::setAutoUpdateModel( bool autoUpdate )
 {
   if ( autoUpdate == autoUpdateModel() )
     return;
 
-  setCustomLayerTree( autoUpdate ? nullptr : mComposition->project()->layerTreeRoot()->clone() );
+  setCustomLayerTree( autoUpdate ? nullptr : mLayout->project()->layerTreeRoot()->clone() );
   adjustBoxSize();
-  updateItem();
+  updateFilterByMap( false );
 }
 
-void QgsComposerLegend::nodeCustomPropertyChanged( QgsLayerTreeNode *, const QString & )
+void QgsLayoutItemLegend::nodeCustomPropertyChanged( QgsLayerTreeNode *, const QString & )
 {
   if ( autoUpdateModel() )
   {
     // in "auto update" mode, some parameters on the main app legend may have been changed (expression filtering)
     // we must then call updateItem to reflect the changes
-    updateItem();
+    updateFilterByMap( false );
   }
 }
 
-bool QgsComposerLegend::autoUpdateModel() const
+bool QgsLayoutItemLegend::autoUpdateModel() const
 {
   return !mCustomLayerTree;
 }
 
-void QgsComposerLegend::setLegendFilterByMapEnabled( bool enabled )
+void QgsLayoutItemLegend::setLegendFilterByMapEnabled( bool enabled )
 {
   mLegendFilterByMap = enabled;
-  updateItem();
+  updateFilterByMap( false );
 }
 
-void QgsComposerLegend::setTitle( const QString &t )
+void QgsLayoutItemLegend::setTitle( const QString &t )
 {
   mTitle = t;
   mSettings.setTitle( t );
 
-  if ( mComposition && id().isEmpty() )
+  if ( mLayout && id().isEmpty() )
   {
     //notify the model that the display name has changed
-    mComposition->itemsModel()->updateItemDisplayName( this );
+    mLayout->itemsModel()->updateItemDisplayName( this );
   }
 }
-QString QgsComposerLegend::title() const { return mTitle; }
-
-Qt::AlignmentFlag QgsComposerLegend::titleAlignment() const { return mSettings.titleAlignment(); }
-void QgsComposerLegend::setTitleAlignment( Qt::AlignmentFlag alignment ) { mSettings.setTitleAlignment( alignment ); }
-
-QgsLegendStyle &QgsComposerLegend::rstyle( QgsLegendStyle::Style s ) { return mSettings.rstyle( s ); }
-QgsLegendStyle QgsComposerLegend::style( QgsLegendStyle::Style s ) const { return mSettings.style( s ); }
-void QgsComposerLegend::setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style ) { mSettings.setStyle( s, style ); }
-
-QFont QgsComposerLegend::styleFont( QgsLegendStyle::Style s ) const { return mSettings.style( s ).font(); }
-void QgsComposerLegend::setStyleFont( QgsLegendStyle::Style s, const QFont &f ) { rstyle( s ).setFont( f ); }
-
-void QgsComposerLegend::setStyleMargin( QgsLegendStyle::Style s, double margin ) { rstyle( s ).setMargin( margin ); }
-void QgsComposerLegend::setStyleMargin( QgsLegendStyle::Style s, QgsLegendStyle::Side side, double margin ) { rstyle( s ).setMargin( side, margin ); }
-
-double QgsComposerLegend::lineSpacing() const { return mSettings.lineSpacing(); }
-void QgsComposerLegend::setLineSpacing( double spacing ) { mSettings.setLineSpacing( spacing ); }
-
-double QgsComposerLegend::boxSpace() const { return mSettings.boxSpace(); }
-void QgsComposerLegend::setBoxSpace( double s ) { mSettings.setBoxSpace( s ); }
-
-double QgsComposerLegend::columnSpace() const { return mSettings.columnSpace(); }
-void QgsComposerLegend::setColumnSpace( double s ) { mSettings.setColumnSpace( s ); }
-
-QColor QgsComposerLegend::fontColor() const { return mSettings.fontColor(); }
-void QgsComposerLegend::setFontColor( const QColor &c ) { mSettings.setFontColor( c ); }
-
-double QgsComposerLegend::symbolWidth() const { return mSettings.symbolSize().width(); }
-void QgsComposerLegend::setSymbolWidth( double w ) { mSettings.setSymbolSize( QSizeF( w, mSettings.symbolSize().height() ) ); }
-
-double QgsComposerLegend::symbolHeight() const { return mSettings.symbolSize().height(); }
-void QgsComposerLegend::setSymbolHeight( double h ) { mSettings.setSymbolSize( QSizeF( mSettings.symbolSize().width(), h ) ); }
-
-double QgsComposerLegend::wmsLegendWidth() const { return mSettings.wmsLegendSize().width(); }
-void QgsComposerLegend::setWmsLegendWidth( double w ) { mSettings.setWmsLegendSize( QSizeF( w, mSettings.wmsLegendSize().height() ) ); }
-
-double QgsComposerLegend::wmsLegendHeight() const {return mSettings.wmsLegendSize().height(); }
-void QgsComposerLegend::setWmsLegendHeight( double h ) { mSettings.setWmsLegendSize( QSizeF( mSettings.wmsLegendSize().width(), h ) ); }
-
-void QgsComposerLegend::setWrapChar( const QString &t ) { mSettings.setWrapChar( t ); }
-QString QgsComposerLegend::wrapChar() const {return mSettings.wrapChar(); }
-
-int QgsComposerLegend::columnCount() const { return mColumnCount; }
-void QgsComposerLegend::setColumnCount( int c ) { mColumnCount = c; mSettings.setColumnCount( c ); }
-
-bool QgsComposerLegend::splitLayer() const { return mSettings.splitLayer(); }
-void QgsComposerLegend::setSplitLayer( bool s ) { mSettings.setSplitLayer( s ); }
-
-bool QgsComposerLegend::equalColumnWidth() const { return mSettings.equalColumnWidth(); }
-void QgsComposerLegend::setEqualColumnWidth( bool s ) { mSettings.setEqualColumnWidth( s ); }
-
-bool QgsComposerLegend::drawRasterStroke() const { return mSettings.drawRasterStroke(); }
-void QgsComposerLegend::setDrawRasterStroke( bool enabled ) { mSettings.setDrawRasterStroke( enabled ); }
-
-QColor QgsComposerLegend::rasterStrokeColor() const { return mSettings.rasterStrokeColor(); }
-void QgsComposerLegend::setRasterStrokeColor( const QColor &color ) { mSettings.setRasterStrokeColor( color ); }
-
-double QgsComposerLegend::rasterStrokeWidth() const { return mSettings.rasterStrokeWidth(); }
-void QgsComposerLegend::setRasterStrokeWidth( double width ) { mSettings.setRasterStrokeWidth( width ); }
-
-void QgsComposerLegend::synchronizeWithModel()
+QString QgsLayoutItemLegend::title() const
 {
-  adjustBoxSize();
-  updateItem();
+  return mTitle;
 }
 
-void QgsComposerLegend::updateLegend()
+Qt::AlignmentFlag QgsLayoutItemLegend::titleAlignment() const
 {
-  adjustBoxSize();
-  updateItem();
+  return mSettings.titleAlignment();
 }
 
-void QgsComposerLegend::updateItem()
+void QgsLayoutItemLegend::setTitleAlignment( Qt::AlignmentFlag alignment )
 {
-  if ( !updatesEnabled() )
-    return;
+  mSettings.setTitleAlignment( alignment );
+}
 
+QgsLegendStyle &QgsLayoutItemLegend::rstyle( QgsLegendStyle::Style s )
+{
+  return mSettings.rstyle( s );
+}
+
+QgsLegendStyle QgsLayoutItemLegend::style( QgsLegendStyle::Style s ) const
+{
+  return mSettings.style( s );
+}
+
+void QgsLayoutItemLegend::setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style )
+{
+  mSettings.setStyle( s, style );
+}
+
+QFont QgsLayoutItemLegend::styleFont( QgsLegendStyle::Style s ) const
+{
+  return mSettings.style( s ).font();
+}
+
+void QgsLayoutItemLegend::setStyleFont( QgsLegendStyle::Style s, const QFont &f )
+{
+  rstyle( s ).setFont( f );
+}
+
+void QgsLayoutItemLegend::setStyleMargin( QgsLegendStyle::Style s, double margin )
+{
+  rstyle( s ).setMargin( margin );
+}
+
+void QgsLayoutItemLegend::setStyleMargin( QgsLegendStyle::Style s, QgsLegendStyle::Side side, double margin )
+{
+  rstyle( s ).setMargin( side, margin );
+}
+
+double QgsLayoutItemLegend::lineSpacing() const
+{
+  return mSettings.lineSpacing();
+}
+
+void QgsLayoutItemLegend::setLineSpacing( double spacing )
+{
+  mSettings.setLineSpacing( spacing );
+}
+
+double QgsLayoutItemLegend::boxSpace() const
+{
+  return mSettings.boxSpace();
+}
+
+void QgsLayoutItemLegend::setBoxSpace( double s )
+{
+  mSettings.setBoxSpace( s );
+}
+
+double QgsLayoutItemLegend::columnSpace() const
+{
+  return mSettings.columnSpace();
+}
+
+void QgsLayoutItemLegend::setColumnSpace( double s )
+{
+  mSettings.setColumnSpace( s );
+}
+
+QColor QgsLayoutItemLegend::fontColor() const
+{
+  return mSettings.fontColor();
+}
+
+void QgsLayoutItemLegend::setFontColor( const QColor &c )
+{
+  mSettings.setFontColor( c );
+}
+
+double QgsLayoutItemLegend::symbolWidth() const
+{
+  return mSettings.symbolSize().width();
+}
+
+void QgsLayoutItemLegend::setSymbolWidth( double w )
+{
+  mSettings.setSymbolSize( QSizeF( w, mSettings.symbolSize().height() ) );
+}
+
+double QgsLayoutItemLegend::symbolHeight() const
+{
+  return mSettings.symbolSize().height();
+}
+
+void QgsLayoutItemLegend::setSymbolHeight( double h )
+{
+  mSettings.setSymbolSize( QSizeF( mSettings.symbolSize().width(), h ) );
+}
+
+double QgsLayoutItemLegend::wmsLegendWidth() const
+{
+  return mSettings.wmsLegendSize().width();
+}
+
+void QgsLayoutItemLegend::setWmsLegendWidth( double w )
+{
+  mSettings.setWmsLegendSize( QSizeF( w, mSettings.wmsLegendSize().height() ) );
+}
+
+double QgsLayoutItemLegend::wmsLegendHeight() const
+{
+  return mSettings.wmsLegendSize().height();
+}
+void QgsLayoutItemLegend::setWmsLegendHeight( double h )
+{
+  mSettings.setWmsLegendSize( QSizeF( mSettings.wmsLegendSize().width(), h ) );
+}
+
+void QgsLayoutItemLegend::setWrapString( const QString &t )
+{
+  mSettings.setWrapChar( t );
+}
+
+QString QgsLayoutItemLegend::wrapString() const
+{
+  return mSettings.wrapChar();
+}
+
+int QgsLayoutItemLegend::columnCount() const
+{
+  return mColumnCount;
+}
+
+void QgsLayoutItemLegend::setColumnCount( int c )
+{
+  mColumnCount = c;
+  mSettings.setColumnCount( c );
+}
+
+bool QgsLayoutItemLegend::splitLayer() const
+{
+  return mSettings.splitLayer();
+}
+
+void QgsLayoutItemLegend::setSplitLayer( bool s )
+{
+  mSettings.setSplitLayer( s );
+}
+
+bool QgsLayoutItemLegend::equalColumnWidth() const
+{
+  return mSettings.equalColumnWidth();
+}
+
+void QgsLayoutItemLegend::setEqualColumnWidth( bool s )
+{
+  mSettings.setEqualColumnWidth( s );
+}
+
+bool QgsLayoutItemLegend::drawRasterStroke() const
+{
+  return mSettings.drawRasterStroke();
+}
+
+void QgsLayoutItemLegend::setDrawRasterStroke( bool enabled )
+{
+  mSettings.setDrawRasterStroke( enabled );
+}
+
+QColor QgsLayoutItemLegend::rasterStrokeColor() const
+{
+  return mSettings.rasterStrokeColor();
+}
+
+void QgsLayoutItemLegend::setRasterStrokeColor( const QColor &color )
+{
+  mSettings.setRasterStrokeColor( color );
+}
+
+double QgsLayoutItemLegend::rasterStrokeWidth() const
+{
+  return mSettings.rasterStrokeWidth();
+}
+
+void QgsLayoutItemLegend::setRasterStrokeWidth( double width )
+{
+  mSettings.setRasterStrokeWidth( width );
+}
+
+void QgsLayoutItemLegend::synchronizeWithModel()
+{
+  adjustBoxSize();
   updateFilterByMap( false );
-  QgsComposerItem::updateItem();
 }
 
-bool QgsComposerLegend::writeXml( QDomElement &elem, QDomDocument &doc ) const
+void QgsLayoutItemLegend::updateLegend()
+{
+  adjustBoxSize();
+  updateFilterByMap( false );
+}
+
+#if 0//TODO
+bool QgsLayoutItemLegend::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   if ( elem.isNull() )
   {
@@ -372,9 +484,9 @@ bool QgsComposerLegend::writeXml( QDomElement &elem, QDomDocument &doc ) const
 
   composerLegendElem.setAttribute( QStringLiteral( "resizeToContents" ), mSizeToContents );
 
-  if ( mComposerMap )
+  if ( mMap )
   {
-    composerLegendElem.setAttribute( QStringLiteral( "map" ), mComposerMap->id() );
+    composerLegendElem.setAttribute( QStringLiteral( "map" ), mMap->id() );
   }
 
   QDomElement composerLegendStyles = doc.createElement( QStringLiteral( "styles" ) );
@@ -401,7 +513,7 @@ bool QgsComposerLegend::writeXml( QDomElement &elem, QDomDocument &doc ) const
   return _writeXml( composerLegendElem, doc );
 }
 
-bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument &doc )
+bool QgsLayoutItemLegend::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   if ( itemElem.isNull() )
   {
@@ -468,7 +580,7 @@ bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument
   mLegendFilterByMap = itemElem.attribute( QStringLiteral( "legendFilterByMap" ), QStringLiteral( "0" ) ).toInt();
   if ( !itemElem.attribute( QStringLiteral( "map" ) ).isEmpty() )
   {
-    setComposerMap( mComposition->getComposerMapById( itemElem.attribute( QStringLiteral( "map" ) ).toInt() ) );
+    setMap( mComposition->getComposerMapById( itemElem.attribute( QStringLiteral( "map" ) ).toInt() ) );
   }
   mFilterOutAtlas = itemElem.attribute( QStringLiteral( "legendFilterByAtlas" ), QStringLiteral( "0" ) ).toInt();
 
@@ -540,8 +652,9 @@ bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument
   emit itemChanged();
   return true;
 }
+#endif
 
-QString QgsComposerLegend::displayName() const
+QString QgsLayoutItemLegend::displayName() const
 {
   if ( !id().isEmpty() )
   {
@@ -564,55 +677,54 @@ QString QgsComposerLegend::displayName() const
   }
 }
 
-void QgsComposerLegend::setComposerMap( const QgsComposerMap *map )
+void QgsLayoutItemLegend::setMap( QgsLayoutItemMap *map )
 {
-  if ( mComposerMap )
+  if ( mMap )
   {
-    disconnect( mComposerMap, &QObject::destroyed, this, &QgsComposerLegend::invalidateCurrentMap );
-    disconnect( mComposerMap, &QgsComposerObject::itemChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
-    disconnect( mComposerMap, &QgsComposerMap::extentChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
-    disconnect( mComposerMap, &QgsComposerMap::layerStyleOverridesChanged, this, &QgsComposerLegend::mapLayerStyleOverridesChanged );
+    disconnect( mMap, &QObject::destroyed, this, &QgsLayoutItemLegend::invalidateCurrentMap );
+    disconnect( mMap, &QgsLayoutObject::changed, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
+    disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
+    disconnect( mMap, &QgsLayoutItemMap::layerStyleOverridesChanged, this, &QgsLayoutItemLegend::mapLayerStyleOverridesChanged );
   }
 
-  mComposerMap = map;
+  mMap = map;
 
   if ( map )
   {
-    connect( map, &QObject::destroyed, this, &QgsComposerLegend::invalidateCurrentMap );
-    connect( map, &QgsComposerObject::itemChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
-    connect( map, &QgsComposerMap::extentChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
-    connect( map, &QgsComposerMap::layerStyleOverridesChanged, this, &QgsComposerLegend::mapLayerStyleOverridesChanged );
+    connect( map, &QObject::destroyed, this, &QgsLayoutItemLegend::invalidateCurrentMap );
+    connect( map, &QgsLayoutObject::changed, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
+    connect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
+    connect( map, &QgsLayoutItemMap::layerStyleOverridesChanged, this, &QgsLayoutItemLegend::mapLayerStyleOverridesChanged );
   }
 
-  updateItem();
+  updateFilterByMap();
 }
 
-void QgsComposerLegend::invalidateCurrentMap()
+void QgsLayoutItemLegend::invalidateCurrentMap()
 {
-  setComposerMap( nullptr );
+  setMap( nullptr );
 }
 
-void QgsComposerLegend::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext *context )
+void QgsLayoutItemLegend::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )
 {
-  QgsExpressionContext scopedContext = createExpressionContext();
-  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
+  QgsExpressionContext context = createExpressionContext();
 
   bool forceUpdate = false;
   //updates data defined properties and redraws item to match
-  if ( property == QgsComposerObject::LegendTitle || property == QgsComposerObject::AllProperties )
+  if ( property == QgsLayoutObject::LegendTitle || property == QgsLayoutObject::AllProperties )
   {
     bool ok = false;
-    QString t = mDataDefinedProperties.valueAsString( QgsComposerObject::LegendTitle, *evalContext, mTitle, &ok );
+    QString t = mDataDefinedProperties.valueAsString( QgsLayoutObject::LegendTitle, context, mTitle, &ok );
     if ( ok )
     {
       mSettings.setTitle( t );
       forceUpdate = true;
     }
   }
-  if ( property == QgsComposerObject::LegendColumnCount || property == QgsComposerObject::AllProperties )
+  if ( property == QgsLayoutObject::LegendColumnCount || property == QgsLayoutObject::AllProperties )
   {
     bool ok = false;
-    int cols = mDataDefinedProperties.valueAsInt( QgsComposerObject::LegendColumnCount, *evalContext, mColumnCount, &ok );
+    int cols = mDataDefinedProperties.valueAsInt( QgsLayoutObject::LegendColumnCount, context, mColumnCount, &ok );
     if ( ok && cols >= 0 )
     {
       mSettings.setColumnCount( cols );
@@ -625,17 +737,18 @@ void QgsComposerLegend::refreshDataDefinedProperty( const QgsComposerObject::Dat
     update();
   }
 
-  QgsComposerObject::refreshDataDefinedProperty( property, context );
+  QgsLayoutItem::refreshDataDefinedProperty( property );
 }
 
-void QgsComposerLegend::updateFilterByMapAndRedraw()
+
+void QgsLayoutItemLegend::updateFilterByMapAndRedraw()
 {
   updateFilterByMap( true );
 }
 
-void QgsComposerLegend::mapLayerStyleOverridesChanged()
+void QgsLayoutItemLegend::mapLayerStyleOverridesChanged()
 {
-  if ( !mComposerMap )
+  if ( !mMap )
     return;
 
   // map's style has been changed, so make sure to update the legend here
@@ -647,55 +760,54 @@ void QgsComposerLegend::mapLayerStyleOverridesChanged()
   }
   else
   {
-    mLegendModel->setLayerStyleOverrides( mComposerMap->layerStyleOverrides() );
+    mLegendModel->setLayerStyleOverrides( mMap->layerStyleOverrides() );
 
     Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mLegendModel->rootGroup()->findLayers() )
       mLegendModel->refreshLayerLegend( nodeLayer );
   }
 
   adjustBoxSize();
-  updateItem();
+  updateFilterByMap( false );
 }
 
-void QgsComposerLegend::updateFilterByMap( bool redraw )
+void QgsLayoutItemLegend::updateFilterByMap( bool redraw )
 {
-  if ( isRemoved() )
-    return;
   // ask for update
   // the actual update will take place before the redraw.
   // This is to avoid multiple calls to the filter
   mFilterAskedForUpdate = true;
 
   if ( redraw )
-    QgsComposerItem::updateItem();
+    update();
 }
 
-void QgsComposerLegend::doUpdateFilterByMap()
+void QgsLayoutItemLegend::doUpdateFilterByMap()
 {
-  if ( mComposerMap )
-    mLegendModel->setLayerStyleOverrides( mComposerMap->layerStyleOverrides() );
+  if ( mMap )
+    mLegendModel->setLayerStyleOverrides( mMap->layerStyleOverrides() );
   else
     mLegendModel->setLayerStyleOverrides( QMap<QString, QString>() );
 
 
-  bool filterByExpression = QgsLayerTreeUtils::hasLegendFilterExpression( *( mCustomLayerTree ? mCustomLayerTree.get() : mComposition->project()->layerTreeRoot() ) );
+  bool filterByExpression = QgsLayerTreeUtils::hasLegendFilterExpression( *( mCustomLayerTree ? mCustomLayerTree.get() : mLayout->project()->layerTreeRoot() ) );
 
-  if ( mComposerMap && ( mLegendFilterByMap || filterByExpression || mInAtlas ) )
+  if ( mMap && ( mLegendFilterByMap || filterByExpression || mInAtlas ) )
   {
-    int dpi = mComposition->printResolution();
+    int dpi = mLayout->context().dpi();
 
-    QgsRectangle requestRectangle;
-    mComposerMap->requestedExtent( requestRectangle );
+    QgsRectangle requestRectangle = mMap->requestedExtent();
 
     QSizeF size( requestRectangle.width(), requestRectangle.height() );
-    size *= mComposerMap->mapUnitsToMM() * dpi / 25.4;
+    size *= mLayout->convertFromLayoutUnits( mMap->mapUnitsToLayoutUnits(), QgsUnitTypes::LayoutMillimeters ).length() * dpi / 25.4;
 
-    QgsMapSettings ms = mComposerMap->mapSettings( requestRectangle, size, dpi );
+    QgsMapSettings ms = mMap->mapSettings( requestRectangle, size, dpi );
 
     QgsGeometry filterPolygon;
     if ( mInAtlas )
     {
-      filterPolygon = composition()->atlasComposition().currentGeometry( mComposerMap->crs() );
+#if 0 //TODO
+      filterPolygon = composition()->atlasComposition().currentGeometry( mMap->crs() );
+#endif
     }
     mLegendModel->setLegendFilter( &ms, /* useExtent */ mInAtlas || mLegendFilterByMap, filterPolygon, /* useExpressions */ true );
   }
@@ -705,17 +817,17 @@ void QgsComposerLegend::doUpdateFilterByMap()
   mForceResize = true;
 }
 
-void QgsComposerLegend::setLegendFilterOutAtlas( bool doFilter )
+void QgsLayoutItemLegend::setLegendFilterOutAtlas( bool doFilter )
 {
   mFilterOutAtlas = doFilter;
 }
 
-bool QgsComposerLegend::legendFilterOutAtlas() const
+bool QgsLayoutItemLegend::legendFilterOutAtlas() const
 {
   return mFilterOutAtlas;
 }
 
-void QgsComposerLegend::onAtlasFeature( QgsFeature *feat )
+void QgsLayoutItemLegend::onAtlasFeature( QgsFeature *feat )
 {
   if ( !feat )
     return;
@@ -723,8 +835,50 @@ void QgsComposerLegend::onAtlasFeature( QgsFeature *feat )
   updateFilterByMap();
 }
 
-void QgsComposerLegend::onAtlasEnded()
+void QgsLayoutItemLegend::onAtlasEnded()
 {
   mInAtlas = false;
   updateFilterByMap();
+}
+
+// -------------------------------------------------------------------------
+#include "qgslayertreemodellegendnode.h"
+#include "qgsvectorlayer.h"
+
+QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent )
+  : QgsLayerTreeModel( rootNode, parent )
+{
+  setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
+  setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
+}
+
+QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
+{
+  // handle custom layer node labels
+  if ( QgsLayerTreeNode *node = index2node( index ) )
+  {
+    if ( QgsLayerTree::isLayer( node ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) && !node->customProperty( QStringLiteral( "legend/title-label" ) ).isNull() )
+    {
+      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+      QString name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
+      if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() && role == Qt::DisplayRole )
+      {
+        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
+        if ( vlayer && vlayer->featureCount() >= 0 )
+          name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
+      }
+      return name;
+    }
+  }
+
+  return QgsLayerTreeModel::data( index, role );
+}
+
+Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
+{
+  // make the legend nodes selectable even if they are not by default
+  if ( index2legendNode( index ) )
+    return QgsLayerTreeModel::flags( index ) | Qt::ItemIsSelectable;
+
+  return QgsLayerTreeModel::flags( index );
 }

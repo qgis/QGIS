@@ -67,7 +67,7 @@
 #include "qgslayerrestorer.h"
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
-
+#include "qgslayoutitemlegend.h"
 
 #include <QImage>
 #include <QPainter>
