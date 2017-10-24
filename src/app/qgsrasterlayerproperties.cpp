@@ -410,6 +410,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
       mBandRenderingGrpBx->setSizePolicy( sizep );
       mBandRenderingGrpBx->updateGeometry();
     }
+
+    if ( mRasterLayer->providerType() != QStringLiteral( "wms" ) )
+    {
+      mWMSPrintGroupBox->hide();
+      mPublishDataSourceUrlCheckBox->hide();
+      mBackgroundLayerCheckBox->hide();
+    }
   }
 
   mRenderTypeComboBox_currentIndexChanged( widgetIndex );
