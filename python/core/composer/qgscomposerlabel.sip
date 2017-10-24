@@ -189,6 +189,7 @@ Get font color
 %End
 
   public slots:
+
     void refreshExpressionContext();
 
 
