@@ -119,10 +119,9 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   settings.setValue( QStringLiteral( "LayoutDesigner/lastItemHeight" ), item->sizeWithUnits().height() );
   settings.setValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), static_cast< int >( item->sizeWithUnits().units() ) );
 
-  layout()->addLayoutItem( item );
-
   QgsGui::layoutItemGuiRegistry()->newItemAddedToLayout( mItemMetadataId, item );
 
+  layout()->addLayoutItem( item );
   layout()->setSelectedItem( item );
   emit createdItem();
 }
