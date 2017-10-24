@@ -118,17 +118,12 @@ Returns the number of nodes in the shape.
 
     QgsLayoutNodesItem( QgsLayout *layout );
 %Docstring
- Constructor
- \param tagName tag used in XML file
- \param layout parent layout
+ Constructor for QgsLayoutNodesItem, attached to the specified ``layout``.
 %End
 
     QgsLayoutNodesItem( const QPolygonF &polygon, QgsLayout *layout );
 %Docstring
- Constructor
- \param tagName tag used in XML file
- \param polygon nodes of the shape
- \param layout parent layout
+ Constructor for a QgsLayoutNodesItem with the given ``polygon`` nodes, attached to the specified ``layout``.
 %End
 
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );

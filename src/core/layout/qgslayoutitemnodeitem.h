@@ -117,17 +117,12 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
   protected:
 
     /**
-     * Constructor
-     * \param tagName tag used in XML file
-     * \param layout parent layout
+     * Constructor for QgsLayoutNodesItem, attached to the specified \a layout.
      */
     QgsLayoutNodesItem( QgsLayout *layout );
 
     /**
-     * Constructor
-     * \param tagName tag used in XML file
-     * \param polygon nodes of the shape
-     * \param layout parent layout
+     * Constructor for a QgsLayoutNodesItem with the given \a polygon nodes, attached to the specified \a layout.
      */
     QgsLayoutNodesItem( const QPolygonF &polygon, QgsLayout *layout );
 
