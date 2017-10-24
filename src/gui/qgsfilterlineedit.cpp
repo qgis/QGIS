@@ -23,7 +23,6 @@
 #include <QStyle>
 #include <QFocusEvent>
 #include <QPainter>
-#include <QDebug>
 
 QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue )
   : QLineEdit( parent )
