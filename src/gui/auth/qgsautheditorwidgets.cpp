@@ -26,6 +26,7 @@
 #include "qgsauthcertificatemanager.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
+#include "qgsnetworkaccessmanager.h"
 
 
 QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget *parent )
@@ -140,12 +141,17 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
            this, &QgsAuthEditorWidgets::authMessageOut );
 
   // set up utility actions menu
-  mActionSetMasterPassword = new QAction( QStringLiteral( "Input master password" ), this );
-  mActionClearCachedMasterPassword = new QAction( QStringLiteral( "Clear cached master password" ), this );
-  mActionResetMasterPassword = new QAction( QStringLiteral( "Reset master password" ), this );
-  mActionClearCachedAuthConfigs = new QAction( QStringLiteral( "Clear cached authentication configurations" ), this );
-  mActionRemoveAuthConfigs = new QAction( QStringLiteral( "Remove all authentication configurations" ), this );
-  mActionEraseAuthDatabase = new QAction( QStringLiteral( "Erase authentication database" ), this );
+  mActionSetMasterPassword = new QAction( tr( "Input master password" ), this );
+  mActionClearCachedMasterPassword = new QAction( tr( "Clear cached master password" ), this );
+  mActionResetMasterPassword = new QAction( tr( "Reset master password" ), this );
+  mActionClearCachedAuthConfigs = new QAction( tr( "Clear cached authentication configurations" ), this );
+  mActionRemoveAuthConfigs = new QAction( tr( "Remove all authentication configurations" ), this );
+  mActionEraseAuthDatabase = new QAction( tr( "Erase authentication database" ), this );
+
+  mActionClearAccessCacheNow = new QAction( tr( "Clear network authentication access cache" ), this );
+  mActionAutoClearAccessCache = new QAction( tr( "Automatically clear network authentication access cache on SSL errors" ), this );
+  mActionAutoClearAccessCache->setCheckable( true );
+  mActionAutoClearAccessCache->setChecked( QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ), true, QgsSettings::Section::Auth ).toBool( ) );
 
   mActionPasswordHelperSync = new QAction( tr( "Store/update the master password in your %1" )
       .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ), this );
@@ -173,10 +179,23 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   connect( mActionPasswordHelperEnable, &QAction::triggered, this, &QgsAuthEditorWidgets::passwordHelperEnableTriggered );
   connect( mActionPasswordHelperLoggingEnable, &QAction::triggered, this, &QgsAuthEditorWidgets::passwordHelperLoggingEnableTriggered );
 
+  connect( mActionClearAccessCacheNow, &QAction::triggered, this, [ = ]
+  {
+    QgsNetworkAccessManager::instance()->clearAccessCache();
+    messageBar()->pushSuccess( tr( "Auth cache cleared" ), tr( "Network authentication cache has been cleared" ) );
+  } );
+  connect( mActionAutoClearAccessCache, &QAction::triggered, this, [ ]( bool checked )
+  {
+    QgsSettings().setValue( QStringLiteral( "clear_auth_cache_on_errors" ), checked, QgsSettings::Section::Auth );
+  } );
+
   mAuthUtilitiesMenu = new QMenu( this );
   mAuthUtilitiesMenu->addAction( mActionSetMasterPassword );
   mAuthUtilitiesMenu->addAction( mActionClearCachedMasterPassword );
   mAuthUtilitiesMenu->addAction( mActionResetMasterPassword );
+  mAuthUtilitiesMenu->addSeparator();
+  mAuthUtilitiesMenu->addAction( mActionClearAccessCacheNow );
+  mAuthUtilitiesMenu->addAction( mActionAutoClearAccessCache );
   mAuthUtilitiesMenu->addSeparator();
   mAuthUtilitiesMenu->addAction( mActionPasswordHelperEnable );
   mAuthUtilitiesMenu->addAction( mActionPasswordHelperSync );

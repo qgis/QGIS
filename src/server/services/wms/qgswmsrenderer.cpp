@@ -132,6 +132,11 @@ namespace QgsWms
     initNicknameLayers();
   }
 
+  QgsRenderer::~QgsRenderer()
+  {
+    removeTemporaryLayers();
+  }
+
 
   QImage *QgsRenderer::getLegendGraphics()
   {
@@ -2557,6 +2562,7 @@ namespace QgsWms
       }
     }
 
+    mTemporaryLayers.append( highlightLayers );
     return highlightLayers;
   }
 
@@ -2602,7 +2608,7 @@ namespace QgsWms
     return layers;
   }
 
-  QList<QgsMapLayer *> QgsRenderer::stylizedLayers( const QList<QgsWmsParametersLayer> &params ) const
+  QList<QgsMapLayer *> QgsRenderer::stylizedLayers( const QList<QgsWmsParametersLayer> &params )
   {
     QList<QgsMapLayer *> layers;
 
@@ -2610,7 +2616,19 @@ namespace QgsWms
     {
       QString nickname = param.mNickname;
       QString style = param.mStyle;
-      if ( mNicknameLayers.contains( nickname ) && !mRestrictedLayers.contains( nickname ) )
+      if ( nickname.startsWith( "EXTERNAL_WMS:" ) )
+      {
+        QString externalLayerId = nickname;
+        externalLayerId.remove( 0, 13 );
+        QgsMapLayer *externalWMSLayer = createExternalWMSLayer( externalLayerId );
+        if ( externalWMSLayer )
+        {
+          layers.append( externalWMSLayer );
+          mNicknameLayers[nickname] = externalWMSLayer; //might be used later in GetPrint request
+          mTemporaryLayers.append( externalWMSLayer );
+        }
+      }
+      else if ( mNicknameLayers.contains( nickname ) && !mRestrictedLayers.contains( nickname ) )
       {
         if ( !style.isEmpty() )
         {
@@ -2631,6 +2649,25 @@ namespace QgsWms
     }
 
     return layers;
+  }
+
+  QgsMapLayer *QgsRenderer::createExternalWMSLayer( const QString &externalLayerId ) const
+  {
+    QString wmsUri = mWmsParameters.externalWMSUri( externalLayerId.toUpper() );
+    QgsMapLayer *wmsLayer = new QgsRasterLayer( wmsUri, externalLayerId, QStringLiteral( "wms" ) );
+    if ( !wmsLayer->isValid() )
+    {
+      delete wmsLayer;
+      return 0;
+    }
+
+    return wmsLayer;
+  }
+
+  void QgsRenderer::removeTemporaryLayers()
+  {
+    qDeleteAll( mTemporaryLayers );
+    mTemporaryLayers.clear();
   }
 
   QPainter *QgsRenderer::layersRendering( const QgsMapSettings &mapSettings, QImage &image, HitTest *hitTest ) const

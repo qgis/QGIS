@@ -9,7 +9,7 @@
 
 
 
-class QgsVScrollArea : QScrollArea
+class QgsVScrollArea : QgsScrollArea
 {
 %Docstring
  QgsVScrollArea is a QScrollArea subclass which only displays a vertical

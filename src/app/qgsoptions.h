@@ -187,6 +187,12 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void clearCache();
 
     /**
+     * \brief clearAuthenticationConnectionCache clears the QNetworkAccessManager
+     * authentication connection cache
+     */
+    void clearAccessCache();
+
+    /**
      * Let the user add a scale to the list of scales
      * used in scale combobox
      */

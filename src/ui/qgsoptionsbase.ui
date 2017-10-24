@@ -308,7 +308,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>12</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -338,14 +338,14 @@
                 <x>0</x>
                 <y>0</y>
                 <width>580</width>
-                <height>672</height>
+                <height>804</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="grpLocale">
                  <property name="title">
-                  <string>O&amp;verride system locale</string>
+                  <string>Override system &amp;locale</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -4755,7 +4755,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   <item row="3" column="0">
                    <widget class="QRadioButton" name="radUseGlobalProjection">
                     <property name="text">
-                     <string>Use a default CRS</string>
+                     <string>&amp;Use a default CRS</string>
                     </property>
                    </widget>
                   </item>
@@ -4947,53 +4947,91 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <property name="title">
                   <string>Cache settings</string>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_2">
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_10">
-                    <property name="text">
-                     <string>Directory</string>
+                 <layout class="QVBoxLayout" name="verticalLayout_19">
+                  <item>
+                   <widget class="QTabWidget" name="tabContentCache">
+                    <property name="currentIndex">
+                     <number>0</number>
                     </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QLineEdit" name="mCacheDirectory"/>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QToolButton" name="mBrowseCacheDirectory">
-                    <property name="toolTip">
-                     <string>Select folder</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_11">
-                    <property name="text">
-                     <string>Size [KiB]</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QSpinBox" name="mCacheSize"/>
-                  </item>
-                  <item row="2" column="2">
-                   <widget class="QToolButton" name="mClearCache">
-                    <property name="toolTip">
-                     <string>Clear</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
-                    </property>
+                    <widget class="QWidget" name="tab">
+                     <attribute name="title">
+                      <string>Content</string>
+                     </attribute>
+                     <layout class="QGridLayout" name="gridLayout_2">
+                      <item row="4" column="0">
+                       <widget class="QLabel" name="label_11">
+                        <property name="text">
+                         <string>Size [KiB]</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="0">
+                       <widget class="QLabel" name="label_10">
+                        <property name="text">
+                         <string>Directory</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="1">
+                       <widget class="QLineEdit" name="mCacheDirectory"/>
+                      </item>
+                      <item row="4" column="1">
+                       <widget class="QSpinBox" name="mCacheSize"/>
+                      </item>
+                      <item row="0" column="2">
+                       <widget class="QToolButton" name="mBrowseCacheDirectory">
+                        <property name="toolTip">
+                         <string>Select folder</string>
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                        <property name="icon">
+                         <iconset resource="../../images/images.qrc">
+                          <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="4" column="2">
+                       <widget class="QToolButton" name="mClearCache">
+                        <property name="toolTip">
+                         <string>Clear cache</string>
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                        <property name="icon">
+                         <iconset resource="../../images/images.qrc">
+                          <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                    <widget class="QWidget" name="tab_2">
+                     <attribute name="title">
+                      <string>Authentication</string>
+                     </attribute>
+                     <layout class="QGridLayout" name="gridLayout_5">
+                      <item row="0" column="0">
+                       <widget class="QCheckBox" name="mAutoClearAccessCache">
+                        <property name="toolTip">
+                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The connection cache stores all authentication connections data even when the connection fails.&lt;br/&gt;If you make any change to the authentication configurations or to the certification authorities, you should clear the authentication cache or&lt;br/&gt;restart QGIS. &lt;br/&gt;When this option is checked, the authentication cache will be automatically cleared every time an SSL error occurs and you choose to abort the connection.&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                        </property>
+                        <property name="text">
+                         <string>Automatically clear the connection authentication cache on SSL errors (recommended)</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="0">
+                       <widget class="QPushButton" name="mClearAccessCache">
+                        <property name="text">
+                         <string>Clear authentication connection cache</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
                    </widget>
                   </item>
                  </layout>
@@ -5610,9 +5648,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mDefaultTileMaxRetrySpinBox</tabstop>
   <tabstop>leUserAgent</tabstop>
   <tabstop>mCacheDirectory</tabstop>
-  <tabstop>mBrowseCacheDirectory</tabstop>
   <tabstop>mCacheSize</tabstop>
-  <tabstop>mClearCache</tabstop>
   <tabstop>grpProxy</tabstop>
   <tabstop>mProxyTypeComboBox</tabstop>
   <tabstop>leProxyHost</tabstop>
