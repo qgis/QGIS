@@ -290,6 +290,10 @@ void QgsFeatureFilterModel::scheduledReload()
 
     request.setFilterExpression( filterClause );
   }
+  QSet<QString> attributes = request.filterExpression().referencedColumns();
+  attributes << mIdentifierField;
+  request.setSubsetOfAttributes( attributes );
+  request.setFlags( QgsFeatureRequest::NoGeometry );
 
   request.setLimit( 100 );
 
