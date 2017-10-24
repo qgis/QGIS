@@ -188,6 +188,7 @@
 %Include qgssearchquerybuilder.sip
 %Include qgsshortcutsmanager.sip
 %Include qgsslider.sip
+%Include qgssnapindicator.sip
 %Include qgsstatusbar.sip
 %Include qgssublayersdialog.sip
 %Include qgssubstitutionlistwidget.sip

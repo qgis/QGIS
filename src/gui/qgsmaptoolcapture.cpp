@@ -27,6 +27,7 @@
 #include "qgsmapmouseevent.h"
 #include "qgspolygon.h"
 #include "qgsrubberband.h"
+#include "qgssnapindicator.h"
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
 #include "qgssettings.h"
@@ -48,6 +49,8 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
   mCaptureModeFromLayer = mode == CaptureNone;
   mCapturing = false;
 
+  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
+
   QPixmap mySelectQPixmap = QPixmap( ( const char ** ) capture_point_cursor );
   setCursor( QCursor( mySelectQPixmap, 8, 8 ) );
 
@@ -57,8 +60,6 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
 
 QgsMapToolCapture::~QgsMapToolCapture()
 {
-  delete mSnappingMarker;
-
   stopCapturing();
 
   if ( mValidator )
@@ -81,8 +82,7 @@ void QgsMapToolCapture::deactivate()
   if ( mTempRubberBand )
     mTempRubberBand->hide();
 
-  delete mSnappingMarker;
-  mSnappingMarker = nullptr;
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
 
   QgsMapToolAdvancedDigitizing::deactivate();
 }
@@ -309,25 +309,9 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
 void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   QgsMapToolAdvancedDigitizing::cadCanvasMoveEvent( e );
-  bool snapped = e->isSnapped();
   QgsPointXY point = e->mapPoint();
 
-  if ( !snapped )
-  {
-    delete mSnappingMarker;
-    mSnappingMarker = nullptr;
-  }
-  else
-  {
-    if ( !mSnappingMarker )
-    {
-      mSnappingMarker = new QgsVertexMarker( mCanvas );
-      mSnappingMarker->setIconType( QgsVertexMarker::ICON_CROSS );
-      mSnappingMarker->setColor( Qt::magenta );
-      mSnappingMarker->setPenWidth( 3 );
-    }
-    mSnappingMarker->setCenter( point );
-  }
+  mSnapIndicator->setMatch( e->mapPointMatch() );
 
   if ( !mTempRubberBand && mCaptureCurve.numPoints() > 0 )
   {

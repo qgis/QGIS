@@ -28,6 +28,7 @@
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgssettings.h"
+#include "qgssnapindicator.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
@@ -204,11 +205,7 @@ QgsNodeTool::QgsNodeTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget 
 {
   setAdvancedDigitizingAllowed( false );
 
-  mSnapMarker = new QgsVertexMarker( canvas );
-  mSnapMarker->setIconType( QgsVertexMarker::ICON_CROSS );
-  mSnapMarker->setColor( Qt::magenta );
-  mSnapMarker->setPenWidth( 3 );
-  mSnapMarker->setVisible( false );
+  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
 
   mEdgeCenterMarker = new QgsVertexMarker( canvas );
   mEdgeCenterMarker->setIconType( QgsVertexMarker::ICON_CROSS );
@@ -248,7 +245,6 @@ QgsNodeTool::QgsNodeTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget 
 
 QgsNodeTool::~QgsNodeTool()
 {
-  delete mSnapMarker;
   delete mEdgeCenterMarker;
   delete mFeatureBand;
   delete mFeatureBandMarkers;
@@ -262,6 +258,8 @@ void QgsNodeTool::deactivate()
   setHighlightedNodes( QList<Vertex>() );
   removeTemporaryRubberBands();
   cleanupNodeEditor();
+
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
 
   QHash< QPair<QgsVectorLayer *, QgsFeatureId>, GeometryValidation>::iterator it = mValidations.begin();
   for ( ; it != mValidations.end(); ++it )
@@ -508,16 +506,7 @@ void QgsNodeTool::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsNodeTool::mouseMoveDraggingVertex( QgsMapMouseEvent *e )
 {
-  if ( e->mapPointMatch().isValid() )
-  {
-    mSnapMarker->setCenter( e->mapPoint() );
-    mSnapMarker->setVisible( true );
-  }
-  else
-  {
-    mSnapMarker->setVisible( false );
-  }
-
+  mSnapIndicator->setMatch( e->mapPointMatch() );
   mEdgeCenterMarker->setVisible( false );
 
   moveDragBands( e->mapPoint() );
@@ -554,7 +543,7 @@ void QgsNodeTool::moveDragBands( const QgsPointXY &mapPoint )
 
 void QgsNodeTool::mouseMoveDraggingEdge( QgsMapMouseEvent *e )
 {
-  mSnapMarker->setVisible( false );
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
   mEdgeCenterMarker->setVisible( false );
 
   QgsPointXY mapPoint = toMapCoordinates( e->pos() );  // do not use e.mapPoint() as it may be snapped
@@ -1349,6 +1338,8 @@ void QgsNodeTool::stopDragging()
   clearDragBands();
 
   setHighlightedNodesVisible( true );  // highlight can be shown again
+
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
 }
 
 QgsPointXY QgsNodeTool::matchToLayerPoint( const QgsVectorLayer *destLayer, const QgsPointXY &mapPoint, const QgsPointLocator::Match *match )
