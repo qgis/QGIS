@@ -337,8 +337,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>866</width>
-                <height>822</height>
+                <width>580</width>
+                <height>804</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1032,7 +1032,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>846</width>
+                <width>537</width>
                 <height>1128</height>
                </rect>
               </property>
@@ -1562,8 +1562,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>866</width>
-                <height>822</height>
+                <width>499</width>
+                <height>754</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1930,7 +1930,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>846</width>
+                <width>672</width>
                 <height>1043</height>
                </rect>
               </property>
@@ -2681,8 +2681,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>866</width>
-                <height>822</height>
+                <width>130</width>
+                <height>322</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2832,8 +2832,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>866</width>
-                <height>822</height>
+                <width>500</width>
+                <height>340</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3175,8 +3175,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>866</width>
-                <height>822</height>
+                <width>623</width>
+                <height>734</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3619,8 +3619,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>866</width>
-                <height>822</height>
+                <width>491</width>
+                <height>610</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3888,8 +3888,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>866</width>
-                <height>822</height>
+                <width>548</width>
+                <height>785</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4466,8 +4466,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>866</width>
-                <height>822</height>
+                <width>431</width>
+                <height>376</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4605,8 +4605,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>866</width>
-                <height>822</height>
+                <width>418</width>
+                <height>544</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -5015,8 +5015,11 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <layout class="QGridLayout" name="gridLayout_5">
                       <item row="0" column="0">
                        <widget class="QCheckBox" name="mAutoClearAccessCache">
+                        <property name="toolTip">
+                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The connection cache stores all authentication connections data even when the connection fails.&lt;br/&gt;If you make any change to the authentication configurations or to the certification authorities, you should clear the authentication cache or&lt;br/&gt;restart QGIS. &lt;br/&gt;When this option is checked, it will clear the authentication cache every time an SSL error occurs and you choose tole abort the connection.&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                        </property>
                         <property name="text">
-                         <string>Automatically clear the connection authentication cache on SSL errors</string>
+                         <string>Automatically clear the connection authentication cache on SSL errors (recommended)</string>
                         </property>
                        </widget>
                       </item>
