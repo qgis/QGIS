@@ -49,6 +49,7 @@
 #include "qgsalgorithmsimplify.h"
 #include "qgsalgorithmsmooth.h"
 #include "qgsalgorithmsplitwithlines.h"
+#include "qgsalgorithmstringconcatenation.h"
 #include "qgsalgorithmsubdivide.h"
 #include "qgsalgorithmtransect.h"
 #include "qgsalgorithmtransform.h"
@@ -122,6 +123,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSimplifyAlgorithm() );
   addAlgorithm( new QgsSmoothAlgorithm() );
   addAlgorithm( new QgsSplitWithLinesAlgorithm() );
+  addAlgorithm( new QgsStringConcatenationAlgorithm() );
   addAlgorithm( new QgsSubdivideAlgorithm() );
   addAlgorithm( new QgsTransectAlgorithm() );
   addAlgorithm( new QgsTransformAlgorithm() );
