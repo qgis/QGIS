@@ -94,7 +94,7 @@ class QgsLayoutItemMapGridStack : QgsLayoutItemMapItemStack
  :rtype: list of QgsLayoutItemMapGrid
 %End
 
-    virtual bool readXml( const QDomElement &elem, const QDomDocument &doc );
+    virtual bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context );
 
 
     double maxGridExtension() const;
@@ -222,9 +222,9 @@ class QgsLayoutItemMapGrid : QgsLayoutItemMapItem
 
     virtual void draw( QPainter *painter );
 
-    virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
+    virtual bool writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
-    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
+    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context );
 
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );

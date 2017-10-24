@@ -29,7 +29,7 @@ QgsLayoutItemMapItem::QgsLayoutItemMapItem( const QString &name, QgsLayoutItemMa
 
 }
 
-bool QgsLayoutItemMapItem::writeXml( QDomElement &element, QDomDocument &document ) const
+bool QgsLayoutItemMapItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext & ) const
 {
   Q_UNUSED( document );
   element.setAttribute( QStringLiteral( "uuid" ), mUuid );
@@ -38,7 +38,7 @@ bool QgsLayoutItemMapItem::writeXml( QDomElement &element, QDomDocument &documen
   return true;
 }
 
-bool QgsLayoutItemMapItem::readXml( const QDomElement &itemElem, const QDomDocument &doc )
+bool QgsLayoutItemMapItem::readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext & )
 {
   Q_UNUSED( doc );
   mUuid = itemElem.attribute( QStringLiteral( "uuid" ) );
@@ -184,12 +184,12 @@ QList<QgsLayoutItemMapItem *> QgsLayoutItemMapItemStack::asList() const
   return list;
 }
 
-bool QgsLayoutItemMapItemStack::writeXml( QDomElement &elem, QDomDocument &doc ) const
+bool QgsLayoutItemMapItemStack::writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   //write item stack
   for ( QgsLayoutItemMapItem *item : mItems )
   {
-    item->writeXml( elem, doc );
+    item->writeXml( elem, doc, context );
   }
 
   return true;

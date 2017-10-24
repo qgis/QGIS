@@ -409,6 +409,10 @@ Returns true if the map contains layers with blend modes or flattened layers for
 
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
 
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+
 
     QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const;
 %Docstring
@@ -421,7 +425,6 @@ Returns true if the map contains layers with blend modes or flattened layers for
 True if a draw is already in progress
  :rtype: bool
 %End
-
 
 
     virtual QRectF boundingRect() const;

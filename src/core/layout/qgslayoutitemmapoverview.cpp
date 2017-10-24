@@ -145,7 +145,7 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
   painter->restore();
 }
 
-bool QgsLayoutItemMapOverview::writeXml( QDomElement &elem, QDomDocument &doc ) const
+bool QgsLayoutItemMapOverview::writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   if ( elem.isNull() )
   {
@@ -160,18 +160,15 @@ bool QgsLayoutItemMapOverview::writeXml( QDomElement &elem, QDomDocument &doc ) 
   overviewFrameElem.setAttribute( QStringLiteral( "inverted" ), mInverted );
   overviewFrameElem.setAttribute( QStringLiteral( "centered" ), mCentered );
 
-  QgsReadWriteContext context;
-  context.setPathResolver( mLayout->project()->pathResolver() );
-
   QDomElement frameStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mFrameSymbol.get(), doc, context );
   overviewFrameElem.appendChild( frameStyleElem );
 
-  bool ok = QgsLayoutItemMapItem::writeXml( overviewFrameElem, doc );
+  bool ok = QgsLayoutItemMapItem::writeXml( overviewFrameElem, doc, context );
   elem.appendChild( overviewFrameElem );
   return ok;
 }
 
-bool QgsLayoutItemMapOverview::readXml( const QDomElement &itemElem, const QDomDocument &doc )
+bool QgsLayoutItemMapOverview::readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
   Q_UNUSED( doc );
   if ( itemElem.isNull() )
@@ -179,7 +176,7 @@ bool QgsLayoutItemMapOverview::readXml( const QDomElement &itemElem, const QDomD
     return false;
   }
 
-  bool ok = QgsLayoutItemMapItem::readXml( itemElem, doc );
+  bool ok = QgsLayoutItemMapItem::readXml( itemElem, doc, context );
 
 #if 0 //TODO
   setFrameMapUuid( itemElem.attribute( QStringLiteral( "frameMap" ), QStringLiteral( "-1" ) ).toInt() );
@@ -187,9 +184,6 @@ bool QgsLayoutItemMapOverview::readXml( const QDomElement &itemElem, const QDomD
   mBlendMode = QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( itemElem.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) );
   mInverted = ( itemElem.attribute( QStringLiteral( "inverted" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
   mCentered = ( itemElem.attribute( QStringLiteral( "centered" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
-
-  QgsReadWriteContext context;
-  context.setPathResolver( mLayout->project()->pathResolver() );
 
   QDomElement frameStyleElem = itemElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !frameStyleElem.isNull() )
@@ -384,7 +378,7 @@ QList<QgsLayoutItemMapOverview *> QgsLayoutItemMapOverviewStack::asList() const
   return list;
 }
 
-bool QgsLayoutItemMapOverviewStack::readXml( const QDomElement &elem, const QDomDocument &doc )
+bool QgsLayoutItemMapOverviewStack::readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
   removeItems();
 
@@ -394,7 +388,7 @@ bool QgsLayoutItemMapOverviewStack::readXml( const QDomElement &elem, const QDom
   {
     QDomElement mapOverviewElem = mapOverviewNodeList.at( i ).toElement();
     QgsLayoutItemMapOverview *mapOverview = new QgsLayoutItemMapOverview( mapOverviewElem.attribute( QStringLiteral( "name" ) ), mMap );
-    mapOverview->readXml( mapOverviewElem, doc );
+    mapOverview->readXml( mapOverviewElem, doc, context );
     mItems.append( mapOverview );
   }
 

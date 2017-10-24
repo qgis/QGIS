@@ -33,7 +33,7 @@ class QgsLayoutItemMapItem : QgsLayoutObject
  Draws the item on to a destination ``painter``.
 %End
 
-    virtual bool writeXml( QDomElement &element, QDomDocument &document ) const;
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
  Stores map item state in a DOM element, where ``element`` is the DOM element
  corresponding to a 'LayoutMap' tag.
@@ -41,7 +41,7 @@ class QgsLayoutItemMapItem : QgsLayoutObject
  :rtype: bool
 %End
 
-    virtual bool readXml( const QDomElement &element, const QDomDocument &doc );
+    virtual bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context );
 %Docstring
  Sets the map item state from a DOM document, where ``element`` is the DOM
  node corresponding to a 'LayoutMapGrid' tag.
@@ -139,7 +139,7 @@ class QgsLayoutItemMapItemStack
  :rtype: int
 %End
 
-    virtual bool writeXml( QDomElement &element, QDomDocument &doc ) const;
+    virtual bool writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
  Stores the state of the item stack in a DOM node, where ``element`` is the DOM element corresponding to a 'LayoutMap' tag.
  Returns true if write was successful.
@@ -147,7 +147,7 @@ class QgsLayoutItemMapItemStack
  :rtype: bool
 %End
 
-    virtual bool readXml( const QDomElement &element, const QDomDocument &doc ) = 0;
+    virtual bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
 %Docstring
  Sets the item stack's state from a DOM document, where ``element`` is a DOM node corresponding to a 'LayoutMap' tag.
  Returns true if read was successful.

@@ -399,6 +399,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
   protected:
 
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
     /**
      * Return map settings that will be used for drawing of the map.
@@ -415,22 +417,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
       Atlas preview extents are only temporary, and are regenerated whenever the atlas feature changes
      */
     void setNewAtlasFeatureExtent( const QgsRectangle &extent );
-
-    /**
-     * Stores state in Dom node
-     * \param elem is Dom element corresponding to 'Composer' tag
-     * \param doc Dom document
-     */
-    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
-
-    /**
-     * Sets state from Dom document
-     * \param itemElem is Dom node corresponding to 'ComposerMap' tag
-     * \param doc is Dom document
-     */
-    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 #endif
-
 
     // In case of annotations, the bounding rectangle can be larger than the map item rectangle
     QRectF boundingRect() const override;

@@ -107,7 +107,7 @@ class CORE_EXPORT QgsLayoutItemMapOverviewStack : public QgsLayoutItemMapItemSta
      * Returns a list of QgsLayoutItemMapOverviews contained by the stack.
      */
     QList< QgsLayoutItemMapOverview * > asList() const;
-    bool readXml( const QDomElement &elem, const QDomDocument &doc ) override;
+    bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
 };
 
@@ -133,8 +133,8 @@ class CORE_EXPORT QgsLayoutItemMapOverview : public QgsLayoutItemMapItem
     QgsLayoutItemMapOverview( const QString &name, QgsLayoutItemMap *map );
 
     void draw( QPainter *painter ) override;
-    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
-    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
     bool usesAdvancedEffects() const override;
 
     /**

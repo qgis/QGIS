@@ -109,7 +109,7 @@ class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
      */
     QList< QgsLayoutItemMapGrid * > asList() const;
 
-    bool readXml( const QDomElement &elem, const QDomDocument &doc ) override;
+    bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
     /**
      * Calculates the maximum distance grids within the stack extend
@@ -267,8 +267,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMap *map );
 
     void draw( QPainter *painter ) override;
-    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
-    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
     /**
      * Sets the \a crs for the grid.

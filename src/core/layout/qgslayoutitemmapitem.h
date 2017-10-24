@@ -52,14 +52,14 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
      * corresponding to a 'LayoutMap' tag.
      * \see readXml()
      */
-    virtual bool writeXml( QDomElement &element, QDomDocument &document ) const;
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     /**
      * Sets the map item state from a DOM document, where \a element is the DOM
      * node corresponding to a 'LayoutMapGrid' tag.
      * \see writeXml()
      */
-    virtual bool readXml( const QDomElement &element, const QDomDocument &doc );
+    virtual bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context );
 
     /**
      * Sets the corresponding layout \a map for the item.
@@ -156,14 +156,14 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
      * Returns true if write was successful.
      * \see readXml()
      */
-    virtual bool writeXml( QDomElement &element, QDomDocument &doc ) const;
+    virtual bool writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     /**
      * Sets the item stack's state from a DOM document, where \a element is a DOM node corresponding to a 'LayoutMap' tag.
      * Returns true if read was successful.
      * \see writeXml()
      */
-    virtual bool readXml( const QDomElement &element, const QDomDocument &doc ) = 0;
+    virtual bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
 
     /**
      * Draws the items from the stack on a specified \a painter.

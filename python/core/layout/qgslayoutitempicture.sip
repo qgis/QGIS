@@ -80,7 +80,6 @@ class QgsLayoutItemPicture: QgsLayoutItem
  :rtype: str
 %End
 
-
     double pictureRotation() const;
 %Docstring
  Returns the rotation used for drawing the picture within the item's frame,

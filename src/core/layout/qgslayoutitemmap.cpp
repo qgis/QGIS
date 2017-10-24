@@ -478,6 +478,250 @@ void QgsLayoutItemMap::draw( QgsRenderContext &, const QStyleOptionGraphicsItem 
 {
 }
 
+bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &composerMapElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
+{
+#if 0 //TODO - is this needed?
+  composerMapElem.setAttribute( QStringLiteral( "id" ), mId );
+#endif
+
+  if ( mKeepLayerSet )
+  {
+    composerMapElem.setAttribute( QStringLiteral( "keepLayerSet" ), QStringLiteral( "true" ) );
+  }
+  else
+  {
+    composerMapElem.setAttribute( QStringLiteral( "keepLayerSet" ), QStringLiteral( "false" ) );
+  }
+
+  if ( mDrawAnnotations )
+  {
+    composerMapElem.setAttribute( QStringLiteral( "drawCanvasItems" ), QStringLiteral( "true" ) );
+  }
+  else
+  {
+    composerMapElem.setAttribute( QStringLiteral( "drawCanvasItems" ), QStringLiteral( "false" ) );
+  }
+
+  //extent
+  QDomElement extentElem = doc.createElement( QStringLiteral( "Extent" ) );
+  extentElem.setAttribute( QStringLiteral( "xmin" ), qgsDoubleToString( mExtent.xMinimum() ) );
+  extentElem.setAttribute( QStringLiteral( "xmax" ), qgsDoubleToString( mExtent.xMaximum() ) );
+  extentElem.setAttribute( QStringLiteral( "ymin" ), qgsDoubleToString( mExtent.yMinimum() ) );
+  extentElem.setAttribute( QStringLiteral( "ymax" ), qgsDoubleToString( mExtent.yMaximum() ) );
+  composerMapElem.appendChild( extentElem );
+
+  if ( mCrs.isValid() )
+  {
+    QDomElement crsElem = doc.createElement( QStringLiteral( "crs" ) );
+    mCrs.writeXml( crsElem, doc );
+    composerMapElem.appendChild( crsElem );
+  }
+
+  // follow map theme
+  composerMapElem.setAttribute( QStringLiteral( "followPreset" ), mFollowVisibilityPreset ? "true" : "false" );
+  composerMapElem.setAttribute( QStringLiteral( "followPresetName" ), mFollowVisibilityPresetName );
+
+  //map rotation
+  composerMapElem.setAttribute( QStringLiteral( "mapRotation" ), QString::number( mMapRotation ) );
+
+  //layer set
+  QDomElement layerSetElem = doc.createElement( QStringLiteral( "LayerSet" ) );
+  for ( const QgsMapLayerRef &layerRef : mLayers )
+  {
+    if ( !layerRef )
+      continue;
+    QDomElement layerElem = doc.createElement( QStringLiteral( "Layer" ) );
+    QDomText layerIdText = doc.createTextNode( layerRef.layerId );
+    layerElem.appendChild( layerIdText );
+
+    layerElem.setAttribute( QStringLiteral( "name" ), layerRef.name );
+    layerElem.setAttribute( QStringLiteral( "source" ), layerRef.source );
+    layerElem.setAttribute( QStringLiteral( "provider" ), layerRef.provider );
+
+    layerSetElem.appendChild( layerElem );
+  }
+  composerMapElem.appendChild( layerSetElem );
+
+  // override styles
+  if ( mKeepLayerStyles )
+  {
+    QDomElement stylesElem = doc.createElement( QStringLiteral( "LayerStyles" ) );
+    for ( auto styleIt = mLayerStyleOverrides.constBegin(); styleIt != mLayerStyleOverrides.constEnd(); ++styleIt )
+    {
+      QDomElement styleElem = doc.createElement( QStringLiteral( "LayerStyle" ) );
+
+      QgsMapLayerRef ref( styleIt.key() );
+      ref.resolve( mLayout->project() );
+
+      styleElem.setAttribute( QStringLiteral( "layerid" ), ref.layerId );
+      styleElem.setAttribute( QStringLiteral( "name" ), ref.name );
+      styleElem.setAttribute( QStringLiteral( "source" ), ref.source );
+      styleElem.setAttribute( QStringLiteral( "provider" ), ref.provider );
+
+      QgsMapLayerStyle style( styleIt.value() );
+      style.writeXml( styleElem );
+      stylesElem.appendChild( styleElem );
+    }
+    composerMapElem.appendChild( stylesElem );
+  }
+
+  //grids
+  mGridStack->writeXml( composerMapElem, doc, context );
+
+  //overviews
+  mOverviewStack->writeXml( composerMapElem, doc, context );
+
+  //atlas
+  QDomElement atlasElem = doc.createElement( QStringLiteral( "AtlasMap" ) );
+  atlasElem.setAttribute( QStringLiteral( "atlasDriven" ), mAtlasDriven );
+  atlasElem.setAttribute( QStringLiteral( "scalingMode" ), mAtlasScalingMode );
+  atlasElem.setAttribute( QStringLiteral( "margin" ), qgsDoubleToString( mAtlasMargin ) );
+  composerMapElem.appendChild( atlasElem );
+
+  return true;
+}
+
+bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
+{
+  mUpdatesEnabled = false;
+#if 0 //TODO
+  QString idRead = itemElem.attribute( QStringLiteral( "id" ), QStringLiteral( "not found" ) );
+  if ( idRead != QLatin1String( "not found" ) )
+  {
+    mId = idRead.toInt();
+    updateToolTip();
+  }
+#endif
+
+  //extent
+  QDomNodeList extentNodeList = itemElem.elementsByTagName( QStringLiteral( "Extent" ) );
+  if ( !extentNodeList.isEmpty() )
+  {
+    QDomElement extentElem = extentNodeList.at( 0 ).toElement();
+    double xmin, xmax, ymin, ymax;
+    xmin = extentElem.attribute( QStringLiteral( "xmin" ) ).toDouble();
+    xmax = extentElem.attribute( QStringLiteral( "xmax" ) ).toDouble();
+    ymin = extentElem.attribute( QStringLiteral( "ymin" ) ).toDouble();
+    ymax = extentElem.attribute( QStringLiteral( "ymax" ) ).toDouble();
+    setExtent( QgsRectangle( xmin, ymin, xmax, ymax ) );
+  }
+
+  QDomNodeList crsNodeList = itemElem.elementsByTagName( QStringLiteral( "crs" ) );
+  if ( !crsNodeList.isEmpty() )
+  {
+    QDomElement crsElem = crsNodeList.at( 0 ).toElement();
+    mCrs.readXml( crsElem );
+  }
+  else
+  {
+    mCrs = QgsCoordinateReferenceSystem();
+  }
+
+  //map rotation
+  mMapRotation = itemElem.attribute( QStringLiteral( "mapRotation" ), QStringLiteral( "0" ) ).toDouble();
+
+  // follow map theme
+  mFollowVisibilityPreset = itemElem.attribute( QStringLiteral( "followPreset" ) ).compare( QLatin1String( "true" ) ) == 0;
+  mFollowVisibilityPresetName = itemElem.attribute( QStringLiteral( "followPresetName" ) );
+
+  //mKeepLayerSet flag
+  QString keepLayerSetFlag = itemElem.attribute( QStringLiteral( "keepLayerSet" ) );
+  if ( keepLayerSetFlag.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  {
+    mKeepLayerSet = true;
+  }
+  else
+  {
+    mKeepLayerSet = false;
+  }
+
+  QString drawCanvasItemsFlag = itemElem.attribute( QStringLiteral( "drawCanvasItems" ), QStringLiteral( "true" ) );
+  if ( drawCanvasItemsFlag.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  {
+    mDrawAnnotations = true;
+  }
+  else
+  {
+    mDrawAnnotations = false;
+  }
+
+  mLayerStyleOverrides.clear();
+
+  //mLayers
+  mLayers.clear();
+  QDomNodeList layerSetNodeList = itemElem.elementsByTagName( QStringLiteral( "LayerSet" ) );
+  if ( !layerSetNodeList.isEmpty() )
+  {
+    QDomElement layerSetElem = layerSetNodeList.at( 0 ).toElement();
+    QDomNodeList layerIdNodeList = layerSetElem.elementsByTagName( QStringLiteral( "Layer" ) );
+    mLayers.reserve( layerIdNodeList.size() );
+    for ( int i = 0; i < layerIdNodeList.size(); ++i )
+    {
+      QDomElement layerElem = layerIdNodeList.at( i ).toElement();
+      QString layerId = layerElem.text();
+      QString layerName = layerElem.attribute( QStringLiteral( "name" ) );
+      QString layerSource = layerElem.attribute( QStringLiteral( "source" ) );
+      QString layerProvider = layerElem.attribute( QStringLiteral( "provider" ) );
+
+      QgsMapLayerRef ref( layerId, layerName, layerSource, layerProvider );
+      ref.resolveWeakly( mLayout->project() );
+      mLayers << ref;
+    }
+  }
+
+  // override styles
+  QDomNodeList layerStylesNodeList = itemElem.elementsByTagName( QStringLiteral( "LayerStyles" ) );
+  mKeepLayerStyles = !layerStylesNodeList.isEmpty();
+  if ( mKeepLayerStyles )
+  {
+    QDomElement layerStylesElem = layerStylesNodeList.at( 0 ).toElement();
+    QDomNodeList layerStyleNodeList = layerStylesElem.elementsByTagName( QStringLiteral( "LayerStyle" ) );
+    for ( int i = 0; i < layerStyleNodeList.size(); ++i )
+    {
+      const QDomElement &layerStyleElement = layerStyleNodeList.at( i ).toElement();
+      QString layerId = layerStyleElement.attribute( QStringLiteral( "layerid" ) );
+      QString layerName = layerStyleElement.attribute( QStringLiteral( "name" ) );
+      QString layerSource = layerStyleElement.attribute( QStringLiteral( "source" ) );
+      QString layerProvider = layerStyleElement.attribute( QStringLiteral( "provider" ) );
+      QgsMapLayerRef ref( layerId, layerName, layerSource, layerProvider );
+      ref.resolveWeakly( mLayout->project() );
+
+      QgsMapLayerStyle style;
+      style.readXml( layerStyleElement );
+      mLayerStyleOverrides.insert( ref.layerId, style.xmlData() );
+    }
+  }
+
+  mDrawing = false;
+  mNumCachedLayers = 0;
+  mCacheInvalidated = true;
+
+  //overviews
+  mOverviewStack->readXml( itemElem, doc, context );
+
+  //grids
+  mGridStack->readXml( itemElem, doc, context );
+
+  //atlas
+  QDomNodeList atlasNodeList = itemElem.elementsByTagName( QStringLiteral( "AtlasMap" ) );
+  if ( !atlasNodeList.isEmpty() )
+  {
+    QDomElement atlasElem = atlasNodeList.at( 0 ).toElement();
+    mAtlasDriven = ( atlasElem.attribute( QStringLiteral( "atlasDriven" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
+    if ( atlasElem.hasAttribute( QStringLiteral( "fixedScale" ) ) ) // deprecated XML
+    {
+      mAtlasScalingMode = ( atlasElem.attribute( QStringLiteral( "fixedScale" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) ) ? Fixed : Auto;
+    }
+    else if ( atlasElem.hasAttribute( QStringLiteral( "scalingMode" ) ) )
+    {
+      mAtlasScalingMode = static_cast<AtlasScalingMode>( atlasElem.attribute( QStringLiteral( "scalingMode" ) ).toInt() );
+    }
+    mAtlasMargin = atlasElem.attribute( QStringLiteral( "margin" ), QStringLiteral( "0.1" ) ).toDouble();
+  }
+  mUpdatesEnabled = true;
+  return true;
+}
+
 void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem *style, QWidget * )
 {
   if ( !mLayout || !painter || !painter->device() || !mUpdatesEnabled )

@@ -94,7 +94,7 @@ class QgsLayoutItemMapOverviewStack : QgsLayoutItemMapItemStack
  Returns a list of QgsLayoutItemMapOverviews contained by the stack.
  :rtype: list of QgsLayoutItemMapOverview
 %End
-    virtual bool readXml( const QDomElement &elem, const QDomDocument &doc );
+    virtual bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context );
 
 
 };
@@ -122,9 +122,9 @@ class QgsLayoutItemMapOverview : QgsLayoutItemMapItem
 
     virtual void draw( QPainter *painter );
 
-    virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
+    virtual bool writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
-    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
+    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context );
 
     virtual bool usesAdvancedEffects() const;
 

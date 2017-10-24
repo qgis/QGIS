@@ -98,15 +98,6 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      */
     QString picturePath() const;
 
-#if 0
-
-    /**
-     * Sets this items bound in scene coordinates such that 1 item size units
-     * corresponds to 1 scene size unit and resizes the svg symbol / image
-     */
-    void setSceneRect( const QRectF &rectangle ) override;
-#endif
-
     /**
      * Returns the rotation used for drawing the picture within the item's frame,
      * in degrees clockwise.

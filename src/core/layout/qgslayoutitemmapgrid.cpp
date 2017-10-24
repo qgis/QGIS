@@ -97,7 +97,7 @@ QgsLayoutItemMapGrid &QgsLayoutItemMapGridStack::operator[]( int idx )
   return *grid;
 }
 
-bool QgsLayoutItemMapGridStack::readXml( const QDomElement &elem, const QDomDocument &doc )
+bool QgsLayoutItemMapGridStack::readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
   removeItems();
 
@@ -107,7 +107,7 @@ bool QgsLayoutItemMapGridStack::readXml( const QDomElement &elem, const QDomDocu
   {
     QDomElement mapGridElem = mapGridNodeList.at( i ).toElement();
     QgsLayoutItemMapGrid *mapGrid = new QgsLayoutItemMapGrid( mapGridElem.attribute( QStringLiteral( "name" ) ), mMap );
-    mapGrid->readXml( mapGridElem, doc );
+    mapGrid->readXml( mapGridElem, doc, context );
     mItems.append( mapGrid );
   }
 
@@ -205,7 +205,7 @@ void QgsLayoutItemMapGrid::setGridLineColor( const QColor &c )
   }
 }
 
-bool QgsLayoutItemMapGrid::writeXml( QDomElement &elem, QDomDocument &doc ) const
+bool QgsLayoutItemMapGrid::writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   if ( elem.isNull() )
   {
@@ -219,9 +219,6 @@ bool QgsLayoutItemMapGrid::writeXml( QDomElement &elem, QDomDocument &doc ) cons
   mapGridElem.setAttribute( QStringLiteral( "offsetX" ), qgsDoubleToString( mGridOffsetX ) );
   mapGridElem.setAttribute( QStringLiteral( "offsetY" ), qgsDoubleToString( mGridOffsetY ) );
   mapGridElem.setAttribute( QStringLiteral( "crossLength" ), qgsDoubleToString( mCrossLength ) );
-
-  QgsReadWriteContext context;
-  context.setPathResolver( mLayout->project()->pathResolver() );
 
   QDomElement lineStyleElem = doc.createElement( QStringLiteral( "lineStyle" ) );
   QDomElement gridLineStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mGridLineSymbol.get(), doc, context );
@@ -271,12 +268,12 @@ bool QgsLayoutItemMapGrid::writeXml( QDomElement &elem, QDomDocument &doc ) cons
   mapGridElem.setAttribute( QStringLiteral( "unit" ), mGridUnit );
   mapGridElem.setAttribute( QStringLiteral( "blendMode" ), mBlendMode );
 
-  bool ok = QgsLayoutItemMapItem::writeXml( mapGridElem, doc );
+  bool ok = QgsLayoutItemMapItem::writeXml( mapGridElem, doc, context );
   elem.appendChild( mapGridElem );
   return ok;
 }
 
-bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocument &doc )
+bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
   Q_UNUSED( doc );
   if ( itemElem.isNull() )
@@ -284,7 +281,7 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
     return false;
   }
 
-  bool ok = QgsLayoutItemMapItem::readXml( itemElem, doc );
+  bool ok = QgsLayoutItemMapItem::readXml( itemElem, doc, context );
 
   //grid
   mGridStyle = QgsLayoutItemMapGrid::GridStyle( itemElem.attribute( QStringLiteral( "gridStyle" ), QStringLiteral( "0" ) ).toInt() );
@@ -304,9 +301,6 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
   mRightFrameDivisions = QgsLayoutItemMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "rightFrameDivisions" ), QStringLiteral( "0" ) ).toInt() );
   mTopFrameDivisions = QgsLayoutItemMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "topFrameDivisions" ), QStringLiteral( "0" ) ).toInt() );
   mBottomFrameDivisions = QgsLayoutItemMapGrid::DisplayMode( itemElem.attribute( QStringLiteral( "bottomFrameDivisions" ), QStringLiteral( "0" ) ).toInt() );
-
-  QgsReadWriteContext context;
-  context.setPathResolver( mLayout->project()->pathResolver() );
 
   QDomElement lineStyleElem = itemElem.firstChildElement( QStringLiteral( "lineStyle" ) );
   if ( !lineStyleElem.isNull() )
@@ -498,23 +492,23 @@ void QgsLayoutItemMapGrid::calculateCrsTransformLines() const
     QList< QPair< double, QPolygonF > >::const_iterator yGridIt = mTransformedYLines.constBegin();
     for ( ; yGridIt != mTransformedYLines.constEnd(); ++yGridIt )
     {
-      QgsPolyline yLine;
+      QgsPolylineXY yLine;
       for ( int i = 0; i < ( *yGridIt ).second.size(); ++i )
       {
         yLine.append( QgsPointXY( ( *yGridIt ).second.at( i ).x(), ( *yGridIt ).second.at( i ).y() ) );
       }
-      yLines << QgsGeometry::fromPolyline( yLine );
+      yLines << QgsGeometry::fromPolylineXY( yLine );
     }
     QList< QgsGeometry > xLines;
     QList< QPair< double, QPolygonF > >::const_iterator xGridIt = mTransformedXLines.constBegin();
     for ( ; xGridIt != mTransformedXLines.constEnd(); ++xGridIt )
     {
-      QgsPolyline xLine;
+      QgsPolylineXY xLine;
       for ( int i = 0; i < ( *xGridIt ).second.size(); ++i )
       {
         xLine.append( QgsPointXY( ( *xGridIt ).second.at( i ).x(), ( *xGridIt ).second.at( i ).y() ) );
       }
-      xLines << QgsGeometry::fromPolyline( xLine );
+      xLines << QgsGeometry::fromPolylineXY( xLine );
     }
 
     //now, loop through geometries and calculate intersection points
