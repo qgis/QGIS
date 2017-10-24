@@ -206,7 +206,10 @@ class QgsFilterLineEdit : QLineEdit
 
     void showSpinnerChanged();
 %Docstring
- \copydoc showSpinner
+ Show a spinner icon. This can be used for search boxes to indicate that
+ something is going on in the background.
+
+.. versionadded:: 3.0
 %End
 
   protected:

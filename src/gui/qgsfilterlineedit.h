@@ -224,7 +224,10 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     void valueChanged( const QString &value );
 
     /**
-     * \copydoc showSpinner
+     * Show a spinner icon. This can be used for search boxes to indicate that
+     * something is going on in the background.
+     *
+     * \since QGIS 3.0
      */
     void showSpinnerChanged();
 
