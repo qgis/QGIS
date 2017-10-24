@@ -22,6 +22,8 @@
 #include "qgsfeature.h"
 
 #include <ogr_api.h>
+#include <gdal.h>
+#include <gdalwarper.h>
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
@@ -81,6 +83,32 @@ namespace gdal
   };
 
   /**
+   * Closes and cleanups GDAL dataset.
+   */
+  struct GDALDatasetCloser
+  {
+
+    /**
+     * Destroys an gdal \a dataset, using the correct gdal calls.
+     */
+    void CORE_EXPORT operator()( void *dataset );
+
+  };
+
+  /**
+   * Closes and cleanups GDAL warp options.
+   */
+  struct GDALWarpOptionsDeleter
+  {
+
+    /**
+     * Destroys GDAL warp \a options, using the correct gdal calls.
+     */
+    void CORE_EXPORT operator()( GDALWarpOptions *options );
+
+  };
+
+  /**
    * Scoped OGR data source.
    */
   using ogr_datasource_unique_ptr = std::unique_ptr< void, OGRDataSourceDeleter>;
@@ -99,6 +127,16 @@ namespace gdal
    * Scoped OGR feature.
    */
   using ogr_feature_unique_ptr = std::unique_ptr< void, OGRFeatureDeleter >;
+
+  /**
+   * Scoped GDAL dataset.
+   */
+  using dataset_unique_ptr = std::unique_ptr< void, GDALDatasetCloser >;
+
+  /**
+   * Scoped GDAL warp options.
+   */
+  using warp_options_unique_ptr = std::unique_ptr< GDALWarpOptions, GDALWarpOptionsDeleter >;
 }
 
 /**

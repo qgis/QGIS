@@ -29,6 +29,7 @@
 #include "qgsgdalproviderbase.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatetransform.h"
+#include "qgsogrutils.h"
 
 #include <QString>
 #include <QStringList>
@@ -330,7 +331,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     mutable VSILFILE *mCachedMemFile = nullptr;
 
     //! Pointer to cached GDAL dataset
-    mutable GDALDatasetH mCachedGdalDataset = nullptr;
+    mutable gdal::dataset_unique_ptr mCachedGdalDataset;
 
     //! Current cache error last getCache() error.
     mutable QgsError mCachedError;

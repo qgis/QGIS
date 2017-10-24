@@ -16,6 +16,7 @@
 #include "qgsgdalprovider.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsogrutils.h"
 
 #include <QFileInfo>
 
@@ -42,31 +43,28 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem *parent,
     setState( Populated );
 
   GDALAllRegister();
-  GDALDatasetH hDS = GDALOpen( mPath.toUtf8().constData(), GA_Update );
+  gdal::dataset_unique_ptr hDS( GDALOpen( mPath.toUtf8().constData(), GA_Update ) );
 
   if ( hDS )
   {
     mCapabilities |= SetCrs;
-    GDALClose( hDS );
   }
 }
 
 
 bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
-  GDALDatasetH hDS = GDALOpen( mPath.toUtf8().constData(), GA_Update );
+  gdal::dataset_unique_ptr hDS( GDALOpen( mPath.toUtf8().constData(), GA_Update ) );
   if ( !hDS )
     return false;
 
   QString wkt = crs.toWkt();
-  if ( GDALSetProjection( hDS, wkt.toLocal8Bit().data() ) != CE_None )
+  if ( GDALSetProjection( hDS.get(), wkt.toLocal8Bit().data() ) != CE_None )
   {
-    GDALClose( hDS );
     QgsDebugMsg( "Could not set CRS" );
     return false;
   }
 
-  GDALClose( hDS );
   return true;
 }
 
@@ -294,7 +292,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  GDALDatasetH hDS = GDALOpen( path.toUtf8().constData(), GA_ReadOnly );
+  gdal::dataset_unique_ptr hDS( GDALOpen( path.toUtf8().constData(), GA_ReadOnly ) );
   CPLPopErrorHandler();
 
   if ( ! hDS )
@@ -303,7 +301,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     return nullptr;
   }
 
-  GDALDriverH hDriver = GDALGetDatasetDriver( hDS );
+  GDALDriverH hDriver = GDALGetDatasetDriver( hDS.get() );
   QString ogrDriverName = GDALGetDriverShortName( hDriver );
 
   // Skip this layer if it's handled by ogr:
@@ -312,9 +310,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     return nullptr;
   }
 
-  QStringList sublayers = QgsGdalProvider::subLayers( hDS );
-
-  GDALClose( hDS );
+  QStringList sublayers = QgsGdalProvider::subLayers( hDS.get() );
 
   QgsDebugMsgLevel( "GdalDataset opened " + path, 2 );
 

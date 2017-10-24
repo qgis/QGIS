@@ -257,18 +257,16 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
     {
       if ( !overwrite && !layerName.isEmpty() )
       {
-        GDALDatasetH hDS = GDALOpenEx( uri.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr );
+        gdal::dataset_unique_ptr hDS( GDALOpenEx( uri.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
         if ( hDS )
         {
-          if ( GDALDatasetGetLayerByName( hDS, layerName.toUtf8().constData() ) )
+          if ( GDALDatasetGetLayerByName( hDS.get(), layerName.toUtf8().constData() ) )
           {
-            GDALClose( hDS );
             if ( errorMessage )
               *errorMessage += QObject::tr( "Layer %2 of %1 exists and overwrite flag is false." )
                                .arg( uri, layerName );
             return QgsVectorLayerExporter::ErrCreateDataSource;
           }
-          GDALClose( hDS );
         }
       }
       action = QgsVectorFileWriter::CreateOrOverwriteLayer;
@@ -311,10 +309,10 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
     bool firstFieldIsFid = false;
     if ( !layerName.isEmpty() )
     {
-      GDALDatasetH hDS = GDALOpenEx( uri.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr );
+      gdal::dataset_unique_ptr hDS( GDALOpenEx( uri.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
       if ( hDS )
       {
-        OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, layerName.toUtf8().constData() );
+        OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS.get(), layerName.toUtf8().constData() );
         if ( hLayer )
         {
           // Expose the OGR FID if it comes from a "real" column (typically GPKG)
@@ -324,7 +322,6 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
                             fields.indexFromName( OGR_L_GetFIDColumn( hLayer ) ) < 0;
 
         }
-        GDALClose( hDS );
       }
     }
 
@@ -2727,8 +2724,8 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     QFile::remove( uri );
   }
 
-  GDALDatasetH dataSource;
-  dataSource = OGR_Dr_CreateDataSource( driver, uri.toUtf8().constData(), nullptr );
+  gdal::dataset_unique_ptr dataSource;
+  dataSource.reset( OGR_Dr_CreateDataSource( driver, uri.toUtf8().constData(), nullptr ) );
   if ( !dataSource )
   {
     QgsMessageLog::logMessage( QObject::tr( "Creating the data source %1 failed: %2" ).arg( uri, QString::fromUtf8( CPLGetLastErrorMsg() ) ), QObject::tr( "OGR" ) );
@@ -2812,7 +2809,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   }
 
   OGRLayerH layer;
-  layer = GDALDatasetCreateLayer( dataSource, QFileInfo( uri ).completeBaseName().toUtf8().constData(), reference, OGRvectortype, papszOptions );
+  layer = GDALDatasetCreateLayer( dataSource.get(), QFileInfo( uri ).completeBaseName().toUtf8().constData(), reference, OGRvectortype, papszOptions );
   CSLDestroy( papszOptions );
 
   QgsSettings settings;
@@ -2902,7 +2899,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     }
   }
 
-  GDALClose( dataSource );
+  dataSource.reset();
 
   if ( driverName == QLatin1String( "ESRI Shapefile" ) )
   {

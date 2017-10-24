@@ -10,7 +10,6 @@
 
 
 
-
 class QgsNineCellFilter
 {
 %Docstring

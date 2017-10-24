@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsgeopackagedataitems.h"
+#include "qgsogrutils.h"
 
 #include <QFileInfo>
 #include <QTextStream>
@@ -53,13 +54,12 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
   setState( Populated ); // children are not expected
 
   OGRRegisterAll();
-  GDALDatasetH hDataSource = GDALOpenEx( mPath.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr );
+  gdal::dataset_unique_ptr hDataSource( GDALOpenEx( mPath.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
 
   if ( hDataSource )
   {
-    GDALDriverH hDriver = GDALGetDatasetDriver( hDataSource );
+    GDALDriverH hDriver = GDALGetDatasetDriver( hDataSource.get() );
     QString driverName = GDALGetDriverShortName( hDriver );
-    GDALClose( hDataSource );
 
     if ( driverName == QLatin1String( "ESRI Shapefile" ) )
       mCapabilities |= SetCrs;
@@ -248,7 +248,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
     // do not print errors, but write to debug
     CPLPushErrorHandler( CPLQuietErrorHandler );
     CPLErrorReset();
-    GDALDatasetH hDS = GDALOpen( path.toUtf8().constData(), GA_ReadOnly );
+    gdal::dataset_unique_ptr hDS( GDALOpen( path.toUtf8().constData(), GA_ReadOnly ) );
     CPLPopErrorHandler();
 
     if ( ! hDS )
@@ -259,8 +259,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
     else
     {
       QString uri( QStringLiteral( "%1:%2" ).arg( driver, path ) );
-      QString name = GDALGetMetadataItem( hDS, "IDENTIFIER", NULL );
-      GDALClose( hDS );
+      QString name = GDALGetMetadataItem( hDS.get(), "IDENTIFIER", NULL );
       // Fallback: will not be able to delete the table
       if ( name.isEmpty() )
       {
@@ -419,19 +418,17 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
 
-  GDALDatasetH hDataSource = GDALOpenEx( mPath.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr );
+  gdal::dataset_unique_ptr hDataSource( GDALOpenEx( mPath.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   if ( !hDataSource )
     return children;
-  int numLayers = GDALDatasetGetLayerCount( hDataSource );
+  int numLayers = GDALDatasetGetLayerCount( hDataSource.get() );
 
   children.reserve( numLayers );
   for ( int i = 0; i < numLayers; ++i )
   {
-    QgsOgrLayerItem *item = dataItemForLayer( this, QString(), mPath, hDataSource, i, true );
+    QgsOgrLayerItem *item = dataItemForLayer( this, QString(), mPath, hDataSource.get(), i, true );
     children.append( item );
   }
-
-  GDALClose( hDataSource );
 
   return children;
 }
@@ -642,7 +639,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  GDALDatasetH hDS = GDALOpenEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr );
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   CPLPopErrorHandler();
 
   if ( ! hDS )
@@ -651,10 +648,10 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     return nullptr;
   }
 
-  GDALDriverH hDriver = GDALGetDatasetDriver( hDS );
+  GDALDriverH hDriver = GDALGetDatasetDriver( hDS.get() );
   QString driverName = GDALGetDriverShortName( hDriver );
   QgsDebugMsgLevel( QString( "GDAL Driver : %1" ).arg( driverName ), 2 );
-  int numLayers = GDALDatasetGetLayerCount( hDS );
+  int numLayers = GDALDatasetGetLayerCount( hDS.get() );
 
   // GeoPackage needs a specialized data item, mainly because of raster deletion not
   // yet implemented in GDAL (2.2.1)
@@ -668,9 +665,8 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   }
   else
   {
-    item = dataItemForLayer( parentItem, name, path, hDS, 0 );
+    item = dataItemForLayer( parentItem, name, path, hDS.get(), 0 );
   }
-  GDALClose( hDS );
   return item;
 }
 

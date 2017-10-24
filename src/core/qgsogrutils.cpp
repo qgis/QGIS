@@ -51,6 +51,16 @@ void gdal::OGRFeatureDeleter::operator()( void *feature )
   OGR_F_Destroy( feature );
 }
 
+void gdal::GDALDatasetCloser::operator()( void *dataset )
+{
+  GDALClose( dataset );
+}
+
+void gdal::GDALWarpOptionsDeleter::operator()( GDALWarpOptions *options )
+{
+  GDALDestroyWarpOptions( options );
+}
+
 QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec *encoding )
 {
   QgsFeature feature;

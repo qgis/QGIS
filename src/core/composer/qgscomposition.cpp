@@ -49,6 +49,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsogrutils.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -2760,16 +2761,15 @@ void QgsComposition::georeferenceOutput( const QString &file, QgsComposerMap *ma
   // important - we need to manually specify the DPI in advance, as GDAL will otherwise
   // assume a DPI of 150
   CPLSetConfigOption( "GDAL_PDF_DPI", QString::number( dpi ).toLocal8Bit().constData() );
-  GDALDatasetH outputDS = GDALOpen( file.toLocal8Bit().constData(), GA_Update );
+  gdal::dataset_unique_ptr outputDS( GDALOpen( file.toLocal8Bit().constData(), GA_Update ) );
   if ( outputDS )
   {
-    GDALSetGeoTransform( outputDS, t );
+    GDALSetGeoTransform( outputDS.get(), t );
 #if 0
     //TODO - metadata can be set here, e.g.:
     GDALSetMetadataItem( outputDS, "AUTHOR", "me", nullptr );
 #endif
-    GDALSetProjection( outputDS, map->crs().toWkt().toLocal8Bit().constData() );
-    GDALClose( outputDS );
+    GDALSetProjection( outputDS.get(), map->crs().toWkt().toLocal8Bit().constData() );
   }
   CPLSetConfigOption( "GDAL_PDF_DPI", nullptr );
   delete[] t;

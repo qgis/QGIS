@@ -37,7 +37,6 @@ class QgsAlignRaster
 %Docstring
 Construct raster info with a path to a raster file
 %End
-        ~RasterInfo();
 
 
         bool isValid() const;
