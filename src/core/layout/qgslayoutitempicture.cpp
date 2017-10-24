@@ -682,7 +682,7 @@ QString QgsLayoutItemPicture::picturePath() const
   return mSourcePath;
 }
 
-bool QgsLayoutItemPicture::writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
+bool QgsLayoutItemPicture::writePropertiesToElement( QDomElement &elem, QDomDocument &, const QgsReadWriteContext &context ) const
 {
   QString imagePath = mSourcePath;
 

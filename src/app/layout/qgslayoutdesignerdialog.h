@@ -245,6 +245,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void addPages();
     void statusMessageReceived( const QString &message );
     void dockVisibilityChanged( bool visible );
+    void undoRedoOccurredForItems( const QSet< QString > itemUuids );
 
   private:
 
@@ -311,6 +312,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
       bool isActive;
     };
     QMap< QString, PanelStatus > mPanelStatus;
+
+    bool mBlockItemOptions = false;
 
     //! Save window state
     void saveWindowState();

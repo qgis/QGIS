@@ -581,6 +581,7 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   mLayoutToolbar->addAction( mUndoAction );
   mLayoutToolbar->addAction( mRedoAction );
 
+  connect( mLayout->undoStack(), &QgsLayoutUndoStack::undoRedoOccurredForItems, this, &QgsLayoutDesignerDialog::undoRedoOccurredForItems );
   connect( mActionClearGuides, &QAction::triggered, &mLayout->guides(), [ = ]
   {
     mLayout->guides().clear();
@@ -620,6 +621,9 @@ void QgsLayoutDesignerDialog::setIconSizes( int size )
 
 void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item, bool bringPanelToFront )
 {
+  if ( mBlockItemOptions )
+    return;
+
   if ( !item )
   {
     delete mItemPropertiesStack->takeMainPanel();
@@ -1071,6 +1075,27 @@ void QgsLayoutDesignerDialog::dockVisibilityChanged( bool visible )
   {
     whileBlocking( mActionHidePanels )->setChecked( false );
   }
+}
+
+void QgsLayoutDesignerDialog::undoRedoOccurredForItems( const QSet<QString> itemUuids )
+{
+  mBlockItemOptions = true;
+
+  mLayout->deselectAll();
+  QgsLayoutItem *focusItem = nullptr;
+  for ( const QString &uuid : itemUuids )
+  {
+    QgsLayoutItem *item = mLayout->itemByUuid( uuid );
+    if ( !item )
+      continue;
+
+    item->setSelected( true );
+    focusItem = item;
+  }
+  mBlockItemOptions = false;
+
+  if ( focusItem )
+    showItemOptions( focusItem );
 }
 
 QgsLayoutView *QgsLayoutDesignerDialog::view()

@@ -41,6 +41,7 @@ class TestQgsLayout: public QObject
     void addItem();
     void layoutItems();
     void layoutItemByUuid();
+    void undoRedoOccurred();
 
   private:
     QString mReport;
@@ -417,6 +418,55 @@ void TestQgsLayout::layoutItemByUuid()
   QCOMPARE( l.itemByUuid( shape1->uuid() ), shape1 );
   QCOMPARE( l.itemByUuid( shape2->uuid() ), shape2 );
   QCOMPARE( l.itemByUuid( map1->uuid() ), map1 );
+}
+
+void TestQgsLayout::undoRedoOccurred()
+{
+  // test emitting undo/redo occurred signal
+  QgsProject proj;
+  QgsLayout l( &proj );
+
+  QSignalSpy spyOccurred( l.undoStack(), &QgsLayoutUndoStack::undoRedoOccurredForItems );
+
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( item );
+
+  QCOMPARE( spyOccurred.count(), 0 );
+  //adds a new undo command
+  item->setId( "test" );
+  QCOMPARE( spyOccurred.count(), 0 );
+
+  QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( item2 );
+  item2->setId( "test2" );
+  QCOMPARE( spyOccurred.count(), 0 );
+
+  l.undoStack()->stack()->undo();
+  QCOMPARE( spyOccurred.count(), 1 );
+  QSet< QString > items = qvariant_cast< QSet< QString > >( spyOccurred.at( 0 ).at( 0 ) );
+  QCOMPARE( items, QSet< QString >() << item2->uuid() );
+
+  l.undoStack()->stack()->redo();
+  QCOMPARE( spyOccurred.count(), 2 );
+  items = qvariant_cast< QSet< QString> >( spyOccurred.at( 1 ).at( 0 ) );
+  QCOMPARE( items, QSet< QString >() << item2->uuid() );
+
+  // macro undo
+  l.undoStack()->beginMacro( QString() );
+  item->setId( "new id" );
+  item2->setId( "new id2" );
+  l.undoStack()->endMacro();
+  QCOMPARE( spyOccurred.count(), 2 );
+
+  l.undoStack()->stack()->undo();
+  QCOMPARE( spyOccurred.count(), 3 );
+  items = qvariant_cast< QSet< QString > >( spyOccurred.at( 2 ).at( 0 ) );
+  QCOMPARE( items, QSet< QString >() << item->uuid() << item2->uuid() );
+  l.undoStack()->stack()->redo();
+  QCOMPARE( spyOccurred.count(), 4 );
+  items = qvariant_cast< QSet< QString > >( spyOccurred.at( 3 ).at( 0 ) );
+  QCOMPARE( items, QSet< QString >() << item->uuid() << item2->uuid() );
+
 }
 
 
