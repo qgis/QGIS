@@ -87,6 +87,7 @@ class QgsLayoutItemMap : QgsLayoutItem
  item to ensure that the extent exactly matches the specified extent, with no
  overlap or margin. This method implicitly alters the map scale.
 .. seealso:: zoomToExtent()
+.. seealso:: extentChanged()
 %End
 
     void zoomToExtent( const QgsRectangle &extent );
@@ -102,6 +103,7 @@ class QgsLayoutItemMap : QgsLayoutItem
 %Docstring
  Returns the current map extent.
 .. seealso:: visibleExtentPolygon()
+.. seealso:: extentChanged()
  :rtype: QgsRectangle
 %End
 
@@ -274,6 +276,7 @@ Returns true if the map contains layers with blend modes or flattened layers for
  Sets the ``rotation`` for the map - this does not affect the composer item shape, only the
  way the map is drawn within the item. Rotation is in degrees, clockwise.
 .. seealso:: mapRotation()
+.. seealso:: mapRotationChanged()
 %End
 
     double mapRotation( QgsLayoutObject::PropertyValueType valueType = QgsLayoutObject::EvaluatedValue ) const;
@@ -283,6 +286,7 @@ Returns true if the map contains layers with blend modes or flattened layers for
  or the current evaluated rotation (which may be affected by data driven rotation
  settings).
 .. seealso:: setMapRotation()
+.. seealso:: mapRotationChanged()
  :rtype: float
 %End
 
@@ -457,11 +461,19 @@ Transforms map coordinates to item coordinates (considering rotation and move of
 %End
 
   signals:
+
     void extentChanged();
+%Docstring
+ Is emitted when the map's extent changes.
+.. seealso:: setExtent()
+.. seealso:: extent()
+%End
 
     void mapRotationChanged( double newRotation );
 %Docstring
-Is emitted on rotation change to notify north arrow pictures
+ Is emitted when the map's rotation changes.
+.. seealso:: setMapRotation()
+.. seealso:: mapRotation()
 %End
 
     void preparedForAtlas();
@@ -474,7 +486,6 @@ Is emitted when the map has been prepared for atlas rendering, just before actua
  Emitted when layer style overrides are changed... a means to let
  associated legend items know they should update
 %End
-
 
   public slots:
 

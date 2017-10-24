@@ -114,6 +114,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * item to ensure that the extent exactly matches the specified extent, with no
      * overlap or margin. This method implicitly alters the map scale.
      * \see zoomToExtent()
+     * \see extentChanged()
      */
     void setExtent( const QgsRectangle &extent );
 
@@ -129,6 +130,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     /**
      * Returns the current map extent.
      * \see visibleExtentPolygon()
+     * \see extentChanged()
      */
     QgsRectangle extent() const;
 
@@ -282,6 +284,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * Sets the \a rotation for the map - this does not affect the composer item shape, only the
      * way the map is drawn within the item. Rotation is in degrees, clockwise.
      * \see mapRotation()
+     * \see mapRotationChanged()
      */
     void setMapRotation( double rotation );
 
@@ -291,6 +294,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * or the current evaluated rotation (which may be affected by data driven rotation
      * settings).
      * \see setMapRotation()
+     * \see mapRotationChanged()
      */
     double mapRotation( QgsLayoutObject::PropertyValueType valueType = QgsLayoutObject::EvaluatedValue ) const;
 
@@ -441,9 +445,19 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     QgsRectangle requestedExtent() const;
 
   signals:
+
+    /**
+     * Is emitted when the map's extent changes.
+     * \see setExtent()
+     * \see extent()
+     */
     void extentChanged();
 
-    //! Is emitted on rotation change to notify north arrow pictures
+    /**
+     * Is emitted when the map's rotation changes.
+     * \see setMapRotation()
+     * \see mapRotation()
+     */
     void mapRotationChanged( double newRotation );
 
     //! Is emitted when the map has been prepared for atlas rendering, just before actual rendering
@@ -454,7 +468,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * associated legend items know they should update
      */
     void layerStyleOverridesChanged();
-
 
   public slots:
 
