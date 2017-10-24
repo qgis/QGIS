@@ -512,6 +512,11 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, const 
   }
 
   mLayer->endEditCommand();
+
+  // refresh table with updated values
+  // fixes https://issues.qgis.org/issues/17312
+  QgsAttributeTableModel* masterModel = mMainView->masterModel();
+  masterModel->reload( masterModel->index( 0, 0 ), masterModel->index( masterModel->rowCount() - 1, masterModel->columnCount() - 1 ) );
 }
 
 void QgsAttributeTableDialog::replaceSearchWidget( QWidget* oldw, QWidget* neww )
