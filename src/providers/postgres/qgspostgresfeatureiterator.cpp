@@ -66,6 +66,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   {
     // can't reproject mFilterRect
     mClosed = true;
+    iteratorClosed();
     return;
   }
 
@@ -98,6 +99,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     if ( request.filterFids().isEmpty() )
     {
       mClosed = true;
+      iteratorClosed();
     }
     else
     {
