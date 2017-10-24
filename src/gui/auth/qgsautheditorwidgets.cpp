@@ -141,15 +141,15 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
            this, &QgsAuthEditorWidgets::authMessageOut );
 
   // set up utility actions menu
-  mActionSetMasterPassword = new QAction( QStringLiteral( "Input master password" ), this );
-  mActionClearCachedMasterPassword = new QAction( QStringLiteral( "Clear cached master password" ), this );
-  mActionResetMasterPassword = new QAction( QStringLiteral( "Reset master password" ), this );
-  mActionClearCachedAuthConfigs = new QAction( QStringLiteral( "Clear cached authentication configurations" ), this );
-  mActionRemoveAuthConfigs = new QAction( QStringLiteral( "Remove all authentication configurations" ), this );
-  mActionEraseAuthDatabase = new QAction( QStringLiteral( "Erase authentication database" ), this );
+  mActionSetMasterPassword = new QAction( tr( "Input master password" ), this );
+  mActionClearCachedMasterPassword = new QAction( tr( "Clear cached master password" ), this );
+  mActionResetMasterPassword = new QAction( tr( "Reset master password" ), this );
+  mActionClearCachedAuthConfigs = new QAction( tr( "Clear cached authentication configurations" ), this );
+  mActionRemoveAuthConfigs = new QAction( tr( "Remove all authentication configurations" ), this );
+  mActionEraseAuthDatabase = new QAction( tr( "Erase authentication database" ), this );
 
-  mActionClearAccessCacheNow = new QAction( QStringLiteral( "Clear network authentication access cache" ), this );
-  mActionAutoClearAccessCache = new QAction( QStringLiteral( "Automatically clear network authentication access cache on SSL errors" ), this );
+  mActionClearAccessCacheNow = new QAction( tr( "Clear network authentication access cache" ), this );
+  mActionAutoClearAccessCache = new QAction( tr( "Automatically clear network authentication access cache on SSL errors" ), this );
   mActionAutoClearAccessCache->setCheckable( true );
   mActionAutoClearAccessCache->setChecked( QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ), true, QgsSettings::Section::Auth ).toBool( ) );
 
