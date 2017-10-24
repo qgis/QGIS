@@ -533,10 +533,17 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
   {
     QMessageBox::critical( nullptr, tr( "Error" ), tr( "An error occurred while evaluating the calculation string:\n%1" ).arg( error ) );
     mLayer->destroyEditCommand();
-    return;
   }
+  else
+  {
+    mLayer->endEditCommand();
 
-  mLayer->endEditCommand();
+    // refresh table with updated values
+    // fixes https://issues.qgis.org/issues/17312
+    QgsAttributeTableModel *masterModel = mMainView->masterModel();
+    int modelColumn = masterModel->fieldCol( fieldindex );
+    masterModel->reload( masterModel->index( 0, modelColumn ), masterModel->index( masterModel->rowCount() - 1, modelColumn ) );
+  }
 }
 
 void QgsAttributeTableDialog::replaceSearchWidget( QWidget *oldw, QWidget *neww )
