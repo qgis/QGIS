@@ -27,6 +27,7 @@
 #include "qgsauthcertutils.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
+#include "qgsapplication.h"
 
 
 QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent,
@@ -36,12 +37,12 @@ QgsAuthImportCertDialog::QgsAuthImportCertDialog( QWidget *parent,
   , mFilter( filter )
   , mInput( input )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mDisabled = true;
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else

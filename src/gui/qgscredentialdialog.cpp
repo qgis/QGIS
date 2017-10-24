@@ -20,6 +20,7 @@
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsapplication.h"
 
 #include <QPushButton>
 #include <QThread>
@@ -73,7 +74,7 @@ void QgsCredentialDialog::requestCredentials( const QString &realm, QString *use
   QgsDebugMsg( "Entering." );
   stackedWidget->setCurrentIndex( 0 );
 
-  chkbxPasswordHelperEnable->setChecked( QgsAuthManager::instance()->passwordHelperEnabled() );
+  chkbxPasswordHelperEnable->setChecked( QgsApplication::authManager()->passwordHelperEnabled() );
   labelRealm->setText( realm );
   leUsername->setText( *username );
   lePassword->setText( *password );
@@ -127,7 +128,7 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
   QString titletxt( stored ? tr( "Enter CURRENT master authentication password" ) : tr( "Set NEW master authentication password" ) );
   lblPasswordTitle->setText( titletxt );
 
-  chkbxPasswordHelperEnable->setChecked( QgsAuthManager::instance()->passwordHelperEnabled() );
+  chkbxPasswordHelperEnable->setChecked( QgsApplication::authManager()->passwordHelperEnabled() );
 
   leMasterPassVerify->setVisible( !stored );
   lblDontForget->setVisible( !stored );
@@ -161,7 +162,7 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
       bool passok = !leMasterPass->text().isEmpty();
       if ( passok && stored && !chkbxEraseAuthDb->isChecked() )
       {
-        passok = QgsAuthManager::instance()->verifyMasterPassword( leMasterPass->text() );
+        passok = QgsApplication::authManager()->verifyMasterPassword( leMasterPass->text() );
       }
 
       if ( passok && !stored )
@@ -173,15 +174,15 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
       {
         if ( stored && chkbxEraseAuthDb->isChecked() )
         {
-          QgsAuthManager::instance()->setScheduledAuthDatabaseErase( true );
+          QgsApplication::authManager()->setScheduledAuthDatabaseErase( true );
         }
         else
         {
           *password = leMasterPass->text();
           // Let's store user's preferences to use the password helper
-          if ( chkbxPasswordHelperEnable->isChecked() != QgsAuthManager::instance()->passwordHelperEnabled() )
+          if ( chkbxPasswordHelperEnable->isChecked() != QgsApplication::authManager()->passwordHelperEnabled() )
           {
-            QgsAuthManager::instance()->setPasswordHelperEnabled( chkbxPasswordHelperEnable->isChecked() );
+            QgsApplication::authManager()->setPasswordHelperEnabled( chkbxPasswordHelperEnable->isChecked() );
           }
         }
         break;

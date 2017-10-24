@@ -53,7 +53,7 @@ void QgsFileDownloader::startDownload()
   QNetworkRequest request( mUrl );
   if ( !mAuthCfg.isEmpty() )
   {
-    QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
+    QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
   }
 
   if ( mReply )
@@ -68,7 +68,7 @@ void QgsFileDownloader::startDownload()
   mReply = nam->get( request );
   if ( !mAuthCfg.isEmpty() )
   {
-    QgsAuthManager::instance()->updateNetworkReply( mReply, mAuthCfg );
+    QgsApplication::authManager()->updateNetworkReply( mReply, mAuthCfg );
   }
 
   connect( mReply, &QNetworkReply::readyRead, this, &QgsFileDownloader::onReadyRead );

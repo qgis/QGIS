@@ -30,6 +30,7 @@
 #include "qgsauthtrustedcasdialog.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
@@ -70,7 +71,7 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
   ignoreButton()->setDefault( false );
   abortButton()->setDefault( true );
 
-  if ( !QgsAuthManager::instance()->isDisabled() )
+  if ( !QgsApplication::authManager()->isDisabled() )
   {
     saveButton()->setEnabled( false );
 
@@ -174,7 +175,7 @@ void QgsAuthSslErrorsDialog::buttonBox_clicked( QAbstractButton *button )
   switch ( btnenum )
   {
     case QDialogButtonBox::Ignore:
-      QgsAuthManager::instance()->updateIgnoredSslErrorsCache(
+      QgsApplication::authManager()->updateIgnoredSslErrorsCache(
         QStringLiteral( "%1:%2" ).arg( mDigest, mHostPort ),
         mSslErrors );
       accept();
@@ -240,7 +241,7 @@ void QgsAuthSslErrorsDialog::btnChainCAs_clicked()
 
 void QgsAuthSslErrorsDialog::grpbxSslErrors_collapsedStateChanged( bool collapsed )
 {
-  if ( !collapsed && QgsAuthManager::instance()->isDisabled() )
+  if ( !collapsed && QgsApplication::authManager()->isDisabled() )
   {
     btnChainInfo->setVisible( false );
     btnChainCAs->setVisible( false );

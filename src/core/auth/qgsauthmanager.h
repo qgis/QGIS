@@ -74,10 +74,14 @@ class CORE_EXPORT QgsAuthManager : public QObject
     Q_ENUM( MessageLevel );
 
     /**
-     * Enforce singleton pattern
-     * \note To set up the manager instance and initialize everything use QgsAuthManager::instance()->init()
+     * \brief init initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
+     * \param pluginPath the plugin path
+     * \param authDatabasePath the authentication DB path
+     * \return true on success
+     * \see QgsApplication::pluginPath
+     * \see QgsApplication::qgisAuthDatabaseFilePath
      */
-    static QgsAuthManager *instance();
+    bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
 
     ~QgsAuthManager();
 
@@ -90,8 +94,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Name of the authentication database table that stores server exceptions/configs
     const QString authDatabaseServersTable() const { return AUTH_SERVERS_TABLE; }
 
-    //! Initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
-    bool init( const QString &pluginPath = QString() );
 
     //! Whether QCA has the qca-ossl plugin, which a base run-time requirement
     bool isDisabled() const;
@@ -643,6 +645,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
     void tryToStartDbErase();
 
   protected:
+
+    /**
+     * Enforce singleton pattern
+     * \note To set up the manager instance and initialize everything use QgsAuthManager::instance()->init()
+     */
+    static QgsAuthManager *instance();
+
     explicit QgsAuthManager();
 
   private:
@@ -790,6 +799,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     //! password helper folder in the wallets
     static const QLatin1String AUTH_PASSWORD_HELPER_FOLDER_NAME;
+
+    friend class QgsApplication;
 
 };
 
