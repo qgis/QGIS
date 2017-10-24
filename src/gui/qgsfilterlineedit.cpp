@@ -17,11 +17,13 @@
 
 #include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
+#include "qgsanimatedicon.h"
 
 #include <QToolButton>
 #include <QStyle>
 #include <QFocusEvent>
 #include <QPainter>
+#include <QDebug>
 
 QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue )
   : QLineEdit( parent )
@@ -151,6 +153,13 @@ void QgsFilterLineEdit::paintEvent( QPaintEvent *e )
     QPainter p( this );
     p.drawPixmap( r.left(), r.top(), mSearchIconPixmap );
   }
+
+  if ( mShowSpinner )
+  {
+    QRect r = busySpinnerRect();
+    QPainter p( this );
+    p.drawPixmap( r.left(), r.top(), mBusySpinner->icon().pixmap( r.size() ) );
+  }
 }
 
 void QgsFilterLineEdit::leaveEvent( QEvent *e )
@@ -184,6 +193,38 @@ void QgsFilterLineEdit::onTextChanged( const QString &text )
   }
 }
 
+void QgsFilterLineEdit::updateBusySpinner()
+{
+  update();
+}
+
+bool QgsFilterLineEdit::showSpinner() const
+{
+  return mShowSpinner;
+}
+
+void QgsFilterLineEdit::setShowSpinner( bool showSpinner )
+{
+  if ( showSpinner == mShowSpinner )
+    return;
+
+  if ( showSpinner )
+  {
+    if ( !mBusySpinner )
+      mBusySpinner = new QgsAnimatedIcon( QgsApplication::iconPath( QStringLiteral( "/mIconLoading.gif" ) ), this );
+
+    mBusySpinner->connectFrameChanged( this, &QgsFilterLineEdit::updateBusySpinner );
+  }
+  else
+  {
+    mBusySpinner->disconnectFrameChanged( this, &QgsFilterLineEdit::updateBusySpinner );
+    update();
+  }
+
+  mShowSpinner = showSpinner;
+  emit showSpinnerChanged();
+}
+
 bool QgsFilterLineEdit::shouldShowClear() const
 {
   if ( !isEnabled() || isReadOnly() || !mClearButtonVisible )
@@ -204,6 +245,18 @@ QRect QgsFilterLineEdit::clearRect() const
 {
   int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
   return QRect( rect().right() - frameWidth * 2 - mClearIconSize.width(),
+                ( rect().bottom() + 1 - mClearIconSize.height() ) / 2,
+                mClearIconSize.width(),
+                mClearIconSize.height() );
+}
+
+QRect QgsFilterLineEdit::busySpinnerRect() const
+{
+  int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
+
+  int offset = shouldShowClear() ? mClearIconSize.width() + frameWidth * 2 : frameWidth;
+
+  return QRect( rect().right() - offset - mClearIconSize.width(),
                 ( rect().bottom() + 1 - mClearIconSize.height() ) / 2,
                 mClearIconSize.width(),
                 mClearIconSize.height() );

@@ -23,7 +23,7 @@
 #include "qgis_gui.h"
 
 class QToolButton;
-
+class QgsAnimatedIcon;
 
 /**
  * \class QgsFilterLineEdit
@@ -54,6 +54,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     Q_PROPERTY( QString value READ value WRITE setValue NOTIFY valueChanged )
     Q_PROPERTY( bool showClearButton READ showClearButton WRITE setShowClearButton )
     Q_PROPERTY( bool showSearchIcon READ showSearchIcon WRITE setShowSearchIcon )
+    Q_PROPERTY( bool showSpinner READ showSpinner WRITE setShowSpinner NOTIFY showSpinnerChanged )
 
   public:
 
@@ -182,6 +183,22 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     inline bool isNull() const { return text() == mNullValue; }
 
+    /**
+     * Show a spinner icon. This can be used for search boxes to indicate that
+     * something is going on in the background.
+     *
+     * \since QGIS 3.0
+     */
+    bool showSpinner() const;
+
+    /**
+     * Show a spinner icon. This can be used for search boxes to indicate that
+     * something is going on in the background.
+     *
+     * \since QGIS 3.0
+     */
+    void setShowSpinner( bool showSpinner );
+
   public slots:
 
     /**
@@ -206,6 +223,11 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     void valueChanged( const QString &value );
 
+    /**
+     * \copydoc showSpinner
+     */
+    void showSpinnerChanged();
+
   protected:
     void mousePressEvent( QMouseEvent *e ) override;
     void mouseMoveEvent( QMouseEvent *e ) override;
@@ -215,11 +237,13 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
   private slots:
     void onTextChanged( const QString &text );
+    void updateBusySpinner();
 
   private:
 
     bool mClearButtonVisible = true;
     bool mSearchIconVisible = false;
+    bool mShowSpinner = false;
 
     ClearMode mClearMode = ClearToNull;
 
@@ -235,12 +259,14 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
     QSize mSearchIconSize;
     QPixmap mSearchIconPixmap;
+    QgsAnimatedIcon *mBusySpinner = nullptr;
 
     //! Returns true if clear button should be shown
     bool shouldShowClear() const;
 
     QRect clearRect() const;
     QRect searchRect() const;
+    QRect busySpinnerRect() const;
 };
 
 /// @cond PRIVATE
