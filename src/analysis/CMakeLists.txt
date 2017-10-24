@@ -124,7 +124,6 @@ SET(QGIS_ANALYSIS_MOC_HDRS
   vector/geometry_checker/qgsgeometryanglecheck.h
   vector/geometry_checker/qgsgeometryareacheck.h
   vector/geometry_checker/qgsgeometrychecker.h
-  vector/geometry_checker/qgsgeometrycheckerutils.h
   vector/geometry_checker/qgsgeometrycheck.h
   vector/geometry_checker/qgsgeometrycontainedcheck.h
   vector/geometry_checker/qgsgeometrydanglecheck.h
@@ -202,6 +201,7 @@ SET(QGIS_ANALYSIS_HDRS
   vector/mersenne-twister.h
   vector/qgsgeometrysnapper.h
   vector/qgszonalstatistics.h
+  vector/geometry_checker/qgsgeometrycheckerutils.h
 
   interpolation/qgsinterpolator.h
   interpolation/qgsgridfilewriter.h
