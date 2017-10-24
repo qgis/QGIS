@@ -80,6 +80,10 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
       UndoPictureStrokeColor,
       UndoPictureStrokeWidth,
       UndoPictureNorthOffset,
+      UndoLabelText,
+      UndoLabelFont,
+      UndoLabelMargin,
+      UndoLabelFontColor,
       UndoCustomCommand,
     };
 

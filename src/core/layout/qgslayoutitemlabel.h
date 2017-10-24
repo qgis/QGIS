@@ -64,8 +64,15 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
 
     /**
      * Resizes the item so that the label's text fits to the item. Keeps the top left point stationary.
+     * \see sizeForText()
      */
     void adjustSizeToText();
+
+    /**
+     * Returns the required item size (in layout units) for the label's text to fill the item.
+     * \see adjustSizeToText()
+     */
+    QSizeF sizeForText() const;
 
     /**
      * Returns the label's preset text.

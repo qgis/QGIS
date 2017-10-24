@@ -29,6 +29,8 @@
 #include "qgslayoutpolylinewidget.h"
 #include "qgslayoutpicturewidget.h"
 #include "qgslayoutitempicture.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutlabelwidget.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 
@@ -81,6 +83,31 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
   {
     return new QgsLayoutPictureWidget( qobject_cast< QgsLayoutItemPicture * >( item ) );
   }, createRubberBand ) );
+
+
+  // label item
+
+  auto labelItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutLabel, QObject::tr( "Label" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabel.svg" ) ),
+                           [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayoutLabelWidget( qobject_cast< QgsLayoutItemLabel * >( item ) );
+  }, createRubberBand );
+  labelItemMetadata->setItemAddedToLayoutFunction( [ = ]( QgsLayoutItem * item )
+  {
+    QgsLayoutItemLabel *label = qobject_cast< QgsLayoutItemLabel * >( item );
+    Q_ASSERT( label );
+
+    label->setText( QObject::tr( "Lorem ipsum" ) );
+    QSizeF minSize = label->sizeForText();
+    QSizeF currentSize = label->rect().size();
+
+    //make sure label size is sufficient to fit text
+    double labelWidth = std::max( minSize.width(), currentSize.width() );
+    double labelHeight = std::max( minSize.height(), currentSize.height() );
+    label->attemptSetSceneRect( QRectF( label->pos().x(), label->pos().y(), labelWidth, labelHeight ) );
+  } );
+
+  registry->addLayoutItemGuiMetadata( labelItemMetadata.release() );
 
 
   // shape items

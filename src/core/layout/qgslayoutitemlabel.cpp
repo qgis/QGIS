@@ -333,6 +333,20 @@ void QgsLayoutItemLabel::setMarginY( const double margin )
 
 void QgsLayoutItemLabel::adjustSizeToText()
 {
+  QSizeF newSize = sizeForText();
+
+  //keep alignment point constant
+  double xShift = 0;
+  double yShift = 0;
+
+  itemShiftAdjustSize( newSize.width(), newSize.height(), xShift, yShift );
+
+  //update rect for data defined size and position
+  attemptSetSceneRect( QRectF( pos().x() + xShift, pos().y() + yShift, newSize.width(), newSize.height() ) );
+}
+
+QSizeF QgsLayoutItemLabel::sizeForText() const
+{
   double textWidth = QgsLayoutUtils::textWidthMM( mFont, currentText() );
   double fontHeight = QgsLayoutUtils::fontHeightMM( mFont );
 
@@ -341,15 +355,7 @@ void QgsLayoutItemLabel::adjustSizeToText()
   double width = textWidth + 2 * mMarginX + 2 * penWidth + 1;
   double height = fontHeight + 2 * mMarginY + 2 * penWidth;
 
-  //keep alignment point constant
-  double xShift = 0;
-  double yShift = 0;
-
-  QSizeF newSize = mLayout->convertToLayoutUnits( QgsLayoutSize( width, height, QgsUnitTypes::LayoutMillimeters ) );
-  itemShiftAdjustSize( newSize.width(), newSize.height(), xShift, yShift );
-
-  //update rect for data defined size and position
-  attemptSetSceneRect( QRectF( pos().x() + xShift, pos().y() + yShift, width, height ) );
+  return mLayout->convertToLayoutUnits( QgsLayoutSize( width, height, QgsUnitTypes::LayoutMillimeters ) );
 }
 
 QFont QgsLayoutItemLabel::font() const

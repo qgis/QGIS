@@ -50,6 +50,14 @@ class QgsLayoutItemLabel: QgsLayoutItem
     void adjustSizeToText();
 %Docstring
  Resizes the item so that the label's text fits to the item. Keeps the top left point stationary.
+.. seealso:: sizeForText()
+%End
+
+    QSizeF sizeForText() const;
+%Docstring
+ Returns the required item size (in layout units) for the label's text to fill the item.
+.. seealso:: adjustSizeToText()
+ :rtype: QSizeF
 %End
 
     QString text();
