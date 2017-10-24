@@ -131,7 +131,7 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
      */
     QgsLayoutNodesItem( const QPolygonF &polygon, QgsLayout *layout );
 
-    virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr );
+    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
 
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
