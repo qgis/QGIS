@@ -29,7 +29,6 @@ QgsTask::QgsTask( const QString &name, const Flags &flags )
   : mFlags( flags )
   , mDescription( name )
 {
-  mNotFinishedMutex.lock();
 }
 
 QgsTask::~QgsTask()
@@ -44,6 +43,7 @@ QgsTask::~QgsTask()
 
 void QgsTask::start()
 {
+  mNotFinishedMutex.lock();
   mStartCount++;
   Q_ASSERT( mStartCount == 1 );
 
