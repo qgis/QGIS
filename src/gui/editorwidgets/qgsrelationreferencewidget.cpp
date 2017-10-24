@@ -39,22 +39,10 @@
 #include "qgsattributetablemodel.h"
 #include "qgsmaptoolidentifyfeature.h"
 #include "qgsfeatureiterator.h"
+#include "qgsfeaturelistcombobox.h"
 
 QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   : QWidget( parent )
-  , mEditorContext( QgsAttributeEditorContext() )
-  , mReferencedFieldIdx( -1 )
-  , mReferencingFieldIdx( -1 )
-  , mAllowNull( true )
-  , mShown( false )
-  , mIsEditable( true )
-  , mEmbedForm( false )
-  , mReadOnlySelector( false )
-  , mAllowMapIdentification( false )
-  , mOrderByValue( false )
-  , mOpenFormButtonVisible( true )
-  , mChainFilters( false )
-  , mAllowAddFeatures( false )
 {
   mTopLayout = new QVBoxLayout( this );
   mTopLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -79,8 +67,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   mChooserContainer->setLayout( chooserLayout );
   chooserLayout->addWidget( mFilterContainer );
 
-  // combobox (for non-geometric relation)
-  mComboBox = new QComboBox();
+  mComboBox = new QgsFeatureListComboBox();
   mChooserContainer->layout()->addWidget( mComboBox );
 
   // read-only line edit
@@ -180,6 +167,10 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
     mReferencingLayer = relation.referencingLayer();
     mRelationName = relation.name();
     mReferencedLayer = relation.referencedLayer();
+    mReferencedField = relation.fieldPairs().at( 0 ).second;
+    if ( mComboBox )
+      mComboBox->setIdentifierField( mReferencedField );
+
     mReferencedFieldIdx = mReferencedLayer->fields().lookupField( relation.fieldPairs().at( 0 ).second );
     mReferencingFieldIdx = mReferencingLayer->fields().lookupField( relation.fieldPairs().at( 0 ).first );
     mAttributeEditorFrame->setObjectName( QStringLiteral( "referencing/" ) + relation.name() );
@@ -236,24 +227,24 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant &value )
   if ( !mReferencedLayer )
     return;
 
-  // Attributes from the referencing layer
-  QgsAttributes attrs = QgsAttributes( mReferencingLayer->fields().count() );
-  // Set the value on the foreign key field of the referencing record
-  attrs[ mReferencingLayer->fields().lookupField( mRelation.fieldPairs().at( 0 ).first )] = value;
-
-  QgsFeatureRequest request = mRelation.getReferencedFeatureRequest( attrs );
-
-  mReferencedLayer->getFeatures( request ).nextFeature( mFeature );
-
-  if ( !mFeature.isValid() )
-  {
-    return;
-  }
-
-  mForeignKey = mFeature.attribute( mReferencedFieldIdx );
-
   if ( mReadOnlySelector )
   {
+    // Attributes from the referencing layer
+    QgsAttributes attrs = QgsAttributes( mReferencingLayer->fields().count() );
+    // Set the value on the foreign key field of the referencing record
+    attrs[ mReferencingLayer->fields().lookupField( mRelation.fieldPairs().at( 0 ).first )] = value;
+
+    QgsFeatureRequest request = mRelation.getReferencedFeatureRequest( attrs );
+
+    mReferencedLayer->getFeatures( request ).nextFeature( mFeature );
+
+    if ( !mFeature.isValid() )
+    {
+      return;
+    }
+
+    mForeignKey = mFeature.attribute( mReferencedFieldIdx );
+
     QgsExpression expr( mReferencedLayer->displayExpression() );
     QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mReferencedLayer ) );
     context.setFeature( mFeature );
@@ -266,41 +257,17 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant &value )
   }
   else
   {
-    QVariant nullValue = QgsApplication::nullRepresentation();
-
-    if ( mChainFilters && mFeature.isValid() && mFilterComboBoxes.count() >= mFilterFields.count() )
-    {
-      QgsFeature feature = mFeature;
-
-      for ( int i = 0; i < mFilterFields.size(); i++ )
-      {
-        QVariant v = feature.attribute( mFilterFields[i] );
-        QString f = v.isNull() ? nullValue.toString() : v.toString();
-        mFilterComboBoxes.at( i )->setCurrentIndex( mFilterComboBoxes.at( i )->findText( f ) );
-      }
-    }
-
-    int i = mComboBox->findData( mFeature.id(), QgsAttributeTableModel::FeatureIdRole );
-    if ( i == -1 && mAllowNull )
-    {
-      mComboBox->setCurrentIndex( 0 );
-    }
-    else
-    {
-      mComboBox->setCurrentIndex( i );
-    }
+    mComboBox->setIdentifierValue( value );
   }
 
   mRemoveFKButton->setEnabled( mIsEditable );
-  highlightFeature( mFeature );
+  highlightFeature( mFeature ); // TODO : make this async
   updateAttributeEditorFrame( mFeature );
   emit foreignKeyChanged( foreignKey() );
 }
 
 void QgsRelationReferenceWidget::deleteForeignKey()
 {
-  QVariant nullValue = QgsApplication::nullRepresentation();
-
   // deactivate filter comboboxes
   if ( mChainFilters && !mFilterComboBoxes.isEmpty() )
   {
@@ -311,10 +278,12 @@ void QgsRelationReferenceWidget::deleteForeignKey()
 
   if ( mReadOnlySelector )
   {
+    const QString nullValue = QgsApplication::nullRepresentation();
+
     QString nullText;
     if ( mAllowNull )
     {
-      nullText = tr( "%1 (no selection)" ).arg( nullValue.toString() );
+      nullText = tr( "%1 (no selection)" ).arg( nullValue );
     }
     mLineEdit->setText( nullText );
     mForeignKey = QVariant();
@@ -322,14 +291,7 @@ void QgsRelationReferenceWidget::deleteForeignKey()
   }
   else
   {
-    if ( mAllowNull )
-    {
-      mComboBox->setCurrentIndex( 0 );
-    }
-    else
-    {
-      mComboBox->setCurrentIndex( -1 );
-    }
+    mComboBox->setIdentifierValue( QVariant() );
   }
   mRemoveFKButton->setEnabled( false );
   updateAttributeEditorFrame( QgsFeature() );
@@ -341,16 +303,16 @@ QgsFeature QgsRelationReferenceWidget::referencedFeature() const
   QgsFeature f;
   if ( mReferencedLayer )
   {
-    QgsFeatureId fid;
+    QgsFeatureRequest request;
     if ( mReadOnlySelector )
     {
-      fid = mFeature.id();
+      request = QgsFeatureRequest().setFilterFid( mFeature.id() );
     }
     else
     {
-      fid = mComboBox->currentData( QgsAttributeTableModel::FeatureIdRole ).value<QgsFeatureId>();
+      request = mComboBox->currentFeatureRequest();
     }
-    mReferencedLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( f );
+    mReferencedLayer->getFeatures( request ).nextFeature( f );
   }
   return f;
 }
@@ -363,7 +325,7 @@ void QgsRelationReferenceWidget::showIndeterminateState()
   }
   else
   {
-    whileBlocking( mComboBox )->setCurrentIndex( -1 );
+    whileBlocking( mComboBox )->setIdentifierValue( QVariant() );
   }
   mRemoveFKButton->setEnabled( false );
   updateAttributeEditorFrame( QgsFeature() );
@@ -463,13 +425,11 @@ void QgsRelationReferenceWidget::showEvent( QShowEvent *e )
 
 void QgsRelationReferenceWidget::init()
 {
-  if ( !mReadOnlySelector && mComboBox->count() == 0 && mReferencedLayer )
+  if ( !mReadOnlySelector && mReferencedLayer )
   {
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
     QSet<QString> requestedAttrs;
-
-    QgsVectorLayerCache *layerCache = new QgsVectorLayerCache( mReferencedLayer, 100000, this );
 
     if ( !mFilterFields.isEmpty() )
     {
@@ -508,7 +468,7 @@ void QgsRelationReferenceWidget::init()
         QVariant nullValue = QgsApplication::nullRepresentation();
 
         QgsFeature ft;
-        QgsFeatureIterator fit = layerCache->getFeatures();
+        QgsFeatureIterator fit = mReferencedLayer->getFeatures();
         while ( fit.nextFeature( ft ) )
         {
           for ( int i = 0; i < mFilterComboBoxes.count() - 1; ++i )
@@ -558,30 +518,10 @@ void QgsRelationReferenceWidget::init()
     Q_FOREACH ( const QString &attr, requestedAttrs )
       attributes << mReferencedLayer->fields().lookupField( attr );
 
-    layerCache->setCacheSubsetOfAttributes( attributes );
-    mMasterModel = new QgsAttributeTableModel( layerCache, this );
-    mMasterModel->setRequest( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( requestedAttrs, mReferencedLayer->fields() ) );
-    mFilterModel = new QgsAttributeTableFilterModel( mCanvas, mMasterModel, mMasterModel );
-    mFeatureListModel = new QgsFeatureListModel( mFilterModel, this );
-    mFeatureListModel->setDisplayExpression( mReferencedLayer->displayExpression() );
-
-    mMasterModel->loadLayer();
-
-    mFeatureListModel->setInjectNull( mAllowNull );
-    if ( mOrderByValue )
-    {
-      mFilterModel->sort( mReferencedLayer->displayExpression() );
-    }
-
-    mComboBox->setModel( mFeatureListModel );
-
-    delete mComboBox->completer();
-    QCompleter *completer = new QCompleter( mComboBox->model(), mComboBox );
-    completer->setModel( mComboBox->model() );
-    completer->setFilterMode( Qt::MatchContains );
-    completer->setCaseSensitivity( Qt::CaseInsensitive );
-    mComboBox->setCompleter( completer );
-
+    mComboBox->setSourceLayer( mReferencedLayer );
+    mComboBox->setDisplayExpression( mReferencedLayer->displayExpression() );
+    mComboBox->setAllowNull( mAllowNull );
+    mComboBox->setIdentifierField( mReferencedField );
 
     QVariant nullValue = QgsApplication::nullRepresentation();
 
@@ -594,9 +534,6 @@ void QgsRelationReferenceWidget::init()
         mFilterComboBoxes.at( i )->setCurrentIndex( mFilterComboBoxes.at( i )->findText( f ) );
       }
     }
-
-    QVariant featId = mFeature.isValid() ? mFeature.id() : QVariant( QVariant::Int );
-    mComboBox->setCurrentIndex( mComboBox->findData( featId, QgsAttributeTableModel::FeatureIdRole ) );
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
     connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRelationReferenceWidget::comboReferenceChanged );
@@ -889,6 +826,7 @@ void QgsRelationReferenceWidget::filterChanged()
         QStringList texts;
         Q_FOREACH ( const QString &txt, mFilterCache[ccb->property( "Field" ).toString()][ccb->currentText()] )
         {
+#if 0
           QMap<QString, QString> filtersAttrs = filters;
           filtersAttrs[fieldName] = QgsExpression::createFieldEqualityExpression( fieldName, txt );
           QString expression = filtersAttrs.values().join( QStringLiteral( " AND " ) );
@@ -909,6 +847,7 @@ void QgsRelationReferenceWidget::filterChanged()
 
           // item is only provided if at least 1 feature exists
           if ( found )
+#endif
             texts << txt;
         }
 
@@ -922,7 +861,7 @@ void QgsRelationReferenceWidget::filterChanged()
       }
     }
   }
-
+#if 0
   if ( !mChainFilters || ( mChainFilters && !filtered ) )
   {
     filterExpression = filters.values().join( QStringLiteral( " AND " ) );
@@ -940,6 +879,7 @@ void QgsRelationReferenceWidget::filterChanged()
   }
 
   mFilterModel->setFilteredFeatures( featureIds );
+#endif
 }
 
 void QgsRelationReferenceWidget::addEntry()
@@ -960,8 +900,7 @@ void QgsRelationReferenceWidget::addEntry()
 
   if ( mEditorContext.vectorLayerTools()->addFeature( mReferencedLayer, attributes, QgsGeometry(), &f ) )
   {
-    int i = mComboBox->findData( f.id(), QgsAttributeTableModel::FeatureIdRole );
-    mComboBox->setCurrentIndex( i );
+    mComboBox->setIdentifierValue( f.attribute( mReferencingFieldIdx ) );
     mAddEntryButton->setEnabled( false );
   }
 }
