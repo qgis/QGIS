@@ -5016,7 +5016,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                       <item row="0" column="0">
                        <widget class="QCheckBox" name="mAutoClearAccessCache">
                         <property name="toolTip">
-                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The connection cache stores all authentication connections data even when the connection fails.&lt;br/&gt;If you make any change to the authentication configurations or to the certification authorities, you should clear the authentication cache or&lt;br/&gt;restart QGIS. &lt;br/&gt;When this option is checked, it will clear the authentication cache every time an SSL error occurs and you choose tole abort the connection.&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The connection cache stores all authentication connections data even when the connection fails.&lt;br/&gt;If you make any change to the authentication configurations or to the certification authorities, you should clear the authentication cache or&lt;br/&gt;restart QGIS. &lt;br/&gt;When this option is checked, the authentication cache will be automatically cleared every time an SSL error occurs and you choose to abort the connection.&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                         </property>
                         <property name="text">
                          <string>Automatically clear the connection authentication cache on SSL errors (recommended)</string>
