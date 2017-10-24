@@ -133,13 +133,19 @@ class OneSideBuffer(GdalAlgorithm):
         arguments.append('sqlite')
         arguments.append('-sql')
 
-        if dissolve or fieldName:
-            sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})) AS {}, {} FROM '{}'".format(geometry, distance, side, geometry, ','.join(other_fields), layerName)
+        if dissolve == True or len(fieldName) > 0:
+            if len(other_fields) > 0:		
+               sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})) AS {}, {} FROM '{}'".format(geometry, distance, side, geometry, ','.join(other_fields), layerName)
+            else:
+               sql = "SELECT ST_Union(ST_SingleSidedBuffer({}, {}, {})) AS {} FROM '{}'".format(geometry, distance, side, geometry, layerName)			
         else:
-            sql = "SELECT ST_SingleSidedBuffer({}, {}, {}) AS {}, {} FROM '{}'".format(geometry, distance, side, geometry, ','.join(other_fields), layerName)
-
-        if fieldName:
-            sql = '"{} GROUP BY {}"'.format(sql, fieldName)
+            if len(other_fields) > 0:		
+               sql = "SELECT ST_SingleSidedBuffer({}, {}, {}) AS {}, {} FROM '{}'".format(geometry, distance, side, geometry, ','.join(other_fields), layerName)
+            else:
+               sql = "SELECT ST_SingleSidedBuffer({}, {}, {}) AS {} FROM '{}'".format(geometry, distance, side, geometry, layerName)
+			
+        if len(fieldName) > 0:
+            sql = '{} GROUP BY {}'.format(sql, fieldName)
 
         arguments.append(sql)
 
