@@ -25,7 +25,7 @@ from qgis.core import (QgsUnitTypes,
                        QgsProperty,
                        QgsLayoutPageCollection,
                        QgsLayoutMeasurement,
-                       QgsLayoutItemMap,
+                       QgsLayoutItemPicture,
                        QgsLayoutSize,
                        QgsLayoutPoint)
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
@@ -44,15 +44,15 @@ class TestQgsLayoutAligner(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
         item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         item2.attemptMove(QgsLayoutPoint(6, 10, QgsUnitTypes.LayoutMillimeters))
         item2.attemptResize(QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.attemptMove(QgsLayoutPoint(0.8, 1.2, QgsUnitTypes.LayoutCentimeters))
         item3.attemptResize(QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
         l.addItem(item3)
@@ -110,15 +110,15 @@ class TestQgsLayoutAligner(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
         item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         item2.attemptMove(QgsLayoutPoint(7, 10, QgsUnitTypes.LayoutMillimeters))
         item2.attemptResize(QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.attemptMove(QgsLayoutPoint(0.8, 1.2, QgsUnitTypes.LayoutCentimeters))
         item3.attemptResize(QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
         l.addItem(item3)
@@ -193,15 +193,15 @@ class TestQgsLayoutAligner(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
         item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         item2.attemptMove(QgsLayoutPoint(7, 10, QgsUnitTypes.LayoutMillimeters))
         item2.attemptResize(QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.attemptMove(QgsLayoutPoint(0.8, 1.2, QgsUnitTypes.LayoutCentimeters))
         item3.attemptResize(QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
         l.addItem(item3)

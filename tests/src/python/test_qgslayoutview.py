@@ -17,7 +17,7 @@ import qgis  # NOQA
 from qgis.core import (QgsProject,
                        QgsLayout,
                        QgsUnitTypes,
-                       QgsLayoutItemMap,
+                       QgsLayoutItemPicture,
                        QgsLayoutPoint,
                        QgsLayoutSize,
                        QgsLayoutAligner)
@@ -83,11 +83,11 @@ class TestQgsLayoutView(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.setLocked(True)
         l.addItem(item3)
 
@@ -117,11 +117,11 @@ class TestQgsLayoutView(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.setLocked(True)
         l.addItem(item3)
 
@@ -153,11 +153,11 @@ class TestQgsLayoutView(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.setLocked(True)
         l.addItem(item3)
 
@@ -187,11 +187,11 @@ class TestQgsLayoutView(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.setLocked(True)
         l.addItem(item3)
 
@@ -262,11 +262,11 @@ class TestQgsLayoutView(unittest.TestCase):
         view.setCurrentLayout(l)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         l.addItem(item3)
 
         item1.setLocked(True)
@@ -296,11 +296,11 @@ class TestQgsLayoutView(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         l.addLayoutItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         l.addLayoutItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         l.addLayoutItem(item3)
 
         view = QgsLayoutView()
@@ -415,15 +415,15 @@ class TestQgsLayoutView(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
         item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         item2.attemptMove(QgsLayoutPoint(6, 10, QgsUnitTypes.LayoutMillimeters))
         item2.attemptResize(QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.attemptMove(QgsLayoutPoint(0.8, 1.2, QgsUnitTypes.LayoutCentimeters))
         item3.attemptResize(QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
         l.addItem(item3)
@@ -490,15 +490,15 @@ class TestQgsLayoutView(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
         item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         item2.attemptMove(QgsLayoutPoint(7, 10, QgsUnitTypes.LayoutMillimeters))
         item2.attemptResize(QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.attemptMove(QgsLayoutPoint(0.8, 1.2, QgsUnitTypes.LayoutCentimeters))
         item3.attemptResize(QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
         l.addItem(item3)
@@ -582,15 +582,15 @@ class TestQgsLayoutView(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
         item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         item2.attemptMove(QgsLayoutPoint(7, 10, QgsUnitTypes.LayoutMillimeters))
         item2.attemptResize(QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.attemptMove(QgsLayoutPoint(0.8, 1.2, QgsUnitTypes.LayoutCentimeters))
         item3.attemptResize(QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
         l.addItem(item3)
