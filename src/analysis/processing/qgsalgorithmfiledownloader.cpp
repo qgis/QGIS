@@ -36,12 +36,12 @@ QString QgsFileDownloaderAlgorithm::displayName() const
 
 QStringList QgsFileDownloaderAlgorithm::tags() const
 {
-  return tr( "file,downloader,internet,url" ).split( ',' );
+  return tr( "file,downloader,internet,url,fetch,get,https" ).split( ',' );
 }
 
 QString QgsFileDownloaderAlgorithm::group() const
 {
-  return tr( "File tool" );
+  return tr( "File tools" );
 }
 
 QString QgsFileDownloaderAlgorithm::shortHelpString() const
