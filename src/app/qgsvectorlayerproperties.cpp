@@ -1581,9 +1581,9 @@ void QgsVectorLayerProperties::onAuxiliaryLayerClear()
   if ( !alayer )
     return;
 
-  const QString msg = tr( "Are you sure you want to clear auxiliary data for %1" ).arg( mLayer->name() );
+  const QString msg = tr( "Are you sure you want to clear auxiliary data for %1?" ).arg( mLayer->name() );
   QMessageBox::StandardButton reply;
-  reply = QMessageBox::question( this, "Clear auxiliary data", msg, QMessageBox::Yes | QMessageBox::No );
+  reply = QMessageBox::question( this, "Clear Auxiliary Data", msg, QMessageBox::Yes | QMessageBox::No );
 
   if ( reply == QMessageBox::Yes )
   {
@@ -1601,9 +1601,9 @@ void QgsVectorLayerProperties::onAuxiliaryLayerDelete()
   if ( !alayer )
     return;
 
-  const QString msg = tr( "Are you sure you want to delete auxiliary storage for %1" ).arg( mLayer->name() );
+  const QString msg = tr( "Are you sure you want to delete auxiliary storage for %1?" ).arg( mLayer->name() );
   QMessageBox::StandardButton reply;
-  reply = QMessageBox::question( this, "Delete auxiliary storage", msg, QMessageBox::Yes | QMessageBox::No );
+  reply = QMessageBox::question( this, "Delete Auxiliary Storage", msg, QMessageBox::Yes | QMessageBox::No );
 
   if ( reply == QMessageBox::Yes )
   {
@@ -1662,10 +1662,10 @@ void QgsVectorLayerProperties::onAuxiliaryLayerDeleteField()
     return;
 
   // should be only 1 field
-  const QString msg = tr( "Are you sure you want to delete auxiliary field %1 for %2" ).arg( item->text( 1 ), item->text( 0 ) );
+  const QString msg = tr( "Are you sure you want to delete auxiliary field %1 for %2?" ).arg( item->text( 1 ), item->text( 0 ) );
 
   QMessageBox::StandardButton reply;
-  reply = QMessageBox::question( this, "Delete auxiliary field", msg, QMessageBox::Yes | QMessageBox::No );
+  reply = QMessageBox::question( this, "Delete Auxiliary Field", msg, QMessageBox::Yes | QMessageBox::No );
 
   if ( reply == QMessageBox::Yes )
   {

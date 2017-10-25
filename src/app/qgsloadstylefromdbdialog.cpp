@@ -166,7 +166,7 @@ void QgsLoadStyleFromDBDialog::deleteStyleFromDB()
   QString msgError;
   QString opInfo = QObject::tr( "Delete style %1 from %2" ).arg( mSelectedStyleName, mLayer->providerType() );
 
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete style" ),
+  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Style" ),
                               QObject::tr( "Are you sure you want to delete the style %1?" ).arg( mSelectedStyleName ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;

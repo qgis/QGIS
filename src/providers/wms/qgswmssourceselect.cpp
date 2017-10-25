@@ -220,7 +220,7 @@ void QgsWMSSourceSelect::btnSave_clicked()
 
 void QgsWMSSourceSelect::btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), QDir::homePath(),
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
@@ -402,7 +402,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
               {
                 QTableWidgetItem *item = lstTilesets->item( row, i );
                 item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
-                item->setToolTip( tr( "encoding %1 not supported." ).arg( format ) );
+                item->setToolTip( tr( "Encoding %1 not supported." ).arg( format ) );
               }
             }
 

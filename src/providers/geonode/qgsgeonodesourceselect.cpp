@@ -91,7 +91,7 @@ void QgsGeoNodeSourceSelect::addConnectionsEntryList()
 void QgsGeoNodeSourceSelect::modifyConnectionsEntryList()
 {
   QgsGeoNodeNewConnection nc( this, cmbConnections->currentText() );
-  nc.setWindowTitle( tr( "Modify GeoNode connection" ) );
+  nc.setWindowTitle( tr( "Modify GeoNode Connection" ) );
 
   if ( nc.exec() )
   {
@@ -300,7 +300,7 @@ void QgsGeoNodeSourceSelect::saveGeonodeConnection()
 
 void QgsGeoNodeSourceSelect::loadGeonodeConnection()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), QDir::homePath(),
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
                      tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
