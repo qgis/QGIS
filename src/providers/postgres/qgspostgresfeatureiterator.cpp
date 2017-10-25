@@ -36,6 +36,13 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   , mLastFetch( false )
   , mFilterRequiresGeometry( false )
 {
+  if ( request.filterType() == QgsFeatureRequest::FilterFids && request.filterFids().isEmpty() )
+  {
+    mClosed = true;
+    iteratorClosed();
+    return;
+  }
+
   if ( !source->mTransactionConnection )
   {
     mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo );
@@ -65,8 +72,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   catch ( QgsCsException & )
   {
     // can't reproject mFilterRect
-    mClosed = true;
-    iteratorClosed();
+    close();
     return;
   }
 
@@ -96,17 +102,9 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   }
   else if ( request.filterType() == QgsFeatureRequest::FilterFids )
   {
-    if ( request.filterFids().isEmpty() )
-    {
-      mClosed = true;
-      iteratorClosed();
-    }
-    else
-    {
-      QString fidsWhereClause = QgsPostgresUtils::whereClause( mRequest.filterFids(), mSource->mFields, mConn, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
+    QString fidsWhereClause = QgsPostgresUtils::whereClause( mRequest.filterFids(), mSource->mFields, mConn, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
 
-      whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidsWhereClause );
-    }
+    whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidsWhereClause );
   }
   else if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
@@ -237,8 +235,6 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     if ( !success )
     {
       close();
-      mClosed = true;
-      iteratorClosed();
     }
   }
 
