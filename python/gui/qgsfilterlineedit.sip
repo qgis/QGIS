@@ -10,7 +10,6 @@
 
 
 
-
 class QgsFilterLineEdit : QLineEdit
 {
 %Docstring
@@ -164,6 +163,23 @@ class QgsFilterLineEdit : QLineEdit
  :rtype: bool
 %End
 
+    bool showSpinner() const;
+%Docstring
+ Show a spinner icon. This can be used for search boxes to indicate that
+ something is going on in the background.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void setShowSpinner( bool showSpinner );
+%Docstring
+ Show a spinner icon. This can be used for search boxes to indicate that
+ something is going on in the background.
+
+.. versionadded:: 3.0
+%End
+
   public slots:
 
     virtual void clearValue();
@@ -186,6 +202,14 @@ class QgsFilterLineEdit : QLineEdit
  Same as textChanged() but with support for null values.
 
  \param value The current text or null string if it matches the nullValue() property.
+%End
+
+    void showSpinnerChanged();
+%Docstring
+ Show a spinner icon. This can be used for search boxes to indicate that
+ something is going on in the background.
+
+.. versionadded:: 3.0
 %End
 
   protected:
