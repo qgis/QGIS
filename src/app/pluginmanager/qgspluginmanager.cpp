@@ -814,7 +814,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   {
     html += QString( "<table bgcolor=\"#90EEE9\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#660000\"><b>%1</b></td></tr>"
-                     "</table>" ).arg( tr( "This is a system plugin, so you can't uninstall it" ) );
+                     "</table>" ).arg( tr( "This is a core plugin, so you can't uninstall it" ) );
   }
 
   // Now the metadata
