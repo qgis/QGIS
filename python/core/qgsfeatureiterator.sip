@@ -72,9 +72,7 @@ end of iterating: free the resources / lock
 
  If you want to check if the iterator successfully completed, better use QgsFeatureIterator.isClosed().
 
-.. note::
-
-   Added in QGIS 3.0
+.. versionadded:: 3.0
  :rtype: bool
 %End
 
@@ -257,9 +255,7 @@ destructor deletes the iterator if it has no more references
 
 .. seealso:: isClosed to check if the iterator successfully completed and returned all the features.
 
-.. note::
-
-   Added in QGIS 3.0
+.. versionadded:: 3.0
  :rtype: bool
 %End
 

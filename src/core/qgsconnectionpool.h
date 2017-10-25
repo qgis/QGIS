@@ -85,6 +85,13 @@ class QgsConnectionPoolGroup
     //! QgsConnectionPoolGroup cannot be copied
     QgsConnectionPoolGroup &operator=( const QgsConnectionPoolGroup &other ) = delete;
 
+    /**
+     * Try to acquire a connection for a maximum of \a timeout milliseconds.
+     * If \a timeout is a negative value the calling thread will be blocked
+     * until a connection becomes available. This is the default behavior.
+     *
+     * \returns initialized connection or nullptr if unsuccessful
+     */
     T acquire( int timeout )
     {
       // we are going to acquire a resource - if no resource is available, we will block here

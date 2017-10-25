@@ -90,7 +90,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      *
      * If you want to check if the iterator successfully completed, better use QgsFeatureIterator::isClosed().
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual bool isValid() const
     {
@@ -311,7 +311,7 @@ class CORE_EXPORT QgsFeatureIterator
      *
      * \see isClosed to check if the iterator successfully completed and returned all the features.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual bool isValid() const;
 
