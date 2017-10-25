@@ -4,4 +4,3 @@ Vector (v.*)
 QgsProcessingParameterVectorLayer|input|Input vector line layer (arcs)|1|None|False
 Hardcoded|operation=nreport
 QgsProcessingParameterFileDestination|output|NReport|Txt files (*.txt)|None|False
-

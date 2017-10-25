@@ -12,5 +12,4 @@ QgsProcessingParameterBoolean|-n|Invert colors|False
 QgsProcessingParameterBoolean|-g|Logarithmic scaling|False
 QgsProcessingParameterBoolean|-a|Logarithmic-absolute scaling|False
 QgsProcessingParameterBoolean|-e|Histogram equalization|False
-OutputDirectory|output_dir|Output Directory
-
+QgsProcessingParameterFolderDestination|output_dir|Output Directory

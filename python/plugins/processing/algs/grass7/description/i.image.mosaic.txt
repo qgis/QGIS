@@ -3,4 +3,3 @@ Mosaics several images and extends colormap.
 Imagery (i.*)
 QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False
 QgsProcessingParameterRasterDestination|output|Mosaic Raster
-

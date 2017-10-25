@@ -7,4 +7,3 @@ QgsProcessingParameterNumber|percent|Percentage weight of first map for color bl
 QgsProcessingParameterRasterDestination|output_red|Blended Red
 QgsProcessingParameterRasterDestination|output_green|Blended Green
 QgsProcessingParameterRasterDestination|output_blue|Blended Blue
-

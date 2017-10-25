@@ -5,4 +5,3 @@ QgsProcessingParameterRasterLayer|trainingmap|Ground truth training map|None|Fal
 QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False
 QgsProcessingParameterNumber|maxsig|Maximum number of sub-signatures in any class|QgsProcessingParameterNumber.Integer|5|True|0|None
 QgsProcessingParameterFileDestination|signaturefile|Signature File|Txt files (*.txt)|None|False
-

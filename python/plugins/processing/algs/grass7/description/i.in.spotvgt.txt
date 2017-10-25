@@ -4,4 +4,3 @@ Imagery (i.*)
 QgsProcessingParameterRasterLayer|input|Name of input SPOT VGT NDVI HDF file|None|False
 *QgsProcessingParameterBoolean|-a|Also import quality map (SM status map layer) and filter NDVI map|False
 QgsProcessingParameterRasterDestination|output|SPOT NDVI Raster
-

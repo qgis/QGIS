@@ -18,4 +18,3 @@ QgsProcessingParameterNumber|lag|Simulating time duration LAG (fill the region) 
 QgsProcessingParameterRasterDestination|output|Spread Time
 QgsProcessingParameterRasterDestination|x_output|X Back Coordinates
 QgsProcessingParameterRasterDestination|y_output|Y Back Coordinates
-

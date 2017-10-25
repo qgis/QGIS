@@ -10,5 +10,4 @@ QgsProcessingParameterEnum|method|Interpolation method to use|nearest;linear;cub
 QgsProcessingParameterCrs|crs|Destination CRS|None|False
 Hardcoded|extension=rectified
 *QgsProcessingParameterBoolean|-t|Use thin plate spline|False
-OutputDirectory|output|Output Directory
-
+QgsProcessingParameterFolderDestination|output|Output Directory

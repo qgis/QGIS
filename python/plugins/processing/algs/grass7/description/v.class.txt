@@ -8,4 +8,3 @@ QgsProcessingParameterEnum|algorithm|Algorithm to use for classification|int;std
 QgsProcessingParameterNumber|nbclasses|Number of classes to define|QgsProcessingParameterNumber.Double|3|False|None|2.0
 QgsProcessingParameterBoolean|-g|Print only class breaks (without min and max)|True
 QgsProcessingParameterFileDestination|html|Classification|Html files (*.html)|report.html|False
-

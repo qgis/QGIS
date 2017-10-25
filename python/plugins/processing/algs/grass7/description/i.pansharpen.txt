@@ -11,4 +11,3 @@ QgsProcessingParameterEnum|method|Method|brovey;ihs;pca|False|1
 QgsProcessingParameterRasterDestination|redoutput|Enhanced Red
 QgsProcessingParameterRasterDestination|greenoutput|Enhanced Green
 QgsProcessingParameterRasterDestination|blueoutput|Enhanced Blue
-

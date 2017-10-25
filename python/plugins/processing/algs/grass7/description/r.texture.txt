@@ -7,4 +7,4 @@ QgsProcessingParameterNumber|size|The size of moving window (odd and >= 3)|QgsPr
 QgsProcessingParameterNumber|distance|The distance between two samples (>= 1)|QgsProcessingParameterNumber.Double|1.0|True|1.0|None
 *QgsProcessingParameterBoolean|-s|Separate output for each angle (0, 45, 90, 135)|False
 *QgsProcessingParameterBoolean|-a|Calculate all textural measurements|False
-OutputDirectory|output|Texture files directory
+QgsProcessingParameterFolderDestination|output|Texture files directory

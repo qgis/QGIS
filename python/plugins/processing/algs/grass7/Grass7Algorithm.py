@@ -57,6 +57,8 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterVectorDestination,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFileDestination,
+                       QgsProcessingParameterFolderDestination,
+                       QgsProcessingOutputFolder,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingOutputHtml,
@@ -265,7 +267,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         layers = [l for l in self.inputLayers if isinstance(l, QgsRasterLayer)]
 
         # Use this function to calculate cell size
-        def cz(l, cellsize): return max(cellsize, (l.extent().xMaximum() - l.extent().xMinimum()) / l.width())
+        cz = lambda l, cellsize: max(cellsize, (l.extent().xMaximum() - l.extent().xMinimum()) / l.width())
 
         for layer in layers:
             cellsize = cz(layer, cellsize)
@@ -533,6 +535,11 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                             outName,
                             self.parameterAsFileOutput(
                                 parameters, outName, context))
+                # For folders destination
+                if isinstance(out, QgsProcessingParameterFolderDestination):
+                    # We need to add a unique temporary basename
+                    uniqueBasename = outName + self.uniqueSuffix
+                    command += ' {}={}'.format(outName, uniqueBasename)
                 else:
                     # We add an output name to make sure it is unique if the session
                     # uses this algorithm several times.
@@ -572,6 +579,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 self.exportRasterLayerFromParameter(outName, parameters, context)
             elif isinstance(out, QgsProcessingParameterVectorDestination):
                 self.exportVectorLayerFromParameter(outName, parameters, context)
+            elif isinstance(out, QgsProcessingParameterFolderDestination):
+                self.exportRasterLayersIntoDirectory(outName, parameters, context)
 
         QgsMessageLog.logMessage('processOutputs. Commands: {}'.format(self.commands), 'Grass7', QgsMessageLog.INFO)
 
@@ -605,8 +614,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         """
         Creates a dedicated command to export a raster from
         temporary GRASS DB into a file via gdal.
-        :param grassName: name of the parameter
-        :param fileName: file path of raster layer
+        :param name: name of the parameter.
+        :param parameters: Algorithm parameters list.
+        :param context: Algorithm context.
         :param colorTable: preserve color Table.
         """
         fileName = self.parameterAsOutputLayer(parameters, name, context)
@@ -631,6 +641,30 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     '--overwrite -c createopt="TFW=YES,COMPRESS=LZW"'
                 )
             )
+
+    def exportRasterLayersIntoDirectory(self, name, parameters, context, colorTable=True):
+        """
+        Creates a dedicated loop command to export rasters from
+        temporary GRASS DB into a directory gdal.
+        :param name: name of the parameter
+        :param fileName: file path of raster layer
+        :param colorTable: preserve color Table.
+        """
+        # Grab directory name and temporary basename
+        outDir = self.parameterAsString(parameters, name, context)
+        basename = name + self.uniqueSuffix
+
+        # Add a loop export from the basename
+        for cmd in [self.commands, self.outputCommands]:
+            # Adjust region to layer before exporting
+            # TODO: Does-it works under MS-Windows or MacOSX?
+            cmd.append("for r in $(g.list type=rast pattern='{}*'); do".format(basename))
+            cmd.append("  r.out.gdal{0} input=${{r}} output={1}/${{r}}.tif {2}".format(
+                ' -t' if colorTable else '', outDir,
+                '--overwrite -c createopt="TFW=YES,COMPRESS=LZW"'
+            )
+            )
+            cmd.append("done")
 
     def loadVectorLayerFromParameter(self, name, parameters, context, external=None):
         """

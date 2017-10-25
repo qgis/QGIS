@@ -6,4 +6,4 @@ QgsProcessingParameterString|expression|Expression to evaluate. Syntax e.g. `ras
 QgsProcessingParameterFile|file|File containing expression(s) to evaluate (same rule for raster names than above)|0|txt|None|True
 QgsProcessingParameterString|seed|Integer seed for rand() function|None|False|True
 *QgsProcessingParameterBoolean|-s|Generate random seed (result is non-deterministic)|False
-OutputDirectory|output_dir|Results Directory
+QgsProcessingParameterFolderDestination|output_dir|Results Directory

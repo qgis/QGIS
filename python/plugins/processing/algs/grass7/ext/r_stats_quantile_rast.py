@@ -30,9 +30,9 @@ from processing.core.parameters import getParameterFromString
 import os
 
 
-def processCommand(alg, parameters):
+def processCommand(alg, parameters, context):
     # We create the output sequence according to percentiles number
-    quantiles = alg.getParameterValue('quantiles') - 1
+    quantiles = alg.parameterAsInt(parameters, 'quantiles', context) - 1
     outputs = []
     for i in range(0, int(quantiles)):
         outputs.append('output_{}'.format(i))
@@ -45,13 +45,13 @@ def processCommand(alg, parameters):
     alg.removeOutputFromName('output_dir')
 
     # Launch the algorithm
-    alg.processCommand()
+    alg.processCommand(parameters, context)
 
     # We re-add the previous output
     alg.addOutput(output_dir)
 
 
-def processOutputs(alg):
+def processOutputs(alg, parameters, context):
     # We need to export each of the output
     output_dir = alg.getOutputValue('output_dir')
     outputParam = alg.getParameterFromName('output')

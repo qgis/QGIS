@@ -6,4 +6,3 @@ QgsProcessingParameterNumber|width|x-y extent of the Gaussian filter|QgsProcessi
 QgsProcessingParameterNumber|threshold|Sensitivity of Gaussian filter|QgsProcessingParameterNumber.Double|10.0|False|None|0
 QgsProcessingParameterNumber|orientations|Number of azimuth directions categorized|QgsProcessingParameterNumber.Double|1|False|None|0
 QgsProcessingParameterRasterDestination|output|Zero crossing
-

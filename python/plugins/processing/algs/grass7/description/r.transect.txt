@@ -6,4 +6,3 @@ QgsProcessingParameterString|line|Transect definition: east,north,azimuth,distan
 QgsProcessingParameterString|null_value|String representing NULL value|*|False|True
 *QgsProcessingParameterBoolean|-g|Output easting and northing in first two columns of four column output|False
 QgsProcessingParameterFileDestination|output|Transect file|Txt files (*.txt)|None|False
-

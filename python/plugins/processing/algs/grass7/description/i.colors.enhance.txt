@@ -12,4 +12,3 @@ QgsProcessingParameterNumber|strength|Cropping intensity (upper brightness level
 QgsProcessingParameterRasterDestination|redoutput|Enhanced Red
 QgsProcessingParameterRasterDestination|greenoutput|Enhanced Green
 QgsProcessingParameterRasterDestination|blueoutput|Enhanced Blue
-

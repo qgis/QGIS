@@ -15,5 +15,4 @@ QgsProcessingParameterNumber|rayleigh|Rayleigh atmosphere (diffuse sky irradianc
 QgsProcessingParameterNumber|scale|Scale factor for output|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
 *QgsProcessingParameterBoolean|-r|Output at-sensor radiance instead of reflectance for all bands|False
 *QgsProcessingParameterBoolean|-n|Input raster maps use as extension the number of the band instead the code|False
-OutputDirectory|output|Output Directory
-
+QgsProcessingParameterFolderDestination|output|Output Directory

@@ -13,4 +13,3 @@ QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the n
 *QgsProcessingParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
 *QgsProcessingParameterBoolean|-s|Write output as original input segments, not each path as one line|False|True
 QgsProcessingParameterVectorDestination|output|Network_Path
-

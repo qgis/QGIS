@@ -11,4 +11,3 @@ QgsProcessingParameterNumber|histogram|Number of classes in the cloud temperatur
 *QgsProcessingParameterBoolean|-2|Bypass second-pass processing, and merge warm (not ambiguous) and cold clouds|False
 *QgsProcessingParameterBoolean|-s|Include a category for cloud shadows|False
 QgsProcessingParameterRasterDestination|output|ACCA Raster
-

@@ -10,4 +10,4 @@ QgsProcessingParameterBoolean|-b|SWIR is High Gain|False
 QgsProcessingParameterBoolean|-c|VNIR is Low Gain 1|False
 QgsProcessingParameterBoolean|-d|SWIR is Low Gain 1|False
 QgsProcessingParameterBoolean|-e|SWIR is Low Gain 2|False
-OutputDirectory|output|Output Directory
+QgsProcessingParameterFolderDestination|output|Output Directory

@@ -66,8 +66,6 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinat
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber)
-# TODELETE
-from qgis.core import (QgsMessageLog)
 
 from processing.tools.vector import resolveFieldIndex
 from processing.tools import dataobjects
@@ -683,6 +681,9 @@ def getParameterFromString(s):
             elif clazz == QgsProcessingParameterFileDestination:
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterFolderDestination:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
             elif clazz == QgsProcessingParameterVectorDestination:
                 if len(params) > 2:
                     if params[2].lower().endswith('point'):

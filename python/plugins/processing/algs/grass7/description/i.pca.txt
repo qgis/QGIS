@@ -6,5 +6,4 @@ QgsProcessingParameterRange|rescale|Rescaling range for output maps. For no resc
 QgsProcessingParameterNumber|percent|Cumulative percent importance for filtering|QgsProcessingParameterNumber.Integer|99|True|50|99
 *QgsProcessingParameterBoolean|-n|Normalize (center and scale) input maps|False
 *QgsProcessingParameterBoolean|-f|Output will be filtered input bands|False
-OutputDirectory|output|Output Directory
-
+QgsProcessingParameterFolderDestination|output|Output Directory

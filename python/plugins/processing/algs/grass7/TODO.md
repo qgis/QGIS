@@ -3,22 +3,19 @@ TODO List for GRASS7 algorithms support into QGIS Processing
 QGIS3 Processing Port
 =====================
 
-* Port to Python3.
-  * print -> print(
-  * unicode -> str
+* Things to do elsewhere
+  * TODO We need Null QgsProcessingParameterNumber!
+  * TODO We need NULL QgsProcessingParameterPoint!
+  * TODO We need a multiple QgsProcessingParameterList!
+  * TODO We need a QgsParameterMultipleInputLayers parameter for minimum and maximum number of layers.
+  * TODO Open all the files in a QgsProcessingOutputFolder at the end of the algorithm.
+* TODO Use GRASS --exec instead of GRASS_BATCH_JOB.
+* TODO Improve Grass Path and Binary detection for all OSs.
+* TODO Review all the methods of QgsProcessingAlgorithm.
+* TODO Make tests under MS-Windows 7 for Utf-8 support.
+* TODO Review Python3 port.
   * dict iteritems
-* TODO Replace all parameters by QgsProcessingParameters.
-  * DONE Review all ParameterFile
-  * TODO We need Null QgsParameterNumber!
-  * TODO We need NULL QgsParameterPoint!
-  * TODO We need a QgsParameterList!
-  * TODO Review all OutputDirectory.
-  * DONE Review all OutputFile
-    * DONE Replace by QgsProcessingParameterFileDestination
-    * DONE QgsProcessingParameterFileDestination should use the file filter in Dialog.
-      Replace fileOut with fileDestination in gui/ParametersUtils.py
-* DONE Re-enable GRASS algorithm by default.
-* Add GRASS 7.2 new algorithms.
+* TODO Add GRASS 7.2 new algorithms.
 * TODO Review all algorithm parameters.
 MOD r.basins.fill
 OK r.blend
@@ -184,18 +181,12 @@ r.watershed
 r.what.color
 r.what
 
-* Improve unit tests.
-* Use some raster/vector layers with spacename into their path.
-* DONE Better support for files output that are HTML.
-  * DONE All html output files will be report outputs.
-  * DONE All html output will come as stdout files by default.
-  * DONE OutputHtml must not be converted to OutputLayerDefinition.
-  * DONE Convert false HTML files to real HTML files.
-  * DONE Opens HTML files in Viewer.
+* TODO Improve unit tests.
+* TODO Use some raster/vector layers with spacename into their path.
 * TODO Use prepareAlgorithm for algorithm preparation.
 * TODO Support ParameterTable.
-* DONE Remove specific algorithms code in Grass7Algorithm.py (move them in ext).
 * TODO Convert all ext scripts.
+  * TODO Review i.py.
   * TODO Force projection in description file?
   * r_rgb.py
   * r_blend_combine.py
@@ -232,7 +223,6 @@ r.what
   * v_net_steiner.py
   * v_net_visibility.py
 
-* TODO Support OutputFolder.
 * TODO Support multiple output raster formats.
 * TODO Support multiple output vector formats.
 * TODO Support multiple input vector formats
@@ -240,9 +230,41 @@ r.what
   * TODO Some formats can't be correctly used by v.external:
     * GML.
   * TODO Build a workaround for those formats (use v.in.ogr).
+* DONE Replace all parameters by QgsProcessingParameters.
+  * DONE Review all ParameterFile
+  * DONE Review all OutputDirectory.
+    * DONE Convert all OutputDirectory to QgsProcessingParameterFolderDestination
+    * DONE Default case:
+      * Take the name of the output variable.
+      * create a default value as basename.
+      * export all layers into the directory with a shell loop.
+    * DONE Remove all multipleOutputDir in ext/
+    * r.colors: TODO ext | DONE desc | TODO tests.
+    * r.texture: DONE ext | DONE desc | TODO tests.
+    * r.stats.quantile: DONE ext | DONE desc | TODO tests.
+    * r.series.interp: DONE ext | DONE desc | TODO tests.
+    * r.mapcalc: DONE ext | DONE desc | TODO tests.
+    * i.aster.toar: DONE ext | DONE desc | TODO tests.
+    * i.tasscap: DONE ext | DONE desc | TODO tests.
+    * i.rectify: DONE ext | DONE desc | TODO tests.
+    * i.cca: DONE ext | DONE desc | TODO tests.
+    * i.landsat.toar: DONE ext | DONE desc | TODO tests.
+    * i.pca: DONE ext | DONE desc | TODO tests.
+    * i.topo.corr: DONE ext | DONE desc | TODO tests.
+  * DONE Review all OutputFile
+    * DONE Replace by QgsProcessingParameterFileDestination
+    * DONE QgsProcessingParameterFileDestination should use the file filter in Dialog.
+      Replace fileOut with fileDestination in gui/ParametersUtils.py
+* DONE Remove specific algorithms code in Grass7Algorithm.py (move them in ext).
+* DONE Re-enable GRASS algorithm by default.
 * DONE Support multiple bands input rasters.
-* Review all the methods of QgsProcessingAlgorithm.
-* Make tests under MS-Windows 7 for Utf-8 support.
+* DONE Better support for files output that are HTML.
+  * DONE All html output files will be report outputs.
+  * DONE All html output will come as stdout files by default.
+  * DONE OutputHtml must not be converted to OutputLayerDefinition.
+  * DONE Convert false HTML files to real HTML files.
+  * DONE Opens HTML files in Viewer.
+
 
 Unit tests
 ==========

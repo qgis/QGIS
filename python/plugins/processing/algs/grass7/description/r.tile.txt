@@ -2,7 +2,6 @@ r.tile
 Splits a raster map into tiles
 Raster (r.*)
 QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False
-QgsProcessingParameterString|output|Output base name of rasters|None|False|False
 QgsProcessingParameterNumber|width|Width of tiles (columns)|QgsProcessingParameterNumber.Integer|1024|True|1|None
 QgsProcessingParameterNumber|height|Height of tiles (rows)|QgsProcessingParameterNumber.Integer|1024|True|1|None
-OutputDirectory|output_dir|Tiles Directory
+QgsProcessingParameterFolderDestination|output|Tiles Directory
