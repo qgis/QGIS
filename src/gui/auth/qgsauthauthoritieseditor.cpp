@@ -515,7 +515,7 @@ void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
 
   if ( cert.isNull() )
   {
-    messageBar()->pushMessage( tr( "Certificate could not found in database for id %1:" ).arg( digest ),
+    messageBar()->pushMessage( tr( "Certificate could not be found in database for id %1:" ).arg( digest ),
                                QgsMessageBar::WARNING );
     return;
   }

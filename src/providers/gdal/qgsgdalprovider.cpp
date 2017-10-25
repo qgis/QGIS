@@ -755,9 +755,8 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   if ( !myWarpOptions->pTransformerArg )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot GDALCreateGenImgProjTransformer: " )
-                          + QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    return;
+                          QObject::tr( "Cannot GDALCreateGenImgProjTransformer: %1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ); // missing word?
+                          return;
 
   }
 
@@ -786,9 +785,8 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   if ( myOperation.Initialize( myWarpOptions ) != CE_None )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot inittialize GDALWarpOperation : " )
-                          + QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    return;
+                          QObject::tr( "Cannot initialize GDAL Warp operation : %1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+                          return;
 
   }
   CPLErrorReset();
@@ -797,7 +795,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   if ( myErr != CPLE_None )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot ChunkAndWarpImage: %1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+                          QObject::tr( "Cannot chunk and warp image: %1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     return;
   }
 

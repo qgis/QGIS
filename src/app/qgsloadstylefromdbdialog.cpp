@@ -192,7 +192,7 @@ void QgsLoadStyleFromDBDialog::deleteStyleFromDB()
     int sectionLimit = mLayer->listStylesInDatabase( ids, names, descriptions, errorMsg );
     if ( !errorMsg.isNull() )
     {
-      QgisApp::instance()->messageBar()->pushMessage( tr( "Error occurred retrieving styles from database" ), errorMsg, QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Error occurred while retrieving styles from database" ), errorMsg, QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
     }
     else
     {
