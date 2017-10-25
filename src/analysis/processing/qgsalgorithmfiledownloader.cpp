@@ -98,18 +98,24 @@ void QgsFileDownloaderAlgorithm::reportErrors( QStringList errors )
 
 void QgsFileDownloaderAlgorithm::sendProgressFeedback()
 {
-  if ( ! mReceived.isEmpty() &&  ! mTotal.isEmpty() )
-    mFeedback->pushInfo( tr( "%1 of %2 downloaded." ).arg( mReceived ).arg( mTotal ) );
+  if ( !mReceived.isEmpty() && mLastReport != mReceived )
+  {
+    mLastReport = mReceived;
+    if ( mTotal.isEmpty() )
+      mFeedback->pushInfo( tr( "%1 downloaded." ).arg( mReceived ) );
+    else
+      mFeedback->pushInfo( tr( "%1 of %2 downloaded." ).arg( mReceived ).arg( mTotal ) );
+  }
 }
 
 void QgsFileDownloaderAlgorithm::receiveProgressFromDownloader( qint64 bytesReceived, qint64 bytesTotal )
 {
-  if ( bytesTotal != 0 )
+  mReceived = humanSize( bytesReceived );
+  if ( bytesTotal > 0 )
   {
     if ( mTotal.isEmpty() )
       mTotal = humanSize( bytesTotal );
 
-    mReceived = humanSize( bytesReceived );
     mFeedback->setProgress( ( bytesReceived * 100 ) / bytesTotal );
   }
 }
