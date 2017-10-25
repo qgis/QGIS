@@ -1117,17 +1117,14 @@ void QgsPluginManager::setCurrentTab( int idx )
 {
   if ( idx == PLUGMAN_TAB_SETTINGS )
   {
-    QgsDebugMsg( "Switching current tab to Settings" );
     mOptionsStackedWidget->setCurrentIndex( 2 );
   }
   else if ( idx == PLUGMAN_TAB_INSTALL_FROM_ZIP )
   {
-    QgsDebugMsg( "Switching current tab to Install from ZIP" );
     mOptionsStackedWidget->setCurrentIndex( 1 );
   }
   else
   {
-    QgsDebugMsg( "Switching current tab to Plugins" );
     mOptionsStackedWidget->setCurrentIndex( 0 );
 
     QStringList acceptedStatuses;
