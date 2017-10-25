@@ -121,16 +121,30 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
   if ( path.isEmpty() )
     return;
 
+  bool enabled = mModel->flags( index ) & Qt::ItemIsEnabled;
+
   QMenu *menu = new QMenu( this );
 
-  QAction *openFolderAction = new QAction( tr( "Open Directory…" ), menu );
-  connect( openFolderAction, &QAction::triggered, this, [this, path]
+  if ( enabled )
   {
-    QFileInfo fi( path );
-    QString folder = fi.path();
-    QDesktopServices::openUrl( QUrl::fromLocalFile( folder ) );
-  } );
-  menu->addAction( openFolderAction );
+    QAction *openFolderAction = new QAction( tr( "Open Directory…" ), menu );
+    connect( openFolderAction, &QAction::triggered, this, [this, path]
+    {
+      QFileInfo fi( path );
+      QString folder = fi.path();
+      QDesktopServices::openUrl( QUrl::fromLocalFile( folder ) );
+    } );
+    menu->addAction( openFolderAction );
+  }
+  else
+  {
+    QAction *rescanAction = new QAction( tr( "Refresh" ), menu );
+    connect( rescanAction, &QAction::triggered, this, [this, index]
+    {
+      mModel->recheckProject( index );
+    } );
+    menu->addAction( rescanAction );
+  }
 
   menu->popup( mapToGlobal( point ) );
 }

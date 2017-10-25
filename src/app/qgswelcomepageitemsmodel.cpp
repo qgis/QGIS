@@ -201,8 +201,22 @@ Qt::ItemFlags QgsWelcomePageItemsModel::flags( const QModelIndex &index ) const
 
   const RecentProjectData &projectData = mRecentProjects.at( index.row() );
 
-  if ( !QFile::exists( ( projectData.path ) ) )
+  // This check can be slow for network based projects, so only run it the first time
+  if ( !projectData.checkedExists )
+  {
+    projectData.exists = QFile::exists( ( projectData.path ) );
+    projectData.checkedExists = true;
+  }
+
+  if ( !projectData.exists )
     flags &= ~Qt::ItemIsEnabled;
 
   return flags;
+}
+
+void QgsWelcomePageItemsModel::recheckProject( const QModelIndex &index )
+{
+  const RecentProjectData &projectData = mRecentProjects.at( index.row() );
+  projectData.exists = QFile::exists( ( projectData.path ) );
+  projectData.checkedExists = true;
 }
