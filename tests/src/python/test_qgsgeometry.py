@@ -70,7 +70,7 @@ class TestQgsGeometry(unittest.TestCase):
         myWKT = 'Point (10 10)'
         g = QgsGeometry.fromWkt(myWKT)
         self.assertTrue(g)
-        g.setGeometry(None)
+        g.set(None)
         self.assertFalse(g)
 
     def testIsEmpty(self):
@@ -1974,7 +1974,7 @@ class TestQgsGeometry(unittest.TestCase):
                 assert geom1, "Relates {} failed: could not create geom:\n{}\n".format(i + 1, test_data[0])
                 geom2 = QgsGeometry.fromWkt(test_data[1])
                 assert geom2, "Relates {} failed: could not create geom:\n{}\n".format(i + 1, test_data[1])
-                result = QgsGeometry.createGeometryEngine(geom1.geometry()).relate(geom2.geometry())
+                result = QgsGeometry.createGeometryEngine(geom1.constGet()).relate(geom2.constGet())
                 exp = test_data[2]
                 self.assertEqual(result, exp, "Relates {} failed: mismatch Expected:\n{}\nGot:\n{}\nGeom1:\n{}\nGeom2:\n{}\n".format(i + 1, exp, result, test_data[0], test_data[1]))
 
