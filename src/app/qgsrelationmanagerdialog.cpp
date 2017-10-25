@@ -77,6 +77,19 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   item = new QTableWidgetItem( rel.id() );
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 5, item );
+
+
+  if ( rel.strength() == QgsRelation::RelationStrength::Composition )
+  {
+    item = new QTableWidgetItem( QStringLiteral( "Composition" ) );
+  }
+  else
+  {
+    item = new QTableWidgetItem( QStringLiteral( "Association" ) );
+  }
+  item->setFlags( Qt::ItemIsEditable );
+  mRelationsTable->setItem( row, 6, item );
+
   mRelationsTable->setSortingEnabled( true );
 }
 
@@ -116,6 +129,7 @@ void QgsRelationManagerDialog::mBtnAddRelation_clicked()
     relation.setId( relationId );
     relation.addFieldPair( addDlg.references().at( 0 ).first, addDlg.references().at( 0 ).second );
     relation.setName( addDlg.relationName() );
+    relation.setStrength( addDlg.relationStrength() );
 
     addRelation( relation );
   }

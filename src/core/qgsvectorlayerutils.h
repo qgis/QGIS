@@ -33,6 +33,43 @@ class CORE_EXPORT QgsVectorLayerUtils
   public:
 
     /**
+     * \ingroup core
+     * \class QgsDuplicateFeatureContext
+     * \brief Contains mainly the QMap with QgsVectorLayer and QgsFeatureIds do list all the duplicated features
+     *
+     * \since QGIS 3.0
+     */
+    class QgsDuplicateFeatureContext
+    {
+      public:
+
+        QgsDuplicateFeatureContext() {}
+
+        /**
+         * Returns all the layers in the member QMap mDuplicatedFeatures
+         * \since QGIS 3.0
+         */
+        QList<QgsVectorLayer *> layers() const;
+
+        /**
+         * Returns the duplicated features in the given layer
+         * \since QGIS 3.0
+         */
+        QgsFeatureIds duplicatedFeatures( QgsVectorLayer *layer ) const;
+
+
+      private:
+        QMap<QgsVectorLayer *, QgsFeatureIds> mDuplicatedFeatures;
+        friend class QgsVectorLayerUtils;
+
+        /**
+         * To set an entry to the member QMap mDuplicatedFeatures
+         * \since QGIS 3.0
+         */
+        void setDuplicatedFeatures( QgsVectorLayer *layer, QgsFeatureIds ids );
+    };
+
+    /**
      * Returns true if the specified value already exists within a field. This method can be used to test for uniqueness
      * of values inside a layer's attributes. An optional list of ignored feature IDs can be provided, if so, any features
      * with IDs within this list are ignored when testing for existence of the value.
@@ -68,6 +105,15 @@ class CORE_EXPORT QgsVectorLayerUtils
                                      const QgsAttributeMap &attributes = QgsAttributeMap(),
                                      QgsExpressionContext *context = nullptr );
 
+    /**
+     * Duplicates a feature and it's children (one level deep). It calls CreateFeature, so
+     * default values and constraints (e.g., unique constraints) will automatically be handled.
+     * The duplicated feature will be automatically inserted into the layer.
+     * \since QGIS 3.0
+     */
+    static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, int depth, QgsDuplicateFeatureContext &duplicateFeatureContext SIP_OUT );
+
 };
+
 
 #endif // QGSVECTORLAYERUTILS_H
