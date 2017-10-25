@@ -642,7 +642,7 @@ class TestQgsAuthManager(unittest.TestCase):
         # and a wrong domain is set
         self.assertTrue(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path), 'my.wrong.domain', True)) > 0)
 
-        # Test that a chain with an untrusted CA is not valid when the addRootCa argumentis true
+        # Test that a chain with an untrusted CA is valid when the addRootCa argumentis true
         # and a right domain is set
         self.assertTrue(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path), 'localhost', True)) == 0)
 
