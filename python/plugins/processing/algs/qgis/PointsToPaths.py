@@ -133,7 +133,7 @@ class PointsToPaths(QgisAlgorithm):
             if not f.hasGeometry():
                 continue
 
-            point = f.geometry().geometry().clone()
+            point = f.geometry().constGet().clone()
             if group_field_index >= 0:
                 group = f.attributes()[group_field_index]
             else:

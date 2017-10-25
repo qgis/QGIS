@@ -136,17 +136,17 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer('{}|layername=routes'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         f = next(vl.getFeatures())
-        self.assertEqual(f.geometry().geometry().wkbType(), QgsWkbTypes.LineString)
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.LineString)
 
         # GPX with elevation data
         datasource = os.path.join(TEST_DATA_DIR, 'elev.gpx')
         vl = QgsVectorLayer('{}|layername=routes'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         f = next(vl.getFeatures())
-        self.assertEqual(f.geometry().geometry().wkbType(), QgsWkbTypes.LineString25D)
-        self.assertEqual(f.geometry().geometry().pointN(0).z(), 1)
-        self.assertEqual(f.geometry().geometry().pointN(1).z(), 2)
-        self.assertEqual(f.geometry().geometry().pointN(2).z(), 3)
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.LineString25D)
+        self.assertEqual(f.geometry().constGet().pointN(0).z(), 1)
+        self.assertEqual(f.geometry().constGet().pointN(1).z(), 2)
+        self.assertEqual(f.geometry().constGet().pointN(2).z(), 3)
 
     def testNoDanglingFileDescriptorAfterCloseVariant1(self):
         ''' Test that when closing the provider all file handles are released '''
@@ -286,7 +286,7 @@ class PyQgsOGRProvider(unittest.TestCase):
             f = QgsFeature()
             self.assertTrue(vl.getFeatures(QgsFeatureRequest(1)).nextFeature(f))
             self.assertTrue(f.geometry())
-            self.assertEqual(f.geometry().geometry().asWkt(), row[2])
+            self.assertEqual(f.geometry().constGet().asWkt(), row[2])
 
     """PolyhedralSurface, Tin => mapped to MultiPolygon
           Triangle => mapped to Polygon

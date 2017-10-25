@@ -2561,15 +2561,15 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         features = [f for f in layer.getFeatures(request)]
         # virtual field value should not change, even though geometry has
         self.assertAlmostEqual(features[0]['virtual'], -71.123, 2)
-        self.assertAlmostEqual(features[0].geometry().geometry().x(), -7917376, -5)
+        self.assertAlmostEqual(features[0].geometry().constGet().x(), -7917376, -5)
         self.assertEqual(features[1]['virtual'], NULL)
         self.assertFalse(features[1].hasGeometry())
         self.assertAlmostEqual(features[2]['virtual'], -70.332, 2)
-        self.assertAlmostEqual(features[2].geometry().geometry().x(), -7829322, -5)
+        self.assertAlmostEqual(features[2].geometry().constGet().x(), -7829322, -5)
         self.assertAlmostEqual(features[3]['virtual'], -68.2, 2)
-        self.assertAlmostEqual(features[3].geometry().geometry().x(), -7591989, -5)
+        self.assertAlmostEqual(features[3].geometry().constGet().x(), -7591989, -5)
         self.assertAlmostEqual(features[4]['virtual'], -65.32, 2)
-        self.assertAlmostEqual(features[4].geometry().geometry().x(), -7271389, -5)
+        self.assertAlmostEqual(features[4].geometry().constGet().x(), -7271389, -5)
 
 
 class TestQgsVectorLayerSourceAddedFeaturesInBuffer(unittest.TestCase, FeatureSourceTestCase):

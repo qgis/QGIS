@@ -169,7 +169,7 @@ class PointsDisplacement(QgisAlgorithm):
                     dy = radius * cosinusCurrentAngle
 
                     # we want to keep any existing m/z values
-                    point = f.geometry().geometry().clone()
+                    point = f.geometry().constGet().clone()
                     point.setX(old_point.x() + dx)
                     point.setY(old_point.y() + dy)
                     f.setGeometry(QgsGeometry(point))
