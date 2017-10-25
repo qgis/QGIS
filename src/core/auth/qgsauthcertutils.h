@@ -299,6 +299,7 @@ class CORE_EXPORT QgsAuthCertUtils
     /**
      * \brief validateCertChain validates the given \a certificateChain
      * \param certificateChain list of certificates to be checked, with leaf first and with optional root CA last
+     * \param hostName (optional) name of the host to be verified
      * \param addRootCa if true the CA will be added to the trusted CAs for this validation check
      * \return list of QSslError, if the list is empty then the cert chain is valid
      */
