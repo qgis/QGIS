@@ -138,7 +138,7 @@ namespace gdal
    * data store. Use when the resultant dataset is no longer required, e.g. as a result
    * of user cancelation of an operation.
    *
-   * Requires a gdal \a dataset pointer, the corresponding gdal \driver and underlying
+   * Requires a gdal \a dataset pointer, the corresponding gdal \a driver and underlying
    * dataset file \a path.
    */
   void CORE_EXPORT fast_delete_and_close( dataset_unique_ptr &dataset, GDALDriverH driver, const QString &path );
