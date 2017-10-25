@@ -168,7 +168,7 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
   if ( feedback && feedback->isCanceled() )
   {
     //delete the dataset without closing (because it is faster)
-    GDALDeleteDataset( outputDriver, mOutputFile.toUtf8().constData() );
+    gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
     return static_cast< int >( Canceled );
   }
   return static_cast< int >( Success );

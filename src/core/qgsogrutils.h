@@ -134,6 +134,16 @@ namespace gdal
   using dataset_unique_ptr = std::unique_ptr< void, GDALDatasetCloser >;
 
   /**
+   * Performs a fast close of an unwanted GDAL dataset handle by deleting the underlying
+   * data store. Use when the resultant dataset is no longer required, e.g. as a result
+   * of user cancelation of an operation.
+   *
+   * Requires a gdal \a dataset pointer, the corresponding gdal \driver and underlying
+   * dataset file \a path.
+   */
+  void CORE_EXPORT fast_delete_and_close( dataset_unique_ptr &dataset, GDALDriverH driver, const QString &path );
+
+  /**
    * Scoped GDAL warp options.
    */
   using warp_options_unique_ptr = std::unique_ptr< GDALWarpOptions, GDALWarpOptionsDeleter >;

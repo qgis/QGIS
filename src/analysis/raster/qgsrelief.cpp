@@ -276,8 +276,7 @@ int QgsRelief::processRaster( QgsFeedback *feedback )
   if ( feedback && feedback->isCanceled() )
   {
     //delete the dataset without closing (because it is faster)
-    ( void )outputDataset.release();
-    GDALDeleteDataset( outputDriver, mOutputFile.toUtf8().constData() );
+    gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
     return 7;
   }
 

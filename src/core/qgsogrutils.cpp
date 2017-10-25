@@ -20,6 +20,7 @@
 #include "qgsfields.h"
 #include <QTextCodec>
 #include <QUuid>
+#include <cpl_error.h>
 
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For QGIS purposes, both
@@ -55,6 +56,26 @@ void gdal::GDALDatasetCloser::operator()( void *dataset )
 {
   GDALClose( dataset );
 }
+
+void gdal::fast_delete_and_close( gdal::dataset_unique_ptr &dataset, GDALDriverH driver, const QString &path )
+{
+  // see https://github.com/qgis/QGIS/commit/d024910490a39e65e671f2055c5b6543e06c7042#commitcomment-25194282
+  // faster if we close the handle AFTER delete, but doesn't work for windows
+#ifdef Q_OS_WIN
+  // close dataset handle
+  dataset.reset();
+#endif
+
+  CPLPushErrorHandler( CPLQuietErrorHandler );
+  GDALDeleteDataset( driver, path.toUtf8().constData() );
+  CPLPopErrorHandler();
+
+#ifndef Q_OS_WIN
+  // close dataset handle
+  dataset.reset();
+#endif
+}
+
 
 void gdal::GDALWarpOptionsDeleter::operator()( GDALWarpOptions *options )
 {
