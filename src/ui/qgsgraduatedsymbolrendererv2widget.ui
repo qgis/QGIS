@@ -375,7 +375,7 @@ Negative rounds to powers of 10</string>
           <widget class="QComboBox" name="cboSymmetryPointForPretty"/>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="spinSymmetryPointForOtherMethods">
+          <widget class="QgsDoubleSpinBox" name="spinSymmetryPointForOtherMethods">
            <property name="specialValueText">
             <string/>
            </property>
