@@ -33,7 +33,6 @@
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mOriginalGeometry( nullptr )
   , mModifiedFeature( -1 )
   , mGeometryModified( false )
   , mForceCopy( false )
@@ -351,6 +350,7 @@ void QgsMapToolOffsetCurve::deleteDistanceWidget()
 
 void QgsMapToolOffsetCurve::deleteRubberBandAndGeometry()
 {
+  mOriginalGeometry.set( nullptr );
   delete mRubberBand;
   mRubberBand = nullptr;
 }
