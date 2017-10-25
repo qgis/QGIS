@@ -109,6 +109,11 @@ class CORE_EXPORT QgsVectorLayerUtils
      * Duplicates a feature and it's children (one level deep). It calls CreateFeature, so
      * default values and constraints (e.g., unique constraints) will automatically be handled.
      * The duplicated feature will be automatically inserted into the layer.
+     * \param layer
+     * \param feature the active feature
+     * \param project
+     * \param depth the higher this number the deeper the level - With depth > 0 the children of the feature are not duplicated
+     * \param duplicateFeatureContext stores all the layers and the featureids of the duplicated features (incl. childs)
      * \since QGIS 3.0
      */
     static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, int depth, QgsDuplicateFeatureContext &duplicateFeatureContext SIP_OUT );
