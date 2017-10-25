@@ -30,6 +30,9 @@ class QgsFeatureFilterModel : QAbstractItemModel
     };
 
     QgsFeatureFilterModel( QObject *parent = 0 );
+%Docstring
+ Create a new QgsFeatureFilterModel, optionally specifying a ``parent``.
+%End
     ~QgsFeatureFilterModel();
 
     QgsVectorLayer *sourceLayer() const;

@@ -23,6 +23,7 @@
 class QgsFieldExpressionValuesGatherer;
 
 /**
+ * \ingroup core
  * Provides a list of features based on filter conditions.
  * Features are fetched asynchronously.
  *
@@ -59,10 +60,13 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
      */
     enum Role
     {
-      IdentifierValueRole = Qt::UserRole, //!<
-      ValueRole
+      IdentifierValueRole = Qt::UserRole, //!< Used to retrieve the identifierValue (primary key) of a feature.
+      ValueRole //!< Used to retrieve the displayExpression of a feature.
     };
 
+    /**
+     * Create a new QgsFeatureFilterModel, optionally specifying a \a parent.
+     */
     QgsFeatureFilterModel( QObject *parent = nullptr );
     ~QgsFeatureFilterModel();
 

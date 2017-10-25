@@ -28,7 +28,8 @@ class QgsAnimatedIcon;
 class QgsFilterLineEdit;
 
 /**
- * This offers a combobox with autocompleter that allows to select features from a layer.
+ * \ingroup gui
+ * This offers a combobox with autocompleter that allows selecting features from a layer.
  *
  * It will show up to 100 entries at a time. The entries can be chosen based on the displayExpression
  * and whenever text is typed into the combobox, the completer and popup will adjust to features matching the typed text.
@@ -47,6 +48,9 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull NOTIFY allowNullChanged )
 
   public:
+    /**
+     * Create a new QgsFeatureListComboBox, optionally specifying a \a parent.
+     */
     QgsFeatureListComboBox( QWidget *parent = nullptr );
 
     /**

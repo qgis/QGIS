@@ -213,7 +213,7 @@ void QgsFeatureFilterModel::updateCompleter()
       firstRow = 1;
     }
 
-    // Remove all entries (except for extra entry if existant)
+    // Remove all entries (except for extra entry if existent)
     beginRemoveRows( QModelIndex(), firstRow, mEntries.size() - firstRow );
     mEntries.remove( firstRow, mEntries.size() - firstRow );
     endRemoveRows();
@@ -295,7 +295,7 @@ void QgsFeatureFilterModel::scheduledReload()
 
     request.setFilterExpression( filterClause );
   }
-  QSet<QString> attributes = request.filterExpression().referencedColumns();
+  QSet<QString> attributes = request.filterExpression()->referencedColumns();
   attributes << mIdentifierField;
   request.setSubsetOfAttributes( attributes, mSourceLayer->fields() );
   request.setFlags( QgsFeatureRequest::NoGeometry );

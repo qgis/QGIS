@@ -12,7 +12,7 @@
 class QgsFeatureListComboBox : QComboBox
 {
 %Docstring
- This offers a combobox with autocompleter that allows to select features from a layer.
+ This offers a combobox with autocompleter that allows selecting features from a layer.
 
  It will show up to 100 entries at a time. The entries can be chosen based on the displayExpression
  and whenever text is typed into the combobox, the completer and popup will adjust to features matching the typed text.
@@ -24,7 +24,11 @@ class QgsFeatureListComboBox : QComboBox
 #include "qgsfeaturelistcombobox.h"
 %End
   public:
+
     QgsFeatureListComboBox( QWidget *parent = 0 );
+%Docstring
+ Create a new QgsFeatureListComboBox, optionally specifying a ``parent``.
+%End
 
     QgsVectorLayer *sourceLayer() const;
 %Docstring
