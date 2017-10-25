@@ -297,7 +297,7 @@ void QgsFeatureFilterModel::scheduledReload()
   }
   QSet<QString> attributes = request.filterExpression().referencedColumns();
   attributes << mIdentifierField;
-  request.setSubsetOfAttributes( attributes );
+  request.setSubsetOfAttributes( attributes, mSourceLayer->fields() );
   request.setFlags( QgsFeatureRequest::NoGeometry );
 
   request.setLimit( 100 );
