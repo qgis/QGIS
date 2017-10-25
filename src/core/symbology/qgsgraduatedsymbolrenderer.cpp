@@ -551,6 +551,7 @@ void _makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, bool ast
   }
 }
 
+
 static QList<double> _calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride )
 {
   // Equal interval algorithm

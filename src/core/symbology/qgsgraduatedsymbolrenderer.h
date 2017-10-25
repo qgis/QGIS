@@ -222,8 +222,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     Mode mode() const { return mMode; }
     void setMode( Mode mode ) { mMode = mode; }
 
-    /**
-     * Recalculate classes for a layer
+    /** Recalculate classes for a layer
      * \param vlayer  The layer being rendered (from which data values are calculated)
      * \param mode    The calculation mode
      * \param nclasses The number of classes to calculate (approximate for some modes)
