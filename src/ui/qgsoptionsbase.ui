@@ -4112,6 +4112,9 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   <string>Snapping</string>
                  </property>
                  <layout class="QGridLayout" name="_10">
+                  <item row="6" column="5">
+                   <widget class="QgsColorButton" name="mSnappingMarkerColorButton"/>
+                  </item>
                   <item row="1" column="1" colspan="6">
                    <widget class="QCheckBox" name="mSnappingEnabledDefault">
                     <property name="text">
@@ -4123,6 +4126,13 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    <widget class="QLabel" name="label_49">
                     <property name="text">
                      <string>Display main dialog as (restart required)</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="1">
+                   <widget class="QLabel" name="label_2">
+                    <property name="text">
+                     <string>Snapping marker color</string>
                     </property>
                    </widget>
                   </item>
@@ -4189,6 +4199,20 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </widget>
                   </item>
+                  <item row="4" column="6">
+                   <widget class="QComboBox" name="mSearchRadiusVertexEditComboBox">
+                    <item>
+                     <property name="text">
+                      <string>map units</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>pixels</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
                   <item row="4" column="5">
                    <widget class="QDoubleSpinBox" name="mSearchRadiusVertexEditSpinBox">
                     <property name="decimals">
@@ -4222,19 +4246,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </spacer>
                   </item>
-                  <item row="4" column="6">
-                   <widget class="QComboBox" name="mSearchRadiusVertexEditComboBox">
-                    <item>
-                     <property name="text">
-                      <string>map units</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>pixels</string>
-                     </property>
-                    </item>
-                   </widget>
+                  <item row="5" column="5" colspan="2">
+                   <widget class="QComboBox" name="mSnappingMainDialogComboBox"/>
                   </item>
                   <item row="4" column="1" colspan="3">
                    <widget class="QLabel" name="mVertexSearchRadiusVertexEditLabel">
@@ -4243,13 +4256,17 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="5" column="5" colspan="2">
-                   <widget class="QComboBox" name="mSnappingMainDialogComboBox"/>
-                  </item>
                   <item row="3" column="1" colspan="2">
                    <widget class="QLabel" name="mDefaultSnappingToleranceTextLabel">
                     <property name="text">
                      <string>Default snapping tolerance</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="1" colspan="6">
+                   <widget class="QCheckBox" name="mSnappingTooltipsCheckbox">
+                    <property name="text">
+                     <string>Show snapping tooltips</string>
                     </property>
                    </widget>
                   </item>
@@ -4829,7 +4846,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                 <x>0</x>
                 <y>0</y>
                 <width>866</width>
-                <height>822</height>
+                <height>930</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">

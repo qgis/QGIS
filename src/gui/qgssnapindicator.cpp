@@ -15,7 +15,12 @@
 
 #include "qgssnapindicator.h"
 
+#include "qgsmapcanvas.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
+
+#include <QToolTip>
 
 
 QgsSnapIndicator::QgsSnapIndicator( QgsMapCanvas *canvas )
@@ -34,17 +39,46 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
   if ( !mMatch.isValid() )
   {
     mSnappingMarker.reset();
+    QToolTip::hideText();
   }
   else
   {
     if ( !mSnappingMarker )
     {
       mSnappingMarker.reset( new QgsVertexMarker( mCanvas ) );
-      mSnappingMarker->setIconType( QgsVertexMarker::ICON_CROSS );
-      mSnappingMarker->setColor( Qt::magenta );
       mSnappingMarker->setPenWidth( 3 );
     }
+
+    QgsSettings s;
+
+    QColor color = s.value( QStringLiteral( "/qgis/digitizing/snap_color" ), QColor( Qt::magenta ) ).value<QColor>();
+    mSnappingMarker->setColor( color );
+
+    int iconType;
+    if ( match.hasVertex() )
+    {
+      if ( match.layer() )
+        iconType = QgsVertexMarker::ICON_CROSS;  // vertex snap
+      else
+        iconType = QgsVertexMarker::ICON_X;  // intersection snap
+    }
+    else  // must be segment snap
+    {
+      iconType = QgsVertexMarker::ICON_BOX;
+    }
+    mSnappingMarker->setIconType( iconType );
+
     mSnappingMarker->setCenter( match.point() );
+
+    // tooltip
+    if ( s.value( QStringLiteral( "/qgis/digitizing/snap_tooltip" ), false ).toBool() )
+    {
+      QPoint ptCanvas = mSnappingMarker->toCanvasCoordinates( match.point() ).toPoint();
+      QPoint ptGlobal = mCanvas->mapToGlobal( ptCanvas );
+      QRect rect( ptCanvas.x(), ptCanvas.y(), 1, 1 );  // area where is the tooltip valid
+      QString layerName = match.layer() ? match.layer()->name() : QString();
+      QToolTip::showText( ptGlobal, layerName, mCanvas, rect );
+    }
   }
 }
 

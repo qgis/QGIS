@@ -941,6 +941,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
   mSearchRadiusVertexEditComboBox->setCurrentIndex( index );
 
+  mSnappingMarkerColorButton->setColor( mSettings->value( QStringLiteral( "/qgis/digitizing/snap_color" ), QColor( Qt::magenta ) ).value<QColor>() );
+  mSnappingTooltipsCheckbox->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/snap_tooltip" ), false ).toBool() );
+
   //vertex marker
   mMarkersOnlyForSelectedCheckBox->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/marker_only_for_selected" ), true ).toBool() );
 
@@ -1458,6 +1461,9 @@ void QgsOptions::saveOptions()
                        ( mDefaultSnappingToleranceComboBox->currentIndex() == 0 ? QgsTolerance::ProjectUnits : QgsTolerance::Pixels ) );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ),
                        ( mSearchRadiusVertexEditComboBox->currentIndex()  == 0 ? QgsTolerance::ProjectUnits : QgsTolerance::Pixels ) );
+
+  mSettings->setValue( QStringLiteral( "/qgis/digitizing/snap_color" ), mSnappingMarkerColorButton->color() );
+  mSettings->setValue( QStringLiteral( "/qgis/digitizing/snap_tooltip" ), mSnappingTooltipsCheckbox->isChecked() );
 
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/marker_only_for_selected" ), mMarkersOnlyForSelectedCheckBox->isChecked() );
 
