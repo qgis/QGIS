@@ -39,7 +39,8 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
     {
       TitleRole = Qt::UserRole + 1,
       PathRole = Qt::UserRole + 2,
-      CrsRole = Qt::UserRole + 3
+      NativePathRole = Qt::UserRole + 3,
+      CrsRole = Qt::UserRole + 4
     };
 
     struct RecentProjectData
