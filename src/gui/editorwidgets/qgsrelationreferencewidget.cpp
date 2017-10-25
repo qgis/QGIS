@@ -826,7 +826,6 @@ void QgsRelationReferenceWidget::filterChanged()
         QStringList texts;
         Q_FOREACH ( const QString &txt, mFilterCache[ccb->property( "Field" ).toString()][ccb->currentText()] )
         {
-#if 0
           QMap<QString, QString> filtersAttrs = filters;
           filtersAttrs[fieldName] = QgsExpression::createFieldEqualityExpression( fieldName, txt );
           QString expression = filtersAttrs.values().join( QStringLiteral( " AND " ) );
@@ -834,7 +833,7 @@ void QgsRelationReferenceWidget::filterChanged()
           QgsAttributeList subset = attrs;
           subset << mReferencedLayer->fields().lookupField( fieldName );
 
-          QgsFeatureIterator it( mMasterModel->layerCache()->getFeatures( QgsFeatureRequest().setFilterExpression( expression ).setSubsetOfAttributes( subset ) ) );
+          QgsFeatureIterator it( mReferencedLayer->getFeatures( QgsFeatureRequest().setFilterExpression( expression ).setSubsetOfAttributes( subset ) ) );
 
           bool found = false;
           while ( it.nextFeature( f ) )
@@ -847,7 +846,6 @@ void QgsRelationReferenceWidget::filterChanged()
 
           // item is only provided if at least 1 feature exists
           if ( found )
-#endif
             texts << txt;
         }
 
@@ -861,25 +859,8 @@ void QgsRelationReferenceWidget::filterChanged()
       }
     }
   }
-#if 0
-  if ( !mChainFilters || ( mChainFilters && !filtered ) )
-  {
-    filterExpression = filters.values().join( QStringLiteral( " AND " ) );
-
-    QgsFeatureRequest req = QgsFeatureRequest().setSubsetOfAttributes( attrs );
-    if ( !filterExpression.isEmpty() )
-      req.setFilterExpression( filterExpression );
-
-    QgsFeatureIterator it( mMasterModel->layerCache()->getFeatures( req ) );
-
-    while ( it.nextFeature( f ) )
-    {
-      featureIds << f.id();
-    }
-  }
-
-  mFilterModel->setFilteredFeatures( featureIds );
-#endif
+  filterExpression = filters.values().join( QStringLiteral( " AND " ) );
+  mComboBox->setFilterExpression( filterExpression );
 }
 
 void QgsRelationReferenceWidget::addEntry()
