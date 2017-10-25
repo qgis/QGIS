@@ -44,7 +44,7 @@ class QPushButton;
  * tables from the database to the map canvas.
  */
 // class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBase
-class GUI_EXPORT QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
+class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
 
@@ -137,8 +137,32 @@ class GUI_EXPORT QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, 
     void setSearchExpression( const QString &regexp );
 
     void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#spatialite-layers" ) ); }
+    /** Load selected Database-Source
+     *  - load Database an fill the QgsSpatiaLiteTableModel with the result
+     * \note
+     *  - only the first entry of 'paths' will be used
+     * \param paths absolute path to file(s) to load
+     * \param providerKey
+     * \see on_btnConnect_clicked
+     * \see addDatabaseLayers
+     * \see QgisApp::openLayer
+     * \since QGIS 3.0
+     */
+    void addDatabaseSource( QStringList const &paths, QString const &providerKey = QStringLiteral( "spatialite" ) );
   signals:
+    /**
+     * Emitted when the provider's connections have changed
+     * This signal is normally forwarded the app and used to refresh browser items
+     * \since QGIS 3.0
+     */
     void connectionsChanged();
+    /** Emitted when a DB layer has been selected for addition
+     * \note
+     *  - this event is used to load a DB-Layer during a Drag and Drop
+     * \see QgisApp::openLayer
+     * \see addDatabaseSource
+     * \since QGIS 3.0
+     */
     void addDatabaseLayers( QStringList const &paths, QString const &providerKey );
 
   private:

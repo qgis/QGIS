@@ -34,7 +34,8 @@
 
 //----------------------------------------------------------
 //-- Mandatory functions for each Provider
-//--> each Provider must be created in an extra library
+//--> each Provider must be created in an extra library [extra library]
+//--> when creating inside a internal library [core library], create as class internal functions
 //----------------------------------------------------------
 const QString RASTERLITE2_KEY = QStringLiteral( "rasterlite2" );
 const QString RASTERLITE2_DESCRIPTION = QStringLiteral( "Spatialite RasterLite2 data provider" );
@@ -71,6 +72,7 @@ QGISEXTERN QgsRasterLite2Provider *classFactory( const QString *uri )
 {
   return new QgsRasterLite2Provider( *uri );
 }
+
 //----------------------------------------------------------
 QgsRasterLite2Provider::QgsRasterLite2Provider( const QString &uri )
   : QgsRasterDataProvider( uri )

@@ -28,7 +28,7 @@
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsprojectionselectiondialog.h"
-#include "qgsslconnect.h"
+#include "qgssqlitehandle.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 
@@ -39,6 +39,7 @@
 #include <QLibrary>
 
 #include <spatialite.h>
+
 
 QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::WindowFlags fl, const QgsCoordinateReferenceSystem &defaultCrs )
   : QDialog( parent, fl )
@@ -383,7 +384,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
   QgsDebugMsg( sqlCreateIndex ); // OK
 
   sqlite3 *db = nullptr;
-  int rc = QgsSLConnect::sqlite3_open( mDatabaseComboBox->currentText().toUtf8(), &db );
+  int rc = QgsSqliteHandle::sqlite3_open( mDatabaseComboBox->currentText().toUtf8(), &db );
   if ( rc != SQLITE_OK )
   {
     QMessageBox::warning( this,
@@ -447,7 +448,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
       }
     }
 
-    QgsSLConnect::sqlite3_close( db );
+    QgsSqliteHandle::sqlite3_close( db );
   }
 
   return false;

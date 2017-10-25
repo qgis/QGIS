@@ -18,7 +18,7 @@
 
 #include "qgsrasterdataprovider.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsspatialiteconnection.h"
+#include "qgssqlitehandle.h"
 
 /**
   * \class QgsRasterLite2Provider
@@ -26,7 +26,7 @@
   *  This provider implements the interface defined in the QgsDataProvider class
   *    to provide access to spatial data residing in a Spatialite enabled database.
   * \note
-  *  Each Provider must be defined as an extra library in the CMakeLists.txt
+  *  Each Provider must be defined as an extra library in the CMakeLists.txt, when used as an extra library
   *  -> 'PROVIDER_KEY' and 'PROVIDER__DESCRIPTION' must be defined
   *  --> QGISEXTERN bool isProvider(), providerKey(),description() and Class Factory method must be defined
   * \since QGIS 3.0
@@ -67,6 +67,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      * \since QGIS 3.0
      */
     QString description() const override;
+
+    static QgsRasterLite2Provider *createProvider( const QString &uri );
 
     /** Returns the coordinate system for the data source.
      * If the provider isn't capable of returning its projection then an invalid

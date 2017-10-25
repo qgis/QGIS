@@ -38,6 +38,12 @@ email                : a.furieri@lqt.it
 #define strcasecmp(a,b) stricmp(a,b)
 #endif
 
+#ifdef HAVE_GUI
+QGISEXTERN QgsSpatiaLiteSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+{
+  return new QgsSpatiaLiteSourceSelect( parent, fl, widgetMode );
+}
+#endif
 QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode ):
   QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
 {
@@ -119,6 +125,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget *parent, Qt::Windo
   mSearchModeLabel->setVisible( false );
   mSearchTableEdit->setVisible( false );
   cbxAllowGeometrylessTables->setVisible( false );
+  connect( this, &QgsAbstractDataSourceWidget::addDatabaseLayers, this, &QgsSpatiaLiteSourceSelect::addDatabaseSource );
 }
 
 QgsSpatiaLiteSourceSelect::~QgsSpatiaLiteSourceSelect()
@@ -354,14 +361,6 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget *parent )
   QString sName = fileInfo.fileName();
   QString savedName = fileInfo.fileName();
   QString baseKey = QStringLiteral( "/SpatiaLite/connections/" );
-
-  // TODO: keep the test
-  //handle = openSpatiaLiteDb( myFI.canonicalFilePath() );
-  //if ( !handle )
-  //  return false;
-  // OK, this one is a valid SpatiaLite DB
-  //closeSpatiaLiteDb( handle );
-
   // if there is already a connection with this name, ask for a new name
   while ( ! settings.value( baseKey + savedName + "/sqlitepath", "" ).toString().isEmpty() )
   {
@@ -501,11 +500,18 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
   QgsSpatiaLiteConnection connectionInfo( cmbConnections->currentText() );
   mSqlitePath = connectionInfo.dbPath();
 
+  addDatabaseSource(QStringList(mSqlitePath));
+
+}
+
+void QgsSpatiaLiteSourceSelect::addDatabaseSource( QStringList const &paths, QString const &providerKey )
+{
+  Q_UNUSED( providerKey );
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  QString sLayerName = QString::null;
+  QString fileName = paths.at(0);
   bool bLoadLayers = true;
   bool bShared = true;
-  SpatialiteDbInfo *spatialiteDbInfo = connectionInfo.CreateSpatialiteConnection( sLayerName, bLoadLayers, bShared );
+  SpatialiteDbInfo *spatialiteDbInfo = QgsSpatiaLiteUtils::CreateSpatialiteConnection( fileName, bLoadLayers, bShared );
 
   QApplication::restoreOverrideCursor();
 
@@ -530,12 +536,15 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
       QMessageBox::critical( this, tr( "SpatiaLite DB Open Error" ), tr( "The read Sqlite3 Container is not supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider: %1" ).arg( mSqlitePath ) );
       return;
     }
+    if (fileName != mSqlitePath)
+    {
+      mSqlitePath=fileName;
+    }
     // populate the table list
     // get the list of suitable tables and columns and populate the UI
     setSpatialiteDbInfo( spatialiteDbInfo );
   }
 }
-
 void QgsSpatiaLiteSourceSelect::setSpatialiteDbInfo( SpatialiteDbInfo *spatialiteDbInfo, bool setConnectionInfo)
 {
   mTableModel.setSqliteDb( spatialiteDbInfo, true );

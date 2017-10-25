@@ -13,6 +13,11 @@ email                : a.furieri@lqt.it
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+extern "C"
+{
+#include <sqlite3.h>
+#include <spatialite.h>
+}
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -25,7 +30,6 @@ email                : a.furieri@lqt.it
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsvectorlayerexporter.h"
-#include "qgsslconnect.h"
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnpool.h"
 #include "qgsspatialitefeatureiterator.h"
@@ -42,7 +46,8 @@ email                : a.furieri@lqt.it
 
 //----------------------------------------------------------
 //-- Mandatory functions for each Provider
-//--> each Provider must be created in an extra library
+//--> each Provider must be created in an extra library [extra library]
+//--> when creating inside a internal library [core library], create as class internal functions
 //----------------------------------------------------------
 const QString SPATIALITE_KEY = QStringLiteral( "spatialite" );
 const QString SPATIALITE_DESCRIPTION = QStringLiteral( "SpatiaLite data provider" );
@@ -79,6 +84,7 @@ QGISEXTERN QgsSpatiaLiteProvider *classFactory( const QString *uri )
 {
   return new QgsSpatiaLiteProvider( *uri );
 }
+
 //----------------------------------------------------------
 QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   : QgsVectorDataProvider( uri )
@@ -217,11 +223,11 @@ bool QgsSpatiaLiteProvider::setDbLayer( SpatialiteDbLayer *dbLayer )
     // mDbLayer->setLayerQuery(mSubsetString);
     mSrid = mDbLayer->getSrid();
     mGeometryType = mDbLayer->getGeometryType();
-    if ( mDbLayer->getSpatialIndexType() == GAIA_SPATIAL_INDEX_RTREE )
+    if ( mDbLayer->getSpatialIndexType() == SpatialiteDbInfo::SpatialIndexRTree )
     {
       mSpatialIndexRTree = true;
     }
-    if ( mDbLayer->getSpatialIndexType() == GAIA_SPATIAL_INDEX_MBRCACHE )
+    if ( mDbLayer->getSpatialIndexType() == SpatialiteDbInfo::SpatialIndexMbrCache )
     {
       mSpatialIndexMbrCache = true;
     }

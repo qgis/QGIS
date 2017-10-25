@@ -66,7 +66,7 @@ class CORE_EXPORT QgsSpatiaLiteConnPoolGroup : public QObject, public QgsConnect
 };
 
 //! SpatiaLite connection pool - singleton
-class QgsSpatiaLiteConnPool : public QgsConnectionPool<QgsSqliteHandle *, QgsSpatiaLiteConnPoolGroup>
+class CORE_EXPORT QgsSpatiaLiteConnPool : public QgsConnectionPool<QgsSqliteHandle *, QgsSpatiaLiteConnPoolGroup>
 {
     static QgsSpatiaLiteConnPool sInstance;
   public:

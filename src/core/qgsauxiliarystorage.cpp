@@ -17,7 +17,7 @@
 
 #include "qgsauxiliarystorage.h"
 #include "qgslogger.h"
-#include "qgsslconnect.h"
+#include "qgssqlitehandle.h"
 #include "qgsproject.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsdiagramrenderer.h"
@@ -679,7 +679,7 @@ sqlite3 *QgsAuxiliaryStorage::openDB( const QString &filename )
 {
   sqlite3 *handler = nullptr;
 
-  bool rc = QgsSLConnect::sqlite3_open_v2( filename.toUtf8().constData(), &handler, SQLITE_OPEN_READWRITE, nullptr );
+  bool rc = QgsSqliteHandle::sqlite3_open_v2( filename.toUtf8().constData(), &handler, SQLITE_OPEN_READWRITE, nullptr );
   if ( rc )
   {
     debugMsg( "sqlite3_open_v2", handler );
@@ -705,7 +705,7 @@ sqlite3 *QgsAuxiliaryStorage::createDB( const QString &filename )
   int rc;
 
   // open/create database
-  rc = QgsSLConnect::sqlite3_open_v2( filename.toUtf8().constData(), &handler, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
+  rc = QgsSqliteHandle::sqlite3_open_v2( filename.toUtf8().constData(), &handler, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
   if ( rc )
   {
     debugMsg( "sqlite3_open_v2", handler );
@@ -774,7 +774,7 @@ void QgsAuxiliaryStorage::close( sqlite3 *handler )
 {
   if ( handler )
   {
-    QgsSLConnect::sqlite3_close_v2( handler );
+    QgsSqliteHandle::sqlite3_close_v2( handler );
     handler = nullptr;
   }
 }

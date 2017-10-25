@@ -594,6 +594,7 @@ INCLUDE_DIRECTORIES(
   ../core/layertree
   ../core/processing
   ../core/providers/memory
+  ../core/providers/spatialite
   ../core/raster
   ../core/scalebar
   ../core/symbology

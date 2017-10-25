@@ -18,6 +18,7 @@
 
 #include <limits>
 #include <QDir>
+#include <QDomNode>
 #include <QFileInfo>
 #include <QIcon>
 #include <QImage>
@@ -27,13 +28,13 @@
 #include <QTextStream>
 #include <QDebug>
 
-#include <sqlite3.h>
-#include <spatialite.h>
-
+#include "qgswkbtypes.h"
+#include "qgsfields.h"
+#include "qgspointxy.h"
+#include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
 #include "qgsfeaturesink.h"
+#include <sqlite3.h>
 
 class SpatialiteDbLayer;
 class QgsSqliteHandle;
@@ -115,11 +116,11 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
     enum SpatialIndexType
     {
       //! Vector Layer: no Spatial Index - GAIA_SPATIAL_INDEX_NONE    0
-      SpatialIndexNone = GAIA_SPATIAL_INDEX_NONE,
+      SpatialIndexNone = 0,
       //! Vector Layer: Spatial Index RTree - GAIA_SPATIAL_INDEX_RTREE  1
-      SpatialIndexRTree = GAIA_SPATIAL_INDEX_RTREE,
+      SpatialIndexRTree = 1,
       //! Vector Layer: Spatial Index MbrCache - GAIA_SPATIAL_INDEX_MBRCACHE  2
-      SpatialIndexMbrCache = GAIA_SPATIAL_INDEX_MBRCACHE
+      SpatialIndexMbrCache = 2
     };
     enum SpatialiteLayerType
     {
@@ -544,14 +545,29 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /** Loaded Layers-Counter
      * - contained in mDbLayers
-     * -- all deatails of the Layer are known
+     * -- all details of the Layer are known
      * \note
      * - only when GetSpatialiteDbInfoWrapper is called with LoadLayers=true
      * -- will all the Layers be loaded
      * \see GetSpatialiteDbInfo
      * \since QGIS 3.0
      */
-    int dbLayersCount() const { return mLayersCount; }
+    int dbLoadedLayersCount() const { return mLayersCount; }
+    /**Sum of all LayerTypes found
+     * \note
+     *   independent of Layer-Types
+     * \see mHasVectorLayers
+     * \see mHasRasterLite1Tables
+     * \see mHasTopologyExportTables
+     * \see mHasVectorCoveragesTables
+     * \see mHasRasterCoveragesTables
+     * \see mHasGeoPackageTables
+     * \see mHasFdoOgrTables
+     * \see mHasMBTilesTables
+     * \see getSniffLayerMetadata
+     * \since QGIS 3.0
+     */
+    int dbLayersCount() const { return mTotalCountLayers; }
 
     /** Amount of Vector-Layers found
      * - SpatialTables, SpatialViews and VirtualShapes [from the vector_layers View]
@@ -563,6 +579,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     int dbVectorLayersCount() const { return mVectorLayers.size(); }
+
     //! Flag indicating if the layer data source has ReadOnly restrictions
     bool isDbReadOnly() const { return mReadOnly; }
     //! Load all Layer-Information [default] or only 'sniff' the Database
@@ -1101,7 +1118,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \param sLayerName when used
      * \param bLoadLayers Load all Layer-Information or only 'sniff' [default] the Database
      * \returns SpatialiteDbInfo with collected results
-     * \see QgsSLConnect
+     * \see QgsSqliteHandle
      * \since QGIS 3.0
      */
     bool GetSpatialiteDbInfo( QString sLayerName = QString::null, bool bLoadLayers = false, SpatialSniff sniffType = SpatialiteDbInfo::SniffUnknown );
@@ -1114,7 +1131,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      *  - otherwise all tables with geometries
      * \param sLayerName when used
      * \returns SpatialiteDbInfo with collected results
-     * \see QgsSLConnect
+     * \see QgsSqliteHandle
      * \since QGIS 3.0
      */
     bool attachQSqliteHandle( QgsSqliteHandle *qSqliteHandle );
@@ -1370,6 +1387,22 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
     * \since QGIS 3.0
     */
     int mRasterLite2VersionRevision;
+
+    /**Sum of all LayerTypes found
+     * \note
+     *   independent of Layer-Types
+     * \see mHasVectorLayers
+     * \see mHasRasterLite1Tables
+     * \see mHasTopologyExportTables
+     * \see mHasVectorCoveragesTables
+     * \see mHasRasterCoveragesTables
+     * \see mHasGeoPackageTables
+     * \see mHasFdoOgrTables
+     * \see mHasMBTilesTables
+     * \see getSniffLayerMetadata
+     * \since QGIS 3.0
+     */
+    int mTotalCountLayers;
 
     /** Does the read Database contain SpatialTables, SpatialViews or VirtualShapes
      * - determine through Sql-Queries, without usage of any Drivers
@@ -4243,9 +4276,9 @@ class CORE_EXPORT QgsSpatiaLiteUtils
      * \param sDatabaseFileName Database Filename
      * \param sLayerName when used
      * \param bLoadLayers Load all Layer-Information or only 'sniff' [default] the Database
-     * \param sqlite_handle opened using QgsSLConnect class
+     * \param sqlite_handle opened using QgsSqliteHandle class
      * \returns SpatialiteDbInfo with collected results
-     * \see QgsSLConnect
+     * \see QgsSqliteHandle
      * \since QGIS 3.0
      */
     static SpatialiteDbInfo *GetSpatialiteDbInfoWrapper( QString sDatabaseFileName, QString sLayerName = QString::null, bool bLoadLayers = false, sqlite3 *sqlite_handle  = nullptr );

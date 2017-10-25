@@ -26,7 +26,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsproviderregistry.h"
-#include "qgsslconnect.h"
+#include "qgssqlitehandle.h"
 #include "qgslogger.h"
 
 #include <cpl_vsi.h>
@@ -354,7 +354,7 @@ bool QgsWFSSharedData::createCache()
 
   sqlite3 *db = nullptr;
   bool ret = true;
-  int rc = QgsSLConnect::sqlite3_open( mCacheDbname.toUtf8(), &db );
+  int rc = QgsSqliteHandle::sqlite3_open( mCacheDbname.toUtf8(), &db );
   if ( rc == SQLITE_OK )
   {
     QString sql;
@@ -428,7 +428,7 @@ bool QgsWFSSharedData::createCache()
 
     ( void )sqlite3_exec( db, "COMMIT", nullptr, nullptr, nullptr );
 
-    QgsSLConnect::sqlite3_close( db );
+    QgsSqliteHandle::sqlite3_close( db );
   }
   else
   {

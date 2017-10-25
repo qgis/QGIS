@@ -19,15 +19,10 @@
 #include <QObject>
 #include <QHash>
 
-extern "C"
-{
-#include <sqlite3.h>
-#include <spatialite/gaiageo.h>
-#include <spatialite.h>
-#ifdef RASTERLITE2_VERSION_GE_1_1_0
-#include <rasterlite2.h>
-#endif
-}
+#include "qgis_core.h"
+
+struct sqlite3;
+
 #include "qgsspatialiteutils.h"
 
 class CORE_EXPORT QgsSqliteHandle
@@ -215,7 +210,7 @@ class CORE_EXPORT QgsSqliteHandle
      * \param sLayerName when used will load the Layer-Information of that Layer only
      * \param bLoadLayers Load all Layer-Information or only 'sniff' [default] the Database the Database
      * \returns SpatialiteDbInfo with collected results if supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider
-     * \see QgsSLConnect
+     * \see QgsSqliteHandle
      * \since QGIS 1.8
      */
     static QgsSqliteHandle *openDb( const QString &dbPath, bool shared = true, QString sLayerName = QString::null, bool bLoadLayers = true, SpatialiteDbInfo::SpatialMetadata dbCreateOption = SpatialiteDbInfo::SpatialUnknown );
@@ -366,9 +361,7 @@ class CORE_EXPORT QgsSqliteHandle
      * \see initRasterlite2
      * \since QGIS 3.0
      */
-#ifdef RASTERLITE2_VERSION_GE_1_1_0
     void *rl2PrivateData = nullptr;  // pointer to RL2 Private Data
-#endif
 
     /**
      * Map of cached of QgsSqliteHandle connections

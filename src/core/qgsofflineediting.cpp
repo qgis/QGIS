@@ -28,7 +28,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayerjoinbuffer.h"
-#include "qgsslconnect.h"
+#include "qgssqlitehandle.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsvectorlayerutils.h"
@@ -88,7 +88,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
   if ( createSpatialiteDB( dbPath ) )
   {
     sqlite3 *db = nullptr;
-    int rc = QgsSLConnect::sqlite3_open( dbPath.toUtf8().constData(), &db );
+    int rc = QgsSqliteHandle::sqlite3_open( dbPath.toUtf8().constData(), &db );
     if ( rc != SQLITE_OK )
     {
       showWarning( tr( "Could not open the SpatiaLite database" ) );
@@ -175,7 +175,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
 
       emit progressStopped();
 
-      QgsSLConnect::sqlite3_close( db );
+      QgsSqliteHandle::sqlite3_close( db );
 
       // save offline project
       QString projectTitle = QgsProject::instance()->title();
@@ -412,7 +412,7 @@ bool QgsOfflineEditing::createSpatialiteDB( const QString &offlineDbPath )
 
   // creating/opening the new database
   QString dbPath = newDb.fileName();
-  ret = QgsSLConnect::sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
+  ret = QgsSqliteHandle::sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
   if ( ret )
   {
     // an error occurred
@@ -428,13 +428,13 @@ bool QgsOfflineEditing::createSpatialiteDB( const QString &offlineDbPath )
   {
     showWarning( tr( "Unable to activate FOREIGN_KEY constraints" ) );
     sqlite3_free( errMsg );
-    QgsSLConnect::sqlite3_close( sqlite_handle );
+    QgsSqliteHandle::sqlite3_close( sqlite_handle );
     return false;
   }
   initializeSpatialMetadata( sqlite_handle );
 
   // all done: closing the DB connection
-  QgsSLConnect::sqlite3_close( sqlite_handle );
+  QgsSqliteHandle::sqlite3_close( sqlite_handle );
 
   return true;
 }

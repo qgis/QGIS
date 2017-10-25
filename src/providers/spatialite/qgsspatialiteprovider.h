@@ -17,31 +17,23 @@ email                : a.furieri@lqt.it
 #ifndef QGSSPATIALITEPROVIDER_H
 #define QGSSPATIALITEPROVIDER_H
 
-extern "C"
-{
-#include <sys/types.h>
-#include <sqlite3.h>
-#include <spatialite/gaiageo.h>
-#include <spatialite.h>
-}
+#include "qgsdatasourceuri.h"
+#include "qgssqlitehandle.h"
 
 #include "qgsvectordataprovider.h"
-#include "qgsrectangle.h"
 #include "qgsvectorlayerexporter.h"
-#include "qgsfields.h"
 #include <list>
 #include <queue>
 #include <fstream>
 #include <set>
+
+struct sqlite3;
 
 class QgsFeature;
 class QgsField;
 
 class QgsSqliteHandle;
 class QgsSpatiaLiteFeatureIterator;
-
-#include "qgsdatasourceuri.h"
-#include "qgsspatialiteconnection.h"
 
 /**
   * \class QgsSpatiaLiteProvider
@@ -609,7 +601,13 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     }
 
     QString name() const override;
+    /** Return description
+     *
+     * Return a terse string describing what the provider is.
+     * \since QGIS 3.0
+     */
     QString description() const override;
+    static QgsSpatiaLiteProvider *createProvider( const QString &uri );
     QgsAttributeList pkAttributeIndexes() const override;
     void invalidateConnections( const QString &connection ) override;
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;

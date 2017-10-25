@@ -32,7 +32,6 @@
 #include "qgsproject.h"
 #include "providers/memory/qgsmemoryprovider.h"
 
-
 // typedefs for provider plugin functions of interest
 typedef QString providerkey_t();
 typedef QString description_t();

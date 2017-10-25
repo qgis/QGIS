@@ -12,6 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+extern "C"
+{
+#include <sqlite3.h>
+#include <spatialite.h>
+#ifdef RASTERLITE2_VERSION_GE_1_1_0
+#include <rasterlite2.h>
+#endif
+}
 #include "qgssqlitehandle.h"
 #include "qgssettings.h"
 #include "qgslogger.h"

@@ -182,7 +182,6 @@ SET(QGIS_GUI_SRCS
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsnewogrconnection.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
-  providers/spatialite/qgsspatialitesourceselect.cpp
 
   qgisinterface.cpp
   qgsactionmenu.cpp
@@ -516,7 +515,6 @@ SET(QGIS_GUI_MOC_HDRS
 
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
-  providers/spatialite/qgsspatialitesourceselect.h
 
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
@@ -727,7 +725,6 @@ SET(QGIS_GUI_HDRS
   ogr/qgsogrhelperfunctions.h
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
-  providers/spatialite/qgsspatialitesourceselect.h
 
   attributetable/qgsfeaturemodel.h
 
@@ -853,6 +850,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/locator
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
+  ${CMAKE_SOURCE_DIR}/src/core/providers/spatialite
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
@@ -874,6 +872,10 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QSCINTILLA_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
+  ${SPATIALITE_INCLUDE_DIR}
+IF(RASTERLITE2_INCLUDE_DIR)
+  ${RASTERLITE2_INCLUDE_DIR}
+ENDIF(RASTERLITE2_INCLUDE_DIR)
 )
 
 # disable deprecation warnings for classes re-exporting deprecated methods
