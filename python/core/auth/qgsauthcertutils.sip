@@ -294,6 +294,15 @@ Get short strings describing an SSL error
 %End
 
 
+    static QList<QSslError> validateCertChain( const QList<QSslCertificate> &certificateChain,  const QString &hostName = QString(), bool addRootCa = false ) ;
+%Docstring
+ validateCertChain validates the given ``certificateChain``
+ \param certificateChain list of certificates to be checked, with leaf first and with optional root CA last
+ \param addRootCa if true the CA will be added to the trusted CAs for this validation check
+ :return: list of QSslError, if the list is empty then the cert chain is valid
+ :rtype: list of QSslError
+%End
+
 };
 
 /************************************************************************

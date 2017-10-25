@@ -329,6 +329,14 @@ class CORE_EXPORT QgsAuthCertUtils
      */
     static QList<QPair<QSslError::SslError, QString> > sslErrorEnumStrings() SIP_SKIP;
 
+    /**
+     * \brief validateCertChain validates the given \a certificateChain
+     * \param certificateChain list of certificates to be checked, with leaf first and with optional root CA last
+     * \param addRootCa if true the CA will be added to the trusted CAs for this validation check
+     * \return list of QSslError, if the list is empty then the cert chain is valid
+     */
+    static QList<QSslError> validateCertChain( const QList<QSslCertificate> &certificateChain,  const QString &hostName = QString(), bool addRootCa = false ) ;
+
   private:
     static void appendDirSegment_( QStringList &dirname, const QString &segment, QString value );
 };
