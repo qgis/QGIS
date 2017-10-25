@@ -82,11 +82,12 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   loop.exec();
 
   timer.stop();
-  if ( ! QFileInfo( outputFile ).exists() )
+  bool exists = QFileInfo( outputFile ).exists();
+  if ( !feedback->isCanceled() && !exists )
     throw QgsProcessingException( tr( "Output file doesn't exist." ) );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  outputs.insert( QStringLiteral( "OUTPUT" ), exists ? outputFile : QString() );
   return outputs;
 }
 
