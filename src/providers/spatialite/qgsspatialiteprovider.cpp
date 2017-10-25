@@ -61,7 +61,8 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
@@ -722,7 +723,7 @@ QgsWkbTypes::Type QgsSpatiaLiteProvider::wkbType() const
  */
 long QgsSpatiaLiteProvider::featureCount() const
 {
-  return getNumberFeatures(true);
+  return getNumberFeatures( true );
 }
 QgsCoordinateReferenceSystem QgsSpatiaLiteProvider::crs() const
 {

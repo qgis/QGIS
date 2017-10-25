@@ -21,7 +21,8 @@ class QIcon;
 #include "qgis.h"
 #include "qgsspatialiteconnection.h"
 
-/** A model that holds the tables of a database in a hierarchy where the
+/**
+ * A model that holds the tables of a database in a hierarchy where the
 SQLite DB is the root elements that contain the individual tables as children.
 The tables have the following columns: Type, Tablename, Geometry Column*/
 class  QgsSpatiaLiteTableModel: public QStandardItemModel
@@ -116,7 +117,8 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
       return sDbConnectionInfo;
     }
 
-    /** Retrieve SpatialiteDbInfo
+    /**
+     * Retrieve SpatialiteDbInfo
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
@@ -126,7 +128,8 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
      */
     SpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
 
-    /** UpdateLayerStatistics for the Database or Layers
+    /**
+     * UpdateLayerStatistics for the Database or Layers
      * - this will be called from the SpatialiteDbLayer::UpdateLayerStatistics
      * - this is also called with a selection of tables/geometries
      *  -> calls InvalidateLayerStatistics before UpdateLayerStatistics
@@ -151,7 +154,8 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
       return false;
     }
 
-    /** Is the Container a Spatialite Database
+    /**
+     * Is the Container a Spatialite Database
      * \note
      *  - Spatialite specific functions should not be called when false
      *  -> UpdateLayerStatistics()
@@ -167,7 +171,8 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
       return false;
     }
 
-    /** List of DataSourceUri of valid Layers
+    /**
+     * List of DataSourceUri of valid Layers
      * -  contains Layer-Name and DataSourceUri
      * \note
      * - Lists all Layer-Types (SpatialTable/View, RasterLite1/2, Topology and VirtualShape)
@@ -188,7 +193,8 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
      */
     QMap<QString, QString> getDataSourceUris() const { return mSpatialiteDbInfo->getDataSourceUris(); }
 
-    /** Map of valid Selected Layers requested by the User
+    /**
+     * Map of valid Selected Layers requested by the User
      * - only Uris that created a valid QgsVectorLayer/QgsRasterLayer
      * -> corresponding QgsMapLayer contained in  getSelectedDb??????Layers
      * \note
@@ -203,7 +209,8 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
      */
     QMap<QString, QString>  getSelectedLayersUris() const { return mSpatialiteDbInfo->getSelectedLayersUris(); }
 
-    /** Add a list of database layers to the map
+    /**
+     * Add a list of database layers to the map
      * - to fill a Map of QgsVectorLayers and/or QgsRasterLayers
      * -> can be for both QgsSpatiaLiteProvider or QgsOgr/GdalProvider
      * \note
@@ -217,7 +224,8 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
      */
     int addDbMapLayers( QStringList saSelectedLayers, QStringList saSelectedLayersSql ) const {  return mSpatialiteDbInfo->addDbMapLayers( saSelectedLayers, saSelectedLayersSql );  }
 
-    /** Create a new Database
+    /**
+     * Create a new Database
      *  - for use with SpatialiteDbInfo::createDatabase
      * \note
      * - SpatialMetadata::Spatialite40: InitSpatialMetadata only
@@ -248,40 +256,47 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
     int i_field_sql;
     QStringList headerLabels;
 
-    /** Retrieve the Table Entries based on a list of Layer-Types
+    /**
+     * Retrieve the Table Entries based on a list of Layer-Types
      * \see addTableEntryType
      * \since QGIS 3.0
      */
     void addTableEntryTypes( );
 
-    /** Retrieve the  Layer-Type entries
+    /**
+     * Retrieve the  Layer-Type entries
      * \see addTableEntry
      * \since QGIS 3.0
      */
     void addTableEntryType( QMap<QString, QString> mapLayers, QgsSpatiaLiteTableModel::EntryType entryType = QgsSpatiaLiteTableModel::EntryTypeLayer, SpatialiteDbInfo::SpatialiteLayerType layerType = SpatialiteDbInfo::SpatialiteUnknown );
 
-    /** Build entry for the  Layer-Type in Root
+    /**
+     * Build entry for the  Layer-Type in Root
      * \see addRootEntry
      * \since QGIS 3.0
      */
     QList < QStandardItem * > createLayerTypeEntry( SpatialiteDbInfo::SpatialiteLayerType layerType = SpatialiteDbInfo::SpatialTable, int amountLayers = 0 );
 
-    /** Fill the model Item based on the retrieved Layer
+    /**
+     * Fill the model Item based on the retrieved Layer
      * \since QGIS 3.0
      */
     void addRootEntry( );
 
-    /** Fill the model Item based on the retrieved Layer
+    /**
+     * Fill the model Item based on the retrieved Layer
      * \since QGIS 3.0
      */
     void addTableEntryLayer( SpatialiteDbLayer *dbLayer, int iLayersCount = 1 );
 
-    /** Fill the model Item based on the retrieved Layer
+    /**
+     * Fill the model Item based on the retrieved Layer
      * \since QGIS 3.0
      */
     void addTableEntryMap( QString sKey, QString sValue, SpatialiteDbInfo::SpatialiteLayerType layerType = SpatialiteDbInfo::NonSpatialTables );
 
-    /** SpatialiteDbInfo Object
+    /**
+     * SpatialiteDbInfo Object
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
@@ -291,7 +306,8 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
      */
     SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
 
-    /** List of DataSourceUri of valid Layers
+    /**
+     * List of DataSourceUri of valid Layers
      * -  contains Layer-Name and DataSourceUri
      * \note
      * - Lists all Layer-Types (SpatialTable/View, RasterLite1/2, Topology and VirtualShape)

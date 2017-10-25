@@ -43,7 +43,8 @@ class CORE_EXPORT QgsSqliteHandle
     {
     }
 
-    /** The sqlite handler
+    /**
+     * The sqlite handler
      *  - used in SpatialiteDbInfo
      * \note
      *  - closing done through QgsSqliteHandle
@@ -56,7 +57,8 @@ class CORE_EXPORT QgsSqliteHandle
       return sqlite_handle;
     }
 
-    /** Absolute Path of the Connection
+    /**
+     * Absolute Path of the Connection
      * - 'SpatiaLite/connections'
      * \note
      *  - extracted from ConnectionString
@@ -69,7 +71,8 @@ class CORE_EXPORT QgsSqliteHandle
       return mDbPath;
     }
 
-    /** Is the Database Connection valid
+    /**
+     * Is the Database Connection valid
      * - not if the Database it is connected is
      * \see sDbValid()
      * \since QGIS 1.8
@@ -79,7 +82,8 @@ class CORE_EXPORT QgsSqliteHandle
       return mIsValid;
     }
 
-    /** Set status of Database after GetSpatialiteDbInfo has run
+    /**
+     * Set status of Database after GetSpatialiteDbInfo has run
      * - setting certin capabilities
      * \see SpatialiteDbInfo::GetSpatialiteDbInfo
      * \since QGIS 3.0
@@ -95,14 +99,16 @@ class CORE_EXPORT QgsSqliteHandle
       return mDbValid;
     }
 
-    /** Count on how often this Connection is being used when shared
+    /**
+     * Count on how often this Connection is being used when shared
      * \note
      *  -1 not being shared
      * \since QGIS 3.0
      */
     bool getRef() const { return ref; }
 
-    /** Set SpatialiteDbInfo pointer when valid
+    /**
+     * Set SpatialiteDbInfo pointer when valid
      * \see SpatialiteDbInfo::attachQSqliteHandle
      * \since QGIS 1.8
      */
@@ -121,7 +127,8 @@ class CORE_EXPORT QgsSqliteHandle
       }
     }
 
-    /** Retrieve SpatialiteDbInfo
+    /**
+     * Retrieve SpatialiteDbInfo
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
@@ -131,7 +138,8 @@ class CORE_EXPORT QgsSqliteHandle
      */
     SpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
 
-    /** Is the read Database supported by QgsSpatiaLiteProvider or
+    /**
+     * Is the read Database supported by QgsSpatiaLiteProvider or
      * a format only supported by the QgsOgrProvider or QgsGdalProvider
      * \note
      *  when false: the file is either a non-supported sqlite3 container
@@ -140,7 +148,8 @@ class CORE_EXPORT QgsSqliteHandle
      */
     bool isDbValid() const { return mDbValid; }
 
-    /** The read Database only supported by the QgsOgrProvider or QgsGdalProvider Drivers
+    /**
+     * The read Database only supported by the QgsOgrProvider or QgsGdalProvider Drivers
      * \note
      *  - QgsOgrProvider: GeoPackage-Vector
      *  - QgsGdalProvider: GeoPackage-Raster, MbTiles
@@ -149,7 +158,8 @@ class CORE_EXPORT QgsSqliteHandle
      */
     bool isDbGdalOgr() const { return mIsGdalOgr; }
 
-    /** The read Database only supported by the QgsRasterLite2Provider
+    /**
+     * The read Database only supported by the QgsRasterLite2Provider
      * \note
      *  - QgsRasterLite2Provider: RasterLite2Raster
      * \since QGIS 3.0
@@ -157,14 +167,16 @@ class CORE_EXPORT QgsSqliteHandle
     bool isDbRasterLite2() const { return mIsRasterLite2; }
 
 
-    /** Has rl2_init been called for the QgsRasterLite2Provider
+    /**
+     * Has rl2_init been called for the QgsRasterLite2Provider
      * \note
      *  - QgsRasterLite2Provider: RasterLite2Raster
      * \since QGIS 3.0
      */
     bool isDbRasterLite2Active() const { return mIsRasterLite2Active; }
 
-    /** Invalidate the Database Connection valid
+    /**
+     * Invalidate the Database Connection valid
      * \since QGIS 1.8
      */
     void invalidate()
@@ -172,7 +184,8 @@ class CORE_EXPORT QgsSqliteHandle
       mIsValid = false;
     }
 
-    /** If  RasterLite2 is to be used
+    /**
+     * If  RasterLite2 is to be used
      *  -  Memory must be  allocated
      * \note
      *  The spatialite-Library contains placeholders for RasterLite2 function
@@ -184,7 +197,8 @@ class CORE_EXPORT QgsSqliteHandle
      */
     bool initRasterlite2();
 
-    /** Close Spatialite Database
+    /**
+     * Close Spatialite Database
      *  - created with openDb
      *  -> called from closeDb [should nver be called directly]
      * \note
@@ -199,7 +213,8 @@ class CORE_EXPORT QgsSqliteHandle
      */
     void sqliteClose();
 
-    /** Open Spatialite Database
+    /**
+     * Open Spatialite Database
      * - at this point we are 'sniffing' the Capabilities of the opened Database
      * \note
      *  - when only a specific table or table with geometry are being looked for
@@ -215,7 +230,8 @@ class CORE_EXPORT QgsSqliteHandle
      */
     static QgsSqliteHandle *openDb( const QString &dbPath, bool shared = true, QString sLayerName = QString::null, bool bLoadLayers = true, SpatialiteDbInfo::SpatialMetadata dbCreateOption = SpatialiteDbInfo::SpatialUnknown );
 
-    /** Close a (possibly cached) Spatialite Database
+    /**
+     * Close a (possibly cached) Spatialite Database
      * - checking will be none if the Connection is cached
      * \note
      *  - sqliteClose will be called for each Connection
@@ -233,7 +249,8 @@ class CORE_EXPORT QgsSqliteHandle
      */
     static void closeAll();
 
-    /** Opening A New Database Connection
+    /**
+     * Opening A New Database Connection
      * -  without two additional parameters for additional control over the new database connection
      * \note
      * - corresponds to flags=SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE
@@ -243,7 +260,8 @@ class CORE_EXPORT QgsSqliteHandle
      */
     static int sqlite3_open( const char *filename, sqlite3 **ppDb );
 
-    /** Closing A Database Connection
+    /**
+     * Closing A Database Connection
      * -  will not return SQLITE_OK until all open tasks are completed
      * \note
      * - spatialite_cleanup_ex and spatialite_shutdown will be called when SPATIALITE_HAS_INIT_EX
@@ -254,7 +272,8 @@ class CORE_EXPORT QgsSqliteHandle
      */
     static int sqlite3_close( sqlite3 * );
 
-    /** Opening A New Database Connection
+    /**
+     * Opening A New Database Connection
      * -  with two additional parameters for additional control over the new database connection
      * \note
      * - flages=bShared ? SQLITE_OPEN_READWRITE : SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX;
@@ -266,7 +285,8 @@ class CORE_EXPORT QgsSqliteHandle
      */
     static int sqlite3_open_v2( const char *filename, sqlite3 **ppDb, int flags, const char *zVfs = nullptr );
 
-    /** Closing A Database Connection
+    /**
+     * Closing A Database Connection
      * -  will complete unfinalized prepared statements or unfinished sqlite3_backup objects
      * \note
      * - spatialite_cleanup_ex and spatialite_shutdown will be called when SPATIALITE_HAS_INIT_EX
@@ -278,14 +298,16 @@ class CORE_EXPORT QgsSqliteHandle
     static int sqlite3_close_v2( sqlite3 * );
   private:
 
-    /** Count on how often this Connection is being used when shared
+    /**
+     * Count on how often this Connection is being used when shared
      * \note
      *  -1 not being shared
      * \since QGIS 1.8
      */
     int ref;
 
-    /** The sqlite handler
+    /**
+     * The sqlite handler
      *  - used in SpatialiteDbInfo
      * \see QgsSqliteHandle::openDb
      * \see sqliteClose()
@@ -293,7 +315,8 @@ class CORE_EXPORT QgsSqliteHandle
     */
     sqlite3 *sqlite_handle = nullptr;
 
-    /** Absolute Path of the Connection
+    /**
+     * Absolute Path of the Connection
      * - 'SpatiaLite/connections'
      * \note
      *  - extracted from ConnectionString
@@ -303,14 +326,16 @@ class CORE_EXPORT QgsSqliteHandle
      */
     QString mDbPath;
 
-    /** Is the Database Connection valid
+    /**
+     * Is the Database Connection valid
      * - not if the Database it is connected is
      * \see sDbValid()
      * \since QGIS 1.8
      */
     bool mIsValid;
 
-    /** The read Database only supported by the QgsOgrProvider or QgsGdalProvider Drivers
+    /**
+     * The read Database only supported by the QgsOgrProvider or QgsGdalProvider Drivers
      * \note
      *  - QgsOgrProvider: GeoPackage-Vector
      *  - QgsGdalProvider: GeoPackage-Raster, MbTiles
@@ -319,21 +344,24 @@ class CORE_EXPORT QgsSqliteHandle
      */
     bool mIsGdalOgr;
 
-    /** The read Database only supported by the QgsRasterLite2Provider
+    /**
+     * The read Database only supported by the QgsRasterLite2Provider
      * \note
      *  - QgsRasterLite2Provider: RasterLite2Raster
      * \since QGIS 3.0
      */
     bool mIsRasterLite2;
 
-    /** Has rl2_init been called for the QgsRasterLite2Provider
+    /**
+     * Has rl2_init been called for the QgsRasterLite2Provider
      * \note
      *  - QgsRasterLite2Provider: RasterLite2Raster
      * \since QGIS 3.0
      */
     bool mIsRasterLite2Active;
 
-    /** Is the read Database supported by QgsSpatiaLiteProvider or
+    /**
+     * Is the read Database supported by QgsSpatiaLiteProvider or
      * a format only supported by the QgsOgrProvider or QgsGdalProvider
      * \note
      *  when false: the file is either a non-supported sqlite3 container
@@ -342,7 +370,8 @@ class CORE_EXPORT QgsSqliteHandle
      */
     bool mDbValid;
 
-    /** Retrieve SpatialiteDbInfo
+    /**
+     * Retrieve SpatialiteDbInfo
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
@@ -352,7 +381,8 @@ class CORE_EXPORT QgsSqliteHandle
      */
     SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
 
-    /** Pointer to RL2 Private Data
+    /**
+     * Pointer to RL2 Private Data
      * If  RasterLite2 ist to be used
      *  -  Memory must be  allocated
      * \note
@@ -372,7 +402,8 @@ class CORE_EXPORT QgsSqliteHandle
     static QMap < QString, QgsSqliteHandle * > sHandles;
 #if defined(SPATIALITE_HAS_INIT_EX)
 
-    /** Hash to contains the sqlite3 handle and the spatialite InternalCache
+    /**
+     * Hash to contains the sqlite3 handle and the spatialite InternalCache
      *    which supports the DB connection
      *  -  Memory must be  allocated and freed [SPATIALITE_HAS_INIT_EX]
      * \note

@@ -500,7 +500,7 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
   QgsSpatiaLiteConnection connectionInfo( cmbConnections->currentText() );
   mSqlitePath = connectionInfo.dbPath();
 
-  addDatabaseSource(QStringList(mSqlitePath));
+  addDatabaseSource( QStringList( mSqlitePath ) );
 
 }
 
@@ -508,7 +508,7 @@ void QgsSpatiaLiteSourceSelect::addDatabaseSource( QStringList const &paths, QSt
 {
   Q_UNUSED( providerKey );
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  QString fileName = paths.at(0);
+  QString fileName = paths.at( 0 );
   bool bLoadLayers = true;
   bool bShared = true;
   SpatialiteDbInfo *spatialiteDbInfo = QgsSpatiaLiteUtils::CreateSpatialiteConnection( fileName, bLoadLayers, bShared );
@@ -536,25 +536,25 @@ void QgsSpatiaLiteSourceSelect::addDatabaseSource( QStringList const &paths, QSt
       QMessageBox::critical( this, tr( "SpatiaLite DB Open Error" ), tr( "The read Sqlite3 Container is not supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider: %1" ).arg( mSqlitePath ) );
       return;
     }
-    if (fileName != mSqlitePath)
+    if ( fileName != mSqlitePath )
     {
-      mSqlitePath=fileName;
+      mSqlitePath = fileName;
     }
     // populate the table list
     // get the list of suitable tables and columns and populate the UI
     setSpatialiteDbInfo( spatialiteDbInfo );
   }
 }
-void QgsSpatiaLiteSourceSelect::setSpatialiteDbInfo( SpatialiteDbInfo *spatialiteDbInfo, bool setConnectionInfo)
+void QgsSpatiaLiteSourceSelect::setSpatialiteDbInfo( SpatialiteDbInfo *spatialiteDbInfo, bool setConnectionInfo )
 {
   mTableModel.setSqliteDb( spatialiteDbInfo, true );
   mTablesTreeView->setColumnHidden( mTableModel.getColumnSortHidden(), true );
   mTablesTreeView->sortByColumn( mTableModel.getColumnSortHidden(), Qt::AscendingOrder );
   mTablesTreeView->expandToDepth( 1 );
-  if (setConnectionInfo)
+  if ( setConnectionInfo )
   {
-   mSqlitePath = spatialiteDbInfo->getDatabaseFileName();
-   // TODO: add to comboBox, if not there already
+    mSqlitePath = spatialiteDbInfo->getDatabaseFileName();
+    // TODO: add to comboBox, if not there already
   }
 }
 

@@ -27,13 +27,15 @@ class CORE_EXPORT QgsSpatiaLiteConnection : public QObject
     Q_OBJECT
   public:
 
-    /** Construct a connection. Name can be either stored connection name or a path to the database file
+    /**
+     * Construct a connection. Name can be either stored connection name or a path to the database file
      * - not used outside the QgsSpatiaLiteProvider classes
      * \since QGIS 1.8
      */
     explicit QgsSpatiaLiteConnection( const QString &name );
 
-    /** Absolute Path of the Connection
+    /**
+     * Absolute Path of the Connection
      * - 'SpatiaLite/connections'
      * \note
      *  - extrcted from ConnectionString
@@ -43,7 +45,8 @@ class CORE_EXPORT QgsSpatiaLiteConnection : public QObject
      */
     QString dbPath() { return mDbPath; }
 
-    /** Key of the Connection
+    /**
+     * Key of the Connection
      * - 'SpatiaLite/connections'
      * \note
      *  - extrcted from ConnectionString
@@ -53,7 +56,8 @@ class CORE_EXPORT QgsSpatiaLiteConnection : public QObject
      */
     QString getSubKey() { return mSubKey; }
 
-    /** Return List of all stored Connection-Namess in QgsSettings
+    /**
+     * Return List of all stored Connection-Namess in QgsSettings
      * - 'SpatiaLite/connections'
      * \note
      *  - use connectionPath to retrieve Absolute Path of the Connection
@@ -63,14 +67,16 @@ class CORE_EXPORT QgsSpatiaLiteConnection : public QObject
      */
     static QStringList connectionList();
 
-    /** Delete the given Connection in QgsSettings
+    /**
+     * Delete the given Connection in QgsSettings
      * \param name of connection as retuned from connectionList
      * \see connectionList
      * \since QGIS 1.8
      */
     static void deleteConnection( const QString &name );
 
-    /** Remove the Connection Strings from the QgsSettings
+    /**
+     * Remove the Connection Strings from the QgsSettings
      * - when the file no longer exists
      * \note
      *  - uses connectionPath to retrieve Absolute Path of the Connection
@@ -82,7 +88,8 @@ class CORE_EXPORT QgsSpatiaLiteConnection : public QObject
      */
     static int deleteInvalidConnections( );
 
-    /** Return the absolute Path of the given Connection
+    /**
+     * Return the absolute Path of the given Connection
      * - when the file no longer exists
      * \param name of connection as retuned from connectionList
      * \returns path of Database file
@@ -91,7 +98,8 @@ class CORE_EXPORT QgsSpatiaLiteConnection : public QObject
      */
     static QString connectionPath( const QString &name );
 
-    /** Create a SpatialiteDbInfo based Connection
+    /**
+     * Create a SpatialiteDbInfo based Connection
      *  -> containing all needed Information about a Spatial Sqlite3 Container
      * \note
      *  - check result with spatialiteDbInfo->isDbSqlite3()
@@ -106,7 +114,8 @@ class CORE_EXPORT QgsSpatiaLiteConnection : public QObject
 
   protected:
 
-    /** Key of the Connection
+    /**
+     * Key of the Connection
      * - 'SpatiaLite/connections'
      * \note
      *  - extrcted from ConnectionString
@@ -116,7 +125,8 @@ class CORE_EXPORT QgsSpatiaLiteConnection : public QObject
      */
     QString mSubKey;
 
-    /** Absolute Path of the Connection
+    /**
+     * Absolute Path of the Connection
      * - 'SpatiaLite/connections'
      * \note
      *  - extrcted from ConnectionString

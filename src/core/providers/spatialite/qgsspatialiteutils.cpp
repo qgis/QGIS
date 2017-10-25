@@ -112,7 +112,7 @@ SpatialiteDbInfo::SpatialiteDbInfo( QString sDatabaseFilename, sqlite3 *sqlite_h
       break;
   }
   QFileInfo file_info( mDatabaseFileName );
-  qDebug().noquote() << QString("-I-> SpatialiteDbInfo::SpatialiteDbInfo: [%1]").arg(mDatabaseFileName);
+  qDebug().noquote() << QString( "-I-> SpatialiteDbInfo::SpatialiteDbInfo: [%1]" ).arg( mDatabaseFileName );
   // for canonicalFilePath, the file must exist
   if ( SpatialiteDbInfo::readSqlite3MagicHeaderString( mDatabaseFileName ) )
   {
@@ -224,10 +224,10 @@ bool SpatialiteDbInfo::dbHasRasterlite2()
 SpatialiteDbInfo *SpatialiteDbInfo::CreateSpatialiteConnection( const QString sDatabaseFileName, bool bShared, QString sLayerName, bool bLoadLayers, SpatialiteDbInfo::SpatialMetadata dbCreateOption,  SpatialSniff sniffType )
 {
   SpatialiteDbInfo *spatialiteDbInfo = new SpatialiteDbInfo( sDatabaseFileName, nullptr, dbCreateOption );
-  sniffType=SpatialiteDbInfo::SniffMinimal;
-  if (bLoadLayers)
+  sniffType = SpatialiteDbInfo::SniffMinimal;
+  if ( bLoadLayers )
   {
-   sniffType=SpatialiteDbInfo::SniffLoadLayers;
+    sniffType = SpatialiteDbInfo::SniffLoadLayers;
   }
   // Checks if the File exists and is a Sqlite3 container [will be created if a valid create-option is given and the file does not exist]
   if ( ( spatialiteDbInfo ) && ( spatialiteDbInfo->isDbSqlite3() ) )
@@ -1830,7 +1830,7 @@ bool SpatialiteDbInfo::getSniffLayerMetadata( )
               sqlite3_finalize( stmt );
             }
           }
-          mTotalCountLayers+=mHasRasterLite1Tables;
+          mTotalCountLayers += mHasRasterLite1Tables;
         }
       }
     }
@@ -1857,7 +1857,7 @@ bool SpatialiteDbInfo::getSniffLayerMetadata( )
           }
         }
         sqlite3_finalize( stmt );
-        mTotalCountLayers+=mHasVectorLayers;
+        mTotalCountLayers += mHasVectorLayers;
       }
     }
     //----------------------------------------------------------
@@ -1875,7 +1875,7 @@ bool SpatialiteDbInfo::getSniffLayerMetadata( )
           }
         }
         sqlite3_finalize( stmt );
-        mTotalCountLayers+=mHasTopologyExportTables;
+        mTotalCountLayers += mHasTopologyExportTables;
       }
     }
     //----------------------------------------------------------
@@ -1893,7 +1893,7 @@ bool SpatialiteDbInfo::getSniffLayerMetadata( )
           }
         }
         sqlite3_finalize( stmt );
-        mTotalCountLayers+=mHasVectorCoveragesTables;
+        mTotalCountLayers += mHasVectorCoveragesTables;
       }
     }
     //----------------------------------------------------------
@@ -1911,7 +1911,7 @@ bool SpatialiteDbInfo::getSniffLayerMetadata( )
           }
         }
         sqlite3_finalize( stmt );
-        mTotalCountLayers+=mHasRasterCoveragesTables;
+        mTotalCountLayers += mHasRasterCoveragesTables;
       }
     }
     //----------------------------------------------------------
@@ -1963,7 +1963,7 @@ bool SpatialiteDbInfo::getSniffLayerMetadata( )
           }
         }
         sqlite3_finalize( stmt );
-        mTotalCountLayers+=mHasGeoPackageTables;
+        mTotalCountLayers += mHasGeoPackageTables;
       }
     }
     //----------------------------------------------------------
@@ -1985,12 +1985,12 @@ bool SpatialiteDbInfo::getSniffLayerMetadata( )
           }
         }
         sqlite3_finalize( stmt );
-        mTotalCountLayers+=mHasFdoOgrTables;
+        mTotalCountLayers += mHasFdoOgrTables;
       }
     }
     if ( mHasMBTilesTables > 0 )
     {
-      mTotalCountLayers+=mHasMBTilesTables;
+      mTotalCountLayers += mHasMBTilesTables;
     }
     //----------------------------------------------------------
     readNonSpatialTables( );

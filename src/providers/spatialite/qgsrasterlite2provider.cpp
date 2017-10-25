@@ -49,7 +49,8 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
@@ -80,7 +81,7 @@ QgsRasterLite2Provider::QgsRasterLite2Provider( const QString &uri )
   , mUriTableName( QString::null )
   , mUriSqlitePath( QString::null )
   , mDefaultImageBackground( QString( "#ffffff" ) )
-  , mImageBandsViewExtent ( QgsRectangle() )
+  , mImageBandsViewExtent( QgsRectangle() )
 {
   if ( dataSourceUri().startsWith( QStringLiteral( "RASTERLITE2:" ) ) )
   {
@@ -116,8 +117,8 @@ QgsRasterLite2Provider::QgsRasterLite2Provider( const QString &uri )
 
 QgsRasterLite2Provider::~QgsRasterLite2Provider()
 {
-  qDebug() << QString("--I--> QgsRasterLite2Provider:~QgsRasterLite2Provider");
-  qDeleteAll(mImageBands.begin(),mImageBands.end());
+  qDebug() << QString( "--I--> QgsRasterLite2Provider:~QgsRasterLite2Provider" );
+  qDeleteAll( mImageBands.begin(), mImageBands.end() );
   mImageBands.clear();
   closeDb();
   invalidateConnections( mUriSqlitePath );
@@ -425,30 +426,30 @@ QgsRasterIdentifyResult QgsRasterLite2Provider::identify( const QgsPointXY &poin
 void QgsRasterLite2Provider::readBlock( int bandNo, const QgsRectangle &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( feedback );  // TODO: make use of the feedback object
-  int bandNo_ZeroBased=bandNo-1;
+  int bandNo_ZeroBased = bandNo - 1;
   // viewExtent uses the srid of the given QgsCoordinateReferenceSystem.
   // Note Style: registered style used in the coverage if this remain empty.
   // Otherwise: set to 'default' or to another registered Style, otherwise 'default' will be used
   if ( mImageBandsViewExtent != viewExtent )
   {
-    qDebug() << QString("QgsRasterLite2Provider::readBlock Retrieving Data band[%1,%2]").arg(bandNo).arg(bandNo_ZeroBased);
-    mImageBandsViewExtent=viewExtent;
-    qDeleteAll(mImageBands.begin(),mImageBands.end());
+    qDebug() << QString( "QgsRasterLite2Provider::readBlock Retrieving Data band[%1,%2]" ).arg( bandNo ).arg( bandNo_ZeroBased );
+    mImageBandsViewExtent = viewExtent;
+    qDeleteAll( mImageBands.begin(), mImageBands.end() );
     mImageBands.clear();
-    mImageBands=getDbLayer()->getMapBandsFromRasterLite2( width, height, viewExtent, mDefaultRasterStyle, mDefaultImageBackground, mError );
+    mImageBands = getDbLayer()->getMapBandsFromRasterLite2( width, height, viewExtent, mDefaultRasterStyle, mDefaultImageBackground, mError );
   }
   else
   {
-    qDebug() << QString("QgsRasterLite2Provider::readBlock Have Data band[%1,%2]").arg(bandNo).arg(bandNo_ZeroBased);
+    qDebug() << QString( "QgsRasterLite2Provider::readBlock Have Data band[%1,%2]" ).arg( bandNo ).arg( bandNo_ZeroBased );
   }
   //bandNo=bandNo_ZeroBased;
   if ( bandNo_ZeroBased <= mImageBands.size() )
   {
-    qDebug() << QString("QgsRasterLite2Provider::readBlock Setting Data band[%1,%2] size[%3]").arg(bandNo).arg(bandNo_ZeroBased).arg(mImageBands.at(bandNo_ZeroBased)->size());
-    char *arrayData = mImageBands.at(bandNo_ZeroBased)->data();
-    if (arrayData)
+    qDebug() << QString( "QgsRasterLite2Provider::readBlock Setting Data band[%1,%2] size[%3]" ).arg( bandNo ).arg( bandNo_ZeroBased ).arg( mImageBands.at( bandNo_ZeroBased )->size() );
+    char *arrayData = mImageBands.at( bandNo_ZeroBased )->data();
+    if ( arrayData )
     {
-      std::memcpy( data, arrayData, mImageBands.at(bandNo_ZeroBased)->size() );
+      std::memcpy( data, arrayData, mImageBands.at( bandNo_ZeroBased )->size() );
     }
   }
 #if 0
@@ -469,13 +470,13 @@ QString QgsRasterLite2Provider::generateBandName( int bandNumber ) const
     switch ( bandNumber )
     {
       case 1:
-        sLayerPixelType = QString( "%2 %1" ).arg( bandNumber ).arg( QStringLiteral("Red  ") );
+        sLayerPixelType = QString( "%2 %1" ).arg( bandNumber ).arg( QStringLiteral( "Red  " ) );
         break;
       case 2:
-        sLayerPixelType = QString( "%2 %1" ).arg( bandNumber ).arg( QStringLiteral("Green") );
+        sLayerPixelType = QString( "%2 %1" ).arg( bandNumber ).arg( QStringLiteral( "Green" ) );
         break;
       case 3:
-        sLayerPixelType = QString( "%2 %1" ).arg( bandNumber ).arg( QStringLiteral("Blue ") );
+        sLayerPixelType = QString( "%2 %1" ).arg( bandNumber ).arg( QStringLiteral( "Blue " ) );
         break;
       default:
         sLayerPixelType = QString( "Band %1" ).arg( bandNumber );

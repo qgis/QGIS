@@ -51,7 +51,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     bool isValid() const override { return mValid; }
 
-    /** Return a provider name
+    /**
+     * Return a provider name
      *
      * Essentially just returns the provider key.  Should be used to build file
      * dialogs so that providers can be shown with their supported types. Thus
@@ -61,7 +62,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QString name() const override;
 
-    /** Return description
+    /**
+     * Return description
      *
      * Return a terse string describing what the provider is.
      * \since QGIS 3.0
@@ -70,7 +72,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
 
     static QgsRasterLite2Provider *createProvider( const QString &uri );
 
-    /** Returns the coordinate system for the data source.
+    /**
+     * Returns the coordinate system for the data source.
      * If the provider isn't capable of returning its projection then an invalid
      * QgsCoordinateReferenceSystem will be returned.
      * \note
@@ -118,7 +121,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     void setSubLayerVisibility( const QString &name, bool vis ) override;
 
-    /** Reloads the data from the source. Needs to be implemented by providers with data caches to
+    /**
+     * Reloads the data from the source. Needs to be implemented by providers with data caches to
      * synchronize with changes in the data source
      * \since QGIS 3.0
      */
@@ -128,7 +132,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
 
 #if 0
 
-    /** Get number of bands
+    /**
+     * Get number of bands
      *
      * \see QgsRasterInterface::bandCount
      * \see SpatialiteDbLayer::getLayerNumBands
@@ -136,7 +141,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     int bandCount() const override { return getDbLayer()->getLayerNumBands(); }
 
-    /** RasterLite2 Raster-Layer tile height [QgsRasterInterface::xBlockSize]
+    /**
+     * RasterLite2 Raster-Layer tile height [QgsRasterInterface::xBlockSize]
      *  - based on // num_bands, tile_width, tile_height entries from raster_coverage table
      * \note
      *  - num_bands = mLayerBandsTileSize.x()
@@ -149,7 +155,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     int xBlockSize() const override { return getDbLayer()->getLayerTileWidth(); }
 
-    /** RasterLite2 Raster-Layer tile height [QgsRasterInterface::yBlockSize]
+    /**
+     * RasterLite2 Raster-Layer tile height [QgsRasterInterface::yBlockSize]
      *  - based on // num_bands, tile_width, tile_height entries from raster_coverage table
      * \note
      *  - num_bands = mLayerBandsTileSize.x()
@@ -163,7 +170,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     int yBlockSize() const override { return getDbLayer()->getLayerTileHeight(); }
 #else
 
-    /** RasterLite2 Raster-Layer Image Width [QgsRasterInterface::xSize() ]
+    /**
+     * RasterLite2 Raster-Layer Image Width [QgsRasterInterface::xSize() ]
      * \note
      *  - based on LayerExtent and Resolution from raster_coverage table
      * \see QgsRasterInterface::xSize
@@ -172,7 +180,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     int xSize() const override { return getDbLayer()->getLayerImageWidth(); }
 
-    /** RasterLite2 Raster-Layer Image Height [QgsRasterInterface::ySize() ]
+    /**
+     * RasterLite2 Raster-Layer Image Height [QgsRasterInterface::ySize() ]
      * \note
      *  - based on LayerExtent and Resolution from raster_coverage table
      * \see QgsRasterInterface::ySize
@@ -181,7 +190,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     int ySize() const override { return getDbLayer()->getLayerImageHeight(); }
 
-    /** Get number of bands
+    /**
+     * Get number of bands
      *
      * \see QgsRasterInterface::bandCount
      * \see SpatialiteDbLayer::getLayerNumBands
@@ -191,7 +201,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     int bandCount() const override { return getDbLayer()->getLayerNumBands(); }
 #endif
 
-    /** Returns a bitmask containing the supported capabilities
+    /**
+     * Returns a bitmask containing the supported capabilities
      *
      * \since QGIS 3.0
      */
@@ -199,7 +210,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
 
     /* Inherited from QgsRasterDataProvider */
 
-    /** Return the extent for this data layer
+    /**
+     * Return the extent for this data layer
      * \since QGIS 3.0
      */
     QgsRectangle extent() const override { return getLayerExtent(); }
@@ -229,37 +241,43 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     QString lastError() override { return mError; }
 #if 1
 
-    /** Returns data type for the band specified by number
+    /**
+     * Returns data type for the band specified by number
      * \since QGIS 3.0
      */
     Qgis::DataType dataType( int /*bandNo*/ ) const override { return getDbLayer()->getLayerRasterDataType(); }
 
-    /** Returns source data type for the band specified by number,
+    /**
+     * Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      * \since QGIS 3.0
      */
     Qgis::DataType sourceDataType( int /*bandNo*/ ) const override { return getDbLayer()->getLayerRasterDataType(); }
 #else
 
-    /** Returns data type for the band specified by number
+    /**
+     * Returns data type for the band specified by number
      * \since QGIS 3.0
      */
     Qgis::DataType dataType( int /*bandNo*/ ) const override { return Qgis::ARGB32; }
 
-    /** Returns source data type for the band specified by number,
+    /**
+     * Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      * \since QGIS 3.0
      */
     Qgis::DataType sourceDataType( int /*bandNo*/ ) const override { return Qgis::ARGB32; }
 #endif
 
-    /** \brief helper function to create zero padded band names
+    /**
+     * \brief helper function to create zero padded band names
      *  based on data-type and band number
      * \since QGIS 3.0
      */
     QString generateBandName( int bandNumber ) const override;
 
-    /** \brief Get band statistics.
+    /**
+     * \brief Get band statistics.
      * \param bandNo The band (number).
      * \param stats Requested statistics
      * \param extent Extent used to calc statistics, if empty, whole raster extent is used.
@@ -272,7 +290,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
                         const QgsRectangle &boundingBox = QgsRectangle(),
                         int sampleSize = 0 ) override;
 
-    /** \brief Get band statistics.
+    /**
+     * \brief Get band statistics.
      * \param bandNo The band (number).
      * \param stats Requested statistics
      * \param extent Extent used to calc statistics, if empty, whole raster extent is used.
@@ -285,7 +304,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
                                        const QgsRectangle &boundingBox = QgsRectangle(),
                                        int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    /** Clone itself, create deep copy
+    /**
+     * Clone itself, create deep copy
      * \since QGIS 3.0
      */
     QgsRasterInterface *clone() const override;
@@ -303,7 +323,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     bool supportsLegendGraphic() const override { return false; }
 
-    /** \brief Identify raster value(s) found on the point position. The context
+    /**
+     * \brief Identify raster value(s) found on the point position. The context
      *         parameters extent, width and height are important to identify
      *         on the same zoom level as a displayed map and to do effective
      *         caching (WCS). If context params are not specified the highest
@@ -328,7 +349,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
 
-    /** The class allowing to reuse the same sqlite handle for more layers
+    /**
+     * The class allowing to reuse the same sqlite handle for more layers
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
@@ -338,7 +360,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QgsSqliteHandle *getQSqliteHandle() const { return mHandle; }
 
-    /** Retrieve SpatialiteDbInfo
+    /**
+     * Retrieve SpatialiteDbInfo
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
@@ -348,7 +371,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     SpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
 
-    /** Is the read Database supported by QgsSpatiaLiteProvider or
+    /**
+     * Is the read Database supported by QgsSpatiaLiteProvider or
      * a format only supported by the QgsOgrProvider or QgsGdalProvider
      * \note
      *  when false: the file is either a non-supported sqlite3 container
@@ -357,7 +381,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     bool isDbValid() const { return getSpatialiteDbInfo()->isDbValid(); }
 
-    /** Is the read Database a Spatialite Database that contains a RasterLite2 Layer
+    /**
+     * Is the read Database a Spatialite Database that contains a RasterLite2 Layer
      * - supported by QgsRasterLite2Provider
      * \note
      *  - RasterLite2 specific functions should not be called when false
@@ -367,7 +392,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     bool isDbRasterLite2() const { return getSpatialiteDbInfo()->isDbRasterLite2(); }
     //!
 
-    /** The active Layer
+    /**
+     * The active Layer
      * - being read by the Provider
      * \note
      * - isLayerValid() return true if everything is considered correct
@@ -376,7 +402,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     SpatialiteDbLayer *getDbLayer() const { return mDbLayer; }
 
-    /** The sqlite handler
+    /**
+     * The sqlite handler
      * - contained in the QgsSqliteHandle class being used by the layer
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
@@ -386,13 +413,15 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     sqlite3 *dbSqliteHandle() const { return getDbLayer()->dbSqliteHandle(); }
 
-    /** The Database filename (with Path)
+    /**
+     * The Database filename (with Path)
     * \returns mDatabaseFileName complete Path (without without symbolic links)
     * \since QGIS 3.0
     */
     QString getDatabaseFileName() const { return getSpatialiteDbInfo()->getDatabaseFileName(); }
 
-    /** The Spatialite internal Database structure being read
+    /**
+     * The Spatialite internal Database structure being read
      * \note
      *  -  based on result of CheckSpatialMetaData
      * \see SpatialiteDbInfo::getSniffDatabaseType
@@ -400,7 +429,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     */
     SpatialiteDbInfo::SpatialMetadata dbSpatialMetadata() const { return getSpatialiteDbInfo()->dbSpatialMetadata(); }
 
-    /** The Spatialite Version Driver being used
+    /**
+     * The Spatialite Version Driver being used
      * \note
      *  - returned from spatialite_version()
      * \see SpatialiteDbInfo::getSniffDatabaseType
@@ -408,7 +438,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     */
     QString dbSpatialiteVersionInfo() const { return getSpatialiteDbInfo()->dbSpatialiteVersionInfo(); }
 
-    /** The major Spatialite Version being used
+    /**
+     * The major Spatialite Version being used
      * \note
      *  - extracted from spatialite_version()
      * \see SpatialiteDbInfo::getSniffDatabaseType
@@ -416,7 +447,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     */
     int dbSpatialiteVersionMajor() const { return getSpatialiteDbInfo()->dbSpatialiteVersionMajor(); }
 
-    /** The minor Spatialite Version being used
+    /**
+     * The minor Spatialite Version being used
      * \note
      *  - extracted from spatialite_version()
      * \see SpatialiteDbInfo::getSniffDatabaseType
@@ -424,7 +456,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     */
     int dbSpatialiteVersionMinor() const { return getSpatialiteDbInfo()->dbSpatialiteVersionMinor(); }
 
-    /** The revision Spatialite Version being used
+    /**
+     * The revision Spatialite Version being used
      * \note
      *  - extracted from spatialite_version()
      * \see SpatialiteDbInfo::getSniffDatabaseType
@@ -432,7 +465,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     */
     int dbSpatialiteVersionRevision() const { return getSpatialiteDbInfo()->dbSpatialiteVersionRevision(); }
 
-    /** The RasterLite2 Version Driver being used
+    /**
+     * The RasterLite2 Version Driver being used
      * \note
      *  - returned from RL2_Version()
      * \see SpatialiteDbInfo::dbHasRasterlite2
@@ -440,7 +474,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     */
     QString dbRasterLite2VersionInfo() const { return getSpatialiteDbInfo()->dbRasterLite2VersionInfo(); }
 
-    /** The major RasterLite2 Version being used
+    /**
+     * The major RasterLite2 Version being used
      * \note
      *  - extracted from RL2_Version()
      * \see SpatialiteDbInfo::dbHasRasterlite2
@@ -448,7 +483,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     */
     int dbRasterLite2VersionMajor() const { return getSpatialiteDbInfo()->dbRasterLite2VersionMajor(); }
 
-    /** The minor RasterLite2 Version being used
+    /**
+     * The minor RasterLite2 Version being used
      * \note
      *  - extracted from RL2_Version()
      * \see SpatialiteDbInfo::dbHasRasterlite2
@@ -456,7 +492,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     */
     int dbRasterLite2VersionMinor() const { return getSpatialiteDbInfo()->dbRasterLite2VersionMinor(); }
 
-    /** The revision RasterLite2 Version being used
+    /**
+     * The revision RasterLite2 Version being used
      * \note
      *  - extracted from RL2_Version()
      * \see SpatialiteDbInfo::dbHasRasterlite2
@@ -464,7 +501,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     */
     int dbRasterLite2VersionRevision() const { return getSpatialiteDbInfo()->dbRasterLite2VersionRevision(); }
 
-    /** Amount of RasterLite2 Raster-Coverages found in the Database
+    /**
+     * Amount of RasterLite2 Raster-Coverages found in the Database
      * - from the raster_coverages table Table [-1 if Table not found]
      * \note
      * - this does not reflect the amount of RasterLite2 Raster-Coverages that have been loaded
@@ -483,7 +521,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     //! The Srid of the Geometry or RasterLite2 Layer
     int getSrid() const { return getDbLayer()->getSrid(); }
 
-    /** The Srid of the Geometry or RasterLite2 Layer formatted as 'EPSG:nnnn'
+    /**
+     * The Srid of the Geometry or RasterLite2 Layer formatted as 'EPSG:nnnn'
      * \note
      *  - can be used to set the needed QgsCoordinateReferenceSystem
      * \see crs()
@@ -495,7 +534,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     //! The Spatialite Layer-Type being read (as String)
     QString getLayerTypeString() const { return getDbLayer()->getLayerTypeString(); }
 
-    /** Rectangle that contains the extent (bounding box) of the layer
+    /**
+     * Rectangle that contains the extent (bounding box) of the layer
      * \note
      *  With UpdateLayerStatistics the Number of features will also be updated and retrieved
      * \param bUpdate force reading from Database
@@ -508,7 +548,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
 
   protected:
 
-    /** Read block of data using give extent and size
+    /**
+     * Read block of data using give extent and size
      * \note not available in Python bindings
      * \since QGIS 3.0
      */
@@ -531,7 +572,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     QVariantMap mServiceInfo;
     QVariantMap mLayerInfo;
 
-    /** Returns the coordinate system for the data source.
+    /**
+     * Returns the coordinate system for the data source.
      * If the provider isn't capable of returning its projection then an invalid
      * QgsCoordinateReferenceSystem will be returned.
      * \since QGIS 3.0
@@ -574,7 +616,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
     QImage mCachedImage;
     QgsRectangle mCachedImageExtent;
 
-    /** The class allowing to reuse the same sqlite handle for more layers
+    /**
+     * The class allowing to reuse the same sqlite handle for more layers
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
@@ -584,7 +627,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QgsSqliteHandle *mHandle = nullptr;
 
-    /** Sets the activeQgsSqliteHandle
+    /**
+     * Sets the activeQgsSqliteHandle
      * - checking will be done to insure that the Database connected to is considered valid
      * \note
      * - isLayerValid() return true if everything is considered correct
@@ -594,7 +638,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     bool setSqliteHandle( QgsSqliteHandle *sqliteHandle );
 
-    /** SpatialiteDbInfo Object
+    /**
+     * SpatialiteDbInfo Object
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
@@ -604,7 +649,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
 
-    /** Sets the active Layer
+    /**
+     * Sets the active Layer
      * - checking will be done to insure that the Layer is considered valid
      * \note
      * - isLayerValid() return true if everything is considered correct
@@ -614,7 +660,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     bool setDbLayer( SpatialiteDbLayer *dbLayer );
 
-    /** The active Layer
+    /**
+     * The active Layer
      * - being read by the Provider
      * \note
      * - isLayerValid() return true if everything is considered correct
@@ -624,7 +671,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     SpatialiteDbLayer *mDbLayer = nullptr;
 
-    /** Close the Database
+    /**
+     * Close the Database
      * - using QgsSqliteHandle [static]
      * \note
      * - if the connection is being shared and used elsewhere, the Database will not be closed
@@ -633,7 +681,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     void closeDb();
 
-    /** For each Band in a RasterLite2 Raster
+    /**
+     * For each Band in a RasterLite2 Raster
      * - information about nodata, min/max pixel value
      * \note
      *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
@@ -649,7 +698,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QStringList mLayerBandsInfo;
 
-    /** Set list for each Band in a RasterLite2 Raster
+    /**
+     * Set list for each Band in a RasterLite2 Raster
      * - information from RL2_GetBandStatistics_Min
      * \note
      *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
@@ -659,7 +709,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QMap<int, double> mLayerBandsNodata;
 
-    /** Set list for each Band in a RasterLite2 Raster
+    /**
+     * Set list for each Band in a RasterLite2 Raster
      * - information from RL2_GetBandStatistics_Min
      * \note
      *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
@@ -669,7 +720,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QMap<int, double> mLayerBandsPixelMin;
 
-    /** Set list for each Band in a RasterLite2 Raster
+    /**
+     * Set list for each Band in a RasterLite2 Raster
      * - information from RL2_GetBandStatistics_Max
      * \note
      *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
@@ -679,7 +731,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QMap<int, double> mLayerBandsPixelMax;
 
-    /** Set list for each Band in a RasterLite2 Raster
+    /**
+     * Set list for each Band in a RasterLite2 Raster
      * - information from  RL2_GetBandStatistics_Avg
      * \note
      *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
@@ -689,7 +742,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QMap<int, double> mLayerBandsPixelAverage;
 
-    /** Set list for each Band in a RasterLite2 Raster
+    /**
+     * Set list for each Band in a RasterLite2 Raster
      * - information from RL2_GetBandStatistics_Var
      * \note
      *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
@@ -699,7 +753,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QMap<int, double> mLayerBandsPixelVariance;
 
-    /** Set list for each Band in a RasterLite2 Raster
+    /**
+     * Set list for each Band in a RasterLite2 Raster
      * - information from RL2_GetBandStatistics_StdDev
      * \note
      *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
@@ -709,7 +764,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QMap<int, double> mLayerBandsPixelStandardDeviation;
 
-    /** Set list for each Band in a RasterLite2 Raster
+    /**
+     * Set list for each Band in a RasterLite2 Raster
      * - information from RL2_GetRasterStatistics_ValidPixelsCount
      * \note
      *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
@@ -719,7 +775,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QMap<int, int> mLayerBandsPixelValidPixelsCount;
 
-    /** For each Band in a RasterLite2 Raster
+    /**
+     * For each Band in a RasterLite2 Raster
      * - a PNG image representing the estimated distribution Histogram from a specific Band
      * \note
      *  - RL2_GetBandStatistics_Histogram
@@ -728,7 +785,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QMap<int, QImage> mLayerBandsHistograms;
 
-    /** Set list for each Band in a RasterLite2 Raster
+    /**
+     * Set list for each Band in a RasterLite2 Raster
      * - information about nodata, min/max pixel value
      * \note
      *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
@@ -752,7 +810,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QString mMetadata;
 
-    /** Query and build Metadata string about properties of the Rasterlite2 layer
+    /**
+     * Query and build Metadata string about properties of the Rasterlite2 layer
      * - for testing, but also for support of anly metadata output strings [metadata()]
      * \note
      *  - at the moment it is not clear if we can really return the real internal information
@@ -774,7 +833,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QString mDefaultImageBackground;
 
-    /** The selected Style
+    /**
+     * The selected Style
      * - by default: the first entry of mStyleLayersData.value
      * \note
      *  - only one Style can be rendered
@@ -783,7 +843,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QString mDefaultRasterStyle;
 
-    /** Map of style_name and Metadata
+    /**
+     * Map of style_name and Metadata
      * \note
      * - Key: StyleName as retrieved from SE_vector_styles or SE_raster_styles
      * - Value: StyleType, StyleTitle, StyleAbstract
@@ -793,7 +854,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QMap<QString, QString> mStyleLayersInfo;
 
-    /** ViewExtent of retrieved Image
+    /**
+     * ViewExtent of retrieved Image
      * \note
      * - load image if different
      * - fill data from requeded Band
@@ -803,7 +865,8 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      */
     QgsRectangle mImageBandsViewExtent;
 
-    /** List of Image Data by Bands
+    /**
+     * List of Image Data by Bands
      * - dependent on Image Type
      * \note
      * - 0=Alpha
@@ -814,7 +877,7 @@ class QgsRasterLite2Provider : public QgsRasterDataProvider
      * \see readBlock
      * \since QGIS 3.0
      */
-    QList<QByteArray*> mImageBands;
+    QList<QByteArray *> mImageBands;
 
 };
 
