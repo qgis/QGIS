@@ -77,7 +77,7 @@ void QgsWelcomePageItemDelegate::paint( QPainter *painter, const QStyleOptionVie
 
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize )
                .arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString(),
-                     index.data( QgsWelcomePageItemsModel::PathRole ).toString(),
+                     index.data( QgsWelcomePageItemsModel::NativePathRole ).toString(),
                      index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
   doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? icon.width() + 35 : 35 ) );
 
@@ -113,7 +113,7 @@ QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem &option, 
 
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize )
                .arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString(),
-                     index.data( QgsWelcomePageItemsModel::PathRole ).toString(),
+                     index.data( QgsWelcomePageItemsModel::NativePathRole ).toString(),
                      index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
   doc.setTextWidth( width - ( !icon.isNull() ? icon.width() + 35 : 35 ) );
 
@@ -148,6 +148,8 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex &index, int role ) co
     case TitleRole:
       return mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QFileInfo( mRecentProjects.at( index.row() ).path ).completeBaseName();
     case PathRole:
+      return mRecentProjects.at( index.row() ).path;
+    case NativePathRole:
       return QDir::toNativeSeparators( mRecentProjects.at( index.row() ).path );
     case CrsRole:
       if ( !mRecentProjects.at( index.row() ).crs.isEmpty() )
