@@ -311,6 +311,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   }
 
   QStringList sublayers = QgsGdalProvider::subLayers( hDS.get() );
+  hDS.reset();
 
   QgsDebugMsgLevel( "GdalDataset opened " + path, 2 );
 
