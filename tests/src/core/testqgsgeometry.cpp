@@ -1500,12 +1500,16 @@ void TestQgsGeometry::circularString()
   QGSCOMPAREGML( elemToString( exportLine.asGML2( doc ) ), expectedGML2 );
   QString expectedGML2prec3( QStringLiteral( "<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.333,0.667 1.333,1.667 2.333,2.667</coordinates></LineString>" ) );
   QGSCOMPAREGML( elemToString( exportLineFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
+  QString expectedGML2empty( QStringLiteral( "<LineString xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsCircularString().asGML2( doc ) ), expectedGML2empty );
 
   //asGML3
   QString expectedGML3( QStringLiteral( "<Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">31 32 41 42 51 52</posList></ArcString></segments></Curve>" ) );
   QCOMPARE( elemToString( exportLine.asGML3( doc ) ), expectedGML3 );
   QString expectedGML3prec3( QStringLiteral( "<Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.333 0.667 1.333 1.667 2.333 2.667</posList></ArcString></segments></Curve>" ) );
   QCOMPARE( elemToString( exportLineFloat.asGML3( doc, 3 ) ), expectedGML3prec3 );
+  QString expectedGML3empty( QStringLiteral( "<Curve xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsCircularString().asGML3( doc ) ), expectedGML3empty );
 
   //asJSON
   QString expectedJson( QStringLiteral( "{\"type\": \"LineString\", \"coordinates\": [ [31, 32], [41, 42], [51, 52]]}" ) );
@@ -3146,12 +3150,16 @@ void TestQgsGeometry::lineString()
   QGSCOMPAREGML( elemToString( exportLine.asGML2( doc ) ), expectedGML2 );
   QString expectedGML2prec3( QStringLiteral( "<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.333,0.667 1.333,1.667 2.333,2.667</coordinates></LineString>" ) );
   QGSCOMPAREGML( elemToString( exportLineFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
+  QString expectedGML2empty( QStringLiteral( "<LineString xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsLineString().asGML2( doc ) ), expectedGML2empty );
 
   //asGML3
   QString expectedGML3( QStringLiteral( "<LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">31 32 41 42 51 52</posList></LineString>" ) );
   QCOMPARE( elemToString( exportLine.asGML3( doc ) ), expectedGML3 );
   QString expectedGML3prec3( QStringLiteral( "<LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.333 0.667 1.333 1.667 2.333 2.667</posList></LineString>" ) );
   QCOMPARE( elemToString( exportLineFloat.asGML3( doc, 3 ) ), expectedGML3prec3 );
+  QString expectedGML3empty( QStringLiteral( "<LineString xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsLineString().asGML3( doc ) ), expectedGML3empty );
 
   //asJSON
   QString expectedJson( QStringLiteral( "{\"type\": \"LineString\", \"coordinates\": [ [31, 32], [41, 42], [51, 52]]}" ) );
@@ -4734,10 +4742,14 @@ void TestQgsGeometry::polygon()
   // as GML2
   QString expectedSimpleGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
   QGSCOMPAREGML( elemToString( exportPolygon.asGML2( doc ) ), expectedSimpleGML2 );
+  QString expectedGML2empty( QStringLiteral( "<Polygon xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsPolygonV2().asGML2( doc ) ), expectedGML2empty );
 
   //as GML3
   QString expectedSimpleGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LinearRing></exterior></Polygon>" ) );
   QCOMPARE( elemToString( exportPolygon.asGML3( doc ) ), expectedSimpleGML3 );
+  QString expectedGML3empty( QStringLiteral( "<Polygon xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsPolygonV2().asGML3( doc ) ), expectedGML3empty );
 
   // as JSON
   QString expectedSimpleJson( QStringLiteral( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]] }" ) );
@@ -5959,6 +5971,40 @@ void TestQgsGeometry::triangle()
   QgsConstWkbPtr wkbPointPtr( wkbPoint );
   QVERIFY( !t6.fromWkb( wkbPointPtr ) );
   QCOMPARE( t6.wkbType(), QgsWkbTypes::Triangle );
+
+  //asGML2
+  QgsTriangle exportEmptyTriangle( QgsPoint( 1, 2 ),
+                                   QgsPoint( 3, 4 ),
+                                   QgsPoint( 5, 6 ) );
+  QgsTriangle exportTriangle( QgsPoint( 1, 2 ),
+                              QgsPoint( 3, 4 ),
+                              QgsPoint( 6, 5 ) );
+  QgsTriangle exportTriangleZ( QgsPoint( 1, 2, 3 ),
+                               QgsPoint( 11, 12, 13 ),
+                               QgsPoint( 1, 12, 23 ) );
+  QgsTriangle exportTriangleFloat( QgsPoint( 1 + 1 / 3.0, 2 + 2 / 3.0 ),
+                                   QgsPoint( 3 + 1 / 3.0, 4 + 2 / 3.0 ),
+                                   QgsPoint( 6 + 1 / 3.0, 5 + 2 / 3.0 ) );
+  QDomDocument doc( QStringLiteral( "gml" ) );
+  QString expectedGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2 3,4 6,5 1,2</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
+  QGSCOMPAREGML( elemToString( exportTriangle.asGML2( doc ) ), expectedGML2 );
+  QString expectedGML2prec3( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.333,2.667 3.333,4.667 6.333,5.667 1.333,2.667</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
+  QGSCOMPAREGML( elemToString( exportTriangleFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
+  QString expectedGML2empty( QStringLiteral( "<Polygon xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( exportEmptyTriangle.asGML2( doc ) ), expectedGML2empty );
+  QGSCOMPAREGML( elemToString( QgsTriangle().asGML2( doc ) ), expectedGML2empty );
+
+  //asGML3
+  QString expectedGML3( QStringLiteral( "<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 2 3 4 6 5 1 2</posList></LinearRing></exterior></Triangle>" ) );
+  QCOMPARE( elemToString( exportTriangle.asGML3( doc ) ), expectedGML3 );
+  QString expectedGML3prec3( QStringLiteral( "<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1.333 2.667 3.333 4.667 6.333 5.667 1.333 2.667</posList></LinearRing></exterior></Triangle>" ) );
+  QCOMPARE( elemToString( exportTriangleFloat.asGML3( doc, 3 ) ), expectedGML3prec3 );
+  QString expectedGML3empty( QStringLiteral( "<Triangle xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( exportEmptyTriangle.asGML3( doc ) ), expectedGML3empty );
+  QGSCOMPAREGML( elemToString( QgsTriangle().asGML3( doc ) ), expectedGML3empty );
+  QString expectedGML3Z( QStringLiteral( "<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">1 2 3 11 12 13 1 12 23 1 2 3</posList></LinearRing></exterior></Triangle>" ) );
+  QCOMPARE( elemToString( exportTriangleZ.asGML3( doc ) ), expectedGML3Z );
+
 
   // lengths and angles
   QgsTriangle t7( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) );
@@ -7549,11 +7595,15 @@ void TestQgsGeometry::curvePolygon()
   QString expectedSimpleGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 1,0 2,0 2,0 2,0 2,0.1 1.9,0.1 1.9,0.1 1.9,0.1 1.9,0.1 1.9,0.1 1.9,0.1 1.9,0.2 1.8,0.2 1.8,0.2 1.8,0.2 1.8,0.2 1.8,0.2 1.8,0.2 1.7,0.3 1.7,0.3 1.7,0.3 1.7,0.3 1.7,0.3 1.6,0.3 1.6,0.3 1.6,0.3 1.6,0.4 1.6,0.4 1.6,0.4 1.5,0.4 1.5,0.4 1.5,0.4 1.5,0.4 1.5,0.4 1.4,0.4 1.4,0.4 1.4,0.4 1.4,0.4 1.4,0.4 1.3,0.5 1.3,0.5 1.3,0.5 1.3,0.5 1.2,0.5 1.2,0.5 1.2,0.5 1.2,0.5 1.2,0.5 1.1,0.5 1.1,0.5 1.1,0.5 1.1,0.5 1.1,0.5 1,0.5 1,0.5 1,0.5 1,0.5 0.9,0.5 0.9,0.5 0.9,0.5 0.9,0.5 0.9,0.5 0.8,0.5 0.8,0.5 0.8,0.5 0.8,0.5 0.8,0.5 0.7,0.5 0.7,0.5 0.7,0.5 0.7,0.5 0.6,0.4 0.6,0.4 0.6,0.4 0.6,0.4 0.6,0.4 0.5,0.4 0.5,0.4 0.5,0.4 0.5,0.4 0.5,0.4 0.4,0.4 0.4,0.4 0.4,0.4 0.4,0.3 0.4,0.3 0.4,0.3 0.3,0.3 0.3,0.3 0.3,0.3 0.3,0.3 0.3,0.3 0.2,0.2 0.2,0.2 0.2,0.2 0.2,0.2 0.2,0.2 0.2,0.2 0.1,0.2 0.1,0.1 0.1,0.1 0.1,0.1 0.1,0.1 0.1,0.1 0.1,0.1 0,0.1 0,0 0,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
   QString res = elemToString( exportPolygon.asGML2( doc, 1 ) );
   QGSCOMPAREGML( res, expectedSimpleGML2 );
+  QString expectedGML2empty( QStringLiteral( "<Polygon xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsCurvePolygon().asGML2( doc ) ), expectedGML2empty );
 
   //as GML3
   QString expectedSimpleGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 1 0.5 13 0 0 10</posList></ArcString></segments></Curve></exterior></Polygon>" ) );
   res = elemToString( exportPolygon.asGML3( doc, 2 ) );
   QCOMPARE( elemToString( exportPolygon.asGML3( doc ) ), expectedSimpleGML3 );
+  QString expectedGML3empty( QStringLiteral( "<Polygon xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsCurvePolygon().asGML3( doc ) ), expectedGML3empty );
 
   // as JSON
   QString expectedSimpleJson( QStringLiteral( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [1, 0], [2, 0], [2, 0], [2, 0], [2, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.1], [1.9, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.8, 0.2], [1.7, 0.3], [1.7, 0.3], [1.7, 0.3], [1.7, 0.3], [1.7, 0.3], [1.6, 0.3], [1.6, 0.3], [1.6, 0.3], [1.6, 0.4], [1.6, 0.4], [1.6, 0.4], [1.5, 0.4], [1.5, 0.4], [1.5, 0.4], [1.5, 0.4], [1.5, 0.4], [1.4, 0.4], [1.4, 0.4], [1.4, 0.4], [1.4, 0.4], [1.4, 0.4], [1.3, 0.5], [1.3, 0.5], [1.3, 0.5], [1.3, 0.5], [1.2, 0.5], [1.2, 0.5], [1.2, 0.5], [1.2, 0.5], [1.2, 0.5], [1.1, 0.5], [1.1, 0.5], [1.1, 0.5], [1.1, 0.5], [1.1, 0.5], [1, 0.5], [1, 0.5], [1, 0.5], [1, 0.5], [0.9, 0.5], [0.9, 0.5], [0.9, 0.5], [0.9, 0.5], [0.9, 0.5], [0.8, 0.5], [0.8, 0.5], [0.8, 0.5], [0.8, 0.5], [0.8, 0.5], [0.7, 0.5], [0.7, 0.5], [0.7, 0.5], [0.7, 0.5], [0.6, 0.4], [0.6, 0.4], [0.6, 0.4], [0.6, 0.4], [0.6, 0.4], [0.5, 0.4], [0.5, 0.4], [0.5, 0.4], [0.5, 0.4], [0.5, 0.4], [0.4, 0.4], [0.4, 0.4], [0.4, 0.4], [0.4, 0.3], [0.4, 0.3], [0.4, 0.3], [0.3, 0.3], [0.3, 0.3], [0.3, 0.3], [0.3, 0.3], [0.3, 0.3], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.2, 0.2], [0.1, 0.2], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0.1, 0.1], [0, 0.1], [0, 0], [0, 0], [0, 0]]] }" ) );
@@ -8888,6 +8938,8 @@ void TestQgsGeometry::compoundCurve()
   QString expectedGML2prec3( QStringLiteral( "<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0.333,0.667 1.333,1.667 2.333,2.667 3.333,3.667</coordinates></LineString>" ) );
   result = elemToString( exportCurveFloat.asGML2( doc, 3 ) );
   QGSCOMPAREGML( result, expectedGML2prec3 );
+  QString expectedGML2empty( QStringLiteral( "<LineString xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsCompoundCurve().asGML2( doc ) ), expectedGML2empty );
 
 
   //asGML3
@@ -8897,6 +8949,8 @@ void TestQgsGeometry::compoundCurve()
   QString expectedGML3prec3( QStringLiteral( "<CompositeCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0.333 0.667 1.333 1.667 2.333 2.667</posList></ArcString></segments></Curve></curveMember><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">2.333 2.667 3.333 3.667</posList></LineString></curveMember></CompositeCurve>" ) );
   result = elemToString( exportCurveFloat.asGML3( doc, 3 ) );
   QCOMPARE( result, expectedGML3prec3 );
+  QString expectedGML3empty( QStringLiteral( "<CompositeCurve xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsCompoundCurve().asGML3( doc ) ), expectedGML3empty );
 
   //asJSON
   QString expectedJson( QStringLiteral( "{\"type\": \"LineString\", \"coordinates\": [ [31, 32], [41, 42], [51, 52], [61, 62]]}" ) );
@@ -10517,11 +10571,15 @@ void TestQgsGeometry::multiPoint()
   QString expectedSimpleGML2( QStringLiteral( "<MultiPoint xmlns=\"gml\"><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,10</coordinates></Point></pointMember><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">10,0</coordinates></Point></pointMember></MultiPoint>" ) );
   QString res = elemToString( exportC.asGML2( doc ) );
   QGSCOMPAREGML( res, expectedSimpleGML2 );
+  QString expectedGML2empty( QStringLiteral( "<MultiPoint xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsMultiPointV2().asGML2( doc ) ), expectedGML2empty );
 
   //as GML3
   QString expectedSimpleGML3( QStringLiteral( "<MultiPoint xmlns=\"gml\"><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">0 10</pos></Point></pointMember><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">10 0</pos></Point></pointMember></MultiPoint>" ) );
   res = elemToString( exportC.asGML3( doc ) );
   QCOMPARE( res, expectedSimpleGML3 );
+  QString expectedGML3empty( QStringLiteral( "<MultiPoint xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsMultiPointV2().asGML3( doc ) ), expectedGML3empty );
 
   // as JSON
   QString expectedSimpleJson( "{\"type\": \"MultiPoint\", \"coordinates\": [ [0, 10], [10, 0]] }" );
@@ -11037,11 +11095,15 @@ void TestQgsGeometry::multiLineString()
   QString expectedSimpleGML2( QStringLiteral( "<MultiLineString xmlns=\"gml\"><lineStringMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">7,17 3,13</coordinates></LineString></lineStringMember><lineStringMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">27,37 43,43</coordinates></LineString></lineStringMember></MultiLineString>" ) );
   QString res = elemToString( exportC.asGML2( doc ) );
   QGSCOMPAREGML( res, expectedSimpleGML2 );
+  QString expectedGML2empty( QStringLiteral( "<MultiLineString xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsMultiLineString().asGML2( doc ) ), expectedGML2empty );
 
   //as GML3
   QString expectedSimpleGML3( QStringLiteral( "<MultiCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">7 17 3 13</posList></LineString></curveMember><curveMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">27 37 43 43</posList></LineString></curveMember></MultiCurve>" ) );
   res = elemToString( exportC.asGML3( doc ) );
   QCOMPARE( res, expectedSimpleGML3 );
+  QString expectedGML3empty( QStringLiteral( "<MultiCurve xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsMultiLineString().asGML3( doc ) ), expectedGML3empty );
 
   // as JSON
   QString expectedSimpleJson( "{\"type\": \"MultiLineString\", \"coordinates\": [[ [7, 17], [3, 13]], [ [27, 37], [43, 43]]] }" );
@@ -11642,11 +11704,15 @@ void TestQgsGeometry::multiCurve()
   QString expectedSimpleGML2( QStringLiteral( "<MultiLineString xmlns=\"gml\"><lineStringMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">7,17 6.9,17 6.9,17 6.8,17 6.8,17.1 6.7,17.1 6.7,17.1 6.6,17.1 6.6,17.1 6.5,17.1 6.5,17.1 6.4,17.1 6.4,17.1 6.3,17.1 6.2,17.2 6.2,17.2 6.1,17.2 6.1,17.2 6,17.2 6,17.2 5.9,17.2 5.9,17.2 5.8,17.2 5.7,17.2 5.7,17.1 5.6,17.1 5.6,17.1 5.5,17.1 5.5,17.1 5.4,17.1 5.4,17.1 5.3,17.1 5.3,17.1 5.2,17.1 5.2,17 5.1,17 5,17 5,17 4.9,17 4.9,17 4.8,16.9 4.8,16.9 4.7,16.9 4.7,16.9 4.6,16.9 4.6,16.8 4.5,16.8 4.5,16.8 4.4,16.8 4.4,16.7 4.3,16.7 4.3,16.7 4.3,16.6 4.2,16.6 4.2,16.6 4.1,16.5 4.1,16.5 4,16.5 4,16.4 3.9,16.4 3.9,16.4 3.9,16.3 3.8,16.3 3.8,16.3 3.7,16.2 3.7,16.2 3.7,16.1 3.6,16.1 3.6,16.1 3.6,16 3.5,16 3.5,15.9 3.5,15.9 3.4,15.8 3.4,15.8 3.4,15.7 3.3,15.7 3.3,15.7 3.3,15.6 3.2,15.6 3.2,15.5 3.2,15.5 3.2,15.4 3.1,15.4 3.1,15.3 3.1,15.3 3.1,15.2 3.1,15.2 3,15.1 3,15.1 3,15 3,15 3,14.9 3,14.8 2.9,14.8 2.9,14.7 2.9,14.7 2.9,14.6 2.9,14.6 2.9,14.5 2.9,14.5 2.9,14.4 2.9,14.4 2.9,14.3 2.8,14.2 2.8,14.2 2.8,14.1 2.8,14.1 2.8,14 2.8,14 2.8,13.9 2.8,13.9 2.8,13.8 2.8,13.8 2.9,13.7 2.9,13.6 2.9,13.6 2.9,13.5 2.9,13.5 2.9,13.4 2.9,13.4 2.9,13.3 2.9,13.3 2.9,13.2 3,13.2 3,13.1 3,13 3,13 3,12.9 3,12.9 3.1,12.8 3.1,12.8 3.1,12.7 3.1,12.7 3.1,12.6 3.2,12.6 3.2,12.5 3.2,12.5 3.2,12.4 3.3,12.4 3.3,12.3 3.3,12.3 3.4,12.3 3.4,12.2 3.4,12.2 3.5,12.1 3.5,12.1 3.5,12 3.6,12 3.6,11.9 3.6,11.9 3.7,11.9 3.7,11.8 3.7,11.8 3.8,11.7 3.8,11.7 3.9,11.7 3.9,11.6 3.9,11.6 4,11.6 4,11.5 4.1,11.5 4.1,11.5 4.2,11.4 4.2,11.4 4.3,11.4 4.3,11.3 4.3,11.3 4.4,11.3 4.4,11.2 4.5,11.2 4.5,11.2 4.6,11.2 4.6,11.1 4.7,11.1 4.7,11.1 4.8,11.1 4.8,11.1 4.9,11 4.9,11 5,11 5,11 5.1,11 5.2,11 5.2,10.9 5.3,10.9 5.3,10.9 5.4,10.9 5.4,10.9 5.5,10.9 5.5,10.9 5.6,10.9 5.6,10.9 5.7,10.9 5.7,10.8 5.8,10.8 5.9,10.8 5.9,10.8 6,10.8 6,10.8 6.1,10.8 6.1,10.8 6.2,10.8 6.2,10.8 6.3,10.9 6.4,10.9 6.4,10.9 6.5,10.9 6.5,10.9 6.6,10.9 6.6,10.9 6.7,10.9 6.7,10.9 6.8,10.9 6.8,11 6.9,11 6.9,11 7,11</coordinates></LineString></lineStringMember><lineStringMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">27,37 27.1,36.9 27.2,36.8 27.3,36.6 27.4,36.5 27.5,36.4 27.6,36.3 27.7,36.2 27.8,36 27.9,35.9 28,35.8 28.1,35.7 28.2,35.6 28.3,35.5 28.4,35.4 28.5,35.3 28.7,35.2 28.8,35.1 28.9,35 29,34.9 29.1,34.8 29.3,34.7 29.4,34.6 29.5,34.6 29.7,34.5 29.8,34.4 29.9,34.3 30.1,34.3 30.2,34.2 30.3,34.1 30.5,34 30.6,34 30.7,33.9 30.9,33.9 31,33.8 31.2,33.7 31.3,33.7 31.5,33.6 31.6,33.6 31.8,33.6 31.9,33.5 32.1,33.5 32.2,33.4 32.4,33.4 32.5,33.4 32.7,33.3 32.8,33.3 33,33.3 33.1,33.3 33.3,33.2 33.4,33.2 33.6,33.2 33.7,33.2 33.9,33.2 34,33.2 34.2,33.2 34.3,33.2 34.5,33.2 34.6,33.2 34.8,33.2 34.9,33.2 35.1,33.2 35.3,33.3 35.4,33.3 35.6,33.3 35.7,33.3 35.9,33.3 36,33.4 36.2,33.4 36.3,33.4 36.5,33.5 36.6,33.5 36.8,33.6 36.9,33.6 37.1,33.7 37.2,33.7 37.3,33.8 37.5,33.8 37.6,33.9 37.8,33.9 37.9,34 38,34.1 38.2,34.1 38.3,34.2 38.5,34.3 38.6,34.3 38.7,34.4 38.9,34.5 39,34.6 39.1,34.7 39.2,34.7 39.4,34.8 39.5,34.9 39.6,35 39.7,35.1 39.9,35.2 40,35.3 40.1,35.4 40.2,35.5 40.3,35.6 40.4,35.7 40.5,35.8 40.6,35.9 40.7,36.1 40.8,36.2 40.9,36.3 41,36.4 41.1,36.5 41.2,36.6 41.3,36.8 41.4,36.9 41.5,37 41.6,37.1 41.7,37.3 41.8,37.4 41.8,37.5 41.9,37.7 42,37.8 42.1,37.9 42.1,38.1 42.2,38.2 42.3,38.3 42.3,38.5 42.4,38.6 42.4,38.8 42.5,38.9 42.6,39.1 42.6,39.2 42.6,39.4 42.7,39.5 42.7,39.6 42.8,39.8 42.8,39.9 42.8,40.1 42.9,40.2 42.9,40.4 42.9,40.5 43,40.7 43,40.9 43,41 43,41.2 43,41.3 43,41.5 43,41.6 43.1,41.8 43.1,41.9 43.1,42.1 43.1,42.2 43,42.4 43,42.5 43,42.7 43,42.8 43,43 43,43.1 43,43.3 42.9,43.5 42.9,43.6 42.9,43.8 42.8,43.9 42.8,44.1 42.8,44.2 42.7,44.4 42.7,44.5 42.6,44.6 42.6,44.8 42.6,44.9 42.5,45.1 42.4,45.2 42.4,45.4 42.3,45.5 42.3,45.7 42.2,45.8 42.1,45.9 42.1,46.1 42,46.2 41.9,46.3 41.8,46.5 41.8,46.6 41.7,46.7 41.6,46.9 41.5,47 41.4,47.1 41.3,47.2 41.2,47.4 41.1,47.5 41,47.6 40.9,47.7 40.8,47.8 40.7,47.9 40.6,48.1 40.5,48.2 40.4,48.3 40.3,48.4 40.2,48.5 40.1,48.6 40,48.7 39.9,48.8 39.7,48.9 39.6,49 39.5,49.1 39.4,49.2 39.2,49.3 39.1,49.3 39,49.4 38.9,49.5 38.7,49.6 38.6,49.7 38.5,49.7 38.3,49.8 38.2,49.9 38,49.9 37.9,50 37.8,50.1 37.6,50.1 37.5,50.2 37.3,50.2 37.2,50.3 37.1,50.3 36.9,50.4 36.8,50.4 36.6,50.5 36.5,50.5 36.3,50.6 36.2,50.6 36,50.6 35.9,50.7 35.7,50.7 35.6,50.7 35.4,50.7 35.3,50.7 35.1,50.8 34.9,50.8 34.8,50.8 34.6,50.8 34.5,50.8 34.3,50.8 34.2,50.8 34,50.8 33.9,50.8 33.7,50.8 33.6,50.8 33.4,50.8 33.3,50.8 33.1,50.7 33,50.7 32.8,50.7 32.7,50.7 32.5,50.6 32.4,50.6 32.2,50.6 32.1,50.5 31.9,50.5 31.8,50.4 31.6,50.4 31.5,50.4 31.3,50.3 31.2,50.3 31,50.2 30.9,50.1 30.7,50.1 30.6,50 30.5,50 30.3,49.9 30.2,49.8 30.1,49.7 29.9,49.7 29.8,49.6 29.7,49.5 29.5,49.4 29.4,49.4 29.3,49.3 29.1,49.2 29,49.1 28.9,49 28.8,48.9 28.7,48.8 28.5,48.7 28.4,48.6 28.3,48.5 28.2,48.4 28.1,48.3 28,48.2 27.9,48.1 27.8,48 27.7,47.8 27.6,47.7 27.5,47.6 27.4,47.5 27.3,47.4 27.2,47.2 27.1,47.1 27,47</coordinates></LineString></lineStringMember></MultiLineString>" ) );
   QString res = elemToString( exportC.asGML2( doc, 1 ) );
   QGSCOMPAREGML( res, expectedSimpleGML2 );
+  QString expectedGML2empty( QStringLiteral( "<MultiLineString xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsMultiCurve().asGML2( doc ) ), expectedGML2empty );
 
   //as GML3
   QString expectedSimpleGML3( QStringLiteral( "<MultiCurve xmlns=\"gml\"><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">7 17 3 13 7 11</posList></ArcString></segments></Curve></curveMember><curveMember xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">27 37 43 43 27 47</posList></ArcString></segments></Curve></curveMember></MultiCurve>" ) );
   res = elemToString( exportC.asGML3( doc ) );
   QCOMPARE( res, expectedSimpleGML3 );
+  QString expectedGML3empty( QStringLiteral( "<MultiCurve xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsMultiCurve().asGML3( doc ) ), expectedGML3empty );
 
   // as JSON
   QString expectedSimpleJson( "{\"type\": \"MultiLineString\", \"coordinates\": [[ [7, 17], [6.9, 17], [6.9, 17], [6.8, 17], [6.8, 17.1], [6.7, 17.1], [6.7, 17.1], [6.6, 17.1], [6.6, 17.1], [6.5, 17.1], [6.5, 17.1], [6.4, 17.1], [6.4, 17.1], [6.3, 17.1], [6.2, 17.2], [6.2, 17.2], [6.1, 17.2], [6.1, 17.2], [6, 17.2], [6, 17.2], [5.9, 17.2], [5.9, 17.2], [5.8, 17.2], [5.7, 17.2], [5.7, 17.1], [5.6, 17.1], [5.6, 17.1], [5.5, 17.1], [5.5, 17.1], [5.4, 17.1], [5.4, 17.1], [5.3, 17.1], [5.3, 17.1], [5.2, 17.1], [5.2, 17], [5.1, 17], [5, 17], [5, 17], [4.9, 17], [4.9, 17], [4.8, 16.9], [4.8, 16.9], [4.7, 16.9], [4.7, 16.9], [4.6, 16.9], [4.6, 16.8], [4.5, 16.8], [4.5, 16.8], [4.4, 16.8], [4.4, 16.7], [4.3, 16.7], [4.3, 16.7], [4.3, 16.6], [4.2, 16.6], [4.2, 16.6], [4.1, 16.5], [4.1, 16.5], [4, 16.5], [4, 16.4], [3.9, 16.4], [3.9, 16.4], [3.9, 16.3], [3.8, 16.3], [3.8, 16.3], [3.7, 16.2], [3.7, 16.2], [3.7, 16.1], [3.6, 16.1], [3.6, 16.1], [3.6, 16], [3.5, 16], [3.5, 15.9], [3.5, 15.9], [3.4, 15.8], [3.4, 15.8], [3.4, 15.7], [3.3, 15.7], [3.3, 15.7], [3.3, 15.6], [3.2, 15.6], [3.2, 15.5], [3.2, 15.5], [3.2, 15.4], [3.1, 15.4], [3.1, 15.3], [3.1, 15.3], [3.1, 15.2], [3.1, 15.2], [3, 15.1], [3, 15.1], [3, 15], [3, 15], [3, 14.9], [3, 14.8], [2.9, 14.8], [2.9, 14.7], [2.9, 14.7], [2.9, 14.6], [2.9, 14.6], [2.9, 14.5], [2.9, 14.5], [2.9, 14.4], [2.9, 14.4], [2.9, 14.3], [2.8, 14.2], [2.8, 14.2], [2.8, 14.1], [2.8, 14.1], [2.8, 14], [2.8, 14], [2.8, 13.9], [2.8, 13.9], [2.8, 13.8], [2.8, 13.8], [2.9, 13.7], [2.9, 13.6], [2.9, 13.6], [2.9, 13.5], [2.9, 13.5], [2.9, 13.4], [2.9, 13.4], [2.9, 13.3], [2.9, 13.3], [2.9, 13.2], [3, 13.2], [3, 13.1], [3, 13], [3, 13], [3, 12.9], [3, 12.9], [3.1, 12.8], [3.1, 12.8], [3.1, 12.7], [3.1, 12.7], [3.1, 12.6], [3.2, 12.6], [3.2, 12.5], [3.2, 12.5], [3.2, 12.4], [3.3, 12.4], [3.3, 12.3], [3.3, 12.3], [3.4, 12.3], [3.4, 12.2], [3.4, 12.2], [3.5, 12.1], [3.5, 12.1], [3.5, 12], [3.6, 12], [3.6, 11.9], [3.6, 11.9], [3.7, 11.9], [3.7, 11.8], [3.7, 11.8], [3.8, 11.7], [3.8, 11.7], [3.9, 11.7], [3.9, 11.6], [3.9, 11.6], [4, 11.6], [4, 11.5], [4.1, 11.5], [4.1, 11.5], [4.2, 11.4], [4.2, 11.4], [4.3, 11.4], [4.3, 11.3], [4.3, 11.3], [4.4, 11.3], [4.4, 11.2], [4.5, 11.2], [4.5, 11.2], [4.6, 11.2], [4.6, 11.1], [4.7, 11.1], [4.7, 11.1], [4.8, 11.1], [4.8, 11.1], [4.9, 11], [4.9, 11], [5, 11], [5, 11], [5.1, 11], [5.2, 11], [5.2, 10.9], [5.3, 10.9], [5.3, 10.9], [5.4, 10.9], [5.4, 10.9], [5.5, 10.9], [5.5, 10.9], [5.6, 10.9], [5.6, 10.9], [5.7, 10.9], [5.7, 10.8], [5.8, 10.8], [5.9, 10.8], [5.9, 10.8], [6, 10.8], [6, 10.8], [6.1, 10.8], [6.1, 10.8], [6.2, 10.8], [6.2, 10.8], [6.3, 10.9], [6.4, 10.9], [6.4, 10.9], [6.5, 10.9], [6.5, 10.9], [6.6, 10.9], [6.6, 10.9], [6.7, 10.9], [6.7, 10.9], [6.8, 10.9], [6.8, 11], [6.9, 11], [6.9, 11], [7, 11]], [ [27, 37], [27.1, 36.9], [27.2, 36.8], [27.3, 36.6], [27.4, 36.5], [27.5, 36.4], [27.6, 36.3], [27.7, 36.2], [27.8, 36], [27.9, 35.9], [28, 35.8], [28.1, 35.7], [28.2, 35.6], [28.3, 35.5], [28.4, 35.4], [28.5, 35.3], [28.7, 35.2], [28.8, 35.1], [28.9, 35], [29, 34.9], [29.1, 34.8], [29.3, 34.7], [29.4, 34.6], [29.5, 34.6], [29.7, 34.5], [29.8, 34.4], [29.9, 34.3], [30.1, 34.3], [30.2, 34.2], [30.3, 34.1], [30.5, 34], [30.6, 34], [30.7, 33.9], [30.9, 33.9], [31, 33.8], [31.2, 33.7], [31.3, 33.7], [31.5, 33.6], [31.6, 33.6], [31.8, 33.6], [31.9, 33.5], [32.1, 33.5], [32.2, 33.4], [32.4, 33.4], [32.5, 33.4], [32.7, 33.3], [32.8, 33.3], [33, 33.3], [33.1, 33.3], [33.3, 33.2], [33.4, 33.2], [33.6, 33.2], [33.7, 33.2], [33.9, 33.2], [34, 33.2], [34.2, 33.2], [34.3, 33.2], [34.5, 33.2], [34.6, 33.2], [34.8, 33.2], [34.9, 33.2], [35.1, 33.2], [35.3, 33.3], [35.4, 33.3], [35.6, 33.3], [35.7, 33.3], [35.9, 33.3], [36, 33.4], [36.2, 33.4], [36.3, 33.4], [36.5, 33.5], [36.6, 33.5], [36.8, 33.6], [36.9, 33.6], [37.1, 33.7], [37.2, 33.7], [37.3, 33.8], [37.5, 33.8], [37.6, 33.9], [37.8, 33.9], [37.9, 34], [38, 34.1], [38.2, 34.1], [38.3, 34.2], [38.5, 34.3], [38.6, 34.3], [38.7, 34.4], [38.9, 34.5], [39, 34.6], [39.1, 34.7], [39.2, 34.7], [39.4, 34.8], [39.5, 34.9], [39.6, 35], [39.7, 35.1], [39.9, 35.2], [40, 35.3], [40.1, 35.4], [40.2, 35.5], [40.3, 35.6], [40.4, 35.7], [40.5, 35.8], [40.6, 35.9], [40.7, 36.1], [40.8, 36.2], [40.9, 36.3], [41, 36.4], [41.1, 36.5], [41.2, 36.6], [41.3, 36.8], [41.4, 36.9], [41.5, 37], [41.6, 37.1], [41.7, 37.3], [41.8, 37.4], [41.8, 37.5], [41.9, 37.7], [42, 37.8], [42.1, 37.9], [42.1, 38.1], [42.2, 38.2], [42.3, 38.3], [42.3, 38.5], [42.4, 38.6], [42.4, 38.8], [42.5, 38.9], [42.6, 39.1], [42.6, 39.2], [42.6, 39.4], [42.7, 39.5], [42.7, 39.6], [42.8, 39.8], [42.8, 39.9], [42.8, 40.1], [42.9, 40.2], [42.9, 40.4], [42.9, 40.5], [43, 40.7], [43, 40.9], [43, 41], [43, 41.2], [43, 41.3], [43, 41.5], [43, 41.6], [43.1, 41.8], [43.1, 41.9], [43.1, 42.1], [43.1, 42.2], [43, 42.4], [43, 42.5], [43, 42.7], [43, 42.8], [43, 43], [43, 43.1], [43, 43.3], [42.9, 43.5], [42.9, 43.6], [42.9, 43.8], [42.8, 43.9], [42.8, 44.1], [42.8, 44.2], [42.7, 44.4], [42.7, 44.5], [42.6, 44.6], [42.6, 44.8], [42.6, 44.9], [42.5, 45.1], [42.4, 45.2], [42.4, 45.4], [42.3, 45.5], [42.3, 45.7], [42.2, 45.8], [42.1, 45.9], [42.1, 46.1], [42, 46.2], [41.9, 46.3], [41.8, 46.5], [41.8, 46.6], [41.7, 46.7], [41.6, 46.9], [41.5, 47], [41.4, 47.1], [41.3, 47.2], [41.2, 47.4], [41.1, 47.5], [41, 47.6], [40.9, 47.7], [40.8, 47.8], [40.7, 47.9], [40.6, 48.1], [40.5, 48.2], [40.4, 48.3], [40.3, 48.4], [40.2, 48.5], [40.1, 48.6], [40, 48.7], [39.9, 48.8], [39.7, 48.9], [39.6, 49], [39.5, 49.1], [39.4, 49.2], [39.2, 49.3], [39.1, 49.3], [39, 49.4], [38.9, 49.5], [38.7, 49.6], [38.6, 49.7], [38.5, 49.7], [38.3, 49.8], [38.2, 49.9], [38, 49.9], [37.9, 50], [37.8, 50.1], [37.6, 50.1], [37.5, 50.2], [37.3, 50.2], [37.2, 50.3], [37.1, 50.3], [36.9, 50.4], [36.8, 50.4], [36.6, 50.5], [36.5, 50.5], [36.3, 50.6], [36.2, 50.6], [36, 50.6], [35.9, 50.7], [35.7, 50.7], [35.6, 50.7], [35.4, 50.7], [35.3, 50.7], [35.1, 50.8], [34.9, 50.8], [34.8, 50.8], [34.6, 50.8], [34.5, 50.8], [34.3, 50.8], [34.2, 50.8], [34, 50.8], [33.9, 50.8], [33.7, 50.8], [33.6, 50.8], [33.4, 50.8], [33.3, 50.8], [33.1, 50.7], [33, 50.7], [32.8, 50.7], [32.7, 50.7], [32.5, 50.6], [32.4, 50.6], [32.2, 50.6], [32.1, 50.5], [31.9, 50.5], [31.8, 50.4], [31.6, 50.4], [31.5, 50.4], [31.3, 50.3], [31.2, 50.3], [31, 50.2], [30.9, 50.1], [30.7, 50.1], [30.6, 50], [30.5, 50], [30.3, 49.9], [30.2, 49.8], [30.1, 49.7], [29.9, 49.7], [29.8, 49.6], [29.7, 49.5], [29.5, 49.4], [29.4, 49.4], [29.3, 49.3], [29.1, 49.2], [29, 49.1], [28.9, 49], [28.8, 48.9], [28.7, 48.8], [28.5, 48.7], [28.4, 48.6], [28.3, 48.5], [28.2, 48.4], [28.1, 48.3], [28, 48.2], [27.9, 48.1], [27.8, 48], [27.7, 47.8], [27.6, 47.7], [27.5, 47.6], [27.4, 47.5], [27.3, 47.4], [27.2, 47.2], [27.1, 47.1], [27, 47]]] }" );
@@ -12287,11 +12353,15 @@ void TestQgsGeometry::multiSurface()
   QString expectedSimpleGML2( QStringLiteral( "<MultiPolygon xmlns=\"gml\"><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">7,17 7,17</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">27,37 27,37</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember></MultiPolygon>" ) );
   QString res = elemToString( exportC.asGML2( doc, 1 ) );
   QGSCOMPAREGML( res, expectedSimpleGML2 );
+  QString expectedGML2empty( QStringLiteral( "<MultiPolygon xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsMultiSurface().asGML2( doc ) ), expectedGML2empty );
 
   //as GML3
   QString expectedSimpleGML3( QStringLiteral( "<MultiSurface xmlns=\"gml\"><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">7 17 3 13 7 17</posList></ArcString></segments></Curve></exterior></Polygon></surfaceMember><surfaceMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><Curve xmlns=\"gml\"><segments xmlns=\"gml\"><ArcString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">27 37 43 43 27 37</posList></ArcString></segments></Curve></exterior></Polygon></surfaceMember></MultiSurface>" ) );
   res = elemToString( exportC.asGML3( doc ) );
   QCOMPARE( res, expectedSimpleGML3 );
+  QString expectedGML3empty( QStringLiteral( "<MultiSurface xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsMultiSurface().asGML3( doc ) ), expectedGML3empty );
 
   // as JSON
   QString expectedSimpleJson( "{\"type\": \"MultiPolygon\", \"coordinates\": [[[ [7, 17], [7, 17]]], [[ [27, 37], [27, 37]]]] }" );
@@ -12914,11 +12984,15 @@ void TestQgsGeometry::multiPolygon()
   QString expectedSimpleGML2( QStringLiteral( "<MultiPolygon xmlns=\"gml\"><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">7,17 3,13 7,21 7,17</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">27,37 43,43 41,39 27,37</coordinates></LinearRing></outerBoundaryIs></Polygon></polygonMember></MultiPolygon>" ) );
   QString res = elemToString( exportC.asGML2( doc, 1 ) );
   QGSCOMPAREGML( res, expectedSimpleGML2 );
+  QString expectedGML2empty( QStringLiteral( "<MultiPolygon xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsMultiPolygonV2().asGML2( doc ) ), expectedGML2empty );
 
   //as GML3
   QString expectedSimpleGML3( QStringLiteral( "<MultiPolygon xmlns=\"gml\"><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">7 17 3 13 7 21 7 17</posList></LinearRing></exterior></Polygon></polygonMember><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">27 37 43 43 41 39 27 37</posList></LinearRing></exterior></Polygon></polygonMember></MultiPolygon>" ) );
   res = elemToString( exportC.asGML3( doc ) );
   QCOMPARE( res, expectedSimpleGML3 );
+  QString expectedGML3empty( QStringLiteral( "<MultiPolygon xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsMultiPolygonV2().asGML3( doc ) ), expectedGML3empty );
 
   // as JSON
   QString expectedSimpleJson( "{\"type\": \"MultiPolygon\", \"coordinates\": [[[ [7, 17], [3, 13], [7, 21], [7, 17]]], [[ [27, 37], [43, 43], [41, 39], [27, 37]]]] }" );
@@ -13496,11 +13570,15 @@ void TestQgsGeometry::geometryCollection()
   QString expectedSimpleGML2( QStringLiteral( "<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LineString></geometryMember></MultiGeometry>" ) );
   QString res = elemToString( exportC.asGML2( doc ) );
   QGSCOMPAREGML( res, expectedSimpleGML2 );
+  QString expectedGML2empty( QStringLiteral( "<MultiGeometry xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsGeometryCollection().asGML2( doc ) ), expectedGML2empty );
 
   //as GML3
   QString expectedSimpleGML3( QStringLiteral( "<MultiGeometry xmlns=\"gml\"><geometryMember xmlns=\"gml\"><LineString xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LineString></geometryMember></MultiGeometry>" ) );
   res = elemToString( exportC.asGML3( doc ) );
   QCOMPARE( res, expectedSimpleGML3 );
+  QString expectedGML3empty( QStringLiteral( "<MultiGeometry xmlns=\"gml\"/>" ) );
+  QGSCOMPAREGML( elemToString( QgsGeometryCollection().asGML3( doc ) ), expectedGML3empty );
 
   // as JSON
   QString expectedSimpleJson( "{\"type\": \"GeometryCollection\", \"geometries\": [{\"type\": \"LineString\", \"coordinates\": [ [0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]}] }" );

@@ -332,6 +332,10 @@ QDomElement QgsCurvePolygon::asGML2( QDomDocument &doc, int precision, const QSt
 {
   // GML2 does not support curves
   QDomElement elemPolygon = doc.createElementNS( ns, QStringLiteral( "Polygon" ) );
+
+  if ( isEmpty() )
+    return elemPolygon;
+
   QDomElement elemOuterBoundaryIs = doc.createElementNS( ns, QStringLiteral( "outerBoundaryIs" ) );
   std::unique_ptr< QgsLineString > exteriorLineString( exteriorRing()->curveToLine() );
   QDomElement outerRing = exteriorLineString->asGML2( doc, precision, ns );
@@ -354,6 +358,10 @@ QDomElement QgsCurvePolygon::asGML2( QDomDocument &doc, int precision, const QSt
 QDomElement QgsCurvePolygon::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemCurvePolygon = doc.createElementNS( ns, QStringLiteral( "Polygon" ) );
+
+  if ( isEmpty() )
+    return elemCurvePolygon;
+
   QDomElement elemExterior = doc.createElementNS( ns, QStringLiteral( "exterior" ) );
   QDomElement curveElem = exteriorRing()->asGML3( doc, precision, ns );
   if ( curveElem.tagName() == QLatin1String( "LineString" ) )

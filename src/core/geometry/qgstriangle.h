@@ -74,8 +74,8 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     bool fromWkt( const QString &wkt ) override;
 
     // inherited: QString asWkt( int precision = 17 ) const;
-    // inherited: QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    // inherited: QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
+    // inherited (as a polygon): QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
     // inherited: QString asJSON( int precision = 17 ) const;
 
     QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;

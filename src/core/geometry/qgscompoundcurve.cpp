@@ -271,6 +271,10 @@ QDomElement QgsCompoundCurve::asGML2( QDomDocument &doc, int precision, const QS
 QDomElement QgsCompoundCurve::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement compoundCurveElem = doc.createElementNS( ns, QStringLiteral( "CompositeCurve" ) );
+
+  if ( isEmpty() )
+    return compoundCurveElem;
+
   for ( const QgsCurve *curve : mCurves )
   {
     QDomElement curveMemberElem = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );

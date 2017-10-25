@@ -63,6 +63,10 @@ void QgsMultiPointV2::clear()
 QDomElement QgsMultiPointV2::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
+
+  if ( isEmpty() )
+    return elemMultiPoint;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
@@ -79,6 +83,10 @@ QDomElement QgsMultiPointV2::asGML2( QDomDocument &doc, int precision, const QSt
 QDomElement QgsMultiPointV2::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
+
+  if ( isEmpty() )
+    return elemMultiPoint;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsPoint *>( geom ) )

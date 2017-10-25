@@ -291,6 +291,10 @@ QDomElement QgsLineString::asGML2( QDomDocument &doc, int precision, const QStri
   points( pts );
 
   QDomElement elemLineString = doc.createElementNS( ns, QStringLiteral( "LineString" ) );
+
+  if ( isEmpty() )
+    return elemLineString;
+
   elemLineString.appendChild( QgsGeometryUtils::pointsToGML2( pts, doc, precision, ns ) );
 
   return elemLineString;
@@ -302,6 +306,10 @@ QDomElement QgsLineString::asGML3( QDomDocument &doc, int precision, const QStri
   points( pts );
 
   QDomElement elemLineString = doc.createElementNS( ns, QStringLiteral( "LineString" ) );
+
+  if ( isEmpty() )
+    return elemLineString;
+
   elemLineString.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D() ) );
   return elemLineString;
 }
