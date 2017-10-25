@@ -2508,7 +2508,7 @@ bool QgsOracleProvider::createSpatialIndex()
                 .arg( quotedIdentifier( mTableName ) )
                 .arg( quotedIdentifier( mGeometryColumn ) ), QVariantList() ) )
     {
-      QgsMessageLog::logMessage( tr( "Creation of spatial index failed.\nSQL: %1\nError: %2" )
+      QgsMessageLog::logMessage( tr( "Creation spatial index failed.\nSQL: %1\nError: %2" )
                                  .arg( qry.lastQuery() )
                                  .arg( qry.lastError().text() ),
                                  tr( "Oracle" ) );

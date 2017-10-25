@@ -134,7 +134,7 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
         with open(self.filename, 'w') as fileobj:
             fileobj.write(prettify_xml(etree.tostring(doc)))
         QMessageBox.information(self, self.tr('Save Connections'),
-                                self.tr('Saved to {0}').format(self.filename))
+                                self.tr('Saved to {0}.').format(self.filename))
         self.reject()
 
     def load(self, items):

@@ -530,7 +530,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
       default:
         //assert(0 && "invalid variant type!");
-        mErrorMessage = QObject::tr( "unsupported type for field %1" )
+        mErrorMessage = QObject::tr( "Unsupported type for field %1" )
                         .arg( attrField.name() );
         mError = ErrAttributeTypeUnsupported;
         return;
@@ -553,7 +553,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
       if ( i == 10 )
       {
-        mErrorMessage = QObject::tr( "no available replacement for internal fieldname ogc_fid found" ).arg( attrField.name() );
+        mErrorMessage = QObject::tr( "No available replacement for internal fieldname ogc_fid found" ).arg( attrField.name() );
         mError = ErrAttributeCreationFailed;
         return;
       }
@@ -581,7 +581,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     if ( OGR_L_CreateField( mLayer, fld.get(), true ) != OGRERR_NONE )
     {
       QgsDebugMsg( "error creating field " + attrField.name() );
-      mErrorMessage = QObject::tr( "creation of field %1 failed (OGR error: %2)" )
+      mErrorMessage = QObject::tr( "Creation of field %1 failed (OGR error: %2)" )
                       .arg( attrField.name(),
                             QString::fromUtf8( CPLGetLastErrorMsg() ) );
       mError = ErrAttributeCreationFailed;
@@ -598,7 +598,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
       if ( ogrIdx < 0 )
       {
         QgsDebugMsg( "error creating field " + attrField.name() );
-        mErrorMessage = QObject::tr( "created field %1 not found (OGR error: %2)" )
+        mErrorMessage = QObject::tr( "Created field %1 not found (OGR error: %2)" )
                         .arg( attrField.name(),
                               QString::fromUtf8( CPLGetLastErrorMsg() ) );
         mError = ErrAttributeCreationFailed;
@@ -837,7 +837,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   // as we set encoding for shapefiles based on "fileEncoding" parameter passed to the writer
 #if 0
   layerOptions.insert( "ENCODING", new SetOption(
-                         QObject::tr( "set the encoding value in the DBF file. "
+                         QObject::tr( "Set the encoding value in the DBF file. "
                                       "The default value is LDID/87. It is not clear "
                                       "what other values may be appropriate." ),
                          QStringList()
@@ -1068,7 +1068,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          ) );
 
   datasetOptions.insert( QStringLiteral( "GML3_LONGSRS" ), new BoolOption(
-                           QObject::tr( "Only valid when FORMAT=GML3/GML3Degree/GML3.2. Default to YES. "
+                           QObject::tr( "Only valid when FORMAT=GML3/GML3Degree/GML3.2. Default to YES. " //needs review here
                                         "If YES, SRS with EPSG authority will be written with the "
                                         "'urn:ogc:def:crs:EPSG::' prefix. In the case the SRS is a "
                                         "geographic SRS without explicit AXIS order, but that the same "
@@ -1440,7 +1440,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
 
   datasetOptions.insert( QStringLiteral( "ADD_SOUNDG_DEPTH" ), new BoolOption(
                            QObject::tr( "Should a DEPTH attribute be added on SOUNDG features and assign the depth "
-                                        "of the sounding. This should only be enabled with SPLIT_MULTIPOINT is "
+                                        "of the sounding. This should only be enabled when SPLIT_MULTIPOINT is "
                                         "also enabled." ),
                            false  // Default value
                          ) );

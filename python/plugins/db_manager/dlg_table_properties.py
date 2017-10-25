@@ -272,7 +272,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
     def createSpatialIndex(self):
         """ create spatial index for the geometry column """
         if self.table.type != self.table.VectorType:
-            QMessageBox.information(self, self.tr("DB Manager"), self.tr("The selected table has no geometry"))
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("The selected table has no geometry."))
             return
 
         res = QMessageBox.question(self, self.tr("Create Spatial Index"),

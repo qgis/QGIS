@@ -352,13 +352,13 @@ void QgsAuthServersEditor::btnEditServer_clicked()
 
   if ( digest.isEmpty() )
   {
-    messageBar()->pushMessage( tr( "SSL custom config id missing" ),
+    messageBar()->pushMessage( tr( "SSL custom config id missing." ),
                                QgsMessageBar::WARNING );
     return;
   }
   if ( hostport.isEmpty() )
   {
-    messageBar()->pushMessage( tr( "SSL custom config host:port missing" ),
+    messageBar()->pushMessage( tr( "SSL custom config host:port missing." ),
                                QgsMessageBar::WARNING );
     return;
   }
@@ -387,7 +387,7 @@ void QgsAuthServersEditor::btnGroupByOrg_toggled( bool checked )
 {
   if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "serverssortby" ), QVariant( checked ) ) )
   {
-    authMessageOut( QObject::tr( "Could not store sort by preference" ),
+    authMessageOut( QObject::tr( "Could not store sort by preference." ),
                     QObject::tr( "Authentication SSL Configs" ),
                     QgsAuthManager::WARNING );
   }

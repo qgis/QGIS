@@ -641,7 +641,7 @@ void QgsAuthAuthoritiesEditor::defaultTrustPolicyChanged( QgsAuthCertUtils::Cert
 {
   if ( !QgsApplication::authManager()->setDefaultCertTrustPolicy( trustpolicy ) )
   {
-    authMessageOut( QObject::tr( "Could not store default trust policy" ),
+    authMessageOut( QObject::tr( "Could not store default trust policy." ),
                     QObject::tr( "Authorities Manager" ),
                     QgsAuthManager::CRITICAL );
   }
@@ -671,14 +671,14 @@ void QgsAuthAuthoritiesEditor::btnCaFile_clicked()
 
     if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "cafile" ), QVariant( fn ) ) )
     {
-      authMessageOut( QObject::tr( "Could not store 'CA file path' in authentication database" ),
+      authMessageOut( QObject::tr( "Could not store 'CA file path' in authentication database." ),
                       QObject::tr( "Authorities Manager" ),
                       QgsAuthManager::WARNING );
     }
     if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "cafileallowinvalid" ),
          QVariant( dlg->allowInvalidCerts() ) ) )
     {
-      authMessageOut( QObject::tr( "Could not store 'CA file allow invalids' setting in authentication database" ),
+      authMessageOut( QObject::tr( "Could not store 'CA file allow invalids' setting in authentication database." ),
                       QObject::tr( "Authorities Manager" ),
                       QgsAuthManager::WARNING );
     }
@@ -692,7 +692,7 @@ void QgsAuthAuthoritiesEditor::btnCaFile_clicked()
       {
         if ( !QgsApplication::authManager()->storeCertTrustPolicy( cert, dlg->certTrustPolicy() ) )
         {
-          authMessageOut( QObject::tr( "Could not set trust policy for imported certificates" ),
+          authMessageOut( QObject::tr( "Could not set trust policy for imported certificates." ),
                           QObject::tr( "Authorities Manager" ),
                           QgsAuthManager::WARNING );
         }
@@ -713,14 +713,14 @@ void QgsAuthAuthoritiesEditor::btnCaFileClear_clicked()
 {
   if ( !QgsApplication::authManager()->removeAuthSetting( QStringLiteral( "cafile" ) ) )
   {
-    authMessageOut( QObject::tr( "Could not remove 'CA file path' from authentication database" ),
+    authMessageOut( QObject::tr( "Could not remove 'CA file path' from authentication database." ),
                     QObject::tr( "Authorities Manager" ),
                     QgsAuthManager::WARNING );
     return;
   }
   if ( !QgsApplication::authManager()->removeAuthSetting( QStringLiteral( "cafileallowinvalid" ) ) )
   {
-    authMessageOut( QObject::tr( "Could not remove 'CA file allow invalids' setting from authentication database" ),
+    authMessageOut( QObject::tr( "Could not remove 'CA file allow invalids' setting from authentication database." ),
                     QObject::tr( "Authorities Manager" ),
                     QgsAuthManager::WARNING );
     return;
@@ -737,7 +737,7 @@ void QgsAuthAuthoritiesEditor::btnCaFileClear_clicked()
     {
       if ( !QgsApplication::authManager()->removeCertTrustPolicies( certs ) )
       {
-        messageBar()->pushMessage( tr( "ERROR removing cert(s) trust policy from authentication database" ),
+        messageBar()->pushMessage( tr( "ERROR removing cert(s) trust policy from authentication database." ),
                                    QgsMessageBar::CRITICAL );
         return;
       }

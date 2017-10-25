@@ -272,7 +272,7 @@ void QgsGeoNodeSourceSelect::connectToGeonodeConnection()
 
     else
     {
-      QMessageBox::critical( this, tr( "Connect to GeoNode" ), tr( "Cannot get any feature services" ) );
+      QMessageBox::critical( this, tr( "Connect to GeoNode" ), tr( "Cannot get any feature services." ) );
     }
 
     treeView->resizeColumnToContents( MODEL_IDX_TITLE );
