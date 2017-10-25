@@ -89,6 +89,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
     QgsSnappingConfig config = snapping->config();
     // setup new settings (temporary)
     QgsSettings settings;
+    config.setEnabled( true );
     config.setMode( QgsSnappingConfig::AllLayers );
     config.setType( QgsSnappingConfig::Segment );
     config.setTolerance( settings.value( QStringLiteral( "qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
