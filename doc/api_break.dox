@@ -1269,6 +1269,10 @@ QgsGeometry        {#qgis_api_break_3_0_QgsGeometry}
 value instead of a pointer. The biggest impact with this change is that PyQGIS code should not compare a geometry
 result to None, but instead either use a boolean test (`if g.buffer(10):`) or explicitly use the isNull()
 method to determine if a geometry is valid.
+- The QgsAbstractGeometry getter was renamed from geometry() to get(), and the setter from setGeometry() to set().
+This was done to avoid the awkward "feature.geometry().geometry()" expression! Note that calling QgsGeometry.get()
+can force a detach and full clone of the geometry, so it is preferable to use the faster QgsGeometry::constGet()
+method if the geometry is not being modified.
 - isEmpty() was renamed to isNull() to differentiate a missing geometry from a geometry which is empty (eg an
 empty geometry collection)
 - wkbSize() and asWkb() has been replaced by exportToWkb(). WKB representation is no longer cached within QgsGeometry
