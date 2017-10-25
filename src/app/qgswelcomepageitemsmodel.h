@@ -50,6 +50,8 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
       QString title;
       QString previewImagePath;
       QString crs;
+      mutable bool checkedExists = false;
+      mutable bool exists = false;
     };
 
     explicit QgsWelcomePageItemsModel( QObject *parent = nullptr );
@@ -59,6 +61,8 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
     int rowCount( const QModelIndex &parent ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+    void recheckProject( const QModelIndex &index );
 
   private:
     QList<RecentProjectData> mRecentProjects;
