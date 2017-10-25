@@ -24,6 +24,7 @@
 #include <qgsattributeform.h>
 #include <qgsrelationmanager.h>
 #include <attributetable/qgsattributetablefiltermodel.h>
+#include "qgsfeaturelistcombobox.h"
 #include "qgsgui.h"
 
 class TestQgsRelationReferenceWidget : public QObject
