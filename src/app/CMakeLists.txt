@@ -20,7 +20,6 @@ SET(QGIS_APP_SRCS
   qgsclipboard.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
-  qgscrashreport.cpp
   qgsdecorationitem.cpp
   qgsdecorationcopyright.cpp
   qgsdecorationcopyrightdialog.cpp
@@ -200,7 +199,6 @@ SET(QGIS_APP_SRCS
 
   qgssettingstree.cpp
   qgsvariantdelegate.cpp
-  qgscrashdialog.cpp
   qgscrashhandler.cpp
 )
 
@@ -393,7 +391,6 @@ SET (QGIS_APP_MOC_HDRS
 
   qgssettingstree.h
   qgsvariantdelegate.h
-  qgscrashdialog.h
   )
 
 

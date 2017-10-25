@@ -12093,7 +12093,10 @@ void QgisApp::keyPressEvent( QKeyEvent *e )
 #if defined(_MSC_VER) && defined(QGISDEBUG)
   else if ( e->key() == Qt::Key_Backslash && e->modifiers() & Qt::ControlModifier )
   {
-    QgsCrashHandler::handle( 0 );
+      int* i;
+      *i = 10;
+//      *((int*)0 + 1) = 5;
+//    QgsCrashHandler::handle( 0 );
   }
 #endif
   else

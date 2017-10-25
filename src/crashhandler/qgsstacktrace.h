@@ -16,10 +16,14 @@
 #ifndef QGSSTACKTRACE_H
 #define QGSSTACKTRACE_H
 
-#define SIP_NO_FILE
+#include <QVector>
 
-
-#include "qgis_core.h"
+#ifdef QGISDEBUG
+#ifdef WIN32
+#include <windows.h>
+#include <dbghelp.h>
+#endif
+#endif
 
 #include <QStringList>
 
@@ -27,20 +31,18 @@
 
 
 /**
-* \ingroup core
 * The QgsStacktrace class provides an interface to generate a stack trace for
 * displaying additional debug information when things go wrong.
 *
-* \note Not available in python
 * \since QGIS 3.0
 */
-class CORE_EXPORT QgsStackTrace
+class QgsStackTrace
 {
   public:
 
     /**
-     * Represents a line from a stack trace.
-     */
+    * Represents a line from a stack trace.
+    */
     struct StackLine
     {
       QString moduleName;
@@ -49,33 +51,35 @@ class CORE_EXPORT QgsStackTrace
       QString lineNumber;
 
       /**
-       * Check if this stack line is part of QGIS.
-       * \return True if part of QGIS.
-       */
+      * Check if this stack line is part of QGIS.
+      * \return True if part of QGIS.
+      */
       bool isQgisModule() const;
 
       /**
-       * Check if this stack line is valid.  Considered valid when the filename and line
-       * number are known.
-       * \return True of the line is valid.
-       */
+      * Check if this stack line is valid.  Considered valid when the filename and line
+      * number are known.
+      * \return True of the line is valid.
+      */
       bool isValid() const;
     };
 
-#ifdef _MSC_VER
+    bool symbolsLoaded;
+    QString fullStack;
+    QVector<QgsStackTrace::StackLine> lines;
 
+#ifdef _MSC_VER
+    HANDLE process;
+    HANDLE thread;
+#endif
+
+#ifdef Q_OS_WIN
     /**
      * Return a demangled stack backtrace of the caller function.
      *
      * \since QGIS 3.0
      */
-    static QVector<QgsStackTrace::StackLine> trace( struct _EXCEPTION_POINTERS *ExceptionInfo );
-
-    /**
-     * Set the paths to load the PDB symbols from on Windows.
-     * @param paths The path, or series of paths separated by a semicolon (;), that is used to search for symbol files.
-     */
-    static void setSymbolPath( QString searchPath );
+    static QgsStackTrace* trace( DWORD processID, DWORD threadID, struct _EXCEPTION_POINTERS *ExceptionInfo, QString symbolPath );
 #endif
 
 #ifdef Q_OS_LINUX
@@ -87,11 +91,6 @@ class CORE_EXPORT QgsStackTrace
      */
     static QVector<QgsStackTrace::StackLine> trace( unsigned int maxFrames = 63 );
 #endif
-
-  private:
-    QgsStackTrace() = default;
-    static QString mSymbolPaths;
-
 };
 
 typedef QVector<QgsStackTrace::StackLine> QgsStackLines;
