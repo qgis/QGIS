@@ -95,7 +95,7 @@ namespace QgsGeometryCheckerUtils
       bool mUseMapCrs;
   };
 
-  QSharedPointer<QgsGeometryEngine> createGeomEngine( const QgsAbstractGeometry *geometry, double tolerance );
+  std::unique_ptr<QgsGeometryEngine> createGeomEngine( const QgsAbstractGeometry *geometry, double tolerance );
 
   QgsAbstractGeometry *getGeomPart( QgsAbstractGeometry *geom, int partIdx );
   const QgsAbstractGeometry *getGeomPart( const QgsAbstractGeometry *geom, int partIdx );

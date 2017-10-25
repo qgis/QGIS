@@ -201,8 +201,8 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
         poly2->setExteriorRing( ringGeom2 );
 
         // Reassing interiors as necessary
-        QSharedPointer<QgsGeometryEngine> geomEnginePoly1 = QgsGeometryCheckerUtils::createGeomEngine( poly, mContext->tolerance );
-        QSharedPointer<QgsGeometryEngine> geomEnginePoly2 = QgsGeometryCheckerUtils::createGeomEngine( poly2, mContext->tolerance );
+        std::unique_ptr< QgsGeometryEngine > geomEnginePoly1 = QgsGeometryCheckerUtils::createGeomEngine( poly, mContext->tolerance );
+        std::unique_ptr< QgsGeometryEngine > geomEnginePoly2 = QgsGeometryCheckerUtils::createGeomEngine( poly2, mContext->tolerance );
         for ( int n = poly->numInteriorRings(), i = n - 1; i >= 0; --i )
         {
           if ( !geomEnginePoly1->contains( poly->interiorRing( i ) ) )

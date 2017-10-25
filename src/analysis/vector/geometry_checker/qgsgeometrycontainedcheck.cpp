@@ -25,7 +25,7 @@ void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &e
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
     QgsRectangle bboxA = layerFeatureA.geometry()->boundingBox();
-    QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
+    std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
     if ( !geomEngineA->isValid() )
     {
       messages.append( tr( "Contained check failed for (%1): the geometry is invalid" ).arg( layerFeatureA.id() ) );
@@ -38,7 +38,7 @@ void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &e
       {
         continue;
       }
-      QSharedPointer<QgsGeometryEngine> geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureB.geometry(), mContext->tolerance );
+      std::unique_ptr< QgsGeometryEngine > geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureB.geometry(), mContext->tolerance );
       if ( !geomEngineB->isValid() )
       {
         messages.append( tr( "Contained check failed for (%1): the geometry is invalid" ).arg( layerFeatureB.id() ) );
@@ -77,8 +77,8 @@ void QgsGeometryContainedCheck::fixError( QgsGeometryCheckError *error, int meth
   QgsGeometryCheckerUtils::LayerFeature layerFeatureA( featurePoolA, featureA, true );
   QgsGeometryCheckerUtils::LayerFeature layerFeatureB( featurePoolB, featureB, true );
 
-  QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
-  QSharedPointer<QgsGeometryEngine> geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureB.geometry(), mContext->tolerance );
+  std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
+  std::unique_ptr< QgsGeometryEngine > geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureB.geometry(), mContext->tolerance );
 
   if ( !( geomEngineB->contains( layerFeatureA.geometry() ) && !geomEngineA->contains( layerFeatureB.geometry() ) ) )
   {

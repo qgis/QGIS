@@ -174,9 +174,9 @@ namespace QgsGeometryCheckerUtils
 
   /////////////////////////////////////////////////////////////////////////////
 
-  QSharedPointer<QgsGeometryEngine> createGeomEngine( const QgsAbstractGeometry *geometry, double tolerance )
+  std::unique_ptr<QgsGeometryEngine> createGeomEngine( const QgsAbstractGeometry *geometry, double tolerance )
   {
-    return QSharedPointer<QgsGeometryEngine>( new QgsGeos( geometry, tolerance ) );
+    return std::move( qgis::make_unique<QgsGeos>( geometry, tolerance ) );
   }
 
   QgsAbstractGeometry *getGeomPart( QgsAbstractGeometry *geom, int partIdx )
