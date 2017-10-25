@@ -60,6 +60,10 @@ QDomElement QgsMultiSurface::asGML2( QDomDocument &doc, int precision, const QSt
 {
   // GML2 does not support curves
   QDomElement elemMultiPolygon = doc.createElementNS( ns, QStringLiteral( "MultiPolygon" ) );
+
+  if ( isEmpty() )
+    return elemMultiPolygon;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
@@ -78,6 +82,10 @@ QDomElement QgsMultiSurface::asGML2( QDomDocument &doc, int precision, const QSt
 QDomElement QgsMultiSurface::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiSurface = doc.createElementNS( ns, QStringLiteral( "MultiSurface" ) );
+
+  if ( isEmpty() )
+    return elemMultiSurface;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
