@@ -19,8 +19,8 @@
 #include "qgsfeaturepool.h"
 
 QgsGeometryCheckerContext::QgsGeometryCheckerContext( int _precision, const QString &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools )
-  : tolerance( qPow( 10, -_precision ) )
-  , reducedTolerance( qPow( 10, -_precision / 2 ) )
+  : tolerance( std::pow( 10, -_precision ) )
+  , reducedTolerance( std::pow( 10, -_precision / 2 ) )
   , mapCrs( _mapCrs )
   , featurePools( _featurePools )
 {

@@ -1855,7 +1855,7 @@ namespace QgsWms
     QList<QColor> bufferColors = toColorList( toStringList( ParameterName::HIGHLIGHT_LABELBUFFERCOLOR, mapId, ';' ), ParameterName::HIGHLIGHT_LABELBUFFERCOLOR, mapId );
     QList<float> bufferSizes = toFloatList( toStringList( ParameterName::HIGHLIGHT_LABELBUFFERSIZE, mapId, ';' ), ParameterName::HIGHLIGHT_LABELBUFFERSIZE, mapId );
 
-    int nHLayers = qMin( geoms.size(), slds.size() );
+    int nHLayers = std::min( geoms.size(), slds.size() );
     for ( int i = 0; i < nHLayers; i++ )
     {
       QgsWmsParametersHighlightLayer hParam;
