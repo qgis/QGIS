@@ -414,8 +414,11 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 =======
     int mAttrNum;
     bool mCounting;
+<<<<<<< 42cd34183d92fcf2d9dbd8fdfab2aab1487c7a00
     //bool mAroundZeroMode;
 >>>>>>> Put the method as a checkbox in the prettybreaks method, instead of in the menu. The checkbox is activated on ly if there both positive and negative values
+=======
+>>>>>>> changed some Doxygen comments and replaced QDoubleSpinBox by QgsDoubleSpinBox
 
     std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;
 

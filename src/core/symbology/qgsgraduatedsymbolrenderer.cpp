@@ -522,9 +522,11 @@ QgsSymbolList QgsGraduatedSymbolRenderer::symbols( QgsRenderContext &context )
 
 void _makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, bool astride )
 {
-  // merge the 2 classes around symmetryPoint and remove the classes
-  // that are above the existing opposite sign classes
-  // to keep colors symmetrically balanced around zero
+  // remove the breaks that are above the existing opposite sign classes
+  // to keep colors symmetrically balanced around symmetryPoint
+  // if astride is true, remove the symmetryPoint break so that
+  // the 2 classes form only one
+
   if ( false == breaks.isEmpty() )
   {
     std::sort( breaks.begin(), breaks.end() );

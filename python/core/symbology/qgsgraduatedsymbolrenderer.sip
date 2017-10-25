@@ -275,7 +275,9 @@ Moves the category at index position from to index position to.
  \param vlayer  The layer being rendered (from which data values are calculated)
  \param mode    The calculation mode
  \param nclasses The number of classes to calculate (approximate for some modes)
- \param useAroundZeroMode  A bool indicating if we want to center everything on zero (currently used only with prettyBreaks)
+ \param useSymmetricMode A bool indicating if we want to have classes and hence colors ramp symmetric around a value
+ \param symmetryPoint The value around which the classes will be symmetric if useSymmetricMode is checked
+ \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 .. versionadded:: 3.0
 %End
 
@@ -461,6 +463,7 @@ create renderer from XML element
 
     QgsSymbol *symbolForValue( double value );
 %Docstring
+attribute index (derived from attribute name in startRender)
  :rtype: QgsSymbol
 %End
 
