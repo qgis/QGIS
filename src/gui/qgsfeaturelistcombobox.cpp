@@ -213,5 +213,6 @@ void QgsFeatureListComboBox::LineEditState::restore( QLineEdit *lineEdit ) const
 {
   lineEdit->setText( text );
   lineEdit->setCursorPosition( cursorPosition );
-  lineEdit->setSelection( selectionStart, selectionLength );
+  if ( selectionStart > -1 )
+    lineEdit->setSelection( selectionStart, selectionLength );
 }
