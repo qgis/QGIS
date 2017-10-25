@@ -15,7 +15,7 @@ Group:          Applications/Engineering
 License:        GPLv3+ with exceptions
 URL:            http://www.qgis.org
 
-# Epoch is used when building packages from master, otherwise is set to 1
+# Epoch is used when building packages from master, otherwise is set to 0
 Epoch: %{_timestamp}
 
 Source0:        http://qgis.org/downloads/%{name}-%{version}.tar.bz2
@@ -113,7 +113,7 @@ and USGS ASCII DEM.
 %package devel
 Summary:        Development Libraries for the QGIS
 Group:          Development/Libraries
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description devel
 Development packages for QGIS including the C header files.
@@ -121,7 +121,7 @@ Development packages for QGIS including the C header files.
 %package grass
 Summary:        GRASS Support Libraries for QGIS
 Group:          Applications/Engineering
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 
 # The plug-in requires more than just the grass-libs.
 # This questions the sense of the libs package.
@@ -141,7 +141,7 @@ Provides: %{name}-python%{?_isa} = %{version}-%{release}
 Obsoletes: %{name}-python < %{version}-%{release}
 Summary:        Python integration and plug-ins for QGIS
 Group:          Applications/Engineering
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 Requires: gdal-python3
 Requires: python3-future
 Requires: python3-jinja2
@@ -160,7 +160,7 @@ Python integration and plug-ins for QGIS.
 %package server
 Summary:        FCGI-based OGC web map server
 Group:          Applications/Engineering
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 Requires:       mod_fcgid
 Provides: mapserver = %{version}-%{release}
 Obsoletes: mapserver < 2.8.1-1
