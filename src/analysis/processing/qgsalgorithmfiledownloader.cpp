@@ -120,7 +120,7 @@ void QgsFileDownloaderAlgorithm::receiveProgressFromDownloader( qint64 bytesRece
   }
 }
 
-QString QgsFileDownloaderAlgorithm::humanSize( qint64 &bytes )
+QString QgsFileDownloaderAlgorithm::humanSize( qint64 bytes )
 {
   QStringList list;
   list << "KB" << "MB" << "GB" << "TB";
