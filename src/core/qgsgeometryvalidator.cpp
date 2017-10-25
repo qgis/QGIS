@@ -222,7 +222,7 @@ void QgsGeometryValidator::run()
       GEOSContextHandle_t handle = QgsGeometry::getGEOSHandler();
       if ( !g0 )
       {
-        emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error:could not produce geometry for GEOS (check log window)" ) ) );
+        emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error: could not produce geometry for GEOS (check log window)" ) ) );
       }
       else
       {
@@ -240,7 +240,7 @@ void QgsGeometryValidator::run()
               double x, y;
               GEOSCoordSeq_getX_r( handle, cs, 0, &x );
               GEOSCoordSeq_getY_r( handle, cs, 0, &y );
-              emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error:%1" ).arg( r ), QgsPointXY( x, y ) ) );
+              emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error: %1" ).arg( r ), QgsPointXY( x, y ) ) );
               mErrorCount++;
             }
 
@@ -248,7 +248,7 @@ void QgsGeometryValidator::run()
           }
           else
           {
-            emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error:%1" ).arg( r ) ) );
+            emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error: %1" ).arg( r ) ) );
             mErrorCount++;
           }
 

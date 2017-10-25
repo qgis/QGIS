@@ -1704,7 +1704,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
     {
       QVariant phrase = mCacheReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
 
-      QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Reason phrase: %2; URL:%3)" )
+      QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Reason phrase: %2; URL: %3)" )
                                  .arg( status.toInt() )
                                  .arg( phrase.toString(),
                                        mCacheReply->url().toString() ), tr( "WCS" ) );
@@ -1742,7 +1742,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Response: %2; URL:%3)" )
+        QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Response: %2; URL: %3)" )
                                    .arg( status.toInt() )
                                    .arg( QString::fromUtf8( text ),
                                          mCacheReply->url().toString() ), tr( "WCS" ) );
@@ -1798,13 +1798,13 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
         QString errorTitle, errorText;
         if ( QgsWcsProvider::parseServiceExceptionReportDom( body, mWcsVersion, errorTitle, errorText ) )
         {
-          QgsMessageLog::logMessage( tr( "Map request error (Title:%1; Error:%2; URL: %3)" )
+          QgsMessageLog::logMessage( tr( "Map request error (Title: %1; Error: %2; URL: %3)" )
                                      .arg( errorTitle, errorText,
                                            mCacheReply->url().toString() ), tr( "WCS" ) );
         }
         else
         {
-          QgsMessageLog::logMessage( tr( "Map request error (Response: %1; URL:%2)" )
+          QgsMessageLog::logMessage( tr( "Map request error (Response: %1; URL: %2)" )
                                      .arg( QString::fromUtf8( body ),
                                            mCacheReply->url().toString() ), tr( "WCS" ) );
         }
@@ -1877,7 +1877,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
       sErrors++;
       if ( sErrors < 100 )
       {
-        QgsMessageLog::logMessage( tr( "Map request failed [error:%1 url:%2]" ).arg( mCacheReply->errorString(), mCacheReply->url().toString() ), tr( "WCS" ) );
+        QgsMessageLog::logMessage( tr( "Map request failed [error: %1 url: %2]" ).arg( mCacheReply->errorString(), mCacheReply->url().toString() ), tr( "WCS" ) );
       }
       else if ( sErrors == 100 )
       {

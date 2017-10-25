@@ -281,10 +281,10 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   {
     mError = ErrCreateDataSource;
     if ( action == CreateOrOverwriteFile )
-      mErrorMessage = QObject::tr( "creation of data source failed (OGR error:%1)" )
+      mErrorMessage = QObject::tr( "Creation of data source failed (OGR error: %1)" )
                       .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
     else
-      mErrorMessage = QObject::tr( "opening of data source in update mode failed (OGR error:%1)" )
+      mErrorMessage = QObject::tr( "Opening of data source in update mode failed (OGR error: %1)" )
                       .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
     return;
   }
@@ -304,7 +304,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         if ( OGR_DS_DeleteLayer( mDS.get(), i ) != OGRERR_NONE )
         {
           mError = ErrCreateLayer;
-          mErrorMessage = QObject::tr( "overwriting of existing layer failed (OGR error:%1)" )
+          mErrorMessage = QObject::tr( "Overwriting of existing layer failed (OGR error: %1)" )
                           .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
           return;
         }
@@ -420,10 +420,10 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   if ( !mLayer )
   {
     if ( action == CreateOrOverwriteFile || action == CreateOrOverwriteLayer )
-      mErrorMessage = QObject::tr( "creation of layer failed (OGR error:%1)" )
+      mErrorMessage = QObject::tr( "Creation of layer failed (OGR error: %1)" )
                       .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
     else
-      mErrorMessage = QObject::tr( "opening of layer failed (OGR error:%1)" )
+      mErrorMessage = QObject::tr( "Opening of layer failed (OGR error: %1)" )
                       .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
     mError = ErrCreateLayer;
     return;
@@ -690,7 +690,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   datasetOptions.insert( QStringLiteral( "NB_IDS" ), new SetOption(
                            QObject::tr( "BNA records may contain from 2 to 4 identifiers per record. "
                                         "Some software packages only support a precise number of identifiers. "
-                                        "You can override the default value (2) by a precise value" ),
+                                        "You can override the default value (2) by a precise value." ),
                            QStringList()
                            << QStringLiteral( "2" )
                            << QStringLiteral( "3" )
@@ -962,7 +962,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   datasetOptions.insert( QStringLiteral( "HEADER" ), new StringOption(
                            QObject::tr( "XML content that will be put between the <channel> element and the "
                                         "first <item> element for a RSS document, or between the xml tag and "
-                                        "the first <entry> element for an Atom document. " ),
+                                        "the first <entry> element for an Atom document." ),
                            QLatin1String( "" )  // Default value
                          ) );
 
@@ -1068,9 +1068,9 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          ) );
 
   datasetOptions.insert( QStringLiteral( "GML3_LONGSRS" ), new BoolOption(
-                           QObject::tr( "only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. "
+                           QObject::tr( "Only valid when FORMAT=GML3/GML3Degree/GML3.2. Default to YES. "
                                         "If YES, SRS with EPSG authority will be written with the "
-                                        "'urn:ogc:def:crs:EPSG::' prefix. In the case, if the SRS is a "
+                                        "'urn:ogc:def:crs:EPSG::' prefix. In the case the SRS is a "
                                         "geographic SRS without explicit AXIS order, but that the same "
                                         "SRS authority code imported with ImportFromEPSGA() should be "
                                         "treated as lat/long, then the function will take care of coordinate "
@@ -1260,7 +1260,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   layerOptions.clear();
 
   datasetOptions.insert( QStringLiteral( "NameField" ), new StringOption(
-                           QObject::tr( "Allows you to specify the field to use for the KML <name> element. " ),
+                           QObject::tr( "Allows you to specify the field to use for the KML <name> element." ),
                            QStringLiteral( "Name" )  // Default value
                          ) );
 
@@ -1423,7 +1423,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   layerOptions.clear();
 
   datasetOptions.insert( QStringLiteral( "UPDATES" ), new SetOption(
-                           QObject::tr( "Should update files be incorporated into the base data on the fly. " ),
+                           QObject::tr( "Should update files be incorporated into the base data on the fly." ),
                            QStringList()
                            << QStringLiteral( "APPLY" )
                            << QStringLiteral( "IGNORE" ),
@@ -1622,7 +1622,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   layerOptions.insert( QStringLiteral( "COMPRESS_GEOM" ), new BoolOption(
                          QObject::tr( "If the format of the geometry BLOB is of the SpatiaLite flavor, "
                                       "this option can be used to control if the compressed format for "
-                                      "geometries (LINESTRINGs, POLYGONs) must be used" ),
+                                      "geometries (LINESTRINGs, POLYGONs) must be used." ),
                          false  // Default value
                        ) );
 
@@ -1700,14 +1700,14 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          ) );
 
   datasetOptions.insert( QStringLiteral( "CONFIG" ), new StringOption(
-                           QObject::tr( "path to the GCT : the GCT file describe the GeoConcept types definitions: "
+                           QObject::tr( "Path to the GCT: the GCT file describes the GeoConcept types definitions: "
                                         "In this file, every line must start with //# followed by a keyword. "
                                         "Lines starting with // are comments." ),
                            QLatin1String( "" )  // Default value
                          ) );
 
   datasetOptions.insert( QStringLiteral( "FEATURETYPE" ), new StringOption(
-                           QObject::tr( "defines the feature to be created. The TYPE corresponds to one of the Name "
+                           QObject::tr( "Defines the feature to be created. The TYPE corresponds to one of the Name "
                                         "found in the GCT file for a type section. The SUBTYPE corresponds to one of "
                                         "the Name found in the GCT file for a sub-type section within the previous "
                                         "type section." ),
@@ -1774,7 +1774,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   layerOptions.insert( QStringLiteral( "OGR_XLSX_HEADERS" ), new SetOption(
                          QObject::tr( "By default, the driver will read the first lines of each sheet to detect "
                                       "if the first line might be the name of columns. If set to FORCE, the driver "
-                                      "will consider the first line will be taken as the header line. If set to "
+                                      "will consider the first line as the header line. If set to "
                                       "DISABLE, it will be considered as the first feature. Otherwise "
                                       "auto-detection will occur." ),
                          QStringList()
@@ -1814,7 +1814,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   layerOptions.insert( QStringLiteral( "OGR_ODS_HEADERS" ), new SetOption(
                          QObject::tr( "By default, the driver will read the first lines of each sheet to detect "
                                       "if the first line might be the name of columns. If set to FORCE, the driver "
-                                      "will consider the first line will be taken as the header line. If set to "
+                                      "will consider the first line as the header line. If set to "
                                       "DISABLE, it will be considered as the first feature. Otherwise "
                                       "auto-detection will occur." ),
                          QStringList()

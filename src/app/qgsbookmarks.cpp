@@ -173,7 +173,7 @@ void QgsBookmarks::addClicked()
   }
   else
   {
-    QMessageBox::warning( this, tr( "Error" ), tr( "Unable to create the bookmark.\nDriver:%1\nDatabase:%2" )
+    QMessageBox::warning( this, tr( "Error" ), tr( "Unable to create the bookmark.\nDriver: %1\nDatabase: %2" )
                           .arg( query.lastError().driverText(),
                                 query.lastError().databaseText() ) );
   }

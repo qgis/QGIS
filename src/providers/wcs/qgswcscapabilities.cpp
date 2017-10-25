@@ -468,7 +468,7 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
     {
       mErrorTitle = tr( "Dom Exception" );
       mErrorFormat = QStringLiteral( "text/plain" );
-      mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WCS Server URL.\nTag:%3\nResponse was:\n%4" )
+      mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WCS Server URL.\nTag: %3\nResponse was:\n%4" )
                .arg( QStringLiteral( "Capabilities" ),
                      docElem.tagName(),
                      QString( xml ) );
@@ -774,7 +774,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
   {
     mErrorTitle = tr( "Dom Exception" );
     mErrorFormat = QStringLiteral( "text/plain" );
-    mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WCS Server URL.\nTag:%3\nResponse was:\n%4" )
+    mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WCS Server URL.\nTag: %3\nResponse was:\n%4" )
              .arg( QStringLiteral( "CoverageDescription" ),
                    docElem.tagName(),
                    QString( xml ) );
@@ -930,7 +930,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
   {
     mErrorTitle = tr( "Dom Exception" );
     mErrorFormat = QStringLiteral( "text/plain" );
-    mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WCS Server URL.\nTag:%3\nResponse was:\n%4" )
+    mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WCS Server URL.\nTag: %3\nResponse was:\n%4" )
              .arg( QStringLiteral( "CoverageDescriptions" ),
                    docElem.tagName(),
                    QString( xml ) );

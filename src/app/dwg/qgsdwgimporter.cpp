@@ -101,7 +101,7 @@ bool QgsDwgImporter::exec( const QString &sql, bool logError )
 
   if ( logError )
   {
-    LOG( QObject::tr( "SQL statement failed\nDatabase:%1\nSQL:%2\nError:%3" )
+    LOG( QObject::tr( "SQL statement failed\nDatabase: %1\nSQL: %2\nError: %3" )
          .arg( mDatabase, sql, QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
   return false;
@@ -127,7 +127,7 @@ OGRLayerH QgsDwgImporter::query( const QString &sql )
   if ( CPLGetLastErrorType() == CE_None )
     return layer;
 
-  LOG( QObject::tr( "SQL statement failed\nDatabase:%1\nSQL:%2\nError:%3" )
+  LOG( QObject::tr( "SQL statement failed\nDatabase: %1\nSQL: %2\nError: %3" )
        .arg( mDatabase, sql, QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
 
   OGR_DS_ReleaseResultSet( mDs.get(), layer );
@@ -143,7 +143,7 @@ void QgsDwgImporter::startTransaction()
   mInTransaction = GDALDatasetStartTransaction( mDs.get(), 0 ) == OGRERR_NONE;
   if ( !mInTransaction )
   {
-    LOG( QObject::tr( "Could not start transaction\nDatabase:%1\nError:%2" )
+    LOG( QObject::tr( "Could not start transaction\nDatabase: %1\nError: %2" )
          .arg( mDatabase, QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
 }
@@ -154,7 +154,7 @@ void QgsDwgImporter::commitTransaction()
 
   if ( mInTransaction && GDALDatasetCommitTransaction( mDs.get() ) != OGRERR_NONE )
   {
-    LOG( QObject::tr( "Could not commit transaction\nDatabase:%1\nError:%2" )
+    LOG( QObject::tr( "Could not commit transaction\nDatabase: %1\nError: %2" )
          .arg( mDatabase, QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
   mInTransaction = false;
@@ -2672,7 +2672,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
         {
           if ( errors < 1000 )
           {
-            QgsMessageLog::logMessage( QObject::tr( "Could not copy feature of block %2 from layer %1 [Errors:%3]" )
+            QgsMessageLog::logMessage( QObject::tr( "Could not copy feature of block %2 from layer %1 [Errors: %3]" )
                                        .arg( name ).arg( handle ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ),
                                        QObject::tr( "DWG/DXF import" ) );
           }
