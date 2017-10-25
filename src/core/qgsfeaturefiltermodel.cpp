@@ -202,7 +202,12 @@ void QgsFeatureFilterModel::updateCompleter()
       if ( mExtraIdentifierValueIndex != 0 )
       {
         beginMoveRows( QModelIndex(), mExtraIdentifierValueIndex, mExtraIdentifierValueIndex, QModelIndex(), 0 );
+#if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
+        Entry extraEntry = mEntries.takeAt( mExtraIdentifierValueIndex, 1 );
+        mEntries.prepend( extraEntry );
+#else
         mEntries.move( mExtraIdentifierValueIndex, 0 );
+#endif
         endMoveRows();
       }
       firstRow = 1;
