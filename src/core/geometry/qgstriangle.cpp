@@ -223,20 +223,14 @@ bool QgsTriangle::fromWkt( const QString &wkt )
   return true;
 }
 
-QDomElement QgsTriangle::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
-{
-  if ( !isEmpty() )  /* else crash */
-    return QgsPolygonV2::asGML2( doc, precision, ns );
-
-  return QDomElement(); /* Crash: "QgsPolygonV2().asGML2( doc, precision, ns )"*/
-}
-
 QDomElement QgsTriangle::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
-  if ( isEmpty() ) /* else crash */
-    return QDomElement();
 
-  QDomElement elemCurveTriangle = doc.createElementNS( ns, QStringLiteral( "Triangle" ) );
+  QDomElement elemTriangle = doc.createElementNS( ns, QStringLiteral( "Triangle" ) );
+
+  if ( isEmpty() )
+    return elemTriangle;
+
   QDomElement elemExterior = doc.createElementNS( ns, QStringLiteral( "exterior" ) );
   QDomElement curveElem = exteriorRing()->asGML3( doc, precision, ns );
   if ( curveElem.tagName() == QLatin1String( "LineString" ) )
@@ -244,9 +238,9 @@ QDomElement QgsTriangle::asGML3( QDomDocument &doc, int precision, const QString
     curveElem.setTagName( QStringLiteral( "LinearRing" ) );
   }
   elemExterior.appendChild( curveElem );
-  elemCurveTriangle.appendChild( elemExterior );
+  elemTriangle.appendChild( elemExterior );
 
-  return elemCurveTriangle;
+  return elemTriangle;
 }
 
 QgsPolygonV2 *QgsTriangle::surfaceToPolygon() const

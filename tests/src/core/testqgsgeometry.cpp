@@ -5977,16 +5977,18 @@ void TestQgsGeometry::triangle()
   QGSCOMPAREGML( elemToString( exportTriangle.asGML2( doc ) ), expectedGML2 );
   QString expectedGML2prec3( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.333,2.667 3.333,4.667 6.333,5.667 1.333,2.667</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
   QGSCOMPAREGML( elemToString( exportTriangleFloat.asGML2( doc, 3 ) ), expectedGML2prec3 );
-  QString expectedGML2empty( QStringLiteral( "" ) ); // TODO: FIXME?
+  QString expectedGML2empty( QStringLiteral( "<Polygon xmlns=\"gml\"/>" ) );
   QGSCOMPAREGML( elemToString( exportEmptyTriangle.asGML2( doc ) ), expectedGML2empty );
+  QGSCOMPAREGML( elemToString( QgsTriangle().asGML2( doc ) ), expectedGML2empty );
 
   //asGML3
   QString expectedGML3( QStringLiteral( "<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 2 3 4 6 5 1 2</posList></LinearRing></exterior></Triangle>" ) );
   QCOMPARE( elemToString( exportTriangle.asGML3( doc ) ), expectedGML3 );
   QString expectedGML3prec3( QStringLiteral( "<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1.333 2.667 3.333 4.667 6.333 5.667 1.333 2.667</posList></LinearRing></exterior></Triangle>" ) );
   QCOMPARE( elemToString( exportTriangleFloat.asGML3( doc, 3 ) ), expectedGML3prec3 );
-  QString expectedGML3empty( QStringLiteral( "" ) ); // TODO: FIXME?
+  QString expectedGML3empty( QStringLiteral( "<Triangle xmlns=\"gml\"/>" ) );
   QGSCOMPAREGML( elemToString( exportEmptyTriangle.asGML3( doc ) ), expectedGML3empty );
+  QGSCOMPAREGML( elemToString( QgsTriangle().asGML3( doc ) ), expectedGML3empty );
   QString expectedGML3Z( QStringLiteral( "<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">1 2 3 11 12 13 1 12 23 1 2 3</posList></LinearRing></exterior></Triangle>" ) );
   QCOMPARE( elemToString( exportTriangleZ.asGML3( doc ) ), expectedGML3Z );
 
