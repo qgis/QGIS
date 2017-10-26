@@ -155,26 +155,34 @@ class ProjectionSettingRestorer
 
 QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string )
 {
+  QStringList components = string.split( '|' );
+  if ( components.isEmpty() )
+    return nullptr;
+
+  QFileInfo fi;
   if ( QFileInfo::exists( string ) )
+    fi = QFileInfo( string );
+  else if ( QFileInfo::exists( components.at( 0 ) ) )
+    fi = QFileInfo( components.at( 0 ) );
+  else
+    return nullptr;
+
+  // TODO - remove when there is a cleaner way to block the unknown projection dialog!
+  ProjectionSettingRestorer restorer;
+  ( void )restorer; // no warnings
+
+  QString name = fi.baseName();
+
+  // brute force attempt to load a matching layer
+  std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( string, name, QStringLiteral( "ogr" ), false ) );
+  if ( layer->isValid() )
   {
-    // TODO - remove when there is a cleaner way to block the unknown projection dialog!
-    ProjectionSettingRestorer restorer;
-    ( void )restorer; // no warnings
-
-    QFileInfo fi( string );
-    QString name = fi.baseName();
-
-    // brute force attempt to load a matching layer
-    std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( string, name, QStringLiteral( "ogr" ), false ) );
-    if ( layer->isValid() )
-    {
-      return layer.release();
-    }
-    std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, name, QStringLiteral( "gdal" ), false ) );
-    if ( rasterLayer->isValid() )
-    {
-      return rasterLayer.release();
-    }
+    return layer.release();
+  }
+  std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, name, QStringLiteral( "gdal" ), false ) );
+  if ( rasterLayer->isValid() )
+  {
+    return rasterLayer.release();
   }
   return nullptr;
 }

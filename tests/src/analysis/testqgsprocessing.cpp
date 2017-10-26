@@ -709,6 +709,21 @@ void TestQgsProcessing::mapLayers()
   QCOMPARE( l->type(), QgsMapLayer::VectorLayer );
   QCOMPARE( l->name(), QStringLiteral( "multipoint" ) );
   delete l;
+
+  // Test layers from a string with parameters
+  QString osmFilePath = testDataDir + "openstreetmap/testdata.xml";
+  QgsVectorLayer *osm = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath ) );
+  QVERIFY( osm->isValid() );
+  QCOMPARE( osm->geometryType(), QgsWkbTypes::PointGeometry );
+
+  osm = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3" ) );
+  QVERIFY( osm->isValid() );
+  QCOMPARE( osm->geometryType(), QgsWkbTypes::PolygonGeometry );
+
+  osm = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3|subset=\"building\" is not null" ) );
+  QVERIFY( osm->isValid() );
+  QCOMPARE( osm->geometryType(), QgsWkbTypes::PolygonGeometry );
+  QCOMPARE( osm->subsetString(), QStringLiteral( "\"building\" is not null" ) );
 }
 
 void TestQgsProcessing::mapLayerFromStore()
