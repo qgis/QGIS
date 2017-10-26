@@ -292,6 +292,15 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex &index )
     mModel->refresh( index );
   }
 
+  // Ensure mProxyModel instance is not nullptr.
+  // When adding, editing or deleting WMS or XYZ data provider mProxyModel is nullptr.
+  if ( !mProxyModel )
+  {
+	  mProxyModel = new QgsBrowserTreeFilterProxyModel(this);
+	  mProxyModel->setBrowserModel(mModel);
+	  mBrowserView->setModel(mProxyModel);
+  }
+
   for ( int i = 0; i < mModel->rowCount( index ); i++ )
   {
     QModelIndex idx = mModel->index( i, 0, index );
