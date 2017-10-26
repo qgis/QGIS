@@ -113,7 +113,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \param feature the active feature
      * \param project
      * \param depth the higher this number the deeper the level - With depth > 0 the children of the feature are not duplicated
-     * \param duplicateFeatureContext stores all the layers and the featureids of the duplicated features (incl. childs)
+     * \param duplicateFeatureContext stores all the layers and the featureids of the duplicated features (incl. children)
      * \since QGIS 3.0
      */
     static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, int depth, QgsDuplicateFeatureContext &duplicateFeatureContext SIP_OUT );

@@ -103,7 +103,7 @@ class QgsVectorLayerUtils
  \param feature the active feature
  \param project
  \param depth the higher this number the deeper the level - With depth > 0 the children of the feature are not duplicated
- \param duplicateFeatureContext stores all the layers and the featureids of the duplicated features (incl. childs)
+ \param duplicateFeatureContext stores all the layers and the featureids of the duplicated features (incl. children)
 .. versionadded:: 3.0
  :rtype: QgsFeature
 %End
