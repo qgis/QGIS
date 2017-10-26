@@ -171,7 +171,7 @@ QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLa
     if ( f.geometry().isNull() )
       continue;
 
-    const QgsAbstractGeometry *g = f.geometry().geometry();
+    const QgsAbstractGeometry *g = f.geometry().constGet();
     if ( const QgsPoint *pt = qgsgeometry_cast< const QgsPoint *>( g ) )
     {
       // TODO: use Z coordinates if the point is 3D
