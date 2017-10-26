@@ -604,12 +604,20 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * The timeout for how long we should wait for a connection if none is available from the pool
      * at this moment. A negative value (which is set by default) will wait forever.
+     *
+     * \note Only works if the provider supports this option.
+     *
+     * \since QGIS 3.0
      */
     int connectionTimeout() const;
 
     /**
      * The timeout for how long we should wait for a connection if none is available from the pool
      * at this moment. A negative value (which is set by default) will wait forever.
+     *
+     * \note Only works if the provider supports this option.
+     *
+     * \since QGIS 3.0
      */
     void setConnectionTimeout( int connectionTimeout );
 
