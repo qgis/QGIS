@@ -46,7 +46,7 @@ class CORE_EXPORT QgsVectorLayerUtils
         QgsDuplicateFeatureContext() {}
 
         /**
-         * Returns all the layers in the member QMap mDuplicatedFeatures
+         * Returns all the layers on which features have been duplicated
          * \since QGIS 3.0
          */
         QList<QgsVectorLayer *> layers() const;
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsVectorLayerUtils
         friend class QgsVectorLayerUtils;
 
         /**
-         * To set an entry to the member QMap mDuplicatedFeatures
+         * To set info about duplicated features to the function feedback (layout and ids)
          * \since QGIS 3.0
          */
         void setDuplicatedFeatures( QgsVectorLayer *layer, QgsFeatureIds ids );
@@ -109,11 +109,8 @@ class CORE_EXPORT QgsVectorLayerUtils
      * Duplicates a feature and it's children (one level deep). It calls CreateFeature, so
      * default values and constraints (e.g., unique constraints) will automatically be handled.
      * The duplicated feature will be automatically inserted into the layer.
-     * \param layer
-     * \param feature the active feature
-     * \param project
-     * \param depth the higher this number the deeper the level - With depth > 0 the children of the feature are not duplicated
-     * \param duplicateFeatureContext stores all the layers and the featureids of the duplicated features (incl. children)
+     * \a depth the higher this number the deeper the level - With depth > 0 the children of the feature are not duplicated
+     * \a duplicateFeatureContext stores all the layers and the featureids of the duplicated features (incl. children)
      * \since QGIS 3.0
      */
     static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, int depth, QgsDuplicateFeatureContext &duplicateFeatureContext SIP_OUT );
