@@ -22,6 +22,7 @@
 
 #include "qgsserversettings.h"
 #include "qgswmsparameters.h"
+#include "qgsfeaturefilter.h"
 #include <QDomDocument>
 #include <QMap>
 #include <QPair>
@@ -165,7 +166,7 @@ namespace QgsWms
       void setLayerOpacity( QgsMapLayer *layer, int opacity ) const;
 
       // Set layer filter
-      void setLayerFilter( QgsMapLayer *layer, const QStringList &filter ) const;
+      void setLayerFilter( QgsMapLayer *layer, const QStringList &filter );
 
       // Set layer python filter
       void setLayerAccessControlFilter( QgsMapLayer *layer ) const;
@@ -287,6 +288,7 @@ namespace QgsWms
 
       //! The access control helper
       QgsAccessControl *mAccessControl = nullptr;
+      QgsFeatureFilter mFeatureFilter;
 
       const QgsServerSettings &mSettings;
       const QgsProject *mProject = nullptr;
