@@ -36,19 +36,14 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommand : public QgsVectorLayerUn
      * Constructor for QgsVectorLayerUndoPassthroughCommand
      * \param buffer associated edit buffer
      * \param text text associated with command
+     * \param autocreate flag allowing to automatically create a savepoint if necessary
      */
-    QgsVectorLayerUndoPassthroughCommand( QgsVectorLayerEditBuffer *buffer, const QString &text );
+    QgsVectorLayerUndoPassthroughCommand( QgsVectorLayerEditBuffer *buffer, const QString &text, bool autocreate = true );
 
     /**
      * Returns error status
      */
     bool hasError() const { return mHasError; }
-
-  private:
-    QString mError;
-    QString mSavePointId;
-    bool mHasError;
-    bool mRecreateSavePoint;
 
   protected:
 
@@ -60,16 +55,37 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommand : public QgsVectorLayerUn
     bool rollBackToSavePoint();
 
     /**
-     * Set the command savepoint or set error status
-     * error satus should be false prior to call
+     * Set the command savepoint or set error status.
+     * Error satus should be false prior to call. If the savepoint given in
+     * parameter is empty, then a new one is created if none is currently
+     * available in the transaction.
      */
-    bool setSavePoint();
+    bool setSavePoint( const QString &savePointId = QString() );
 
     /**
      * Set error flag and append "failed" to text
      */
     void setError();
 
+    /**
+     * Sets the error message.
+     *
+     * \since QGIS 3.0
+     */
+    void setErrorMessage( const QString &errorMessage );
+
+    /**
+     * Returns the error message or an empty string if there's none.
+     *
+     * \since QGIS 3.0
+     */
+    QString errorMessage() const;
+
+  private:
+    QString mSavePointId;
+    QString mError;
+    bool mHasError;
+    bool mRecreateSavePoint;
 };
 
 /**
@@ -263,6 +279,34 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandRenameAttribute : public Q
     const int mAttr;
     const QString mNewName;
     const QString mOldName;
+};
+
+/**
+ * \ingroup core
+ * \class QgsVectorLayerUndoPassthroughCommandUpdate
+ * \brief Undo command for running a specific sql query in transaction group.
+ * \since QGIS 3.0
+ */
+
+class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandUpdate : public QgsVectorLayerUndoPassthroughCommand
+{
+  public:
+
+    /**
+     * Constructor for QgsVectorLayerUndoCommandUpdate
+     * \param buffer associated edit buffer
+     * \param transaction transaction running the sql query
+     * \param sql the query
+     */
+    QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsTransaction *transaction, const QString &sql );
+
+    virtual void undo() override;
+    virtual void redo() override;
+
+  private:
+    QgsTransaction *mTransaction = nullptr;
+    QString mSql;
+    bool mUndone = false;
 };
 
 #endif

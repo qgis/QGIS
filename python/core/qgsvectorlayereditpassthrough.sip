@@ -41,6 +41,19 @@ class QgsVectorLayerEditPassthrough : QgsVectorLayerEditBuffer
     virtual void rollBack();
 
 
+    bool update( QgsTransaction *transaction, const QString &sql );
+%Docstring
+ Update underlying data with a SQL query embedded in a transaction.
+
+ \param transaction Transaction in which the sql query has been run
+ \param sql The SQL query updating data
+
+ :return: true if the undo/redo command is well added to the stack, false otherwise
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
 };
 
 /************************************************************************

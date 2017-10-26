@@ -33,7 +33,8 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsRectangle,
     QgsDefaultValue,
-    QgsDataSourceUri
+    QgsDataSourceUri,
+    QgsProject
 )
 from qgis.gui import QgsGui
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject
@@ -311,6 +312,54 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         f['pk'] = NULL
         self.vl.addFeature(f)  # Should not deadlock during an active iteration
         f = next(it)
+
+    def testTransactionNotDirty(self):
+        # create a vector ayer based on postgres
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        # prepare a project with transactions enabled
+        p = QgsProject()
+        p.setAutoTransaction(True)
+        p.addMapLayers([vl])
+        vl.startEditing()
+
+        # check that the feature used for testing is ok
+        ft0 = vl.getFeatures('pk=1')
+        f = QgsFeature()
+        self.assertTrue(ft0.nextFeature(f))
+
+        # update the data within the transaction
+        tr = vl.dataProvider().transaction()
+        sql = "update qgis_test.some_poly_data set pk=33 where pk=1"
+        self.assertTrue(tr.executeSql(sql, True)[0])
+
+        # check that the pk of the feature has been changed
+        ft = vl.getFeatures('pk=1')
+        self.assertFalse(ft.nextFeature(f))
+
+        ft = vl.getFeatures('pk=33')
+        self.assertTrue(ft.nextFeature(f))
+
+        # underlying data has been modified but the layer is not tagged as
+        # modified
+        self.assertTrue(vl.isModified())
+
+        # undo sql query
+        vl.undoStack().undo()
+
+        # check that the original feature with pk is back
+        ft0 = vl.getFeatures('pk=1')
+        self.assertTrue(ft0.nextFeature(f))
+
+        # redo
+        vl.undoStack().redo()
+
+        # check that the pk of the feature has been changed
+        ft1 = vl.getFeatures('pk=1')
+        self.assertFalse(ft1.nextFeature(f))
+
+        p.setAutoTransaction(False)
 
     def testDomainTypes(self):
         """Test that domain types are correctly mapped"""

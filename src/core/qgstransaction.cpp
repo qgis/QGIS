@@ -201,7 +201,7 @@ QString QgsTransaction::createSavepoint( QString &error SIP_OUT )
   if ( !mTransactionActive )
     return QString();
 
-  if ( !mLastSavePointIsDirty )
+  if ( !mLastSavePointIsDirty && !mSavepoints.isEmpty() )
     return mSavepoints.top();
 
   const QString name( QUuid::createUuid().toString() );
