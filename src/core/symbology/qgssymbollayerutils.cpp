@@ -4006,7 +4006,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
     int posOfMin = 0;
     for ( int i = 1; i < breaks.count(); i++ ) // find position of minimal difference
     {
-      if ( qAbs( breaksMinusZero[i] ) < qAbs( breaksMinusZero[i - 1] ) )
+      if ( std::abs( breaksMinusZero[i] ) < std::abs( breaksMinusZero[i - 1] ) )
         posOfMin = i;
     }
     breaks[posOfMin] = 0.0;
