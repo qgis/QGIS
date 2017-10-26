@@ -90,7 +90,7 @@ then
     let relver+=1
     echo "relver=$relver" > version.cfg
   fi
-  timestamp=1
+  timestamp=0
 else
   relver="git$(git rev-parse --short HEAD)"
   timestamp=$(date +'%s')
