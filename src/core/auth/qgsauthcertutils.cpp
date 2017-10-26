@@ -413,8 +413,8 @@ QByteArray QgsAuthCertUtils::pkcs8PrivateKey( QByteArray &pkcs8Der )
 
   pkcs1 = QByteArray( oct_data, oct_len );
 
-  // !!! SENSITIVE DATA !!!
-  QgsDebugMsgLevel( QStringLiteral( "privateKey octet data as PEM: %1" ).arg( QString( pkcs1.toBase64() ) ), 9 );
+  // !!! SENSITIVE DATA - DO NOT LEAVE UNCOMMENTED !!!
+  //QgsDebugMsgLevel( QStringLiteral( "privateKey octet data as PEM: %1" ).arg( QString( pkcs1.toBase64() ) ), 4 );
 
 PKCS1DONE:
 
@@ -512,8 +512,8 @@ QStringList QgsAuthCertUtils::pkcs12BundleToPem( const QString &bundlepath,
 #endif
 
   QgsDebugMsgLevel( QString( "PKCS#12 cert as PEM:\n%1" ).arg( QString( bundle.certificateChain().primary().toPEM() ) ), 4 );
-  // !!! SENSITIVE DATA !!!
-  QgsDebugMsgLevel( QString( "PKCS#12 key as PEM:\n%1" ).arg( QString( keyPem ) ), 9 );
+  // !!! SENSITIVE DATA - DO NOT LEAVE UNCOMMENTED !!!
+  //QgsDebugMsgLevel( QString( "PKCS#12 key as PEM:\n%1" ).arg( QString( keyPem ) ), 4 );
 
   return QStringList() << bundle.certificateChain().primary().toPEM() << keyPem << algtype;
 }
