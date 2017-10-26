@@ -9,3 +9,9 @@ INSTALL(DIRECTORY data DESTINATION ${QGIS_DATA_DIR}/resources)
 IF (WITH_SERVER)
         INSTALL(DIRECTORY server DESTINATION ${QGIS_DATA_DIR}/resources)
 ENDIF (WITH_SERVER)
+
+IF (APPLE)
+  # ASN.1 definition files of PKIX elements
+  INSTALL(FILES pkcs8.asn
+          DESTINATION ${QGIS_DATA_DIR}/resources)
+ENDIF (APPLE)

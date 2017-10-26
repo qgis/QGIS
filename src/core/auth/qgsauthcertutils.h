@@ -104,6 +104,14 @@ class CORE_EXPORT QgsAuthCertUtils
      */
     static QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( const QList<QgsAuthConfigSslServer> &configs ) SIP_SKIP;
 
+    /**
+     * Return data from a local file via a read-only operation
+     * \param path Path to file to read
+     * \param astext Whether to open the file as text, otherwise as binary
+     * \returns All data contained in file or empty contents if file does not exist
+     */
+    static QByteArray fileData( const QString &path, bool astext = false );
+
     //! Return list of concatenated certs from a PEM or DER formatted file
     static QList<QSslCertificate> certsFromFile( const QString &certspath );
 
@@ -156,6 +164,31 @@ class CORE_EXPORT QgsAuthCertUtils
                                            const QString &keypath,
                                            const QString &keypass = QString(),
                                            bool reencrypt = true );
+
+    /**
+     * Determine if the PEM-encoded text of a key is PKCS#8 format
+     * \param keyPemTxt PEM-encoded text
+     * \returns True if PKCS#8, otherwise false
+     */
+    static bool pemIsPkcs8( const QString &keyPemTxt );
+
+#ifdef Q_OS_MAC
+
+    /**
+     * Extract the PrivateKey ASN.1 element of a DER-encoded PKCS#8 private key
+     * \param pkcs8Der PKCS#8 DER-encoded private key data
+     * \returns DER-encoded private key on success or an empty QByteArray upon failure
+     * \note On some platforms, e.g. macOS, where the default SSL backend is not OpenSSL, a QSslKey
+     * can not be created using PKCS#8-formatted data. However, PKCS#8 private key ASN.1 structures
+     * contain the key data inside a wrapper describing the algorithm used, e.g. RSA, DSA, ECC etc.
+     * Extracted PrivateKey ASN.1 data can be used to create a compatible QSslKey,
+     * e.g. 'traditional' SSLeay RSA-specific PKCS#1.
+     * By default OpenSSL 1.0.0+ returns private keys as PKCS#8, previously it was PKCS#1.
+     * \note This function requires 'libtasn1' development files and library, which is used
+     * to parse and extract the PrivateKey element from an ASN.1 PKCS#8 structure.
+     */
+    static QByteArray pkcs8PrivateKey( QByteArray &pkcs8Der ) SIP_SKIP;
+#endif
 
     /**
      * Return list of certificate, private key and algorithm (as PEM text) for a PKCS#12 bundle

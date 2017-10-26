@@ -283,6 +283,12 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
   QStringList bundlelist = QgsAuthCertUtils::pkcs12BundleToPem( mconfig.config( QStringLiteral( "bundlepath" ) ),
                            mconfig.config( QStringLiteral( "bundlepass" ) ), false );
 
+  if ( bundlelist.isEmpty() || bundlelist.size() < 2 )
+  {
+    QgsDebugMsg( QString( "PKI bundle for authcfg %1: insert FAILED, PKCS#12 bundle parsing failed" ).arg( authcfg ) );
+    return bundle;
+  }
+
   // init client cert
   // Note: if this is not valid, no sense continuing
   QSslCertificate clientcert( bundlelist.at( 0 ).toLatin1() );
@@ -291,6 +297,11 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
     QgsDebugMsg( QString( "PKI bundle for authcfg %1: insert FAILED, client cert is not valid" ).arg( authcfg ) );
     return bundle;
   }
+
+  // !!! DON'T LEAVE THESE UNCOMMENTED !!!
+  // QgsDebugMsg( QString( "PKI bundle key for authcfg: \n%1" ).arg( bundlelist.at( 1 ) ) );
+  // QgsDebugMsg( QString( "PKI bundle key pass for authcfg: \n%1" )
+  //              .arg( !mconfig.config( QStringLiteral( "bundlepass" ) ).isNull() ? mconfig.config( QStringLiteral( "bundlepass" ) ) : QStringLiteral() ) );
 
   // init key
   QSslKey clientkey( bundlelist.at( 1 ).toLatin1(),

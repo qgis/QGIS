@@ -81,6 +81,15 @@ Map certificate sha1 to certificate as simple cache
 %End
 
 
+    static QByteArray fileData( const QString &path, bool astext = false );
+%Docstring
+ Return data from a local file via a read-only operation
+ \param path Path to file to read
+ \param astext Whether to open the file as text, otherwise as binary
+ :return: All data contained in file or empty contents if file does not exist
+ :rtype: QByteArray
+%End
+
     static QList<QSslCertificate> certsFromFile( const QString &certspath );
 %Docstring
 Return list of concatenated certs from a PEM or DER formatted file
@@ -149,6 +158,16 @@ Return list of concatenated certs from a PEM Base64 text block
  :return: certificate, private key, key's algorithm type
  :rtype: list of str
 %End
+
+    static bool pemIsPkcs8( const QString &keyPemTxt );
+%Docstring
+ Determine if the PEM-encoded text of a key is PKCS#8 format
+ \param keyPemTxt PEM-encoded text
+ :return: True if PKCS#8, otherwise false
+ :rtype: bool
+%End
+
+
 
     static QStringList pkcs12BundleToPem( const QString &bundlepath,
                                           const QString &bundlepass = QString(),
