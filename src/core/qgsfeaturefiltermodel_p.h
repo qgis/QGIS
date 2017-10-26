@@ -95,14 +95,14 @@ class QgsFieldExpressionValuesGatherer: public QThread
     }
 
     /**
-     * Internal data, use for whatever you want. Defaults to -1.
+     * Internal data, use for whatever you want.
      */
     QVariant data() const;
 
     /**
-     * Internal data, use for whatever you want. Defaults to -1.
+     * Internal data, use for whatever you want.
      */
-    void setData( const QVariant &data ); // TODO: Do we still need this???
+    void setData( const QVariant &data );
 
   signals:
 
