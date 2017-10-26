@@ -214,6 +214,11 @@ Qt::ItemFlags QgsWelcomePageItemsModel::flags( const QModelIndex &index ) const
   return flags;
 }
 
+void QgsWelcomePageItemsModel::removeProject( const QModelIndex &index )
+{
+  mRecentProjects.removeAt( index.row() );
+}
+
 void QgsWelcomePageItemsModel::recheckProject( const QModelIndex &index )
 {
   const RecentProjectData &projectData = mRecentProjects.at( index.row() );

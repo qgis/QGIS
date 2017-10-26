@@ -35,6 +35,9 @@ class QgsWelcomePage : public QWidget
 
     void setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData> &recentProjects );
 
+  signals:
+    void projectRemoved( int row );
+
   private slots:
     void itemActivated( const QModelIndex &index );
     void versionInfoReceived();
