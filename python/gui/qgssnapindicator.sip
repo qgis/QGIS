@@ -48,6 +48,12 @@ Returns whether the snapping indicator is visible
  :rtype: bool
 %End
 
+  private:
+    QgsSnapIndicator( const QgsSnapIndicator &rh );
+    QgsSnapIndicator &operator=( const QgsSnapIndicator & );
+%Docstring
+ :rtype: QgsSnapIndicator
+%End
 };
 
 /************************************************************************

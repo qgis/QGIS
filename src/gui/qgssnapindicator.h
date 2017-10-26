@@ -47,6 +47,13 @@ class GUI_EXPORT QgsSnapIndicator
     bool isVisible() const;
 
   private:
+    Q_DISABLE_COPY( QgsSnapIndicator )
+
+#ifdef SIP_RUN
+    QgsSnapIndicator( const QgsSnapIndicator &rh );
+    QgsSnapIndicator &operator=( const QgsSnapIndicator & );
+#endif
+
     QgsMapCanvas *mCanvas;
     QgsPointLocator::Match mMatch;
     std::unique_ptr<QgsVertexMarker> mSnappingMarker;

@@ -28,9 +28,8 @@ QgsSnapIndicator::QgsSnapIndicator( QgsMapCanvas *canvas )
 {
 }
 
-QgsSnapIndicator::~QgsSnapIndicator()
-{
-}
+QgsSnapIndicator::~QgsSnapIndicator() = default;
+
 
 void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
 {
