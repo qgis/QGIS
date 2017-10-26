@@ -38,6 +38,7 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   connect( mModel, &QgsFeatureFilterModel::filterExpressionChanged, this, &QgsFeatureListComboBox::filterExpressionChanged );
   connect( mModel, &QgsFeatureFilterModel::isLoadingChanged, this, &QgsFeatureListComboBox::onLoadingChanged );
   connect( mModel, &QgsFeatureFilterModel::filterJobCompleted, this, &QgsFeatureListComboBox::onFilterUpdateCompleted );
+  connect( mModel, &QgsFeatureFilterModel::allowNullChanged, this, &QgsFeatureListComboBox::allowNullChanged );
   connect( mModel, &QgsFeatureFilterModel::extraIdentifierValueChanged, this, &QgsFeatureListComboBox::identifierValueChanged );
   connect( mModel, &QgsFeatureFilterModel::extraIdentifierValueIndexChanged, this, &QgsFeatureListComboBox::setCurrentIndex );
   connect( mModel, &QgsFeatureFilterModel::identifierFieldChanged, this, &QgsFeatureListComboBox::identifierFieldChanged );
@@ -45,6 +46,7 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   connect( mCompleter, static_cast<void( QCompleter::* )( const QModelIndex & )>( &QCompleter::activated ), this, &QgsFeatureListComboBox::onActivated );
   connect( mModel, &QgsFeatureFilterModel::beginUpdate, this, &QgsFeatureListComboBox::storeLineEditState );
   connect( mModel, &QgsFeatureFilterModel::endUpdate, this, &QgsFeatureListComboBox::restoreLineEditState );
+  connect( mModel, &QgsFeatureFilterModel::dataChanged, this, &QgsFeatureListComboBox::onDataChanged );
 
   connect( this, static_cast<void( QgsFeatureListComboBox::* )( int )>( &QgsFeatureListComboBox::currentIndexChanged ), this, &QgsFeatureListComboBox::onCurrentIndexChanged );
 
@@ -55,10 +57,7 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
 
   connect( mLineEdit, &QgsFilterLineEdit::textEdited, this, &QgsFeatureListComboBox::onCurrentTextChanged );
 
-  connect( mLineEdit, &QgsFilterLineEdit::textChanged, this, []( const QString & text )
-  {
-    QgsDebugMsg( QStringLiteral( "Edit text changed to %1" ).arg( text ) );
-  } );
+  setToolTip( tr( "Just start typing what you are looking for." ) );
 }
 
 QgsVectorLayer *QgsFeatureListComboBox::sourceLayer() const
@@ -83,6 +82,7 @@ void QgsFeatureListComboBox::setDisplayExpression( const QString &expression )
 
 void QgsFeatureListComboBox::onCurrentTextChanged( const QString &text )
 {
+  mIsCurrentlyEdited = true;
   mPopupRequested = true;
   mModel->setFilterValue( text );
 }
@@ -107,6 +107,7 @@ void QgsFeatureListComboBox::onItemSelected( const QModelIndex &index )
 
 void QgsFeatureListComboBox::onCurrentIndexChanged( int i )
 {
+  mIsCurrentlyEdited = false;
   QModelIndex modelIndex = mModel->index( i, 0, QModelIndex() );
   mModel->setExtraIdentifierValue( mModel->data( modelIndex, QgsFeatureFilterModel::IdentifierValueRole ) );
   mLineEdit->setText( mModel->data( modelIndex, QgsFeatureFilterModel::ValueRole ).toString() );
@@ -115,19 +116,33 @@ void QgsFeatureListComboBox::onCurrentIndexChanged( int i )
 void QgsFeatureListComboBox::onActivated( QModelIndex modelIndex )
 {
   setIdentifierValue( mModel->data( modelIndex, QgsFeatureFilterModel::IdentifierValueRole ) );
-  QgsDebugMsg( QStringLiteral( "Activated index" ) );
-  QgsDebugMsg( QStringLiteral( "%1 %2" ).arg( QString::number( modelIndex.row() ), mModel->data( modelIndex, QgsFeatureFilterModel::ValueRole ).toString() ) );
   mLineEdit->setText( mModel->data( modelIndex, QgsFeatureFilterModel::ValueRole ).toString() );
 }
 
 void QgsFeatureListComboBox::storeLineEditState()
 {
-  mLineEditState.store( mLineEdit );
+  if ( mIsCurrentlyEdited )
+    mLineEditState.store( mLineEdit );
 }
 
 void QgsFeatureListComboBox::restoreLineEditState()
 {
-  mLineEditState.restore( mLineEdit );
+  if ( mIsCurrentlyEdited )
+    mLineEditState.restore( mLineEdit );
+}
+
+void QgsFeatureListComboBox::onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles )
+{
+  Q_UNUSED( roles )
+  if ( !mIsCurrentlyEdited )
+  {
+    const int currentIndex = mModel->extraIdentifierValueIndex();
+    if ( currentIndex >= topLeft.row() && currentIndex <= bottomRight.row() )
+    {
+      QModelIndex modelIndex = mModel->index( currentIndex, 0, QModelIndex() );
+      mLineEdit->setText( mModel->data( modelIndex, QgsFeatureFilterModel::ValueRole ).toString() );
+    }
+  }
 }
 
 QString QgsFeatureListComboBox::identifierField() const
@@ -163,16 +178,12 @@ void QgsFeatureListComboBox::keyPressEvent( QKeyEvent *event )
 
 bool QgsFeatureListComboBox::allowNull() const
 {
-  return mAllowNull;
+  return mModel->allowNull();
 }
 
 void QgsFeatureListComboBox::setAllowNull( bool allowNull )
 {
-  if ( mAllowNull == allowNull )
-    return;
-
-  mAllowNull = allowNull;
-  emit allowNullChanged();
+  mModel->setAllowNull( allowNull );
 }
 
 QVariant QgsFeatureListComboBox::identifierValue() const
@@ -187,7 +198,10 @@ void QgsFeatureListComboBox::setIdentifierValue( const QVariant &identifierValue
 
 QgsFeatureRequest QgsFeatureListComboBox::currentFeatureRequest() const
 {
-  return QgsFeatureRequest().setFilterExpression( QStringLiteral( "%1 = %2" ).arg( QgsExpression::quotedColumnRef( mModel->identifierField() ), QgsExpression::quotedValue( mModel->extraIdentifierValue() ) ) );
+  if ( mModel->extraIdentifierValue().isNull() )
+    return QgsFeatureRequest().setFilterFids( QgsFeatureIds() ); // NULL: Return a request that's guaranteed to not return anything
+  else
+    return QgsFeatureRequest().setFilterExpression( QStringLiteral( "%1 = %2" ).arg( QgsExpression::quotedColumnRef( mModel->identifierField() ), QgsExpression::quotedValue( mModel->extraIdentifierValue() ) ) );
 }
 
 QString QgsFeatureListComboBox::filterExpression() const

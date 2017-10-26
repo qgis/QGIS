@@ -48,6 +48,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull NOTIFY allowNullChanged )
 
   public:
+
     /**
      * Create a new QgsFeatureListComboBox, optionally specifying a \a parent.
      */
@@ -109,8 +110,6 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
 
     /**
      * Determines if a NULL value should be available in the list.
-     *
-     * TODO!
      */
     bool allowNull() const;
 
@@ -185,6 +184,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     void onActivated( QModelIndex index );
     void storeLineEditState();
     void restoreLineEditState();
+    void onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles = QVector<int>() );
 
   private:
     struct LineEditState
@@ -202,7 +202,6 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     QCompleter *mCompleter;
     QString mDisplayExpression;
     QgsFilterLineEdit *mLineEdit;
-    bool mAllowNull = true;
     bool mPopupRequested = false;
     bool mIsCurrentlyEdited = false;
     LineEditState mLineEditState;

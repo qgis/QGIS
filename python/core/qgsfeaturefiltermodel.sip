@@ -141,6 +141,17 @@ class QgsFeatureFilterModel : QAbstractItemModel
  :rtype: bool
 %End
 
+    bool allowNull() const;
+%Docstring
+ Add a NULL entry to the list.
+ :rtype: bool
+%End
+
+    void setAllowNull( bool allowNull );
+%Docstring
+ Add a NULL entry to the list.
+%End
+
   signals:
 
     void sourceLayerChanged();
@@ -209,6 +220,11 @@ class QgsFeatureFilterModel : QAbstractItemModel
     void endUpdate();
 %Docstring
  Notification that the model change is finished. Will always be emitted in sync with beginUpdate.
+%End
+
+    void allowNullChanged();
+%Docstring
+ Add a NULL entry to the list.
 %End
 
 };

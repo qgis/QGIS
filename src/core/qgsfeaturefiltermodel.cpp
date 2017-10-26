@@ -165,11 +165,17 @@ void QgsFeatureFilterModel::updateCompleter()
     }
 
     mShouldReloadCurrentFeature = false;
+
+    if ( mFilterValue.isEmpty() )
+      reload();
   }
   else
   {
     // We got strings for a filter selection
     std::sort( entries.begin(), entries.end(), []( const Entry & a, const Entry & b ) { return a.value.localeAwareCompare( b.value ) < 0; } );
+
+    if ( mAllowNull )
+      entries.prepend( Entry( QVariant( QVariant::Int ), tr( "NULL" ) ) );
 
     int newEntriesSize = entries.size();
 
@@ -196,6 +202,8 @@ void QgsFeatureFilterModel::updateCompleter()
 
     int firstRow = 0;
 
+    QgsDebugMsg( QStringLiteral( "Entries 1: %1 " ).arg( mEntries.size() ) );
+
     // Move the extra entry to the first position
     if ( mExtraIdentifierValueIndex != -1 )
     {
@@ -213,13 +221,18 @@ void QgsFeatureFilterModel::updateCompleter()
       firstRow = 1;
     }
 
+    QgsDebugMsg( QStringLiteral( "Entries 2: %1 " ).arg( mEntries.size() ) );
+
     // Remove all entries (except for extra entry if existent)
     beginRemoveRows( QModelIndex(), firstRow, mEntries.size() - firstRow );
     mEntries.remove( firstRow, mEntries.size() - firstRow );
     endRemoveRows();
 
+    QgsDebugMsg( QStringLiteral( "Entries 3: %1 " ).arg( mEntries.size() ) );
+
     if ( currentEntryInNewList == -1 )
     {
+      QgsDebugMsg( QStringLiteral( "Current value is NOT in new list" ) );
       beginInsertRows( QModelIndex(), 1, entries.size() + 1 );
       mEntries += entries;
       endInsertRows();
@@ -227,6 +240,7 @@ void QgsFeatureFilterModel::updateCompleter()
     }
     else
     {
+      QgsDebugMsg( QStringLiteral( "Current value is in new list" ) );
       if ( currentEntryInNewList != 0 )
       {
         beginInsertRows( QModelIndex(), 0, currentEntryInNewList - 1 );
@@ -335,7 +349,7 @@ void QgsFeatureFilterModel::setExtraIdentifierValueUnguarded( const QVariant &ex
   int index = 0;
   for ( const Entry &entry : entries )
   {
-    if ( entry.identifierValue == extraIdentifierValue )
+    if ( entry.identifierValue == extraIdentifierValue && entry.identifierValue.isNull() == extraIdentifierValue.isNull() && entry.identifierValue.isValid() == extraIdentifierValue.isValid() )
     {
       setExtraIdentifierValueIndex( index );
       break;
@@ -348,12 +362,31 @@ void QgsFeatureFilterModel::setExtraIdentifierValueUnguarded( const QVariant &ex
   if ( mExtraIdentifierValueIndex != index )
   {
     beginInsertRows( QModelIndex(), 0, 0 );
-    mEntries.prepend( Entry( extraIdentifierValue, QStringLiteral( "(%1)" ).arg( extraIdentifierValue.toString() ) ) );
+    if ( extraIdentifierValue.isNull() )
+      mEntries.prepend( Entry( QVariant( QVariant::Int ), QStringLiteral( "%1" ).arg( tr( "NULL" ) ) ) );
+    else
+      mEntries.prepend( Entry( extraIdentifierValue, QStringLiteral( "(%1)" ).arg( extraIdentifierValue.toString() ) ) );
     endInsertRows();
     setExtraIdentifierValueIndex( 0 );
 
     reloadCurrentFeature();
   }
+}
+
+bool QgsFeatureFilterModel::allowNull() const
+{
+  return mAllowNull;
+}
+
+void QgsFeatureFilterModel::setAllowNull( bool allowNull )
+{
+  if ( mAllowNull == allowNull )
+    return;
+
+  mAllowNull = allowNull;
+  emit allowNullChanged();
+
+  reload();
 }
 
 bool QgsFeatureFilterModel::extraValueDoesNotExist() const
@@ -401,7 +434,7 @@ QVariant QgsFeatureFilterModel::extraIdentifierValue() const
 
 void QgsFeatureFilterModel::setExtraIdentifierValue( const QVariant &extraIdentifierValue )
 {
-  if ( extraIdentifierValue == mExtraIdentifierValue && extraIdentifierValue.isNull() == mExtraIdentifierValue.isNull() )
+  if ( extraIdentifierValue == mExtraIdentifierValue && extraIdentifierValue.isNull() == mExtraIdentifierValue.isNull() && mExtraIdentifierValue.isValid() )
     return;
 
   setExtraIdentifierValueUnguarded( extraIdentifierValue );

@@ -37,6 +37,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     Q_PROPERTY( QString displayExpression READ displayExpression WRITE setDisplayExpression NOTIFY displayExpressionChanged )
     Q_PROPERTY( QString filterValue READ filterValue WRITE setFilterValue NOTIFY filterValueChanged )
     Q_PROPERTY( QString filterExpression READ filterExpression WRITE setFilterExpression NOTIFY filterExpressionChanged )
+    Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull NOTIFY allowNullChanged )
     Q_PROPERTY( bool isLoading READ isLoading NOTIFY isLoadingChanged )
 
     /**
@@ -167,6 +168,16 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
      */
     bool extraValueDoesNotExist() const;
 
+    /**
+     * Add a NULL entry to the list.
+     */
+    bool allowNull() const;
+
+    /**
+     * Add a NULL entry to the list.
+     */
+    void setAllowNull( bool allowNull );
+
   signals:
 
     /**
@@ -237,6 +248,11 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
      */
     void endUpdate();
 
+    /**
+     * Add a NULL entry to the list.
+     */
+    void allowNullChanged();
+
   private slots:
     void updateCompleter();
     void gathererThreadFinished();
@@ -274,6 +290,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     QTimer mReloadTimer;
     bool mShouldReloadCurrentFeature = false;
     bool mExtraValueDoesNotExist = false;
+    bool mAllowNull = false;
 
     QString mIdentifierField;
 

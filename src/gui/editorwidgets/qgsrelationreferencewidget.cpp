@@ -677,8 +677,7 @@ void QgsRelationReferenceWidget::mapIdentification()
 
 void QgsRelationReferenceWidget::comboReferenceChanged( int index )
 {
-  QgsFeatureId fid = mComboBox->itemData( index, QgsAttributeTableModel::FeatureIdRole ).value<QgsFeatureId>();
-  mReferencedLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( mFeature );
+  mReferencedLayer->getFeatures( mComboBox->currentFeatureRequest() ).nextFeature( mFeature );
   highlightFeature( mFeature );
   updateAttributeEditorFrame( mFeature );
   emit foreignKeyChanged( mFeature.attribute( mReferencedFieldIdx ) );

@@ -92,8 +92,6 @@ class QgsFeatureListComboBox : QComboBox
     bool allowNull() const;
 %Docstring
  Determines if a NULL value should be available in the list.
-
- TODO!
  :rtype: bool
 %End
 
