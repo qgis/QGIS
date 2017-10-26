@@ -102,7 +102,7 @@ void QgsFilterLineEdit::mouseMoveEvent( QMouseEvent *e )
 void QgsFilterLineEdit::focusInEvent( QFocusEvent *e )
 {
   QLineEdit::focusInEvent( e );
-  if ( e->reason() == Qt::MouseFocusReason && isNull() )
+  if ( e->reason() == Qt::MouseFocusReason && ( isNull() || mSelectOnFocus ) )
   {
     mFocusInEvent = true;
     selectAll();
@@ -195,6 +195,20 @@ void QgsFilterLineEdit::onTextChanged( const QString &text )
 void QgsFilterLineEdit::updateBusySpinner()
 {
   update();
+}
+
+bool QgsFilterLineEdit::selectOnFocus() const
+{
+  return mSelectOnFocus;
+}
+
+void QgsFilterLineEdit::setSelectOnFocus( bool selectOnFocus )
+{
+  if ( mSelectOnFocus == selectOnFocus )
+    return;
+
+  mSelectOnFocus = selectOnFocus;
+  emit selectOnFocusChanged();
 }
 
 bool QgsFilterLineEdit::showSpinner() const

@@ -199,6 +199,20 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     void setShowSpinner( bool showSpinner );
 
+    /**
+     * Will select all text when this widget receives the focus.
+     *
+     * \since QGIS 3.0
+     */
+    bool selectOnFocus() const;
+
+    /**
+     * Will select all text when this widget receives the focus.
+     *
+     * \since QGIS 3.0
+     */
+    void setSelectOnFocus( bool selectOnFocus );
+
   public slots:
 
     /**
@@ -231,6 +245,14 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     void showSpinnerChanged();
 
+
+    /**
+     * Will select all text when this widget receives the focus.
+     *
+     * \since QGIS 3.0
+     */
+    void selectOnFocusChanged();
+
   protected:
     void mousePressEvent( QMouseEvent *e ) override;
     void mouseMoveEvent( QMouseEvent *e ) override;
@@ -255,6 +277,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     QString mStyleSheet;
     bool mFocusInEvent = false;
     bool mClearHover = false;
+    bool mSelectOnFocus = false;
 
     QSize mClearIconSize;
     QPixmap mClearIconPixmap;

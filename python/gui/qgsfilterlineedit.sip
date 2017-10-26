@@ -180,6 +180,21 @@ class QgsFilterLineEdit : QLineEdit
 .. versionadded:: 3.0
 %End
 
+    bool selectOnFocus() const;
+%Docstring
+ Will select all text when this widget receives the focus.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void setSelectOnFocus( bool selectOnFocus );
+%Docstring
+ Will select all text when this widget receives the focus.
+
+.. versionadded:: 3.0
+%End
+
   public slots:
 
     virtual void clearValue();
@@ -208,6 +223,14 @@ class QgsFilterLineEdit : QLineEdit
 %Docstring
  Show a spinner icon. This can be used for search boxes to indicate that
  something is going on in the background.
+
+.. versionadded:: 3.0
+%End
+
+
+    void selectOnFocusChanged();
+%Docstring
+ Will select all text when this widget receives the focus.
 
 .. versionadded:: 3.0
 %End
