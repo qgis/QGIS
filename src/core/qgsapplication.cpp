@@ -876,7 +876,6 @@ void QgsApplication::initQgis()
   QgsProject::instance();
 
   // Initialize authentication manager and connect to database
-  instance()->mAuthManager = QgsAuthManager::instance();
   authManager()->init( pluginPath(), qgisAuthDatabaseFilePath() );
 
   // Make sure we have a NAM created on the main thread.
@@ -890,6 +889,10 @@ void QgsApplication::initQgis()
 
 QgsAuthManager *QgsApplication::authManager()
 {
+  if ( ! instance()->mAuthManager )
+  {
+    instance()->mAuthManager = QgsAuthManager::instance();
+  }
   return instance()->mAuthManager;
 }
 
