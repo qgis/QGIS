@@ -230,7 +230,7 @@ void QgsFeatureFilterModel::updateCompleter()
       {
         beginMoveRows( QModelIndex(), mExtraIdentifierValueIndex, mExtraIdentifierValueIndex, QModelIndex(), 0 );
 #if QT_VERSION < QT_VERSION_CHECK(5, 6, 0)
-        Entry extraEntry = mEntries.takeAt( mExtraIdentifierValueIndex, 1 );
+        Entry extraEntry = mEntries.takeAt( mExtraIdentifierValueIndex );
         mEntries.prepend( extraEntry );
 #else
         mEntries.move( mExtraIdentifierValueIndex, 0 );
