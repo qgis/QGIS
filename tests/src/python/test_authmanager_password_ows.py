@@ -40,10 +40,9 @@ from qgis.core import (
     QgsAuthMethodConfig,
     QgsVectorLayer,
     QgsRasterLayer,
-)
-from qgis.gui import (
     QgsFileDownloader,
 )
+
 from qgis.testing import (
     start_app,
     unittest,
@@ -211,7 +210,7 @@ class TestAuthManager(unittest.TestCase):
         destination = tempfile.mktemp()
         loop = QEventLoop()
 
-        downloader = QgsFileDownloader(QUrl(url), destination, False)
+        downloader = QgsFileDownloader(QUrl(url), destination, None, False)
         downloader.downloadCompleted.connect(partial(self._set_slot, 'completed'))
         downloader.downloadExited.connect(partial(self._set_slot, 'exited'))
         downloader.downloadCanceled.connect(partial(self._set_slot, 'canceled'))
@@ -247,7 +246,7 @@ class TestAuthManager(unittest.TestCase):
         destination = tempfile.mktemp()
         loop = QEventLoop()
 
-        downloader = QgsFileDownloader(QUrl(url), destination, False, self.auth_config.id())
+        downloader = QgsFileDownloader(QUrl(url), destination, self.auth_config.id(), False)
         downloader.downloadCompleted.connect(partial(self._set_slot, 'completed'))
         downloader.downloadExited.connect(partial(self._set_slot, 'exited'))
         downloader.downloadCanceled.connect(partial(self._set_slot, 'canceled'))
