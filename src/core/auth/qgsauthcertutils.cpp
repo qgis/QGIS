@@ -26,7 +26,6 @@
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
 
 #ifdef Q_OS_MAC
 #include <string.h>
