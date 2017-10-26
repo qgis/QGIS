@@ -111,6 +111,8 @@ BuildRequires: qwt-devel
 BuildRequires: qwt-qt5-devel
 BuildRequires: qwt-qt5-devel
 
+# Installation of QCA plugins must be explicit
+Requires:       qca-qt5-ossl
 Requires:       gpsbabel
 
 # We don't want to provide private Python extension libs
