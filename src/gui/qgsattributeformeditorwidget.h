@@ -23,6 +23,7 @@
 #include "qgsattributeeditorcontext.h"
 #include "qgssearchwidgetwrapper.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetwrapper.h"
 
 class QgsAttributeForm;
 class QgsEditorWidgetWrapper;
@@ -31,6 +32,7 @@ class QgsSearchWidgetToolButton;
 class QgsVectorLayer;
 class QStackedWidget;
 class QgsAttributeEditorContext;
+class QLabel;
 
 /**
  * \ingroup gui
@@ -115,6 +117,11 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
      * \since QGIS 2.16
      */
     QString currentFilterExpression() const;
+
+    /**
+     * Set the constraint status for this widget.
+     */
+    void setConstraintStatus( const QString &constraint, const QString &description, const QString &err, QgsEditorWidgetWrapper::ConstraintResult result );
 
   public slots:
 
@@ -202,6 +209,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
     QgsEditorWidgetWrapper *mWidget = nullptr;
     QList< QgsSearchWidgetWrapper * > mSearchWidgets;
     QgsAttributeForm *mForm = nullptr;
+    QLabel *mConstraintResultLabel;
     Mode mMode;
 
     QgsMultiEditToolButton *mMultiEditButton = nullptr;
@@ -210,7 +218,6 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
     bool mBlockValueUpdate;
     bool mIsMixed;
     bool mIsChanged;
-
 
     QgsVectorLayer *layer();
     void updateWidgets();

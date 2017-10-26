@@ -96,6 +96,11 @@ class QgsAttributeFormEditorWidget : QWidget
  :rtype: str
 %End
 
+    void setConstraintStatus( const QString &constraint, const QString &description, const QString &err, QgsEditorWidgetWrapper::ConstraintResult result );
+%Docstring
+ Set the constraint status for this widget.
+%End
+
   public slots:
 
     void setIsMixed( bool mixed );

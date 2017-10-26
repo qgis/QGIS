@@ -110,11 +110,11 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult cons
       break;
 
     case ConstraintResultFailHard:
-      widget()->setStyleSheet( QStringLiteral( "background-color: #dd7777;" ) );
+      widget()->setStyleSheet( QStringLiteral( "background-color: #FFE0B2;" ) );
       break;
 
     case ConstraintResultFailSoft:
-      widget()->setStyleSheet( QStringLiteral( "background-color: #ffd85d;" ) );
+      widget()->setStyleSheet( QStringLiteral( "background-color: #FFECB3;" ) );
       break;
   }
 }

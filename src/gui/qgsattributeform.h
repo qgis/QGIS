@@ -339,9 +339,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     bool currentFormFeature( QgsFeature &feature );
     bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions );
     QList<QgsEditorWidgetWrapper *> constraintDependencies( QgsEditorWidgetWrapper *w );
-    void clearInvalidConstraintsMessage();
-    void displayInvalidConstraintMessage( const QStringList &invalidFields,
-                                          const QStringList &description );
 
     QgsVectorLayer *mLayer = nullptr;
     QgsFeature mFeature;
@@ -349,8 +346,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     bool mOwnsMessageBar;
     QgsMessageBarItem *mMultiEditUnsavedMessageBarItem = nullptr;
     QgsMessageBarItem *mMultiEditMessageBarItem = nullptr;
-    QLabel *mInvalidConstraintMessage = nullptr;
-    QWidget *mTopMessageWidget = nullptr;
     QList<QgsWidgetWrapper *> mWidgets;
     QgsAttributeEditorContext mContext;
     QDialogButtonBox *mButtonBox = nullptr;
@@ -415,8 +410,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     Mode mMode;
 
-    //! Backlinks widgets to buddies.
-    QMap<QWidget *, QLabel *> mBuddyMap;
     QMap<QWidget *, QSvgWidget *> mIconMap;
 
     friend class TestQgsDualView;

@@ -201,15 +201,6 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
     case QgsAttributeForm::SearchMode:
       mSearchButtonBox->setVisible( true );
       hideButtonBox();
-      if ( mContext.formMode() != QgsAttributeEditorContext::Embed )
-      {
-        delete mInvalidConstraintMessage;
-        mInvalidConstraintMessage = nullptr;
-      }
-      else
-      {
-        mTopMessageWidget->hide();
-      }
       break;
   }
 
@@ -807,29 +798,6 @@ bool QgsAttributeForm::currentFormFeature( QgsFeature &feature )
   return rc;
 }
 
-void QgsAttributeForm::clearInvalidConstraintsMessage()
-{
-  mTopMessageWidget->hide();
-  mInvalidConstraintMessage->clear();
-}
-
-void QgsAttributeForm::displayInvalidConstraintMessage( const QStringList &f,
-    const QStringList &d )
-{
-  clearInvalidConstraintsMessage();
-
-  // show only the third first errors (to avoid a too long label)
-  int max = 3;
-  int size = f.size() > max ? max : f.size();
-  QString descriptions;
-  for ( int i = 0; i < size; i++ )
-    descriptions += QStringLiteral( "<li>%1: <i>%2</i></li>" ).arg( f[i], d[i] );
-
-  QString msg = QStringLiteral( "<b>%1</b><ul>%2</ul>" ).arg( tr( "Invalid fields" ), descriptions );
-
-  mInvalidConstraintMessage->setText( msg );
-  mTopMessageWidget->show();
-}
 
 void QgsAttributeForm::registerContainerInformation( QgsAttributeForm::ContainerInformation *info )
 {
@@ -928,35 +896,9 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString &constraint,
   QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( sender() );
   Q_ASSERT( eww );
 
-  QLabel *buddy = mBuddyMap.value( eww->widget() );
+  QgsAttributeFormEditorWidget *formEditorWidget = mFormEditorWidgets.value( eww->fieldIdx() );
 
-  if ( buddy )
-  {
-    QString tooltip = QStringLiteral( "<b>" ) + tr( "Constraints: " ) + QStringLiteral( "</b>" ) + description +
-                      QStringLiteral( "<br /><b>" ) + tr( "Raw expression: " ) + QStringLiteral( "</b>" ) + constraint +
-                      QStringLiteral( "<br /><b>" ) + tr( "Result: " ) + QStringLiteral( "</b>" ) + err;
-    buddy->setToolTip( tooltip );
-
-    if ( !buddy->property( "originalText" ).isValid() )
-      buddy->setProperty( "originalText", buddy->text() );
-
-    QString text = buddy->property( "originalText" ).toString();
-
-    switch ( result )
-    {
-      case QgsEditorWidgetWrapper::ConstraintResultFailHard:
-        buddy->setText( trUtf8( "%1<font color=\"red\">✘</font>" ).arg( text ) );
-        break;
-
-      case QgsEditorWidgetWrapper::ConstraintResultFailSoft:
-        buddy->setText( trUtf8( "%1<font color=\"orange\">✘</font>" ).arg( text ) );
-        break;
-
-      case QgsEditorWidgetWrapper::ConstraintResultPass:
-        buddy->setText( trUtf8( "%1<font color=\"green\">✔</font>" ).arg( text ) );
-        break;
-    }
-  }
+  formEditorWidget->setConstraintStatus( constraint, description, err, result );
 }
 
 QList<QgsEditorWidgetWrapper *> QgsAttributeForm::constraintDependencies( QgsEditorWidgetWrapper *w )
@@ -1030,16 +972,10 @@ void QgsAttributeForm::synchronizeEnabledState()
     }
   }
 
-  // push a message and disable the OK button if constraints are invalid
-  clearInvalidConstraintsMessage();
-
   if ( mMode != SearchMode )
   {
     QStringList invalidFields, descriptions;
     bool validConstraint = currentFormValidConstraints( invalidFields, descriptions );
-
-    if ( ! invalidFields.isEmpty() )
-      displayInvalidConstraintMessage( invalidFields, descriptions );
 
     isEditable = isEditable & validConstraint;
   }
@@ -1087,19 +1023,6 @@ void QgsAttributeForm::init()
   mMessageBar = new QgsMessageBar( this );
   mMessageBar->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
   vl->addWidget( mMessageBar );
-
-  mTopMessageWidget = new QWidget();
-  mTopMessageWidget->hide();
-  mTopMessageWidget->setLayout( new QHBoxLayout() );
-
-  QSvgWidget *warningIcon = new QSvgWidget( QgsApplication::iconPath( QStringLiteral( "/mIconWarning.svg" ) ) );
-  warningIcon->setFixedSize( 48, 48 );
-  mTopMessageWidget->layout()->addWidget( warningIcon );
-  mInvalidConstraintMessage = new QLabel( this );
-  mTopMessageWidget->layout()->addWidget( mInvalidConstraintMessage );
-  mTopMessageWidget->hide();
-
-  vl->addWidget( mTopMessageWidget );
 
   setLayout( vl );
 
@@ -1812,16 +1735,6 @@ void QgsAttributeForm::afterWidgetInit()
       connect( eww, static_cast<void ( QgsEditorWidgetWrapper::* )( const QVariant & )>( &QgsEditorWidgetWrapper::valueChanged ), this, &QgsAttributeForm::onAttributeChanged );
       connect( eww, &QgsEditorWidgetWrapper::constraintStatusChanged, this, &QgsAttributeForm::onConstraintStatusChanged );
     }
-  }
-
-  // Update buddy widget list
-  mBuddyMap.clear();
-  QList<QLabel *> labels = findChildren<QLabel *>();
-
-  Q_FOREACH ( QLabel *label, labels )
-  {
-    if ( label->buddy() )
-      mBuddyMap.insert( label->buddy(), label );
   }
 }
 
