@@ -75,17 +75,21 @@ void QgsPointDisplacementRenderer::drawGroup( QPointF centerPoint, QgsRenderCont
   QList<QPointF> symbolPositions;
   QList<QPointF> labelPositions;
   double circleRadius = -1.0;
-  double gridRadius;
-  int gridSize;
+  double gridRadius = -1.0;
+  int gridSize = -1;
 
   calculateSymbolAndLabelPositions( symbolContext, centerPoint, group.size(), diagonal, symbolPositions, labelPositions, circleRadius, gridRadius, gridSize );
 
-  //draw circle
-  if ( circleRadius > 0 )
-    drawCircle( circleRadius, symbolContext, centerPoint, group.size() );
-  //draw grid
-  else
-    drawGrid( gridSize, symbolContext, symbolPositions, group.size() );
+  //only draw circle/grid if there's a pen present - otherwise skip drawing transparent grids
+  if ( mCircleColor.isValid() && mCircleColor.alpha() > 0 )
+  {
+    //draw circle
+    if ( circleRadius > 0 )
+      drawCircle( circleRadius, symbolContext, centerPoint, group.size() );
+    //draw grid
+    else
+      drawGrid( gridSize, symbolContext, symbolPositions, group.size() );
+  }
 
   if ( group.size() > 1 )
   {
@@ -306,8 +310,8 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
       double centerDiagonal = symbolContext.renderContext().convertToPainterUnits( M_SQRT2 * mCenterSymbol->size(),
                               mCenterSymbol->sizeUnit(), mCenterSymbol->sizeMapUnitScale() );
       int pointsRemaining = nPosition;
-      gridSize = ceil( sqrt( pointsRemaining ) );
-      if ( pointsRemaining - pow( gridSize - 1, 2 ) < gridSize )
+      gridSize = std::ceil( std::sqrt( pointsRemaining ) );
+      if ( pointsRemaining - std::pow( gridSize - 1, 2 ) < gridSize )
         gridSize -= 1;
       double originalPointRadius = ( ( centerDiagonal / 2.0 + symbolDiagonal / 2.0 ) + symbolDiagonal ) / 2;
       double userPointRadius =  originalPointRadius + circleAdditionPainterUnits;
@@ -336,7 +340,7 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
 
 void QgsPointDisplacementRenderer::centralizeGrid( QList<QPointF> &pointSymbolPositions, double radius, int size ) const
 {
-  double shiftAmount = -radius * ( size - 1 ) / 2;
+  double shiftAmount = -radius * ( size - 1.0 ) / 2.0;
   QPointF centralShift( shiftAmount, shiftAmount );
   for ( int i = 0; i < pointSymbolPositions.size(); ++i )
   {
