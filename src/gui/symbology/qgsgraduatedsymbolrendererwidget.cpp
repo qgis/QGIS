@@ -422,12 +422,6 @@ QgsExpressionContext QgsGraduatedSymbolRendererWidget::createExpressionContext()
 
 QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-<<<<<<< HEAD
-
-=======
-  , mRenderer( nullptr )
-  , mModel( nullptr )
->>>>>>> c69fd4e87cf1ef76f206ab6fd7c15328d57a4cd9
 {
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
