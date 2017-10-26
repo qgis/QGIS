@@ -601,6 +601,26 @@ class CORE_EXPORT QgsFeatureRequest
      */
     bool acceptFeature( const QgsFeature &feature );
 
+    /**
+     * The timeout for how long we should wait for a connection if none is available from the pool
+     * at this moment. A negative value (which is set by default) will wait forever.
+     *
+     * \note Only works if the provider supports this option.
+     *
+     * \since QGIS 3.0
+     */
+    int connectionTimeout() const;
+
+    /**
+     * The timeout for how long we should wait for a connection if none is available from the pool
+     * at this moment. A negative value (which is set by default) will wait forever.
+     *
+     * \note Only works if the provider supports this option.
+     *
+     * \since QGIS 3.0
+     */
+    void setConnectionTimeout( int connectionTimeout );
+
   protected:
     FilterType mFilter = FilterNone;
     QgsRectangle mFilterRect;
@@ -617,6 +637,7 @@ class CORE_EXPORT QgsFeatureRequest
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
     QgsCoordinateReferenceSystem mCrs;
+    int mConnectionTimeout = -1;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )

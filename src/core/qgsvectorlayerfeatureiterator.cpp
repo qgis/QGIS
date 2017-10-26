@@ -408,6 +408,11 @@ void QgsVectorLayerFeatureIterator::setInterruptionChecker( QgsInterruptionCheck
   mInterruptionChecker = interruptionChecker;
 }
 
+bool QgsVectorLayerFeatureIterator::isValid() const
+{
+  return mProviderIterator.isValid();
+}
+
 bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature &f )
 {
   while ( mFetchAddedFeaturesIt-- != mSource->mAddedFeatures.constBegin() )

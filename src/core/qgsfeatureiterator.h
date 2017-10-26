@@ -82,6 +82,21 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      */
     CompileStatus compileStatus() const { return mCompileStatus; }
 
+    /**
+     * Returns if this iterator is valid.
+     * An invalid feature iterator is not able to provide a reliable source for data.
+     * If an iterator is invalid, either give up or try to send the request again (preferably
+     * after a timeout to give the system some time to stay responsive).
+     *
+     * If you want to check if the iterator successfully completed, better use QgsFeatureIterator::isClosed().
+     *
+     * \since QGIS 3.0
+     */
+    virtual bool isValid() const
+    {
+      return mValid;
+    }
+
   protected:
 
     /**
@@ -174,6 +189,16 @@ class CORE_EXPORT QgsAbstractFeatureIterator
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod );
+
+    /**
+     * An invalid state of a feature iterator indicates that there was a problem with
+     * even getting it up and running.
+     * This should be set to false by subclasses if they have problems connecting to
+     * the provider.
+     * Do NOT set this to false when the feature iterator closes or has no features but
+     * we are sure, that it's just an empty dataset.
+     */
+    bool mValid = true;
 
   private:
     bool mUseCachedFeatures;
@@ -278,6 +303,17 @@ class CORE_EXPORT QgsFeatureIterator
     bool nextFeature( QgsFeature &f );
     bool rewind();
     bool close();
+
+    /**
+     * Will return if this iterator is valid.
+     * An invalid iterator was probably introduced by a failed attempt to acquire a connection
+     * or is a default constructed iterator.
+     *
+     * \see isClosed to check if the iterator successfully completed and returned all the features.
+     *
+     * \since QGIS 3.0
+     */
+    virtual bool isValid() const;
 
     //! find out whether the iterator is still valid or closed already
     bool isClosed() const;

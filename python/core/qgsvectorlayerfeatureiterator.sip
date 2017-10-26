@@ -107,6 +107,8 @@ end of iterating: free the resources / lock
     };
 
 
+    virtual bool isValid() const;
+
   protected:
     virtual bool fetchFeature( QgsFeature &feature );
 %Docstring
