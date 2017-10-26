@@ -744,6 +744,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   startProfile( QStringLiteral( "Welcome page" ) );
   mWelcomePage = new QgsWelcomePage( skipVersionCheck );
+  connect( mWelcomePage, &QgsWelcomePage::projectRemoved, this, [ this ]( int row )
+  {
+    mRecentProjects.removeAt( row );
+    saveRecentProjects();
+  } );
+
   endProfile();
 
   mCentralContainer = new QStackedWidget;
@@ -3830,8 +3836,6 @@ void QgisApp::saveRecentProjectPath( const QString &projectPath, bool savePrevie
   // projects when multiple QGIS sessions are open
   readRecentProjects();
 
-  QgsSettings settings;
-
   // Get canonical absolute path
   QFileInfo myFileInfo( projectPath );
   QgsWelcomePageItemsModel::RecentProjectData projectData;
@@ -3883,10 +3887,22 @@ void QgisApp::saveRecentProjectPath( const QString &projectPath, bool savePrevie
     QFile( mRecentProjects.takeLast().previewImagePath ).remove();
   }
 
+  // Persist the list
+  saveRecentProjects();
+
+  // Update menu list of paths
+  updateRecentProjectPaths();
+
+} // QgisApp::saveRecentProjectPath
+
+// Save recent projects list to settings
+void QgisApp::saveRecentProjects()
+{
+  QgsSettings settings;
+
   settings.remove( QStringLiteral( "/UI/recentProjects" ) );
   int idx = 0;
 
-  // Persist the list
   Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject, mRecentProjects )
   {
     ++idx;
@@ -3897,11 +3913,7 @@ void QgisApp::saveRecentProjectPath( const QString &projectPath, bool savePrevie
     settings.setValue( QStringLiteral( "crs" ), recentProject.crs );
     settings.endGroup();
   }
-
-  // Update menu list of paths
-  updateRecentProjectPaths();
-
-} // QgisApp::saveRecentProjectPath
+}
 
 // Update project menu with the project templates
 void QgisApp::updateProjectFromTemplates()

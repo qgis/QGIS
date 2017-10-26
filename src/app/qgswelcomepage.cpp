@@ -145,6 +145,13 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
     } );
     menu->addAction( rescanAction );
   }
+  QAction *removeProjectAction = new QAction( tr( "Remove from List" ), menu );
+  connect( removeProjectAction, &QAction::triggered, this, [this, index]
+  {
+    mModel->removeProject( index );
+    emit projectRemoved( index.row() );
+  } );
+  menu->addAction( removeProjectAction );
 
   menu->popup( mapToGlobal( point ) );
 }
