@@ -12,6 +12,15 @@
 %define builddate %(date '+%a %b %d %Y')
 %endif
 
+# Qt53D support
+# Fedora 26 provides Qt 5.7 which is not supported at the moment.
+# This check may be removed when https://bodhi.fedoraproject.org/updates/FEDORA-2017-c133443edc
+# is pushed to stable
+%if 0%{?fedora} > 26
+%global configure_with_3d -D WITH_3D:BOOL=TRUE
+BuildRequires: qt5-qt3d-devel
+%endif
+
 Name:           qgis
 Version:        %{_version}
 Release:        %{_relver}%{?dist}
@@ -96,8 +105,6 @@ BuildRequires: qt5-qtwebkit-devel
 BuildRequires: qt5-qtxmlpatterns-devel
 BuildRequires: qtkeychain-qt5-devel
 BuildRequires: qextserialport-devel
-# Qt53D support
-BuildRequires: qt5-qt3d-devel
 
 # Qwt stuff
 BuildRequires: qwt-devel
@@ -213,7 +220,7 @@ gzip ChangeLog
       -D ENABLE_TESTS:BOOL=FALSE \
       -D WITH_QSPATIALITE:BOOL=TRUE \
       -D WITH_SERVER:BOOL=TRUE \
-      -D WITH_3D:BOOL=TRUE \
+      %{configure_with_3d} \
       .
 
       # Using external QEXTSERIALPORT causes segfaults
