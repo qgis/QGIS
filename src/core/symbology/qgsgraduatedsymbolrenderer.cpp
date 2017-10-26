@@ -531,13 +531,13 @@ void _makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, bool ast
   {
     std::sort( breaks.begin(), breaks.end() );
     // breaks contain the maximum of the distrib but not the minimum
-    double distBelowSymmetricValue = qAbs( breaks[0] - symmetryPoint );
-    double distAboveSymmetricValue = qAbs( breaks[ breaks.size() - 2 ] - symmetryPoint ) ;
-    double absMin = qMin( qAbs( distAboveSymmetricValue ), qAbs( distBelowSymmetricValue ) );
+    double distBelowSymmetricValue = std::abs( breaks[0] - symmetryPoint );
+    double distAboveSymmetricValue = std::abs( breaks[ breaks.size() - 2 ] - symmetryPoint ) ;
+    double absMin = std::min( std::abs( distAboveSymmetricValue ), std::abs( distBelowSymmetricValue ) );
     // make symmetric
     for ( int i = 0; i <= breaks.size() - 2; ++i )
     {
-      if ( qAbs( breaks.at( i ) - symmetryPoint ) > absMin )
+      if ( std::abs( breaks.at( i ) - symmetryPoint ) > absMin )
       {
         breaks.removeAt( i );
         --i;
@@ -574,8 +574,8 @@ static QList<double> _calcEqualIntervalBreaks( double minimum, double maximum, i
   }
   else if ( true == useSymmetricMode ) // symmetric mode
   {
-    double distBelowSymmetricValue = qAbs( minimum - symmetryPoint );
-    double distAboveSymmetricValue = qAbs( maximum - symmetryPoint ) ;
+    double distBelowSymmetricValue = std::abs( minimum - symmetryPoint );
+    double distAboveSymmetricValue = std::abs( maximum - symmetryPoint ) ;
 
     if ( true == astride )
     {
@@ -585,7 +585,7 @@ static QList<double> _calcEqualIntervalBreaks( double minimum, double maximum, i
     {
       ( 1 == classes % 2 ) ? ++classes : classes; // we want even number of classes
     }
-    double step = 2 * qMin( distBelowSymmetricValue, distAboveSymmetricValue ) / classes;
+    double step = 2 * std::min( distBelowSymmetricValue, distAboveSymmetricValue ) / classes;
 
     double value;
     breaks.reserve( classes );
