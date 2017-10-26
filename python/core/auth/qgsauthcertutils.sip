@@ -304,6 +304,11 @@ Get short strings describing an SSL error
  :rtype: list of QSslError
 %End
 
+    static QStringList validatePKIBundle( QgsPkiBundle &bundle, bool useIntermediates = true, bool addRootCa = false );
+%Docstring
+ :rtype: list of str
+%End
+
 };
 
 /************************************************************************

@@ -24,6 +24,7 @@
 #include <QSslCertificate>
 #include <QSslError>
 
+#include "qgsauthconfig.h"
 #include "qgis_core.h"
 
 class QgsAuthConfigSslServer;
@@ -337,6 +338,8 @@ class CORE_EXPORT QgsAuthCertUtils
      * \return list of QSslError, if the list is empty then the cert chain is valid
      */
     static QList<QSslError> validateCertChain( const QList<QSslCertificate> &certificateChain,  const QString &hostName = QString(), bool addRootCa = false ) ;
+
+    static QStringList validatePKIBundle( QgsPkiBundle &bundle, bool useIntermediates = true, bool addRootCa = false );
 
   private:
     static void appendDirSegment_( QStringList &dirname, const QString &segment, QString value );

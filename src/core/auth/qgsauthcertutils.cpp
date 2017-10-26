@@ -1244,22 +1244,91 @@ QList<QPair<QSslError::SslError, QString> > QgsAuthCertUtils::sslErrorEnumString
 
 QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificate> &certificateChain, const QString &hostName, bool addRootCa )
 {
-  QList<QSslError> results;
+  QList<QSslError> sslErrors;
+  QList<QSslCertificate> trustedChain;
+  // Filter out all CAs that are not trusted from QgsAuthManager
+  for ( const auto &cert : certificateChain )
+  {
+    bool untrusted = false;
+    for ( const auto &untrustedCert : QgsAuthManager::instance()->getUntrustedCaCerts() )
+    {
+      if ( cert.digest( ) == untrustedCert.digest( ) )
+      {
+        untrusted = true;
+        break;
+      }
+    }
+    if ( ! untrusted )
+    {
+      trustedChain << cert;
+    }
+  }
+
   // Merge in the root CA if present and asked for
-  if ( addRootCa && certificateChain.count() > 1 &&  certificateChain.last().isSelfSigned() )
+  if ( addRootCa && trustedChain.count() > 1 && trustedChain.last().isSelfSigned() )
   {
     static QMutex sMutex;
     QMutexLocker lock( &sMutex );
     QSslConfiguration oldSslConfig( QSslConfiguration::defaultConfiguration() );
     QSslConfiguration sslConfig( oldSslConfig );
-    sslConfig.setCaCertificates( casMerge( sslConfig.caCertificates(), QList<QSslCertificate>() << certificateChain.last() ) );
+    sslConfig.setCaCertificates( casMerge( sslConfig.caCertificates(), QList<QSslCertificate>() << trustedChain.last() ) );
     QSslConfiguration::setDefaultConfiguration( sslConfig );
-    results = QSslCertificate::verify( certificateChain, hostName );
+    sslErrors = QSslCertificate::verify( trustedChain, hostName );
     QSslConfiguration::setDefaultConfiguration( oldSslConfig );
   }
   else
   {
-    results = QSslCertificate::verify( certificateChain, hostName );
+    sslErrors = QSslCertificate::verify( trustedChain, hostName );
   }
-  return results;
+  return sslErrors;
+}
+
+QStringList QgsAuthCertUtils::validatePKIBundle( QgsPkiBundle &bundle, bool useIntermediates, bool addRootCa )
+{
+  QStringList errors;
+  QList<QSslError> sslErrors;
+  if ( useIntermediates )
+  {
+    QList<QSslCertificate> certsList( bundle.caChain() );
+    certsList.insert( 0, bundle.clientCert( ) );
+    sslErrors = QgsAuthCertUtils::validateCertChain( certsList, QString(), addRootCa );
+  }
+  else
+  {
+    sslErrors = QSslCertificate::verify( QList<QSslCertificate>() << bundle.clientCert() );
+  }
+  const QList<QSslError> constSslErrors( sslErrors );
+  for ( const auto &sslError : constSslErrors )
+  {
+    if ( sslError.error() != QSslError::NoError )
+    {
+      errors << sslError.errorString();
+    }
+  }
+  // Now check the key with QCA!
+  QCA::PrivateKey pvtKey( QCA::PrivateKey::fromPEM( bundle.clientKey().toPem() ) );
+  QCA::PublicKey pubKey( QCA::PublicKey::fromPEM( bundle.clientCert().publicKey().toPem( ) ) );
+  bool keyValid( ! pvtKey.isNull() );
+  if ( keyValid && !( pubKey.toRSA().isNull( ) || pvtKey.toRSA().isNull( ) ) )
+  {
+    keyValid = pubKey.toRSA().n() == pvtKey.toRSA().n();
+  }
+  else if ( keyValid && !( pubKey.toDSA().isNull( ) || pvtKey.toDSA().isNull( ) ) )
+  {
+    keyValid = pubKey == QCA::DSAPublicKey( pvtKey.toDSA() );
+  }
+  // DH is probably not used anymore but the library supports it
+  else if ( keyValid && !( pubKey.toDH().isNull( ) || pvtKey.toDH().isNull( ) ) )
+  {
+    keyValid = pubKey == QCA::DHPublicKey( pvtKey.toDH() );
+  }
+  else
+  {
+    // Log? Error? Note that elliptical curve is not supported by QCA
+  }
+  if ( ! keyValid )
+  {
+    errors << QObject::tr( "Private key does not match client certificate public key." );
+  }
+  return errors;
 }
