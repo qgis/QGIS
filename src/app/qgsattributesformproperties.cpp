@@ -57,7 +57,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
 {
   QTreeWidgetItem *currentItem = mAvailableWidgetsTree->currentItem();
 
-  if ( !currentItem )
+  if ( !currentItem || !( currentItem->data( 0, DnDTreeRole ).value<DnDTreeItemData>().type()==DnDTreeItemData::Field ) )
     mAttributeTypeDialog->setEnabled( false );
   else
   {
@@ -270,6 +270,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   mAvailableWidgetsTree->setDragDropMode( QAbstractItemView::DragOnly );
 
   //load Fields
+
   DnDTreeItemData catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Fields");
   QTreeWidgetItem *catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
 
@@ -283,6 +284,8 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
     FieldConfig cfg( mLayer, i );
 
     QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
+    //QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), itemData );
+
     item->setData( 0, FieldConfigRole, cfg );
     item->setData( 0, FieldNameRole, field.name() );
   }
@@ -292,6 +295,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   itemData.setText(i, QString::number( i+1 ) );
   itemData.setText(i, fields.at( i ).name() );
   */
+
 
   //load Relations
   catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Relations");
@@ -307,6 +311,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
     QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
     item->setData( 0, FieldNameRole, relation.name() );
   }
+
 
 }
 
@@ -362,7 +367,6 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
       break;
     }
 
-    /*dave to do
     case DnDTreeItemData::Relation:
     {
       QgsRelation relation = QgsProject::instance()->relationManager()->relation( itemData.name() );
@@ -372,7 +376,6 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
       widgetDef = relDef;
       break;
     }
-    */
 
     case DnDTreeItemData::Container:
     {
@@ -401,9 +404,13 @@ void QgsAttributesFormProperties::apply()
 {
   QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
 
-  for ( QTreeWidgetItemIterator it( mAvailableWidgetsTree ); *it; ++it )
+  QTreeWidgetItem* fieldContainer=mAvailableWidgetsTree->invisibleRootItem()->child(0);
+
+  for ( int i = 0; i < fieldContainer->childCount(); i++ )
   {
-    int idx = mAvailableWidgetsTree->invisibleRootItem()->indexOfChild( ( *it ) );
+    QTreeWidgetItem *fieldItem = fieldContainer->child( i );
+    int idx=fieldContainer->indexOfChild( fieldItem );
+
     QString name = mLayer->fields().at( idx ).name();
     FieldConfig cfg = configForChild( idx );
 
@@ -436,6 +443,8 @@ void QgsAttributesFormProperties::apply()
     {
       mLayer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintExpression );
     }
+
+    //mLayer->setFieldAlias( idx, aliasItem->text() );
   }
 
   // tabs and groups
@@ -457,8 +466,19 @@ void QgsAttributesFormProperties::apply()
   editFormConfig.setInitFilePath( mInitFilePathLineEdit->text() );
   editFormConfig.setInitCodeSource( ( QgsEditFormConfig::PythonInitCodeSource )mInitCodeSourceComboBox->currentIndex() );
   editFormConfig.setSuppress( ( QgsEditFormConfig::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
+  */
 
+  /*
   // relations
+  QTreeWidgetItem* relationContainer=mAvailableWidgetsTree->invisibleRootItem()->child(1);
+
+  for ( int i = 0; i < relationContainer->childCount(); i++ )
+  {
+    QTreeWidgetItem *relationItem = relationContainer->child( i );
+    int idx=relationContainer->indexOfChild( relationItem );
+
+    QString name = mLayer->fields().at( idx ).name();
+
   for ( int i = 0; i < mRelationsList->rowCount(); ++i )
   {
     QVariantMap cfg;
@@ -477,8 +497,7 @@ void QgsAttributesFormProperties::apply()
 
     editFormConfig.setWidgetConfig( relationName, cfg );
   }
-  */
-
+*/
   mLayer->setEditFormConfig( editFormConfig );
 }
 
