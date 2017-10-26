@@ -96,12 +96,18 @@ class QgsFieldExpressionValuesGatherer: public QThread
     /**
      * Internal data, use for whatever you want.
      */
-    QVariant data() const;
+    QVariant data() const
+    {
+      return mData;
+    }
 
     /**
      * Internal data, use for whatever you want.
      */
-    void setData( const QVariant &data );
+    void setData( const QVariant &data )
+    {
+      mData = data;
+    }
 
   signals:
 

@@ -464,13 +464,3 @@ void QgsFeatureFilterModel::setExtraIdentifierValue( const QVariant &extraIdenti
   mExtraIdentifierValue = extraIdentifierValue;
   emit extraIdentifierValueChanged();
 }
-
-QVariant QgsFieldExpressionValuesGatherer::data() const
-{
-  return mData;
-}
-
-void QgsFieldExpressionValuesGatherer::setData( const QVariant &data )
-{
-  mData = data;
-}
