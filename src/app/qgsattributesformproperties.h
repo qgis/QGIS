@@ -44,6 +44,7 @@
 #include "qgsgui.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgsrelationmanager.h"
 
 class DnDTree;
 

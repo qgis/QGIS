@@ -269,6 +269,10 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   mAvailableWidgetsTree->setAcceptDrops( false );
   mAvailableWidgetsTree->setDragDropMode( QAbstractItemView::DragOnly );
 
+  //load Fields
+  DnDTreeItemData catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Fields");
+  QTreeWidgetItem *catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
+
   const QgsFields fields = mLayer->fields();
   for ( int i = 0; i < fields.size(); ++i )
   {
@@ -278,23 +282,32 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
 
     FieldConfig cfg( mLayer, i );
 
-    QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), itemData );
+    QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
     item->setData( 0, FieldConfigRole, cfg );
     item->setData( 0, FieldNameRole, field.name() );
   }
 
-  /*some stuff for containers
-  //load Container Field
-  DnDTreeItemData catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Fields");
-  catItemData.setShowLabel( true );
-  QTreeWidgetItem *catWidget = nullptr;
-  catWidget=mTree->addItem( mTree->invisibleRootItem(), catItemData );
-  mTree->mIndexedWidgets.insert( i, mTree->addItem( catWidget, itemData ) );
-
+  /* stuff
   itemData.setIcon(i, mLayer->fields().iconForField( i ));
   itemData.setText(i, QString::number( i+1 ) );
   itemData.setText(i, fields.at( i ).name() );
   */
+
+  //load Relations
+  catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Relations");
+  catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
+
+  const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );
+
+  for ( const QgsRelation &relation : relations )
+  {
+    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, relation.name() );
+    itemData.setShowLabel( true );
+
+    QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
+    item->setData( 0, FieldNameRole, relation.name() );
+  }
+
 }
 
 
