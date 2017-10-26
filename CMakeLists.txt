@@ -844,7 +844,7 @@ IF (WITH_CORE)
     SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} QGIS")
     SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\qgis.org")
     SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\qgis.org")
-    SET(CPACK_NSIS_CONTACT "tim@linfiniti.com")
+    SET(CPACK_NSIS_CONTACT "info@qgis.org")
     SET(CPACK_NSIS_MODIFY_PATH ON)
 
   #  SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "  !include \\\"${CMAKE_SOURCE_DIR}\\\\win_build\\\\extra.nsh\\\"")
