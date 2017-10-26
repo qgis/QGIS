@@ -96,6 +96,8 @@ BuildRequires: qt5-qtwebkit-devel
 BuildRequires: qt5-qtxmlpatterns-devel
 BuildRequires: qtkeychain-qt5-devel
 BuildRequires: qextserialport-devel
+# Qt53D support
+BuildRequires: qt5-qt3d-devel
 
 # Qwt stuff
 BuildRequires: qwt-devel
@@ -211,6 +213,7 @@ gzip ChangeLog
       -D ENABLE_TESTS:BOOL=FALSE \
       -D WITH_QSPATIALITE:BOOL=TRUE \
       -D WITH_SERVER:BOOL=TRUE \
+      -D WITH_3D:BOOL=TRUE \
       .
 
       # Using external QEXTSERIALPORT causes segfaults
