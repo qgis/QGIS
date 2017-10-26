@@ -1339,14 +1339,9 @@ QStringList QgsAuthCertUtils::validatePKIBundle( QgsPkiBundle &bundle, bool useI
   {
     keyValid = pubKey == QCA::DSAPublicKey( pvtKey.toDSA() );
   }
-  // DH is probably not used anymore but the library supports it
-  else if ( keyValid && !( pubKey.toDH().isNull( ) || pvtKey.toDH().isNull( ) ) )
-  {
-    keyValid = pubKey == QCA::DHPublicKey( pvtKey.toDH() );
-  }
   else
   {
-    QgsDebugMsg( "Key is not DSA, RSA or DH: validation is not supported by Qt" );
+    QgsDebugMsg( "Key is not DSA, RSA: validation is not supported by QCA" );
   }
   if ( ! keyValid )
   {
