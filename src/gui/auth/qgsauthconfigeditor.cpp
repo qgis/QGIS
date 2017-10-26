@@ -25,17 +25,18 @@
 #include "qgsauthmanager.h"
 #include "qgsauthconfigedit.h"
 #include "qgsauthguiutils.h"
+#include "qgsapplication.h"
 
 QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, bool relayMessages )
   : QWidget( parent )
   , mRelayMessages( relayMessages )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mDisabled = true;
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
@@ -47,8 +48,8 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
 
     setShowUtilitiesButton( showUtilities );
 
-    mConfigModel = new QSqlTableModel( this, QgsAuthManager::instance()->authDatabaseConnection() );
-    mConfigModel->setTable( QgsAuthManager::instance()->authDatabaseConfigTable() );
+    mConfigModel = new QSqlTableModel( this, QgsApplication::authManager()->authDatabaseConnection() );
+    mConfigModel->setTable( QgsApplication::authManager()->authDatabaseConfigTable() );
     mConfigModel->select();
 
     mConfigModel->setHeaderData( 0, Qt::Horizontal, tr( "ID" ) );
@@ -79,11 +80,11 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
 
     if ( mRelayMessages )
     {
-      connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
+      connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
                this, &QgsAuthConfigEditor::authMessageOut );
     }
 
-    connect( QgsAuthManager::instance(), &QgsAuthManager::authDatabaseChanged,
+    connect( QgsApplication::authManager(), &QgsAuthManager::authDatabaseChanged,
              this, &QgsAuthConfigEditor::refreshTableView );
 
     checkSelection();
@@ -183,13 +184,13 @@ void QgsAuthConfigEditor::setRelayMessages( bool relay )
 
   if ( mRelayMessages )
   {
-    disconnect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
+    disconnect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
                 this, &QgsAuthConfigEditor::authMessageOut );
     mRelayMessages = relay;
     return;
   }
 
-  connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
+  connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
            this, &QgsAuthConfigEditor::authMessageOut );
   mRelayMessages = relay;
 }
@@ -216,7 +217,7 @@ void QgsAuthConfigEditor::checkSelection()
 
 void QgsAuthConfigEditor::btnAddConfig_clicked()
 {
-  if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
+  if ( !QgsApplication::authManager()->setMasterPassword( true ) )
     return;
 
   QgsAuthConfigEdit *ace = new QgsAuthConfigEdit( this );
@@ -235,7 +236,7 @@ void QgsAuthConfigEditor::btnEditConfig_clicked()
   if ( authcfg.isEmpty() )
     return;
 
-  if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
+  if ( !QgsApplication::authManager()->setMasterPassword( true ) )
     return;
 
   QgsAuthConfigEdit *ace = new QgsAuthConfigEdit( this, authcfg );

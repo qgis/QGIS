@@ -44,6 +44,7 @@ class QgsUserProfile;
 class QgsUserProfileManager;
 class QgsPageSizeRegistry;
 class QgsLayoutItemRegistry;
+class QgsAuthManager;
 
 /**
  * \ingroup core
@@ -583,6 +584,14 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsMessageLog *messageLog();
 
     /**
+     * Returns the application's authentication manager instance
+     * \note this can be a null pointer if called before initQgis
+     * \see initQgis
+     * \since QGIS 3.0
+     */
+    static QgsAuthManager *authManager();
+
+    /**
      * Returns the application's processing registry, used for managing processing providers,
      * algorithms, and various parameters and outputs.
      * \since QGIS 3.0
@@ -740,6 +749,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     QMap<QString, QIcon> mIconCache;
 
     QgsDataItemProviderRegistry *mDataItemProviderRegistry = nullptr;
+    QgsAuthManager *mAuthManager = nullptr;
 
     struct ApplicationMembers
     {

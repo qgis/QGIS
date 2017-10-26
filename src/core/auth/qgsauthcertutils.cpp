@@ -25,6 +25,7 @@
 
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 QString QgsAuthCertUtils::getSslProtocolName( QSsl::SslProtocol protocol )
 {
@@ -419,7 +420,7 @@ QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert
     const QCA::Certificate &acert,
     bool issuer )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
     return QString();
 
   if ( acert.isNull() )
@@ -505,7 +506,7 @@ QString QgsAuthCertUtils::shaHexForCert( const QSslCertificate &cert, bool forma
 
 QCA::Certificate QgsAuthCertUtils::qtCertToQcaCert( const QSslCertificate &cert )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
     return QCA::Certificate();
 
   QCA::ConvertResult res;
@@ -521,7 +522,7 @@ QCA::Certificate QgsAuthCertUtils::qtCertToQcaCert( const QSslCertificate &cert 
 QCA::CertificateCollection QgsAuthCertUtils::qtCertsToQcaCollection( const QList<QSslCertificate> &certs )
 {
   QCA::CertificateCollection qcacoll;
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
     return qcacoll;
 
   for ( const auto &cert : certs )
@@ -690,7 +691,7 @@ QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( 
 {
   QList<QgsAuthCertUtils::CertUsageType> usages;
 
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
     return usages;
 
   QCA::ConvertResult res;
@@ -724,9 +725,9 @@ QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( 
 
   // ask QCA what it thinks about potential usages
   QCA::CertificateCollection trustedCAs(
-    qtCertsToQcaCollection( QgsAuthManager::instance()->getTrustedCaCertsCache() ) );
+    qtCertsToQcaCollection( QgsApplication::authManager()->getTrustedCaCertsCache() ) );
   QCA::CertificateCollection untrustedCAs(
-    qtCertsToQcaCollection( QgsAuthManager::instance()->getUntrustedCaCerts() ) );
+    qtCertsToQcaCollection( QgsApplication::authManager()->getUntrustedCaCerts() ) );
 
   QCA::Validity v_any;
   v_any = qcacert.validate( trustedCAs, untrustedCAs, QCA::UsageAny, QCA::ValidateAll );
@@ -790,7 +791,7 @@ bool QgsAuthCertUtils::certificateIsSslServer( const QSslCertificate &cert )
   //       only what it should not be able to do (cert sign, etc.). The logic here may need refined
   // see: http://security.stackexchange.com/a/26650
 
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
     return false;
 
   QCA::ConvertResult res;

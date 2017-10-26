@@ -32,13 +32,15 @@ class QgsAuthManager : QObject
       CRITICAL
     };
 
-    static QgsAuthManager *instance();
+    bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
 %Docstring
- Enforce singleton pattern
-.. note::
-
-   To set up the manager instance and initialize everything use QgsAuthManager.instance()->init()
- :rtype: QgsAuthManager
+ init initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
+ \param pluginPath the plugin path
+ \param authDatabasePath the authentication DB path
+ :return: true on success
+.. seealso:: QgsApplication.pluginPath
+.. seealso:: QgsApplication.qgisAuthDatabaseFilePath
+ :rtype: bool
 %End
 
     ~QgsAuthManager();
@@ -61,11 +63,6 @@ Name of the authentication database table that stores server exceptions/configs
  :rtype: str
 %End
 
-    bool init( const QString &pluginPath = QString() );
-%Docstring
-Initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
- :rtype: bool
-%End
 
     bool isDisabled() const;
 %Docstring
@@ -738,7 +735,8 @@ Clear an authentication config from its associated authentication method cache
 %End
 
   protected:
-    explicit QgsAuthManager();
+
+
 
 };
 

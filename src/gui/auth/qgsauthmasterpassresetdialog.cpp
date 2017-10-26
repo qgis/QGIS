@@ -22,16 +22,17 @@
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
   : QDialog( parent )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
@@ -44,7 +45,7 @@ QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
 
 bool QgsMasterPasswordResetDialog::requestMasterPasswordReset( QString *newpass, QString *oldpass, bool *keepbackup )
 {
-  if ( !QgsAuthManager::instance()->isDisabled() )
+  if ( !QgsApplication::authManager()->isDisabled() )
   {
     validatePasswords();
     leMasterPassCurrent->setFocus();
@@ -66,9 +67,9 @@ bool QgsMasterPasswordResetDialog::requestMasterPasswordReset( QString *newpass,
 void QgsMasterPasswordResetDialog::leMasterPassCurrent_textChanged( const QString &pass )
 {
   // since this is called on every keystroke, block signals emitted during verification of password
-  QgsAuthManager::instance()->blockSignals( true );
+  QgsApplication::authManager()->blockSignals( true );
   mPassCurOk = !pass.isEmpty();
-  QgsAuthManager::instance()->blockSignals( false );
+  QgsApplication::authManager()->blockSignals( false );
   validatePasswords();
 }
 

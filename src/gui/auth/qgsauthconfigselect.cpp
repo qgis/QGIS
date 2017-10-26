@@ -33,12 +33,12 @@ QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &datapr
   : QWidget( parent )
   , mDataProvider( dataprovider )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mDisabled = true;
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
@@ -74,7 +74,7 @@ void QgsAuthConfigSelect::setConfigId( const QString &authcfg )
 {
   if ( mDisabled && mAuthNotify )
   {
-    mAuthNotify->setText( QgsAuthManager::instance()->disabledMessage() + "\n\n" +
+    mAuthNotify->setText( QgsApplication::authManager()->disabledMessage() + "\n\n" +
                           tr( "Authentication config id not loaded: %1" ).arg( authcfg ) );
   }
   else
@@ -105,7 +105,7 @@ void QgsAuthConfigSelect::loadConfig()
   if ( !mAuthCfg.isEmpty() && mConfigs.contains( mAuthCfg ) )
   {
     QgsAuthMethodConfig config = mConfigs.value( mAuthCfg );
-    QgsAuthMethod *authmethod = QgsAuthManager::instance()->configAuthMethod( mAuthCfg );
+    QgsAuthMethod *authmethod = QgsApplication::authManager()->configAuthMethod( mAuthCfg );
     QString methoddesc = tr( "Missing authentication method description" );
     if ( authmethod )
     {
@@ -190,7 +190,7 @@ void QgsAuthConfigSelect::clearMessage()
 void QgsAuthConfigSelect::loadAvailableConfigs()
 {
   mConfigs.clear();
-  mConfigs = QgsAuthManager::instance()->availableAuthMethodConfigs( mDataProvider );
+  mConfigs = QgsApplication::authManager()->availableAuthMethodConfigs( mDataProvider );
 }
 
 void QgsAuthConfigSelect::cmbConfigSelect_currentIndexChanged( int index )
@@ -202,7 +202,7 @@ void QgsAuthConfigSelect::cmbConfigSelect_currentIndexChanged( int index )
 
 void QgsAuthConfigSelect::btnConfigAdd_clicked()
 {
-  if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
+  if ( !QgsApplication::authManager()->setMasterPassword( true ) )
     return;
 
   QgsAuthConfigEdit *ace = new QgsAuthConfigEdit( this, QString(), mDataProvider );
@@ -216,7 +216,7 @@ void QgsAuthConfigSelect::btnConfigAdd_clicked()
 
 void QgsAuthConfigSelect::btnConfigEdit_clicked()
 {
-  if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
+  if ( !QgsApplication::authManager()->setMasterPassword( true ) )
     return;
 
   QgsAuthConfigEdit *ace = new QgsAuthConfigEdit( this, mAuthCfg, mDataProvider );
@@ -240,7 +240,7 @@ void QgsAuthConfigSelect::btnConfigRemove_clicked()
     return;
   }
 
-  if ( QgsAuthManager::instance()->removeAuthenticationConfig( mAuthCfg ) )
+  if ( QgsApplication::authManager()->removeAuthenticationConfig( mAuthCfg ) )
   {
     emit selectedConfigIdRemoved( mAuthCfg );
     setConfigId( QString() );
@@ -260,12 +260,12 @@ void QgsAuthConfigSelect::btnConfigMsgClear_clicked()
 QgsAuthConfigUriEdit::QgsAuthConfigUriEdit( QWidget *parent, const QString &datauri, const QString &dataprovider )
   : QDialog( parent )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mDisabled = true;
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
@@ -329,11 +329,11 @@ QString QgsAuthConfigUriEdit::dataSourceUri()
 
 bool QgsAuthConfigUriEdit::hasConfigId( const QString &txt )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     return false;
   }
-  return QgsAuthManager::instance()->hasConfigId( txt );
+  return QgsApplication::authManager()->hasConfigId( txt );
 }
 
 void QgsAuthConfigUriEdit::saveChanges()
@@ -375,7 +375,7 @@ void QgsAuthConfigUriEdit::authCfgRemoved( const QString &authcfg )
 
 int QgsAuthConfigUriEdit::authCfgIndex()
 {
-  QRegExp rx( QgsAuthManager::instance()->configIdRegex() );
+  QRegExp rx( QgsApplication::authManager()->configIdRegex() );
   return rx.indexIn( mDataUri );
 }
 

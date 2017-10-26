@@ -682,6 +682,17 @@ Returns path to the build output directory. Valid only when running from build d
  :rtype: QgsMessageLog
 %End
 
+    static QgsAuthManager *authManager();
+%Docstring
+ Returns the application's authentication manager instance
+.. note::
+
+   this can be a null pointer if called before initQgis
+.. seealso:: initQgis
+.. versionadded:: 3.0
+ :rtype: QgsAuthManager
+%End
+
     static QgsProcessingRegistry *processingRegistry();
 %Docstring
  Returns the application's processing registry, used for managing processing providers,

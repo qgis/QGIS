@@ -26,6 +26,7 @@
 #include "qgsauthcertificatemanager.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
+#include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"
 
 
@@ -33,11 +34,11 @@ QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget *parent )
   : QDialog( parent )
 
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
@@ -62,7 +63,7 @@ void QgsAuthMethodPlugins::setupTable()
   tblAuthPlugins->setAlternatingRowColors( true );
   tblAuthPlugins->setColumnWidth( 0, 150 );
   tblAuthPlugins->setColumnWidth( 1, 300 );
-  tblAuthPlugins->setRowCount( QgsAuthManager::instance()->authMethodsKeys().size() );
+  tblAuthPlugins->setRowCount( QgsApplication::authManager()->authMethodsKeys().size() );
   tblAuthPlugins->verticalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
   tblAuthPlugins->setSortingEnabled( true );
   tblAuthPlugins->setSelectionBehavior( QAbstractItemView::SelectRows );
@@ -70,7 +71,7 @@ void QgsAuthMethodPlugins::setupTable()
 
 void QgsAuthMethodPlugins::populateTable()
 {
-  QgsAuthMethodsMap authmethods( QgsAuthManager::instance()->authMethodsMap() );
+  QgsAuthMethodsMap authmethods( QgsApplication::authManager()->authMethodsMap() );
 
   int i = 0;
   for ( QgsAuthMethodsMap::const_iterator it = authmethods.constBegin(); it != authmethods.constEnd(); ++it, i++ )
@@ -105,7 +106,7 @@ QgsAuthEditorWidgets::QgsAuthEditorWidgets( QWidget *parent )
   setupUi( this );
   connect( btnCertManager, &QPushButton::clicked, this, &QgsAuthEditorWidgets::btnCertManager_clicked );
   connect( btnAuthPlugins, &QPushButton::clicked, this, &QgsAuthEditorWidgets::btnAuthPlugins_clicked );
-  if ( !QgsAuthManager::instance()->isDisabled() )
+  if ( !QgsApplication::authManager()->isDisabled() )
   {
     wdgtConfigEditor->setRelayMessages( false );
     wdgtConfigEditor->setShowUtilitiesButton( false );
@@ -137,7 +138,7 @@ void QgsAuthEditorWidgets::btnAuthPlugins_clicked()
 
 void QgsAuthEditorWidgets::setupUtilitiesMenu()
 {
-  connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
+  connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
            this, &QgsAuthEditorWidgets::authMessageOut );
 
   // set up utility actions menu
@@ -162,10 +163,10 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   mActionPasswordHelperLoggingEnable = new QAction( tr( "Enable password helper debug log" ), this );
 
   mActionPasswordHelperEnable->setCheckable( true );
-  mActionPasswordHelperEnable->setChecked( QgsAuthManager::instance()->passwordHelperEnabled() );
+  mActionPasswordHelperEnable->setChecked( QgsApplication::authManager()->passwordHelperEnabled() );
 
   mActionPasswordHelperLoggingEnable->setCheckable( true );
-  mActionPasswordHelperLoggingEnable->setChecked( QgsAuthManager::instance()->passwordHelperLoggingEnabled() );
+  mActionPasswordHelperLoggingEnable->setChecked( QgsApplication::authManager()->passwordHelperLoggingEnabled() );
 
   connect( mActionSetMasterPassword, &QAction::triggered, this, &QgsAuthEditorWidgets::setMasterPassword );
   connect( mActionClearCachedMasterPassword, &QAction::triggered, this, &QgsAuthEditorWidgets::clearCachedMasterPassword );
