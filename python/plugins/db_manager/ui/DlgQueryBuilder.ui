@@ -24,6 +24,9 @@
        <property name="fieldGrowthPolicy">
         <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
        </property>
+       <property name="labelAlignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
@@ -44,7 +47,7 @@
        <item row="1" column="0">
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Tables     </string>
+          <string>Tables</string>
          </property>
         </widget>
        </item>
@@ -105,7 +108,7 @@
        <item row="2" column="0">
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>Where    </string>
+          <string>Where</string>
          </property>
         </widget>
        </item>
@@ -156,7 +159,7 @@
             <x>0</x>
             <y>0</y>
             <width>250</width>
-            <height>313</height>
+            <height>291</height>
            </rect>
           </property>
           <attribute name="label">
@@ -266,8 +269,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>250</width>
-            <height>313</height>
+            <width>154</width>
+            <height>155</height>
            </rect>
           </property>
           <attribute name="label">
@@ -319,8 +322,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>250</width>
-            <height>313</height>
+            <width>223</width>
+            <height>122</height>
            </rect>
           </property>
           <attribute name="label">
