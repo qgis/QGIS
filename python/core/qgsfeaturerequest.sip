@@ -629,6 +629,12 @@ Set a subset of attributes by names that will be fetched
 %Docstring
  The timeout for how long we should wait for a connection if none is available from the pool
  at this moment. A negative value (which is set by default) will wait forever.
+
+.. note::
+
+   Only works if the provider supports this option.
+
+.. versionadded:: 3.0
  :rtype: int
 %End
 
@@ -636,6 +642,12 @@ Set a subset of attributes by names that will be fetched
 %Docstring
  The timeout for how long we should wait for a connection if none is available from the pool
  at this moment. A negative value (which is set by default) will wait forever.
+
+.. note::
+
+   Only works if the provider supports this option.
+
+.. versionadded:: 3.0
 %End
 
   protected:
