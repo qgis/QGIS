@@ -39,7 +39,8 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
     {
       TitleRole = Qt::UserRole + 1,
       PathRole = Qt::UserRole + 2,
-      CrsRole = Qt::UserRole + 3
+      NativePathRole = Qt::UserRole + 3,
+      CrsRole = Qt::UserRole + 4
     };
 
     struct RecentProjectData
@@ -49,6 +50,8 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
       QString title;
       QString previewImagePath;
       QString crs;
+      mutable bool checkedExists = false;
+      mutable bool exists = false;
     };
 
     explicit QgsWelcomePageItemsModel( QObject *parent = nullptr );
@@ -58,6 +61,9 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
     int rowCount( const QModelIndex &parent ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+    void removeProject( const QModelIndex &index );
+    void recheckProject( const QModelIndex &index );
 
   private:
     QList<RecentProjectData> mRecentProjects;

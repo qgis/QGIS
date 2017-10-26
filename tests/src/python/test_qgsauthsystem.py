@@ -17,7 +17,7 @@ __revision__ = '$Format:%H$'
 import os
 import tempfile
 
-from qgis.core import QgsAuthManager, QgsAuthCertUtils, QgsPkiBundle, QgsAuthMethodConfig, QgsAuthMethod, QgsAuthConfigSslServer
+from qgis.core import QgsAuthManager, QgsAuthCertUtils, QgsPkiBundle, QgsAuthMethodConfig, QgsAuthMethod, QgsAuthConfigSslServer, QgsApplication
 from qgis.gui import QgsAuthEditorWidgets
 
 
@@ -29,8 +29,9 @@ from qgis.PyQt.QtNetwork import QSsl, QSslError, QSslSocket
 from qgis.testing import (
     start_app,
     unittest,
-    unitTestDataPath,
 )
+
+from utilities import unitTestDataPath
 
 AUTHDBDIR = tempfile.mkdtemp()
 os.environ['QGIS_AUTH_DB_DIR_PATH'] = AUTHDBDIR
@@ -44,7 +45,7 @@ class TestQgsAuthManager(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.authm = QgsAuthManager.instance()
+        cls.authm = QgsApplication.authManager()
         assert not cls.authm.isDisabled(), cls.authm.disabledMessage()
 
         cls.mpass = 'pass'  # master password
@@ -325,7 +326,7 @@ class TestQgsAuthManager(unittest.TestCase):
         config.setSslIgnoredErrorEnums([QSslError.SelfSignedCertificate])
         config.setSslPeerVerifyMode(QSslSocket.VerifyNone)
         config.setSslPeerVerifyDepth(3)
-        config.setSslProtocol(QSsl.TlsV1)
+        config.setSslProtocol(QSsl.TlsV1_1)
 
         msg = 'SSL config is null'
         self.assertFalse(config.isNull(), msg)
@@ -559,6 +560,63 @@ class TestQgsAuthManager(unittest.TestCase):
                         not self.authm.masterPasswordHashInDatabase(), msg)
 
         self.set_master_password()
+
+    def test_110_pkcs12_cas(self):
+        """Test if CAs can be read from a pkcs12 bundle"""
+        path = PKIDATA + '/fra_w-chain.p12'
+        cas = QgsAuthCertUtils.pkcs12BundleCas(path, 'password')
+
+        self.assertEqual(cas[0].issuerInfo(b'CN'), ['QGIS Test Root CA'])
+        self.assertEqual(cas[0].subjectInfo(b'CN'), ['QGIS Test Issuer CA'])
+        self.assertEqual(cas[0].serialNumber(), b'02')
+        self.assertEqual(cas[1].issuerInfo(b'CN'), ['QGIS Test Root CA'])
+        self.assertEqual(cas[1].subjectInfo(b'CN'), ['QGIS Test Root CA'])
+        self.assertEqual(cas[1].serialNumber(), b'01')
+
+    def test_120_pem_cas_from_file(self):
+        """Test if CAs can be read from a pem bundle"""
+        path = PKIDATA + '/fra_w-chain.pem'
+        cas = QgsAuthCertUtils.casFromFile(path)
+
+        self.assertEqual(cas[0].issuerInfo(b'CN'), ['QGIS Test Root CA'])
+        self.assertEqual(cas[0].subjectInfo(b'CN'), ['QGIS Test Issuer CA'])
+        self.assertEqual(cas[0].serialNumber(), b'02')
+        self.assertEqual(cas[1].issuerInfo(b'CN'), ['QGIS Test Root CA'])
+        self.assertEqual(cas[1].subjectInfo(b'CN'), ['QGIS Test Root CA'])
+        self.assertEqual(cas[1].serialNumber(), b'01')
+
+    def test_130_cas_merge(self):
+        """Test CAs merge """
+        trusted_path = PKIDATA + '/subissuer_ca_cert.pem'
+        extra_path = PKIDATA + '/fra_w-chain.pem'
+
+        trusted = QgsAuthCertUtils.casFromFile(trusted_path)
+        extra = QgsAuthCertUtils.casFromFile(extra_path)
+        merged = QgsAuthCertUtils.casMerge(trusted, extra)
+
+        self.assertEqual(len(trusted), 1)
+        self.assertEqual(len(extra), 2)
+        self.assertEqual(len(merged), 3)
+
+        for c in extra:
+            self.assertTrue(c in merged)
+
+        self.assertTrue(trusted[0] in merged)
+
+    def test_140_cas_remove_self_signed(self):
+        """Test CAs merge """
+        extra_path = PKIDATA + '/fra_w-chain.pem'
+
+        extra = QgsAuthCertUtils.casFromFile(extra_path)
+        filtered = QgsAuthCertUtils.casRemoveSelfSigned(extra)
+
+        self.assertEqual(len(filtered), 1)
+        self.assertEqual(len(extra), 2)
+
+        self.assertTrue(extra[1].isSelfSigned())
+
+        for c in filtered:
+            self.assertFalse(c.isSelfSigned())
 
 
 if __name__ == '__main__':

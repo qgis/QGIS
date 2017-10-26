@@ -26,6 +26,7 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPoint
   , mPixelCoords( pixelCoords )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapCoordsDialog::buttonBox_accepted );
 
   QgsSettings s;
   restoreGeometry( s.value( QStringLiteral( "/Plugin-GeoReferencer/MapCoordsWindow/geometry" ) ).toByteArray() );
@@ -75,7 +76,7 @@ void QgsMapCoordsDialog::setPrevTool()
   mQgisCanvas->setMapTool( mPrevMapTool );
 }
 
-void QgsMapCoordsDialog::on_buttonBox_accepted()
+void QgsMapCoordsDialog::buttonBox_accepted()
 {
   bool ok;
   double x = leXCoord->text().toDouble( &ok );

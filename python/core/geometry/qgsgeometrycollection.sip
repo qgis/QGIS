@@ -53,6 +53,10 @@ class QgsGeometryCollection: QgsAbstractGeometry
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
+    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const;
+
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
+
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 %Docstring
@@ -167,6 +171,10 @@ Adds a geometry and takes ownership. Returns true in case of success.
     virtual QgsGeometryCollection *toCurveType() const /Factory/;
 
 
+
+  protected:
+    virtual int childCount() const;
+    virtual QgsAbstractGeometry *childGeometry( int index ) const;
 
   protected:
 

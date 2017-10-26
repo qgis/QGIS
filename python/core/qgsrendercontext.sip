@@ -41,6 +41,7 @@ class QgsRenderContext
       RenderMapTile,
       Antialiasing,
       RenderPartialOutput,
+      RenderPreviewJob,
     };
     typedef QFlags<QgsRenderContext::Flag> Flags;
 
@@ -73,6 +74,7 @@ class QgsRenderContext
 
     static QgsRenderContext fromMapSettings( const QgsMapSettings &mapSettings );
 %Docstring
+ create initialized QgsRenderContext instance from given QgsMapSettings
 .. versionadded:: 2.4
  :rtype: QgsRenderContext
 %End

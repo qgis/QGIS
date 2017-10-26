@@ -476,6 +476,7 @@ QgsAdvancedDigitizingDockWidget        {#qgis_api_break_3_0_QgsAdvancedDigitizin
 
 - canvasPressEvent(), canvasReleaseEvent(), canvasMoveEvent() were removed. Handling of events is done in QgsMapToolAdvancedDigitizing.
 - snappingMode() was removed. Advanced digitizing now always uses project's snapping configuration.
+- lineCircleIntersection() was removed
 
 
 QgsApplication        {#qgis_api_break_3_0_QgsApplication}
@@ -1154,6 +1155,8 @@ QgsExpression::Function       {#qgis_api_break_3_0_QgsExpression_Function}
 - `QgsExpression::Function::usesgeometry()` has been renamed to `QgsExpression::Function::usesGeometry( const NodeFunction* node )`
 - `QStringList QgsExpression::Function::referencedColumns()` has been changed to `QSet<QString> QgsExpression::Function::referencedColumns( const NodeFunction* node )`
 - `QgsExpression::Function::helptext()` has been renamed to `helpText()`
+- `QgsExpression::Function::func` has an additional parameter `node` that
+  provides access to the original node.
 
 QgsExpressionItem        {#qgis_api_break_3_0_QgsExpressionItem}
 -----------------
@@ -1250,6 +1253,15 @@ QgsFieldProxyModel        {#qgis_api_break_3_0_QgsFieldProxyModel}
 - In QgsFieldProxyModel::Filter, All has been renamed to AllTypes
 
 
+QgsFileDownloader       {#qgis_api_break_3_0_QgsFileDownloader}
+-----------------
+
+- In 2.x QgsFileDownloader was a gui library class. In 3.0 its functionality has been split into
+two new classes - a core QgsFileDownloader class, which handles just the file download functionality
+and contains no GUI progress bar dialog, and a separate QgsFileDownloaderDialog class which
+incorporates a QgsFileDownloader together with a user-visible progress bar dialog
+
+
 QgsGeometry        {#qgis_api_break_3_0_QgsGeometry}
 -----------
 
@@ -1257,6 +1269,10 @@ QgsGeometry        {#qgis_api_break_3_0_QgsGeometry}
 value instead of a pointer. The biggest impact with this change is that PyQGIS code should not compare a geometry
 result to None, but instead either use a boolean test (`if g.buffer(10):`) or explicitly use the isNull()
 method to determine if a geometry is valid.
+- The QgsAbstractGeometry getter was renamed from geometry() to get(), and the setter from setGeometry() to set().
+This was done to avoid the awkward "feature.geometry().geometry()" expression! Note that calling QgsGeometry.get()
+can force a detach and full clone of the geometry, so it is preferable to use the faster QgsGeometry::constGet()
+method if the geometry is not being modified.
 - isEmpty() was renamed to isNull() to differentiate a missing geometry from a geometry which is empty (eg an
 empty geometry collection)
 - wkbSize() and asWkb() has been replaced by exportToWkb(). WKB representation is no longer cached within QgsGeometry
@@ -1271,6 +1287,9 @@ empty geometry collection)
 - isGeosEmpty() was removed. Use isEmpty() instead.
 - reshapeGeometry() expects QgsLineString as a parameter instead of a list of 2D points (so that it can support 3D geometries)
 - vertexAt() now returns a QgsPoint (previously QgsPointV2) instead of a QgsPointXY (previously QgsPoint)
+- fromPolyline() now requires a list of QgsPoint objects, instead of QgsPointXY 2d points. A new method fromPolylineXY was
+added which uses the old list of 2d QgsPointXY objects. Using the newer method with QgsPoint is greatly preferred, as it
+maintains Z or M dimensions from the input points and is more efficient.
 
 
 QgsGeometryAnalyzer        {#qgis_api_break_3_0_QgsGeometryAnalyzer}
@@ -1285,6 +1304,8 @@ QgsGeometryEngine        {#qgis_api_break_3_0_QgsGeometryEngine}
 - `QgsAbstractGeometry&` parameters have been changed to `QgsAbstractGeometry*` (Affects C++ only)
 - `centroid()` returns the point instead of working on a parameter. The return value is a `nullptr` when `false` has been returned in the past.
 - `pointOnSurface()` returns the point instead of working on a parameter. The return value is a `nullptr` when `false` has been returned in the past.
+- splitGeometry() now returns new geometries as QgsGeometry, instead of QgsAbstractGeometry
+- combine() now requires a list of QgsGeometry, instead of QgsAbstractGeometry
 
 
 QgsGeometrySimplifier        {#qgis_api_break_3_0_QgsGeometrySimplifier}
@@ -1358,6 +1379,7 @@ QgsGeometryUtils         {#qgis_api_break_3_0_QgsGeometryUtils}
 ----------------
 
 - componentType enum has been renamed to ComponentType and its members were CamelCased too: VERTEX, RING and PART become Vertex, Ring and Part, respectively.
+- adjacentVertices was removed - use QgsAbstractGeometry.adjacentVertices instead.
 
 
 QgsGPSConnectionRegistry        {#qgis_api_break_3_0_QgsGPSConnectionRegistry}
@@ -1875,6 +1897,13 @@ plugins calling this method will need to be updated.
 - destCRS() has been renamed to destinationCrs()
 - destinationCrs() now returns a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
 plugins calling this method will need to be updated.
+
+
+QgsPolyline        {#qgis_api_break_3_0_QgsPolyline}
+-----------
+
+- QgsPolyline now consists of a list of QgsPoint, instead of 2d QgsPointXY objects. The 2d polyline variant has
+been renamed to QgsPolylineXY
 
 
 QgsProject        {#qgis_api_break_3_0_QgsProject}

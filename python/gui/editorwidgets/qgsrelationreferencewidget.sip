@@ -23,7 +23,6 @@ class QgsRelationReferenceWidget : QWidget
 %TypeHeaderCode
 #include "qgsrelationreferencewidget.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsRelationReferenceWidget *>( sipCpp ) )
       sipType = sipType_QgsRelationReferenceWidget;
@@ -120,7 +119,8 @@ determines the open form button is visible in the widget
 
     QgsFeature referencedFeature() const;
 %Docstring
-if no feature is related, it returns an invalid feature
+ return the related feature (from the referenced layer)
+ if no feature is related, it returns an invalid feature
  :rtype: QgsFeature
 %End
 

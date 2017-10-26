@@ -27,7 +27,8 @@
 #include "qgsmargins.h"
 #include "qgsmaplayer.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsAnnotation
  * \since QGIS 3.0
  *

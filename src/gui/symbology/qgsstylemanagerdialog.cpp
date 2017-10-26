@@ -49,6 +49,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   , mModified( false )
 {
   setupUi( this );
+  connect( tabItemType, &QTabWidget::currentChanged, this, &QgsStyleManagerDialog::tabItemType_currentChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsStyleManagerDialog::showHelp );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsStyleManagerDialog::onClose );
 
@@ -187,7 +188,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   connect( actnRemoveGroup, &QAction::triggered, this, &QgsStyleManagerDialog::removeGroup );
   mGroupTreeContextMenu->addAction( actnRemoveGroup );
 
-  on_tabItemType_currentChanged( 0 );
+  tabItemType_currentChanged( 0 );
 }
 
 void QgsStyleManagerDialog::onFinished()
@@ -243,7 +244,7 @@ void QgsStyleManagerDialog::populateTypes()
 #endif
 }
 
-void QgsStyleManagerDialog::on_tabItemType_currentChanged( int )
+void QgsStyleManagerDialog::tabItemType_currentChanged( int )
 {
   // when in Color Ramp tab, add menu to add item button and hide "Export symbols as PNG/SVG"
   bool flag = currentItemType() != 3;
@@ -791,7 +792,7 @@ bool QgsStyleManagerDialog::removeColorRamp()
 {
   QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm removal" ),
-       QString( tr( "Do you really want to remove %n ramps(s)?", nullptr, indexes.count() ) ),
+       QString( tr( "Do you really want to remove %n ramp(s)?", nullptr, indexes.count() ) ),
        QMessageBox::Yes,
        QMessageBox::No ) )
     return false;

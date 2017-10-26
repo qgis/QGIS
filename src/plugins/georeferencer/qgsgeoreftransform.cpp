@@ -32,7 +32,7 @@
 class QgsLinearGeorefTransform : public QgsGeorefTransformInterface
 {
   public:
-    QgsLinearGeorefTransform() {}
+    QgsLinearGeorefTransform() = default;
 
     bool getOriginScale( QgsPointXY &origin, double &scaleX, double &scaleY ) const;
 
@@ -58,7 +58,7 @@ class QgsLinearGeorefTransform : public QgsGeorefTransformInterface
 class QgsHelmertGeorefTransform : public QgsGeorefTransformInterface
 {
   public:
-    QgsHelmertGeorefTransform() {}
+    QgsHelmertGeorefTransform() = default;
     struct HelmertParameters
     {
       QgsPointXY origin;

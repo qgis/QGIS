@@ -26,7 +26,8 @@
 #include "qgspoint.h"
 #include "qgstest.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the operations on curve geometries
  */
 class TestQgsCurve : public QObject
@@ -34,7 +35,7 @@ class TestQgsCurve : public QObject
     Q_OBJECT
 
   public:
-    TestQgsCurve() {};
+    TestQgsCurve() = default;;
 
   private slots:
     //void initTestCase();// will be called before the first testfunction is executed.

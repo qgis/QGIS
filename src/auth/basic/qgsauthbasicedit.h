@@ -30,7 +30,6 @@ class QgsAuthBasicEdit : public QgsAuthMethodEdit, private Ui::QgsAuthBasicEdit
 
   public:
     explicit QgsAuthBasicEdit( QWidget *parent = nullptr );
-    virtual ~QgsAuthBasicEdit();
 
     bool validateConfig() override;
 
@@ -44,9 +43,9 @@ class QgsAuthBasicEdit : public QgsAuthMethodEdit, private Ui::QgsAuthBasicEdit
     void clearConfig() override;
 
   private slots:
-    void on_leUsername_textChanged( const QString &txt );
+    void leUsername_textChanged( const QString &txt );
 
-    void on_chkPasswordShow_stateChanged( int state );
+    void chkPasswordShow_stateChanged( int state );
 
   private:
     QgsStringMap mConfigMap;

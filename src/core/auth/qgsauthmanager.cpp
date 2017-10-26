@@ -41,7 +41,6 @@
 #include "keychain.h"
 
 // QGIS includes
-#include "qgsapplication.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthcrypto.h"
 #include "qgsauthmethod.h"
@@ -83,13 +82,27 @@ static const QString sDescription = QObject::tr( "Master Password <-> KeyChain s
 #endif
 
 
+
 QgsAuthManager *QgsAuthManager::instance()
 {
   if ( !sInstance )
   {
-    sInstance = new QgsAuthManager();
+    static QMutex sMutex;
+    QMutexLocker locker( &sMutex );
+    if ( !sInstance )
+    {
+      sInstance = new QgsAuthManager( );
+    }
   }
   return sInstance;
+}
+
+
+QgsAuthManager::QgsAuthManager()
+{
+  mMutex = new QMutex( QMutex::Recursive );
+  connect( this, &QgsAuthManager::messageOut,
+           this, &QgsAuthManager::writeToConsole );
 }
 
 QSqlDatabase QgsAuthManager::authDatabaseConnection() const
@@ -121,7 +134,7 @@ QSqlDatabase QgsAuthManager::authDatabaseConnection() const
   return authdb;
 }
 
-bool QgsAuthManager::init( const QString &pluginPath )
+bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabasePath )
 {
   if ( mAuthInit )
     return true;
@@ -184,7 +197,7 @@ bool QgsAuthManager::init( const QString &pluginPath )
     return isDisabled();
   }
 
-  mAuthDbPath = QDir::cleanPath( QgsApplication::qgisAuthDatabaseFilePath() );
+  mAuthDbPath = QDir::cleanPath( authDatabasePath );
   QgsDebugMsg( QString( "Auth database path: %1" ).arg( authenticationDatabasePath() ) );
 
   QFileInfo dbinfo( authenticationDatabasePath() );
@@ -1401,7 +1414,6 @@ bool QgsAuthManager::updateNetworkRequest( QNetworkRequest &request, const QStri
     }
     return true;
   }
-
   return false;
 }
 
@@ -2437,7 +2449,7 @@ const QList<QSslCertificate> QgsAuthManager::getExtraFileCAs()
     filecerts = QgsAuthCertUtils::certsFromFile( cafile );
   }
   // only CAs or certs capable of signing other certs are allowed
-  for ( const auto &cert : qgsAsConst( filecerts ) )
+  for ( const auto &cert : qgis::as_const( filecerts ) )
   {
     if ( !allowinvalid.toBool() && !cert.isValid() )
     {
@@ -2756,18 +2768,7 @@ bool QgsAuthManager::rebuildTrustedCaCertsCache()
 
 const QByteArray QgsAuthManager::getTrustedCaCertsPemText()
 {
-  QByteArray capem;
-  const QList<QSslCertificate> certs( getTrustedCaCertsCache() );
-  if ( !certs.isEmpty() )
-  {
-    QStringList certslist;
-    for ( const auto &cert : certs )
-    {
-      certslist << cert.toPem();
-    }
-    capem = certslist.join( QStringLiteral( "\n" ) ).toLatin1(); //+ "\n";
-  }
-  return capem;
+  return QgsAuthCertUtils::certsToPemText( getTrustedCaCertsCache() );
 }
 
 bool QgsAuthManager::passwordHelperSync()
@@ -2867,14 +2868,6 @@ void QgsAuthManager::tryToStartDbErase()
   QgsDebugMsg( "authDatabaseEraseRequest emit skipped" );
 }
 
-QgsAuthManager::QgsAuthManager()
-  : QObject()
-  , mIgnoredSslErrorsCache( QHash<QString, QSet<QSslError::SslError> >() )
-{
-  mMutex = new QMutex( QMutex::Recursive );
-  connect( this, &QgsAuthManager::messageOut,
-           this, &QgsAuthManager::writeToConsole );
-}
 
 QgsAuthManager::~QgsAuthManager()
 {
@@ -3405,7 +3398,7 @@ bool QgsAuthManager::reencryptAllAuthenticationSettings( const QString &prevpass
   QStringList encryptedsettings;
   encryptedsettings << "";
 
-  for ( const auto & sett, qgsAsConst( encryptedsettings ) )
+  for ( const auto & sett, qgis::as_const( encryptedsettings ) )
   {
     if ( sett.isEmpty() || !existsAuthSetting( sett ) )
       continue;

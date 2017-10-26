@@ -25,7 +25,8 @@ email                : marco.hugentobler at sourcepole dot com
 
 class QgsLineString;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGeometryUtils
  * \brief Contains various geometry utility functions.
  * \since QGIS 2.10
@@ -34,12 +35,14 @@ class CORE_EXPORT QgsGeometryUtils
 {
   public:
 
-    /** Returns list of linestrings extracted from the passed geometry. The returned objects
+    /**
+     * Returns list of linestrings extracted from the passed geometry. The returned objects
      *  have to be deleted by the caller.
      */
     static QList<QgsLineString *> extractLineStrings( const QgsAbstractGeometry *geom ) SIP_FACTORY;
 
-    /** Returns the closest vertex to a geometry for a specified point.
+    /**
+     * Returns the closest vertex to a geometry for a specified point.
      * On error null point will be returned and "id" argument will be invalid.
      */
     static QgsPoint closestVertex( const QgsAbstractGeometry &geom, const QgsPoint &pt, QgsVertexId &id SIP_OUT );
@@ -51,7 +54,8 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QgsPoint closestPoint( const QgsAbstractGeometry &geometry, const QgsPoint &point );
 
-    /** Returns the distance along a geometry from its first vertex to the specified vertex.
+    /**
+     * Returns the distance along a geometry from its first vertex to the specified vertex.
      * \param geom geometry
      * \param id vertex id to find distance to
      * \returns distance to vertex (following geometry)
@@ -59,7 +63,8 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static double distanceToVertex( const QgsAbstractGeometry &geom, QgsVertexId id );
 
-    /** Retrieves the vertices which are before and after the interpolated point at a specified distance along a linestring
+    /**
+     * Retrieves the vertices which are before and after the interpolated point at a specified distance along a linestring
      * (or polygon boundary).
      * \param geometry line or polygon geometry
      * \param distance distance to traverse along geometry
@@ -74,15 +79,13 @@ class CORE_EXPORT QgsGeometryUtils
                                     QgsVertexId &previousVertex SIP_OUT,
                                     QgsVertexId &nextVertex SIP_OUT );
 
-    /** Returns vertices adjacent to a specified vertex within a geometry.
-     */
-    static void adjacentVertices( const QgsAbstractGeometry &geom, QgsVertexId atVertex, QgsVertexId &beforeVertex SIP_OUT, QgsVertexId &afterVertex SIP_OUT );
-
-    /** Returns the squared 2D distance between two points.
+    /**
+     * Returns the squared 2D distance between two points.
      */
     static double sqrDistance2D( const QgsPoint &pt1, const QgsPoint &pt2 );
 
-    /** Returns the squared distance between a point and a line.
+    /**
+     * Returns the squared distance between a point and a line.
      */
     static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX SIP_OUT, double &minDistY SIP_OUT, double epsilon );
 
@@ -147,7 +150,8 @@ class CORE_EXPORT QgsGeometryUtils
     //! Returns < 0 if point(x/y) is left of the line x1,y1 -> x2,y2
     static double leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
 
-    /** Returns a point a specified distance toward a second point.
+    /**
+     * Returns a point a specified distance toward a second point.
      */
     static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance );
 
@@ -164,7 +168,8 @@ class CORE_EXPORT QgsGeometryUtils
     //! Returns true if, in a circle, angle is between angle1 and angle2
     static bool circleAngleBetween( double angle, double angle1, double angle2, bool clockwise );
 
-    /** Returns true if an angle is between angle1 and angle3 on a circle described by
+    /**
+     * Returns true if an angle is between angle1 and angle3 on a circle described by
      * angle1, angle2 and angle3.
      */
     static bool angleOnCircle( double angle, double angle1, double angle2, double angle3 );
@@ -181,7 +186,8 @@ class CORE_EXPORT QgsGeometryUtils
     //! Calculates the direction angle of a circle tangent (clockwise from north in radians)
     static double circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 );
 
-    /** Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p2 lies on the arc) into a sequence of points.
+    /**
+     * Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p2 lies on the arc) into a sequence of points.
      * \since 3.0
      */
     static void segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3,
@@ -189,18 +195,21 @@ class CORE_EXPORT QgsGeometryUtils
                                QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle,
                                bool hasZ = false, bool hasM = false );
 
-    /** For line defined by points pt1 and pt3, find out on which side of the line is point pt3.
+    /**
+     * For line defined by points pt1 and pt3, find out on which side of the line is point pt3.
      * Returns -1 if pt3 on the left side, 1 if pt3 is on the right side or 0 if pt3 lies on the line.
      * \since 3.0
      */
     static int segmentSide( const QgsPoint &pt1, const QgsPoint &pt3, const QgsPoint &pt2 );
 
-    /** Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
+    /**
+     * Interpolate a value at given angle on circular arc given values (zm1, zm2, zm3) at three different angles (a1, a2, a3).
      * \since 3.0
      */
     static double interpolateArcValue( double angle, double a1, double a2, double a3, double zm1, double zm2, double zm3 );
 
-    /** Returns a list of points contained in a WKT string.
+    /**
+     * Returns a list of points contained in a WKT string.
      * \note not available in Python bindings
      */
     static QgsPointSequence pointsFromWKT( const QString &wktCoordinateList, bool is3D, bool isMeasure ) SIP_SKIP;
@@ -235,13 +244,15 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QString pointsToJSON( const QgsPointSequence &points, int precision ) SIP_SKIP;
 
-    /** Ensures that an angle is in the range 0 <= angle < 2 pi.
+    /**
+     * Ensures that an angle is in the range 0 <= angle < 2 pi.
      * \param angle angle in radians
      * \returns equivalent angle within the range [0, 2 pi)
      */
     static double normalizedAngle( double angle );
 
-    /** Calculates the direction of line joining two points in radians, clockwise from the north direction.
+    /**
+     * Calculates the direction of line joining two points in radians, clockwise from the north direction.
      * \param x1 x-coordinate of line start
      * \param y1 y-coordinate of line start
      * \param x2 x-coordinate of line end
@@ -250,7 +261,8 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static double lineAngle( double x1, double y1, double x2, double y2 );
 
-    /** Calculates the angle between the lines AB and BC, where AB and BC described
+    /**
+     * Calculates the angle between the lines AB and BC, where AB and BC described
      * by points a, b and b, c.
      * \param x1 x-coordinate of point a
      * \param y1 y-coordinate of point a
@@ -263,7 +275,8 @@ class CORE_EXPORT QgsGeometryUtils
     static double angleBetweenThreePoints( double x1, double y1, double x2, double y2,
                                            double x3, double y3 );
 
-    /** Calculates the perpendicular angle to a line joining two points. Returned angle is in radians,
+    /**
+     * Calculates the perpendicular angle to a line joining two points. Returned angle is in radians,
      * clockwise from the north direction.
      * \param x1 x-coordinate of line start
      * \param y1 y-coordinate of line start
@@ -276,7 +289,8 @@ class CORE_EXPORT QgsGeometryUtils
     //! Angle between two linear segments
     static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 );
 
-    /** Averages two angles, correctly handling negative angles and ensuring the result is between 0 and 2 pi.
+    /**
+     * Averages two angles, correctly handling negative angles and ensuring the result is between 0 and 2 pi.
      * \param a1 first angle (in radians)
      * \param a2 second angle (in radians)
      * \returns average angle (in radians)
@@ -298,7 +312,8 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QStringList wktGetChildBlocks( const QString &wkt, const QString &defaultType = QString() ) SIP_SKIP;
 
-    /** Returns a middle point between points pt1 and pt2.
+    /**
+     * Returns a middle point between points pt1 and pt2.
      * Z value is computed if one of this point have Z.
      * M value is computed if one of this point have M.
      * \param pt1 first point.
@@ -320,7 +335,8 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QgsPoint midpoint( const QgsPoint &pt1, const QgsPoint &pt2 );
 
-    /** Return the gradient of a line defined by points \a pt1 and \a pt2.
+    /**
+     * Return the gradient of a line defined by points \a pt1 and \a pt2.
      * \param pt1 first point.
      * \param pt2 second point.
      * \returns The gradient of this linear entity, or infinity if vertical
@@ -328,7 +344,8 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 );
 
-    /** Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points \a pt1 and \a pt2.
+    /**
+     * Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points \a pt1 and \a pt2.
      * \param pt1 first point.
      * \param pt2 second point.
      * \param a Output parameter, a coefficient of the equation.

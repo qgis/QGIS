@@ -29,7 +29,8 @@ class QgsComposerTableColumn;
 
 //QgsComposerAttributeTableColumnModelV2
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A model for displaying columns shown in a QgsComposerAttributeTableV2
 */
 class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableModel
@@ -38,7 +39,8 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
 
   public:
 
-    /** Controls whether a row/column is shifted up or down
+    /**
+     * Controls whether a row/column is shifted up or down
      */
     enum ShiftDirection
     {
@@ -46,7 +48,8 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
       ShiftDown //!< Shift the row/column down
     };
 
-    /** Constructor for QgsComposerAttributeTableColumnModel.
+    /**
+     * Constructor for QgsComposerAttributeTableColumnModel.
      * \param composerTable QgsComposerAttributeTable the model is attached to
      * \param parent optional parent
      */
@@ -63,7 +66,8 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
     QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
     QModelIndex parent( const QModelIndex &child ) const override;
 
-    /** Moves the specified row up or down in the model. Used for rearranging the attribute tables
+    /**
+     * Moves the specified row up or down in the model. Used for rearranging the attribute tables
      * columns.
      * \returns true if the move is allowed
      * \param row row in model representing attribute table column to move
@@ -72,13 +76,15 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      */
     bool moveRow( int row, ShiftDirection direction );
 
-    /** Resets the attribute table's columns to match the source layer's fields. Remove all existing
+    /**
+     * Resets the attribute table's columns to match the source layer's fields. Remove all existing
      * attribute table columns and column customisations.
      * \since QGIS 2.3
      */
     void resetToLayer();
 
-    /** Returns the QgsComposerTableColumn corresponding to an index in the model.
+    /**
+     * Returns the QgsComposerTableColumn corresponding to an index in the model.
      * \returns QgsComposerTableColumn for specified index
      * \param index a QModelIndex
      * \since QGIS 2.3
@@ -86,7 +92,8 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      */
     QgsComposerTableColumn *columnFromIndex( const QModelIndex &index ) const;
 
-    /** Returns a QModelIndex corresponding to a QgsComposerTableColumn in the model.
+    /**
+     * Returns a QModelIndex corresponding to a QgsComposerTableColumn in the model.
      * \returns QModelIndex for specified QgsComposerTableColumn
      * \param column a QgsComposerTableColumn
      * \since QGIS 2.3
@@ -94,7 +101,8 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      */
     QModelIndex indexFromColumn( QgsComposerTableColumn *column );
 
-    /** Sets a specified column as a sorted column in the QgsComposerAttributeTable. The column will be
+    /**
+     * Sets a specified column as a sorted column in the QgsComposerAttributeTable. The column will be
      * added to the end of the sort rank list, ie it will take the next largest available sort rank.
      * \param column a QgsComposerTableColumn
      * \param order sort order for column
@@ -104,7 +112,8 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      */
     void setColumnAsSorted( QgsComposerTableColumn *column, Qt::SortOrder order );
 
-    /** Sets a specified column as an unsorted column in the QgsComposerAttributeTable. The column will be
+    /**
+     * Sets a specified column as an unsorted column in the QgsComposerAttributeTable. The column will be
      * removed from the sort rank list.
      * \param column a QgsComposerTableColumn
      * \since QGIS 2.3
@@ -112,7 +121,8 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      */
     void setColumnAsUnsorted( QgsComposerTableColumn *column );
 
-    /** Moves a column up or down in the sort rank for the QgsComposerAttributeTable.
+    /**
+     * Moves a column up or down in the sort rank for the QgsComposerAttributeTable.
      * \param column a QgsComposerTableColumn
      * \param direction direction to move the column in the sort rank list
      * \since QGIS 2.3
@@ -128,7 +138,8 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
 
 //QgsComposerTableSortColumnsProxyModelV2
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Allows for filtering QgsComposerAttributeTable columns by columns which are sorted or unsorted
 */
 class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterProxyModel
@@ -137,7 +148,8 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
 
   public:
 
-    /** Controls whether the proxy model shows sorted or unsorted columns
+    /**
+     * Controls whether the proxy model shows sorted or unsorted columns
      */
     enum ColumnFilterType
     {
@@ -145,7 +157,8 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
       ShowUnsortedColumns//!< Show only unsorted columns
     };
 
-    /** Constructor for QgsComposerTableSortColumnsProxyModel.
+    /**
+     * Constructor for QgsComposerTableSortColumnsProxyModel.
      * \param composerTable QgsComposerAttributeTable the model is attached to
      * \param filterType filter for columns, controls whether sorted or unsorted columns are shown
      * \param parent optional parent
@@ -159,7 +172,8 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
-    /** Returns the QgsComposerTableColumn corresponding to a row in the proxy model.
+    /**
+     * Returns the QgsComposerTableColumn corresponding to a row in the proxy model.
      * \returns QgsComposerTableColumn for specified row
      * \param row a row number
      * \since QGIS 2.3
@@ -167,7 +181,8 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      */
     QgsComposerTableColumn *columnFromRow( int row );
 
-    /** Returns the QgsComposerTableColumn corresponding to an index in the proxy model.
+    /**
+     * Returns the QgsComposerTableColumn corresponding to an index in the proxy model.
      * \returns QgsComposerTableColumn for specified index
      * \param index a QModelIndex
      * \since QGIS 2.3
@@ -176,7 +191,8 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      */
     QgsComposerTableColumn *columnFromIndex( const QModelIndex &index ) const;
 
-    /** Returns the QgsComposerTableColumn corresponding to an index from the source
+    /**
+     * Returns the QgsComposerTableColumn corresponding to an index from the source
      * QgsComposerAttributeTableColumnModel model.
      * \returns QgsComposerTableColumn for specified index from QgsComposerAttributeTableColumnModel
      * \param sourceIndex a QModelIndex
@@ -186,7 +202,8 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      */
     QgsComposerTableColumn *columnFromSourceIndex( const QModelIndex &sourceIndex ) const;
 
-    /** Invalidates the current filter used by the proxy model
+    /**
+     * Invalidates the current filter used by the proxy model
      * \since QGIS 2.3
      */
     void resetFilter();
@@ -198,7 +215,8 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
     QgsComposerAttributeTableV2 *mComposerTable = nullptr;
     ColumnFilterType mFilterType;
 
-    /** Returns a list of QgsComposerTableColumns without a set sort rank
+    /**
+     * Returns a list of QgsComposerTableColumns without a set sort rank
      * \returns QgsComposerTableColumns in attribute table without a sort rank
      * \since QGIS 2.3
      */

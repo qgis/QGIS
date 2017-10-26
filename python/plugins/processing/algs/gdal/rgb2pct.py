@@ -17,7 +17,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -31,12 +30,13 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsProcessingParameterRasterLayer,
+from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.tools.system import isWindows
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -47,20 +47,18 @@ class rgb2pct(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
     NCOLORS = 'NCOLORS'
 
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', '24-to-8-bits.png'))
-
-    def group(self):
-        return self.tr('Raster conversion')
-
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterRasterLayer(rgb2pct.INPUT,
-                                                            self.tr('Input layer'), optional=False))
-        self.addParameter(QgsProcessingParameterNumber(rgb2pct.NCOLORS,
-                                                       self.tr('Number of colors'), minValue=1, defaultValue=2))
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterNumber(self.NCOLORS,
+                                                       self.tr('Number of colors'),
+                                                       type=QgsProcessingParameterNumber.Integer,
+                                                       minValue=0,
+                                                       maxValue=255,
+                                                       defaultValue=2))
+
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('RGB to PCT')))
 
     def name(self):
@@ -69,13 +67,20 @@ class rgb2pct(GdalAlgorithm):
     def displayName(self):
         return self.tr('RGB to PCT')
 
+    def group(self):
+        return self.tr('Raster conversion')
+
+    def icon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', '24-to-8-bits.png'))
+
     def getConsoleCommands(self, parameters, context, feedback):
         arguments = []
         arguments.append('-n')
-        arguments.append(str(self.parameterAsInt(parameters, rgb2pct.NCOLORS, context)))
-        arguments.append('-of')
+        arguments.append(str(self.parameterAsInt(parameters, self.NCOLORS, context)))
+
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
+        arguments.append('-of')
+        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
         arguments.append(self.parameterAsRasterLayer(parameters, self.INPUT, context).source())
         arguments.append(out)
 

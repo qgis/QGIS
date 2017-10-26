@@ -22,7 +22,8 @@
 #include "qgsexpression.h"
 #include "qgsdatadefinedsizelegend.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSingleSymbolRenderer
  */
 class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
@@ -57,9 +58,11 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
 
-    //! creates a QgsSingleSymbolRenderer from an existing renderer.
-    //! \since QGIS 2.5
-    //! \returns a new renderer if the conversion was possible, otherwise 0.
+    /**
+     * creates a QgsSingleSymbolRenderer from an existing renderer.
+     * \since QGIS 2.5
+     * \returns a new renderer if the conversion was possible, otherwise 0.
+     */
     static QgsSingleSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     /**

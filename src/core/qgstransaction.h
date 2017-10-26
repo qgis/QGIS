@@ -30,7 +30,8 @@
 class QgsVectorDataProvider;
 class QgsVectorLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class allows including a set of layers in a database-side transaction,
  * provided the layer data providers support transactions and are compatible
  * with each other.
@@ -110,8 +111,14 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     /**
      * Execute the \a sql string. The result must not be a tuple, so running a
      * ``SELECT`` query will return an error.
+     *
+     * \param sql The sql query to execute
+     * \param error The error message
+     * \param isDirty Flag to indicate if the underlying data will be modified
+     *
+     * \returns true if everything is OK, false otherwise
      */
-    virtual bool executeSql( const QString &sql, QString &error SIP_OUT ) = 0;
+    virtual bool executeSql( const QString &sql, QString &error SIP_OUT, bool isDirty = false ) = 0;
 
     /**
      * Checks if a the provider of a given \a layer supports transactions.
@@ -163,6 +170,11 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
      * Emitted after a rollback
      */
     void afterRollback();
+
+    /**
+     * Emitted if a sql query is executed and the underlying data is modified
+     */
+    void dirtied( const QString &sql );
 
   protected:
     QgsTransaction( const QString &connString ) SIP_SKIP;

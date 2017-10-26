@@ -1,68 +1,84 @@
-Content-Length: 3001
+Content-Length: 6031
 Content-Type: text/xml; charset=utf-8
 
-<WFS_Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns="http://www.opengis.net/wfs" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd" xmlns:ogc="http://www.opengis.net/ogc" version="1.0.0" xmlns:xlink="http://www.w3.org/1999/xlink" updateSequence="0">
- <Service>
-  <Name>WFS</Name>
-  <Title>QGIS TestProject</Title>
-  <Abstract><![CDATA[Some UTF8 text èòù]]></Abstract>
-  <OnlineResource/>
- </Service>
- <Capability>
-  <Request>
-   <GetCapabilities>
-    <DCPType>
-     <HTTP>
-      <Get onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
-     </HTTP>
-    </DCPType>
-    <DCPType>
-     <HTTP>
-      <Post onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
-     </HTTP>
-    </DCPType>
-   </GetCapabilities>
-   <DescribeFeatureType>
-    <SchemaDescriptionLanguage>
-     <XMLSCHEMA/>
-    </SchemaDescriptionLanguage>
-    <DCPType>
-     <HTTP>
-      <Get onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
-     </HTTP>
-    </DCPType>
-    <DCPType>
-     <HTTP>
-      <Post onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
-     </HTTP>
-    </DCPType>
-   </DescribeFeatureType>
-   <GetFeature>
-    <ResultFormat>
-     <GML2/>
-     <GML3/>
-     <GeoJSON/>
-    </ResultFormat>
-    <DCPType>
-     <HTTP>
-      <Get onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
-     </HTTP>
-    </DCPType>
-    <DCPType>
-     <HTTP>
-      <Post onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
-     </HTTP>
-    </DCPType>
-   </GetFeature>
-   <Transaction>
-    <DCPType>
-     <HTTP>
-      <Post onlineResource="?MAP=tests/testdata/qgis_server/test_project_wfs.qgs"/>
-     </HTTP>
-    </DCPType>
-   </Transaction>
-  </Request>
- </Capability>
+<WFS_Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xmlns:ows="http://www.opengis.net/ows" xmlns="http://www.opengis.net/wfs" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd" xmlns:ogc="http://www.opengis.net/ogc" version="1.1.0" xmlns:xlink="http://www.w3.org/1999/xlink" updateSequence="0">
+ <ows:ServiceIdentification>
+  <ows:Title>QGIS TestProject</ows:Title>
+  <ows:Abstract><![CDATA[Some UTF8 text èòù]]></ows:Abstract>
+  <ows:ServiceType>WFS</ows:ServiceType>
+  <ows:Fees>None</ows:Fees>
+  <ows:AccessConstraints>None</ows:AccessConstraints>
+ </ows:ServiceIdentification>
+ <ows:ServiceProvider>
+  <ows:ProviderName>QGIS dev team</ows:ProviderName>
+  <ows:ServiceContact>
+   <ows:IndividualName>Alessandro Pasotti</ows:IndividualName>
+   <ows:Role>PointOfContact</ows:Role>
+  </ows:ServiceContact>
+ </ows:ServiceProvider>
+ <ows:OperationsMetadata>
+  <ows:Operation name="GetCapabilities">
+   <ows:DCP>
+    <ows:HTTP>
+     <ows:Get xlink:type="xlink:simple" xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Get xlink:type="xlink:simple" xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+    </ows:HTTP>
+   </ows:DCP>
+   <ows:Parameter name="service">
+    <ows:Value>WFS</ows:Value>
+   </ows:Parameter>
+   <ows:Parameter name="AcceptVersions">
+    <ows:Value>1.1.0</ows:Value>
+    <ows:Value>1.0.0</ows:Value>
+   </ows:Parameter>
+   <ows:Parameter name="AcceptFormats">
+    <ows:Value>text/xml</ows:Value>
+   </ows:Parameter>
+  </ows:Operation>
+  <ows:Operation name="DescribeFeatureType">
+   <ows:DCP>
+    <ows:HTTP>
+     <ows:Get xlink:type="xlink:simple" xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Get xlink:type="xlink:simple" xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+    </ows:HTTP>
+   </ows:DCP>
+   <ows:Parameter name="outputFormat">
+    <ows:Value>XMLSCHEMA</ows:Value>
+    <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
+    <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+   </ows:Parameter>
+  </ows:Operation>
+  <ows:Operation name="GetFeature">
+   <ows:DCP>
+    <ows:HTTP>
+     <ows:Get xlink:type="xlink:simple" xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Get xlink:type="xlink:simple" xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+    </ows:HTTP>
+   </ows:DCP>
+   <ows:Parameter name="outputFormat">
+    <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
+    <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+    <ows:Value>application/vnd.geo+json</ows:Value>
+   </ows:Parameter>
+   <ows:Parameter name="resultType">
+    <ows:Value>results</ows:Value>
+    <ows:Value>hits</ows:Value>
+   </ows:Parameter>
+  </ows:Operation>
+  <ows:Operation name="Transaction">
+   <ows:DCP>
+    <ows:HTTP>
+     <ows:Get xlink:type="xlink:simple" xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+     <ows:Get xlink:type="xlink:simple" xlink:href="?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_wfs.qgs"/>
+    </ows:HTTP>
+   </ows:DCP>
+   <ows:Parameter name="inputFormat">
+    <ows:Value>text/xml; subtype=gml/2.1.2</ows:Value>
+    <ows:Value>text/xml; subtype=gml/3.1.1</ows:Value>
+    <ows:Value>application/vnd.geo+json</ows:Value>
+   </ows:Parameter>
+  </ows:Operation>
+ </ows:OperationsMetadata>
  <FeatureTypeList>
   <Operations>
    <Query/>
@@ -71,8 +87,15 @@ Content-Type: text/xml; charset=utf-8
    <Name>testlayer</Name>
    <Title>A test vector layer</Title>
    <Abstract>A test vector layer with unicode òà</Abstract>
-   <SRS>EPSG:4326</SRS>
-   <LatLongBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+   <DefaultSRS>EPSG:4326</DefaultSRS>
+   <OtherSRS>EPSG:3857</OtherSRS>
+   <OutputFormats>
+    <Format>text/xml; subtype=gml/3.1.1</Format>
+   </OutputFormats>
+   <ows:WGS84BoundingBox dimensions="2">
+    <ows:LowerCorner>8.20346 44.9014</ows:LowerCorner>
+    <ows:UpperCorner>8.20355 44.9015</ows:UpperCorner>
+   </ows:WGS84BoundingBox>
    <Operations>
     <Query/>
     <Insert/>
@@ -83,23 +106,37 @@ Content-Type: text/xml; charset=utf-8
  </FeatureTypeList>
  <ogc:Filter_Capabilities>
   <ogc:Spatial_Capabilities>
-   <ogc:Spatial_Operators>
-    <ogc:BBOX/>
-    <ogc:Disjoint/>
-    <ogc:Intersect/>
-    <ogc:Touches/>
-    <ogc:Crosses/>
-    <ogc:Contains/>
-    <ogc:Overlaps/>
-    <ogc:Within/>
-   </ogc:Spatial_Operators>
+   <ogc:GeometryOperands>
+    <ogc:GeometryOperand>gml:Point</ogc:GeometryOperand>
+    <ogc:GeometryOperand>gml:LineString</ogc:GeometryOperand>
+    <ogc:GeometryOperand>gml:Polygon</ogc:GeometryOperand>
+    <ogc:GeometryOperand>gml:Envelope</ogc:GeometryOperand>
+   </ogc:GeometryOperands>
+   <ogc:SpatialOperators>
+    <ogc:SpatialOperator>Equals</ogc:SpatialOperator>
+    <ogc:SpatialOperator>Disjoint</ogc:SpatialOperator>
+    <ogc:SpatialOperator>Touches</ogc:SpatialOperator>
+    <ogc:SpatialOperator>Within</ogc:SpatialOperator>
+    <ogc:SpatialOperator>Overlaps</ogc:SpatialOperator>
+    <ogc:SpatialOperator>Crosses</ogc:SpatialOperator>
+    <ogc:SpatialOperator>Intersects</ogc:SpatialOperator>
+    <ogc:SpatialOperator>Contains</ogc:SpatialOperator>
+    <ogc:SpatialOperator>DWithin</ogc:SpatialOperator>
+    <ogc:SpatialOperator>Beyond</ogc:SpatialOperator>
+    <ogc:SpatialOperator>BBOX</ogc:SpatialOperator>
+   </ogc:SpatialOperators>
   </ogc:Spatial_Capabilities>
   <ogc:Scalar_Capabilities>
-   <ogc:Comparison_Operators>
-    <ogc:Simple_Comparisons/>
-    <ogc:Between/>
-    <ogc:Like/>
-   </ogc:Comparison_Operators>
+   <ogc:LogicalOperators/>
+   <ogc:ComparisonOperators>
+    <ogc:ComparisonOperator>LessThan</ogc:ComparisonOperator>
+    <ogc:ComparisonOperator>GreaterThan</ogc:ComparisonOperator>
+    <ogc:ComparisonOperator>LessThanEqualTo</ogc:ComparisonOperator>
+    <ogc:ComparisonOperator>GreaterThanEqualTo</ogc:ComparisonOperator>
+    <ogc:ComparisonOperator>EqualTo</ogc:ComparisonOperator>
+    <ogc:ComparisonOperator>Like</ogc:ComparisonOperator>
+    <ogc:ComparisonOperator>Between</ogc:ComparisonOperator>
+   </ogc:ComparisonOperators>
   </ogc:Scalar_Capabilities>
  </ogc:Filter_Capabilities>
 </WFS_Capabilities>

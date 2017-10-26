@@ -62,7 +62,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     // number of instances using this map
     int userCount() const;
 
-    /** Get current number of lines.
+    /**
+     * Get current number of lines.
      *   \returns number of lines */
     int numLines();
     int numAreas();
@@ -88,7 +89,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QHash<QgsFeatureId, int> &newCats() { return mNewCats; }
     QMap<int, QList<QgsGrassUndoCommand *> > &undoCommands() { return mUndoCommands; }
 
-    /** Get geometry of line.
+    /**
+     * Get geometry of line.
      * \returns geometry (point,line or polygon(GV_FACE)) or 0 */
     QgsAbstractGeometry *lineGeometry( int id );
     QgsAbstractGeometry *nodeGeometry( int id );
@@ -113,26 +115,31 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     bool closeEdit( bool newMap );
     void clearUndoCommands();
 
-    /** Get layer, layer is created and loaded if not yet.
+    /**
+     * Get layer, layer is created and loaded if not yet.
      *  \param field
      *  \returns pointer to layer or 0 if layer doe not exist */
     QgsGrassVectorMapLayer *openLayer( int field );
 
-    /** Close layer and release cached data if there are no more users and close map
+    /**
+     * Close layer and release cached data if there are no more users and close map
      *  if there are no more map users.
      *  \param layer */
     void closeLayer( QgsGrassVectorMapLayer *layer );
 
-    /** Update map. Close and reopen vector and refresh layers.
+    /**
+     * Update map. Close and reopen vector and refresh layers.
      *  Instances of QgsGrassProvider are not updated and should call update() method */
     void update();
 
-    /** The map is outdated. The map was for example rewritten by GRASS module outside QGIS.
+    /**
+     * The map is outdated. The map was for example rewritten by GRASS module outside QGIS.
      *  This function checks internal timestamp stored in QGIS.
      */
     bool mapOutdated();
 
-    /** The attributes are outdated. The table was for example updated by GRASS module outside QGIS.
+    /**
+     * The attributes are outdated. The table was for example updated by GRASS module outside QGIS.
      *  This function checks internal timestamp stored in QGIS.
      */
     bool attributesOutdated();
@@ -140,7 +147,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     //! Map description for debugging
     QString toString();
 
-    /** Get topology symbol code
+    /**
+     * Get topology symbol code
      * \param lid line or area number
      * \param type geometry type */
     TopoSymbol topoSymbol( int lid );
@@ -151,7 +159,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 
   signals:
 
-    /** Ask all iterators to cancel iteration when possible. Connected to iterators with
+    /**
+     * Ask all iterators to cancel iteration when possible. Connected to iterators with
      * Qt::DirectConnection (non blocking) */
     void cancelIterators();
 
@@ -218,7 +227,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 class GRASS_LIB_EXPORT QgsGrassVectorMapStore
 {
   public:
-    QgsGrassVectorMapStore();
+    QgsGrassVectorMapStore() = default;
 
     static QgsGrassVectorMapStore *instance();
 
@@ -226,7 +235,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapStore
     // This is only used for editing test to have an independent map
     static void setStore( QgsGrassVectorMapStore *store ) { sStore = store; }
 
-    /** Open map.
+    /**
+     * Open map.
      *  \param grassObject
      *  \returns map, the map may be invalide  */
     QgsGrassVectorMap *openMap( const QgsGrassObject &grassObject );

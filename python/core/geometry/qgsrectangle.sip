@@ -44,6 +44,14 @@ Copy constructor
 
     ~QgsRectangle();
 
+    static QgsRectangle fromWkt( const QString &wkt );
+%Docstring
+ Creates a new rectangle from a WKT string.
+ The WKT must contain only 5 vertices, representing a rectangle aligned with X and Y axes.
+.. versionadded:: 3.0
+ :rtype: QgsRectangle
+%End
+
     void set( const QgsPointXY &p1, const QgsPointXY &p2 );
 %Docstring
  Sets the rectangle from two QgsPoints. The rectangle is
@@ -175,7 +183,10 @@ Copy constructor
     QgsRectangle buffered( double width ) const;
 %Docstring
  Get rectangle enlarged by buffer.
-.. versionadded:: 2.1
+.. note::
+
+   In earlier QGIS releases this method was named buffer().
+.. versionadded:: 3.0
 .. seealso:: grow()
  :rtype: QgsRectangle
 %End

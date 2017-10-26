@@ -46,7 +46,7 @@
 #include "qgswmscapabilities.h"
 #include "qgsexception.h"
 #include "qgssettings.h"
-
+#include "qgsogrutils.h"
 
 #ifdef HAVE_GUI
 #include "qgswmssourceselect.h"
@@ -611,7 +611,10 @@ static void _drawDebugRect( QPainter &p, const QRectF &rect, const QColor &color
 
 QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback *feedback )
 {
-  QgsDebugMsg( "Entering." );
+  if ( QgsApplication::instance()->thread() != QThread::currentThread() )
+  {
+    QgsDebugMsg( "Trying to draw a WMS image on the main thread. Stop it!" );
+  }
 
   // compose the URL query string for the WMS server.
 
@@ -3042,13 +3045,12 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
               QScriptValue geom = json_stringify.call( QScriptValue(), QScriptValueList() << f.property( QStringLiteral( "geometry" ) ) );
               if ( geom.isString() )
               {
-                OGRGeometryH ogrGeom = OGR_G_CreateGeometryFromJson( geom.toString().toUtf8() );
+                gdal::ogr_geometry_unique_ptr ogrGeom( OGR_G_CreateGeometryFromJson( geom.toString().toUtf8() ) );
                 if ( ogrGeom )
                 {
-                  int wkbSize = OGR_G_WkbSize( ogrGeom );
+                  int wkbSize = OGR_G_WkbSize( ogrGeom.get() );
                   unsigned char *wkb = new unsigned char[ wkbSize ];
-                  OGR_G_ExportToWkb( ogrGeom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
-                  OGR_G_DestroyGeometry( ogrGeom );
+                  OGR_G_ExportToWkb( ogrGeom.get(), ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
 
                   QgsGeometry g;
                   g.fromWkb( wkb, wkbSize );
@@ -3510,7 +3512,8 @@ QGISEXTERN QgsWmsProvider *classFactory( const QString *uri )
   return new QgsWmsProvider( *uri );
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
@@ -4208,11 +4211,7 @@ QgsCachedImageFetcher::QgsCachedImageFetcher( const QImage &img )
 {
 }
 
-QgsCachedImageFetcher::~QgsCachedImageFetcher()
-{
-}
-void
-QgsCachedImageFetcher::start()
+void QgsCachedImageFetcher::start()
 {
   QTimer::singleShot( 1, this, SLOT( send() ) );
 }

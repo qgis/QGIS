@@ -172,6 +172,9 @@ class APP_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
 
     QgsExpressionContext createExpressionContext() const override;
 
+    bool applyDefaultValueOnUpdate() const;
+    void setApplyDefaultValueOnUpdate( bool applyDefaultValueOnUpdate );
+
   private slots:
 
     /**
@@ -179,7 +182,9 @@ class APP_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
      * \param index index of value in combobox
      */
     void onCurrentWidgetChanged( int index );
-
+    
+    void selectionListWidget_currentRowChanged( int index );
+    
     void defaultExpressionChanged();
 
     void showHelp();

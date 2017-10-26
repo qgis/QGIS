@@ -5,7 +5,7 @@
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <TITLE>QGIS</TITLE>
 
-<!-- Included /home/fischer/src/qgis/doc/style.css -->
+<!-- Included doc/style.css -->
 <STYLE TYPE="text/css">
 body{  background: white;
   color: black;
@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Saturday September 23, 2017</H3>
+<H3>Saturday October 14, 2017</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Saturday September 23, 2017
-Last Change : Saturday September 23, 2017
+Last Updated: Saturday October 14, 2017
+Last Change : Saturday October 14, 2017
 </P>
 <DIV CLASS="toc">
 
@@ -160,7 +160,7 @@ regularly updated to match the corresponding release. Instructions for the curre
 master branch are available at
 <A HREF="http://htmlpreview.github.io/?https://raw.github.com/qgis/QGIS/master/doc/INSTALL.html.">http://htmlpreview.github.io/?https://raw.github.com/qgis/QGIS/master/doc/INSTALL.html.</A>
 If you wish to build another version of QGIS, ensure to checkout the appropriate
-release branch.
+release branch. The QGIS source code can be found <A HREF="https://github.com/qgis/QGIS">in the repository</A>.
 </P>
 <P>
 Please visit <A HREF="http://qgis.org">http://qgis.org</A> for information on joining our mailing lists 
@@ -596,7 +596,7 @@ new subdirectory called `build` or `build-qt5` in it.
 <H3>3.9.1. Install build dependencies</H3>
 
 <div class="code"><PRE>
-dnf install qt5-qtwebkit-devel qt5-qtlocation-devel qt5-qttools-static qt5-qtscript-devel qca-qt5-devel python3-qt5-devel python3-qscintilla-qt5-devel qscintilla-qt5-devel python3-qscintilla-devel python3-qscintilla-qt5 clang flex bison geos-devel gdal-devel sqlite-devel libspatialite-devel qt5-qtsvg-devel qt5-qtxmlpatterns-devel spatialindex-devel expat-devel proj-devel qwt-qt5-devel gsl-devel postgresql-devel cmake python3-future gdal-python3 python3-psycopg2 python3-PyYAML python3-pygments python3-jinja2 python3-OWSLib qca-qt5-ossl qwt-qt5-devel qtkeychain-qt5-devel qwt-devel sip-devel
+dnf install qt5-qtwebkit-devel qt5-qtlocation-devel qt5-qttools-static qt5-qtscript-devel qca-qt5-devel python3-qt5-devel python3-qscintilla-qt5-devel qscintilla-qt5-devel python3-qscintilla-devel python3-qscintilla-qt5 clang flex bison geos-devel gdal-devel sqlite-devel libspatialite-devel qt5-qtsvg-devel qt5-qtxmlpatterns-devel spatialindex-devel expat-devel proj-devel qwt-qt5-devel gsl-devel postgresql-devel cmake python3-future gdal-python3 python3-psycopg2 python3-PyYAML python3-pygments python3-jinja2 python3-OWSLib qca-qt5-ossl qwt-qt5-devel qtkeychain-qt5-devel qwt-devel sip-devel libzip-devel
 </PRE></div>
 
 <P>
@@ -751,6 +751,7 @@ and from OSGeo4W (select <I>Advanced Installation</I>):
 <LI>python3-future
 <LI>python3-pyyaml
 <LI>python3-mock
+<LI>python3-six
 <LI>qca-qt5-devel
 <LI>qca-qt5-libs
 <LI>qscintilla-qt5
@@ -1002,7 +1003,7 @@ it, just point the installer to c:\msys\mingw
 When Qt installation is complete:
 </P>
 <P>
-Edit C:\Qt\4.8.0\bin\qtvars.bat and add the following lines:
+Edit C:\Qt\5.9.1\bin\qtvars.bat and add the following lines:
 </P>
 
 <div class="code"><PRE>
@@ -1011,12 +1012,12 @@ set PATH=%PATH%;"C:\Program Files\Subversion\bin"
 </PRE></div>
 
 <P>
-I suggest you also add C:\Qt\4.8.0\bin\ to your Environment Variables Path in
+I suggest you also add C:\Qt\5.9.1\bin\ to your Environment Variables Path in
 the windows system preferences.
 </P>
 <P>
 If you plan to do some debugging, you'll need to compile debug version of Qt:
-C:\Qt\4.8.0\bin\qtvars.bat compile_debug
+C:\Qt\5.9.1\bin\qtvars.bat compile_debug
 </P>
 <P>
 Note: there is a problem when compiling debug version of Qt 4.7, the script ends with
@@ -1026,7 +1027,7 @@ following command:
 </P>
 
 <div class="code"><PRE>
-c:\Qt\4.8.0 make 
+c:\Qt\5.9.1 make 
 </PRE></div>
 
 <H3>4.2.3. Flex and Bison</H3>
@@ -1037,12 +1038,16 @@ Get Flex
 (the zip bin) and extract it into c:\msys\mingw\bin
 </P>
 
-<H3>4.2.4. Python stuff (optional)</H3>
+<H3>4.2.4. Python</H3>
 
 <P>
 Follow this section in case you would like to use Python bindings for QGIS.  To
-be able to compile bindings, you need to compile SIP and PyQt4 from sources as
+be able to compile bindings, you need to compile SIP and PyQt5 from sources as
 their installer doesn't include some development files which are necessary.
+</P>
+<P>
+Note that even if you compile without the Python bindings, Python3 is still
+a necessary dependency for building QGIS.
 </P>
 
 <H4>4.2.4.1. Download and install Python - use Windows installer</H4>
@@ -1054,7 +1059,7 @@ their installer doesn't include some development files which are necessary.
 <A HREF="http://python.org/download/">http://python.org/download/</A>
 </P>
 
-<H4>4.2.4.2. Download SIP and PyQt4 sources</H4>
+<H4>4.2.4.2. Download SIP and PyQt5 sources</H4>
 
 <P>
 <A HREF="http://www.riverbankcomputing.com/software/sip/download">http://www.riverbankcomputing.com/software/sip/download</A>
@@ -1068,7 +1073,7 @@ to get versions that match your current Qt installed version.
 <H4>4.2.4.3. Compile SIP</H4>
 
 <div class="code"><PRE>
-c:\Qt\4.8.0\bin\qtvars.bat 
+c:\Qt\5.9.1\bin\qtvars.bat 
 python configure.py -p win32-g++ 
 make 
 make install 
@@ -1077,7 +1082,7 @@ make install
 <H4>4.2.4.4. Compile PyQt</H4>
 
 <div class="code"><PRE>
-c:\Qt\4.8.0\bin\qtvars.bat 
+c:\Qt\5.9.1\bin\qtvars.bat 
 python configure.py 
 make 
 make install 
@@ -1086,7 +1091,7 @@ make install
 <H4>4.2.4.5. Final python notes</H4>
 
 <P>
-/!\ You can delete the directories with unpacked SIP and PyQt4 sources after a
+/!\ You can delete the directories with unpacked SIP and PyQt5 sources after a
 successful install, they're not needed anymore.
 </P>
 
@@ -1106,7 +1111,7 @@ This installer should work fine:
 CMake is build system used by QGIS. Download it from here:
 </P>
 <P>
-<A HREF="http://www.cmake.org/files/v2.8/cmake-2.8.2-win32-x86.exe">http://www.cmake.org/files/v2.8/cmake-2.8.2-win32-x86.exe</A>
+<A HREF="https://cmake.org/files/v3.9/cmake-3.9.3-win64-x64.msi">https://cmake.org/files/v3.9/cmake-3.9.3-win64-x64.msi</A>
 </P>
 
 <H3>4.2.7. QGIS</H3>
@@ -1141,11 +1146,11 @@ already.  Add paths to compiler and our MSYS environment:
 </P>
 
 <div class="code"><PRE>
-c:\Qt\4.8.0\bin\qtvars.bat 
+c:\Qt\5.9.1\bin\qtvars.bat 
 </PRE></div>
 
 <P>
-For ease of use add c:\Qt\4.8.0\bin\ to your system path in system
+For ease of use add c:\Qt\5.9.1\bin\ to your system path in system
 properties so you can just type qtvars.bat when you open the cmd console.
 Create build directory and set it as current directory:
 </P>
@@ -3055,5 +3060,5 @@ The following people have contributed to this document:
 
 </DIV>
 <!-- html code generated by txt2tags 2.6 (http://txt2tags.org) -->
-<!-- cmdline: txt2tags -\-encoding=utf-8 -o/home/fischer/src/qgis/debian/build-master-qt5/doc/INSTALL.html -t html /home/fischer/src/qgis/doc/INSTALL.t2t -->
+<!-- cmdline: txt2tags -\-encoding=utf-8 -o doc/INSTALL.html -t html doc/INSTALL.t2t -->
 </BODY></HTML>

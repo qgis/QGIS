@@ -70,6 +70,7 @@ quoted table name
 
     void setParam( const QString &key, const QString &value );
 %Docstring
+ Set generic param (generic mode)
 .. note::
 
    if key exists, another is inserted
@@ -83,6 +84,7 @@ quoted table name
 
     int removeParam( const QString &key );
 %Docstring
+ Remove generic param (generic mode)
 .. note::
 
    remove all occurrences of key, returns number of params removed

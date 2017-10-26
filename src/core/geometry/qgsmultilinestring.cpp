@@ -23,7 +23,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmulticurve.h"
 
 QgsMultiLineString::QgsMultiLineString()
-  : QgsMultiCurve()
 {
   mWkbType = QgsWkbTypes::MultiLineString;
 }
@@ -52,6 +51,10 @@ bool QgsMultiLineString::fromWkt( const QString &wkt )
 QDomElement QgsMultiLineString::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
+
+  if ( isEmpty() )
+    return elemMultiLineString;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )
@@ -68,6 +71,10 @@ QDomElement QgsMultiLineString::asGML2( QDomDocument &doc, int precision, const 
 QDomElement QgsMultiLineString::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiCurve" ) );
+
+  if ( isEmpty() )
+    return elemMultiCurve;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )

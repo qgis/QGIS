@@ -24,7 +24,6 @@ class QgsWCSConnectionItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsWCSConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri );
-    ~QgsWCSConnectionItem();
 
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
@@ -55,7 +54,6 @@ class QgsWCSLayerItem : public QgsLayerItem
     QgsWCSLayerItem( QgsDataItem *parent, QString name, QString path,
                      const QgsWcsCapabilitiesProperty &capabilitiesProperty,
                      const QgsDataSourceUri &dataSourceUri, const QgsWcsCoverageSummary &coverageSummary );
-    ~QgsWCSLayerItem();
 
     QString createUri();
 
@@ -69,7 +67,6 @@ class QgsWCSRootItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsWCSRootItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsWCSRootItem();
 
     QVector<QgsDataItem *> createChildren() override;
 

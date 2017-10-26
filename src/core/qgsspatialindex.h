@@ -49,7 +49,8 @@ class QgsSpatialIndexData;
 class QgsFeatureIterator;
 class QgsFeatureSource;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSpatialIndex
  */
 class CORE_EXPORT QgsSpatialIndex
@@ -62,7 +63,8 @@ class CORE_EXPORT QgsSpatialIndex
     //! Constructor - creates R-tree
     QgsSpatialIndex();
 
-    /** Constructor - creates R-tree and bulk loads it with features from the iterator.
+    /**
+     * Constructor - creates R-tree and bulk loads it with features from the iterator.
      * This is much faster approach than creating an empty index and then inserting features one by one.
      *
      * The optional \a feedback object can be used to allow cancelation of bulk feature loading. Ownership
@@ -128,7 +130,8 @@ class CORE_EXPORT QgsSpatialIndex
 
     static SpatialIndex::Region rectToRegion( const QgsRectangle &rect );
 
-    /** Calculates feature info to insert into index.
+    /**
+     * Calculates feature info to insert into index.
     * \param f input feature
     * \param r will be set to spatial index region
     * \param id will be set to feature's ID
@@ -137,7 +140,8 @@ class CORE_EXPORT QgsSpatialIndex
     */
     static bool featureInfo( const QgsFeature &f, SpatialIndex::Region &r, QgsFeatureId &id ) SIP_SKIP;
 
-    /** Calculates feature info to insert into index.
+    /**
+     * Calculates feature info to insert into index.
      * \param f input feature
      * \param rect will be set to feature's geometry bounding box
      * \param id will be set to feature's ID

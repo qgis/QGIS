@@ -1,0 +1,28 @@
+version: '3'
+services:
+  postgres:
+    image: kartoza/postgis:9.5-2.2
+    environment:
+      - ALLOW_IP_RANGE="172.18.0.0/16"
+
+  qgis-deps:
+    tty: true
+    image: qgis/qgis3-build-deps:${DOCKER_TAG}
+    volumes:
+      - ${TRAVIS_BUILD_DIR}:/root/QGIS
+      - $HOME/.ccache:/root/.ccache  # if changed, also change env var
+    links:
+      - postgres
+    environment:
+      - CCACHE_DIR=/root/.ccache
+      - CTEST_BUILD_DIR=/root/QGIS
+      - TRAVIS_BRANCH=${TRAVIS_BRANCH}
+      - TRAVIS_PULL_REQUEST=${TRAVIS_PULL_REQUEST}
+      - TRAVIS_PULL_REQUEST_BRANCH=${TRAVIS_PULL_REQUEST_BRANCH}
+      - TRAVIS_COMMIT_RANGE=${TRAVIS_COMMIT_RANGE}
+      - TRAVIS_OS_NAME=${TRAVIS_OS_NAME}
+      - TRAVIS_CONFIG=${TRAVIS_CONFIG}
+      - TRAVIS=${TRAVIS}
+      - QGIS_DISABLE_MESSAGE_HOOKS=1
+      - QGIS_NO_OVERRIDE_IMPORT=1
+

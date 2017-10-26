@@ -25,7 +25,8 @@ class QgsMapCanvas;
 class QgsRenderContext;
 class QPainter;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * An abstract class for items that can be placed on the
  * map canvas.
  */
@@ -48,7 +49,8 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! schedules map canvas for repaint
     void updateCanvas();
 
-    /** Sets render context parameters
+    /**
+     * Sets render context parameters
     \param p painter for rendering
     \param context out: configured context
     \returns true in case of success */
@@ -78,14 +80,16 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! pointer to map canvas
     QgsMapCanvas *mMapCanvas = nullptr;
 
-    //! cached canvas item rectangle in map coordinates
-    //! encodes position (xmin,ymax) and size (width/height)
-    //! used to re-position and re-size the item on zoom/pan
-    //! while waiting for the renderer to complete.
-    //!
-    //! NOTE: does not include rotation information, so cannot
-    //!       be used to correctly present pre-rendered map
-    //!       on rotation change
+    /**
+     * cached canvas item rectangle in map coordinates
+     * encodes position (xmin,ymax) and size (width/height)
+     * used to re-position and re-size the item on zoom/pan
+     * while waiting for the renderer to complete.
+     *
+     * NOTE: does not include rotation information, so cannot
+     * be used to correctly present pre-rendered map
+     * on rotation change
+     */
     QgsRectangle mRect;
 
     double mRectRotation;

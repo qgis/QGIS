@@ -29,7 +29,8 @@ class QgsDistanceArea;
 class QgsExpressionContextGenerator;
 class QgsCodeEditorSQL;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsExpressionLineEdit
  * \brief The QgsExpressionLineEdit widget includes a line edit for entering expressions
  * together with a button to open the expression creation dialog.
@@ -115,7 +116,8 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
 
   signals:
 
-    /** Emitted when the expression is changed.
+    /**
+     * Emitted when the expression is changed.
      * \param expression new expression
      */
     void expressionChanged( const QString &expression );

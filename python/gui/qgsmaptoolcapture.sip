@@ -51,6 +51,13 @@ Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be
  :rtype: int
 %End
 
+    void clearCurve( );
+%Docstring
+ Clear capture curve.
+
+.. versionadded:: 3.0
+%End
+
     const QgsCompoundCurve *captureCurve() const;
 %Docstring
  Get the capture curve
@@ -80,6 +87,11 @@ Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be
     void deleteTempRubberBand();
 %Docstring
  Clean a temporary rubberband
+%End
+
+    virtual void clean();
+%Docstring
+convenient method to clean members
 %End
 
   protected:

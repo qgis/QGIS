@@ -20,7 +20,8 @@
 #include "qgis_sip.h"
 #include "qgsmaprendererjob.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Job implementation that renders all layers in parallel.
  *
  * The resulting map image can be retrieved with renderedImage() function.

@@ -91,15 +91,15 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     //! Sets the selected connection
     void setSelectedConnection();
 
-    void on_radioSrcFile_toggled( bool checked );
-    void on_radioSrcDirectory_toggled( bool checked );
-    void on_radioSrcDatabase_toggled( bool checked );
-    void on_radioSrcProtocol_toggled( bool checked );
-    void on_btnNew_clicked();
-    void on_btnEdit_clicked();
-    void on_btnDelete_clicked();
-    void on_cmbDatabaseTypes_currentIndexChanged( const QString &text );
-    void on_cmbConnections_currentIndexChanged( const QString &text );
+    void radioSrcFile_toggled( bool checked );
+    void radioSrcDirectory_toggled( bool checked );
+    void radioSrcDatabase_toggled( bool checked );
+    void radioSrcProtocol_toggled( bool checked );
+    void btnNew_clicked();
+    void btnEdit_clicked();
+    void btnDelete_clicked();
+    void cmbDatabaseTypes_currentIndexChanged( const QString &text );
+    void cmbConnections_currentIndexChanged( const QString &text );
     void showHelp();
 
   private:

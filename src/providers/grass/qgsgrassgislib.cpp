@@ -1074,7 +1074,7 @@ double GRASS_LIB_EXPORT G_area_of_cell_at_row( int row )
 
 double QgsGrassGisLib::G_area_of_polygon( const double *x, const double *y, int n )
 {
-  QgsPolyline polyline;
+  QgsPolylineXY polyline;
   for ( int i = 0; i < n; i++ )
   {
     polyline.append( QgsPointXY( x[i], y[i] ) );

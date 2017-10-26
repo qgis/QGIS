@@ -27,7 +27,8 @@
 #include <qgscacheindexfeatureid.h>
 #include <QDebug>
 
-/** @ingroup UnitTests
+/**
+ * @ingroup UnitTests
  * This is a unit test for the vector layer cache
  *
  * @see QgsVectorLayerCache
@@ -36,8 +37,7 @@ class TestVectorLayerCache : public QObject
 {
     Q_OBJECT
   public:
-    TestVectorLayerCache()
-    {}
+    TestVectorLayerCache() = default;
 
   private slots:
     void initTestCase();      // will be called before the first testfunction is executed.

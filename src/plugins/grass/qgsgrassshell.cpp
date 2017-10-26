@@ -73,10 +73,6 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const ch
   mTerminal->setStyleSheet( QStringLiteral( "font-family: Monospace; font-size: 10pt;" ) );
 }
 
-QgsGrassShell::~QgsGrassShell()
-{
-}
-
 void QgsGrassShell::closeShell()
 {
   int index = mTabWidget->indexOf( this );

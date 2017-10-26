@@ -63,8 +63,11 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
 
     QAction *actionMakeTopLevel( QObject *parent = nullptr ) SIP_FACTORY;
     QAction *actionGroupSelected( QObject *parent = nullptr ) SIP_FACTORY;
-    //! Action to enable/disable mutually exclusive flag of a group (only one child node may be checked)
-    //! \since QGIS 2.12
+
+    /**
+     * Action to enable/disable mutually exclusive flag of a group (only one child node may be checked)
+     * \since QGIS 2.12
+     */
     QAction *actionMutuallyExclusiveGroup( QObject *parent = nullptr ) SIP_FACTORY;
 
     void zoomToLayer( QgsMapCanvas *canvas );
@@ -82,8 +85,11 @@ class GUI_EXPORT QgsLayerTreeViewDefaultActions : public QObject
     void zoomToGroup();
     void makeTopLevel();
     void groupSelected();
-    //! Slot to enable/disable mutually exclusive group flag
-    //! \since QGIS 2.12
+
+    /**
+     * Slot to enable/disable mutually exclusive group flag
+     * \since QGIS 2.12
+     */
     void mutuallyExclusiveGroup();
 
   private slots:

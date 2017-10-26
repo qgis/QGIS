@@ -600,10 +600,6 @@ void QgsGrassRasterProvider::thaw()
 
 //-------------------------------- QgsGrassRasterValue ----------------------------------------
 
-QgsGrassRasterValue::QgsGrassRasterValue()
-{
-}
-
 QgsGrassRasterValue::~QgsGrassRasterValue()
 {
   stop();

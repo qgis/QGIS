@@ -49,6 +49,7 @@
 #include "qgslayoutmanager.h"
 #include "qgsmaplayerstore.h"
 #include "qgsziputils.h"
+#include "qgsauxiliarystorage.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -186,7 +187,8 @@ QgsProjectProperty *findKey_( const QString &scope,
 
 
 
-/** Add the given key and value
+/**
+ * Add the given key and value
 
 @param scope scope of key
 @param key key name
@@ -334,6 +336,7 @@ QgsProject::QgsProject( QObject *parent )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
   , mArchive( new QgsProjectArchive() )
+  , mAuxiliaryStorage( new QgsAuxiliaryStorage() )
 {
   mProperties.setName( QStringLiteral( "properties" ) );
   clear();
@@ -370,6 +373,10 @@ QgsProject::~QgsProject()
   delete mRelationManager;
   delete mLayerTreeRegistryBridge;
   delete mRootGroup;
+  if ( this == sProject )
+  {
+    sProject = nullptr;
+  }
 }
 
 
@@ -422,8 +429,6 @@ void QgsProject::setFileName( const QString &name )
   QString newHomePath = homePath();
   if ( newHomePath != oldHomePath )
     emit homePathChanged();
-
-  mArchive->clear();
 
   setDirty( true );
 }
@@ -492,6 +497,7 @@ void QgsProject::clear()
 
   mLabelingEngineSettings->clear();
 
+  mAuxiliaryStorage.reset( new QgsAuxiliaryStorage() );
   mArchive->clear();
 
   emit labelingEngineSettingsChanged();
@@ -775,9 +781,14 @@ bool QgsProject::read()
   bool rc;
 
   if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
+  {
     rc = unzip( mFile.fileName() );
+  }
   else
+  {
+    mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( *this ) );
     rc = readProjectFile( mFile.fileName() );
+  }
 
   mFile.setFileName( filename );
   return rc;
@@ -849,9 +860,11 @@ bool QgsProject::readProjectFile( const QString &filename )
     projectFile.updateRevision( thisVersion );
   }
 
-  // start new project, just keep the file name
+  // start new project, just keep the file name and auxiliary storage
   QString fileName = mFile.fileName();
+  std::unique_ptr<QgsAuxiliaryStorage> aStorage = std::move( mAuxiliaryStorage );
   clear();
+  mAuxiliaryStorage = std::move( aStorage );
   mFile.setFileName( fileName );
 
   // now get any properties
@@ -939,13 +952,12 @@ bool QgsProject::readProjectFile( const QString &filename )
     mBadLayerHandler->handleBadLayers( brokenNodes );
   }
 
-  // Resolve references to other vector layers
+  // Resolve references to other layers
   // Needs to be done here once all dependent layers are loaded
   QMap<QString, QgsMapLayer *> layers = mLayerStore->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::iterator it = layers.begin(); it != layers.end(); it++ )
   {
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
-      vl->resolveReferences( this );
+    it.value()->resolveReferences( this );
   }
 
   mLayerTreeRegistryBridge->setEnabled( true );
@@ -1258,9 +1270,22 @@ bool QgsProject::write( const QString &filename )
 bool QgsProject::write()
 {
   if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
+  {
     return zip( mFile.fileName() );
+  }
   else
-    return writeProjectFile( mFile.fileName() );
+  {
+    // write project file even if the auxiliary storage is not correctly
+    // saved
+    const bool asOk = saveAuxiliaryStorage();
+    const bool writeOk = writeProjectFile( mFile.fileName() );
+
+    // errors raised during writing project file are more important
+    if ( !asOk && writeOk )
+      setError( tr( "Unable to save auxiliary storage" ) );
+
+    return asOk && writeOk;
+  }
 }
 
 bool QgsProject::writeProjectFile( const QString &filename )
@@ -2132,6 +2157,18 @@ bool QgsProject::unzip( const QString &filename )
     return false;
   }
 
+  // load auxiliary storage
+  if ( !archive->auxiliaryStorageFile().isEmpty() )
+  {
+    // database file is already a copy as it's been unzipped. So we don't open
+    // auxiliary storage in copy mode in this case
+    mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( archive->auxiliaryStorageFile(), false ) );
+  }
+  else
+  {
+    mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( *this ) );
+  }
+
   // read the project file
   if ( ! readProjectFile( archive->projectFile() ) )
   {
@@ -2170,8 +2207,19 @@ bool QgsProject::zip( const QString &filename )
     return false;
   }
 
+  // save auxiliary storage
+  const QFileInfo info( qgsFile );
+  const QString asFileName = info.path() + QDir::separator() + info.completeBaseName() + "." + QgsAuxiliaryStorage::extension();
+
+  if ( ! saveAuxiliaryStorage( asFileName ) )
+  {
+    setError( tr( "Unable to save auxiliary storage" ) );
+    return false;
+  }
+
   // create the archive
   archive->addFile( qgsFile.fileName() );
+  archive->addFile( asFileName );
 
   // zip
   if ( !archive->zip( filename ) )
@@ -2199,6 +2247,22 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
     if ( addToLegend )
       emit legendLayersAdded( myResultList );
   }
+
+  if ( mAuxiliaryStorage )
+  {
+    for ( QgsMapLayer *mlayer : myResultList )
+    {
+      if ( mlayer->type() != QgsMapLayer::VectorLayer )
+        continue;
+
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mlayer );
+      if ( vl )
+      {
+        vl->loadAuxiliaryLayer( *mAuxiliaryStorage.get() );
+      }
+    }
+  }
+
   return myResultList;
 }
 
@@ -2292,4 +2356,38 @@ void QgsProject::setTrustLayerMetadata( bool trust )
       vl->setReadExtentFromXml( trust );
     }
   }
+}
+
+bool QgsProject::saveAuxiliaryStorage( const QString &filename )
+{
+  for ( QgsMapLayer *l : mapLayers().values() )
+  {
+    if ( l->type() != QgsMapLayer::VectorLayer )
+      continue;
+
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
+    if ( vl && vl->auxiliaryLayer() )
+    {
+      vl->auxiliaryLayer()->save();
+    }
+  }
+
+  if ( !filename.isEmpty() )
+  {
+    return mAuxiliaryStorage->saveAs( filename );
+  }
+  else
+  {
+    return mAuxiliaryStorage->saveAs( *this );
+  }
+}
+
+const QgsAuxiliaryStorage *QgsProject::auxiliaryStorage() const
+{
+  return mAuxiliaryStorage.get();
+}
+
+QgsAuxiliaryStorage *QgsProject::auxiliaryStorage()
+{
+  return mAuxiliaryStorage.get();
 }

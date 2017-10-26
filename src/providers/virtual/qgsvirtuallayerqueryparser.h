@@ -24,8 +24,9 @@ email                : hugo dot mercier at oslandia dot com
 namespace QgsVirtualLayerQueryParser
 {
 
-  //!
-  //! Return the list of tables referenced in the SQL query
+  /**
+   * Return the list of tables referenced in the SQL query
+   */
   QStringList referencedTables( const QString &q );
 
   /**
@@ -70,16 +71,19 @@ namespace QgsVirtualLayerQueryParser
       long mSrid = -1;
   };
 
-  //!
-  //! Type used by the parser to type a query. It is slightly different from a QgsVirtualLayerDefinition since more than one geometry column can be represented
+  /**
+   * Type used by the parser to type a query. It is slightly different from a QgsVirtualLayerDefinition since more than one geometry column can be represented
+   */
   typedef QList<ColumnDef> TableDef;
 
-  //! Get the column names and types that can be deduced from the query, using SQLite introspection
-  //! Special comments can also be used in the query to type columns
-  //! Comments should be set after the name of the column and are introduced by "/*:"
-  //! For instance 'SELECT t+1 /*:int*/ FROM table' will type the column 't' as integer
-  //! A geometry column can also be set by specifying a type and an SRID
-  //! For instance 'SELECT t, GeomFromText('POINT(0 0)',4326) as geom /*:point:4326*/
+  /**
+   * Get the column names and types that can be deduced from the query, using SQLite introspection
+   * Special comments can also be used in the query to type columns
+   * Comments should be set after the name of the column and are introduced by "/\htmlonly\endhtmlonly*:"
+   * For instance 'SELECT t+1 /\htmlonly\endhtmlonly*:int*\htmlonly\endhtmlonly/ FROM table' will type the column 't' as integer
+   * A geometry column can also be set by specifying a type and an SRID
+   * For instance 'SELECT t, GeomFromText('POINT(0 0)',4326) as geom /\htmlonly\endhtmlonly*:point:4326*\htmlonly\endhtmlonly/
+   */
   TableDef columnDefinitionsFromQuery( sqlite3 *db, const QString &query );
 
   //! Get the column types of a virtual table

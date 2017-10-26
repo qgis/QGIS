@@ -27,7 +27,8 @@
 
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This is a dialog to build and manage a list of order by clauses.
  *
  * \since QGIS 2.14

@@ -20,7 +20,8 @@
 
 class QgsAbstractGeometrySimplifier;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class contains information about how to simplify geometries fetched from a QgsFeatureIterator
  * \since QGIS 2.2
  */
@@ -35,7 +36,7 @@ class CORE_EXPORT QgsSimplifyMethod
     };
 
     //! construct a default method
-    QgsSimplifyMethod();
+    QgsSimplifyMethod() = default;
 
     //! Sets the simplification type
     void setMethodType( MethodType methodType );

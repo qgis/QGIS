@@ -195,11 +195,11 @@ class SpatialJoin(QgisAlgorithm):
                     join_attributes.append(f.attributes()[a])
 
                 if engine is None:
-                    engine = QgsGeometry.createGeometryEngine(f.geometry().geometry())
+                    engine = QgsGeometry.createGeometryEngine(f.geometry().constGet())
                     engine.prepareGeometry()
 
                 for predicate in predicates:
-                    if getattr(engine, predicate)(test_feat.geometry().geometry()):
+                    if getattr(engine, predicate)(test_feat.geometry().constGet()):
                         added_set.add(test_feat.id())
 
                         # join attributes and add

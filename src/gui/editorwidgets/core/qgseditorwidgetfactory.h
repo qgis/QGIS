@@ -30,7 +30,8 @@ class QgsVectorLayer;
 class QWidget;
 class QgsSearchWidgetWrapper;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Every attribute editor widget needs a factory, which inherits this class
  *
  * It provides metadata for the widgets such as the name (human readable), it serializes

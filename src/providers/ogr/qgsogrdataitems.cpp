@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsgeopackagedataitems.h"
+#include "qgsogrutils.h"
 
 #include <QFileInfo>
 #include <QTextStream>
@@ -53,13 +54,12 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
   setState( Populated ); // children are not expected
 
   OGRRegisterAll();
-  GDALDriverH hDriver;
-  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( mPath.toUtf8().constData(), true, &hDriver );
+  gdal::dataset_unique_ptr hDataSource( GDALOpenEx( mPath.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
 
   if ( hDataSource )
   {
+    GDALDriverH hDriver = GDALGetDatasetDriver( hDataSource.get() );
     QString driverName = GDALGetDriverShortName( hDriver );
-    GDALClose( hDataSource );
 
     if ( driverName == QLatin1String( "ESRI Shapefile" ) )
       mCapabilities |= SetCrs;
@@ -157,12 +157,24 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
     // Collect mixed-geom layers
     QMultiMap<int, QStringList> subLayersMap;
     const QStringList subLayersList( layer.dataProvider()->subLayers( ) );
+    QMap< QString, int > mapLayerNameToCount;
+    bool uniqueNames = true;
+    int prevIdx = -1;
     for ( const QString &descriptor : subLayersList )
     {
       QStringList pieces = descriptor.split( ':' );
-      subLayersMap.insert( pieces[0].toInt(), pieces );
+      int idx = pieces[0].toInt();
+      subLayersMap.insert( idx, pieces );
+      if ( pieces.count() >= 4 && idx != prevIdx )
+      {
+        QString layerName = pieces[1];
+        int count = ++mapLayerNameToCount[layerName];
+        if ( count > 1 || layerName.isEmpty() )
+          uniqueNames = false;
+      }
+      prevIdx = idx;
     }
-    int prevIdx = -1;
+    prevIdx = -1;
     const auto subLayerKeys = subLayersMap.keys( );
     for ( const int &idx : subLayerKeys )
     {
@@ -194,13 +206,13 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
           }
           else
           {
+            if ( uniqueNames )
+              uri = QStringLiteral( "%1|layername=%2" ).arg( path, name );
+            else
+              uri = QStringLiteral( "%1|layerid=%2" ).arg( path, layerId );
             if ( values.size() > 1 )
             {
-              uri = QStringLiteral( "%1|layerid=%2|geometrytype=%3" ).arg( path, layerId, geometryType );
-            }
-            else
-            {
-              uri = QStringLiteral( "%1|layerid=%2" ).arg( path, layerId );
+              uri += QStringLiteral( "|geometrytype=" ) + geometryType;
             }
             QgsDebugMsgLevel( QStringLiteral( "Adding %1 Vector item %2 %3 %4" ).arg( driver, name, uri, geometryType ), 3 );
             children.append( new QgsOgrDbLayerInfo( path, uri, name, geometryColumn, geometryType, layerType ) );
@@ -236,7 +248,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
     // do not print errors, but write to debug
     CPLPushErrorHandler( CPLQuietErrorHandler );
     CPLErrorReset();
-    GDALDatasetH hDS = GDALOpen( path.toUtf8().constData(), GA_ReadOnly );
+    gdal::dataset_unique_ptr hDS( GDALOpen( path.toUtf8().constData(), GA_ReadOnly ) );
     CPLPopErrorHandler();
 
     if ( ! hDS )
@@ -247,8 +259,8 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
     else
     {
       QString uri( QStringLiteral( "%1:%2" ).arg( driver, path ) );
-      QString name = GDALGetMetadataItem( hDS, "IDENTIFIER", NULL );
-      GDALClose( hDS );
+      QString name = GDALGetMetadataItem( hDS.get(), "IDENTIFIER", NULL );
+      hDS.reset();
       // Fallback: will not be able to delete the table
       if ( name.isEmpty() )
       {
@@ -407,20 +419,17 @@ QVector<QgsDataItem *> QgsOgrDataCollectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
 
-  GDALDriverH hDriver;
-  GDALDatasetH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( mPath.toUtf8().constData(), false, &hDriver );
+  gdal::dataset_unique_ptr hDataSource( GDALOpenEx( mPath.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   if ( !hDataSource )
     return children;
-  int numLayers = GDALDatasetGetLayerCount( hDataSource );
+  int numLayers = GDALDatasetGetLayerCount( hDataSource.get() );
 
   children.reserve( numLayers );
   for ( int i = 0; i < numLayers; ++i )
   {
-    QgsOgrLayerItem *item = dataItemForLayer( this, QString(), mPath, hDataSource, i, true );
+    QgsOgrLayerItem *item = dataItemForLayer( this, QString(), mPath, hDataSource.get(), i, true );
     children.append( item );
   }
-
-  GDALClose( hDataSource );
 
   return children;
 }
@@ -593,26 +602,19 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     // if this is a VRT file make sure it is vector VRT to avoid duplicates
     if ( suffix == QLatin1String( "vrt" ) )
     {
-      GDALDriverH hDriver = GDALGetDriverByName( "OGR_VRT" );
-      if ( hDriver )
+      CPLPushErrorHandler( CPLQuietErrorHandler );
+      CPLErrorReset();
+      GDALDriverH hDriver = GDALIdentifyDriver( path.toUtf8().constData(), nullptr );
+      CPLPopErrorHandler();
+      if ( !hDriver || GDALGetDriverShortName( hDriver ) == QLatin1String( "VRT" ) )
       {
-        // do not print errors, but write to debug
-        CPLPushErrorHandler( CPLQuietErrorHandler );
-        CPLErrorReset();
-        GDALDatasetH hDataSource = GDALOpenEx(
-                                     path.toLocal8Bit().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr );
-        CPLPopErrorHandler();
-        if ( ! hDataSource )
-        {
-          QgsDebugMsgLevel( "Skipping VRT file because root is not a OGR VRT", 2 );
-          return nullptr;
-        }
-        GDALClose( hDataSource );
+        QgsDebugMsgLevel( "Skipping VRT file because root is not a OGR VRT", 2 );
+        return nullptr;
       }
     }
     // Handle collections
     // Check if the layer has sublayers by comparing the extension
-    QgsDataItem *item;
+    QgsDataItem *item = nullptr;
     if ( ! ogrSupportedDbLayersExtensions.contains( suffix ) )
     {
       item = new QgsOgrLayerItem( parentItem, name, path, path, QgsLayerItem::Vector );
@@ -635,38 +637,37 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
   // test that file is valid with OGR
   OGRRegisterAll();
-  OGRSFDriverH hDriver;
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
-  OGRDataSourceH hDataSource = QgsOgrProviderUtils::GDALOpenWrapper( path.toUtf8().constData(), false, &hDriver );
+  gdal::dataset_unique_ptr hDS( GDALOpenEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
   CPLPopErrorHandler();
 
-  if ( ! hDataSource )
+  if ( ! hDS )
   {
     QgsDebugMsg( QString( "GDALOpen error # %1 : %2 on %3" ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ).arg( path ) );
     return nullptr;
   }
 
-  QgsDebugMsgLevel( QString( "GDAL Driver : %1" ).arg( OGR_Dr_GetName( hDriver ) ), 2 );
-  QString ogrDriverName = OGR_Dr_GetName( hDriver );
-  int numLayers = OGR_DS_GetLayerCount( hDataSource );
+  GDALDriverH hDriver = GDALGetDatasetDriver( hDS.get() );
+  QString driverName = GDALGetDriverShortName( hDriver );
+  QgsDebugMsgLevel( QString( "GDAL Driver : %1" ).arg( driverName ), 2 );
+  int numLayers = GDALDatasetGetLayerCount( hDS.get() );
 
   // GeoPackage needs a specialized data item, mainly because of raster deletion not
   // yet implemented in GDAL (2.2.1)
-  if ( ogrDriverName == QLatin1String( "GPKG" ) )
+  if ( driverName == QLatin1String( "GPKG" ) )
   {
     item = new QgsGeoPackageCollectionItem( parentItem, name, path );
   }
-  else if ( numLayers > 1 || ogrSupportedDbDriverNames.contains( ogrDriverName ) )
+  else if ( numLayers > 1 || ogrSupportedDbDriverNames.contains( driverName ) )
   {
     item = new QgsOgrDataCollectionItem( parentItem, name, path );
   }
   else
   {
-    item = dataItemForLayer( parentItem, name, path, hDataSource, 0 );
+    item = dataItemForLayer( parentItem, name, path, hDS.get(), 0 );
   }
-  OGR_DS_Destroy( hDataSource );
   return item;
 }
 

@@ -28,7 +28,8 @@
 class QgsRasterBlock;
 class QgsRasterMatrix;
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * \class QgsRasterCalcNode
  */
 class ANALYSIS_EXPORT QgsRasterCalcNode
@@ -72,7 +73,11 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       opNONE,
     };
 
-    QgsRasterCalcNode();
+    /**
+     * Constructor for QgsRasterCalcNode.
+     */
+    QgsRasterCalcNode() = default;
+
     QgsRasterCalcNode( double number );
     QgsRasterCalcNode( QgsRasterMatrix *matrix );
     QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right );
@@ -90,7 +95,8 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     void setLeft( QgsRasterCalcNode *left ) { delete mLeft; mLeft = left; }
     void setRight( QgsRasterCalcNode *right ) { delete mRight; mRight = right; }
 
-    /** Calculates result of raster calculation (might be real matrix or single number).
+    /**
+     * Calculates result of raster calculation (might be real matrix or single number).
      * \param rasterData input raster data references, map of raster name to raster data block
      * \param result destination raster matrix for calculation results
      * \param row optional row number to calculate for calculating result by rows, or -1 to

@@ -29,8 +29,7 @@
 ///@cond PRIVATE
 
 QgsRasterLayerRendererFeedback::QgsRasterLayerRendererFeedback( QgsRasterLayerRenderer *r )
-  : QgsRasterBlockFeedback()
-  , mR( r )
+  : mR( r )
   , mMinimalPreviewInterval( 250 )
 {
   setRenderPartialOutput( r->mContext.testFlag( QgsRenderContext::RenderPartialOutput ) );
@@ -215,7 +214,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   // copy the whole raster pipe!
   mPipe = new QgsRasterPipe( *layer->pipe() );
   QgsRasterRenderer *rasterRenderer = mPipe->renderer();
-  if ( rasterRenderer )
+  if ( rasterRenderer && !( rendererContext.flags() & QgsRenderContext::RenderPreviewJob ) )
     layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
 }
 

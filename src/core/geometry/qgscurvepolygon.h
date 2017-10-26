@@ -25,7 +25,8 @@
 
 class QgsPolygonV2;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCurvePolygon
  * \brief Curve polygon geometry type
  * \since QGIS 2.10
@@ -67,13 +68,15 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     const QgsCurve *exteriorRing() const;
     const QgsCurve *interiorRing( int i ) const;
 
-    /** Returns a new polygon geometry corresponding to a segmentized approximation
+    /**
+     * Returns a new polygon geometry corresponding to a segmentized approximation
      * of the curve.
      * \param tolerance segmentation tolerance
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     virtual QgsPolygonV2 *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const SIP_FACTORY;
 
-    /** Sets the exterior ring of the polygon. The CurvePolygon type will be updated to match the dimensionality
+    /**
+     * Sets the exterior ring of the polygon. The CurvePolygon type will be updated to match the dimensionality
      * of the exterior ring. For instance, setting a 2D exterior ring on a 3D CurvePolygon will drop the z dimension
      * from the CurvePolygon and all interior rings.
      * \param ring new exterior ring. Ownership is transferred to the CurvePolygon.
@@ -115,19 +118,22 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     QgsCoordinateSequence coordinateSequence() const override;
     int nCoordinates() const override;
+    int vertexNumberFromVertexId( QgsVertexId id ) const override;
     bool isEmpty() const override;
     double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
 
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
-
+    void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
     bool hasCurvedSegments() const override;
 
-    /** Returns a geometry without curves. Caller takes ownership
+    /**
+     * Returns a geometry without curves. Caller takes ownership
      * \param tolerance segmentation tolerance
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     QgsAbstractGeometry *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
-    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+    /**
+     * Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
      *  \param vertex the vertex id
      *  \returns rotation in radians, clockwise from north
      */
@@ -166,6 +172,10 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
       return nullptr;
     }
 #endif
+  protected:
+    virtual int childCount() const override;
+    virtual QgsAbstractGeometry *childGeometry( int index ) const override;
+
   protected:
 
     std::unique_ptr< QgsCurve > mExteriorRing;

@@ -98,11 +98,11 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     void deSelectAll();
 
   private slots:
-    void on_mFileSelectionButton_clicked();
+    void mFileSelectionButton_clicked();
     void setOkEnabled();
     void saveSettings();
-    void on_mVisibilityPresets_currentIndexChanged( int index );
-    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
+    void mVisibilityPresets_currentIndexChanged( int index );
+    void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
     void showHelp();
 
   private:

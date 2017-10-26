@@ -31,9 +31,7 @@ class TestQgsComposerObject : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerObject()
-    {
-    }
+    TestQgsComposerObject() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

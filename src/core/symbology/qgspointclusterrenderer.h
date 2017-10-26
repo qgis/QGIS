@@ -22,7 +22,8 @@
 #include "qgis.h"
 #include "qgspointdistancerenderer.h"
 
-/** \class QgsPointClusterRenderer
+/**
+ * \class QgsPointClusterRenderer
  * \ingroup core
  * A renderer that automatically clusters points with the same geographic position.
  * \since QGIS 3.0
@@ -42,18 +43,21 @@ class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
     //! Creates a renderer from XML element
     static QgsFeatureRenderer *create( QDomElement &symbologyElem, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    /** Returns the symbol used for rendering clustered groups (but not ownership of the symbol).
+    /**
+     * Returns the symbol used for rendering clustered groups (but not ownership of the symbol).
      * \see setClusterSymbol()
     */
     QgsMarkerSymbol *clusterSymbol();
 
-    /** Sets the symbol for rendering clustered groups.
+    /**
+     * Sets the symbol for rendering clustered groups.
      * \param symbol new cluster symbol. Ownership is transferred to the renderer.
      * \see clusterSymbol()
     */
     void setClusterSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
 
-    /** Creates a QgsPointClusterRenderer from an existing renderer.
+    /**
+     * Creates a QgsPointClusterRenderer from an existing renderer.
      * \returns a new renderer if the conversion was possible, otherwise nullptr.
      */
     static QgsPointClusterRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;

@@ -44,8 +44,7 @@ class TestQgsMapCanvas : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapCanvas()
-    {}
+    TestQgsMapCanvas() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.

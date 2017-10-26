@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
@@ -30,14 +29,16 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import (QgsProcessing,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterVectorDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterString
-
-from processing.core.outputs import OutputVector
-
+from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -45,29 +46,65 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 class contour(GdalAlgorithm):
 
-    INPUT_RASTER = 'INPUT_RASTER'
-    OUTPUT_VECTOR = 'OUTPUT_VECTOR'
+    INPUT = 'INPUT'
+    BAND = 'BAND'
     INTERVAL = 'INTERVAL'
     FIELD_NAME = 'FIELD_NAME'
-    EXTRA = 'EXTRA'
+    CREATE_3D = 'CREATE_3D'
+    IGNORE_NODATA = 'IGNORE_NODATA'
+    NODATA = 'NODATA'
+    OFFSET = 'OFFSET'
+    OUTPUT = 'OUTPUT'
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterRaster(self.INPUT_RASTER,
-                                          self.tr('Input layer'), False))
-        self.addParameter(ParameterNumber(self.INTERVAL,
-                                          self.tr('Interval between contour lines'), 0.0,
-                                          99999999.999999, 10.0))
-        self.addParameter(ParameterString(self.FIELD_NAME,
-                                          self.tr('Attribute name (if not set, no elevation attribute is attached)'),
-                                          'ELEV', optional=True))
-        self.addParameter(ParameterString(self.EXTRA,
-                                          self.tr('Additional creation parameters'), '', optional=True))
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
+                                                            self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterBand(self.BAND,
+                                                     self.tr('Band number'),
+                                                     parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterNumber(self.INTERVAL,
+                                                       self.tr('Interval between contour lines'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0,
+                                                       defaultValue=10.0))
+        self.addParameter(QgsProcessingParameterString(self.FIELD_NAME,
+                                                       self.tr('Attribute name (if not set, no elevation attribute is attached)'),
+                                                       defaultValue='ELEV',
+                                                       optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_VECTOR,
-                                    self.tr('Contours')))
+        create_3d_param = QgsProcessingParameterBoolean(self.CREATE_3D,
+                                                        self.tr('Produce 3D vector'),
+                                                        defaultValue=False)
+        create_3d_param.setFlags(create_3d_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(create_3d_param)
+
+        ignore_nodata_param = QgsProcessingParameterBoolean(self.IGNORE_NODATA,
+                                                            self.tr('Treat all raster values as valid'),
+                                                            defaultValue=False)
+        ignore_nodata_param.setFlags(ignore_nodata_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(ignore_nodata_param)
+
+        nodata_param = QgsProcessingParameterNumber(self.NODATA,
+                                                    self.tr('Input pixel value to treat as "nodata"'),
+                                                    type=QgsProcessingParameterNumber.Double,
+                                                    defaultValue=0.0,
+                                                    optional=True)
+        nodata_param.setFlags(nodata_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(nodata_param)
+
+        offset_param = QgsProcessingParameterNumber(self.OFFSET,
+                                                    self.tr('Offset from zero relative to which to interpret intervals'),
+                                                    type=QgsProcessingParameterNumber.Double,
+                                                    defaultValue=0.0,
+                                                    optional=True)
+        nodata_param.setFlags(offset_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(offset_param)
+
+        self.addParameter(QgsProcessingParameterVectorDestination(
+            self.OUTPUT, self.tr('Contours'), QgsProcessing.TypeVectorLine))
 
     def name(self):
         return 'contour'
@@ -82,28 +119,41 @@ class contour(GdalAlgorithm):
         return self.tr('Raster extraction')
 
     def getConsoleCommands(self, parameters, context, feedback):
-        output = self.getOutputValue(self.OUTPUT_VECTOR)
-        interval = str(self.getParameterValue(self.INTERVAL))
-        fieldName = str(self.getParameterValue(self.FIELD_NAME))
-        extra = self.getParameterValue(self.EXTRA)
-        if extra is not None:
-            extra = str(extra)
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        fieldName = self.parameterAsString(parameters, self.FIELD_NAME, context)
+        nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        offset = self.parameterAsDouble(parameters, self.OFFSET, context)
+
+        outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
 
         arguments = []
-        if len(fieldName) > 0:
+        arguments.append('-b')
+        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
+
+        if fieldName:
             arguments.append('-a')
             arguments.append(fieldName)
+
         arguments.append('-i')
-        arguments.append(interval)
+        arguments.append(str(self.parameterAsDouble(parameters, self.INTERVAL, context)))
 
-        driver = GdalUtils.getVectorDriverFromFileName(output)
-        arguments.append('-f')
-        arguments.append(driver)
+        if self.parameterAsBool(parameters, self.CREATE_3D, context):
+            arguments.append('-3d')
 
-        if extra and len(extra) > 0:
-            arguments.append(extra)
+        if self.parameterAsBool(parameters, self.IGNORE_NODATA, context):
+            arguments.append('-inodata')
 
-        arguments.append(self.getParameterValue(self.INPUT_RASTER))
+        if nodata:
+            arguments.append('-snodata {}'.format(nodata))
+
+        if offset:
+            arguments.append('-off {}'.format(offset))
+
+        if outFormat:
+            arguments.append('-f {}'.format(outFormat))
+
+        arguments.append(inLayer.source())
         arguments.append(output)
 
         return ['gdal_contour', GdalUtils.escapeAndJoin(arguments)]

@@ -27,6 +27,7 @@
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 static QByteArray fileData_( const QString &path, bool astext = false )
@@ -57,17 +58,24 @@ QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityD
   , mDisabled( false )
 
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mDisabled = true;
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
   {
     setupUi( this );
+    connect( lePkiPathsKeyPass, &QLineEdit::textChanged, this, &QgsAuthImportIdentityDialog::lePkiPathsKeyPass_textChanged );
+    connect( chkPkiPathsPassShow, &QCheckBox::stateChanged, this, &QgsAuthImportIdentityDialog::chkPkiPathsPassShow_stateChanged );
+    connect( btnPkiPathsCert, &QToolButton::clicked, this, &QgsAuthImportIdentityDialog::btnPkiPathsCert_clicked );
+    connect( btnPkiPathsKey, &QToolButton::clicked, this, &QgsAuthImportIdentityDialog::btnPkiPathsKey_clicked );
+    connect( lePkiPkcs12KeyPass, &QLineEdit::textChanged, this, &QgsAuthImportIdentityDialog::lePkiPkcs12KeyPass_textChanged );
+    connect( chkPkiPkcs12PassShow, &QCheckBox::stateChanged, this, &QgsAuthImportIdentityDialog::chkPkiPkcs12PassShow_stateChanged );
+    connect( btnPkiPkcs12Bundle, &QToolButton::clicked, this, &QgsAuthImportIdentityDialog::btnPkiPkcs12Bundle_clicked );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
     connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
 
@@ -191,18 +199,18 @@ void QgsAuthImportIdentityDialog::writeValidation( const QString &msg,
   teValidation->moveCursor( QTextCursor::Start );
 }
 
-void QgsAuthImportIdentityDialog::on_lePkiPathsKeyPass_textChanged( const QString &pass )
+void QgsAuthImportIdentityDialog::lePkiPathsKeyPass_textChanged( const QString &pass )
 {
   Q_UNUSED( pass );
   validateIdentity();
 }
 
-void QgsAuthImportIdentityDialog::on_chkPkiPathsPassShow_stateChanged( int state )
+void QgsAuthImportIdentityDialog::chkPkiPathsPassShow_stateChanged( int state )
 {
   lePkiPathsKeyPass->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
-void QgsAuthImportIdentityDialog::on_btnPkiPathsCert_clicked()
+void QgsAuthImportIdentityDialog::btnPkiPathsCert_clicked()
 {
   const QString &fn = getOpenFileName( tr( "Open Client Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
@@ -212,7 +220,7 @@ void QgsAuthImportIdentityDialog::on_btnPkiPathsCert_clicked()
   }
 }
 
-void QgsAuthImportIdentityDialog::on_btnPkiPathsKey_clicked()
+void QgsAuthImportIdentityDialog::btnPkiPathsKey_clicked()
 {
   const QString &fn = getOpenFileName( tr( "Open Private Key File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
@@ -222,18 +230,18 @@ void QgsAuthImportIdentityDialog::on_btnPkiPathsKey_clicked()
   }
 }
 
-void QgsAuthImportIdentityDialog::on_lePkiPkcs12KeyPass_textChanged( const QString &pass )
+void QgsAuthImportIdentityDialog::lePkiPkcs12KeyPass_textChanged( const QString &pass )
 {
   Q_UNUSED( pass );
   validateIdentity();
 }
 
-void QgsAuthImportIdentityDialog::on_chkPkiPkcs12PassShow_stateChanged( int state )
+void QgsAuthImportIdentityDialog::chkPkiPkcs12PassShow_stateChanged( int state )
 {
   lePkiPkcs12KeyPass->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
-void QgsAuthImportIdentityDialog::on_btnPkiPkcs12Bundle_clicked()
+void QgsAuthImportIdentityDialog::btnPkiPkcs12Bundle_clicked()
 {
   const QString &fn = getOpenFileName( tr( "Open PKCS#12 Certificate Bundle" ),  tr( "PKCS#12 (*.p12 *.pfx)" ) );
   if ( !fn.isEmpty() )

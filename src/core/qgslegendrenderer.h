@@ -31,7 +31,8 @@ class QgsSymbol;
 
 #include "qgslegendsettings.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsLegendRenderer class handles automatic layout and rendering of legend.
  * The content is given by QgsLayerTreeModel instance. Various layout properties can be configured
  * within QgsLegendRenderer.
@@ -55,7 +56,8 @@ class CORE_EXPORT QgsLegendRenderer
     //! Find out preferred legend size set by the client. If null, the legend will be drawn with the minimum size
     QSizeF legendSize() const { return mLegendSize; }
 
-    /** Draw the legend with given painter. It will occupy the area reported in legendSize().
+    /**
+     * Draw the legend with given painter. It will occupy the area reported in legendSize().
      *  Painter should be scaled beforehand so that units correspond to millimeters.
      */
     void drawLegend( QPainter *painter );
@@ -68,7 +70,8 @@ class CORE_EXPORT QgsLegendRenderer
 
 #ifndef SIP_RUN
 
-    /** Nucleon is either group title, layer title or layer child item.
+    /**
+     * Nucleon is either group title, layer title or layer child item.
      *  E.g. layer title nucleon is just title, it does not
      *  include all layer subitems, the same with groups.
      */
@@ -89,7 +92,8 @@ class CORE_EXPORT QgsLegendRenderer
         double labelXOffset = 0.0;
     };
 
-    /** Atom is indivisible set (indivisible into more columns). It may consists
+    /**
+     * Atom is indivisible set (indivisible into more columns). It may consists
      *  of one or more Nucleon, depending on layer splitting mode:
      *  1) no layer split: [group_title ...] layer_title layer_item [layer_item ...]
      *  2) layer split:    [group_title ...] layer_title layer_item
@@ -116,14 +120,16 @@ class CORE_EXPORT QgsLegendRenderer
     //! Divide atoms to columns and set columns on atoms
     void setColumns( QList<Atom> &atomList );
 
-    /** Draws title in the legend using the title font and the specified alignment
+    /**
+     * Draws title in the legend using the title font and the specified alignment
      * If no painter is specified, function returns the required width/height to draw the title.
      */
     QSizeF drawTitle( QPainter *painter = nullptr, QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft, double legendWidth = 0 );
 
     double spaceAboveAtom( const Atom &atom );
 
-    /** Draw atom and return its actual size, the atom is drawn with the space above it
+    /**
+     * Draw atom and return its actual size, the atom is drawn with the space above it
      *  so that first atoms in column are all aligned to the same line regardles their
      * style top space */
     QSizeF drawAtom( const Atom &atom, QPainter *painter = nullptr, QPointF point = QPointF() );
@@ -133,7 +139,8 @@ class CORE_EXPORT QgsLegendRenderer
     //! Draws a layer item
     QSizeF drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QPainter *painter = nullptr, QPointF point = QPointF() );
 
-    /** Draws a group item.
+    /**
+     * Draws a group item.
      * Returns list of sizes of layers and groups including this group.
      */
     QSizeF drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QPainter *painter = nullptr, QPointF point = QPointF() );

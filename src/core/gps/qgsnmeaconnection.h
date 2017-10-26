@@ -21,7 +21,8 @@
 #include "qgis_core.h"
 #include "qgsgpsconnection.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Evaluates NMEA sentences coming from a GPS device
 */
 class CORE_EXPORT QgsNMEAConnection: public QgsGPSConnection

@@ -26,11 +26,6 @@
 
 #include <ctime>
 
-QgsMSLayerBuilder::QgsMSLayerBuilder()
-{
-
-}
-
 QString QgsMSLayerBuilder::layerNameFromUri( const QString &uri ) const
 {
   //file based?

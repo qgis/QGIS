@@ -234,7 +234,7 @@ class ShortestPathPointToPoint(QgisAlgorithm):
         route.reverse()
 
         feedback.pushInfo(self.tr('Writing results...'))
-        geom = QgsGeometry.fromPolyline(route)
+        geom = QgsGeometry.fromPolylineXY(route)
         feat = QgsFeature()
         feat.setFields(fields)
         feat['start'] = startPoint.toString()

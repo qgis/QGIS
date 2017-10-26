@@ -29,7 +29,7 @@ class QgsVectorLayer;
 class QgsRemoteDataSourceBuilder: public QgsMSLayerBuilder
 {
   public:
-    QgsRemoteDataSourceBuilder();
+    QgsRemoteDataSourceBuilder() = default;
     QgsMapLayer *createMapLayer( const QDomElement &elem, const QString &layerName, QList<QTemporaryFile *> &filesToRemove, QList<QgsMapLayer *> &layersToRemove, bool allowCaching = true ) const override;
 
   private:
@@ -38,7 +38,8 @@ class QgsRemoteDataSourceBuilder: public QgsMSLayerBuilder
     //! Saves the vector data into a temporary file and creates a vector layer. Returns a 0 pointer in case of error
     QgsVectorLayer *vectorLayerFromRemoteVDS( const QDomElement &remoteVDSElem, const QString &layerName, QList<QTemporaryFile *> &filesToRemove, QList<QgsMapLayer *> &layersToRemove, bool allowCaching = true ) const;
 
-    /** Loads data from http or ftp
+    /**
+     * Loads data from http or ftp
      \returns 0 in case of success*/
     int loadData( const QString &url, QByteArray &data ) const;
 };

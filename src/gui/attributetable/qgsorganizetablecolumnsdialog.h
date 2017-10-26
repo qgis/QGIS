@@ -26,7 +26,8 @@
 
 class QgsVectorLayer;
 
-/** \class QgsOrganizeTableColumnsDialog
+/**
+ * \class QgsOrganizeTableColumnsDialog
  * \ingroup gui
  * Dialog for organising (hiding and reordering) columns in the attributes table.
  * \since QGIS 2.16

@@ -19,6 +19,7 @@
 
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
+#include "qgsapplication.h"
 
 
 QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcfg, bool allowEmpty )
@@ -27,6 +28,8 @@ QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcf
   , mAllowEmpty( allowEmpty )
 {
   setupUi( this );
+  connect( btnLock, &QToolButton::toggled, this, &QgsAuthConfigIdEdit::btnLock_toggled );
+  connect( leAuthCfg, &QLineEdit::textChanged, this, &QgsAuthConfigIdEdit::leAuthCfg_textChanged );
 
   leAuthCfg->setReadOnly( true );
 
@@ -51,9 +54,9 @@ bool QgsAuthConfigIdEdit::validate()
   bool curvalid = ( ( authcfg == mAuthCfgOrig && authcfg.size() == 7 )
                     || ( mAllowEmpty && authcfg.isEmpty() ) );
 
-  if ( !QgsAuthManager::instance()->isDisabled() && !curvalid && authcfg.size() == 7 && isAlphaNumeric( authcfg ) )
+  if ( !QgsApplication::authManager()->isDisabled() && !curvalid && authcfg.size() == 7 && isAlphaNumeric( authcfg ) )
   {
-    curvalid = QgsAuthManager::instance()->configIdUnique( authcfg );
+    curvalid = QgsApplication::authManager()->configIdUnique( authcfg );
   }
 
   if ( mValid != curvalid )
@@ -97,7 +100,7 @@ void QgsAuthConfigIdEdit::updateValidityStyle( bool valid )
   leAuthCfg->setStyleSheet( ss );
 }
 
-void QgsAuthConfigIdEdit::on_btnLock_toggled( bool checked )
+void QgsAuthConfigIdEdit::btnLock_toggled( bool checked )
 {
   leAuthCfg->setReadOnly( !checked );
   if ( checked )
@@ -106,7 +109,7 @@ void QgsAuthConfigIdEdit::on_btnLock_toggled( bool checked )
   updateValidityStyle( validate() );
 }
 
-void QgsAuthConfigIdEdit::on_leAuthCfg_textChanged( const QString &txt )
+void QgsAuthConfigIdEdit::leAuthCfg_textChanged( const QString &txt )
 {
   Q_UNUSED( txt );
   validate();

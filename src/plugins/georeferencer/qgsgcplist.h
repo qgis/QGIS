@@ -26,7 +26,7 @@ class QgsPointXY;
 class QgsGCPList : public QList<QgsGeorefDataPoint *>
 {
   public:
-    QgsGCPList();
+    QgsGCPList() = default;
     QgsGCPList( const QgsGCPList &list );
 
     void createGCPVectors( QVector<QgsPointXY> &mapCoords, QVector<QgsPointXY> &pixelCoords );

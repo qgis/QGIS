@@ -24,11 +24,6 @@
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
 
-QgsPaintEffect::QgsPaintEffect()
-{
-
-}
-
 QgsPaintEffect::QgsPaintEffect( const QgsPaintEffect &other )
   : mEnabled( other.enabled() )
   , mDrawMode( other.drawMode() )

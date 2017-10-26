@@ -25,7 +25,8 @@
 #include <QLocale>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsLongLongValidator
  */
 class GUI_EXPORT QgsLongLongValidator : public QValidator

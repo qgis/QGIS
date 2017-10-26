@@ -34,7 +34,8 @@
 //qgis unit test includes
 #include <qgsrenderchecker.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the map rotation feature
  */
 class TestQgsMapRotation : public QObject
@@ -108,10 +109,7 @@ void TestQgsMapRotation::initTestCase()
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
 
-TestQgsMapRotation::~TestQgsMapRotation()
-{
-
-}
+TestQgsMapRotation::~TestQgsMapRotation() = default;
 
 //runs after all tests
 void TestQgsMapRotation::cleanupTestCase()

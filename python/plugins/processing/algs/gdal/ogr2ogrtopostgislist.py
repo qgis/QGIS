@@ -83,9 +83,6 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         GdalAlgorithm.__init__(self)
         self.processing = False
 
-    def __init__(self):
-        super().__init__()
-
     def initAlgorithm(self, config=None):
         self.addParameter(ParameterString(
             self.DATABASE,

@@ -18,10 +18,10 @@
 %Include qgsuserinputdockwidget.sip
 %Include qgsbrowserdockwidget.sip
 %Include qgsvertexmarker.sip
-%Include qgsfiledownloader.sip
 %Include qgsabstractdatasourcewidget.sip
 %Include qgssourceselectprovider.sip
 %Include qgssourceselectproviderregistry.sip
+%Include qgsvscrollarea.sip
 %Include attributetable/qgsfeaturemodel.sip
 %Include auth/qgsauthauthoritieseditor.sip
 %Include auth/qgsauthcertificateinfo.sip
@@ -29,6 +29,7 @@
 %Include auth/qgsauthcerttrustpolicycombobox.sip
 %Include auth/qgsauthconfigeditor.sip
 %Include auth/qgsauthconfigselect.sip
+%Include auth/qgsauthsettingswidget.sip
 %Include auth/qgsautheditorwidgets.sip
 %Include auth/qgsauthidentitieseditor.sip
 %Include auth/qgsauthimportcertdialog.sip
@@ -151,6 +152,8 @@
 %Include qgsmessagelogviewer.sip
 %Include qgsmessageviewer.sip
 %Include qgsmetadatawidget.sip
+%Include qgsnewauxiliarylayerdialog.sip
+%Include qgsnewauxiliaryfielddialog.sip
 %Include qgsnewhttpconnection.sip
 %Include qgsnewmemorylayerdialog.sip
 %Include qgsnewnamedialog.sip
@@ -198,6 +201,7 @@
 %Include qgstreewidgetitem.sip
 %Include qgsunitselectionwidget.sip
 %Include qgsvariableeditorwidget.sip
+%Include qgsfiledownloaderdialog.sip
 %Include raster/qgsmultibandcolorrendererwidget.sip
 %Include raster/qgspalettedrendererwidget.sip
 %Include raster/qgsrasterbandcombobox.sip

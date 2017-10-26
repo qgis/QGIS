@@ -61,7 +61,7 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     void showHelp();
 
   private slots:
-    void on_btnBrowseForFile_clicked();
+    void btnBrowseForFile_clicked();
 
   public slots:
     void addButtonClicked() override;

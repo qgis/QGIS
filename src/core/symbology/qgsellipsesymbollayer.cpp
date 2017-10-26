@@ -28,8 +28,7 @@
 #include <QDomElement>
 
 QgsEllipseSymbolLayer::QgsEllipseSymbolLayer()
-  : QgsMarkerSymbolLayer()
-  , mSymbolName( QStringLiteral( "circle" ) )
+  : mSymbolName( QStringLiteral( "circle" ) )
   , mStrokeColor( Qt::black )
 {
   mColor = Qt::white;

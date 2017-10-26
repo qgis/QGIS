@@ -70,11 +70,24 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     virtual QString id() const = 0;
 
     /**
-     * Returns the full provider name, which is used to describe the provider within the GUI.
-     * This string should be localised.
+     * Returns the provider name, which is used to describe the provider within the GUI.
+     * This string should be short (e.g. "Lastools") and localised.
+     * \see longName()
      * \see id()
      */
     virtual QString name() const = 0;
+
+    /**
+     * Returns the a longer version of the provider name, which can include extra details
+     * such as version numbers. E.g. "Lastools LIDAR tools (version 2.2.1)".
+     * This string should be localised.
+     *
+     * The default implementation returns the same string as name().
+     *
+     * \see name()
+     * \see id()
+     */
+    virtual QString longName() const;
 
     /**
      * Returns true if the provider can be activated, or false if it cannot be activated (e.g. due to

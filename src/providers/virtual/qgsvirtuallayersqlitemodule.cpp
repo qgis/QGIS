@@ -162,8 +162,8 @@ struct VTable
 
   private:
 
-    VTable( const VTable &other );
-    VTable &operator=( const VTable &other );
+    VTable( const VTable &other ) = delete;
+    VTable &operator=( const VTable &other ) = delete;
 
     // connection
     sqlite3 *mSql = nullptr;
@@ -777,8 +777,8 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
     };
   }
 
-  QgsExpression parentExpr( QLatin1String( "" ) );
-  QVariant ret = foo->func( variants, &qgisFunctionExpressionContext, &parentExpr );
+  QgsExpression parentExpr = QgsExpression( QString() );
+  QVariant ret = foo->func( variants, &qgisFunctionExpressionContext, &parentExpr, nullptr );
   if ( parentExpr.hasEvalError() )
   {
     QByteArray ba = parentExpr.evalErrorString().toUtf8();

@@ -116,6 +116,11 @@ class CORE_EXPORT QgsProcessingUtils
     static QString normalizeLayerSource( const QString &source );
 
     /**
+     * Converts a string to a Python string literal. E.g. by replacing ' with \'.
+     */
+    static QString stringToPythonLiteral( const QString &string );
+
+    /**
      * Creates a feature sink ready for adding features. The \a destination specifies a destination
      * URI for the resultant layer. It may be updated in place to reflect the actual destination
      * for the layer.

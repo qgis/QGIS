@@ -40,10 +40,6 @@
 #include <ctime>
 
 
-QgsRendererRange::QgsRendererRange()
-{
-}
-
 QgsRendererRange::QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol, const QString &label, bool render )
   : mLowerValue( lowerValue )
   , mUpperValue( upperValue )

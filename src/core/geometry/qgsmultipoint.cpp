@@ -20,7 +20,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 
 QgsMultiPointV2::QgsMultiPointV2()
-  : QgsGeometryCollection()
 {
   mWkbType = QgsWkbTypes::MultiPoint;
 }
@@ -64,6 +63,10 @@ void QgsMultiPointV2::clear()
 QDomElement QgsMultiPointV2::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
+
+  if ( isEmpty() )
+    return elemMultiPoint;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
@@ -80,6 +83,10 @@ QDomElement QgsMultiPointV2::asGML2( QDomDocument &doc, int precision, const QSt
 QDomElement QgsMultiPointV2::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
+
+  if ( isEmpty() )
+    return elemMultiPoint;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
@@ -153,6 +160,14 @@ bool QgsMultiPointV2::insertGeometry( QgsAbstractGeometry *g, int index )
 QgsAbstractGeometry *QgsMultiPointV2::boundary() const
 {
   return nullptr;
+}
+
+int QgsMultiPointV2::vertexNumberFromVertexId( QgsVertexId id ) const
+{
+  if ( id.part < 0 || id.part >= mGeometries.count() || id.vertex != 0 || id.ring != 0 )
+    return -1;
+
+  return id.part; // can shortcut the calculation, since each part will have 1 vertex
 }
 
 bool QgsMultiPointV2::wktOmitChildType() const

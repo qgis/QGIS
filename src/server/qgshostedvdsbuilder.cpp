@@ -22,11 +22,6 @@
 #include "qgsvectorlayer.h"
 #include <QDomElement>
 
-QgsHostedVDSBuilder::QgsHostedVDSBuilder(): QgsMSLayerBuilder()
-{
-
-}
-
 QgsMapLayer *QgsHostedVDSBuilder::createMapLayer( const QDomElement &elem,
     const QString &layerName,
     QList<QTemporaryFile *> &filesToRemove,

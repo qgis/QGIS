@@ -26,7 +26,8 @@
 #include "qgsfields.h"
 #include "qgsexpression.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Buffers information about expression fields for a vector layer.
  *
  * \since QGIS 2.6

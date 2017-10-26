@@ -26,7 +26,8 @@
 class QString;
 class QWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This is the interface for those who want to add entries to the QgsDataSourceManagerDialog
  *
  * \since QGIS 3.0
@@ -50,7 +51,8 @@ class GUI_EXPORT QgsSourceSelectProvider
     //! Data Provider key
     virtual QString providerKey() const = 0;
 
-    /** Source select provider name, this is useful to retrieve
+    /**
+     * Source select provider name, this is useful to retrieve
      * a particular source select in case the provider has more
      * than one, it should be unique among all providers.
      *
@@ -61,7 +63,8 @@ class GUI_EXPORT QgsSourceSelectProvider
     //! Text for the menu item entry, it will be visible to the user so make sure it's translatable
     virtual QString text() const = 0;
 
-    /** Text for the tooltip menu item entry, it will be visible to the user so make sure it's translatable
+    /**
+     * Text for the tooltip menu item entry, it will be visible to the user so make sure it's translatable
      *
      * The default implementation returns an empty string.
      */
@@ -70,12 +73,14 @@ class GUI_EXPORT QgsSourceSelectProvider
     //! Creates a new instance of an QIcon for the menu item entry
     virtual QIcon icon() const = 0;
 
-    /** Ordering: the source select provider registry will be able to sort
+    /**
+     * Ordering: the source select provider registry will be able to sort
      * the source selects (ascending) using this integer value
      */
     virtual int ordering( ) const { return OrderOtherProvider; }
 
-    /** Create a new instance of QgsAbstractDataSourceWidget (or null).
+    /**
+     * Create a new instance of QgsAbstractDataSourceWidget (or null).
      * Caller takes responsibility of deleting created.
      */
     virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const = 0 SIP_FACTORY;

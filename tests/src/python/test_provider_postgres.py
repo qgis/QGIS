@@ -31,7 +31,10 @@ from qgis.core import (
     QgsSettings,
     QgsTransactionGroup,
     QgsReadWriteContext,
-    QgsRectangle
+    QgsRectangle,
+    QgsDefaultValue,
+    QgsDataSourceUri,
+    QgsProject
 )
 from qgis.gui import QgsGui
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject
@@ -309,6 +312,54 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         f['pk'] = NULL
         self.vl.addFeature(f)  # Should not deadlock during an active iteration
         f = next(it)
+
+    def testTransactionNotDirty(self):
+        # create a vector ayer based on postgres
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        # prepare a project with transactions enabled
+        p = QgsProject()
+        p.setAutoTransaction(True)
+        p.addMapLayers([vl])
+        vl.startEditing()
+
+        # check that the feature used for testing is ok
+        ft0 = vl.getFeatures('pk=1')
+        f = QgsFeature()
+        self.assertTrue(ft0.nextFeature(f))
+
+        # update the data within the transaction
+        tr = vl.dataProvider().transaction()
+        sql = "update qgis_test.some_poly_data set pk=33 where pk=1"
+        self.assertTrue(tr.executeSql(sql, True)[0])
+
+        # check that the pk of the feature has been changed
+        ft = vl.getFeatures('pk=1')
+        self.assertFalse(ft.nextFeature(f))
+
+        ft = vl.getFeatures('pk=33')
+        self.assertTrue(ft.nextFeature(f))
+
+        # underlying data has been modified but the layer is not tagged as
+        # modified
+        self.assertTrue(vl.isModified())
+
+        # undo sql query
+        vl.undoStack().undo()
+
+        # check that the original feature with pk is back
+        ft0 = vl.getFeatures('pk=1')
+        self.assertTrue(ft0.nextFeature(f))
+
+        # redo
+        vl.undoStack().redo()
+
+        # check that the pk of the feature has been changed
+        ft1 = vl.getFeatures('pk=1')
+        self.assertFalse(ft1.nextFeature(f))
+
+        p.setAutoTransaction(False)
 
     def testDomainTypes(self):
         """Test that domain types are correctly mapped"""
@@ -589,7 +640,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", "'qgis'::text", None, None])
 
         # test take vector layer default value expression overrides postgres provider default clause
-        vl.setDefaultValueExpression(3, "'mappy'")
+        vl.setDefaultValueDefinition(3, QgsDefaultValue("'mappy'"))
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 5, 3: 'map'})
         self.assertEqual(f.attributes(), [default_clause, 5, "'qgis'::text", 'mappy', None, None])
 
@@ -845,6 +896,27 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         vl0.dataProvider().setListening(False)
 
         self.assertTrue(ok)
+
+    def testStyleDatabaseWithService(self):
+
+        myconn = 'service=\'qgis_test\''
+        if 'QGIS_PGTEST_DB' in os.environ:
+            myconn = os.environ['QGIS_PGTEST_DB']
+        myvl = QgsVectorLayer(myconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
+
+        styles = myvl.listStylesInDatabase()
+        ids = styles[1]
+        self.assertEqual(len(ids), 0)
+
+        myvl.saveStyleToDatabase('mystyle', '', False, '')
+        styles = myvl.listStylesInDatabase()
+        ids = styles[1]
+        self.assertEqual(len(ids), 1)
+
+        myvl.deleteStyleFromDatabase(ids[0])
+        styles = myvl.listStylesInDatabase()
+        ids = styles[1]
+        self.assertEqual(len(ids), 0)
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):

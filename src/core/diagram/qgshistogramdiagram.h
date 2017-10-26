@@ -32,7 +32,8 @@ class QgsDiagramInterpolationSettings;
 
 class QgsRenderContext;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsHistogramDiagram
  */
 class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram

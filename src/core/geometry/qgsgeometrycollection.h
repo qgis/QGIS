@@ -25,7 +25,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspoint.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGeometryCollection
  * \brief Geometry collection
  * \since QGIS 2.10
@@ -40,17 +41,20 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 
     QgsGeometryCollection *clone() const override SIP_FACTORY;
 
-    /** Returns the number of geometries within the collection.
+    /**
+     * Returns the number of geometries within the collection.
      */
     int numGeometries() const;
 
-    /** Returns a const reference to a geometry from within the collection.
+    /**
+     * Returns a const reference to a geometry from within the collection.
      * \param n index of geometry to return
      * \note not available in Python bindings
      */
     const QgsAbstractGeometry *geometryN( int n ) const SIP_SKIP;
 
-    /** Returns a geometry from within the collection.
+    /**
+     * Returns a geometry from within the collection.
      * \param n index of geometry to return
      */
     QgsAbstractGeometry *geometryN( int n );
@@ -61,17 +65,21 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QString geometryType() const override;
     void clear() override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
+    int vertexNumberFromVertexId( QgsVertexId id ) const override;
 
     //! Adds a geometry and takes ownership. Returns true in case of success.
     virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER );
 
-    /** Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
+    /**
+     * Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
      * \param g geometry to insert. Ownership is transferred to the collection.
      * \param index position to insert geometry before
      */
     virtual bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index );
 
-    /** Removes a geometry from the collection.
+    /**
+     * Removes a geometry from the collection.
      * \param nr index of geometry to remove
      * \returns true if removal was successful.
      */
@@ -110,12 +118,14 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 
     bool hasCurvedSegments() const override;
 
-    /** Returns a geometry without curves. Caller takes ownership
+    /**
+     * Returns a geometry without curves. Caller takes ownership
      * \param tolerance segmentation tolerance
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     QgsAbstractGeometry *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
-    /** Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+    /**
+     * Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
      * \param vertex the vertex id
      * \returns rotation in radians, clockwise from north
      */
@@ -150,14 +160,20 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 #endif
 
   protected:
+    virtual int childCount() const override;
+    virtual QgsAbstractGeometry *childGeometry( int index ) const override;
+
+  protected:
     QVector< QgsAbstractGeometry * > mGeometries;
 
-    /** Returns whether child type names are omitted from Wkt representations of the collection
+    /**
+     * Returns whether child type names are omitted from Wkt representations of the collection
      * \since QGIS 2.12
      */
     virtual bool wktOmitChildType() const;
 
-    /** Reads a collection from a WKT string.
+    /**
+     * Reads a collection from a WKT string.
      */
     bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
 

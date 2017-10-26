@@ -24,9 +24,15 @@ class QgsLegendSymbolItem
 #include "qgslegendsymbolitem.h"
 %End
   public:
+
     QgsLegendSymbolItem();
+%Docstring
+ Constructor for QgsLegendSymbolItem.
+%End
+
     QgsLegendSymbolItem( QgsSymbol *symbol, const QString &label, const QString &ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString &parentRuleKey = QString() );
 %Docstring
+ Construct item. Does not take ownership of symbol (makes internal clone)
 .. versionadded:: 2.8
 %End
     ~QgsLegendSymbolItem();
@@ -65,14 +71,18 @@ Used for older code that identifies legend entries from symbol pointer within re
 Determine whether given scale is within the scale range. Returns true if scale or scale range is invalid (value <= 0)
  :rtype: bool
 %End
+
     int scaleMinDenom() const;
 %Docstring
-Value <= 0 means the range is unbounded on this side
+ Min scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 1000.
+ Value <= 0 means the range is unbounded on this side
  :rtype: int
 %End
+
     int scaleMaxDenom() const;
 %Docstring
-Value <= 0 means the range is unbounded on this side
+ Max scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 2000.
+ Value <= 0 means the range is unbounded on this side
  :rtype: int
 %End
 
@@ -84,6 +94,7 @@ Identation level that tells how deep the item is in a hierarchy of items. For fl
 
     QString parentRuleKey() const;
 %Docstring
+ Key of the parent legend node. For legends with tree hierarchy
 .. note::
 
    Parameter parentRuleKey added in QGIS 2.8

@@ -22,7 +22,11 @@ class QgsGraphEdge
 #include "qgsgraph.h"
 %End
   public:
+
     QgsGraphEdge();
+%Docstring
+ Constructor for QgsGraphEdge.
+%End
 
     QVariant cost( int strategyIndex ) const;
 %Docstring

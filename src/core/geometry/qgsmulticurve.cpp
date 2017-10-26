@@ -24,7 +24,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include <memory>
 
 QgsMultiCurve::QgsMultiCurve()
-  : QgsGeometryCollection()
 {
   mWkbType = QgsWkbTypes::MultiCurve;
 }
@@ -61,6 +60,10 @@ QDomElement QgsMultiCurve::asGML2( QDomDocument &doc, int precision, const QStri
 {
   // GML2 does not support curves
   QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
+
+  if ( isEmpty() )
+    return elemMultiLineString;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
@@ -79,6 +82,10 @@ QDomElement QgsMultiCurve::asGML2( QDomDocument &doc, int precision, const QStri
 QDomElement QgsMultiCurve::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiCurve" ) );
+
+  if ( isEmpty() )
+    return elemMultiCurve;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )

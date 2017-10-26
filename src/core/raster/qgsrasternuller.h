@@ -25,7 +25,8 @@
 
 #include <QList>
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Raster pipe that deals with null values.
 */
 class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface

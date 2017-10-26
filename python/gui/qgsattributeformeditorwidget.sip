@@ -118,7 +118,8 @@ class QgsAttributeFormEditorWidget : QWidget
 
     void valueChanged( const QVariant &value );
 %Docstring
-\param value new widget value
+ Emitted when the widget's value changes
+ \param value new widget value
 %End
 
   protected:

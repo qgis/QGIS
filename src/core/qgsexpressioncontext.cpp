@@ -593,6 +593,14 @@ void QgsExpressionContextUtils::setGlobalVariables( const QVariantMap &variables
   QgsApplication::setCustomVariables( variables );
 }
 
+void QgsExpressionContextUtils::removeGlobalVariable( const QString &name )
+{
+  QVariantMap vars = QgsApplication::customVariables();
+  if ( vars.remove( name ) )
+    QgsApplication::setCustomVariables( vars );
+}
+
+
 /// @cond PRIVATE
 
 class GetNamedProjectColor : public QgsScopedExpressionFunction
@@ -626,7 +634,7 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
       }
     }
 
-    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression * ) override
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
       QString colorName = values.at( 0 ).toString().toLower();
       if ( mColors.contains( colorName ) )
@@ -657,7 +665,7 @@ class GetComposerItemVariables : public QgsScopedExpressionFunction
       , mComposition( c )
     {}
 
-    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression * ) override
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
       if ( !mComposition )
         return QVariant();
@@ -692,7 +700,7 @@ class GetLayerVisibility : public QgsScopedExpressionFunction
       , mLayers( layers )
     {}
 
-    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression * ) override
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
       if ( mLayers.isEmpty() )
       {
@@ -729,7 +737,7 @@ class GetProcessingParameterValue : public QgsScopedExpressionFunction
       , mParams( params )
     {}
 
-    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression * ) override
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
     {
       return mParams.value( values.at( 0 ).toString() );
     }
@@ -794,6 +802,18 @@ void QgsExpressionContextUtils::setProjectVariables( QgsProject *project, const 
     return;
 
   project->setCustomVariables( variables );
+}
+
+void QgsExpressionContextUtils::removeProjectVariable( QgsProject *project, const QString &name )
+{
+  if ( !project )
+  {
+    return;
+  }
+
+  QVariantMap vars = project->customVariables();
+  if ( vars.remove( name ) )
+    project->setCustomVariables( vars );
 }
 
 QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLayer *layer )

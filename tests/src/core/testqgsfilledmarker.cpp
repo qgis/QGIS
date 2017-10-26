@@ -36,7 +36,8 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for QgsFilledMarkerSymbolLayer.
  */
 class TestQgsFilledMarkerSymbol : public QObject
@@ -44,8 +45,7 @@ class TestQgsFilledMarkerSymbol : public QObject
     Q_OBJECT
 
   public:
-    TestQgsFilledMarkerSymbol()
-    {}
+    TestQgsFilledMarkerSymbol() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

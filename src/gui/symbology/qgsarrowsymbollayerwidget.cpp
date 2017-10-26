@@ -17,11 +17,25 @@
 #include "qgsvectorlayer.h"
 #include <QColorDialog>
 
-QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+QgsArrowSymbolLayerWidget::QgsArrowSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
 
 {
   setupUi( this );
+  connect( mArrowWidthSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsArrowSymbolLayerWidget::mArrowWidthSpin_valueChanged );
+  connect( mArrowWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsArrowSymbolLayerWidget::mArrowWidthUnitWidget_changed );
+  connect( mArrowStartWidthSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsArrowSymbolLayerWidget::mArrowStartWidthSpin_valueChanged );
+  connect( mArrowStartWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsArrowSymbolLayerWidget::mArrowStartWidthUnitWidget_changed );
+  connect( mHeadLengthSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsArrowSymbolLayerWidget::mHeadLengthSpin_valueChanged );
+  connect( mHeadLengthUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsArrowSymbolLayerWidget::mHeadLengthUnitWidget_changed );
+  connect( mHeadThicknessSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsArrowSymbolLayerWidget::mHeadThicknessSpin_valueChanged );
+  connect( mHeadThicknessUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsArrowSymbolLayerWidget::mHeadThicknessUnitWidget_changed );
+  connect( mHeadTypeCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsArrowSymbolLayerWidget::mHeadTypeCombo_currentIndexChanged );
+  connect( mArrowTypeCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsArrowSymbolLayerWidget::mArrowTypeCombo_currentIndexChanged );
+  connect( mOffsetSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsArrowSymbolLayerWidget::mOffsetSpin_valueChanged );
+  connect( mOffsetUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsArrowSymbolLayerWidget::mOffsetUnitWidget_changed );
+  connect( mCurvedArrowChck, &QCheckBox::stateChanged, this, &QgsArrowSymbolLayerWidget::mCurvedArrowChck_stateChanged );
+  connect( mRepeatArrowChck, &QCheckBox::stateChanged, this, &QgsArrowSymbolLayerWidget::mRepeatArrowChck_stateChanged );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mArrowWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
@@ -87,7 +101,7 @@ QgsSymbolLayer *QgsArrowSymbolLayerWidget::symbolLayer()
   return mLayer;
 }
 
-void QgsArrowSymbolLayerWidget::on_mArrowWidthSpin_valueChanged( double d )
+void QgsArrowSymbolLayerWidget::mArrowWidthSpin_valueChanged( double d )
 {
   if ( !mLayer )
     return;
@@ -96,7 +110,7 @@ void QgsArrowSymbolLayerWidget::on_mArrowWidthSpin_valueChanged( double d )
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mArrowStartWidthSpin_valueChanged( double d )
+void QgsArrowSymbolLayerWidget::mArrowStartWidthSpin_valueChanged( double d )
 {
   if ( !mLayer )
     return;
@@ -105,7 +119,7 @@ void QgsArrowSymbolLayerWidget::on_mArrowStartWidthSpin_valueChanged( double d )
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mHeadLengthSpin_valueChanged( double d )
+void QgsArrowSymbolLayerWidget::mHeadLengthSpin_valueChanged( double d )
 {
   if ( !mLayer )
     return;
@@ -114,7 +128,7 @@ void QgsArrowSymbolLayerWidget::on_mHeadLengthSpin_valueChanged( double d )
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mHeadThicknessSpin_valueChanged( double d )
+void QgsArrowSymbolLayerWidget::mHeadThicknessSpin_valueChanged( double d )
 {
   if ( !mLayer )
     return;
@@ -123,7 +137,7 @@ void QgsArrowSymbolLayerWidget::on_mHeadThicknessSpin_valueChanged( double d )
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mArrowWidthUnitWidget_changed()
+void QgsArrowSymbolLayerWidget::mArrowWidthUnitWidget_changed()
 {
   if ( !mLayer )
     return;
@@ -133,7 +147,7 @@ void QgsArrowSymbolLayerWidget::on_mArrowWidthUnitWidget_changed()
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mArrowStartWidthUnitWidget_changed()
+void QgsArrowSymbolLayerWidget::mArrowStartWidthUnitWidget_changed()
 {
   if ( !mLayer )
     return;
@@ -143,7 +157,7 @@ void QgsArrowSymbolLayerWidget::on_mArrowStartWidthUnitWidget_changed()
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mHeadLengthUnitWidget_changed()
+void QgsArrowSymbolLayerWidget::mHeadLengthUnitWidget_changed()
 {
   if ( !mLayer )
     return;
@@ -153,7 +167,7 @@ void QgsArrowSymbolLayerWidget::on_mHeadLengthUnitWidget_changed()
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mHeadThicknessUnitWidget_changed()
+void QgsArrowSymbolLayerWidget::mHeadThicknessUnitWidget_changed()
 {
   if ( !mLayer )
     return;
@@ -163,7 +177,7 @@ void QgsArrowSymbolLayerWidget::on_mHeadThicknessUnitWidget_changed()
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mHeadTypeCombo_currentIndexChanged( int idx )
+void QgsArrowSymbolLayerWidget::mHeadTypeCombo_currentIndexChanged( int idx )
 {
   if ( !mLayer )
     return;
@@ -177,7 +191,7 @@ void QgsArrowSymbolLayerWidget::on_mHeadTypeCombo_currentIndexChanged( int idx )
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mArrowTypeCombo_currentIndexChanged( int idx )
+void QgsArrowSymbolLayerWidget::mArrowTypeCombo_currentIndexChanged( int idx )
 {
   if ( !mLayer )
     return;
@@ -187,7 +201,7 @@ void QgsArrowSymbolLayerWidget::on_mArrowTypeCombo_currentIndexChanged( int idx 
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mOffsetSpin_valueChanged( double d )
+void QgsArrowSymbolLayerWidget::mOffsetSpin_valueChanged( double d )
 {
   if ( !mLayer )
     return;
@@ -196,7 +210,7 @@ void QgsArrowSymbolLayerWidget::on_mOffsetSpin_valueChanged( double d )
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mOffsetUnitWidget_changed()
+void QgsArrowSymbolLayerWidget::mOffsetUnitWidget_changed()
 {
   if ( !mLayer )
     return;
@@ -206,7 +220,7 @@ void QgsArrowSymbolLayerWidget::on_mOffsetUnitWidget_changed()
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mCurvedArrowChck_stateChanged( int state )
+void QgsArrowSymbolLayerWidget::mCurvedArrowChck_stateChanged( int state )
 {
   if ( ! mLayer )
     return;
@@ -215,7 +229,7 @@ void QgsArrowSymbolLayerWidget::on_mCurvedArrowChck_stateChanged( int state )
   emit changed();
 }
 
-void QgsArrowSymbolLayerWidget::on_mRepeatArrowChck_stateChanged( int state )
+void QgsArrowSymbolLayerWidget::mRepeatArrowChck_stateChanged( int state )
 {
   if ( ! mLayer )
     return;

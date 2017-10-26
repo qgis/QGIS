@@ -24,7 +24,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmulticurve.h"
 
 QgsMultiSurface::QgsMultiSurface()
-  : QgsGeometryCollection()
 {
   mWkbType = QgsWkbTypes::MultiSurface;
 }
@@ -61,6 +60,10 @@ QDomElement QgsMultiSurface::asGML2( QDomDocument &doc, int precision, const QSt
 {
   // GML2 does not support curves
   QDomElement elemMultiPolygon = doc.createElementNS( ns, QStringLiteral( "MultiPolygon" ) );
+
+  if ( isEmpty() )
+    return elemMultiPolygon;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
@@ -79,6 +82,10 @@ QDomElement QgsMultiSurface::asGML2( QDomDocument &doc, int precision, const QSt
 QDomElement QgsMultiSurface::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiSurface = doc.createElementNS( ns, QStringLiteral( "MultiSurface" ) );
+
+  if ( isEmpty() )
+    return elemMultiSurface;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
@@ -102,7 +109,7 @@ QString QgsMultiSurface::asJSON( int precision ) const
     {
       json += '[';
 
-      QgsPolygonV2 *polygon = static_cast<const QgsSurface *>( geom )->surfaceToPolygon();
+      std::unique_ptr< QgsPolygonV2 >polygon( static_cast<const QgsSurface *>( geom )->surfaceToPolygon() );
 
       std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;

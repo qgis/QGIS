@@ -30,7 +30,8 @@
 class QgsVectorLayer;
 class QgsMapCanvas;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPropertyOverrideButton
  * A button for controlling property overrides which may apply to a widget.
  *
@@ -68,11 +69,13 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * \param property initial value of associated property to show in widget
      * \param definitions properties definitions for corresponding collection
      * \param layer associated vector layer
+     * \param auxiliaryStorageEnabled If true, activate the button to store data defined in auxiliary storage
      */
     void init( int propertyKey,
                const QgsProperty &property,
                const QgsPropertiesDefinition &definitions,
-               const QgsVectorLayer *layer = nullptr );
+               const QgsVectorLayer *layer = nullptr,
+               bool auxiliaryStorageEnabled = false );
 
     /**
      * Initialize a newly constructed property button (useful if button was included in a UI layout).
@@ -80,11 +83,13 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * \param collection associated property collection
      * \param definitions properties definitions for collection
      * \param layer associated vector layer
+     * \param auxiliaryStorageEnabled If true, activate the button to store data defined in auxiliary storage
      */
     void init( int propertyKey,
                const QgsAbstractPropertyCollection &collection,
                const QgsPropertiesDefinition &definitions,
-               const QgsVectorLayer *layer = nullptr );
+               const QgsVectorLayer *layer = nullptr,
+               bool auxiliaryStorageEnabled = false );
 
     /**
      * Returns a QgsProperty object encapsulating the current state of the
@@ -181,6 +186,13 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
     /**
+     * Updates list of fields.
+     *
+     * \since QGIS 3.0
+     */
+    void updateFieldLists();
+
+    /**
      * Sets a symbol which can be used for previews inside the widget or in any dialog created
      * by the widget. If not specified, a default created symbol will be used instead.
      * \note not available in Python bindings
@@ -202,12 +214,13 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     //! Emitted when the activated status of the widget changes
     void activated( bool isActive );
 
+    //! Emitted when creating a new auxiliary field
+    void createAuxiliaryField();
+
   protected:
     void mouseReleaseEvent( QMouseEvent *event ) override;
 
   private:
-
-    void updateFieldLists();
 
     void showDescriptionDialog();
     void showExpressionDialog();
@@ -245,6 +258,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     QAction *mActionCopyExpr = nullptr;
     QAction *mActionClearExpr = nullptr;
     QAction *mActionAssistant = nullptr;
+    QAction *mActionCreateAuxiliaryField = nullptr;
 
     QgsPropertyDefinition mDefinition;
 
@@ -278,6 +292,8 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     //! Internal property used for storing state of widget
     QgsProperty mProperty;
+
+    bool mAuxiliaryStorageEnabled = false;
 
     std::shared_ptr< QgsSymbol > mSymbol;
 

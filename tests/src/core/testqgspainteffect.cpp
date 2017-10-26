@@ -83,7 +83,8 @@ class DummyPaintEffect : public QgsPaintEffect
 
 
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for paint effects
  */
 class TestQgsPaintEffect: public QObject
@@ -129,10 +130,7 @@ class TestQgsPaintEffect: public QObject
 };
 
 
-TestQgsPaintEffect::TestQgsPaintEffect()
-{
-
-}
+TestQgsPaintEffect::TestQgsPaintEffect() = default;
 
 void TestQgsPaintEffect::initTestCase()
 {

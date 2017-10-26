@@ -29,7 +29,8 @@ class QgsExpression;
 class QgsCategorizedSymbolRenderer;
 class QgsGraduatedSymbolRenderer;
 
-/** \ingroup core
+/**
+ * \ingroup core
 When drawing a vector layer with rule-based renderer, it goes through
 the rules and draws features with symbols from rules that match.
  */
@@ -105,7 +106,8 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     class Rule;
     typedef QList<QgsRuleBasedRenderer::Rule *> RuleList;
 
-    /** \ingroup core
+    /**
+     * \ingroup core
       This class keeps data about a rules for rule-based renderer.
       A rule consists of a symbol, filter expression and range of scales.
       If filter is empty, it matches all features.
@@ -226,11 +228,16 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         bool active() const { return mIsActive; }
 
-        //! Unique rule identifier (for identification of rule within renderer)
-        //! \since QGIS 2.6
+        /**
+         * Unique rule identifier (for identification of rule within renderer)
+         * \since QGIS 2.6
+         */
         QString ruleKey() const { return mRuleKey; }
-        //! Override the assigned rule key (should be used just internally by rule-based renderer)
-        //! \since QGIS 2.6
+
+        /**
+         * Override the assigned rule key (should be used just internally by rule-based renderer)
+         * \since QGIS 2.6
+         */
         void setRuleKey( const QString &key ) { mRuleKey = key; }
 
         //! set a new symbol (or NULL). Deletes old symbol.
@@ -293,8 +300,10 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         //! get all used z-levels from this rule and children
         QSet<int> collectZLevels();
 
-        //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
-        //! \note not available in Python bindings
+        /**
+         * assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
+         * \note not available in Python bindings
+         */
         void setNormZLevels( const QMap<int, int> &zLevelsToNormLevels ) SIP_SKIP;
 
         /**
@@ -314,7 +323,8 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         //! tell which symbols will be used to render the feature
         QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
 
-        /** Returns which legend keys match the feature
+        /**
+         * Returns which legend keys match the feature
          * \since QGIS 2.14
          */
         QSet< QString > legendKeysForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
@@ -378,8 +388,10 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         //! take child rule out, set parent as null
         QgsRuleBasedRenderer::Rule *takeChildAt( int i ) SIP_TRANSFERBACK;
 
-        //! Try to find a rule given its unique key
-        //! \since QGIS 2.6
+        /**
+         * Try to find a rule given its unique key
+         * \since QGIS 2.6
+         */
         QgsRuleBasedRenderer::Rule *findRuleByKey( const QString &key );
 
         /**
@@ -491,9 +503,11 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     //! take a rule and create a list of new rules with intervals of scales given by the passed scale denominators
     static void refineRuleScales( QgsRuleBasedRenderer::Rule *initialRule, QList<int> scales );
 
-    //! creates a QgsRuleBasedRenderer from an existing renderer.
-    //! \since QGIS 2.5
-    //! \returns a new renderer if the conversion was possible, otherwise 0.
+    /**
+     * creates a QgsRuleBasedRenderer from an existing renderer.
+     * \since QGIS 2.5
+     * \returns a new renderer if the conversion was possible, otherwise 0.
+     */
     static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     //! helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology

@@ -27,9 +27,9 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
   setupUi( this );
   setPanelTitle( tr( "Guides" ) );
 
-  mHozProxyModel = new QgsLayoutGuideProxyModel( mHozGuidesTableView, QgsLayoutGuide::Horizontal, 0 );
+  mHozProxyModel = new QgsLayoutGuideProxyModel( mHozGuidesTableView, Qt::Horizontal, 0 );
   mHozProxyModel->setSourceModel( &mLayout->guides() );
-  mVertProxyModel = new QgsLayoutGuideProxyModel( mVertGuidesTableView, QgsLayoutGuide::Vertical, 0 );
+  mVertProxyModel = new QgsLayoutGuideProxyModel( mVertGuidesTableView, Qt::Vertical, 0 );
   mVertProxyModel->setSourceModel( &mLayout->guides() );
 
   mHozGuidesTableView->setModel( mHozProxyModel );
@@ -60,19 +60,19 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
 
 void QgsLayoutGuideWidget::addHorizontalGuide()
 {
-  std::unique_ptr< QgsLayoutGuide > newGuide( new QgsLayoutGuide( QgsLayoutGuide::Horizontal, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) ) );
+  std::unique_ptr< QgsLayoutGuide > newGuide( new QgsLayoutGuide( Qt::Horizontal, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) ) );
   mLayout->guides().addGuide( newGuide.release() );
 }
 
 void QgsLayoutGuideWidget::addVerticalGuide()
 {
-  std::unique_ptr< QgsLayoutGuide > newGuide( new QgsLayoutGuide( QgsLayoutGuide::Vertical, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) ) );
+  std::unique_ptr< QgsLayoutGuide > newGuide( new QgsLayoutGuide( Qt::Vertical, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) ) );
   mLayout->guides().addGuide( newGuide.release() );
 }
 
 void QgsLayoutGuideWidget::deleteHorizontalGuide()
 {
-  mLayout->undoStack()->beginMacro( tr( "Remove horizontal guides" ) );
+  mLayout->undoStack()->beginMacro( tr( "Remove Horizontal Guides" ) );
   Q_FOREACH ( const QModelIndex &index, mHozGuidesTableView->selectionModel()->selectedIndexes() )
   {
     mHozGuidesTableView->closePersistentEditor( index );
@@ -84,7 +84,7 @@ void QgsLayoutGuideWidget::deleteHorizontalGuide()
 
 void QgsLayoutGuideWidget::deleteVerticalGuide()
 {
-  mLayout->undoStack()->beginMacro( tr( "Remove vertical guides" ) );
+  mLayout->undoStack()->beginMacro( tr( "Remove Vertical Guides" ) );
   Q_FOREACH ( const QModelIndex &index, mVertGuidesTableView->selectionModel()->selectedIndexes() )
   {
     mVertGuidesTableView->closePersistentEditor( index );
@@ -127,7 +127,7 @@ void QgsLayoutGuideWidget::clearAll()
     mVertGuidesTableView->closePersistentEditor( index );
   }
 
-  mLayout->undoStack()->beginMacro( tr( "Remove all guides" ) );
+  mLayout->undoStack()->beginMacro( tr( "Remove All Guides" ) );
   mVertProxyModel->removeRows( 0, mVertProxyModel->rowCount() );
   mHozProxyModel->removeRows( 0, mHozProxyModel->rowCount() );
   mLayout->undoStack()->endMacro();

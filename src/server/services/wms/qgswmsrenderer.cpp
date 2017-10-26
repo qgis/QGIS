@@ -132,6 +132,11 @@ namespace QgsWms
     initNicknameLayers();
   }
 
+  QgsRenderer::~QgsRenderer()
+  {
+    removeTemporaryLayers();
+  }
+
 
   QImage *QgsRenderer::getLegendGraphics()
   {
@@ -909,8 +914,8 @@ namespace QgsWms
     QStringList queryLayers = mWmsParameters.queryLayersNickname();
     if ( queryLayers.isEmpty() )
     {
-      throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
-                                    QStringLiteral( "QUERY_LAYERS parameter is required for GetFeatureInfo" ) );
+      QString msg = QObject::tr( "QUERY_LAYERS parameter is required for GetFeatureInfo" );
+      throw QgsBadRequestException( QStringLiteral( "LayerNotQueryable" ), msg );
     }
 
     // The I/J parameters are Mandatory if they are not replaced by X/Y or FILTER or FILTER_GEOM
@@ -998,7 +1003,13 @@ namespace QgsWms
     QByteArray ba;
 
     QgsWmsParameters::Format infoFormat = mWmsParameters.infoFormat();
-    if ( infoFormat == QgsWmsParameters::Format::TEXT )
+
+    if ( infoFormat == QgsWmsParameters::Format::NONE )
+    {
+      throw QgsBadRequestException( QStringLiteral( "InvalidFormat" ),
+                                    QStringLiteral( "Invalid INFO_FORMAT parameter" ) );
+    }
+    else if ( infoFormat == QgsWmsParameters::Format::TEXT )
       ba = convertFeatureInfoToText( result );
     else if ( infoFormat == QgsWmsParameters::Format::HTML )
       ba = convertFeatureInfoToHtml( result );
@@ -1255,10 +1266,13 @@ namespace QgsWms
 
     Q_FOREACH ( QString queryLayer, queryLayers )
     {
+      bool validLayer = false;
       Q_FOREACH ( QgsMapLayer *layer, layers )
       {
         if ( queryLayer == layerNickname( *layer ) )
         {
+          validLayer = true;
+
           QDomElement layerElement;
           if ( infoFormat == QgsWmsParameters::Format::GML )
           {
@@ -1315,6 +1329,12 @@ namespace QgsWms
           }
           break;
         }
+      }
+
+      if ( !validLayer )
+      {
+        QString msg = QObject::tr( "Layer '%1' not found" ).arg( queryLayer );
+        throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
       }
     }
 
@@ -1593,13 +1613,13 @@ namespace QgsWms
 
             if ( segmentizeWktGeometry )
             {
-              QgsAbstractGeometry *abstractGeom = geom.geometry();
+              const QgsAbstractGeometry *abstractGeom = geom.constGet();
               if ( abstractGeom )
               {
                 if ( QgsWkbTypes::isCurvedType( abstractGeom->wkbType() ) )
                 {
                   QgsAbstractGeometry *segmentizedGeom = abstractGeom->segmentize();
-                  geom.setGeometry( segmentizedGeom );
+                  geom.set( segmentizedGeom );
                 }
               }
             }
@@ -2542,6 +2562,7 @@ namespace QgsWms
       }
     }
 
+    mTemporaryLayers.append( highlightLayers );
     return highlightLayers;
   }
 
@@ -2587,7 +2608,7 @@ namespace QgsWms
     return layers;
   }
 
-  QList<QgsMapLayer *> QgsRenderer::stylizedLayers( const QList<QgsWmsParametersLayer> &params ) const
+  QList<QgsMapLayer *> QgsRenderer::stylizedLayers( const QList<QgsWmsParametersLayer> &params )
   {
     QList<QgsMapLayer *> layers;
 
@@ -2595,7 +2616,19 @@ namespace QgsWms
     {
       QString nickname = param.mNickname;
       QString style = param.mStyle;
-      if ( mNicknameLayers.contains( nickname ) && !mRestrictedLayers.contains( nickname ) )
+      if ( nickname.startsWith( "EXTERNAL_WMS:" ) )
+      {
+        QString externalLayerId = nickname;
+        externalLayerId.remove( 0, 13 );
+        QgsMapLayer *externalWMSLayer = createExternalWMSLayer( externalLayerId );
+        if ( externalWMSLayer )
+        {
+          layers.append( externalWMSLayer );
+          mNicknameLayers[nickname] = externalWMSLayer; //might be used later in GetPrint request
+          mTemporaryLayers.append( externalWMSLayer );
+        }
+      }
+      else if ( mNicknameLayers.contains( nickname ) && !mRestrictedLayers.contains( nickname ) )
       {
         if ( !style.isEmpty() )
         {
@@ -2618,9 +2651,28 @@ namespace QgsWms
     return layers;
   }
 
+  QgsMapLayer *QgsRenderer::createExternalWMSLayer( const QString &externalLayerId ) const
+  {
+    QString wmsUri = mWmsParameters.externalWMSUri( externalLayerId.toUpper() );
+    QgsMapLayer *wmsLayer = new QgsRasterLayer( wmsUri, externalLayerId, QStringLiteral( "wms" ) );
+    if ( !wmsLayer->isValid() )
+    {
+      delete wmsLayer;
+      return 0;
+    }
+
+    return wmsLayer;
+  }
+
+  void QgsRenderer::removeTemporaryLayers()
+  {
+    qDeleteAll( mTemporaryLayers );
+    mTemporaryLayers.clear();
+  }
+
   QPainter *QgsRenderer::layersRendering( const QgsMapSettings &mapSettings, QImage &image, HitTest *hitTest ) const
   {
-    QPainter *painter;
+    QPainter *painter = nullptr;
     if ( hitTest )
     {
       runHitTest( mapSettings, *hitTest );
@@ -2926,8 +2978,6 @@ namespace QgsWms
 
     for ( QgsVectorLayerFeatureCounter *c : counters )
     {
-      if ( !c )
-        continue;
       c->waitForFinished();
     }
 

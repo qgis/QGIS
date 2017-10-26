@@ -23,6 +23,7 @@
 #include <QPair>
 #include <QString>
 #include "gdal.h"
+#include "qgsogrutils.h"
 #include "qgis_analysis.h"
 
 class QgsAspectFilter;
@@ -30,7 +31,8 @@ class QgsSlopeFilter;
 class QgsHillshadeFilter;
 class QgsFeedback;
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * Produces colored relief rasters from DEM*/
 class ANALYSIS_EXPORT QgsRelief
 {
@@ -51,7 +53,8 @@ class ANALYSIS_EXPORT QgsRelief
     //! QgsRelief cannot be copied
     QgsRelief &operator=( const QgsRelief &rh ) = delete;
 
-    /** Starts the calculation, reads from mInputFile and stores the result in mOutputFile
+    /**
+     * Starts the calculation, reads from mInputFile and stores the result in mOutputFile
       \param feedback feedback object that receives update and that is checked for cancelation.
       \returns 0 in case of success*/
     int processRaster( QgsFeedback *feedback = nullptr );
@@ -64,7 +67,8 @@ class ANALYSIS_EXPORT QgsRelief
     QList< QgsRelief::ReliefColor > reliefColors() const { return mReliefColors; }
     void setReliefColors( const QList< QgsRelief::ReliefColor > &c ) { mReliefColors = c; }
 
-    /** Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
+    /**
+     * Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
       \returns true in case of success*/
     QList< QgsRelief::ReliefColor > calculateOptimizedReliefClasses();
 
@@ -102,15 +106,17 @@ class ANALYSIS_EXPORT QgsRelief
                                 unsigned char *red, unsigned char *green, unsigned char *blue );
 
     //! Opens the input file and returns the dataset handle and the number of pixels in x-/y- direction
-    GDALDatasetH openInputFile( int &nCellsX, int &nCellsY );
+    gdal::dataset_unique_ptr openInputFile( int &nCellsX, int &nCellsY );
 
-    /** Opens the output driver and tests if it supports the creation of a new dataset
+    /**
+     * Opens the output driver and tests if it supports the creation of a new dataset
       \returns nullptr on error and the driver handle on success*/
     GDALDriverH openOutputDriver();
 
-    /** Opens the output file and sets the same geotransform and CRS as the input data
+    /**
+     * Opens the output file and sets the same geotransform and CRS as the input data
       \returns the output dataset or nullptr in case of error*/
-    GDALDatasetH openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver );
+    gdal::dataset_unique_ptr openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver );
 
     //! Set elevation color
     bool setElevationColor( double elevation, int *red, int *green, int *blue );
@@ -118,13 +124,15 @@ class ANALYSIS_EXPORT QgsRelief
     //! Sets relief colors
     void setDefaultReliefColors();
 
-    /** Returns class (0-255) for an elevation value
+    /**
+     * Returns class (0-255) for an elevation value
       \returns elevation class or -1 in case of error*/
     int frequencyClassForElevation( double elevation, double minElevation, double elevationClassRange );
     //! Do one iteration of class break optimisation (algorithm from Garcia and Rodriguez)
     void optimiseClassBreaks( QList<int> &breaks, double *frequencies );
 
-    /** Calculates coefficients a and b
+    /**
+     * Calculates coefficients a and b
       \param input data points ( elevation class / frequency )
       \param a slope
       \param b y value for x=0

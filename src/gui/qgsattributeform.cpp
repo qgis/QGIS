@@ -410,6 +410,15 @@ void QgsAttributeForm::searchZoomTo()
   emit zoomToFeatures( filter );
 }
 
+void QgsAttributeForm::searchFlash()
+{
+  QString filter = createFilterExpression();
+  if ( filter.isEmpty() )
+    return;
+
+  emit flashFeatures( filter );
+}
+
 void QgsAttributeForm::filterAndTriggered()
 {
   QString filter = createFilterExpression();
@@ -1353,6 +1362,12 @@ void QgsAttributeForm::init()
     boxLayout->addWidget( clearButton );
     boxLayout->addStretch( 1 );
 
+    QPushButton *flashButton = new QPushButton();
+    flashButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+    flashButton->setText( tr( "&Flash features" ) );
+    connect( flashButton, &QToolButton::clicked, this, &QgsAttributeForm::searchFlash );
+    boxLayout->addWidget( flashButton );
+
     QPushButton *zoomButton = new QPushButton();
     zoomButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
     zoomButton->setText( tr( "&Zoom to features" ) );
@@ -1981,10 +1996,11 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
 
     mJoinedFeatures[info] = joinFeature;
 
-    QStringList *subsetFields = info->joinFieldNamesSubset();
-    if ( subsetFields )
+    if ( info->hasSubset() )
     {
-      Q_FOREACH ( const QString &field, *subsetFields )
+      const QStringList subsetNames = QgsVectorLayerJoinInfo::joinFieldNamesSubset( *info );
+
+      Q_FOREACH ( const QString &field, subsetNames )
       {
         QString prefixedName = info->prefixedFieldName( field );
         QVariant val;

@@ -769,7 +769,6 @@ namespace QgsWms
     const QgsLayerTree *projectLayerTreeRoot = project->layerTreeRoot();
 
     QDomElement layerParentElem = doc.createElement( QStringLiteral( "Layer" ) );
-    layerParentElem.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "1" ) );
 
     // Root Layer name
     QDomElement layerParentNameElem = doc.createElement( QStringLiteral( "Name" ) );
@@ -829,6 +828,12 @@ namespace QgsWms
       {
         QgsLayerTreeNode *treeNode = layerTreeGroupChildren.at( i );
         QDomElement layerElem = doc.createElement( QStringLiteral( "Layer" ) );
+
+        if ( projectSettings )
+        {
+          layerElem.setAttribute( QStringLiteral( "visible" ), treeNode->isVisible() );
+        }
+
         if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
         {
           QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
@@ -841,7 +846,6 @@ namespace QgsWms
 
           if ( projectSettings )
           {
-            layerElem.setAttribute( QStringLiteral( "visible" ), treeGroupChild->isVisible() );
             layerElem.setAttribute( QStringLiteral( "mutuallyExclusive" ), treeGroupChild->isMutuallyExclusive() );
           }
 

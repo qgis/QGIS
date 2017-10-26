@@ -35,6 +35,7 @@ from shutil import rmtree
 
 from utilities import unitTestDataPath
 from qgis.core import (
+    QgsApplication,
     QgsAuthManager,
     QgsAuthMethodConfig,
     QgsVectorLayer,
@@ -97,7 +98,7 @@ class TestAuthManager(unittest.TestCase):
     @classmethod
     def setUpAuth(cls):
         """Run before all tests and set up authentication"""
-        authm = QgsAuthManager.instance()
+        authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
         cls.pg_conf = os.path.join(cls.tempfolder, 'postgresql.conf')
         cls.pg_hba = os.path.join(cls.tempfolder, 'pg_hba.conf')

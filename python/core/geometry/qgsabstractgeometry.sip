@@ -24,7 +24,6 @@ class QgsAbstractGeometry
 %TypeHeaderCode
 #include "qgsabstractgeometry.h"
 %End
-
 %ConvertToSubClassCode
     if ( qgsgeometry_cast<QgsPoint *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPoint;
@@ -66,6 +65,9 @@ class QgsAbstractGeometry
     };
 
     QgsAbstractGeometry();
+%Docstring
+ Constructor for QgsAbstractGeometry.
+%End
     virtual ~QgsAbstractGeometry();
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
 
@@ -244,6 +246,19 @@ class QgsAbstractGeometry
  \param p destination QPainter
 %End
 
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const = 0;
+%Docstring
+ Returns the vertex number corresponding to a vertex ``id``.
+
+ The vertex numbers start at 0, so a return value of 0 corresponds
+ to the first vertex.
+
+ Returns -1 if a corresponding vertex could not be found.
+
+.. versionadded:: 3.0
+ :rtype: int
+%End
+
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const = 0;
 %Docstring
  Returns next vertex id and coordinates
@@ -252,6 +267,12 @@ class QgsAbstractGeometry
  \param vertex container for found node
  :return: false if at end
  :rtype: bool
+%End
+
+    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const = 0;
+%Docstring
+ Returns the vertices adjacent to a specified ``vertex`` within a geometry.
+.. versionadded:: 3.0
 %End
 
     virtual QgsCoordinateSequence coordinateSequence() const = 0;
@@ -393,7 +414,7 @@ Returns the centroid of the geometry
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const = 0;
 %Docstring
- Returns the number of vertexes of which this geometry is built.
+ Returns the number of vertices of which this geometry is built.
  :rtype: int
 %End
 
@@ -459,6 +480,56 @@ Returns the centroid of the geometry
  :return: true if conversion was successful
 .. versionadded:: 2.14
  :rtype: bool
+%End
+
+
+    QgsVertexIterator vertices() const;
+%Docstring
+ Returns Java-style iterator for traversal of vertices of the geometry
+.. versionadded:: 3.0
+ :rtype: QgsVertexIterator
+%End
+
+  protected:
+
+    virtual bool hasChildGeometries() const;
+%Docstring
+ Returns whether the geometry has any child geometries (false for point / curve, true otherwise)
+.. note::
+
+   used for vertex_iterator implementation
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    virtual int childCount() const;
+%Docstring
+ Returns number of child geometries (for geometries with child geometries) or child points (for geometries without child geometries - i.e. curve / point)
+.. note::
+
+   used for vertex_iterator implementation
+.. versionadded:: 3.0
+ :rtype: int
+%End
+
+    virtual QgsAbstractGeometry *childGeometry( int index ) const;
+%Docstring
+ Returns pointer to child geometry (for geometries with child geometries - i.e. geom. collection / polygon)
+.. note::
+
+   used for vertex_iterator implementation
+.. versionadded:: 3.0
+ :rtype: QgsAbstractGeometry
+%End
+
+    virtual QgsPoint childPoint( int index ) const;
+%Docstring
+ Returns point at index (for geometries without child geometries - i.e. curve / point)
+.. note::
+
+   used for vertex_iterator implementation
+.. versionadded:: 3.0
+ :rtype: QgsPoint
 %End
 
   protected:
@@ -528,6 +599,54 @@ struct QgsVertexId
 };
 
 
+
+class QgsVertexIterator
+{
+%Docstring
+ Java-style iterator for traversal of vertices of a geometry
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsabstractgeometry.h"
+%End
+  public:
+    QgsVertexIterator();
+
+    QgsVertexIterator( const QgsAbstractGeometry *geometry );
+%Docstring
+Constructs iterator for the given geometry
+%End
+
+    bool hasNext() const;
+%Docstring
+Find out whether there are more vertices
+ :rtype: bool
+%End
+
+    QgsPoint next();
+%Docstring
+Return next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
+ :rtype: QgsPoint
+%End
+
+    QgsVertexIterator *__iter__();
+%Docstring
+ :rtype: QgsVertexIterator
+%End
+%MethodCode
+    sipRes = sipCpp;
+%End
+
+    SIP_PYOBJECT __next__();
+%MethodCode
+    if ( sipCpp->hasNext() )
+      sipRes = sipConvertFromType( new QgsPoint( sipCpp->next() ), sipType_QgsPoint, Py_None );
+    else
+      PyErr_SetString( PyExc_StopIteration, "" );
+%End
+
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *

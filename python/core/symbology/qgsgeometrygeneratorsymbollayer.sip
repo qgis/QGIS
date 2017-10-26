@@ -77,7 +77,9 @@ class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
 
 %Docstring
-care about the geometry of its parents.
+ Will always return true.
+ This is a hybrid layer, it constructs its own geometry so it does not
+ care about the geometry of its parents.
  :rtype: bool
 %End
 

@@ -35,7 +35,8 @@ class QMenu;
 class QProgressDialog;
 class QgsAttributeTableConfig;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief
  * Provides a table view of features of a QgsVectorLayer.
  *
@@ -138,7 +139,8 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      */
     void willShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
 
-    /** Emitted when a column in the view has been resized.
+    /**
+     * Emitted when a column in the view has been resized.
      * \param column column index (starts at 0)
      * \param width new width in pixel
      * \since QGIS 2.16

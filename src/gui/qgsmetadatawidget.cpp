@@ -106,10 +106,6 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   updateContactDetails();
 }
 
-QgsMetadataWidget::~QgsMetadataWidget()
-{
-}
-
 void QgsMetadataWidget::fillSourceFromLayer() const
 {
   lineEditIdentifier->setText( mLayer->publicSource() );
@@ -209,7 +205,7 @@ void QgsMetadataWidget::addContact() const
 {
   int row = tabContacts->rowCount();
   tabContacts->setRowCount( row + 1 );
-  QTableWidgetItem *pCell;
+  QTableWidgetItem *pCell = nullptr;
 
   // Name
   pCell = new QTableWidgetItem( QString( tr( "unnamed %1" ) ).arg( row + 1 ) );
@@ -514,8 +510,7 @@ bool QgsMetadataWidget::checkMetadata() const
   QString errors;
   if ( results == false )
   {
-    errors = QStringLiteral();
-    for ( const QgsMetadataValidator::ValidationResult &result : qgsAsConst( validationResults ) )
+    for ( const QgsMetadataValidator::ValidationResult &result : qgis::as_const( validationResults ) )
     {
       errors += QLatin1String( "<b>" ) % result.section;
       if ( ! result.identifier.isNull() )

@@ -20,6 +20,7 @@
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 #include "qgswkbtypes.h"
+#include "qgsapplication.h"
 
 #include <QStringList>
 #include <QRegExp>
@@ -215,7 +216,7 @@ QgsDataSourceUri::QgsDataSourceUri( QString uri )
       }
       else
       {
-        QgsDebugMsg( "parameter \"" + pname + "\":\"" + pval + "\" added" );
+        QgsDebugMsgLevel( "parameter \"" + pname + "\":\"" + pval + "\" added", 4 );
         setParam( pname, pval );
       }
     }
@@ -526,7 +527,7 @@ QString QgsDataSourceUri::connectionInfo( bool expandAuthConfig ) const
   {
     if ( expandAuthConfig )
     {
-      if ( !QgsAuthManager::instance()->updateDataSourceUriItems( connectionItems, mAuthConfigId ) )
+      if ( !QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, mAuthConfigId ) )
       {
         QgsDebugMsg( QString( "Data source URI FAILED to update via loading configuration ID '%1'" ).arg( mAuthConfigId ) );
       }

@@ -200,6 +200,7 @@ class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
 
     void setIconSize( QSize sz );
 %Docstring
+ Set the icon size
 .. versionadded:: 2.10
 %End
     QSize iconSize() const;

@@ -25,10 +25,12 @@
 #include <QSslConfiguration>
 #include <QSslError>
 #endif
+#include <QMutexLocker>
 
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 static const QString AUTH_METHOD_KEY = QStringLiteral( "PKI-PKCS#12" );
@@ -38,7 +40,6 @@ QMap<QString, QgsPkiConfigBundle *> QgsAuthPkcs12Method::sPkiConfigBundleCache =
 
 
 QgsAuthPkcs12Method::QgsAuthPkcs12Method()
-  : QgsAuthMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
@@ -52,6 +53,7 @@ QgsAuthPkcs12Method::QgsAuthPkcs12Method()
 
 QgsAuthPkcs12Method::~QgsAuthPkcs12Method()
 {
+  QMutexLocker locker( &mConfigMutex );
   qDeleteAll( sPkiConfigBundleCache );
   sPkiConfigBundleCache.clear();
 }
@@ -100,6 +102,19 @@ bool QgsAuthPkcs12Method::updateNetworkRequest( QNetworkRequest &request, const 
   sslConfig.setLocalCertificate( pkibundle->clientCert() );
   sslConfig.setPrivateKey( pkibundle->clientCertKey() );
 
+  // add extra CAs from the bundle, QNAM will prepend the trusted CAs in createRequest()
+  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+  {
+    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+    {
+      sslConfig.setCaCertificates( pkibundle->caChain() );
+    }
+    else
+    {
+      sslConfig.setCaCertificates( QgsAuthCertUtils::casRemoveSelfSigned( pkibundle->caChain() ) );
+    }
+  }
+
   request.setSslConfiguration( sslConfig );
 
   return true;
@@ -140,10 +155,30 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
     return false;
   }
 
+  // add extra CAs from the bundle
+  QList<QSslCertificate> cas;
+  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+  {
+    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+    {
+      cas = QgsAuthCertUtils::casMerge( QgsApplication::authManager()->getTrustedCaCerts(), pkibundle->caChain() );
+    }
+    else
+    {
+      cas = QgsAuthCertUtils::casMerge( QgsApplication::authManager()->getTrustedCaCerts(),
+                                        QgsAuthCertUtils::casRemoveSelfSigned( pkibundle->caChain() ) );
+    }
+  }
+  else
+  {
+    cas = QgsApplication::authManager()->getTrustedCaCerts();
+  }
+
   // save CAs to temp file
   QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
                          pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-                         QgsAuthManager::instance()->getTrustedCaCertsPemText() );
+                         QgsAuthCertUtils::certsToPemText( cas ) );
+
   if ( caFilePath.isEmpty() )
   {
     return false;
@@ -222,6 +257,7 @@ void QgsAuthPkcs12Method::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 
 QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &authcfg )
 {
+  QMutexLocker locker( &mConfigMutex );
   QgsPkiConfigBundle *bundle = nullptr;
 
   // check if it is cached
@@ -238,7 +274,7 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
   // else build PKI bundle
   QgsAuthMethodConfig mconfig;
 
-  if ( !QgsAuthManager::instance()->loadAuthenticationConfig( authcfg, mconfig, true ) )
+  if ( !QgsApplication::authManager()->loadAuthenticationConfig( authcfg, mconfig, true ) )
   {
     QgsDebugMsg( QString( "PKI bundle for authcfg %1: FAILED to retrieve config" ).arg( authcfg ) );
     return bundle;
@@ -270,8 +306,12 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
     return bundle;
   }
 
-  bundle = new QgsPkiConfigBundle( mconfig, clientcert, clientkey );
+  bundle = new QgsPkiConfigBundle( mconfig, clientcert, clientkey,
+                                   QgsAuthCertUtils::pkcs12BundleCas(
+                                     mconfig.config( QStringLiteral( "bundlepath" ) ),
+                                     mconfig.config( QStringLiteral( "bundlepass" ) ) ) );
 
+  locker.unlock();
   // cache bundle
   putPkiConfigBundle( authcfg, bundle );
 
@@ -280,12 +320,14 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
 
 void QgsAuthPkcs12Method::putPkiConfigBundle( const QString &authcfg, QgsPkiConfigBundle *pkibundle )
 {
+  QMutexLocker locker( &mConfigMutex );
   QgsDebugMsg( QString( "Putting PKI bundle for authcfg %1" ).arg( authcfg ) );
   sPkiConfigBundleCache.insert( authcfg, pkibundle );
 }
 
 void QgsAuthPkcs12Method::removePkiConfigBundle( const QString &authcfg )
 {
+  QMutexLocker locker( &mConfigMutex );
   if ( sPkiConfigBundleCache.contains( authcfg ) )
   {
     QgsPkiConfigBundle *pkibundle = sPkiConfigBundleCache.take( authcfg );
@@ -308,7 +350,8 @@ QGISEXTERN QgsAuthPkcs12Method *classFactory()
   return new QgsAuthPkcs12Method();
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
  */
 QGISEXTERN QString authMethodKey()
 {

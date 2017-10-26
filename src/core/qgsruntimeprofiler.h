@@ -8,7 +8,8 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsRuntimeProfiler
  */
 class CORE_EXPORT QgsRuntimeProfiler

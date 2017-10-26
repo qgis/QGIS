@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsProcessingParameterNumber)
+from qgis.core import (QgsProcessingParameterNumber,
+                       QgsProcessing)
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
@@ -60,6 +61,9 @@ class DensifyGeometries(QgisFeatureBasedAlgorithm):
 
     def outputName(self):
         return self.tr('Densified')
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon]
 
     def prepareAlgorithm(self, parameters, context, feedback):
         self.vertices = self.parameterAsInt(parameters, self.VERTICES, context)

@@ -32,13 +32,15 @@ class QgsAuthManager : QObject
       CRITICAL
     };
 
-    static QgsAuthManager *instance();
+    bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
 %Docstring
- Enforce singleton pattern
-.. note::
-
-   To set up the manager instance and initialize everything use QgsAuthManager.instance()->init()
- :rtype: QgsAuthManager
+ init initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
+ \param pluginPath the plugin path
+ \param authDatabasePath the authentication DB path
+ :return: true on success
+.. seealso:: QgsApplication.pluginPath
+.. seealso:: QgsApplication.qgisAuthDatabaseFilePath
+ :rtype: bool
 %End
 
     ~QgsAuthManager();
@@ -61,11 +63,6 @@ Name of the authentication database table that stores server exceptions/configs
  :rtype: str
 %End
 
-    bool init( const QString &pluginPath = QString() );
-%Docstring
-Initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
- :rtype: bool
-%End
 
     bool isDisabled() const;
 %Docstring
@@ -700,7 +697,7 @@ The display name of the Authentication Manager
  \param level Message log level
 %End
 
-    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const;
+    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO );
 %Docstring
  Custom logging signal to inform the user about master password <-> password manager interactions
  @see QgsMessageLog
@@ -710,18 +707,18 @@ The display name of the Authentication Manager
 %End
 
 
-    void masterPasswordVerified( bool verified ) const;
+    void masterPasswordVerified( bool verified );
 %Docstring
  Emitted when a password has been verify (or not)
  \param verified The state of password's verification
 %End
 
-    void authDatabaseEraseRequested() const;
+    void authDatabaseEraseRequested();
 %Docstring
 Emitted when a user has indicated they may want to erase the authentication db.
 %End
 
-    void authDatabaseChanged() const;
+    void authDatabaseChanged();
 %Docstring
 Emitted when the authentication db is significantly changed, e.g. large record removal, erased, etc.
 %End
@@ -738,7 +735,8 @@ Clear an authentication config from its associated authentication method cache
 %End
 
   protected:
-    explicit QgsAuthManager();
+
+
 
 };
 

@@ -50,6 +50,9 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
 {
   setupUi( this );
+  connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsWFSSourceSelect::cmbConnections_activated );
+  connect( btnSave, &QPushButton::clicked, this, &QgsWFSSourceSelect::btnSave_clicked );
+  connect( btnLoad, &QPushButton::clicked, this, &QgsWFSSourceSelect::btnLoad_clicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWFSSourceSelect::showHelp );
 
@@ -685,7 +688,7 @@ void QgsWFSSourceSelect::changeCRSFilter()
   }
 }
 
-void QgsWFSSourceSelect::on_cmbConnections_activated( int index )
+void QgsWFSSourceSelect::cmbConnections_activated( int index )
 {
   Q_UNUSED( index );
   QgsWfsConnection::setSelectedConnection( cmbConnections->currentText() );
@@ -697,13 +700,13 @@ void QgsWFSSourceSelect::on_cmbConnections_activated( int index )
   connect( mCapabilities, &QgsWfsCapabilities::gotCapabilities, this, &QgsWFSSourceSelect::capabilitiesReplyFinished );
 }
 
-void QgsWFSSourceSelect::on_btnSave_clicked()
+void QgsWFSSourceSelect::btnSave_clicked()
 {
   QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::WFS );
   dlg.exec();
 }
 
-void QgsWFSSourceSelect::on_btnLoad_clicked()
+void QgsWFSSourceSelect::btnLoad_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), QDir::homePath(),
                      tr( "XML files (*.xml *XML)" ) );

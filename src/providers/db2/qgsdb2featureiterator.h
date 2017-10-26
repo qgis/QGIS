@@ -30,7 +30,6 @@ class QgsDb2FeatureSource : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsDb2FeatureSource( const QgsDb2Provider *p );
-    ~QgsDb2FeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 

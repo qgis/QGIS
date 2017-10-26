@@ -50,6 +50,28 @@ class QgsLayoutUtils
  :rtype: QgsRenderContext
 %End
 
+    static void relativeResizeRect( QRectF &rectToResize, const QRectF &boundsBefore, const QRectF &boundsAfter );
+%Docstring
+ Resizes a QRectF relative to a resized bounding rectangle.
+ \param rectToResize QRectF to resize, contained within boundsBefore. The
+ rectangle is linearly scaled to retain its relative position and size within
+ boundsAfter.
+ \param boundsBefore QRectF of bounds before resize
+ \param boundsAfter QRectF of bounds after resize
+%End
+
+    static double relativePosition( const double position, const double beforeMin, const double beforeMax, const double afterMin, const double afterMax );
+%Docstring
+ Returns a scaled position given a before and after range
+ \param position initial position within before range to scale
+ \param beforeMin minimum value in before range
+ \param beforeMax maximum value in before range
+ \param afterMin minimum value in after range
+ \param afterMax maximum value in after range
+ :return: position scaled to range specified by afterMin and afterMax
+ :rtype: float
+%End
+
 };
 
 /************************************************************************

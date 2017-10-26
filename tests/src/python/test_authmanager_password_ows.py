@@ -36,14 +36,13 @@ from shutil import rmtree
 
 from utilities import unitTestDataPath, waitServer
 from qgis.core import (
-    QgsAuthManager,
+    QgsApplication,
     QgsAuthMethodConfig,
     QgsVectorLayer,
     QgsRasterLayer,
-)
-from qgis.gui import (
     QgsFileDownloader,
 )
+
 from qgis.testing import (
     start_app,
     unittest,
@@ -84,7 +83,7 @@ class TestAuthManager(unittest.TestCase):
         cls.project_path = cls.testdata_path + "test_project.qgs"
         # Enable auth
         # os.environ['QGIS_AUTH_PASSWORD_FILE'] = QGIS_AUTH_PASSWORD_FILE
-        authm = QgsAuthManager.instance()
+        authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
         cls.auth_config = QgsAuthMethodConfig('Basic')
         cls.auth_config.setName('test_auth_config')
@@ -105,7 +104,7 @@ class TestAuthManager(unittest.TestCase):
         server_path = os.path.dirname(os.path.realpath(__file__)) + \
             '/qgis_wrapped_server.py'
         cls.server = subprocess.Popen([sys.executable, server_path],
-                                      env=os.environ, stdout=subprocess.PIPE)
+                                      env=os.environ, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         line = cls.server.stdout.readline()
         cls.port = int(re.findall(b':(\d+)', line)[0])
@@ -211,7 +210,7 @@ class TestAuthManager(unittest.TestCase):
         destination = tempfile.mktemp()
         loop = QEventLoop()
 
-        downloader = QgsFileDownloader(QUrl(url), destination, False)
+        downloader = QgsFileDownloader(QUrl(url), destination, None, False)
         downloader.downloadCompleted.connect(partial(self._set_slot, 'completed'))
         downloader.downloadExited.connect(partial(self._set_slot, 'exited'))
         downloader.downloadCanceled.connect(partial(self._set_slot, 'canceled'))
@@ -247,7 +246,7 @@ class TestAuthManager(unittest.TestCase):
         destination = tempfile.mktemp()
         loop = QEventLoop()
 
-        downloader = QgsFileDownloader(QUrl(url), destination, False, self.auth_config.id())
+        downloader = QgsFileDownloader(QUrl(url), destination, self.auth_config.id(), False)
         downloader.downloadCompleted.connect(partial(self._set_slot, 'completed'))
         downloader.downloadExited.connect(partial(self._set_slot, 'exited'))
         downloader.downloadCanceled.connect(partial(self._set_slot, 'canceled'))

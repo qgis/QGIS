@@ -35,15 +35,15 @@
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for shapeburst fill types.
  */
 class TestQgsShapeburst : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsShapeburst()
-    {}
+    TestQgsShapeburst() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

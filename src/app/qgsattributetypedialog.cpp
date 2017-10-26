@@ -45,6 +45,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   , mFieldIdx( fieldIdx )
 {
   setupUi( this );
+  connect( selectionListWidget, &QListWidget::currentRowChanged, this, &QgsAttributeTypeDialog::selectionListWidget_currentRowChanged );
   setWindowTitle( tr( "Edit Widget Properties - %1 (%2)" ).arg( vl->fields().at( fieldIdx ).name(), vl->name() ) );
 
   QMapIterator<QString, QgsEditorWidgetFactory *> it( QgsGui::editorWidgetRegistry()->factories() );
@@ -315,6 +316,16 @@ void QgsAttributeTypeDialog::onCurrentWidgetChanged( int index )
   setEditorWidgetType( editType );
 }
 
+bool QgsAttributeTypeDialog::applyDefaultValueOnUpdate() const
+{
+  return mApplyDefaultValueOnUpdateCheckBox->isChecked();
+}
+
+void QgsAttributeTypeDialog::setApplyDefaultValueOnUpdate( bool applyDefaultValueOnUpdate )
+{
+  mApplyDefaultValueOnUpdateCheckBox->setChecked( applyDefaultValueOnUpdate );
+}
+
 QString QgsAttributeTypeDialog::constraintExpression() const
 {
   return constraintExpressionWidget->asExpression();
@@ -328,6 +339,13 @@ void QgsAttributeTypeDialog::setFieldEditable( bool editable )
 void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )
 {
   labelOnTopCheckBox->setChecked( onTop );
+}
+
+void QgsAttributeTypeDialog::selectionListWidget_currentRowChanged( int index )
+{
+  const QString editType = selectionListWidget->item( index )->data( Qt::UserRole ).toString();
+
+  setEditorWidgetType( editType );
 }
 
 void QgsAttributeTypeDialog::defaultExpressionChanged()

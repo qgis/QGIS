@@ -41,8 +41,7 @@
 using namespace pal;
 
 LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, bool isReversed, Quadrant quadrant )
-  : PointSet()
-  , id( id )
+  : id( id )
   , feature( feature )
   , probFeat( 0 )
   , nbOverlap( 0 )

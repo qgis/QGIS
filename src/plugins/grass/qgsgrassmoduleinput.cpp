@@ -313,10 +313,6 @@ void QgsGrassModuleInputModel::onMapsetSearchPathChanged()
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
 
-QgsGrassModuleInputModel::~QgsGrassModuleInputModel()
-{
-
-}
 
 QgsGrassModuleInputModel *QgsGrassModuleInputModel::instance()
 {
@@ -618,10 +614,6 @@ void QgsGrassModuleInputComboBox::hidePopup()
   //QComboBox::hidePopup();
   // reset state to fix the bug after drag
   mTreeView->resetState();
-}
-
-QgsGrassModuleInputComboBox::~QgsGrassModuleInputComboBox()
-{
 }
 
 void QgsGrassModuleInputComboBox::setCurrent( const QModelIndex &proxyIndex )
@@ -1023,10 +1015,6 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   }
   QgsDebugMsg( QString( "mUsesRegion = %1" ).arg( mUsesRegion ) );
   onChanged( QLatin1String( "" ) );
-}
-
-QgsGrassModuleInput::~QgsGrassModuleInput()
-{
 }
 
 bool QgsGrassModuleInput::useRegion()

@@ -28,7 +28,8 @@ class QgsBox3d;
 #include "qgspointxy.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A rectangle specified with double values.
  *
  * QgsRectangle is used to store a rectangle when double values are required.
@@ -51,6 +52,13 @@ class CORE_EXPORT QgsRectangle
     // because this class MUST be lightweight and we don't want the cost of the vtable here.
     // see https://github.com/qgis/QGIS/pull/4720#issuecomment-308652392
     ~QgsRectangle() = default;
+
+    /**
+    * Creates a new rectangle from a WKT string.
+    * The WKT must contain only 5 vertices, representing a rectangle aligned with X and Y axes.
+    * \since QGIS 3.0
+    */
+    static QgsRectangle fromWkt( const QString &wkt );
 
     /**
      * Sets the rectangle from two QgsPoints. The rectangle is
@@ -173,7 +181,8 @@ class CORE_EXPORT QgsRectangle
 
     /**
      * Get rectangle enlarged by buffer.
-     * \since QGIS 2.1
+     * \note In earlier QGIS releases this method was named buffer().
+     * \since QGIS 3.0
      * \see grow()
     */
     QgsRectangle buffered( double width ) const;

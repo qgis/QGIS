@@ -26,7 +26,8 @@
 class QgsInterpolator;
 class QgsFeedback;
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * A class that does interpolation to a grid and writes the results to an ascii grid*/
 //todo: extend such that writing to other file types is possible
 class ANALYSIS_EXPORT QgsGridFileWriter
@@ -34,7 +35,8 @@ class ANALYSIS_EXPORT QgsGridFileWriter
   public:
     QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows, double cellSizeX, double cellSizeY );
 
-    /** Writes the grid file.
+    /**
+     * Writes the grid file.
      \param feedback optional feedback object for progress reports and cancelation support
     \returns 0 in case of success*/
 
@@ -42,7 +44,8 @@ class ANALYSIS_EXPORT QgsGridFileWriter
 
   private:
 
-    QgsGridFileWriter(); //forbidden
+    QgsGridFileWriter() = delete;
+
     int writeHeader( QTextStream &outStream );
 
     QgsInterpolator *mInterpolator = nullptr;

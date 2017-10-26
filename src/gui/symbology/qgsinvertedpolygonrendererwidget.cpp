@@ -50,6 +50,8 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
     return;
   }
   setupUi( this );
+  connect( mRendererComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsInvertedPolygonRendererWidget::mRendererComboBox_currentIndexChanged );
+  connect( mMergePolygonsCheckBox, &QCheckBox::stateChanged, this, &QgsInvertedPolygonRendererWidget::mMergePolygonsCheckBox_stateChanged );
 
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")
@@ -93,7 +95,7 @@ QgsInvertedPolygonRendererWidget::QgsInvertedPolygonRendererWidget( QgsVectorLay
   if ( oldIdx == currentEmbeddedIdx )
   {
     // force update
-    on_mRendererComboBox_currentIndexChanged( currentEmbeddedIdx );
+    mRendererComboBox_currentIndexChanged( currentEmbeddedIdx );
   }
 }
 
@@ -117,7 +119,7 @@ void QgsInvertedPolygonRendererWidget::setContext( const QgsSymbolWidgetContext 
     mEmbeddedRendererWidget->setContext( context );
 }
 
-void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged( int index )
+void QgsInvertedPolygonRendererWidget::mRendererComboBox_currentIndexChanged( int index )
 {
   QString rendererId = mRendererComboBox->itemData( index ).toString();
   QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
@@ -136,7 +138,7 @@ void QgsInvertedPolygonRendererWidget::on_mRendererComboBox_currentIndexChanged(
   }
 }
 
-void QgsInvertedPolygonRendererWidget::on_mMergePolygonsCheckBox_stateChanged( int state )
+void QgsInvertedPolygonRendererWidget::mMergePolygonsCheckBox_stateChanged( int state )
 {
   mRenderer->setPreprocessingEnabled( state == Qt::Checked );
   emit widgetChanged();

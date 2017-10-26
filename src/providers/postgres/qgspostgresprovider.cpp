@@ -1304,7 +1304,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
 
       QgsPostgresProvider::Relkind type = relkind();
 
-      if ( type == Relkind::OrdinaryTable )
+      if ( type == Relkind::OrdinaryTable || type == Relkind::PartitionedTable )
       {
         QgsDebugMsg( "Relation is a table. Checking to see if it has an oid column." );
 
@@ -4290,6 +4290,9 @@ QgsAttrPalIndexNameHash QgsPostgresProvider::palAttributeIndexNames() const
 
 QgsPostgresProvider::Relkind QgsPostgresProvider::relkind() const
 {
+  if ( mIsQuery )
+    return Relkind::Unknown;
+
   QString sql = QStringLiteral( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
   QgsPostgresResult res( connectionRO()->PQexec( sql ) );
   QString type = res.PQgetvalue( 0, 0 );
@@ -4328,6 +4331,10 @@ QgsPostgresProvider::Relkind QgsPostgresProvider::relkind() const
   {
     kind = Relkind::ForeignTable;
   }
+  else if ( type == QLatin1String( "p" ) )
+  {
+    kind = Relkind::PartitionedTable;
+  }
 
   return kind;
 }
@@ -4354,7 +4361,8 @@ QGISEXTERN QgsPostgresProvider *classFactory( const QString *uri )
   return new QgsPostgresProvider( *uri );
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
@@ -4559,6 +4567,11 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     }
   }
 
+  if ( dsUri.database().isEmpty() ) // typically when a service file is used
+  {
+    dsUri.setDatabase( conn->currentDatabase() );
+  }
+
   QString uiFileColumn;
   QString uiFileValue;
   if ( !uiFileContent.isEmpty() )
@@ -4679,6 +4692,11 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
     return QLatin1String( "" );
   }
 
+  if ( dsUri.database().isEmpty() ) // typically when a service file is used
+  {
+    dsUri.setDatabase( conn->currentDatabase() );
+  }
+
   if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
   {
     return QLatin1String( "" );
@@ -4715,6 +4733,11 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
     return -1;
+  }
+
+  if ( dsUri.database().isEmpty() ) // typically when a service file is used
+  {
+    dsUri.setDatabase( conn->currentDatabase() );
   }
 
   QString selectRelatedQuery = QString( "SELECT id,styleName,description"
@@ -4882,10 +4905,6 @@ QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
 #endif
 
 // ----------
-
-QgsPostgresSharedData::QgsPostgresSharedData()
-{
-}
 
 void QgsPostgresSharedData::addFeaturesCounted( long diff )
 {

@@ -25,7 +25,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsgui.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the save as dialog
  */
 class TestQgsVectorLayerSaveAsDialog : public QObject
@@ -46,10 +47,7 @@ class TestQgsVectorLayerSaveAsDialog : public QObject
     QgisApp *mQgisApp = nullptr;
 };
 
-TestQgsVectorLayerSaveAsDialog::TestQgsVectorLayerSaveAsDialog()
-{
-
-}
+TestQgsVectorLayerSaveAsDialog::TestQgsVectorLayerSaveAsDialog() = default;
 
 //runs before all tests
 void TestQgsVectorLayerSaveAsDialog::initTestCase()

@@ -21,7 +21,7 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgswkbptr.h"
-
+#include "qgsogrutils.h"
 #include <QBuffer>
 #include <QList>
 #include <QNetworkRequest>
@@ -43,8 +43,7 @@ QgsGml::QgsGml(
   const QString &typeName,
   const QString &geometryAttribute,
   const QgsFields &fields )
-  : QObject()
-  , mParser( typeName, geometryAttribute, fields )
+  : mParser( typeName, geometryAttribute, fields )
   , mTypeName( typeName )
   , mFinished( false )
 {
@@ -63,7 +62,7 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
   QNetworkRequest request( uri );
   if ( !authcfg.isEmpty() )
   {
-    if ( !QgsAuthManager::instance()->updateNetworkRequest( request, authcfg ) )
+    if ( !QgsApplication::authManager()->updateNetworkRequest( request, authcfg ) )
     {
       QgsMessageLog::logMessage(
         tr( "GML Getfeature network request update failed for authcfg %1" ).arg( authcfg ),
@@ -81,7 +80,7 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
 
   if ( !authcfg.isEmpty() )
   {
-    if ( !QgsAuthManager::instance()->updateNetworkReply( reply, authcfg ) )
+    if ( !QgsApplication::authManager()->updateNetworkReply( reply, authcfg ) )
     {
       reply->deleteLater();
       QgsMessageLog::logMessage(
@@ -876,12 +875,12 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     mParseModeStack.pop();
     if ( mFoundUnhandledGeometryElement )
     {
-      OGRGeometryH hGeom = OGR_G_CreateFromGML( mGeometryString.c_str() );
+      gdal::ogr_geometry_unique_ptr hGeom( OGR_G_CreateFromGML( mGeometryString.c_str() ) );
       if ( hGeom )
       {
-        const int wkbSize = OGR_G_WkbSize( hGeom );
+        const int wkbSize = OGR_G_WkbSize( hGeom.get() );
         unsigned char *pabyBuffer = new unsigned char[ wkbSize ];
-        OGR_G_ExportToIsoWkb( hGeom, wkbNDR, pabyBuffer );
+        OGR_G_ExportToIsoWkb( hGeom.get(), wkbNDR, pabyBuffer );
         QgsGeometry g;
         g.fromWkb( pabyBuffer, wkbSize );
         if ( mInvertAxisOrientation )
@@ -889,7 +888,6 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
           g.transform( QTransform( 0, 1, 1, 0, 0, 0 ) );
         }
         mCurrentFeature->setGeometry( g );
-        OGR_G_DestroyGeometry( hGeom );
       }
     }
     mGeometryString.clear();

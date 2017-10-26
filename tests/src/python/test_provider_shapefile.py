@@ -269,7 +269,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         values = [f_iter['pk'] for f_iter in features]
         self.assertEqual(values, [200])
 
-        got_geom = [f_iter.geometry() for f_iter in features][0].geometry()
+        got_geom = [f_iter.geometry() for f_iter in features][0].constGet()
         self.assertEqual((got_geom.x(), got_geom.y()), (2.0, 49.0))
 
         self.assertTrue(vl.dataProvider().changeGeometryValues({fid: QgsGeometry.fromWkt('Point (3 50)')}))
@@ -278,7 +278,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         features = [f_iter for f_iter in vl.getFeatures(QgsFeatureRequest().setFilterFid(fid))]
         values = [f_iter['pk'] for f_iter in features]
 
-        got_geom = [f_iter.geometry() for f_iter in features][0].geometry()
+        got_geom = [f_iter.geometry() for f_iter in features][0].constGet()
         self.assertEqual((got_geom.x(), got_geom.y()), (3.0, 50.0))
 
         self.assertTrue(vl.dataProvider().deleteFeatures([fid]))

@@ -47,6 +47,12 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( pbnCalculate, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnCalculate_clicked );
+  connect( pbnAdd, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnAdd_clicked );
+  connect( pbnRemove, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnRemove_clicked );
+  connect( pbnCopyCRS, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnCopyCRS_clicked );
+  connect( leNameList, &QTreeWidget::currentItemChanged, this, &QgsCustomProjectionDialog::leNameList_currentItemChanged );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsCustomProjectionDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsCustomProjectionDialog::showHelp );
 
   QgsSettings settings;
@@ -305,7 +311,7 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem myCRS, con
 }
 
 
-void QgsCustomProjectionDialog::on_pbnAdd_clicked()
+void QgsCustomProjectionDialog::pbnAdd_clicked()
 {
   QString name = tr( "new CRS" );
   QString id;
@@ -322,7 +328,7 @@ void QgsCustomProjectionDialog::on_pbnAdd_clicked()
   leNameList->setCurrentItem( newItem );
 }
 
-void QgsCustomProjectionDialog::on_pbnRemove_clicked()
+void QgsCustomProjectionDialog::pbnRemove_clicked()
 {
   int i = leNameList->currentIndex().row();
   if ( i == -1 )
@@ -340,7 +346,7 @@ void QgsCustomProjectionDialog::on_pbnRemove_clicked()
   customCRSparameters.erase( customCRSparameters.begin() + i );
 }
 
-void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
+void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
   //Store the modifications made to the current element before moving on
   int currentIndex, previousIndex;
@@ -367,7 +373,7 @@ void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetIte
   }
 }
 
-void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
+void QgsCustomProjectionDialog::pbnCopyCRS_clicked()
 {
   QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
   if ( mySelector->exec() )
@@ -375,7 +381,7 @@ void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
     QgsCoordinateReferenceSystem srs = mySelector->crs();
     if ( leNameList->topLevelItemCount() == 0 )
     {
-      on_pbnAdd_clicked();
+      pbnAdd_clicked();
     }
     teParameters->setPlainText( srs.toProj4() );
     customCRSparameters[leNameList->currentIndex().row()] = srs.toProj4();
@@ -385,7 +391,7 @@ void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
   delete mySelector;
 }
 
-void QgsCustomProjectionDialog::on_buttonBox_accepted()
+void QgsCustomProjectionDialog::buttonBox_accepted()
 {
   //Update the current CRS:
   int i = leNameList->currentIndex().row();
@@ -446,7 +452,7 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
   }
 }
 
-void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
+void QgsCustomProjectionDialog::pbnCalculate_clicked()
 {
 
 

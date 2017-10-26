@@ -98,11 +98,13 @@ typedef SInt32 SRefCon;
 #include "qgsvectorlayer.h"
 #include "qgis_app.h"
 #include "qgscrashhandler.h"
+#include "qgsziputils.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
 
-/** Print usage text
+/**
+ * Print usage text
  */
 void usage( const QString &appName )
 {
@@ -1164,11 +1166,12 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
-  for ( const QString &layerName : qgsAsConst( sFileList ) )
+  for ( const QString &layerName : qgis::as_const( sFileList ) )
   {
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg( layerName ) );
     // don't load anything with a .qgs extension - these are project files
-    if ( !layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
+    if ( !layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive )
+         && !QgsZipUtils::isZipFile( layerName ) )
     {
       qgis->openLayer( layerName );
     }

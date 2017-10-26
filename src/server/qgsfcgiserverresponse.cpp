@@ -37,10 +37,6 @@ QgsFcgiServerResponse::QgsFcgiServerResponse( QgsServerRequest::Method method )
   setDefaultHeaders();
 }
 
-QgsFcgiServerResponse::~QgsFcgiServerResponse()
-{
-}
-
 void QgsFcgiServerResponse::removeHeader( const QString &key )
 {
   mHeaders.remove( key );

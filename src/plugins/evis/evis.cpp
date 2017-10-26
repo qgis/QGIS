@@ -89,10 +89,6 @@ eVis::eVis( QgisInterface *qgisInterface )
   mIdTool = nullptr;
 }
 
-eVis::~eVis()
-{
-}
-
 void eVis::initGui()
 {
   delete mDatabaseConnectionActionPointer;

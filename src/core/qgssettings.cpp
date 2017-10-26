@@ -83,12 +83,13 @@ QgsSettings::~QgsSettings()
 }
 
 
-void QgsSettings::beginGroup( const QString &prefix )
+void QgsSettings::beginGroup( const QString &prefix, const QgsSettings::Section section )
 {
-  mUserSettings->beginGroup( sanitizeKey( prefix ) );
+  QString pKey = prefixedKey( prefix, section );
+  mUserSettings->beginGroup( pKey );
   if ( mGlobalSettings )
   {
-    mGlobalSettings->beginGroup( sanitizeKey( prefix ) );
+    mGlobalSettings->beginGroup( pKey );
   }
 }
 
@@ -191,9 +192,10 @@ void QgsSettings::sync()
   return mUserSettings->sync();
 }
 
-void QgsSettings::remove( const QString &key )
+void QgsSettings::remove( const QString &key, const QgsSettings::Section section )
 {
-  mUserSettings->remove( sanitizeKey( key ) );
+  QString pKey = prefixedKey( key, section );
+  mUserSettings->remove( pKey );
 }
 
 QString QgsSettings::prefixedKey( const QString &key, const Section section ) const

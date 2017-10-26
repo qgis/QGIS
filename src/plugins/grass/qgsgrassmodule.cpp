@@ -95,6 +95,9 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   QgsDebugMsg( "called" );
 
   setupUi( this );
+  connect( mRunButton, &QPushButton::clicked, this, &QgsGrassModule::mRunButton_clicked );
+  connect( mCloseButton, &QPushButton::clicked, this, &QgsGrassModule::mCloseButton_clicked );
+  connect( mViewButton, &QPushButton::clicked, this, &QgsGrassModule::mViewButton_clicked );
   // use fixed width font because module's output may be formatted
   mOutputTextBrowser->setStyleSheet( QStringLiteral( "font-family: Monospace; font-size: 9pt;" ) );
   lblModuleName->setText( tr( "Module: %1" ).arg( moduleName ) );

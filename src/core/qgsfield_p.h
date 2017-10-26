@@ -31,6 +31,7 @@
 
 #include "qgsfieldconstraints.h"
 #include "qgseditorwidgetsetup.h"
+#include "qgsdefaultvalue.h"
 #include <QString>
 #include <QVariant>
 #include <QSharedData>
@@ -72,7 +73,7 @@ class QgsFieldPrivate : public QSharedData
       , precision( other.precision )
       , comment( other.comment )
       , alias( other.alias )
-      , defaultValueExpression( other.defaultValueExpression )
+      , defaultValueDefinition( other.defaultValueDefinition )
       , constraints( other.constraints )
     {
     }
@@ -83,7 +84,7 @@ class QgsFieldPrivate : public QSharedData
     {
       return ( ( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
                && ( length == other.length ) && ( precision == other.precision )
-               && ( alias == other.alias ) && ( defaultValueExpression == other.defaultValueExpression )
+               && ( alias == other.alias ) && ( defaultValueDefinition == other.defaultValueDefinition )
                && ( constraints == other.constraints ) );
     }
 
@@ -111,8 +112,8 @@ class QgsFieldPrivate : public QSharedData
     //! Alias for field name (friendly name shown to users)
     QString alias;
 
-    //! Default value expression
-    QString defaultValueExpression;
+    //! Default value
+    QgsDefaultValue defaultValueDefinition;
 
     //! Field constraints
     QgsFieldConstraints constraints;

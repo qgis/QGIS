@@ -74,13 +74,18 @@ class buildvrt(GdalAlgorithm):
                 return 'vrt'
 
         self.addParameter(QgsProcessingParameterMultipleLayers(self.INPUT,
-                                                               self.tr('Input layers'), QgsProcessing.TypeRaster))
+                                                               self.tr('Input layers'),
+                                                               QgsProcessing.TypeRaster))
         self.addParameter(QgsProcessingParameterEnum(self.RESOLUTION,
-                                                     self.tr('Resolution'), options=self.RESOLUTION_OPTIONS, defaultValue=0))
+                                                     self.tr('Resolution'),
+                                                     options=self.RESOLUTION_OPTIONS,
+                                                     defaultValue=0))
         self.addParameter(QgsProcessingParameterBoolean(self.SEPARATE,
-                                                        self.tr('Layer stack'), defaultValue=True))
+                                                        self.tr('Layer stack'),
+                                                        defaultValue=True))
         self.addParameter(QgsProcessingParameterBoolean(self.PROJ_DIFFERENCE,
-                                                        self.tr('Allow projection difference'), defaultValue=False))
+                                                        self.tr('Allow projection difference'),
+                                                        defaultValue=False))
         self.addParameter(ParameterVrtDestination(self.OUTPUT, self.tr('Virtual')))
 
     def name(self):

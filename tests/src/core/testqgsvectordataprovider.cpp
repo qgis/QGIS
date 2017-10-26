@@ -29,8 +29,7 @@ class TestQgsVectorDataProvider : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsVectorDataProvider()
-    {}
+    TestQgsVectorDataProvider() = default;
 
   private slots:
 

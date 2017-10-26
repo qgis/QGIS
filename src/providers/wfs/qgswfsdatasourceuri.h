@@ -19,6 +19,7 @@
 #include "qgsauthmanager.h"
 #include "qgsdatasourceuri.h"
 #include "qgsrectangle.h"
+#include "qgsapplication.h"
 
 #include <QNetworkRequest>
 #include <QString>
@@ -37,7 +38,7 @@ struct QgsWFSAuthorization
   {
     if ( !mAuthCfg.isEmpty() ) // must be non-empty value
     {
-      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
+      return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
     }
     else if ( !mUserName.isNull() || !mPassword.isNull() ) // allow empty values
     {
@@ -51,7 +52,7 @@ struct QgsWFSAuthorization
   {
     if ( !mAuthCfg.isEmpty() )
     {
-      return QgsAuthManager::instance()->updateNetworkReply( reply, mAuthCfg );
+      return QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
     }
     return true;
   }
@@ -66,7 +67,8 @@ struct QgsWFSAuthorization
   QString mAuthCfg;
 };
 
-/** Utility class that wraps a QgsDataSourceUri with conveniency
+/**
+ * Utility class that wraps a QgsDataSourceUri with conveniency
  * methods with the parameters used for a WFS URI.
  */
 class QgsWFSDataSourceURI

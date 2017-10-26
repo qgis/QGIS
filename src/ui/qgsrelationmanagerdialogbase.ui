@@ -45,17 +45,22 @@
      </column>
      <column>
       <property name="text">
-       <string>Referenced Layer</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
        <string>Referenced Field</string>
       </property>
      </column>
      <column>
       <property name="text">
+       <string>Referenced Layer</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
        <string>Id</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Strength</string>
       </property>
      </column>
     </widget>

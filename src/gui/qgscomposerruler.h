@@ -21,7 +21,8 @@
 class QgsComposition;
 class QGraphicsLineItem;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A class to show paper scale and the current cursor position
 */
 class GUI_EXPORT QgsComposerRuler: public QWidget

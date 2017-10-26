@@ -19,6 +19,13 @@ class QgsRelation
 %End
   public:
 
+    enum RelationStrength
+    {
+      Association,
+      Composition
+
+    };
+
 
     QgsRelation();
 %Docstring
@@ -51,6 +58,12 @@ class QgsRelation
     void setName( const QString &name );
 %Docstring
  Set a name for this relation
+%End
+
+    void setStrength( const RelationStrength &strength );
+%Docstring
+ Set a strength for this relation
+.. versionadded:: 3.0
 %End
 
     void setReferencingLayer( const QString &id );
@@ -156,6 +169,15 @@ class QgsRelation
 
  :return: A name
  :rtype: str
+%End
+
+    RelationStrength strength() const;
+%Docstring
+ Returns the relation strength as a string
+
+ :return: strength
+.. versionadded:: 3.0
+ :rtype: RelationStrength
 %End
 
     QString id() const;

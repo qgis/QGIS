@@ -30,10 +30,13 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QFileInfo
 
+from qgis.core import (QgsProcessing,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterVectorDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterString
-from processing.core.outputs import OutputVector
 from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -43,21 +46,29 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 class polygonize(GdalAlgorithm):
 
     INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
+    BAND = 'BAND'
     FIELD = 'FIELD'
-
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'polygonize.png'))
+    EIGHT_CONNECTEDNESS = 'EIGHT_CONNECTEDNESS'
+    OUTPUT = 'OUTPUT'
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterRaster(polygonize.INPUT,
-                                          self.tr('Input layer'), False))
-        self.addParameter(ParameterString(polygonize.FIELD,
-                                          self.tr('Output field name'), 'DN'))
-        self.addOutput(OutputVector(polygonize.OUTPUT, self.tr('Vectorized')))
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterBand(self.BAND,
+                                                     self.tr('Band number'),
+                                                     parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterString(self.FIELD,
+                                                       self.tr('Name of the field to create'),
+                                                       defaultValue='DN'))
+        self.addParameter(QgsProcessingParameterBoolean(self.EIGHT_CONNECTEDNESS,
+                                                        self.tr('Use 8-connectedness'),
+                                                        defaultValue=False))
+
+        self.addParameter(QgsProcessingParameterVectorDestination(self.OUTPUT,
+                                                                  self.tr('Vectorized'),
+                                                                  QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'polygonize'
@@ -68,16 +79,29 @@ class polygonize(GdalAlgorithm):
     def group(self):
         return self.tr('Raster conversion')
 
-    def getConsoleCommands(self, parameters, context, feedback):
-        output = self.getOutputValue(polygonize.OUTPUT)
+    def icon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'polygonize.png'))
 
+    def getConsoleCommands(self, parameters, context, feedback):
         arguments = []
-        arguments.append(self.getParameterValue(polygonize.INPUT))
-        arguments.append('-f')
-        arguments.append(GdalUtils.getVectorDriverFromFileName(output))
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        arguments.append(inLayer.source())
+
+        outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        output, outFormat = GdalUtils.ogrConnectionStringAndFormat(outFile, context)
         arguments.append(output)
-        arguments.append(QFileInfo(output).baseName())
-        arguments.append(self.getParameterValue(polygonize.FIELD))
+
+        if self.parameterAsBool(parameters, self.EIGHT_CONNECTEDNESS, context):
+            arguments.append('-8')
+
+        arguments.append('-b')
+        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
+
+        if outFormat:
+            arguments.append('-f {}'.format(outFormat))
+
+        arguments.append(GdalUtils.ogrLayerName(output))
+        arguments.append(self.parameterAsString(parameters, self.FIELD, context))
 
         commands = []
         if isWindows():

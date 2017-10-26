@@ -17,10 +17,6 @@
 #include "qgsrastermatrix.h"
 #include <cfloat>
 
-QgsRasterCalcNode::QgsRasterCalcNode()
-{
-}
-
 QgsRasterCalcNode::QgsRasterCalcNode( double number )
   : mNumber( number )
 {

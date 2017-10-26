@@ -36,8 +36,7 @@ class TestQgsComposerRotation : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerRotation()
-    {}
+    TestQgsComposerRotation() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

@@ -24,6 +24,7 @@ email                : morb at ozemail dot com dot au
 #include <geos_c.h>
 #include <climits>
 #include <limits>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -47,12 +48,29 @@ class QPainter;
 class QgsPolygonV2;
 class QgsLineString;
 
-//! Polyline is represented as a vector of points
-typedef QVector<QgsPointXY> QgsPolyline;
+/**
+ * Polyline as represented as a vector of two-dimensional points.
+ *
+ * This type has no support for Z/M dimensions and use of QgsPolyline is encouraged instead.
+ *
+ * \note In QGIS 2.x this type was available as QgsPolyline.
+ *
+ * \since QGIS 3.0
+ */
+typedef QVector<QgsPointXY> QgsPolylineXY;
+
+/**
+ * Polyline as represented as a vector of points.
+ *
+ * This type has full support for Z/M dimensions.
+ *
+ * \since QGIS 3.0
+ */
+typedef QVector<QgsPoint> QgsPolyline;
 
 //! Polygon: first item of the list is outer ring, inner rings (if any) start from second item
 #ifndef SIP_RUN
-typedef QVector<QgsPolyline> QgsPolygon;
+typedef QVector<QgsPolylineXY> QgsPolygon;
 #else
 typedef QVector<QVector<QgsPointXY>> QgsPolygon;
 #endif
@@ -62,7 +80,7 @@ typedef QVector<QgsPointXY> QgsMultiPoint;
 
 //! A collection of QgsPolylines that share a common collection of attributes
 #ifndef SIP_RUN
-typedef QVector<QgsPolyline> QgsMultiPolyline;
+typedef QVector<QgsPolylineXY> QgsMultiPolyline;
 #else
 typedef QVector<QVector<QgsPointXY>> QgsMultiPolyline;
 #endif
@@ -80,7 +98,8 @@ class QgsConstWkbPtr;
 
 struct QgsGeometryPrivate;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A geometry is the spatial representation of a feature. Since QGIS 2.10, QgsGeometry acts as a generic container
  * for geometry objects. QgsGeometry is implicitly shared, so making copies of geometries is inexpensive. The geometry
  * container class can also be stored inside a QVariant object.
@@ -135,22 +154,52 @@ class CORE_EXPORT QgsGeometry
      */
     explicit QgsGeometry( QgsAbstractGeometry *geom SIP_TRANSFER );
 
+    /**
+     * Creates a geometry from an abstract geometry object. Ownership of
+     * geom is transferred.
+     * \note Not available in Python bindings
+     */
+    explicit QgsGeometry( std::unique_ptr< QgsAbstractGeometry > geom ) SIP_SKIP;
 
     ~QgsGeometry();
 
     /**
-     * Returns the underlying geometry store.
-    * \since QGIS 2.10
-    * \see setGeometry
+     * Returns a non-modifiable (const) reference to the underlying abstract geometry primitive.
+     *
+     * This is much faster then calling the non-const get() method.
+     *
+     * \note In QGIS 2.x this method was named geometry().
+     *
+     * \since QGIS 3.0
+     * \see primitive()
+     * \see set()
     */
-    QgsAbstractGeometry *geometry() const;
+    const QgsAbstractGeometry *constGet() const;
+
+    /**
+     * Returns a modifiable (non-const) reference to the underlying abstract geometry primitive.
+     *
+     * This method can be slow to call, as it may trigger a detachment of the geometry
+     * and a deep copy. Where possible, use constGet() instead.
+     *
+     * \note In QGIS 2.x this method was named geometry().
+     *
+     * \since QGIS 3.0
+     * \see constGet()
+     * \see set()
+    */
+    QgsAbstractGeometry *get();
 
     /**
      * Sets the underlying geometry store. Ownership of geometry is transferred.
-     * \since QGIS 2.10
-     * \see geometry
+     *
+     * \note In QGIS 2.x this method was named setGeometry().
+     *
+     * \since QGIS 3.0
+     * \see get()
+     * \see constGet()
      */
-    void setGeometry( QgsAbstractGeometry *geometry SIP_TRANSFER );
+    void set( QgsAbstractGeometry *geometry SIP_TRANSFER );
 
     /**
      * Returns true if the geometry is null (ie, contains no underlying geometry
@@ -167,8 +216,31 @@ class CORE_EXPORT QgsGeometry
     static QgsGeometry fromPoint( const QgsPointXY &point );
     //! Creates a new geometry from a QgsMultiPoint object
     static QgsGeometry fromMultiPoint( const QgsMultiPoint &multipoint );
-    //! Creates a new geometry from a QgsPolyline object
+
+    /**
+     * Creates a new LineString geometry from a list of QgsPointXY points.
+     *
+     * Using fromPolyline() is preferred, as fromPolyline() is more efficient
+     * and will respect any Z or M dimensions present in the input points.
+     *
+     * \note In QGIS 2.x this method was available as fromPolyline().
+     *
+     * \since QGIS 3.0
+     * \see fromPolyline()
+     */
+    static QgsGeometry fromPolylineXY( const QgsPolylineXY &polyline );
+
+    /**
+     * Creates a new LineString geometry from a list of QgsPoint points.
+     *
+     * This method will respect any Z or M dimensions present in the input points.
+     * E.g. if input points are PointZ type, the resultant linestring will be
+     * a LineStringZ type.
+     *
+     * \since QGIS 3.0
+     */
     static QgsGeometry fromPolyline( const QgsPolyline &polyline );
+
     //! Creates a new geometry from a QgsMultiPolyline object
     static QgsGeometry fromMultiPolyline( const QgsMultiPolyline &multiline );
     //! Creates a new geometry from a QgsPolygon
@@ -200,19 +272,22 @@ class CORE_EXPORT QgsGeometry
      */
     void fromWkb( const QByteArray &wkb );
 
-    /** Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
+    /**
+     * Returns a geos geometry - caller takes ownership of the object (should be deleted with GEOSGeom_destroy_r)
      *  \param precision The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
      *  \since QGIS 3.0
      *  \note not available in Python bindings
      */
     GEOSGeometry *exportToGeos( double precision = 0 ) const SIP_SKIP;
 
-    /** Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
+    /**
+     * Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
      * \see type
      */
     QgsWkbTypes::Type wkbType() const;
 
-    /** Returns type of the geometry as a QgsWkbTypes::GeometryType
+    /**
+     * Returns type of the geometry as a QgsWkbTypes::GeometryType
      * \see wkbType
      */
     QgsWkbTypes::GeometryType type() const;
@@ -228,17 +303,20 @@ class CORE_EXPORT QgsGeometry
     //! Returns true if WKB of the geometry is of WKBMulti* type
     bool isMultipart() const;
 
-    /** Compares the geometry with another geometry using GEOS
+    /**
+     * Compares the geometry with another geometry using GEOS
      * \since QGIS 1.5
      */
     bool isGeosEqual( const QgsGeometry & ) const;
 
-    /** Checks validity of the geometry using GEOS
+    /**
+     * Checks validity of the geometry using GEOS
      * \since QGIS 1.5
      */
     bool isGeosValid() const;
 
-    /** Determines whether the geometry is simple (according to OGC definition),
+    /**
+     * Determines whether the geometry is simple (according to OGC definition),
      * i.e. it has no anomalous geometric points, such as self-intersection or self-tangency.
      * Uses GEOS library for the test.
      * \note This is useful mainly for linestrings and linear rings. Polygons are simple by definition,
@@ -266,6 +344,27 @@ class CORE_EXPORT QgsGeometry
      * \param geom geometry to find minimum distance to
      */
     double distance( const QgsGeometry &geom ) const;
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns STL-style iterator pointing to the first vertex of the geometry
+     * \since QGIS 3.0
+     */
+    QgsAbstractGeometry::vertex_iterator vertices_begin() const;
+
+    /**
+     * Returns STL-style iterator pointing to the imaginary vertex after the last vertex of the geometry
+     * \since QGIS 3.0
+     */
+    QgsAbstractGeometry::vertex_iterator vertices_end() const;
+#endif
+
+    /**
+     * Returns Java-style iterator for traversal of vertices of the geometry
+     * \since QGIS 3.0
+     */
+    QgsVertexIterator vertices() const;
 
     /**
      * Returns the Hausdorff distance between this geometry and \a geom. This is basically a measure of how similar or dissimilar 2 geometries are.
@@ -352,7 +451,8 @@ class CORE_EXPORT QgsGeometry
      */
     void adjacentVertices( int atVertex, int &beforeVertex SIP_OUT, int &afterVertex SIP_OUT ) const;
 
-    /** Insert a new vertex before the given vertex index,
+    /**
+     * Insert a new vertex before the given vertex index,
      *  ring and item (first number is index 0)
      *  If the requested vertex number (beforeVertex.back()) is greater
      *  than the last actual vertex on the requested ring and item,
@@ -365,7 +465,8 @@ class CORE_EXPORT QgsGeometry
      */
     bool insertVertex( double x, double y, int beforeVertex );
 
-    /** Insert a new vertex before the given vertex index,
+    /**
+     * Insert a new vertex before the given vertex index,
      *  ring and item (first number is index 0)
      *  If the requested vertex number (beforeVertex.back()) is greater
      *  than the last actual vertex on the requested ring and item,
@@ -637,37 +738,44 @@ class CORE_EXPORT QgsGeometry
     //! Tests for containment of a point (uses GEOS)
     bool contains( const QgsPointXY *p ) const;
 
-    /** Tests for if geometry is contained in another (uses GEOS)
+    /**
+     * Tests for if geometry is contained in another (uses GEOS)
      *  \since QGIS 1.5
      */
     bool contains( const QgsGeometry &geometry ) const;
 
-    /** Tests for if geometry is disjoint of another (uses GEOS)
+    /**
+     * Tests for if geometry is disjoint of another (uses GEOS)
      *  \since QGIS 1.5
      */
     bool disjoint( const QgsGeometry &geometry ) const;
 
-    /** Test for if geometry equals another (uses GEOS)
+    /**
+     * Test for if geometry equals another (uses GEOS)
      *  \since QGIS 1.5
      */
     bool equals( const QgsGeometry &geometry ) const;
 
-    /** Test for if geometry touch another (uses GEOS)
+    /**
+     * Test for if geometry touch another (uses GEOS)
      *  \since QGIS 1.5
      */
     bool touches( const QgsGeometry &geometry ) const;
 
-    /** Test for if geometry overlaps another (uses GEOS)
+    /**
+     * Test for if geometry overlaps another (uses GEOS)
      *  \since QGIS 1.5
      */
     bool overlaps( const QgsGeometry &geometry ) const;
 
-    /** Test for if geometry is within another (uses GEOS)
+    /**
+     * Test for if geometry is within another (uses GEOS)
      *  \since QGIS 1.5
      */
     bool within( const QgsGeometry &geometry ) const;
 
-    /** Test for if geometry crosses another (uses GEOS)
+    /**
+     * Test for if geometry crosses another (uses GEOS)
      *  \since QGIS 1.5
      */
     bool crosses( const QgsGeometry &geometry ) const;
@@ -981,7 +1089,8 @@ class CORE_EXPORT QgsGeometry
     //! Returns an extruded version of this geometry.
     QgsGeometry extrude( double x, double y );
 
-    /** Export the geometry to WKB
+    /**
+     * Export the geometry to WKB
      * \since QGIS 3.0
      */
     QByteArray exportToWkb() const;
@@ -1023,7 +1132,7 @@ class CORE_EXPORT QgsGeometry
      * Returns contents of the geometry as a polyline
      * if wkbType is WKBLineString, otherwise an empty list
      */
-    QgsPolyline asPolyline() const;
+    QgsPolylineXY asPolyline() const;
 
     /**
      * Returns contents of the geometry as a polygon
@@ -1137,9 +1246,10 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.0
      */
-    QgsGeometry makeValid();
+    QgsGeometry makeValid() const;
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      */
     class CORE_EXPORT Error
     {
@@ -1182,9 +1292,10 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 1.5
      * \note Available in Python bindings since QGIS 1.6
      **/
-    void validateGeometry( QList<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal );
+    void validateGeometry( QList<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal ) const;
 
-    /** Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
+    /**
+     * Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
      * The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
      * input geometries. An empty geometry will be returned in the case of errors.
      */
@@ -1230,23 +1341,29 @@ class CORE_EXPORT QgsGeometry
     void draw( QPainter &p ) const;
 
     /**
-     * Calculates the vertex ID from a vertex number
-     * \param nr vertex number
-     * \param id reference to QgsVertexId for storing result
-     * \returns true if vertex was found
+     * Calculates the vertex ID from a vertex \a number.
+     *
+     * If a matching vertex was found, it will be stored in \a id.
+     *
+     * Returns true if vertex was found.
+     *
      * \since QGIS 2.10
-     * \see vertexNrFromVertexId
+     * \see vertexNrFromVertexId()
      */
-    bool vertexIdFromVertexNr( int nr, QgsVertexId &id SIP_OUT ) const;
+    bool vertexIdFromVertexNr( int number, QgsVertexId &id SIP_OUT ) const;
 
     /**
-     * Returns the vertex number corresponding to a vertex idd
-     * \param i vertex id
-     * \returns vertex number
+     * Returns the vertex number corresponding to a vertex \a id.
+     *
+     * The vertex numbers start at 0, so a return value of 0 corresponds
+     * to the first vertex.
+     *
+     * Returns -1 if a corresponding vertex could not be found.
+     *
      * \since QGIS 2.10
-     * \see vertexIdFromVertexNr
+     * \see vertexIdFromVertexNr()
      */
-    int vertexNrFromVertexId( QgsVertexId i ) const;
+    int vertexNrFromVertexId( QgsVertexId id ) const;
 
     /**
      * Returns an error string referring to the last error encountered
@@ -1281,12 +1398,12 @@ class CORE_EXPORT QgsGeometry
     static QgsGeometry fromQPolygonF( const QPolygonF &polygon );
 
     /**
-     * Creates a QgsPolyline from a QPolygonF.
+     * Creates a QgsPolylineXY from a QPolygonF.
      * \param polygon source polygon
-     * \returns QgsPolyline
+     * \returns QgsPolylineXY
      * \see createPolygonFromQPolygonF
      */
-    static QgsPolyline createPolylineFromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
+    static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
 
     /**
      * Creates a QgsPolygon from a QPolygonF.
@@ -1298,7 +1415,8 @@ class CORE_EXPORT QgsGeometry
 
 #ifndef SIP_RUN
 
-    /** Compares two polylines for equality within a specified tolerance.
+    /**
+     * Compares two polylines for equality within a specified tolerance.
      * \param p1 first polyline
      * \param p2 second polyline
      * \param epsilon maximum difference for coordinates between the polylines
@@ -1306,7 +1424,7 @@ class CORE_EXPORT QgsGeometry
      * points are equal within the specified tolerance
      * \since QGIS 2.9
      */
-    static bool compare( const QgsPolyline &p1, const QgsPolyline &p2,
+    static bool compare( const QgsPolylineXY &p1, const QgsPolylineXY &p2,
                          double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 
     /**
@@ -1337,7 +1455,7 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Compares two geometry objects for equality within a specified tolerance.
-     * The objects can be of type QgsPolyline, QgsPolygon or QgsMultiPolygon.
+     * The objects can be of type QgsPolylineXY, QgsPolygon or QgsMultiPolygon.
      * The 2 types should match.
      * \param p1 first geometry object
      * \param p2 second geometry object
@@ -1374,10 +1492,10 @@ class CORE_EXPORT QgsGeometry
                sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
                sipCanConvertToType( a1, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
           {
-            QgsPolyline *p0;
-            QgsPolyline *p1;
-            p0 = reinterpret_cast<QgsPolyline *>( sipConvertToType( a0, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-            p1 = reinterpret_cast<QgsPolyline *>( sipConvertToType( a1, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+            QgsPolylineXY *p0;
+            QgsPolylineXY *p1;
+            p0 = reinterpret_cast<QgsPolylineXY *>( sipConvertToType( a0, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+            p1 = reinterpret_cast<QgsPolylineXY *>( sipConvertToType( a1, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
             if ( sipIsErr )
             {
               sipReleaseType( p0, sipType_QVector_0100QgsPointXY, state0 );
@@ -1506,9 +1624,19 @@ class CORE_EXPORT QgsGeometry
     //! Last error encountered
     mutable QString mLastError;
 
-    void detach( bool cloneGeom = true ); //make sure mGeometry only referenced from this instance
+    /**
+     * Detaches the private geometry container from this instance, and clones
+     * the existing geometry ready for modification.
+     */
+    void detach();
 
-    static void convertToPolyline( const QgsPointSequence &input, QgsPolyline &output );
+    /**
+     * Detaches the private geometry container from this instance, and resets it
+     * to a new abstract geometry pointer.
+     */
+    void reset( std::unique_ptr< QgsAbstractGeometry > newGeometry );
+
+    static void convertToPolyline( const QgsPointSequence &input, QgsPolylineXY &output );
     static void convertPolygon( const QgsPolygonV2 &input, QgsPolygon &output );
 
     //! Try to convert the geometry to a point
@@ -1518,7 +1646,8 @@ class CORE_EXPORT QgsGeometry
     //! Try to convert the geometry to a polygon
     QgsGeometry convertToPolygon( bool destMultipart ) const;
 
-    /** Smooths a polyline using the Chaikin algorithm
+    /**
+     * Smooths a polyline using the Chaikin algorithm
      * \param line line to smooth
      * \param iterations number of smoothing iterations to run. More iterations results
      * in a smoother geometry
@@ -1528,10 +1657,11 @@ class CORE_EXPORT QgsGeometry
      * \param minimumDistance minimum segment length to apply smoothing to
      * \param maxAngle maximum angle at node (0-180) at which smoothing will be applied
     */
-    QgsLineString *smoothLine( const QgsLineString &line, const unsigned int iterations = 1, const double offset = 0.25,
-                               double minimumDistance = -1, double maxAngle = 180.0 ) const;
+    std::unique_ptr< QgsLineString > smoothLine( const QgsLineString &line, const unsigned int iterations = 1, const double offset = 0.25,
+        double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
-    /** Smooths a polygon using the Chaikin algorithm
+    /**
+     * Smooths a polygon using the Chaikin algorithm
      * \param polygon polygon to smooth
      * \param iterations number of smoothing iterations to run. More iterations results
      * in a smoother geometry
@@ -1541,8 +1671,8 @@ class CORE_EXPORT QgsGeometry
      * \param minimumDistance minimum segment length to apply smoothing to
      * \param maxAngle maximum angle at node (0-180) at which smoothing will be applied
     */
-    QgsPolygonV2 *smoothPolygon( const QgsPolygonV2 &polygon, const unsigned int iterations = 1, const double offset = 0.25,
-                                 double minimumDistance = -1, double maxAngle = 180.0 ) const;
+    std::unique_ptr< QgsPolygonV2 > smoothPolygon( const QgsPolygonV2 &polygon, const unsigned int iterations = 1, const double offset = 0.25,
+        double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
 
 }; // class QgsGeometry

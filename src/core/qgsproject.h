@@ -61,8 +61,10 @@ class QgsAnnotationManager;
 class QgsLayoutManager;
 class QgsLayerTree;
 class QgsLabelingEngineSettings;
+class QgsAuxiliaryStorage;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Reads and writes project states.
  *
   \note
@@ -102,14 +104,16 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     ~QgsProject();
 
-    /** Sets the project's title.
+    /**
+     * Sets the project's title.
      * \param title new title
      * \since QGIS 2.4
      * \see title()
      */
     void setTitle( const QString &title );
 
-    /** Returns the project's title.
+    /**
+     * Returns the project's title.
      * \see setTitle()
     */
     QString title() const;
@@ -119,21 +123,24 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     bool isDirty() const;
 
-    /** Sets the file name associated with the project. This is the file which contains the project's XML
+    /**
+     * Sets the file name associated with the project. This is the file which contains the project's XML
      * representation.
      * \param name project file name
      * \see fileName()
      */
     void setFileName( const QString &name );
 
-    /** Returns the project's file name. This is the file which contains the project's XML
+    /**
+     * Returns the project's file name. This is the file which contains the project's XML
      * representation.
      * \see setFileName()
      * \see fileInfo()
     */
     QString fileName() const;
 
-    /** Returns QFileInfo object for the project's associated file.
+    /**
+     * Returns QFileInfo object for the project's associated file.
      * \see fileName()
      * \since QGIS 2.9
      */
@@ -171,23 +178,27 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setEllipsoid( const QString &ellipsoid );
 
-    /** Clear the project - removes all settings and resets it back to an empty, default state.
+    /**
+     * Clear the project - removes all settings and resets it back to an empty, default state.
      * \since QGIS 2.4
      */
     void clear();
 
-    /** Reads given project file from the given file.
+    /**
+     * Reads given project file from the given file.
      * \param filename name of project file to read
      * \returns true if project file has been read successfully
      */
     bool read( const QString &filename );
 
-    /** Reads the project from its currently associated file (see fileName() ).
+    /**
+     * Reads the project from its currently associated file (see fileName() ).
      * \returns true if project file has been read successfully
      */
     bool read();
 
-    /** Reads the layer described in the associated DOM node.
+    /**
+     * Reads the layer described in the associated DOM node.
      *
      * \note This method is mainly for use by QgsProjectBadLayerHandler subclasses
      * that may fix definition of bad layers with the user's help in GUI. Calling
@@ -208,7 +219,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     bool write( const QString &filename );
 
-    /** Writes the project to its current associated file (see fileName() ).
+    /**
+     * Writes the project to its current associated file (see fileName() ).
      * \note isDirty() will be set to false if project is successfully written
      * \returns true if project was written successfully
      */
@@ -284,26 +296,30 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool removeEntry( const QString &scope, const QString &key );
 
 
-    /** Return keys with values -- do not return keys that contain other keys
+    /**
+     * Return keys with values -- do not return keys that contain other keys
      *
      * \note equivalent to QgsSettings entryList()
      */
     QStringList entryList( const QString &scope, const QString &key ) const;
 
-    /** Return keys with keys -- do not return keys that contain only values
+    /**
+     * Return keys with keys -- do not return keys that contain only values
      *
      * \note equivalent to QgsSettings subkeyList()
      */
     QStringList subkeyList( const QString &scope, const QString &key ) const;
 
 
-    /** Dump out current project properties to stderr
+    /**
+     * Dump out current project properties to stderr
      */
     // TODO Now slightly broken since re-factoring.  Won't print out top-level key
     //           and redundantly prints sub-keys.
     void dumpProperties() const;
 
-    /** Return path resolver object with considering whether the project uses absolute
+    /**
+     * Return path resolver object with considering whether the project uses absolute
      * or relative paths and using current project's path.
      * \since QGIS 3.0
      */
@@ -322,7 +338,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Return error message from previous read/write
     QString error() const;
 
-    /** Change handler for missing layers.
+    /**
+     * Change handler for missing layers.
      * Deletes old handler and takes ownership of the new one.
      */
     void setBadLayerHandler( QgsProjectBadLayerHandler *handler SIP_TRANSFER );
@@ -330,14 +347,16 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded
     QString layerIsEmbedded( const QString &id ) const;
 
-    /** Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
+    /**
+     * Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
      * \returns the layer or 0 in case of error
      * \note not available in Python bindings
      */
     bool createEmbeddedLayer( const QString &layerId, const QString &projectFilePath, QList<QDomNode> &brokenNodes,
                               bool saveFlag = true ) SIP_SKIP;
 
-    /** Create layer group instance defined in an arbitrary project file.
+    /**
+     * Create layer group instance defined in an arbitrary project file.
      * \since QGIS 2.4
      */
     QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers );
@@ -348,7 +367,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Convenience function to query topological editing status
     bool topologicalEditing() const;
 
-    /** Convenience function to query default distance measurement units for project.
+    /**
+     * Convenience function to query default distance measurement units for project.
      * \since QGIS 2.14
      * \see setDistanceUnits()
      * \see areaUnits()
@@ -363,7 +383,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 
-    /** Convenience function to query default area measurement units for project.
+    /**
+     * Convenience function to query default area measurement units for project.
      * \since QGIS 2.14
      * \see distanceUnits()
      */
@@ -377,7 +398,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 
-    /** Return project's home path
+    /**
+     * Return project's home path
       \returns home path of project (or null QString if not set) */
     QString homePath() const;
 
@@ -398,17 +420,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QgsLayoutManager *layoutManager();
 
-    /** Return pointer to the root (invisible) node of the project's layer tree
+    /**
+     * Return pointer to the root (invisible) node of the project's layer tree
      * \since QGIS 2.4
      */
     QgsLayerTree *layerTreeRoot() const;
 
-    /** Return pointer to the helper class that synchronizes map layer registry with layer tree
+    /**
+     * Return pointer to the helper class that synchronizes map layer registry with layer tree
      * \since QGIS 2.4
      */
     QgsLayerTreeRegistryBridge *layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge; }
 
-    /** Returns pointer to the project's map theme collection.
+    /**
+     * Returns pointer to the project's map theme collection.
      * \since QGIS 2.12
      * \note renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
      */
@@ -553,7 +578,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Returns the number of registered layers.
     int count() const;
 
-    /** Retrieve a pointer to a registered layer by layer ID.
+    /**
+     * Retrieve a pointer to a registered layer by layer ID.
      * \param layerId ID of layer to retrieve
      * \returns matching layer, or nullptr if no matching layer found
      * \see mapLayersByName()
@@ -561,7 +587,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QgsMapLayer *mapLayer( const QString &layerId ) const;
 
-    /** Retrieve a list of matching registered layers by layer name.
+    /**
+     * Retrieve a list of matching registered layers by layer name.
      * \param layerName name of layers to match
      * \returns list of matching layers
      * \see mapLayer()
@@ -569,7 +596,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     QList<QgsMapLayer *> mapLayersByName( const QString &layerName ) const;
 
-    /** Returns a map of all registered layers by layer ID.
+    /**
+     * Returns a map of all registered layers by layer ID.
      * \see mapLayer()
      * \see mapLayersByName()
      * \see layers()
@@ -583,7 +611,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
 #ifndef SIP_RUN
 
-    /** Returns a list of registered map layers with a specified layer type.
+    /**
+     * Returns a list of registered map layers with a specified layer type.
      *
      * Example:
      *
@@ -750,7 +779,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void reloadAllLayers();
 
-    /** Returns the default CRS for new layers based on the settings and
+    /**
+     * Returns the default CRS for new layers based on the settings and
      * the current project CRS
      */
     QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
@@ -779,6 +809,20 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.0
      */
     bool trustLayerMetadata() const { return mTrustLayerMetadata; }
+
+    /**
+     * Returns the current const auxiliary storage.
+     *
+     * \since QGIS 3.0
+     */
+    const QgsAuxiliaryStorage *auxiliaryStorage() const SIP_SKIP;
+
+    /**
+     * Returns the current auxiliary storage.
+     *
+     * \since QGIS 3.0
+     */
+    QgsAuxiliaryStorage *auxiliaryStorage();
 
   signals:
     //! emitted when project is being read
@@ -834,7 +878,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! emitted whenever the configuration for snapping has changed
     void snappingConfigChanged( const QgsSnappingConfig &config );
 
-    /** Emitted whenever the expression variables stored in the project have been changed.
+    /**
+     * Emitted whenever the expression variables stored in the project have been changed.
      * \since QGIS 3.0
      */
     void customVariablesChanged();
@@ -1026,7 +1071,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     static QgsProject *sProject;
 
-    /** Read map layers from project file.
+    /**
+     * Read map layers from project file.
      * \param doc DOM document to parse
      * \param brokenNodes a list of DOM nodes corresponding to layers that we were unable to load; this could be
      * because the layers were removed or re-located after the project was last saved
@@ -1034,18 +1080,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     */
     bool _getMapLayers( const QDomDocument &doc, QList<QDomNode> &brokenNodes );
 
-    /** Set error message from read/write operation
+    /**
+     * Set error message from read/write operation
      * \note not available in Python bindings
      */
     void setError( const QString &errorMessage ) SIP_SKIP;
 
-    /** Clear error message
+    /**
+     * Clear error message
      * \note not available in Python bindings
      */
     void clearError() SIP_SKIP;
 
-    //! Creates layer and adds it to maplayer registry
-    //! \note not available in Python bindings
+    /**
+     * Creates layer and adds it to maplayer registry
+     * \note not available in Python bindings
+     */
     bool addLayer( const QDomElement &layerElem, QList<QDomNode> &brokenNodes, const QgsReadWriteContext &context ) SIP_SKIP;
 
     //! \note not available in Python bindings
@@ -1066,13 +1116,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     //! Zip project
     bool zip( const QString &filename );
 
+    //! Save auxiliary storage to database
+    bool saveAuxiliaryStorage( const QString &filename = QString() );
+
     std::unique_ptr< QgsMapLayerStore > mLayerStore;
 
     QString mErrorMessage;
 
     QgsProjectBadLayerHandler *mBadLayerHandler = nullptr;
 
-    /** Embedded layers which are defined in other projects. Key: layer id,
+    /**
+     * Embedded layers which are defined in other projects. Key: layer id,
      * value: pair< project file path, save layer yes / no (e.g. if the layer is part of an embedded group, loading/saving is done by the legend)
      *  If the project file path is empty, QgsProject is going to ignore the layer for saving (e.g. because it is part and managed by an embedded group)
      */
@@ -1100,6 +1154,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     std::unique_ptr<QgsProjectArchive> mArchive;
 
+    std::unique_ptr<QgsAuxiliaryStorage> mAuxiliaryStorage;
+
     QFile mFile;                 // current physical project file
     mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
     QString mTitle;              // project title
@@ -1110,7 +1166,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool mTrustLayerMetadata = false;
 };
 
-/** Return the version string found in the given DOM document
+/**
+ * Return the version string found in the given DOM document
    \returns the version string or an empty string if none found
    \note not available in Python bindings.
  */

@@ -24,7 +24,9 @@
 #include "qgsrasterlayer.h"
 #include "qgsogrprovider.h"
 #include "qgsogrdataitems.h"
+#ifdef HAVE_GUI
 #include "qgsnewgeopackagelayerdialog.h"
+#endif
 #include "qgsmessageoutput.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgsgeopackagerasterwritertask.h"
@@ -89,7 +91,6 @@ QWidget *QgsGeoPackageRootItem::paramWidget()
 {
   return nullptr;
 }
-#endif
 
 void QgsGeoPackageRootItem::onConnectionsChanged()
 {
@@ -104,8 +105,6 @@ void QgsGeoPackageRootItem::newConnection()
   }
 }
 
-
-#ifdef HAVE_GUI
 void QgsGeoPackageRootItem::createDatabase()
 {
   QgsNewGeoPackageLayerDialog dialog( nullptr );
@@ -188,9 +187,6 @@ QList<QAction *> QgsGeoPackageCollectionItem::actions( QWidget *parent )
 
   return lst;
 }
-#endif
-
-
 
 bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
 {
@@ -219,7 +215,7 @@ bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAct
     }
     else
     {
-      QgsMapLayer *srcLayer;
+      QgsMapLayer *srcLayer = nullptr;
       bool owner;
       bool isVector = false;
       QString error;
@@ -345,7 +341,7 @@ bool QgsGeoPackageCollectionItem::handleDrop( const QMimeData *data, Qt::DropAct
   }
   return true;
 }
-
+#endif
 
 bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &uri, QString &errCause )
 {
@@ -362,7 +358,7 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
     {
       QString baseUri = pieces.at( 1 );
       QString layerName = pieces.at( 2 );
-      sqlite3 *handle;
+      sqlite3 *handle = nullptr;
       int status = sqlite3_open_v2( baseUri.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, nullptr );
       if ( status != SQLITE_OK )
       {
@@ -393,7 +389,7 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
         QStringList optionalTables;
         optionalTables << QStringLiteral( "gpkg_extensions" )
                        << QStringLiteral( "gpkg_metadata_reference" );
-        for ( const QString &tableName : qgsAsConst( optionalTables ) )
+        for ( const QString &tableName : qgis::as_const( optionalTables ) )
         {
           char *sql = sqlite3_mprintf( "DELETE FROM %w WHERE table_name = '%q'",
                                        tableName.toUtf8().constData(),
@@ -523,7 +519,7 @@ void QgsGeoPackageCollectionItem::addTable()
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Cannot add Table: connection %1 does not exists or the path is empy!" ).arg( connName ) );
+    QgsDebugMsg( QStringLiteral( "Cannot add Table: connection %1 does not exist or the path is empty!" ).arg( connName ) );
   }
 }
 
@@ -546,7 +542,6 @@ QList<QAction *> QgsGeoPackageAbstractLayerItem::actions()
   lst.append( actionDeleteLayer );
   return lst;
 }
-#endif
 
 void QgsGeoPackageAbstractLayerItem::deleteLayer()
 {
@@ -587,6 +582,7 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
   }
 
 }
+#endif
 
 QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, QgsLayerItem::LayerType layerType, const QString &providerKey )
   : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
@@ -597,7 +593,7 @@ QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *par
 
 bool QgsGeoPackageAbstractLayerItem::executeDeleteLayer( QString &errCause )
 {
-  errCause = QObject::tr( "The layer <b>%1</b> cannot be deleted because the this feature is not yet implemented for this kind of layers." ).arg( mName );
+  errCause = QObject::tr( "The layer <b>%1</b> cannot be deleted because this feature is not yet implemented for this kind of layers." ).arg( mName );
   return false;
 }
 

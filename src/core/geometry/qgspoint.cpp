@@ -32,8 +32,7 @@
  ****************************************************************************/
 
 QgsPoint::QgsPoint( double x, double y, double z, double m, QgsWkbTypes::Type wkbType )
-  : QgsAbstractGeometry()
-  , mX( x )
+  : mX( x )
   , mY( y )
   , mZ( z )
   , mM( m )
@@ -57,8 +56,7 @@ QgsPoint::QgsPoint( double x, double y, double z, double m, QgsWkbTypes::Type wk
 }
 
 QgsPoint::QgsPoint( const QgsPointXY &p )
-  : QgsAbstractGeometry()
-  , mX( p.x() )
+  : mX( p.x() )
   , mY( p.y() )
   , mZ( std::numeric_limits<double>::quiet_NaN() )
   , mM( std::numeric_limits<double>::quiet_NaN() )
@@ -67,8 +65,7 @@ QgsPoint::QgsPoint( const QgsPointXY &p )
 }
 
 QgsPoint::QgsPoint( QPointF p )
-  : QgsAbstractGeometry()
-  , mX( p.x() )
+  : mX( p.x() )
   , mY( p.y() )
   , mZ( std::numeric_limits<double>::quiet_NaN() )
   , mM( std::numeric_limits<double>::quiet_NaN() )
@@ -77,8 +74,7 @@ QgsPoint::QgsPoint( QPointF p )
 }
 
 QgsPoint::QgsPoint( QgsWkbTypes::Type wkbType, double x, double y, double z, double m )
-  : QgsAbstractGeometry()
-  , mX( x )
+  : mX( x )
   , mY( y )
   , mZ( QgsWkbTypes::hasZ( wkbType ) ? z : std::numeric_limits<double>::quiet_NaN() )
   , mM( QgsWkbTypes::hasM( wkbType ) ? m : std::numeric_limits<double>::quiet_NaN() )
@@ -324,6 +320,14 @@ int QgsPoint::nCoordinates() const
   return 1;
 }
 
+int QgsPoint::vertexNumberFromVertexId( QgsVertexId id ) const
+{
+  if ( id.vertex != 0 )
+    return -1;
+  else
+    return 0;
+}
+
 QgsAbstractGeometry *QgsPoint::boundary() const
 {
   return nullptr;
@@ -395,6 +399,12 @@ bool QgsPoint::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
   {
     return false;
   }
+}
+
+void QgsPoint::adjacentVertices( QgsVertexId, QgsVertexId &previousVertex, QgsVertexId &nextVertex ) const
+{
+  previousVertex = QgsVertexId();
+  nextVertex = QgsVertexId();
 }
 
 double QgsPoint::vertexAngle( QgsVertexId vertex ) const
@@ -647,4 +657,15 @@ QString QgsPoint::geometryType() const
 int QgsPoint::dimension() const
 {
   return 0;
+}
+
+int QgsPoint::childCount() const
+{
+  return 1;
+}
+
+QgsPoint QgsPoint::childPoint( int index ) const
+{
+  Q_ASSERT( index == 0 );
+  return *this;
 }

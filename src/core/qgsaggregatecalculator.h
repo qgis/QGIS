@@ -30,7 +30,8 @@ class QgsExpression;
 class QgsVectorLayer;
 class QgsExpressionContext;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsAggregateCalculator
  * \brief Utility class for calculating aggregates for a field (or expression) over the features
  * from a vector layer. It is recommended that QgsVectorLayer::aggregate() is used rather then
@@ -42,8 +43,10 @@ class CORE_EXPORT QgsAggregateCalculator
 {
   public:
 
-    //! Available aggregates to calculate. Not all aggregates are available for all field
-    //! types.
+    /**
+     * Available aggregates to calculate. Not all aggregates are available for all field
+     * types.
+     */
     enum Aggregate
     {
       Count,  //!< Count
@@ -73,57 +76,67 @@ class CORE_EXPORT QgsAggregateCalculator
     struct AggregateParameters
     {
 
-      /** Optional filter for calculating aggregate over a subset of features, or an
+      /**
+       * Optional filter for calculating aggregate over a subset of features, or an
        * empty string to use all features.
        * \see QgsAggregateCalculator::setFilter()
        * \see QgsAggregateCalculator::filter()
        */
       QString filter;
 
-      /** Delimiter to use for joining values with the StringConcatenate aggregate.
+      /**
+       * Delimiter to use for joining values with the StringConcatenate aggregate.
        * \see QgsAggregateCalculator::setDelimiter()
        * \see QgsAggregateCalculator::delimiter()
        */
       QString delimiter;
     };
 
-    /** Constructor for QgsAggregateCalculator.
+    /**
+     * Constructor for QgsAggregateCalculator.
      * \param layer vector layer to calculate aggregate from
      */
     QgsAggregateCalculator( const QgsVectorLayer *layer );
 
-    /** Returns the associated vector layer.
+    /**
+     * Returns the associated vector layer.
      */
     const QgsVectorLayer *layer() const;
 
-    /** Sets all aggregate parameters from a parameter bundle.
+    /**
+     * Sets all aggregate parameters from a parameter bundle.
      * \param parameters aggregate parameters
      */
     void setParameters( const AggregateParameters &parameters );
 
-    /** Sets a filter to limit the features used during the aggregate calculation.
+    /**
+     * Sets a filter to limit the features used during the aggregate calculation.
      * \param filterExpression expression for filtering features, or empty string to remove filter
      * \see filter()
      */
     void setFilter( const QString &filterExpression ) { mFilterExpression = filterExpression; }
 
-    /** Returns the filter which limits the features used during the aggregate calculation.
+    /**
+     * Returns the filter which limits the features used during the aggregate calculation.
      * \see setFilter()
      */
     QString filter() const { return mFilterExpression; }
 
-    /** Sets the delimiter to use for joining values with the StringConcatenate aggregate.
+    /**
+     * Sets the delimiter to use for joining values with the StringConcatenate aggregate.
      * \param delimiter string delimiter
      * \see delimiter()
      */
     void setDelimiter( const QString &delimiter ) { mDelimiter = delimiter; }
 
-    /** Returns the delimiter used for joining values with the StringConcatenate aggregate.
+    /**
+     * Returns the delimiter used for joining values with the StringConcatenate aggregate.
      * \see setDelimiter()
      */
     QString delimiter() const { return mDelimiter; }
 
-    /** Calculates the value of an aggregate.
+    /**
+     * Calculates the value of an aggregate.
      * \param aggregate aggregate to calculate
      * \param fieldOrExpression source field or expression to use as basis for aggregated values.
      * If an expression is used, then the context parameter must be set.
@@ -134,7 +147,8 @@ class CORE_EXPORT QgsAggregateCalculator
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,
                         QgsExpressionContext *context = nullptr, bool *ok = nullptr ) const;
 
-    /** Converts a string to a aggregate type.
+    /**
+     * Converts a string to a aggregate type.
      * \param string string to convert
      * \param ok if specified, will be set to true if conversion was successful
      * \returns aggregate type

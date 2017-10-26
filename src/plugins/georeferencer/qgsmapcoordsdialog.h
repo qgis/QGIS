@@ -119,7 +119,7 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     ~QgsMapCoordsDialog();
 
   private slots:
-    void on_buttonBox_accepted();
+    void buttonBox_accepted();
 
     void setToolEmitPoint( bool isEnable );
 

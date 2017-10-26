@@ -37,8 +37,7 @@ class QNetworkReply;
 //! CoverageSummary structure
 struct QgsWcsCoverageSummary
 {
-  QgsWcsCoverageSummary()
-  { }
+  QgsWcsCoverageSummary() = default;
 
   int           orderId = 0;
   QString       identifier;
@@ -92,10 +91,7 @@ class QgsWcsCapabilities : public QObject
      *
      */
     explicit QgsWcsCapabilities( QgsDataSourceUri const &uri );
-    QgsWcsCapabilities();
-
-
-    ~QgsWcsCapabilities();
+    QgsWcsCapabilities() = default;
 
     void setUri( QgsDataSourceUri const &uri );
 
@@ -129,7 +125,8 @@ class QgsWcsCapabilities : public QObject
      */
     static QString prepareUri( QString uri );
 
-    /** \brief Returns the GetCoverage full url
+    /**
+     * \brief Returns the GetCoverage full url
      *  \param version optional version, e.g. 1.0.0 or 1.1.0 */
     QString getCapabilitiesUrl( const QString &version ) const;
 
@@ -145,7 +142,8 @@ class QgsWcsCapabilities : public QObject
     //! Send request to server
     bool sendRequest( QString const &url );
 
-    /** Get additional coverage info from server. Version 1.0 GetCapabilities
+    /**
+     * Get additional coverage info from server. Version 1.0 GetCapabilities
      *  response does not contain all info (CRS, formats).
      */
     bool describeCoverage( QString const &identifier, bool forceRefresh = false );
@@ -196,11 +194,13 @@ class QgsWcsCapabilities : public QObject
     //! Get first child of specified name, NS is ignored
     static QDomElement firstChild( const QDomElement &element, const QString &name );
 
-    /** Find sub elements by path which is string of dot separated tag names.
+    /**
+     * Find sub elements by path which is string of dot separated tag names.
      *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
     static QList<QDomElement> domElements( const QDomElement &element, const QString &path );
 
-    /** Find first sub element by path which is string of dot separated tag names.
+    /**
+     * Find first sub element by path which is string of dot separated tag names.
      *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
     static QDomElement domElement( const QDomElement &element, const QString &path );
 
@@ -322,7 +322,8 @@ class QgsWcsCapabilities : public QObject
      */
     QString mError;
 
-    /** The mime type of the message
+    /**
+     * The mime type of the message
      */
     QString mErrorFormat;
 

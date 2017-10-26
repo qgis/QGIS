@@ -33,6 +33,7 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
   , mOriginalConnName( connName )
 {
   setupUi( this );
+  connect( btnConnect, &QPushButton::clicked, this, &QgsNewOgrConnection::btnConnect_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewOgrConnection::showHelp );
 
   QgsSettings settings;
@@ -139,7 +140,7 @@ void QgsNewOgrConnection::accept()
   QDialog::accept();
 }
 
-void QgsNewOgrConnection::on_btnConnect_clicked()
+void QgsNewOgrConnection::btnConnect_clicked()
 {
   testConnection();
 }

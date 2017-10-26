@@ -72,9 +72,7 @@ class TestQgsComposerUtils : public QObject
 
 };
 
-TestQgsComposerUtils::TestQgsComposerUtils()
-{
-}
+TestQgsComposerUtils::TestQgsComposerUtils() = default;
 
 
 void TestQgsComposerUtils::initTestCase()

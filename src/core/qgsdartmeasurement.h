@@ -20,7 +20,8 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsDartMeasurement
  */
 class CORE_EXPORT QgsDartMeasurement

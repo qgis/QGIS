@@ -143,6 +143,8 @@ Adds an interior ring to the geometry (takes ownership)
 
     virtual int nCoordinates() const;
 
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
+
     virtual bool isEmpty() const;
 
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
@@ -150,6 +152,7 @@ Adds an interior ring to the geometry (takes ownership)
 
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const;
 
+    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const;
 
     virtual bool hasCurvedSegments() const;
 
@@ -191,6 +194,10 @@ Adds an interior ring to the geometry (takes ownership)
 
 
     virtual QgsCurvePolygon *toCurveType() const /Factory/;
+
+  protected:
+    virtual int childCount() const;
+    virtual QgsAbstractGeometry *childGeometry( int index ) const;
 
   protected:
 

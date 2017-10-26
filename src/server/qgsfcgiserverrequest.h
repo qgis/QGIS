@@ -35,7 +35,6 @@ class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
 {
   public:
     QgsFcgiServerRequest();
-    ~QgsFcgiServerRequest();
 
     virtual QByteArray data() const override;
 

@@ -45,6 +45,10 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsrasterminmaxwidget.h"
 
+#ifdef HAVE_3D
+#include "qgsvectorlayer3drendererwidget.h"
+#endif
+
 
 QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent )
   : QWidget( parent )
@@ -158,6 +162,13 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     labelItem->setData( Qt::UserRole, VectorLabeling );
     labelItem->setToolTip( tr( "Labels" ) );
     mOptionsListWidget->addItem( labelItem );
+
+#ifdef HAVE_3D
+    QListWidgetItem *symbol3DItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), QString() );
+    symbol3DItem->setData( Qt::UserRole, Symbology3D );
+    symbol3DItem->setToolTip( tr( "3D View" ) );
+    mOptionsListWidget->addItem( symbol3DItem );
+#endif
   }
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
@@ -318,6 +329,12 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     {
       mRasterStyleWidget = widget;
     }
+#ifdef HAVE_3D
+    else if ( QgsVectorLayer3DRendererWidget *widget = qobject_cast<QgsVectorLayer3DRendererWidget *>( current ) )
+    {
+      mVector3DWidget = widget;
+    }
+#endif
 
   }
 
@@ -369,6 +386,20 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         mWidgetStack->setMainPanel( mLabelingWidget );
         break;
       }
+#ifdef HAVE_3D
+      case 2:  // 3D View
+      {
+        if ( !mVector3DWidget )
+        {
+          mVector3DWidget = new QgsVectorLayer3DRendererWidget( nullptr, mMapCanvas, mWidgetStack );
+          mVector3DWidget->setDockMode( true );
+          connect( mVector3DWidget, &QgsVectorLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+        }
+        mVector3DWidget->setLayer( vlayer );
+        mWidgetStack->setMainPanel( mVector3DWidget );
+        break;
+      }
+#endif
       default:
         break;
     }

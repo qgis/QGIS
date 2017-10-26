@@ -897,7 +897,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValid( const GEOSGeometry *gin, QString &er
 }
 
 
-QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_in, QString &errorMessage )
+std::unique_ptr< QgsAbstractGeometry > _qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_in, QString &errorMessage )
 {
   //bool is3d = FLAGS_GET_Z(lwgeom_in->flags);
 
@@ -905,7 +905,7 @@ QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_
   // otherwise (adding only duplicates of existing points)
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
-  GEOSGeometry *geosgeom = QgsGeos::asGeos( lwgeom_in );
+  geos::unique_ptr geosgeom = QgsGeos::asGeos( lwgeom_in );
   if ( !geosgeom )
   {
     QgsDebugMsg( "Original geom can't be converted to GEOS - will try cleaning that up first" );
@@ -931,12 +931,11 @@ QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_
     QgsDebugMsgLevel( "original geom converted to GEOS", 4 );
   }
 
-  GEOSGeometry *geosout = LWGEOM_GEOS_makeValid( geosgeom, errorMessage );
-  GEOSGeom_destroy_r( handle, geosgeom );
+  GEOSGeometry *geosout = LWGEOM_GEOS_makeValid( geosgeom.get(), errorMessage );
   if ( !geosout )
     return nullptr;
 
-  QgsAbstractGeometry *lwgeom_out = QgsGeos::fromGeos( geosout );
+  std::unique_ptr< QgsAbstractGeometry > lwgeom_out = QgsGeos::fromGeos( geosout );
   GEOSGeom_destroy_r( handle, geosout );
   if ( !lwgeom_out )
     return nullptr;
@@ -960,8 +959,8 @@ QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_
         collection = new QgsGeometryCollection();
         break;
     }
-    collection->addGeometry( lwgeom_out ); // takes ownership
-    lwgeom_out = collection;
+    collection->addGeometry( lwgeom_out.release() ); // takes ownership
+    lwgeom_out.reset( collection );
   }
 
   return lwgeom_out;

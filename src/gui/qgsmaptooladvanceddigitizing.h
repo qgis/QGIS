@@ -23,7 +23,8 @@
 class QgsMapMouseEvent;
 class QgsAdvancedDigitizingDockWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsMapToolAdvancedDigitizing class is a QgsMapTool which gives event directly in map coordinates and allows filtering its events.
  * Events from QgsMapTool are caught and their QMouseEvent are transformed into QgsMapMouseEvent (with map coordinates).
  * Events are then forwarded to corresponding virtual methods which can be reimplemented in subclasses.
@@ -104,6 +105,8 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * \since QGIS 3.0
      */
     void setAutoSnapEnabled( bool enabled ) { mAutoSnapEnabled = enabled; }
+
+  public:
 
     /**
      * Override this method when subclassing this class.

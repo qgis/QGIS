@@ -20,7 +20,8 @@
 #include "qgserror.h"
 #include <QIcon>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * User profile contains information about the user profile folders on the machine.
  * In QGIS 3 all settings, plugins, etc were moved into a %APPDATA%/profiles folder for each platform.
  * This allows for manage different user profiles per machine vs the single default one that was allowed in the

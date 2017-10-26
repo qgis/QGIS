@@ -20,9 +20,6 @@
 #include "qgspoint.h"
 #include "qgsmultipoint.h"
 
-QgsCurve::QgsCurve(): QgsAbstractGeometry()
-{}
-
 bool QgsCurve::isClosed() const
 {
   if ( numPoints() == 0 )
@@ -79,6 +76,43 @@ bool QgsCurve::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
     ++id.vertex;
   }
   return pointAt( id.vertex, vertex, id.type );
+}
+
+void QgsCurve::adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex, QgsVertexId &nextVertex ) const
+{
+  int n = numPoints();
+  if ( vertex.vertex < 0 || vertex.vertex >= n )
+  {
+    previousVertex = QgsVertexId();
+    nextVertex = QgsVertexId();
+    return;
+  }
+
+  if ( vertex.vertex == 0 )
+  {
+    previousVertex = QgsVertexId();
+  }
+  else
+  {
+    previousVertex = QgsVertexId( vertex.part, vertex.ring, vertex.vertex - 1 );
+  }
+  if ( vertex.vertex == n - 1 )
+  {
+    nextVertex = QgsVertexId();
+  }
+  else
+  {
+    nextVertex = QgsVertexId( vertex.part, vertex.ring, vertex.vertex + 1 );
+  }
+}
+
+int QgsCurve::vertexNumberFromVertexId( QgsVertexId id ) const
+{
+  if ( id.part != 0 || id.ring != 0 )
+    return -1;
+  if ( id.vertex < 0 || id.vertex >= numPoints() )
+    return -1;
+  return id.vertex;
 }
 
 QgsAbstractGeometry *QgsCurve::boundary() const
@@ -159,3 +193,16 @@ void QgsCurve::clearCache() const
   QgsAbstractGeometry::clearCache();
 }
 
+int QgsCurve::childCount() const
+{
+  return numPoints();
+}
+
+QgsPoint QgsCurve::childPoint( int index ) const
+{
+  QgsPoint point;
+  QgsVertexId::VertexType type;
+  bool res = pointAt( index, point, type );
+  Q_ASSERT( res );
+  return point;
+}

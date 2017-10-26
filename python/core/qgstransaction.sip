@@ -97,10 +97,16 @@ class QgsTransaction : QObject /Abstract/
  :rtype: bool
 %End
 
-    virtual bool executeSql( const QString &sql, QString &error /Out/ ) = 0;
+    virtual bool executeSql( const QString &sql, QString &error /Out/, bool isDirty = false ) = 0;
 %Docstring
  Execute the ``sql`` string. The result must not be a tuple, so running a
  ``SELECT`` query will return an error.
+
+ \param sql The sql query to execute
+ \param error The error message
+ \param isDirty Flag to indicate if the underlying data will be modified
+
+ :return: true if everything is OK, false otherwise
  :rtype: bool
 %End
 
@@ -159,6 +165,11 @@ class QgsTransaction : QObject /Abstract/
     void afterRollback();
 %Docstring
  Emitted after a rollback
+%End
+
+    void dirtied( const QString &sql );
+%Docstring
+ Emitted if a sql query is executed and the underlying data is modified
 %End
 
   protected:

@@ -23,7 +23,6 @@
 #include <memory>
 
 QgsTriangle::QgsTriangle()
-  : QgsPolygonV2()
 {
   mWkbType = QgsWkbTypes::Triangle;
 }
@@ -36,17 +35,15 @@ QgsTriangle::QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint
   {
     return;
   }
-  QVector< double > x;
-  x << p1.x() << p2.x() << p3.x();
-  QVector< double > y;
-  y << p1.y() << p2.y() << p3.y();
-  QgsLineString *ext = new QgsLineString( x, y );
-  setExteriorRing( ext );
 
+  std::unique_ptr<QgsLineString> ext( new QgsLineString() );
+
+  ext->setPoints( QgsPointSequence() << p1 << p2 << p3 );
+
+  setExteriorRing( ext.release() );
 }
 
 QgsTriangle::QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 )
-  : QgsPolygonV2()
 {
   mWkbType = QgsWkbTypes::Triangle;
   QgsPoint pt1( p1 );
@@ -66,7 +63,6 @@ QgsTriangle::QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsP
 }
 
 QgsTriangle::QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 )
-  : QgsPolygonV2()
 {
   mWkbType = QgsWkbTypes::Triangle;
   QgsPoint pt1( p1 );
@@ -164,10 +160,7 @@ bool QgsTriangle::fromWkb( QgsConstWkbPtr &wkbPtr )
 
   QgsLineString *line = new QgsLineString();
   line->fromWkbPoints( ringType, wkbPtr );
-  if ( !mExteriorRing )
-  {
-    mExteriorRing.reset( line );
-  }
+  mExteriorRing.reset( line );
 
   return true;
 }
@@ -230,6 +223,26 @@ bool QgsTriangle::fromWkt( const QString &wkt )
   return true;
 }
 
+QDomElement QgsTriangle::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
+{
+
+  QDomElement elemTriangle = doc.createElementNS( ns, QStringLiteral( "Triangle" ) );
+
+  if ( isEmpty() )
+    return elemTriangle;
+
+  QDomElement elemExterior = doc.createElementNS( ns, QStringLiteral( "exterior" ) );
+  QDomElement curveElem = exteriorRing()->asGML3( doc, precision, ns );
+  if ( curveElem.tagName() == QLatin1String( "LineString" ) )
+  {
+    curveElem.setTagName( QStringLiteral( "LinearRing" ) );
+  }
+  elemExterior.appendChild( curveElem );
+  elemTriangle.appendChild( elemExterior );
+
+  return elemTriangle;
+}
+
 QgsPolygonV2 *QgsTriangle::surfaceToPolygon() const
 {
   return toPolygon();
@@ -260,9 +273,12 @@ bool QgsTriangle::insertVertex( QgsVertexId position, const QgsPoint &vertex )
   Q_UNUSED( vertex );
   return false;
 }
-#include <iostream>
+
 bool QgsTriangle::moveVertex( QgsVertexId vId, const QgsPoint &newPos )
 {
+  if ( isEmpty() )
+    return false;
+
   if ( !mExteriorRing || vId.part != 0 || vId.ring != 0 || vId.vertex < 0 || vId.vertex > 4 )
   {
     return false;
@@ -361,6 +377,9 @@ QgsCurve *QgsTriangle::boundary() const
 
 QgsPoint QgsTriangle::vertexAt( int atVertex ) const
 {
+  if ( isEmpty() )
+    return QgsPoint();
+
   QgsVertexId id( 0, 0, atVertex );
   return mExteriorRing->vertexAt( id );
 }
@@ -368,6 +387,9 @@ QgsPoint QgsTriangle::vertexAt( int atVertex ) const
 QVector<double> QgsTriangle::lengths() const
 {
   QVector<double> lengths;
+  if ( isEmpty() )
+    return lengths;
+
   lengths.append( vertexAt( 0 ).distance( vertexAt( 1 ) ) );
   lengths.append( vertexAt( 1 ).distance( vertexAt( 2 ) ) );
   lengths.append( vertexAt( 2 ).distance( vertexAt( 0 ) ) );
@@ -378,6 +400,8 @@ QVector<double> QgsTriangle::lengths() const
 QVector<double> QgsTriangle::angles() const
 {
   QVector<double> angles;
+  if ( isEmpty() )
+    return angles;
   double ax, ay, bx, by, cx, cy;
 
   ax = vertexAt( 0 ).x();
@@ -400,6 +424,8 @@ QVector<double> QgsTriangle::angles() const
 
 bool QgsTriangle::isIsocele( double lengthTolerance ) const
 {
+  if ( isEmpty() )
+    return false;
   QVector<double> sides = lengths();
   bool ab_bc = qgsDoubleNear( sides.at( 0 ), sides.at( 1 ), lengthTolerance );
   bool bc_ca = qgsDoubleNear( sides.at( 1 ), sides.at( 2 ), lengthTolerance );
@@ -410,6 +436,8 @@ bool QgsTriangle::isIsocele( double lengthTolerance ) const
 
 bool QgsTriangle::isEquilateral( double lengthTolerance ) const
 {
+  if ( isEmpty() )
+    return false;
   QVector<double> sides = lengths();
   bool ab_bc = qgsDoubleNear( sides.at( 0 ), sides.at( 1 ), lengthTolerance );
   bool bc_ca = qgsDoubleNear( sides.at( 1 ), sides.at( 2 ), lengthTolerance );
@@ -420,6 +448,8 @@ bool QgsTriangle::isEquilateral( double lengthTolerance ) const
 
 bool QgsTriangle::isRight( double angleTolerance ) const
 {
+  if ( isEmpty() )
+    return false;
   QVector<double> a = angles();
   QVector<double>::iterator ita = a.begin();
   while ( ita != a.end() )
@@ -433,12 +463,17 @@ bool QgsTriangle::isRight( double angleTolerance ) const
 
 bool QgsTriangle::isScalene( double lengthTolerance ) const
 {
+  if ( isEmpty() )
+    return false;
   return !isIsocele( lengthTolerance );
 }
 
 QVector<QgsLineString> QgsTriangle::altitudes() const
 {
   QVector<QgsLineString> alt;
+  if ( isEmpty() )
+    return alt;
+
   alt.append( QgsGeometryUtils::perpendicularSegment( vertexAt( 0 ), vertexAt( 2 ), vertexAt( 1 ) ) );
   alt.append( QgsGeometryUtils::perpendicularSegment( vertexAt( 1 ), vertexAt( 0 ), vertexAt( 2 ) ) );
   alt.append( QgsGeometryUtils::perpendicularSegment( vertexAt( 2 ), vertexAt( 0 ), vertexAt( 1 ) ) );
@@ -449,6 +484,8 @@ QVector<QgsLineString> QgsTriangle::altitudes() const
 QVector<QgsLineString> QgsTriangle::medians() const
 {
   QVector<QgsLineString> med;
+  if ( isEmpty() )
+    return med;
 
   QgsLineString med1;
   QgsLineString med2;
@@ -466,6 +503,9 @@ QVector<QgsLineString> QgsTriangle::medians() const
 QVector<QgsLineString> QgsTriangle::bisectors( double lengthTolerance ) const
 {
   QVector<QgsLineString> bis;
+  if ( isEmpty() )
+    return bis;
+
   QgsLineString bis1;
   QgsLineString bis2;
   QgsLineString bis3;
@@ -490,6 +530,8 @@ QVector<QgsLineString> QgsTriangle::bisectors( double lengthTolerance ) const
 
 QgsTriangle QgsTriangle::medial() const
 {
+  if ( isEmpty() )
+    return QgsTriangle();
   QgsPoint p1, p2, p3;
   p1 = QgsGeometryUtils::midpoint( vertexAt( 0 ), vertexAt( 1 ) );
   p2 = QgsGeometryUtils::midpoint( vertexAt( 1 ), vertexAt( 2 ) );
@@ -499,6 +541,8 @@ QgsTriangle QgsTriangle::medial() const
 
 QgsPoint QgsTriangle::orthocenter( double lengthTolerance ) const
 {
+  if ( isEmpty() )
+    return QgsPoint();
   QVector<QgsLineString> alt = altitudes();
   QgsPoint ortho;
   QgsGeometryUtils::segmentIntersection( alt.at( 0 ).pointN( 0 ), alt.at( 0 ).pointN( 1 ), alt.at( 1 ).pointN( 0 ), alt.at( 1 ).pointN( 1 ), ortho, lengthTolerance );
@@ -508,6 +552,8 @@ QgsPoint QgsTriangle::orthocenter( double lengthTolerance ) const
 
 QgsPoint QgsTriangle::circumscribedCenter() const
 {
+  if ( isEmpty() )
+    return QgsPoint();
   double r, x, y;
   QgsGeometryUtils::circleCenterRadius( vertexAt( 0 ), vertexAt( 1 ), vertexAt( 2 ), r, x, y );
   return QgsPoint( x, y );
@@ -515,6 +561,8 @@ QgsPoint QgsTriangle::circumscribedCenter() const
 
 double QgsTriangle::circumscribedRadius() const
 {
+  if ( isEmpty() )
+    return 0.0;
   double r, x, y;
   QgsGeometryUtils::circleCenterRadius( vertexAt( 0 ), vertexAt( 1 ), vertexAt( 2 ), r, x, y );
   return r;
@@ -522,11 +570,15 @@ double QgsTriangle::circumscribedRadius() const
 
 QgsCircle QgsTriangle::circumscribedCircle() const
 {
+  if ( isEmpty() )
+    return QgsCircle();
   return QgsCircle( circumscribedCenter(), circumscribedRadius() );
 }
 
 QgsPoint QgsTriangle::inscribedCenter() const
 {
+  if ( isEmpty() )
+    return QgsPoint();
 
   QVector<double> l = lengths();
   double x = ( l.at( 0 ) * vertexAt( 2 ).x() +
@@ -541,6 +593,8 @@ QgsPoint QgsTriangle::inscribedCenter() const
 
 double QgsTriangle::inscribedRadius() const
 {
+  if ( isEmpty() )
+    return 0.0;
   return ( 2.0 * area() / perimeter() );
 }
 
@@ -551,6 +605,8 @@ bool QgsTriangle::validateGeom( const QgsPoint &p1, const QgsPoint &p2, const Qg
 
 QgsCircle QgsTriangle::inscribedCircle() const
 {
+  if ( isEmpty() )
+    return QgsCircle();
   return QgsCircle( inscribedCenter(), inscribedRadius() );
 }
 

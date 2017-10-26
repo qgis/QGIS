@@ -21,7 +21,8 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsGeoConnection class.
  */
 

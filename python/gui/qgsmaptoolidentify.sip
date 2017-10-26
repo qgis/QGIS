@@ -100,7 +100,8 @@ this has been made private and two publics methods are offered
 
     QgsIdentifyMenu *identifyMenu();
 %Docstring
-this menu can also be customized
+ return a pointer to the identify menu which will be used in layer selection mode
+ this menu can also be customized
  :rtype: QgsIdentifyMenu
 %End
 

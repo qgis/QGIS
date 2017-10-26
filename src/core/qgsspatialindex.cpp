@@ -29,7 +29,8 @@ using namespace SpatialIndex;
 
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgisVisitor
  * \brief Custom visitor that adds found features to list.
  * \note not available in Python bindings
@@ -55,7 +56,8 @@ class QgisVisitor : public SpatialIndex::IVisitor
     QList<QgsFeatureId> &mList;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSpatialIndexCopyVisitor
  * \note not available in Python bindings
  */
@@ -84,7 +86,8 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsFeatureIteratorDataStream
  * \brief Utility class for bulk loading of R-trees. Not a part of public API.
  * \note not available in Python bindings
@@ -149,7 +152,8 @@ class QgsFeatureIteratorDataStream : public IDataStream
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  *  \class QgsSpatialIndexData
  * \brief Data of spatial index that may be implicitly shared
  * \note not available in Python bindings
