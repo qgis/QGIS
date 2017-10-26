@@ -997,12 +997,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   if ( !QgsApplication::authManager()->isDisabled() )
   {
-    // Most of the auth initialization is done inside initQgis
-    startProfile( QStringLiteral( "Initializing authentication" ) );
-    mSplash->showMessage( tr( "Initializing authentication" ), Qt::AlignHCenter | Qt::AlignBottom );
-    qApp->processEvents();
+    // Most of the auth initialization is now done inside initQgis, no need to profile here
     masterPasswordSetup();
-    endProfile();
   }
 
   // Setup QgsNetworkAccessManager (this needs to happen after authentication, for proxy settings)
