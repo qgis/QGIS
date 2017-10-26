@@ -62,6 +62,7 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
     QVariant data( const QModelIndex &index, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
+    void removeProject( const QModelIndex &index );
     void recheckProject( const QModelIndex &index );
 
   private:

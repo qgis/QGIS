@@ -1691,6 +1691,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \param savePreviewImage Set to false when the preview image should not be saved. E.g. project load.
      */
     void saveRecentProjectPath( const QString &projectPath, bool savePreviewImage = true );
+    //! Save recent projects list to settings
+    void saveRecentProjects();
     //! Update project menu with the current list of recently accessed projects
     void updateRecentProjectPaths();
     //! Read Well Known Binary stream from PostGIS
