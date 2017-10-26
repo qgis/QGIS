@@ -1017,3 +1017,25 @@ QList<QPair<QSslError::SslError, QString> > QgsAuthCertUtils::sslErrorEnumString
                          QgsAuthCertUtils::sslErrorEnumString( QSslError::CertificateBlacklisted ) );
   return errenums;
 }
+
+QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificate> &certificateChain, const QString &hostName, bool addRootCa )
+{
+  QList<QSslError> results;
+  // Merge in the root CA if present and asked for
+  if ( addRootCa && certificateChain.count() > 1 &&  certificateChain.last().isSelfSigned() )
+  {
+    static QMutex sMutex;
+    QMutexLocker lock( &sMutex );
+    QSslConfiguration oldSslConfig( QSslConfiguration::defaultConfiguration() );
+    QSslConfiguration sslConfig( oldSslConfig );
+    sslConfig.setCaCertificates( casMerge( sslConfig.caCertificates(), QList<QSslCertificate>() << certificateChain.last() ) );
+    QSslConfiguration::setDefaultConfiguration( sslConfig );
+    results = QSslCertificate::verify( certificateChain, hostName );
+    QSslConfiguration::setDefaultConfiguration( oldSslConfig );
+  }
+  else
+  {
+    results = QSslCertificate::verify( certificateChain, hostName );
+  }
+  return results;
+}

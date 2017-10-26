@@ -618,6 +618,38 @@ class TestQgsAuthManager(unittest.TestCase):
         for c in filtered:
             self.assertFalse(c.isSelfSigned())
 
+    def test_150_verify_keychain(self):
+        """Test the verify keychain function"""
+
+        def testChain(path):
+
+            # Test that a chain with an untrusted CA is not valid
+            self.assertTrue(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path))) > 0)
+
+            # Test that a chain with an untrusted CA is valid when the addRootCa argumentis true
+            self.assertTrue(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path), None, True)) == 0)
+
+            # Test that a chain with an untrusted CA is not valid when the addRootCa argumentis true
+            # and a wrong domainis true
+            self.assertTrue(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path), 'my.wrong.domain', True)) > 0)
+
+        testChain(PKIDATA + '/chain_subissuer-issuer-root.pem')
+        testChain(PKIDATA + '/localhost_ssl_w-chain.pem')
+
+        path = PKIDATA + '/localhost_ssl_w-chain.pem'
+
+        # Test that a chain with an untrusted CA is not valid when the addRootCa argumentis true
+        # and a wrong domain is set
+        self.assertTrue(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path), 'my.wrong.domain', True)) > 0)
+
+        # Test that a chain with an untrusted CA is valid when the addRootCa argumentis true
+        # and a right domain is set
+        self.assertTrue(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path), 'localhost', True)) == 0)
+
+        # Test that a chain with an untrusted CA is not valid when the addRootCa argument is false
+        # and a right domain is set
+        self.assertTrue(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path), 'localhost', False)) > 0)
+
 
 if __name__ == '__main__':
     unittest.main()
