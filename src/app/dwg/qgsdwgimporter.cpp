@@ -2637,7 +2637,7 @@ bool QgsDwgImporter::expandInserts( QString &error )
           continue;
         }
 
-        QByteArray wkb = g.geometry()->asWkb();
+        QByteArray wkb = g.constGet()->asWkb();
         if ( OGR_G_CreateFromWkb( ( unsigned char * ) wkb.constData(), nullptr, &ogrG, wkb.size() ) != OGRERR_NONE )
         {
           QgsDebugMsg( QString( "%1/%2: could not create ogr geometry" ).arg( name ).arg( fid ) );

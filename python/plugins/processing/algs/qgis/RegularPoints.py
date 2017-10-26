@@ -124,7 +124,7 @@ class RegularPoints(QgisAlgorithm):
         y = extent.yMaximum() - inset
 
         extent_geom = QgsGeometry.fromRect(extent)
-        extent_engine = QgsGeometry.createGeometryEngine(extent_geom.geometry())
+        extent_engine = QgsGeometry.createGeometryEngine(extent_geom.constGet())
         extent_engine.prepareGeometry()
 
         while y >= extent.yMinimum():
@@ -140,7 +140,7 @@ class RegularPoints(QgisAlgorithm):
                 else:
                     geom = QgsGeometry().fromPoint(QgsPointXY(x, y))
 
-                if extent_engine.intersects(geom.geometry()):
+                if extent_engine.intersects(geom.constGet()):
                     f.setAttribute('id', count)
                     f.setGeometry(geom)
                     sink.addFeature(f, QgsFeatureSink.FastInsert)

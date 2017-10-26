@@ -42,7 +42,7 @@ class ANALYSIS_EXPORT QgsGeometryOverlapCheckError : public QgsGeometryCheckErro
              other->featureId() == featureId() &&
              err->overlappedFeature() == overlappedFeature() &&
              QgsGeometryCheckerUtils::pointsFuzzyEqual( location(), other->location(), mCheck->getContext()->reducedTolerance ) &&
-             qAbs( value().toDouble() - other->value().toDouble() ) < mCheck->getContext()->reducedTolerance;
+             std::fabs( value().toDouble() - other->value().toDouble() ) < mCheck->getContext()->reducedTolerance;
     }
 
     bool closeMatch( QgsGeometryCheckError *other ) const override

@@ -29,7 +29,7 @@
 #include <queue>
 
 QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry &geometry )
-  : mGeometry( geometry.geometry() )
+  : mGeometry( geometry.constGet() )
 {
 
 }

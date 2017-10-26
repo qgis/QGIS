@@ -459,7 +459,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, [QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.UTC))])
 
         got_f = [f for f in vl.getFeatures()]
-        got = got_f[0].geometry().geometry()
+        got = got_f[0].geometry().constGet()
         self.assertEqual((got.x(), got.y()), (426858.0, 5427937.0))
 
         self.assertEqual(vl.featureCount(), 1)
@@ -564,7 +564,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
         got_f = [f for f in vl.getFeatures()]
-        got = got_f[0].geometry().geometry()
+        got = got_f[0].geometry().constGet()
         self.assertEqual((got.x(), got.y()), (426858.0, 5427937.0))
 
         # Test with explicit OUTPUTFORMAT as parameter
@@ -588,7 +588,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
         got_f = [f for f in vl.getFeatures()]
-        got = got_f[0].geometry().geometry()
+        got = got_f[0].geometry().constGet()
         self.assertEqual((got.x(), got.y()), (1.0, 2.0))
 
         # Test with explicit OUTPUTFORMAT  in URL
@@ -612,7 +612,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
         got_f = [f for f in vl.getFeatures()]
-        got = got_f[0].geometry().geometry()
+        got = got_f[0].geometry().constGet()
         self.assertEqual((got.x(), got.y()), (3.0, 4.0))
 
     def testWFS10_latlongboundingbox_in_WGS84(self):
@@ -781,7 +781,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, [QDateTime(2016, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.UTC))])
 
         got_f = [f for f in vl.getFeatures()]
-        got = got_f[0].geometry().geometry()
+        got = got_f[0].geometry().constGet()
         self.assertEqual((got.x(), got.y()), (2.0, 49.0))
 
         # Test changeGeometryValues
@@ -805,7 +805,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.dataProvider().changeGeometryValues({1: QgsGeometry.fromWkt('Point (3 50)')}))
 
         got_f = [f for f in vl.getFeatures()]
-        got = got_f[0].geometry().geometry()
+        got = got_f[0].geometry().constGet()
         self.assertEqual((got.x(), got.y()), (3.0, 50.0))
 
         values = [f['intfield'] for f in vl.getFeatures()]
@@ -852,7 +852,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, [QDateTime(2015, 4, 10, 12, 34, 56, 789, Qt.TimeSpec(Qt.UTC))])
 
         got_f = [f for f in vl.getFeatures()]
-        got = got_f[0].geometry().geometry()
+        got = got_f[0].geometry().constGet()
         self.assertEqual((got.x(), got.y()), (3.0, 50.0))
 
         # Test deleteFeatures
@@ -2269,7 +2269,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
         got_f = [f for f in vl.getFeatures()]
-        got = got_f[0].geometry().geometry()
+        got = got_f[0].geometry().constGet()
         self.assertEqual((got.x(), got.y()), (2.0, 49.0))
 
     def testDescribeFeatureTypeWithInlineType(self):
@@ -2357,7 +2357,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
         got_f = [f for f in vl.getFeatures()]
-        got = got_f[0].geometry().geometry()
+        got = got_f[0].geometry().constGet()
         self.assertEqual((got.x(), got.y()), (2.0, 49.0))
 
     def testWFS20TransactionsDisabled(self):
@@ -2561,7 +2561,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(values, [1])
 
         got_f = [f for f in vl.getFeatures()]
-        got = got_f[0].geometry().geometry()
+        got = got_f[0].geometry().constGet()
         self.assertEqual((got.x(), got.y()), (426858.0, 5427937.0))
 
 

@@ -65,7 +65,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QString geometryType() const override;
     void clear() override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
-    void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) override;
+    void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
 
     //! Adds a geometry and takes ownership. Returns true in case of success.

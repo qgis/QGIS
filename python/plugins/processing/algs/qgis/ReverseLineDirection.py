@@ -57,7 +57,7 @@ class ReverseLineDirection(QgisFeatureBasedAlgorithm):
     def processFeature(self, feature, feedback):
         if feature.geometry():
             inGeom = feature.geometry()
-            reversedLine = inGeom.geometry().reversed()
+            reversedLine = inGeom.constGet().reversed()
             if not reversedLine:
                 raise QgsProcessingException(
                     self.tr('Error reversing line'))

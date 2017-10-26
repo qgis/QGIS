@@ -50,13 +50,13 @@ void QgsGeometryFollowBoundariesCheck::collectErrors( QList<QgsGeometryCheckErro
 
     // The geometry to crs of the check layer
     QgsCoordinateTransform crst = QgsCoordinateTransformCache::instance()->transform( layerFeature.layer().crs().authid(), mCheckLayer->crs().authid() );
-    QScopedPointer<QgsAbstractGeometry> geomt( geom->clone() );
-    geomt->transform( crst );
+    QgsGeometry geomt( geom->clone() );
+    geomt.transform( crst );
 
-    QSharedPointer<QgsGeometryEngine> geomEngine = QgsGeometryCheckerUtils::createGeomEngine( geomt.data(), mContext->tolerance );
+    std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( geomt.constGet(), mContext->tolerance );
 
     // Get potential reference features
-    QgsRectangle searchBounds = geomt->boundingBox();
+    QgsRectangle searchBounds = geomt.constGet()->boundingBox();
     searchBounds.grow( mContext->tolerance );
     QgsFeatureIds refFeatureIds = mIndex->intersects( searchBounds ).toSet();
 
@@ -74,10 +74,10 @@ void QgsGeometryFollowBoundariesCheck::collectErrors( QList<QgsGeometryCheckErro
       QgsFeature refFeature;
       while ( refFeatureIt.nextFeature( refFeature ) )
       {
-        QgsAbstractGeometry *refGeom = refFeature.geometry().geometry();
-        QSharedPointer<QgsGeometryEngine> refgeomEngine = QgsGeometryCheckerUtils::createGeomEngine( refGeom, mContext->tolerance );
-        QScopedPointer<QgsAbstractGeometry> reducedRefGeom( refgeomEngine->buffer( -mContext->tolerance, 0 ) );
-        if ( !( geomEngine->contains( reducedRefGeom.data() ) || geomEngine->disjoint( reducedRefGeom.data() ) ) )
+        const QgsAbstractGeometry *refGeom = refFeature.geometry().constGet();
+        std::unique_ptr<QgsGeometryEngine> refgeomEngine( QgsGeometryCheckerUtils::createGeomEngine( refGeom, mContext->tolerance ) );
+        QgsGeometry reducedRefGeom( refgeomEngine->buffer( -mContext->tolerance, 0 ) );
+        if ( !( geomEngine->contains( reducedRefGeom.constGet() ) || geomEngine->disjoint( reducedRefGeom.constGet() ) ) )
         {
           errors.append( new QgsGeometryCheckError( this, layerFeature, QgsPointXY( geom->centroid() ) ) );
           break;

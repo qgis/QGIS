@@ -84,19 +84,50 @@ Copy constructor will prompt a deep copy of the object
 
     ~QgsGeometry();
 
-    QgsAbstractGeometry *geometry() const;
+    const QgsAbstractGeometry *constGet() const;
 %Docstring
- Returns the underlying geometry store.
-.. versionadded:: 2.10
-.. seealso:: setGeometry
+ Returns a non-modifiable (const) reference to the underlying abstract geometry primitive.
+
+ This is much faster then calling the non-const get() method.
+
+.. note::
+
+   In QGIS 2.x this method was named geometry().
+
+.. versionadded:: 3.0
+.. seealso:: primitive()
+.. seealso:: set()
  :rtype: QgsAbstractGeometry
 %End
 
-    void setGeometry( QgsAbstractGeometry *geometry /Transfer/ );
+    QgsAbstractGeometry *get();
+%Docstring
+ Returns a modifiable (non-const) reference to the underlying abstract geometry primitive.
+
+ This method can be slow to call, as it may trigger a detachment of the geometry
+ and a deep copy. Where possible, use constGet() instead.
+
+.. note::
+
+   In QGIS 2.x this method was named geometry().
+
+.. versionadded:: 3.0
+.. seealso:: constGet()
+.. seealso:: set()
+ :rtype: QgsAbstractGeometry
+%End
+
+    void set( QgsAbstractGeometry *geometry /Transfer/ );
 %Docstring
  Sets the underlying geometry store. Ownership of geometry is transferred.
-.. versionadded:: 2.10
-.. seealso:: geometry
+
+.. note::
+
+   In QGIS 2.x this method was named setGeometry().
+
+.. versionadded:: 3.0
+.. seealso:: get()
+.. seealso:: constGet()
 %End
 
     bool isNull() const;

@@ -692,7 +692,7 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
     return QgsGeometry();
   }
 
-  QgsAbstractGeometry *geometry = geom.geometry();
+  const QgsAbstractGeometry *geometry = geom.constGet();
   if ( !geometry )
   {
     return QgsGeometry();

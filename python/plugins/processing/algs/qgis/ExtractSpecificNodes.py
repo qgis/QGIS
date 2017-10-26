@@ -104,7 +104,7 @@ class ExtractSpecificNodes(QgisAlgorithm):
             if not input_geometry:
                 sink.addFeature(f, QgsFeatureSink.FastInsert)
             else:
-                total_nodes = input_geometry.geometry().nCoordinates()
+                total_nodes = input_geometry.constGet().nCoordinates()
 
                 for node in indices:
                     if node < 0:

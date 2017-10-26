@@ -118,11 +118,11 @@ class TestCase(_TestCase):
 
         for feats in zip(expected_features, result_features):
             if feats[0].hasGeometry():
-                geom0 = feats[0].geometry().geometry().asWkt(precision)
+                geom0 = feats[0].geometry().constGet().asWkt(precision)
             else:
                 geom0 = None
             if feats[1].hasGeometry():
-                geom1 = feats[1].geometry().geometry().asWkt(precision)
+                geom1 = feats[1].geometry().constGet().asWkt(precision)
             else:
                 geom1 = None
             if use_asserts:

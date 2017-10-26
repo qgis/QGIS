@@ -47,7 +47,7 @@ void QgsGeometryDegeneratePolygonCheck::fixError( QgsGeometryCheckError *error, 
     return;
   }
   QgsGeometry featureGeometry = feature.geometry();
-  QgsAbstractGeometry *geom = featureGeometry.geometry();
+  const QgsAbstractGeometry *geom = featureGeometry.constGet();
   QgsVertexId vidx = error->vidx();
 
   // Check if ring still exists

@@ -238,7 +238,7 @@ class MinimumBoundingGeometry(QgisAlgorithm):
             while True:
                 if feedback.isCanceled():
                     break
-                found, point = g.geometry().nextVertex(vid)
+                found, point = g.constGet().nextVertex(vid)
                 if found:
                     multi_point.addGeometry(point)
                 else:
@@ -270,8 +270,8 @@ class MinimumBoundingGeometry(QgisAlgorithm):
         elif type == 3:
             # convex hull
             output_geometry = geometry.convexHull()
-            attrs.append(output_geometry.geometry().area())
-            attrs.append(output_geometry.geometry().perimeter())
+            attrs.append(output_geometry.constGet().area())
+            attrs.append(output_geometry.constGet().perimeter())
         f = QgsFeature()
         f.setAttributes(attrs)
         f.setGeometry(output_geometry)

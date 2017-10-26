@@ -78,7 +78,7 @@ bool QgsCurve::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
   return pointAt( id.vertex, vertex, id.type );
 }
 
-void QgsCurve::adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex, QgsVertexId &nextVertex )
+void QgsCurve::adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex, QgsVertexId &nextVertex ) const
 {
   int n = numPoints();
   if ( vertex.vertex < 0 || vertex.vertex >= n )

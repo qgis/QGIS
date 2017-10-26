@@ -36,7 +36,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
     return;
   }
 
-  QSharedPointer<QgsGeometryEngine> geomEngine = QgsGeometryCheckerUtils::createGeomEngine( nullptr, mContext->tolerance );
+  std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( nullptr, mContext->tolerance );
 
   // Create union of geometry
   QString errMsg;
@@ -168,7 +168,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError *err, Chan
         continue;
       }
       QgsGeometry featureGeom = testFeature.geometry();
-      QgsAbstractGeometry *testGeom = featureGeom.geometry();
+      const QgsAbstractGeometry *testGeom = featureGeom.constGet();
       for ( int iPart = 0, nParts = testGeom->partCount(); iPart < nParts; ++iPart )
       {
         double len = QgsGeometryCheckerUtils::sharedEdgeLength( errLayerGeom, QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart ), mContext->reducedTolerance );
@@ -194,8 +194,8 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( QgsGeometryGapCheckError *err, Chan
   QgsAbstractGeometry *errLayerGeom = errGeometry->clone();
   errLayerGeom->transform( featurePool->getLayerToMapTransform(), QgsCoordinateTransform::ReverseTransform );
   QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
-  QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.geometry();
-  QSharedPointer<QgsGeometryEngine> geomEngine = QgsGeometryCheckerUtils::createGeomEngine( errLayerGeom, mContext->reducedTolerance );
+  const QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.constGet();
+  std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( errLayerGeom, mContext->reducedTolerance );
   QgsAbstractGeometry *combinedGeom = geomEngine->combine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), &errMsg );
   delete errLayerGeom;
   if ( !combinedGeom || combinedGeom->isEmpty() || !QgsWkbTypes::isSingleType( combinedGeom->wkbType() ) )

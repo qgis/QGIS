@@ -1254,7 +1254,7 @@ namespace QgsWfs
         }
         else
         {
-          QgsAbstractGeometry *abstractGeom = geom.geometry();
+          const QgsAbstractGeometry *abstractGeom = geom.constGet();
           if ( abstractGeom )
           {
             gmlElem = abstractGeom->asGML2( doc, prec, "http://www.opengis.net/gml" );
@@ -1355,7 +1355,7 @@ namespace QgsWfs
         }
         else
         {
-          QgsAbstractGeometry *abstractGeom = geom.geometry();
+          const QgsAbstractGeometry *abstractGeom = geom.constGet();
           if ( abstractGeom )
           {
             gmlElem = abstractGeom->asGML3( doc, prec, "http://www.opengis.net/gml" );

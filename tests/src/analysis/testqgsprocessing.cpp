@@ -1911,7 +1911,7 @@ void TestQgsProcessing::parameterExtent()
   QGSCOMPARENEAR( ext.yMinimum(),  30.151856, 0.01 );
   QGSCOMPARENEAR( ext.yMaximum(), 30.257289, 0.01 );
   QgsGeometry gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
-  QCOMPARE( gExt.geometry()->vertexCount(), 85 );
+  QCOMPARE( gExt.constGet()->vertexCount(), 85 );
   ext = gExt.boundingBox();
   QGSCOMPARENEAR( ext.xMinimum(), 17.924273, 0.01 );
   QGSCOMPARENEAR( ext.xMaximum(), 18.045658, 0.01 );
@@ -1948,7 +1948,7 @@ void TestQgsProcessing::parameterExtent()
   QGSCOMPARENEAR( ext.yMinimum(),  244963, 100 );
   QGSCOMPARENEAR( ext.yMaximum(), 490287, 100 );
   gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
-  QCOMPARE( gExt.geometry()->vertexCount(), 85 );
+  QCOMPARE( gExt.constGet()->vertexCount(), 85 );
   ext = gExt.boundingBox();
   QGSCOMPARENEAR( ext.xMinimum(), 122451, 100 );
   QGSCOMPARENEAR( ext.xMaximum(), 367354, 100 );
@@ -1998,7 +1998,7 @@ void TestQgsProcessing::parameterExtent()
 
   // as reprojected geometry
   gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
-  QCOMPARE( gExt.geometry()->vertexCount(), 85 );
+  QCOMPARE( gExt.constGet()->vertexCount(), 85 );
   ext = gExt.boundingBox();
   QGSCOMPARENEAR( ext.xMinimum(), 122451, 100 );
   QGSCOMPARENEAR( ext.xMaximum(), 367354, 100 );

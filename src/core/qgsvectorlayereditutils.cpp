@@ -105,10 +105,10 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId f
   if ( !geometry.deleteVertex( vertex ) )
     return QgsVectorLayer::EditFailed;
 
-  if ( geometry.geometry() && geometry.geometry()->nCoordinates() == 0 )
+  if ( geometry.constGet() && geometry.constGet()->nCoordinates() == 0 )
   {
     //last vertex deleted, set geometry to null
-    geometry.setGeometry( nullptr );
+    geometry.set( nullptr );
   }
 
   mLayer->editBuffer()->changeGeometry( featureId, geometry );

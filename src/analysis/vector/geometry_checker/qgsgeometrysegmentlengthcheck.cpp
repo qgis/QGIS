@@ -65,7 +65,7 @@ void QgsGeometrySegmentLengthCheck::fixError( QgsGeometryCheckError *error, int 
   }
 
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometry *geom = featureGeom.geometry();
+  const QgsAbstractGeometry *geom = featureGeom.constGet();
   QgsVertexId vidx = error->vidx();
 
   // Check if point still exists

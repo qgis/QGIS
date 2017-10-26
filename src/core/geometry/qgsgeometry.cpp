@@ -120,12 +120,18 @@ void QgsGeometry::reset( std::unique_ptr<QgsAbstractGeometry> newGeometry )
   d->geometry = std::move( newGeometry );
 }
 
-QgsAbstractGeometry *QgsGeometry::geometry() const
+const QgsAbstractGeometry *QgsGeometry::constGet() const
 {
   return d->geometry.get();
 }
 
-void QgsGeometry::setGeometry( QgsAbstractGeometry *geometry )
+QgsAbstractGeometry *QgsGeometry::get()
+{
+  detach();
+  return d->geometry.get();
+}
+
+void QgsGeometry::set( QgsAbstractGeometry *geometry )
 {
   if ( d->geometry.get() == geometry )
   {
@@ -872,7 +878,7 @@ int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other )
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.geometry(), &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError ) );
   if ( !diffGeom )
   {
     return 1;
@@ -892,7 +898,7 @@ QgsGeometry QgsGeometry::makeDifference( const QgsGeometry &other ) const
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.geometry(), &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError ) );
   if ( !diffGeom )
   {
     QgsGeometry result;
@@ -932,10 +938,10 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
   QgsPoint pt1;
   QgsPoint pt2;
   // get first point
-  hull.geometry()->nextVertex( vertexId, pt0 );
+  hull.constGet()->nextVertex( vertexId, pt0 );
   pt1 = pt0;
   double prevAngle = 0.0;
-  while ( hull.geometry()->nextVertex( vertexId, pt2 ) )
+  while ( hull.constGet()->nextVertex( vertexId, pt2 ) )
   {
     double currentAngle = QgsGeometryUtils::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() );
     double rotateAngle = 180.0 / M_PI * ( currentAngle - prevAngle );
@@ -945,9 +951,9 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
     t.rotate( rotateAngle );
     t.translate( -pt0.x(), -pt0.y() );
 
-    hull.geometry()->transform( t );
+    hull.get()->transform( t );
 
-    QgsRectangle bounds = hull.geometry()->boundingBox();
+    QgsRectangle bounds = hull.constGet()->boundingBox();
     double currentArea = bounds.width() * bounds.height();
     if ( currentArea  < area )
     {
@@ -1047,7 +1053,7 @@ QgsGeometry QgsGeometry::minimalEnclosingCircle( QgsPointXY &center, double &rad
   center = QgsPointXY( circ.center() );
   radius = circ.radius();
   QgsGeometry geom;
-  geom.setGeometry( circ.toPolygon( segments ) );
+  geom.set( circ.toPolygon( segments ) );
   return geom;
 
 }
@@ -1816,7 +1822,7 @@ QgsGeometry QgsGeometry::voronoiDiagram( const QgsGeometry &extent, double toler
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  QgsGeometry result = geos.voronoiDiagram( extent.geometry(), tolerance, edgesOnly, &mLastError );
+  QgsGeometry result = geos.voronoiDiagram( extent.constGet(), tolerance, edgesOnly, &mLastError );
   result.mLastError = mLastError;
   return result;
 }
@@ -1873,7 +1879,7 @@ QgsGeometry QgsGeometry::interpolate( double distance ) const
   if ( type() == QgsWkbTypes::PolygonGeometry )
     line = QgsGeometry( d->geometry->boundary() );
 
-  QgsGeos geos( line.geometry() );
+  QgsGeos geos( line.constGet() );
   mLastError.clear();
   std::unique_ptr< QgsAbstractGeometry > result( geos.interpolate( distance, &mLastError ) );
   if ( !result )
@@ -1918,7 +1924,7 @@ double QgsGeometry::interpolateAngle( double distance ) const
 
   QgsVertexId previous;
   QgsVertexId next;
-  if ( !QgsGeometryUtils::verticesAtDistance( *segmentized.geometry(), distance, previous, next ) )
+  if ( !QgsGeometryUtils::verticesAtDistance( *segmentized.constGet(), distance, previous, next ) )
     return 0.0;
 
   if ( previous == next )
@@ -1927,33 +1933,33 @@ double QgsGeometry::interpolateAngle( double distance ) const
     QgsVertexId v2 = previous;
     QgsVertexId v1;
     QgsVertexId v3;
-    segmentized.geometry()->adjacentVertices( v2, v1, v3 );
+    segmentized.constGet()->adjacentVertices( v2, v1, v3 );
     if ( v1.isValid() && v3.isValid() )
     {
-      QgsPoint p1 = segmentized.geometry()->vertexAt( v1 );
-      QgsPoint p2 = segmentized.geometry()->vertexAt( v2 );
-      QgsPoint p3 = segmentized.geometry()->vertexAt( v3 );
+      QgsPoint p1 = segmentized.constGet()->vertexAt( v1 );
+      QgsPoint p2 = segmentized.constGet()->vertexAt( v2 );
+      QgsPoint p3 = segmentized.constGet()->vertexAt( v3 );
       double angle1 = QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
       double angle2 = QgsGeometryUtils::lineAngle( p2.x(), p2.y(), p3.x(), p3.y() );
       return QgsGeometryUtils::averageAngle( angle1, angle2 );
     }
     else if ( v3.isValid() )
     {
-      QgsPoint p1 = segmentized.geometry()->vertexAt( v2 );
-      QgsPoint p2 = segmentized.geometry()->vertexAt( v3 );
+      QgsPoint p1 = segmentized.constGet()->vertexAt( v2 );
+      QgsPoint p2 = segmentized.constGet()->vertexAt( v3 );
       return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
     }
     else
     {
-      QgsPoint p1 = segmentized.geometry()->vertexAt( v1 );
-      QgsPoint p2 = segmentized.geometry()->vertexAt( v2 );
+      QgsPoint p1 = segmentized.constGet()->vertexAt( v1 );
+      QgsPoint p2 = segmentized.constGet()->vertexAt( v2 );
       return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
     }
   }
   else
   {
-    QgsPoint p1 = segmentized.geometry()->vertexAt( previous );
-    QgsPoint p2 = segmentized.geometry()->vertexAt( next );
+    QgsPoint p1 = segmentized.constGet()->vertexAt( previous );
+    QgsPoint p2 = segmentized.constGet()->vertexAt( next );
     return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
   }
 }
@@ -2152,7 +2158,7 @@ bool QgsGeometry::deletePart( int partNum )
 
   if ( !isMultipart() && partNum < 1 )
   {
-    setGeometry( nullptr );
+    set( nullptr );
     return true;
   }
 
@@ -2250,7 +2256,7 @@ QgsGeometry QgsGeometry::polygonize( const QList<QgsGeometry> &geometryList )
   {
     if ( !( g.isNull() ) )
     {
-      geomV2List.append( g.geometry() );
+      geomV2List.append( g.constGet() );
     }
   }
 
@@ -3107,7 +3113,7 @@ QDataStream &operator>>( QDataStream &in, QgsGeometry &geometry )
   in >> byteArray;
   if ( byteArray.isEmpty() )
   {
-    geometry.setGeometry( nullptr );
+    geometry.set( nullptr );
     return in;
   }
 

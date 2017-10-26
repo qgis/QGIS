@@ -48,7 +48,7 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, c
     return;
   }
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometry *geom = featureGeom.geometry();
+  const QgsAbstractGeometry *geom = featureGeom.constGet();
 
   // Check if error still applies
   QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom->wkbType() );

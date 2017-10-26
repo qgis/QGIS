@@ -93,7 +93,7 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
     }
     QgsRectangle box = geom.boundingBox();
 
-    if ( QgsWkbTypes::flatType( geom.geometry()->wkbType() ) != QgsWkbTypes::Point )
+    if ( QgsWkbTypes::flatType( geom.wkbType() ) != QgsWkbTypes::Point )
     {
       s += QStringLiteral( "   \"bbox\":[%1, %2, %3, %4],\n" ).arg( qgsDoubleToString( box.xMinimum(), mPrecision ),
            qgsDoubleToString( box.yMinimum(), mPrecision ),

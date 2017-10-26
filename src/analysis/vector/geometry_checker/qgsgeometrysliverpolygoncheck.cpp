@@ -20,7 +20,7 @@ bool QgsGeometrySliverPolygonCheck::checkThreshold( double layerToMapUnits, cons
 {
   double maxArea = mMaxAreaMapUnits / ( layerToMapUnits * layerToMapUnits );
   QgsRectangle bb = geom->boundingBox();
-  double maxDim = qMax( bb.width(), bb.height() );
+  double maxDim = std::max( bb.width(), bb.height() );
   double area = geom->area();
   value = ( maxDim * maxDim ) / area;
   if ( maxArea > 0. && area > maxArea )

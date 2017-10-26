@@ -30,7 +30,7 @@ void QgsGeometryOverlapCheck::collectErrors( QList<QgsGeometryCheckError *> &err
     layerIds.removeOne( layerFeatureA.layer().id() );
 
     QgsRectangle bboxA = layerFeatureA.geometry()->boundingBox();
-    QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
+    std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->tolerance );
     if ( !geomEngineA->isValid() )
     {
       messages.append( tr( "Overlap check failed for (%1): the geometry is invalid" ).arg( layerFeatureA.id() ) );
@@ -91,7 +91,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
   // Check if error still applies
   QgsGeometryCheckerUtils::LayerFeature layerFeatureA( featurePoolA, featureA, true );
   QgsGeometryCheckerUtils::LayerFeature layerFeatureB( featurePoolB, featureB, true );
-  QSharedPointer<QgsGeometryEngine> geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->reducedTolerance );
+  std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry(), mContext->reducedTolerance );
 
   if ( !geomEngineA->overlaps( layerFeatureB.geometry() ) )
   {
@@ -110,7 +110,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
   for ( int iPart = 0, nParts = interGeom->partCount(); iPart < nParts; ++iPart )
   {
     QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( interGeom, iPart );
-    if ( qAbs( part->area() - overlapError->value().toDouble() ) < mContext->reducedTolerance &&
+    if ( std::fabs( part->area() - overlapError->value().toDouble() ) < mContext->reducedTolerance &&
          QgsGeometryCheckerUtils::pointsFuzzyEqual( part->centroid(), overlapError->location(), mContext->reducedTolerance ) )
     {
       interPart = part;
@@ -141,7 +141,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
     {
       QgsGeometryCheckerUtils::filter1DTypes( diff1 );
     }
-    QSharedPointer<QgsGeometryEngine> geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureB.geometry(), mContext->reducedTolerance );
+    std::unique_ptr< QgsGeometryEngine > geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureB.geometry(), mContext->reducedTolerance );
     QgsAbstractGeometry *diff2 = geomEngineB->difference( interPart, &errMsg );
     if ( !diff2 || diff2->isEmpty() )
     {

@@ -92,7 +92,7 @@ class PolygonsToLines(QgisFeatureBasedAlgorithm):
         return multi_wkb
 
     def convertToLines(self, geometry):
-        rings = self.getRings(geometry.geometry())
+        rings = self.getRings(geometry.constGet())
         output_wkb = self.convertWkbToLines(geometry.wkbType())
         out_geom = None
         if QgsWkbTypes.flatType(output_wkb) == QgsWkbTypes.MultiLineString:

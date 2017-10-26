@@ -155,7 +155,7 @@ class ExportGeometryInfo(QgisAlgorithm):
     def point_attributes(self, geometry):
         pt = None
         if not geometry.isMultipart():
-            pt = geometry.geometry()
+            pt = geometry.constGet()
         else:
             if geometry.numGeometries() > 0:
                 pt = geometry.geometryN(0)

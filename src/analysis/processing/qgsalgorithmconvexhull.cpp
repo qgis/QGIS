@@ -76,8 +76,8 @@ QgsFeature QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature, Qg
     if ( outputGeometry )
     {
       QgsAttributes attrs = f.attributes();
-      attrs << outputGeometry.geometry()->area()
-            << outputGeometry.geometry()->perimeter();
+      attrs << outputGeometry.constGet()->area()
+            << outputGeometry.constGet()->perimeter();
       f.setAttributes( attrs );
     }
   }

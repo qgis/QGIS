@@ -161,7 +161,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
     if ( !lines.empty() )
     {
       // use prepared geometries for faster intersection tests
-      std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( inGeom.geometry() ) );
+      std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( inGeom.constGet() ) );
       engine->prepareGeometry();
 
       QgsFeatureRequest request = QgsFeatureRequest().setFilterFids( lines );
@@ -178,7 +178,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
         }
 
         QgsGeometry tmpGeom = inFeatureB.geometry();
-        if ( engine->intersects( tmpGeom.geometry() ) )
+        if ( engine->intersects( tmpGeom.constGet() ) )
         {
           QgsMultiPoint points;
           QgsGeometry intersectGeom = inGeom.intersection( tmpGeom );

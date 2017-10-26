@@ -269,7 +269,7 @@ class QgsAbstractGeometry
  :rtype: bool
 %End
 
-    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) = 0;
+    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const = 0;
 %Docstring
  Returns the vertices adjacent to a specified ``vertex`` within a geometry.
 .. versionadded:: 3.0

@@ -147,7 +147,7 @@ class EliminateSelection(QgisAlgorithm):
                 selFeat = QgsFeature()
 
                 # use prepared geometries for faster intersection tests
-                engine = QgsGeometry.createGeometryEngine(geom2Eliminate.geometry())
+                engine = QgsGeometry.createGeometryEngine(geom2Eliminate.constGet())
                 engine.prepareGeometry()
 
                 while fit.nextFeature(selFeat):
@@ -156,7 +156,7 @@ class EliminateSelection(QgisAlgorithm):
 
                     selGeom = selFeat.geometry()
 
-                    if engine.intersects(selGeom.geometry()):
+                    if engine.intersects(selGeom.constGet()):
                         # We have a candidate
                         iGeom = geom2Eliminate.intersection(selGeom)
 

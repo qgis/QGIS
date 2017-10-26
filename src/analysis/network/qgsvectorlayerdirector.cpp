@@ -165,9 +165,9 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
     }
 
     QgsMultiPolyline mpl;
-    if ( QgsWkbTypes::flatType( feature.geometry().geometry()->wkbType() ) == QgsWkbTypes::MultiLineString )
+    if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == QgsWkbTypes::MultiLineString )
       mpl = feature.geometry().asMultiPolyline();
-    else if ( QgsWkbTypes::flatType( feature.geometry().geometry()->wkbType() ) == QgsWkbTypes::LineString )
+    else if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == QgsWkbTypes::LineString )
       mpl.push_back( feature.geometry().asPolyline() );
 
     QgsMultiPolyline::iterator mplIt;
@@ -308,9 +308,9 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
 
     // begin features segments and add arc to the Graph;
     QgsMultiPolyline mpl;
-    if ( QgsWkbTypes::flatType( feature.geometry().geometry()->wkbType() ) == QgsWkbTypes::MultiLineString )
+    if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == QgsWkbTypes::MultiLineString )
       mpl = feature.geometry().asMultiPolyline();
-    else if ( QgsWkbTypes::flatType( feature.geometry().geometry()->wkbType() ) == QgsWkbTypes::LineString )
+    else if ( QgsWkbTypes::flatType( feature.geometry().wkbType() ) == QgsWkbTypes::LineString )
       mpl.push_back( feature.geometry().asPolyline() );
 
     QgsMultiPolyline::iterator mplIt;

@@ -90,7 +90,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
     return;
   }
   QgsGeometry featureGeom = feature.geometry();
-  QgsAbstractGeometry *geom = featureGeom.geometry();
+  QgsAbstractGeometry *geom = featureGeom.get();
   QgsVertexId vidx = error->vidx();
 
   // Check if ring still exists
@@ -201,8 +201,8 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
         poly2->setExteriorRing( ringGeom2 );
 
         // Reassing interiors as necessary
-        QSharedPointer<QgsGeometryEngine> geomEnginePoly1 = QgsGeometryCheckerUtils::createGeomEngine( poly, mContext->tolerance );
-        QSharedPointer<QgsGeometryEngine> geomEnginePoly2 = QgsGeometryCheckerUtils::createGeomEngine( poly2, mContext->tolerance );
+        std::unique_ptr< QgsGeometryEngine > geomEnginePoly1 = QgsGeometryCheckerUtils::createGeomEngine( poly, mContext->tolerance );
+        std::unique_ptr< QgsGeometryEngine > geomEnginePoly2 = QgsGeometryCheckerUtils::createGeomEngine( poly2, mContext->tolerance );
         for ( int n = poly->numInteriorRings(), i = n - 1; i >= 0; --i )
         {
           if ( !geomEnginePoly1->contains( poly->interiorRing( i ) ) )
@@ -244,6 +244,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
           QgsFeature newFeature;
           newFeature.setAttributes( feature.attributes() );
           newFeature.setGeometry( QgsGeometry( poly2 ) );
+          feature.setGeometry( featureGeom );
           featurePool->updateFeature( feature );
           featurePool->addFeature( newFeature );
           changes[error->layerId()][feature.id()].append( Change( ChangeRing, ChangeChanged, QgsVertexId( vidx.part, vidx.ring ) ) );
@@ -261,6 +262,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
           geomCollection->removeGeometry( vidx.part );
           geomCollection->addGeometry( ringGeom1 );
           geomCollection->addGeometry( ringGeom2 );
+          feature.setGeometry( featureGeom );
           featurePool->updateFeature( feature );
           changes[error->layerId()][feature.id()].append( Change( ChangePart, ChangeRemoved, QgsVertexId( vidx.part ) ) );
           changes[error->layerId()][feature.id()].append( Change( ChangePart, ChangeAdded, QgsVertexId( geomCollection->partCount() - 2 ) ) );
