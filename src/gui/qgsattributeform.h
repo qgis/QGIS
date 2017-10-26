@@ -304,6 +304,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
       QWidget *widget = nullptr;
       QString labelText;
+      QString hint;
       bool labelOnTop = false;
       bool labelAlignRight = false;
       bool showLabel = true;
