@@ -626,10 +626,10 @@ class TestQgsAuthManager(unittest.TestCase):
             # Test that a chain with an untrusted CA is not valid
             self.assertTrue(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path))) > 0)
 
-            # Test that a chain with an untrusted CA is valid when the addRootCa argumentis true
+            # Test that a chain with an untrusted CA is valid when the addRootCa argument is true
             self.assertTrue(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path), None, True)) == 0)
 
-            # Test that a chain with an untrusted CA is not valid when the addRootCa argumentis true
+            # Test that a chain with an untrusted CA is not valid when the addRootCa argument is true
             # and a wrong domainis true
             self.assertTrue(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path), 'my.wrong.domain', True)) > 0)
 
@@ -638,17 +638,19 @@ class TestQgsAuthManager(unittest.TestCase):
 
         path = PKIDATA + '/localhost_ssl_w-chain.pem'
 
-        # Test that a chain with an untrusted CA is not valid when the addRootCa argumentis true
+        # Test that a chain with an untrusted CA is not valid when the addRootCa argument is true
         # and a wrong domain is set
         self.assertTrue(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path), 'my.wrong.domain', True)) > 0)
 
-        # Test that a chain with an untrusted CA is valid when the addRootCa argumentis true
+        # Test that a chain with an untrusted CA is valid when the addRootCa argument is true
         # and a right domain is set
         self.assertTrue(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path), 'localhost', True)) == 0)
 
         # Test that a chain with an untrusted CA is not valid when the addRootCa argument is false
         # and a right domain is set
         self.assertTrue(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path), 'localhost', False)) > 0)
+
+        testChain(PKIDATA + '/fra_w-chain.pem')
 
 
 if __name__ == '__main__':
