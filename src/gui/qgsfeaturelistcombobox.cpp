@@ -51,6 +51,7 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   connect( this, static_cast<void( QgsFeatureListComboBox::* )( int )>( &QgsFeatureListComboBox::currentIndexChanged ), this, &QgsFeatureListComboBox::onCurrentIndexChanged );
 
   mLineEdit = new QgsFilterLineEdit();
+  mLineEdit->setSelectOnFocus( true );
   setEditable( true );
   setLineEdit( mLineEdit );
   setModel( mModel );
@@ -111,6 +112,10 @@ void QgsFeatureListComboBox::onCurrentIndexChanged( int i )
   QModelIndex modelIndex = mModel->index( i, 0, QModelIndex() );
   mModel->setExtraIdentifierValue( mModel->data( modelIndex, QgsFeatureFilterModel::IdentifierValueRole ) );
   mLineEdit->setText( mModel->data( modelIndex, QgsFeatureFilterModel::ValueRole ).toString() );
+  mLineEdit->setFont( mModel->data( modelIndex, Qt::FontRole ).value<QFont>() );
+  QPalette palette = mLineEdit->palette();
+  palette.setBrush( mLineEdit->foregroundRole(), mModel->data( modelIndex, Qt::ForegroundRole ).value<QBrush>() );
+  mLineEdit->setPalette( palette );
 }
 
 void QgsFeatureListComboBox::onActivated( QModelIndex modelIndex )
