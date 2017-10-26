@@ -37,7 +37,7 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
   , mIsMixed( false )
   , mIsChanged( false )
 {
-  mConstraintResultLabel = new QLabel();
+  mConstraintResultLabel = new QLabel( this );
   mConstraintResultLabel->setObjectName( QStringLiteral( "ConstraintStatus" ) );
   mConstraintResultLabel->setSizePolicy( QSizePolicy::Fixed, mConstraintResultLabel->sizePolicy().verticalPolicy() );
 

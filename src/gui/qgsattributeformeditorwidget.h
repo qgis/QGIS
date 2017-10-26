@@ -209,7 +209,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
     QgsEditorWidgetWrapper *mWidget = nullptr;
     QList< QgsSearchWidgetWrapper * > mSearchWidgets;
     QgsAttributeForm *mForm = nullptr;
-    QLabel *mConstraintResultLabel;
+    QLabel *mConstraintResultLabel = nullptr;
     Mode mMode;
 
     QgsMultiEditToolButton *mMultiEditButton = nullptr;
