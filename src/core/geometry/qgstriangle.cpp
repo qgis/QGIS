@@ -31,11 +31,6 @@ QgsTriangle::QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint
 {
   mWkbType = QgsWkbTypes::Triangle;
 
-  if ( !validateGeom( p1, p2, p3 ) )
-  {
-    return;
-  }
-
   std::unique_ptr<QgsLineString> ext( new QgsLineString() );
 
   ext->setPoints( QgsPointSequence() << p1 << p2 << p3 );
@@ -46,14 +41,7 @@ QgsTriangle::QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint
 QgsTriangle::QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 )
 {
   mWkbType = QgsWkbTypes::Triangle;
-  QgsPoint pt1( p1 );
-  QgsPoint pt2( p2 );
-  QgsPoint pt3( p3 );
 
-  if ( !validateGeom( pt1, pt2, pt3 ) )
-  {
-    return;
-  }
   QVector< double > x;
   x << p1.x() << p2.x() << p3.x();
   QVector< double > y;
@@ -65,14 +53,7 @@ QgsTriangle::QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsP
 QgsTriangle::QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 )
 {
   mWkbType = QgsWkbTypes::Triangle;
-  QgsPoint pt1( p1 );
-  QgsPoint pt2( p2 );
-  QgsPoint pt3( p3 );
 
-  if ( !validateGeom( pt1, pt2, pt3 ) )
-  {
-    return;
-  }
   QVector< double > x;
   x << p1.x() << p2.x() << p3.x();
   QVector< double > y;
@@ -289,15 +270,6 @@ bool QgsTriangle::moveVertex( QgsVertexId vId, const QgsPoint &newPos )
     vId.vertex = 0;
   }
 
-  QgsPoint p1( vId.vertex == 0 ? newPos : vertexAt( 0 ) );
-  QgsPoint p2( vId.vertex == 1 ? newPos : vertexAt( 1 ) );
-  QgsPoint p3( vId.vertex == 2 ? newPos : vertexAt( 2 ) );
-
-  if ( !validateGeom( p1, p2, p3 ) )
-  {
-    return false;
-  }
-
   int n = mExteriorRing->numPoints();
   bool success = mExteriorRing->moveVertex( vId, newPos );
   if ( success )
@@ -351,12 +323,6 @@ void QgsTriangle::setExteriorRing( QgsCurve *ring )
       lineString->close();
     }
     ring = lineString;
-  }
-
-  if ( !validateGeom( ring->vertexAt( QgsVertexId( 0, 0, 0 ) ), ring->vertexAt( QgsVertexId( 0, 0, 1 ) ), ring->vertexAt( QgsVertexId( 0, 0, 2 ) ) ) )
-  {
-    delete ring;
-    return;
   }
 
   mExteriorRing.reset( ring );
@@ -420,6 +386,17 @@ QVector<double> QgsTriangle::angles() const
   angles.append( ( a3 > M_PI_2 ? a3 - M_PI_2 : a3 ) );
 
   return angles;
+}
+
+bool QgsTriangle::isDegenerate()
+{
+  if ( isEmpty() )
+    return true;
+
+  QgsPoint p1( vertexAt( 0 ) );
+  QgsPoint p2( vertexAt( 1 ) );
+  QgsPoint p3( vertexAt( 2 ) );
+  return ( ( ( p1 == p2 ) || ( p1 == p3 ) || ( p2 == p3 ) ) || qgsDoubleNear( QgsGeometryUtils::leftOfLine( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ), 0.0 ) );
 }
 
 bool QgsTriangle::isIsocele( double lengthTolerance ) const
@@ -596,11 +573,6 @@ double QgsTriangle::inscribedRadius() const
   if ( isEmpty() )
     return 0.0;
   return ( 2.0 * area() / perimeter() );
-}
-
-bool QgsTriangle::validateGeom( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 )
-{
-  return !( ( ( p1 == p2 ) || ( p1 == p3 ) || ( p2 == p3 ) ) || qgsDoubleNear( QgsGeometryUtils::leftOfLine( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ), 0.0 ) );
 }
 
 QgsCircle QgsTriangle::inscribedCircle() const
