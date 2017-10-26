@@ -1242,7 +1242,9 @@ QList<QPair<QSslError::SslError, QString> > QgsAuthCertUtils::sslErrorEnumString
   return errenums;
 }
 
-QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificate> &certificateChain, const QString &hostName, bool addRootCa )
+QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificate> &certificateChain,
+    const QString &hostName,
+    bool trustRootCa )
 {
   QList<QSslError> sslErrors;
   QList<QSslCertificate> trustedChain;
@@ -1264,8 +1266,28 @@ QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificat
     }
   }
 
+  // Check that no certs in the chain are expired or not yet valid or blacklisted
+  const QList<QSslCertificate> constTrustedChain( trustedChain );
+  for ( const auto &cert : constTrustedChain )
+  {
+    // TODO: move all the checks to QgsAuthCertUtils::certIsViable( )
+    const QDateTime currentTime = QDateTime::currentDateTime();
+    if ( cert.expiryDate() <= currentTime )
+    {
+      sslErrors << QSslError( QSslError::SslError::CertificateExpired, cert );
+    }
+    if ( cert.effectiveDate() >= QDateTime::currentDateTime() )
+    {
+      sslErrors << QSslError( QSslError::SslError::CertificateNotYetValid, cert );
+    }
+    if ( cert.isBlacklisted() )
+    {
+      sslErrors << QSslError( QSslError::SslError::CertificateBlacklisted, cert );
+    }
+  }
+
   // Merge in the root CA if present and asked for
-  if ( addRootCa && trustedChain.count() > 1 && trustedChain.last().isSelfSigned() )
+  if ( trustRootCa && trustedChain.count() > 1 && trustedChain.last().isSelfSigned() )
   {
     static QMutex sMutex;
     QMutexLocker lock( &sMutex );
@@ -1283,7 +1305,7 @@ QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificat
   return sslErrors;
 }
 
-QStringList QgsAuthCertUtils::validatePKIBundle( QgsPkiBundle &bundle, bool useIntermediates, bool addRootCa )
+QStringList QgsAuthCertUtils::validatePKIBundle( QgsPkiBundle &bundle, bool useIntermediates, bool trustRootCa )
 {
   QStringList errors;
   QList<QSslError> sslErrors;
@@ -1291,7 +1313,7 @@ QStringList QgsAuthCertUtils::validatePKIBundle( QgsPkiBundle &bundle, bool useI
   {
     QList<QSslCertificate> certsList( bundle.caChain() );
     certsList.insert( 0, bundle.clientCert( ) );
-    sslErrors = QgsAuthCertUtils::validateCertChain( certsList, QString(), addRootCa );
+    sslErrors = QgsAuthCertUtils::validateCertChain( certsList, QString(), trustRootCa );
   }
   else
   {
@@ -1324,7 +1346,7 @@ QStringList QgsAuthCertUtils::validatePKIBundle( QgsPkiBundle &bundle, bool useI
   }
   else
   {
-    // Log? Error? Note that elliptical curve is not supported by QCA
+    QgsDebugMsg( "Key is not DSA, RSA or DH: validation is not supported by Qt" );
   }
   if ( ! keyValid )
   {

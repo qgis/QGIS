@@ -334,12 +334,23 @@ class CORE_EXPORT QgsAuthCertUtils
      * \brief validateCertChain validates the given \a certificateChain
      * \param certificateChain list of certificates to be checked, with leaf first and with optional root CA last
      * \param hostName (optional) name of the host to be verified
-     * \param addRootCa if true the CA will be added to the trusted CAs for this validation check
+     * \param trustRootCa if true the CA will be added to the trusted CAs for this validation check
      * \return list of QSslError, if the list is empty then the cert chain is valid
      */
-    static QList<QSslError> validateCertChain( const QList<QSslCertificate> &certificateChain,  const QString &hostName = QString(), bool addRootCa = false ) ;
+    static QList<QSslError> validateCertChain( const QList<QSslCertificate> &certificateChain,
+        const QString &hostName = QString(),
+        bool trustRootCa = false ) ;
 
-    static QStringList validatePKIBundle( QgsPkiBundle &bundle, bool useIntermediates = true, bool addRootCa = false );
+    /**
+     * \brief validatePKIBundle validate the PKI bundle by checking the certificate chain, the
+     * expiration and effective dates, optionally trusts the root CA
+     * \param bundle
+     * \param useIntermediates if true the intermediate certs are also checked
+     * \param trustRootCa if true the CA will be added to the trusted CAs for this validation check (if useIntermediates is false)
+     * this option is ignored and set to false
+     * \return a list of error strings, if the list is empty then the PKI bundle is valid
+     */
+    static QStringList validatePKIBundle( QgsPkiBundle &bundle, bool useIntermediates = true, bool trustRootCa = false );
 
   private:
     static void appendDirSegment_( QStringList &dirname, const QString &segment, QString value );
