@@ -201,7 +201,6 @@ class CORE_EXPORT QgsPkiBundle
                   const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
 
     /**
-     * TORM
      * Construct a bundle of PKI components from PEM-formatted file paths
      * \param certPath Certificate file path
      * \param keyPath Private key path
@@ -214,7 +213,6 @@ class CORE_EXPORT QgsPkiBundle
                                             const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
 
     /**
-     * TORM
      * Construct a bundle of PKI components from a PKCS#12 file path
      * \param bundlepath Bundle file path
      * \param bundlepass Optional bundle passphrase
@@ -256,7 +254,6 @@ class CORE_EXPORT QgsPkiBundle
 /**
  * \ingroup core
  * \brief Storage set for constructed SSL certificate, key, associated with an authentication config
- * TODO: inherit from PKIBundle
  */
 class CORE_EXPORT QgsPkiConfigBundle
 {

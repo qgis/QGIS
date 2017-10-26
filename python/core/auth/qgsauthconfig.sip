@@ -221,7 +221,6 @@ class QgsPkiBundle
                                             const QString &keyPass = QString(),
                                             const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
 %Docstring
- TORM
  Construct a bundle of PKI components from PEM-formatted file paths
  \param certPath Certificate file path
  \param keyPath Private key path
@@ -233,7 +232,6 @@ class QgsPkiBundle
     static const QgsPkiBundle fromPkcs12Paths( const QString &bundlepath,
         const QString &bundlepass = QString() );
 %Docstring
- TORM
  Construct a bundle of PKI components from a PKCS#12 file path
  \param bundlepath Bundle file path
  \param bundlepass Optional bundle passphrase
@@ -295,7 +293,6 @@ class QgsPkiConfigBundle
 {
 %Docstring
  Storage set for constructed SSL certificate, key, associated with an authentication config
- TODO: inherit from PKIBundle
 %End
 
 %TypeHeaderCode

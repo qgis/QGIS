@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for bindings to core authentication system classes
 
-From build dir: ctest -R PyQgsAuthenticationSystem -V
+From build dir: LC_ALL=en_US.UTF-8 ctest -R PyQgsAuthenticationSystem -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,19 +17,13 @@ __revision__ = '$Format:%H$'
 import os
 import tempfile
 
-from qgis.core import QgsAuthManager, QgsAuthCertUtils, QgsPkiBundle, QgsAuthMethodConfig, QgsAuthMethod, QgsAuthConfigSslServer, QgsApplication
+from qgis.core import QgsAuthCertUtils, QgsPkiBundle, QgsAuthMethodConfig, QgsAuthMethod, QgsAuthConfigSslServer, QgsApplication
 from qgis.gui import QgsAuthEditorWidgets
-
-
 from qgis.PyQt.QtCore import QFileInfo, qDebug
-from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QDialogButtonBox
-from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtNetwork import QSsl, QSslError, QSslSocket
-
-from qgis.testing import (
-    start_app,
-    unittest,
-)
+from qgis.PyQt.QtTest import QTest
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
+from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
 
@@ -635,6 +629,7 @@ class TestQgsAuthManager(unittest.TestCase):
 
         testChain(PKIDATA + '/chain_subissuer-issuer-root.pem')
         testChain(PKIDATA + '/localhost_ssl_w-chain.pem')
+        testChain(PKIDATA + '/fra_w-chain.pem')
 
         path = PKIDATA + '/localhost_ssl_w-chain.pem'
 
@@ -650,7 +645,48 @@ class TestQgsAuthManager(unittest.TestCase):
         # and a right domain is set
         self.assertTrue(len(QgsAuthCertUtils.validateCertChain(QgsAuthCertUtils.certsFromFile(path), 'localhost', False)) > 0)
 
-        testChain(PKIDATA + '/fra_w-chain.pem')
+    def test_validate_pki_bundle(self):
+        """Text the pki bundle validation"""
+
+        def mkPEMBundle(client_cert, client_key, password, chain):
+            return QgsPkiBundle.fromPemPaths(PKIDATA + '/' + client_cert,
+                                             PKIDATA + '/' + client_key,
+                                             password,
+                                             QgsAuthCertUtils.certsFromFile(
+                                                 PKIDATA + '/' + chain
+                                             ))
+
+        # Valid bundle:
+        bundle = mkPEMBundle('fra_cert.pem', 'fra_key.pem', 'password', 'chain_subissuer-issuer-root.pem')
+
+        # Test valid bundle with intermediates and without trusted root
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle), ['The root certificate of the certificate chain is self-signed, and untrusted'])
+        # Test valid without intermediates
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, False), ['The issuer certificate of a locally looked up certificate could not be found', 'No certificates could be verified'])
+        # Test valid with intermediates and trusted root
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), [])
+
+        # Wrong chain
+        bundle = mkPEMBundle('fra_cert.pem', 'fra_key.pem', 'password', 'chain_issuer2-root2.pem')
+        # Test invalid bundle with intermediates and without trusted root
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle), ['The issuer certificate of a locally looked up certificate could not be found', 'No certificates could be verified'])
+        # Test valid without intermediates
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, False), ['The issuer certificate of a locally looked up certificate could not be found', 'No certificates could be verified'])
+        # Test valid with intermediates and trusted root
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), ['The issuer certificate of a locally looked up certificate could not be found', 'No certificates could be verified'])
+
+        # Wrong key
+        bundle = mkPEMBundle('fra_cert.pem', 'ptolemy_key.pem', 'password', 'chain_subissuer-issuer-root.pem')
+        # Test invalid bundle with intermediates and without trusted root
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle), ['The root certificate of the certificate chain is self-signed, and untrusted', 'Private key does not match client certificate public key.'])
+        # Test invalid without intermediates
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, False), ['The issuer certificate of a locally looked up certificate could not be found', 'No certificates could be verified', 'Private key does not match client certificate public key.'])
+        # Test invalid with intermediates and trusted root
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), ['Private key does not match client certificate public key.'])
+
+        # TODO: Wrong root CA
+        # TODO: expired/not-yet-valid cert
+        # TODO: expired/not-yet-valid intermediate (is it possible to build a cert from one of those?)
 
 
 if __name__ == '__main__':
