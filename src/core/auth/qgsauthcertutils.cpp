@@ -1252,7 +1252,7 @@ QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificat
   for ( const auto &cert : certificateChain )
   {
     bool untrusted = false;
-    for ( const auto &untrustedCert : QgsAuthManager::instance()->getUntrustedCaCerts() )
+    for ( const auto &untrustedCert : QgsApplication::authManager()->getUntrustedCaCerts() )
     {
       if ( cert.digest( ) == untrustedCert.digest( ) )
       {
