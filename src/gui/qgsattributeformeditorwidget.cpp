@@ -38,6 +38,7 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
   , mIsChanged( false )
 {
   mConstraintResultLabel = new QLabel();
+  mConstraintResultLabel->setObjectName( QStringLiteral( "ConstraintStatus" ) );
   mConstraintResultLabel->setSizePolicy( QSizePolicy::Fixed, mConstraintResultLabel->sizePolicy().verticalPolicy() );
 
   mEditPage = new QWidget();
