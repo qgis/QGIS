@@ -266,11 +266,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         cellsize = 0.0
         layers = [l for l in self.inputLayers if isinstance(l, QgsRasterLayer)]
 
-        # Use this function to calculate cell size
-        def cz(l, cellsize): return max(cellsize, (l.extent().xMaximum() - l.extent().xMinimum()) / l.width())
-
         for layer in layers:
-            cellsize = cz(layer, cellsize)
+            cellsize = max(layer.rasterUnitsPerPixelX(), cellsize)
 
         if cellsize == 0.0:
             cellsize = 100.0
@@ -328,7 +325,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         if existingSession:
             self.exportedLayers = Grass7Utils.getSessionLayers()
         else:
-            Grass7Utils.startGrass7Session()
+            Grass7Utils.startGrassSession()
 
         # Handle default GRASS parameters
         self.grabDefaultGrassParameters(parameters, context)
@@ -350,17 +347,16 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_COMMANDS):
             QgsMessageLog.logMessage("\n".join(loglines), self.tr('Processing'), QgsMessageLog.INFO)
 
-        Grass7Utils.executeGrass7(self.commands, feedback, self.outputCommands)
+        Grass7Utils.executeGrass(self.commands, feedback, self.outputCommands)
 
         # If the session has been created outside of this algorithm, add
         # the new GRASS GIS 7 layers to it otherwise finish the session
         if existingSession:
             Grass7Utils.addSessionLayers(self.exportedLayers)
         else:
-            Grass7Utils.endGrass7Session()
+            Grass7Utils.endGrassSession()
 
         # Return outputs map
-        QgsMessageLog.logMessage('outputDefinitions: {}'.format(self.outputDefinitions()), 'Grass7', QgsMessageLog.INFO)
         outputs = {}
         for out in self.outputDefinitions():
             outName = out.name()
@@ -369,7 +365,6 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 if isinstance(out, QgsProcessingOutputHtml):
                     self.convertToHtml(parameters[outName])
 
-        QgsMessageLog.logMessage('processAlgorithm end. outputs: {}'.format(outputs), 'Grass7', QgsMessageLog.INFO)
         return outputs
 
     def processInputs(self, parameters, context):
@@ -582,10 +577,15 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             elif isinstance(out, QgsProcessingParameterFolderDestination):
                 self.exportRasterLayersIntoDirectory(outName, parameters, context)
 
-        QgsMessageLog.logMessage('processOutputs. Commands: {}'.format(self.commands), 'Grass7', QgsMessageLog.INFO)
-
     def loadRasterLayerFromParameter(self, name, parameters, context, external=True, band=1):
         """
+        Creates a dedicated command to load a raster into
+        the temporary GRASS DB.
+        :param name: name of the parameter.
+        :param parameters: algorithm parameters dict.
+        :param context: algorithm context.
+        :param external: True if using r.external.
+        :param band: imports only specified band. None for all bands.
         """
         layer = self.parameterAsRasterLayer(parameters, name, context)
         self.loadRasterLayer(name, layer, external, band)
@@ -593,11 +593,11 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
     def loadRasterLayer(self, name, layer, external=True, band=1):
         """
         Creates a dedicated command to load a raster into
-        temporary GRASS DB.
-        :layerKey: name of the parameter
-        :layerSrc: file path of raster layer
-        :external: use r.external (r.in.gdal if False).
-        :band: import only this band (if None, all bands are imported).
+        the temporary GRASS DB.
+        :param name: name of the parameter.
+        :param layer: QgsMapLayer for the raster layer.
+        :param external: True if using r.external.
+        :param band: imports only specified band. None for all bands.
         """
         self.inputLayers.append(layer)
         self.setSessionProjectionFromLayer(layer)
@@ -605,7 +605,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.exportedLayers[name] = destFilename
         command = '{0} input="{1}" {2}output="{3}" --overwrite -o'.format(
             'r.external' if external else 'r.in.gdal',
-            layer.source(),
+            os.path.normpath(layer.source()),
             'band={} '.format(band) if band else '',
             destFilename)
         self.commands.append(command)
@@ -615,11 +615,12 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         Creates a dedicated command to export a raster from
         temporary GRASS DB into a file via gdal.
         :param name: name of the parameter.
-        :param parameters: Algorithm parameters list.
+        :param parameters: Algorithm parameters dict.
         :param context: Algorithm context.
         :param colorTable: preserve color Table.
         """
-        fileName = self.parameterAsOutputLayer(parameters, name, context)
+        fileName = os.path.normpath(
+            self.parameterAsOutputLayer(parameters, name, context))
         grassName = '{}{}'.format(name, self.uniqueSuffix)
         self.exportRasterLayer(grassName, fileName, colorTable)
 
@@ -635,7 +636,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             # Adjust region to layer before exporting
             cmd.append('g.region raster={}'.format(grassName))
             cmd.append(
-                'r.out.gdal{0} {3} input="{1}" output="{2}"'.format(
+                'r.out.gdal -m{0} {3} input="{1}" output="{2}"'.format(
                     ' -t' if colorTable else '',
                     grassName, fileName,
                     '--overwrite -c createopt="TFW=YES,COMPRESS=LZW"'
@@ -645,13 +646,15 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
     def exportRasterLayersIntoDirectory(self, name, parameters, context, colorTable=True):
         """
         Creates a dedicated loop command to export rasters from
-        temporary GRASS DB into a directory gdal.
-        :param name: name of the parameter
-        :param fileName: file path of raster layer
+        temporary GRASS DB into a directory via gdal.
+        :param name: name of the output directory parameter.
+        :param parameters: Algorithm parameters dict.
+        :param context: Algorithm context.
         :param colorTable: preserve color Table.
         """
         # Grab directory name and temporary basename
-        outDir = self.parameterAsString(parameters, name, context)
+        outDir = os.path.normpath(
+            self.parameterAsString(parameters, name, context))
         basename = name + self.uniqueSuffix
 
         # Add a loop export from the basename
@@ -659,7 +662,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             # Adjust region to layer before exporting
             # TODO: Does-it works under MS-Windows or MacOSX?
             cmd.append("for r in $(g.list type=rast pattern='{}*'); do".format(basename))
-            cmd.append("  r.out.gdal{0} input=${{r}} output={1}/${{r}}.tif {2}".format(
+            cmd.append("  r.out.gdal -m{0} input=${{r}} output={1}/${{r}}.tif {2}".format(
                 ' -t' if colorTable else '', outDir,
                 '--overwrite -c createopt="TFW=YES,COMPRESS=LZW"'
             )
@@ -668,6 +671,12 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
     def loadVectorLayerFromParameter(self, name, parameters, context, external=None):
         """
+        Creates a dedicated command to load a vector into
+        the temporary GRASS DB.
+        :param name: name of the parameter
+        :param parameters: Parameters of the algorithm.
+        :param context: Processing context
+        :param external: use v.external (v.in.ogr if False).
         """
         layer = self.parameterAsVectorLayer(parameters, name, context)
         self.loadVectorLayer(name, layer, external)
@@ -677,8 +686,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         Creates a dedicated command to load a vector into
         temporary GRASS DB.
         :param name: name of the parameter
-        :param parameters: Parameters of the algorithm.
-        :param context: Processing context
+        :param layer: QgsMapLayer for the vector layer.
         :param external: use v.external (v.in.ogr if False).
         """
         # TODO: support selections
@@ -694,7 +702,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             'v.external' if external else 'v.in.ogr',
             ' min_area={}'.format(self.minArea) if not external else '',
             ' snap={}'.format(self.snapTolerance) if not external else '',
-            layer.source(),
+            os.path.normpath(layer.source()),
             destFilename)
         self.commands.append(command)
 
@@ -706,7 +714,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param fileName: file path of raster layer
         :param colorTable: preserve color Table.
         """
-        fileName = self.parameterAsOutputLayer(parameters, name, context)
+        fileName = os.path.normpath(
+            self.parameterAsOutputLayer(parameters, name, context))
         # Find if there is a dataType
         dataType = self.outType
         if self.outType == 'auto':
@@ -778,7 +787,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 f.write('</p></body></html>')
 
     def canExecute(self):
-        message = Grass7Utils.checkGrass7IsInstalled()
+        message = Grass7Utils.checkGrassIsInstalled()
         return not message, message
 
     def checkParameterValues(self, parameters, context):
