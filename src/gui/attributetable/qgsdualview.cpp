@@ -48,7 +48,6 @@ QgsDualView::QgsDualView( QWidget *parent )
 
   mConditionalFormatWidget->hide();
 
-
   mPreviewColumnsMenu = new QMenu( this );
   mActionPreviewColumnsMenu->setMenu( mPreviewColumnsMenu );
 
@@ -84,7 +83,8 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   mTableView->setModel( mFilterModel );
   mFeatureList->setModel( mFeatureListModel );
   delete mAttributeForm;
-  mAttributeForm = new QgsAttributeForm( mLayer, QgsFeature(), mEditorContext );
+  mAttributeForm = new QgsAttributeForm( mLayer, mTempAttributeFormFeature, mEditorContext );
+  mTempAttributeFormFeature = QgsFeature();
   if ( !context.parentContext() )
   {
     mAttributeEditorScrollArea = new QgsScrollArea();
@@ -410,7 +410,11 @@ void QgsDualView::mFeatureList_aboutToChangeEditSelection( bool &ok )
 
 void QgsDualView::mFeatureList_currentEditSelectionChanged( const QgsFeature &feat )
 {
-  if ( !mLayer->isEditable() || mAttributeForm->save() )
+  if ( !mAttributeForm )
+  {
+    mTempAttributeFormFeature = feat;
+  }
+  else if ( !mLayer->isEditable() || mAttributeForm->save() )
   {
     mAttributeForm->setFeature( feat );
     setCurrentEditSelection( QgsFeatureIds() << feat.id() );
