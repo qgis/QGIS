@@ -174,8 +174,14 @@ class GUI_EXPORT QgsFeatureListView : public QListView
   private slots:
     void editSelectionChanged( const QItemSelection &deselected, const QItemSelection &selected );
 
+    /**
+     * Make sure, there is an edit selection. If there is none, choose the first item.
+     */
+    void ensureEditSelection();
+
   private:
     void selectRow( const QModelIndex &index, bool anchor );
+
 
     QgsFeatureListModel *mModel = nullptr;
     QItemSelectionModel *mCurrentEditSelectionModel = nullptr;

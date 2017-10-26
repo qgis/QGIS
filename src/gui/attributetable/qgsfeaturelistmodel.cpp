@@ -45,6 +45,8 @@ void QgsFeatureListModel::setSourceModel( QgsAttributeTableFilterModel *sourceMo
     // propagate sort order changes from source model to views connected to this model
     connect( mFilterModel, &QAbstractItemModel::layoutAboutToBeChanged, this, &QAbstractItemModel::layoutAboutToBeChanged );
     connect( mFilterModel, &QAbstractItemModel::layoutChanged, this, &QAbstractItemModel::layoutChanged );
+    connect( mFilterModel, &QAbstractItemModel::modelAboutToBeReset, this, &QAbstractItemModel::modelAboutToBeReset );
+    connect( mFilterModel, &QAbstractItemModel::modelReset, this, &QAbstractItemModel::modelReset );
   }
 }
 
