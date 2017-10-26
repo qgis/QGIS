@@ -145,12 +145,15 @@ QVariant QgsFeatureFilterModel::data( const QModelIndex &index, int role ) const
       break;
 
     case Qt::FontRole:
+      QFont font = QFont();
+      if ( index.row() == mExtraIdentifierValueIndex )
+        font.setBold( true );
+
       if ( mEntries.value( index.row() ).identifierValue.isNull() )
       {
-        QFont font = QFont();
         font.setItalic( true );
-        return font;
       }
+      return font;
       break;
   }
 
