@@ -749,7 +749,16 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     mRecentProjects.removeAt( row );
     saveRecentProjects();
   } );
-
+  connect( mWelcomePage, &QgsWelcomePage::projectPinned, this, [ this ]( int row )
+  {
+    mRecentProjects.at( row ).pin = true;
+    saveRecentProjects();
+  } );
+  connect( mWelcomePage, &QgsWelcomePage::projectUnpinned, this, [ this ]( int row )
+  {
+    mRecentProjects.at( row ).pin = false;
+    saveRecentProjects();
+  } );
   endProfile();
 
   mCentralContainer = new QStackedWidget;
@@ -1661,8 +1670,16 @@ void QgisApp::readRecentProjects()
     data.path = settings.value( QStringLiteral( "path" ) ).toString();
     data.previewImagePath = settings.value( QStringLiteral( "previewImage" ) ).toString();
     data.crs = settings.value( QStringLiteral( "crs" ) ).toString();
+    data.pin = settings.value( QStringLiteral( "pin" ) ).toBool();
     settings.endGroup();
-    mRecentProjects.append( data );
+    if ( data.pin )
+    {
+      mRecentProjects.prepend( data );
+    }
+    else
+    {
+      mRecentProjects.append( data );
+    }
   }
   settings.endGroup();
 }
@@ -3880,9 +3897,16 @@ void QgisApp::saveRecentProjectPath( const QString &projectPath, bool savePrevie
   // Prepend this file to the list
   mRecentProjects.prepend( projectData );
 
+  // Count the number of pinned items, those shouldn't affect trimming
+  int pinnedCount = 0;
+  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject, mRecentProjects )
+  {
+    if ( recentProject.pin )
+      pinnedCount++;
+  }
   // Keep the list to 10 items by trimming excess off the bottom
   // And remove the associated image
-  while ( mRecentProjects.count() > 10 )
+  while ( mRecentProjects.count() > 10 + pinnedCount )
   {
     QFile( mRecentProjects.takeLast().previewImagePath ).remove();
   }
@@ -3911,6 +3935,7 @@ void QgisApp::saveRecentProjects()
     settings.setValue( QStringLiteral( "path" ), recentProject.path );
     settings.setValue( QStringLiteral( "previewImage" ), recentProject.previewImagePath );
     settings.setValue( QStringLiteral( "crs" ), recentProject.crs );
+    settings.setValue( QStringLiteral( "pin" ), recentProject.pin );
     settings.endGroup();
   }
 }

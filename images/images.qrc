@@ -413,6 +413,7 @@
         <file>themes/default/north_arrow.png</file>
         <file>themes/default/diagramNone.svg</file>
         <file>themes/default/pie-chart.svg</file>
+        <file>themes/default/pin.svg</file>
         <file>themes/default/pluginExperimental.png</file>
         <file>themes/default/pluginDeprecated.png</file>
         <file>themes/default/propertyicons/action.svg</file>
