@@ -29,6 +29,7 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgshelp.h"
+#include "qgsogrutils.h"
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -297,10 +298,10 @@ bool QgsNewGeoPackageLayerDialog::apply()
     return false;
   }
 
-  OGRDataSourceH hDS = nullptr;
+  gdal::ogr_datasource_unique_ptr hDS;
   if ( createNewDb )
   {
-    hDS = OGR_Dr_CreateDataSource( hGpkgDriver, fileName.toUtf8().constData(), nullptr );
+    hDS.reset( OGR_Dr_CreateDataSource( hGpkgDriver, fileName.toUtf8().constData(), nullptr ) );
     if ( !hDS )
     {
       QString msg( tr( "Creation of database failed (OGR error:%1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
@@ -312,7 +313,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   else
   {
     OGRSFDriverH hDriver = nullptr;
-    hDS = OGROpen( fileName.toUtf8().constData(), true, &hDriver );
+    hDS.reset( OGROpen( fileName.toUtf8().constData(), true, &hDriver ) );
     if ( !hDS )
     {
       QString msg( tr( "Opening of database failed (OGR error:%1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
@@ -325,7 +326,6 @@ bool QgsNewGeoPackageLayerDialog::apply()
       QString msg( tr( "Opening of file succeeded, but this is not a GeoPackage database" ) );
       if ( !property( "hideDialogs" ).toBool() )
         QMessageBox::critical( this, tr( "Layer creation failed" ), msg );
-      OGR_DS_Destroy( hDS );
       return false;
     }
   }
@@ -333,7 +333,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   QString tableName( mTableNameEdit->text() );
 
   bool overwriteTable = false;
-  if ( OGR_DS_GetLayerByName( hDS, tableName.toUtf8().constData() ) )
+  if ( OGR_DS_GetLayerByName( hDS.get(), tableName.toUtf8().constData() ) )
   {
     if ( property( "hideDialogs" ).toBool() )
     {
@@ -348,7 +348,6 @@ bool QgsNewGeoPackageLayerDialog::apply()
 
     if ( !overwriteTable )
     {
-      OGR_DS_Destroy( hDS );
       return false;
     }
   }
@@ -396,7 +395,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   if ( wkbType != wkbNone )
     options = CSLSetNameValue( options, "SPATIAL_INDEX", mCheckBoxCreateSpatialIndex->isChecked() ? "YES" : "NO" );
 
-  OGRLayerH hLayer = OGR_DS_CreateLayer( hDS, tableName.toUtf8().constData(), hSRS, wkbType, options );
+  OGRLayerH hLayer = OGR_DS_CreateLayer( hDS.get(), tableName.toUtf8().constData(), hSRS, wkbType, options );
   CSLDestroy( options );
   if ( hSRS )
     OSRRelease( hSRS );
@@ -405,7 +404,6 @@ bool QgsNewGeoPackageLayerDialog::apply()
     QString msg( tr( "Creation of layer failed (OGR error:%1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     if ( !property( "hideDialogs" ).toBool() )
       QMessageBox::critical( this, tr( "Layer creation failed" ), msg );
-    OGR_DS_Destroy( hDS );
     return false;
   }
 
@@ -432,10 +430,10 @@ bool QgsNewGeoPackageLayerDialog::apply()
 
     int ogrWidth = fieldWidth.toInt();
 
-    OGRFieldDefnH fld = OGR_Fld_Create( fieldName.toUtf8().constData(), ogrType );
-    OGR_Fld_SetWidth( fld, ogrWidth );
+    gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( fieldName.toUtf8().constData(), ogrType ) );
+    OGR_Fld_SetWidth( fld.get(), ogrWidth );
 
-    if ( OGR_L_CreateField( hLayer, fld, true ) != OGRERR_NONE )
+    if ( OGR_L_CreateField( hLayer, fld.get(), true ) != OGRERR_NONE )
     {
       if ( !property( "hideDialogs" ).toBool() )
       {
@@ -443,11 +441,8 @@ bool QgsNewGeoPackageLayerDialog::apply()
                                tr( "Creation of field %1 failed (OGR error: %2)" )
                                .arg( fieldName, QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
       }
-      OGR_Fld_Destroy( fld );
-      OGR_DS_Destroy( hDS );
       return false;
     }
-    OGR_Fld_Destroy( fld );
 
     ++it;
   }
@@ -461,11 +456,9 @@ bool QgsNewGeoPackageLayerDialog::apply()
     QString msg( tr( "Creation of layer failed (OGR error:%1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     if ( !property( "hideDialogs" ).toBool() )
       QMessageBox::critical( this, tr( "Layer creation failed" ), msg );
-    OGR_DS_Destroy( hDS );
     return false;
   }
-
-  OGR_DS_Destroy( hDS );
+  hDS.reset();
 
   QString uri( QStringLiteral( "%1|layername=%2" ).arg( mDatabaseEdit->text(), tableName ) );
   QString userVisiblelayerName( layerIdentifier.isEmpty() ? tableName : layerIdentifier );

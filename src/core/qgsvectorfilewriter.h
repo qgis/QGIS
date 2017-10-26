@@ -26,6 +26,7 @@
 #include "qgssymbol.h"
 #include "qgstaskmanager.h"
 #include "qgsvectorlayer.h"
+#include "qgsogrutils.h"
 #include <ogr_api.h>
 
 #include <QPair>
@@ -630,7 +631,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     //! \note not available in Python bindings
     OGRGeometryH createEmptyGeometry( QgsWkbTypes::Type wkbType ) SIP_SKIP;
 
-    OGRDataSourceH mDS = nullptr;
+    gdal::ogr_datasource_unique_ptr mDS;
     OGRLayerH mLayer = nullptr;
     OGRSpatialReferenceH mOgrRef = nullptr;
 
@@ -680,7 +681,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     static QMap<QString, MetaData> initMetaData();
     void createSymbolLayerTable( QgsVectorLayer *vl, const QgsCoordinateTransform &ct, OGRDataSourceH ds );
-    OGRFeatureH createFeature( const QgsFeature &feature );
+    gdal::ogr_feature_unique_ptr createFeature( const QgsFeature &feature );
     bool writeFeature( OGRLayerH layer, OGRFeatureH feature );
 
     //! Writes features considering symbol level order

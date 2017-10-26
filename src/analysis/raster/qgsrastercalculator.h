@@ -24,6 +24,7 @@
 #include <QVector>
 #include "gdal.h"
 #include "qgis_analysis.h"
+#include "qgsogrutils.h"
 
 class QgsRasterLayer;
 class QgsFeedback;
@@ -109,7 +110,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     /**
      * Opens the output file and sets the same geotransform and CRS as the input data
       \returns the output dataset or nullptr in case of error*/
-    GDALDatasetH openOutputFile( GDALDriverH outputDriver );
+    gdal::dataset_unique_ptr openOutputFile( GDALDriverH outputDriver );
 
     /**
      * Sets gdal 6 parameters array from mOutputRectangle, mNumOutputColumns, mNumOutputRows

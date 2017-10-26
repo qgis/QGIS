@@ -34,6 +34,7 @@
 #include "qgsrasterpyramid.h"
 #include "qgspointxy.h"
 #include "qgssettings.h"
+#include "qgsogrutils.h"
 
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"
@@ -2136,7 +2137,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 
 QGISEXTERN bool isValidRasterFileName( QString const &fileNameQString, QString &retErrMsg )
 {
-  GDALDatasetH myDataset;
+  gdal::dataset_unique_ptr myDataset;
 
   QgsGdalProviderBase::registerGdalDrivers();
 
@@ -2156,18 +2157,16 @@ QGISEXTERN bool isValidRasterFileName( QString const &fileNameQString, QString &
 
   //open the file using gdal making sure we have handled locale properly
   //myDataset = GDALOpen( QFile::encodeName( fileNameQString ).constData(), GA_ReadOnly );
-  myDataset = QgsGdalProviderBase::gdalOpen( fileName.toUtf8().constData(), GA_ReadOnly );
+  myDataset.reset( QgsGdalProviderBase::gdalOpen( fileName.toUtf8().constData(), GA_ReadOnly ) );
   if ( !myDataset )
   {
     if ( CPLGetLastErrorNo() != CPLE_OpenFailed )
       retErrMsg = QString::fromUtf8( CPLGetLastErrorMsg() );
     return false;
   }
-  else if ( GDALGetRasterCount( myDataset ) == 0 )
+  else if ( GDALGetRasterCount( myDataset.get() ) == 0 )
   {
-    QStringList layers = QgsGdalProvider::subLayers( myDataset );
-    GDALClose( myDataset );
-    myDataset = nullptr;
+    QStringList layers = QgsGdalProvider::subLayers( myDataset.get() );
     if ( layers.isEmpty() )
     {
       retErrMsg = QObject::tr( "This raster file has no bands and is invalid as a raster layer." );
@@ -2177,7 +2176,6 @@ QGISEXTERN bool isValidRasterFileName( QString const &fileNameQString, QString &
   }
   else
   {
-    GDALClose( myDataset );
     return true;
   }
 }
@@ -2730,7 +2728,7 @@ QGISEXTERN QgsGdalProvider *create(
   //create dataset
   CPLErrorReset();
   char **papszOptions = papszFromStringList( createOptions );
-  GDALDatasetH dataset = GDALCreate( driver, uri.toUtf8().constData(), width, height, nBands, ( GDALDataType )type, papszOptions );
+  gdal::dataset_unique_ptr dataset( GDALCreate( driver, uri.toUtf8().constData(), width, height, nBands, ( GDALDataType )type, papszOptions ) );
   CSLDestroy( papszOptions );
   if ( !dataset )
   {
@@ -2739,9 +2737,9 @@ QGISEXTERN QgsGdalProvider *create(
     return new QgsGdalProvider( uri, error );
   }
 
-  GDALSetGeoTransform( dataset, geoTransform );
-  GDALSetProjection( dataset, crs.toWkt().toLocal8Bit().data() );
-  GDALClose( dataset );
+  GDALSetGeoTransform( dataset.get(), geoTransform );
+  GDALSetProjection( dataset.get(), crs.toWkt().toLocal8Bit().data() );
+  dataset.reset();
 
   return new QgsGdalProvider( uri, true );
 }

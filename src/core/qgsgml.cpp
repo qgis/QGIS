@@ -21,7 +21,7 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgswkbptr.h"
-
+#include "qgsogrutils.h"
 #include <QBuffer>
 #include <QList>
 #include <QNetworkRequest>
@@ -875,12 +875,12 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     mParseModeStack.pop();
     if ( mFoundUnhandledGeometryElement )
     {
-      OGRGeometryH hGeom = OGR_G_CreateFromGML( mGeometryString.c_str() );
+      gdal::ogr_geometry_unique_ptr hGeom( OGR_G_CreateFromGML( mGeometryString.c_str() ) );
       if ( hGeom )
       {
-        const int wkbSize = OGR_G_WkbSize( hGeom );
+        const int wkbSize = OGR_G_WkbSize( hGeom.get() );
         unsigned char *pabyBuffer = new unsigned char[ wkbSize ];
-        OGR_G_ExportToIsoWkb( hGeom, wkbNDR, pabyBuffer );
+        OGR_G_ExportToIsoWkb( hGeom.get(), wkbNDR, pabyBuffer );
         QgsGeometry g;
         g.fromWkb( pabyBuffer, wkbSize );
         if ( mInvertAxisOrientation )
@@ -888,7 +888,6 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
           g.transform( QTransform( 0, 1, 1, 0, 0, 0 ) );
         }
         mCurrentFeature->setGeometry( g );
-        OGR_G_DestroyGeometry( hGeom );
       }
     }
     mGeometryString.clear();
