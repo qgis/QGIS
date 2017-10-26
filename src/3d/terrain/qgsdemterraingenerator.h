@@ -49,6 +49,11 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     //! Returns resolution of the generator (how many elevation samples on one side of a terrain tile)
     int resolution() const { return mResolution; }
 
+    //! Sets skirt height (in world units). Skirts at the edges of terrain tiles help hide cracks between adjacent tiles.
+    void setSkirtHeight( float skirtHeight ) { mSkirtHeight = skirtHeight; }
+    //! Returns skirt height (in world units). Skirts at the edges of terrain tiles help hide cracks between adjacent tiles.
+    float skirtHeight() const { return mSkirtHeight; }
+
     //! Returns height map generator object - takes care of extraction of elevations from the layer)
     QgsDemHeightMapGenerator *heightMapGenerator() { return mHeightMapGenerator; }
 
@@ -71,6 +76,8 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     QgsMapLayerRef mLayer;
     //! how many vertices to place on one side of the tile
     int mResolution;
+    //! height of the "skirts" at the edges of tiles to hide cracks between adjacent cracks
+    float mSkirtHeight;
 };
 
 
