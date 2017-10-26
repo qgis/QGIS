@@ -169,6 +169,9 @@ void QgsPropertyOverrideButton::updateFieldLists()
         case QVariant::Int:
           fieldType = tr( "integer" );
           break;
+        case QVariant::LongLong:
+          fieldType = tr( "integer64" );
+          break;
         case QVariant::Double:
           fieldType = tr( "double" );
           break;
