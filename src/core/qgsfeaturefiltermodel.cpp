@@ -326,9 +326,12 @@ void QgsFeatureFilterModel::scheduledReload()
     else if ( !mFilterExpression.isEmpty() && !mFilterValue.isEmpty() )
       filterClause = QStringLiteral( "(%1) AND ((%2) ILIKE '\%%3\%')" ).arg( mFilterExpression, mDisplayExpression, mFilterValue );
 
-    request.setFilterExpression( filterClause );
+    if ( !filterClause.isEmpty() )
+      request.setFilterExpression( filterClause );
   }
-  QSet<QString> attributes = request.filterExpression()->referencedColumns();
+  QSet<QString> attributes;
+  if ( request.filterExpression() )
+    attributes = request.filterExpression()->referencedColumns();
   attributes << mIdentifierField;
   request.setSubsetOfAttributes( attributes, mSourceLayer->fields() );
   request.setFlags( QgsFeatureRequest::NoGeometry );

@@ -57,7 +57,6 @@ class QgsFieldExpressionValuesGatherer: public QThread
 
       mIterator = mSource->getFeatures( mRequest );
 
-      QgsDebugMsg( QStringLiteral( "New gatherer: %1" ).arg( mRequest.filterExpression()->expression() ) );
       mDisplayExpression.prepare( &mExpressionContext );
 
       QgsFeature feat;
