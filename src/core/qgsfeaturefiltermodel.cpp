@@ -136,6 +136,22 @@ QVariant QgsFeatureFilterModel::data( const QModelIndex &index, int role ) const
 
     case IdentifierValueRole:
       return mEntries.value( index.row() ).identifierValue;
+
+    case Qt::ForegroundRole:
+      if ( mEntries.value( index.row() ).identifierValue.isNull() )
+      {
+        return QBrush( QColor( Qt::gray ) );
+      }
+      break;
+
+    case Qt::FontRole:
+      if ( mEntries.value( index.row() ).identifierValue.isNull() )
+      {
+        QFont font = QFont();
+        font.setItalic( true );
+        return font;
+      }
+      break;
   }
 
   return QVariant();
