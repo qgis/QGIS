@@ -5794,6 +5794,55 @@ void TestQgsGeometry::triangle()
   QVERIFY( !t1.interiorRing( 0 ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( t1.exteriorRing() ) ), *ext );
 
+  // AddZ
+  QgsLineString lz;
+  lz.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3 ) << QgsPoint( 11, 12, 13 ) << QgsPoint( 1, 12, 23 ) << QgsPoint( 1, 2, 3 ) );
+  t1.setExteriorRing( lz.clone() );
+  QVERIFY( t1.is3D() );
+  QVERIFY( !t1.isMeasure() );
+  QCOMPARE( t1.wkbType(), QgsWkbTypes::TriangleZ );
+  QCOMPARE( t1.wktTypeStr(), QString( "TriangleZ" ) );
+  QCOMPARE( t1.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t1.dimension(), 2 );
+  QCOMPARE( t1.vertexAt( 0 ).z(),  3.0 );
+  QCOMPARE( t1.vertexAt( 1 ).z(), 13.0 );
+  QCOMPARE( t1.vertexAt( 2 ).z(), 23.0 );
+  // AddM
+  QgsLineString lzm;
+  lzm.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4 ) << QgsPoint( 11, 12, 13, 14 ) << QgsPoint( 1, 12, 23, 24 ) << QgsPoint( 1, 2, 3, 4 ) );
+  t1.setExteriorRing( lzm.clone() );
+  QVERIFY( t1.is3D() );
+  QVERIFY( t1.isMeasure() );
+  QCOMPARE( t1.wkbType(), QgsWkbTypes::TriangleZM );
+  QCOMPARE( t1.wktTypeStr(), QString( "TriangleZM" ) );
+  QCOMPARE( t1.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t1.dimension(), 2 );
+  QCOMPARE( t1.vertexAt( 0 ).m(),  4.0 );
+  QCOMPARE( t1.vertexAt( 1 ).m(), 14.0 );
+  QCOMPARE( t1.vertexAt( 2 ).m(), 24.0 );
+  // dropZ
+  t1.dropZValue();
+  QVERIFY( !t1.is3D() );
+  QVERIFY( t1.isMeasure() );
+  QCOMPARE( t1.wkbType(), QgsWkbTypes::TriangleM );
+  QCOMPARE( t1.wktTypeStr(), QString( "TriangleM" ) );
+  QCOMPARE( t1.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t1.dimension(), 2 );
+  QVERIFY( std::isnan( t1.vertexAt( 0 ).z() ) );
+  QVERIFY( std::isnan( t1.vertexAt( 1 ).z() ) );
+  QVERIFY( std::isnan( t1.vertexAt( 2 ).z() ) );
+  // dropM
+  t1.dropMValue();
+  QVERIFY( !t1.is3D() );
+  QVERIFY( !t1.isMeasure() );
+  QCOMPARE( t1.wkbType(), QgsWkbTypes::Triangle );
+  QCOMPARE( t1.wktTypeStr(), QString( "Triangle" ) );
+  QCOMPARE( t1.geometryType(), QString( "Triangle" ) );
+  QCOMPARE( t1.dimension(), 2 );
+  QVERIFY( std::isnan( t1.vertexAt( 0 ).m() ) );
+  QVERIFY( std::isnan( t1.vertexAt( 1 ).m() ) );
+  QVERIFY( std::isnan( t1.vertexAt( 2 ).m() ) );
+
   //test that a non closed exterior ring will be automatically closed
   QgsTriangle t2;
   ext.reset( new QgsLineString() );
@@ -5918,6 +5967,31 @@ void TestQgsGeometry::triangle()
   QVERIFY( t3 == t_qgspoint );
   QgsTriangle t_pointf = QgsTriangle( QPointF( 0, 0 ), QPointF( 0, 10 ), QPointF( 10, 10 ) );
   QVERIFY( t3 == t_pointf );
+
+  // Z
+  t3 = QgsTriangle( QgsPoint( QgsWkbTypes::PointZ, 0, 5, 1 ), QgsPoint( QgsWkbTypes::PointZ, 0, 0, 2 ), QgsPoint( QgsWkbTypes::PointZ, 10, 10, 3 ) );
+  QVERIFY( !t3.isEmpty() );
+  QVERIFY( t3.is3D() );
+  QVERIFY( !t3.isMeasure() );
+  QCOMPARE( t3.wkbType(), QgsWkbTypes::TriangleZ );
+  QCOMPARE( t3.wktTypeStr(), QString( "TriangleZ" ) );
+  QCOMPARE( t3.geometryType(), QString( "Triangle" ) );
+  // M
+  t3 = QgsTriangle( QgsPoint( QgsWkbTypes::PointM, 0, 5, 0, 1 ), QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 2 ), QgsPoint( QgsWkbTypes::PointM, 10, 10, 0, 3 ) );
+  QVERIFY( !t3.isEmpty() );
+  QVERIFY( !t3.is3D() );
+  QVERIFY( t3.isMeasure() );
+  QCOMPARE( t3.wkbType(), QgsWkbTypes::TriangleM );
+  QCOMPARE( t3.wktTypeStr(), QString( "TriangleM" ) );
+  QCOMPARE( t3.geometryType(), QString( "Triangle" ) );
+  // ZM
+  t3 = QgsTriangle( QgsPoint( QgsWkbTypes::PointZM, 0, 5, 8, 1 ), QgsPoint( QgsWkbTypes::PointZM, 0, 0, 5, 2 ), QgsPoint( QgsWkbTypes::PointZM, 10, 10, 2, 3 ) );
+  QVERIFY( !t3.isEmpty() );
+  QVERIFY( t3.is3D() );
+  QVERIFY( t3.isMeasure() );
+  QCOMPARE( t3.wkbType(), QgsWkbTypes::TriangleZM );
+  QCOMPARE( t3.wktTypeStr(), QString( "TriangleZM" ) );
+  QCOMPARE( t3.geometryType(), QString( "Triangle" ) );
 
   // fromWkt
   QgsTriangle t5;
