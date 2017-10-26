@@ -276,16 +276,19 @@ class CORE_EXPORT QgsPkiConfigBundle
 
     //! Authentication method configuration
     const QgsAuthMethodConfig config() const { return mConfig; }
+
     //! Set authentication method configuration
     void setConfig( const QgsAuthMethodConfig &config ) { mConfig = config; }
 
     //! Client certificate object
     const QSslCertificate clientCert() const { return mCert; }
+
     //! Set client certificate object
     void setClientCert( const QSslCertificate &cert ) { mCert = cert; }
 
     //! Private key object
     const QSslKey clientCertKey() const { return mCertKey; }
+
     //! Set private key object
     void setClientCertKey( const QSslKey &certkey ) { mCertKey = certkey; }
 

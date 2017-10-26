@@ -1241,3 +1241,111 @@ QList<QPair<QSslError::SslError, QString> > QgsAuthCertUtils::sslErrorEnumString
                          QgsAuthCertUtils::sslErrorEnumString( QSslError::CertificateBlacklisted ) );
   return errenums;
 }
+
+QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificate> &certificateChain,
+    const QString &hostName,
+    bool trustRootCa )
+{
+  QList<QSslError> sslErrors;
+  QList<QSslCertificate> trustedChain;
+  // Filter out all CAs that are not trusted from QgsAuthManager
+  for ( const auto &cert : certificateChain )
+  {
+    bool untrusted = false;
+    for ( const auto &untrustedCert : QgsApplication::authManager()->getUntrustedCaCerts() )
+    {
+      if ( cert.digest( ) == untrustedCert.digest( ) )
+      {
+        untrusted = true;
+        break;
+      }
+    }
+    if ( ! untrusted )
+    {
+      trustedChain << cert;
+    }
+  }
+
+  // Check that no certs in the chain are expired or not yet valid or blacklisted
+  const QList<QSslCertificate> constTrustedChain( trustedChain );
+  for ( const auto &cert : constTrustedChain )
+  {
+    // TODO: move all the checks to QgsAuthCertUtils::certIsViable( )
+    const QDateTime currentTime = QDateTime::currentDateTime();
+    if ( cert.expiryDate() <= currentTime )
+    {
+      sslErrors << QSslError( QSslError::SslError::CertificateExpired, cert );
+    }
+    if ( cert.effectiveDate() >= QDateTime::currentDateTime() )
+    {
+      sslErrors << QSslError( QSslError::SslError::CertificateNotYetValid, cert );
+    }
+    if ( cert.isBlacklisted() )
+    {
+      sslErrors << QSslError( QSslError::SslError::CertificateBlacklisted, cert );
+    }
+  }
+
+  // Merge in the root CA if present and asked for
+  if ( trustRootCa && trustedChain.count() > 1 && trustedChain.last().isSelfSigned() )
+  {
+    static QMutex sMutex;
+    QMutexLocker lock( &sMutex );
+    QSslConfiguration oldSslConfig( QSslConfiguration::defaultConfiguration() );
+    QSslConfiguration sslConfig( oldSslConfig );
+    sslConfig.setCaCertificates( casMerge( sslConfig.caCertificates(), QList<QSslCertificate>() << trustedChain.last() ) );
+    QSslConfiguration::setDefaultConfiguration( sslConfig );
+    sslErrors = QSslCertificate::verify( trustedChain, hostName );
+    QSslConfiguration::setDefaultConfiguration( oldSslConfig );
+  }
+  else
+  {
+    sslErrors = QSslCertificate::verify( trustedChain, hostName );
+  }
+  return sslErrors;
+}
+
+QStringList QgsAuthCertUtils::validatePKIBundle( QgsPkiBundle &bundle, bool useIntermediates, bool trustRootCa )
+{
+  QStringList errors;
+  QList<QSslError> sslErrors;
+  if ( useIntermediates )
+  {
+    QList<QSslCertificate> certsList( bundle.caChain() );
+    certsList.insert( 0, bundle.clientCert( ) );
+    sslErrors = QgsAuthCertUtils::validateCertChain( certsList, QString(), trustRootCa );
+  }
+  else
+  {
+    sslErrors = QSslCertificate::verify( QList<QSslCertificate>() << bundle.clientCert() );
+  }
+  const QList<QSslError> constSslErrors( sslErrors );
+  for ( const auto &sslError : constSslErrors )
+  {
+    if ( sslError.error() != QSslError::NoError )
+    {
+      errors << sslError.errorString();
+    }
+  }
+  // Now check the key with QCA!
+  QCA::PrivateKey pvtKey( QCA::PrivateKey::fromPEM( bundle.clientKey().toPem() ) );
+  QCA::PublicKey pubKey( QCA::PublicKey::fromPEM( bundle.clientCert().publicKey().toPem( ) ) );
+  bool keyValid( ! pvtKey.isNull() );
+  if ( keyValid && !( pubKey.toRSA().isNull( ) || pvtKey.toRSA().isNull( ) ) )
+  {
+    keyValid = pubKey.toRSA().n() == pvtKey.toRSA().n();
+  }
+  else if ( keyValid && !( pubKey.toDSA().isNull( ) || pvtKey.toDSA().isNull( ) ) )
+  {
+    keyValid = pubKey == QCA::DSAPublicKey( pvtKey.toDSA() );
+  }
+  else
+  {
+    QgsDebugMsg( "Key is not DSA, RSA: validation is not supported by QCA" );
+  }
+  if ( ! keyValid )
+  {
+    errors << QObject::tr( "Private key does not match client certificate public key." );
+  }
+  return errors;
+}

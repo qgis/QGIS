@@ -323,6 +323,7 @@ Whether the bundle is valid
 Authentication method configuration
  :rtype: QgsAuthMethodConfig
 %End
+
     void setConfig( const QgsAuthMethodConfig &config );
 %Docstring
 Set authentication method configuration
@@ -333,6 +334,7 @@ Set authentication method configuration
 Client certificate object
  :rtype: QSslCertificate
 %End
+
     void setClientCert( const QSslCertificate &cert );
 %Docstring
 Set client certificate object
@@ -343,6 +345,7 @@ Set client certificate object
 Private key object
  :rtype: QSslKey
 %End
+
     void setClientCertKey( const QSslKey &certkey );
 %Docstring
 Set private key object
