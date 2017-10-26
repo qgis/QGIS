@@ -91,10 +91,8 @@ for f in $MODIFIED; do
 
   cp $f $m
   ASTYLEPROGRESS=" [$i/$N]" astyle.sh $f
-  if diff -u $m $f >>$ASTYLEDIFF; then
-    # no difference found
-    rm $m
-  fi
+  diff -u $m $f >>$ASTYLEDIFF
+  rm $m
 done
 
 if [ -s "$ASTYLEDIFF" ]; then
@@ -102,11 +100,10 @@ if [ -s "$ASTYLEDIFF" ]; then
     # review astyle changes
     colordiff <$ASTYLEDIFF | less -r
   else
-    echo "Files changed (see $ASTYLEDIFF)"
+    echo "Files changed"
   fi
-else
-  rm $ASTYLEDIFF
 fi
+rm $ASTYLEDIFF
 
 
 # verify SIP files
