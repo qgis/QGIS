@@ -25,6 +25,7 @@
 #include <qgsrelationmanager.h>
 #include <attributetable/qgsattributetablefiltermodel.h>
 #include "qgsfeaturelistcombobox.h"
+#include "qgsfeaturefiltermodel.h"
 #include "qgsgui.h"
 
 class TestQgsRelationReferenceWidget : public QObject
@@ -180,12 +181,17 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   cbs[2]->setCurrentIndex( cbs[2]->findText( QStringLiteral( "brides" ) ) );
   cbs[1]->setCurrentIndex( cbs[1]->findText( QStringLiteral( "diameter" ) ) );
 
+  QEventLoop loop;
+  connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+  loop.exec();
+
   // combobox should propose NULL, 10 and 11 because the filter is now:
   // "material" == 'iron'
   QCOMPARE( w.mComboBox->count(), 3 );
 
   // if there's no filter at all, all features' id should be proposed
   cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "material" ) ) );
+  loop.exec();
   QCOMPARE( w.mComboBox->count(), 4 );
 }
 

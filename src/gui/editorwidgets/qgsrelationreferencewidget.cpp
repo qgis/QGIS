@@ -258,6 +258,22 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant &value )
   else
   {
     mComboBox->setIdentifierValue( value );
+
+    if ( mChainFilters )
+    {
+      QVariant nullValue = QgsApplication::nullRepresentation();
+
+      QgsFeatureRequest request = mComboBox->currentFeatureRequest();
+
+      mReferencedLayer->getFeatures( request ).nextFeature( mFeature );
+
+      for ( int i = 0; i < mFilterFields.size(); i++ )
+      {
+        QVariant v = mFeature.attribute( mFilterFields[i] );
+        QString f = v.isNull() ? nullValue.toString() : v.toString();
+        mFilterComboBoxes.at( i )->setCurrentIndex( mFilterComboBoxes.at( i )->findText( f ) );
+      }
+    }
   }
 
   mRemoveFKButton->setEnabled( mIsEditable );
@@ -292,6 +308,8 @@ void QgsRelationReferenceWidget::deleteForeignKey()
   else
   {
     mComboBox->setIdentifierValue( QVariant() );
+
+
   }
   mRemoveFKButton->setEnabled( false );
   updateAttributeEditorFrame( QgsFeature() );
