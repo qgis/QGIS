@@ -61,6 +61,7 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
     int mHeightMapJobId;
     QByteArray mHeightMap;
     int mResolution;
+    float mSkirtHeight;
 };
 
 

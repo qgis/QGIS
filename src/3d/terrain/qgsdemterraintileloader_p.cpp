@@ -54,6 +54,7 @@ QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, Qgs
   connect( generator->heightMapGenerator(), &QgsDemHeightMapGenerator::heightMapReady, this, &QgsDemTerrainTileLoader::onHeightMapReady );
   mHeightMapJobId = generator->heightMapGenerator()->render( node->tileX(), node->tileY(), node->tileZ() );
   mResolution = generator->heightMapGenerator()->resolution();
+  mSkirtHeight = generator->skirtHeight();
 }
 
 QgsDemTerrainTileLoader::~QgsDemTerrainTileLoader()
@@ -67,7 +68,7 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   // create geometry renderer
 
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  mesh->setGeometry( new DemTerrainTileGeometry( mResolution, mHeightMap, mesh ) );
+  mesh->setGeometry( new DemTerrainTileGeometry( mResolution, mSkirtHeight, mHeightMap, mesh ) );
   entity->addComponent( mesh ); // takes ownership if the component has no parent
 
   // create material
