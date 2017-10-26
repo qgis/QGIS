@@ -650,9 +650,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Enforce singleton pattern
      * \note To set up the manager instance and initialize everything use QgsAuthManager::instance()->init()
      */
-    static QgsAuthManager *instance();
+    static QgsAuthManager *instance() SIP_SKIP;
 
-    explicit QgsAuthManager();
+    explicit QgsAuthManager() SIP_SKIP;
 
   private:
 

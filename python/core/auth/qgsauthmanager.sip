@@ -736,16 +736,7 @@ Clear an authentication config from its associated authentication method cache
 
   protected:
 
-    static QgsAuthManager *instance();
-%Docstring
- Enforce singleton pattern
-.. note::
 
-   To set up the manager instance and initialize everything use QgsAuthManager.instance()->init()
- :rtype: QgsAuthManager
-%End
-
-    explicit QgsAuthManager();
 
 };
 
