@@ -39,6 +39,7 @@ class TestQgsAuthCertUtils: public QObject
     void init() {}
     void cleanup() {}
 
+    void testValidationUtils();
     void testPkcsUtils();
 
   private:
@@ -58,6 +59,36 @@ void TestQgsAuthCertUtils::initTestCase()
 void TestQgsAuthCertUtils::cleanupTestCase()
 {
   QgsApplication::exitQgis();
+}
+
+void TestQgsAuthCertUtils::testValidationUtils()
+{
+  // null cert
+  QSslCertificate cert;
+  QVERIFY( !QgsAuthCertUtils::certIsCurrent( cert ) );
+  QList<QSslError> res = QgsAuthCertUtils::certViabilityErrors( cert );
+  QVERIFY( res.count() == 0 );
+  QVERIFY( !QgsAuthCertUtils::certIsViable( cert ) );
+
+  cert.clear();
+  res.clear();
+  // valid cert
+  cert = QgsAuthCertUtils::certFromFile( sPkiData + "/gerardus_cert.pem" );
+  QVERIFY( QgsAuthCertUtils::certIsCurrent( cert ) );
+  res = QgsAuthCertUtils::certViabilityErrors( cert );
+  QVERIFY( res.count() == 0 );
+  QVERIFY( QgsAuthCertUtils::certIsViable( cert ) );
+
+
+  cert.clear();
+  res.clear();
+  // expired cert
+  cert = QgsAuthCertUtils::certFromFile( sPkiData + "/marinus_cert-EXPIRED.pem" );
+  QVERIFY( !QgsAuthCertUtils::certIsCurrent( cert ) );
+  res = QgsAuthCertUtils::certViabilityErrors( cert );
+  QVERIFY( res.count() > 0 );
+  QVERIFY( res.contains( QSslError( QSslError::SslError::CertificateExpired, cert ) ) );
+  QVERIFY( !QgsAuthCertUtils::certIsViable( cert ) );
 }
 
 void TestQgsAuthCertUtils::testPkcsUtils()

@@ -331,6 +331,26 @@ class CORE_EXPORT QgsAuthCertUtils
     static QList<QPair<QSslError::SslError, QString> > sslErrorEnumStrings() SIP_SKIP;
 
     /**
+     * \brief certIsCurrent checks if \a cert is viable for its not before and not after dates
+     * \param cert certificate to be checked
+     */
+    static bool certIsCurrent( const QSslCertificate &cert );
+
+    /**
+     * \brief certViabilityErrors checks basic characteristics (validity dates, blacklisting, etc.) of given \a cert
+     * \param cert certificate to be checked
+     * \return list of QSslError (will return NO ERRORS if a null QSslCertificate is passed)
+     */
+    static QList<QSslError> certViabilityErrors( const QSslCertificate &cert );
+
+    /**
+     * \brief certIsViable checks for viability errors of \a cert and whether it is NULL
+     * \param cert certificate to be checked
+     * \return false if cert is NULL or has viability errors
+     */
+    static bool certIsViable( const QSslCertificate &cert );
+
+    /**
      * \brief validateCertChain validates the given \a certificateChain
      * \param certificateChain list of certificates to be checked, with leaf first and with optional root CA last
      * \param hostName (optional) name of the host to be verified

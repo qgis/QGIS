@@ -294,6 +294,29 @@ Get short strings describing an SSL error
 %End
 
 
+    static bool certIsCurrent( const QSslCertificate &cert );
+%Docstring
+ certIsCurrent checks if ``cert`` is viable for its not before and not after dates
+ \param cert certificate to be checked
+ :rtype: bool
+%End
+
+    static QList<QSslError> certViabilityErrors( const QSslCertificate &cert );
+%Docstring
+ certViabilityErrors checks basic characteristics (validity dates, blacklisting, etc.) of given ``cert``
+ \param cert certificate to be checked
+ :return: list of QSslError (will return NO ERRORS if a null QSslCertificate is passed)
+ :rtype: list of QSslError
+%End
+
+    static bool certIsViable( const QSslCertificate &cert );
+%Docstring
+ certIsViable checks for viability errors of ``cert`` and whether it is NULL
+ \param cert certificate to be checked
+ :return: false if cert is NULL or has viability errors
+ :rtype: bool
+%End
+
     static QList<QSslError> validateCertChain( const QList<QSslCertificate> &certificateChain,
         const QString &hostName = QString(),
         bool trustRootCa = false ) ;
