@@ -12,12 +12,20 @@ QgsAttributeRelationEdit::~QgsAttributeRelationEdit()
 {
 }
 
+void QgsAttributeRelationEdit::setCardinalityCombo( const QString &cardinalityComboItem )
+{
+  coCardinality->addItem( cardinalityComboItem );
+}
+
 void QgsAttributeRelationEdit::setCardinality( const QString &cardinality )
 {
-  leCardinality->setText( cardinality );
+  int idx = coCardinality->findText( cardinality );
+
+  if ( idx != -1 )
+    coCardinality->setCurrentIndex( idx );
 }
 
 QString QgsAttributeRelationEdit::cardinality()
 {
-  return leCardinality->text();
+  return coCardinality->currentText();
 }

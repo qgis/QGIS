@@ -28,12 +28,17 @@ class APP_EXPORT QgsAttributeRelationEdit: public QWidget, private Ui::QgsAttrib
     ~QgsAttributeRelationEdit();
 
   /**
-   * Setter for lable alias
+   * Setter for combo cardinality item
+   */
+  void setCardinalityCombo( const QString &cardinalityComboItem );
+
+  /**
+   * Setter for combo cardinality
    */
   void setCardinality( const QString &cardinality );
 
   /**
-   * Getter for lable alias
+   * Getter for combo cardinality
    */
   QString cardinality();
 

@@ -196,6 +196,8 @@ void QgsAttributesFormProperties::loadAttributeRelationEdit()
     RelationConfig cfg = currentItem->data( 0, RelationConfigRole).value<RelationConfig>();
 
     mAttributeRelationEdit = new QgsAttributeRelationEdit( currentItem->data( 0, FieldNameRole ).toString(), mAttributeTypeFrame );
+    mAttributeRelationEdit->setCardinalityCombo( "testoption 1");
+    mAttributeRelationEdit->setCardinalityCombo( "testoption 2");
     mAttributeRelationEdit->setCardinality( cfg.mCardinality );
 
     mAttributeRelationEdit->layout()->setMargin( 0 );
