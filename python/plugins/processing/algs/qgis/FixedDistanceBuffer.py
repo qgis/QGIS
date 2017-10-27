@@ -70,9 +70,11 @@ class FixedDistanceBuffer(QgisAlgorithm):
                                                               self.tr('Input layer')))
 
         self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
-                                                       self.tr('Distance'), defaultValue=10.0))
+                                                       self.tr('Distance'), type=QgsProcessingParameterNumber.Double,
+                                                       defaultValue=10.0))
         self.addParameter(QgsProcessingParameterNumber(self.SEGMENTS,
-                                                       self.tr('Segments'), type=QgsProcessingParameterNumber.Integer, minValue=1, defaultValue=5))
+                                                       self.tr('Segments'), type=QgsProcessingParameterNumber.Integer,
+                                                       minValue=1, defaultValue=5))
         self.addParameter(QgsProcessingParameterBoolean(self.DISSOLVE,
                                                         self.tr('Dissolve result'), defaultValue=False))
         self.end_cap_styles = [self.tr('Round'),
@@ -90,7 +92,8 @@ class FixedDistanceBuffer(QgisAlgorithm):
             self.tr('Join style'),
             options=self.join_styles, defaultValue=0))
         self.addParameter(QgsProcessingParameterNumber(self.MITER_LIMIT,
-                                                       self.tr('Miter limit'), minValue=0, defaultValue=2))
+                                                       self.tr('Miter limit'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0, defaultValue=2))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Buffer'), QgsProcessing.TypeVectorPolygon))
 
