@@ -94,6 +94,8 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     void validationFinished();
 
+    void startRangeVertexSelection();
+
   private:
 
     void buildDragBandsForVertices( const QSet<Vertex> &movingVertices, const QgsPointXY &dragVertexMapPoint );
@@ -196,6 +198,23 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     //! Makes sure that the node is visible in map canvas
     void zoomToNode( const Vertex &node );
+
+    //! Returns a list of vertices between the two given vertex indices (including those)
+    QList<Vertex> verticesInRange( QgsVectorLayer *layer, QgsFeatureId fid, int vertexId0, int vertexId1, bool longWay );
+
+    void updateFeatureBand( const QgsPointLocator::Match &m );
+
+    //! Updates vertex band based on the current match
+    void updateVertexBand( const QgsPointLocator::Match &m );
+
+    //! Handles mouse press event when in range selection method
+    void rangeMethodPressEvent( QgsMapMouseEvent *e );
+    //! Handles mouse release event when in range selection method
+    void rangeMethodReleaseEvent( QgsMapMouseEvent *e );
+    //! Handles mouse move event when in range selection method
+    void rangeMethodMoveEvent( QgsMapMouseEvent *e );
+
+    void stopRangeVertexSelection();
 
   private:
 
@@ -362,6 +381,18 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     //! data structure to keep validation details
     QHash< QPair<QgsVectorLayer *, QgsFeatureId>, GeometryValidation> mValidations;
 
+    //! Enumeration of methods for selection of vertices
+    enum VertexSelectionMethod
+    {
+      SelectionNormal,   //!< Default selection: clicking node starts move, ctrl+click selects node, dragging rectangle select multiple nodes
+      SelectionRange,    //!< Range selection: clicking selects start node, next click select final node, vertices in the range get selected
+    };
+
+    //! Current vertex selection method
+    VertexSelectionMethod mSelectionMethod = SelectionNormal;
+
+    //! Starting vertex when using range selection (null if not yet selected)
+    std::unique_ptr<Vertex> mRangeSelectionFirstVertex;
 };
 
 
