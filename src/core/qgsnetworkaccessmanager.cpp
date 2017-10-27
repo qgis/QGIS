@@ -185,12 +185,12 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
     QgsDebugMsg( "Adding trusted CA certs to request" );
     QSslConfiguration sslconfig( pReq->sslConfiguration() );
     // Merge trusted CAs with any additional CAs added by the authentication methods
-    sslconfig.setCaCertificates( QgsAuthCertUtils::casMerge( QgsApplication::authManager()->getTrustedCaCertsCache(), sslconfig.caCertificates( ) ) );
+    sslconfig.setCaCertificates( QgsAuthCertUtils::casMerge( QgsApplication::authManager()->trustedCaCertsCache(), sslconfig.caCertificates( ) ) );
     // check for SSL cert custom config
     QString hostport( QStringLiteral( "%1:%2" )
                       .arg( pReq->url().host().trimmed() )
                       .arg( pReq->url().port() != -1 ? pReq->url().port() : 443 ) );
-    QgsAuthConfigSslServer servconfig = QgsApplication::authManager()->getSslCertCustomConfigByHost( hostport.trimmed() );
+    QgsAuthConfigSslServer servconfig = QgsApplication::authManager()->sslCertCustomConfigByHost( hostport.trimmed() );
     if ( !servconfig.isNull() )
     {
       QgsDebugMsg( QString( "Adding SSL custom config to request for %1" ).arg( hostport ) );

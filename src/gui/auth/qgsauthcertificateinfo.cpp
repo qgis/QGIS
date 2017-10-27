@@ -80,7 +80,7 @@ QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate &cert,
     connect( treeHierarchy, &QTreeWidget::currentItemChanged,
              this, &QgsAuthCertInfo::currentCertItemChanged );
 
-    mCaCertsCache = QgsApplication::authManager()->getCaCertsCache();
+    mCaCertsCache = QgsApplication::authManager()->caCertsCache();
 
     setUpCertDetailsTree();
 
@@ -266,7 +266,7 @@ void QgsAuthCertInfo::setCertHierarchy()
       mDefaultItemForeground = item->foreground( 0 );
     }
 
-    decorateCertTreeItem( cert, QgsApplication::authManager()->getCertificateTrustPolicy( cert ), item );
+    decorateCertTreeItem( cert, QgsApplication::authManager()->certificateTrustPolicy( cert ), item );
 
     item->setFirstColumnSpanned( true );
     if ( !previtem )
@@ -291,7 +291,7 @@ void QgsAuthCertInfo::updateCurrentCertInfo( int chainindx )
 
   if ( !mCurrentQCert.isNull() )
   {
-    QgsAuthCertUtils::CertTrustPolicy trustpolicy( QgsApplication::authManager()->getCertificateTrustPolicy( mCurrentQCert ) );
+    QgsAuthCertUtils::CertTrustPolicy trustpolicy( QgsApplication::authManager()->certificateTrustPolicy( mCurrentQCert ) );
     mCurrentTrustPolicy = trustpolicy;
 
     cmbbxTrust->setTrustPolicy( trustpolicy );
