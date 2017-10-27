@@ -35,9 +35,9 @@ QString QgsMultiCurve::geometryType() const
 
 QgsMultiCurve *QgsMultiCurve::createEmptyWithSameType() const
 {
-  auto result = new QgsMultiCurve();
+  auto result = qgis::make_unique< QgsMultiCurve >();
   result->mWkbType = mWkbType;
-  return result;
+  return result.release();
 }
 
 QgsMultiCurve *QgsMultiCurve::clone() const

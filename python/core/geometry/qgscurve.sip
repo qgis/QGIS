@@ -126,8 +126,6 @@ class QgsCurve: QgsAbstractGeometry
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
-    virtual QgsCurve *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
-                                     double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
     virtual QgsCurve *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
@@ -185,6 +183,7 @@ class QgsCurve: QgsAbstractGeometry
 
     virtual int childCount() const;
     virtual QgsPoint childPoint( int index ) const;
+
 
 };
 

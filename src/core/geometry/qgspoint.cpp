@@ -116,8 +116,7 @@ QgsPoint *QgsPoint::clone() const
   return new QgsPoint( *this );
 }
 
-QgsPoint *QgsPoint::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
-                                   double /*tolerance*/, SegmentationToleranceType /*toleranceType*/ ) const
+QgsPoint *QgsPoint::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
 {
   // helper function
   auto gridifyValue = []( double value, double spacing, bool extraCondition = true ) -> double

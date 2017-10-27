@@ -110,14 +110,6 @@ class CORE_EXPORT QgsAbstractGeometry
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
     QgsAbstractGeometry &operator=( const QgsAbstractGeometry &geom );
 
-    /** Makes a new geometry with the same class and same WKB and transfers ownership.
-     * To create it, the geometry is default constructedand then the WKB is changed.
-     * \returns the new empty geometry. Callee takes ownership.
-     * \see clone
-     * \since 3.0
-     */
-    virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 SIP_FACTORY;
-
     /**
      * Clones the geometry by performing a deep copy
      */
@@ -419,12 +411,13 @@ class CORE_EXPORT QgsAbstractGeometry
     */
     virtual QgsAbstractGeometry *toCurveType() const = 0 SIP_FACTORY;
 
-    /** Makes a new geometry with all the points or vertices snapped to the closest point of the grid.
-     * It transfers ownership to the callee.
-     * If it couldn't make the gridified geometry it returns nullptr.
+    /**
+     * Makes a new geometry with all the points or vertices snapped to the closest point of the grid.
+     * Ownership is transferred to the caller.
+     *
+     * If the gridified geometry could not be calculated a nullptr will be returned.
      * It may generate an invalid geometry (in some corner cases).
      * It can also be thought as rounding the edges and it may be useful for removing errors.
-     * If the geometry is curved, it will be segmentized before gridifying it.
      * Example:
      * \code
      * geometry->snappedToGrid(1, 1);
@@ -435,13 +428,9 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param vSpacing Vertical spacing of the grid (y axis). 0 to disable.
      * \param dSpacing Depth spacing of the grid (z axis). 0 (default) to disable.
      * \param mSpacing Custom dimension spacing of the grid (m axis). 0 (default) to disable.
-     * \param tolerance In case of segmentation, the tolerance to use (passed to segmentize as is).
-     * \param toleranceType In case of segmentation, the toleranceType to use (passed to segmentize as is).
-     * \returns the segmentized geometry or nullptr if it wasn't possible to make. Caller takes ownership.
-     * \see segmentize
      * \since 3.0
      */
-    virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const = 0 SIP_FACTORY;
 
     /**
      * Returns approximate angle at a vertex. This is usually the average angle between adjacent
@@ -594,6 +583,17 @@ class CORE_EXPORT QgsAbstractGeometry
 
   protected:
 
+#ifndef SIP_RUN
+    /**
+     * Creates a new geometry with the same class and same WKB type as the original and transfers ownership.
+     * To create it, the geometry is default constructed and then the WKB is changed.
+     * \see clone()
+     * \since 3.0
+     * \note Not available in Python bindings
+     */
+    virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 SIP_FACTORY;
+#endif
+
     /**
      * Returns whether the geometry has any child geometries (false for point / curve, true otherwise)
      * \note used for vertex_iterator implementation
@@ -641,6 +641,7 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual void clearCache() const;
 
+    friend class TestQgsGeometry;
 };
 
 
@@ -758,6 +759,7 @@ class CORE_EXPORT QgsVertexIterator
   private:
     const QgsAbstractGeometry *g;
     QgsAbstractGeometry::vertex_iterator i, n;
+
 };
 
 #endif //QGSABSTRACTGEOMETRYV2

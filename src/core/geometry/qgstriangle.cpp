@@ -91,9 +91,9 @@ QString QgsTriangle::geometryType() const
 
 QgsTriangle *QgsTriangle::createEmptyWithSameType() const
 {
-  auto result = new QgsTriangle();
+  auto result = qgis::make_unique< QgsTriangle >();
   result->mWkbType = mWkbType;
-  return result;
+  return result.release();
 }
 
 void QgsTriangle::clear()

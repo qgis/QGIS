@@ -71,16 +71,6 @@ class QgsAbstractGeometry
     virtual ~QgsAbstractGeometry();
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
 
-    virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 /Factory/;
-%Docstring
- Makes a new geometry with the same class and same WKB and transfers ownership.
- To create it, the geometry is default constructedand then the WKB is changed.
- :return: the new empty geometry. Callee takes ownership.
-.. seealso:: clone
-.. versionadded:: 3.0
- :rtype: QgsAbstractGeometry
-%End
-
     virtual QgsAbstractGeometry *clone() const = 0 /Factory/;
 %Docstring
  Clones the geometry by performing a deep copy
@@ -412,14 +402,14 @@ Returns the centroid of the geometry
  :rtype: QgsAbstractGeometry
 %End
 
-    virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const = 0 /Factory/;
+    virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const = 0 /Factory/;
 %Docstring
  Makes a new geometry with all the points or vertices snapped to the closest point of the grid.
- It transfers ownership to the callee.
- If it couldn't make the gridified geometry it returns None.
+ Ownership is transferred to the caller.
+
+ If the gridified geometry could not be calculated a None will be returned.
  It may generate an invalid geometry (in some corner cases).
  It can also be thought as rounding the edges and it may be useful for removing errors.
- If the geometry is curved, it will be segmentized before gridifying it.
  Example:
  \code
  geometry->snappedToGrid(1, 1);
@@ -430,10 +420,6 @@ Returns the centroid of the geometry
  \param vSpacing Vertical spacing of the grid (y axis). 0 to disable.
  \param dSpacing Depth spacing of the grid (z axis). 0 (default) to disable.
  \param mSpacing Custom dimension spacing of the grid (m axis). 0 (default) to disable.
- \param tolerance In case of segmentation, the tolerance to use (passed to segmentize as is).
- \param toleranceType In case of segmentation, the toleranceType to use (passed to segmentize as is).
- :return: the segmentized geometry or None if it wasn't possible to make. Caller takes ownership.
-.. seealso:: segmentize
 .. versionadded:: 3.0
  :rtype: QgsAbstractGeometry
 %End
@@ -527,6 +513,7 @@ Returns the centroid of the geometry
 %End
 
   protected:
+
 
     virtual bool hasChildGeometries() const;
 %Docstring
