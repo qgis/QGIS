@@ -919,14 +919,14 @@ namespace QgsWms
       QString externalWMSUri( const QString &id ) const;
 
       /**
-       * @brief Returns if the client wants the feature info response with geometry information
-       * @return true if geometry information is requested for feature info response
+       * \brief Returns if the client wants the feature info response with geometry information
+       * \returns true if geometry information is requested for feature info response
        */
       bool withGeometry() const;
 
       /**
-       * @brief withMapTip
-       * @return true if maptip information is requested for feature info response
+       * \brief withMapTip
+       * \returns true if maptip information is requested for feature info response
        */
       bool withMapTip() const;
 
