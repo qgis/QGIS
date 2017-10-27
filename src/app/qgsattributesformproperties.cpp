@@ -188,6 +188,22 @@ QgsAttributesFormProperties::FieldConfig QgsAttributesFormProperties::configForC
   return FieldConfig();
 }
 
+QgsAttributesFormProperties::RelationConfig QgsAttributesFormProperties::configForRelationChild( const QString &relationName )
+{
+  QTreeWidgetItemIterator itemIt( mAvailableWidgetsTree );
+  while ( *itemIt )
+  {
+    QTreeWidgetItem *item = *itemIt;
+    if ( item->data( 0, FieldNameRole ).toString() == relationName )
+      return item->data( 0, RelationConfigRole ).value<RelationConfig>();
+    ++itemIt;
+  }
+
+  // Should never get here
+  Q_ASSERT( false );
+  return RelationConfig();
+}
+
 
 QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, DnDTree *tree )
 {
@@ -313,14 +329,16 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
 
   for ( const QgsRelation &relation : relations )
   {
-    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, relation.name() );
+    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, QStringLiteral( "%1" ).arg( relation.id() )); //relation.name() );
     itemData.setShowLabel( true );
 
+    //daveRelation
+    RelationConfig cfg( mLayer, relation.id() );
+
     QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
-    item->setData( 0, FieldNameRole, relation.name() );
+    item->setData( 0, RelationConfigRole, cfg );
+    item->setData( 0, FieldNameRole, QStringLiteral( "%1" ).arg( relation.id() ) ); //relation.name() );
   }
-
-
 }
 
 
@@ -416,10 +434,12 @@ void QgsAttributesFormProperties::apply()
 
   QTreeWidgetItem* fieldContainer=mAvailableWidgetsTree->invisibleRootItem()->child(0);
 
+  int idx;
+
   for ( int i = 0; i < fieldContainer->childCount(); i++ )
   {
     QTreeWidgetItem *fieldItem = fieldContainer->child( i );
-    int idx=fieldContainer->indexOfChild( fieldItem );
+    idx=fieldContainer->indexOfChild( fieldItem );
 
     QString name = mLayer->fields().at( idx ).name();
     FieldConfig cfg = configForChild( idx );
@@ -479,16 +499,24 @@ void QgsAttributesFormProperties::apply()
   editFormConfig.setSuppress( ( QgsEditFormConfig::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
   */
 
-  /*
+
   // relations
   QTreeWidgetItem* relationContainer=mAvailableWidgetsTree->invisibleRootItem()->child(1);
 
   for ( int i = 0; i < relationContainer->childCount(); i++ )
   {
     QTreeWidgetItem *relationItem = relationContainer->child( i );
-    int idx=relationContainer->indexOfChild( relationItem );
+    DnDTreeItemData itemData= relationItem->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
 
-    QString name = mLayer->fields().at( idx ).name();
+    RelationConfig relCfg = configForRelChild( itemData.name() );
+
+    QVariantMap cfg;
+    cfg[QStringLiteral( "nm-rel" )]=relCfg.mCardinality;
+
+    editFormConfig.setWidgetConfig( itemData.name(), cfg );
+  }
+
+/*
 
   for ( int i = 0; i < mRelationsList->rowCount(); ++i )
   {
@@ -509,6 +537,7 @@ void QgsAttributesFormProperties::apply()
     editFormConfig.setWidgetConfig( relationName, cfg );
   }
 */
+
   mLayer->setEditFormConfig( editFormConfig );
 }
 
@@ -550,6 +579,22 @@ QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, in
 QgsAttributesFormProperties::FieldConfig::operator QVariant()
 {
   return QVariant::fromValue<QgsAttributesFormProperties::FieldConfig>( *this );
+}
+
+
+/*
+ * RelationConfig implementation
+ */
+QgsAttributesFormProperties::RelationConfig::RelationConfig( QgsVectorLayer *layer, const QString &relationId )
+{
+  const QVariant nmrelcfg = layer->editFormConfig().widgetConfig( relationId ).value( QStringLiteral( "nm-rel" ) );
+
+  mCardinality=nmrelcfg.toString();
+}
+
+QgsAttributesFormProperties::RelationConfig::operator QVariant()
+{
+  return QVariant::fromValue<QgsAttributesFormProperties::RelationConfig>( *this );
 }
 
 /*

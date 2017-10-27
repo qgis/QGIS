@@ -58,6 +58,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     {
       DnDTreeRole = Qt::UserRole,
       FieldConfigRole,
+      RelationConfigRole,
       FieldNameRole
     };
 
@@ -156,6 +157,20 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       operator QVariant();
     };
 
+
+    /**
+     * Holds the configuration for a relation
+     */
+    struct RelationConfig
+    {
+      RelationConfig();
+      RelationConfig( QgsVectorLayer *layer, const QString &relationId );
+
+      QString mCardinality;
+
+      operator QVariant();
+    };
+
   public:
     explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );
     ~QgsAttributesFormProperties();
@@ -178,6 +193,8 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
 
     FieldConfig configForChild( int index );
     void setConfigForChild( int index, const FieldConfig &cfg );
+
+    RelationConfig configForRelationChild( const QString &relationName );
 
     //QList<QgsRelation> mRelations;
     QgsVectorLayer *mLayer = nullptr;
