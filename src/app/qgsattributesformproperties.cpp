@@ -407,7 +407,6 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
     DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, QStringLiteral( "%1" ).arg( relation.id() )); //relation.name() );
     itemData.setShowLabel( true );
 
-    //daveRelation
     RelationConfig cfg( mLayer, relation.id() );
 
     QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
