@@ -34,9 +34,9 @@ QString QgsPolygonV2::geometryType() const
 
 QgsPolygonV2 *QgsPolygonV2::createEmptyWithSameType() const
 {
-  auto result = new QgsPolygonV2();
+  auto result = qgis::make_unique< QgsPolygonV2 >();
   result->mWkbType = mWkbType;
-  return result;
+  return result.release();
 }
 
 QgsPolygonV2 *QgsPolygonV2::clone() const

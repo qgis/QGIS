@@ -35,7 +35,7 @@ class QgsCurvePolygon: QgsSurface
     virtual QString geometryType() const;
 
     virtual int dimension() const;
-    virtual QgsCurvePolygon *createEmptyWithSameType() const /Factory/;
+
     virtual QgsCurvePolygon *clone() const /Factory/;
 
     virtual void clear();
@@ -64,8 +64,9 @@ class QgsCurvePolygon: QgsSurface
     virtual QgsPolygonV2 *surfaceToPolygon() const /Factory/;
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
-    virtual QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0,
-                                            double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
+
+    virtual QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
+
 
     int numInteriorRings() const;
 %Docstring
@@ -197,8 +198,12 @@ Adds an interior ring to the geometry (takes ownership)
     virtual QgsCurvePolygon *toCurveType() const /Factory/;
 
   protected:
+    virtual QgsCurvePolygon *createEmptyWithSameType() const /Factory/;
+
     virtual int childCount() const;
+
     virtual QgsAbstractGeometry *childGeometry( int index ) const;
+
 
   protected:
 

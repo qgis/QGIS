@@ -23,7 +23,7 @@ class QgsPolygonV2: QgsCurvePolygon
     QgsPolygonV2();
 
     virtual QString geometryType() const;
-    virtual QgsPolygonV2 *createEmptyWithSameType() const /Factory/;
+
     virtual QgsPolygonV2 *clone() const /Factory/;
 
     virtual void clear();
@@ -59,6 +59,13 @@ class QgsPolygonV2: QgsCurvePolygon
 .. versionadded:: 3.0
  :rtype: float
 %End
+
+
+  protected:
+
+    virtual QgsPolygonV2 *createEmptyWithSameType() const /Factory/;
+
+
 
 };
 /************************************************************************

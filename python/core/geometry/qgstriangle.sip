@@ -53,7 +53,7 @@ class QgsTriangle : QgsPolygonV2
 %End
 
     virtual QString geometryType() const;
-    virtual QgsTriangle *createEmptyWithSameType() const /Factory/;
+
     virtual QgsTriangle *clone() const /Factory/;
 
     virtual void clear();
@@ -417,6 +417,11 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
  \endcode
  :rtype: QgsCircle
 %End
+
+
+  protected:
+
+    virtual QgsTriangle *createEmptyWithSameType() const /Factory/;
 
 
 };

@@ -40,9 +40,9 @@ void QgsMultiPolygonV2::clear()
 
 QgsMultiPolygonV2 *QgsMultiPolygonV2::createEmptyWithSameType() const
 {
-  auto result = new QgsMultiPolygonV2();
+  auto result = qgis::make_unique< QgsMultiPolygonV2 >();
   result->mWkbType = mWkbType;
-  return result;
+  return result.release();
 }
 
 QgsMultiPolygonV2 *QgsMultiPolygonV2::clone() const

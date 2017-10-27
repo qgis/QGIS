@@ -20,13 +20,3 @@
 #include "qgspolygon.h"
 
 #include <memory>
-
-QgsSurface *QgsSurface::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
-                                       double /*tolerance*/, SegmentationToleranceType /*toleranceType*/ ) const
-{
-  std::unique_ptr<QgsPolygonV2> polygon { surfaceToPolygon() };
-  if ( !polygon )
-    return nullptr;
-
-  return polygon->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing );
-}

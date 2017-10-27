@@ -66,9 +66,9 @@ QgsGeometryCollection::~QgsGeometryCollection()
 
 QgsGeometryCollection *QgsGeometryCollection::createEmptyWithSameType() const
 {
-  auto result = new QgsGeometryCollection();
+  auto result = qgis::make_unique< QgsGeometryCollection >();
   result->mWkbType = mWkbType;
-  return result;
+  return result.release();
 }
 
 QgsGeometryCollection *QgsGeometryCollection::clone() const
@@ -83,14 +83,13 @@ void QgsGeometryCollection::clear()
   clearCache(); //set bounding box invalid
 }
 
-QgsGeometryCollection *QgsGeometryCollection::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
-    double tolerance, SegmentationToleranceType toleranceType ) const
+QgsGeometryCollection *QgsGeometryCollection::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
 {
   std::unique_ptr<QgsGeometryCollection> result;
 
   for ( auto geom : mGeometries )
   {
-    std::unique_ptr<QgsAbstractGeometry> gridified { geom->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType ) };
+    std::unique_ptr<QgsAbstractGeometry> gridified { geom->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) };
     if ( gridified )
     {
       if ( !result )

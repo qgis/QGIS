@@ -31,9 +31,9 @@ QString QgsMultiPointV2::geometryType() const
 
 QgsMultiPointV2 *QgsMultiPointV2::createEmptyWithSameType() const
 {
-  auto result = new QgsMultiPointV2();
+  auto result = qgis::make_unique< QgsMultiPointV2 >();
   result->mWkbType = mWkbType;
-  return result;
+  return result.release();
 }
 
 QgsMultiPointV2 *QgsMultiPointV2::clone() const

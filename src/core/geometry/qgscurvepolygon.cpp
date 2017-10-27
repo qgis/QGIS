@@ -40,9 +40,9 @@ QgsCurvePolygon::~QgsCurvePolygon()
 
 QgsCurvePolygon *QgsCurvePolygon::createEmptyWithSameType() const
 {
-  auto result = new QgsCurvePolygon();
+  auto result = qgis::make_unique< QgsCurvePolygon >();
   result->mWkbType = mWkbType;
-  return result;
+  return result.release();
 }
 
 QString QgsCurvePolygon::geometryType() const
@@ -502,30 +502,21 @@ QgsAbstractGeometry *QgsCurvePolygon::boundary() const
   }
 }
 
-QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
-    double tolerance, SegmentationToleranceType toleranceType ) const
+QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
 {
   if ( !mExteriorRing )
     return nullptr;
 
-  std::unique_ptr<QgsPolygonV2> polygon;
-  if ( QgsWkbTypes::flatType( mWkbType ) == QgsWkbTypes::Triangle ||  QgsWkbTypes::flatType( mWkbType ) == QgsWkbTypes::Polygon )
-  {
-    polygon = std::unique_ptr<QgsPolygonV2> { static_cast< QgsPolygonV2 const *>( this )->createEmptyWithSameType() };
-  }
-  else
-  {
-    polygon = std::unique_ptr<QgsPolygonV2> { new QgsPolygonV2() };
-    polygon->mWkbType = QgsWkbTypes::zmType( QgsWkbTypes::Polygon, QgsWkbTypes::hasZ( mWkbType ), QgsWkbTypes::hasM( mWkbType ) );
-  }
+
+  std::unique_ptr< QgsCurvePolygon > polygon( createEmptyWithSameType() );
 
   // exterior ring
-  auto exterior = std::unique_ptr<QgsCurve> { mExteriorRing->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType ) };
+  auto exterior = std::unique_ptr<QgsCurve> { static_cast< QgsCurve *>( mExteriorRing->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) ) };
 
   if ( !exterior )
     return nullptr;
 
-  polygon->mExteriorRing = exterior.release();
+  polygon->mExteriorRing = std::move( exterior );
 
   //interior rings
   for ( auto interior : mInteriorRings )
@@ -533,7 +524,7 @@ QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacin
     if ( !interior )
       continue;
 
-    QgsCurve *gridifiedInterior = interior->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, tolerance, toleranceType );
+    QgsCurve *gridifiedInterior = static_cast< QgsCurve * >( interior->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) );
 
     if ( !gridifiedInterior )
       continue;

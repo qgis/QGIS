@@ -32,7 +32,6 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
     QgsMultiPolygonV2();
     QString geometryType() const override;
     void clear() override;
-    virtual QgsMultiPolygonV2 *createEmptyWithSameType() const override SIP_FACTORY;
     QgsMultiPolygonV2 *clone() const override SIP_FACTORY;
     bool fromWkt( const QString &wkt ) override;
     QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
@@ -65,7 +64,7 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
 #endif
 
   protected:
-
+    QgsMultiPolygonV2 *createEmptyWithSameType() const override SIP_FACTORY;
     bool wktOmitChildType() const override;
 };
 

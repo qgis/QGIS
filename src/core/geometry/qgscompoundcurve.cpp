@@ -63,9 +63,9 @@ bool QgsCompoundCurve::operator!=( const QgsCurve &other ) const
 
 QgsCompoundCurve *QgsCompoundCurve::createEmptyWithSameType() const
 {
-  auto result = new QgsCompoundCurve();
+  auto result = qgis::make_unique< QgsCompoundCurve >();
   result->mWkbType = mWkbType;
-  return result;
+  return result.release();
 }
 
 QString QgsCompoundCurve::geometryType() const
@@ -389,6 +389,25 @@ QgsLineString *QgsCompoundCurve::curveToLine( double tolerance, SegmentationTole
     line->append( currentLine.get() );
   }
   return line;
+}
+
+QgsCompoundCurve *QgsCompoundCurve::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+{
+  std::unique_ptr<QgsCompoundCurve> result( createEmptyWithSameType() );
+
+  for ( QgsCurve *curve : mCurves )
+  {
+    std::unique_ptr<QgsCurve> gridified( static_cast< QgsCurve * >( curve->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) ) );
+    if ( gridified )
+    {
+      result->mCurves.append( gridified.release() );
+    }
+  }
+
+  if ( result->mCurves.empty() )
+    return nullptr;
+  else
+    return result.release();
 }
 
 const QgsCurve *QgsCompoundCurve::curveAt( int i ) const
