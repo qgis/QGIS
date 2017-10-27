@@ -133,7 +133,7 @@ QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
              this, &QgsAuthSslImportDialog::widgetReadyToSaveChanged );
     wdgtSslConfig->setEnabled( false );
 
-    mTrustedCAs = QgsApplication::authManager()->getTrustedCaCertsCache();
+    mTrustedCAs = QgsApplication::authManager()->trustedCaCertsCache();
   }
 }
 

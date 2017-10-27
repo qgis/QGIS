@@ -118,13 +118,13 @@ class TestQgsAuthManager(unittest.TestCase):
             self.assertTrue(self.authm.rebuildTrustedCaCertsCache(), m)
 
         def trusted_ca_certs():
-            tr_certs = self.authm.getTrustedCaCerts()
+            tr_certs = self.authm.trustedCaCerts()
             m = 'Trusted authorities cache is empty'
             self.assertIsNotNone(tr_certs, m)
             return tr_certs
 
         msg = 'No system root CAs'
-        self.assertIsNotNone(self.authm.getSystemRootCAs())
+        self.assertIsNotNone(self.authm.systemRootCAs())
 
         # TODO: add more tests
         full_chain = 'chains_subissuer-issuer-root_issuer2-root2.pem'
@@ -333,10 +333,10 @@ class TestQgsAuthManager(unittest.TestCase):
             self.authm.existsSslCertCustomConfig(cert_sha, hostport), msg)
 
         msg = 'Could not verify SSL config in all configs'
-        self.assertIsNotNone(self.authm.getSslCertCustomConfigs(), msg)
+        self.assertIsNotNone(self.authm.sslCertCustomConfigs(), msg)
 
         msg = 'Could not retrieve SSL config'
-        config2 = self.authm.getSslCertCustomConfig(cert_sha, hostport)
+        config2 = self.authm.sslCertCustomConfig(cert_sha, hostport)
         """:type: QgsAuthConfigSslServer"""
         self.assertFalse(config2.isNull(), msg)
 

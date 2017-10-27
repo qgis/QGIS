@@ -161,17 +161,17 @@ bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionIte
   {
     if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
     {
-      cas = QgsAuthCertUtils::casMerge( QgsApplication::authManager()->getTrustedCaCerts(), pkibundle->caChain() );
+      cas = QgsAuthCertUtils::casMerge( QgsApplication::authManager()->trustedCaCerts(), pkibundle->caChain() );
     }
     else
     {
-      cas = QgsAuthCertUtils::casMerge( QgsApplication::authManager()->getTrustedCaCerts(),
+      cas = QgsAuthCertUtils::casMerge( QgsApplication::authManager()->trustedCaCerts(),
                                         QgsAuthCertUtils::casRemoveSelfSigned( pkibundle->caChain() ) );
     }
   }
   else
   {
-    cas = QgsApplication::authManager()->getTrustedCaCerts();
+    cas = QgsApplication::authManager()->trustedCaCerts();
   }
 
   // save CAs to temp file

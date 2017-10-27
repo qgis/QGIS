@@ -76,14 +76,14 @@ QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
 
     connect( btnViewRefresh, &QAbstractButton::clicked, this, &QgsAuthAuthoritiesEditor::refreshCaCertsView );
 
-    QVariant cafileval = QgsApplication::authManager()->getAuthSetting( QStringLiteral( "cafile" ) );
+    QVariant cafileval = QgsApplication::authManager()->authSetting( QStringLiteral( "cafile" ) );
     if ( !cafileval.isNull() )
     {
       leCaFile->setText( cafileval.toString() );
     }
 
     btnGroupByOrg->setChecked( false );
-    QVariant sortbyval = QgsApplication::authManager()->getAuthSetting( QStringLiteral( "casortby" ), QVariant( false ) );
+    QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "casortby" ), QVariant( false ) );
     if ( !sortbyval.isNull() )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
@@ -172,7 +172,7 @@ void QgsAuthAuthoritiesEditor::populateDatabaseCaCerts()
 
   bool expanded = mDbCaSecItem->isExpanded();
   populateCaCertsSection( mDbCaSecItem,
-                          QgsApplication::authManager()->getDatabaseCAs(),
+                          QgsApplication::authManager()->databaseCAs(),
                           QgsAuthAuthoritiesEditor::DbCaCert );
   mDbCaSecItem->setExpanded( expanded );
 }
@@ -183,7 +183,7 @@ void QgsAuthAuthoritiesEditor::populateFileCaCerts()
 
   bool expanded = mFileCaSecItem->isExpanded();
   populateCaCertsSection( mFileCaSecItem,
-                          QgsApplication::authManager()->getExtraFileCAs(),
+                          QgsApplication::authManager()->extraFileCAs(),
                           QgsAuthAuthoritiesEditor::FileCaCert );
   mFileCaSecItem->setExpanded( expanded );
 }
@@ -194,7 +194,7 @@ void QgsAuthAuthoritiesEditor::populateRootCaCerts()
 
   bool expanded = mRootCaSecItem->isExpanded();
   populateCaCertsSection( mRootCaSecItem,
-                          QgsApplication::authManager()->getSystemRootCAs(),
+                          QgsApplication::authManager()->systemRootCAs(),
                           QgsAuthAuthoritiesEditor::RootCaCert );
   mRootCaSecItem->setExpanded( expanded );
 }
@@ -326,7 +326,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate> &
 
 void QgsAuthAuthoritiesEditor::updateCertTrustPolicyCache()
 {
-  mCertTrustCache = QgsApplication::authManager()->getCertTrustCache();
+  mCertTrustCache = QgsApplication::authManager()->certTrustCache();
 }
 
 void QgsAuthAuthoritiesEditor::populateUtilitiesMenu()
@@ -353,7 +353,7 @@ void QgsAuthAuthoritiesEditor::showCertInfo( QTreeWidgetItem *item )
   QString digest( item->data( 0, Qt::UserRole ).toString() );
 
   QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > cacertscache(
-    QgsApplication::authManager()->getCaCertsCache() );
+    QgsApplication::authManager()->caCertsCache() );
 
   if ( !cacertscache.contains( digest ) )
   {
@@ -492,7 +492,7 @@ void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
   }
 
   QMap<QString, QSslCertificate> mappedcerts(
-    QgsApplication::authManager()->getMappedDatabaseCAs() );
+    QgsApplication::authManager()->mappedDatabaseCAs() );
 
   if ( !mappedcerts.contains( digest ) )
   {
@@ -687,7 +687,7 @@ void QgsAuthAuthoritiesEditor::btnCaFile_clicked()
 
     if ( dlg->certTrustPolicy() != QgsAuthCertUtils::DefaultTrust )
     {
-      QList<QSslCertificate> certs( QgsApplication::authManager()->getExtraFileCAs() );
+      QList<QSslCertificate> certs( QgsApplication::authManager()->extraFileCAs() );
       Q_FOREACH ( const QSslCertificate &cert, certs )
       {
         if ( !QgsApplication::authManager()->storeCertTrustPolicy( cert, dlg->certTrustPolicy() ) )

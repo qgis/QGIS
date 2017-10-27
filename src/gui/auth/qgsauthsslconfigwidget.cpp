@@ -250,7 +250,7 @@ void QgsAuthSslConfigWidget::setSslCertificate( const QSslCertificate &cert, con
 
   QString sha( QgsAuthCertUtils::shaHexForCert( cert ) );
   QgsAuthConfigSslServer config(
-    QgsApplication::authManager()->getSslCertCustomConfig( sha, hostport.isEmpty() ? sslHost() : hostport ) );
+    QgsApplication::authManager()->sslCertCustomConfig( sha, hostport.isEmpty() ? sslHost() : hostport ) );
 
   emit certFoundInAuthDatabase( !config.isNull() );
 

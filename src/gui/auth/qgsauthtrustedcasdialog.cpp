@@ -59,7 +59,7 @@ QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent,
 
 
     btnGroupByOrg->setChecked( false );
-    QVariant sortbyval = QgsApplication::authManager()->getAuthSetting( QStringLiteral( "trustedcasortby" ), QVariant( false ) );
+    QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "trustedcasortby" ), QVariant( false ) );
     if ( !sortbyval.isNull() )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
@@ -111,7 +111,7 @@ void QgsAuthTrustedCAsDialog::populateCaCertsView()
 
   if ( mTrustedCAs.isEmpty() )
   {
-    mTrustedCAs = QgsApplication::authManager()->getTrustedCaCerts();
+    mTrustedCAs = QgsApplication::authManager()->trustedCaCerts();
   }
 
   populateCaCertsSection( mRootCaSecItem, mTrustedCAs, QgsAuthTrustedCAsDialog::CaCert );
@@ -216,7 +216,7 @@ void QgsAuthTrustedCAsDialog::showCertInfo( QTreeWidgetItem *item )
   QString digest( item->data( 0, Qt::UserRole ).toString() );
 
   QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > cacertscache(
-    QgsApplication::authManager()->getCaCertsCache() );
+    QgsApplication::authManager()->caCertsCache() );
 
   if ( !cacertscache.contains( digest ) )
   {

@@ -64,7 +64,7 @@ QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
     connect( btnViewRefresh, &QAbstractButton::clicked, this, &QgsAuthServersEditor::refreshSslConfigsView );
 
     btnGroupByOrg->setChecked( false );
-    QVariant sortbyval = QgsApplication::authManager()->getAuthSetting( QStringLiteral( "serverssortby" ), QVariant( false ) );
+    QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "serverssortby" ), QVariant( false ) );
     if ( !sortbyval.isNull() )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
@@ -116,7 +116,7 @@ void QgsAuthServersEditor::populateSslConfigsView()
   removeChildren_( mRootSslConfigItem );
 
   populateSslConfigsSection( mRootSslConfigItem,
-                             QgsApplication::authManager()->getSslCertCustomConfigs(),
+                             QgsApplication::authManager()->sslCertCustomConfigs(),
                              QgsAuthServersEditor::ServerConfig );
 }
 
@@ -369,7 +369,7 @@ void QgsAuthServersEditor::btnEditServer_clicked()
     return;
   }
 
-  QgsAuthConfigSslServer config( QgsApplication::authManager()->getSslCertCustomConfig( digest, hostport ) );
+  QgsAuthConfigSslServer config( QgsApplication::authManager()->sslCertCustomConfig( digest, hostport ) );
   QSslCertificate cert( config.sslCertificate() );
 
   QgsAuthSslConfigDialog *dlg = new QgsAuthSslConfigDialog( this, cert, hostport );

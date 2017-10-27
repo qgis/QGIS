@@ -947,9 +947,9 @@ QList<QgsAuthCertUtils::CertUsageType> QgsAuthCertUtils::certificateUsageTypes( 
 
   // ask QCA what it thinks about potential usages
   QCA::CertificateCollection trustedCAs(
-    qtCertsToQcaCollection( QgsApplication::authManager()->getTrustedCaCertsCache() ) );
+    qtCertsToQcaCollection( QgsApplication::authManager()->trustedCaCertsCache() ) );
   QCA::CertificateCollection untrustedCAs(
-    qtCertsToQcaCollection( QgsApplication::authManager()->getUntrustedCaCerts() ) );
+    qtCertsToQcaCollection( QgsApplication::authManager()->untrustedCaCerts() ) );
 
   QCA::Validity v_any;
   v_any = qcacert.validate( trustedCAs, untrustedCAs, QCA::UsageAny, QCA::ValidateAll );
@@ -1251,7 +1251,7 @@ QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificat
   for ( const auto &cert : certificateChain )
   {
     bool untrusted = false;
-    for ( const auto &untrustedCert : QgsApplication::authManager()->getUntrustedCaCerts() )
+    for ( const auto &untrustedCert : QgsApplication::authManager()->untrustedCaCerts() )
     {
       if ( cert.digest( ) == untrustedCert.digest( ) )
       {

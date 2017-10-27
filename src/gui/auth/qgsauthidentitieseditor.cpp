@@ -66,7 +66,7 @@ QgsAuthIdentitiesEditor::QgsAuthIdentitiesEditor( QWidget *parent )
     connect( btnViewRefresh, &QAbstractButton::clicked, this, &QgsAuthIdentitiesEditor::refreshIdentitiesView );
 
     btnGroupByOrg->setChecked( false );
-    QVariant sortbyval = QgsApplication::authManager()->getAuthSetting( QStringLiteral( "identitiessortby" ), QVariant( false ) );
+    QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "identitiessortby" ), QVariant( false ) );
     if ( !sortbyval.isNull() )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
@@ -117,7 +117,7 @@ void QgsAuthIdentitiesEditor::populateIdentitiesView()
   removeChildren_( mRootCertIdentItem );
 
   populateIdentitiesSection( mRootCertIdentItem,
-                             QgsApplication::authManager()->getCertIdentities(),
+                             QgsApplication::authManager()->certIdentities(),
                              QgsAuthIdentitiesEditor::CertIdentity );
 }
 
@@ -230,7 +230,7 @@ void QgsAuthIdentitiesEditor::showCertInfo( QTreeWidgetItem *item )
     return;
   }
 
-  QSslCertificate cert( QgsApplication::authManager()->getCertIdentity( digest ) );
+  QSslCertificate cert( QgsApplication::authManager()->certIdentity( digest ) );
 
   QgsAuthCertInfoDialog *dlg = new QgsAuthCertInfoDialog( cert, false, this );
   dlg->setWindowModality( Qt::WindowModal );
