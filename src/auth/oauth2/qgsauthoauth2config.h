@@ -203,7 +203,7 @@ class QgsAuthOAuth2Config : public QObject
       bool *ok = nullptr );
 
     //! Load and parse standard directories of configs (e.g. JSON) to a mapped cache
-    static QgsStringMap mappedOAuth2ConfigsCache( const QString &extradir = QString::null );
+    static QgsStringMap mappedOAuth2ConfigsCache( QObject *parent, const QString &extradir = QString::null );
 
     //!
     static QString oauth2ConfigsPkgDataDir();
