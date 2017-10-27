@@ -1514,8 +1514,9 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       if ( !fieldDef )
         break;
 
-      int fldIdx = vl->fields().lookupField( fieldDef->name() );
-      if ( fldIdx < vl->fields().count() && fldIdx >= 0 )
+      const QgsFields fields = vl->fields();
+      int fldIdx = fields.lookupField( fieldDef->name() );
+      if ( fldIdx < fields.count() && fldIdx >= 0 )
       {
         const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, fieldDef->name() );
 
@@ -1528,12 +1529,12 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         newWidgetInfo.widget = w;
         addWidgetWrapper( eww );
 
-        newWidgetInfo.widget->setObjectName( mLayer->fields().at( fldIdx ).name() );
+        newWidgetInfo.widget->setObjectName( fields.at( fldIdx ).name() );
+        newWidgetInfo.hint = fields.at( fieldDef->idx() ).comment();
       }
 
       newWidgetInfo.labelOnTop = mLayer->editFormConfig().labelOnTop( fieldDef->idx() );
       newWidgetInfo.labelText = mLayer->attributeDisplayName( fieldDef->idx() );
-      newWidgetInfo.hint = mLayer->fields().at( fieldDef->idx() ).comment();
       newWidgetInfo.showLabel = widgetDef->showLabel();
 
       break;
