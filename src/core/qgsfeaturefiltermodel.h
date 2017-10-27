@@ -68,7 +68,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     /**
      * Create a new QgsFeatureFilterModel, optionally specifying a \a parent.
      */
-    QgsFeatureFilterModel( QObject *parent = nullptr );
+    explicit QgsFeatureFilterModel( QObject *parent = nullptr );
     ~QgsFeatureFilterModel();
 
     /**
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
       bool operator()( const Entry &lhs, const Entry &rhs ) const;
     };
 
-    QgsVectorLayer *mSourceLayer;
+    QgsVectorLayer *mSourceLayer = nullptr;
     QString mDisplayExpression;
     QString mFilterValue;
     QString mFilterExpression;

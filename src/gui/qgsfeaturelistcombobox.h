@@ -198,8 +198,8 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
       int cursorPosition;
     };
 
-    QgsFeatureFilterModel *mModel;
-    QCompleter *mCompleter;
+    QgsFeatureFilterModel *mModel = nullptr;
+    QCompleter *mCompleter = nullptr;
     QString mDisplayExpression;
     QgsFilterLineEdit *mLineEdit;
     bool mPopupRequested = false;

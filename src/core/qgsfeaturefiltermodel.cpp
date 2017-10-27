@@ -18,7 +18,6 @@
 
 QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )
   : QAbstractItemModel( parent )
-  , mSourceLayer( nullptr )
 {
   mReloadTimer.setInterval( 100 );
   mReloadTimer.setSingleShot( true );
@@ -196,7 +195,7 @@ void QgsFeatureFilterModel::updateCompleter()
     if ( mAllowNull )
       entries.prepend( Entry( QVariant( QVariant::Int ), tr( "NULL" ) ) );
 
-    int newEntriesSize = entries.size();
+    const int newEntriesSize = entries.size();
 
     // Find the index of the extra entry in the new list
     int currentEntryInNewList = -1;
