@@ -88,6 +88,7 @@ RUN  apt-get update \
     mock \
     future \
     termcolor \
+    oauthlib \
   && apt-get autoremove -y python3-pip python2.7 \
   && apt-get clean
 
