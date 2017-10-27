@@ -684,9 +684,35 @@ class TestQgsAuthManager(unittest.TestCase):
         # Test invalid with intermediates and trusted root
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), ['Private key does not match client certificate public key.'])
 
-        # TODO: Wrong root CA
-        # TODO: expired/not-yet-valid cert
-        # TODO: expired/not-yet-valid intermediate (is it possible to build a cert from one of those?)
+        # Expired root CA
+        bundle = mkPEMBundle('piri_cert.pem', 'piri_key.pem', 'password', 'chain_issuer3-root3-EXPIRED.pem')
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle), ['The root certificate of the certificate chain is self-signed, and untrusted', 'The certificate has expired'])
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, False), ['The issuer certificate of a locally looked up certificate could not be found', 'No certificates could be verified'])
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), ['The root certificate of the certificate chain is self-signed, and untrusted', 'The certificate has expired'])
+
+        # Expired intermediate CA
+        bundle = mkPEMBundle('marinus_cert-EXPIRED.pem', 'marinus_key_w-pass.pem', 'password', 'chain_issuer2-root2.pem')
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle), ['The root certificate of the certificate chain is self-signed, and untrusted', 'The certificate has expired'])
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, False), ['The issuer certificate of a locally looked up certificate could not be found', 'No certificates could be verified'])
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), ['The certificate has expired'])
+
+        # Expired client cert
+        bundle = mkPEMBundle('henricus_cert.pem', 'henricus_key_w-pass.pem', 'password', 'chain_issuer4-EXPIRED-root2.pem')
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle), ['The root certificate of the certificate chain is self-signed, and untrusted', 'The certificate has expired'])
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, False), ['The issuer certificate of a locally looked up certificate could not be found', 'No certificates could be verified'])
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), ['The certificate has expired'])
+
+        # Untrusted root, positive test before untrust is applied
+        bundle = mkPEMBundle('nicholas_cert.pem', 'nicholas_key.pem', 'password', 'chain_issuer2-root2.pem')
+        # Test valid with intermediates and trusted root
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), [])
+        # Untrust this root
+        root2 = QgsAuthCertUtils.certFromFile(PKIDATA + '/' + 'root2_ca_cert.pem')
+        QgsApplication.authManager().storeCertAuthority(root2)
+        self.assertTrue(QgsApplication.authManager().storeCertTrustPolicy(root2, QgsAuthCertUtils.Untrusted))
+        QgsApplication.authManager().rebuildCaCertsCache()
+        # Test valid with intermediates and untrusted root
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), ['The issuer certificate of a locally looked up certificate could not be found'])
 
 
 if __name__ == '__main__':
