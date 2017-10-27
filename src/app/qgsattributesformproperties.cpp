@@ -192,7 +192,6 @@ void QgsAttributesFormProperties::loadAttributeRelationEdit()
     mAttributeTypeFrame->layout()->removeWidget( mAttributeRelationEdit );
     delete mAttributeRelationEdit;
 
-    //oder mit dem? RelationConfig relCfg = configForRelation( itemData.name() );
     RelationConfig cfg = currentItem->data( 0, RelationConfigRole ).value<RelationConfig>();
 
     mAttributeRelationEdit = new QgsAttributeRelationEdit( currentItem->data( 0, FieldNameRole ).toString(), mAttributeTypeFrame );
