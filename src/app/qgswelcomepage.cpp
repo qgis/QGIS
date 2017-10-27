@@ -117,6 +117,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
   if ( !index.isValid() )
     return;
 
+  bool pin = mModel->data( index, QgsWelcomePageItemsModel::PinRole ).toBool();
   QString path = mModel->data( index, QgsWelcomePageItemsModel::PathRole ).toString();
   if ( path.isEmpty() )
     return;
@@ -127,6 +128,26 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
 
   if ( enabled )
   {
+    if ( !pin )
+    {
+      QAction *pinAction = new QAction( tr( "Pin to List" ), menu );
+      connect( pinAction, &QAction::triggered, this, [this, index]
+      {
+        mModel->pinProject( index );
+        emit projectPinned( index.row() );
+      } );
+      menu->addAction( pinAction );
+    }
+    else
+    {
+      QAction *pinAction = new QAction( tr( "Unpin from List" ), menu );
+      connect( pinAction, &QAction::triggered, this, [this, index]
+      {
+        mModel->unpinProject( index );
+        emit projectUnpinned( index.row() );
+      } );
+      menu->addAction( pinAction );
+    }
     QAction *openFolderAction = new QAction( tr( "Open Directory…" ), menu );
     connect( openFolderAction, &QAction::triggered, this, [this, path]
     {
