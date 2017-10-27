@@ -1220,10 +1220,6 @@ int main( int argc, char *argv[] )
       // set extent from parsed values
       QgsRectangle rect( coords[0], coords[1], coords[2], coords[3] );
       qgis->setExtent( rect );
-      if ( qgis->mapCanvas() )
-      {
-        qgis->mapCanvas()->refresh();
-      }
     }
   }
 

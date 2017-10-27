@@ -108,6 +108,7 @@
 %Include qgsfeatureselectiondlg.sip
 %Include qgsfieldcombobox.sip
 %Include qgsfieldexpressionwidget.sip
+%Include qgsfeaturelistcombobox.sip
 %Include qgsfieldvalidator.sip
 %Include qgsfieldvalueslineedit.sip
 %Include qgsfilewidget.sip
