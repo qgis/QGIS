@@ -81,7 +81,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
           Container
         };
 
-        //dave: do we need that
+        //do we need that
         DnDTreeItemData()
           : mType( Field )
           , mColumnCount( 1 )
@@ -142,6 +142,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       bool mEditable;
       bool mEditableEnabled;
       bool mLabelOnTop;
+      QgsFieldConstraints mFieldConstraints;
       QgsFieldConstraints::Constraints mConstraints;
       QHash< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength > mConstraintStrength;
       QString mConstraint;
@@ -149,6 +150,8 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       QPushButton *mButton = nullptr;
       QString mEditorWidgetType;
       QMap<QString, QVariant> mEditorWidgetConfig;
+      QString mAlias;
+      QString mComment;
 
       operator QVariant();
     };

@@ -45,7 +45,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   , mFieldIdx( fieldIdx )
 {
   setupUi( this );
-  connect( selectionListWidget, &QListWidget::currentRowChanged, this, &QgsAttributeTypeDialog::selectionListWidget_currentRowChanged );
+  //removed selectionListWidget: connect( selectionListWidget, &QListWidget::currentRowChanged, this, &QgsAttributeTypeDialog::selectionListWidget_currentRowChanged );
   setWindowTitle( tr( "Edit Widget Properties - %1 (%2)" ).arg( vl->fields().at( fieldIdx ).name(), vl->name() ) );
 
   QMapIterator<QString, QgsEditorWidgetFactory *> it( QgsGui::editorWidgetRegistry()->factories() );
@@ -336,17 +336,38 @@ void QgsAttributeTypeDialog::setFieldEditable( bool editable )
   isFieldEditableCheckBox->setChecked( editable );
 }
 
+void QgsAttributeTypeDialog::setAlias( const QString &alias )
+{
+  leAlias->setText( alias );
+}
+
+QString QgsAttributeTypeDialog::alias()
+{
+  return leAlias->text();
+}
+
+void QgsAttributeTypeDialog::setComment( const QString &comment )
+{
+  leComment->setText( comment );
+}
+
+QString QgsAttributeTypeDialog::comment()
+{
+  return leComment->text();
+}
+
+
 void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )
 {
   labelOnTopCheckBox->setChecked( onTop );
 }
 
-void QgsAttributeTypeDialog::selectionListWidget_currentRowChanged( int index )
-{
-  const QString editType = selectionListWidget->item( index )->data( Qt::UserRole ).toString();
-
-  setEditorWidgetType( editType );
-}
+//removed selectionListWidget: void QgsAttributeTypeDialog::selectionListWidget_currentRowChanged( int index )
+//removed selectionListWidget: {
+//removed selectionListWidget:   const QString editType = selectionListWidget->item( index )->data( Qt::UserRole ).toString();
+//removed selectionListWidget:
+//removed selectionListWidget:   setEditorWidgetType( editType );
+//removed selectionListWidget: }
 
 void QgsAttributeTypeDialog::defaultExpressionChanged()
 {

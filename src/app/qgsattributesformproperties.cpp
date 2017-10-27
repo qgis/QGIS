@@ -74,7 +74,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
 
     //
     mAttributeTypeDialog = new QgsAttributeTypeDialog( mLayer, index, mAttributeTypeFrame );
-
+    mAttributeTypeDialog->setAlias( cfg.mAlias );
     mAttributeTypeDialog->setFieldEditable( cfg.mEditable );
     mAttributeTypeDialog->setLabelOnTop( cfg.mLabelOnTop );
     mAttributeTypeDialog->setNotNull( cfg.mConstraints & QgsFieldConstraints::ConstraintNotNull );
@@ -82,7 +82,8 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
     mAttributeTypeDialog->setUnique( cfg.mConstraints & QgsFieldConstraints::ConstraintUnique );
     mAttributeTypeDialog->setUniqueEnforced( cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthHard ) == QgsFieldConstraints::ConstraintStrengthHard );
 
-    QgsFieldConstraints constraints = mLayer->fields().at( index ).constraints();
+    //confustion (will be removed): when we make this, the contraint stuff is allways reloaded from layer when we only change the widged-selection... : QgsFieldConstraints constraints = mLayer->fields().at( index ).constraints();
+    QgsFieldConstraints constraints = cfg.mFieldConstraints;
     QgsFieldConstraints::Constraints providerConstraints = 0;
     if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
       providerConstraints |= QgsFieldConstraints::ConstraintNotNull;
@@ -95,7 +96,9 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
     mAttributeTypeDialog->setConstraintExpression( cfg.mConstraint );
     mAttributeTypeDialog->setConstraintExpressionDescription( cfg.mConstraintDescription );
     mAttributeTypeDialog->setConstraintExpressionEnforced( cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard ) == QgsFieldConstraints::ConstraintStrengthHard );
-    mAttributeTypeDialog->setDefaultValueExpression( mLayer->defaultValueExpression( index ) );
+    mAttributeTypeDialog->setDefaultValueExpression( mLayer->defaultValueDefinition( index ).expression() );
+    mAttributeTypeDialog->setApplyDefaultValueOnUpdate( mLayer->defaultValueDefinition( index ).applyOnUpdate() );
+    //confustion (will be removed): das hier funktioniert nicht, es is neu, aber ich weiss nicht woher: mAttributeTypeDialog->setDefaultValueExpression( mLayer->defaultValueExpression( index ) );
 
     mAttributeTypeDialog->setEditorWidgetConfig( cfg.mEditorWidgetConfig );
     mAttributeTypeDialog->setEditorWidgetType( cfg.mEditorWidgetType );
@@ -114,7 +117,10 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
 
   cfg.mEditable = mAttributeTypeDialog->fieldEditable();
   cfg.mLabelOnTop = mAttributeTypeDialog->labelOnTop();
+  cfg.mAlias = mAttributeTypeDialog->alias();
+  cfg.mComment = mAttributeTypeDialog->comment();
 
+  //confustion (will be removed): wir laden teilweise sachen einfach beim store anstelle des applys auf die mLayer - eingie Sachen laden wir auch vom layer anstatt über das cfg. wieso
   QgsFieldConstraints constraints = mLayer->fields().at( mAttributeTypeDialog->fieldIdx() ).constraints();
   QgsFieldConstraints::Constraints providerConstraints = 0;
   if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
@@ -139,7 +145,8 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
 
   cfg.mConstraintDescription = mAttributeTypeDialog->constraintExpressionDescription();
   cfg.mConstraint = mAttributeTypeDialog->constraintExpression();
-  mLayer->setDefaultValueExpression( mAttributeTypeDialog->fieldIdx(), mAttributeTypeDialog->defaultValueExpression() );
+  //confustion (will be removed): das hier funktioniert nicht, es is neu, aber ich weiss nicht woher: mLayer->setDefaultValueExpression( mAttributeTypeDialog->fieldIdx(), mAttributeTypeDialog->defaultValueExpression() );
+  mLayer->setDefaultValueDefinition( mAttributeTypeDialog->fieldIdx(), QgsDefaultValue( mAttributeTypeDialog->defaultValueExpression(), mAttributeTypeDialog->applyDefaultValueOnUpdate() ) );
 
   cfg.mEditorWidgetType = mAttributeTypeDialog->editorWidgetType();
   cfg.mEditorWidgetConfig = mAttributeTypeDialog->editorWidgetConfig();
@@ -279,6 +286,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   {
     const QgsField field = fields.at( i );
     DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, field.name() );
+    //should we load here stuff like in im loadAttributeEditorTreeItem other stuff like itemData.setShowLabel( true );?
     itemData.setShowLabel( true );
 
     FieldConfig cfg( mLayer, i );
@@ -359,7 +367,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
 
   switch ( itemData.type() )
   {
-    //dave hier auch indexed rein?
+    //indexed here?
     case DnDTreeItemData::Field:
     {
       int idx = mLayer->fields().lookupField( itemData.name() );
@@ -402,6 +410,8 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
 
 void QgsAttributesFormProperties::apply()
 {
+  storeAttributeTypeDialog();
+
   QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
 
   QTreeWidgetItem* fieldContainer=mAvailableWidgetsTree->invisibleRootItem()->child(0);
@@ -444,7 +454,8 @@ void QgsAttributesFormProperties::apply()
       mLayer->removeFieldConstraint( idx, QgsFieldConstraints::ConstraintExpression );
     }
 
-    //mLayer->setFieldAlias( idx, aliasItem->text() );
+    mLayer->setFieldAlias( idx, cfg.mAlias );
+    //wo?? ( idx, cfg.mComment );
   }
 
   // tabs and groups
@@ -519,17 +530,18 @@ QgsAttributesFormProperties::FieldConfig::FieldConfig()
 QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
   : mButton( nullptr )
 {
+  mAlias=layer->fields().at( idx ).alias();
   mEditable = !layer->editFormConfig().readOnly( idx );
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin
                      && layer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression;
   mLabelOnTop = layer->editFormConfig().labelOnTop( idx );
-  QgsFieldConstraints constraints = layer->fields().at( idx ).constraints();
-  mConstraints = constraints.constraints();
-  mConstraint = constraints.constraintExpression();
-  mConstraintStrength.insert( QgsFieldConstraints::ConstraintNotNull, constraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
-  mConstraintStrength.insert( QgsFieldConstraints::ConstraintUnique, constraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
-  mConstraintStrength.insert( QgsFieldConstraints::ConstraintExpression, constraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
-  mConstraintDescription = constraints.constraintDescription();
+  mFieldConstraints = layer->fields().at( idx ).constraints();
+  mConstraints = mFieldConstraints.constraints();
+  mConstraint = mFieldConstraints.constraintExpression();
+  mConstraintStrength.insert( QgsFieldConstraints::ConstraintNotNull, mFieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
+  mConstraintStrength.insert( QgsFieldConstraints::ConstraintUnique, mFieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
+  mConstraintStrength.insert( QgsFieldConstraints::ConstraintExpression, mFieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
+  mConstraintDescription = mFieldConstraints.constraintDescription();
   const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( layer, layer->fields().field( idx ).name() );
   mEditorWidgetType = setup.type();
   mEditorWidgetConfig = setup.config();
@@ -561,9 +573,7 @@ DnDTree::DnDTree( QgsVectorLayer *layer, QWidget *parent )
   : QTreeWidget( parent )
   , mLayer( layer )
 {
-  //connect( this, &QTreeWidget::itemDoubleClicked, this, &DnDTree::onItemDoubleClicked );
-  //connect( this, &QTreeWidget::itemDoubleClicked, this, &DnDTree::attributeTypeDialog );
-  //connect( this, &QTreeWidget::itemSelectionChanged, this, &DnDTree::attributeTypeDialog );
+  connect( this, &QTreeWidget::itemDoubleClicked, this, &DnDTree::onItemDoubleClicked );
 }
 
 QTreeWidgetItem *DnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data )

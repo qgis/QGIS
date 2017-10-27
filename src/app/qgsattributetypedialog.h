@@ -64,6 +64,26 @@ class APP_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     bool labelOnTop() const;
 
     /**
+     * Setter for lable alias
+     */
+    void setAlias( const QString &alias );
+
+    /**
+     * Getter for lable alias
+     */
+    QString alias();
+
+    /**
+     * Setter for lable comment
+     */
+    void setComment( const QString &comment );
+
+    /**
+     * Getter for lable comment
+     */
+    QString comment();
+
+    /**
      * Setter for checkbox for editable state of field
      */
     void setFieldEditable( bool editable );
@@ -183,7 +203,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
      */
     void onCurrentWidgetChanged( int index );
     
-    void selectionListWidget_currentRowChanged( int index );
+//removed selectionListWidget:     void selectionListWidget_currentRowChanged( int index );
     
     void defaultExpressionChanged();
 
