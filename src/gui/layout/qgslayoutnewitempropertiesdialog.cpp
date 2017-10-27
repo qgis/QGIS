@@ -53,6 +53,14 @@ QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Q
 
 void QgsLayoutItemPropertiesDialog::setItemPosition( QgsLayoutPoint position )
 {
+  // page number
+  QPointF layoutPoint = mLayout->convertToLayoutUnits( position );
+  int page = mLayout->pageCollection()->pageNumberForPoint( layoutPoint );
+
+  // convert position to relative for current page
+  position = mLayout->convertFromLayoutUnits( mLayout->pageCollection()->positionOnPage( layoutPoint ), position.units() );
+
+  mPageSpin->setValue( page + 1 );
   mPosUnitsComboBox->setUnit( position.units() );
   mXPosSpin->setValue( position.x() );
   mYPosSpin->setValue( position.y() );
@@ -61,6 +69,11 @@ void QgsLayoutItemPropertiesDialog::setItemPosition( QgsLayoutPoint position )
 QgsLayoutPoint QgsLayoutItemPropertiesDialog::itemPosition() const
 {
   return QgsLayoutPoint( mXPosSpin->value(), mYPosSpin->value(), mPosUnitsComboBox->unit() );
+}
+
+int QgsLayoutItemPropertiesDialog::page() const
+{
+  return mPageSpin->value() - 1;
 }
 
 void QgsLayoutItemPropertiesDialog::setItemSize( QgsLayoutSize size )
@@ -162,4 +175,5 @@ void QgsLayoutItemPropertiesDialog::setLayout( QgsLayout *layout )
 {
   mSizeUnitsComboBox->setConverter( &layout->context().measurementConverter() );
   mPosUnitsComboBox->setConverter( &layout->context().measurementConverter() );
+  mLayout = layout;
 }

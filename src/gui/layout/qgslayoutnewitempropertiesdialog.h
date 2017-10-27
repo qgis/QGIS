@@ -57,6 +57,11 @@ class GUI_EXPORT QgsLayoutItemPropertiesDialog : public QDialog, private Ui::Qgs
     QgsLayoutPoint itemPosition() const;
 
     /**
+     * Returns the page number for the new item.
+     */
+    int page() const;
+
+    /**
      * Sets the item \a size to show in the dialog.
      * \see itemSize()
      */
@@ -86,6 +91,10 @@ class GUI_EXPORT QgsLayoutItemPropertiesDialog : public QDialog, private Ui::Qgs
      * conversion of units.
      */
     void setLayout( QgsLayout *layout );
+
+  private:
+
+    QgsLayout *mLayout = nullptr;
 
 };
 
