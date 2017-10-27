@@ -23,9 +23,7 @@ QgsLayoutMultiFrame::QgsLayoutMultiFrame( QgsLayout *layout )
 {
   mLayout->addMultiFrame( this );
 
-#if 0 //TODO
-  connect( mLayout, &QgsLayout::nPagesChanged, this, &QgsLayoutMultiFrame::handlePageChange );
-#endif
+  connect( mLayout->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutMultiFrame::handlePageChange );
 }
 
 QgsLayoutMultiFrame::~QgsLayoutMultiFrame()
@@ -86,7 +84,6 @@ QList<QgsLayoutFrame *> QgsLayoutMultiFrame::frames() const
 
 void QgsLayoutMultiFrame::recalculateFrameSizes()
 {
-#if 0 //TODO
   if ( mFrameItems.empty() )
   {
     return;
@@ -143,38 +140,49 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
     while ( ( mResizeMode == RepeatOnEveryPage ) || currentY < totalHeight )
     {
       //find out on which page the lower left point of the last frame is
-      int page = std::floor( ( currentItem->pos().y() + currentItem->rect().height() ) / ( mLayout->paperHeight() + mComposition->spaceBetweenPages() ) ) + 1;
+      int page = mLayout->pageCollection()->predictPageNumberForPoint( QPointF( 0, currentItem->pos().y() + currentItem->rect().height() ) );
 
       if ( mResizeMode == RepeatOnEveryPage )
       {
-        if ( page >= mComposition->numPages() )
+        if ( page >= mLayout->pageCollection()->pageCount() )
         {
           break;
         }
       }
       else
       {
-        //add an extra page if required
-        if ( mComposition->numPages() < ( page + 1 ) )
+        //add new pages if required
+        for ( int p = mLayout->pageCollection()->pageCount() - 1 ; p < page; ++p )
         {
-          mComposition->setNumPages( page + 1 );
+          mLayout->pageCollection()->extendByNewPage();
         }
       }
 
+      double currentPageHeight = mLayout->pageCollection()->page( page )->rect().height();
+
       double frameHeight = 0;
-      if ( mResizeMode == RepeatUntilFinished || mResizeMode == RepeatOnEveryPage )
+      switch ( mResizeMode )
       {
-        frameHeight = currentItem->rect().height();
-      }
-      else //mResizeMode == ExtendToNextPage
-      {
-        frameHeight = ( currentY + mComposition->paperHeight() ) > totalHeight ?  totalHeight - currentY : mComposition->paperHeight();
+        case RepeatUntilFinished:
+        case RepeatOnEveryPage:
+        {
+          frameHeight = currentItem->rect().height();
+          break;
+        }
+        case ExtendToNextPage:
+        {
+          frameHeight = ( currentY + currentPageHeight ) > totalHeight ?  totalHeight - currentY : currentPageHeight;
+          break;
+        }
+
+        case UseExistingFrames:
+          break;
       }
 
-      double newFrameY = page * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+      double newFrameY = mLayout->pageCollection()->page( page )->pos().y();
       if ( mResizeMode == RepeatUntilFinished || mResizeMode == RepeatOnEveryPage )
       {
-        newFrameY += currentItem->pos().y() - ( page - 1 ) * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+        newFrameY += currentItem->pagePos().y();
       }
 
       //create new frame
@@ -197,7 +205,6 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
       currentItem = newFrame;
     }
   }
-#endif
 }
 
 void QgsLayoutMultiFrame::recalculateFrameRects()
@@ -281,7 +288,6 @@ void QgsLayoutMultiFrame::handleFrameRemoval()
 
 void QgsLayoutMultiFrame::handlePageChange()
 {
-#if 0 //TODO
   if ( mLayout->pageCollection()->pageCount() < 1 )
   {
     return;
@@ -296,8 +302,8 @@ void QgsLayoutMultiFrame::handlePageChange()
   for ( int i = mFrameItems.size() - 1; i >= 0; --i )
   {
     QgsLayoutFrame *frame = mFrameItems.at( i );
-    int page = frame->pos().y() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
-    if ( page > ( mComposition->numPages() - 1 ) )
+    int page = mLayout->pageCollection()->predictPageNumberForPoint( frame->pos() );
+    if ( page >= mLayout->pageCollection()->pageCount() )
     {
       removeFrame( i );
     }
@@ -305,21 +311,22 @@ void QgsLayoutMultiFrame::handlePageChange()
 
   //page number of the last item
   QgsLayoutFrame *lastFrame = mFrameItems.last();
-  int lastItemPage = lastFrame->pos().y() / ( mLayout->paperHeight() + mLayout->spaceBetweenPages() );
+  int lastItemPage = mLayout->pageCollection()->predictPageNumberForPoint( lastFrame->pos() );
 
   for ( int i = lastItemPage + 1; i < mLayout->pageCollection()->pageCount(); ++i )
   {
     //copy last frame to current page
-    QgsLayoutFrame *newFrame = new QgsLayoutFrame( mLayout, this, lastFrame->pos().x(),
-        lastFrame->pos().y() + mLayout->paperHeight() + mLayout->spaceBetweenPages(),
-        lastFrame->rect().width(), lastFrame->rect().height() );
-    addFrame( newFrame, false );
-    lastFrame = newFrame;
+    std::unique_ptr< QgsLayoutFrame > newFrame = qgis::make_unique< QgsLayoutFrame >( mLayout, this );
+
+    newFrame->attemptSetSceneRect( QRectF( lastFrame->pos().x(),
+                                           mLayout->pageCollection()->page( i )->pos().y() + lastFrame->pagePos().y(),
+                                           lastFrame->rect().width(), lastFrame->rect().height() ) );
+    lastFrame = newFrame.get();
+    addFrame( newFrame.release(), false );
   }
 
   recalculateFrameSizes();
   update();
-#endif
 }
 
 void QgsLayoutMultiFrame::removeFrame( int i, const bool removeEmptyPages )
@@ -333,18 +340,16 @@ void QgsLayoutMultiFrame::removeFrame( int i, const bool removeEmptyPages )
   if ( mLayout )
   {
     mIsRecalculatingSize = true;
-#if 0 //TODO
     int pageNumber = frameItem->page();
     //remove item, but don't create undo command
 #if 0 //TODO - block undo commands
 #endif
     mLayout->removeLayoutItem( frameItem );
     //if frame was the only item on the page, remove the page
-    if ( removeEmptyPages && mComposition->pageIsEmpty( pageNumber ) )
+    if ( removeEmptyPages && mLayout->pageCollection()->pageIsEmpty( pageNumber ) )
     {
-      mComposition->setNumPages( mComposition->numPages() - 1 );
+      mLayout->pageCollection()->deletePage( pageNumber );
     }
-#endif
     mIsRecalculatingSize = false;
   }
   mFrameItems.removeAt( i );
