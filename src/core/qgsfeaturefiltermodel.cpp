@@ -220,8 +220,6 @@ void QgsFeatureFilterModel::updateCompleter()
 
     int firstRow = 0;
 
-    QgsDebugMsg( QStringLiteral( "Entries 1: %1 " ).arg( mEntries.size() ) );
-
     // Move the extra entry to the first position
     if ( mExtraIdentifierValueIndex != -1 )
     {
@@ -239,18 +237,13 @@ void QgsFeatureFilterModel::updateCompleter()
       firstRow = 1;
     }
 
-    QgsDebugMsg( QStringLiteral( "Entries 2: %1 " ).arg( mEntries.size() ) );
-
     // Remove all entries (except for extra entry if existent)
     beginRemoveRows( QModelIndex(), firstRow, mEntries.size() - firstRow );
     mEntries.remove( firstRow, mEntries.size() - firstRow );
     endRemoveRows();
 
-    QgsDebugMsg( QStringLiteral( "Entries 3: %1 " ).arg( mEntries.size() ) );
-
     if ( currentEntryInNewList == -1 )
     {
-      QgsDebugMsg( QStringLiteral( "Current value is NOT in new list" ) );
       beginInsertRows( QModelIndex(), 1, entries.size() + 1 );
       mEntries += entries;
       endInsertRows();
@@ -258,7 +251,6 @@ void QgsFeatureFilterModel::updateCompleter()
     }
     else
     {
-      QgsDebugMsg( QStringLiteral( "Current value is in new list" ) );
       if ( currentEntryInNewList != 0 )
       {
         beginInsertRows( QModelIndex(), 0, currentEntryInNewList - 1 );
