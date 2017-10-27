@@ -1879,5 +1879,6 @@ class TestQgsServerWMS(QgsServerTestBase):
         self.assertTrue(xmlResult.find("<WMSDataSource>contextualWMSLegend=0&amp;crs=EPSG:21781&amp;dpiMode=7&amp;featureCount=10&amp;format=image/png&amp;layers=public_geo_gemeinden&amp;styles=&amp;url=https://qgiscloud.com/mhugent/qgis_unittest_wms/wms?</WMSDataSource>") != -1)
         self.assertTrue(xmlResult.find("<WMSPrintLayer>contextualWMSLegend=0&amp;amp;crs=EPSG:21781&amp;amp;dpiMode=7&amp;amp;featureCount=10&amp;amp;format=image/png&amp;amp;layers=public_geo_gemeinden&amp;amp;styles=&amp;amp;url=https://qgiscloud.com/mhugent/qgis_unittest_wms_print/wms?</WMSPrintLayer>") != -1)
 
+
 if __name__ == '__main__':
     unittest.main()
