@@ -329,14 +329,22 @@ class QgsPoint: QgsAbstractGeometry
 %End
 
     virtual bool isEmpty() const;
+
     virtual QgsRectangle boundingBox() const;
+
     virtual QString geometryType() const;
+
     virtual int dimension() const;
+
     virtual QgsPoint *clone() const /Factory/;
+
+    virtual QgsPoint *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
     virtual void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
+
     virtual bool fromWkt( const QString &wkt );
+
     virtual QByteArray asWkb() const;
 
     virtual QString asWkt( int precision = 17 ) const;
@@ -354,20 +362,30 @@ class QgsPoint: QgsAbstractGeometry
     virtual void transform( const QTransform &t );
 
     virtual QgsCoordinateSequence coordinateSequence() const;
+
     virtual int nCoordinates() const;
+
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
+
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
+
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
+
     virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
+
     virtual bool deleteVertex( QgsVertexId position );
 
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
-                                   QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/,
-                                   double epsilon ) const;
+
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
+
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const;
+
+    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const;
 
 
     virtual double vertexAngle( QgsVertexId vertex ) const;
+
 %Docstring
  Angle undefined. Always returns 0.0
 \param vertex the vertex id
@@ -376,18 +394,38 @@ class QgsPoint: QgsAbstractGeometry
 %End
 
     virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const;
+
     virtual int ringCount( int /*part*/ = 0 ) const;
+
     virtual int partCount() const;
+
     virtual QgsPoint vertexAt( QgsVertexId /*id*/ ) const;
 
+    virtual QgsPoint *toCurveType() const /Factory/;
+
+
     virtual bool addZValue( double zValue = 0 );
+
     virtual bool addMValue( double mValue = 0 );
+
     virtual bool dropZValue();
+
     virtual bool dropMValue();
+
     virtual bool convertTo( QgsWkbTypes::Type type );
 
 
+
+  protected:
+    virtual QgsPoint *createEmptyWithSameType() const /Factory/;
+
+    virtual int childCount() const;
+
+    virtual QgsPoint childPoint( int index ) const;
+
+
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

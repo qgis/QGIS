@@ -20,14 +20,30 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 
 QgsMultiPointV2::QgsMultiPointV2()
-  : QgsGeometryCollection()
 {
   mWkbType = QgsWkbTypes::MultiPoint;
+}
+
+QString QgsMultiPointV2::geometryType() const
+{
+  return QStringLiteral( "MultiPoint" );
+}
+
+QgsMultiPointV2 *QgsMultiPointV2::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsMultiPointV2 >();
+  result->mWkbType = mWkbType;
+  return result.release();
 }
 
 QgsMultiPointV2 *QgsMultiPointV2::clone() const
 {
   return new QgsMultiPointV2( *this );
+}
+
+QgsMultiPointV2 *QgsMultiPointV2::toCurveType() const
+{
+  return clone();
 }
 
 bool QgsMultiPointV2::fromWkt( const QString &wkt )
@@ -45,12 +61,22 @@ bool QgsMultiPointV2::fromWkt( const QString &wkt )
   return fromCollectionWkt( collectionWkt, QList<QgsAbstractGeometry *>() << new QgsPoint, QStringLiteral( "Point" ) );
 }
 
+void QgsMultiPointV2::clear()
+{
+  QgsGeometryCollection::clear();
+  mWkbType = QgsWkbTypes::MultiPoint;
+}
+
 QDomElement QgsMultiPointV2::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+
+  if ( isEmpty() )
+    return elemMultiPoint;
+
+  for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( dynamic_cast<const QgsPoint *>( geom ) )
+    if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
     {
       QDomElement elemPointMember = doc.createElementNS( ns, QStringLiteral( "pointMember" ) );
       elemPointMember.appendChild( geom->asGML2( doc, precision, ns ) );
@@ -64,9 +90,13 @@ QDomElement QgsMultiPointV2::asGML2( QDomDocument &doc, int precision, const QSt
 QDomElement QgsMultiPointV2::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+
+  if ( isEmpty() )
+    return elemMultiPoint;
+
+  for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( dynamic_cast<const QgsPoint *>( geom ) )
+    if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
     {
       QDomElement elemPointMember = doc.createElementNS( ns, QStringLiteral( "pointMember" ) );
       elemPointMember.appendChild( geom->asGML3( doc, precision, ns ) );
@@ -82,9 +112,9 @@ QString QgsMultiPointV2::asJSON( int precision ) const
   QString json = QStringLiteral( "{\"type\": \"MultiPoint\", \"coordinates\": " );
 
   QgsPointSequence pts;
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( dynamic_cast<const QgsPoint *>( geom ) )
+    if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
     {
       const QgsPoint *point = static_cast<const QgsPoint *>( geom );
       pts << *point;
@@ -95,18 +125,59 @@ QString QgsMultiPointV2::asJSON( int precision ) const
   return json;
 }
 
+int QgsMultiPointV2::nCoordinates() const
+{
+  return mGeometries.size();
+}
+
 bool QgsMultiPointV2::addGeometry( QgsAbstractGeometry *g )
 {
-  if ( !dynamic_cast<QgsPoint *>( g ) )
+  if ( !qgsgeometry_cast<QgsPoint *>( g ) )
   {
     delete g;
     return false;
   }
-  setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiPoint );
+  if ( mGeometries.empty() )
+  {
+    setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiPoint );
+  }
+  if ( is3D() && !g->is3D() )
+    g->addZValue();
+  else if ( !is3D() && g->is3D() )
+    g->dropZValue();
+  if ( isMeasure() && !g->isMeasure() )
+    g->addMValue();
+  else if ( !isMeasure() && g->isMeasure() )
+    g->dropMValue();
+
   return QgsGeometryCollection::addGeometry( g );
+}
+
+bool QgsMultiPointV2::insertGeometry( QgsAbstractGeometry *g, int index )
+{
+  if ( !g || QgsWkbTypes::flatType( g->wkbType() ) != QgsWkbTypes::Point )
+  {
+    delete g;
+    return false;
+  }
+
+  return QgsGeometryCollection::insertGeometry( g, index );
 }
 
 QgsAbstractGeometry *QgsMultiPointV2::boundary() const
 {
   return nullptr;
+}
+
+int QgsMultiPointV2::vertexNumberFromVertexId( QgsVertexId id ) const
+{
+  if ( id.part < 0 || id.part >= mGeometries.count() || id.vertex != 0 || id.ring != 0 )
+    return -1;
+
+  return id.part; // can shortcut the calculation, since each part will have 1 vertex
+}
+
+bool QgsMultiPointV2::wktOmitChildType() const
+{
+  return true;
 }

@@ -74,11 +74,6 @@ class QgsGeometryUtils
  :rtype: bool
 %End
 
-    static void adjacentVertices( const QgsAbstractGeometry &geom, QgsVertexId atVertex, QgsVertexId &beforeVertex /Out/, QgsVertexId &afterVertex /Out/ );
-%Docstring
- Returns vertices adjacent to a specified vertex within a geometry.
-%End
-
     static double sqrDistance2D( const QgsPoint &pt1, const QgsPoint &pt2 );
 %Docstring
  Returns the squared 2D distance between two points.

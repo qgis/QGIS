@@ -65,8 +65,6 @@ static const QString icon_ = QStringLiteral( ":/gps_importer.svg" );
 QgsGPSPlugin::QgsGPSPlugin( QgisInterface *qgisInterFace )
   : QgisPlugin( name_, description_, category_, version_, type_ )
   , mQGisInterface( qgisInterFace )
-  , mQActionPointer( nullptr )
-  , mCreateGPXAction( nullptr )
 {
   setupBabel();
 }
@@ -186,12 +184,12 @@ void QgsGPSPlugin::createGPX()
 
     ofs << "<gpx></gpx>" << std::endl;
 
-    emit drawVectorLayer( fileName + "?type=track",
-                          fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
-    emit drawVectorLayer( fileName + "?type=route",
-                          fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
-    emit drawVectorLayer( fileName + "?type=waypoint",
-                          fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
+    drawVectorLayer( fileName + "?type=track",
+                     fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
+    drawVectorLayer( fileName + "?type=route",
+                     fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
+    drawVectorLayer( fileName + "?type=waypoint",
+                     fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
   }
 }
 
@@ -230,14 +228,14 @@ void QgsGPSPlugin::loadGPXFile( const QString &fileName, bool loadWaypoints, boo
 
   // add the requested layers
   if ( loadTracks )
-    emit drawVectorLayer( fileName + "?type=track",
-                          fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
+    drawVectorLayer( fileName + "?type=track",
+                     fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
   if ( loadRoutes )
-    emit drawVectorLayer( fileName + "?type=route",
-                          fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
+    drawVectorLayer( fileName + "?type=route",
+                     fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
   if ( loadWaypoints )
-    emit drawVectorLayer( fileName + "?type=waypoint",
-                          fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
+    drawVectorLayer( fileName + "?type=waypoint",
+                     fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
 
   emit closeGui();
 }
@@ -297,14 +295,14 @@ void QgsGPSPlugin::importGPSFile( const QString &inputFileName, QgsBabelFormat *
 
   // add the layer
   if ( importTracks )
-    emit drawVectorLayer( outputFileName + "?type=track",
-                          layerName, QStringLiteral( "gpx" ) );
+    drawVectorLayer( outputFileName + "?type=track",
+                     layerName, QStringLiteral( "gpx" ) );
   if ( importRoutes )
-    emit drawVectorLayer( outputFileName + "?type=route",
-                          layerName, QStringLiteral( "gpx" ) );
+    drawVectorLayer( outputFileName + "?type=route",
+                     layerName, QStringLiteral( "gpx" ) );
   if ( importWaypoints )
-    emit drawVectorLayer( outputFileName + "?type=waypoint",
-                          layerName, QStringLiteral( "gpx" ) );
+    drawVectorLayer( outputFileName + "?type=waypoint",
+                     layerName, QStringLiteral( "gpx" ) );
 
   emit closeGui();
 }
@@ -377,16 +375,16 @@ void QgsGPSPlugin::convertGPSFile( const QString &inputFileName,
   {
     case 0:
     case 3:
-      emit drawVectorLayer( outputFileName + "?type=waypoint",
-                            layerName, QStringLiteral( "gpx" ) );
+      drawVectorLayer( outputFileName + "?type=waypoint",
+                       layerName, QStringLiteral( "gpx" ) );
       break;
     case 1:
-      emit drawVectorLayer( outputFileName + "?type=route",
-                            layerName, QStringLiteral( "gpx" ) );
+      drawVectorLayer( outputFileName + "?type=route",
+                       layerName, QStringLiteral( "gpx" ) );
       break;
     case 2:
-      emit drawVectorLayer( outputFileName + "?type=track",
-                            layerName, QStringLiteral( "gpx" ) );
+      drawVectorLayer( outputFileName + "?type=track",
+                       layerName, QStringLiteral( "gpx" ) );
       break;
     default:
       QgsDebugMsg( "Illegal conversion index!" );
@@ -464,14 +462,14 @@ void QgsGPSPlugin::downloadFromGPS( const QString &device, const QString &port,
 
   // add the layer
   if ( downloadWaypoints )
-    emit drawVectorLayer( outputFileName + "?type=waypoint",
-                          layerName, QStringLiteral( "gpx" ) );
+    drawVectorLayer( outputFileName + "?type=waypoint",
+                     layerName, QStringLiteral( "gpx" ) );
   if ( downloadRoutes )
-    emit drawVectorLayer( outputFileName + "?type=route",
-                          layerName, QStringLiteral( "gpx" ) );
+    drawVectorLayer( outputFileName + "?type=route",
+                     layerName, QStringLiteral( "gpx" ) );
   if ( downloadTracks )
-    emit drawVectorLayer( outputFileName + "?type=track",
-                          layerName, QStringLiteral( "gpx" ) );
+    drawVectorLayer( outputFileName + "?type=track",
+                     layerName, QStringLiteral( "gpx" ) );
 
   // everything was OK, remember the device and port for next time
   QgsSettings settings;
@@ -642,7 +640,7 @@ void QgsGPSPlugin::setupBabel()
 
   QStringList::const_iterator iter;
 
-  for ( iter = deviceNames.begin(); iter != deviceNames.end(); ++iter )
+  for ( iter = deviceNames.constBegin(); iter != deviceNames.constEnd(); ++iter )
   {
     QString wptDownload = settings.
                           value( QStringLiteral( "/Plugin-GPS/devices/%1/wptdownload" ).

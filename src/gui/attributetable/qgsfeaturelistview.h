@@ -34,7 +34,8 @@ class QgsVectorLayerCache;
 class QgsFeatureListViewDelegate;
 class QRect;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Shows a list of features and renders a edit button next to each feature.
  *
  * Accepts a display expression to define the way, features are rendered.
@@ -181,8 +182,8 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QgsFeatureSelectionModel *mFeatureSelectionModel = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QgsFeatureListViewDelegate *mItemDelegate = nullptr;
-    bool mEditSelectionDrag; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing //!< TODO
-    int mRowAnchor;
+    bool mEditSelectionDrag = false; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing //!< TODO
+    int mRowAnchor = 0;
     QItemSelectionModel::SelectionFlags mCtrlDragSelectionFlag;
 };
 

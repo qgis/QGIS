@@ -37,18 +37,7 @@ class TestQgsAtlasComposition : public QObject
     Q_OBJECT
 
   public:
-    TestQgsAtlasComposition()
-      : mComposition( 0 )
-      , mLabel1( 0 )
-      , mLabel2( 0 )
-      , mAtlasMap( 0 )
-      , mOverview( 0 )
-      , mVectorLayer( 0 )
-      , mVectorLayer2( 0 )
-      , mAtlas( 0 )
-    {}
-
-    ~TestQgsAtlasComposition();
+    TestQgsAtlasComposition() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -109,10 +98,6 @@ void TestQgsAtlasComposition::initTestCase()
 
   mReport = QStringLiteral( "<h1>Composer Atlas Tests</h1>\n" );
 }
-
-TestQgsAtlasComposition::~TestQgsAtlasComposition()
-{}
-
 
 void TestQgsAtlasComposition::cleanupTestCase()
 {

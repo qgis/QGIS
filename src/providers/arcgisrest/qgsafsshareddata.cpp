@@ -17,17 +17,11 @@
 #include "qgsarcgisrestutils.h"
 #include "qgslogger.h"
 
-QgsAfsSharedData::QgsAfsSharedData()
-{
-
-
-}
-
 bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int> & /*fetchAttributes*/, const QgsRectangle &filterRect )
 {
   // If cached, return cached feature
-  QMap<QgsFeatureId, QgsFeature>::const_iterator it = mCache.find( id );
-  if ( it != mCache.end() )
+  QMap<QgsFeatureId, QgsFeature>::const_iterator it = mCache.constFind( id );
+  if ( it != mCache.constEnd() )
   {
     f = it.value();
     return filterRect.isNull() || f.geometry().intersects( filterRect );
@@ -52,7 +46,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
 
   // Fetch 100 features at the time
   int startId = ( id / 100 ) * 100;
-  int stopId = qMin( startId + 100, mObjectIds.length() );
+  int stopId = std::min( startId + 100, mObjectIds.length() );
   QList<quint32> objectIds;
   objectIds.reserve( stopId );
   for ( int i = startId; i < stopId; ++i )

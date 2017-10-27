@@ -36,7 +36,8 @@ class QgsMapLayerAction;
 class QgsEditorWidgetFactory;
 class QgsFieldFormatter;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A model backed by a QgsVectorLayerCache which is able to provide
  * feature/attribute information to a QAbstractItemView.
  *
@@ -260,7 +261,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void loadLayer();
 
-    /** Handles updating the model when the conditional style for a field changes.
+    /**
+     * Handles updating the model when the conditional style for a field changes.
      * \param fieldName name of field whose conditional style has changed
      * \since QGIS 2.12
      */
@@ -356,6 +358,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * \returns feature exists
      */
     virtual bool loadFeatureAtId( QgsFeatureId fid ) const;
+
+    bool fieldIsEditable( const QgsVectorLayer &layer, int fieldIndex, QgsFeatureId fid ) const;
 
     QgsFeatureRequest mFeatureRequest;
 

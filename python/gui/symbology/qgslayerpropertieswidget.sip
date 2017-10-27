@@ -18,7 +18,15 @@ class QgsLayerPropertiesWidget : QgsPanelWidget, QgsExpressionContextGenerator
 #include "qgslayerpropertieswidget.h"
 %End
   public:
-    QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+
+    QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsLayerPropertiesWidget.
+ \param layer the symbol layer
+ \param symbol the symbol
+ \param vl associated vector layer
+ \param parent parent widget
+%End
 
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring

@@ -29,6 +29,7 @@ class QgsFieldValidator : QValidator
 
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

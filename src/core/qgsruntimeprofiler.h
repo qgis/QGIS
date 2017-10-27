@@ -8,7 +8,8 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsRuntimeProfiler
  */
 class CORE_EXPORT QgsRuntimeProfiler
@@ -18,7 +19,7 @@ class CORE_EXPORT QgsRuntimeProfiler
     /**
      * Constructor to create a new runtime profiler.
      */
-    QgsRuntimeProfiler();
+    QgsRuntimeProfiler() = default;
 
     /**
      * \brief Begin the group for the profiler. Groups will append {GroupName}/ to the

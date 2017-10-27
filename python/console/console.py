@@ -31,8 +31,8 @@ from .console_sci import ShellScintilla
 from .console_output import ShellOutputScintilla
 from .console_editor import EditorTabWidget
 from .console_settings import optionsDialog
-from qgis.core import QgsApplication, QgsContextHelp, QgsSettings
-from qgis.gui import QgsFilterLineEdit
+from qgis.core import QgsApplication, QgsSettings
+from qgis.gui import QgsFilterLineEdit, QgsHelp
 from functools import partial
 
 import sys
@@ -55,12 +55,6 @@ def show_console():
         # set focus to the console so the user can start typing
         if _console.isVisible():
             _console.activate()
-
-    # Shows help on first launch of the console
-    settings = QgsSettings()
-    if settings.value('pythonConsole/contextHelpOnFirstLaunch', True, type=bool):
-        QgsContextHelp.run("PythonConsole")
-        settings.setValue('pythonConsole/contextHelpOnFirstLaunch', False)
 
     return _console
 
@@ -244,7 +238,7 @@ class PythonConsoleWidget(QWidget):
         self.pasteEditorButton.setToolTip(pasteEditorBt)
         self.pasteEditorButton.setText(pasteEditorBt)
         # Action Run Script (subprocess)
-        runScriptEditorBt = QCoreApplication.translate("PythonConsole", "Run script")
+        runScriptEditorBt = QCoreApplication.translate("PythonConsole", "Run Script")
         self.runScriptEditorButton = QAction(self)
         self.runScriptEditorButton.setCheckable(False)
         self.runScriptEditorButton.setEnabled(True)
@@ -629,7 +623,7 @@ class PythonConsoleWidget(QWidget):
             index = self.tabEditorWidget.currentIndex()
         if not tabWidget.path:
             fileName = self.tabEditorWidget.tabText(index) + '.py'
-            folder = self.settings.value("pythonConsole/lastDirPath", QDir.home())
+            folder = self.settings.value("pythonConsole/lastDirPath", QDir.homePath())
             pathFileName = os.path.join(folder, fileName)
             fileNone = True
         else:
@@ -657,7 +651,7 @@ class PythonConsoleWidget(QWidget):
                 self.updateTabListScript(pathFileName, action='remove')
 
     def openHelp(self):
-        QgsContextHelp.run("PythonConsole")
+        QgsHelp.openHelp("plugins/python_console.html")
 
     def openSettings(self):
         if optionsDialog(self).exec_():

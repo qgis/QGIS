@@ -25,14 +25,15 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsdiagramrenderer.h"
 #include "qgssettings.h"
+#include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerjoinbuffer.h"
+#include "qgsauxiliarystorage.h"
 
 #include <QMouseEvent>
 
 QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-  , mLabelRubberBand( nullptr )
-  , mFeatureRubberBand( nullptr )
-  , mFixPointRubberBand( nullptr )
+
 {
 }
 
@@ -145,7 +146,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
     if ( trunc > 0 && labelText.length() > trunc )
     {
       labelText.truncate( trunc );
-      labelText += QStringLiteral( "…" );
+      labelText += QStringLiteral( "\u2026" );
     }
     return labelText;
   }
@@ -168,7 +169,7 @@ QString QgsMapToolLabel::currentLabelText( int trunc )
         if ( trunc > 0 && labelText.length() > trunc )
         {
           labelText.truncate( trunc );
-          labelText += QStringLiteral( "…" );
+          labelText += QStringLiteral( "\u2026" );
         }
         return labelText;
       }
@@ -343,8 +344,8 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUps
   //  QgsDebugMsg( QString( "cp_0: x=%1, y=%2" ).arg( cp_0.x() ).arg( cp_0.y() ) );
   //  QgsDebugMsg( QString( "cp_1: x=%1, y=%2" ).arg( cp_1.x() ).arg( cp_1.y() ) );
   //  QgsDebugMsg( QString( "cp_3: x=%1, y=%2" ).arg( cp_3.x() ).arg( cp_3.y() ) );
-  double labelSizeX = qSqrt( cp_0.sqrDist( cp_1 ) );
-  double labelSizeY = qSqrt( cp_0.sqrDist( cp_3 ) );
+  double labelSizeX = std::sqrt( cp_0.sqrDist( cp_1 ) );
+  double labelSizeY = std::sqrt( cp_0.sqrDist( cp_3 ) );
 
   double xdiff = 0;
   double ydiff = 0;
@@ -376,8 +377,8 @@ bool QgsMapToolLabel::currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUps
   }
 
   double angle = mCurrentLabel.pos.rotation;
-  double xd = xdiff * cos( angle ) - ydiff * sin( angle );
-  double yd = xdiff * sin( angle ) + ydiff * cos( angle );
+  double xd = xdiff * std::cos( angle ) - ydiff * std::sin( angle );
+  double yd = xdiff * std::sin( angle ) + ydiff * std::cos( angle );
   if ( mCurrentLabel.pos.upsideDown && !ignoreUpsideDown )
   {
     pos.setX( pos.x() - xd );
@@ -687,18 +688,17 @@ bool QgsMapToolLabel::diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol )
 //
 
 QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p )
-  : valid( false )
-  , pos( p )
+  : pos( p )
 {
   layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( pos.layerID ) );
-  if ( layer && layer->labeling() )
+  if ( layer && layer->labeling() && !p.isDiagram )
   {
     settings = layer->labeling()->settings( pos.providerID );
-
-    if ( p.isDiagram )
-      valid = layer->diagramsEnabled();
-    else
-      valid = true;
+    valid = true;
+  }
+  else if ( layer && layer->diagramsEnabled() && p.isDiagram )
+  {
+    valid = true;
   }
 
   if ( !valid )
@@ -706,4 +706,96 @@ QgsMapToolLabel::LabelDetails::LabelDetails( const QgsLabelPosition &p )
     layer = nullptr;
     settings = QgsPalLayerSettings();
   }
+}
+
+bool QgsMapToolLabel::createAuxiliaryFields( QgsPalIndexes &indexes )
+{
+  return createAuxiliaryFields( mCurrentLabel, indexes );
+}
+
+bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &indexes ) const
+{
+  bool newAuxiliaryLayer = false;
+  QgsVectorLayer *vlayer = details.layer;
+  QString providerId = details.pos.providerID;
+
+  if ( !vlayer || !vlayer->labeling() )
+    return newAuxiliaryLayer;
+
+  if ( !vlayer->auxiliaryLayer() )
+  {
+    QgsNewAuxiliaryLayerDialog dlg( vlayer );
+    dlg.exec();
+    newAuxiliaryLayer = true;
+  }
+
+  if ( !vlayer->auxiliaryLayer() )
+    return false;
+
+  for ( const QgsPalLayerSettings::Property &p : qgis::as_const( mPalProperties ) )
+  {
+    int index = -1;
+
+    // always use the default activated property
+    QgsProperty prop = details.settings.dataDefinedProperties().property( p );
+    if ( prop.propertyType() == QgsProperty::FieldBasedProperty && prop.isActive() )
+    {
+      index = vlayer->fields().lookupField( prop.field() );
+    }
+    else
+    {
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer );
+    }
+
+    indexes[p] = index;
+  }
+
+  details.settings = vlayer->labeling()->settings( providerId );
+
+  return newAuxiliaryLayer;
+}
+
+bool QgsMapToolLabel::createAuxiliaryFields( QgsDiagramIndexes &indexes )
+{
+  return createAuxiliaryFields( mCurrentLabel, indexes );
+}
+
+
+bool QgsMapToolLabel::createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &indexes )
+{
+  bool newAuxiliaryLayer = false;
+  QgsVectorLayer *vlayer = details.layer;
+
+  if ( !vlayer )
+    return newAuxiliaryLayer;
+
+  if ( !vlayer->auxiliaryLayer() )
+  {
+    QgsNewAuxiliaryLayerDialog dlg( vlayer );
+    dlg.exec();
+    newAuxiliaryLayer = true;
+  }
+
+  if ( !vlayer->auxiliaryLayer() )
+    return false;
+
+  for ( const QgsDiagramLayerSettings::Property &p : qgis::as_const( mDiagramProperties ) )
+  {
+    int index = -1;
+
+    // always use the default activated property
+    QgsProperty prop = vlayer->diagramLayerSettings()->dataDefinedProperties().property( p );
+    if ( prop.propertyType() == QgsProperty::FieldBasedProperty && prop.isActive() )
+    {
+      index = vlayer->fields().lookupField( prop.field() );
+    }
+    else
+    {
+      index = QgsAuxiliaryLayer::createProperty( p, vlayer );
+    }
+
+    indexes[p] = index;
+  }
+
+  return newAuxiliaryLayer;
 }

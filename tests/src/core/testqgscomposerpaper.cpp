@@ -35,9 +35,7 @@ class TestQgsComposerPaper : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerPaper()
-      : mComposition( 0 )
-    {}
+    TestQgsComposerPaper() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

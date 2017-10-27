@@ -35,13 +35,6 @@
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
   : QListView( parent )
-  , mModel( nullptr )
-  , mCurrentEditSelectionModel( nullptr )
-  , mFeatureSelectionModel( nullptr )
-  , mFeatureSelectionManager( nullptr )
-  , mItemDelegate( nullptr )
-  , mEditSelectionDrag( false )
-  , mRowAnchor( 0 )
 {
   setSelectionMode( QAbstractItemView::ExtendedSelection );
 }
@@ -304,14 +297,14 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
   {
     QgsFeature feature = mModel->data( index, QgsFeatureListModel::FeatureRole ).value<QgsFeature>();
 
-    QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "AttributeTableRow" ), this );
+    QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "Feature" ), this );
     menu->exec( event->globalPos() );
   }
 }
 
 void QgsFeatureListView::selectRow( const QModelIndex &index, bool anchor )
 {
-  QItemSelectionModel::SelectionFlags command =  selectionCommand( index );
+  QItemSelectionModel::SelectionFlags command = selectionCommand( index );
   int row = index.row();
 
   if ( anchor )
@@ -329,8 +322,8 @@ void QgsFeatureListView::selectRow( const QModelIndex &index, bool anchor )
       command |= QItemSelectionModel::Current;
   }
 
-  QModelIndex tl = model()->index( qMin( mRowAnchor, row ), 0 );
-  QModelIndex br = model()->index( qMax( mRowAnchor, row ), model()->columnCount() - 1 );
+  QModelIndex tl = model()->index( std::min( mRowAnchor, row ), 0 );
+  QModelIndex br = model()->index( std::max( mRowAnchor, row ), model()->columnCount() - 1 );
 
   mFeatureSelectionModel->selectFeatures( QItemSelection( tl, br ), command );
 }

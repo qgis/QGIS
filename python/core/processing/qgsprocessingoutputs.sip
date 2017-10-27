@@ -26,7 +26,6 @@ class QgsProcessingOutputDefinition
 %TypeHeaderCode
 #include "qgsprocessingoutputs.h"
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->type() == QgsProcessingOutputVectorLayer::typeName() )
       sipType = sipType_QgsProcessingOutputVectorLayer;
@@ -40,6 +39,10 @@ class QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputString;
     else if ( sipCpp->type() == QgsProcessingOutputFolder::typeName() )
       sipType = sipType_QgsProcessingOutputFolder;
+    else if ( sipCpp->type() == QgsProcessingOutputFile::typeName() )
+      sipType = sipType_QgsProcessingOutputFile;
+    else
+      sipType = nullptr;
 %End
   public:
 
@@ -106,7 +109,7 @@ class QgsProcessingOutputVectorLayer : QgsProcessingOutputDefinition
 %End
   public:
 
-    QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny );
+    QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry );
 %Docstring
  Constructor for QgsProcessingOutputVectorLayer.
 %End
@@ -118,14 +121,14 @@ class QgsProcessingOutputVectorLayer : QgsProcessingOutputDefinition
 %End
     virtual QString type() const;
 
-    QgsProcessing::LayerType dataType() const;
+    QgsProcessing::SourceType dataType() const;
 %Docstring
  Returns the layer type for the output layer.
 .. seealso:: setDataType()
- :rtype: QgsProcessing.LayerType
+ :rtype: QgsProcessing.SourceType
 %End
 
-    void setDataType( QgsProcessing::LayerType type );
+    void setDataType( QgsProcessing::SourceType type );
 %Docstring
  Sets the layer ``type`` for the output layer.
 .. seealso:: dataType()
@@ -263,6 +266,33 @@ class QgsProcessingOutputFolder : QgsProcessingOutputDefinition
     virtual QString type() const;
 
 };
+
+class QgsProcessingOutputFile : QgsProcessingOutputDefinition
+{
+%Docstring
+ A file output for processing algorithms.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingoutputs.h"
+%End
+  public:
+
+    QgsProcessingOutputFile( const QString &name, const QString &description = QString() );
+%Docstring
+ Constructor for QgsProcessingOutputFile.
+%End
+
+    static QString typeName();
+%Docstring
+ Returns the type name for the output class.
+ :rtype: str
+%End
+    virtual QString type() const;
+
+};
+
 
 
 

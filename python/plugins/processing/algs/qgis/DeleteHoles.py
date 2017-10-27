@@ -24,7 +24,8 @@ __copyright__ = '(C) 2015, Etienne Trimaille'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsProcessingParameterNumber)
+from qgis.core import (QgsProcessingParameterNumber,
+                       QgsProcessing)
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
@@ -45,7 +46,7 @@ class DeleteHoles(QgisFeatureBasedAlgorithm):
         return self.tr('remove,delete,drop,holes,rings,fill').split(',')
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def name(self):
         return 'deleteholes'
@@ -55,6 +56,9 @@ class DeleteHoles(QgisFeatureBasedAlgorithm):
 
     def outputName(self):
         return self.tr('Cleaned')
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorPolygon]
 
     def prepareAlgorithm(self, parameters, context, feedback):
         self.min_area = self.parameterAsDouble(parameters, self.MIN_AREA, context)

@@ -356,7 +356,7 @@ Problem *Pal::extract( double lambda_min, double phi_min, double lambda_max, dou
     feat = fFeats->takeFirst();
 
     prob->featStartId[i] = idlp;
-    prob->inactiveCost[i] = pow( 2, 10 - 10 * feat->priority );
+    prob->inactiveCost[i] = std::pow( 2, 10 - 10 * feat->priority );
 
     switch ( feat->feature->getGeosType() )
     {

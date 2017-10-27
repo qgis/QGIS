@@ -31,7 +31,7 @@ QgsMapToolZoom::QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut )
   : QgsMapTool( canvas )
   , mZoomOut( zoomOut )
   , mDragging( false )
-  , mRubberBand( nullptr )
+
 {
   mToolName = tr( "Zoom" );
   // set the cursor
@@ -116,7 +116,7 @@ void QgsMapToolZoom::canvasReleaseEvent( QgsMapMouseEvent *e )
     const QSize &canvasSize = mapSettings.outputSize();
     double sfx = ( double )zoomRectSize.width() / canvasSize.width();
     double sfy = ( double )zoomRectSize.height() / canvasSize.height();
-    double sf = qMax( sfx, sfy );
+    double sf = std::max( sfx, sfy );
 
     const QgsMapToPixel *m2p = mCanvas->getCoordinateTransform();
     QgsPointXY c = m2p->toMapCoordinates( mZoomRect.center() );

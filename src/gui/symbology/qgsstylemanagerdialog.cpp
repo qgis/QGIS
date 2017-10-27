@@ -49,6 +49,10 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   , mModified( false )
 {
   setupUi( this );
+  connect( tabItemType, &QTabWidget::currentChanged, this, &QgsStyleManagerDialog::tabItemType_currentChanged );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsStyleManagerDialog::showHelp );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsStyleManagerDialog::onClose );
+
 #ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
@@ -66,15 +70,15 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
 
   connect( listItems, &QAbstractItemView::doubleClicked, this, &QgsStyleManagerDialog::editItem );
 
-  connect( btnAddItem, &QPushButton::clicked, [ = ]( bool ) { addItem(); }
+  connect( btnAddItem, &QPushButton::clicked, this, [ = ]( bool ) { addItem(); }
          );
-  connect( btnEditItem, &QPushButton::clicked, [ = ]( bool ) { editItem(); }
+  connect( btnEditItem, &QPushButton::clicked, this, [ = ]( bool ) { editItem(); }
          );
-  connect( actnEditItem, &QAction::triggered, [ = ]( bool ) { editItem(); }
+  connect( actnEditItem, &QAction::triggered, this, [ = ]( bool ) { editItem(); }
          );
-  connect( btnRemoveItem, &QPushButton::clicked, [ = ]( bool ) { removeItem(); }
+  connect( btnRemoveItem, &QPushButton::clicked, this, [ = ]( bool ) { removeItem(); }
          );
-  connect( actnRemoveItem, &QAction::triggered, [ = ]( bool ) { removeItem(); }
+  connect( actnRemoveItem, &QAction::triggered, this, [ = ]( bool ) { removeItem(); }
          );
 
   QMenu *shareMenu = new QMenu( tr( "Share menu" ), this );
@@ -175,16 +179,16 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   mGroupTreeContextMenu = new QMenu( this );
   connect( actnEditSmartGroup, &QAction::triggered, this, &QgsStyleManagerDialog::editSmartgroupAction );
   mGroupTreeContextMenu->addAction( actnEditSmartGroup );
-  connect( actnAddTag, &QAction::triggered, [ = ]( bool ) { addTag(); }
+  connect( actnAddTag, &QAction::triggered, this, [ = ]( bool ) { addTag(); }
          );
   mGroupTreeContextMenu->addAction( actnAddTag );
-  connect( actnAddSmartgroup, &QAction::triggered, [ = ]( bool ) { addSmartgroup(); }
+  connect( actnAddSmartgroup, &QAction::triggered, this, [ = ]( bool ) { addSmartgroup(); }
          );
   mGroupTreeContextMenu->addAction( actnAddSmartgroup );
   connect( actnRemoveGroup, &QAction::triggered, this, &QgsStyleManagerDialog::removeGroup );
   mGroupTreeContextMenu->addAction( actnRemoveGroup );
 
-  on_tabItemType_currentChanged( 0 );
+  tabItemType_currentChanged( 0 );
 }
 
 void QgsStyleManagerDialog::onFinished()
@@ -240,7 +244,7 @@ void QgsStyleManagerDialog::populateTypes()
 #endif
 }
 
-void QgsStyleManagerDialog::on_tabItemType_currentChanged( int )
+void QgsStyleManagerDialog::tabItemType_currentChanged( int )
 {
   // when in Color Ramp tab, add menu to add item button and hide "Export symbols as PNG/SVG"
   bool flag = currentItemType() != 3;
@@ -283,7 +287,7 @@ void QgsStyleManagerDialog::populateSymbols( const QStringList &symbolNames, boo
       item->setIcon( icon );
       item->setData( name ); // used to find out original name when user edited the name
       item->setCheckable( check );
-      item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( name ).arg( tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
+      item->setToolTip( QStringLiteral( "<b>%1</b><br><i>%2</i>" ).arg( name, tags.count() > 0 ? tags.join( QStringLiteral( ", " ) ) : tr( "Not tagged" ) ) );
       // add to model
       model->appendRow( item );
     }
@@ -788,7 +792,7 @@ bool QgsStyleManagerDialog::removeColorRamp()
 {
   QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm removal" ),
-       QString( tr( "Do you really want to remove %n ramps(s)?", nullptr, indexes.count() ) ),
+       QString( tr( "Do you really want to remove %n ramp(s)?", nullptr, indexes.count() ) ),
        QMessageBox::Yes,
        QMessageBox::No ) )
     return false;
@@ -856,7 +860,7 @@ void QgsStyleManagerDialog::exportSelectedItemsImages( const QString &dir, const
   if ( dir.isEmpty() )
     return;
 
-  QModelIndexList indexes =  listItems->selectionModel()->selection().indexes();
+  QModelIndexList indexes = listItems->selectionModel()->selection().indexes();
   Q_FOREACH ( const QModelIndex &index, indexes )
   {
     QString name = index.data().toString();
@@ -1386,7 +1390,7 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
   {
     mGroupListMenu->addSeparator();
   }
-  a = new QAction( "Create new tag... ", mGroupListMenu );
+  a = new QAction( QStringLiteral( "Create new tag... " ), mGroupListMenu );
   connect( a, &QAction::triggered, this, [ = ]( bool ) { tagSelectedSymbols( true ); }
          );
   mGroupListMenu->addAction( a );
@@ -1403,7 +1407,7 @@ void QgsStyleManagerDialog::addFavoriteSelectedSymbols()
     return;
   }
 
-  QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
+  QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
   Q_FOREACH ( const QModelIndex &index, indexes )
   {
     mStyle->addFavorite( type, index.data().toString() );
@@ -1420,7 +1424,7 @@ void QgsStyleManagerDialog::removeFavoriteSelectedSymbols()
     return;
   }
 
-  QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
+  QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
   Q_FOREACH ( const QModelIndex &index, indexes )
   {
     mStyle->removeFavorite( type, index.data().toString() );
@@ -1456,7 +1460,7 @@ void QgsStyleManagerDialog::tagSelectedSymbols( bool newTag )
       tag = selectedItem->data().toString();
     }
 
-    QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
+    QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
     Q_FOREACH ( const QModelIndex &index, indexes )
     {
       mStyle->tagSymbol( type, index.data().toString(), QStringList( tag ) );
@@ -1479,7 +1483,7 @@ void QgsStyleManagerDialog::detagSelectedSymbols()
       QgsDebugMsg( "unknown entity type" );
       return;
     }
-    QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
+    QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
     Q_FOREACH ( const QModelIndex &index, indexes )
     {
       mStyle->detagSymbol( type, index.data().toString() );
@@ -1527,4 +1531,12 @@ void QgsStyleManagerDialog::editSmartgroupAction()
   groupChanged( present );
 }
 
+void QgsStyleManagerDialog::onClose()
+{
+  reject();
+}
 
+void QgsStyleManagerDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#the-style-manager" ) );
+}

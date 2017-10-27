@@ -34,11 +34,6 @@
 
 QgsSimpleLineSymbolLayer::QgsSimpleLineSymbolLayer( const QColor &color, double width, Qt::PenStyle penStyle )
   : mPenStyle( penStyle )
-  , mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE )
-  , mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE )
-  , mUseCustomDashPattern( false )
-  , mCustomDashPatternUnit( QgsUnitTypes::RenderMillimeters )
-  , mDrawInsidePolygon( false )
 {
   mColor = color;
   mWidth = width;
@@ -355,11 +350,11 @@ QgsStringMap QgsSimpleLineSymbolLayer::properties() const
   map[QStringLiteral( "offset" )] = QString::number( mOffset );
   map[QStringLiteral( "offset_unit" )] = QgsUnitTypes::encodeUnit( mOffsetUnit );
   map[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
-  map[QStringLiteral( "use_custom_dash" )] = ( mUseCustomDashPattern ? "1" : "0" );
+  map[QStringLiteral( "use_custom_dash" )] = ( mUseCustomDashPattern ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   map[QStringLiteral( "customdash" )] = QgsSymbolLayerUtils::encodeRealVector( mCustomDashVector );
   map[QStringLiteral( "customdash_unit" )] = QgsUnitTypes::encodeUnit( mCustomDashPatternUnit );
   map[QStringLiteral( "customdash_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mCustomDashPatternMapUnitScale );
-  map[QStringLiteral( "draw_inside_polygon" )] = ( mDrawInsidePolygon ? "1" : "0" );
+  map[QStringLiteral( "draw_inside_polygon" )] = ( mDrawInsidePolygon ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   return map;
 }
 
@@ -462,7 +457,7 @@ QgsSymbolLayer *QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
       offset = d;
   }
 
-  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  QString uom = element.attribute( QStringLiteral( "uom" ) );
   width = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, width );
   offset = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset );
 
@@ -581,7 +576,7 @@ double QgsSimpleLineSymbolLayer::estimateMaxBleed( const QgsRenderContext &conte
   else
   {
     return context.convertToPainterUnits( ( mWidth / 2.0 ), mWidthUnit, mWidthMapUnitScale ) +
-           context.convertToPainterUnits( qAbs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
+           context.convertToPainterUnits( std::fabs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
   }
 }
 
@@ -666,13 +661,13 @@ class MyLine
       // length
       double x = ( p2.x() - p1.x() );
       double y = ( p2.y() - p1.y() );
-      mLength = sqrt( x * x + y * y );
+      mLength = std::sqrt( x * x + y * y );
     }
 
     // return angle in radians
     double angle()
     {
-      double a = ( mVertical ? M_PI / 2 : atan( mT ) );
+      double a = ( mVertical ? M_PI_2 : std::atan( mT ) );
 
       if ( !mIncreasing )
         a += M_PI;
@@ -685,9 +680,9 @@ class MyLine
       if ( mVertical )
         return ( mIncreasing ? QPointF( 0, interval ) : QPointF( 0, -interval ) );
 
-      double alpha = atan( mT );
-      double dx = cos( alpha ) * interval;
-      double dy = sin( alpha ) * interval;
+      double alpha = std::atan( mT );
+      double dx = std::cos( alpha ) * interval;
+      double dy = std::sin( alpha ) * interval;
       return ( mIncreasing ? QPointF( dx, dy ) : QPointF( -dx, -dy ) );
     }
 
@@ -747,7 +742,7 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::create( const QgsStringMap &props )
   {
     x->setOffsetAlongLineUnit( QgsUnitTypes::decodeRenderUnit( props[QStringLiteral( "offset_along_line_unit" )] ) );
   }
-  if ( props.contains( ( "offset_along_line_map_unit_scale" ) ) )
+  if ( props.contains( ( QStringLiteral( "offset_along_line_map_unit_scale" ) ) ) )
   {
     x->setOffsetAlongLineMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( props[QStringLiteral( "offset_along_line_map_unit_scale" )] ) );
   }
@@ -1002,9 +997,9 @@ static double _averageAngle( QPointF prevPt, QPointF pt, QPointF nextPt )
   // calc average angle between the previous and next point
   double a1 = MyLine( prevPt, pt ).angle();
   double a2 = MyLine( pt, nextPt ).angle();
-  double unitX = cos( a1 ) + cos( a2 ), unitY = sin( a1 ) + sin( a2 );
+  double unitX = std::cos( a1 ) + std::cos( a2 ), unitY = std::sin( a1 ) + std::sin( a2 );
 
-  return atan2( unitY, unitX );
+  return std::atan2( unitY, unitX );
 }
 
 void QgsMarkerLineSymbolLayer::renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Placement placement )
@@ -1234,9 +1229,9 @@ void QgsMarkerLineSymbolLayer::renderOffsetVertexAlongLine( const QPolygonF &poi
 
   int pointIncrement = distance > 0 ? 1 : -1;
   QPointF previousPoint = points[vertex];
-  int startPoint = distance > 0 ? qMin( vertex + 1, points.count() - 1 ) : qMax( vertex - 1, 0 );
+  int startPoint = distance > 0 ? std::min( vertex + 1, points.count() - 1 ) : std::max( vertex - 1, 0 );
   int endPoint = distance > 0 ? points.count() - 1 : 0;
-  double distanceLeft = qAbs( distance );
+  double distanceLeft = std::fabs( distance );
 
   for ( int i = startPoint; pointIncrement > 0 ? i <= endPoint : i >= endPoint; i += pointIncrement )
   {
@@ -1278,8 +1273,8 @@ void QgsMarkerLineSymbolLayer::renderPolylineCentral( const QPolygonF &points, Q
     QPointF last = *it;
     for ( ++it; it != points.constEnd(); ++it )
     {
-      length += sqrt( ( last.x() - it->x() ) * ( last.x() - it->x() ) +
-                      ( last.y() - it->y() ) * ( last.y() - it->y() ) );
+      length += std::sqrt( ( last.x() - it->x() ) * ( last.x() - it->x() ) +
+                           ( last.y() - it->y() ) * ( last.y() - it->y() ) );
       last = *it;
     }
 
@@ -1292,8 +1287,8 @@ void QgsMarkerLineSymbolLayer::renderPolylineCentral( const QPolygonF &points, Q
     for ( ++it; it != points.constEnd(); ++it )
     {
       next = *it;
-      next_at += sqrt( ( last.x() - it->x() ) * ( last.x() - it->x() ) +
-                       ( last.y() - it->y() ) * ( last.y() - it->y() ) );
+      next_at += std::sqrt( ( last.x() - it->x() ) * ( last.x() - it->x() ) +
+                            ( last.y() - it->y() ) * ( last.y() - it->y() ) );
       if ( next_at >= length / 2 )
         break; // we have reached the center
       last = *it;
@@ -1320,7 +1315,7 @@ void QgsMarkerLineSymbolLayer::renderPolylineCentral( const QPolygonF &points, Q
 QgsStringMap QgsMarkerLineSymbolLayer::properties() const
 {
   QgsStringMap map;
-  map[QStringLiteral( "rotate" )] = ( mRotateMarker ? "1" : "0" );
+  map[QStringLiteral( "rotate" )] = ( mRotateMarker ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   map[QStringLiteral( "interval" )] = QString::number( mInterval );
   map[QStringLiteral( "offset" )] = QString::number( mOffset );
   map[QStringLiteral( "offset_along_line" )] = QString::number( mOffsetAlongLine );
@@ -1523,7 +1518,7 @@ QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
       offset = d;
   }
 
-  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  QString uom = element.attribute( QStringLiteral( "uom" ) );
   interval = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, interval );
   offset = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset );
 
@@ -1604,7 +1599,7 @@ QSet<QString> QgsMarkerLineSymbolLayer::usedAttributes( const QgsRenderContext &
 double QgsMarkerLineSymbolLayer::estimateMaxBleed( const QgsRenderContext &context ) const
 {
   return context.convertToPainterUnits( ( mMarker->size() / 2.0 ), mMarker->sizeUnit(), mMarker->sizeMapUnitScale() ) +
-         context.convertToPainterUnits( qAbs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
+         context.convertToPainterUnits( std::fabs( mOffset ), mOffsetUnit, mOffsetMapUnitScale );
 }
 
 

@@ -20,7 +20,6 @@ class QgsColorButton : QToolButton
 %TypeHeaderCode
 #include "qgscolorbutton.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsColorButton *>( sipCpp ) )
       sipType = sipType_QgsColorButton;
@@ -35,7 +34,7 @@ class QgsColorButton : QToolButton
       SignalOnly
     };
 
-    QgsColorButton( QWidget *parent /TransferThis/ = 0, const QString &cdt = "", QgsColorSchemeRegistry *registry = 0 );
+    QgsColorButton( QWidget *parent /TransferThis/ = 0, const QString &cdt = QString(), QgsColorSchemeRegistry *registry = 0 );
 %Docstring
  Construct a new color ramp button.
  Use ``parent`` to attach a parent QWidget to the dialog.

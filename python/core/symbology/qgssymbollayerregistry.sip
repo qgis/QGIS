@@ -47,7 +47,7 @@ In C++ you can use QgsSymbolLayerMetadata convenience class.
 Create a symbol layer of this type given the map of properties.
  :rtype: QgsSymbolLayer
 %End
-    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer * ) /Factory/;
+    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer * ) /Factory/;
 %Docstring
 Create widget for symbol layer of this type. Can return NULL if there's no GUI
  :rtype: QgsSymbolLayerWidget
@@ -86,7 +86,7 @@ Convenience metadata class that uses static functions to create symbol layer and
 
 
     virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) /Factory/;
-    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( const QgsVectorLayer *vl ) /Factory/;
+    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer *vl ) /Factory/;
     virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) /Factory/;
     virtual void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
 

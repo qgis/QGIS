@@ -31,7 +31,8 @@
 #include "qgspoint.h"
 #include "qgssettings.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgisApp clipboard.
  */
 class TestQgisAppClipboard : public QObject
@@ -59,11 +60,7 @@ class TestQgisAppClipboard : public QObject
     QString mTestDataDir;
 };
 
-TestQgisAppClipboard::TestQgisAppClipboard()
-  : mQgisApp( nullptr )
-{
-
-}
+TestQgisAppClipboard::TestQgisAppClipboard() = default;
 
 //runs before all tests
 void TestQgisAppClipboard::initTestCase()
@@ -194,8 +191,8 @@ void TestQgisAppClipboard::copyToText()
   QStringList list = regex.capturedTexts();
   QCOMPARE( list.count(), 3 );
 
-  int x = qRound( list.at( 1 ).toDouble() );
-  int y = qRound( list.at( 2 ).toDouble() );
+  int x = std::round( list.at( 1 ).toDouble() );
+  int y = std::round( list.at( 2 ).toDouble() );
 
   QCOMPARE( x, 145 );
   QCOMPARE( y, -38 );
@@ -208,14 +205,14 @@ void TestQgisAppClipboard::pasteWkt()
   QgsFeatureList features = mQgisApp->clipboard()->copyOf();
   QCOMPARE( features.length(), 2 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
-  QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
   QgsGeometry featureGeom = features.at( 0 ).geometry();
-  const QgsPoint *point = dynamic_cast< QgsPoint * >( featureGeom.geometry() );
+  const QgsPoint *point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
-  QCOMPARE( features.at( 1 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
-  point = dynamic_cast< QgsPoint * >( features.at( 1 ).geometry().geometry() );
+  QCOMPARE( features.at( 1 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
+  point = dynamic_cast< const QgsPoint * >( features.at( 1 ).geometry().constGet() );
   QCOMPARE( point->x(), 111.0 );
   QCOMPARE( point->y(), 30.0 );
 
@@ -227,15 +224,15 @@ void TestQgisAppClipboard::pasteWkt()
   QCOMPARE( features.length(), 2 );
 
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
-  QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
   featureGeom = features.at( 0 ).geometry();
-  point = dynamic_cast< QgsPoint * >( featureGeom.geometry() );
+  point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
   QCOMPARE( point->x(), 111.0 );
   QCOMPARE( point->y(), 30.0 );
 
   QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
-  QCOMPARE( features.at( 1 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
-  point = dynamic_cast< QgsPoint * >( features.at( 1 ).geometry().geometry() );
+  QCOMPARE( features.at( 1 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
+  point = dynamic_cast< const QgsPoint * >( features.at( 1 ).geometry().constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
 
@@ -254,9 +251,9 @@ void TestQgisAppClipboard::pasteGeoJson()
   QgsFeatureList features = mQgisApp->clipboard()->copyOf( fields );
   QCOMPARE( features.length(), 1 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
-  QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
   QgsGeometry featureGeom = features.at( 0 ).geometry();
-  const QgsPoint *point = dynamic_cast< QgsPoint * >( featureGeom.geometry() );
+  const QgsPoint *point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
@@ -265,7 +262,7 @@ void TestQgisAppClipboard::pasteGeoJson()
 void TestQgisAppClipboard::retrieveFields()
 {
   //empty string
-  mQgisApp->clipboard()->setText( QLatin1String( "" ) );
+  mQgisApp->clipboard()->setText( QString() );
 
   QgsFields fields = mQgisApp->clipboard()->fields();
   QCOMPARE( fields.count(), 0 );

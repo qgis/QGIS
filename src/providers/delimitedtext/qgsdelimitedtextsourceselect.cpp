@@ -14,7 +14,6 @@
 #include "qgsdelimitedtextsourceselect.h"
 
 #include "qgisinterface.h"
-#include "qgscontexthelp.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
 #include "qgsdelimitedtextprovider.h"
@@ -37,14 +36,13 @@ const int MAX_SAMPLE_LENGTH = 200;
 QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mFile( new QgsDelimitedTextFile() )
-  , mExampleRowCount( 20 )
-  , mBadRowCount( 0 )
   , mPluginKey( QStringLiteral( "/Plugin-DelimitedText" ) )
-  , mLastFileType( QLatin1String( "" ) )
 {
 
   setupUi( this );
+  connect( btnBrowseForFile, &QPushButton::clicked, this, &QgsDelimitedTextSourceSelect::btnBrowseForFile_clicked );
   setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDelimitedTextSourceSelect::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( mPluginKey + "/geometry" ).toByteArray() );
@@ -104,7 +102,7 @@ QgsDelimitedTextSourceSelect::~QgsDelimitedTextSourceSelect()
   delete mFile;
 }
 
-void QgsDelimitedTextSourceSelect::on_btnBrowseForFile_clicked()
+void QgsDelimitedTextSourceSelect::btnBrowseForFile_clicked()
 {
   getOpenFileName();
 }
@@ -193,7 +191,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
 
 
   // add the layer to the map
-  emit addVectorLayer( QString::fromAscii( url.toEncoded() ), txtLayerName->text() );
+  emit addVectorLayer( QString::fromLatin1( url.toEncoded() ), txtLayerName->text() );
   if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
   {
     accept();
@@ -203,7 +201,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
 
 QString QgsDelimitedTextSourceSelect::selectedChars()
 {
-  QString chars = QLatin1String( "" );
+  QString chars;
   if ( cbxDelimComma->isChecked() )
     chars.append( ',' );
   if ( cbxDelimSpace->isChecked() )
@@ -438,7 +436,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     for ( int i = 0; i < tblSample->columnCount(); i++ )
     {
       QString value = i < nv ? values[i] : QLatin1String( "" );
-      if ( value.length() > MAX_SAMPLE_LENGTH ) value = value.mid( 0, MAX_SAMPLE_LENGTH ) + "…";
+      if ( value.length() > MAX_SAMPLE_LENGTH ) value = value.mid( 0, MAX_SAMPLE_LENGTH ) + "\u2026";
       QTableWidgetItem *item = new QTableWidgetItem( value );
       tblSample->setItem( counter - 1, i, item );
       if ( ! value.isEmpty() )
@@ -737,4 +735,9 @@ bool QgsDelimitedTextSourceSelect::validate()
 void QgsDelimitedTextSourceSelect::enableAccept()
 {
   emit enableButtons( validate() );
+}
+
+void QgsDelimitedTextSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#importing-a-delimited-text-file" ) );
 }

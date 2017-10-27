@@ -391,12 +391,3 @@ class DlgImportVector(QDialog, Ui_Dialog):
         # from this dialog!
         self.deleteInputLayer()
         QDialog.closeEvent(self, event)
-
-
-if __name__ == '__main__':
-    import sys
-
-    a = QApplication(sys.argv)
-    dlg = DlgImportVector()
-    dlg.show()
-    sys.exit(a.exec_())

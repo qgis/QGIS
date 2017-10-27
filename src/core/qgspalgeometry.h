@@ -17,7 +17,7 @@
 
 #include "qgsgeometry.h"
 #include "qgspallabeling.h"
-#include <pal/feature.h>
+#include "pal/feature.h"
 
 #include "qgslabelingengine.h"
 
@@ -44,7 +44,8 @@ class QgsTextLabelFeature : public QgsLabelFeature
       delete mFontMetrics;
     }
 
-    /** Returns the text component corresponding to a specified label part
+    /**
+     * Returns the text component corresponding to a specified label part
      * \param partId Set to -1 for labels which are not broken into parts (e.g., non-curved labels), or the required
      * part index for labels which are broken into parts (curved labels)
      * \since QGIS 2.10

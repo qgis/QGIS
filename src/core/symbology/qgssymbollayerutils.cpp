@@ -721,7 +721,7 @@ void QgsSymbolLayerUtils::drawStippledBackground( QPainter *painter, QRect rect 
 #include <cmath>
 #include <cfloat>
 
-static QPolygonF makeOffsetGeometry( const QgsPolyline &polyline )
+static QPolygonF makeOffsetGeometry( const QgsPolylineXY &polyline )
 {
   int i, pointCount = polyline.count();
 
@@ -756,12 +756,12 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
 
   unsigned int i, pointCount = polyline.count();
 
-  QgsPolyline tempPolyline( pointCount );
+  QgsPolylineXY tempPolyline( pointCount );
   QPointF *tempPtr = polyline.data();
   for ( i = 0; i < pointCount; ++i, tempPtr++ )
     tempPolyline[i] = QgsPointXY( tempPtr->rx(), tempPtr->ry() );
 
-  QgsGeometry tempGeometry = geometryType == QgsWkbTypes::PolygonGeometry ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolyline( tempPolyline );
+  QgsGeometry tempGeometry = geometryType == QgsWkbTypes::PolygonGeometry ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolylineXY( tempPolyline );
   if ( !tempGeometry.isNull() )
   {
     int quadSegments = 0; // we want miter joins, not round joins
@@ -779,7 +779,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
 
       if ( QgsWkbTypes::flatType( tempGeometry.wkbType() ) == QgsWkbTypes::LineString )
       {
-        QgsPolyline line = tempGeometry.asPolyline();
+        QgsPolylineXY line = tempGeometry.asPolyline();
         // Reverse the line if offset was negative, see
         // https://issues.qgis.org/issues/13811
         if ( dist < 0 ) std::reverse( line.begin(), line.end() );
@@ -885,7 +885,7 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
   {
     symbol->setOutputUnit( QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "outputUnit" ) ) ) );
   }
-  if ( element.hasAttribute( ( "mapUnitScale" ) ) )
+  if ( element.hasAttribute( ( QStringLiteral( "mapUnitScale" ) ) ) )
   {
     QgsMapUnitScale mapUnitScale;
     double oldMin = element.attribute( QStringLiteral( "mapUnitMinScale" ), QStringLiteral( "0.0" ) ).toDouble();
@@ -966,7 +966,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, QgsSymbol *sym
   symEl.setAttribute( QStringLiteral( "type" ), _nameForSymbolType( symbol->type() ) );
   symEl.setAttribute( QStringLiteral( "name" ), name );
   symEl.setAttribute( QStringLiteral( "alpha" ), QString::number( symbol->opacity() ) );
-  symEl.setAttribute( QStringLiteral( "clip_to_extent" ), symbol->clipFeaturesToExtent() ? "1" : "0" );
+  symEl.setAttribute( QStringLiteral( "clip_to_extent" ), symbol->clipFeaturesToExtent() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   //QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
 
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
@@ -1281,10 +1281,7 @@ bool QgsSymbolLayerUtils::hasWellKnownMark( QDomElement &element )
     return false;
 
   QDomElement wellKnownNameElem = markElem.firstChildElement( QStringLiteral( "WellKnownName" ) );
-  if ( wellKnownNameElem.isNull() )
-    return false;
-
-  return true;
+  return !wellKnownNameElem.isNull();
 }
 
 
@@ -1396,10 +1393,7 @@ bool QgsSymbolLayerUtils::needLinePatternFill( QDomElement &element )
 
   bool ok;
   double angle = angleFunc.toDouble( &ok );
-  if ( !ok || qgsDoubleNear( angle, 0.0 ) )
-    return false;
-
-  return true;
+  return !( !ok || qgsDoubleNear( angle, 0.0 ) );
 }
 
 bool QgsSymbolLayerUtils::needPointPatternFill( QDomElement &element )
@@ -1734,7 +1728,7 @@ bool QgsSymbolLayerUtils::fillFromSld( QDomElement &element, Qt::BrushStyle &bru
   QgsDebugMsg( "Entered." );
 
   brushStyle = Qt::SolidPattern;
-  color = QColor( "#808080" );
+  color = QColor( 128, 128, 128 );
 
   if ( element.isNull() )
   {
@@ -1875,7 +1869,7 @@ bool QgsSymbolLayerUtils::lineFromSld( QDomElement &element,
   QgsDebugMsg( "Entered." );
 
   penStyle = Qt::SolidLine;
-  color = QColor( "#000000" );
+  color = QColor( 0, 0, 0 );
   width = 1;
   if ( penJoinStyle )
     *penJoinStyle = Qt::BevelJoin;
@@ -2056,8 +2050,8 @@ QString QgsSymbolLayerUtils::getSvgParametricPath( const QString &basePath, cons
   }
   else
   {
-    url.addQueryItem( "fill", QStringLiteral( "#000000" ) );
-    url.addQueryItem( "fill-opacity", QStringLiteral( "1" ) );
+    url.addQueryItem( QStringLiteral( "fill" ), QStringLiteral( "#000000" ) );
+    url.addQueryItem( QStringLiteral( "fill-opacity" ), QStringLiteral( "1" ) );
   }
   if ( strokeColor.isValid() )
   {
@@ -2224,7 +2218,7 @@ bool QgsSymbolLayerUtils::wellKnownMarkerFromSld( QDomElement &element,
 
   name = QStringLiteral( "square" );
   color = QColor();
-  strokeColor = QColor( "#000000" );
+  strokeColor = QColor( 0, 0, 0 );
   strokeWidth = 1;
   size = 6;
 
@@ -3094,7 +3088,7 @@ QgsNamedColorList QgsSymbolLayerUtils::colorListFromMimeData( const QMimeData *d
         }
 
         QPair< QColor, QString> namedColor;
-        namedColor.first =  QgsSymbolLayerUtils::decodeColor( currentElem.attribute( QStringLiteral( "color" ), QStringLiteral( "255,255,255,255" ) ) );
+        namedColor.first = QgsSymbolLayerUtils::decodeColor( currentElem.attribute( QStringLiteral( "color" ), QStringLiteral( "255,255,255,255" ) ) );
         namedColor.second = currentElem.attribute( QStringLiteral( "label" ), QLatin1String( "" ) );
 
         mimeColors << namedColor;
@@ -3412,9 +3406,9 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   QRegExp rgbPercentFormatRx( "^\\s*(?:rgb)?\\(?\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*\\)?\\s*;?\\s*$" );
   if ( rgbPercentFormatRx.indexIn( colorStr ) != -1 )
   {
-    int r = qRound( rgbPercentFormatRx.cap( 1 ).toDouble() * 2.55 );
-    int g = qRound( rgbPercentFormatRx.cap( 2 ).toDouble() * 2.55 );
-    int b = qRound( rgbPercentFormatRx.cap( 3 ).toDouble() * 2.55 );
+    int r = std::round( rgbPercentFormatRx.cap( 1 ).toDouble() * 2.55 );
+    int g = std::round( rgbPercentFormatRx.cap( 2 ).toDouble() * 2.55 );
+    int b = std::round( rgbPercentFormatRx.cap( 3 ).toDouble() * 2.55 );
     parsedColor.setRgb( r, g, b );
     if ( parsedColor.isValid() )
     {
@@ -3430,7 +3424,7 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
     int r = rgbaFormatRx.cap( 1 ).toInt();
     int g = rgbaFormatRx.cap( 2 ).toInt();
     int b = rgbaFormatRx.cap( 3 ).toInt();
-    int a = qRound( rgbaFormatRx.cap( 4 ).toDouble() * 255.0 );
+    int a = std::round( rgbaFormatRx.cap( 4 ).toDouble() * 255.0 );
     parsedColor.setRgb( r, g, b, a );
     if ( parsedColor.isValid() )
     {
@@ -3443,10 +3437,10 @@ QColor QgsSymbolLayerUtils::parseColorWithAlpha( const QString &colorStr, bool &
   QRegExp rgbaPercentFormatRx( "^\\s*(?:rgba)?\\(?\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(100|0*\\d{1,2})\\s*%\\s*,\\s*(0|0?\\.\\d*|1(?:\\.0*)?)\\s*\\)?\\s*;?\\s*$" );
   if ( rgbaPercentFormatRx.indexIn( colorStr ) != -1 )
   {
-    int r = qRound( rgbaPercentFormatRx.cap( 1 ).toDouble() * 2.55 );
-    int g = qRound( rgbaPercentFormatRx.cap( 2 ).toDouble() * 2.55 );
-    int b = qRound( rgbaPercentFormatRx.cap( 3 ).toDouble() * 2.55 );
-    int a = qRound( rgbaPercentFormatRx.cap( 4 ).toDouble() * 255.0 );
+    int r = std::round( rgbaPercentFormatRx.cap( 1 ).toDouble() * 2.55 );
+    int g = std::round( rgbaPercentFormatRx.cap( 2 ).toDouble() * 2.55 );
+    int b = std::round( rgbaPercentFormatRx.cap( 3 ).toDouble() * 2.55 );
+    int a = std::round( rgbaPercentFormatRx.cap( 4 ).toDouble() * 255.0 );
     parsedColor.setRgb( r, g, b, a );
     if ( parsedColor.isValid() )
     {
@@ -3604,7 +3598,7 @@ QPointF QgsSymbolLayerUtils::pointOnLineWithDistance( QPointF startPoint, QPoint
 {
   double dx = directionPoint.x() - startPoint.x();
   double dy = directionPoint.y() - startPoint.y();
-  double length = sqrt( dx * dx + dy * dy );
+  double length = std::sqrt( dx * dx + dy * dy );
   double scaleFactor = distance / length;
   return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }
@@ -3788,7 +3782,7 @@ QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points )
   {
     unsigned int i, pointCount = points.count();
 
-    QgsPolyline polyline( pointCount );
+    QgsPolylineXY polyline( pointCount );
     for ( i = 0; i < pointCount; ++i ) polyline[i] = QgsPointXY( points[i].x(), points[i].y() );
 
     QgsGeometry geom = QgsGeometry::fromPolygon( QgsPolygon() << polyline );
@@ -3895,7 +3889,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
   else
   {
     int U = 1;
-    cell = qMax( qAbs( minimum ), qAbs( maximum ) );
+    cell = std::max( std::fabs( minimum ), std::fabs( maximum ) );
     if ( adjustBias >= 1.5 * h + 0.5 )
     {
       U = 1 + ( 1.0 / ( 1 + h ) );
@@ -3904,7 +3898,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
     {
       U = 1 + ( 1.5 / ( 1 + adjustBias ) );
     }
-    small = dx < ( cell * U * qMax( 1, divisions ) * 1e-07 * 3.0 );
+    small = dx < ( cell * U * std::max( 1, divisions ) * 1e-07 * 3.0 );
   }
 
   if ( small )
@@ -3932,7 +3926,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
     cell = 20 * 1e-07;
   }
 
-  double base = pow( 10.0, floor( log10( cell ) ) );
+  double base = std::pow( 10.0, std::floor( std::log10( cell ) ) );
   double unit = base;
   if ( ( 2 * base ) - cell < h * ( cell - unit ) )
   {
@@ -3947,8 +3941,8 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
     }
   }
   // Maybe used to correct for the epsilon here??
-  int start = floor( minimum / unit + 1e-07 );
-  int end = ceil( maximum / unit - 1e-07 );
+  int start = std::floor( minimum / unit + 1e-07 );
+  int end = std::ceil( maximum / unit - 1e-07 );
 
   // Extend the range out beyond the data. Does this ever happen??
   while ( start * unit > minimum + ( 1e-07 * unit ) )
@@ -3963,7 +3957,7 @@ QList<double> QgsSymbolLayerUtils::prettyBreaks( double minimum, double maximum,
 
   // If we don't have quite enough labels, extend the range out
   // to make more (these labels are beyond the data :()
-  int k = floor( 0.5 + end - start );
+  int k = std::floor( 0.5 + end - start );
   if ( k < minimumCount )
   {
     k = minimumCount - k;
@@ -4075,7 +4069,7 @@ double QgsSymbolLayerUtils::rescaleUom( double size, QgsUnitTypes::RenderUnit un
   // of pixels as integers, even if SLD allows for float values in there
   if ( roundToUnit )
   {
-    rescaled = qRound( rescaled );
+    rescaled = std::round( rescaled );
   }
   return rescaled;
 }
@@ -4124,7 +4118,7 @@ void QgsSymbolLayerUtils::mergeScaleDependencies( int mScaleMinDenom, int mScale
     if ( !ok || parentScaleMinDenom <= 0 )
       props[ QStringLiteral( "scaleMinDenom" )] = QString::number( mScaleMinDenom );
     else
-      props[ QStringLiteral( "scaleMinDenom" )] = QString::number( qMax( parentScaleMinDenom, mScaleMinDenom ) );
+      props[ QStringLiteral( "scaleMinDenom" )] = QString::number( std::max( parentScaleMinDenom, mScaleMinDenom ) );
   }
 
   if ( mScaleMaxDenom != 0 )
@@ -4134,7 +4128,7 @@ void QgsSymbolLayerUtils::mergeScaleDependencies( int mScaleMinDenom, int mScale
     if ( !ok || parentScaleMaxDenom <= 0 )
       props[ QStringLiteral( "scaleMaxDenom" )] = QString::number( mScaleMaxDenom );
     else
-      props[ QStringLiteral( "scaleMaxDenom" )] = QString::number( qMin( parentScaleMaxDenom, mScaleMaxDenom ) );
+      props[ QStringLiteral( "scaleMaxDenom" )] = QString::number( std::min( parentScaleMaxDenom, mScaleMaxDenom ) );
   }
 }
 

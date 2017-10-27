@@ -19,15 +19,15 @@
 // QGIS Specific includes
 //
 
-#include <qgisinterface.h>
+#include "qgisinterface.h"
 #include "qgsguiutils.h"
 #include "qgsapplication.h"
-#include <qgspoint.h>
-#include <qgsmapcanvas.h>
-#include <qgis.h>
-#include <qgscoordinatereferencesystem.h>
-#include <qgscoordinatetransform.h>
-#include <qgsprojectionselectiondialog.h>
+#include "qgspoint.h"
+#include "qgsmapcanvas.h"
+#include "qgis.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgsdockwidget.h"
 
 #include "coordinatecapture.h"
@@ -67,21 +67,10 @@ static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
  */
 CoordinateCapture::CoordinateCapture( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-  , mpMapTool( nullptr )
-  , mpTrackMouseButton( nullptr )
-  , mpCaptureButton( nullptr )
-  , mypUserCrsToolButton( nullptr )
-  , mypCRSLabel( nullptr )
   , mCanvasDisplayPrecision( 5 )
   , mUserCrsDisplayPrecision( 5 )
   , mQGisIface( qgisInterface )
-  , mQActionPointer( nullptr )
 {
-}
-
-CoordinateCapture::~CoordinateCapture()
-{
-
 }
 
 /*

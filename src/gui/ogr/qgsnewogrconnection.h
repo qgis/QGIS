@@ -22,11 +22,11 @@
 
 #include "ui_qgsnewogrconnectionbase.h"
 #include "qgsguiutils.h"
-#include "qgscontexthelp.h"
 #include "qgis_gui.h"
 
 
-/** \class QgsNewOgrConnection
+/**
+ * \class QgsNewOgrConnection
  * \brief Dialog to allow the user to define, test and save connection
  * information for OGR databases
  * \note not available in python bindings
@@ -42,10 +42,10 @@ class GUI_EXPORT QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConn
     ~QgsNewOgrConnection();
     //! Tests the connection using the parameters supplied
     void testConnection();
+    void showHelp();
   public slots:
     void accept() override;
-    void on_btnConnect_clicked();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void btnConnect_clicked();
 
   private:
     QString mOriginalConnName;

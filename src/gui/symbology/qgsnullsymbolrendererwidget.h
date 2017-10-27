@@ -23,7 +23,8 @@ class QgsNullSymbolRenderer;
 
 class QMenu;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsNullSymbolRendererWidget
  * \brief Blank widget for customising QgsNullSymbolRenderer.
  * \since QGIS 2.16

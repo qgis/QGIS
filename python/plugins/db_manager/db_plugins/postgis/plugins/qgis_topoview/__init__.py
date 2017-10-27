@@ -263,7 +263,7 @@ def run(item, action, mainwindow):
             ext = node_extent
             ext.combineExtentWith(edge_extent)
             # Grow by 1/20 of largest side
-            ext = ext.buffer(max(ext.width(), ext.height()) / 20)
+            ext = ext.buffered(max(ext.width(), ext.height()) / 20)
             canvas.setExtent(ext)
 
         # restore canvas render flag

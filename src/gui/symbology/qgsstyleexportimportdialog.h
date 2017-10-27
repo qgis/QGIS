@@ -28,11 +28,13 @@
 #include "ui_qgsstyleexportimportdialogbase.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgshelp.h"
 
 class QgsStyle;
 class QgsStyleGroupSelectionDialog;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsStyleExportImportDialog
  */
 class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsStyleExportImportDialogBase
@@ -114,6 +116,7 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     void updateProgress( qint64, qint64 );
     void downloadCanceled();
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
+    void showHelp();
 
   private:
     void downloadStyleXml( const QUrl &url );

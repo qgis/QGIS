@@ -97,10 +97,16 @@ class QgsTransaction : QObject /Abstract/
  :rtype: bool
 %End
 
-    virtual bool executeSql( const QString &sql, QString &error /Out/ ) = 0;
+    virtual bool executeSql( const QString &sql, QString &error /Out/, bool isDirty = false ) = 0;
 %Docstring
  Execute the ``sql`` string. The result must not be a tuple, so running a
  ``SELECT`` query will return an error.
+
+ \param sql The sql query to execute
+ \param error The error message
+ \param isDirty Flag to indicate if the underlying data will be modified
+
+ :return: true if everything is OK, false otherwise
  :rtype: bool
 %End
 
@@ -110,11 +116,60 @@ class QgsTransaction : QObject /Abstract/
  :rtype: bool
 %End
 
+    QString createSavepoint( QString &error /Out/ );
+%Docstring
+ creates a save point
+ returns empty string on error
+ returns the last created savepoint if it's not dirty
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    QString createSavepoint( const QString &savePointId, QString &error /Out/ );
+%Docstring
+ creates a save point
+ returns empty string on error
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    bool rollbackToSavepoint( const QString &name, QString &error /Out/ );
+%Docstring
+ rollback to save point, the save point is maintained and is "undertied"
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void dirtyLastSavePoint();
+%Docstring
+ dirty save point such that next call to createSavepoint will create a new one
+.. versionadded:: 3.0
+%End
+
+    QList< QString > savePoints() const;
+%Docstring
+ returns savepoints
+.. versionadded:: 3.0
+ :rtype: list of str
+%End
+
+    bool lastSavePointIsDirty() const;
+%Docstring
+ returns the last created savepoint
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
   signals:
 
     void afterRollback();
 %Docstring
  Emitted after a rollback
+%End
+
+    void dirtied( const QString &sql );
+%Docstring
+ Emitted if a sql query is executed and the underlying data is modified
 %End
 
   protected:

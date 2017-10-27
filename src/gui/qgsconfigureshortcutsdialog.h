@@ -20,12 +20,14 @@
 #include "qgis.h"
 
 #include "ui_qgsconfigureshortcutsdialog.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
 class QShortcut;
 class QgsShortcutsManager;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsConfigureShortcutsDialog
  * Reusable dialog for allowing users to configure shortcuts contained in a QgsShortcutsManager.
  * \since QGIS 2.16
@@ -37,7 +39,8 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
 
   public:
 
-    /** Constructor for QgsConfigureShortcutsDialog.
+    /**
+     * Constructor for QgsConfigureShortcutsDialog.
      * \param parent parent widget
      * \param manager associated QgsShortcutsManager, or leave as null to use the default
      * singleton QgsShortcutsManager instance.
@@ -56,9 +59,12 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     void setNoShortcut();
     void saveShortcuts();
     void loadShortcuts();
-    void on_mLeFilter_textChanged( const QString &text );
+    void mLeFilter_textChanged( const QString &text );
 
     void actionChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous );
+
+    //! Open the associated help
+    void showHelp();
 
   private:
 
@@ -86,8 +92,8 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
 
     QgsShortcutsManager *mManager = nullptr;
 
-    bool mGettingShortcut;
-    int mModifiers, mKey;
+    bool mGettingShortcut = false;
+    int mModifiers = 0, mKey = 0;
 
 };
 

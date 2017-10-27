@@ -24,7 +24,8 @@ class QgsRelationReferenceWidget;
 class QgsMapCanvas;
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a relation reference widget.
  *
  * Options:

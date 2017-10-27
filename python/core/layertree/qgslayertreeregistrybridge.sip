@@ -49,12 +49,15 @@ Create the instance that synchronizes given project with a layer tree root
 
     void setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index );
 %Docstring
-By default it is root group with zero index.
+ Set where the new layers should be inserted - can be used to follow current selection.
+ By default it is root group with zero index.
 %End
 
   signals:
+
     void addedLayersToLayerTree( const QList<QgsMapLayer *> &layers );
 %Docstring
+ Tell others we have just added layers to the tree (used in QGIS to auto-select first newly added layer)
 .. versionadded:: 2.6
 %End
 

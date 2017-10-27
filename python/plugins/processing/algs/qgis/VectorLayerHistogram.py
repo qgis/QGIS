@@ -28,14 +28,12 @@ __revision__ = '$Format:%H$'
 import plotly as plt
 import plotly.graph_objs as go
 
-from qgis.core import (QgsApplication,
-                       QgsFeatureSink,
-                       QgsProcessingUtils)
+from qgis.core import (QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingOutputHtml)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputHTML
 from processing.tools import vector
 
 
@@ -53,15 +51,16 @@ class VectorLayerHistogram(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Attribute'), self.INPUT,
-                                              ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterNumber(self.BINS,
-                                          self.tr('number of bins'), 2, None, 10))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Attribute'), parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.Numeric))
+        self.addParameter(QgsProcessingParameterNumber(self.BINS,
+                                                       self.tr('number of bins'), minValue=2, defaultValue=10))
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Histogram')))
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Histogram'), self.tr('HTML files (*.html)')))
+        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Histogram')))
 
     def name(self):
         return 'vectorlayerhistogram'
@@ -70,14 +69,16 @@ class VectorLayerHistogram(QgisAlgorithm):
         return self.tr('Vector layer histogram')
 
     def processAlgorithm(self, parameters, context, feedback):
-        layer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
-        fieldname = self.getParameterValue(self.FIELD)
-        bins = self.getParameterValue(self.BINS)
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        fieldname = self.parameterAsString(parameters, self.FIELD, context)
+        bins = self.parameterAsInt(parameters, self.BINS, context)
 
-        output = self.getOutputValue(self.OUTPUT)
+        output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        values = vector.values(layer, fieldname)
+        values = vector.values(source, fieldname)
 
         data = [go.Histogram(x=values[fieldname],
                              nbinsx=bins)]
         plt.offline.plot(data, filename=output, auto_open=False)
+
+        return {self.OUTPUT: output}

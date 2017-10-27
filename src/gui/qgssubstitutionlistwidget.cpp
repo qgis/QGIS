@@ -28,6 +28,10 @@ QgsSubstitutionListWidget::QgsSubstitutionListWidget( QWidget *parent )
   : QgsPanelWidget( parent )
 {
   setupUi( this );
+  connect( mButtonAdd, &QToolButton::clicked, this, &QgsSubstitutionListWidget::mButtonAdd_clicked );
+  connect( mButtonRemove, &QToolButton::clicked, this, &QgsSubstitutionListWidget::mButtonRemove_clicked );
+  connect( mButtonExport, &QToolButton::clicked, this, &QgsSubstitutionListWidget::mButtonExport_clicked );
+  connect( mButtonImport, &QToolButton::clicked, this, &QgsSubstitutionListWidget::mButtonImport_clicked );
   connect( mTableSubstitutions, &QTableWidget::cellChanged, this, &QgsSubstitutionListWidget::tableChanged );
 }
 
@@ -65,14 +69,14 @@ QgsStringReplacementCollection QgsSubstitutionListWidget::substitutions() const
   return QgsStringReplacementCollection( result );
 }
 
-void QgsSubstitutionListWidget::on_mButtonAdd_clicked()
+void QgsSubstitutionListWidget::mButtonAdd_clicked()
 {
   addSubstitution( QgsStringReplacement( QString(), QString(), false, true ) );
   mTableSubstitutions->setFocus();
   mTableSubstitutions->setCurrentCell( mTableSubstitutions->rowCount() - 1, 0 );
 }
 
-void QgsSubstitutionListWidget::on_mButtonRemove_clicked()
+void QgsSubstitutionListWidget::mButtonRemove_clicked()
 {
   int currentRow = mTableSubstitutions->currentRow();
   mTableSubstitutions->removeRow( currentRow );
@@ -84,7 +88,7 @@ void QgsSubstitutionListWidget::tableChanged()
   emit substitutionsChanged( substitutions() );
 }
 
-void QgsSubstitutionListWidget::on_mButtonExport_clicked()
+void QgsSubstitutionListWidget::mButtonExport_clicked()
 {
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save substitutions" ), QDir::homePath(),
                      tr( "XML files (*.xml *.XML)" ) );
@@ -120,7 +124,7 @@ void QgsSubstitutionListWidget::on_mButtonExport_clicked()
   doc.save( out, 4 );
 }
 
-void QgsSubstitutionListWidget::on_mButtonImport_clicked()
+void QgsSubstitutionListWidget::mButtonImport_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load substitutions" ), QDir::homePath(),
                      tr( "XML files (*.xml *.XML)" ) );
@@ -206,7 +210,7 @@ void QgsSubstitutionListWidget::addSubstitution( const QgsStringReplacement &sub
 
 QgsSubstitutionListDialog::QgsSubstitutionListDialog( QWidget *parent )
   : QDialog( parent )
-  , mWidget( nullptr )
+
 {
   setWindowTitle( tr( "Substitutions" ) );
   QVBoxLayout *vLayout = new QVBoxLayout();

@@ -83,8 +83,10 @@ Action to check a group and all its parents
 %Docstring
  :rtype: QAction
 %End
+
     QAction *actionMutuallyExclusiveGroup( QObject *parent = 0 ) /Factory/;
 %Docstring
+ Action to enable/disable mutually exclusive flag of a group (only one child node may be checked)
 .. versionadded:: 2.12
  :rtype: QAction
 %End
@@ -104,8 +106,10 @@ Action to check a group and all its parents
     void zoomToGroup();
     void makeTopLevel();
     void groupSelected();
+
     void mutuallyExclusiveGroup();
 %Docstring
+ Slot to enable/disable mutually exclusive group flag
 .. versionadded:: 2.12
 %End
 

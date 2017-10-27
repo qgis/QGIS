@@ -16,7 +16,7 @@
 #ifndef QGSMAPCANVASMAP_H
 #define QGSMAPCANVASMAP_H
 
-#include <qgsmapcanvasitem.h>
+#include "qgsmapcanvasitem.h"
 
 class QgsMapSettings;
 class QgsMapCanvas;
@@ -25,7 +25,8 @@ class QgsMapCanvas;
 
 /// @cond PRIVATE
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A rectangular graphics item representing the map on the canvas.
  *
  * \note This class is not a part of public API

@@ -70,9 +70,9 @@ class TestQgsFillSymbolLayers(unittest.TestCase):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        extent = geom.geometry().boundingBox()
+        extent = geom.constGet().boundingBox()
         # buffer extent by 10%
-        extent = extent.buffer((extent.height() + extent.width()) / 20.0)
+        extent = extent.buffered((extent.height() + extent.width()) / 20.0)
 
         ms.setExtent(extent)
         ms.setOutputSize(image.size())

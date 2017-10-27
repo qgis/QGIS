@@ -26,7 +26,8 @@
 class QgsFeatureRequest;
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup core
  * Methods in this class are used to handle basic operations on vector layers.
  * With an implementation of this class, parts of the application can ask for
  * an operation to be done and the implementation will then take care of it.

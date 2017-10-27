@@ -33,6 +33,8 @@ QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget *parent,
   , mProvider( provider )
 {
   setupUi( this );
+  connect( cbxPyramidsLevelsCustom, &QCheckBox::toggled, this, &QgsRasterPyramidsOptionsWidget::cbxPyramidsLevelsCustom_toggled );
+  connect( cbxPyramidsFormat, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterPyramidsOptionsWidget::cbxPyramidsFormat_currentIndexChanged );
 
   mSaveOptionsWidget->setProvider( provider );
   mSaveOptionsWidget->setPyramidsFormat( QgsRaster::PyramidsGTiff );
@@ -89,8 +91,8 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
   }
   else
   {
-    Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
-      mOverviewCheckBoxes[ i ]->setChecked( false );
+    for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
+      it.value()->setChecked( false );
   }
   tmpStr = mySettings.value( prefix + "overviewList", "" ).toString();
   Q_FOREACH ( const QString &lev, tmpStr.split( ' ', QString::SkipEmptyParts ) )
@@ -133,11 +135,11 @@ void QgsRasterPyramidsOptionsWidget::apply()
   mySettings.setValue( prefix + "overviewStr", lePyramidsLevels->text().trimmed() );
 
   // overview list
-  tmpStr = QLatin1String( "" );
-  Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
+  tmpStr.clear();
+  for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
   {
-    if ( mOverviewCheckBoxes[ i ]->isChecked() )
-      tmpStr += QString::number( i ) + ' ';
+    if ( it.value()->isChecked() )
+      tmpStr += QString::number( it.key() ) + ' ';
   }
   mySettings.setValue( prefix + "overviewList", tmpStr.trimmed() );
 
@@ -146,20 +148,20 @@ void QgsRasterPyramidsOptionsWidget::apply()
 
 void QgsRasterPyramidsOptionsWidget::checkAllLevels( bool checked )
 {
-  Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
-    mOverviewCheckBoxes[ i ]->setChecked( checked );
+  for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
+    it.value()->setChecked( checked );
 }
 
-void QgsRasterPyramidsOptionsWidget::on_cbxPyramidsLevelsCustom_toggled( bool toggled )
+void QgsRasterPyramidsOptionsWidget::cbxPyramidsLevelsCustom_toggled( bool toggled )
 {
   // if toggled, disable checkboxes and enable line edit
   lePyramidsLevels->setEnabled( toggled );
-  Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
-    mOverviewCheckBoxes[ i ]->setEnabled( ! toggled );
+  for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
+    it.value()->setEnabled( ! toggled );
   setOverviewList();
 }
 
-void QgsRasterPyramidsOptionsWidget::on_cbxPyramidsFormat_currentIndexChanged( int index )
+void QgsRasterPyramidsOptionsWidget::cbxPyramidsFormat_currentIndexChanged( int index )
 {
   mSaveOptionsWidget->setEnabled( index != ERDAS );
   QgsRaster::RasterPyramidsFormat format;
@@ -205,10 +207,10 @@ void QgsRasterPyramidsOptionsWidget::setOverviewList()
   }
   else
   {
-    Q_FOREACH ( int i, mOverviewCheckBoxes.keys() )
+    for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
     {
-      if ( mOverviewCheckBoxes[ i ]->isChecked() )
-        mOverviewList << i;
+      if ( it.value()->isChecked() )
+        mOverviewList << it.key();
     }
   }
 

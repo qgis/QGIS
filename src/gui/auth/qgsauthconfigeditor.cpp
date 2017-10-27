@@ -25,38 +25,31 @@
 #include "qgsauthmanager.h"
 #include "qgsauthconfigedit.h"
 #include "qgsauthguiutils.h"
+#include "qgsapplication.h"
 
 QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, bool relayMessages )
   : QWidget( parent )
   , mRelayMessages( relayMessages )
-  , mConfigModel( nullptr )
-  , mAuthUtilitiesMenu( nullptr )
-  , mActionSetMasterPassword( nullptr )
-  , mActionClearCachedMasterPassword( nullptr )
-  , mActionResetMasterPassword( nullptr )
-  , mActionClearCachedAuthConfigs( nullptr )
-  , mActionRemoveAuthConfigs( nullptr )
-  , mActionEraseAuthDatabase( nullptr )
-  , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mDisabled = true;
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
   {
     setupUi( this );
+    connect( btnAddConfig, &QToolButton::clicked, this, &QgsAuthConfigEditor::btnAddConfig_clicked );
+    connect( btnEditConfig, &QToolButton::clicked, this, &QgsAuthConfigEditor::btnEditConfig_clicked );
+    connect( btnRemoveConfig, &QToolButton::clicked, this, &QgsAuthConfigEditor::btnRemoveConfig_clicked );
 
     setShowUtilitiesButton( showUtilities );
 
-    mConfigModel = new QSqlTableModel( this, QgsAuthManager::instance()->authDatabaseConnection() );
-    mConfigModel->setTable( QgsAuthManager::instance()->authDatabaseConfigTable() );
+    mConfigModel = new QSqlTableModel( this, QgsApplication::authManager()->authDatabaseConnection() );
+    mConfigModel->setTable( QgsApplication::authManager()->authDatabaseConfigTable() );
     mConfigModel->select();
 
     mConfigModel->setHeaderData( 0, Qt::Horizontal, tr( "ID" ) );
@@ -83,15 +76,15 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
              this, &QgsAuthConfigEditor::selectionChanged );
 
     connect( tableViewConfigs, &QAbstractItemView::doubleClicked,
-             this, &QgsAuthConfigEditor::on_btnEditConfig_clicked );
+             this, &QgsAuthConfigEditor::btnEditConfig_clicked );
 
     if ( mRelayMessages )
     {
-      connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
+      connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
                this, &QgsAuthConfigEditor::authMessageOut );
     }
 
-    connect( QgsAuthManager::instance(), &QgsAuthManager::authDatabaseChanged,
+    connect( QgsApplication::authManager(), &QgsAuthManager::authDatabaseChanged,
              this, &QgsAuthConfigEditor::refreshTableView );
 
     checkSelection();
@@ -191,13 +184,13 @@ void QgsAuthConfigEditor::setRelayMessages( bool relay )
 
   if ( mRelayMessages )
   {
-    disconnect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
+    disconnect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
                 this, &QgsAuthConfigEditor::authMessageOut );
     mRelayMessages = relay;
     return;
   }
 
-  connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
+  connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
            this, &QgsAuthConfigEditor::authMessageOut );
   mRelayMessages = relay;
 }
@@ -222,9 +215,9 @@ void QgsAuthConfigEditor::checkSelection()
   btnRemoveConfig->setEnabled( hasselection );
 }
 
-void QgsAuthConfigEditor::on_btnAddConfig_clicked()
+void QgsAuthConfigEditor::btnAddConfig_clicked()
 {
-  if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
+  if ( !QgsApplication::authManager()->setMasterPassword( true ) )
     return;
 
   QgsAuthConfigEdit *ace = new QgsAuthConfigEdit( this );
@@ -236,14 +229,14 @@ void QgsAuthConfigEditor::on_btnAddConfig_clicked()
   ace->deleteLater();
 }
 
-void QgsAuthConfigEditor::on_btnEditConfig_clicked()
+void QgsAuthConfigEditor::btnEditConfig_clicked()
 {
   QString authcfg = selectedConfigId();
 
   if ( authcfg.isEmpty() )
     return;
 
-  if ( !QgsAuthManager::instance()->setMasterPassword( true ) )
+  if ( !QgsApplication::authManager()->setMasterPassword( true ) )
     return;
 
   QgsAuthConfigEdit *ace = new QgsAuthConfigEdit( this, authcfg );
@@ -255,7 +248,7 @@ void QgsAuthConfigEditor::on_btnEditConfig_clicked()
   ace->deleteLater();
 }
 
-void QgsAuthConfigEditor::on_btnRemoveConfig_clicked()
+void QgsAuthConfigEditor::btnRemoveConfig_clicked()
 {
   QModelIndexList selection = tableViewConfigs->selectionModel()->selectedRows( 0 );
 

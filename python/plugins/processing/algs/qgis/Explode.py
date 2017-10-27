@@ -43,7 +43,7 @@ class Explode(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -89,11 +89,11 @@ class Explode(QgisAlgorithm):
     def extractAsSingleSegments(self, geom):
         segments = []
         if geom.isMultipart():
-            for part in range(geom.geometry().numGeometries()):
-                segments.extend(self.getPolylineAsSingleSegments(geom.geometry().geometryN(part)))
+            for part in range(geom.constGet().numGeometries()):
+                segments.extend(self.getPolylineAsSingleSegments(geom.constGet().geometryN(part)))
         else:
             segments.extend(self.getPolylineAsSingleSegments(
-                geom.geometry()))
+                geom.constGet()))
         return segments
 
     def getPolylineAsSingleSegments(self, polyline):

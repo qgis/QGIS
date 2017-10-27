@@ -18,11 +18,12 @@
 
 #include <QDialog>
 #include <QCheckBox>
-#include <ui_qgssublayersdialogbase.h>
-#include "qgscontexthelp.h"
+#include "ui_qgssublayersdialogbase.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSublayersDialog
  */
 class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDialogBase
@@ -37,20 +38,24 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
       Vsifile
     };
 
-    //! A structure that defines layers for the purpose of this dialog
-    //! \since QGIS 2.16
+    /**
+     * A structure that defines layers for the purpose of this dialog
+     * \since QGIS 2.16
+     */
     struct LayerDefinition
     {
-      LayerDefinition() : layerId( -1 ), count( -1 ) {}
+      LayerDefinition() {}
 
-      int layerId;        //!< Identifier of the layer (one unique layer id may have multiple types though)
+      int layerId = -1 ;        //!< Identifier of the layer (one unique layer id may have multiple types though)
       QString layerName;  //!< Name of the layer (not necessarily unique)
-      int count;          //!< Number of features (might be unused)
+      int count = -1 ;          //!< Number of features (might be unused)
       QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
     };
 
-    //! List of layer definitions for the purpose of this dialog
-    //! \since QGIS 2.16
+    /**
+     * List of layer definitions for the purpose of this dialog
+     * \since QGIS 2.16
+     */
     typedef QList<QgsSublayersDialog::LayerDefinition> LayerDefinitionList;
 
     QgsSublayersDialog( ProviderType providerType,
@@ -60,32 +65,43 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 
     ~QgsSublayersDialog();
 
-    //! Populate the table with layers
-    //! \since QGIS 2.16
+    /**
+     * Populate the table with layers
+     * \since QGIS 2.16
+     */
     void populateLayerTable( const LayerDefinitionList &list );
 
-    //! Returns list of selected layers
-    //! \since QGIS 2.16
+    /**
+     * Returns list of selected layers
+     * \since QGIS 2.16
+     */
     LayerDefinitionList selection();
 
-    //! Set if we should display the add to group checkbox
-    //! \since QGIS 3.0
+    /**
+     * Set if we should display the add to group checkbox
+     * \since QGIS 3.0
+     */
     void setShowAddToGroupCheckbox( bool showAddToGroupCheckbox ) { mShowAddToGroupCheckbox = showAddToGroupCheckbox; }
 
-    //! If we should display the add to group checkbox
-    //! \since QGIS 3.0
+    /**
+     * If we should display the add to group checkbox
+     * \since QGIS 3.0
+     */
     bool showAddToGroupCheckbox() const { return mShowAddToGroupCheckbox; }
 
-    //! If we should add layers in a group
-    //! \since QGIS 3.0
+    /**
+     * If we should add layers in a group
+     * \since QGIS 3.0
+     */
     bool addToGroupCheckbox() const { return mCheckboxAddToGroup->isChecked(); }
 
-    //! Return column with count or -1
-    //! \since QGIS 3.0
+    /**
+     * Return column with count or -1
+     * \since QGIS 3.0
+     */
     int countColumn() const { return mShowCount ? 2 : -1; }
 
   public slots:
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     int exec();
 
   protected:

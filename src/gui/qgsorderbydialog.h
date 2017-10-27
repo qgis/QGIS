@@ -22,11 +22,13 @@
 
 #include "ui_qgsorderbydialogbase.h"
 #include "qgsfeaturerequest.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This is a dialog to build and manage a list of order by clauses.
  *
  * \since QGIS 2.14
@@ -62,6 +64,7 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
 
   private slots:
     void onExpressionChanged( const QString &expression );
+    void showHelp();
 
   private:
 

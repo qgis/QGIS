@@ -1,5 +1,5 @@
 {
-        "name": "array_get",
+        "name": "array_slice",
         "type": "function",
         "description": "Returns a portion of the array. The slice is defined by the start_pos and end_pos arguments.",
         "arguments": [{

@@ -59,7 +59,7 @@ class VariableDistanceBuffer(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.png'))
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -90,7 +90,8 @@ class VariableDistanceBuffer(QgisAlgorithm):
             self.tr('Join style'),
             options=self.join_styles, defaultValue=0))
         self.addParameter(QgsProcessingParameterNumber(self.MITER_LIMIT,
-                                                       self.tr('Miter limit'), minValue=0, defaultValue=2))
+                                                       self.tr('Miter limit'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0, defaultValue=2))
 
         self.addParameter(
             QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Buffer'), QgsProcessing.TypeVectorPolygon))

@@ -39,7 +39,8 @@ class QgsLabelingEngine;
 class QgsMapSettings;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Contains information about the context of a rendering operation.
  * The context of a rendering operation defines properties such as
  * the conversion ratio between screen and map units, the extents
@@ -53,7 +54,8 @@ class CORE_EXPORT QgsRenderContext
     QgsRenderContext( const QgsRenderContext &rh );
     QgsRenderContext &operator=( const QgsRenderContext &rh );
 
-    /** Enumeration of flags that affect rendering operations.
+    /**
+     * Enumeration of flags that affect rendering operations.
      * \since QGIS 2.14
      */
     enum Flag
@@ -67,31 +69,38 @@ class CORE_EXPORT QgsRenderContext
       RenderMapTile            = 0x40,  //!< Draw map such that there are no problems between adjacent tiles
       Antialiasing             = 0x80,  //!< Use antialiasing while drawing
       RenderPartialOutput      = 0x100, //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
+      RenderPreviewJob         = 0x200, //!< Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    /** Set combination of flags that will be used for rendering.
+    /**
+     * Set combination of flags that will be used for rendering.
      * \since QGIS 2.14
      */
     void setFlags( QgsRenderContext::Flags flags );
 
-    /** Enable or disable a particular flag (other flags are not affected)
+    /**
+     * Enable or disable a particular flag (other flags are not affected)
      * \since QGIS 2.14
      */
     void setFlag( Flag flag, bool on = true );
 
-    /** Return combination of flags used for rendering.
+    /**
+     * Return combination of flags used for rendering.
      * \since QGIS 2.14
      */
     Flags flags() const;
 
-    /** Check whether a particular flag is enabled.
+    /**
+     * Check whether a particular flag is enabled.
      * \since QGIS 2.14
      */
     bool testFlag( Flag flag ) const;
 
-    //! create initialized QgsRenderContext instance from given QgsMapSettings
-    //! \since QGIS 2.4
+    /**
+     * create initialized QgsRenderContext instance from given QgsMapSettings
+     * \since QGIS 2.4
+     */
     static QgsRenderContext fromMapSettings( const QgsMapSettings &mapSettings );
 
     /**
@@ -110,7 +119,8 @@ class CORE_EXPORT QgsRenderContext
     */
     QPainter *painter() {return mPainter;}
 
-    /** Returns the current coordinate transform for the context, or an invalid
+    /**
+     * Returns the current coordinate transform for the context, or an invalid
      * transform is no coordinate transformation is required.
      */
     QgsCoordinateTransform coordinateTransform() const {return mCoordTransform;}
@@ -137,11 +147,13 @@ class CORE_EXPORT QgsRenderContext
 
     bool forceVectorOutput() const;
 
-    /** Returns true if advanced effects such as blend modes such be used
+    /**
+     * Returns true if advanced effects such as blend modes such be used
      */
     bool useAdvancedEffects() const;
 
-    /** Used to enable or disable advanced effects such as blend modes
+    /**
+     * Used to enable or disable advanced effects such as blend modes
      */
     void setUseAdvancedEffects( bool enabled );
 
@@ -154,13 +166,16 @@ class CORE_EXPORT QgsRenderContext
      */
     double rendererScale() const {return mRendererScale;}
 
-    //! Get access to new labeling engine (may be nullptr)
-    //! \note not available in Python bindings
+    /**
+     * Get access to new labeling engine (may be nullptr)
+     * \note not available in Python bindings
+     */
     QgsLabelingEngine *labelingEngine() const { return mLabelingEngine; } SIP_SKIP
 
     QColor selectionColor() const { return mSelectionColor; }
 
-    /** Returns true if vector selections should be shown in the rendered map
+    /**
+     * Returns true if vector selections should be shown in the rendered map
      * \returns true if selections should be shown
      * \see setShowSelection
      * \see selectionColor
@@ -184,7 +199,7 @@ class CORE_EXPORT QgsRenderContext
      * Will be used to convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
      * \since QGIS 3.0
      */
-    void setDistanceArea( const QgsDistanceArea distanceArea ) {mDistanceArea = distanceArea ;}
+    void setDistanceArea( const QgsDistanceArea &distanceArea ) {mDistanceArea = distanceArea ;}
 
     /**
      * Sets the scaling factor for the render to convert painter units
@@ -211,12 +226,15 @@ class CORE_EXPORT QgsRenderContext
 
     void setForceVectorOutput( bool force );
 
-    //! Assign new labeling engine
-    //! \note not available in Python bindings
+    /**
+     * Assign new labeling engine
+     * \note not available in Python bindings
+     */
     void setLabelingEngine( QgsLabelingEngine *engine2 ) { mLabelingEngine = engine2; } SIP_SKIP
     void setSelectionColor( const QColor &color ) { mSelectionColor = color; }
 
-    /** Sets whether vector selections should be shown in the rendered map
+    /**
+     * Sets whether vector selections should be shown in the rendered map
      * \param showSelection set to true if selections should be shown
      * \see showSelection
      * \see setSelectionColor
@@ -224,7 +242,8 @@ class CORE_EXPORT QgsRenderContext
      */
     void setShowSelection( const bool showSelection );
 
-    /** Returns true if the rendering optimization (geometry simplification) can be executed
+    /**
+     * Returns true if the rendering optimization (geometry simplification) can be executed
      */
     bool useRenderingOptimization() const;
 
@@ -234,21 +253,24 @@ class CORE_EXPORT QgsRenderContext
     const QgsVectorSimplifyMethod &vectorSimplifyMethod() const { return mVectorSimplifyMethod; }
     void setVectorSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod ) { mVectorSimplifyMethod = simplifyMethod; }
 
-    /** Sets the expression context. This context is used for all expression evaluation
+    /**
+     * Sets the expression context. This context is used for all expression evaluation
      * associated with this render context.
      * \see expressionContext()
      * \since QGIS 2.12
      */
     void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
 
-    /** Gets the expression context. This context should be used for all expression evaluation
+    /**
+     * Gets the expression context. This context should be used for all expression evaluation
      * associated with this render context.
      * \see setExpressionContext()
      * \since QGIS 2.12
      */
     QgsExpressionContext &expressionContext() { return mExpressionContext; }
 
-    /** Gets the expression context (const version). This context should be used for all expression evaluation
+    /**
+     * Gets the expression context (const version). This context should be used for all expression evaluation
      * associated with this render context.
      * \see setExpressionContext()
      * \since QGIS 2.12
@@ -261,27 +283,31 @@ class CORE_EXPORT QgsRenderContext
     //! Sets pointer to original (unsegmentized) geometry
     void setGeometry( const QgsAbstractGeometry *geometry ) { mGeometry = geometry; }
 
-    /** Set a filter feature provider used for additional filtering of rendered features.
+    /**
+     * Set a filter feature provider used for additional filtering of rendered features.
      * \param ffp the filter feature provider
      * \since QGIS 2.14
      * \see featureFilterProvider()
      */
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *ffp );
 
-    /** Get the filter feature provider used for additional filtering of rendered features.
+    /**
+     * Get the filter feature provider used for additional filtering of rendered features.
      * \returns the filter feature provider
      * \since QGIS 2.14
      * \see setFeatureFilterProvider()
      */
     const QgsFeatureFilterProvider *featureFilterProvider() const;
 
-    /** Sets the segmentation tolerance applied when rendering curved geometries
+    /**
+     * Sets the segmentation tolerance applied when rendering curved geometries
     \param tolerance the segmentation tolerance*/
     void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
     //! Gets the segmentation tolerance applied when rendering curved geometries
     double segmentationTolerance() const { return mSegmentationTolerance; }
 
-    /** Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+    /**
+     * Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
     \param type the segmentation tolerance typename*/
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
     //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)

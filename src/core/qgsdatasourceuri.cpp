@@ -20,27 +20,18 @@
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 #include "qgswkbtypes.h"
+#include "qgsapplication.h"
 
 #include <QStringList>
 #include <QRegExp>
 #include <QUrl>
 
 QgsDataSourceUri::QgsDataSourceUri()
-  : mSSLmode( SslPrefer )
-  , mKeyColumn( QLatin1String( "" ) )
-  , mUseEstimatedMetadata( false )
-  , mSelectAtIdDisabled( false )
-  , mWkbType( QgsWkbTypes::Unknown )
 {
   // do nothing
 }
 
 QgsDataSourceUri::QgsDataSourceUri( QString uri )
-  : mSSLmode( SslPrefer )
-  , mKeyColumn( QLatin1String( "" ) )
-  , mUseEstimatedMetadata( false )
-  , mSelectAtIdDisabled( false )
-  , mWkbType( QgsWkbTypes::Unknown )
 {
   int i = 0;
   while ( i < uri.length() )
@@ -93,7 +84,7 @@ QgsDataSourceUri::QgsDataSourceUri( QString uri )
         }
         else
         {
-          mSchema = QLatin1String( "" );
+          mSchema.clear();
           mTable = pval;
         }
 
@@ -225,7 +216,7 @@ QgsDataSourceUri::QgsDataSourceUri( QString uri )
       }
       else
       {
-        QgsDebugMsg( "parameter \"" + pname + "\":\"" + pval + "\" added" );
+        QgsDebugMsgLevel( "parameter \"" + pname + "\":\"" + pval + "\" added", 4 );
         setParam( pname, pval );
       }
     }
@@ -386,7 +377,7 @@ void QgsDataSourceUri::setSql( const QString &sql )
 
 void QgsDataSourceUri::clearSchema()
 {
-  mSchema = QLatin1String( "" );
+  mSchema.clear();
 }
 
 void QgsDataSourceUri::setSchema( const QString &schema )
@@ -482,36 +473,36 @@ QString QgsDataSourceUri::connectionInfo( bool expandAuthConfig ) const
 {
   QStringList connectionItems;
 
-  if ( mDatabase != QLatin1String( "" ) )
+  if ( !mDatabase.isEmpty() )
   {
     connectionItems << "dbname='" + escape( mDatabase ) + '\'';
   }
 
-  if ( mService != QLatin1String( "" ) )
+  if ( !mService.isEmpty() )
   {
     connectionItems << "service='" + escape( mService ) + '\'';
   }
-  else if ( mHost != QLatin1String( "" ) )
+  else if ( !mHost.isEmpty() )
   {
     connectionItems << "host=" + mHost;
   }
 
   if ( mService.isEmpty() )
   {
-    if ( mPort != QLatin1String( "" ) )
+    if ( !mPort.isEmpty() )
       connectionItems << "port=" + mPort;
   }
 
-  if ( mDriver != QLatin1String( "" ) )
+  if ( !mDriver.isEmpty() )
   {
     connectionItems << "driver='" + escape( mDriver ) + '\'';
   }
 
-  if ( mUsername != QLatin1String( "" ) )
+  if ( !mUsername.isEmpty() )
   {
     connectionItems << "user='" + escape( mUsername ) + '\'';
 
-    if ( mPassword != QLatin1String( "" ) )
+    if ( !mPassword.isEmpty() )
     {
       connectionItems << "password='" + escape( mPassword ) + '\'';
     }
@@ -536,7 +527,7 @@ QString QgsDataSourceUri::connectionInfo( bool expandAuthConfig ) const
   {
     if ( expandAuthConfig )
     {
-      if ( !QgsAuthManager::instance()->updateDataSourceUriItems( connectionItems, mAuthConfigId ) )
+      if ( !QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, mAuthConfigId ) )
       {
         QgsDebugMsg( QString( "Data source URI FAILED to update via loading configuration ID '%1'" ).arg( mAuthConfigId ) );
       }
@@ -606,12 +597,9 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
 QByteArray QgsDataSourceUri::encodedUri() const
 {
   QUrl url;
-  Q_FOREACH ( const QString &key, mParams.uniqueKeys() )
+  for ( auto it = mParams.constBegin(); it != mParams.constEnd(); ++it )
   {
-    Q_FOREACH ( const QString &value, mParams.values( key ) )
-    {
-      url.addQueryItem( key, value );
-    }
+    url.addQueryItem( it.key(), it.value() );
   }
   return url.encodedQuery();
 }

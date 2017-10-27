@@ -25,7 +25,8 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsProcessingException,
+from qgis.core import (QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterNumber)
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
@@ -41,7 +42,7 @@ class Orthogonalize(QgisFeatureBasedAlgorithm):
         return self.tr('rectangle,perpendicular,right,angles,square,quadrilateralise').split(',')
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -69,6 +70,9 @@ class Orthogonalize(QgisFeatureBasedAlgorithm):
 
     def outputName(self):
         return self.tr('Orthogonalized')
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorLine]
 
     def prepareAlgorithm(self, parameters, context, feedback):
         self.max_iterations = self.parameterAsInt(parameters, self.MAX_ITERATIONS, context)

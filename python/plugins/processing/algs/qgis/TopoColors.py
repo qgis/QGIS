@@ -61,7 +61,7 @@ class TopoColor(QgisAlgorithm):
         return self.tr('topocolor,colors,graph,adjacent,assign').split(',')
 
     def group(self):
-        return self.tr('Cartographic tools')
+        return self.tr('Cartography')
 
     def __init__(self):
         super().__init__()
@@ -112,6 +112,9 @@ class TopoColor(QgisAlgorithm):
                                                     feedback=feedback,
                                                     min_colors=min_colors)
 
+        if len(feature_colors) == 0:
+            return {self.OUTPUT: dest_id}
+
         max_colors = max(feature_colors.values())
         feedback.pushInfo(self.tr('{} colors required').format(max_colors))
 
@@ -146,7 +149,7 @@ class TopoColor(QgisAlgorithm):
         # skip features without geometry
         features_with_geometry = {f_id: f for (f_id, f) in features.items() if f.hasGeometry()}
 
-        total = 70.0 / len(features_with_geometry)
+        total = 70.0 / len(features_with_geometry) if features_with_geometry else 1
         index = QgsSpatialIndex()
 
         i = 0
@@ -158,7 +161,7 @@ class TopoColor(QgisAlgorithm):
             if min_distance > 0:
                 g = g.buffer(min_distance, 5)
 
-            engine = QgsGeometry.createGeometryEngine(g.geometry())
+            engine = QgsGeometry.createGeometryEngine(g.constGet())
             engine.prepareGeometry()
 
             feature_bounds = g.boundingBox()
@@ -167,7 +170,7 @@ class TopoColor(QgisAlgorithm):
             intersections = index.intersects(feature_bounds)
             for l2 in intersections:
                 f2 = features_with_geometry[l2]
-                if engine.intersects(f2.geometry().geometry()):
+                if engine.intersects(f2.geometry().constGet()):
                     s.add_edge(f.id(), f2.id())
                     s.add_edge(f2.id(), f.id())
                     if id_graph:
@@ -211,7 +214,7 @@ class ColoringAlgorithm:
             color_counts[c] = 0
             color_areas[c] = 0
 
-        total = 10.0 / len(sorted_by_count)
+        total = 10.0 / len(sorted_by_count) if sorted_by_count else 1
         i = 0
 
         for (feature_id, n) in sorted_by_count:
@@ -244,7 +247,7 @@ class ColoringAlgorithm:
                     color_areas[feature_color] += features[feature_id].geometry().area()
                 elif balance == 2:
                     min_distances = {c: sys.float_info.max for c in available_colors}
-                    this_feature_centroid = QgsPointXY(features[feature_id].geometry().centroid().geometry())
+                    this_feature_centroid = features[feature_id].geometry().centroid().constGet()
 
                     # find features for all available colors
                     other_features = {f_id: c for (f_id, c) in feature_colors.items() if c in available_colors}
@@ -256,7 +259,7 @@ class ColoringAlgorithm:
                             break
 
                         other_geometry = features[other_feature_id].geometry()
-                        other_centroid = QgsPointXY(other_geometry.centroid().geometry())
+                        other_centroid = other_geometry.centroid().constGet()
 
                         distance = this_feature_centroid.distanceSquared(other_centroid)
                         if distance < min_distances[c]:

@@ -12,7 +12,3 @@
 #   (at your option) any later version.                                   #
 #                                                                         #
 ###########################################################################
-
-ccache -s
-
-[ -r /tmp/ctest-important.log ] && cat /tmp/ctest-important.log

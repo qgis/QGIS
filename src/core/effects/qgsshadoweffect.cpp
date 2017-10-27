@@ -21,13 +21,7 @@
 #include "qgsunittypes.h"
 
 QgsShadowEffect::QgsShadowEffect()
-  : QgsPaintEffect()
-  , mBlurLevel( 10 )
-  , mOffsetAngle( 135 )
-  , mOffsetDist( 2.0 )
-  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
-  , mColor( Qt::black )
-  , mBlendMode( QPainter::CompositionMode_Multiply )
+  : mColor( Qt::black )
 {
 
 }
@@ -56,8 +50,8 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
   double offsetDist = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
 
   double   angleRad = mOffsetAngle * M_PI / 180; // to radians
-  QPointF transPt( -offsetDist * cos( angleRad + M_PI / 2 ),
-                   -offsetDist * sin( angleRad + M_PI / 2 ) );
+  QPointF transPt( -offsetDist * std::cos( angleRad + M_PI_2 ),
+                   -offsetDist * std::sin( angleRad + M_PI_2 ) );
 
   //transparency, scale
   QgsImageOperation::multiplyOpacity( colorisedIm, mOpacity );

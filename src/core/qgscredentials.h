@@ -26,7 +26,8 @@
 #include "qgis_core.h"
 #include "qgis.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Interface for requesting credentials in QGIS in GUI independent way.
  * This class provides abstraction of a dialog for requesting credentials to the user.
  * By default QgsCredentials will be used if not overridden with other
@@ -41,6 +42,9 @@ class CORE_EXPORT QgsCredentials
 {
   public:
 
+    /**
+     * Destructor.
+     */
     virtual ~QgsCredentials() = default;
 
     bool get( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString() );
@@ -72,7 +76,11 @@ class CORE_EXPORT QgsCredentials
     QMutex *mutex() { return &mMutex; }
 
   protected:
-    QgsCredentials();
+
+    /**
+     * Constructor for QgsCredentials.
+     */
+    QgsCredentials() = default;
 
     //! request a password
     virtual bool request( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString() ) = 0;
@@ -100,7 +108,8 @@ class CORE_EXPORT QgsCredentials
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
 \brief Default implementation of credentials interface
 
 This class doesn't prompt or return credentials
@@ -122,7 +131,8 @@ class CORE_EXPORT QgsCredentialsNone : public QObject, public QgsCredentials
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
 \brief Implementation of credentials interface for the console
 
 This class outputs message to the standard output and retrieves input from

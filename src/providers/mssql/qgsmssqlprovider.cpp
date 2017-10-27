@@ -49,6 +49,7 @@
 
 #ifdef HAVE_GUI
 #include "qgsmssqlsourceselect.h"
+#include "qgssourceselectprovider.h"
 #endif
 
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "mssql" );
@@ -57,10 +58,6 @@ int QgsMssqlProvider::sConnectionId = 0;
 
 QgsMssqlProvider::QgsMssqlProvider( const QString &uri )
   : QgsVectorDataProvider( uri )
-  , mNumberFeatures( 0 )
-  , mFidColIdx( -1 )
-  , mCrs()
-  , mWkbType( QgsWkbTypes::Unknown )
 {
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );
 
@@ -245,7 +242,7 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( const QString &service, const QStrin
     db = QSqlDatabase::database( connectionName );
 
   db.setHostName( host );
-  QString connectionString = QLatin1String( "" );
+  QString connectionString;
   if ( !service.isEmpty() )
   {
     // driver was specified explicitly
@@ -421,7 +418,7 @@ void QgsMssqlProvider::loadFields()
         if ( sqlType == QVariant::String )
         {
           int length = query.value( 7 ).toInt();
-          if ( sqlTypeName.startsWith( "n" ) )
+          if ( sqlTypeName.startsWith( QLatin1String( "n" ) ) )
           {
             length = length / 2;
           }
@@ -672,7 +669,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
   // Get the extents from the spatial index table to speed up load times.
   // We have to use max() and min() because you can have more then one index but the biggest area is what we want to use.
   QString sql = "SELECT min(bounding_box_xmin), min(bounding_box_ymin), max(bounding_box_xmax), max(bounding_box_ymax)"
-                " FROM sys.spatial_index_tessellations WHERE object_id =  OBJECT_ID('[%1].[%2]')";
+                " FROM sys.spatial_index_tessellations WHERE object_id = OBJECT_ID('[%1].[%2]')";
 
   statement = QString( sql ).arg( mSchemaName, mTableName );
 
@@ -1006,7 +1003,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           // Z and M on the end of a WKT string isn't valid for
           // SQL Server so we have to remove it first.
           wkt = geom.exportToWkt();
-          wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), "(" );
+          wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), QStringLiteral( "(" ) );
         }
         query.addBindValue( wkt );
       }
@@ -1342,7 +1339,7 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
       QString wkt = it->exportToWkt();
       // Z and M on the end of a WKT string isn't valid for
       // SQL Server so we have to remove it first.
-      wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), "(" );
+      wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), QStringLiteral( "(" ) );
       query.addBindValue( wkt );
     }
 
@@ -1458,7 +1455,7 @@ bool QgsMssqlProvider::createAttributeIndex( int field )
 
   if ( field < 0 || field >= mAttributeFields.size() )
   {
-    pushError( "createAttributeIndex invalid index" );
+    pushError( QStringLiteral( "createAttributeIndex invalid index" ) );
     return false;
   }
 
@@ -1934,7 +1931,8 @@ QGISEXTERN QgsMssqlProvider *classFactory( const QString *uri )
   return new QgsMssqlProvider( *uri );
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
@@ -2010,8 +2008,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
   query.setForwardOnly( true );
   if ( !query.exec( QStringLiteral( "SELECT COUNT(*) FROM information_schema.tables WHERE table_name= N'layer_styles'" ) ) )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
     return false;
   }
   if ( query.isActive() && query.next() && query.value( 0 ).toInt() == 0 )
@@ -2265,8 +2262,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   queryOk = query.exec( selectOthersQuery );
   if ( !queryOk )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
     return -1;
   }
   QgsDebugMsg( query.isActive() && query.size() );
@@ -2294,13 +2290,12 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
 
-  QString style = QLatin1String( "" );
+  QString style;
   QString selectQmlQuery = QStringLiteral( "SELECT styleQml FROM layer_styles WHERE id=%1" ).arg( QgsMssqlProvider::quotedValue( styleId ) );
   bool queryOk = query.exec( selectQmlQuery );
   if ( !queryOk )
   {
-    QString msg = query.lastError().text();
-    QgsDebugMsg( msg );
+    QgsDebugMsg( query.lastError().text() );
     errCause = query.lastError().text();
     return QString();
   }
@@ -2310,3 +2305,34 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   }
   return style;
 }
+
+
+#ifdef HAVE_GUI
+
+//! Provider for msssql raster source select
+class QgsMssqlSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "mssql" ); }
+    virtual QString text() const override { return QObject::tr( "MSSQL" ); }
+    virtual int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 30; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMssqlLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsMssqlSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsMssqlSourceSelectProvider;
+
+  return providers;
+}
+
+#endif

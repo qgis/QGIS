@@ -21,11 +21,14 @@ class QgsMultiSurface: QgsGeometryCollection
   public:
     QgsMultiSurface();
     virtual QString geometryType() const;
+
+    virtual void clear();
+
     virtual QgsMultiSurface *clone() const /Factory/;
 
+    virtual QgsMultiSurface *toCurveType() const /Factory/;
 
     virtual bool fromWkt( const QString &wkt );
-
 
     virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
@@ -33,16 +36,20 @@ class QgsMultiSurface: QgsGeometryCollection
 
     virtual QString asJSON( int precision = 17 ) const;
 
+    virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 
-
-    virtual bool addGeometry( QgsAbstractGeometry *g )  /Transfer/;
-%Docstring
-Adds a geometry and takes ownership. Returns true in case of success
- :rtype: bool
-%End
+    virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
+
+
+
+  protected:
+    virtual QgsMultiSurface *createEmptyWithSameType() const /Factory/;
+
+
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

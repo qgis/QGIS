@@ -24,7 +24,6 @@ class QgsGraphDirector : QObject
 %TypeHeaderCode
 #include "qgsgraphdirector.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast< QgsVectorLayerDirector * >( sipCpp ) != NULL )
       sipType = sipType_QgsVectorLayerDirector;

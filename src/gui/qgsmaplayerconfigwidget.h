@@ -24,7 +24,8 @@
 class QgsMapCanvas;
 class QgsMapLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsMapLayerConfigWidget
  * \brief A panel widget that can be shown in the map style dock
  * \since QGIS 2.16

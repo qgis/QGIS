@@ -21,7 +21,8 @@
 
 class QgsPluginManager;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * QgsPluginManagerInterface
  * Abstract base class to make QgsPluginManager available to pyplugin_installer.
  */
@@ -33,8 +34,6 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
 
     //! Constructor
     explicit QgsAppPluginManagerInterface( QgsPluginManager *pluginManager );
-
-    ~QgsAppPluginManagerInterface();
 
     //! remove Python plugins from the metadata registry (c++ plugins stay)
     void clearPythonPluginMetadata() override;

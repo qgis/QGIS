@@ -12,7 +12,6 @@
 
 
 
-
 class QgsLineString: QgsCurve
 {
 %Docstring
@@ -151,12 +150,12 @@ class QgsLineString: QgsCurve
 Closes the line string by appending the first point to the end of the line, if it is not already closed.
 %End
 
-    virtual QgsAbstractGeometry *toCurveType() const /Factory/;
+    virtual QgsCompoundCurve *toCurveType() const /Factory/;
 
 %Docstring
  Returns the geometry converted to the more generic curve type QgsCompoundCurve
 :return: the converted geometry. Caller takes ownership*
- :rtype: QgsAbstractGeometry
+ :rtype: QgsCompoundCurve
 %End
 
     void extend( double startDistance, double endDistance );
@@ -169,14 +168,22 @@ Closes the line string by appending the first point to the end of the line, if i
 
 
     virtual QString geometryType() const;
+
     virtual int dimension() const;
+
     virtual QgsLineString *clone() const /Factory/;
+
     virtual void clear();
+
     virtual bool isEmpty() const;
+
+    virtual QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
 
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
+
     virtual bool fromWkt( const QString &wkt );
+
 
     virtual QByteArray asWkb() const;
 
@@ -190,10 +197,14 @@ Closes the line string by appending the first point to the end of the line, if i
 
 
     virtual double length() const;
+
     virtual QgsPoint startPoint() const;
+
     virtual QgsPoint endPoint() const;
 
+
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const  /Factory/;
+
 %Docstring
  Returns a new line string geometry corresponding to a segmentized approximation
  of the curve.
@@ -205,6 +216,7 @@ Closes the line string by appending the first point to the end of the line, if i
     virtual int numPoints() const;
 
     virtual int nCoordinates() const;
+
     virtual void points( QgsPointSequence &pt /Out/ ) const;
 
 
@@ -222,18 +234,22 @@ Closes the line string by appending the first point to the end of the line, if i
 
 
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
+
     virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
+
     virtual bool deleteVertex( QgsVertexId position );
+
 
     virtual QgsLineString *reversed() const /Factory/;
 
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
-                                   QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/,
-                                   double epsilon ) const;
+
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
+
     virtual bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const;
 
 
     virtual QgsPoint centroid() const;
+
 
     virtual void sumUpArea( double &sum /Out/ ) const;
 
@@ -241,19 +257,26 @@ Closes the line string by appending the first point to the end of the line, if i
 
 
     virtual bool addZValue( double zValue = 0 );
+
     virtual bool addMValue( double mValue = 0 );
 
+
     virtual bool dropZValue();
+
     virtual bool dropMValue();
+
 
     virtual bool convertTo( QgsWkbTypes::Type type );
 
 
   protected:
+    virtual QgsLineString *createEmptyWithSameType() const /Factory/;
 
     virtual QgsRectangle calculateBoundingBox() const;
 
+
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

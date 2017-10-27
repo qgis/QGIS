@@ -32,6 +32,21 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml *html, QgsComposer
   , mFrame( frame )
 {
   setupUi( this );
+  connect( mUrlLineEdit, &QLineEdit::editingFinished, this, &QgsComposerHtmlWidget::mUrlLineEdit_editingFinished );
+  connect( mFileToolButton, &QToolButton::clicked, this, &QgsComposerHtmlWidget::mFileToolButton_clicked );
+  connect( mResizeModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsComposerHtmlWidget::mResizeModeComboBox_currentIndexChanged );
+  connect( mEvaluateExpressionsCheckbox, &QCheckBox::toggled, this, &QgsComposerHtmlWidget::mEvaluateExpressionsCheckbox_toggled );
+  connect( mUseSmartBreaksCheckBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsComposerHtmlWidget::mUseSmartBreaksCheckBox_toggled );
+  connect( mMaxDistanceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerHtmlWidget::mMaxDistanceSpinBox_valueChanged );
+  connect( mUserStylesheetCheckBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsComposerHtmlWidget::mUserStylesheetCheckBox_toggled );
+  connect( mRadioManualSource, &QRadioButton::clicked, this, &QgsComposerHtmlWidget::mRadioManualSource_clicked );
+  connect( mRadioUrlSource, &QRadioButton::clicked, this, &QgsComposerHtmlWidget::mRadioUrlSource_clicked );
+  connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsComposerHtmlWidget::mInsertExpressionButton_clicked );
+  connect( mReloadPushButton, &QPushButton::clicked, this, &QgsComposerHtmlWidget::mReloadPushButton_clicked );
+  connect( mReloadPushButton2, &QPushButton::clicked, this, &QgsComposerHtmlWidget::mReloadPushButton2_clicked );
+  connect( mAddFramePushButton, &QPushButton::clicked, this, &QgsComposerHtmlWidget::mAddFramePushButton_clicked );
+  connect( mEmptyFrameCheckBox, &QCheckBox::toggled, this, &QgsComposerHtmlWidget::mEmptyFrameCheckBox_toggled );
+  connect( mHideEmptyBgCheckBox, &QCheckBox::toggled, this, &QgsComposerHtmlWidget::mHideEmptyBgCheckBox_toggled );
   setPanelTitle( tr( "HTML properties" ) );
 
   //setup html editor
@@ -72,14 +87,7 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml *html, QgsComposer
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget()
   : QgsComposerItemBaseWidget( nullptr, nullptr )
-  , mHtml( nullptr )
-  , mFrame( nullptr )
-  , mHtmlEditor( nullptr )
-  , mStylesheetEditor( nullptr )
-{
-}
 
-QgsComposerHtmlWidget::~QgsComposerHtmlWidget()
 {
 }
 
@@ -100,7 +108,7 @@ void QgsComposerHtmlWidget::blockSignals( bool block )
   mHideEmptyBgCheckBox->blockSignals( block );
 }
 
-void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
+void QgsComposerHtmlWidget::mUrlLineEdit_editingFinished()
 {
   if ( mHtml )
   {
@@ -121,7 +129,7 @@ void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
   }
 }
 
-void QgsComposerHtmlWidget::on_mFileToolButton_clicked()
+void QgsComposerHtmlWidget::mFileToolButton_clicked()
 {
   QgsSettings s;
   QString lastDir = s.value( QStringLiteral( "/UI/lastHtmlDir" ), QDir::homePath() ).toString();
@@ -130,13 +138,13 @@ void QgsComposerHtmlWidget::on_mFileToolButton_clicked()
   {
     QUrl url = QUrl::fromLocalFile( file );
     mUrlLineEdit->setText( url.toString() );
-    on_mUrlLineEdit_editingFinished();
+    mUrlLineEdit_editingFinished();
     mHtml->update();
     s.setValue( QStringLiteral( "/UI/lastHtmlDir" ), QFileInfo( file ).absolutePath() );
   }
 }
 
-void QgsComposerHtmlWidget::on_mResizeModeComboBox_currentIndexChanged( int index )
+void QgsComposerHtmlWidget::mResizeModeComboBox_currentIndexChanged( int index )
 {
   if ( !mHtml )
   {
@@ -154,7 +162,7 @@ void QgsComposerHtmlWidget::on_mResizeModeComboBox_currentIndexChanged( int inde
   mAddFramePushButton->setEnabled( mHtml->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
 }
 
-void QgsComposerHtmlWidget::on_mEvaluateExpressionsCheckbox_toggled( bool checked )
+void QgsComposerHtmlWidget::mEvaluateExpressionsCheckbox_toggled( bool checked )
 {
   if ( !mHtml )
   {
@@ -172,7 +180,7 @@ void QgsComposerHtmlWidget::on_mEvaluateExpressionsCheckbox_toggled( bool checke
   }
 }
 
-void QgsComposerHtmlWidget::on_mUseSmartBreaksCheckBox_toggled( bool checked )
+void QgsComposerHtmlWidget::mUseSmartBreaksCheckBox_toggled( bool checked )
 {
   if ( !mHtml )
   {
@@ -190,7 +198,7 @@ void QgsComposerHtmlWidget::on_mUseSmartBreaksCheckBox_toggled( bool checked )
   }
 }
 
-void QgsComposerHtmlWidget::on_mMaxDistanceSpinBox_valueChanged( double val )
+void QgsComposerHtmlWidget::mMaxDistanceSpinBox_valueChanged( double val )
 {
   if ( !mHtml )
   {
@@ -245,7 +253,7 @@ void QgsComposerHtmlWidget::stylesheetEditorChanged()
   }
 }
 
-void QgsComposerHtmlWidget::on_mUserStylesheetCheckBox_toggled( bool checked )
+void QgsComposerHtmlWidget::mUserStylesheetCheckBox_toggled( bool checked )
 {
   if ( !mHtml )
   {
@@ -263,7 +271,7 @@ void QgsComposerHtmlWidget::on_mUserStylesheetCheckBox_toggled( bool checked )
   }
 }
 
-void QgsComposerHtmlWidget::on_mEmptyFrameCheckBox_toggled( bool checked )
+void QgsComposerHtmlWidget::mEmptyFrameCheckBox_toggled( bool checked )
 {
   if ( !mFrame )
   {
@@ -275,7 +283,7 @@ void QgsComposerHtmlWidget::on_mEmptyFrameCheckBox_toggled( bool checked )
   mFrame->endCommand();
 }
 
-void QgsComposerHtmlWidget::on_mHideEmptyBgCheckBox_toggled( bool checked )
+void QgsComposerHtmlWidget::mHideEmptyBgCheckBox_toggled( bool checked )
 {
   if ( !mFrame )
   {
@@ -287,7 +295,7 @@ void QgsComposerHtmlWidget::on_mHideEmptyBgCheckBox_toggled( bool checked )
   mFrame->endCommand();
 }
 
-void QgsComposerHtmlWidget::on_mRadioManualSource_clicked( bool checked )
+void QgsComposerHtmlWidget::mRadioManualSource_clicked( bool checked )
 {
   if ( !mHtml )
   {
@@ -311,7 +319,7 @@ void QgsComposerHtmlWidget::on_mRadioManualSource_clicked( bool checked )
   mHtml->loadHtml();
 }
 
-void QgsComposerHtmlWidget::on_mRadioUrlSource_clicked( bool checked )
+void QgsComposerHtmlWidget::mRadioUrlSource_clicked( bool checked )
 {
   if ( !mHtml )
   {
@@ -335,7 +343,7 @@ void QgsComposerHtmlWidget::on_mRadioUrlSource_clicked( bool checked )
   mHtml->loadHtml();
 }
 
-void QgsComposerHtmlWidget::on_mInsertExpressionButton_clicked()
+void QgsComposerHtmlWidget::mInsertExpressionButton_clicked()
 {
   if ( !mHtml )
   {
@@ -365,7 +373,7 @@ void QgsComposerHtmlWidget::on_mInsertExpressionButton_clicked()
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression =  exprDlg.expressionText();
+    QString expression = exprDlg.expressionText();
     QgsComposition *composition = mHtml->composition();
     if ( !expression.isEmpty() && composition )
     {
@@ -387,7 +395,7 @@ void QgsComposerHtmlWidget::on_mInsertExpressionButton_clicked()
 
 }
 
-void QgsComposerHtmlWidget::on_mReloadPushButton_clicked()
+void QgsComposerHtmlWidget::mReloadPushButton_clicked()
 {
   if ( !mHtml )
   {
@@ -397,7 +405,7 @@ void QgsComposerHtmlWidget::on_mReloadPushButton_clicked()
   mHtml->loadHtml();
 }
 
-void QgsComposerHtmlWidget::on_mReloadPushButton2_clicked()
+void QgsComposerHtmlWidget::mReloadPushButton2_clicked()
 {
   if ( !mHtml )
   {
@@ -407,7 +415,7 @@ void QgsComposerHtmlWidget::on_mReloadPushButton2_clicked()
   mHtml->loadHtml();
 }
 
-void QgsComposerHtmlWidget::on_mAddFramePushButton_clicked()
+void QgsComposerHtmlWidget::mAddFramePushButton_clicked()
 {
   if ( !mHtml || !mFrame )
   {

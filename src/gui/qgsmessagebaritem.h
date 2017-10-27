@@ -17,9 +17,9 @@
 #ifndef qgsmessagebaritem_H
 #define qgsmessagebaritem_H
 
-#include <qgsmessagebaritem.h>
+#include "qgsmessagebaritem.h"
 #include "qgis.h"
-#include <qgsmessagebar.h>
+#include "qgsmessagebar.h"
 
 #include <QWidget>
 #include <QIcon>
@@ -27,7 +27,8 @@
 #include <QHBoxLayout>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsMessageBarItem
  */
 class GUI_EXPORT QgsMessageBarItem : public QWidget

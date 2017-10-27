@@ -134,6 +134,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setFlag( RenderMapTile, mapSettings.testFlag( QgsMapSettings::RenderMapTile ) );
   ctx.setFlag( Antialiasing, mapSettings.testFlag( QgsMapSettings::Antialiasing ) );
   ctx.setFlag( RenderPartialOutput, mapSettings.testFlag( QgsMapSettings::RenderPartialOutput ) );
+  ctx.setFlag( RenderPreviewJob, mapSettings.testFlag( QgsMapSettings::RenderPreviewJob ) );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setRendererScale( mapSettings.scale() );
   ctx.setExpressionContext( mapSettings.expressionContext() );
@@ -274,9 +275,9 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
   {
     //check max/min size
     if ( scale.minSizeMMEnabled )
-      convertedSize = qMax( convertedSize, scale.minSizeMM * mScaleFactor );
+      convertedSize = std::max( convertedSize, scale.minSizeMM * mScaleFactor );
     if ( scale.maxSizeMMEnabled )
-      convertedSize = qMin( convertedSize, scale.maxSizeMM * mScaleFactor );
+      convertedSize = std::min( convertedSize, scale.maxSizeMM * mScaleFactor );
   }
 
   return convertedSize;
@@ -304,9 +305,9 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
       }
       if ( !qgsDoubleNear( scale.minScale, 0.0 ) )
       {
-        minSizeMU = qMax( minSizeMU, size * ( mRendererScale / scale.minScale ) );
+        minSizeMU = std::max( minSizeMU, size * ( mRendererScale / scale.minScale ) );
       }
-      size = qMax( size, minSizeMU );
+      size = std::max( size, minSizeMU );
 
       double maxSizeMU = DBL_MAX;
       if ( scale.maxSizeMMEnabled )
@@ -315,9 +316,9 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
       }
       if ( !qgsDoubleNear( scale.maxScale, 0.0 ) )
       {
-        maxSizeMU = qMin( maxSizeMU, size * ( mRendererScale / scale.maxScale ) );
+        maxSizeMU = std::min( maxSizeMU, size * ( mRendererScale / scale.maxScale ) );
       }
-      size = qMin( size, maxSizeMU );
+      size = std::min( size, maxSizeMU );
 
       return size;
     }

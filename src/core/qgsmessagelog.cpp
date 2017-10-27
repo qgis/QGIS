@@ -15,18 +15,12 @@
 
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
-#include <qgslogger.h>
+#include "qgslogger.h"
 #include <QDateTime>
 #include <QMetaType>
 #include <iostream>
 
 class QgsMessageLogConsole;
-
-QgsMessageLog::QgsMessageLog()
-  : QObject()
-{
-  qRegisterMetaType< QgsMessageLog::MessageLevel >( "QgsMessageLog::MessageLevel" );
-}
 
 void QgsMessageLog::logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level )
 {

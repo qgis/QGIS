@@ -120,7 +120,7 @@ QList<long> QgsCoordinateReferenceSystem::validSrsIds()
       continue;
     }
 
-    QString sql = "select srs_id from tbl_srs";
+    QString sql = QStringLiteral( "select srs_id from tbl_srs" );
     ( void )sqlite3_prepare( database, sql.toUtf8(),
                              sql.toUtf8().length(),
                              &statement, &tail );
@@ -516,7 +516,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
     d->mProjectionAcronym = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 2 ) ) );
     d->mEllipsoidAcronym = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 3 ) ) );
     d->mProj4 = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 4 ) ) );
-    d->mSRID = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 5 ) ) ).toLong() ;
+    d->mSRID = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 5 ) ) ).toLong();
     d->mAuthId = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 6 ) ) );
     d->mIsGeographic = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 7 ) ) ).toInt() != 0;
     d->mAxisInvertedDirty = true;
@@ -1061,6 +1061,49 @@ QgsUnitTypes::DistanceUnit QgsCoordinateReferenceSystem::mapUnits() const
   return d->mMapUnits;
 }
 
+QgsRectangle QgsCoordinateReferenceSystem::bounds() const
+{
+  if ( !d->mIsValid )
+    return QgsRectangle();
+
+  //check the db is available
+  QString databaseFileName = QgsApplication::srsDatabaseFilePath();
+
+  sqlite3 *database = nullptr;
+  const char *tail = nullptr;
+  sqlite3_stmt *stmt = nullptr;
+
+  int result = openDatabase( databaseFileName, &database );
+  if ( result != SQLITE_OK )
+  {
+    return QgsRectangle();
+  }
+
+  QString sql = QStringLiteral( "select west_bound_lon, north_bound_lat, east_bound_lon, south_bound_lat from tbl_srs "
+                                "where srs_id=%1" )
+                .arg( d->mSrsId );
+  result = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
+
+  QgsRectangle rect;
+  if ( result == SQLITE_OK )
+  {
+    if ( sqlite3_step( stmt ) == SQLITE_ROW )
+    {
+      double west = sqlite3_column_double( stmt, 0 );
+      double north = sqlite3_column_double( stmt, 1 );
+      double east = sqlite3_column_double( stmt, 2 );
+      double south = sqlite3_column_double( stmt, 3 );
+      rect = QgsRectangle( west, north, east, south );
+    }
+  }
+
+  // close the sqlite3 statement
+  sqlite3_finalize( stmt );
+  sqlite3_close( database );
+
+  return rect;
+}
+
 
 // Mutators -----------------------------------
 
@@ -1164,7 +1207,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     static const double FEET_TO_METER = 0.3048;
     static const double SMALL_NUM = 1e-3;
 
-    if ( qAbs( toMeter - FEET_TO_METER ) < SMALL_NUM )
+    if ( std::fabs( toMeter - FEET_TO_METER ) < SMALL_NUM )
       unit = QStringLiteral( "Foot" );
 
     if ( qgsDoubleNear( toMeter, 1.0 ) ) //Unit name for meters would be "metre"
@@ -1715,7 +1758,7 @@ QString QgsCoordinateReferenceSystem::quotedValue( QString value )
 // adapted from gdal/ogr/ogr_srs_dict.cpp
 bool QgsCoordinateReferenceSystem::loadWkts( QHash<int, QString> &wkts, const char *filename )
 {
-  qDebug( "Loading %s", filename );
+  QgsDebugMsgLevel( QStringLiteral( "Loading %1" ).arg( filename ), 4 );
   const char *pszFilename = CPLFindFile( "gdal", filename );
   if ( !pszFilename )
     return false;
@@ -1826,7 +1869,7 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
 
     f.close();
 
-    qDebug( "Loaded %d/%d from %s", n, l, filename.toUtf8().constData() );
+    QgsDebugMsgLevel( QStringLiteral( "Loaded %1/%2 from %3" ).arg( QString::number( n ), QString::number( l ), filename.toUtf8().constData() ), 4 );
   }
 
   OSRDestroySpatialReference( crs );
@@ -1841,7 +1884,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
   int inserted = 0, updated = 0, deleted = 0, errors = 0;
 
-  qDebug( "Load srs db from: %s", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData() );
+  QgsDebugMsgLevel( QStringLiteral( "Load srs db from: %1" ).arg( QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData() ), 4 );
 
   sqlite3 *database = nullptr;
   if ( sqlite3_open( dbFilePath.toUtf8().constData(), &database ) != SQLITE_OK )
@@ -1856,6 +1899,13 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     sqlite3_close( database );
     return -1;
   }
+
+  QString boundsColumns( "ALTER TABLE tbl_srs ADD west_bound_lon REAL;"
+                         "ALTER TABLE tbl_srs ADD north_bound_lat REAL;"
+                         "ALTER TABLE tbl_srs ADD east_bound_lon REAL;"
+                         "ALTER TABLE tbl_srs ADD south_bound_lat REAL;" );
+
+  sqlite3_exec( database, boundsColumns.toUtf8(), nullptr, nullptr, nullptr );
 
   // fix up database, if not done already //
   if ( sqlite3_exec( database, "alter table tbl_srs add noupdate boolean", nullptr, nullptr, nullptr ) == SQLITE_OK )
@@ -1874,7 +1924,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   loadIds( wkts );
   loadWkts( wkts, "epsg.wkt" );
 
-  qDebug( "%d WKTs loaded", wkts.count() );
+  QgsDebugMsgLevel( QStringLiteral( "%1 WKTs loaded" ).arg( wkts.count() ), 4 );
 
   for ( QHash<int, QString>::const_iterator it = wkts.constBegin(); it != wkts.constEnd(); ++it )
   {
@@ -2103,6 +2153,58 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   sqlite3_finalize( select );
 #endif
 
+  QFile csv( QgsApplication::pkgDataPath() + "/resources/epsg_areas.csv" );
+  if ( !csv.open( QIODevice::ReadOnly ) )
+  {
+    return false;
+  }
+
+  QTextStream lines( &csv );
+  ( void )lines.readLine(); // header line
+
+  for ( ;; )
+  {
+    QString line = lines.readLine();
+    if ( line.isNull() )
+      break;
+
+    if ( line.startsWith( '#' ) )
+    {
+      continue;
+    }
+    const QStringList data = line.split( ',' );
+    if ( data[0] == QStringLiteral( "None" ) )
+      continue;
+
+    double west_bound_lon = data[1].toDouble();
+    double north_bound_lat = data[2].toDouble();
+    double east_bound_lon = data[3].toDouble();
+    double south_bound_lat = data[4].toDouble();
+    sql = QStringLiteral( "UPDATE tbl_srs "
+                          "SET west_bound_lon=%1, "
+                          "north_bound_lat=%2, "
+                          "east_bound_lon=%3, "
+                          "south_bound_lat=%4 "
+                          "WHERE auth_name='EPSG' AND auth_id=%5" )
+          .arg( west_bound_lon )
+          .arg( north_bound_lat )
+          .arg( east_bound_lon )
+          .arg( south_bound_lat )
+          .arg( data[0] );
+
+    if ( sqlite3_exec( database, sql.toUtf8(), nullptr, nullptr, &errMsg ) != SQLITE_OK )
+    {
+      qCritical( "Could not execute: %s [%s/%s]\n",
+                 sql.toLocal8Bit().constData(),
+                 sqlite3_errmsg( database ),
+                 errMsg ? errMsg : "(unknown error)" );
+      if ( errMsg )
+        sqlite3_free( errMsg );
+      errors++;
+
+    }
+  }
+
   pj_ctx_free( pContext );
 
   if ( sqlite3_exec( database, "COMMIT", nullptr, nullptr, nullptr ) != SQLITE_OK )
@@ -2114,7 +2216,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
   sqlite3_close( database );
 
-  qWarning( "CRS update (inserted:%d updated:%d deleted:%d errors:%d)", inserted, updated, deleted, errors );
+  QgsDebugMsgLevel( QStringLiteral( "CRS update (inserted:%1 updated:%2 deleted:%3 errors:%4)" ).arg( QString::number( inserted ), QString::number( updated ), QString::number( deleted ), QString::number( errors ) ), 4 );
 
   if ( errors > 0 )
     return -errors;

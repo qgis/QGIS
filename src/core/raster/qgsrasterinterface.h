@@ -32,47 +32,66 @@
 #include "qgsrasterhistogram.h"
 #include "qgsrectangle.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Feedback object tailored for raster block reading.
  *
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
 {
+    Q_OBJECT
+
   public:
     //! Construct a new raster block feedback object
-    QgsRasterBlockFeedback( QObject *parent = nullptr ) : QgsFeedback( parent ), mPreviewOnly( false ), mRenderPartialOutput( false ) {}
+    QgsRasterBlockFeedback( QObject *parent = nullptr ) : QgsFeedback( parent ) {}
 
-    //! May be emitted by raster data provider to indicate that some partial data are available
-    //! and a new preview image may be produced
+    /**
+     * May be emitted by raster data provider to indicate that some partial data are available
+     * and a new preview image may be produced
+     */
     virtual void onNewData() {}
 
-    //! Whether the raster provider should return only data that are already available
-    //! without waiting for full result. By default this flag is not enabled.
-    //! \see setPreviewOnly()
+    /**
+     * Whether the raster provider should return only data that are already available
+     * without waiting for full result. By default this flag is not enabled.
+     * \see setPreviewOnly()
+     */
     bool isPreviewOnly() const { return mPreviewOnly; }
-    //! set flag whether the block request is for preview purposes only
-    //! \see isPreviewOnly()
+
+    /**
+     * set flag whether the block request is for preview purposes only
+     * \see isPreviewOnly()
+     */
     void setPreviewOnly( bool preview ) { mPreviewOnly = preview; }
 
-    //! Whether our painter is drawing to a temporary image used just by this layer
-    //! \see setRenderPartialOutput()
+    /**
+     * Whether our painter is drawing to a temporary image used just by this layer
+     * \see setRenderPartialOutput()
+     */
     bool renderPartialOutput() const { return mRenderPartialOutput; }
-    //! Set whether our painter is drawing to a temporary image used just by this layer
-    //! \see renderPartialOutput()
+
+    /**
+     * Set whether our painter is drawing to a temporary image used just by this layer
+     * \see renderPartialOutput()
+     */
     void setRenderPartialOutput( bool enable ) { mRenderPartialOutput = enable; }
 
   private:
-    //! Whether the raster provider should return only data that are already available
-    //! without waiting for full result
-    bool mPreviewOnly;
+
+    /**
+     * Whether the raster provider should return only data that are already available
+     * without waiting for full result
+     */
+    bool mPreviewOnly = false;
 
     //! Whether our painter is drawing to a temporary image used just by this layer
-    bool mRenderPartialOutput;
+    bool mRenderPartialOutput = false;
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Base class for processing filters like renderers, reprojector, resampler etc.
  */
 class CORE_EXPORT QgsRasterInterface
@@ -177,7 +196,8 @@ class CORE_EXPORT QgsRasterInterface
     //! Returns data type for the band specified by number
     virtual Qgis::DataType dataType( int bandNo ) const = 0;
 
-    /** Returns source data type for the band specified by number,
+    /**
+     * Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType */
     virtual Qgis::DataType sourceDataType( int bandNo ) const { return mInput ? mInput->sourceDataType( bandNo ) : Qgis::UnknownDataType; }
 
@@ -203,10 +223,11 @@ class CORE_EXPORT QgsRasterInterface
     //! \brief helper function to create zero padded band names
     virtual QString generateBandName( int bandNumber ) const
     {
-      return tr( "Band" ) + QStringLiteral( " %1" ) .arg( bandNumber, 1 + static_cast< int >( log10( static_cast< double >( bandCount() ) ) ), 10, QChar( '0' ) );
+      return tr( "Band" ) + QStringLiteral( " %1" ) .arg( bandNumber, 1 + static_cast< int >( std::log10( static_cast< double >( bandCount() ) ) ), 10, QChar( '0' ) );
     }
 
-    /** Read block of data using given extent and size.
+    /**
+     * Read block of data using given extent and size.
      *  Returns pointer to data.
      *  Caller is responsible to free the memory returned.
      * \param bandNo band number
@@ -217,7 +238,8 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) = 0 SIP_FACTORY;
 
-    /** Set input.
+    /**
+     * Set input.
       * Returns true if set correctly, false if cannot use that input */
     virtual bool setInput( QgsRasterInterface *input ) { mInput = input; return true; }
 
@@ -230,7 +252,8 @@ class CORE_EXPORT QgsRasterInterface
     //! Set on/off
     virtual void setOn( bool on ) { mOn = on; }
 
-    /** Get source / raw input, the first in pipe, usually provider.
+    /**
+     * Get source / raw input, the first in pipe, usually provider.
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      * \note not available in Python bindings.
@@ -241,7 +264,8 @@ class CORE_EXPORT QgsRasterInterface
       return mInput ? mInput->sourceInput() : this;
     }
 
-    /** Get source / raw input, the first in pipe, usually provider.
+    /**
+     * Get source / raw input, the first in pipe, usually provider.
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      */
@@ -251,7 +275,8 @@ class CORE_EXPORT QgsRasterInterface
       return mInput ? mInput->sourceInput() : this;
     }
 
-    /** \brief Get band statistics.
+    /**
+     * \brief Get band statistics.
      * \param bandNo The band (number).
      * \param stats Requested statistics
      * \param extent Extent used to calc statistics, if empty, whole raster extent is used.
@@ -264,7 +289,8 @@ class CORE_EXPORT QgsRasterInterface
         const QgsRectangle &extent = QgsRectangle(),
         int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr );
 
-    /** \brief Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
+    /**
+     * \brief Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
      * \returns true if statistics are available (ready to use)
      */
     virtual bool hasStatistics( int bandNo,
@@ -273,7 +299,8 @@ class CORE_EXPORT QgsRasterInterface
                                 int sampleSize = 0 );
 
 
-    /** \brief Get histogram. Histograms are cached in providers.
+    /**
+     * \brief Get histogram. Histograms are cached in providers.
      * \param bandNo The band (number).
      * \param binCount Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.
      * \param minimum Minimum value, if NaN (None for Python), raster minimum value will be used.
@@ -338,7 +365,8 @@ class CORE_EXPORT QgsRasterInterface
 #endif
 
 
-    /** \brief Returns true if histogram is available (cached, already calculated)
+    /**
+     * \brief Returns true if histogram is available (cached, already calculated)
      * \note the parameters are the same as in \see histogram()
      */
 #ifndef SIP_RUN
@@ -390,7 +418,8 @@ class CORE_EXPORT QgsRasterInterface
 #endif
 
 
-    /** \brief Find values for cumulative pixel count cut.
+    /**
+     * \brief Find values for cumulative pixel count cut.
      * \param bandNo The band (number).
      * \param lowerCount The lower count as fraction of 1, e.g. 0.02 = 2%
      * \param upperCount The upper count as fraction of 1, e.g. 0.98 = 98%
@@ -423,9 +452,10 @@ class CORE_EXPORT QgsRasterInterface
     QList<QgsRasterHistogram> mHistograms;
 
     // On/off state, if off, it does not do anything, replicates input
-    bool mOn;
+    bool mOn = true;
 
-    /** Fill in histogram defaults if not specified
+    /**
+     * Fill in histogram defaults if not specified
      * \note the parameters are the same as in \see histogram()
      */
 #ifndef SIP_RUN

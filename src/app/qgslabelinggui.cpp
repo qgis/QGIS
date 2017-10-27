@@ -21,6 +21,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsproject.h"
+#include "qgsauxiliarystorage.h"
+#include "qgsnewauxiliarylayerdialog.h"
 
 QgsExpressionContext QgsLabelingGui::createExpressionContext() const
 {
@@ -44,9 +46,12 @@ QgsExpressionContext QgsLabelingGui::createExpressionContext() const
 
 void QgsLabelingGui::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key )
 {
-  button->init( key, mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), mLayer );
+  button->init( key, mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), mLayer, true );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLabelingGui::updateProperty );
+  connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsLabelingGui::createAuxiliaryField );
   button->registerExpressionContextGenerator( this );
+
+  mButtons[key] = button;
 }
 
 void QgsLabelingGui::updateProperty()
@@ -237,7 +242,7 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
   // curved label max character angles
   mMaxCharAngleInDSpinBox->setValue( lyr.maxCurvedCharAngleIn );
   // lyr.maxCurvedCharAngleOut must be negative, but it is shown as positive spinbox in GUI
-  mMaxCharAngleOutDSpinBox->setValue( qAbs( lyr.maxCurvedCharAngleOut ) );
+  mMaxCharAngleOutDSpinBox->setValue( std::fabs( lyr.maxCurvedCharAngleOut ) );
 
   wrapCharacterEdit->setText( lyr.wrapChar );
   mFontMultiLineAlignComboBox->setCurrentIndex( ( unsigned int ) lyr.multilineAlign );
@@ -610,6 +615,48 @@ void QgsLabelingGui::updateUi()
   }
 }
 
+void QgsLabelingGui::createAuxiliaryField()
+{
+  // try to create an auxiliary layer if not yet created
+  if ( !mLayer->auxiliaryLayer() )
+  {
+    QgsNewAuxiliaryLayerDialog dlg( mLayer, this );
+    dlg.exec();
+  }
 
+  // return if still not exists
+  if ( !mLayer->auxiliaryLayer() )
+    return;
 
+  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  const QgsPalLayerSettings::Property key = static_cast< QgsPalLayerSettings::Property >( button->propertyKey() );
+  const QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[key];
 
+  // create property in auxiliary storage if necessary
+  if ( !mLayer->auxiliaryLayer()->exists( def ) )
+    mLayer->auxiliaryLayer()->addAuxiliaryField( def );
+
+  // update property with join field name from auxiliary storage
+  QgsProperty property = button->toProperty();
+  property.setField( QgsAuxiliaryLayer::nameFromProperty( def, true ) );
+  property.setActive( true );
+  button->updateFieldLists();
+  button->setToProperty( property );
+  mDataDefinedProperties.setProperty( key, button->toProperty() );
+
+  emit auxiliaryFieldCreated();
+}
+
+void QgsLabelingGui::deactivateField( QgsPalLayerSettings::Property key )
+{
+  if ( mButtons.contains( key ) )
+  {
+    QgsPropertyOverrideButton *button = mButtons[ key ];
+    QgsProperty p = button->toProperty();
+    p.setField( QString() );
+    p.setActive( false );
+    button->updateFieldLists();
+    button->setToProperty( p );
+    mDataDefinedProperties.setProperty( key, p );
+  }
+}

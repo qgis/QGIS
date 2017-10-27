@@ -32,7 +32,8 @@ class QgsRenderContext;
 class QgsGeometry;
 class QgsRuleBasedLabelProvider;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsRuleBasedLabeling
  * \since QGIS 3.0
  */
@@ -230,6 +231,17 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         //! Try to find a rule given its unique key
         const QgsRuleBasedLabeling::Rule *findRuleByKey( const QString &key ) const;
 
+        /**
+         * Find a labeling rule thanks to its key.
+         *
+         * \param key The key of the rule to find
+         *
+         * \returns The rule or a nullptr if not found
+         *
+         * \since QGIS 3.0
+         */
+        QgsRuleBasedLabeling::Rule *findRuleByKey( const QString &key ) SIP_SKIP;
+
         //! clone this rule, return new instance
         QgsRuleBasedLabeling::Rule *clone() const SIP_FACTORY;
 
@@ -248,20 +260,28 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
         // evaluation
 
-        //! add providers
-        //! \note not available in Python bindings
+        /**
+         * add providers
+         * \note not available in Python bindings
+         */
         void createSubProviders( QgsVectorLayer *layer, RuleToProviderMap &subProviders, QgsRuleBasedLabelProvider *provider ) SIP_SKIP;
 
-        //! append rule keys of descendants that contain valid settings (i.e. they will be sub-providers)
-        //! \note not available in Python bindings
+        /**
+         * append rule keys of descendants that contain valid settings (i.e. they will be sub-providers)
+         * \note not available in Python bindings
+         */
         void subProviderIds( QStringList &list ) const SIP_SKIP;
 
-        //! call prepare() on sub-providers and populate attributeNames
-        //! \note not available in Python bindings
+        /**
+         * call prepare() on sub-providers and populate attributeNames
+         * \note not available in Python bindings
+         */
         void prepare( const QgsRenderContext &context, QSet<QString> &attributeNames, RuleToProviderMap &subProviders ) SIP_SKIP;
 
-        //! register individual features
-        //! \note not available in Python bindings
+        /**
+         * register individual features
+         * \note not available in Python bindings
+         */
         RegisterResult registerFeature( QgsFeature &feature, QgsRenderContext &context, RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry = QgsGeometry() ) SIP_SKIP;
 
         /**
@@ -341,7 +361,18 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override SIP_SKIP;
     virtual QStringList subProviders() const override;
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
+
+    /**
+     * Set pal settings for a specific provider (takes ownership).
+     *
+     * \param settings Pal layer settings
+     * \param providerId The id of the provider
+     *
+     * \since QGIS 3.0
+     */
+    virtual void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
     bool requiresAdvancedEffects() const override;
+    virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const override;
 
   protected:
     Rule *mRootRule = nullptr;
@@ -349,7 +380,8 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
 #ifndef SIP_RUN
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsRuleBasedLabelProvider
  * \note not available in Python bindings
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
@@ -358,7 +390,6 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 {
   public:
     QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, bool withFeatureLoop = true );
-    ~QgsRuleBasedLabelProvider();
 
     // reimplemented
 

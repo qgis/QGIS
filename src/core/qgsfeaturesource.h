@@ -25,6 +25,7 @@
 class QgsFeatureIterator;
 class QgsCoordinateReferenceSystem;
 class QgsFields;
+class QgsFeedback;
 
 /**
  * \class QgsFeatureSource
@@ -94,7 +95,8 @@ class CORE_EXPORT QgsFeatureSource
      */
     virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
 
-    /** Returns the minimum value for an attribute column or an invalid variant in case of error.
+    /**
+     * Returns the minimum value for an attribute column or an invalid variant in case of error.
      * The base class implementation uses a non-optimised approach of looping through
      * all features in the source.
      * \see maximumValue()
@@ -102,7 +104,8 @@ class CORE_EXPORT QgsFeatureSource
      */
     virtual QVariant minimumValue( int fieldIndex ) const;
 
-    /** Returns the maximum value for an attribute column or an invalid variant in case of error.
+    /**
+     * Returns the maximum value for an attribute column or an invalid variant in case of error.
      * The base class implementation uses a non-optimised approach of looping through
      * all features in the source.
      * \see minimumValue()
@@ -116,6 +119,37 @@ class CORE_EXPORT QgsFeatureSource
      * all features in the source.
      */
     virtual QgsRectangle sourceExtent() const;
+
+    /**
+     * Returns a list of all feature IDs for features present in the source.
+     */
+    virtual QgsFeatureIds allFeatureIds() const;
+
+    /**
+     * Materializes a \a request (query) made against this feature source, by running
+     * it over the source and returning a new memory based vector layer containing
+     * the result. All settings from feature \a request will be honored.
+     *
+     * If a subset of attributes has been set for the request, then only
+     * those selected fields will be present in the output layer.
+     *
+     * The CRS for the output layer will match the input layer, unless
+     * QgsFeatureRequest::setDestinationCrs() has been called with a valid QgsCoordinateReferenceSystem.
+     * In this case the output layer will match the QgsFeatureRequest::destinationCrs() CRS.
+     *
+     * The returned layer WKB type will match wkbType(), unless the QgsFeatureRequest::NoGeometry flag is set
+     * on the \a request. In that case the returned layer will not be a spatial layer.
+     *
+     * An optional \a feedback argument can be used to cancel the materialization
+     * before it has fully completed.
+     *
+     * The returned value is a new instance and the caller takes responsibility
+     * for its ownership.
+     *
+     * \since QGIS 3.0
+     */
+    QgsVectorLayer *materialize( const QgsFeatureRequest &request,
+                                 QgsFeedback *feedback = nullptr ) SIP_FACTORY;
 
 };
 

@@ -83,7 +83,7 @@
      <x>0</x>
      <y>0</y>
      <width>1083</width>
-     <height>25</height>
+     <height>42</height>
     </rect>
    </property>
    <widget class="QMenu" name="mLayoutMenu">
@@ -97,7 +97,7 @@
    </widget>
    <widget class="QMenu" name="mItemMenu">
     <property name="title">
-     <string>&amp;Items</string>
+     <string>&amp;Add Item</string>
     </property>
    </widget>
    <widget class="QMenu" name="mMenuView">
@@ -114,6 +114,18 @@
       <string>&amp;Panels</string>
      </property>
     </widget>
+    <widget class="QMenu" name="menuPreview">
+     <property name="title">
+      <string>&amp;Preview</string>
+     </property>
+     <addaction name="mActionPreviewModeOff"/>
+     <addaction name="mActionPreviewModeGrayscale"/>
+     <addaction name="mActionPreviewModeMono"/>
+     <addaction name="mActionPreviewProtanope"/>
+     <addaction name="mActionPreviewDeuteranope"/>
+    </widget>
+    <addaction name="menuPreview"/>
+    <addaction name="separator"/>
     <addaction name="mActionZoomIn"/>
     <addaction name="mActionZoomOut"/>
     <addaction name="mActionZoomActual"/>
@@ -125,17 +137,91 @@
     <addaction name="separator"/>
     <addaction name="mActionShowGuides"/>
     <addaction name="mActionSnapGuides"/>
+    <addaction name="mActionSmartGuides"/>
     <addaction name="mActionManageGuides"/>
     <addaction name="mActionClearGuides"/>
     <addaction name="separator"/>
     <addaction name="mActionShowRulers"/>
+    <addaction name="mActionShowBoxes"/>
+    <addaction name="mActionShowPage"/>
     <addaction name="separator"/>
     <addaction name="mToolbarMenu"/>
     <addaction name="mPanelsMenu"/>
     <addaction name="mActionToggleFullScreen"/>
+    <addaction name="mActionHidePanels"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="mActionDeleteSelection"/>
+    <addaction name="separator"/>
+    <addaction name="mActionSelectAll"/>
+    <addaction name="mActionDeselectAll"/>
+    <addaction name="mActionInvertSelection"/>
+    <addaction name="mActionSelectNextBelow"/>
+    <addaction name="mActionSelectNextAbove"/>
+   </widget>
+   <widget class="QMenu" name="menuLayout">
+    <property name="title">
+     <string>&amp;Items</string>
+    </property>
+    <widget class="QMenu" name="menuAlign_Items">
+     <property name="title">
+      <string>&amp;Align Items</string>
+     </property>
+     <addaction name="mActionAlignLeft"/>
+     <addaction name="mActionAlignHCenter"/>
+     <addaction name="mActionAlignRight"/>
+     <addaction name="separator"/>
+     <addaction name="mActionAlignBottom"/>
+     <addaction name="mActionAlignVCenter"/>
+     <addaction name="mActionAlignTop"/>
+    </widget>
+    <widget class="QMenu" name="menu_Distribute_Items">
+     <property name="title">
+      <string>&amp;Distribute Items</string>
+     </property>
+     <addaction name="mActionDistributeLeft"/>
+     <addaction name="mActionDistributeHCenter"/>
+     <addaction name="mActionDistributeRight"/>
+     <addaction name="separator"/>
+     <addaction name="mActionDistributeTop"/>
+     <addaction name="mActionDistributeVCenter"/>
+     <addaction name="mActionDistributeBottom"/>
+    </widget>
+    <widget class="QMenu" name="menuResize">
+     <property name="title">
+      <string>Re&amp;size</string>
+     </property>
+     <addaction name="mActionResizeNarrowest"/>
+     <addaction name="mActionResizeWidest"/>
+     <addaction name="separator"/>
+     <addaction name="mActionResizeShortest"/>
+     <addaction name="mActionResizeTallest"/>
+     <addaction name="separator"/>
+     <addaction name="mActionResizeToSquare"/>
+    </widget>
+    <addaction name="mActionGroupItems"/>
+    <addaction name="mActionUngroupItems"/>
+    <addaction name="separator"/>
+    <addaction name="mActionRaiseItems"/>
+    <addaction name="mActionLowerItems"/>
+    <addaction name="mActionMoveItemsToTop"/>
+    <addaction name="mActionMoveItemsToBottom"/>
+    <addaction name="separator"/>
+    <addaction name="mActionLockItems"/>
+    <addaction name="mActionUnlockAll"/>
+    <addaction name="separator"/>
+    <addaction name="menuAlign_Items"/>
+    <addaction name="menu_Distribute_Items"/>
+    <addaction name="menuResize"/>
    </widget>
    <addaction name="mLayoutMenu"/>
+   <addaction name="menuEdit"/>
    <addaction name="mMenuView"/>
+   <addaction name="menuLayout"/>
    <addaction name="mItemMenu"/>
   </widget>
   <widget class="QToolBar" name="mNavigationToolbar">
@@ -152,6 +238,21 @@
    <addaction name="mActionZoomOut"/>
    <addaction name="mActionZoomActual"/>
    <addaction name="mActionZoomAll"/>
+  </widget>
+  <widget class="QToolBar" name="mActionsToolbar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionLockItems"/>
+   <addaction name="mActionUnlockAll"/>
+   <addaction name="mActionGroupItems"/>
+   <addaction name="mActionUngroupItems"/>
   </widget>
   <action name="mActionClose">
    <property name="text">
@@ -395,35 +496,504 @@
     <string>Layout Properties…</string>
    </property>
   </action>
+  <action name="mActionShowBoxes">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Bounding Boxes</string>
+   </property>
+   <property name="toolTip">
+    <string>Show bounding boxes</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+B</string>
+   </property>
+  </action>
+  <action name="mActionSmartGuides">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>S&amp;mart Guides</string>
+   </property>
+   <property name="toolTip">
+    <string>Smart guides</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+;</string>
+   </property>
+  </action>
+  <action name="mActionDeselectAll">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeselectAll.svg</normaloff>:/images/themes/default/mActionDeselectAll.svg</iconset>
+   </property>
+   <property name="text">
+    <string>D&amp;eselect All</string>
+   </property>
+   <property name="toolTip">
+    <string>Deselect all</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="mActionSelectAll">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectAll.svg</normaloff>:/images/themes/default/mActionSelectAll.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Select All</string>
+   </property>
+   <property name="toolTip">
+    <string>Select all items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="mActionInvertSelection">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionInvertSelection.svg</normaloff>:/images/themes/default/mActionInvertSelection.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Invert Selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Invert selection</string>
+   </property>
+  </action>
+  <action name="mActionSelectNextBelow">
+   <property name="text">
+    <string>Select Next Item &amp;Below</string>
+   </property>
+   <property name="toolTip">
+    <string>Select next item below</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+[</string>
+   </property>
+  </action>
+  <action name="mActionSelectNextAbove">
+   <property name="text">
+    <string>Select Next Item &amp;Above</string>
+   </property>
+   <property name="toolTip">
+    <string>Select next item above</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+]</string>
+   </property>
+  </action>
+  <action name="mActionLockItems">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/locked.svg</normaloff>:/images/themes/default/locked.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Loc&amp;k Selected Items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="mActionUnlockAll">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/unlocked.svg</normaloff>:/images/themes/default/unlocked.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Unl&amp;ock All</string>
+   </property>
+   <property name="toolTip">
+    <string>Unlock All Items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+L</string>
+   </property>
+  </action>
+  <action name="mActionHidePanels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Toggle Panel &amp;Visibility</string>
+   </property>
+   <property name="toolTip">
+    <string>Hide panels</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Tab</string>
+   </property>
+  </action>
+  <action name="mActionRaiseItems">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRaiseItems.svg</normaloff>:/images/themes/default/mActionRaiseItems.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Raise</string>
+   </property>
+   <property name="toolTip">
+    <string>Raise selected items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+]</string>
+   </property>
+  </action>
+  <action name="mActionLowerItems">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionLowerItems.svg</normaloff>:/images/themes/default/mActionLowerItems.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Lower</string>
+   </property>
+   <property name="toolTip">
+    <string>Lower selected items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+[</string>
+   </property>
+  </action>
+  <action name="mActionMoveItemsToTop">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMoveItemsToTop.svg</normaloff>:/images/themes/default/mActionMoveItemsToTop.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Bring to &amp;Front</string>
+   </property>
+   <property name="toolTip">
+    <string>Move selected items to top</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+]</string>
+   </property>
+  </action>
+  <action name="mActionMoveItemsToBottom">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionMoveItemsToBottom.svg</normaloff>:/images/themes/default/mActionMoveItemsToBottom.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Send to &amp;Back</string>
+   </property>
+   <property name="toolTip">
+    <string>Move selected items to bottom</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+[</string>
+   </property>
+  </action>
+  <action name="mActionAlignLeft">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignLeft.svg</normaloff>:/images/themes/default/mActionAlignLeft.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Align &amp;Left</string>
+   </property>
+   <property name="toolTip">
+    <string>Align selected items left</string>
+   </property>
+  </action>
+  <action name="mActionAlignHCenter">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignHCenter.svg</normaloff>:/images/themes/default/mActionAlignHCenter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Align &amp;Center</string>
+   </property>
+   <property name="toolTip">
+    <string>Align center horizontal</string>
+   </property>
+  </action>
+  <action name="mActionAlignRight">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignRight.svg</normaloff>:/images/themes/default/mActionAlignRight.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Align &amp;Right</string>
+   </property>
+   <property name="toolTip">
+    <string>Align selected items right</string>
+   </property>
+  </action>
+  <action name="mActionAlignTop">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignTop.svg</normaloff>:/images/themes/default/mActionAlignTop.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Align &amp;Top</string>
+   </property>
+   <property name="toolTip">
+    <string>Align selected items to top</string>
+   </property>
+  </action>
+  <action name="mActionAlignVCenter">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignVCenter.svg</normaloff>:/images/themes/default/mActionAlignVCenter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Align Center &amp;Vertical</string>
+   </property>
+   <property name="toolTip">
+    <string>Align center vertical</string>
+   </property>
+  </action>
+  <action name="mActionAlignBottom">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAlignBottom.svg</normaloff>:/images/themes/default/mActionAlignBottom.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Align &amp;Bottom</string>
+   </property>
+   <property name="toolTip">
+    <string>Align selected items bottom</string>
+   </property>
+  </action>
+  <action name="mActionDistributeLeft">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDistributeLeft.svg</normaloff>:/images/themes/default/mActionDistributeLeft.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Distribute &amp;Left Edges</string>
+   </property>
+   <property name="toolTip">
+    <string>Distributes left edges of items equidistantly</string>
+   </property>
+  </action>
+  <action name="mActionDistributeHCenter">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDistributeHCenter.svg</normaloff>:/images/themes/default/mActionDistributeHCenter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Distribute &amp;Centers</string>
+   </property>
+   <property name="toolTip">
+    <string>Distributes horizontal centers of items equidistantly</string>
+   </property>
+  </action>
+  <action name="mActionDistributeRight">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDistributeRight.svg</normaloff>:/images/themes/default/mActionDistributeRight.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Distribute &amp;Right Edges</string>
+   </property>
+   <property name="toolTip">
+    <string>Distributes right edges of items equidistantly</string>
+   </property>
+  </action>
+  <action name="mActionDistributeTop">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDistributeTop.svg</normaloff>:/images/themes/default/mActionDistributeTop.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Distribute &amp;Top Edges</string>
+   </property>
+   <property name="toolTip">
+    <string>Distributes top edges of items equidistantly</string>
+   </property>
+  </action>
+  <action name="mActionDistributeVCenter">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDistributeVCenter.svg</normaloff>:/images/themes/default/mActionDistributeVCenter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Distribute &amp;Vertical Centers</string>
+   </property>
+   <property name="toolTip">
+    <string>Distributes vertical centers of items equidistantly</string>
+   </property>
+  </action>
+  <action name="mActionDistributeBottom">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDistributeBottom.svg</normaloff>:/images/themes/default/mActionDistributeBottom.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Distribute &amp;Bottom Edges</string>
+   </property>
+   <property name="toolTip">
+    <string>Distributes bottom edges of items equidistantly</string>
+   </property>
+  </action>
+  <action name="mActionResizeNarrowest">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionResizeNarrowest.svg</normaloff>:/images/themes/default/mActionResizeNarrowest.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Resize to &amp;Narrowest</string>
+   </property>
+   <property name="toolTip">
+    <string>Resizes item width to match the narrowest selected item</string>
+   </property>
+  </action>
+  <action name="mActionResizeWidest">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionResizeWidest.svg</normaloff>:/images/themes/default/mActionResizeWidest.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Resize to &amp;Widest</string>
+   </property>
+   <property name="toolTip">
+    <string>Resizes item width to match the widest selected item</string>
+   </property>
+  </action>
+  <action name="mActionResizeShortest">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionResizeShortest.svg</normaloff>:/images/themes/default/mActionResizeShortest.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Resize to &amp;Shortest</string>
+   </property>
+   <property name="toolTip">
+    <string>Resizes item height to match the shortest selected item</string>
+   </property>
+  </action>
+  <action name="mActionResizeTallest">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionResizeTallest.svg</normaloff>:/images/themes/default/mActionResizeTallest.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Resize to &amp;Tallest</string>
+   </property>
+   <property name="toolTip">
+    <string>Resizes item height to match the tallest selected item</string>
+   </property>
+  </action>
+  <action name="mActionDeleteSelection">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Delete</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete selected items</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
+   </property>
+  </action>
+  <action name="mActionResizeToSquare">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionResizeSquare.svg</normaloff>:/images/themes/default/mActionResizeSquare.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Resize to S&amp;quare</string>
+   </property>
+   <property name="toolTip">
+    <string>Resizes items to squares</string>
+   </property>
+  </action>
+  <action name="mActionPreviewModeOff">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Normal</string>
+   </property>
+   <property name="toolTip">
+    <string>Normal</string>
+   </property>
+  </action>
+  <action name="mActionPreviewModeGrayscale">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate Photocopy (&amp;Grayscale)</string>
+   </property>
+  </action>
+  <action name="mActionPreviewModeMono">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate Fax (&amp;Mono)</string>
+   </property>
+  </action>
+  <action name="mActionPreviewProtanope">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate Color Blindness (&amp;Protanope)</string>
+   </property>
+  </action>
+  <action name="mActionPreviewDeuteranope">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Simulate Color Blindness (&amp;Deuteranope)</string>
+   </property>
+  </action>
+  <action name="mActionShowPage">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Pages</string>
+   </property>
+   <property name="toolTip">
+    <string>Show pages</string>
+   </property>
+  </action>
+  <action name="mActionGroupItems">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionGroupItems.svg</normaloff>:/images/themes/default/mActionGroupItems.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Group</string>
+   </property>
+   <property name="toolTip">
+    <string>Group items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="mActionUngroupItems">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionUngroupItems.svg</normaloff>:/images/themes/default/mActionUngroupItems.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Ungroup</string>
+   </property>
+   <property name="toolTip">
+    <string>Ungroup items</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+G</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>

@@ -22,6 +22,7 @@
 #include "qgswfsutils.h"
 #include "qgsserverprojectutils.h"
 #include "qgswfsdescribefeaturetype.h"
+#include "qgswfsparameters.h"
 
 #include "qgsproject.h"
 #include "qgsexception.h"
@@ -53,6 +54,13 @@ namespace QgsWfs
     QDomDocument doc;
 
     QgsServerRequest::Parameters parameters = request.parameters();
+    QgsWfsParameters wfsParameters( parameters );
+    QgsWfsParameters::Format oFormat = wfsParameters.outputFormat();
+
+    // test oFormat
+    if ( oFormat == QgsWfsParameters::Format::NONE )
+      throw QgsBadRequestException( QStringLiteral( "Invalid WFS Parameter" ),
+                                    "OUTPUTFORMAT " + wfsParameters.outputFormatAsString() + "is not supported" );
 
     QgsAccessControl *accessControl = serverIface->accessControls();
 
@@ -71,7 +79,10 @@ namespace QgsWfs
     //xsd:import
     QDomElement importElement = doc.createElement( QStringLiteral( "import" )/*xsd:import*/ );
     importElement.setAttribute( QStringLiteral( "namespace" ),  GML_NAMESPACE );
-    importElement.setAttribute( QStringLiteral( "schemaLocation" ), QStringLiteral( "http://schemas.opengis.net/gml/2.1.2/feature.xsd" ) );
+    if ( oFormat == QgsWfsParameters::Format::GML2 )
+      importElement.setAttribute( QStringLiteral( "schemaLocation" ), QStringLiteral( "http://schemas.opengis.net/gml/2.1.2/feature.xsd" ) );
+    else if ( oFormat == QgsWfsParameters::Format::GML3 )
+      importElement.setAttribute( QStringLiteral( "schemaLocation" ), QStringLiteral( "http://schemas.opengis.net/gml/3.1.1/base/gml.xsd" ) );
     schemaElement.appendChild( importElement );
 
     QStringList typeNameList;
@@ -200,46 +211,37 @@ namespace QgsWfs
     {
       QDomElement geomElem = doc.createElement( QStringLiteral( "element" )/*xsd:element*/ );
       geomElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "geometry" ) );
-      if ( provider->name() == QLatin1String( "ogr" ) )
+
+      QgsWkbTypes::Type wkbType = layer->wkbType();
+      switch ( wkbType )
       {
-        // because some ogr drivers (e.g. ESRI ShapeFile, GML)
-        // are not able to determine the geometry type of a layer.
-        // we set to GeometryType
-        geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:GeometryPropertyType" ) );
-      }
-      else
-      {
-        QgsWkbTypes::Type wkbType = layer->wkbType();
-        switch ( wkbType )
-        {
-          case QgsWkbTypes::Point25D:
-          case QgsWkbTypes::Point:
-            geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:PointPropertyType" ) );
-            break;
-          case QgsWkbTypes::LineString25D:
-          case QgsWkbTypes::LineString:
-            geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:LineStringPropertyType" ) );
-            break;
-          case QgsWkbTypes::Polygon25D:
-          case QgsWkbTypes::Polygon:
-            geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:PolygonPropertyType" ) );
-            break;
-          case QgsWkbTypes::MultiPoint25D:
-          case QgsWkbTypes::MultiPoint:
-            geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiPointPropertyType" ) );
-            break;
-          case QgsWkbTypes::MultiLineString25D:
-          case QgsWkbTypes::MultiLineString:
-            geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiLineStringPropertyType" ) );
-            break;
-          case QgsWkbTypes::MultiPolygon25D:
-          case QgsWkbTypes::MultiPolygon:
-            geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiPolygonPropertyType" ) );
-            break;
-          default:
-            geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:GeometryPropertyType" ) );
-            break;
-        }
+        case QgsWkbTypes::Point25D:
+        case QgsWkbTypes::Point:
+          geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:PointPropertyType" ) );
+          break;
+        case QgsWkbTypes::LineString25D:
+        case QgsWkbTypes::LineString:
+          geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:LineStringPropertyType" ) );
+          break;
+        case QgsWkbTypes::Polygon25D:
+        case QgsWkbTypes::Polygon:
+          geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:PolygonPropertyType" ) );
+          break;
+        case QgsWkbTypes::MultiPoint25D:
+        case QgsWkbTypes::MultiPoint:
+          geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiPointPropertyType" ) );
+          break;
+        case QgsWkbTypes::MultiLineString25D:
+        case QgsWkbTypes::MultiLineString:
+          geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiLineStringPropertyType" ) );
+          break;
+        case QgsWkbTypes::MultiPolygon25D:
+        case QgsWkbTypes::MultiPolygon:
+          geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:MultiPolygonPropertyType" ) );
+          break;
+        default:
+          geomElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "gml:GeometryPropertyType" ) );
+          break;
       }
       geomElem.setAttribute( QStringLiteral( "minOccurs" ), QStringLiteral( "0" ) );
       geomElem.setAttribute( QStringLiteral( "maxOccurs" ), QStringLiteral( "1" ) );

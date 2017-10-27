@@ -26,7 +26,8 @@
 class QgsMapLayer;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsMapLayerModel class is a model to display layers in widgets.
  * \see QgsMapLayerProxyModel to sort and/filter the layers
  * \see QgsFieldModel to combine in with a field selector.
@@ -158,12 +159,12 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
   protected:
     QList<QgsMapLayer *> mLayers;
     QMap<QString, Qt::CheckState> mLayersChecked;
-    bool mItemCheckable;
+    bool mItemCheckable = false;
 
   private:
 
-    bool mAllowEmpty;
-    bool mShowCrs;
+    bool mAllowEmpty = false;
+    bool mShowCrs = false;
     QStringList mAdditionalItems;
 };
 

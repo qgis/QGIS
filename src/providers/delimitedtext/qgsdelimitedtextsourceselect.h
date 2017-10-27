@@ -52,19 +52,16 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
 
   private:
     QgsDelimitedTextFile *mFile = nullptr;
-    int mExampleRowCount;
-    int mBadRowCount;
+    int mExampleRowCount = 20;
+    int mBadRowCount = 0;
     QString mPluginKey;
     QString mLastFileType;
     QButtonGroup *bgFileFormat = nullptr;
     QButtonGroup *bgGeomType = nullptr;
+    void showHelp();
 
   private slots:
-    void on_buttonBox_helpRequested()
-    {
-      QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#importing-a-delimited-text-file" ) );
-    }
-    void on_btnBrowseForFile_clicked();
+    void btnBrowseForFile_clicked();
 
   public slots:
     void addButtonClicked() override;

@@ -34,7 +34,7 @@ from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 class ReverseLineDirection(QgisFeatureBasedAlgorithm):
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -51,10 +51,13 @@ class ReverseLineDirection(QgisFeatureBasedAlgorithm):
     def outputType(self):
         return QgsProcessing.TypeVectorLine
 
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine]
+
     def processFeature(self, feature, feedback):
         if feature.geometry():
             inGeom = feature.geometry()
-            reversedLine = inGeom.geometry().reversed()
+            reversedLine = inGeom.constGet().reversed()
             if not reversedLine:
                 raise QgsProcessingException(
                     self.tr('Error reversing line'))

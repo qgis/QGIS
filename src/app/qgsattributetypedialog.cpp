@@ -40,11 +40,11 @@
 #include <cfloat>
 
 QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx )
-  : QDialog()
-  , mLayer( vl )
+  : mLayer( vl )
   , mFieldIdx( fieldIdx )
 {
   setupUi( this );
+  connect( selectionListWidget, &QListWidget::currentRowChanged, this, &QgsAttributeTypeDialog::selectionListWidget_currentRowChanged );
   setWindowTitle( tr( "Edit Widget Properties - %1 (%2)" ).arg( vl->fields().at( fieldIdx ).name(), vl->name() ) );
 
   QMapIterator<QString, QgsEditorWidgetFactory *> it( QgsGui::editorWidgetRegistry()->factories() );
@@ -93,6 +93,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   restoreGeometry( settings.value( QStringLiteral( "Windows/QgsAttributeTypeDialog/geometry" ) ).toByteArray() );
 
   constraintExpressionWidget->setLayer( vl );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsAttributeTypeDialog::showHelp );
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
@@ -307,6 +308,16 @@ QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
   return context;
 }
 
+bool QgsAttributeTypeDialog::applyDefaultValueOnUpdate() const
+{
+  return mApplyDefaultValueOnUpdateCheckBox->isChecked();
+}
+
+void QgsAttributeTypeDialog::setApplyDefaultValueOnUpdate( bool applyDefaultValueOnUpdate )
+{
+  mApplyDefaultValueOnUpdateCheckBox->setChecked( applyDefaultValueOnUpdate );
+}
+
 QString QgsAttributeTypeDialog::constraintExpression() const
 {
   return constraintExpressionWidget->asExpression();
@@ -322,7 +333,7 @@ void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )
   labelOnTopCheckBox->setChecked( onTop );
 }
 
-void QgsAttributeTypeDialog::on_selectionListWidget_currentRowChanged( int index )
+void QgsAttributeTypeDialog::selectionListWidget_currentRowChanged( int index )
 {
   const QString editType = selectionListWidget->item( index )->data( Qt::UserRole ).toString();
 
@@ -370,4 +381,9 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
   QString previewText = fieldFormatter->representValue( mLayer, mFieldIdx, editorWidgetConfig(), QVariant(), val );
 
   mDefaultPreviewLabel->setText( "<i>" + previewText + "</i>" );
+}
+
+void QgsAttributeTypeDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#configure-the-field-behavior" ) );
 }

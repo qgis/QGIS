@@ -8,6 +8,7 @@
 
 
 
+
 class QgsRendererRange
 {
 
@@ -15,7 +16,11 @@ class QgsRendererRange
 #include "qgsgraduatedsymbolrenderer.h"
 %End
   public:
+
     QgsRendererRange();
+%Docstring
+ Constructor for QgsRendererRange.
+%End
     QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true );
     QgsRendererRange( const QgsRendererRange &range );
 
@@ -262,23 +267,35 @@ Moves the category at index position from to index position to.
  :rtype: Mode
 %End
     void setMode( Mode mode );
+
     void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
 %Docstring
+ Recalculate classes for a layer
+ \param vlayer  The layer being rendered (from which data values are calculated)
+ \param mode    The calculation mode
+ \param nclasses The number of classes to calculate (approximate for some modes)
 .. versionadded:: 2.6
 %End
 
     const QgsRendererRangeLabelFormat &labelFormat() const;
 %Docstring
+ Return the label format used to generate default classification labels
 .. versionadded:: 2.6
  :rtype: QgsRendererRangeLabelFormat
 %End
+
     void setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges = false );
 %Docstring
+ Set the label format used to generate default classification labels
+ \param labelFormat The string appended to classification labels
+ \param updateRanges If true then ranges ending with the old unit string are updated to the new.
 .. versionadded:: 2.6
 %End
 
     void calculateLabelPrecision( bool updateRanges = true );
 %Docstring
+ Reset the label decimal places to a numberbased on the minimum class interval
+ \param updateRanges if true then ranges currently using the default label will be updated
 .. versionadded:: 2.6
 %End
 
@@ -362,17 +379,23 @@ create renderer from XML element
 
     void setSymbolSizes( double minSize, double maxSize );
 %Docstring
+ set varying symbol size for classes
+.. note::
+
+   the classes must already be set so that symbols exist
 .. versionadded:: 2.10
 %End
 
     double minSymbolSize() const;
 %Docstring
+ return the min symbol size when graduated by size
 .. versionadded:: 2.10
  :rtype: float
 %End
 
     double maxSymbolSize() const;
 %Docstring
+ return the max symbol size when graduated by size
 .. versionadded:: 2.10
  :rtype: float
 %End
@@ -385,12 +408,14 @@ create renderer from XML element
 
     GraduatedMethod graduatedMethod() const;
 %Docstring
+ return the method used for graduation (either size or color)
 .. versionadded:: 2.10
  :rtype: GraduatedMethod
 %End
 
     void setGraduatedMethod( GraduatedMethod method );
 %Docstring
+ set the method used for graduation (either size or color)
 .. versionadded:: 2.10
 %End
 
@@ -402,7 +427,9 @@ create renderer from XML element
 
     static QgsGraduatedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
-:return: a new renderer if the conversion was possible, otherwise 0.
+ creates a QgsGraduatedSymbolRenderer from an existing renderer.
+.. versionadded:: 2.6
+ :return: a new renderer if the conversion was possible, otherwise 0.
  :rtype: QgsGraduatedSymbolRenderer
 %End
 

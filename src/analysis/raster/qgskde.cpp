@@ -20,10 +20,6 @@
 
 #define NO_DATA -9999
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
 QgsKernelDensityEstimation::QgsKernelDensityEstimation( const QgsKernelDensityEstimation::Parameters &parameters, const QString &outputFile, const QString &outputFormat )
   : mSource( parameters.source )
   , mOutputFile( outputFile )
@@ -87,17 +83,17 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::prepare()
   if ( mBounds.isNull() )
     return InvalidParameters;
 
-  int rows = qMax( ceil( mBounds.height() / mPixelSize ) + 1, 1.0 );
-  int cols = qMax( ceil( mBounds.width() / mPixelSize ) + 1, 1.0 );
+  int rows = std::max( std::ceil( mBounds.height() / mPixelSize ) + 1, 1.0 );
+  int cols = std::max( std::ceil( mBounds.width() / mPixelSize ) + 1, 1.0 );
 
   if ( !createEmptyLayer( driver, mBounds, rows, cols ) )
     return FileCreationError;
 
   // open the raster in GA_Update mode
-  mDatasetH = GDALOpen( mOutputFile.toUtf8().constData(), GA_Update );
+  mDatasetH.reset( GDALOpen( mOutputFile.toUtf8().constData(), GA_Update ) );
   if ( !mDatasetH )
     return FileCreationError;
-  mRasterBandH = GDALGetRasterBand( mDatasetH, 1 );
+  mRasterBandH = GDALGetRasterBand( mDatasetH.get(), 1 );
   if ( !mRasterBandH )
     return FileCreationError;
 
@@ -181,7 +177,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
         double pixelCentroidX = ( xPosition + xp + 0.5 ) * mPixelSize + mBounds.xMinimum();
         double pixelCentroidY = ( yPosition + yp + 0.5 ) * mPixelSize + mBounds.yMinimum();
 
-        double distance = sqrt( pow( pixelCentroidX - ( *pointIt ).x(), 2.0 ) + pow( pixelCentroidY - ( *pointIt ).y(), 2.0 ) );
+        double distance = std::sqrt( std::pow( pixelCentroidX - ( *pointIt ).x(), 2.0 ) + std::pow( pixelCentroidY - ( *pointIt ).y(), 2.0 ) );
 
         // is pixel outside search bandwidth of feature?
         if ( distance > radius )
@@ -211,8 +207,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
 
 QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::finalise()
 {
-  GDALClose( ( GDALDatasetH ) mDatasetH );
-  mDatasetH = nullptr;
+  mDatasetH.reset();
   mRasterBandH = nullptr;
   return Success;
 }
@@ -230,18 +225,18 @@ int QgsKernelDensityEstimation::radiusSizeInPixels( double radius ) const
 bool QgsKernelDensityEstimation::createEmptyLayer( GDALDriverH driver, const QgsRectangle &bounds, int rows, int columns ) const
 {
   double geoTransform[6] = { bounds.xMinimum(), mPixelSize, 0, bounds.yMaximum(), 0, -mPixelSize };
-  GDALDatasetH emptyDataset = GDALCreate( driver, mOutputFile.toUtf8(), columns, rows, 1, GDT_Float32, nullptr );
+  gdal::dataset_unique_ptr emptyDataset( GDALCreate( driver, mOutputFile.toUtf8(), columns, rows, 1, GDT_Float32, nullptr ) );
   if ( !emptyDataset )
     return false;
 
-  if ( GDALSetGeoTransform( emptyDataset, geoTransform ) != CE_None )
+  if ( GDALSetGeoTransform( emptyDataset.get(), geoTransform ) != CE_None )
     return false;
 
   // Set the projection on the raster destination to match the input layer
-  if ( GDALSetProjection( emptyDataset, mSource->sourceCrs().toWkt().toLocal8Bit().data() ) != CE_None )
+  if ( GDALSetProjection( emptyDataset.get(), mSource->sourceCrs().toWkt().toLocal8Bit().data() ) != CE_None )
     return false;
 
-  GDALRasterBandH poBand = GDALGetRasterBand( emptyDataset, 1 );
+  GDALRasterBandH poBand = GDALGetRasterBand( emptyDataset.get(), 1 );
   if ( !poBand )
     return false;
 
@@ -263,8 +258,6 @@ bool QgsKernelDensityEstimation::createEmptyLayer( GDALDriverH driver, const Qgs
   }
 
   CPLFree( line );
-  //close the dataset
-  GDALClose( emptyDataset );
   return true;
 }
 
@@ -324,13 +317,13 @@ double QgsKernelDensityEstimation::quarticKernel( const double distance, const d
     case OutputScaled:
     {
       // Normalizing constant
-      double k = 116. / ( 5. * M_PI * pow( bandwidth, 2 ) );
+      double k = 116. / ( 5. * M_PI * std::pow( bandwidth, 2 ) );
 
       // Derived from Wand and Jones (1995), p. 175
-      return k * ( 15. / 16. ) * pow( 1. - pow( distance / bandwidth, 2 ), 2 );
+      return k * ( 15. / 16. ) * std::pow( 1. - std::pow( distance / bandwidth, 2 ), 2 );
     }
     case OutputRaw:
-      return pow( 1. - pow( distance / bandwidth, 2 ), 2 );
+      return std::pow( 1. - std::pow( distance / bandwidth, 2 ), 2 );
   }
   return 0.0; //no, seriously, I told you NO WARNINGS!
 }
@@ -342,13 +335,13 @@ double QgsKernelDensityEstimation::triweightKernel( const double distance, const
     case OutputScaled:
     {
       // Normalizing constant
-      double k = 128. / ( 35. * M_PI * pow( bandwidth, 2 ) );
+      double k = 128. / ( 35. * M_PI * std::pow( bandwidth, 2 ) );
 
       // Derived from Wand and Jones (1995), p. 175
-      return k * ( 35. / 32. ) * pow( 1. - pow( distance / bandwidth, 2 ), 3 );
+      return k * ( 35. / 32. ) * std::pow( 1. - std::pow( distance / bandwidth, 2 ), 3 );
     }
     case OutputRaw:
-      return pow( 1. - pow( distance / bandwidth, 2 ), 3 );
+      return std::pow( 1. - std::pow( distance / bandwidth, 2 ), 3 );
   }
   return 0.0; // this is getting ridiculous... don't you ever listen to a word I say?
 }
@@ -360,13 +353,13 @@ double QgsKernelDensityEstimation::epanechnikovKernel( const double distance, co
     case OutputScaled:
     {
       // Normalizing constant
-      double k = 8. / ( 3. * M_PI * pow( bandwidth, 2 ) );
+      double k = 8. / ( 3. * M_PI * std::pow( bandwidth, 2 ) );
 
       // Derived from Wand and Jones (1995), p. 175
-      return k * ( 3. / 4. ) * ( 1. - pow( distance / bandwidth, 2 ) );
+      return k * ( 3. / 4. ) * ( 1. - std::pow( distance / bandwidth, 2 ) );
     }
     case OutputRaw:
-      return ( 1. - pow( distance / bandwidth, 2 ) );
+      return ( 1. - std::pow( distance / bandwidth, 2 ) );
   }
 
   return 0.0; // la la la i'm not listening
@@ -383,7 +376,7 @@ double QgsKernelDensityEstimation::triangularKernel( const double distance, cons
 
       if ( mDecay >= 0 )
       {
-        double k = 3. / ( ( 1. + 2. * mDecay ) * M_PI * pow( bandwidth, 2 ) );
+        double k = 3. / ( ( 1. + 2. * mDecay ) * M_PI * std::pow( bandwidth, 2 ) );
 
         // Derived from Wand and Jones (1995), p. 175 (with addition of decay parameter)
         return k * ( 1. - ( 1. - mDecay ) * ( distance / bandwidth ) );

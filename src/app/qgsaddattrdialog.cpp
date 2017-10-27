@@ -27,6 +27,8 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
   , mIsShapeFile( vlayer && vlayer->providerType() == QLatin1String( "ogr" ) && vlayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
 {
   setupUi( this );
+  connect( mTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAddAttrDialog::mTypeBox_currentIndexChanged );
+  connect( mLength, &QSpinBox::editingFinished, this, &QgsAddAttrDialog::mLength_editingFinished );
 
   if ( !vlayer )
     return;
@@ -52,13 +54,13 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
     mTypeBox->setItemData( i, typelist[i].mMaxPrec, Qt::UserRole + 5 );
   }
 
-  on_mTypeBox_currentIndexChanged( 0 );
+  mTypeBox_currentIndexChanged( 0 );
 
   if ( mIsShapeFile )
     mNameEdit->setMaxLength( 10 );
 }
 
-void QgsAddAttrDialog::on_mTypeBox_currentIndexChanged( int idx )
+void QgsAddAttrDialog::mTypeBox_currentIndexChanged( int idx )
 {
   mTypeName->setText( mTypeBox->itemData( idx, Qt::UserRole + 1 ).toString() );
 
@@ -73,7 +75,7 @@ void QgsAddAttrDialog::on_mTypeBox_currentIndexChanged( int idx )
   setPrecisionMinMax();
 }
 
-void QgsAddAttrDialog::on_mLength_editingFinished()
+void QgsAddAttrDialog::mLength_editingFinished()
 {
   setPrecisionMinMax();
 }
@@ -86,7 +88,7 @@ void QgsAddAttrDialog::setPrecisionMinMax()
   mPrec->setVisible( minPrecType < maxPrecType );
   mPrecLabel->setVisible( minPrecType < maxPrecType );
   mPrec->setMinimum( minPrecType );
-  mPrec->setMaximum( qMax( minPrecType, qMin( maxPrecType, mLength->value() ) ) );
+  mPrec->setMaximum( std::max( minPrecType, std::min( maxPrecType, mLength->value() ) ) );
 }
 
 void QgsAddAttrDialog::accept()

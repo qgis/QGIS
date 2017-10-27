@@ -33,13 +33,7 @@ class TestQgsComposerGroup : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerGroup()
-      : mComposition( 0 )
-      , mMapSettings( 0 )
-      , mItem1( 0 )
-      , mItem2( 0 )
-      , mGroup( 0 )
-    {}
+    TestQgsComposerGroup() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -53,7 +47,7 @@ class TestQgsComposerGroup : public QObject
 
   private:
 
-    void dumpUndoStack( const QUndoStack &, QString prefix = QLatin1String( QLatin1String( "" ) ) ) const;
+    void dumpUndoStack( const QUndoStack &, QString prefix = QString() ) const;
 
     QgsComposition *mComposition = nullptr;
     QgsMapSettings *mMapSettings = nullptr;

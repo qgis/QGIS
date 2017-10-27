@@ -23,12 +23,14 @@
 #include <QTextStream>
 #include <QTransform>
 #include <QRegExp>
-#include <qnumeric.h>
 
+#include "qgsgeometry.h"
 #include "qgspointxy.h"
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 #include "qgsbox3d.h"
+#include "qgspolygon.h"
+#include "qgslinestring.h"
 
 QgsRectangle::QgsRectangle( double xMin, double yMin, double xMax, double yMax )
   : mXmin( xMin )
@@ -58,6 +60,24 @@ QgsRectangle::QgsRectangle( const QgsRectangle &r )
   mYmin = r.yMinimum();
   mXmax = r.xMaximum();
   mYmax = r.yMaximum();
+}
+
+QgsRectangle QgsRectangle::fromWkt( const QString &wkt )
+{
+  QgsGeometry geom = QgsGeometry::fromWkt( wkt );
+  if ( geom.isMultipart() )
+    return QgsRectangle();
+
+  QgsPolygon poly = geom.asPolygon();
+
+  if ( poly.size() != 1 )
+    return QgsRectangle();
+
+  QgsPolylineXY polyline = geom.asPolygon().at( 0 );
+  if ( polyline.size() == 5 && polyline.at( 0 ) == polyline.at( 4 ) && geom.isGeosValid() )
+    return QgsRectangle( polyline.at( 0 ).x(), polyline.at( 0 ).y(), polyline.at( 2 ).x(), polyline.at( 2 ).y() );
+  else
+    return QgsRectangle();
 }
 
 void QgsRectangle::set( const QgsPointXY &p1, const QgsPointXY &p2 )
@@ -148,7 +168,7 @@ void QgsRectangle::include( const QgsPointXY &p )
     setYMaximum( p.y() );
 }
 
-QgsRectangle QgsRectangle::buffer( double width )
+QgsRectangle QgsRectangle::buffered( double width ) const
 {
   return QgsRectangle( mXmin - width, mYmin - width, mXmax + width, mYmax + width );
 }
@@ -156,16 +176,13 @@ QgsRectangle QgsRectangle::buffer( double width )
 QgsRectangle QgsRectangle::intersect( const QgsRectangle *rect ) const
 {
   QgsRectangle intersection = QgsRectangle();
-  //If they don't actually intersect an empty QgsRectangle should be returned
-  if ( !rect || !intersects( *rect ) )
+  if ( rect && intersects( *rect ) )
   {
-    return intersection;
+    intersection.setXMinimum( mXmin > rect->xMinimum() ? mXmin : rect->xMinimum() );
+    intersection.setXMaximum( mXmax < rect->xMaximum() ? mXmax : rect->xMaximum() );
+    intersection.setYMinimum( mYmin > rect->yMinimum() ? mYmin : rect->yMinimum() );
+    intersection.setYMaximum( mYmax < rect->yMaximum() ? mYmax : rect->yMaximum() );
   }
-
-  intersection.setXMinimum( mXmin > rect->xMinimum() ? mXmin : rect->xMinimum() );
-  intersection.setXMaximum( mXmax < rect->xMaximum() ? mXmax : rect->xMaximum() );
-  intersection.setYMinimum( mYmin > rect->yMinimum() ? mYmin : rect->yMinimum() );
-  intersection.setYMaximum( mYmax < rect->yMaximum() ? mYmax : rect->yMaximum() );
   return intersection;
 }
 
@@ -177,9 +194,7 @@ bool QgsRectangle::intersects( const QgsRectangle &rect ) const
     return false;
   double y1 = ( mYmin > rect.mYmin ? mYmin : rect.mYmin );
   double y2 = ( mYmax < rect.mYmax ? mYmax : rect.mYmax );
-  if ( y1 > y2 )
-    return false;
-  return true;
+  return y1 <= y2;
 }
 
 bool QgsRectangle::contains( const QgsRectangle &rect ) const
@@ -260,7 +275,7 @@ QgsRectangle &QgsRectangle::operator+=( const QgsVector v )
 
 bool QgsRectangle::isEmpty() const
 {
-  return mXmax <= mXmin || mYmax <= mYmin;
+  return mXmax < mXmin || mYmax < mYmin || qgsDoubleNear( mXmax, mXmin ) || qgsDoubleNear( mYmax, mYmin );
 }
 
 bool QgsRectangle::isNull() const
@@ -308,7 +323,7 @@ QString QgsRectangle::toString( int precision ) const
     precision = 0;
     if ( ( width() < 10 || height() < 10 ) && ( width() > 0 && height() > 0 ) )
     {
-      precision = static_cast<int>( ceil( -1.0 * log10( qMin( width(), height() ) ) ) ) + 1;
+      precision = static_cast<int>( std::ceil( -1.0 * std::log10( std::min( width(), height() ) ) ) ) + 1;
       // sanity check
       if ( precision > 20 )
         precision = 20;
@@ -380,11 +395,11 @@ QgsRectangle &QgsRectangle::operator=( const QgsRectangle &r )
 
 bool QgsRectangle::isFinite() const
 {
-  if ( qIsInf( mXmin ) || qIsInf( mYmin ) || qIsInf( mXmax ) || qIsInf( mYmax ) )
+  if ( std::isinf( mXmin ) || std::isinf( mYmin ) || std::isinf( mXmax ) || std::isinf( mYmax ) )
   {
     return false;
   }
-  if ( qIsNaN( mXmin ) || qIsNaN( mYmin ) || qIsNaN( mXmax ) || qIsNaN( mYmax ) )
+  if ( std::isnan( mXmin ) || std::isnan( mYmin ) || std::isnan( mXmax ) || std::isnan( mYmax ) )
   {
     return false;
   }
@@ -393,13 +408,8 @@ bool QgsRectangle::isFinite() const
 
 void QgsRectangle::invert()
 {
-  double tmp;
-  tmp = mXmin;
-  mXmin = mYmin;
-  mYmin = tmp;
-  tmp = mXmax;
-  mXmax = mYmax;
-  mYmax = tmp;
+  std::swap( mXmin, mYmin );
+  std::swap( mXmax, mYmax );
 }
 
 QgsBox3d QgsRectangle::toBox3d( double zMin, double zMax ) const

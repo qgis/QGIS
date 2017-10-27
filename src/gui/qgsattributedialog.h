@@ -30,7 +30,8 @@
 class QgsDistanceArea;
 class QgsHighlight;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsAttributeDialog
  */
 class GUI_EXPORT QgsAttributeDialog : public QDialog
@@ -54,12 +55,14 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
 
     ~QgsAttributeDialog();
 
-    /** Saves the size and position for the next time
+    /**
+     * Saves the size and position for the next time
      *  this dialog box will be used.
      */
     void saveGeometry();
 
-    /** Restores the size and position from the last time
+    /**
+     * Restores the size and position from the last time
      *  this dialog box was used.
      */
     void restoreGeometry();

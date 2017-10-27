@@ -32,7 +32,7 @@
 class QgsLinearGeorefTransform : public QgsGeorefTransformInterface
 {
   public:
-    QgsLinearGeorefTransform() : mParameters() {}
+    QgsLinearGeorefTransform() = default;
 
     bool getOriginScale( QgsPointXY &origin, double &scaleX, double &scaleY ) const;
 
@@ -58,7 +58,7 @@ class QgsLinearGeorefTransform : public QgsGeorefTransformInterface
 class QgsHelmertGeorefTransform : public QgsGeorefTransformInterface
 {
   public:
-    QgsHelmertGeorefTransform() : mHelmertParameters() {}
+    QgsHelmertGeorefTransform() = default;
     struct HelmertParameters
     {
       QgsPointXY origin;
@@ -379,8 +379,8 @@ int QgsLinearGeorefTransform::linear_transform( void *pTransformerArg, int bDstT
   else
   {
     // Guard against division by zero
-    if ( qAbs( t->scaleX ) < std::numeric_limits<double>::epsilon() ||
-         qAbs( t->scaleY ) < std::numeric_limits<double>::epsilon() )
+    if ( std::fabs( t->scaleX ) < std::numeric_limits<double>::epsilon() ||
+         std::fabs( t->scaleY ) < std::numeric_limits<double>::epsilon() )
     {
       for ( int i = 0; i < nPointCount; ++i )
       {
@@ -440,7 +440,7 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
   if ( !t )
     return false;
 
-  double a = cos( t->angle ), b = sin( t->angle ), x0 = t->origin.x(), y0 = t->origin.y(), s = t->scale;
+  double a = std::cos( t->angle ), b = std::sin( t->angle ), x0 = t->origin.x(), y0 = t->origin.y(), s = t->scale;
   if ( !bDstToSrc )
   {
     a *= s;
@@ -450,8 +450,8 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
       double xT = x[i], yT = y[i];
       // Because rotation parameters where estimated in a CS with negative y-axis ^= down.
       // we need to apply the rotation matrix and a change of base:
-      // |cos a,-sin a| |1, 0|   | cos a,  sin a|
-      // |sin a, cos a| |0,-1| = | sin a, -cos a|
+      // |cos a,-sin a| |1, 0|   | std::cos a,  std::sin a|
+      // |sin a, std::cos a| |0,-1| = | std::sin a, -cos a|
       x[i] = x0 + ( a * xT + b * yT );
       y[i] = y0 + ( b * xT - a * yT );
       panSuccess[i] = true;
@@ -460,7 +460,7 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
   else
   {
     // Guard against division by zero
-    if ( qAbs( s ) < std::numeric_limits<double>::epsilon() )
+    if ( std::fabs( s ) < std::numeric_limits<double>::epsilon() )
     {
       for ( int i = 0; i < nPointCount; ++i )
       {
@@ -475,10 +475,10 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
       double xT = x[i], yT = y[i];
       xT -= x0;
       yT -= y0;
-      // | cos a,  sin a |^-1   |cos a,  sin a|
-      // | sin a, -cos a |    = |sin a, -cos a|
-      x[i] =  a * xT + b * yT;
-      y[i] =  b * xT - a * yT;
+      // | std::cos a,  std::sin a |^-1   |cos a,  std::sin a|
+      // | std::sin a, -cos a |    = |sin a, -cos a|
+      x[i] = a * xT + b * yT;
+      y[i] = b * xT - a * yT;
       panSuccess[i] = true;
     }
   }
@@ -486,7 +486,7 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
 }
 
 QgsGDALGeorefTransform::QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder )
-  : mPolynomialOrder( qMin( 3u, polynomialOrder ) )
+  : mPolynomialOrder( std::min( 3u, polynomialOrder ) )
   , mIsTPSTransform( useTPS )
 {
   mGDALTransformer     = nullptr;
@@ -511,7 +511,7 @@ bool QgsGDALGeorefTransform::updateParametersFromGCPs( const QVector<QgsPointXY>
     GCPList[i].pszId = new char[20];
     snprintf( GCPList[i].pszId, 19, "gcp%i", i );
     GCPList[i].pszInfo = nullptr;
-    GCPList[i].dfGCPPixel =  pixelCoords[i].x();
+    GCPList[i].dfGCPPixel = pixelCoords[i].x();
     GCPList[i].dfGCPLine  = -pixelCoords[i].y();
     GCPList[i].dfGCPX = mapCoords[i].x();
     GCPList[i].dfGCPY = mapCoords[i].y();
@@ -588,21 +588,21 @@ bool QgsProjectiveGeorefTransform::updateParametersFromGCPs( const QVector<QgsPo
   double *H = mParameters.H;
 
   double adjoint[9];
-  adjoint[0] =  H[4] * H[8] - H[5] * H[7];
+  adjoint[0] = H[4] * H[8] - H[5] * H[7];
   adjoint[1] = -H[1] * H[8] + H[2] * H[7];
-  adjoint[2] =  H[1] * H[5] - H[2] * H[4];
+  adjoint[2] = H[1] * H[5] - H[2] * H[4];
 
   adjoint[3] = -H[3] * H[8] + H[5] * H[6];
-  adjoint[4] =  H[0] * H[8] - H[2] * H[6];
+  adjoint[4] = H[0] * H[8] - H[2] * H[6];
   adjoint[5] = -H[0] * H[5] + H[2] * H[3];
 
-  adjoint[6] =  H[3] * H[7] - H[4] * H[6];
+  adjoint[6] = H[3] * H[7] - H[4] * H[6];
   adjoint[7] = -H[0] * H[7] + H[1] * H[6];
-  adjoint[8] =  H[0] * H[4] - H[1] * H[3];
+  adjoint[8] = H[0] * H[4] - H[1] * H[3];
 
   double det = H[0] * adjoint[0] + H[3] * adjoint[1] + H[6] * adjoint[2];
 
-  if ( qAbs( det ) < 1024.0 * std::numeric_limits<double>::epsilon() )
+  if ( std::fabs( det ) < 1024.0 * std::numeric_limits<double>::epsilon() )
   {
     mParameters.hasInverse = false;
   }
@@ -654,7 +654,7 @@ int QgsProjectiveGeorefTransform::projective_transform( void *pTransformerArg, i
   {
     double Z = x[i] * H[6] + y[i] * H[7] + H[8];
     // Projects to infinity?
-    if ( qAbs( Z ) < 1024.0 * std::numeric_limits<double>::epsilon() )
+    if ( std::fabs( Z ) < 1024.0 * std::numeric_limits<double>::epsilon() )
     {
       panSuccess[i] = false;
       continue;

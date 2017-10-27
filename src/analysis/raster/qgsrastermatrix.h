@@ -21,7 +21,8 @@
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * \class QgsRasterMatrix
  */
 class ANALYSIS_EXPORT QgsRasterMatrix
@@ -60,7 +61,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     };
 
     //! Takes ownership of data array
-    QgsRasterMatrix();
+    QgsRasterMatrix() = default;
 
     //! \note note available in Python bindings
     QgsRasterMatrix( int nCols, int nRows, double *data, double nodataValue ) SIP_SKIP;
@@ -71,11 +72,16 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     bool isNumber() const { return ( mColumns == 1 && mRows == 1 ); }
     double number() const { return mData[0]; }
 
-    //! Returns data array (but not ownership)
-    //! \note not available in Python bindings
+    /**
+     * Returns data array (but not ownership)
+     * \note not available in Python bindings
+     */
     double *data() { return mData; } SIP_SKIP
-    //! Returns data and ownership. Sets data and nrows, ncols of this matrix to 0
-    //! \note not available in Python bindings
+
+    /**
+     * Returns data and ownership. Sets data and nrows, ncols of this matrix to 0
+     * \note not available in Python bindings
+     */
     double *takeData() SIP_SKIP;
 
     void setData( int cols, int rows, double *data, double nodataValue );
@@ -115,16 +121,16 @@ class ANALYSIS_EXPORT QgsRasterMatrix
     bool log10();
 
   private:
-    int mColumns;
-    int mRows;
+    int mColumns = 0;
+    int mRows = 0;
     double *mData = nullptr;
-    double mNodataValue;
+    double mNodataValue = -1;
 
     //! +,-,*,/,^,<,>,<=,>=,=,!=, and, or
     bool twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix &other );
     double calculateTwoArgumentOp( TwoArgOperator op, double arg1, double arg2 ) const;
 
-    /*sqrt, sin, cos, tan, asin, acos, atan*/
+    /*sqrt, std::sin, std::cos, tan, asin, acos, atan*/
     bool oneArgumentOperation( OneArgOperator op );
     bool testPowerValidity( double base, double power ) const;
 };

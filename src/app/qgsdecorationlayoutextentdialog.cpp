@@ -34,14 +34,17 @@ QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationL
   , mDeco( deco )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationLayoutExtentDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationLayoutExtentDialog::buttonBox_rejected );
 
   mSymbolButton->setSymbolType( QgsSymbol::Fill );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( "/Windows/DecorationLayoutExtent/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationLayoutExtent/geometry" ) ).toByteArray() );
 
   updateGuiElements();
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsDecorationLayoutExtentDialog::apply );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationLayoutExtentDialog::showHelp );
 
   mSymbolButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
 }
@@ -68,7 +71,7 @@ QgsDecorationLayoutExtentDialog::~QgsDecorationLayoutExtentDialog()
   settings.setValue( QStringLiteral( "/Windows/DecorationLayoutExtent/geometry" ), saveGeometry() );
 }
 
-void QgsDecorationLayoutExtentDialog::on_buttonBox_accepted()
+void QgsDecorationLayoutExtentDialog::buttonBox_accepted()
 {
   apply();
   accept();
@@ -80,7 +83,12 @@ void QgsDecorationLayoutExtentDialog::apply()
   mDeco.update();
 }
 
-void QgsDecorationLayoutExtentDialog::on_buttonBox_rejected()
+void QgsDecorationLayoutExtentDialog::buttonBox_rejected()
 {
   reject();
+}
+
+void QgsDecorationLayoutExtentDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#decorations" ) );
 }

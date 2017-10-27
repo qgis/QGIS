@@ -360,12 +360,6 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
                                   double nullOutput = 0.0,
                                   double exponent = 1.0 );
 
-    /**
-     * Copy constructor.
-     */
-    QgsGenericNumericTransformer( const QgsGenericNumericTransformer &other );
-    QgsGenericNumericTransformer &operator=( const QgsGenericNumericTransformer &other );
-
     virtual Type transformerType() const override { return GenericNumericTransformer; }
     virtual QgsGenericNumericTransformer *clone() const override SIP_FACTORY;
     virtual QVariant toVariant() const override;
@@ -496,12 +490,6 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
                              double nullSize = 0.0,
                              double exponent = 1.0 );
 
-    /**
-     * Copy constructor.
-     */
-    QgsSizeScaleTransformer( const QgsSizeScaleTransformer &other );
-    QgsSizeScaleTransformer &operator=( const QgsSizeScaleTransformer &other );
-
     virtual Type transformerType() const override { return SizeScaleTransformer; }
     virtual QgsSizeScaleTransformer *clone() const override SIP_FACTORY;
     virtual QVariant toVariant() const override;
@@ -602,7 +590,7 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
     void setType( ScaleType type );
 
   private:
-    ScaleType mType;
+    ScaleType mType = Linear;
     double mMinSize;
     double mMaxSize;
     double mNullSize;

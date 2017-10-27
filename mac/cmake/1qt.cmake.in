@@ -29,11 +29,11 @@ MYMESSAGE ("Qt list: ${QTLISTQG}")
 # symlinks when only @executable_path used
 
 IF (NOT @OSX_HAVE_LOADERPATH@)
-    EXECUTE_PROCESS (COMMAND ln -sfh ../Frameworks "${QAPPDIR}/")
+    EXECUTE_PROCESS (COMMAND ln -sfn ../Frameworks "${QAPPDIR}/")
     IF (IS_DIRECTORY "${QLIBXIR}/grass/bin")
-        EXECUTE_PROCESS (COMMAND ln -sfh ../@QGIS_LIBEXEC_SUBDIR_REV@/@QGIS_FW_SUBDIR@ "${QLIBXDIR}/grass/Frameworks")
+        EXECUTE_PROCESS (COMMAND ln -sfn ../@QGIS_LIBEXEC_SUBDIR_REV@/@QGIS_FW_SUBDIR@ "${QLIBXDIR}/grass/Frameworks")
     ENDIF ()
-    EXECUTE_PROCESS (COMMAND ln -sfh @QGIS_CGIBIN_SUBDIR_REV@/@QGIS_LIB_SUBDIR@ "${QCGIDIR}/lib")
+    EXECUTE_PROCESS (COMMAND ln -sfn @QGIS_CGIBIN_SUBDIR_REV@/@QGIS_LIB_SUBDIR@ "${QCGIDIR}/lib")
 ENDIF (NOT @OSX_HAVE_LOADERPATH@)
 
 ### copy files

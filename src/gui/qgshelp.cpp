@@ -55,7 +55,7 @@ QUrl QgsHelp::helpUrl( const QString &key )
 
   Q_FOREACH ( const QString &path, paths )
   {
-    if ( path.endsWith( "\\" ) || path.endsWith( "/" ) )
+    if ( path.endsWith( QLatin1String( "\\" ) ) || path.endsWith( QLatin1String( "/" ) ) )
     {
       fullPath = path.left( path.size() - 1 );
     }
@@ -69,9 +69,9 @@ QUrl QgsHelp::helpUrl( const QString &key )
       QRegularExpression rx( QStringLiteral( "(<!\\$\\$)*(\\$%1)" ).arg( var ) );
       fullPath.replace( rx, scope->variable( var ).toString() );
     }
-    fullPath.replace( QRegularExpression( "(\\$\\$)" ), "$" );
+    fullPath.replace( QRegularExpression( QStringLiteral( "(\\$\\$)" ) ), QStringLiteral( "$" ) );
 
-    helpPath = QStringLiteral( "%1/%2" ).arg( fullPath ).arg( key );
+    helpPath = QStringLiteral( "%1/%2" ).arg( fullPath, key );
 
     if ( helpPath.startsWith( QStringLiteral( "http" ) ) )
     {
@@ -83,16 +83,16 @@ QUrl QgsHelp::helpUrl( const QString &key )
     }
     else
     {
-      QString filePath = helpPath.mid( 0, helpPath.lastIndexOf( "#" ) );
+      QString filePath = helpPath.mid( 0, helpPath.lastIndexOf( QLatin1String( "#" ) ) );
       if ( !QFileInfo::exists( filePath ) )
       {
         continue;
       }
       helpUrl = QUrl::fromLocalFile( filePath );
-      int pos = helpPath.lastIndexOf( "#" );
+      int pos = helpPath.lastIndexOf( QLatin1String( "#" ) );
       if ( pos != -1 )
       {
-        helpUrl.setFragment( helpPath.mid( helpPath.lastIndexOf( "#" ) + 1, -1 ) );
+        helpUrl.setFragment( helpPath.mid( helpPath.lastIndexOf( QLatin1String( "#" ) ) + 1, -1 ) );
       }
     }
 

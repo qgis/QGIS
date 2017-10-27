@@ -24,11 +24,6 @@
 
 QgsFloatingWidget::QgsFloatingWidget( QWidget *parent )
   : QWidget( parent )
-  , mAnchorWidget( nullptr )
-  , mParentEventFilter( nullptr )
-  , mAnchorEventFilter( nullptr )
-  , mFloatAnchorPoint( BottomMiddle )
-  , mAnchorWidgetAnchorPoint( TopMiddle )
 {
   if ( parent )
   {

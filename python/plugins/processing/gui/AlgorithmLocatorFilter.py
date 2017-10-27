@@ -27,9 +27,9 @@ __revision__ = '$Format:%H$'
 
 
 from qgis.core import (QgsApplication,
-                       QgsProcessingAlgorithm)
-from qgis.gui import (QgsLocatorFilter,
-                      QgsLocatorResult)
+                       QgsProcessingAlgorithm,
+                       QgsLocatorFilter,
+                       QgsLocatorResult)
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface

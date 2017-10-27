@@ -30,6 +30,7 @@ from qgis.core import QgsSettings
 
 
 class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
+
     def __init__(self, parent):
         QDialog.__init__(self, parent)
         self.setWindowTitle(QCoreApplication.translate(

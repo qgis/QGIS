@@ -376,14 +376,14 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   if ( feature->hasGeometry() )
   {
     geometryType = feature->geometry().type();
-    wkbType = feature->geometry().geometry()->wkbType();
+    wkbType = feature->geometry().wkbType();
     //find closest vertex to clicked point
-    closestPoint = QgsGeometryUtils::closestVertex( *feature->geometry().geometry(), QgsPoint( layerPoint.x(), layerPoint.y() ), vId );
+    closestPoint = QgsGeometryUtils::closestVertex( *feature->geometry().constGet(), QgsPoint( layerPoint.x(), layerPoint.y() ), vId );
   }
 
   if ( QgsWkbTypes::isMultiType( wkbType ) )
   {
-    QString str = QLocale::system().toString( static_cast<const QgsGeometryCollection *>( feature->geometry().geometry() )->numGeometries() );
+    QString str = QLocale::system().toString( static_cast<const QgsGeometryCollection *>( feature->geometry().constGet() )->numGeometries() );
     derivedAttributes.insert( tr( "Parts" ), str );
     str = QLocale::system().toString( vId.part + 1 );
     derivedAttributes.insert( tr( "Part number" ), str );
@@ -396,7 +396,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
     QString str = formatDistance( dist );
     derivedAttributes.insert( tr( "Length" ), str );
 
-    const QgsCurve *curve = dynamic_cast< const QgsCurve * >( feature->geometry().geometry() );
+    const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( feature->geometry().constGet() );
     if ( curve )
     {
       str = QLocale::system().toString( curve->nCoordinates() );
@@ -431,11 +431,11 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
     str = formatDistance( perimeter );
     derivedAttributes.insert( tr( "Perimeter" ), str );
 
-    str = QLocale::system().toString( feature->geometry().geometry()->nCoordinates() );
+    str = QLocale::system().toString( feature->geometry().constGet()->nCoordinates() );
     derivedAttributes.insert( tr( "Vertices" ), str );
 
     //add details of closest vertex to identify point
-    closestVertexAttributes( *feature->geometry().geometry(), vId, layer, derivedAttributes );
+    closestVertexAttributes( *feature->geometry().constGet(), vId, layer, derivedAttributes );
   }
   else if ( geometryType == QgsWkbTypes::PointGeometry &&
             QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point )
@@ -449,12 +449,12 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
 
     if ( QgsWkbTypes::hasZ( wkbType ) )
     {
-      str = QLocale::system().toString( static_cast<const QgsPoint *>( feature->geometry().geometry() )->z(), 'g', 10 );
+      str = QLocale::system().toString( static_cast<const QgsPoint *>( feature->geometry().constGet() )->z(), 'g', 10 );
       derivedAttributes.insert( QStringLiteral( "Z" ), str );
     }
     if ( QgsWkbTypes::hasM( wkbType ) )
     {
-      str = QLocale::system().toString( static_cast<const QgsPoint *>( feature->geometry().geometry() )->m(), 'g', 10 );
+      str = QLocale::system().toString( static_cast<const QgsPoint *>( feature->geometry().constGet() )->m(), 'g', 10 );
       derivedAttributes.insert( QStringLiteral( "M" ), str );
     }
   }
@@ -540,8 +540,8 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     // are similar to source width and height used to reproject layer for drawing.
     // TODO: may be very dangerous, because it may result in different resolutions
     // in source CRS, and WMS server (QGIS server) calcs wrong coor using average resolution.
-    int width = qRound( viewExtent.width() / mapUnitsPerPixel );
-    int height = qRound( viewExtent.height() / mapUnitsPerPixel );
+    int width = std::round( viewExtent.width() / mapUnitsPerPixel );
+    int height = std::round( viewExtent.height() / mapUnitsPerPixel );
 
     QgsDebugMsg( QString( "viewExtent.width = %1 viewExtent.height = %2" ).arg( viewExtent.width() ).arg( viewExtent.height() ) );
     QgsDebugMsg( QString( "width = %1 height = %2" ).arg( width ).arg( height ) );
@@ -559,16 +559,16 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     QgsGeometry geometry;
     if ( format == QgsRaster::IdentifyFormatValue )
     {
-      Q_FOREACH ( int bandNo, values.keys() )
+      for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
       {
         QString valueString;
-        if ( values.value( bandNo ).isNull() )
+        if ( it.value().isNull() )
         {
           valueString = tr( "no data" );
         }
         else
         {
-          QVariant value( values.value( bandNo ) );
+          QVariant value( it.value() );
           // The cast is legit. Quoting QT doc :
           // "Although this function is declared as returning QVariant::Type,
           // the return value should be interpreted as QMetaType::Type"
@@ -581,16 +581,16 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
             valueString = QgsRasterBlock::printValue( value.toDouble() );
           }
         }
-        attributes.insert( dprovider->generateBandName( bandNo ), valueString );
+        attributes.insert( dprovider->generateBandName( it.key() ), valueString );
       }
       QString label = layer->name();
       results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
     }
     else if ( format == QgsRaster::IdentifyFormatFeature )
     {
-      Q_FOREACH ( int i, values.keys() )
+      for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
       {
-        QVariant value = values.value( i );
+        QVariant value = it.value();
         if ( value.type() == QVariant::Bool && !value.toBool() )
         {
           // sublayer not visible or not queryable
@@ -601,7 +601,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
         {
           // error
           // TODO: better error reporting
-          QString label = layer->subLayers().value( i );
+          QString label = layer->subLayers().value( it.key() );
           attributes.clear();
           attributes.insert( tr( "Error" ), value.toString() );
 
@@ -610,11 +610,12 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
         }
 
         // list of feature stores for a single sublayer
-        QgsFeatureStoreList featureStoreList = values.value( i ).value<QgsFeatureStoreList>();
+        const QgsFeatureStoreList featureStoreList = it.value().value<QgsFeatureStoreList>();
 
-        Q_FOREACH ( QgsFeatureStore featureStore, featureStoreList )
+        for ( const QgsFeatureStore &featureStore : featureStoreList )
         {
-          Q_FOREACH ( QgsFeature feature, featureStore.features() )
+          const QgsFeatureList storeFeatures = featureStore.features();
+          for ( QgsFeature feature : storeFeatures )
           {
             attributes.clear();
             // WMS sublayer and feature type, a sublayer may contain multiple feature types.
@@ -648,13 +649,13 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     else // text or html
     {
       QgsDebugMsg( QString( "%1 HTML or text values" ).arg( values.size() ) );
-      Q_FOREACH ( int bandNo, values.keys() )
+      for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
       {
-        QString value = values.value( bandNo ).toString();
+        QString value = it.value().toString();
         attributes.clear();
         attributes.insert( QLatin1String( "" ), value );
 
-        QString label = layer->subLayers().value( bandNo );
+        QString label = layer->subLayers().value( it.key() );
         results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), label, attributes, derivedAttributes ) );
       }
     }

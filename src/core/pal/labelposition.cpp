@@ -38,22 +38,16 @@
 #include <cmath>
 #include <cfloat>
 
-#ifndef M_PI
-#define M_PI 3.1415926535897931159979634685
-#endif
-
 using namespace pal;
 
 LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, bool isReversed, Quadrant quadrant )
-  : PointSet()
-  , id( id )
+  : id( id )
   , feature( feature )
   , probFeat( 0 )
   , nbOverlap( 0 )
   , alpha( alpha )
   , w( w )
   , h( h )
-  , nextPart( nullptr )
   , partId( -1 )
   , reversed( isReversed )
   , upsideDown( false )
@@ -74,15 +68,15 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   while ( this->alpha < 0 )
     this->alpha += 2 * M_PI;
 
-  double beta = this->alpha + ( M_PI / 2 );
+  double beta = this->alpha + M_PI_2;
 
   double dx1, dx2, dy1, dy2;
 
-  dx1 = cos( this->alpha ) * w;
-  dy1 = sin( this->alpha ) * w;
+  dx1 = std::cos( this->alpha ) * w;
+  dy1 = std::sin( this->alpha ) * w;
 
-  dx2 = cos( beta ) * h;
-  dy2 = sin( beta ) * h;
+  dx2 = std::cos( beta ) * h;
+  dy2 = std::sin( beta ) * h;
 
   x[0] = x1;
   y[0] = y1;
@@ -98,7 +92,7 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
 
   // upside down ? (curved labels are always correct)
   if ( !feature->layer()->isCurved() &&
-       this->alpha > M_PI / 2 && this->alpha <= 3 * M_PI / 2 )
+       this->alpha > M_PI_2 && this->alpha <= 3 * M_PI_2 )
   {
     if ( feature->showUprightLabels() )
     {
@@ -136,10 +130,10 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
 
   for ( int i = 0; i < nbPoints; ++i )
   {
-    xmin = qMin( xmin, x[i] );
-    xmax = qMax( xmax, x[i] );
-    ymin = qMin( ymin, y[i] );
-    ymax = qMax( ymax, y[i] );
+    xmin = std::min( xmin, x[i] );
+    xmax = std::max( xmax, x[i] );
+    ymin = std::min( ymin, y[i] );
+    ymax = std::max( ymax, y[i] );
   }
 }
 
@@ -453,10 +447,10 @@ double LabelPosition::getDistanceToPoint( double xp, double yp ) const
 {
   //first check if inside, if so then distance is -1
   double distance = ( containsPoint( xp, yp ) ? -1
-                      : sqrt( minDistanceToPoint( xp, yp ) ) );
+                      : std::sqrt( minDistanceToPoint( xp, yp ) ) );
 
   if ( nextPart && distance > 0 )
-    return qMin( distance, nextPart->getDistanceToPoint( xp, yp ) );
+    return std::min( distance, nextPart->getDistanceToPoint( xp, yp ) );
 
   return distance;
 }
@@ -525,7 +519,7 @@ int LabelPosition::polygonIntersectionCost( PointSet *polygon ) const
   //effectively take the average polygon intersection cost for all label parts
   double totalCost = polygonIntersectionCostForParts( polygon );
   int n = partCount();
-  return ceil( totalCost / n );
+  return std::ceil( totalCost / n );
 }
 
 bool LabelPosition::intersectsWithPolygon( PointSet *polygon ) const

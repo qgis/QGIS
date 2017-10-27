@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgis.h>
+#include "qgis.h"
 #include "qgscompositionwidget.h"
 #include "qgscomposition.h"
 #include "qgscomposermap.h"
@@ -34,6 +34,21 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget *parent, QgsComposition *c )
   , mComposition( c )
 {
   setupUi( this );
+  connect( mPaperSizeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsCompositionWidget::mPaperSizeComboBox_currentIndexChanged );
+  connect( mPaperUnitsComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsCompositionWidget::mPaperUnitsComboBox_currentIndexChanged );
+  connect( mPaperOrientationComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsCompositionWidget::mPaperOrientationComboBox_currentIndexChanged );
+  connect( mPaperWidthDoubleSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsCompositionWidget::mPaperWidthDoubleSpinBox_editingFinished );
+  connect( mPaperHeightDoubleSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsCompositionWidget::mPaperHeightDoubleSpinBox_editingFinished );
+  connect( mNumPagesSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsCompositionWidget::mNumPagesSpinBox_valueChanged );
+  connect( mPageStyleButton, &QPushButton::clicked, this, &QgsCompositionWidget::mPageStyleButton_clicked );
+  connect( mResizePageButton, &QPushButton::clicked, this, &QgsCompositionWidget::mResizePageButton_clicked );
+  connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsCompositionWidget::mResolutionSpinBox_valueChanged );
+  connect( mPrintAsRasterCheckBox, &QCheckBox::toggled, this, &QgsCompositionWidget::mPrintAsRasterCheckBox_toggled );
+  connect( mGenerateWorldFileCheckBox, &QCheckBox::toggled, this, &QgsCompositionWidget::mGenerateWorldFileCheckBox_toggled );
+  connect( mGridResolutionSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsCompositionWidget::mGridResolutionSpinBox_valueChanged );
+  connect( mOffsetXSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsCompositionWidget::mOffsetXSpinBox_valueChanged );
+  connect( mOffsetYSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsCompositionWidget::mOffsetYSpinBox_valueChanged );
+  connect( mSnapToleranceSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsCompositionWidget::mSnapToleranceSpinBox_valueChanged );
   setPanelTitle( tr( "Composition properties" ) );
   blockSignals( true );
   createPaperEntries();
@@ -125,14 +140,24 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget *parent, QgsComposition *c )
 
 QgsCompositionWidget::QgsCompositionWidget()
   : QgsPanelWidget( nullptr )
-  , mComposition( nullptr )
+
 {
   setupUi( this );
-}
-
-QgsCompositionWidget::~QgsCompositionWidget()
-{
-
+  connect( mPaperSizeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsCompositionWidget::mPaperSizeComboBox_currentIndexChanged );
+  connect( mPaperUnitsComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsCompositionWidget::mPaperUnitsComboBox_currentIndexChanged );
+  connect( mPaperOrientationComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsCompositionWidget::mPaperOrientationComboBox_currentIndexChanged );
+  connect( mPaperWidthDoubleSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsCompositionWidget::mPaperWidthDoubleSpinBox_editingFinished );
+  connect( mPaperHeightDoubleSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsCompositionWidget::mPaperHeightDoubleSpinBox_editingFinished );
+  connect( mNumPagesSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsCompositionWidget::mNumPagesSpinBox_valueChanged );
+  connect( mPageStyleButton, &QPushButton::clicked, this, &QgsCompositionWidget::mPageStyleButton_clicked );
+  connect( mResizePageButton, &QPushButton::clicked, this, &QgsCompositionWidget::mResizePageButton_clicked );
+  connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsCompositionWidget::mResolutionSpinBox_valueChanged );
+  connect( mPrintAsRasterCheckBox, &QCheckBox::toggled, this, &QgsCompositionWidget::mPrintAsRasterCheckBox_toggled );
+  connect( mGenerateWorldFileCheckBox, &QCheckBox::toggled, this, &QgsCompositionWidget::mGenerateWorldFileCheckBox_toggled );
+  connect( mGridResolutionSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsCompositionWidget::mGridResolutionSpinBox_valueChanged );
+  connect( mOffsetXSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsCompositionWidget::mOffsetXSpinBox_valueChanged );
+  connect( mOffsetYSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsCompositionWidget::mOffsetYSpinBox_valueChanged );
+  connect( mSnapToleranceSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsCompositionWidget::mSnapToleranceSpinBox_valueChanged );
 }
 
 void QgsCompositionWidget::populateDataDefinedButtons()
@@ -269,14 +294,14 @@ void QgsCompositionWidget::createPaperEntries()
       ;
   mPaperSizeComboBox->addItem( tr( "Custom" ) );
 
-  for ( QList<QgsCompositionPaper>::const_iterator it = formats.begin(); it != formats.end(); ++it )
+  for ( QList<QgsCompositionPaper>::const_iterator it = formats.constBegin(); it != formats.constEnd(); ++it )
   {
     mPaperSizeComboBox->addItem( it->mName );
     mPaperMap.insert( it->mName, *it );
   }
 }
 
-void QgsCompositionWidget::on_mPaperSizeComboBox_currentIndexChanged( const QString &text )
+void QgsCompositionWidget::mPaperSizeComboBox_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
 
@@ -295,7 +320,7 @@ void QgsCompositionWidget::on_mPaperSizeComboBox_currentIndexChanged( const QStr
   applyCurrentPaperSettings();
 }
 
-void QgsCompositionWidget::on_mPaperOrientationComboBox_currentIndexChanged( const QString &text )
+void QgsCompositionWidget::mPaperOrientationComboBox_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
 
@@ -311,7 +336,7 @@ void QgsCompositionWidget::on_mPaperOrientationComboBox_currentIndexChanged( con
   }
 }
 
-void QgsCompositionWidget::on_mPaperUnitsComboBox_currentIndexChanged( const QString &text )
+void QgsCompositionWidget::mPaperUnitsComboBox_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
 
@@ -449,17 +474,17 @@ void QgsCompositionWidget::applyWidthHeight()
   mComposition->refreshItems();
 }
 
-void QgsCompositionWidget::on_mPaperWidthDoubleSpinBox_editingFinished()
+void QgsCompositionWidget::mPaperWidthDoubleSpinBox_editingFinished()
 {
   applyWidthHeight();
 }
 
-void QgsCompositionWidget::on_mPaperHeightDoubleSpinBox_editingFinished()
+void QgsCompositionWidget::mPaperHeightDoubleSpinBox_editingFinished()
 {
   applyWidthHeight();
 }
 
-void QgsCompositionWidget::on_mNumPagesSpinBox_valueChanged( int value )
+void QgsCompositionWidget::mNumPagesSpinBox_valueChanged( int value )
 {
   if ( !mComposition )
   {
@@ -523,7 +548,7 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
   }
 }
 
-void QgsCompositionWidget::on_mPageStyleButton_clicked()
+void QgsCompositionWidget::mPageStyleButton_clicked()
 {
   if ( !mComposition )
   {
@@ -554,7 +579,7 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
   openPanel( d );
 }
 
-void QgsCompositionWidget::on_mResizePageButton_clicked()
+void QgsCompositionWidget::mResizePageButton_clicked()
 {
   if ( !mComposition )
   {
@@ -607,12 +632,12 @@ void QgsCompositionWidget::displaySnappingSettings()
   mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
 }
 
-void QgsCompositionWidget::on_mResolutionSpinBox_valueChanged( const int value )
+void QgsCompositionWidget::mResolutionSpinBox_valueChanged( int value )
 {
   mComposition->setPrintResolution( value );
 }
 
-void QgsCompositionWidget::on_mPrintAsRasterCheckBox_toggled( bool state )
+void QgsCompositionWidget::mPrintAsRasterCheckBox_toggled( bool state )
 {
   if ( !mComposition )
   {
@@ -622,7 +647,7 @@ void QgsCompositionWidget::on_mPrintAsRasterCheckBox_toggled( bool state )
   mComposition->setPrintAsRaster( state );
 }
 
-void QgsCompositionWidget::on_mGenerateWorldFileCheckBox_toggled( bool state )
+void QgsCompositionWidget::mGenerateWorldFileCheckBox_toggled( bool state )
 {
   if ( !mComposition )
   {
@@ -643,7 +668,7 @@ void QgsCompositionWidget::referenceMapChanged( QgsComposerItem *item )
   mComposition->setReferenceMap( map );
 }
 
-void QgsCompositionWidget::on_mGridResolutionSpinBox_valueChanged( double d )
+void QgsCompositionWidget::mGridResolutionSpinBox_valueChanged( double d )
 {
   if ( mComposition )
   {
@@ -651,7 +676,7 @@ void QgsCompositionWidget::on_mGridResolutionSpinBox_valueChanged( double d )
   }
 }
 
-void QgsCompositionWidget::on_mOffsetXSpinBox_valueChanged( double d )
+void QgsCompositionWidget::mOffsetXSpinBox_valueChanged( double d )
 {
   if ( mComposition )
   {
@@ -659,7 +684,7 @@ void QgsCompositionWidget::on_mOffsetXSpinBox_valueChanged( double d )
   }
 }
 
-void QgsCompositionWidget::on_mOffsetYSpinBox_valueChanged( double d )
+void QgsCompositionWidget::mOffsetYSpinBox_valueChanged( double d )
 {
   if ( mComposition )
   {
@@ -667,7 +692,7 @@ void QgsCompositionWidget::on_mOffsetYSpinBox_valueChanged( double d )
   }
 }
 
-void QgsCompositionWidget::on_mSnapToleranceSpinBox_valueChanged( int tolerance )
+void QgsCompositionWidget::mSnapToleranceSpinBox_valueChanged( int tolerance )
 {
   if ( mComposition )
   {

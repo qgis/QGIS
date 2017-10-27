@@ -24,9 +24,11 @@
 
 QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
-  , mReferencedLayer( nullptr )
+
 {
   setupUi( this );
+  connect( mAddFilterButton, &QToolButton::clicked, this, &QgsRelationReferenceConfigDlg::mAddFilterButton_clicked );
+  connect( mRemoveFilterButton, &QToolButton::clicked, this, &QgsRelationReferenceConfigDlg::mRemoveFilterButton_clicked );
 
   mExpressionWidget->registerExpressionContextGenerator( vl );
 
@@ -100,7 +102,7 @@ void QgsRelationReferenceConfigDlg::relationChanged( int idx )
   loadFields();
 }
 
-void QgsRelationReferenceConfigDlg::on_mAddFilterButton_clicked()
+void QgsRelationReferenceConfigDlg::mAddFilterButton_clicked()
 {
   Q_FOREACH ( QListWidgetItem *item, mAvailableFieldsList->selectedItems() )
   {
@@ -108,7 +110,7 @@ void QgsRelationReferenceConfigDlg::on_mAddFilterButton_clicked()
   }
 }
 
-void QgsRelationReferenceConfigDlg::on_mRemoveFilterButton_clicked()
+void QgsRelationReferenceConfigDlg::mRemoveFilterButton_clicked()
 {
   Q_FOREACH ( QListWidgetItem *item, mFilterFieldsList->selectedItems() )
   {

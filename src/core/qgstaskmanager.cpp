@@ -26,16 +26,10 @@
 //
 
 QgsTask::QgsTask( const QString &name, const Flags &flags )
-  : QObject()
-  , mFlags( flags )
+  : mFlags( flags )
   , mDescription( name )
-  , mStatus( Queued )
-  , mOverallStatus( Queued )
-  , mProgress( 0.0 )
-  , mTotalProgress( 0.0 )
-  , mShouldTerminate( false )
-  , mStartCount( 0 )
-{}
+{
+}
 
 QgsTask::~QgsTask()
 {
@@ -49,6 +43,7 @@ QgsTask::~QgsTask()
 
 void QgsTask::start()
 {
+  mNotFinishedMutex.lock();
   mStartCount++;
   Q_ASSERT( mStartCount == 1 );
 
@@ -142,26 +137,19 @@ QList<QgsMapLayer *> QgsTask::dependentLayers() const
   return _qgis_listQPointerToRaw( mDependentLayers );
 }
 
-bool QgsTask::waitForFinished( int timeout )
+bool QgsTask::waitForFinished( unsigned long timeout )
 {
-  QEventLoop loop;
   bool rv = true;
-
-  connect( this, &QgsTask::taskCompleted, &loop, &QEventLoop::quit );
-  connect( this, &QgsTask::taskTerminated, &loop, &QEventLoop::quit );
-  QTimer timer;
-
-  if ( timeout != -1 )
+  if ( mOverallStatus == Complete || mOverallStatus == Terminated )
   {
-    timer.start( timeout );
-    connect( &timer, &QTimer::timeout, [&rv]() { rv = false; } );
-    connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
+    rv = true;
   }
-
-  if ( status() == QgsTask::Complete || status() == QgsTask::Terminated )
-    return true;
-  loop.exec();
-
+  else
+  {
+    if ( timeout == 0 )
+      timeout = ULONG_MAX;
+    rv = mTaskFinished.wait( &mNotFinishedMutex, timeout );
+  }
   return rv;
 }
 
@@ -249,9 +237,13 @@ void QgsTask::processSubTasksForCompletion()
   if ( mStatus == Complete && subTasksCompleted )
   {
     mOverallStatus = Complete;
+
     setProgress( 100.0 );
     emit statusChanged( Complete );
     emit taskCompleted();
+    mTaskFinished.wakeAll();
+    mNotFinishedMutex.unlock();
+    mTaskFinished.wakeAll();
   }
   else if ( mStatus == Complete )
   {
@@ -275,8 +267,12 @@ void QgsTask::processSubTasksForTermination()
   if ( mStatus == Terminated && subTasksTerminated && mOverallStatus != Terminated )
   {
     mOverallStatus = Terminated;
+
     emit statusChanged( Terminated );
     emit taskTerminated();
+    mTaskFinished.wakeAll();
+    mNotFinishedMutex.unlock();
+    mTaskFinished.wakeAll();
   }
   else if ( mStatus == Terminated && !subTasksTerminated )
   {
@@ -323,8 +319,7 @@ class QgsTaskRunnableWrapper : public QRunnable
   public:
 
     explicit QgsTaskRunnableWrapper( QgsTask *task )
-      : QRunnable()
-      , mTask( task )
+      : mTask( task )
     {
       setAutoDelete( true );
     }
@@ -352,7 +347,6 @@ class QgsTaskRunnableWrapper : public QRunnable
 QgsTaskManager::QgsTaskManager( QObject *parent )
   : QObject( parent )
   , mTaskMutex( new QMutex( QMutex::Recursive ) )
-  , mNextTaskId( 0 )
 {
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList< QgsMapLayer * >& ) > ( &QgsProject::layersWillBeRemoved ),
            this, &QgsTaskManager::layersWillBeRemoved );

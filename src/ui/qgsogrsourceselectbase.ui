@@ -103,35 +103,28 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2" colspan="2">
-       <widget class="QComboBox" name="cmbDirectoryTypes"/>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cmbDirectoryTypes">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="1" column="0">
        <widget class="QLabel" name="labelSrcDataset">
         <property name="text">
-         <string>Dataset</string>
+         <string>Vector Dataset(s)</string>
         </property>
         <property name="buddy">
-         <cstring>inputSrcDataset</cstring>
+         <cstring>mFileWidget</cstring>
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QLineEdit" name="inputSrcDataset">
-        <property name="minimumSize">
-         <size>
-          <width>200</width>
-          <height>0</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="buttonSelectSrc">
-        <property name="text">
-         <string>Browse</string>
-        </property>
-       </widget>
+      <item row="1" column="1">
+       <widget class="QgsFileWidget" name="mFileWidget"/>
       </item>
      </layout>
     </widget>
@@ -297,6 +290,13 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>radioSrcFile</tabstop>
   <tabstop>radioSrcDirectory</tabstop>
@@ -306,8 +306,7 @@
   <tabstop>cmbProtocolTypes</tabstop>
   <tabstop>protocolURI</tabstop>
   <tabstop>cmbDirectoryTypes</tabstop>
-  <tabstop>inputSrcDataset</tabstop>
-  <tabstop>buttonSelectSrc</tabstop>
+  <tabstop>mFileWidget</tabstop>
   <tabstop>cmbDatabaseTypes</tabstop>
   <tabstop>cmbConnections</tabstop>
   <tabstop>btnNew</tabstop>

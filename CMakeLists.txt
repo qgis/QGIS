@@ -21,7 +21,7 @@ MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSIO
 #############################################################
 # CMake settings
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
 
 SET(CMAKE_COLOR_MAKEFILE ON)
 
@@ -58,6 +58,8 @@ IF(WITH_CORE)
   SET (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
 
   SET (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
+
+  SET (WITH_3D FALSE CACHE BOOL "Determines whether QGIS 3D library should be built")
 
   # server disabled default because it needs FastCGI (which is optional dependency)
   SET (WITH_SERVER FALSE CACHE BOOL "Determines whether QGIS server should be built")
@@ -258,7 +260,14 @@ IF(WITH_CORE)
   ENDIF(WITH_QTWEBKIT)
   #############################################################
   # search for Qt5
-  SET(QT_MIN_VERSION 5.2.0)
+  IF (WITH_3D)
+    # for 3D support we strictly require Qt >= 5.9
+    # (Qt 3D was introduced in 5.7 but it is not stable enough in that branch)
+    # Qt 5.8 is missing some classes, https://github.com/qgis/QGIS/pull/5203#discussion_r142319862
+    SET(QT_MIN_VERSION 5.9.0)
+  ELSE ()
+    SET(QT_MIN_VERSION 5.2.0)
+  ENDIF()
   FIND_PACKAGE(Qt5Core QUIET)
   FIND_PACKAGE(Qt5Gui REQUIRED)
   FIND_PACKAGE(Qt5Widgets REQUIRED)
@@ -276,6 +285,14 @@ IF(WITH_CORE)
   FIND_PACKAGE(Qt5UiTools REQUIRED)
   FIND_PACKAGE(Qt5Script REQUIRED)
   FIND_PACKAGE(Qt5Sql REQUIRED)
+  IF (WITH_3D)
+    FIND_PACKAGE(Qt53DCore REQUIRED)
+    FIND_PACKAGE(Qt53DRender REQUIRED)
+    FIND_PACKAGE(Qt53DInput REQUIRED)
+    FIND_PACKAGE(Qt53DLogic REQUIRED)
+    FIND_PACKAGE(Qt53DExtras REQUIRED)
+    SET(HAVE_3D TRUE)  # used in qgsconfig.h
+  ENDIF (WITH_3D)
   INCLUDE("cmake/modules/ECMQt4To5Porting.cmake")
   MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
 
@@ -302,6 +319,11 @@ IF(WITH_CORE)
   include(QCAMacros)
   FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
   ENDIF(NOT MSVC)
+
+  IF (APPLE)
+    # Libtasn1 is for DER-encoded PKI ASN.1 parsing/extracting workarounds
+    FIND_PACKAGE(Libtasn1 REQUIRED)
+  ENDIF (APPLE)
 
   IF (SUPPRESS_QT_WARNINGS)
     # Newer versions of UseQt4.cmake include Qt with -isystem automatically
@@ -499,6 +521,9 @@ IF (WITH_CORE)
       IF (POLICY CMP0042) # in CMake 3.0.0+
         SET (CMAKE_MACOSX_RPATH OFF) # otherwise ON by default
       ENDIF (POLICY CMP0042)
+      IF (POLICY CMP0068) # in CMake 3.9.0+
+        cmake_policy(SET CMP0068 NEW)
+      ENDIF (POLICY CMP0068)
       # for Mac OS X, everything is put inside an application bundle
       # save the root install prefix for the app later
       SET (QGIS_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
@@ -581,7 +606,6 @@ IF (WITH_CORE)
   #hoops to escape compiler directives then
   IF(COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
-    cmake_policy(SET CMP0005 OLD)
     IF(NOT "${CMAKE_VERSION}" VERSION_LESS "3.3")
       cmake_policy(SET CMP0063 NEW)
     ENDIF(NOT "${CMAKE_VERSION}" VERSION_LESS "3.3")
@@ -820,7 +844,7 @@ IF (WITH_CORE)
     SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} QGIS")
     SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\qgis.org")
     SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\qgis.org")
-    SET(CPACK_NSIS_CONTACT "tim@linfiniti.com")
+    SET(CPACK_NSIS_CONTACT "info@qgis.org")
     SET(CPACK_NSIS_MODIFY_PATH ON)
 
   #  SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "  !include \\\"${CMAKE_SOURCE_DIR}\\\\win_build\\\\extra.nsh\\\"")

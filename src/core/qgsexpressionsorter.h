@@ -160,7 +160,7 @@ class QgsExpressionSorter
 
       delete expressionContext->popScope();
 
-      qSort( indexedFeatures.begin(), indexedFeatures.end(), *this );
+      std::sort( indexedFeatures.begin(), indexedFeatures.end(), *this );
 
       features.clear();
 

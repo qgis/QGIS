@@ -24,11 +24,6 @@
 
 #include <QDomElement>
 
-QgsHostedRDSBuilder::QgsHostedRDSBuilder(): QgsMSLayerBuilder()
-{
-
-}
-
 QgsMapLayer *QgsHostedRDSBuilder::createMapLayer( const QDomElement &elem,
     const QString &layerName,
     QList<QTemporaryFile *> &filesToRemove,

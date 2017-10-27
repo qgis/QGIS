@@ -19,7 +19,8 @@
 #include "qgis_core.h"
 #include "qgsrenderchecker.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class allows checking rendered images against comparison images.
  * Its main purpose is for the unit testing framework.
  *
@@ -52,7 +53,11 @@
 class CORE_EXPORT QgsMultiRenderChecker
 {
   public:
-    QgsMultiRenderChecker();
+
+    /**
+     * Constructor for QgsMultiRenderChecker.
+     */
+    QgsMultiRenderChecker() = default;
 
     virtual ~QgsMultiRenderChecker() = default;
 
@@ -117,7 +122,8 @@ class CORE_EXPORT QgsMultiRenderChecker
      */
     QString controlImagePath() const;
 
-    /** Draws a checkboard pattern for image backgrounds, so that opacity is visible
+    /**
+     * Draws a checkboard pattern for image backgrounds, so that opacity is visible
      * without requiring a transparent background for the image
      */
     static void drawBackground( QImage *image ) { QgsRenderChecker::drawBackground( image ); }
@@ -127,7 +133,7 @@ class CORE_EXPORT QgsMultiRenderChecker
     QString mRenderedImage;
     QString mControlName;
     QString mControlPathPrefix;
-    unsigned int mColorTolerance;
+    unsigned int mColorTolerance = 0;
     QgsMapSettings mMapSettings;
 };
 
@@ -137,7 +143,8 @@ SIP_IF_FEATURE( TESTS )
 
 ///@cond PRIVATE
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCompositionChecker
  * Renders a composition to an image and compares with an expected output
  */

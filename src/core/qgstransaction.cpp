@@ -24,6 +24,8 @@
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpression.h"
+#include <QUuid>
 
 typedef QgsTransaction *createTransaction_t( const QString &connString );
 
@@ -72,6 +74,7 @@ QgsTransaction *QgsTransaction::create( const QStringList &layerIds )
 QgsTransaction::QgsTransaction( const QString &connString )
   : mConnString( connString )
   , mTransactionActive( false )
+  , mLastSavePointIsDirty( true )
 {
 }
 
@@ -130,6 +133,7 @@ bool QgsTransaction::begin( QString &errorMsg, int statementTimeout )
 
   setLayerTransactionIds( this );
   mTransactionActive = true;
+  mSavepoints.clear();
   return true;
 }
 
@@ -143,6 +147,7 @@ bool QgsTransaction::commit( QString &errorMsg )
 
   setLayerTransactionIds( nullptr );
   mTransactionActive = false;
+  mSavepoints.clear();
   return true;
 }
 
@@ -156,6 +161,7 @@ bool QgsTransaction::rollback( QString &errorMsg )
 
   setLayerTransactionIds( nullptr );
   mTransactionActive = false;
+  mSavepoints.clear();
 
   emit afterRollback();
 
@@ -188,4 +194,55 @@ void QgsTransaction::setLayerTransactionIds( QgsTransaction *transaction )
       vl->dataProvider()->setTransaction( transaction );
     }
   }
+}
+
+QString QgsTransaction::createSavepoint( QString &error SIP_OUT )
+{
+  if ( !mTransactionActive )
+    return QString();
+
+  if ( !mLastSavePointIsDirty && !mSavepoints.isEmpty() )
+    return mSavepoints.top();
+
+  const QString name( QUuid::createUuid().toString() );
+
+  if ( !executeSql( QStringLiteral( "SAVEPOINT %1" ).arg( QgsExpression::quotedColumnRef( name ) ), error ) )
+    return QString();
+
+  mSavepoints.push( name );
+  mLastSavePointIsDirty = false;
+  return name;
+}
+
+QString QgsTransaction::createSavepoint( const QString &savePointId, QString &error SIP_OUT )
+{
+  if ( !mTransactionActive )
+    return QString();
+
+  if ( !executeSql( QStringLiteral( "SAVEPOINT %1" ).arg( QgsExpression::quotedColumnRef( savePointId ) ), error ) )
+    return QString();
+
+  mSavepoints.push( savePointId );
+  mLastSavePointIsDirty = false;
+  return savePointId;
+}
+
+bool QgsTransaction::rollbackToSavepoint( const QString &name, QString &error SIP_OUT )
+{
+  if ( !mTransactionActive )
+    return false;
+
+  const int idx = mSavepoints.indexOf( name );
+
+  if ( idx == -1 )
+    return false;
+
+  mSavepoints.resize( idx );
+  mLastSavePointIsDirty = false;
+  return executeSql( QStringLiteral( "ROLLBACK TO SAVEPOINT %1" ).arg( QgsExpression::quotedColumnRef( name ) ), error );
+}
+
+void QgsTransaction::dirtyLastSavePoint()
+{
+  mLastSavePointIsDirty = true;
 }

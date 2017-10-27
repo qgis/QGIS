@@ -34,6 +34,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsWkbTypes,
                        QgsUnitTypes,
                        QgsFeature,
+                       QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsGeometry,
                        QgsFields,
@@ -158,7 +159,7 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         network = self.parameterAsSource(parameters, self.INPUT, context)
         startPoints = self.parameterAsSource(parameters, self.START_POINTS, context)
-        endPoint = self.parameterAsPoint(parameters, self.END_POINT, context)
+        endPoint = self.parameterAsPoint(parameters, self.END_POINT, context, network.sourceCrs())
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
 
         directionFieldName = self.parameterAsString(parameters, self.DIRECTION_FIELD, context)
@@ -206,7 +207,7 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
             multiplier = 3600
 
         director.addStrategy(strategy)
-        builder = QgsGraphBuilder(context.project().crs(),
+        builder = QgsGraphBuilder(network.sourceCrs(),
                                   True,
                                   tolerance)
 
@@ -236,7 +237,7 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
 
         nPoints = len(snappedPoints)
         total = 100.0 / nPoints if nPoints else 1
-        for i in range(1, count + 1):
+        for i in range(1, nPoints + 1):
             if feedback.isCanceled():
                 break
 
@@ -259,7 +260,7 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
             route.append(snappedPoints[i])
             route.reverse()
 
-            geom = QgsGeometry.fromPolyline(route)
+            geom = QgsGeometry.fromPolylineXY(route)
             feat.setGeometry(geom)
             feat['start'] = points[i].toString()
             feat['end'] = endPoint.toString()

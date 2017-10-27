@@ -19,7 +19,7 @@
 
 #include <QPainter>
 
-QgsTextDiagram::QgsTextDiagram(): mOrientation( Vertical ), mShape( Circle )
+QgsTextDiagram::QgsTextDiagram()
 {
   mPen.setWidthF( 2.0 );
   mPen.setColor( QColor( 0, 0, 0 ) );
@@ -63,7 +63,12 @@ QSizeF QgsTextDiagram::diagramSize( const QgsFeature &feature, const QgsRenderCo
 double QgsTextDiagram::legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
 {
   QSizeF size = sizeForValue( value, s, is );
-  return qMax( size.width(), size.height() );
+  return std::max( size.width(), size.height() );
+}
+
+QString QgsTextDiagram::diagramName() const
+{
+  return DIAGRAM_NAME_TEXT;
 }
 
 QSizeF QgsTextDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
@@ -243,7 +248,7 @@ void QgsTextDiagram::lineEllipseIntersection( QPointF lineStart, QPointF lineEnd
   double d = b * b - a * ( c - 1 );
   if ( d > 0 )
   {
-    double e = sqrt( d );
+    double e = std::sqrt( d );
     double u1 = ( -b - e ) / a;
     double u2 = ( -b + e ) / a;
     //work with a tolerance of 0.00001 because of limited numerical precision

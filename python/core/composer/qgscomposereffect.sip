@@ -17,7 +17,11 @@ class QgsComposerEffect : QGraphicsEffect
 #include "qgscomposereffect.h"
 %End
   public:
+
     QgsComposerEffect();
+%Docstring
+ Constructor for QgsComposerEffect.
+%End
 
     void setCompositionMode( QPainter::CompositionMode compositionMode );
 

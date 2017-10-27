@@ -25,14 +25,15 @@
 #include <QMetaType>
 #include <QVariant>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A container for features with the same fields and crs.
  */
 class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
 {
   public:
     //! Constructor
-    QgsFeatureStore();
+    QgsFeatureStore() = default;
 
     //! Constructor
     QgsFeatureStore( const QgsFields &fields, const QgsCoordinateReferenceSystem &crs );

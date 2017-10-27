@@ -30,9 +30,10 @@ QGIS utilities module
 
 from qgis.PyQt.QtCore import QCoreApplication, QLocale, QThread
 from qgis.PyQt.QtWidgets import QPushButton, QApplication
-from qgis.core import Qgis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput, QgsWkbTypes, QgsApplication
+from qgis.core import Qgis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput, QgsWkbTypes
 from qgis.gui import QgsMessageBar
 
+import os
 import sys
 import traceback
 import glob
@@ -76,7 +77,8 @@ def showWarning(message, category, filename, lineno, file=None, line=None):
     )
 
 
-warnings.showwarning = showWarning
+if not os.environ.get('QGIS_DISABLE_MESSAGE_HOOKS'):
+    warnings.showwarning = showWarning
 
 
 def showException(type, value, tb, msg, messagebar=False):
@@ -133,7 +135,7 @@ def show_message_log(pop_error=True):
 
 
 def open_stack_dialog(type, value, tb, msg, pop_error=True):
-    if pop_error:
+    if pop_error and iface is not None:
         iface.messageBar().popWidget()
 
     if msg is None:
@@ -189,7 +191,7 @@ def open_stack_dialog(type, value, tb, msg, pop_error=True):
 
 def qgis_excepthook(type, value, tb):
     # detect if running in the main thread
-    in_main_thread = QThread.currentThread() == QgsApplication.instance().thread()
+    in_main_thread = QCoreApplication.instance() is None or QThread.currentThread() == QCoreApplication.instance().thread()
 
     # only use messagebar if running in main thread - otherwise it will crash!
     showException(type, value, tb, None, messagebar=in_main_thread)
@@ -204,7 +206,8 @@ def uninstallErrorHook():
 
 
 # install error hook() on module load
-installErrorHook()
+if not os.environ.get('QGIS_DISABLE_MESSAGE_HOOKS'):
+    installErrorHook()
 
 # initialize 'iface' object
 iface = None
@@ -683,7 +686,8 @@ def _import(name, globals={}, locals={}, fromlist=[], level=None):
     return mod
 
 
-if _uses_builtins:
-    builtins.__import__ = _import
-else:
-    __builtin__.__import__ = _import
+if not os.environ.get('QGIS_NO_OVERRIDE_IMPORT'):
+    if _uses_builtins:
+        builtins.__import__ = _import
+    else:
+        __builtin__.__import__ = _import

@@ -33,12 +33,19 @@
 
 QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &color, Layout widgetLayout )
   : QgsPanelWidget( parent )
-  , mAllowAlpha( true )
-  , mLastCustomColorIndex( 0 )
-  , mPickingColor( false )
-  , mDiscarded( false )
 {
   setupUi( this );
+  connect( mHueRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mHueRadio_toggled );
+  connect( mSaturationRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mSaturationRadio_toggled );
+  connect( mValueRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mValueRadio_toggled );
+  connect( mRedRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mRedRadio_toggled );
+  connect( mGreenRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mGreenRadio_toggled );
+  connect( mBlueRadio, &QRadioButton::toggled, this, &QgsCompoundColorWidget::mBlueRadio_toggled );
+  connect( mAddColorToSchemeButton, &QPushButton::clicked, this, &QgsCompoundColorWidget::mAddColorToSchemeButton_clicked );
+  connect( mAddCustomColorButton, &QPushButton::clicked, this, &QgsCompoundColorWidget::mAddCustomColorButton_clicked );
+  connect( mSampleButton, &QPushButton::clicked, this, &QgsCompoundColorWidget::mSampleButton_clicked );
+  connect( mTabWidget, &QTabWidget::currentChanged, this, &QgsCompoundColorWidget::mTabWidget_currentChanged );
+  connect( mActionShowInButtons, &QAction::toggled, this, &QgsCompoundColorWidget::mActionShowInButtons_toggled );
 
   if ( widgetLayout == LayoutVertical )
   {
@@ -359,7 +366,7 @@ void QgsCompoundColorWidget::removePalette()
   //remove scheme from registry
   QgsApplication::colorSchemeRegistry()->removeColorScheme( userScheme );
   refreshSchemeComboBox();
-  prevIndex = qMax( qMin( prevIndex, mSchemeComboBox->count() - 1 ), 0 );
+  prevIndex = std::max( std::min( prevIndex, mSchemeComboBox->count() - 1 ), 0 );
   mSchemeComboBox->setCurrentIndex( prevIndex );
 }
 
@@ -445,7 +452,7 @@ void QgsCompoundColorWidget::listSelectionChanged( const QItemSelection &selecte
   mActionCopyColors->setEnabled( selected.length() > 0 );
 }
 
-void QgsCompoundColorWidget::on_mAddCustomColorButton_clicked()
+void QgsCompoundColorWidget::mAddCustomColorButton_clicked()
 {
   switch ( mLastCustomColorIndex )
   {
@@ -505,7 +512,7 @@ void QgsCompoundColorWidget::on_mAddCustomColorButton_clicked()
   }
 }
 
-void QgsCompoundColorWidget::on_mSampleButton_clicked()
+void QgsCompoundColorWidget::mSampleButton_clicked()
 {
   //activate picker color
   QPixmap samplerPixmap = QPixmap( ( const char ** ) sampler_cursor );
@@ -516,7 +523,7 @@ void QgsCompoundColorWidget::on_mSampleButton_clicked()
   setMouseTracking( true );
 }
 
-void QgsCompoundColorWidget::on_mTabWidget_currentChanged( int index )
+void QgsCompoundColorWidget::mTabWidget_currentChanged( int index )
 {
   //disable radio buttons if not using the first tab, as they have no meaning for other tabs
   bool enabled = index == 0;
@@ -528,7 +535,7 @@ void QgsCompoundColorWidget::on_mTabWidget_currentChanged( int index )
   mValueRadio->setEnabled( enabled );
 }
 
-void QgsCompoundColorWidget::on_mActionShowInButtons_toggled( bool state )
+void QgsCompoundColorWidget::mActionShowInButtons_toggled( bool state )
 {
   QgsUserColorScheme *scheme = dynamic_cast< QgsUserColorScheme * >( mSchemeList->scheme() );
   if ( scheme )
@@ -738,7 +745,7 @@ void QgsCompoundColorWidget::keyPressEvent( QKeyEvent *e )
   stopPicking( QCursor::pos(), e->key() == Qt::Key_Space );
 }
 
-void QgsCompoundColorWidget::on_mHueRadio_toggled( bool checked )
+void QgsCompoundColorWidget::mHueRadio_toggled( bool checked )
 {
   if ( checked )
   {
@@ -747,7 +754,7 @@ void QgsCompoundColorWidget::on_mHueRadio_toggled( bool checked )
   }
 }
 
-void QgsCompoundColorWidget::on_mSaturationRadio_toggled( bool checked )
+void QgsCompoundColorWidget::mSaturationRadio_toggled( bool checked )
 {
   if ( checked )
   {
@@ -756,7 +763,7 @@ void QgsCompoundColorWidget::on_mSaturationRadio_toggled( bool checked )
   }
 }
 
-void QgsCompoundColorWidget::on_mValueRadio_toggled( bool checked )
+void QgsCompoundColorWidget::mValueRadio_toggled( bool checked )
 {
   if ( checked )
   {
@@ -765,7 +772,7 @@ void QgsCompoundColorWidget::on_mValueRadio_toggled( bool checked )
   }
 }
 
-void QgsCompoundColorWidget::on_mRedRadio_toggled( bool checked )
+void QgsCompoundColorWidget::mRedRadio_toggled( bool checked )
 {
   if ( checked )
   {
@@ -774,7 +781,7 @@ void QgsCompoundColorWidget::on_mRedRadio_toggled( bool checked )
   }
 }
 
-void QgsCompoundColorWidget::on_mGreenRadio_toggled( bool checked )
+void QgsCompoundColorWidget::mGreenRadio_toggled( bool checked )
 {
   if ( checked )
   {
@@ -783,7 +790,7 @@ void QgsCompoundColorWidget::on_mGreenRadio_toggled( bool checked )
   }
 }
 
-void QgsCompoundColorWidget::on_mBlueRadio_toggled( bool checked )
+void QgsCompoundColorWidget::mBlueRadio_toggled( bool checked )
 {
   if ( checked )
   {
@@ -792,7 +799,7 @@ void QgsCompoundColorWidget::on_mBlueRadio_toggled( bool checked )
   }
 }
 
-void QgsCompoundColorWidget::on_mAddColorToSchemeButton_clicked()
+void QgsCompoundColorWidget::mAddColorToSchemeButton_clicked()
 {
   mSchemeList->addColor( mColorPreview->color(), QgsSymbolLayerUtils::colorToName( mColorPreview->color() ) );
 }
@@ -807,7 +814,7 @@ void QgsCompoundColorWidget::updateActionsForCurrentScheme()
   mRemoveColorsFromSchemeButton->setEnabled( scheme->isEditable() );
 
   QgsUserColorScheme *userScheme = dynamic_cast<QgsUserColorScheme *>( scheme );
-  mActionRemovePalette->setEnabled( userScheme ? true : false );
+  mActionRemovePalette->setEnabled( static_cast< bool >( userScheme ) );
   if ( userScheme )
   {
     mActionShowInButtons->setEnabled( true );

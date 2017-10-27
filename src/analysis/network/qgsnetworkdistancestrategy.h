@@ -16,10 +16,11 @@
 #ifndef QGSNETWORKDISTANCESTRATEGY_H
 #define QGSNETWORKDISTANCESTRATEGY_H
 
-#include <qgsnetworkstrategy.h>
+#include "qgsnetworkstrategy.h"
 #include "qgis_analysis.h"
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * \class QgsNetworkDistanceStrategy
  * \since QGIS 3.0
  * \brief Strategy for caclulating edge cost based on its length. Should be

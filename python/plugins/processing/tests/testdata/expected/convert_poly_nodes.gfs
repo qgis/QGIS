@@ -2,11 +2,11 @@
   <GMLFeatureClass>
     <Name>convert_poly_nodes</Name>
     <ElementPath>convert_poly_nodes</ElementPath>
-    <!--POINT-->
-    <GeometryType>1</GeometryType>
+    <!--MULTIPOINT-->
+    <GeometryType>4</GeometryType>
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
-      <FeatureCount>32</FeatureCount>
+      <FeatureCount>6</FeatureCount>
       <ExtentXMin>-1.00000</ExtentXMin>
       <ExtentXMax>10.00000</ExtentXMax>
       <ExtentYMin>-3.00000</ExtentYMin>

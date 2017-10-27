@@ -50,28 +50,12 @@
 
 QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceUri const &uri )
   : mUri( uri )
-  , mCapabilitiesReply( nullptr )
-  , mCoverageCount( 0 )
-  , mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
   QgsDebugMsg( "uri = " + mUri.encodedUri() );
 
   parseUri();
 
   retrieveServerCapabilities();
-}
-
-QgsWcsCapabilities::QgsWcsCapabilities()
-  : mCapabilities()
-  , mCapabilitiesReply( nullptr )
-  , mCoverageCount( 0 )
-  , mCacheLoadControl( QNetworkRequest::PreferNetwork )
-{
-}
-
-QgsWcsCapabilities::~QgsWcsCapabilities()
-{
-  QgsDebugMsg( "deconstructing." );
 }
 
 void QgsWcsCapabilities::parseUri()
@@ -143,7 +127,7 @@ QString QgsWcsCapabilities::getCoverageUrl() const
 bool QgsWcsCapabilities::sendRequest( QString const &url )
 {
   QgsDebugMsg( "url = " + url );
-  mError = QLatin1String( "" );
+  mError.clear();
   QNetworkRequest request( url );
   if ( !setAuthorization( request ) )
   {
@@ -905,11 +889,12 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
   // Find native bounding box
   if ( !coverage->nativeCrs.isEmpty() )
   {
-    Q_FOREACH ( const QString &srsName, coverage->boundingBoxes.keys() )
+    const auto boundingBoxes = coverage->boundingBoxes;
+    for ( auto it = boundingBoxes.constBegin(); it != boundingBoxes.constEnd(); ++it )
     {
-      if ( srsName == coverage->nativeCrs )
+      if ( it.key() == coverage->nativeCrs )
       {
-        coverage->nativeBoundingBox = coverage->boundingBoxes.value( srsName );
+        coverage->nativeBoundingBox = it.value();
       }
     }
   }
@@ -1194,7 +1179,7 @@ bool QgsWcsCapabilities::setAuthorization( QNetworkRequest &request ) const
 {
   if ( mUri.hasParam( QStringLiteral( "authcfg" ) ) && !mUri.param( QStringLiteral( "authcfg" ) ).isEmpty() )
   {
-    return QgsAuthManager::instance()->updateNetworkRequest( request, mUri.param( QStringLiteral( "authcfg" ) ) );
+    return QgsApplication::authManager()->updateNetworkRequest( request, mUri.param( QStringLiteral( "authcfg" ) ) );
   }
   else if ( mUri.hasParam( QStringLiteral( "username" ) ) && mUri.hasParam( QStringLiteral( "password" ) ) )
   {
@@ -1208,7 +1193,7 @@ bool QgsWcsCapabilities::setAuthorizationReply( QNetworkReply *reply ) const
 {
   if ( mUri.hasParam( QStringLiteral( "authcfg" ) ) && !mUri.param( QStringLiteral( "authcfg" ) ).isEmpty() )
   {
-    return QgsAuthManager::instance()->updateNetworkReply( reply, mUri.param( QStringLiteral( "authcfg" ) ) );
+    return QgsApplication::authManager()->updateNetworkReply( reply, mUri.param( QStringLiteral( "authcfg" ) ) );
   }
   return true;
 }

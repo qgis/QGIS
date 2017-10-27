@@ -43,7 +43,6 @@ SET(QGIS_SERVER_SRCS
   qgsserverinterface.cpp
   qgsserverinterfaceimpl.cpp
   qgsserverlogger.cpp
-  qgsserverprojectparser.cpp
   qgsserverprojectutils.cpp
   qgsserverrequest.cpp
   qgsserverresponse.cpp
@@ -52,9 +51,6 @@ SET(QGIS_SERVER_SRCS
   qgsservicemodule.cpp
   qgsservicenativeloader.cpp
   qgsserviceregistry.cpp
-  qgssldconfigparser.cpp
-  qgswmsconfigparser.cpp
-  qgswmsprojectparser.cpp
 )
 
 SET (QGIS_SERVER_HDRS
@@ -207,6 +203,5 @@ INSTALL(TARGETS
 INSTALL(FILES
   admin.sld
   wms_metadata.xml
-  schemaExtension.xsd
   DESTINATION ${QGIS_CGIBIN_DIR}
 )

@@ -68,21 +68,23 @@ email                : sherman at mrcc.com
 #include <cmath>
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Deprecated to be deleted, stuff from here should be moved elsewhere.
- * @note not available in Python bindings
+ * \note not available in Python bindings
 */
 //TODO QGIS 3.0 - remove
 class QgsMapCanvas::CanvasProperties
 {
   public:
-    CanvasProperties()
-      : mouseButtonDown( false )
-      , panSelectorDown( false )
-    { }
+
+    /**
+     * Constructor for CanvasProperties.
+     */
+    CanvasProperties() = default;
 
     //!Flag to indicate status of mouse button
-    bool mouseButtonDown;
+    bool mouseButtonDown{ false };
 
     //! Last seen point of the mouse
     QPoint mouseLastXY;
@@ -91,7 +93,7 @@ class QgsMapCanvas::CanvasProperties
     QPoint rubberStartPoint;
 
     //! Flag to indicate the pan selector key is held down by user
-    bool panSelectorDown;
+    bool panSelectorDown{ false };
 };
 
 
@@ -99,28 +101,7 @@ class QgsMapCanvas::CanvasProperties
 QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   : QGraphicsView( parent )
   , mCanvasProperties( new CanvasProperties )
-  , mMap( nullptr )
-  , mFrozen( false )
-  , mRefreshScheduled( false )
-  , mRenderFlag( true ) // by default, the canvas is rendered
-  , mCurrentLayer( nullptr )
-  , mScene( nullptr )
-  , mMapTool( nullptr )
-  , mLastNonZoomMapTool( nullptr )
-  , mLastExtentIndex( -1 )
-  , mWheelZoomFactor( 2.0 )
-  , mJob( nullptr )
-  , mJobCanceled( false )
-  , mLabelingResults( nullptr )
-  , mUseParallelRendering( false )
-  , mDrawRenderingStats( false )
-  , mCache( nullptr )
-  , mResizeTimer( nullptr )
-  , mPreviewEffect( nullptr )
-  , mSnappingUtils( nullptr )
-  , mScaleLocked( false )
   , mExpressionContextScope( tr( "Map Canvas" ) )
-  , mZoomDragging( false )
 {
   mScene = new QGraphicsScene();
   setScene( mScene );
@@ -196,6 +177,10 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   connect( this, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvas::updateCanvasItemPositions );
 
   setInteractive( false );
+
+  // make sure we have the same default in QgsMapSettings and the scene's background brush
+  // (by default map settings has white bg color, scene background brush is black)
+  setCanvasColor( mSettings.backgroundColor() );
 
   refresh();
 
@@ -629,7 +614,8 @@ void QgsMapCanvas::rendererJobFinished()
     p.end();
 
     mMap->setContent( img, imageRect( img, mSettings ) );
-    startPreviewJobs();
+    if ( mUsePreviewJobs )
+      startPreviewJobs();
   }
 
   // now we are in a slot called from mJob - do not delete it immediately
@@ -662,6 +648,16 @@ QgsRectangle QgsMapCanvas::imageRect( const QImage &img, const QgsMapSettings &m
   double res = m2p.mapUnitsPerPixel();
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + img.width()*res, topLeft.y() - img.height()*res );
   return rect;
+}
+
+bool QgsMapCanvas::previewJobsEnabled() const
+{
+  return mUsePreviewJobs;
+}
+
+void QgsMapCanvas::setPreviewJobsEnabled( bool enabled )
+{
+  mUsePreviewJobs = enabled;
 }
 
 void QgsMapCanvas::mapUpdateTimeout()
@@ -1022,7 +1018,7 @@ bool QgsMapCanvas::boundingBoxOfFeatureIds( const QgsFeatureIds &ids, QgsVectorL
     {
       errorMsg = tr( "Feature does not have a geometry" );
     }
-    else if ( geom.geometry()->isEmpty() )
+    else if ( geom.constGet()->isEmpty() )
     {
       errorMsg = tr( "Feature geometry is empty" );
     }
@@ -1067,6 +1063,106 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer *layer )
   refresh();
 }
 
+void QgsMapCanvas::flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids,
+                                    const QColor &color1, const QColor &color2,
+                                    int flashes, int duration )
+{
+  if ( !layer )
+  {
+    return;
+  }
+
+  QList< QgsGeometry > geoms;
+
+  QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest().setFilterFids( ids ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsFeature fet;
+  while ( it.nextFeature( fet ) )
+  {
+    if ( !fet.hasGeometry() )
+      continue;
+    geoms << fet.geometry();
+  }
+
+  flashGeometries( geoms, layer->crs(), color1, color2, flashes, duration );
+}
+
+void QgsMapCanvas::flashGeometries( const QList<QgsGeometry> &geometries, const QgsCoordinateReferenceSystem &crs, const QColor &color1, const QColor &color2, int flashes, int duration )
+{
+  if ( geometries.isEmpty() )
+    return;
+
+  QgsWkbTypes::GeometryType geomType = QgsWkbTypes::geometryType( geometries.at( 0 ).wkbType() );
+  QgsRubberBand *rb = new QgsRubberBand( this, geomType );
+  for ( const QgsGeometry &geom : geometries )
+    rb->addGeometry( geom, crs );
+
+  if ( geomType == QgsWkbTypes::LineGeometry || geomType == QgsWkbTypes::PointGeometry )
+  {
+    rb->setWidth( 2 );
+    rb->setSecondaryStrokeColor( QColor( 255, 255, 255 ) );
+  }
+  if ( geomType == QgsWkbTypes::PointGeometry )
+    rb->setIcon( QgsRubberBand::ICON_CIRCLE );
+
+  QColor startColor = color1;
+  if ( !startColor.isValid() )
+  {
+    if ( geomType == QgsWkbTypes::PolygonGeometry )
+    {
+      startColor = rb->fillColor();
+    }
+    else
+    {
+      startColor = rb->strokeColor();
+    }
+    startColor.setAlpha( 255 );
+  }
+  QColor endColor = color2;
+  if ( !endColor.isValid() )
+  {
+    endColor = startColor;
+    endColor.setAlpha( 0 );
+  }
+
+
+  QVariantAnimation *animation = new QVariantAnimation( this );
+  connect( animation, &QVariantAnimation::finished, this, [animation, rb]
+  {
+    animation->deleteLater();
+    delete rb;
+  } );
+  connect( animation, &QPropertyAnimation::valueChanged, this, [rb, geomType]( const QVariant & value )
+  {
+    QColor c = value.value<QColor>();
+    if ( geomType == QgsWkbTypes::PolygonGeometry )
+    {
+      rb->setFillColor( c );
+    }
+    else
+    {
+      rb->setStrokeColor( c );
+      QColor c = rb->secondaryStrokeColor();
+      c.setAlpha( c.alpha() );
+      rb->setSecondaryStrokeColor( c );
+    }
+    rb->update();
+  } );
+
+  animation->setDuration( duration * flashes );
+  animation->setStartValue( endColor );
+  double midStep = 0.2 / flashes;
+  for ( int i = 0; i < flashes; ++i )
+  {
+    double start = static_cast< double >( i ) / flashes;
+    animation->setKeyValueAt( start + midStep, startColor );
+    double end = static_cast< double >( i + 1 ) / flashes;
+    if ( !qgsDoubleNear( end, 1.0 ) )
+      animation->setKeyValueAt( end, endColor );
+  }
+  animation->setEndValue( endColor );
+  animation->start();
+}
+
 void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
 {
   if ( mCanvasProperties->mouseButtonDown || mCanvasProperties->panSelectorDown )
@@ -1080,8 +1176,8 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
     // Don't want to interfer with mouse events
 
     QgsRectangle currentExtent = mapSettings().visibleExtent();
-    double dx = qAbs( currentExtent.width() / 4 );
-    double dy = qAbs( currentExtent.height() / 4 );
+    double dx = std::fabs( currentExtent.width() / 4 );
+    double dy = std::fabs( currentExtent.height() / 4 );
 
     switch ( e->key() )
     {
@@ -1240,7 +1336,7 @@ void QgsMapCanvas::endZoomRect( QPoint pos )
   const QSize &canvasSize = mSettings.outputSize();
   double sfx = ( double )zoomRectSize.width() / canvasSize.width();
   double sfy = ( double )zoomRectSize.height() / canvasSize.height();
-  double sf = qMax( sfx, sfy );
+  double sf = std::max( sfx, sfy );
 
   QgsPointXY c = mSettings.mapToPixel().toMapCoordinates( mZoomRect.center() );
 
@@ -1409,7 +1505,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
   double zoomFactor = mWheelZoomFactor;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
-  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * qAbs( e->angleDelta().y() );
+  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( e->angleDelta().y() );
 
   if ( e->modifiers() & Qt::ControlModifier )
   {
@@ -1426,6 +1522,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
                         mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * signedWheelFactor ) );
 
   zoomByFactor( signedWheelFactor, &newCenter );
+  e->accept();
 }
 
 void QgsMapCanvas::setWheelFactor( double factor )
@@ -1504,13 +1601,16 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent *e )
   emit xyCoordinates( coord );
 }
 
-void QgsMapCanvas::setMapTool( QgsMapTool *tool )
+void QgsMapCanvas::setMapTool( QgsMapTool *tool, bool clean )
 {
   if ( !tool )
     return;
 
   if ( mMapTool )
   {
+    if ( clean )
+      mMapTool->clean();
+
     disconnect( mMapTool, &QObject::destroyed, this, &QgsMapCanvas::mapToolDestroyed );
     mMapTool->deactivate();
   }
@@ -1559,6 +1659,9 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
 
 void QgsMapCanvas::setCanvasColor( const QColor &color )
 {
+  if ( canvasColor() == color )
+    return;
+
   // background of map's pixmap
   mSettings.setBackgroundColor( color );
 
@@ -1573,6 +1676,8 @@ void QgsMapCanvas::setCanvasColor( const QColor &color )
 
   // background of QGraphicsScene
   mScene->setBackgroundBrush( bgBrush );
+
+  emit canvasColorChanged();
 }
 
 QColor QgsMapCanvas::canvasColor() const
@@ -1583,6 +1688,11 @@ QColor QgsMapCanvas::canvasColor() const
 void QgsMapCanvas::setSelectionColor( const QColor &color )
 {
   mSettings.setSelectionColor( color );
+}
+
+QColor QgsMapCanvas::selectionColor() const
+{
+  return mSettings.selectionColor();
 }
 
 int QgsMapCanvas::layerCount() const
@@ -1734,7 +1844,7 @@ void QgsMapCanvas::updateAutoRefreshTimer()
   Q_FOREACH ( QgsMapLayer *layer, mSettings.layers() )
   {
     if ( layer->hasAutoRefreshEnabled() && layer->autoRefreshInterval() > 0 )
-      minAutoRefreshInterval = minAutoRefreshInterval > 0 ? qMin( layer->autoRefreshInterval(), minAutoRefreshInterval ) : layer->autoRefreshInterval();
+      minAutoRefreshInterval = minAutoRefreshInterval > 0 ? std::min( layer->autoRefreshInterval(), minAutoRefreshInterval ) : layer->autoRefreshInterval();
   }
 
   if ( minAutoRefreshInterval > 0 )
@@ -2132,7 +2242,7 @@ const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
 void QgsMapCanvas::startPreviewJobs()
 {
   stopPreviewJobs(); //just in case still running
-  startPreviewJob( 0 );
+  schedulePreviewJob( 0 );
 }
 
 void QgsMapCanvas::startPreviewJob( int number )
@@ -2159,17 +2269,16 @@ void QgsMapCanvas::startPreviewJob( int number )
 
   jobSettings.setExtent( jobExtent );
   jobSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+  jobSettings.setFlag( QgsMapSettings::RenderPreviewJob, true );
 
-  QgsMapRendererQImageJob *job = new QgsMapRendererParallelJob( jobSettings );
+  QgsMapRendererQImageJob *job = new QgsMapRendererSequentialJob( jobSettings );
   mPreviewJobs.append( job );
   connect( job, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
   job->start();
 
   if ( number < 8 )
   {
-    mPreviewTimer.setSingleShot( true );
-    mPreviewTimer.setInterval( 10 );
-    connect( &mPreviewTimer, &QTimer::timeout, [ = ]() { startPreviewJob( number + 1 ); } );
+    schedulePreviewJob( number + 1 );
   }
 }
 
@@ -2187,4 +2296,17 @@ void QgsMapCanvas::stopPreviewJobs()
     }
   }
   mPreviewJobs.clear();
+}
+
+void QgsMapCanvas::schedulePreviewJob( int number )
+{
+  mPreviewTimer.setSingleShot( true );
+  mPreviewTimer.setInterval( 250 );
+  disconnect( mPreviewTimerConnection );
+  mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, this, [ = ]()
+  {
+    startPreviewJob( number );
+  }
+                                   );
+  mPreviewTimer.start();
 }

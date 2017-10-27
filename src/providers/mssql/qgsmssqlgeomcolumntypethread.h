@@ -27,7 +27,7 @@ class QgsMssqlGeomColumnTypeThread : public QThread
     void stop();
 
   private:
-    QgsMssqlGeomColumnTypeThread() {}
+    QgsMssqlGeomColumnTypeThread() = delete;
 
     QString mConnectionName;
     bool mUseEstimatedMetadata;

@@ -33,10 +33,10 @@
 //
 
 
-#include <ui_qgsbrowserdockwidgetbase.h>
-#include <ui_qgsbrowserlayerpropertiesbase.h>
-#include <ui_qgsbrowserdirectorypropertiesbase.h>
-#include <ui_qgsbrowserpropertiesdialogbase.h>
+#include "ui_qgsbrowserdockwidgetbase.h"
+#include "ui_qgsbrowserlayerpropertiesbase.h"
+#include "ui_qgsbrowserdirectorypropertiesbase.h"
+#include "ui_qgsbrowserpropertiesdialogbase.h"
 
 #include "qgsdataitem.h"
 #include "qgsbrowsertreeview.h"
@@ -91,7 +91,8 @@ class QgsBrowserPropertiesWidget : public QWidget
     //! Set content widget, usually item paramWidget. Takes ownership.
     virtual void setWidget( QWidget *widget );
 
-    /** Sets whether the properties widget should display in condensed mode, ie, for display in a dock
+    /**
+     * Sets whether the properties widget should display in condensed mode, ie, for display in a dock
      * widget rather than it's own separate dialog.
      * \param condensedMode set to true to enable condensed mode
      * \since QGIS 2.10
@@ -115,7 +116,8 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
     //! Set item
     void setItem( QgsDataItem *item ) override;
 
-    /** Sets whether the properties widget should display in condensed mode, ie, for display in a dock
+    /**
+     * Sets whether the properties widget should display in condensed mode, ie, for display in a dock
      * widget rather than it's own separate dialog.
      * \param condensedMode set to true to enable condensed mode
      * \since QGIS 2.10

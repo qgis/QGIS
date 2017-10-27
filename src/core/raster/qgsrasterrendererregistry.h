@@ -37,22 +37,28 @@ class QgsRasterRendererWidget;
 typedef QgsRasterRenderer *( *QgsRasterRendererCreateFunc )( const QDomElement &, QgsRasterInterface *input );
 typedef QgsRasterRendererWidget *( *QgsRasterRendererWidgetCreateFunc )( QgsRasterLayer *, const QgsRectangle &extent );
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Registry for raster renderer entries.
   */
 struct CORE_EXPORT QgsRasterRendererRegistryEntry
 {
   QgsRasterRendererRegistryEntry( const QString &name, const QString &visibleName, QgsRasterRendererCreateFunc rendererFunction,
                                   QgsRasterRendererWidgetCreateFunc widgetFunction );
-  QgsRasterRendererRegistryEntry();
+
+  /**
+   * Constructor for QgsRasterRendererRegistryEntry.
+   */
+  QgsRasterRendererRegistryEntry() = default;
   QString name;
   QString visibleName; //visible (and translatable) name
   QIcon icon();
-  QgsRasterRendererCreateFunc rendererCreateFunction; //pointer to create function
-  QgsRasterRendererWidgetCreateFunc widgetCreateFunction; //pointer to create function for renderer widget
+  QgsRasterRendererCreateFunc rendererCreateFunction = nullptr ; //pointer to create function
+  QgsRasterRendererWidgetCreateFunc widgetCreateFunction = nullptr ; //pointer to create function for renderer widget
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Registry for raster renderers.
   *
   * QgsRasterRendererRegistry is not usually directly created, but rather accessed through
@@ -72,7 +78,8 @@ class CORE_EXPORT QgsRasterRendererRegistry
     QStringList renderersList() const;
     QList< QgsRasterRendererRegistryEntry > entries() const;
 
-    /** Creates a default renderer for a raster drawing style (considering user options such as default contrast enhancement).
+    /**
+     * Creates a default renderer for a raster drawing style (considering user options such as default contrast enhancement).
         Caller takes ownership*/
     QgsRasterRenderer *defaultRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle, QgsRasterDataProvider *provider ) const;
 

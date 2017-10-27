@@ -19,9 +19,9 @@
 
 #include "ui_qgsgpsinformationwidgetbase.h"
 
-#include <qgsmapcanvas.h>
-#include <qgsgpsmarker.h>
-#include <qgsmaptoolcapture.h>
+#include "qgsmapcanvas.h"
+#include "qgsgpsmarker.h"
+#include "qgsmaptoolcapture.h"
 #include <qwt_plot_curve.h>
 #ifdef WITH_QWTPOLAR
 #include <qwt_polar_plot.h>
@@ -37,7 +37,8 @@ struct QgsGPSInformation;
 class QFile;
 class QColor;
 
-/** A dock widget that displays information from a GPS device and
+/**
+ * A dock widget that displays information from a GPS device and
  * allows the user to capture features using gps readings to
  * specify the geometry.*/
 class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidgetBase
@@ -48,25 +49,25 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     ~QgsGPSInformationWidget();
 
   private slots:
-    void on_mConnectButton_toggled( bool flag );
+    void mConnectButton_toggled( bool flag );
     void displayGPSInformation( const QgsGPSInformation &info );
     void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
     void updateCloseFeatureButton( QgsMapLayer *lyr );
     void layerEditStateChanged();
 //   void setTrackColor(); // no longer used
-    void on_mBtnTrackColor_clicked();
-    void on_mSpinTrackWidth_valueChanged( int value );
-    void on_mBtnPosition_clicked();
-    void on_mBtnSignal_clicked();
-    void on_mBtnSatellites_clicked();
-    void on_mBtnOptions_clicked();
-    void on_mBtnDebug_clicked();
-    void on_mBtnRefreshDevices_clicked();
-    void on_mBtnAddVertex_clicked();
-    void on_mBtnCloseFeature_clicked();
-    void on_mBtnResetFeature_clicked();
+    void mBtnTrackColor_clicked();
+    void mSpinTrackWidth_valueChanged( int value );
+    void mBtnPosition_clicked();
+    void mBtnSignal_clicked();
+    void mBtnSatellites_clicked();
+    void mBtnOptions_clicked();
+    void mBtnDebug_clicked();
+    void mBtnRefreshDevices_clicked();
+    void mBtnAddVertex_clicked();
+    void mBtnCloseFeature_clicked();
+    void mBtnResetFeature_clicked();
 // not needed    void on_mCbxAutoAddVertices_toggled( bool flag );
-    void on_mBtnLogFile_clicked();
+    void mBtnLogFile_clicked();
 
     void connected( QgsGPSConnection * );
     void timedout();

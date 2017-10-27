@@ -65,7 +65,7 @@ QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource *source,
   // multiple iterators if features are edited -> lock only critical sections
 
   // Create selection
-  int size = 1 + qMax( Vect_get_num_lines( mSource->map() ), Vect_get_num_areas( mSource->map() ) );
+  int size = 1 + std::max( Vect_get_num_lines( mSource->map() ), Vect_get_num_areas( mSource->map() ) );
   QgsDebugMsg( QString( "mSelection.resize(%1)" ).arg( size ) );
   mSelection.resize( size );
 
@@ -664,7 +664,7 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
 {
   QgsDebugMsgLevel( QString( "setFeatureAttributes cat = %1" ).arg( cat ), 3 );
   QgsAttributeList attlist;
-  int nFields =  mSource->mLayer->fields().size();
+  int nFields = mSource->mLayer->fields().size();
   if ( nFields > 0 )
   {
     for ( int i = 0; i <  mSource->mLayer->fields().size(); i++ )
@@ -704,7 +704,7 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
     QVariant value;
     if ( isEditedLayer )
     {
-      value =  mSource->mLayer->attribute( cat, *iter );
+      value = mSource->mLayer->attribute( cat, *iter );
       if ( value.type() == QVariant::ByteArray )
       {
         value = QVariant( mSource->mEncoding->toUnicode( value.toByteArray() ) );

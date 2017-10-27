@@ -42,11 +42,19 @@ QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer,
   , mMapCanvas( canvas )
 {
   setupUi( this );
+  connect( pbnAddValuesFromDisplay, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnAddValuesFromDisplay_clicked );
+  connect( pbnAddValuesManually, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnAddValuesManually_clicked );
+  connect( pbnDefaultValues, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnDefaultValues_clicked );
+  connect( pbnExportTransparentPixelValues, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnExportTransparentPixelValues_clicked );
+  connect( pbnImportTransparentPixelValues, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnImportTransparentPixelValues_clicked );
+  connect( pbnRemoveSelectedRow, &QToolButton::clicked, this, &QgsRasterTransparencyWidget::pbnRemoveSelectedRow_clicked );
 
   syncToLayer();
 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsPanelWidget::widgetChanged );
   connect( cboxTransparencyBand, &QgsRasterBandComboBox::bandChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mSrcNoDataValueCheckBox, &QCheckBox::stateChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( leNoDataValue, &QLineEdit::textEdited, this, &QgsPanelWidget::widgetChanged );
 
   mPixelSelectorTool = nullptr;
   if ( mMapCanvas )
@@ -92,10 +100,21 @@ void QgsRasterTransparencyWidget::syncToLayer()
 
   mSrcNoDataValueCheckBox->setChecked( mRasterLayer->dataProvider()->useSourceNoDataValue( 1 ) );
 
-  bool enableSrcNoData = mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) && !qIsNaN( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) );
+  bool enableSrcNoData = mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) && !std::isnan( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) );
 
   mSrcNoDataValueCheckBox->setEnabled( enableSrcNoData );
   lblSrcNoDataValue->setEnabled( enableSrcNoData );
+
+  QgsRasterRangeList noDataRangeList = mRasterLayer->dataProvider()->userNoDataValues( 1 );
+  QgsDebugMsg( QString( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
+  if ( !noDataRangeList.isEmpty() )
+  {
+    leNoDataValue->insert( QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ) );
+  }
+  else
+  {
+    leNoDataValue->insert( QLatin1String( "" ) );
+  }
 
   populateTransparencyTable( mRasterLayer->renderer() );
 }
@@ -116,9 +135,9 @@ void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &tex
     if ( !lineEdit ) return;
     int row = -1;
     int column = -1;
-    for ( int r = 0 ; r < tableTransparency->rowCount(); r++ )
+    for ( int r = 0; r < tableTransparency->rowCount(); r++ )
     {
-      for ( int c = 0 ; c < tableTransparency->columnCount(); c++ )
+      for ( int c = 0; c < tableTransparency->columnCount(); c++ )
       {
         if ( tableTransparency->cellWidget( r, c ) == sender() )
         {
@@ -150,7 +169,7 @@ void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &tex
   emit widgetChanged();
 }
 
-void QgsRasterTransparencyWidget::on_pbnAddValuesFromDisplay_clicked()
+void QgsRasterTransparencyWidget::pbnAddValuesFromDisplay_clicked()
 {
   if ( mMapCanvas && mPixelSelectorTool )
   {
@@ -158,7 +177,7 @@ void QgsRasterTransparencyWidget::on_pbnAddValuesFromDisplay_clicked()
   }
 }
 
-void QgsRasterTransparencyWidget::on_pbnAddValuesManually_clicked()
+void QgsRasterTransparencyWidget::pbnAddValuesManually_clicked()
 {
   QgsRasterRenderer *renderer = mRasterLayer->renderer();
   if ( !renderer )
@@ -182,7 +201,7 @@ void QgsRasterTransparencyWidget::on_pbnAddValuesManually_clicked()
   tableTransparency->resizeRowsToContents();
 }
 
-void QgsRasterTransparencyWidget::on_pbnDefaultValues_clicked()
+void QgsRasterTransparencyWidget::pbnDefaultValues_clicked()
 {
   QgsRasterRenderer *r = mRasterLayer->renderer();
   if ( !r )
@@ -199,7 +218,7 @@ void QgsRasterTransparencyWidget::on_pbnDefaultValues_clicked()
 
 }
 
-void QgsRasterTransparencyWidget::on_pbnExportTransparentPixelValues_clicked()
+void QgsRasterTransparencyWidget::pbnExportTransparentPixelValues_clicked()
 {
   QgsSettings myQSettings;
   QString myLastDir = myQSettings.value( QStringLiteral( "lastRasterFileFilterDir" ), QDir::homePath() ).toString();
@@ -246,7 +265,7 @@ void QgsRasterTransparencyWidget::on_pbnExportTransparentPixelValues_clicked()
   }
 }
 
-void QgsRasterTransparencyWidget::on_pbnImportTransparentPixelValues_clicked()
+void QgsRasterTransparencyWidget::pbnImportTransparentPixelValues_clicked()
 {
   int myLineCounter = 0;
   bool myImportError = false;
@@ -344,7 +363,7 @@ void QgsRasterTransparencyWidget::on_pbnImportTransparentPixelValues_clicked()
   emit widgetChanged();
 }
 
-void QgsRasterTransparencyWidget::on_pbnRemoveSelectedRow_clicked()
+void QgsRasterTransparencyWidget::pbnRemoveSelectedRow_clicked()
 {
   if ( 0 < tableTransparency->rowCount() )
   {
@@ -360,6 +379,25 @@ bool QgsRasterTransparencyWidget::rasterIsMultiBandColor()
 
 void QgsRasterTransparencyWidget::apply()
 {
+  //set NoDataValue
+  QgsRasterRangeList myNoDataRangeList;
+  if ( "" != leNoDataValue->text() )
+  {
+    bool myDoubleOk = false;
+    double myNoDataValue = leNoDataValue->text().toDouble( &myDoubleOk );
+    if ( myDoubleOk )
+    {
+      QgsRasterRange myNoDataRange( myNoDataValue, myNoDataValue );
+      myNoDataRangeList << myNoDataRange;
+    }
+  }
+  for ( int bandNo = 1; bandNo <= mRasterLayer->dataProvider()->bandCount(); bandNo++ )
+  {
+    mRasterLayer->dataProvider()->setUserNoDataValue( bandNo, myNoDataRangeList );
+    mRasterLayer->dataProvider()->setUseSourceNoDataValue( bandNo, mSrcNoDataValueCheckBox->isChecked() );
+  }
+
+  //transparency settings
   QgsRasterRenderer *rasterRenderer = mRasterLayer->renderer();
   if ( rasterRenderer )
   {
@@ -586,14 +624,14 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
       case Qgis::Float32:
       case Qgis::Float64:
         lineEdit->setValidator( new QDoubleValidator( nullptr ) );
-        if ( !qIsNaN( value ) )
+        if ( !std::isnan( value ) )
         {
           valueString = QgsRasterBlock::printValue( value );
         }
         break;
       default:
         lineEdit->setValidator( new QIntValidator( nullptr ) );
-        if ( !qIsNaN( value ) )
+        if ( !std::isnan( value ) )
         {
           valueString = QString::number( static_cast<int>( value ) );
         }
@@ -618,8 +656,8 @@ void QgsRasterTransparencyWidget::adjustTransparencyCellWidth( int row, int colu
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, column ) );
   if ( !lineEdit ) return;
 
-  int width = qMax( lineEdit->fontMetrics().width( lineEdit->text() ) + 10, 100 );
-  width = qMax( width, tableTransparency->columnWidth( column ) );
+  int width = std::max( lineEdit->fontMetrics().width( lineEdit->text() ) + 10, 100 );
+  width = std::max( width, tableTransparency->columnWidth( column ) );
 
   lineEdit->setFixedWidth( width );
 }

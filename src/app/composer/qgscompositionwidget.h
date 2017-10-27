@@ -20,7 +20,8 @@
 class QgsComposition;
 class QgsComposerMap;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * Struct to hold map composer paper properties.
  */
 struct QgsCompositionPaper
@@ -31,7 +32,8 @@ struct QgsCompositionPaper
   double mHeight;
 };
 
-/** \ingroup app
+/**
+ * \ingroup app
   * Input widget for QgsComposition
   */
 class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWidgetBase
@@ -39,26 +41,25 @@ class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWid
     Q_OBJECT
   public:
     QgsCompositionWidget( QWidget *parent, QgsComposition *c );
-    ~QgsCompositionWidget();
 
   public slots:
-    void on_mPaperSizeComboBox_currentIndexChanged( const QString &text );
-    void on_mPaperUnitsComboBox_currentIndexChanged( const QString &text );
-    void on_mPaperOrientationComboBox_currentIndexChanged( const QString &text );
-    void on_mPaperWidthDoubleSpinBox_editingFinished();
-    void on_mPaperHeightDoubleSpinBox_editingFinished();
-    void on_mNumPagesSpinBox_valueChanged( int value );
-    void on_mPageStyleButton_clicked();
-    void on_mResizePageButton_clicked();
-    void on_mResolutionSpinBox_valueChanged( const int value );
-    void on_mPrintAsRasterCheckBox_toggled( bool state );
-    void on_mGenerateWorldFileCheckBox_toggled( bool state );
+    void mPaperSizeComboBox_currentIndexChanged( const QString &text );
+    void mPaperUnitsComboBox_currentIndexChanged( const QString &text );
+    void mPaperOrientationComboBox_currentIndexChanged( const QString &text );
+    void mPaperWidthDoubleSpinBox_editingFinished();
+    void mPaperHeightDoubleSpinBox_editingFinished();
+    void mNumPagesSpinBox_valueChanged( int value );
+    void mPageStyleButton_clicked();
+    void mResizePageButton_clicked();
+    void mResolutionSpinBox_valueChanged( int value );
+    void mPrintAsRasterCheckBox_toggled( bool state );
+    void mGenerateWorldFileCheckBox_toggled( bool state );
     void referenceMapChanged( QgsComposerItem * );
 
-    void on_mGridResolutionSpinBox_valueChanged( double d );
-    void on_mOffsetXSpinBox_valueChanged( double d );
-    void on_mOffsetYSpinBox_valueChanged( double d );
-    void on_mSnapToleranceSpinBox_valueChanged( int tolerance );
+    void mGridResolutionSpinBox_valueChanged( double d );
+    void mOffsetXSpinBox_valueChanged( double d );
+    void mOffsetYSpinBox_valueChanged( double d );
+    void mSnapToleranceSpinBox_valueChanged( int tolerance );
 
     //! Sets GUI elements to width/height from composition
     void displayCompositionWidthHeight();

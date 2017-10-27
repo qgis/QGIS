@@ -36,9 +36,6 @@
 
 QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
   : QWidget( parent )
-  , mContext( nullptr )
-  , mEditableScopeIndex( -1 )
-  , mShown( false )
 {
   QVBoxLayout *verticalLayout = new QVBoxLayout( this );
   verticalLayout->setSpacing( 3 );
@@ -61,8 +58,8 @@ QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
   mRemoveButton->setToolTip( tr( "Remove variable" ) );
   horizontalLayout->addWidget( mRemoveButton );
   verticalLayout->addLayout( horizontalLayout );
-  connect( mRemoveButton, &QAbstractButton::clicked, this, &QgsVariableEditorWidget::on_mRemoveButton_clicked );
-  connect( mAddButton, &QAbstractButton::clicked, this, &QgsVariableEditorWidget::on_mAddButton_clicked );
+  connect( mRemoveButton, &QAbstractButton::clicked, this, &QgsVariableEditorWidget::mRemoveButton_clicked );
+  connect( mAddButton, &QAbstractButton::clicked, this, &QgsVariableEditorWidget::mAddButton_clicked );
   connect( mTreeWidget, &QTreeWidget::itemSelectionChanged, this, &QgsVariableEditorWidget::selectionChanged );
   connect( mTreeWidget, &QgsVariableEditorTree::scopeChanged, this, &QgsVariableEditorWidget::scopeChanged );
 
@@ -164,7 +161,7 @@ QString QgsVariableEditorWidget::saveKey() const
   return saveKey;
 }
 
-void QgsVariableEditorWidget::on_mAddButton_clicked()
+void QgsVariableEditorWidget::mAddButton_clicked()
 {
   if ( mEditableScopeIndex < 0 || mEditableScopeIndex >= mContext->scopeCount() )
     return;
@@ -180,7 +177,7 @@ void QgsVariableEditorWidget::on_mAddButton_clicked()
   emit scopeChanged();
 }
 
-void QgsVariableEditorWidget::on_mRemoveButton_clicked()
+void QgsVariableEditorWidget::mRemoveButton_clicked()
 {
   if ( mEditableScopeIndex < 0 || mEditableScopeIndex >= mContext->scopeCount() )
     return;
@@ -252,9 +249,6 @@ void QgsVariableEditorWidget::selectionChanged()
 
 QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
   : QTreeWidget( parent )
-  , mEditorDelegate( nullptr )
-  , mEditableScopeIndex( -1 )
-  , mContext( nullptr )
 {
   // init icons
   if ( mExpandIcon.isNull() )
@@ -273,8 +267,8 @@ QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
   setAlternatingRowColors( true );
   setEditTriggers( QAbstractItemView::AllEditTriggers );
   setRootIsDecorated( false );
-  header()->setMovable( false );
-  header()->setResizeMode( QHeaderView::Interactive );
+  header()->setSectionsMovable( false );
+  header()->setSectionResizeMode( QHeaderView::Interactive );
 
   mEditorDelegate = new VariableEditorDelegate( this, this );
   setItemDelegate( mEditorDelegate );

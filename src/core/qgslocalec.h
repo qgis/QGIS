@@ -24,7 +24,8 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsLocaleNumC
 {

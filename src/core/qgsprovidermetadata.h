@@ -27,7 +27,8 @@
 
 class QgsDataProvider;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Holds data provider key, description, and associated shared library file or function pointer information.
  *
  * Provider metadata refers either to providers which are loaded via libraries or
@@ -61,21 +62,24 @@ class CORE_EXPORT QgsProviderMetadata
      * \since QGIS 3.0
      * \note not available in Python bindings
      */
-    SIP_SKIP QgsProviderMetadata( const QString &key, const QString &description, QgsProviderMetadata::CreateDataProviderFunction createFunc );
+    SIP_SKIP QgsProviderMetadata( const QString &key, const QString &description, const QgsProviderMetadata::CreateDataProviderFunction &createFunc );
 
-    /** This returns the unique key associated with the provider
+    /**
+     * This returns the unique key associated with the provider
 
         This key string is used for the associative container in QgsProviderRegistry
      */
     QString key() const;
 
-    /** This returns descriptive text for the provider
+    /**
+     * This returns descriptive text for the provider
 
         This is used to provide a descriptive list of available data providers.
      */
     QString description() const;
 
-    /** This returns the library file name
+    /**
+     * This returns the library file name
 
         This is used to QLibrary calls to load the data provider.
      */

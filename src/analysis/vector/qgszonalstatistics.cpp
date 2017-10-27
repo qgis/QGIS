@@ -25,8 +25,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterblock.h"
 #include "qgslogger.h"
-
-#include "qmath.h"
+#include "qgsgeos.h"
 
 #include <QFile>
 
@@ -285,7 +284,7 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
       if ( mStatistics & QgsZonalStatistics::Median )
       {
         std::sort( featureStats.values.begin(), featureStats.values.end() );
-        int size =  featureStats.values.count();
+        int size = featureStats.values.count();
         bool even = ( size % 2 ) < 1;
         double medianValue;
         if ( even )
@@ -309,7 +308,7 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
         double variance = sumSquared / featureStats.values.count();
         if ( mStatistics & QgsZonalStatistics::StDev )
         {
-          double stdev = qPow( variance, 0.5 );
+          double stdev = std::pow( variance, 0.5 );
           changeAttributeMap.insert( stdevIndex, QVariant( stdev ) );
         }
         if ( mStatistics & QgsZonalStatistics::Variance )
@@ -396,27 +395,26 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly,
   cellCenterY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
   stats.reset();
 
-  GEOSGeometry *polyGeos = poly.exportToGeos();
+  geos::unique_ptr polyGeos( poly.exportToGeos() );
   if ( !polyGeos )
   {
     return;
   }
 
   GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
-  const GEOSPreparedGeometry *polyGeosPrepared = GEOSPrepare_r( geosctxt, polyGeos );
+  geos::prepared_unique_ptr polyGeosPrepared( GEOSPrepare_r( geosctxt, polyGeos.get() ) );
   if ( !polyGeosPrepared )
   {
-    GEOSGeom_destroy_r( geosctxt, polyGeos );
     return;
   }
 
   GEOSCoordSequence *cellCenterCoords = nullptr;
-  GEOSGeometry *currentCellCenter = nullptr;
+  geos::unique_ptr currentCellCenter;
 
   QgsRectangle featureBBox = poly.boundingBox().intersect( &rasterBBox );
   QgsRectangle intersectBBox = rasterBBox.intersect( &featureBBox );
 
-  QgsRasterBlock *block = mRasterProvider->block( mRasterBand, intersectBBox, nCellsX, nCellsY );
+  std::unique_ptr< QgsRasterBlock > block( mRasterProvider->block( mRasterBand, intersectBBox, nCellsX, nCellsY ) );
   for ( int i = 0; i < nCellsY; ++i )
   {
     cellCenterX = rasterBBox.xMinimum() + pixelOffsetX * cellSizeX + cellSizeX / 2;
@@ -424,12 +422,11 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly,
     {
       if ( validPixel( block->value( i, j ) ) )
       {
-        GEOSGeom_destroy_r( geosctxt, currentCellCenter );
         cellCenterCoords = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
         GEOSCoordSeq_setX_r( geosctxt, cellCenterCoords, 0, cellCenterX );
         GEOSCoordSeq_setY_r( geosctxt, cellCenterCoords, 0, cellCenterY );
-        currentCellCenter = GEOSGeom_createPoint_r( geosctxt, cellCenterCoords );
-        if ( GEOSPreparedContains_r( geosctxt, polyGeosPrepared, currentCellCenter ) )
+        currentCellCenter.reset( GEOSGeom_createPoint_r( geosctxt, cellCenterCoords ) );
+        if ( GEOSPreparedContains_r( geosctxt, polyGeosPrepared.get(), currentCellCenter.get() ) )
         {
           stats.addValue( block->value( i, j ) );
         }
@@ -438,11 +435,6 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly,
     }
     cellCenterY -= cellSizeY;
   }
-
-  GEOSGeom_destroy_r( geosctxt, currentCellCenter );
-  GEOSPreparedGeom_destroy_r( geosctxt, polyGeosPrepared );
-  GEOSGeom_destroy_r( geosctxt, polyGeos );
-  delete block;
 }
 
 void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &poly, int pixelOffsetX,
@@ -497,11 +489,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
 
 bool QgsZonalStatistics::validPixel( float value ) const
 {
-  if ( value == mInputNodataValue || qIsNaN( value ) )
-  {
-    return false;
-  }
-  return true;
+  return !( value == mInputNodataValue || std::isnan( value ) );
 }
 
 QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const QList<QgsField> &newFields )

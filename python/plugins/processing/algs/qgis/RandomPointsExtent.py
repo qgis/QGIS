@@ -65,7 +65,7 @@ class RandomPointsExtent(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_points.png'))
 
     def group(self):
-        return self.tr('Vector creation tools')
+        return self.tr('Vector creation')
 
     def __init__(self):
         super().__init__()
@@ -94,10 +94,10 @@ class RandomPointsExtent(QgisAlgorithm):
         return self.tr('Random points in extent')
 
     def processAlgorithm(self, parameters, context, feedback):
-        bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
         pointCount = self.parameterAsDouble(parameters, self.POINTS_NUMBER, context)
         minDistance = self.parameterAsDouble(parameters, self.MIN_DISTANCE, context)
         crs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
+        bbox = self.parameterAsExtent(parameters, self.EXTENT, context, crs)
 
         extent = QgsGeometry().fromRect(bbox)
 

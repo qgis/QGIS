@@ -23,7 +23,8 @@
 #include "qgscomposeritem.h"
 #include <QGraphicsRectItem>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Item representing a grid. This is drawn separately to the underlying paper item since the grid needs to be
  * drawn above all other composer items, while the paper item is drawn below all others.
  */
@@ -39,7 +40,8 @@ class CORE_EXPORT QgsPaperGrid: public QGraphicsRectItem
     QgsComposition *mComposition = nullptr;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Item representing the paper.*/
 class CORE_EXPORT QgsPaperItem : public QgsComposerItem
 {
@@ -56,13 +58,15 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
     //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
-    /** Stores state in Dom element
+    /**
+     * Stores state in Dom element
        * \param elem is Dom element corresponding to 'Composer' tag
        * \param doc Dom document
        */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
-    /** Sets state from Dom document
+    /**
+     * Sets state from Dom document
      * \param itemElem is Dom node corresponding to item tag
      * \param doc is the Dom document
      */
@@ -78,7 +82,7 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
     void calculatePageMargin();
 
     QgsPaperGrid *mPageGrid = nullptr;
-    double mPageMargin;
+    double mPageMargin = 0;
 };
 
 #endif

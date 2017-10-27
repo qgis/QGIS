@@ -139,3 +139,9 @@ QString QgsAfsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
   }
   return ds.uri();
 }
+
+
+void QgsAfsSourceSelect::addServiceLayer( QString uri, QString typeName )
+{
+  emit addVectorLayer( uri, typeName );
+}

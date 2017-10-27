@@ -18,6 +18,7 @@
 
 #include "qgslocatorwidget.h"
 #include "qgslocator.h"
+#include "qgslocatormodel.h"
 #include "qgsfilterlineedit.h"
 #include "qgsmapcanvas.h"
 #include "qgsapplication.h"
@@ -41,7 +42,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
 #endif
 
   int placeholderMinWidth = mLineEdit->fontMetrics().width( mLineEdit->placeholderText() );
-  int minWidth = qMax( 200, ( int )( placeholderMinWidth * 1.6 ) );
+  int minWidth = std::max( 200, ( int )( placeholderMinWidth * 1.6 ) );
   resize( minWidth, 30 );
   QSizePolicy sizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
   sizePolicy.setHorizontalStretch( 0 );
@@ -99,7 +100,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   mLocator->registerFilter( new QgsLocatorFilterFilter( this, this ) );
 
   mMenu = new QMenu( this );
-  QAction *menuAction = mLineEdit->addAction( QgsApplication::getThemeIcon( "/search.svg" ), QLineEdit::LeadingPosition );
+  QAction *menuAction = mLineEdit->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/search.svg" ) ), QLineEdit::LeadingPosition );
   connect( menuAction, &QAction::triggered, this, [ = ]
   {
     mFocusTimer.stop();
@@ -170,6 +171,11 @@ void QgsLocatorWidget::searchFinished()
     mNextRequestedString.clear();
     mHasQueuedRequest = false;
     updateResults( nextSearch );
+  }
+  else
+  {
+    if ( !mLocator->isRunning() )
+      mLineEdit->setShowSpinner( false );
   }
 }
 
@@ -291,6 +297,7 @@ void QgsLocatorWidget::configMenuAboutToShow()
 
 void QgsLocatorWidget::updateResults( const QString &text )
 {
+  mLineEdit->setShowSpinner( true );
   if ( mLocator->isRunning() )
   {
     // can't do anything while a query is running, and can't block
@@ -345,179 +352,6 @@ QgsLocatorContext QgsLocatorWidget::createContext()
 ///@cond PRIVATE
 
 //
-// QgsLocatorModel
-//
-
-QgsLocatorModel::QgsLocatorModel( QObject *parent )
-  : QAbstractTableModel( parent )
-{
-  mDeferredClearTimer.setInterval( 100 );
-  mDeferredClearTimer.setSingleShot( true );
-  connect( &mDeferredClearTimer, &QTimer::timeout, this, &QgsLocatorModel::clear );
-}
-
-void QgsLocatorModel::clear()
-{
-  mDeferredClearTimer.stop();
-  mDeferredClear = false;
-
-  beginResetModel();
-  mResults.clear();
-  mFoundResultsFromFilterNames.clear();
-  endResetModel();
-}
-
-void QgsLocatorModel::deferredClear()
-{
-  mDeferredClear = true;
-  mDeferredClearTimer.start();
-}
-
-int QgsLocatorModel::rowCount( const QModelIndex & ) const
-{
-  return mResults.size();
-}
-
-int QgsLocatorModel::columnCount( const QModelIndex & ) const
-{
-  return 2;
-}
-
-QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
-{
-  if ( !index.isValid() || index.row() < 0 || index.column() < 0 ||
-       index.row() >= rowCount( QModelIndex() ) || index.column() >= columnCount( QModelIndex() ) )
-    return QVariant();
-
-  switch ( role )
-  {
-    case Qt::DisplayRole:
-    case Qt::EditRole:
-    {
-      switch ( index.column() )
-      {
-        case Name:
-          if ( !mResults.at( index.row() ).filter )
-            return mResults.at( index.row() ).result.displayString;
-          else
-            return mResults.at( index.row() ).filterTitle;
-        case Description:
-          if ( !mResults.at( index.row() ).filter )
-            return mResults.at( index.row() ).result.description;
-          else
-            return QVariant();
-      }
-      break;
-    }
-
-    case Qt::DecorationRole:
-      switch ( index.column() )
-      {
-        case Name:
-          if ( !mResults.at( index.row() ).filter )
-          {
-            QIcon icon = mResults.at( index.row() ).result.icon;
-            if ( !icon.isNull() )
-              return icon;
-            return QgsApplication::getThemeIcon( "/search.svg" );
-          }
-          else
-            return QVariant();
-        case Description:
-          return QVariant();
-      }
-      break;
-
-    case ResultDataRole:
-      if ( !mResults.at( index.row() ).filter )
-        return QVariant::fromValue( mResults.at( index.row() ).result );
-      else
-        return QVariant();
-
-    case ResultTypeRole:
-      if ( mResults.at( index.row() ).filter )
-        return 0;
-      else
-        return 1;
-
-    case ResultScoreRole:
-      if ( mResults.at( index.row() ).filter )
-        return 0;
-      else
-        return ( mResults.at( index.row() ).result.score );
-
-    case ResultFilterPriorityRole:
-      if ( !mResults.at( index.row() ).filter )
-        return mResults.at( index.row() ).result.filter->priority();
-      else
-        return mResults.at( index.row() ).filter->priority();
-
-    case ResultFilterNameRole:
-      if ( !mResults.at( index.row() ).filter )
-        return mResults.at( index.row() ).result.filter->displayName();
-      else
-        return mResults.at( index.row() ).filterTitle;
-  }
-
-  return QVariant();
-}
-
-Qt::ItemFlags QgsLocatorModel::flags( const QModelIndex &index ) const
-{
-  if ( !index.isValid() || index.row() < 0 || index.column() < 0 ||
-       index.row() >= rowCount( QModelIndex() ) || index.column() >= columnCount( QModelIndex() ) )
-    return QAbstractTableModel::flags( index );
-
-  Qt::ItemFlags flags = QAbstractTableModel::flags( index );
-  if ( !mResults.at( index.row() ).filterTitle.isEmpty() )
-  {
-    flags = flags & ~( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
-  }
-  return flags;
-}
-
-void QgsLocatorModel::addResult( const QgsLocatorResult &result )
-{
-  mDeferredClearTimer.stop();
-  if ( mDeferredClear )
-  {
-    mFoundResultsFromFilterNames.clear();
-  }
-
-  int pos = mResults.size();
-  bool addingFilter = !result.filter->displayName().isEmpty() && !mFoundResultsFromFilterNames.contains( result.filter->name() );
-  if ( addingFilter )
-    mFoundResultsFromFilterNames << result.filter->name();
-
-  if ( mDeferredClear )
-  {
-    beginResetModel();
-    mResults.clear();
-  }
-  else
-    beginInsertRows( QModelIndex(), pos, pos + ( addingFilter ? 1 : 0 ) );
-
-  if ( addingFilter )
-  {
-    Entry entry;
-    entry.filterTitle = result.filter->displayName();
-    entry.filter = result.filter;
-    mResults << entry;
-  }
-  Entry entry;
-  entry.result = result;
-  mResults << entry;
-
-  if ( mDeferredClear )
-    endResetModel();
-  else
-    endInsertRows();
-
-  mDeferredClear = false;
-}
-
-
-//
 // QgsLocatorResultsView
 //
 
@@ -536,7 +370,7 @@ void QgsLocatorResultsView::recalculateSize()
   int rowSize = 20 * itemDelegate()->sizeHint( viewOptions(), model()->index( 0, 0 ) ).height();
 
   // try to take up a sensible portion of window width (about half)
-  int width = qMax( 300, window()->size().width() / 2 );
+  int width = std::max( 300, window()->size().width() / 2 );
   QSize newSize( width, rowSize + frameWidth() * 2 );
   // resize the floating widget this is contained within
   parentWidget()->resize( newSize );
@@ -560,53 +394,6 @@ void QgsLocatorResultsView::selectPreviousResult()
     previousRow = model()->rowCount( QModelIndex() ) - 1;
   setCurrentIndex( model()->index( previousRow, 0 ) );
 }
-
-
-//
-// QgsLocatorProxyModel
-//
-
-QgsLocatorProxyModel::QgsLocatorProxyModel( QObject *parent )
-  : QSortFilterProxyModel( parent )
-{
-  setDynamicSortFilter( true );
-  setSortLocaleAware( true );
-  setFilterCaseSensitivity( Qt::CaseInsensitive );
-  sort( 0 );
-}
-
-bool QgsLocatorProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
-{
-  // first go by filter priority
-  int leftFilterPriority = sourceModel()->data( left, QgsLocatorModel::ResultFilterPriorityRole ).toInt();
-  int rightFilterPriority  = sourceModel()->data( right, QgsLocatorModel::ResultFilterPriorityRole ).toInt();
-  if ( leftFilterPriority != rightFilterPriority )
-    return leftFilterPriority < rightFilterPriority;
-
-  // then filter name
-  QString leftFilter = sourceModel()->data( left, QgsLocatorModel::ResultFilterNameRole ).toString();
-  QString rightFilter = sourceModel()->data( right, QgsLocatorModel::ResultFilterNameRole ).toString();
-  if ( leftFilter != rightFilter )
-    return QString::localeAwareCompare( leftFilter, rightFilter ) < 0;
-
-  // then make sure filter title appears before filter's results
-  int leftTypeRole = sourceModel()->data( left, QgsLocatorModel::ResultTypeRole ).toInt();
-  int rightTypeRole = sourceModel()->data( right, QgsLocatorModel::ResultTypeRole ).toInt();
-  if ( leftTypeRole != rightTypeRole )
-    return leftTypeRole < rightTypeRole;
-
-  // sort filter's results by score
-  double leftScore = sourceModel()->data( left, QgsLocatorModel::ResultScoreRole ).toDouble();
-  double rightScore = sourceModel()->data( right, QgsLocatorModel::ResultScoreRole ).toDouble();
-  if ( !qgsDoubleNear( leftScore, rightScore ) )
-    return leftScore > rightScore;
-
-  // lastly sort filter's results by string
-  leftFilter = sourceModel()->data( left, Qt::DisplayRole ).toString();
-  rightFilter = sourceModel()->data( right, Qt::DisplayRole ).toString();
-  return QString::localeAwareCompare( leftFilter, rightFilter ) < 0;
-}
-
 
 //
 // QgsLocatorFilterFilter
@@ -640,7 +427,7 @@ void QgsLocatorFilterFilter::fetchResults( const QString &string, const QgsLocat
     result.displayString = fIt.key();
     result.description = fIt.value()->displayName();
     result.userData = fIt.key() + ' ';
-    result.icon = QgsApplication::getThemeIcon( "/search.svg" );
+    result.icon = QgsApplication::getThemeIcon( QStringLiteral( "/search.svg" ) );
     emit resultFetched( result );
   }
 }

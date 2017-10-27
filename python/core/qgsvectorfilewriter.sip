@@ -224,9 +224,9 @@ Constructor
         const QString &fileName,
         const QString &fileEncoding,
         const QgsCoordinateReferenceSystem &destCRS = QgsCoordinateReferenceSystem(),
-        const QString &driverName = "ESRI Shapefile",
+        const QString &driverName = "GPKG",
         bool onlySelected = false,
-        QString *errorMessage = 0,
+        QString *errorMessage /Out/ = 0,
         const QStringList &datasourceOptions = QStringList(),
         const QStringList &layerOptions = QStringList(),
         bool skipAttributeCreation = false,
@@ -269,9 +269,9 @@ Constructor
         const QString &fileName,
         const QString &fileEncoding,
         const QgsCoordinateTransform &ct,
-        const QString &driverName = "ESRI Shapefile",
+        const QString &driverName = "GPKG",
         bool onlySelected = false,
-        QString *errorMessage = 0,
+        QString *errorMessage /Out/ = 0,
         const QStringList &datasourceOptions = QStringList(),
         const QStringList &layerOptions = QStringList(),
         bool skipAttributeCreation = false,
@@ -431,7 +431,7 @@ Optional feedback object allowing cancelation of layer save
         const QString &fileName,
         const QgsVectorFileWriter::SaveVectorOptions &options,
         QString *newFilename = 0,
-        QString *errorMessage = 0 );
+        QString *errorMessage /Out/ = 0 );
 %Docstring
  Writes a layer out to a vector file.
  \param layer source layer to write
@@ -448,7 +448,7 @@ Optional feedback object allowing cancelation of layer save
                          const QgsFields &fields,
                          QgsWkbTypes::Type geometryType,
                          const QgsCoordinateReferenceSystem &srs = QgsCoordinateReferenceSystem(),
-                         const QString &driverName = "ESRI Shapefile",
+                         const QString &driverName = "GPKG",
                          const QStringList &datasourceOptions = QStringList(),
                          const QStringList &layerOptions = QStringList(),
                          QString *newFilename = 0,

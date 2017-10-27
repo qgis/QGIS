@@ -30,6 +30,37 @@
 QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
+  connect( mOutputLayerPushButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mOutputLayerPushButton_clicked );
+  connect( mRasterBandsListWidget, &QListWidget::itemDoubleClicked, this, &QgsRasterCalcDialog::mRasterBandsListWidget_itemDoubleClicked );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsRasterCalcDialog::mButtonBox_accepted );
+  connect( mCurrentLayerExtentButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mCurrentLayerExtentButton_clicked );
+  connect( mExpressionTextEdit, &QTextEdit::textChanged, this, &QgsRasterCalcDialog::mExpressionTextEdit_textChanged );
+  connect( mOutputLayerLineEdit, &QLineEdit::textChanged, this, &QgsRasterCalcDialog::mOutputLayerLineEdit_textChanged );
+  connect( mPlusPushButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mPlusPushButton_clicked );
+  connect( mMinusPushButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mMinusPushButton_clicked );
+  connect( mMultiplyPushButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mMultiplyPushButton_clicked );
+  connect( mDividePushButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mDividePushButton_clicked );
+  connect( mSqrtButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mSqrtButton_clicked );
+  connect( mCosButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mCosButton_clicked );
+  connect( mSinButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mSinButton_clicked );
+  connect( mASinButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mASinButton_clicked );
+  connect( mExpButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mExpButton_clicked );
+  connect( mLnButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mLnButton_clicked );
+  connect( mLogButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mLogButton_clicked );
+  connect( mNotEqualButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mNotEqualButton_clicked );
+  connect( mTanButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mTanButton_clicked );
+  connect( mACosButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mACosButton_clicked );
+  connect( mATanButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mATanButton_clicked );
+  connect( mOpenBracketPushButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mOpenBracketPushButton_clicked );
+  connect( mCloseBracketPushButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mCloseBracketPushButton_clicked );
+  connect( mLessButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mLessButton_clicked );
+  connect( mGreaterButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mGreaterButton_clicked );
+  connect( mEqualButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mEqualButton_clicked );
+  connect( mLesserEqualButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mLesserEqualButton_clicked );
+  connect( mGreaterEqualButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mGreaterEqualButton_clicked );
+  connect( mAndButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mAndButton_clicked );
+  connect( mOrButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mOrButton_clicked );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsRasterCalcDialog::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/RasterCalc/geometry" ) ).toByteArray() );
@@ -216,7 +247,7 @@ int QgsRasterCalcDialog::numberOfRows() const
 
 //slots
 
-void QgsRasterCalcDialog::on_mButtonBox_accepted()
+void QgsRasterCalcDialog::mButtonBox_accepted()
 {
   //save last output format
   QgsSettings s;
@@ -224,7 +255,12 @@ void QgsRasterCalcDialog::on_mButtonBox_accepted()
   s.setValue( QStringLiteral( "/RasterCalculator/lastOutputDir" ), QVariant( QFileInfo( mOutputLayerLineEdit->text() ).absolutePath() ) );
 }
 
-void QgsRasterCalcDialog::on_mOutputLayerPushButton_clicked()
+void QgsRasterCalcDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_analysis.html#raster-calculator" ) );
+}
+
+void QgsRasterCalcDialog::mOutputLayerPushButton_clicked()
 {
   QgsSettings s;
   QString saveFileName = QFileDialog::getSaveFileName( nullptr, tr( "Enter result file" ), s.value( QStringLiteral( "/RasterCalculator/lastOutputDir" ), QDir::homePath() ).toString() );
@@ -234,7 +270,7 @@ void QgsRasterCalcDialog::on_mOutputLayerPushButton_clicked()
   }
 }
 
-void QgsRasterCalcDialog::on_mCurrentLayerExtentButton_clicked()
+void QgsRasterCalcDialog::mCurrentLayerExtentButton_clicked()
 {
   QListWidgetItem *currentLayerItem = mRasterBandsListWidget->currentItem();
   if ( currentLayerItem )
@@ -265,7 +301,7 @@ void QgsRasterCalcDialog::on_mCurrentLayerExtentButton_clicked()
   }
 }
 
-void QgsRasterCalcDialog::on_mExpressionTextEdit_textChanged()
+void QgsRasterCalcDialog::mExpressionTextEdit_textChanged()
 {
   if ( expressionValid() )
   {
@@ -283,7 +319,7 @@ void QgsRasterCalcDialog::on_mExpressionTextEdit_textChanged()
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
 
-void QgsRasterCalcDialog::on_mOutputLayerLineEdit_textChanged( const QString &text )
+void QgsRasterCalcDialog::mOutputLayerLineEdit_textChanged( const QString &text )
 {
   Q_UNUSED( text );
   setAcceptButtonState();
@@ -323,127 +359,127 @@ bool QgsRasterCalcDialog::filePathValid() const
   return QFileInfo( outputPath ).isWritable();
 }
 
-void QgsRasterCalcDialog::on_mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem *item )
+void QgsRasterCalcDialog::mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem *item )
 {
   mExpressionTextEdit->insertPlainText( quoteBandEntry( item->text() ) );
 }
 
-void QgsRasterCalcDialog::on_mPlusPushButton_clicked()
+void QgsRasterCalcDialog::mPlusPushButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " + " ) );
 }
 
-void QgsRasterCalcDialog::on_mMinusPushButton_clicked()
+void QgsRasterCalcDialog::mMinusPushButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " - " ) );
 }
 
-void QgsRasterCalcDialog::on_mMultiplyPushButton_clicked()
+void QgsRasterCalcDialog::mMultiplyPushButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " * " ) );
 }
 
-void QgsRasterCalcDialog::on_mDividePushButton_clicked()
+void QgsRasterCalcDialog::mDividePushButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " / " ) );
 }
 
-void QgsRasterCalcDialog::on_mSqrtButton_clicked()
+void QgsRasterCalcDialog::mSqrtButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " sqrt ( " ) );
+  mExpressionTextEdit->insertPlainText( QStringLiteral( " std::sqrt ( " ) );
 }
 
-void QgsRasterCalcDialog::on_mCosButton_clicked()
+void QgsRasterCalcDialog::mCosButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( QStringLiteral( " cos ( " ) );
+  mExpressionTextEdit->insertPlainText( QStringLiteral( " std::cos ( " ) );
 }
 
-void QgsRasterCalcDialog::on_mSinButton_clicked()
+void QgsRasterCalcDialog::mSinButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " sin ( " ) );
 }
 
-void QgsRasterCalcDialog::on_mASinButton_clicked()
+void QgsRasterCalcDialog::mASinButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " asin ( " ) );
 }
 
-void QgsRasterCalcDialog::on_mExpButton_clicked()
+void QgsRasterCalcDialog::mExpButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " ^ " ) );
 }
 
-void QgsRasterCalcDialog::on_mTanButton_clicked()
+void QgsRasterCalcDialog::mTanButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " tan ( " ) );
 }
 
-void QgsRasterCalcDialog::on_mACosButton_clicked()
+void QgsRasterCalcDialog::mACosButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " acos ( " ) );
 }
 
-void QgsRasterCalcDialog::on_mATanButton_clicked()
+void QgsRasterCalcDialog::mATanButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " atan ( " ) );
 }
 
-void QgsRasterCalcDialog::on_mLnButton_clicked()
+void QgsRasterCalcDialog::mLnButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " ln ( " ) );
 }
 
-void QgsRasterCalcDialog::on_mLogButton_clicked()
+void QgsRasterCalcDialog::mLogButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " log10 ( " ) );
 }
 
-void QgsRasterCalcDialog::on_mNotEqualButton_clicked()
+void QgsRasterCalcDialog::mNotEqualButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " != " ) );
 }
 
-void QgsRasterCalcDialog::on_mOpenBracketPushButton_clicked()
+void QgsRasterCalcDialog::mOpenBracketPushButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " ( " ) );
 }
 
-void QgsRasterCalcDialog::on_mCloseBracketPushButton_clicked()
+void QgsRasterCalcDialog::mCloseBracketPushButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " ) " ) );
 }
 
-void QgsRasterCalcDialog::on_mLessButton_clicked()
+void QgsRasterCalcDialog::mLessButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " < " ) );
 }
 
-void QgsRasterCalcDialog::on_mGreaterButton_clicked()
+void QgsRasterCalcDialog::mGreaterButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " > " ) );
 }
 
-void QgsRasterCalcDialog::on_mEqualButton_clicked()
+void QgsRasterCalcDialog::mEqualButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " = " ) );
 }
 
-void QgsRasterCalcDialog::on_mLesserEqualButton_clicked()
+void QgsRasterCalcDialog::mLesserEqualButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " <= " ) );
 }
 
-void QgsRasterCalcDialog::on_mGreaterEqualButton_clicked()
+void QgsRasterCalcDialog::mGreaterEqualButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " >= " ) );
 }
 
-void QgsRasterCalcDialog::on_mAndButton_clicked()
+void QgsRasterCalcDialog::mAndButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " AND " ) );
 }
 
-void QgsRasterCalcDialog::on_mOrButton_clicked()
+void QgsRasterCalcDialog::mOrButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( QStringLiteral( " OR " ) );
 }

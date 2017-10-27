@@ -24,7 +24,8 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsNewVectorLayerDialog
  */
 class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVectorLayerDialogBase
@@ -63,12 +64,14 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
-  protected slots:
-    void on_mAddAttributeButton_clicked();
-    void on_mRemoveAttributeButton_clicked();
-    void on_mFileFormatComboBox_currentIndexChanged( int index );
-    void on_mTypeBox_currentIndexChanged( int index );
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-a-new-shapefile-layer" ) ); }
+  private slots:
+    void mAddAttributeButton_clicked();
+    void mRemoveAttributeButton_clicked();
+    void mFileFormatComboBox_currentIndexChanged( int index );
+    void mTypeBox_currentIndexChanged( int index );
+
+    //! Open the associated help
+    void showHelp();
     void nameChanged( const QString & );
     void selectionChanged();
 

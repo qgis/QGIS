@@ -52,9 +52,9 @@ QWidget *FieldSelectorDelegate::createEditor( QWidget *parent, const QStyleOptio
   if ( !vl )
     return nullptr;
 
-
   QgsFieldComboBox *w = new QgsFieldComboBox( parent );
   w->setLayer( vl );
+  w->setAllowEmptyFieldName( true );
   return w;
 }
 
@@ -79,7 +79,7 @@ void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &i
 
 void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  QgsVectorLayerAndAttributeModel *m = dynamic_cast< QgsVectorLayerAndAttributeModel *>( model );
+  QgsVectorLayerAndAttributeModel *m = qobject_cast< QgsVectorLayerAndAttributeModel *>( model );
   if ( !m )
     return;
 
@@ -96,10 +96,6 @@ void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *m
 
 QgsVectorLayerAndAttributeModel::QgsVectorLayerAndAttributeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
-{
-}
-
-QgsVectorLayerAndAttributeModel::~QgsVectorLayerAndAttributeModel()
 {
 }
 
@@ -426,6 +422,9 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
 {
   setupUi( this );
+  connect( mFileSelectionButton, &QToolButton::clicked, this, &QgsDxfExportDialog::mFileSelectionButton_clicked );
+  connect( mVisibilityPresets, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDxfExportDialog::mVisibilityPresets_currentIndexChanged );
+  connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsDxfExportDialog::mCrsSelector_crsChanged );
 
   mLayerTreeGroup = QgsProject::instance()->layerTreeRoot()->clone();
   cleanGroup( mLayerTreeGroup );
@@ -444,6 +443,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   connect( this, &QDialog::accepted, this, &QgsDxfExportDialog::saveSettings );
   connect( mSelectAllButton, &QAbstractButton::clicked, this, &QgsDxfExportDialog::selectAll );
   connect( mDeselectAllButton, &QAbstractButton::clicked, this, &QgsDxfExportDialog::deSelectAll );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDxfExportDialog::showHelp );
 
   mFileLineEdit->setFocus();
 
@@ -488,10 +488,10 @@ QgsDxfExportDialog::~QgsDxfExportDialog()
   QgsSettings().setValue( QStringLiteral( "/Windows/DxfExport/geometry" ), saveGeometry() );
 }
 
-void QgsDxfExportDialog::on_mVisibilityPresets_currentIndexChanged( int index )
+void QgsDxfExportDialog::mVisibilityPresets_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
-  QgsVectorLayerAndAttributeModel *model = dynamic_cast< QgsVectorLayerAndAttributeModel * >( mTreeView->model() );
+  QgsVectorLayerAndAttributeModel *model = qobject_cast< QgsVectorLayerAndAttributeModel * >( mTreeView->model() );
   Q_ASSERT( model );
   model->applyVisibilityPreset( mVisibilityPresets->currentText() );
 }
@@ -524,14 +524,14 @@ void QgsDxfExportDialog::cleanGroup( QgsLayerTreeNode *node )
 
 void QgsDxfExportDialog::selectAll()
 {
-  QgsVectorLayerAndAttributeModel *model = dynamic_cast< QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
+  QgsVectorLayerAndAttributeModel *model = qobject_cast< QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
   Q_ASSERT( model );
   model->selectAll();
 }
 
 void QgsDxfExportDialog::deSelectAll()
 {
-  QgsVectorLayerAndAttributeModel *model = dynamic_cast< QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
+  QgsVectorLayerAndAttributeModel *model = qobject_cast< QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
   Q_ASSERT( model );
   model->deSelectAll();
 }
@@ -567,7 +567,7 @@ QgsDxfExport::SymbologyExport QgsDxfExportDialog::symbologyMode() const
 }
 
 
-void QgsDxfExportDialog::on_mFileSelectionButton_clicked()
+void QgsDxfExportDialog::mFileSelectionButton_clicked()
 {
   //get last dxf save directory
   QgsSettings s;
@@ -606,6 +606,11 @@ bool QgsDxfExportDialog::layerTitleAsName() const
   return mLayerTitleAsName->isChecked();
 }
 
+bool QgsDxfExportDialog::force2d() const
+{
+  return mForce2d->isChecked();
+}
+
 void QgsDxfExportDialog::saveSettings()
 {
   QgsSettings s;
@@ -633,7 +638,7 @@ QString QgsDxfExportDialog::encoding() const
   return mEncoding->currentText();
 }
 
-void QgsDxfExportDialog::on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
+void QgsDxfExportDialog::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
   mCRS = crs;
 }
@@ -646,4 +651,8 @@ QgsCoordinateReferenceSystem QgsDxfExportDialog::crs() const
 QString QgsDxfExportDialog::mapTheme() const
 {
   return mVisibilityPresets->currentText();
+}
+void QgsDxfExportDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#create-dxf-files" ) );
 }

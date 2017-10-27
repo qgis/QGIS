@@ -16,9 +16,9 @@
  ***************************************************************************/
 
 // QGIS Specific includes
-#include <qgsmaplayer.h>
-#include <qgsapplication.h>
-#include <qgisinterface.h>
+#include "qgsmaplayer.h"
+#include "qgsapplication.h"
+#include "qgisinterface.h"
 #include "qgsguiutils.h"
 
 // Qt4 Related Includes
@@ -51,13 +51,8 @@ static const QString sPluginIcon = QStringLiteral( ":/topology/mActionTopologyCh
 Topol::Topol( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
   , mQGisIface( qgisInterface )
-  , mQActionPointer( nullptr )
 {
   mDock = nullptr;
-}
-
-Topol::~Topol()
-{
 }
 
 /*

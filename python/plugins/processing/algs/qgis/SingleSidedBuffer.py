@@ -43,7 +43,7 @@ class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
     MITER_LIMIT = 'MITER_LIMIT'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -60,7 +60,8 @@ class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
 
     def initParameters(self, config=None):
         self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
-                                                       self.tr('Distance'), defaultValue=10.0))
+                                                       self.tr('Distance'), QgsProcessingParameterNumber.Double,
+                                                       defaultValue=10.0))
         self.addParameter(QgsProcessingParameterEnum(
             self.SIDE,
             self.tr('Side'),
@@ -75,7 +76,8 @@ class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
             self.tr('Join style'),
             options=self.join_styles))
         self.addParameter(QgsProcessingParameterNumber(self.MITER_LIMIT,
-                                                       self.tr('Miter limit'), minValue=1, defaultValue=2))
+                                                       self.tr('Miter limit'), QgsProcessingParameterNumber.Double,
+                                                       minValue=1, defaultValue=2))
 
     def name(self):
         return 'singlesidedbuffer'
@@ -84,7 +86,10 @@ class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
         return self.tr('Single sided buffer')
 
     def outputName(self):
-        return self.tr('Buffers')
+        return self.tr('Buffer')
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine]
 
     def outputType(self):
         return QgsProcessing.TypeVectorPolygon

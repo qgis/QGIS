@@ -23,7 +23,8 @@
 
 class QgsComposerPicture;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * A widget for adding an image to a map composition.
  */
 class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerPictureWidgetBase
@@ -32,22 +33,21 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
 
   public:
     explicit QgsComposerPictureWidget( QgsComposerPicture *picture );
-    ~QgsComposerPictureWidget();
 
     //! Add the icons of the standard directories to the preview
     void addStandardDirectoriesToPreview();
 
   public slots:
-    void on_mPictureBrowseButton_clicked();
-    void on_mPictureLineEdit_editingFinished();
-    void on_mPictureRotationSpinBox_valueChanged( double d );
-    void on_mPreviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
-    void on_mAddDirectoryButton_clicked();
-    void on_mRemoveDirectoryButton_clicked();
-    void on_mRotationFromComposerMapCheckBox_stateChanged( int state );
+    void mPictureBrowseButton_clicked();
+    void mPictureLineEdit_editingFinished();
+    void mPictureRotationSpinBox_valueChanged( double d );
+    void mPreviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
+    void mAddDirectoryButton_clicked();
+    void mRemoveDirectoryButton_clicked();
+    void mRotationFromComposerMapCheckBox_stateChanged( int state );
     void composerMapChanged( QgsComposerItem *item );
-    void on_mResizeModeComboBox_currentIndexChanged( int index );
-    void on_mAnchorPointComboBox_currentIndexChanged( int index );
+    void mResizeModeComboBox_currentIndexChanged( int index );
+    void mAnchorPointComboBox_currentIndexChanged( int index );
 
   protected:
     void resizeEvent( QResizeEvent *event ) override;
@@ -63,15 +63,16 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     //! Sets the picture rotation GUI control value
     void setPicRotationSpinValue( double r );
 
-    /** Load SVG and pixel-based image previews
+    /**
+     * Load SVG and pixel-based image previews
      * \param collapsed Whether the parent group box is collapsed */
     void loadPicturePreviews( bool collapsed );
 
-    void on_mFillColorButton_colorChanged( const QColor &color );
-    void on_mStrokeColorButton_colorChanged( const QColor &color );
-    void on_mStrokeWidthSpinBox_valueChanged( double d );
-    void on_mPictureRotationOffsetSpinBox_valueChanged( double d );
-    void on_mNorthTypeComboBox_currentIndexChanged( int index );
+    void mFillColorButton_colorChanged( const QColor &color );
+    void mStrokeColorButton_colorChanged( const QColor &color );
+    void mStrokeWidthSpinBox_valueChanged( double d );
+    void mPictureRotationOffsetSpinBox_valueChanged( double d );
+    void mNorthTypeComboBox_currentIndexChanged( int index );
 
   private:
     QgsComposerPicture *mPicture = nullptr;

@@ -26,7 +26,8 @@ class QgsRasterRange;
 
 typedef QList<QgsRasterRange> QgsRasterRangeList;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Raster values range container. Represents range of values between min and max
  * including min and max value.
  */
@@ -34,11 +35,13 @@ class CORE_EXPORT QgsRasterRange
 {
   public:
 
-    /** \brief Constructor.
+    /**
+     * \brief Constructor.
      */
     QgsRasterRange();
 
-    /** \brief Constructor
+    /**
+     * \brief Constructor
      *  \param min minimum value
      *  \param max max value
      */
@@ -55,7 +58,8 @@ class CORE_EXPORT QgsRasterRange
       return qgsDoubleNear( mMin, o.mMin ) && qgsDoubleNear( mMax, o.mMax );
     }
 
-    /** \brief Test if value is within the list of ranges
+    /**
+     * \brief Test if value is within the list of ranges
      *  \param value value
      *  \param rangeList list of ranges
      *  \returns true if value is in at least one of ranges

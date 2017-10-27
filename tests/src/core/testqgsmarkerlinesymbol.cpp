@@ -36,7 +36,8 @@
 //qgis unit test includes
 #include <qgsrenderchecker.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the Marker Line symbol
  */
 class TestQgsMarkerLineSymbol : public QObject
@@ -44,8 +45,6 @@ class TestQgsMarkerLineSymbol : public QObject
     Q_OBJECT
   public:
     TestQgsMarkerLineSymbol()
-      : mLinesLayer( 0 )
-      , mMapSettings( 0 )
     {
       mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
     }
@@ -102,10 +101,7 @@ void TestQgsMarkerLineSymbol::initTestCase()
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
 
-TestQgsMarkerLineSymbol::~TestQgsMarkerLineSymbol()
-{
-
-}
+TestQgsMarkerLineSymbol::~TestQgsMarkerLineSymbol() = default;
 
 //runs after all tests
 void TestQgsMarkerLineSymbol::cleanupTestCase()

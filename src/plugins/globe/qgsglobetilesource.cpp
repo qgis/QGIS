@@ -18,10 +18,11 @@
 #include <osgEarth/Registry>
 #include <osgEarth/ImageUtils>
 
-#include "qgscoordinatereferencesystem.h"
+#include "qgscrscache.h"
 #include "qgsglobetilesource.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsmaprendererparalleljob.h"
 
@@ -73,7 +74,7 @@ QgsGlobeTileImage::QgsGlobeTileImage( QgsGlobeTileSource *tileSource, const QgsR
 #else
   QImage qImage( mTileData, mTileSize, mTileSize, QImage::Format_ARGB32_Premultiplied );
   QPainter painter( &qImage );
-  QgsMapRendererCustomPainterJob job( createSettings( qImage.logicalDpiX(), mTileSource->mLayerSet ), &painter );
+  QgsMapRendererCustomPainterJob job( createSettings( qImage.logicalDpiX(), mTileSource->mLayers ), &painter );
   job.renderSynchronously();
 
   setImage( mTileSize, mTileSize, 1, 4, // width, height, depth, internal_format
@@ -94,18 +95,16 @@ QgsGlobeTileImage::~QgsGlobeTileImage()
 #endif
 }
 
-QgsMapSettings QgsGlobeTileImage::createSettings( int dpi, const QStringList &layerSet ) const
+QgsMapSettings QgsGlobeTileImage::createSettings( int dpi, const QList<QgsMapLayer *> &layers ) const
 {
   QgsMapSettings settings;
   settings.setBackgroundColor( QColor( Qt::transparent ) );
   settings.setDestinationCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID ) );
-  settings.setCrsTransformEnabled( true );
   settings.setExtent( mTileExtent );
-  settings.setLayers( layerSet );
+  settings.setLayers( layers );
   settings.setFlag( QgsMapSettings::DrawEditingInfo, false );
   settings.setFlag( QgsMapSettings::DrawLabeling, false );
   settings.setFlag( QgsMapSettings::DrawSelection, false );
-  settings.setMapUnits( QgsUnitTypes::DistanceDegrees );
   settings.setOutputSize( QSize( mTileSize, mTileSize ) );
   settings.setOutputImageFormat( QImage::Format_ARGB32_Premultiplied );
   settings.setOutputDpi( dpi );
@@ -179,6 +178,14 @@ void QgsGlobeTileUpdateManager::removeTile( QgsGlobeTileImage *tile )
   }
 }
 
+void QgsGlobeTileUpdateManager::waitForFinished() const
+{
+  if ( mRenderer )
+  {
+    mRenderer->waitForFinished();
+  }
+}
+
 void QgsGlobeTileUpdateManager::start()
 {
   if ( mRenderer == 0 && !mTileQueue.isEmpty() )
@@ -187,7 +194,7 @@ void QgsGlobeTileUpdateManager::start()
 #ifdef GLOBE_SHOW_TILE_STATS
     QgsGlobeTileStatistics::instance()->updateQueueTileCount( mTileQueue.size() );
 #endif
-    mRenderer = new QgsMapRendererParallelJob( mCurrentTile->createSettings( mCurrentTile->dpi(), mLayerSet ) );
+    mRenderer = new QgsMapRendererParallelJob( mCurrentTile->createSettings( mCurrentTile->dpi(), mLayers ) );
     connect( mRenderer, SIGNAL( finished() ), this, SLOT( renderingFinished() ) );
     mRenderer->start();
   }
@@ -214,20 +221,31 @@ void QgsGlobeTileUpdateManager::renderingFinished()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsGlobeTileSource::QgsGlobeTileSource( const osgEarth::TileSourceOptions &options )
+QgsGlobeTileSource::QgsGlobeTileSource( QgsMapCanvas *canvas, const osgEarth::TileSourceOptions &options )
   : TileSource( options )
+  , mCanvas( canvas )
 {
   osgEarth::GeoExtent geoextent( osgEarth::SpatialReference::get( "wgs84" ), -180., -90., 180., 90. );
   osgEarth::DataExtentList extents;
   extents.push_back( geoextent );
   getDataExtents() = extents;
+#if OSGEARTH_VERSION_LESS_THAN(2, 9, 0)
   dirtyDataExtents();
+#endif
 }
 
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL(2, 8, 0)
+osgEarth::Status QgsGlobeTileSource::initialize( const osgDB::Options * /*dbOptions*/ )
+#else
 osgEarth::TileSource::Status QgsGlobeTileSource::initialize( const osgDB::Options * /*dbOptions*/ )
+#endif
 {
   setProfile( osgEarth::Registry::instance()->getGlobalGeodeticProfile() );
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL(2, 8, 0)
+  return osgEarth::Status( osgEarth::Status::NoError );
+#else
   return STATUS_OK;
+#endif
 }
 
 osg::Image *QgsGlobeTileSource::createImage( const osgEarth::TileKey &key, osgEarth::ProgressCallback *progress )
@@ -250,9 +268,9 @@ osg::Image *QgsGlobeTileSource::createImage( const osgEarth::TileKey &key, osgEa
 
 void QgsGlobeTileSource::refresh( const QgsRectangle &dirtyExtent )
 {
-  mTileUpdateManager.updateLayerSet( mLayerSet );
+  mTileUpdateManager.updateLayerSet( mLayers );
   mTileListLock.lock();
-  foreach ( QgsGlobeTileImage *tile, mTiles )
+  for ( QgsGlobeTileImage *tile : mTiles )
   {
     if ( tile->extent().intersects( dirtyExtent ) )
     {
@@ -260,16 +278,6 @@ void QgsGlobeTileSource::refresh( const QgsRectangle &dirtyExtent )
     }
   }
   mTileListLock.unlock();
-}
-
-void QgsGlobeTileSource::setLayerSet( const QStringList &layerSet )
-{
-  mLayerSet = layerSet;
-}
-
-const QStringList &QgsGlobeTileSource::layerSet() const
-{
-  return mLayerSet;
 }
 
 void QgsGlobeTileSource::addTile( QgsGlobeTileImage *tile )

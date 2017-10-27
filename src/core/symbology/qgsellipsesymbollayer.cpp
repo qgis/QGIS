@@ -28,17 +28,8 @@
 #include <QDomElement>
 
 QgsEllipseSymbolLayer::QgsEllipseSymbolLayer()
-  : QgsMarkerSymbolLayer()
-  , mSymbolName( QStringLiteral( "circle" ) )
-  , mSymbolWidth( 4 )
-  , mSymbolWidthUnit( QgsUnitTypes::RenderMillimeters )
-  , mSymbolHeight( 3 )
-  , mSymbolHeightUnit( QgsUnitTypes::RenderMillimeters )
+  : mSymbolName( QStringLiteral( "circle" ) )
   , mStrokeColor( Qt::black )
-  , mStrokeStyle( Qt::SolidLine )
-  , mPenJoinStyle( DEFAULT_ELLIPSE_JOINSTYLE )
-  , mStrokeWidth( 0 )
-  , mStrokeWidthUnit( QgsUnitTypes::RenderMillimeters )
 {
   mColor = Qt::white;
   mPen.setColor( mStrokeColor );
@@ -216,7 +207,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
 
     if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
     {
-      QString symbolName =  mSymbolName;
+      QString symbolName = mSymbolName;
       context.setOriginalValueVariable( mSymbolName );
       exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext() );
       if ( exprVal.isValid() )
@@ -451,7 +442,7 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
   if ( !QgsSymbolLayerUtils::wellKnownMarkerFromSld( graphicElem, name, fillColor, strokeColor, strokeStyle, strokeWidth, size ) )
     return nullptr;
 
-  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  QString uom = element.attribute( QStringLiteral( "uom" ) );
   size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
   strokeWidth = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, strokeWidth );
 
@@ -805,8 +796,8 @@ bool QgsEllipseSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFact
       for ( int i = 0; i < 39; ++i )
       {
         double angle = stepsize * i;
-        double x = halfWidth * cos( angle );
-        double y = halfHeight * sin( angle );
+        double x = halfWidth * std::cos( angle );
+        double y = halfHeight * std::sin( angle );
         line << QgsPoint( t.map( QPointF( x, y ) ) );
       }
       //close ellipse with first point

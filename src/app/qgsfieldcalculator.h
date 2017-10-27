@@ -36,19 +36,17 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
   public slots:
     void accept() override;
 
-    void on_mNewFieldGroupBox_toggled( bool on );
-    void on_mUpdateExistingGroupBox_toggled( bool on );
-    void on_mCreateVirtualFieldCheckbox_stateChanged( int state );
-    void on_mOutputFieldNameLineEdit_textChanged( const QString &text );
-    void on_mOutputFieldTypeComboBox_activated( int index );
-
-    void on_mButtonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/attribute_table.html#editing-attribute-values" ) ); }
-
+    void mNewFieldGroupBox_toggled( bool on );
+    void mUpdateExistingGroupBox_toggled( bool on );
+    void mCreateVirtualFieldCheckbox_stateChanged( int state );
+    void mOutputFieldNameLineEdit_textChanged( const QString &text );
+    void mOutputFieldTypeComboBox_activated( int index );
 
   private slots:
     //! Sets the OK button enabled / disabled
     void setOkButtonState();
     void setPrecisionMinMax();
+    void showHelp();
 
   private:
     //! default constructor forbidden

@@ -20,7 +20,6 @@
 #include <QString>
 #include <QFont>
 #include <QLabel>
-#include <Qsci/qscilexersql.h>
 
 
 QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
@@ -36,22 +35,6 @@ QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
   setSciLexerSQL();
 }
 
-/** Internal use.
-
-   setAutoCompletionCaseSensitivity( false ) is not sufficient when installing
-   a lexer, since its caseSensitive() method is actually used, and defaults
-   to true.
-   @note not available in Python bindings
-   @ingroup gui
-*/
-class QgsCaseInsensitiveLexerSQL: public QsciLexerSQL
-{
-  public:
-    //! constructor
-    explicit QgsCaseInsensitiveLexerSQL( QObject *parent = 0 ) : QsciLexerSQL( parent ) {}
-
-    bool caseSensitive() const override { return false; }
-};
 
 void QgsCodeEditorSQL::setSciLexerSQL()
 {

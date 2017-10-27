@@ -20,16 +20,6 @@
 #include "qgsunittypes.h"
 
 QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
-  : mXAttribute( QLatin1String( "" ) )
-  , mYAttribute( QLatin1String( "" ) )
-  , mDistanceUnit( QgsUnitTypes::RenderMillimeters )
-  , mScale( 1.0 )
-  , mVectorFieldType( Cartesian )
-  , mAngleOrientation( ClockwiseFromNorth )
-  , mAngleUnits( Degrees )
-  , mLineSymbol( nullptr )
-  , mXIndex( -1 )
-  , mYIndex( -1 )
 {
   setSubSymbol( new QgsLineSymbol() );
 }
@@ -313,8 +303,8 @@ void QgsVectorFieldSymbolLayer::convertPolarToCartesian( double length, double a
     angle = angle * M_PI / 180.0;
   }
 
-  x = length * sin( angle );
-  y = length * cos( angle );
+  x = length * std::sin( angle );
+  y = length * std::cos( angle );
 }
 
 void QgsVectorFieldSymbolLayer::setColor( const QColor &color )

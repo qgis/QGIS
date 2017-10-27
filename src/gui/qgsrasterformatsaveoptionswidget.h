@@ -24,7 +24,8 @@
 
 class QgsRasterLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A widget to select format-specific raster saving options
  */
 class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::QgsRasterFormatSaveOptionsWidgetBase
@@ -116,12 +117,12 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::Q
 
   private slots:
 
-    void on_mProfileNewButton_clicked() SIP_FORCE;
-    void on_mProfileDeleteButton_clicked() SIP_FORCE;
-    void on_mProfileResetButton_clicked() SIP_FORCE;
-    void on_mOptionsAddButton_clicked() SIP_FORCE;
-    void on_mOptionsDeleteButton_clicked() SIP_FORCE;
-    void on_mOptionsLineEdit_editingFinished() SIP_FORCE;
+    void mProfileNewButton_clicked() SIP_FORCE;
+    void mProfileDeleteButton_clicked() SIP_FORCE;
+    void mProfileResetButton_clicked() SIP_FORCE;
+    void mOptionsAddButton_clicked() SIP_FORCE;
+    void mOptionsDeleteButton_clicked() SIP_FORCE;
+    void mOptionsLineEdit_editingFinished() SIP_FORCE;
     void optionsTableChanged() SIP_FORCE;
     void optionsTableEnableDeleteButton() SIP_FORCE;
     void updateOptions() SIP_FORCE;
@@ -142,8 +143,8 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::Q
     QString mRasterFileName;
     QMap< QString, QString> mOptionsMap;
     static QMap< QString, QStringList > sBuiltinProfiles;
-    bool mPyramids;
-    QgsRaster::RasterPyramidsFormat mPyramidsFormat;
+    bool mPyramids = false;
+    QgsRaster::RasterPyramidsFormat mPyramidsFormat = QgsRaster::PyramidsGTiff;
 
     QString settingsKey( QString profile ) const SIP_FORCE;
     QString currentProfileKey() const SIP_FORCE;
@@ -157,5 +158,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::Q
     QString pseudoFormat() const SIP_FORCE;
 
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSRASTERLAYERSAVEASDIALOG_H

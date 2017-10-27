@@ -10,7 +10,6 @@
 
 
 
-
 class QgsFilterLineEdit : QLineEdit
 {
 %Docstring
@@ -26,7 +25,6 @@ class QgsFilterLineEdit : QLineEdit
 %TypeHeaderCode
 #include "qgsfilterlineedit.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsFilterLineEdit *>( sipCpp ) )
       sipType = sipType_QgsFilterLineEdit;
@@ -165,6 +163,38 @@ class QgsFilterLineEdit : QLineEdit
  :rtype: bool
 %End
 
+    bool showSpinner() const;
+%Docstring
+ Show a spinner icon. This can be used for search boxes to indicate that
+ something is going on in the background.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void setShowSpinner( bool showSpinner );
+%Docstring
+ Show a spinner icon. This can be used for search boxes to indicate that
+ something is going on in the background.
+
+.. versionadded:: 3.0
+%End
+
+    bool selectOnFocus() const;
+%Docstring
+ Will select all text when this widget receives the focus.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void setSelectOnFocus( bool selectOnFocus );
+%Docstring
+ Will select all text when this widget receives the focus.
+
+.. versionadded:: 3.0
+%End
+
   public slots:
 
     virtual void clearValue();
@@ -187,6 +217,22 @@ class QgsFilterLineEdit : QLineEdit
  Same as textChanged() but with support for null values.
 
  \param value The current text or null string if it matches the nullValue() property.
+%End
+
+    void showSpinnerChanged();
+%Docstring
+ Show a spinner icon. This can be used for search boxes to indicate that
+ something is going on in the background.
+
+.. versionadded:: 3.0
+%End
+
+
+    void selectOnFocusChanged();
+%Docstring
+ Will select all text when this widget receives the focus.
+
+.. versionadded:: 3.0
 %End
 
   protected:

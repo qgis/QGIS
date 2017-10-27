@@ -29,10 +29,7 @@ class TestQgsVectorDataProvider : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsVectorDataProvider()
-      : vlayerPoints( 0 )
-      , vlayerLines( 0 )
-    {}
+    TestQgsVectorDataProvider() = default;
 
   private slots:
 
@@ -90,7 +87,7 @@ void TestQgsVectorDataProvider::cleanupTestCase()
 
 static double keep6digits( double x )
 {
-  return qRound( x * 1e6 ) / 1e6;
+  return std::round( x * 1e6 ) / 1e6;
 }
 
 static void checkFid4( QgsFeature &f, bool hasGeometry, bool hasAttrs, int onlyOneAttribute )

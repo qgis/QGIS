@@ -18,7 +18,7 @@
 #include "qgsdb2provider.h"
 #include "qgsdb2tablemodel.h"
 
-#include <qgsdataitem.h>
+#include "qgsdataitem.h"
 
 class QgsDb2RootItem;
 class QgsDb2Connection;
@@ -35,7 +35,6 @@ class QgsDb2RootItem : public QgsDataCollectionItem
 
   public:
     QgsDb2RootItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsDb2RootItem();
 
     /**
      * Add saved connections as children.
@@ -45,7 +44,7 @@ class QgsDb2RootItem : public QgsDataCollectionItem
 #ifdef HAVE_GUI
     virtual QWidget *paramWidget() override;
 
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   public slots:
@@ -64,7 +63,6 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsDb2ConnectionItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsDb2ConnectionItem();
 
     static bool ConnInfoFromSettings( const QString connName,
                                       QString &connInfo, QString &errorMsg );
@@ -90,10 +88,7 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
 
 #ifdef HAVE_GUI
 
-    /**
-     * Add Refresh, Edit, and Delete actions for every QgsDb2ConnectionItem.
-     */
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
     virtual bool acceptDrop() override { return true; }
@@ -143,7 +138,6 @@ class QgsDb2SchemaItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsDb2SchemaItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsDb2SchemaItem();
 
     QVector<QgsDataItem *> createChildren() override;
 
@@ -165,7 +159,6 @@ class QgsDb2LayerItem : public QgsLayerItem
 
   public:
     QgsDb2LayerItem( QgsDataItem *parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsDb2LayerProperty layerProperties );
-    ~QgsDb2LayerItem();
 
     QString createUri();
 

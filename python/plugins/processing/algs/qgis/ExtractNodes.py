@@ -54,7 +54,7 @@ class ExtractNodes(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'extract_nodes.png'))
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -99,7 +99,7 @@ class ExtractNodes(QgisAlgorithm):
                 sink.addFeature(f, QgsFeatureSink.FastInsert)
             else:
                 i = 0
-                for part in input_geometry.geometry().coordinateSequence():
+                for part in input_geometry.constGet().coordinateSequence():
                     for ring in part:
                         if feedback.isCanceled():
                             break

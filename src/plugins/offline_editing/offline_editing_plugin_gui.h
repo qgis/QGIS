@@ -30,7 +30,6 @@ class QgsSelectLayerTreeModel : public QgsLayerTreeModel
     Q_OBJECT
   public:
     QgsSelectLayerTreeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
-    ~QgsSelectLayerTreeModel();
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     // bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
@@ -63,10 +62,10 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
     QStringList mSelectedLayerIds;
 
   private slots:
-    void on_mBrowseButton_clicked();
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
+    void mBrowseButton_clicked();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
+    void showHelp();
 };
 
 #endif // QGS_OFFLINE_EDITING_PLUGIN_GUI_H

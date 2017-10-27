@@ -22,6 +22,7 @@
 #include "qgseditorconfigwidget.h"
 #include "qgsfeature.h"
 #include "qgsvectordataprovider.h"
+#include "qgshelp.h"
 #include "qgis_app.h"
 
 class QDialog;
@@ -165,15 +166,20 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
 
     QgsExpressionContext createExpressionContext() const override;
 
+    bool applyDefaultValueOnUpdate() const;
+    void setApplyDefaultValueOnUpdate( bool applyDefaultValueOnUpdate );
+
   private slots:
 
     /**
      * Slot to handle change of index in combobox to select correct page
      * \param index index of value in combobox
      */
-    void on_selectionListWidget_currentRowChanged( int index );
+    void selectionListWidget_currentRowChanged( int index );
 
     void defaultExpressionChanged();
+
+    void showHelp();
 
   private:
     QgsVectorLayer *mLayer = nullptr;

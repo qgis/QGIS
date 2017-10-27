@@ -236,7 +236,7 @@ void TestQgsLayoutUnits::measurementEncodeDecode()
   QCOMPARE( original, result );
 
   //test with bad string
-  result = QgsLayoutMeasurement::decodeMeasurement( QString( "1" ) );
+  result = QgsLayoutMeasurement::decodeMeasurement( QStringLiteral( "1" ) );
   QCOMPARE( result, QgsLayoutMeasurement( 0 ) );
 }
 
@@ -376,7 +376,7 @@ void TestQgsLayoutUnits::sizeEncodeDecode()
   QCOMPARE( original, result );
 
   //test with bad string
-  result = QgsLayoutSize::decodeSize( QString( "1,2" ) );
+  result = QgsLayoutSize::decodeSize( QStringLiteral( "1,2" ) );
   QCOMPARE( result, QgsLayoutSize() );
 }
 
@@ -516,7 +516,7 @@ void TestQgsLayoutUnits::pointEncodeDecode()
   QCOMPARE( original, result );
 
   //test with bad string
-  result = QgsLayoutPoint::decodePoint( QString( "1,2" ) );
+  result = QgsLayoutPoint::decodePoint( QStringLiteral( "1,2" ) );
   QCOMPARE( result, QgsLayoutPoint() );
 }
 
@@ -670,13 +670,13 @@ void TestQgsLayoutUnits::conversionToInches()
   QCOMPARE( convertedFromPoints.units(), QgsUnitTypes::LayoutInches );
   QCOMPARE( convertedFromPicas.units(), QgsUnitTypes::LayoutInches );
 
-  QVERIFY( qgsDoubleNear( convertedFromMillimeters.length(), 0.0393701, 0.000001 ) );
-  QVERIFY( qgsDoubleNear( convertedFromCentimeters.length(), 0.3937008, 0.000001 ) );
-  QVERIFY( qgsDoubleNear( convertedFromMeters.length(), 39.3700787, 0.000001 ) );
+  QGSCOMPARENEAR( convertedFromMillimeters.length(), 0.0393701, 0.000001 );
+  QGSCOMPARENEAR( convertedFromCentimeters.length(), 0.3937008, 0.000001 );
+  QGSCOMPARENEAR( convertedFromMeters.length(), 39.3700787, 0.000001 );
   QCOMPARE( convertedFromInches.length(), 1.0 );
   QCOMPARE( convertedFromFeet.length(), 12.0 );
-  QVERIFY( qgsDoubleNear( convertedFromPoints.length(), 0.0138888889, 0.000001 ) );
-  QVERIFY( qgsDoubleNear( convertedFromPicas.length(), 0.166666667, 0.000001 ) );
+  QGSCOMPARENEAR( convertedFromPoints.length(), 0.0138888889, 0.000001 );
+  QGSCOMPARENEAR( convertedFromPicas.length(), 0.166666667, 0.000001 );
 }
 
 void TestQgsLayoutUnits::conversionToFeet()
@@ -706,13 +706,13 @@ void TestQgsLayoutUnits::conversionToFeet()
   QCOMPARE( convertedFromPoints.units(), QgsUnitTypes::LayoutFeet );
   QCOMPARE( convertedFromPicas.units(), QgsUnitTypes::LayoutFeet );
 
-  QVERIFY( qgsDoubleNear( convertedFromMillimeters.length(), 0.0032808399, 0.000001 ) );
-  QVERIFY( qgsDoubleNear( convertedFromCentimeters.length(), 0.032808399, 0.000001 ) );
-  QVERIFY( qgsDoubleNear( convertedFromMeters.length(), 3.2808399, 0.000001 ) );
-  QVERIFY( qgsDoubleNear( convertedFromInches.length(), 0.0833333, 0.000001 ) );
+  QGSCOMPARENEAR( convertedFromMillimeters.length(), 0.0032808399, 0.000001 );
+  QGSCOMPARENEAR( convertedFromCentimeters.length(), 0.032808399, 0.000001 );
+  QGSCOMPARENEAR( convertedFromMeters.length(), 3.2808399, 0.000001 );
+  QGSCOMPARENEAR( convertedFromInches.length(), 0.0833333, 0.000001 );
   QCOMPARE( convertedFromFeet.length(), 1.0 );
-  QVERIFY( qgsDoubleNear( convertedFromPoints.length(), 0.00115740741, 0.000001 ) );
-  QVERIFY( qgsDoubleNear( convertedFromPicas.length(), 0.0138888889, 0.000001 ) );
+  QGSCOMPARENEAR( convertedFromPoints.length(), 0.00115740741, 0.000001 );
+  QGSCOMPARENEAR( convertedFromPicas.length(), 0.0138888889, 0.000001 );
 }
 
 void TestQgsLayoutUnits::conversionToPoints()
@@ -742,13 +742,13 @@ void TestQgsLayoutUnits::conversionToPoints()
   QCOMPARE( convertedFromPoints.units(), QgsUnitTypes::LayoutPoints );
   QCOMPARE( convertedFromPicas.units(), QgsUnitTypes::LayoutPoints );
 
-  QVERIFY( qgsDoubleNear( convertedFromMillimeters.length(), 2.83464567, 0.000001 ) );
-  QVERIFY( qgsDoubleNear( convertedFromCentimeters.length(), 28.3464567, 0.000001 ) );
-  QVERIFY( qgsDoubleNear( convertedFromMeters.length(), 2834.64567, 0.000001 ) );
-  QVERIFY( qgsDoubleNear( convertedFromInches.length(), 72.0, 0.000001 ) );
-  QVERIFY( qgsDoubleNear( convertedFromFeet.length(), 864.0, 0.000001 ) );
+  QGSCOMPARENEAR( convertedFromMillimeters.length(), 2.83464567, 0.000001 );
+  QGSCOMPARENEAR( convertedFromCentimeters.length(), 28.3464567, 0.000001 );
+  QGSCOMPARENEAR( convertedFromMeters.length(), 2834.64567, 0.000001 );
+  QGSCOMPARENEAR( convertedFromInches.length(), 72.0, 0.000001 );
+  QGSCOMPARENEAR( convertedFromFeet.length(), 864.0, 0.000001 );
   QCOMPARE( convertedFromPoints.length(), 1.0 );
-  QVERIFY( qgsDoubleNear( convertedFromPicas.length(), 12.0, 0.000001 ) );
+  QGSCOMPARENEAR( convertedFromPicas.length(), 12.0, 0.000001 );
 }
 
 void TestQgsLayoutUnits::conversionToPicas()
@@ -778,12 +778,12 @@ void TestQgsLayoutUnits::conversionToPicas()
   QCOMPARE( convertedFromPoints.units(), QgsUnitTypes::LayoutPicas );
   QCOMPARE( convertedFromPicas.units(), QgsUnitTypes::LayoutPicas );
 
-  QVERIFY( qgsDoubleNear( convertedFromMillimeters.length(), 0.236220472, 0.000001 ) );
-  QVERIFY( qgsDoubleNear( convertedFromCentimeters.length(), 2.36220472, 0.000001 ) );
-  QVERIFY( qgsDoubleNear( convertedFromMeters.length(), 236.220472, 0.000001 ) );
-  QVERIFY( qgsDoubleNear( convertedFromInches.length(), 6.0, 0.000001 ) );
-  QVERIFY( qgsDoubleNear( convertedFromFeet.length(), 72.0, 0.000001 ) );
-  QVERIFY( qgsDoubleNear( convertedFromPoints.length(), 0.0833333333, 0.000001 ) );
+  QGSCOMPARENEAR( convertedFromMillimeters.length(), 0.236220472, 0.000001 );
+  QGSCOMPARENEAR( convertedFromCentimeters.length(), 2.36220472, 0.000001 );
+  QGSCOMPARENEAR( convertedFromMeters.length(), 236.220472, 0.000001 );
+  QGSCOMPARENEAR( convertedFromInches.length(), 6.0, 0.000001 );
+  QGSCOMPARENEAR( convertedFromFeet.length(), 72.0, 0.000001 );
+  QGSCOMPARENEAR( convertedFromPoints.length(), 0.0833333333, 0.000001 );
   QCOMPARE( convertedFromPicas.length(), 1.0 );
 }
 
@@ -803,19 +803,19 @@ void TestQgsLayoutUnits::conversionFromPixels()
   converter.setDpi( 300.0 );
   QgsLayoutMeasurement convertedToInches = converter.convert( measurementInPixels, QgsUnitTypes::LayoutInches );
   QCOMPARE( convertedToInches.units(), QgsUnitTypes::LayoutInches );
-  QVERIFY( qgsDoubleNear( convertedToInches.length(), 1.0, 0.000001 ) );
+  QGSCOMPARENEAR( convertedToInches.length(), 1.0, 0.000001 );
   QgsLayoutMeasurement convertedToMM = converter.convert( measurementInPixels, QgsUnitTypes::LayoutMillimeters );
   QCOMPARE( convertedToMM.units(), QgsUnitTypes::LayoutMillimeters );
-  QVERIFY( qgsDoubleNear( convertedToMM.length(), 25.4, 0.000001 ) );
+  QGSCOMPARENEAR( convertedToMM.length(), 25.4, 0.000001 );
 
   //try with 96 dpi
   converter.setDpi( 96.0 );
   convertedToInches = converter.convert( measurementInPixels, QgsUnitTypes::LayoutInches );
   QCOMPARE( convertedToInches.units(), QgsUnitTypes::LayoutInches );
-  QVERIFY( qgsDoubleNear( convertedToInches.length(), 3.125, 0.000001 ) );
+  QGSCOMPARENEAR( convertedToInches.length(), 3.125, 0.000001 );
   convertedToMM = converter.convert( measurementInPixels, QgsUnitTypes::LayoutMillimeters );
   QCOMPARE( convertedToMM.units(), QgsUnitTypes::LayoutMillimeters );
-  QVERIFY( qgsDoubleNear( convertedToMM.length(), 79.375, 0.000001 ) );
+  QGSCOMPARENEAR( convertedToMM.length(), 79.375, 0.000001 );
 }
 
 void TestQgsLayoutUnits::conversionToPixels()
@@ -828,19 +828,19 @@ void TestQgsLayoutUnits::conversionToPixels()
   converter.setDpi( 300.0 );
   QgsLayoutMeasurement convertedToPixels = converter.convert( measurementInInches, QgsUnitTypes::LayoutPixels );
   QCOMPARE( convertedToPixels.units(), QgsUnitTypes::LayoutPixels );
-  QVERIFY( qgsDoubleNear( convertedToPixels.length(), 300.0, 0.000001 ) );
+  QGSCOMPARENEAR( convertedToPixels.length(), 300.0, 0.000001 );
   convertedToPixels = converter.convert( measurementInMM, QgsUnitTypes::LayoutPixels );
   QCOMPARE( convertedToPixels.units(), QgsUnitTypes::LayoutPixels );
-  QVERIFY( qgsDoubleNear( convertedToPixels.length(), 11.811023622, 0.000001 ) );
+  QGSCOMPARENEAR( convertedToPixels.length(), 11.811023622, 0.000001 );
 
   //try with 96 dpi
   converter.setDpi( 96.0 );
   convertedToPixels = converter.convert( measurementInInches, QgsUnitTypes::LayoutPixels );
   QCOMPARE( convertedToPixels.units(), QgsUnitTypes::LayoutPixels );
-  QVERIFY( qgsDoubleNear( convertedToPixels.length(), 96.0, 0.000001 ) );
+  QGSCOMPARENEAR( convertedToPixels.length(), 96.0, 0.000001 );
   convertedToPixels = converter.convert( measurementInMM, QgsUnitTypes::LayoutPixels );
   QCOMPARE( convertedToPixels.units(), QgsUnitTypes::LayoutPixels );
-  QVERIFY( qgsDoubleNear( convertedToPixels.length(), 3.77952755906, 0.000001 ) );
+  QGSCOMPARENEAR( convertedToPixels.length(), 3.77952755906, 0.000001 );
 }
 
 void TestQgsLayoutUnits::sizeConversion()

@@ -21,7 +21,6 @@
 #include "qgssettings.h"
 
 #include <QDataStream>
-#include <QtCore/qmath.h>
 #include <QIcon>
 
 /***************************************************************************
@@ -166,14 +165,14 @@ void QgsField::setComment( const QString &comment )
   d->comment = comment;
 }
 
-QString QgsField::defaultValueExpression() const
+QgsDefaultValue QgsField::defaultValueDefinition() const
 {
-  return d->defaultValueExpression;
+  return d->defaultValueDefinition;
 }
 
-void QgsField::setDefaultValueExpression( const QString &expression )
+void QgsField::setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition )
 {
-  d->defaultValueExpression = expression;
+  d->defaultValueDefinition = defaultValueDefinition;
 }
 
 void QgsField::setConstraints( const QgsFieldConstraints &constraints )
@@ -249,14 +248,14 @@ bool QgsField::convertCompatible( QVariant &v ) const
       return false;
     }
 
-    double round = qgsRound( dbl );
+    double round = std::round( dbl );
     if ( round  > INT_MAX || round < -INT_MAX )
     {
       //double too large to fit in int
       v = QVariant( d->type );
       return false;
     }
-    v = QVariant( qRound( dbl ) );
+    v = QVariant( static_cast< int >( std::round( dbl ) ) );
     return true;
   }
 
@@ -268,9 +267,9 @@ bool QgsField::convertCompatible( QVariant &v ) const
 
   if ( d->type == QVariant::Double && d->precision > 0 )
   {
-    double s = qPow( 10, d->precision );
+    double s = std::pow( 10, d->precision );
     double d = v.toDouble() * s;
-    v = QVariant( ( d < 0 ? ceil( d - 0.5 ) : floor( d + 0.5 ) ) / s );
+    v = QVariant( ( d < 0 ? std::ceil( d - 0.5 ) : std::floor( d + 0.5 ) ) / s );
     return true;
   }
 
@@ -308,7 +307,8 @@ QDataStream &operator<<( QDataStream &out, const QgsField &field )
   out << field.precision();
   out << field.comment();
   out << field.alias();
-  out << field.defaultValueExpression();
+  out << field.defaultValueDefinition().expression();
+  out << field.defaultValueDefinition().applyOnUpdate();
   out << field.constraints().constraints();
   out << static_cast< quint32 >( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) );
   out << static_cast< quint32 >( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintUnique ) );
@@ -324,10 +324,30 @@ QDataStream &operator<<( QDataStream &out, const QgsField &field )
 
 QDataStream &operator>>( QDataStream &in, QgsField &field )
 {
-  quint32 type, subType, length, precision, constraints, originNotNull, originUnique, originExpression, strengthNotNull, strengthUnique, strengthExpression;
-  QString name, typeName, comment, alias, defaultValueExpression, constraintExpression, constraintDescription;
+  quint32 type;
+  quint32 subType;
+  quint32 length;
+  quint32 precision;
+  quint32 constraints;
+  quint32 originNotNull;
+  quint32 originUnique;
+  quint32 originExpression;
+  quint32 strengthNotNull;
+  quint32 strengthUnique;
+  quint32 strengthExpression;
+
+  bool applyOnUpdate;
+
+  QString name;
+  QString typeName;
+  QString comment;
+  QString alias;
+  QString defaultValueExpression;
+  QString constraintExpression;
+  QString constraintDescription;
+
   in >> name >> type >> typeName >> length >> precision >> comment >> alias
-     >> defaultValueExpression >> constraints >> originNotNull >> originUnique >> originExpression >> strengthNotNull >> strengthUnique >> strengthExpression >>
+     >> defaultValueExpression >> applyOnUpdate >> constraints >> originNotNull >> originUnique >> originExpression >> strengthNotNull >> strengthUnique >> strengthExpression >>
      constraintExpression >> constraintDescription >> subType;
   field.setName( name );
   field.setType( static_cast< QVariant::Type >( type ) );
@@ -336,7 +356,7 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
   field.setPrecision( static_cast< int >( precision ) );
   field.setComment( comment );
   field.setAlias( alias );
-  field.setDefaultValueExpression( defaultValueExpression );
+  field.setDefaultValueDefinition( QgsDefaultValue( defaultValueExpression, applyOnUpdate ) );
   QgsFieldConstraints fieldConstraints;
   if ( constraints & QgsFieldConstraints::ConstraintNotNull )
   {

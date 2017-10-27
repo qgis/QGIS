@@ -116,6 +116,10 @@ class Heatmap(QgisAlgorithm):
                 self.radius_param = radius_param
                 self.radius_field_param = radius_field_param
 
+            def clone(self):
+                copy = ParameterHeatmapPixelSize(self.name(), self.description(), self.parent_layer, self.radius_param, self.radius_field_param, self.minimum(), self.maximum(), self.defaultValue((), self.flags() & QgsProcessingParameterDefinition.FlagOptional))
+                return copy
+
         pixel_size_param = ParameterHeatmapPixelSize(self.PIXEL_SIZE,
                                                      self.tr('Output raster size'),
                                                      parent_layer=self.INPUT,

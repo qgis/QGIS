@@ -36,10 +36,6 @@ QgsOWSConnectionItem::QgsOWSConnectionItem( QgsDataItem *parent, QString name, Q
   mCapabilities |= Collapse;
 }
 
-QgsOWSConnectionItem::~QgsOWSConnectionItem()
-{
-}
-
 QVector<QgsDataItem *> QgsOWSConnectionItem::createChildren()
 {
   QVector<QgsDataItem *> children;
@@ -87,10 +83,11 @@ QVector<QgsDataItem *> QgsOWSConnectionItem::createChildren()
     }
   }
 
-  Q_FOREACH ( QgsDataItem *item, serviceItems.keys() )
+  for ( auto it = serviceItems.constBegin(); it != serviceItems.constEnd(); ++it )
   {
+    QgsDataItem *item = it.key();
     QgsDebugMsg( QString( "serviceItems.size = %1 layerCount = %2 rowCount = %3" ).arg( serviceItems.size() ).arg( layerCount ).arg( item->rowCount() ) );
-    QString providerKey = serviceItems.value( item );
+    QString providerKey = it.value();
     if ( serviceItems.size() == 1 || layerCount <= 30 || item->rowCount() <= 10 )
     {
       // Add layers directly to OWS connection
@@ -134,15 +131,15 @@ bool QgsOWSConnectionItem::equal( const QgsDataItem *other )
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsOWSConnectionItem::actions()
+QList<QAction *> QgsOWSConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), this );
+  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsOWSConnectionItem::editConnection );
   lst.append( actionEdit );
 
-  QAction *actionDelete = new QAction( tr( "Delete" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsOWSConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
@@ -184,10 +181,6 @@ QgsOWSRootItem::QgsOWSRootItem( QgsDataItem *parent, QString name, QString path 
   populate();
 }
 
-QgsOWSRootItem::~QgsOWSRootItem()
-{
-}
-
 QVector<QgsDataItem *> QgsOWSRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
@@ -212,12 +205,13 @@ QVector<QgsDataItem *> QgsOWSRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsOWSRootItem::actions()
+QList<QAction *> QgsOWSRootItem::actions( QWidget *parent )
 {
+  Q_UNUSED( parent );
   QList<QAction *> lst;
 
 #if 0
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
 #endif
@@ -235,7 +229,7 @@ QWidget *QgsOWSRootItem::paramWidget()
 #endif
   return nullptr;
 }
-void QgsOWSRootItem::connectionsChanged()
+void QgsOWSRootItem::onConnectionsChanged()
 {
   refresh();
 }

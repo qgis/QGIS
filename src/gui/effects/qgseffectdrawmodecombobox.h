@@ -20,7 +20,8 @@
 #include "qgspainteffect.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsEffectDrawModeComboBox
  * \brief A combo box allowing selection of paint effect draw modes
  *
@@ -35,12 +36,14 @@ class GUI_EXPORT QgsEffectDrawModeComboBox : public QComboBox
 
     QgsEffectDrawModeComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Returns the currently selected draw mode for the combo box
+    /**
+     * Returns the currently selected draw mode for the combo box
      * \returns current draw mode
      */
     QgsPaintEffect::DrawMode drawMode() const;
 
-    /** Sets the currently selected draw mode for the combo box
+    /**
+     * Sets the currently selected draw mode for the combo box
      * \param drawMode selected draw mode
      */
     void setDrawMode( QgsPaintEffect::DrawMode drawMode );

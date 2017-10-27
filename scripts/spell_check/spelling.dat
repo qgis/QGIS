@@ -1,3 +1,6 @@
+# append :* to avoid in word check_spelling
+# append :% to exclude script files
+#...:…:%
 abailable:available
 abandonded:abandoned
 abandonned:abandoned
@@ -405,6 +408,7 @@ alocated:allocated
 alocates:allocates
 alocating:allocating
 alochol:alcohol
+alog:along
 alogirhtms:algorithms
 alogrithm:algorithm
 alogrithms:algorithms
@@ -2543,6 +2547,7 @@ empirial:imperial
 emporer:emperor
 emprisoned:imprisoned
 emptry:empty
+empy:empty
 emtied:emptied
 emties:empties
 emtpy:empty
@@ -2905,6 +2910,7 @@ facillitate:facilitate
 facinated:fascinated
 facist:fascist
 faild:failed
+faile:failed
 failue:failure
 failuer:failure
 failues:failures
@@ -3556,6 +3562,7 @@ imprisonned:imprisoned
 improvision:improvisation
 improvment:improvement
 improvments:improvements
+imput:input
 imrovement:improvement
 inablility:inability
 inacccessible:inaccessible
@@ -5732,6 +5739,7 @@ regarless:regardless
 registe:register
 registed:registered
 registeing:registering
+registing:registering
 registerd:registered:*
 registes:registers
 registraration:registration
@@ -7095,6 +7103,7 @@ tyrranies:tyrannies
 tyrrany:tyranny
 ubiquitious:ubiquitous
 ublisher:publisher
+updat:update
 udpate:update
 udpated:updated
 udpates:updates
@@ -7391,6 +7400,7 @@ versitlity:versatility
 verson:version
 versoned:versioned
 versons:versions
+vertexes:vertices
 verticaly:vertically
 verticies:vertices
 veryified:verified

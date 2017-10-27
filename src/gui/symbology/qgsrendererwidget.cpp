@@ -30,8 +30,7 @@
 #include <QMenu>
 
 QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
-  : QgsPanelWidget()
-  , mLayer( layer )
+  : mLayer( layer )
   , mStyle( style )
 {
   contextMenu = new QMenu( tr( "Renderer Options" ), this );
@@ -251,11 +250,20 @@ void QgsRendererWidget::changeSymbolAngle()
 
 void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
 {
-  QgsSymbolLevelsDialog dlg( r->legendSymbolItems(), r->usingSymbolLevels(), this );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( r, r->usingSymbolLevels(), panel );
+    widget->setPanelTitle( tr( "Symbol Levels" ) );
+    connect( widget, &QgsPanelWidget::widgetChanged, widget, &QgsSymbolLevelsWidget::apply );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
+    panel->openPanel( widget );
+    return;
+  }
 
+  QgsSymbolLevelsDialog dlg( r, r->usingSymbolLevels(), panel );
   if ( dlg.exec() )
   {
-    r->setUsingSymbolLevels( dlg.usingLevels() );
     emit widgetChanged();
   }
 }

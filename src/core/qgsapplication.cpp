@@ -41,10 +41,11 @@
 #include "qgsunittypes.h"
 #include "qgsuserprofile.h"
 #include "qgsuserprofilemanager.h"
+#include "qgsreferencedgeometry.h"
+#include "qgs3drendererregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
-#include "processing/qgsnativealgorithms.h"
 
 #include "layout/qgspagesizeregistry.h"
 
@@ -148,6 +149,9 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
   qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
   qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
+  qRegisterMetaType<QgsMessageLog::MessageLevel>( "QgsMessageLog::MessageLevel" );
+  qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
+  qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
 
   QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
   // QgsDebugMsg( QString( "prefixPath(): %1" ).arg( prefixPath ) );
@@ -166,9 +170,9 @@ void QgsApplication::init( QString profileFolder )
     ABISYM( mRunningFromBuildDir ) = true;
     ABISYM( mBuildSourcePath ) = f.readLine().trimmed();
     ABISYM( mBuildOutputPath ) = f.readLine().trimmed();
-    qDebug( "Running from build directory!" );
-    qDebug( "- source directory: %s", ABISYM( mBuildSourcePath ).toUtf8().data() );
-    qDebug( "- output directory of the build: %s", ABISYM( mBuildOutputPath ).toUtf8().data() );
+    QgsDebugMsgLevel( QStringLiteral( "Running from build directory!" ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "- source directory: %1" ).arg( ABISYM( mBuildSourcePath ).toUtf8().data() ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "- output directory of the build: %1" ).arg( ABISYM( mBuildOutputPath ).toUtf8().data() ), 4 );
 #ifdef _MSC_VER
     ABISYM( mCfgIntDir ) = prefixPath.split( '/', QString::SkipEmptyParts ).last();
     qDebug( "- cfg: %s", ABISYM( mCfgIntDir ).toUtf8().data() );
@@ -317,7 +321,7 @@ bool QgsApplication::notify( QObject *receiver, QEvent *event )
   }
   catch ( std::exception &e )
   {
-    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
+    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromLatin1( e.what() ) );
     if ( qApp->thread() == QThread::currentThread() )
       QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
   }
@@ -614,27 +618,17 @@ QString QgsApplication::licenceFilePath()
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/doc/LICENSE" );
 }
 
-QString QgsApplication::helpAppPath()
-{
-  QString helpAppPath;
-#ifdef Q_OS_MACX
-  helpAppPath = applicationDirPath() + "/bin/qgis_help.app/Contents/MacOS";
-#else
-  helpAppPath = libexecPath();
-#endif
-  helpAppPath += QLatin1String( "/qgis_help" );
-#ifdef Q_OS_WIN
-  helpAppPath += ".exe";
-#endif
-  return helpAppPath;
-}
-
 QString QgsApplication::i18nPath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
     return ABISYM( mBuildOutputPath ) + QStringLiteral( "/i18n" );
   else
     return ABISYM( mPkgDataPath ) + QStringLiteral( "/i18n/" );
+}
+
+QString QgsApplication::metadataPath()
+{
+  return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/metadata-ISO/" );
 }
 
 QString QgsApplication::qgisMasterDatabaseFilePath()
@@ -851,6 +845,11 @@ QString QgsApplication::defaultThemesFolder()
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/themes" );
 }
 
+QString QgsApplication::serverResourcesPath()
+{
+  return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/server/" );
+}
+
 QString QgsApplication::libraryPath()
 {
   return ABISYM( mLibraryPath );
@@ -876,26 +875,43 @@ void QgsApplication::initQgis()
   // create project instance if doesn't exist
   QgsProject::instance();
 
+  // Initialize authentication manager and connect to database
+  authManager()->init( pluginPath(), qgisAuthDatabaseFilePath() );
+
   // Make sure we have a NAM created on the main thread.
+  // Note that this might call QgsApplication::authManager to
+  // setup the proxy configuration that's why it needs to be
+  // called after the QgsAuthManager instance has been created
   QgsNetworkAccessManager::instance();
 
-  // initialize authentication manager and connect to database
-  QgsAuthManager::instance()->init( pluginPath() );
 }
+
+
+QgsAuthManager *QgsApplication::authManager()
+{
+  if ( ! instance()->mAuthManager )
+  {
+    instance()->mAuthManager = QgsAuthManager::instance();
+  }
+  return instance()->mAuthManager;
+}
+
 
 void QgsApplication::exitQgis()
 {
-  delete QgsAuthManager::instance();
+  delete QgsApplication::authManager();
 
   //Ensure that all remaining deleteLater QObjects are actually deleted before we exit.
   //This isn't strictly necessary (since we're exiting anyway) but doing so prevents a lot of
   //LeakSanitiser noise which hides real issues
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
 
-  delete QgsProviderRegistry::instance();
-
   //delete all registered functions from expression engine (see above comment)
   QgsExpression::cleanRegisteredFunctions();
+
+  delete QgsProject::instance();
+
+  delete QgsProviderRegistry::instance();
 
   // tear-down GDAL/OGR
   OGRCleanupAll();
@@ -1585,6 +1601,11 @@ QgsFieldFormatterRegistry *QgsApplication::fieldFormatterRegistry()
   return members()->mFieldFormatterRegistry;
 }
 
+Qgs3DRendererRegistry *QgsApplication::renderer3DRegistry()
+{
+  return members()->m3DRendererRegistry;
+}
+
 QgsApplication::ApplicationMembers::ApplicationMembers()
 {
   // don't use initializer lists or scoped pointers - as more objects are added here we
@@ -1607,13 +1628,14 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mPageSizeRegistry = new QgsPageSizeRegistry();
   mLayoutItemRegistry = new QgsLayoutItemRegistry();
   mLayoutItemRegistry->populate();
-  mProcessingRegistry->addProvider( new QgsNativeAlgorithms( mProcessingRegistry ) );
   mAnnotationRegistry = new QgsAnnotationRegistry();
+  m3DRendererRegistry = new Qgs3DRendererRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
 {
   delete mActionScopeRegistry;
+  delete m3DRendererRegistry;
   delete mAnnotationRegistry;
   delete mColorSchemeRegistry;
   delete mFieldFormatterRegistry;

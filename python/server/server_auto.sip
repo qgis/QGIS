@@ -11,15 +11,12 @@
 %If ( HAVE_SERVER_PYTHON_PLUGINS )
 %Include qgsserverinterface.sip
 %End
-%Include qgsserverprojectparser.sip
 %Include qgsserverprojectutils.sip
 %Include qgsserverrequest.sip
 %Include qgsserverresponse.sip
 %Include qgsservice.sip
 %Include qgsservicemodule.sip
 %Include qgsserviceregistry.sip
-%Include qgswmsconfigparser.sip
-%Include qgswmsprojectparser.sip
 %If ( HAVE_SERVER_PYTHON_PLUGINS )
 %Include qgsserverfilter.sip
 %End

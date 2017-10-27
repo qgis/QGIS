@@ -17,8 +17,8 @@
 
 #include <QWidget>
 
-#include <ui_qgslabelingwidget.h>
-#include <qgspallabeling.h>
+#include "ui_qgslabelingwidget.h"
+#include "qgspallabeling.h"
 #include "qgsvectorlayerlabeling.h"
 
 #include "qgsmaplayerconfigwidget.h"
@@ -38,6 +38,13 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
   public:
     QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
+    /**
+     * Returns the labeling gui widget or a nullptr if none.
+     *
+     * \since QGIS 3.0
+     */
+    QgsLabelingGui *labelingGui();
+
   public slots:
     void setLayer( QgsMapLayer *layer );
     //! save config to layer
@@ -52,7 +59,8 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     void resetSettings();
 
   signals:
-    void widgetChanged();
+
+    void auxiliaryFieldCreated();
 
   protected slots:
     void labelModeChanged( int index );

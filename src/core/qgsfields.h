@@ -29,7 +29,8 @@ class QgsFieldsPrivate;
  * See details in QEP #17
  ****************************************************************************/
 
-/** \class QgsFields
+/**
+ * \class QgsFields
  * \ingroup core
  * Container of fields for a vector layer.
  *
@@ -56,9 +57,8 @@ class CORE_EXPORT QgsFields
     typedef struct Field
     {
       Field()
-        : origin( OriginUnknown )
-        , originIndex( -1 )
       {}
+
       Field( const QgsField &f, FieldOrigin o, int oi )
         : field( f )
         , origin( o )
@@ -71,21 +71,24 @@ class CORE_EXPORT QgsFields
       bool operator!=( const Field &other ) const { return !( *this == other ); }
 
       QgsField field;      //!< Field
-      FieldOrigin origin;  //!< Origin of the field
-      int originIndex;     //!< Index specific to the origin
+      FieldOrigin origin = OriginUnknown ;  //!< Origin of the field
+      int originIndex = -1 ;     //!< Index specific to the origin
     } Field;
 
 #endif
 
-    /** Constructor for an empty field container
+    /**
+     * Constructor for an empty field container
      */
     QgsFields();
 
-    /** Copy constructor
+    /**
+     * Copy constructor
      */
     QgsFields( const QgsFields &other );
 
-    /** Assignment operator
+    /**
+     * Assignment operator
      */
     QgsFields &operator =( const QgsFields &other ) SIP_SKIP;
 
@@ -135,9 +138,17 @@ class CORE_EXPORT QgsFields
     //! Return number of items
     int size() const;
 
-    //! Return if a field index is valid
-    //! \param i  Index of the field which needs to be checked
-    //! \returns   True if the field exists
+    /**
+     * Returns a list with field names
+     * \since QGIS 3.0
+     */
+    QStringList names() const;
+
+    /**
+     * Return if a field index is valid
+     * \param i  Index of the field which needs to be checked
+     * \returns   True if the field exists
+     */
     bool exists( int i ) const;
 
 #ifndef SIP_RUN
@@ -240,7 +251,7 @@ class CORE_EXPORT QgsFields
 
     /**
      * Get the field index from the field name.
-     * This method takes is case sensitive and only matches the data source
+     * This method is case sensitive and only matches the data source
      * name of the field.
      * Alias for indexOf
      *
@@ -253,7 +264,7 @@ class CORE_EXPORT QgsFields
 
     /**
      * Get the field index from the field name.
-     * This method takes is case sensitive and only matches the data source
+     * This method is case sensitive and only matches the data source
      * name of the field.
      *
      * \param fieldName The name of the field.
@@ -280,8 +291,10 @@ class CORE_EXPORT QgsFields
      */
     int lookupField( const QString &fieldName ) const;
 
-    //! Utility function to get list of attribute indexes
-    //! \since QGIS 2.4
+    /**
+     * Utility function to get list of attribute indexes
+     * \since QGIS 2.4
+     */
     QgsAttributeList allAttributesList() const;
 
     //! Utility function to return a list of QgsField instances
@@ -292,7 +305,8 @@ class CORE_EXPORT QgsFields
     //! \since QGIS 2.6
     bool operator!=( const QgsFields &other ) const { return !( *this == other ); }
 
-    /** Returns an icon corresponding to a field index, based on the field's type and source
+    /**
+     * Returns an icon corresponding to a field index, based on the field's type and source
      * \since QGIS 2.14
      */
     QIcon iconForField( int fieldIdx ) const SIP_FACTORY;
@@ -343,8 +357,8 @@ class CORE_EXPORT QgsFields
         typedef qptrdiff difference_type;
 
         inline iterator()
-          : d( nullptr )
         {}
+
         inline iterator( QgsFields::Field *n )
           : d( n )
         {}
@@ -380,7 +394,8 @@ class CORE_EXPORT QgsFields
         typedef qptrdiff difference_type;
 
         inline const_iterator()
-          : d( nullptr ) {}
+        {}
+
         inline const_iterator( const QgsFields::Field *f )
           : d( f ) {}
         inline const_iterator( const const_iterator &o )

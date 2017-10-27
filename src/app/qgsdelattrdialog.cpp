@@ -23,7 +23,6 @@
 #include "qgssettings.h"
 
 QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
-  : QDialog()
 {
   setupUi( this );
   if ( vl )

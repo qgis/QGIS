@@ -26,7 +26,8 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsProcessingParameterNumber,
-                       QgsProcessingException)
+                       QgsProcessingException,
+                       QgsProcessing)
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
@@ -36,7 +37,7 @@ class ExtendLines(QgisFeatureBasedAlgorithm):
     END_DISTANCE = 'END_DISTANCE'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -57,6 +58,9 @@ class ExtendLines(QgisFeatureBasedAlgorithm):
 
     def outputName(self):
         return self.tr('Extended')
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine]
 
     def prepareAlgorithm(self, parameters, context, feedback):
         self.start_distance = self.parameterAsDouble(parameters, self.START_DISTANCE, context)

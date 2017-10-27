@@ -25,9 +25,9 @@ class QgsGPSDeviceDialog : public QDialog, private Ui::QgsGPSDeviceDialogBase
     explicit QgsGPSDeviceDialog( std::map<QString, QgsGPSDevice *> &devices );
 
   public slots:
-    void on_pbnNewDevice_clicked();
-    void on_pbnDeleteDevice_clicked();
-    void on_pbnUpdateDevice_clicked();
+    void pbnNewDevice_clicked();
+    void pbnDeleteDevice_clicked();
+    void pbnUpdateDevice_clicked();
     void on_pbnClose_clicked();
     void slotUpdateDeviceList( const QString &selection = "" );
     void slotSelectionChanged( QListWidgetItem *current );

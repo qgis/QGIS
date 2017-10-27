@@ -42,8 +42,8 @@
 //QGIS includes
 #include "../qgisplugin.h"
 #include "coordinatecapturemaptool.h"
-#include <qgscoordinatereferencesystem.h>
-#include <qgscoordinatetransform.h>
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 
 //forward declarations
 class QAction;
@@ -81,8 +81,6 @@ class CoordinateCapture: public QObject, public QgisPlugin
      */
     explicit CoordinateCapture( QgisInterface *interface );
 
-    virtual ~CoordinateCapture();
-
   public slots:
     //! init the gui
     virtual void initGui() override;
@@ -99,7 +97,8 @@ class CoordinateCapture: public QObject, public QgisPlugin
     //! Called when mouse clicks on the canvas. Will populate text box with coords.
     void mouseClicked( const QgsPointXY &point );
 
-    /** Called when mouse moved over the canvas. If the tracking button is toggled,
+    /**
+     * Called when mouse moved over the canvas. If the tracking button is toggled,
      * the text box coords will be updated. */
     void mouseMoved( const QgsPointXY &point );
     //! Called when mouse is clicked on the canvas

@@ -45,11 +45,6 @@
 
 QgsGrassRasterProvider::QgsGrassRasterProvider( QString const &uri )
   : QgsRasterDataProvider( uri )
-  , mValid( false )
-  , mGrassDataType( 0 )
-  , mCols( 0 )
-  , mRows( 0 )
-  , mYBlockSize( 0 )
   , mNoDataValue( std::numeric_limits<double>::quiet_NaN() )
 {
   QgsDebugMsg( "QgsGrassRasterProvider: constructing with uri '" + uri + "'." );
@@ -123,7 +118,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const &uri )
   else if ( mGrassDataType == DCELL_TYPE )
   {
     // Don't use numeric limits, raster layer is using
-    //    qAbs( myValue - mNoDataValue ) <= TINY_VALUE
+    //    std::fabs( myValue - mNoDataValue ) <= TINY_VALUE
     // if the mNoDataValue would be a limit, the subtraction could overflow.
     // No data value is shown in GUI, use some nice number.
     // Choose values with small representation error.
@@ -445,7 +440,7 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPointXY &poin
   }
 
   // no data?
-  if ( qIsNaN( value ) || qgsDoubleNear( value, mNoDataValue ) )
+  if ( std::isnan( value ) || qgsDoubleNear( value, mNoDataValue ) )
   {
     return noDataResult;
   }
@@ -604,11 +599,6 @@ void QgsGrassRasterProvider::thaw()
 }
 
 //-------------------------------- QgsGrassRasterValue ----------------------------------------
-
-QgsGrassRasterValue::QgsGrassRasterValue()
-  : mProcess( 0 )
-{
-}
 
 QgsGrassRasterValue::~QgsGrassRasterValue()
 {

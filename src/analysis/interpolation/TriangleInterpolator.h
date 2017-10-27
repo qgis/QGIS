@@ -17,12 +17,17 @@
 #ifndef TINTERPOLATOR_H
 #define TINTERPOLATOR_H
 
-#include <qgspoint.h>
-#include <Vector3D.h>
+#include "qgspoint.h"
+#include "Vector3D.h"
 #include "qgis_analysis.h"
 
-/** \ingroup analysis
- * This is an interface for interpolator classes for triangulations*/
+#define SIP_NO_FILE
+
+/**
+ * \ingroup analysis
+ * This is an interface for interpolator classes for triangulations.
+ * \note Not available in Python bindings.
+*/
 class ANALYSIS_EXPORT TriangleInterpolator
 {
   public:

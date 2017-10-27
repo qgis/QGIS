@@ -269,10 +269,9 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
       defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ), QLatin1String( "" ) );
       break;
     default:
-      defaultSymbol = QLatin1String( "" );
       break;
   }
-  if ( defaultSymbol != QLatin1String( "" ) )
+  if ( !defaultSymbol.isEmpty() )
     s = QgsStyle::defaultStyle()->symbol( defaultSymbol );
 
   // if no default found for this type, get global default (as previously)
@@ -308,7 +307,7 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   s->setOpacity( opacity );
 
   // set random color, it project prefs allow
-  if ( defaultSymbol == QLatin1String( "" ) ||
+  if ( defaultSymbol.isEmpty() ||
        QgsProject::instance()->readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) )
   {
     s->setColor( QColor::fromHsv( qrand() % 360, 64 + qrand() % 192, 128 + qrand() % 128 ) );
@@ -675,7 +674,7 @@ class ExpressionContextScopePopper
 
 void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker, int currentVertexMarkerType, int currentVertexMarkerSize )
 {
-  QgsGeometry geom = feature.geometry();
+  const QgsGeometry geom = feature.geometry();
   if ( geom.isNull() )
   {
     return;
@@ -683,14 +682,14 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
   QgsGeometry segmentizedGeometry = geom;
   bool usingSegmentizedGeometry = false;
-  context.setGeometry( geom.geometry() );
+  context.setGeometry( geom.constGet() );
 
   bool tileMapRendering = context.testFlag( QgsRenderContext::RenderMapTile );
 
   //convert curve types to normal point/line/polygon ones
-  if ( QgsWkbTypes::isCurvedType( geom.geometry()->wkbType() ) )
+  if ( QgsWkbTypes::isCurvedType( geom.constGet()->wkbType() ) )
   {
-    QgsAbstractGeometry *g = geom.geometry()->segmentize( context.segmentationTolerance(), context.segmentationToleranceType() );
+    QgsAbstractGeometry *g = geom.constGet()->segmentize( context.segmentationTolerance(), context.segmentationToleranceType() );
     if ( !g )
     {
       return;
@@ -699,7 +698,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     usingSegmentizedGeometry = true;
   }
 
-  mSymbolRenderContext->setGeometryPartCount( segmentizedGeometry.geometry()->partCount() );
+  mSymbolRenderContext->setGeometryPartCount( segmentizedGeometry.constGet()->partCount() );
   mSymbolRenderContext->setGeometryPartNum( 1 );
 
   ExpressionContextScopePopper scopePopper;
@@ -730,7 +729,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     segmentizedGeometry = simplifier.simplify( segmentizedGeometry );
   }
 
-  switch ( QgsWkbTypes::flatType( segmentizedGeometry.geometry()->wkbType() ) )
+  switch ( QgsWkbTypes::flatType( segmentizedGeometry.constGet()->wkbType() ) )
   {
     case QgsWkbTypes::Point:
     {
@@ -740,7 +739,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         break;
       }
 
-      const QgsPoint *point = static_cast< const QgsPoint * >( segmentizedGeometry.geometry() );
+      const QgsPoint *point = static_cast< const QgsPoint * >( segmentizedGeometry.constGet() );
       const QPointF pt = _getPoint( context, *point );
       static_cast<QgsMarkerSymbol *>( this )->renderPoint( pt, &feature, context, layer, selected );
 
@@ -765,7 +764,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         QgsDebugMsg( "linestring can be drawn only with line symbol!" );
         break;
       }
-      const QgsCurve &curve = dynamic_cast<const QgsCurve &>( *segmentizedGeometry.geometry() );
+      const QgsCurve &curve = dynamic_cast<const QgsCurve &>( *segmentizedGeometry.constGet() );
       const QPolygonF pts = _getLineString( context, curve, !tileMapRendering && clipFeaturesToExtent() );
       static_cast<QgsLineSymbol *>( this )->renderPolyline( pts, &feature, context, layer, selected );
 
@@ -776,6 +775,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     }
     break;
     case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::Triangle:
     {
       QPolygonF pts;
       QList<QPolygonF> holes;
@@ -784,7 +784,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         QgsDebugMsg( "polygon can be drawn only with fill symbol!" );
         break;
       }
-      const QgsPolygonV2 &polygon = dynamic_cast<const QgsPolygonV2 &>( *segmentizedGeometry.geometry() );
+      const QgsPolygonV2 &polygon = dynamic_cast<const QgsPolygonV2 &>( *segmentizedGeometry.constGet() );
       if ( !polygon.exteriorRing() )
       {
         QgsDebugMsg( "cannot render polygon with no exterior ring" );
@@ -813,7 +813,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         break;
       }
 
-      const QgsMultiPointV2 &mp = static_cast< const QgsMultiPointV2 & >( *segmentizedGeometry.geometry() );
+      const QgsMultiPointV2 &mp = static_cast< const QgsMultiPointV2 & >( *segmentizedGeometry.constGet() );
 
       if ( drawVertexMarker && !usingSegmentizedGeometry )
       {
@@ -846,7 +846,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         break;
       }
 
-      const QgsGeometryCollection &geomCollection = dynamic_cast<const QgsGeometryCollection &>( *segmentizedGeometry.geometry() );
+      const QgsGeometryCollection &geomCollection = dynamic_cast<const QgsGeometryCollection &>( *segmentizedGeometry.constGet() );
 
       const unsigned int num = geomCollection.numGeometries();
       for ( unsigned int i = 0; i < num; ++i )
@@ -856,7 +856,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
         context.setGeometry( geomCollection.geometryN( i ) );
         const QgsCurve &curve = dynamic_cast<const QgsCurve &>( *geomCollection.geometryN( i ) );
-        const QPolygonF pts =  _getLineString( context, curve, !tileMapRendering && clipFeaturesToExtent() );
+        const QPolygonF pts = _getLineString( context, curve, !tileMapRendering && clipFeaturesToExtent() );
         static_cast<QgsLineSymbol *>( this )->renderPolyline( pts, &feature, context, layer, selected );
 
         if ( drawVertexMarker && !usingSegmentizedGeometry )
@@ -886,7 +886,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       QPolygonF pts;
       QList<QPolygonF> holes;
 
-      const QgsGeometryCollection &geomCollection = dynamic_cast<const QgsGeometryCollection &>( *segmentizedGeometry.geometry() );
+      const QgsGeometryCollection &geomCollection = dynamic_cast<const QgsGeometryCollection &>( *segmentizedGeometry.constGet() );
       const unsigned int num = geomCollection.numGeometries();
 
       // Sort components by approximate area (probably a bit faster than using
@@ -939,7 +939,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     }
     case QgsWkbTypes::GeometryCollection:
     {
-      const QgsGeometryCollection &geomCollection = dynamic_cast<const QgsGeometryCollection &>( *segmentizedGeometry.geometry() );
+      const QgsGeometryCollection &geomCollection = dynamic_cast<const QgsGeometryCollection &>( *segmentizedGeometry.constGet() );
       if ( geomCollection.numGeometries() == 0 )
       {
         // skip noise from empty geometry collections from simplification
@@ -951,13 +951,13 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     default:
       QgsDebugMsg( QString( "feature %1: unsupported wkb type %2/%3 for rendering" )
                    .arg( feature.id() )
-                   .arg( QgsWkbTypes::displayString( geom.geometry()->wkbType() ) )
+                   .arg( QgsWkbTypes::displayString( geom.constGet()->wkbType() ) )
                    .arg( geom.wkbType(), 0, 16 ) );
   }
 
   if ( drawVertexMarker )
   {
-    if ( markers.size() > 0 )
+    if ( !markers.isEmpty() )
     {
       Q_FOREACH ( QPointF marker, markers )
       {
@@ -973,7 +973,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       QgsVertexId vertexId;
       double x, y, z;
       QPointF mapPoint;
-      while ( geom.geometry()->nextVertex( vertexId, vertexPoint ) )
+      while ( geom.constGet()->nextVertex( vertexId, vertexPoint ) )
       {
         //transform
         x = vertexPoint.x();

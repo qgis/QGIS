@@ -24,10 +24,6 @@
 #include "qgsproperty.h"
 #include <cmath>
 
-#ifndef M_SQRT2
-#define M_SQRT2 1.41421356237309504880
-#endif
-
 QgsPointClusterRenderer::QgsPointClusterRenderer()
   : QgsPointDistanceRenderer( QStringLiteral( "pointCluster" ) )
 {
@@ -128,7 +124,7 @@ QgsMarkerSymbol *QgsPointClusterRenderer::clusterSymbol()
 QDomElement QgsPointClusterRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElement = doc.createElement( RENDERER_TAG_NAME );
-  rendererElement.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
+  rendererElement.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
   rendererElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "pointCluster" ) );
   rendererElement.setAttribute( QStringLiteral( "tolerance" ), QString::number( mTolerance ) );
   rendererElement.setAttribute( QStringLiteral( "toleranceUnit" ), QgsUnitTypes::encodeUnit( mToleranceUnit ) );
@@ -154,7 +150,7 @@ QDomElement QgsPointClusterRenderer::save( QDomDocument &doc, const QgsReadWrite
     mOrderBy.save( orderBy );
     rendererElement.appendChild( orderBy );
   }
-  rendererElement.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElement.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   return rendererElement;
 }

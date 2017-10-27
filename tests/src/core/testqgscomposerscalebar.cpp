@@ -36,12 +36,7 @@ class TestQgsComposerScaleBar : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerScaleBar()
-      : mComposition( 0 )
-      , mComposerMap( 0 )
-      , mComposerScaleBar( 0 )
-      , mRasterLayer( 0 )
-    {}
+    TestQgsComposerScaleBar() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -205,10 +200,10 @@ void TestQgsComposerScaleBar::tick()
 
 void TestQgsComposerScaleBar::dataDefined()
 {
-  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarFillColor, QgsProperty::fromExpression( "'red'" ) );
-  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarFillColor2, QgsProperty::fromExpression( "'blue'" ) );
-  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarLineColor, QgsProperty::fromExpression( "'yellow'" ) );
-  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarLineWidth, QgsProperty::fromExpression( "1.2" ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarFillColor, QgsProperty::fromExpression( QStringLiteral( "'red'" ) ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarFillColor2, QgsProperty::fromExpression( QStringLiteral( "'blue'" ) ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarLineColor, QgsProperty::fromExpression( QStringLiteral( "'yellow'" ) ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarLineWidth, QgsProperty::fromExpression( QStringLiteral( "1.2" ) ) );
   mComposerScaleBar->refreshDataDefinedProperty();
   QCOMPARE( mComposerScaleBar->brush().color().name(), QColor( 255, 0, 0 ).name() );
   QCOMPARE( mComposerScaleBar->brush2().color().name(), QColor( 0, 0, 255 ).name() );

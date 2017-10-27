@@ -512,15 +512,15 @@ class FeatureSourceTestCase(object):
         request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'))
         features = {f['pk']: f for f in self.source.getFeatures(request)}
         # test that features have been reprojected
-        self.assertAlmostEqual(features[1].geometry().geometry().x(), -7829322, -5)
-        self.assertAlmostEqual(features[1].geometry().geometry().y(), 9967753, -5)
-        self.assertAlmostEqual(features[2].geometry().geometry().x(), -7591989, -5)
-        self.assertAlmostEqual(features[2].geometry().geometry().y(), 11334232, -5)
+        self.assertAlmostEqual(features[1].geometry().constGet().x(), -7829322, -5)
+        self.assertAlmostEqual(features[1].geometry().constGet().y(), 9967753, -5)
+        self.assertAlmostEqual(features[2].geometry().constGet().x(), -7591989, -5)
+        self.assertAlmostEqual(features[2].geometry().constGet().y(), 11334232, -5)
         self.assertFalse(features[3].hasGeometry())
-        self.assertAlmostEqual(features[4].geometry().geometry().x(), -7271389, -5)
-        self.assertAlmostEqual(features[4].geometry().geometry().y(), 14531322, -5)
-        self.assertAlmostEqual(features[5].geometry().geometry().x(), -7917376, -5)
-        self.assertAlmostEqual(features[5].geometry().geometry().y(), 14493008, -5)
+        self.assertAlmostEqual(features[4].geometry().constGet().x(), -7271389, -5)
+        self.assertAlmostEqual(features[4].geometry().constGet().y(), 14531322, -5)
+        self.assertAlmostEqual(features[5].geometry().constGet().x(), -7917376, -5)
+        self.assertAlmostEqual(features[5].geometry().constGet().y(), 14493008, -5)
 
         # when destination crs is set, filter rect should be in destination crs
         rect = QgsRectangle(-7650000, 10500000, -7200000, 15000000)
@@ -528,10 +528,10 @@ class FeatureSourceTestCase(object):
         features = {f['pk']: f for f in self.source.getFeatures(request)}
         self.assertEqual(set(features.keys()), {2, 4})
         # test that features have been reprojected
-        self.assertAlmostEqual(features[2].geometry().geometry().x(), -7591989, -5)
-        self.assertAlmostEqual(features[2].geometry().geometry().y(), 11334232, -5)
-        self.assertAlmostEqual(features[4].geometry().geometry().x(), -7271389, -5)
-        self.assertAlmostEqual(features[4].geometry().geometry().y(), 14531322, -5)
+        self.assertAlmostEqual(features[2].geometry().constGet().x(), -7591989, -5)
+        self.assertAlmostEqual(features[2].geometry().constGet().y(), 11334232, -5)
+        self.assertAlmostEqual(features[4].geometry().constGet().x(), -7271389, -5)
+        self.assertAlmostEqual(features[4].geometry().constGet().y(), 14531322, -5)
 
         # bad rect for transform
         rect = QgsRectangle(-99999999999, 99999999999, -99999999998, 99999999998)
@@ -647,3 +647,7 @@ class FeatureSourceTestCase(object):
     def testMaximumValue(self):
         self.assertEqual(self.source.maximumValue(1), 400)
         self.assertEqual(self.source.maximumValue(2), 'Pear')
+
+    def testAllFeatureIds(self):
+        ids = set([f.id() for f in self.source.getFeatures()])
+        self.assertEqual(set(self.source.allFeatureIds()), ids)

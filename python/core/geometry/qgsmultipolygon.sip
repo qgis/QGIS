@@ -21,11 +21,12 @@ class QgsMultiPolygonV2: QgsMultiSurface
   public:
     QgsMultiPolygonV2();
     virtual QString geometryType() const;
+
+    virtual void clear();
+
     virtual QgsMultiPolygonV2 *clone() const /Factory/;
 
-
     virtual bool fromWkt( const QString &wkt );
-
 
     virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
@@ -33,27 +34,29 @@ class QgsMultiPolygonV2: QgsMultiSurface
 
     virtual QString asJSON( int precision = 17 ) const;
 
-
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
-%Docstring
-Adds a geometry and takes ownership. Returns true in case of success
- :rtype: bool
-%End
 
-    virtual QgsAbstractGeometry *toCurveType() const /Factory/;
+    virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
+
+
+    virtual QgsMultiSurface *toCurveType() const /Factory/;
 
 %Docstring
  Returns the geometry converted to the more generic curve type QgsMultiSurface
 :return: the converted geometry. Caller takes ownership*
- :rtype: QgsAbstractGeometry
+ :rtype: QgsMultiSurface
 %End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
+
   protected:
+    virtual QgsMultiPolygonV2 *createEmptyWithSameType() const /Factory/;
 
     virtual bool wktOmitChildType() const;
+
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

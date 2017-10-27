@@ -22,8 +22,6 @@
 #include <QTime>
 #include <QStringList>
 
-#include <qmath.h>
-
 #include "qgslogger.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterhistogram.h"
@@ -32,7 +30,6 @@
 
 QgsRasterInterface::QgsRasterInterface( QgsRasterInterface *input )
   : mInput( input )
-  , mOn( true )
 {
 }
 
@@ -62,7 +59,7 @@ void QgsRasterInterface::initStatistics( QgsRasterBandStats &statistics,
   {
     // Calc resolution from theSampleSize
     double xRes, yRes;
-    xRes = yRes = sqrt( ( finalExtent.width() * finalExtent.height() ) / sampleSize );
+    xRes = yRes = std::sqrt( ( finalExtent.width() * finalExtent.height() ) / sampleSize );
 
     // But limit by physical resolution
     if ( capabilities() & Size )
@@ -173,8 +170,8 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
         return myRasterBandStats;
 
       QgsDebugMsgLevel( QString( "myYBlock = %1 myXBlock = %2" ).arg( myYBlock ).arg( myXBlock ), 4 );
-      int myBlockWidth = qMin( myXBlockSize, myWidth - myXBlock * myXBlockSize );
-      int myBlockHeight = qMin( myYBlockSize, myHeight - myYBlock * myYBlockSize );
+      int myBlockWidth = std::min( myXBlockSize, myWidth - myXBlock * myXBlockSize );
+      int myBlockHeight = std::min( myYBlockSize, myHeight - myYBlock * myYBlockSize );
 
       double xmin = myExtent.xMinimum() + myXBlock * myXBlockSize * myXRes;
       double xmax = xmin + myBlockWidth * myXRes;
@@ -230,7 +227,7 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
   // stdDev may differ  from GDAL stats, because GDAL is using naive single pass
   // algorithm which is more error prone (because of rounding errors)
   // Divide result by sample size - 1 and get square root to get stdev
-  myRasterBandStats.stdDev = sqrt( mySumOfSquares / ( myRasterBandStats.elementCount - 1 ) );
+  myRasterBandStats.stdDev = std::sqrt( mySumOfSquares / ( myRasterBandStats.elementCount - 1 ) );
 
   QgsDebugMsgLevel( "************ STATS **************", 4 );
   QgsDebugMsgLevel( QString( "MIN %1" ).arg( myRasterBandStats.minimumValue ), 4 );
@@ -260,7 +257,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
 
   int mySrcDataType = sourceDataType( bandNo );
 
-  if ( qIsNaN( histogram.minimum ) )
+  if ( std::isnan( histogram.minimum ) )
   {
     // TODO: this was OK when stats/histogram were calced in provider,
     // but what TODO in other interfaces? Check for mInput for now.
@@ -277,7 +274,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
       histogram.minimum = stats.minimumValue;
     }
   }
-  if ( qIsNaN( histogram.maximum ) )
+  if ( std::isnan( histogram.maximum ) )
   {
     if ( !mInput && mySrcDataType == Qgis::Byte )
     {
@@ -305,7 +302,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
   {
     // Calc resolution from theSampleSize
     double xRes, yRes;
-    xRes = yRes = sqrt( ( finalExtent.width() * finalExtent.height() ) / sampleSize );
+    xRes = yRes = std::sqrt( ( finalExtent.width() * finalExtent.height() ) / sampleSize );
 
     // But limit by physical resolution
     if ( capabilities() & Size )
@@ -357,7 +354,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
              mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 ) )
       {
         if ( myBinCount > histogram.maximum - histogram.minimum + 1 )
-          myBinCount = int( ceil( histogram.maximum - histogram.minimum + 1 ) );
+          myBinCount = int( std::ceil( histogram.maximum - histogram.minimum + 1 ) );
       }
     }
   }
@@ -458,8 +455,8 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
       if ( feedback && feedback->isCanceled() )
         return myHistogram;
 
-      int myBlockWidth = qMin( myXBlockSize, myWidth - myXBlock * myXBlockSize );
-      int myBlockHeight = qMin( myYBlockSize, myHeight - myYBlock * myYBlockSize );
+      int myBlockWidth = std::min( myXBlockSize, myWidth - myXBlock * myXBlockSize );
+      int myBlockHeight = std::min( myYBlockSize, myHeight - myYBlock * myYBlockSize );
 
       double xmin = myExtent.xMinimum() + myXBlock * myXBlockSize * myXRes;
       double xmax = xmin + myBlockWidth * myXRes;
@@ -479,7 +476,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
         }
         double myValue = blk->value( i );
 
-        int myBinIndex = static_cast <int>( qFloor( ( myValue - myMinimum ) /  myBinSize ) );
+        int myBinIndex = static_cast <int>( std::floor( ( myValue - myMinimum ) /  myBinSize ) );
 
         if ( ( myBinIndex < 0 || myBinIndex > ( myBinCount - 1 ) ) && !includeOutOfRange )
         {
@@ -500,7 +497,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
 
 #ifdef QGISDEBUG
   QString hist;
-  for ( int i = 0; i < qMin( myHistogram.histogramVector.size(), 500 ); i++ )
+  for ( int i = 0; i < std::min( myHistogram.histogramVector.size(), 500 ); i++ )
   {
     hist += QString::number( myHistogram.histogramVector.value( i ) ) + ' ';
   }
@@ -530,14 +527,14 @@ void QgsRasterInterface::cumulativeCut( int bandNo,
     return;
 
   // for byte bands make sure bin count == actual range
-  int myBinCount = ( mySrcDataType == Qgis::Byte ) ? int( ceil( stats.maximumValue - stats.minimumValue + 1 ) ) : 0;
+  int myBinCount = ( mySrcDataType == Qgis::Byte ) ? int( std::ceil( stats.maximumValue - stats.minimumValue + 1 ) ) : 0;
   QgsRasterHistogram myHistogram = histogram( bandNo, myBinCount, stats.minimumValue, stats.maximumValue, extent, sampleSize );
   //QgsRasterHistogram myHistogram = histogram( bandNo, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), extent, sampleSize );
 
   double myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / myHistogram.binCount;
   int myCount = 0;
-  int myMinCount = static_cast< int >( qRound( lowerCount * myHistogram.nonNullCount ) );
-  int myMaxCount = static_cast< int >( qRound( upperCount * myHistogram.nonNullCount ) );
+  int myMinCount = static_cast< int >( std::round( lowerCount * myHistogram.nonNullCount ) );
+  int myMaxCount = static_cast< int >( std::round( upperCount * myHistogram.nonNullCount ) );
   bool myLowerFound = false;
   QgsDebugMsgLevel( QString( "binCount = %1 minimum = %2 maximum = %3 myBinXStep = %4" ).arg( myHistogram.binCount ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myBinXStep ), 4 );
   QgsDebugMsgLevel( QString( "myMinCount = %1 myMaxCount = %2" ).arg( myMinCount ).arg( myMaxCount ), 4 );
@@ -566,9 +563,9 @@ void QgsRasterInterface::cumulativeCut( int bandNo,
        mySrcDataType == Qgis::UInt16 || mySrcDataType == Qgis::UInt32 )
   {
     if ( lowerValue != std::numeric_limits<double>::quiet_NaN() )
-      lowerValue = floor( lowerValue );
+      lowerValue = std::floor( lowerValue );
     if ( upperValue != std::numeric_limits<double>::quiet_NaN() )
-      upperValue = ceil( upperValue );
+      upperValue = std::ceil( upperValue );
   }
 }
 

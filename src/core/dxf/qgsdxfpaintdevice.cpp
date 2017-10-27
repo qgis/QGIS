@@ -18,7 +18,7 @@
 #include "qgsdxfpaintdevice.h"
 #include "qgsdxfpaintengine.h"
 
-QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport *dxf ): QPaintDevice(), mPaintEngine( nullptr )
+QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport *dxf )
 {
   mPaintEngine = new QgsDxfPaintEngine( this, dxf );
 }

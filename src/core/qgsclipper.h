@@ -32,7 +32,8 @@ class QgsCurve;
 SIP_FEATURE( ARM ) // Some parts are not available in sip bindings on ARM because of qreal double vs. float issues
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A class to trim lines and polygons to within a rectangular region.
  * The functions in this class are likely to be called from within a
  * render loop and hence need to as CPU efficient as possible.
@@ -99,7 +100,8 @@ class CORE_EXPORT QgsClipper
 
     static void trimPolygon( QPolygonF &pts, const QgsRectangle &clipRect );
 
-    /** Takes a linestring and clips it to clipExtent
+    /**
+     * Takes a linestring and clips it to clipExtent
      * \param curve the linestring
      * \param clipExtent clipping bounds
      * \returns clipped line coordinates
@@ -140,7 +142,8 @@ class CORE_EXPORT QgsClipper
     //Implementation of 'Fast clipping' algorithm (Sobkow et al. 1987, Computers & Graphics Vol.11, 4, p.459-467)
     static bool clipLineSegment( double xLeft, double xRight, double yBottom, double yTop, double &x0, double &y0, double &x1, double &y1 );
 
-    /** Connects two lines split by the clip (by inserting points on the clip border)
+    /**
+     * Connects two lines split by the clip (by inserting points on the clip border)
       \param x0 x-coordinate of the first line end
       \param y0 y-coordinate of the first line end
       \param x1 x-coordinate of the second line start
@@ -234,8 +237,8 @@ inline void QgsClipper::trimFeatureToBoundary(
     // look at each edge of the polygon in turn
 
     //ignore segments with nan or inf coordinates
-    if ( qIsNaN( inX[i2] ) || qIsNaN( inY[i2] ) || qIsInf( inX[i2] ) || qIsInf( inY[i2] )
-         || qIsNaN( inX[i1] ) || qIsNaN( inY[i1] ) || qIsInf( inX[i1] ) || qIsInf( inY[i1] ) )
+    if ( std::isnan( inX[i2] ) || std::isnan( inY[i2] ) || std::isinf( inX[i2] ) || std::isinf( inY[i2] )
+         || std::isnan( inX[i1] ) || std::isnan( inY[i1] ) || std::isinf( inX[i1] ) || std::isinf( inY[i1] ) )
     {
       i1 = i2;
       continue;
@@ -395,7 +398,7 @@ inline QgsPointXY QgsClipper::intersect( const double x1, const double y1,
 
   QgsPointXY p;
 
-  if ( qAbs( r_d ) > SMALL_NUM && qAbs( r_n ) > SMALL_NUM )
+  if ( std::fabs( r_d ) > SMALL_NUM && std::fabs( r_n ) > SMALL_NUM )
   {
     // they cross
     double r = r_n / r_d;
@@ -405,7 +408,7 @@ inline QgsPointXY QgsClipper::intersect( const double x1, const double y1,
   {
     // Should never get here, but if we do for some reason, cause a
     // clunk because something else is wrong if we do.
-    Q_ASSERT( qAbs( r_d ) > SMALL_NUM && qAbs( r_n ) > SMALL_NUM );
+    Q_ASSERT( std::fabs( r_d ) > SMALL_NUM && std::fabs( r_n ) > SMALL_NUM );
   }
 
   return p;

@@ -28,7 +28,8 @@
 class QDomElement;
 class QgsRasterShader;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Raster renderer pipe for single band pseudocolor.
   */
 class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
@@ -59,7 +60,8 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     //! \note available in Python as constShader
     const QgsRasterShader *shader() const SIP_PYNAME( constShader ) { return mShader.get(); }
 
-    /** Creates a color ramp shader
+    /**
+     * Creates a color ramp shader
      * \param colorRamp vector color ramp
      * \param colorRampType type of color ramp shader
      * \param classificationMode classification mode
@@ -80,12 +82,14 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
     QList<int> usesBands() const override;
 
-    /** Returns the band used by the renderer
+    /**
+     * Returns the band used by the renderer
      * \since QGIS 2.7
      */
     int band() const { return mBand; }
 
-    /** Sets the band used by the renderer.
+    /**
+     * Sets the band used by the renderer.
      * \see band
      * \since QGIS 2.10
      */

@@ -110,11 +110,11 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult cons
       break;
 
     case ConstraintResultFailHard:
-      widget()->setStyleSheet( QStringLiteral( "background-color: #dd7777;" ) );
+      widget()->setStyleSheet( QStringLiteral( "background-color: #FFE0B2;" ) );
       break;
 
     case ConstraintResultFailSoft:
-      widget()->setStyleSheet( QStringLiteral( "background-color: #ffd85d;" ) );
+      widget()->setStyleSheet( QStringLiteral( "background-color: #FFECB3;" ) );
       break;
   }
 }
@@ -186,7 +186,7 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsVectorLayer *layer, int 
       hardConstraintsOk = true;
       softConstraintsOk = false;
 
-      errors << "Invalid feature";
+      errors << QStringLiteral( "Invalid feature" );
 
       toEmit = true;
     }
@@ -195,16 +195,16 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsVectorLayer *layer, int 
   mValidConstraint = hardConstraintsOk && softConstraintsOk;
   mIsBlockingCommit = !hardConstraintsOk;
 
-  mConstraintFailureReason = errors.join( ", " );
+  mConstraintFailureReason = errors.join( QStringLiteral( ", " ) );
 
   if ( toEmit )
   {
     QString errStr = errors.isEmpty() ? tr( "Constraint checks passed" ) : mConstraintFailureReason;
 
-    QString description = descriptions.join( ", " );
+    QString description = descriptions.join( QStringLiteral( ", " ) );
     QString expressionDesc;
     if ( expressions.size() > 1 )
-      expressionDesc = "( " + expressions.join( " ) AND ( " ) + " )";
+      expressionDesc = "( " + expressions.join( QStringLiteral( " ) AND ( " ) ) + " )";
     else if ( !expressions.isEmpty() )
       expressionDesc = expressions.at( 0 );
 

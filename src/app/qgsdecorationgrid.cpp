@@ -110,8 +110,8 @@ void QgsDecorationGrid::projectRead()
   mGridAnnotationPosition = InsideMapFrame; // don't allow outside frame, doesn't make sense
   mGridAnnotationDirection = static_cast< GridAnnotationDirection >( QgsProject::instance()->readNumEntry( mNameConfig,
                              QStringLiteral( "/AnnotationDirection" ), 0 ) );
-  QString fontStr = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/AnnotationFont" ), QLatin1String( "" ) );
-  if ( fontStr != QLatin1String( "" ) )
+  QString fontStr = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/AnnotationFont" ), QString() );
+  if ( !fontStr.isEmpty() )
   {
     mGridAnnotationFont.fromString( fontStr );
   }
@@ -134,7 +134,7 @@ void QgsDecorationGrid::projectRead()
   if ( mLineSymbol )
     setLineSymbol( nullptr );
   xml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/LineSymbol" ) );
-  if ( xml != QLatin1String( "" ) )
+  if ( !xml.isEmpty() )
   {
     doc.setContent( xml );
     elem = doc.documentElement();
@@ -146,7 +146,7 @@ void QgsDecorationGrid::projectRead()
   if ( mMarkerSymbol )
     setMarkerSymbol( nullptr );
   xml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/MarkerSymbol" ) );
-  if ( xml != QLatin1String( "" ) )
+  if ( !xml.isEmpty() )
   {
     doc.setContent( xml );
     elem = doc.documentElement();
@@ -582,7 +582,7 @@ int QgsDecorationGrid::xGridLines( const QgsMapSettings &mapSettings, QList< QPa
   QLineF lineWest( mapPolygon[3], mapPolygon[0] );
 
   double len = lineEast.length();
-  Q_ASSERT( fabs( len - lineWest.length() ) < 1e-6 ); // no shear
+  Q_ASSERT( std::fabs( len - lineWest.length() ) < 1e-6 ); // no shear
 
   double roundCorrection = mapBoundingRect.top() > 0 ? 1.0 : 0.0;
   double dist = static_cast< int >( ( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + roundCorrection ) * mGridIntervalY + mGridOffsetY;
@@ -626,7 +626,7 @@ int QgsDecorationGrid::yGridLines( const QgsMapSettings &mapSettings, QList< QPa
   QLineF lineNorth( mapPolygon[0], mapPolygon[1] );
 
   double len = lineSouth.length();
-  Q_ASSERT( fabs( len - lineNorth.length() ) < 1e-6 ); // no shear
+  Q_ASSERT( std::fabs( len - lineNorth.length() ) < 1e-6 ); // no shear
 
   const QRectF &mapBoundingRect = mapPolygon.boundingRect();
   double roundCorrection = mapBoundingRect.left() > 0 ? 1.0 : 0.0;
@@ -753,11 +753,9 @@ bool QgsDecorationGrid::isDirty()
 {
   // checks if stored map units is undefined or different from canvas map units
   // or if interval is 0
-  if ( mMapUnits == QgsUnitTypes::DistanceUnknownUnit ||
-       mMapUnits != QgisApp::instance()->mapCanvas()->mapSettings().mapUnits() ||
-       qgsDoubleNear( mGridIntervalX, 0.0 ) || qgsDoubleNear( mGridIntervalY, 0.0 ) )
-    return true;
-  return false;
+  return mMapUnits == QgsUnitTypes::DistanceUnknownUnit ||
+         mMapUnits != QgisApp::instance()->mapCanvas()->mapSettings().mapUnits() ||
+         qgsDoubleNear( mGridIntervalX, 0.0 ) || qgsDoubleNear( mGridIntervalY, 0.0 );
 }
 
 void QgsDecorationGrid::setDirty( bool dirty )
@@ -787,10 +785,10 @@ bool QgsDecorationGrid::getIntervalFromExtent( double *values, bool useXAxis )
   if ( !qgsDoubleNear( interval, 0.0 ) )
   {
     double interval2 = 0;
-    int factor =  pow( 10, floor( log10( interval ) ) );
+    int factor = std::pow( 10, std::floor( std::log10( interval ) ) );
     if ( factor != 0 )
     {
-      interval2 = qRound( interval / factor ) * factor;
+      interval2 = std::round( interval / factor ) * factor;
       QgsDebugMsg( QString( "interval2: %1" ).arg( interval2 ) );
       if ( !qgsDoubleNear( interval2, 0.0 ) )
         interval = interval2;
@@ -836,15 +834,15 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double *values )
   // TODO add a function in QgsRasterLayer to get x/y resolution from provider,
   // because this might not be 100% accurate
   QgsRectangle extent = rlayer->extent();
-  values[0] = fabs( extent.xMaximum() - extent.xMinimum() ) / rlayer->width();
-  values[1] = fabs( extent.yMaximum() - extent.yMinimum() ) / rlayer->height();
+  values[0] = std::fabs( extent.xMaximum() - extent.xMinimum() ) / rlayer->width();
+  values[1] = std::fabs( extent.yMaximum() - extent.yMinimum() ) / rlayer->height();
 
   // calculate offset - when using very high resolution rasters in geographic CRS
   // there seems to be a small shift, but this may be due to rendering issues and depends on zoom
   double ratio = extent.xMinimum() / values[0];
-  values[2] = ( ratio - floor( ratio ) ) * values[0];
+  values[2] = ( ratio - std::floor( ratio ) ) * values[0];
   ratio = extent.yMinimum() / values[1];
-  values[3] = ( ratio - floor( ratio ) ) * values[1];
+  values[3] = ( ratio - std::floor( ratio ) ) * values[1];
 
   QgsDebugMsg( QString( "xmax: %1 xmin: %2 width: %3 xInterval: %4 xOffset: %5" ).arg(
                  extent.xMaximum() ).arg( extent.xMinimum() ).arg( rlayer->width() ).arg( values[0] ).arg( values[2] ) );

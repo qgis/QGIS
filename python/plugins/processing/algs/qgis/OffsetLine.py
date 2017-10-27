@@ -48,7 +48,7 @@ class OffsetLine(QgisFeatureBasedAlgorithm):
     MITER_LIMIT = 'MITER_LIMIT'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -86,6 +86,9 @@ class OffsetLine(QgisFeatureBasedAlgorithm):
 
     def outputName(self):
         return self.tr('Offset')
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine]
 
     def outputType(self):
         return QgsProcessing.TypeVectorLine

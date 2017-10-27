@@ -81,10 +81,6 @@ namespace
 
 } // namespace
 
-QgsServiceRegistry::QgsServiceRegistry()
-{
-}
-
 QgsServiceRegistry::~QgsServiceRegistry()
 {
   cleanUp();

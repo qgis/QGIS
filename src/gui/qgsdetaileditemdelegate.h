@@ -28,7 +28,8 @@ class QgsDetailedItemData;
 class QFontMetrics;
 class QFont;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A custom model/view delegate that can display an icon, heading
  * and detail sections.
  * \see also QgsDetailedItemData

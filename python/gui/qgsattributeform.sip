@@ -165,6 +165,12 @@ class QgsAttributeForm : QWidget
 .. versionadded:: 3.0
 %End
 
+    void flashFeatures( const QString &filter );
+%Docstring
+ Emitted when the user chooses to flash a filtered set of features.
+.. versionadded:: 3.0
+%End
+
   public slots:
 
     void changeAttribute( const QString &field, const QVariant &value, const QString &hintText = QString() );

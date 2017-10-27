@@ -21,7 +21,6 @@
  ***************************************************************************/
 
 #include "qgis.h" // GEO_EPSG_CRS_ID
-#include "qgscontexthelp.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
 #include "qgsprojectionselectiondialog.h"
@@ -57,9 +56,24 @@
 QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mService( service )
-  , mCurrentTileset( nullptr )
+
 {
   setupUi( this );
+  connect( mNewButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mNewButton_clicked );
+  connect( mEditButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mEditButton_clicked );
+  connect( mDeleteButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mDeleteButton_clicked );
+  connect( mSaveButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mSaveButton_clicked );
+  connect( mLoadButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mLoadButton_clicked );
+  connect( mConnectButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mConnectButton_clicked );
+  connect( mChangeCRSButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mChangeCRSButton_clicked );
+  connect( mLayersTreeWidget, &QTreeWidget::itemSelectionChanged, this, &QgsOWSSourceSelect::mLayersTreeWidget_itemSelectionChanged );
+  connect( mConnectionsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsOWSSourceSelect::mConnectionsComboBox_activated );
+  connect( mAddDefaultButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mAddDefaultButton_clicked );
+  connect( mSearchButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mSearchButton_clicked );
+  connect( mSearchTableWidget, &QTableWidget::itemSelectionChanged, this, &QgsOWSSourceSelect::mSearchTableWidget_itemSelectionChanged );
+  connect( mTilesetsTableWidget, &QTableWidget::itemClicked, this, &QgsOWSSourceSelect::mTilesetsTableWidget_itemClicked );
+  connect( mLayerUpButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mLayerUpButton_clicked );
+  connect( mLayerDownButton, &QPushButton::clicked, this, &QgsOWSSourceSelect::mLayerDownButton_clicked );
   setupButtons( buttonBox );
 
 
@@ -230,9 +244,23 @@ void QgsOWSSourceSelect::populateConnectionList()
 
   setConnectionListPosition();
 }
-void QgsOWSSourceSelect::on_mNewButton_clicked()
+
+QgsNewHttpConnection::ConnectionType connectionTypeFromServiceString( const QString &string )
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + '/' );
+  if ( string.compare( QStringLiteral( "wms" ), Qt::CaseInsensitive ) == 0 )
+    return QgsNewHttpConnection::ConnectionWms;
+  else if ( string.compare( QStringLiteral( "wfs" ), Qt::CaseInsensitive ) == 0 )
+    return QgsNewHttpConnection::ConnectionWfs;
+  else if ( string.compare( QStringLiteral( "wcs" ), Qt::CaseInsensitive ) == 0 )
+    return QgsNewHttpConnection::ConnectionWcs;
+  else
+    return QgsNewHttpConnection::ConnectionWms;
+}
+
+void QgsOWSSourceSelect::mNewButton_clicked()
+{
+  QgsNewHttpConnection::ConnectionType type = connectionTypeFromServiceString( mService );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, type, "/qgis/connections-" + mService.toLower() + '/' );
 
   if ( nc->exec() )
   {
@@ -243,9 +271,10 @@ void QgsOWSSourceSelect::on_mNewButton_clicked()
   delete nc;
 }
 
-void QgsOWSSourceSelect::on_mEditButton_clicked()
+void QgsOWSSourceSelect::mEditButton_clicked()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, "/Qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
+  QgsNewHttpConnection::ConnectionType type = connectionTypeFromServiceString( mService );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, type, "/qgis/connections-" + mService.toLower() + '/', mConnectionsComboBox->currentText() );
 
   if ( nc->exec() )
   {
@@ -256,7 +285,7 @@ void QgsOWSSourceSelect::on_mEditButton_clicked()
   delete nc;
 }
 
-void QgsOWSSourceSelect::on_mDeleteButton_clicked()
+void QgsOWSSourceSelect::mDeleteButton_clicked()
 {
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
                 .arg( mConnectionsComboBox->currentText() );
@@ -270,13 +299,13 @@ void QgsOWSSourceSelect::on_mDeleteButton_clicked()
   }
 }
 
-void QgsOWSSourceSelect::on_mSaveButton_clicked()
+void QgsOWSSourceSelect::mSaveButton_clicked()
 {
   QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::WCS );
   dlg.exec();
 }
 
-void QgsOWSSourceSelect::on_mLoadButton_clicked()
+void QgsOWSSourceSelect::mLoadButton_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), QDir::homePath(),
                      tr( "XML files (*.xml *XML)" ) );
@@ -329,7 +358,7 @@ void QgsOWSSourceSelect::populateLayerList()
 {
 }
 
-void QgsOWSSourceSelect::on_mConnectButton_clicked()
+void QgsOWSSourceSelect::mConnectButton_clicked()
 {
 
   mLayersTreeWidget->clear();
@@ -354,7 +383,7 @@ void QgsOWSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )
 {
 }
 
-void QgsOWSSourceSelect::on_mChangeCRSButton_clicked()
+void QgsOWSSourceSelect::mChangeCRSButton_clicked()
 {
   QStringList layers;
   Q_FOREACH ( QTreeWidgetItem *item, mLayersTreeWidget->selectedItems() )
@@ -390,7 +419,7 @@ void QgsOWSSourceSelect::on_mChangeCRSButton_clicked()
   updateButtons();
 }
 
-void QgsOWSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
+void QgsOWSSourceSelect::mLayersTreeWidget_itemSelectionChanged()
 {
 }
 
@@ -414,7 +443,7 @@ void QgsOWSSourceSelect::populateCrs()
         break;
 
       // save first CRS in case the current CRS is not available
-      if ( it == mSelectedLayersCRSs.begin() )
+      if ( it == mSelectedLayersCRSs.constBegin() )
         defaultCRS = *it;
 
       // prefer value of DEFAULT_GEO_EPSG_CRS_ID if available
@@ -422,7 +451,7 @@ void QgsOWSSourceSelect::populateCrs()
         defaultCRS = *it;
     }
 
-    if ( it == mSelectedLayersCRSs.end() )
+    if ( it == mSelectedLayersCRSs.constEnd() )
     {
       // not found
       mSelectedCRS = defaultCRS;
@@ -436,12 +465,12 @@ void QgsOWSSourceSelect::populateCrs()
 void QgsOWSSourceSelect::clearCrs()
 {
   mCRSLabel->setText( tr( "Coordinate Reference System" ) + ':' );
-  mSelectedCRS = QLatin1String( "" );
-  mSelectedCRSLabel->setText( QLatin1String( "" ) );
+  mSelectedCRS.clear();
+  mSelectedCRSLabel->clear();
   mChangeCRSButton->setEnabled( false );
 }
 
-void QgsOWSSourceSelect::on_mTilesetsTableWidget_itemClicked( QTableWidgetItem *item )
+void QgsOWSSourceSelect::mTilesetsTableWidget_itemClicked( QTableWidgetItem *item )
 {
   Q_UNUSED( item );
 
@@ -557,13 +586,13 @@ void QgsOWSSourceSelect::showError( QString const &title, QString const &format,
   mv->showMessage( true ); // Is deleted when closed
 }
 
-void QgsOWSSourceSelect::on_mConnectionsComboBox_activated( int )
+void QgsOWSSourceSelect::mConnectionsComboBox_activated( int )
 {
   // Remember which server was selected.
   QgsOwsConnection::setSelectedConnection( mService, mConnectionsComboBox->currentText() );
 }
 
-void QgsOWSSourceSelect::on_mAddDefaultButton_clicked()
+void QgsOWSSourceSelect::mAddDefaultButton_clicked()
 {
   addDefaultServers();
 }
@@ -582,12 +611,12 @@ void QgsOWSSourceSelect::addDefaultServers()
 {
   QMap<QString, QString> exampleServers;
   exampleServers[QStringLiteral( "DM Solutions GMap" )] = QStringLiteral( "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap" );
-  exampleServers[QStringLiteral( "Lizardtech server" )] =  QStringLiteral( "http://wms.lizardtech.com/lizardtech/iserv/ows" );
+  exampleServers[QStringLiteral( "Lizardtech server" )] = QStringLiteral( "http://wms.lizardtech.com/lizardtech/iserv/ows" );
   // Nice to have the qgis users map, but I'm not sure of the URL at the moment.
   //  exampleServers["Qgis users map"] = "http://qgis.org/wms.cgi";
 
   QgsSettings settings;
-  settings.beginGroup( "/Qgis/connections-" + mService.toLower() );
+  settings.beginGroup( "/qgis/connections-" + mService.toLower() );
   QMap<QString, QString>::const_iterator i = exampleServers.constBegin();
   for ( ; i != exampleServers.constEnd(); ++i )
   {
@@ -629,7 +658,7 @@ void QgsOWSSourceSelect::addWmsListItem( const QDomElement &el, int row, int col
   }
 }
 
-void QgsOWSSourceSelect::on_mSearchButton_clicked()
+void QgsOWSSourceSelect::mSearchButton_clicked()
 {
   // clear results
   mSearchTableWidget->clearContents();
@@ -694,15 +723,15 @@ void QgsOWSSourceSelect::searchFinished()
   r->deleteLater();
 }
 
-void QgsOWSSourceSelect::on_mSearchTableWidget_itemSelectionChanged()
+void QgsOWSSourceSelect::mSearchTableWidget_itemSelectionChanged()
 {
   mSearchAddButton->setEnabled( mSearchTableWidget->currentRow() != -1 );
 }
 
-void QgsOWSSourceSelect::on_mLayerUpButton_clicked()
+void QgsOWSSourceSelect::mLayerUpButton_clicked()
 {
   QList<QTreeWidgetItem *> selectionList = mLayerOrderTreeWidget->selectedItems();
-  if ( selectionList.size() < 1 )
+  if ( selectionList.empty() )
   {
     return;
   }
@@ -718,10 +747,10 @@ void QgsOWSSourceSelect::on_mLayerUpButton_clicked()
   selectedItem->setSelected( true );
 }
 
-void QgsOWSSourceSelect::on_mLayerDownButton_clicked()
+void QgsOWSSourceSelect::mLayerDownButton_clicked()
 {
   QList<QTreeWidgetItem *> selectionList = mLayerOrderTreeWidget->selectedItems();
-  if ( selectionList.size() < 1 )
+  if ( selectionList.empty() )
   {
     return;
   }

@@ -191,7 +191,8 @@ void QgsActiveLayerFeaturesLocatorFilter::fetchResults( const QString &string, c
 
   // build up request expression
   QStringList expressionParts;
-  Q_FOREACH ( const QgsField &field, layer->fields() )
+  const QgsFields fields = layer->fields();
+  for ( const QgsField &field : fields )
   {
     if ( field.type() == QVariant::String )
     {

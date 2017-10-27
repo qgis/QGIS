@@ -35,6 +35,11 @@
 #include "qgswfsutils.h"
 #include "qgssettings.h"
 
+#ifdef HAVE_GUI
+#include "qgswfssourceselect.h"
+#include "qgssourceselectprovider.h"
+#endif
+
 #include <QDomDocument>
 #include <QMessageBox>
 #include <QDomNodeList>
@@ -281,7 +286,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
   {
     QString parserErrorString( sql.parserErrorString() );
     QStringList parts( parserErrorString.split( QStringLiteral( "," ) ) );
-    parserErrorString = QLatin1String( "" );
+    parserErrorString.clear();
     Q_FOREACH ( const QString &part, parts )
     {
       QString newPart( part );
@@ -1116,23 +1121,23 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 QVariantMap QgsWFSProvider::metadata() const
 {
   QVariantMap result;
-  result["MaxFeatures"] = mShared->mCaps.maxFeatures;
-  result["SupportsPaging"] = mShared->mCaps.supportsPaging;
-  result["SupportsJoins"] = mShared->mCaps.supportsJoins;
+  result[QStringLiteral( "MaxFeatures" )] = mShared->mCaps.maxFeatures;
+  result[QStringLiteral( "SupportsPaging" )] = mShared->mCaps.supportsPaging;
+  result[QStringLiteral( "SupportsJoins" )] = mShared->mCaps.supportsJoins;
   return result;
 }
 
 QString QgsWFSProvider::translateMetadataKey( const QString &mdKey ) const
 {
-  if ( mdKey == "MaxFeatures" )
+  if ( mdKey == QLatin1String( "MaxFeatures" ) )
   {
     return tr( "Max Features" );
   }
-  else if ( mdKey == "SupportsPaging" )
+  else if ( mdKey == QLatin1String( "SupportsPaging" ) )
   {
     return tr( "Supports Paging" );
   }
-  else if ( mdKey == "SupportsJoins" )
+  else if ( mdKey == QLatin1String( "SupportsJoins" ) )
   {
     return tr( "Supports Joins" );
   }
@@ -1144,11 +1149,11 @@ QString QgsWFSProvider::translateMetadataKey( const QString &mdKey ) const
 
 QString QgsWFSProvider::translateMetadataValue( const QString &mdKey, const QVariant &value ) const
 {
-  if ( mdKey == "MaxFeatures" )
+  if ( mdKey == QLatin1String( "MaxFeatures" ) )
   {
     return value.toInt() == 0 ? tr( "not provided" ) : value.toString();
   }
-  else if ( mdKey == "SupportsPaging" || mdKey == "SupportsJoins" )
+  else if ( mdKey == QLatin1String( "SupportsPaging" ) || mdKey == QLatin1String( "SupportsJoins" ) )
   {
     return value.toBool() ? tr( "supported" ) : tr( "unsupported" );
   }
@@ -1363,7 +1368,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
       geometryAttribute = ref.mid( 4 ); // Strip gml: prefix
       QString propertyType( gmlRefProperty.cap( 1 ) );
       // Set the first character in upper case
-      propertyType = propertyType.left( 1 ).toUpper() + propertyType.mid( 1 );
+      propertyType = propertyType.at( 0 ).toUpper() + propertyType.mid( 1 );
       geomType = geomTypeFromPropertyType( geometryAttribute, propertyType );
     }
     else if ( !name.isEmpty() ) //todo: distinguish between numerical and non-numerical types
@@ -1698,3 +1703,32 @@ QGISEXTERN bool isProvider()
 
   return true;
 }
+
+#ifdef HAVE_GUI
+
+//! Provider for WFS layers source select
+class QgsWfsSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "WFS" ); }
+    virtual QString text() const override { return QObject::tr( "WFS" ); }
+    virtual int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 40; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWfsLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsWFSSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsWfsSourceSelectProvider;
+
+  return providers;
+}
+#endif

@@ -161,7 +161,7 @@ struct expression_parser_context
 %%
 
 root: expression { parser_ctx->rootNode = $1; }
-    ;
+   ;
 
 expression:
       expression AND expression       { $$ = BINOP($2, $1, $3); }
@@ -285,7 +285,7 @@ expression:
 
 named_node:
     NAMED_NODE expression { $$ = new QgsExpressionNode::NamedNode( *$1, $2 ); delete $1; }
-    ;
+   ;
 
 exp_list:
       exp_list COMMA expression
@@ -304,16 +304,16 @@ exp_list:
     | exp_list COMMA named_node { $$ = $1; $1->append($3); }
     | expression              { $$ = new QgsExpressionNode::NodeList(); $$->append($1); }
     | named_node              { $$ = new QgsExpressionNode::NodeList(); $$->append($1); }
-    ;
+   ;
 
 when_then_clauses:
       when_then_clauses when_then_clause  { $$ = $1; $1->append($2); }
     | when_then_clause                    { $$ = new QgsExpressionNodeCondition::WhenThenList(); $$->append($1); }
-    ;
+   ;
 
 when_then_clause:
       WHEN expression THEN expression     { $$ = new QgsExpressionNodeCondition::WhenThen($2,$4); }
-    ;
+   ;
 
 %%
 

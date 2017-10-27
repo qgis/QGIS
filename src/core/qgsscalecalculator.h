@@ -20,13 +20,14 @@
 #define QGSSCALECALCULATOR_H
 
 #include "qgis_core.h"
-#include <qgis.h>
+#include "qgis.h"
 #include "qgsunittypes.h"
 
 class QString;
 class QgsRectangle;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Calculates scale for a given combination of canvas size, map extent,
  * and monitor dpi.
  */

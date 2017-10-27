@@ -55,6 +55,10 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputString;
     else if ( sipCpp->type() == QgsProcessingOutputFolder::typeName() )
       sipType = sipType_QgsProcessingOutputFolder;
+    else if ( sipCpp->type() == QgsProcessingOutputFile::typeName() )
+      sipType = sipType_QgsProcessingOutputFile;
+    else
+      sipType = nullptr;
     SIP_END
 #endif
 
@@ -126,7 +130,7 @@ class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDef
     /**
      * Constructor for QgsProcessingOutputVectorLayer.
      */
-    QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessing::LayerType type = QgsProcessing::TypeVectorAny );
+    QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry );
 
     /**
      * Returns the type name for the output class.
@@ -138,17 +142,17 @@ class CORE_EXPORT QgsProcessingOutputVectorLayer : public QgsProcessingOutputDef
      * Returns the layer type for the output layer.
      * \see setDataType()
      */
-    QgsProcessing::LayerType dataType() const;
+    QgsProcessing::SourceType dataType() const;
 
     /**
      * Sets the layer \a type for the output layer.
      * \see dataType()
      */
-    void setDataType( QgsProcessing::LayerType type );
+    void setDataType( QgsProcessing::SourceType type );
 
   private:
 
-    QgsProcessing::LayerType mDataType = QgsProcessing::TypeVectorAny;
+    QgsProcessing::SourceType mDataType = QgsProcessing::TypeVectorAnyGeometry;
 };
 
 /**
@@ -266,6 +270,30 @@ class CORE_EXPORT QgsProcessingOutputFolder : public QgsProcessingOutputDefiniti
     QString type() const override { return typeName(); }
 
 };
+
+/**
+ * \class QgsProcessingOutputFile
+ * \ingroup core
+ * A file output for processing algorithms.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingOutputFile : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputFile.
+     */
+    QgsProcessingOutputFile( const QString &name, const QString &description = QString() );
+
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputFile" ); }
+    QString type() const override { return typeName(); }
+
+};
+
 
 #endif // QGSPROCESSINGOUTPUTS_H
 

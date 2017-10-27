@@ -60,9 +60,6 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Close event
     void closeEvent( QCloseEvent *e ) override;
 
-    //! Show the help for the dialog
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#measuring" ) ); }
-
     //! When any external settings change
     void updateSettings();
 
@@ -85,7 +82,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! shows/hides table, shows correct units
     void updateUi();
 
-    /** Resets the units combo box to display either distance or area units
+    /**
+     * Resets the units combo box to display either distance or area units
      * \param isArea set to true to populate with areal units, or false to show distance units
      */
     void repopulateComboBoxUnits( bool isArea );
@@ -118,6 +116,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     QgsMeasureTool *mTool = nullptr;
 
     QgsPointXY mLastMousePoint;
+
+    void showHelp();
 
     friend class TestQgsMeasureTool;
 };

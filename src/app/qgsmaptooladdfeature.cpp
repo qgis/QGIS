@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptooladdfeature.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsapplication.h"
 #include "qgsattributedialog.h"
 #include "qgsexception.h"
@@ -40,10 +41,8 @@ QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mo
   , mCheckGeometryType( true )
 {
   mToolName = tr( "Add feature" );
-}
-
-QgsMapToolAddFeature::~QgsMapToolAddFeature()
-{
+  connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddFeature::stopCapturing );
+  connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddFeature::stopCapturing );
 }
 
 bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bool showModal )
@@ -180,7 +179,8 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       addFeature( vlayer, &f, false );
 
-      vlayer->triggerRepaint();
+      // we are done with digitizing for now so instruct advanced digitizing dock to reset its CAD points
+      cadDockWidget()->clearPoints();
     }
   }
 

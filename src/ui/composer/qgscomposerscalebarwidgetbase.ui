@@ -60,9 +60,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-121</y>
-        <width>437</width>
-        <height>764</height>
+        <y>0</y>
+        <width>440</width>
+        <height>1004</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -261,22 +261,6 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2">
-           <widget class="QgsSpinBox" name="mMaxWidthSpinBox">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-            <property name="prefix">
-             <string>max </string>
-            </property>
-            <property name="maximum">
-             <number>999</number>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="2">
            <widget class="QgsSpinBox" name="mSegmentsLeftSpinBox">
             <property name="suffix">
@@ -284,35 +268,6 @@
             </property>
             <property name="prefix">
              <string>left </string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2">
-           <widget class="QgsSpinBox" name="mMinWidthSpinBox">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-            <property name="prefix">
-             <string>min </string>
-            </property>
-            <property name="maximum">
-             <number>999</number>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="2">
-           <widget class="QgsSpinBox" name="mHeightSpinBox">
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-            <property name="prefix">
-             <string/>
-            </property>
-            <property name="showClearButton" stdset="0">
-             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -330,6 +285,42 @@
            <widget class="QRadioButton" name="mFitWidthRadio">
             <property name="text">
              <string>Fit segment width</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="2">
+           <widget class="QgsDoubleSpinBox" name="mHeightSpinBox">
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+            <property name="maximum">
+             <double>999.990000000000009</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QgsDoubleSpinBox" name="mMinWidthSpinBox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+            <property name="maximum">
+             <double>999.990000000000009</double>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2">
+           <widget class="QgsDoubleSpinBox" name="mMaxWidthSpinBox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+            <property name="maximum">
+             <double>999.990000000000009</double>
             </property>
            </widget>
           </item>

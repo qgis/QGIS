@@ -58,6 +58,14 @@ WIDGET, BASE = uic.loadUiType(
 
 class ProcessingToolbox(BASE, WIDGET):
 
+    ALG_ITEM = 'ALG_ITEM'
+    PROVIDER_ITEM = 'PROVIDER_ITEM'
+    GROUP_ITEM = 'GROUP_ITEM'
+
+    NAME_ROLE = Qt.UserRole
+    TAG_ROLE = Qt.UserRole + 1
+    TYPE_ROLE = Qt.UserRole + 2
+
     def __init__(self):
         super(ProcessingToolbox, self).__init__(None)
         self.tipWasClosed = False
@@ -143,10 +151,10 @@ class ProcessingToolbox(BASE, WIDGET):
             return show
         elif isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
             # hide if every part of text is not contained somewhere in either the item text or item user role
-            item_text = [item.text(0).lower(), item.data(0, Qt.UserRole).lower()]
+            item_text = [item.text(0).lower(), item.data(0, ProcessingToolbox.NAME_ROLE).lower()]
             if isinstance(item, TreeAlgorithmItem):
                 item_text.append(item.alg.id())
-                item_text.extend(item.data(0, Qt.UserRole + 1))
+                item_text.extend(item.data(0, ProcessingToolbox.TAG_ROLE))
 
             hide = bool(text) and not all(
                 any(part in t for t in item_text)
@@ -299,7 +307,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 context = dataobjects.createContext(feedback)
                 parameters = {}
                 ret, results = execute(alg, parameters, context, feedback)
-                handleAlgorithmResults(alg, parameters, context, feedback)
+                handleAlgorithmResults(alg, context, feedback)
                 feedback.close()
         if isinstance(item, TreeActionItem):
             action = item.action
@@ -319,13 +327,13 @@ class ProcessingToolbox(BASE, WIDGET):
                 found = False
                 if updating:
                     recentItem = self.algorithmTree.topLevelItem(0)
-                    if recentItem.text(0) == self.tr('Recently used algorithms'):
+                    if recentItem.text(0) == self.tr('Recently used'):
                         treeWidget = recentItem.treeWidget()
                         treeWidget.takeTopLevelItem(
                             treeWidget.indexOfTopLevelItem(recentItem))
 
                 recentItem = QTreeWidgetItem()
-                recentItem.setText(0, self.tr('Recently used algorithms'))
+                recentItem.setText(0, self.tr('Recently used'))
                 for algname in recent:
                     alg = QgsApplication.processingRegistry().createAlgorithmById(algname)
                     if alg is not None:
@@ -356,20 +364,37 @@ class ProcessingToolbox(BASE, WIDGET):
     def fillTreeUsingProviders(self):
         self.algorithmTree.clear()
         self.disabledProviderItems = {}
-        disabled = []
+
+        # TODO - replace with proper model for toolbox!
+
+        # first add qgis/native providers, since they create top level groups
         for provider in QgsApplication.processingRegistry().providers():
             if provider.id() in ('qgis', 'native'):
                 self.addAlgorithmsFromProvider(provider, self.algorithmTree.invisibleRootItem())
             else:
-                if provider.isActive():
-                    providerItem = TreeProviderItem(provider, self.algorithmTree, self)
-                else:
-                    disabled.append(provider)
+                continue
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
-        for provider in disabled:
-            providerItem = TreeProviderItem(provider, self.algorithmTree, self)
-            providerItem.setHidden(True)
-            self.disabledProviderItems[provider.id()] = providerItem
+
+        for provider in QgsApplication.processingRegistry().providers():
+            if provider.id() in ('qgis', 'native'):
+                # already added
+                continue
+            else:
+                providerItem = TreeProviderItem(provider, self.algorithmTree, self)
+
+                if not provider.isActive():
+                    providerItem.setHidden(True)
+                    self.disabledProviderItems[provider.id()] = providerItem
+
+                # insert non-native providers at end of tree, alphabetically
+
+                for i in range(self.algorithmTree.invisibleRootItem().childCount()):
+                    child = self.algorithmTree.invisibleRootItem().child(i)
+                    if isinstance(child, TreeProviderItem):
+                        if child.text(0) > providerItem.text(0):
+                            break
+
+                self.algorithmTree.insertTopLevelItem(i + 1, providerItem)
 
     def addAlgorithmsFromProvider(self, provider, parent):
         groups = {}
@@ -393,12 +418,9 @@ class ProcessingToolbox(BASE, WIDGET):
                         break
 
                 if not groupItem:
-                    groupItem = QTreeWidgetItem()
-                    name = alg.group()
+                    groupItem = TreeGroupItem(alg.group())
                     if not active:
-                        groupItem.setForeground(0, Qt.darkGray)
-                    groupItem.setText(0, name)
-                    groupItem.setToolTip(0, name)
+                        groupItem.setInactive()
                     if provider.id() in ('qgis', 'native'):
                         groupItem.setIcon(0, provider.icon())
                     groups[alg.group()] = groupItem
@@ -414,8 +436,7 @@ class ProcessingToolbox(BASE, WIDGET):
                 if action.group in groups:
                     groupItem = groups[action.group]
                 else:
-                    groupItem = QTreeWidgetItem()
-                    groupItem.setText(0, action.group)
+                    groupItem = TreeGroupItem(action.group)
                     groups[action.group] = groupItem
                 algItem = TreeActionItem(action)
                 groupItem.addChild(algItem)
@@ -430,12 +451,9 @@ class ProcessingToolbox(BASE, WIDGET):
                 label = QLabel(text + "&nbsp;&nbsp;&nbsp;&nbsp;<a href='%s'>Activate</a>")
                 label.setStyleSheet("QLabel {background-color: white; color: grey;}")
                 label.linkActivated.connect(activateProvider)
-                self.algorithmTree.setItemWidget(item, 0, label)
-
+                self.algorithmTree.setItemWidget(parent, 0, label)
             else:
-                text += QCoreApplication.translate("TreeProviderItem", " [{0} geoalgorithms]").format(count)
                 parent.setText(0, text)
-            parent.setToolTip(0, parent.text(0))
 
         for groupItem in list(groups.values()):
             parent.addChild(groupItem)
@@ -456,8 +474,22 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         self.setIcon(0, icon)
         self.setToolTip(0, name)
         self.setText(0, name)
-        self.setData(0, Qt.UserRole, nameEn)
-        self.setData(0, Qt.UserRole + 1, alg.tags())
+        self.setData(0, ProcessingToolbox.NAME_ROLE, nameEn)
+        self.setData(0, ProcessingToolbox.TAG_ROLE, alg.tags())
+        self.setData(0, ProcessingToolbox.TYPE_ROLE, ProcessingToolbox.ALG_ITEM)
+
+
+class TreeGroupItem(QTreeWidgetItem):
+
+    def __init__(self, name):
+        QTreeWidgetItem.__init__(self)
+        self.setToolTip(0, name)
+        self.setText(0, name)
+        self.setData(0, ProcessingToolbox.NAME_ROLE, name)
+        self.setData(0, ProcessingToolbox.TYPE_ROLE, ProcessingToolbox.GROUP_ITEM)
+
+    def setInactive(self):
+        self.setForeground(0, Qt.darkGray)
 
 
 class TreeActionItem(QTreeWidgetItem):
@@ -467,17 +499,19 @@ class TreeActionItem(QTreeWidgetItem):
         self.action = action
         self.setText(0, action.i18n_name)
         self.setIcon(0, action.getIcon())
-        self.setData(0, Qt.UserRole, action.name)
+        self.setData(0, ProcessingToolbox.NAME_ROLE, action.name)
 
 
 class TreeProviderItem(QTreeWidgetItem):
 
     def __init__(self, provider, tree, toolbox):
-        QTreeWidgetItem.__init__(self, tree)
+        QTreeWidgetItem.__init__(self, None)
         self.tree = tree
         self.toolbox = toolbox
         self.provider = provider
         self.setIcon(0, self.provider.icon())
+        self.setData(0, ProcessingToolbox.TYPE_ROLE, ProcessingToolbox.PROVIDER_ITEM)
+        self.setToolTip(0, self.provider.longName())
         self.populate()
 
     def refresh(self):

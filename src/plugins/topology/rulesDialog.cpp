@@ -18,13 +18,13 @@
 #include <QDebug>
 #include <QTableWidgetItem>
 
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayer.h>
-#include <qgsmaplayer.h>
-#include <qgsproviderregistry.h>
-#include <qgslogger.h>
-#include <qgisinterface.h>
-#include <qgsproject.h>
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsmaplayer.h"
+#include "qgsproviderregistry.h"
+#include "qgslogger.h"
+#include "qgisinterface.h"
+#include "qgsproject.h"
 #include "qgsapplication.h"
 #include "rulesDialog.h"
 #include "topolTest.h"
@@ -62,10 +62,6 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   connect( mQgisIface, &QgisInterface::projectRead, this, &rulesDialog::projectRead );
   //reset plugin if new project is activated
   projectRead();
-}
-
-rulesDialog::~rulesDialog()
-{
 }
 
 void rulesDialog::setHorizontalHeaderItems()
@@ -267,7 +263,7 @@ void rulesDialog::addRule()
   else
     layer2ID = tr( "No layer" );
 
-  layer1ID =  mLayer1Box->currentData().toString();
+  layer1ID = mLayer1Box->currentData().toString();
 
   //TODO: use setItemData (or something like that) instead of hidden columns
   newItem = new QTableWidgetItem( layer1ID );

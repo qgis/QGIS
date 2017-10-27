@@ -26,9 +26,6 @@
 
 QgsRasterProjector::QgsRasterProjector()
   : QgsRasterInterface( nullptr )
-  , mSrcDatumTransform( -1 )
-  , mDestDatumTransform( -1 )
-  , mPrecision( Approximate )
 {
   QgsDebugMsgLevel( "Entered", 4 );
 }
@@ -87,8 +84,6 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
   , mSrcYRes( 0.0 )
   , mDestRowsPerMatrixRow( 0.0 )
   , mDestColsPerMatrixCol( 0.0 )
-  , pHelperTop( nullptr )
-  , pHelperBottom( nullptr )
   , mHelperTopRow( 0 )
   , mCPCols( 0 )
   , mCPRows( 0 )
@@ -255,21 +250,21 @@ void ProjectorData::calcSrcExtent()
     if ( mMaxSrcXRes > 0 )
     {
       // with floor/ceil it should work correctly also for mSrcExtent.xMinimum() < mExtent.xMinimum()
-      double col = floor( ( mSrcExtent.xMinimum() - mExtent.xMinimum() ) / mMaxSrcXRes );
+      double col = std::floor( ( mSrcExtent.xMinimum() - mExtent.xMinimum() ) / mMaxSrcXRes );
       double x = mExtent.xMinimum() + col * mMaxSrcXRes;
       mSrcExtent.setXMinimum( x );
 
-      col = ceil( ( mSrcExtent.xMaximum() - mExtent.xMinimum() ) / mMaxSrcXRes );
+      col = std::ceil( ( mSrcExtent.xMaximum() - mExtent.xMinimum() ) / mMaxSrcXRes );
       x = mExtent.xMinimum() + col * mMaxSrcXRes;
       mSrcExtent.setXMaximum( x );
     }
     if ( mMaxSrcYRes > 0 )
     {
-      double row = floor( ( mExtent.yMaximum() - mSrcExtent.yMaximum() ) / mMaxSrcYRes );
+      double row = std::floor( ( mExtent.yMaximum() - mSrcExtent.yMaximum() ) / mMaxSrcYRes );
       double y = mExtent.yMaximum() - row * mMaxSrcYRes;
       mSrcExtent.setYMaximum( y );
 
-      row = ceil( ( mExtent.yMaximum() - mSrcExtent.yMinimum() ) / mMaxSrcYRes );
+      row = std::ceil( ( mExtent.yMaximum() - mSrcExtent.yMinimum() ) / mMaxSrcYRes );
       y = mExtent.yMaximum() - row * mMaxSrcYRes;
       mSrcExtent.setYMinimum( y );
     }
@@ -327,11 +322,11 @@ void ProjectorData::calcSrcRowsCols()
         QgsPointXY myPointC = mCPMatrix[i + 1][j];
         if ( mCPLegalMatrix[i][j] && mCPLegalMatrix[i][j + 1] && mCPLegalMatrix[i + 1][j] )
         {
-          double mySize = sqrt( myPointA.sqrDist( myPointB ) ) / myDestColsPerMatrixCell;
+          double mySize = std::sqrt( myPointA.sqrDist( myPointB ) ) / myDestColsPerMatrixCell;
           if ( mySize < myMinSize )
             myMinSize = mySize;
 
-          mySize = sqrt( myPointA.sqrDist( myPointC ) ) / myDestRowsPerMatrixCell;
+          mySize = std::sqrt( myPointA.sqrDist( myPointC ) ) / myDestRowsPerMatrixCell;
           if ( mySize < myMinSize )
             myMinSize = mySize;
         }
@@ -369,8 +364,8 @@ void ProjectorData::calcSrcRowsCols()
   QgsDebugMsgLevel( QString( "mSrcExtent.width = %1 mSrcExtent.height = %2" ).arg( mSrcExtent.width() ).arg( mSrcExtent.height() ), 4 );
 
   // we have to round to keep alignment set in calcSrcExtent
-  mSrcRows = static_cast< int >( qRound( mSrcExtent.height() / myMinYSize ) );
-  mSrcCols = static_cast< int >( qRound( mSrcExtent.width() / myMinXSize ) );
+  mSrcRows = static_cast< int >( std::round( mSrcExtent.height() / myMinYSize ) );
+  mSrcCols = static_cast< int >( std::round( mSrcExtent.width() / myMinXSize ) );
 
   QgsDebugMsgLevel( QString( "mSrcRows = %1 mSrcCols = %2" ).arg( mSrcRows ).arg( mSrcCols ), 4 );
 }
@@ -384,11 +379,11 @@ inline void ProjectorData::destPointOnCPMatrix( int row, int col, double *theX, 
 
 inline int ProjectorData::matrixRow( int destRow )
 {
-  return static_cast< int >( floor( ( destRow + 0.5 ) / mDestRowsPerMatrixRow ) );
+  return static_cast< int >( std::floor( ( destRow + 0.5 ) / mDestRowsPerMatrixRow ) );
 }
 inline int ProjectorData::matrixCol( int destCol )
 {
-  return static_cast< int >( floor( ( destCol + 0.5 ) / mDestColsPerMatrixCol ) );
+  return static_cast< int >( std::floor( ( destCol + 0.5 ) / mDestColsPerMatrixCol ) );
 }
 
 void ProjectorData::calcHelper( int matrixRow, QgsPointXY *points )
@@ -470,8 +465,8 @@ bool ProjectorData::preciseSrcRowCol( int destRow, int destCol, int *srcRow, int
     return false;
   }
   // Get source row col
-  *srcRow = static_cast< int >( floor( ( mSrcExtent.yMaximum() - y ) / mSrcYRes ) );
-  *srcCol = static_cast< int >( floor( ( x - mSrcExtent.xMinimum() ) / mSrcXRes ) );
+  *srcRow = static_cast< int >( std::floor( ( mSrcExtent.yMaximum() - y ) / mSrcYRes ) );
+  *srcCol = static_cast< int >( std::floor( ( x - mSrcExtent.xMinimum() ) / mSrcXRes ) );
 #ifdef QGISDEBUG
   QgsDebugMsgLevel( QString( "mSrcExtent.yMinimum() = %1 mSrcExtent.yMaximum() = %2 mSrcYRes = %3" ).arg( mSrcExtent.yMinimum() ).arg( mSrcExtent.yMaximum() ).arg( mSrcYRes ), 5 );
   QgsDebugMsgLevel( QString( "theSrcRow = %1 srcCol = %2" ).arg( *srcRow ).arg( *srcCol ), 5 );
@@ -532,8 +527,8 @@ bool ProjectorData::approximateSrcRowCol( int destRow, int destCol, int *srcRow,
 
   // TODO: check again cell selection (coor is in the middle)
 
-  *srcRow = static_cast< int >( floor( ( mSrcExtent.yMaximum() - mySrcY ) / mSrcYRes ) );
-  *srcCol = static_cast< int >( floor( ( mySrcX - mSrcExtent.xMinimum() ) / mSrcXRes ) );
+  *srcRow = static_cast< int >( std::floor( ( mSrcExtent.yMaximum() - mySrcY ) / mSrcYRes ) );
+  *srcCol = static_cast< int >( std::floor( ( mySrcX - mSrcExtent.xMinimum() ) / mSrcXRes ) );
 
   // For now silently correct limits to avoid crashes
   // TODO: review

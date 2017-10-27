@@ -19,15 +19,6 @@
 
 #include "qgsstatisticalsummary.h"
 #include "qgsvectorlayer.h"
-#include <qmath.h>
-
-QgsHistogram::QgsHistogram()
-  : mMax( 0 )
-  , mMin( 0 )
-  , mIQR( 0 )
-{
-
-}
 
 void QgsHistogram::prepareValues()
 {
@@ -65,12 +56,12 @@ bool QgsHistogram::setValues( const QgsVectorLayer *layer, const QString &fieldO
 double QgsHistogram::optimalBinWidth() const
 {
   //Freedman-Diaconis rule
-  return 2.0 * mIQR * qPow( mValues.count(), -1 / 3.0 );
+  return 2.0 * mIQR * std::pow( mValues.count(), -1 / 3.0 );
 }
 
 int QgsHistogram::optimalNumberBins() const
 {
-  return ceil( ( mMax - mMin ) / optimalBinWidth() );
+  return std::ceil( ( mMax - mMin ) / optimalBinWidth() );
 }
 
 QList<double> QgsHistogram::binEdges( int bins ) const

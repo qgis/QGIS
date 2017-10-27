@@ -62,7 +62,7 @@ class UniqueValues(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'unique.png'))
 
     def group(self):
-        return self.tr('Vector table tools')
+        return self.tr('Vector analysis')
 
     def __init__(self):
         super().__init__()

@@ -28,13 +28,11 @@
 #include <QMouseEvent>
 
 QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas *canvas )
-  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), CaptureNone )
 {
   mToolName = tr( "Add part" );
-}
-
-QgsMapToolAddPart::~QgsMapToolAddPart()
-{
+  connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddPart::stopCapturing );
+  connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddPart::stopCapturing );
 }
 
 void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent *e )
@@ -66,7 +64,8 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
 
   bool isGeometryEmpty = false;
-  if ( vlayer->selectedFeatures()[0].geometry().isNull() )
+  QgsFeatureList selectedFeatures = vlayer->selectedFeatures();
+  if ( !selectedFeatures.isEmpty() && selectedFeatures.at( 0 ).geometry().isNull() )
     isGeometryEmpty = true;
 
   if ( !checkSelection() )
@@ -155,7 +154,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QgsGeometry *geom = new QgsGeometry( cp );
         geom->avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
 
-        const QgsCurvePolygon *cpGeom = dynamic_cast<const QgsCurvePolygon *>( geom->geometry() );
+        const QgsCurvePolygon *cpGeom = qgsgeometry_cast<const QgsCurvePolygon *>( geom->constGet() );
         if ( !cpGeom )
         {
           stopCapturing();

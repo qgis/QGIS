@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
+                       QgsProcessing,
                        QgsProcessingParameterField)
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
@@ -36,7 +37,7 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
     FIELD = 'FIELD'
 
     def group(self):
-        return self.tr('Vector table tools')
+        return self.tr('Vector table')
 
     def __init__(self):
         super().__init__()
@@ -58,6 +59,9 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
 
     def outputName(self):
         return self.tr('Float from text')
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVector]
 
     def outputFields(self, inputFields):
         self.field_idx = inputFields.lookupField(self.field_name)

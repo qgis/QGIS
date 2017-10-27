@@ -73,6 +73,7 @@ SET(QGIS_GUI_SRCS
   auth/qgsauthconfigeditor.cpp
   auth/qgsauthconfigidedit.cpp
   auth/qgsauthconfigselect.cpp
+  auth/qgsauthsettingswidget.cpp
   auth/qgsautheditorwidgets.cpp
   auth/qgsauthguiutils.cpp
   auth/qgsauthidentitieseditor.cpp
@@ -160,6 +161,7 @@ SET(QGIS_GUI_SRCS
 
   layout/qgslayoutitemguiregistry.cpp
   layout/qgslayoutitemwidget.cpp
+  layout/qgslayoutmousehandles.cpp
   layout/qgslayoutnewitempropertiesdialog.cpp
   layout/qgslayoutruler.cpp
   layout/qgslayoutunitscombobox.cpp
@@ -175,8 +177,6 @@ SET(QGIS_GUI_SRCS
   layout/qgslayoutviewtooltemporarymousepan.cpp
   layout/qgslayoutviewtoolzoom.cpp
 
-  locator/qgslocator.cpp
-  locator/qgslocatorfilter.cpp
   locator/qgslocatorwidget.cpp
 
   ogr/qgsogrhelperfunctions.cpp
@@ -241,6 +241,7 @@ SET(QGIS_GUI_SRCS
   qgsfeatureselectiondlg.cpp
   qgsfieldcombobox.cpp
   qgsfieldexpressionwidget.cpp
+  qgsfeaturelistcombobox.cpp
   qgsfieldvalidator.cpp
   qgsfieldvalueslineedit.cpp
   qgsfilewidget.cpp
@@ -295,6 +296,9 @@ SET(QGIS_GUI_SRCS
   qgsmessagebaritem.cpp
   qgsmessagelogviewer.cpp
   qgsmessageviewer.cpp
+  qgsmetadatawidget.cpp
+  qgsnewauxiliarylayerdialog.cpp
+  qgsnewauxiliaryfielddialog.cpp
   qgsnewhttpconnection.cpp
   qgsnewmemorylayerdialog.cpp
   qgsnewnamedialog.cpp
@@ -346,9 +350,12 @@ SET(QGIS_GUI_SRCS
   qgsuserinputdockwidget.cpp
   qgsvariableeditorwidget.cpp
   qgsvertexmarker.cpp
-  qgsfiledownloader.cpp
+  qgsfiledownloaderdialog.cpp
+  qgsvscrollarea.cpp
   qgsdatasourcemanagerdialog.cpp
   qgsabstractdatasourcewidget.cpp
+  qgssourceselectprovider.cpp
+  qgssourceselectproviderregistry.cpp
 )
 
 SET(QGIS_GUI_MOC_HDRS
@@ -385,6 +392,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsconfigureshortcutsdialog.h
   qgscredentialdialog.h
   qgscurveeditorwidget.h
+  qgscustomdrophandler.h
   qgsdatumtransformdialog.h
   qgsdetaileditemdelegate.h
   qgsdetaileditemwidget.h
@@ -405,6 +413,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfeatureselectiondlg.h
   qgsfieldcombobox.h
   qgsfieldexpressionwidget.h
+  qgsfeaturelistcombobox.h
   qgsfieldvalidator.h
   qgsfieldvalueslineedit.h
   qgsfilewidget.h
@@ -451,6 +460,9 @@ SET(QGIS_GUI_MOC_HDRS
   qgsmessagebaritem.h
   qgsmessagelogviewer.h
   qgsmessageviewer.h
+  qgsmetadatawidget.h
+  qgsnewauxiliarylayerdialog.h
+  qgsnewauxiliaryfielddialog.h
   qgsnewhttpconnection.h
   qgsnewmemorylayerdialog.h
   qgsnewnamedialog.h
@@ -500,7 +512,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsunitselectionwidget.h
   qgsuserinputdockwidget.h
   qgsvariableeditorwidget.h
-  qgsfiledownloader.h
+  qgsfiledownloaderdialog.h
   qgsdatasourcemanagerdialog.h
   qgsabstractdatasourcewidget.h
 
@@ -576,6 +588,7 @@ SET(QGIS_GUI_MOC_HDRS
   auth/qgsauthconfigeditor.h
   auth/qgsauthconfigidedit.h
   auth/qgsauthconfigselect.h
+  auth/qgsauthsettingswidget.h
   auth/qgsautheditorwidgets.h
   auth/qgsauthidentitieseditor.h
   auth/qgsauthimportcertdialog.h
@@ -652,6 +665,7 @@ SET(QGIS_GUI_MOC_HDRS
   layout/qgslayoutdesignerinterface.h
   layout/qgslayoutitemguiregistry.h
   layout/qgslayoutitemwidget.h
+  layout/qgslayoutmousehandles.h
   layout/qgslayoutnewitempropertiesdialog.h
   layout/qgslayoutruler.h
   layout/qgslayoutunitscombobox.h
@@ -665,8 +679,6 @@ SET(QGIS_GUI_MOC_HDRS
   layout/qgslayoutviewtooltemporarymousepan.h
   layout/qgslayoutviewtoolzoom.h
 
-  locator/qgslocator.h
-  locator/qgslocatorfilter.h
   locator/qgslocatorwidget.h
 )
 SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_MOC_HDRS ${QGIS_GUI_MOC_HDRS})
@@ -686,7 +698,6 @@ SET(QGIS_GUI_HDRS
   qgsattributeforminterface.h
   qgsattributeformlegacyinterface.h
   qgscursors.h
-  qgscustomdrophandler.h
   qgsdetaileditemdata.h
   qgsexpressionbuilderdialog.h
   qgsgeometryrubberband.h
@@ -708,9 +719,11 @@ SET(QGIS_GUI_HDRS
   qgsbrowserdockwidget.h
   qgsbrowserdockwidget_p.h
   qgsvertexmarker.h
-  qgsfiledownloader.h
   qgsdatasourcemanagerdialog.h
   qgsabstractdatasourcewidget.h
+  qgssourceselectprovider.h
+  qgssourceselectproviderregistry.h
+  qgsvscrollarea.h
 
   ogr/qgsogrhelperfunctions.h
   ogr/qgsnewogrconnection.h
@@ -726,6 +739,7 @@ SET(QGIS_GUI_HDRS
   auth/qgsauthconfigeditor.h
   auth/qgsauthconfigidedit.h
   auth/qgsauthconfigselect.h
+  auth/qgsauthsettingswidget.h
   auth/qgsautheditorwidgets.h
   auth/qgsauthguiutils.h
   auth/qgsauthidentitieseditor.h
@@ -765,8 +779,6 @@ SET(QGIS_GUI_HDRS
   layout/qgslayoutviewmouseevent.h
   layout/qgslayoutviewrubberband.h
 
-  locator/qgslocatorcontext.h
-
   raster/qgsrasterrendererwidget.h
 
   symbology/qgssymbolwidgetcontext.h
@@ -782,6 +794,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthconfigeditor.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthconfigidedit.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthconfigselect.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthsettingswidget.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthconfiguriedit.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsautheditorwidgets.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthidentitieseditor.h

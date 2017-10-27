@@ -66,15 +66,16 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
 
   private:
 
-    bool readFeature( OGRFeatureH fet, QgsFeature &feature ) const;
+    bool readFeature( gdal::ogr_feature_unique_ptr fet, QgsFeature &feature ) const;
 
     //! Get an attribute associated with a feature
     void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature &f, int attindex ) const;
 
     QgsOgrConn *mConn = nullptr;
-    OGRLayerH ogrLayer;
+    OGRLayerH ogrLayer = nullptr;
 
     bool mSubsetStringSet;
+    bool mOrigFidAdded;
 
     //! Set to true, if geometry is in the requested columns
     bool mFetchGeometry;

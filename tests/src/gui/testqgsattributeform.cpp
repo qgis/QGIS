@@ -26,12 +26,13 @@
 #include <qgsfeature.h>
 #include <qgsvectorlayerjoininfo.h>
 #include "qgsgui.h"
+#include "qgsattributeformeditorwidget.h"
 
 class TestQgsAttributeForm : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsAttributeForm() {}
+    TestQgsAttributeForm() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -44,6 +45,15 @@ class TestQgsAttributeForm : public QObject
     void testOKButtonStatus();
     void testDynamicForm();
     void testConstraintsOnJoinedFields();
+    void testEditableJoin();
+    void testUpsertOnEdit();
+
+  private:
+    QLabel *constraintsLabel( QgsAttributeForm *form, QgsEditorWidgetWrapper *ww )
+    {
+      QgsAttributeFormEditorWidget *formEditorWidget = form->mFormEditorWidgets.value( ww->fieldIdx() );
+      return formEditorWidget->findChild<QLabel *>( QStringLiteral( "ConstraintStatus" ) );
+    }
 };
 
 void TestQgsAttributeForm::initTestCase()
@@ -82,9 +92,9 @@ void TestQgsAttributeForm::testFieldConstraint()
   form.setFeature( ft );
 
   // testing stuff
-  QString validLabel = QStringLiteral( "col0<font color=\"green\">✔</font>" );
-  QString invalidLabel = QStringLiteral( "col0<font color=\"red\">✘</font>" );
-  QString warningLabel = QStringLiteral( "col0<font color=\"orange\">✘</font>" );
+  QString validLabel = QStringLiteral( "<font color=\"#259b24\">\u2714</font>" );
+  QString invalidLabel = QStringLiteral( "<font color=\"#FF9800\">\u2718</font>" );
+  QString warningLabel = QStringLiteral( "<font color=\"#FFC107\">\u2718</font>" );
 
   // set constraint
   layer->setConstraintExpression( 0, QString() );
@@ -93,9 +103,8 @@ void TestQgsAttributeForm::testFieldConstraint()
   QgsEditorWidgetWrapper *ww = nullptr;
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
 
-  // no constraint so we expect a label with just the field name
-  QLabel *label = form.mBuddyMap.value( ww->widget() );
-  QCOMPARE( label->text(), QString( "col0" ) );
+  // no constraint so we expect an empty label
+  QCOMPARE( constraintsLabel( &form, ww )->text(), QString() );
 
   // set a not null constraint
   layer->setConstraintExpression( 0, QStringLiteral( "col0 is not null" ) );
@@ -104,24 +113,23 @@ void TestQgsAttributeForm::testFieldConstraint()
   form2.setFeature( ft );
   QSignalSpy spy( &form2, SIGNAL( attributeChanged( QString, QVariant ) ) );
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[0] );
-  label = form2.mBuddyMap.value( ww->widget() );
 
   // set value to 1
   ww->setValue( 1 );
   QCOMPARE( spy.count(), 2 );
-  QCOMPARE( label->text(), validLabel );
+  QCOMPARE( constraintsLabel( &form2, ww )->text(), validLabel );
 
   // set value to null
   spy.clear();
   ww->setValue( QVariant() );
   QCOMPARE( spy.count(), 2 );
-  QCOMPARE( label->text(), invalidLabel );
+  QCOMPARE( constraintsLabel( &form2, ww )->text(), invalidLabel );
 
   // set value to 1
   spy.clear();
   ww->setValue( 1 );
   QCOMPARE( spy.count(), 2 );
-  QCOMPARE( label->text(), validLabel );
+  QCOMPARE( constraintsLabel( &form2, ww )->text(), validLabel );
 
   // set a soft constraint
   layer->setConstraintExpression( 0, QStringLiteral( "col0 is not null" ) );
@@ -130,19 +138,18 @@ void TestQgsAttributeForm::testFieldConstraint()
   QgsAttributeForm form3( layer );
   form3.setFeature( ft );
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form3.mWidgets[0] );
-  label = form3.mBuddyMap.value( ww->widget() );
 
   // set value to 1
   ww->setValue( 1 );
-  QCOMPARE( label->text(), validLabel );
+  QCOMPARE( constraintsLabel( &form3, ww )->text(), validLabel );
 
   // set value to null
   ww->setValue( QVariant() );
-  QCOMPARE( label->text(), warningLabel );
+  QCOMPARE( constraintsLabel( &form3, ww )->text(), warningLabel );
 
   // set value to 1
   ww->setValue( 1 );
-  QCOMPARE( label->text(), validLabel );
+  QCOMPARE( constraintsLabel( &form3, ww )->text(), validLabel );
 }
 
 void TestQgsAttributeForm::testFieldMultiConstraints()
@@ -170,8 +177,8 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
 
   // testing stuff
   QSignalSpy spy( &form, SIGNAL( attributeChanged( QString, QVariant ) ) );
-  QString val = QStringLiteral( "<font color=\"green\">✔</font>" );
-  QString inv = QStringLiteral( "<font color=\"red\">✘</font>" );
+  QString val = QStringLiteral( "<font color=\"#259b24\">\u2714</font>" );
+  QString inv = QStringLiteral( "<font color=\"#FF9800\">\u2718</font>" );
 
   // get wrappers for each widget
   QgsEditorWidgetWrapper *ww0, *ww1, *ww2, *ww3;
@@ -180,17 +187,11 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   ww2 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[2] );
   ww3 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[3] );
 
-  // get label for wrappers
-  QLabel *label0 = form.mBuddyMap.value( ww0->widget() );
-  QLabel *label1 = form.mBuddyMap.value( ww1->widget() );
-  QLabel *label2 = form.mBuddyMap.value( ww2->widget() );
-  QLabel *label3 = form.mBuddyMap.value( ww3->widget() );
-
-  // no constraint so we expect a label with just the field name
-  QCOMPARE( label0->text(), QString( "col0" ) );
-  QCOMPARE( label1->text(), QString( "col1" ) );
-  QCOMPARE( label2->text(), QString( "col2" ) );
-  QCOMPARE( label3->text(), QString( "col3" ) );
+  // no constraint so we expect an empty label
+  Q_ASSERT( constraintsLabel( &form, ww0 )->text().isEmpty() );
+  Q_ASSERT( constraintsLabel( &form, ww1 )->text().isEmpty() );
+  Q_ASSERT( constraintsLabel( &form, ww2 )->text().isEmpty() );
+  Q_ASSERT( constraintsLabel( &form, ww3 )->text().isEmpty() );
 
   // update constraint
   layer->setConstraintExpression( 0, QStringLiteral( "col0 < (col1 * col2)" ) );
@@ -204,30 +205,26 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   ww1 = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[1] );
   ww2 = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[2] );
   ww3 = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[3] );
-  label0 = form2.mBuddyMap.value( ww0->widget() );
-  label1 = form2.mBuddyMap.value( ww1->widget() );
-  label2 = form2.mBuddyMap.value( ww2->widget() );
-  label3 = form2.mBuddyMap.value( ww3->widget() );
   QSignalSpy spy2( &form2, SIGNAL( attributeChanged( QString, QVariant ) ) );
 
   // change value
   ww0->setValue( 2 ); // update col0
   QCOMPARE( spy2.count(), 2 );
 
-  QCOMPARE( label0->text(), QString( "col0" + inv ) ); // 2 < ( 1 + 2 )
-  QCOMPARE( label1->text(), QString( "col1" ) );
-  QCOMPARE( label2->text(), QString( "col2" ) );
-  QCOMPARE( label3->text(), QString( "col3" + val ) ); // 2 = 2
+  QCOMPARE( constraintsLabel( &form2, ww0 )->text(), inv ); // 2 < ( 1 + 2 )
+  QCOMPARE( constraintsLabel( &form2, ww1 )->text(), QString() );
+  QCOMPARE( constraintsLabel( &form2, ww2 )->text(), QString() );
+  QCOMPARE( constraintsLabel( &form2, ww3 )->text(), val ); // 2 = 2
 
   // change value
   spy2.clear();
   ww0->setValue( 1 ); // update col0
   QCOMPARE( spy2.count(), 2 );
 
-  QCOMPARE( label0->text(), QString( "col0" + val ) ); // 1 < ( 1 + 2 )
-  QCOMPARE( label1->text(), QString( "col1" ) );
-  QCOMPARE( label2->text(), QString( "col2" ) );
-  QCOMPARE( label3->text(), QString( "col3" + inv ) ); // 2 = 1
+  QCOMPARE( constraintsLabel( &form2, ww0 )->text(), val ); // 1 < ( 1 + 2 )
+  QCOMPARE( constraintsLabel( &form2, ww1 )->text(), QString() );
+  QCOMPARE( constraintsLabel( &form2, ww2 )->text(), QString() );
+  QCOMPARE( constraintsLabel( &form2, ww3 )->text(), inv ); // 2 = 1
 }
 
 void TestQgsAttributeForm::testOKButtonStatus()
@@ -323,17 +320,17 @@ void TestQgsAttributeForm::testDynamicForm()
 
   // join configuration
   QgsVectorLayerJoinInfo infoJoinAB;
-  infoJoinAB.setTargetFieldName( "id_a" );
+  infoJoinAB.setTargetFieldName( QStringLiteral( "id_a" ) );
   infoJoinAB.setJoinLayer( layerB );
-  infoJoinAB.setJoinFieldName( "id_b" );
+  infoJoinAB.setJoinFieldName( QStringLiteral( "id_b" ) );
   infoJoinAB.setDynamicFormEnabled( true );
 
   layerA->addJoin( infoJoinAB );
 
   QgsVectorLayerJoinInfo infoJoinAC;
-  infoJoinAC.setTargetFieldName( "id_a" );
+  infoJoinAC.setTargetFieldName( QStringLiteral( "id_a" ) );
   infoJoinAC.setJoinLayer( layerC );
-  infoJoinAC.setJoinFieldName( "id_c" );
+  infoJoinAC.setJoinFieldName( QStringLiteral( "id_c" ) );
   infoJoinAC.setDynamicFormEnabled( true );
 
   layerA->addJoin( infoJoinAC );
@@ -391,7 +388,7 @@ void TestQgsAttributeForm::testDynamicForm()
   QCOMPARE( ww->value(), QVariant( QVariant::Int ) );
 
   // change layerA join id field to join with layerB
-  form.changeAttribute( "id_a", QVariant( 30 ) );
+  form.changeAttribute( QStringLiteral( "id_a" ), QVariant( 30 ) );
 
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
   QCOMPARE( ww->field().name(), QString( "id_a" ) );
@@ -406,7 +403,7 @@ void TestQgsAttributeForm::testDynamicForm()
   QCOMPARE( ww->value(), QVariant( QVariant::Int ) );
 
   // change layerA join id field to join with layerC
-  form.changeAttribute( "id_a", QVariant( 32 ) );
+  form.changeAttribute( QStringLiteral( "id_a" ), QVariant( 32 ) );
 
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
   QCOMPARE( ww->field().name(), QString( "id_a" ) );
@@ -421,7 +418,7 @@ void TestQgsAttributeForm::testDynamicForm()
   QCOMPARE( ww->value(), QVariant( 12 ) );
 
   // change layerA join id field to join with layerA and layerC
-  form.changeAttribute( "id_a", QVariant( 31 ) );
+  form.changeAttribute( QStringLiteral( "id_a" ), QVariant( 31 ) );
 
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
   QCOMPARE( ww->field().name(), QString( "id_a" ) );
@@ -443,8 +440,8 @@ void TestQgsAttributeForm::testDynamicForm()
 
 void TestQgsAttributeForm::testConstraintsOnJoinedFields()
 {
-  QString validLabel = QStringLiteral( "col0<font color=\"green\">✔</font>" );
-  QString warningLabel = QStringLiteral( "col0<font color=\"orange\">✘</font>" );
+  QString validLabel = QStringLiteral( "<font color=\"#259b24\">\u2714</font>" );
+  QString warningLabel = QStringLiteral( "<font color=\"#FFC107\">\u2718</font>" );
 
   // make temporary layers
   QString defA = QStringLiteral( "Point?field=id_a:integer" );
@@ -459,9 +456,9 @@ void TestQgsAttributeForm::testConstraintsOnJoinedFields()
 
   // join configuration
   QgsVectorLayerJoinInfo infoJoinAB;
-  infoJoinAB.setTargetFieldName( "id_a" );
+  infoJoinAB.setTargetFieldName( QStringLiteral( "id_a" ) );
   infoJoinAB.setJoinLayer( layerB );
-  infoJoinAB.setJoinFieldName( "id_b" );
+  infoJoinAB.setJoinFieldName( QStringLiteral( "id_b" ) );
   infoJoinAB.setDynamicFormEnabled( true );
 
   layerA->addJoin( infoJoinAB );
@@ -494,22 +491,366 @@ void TestQgsAttributeForm::testConstraintsOnJoinedFields()
   form.setFeature( ftA );
 
   // change layerA join id field
-  form.changeAttribute( "id_a", QVariant( 30 ) );
+  form.changeAttribute( QStringLiteral( "id_a" ), QVariant( 30 ) );
 
   // compare
   QgsEditorWidgetWrapper *ww = nullptr;
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
-  QLabel *label = form.mBuddyMap.value( ww->widget() );
-  QCOMPARE( label->text(), "layerB_" + validLabel );
+  QCOMPARE( constraintsLabel( &form, ww )->text(), validLabel );
 
   // change layerA join id field
-  form.changeAttribute( "id_a", QVariant( 31 ) );
+  form.changeAttribute( QStringLiteral( "id_a" ), QVariant( 31 ) );
 
   // compare
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
-  label = form.mBuddyMap.value( ww->widget() );
-  QCOMPARE( label->text(), "layerB_" + warningLabel );
+  QCOMPARE( constraintsLabel( &form, ww )->text(), warningLabel );
 }
+
+void TestQgsAttributeForm::testEditableJoin()
+{
+  // make temporary layers
+  QString defA = QStringLiteral( "Point?field=id_a:integer" );
+  QgsVectorLayer *layerA = new QgsVectorLayer( defA, QStringLiteral( "layerA" ), QStringLiteral( "memory" ) );
+
+  QString defB = QStringLiteral( "Point?field=id_b:integer&field=col0:integer" );
+  QgsVectorLayer *layerB = new QgsVectorLayer( defB, QStringLiteral( "layerB" ), QStringLiteral( "memory" ) );
+
+  QString defC = QStringLiteral( "Point?field=id_c:integer&field=col0:integer" );
+  QgsVectorLayer *layerC = new QgsVectorLayer( defC, QStringLiteral( "layerC" ), QStringLiteral( "memory" ) );
+
+  // join configuration
+  QgsVectorLayerJoinInfo infoJoinAB;
+  infoJoinAB.setTargetFieldName( QStringLiteral( "id_a" ) );
+  infoJoinAB.setJoinLayer( layerB );
+  infoJoinAB.setJoinFieldName( QStringLiteral( "id_b" ) );
+  infoJoinAB.setDynamicFormEnabled( true );
+  infoJoinAB.setEditable( true );
+
+  layerA->addJoin( infoJoinAB );
+
+  QgsVectorLayerJoinInfo infoJoinAC;
+  infoJoinAC.setTargetFieldName( QStringLiteral( "id_a" ) );
+  infoJoinAC.setJoinLayer( layerC );
+  infoJoinAC.setJoinFieldName( QStringLiteral( "id_c" ) );
+  infoJoinAC.setDynamicFormEnabled( true );
+  infoJoinAC.setEditable( false );
+
+  layerA->addJoin( infoJoinAC );
+
+  // add features for main layer
+  QgsFeature ftA( layerA->fields() );
+  ftA.setAttribute( QStringLiteral( "id_a" ), 31 );
+  layerA->startEditing();
+  layerA->addFeature( ftA );
+  layerA->commitChanges();
+
+  // add features for joined layers
+  QgsFeature ft0B( layerB->fields() );
+  ft0B.setAttribute( QStringLiteral( "id_b" ), 31 );
+  ft0B.setAttribute( QStringLiteral( "col0" ), 11 );
+  layerB->startEditing();
+  layerB->addFeature( ft0B );
+  layerB->commitChanges();
+
+  QgsFeature ft0C( layerC->fields() );
+  ft0C.setAttribute( QStringLiteral( "id_c" ), 31 );
+  ft0C.setAttribute( QStringLiteral( "col0" ), 13 );
+  layerC->startEditing();
+  layerC->addFeature( ft0C );
+  layerC->commitChanges();
+
+  // start editing layers
+  layerA->startEditing();
+  layerB->startEditing();
+  layerC->startEditing();
+
+  // build a form with feature A
+  ftA = layerA->getFeature( 1 );
+
+  QgsAttributeForm form( layerA );
+  form.setMode( QgsAttributeForm::SingleEditMode );
+  form.setFeature( ftA );
+
+  // change layerA join id field to join with layerB and layerC
+  QgsEditorWidgetWrapper *ww = nullptr;
+
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
+  QCOMPARE( ww->field().name(), QString( "id_a" ) );
+  QCOMPARE( ww->value(), QVariant( 31 ) );
+
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
+  QCOMPARE( ww->field().name(), QString( "layerB_col0" ) );
+  QCOMPARE( ww->value(), QVariant( 11 ) );
+
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[2] );
+  QCOMPARE( ww->field().name(), QString( "layerC_col0" ) );
+  QCOMPARE( ww->value(), QVariant( 13 ) );
+
+  // test if widget is enabled for layerA
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[0] );
+  QCOMPARE( ww->widget()->isEnabled(), true );
+
+  // test if widget is enabled for layerB
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[1] );
+  QCOMPARE( ww->widget()->isEnabled(), true );
+
+  // test if widget is disabled for layerC
+  ww = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[2] );
+  QCOMPARE( ww->widget()->isEnabled(), false );
+
+  // change attributes
+  form.changeAttribute( QStringLiteral( "layerB_col0" ), QVariant( 333 ) );
+  form.changeAttribute( QStringLiteral( "layerC_col0" ), QVariant( 444 ) );
+  form.save();
+
+  // commit changes
+  layerA->commitChanges();
+  layerB->commitChanges();
+  layerC->commitChanges();
+
+  // check attributes
+  ft0B = layerB->getFeature( 1 );
+  QCOMPARE( ft0B.attribute( "col0" ), QVariant( 333 ) );
+
+  ft0C = layerC->getFeature( 1 );
+  QCOMPARE( ft0C.attribute( "col0" ), QVariant( 13 ) );
+
+  // clean
+  delete layerA;
+  delete layerB;
+  delete layerC;
+}
+
+void TestQgsAttributeForm::testUpsertOnEdit()
+{
+  // make temporary layers
+  QString defA = QStringLiteral( "Point?field=id_a:integer" );
+  QgsVectorLayer *layerA = new QgsVectorLayer( defA, QStringLiteral( "layerA" ), QStringLiteral( "memory" ) );
+
+  QString defB = QStringLiteral( "Point?field=id_b:integer&field=col0:integer" );
+  QgsVectorLayer *layerB = new QgsVectorLayer( defB, QStringLiteral( "layerB" ), QStringLiteral( "memory" ) );
+
+  QString defC = QStringLiteral( "Point?field=id_c:integer&field=col0:integer" );
+  QgsVectorLayer *layerC = new QgsVectorLayer( defC, QStringLiteral( "layerC" ), QStringLiteral( "memory" ) );
+
+  // join configuration
+  QgsVectorLayerJoinInfo infoJoinAB;
+  infoJoinAB.setTargetFieldName( QStringLiteral( "id_a" ) );
+  infoJoinAB.setJoinLayer( layerB );
+  infoJoinAB.setJoinFieldName( QStringLiteral( "id_b" ) );
+  infoJoinAB.setDynamicFormEnabled( true );
+  infoJoinAB.setEditable( true );
+  infoJoinAB.setUpsertOnEdit( true );
+
+  layerA->addJoin( infoJoinAB );
+
+  QgsVectorLayerJoinInfo infoJoinAC;
+  infoJoinAC.setTargetFieldName( QStringLiteral( "id_a" ) );
+  infoJoinAC.setJoinLayer( layerC );
+  infoJoinAC.setJoinFieldName( QStringLiteral( "id_c" ) );
+  infoJoinAC.setDynamicFormEnabled( true );
+  infoJoinAC.setEditable( true );
+  infoJoinAC.setUpsertOnEdit( false );
+
+  layerA->addJoin( infoJoinAC );
+
+  // add features for main layer
+  QgsFeature ft0A( layerA->fields() );
+  ft0A.setAttribute( QStringLiteral( "id_a" ), 31 );
+  layerA->startEditing();
+  layerA->addFeature( ft0A );
+  layerA->commitChanges();
+
+  // add features for joined layers
+  QgsFeature ft0B( layerB->fields() );
+  ft0B.setAttribute( QStringLiteral( "id_b" ), 33 );
+  ft0B.setAttribute( QStringLiteral( "col0" ), 11 );
+  layerB->startEditing();
+  layerB->addFeature( ft0B );
+  layerB->commitChanges();
+
+  QgsFeature ft0C( layerC->fields() );
+  ft0C.setAttribute( QStringLiteral( "id_c" ), 31 );
+  ft0C.setAttribute( QStringLiteral( "col0" ), 13 );
+  layerC->startEditing();
+  layerC->addFeature( ft0C );
+  layerC->commitChanges();
+
+  // get committed feature from layerA
+  QgsFeature feature;
+  QString filter = QgsExpression::createFieldEqualityExpression( QStringLiteral( "id_a" ), 31 );
+
+  QgsFeatureRequest request;
+  request.setFilterExpression( filter );
+  request.setLimit( 1 );
+  layerA->getFeatures( request ).nextFeature( ft0A );
+
+  // start editing layers
+  layerA->startEditing();
+  layerB->startEditing();
+  layerC->startEditing();
+
+  // build a form with feature A
+  QgsAttributeForm form( layerA );
+  form.setMode( QgsAttributeForm::AddFeatureMode );
+  form.setFeature( ft0A );
+
+  // count features
+  QCOMPARE( ( int )layerA->featureCount(), 1 );
+  QCOMPARE( ( int )layerB->featureCount(), 1 );
+  QCOMPARE( ( int )layerC->featureCount(), 1 );
+
+  // add a new feature with null joined fields. Joined feature should not be
+  // added
+  form.changeAttribute( QStringLiteral( "id_a" ), QVariant( 32 ) );
+  form.changeAttribute( QStringLiteral( "layerB_col0" ), QVariant() );
+  form.changeAttribute( QStringLiteral( "layerC_col0" ), QVariant() );
+  form.save();
+
+  // commit
+  layerA->commitChanges();
+  layerB->commitChanges();
+  layerC->commitChanges();
+
+  // count features
+  QCOMPARE( ( int )layerA->featureCount(), 2 );
+  QCOMPARE( ( int )layerB->featureCount(), 1 );
+  QCOMPARE( ( int )layerC->featureCount(), 1 );
+
+  // start editing layers
+  layerA->startEditing();
+  layerB->startEditing();
+  layerC->startEditing();
+
+  // add a new feature with not null joined fields. Joined feature should be
+  // added
+  QgsAttributeForm form1( layerA );
+  form1.setMode( QgsAttributeForm::AddFeatureMode );
+  form1.setFeature( ft0A );
+
+  form1.changeAttribute( QStringLiteral( "id_a" ), QVariant( 34 ) );
+  form1.changeAttribute( QStringLiteral( "layerB_col0" ), QVariant( 3434 ) );
+  form1.changeAttribute( QStringLiteral( "layerC_col0" ), QVariant( 343434 ) );
+  form1.save();
+
+  // commit
+  layerA->commitChanges();
+  layerB->commitChanges();
+  layerC->commitChanges();
+
+  // count features
+  QCOMPARE( ( int )layerA->featureCount(), 3 );
+  QCOMPARE( ( int )layerB->featureCount(), 2 );
+  QCOMPARE( ( int )layerC->featureCount(), 1 );
+
+  // check joined feature value
+  filter = QgsExpression::createFieldEqualityExpression( QStringLiteral( "id_a" ), 34 );
+
+  request.setFilterExpression( filter );
+  request.setLimit( 1 );
+  layerA->getFeatures( request ).nextFeature( feature );
+
+  QCOMPARE( feature.attribute( "layerB_col0" ), QVariant( 3434 ) );
+
+  // start editing layers
+  layerA->startEditing();
+  layerB->startEditing();
+  layerC->startEditing();
+
+  // create a target feature but update a joined feature. A new feature should
+  // be added in layerA and values in layerB should be updated
+  QgsAttributeForm form2( layerA );
+  form2.setMode( QgsAttributeForm::AddFeatureMode );
+  form2.setFeature( ft0A );
+  form2.changeAttribute( QStringLiteral( "id_a" ), QVariant( 33 ) );
+  form2.changeAttribute( QStringLiteral( "layerB_col0" ), QVariant( 3333 ) );
+  form2.changeAttribute( QStringLiteral( "layerC_col0" ), QVariant( 323232 ) );
+  form2.save();
+
+  // commit
+  layerA->commitChanges();
+  layerB->commitChanges();
+  layerC->commitChanges();
+
+  // count features
+  QCOMPARE( ( int )layerA->featureCount(), 4 );
+  QCOMPARE( ( int )layerB->featureCount(), 2 );
+  QCOMPARE( ( int )layerC->featureCount(), 1 );
+
+  // check joined feature value
+  filter = QgsExpression::createFieldEqualityExpression( QStringLiteral( "id_a" ), 33 );
+
+  request.setFilterExpression( filter );
+  request.setLimit( 1 );
+  layerA->getFeatures( request ).nextFeature( feature );
+
+  QCOMPARE( feature.attribute( "layerB_col0" ), QVariant( 3333 ) );
+
+  // start editing layers
+  layerA->startEditing();
+  layerB->startEditing();
+  layerC->startEditing();
+
+  // update feature which does not exist in joined layer but with null joined
+  // fields. A new feature should NOT be added in joined layer
+  QgsAttributeForm form3( layerA );
+  form3.setMode( QgsAttributeForm::SingleEditMode );
+  form3.setFeature( ft0A );
+  form3.changeAttribute( QStringLiteral( "id_a" ), QVariant( 31 ) );
+  form3.changeAttribute( QStringLiteral( "layerB_col0" ), QVariant() );
+  form3.changeAttribute( QStringLiteral( "layerC_col0" ), QVariant() );
+  form3.save();
+
+  // commit
+  layerA->commitChanges();
+  layerB->commitChanges();
+  layerC->commitChanges();
+
+  // count features
+  QCOMPARE( ( int )layerA->featureCount(), 4 );
+  QCOMPARE( ( int )layerB->featureCount(), 2 );
+  QCOMPARE( ( int )layerC->featureCount(), 1 );
+
+  // start editing layers
+  layerA->startEditing();
+  layerB->startEditing();
+  layerC->startEditing();
+
+  // update feature which does not exist in joined layer with NOT null joined
+  // fields. A new feature should be added in joined layer
+  QgsAttributeForm form4( layerA );
+  form4.setMode( QgsAttributeForm::SingleEditMode );
+  form4.setFeature( ft0A );
+  form4.changeAttribute( QStringLiteral( "id_a" ), QVariant( 31 ) );
+  form4.changeAttribute( QStringLiteral( "layerB_col0" ), QVariant( 1111 ) );
+  form4.changeAttribute( QStringLiteral( "layerC_col0" ), QVariant( 3131 ) );
+  form4.save();
+
+  // commit
+  layerA->commitChanges();
+  layerB->commitChanges();
+  layerC->commitChanges();
+
+  // count features
+  QCOMPARE( ( int )layerA->featureCount(), 4 );
+  QCOMPARE( ( int )layerB->featureCount(), 3 );
+  QCOMPARE( ( int )layerC->featureCount(), 1 );
+
+  // check joined feature value
+  filter = QgsExpression::createFieldEqualityExpression( QStringLiteral( "id_a" ), 31 );
+
+  request.setFilterExpression( filter );
+  request.setLimit( 1 );
+  layerA->getFeatures( request ).nextFeature( feature );
+
+  QCOMPARE( feature.attribute( "layerB_col0" ), QVariant( 1111 ) );
+
+  // clean
+  delete layerA;
+  delete layerB;
+  delete layerC;
+}
+
 
 QGSTEST_MAIN( TestQgsAttributeForm )
 #include "testqgsattributeform.moc"

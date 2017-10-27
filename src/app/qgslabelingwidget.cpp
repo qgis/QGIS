@@ -30,16 +30,19 @@ QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canva
   : QgsMapLayerConfigWidget( layer, canvas, parent )
   , mLayer( layer )
   , mCanvas( canvas )
-  , mWidget( nullptr )
+
 {
   setupUi( this );
 
   connect( mEngineSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingWidget::showEngineConfigDialog );
 
-  mLabelModeComboBox->setCurrentIndex( -1 );
-
   connect( mLabelModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelingWidget::labelModeChanged );
   setLayer( layer );
+}
+
+QgsLabelingGui *QgsLabelingWidget::labelingGui()
+{
+  return qobject_cast<QgsLabelingGui *>( mWidget );
 }
 
 void QgsLabelingWidget::resetSettings()
@@ -81,6 +84,8 @@ void QgsLabelingWidget::adaptToLayer()
   if ( !mLayer )
     return;
 
+  whileBlocking( mLabelModeComboBox )->setCurrentIndex( -1 );
+
   // pick the right mode of the layer
   if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "rule-based" ) )
   {
@@ -95,6 +100,12 @@ void QgsLabelingWidget::adaptToLayer()
   else
   {
     mLabelModeComboBox->setCurrentIndex( 0 );
+  }
+
+  QgsLabelingGui *lg = qobject_cast<QgsLabelingGui *>( mWidget );
+  if ( lg )
+  {
+    lg->updateUi();
   }
 }
 
@@ -156,6 +167,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
     QgsLabelingGui *simpleWidget = new QgsLabelingGui( mLayer, mCanvas, *mSimpleSettings, this );
     simpleWidget->setDockMode( dockMode() );
     connect( simpleWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsLabelingWidget::widgetChanged );
+    connect( simpleWidget, &QgsLabelingGui::auxiliaryFieldCreated, this, &QgsLabelingWidget::auxiliaryFieldCreated );
 
     if ( index == 3 )
       simpleWidget->setLabelMode( QgsLabelingGui::ObstaclesOnly );

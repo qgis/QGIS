@@ -93,6 +93,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
     def getParamValues(self):
         parameters = {}
 
+        if not hasattr(self, 'mainWidget') or self.mainWidget is None:
+            return parameters
+
         for param in self.alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
@@ -213,7 +216,10 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 self.tr('<b>Algorithm \'{0}\' starting...</b>').format(self.alg.displayName()), escape_html=False)
 
             feedback.pushInfo(self.tr('Input parameters:'))
-            feedback.pushCommandInfo(pformat(parameters))
+            display_params = []
+            for k, v in parameters.items():
+                display_params.append("'" + k + "' : " + self.alg.parameterDefinition(k).valueAsPythonString(v, context))
+            feedback.pushCommandInfo('{ ' + ', '.join(display_params) + ' }')
             feedback.pushInfo('')
             start_time = time.time()
 

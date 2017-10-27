@@ -42,9 +42,6 @@
 
 QgsGraduatedHistogramWidget::QgsGraduatedHistogramWidget( QWidget *parent )
   : QgsHistogramWidget( parent )
-  , mRenderer( nullptr )
-  , mHistoPicker( nullptr )
-  , mPressedValue( 0 )
 {
   //clear x axis title to make more room for graph
   setXAxisTitle( QString() );
@@ -158,11 +155,11 @@ void QgsGraduatedHistogramWidget::findClosestRange( double value, int &closestRa
   int pressedPixel = mPlot->canvasMap( QwtPlot::xBottom ).transform( value );
   for ( int i = 0; i < ranges.count() - 1; ++i )
   {
-    if ( qAbs( mPressedValue - ranges.at( i ).upperValue() ) < minDistance )
+    if ( std::fabs( mPressedValue - ranges.at( i ).upperValue() ) < minDistance )
     {
       closestRangeIndex = i;
-      minDistance = qAbs( mPressedValue - ranges.at( i ).upperValue() );
-      pixelDistance = qAbs( pressedPixel - mPlot->canvasMap( QwtPlot::xBottom ).transform( ranges.at( i ).upperValue() ) );
+      minDistance = std::fabs( mPressedValue - ranges.at( i ).upperValue() );
+      pixelDistance = std::fabs( pressedPixel - mPlot->canvasMap( QwtPlot::xBottom ).transform( ranges.at( i ).upperValue() ) );
     }
   }
 }

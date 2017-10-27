@@ -36,7 +36,6 @@ open add color ramp dialog, return color ramp's name if the ramp has been added
     void exportItems();
     void importItems();
 
-    void on_tabItemType_currentChanged( int );
     void populateList();
 %Docstring
 adds symbols of some type to list
@@ -47,7 +46,15 @@ adds symbols of some type to list
 called when the dialog is going to be closed
 %End
 
-    void on_buttonBox_helpRequested();
+    void onClose();
+%Docstring
+Close the dialog
+%End
+
+    void showHelp();
+%Docstring
+Open the associated help
+%End
 
     void itemChanged( QStandardItem *item );
 
@@ -211,6 +218,7 @@ Enables or disables the groupTree items for grouping mode
 %Docstring
 sets the text of the item with bold font
 %End
+
 
 
 

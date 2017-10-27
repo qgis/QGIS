@@ -19,7 +19,7 @@ email                : hugo dot mercier at oslandia dot com
 
 #include <stdint.h>
 
-#include <qgsgeometry.h>
+#include "qgsgeometry.h"
 
 // BLOB header
 // name    size    value
@@ -33,16 +33,16 @@ email                : hugo dot mercier at oslandia dot com
 // mbr_end   1      7C
 struct SpatialiteBlobHeader
 {
-  unsigned char start;
-  unsigned char endianness;
-  int32_t srid;
-  double mbrMinX;
-  double mbrMinY;
-  double mbrMaxX;
-  double mbrMaxY;
-  unsigned char end;
+  unsigned char start = 0x00;
+  unsigned char endianness = 0x01;
+  int32_t srid = -1;
+  double mbrMinX = -DBL_MAX;
+  double mbrMinY = -DBL_MAX;
+  double mbrMaxX = DBL_MAX;
+  double mbrMaxY = DBL_MAX;
+  unsigned char end = 0x7C;
 
-  SpatialiteBlobHeader();
+  SpatialiteBlobHeader() = default;
 
   static const size_t LENGTH = 39;
 
@@ -51,21 +51,25 @@ struct SpatialiteBlobHeader
   void writeTo( char *p ) const;
 };
 
-//!
-//! Convert a QgsGeometry into a SpatiaLite geometry BLOB
-//! The blob will be allocated and must be handled by the caller
+/**
+ * Convert a QgsGeometry into a SpatiaLite geometry BLOB
+ * The blob will be allocated and must be handled by the caller
+ */
 void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&blob, int &size );
 
-//!
-//! Return the bounding box of a SpatiaLite geometry blob
+/**
+ * Return the bounding box of a SpatiaLite geometry blob
+ */
 QgsRectangle spatialiteBlobBbox( const char *blob, size_t size );
 
-//!
-//! Convert a SpatiaLite geometry BLOB to a QgsGeometry
+/**
+ * Convert a SpatiaLite geometry BLOB to a QgsGeometry
+ */
 QgsGeometry spatialiteBlobToQgsGeometry( const char *blob, size_t size );
 
-//!
-//! Get geometry type and srid from a SpatiaLite geometry blob
+/**
+ * Get geometry type and srid from a SpatiaLite geometry blob
+ */
 QPair<QgsWkbTypes::Type, long> spatialiteBlobGeometryType( const char *blob, size_t size );
 
 #endif

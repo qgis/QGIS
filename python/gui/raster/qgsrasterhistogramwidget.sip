@@ -61,10 +61,6 @@ Apply a histoActionTriggered() event.
 %Docstring
  slot executed when user wishes to refresh raster histogramwidget
 %End
-    void on_mSaveAsImageButton_clicked();
-%Docstring
-This slot lets you save the histogram as an image to disk
-%End
 
     virtual void apply();
 

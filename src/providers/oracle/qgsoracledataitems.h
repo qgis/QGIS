@@ -39,11 +39,11 @@ class QgsOracleRootItem : public QgsDataCollectionItem
     QgsOracleRootItem( QgsDataItem *parent, QString name, QString path );
     ~QgsOracleRootItem();
 
-    QVector<QgsDataItem *> createChildren();
+    QVector<QgsDataItem *> createChildren() override;
 
-    virtual QWidget *paramWidget();
+    virtual QWidget *paramWidget() override;
 
-    virtual QList<QAction *> actions();
+    QList<QAction *> actions( QWidget *parent ) override;
 
     static QMainWindow *sMainWindow;
 
@@ -59,14 +59,14 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
     QgsOracleConnectionItem( QgsDataItem *parent, QString name, QString path );
     ~QgsOracleConnectionItem();
 
-    QVector<QgsDataItem *> createChildren();
-    virtual bool equal( const QgsDataItem *other );
-    virtual QList<QAction *> actions();
+    QVector<QgsDataItem *> createChildren() override;
+    virtual bool equal( const QgsDataItem *other ) override;
+    QList<QAction *> actions( QWidget *parent ) override;
 
-    virtual bool acceptDrop() { return true; }
-    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action );
+    virtual bool acceptDrop() override { return true; }
+    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 
-    void refresh();
+    void refresh() override;
 
   signals:
     void addGeometryColumn( QgsOracleLayerProperty );
@@ -110,7 +110,7 @@ class QgsOracleLayerItem : public QgsLayerItem
 
     QString createUri();
 
-    virtual QList<QAction *> actions();
+    QList<QAction *> actions( QWidget *parent ) override;
 
   public slots:
     void deleteLayer();

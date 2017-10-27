@@ -27,7 +27,8 @@ __copyright__ = '(C) 2012, Anita Graser'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsProcessingParameterNumber)
+from qgis.core import (QgsProcessingParameterNumber,
+                       QgsProcessing)
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
@@ -37,7 +38,7 @@ class DensifyGeometriesInterval(QgisFeatureBasedAlgorithm):
     INTERVAL = 'INTERVAL'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -56,6 +57,9 @@ class DensifyGeometriesInterval(QgisFeatureBasedAlgorithm):
 
     def outputName(self):
         return self.tr('Densified')
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon]
 
     def prepareAlgorithm(self, parameters, context, feedback):
         interval = self.parameterAsDouble(parameters, self.INTERVAL, context)

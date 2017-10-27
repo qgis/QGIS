@@ -27,7 +27,8 @@
 
 class QgsRasterMinMaxWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSingleBandPseudoColorRendererWidget
  */
 class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsSingleBandPseudoColorRendererWidgetBase
@@ -49,7 +50,8 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 
   public slots:
 
-    /** Executes the single band pseudo raster classficiation
+    /**
+     * Executes the single band pseudo raster classficiation
      */
     void classify();
     //! called when new min/max values are loaded
@@ -66,7 +68,8 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems );
 
-    /** Generate labels from the values in the color map.
+    /**
+     * Generate labels from the values in the color map.
      *  Skip labels which were manually edited (black text).
      *  Text of generated labels is made gray
      */
@@ -80,21 +83,21 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
   private slots:
 
     void applyColorRamp();
-    void on_mAddEntryButton_clicked();
-    void on_mDeleteEntryButton_clicked();
-    void on_mLoadFromBandButton_clicked();
-    void on_mLoadFromFileButton_clicked();
-    void on_mExportToFileButton_clicked();
-    void on_mUnitLineEdit_textEdited( const QString &text ) { Q_UNUSED( text ); autoLabel(); }
-    void on_mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void mAddEntryButton_clicked();
+    void mDeleteEntryButton_clicked();
+    void mLoadFromBandButton_clicked();
+    void mLoadFromFileButton_clicked();
+    void mExportToFileButton_clicked();
+    void mUnitLineEdit_textEdited( const QString &text ) { Q_UNUSED( text ); autoLabel(); }
+    void mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
     void mColormapTreeWidget_itemEdited( QTreeWidgetItem *item, int column );
     void bandChanged();
-    void on_mColorInterpolationComboBox_currentIndexChanged( int index );
-    void on_mMinLineEdit_textChanged( const QString & ) { resetClassifyButton(); }
-    void on_mMaxLineEdit_textChanged( const QString & ) { resetClassifyButton(); }
-    void on_mMinLineEdit_textEdited( const QString &text ) ;
-    void on_mMaxLineEdit_textEdited( const QString &text ) ;
-    void on_mClassificationModeComboBox_currentIndexChanged( int index );
+    void mColorInterpolationComboBox_currentIndexChanged( int index );
+    void mMinLineEdit_textChanged( const QString & ) { resetClassifyButton(); }
+    void mMaxLineEdit_textChanged( const QString & ) { resetClassifyButton(); }
+    void mMinLineEdit_textEdited( const QString &text );
+    void mMaxLineEdit_textEdited( const QString &text );
+    void mClassificationModeComboBox_currentIndexChanged( int index );
     void changeColor();
     void changeOpacity();
 

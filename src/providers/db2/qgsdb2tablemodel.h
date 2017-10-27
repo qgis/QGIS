@@ -19,7 +19,7 @@
 #define QGSDB2TABLEMODEL_H
 
 #include <QStandardItemModel>
-#include <qgsdataitem.h>
+#include "qgsdataitem.h"
 #include "qgis.h"
 
 //! Layer Property structure
@@ -40,7 +40,8 @@ struct QgsDb2LayerProperty
 
 class QIcon;
 
-/** A model that holds the tables of a database in a hierarchy where the
+/**
+ * A model that holds the tables of a database in a hierarchy where the
 schemas are the root elements that contain the individual tables as children.
 The tables have the following columns: Type, Schema, Tablename, Geometry Column, Sql*/
 class QgsDb2TableModel : public QStandardItemModel
@@ -48,7 +49,6 @@ class QgsDb2TableModel : public QStandardItemModel
     Q_OBJECT
   public:
     QgsDb2TableModel();
-    ~QgsDb2TableModel();
 
     //! Adds entry for one database table to the model
     void addTableEntry( const QgsDb2LayerProperty &property );
@@ -56,7 +56,8 @@ class QgsDb2TableModel : public QStandardItemModel
     //! Sets an sql statement that belongs to a cell specified by a model index
     void setSql( const QModelIndex &index, const QString &sql );
 
-    /** Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
+    /**
+     * Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
        This is for tables where the type is detected later by thread*/
     void setGeometryTypesForTable( QgsDb2LayerProperty layerProperty );
 
@@ -86,6 +87,6 @@ class QgsDb2TableModel : public QStandardItemModel
 
   private:
     //! Number of tables in the model
-    int mTableCount;
+    int mTableCount = 0;
 };
 #endif

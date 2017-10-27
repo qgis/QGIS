@@ -24,9 +24,13 @@ class QgsDataDefinedSizeLegendWidget : QgsPanelWidget
 #include "qgsdatadefinedsizelegendwidget.h"
 %End
   public:
+
     explicit QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol /Transfer/, QgsMapCanvas *canvas = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-when the symbol is given from outside rather than being set inside QgsDataDefinedSizeLegend.
+ Creates the dialog and initializes the content to what is passed in the legend configuration (may be null).
+ The ddSize argument determines scaling of the marker symbol - it should have a size scale transformer assigned
+ to know the range of sizes. The overrideSymbol argument may override the source symbol: this is useful in case
+ when the symbol is given from outside rather than being set inside QgsDataDefinedSizeLegend.
 %End
     ~QgsDataDefinedSizeLegendWidget();
 
@@ -39,6 +43,7 @@ Returns configuration as set up in the dialog (may be null). Ownership is passed
   signals:
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

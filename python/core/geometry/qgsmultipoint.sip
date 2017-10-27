@@ -20,12 +20,16 @@ class QgsMultiPointV2: QgsGeometryCollection
 %End
   public:
     QgsMultiPointV2();
+
     virtual QString geometryType() const;
+
     virtual QgsMultiPointV2 *clone() const /Factory/;
 
+    virtual QgsMultiPointV2 *toCurveType() const /Factory/;
 
     virtual bool fromWkt( const QString &wkt );
 
+    virtual void clear();
 
     virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
@@ -33,22 +37,26 @@ class QgsMultiPointV2: QgsGeometryCollection
 
     virtual QString asJSON( int precision = 17 ) const;
 
-
     virtual int nCoordinates() const;
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
-%Docstring
-Adds a geometry and takes ownership. Returns true in case of success
- :rtype: bool
-%End
+
+    virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
+
+
+
   protected:
+    virtual QgsMultiPointV2 *createEmptyWithSameType() const /Factory/;
 
     virtual bool wktOmitChildType() const;
 
+
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

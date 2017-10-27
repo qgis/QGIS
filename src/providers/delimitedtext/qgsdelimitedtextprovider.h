@@ -96,21 +96,24 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     virtual QgsFields fields() const override;
 
-    /** Returns a bitmask containing the supported capabilities
+    /**
+     * Returns a bitmask containing the supported capabilities
      * Note, some capabilities may change depending on whether
      * a spatial filter is active on this provider, so it may
      * be prudent to check this value per intended operation.
      */
     virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
-    /** Creates a spatial index on the data
+    /**
+     * Creates a spatial index on the data
      * \returns indexCreated  Returns true if a spatial index is created
      */
     virtual bool createSpatialIndex() override;
 
     /* Implementation of functions from QgsDataProvider */
 
-    /** Return a provider name
+    /**
+     * Return a provider name
      *
      *  Essentially just returns the provider key.  Should be used to build file
      *  dialogs so that providers can be shown with their supported types. Thus
@@ -125,7 +128,8 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      */
     QString name() const override;
 
-    /** Return description
+    /**
+     * Return description
      *
      *  Return a terse string describing what the provider is.
      *
@@ -207,31 +211,31 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     static double dmsStringToDouble( const QString &sX, bool *xOk );
 
     // mLayerValid defines whether the layer has been loaded as a valid layer
-    bool mLayerValid;
+    bool mLayerValid = false;
     // mValid defines whether the layer is currently valid (may differ from
     // mLayerValid if the file has been rewritten)
-    mutable bool mValid;
+    mutable bool mValid = false;
 
     //! Text file
     QgsDelimitedTextFile *mFile = nullptr;
 
     // Fields
-    GeomRepresentationType mGeomRep;
+    GeomRepresentationType mGeomRep = GeomNone;
     mutable QList<int> attributeColumns;
     QgsFields attributeFields;
 
-    int mFieldCount;  // Note: this includes field count for wkt field
+    int mFieldCount = 0;  // Note: this includes field count for wkt field
     QString mWktFieldName;
     QString mXFieldName;
     QString mYFieldName;
 
-    mutable int mXFieldIndex;
-    mutable int mYFieldIndex;
-    mutable int mWktFieldIndex;
+    mutable int mXFieldIndex = -1;
+    mutable int mYFieldIndex = -1;
+    mutable int mWktFieldIndex = -1;
 
     // mWktPrefix regexp is used to clean up
     // prefixes sometimes used for WKT (PostGIS EWKT, informix SRID)
-    bool mWktHasPrefix;
+    bool mWktHasPrefix = false;
 
     //! Layer extent
     mutable QgsRectangle mExtent;
@@ -241,37 +245,37 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     mutable long mNumberFeatures;
     int mSkipLines;
     QString mDecimalPoint;
-    bool mXyDms;
+    bool mXyDms = false;
 
     QString mSubsetString;
     mutable QString mCachedSubsetString;
     QgsExpression *mSubsetExpression = nullptr;
-    bool mBuildSubsetIndex;
+    bool mBuildSubsetIndex = true;
     mutable QList<quintptr> mSubsetIndex;
-    mutable bool mUseSubsetIndex;
+    mutable bool mUseSubsetIndex = false;
     mutable bool mCachedUseSubsetIndex;
 
     //! Storage for any lines in the file that couldn't be loaded
-    int mMaxInvalidLines;
+    int mMaxInvalidLines = 50;
     mutable int mNExtraInvalidLines;
     mutable QStringList mInvalidLines;
     //! Only want to show the invalid lines once to the user
-    bool mShowInvalidLines;
+    bool mShowInvalidLines = true;
 
     //! Record file updates, flags rescan required
-    mutable bool mRescanRequired;
+    mutable bool mRescanRequired = false;
 
     // Coordinate reference system
     QgsCoordinateReferenceSystem mCrs;
 
-    QgsWkbTypes::Type mWkbType;
-    QgsWkbTypes::GeometryType mGeometryType;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::NoGeometry;
+    QgsWkbTypes::GeometryType mGeometryType = QgsWkbTypes::UnknownGeometry;
 
     // Spatial index
-    bool mBuildSpatialIndex;
+    bool mBuildSpatialIndex = false;
     mutable bool mUseSpatialIndex;
     mutable bool mCachedUseSpatialIndex;
-    mutable QgsSpatialIndex *mSpatialIndex;
+    mutable QgsSpatialIndex *mSpatialIndex = nullptr;
 
     friend class QgsDelimitedTextFeatureIterator;
     friend class QgsDelimitedTextFeatureSource;

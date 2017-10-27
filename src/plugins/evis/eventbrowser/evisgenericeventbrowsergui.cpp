@@ -54,6 +54,29 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgisInt
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( buttonboxOptions, &QDialogButtonBox::clicked, this, &eVisGenericEventBrowserGui::buttonboxOptions_clicked );
+  connect( chkboxApplyPathRulesToDocs, &QCheckBox::stateChanged, this, &eVisGenericEventBrowserGui::chkboxApplyPathRulesToDocs_stateChanged );
+  connect( cboxEventImagePathField, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &eVisGenericEventBrowserGui::cboxEventImagePathField_currentIndexChanged );
+  connect( cboxCompassBearingField, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &eVisGenericEventBrowserGui::cboxCompassBearingField_currentIndexChanged );
+  connect( cboxCompassOffsetField, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &eVisGenericEventBrowserGui::cboxCompassOffsetField_currentIndexChanged );
+  connect( chkboxDisplayCompassBearing, &QCheckBox::stateChanged, this, &eVisGenericEventBrowserGui::chkboxDisplayCompassBearing_stateChanged );
+  connect( chkboxEventImagePathRelative, &QCheckBox::stateChanged, this, &eVisGenericEventBrowserGui::chkboxEventImagePathRelative_stateChanged );
+  connect( chkboxUseOnlyFilename, &QCheckBox::stateChanged, this, &eVisGenericEventBrowserGui::chkboxUseOnlyFilename_stateChanged );
+  connect( displayArea, &QTabWidget::currentChanged, this, &eVisGenericEventBrowserGui::displayArea_currentChanged );
+  connect( dsboxCompassOffset, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &eVisGenericEventBrowserGui::dsboxCompassOffset_valueChanged );
+  connect( leBasePath, &QLineEdit::textChanged, this, &eVisGenericEventBrowserGui::leBasePath_textChanged );
+  connect( pbtnAddFileType, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnAddFileType_clicked );
+  connect( pbtnDeleteFileType, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnDeleteFileType_clicked );
+  connect( pbtnNext, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnNext_clicked );
+  connect( pbtnPrevious, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnPrevious_clicked );
+  connect( pbtnResetApplyPathRulesToDocs, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnResetApplyPathRulesToDocs_clicked );
+  connect( pbtnResetBasePathData, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnResetBasePathData_clicked );
+  connect( pbtnResetCompassBearingData, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnResetCompassBearingData_clicked );
+  connect( pbtnResetCompassOffsetData, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnResetCompassOffsetData_clicked );
+  connect( pbtnResetEventImagePathData, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnResetEventImagePathData_clicked );
+  connect( pbtnResetUseOnlyFilenameData, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnResetUseOnlyFilenameData_clicked );
+  connect( rbtnManualCompassOffset, &QRadioButton::toggled, this, &eVisGenericEventBrowserGui::rbtnManualCompassOffset_toggled );
+  connect( tableFileTypeAssociations, &QTableWidget::cellDoubleClicked, this, &eVisGenericEventBrowserGui::tableFileTypeAssociations_cellDoubleClicked );
 
   QSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "eVis/browser-geometry" ) ).toByteArray() );
@@ -87,6 +110,29 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgsMapC
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( buttonboxOptions, &QDialogButtonBox::clicked, this, &eVisGenericEventBrowserGui::buttonboxOptions_clicked );
+  connect( chkboxApplyPathRulesToDocs, &QCheckBox::stateChanged, this, &eVisGenericEventBrowserGui::chkboxApplyPathRulesToDocs_stateChanged );
+  connect( cboxEventImagePathField, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &eVisGenericEventBrowserGui::cboxEventImagePathField_currentIndexChanged );
+  connect( cboxCompassBearingField, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &eVisGenericEventBrowserGui::cboxCompassBearingField_currentIndexChanged );
+  connect( cboxCompassOffsetField, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &eVisGenericEventBrowserGui::cboxCompassOffsetField_currentIndexChanged );
+  connect( chkboxDisplayCompassBearing, &QCheckBox::stateChanged, this, &eVisGenericEventBrowserGui::chkboxDisplayCompassBearing_stateChanged );
+  connect( chkboxEventImagePathRelative, &QCheckBox::stateChanged, this, &eVisGenericEventBrowserGui::chkboxEventImagePathRelative_stateChanged );
+  connect( chkboxUseOnlyFilename, &QCheckBox::stateChanged, this, &eVisGenericEventBrowserGui::chkboxUseOnlyFilename_stateChanged );
+  connect( displayArea, &QTabWidget::currentChanged, this, &eVisGenericEventBrowserGui::displayArea_currentChanged );
+  connect( dsboxCompassOffset, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &eVisGenericEventBrowserGui::dsboxCompassOffset_valueChanged );
+  connect( leBasePath, &QLineEdit::textChanged, this, &eVisGenericEventBrowserGui::leBasePath_textChanged );
+  connect( pbtnAddFileType, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnAddFileType_clicked );
+  connect( pbtnDeleteFileType, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnDeleteFileType_clicked );
+  connect( pbtnNext, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnNext_clicked );
+  connect( pbtnPrevious, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnPrevious_clicked );
+  connect( pbtnResetApplyPathRulesToDocs, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnResetApplyPathRulesToDocs_clicked );
+  connect( pbtnResetBasePathData, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnResetBasePathData_clicked );
+  connect( pbtnResetCompassBearingData, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnResetCompassBearingData_clicked );
+  connect( pbtnResetCompassOffsetData, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnResetCompassOffsetData_clicked );
+  connect( pbtnResetEventImagePathData, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnResetEventImagePathData_clicked );
+  connect( pbtnResetUseOnlyFilenameData, &QPushButton::clicked, this, &eVisGenericEventBrowserGui::pbtnResetUseOnlyFilenameData_clicked );
+  connect( rbtnManualCompassOffset, &QRadioButton::toggled, this, &eVisGenericEventBrowserGui::rbtnManualCompassOffset_toggled );
+  connect( tableFileTypeAssociations, &QTableWidget::cellDoubleClicked, this, &eVisGenericEventBrowserGui::tableFileTypeAssociations_cellDoubleClicked );
 
   mCurrentFeatureIndex = 0;
   mInterface = nullptr;
@@ -655,7 +701,7 @@ void eVisGenericEventBrowserGui::restoreDefaultOptions()
   rbtnManualCompassOffset->setChecked( true );
   dsboxCompassOffset->setValue( 0.0 );
 
-  leBasePath->setText( QLatin1String( "" ) );
+  leBasePath->clear();
   chkboxUseOnlyFilename->setChecked( false );
 
   chkboxSaveEventImagePathData->setChecked( false );
@@ -793,7 +839,7 @@ void eVisGenericEventBrowserGui::launchExternalApplication( QTreeWidgetItem *ite
  * Slot called when the restore or save button is click on the options panel
  * @param state - The new state of the checkbox
  */
-void eVisGenericEventBrowserGui::on_buttonboxOptions_clicked( QAbstractButton *button )
+void eVisGenericEventBrowserGui::buttonboxOptions_clicked( QAbstractButton *button )
 {
   if ( QDialogButtonBox::ResetRole == buttonboxOptions->buttonRole( button ) )
   {
@@ -809,7 +855,7 @@ void eVisGenericEventBrowserGui::on_buttonboxOptions_clicked( QAbstractButton *b
  * Slot called when the state changes for the chkboxApplyPathRulesToDocs checkbox.
  * @param state - The new state of the checkbox
  */
-void eVisGenericEventBrowserGui::on_chkboxApplyPathRulesToDocs_stateChanged( int state )
+void eVisGenericEventBrowserGui::chkboxApplyPathRulesToDocs_stateChanged( int state )
 {
   Q_UNUSED( state );
   mConfiguration.setApplyPathRulesToDocs( chkboxApplyPathRulesToDocs->isChecked() );
@@ -819,7 +865,7 @@ void eVisGenericEventBrowserGui::on_chkboxApplyPathRulesToDocs_stateChanged( int
  * Slot called when the index changes for the cboxEventImagePathField combo box.
  * @param index - The index of the new selected item
  */
-void eVisGenericEventBrowserGui::on_cboxEventImagePathField_currentIndexChanged( int index )
+void eVisGenericEventBrowserGui::cboxEventImagePathField_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
   if ( !mIgnoreEvent )
@@ -833,7 +879,7 @@ void eVisGenericEventBrowserGui::on_cboxEventImagePathField_currentIndexChanged(
       return;
 
     QgsAttributes myAttrs = myFeature->attributes();
-    for ( int i = 0 ; i < myAttrs.count(); ++i )
+    for ( int i = 0; i < myAttrs.count(); ++i )
     {
       if ( myFields.at( i ).name() == cboxEventImagePathField->currentText() )
       {
@@ -847,7 +893,7 @@ void eVisGenericEventBrowserGui::on_cboxEventImagePathField_currentIndexChanged(
  * Slot called when the index changes for the cboxCompassBearingField combo box.
  * @param index - The index of the new selected item
  */
-void eVisGenericEventBrowserGui::on_cboxCompassBearingField_currentIndexChanged( int index )
+void eVisGenericEventBrowserGui::cboxCompassBearingField_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
   if ( !mIgnoreEvent )
@@ -875,7 +921,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassBearingField_currentIndexChanged(
  * Slot called when the index changes for the cboxCompassBearingField combo box.
  * @param index - The index of the new selected item
  */
-void eVisGenericEventBrowserGui::on_cboxCompassOffsetField_currentIndexChanged( int index )
+void eVisGenericEventBrowserGui::cboxCompassOffsetField_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
   if ( !mIgnoreEvent )
@@ -903,7 +949,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassOffsetField_currentIndexChanged( 
  * Slot called when the chkDisplayCompassBearing radio button is toggled
  * @param state - The current selection state of the radio button
  */
-void eVisGenericEventBrowserGui::on_chkboxDisplayCompassBearing_stateChanged( int state )
+void eVisGenericEventBrowserGui::chkboxDisplayCompassBearing_stateChanged( int state )
 {
   Q_UNUSED( state );
   mConfiguration.setDisplayCompassBearing( chkboxDisplayCompassBearing->isChecked() );
@@ -914,7 +960,7 @@ void eVisGenericEventBrowserGui::on_chkboxDisplayCompassBearing_stateChanged( in
  * Slot called when the state changes for the chkboxEventImagePathRelative checkbox.
  * @param state - The new state of the checkbox
  */
-void eVisGenericEventBrowserGui::on_chkboxEventImagePathRelative_stateChanged( int state )
+void eVisGenericEventBrowserGui::chkboxEventImagePathRelative_stateChanged( int state )
 {
   Q_UNUSED( state );
   mConfiguration.setEventImagePathRelative( chkboxEventImagePathRelative->isChecked() );
@@ -930,7 +976,7 @@ void eVisGenericEventBrowserGui::on_chkboxEventImagePathRelative_stateChanged( i
  * Slot called when the state changes for the chkboxUseOnlyFilename checkbox.
  * @param state - The new state of the checkbox
  */
-void eVisGenericEventBrowserGui::on_chkboxUseOnlyFilename_stateChanged( int state )
+void eVisGenericEventBrowserGui::chkboxUseOnlyFilename_stateChanged( int state )
 {
   Q_UNUSED( state );
   mConfiguration.setUseOnlyFilename( chkboxUseOnlyFilename->isChecked() );
@@ -940,7 +986,7 @@ void eVisGenericEventBrowserGui::on_chkboxUseOnlyFilename_stateChanged( int stat
  * Slot called when the tabs in the tabWidget are selected
  * @param currentTabIndex - The index of the currently selected tab
  */
-void eVisGenericEventBrowserGui::on_displayArea_currentChanged( int currentTabIndex )
+void eVisGenericEventBrowserGui::displayArea_currentChanged( int currentTabIndex )
 {
   //Force redraw when we switching back to the Display tab
   if ( 0 == currentTabIndex )
@@ -953,7 +999,7 @@ void eVisGenericEventBrowserGui::on_displayArea_currentChanged( int currentTabIn
  * Slot called when a manual compass offset is entered
  * @param value - The new compass offset
  */
-void eVisGenericEventBrowserGui::on_dsboxCompassOffset_valueChanged( double value )
+void eVisGenericEventBrowserGui::dsboxCompassOffset_valueChanged( double value )
 {
   mConfiguration.setCompassOffset( value );
 }
@@ -962,7 +1008,7 @@ void eVisGenericEventBrowserGui::on_dsboxCompassOffset_valueChanged( double valu
  * Slot called the text in leBasePath is set or changed
  * @param text - The new base path
  */
-void eVisGenericEventBrowserGui::on_leBasePath_textChanged( const QString &text )
+void eVisGenericEventBrowserGui::leBasePath_textChanged( const QString &text )
 {
   mConfiguration.setBasePath( text );
 }
@@ -970,7 +1016,7 @@ void eVisGenericEventBrowserGui::on_leBasePath_textChanged( const QString &text 
 /**
  * Slot called when the pbtnAddFileType button is clicked - adds a new row to the file associations table
  */
-void eVisGenericEventBrowserGui::on_pbtnAddFileType_clicked()
+void eVisGenericEventBrowserGui::pbtnAddFileType_clicked()
 {
   tableFileTypeAssociations->insertRow( tableFileTypeAssociations->rowCount() );
 }
@@ -978,7 +1024,7 @@ void eVisGenericEventBrowserGui::on_pbtnAddFileType_clicked()
 /**
  * Slot called when the pbtnDeleteFileType button is clicked - removes arow from the file associations table
  */
-void eVisGenericEventBrowserGui::on_pbtnDeleteFileType_clicked()
+void eVisGenericEventBrowserGui::pbtnDeleteFileType_clicked()
 {
   if ( 1 <= tableFileTypeAssociations->rowCount() )
   {
@@ -990,7 +1036,7 @@ void eVisGenericEventBrowserGui::on_pbtnDeleteFileType_clicked()
 /**
  * Slot called when the pbtnNext button is pressed
  */
-void eVisGenericEventBrowserGui::on_pbtnNext_clicked()
+void eVisGenericEventBrowserGui::pbtnNext_clicked()
 {
   if ( mCurrentFeatureIndex != mFeatureIds.size() - 1 )
   {
@@ -1012,7 +1058,7 @@ void eVisGenericEventBrowserGui::on_pbtnNext_clicked()
 /**
  * Slot called when the pbtnPrevious button is pressed
  */
-void eVisGenericEventBrowserGui::on_pbtnPrevious_clicked()
+void eVisGenericEventBrowserGui::pbtnPrevious_clicked()
 {
   if ( mCurrentFeatureIndex > 0 )
   {
@@ -1032,21 +1078,21 @@ void eVisGenericEventBrowserGui::on_pbtnPrevious_clicked()
 
 }
 
-void eVisGenericEventBrowserGui::on_pbtnResetApplyPathRulesToDocs_clicked()
+void eVisGenericEventBrowserGui::pbtnResetApplyPathRulesToDocs_clicked()
 {
   chkboxApplyPathRulesToDocs->setChecked( false );
 }
 
-void eVisGenericEventBrowserGui::on_pbtnResetBasePathData_clicked()
+void eVisGenericEventBrowserGui::pbtnResetBasePathData_clicked()
 {
-  leBasePath->setText( QLatin1String( "" ) );
+  leBasePath->clear();
   if ( chkboxEventImagePathRelative->isChecked() )
   {
     setBasePathToDataSource();
   }
 }
 
-void eVisGenericEventBrowserGui::on_pbtnResetCompassBearingData_clicked()
+void eVisGenericEventBrowserGui::pbtnResetCompassBearingData_clicked()
 {
   cboxCompassBearingField->setEnabled( true );
   cboxCompassBearingField->setCurrentIndex( mDefaultCompassBearingField );
@@ -1054,7 +1100,7 @@ void eVisGenericEventBrowserGui::on_pbtnResetCompassBearingData_clicked()
   chkboxDisplayCompassBearing->setChecked( false );
 }
 
-void eVisGenericEventBrowserGui::on_pbtnResetCompassOffsetData_clicked()
+void eVisGenericEventBrowserGui::pbtnResetCompassOffsetData_clicked()
 {
   cboxCompassOffsetField->setEnabled( true );
   cboxCompassOffsetField->setCurrentIndex( mDefaultCompassOffsetField );
@@ -1063,18 +1109,18 @@ void eVisGenericEventBrowserGui::on_pbtnResetCompassOffsetData_clicked()
   dsboxCompassOffset->setValue( 0.0 );
 }
 
-void eVisGenericEventBrowserGui::on_pbtnResetEventImagePathData_clicked()
+void eVisGenericEventBrowserGui::pbtnResetEventImagePathData_clicked()
 {
   chkboxEventImagePathRelative->setChecked( false );
   cboxEventImagePathField->setCurrentIndex( mDefaultEventImagePathField );
 }
 
-void eVisGenericEventBrowserGui::on_pbtnResetUseOnlyFilenameData_clicked()
+void eVisGenericEventBrowserGui::pbtnResetUseOnlyFilenameData_clicked()
 {
   chkboxUseOnlyFilename->setChecked( false );
 }
 
-void eVisGenericEventBrowserGui::on_rbtnManualCompassOffset_toggled( bool state )
+void eVisGenericEventBrowserGui::rbtnManualCompassOffset_toggled( bool state )
 {
   mConfiguration.setManualCompassOffset( state );
   mConfiguration.setAttributeCompassOffset( !state );
@@ -1088,7 +1134,7 @@ void eVisGenericEventBrowserGui::on_rbtnManualCompassOffset_toggled( bool state 
  * @param row - the row that was clicked
  * @param column - the column that was clicked
  */
-void eVisGenericEventBrowserGui::on_tableFileTypeAssociations_cellDoubleClicked( int row, int column )
+void eVisGenericEventBrowserGui::tableFileTypeAssociations_cellDoubleClicked( int row, int column )
 {
   if ( 1 == column )
   {

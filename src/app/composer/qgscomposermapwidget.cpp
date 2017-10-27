@@ -46,6 +46,42 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap *composerMap )
   , mComposerMap( composerMap )
 {
   setupUi( this );
+  connect( mScaleLineEdit, &QLineEdit::editingFinished, this, &QgsComposerMapWidget::mScaleLineEdit_editingFinished );
+  connect( mSetToMapCanvasExtentButton, &QPushButton::clicked, this, &QgsComposerMapWidget::mSetToMapCanvasExtentButton_clicked );
+  connect( mViewExtentInCanvasButton, &QPushButton::clicked, this, &QgsComposerMapWidget::mViewExtentInCanvasButton_clicked );
+  connect( mUpdatePreviewButton, &QPushButton::clicked, this, &QgsComposerMapWidget::mUpdatePreviewButton_clicked );
+  connect( mFollowVisibilityPresetCheckBox, &QCheckBox::stateChanged, this, &QgsComposerMapWidget::mFollowVisibilityPresetCheckBox_stateChanged );
+  connect( mKeepLayerListCheckBox, &QCheckBox::stateChanged, this, &QgsComposerMapWidget::mKeepLayerListCheckBox_stateChanged );
+  connect( mKeepLayerStylesCheckBox, &QCheckBox::stateChanged, this, &QgsComposerMapWidget::mKeepLayerStylesCheckBox_stateChanged );
+  connect( mDrawCanvasItemsCheckBox, &QCheckBox::stateChanged, this, &QgsComposerMapWidget::mDrawCanvasItemsCheckBox_stateChanged );
+  connect( mOverviewFrameStyleButton, &QPushButton::clicked, this, &QgsComposerMapWidget::mOverviewFrameStyleButton_clicked );
+  connect( mOverviewBlendModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsComposerMapWidget::mOverviewBlendModeComboBox_currentIndexChanged );
+  connect( mOverviewInvertCheckbox, &QCheckBox::toggled, this, &QgsComposerMapWidget::mOverviewInvertCheckbox_toggled );
+  connect( mOverviewCenterCheckbox, &QCheckBox::toggled, this, &QgsComposerMapWidget::mOverviewCenterCheckbox_toggled );
+  connect( mXMinLineEdit, &QLineEdit::editingFinished, this, &QgsComposerMapWidget::mXMinLineEdit_editingFinished );
+  connect( mXMaxLineEdit, &QLineEdit::editingFinished, this, &QgsComposerMapWidget::mXMaxLineEdit_editingFinished );
+  connect( mYMinLineEdit, &QLineEdit::editingFinished, this, &QgsComposerMapWidget::mYMinLineEdit_editingFinished );
+  connect( mYMaxLineEdit, &QLineEdit::editingFinished, this, &QgsComposerMapWidget::mYMaxLineEdit_editingFinished );
+  connect( mAtlasMarginRadio, &QRadioButton::toggled, this, &QgsComposerMapWidget::mAtlasMarginRadio_toggled );
+  connect( mAtlasCheckBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsComposerMapWidget::mAtlasCheckBox_toggled );
+  connect( mAtlasMarginSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsComposerMapWidget::mAtlasMarginSpinBox_valueChanged );
+  connect( mAtlasFixedScaleRadio, &QRadioButton::toggled, this, &QgsComposerMapWidget::mAtlasFixedScaleRadio_toggled );
+  connect( mAtlasPredefinedScaleRadio, &QRadioButton::toggled, this, &QgsComposerMapWidget::mAtlasPredefinedScaleRadio_toggled );
+  connect( mAddGridPushButton, &QPushButton::clicked, this, &QgsComposerMapWidget::mAddGridPushButton_clicked );
+  connect( mRemoveGridPushButton, &QPushButton::clicked, this, &QgsComposerMapWidget::mRemoveGridPushButton_clicked );
+  connect( mGridUpButton, &QPushButton::clicked, this, &QgsComposerMapWidget::mGridUpButton_clicked );
+  connect( mGridDownButton, &QPushButton::clicked, this, &QgsComposerMapWidget::mGridDownButton_clicked );
+  connect( mDrawGridCheckBox, &QCheckBox::toggled, this, &QgsComposerMapWidget::mDrawGridCheckBox_toggled );
+  connect( mGridListWidget, &QListWidget::currentItemChanged, this, &QgsComposerMapWidget::mGridListWidget_currentItemChanged );
+  connect( mGridListWidget, &QListWidget::itemChanged, this, &QgsComposerMapWidget::mGridListWidget_itemChanged );
+  connect( mGridPropertiesButton, &QPushButton::clicked, this, &QgsComposerMapWidget::mGridPropertiesButton_clicked );
+  connect( mAddOverviewPushButton, &QPushButton::clicked, this, &QgsComposerMapWidget::mAddOverviewPushButton_clicked );
+  connect( mRemoveOverviewPushButton, &QPushButton::clicked, this, &QgsComposerMapWidget::mRemoveOverviewPushButton_clicked );
+  connect( mOverviewUpButton, &QPushButton::clicked, this, &QgsComposerMapWidget::mOverviewUpButton_clicked );
+  connect( mOverviewDownButton, &QPushButton::clicked, this, &QgsComposerMapWidget::mOverviewDownButton_clicked );
+  connect( mOverviewCheckBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsComposerMapWidget::mOverviewCheckBox_toggled );
+  connect( mOverviewListWidget, &QListWidget::currentItemChanged, this, &QgsComposerMapWidget::mOverviewListWidget_currentItemChanged );
+  connect( mOverviewListWidget, &QListWidget::itemChanged, this, &QgsComposerMapWidget::mOverviewListWidget_itemChanged );
   setPanelTitle( tr( "Map properties" ) );
   mMapRotationSpinBox->setClearValue( 0 );
 
@@ -120,10 +156,6 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap *composerMap )
   connect( mMapRotationSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsComposerMapWidget::rotationChanged );
 
   blockAllSignals( false );
-}
-
-QgsComposerMapWidget::~QgsComposerMapWidget()
-{
 }
 
 void QgsComposerMapWidget::populateDataDefinedButtons()
@@ -300,7 +332,7 @@ void QgsComposerMapWidget::mapCrsChanged( const QgsCoordinateReferenceSystem &cr
   mComposerMap->invalidateCache();
 }
 
-void QgsComposerMapWidget::on_mAtlasCheckBox_toggled( bool checked )
+void QgsComposerMapWidget::mAtlasCheckBox_toggled( bool checked )
 {
   if ( !mComposerMap )
   {
@@ -368,7 +400,7 @@ void QgsComposerMapWidget::updateMapForAtlas()
   }
 }
 
-void QgsComposerMapWidget::on_mAtlasMarginRadio_toggled( bool checked )
+void QgsComposerMapWidget::mAtlasMarginRadio_toggled( bool checked )
 {
   mAtlasMarginSpinBox->setEnabled( checked );
 
@@ -379,7 +411,7 @@ void QgsComposerMapWidget::on_mAtlasMarginRadio_toggled( bool checked )
   }
 }
 
-void QgsComposerMapWidget::on_mAtlasMarginSpinBox_valueChanged( int value )
+void QgsComposerMapWidget::mAtlasMarginSpinBox_valueChanged( int value )
 {
   if ( !mComposerMap )
   {
@@ -390,7 +422,7 @@ void QgsComposerMapWidget::on_mAtlasMarginSpinBox_valueChanged( int value )
   updateMapForAtlas();
 }
 
-void QgsComposerMapWidget::on_mAtlasFixedScaleRadio_toggled( bool checked )
+void QgsComposerMapWidget::mAtlasFixedScaleRadio_toggled( bool checked )
 {
   if ( !mComposerMap )
   {
@@ -404,7 +436,7 @@ void QgsComposerMapWidget::on_mAtlasFixedScaleRadio_toggled( bool checked )
   }
 }
 
-void QgsComposerMapWidget::on_mAtlasPredefinedScaleRadio_toggled( bool checked )
+void QgsComposerMapWidget::mAtlasPredefinedScaleRadio_toggled( bool checked )
 {
   if ( !mComposerMap )
   {
@@ -429,7 +461,7 @@ void QgsComposerMapWidget::on_mAtlasPredefinedScaleRadio_toggled( bool checked )
   }
 }
 
-void QgsComposerMapWidget::on_mScaleLineEdit_editingFinished()
+void QgsComposerMapWidget::mScaleLineEdit_editingFinished()
 {
   if ( !mComposerMap )
   {
@@ -444,7 +476,7 @@ void QgsComposerMapWidget::on_mScaleLineEdit_editingFinished()
     return;
   }
 
-  if ( qRound( scaleDenominator ) == qRound( mComposerMap->scale() ) )
+  if ( std::round( scaleDenominator ) == std::round( mComposerMap->scale() ) )
     return;
 
   mComposerMap->beginCommand( tr( "Map scale changed" ) );
@@ -465,7 +497,7 @@ void QgsComposerMapWidget::rotationChanged( double value )
   mComposerMap->invalidateCache();
 }
 
-void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
+void QgsComposerMapWidget::mSetToMapCanvasExtentButton_clicked()
 {
   if ( !mComposerMap )
   {
@@ -496,7 +528,7 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::on_mViewExtentInCanvasButton_clicked()
+void QgsComposerMapWidget::mViewExtentInCanvasButton_clicked()
 {
   if ( !mComposerMap )
   {
@@ -529,22 +561,22 @@ void QgsComposerMapWidget::on_mViewExtentInCanvasButton_clicked()
   }
 }
 
-void QgsComposerMapWidget::on_mXMinLineEdit_editingFinished()
+void QgsComposerMapWidget::mXMinLineEdit_editingFinished()
 {
   updateComposerExtentFromGui();
 }
 
-void QgsComposerMapWidget::on_mXMaxLineEdit_editingFinished()
+void QgsComposerMapWidget::mXMaxLineEdit_editingFinished()
 {
   updateComposerExtentFromGui();
 }
 
-void QgsComposerMapWidget::on_mYMinLineEdit_editingFinished()
+void QgsComposerMapWidget::mYMinLineEdit_editingFinished()
 {
   updateComposerExtentFromGui();
 }
 
-void QgsComposerMapWidget::on_mYMaxLineEdit_editingFinished()
+void QgsComposerMapWidget::mYMaxLineEdit_editingFinished()
 {
   updateComposerExtentFromGui();
 }
@@ -786,7 +818,7 @@ void QgsComposerMapWidget::handleChangedAnnotationDisplay( QgsComposerMapGrid::B
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
+void QgsComposerMapWidget::mUpdatePreviewButton_clicked()
 {
   if ( !mComposerMap )
   {
@@ -805,7 +837,7 @@ void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
   mUpdatePreviewButton->setEnabled( true );
 }
 
-void QgsComposerMapWidget::on_mFollowVisibilityPresetCheckBox_stateChanged( int state )
+void QgsComposerMapWidget::mFollowVisibilityPresetCheckBox_stateChanged( int state )
 {
   if ( !mComposerMap )
   {
@@ -828,7 +860,7 @@ void QgsComposerMapWidget::on_mFollowVisibilityPresetCheckBox_stateChanged( int 
   }
 }
 
-void QgsComposerMapWidget::on_mKeepLayerListCheckBox_stateChanged( int state )
+void QgsComposerMapWidget::mKeepLayerListCheckBox_stateChanged( int state )
 {
   if ( !mComposerMap )
   {
@@ -858,7 +890,7 @@ void QgsComposerMapWidget::on_mKeepLayerListCheckBox_stateChanged( int state )
   mKeepLayerStylesCheckBox->setEnabled( state == Qt::Checked );
 }
 
-void QgsComposerMapWidget::on_mKeepLayerStylesCheckBox_stateChanged( int state )
+void QgsComposerMapWidget::mKeepLayerStylesCheckBox_stateChanged( int state )
 {
   if ( !mComposerMap )
   {
@@ -877,7 +909,7 @@ void QgsComposerMapWidget::on_mKeepLayerStylesCheckBox_stateChanged( int state )
   }
 }
 
-void QgsComposerMapWidget::on_mDrawCanvasItemsCheckBox_stateChanged( int state )
+void QgsComposerMapWidget::mDrawCanvasItemsCheckBox_stateChanged( int state )
 {
   if ( !mComposerMap )
   {
@@ -1055,12 +1087,12 @@ bool QgsComposerMapWidget::hasPredefinedScales() const
     QgsSettings settings;
     QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString() );
     QStringList myScalesList = scalesStr.split( ',' );
-    return !myScalesList.isEmpty() && myScalesList[0] != QLatin1String( "" );
+    return !myScalesList.isEmpty() && !myScalesList[0].isEmpty();
   }
   return true;
 }
 
-void QgsComposerMapWidget::on_mAddGridPushButton_clicked()
+void QgsComposerMapWidget::mAddGridPushButton_clicked()
 {
   if ( !mComposerMap )
   {
@@ -1077,10 +1109,10 @@ void QgsComposerMapWidget::on_mAddGridPushButton_clicked()
 
   addGridListItem( grid->id(), grid->name() );
   mGridListWidget->setCurrentRow( 0 );
-  on_mGridListWidget_currentItemChanged( mGridListWidget->currentItem(), nullptr );
+  mGridListWidget_currentItemChanged( mGridListWidget->currentItem(), nullptr );
 }
 
-void QgsComposerMapWidget::on_mRemoveGridPushButton_clicked()
+void QgsComposerMapWidget::mRemoveGridPushButton_clicked()
 {
   QListWidgetItem *item = mGridListWidget->currentItem();
   if ( !item )
@@ -1095,7 +1127,7 @@ void QgsComposerMapWidget::on_mRemoveGridPushButton_clicked()
   mComposerMap->update();
 }
 
-void QgsComposerMapWidget::on_mGridUpButton_clicked()
+void QgsComposerMapWidget::mGridUpButton_clicked()
 {
   QListWidgetItem *item = mGridListWidget->currentItem();
   if ( !item )
@@ -1115,7 +1147,7 @@ void QgsComposerMapWidget::on_mGridUpButton_clicked()
   mComposerMap->update();
 }
 
-void QgsComposerMapWidget::on_mGridDownButton_clicked()
+void QgsComposerMapWidget::mGridDownButton_clicked()
 {
   QListWidgetItem *item = mGridListWidget->currentItem();
   if ( !item )
@@ -1151,7 +1183,7 @@ QgsComposerMapGrid *QgsComposerMapWidget::currentGrid()
   return mComposerMap->grids()->grid( item->data( Qt::UserRole ).toString() );
 }
 
-void QgsComposerMapWidget::on_mGridListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
+void QgsComposerMapWidget::mGridListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
 {
   Q_UNUSED( previous );
   if ( !current )
@@ -1169,7 +1201,7 @@ void QgsComposerMapWidget::on_mGridListWidget_currentItemChanged( QListWidgetIte
   mDrawGridCheckBox->setText( QString( tr( "Draw \"%1\" grid" ) ).arg( currentGrid()->name() ) );
 }
 
-void QgsComposerMapWidget::on_mGridListWidget_itemChanged( QListWidgetItem *item )
+void QgsComposerMapWidget::mGridListWidget_itemChanged( QListWidgetItem *item )
 {
   if ( !mComposerMap )
   {
@@ -1190,7 +1222,7 @@ void QgsComposerMapWidget::on_mGridListWidget_itemChanged( QListWidgetItem *item
   }
 }
 
-void QgsComposerMapWidget::on_mGridPropertiesButton_clicked()
+void QgsComposerMapWidget::mGridPropertiesButton_clicked()
 {
   if ( !mComposerMap )
   {
@@ -1248,15 +1280,15 @@ void QgsComposerMapWidget::loadGridEntries()
 
   if ( mGridListWidget->currentItem() )
   {
-    on_mGridListWidget_currentItemChanged( mGridListWidget->currentItem(), nullptr );
+    mGridListWidget_currentItemChanged( mGridListWidget->currentItem(), nullptr );
   }
   else
   {
-    on_mGridListWidget_currentItemChanged( nullptr, nullptr );
+    mGridListWidget_currentItemChanged( nullptr, nullptr );
   }
 }
 
-void QgsComposerMapWidget::on_mDrawGridCheckBox_toggled( bool state )
+void QgsComposerMapWidget::mDrawGridCheckBox_toggled( bool state )
 {
   QgsComposerMapGrid *grid = currentGrid();
   if ( !grid )
@@ -1280,7 +1312,7 @@ void QgsComposerMapWidget::on_mDrawGridCheckBox_toggled( bool state )
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::on_mAddOverviewPushButton_clicked()
+void QgsComposerMapWidget::mAddOverviewPushButton_clicked()
 {
   if ( !mComposerMap )
   {
@@ -1298,7 +1330,7 @@ void QgsComposerMapWidget::on_mAddOverviewPushButton_clicked()
   mOverviewListWidget->setCurrentRow( 0 );
 }
 
-void QgsComposerMapWidget::on_mRemoveOverviewPushButton_clicked()
+void QgsComposerMapWidget::mRemoveOverviewPushButton_clicked()
 {
   QListWidgetItem *item = mOverviewListWidget->currentItem();
   if ( !item )
@@ -1312,7 +1344,7 @@ void QgsComposerMapWidget::on_mRemoveOverviewPushButton_clicked()
   mComposerMap->update();
 }
 
-void QgsComposerMapWidget::on_mOverviewUpButton_clicked()
+void QgsComposerMapWidget::mOverviewUpButton_clicked()
 {
   QListWidgetItem *item = mOverviewListWidget->currentItem();
   if ( !item )
@@ -1332,7 +1364,7 @@ void QgsComposerMapWidget::on_mOverviewUpButton_clicked()
   mComposerMap->update();
 }
 
-void QgsComposerMapWidget::on_mOverviewDownButton_clicked()
+void QgsComposerMapWidget::mOverviewDownButton_clicked()
 {
   QListWidgetItem *item = mOverviewListWidget->currentItem();
   if ( !item )
@@ -1368,7 +1400,7 @@ QgsComposerMapOverview *QgsComposerMapWidget::currentOverview()
   return mComposerMap->overviews()->overview( item->data( Qt::UserRole ).toString() );
 }
 
-void QgsComposerMapWidget::on_mOverviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
+void QgsComposerMapWidget::mOverviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
 {
   Q_UNUSED( previous );
   if ( !current )
@@ -1381,7 +1413,7 @@ void QgsComposerMapWidget::on_mOverviewListWidget_currentItemChanged( QListWidge
   setOverviewItems( mComposerMap->overviews()->constOverview( current->data( Qt::UserRole ).toString() ) );
 }
 
-void QgsComposerMapWidget::on_mOverviewListWidget_itemChanged( QListWidgetItem *item )
+void QgsComposerMapWidget::mOverviewListWidget_itemChanged( QListWidgetItem *item )
 {
   if ( !mComposerMap )
   {
@@ -1517,15 +1549,15 @@ void QgsComposerMapWidget::loadOverviewEntries()
 
   if ( mOverviewListWidget->currentItem() )
   {
-    on_mOverviewListWidget_currentItemChanged( mOverviewListWidget->currentItem(), nullptr );
+    mOverviewListWidget_currentItemChanged( mOverviewListWidget->currentItem(), nullptr );
   }
   else
   {
-    on_mOverviewListWidget_currentItemChanged( nullptr, nullptr );
+    mOverviewListWidget_currentItemChanged( nullptr, nullptr );
   }
 }
 
-void QgsComposerMapWidget::on_mOverviewCheckBox_toggled( bool state )
+void QgsComposerMapWidget::mOverviewCheckBox_toggled( bool state )
 {
   QgsComposerMapOverview *overview = currentOverview();
   if ( !overview )
@@ -1564,7 +1596,7 @@ void QgsComposerMapWidget::overviewMapChanged( QgsComposerItem *item )
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
+void QgsComposerMapWidget::mOverviewFrameStyleButton_clicked()
 {
   QgsComposerMapOverview *overview = currentOverview();
   if ( !overview )
@@ -1589,7 +1621,7 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
   mComposerMap->beginCommand( tr( "Overview frame style changed" ) );
 }
 
-void QgsComposerMapWidget::on_mOverviewBlendModeComboBox_currentIndexChanged( int index )
+void QgsComposerMapWidget::mOverviewBlendModeComboBox_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
   QgsComposerMapOverview *overview = currentOverview();
@@ -1603,7 +1635,7 @@ void QgsComposerMapWidget::on_mOverviewBlendModeComboBox_currentIndexChanged( in
   mComposerMap->update();
   mComposerMap->endCommand();
 }
-void QgsComposerMapWidget::on_mOverviewInvertCheckbox_toggled( bool state )
+void QgsComposerMapWidget::mOverviewInvertCheckbox_toggled( bool state )
 {
   QgsComposerMapOverview *overview = currentOverview();
   if ( !overview )
@@ -1617,7 +1649,7 @@ void QgsComposerMapWidget::on_mOverviewInvertCheckbox_toggled( bool state )
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::on_mOverviewCenterCheckbox_toggled( bool state )
+void QgsComposerMapWidget::mOverviewCenterCheckbox_toggled( bool state )
 {
   QgsComposerMapOverview *overview = currentOverview();
   if ( !overview )

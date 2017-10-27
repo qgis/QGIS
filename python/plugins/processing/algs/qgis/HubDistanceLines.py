@@ -64,7 +64,7 @@ class HubDistanceLines(QgisAlgorithm):
              ]
 
     def group(self):
-        return self.tr('Vector analysis tools')
+        return self.tr('Vector analysis')
 
     def __init__(self):
         super().__init__()
@@ -146,7 +146,7 @@ class HubDistanceLines(QgisAlgorithm):
             feat = QgsFeature()
             feat.setAttributes(attributes)
 
-            feat.setGeometry(QgsGeometry.fromPolyline([src, closest]))
+            feat.setGeometry(QgsGeometry.fromPolylineXY([src, closest]))
 
             sink.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))

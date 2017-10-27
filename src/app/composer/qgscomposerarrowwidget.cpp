@@ -28,6 +28,18 @@
 QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow *arrow ): QgsComposerItemBaseWidget( nullptr, arrow ), mArrow( arrow )
 {
   setupUi( this );
+  connect( mStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerArrowWidget::mStrokeWidthSpinBox_valueChanged );
+  connect( mArrowHeadWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerArrowWidget::mArrowHeadWidthSpinBox_valueChanged );
+  connect( mArrowHeadFillColorButton, &QgsColorButton::colorChanged, this, &QgsComposerArrowWidget::mArrowHeadFillColorButton_colorChanged );
+  connect( mArrowHeadStrokeColorButton, &QgsColorButton::colorChanged, this, &QgsComposerArrowWidget::mArrowHeadStrokeColorButton_colorChanged );
+  connect( mDefaultMarkerRadioButton, &QRadioButton::toggled, this, &QgsComposerArrowWidget::mDefaultMarkerRadioButton_toggled );
+  connect( mNoMarkerRadioButton, &QRadioButton::toggled, this, &QgsComposerArrowWidget::mNoMarkerRadioButton_toggled );
+  connect( mSvgMarkerRadioButton, &QRadioButton::toggled, this, &QgsComposerArrowWidget::mSvgMarkerRadioButton_toggled );
+  connect( mStartMarkerLineEdit, &QLineEdit::textChanged, this, &QgsComposerArrowWidget::mStartMarkerLineEdit_textChanged );
+  connect( mEndMarkerLineEdit, &QLineEdit::textChanged, this, &QgsComposerArrowWidget::mEndMarkerLineEdit_textChanged );
+  connect( mStartMarkerToolButton, &QToolButton::clicked, this, &QgsComposerArrowWidget::mStartMarkerToolButton_clicked );
+  connect( mEndMarkerToolButton, &QToolButton::clicked, this, &QgsComposerArrowWidget::mEndMarkerToolButton_clicked );
+  connect( mLineStyleButton, &QPushButton::clicked, this, &QgsComposerArrowWidget::mLineStyleButton_clicked );
   setPanelTitle( tr( "Arrow properties" ) );
   mRadioButtonGroup = new QButtonGroup( this );
   mRadioButtonGroup->addButton( mDefaultMarkerRadioButton );
@@ -36,7 +48,7 @@ QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow *arrow ): QgsCo
   mRadioButtonGroup->setExclusive( true );
 
   //disable the svg related gui elements by default
-  on_mSvgMarkerRadioButton_toggled( false );
+  mSvgMarkerRadioButton_toggled( false );
 
   //add widget for general composer item properties
   QgsComposerItemWidget *itemPropertiesWidget = new QgsComposerItemWidget( this, mArrow );
@@ -61,12 +73,7 @@ QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow *arrow ): QgsCo
   }
 }
 
-QgsComposerArrowWidget::~QgsComposerArrowWidget()
-{
-
-}
-
-void QgsComposerArrowWidget::on_mStrokeWidthSpinBox_valueChanged( double d )
+void QgsComposerArrowWidget::mStrokeWidthSpinBox_valueChanged( double d )
 {
   if ( !mArrow )
   {
@@ -79,7 +86,7 @@ void QgsComposerArrowWidget::on_mStrokeWidthSpinBox_valueChanged( double d )
   mArrow->endCommand();
 }
 
-void QgsComposerArrowWidget::on_mArrowHeadWidthSpinBox_valueChanged( double d )
+void QgsComposerArrowWidget::mArrowHeadWidthSpinBox_valueChanged( double d )
 {
   if ( !mArrow )
   {
@@ -92,7 +99,7 @@ void QgsComposerArrowWidget::on_mArrowHeadWidthSpinBox_valueChanged( double d )
   mArrow->endCommand();
 }
 
-void QgsComposerArrowWidget::on_mArrowHeadFillColorButton_colorChanged( const QColor &newColor )
+void QgsComposerArrowWidget::mArrowHeadFillColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mArrow )
   {
@@ -105,7 +112,7 @@ void QgsComposerArrowWidget::on_mArrowHeadFillColorButton_colorChanged( const QC
   mArrow->endCommand();
 }
 
-void QgsComposerArrowWidget::on_mArrowHeadStrokeColorButton_colorChanged( const QColor &newColor )
+void QgsComposerArrowWidget::mArrowHeadStrokeColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mArrow )
   {
@@ -195,7 +202,7 @@ void QgsComposerArrowWidget::enableSvgInputElements( bool enable )
   mEndMarkerToolButton->setEnabled( enable );
 }
 
-void QgsComposerArrowWidget::on_mDefaultMarkerRadioButton_toggled( bool toggled )
+void QgsComposerArrowWidget::mDefaultMarkerRadioButton_toggled( bool toggled )
 {
   if ( mArrow && toggled )
   {
@@ -206,7 +213,7 @@ void QgsComposerArrowWidget::on_mDefaultMarkerRadioButton_toggled( bool toggled 
   }
 }
 
-void QgsComposerArrowWidget::on_mNoMarkerRadioButton_toggled( bool toggled )
+void QgsComposerArrowWidget::mNoMarkerRadioButton_toggled( bool toggled )
 {
   if ( mArrow && toggled )
   {
@@ -217,7 +224,7 @@ void QgsComposerArrowWidget::on_mNoMarkerRadioButton_toggled( bool toggled )
   }
 }
 
-void QgsComposerArrowWidget::on_mSvgMarkerRadioButton_toggled( bool toggled )
+void QgsComposerArrowWidget::mSvgMarkerRadioButton_toggled( bool toggled )
 {
   enableSvgInputElements( toggled );
   if ( mArrow && toggled )
@@ -229,7 +236,7 @@ void QgsComposerArrowWidget::on_mSvgMarkerRadioButton_toggled( bool toggled )
   }
 }
 
-void QgsComposerArrowWidget::on_mStartMarkerLineEdit_textChanged( const QString &text )
+void QgsComposerArrowWidget::mStartMarkerLineEdit_textChanged( const QString &text )
 {
   if ( mArrow )
   {
@@ -241,14 +248,14 @@ void QgsComposerArrowWidget::on_mStartMarkerLineEdit_textChanged( const QString 
     }
     else
     {
-      mArrow->setStartMarker( QLatin1String( "" ) );
+      mArrow->setStartMarker( QString() );
     }
     mArrow->update();
     mArrow->endCommand();
   }
 }
 
-void QgsComposerArrowWidget::on_mEndMarkerLineEdit_textChanged( const QString &text )
+void QgsComposerArrowWidget::mEndMarkerLineEdit_textChanged( const QString &text )
 {
   if ( mArrow )
   {
@@ -260,14 +267,14 @@ void QgsComposerArrowWidget::on_mEndMarkerLineEdit_textChanged( const QString &t
     }
     else
     {
-      mArrow->setEndMarker( QLatin1String( "" ) );
+      mArrow->setEndMarker( QString() );
     }
     mArrow->update();
     mArrow->endCommand();
   }
 }
 
-void QgsComposerArrowWidget::on_mStartMarkerToolButton_clicked()
+void QgsComposerArrowWidget::mStartMarkerToolButton_clicked()
 {
   QgsSettings s;
   QString openDir;
@@ -294,7 +301,7 @@ void QgsComposerArrowWidget::on_mStartMarkerToolButton_clicked()
   }
 }
 
-void QgsComposerArrowWidget::on_mEndMarkerToolButton_clicked()
+void QgsComposerArrowWidget::mEndMarkerToolButton_clicked()
 {
   QgsSettings s;
   QString openDir;
@@ -321,7 +328,7 @@ void QgsComposerArrowWidget::on_mEndMarkerToolButton_clicked()
   }
 }
 
-void QgsComposerArrowWidget::on_mLineStyleButton_clicked()
+void QgsComposerArrowWidget::mLineStyleButton_clicked()
 {
   if ( !mArrow )
   {

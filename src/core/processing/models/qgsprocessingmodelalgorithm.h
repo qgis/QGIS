@@ -403,6 +403,53 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     friend class TestQgsProcessing;
 };
 
+
+#ifndef SIP_RUN
+
+/**
+ * Model algorithm feedback which proxies its calls to an underlying
+ * feedback object, but scales overall progress reports to account
+ * for the number of child steps in a model.
+ */
+class QgsProcessingModelFeedback : public QgsProcessingFeedback
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsProcessingModelFeedback, for a model with the specified
+     * number of active child algorithms. This feedback object will proxy calls
+     * to the specified \a feedback object.
+     */
+    QgsProcessingModelFeedback( int childAlgorithmCount, QgsProcessingFeedback *feedback );
+
+    /**
+     * Sets the current child algorithm \a step which is being executed. This is used
+     * to scale the overall progress to account for progress through the overall model.
+     */
+    void setCurrentStep( int step );
+
+    void setProgressText( const QString &text ) override;
+    void reportError( const QString &error ) override;
+    void pushInfo( const QString &info ) override;
+    void pushCommandInfo( const QString &info ) override;
+    void pushDebugInfo( const QString &info ) override;
+    void pushConsoleInfo( const QString &info ) override;
+
+  private slots:
+
+    void updateOverallProgress( double progress );
+
+  private:
+
+    int mChildSteps = 0;
+    int mCurrentStep = 0;
+    QgsProcessingFeedback *mFeedback = nullptr;
+};
+
+#endif
+
 ///@endcond
 
 #endif // QGSPROCESSINGMODELALGORITHM_H

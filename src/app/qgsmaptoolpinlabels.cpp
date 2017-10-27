@@ -25,14 +25,14 @@
 
 #include "qgsmaptoolselectutils.h"
 #include "qgsrubberband.h"
-#include <qgslogger.h>
+#include "qgslogger.h"
 #include <QMouseEvent>
 
 QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas *canvas )
   : QgsMapToolLabel( canvas )
   , mDragging( false )
   , mShowPinned( false )
-  , mRubberBand( nullptr )
+
 {
   mToolName = tr( "Pin labels" );
 
@@ -260,13 +260,6 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle &ext, QMouseEvent *
       continue;
     }
 
-    QgsVectorLayer *vlayer = mCurrentLabel.layer;
-    if ( !vlayer->isEditable() )
-    {
-      QgsDebugMsg( QString( "Vector layer not editable, skipping label" ) );
-      continue;
-    }
-
     // unpin label
     if ( isPinned() && ( doUnpin  || toggleUnpinOrPin ) )
     {
@@ -297,7 +290,7 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle &ext, QMouseEvent *
 
   if ( labelChanged )
   {
-    mCanvas->refresh();
+    mCurrentLabel.layer->triggerRepaint();
 
     if ( !mShowPinned )
     {
@@ -473,8 +466,5 @@ bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
     vlayer->endEditCommand();
   }
 
-  if ( writeFailed )
-    return false;
-
-  return true;
+  return !writeFailed;
 }

@@ -159,13 +159,6 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 // ----------------------
 
 
-QgsWmsCapabilities::QgsWmsCapabilities()
-  : mValid( false )
-  , mLayerCount( -1 )
-  , mCapabilities()
-{
-}
-
 bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParserSettings settings )
 {
   mParserSettings = settings;
@@ -750,9 +743,9 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
 // TODO: Delete this stanza completely, depending on success of "Inherit things into the sublayer" below.
 #if 0
   // enforce WMS non-inheritance rules
-  layerProperty.name =        QString();
-  layerProperty.title =       QString();
-  layerProperty.abstract =    QString();
+  layerProperty.name = QString();
+  layerProperty.title = QString();
+  layerProperty.abstract = QString();
   layerProperty.keywordList.clear();
 #endif
 
@@ -834,7 +827,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
           {
             QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( e1.attribute( QStringLiteral( "SRS" ) ) );
 
-            QgsCoordinateReferenceSystem dst =  QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
+            QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
 
             QgsCoordinateTransform ct( src, dst );
             layerProperty.ex_GeographicBoundingBox = ct.transformBoundingBox( layerProperty.ex_GeographicBoundingBox );
@@ -1286,8 +1279,8 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
     double r = rS.toDouble();
     m.identifier = QString::number( i );
     Q_ASSERT( l.boundingBoxes.size() == 1 );
-    m.matrixWidth  = ceil( l.boundingBoxes.at( 0 ).box.width() / m.tileWidth / r );
-    m.matrixHeight = ceil( l.boundingBoxes.at( 0 ).box.height() / m.tileHeight / r );
+    m.matrixWidth  = std::ceil( l.boundingBoxes.at( 0 ).box.width() / m.tileWidth / r );
+    m.matrixHeight = std::ceil( l.boundingBoxes.at( 0 ).box.height() / m.tileHeight / r );
     m.topLeft = QgsPointXY( l.boundingBoxes.at( 0 ).box.xMinimum(), l.boundingBoxes.at( 0 ).box.yMinimum() + m.matrixHeight * m.tileHeight * r );
     m.tres = r;
     ms.tileMatrices.insert( r, m );
@@ -1886,9 +1879,9 @@ int QgsWmsCapabilities::identifyCapabilities() const
 {
   int capability = QgsRasterInterface::NoCapabilities;
 
-  Q_FOREACH ( QgsRaster::IdentifyFormat f, mIdentifyFormats.keys() )
+  for ( auto it = mIdentifyFormats.constBegin(); it != mIdentifyFormats.constEnd(); ++it )
   {
-    capability |= QgsRasterDataProvider::identifyFormatToCapability( f );
+    capability |= QgsRasterDataProvider::identifyFormatToCapability( it.key() );
   }
 
   return capability;
@@ -1900,7 +1893,6 @@ int QgsWmsCapabilities::identifyCapabilities() const
 
 QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( bool forceRefresh, QObject *parent )
   : QObject( parent )
-  , mCapabilitiesReply( nullptr )
   , mIsAborted( false )
   , mForceRefresh( forceRefresh )
 {
@@ -1910,7 +1902,6 @@ QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString &baseUrl, 
   : QObject( parent )
   , mBaseUrl( baseUrl )
   , mAuth( auth )
-  , mCapabilitiesReply( nullptr )
   , mIsAborted( false )
   , mForceRefresh( forceRefresh )
 {
@@ -2146,10 +2137,10 @@ void QgsWmtsTileMatrix::viewExtentIntersection( const QgsRectangle &viewExtent, 
     //             .arg( minTileRow ).arg( maxTileRow ) );
   }
 
-  col0 = qBound( minTileCol, ( int ) floor( ( viewExtent.xMinimum() - topLeft.x() ) / twMap ), maxTileCol );
-  row0 = qBound( minTileRow, ( int ) floor( ( topLeft.y() - viewExtent.yMaximum() ) / thMap ), maxTileRow );
-  col1 = qBound( minTileCol, ( int ) floor( ( viewExtent.xMaximum() - topLeft.x() ) / twMap ), maxTileCol );
-  row1 = qBound( minTileRow, ( int ) floor( ( topLeft.y() - viewExtent.yMinimum() ) / thMap ), maxTileRow );
+  col0 = qBound( minTileCol, ( int ) std::floor( ( viewExtent.xMinimum() - topLeft.x() ) / twMap ), maxTileCol );
+  row0 = qBound( minTileRow, ( int ) std::floor( ( topLeft.y() - viewExtent.yMaximum() ) / thMap ), maxTileRow );
+  col1 = qBound( minTileCol, ( int ) std::floor( ( viewExtent.xMaximum() - topLeft.x() ) / twMap ), maxTileCol );
+  row1 = qBound( minTileRow, ( int ) std::floor( ( topLeft.y() - viewExtent.yMinimum() ) / thMap ), maxTileRow );
 }
 
 const QgsWmtsTileMatrix *QgsWmtsTileMatrixSet::findNearestResolution( double vres ) const

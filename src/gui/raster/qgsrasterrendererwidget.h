@@ -29,7 +29,8 @@ class QgsRasterRenderer;
 class QgsMapCanvas;
 class QgsRasterMinMaxWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRasterRendererWidget
  */
 class GUI_EXPORT QgsRasterRendererWidget: public QWidget
@@ -42,7 +43,6 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     QgsRasterRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
       : mRasterLayer( layer )
       , mExtent( extent )
-      , mCanvas( nullptr )
     {}
 
     virtual QgsRasterRenderer *renderer() = 0 SIP_FACTORY;
@@ -50,7 +50,8 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     void setRasterLayer( QgsRasterLayer *layer ) { mRasterLayer = layer; }
     const QgsRasterLayer *rasterLayer() const { return mRasterLayer; }
 
-    /** Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+    /**
+     * Sets the map canvas associated with the widget. This allows the widget to retrieve the current
      * map extent and other properties from the canvas.
      * \param canvas map canvas
      * \see mapCanvas()
@@ -58,7 +59,8 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
      */
     virtual void setMapCanvas( QgsMapCanvas *canvas );
 
-    /** Returns the map canvas associated with the widget.
+    /**
+     * Returns the map canvas associated with the widget.
      * \see setMapCanvas()
      * \see canvasExtent()
      * \since QGIS 2.16

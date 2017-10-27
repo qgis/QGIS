@@ -503,23 +503,26 @@ class ModelerDialog(BASE, WIDGET):
                                                                 ModelerUtils.modelsFolders()[0],
                                                                 self.tr('Processing models (*.model3 *.MODEL3)'))
         if filename:
-            alg = QgsProcessingModelAlgorithm()
-            if alg.fromFile(filename):
-                self.model = alg
-                self.model.setProvider(QgsApplication.processingRegistry().providerById('model'))
-                self.textGroup.setText(alg.group())
-                self.textName.setText(alg.name())
-                self.repaintModel()
+            self.loadModel(filename)
 
-                self.view.centerOn(0, 0)
-                self.hasChanged = False
-            else:
-                QgsMessageLog.logMessage(self.tr('Could not load model {0}').format(filename),
-                                         self.tr('Processing'),
-                                         QgsMessageLog.CRITICAL)
-                QMessageBox.critical(self, self.tr('Could not open model'),
-                                     self.tr('The selected model could not be loaded.\n'
-                                             'See the log for more information.'))
+    def loadModel(self, filename):
+        alg = QgsProcessingModelAlgorithm()
+        if alg.fromFile(filename):
+            self.model = alg
+            self.model.setProvider(QgsApplication.processingRegistry().providerById('model'))
+            self.textGroup.setText(alg.group())
+            self.textName.setText(alg.name())
+            self.repaintModel()
+
+            self.view.centerOn(0, 0)
+            self.hasChanged = False
+        else:
+            QgsMessageLog.logMessage(self.tr('Could not load model {0}').format(filename),
+                                     self.tr('Processing'),
+                                     QgsMessageLog.CRITICAL)
+            QMessageBox.critical(self, self.tr('Could not open model'),
+                                 self.tr('The selected model could not be loaded.\n'
+                                         'See the log for more information.'))
 
     def repaintModel(self, controls=True):
         self.scene = ModelerScene(self, dialog=self)
@@ -588,17 +591,17 @@ class ModelerDialog(BASE, WIDGET):
             pass
         if not dlg:
             dlg = ModelerParametersDialog(alg, self.model)
-        dlg.exec_()
-        if dlg.alg is not None:
+        if dlg.exec_():
+            alg = dlg.createAlgorithm()
             if pos is None:
-                dlg.alg.setPosition(self.getPositionForAlgorithmItem())
+                alg.setPosition(self.getPositionForAlgorithmItem())
             else:
-                dlg.alg.setPosition(pos)
+                alg.setPosition(pos)
             from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
-            for i, out in enumerate(dlg.alg.modelOutputs()):
-                dlg.alg.modelOutput(out).setPosition(dlg.alg.position() + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5) *
-                                                                                  ModelerGraphicItem.BOX_HEIGHT))
-            self.model.addChildAlgorithm(dlg.alg)
+            for i, out in enumerate(alg.modelOutputs()):
+                alg.modelOutput(out).setPosition(alg.position() + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5) *
+                                                                          ModelerGraphicItem.BOX_HEIGHT))
+            self.model.addChildAlgorithm(alg)
             self.repaintModel()
             self.hasChanged = True
 
@@ -659,6 +662,7 @@ class ModelerDialog(BASE, WIDGET):
                         name = alg.group()
                         groupItem.setText(0, name)
                         groupItem.setToolTip(0, name)
+                        groupItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
                         if provider.id() in ('qgis', 'native'):
                             groupItem.setIcon(0, provider.icon())
                             qgis_groups[alg.group()] = groupItem
@@ -672,6 +676,7 @@ class ModelerDialog(BASE, WIDGET):
                 providerItem.setText(0, provider.name())
                 providerItem.setToolTip(0, provider.name())
                 providerItem.setIcon(0, provider.icon())
+                providerItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
                 for groupItem in list(groups.values()):
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)

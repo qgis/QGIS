@@ -34,18 +34,18 @@
 
 QGISEXTERN bool deleteLayer( const QString &dbPath, const QString &tableName, QString &errCause );
 
-QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType )
+QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType )
   : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "spatialite" ) )
 {
   setState( Populated ); // no children are expected
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsSLLayerItem::actions()
+QList<QAction *> QgsSLLayerItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionDeleteLayer = new QAction( tr( "Delete Layer" ), this );
+  QAction *actionDeleteLayer = new QAction( tr( "Delete Layer" ), parent );
   connect( actionDeleteLayer, &QAction::triggered, this, &QgsSLLayerItem::deleteLayer );
   lst.append( actionDeleteLayer );
 
@@ -76,7 +76,7 @@ void QgsSLLayerItem::deleteLayer()
 
 // ------
 
-QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem *parent, QString name, QString path )
+QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
 {
   mDbPath = QgsSpatiaLiteConnection::connectionPath( name );
@@ -165,15 +165,15 @@ bool QgsSLConnectionItem::equal( const QgsDataItem *other )
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsSLConnectionItem::actions()
+QList<QAction *> QgsSLConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  //QAction* actionEdit = new QAction( tr( "Edit..." ), this );
+  //QAction* actionEdit = new QAction( tr( "Edit..." ), parent );
   //connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
   //lst.append( actionEdit );
 
-  QAction *actionDelete = new QAction( tr( "Delete" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsSLConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
@@ -219,7 +219,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
     QgsVectorLayer *srcLayer = u.vectorLayer( owner, error );
     if ( !srcLayer )
     {
-      importResults.append( tr( "%1: %2" ).arg( u.name ).arg( error ) );
+      importResults.append( tr( "%1: %2" ).arg( u.name, error ) );
       hasError = true;
       continue;
     }
@@ -229,7 +229,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
       destUri.setDataSource( QString(), u.name, srcLayer->geometryType() != QgsWkbTypes::NullGeometry ? QStringLiteral( "geom" ) : QString() );
       QgsDebugMsg( "URI " + destUri.uri() );
 
-      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, destUri.uri(), QStringLiteral( "spatialite" ), srcLayer->crs(), nullptr, owner ) );
+      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, destUri.uri(), QStringLiteral( "spatialite" ), srcLayer->crs(), QVariantMap(), owner ) );
 
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
@@ -275,7 +275,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData *data, Qt::DropAction )
 
 // ---------------------------------------------------------------------------
 
-QgsSLRootItem::QgsSLRootItem( QgsDataItem *parent, QString name, QString path )
+QgsSLRootItem::QgsSLRootItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
 {
   mCapabilities |= Fast;
@@ -295,15 +295,15 @@ QVector<QgsDataItem *> QgsSLRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsSLRootItem::actions()
+QList<QAction *> QgsSLRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsSLRootItem::newConnection );
   lst.append( actionNew );
 
-  QAction *actionCreateDatabase = new QAction( tr( "Create Database..." ), this );
+  QAction *actionCreateDatabase = new QAction( tr( "Create Database..." ), parent );
   connect( actionCreateDatabase, &QAction::triggered, this, &QgsSLRootItem::createDatabase );
   lst.append( actionCreateDatabase );
 
@@ -313,11 +313,11 @@ QList<QAction *> QgsSLRootItem::actions()
 QWidget *QgsSLRootItem::paramWidget()
 {
   QgsSpatiaLiteSourceSelect *select = new QgsSpatiaLiteSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsSpatiaLiteSourceSelect::connectionsChanged, this, &QgsSLRootItem::connectionsChanged );
+  connect( select, &QgsSpatiaLiteSourceSelect::connectionsChanged, this, &QgsSLRootItem::onConnectionsChanged );
   return select;
 }
 
-void QgsSLRootItem::connectionsChanged()
+void QgsSLRootItem::onConnectionsChanged()
 {
   refresh();
 }

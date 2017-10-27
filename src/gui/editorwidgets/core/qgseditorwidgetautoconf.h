@@ -23,7 +23,8 @@
 class QgsVectorLayer;
 class QgsEditorWidgetSetup;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Base class for plugins allowing to pick automatically a widget type for editing fields.
  *
  * \since QGIS 3.0
@@ -51,8 +52,9 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
 
 ///@cond PRIVATE
 
-/** \ingroup gui
- * Class that allows registing plugins to pick automatically a widget type for editing fields.
+/**
+ * \ingroup gui
+ * Class that allows registering plugins to pick automatically a widget type for editing fields.
  * This class has only one instance, owned by the QgsEditorWidgetRegistry singleton
  *
  * The plugins are instances of QgsEditorWidgetAutoConfPlugin.

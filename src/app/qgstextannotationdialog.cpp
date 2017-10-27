@@ -30,6 +30,8 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
   , mTextDocument( nullptr )
 {
   setupUi( this );
+  connect( mFontColorButton, &QgsColorButton::colorChanged, this, &QgsTextAnnotationDialog::mFontColorButton_colorChanged );
+  connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsTextAnnotationDialog::mButtonBox_clicked );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
@@ -65,7 +67,7 @@ void QgsTextAnnotationDialog::showEvent( QShowEvent * )
   backgroundColorChanged( mItem && mItem->annotation() && mItem->annotation()->fillSymbol() ? mItem->annotation()->fillSymbol()->color() : Qt::white );
 }
 
-void QgsTextAnnotationDialog::on_mButtonBox_clicked( QAbstractButton *button )
+void QgsTextAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
   {
@@ -129,7 +131,7 @@ void QgsTextAnnotationDialog::changeCurrentFormat()
   mTextEdit->setTextColor( mFontColorButton->color() );
 }
 
-void QgsTextAnnotationDialog::on_mFontColorButton_colorChanged( const QColor &color )
+void QgsTextAnnotationDialog::mFontColorButton_colorChanged( const QColor &color )
 {
   Q_UNUSED( color )
   changeCurrentFormat();

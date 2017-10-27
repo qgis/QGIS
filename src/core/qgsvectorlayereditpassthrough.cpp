@@ -16,6 +16,8 @@
 #include "qgsvectorlayereditpassthrough.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayerundopassthroughcommand.h"
+#include "qgstransaction.h"
 
 QgsVectorLayerEditPassthrough::QgsVectorLayerEditPassthrough( QgsVectorLayer *layer )
   : mModified( false )
@@ -28,121 +30,75 @@ bool QgsVectorLayerEditPassthrough::isModified() const
   return mModified;
 }
 
+bool QgsVectorLayerEditPassthrough::modify( QgsVectorLayerUndoPassthroughCommand *cmd )
+{
+  L->undoStack()->push( cmd ); // push takes owneship -> no need for cmd to be a smart ptr
+  if ( cmd->hasError() )
+    return false;
+
+  if ( !mModified )
+  {
+    mModified = true;
+    emit layerModified();
+  }
+
+  return true;
+}
+
 bool QgsVectorLayerEditPassthrough::addFeature( QgsFeature &f )
 {
+  QgsVectorLayerUndoPassthroughCommandAddFeatures *cmd = new QgsVectorLayerUndoPassthroughCommandAddFeatures( this, QgsFeatureList() << f );
+  if ( !modify( cmd ) ) // modify takes owneship -> no need for cmd to be a smart ptr
+    return false;
 
-  QgsFeatureList fl;
-  fl << f;
-  if ( L->dataProvider()->addFeatures( fl ) )
-  {
-    f = fl.first();
-    emit featureAdded( f.id() );
-    mModified = true;
-    return true;
-  }
-  return false;
+  const QgsFeatureList features = cmd->features();
+  f = features.at( features.count() - 1 );
+  return true;
 }
 
 bool QgsVectorLayerEditPassthrough::addFeatures( QgsFeatureList &features )
 {
-  if ( L->dataProvider()->addFeatures( features ) )
-  {
-    Q_FOREACH ( const QgsFeature &f, features )
-    {
-      emit featureAdded( f.id() );
-    }
-    mModified = true;
-    return true;
-  }
-  return false;
+  QgsVectorLayerUndoPassthroughCommandAddFeatures *cmd = new QgsVectorLayerUndoPassthroughCommandAddFeatures( this, features );
+  if ( !modify( cmd ) ) // modify takes owneship -> no need for cmd to be a smart ptr
+    return false;
+
+  features = cmd->features();
+  return true;
 }
 
 bool QgsVectorLayerEditPassthrough::deleteFeature( QgsFeatureId fid )
 {
-  if ( L->dataProvider()->deleteFeatures( QgsFeatureIds() << fid ) )
-  {
-    emit featureDeleted( fid );
-    mModified = true;
-    return true;
-  }
-  return false;
+  return modify( new QgsVectorLayerUndoPassthroughCommandDeleteFeatures( this, QgsFeatureIds() << fid ) );
 }
 
 bool QgsVectorLayerEditPassthrough::deleteFeatures( const QgsFeatureIds &fids )
 {
-  if ( L->dataProvider()->deleteFeatures( fids ) )
-  {
-    Q_FOREACH ( QgsFeatureId fid, fids )
-      emit featureDeleted( fid );
-
-    mModified = true;
-    return true;
-  }
-  return false;
+  return modify( new QgsVectorLayerUndoPassthroughCommandDeleteFeatures( this, fids ) );
 }
 
 bool QgsVectorLayerEditPassthrough::changeGeometry( QgsFeatureId fid, const QgsGeometry &geom )
 {
-  QgsGeometryMap geomMap;
-  geomMap.insert( fid, geom );
-  if ( L->dataProvider()->changeGeometryValues( geomMap ) )
-  {
-    emit geometryChanged( fid, geom );
-    mModified = true;
-    return true;
-  }
-  return false;
+  return modify( new QgsVectorLayerUndoPassthroughCommandChangeGeometry( this, fid, geom ) );
 }
 
 bool QgsVectorLayerEditPassthrough::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &/*oldValue*/ )
 {
-  QgsAttributeMap map;
-  map.insert( field, newValue );
-  QgsChangedAttributesMap attribMap;
-  attribMap.insert( fid, map );
-  if ( L->dataProvider()->changeAttributeValues( attribMap ) )
-  {
-    emit attributeValueChanged( fid, field, newValue );
-    mModified = true;
-    return true;
-  }
-  return false;
+  return modify( new QgsVectorLayerUndoPassthroughCommandChangeAttribute( this, fid, field, newValue ) );
 }
 
 bool QgsVectorLayerEditPassthrough::addAttribute( const QgsField &field )
 {
-  if ( L->dataProvider()->addAttributes( QList<QgsField>() << field ) )
-  {
-    emit attributeAdded( L->dataProvider()->fieldNameIndex( field.name() ) );
-    mModified = true;
-    return true;
-  }
-  return false;
+  return modify( new QgsVectorLayerUndoPassthroughCommandAddAttribute( this, field ) );
 }
 
 bool QgsVectorLayerEditPassthrough::deleteAttribute( int attr )
 {
-  if ( L->dataProvider()->deleteAttributes( QgsAttributeIds() << attr ) )
-  {
-    mModified = true;
-    emit attributeDeleted( attr );
-    mModified = true;
-    return true;
-  }
-  return false;
+  return modify( new QgsVectorLayerUndoPassthroughCommandDeleteAttribute( this, attr ) );
 }
 
 bool QgsVectorLayerEditPassthrough::renameAttribute( int attr, const QString &newName )
 {
-  QgsFieldNameMap map;
-  map[ attr ] = newName;
-  if ( L->dataProvider()->renameAttributes( map ) )
-  {
-    mModified = true;
-    emit attributeRenamed( attr, newName );
-    return true;
-  }
-  return false;
+  return modify( new QgsVectorLayerUndoPassthroughCommandRenameAttribute( this, attr, newName ) );
 }
 
 bool QgsVectorLayerEditPassthrough::commitChanges( QStringList & /*commitErrors*/ )
@@ -154,4 +110,9 @@ bool QgsVectorLayerEditPassthrough::commitChanges( QStringList & /*commitErrors*
 void QgsVectorLayerEditPassthrough::rollBack()
 {
   mModified = false;
+}
+
+bool QgsVectorLayerEditPassthrough::update( QgsTransaction *tr, const QString &sql )
+{
+  return modify( new QgsVectorLayerUndoPassthroughCommandUpdate( this, tr, sql ) );
 }

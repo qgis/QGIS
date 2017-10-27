@@ -48,7 +48,7 @@ class Polygonize(QgisAlgorithm):
         return self.tr('create,lines,polygons,convert').split(',')
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -104,13 +104,13 @@ class Polygonize(QgisAlgorithm):
 
         if not polygons.isEmpty():
             feedback.pushInfo('Saving polygons...')
-            total = 50.0 / polygons.geometry().numGeometries()
-            for i in range(polygons.geometry().numGeometries()):
+            total = 50.0 / polygons.constGet().numGeometries()
+            for i in range(polygons.constGet().numGeometries()):
                 if feedback.isCanceled():
                     break
 
                 outFeat = QgsFeature()
-                geom = QgsGeometry(polygons.geometry().geometryN(i).clone())
+                geom = QgsGeometry(polygons.constGet().geometryN(i).clone())
                 outFeat.setGeometry(geom)
                 sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
                 feedback.setProgress(50 + int(current * total))

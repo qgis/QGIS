@@ -18,12 +18,13 @@
 
 #include <QVector>
 
-#include <qgis.h>
+#include "qgis.h"
 #include "qgis_analysis.h"
 
 class QgsGraph;
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  *  This class performs graph analysis, e.g. calculates shortest path between two
  * points using different strategies with Dijkstra algorithm
  */

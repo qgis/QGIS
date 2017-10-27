@@ -23,16 +23,28 @@ class QgsCurvePolygon: QgsSurface
   public:
     QgsCurvePolygon();
     QgsCurvePolygon( const QgsCurvePolygon &p );
+
+    bool operator==( const QgsCurvePolygon &other ) const;
+    bool operator!=( const QgsCurvePolygon &other ) const;
+%Docstring
+ :rtype: bool
+%End
+
     ~QgsCurvePolygon();
 
     virtual QString geometryType() const;
+
     virtual int dimension() const;
+
     virtual QgsCurvePolygon *clone() const /Factory/;
+
     virtual void clear();
 
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
+
     virtual bool fromWkt( const QString &wkt );
+
 
     virtual QByteArray asWkb() const;
 
@@ -46,10 +58,15 @@ class QgsCurvePolygon: QgsSurface
 
 
     virtual double area() const;
+
     virtual double perimeter() const;
+
     virtual QgsPolygonV2 *surfaceToPolygon() const /Factory/;
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
+
+    virtual QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
+
 
     int numInteriorRings() const;
 %Docstring
@@ -111,25 +128,33 @@ Adds an interior ring to the geometry (takes ownership)
 %End
 
     virtual void draw( QPainter &p ) const;
+
      virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false );
     virtual void transform( const QTransform &t );
 
 
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
+
     virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
+
     virtual bool deleteVertex( QgsVertexId position );
 
+
     virtual QgsCoordinateSequence coordinateSequence() const;
+
     virtual int nCoordinates() const;
+
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
+
     virtual bool isEmpty() const;
 
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
-                                   QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/,
-                                   double epsilon ) const;
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
+
 
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const;
 
+    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const;
 
     virtual bool hasCurvedSegments() const;
 
@@ -152,21 +177,41 @@ Adds an interior ring to the geometry (takes ownership)
  :rtype: float
 %End
 
-    virtual int vertexCount( int /*part*/ = 0, int ring = 0 ) const;
-    virtual int ringCount( int /*part*/ = 0 ) const;
+    virtual int vertexCount( int part = 0, int ring = 0 ) const;
+
+    virtual int ringCount( int part = 0 ) const;
+
     virtual int partCount() const;
+
     virtual QgsPoint vertexAt( QgsVertexId id ) const;
 
+
     virtual bool addZValue( double zValue = 0 );
+
     virtual bool addMValue( double mValue = 0 );
+
     virtual bool dropZValue();
+
     virtual bool dropMValue();
+
+
+    virtual QgsCurvePolygon *toCurveType() const /Factory/;
+
+  protected:
+    virtual QgsCurvePolygon *createEmptyWithSameType() const /Factory/;
+
+    virtual int childCount() const;
+
+    virtual QgsAbstractGeometry *childGeometry( int index ) const;
+
 
   protected:
 
 
     virtual QgsRectangle calculateBoundingBox() const;
+
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -41,8 +41,14 @@ def _geometryNonZero(self):
     return not self.isEmpty()
 
 
+def _isValid(self):
+    return self.isValid()
+
+
 QgsGeometry.__nonzero__ = _geometryNonZero
 QgsGeometry.__bool__ = _geometryNonZero
+
+QgsDefaultValue.__bool__ = _isValid
 
 
 def register_function(function, arg_count, group, usesgeometry=False,
@@ -84,7 +90,7 @@ def register_function(function, arg_count, group, usesgeometry=False,
             self.uses_geometry = usesGeometry
             self.referenced_columns = referencedColumns
 
-        def func(self, values, context, parent):
+        def func(self, values, context, parent, node):
             feature = None
             if context:
                 feature = context.feature()
@@ -112,7 +118,7 @@ def register_function(function, arg_count, group, usesgeometry=False,
 
     helptemplate = string.Template("""<h3>$name function</h3><br>$doc""")
     name = kwargs.get('name', function.__name__)
-    helptext = function.__doc__ or ''
+    helptext = kwargs.get('helpText') or function.__doc__ or ''
     helptext = helptext.strip()
     expandargs = False
 

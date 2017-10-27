@@ -21,7 +21,8 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsfields.h"
 #include "qgis.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Class to manipulate the definition of a virtual layer
  *
  * It is used to extract parameters from an initial virtual layer definition as well as
@@ -31,7 +32,8 @@ class CORE_EXPORT QgsVirtualLayerDefinition
 {
   public:
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * A SourceLayer is either a reference to a live layer in the registry
      * or all the parameters needed to load it (provider key, source, etc.)
      */
@@ -80,18 +82,20 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     //! Constructor with an optional file path
     QgsVirtualLayerDefinition( const QString &filePath = "" );
 
-    //! Constructor to build a definition from a QUrl
-    //! The path part of the URL is extracted as well as the following optional keys:
-    //! layer_ref=layer_id[:name]               represents a live layer referenced by its ID. An optional name can be given
-    //! layer=provider:source[:name[:encoding]] represents a layer given by its provider key, its source url (URL-encoded).
-    //!                                         An optional name and encoding can be given
-    //! geometry=column_name[:type:srid]        gives the definition of the geometry column.
-    //!                                         Type can be either a WKB type code or a string (point, linestring, etc.)
-    //!                                         srid is an integer
-    //! uid=column_name                         is the name of a column with unique integer values.
-    //! nogeometry                              is a flag to force the layer to be a non-geometry layer
-    //! query=sql                               represents the SQL query. Must be URL-encoded
-    //! field=column_name:[int|real|text]       represents a field with its name and its type
+    /**
+     * Constructor to build a definition from a QUrl
+     * The path part of the URL is extracted as well as the following optional keys:
+     * layer_ref=layer_id[:name]               represents a live layer referenced by its ID. An optional name can be given
+     * layer=provider:source[:name[:encoding]] represents a layer given by its provider key, its source url (URL-encoded).
+     * An optional name and encoding can be given
+     * geometry=column_name[:type:srid]        gives the definition of the geometry column.
+     * Type can be either a WKB type code or a string (point, linestring, etc.)
+     * srid is an integer
+     * uid=column_name                         is the name of a column with unique integer values.
+     * nogeometry                              is a flag to force the layer to be a non-geometry layer
+     * query=sql                               represents the SQL query. Must be URL-encoded
+     * field=column_name:[int|real|text]       represents a field with its name and its type
+     */
     static QgsVirtualLayerDefinition fromUrl( const QUrl &url );
 
     //! Convert the definition into a QUrl
@@ -132,9 +136,11 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     //! Set the name of the geometry field
     void setGeometryField( const QString &geometryField ) { mGeometryField = geometryField; }
 
-    //! Get the type of the geometry
-    //! QgsWkbTypes::NoGeometry to hide any geometry
-    //! QgsWkbTypes::Unknown for unknown types
+    /**
+     * Get the type of the geometry
+     * QgsWkbTypes::NoGeometry to hide any geometry
+     * QgsWkbTypes::Unknown for unknown types
+     */
     QgsWkbTypes::Type geometryWkbType() const { return mGeometryWkbType; }
     //! Set the type of the geometry
     void setGeometryWkbType( QgsWkbTypes::Type t ) { mGeometryWkbType = t; }
@@ -168,8 +174,10 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     QString mGeometryField;
     QString mFilePath;
     QgsFields mFields;
-    QgsWkbTypes::Type mGeometryWkbType;
-    long mGeometrySrid;
+    QgsWkbTypes::Type mGeometryWkbType = QgsWkbTypes::Unknown;
+    long mGeometrySrid = 0;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

@@ -86,10 +86,11 @@ class TestCase(_TestCase):
             compare = {}
 
         # Compare CRS
-        if use_asserts:
-            _TestCase.assertEqual(self, layer_expected.dataProvider().crs().authid(), layer_result.dataProvider().crs().authid())
-        elif not layer_expected.dataProvider().crs().authid() == layer_result.dataProvider().crs().authid():
-            return False
+        if 'ignore_crs_check' not in compare or not compare['ignore_crs_check']:
+            if use_asserts:
+                _TestCase.assertEqual(self, layer_expected.dataProvider().crs().authid(), layer_result.dataProvider().crs().authid())
+            elif not layer_expected.dataProvider().crs().authid() == layer_result.dataProvider().crs().authid():
+                return False
 
         # Compare features
         if use_asserts:
@@ -104,7 +105,11 @@ class TestCase(_TestCase):
 
         def sort_by_pk_or_fid(f):
             if 'pk' in kwargs and kwargs['pk'] is not None:
-                return f[kwargs['pk']]
+                key = kwargs['pk']
+                if isinstance(key, list) or isinstance(key, tuple):
+                    return [f[k] for k in key]
+                else:
+                    return f[kwargs['pk']]
             else:
                 return f.id()
 
@@ -113,11 +118,11 @@ class TestCase(_TestCase):
 
         for feats in zip(expected_features, result_features):
             if feats[0].hasGeometry():
-                geom0 = feats[0].geometry().geometry().asWkt(precision)
+                geom0 = feats[0].geometry().constGet().asWkt(precision)
             else:
                 geom0 = None
             if feats[1].hasGeometry():
-                geom1 = feats[1].geometry().geometry().asWkt(precision)
+                geom1 = feats[1].geometry().constGet().asWkt(precision)
             else:
                 geom1 = None
             if use_asserts:
@@ -173,7 +178,7 @@ class TestCase(_TestCase):
                         self,
                         attr_expected,
                         attr_result,
-                        'Features {}/{} differ in attributes\n\n * Field1: {} ({})\n * Field2: {} ({})\n\n * {} != {}'.format(
+                        'Features {}/{} differ in attributes\n\n * Field expected: {} ({})\n * result  : {} ({})\n\n * Expected: {} != Result  : {}'.format(
                             feats[0].id(),
                             feats[1].id(),
                             field_expected.name(),

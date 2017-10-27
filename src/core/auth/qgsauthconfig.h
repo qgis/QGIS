@@ -31,7 +31,8 @@
 #include "qgis.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Configuration storage class for authentication method configurations
  */
 class CORE_EXPORT QgsAuthMethodConfig
@@ -180,7 +181,8 @@ typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;
 
 #ifndef QT_NO_SSL
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Storage set for PKI bundle: SSL certificate, key, optional CA cert chain
  * \note Useful for caching the bundle during application run sessions
  */
@@ -249,7 +251,8 @@ class CORE_EXPORT QgsPkiBundle
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Storage set for constructed SSL certificate, key, associated with an authentication config
  */
 class CORE_EXPORT QgsPkiConfigBundle
@@ -261,33 +264,51 @@ class CORE_EXPORT QgsPkiConfigBundle
      * \param config Authentication method configuration
      * \param cert Certificate to store in bundle
      * \param certkey Private key to store in bundle
+     * \param cachain list of CA certificates
      */
     QgsPkiConfigBundle( const QgsAuthMethodConfig &config,
                         const QSslCertificate &cert,
-                        const QSslKey &certkey );
+                        const QSslKey &certkey,
+                        const QList<QSslCertificate> &cachain = QList<QSslCertificate>( ) );
 
     //! Whether the bundle is valid
     bool isValid();
 
     //! Authentication method configuration
     const QgsAuthMethodConfig config() const { return mConfig; }
+
     //! Set authentication method configuration
     void setConfig( const QgsAuthMethodConfig &config ) { mConfig = config; }
 
     //! Client certificate object
     const QSslCertificate clientCert() const { return mCert; }
+
     //! Set client certificate object
     void setClientCert( const QSslCertificate &cert ) { mCert = cert; }
 
     //! Private key object
     const QSslKey clientCertKey() const { return mCertKey; }
+
     //! Set private key object
     void setClientCertKey( const QSslKey &certkey ) { mCertKey = certkey; }
+
+    /**
+     * \brief caChain return the CA chain
+     * \return list of CA certificates
+     */
+    QList<QSslCertificate> caChain() const { return mCaChain; }
+
+    /**
+     * \brief setCaChain set the CA chain
+     * \param caChain
+     */
+    void setCaChain( const QList<QSslCertificate> &caChain ) { mCaChain = caChain; }
 
   private:
     QgsAuthMethodConfig mConfig;
     QSslCertificate mCert;
     QSslKey mCertKey;
+    QList<QSslCertificate> mCaChain;
 };
 
 
@@ -343,7 +364,8 @@ class CORE_EXPORT QgsPkiConfigBundle
 
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Configuration container for SSL server connection exceptions or overrides
  */
 class CORE_EXPORT QgsAuthConfigSslServer
@@ -379,12 +401,14 @@ class CORE_EXPORT QgsAuthConfigSslServer
     //! Set SSL client's peer verify mode to use in connections
     void setSslPeerVerifyMode( QSslSocket::PeerVerifyMode mode ) { mSslPeerVerifyMode = mode; }
 
-    /** Number or SSL client's peer to verify in connections
+    /**
+     * Number or SSL client's peer to verify in connections
      * \note When set to 0 = unlimited depth
      */
     int sslPeerVerifyDepth() const { return mSslPeerVerifyDepth; }
 
-    /** Set number or SSL client's peer to verify in connections
+    /**
+     * Set number or SSL client's peer to verify in connections
      * \note When set to 0 = unlimited depth
      */
     void setSslPeerVerifyDepth( int depth ) { mSslPeerVerifyDepth = depth; }
@@ -415,9 +439,9 @@ class CORE_EXPORT QgsAuthConfigSslServer
     QSsl::SslProtocol mSslProtocol;
     int mQtVersion;
     QList<QSslError::SslError> mSslIgnoredErrors;
-    QSslSocket::PeerVerifyMode mSslPeerVerifyMode;
-    int mSslPeerVerifyDepth;
-    int mVersion;
+    QSslSocket::PeerVerifyMode mSslPeerVerifyMode = QSslSocket::VerifyPeer;
+    int mSslPeerVerifyDepth = 0;
+    int mVersion = 1;
 
     static const QString CONF_SEP;
 };

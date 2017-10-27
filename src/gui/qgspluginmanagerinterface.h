@@ -23,7 +23,8 @@
 #include "qgsmessagebar.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPluginManagerInterface
  */
 class GUI_EXPORT QgsPluginManagerInterface : public QObject
@@ -33,7 +34,7 @@ class GUI_EXPORT QgsPluginManagerInterface : public QObject
   public:
 
     //! Constructor
-    QgsPluginManagerInterface();
+    QgsPluginManagerInterface() = default;
 
     //! remove Python plugins from the metadata registry (c++ plugins stay)
     virtual void clearPythonPluginMetadata() = 0;

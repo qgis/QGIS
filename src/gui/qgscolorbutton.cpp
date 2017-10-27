@@ -40,19 +40,8 @@
 
 QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSchemeRegistry *registry )
   : QToolButton( parent )
-  , mBehavior( QgsColorButton::ShowDialog )
   , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )
-  , mColor( QColor() )
-  , mDefaultColor( QColor() ) //default to invalid color
-  , mAllowOpacity( false )
-  , mAcceptLiveUpdates( true )
-  , mColorSet( false )
-  , mShowNoColorOption( false )
   , mNoColorString( tr( "No color" ) )
-  , mShowNull( false )
-  , mPickingColor( false )
-  , mMenu( nullptr )
-
 {
   //if a color scheme registry was specified, use it, otherwise use the global instance
   mColorSchemeRegistry = registry ? registry : QgsApplication::colorSchemeRegistry();
@@ -73,7 +62,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
   mMinimumSize = QSize( 120, 28 );
 #endif
 
-  mMinimumSize.setHeight( qMax( static_cast<int>( fontMetrics().height() * 1.1 ), mMinimumSize.height() ) );
+  mMinimumSize.setHeight( std::max( static_cast<int>( fontMetrics().height() * 1.1 ), mMinimumSize.height() ) );
 }
 
 

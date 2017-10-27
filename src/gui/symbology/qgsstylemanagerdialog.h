@@ -27,7 +27,8 @@
 
 class QgsStyle;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsStyleManagerDialog
  */
 class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleManagerDialogBase
@@ -51,14 +52,17 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void exportItems();
     void importItems();
 
-    void on_tabItemType_currentChanged( int );
     //! adds symbols of some type to list
     void populateList();
 
     //! called when the dialog is going to be closed
     void onFinished();
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#id2" ) ); }
+    //! Close the dialog
+    void onClose();
+
+    //! Open the associated help
+    void showHelp();
 
     void itemChanged( QStandardItem *item );
 
@@ -169,6 +173,10 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     //! Menu for the "Add item" toolbutton when in colorramp mode
     QMenu *mMenuBtnAddItemColorRamp = nullptr;
+
+  private slots:
+
+    void tabItemType_currentChanged( int );
 };
 
 #endif

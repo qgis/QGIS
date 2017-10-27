@@ -315,7 +315,8 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
     };
 
     QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
-                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true );
+                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true,
+                    bool readExtentFromXml = false );
 %Docstring
  Constructor - creates a vector layer
 
@@ -328,6 +329,7 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
  \param  baseName The name used to represent the layer in the legend
  \param  providerLib  The name of the data provider, e.g., "memory", "postgres"
  \param  loadDefaultStyleFlag whether to load the default style
+ \param  readExtentFromXml Read extent from XML if true or let provider determine it if false
 %End
 
 
@@ -347,19 +349,20 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
 
     QString storageType() const;
 %Docstring
-Returns the permanent storage type for this layer as a friendly name.
+ Returns the permanent storage type for this layer as a friendly name.
+ This is obtained from the data provider and does not follow any standard.
  :rtype: str
 %End
 
     QString capabilitiesString() const;
 %Docstring
-Capabilities for this layer in a friendly format.
+ Capabilities for this layer, comma separated and translated.
  :rtype: str
 %End
 
     QString dataComment() const;
 %Docstring
-Returns a comment for the data in the layer
+ Returns a description for this layer as defined in the data provider.
  :rtype: str
 %End
 
@@ -574,12 +577,6 @@ Select not selected features and deselect selected ones
 Select all the features
 %End
 
-    QgsFeatureIds allFeatureIds() const;
-%Docstring
-Get all feature Ids
- :rtype: QgsFeatureIds
-%End
-
     void invertSelectionInRectangle( QgsRectangle &rect );
 %Docstring
  Invert selection of features found within the search rectangle (in layer's coordinates)
@@ -715,7 +712,7 @@ Return the provider type for this layer
  :rtype: bool
 %End
 
-    void resolveReferences( QgsProject *project );
+    virtual void resolveReferences( QgsProject *project );
 %Docstring
  Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
 .. versionadded:: 3.0
@@ -776,6 +773,41 @@ Return the provider type for this layer
  Retained for backward compatibility
  :rtype: str
 %End
+
+    bool loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage, const QString &key = QString() );
+%Docstring
+ Loads the auxiliary layer for this vector layer. If there's no
+ corresponding table in the database, then nothing happens and false is
+ returned. The key is optional because if this layer has been read from
+ a XML document, then the key read in this document is used by default.
+
+ \param storage The auxiliary storage where to look for the table
+ \param key The key to use for joining.
+
+ :return: true if the auxiliary layer is well loaded, false otherwise
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void setAuxiliaryLayer( QgsAuxiliaryLayer *layer /Transfer/ = 0 );
+%Docstring
+ Sets the current auxiliary layer. The auxiliary layer is automatically
+ put in editable mode and fields are updated. Moreover, a join is created
+ between the current layer and the auxiliary layer. Ownership is
+ transferred.
+
+.. versionadded:: 3.0
+%End
+
+    QgsAuxiliaryLayer *auxiliaryLayer();
+%Docstring
+ Returns the current auxiliary layer.
+
+.. versionadded:: 3.0
+ :rtype: QgsAuxiliaryLayer
+%End
+
 
     virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage, const QgsReadWriteContext &context );
 
@@ -857,20 +889,21 @@ Return the provider type for this layer
 .. versionadded:: 2.10
 %End
 
-    bool countSymbolFeatures();
+    QgsVectorLayerFeatureCounter *countSymbolFeatures();
 %Docstring
  Count features for symbols.
- The method will return immediately. You will need to connect to the
- symbolFeatureCountMapChanged() signal to be notified when the freshly updated
- feature counts are ready.
+ The method will return the feature counter task. You will need to
+ connect to the symbolFeatureCountMapChanged() signal to be
+ notified when the freshly updated feature counts are ready.
 
 .. note::
 
-   If you need to wait for the results, create and start your own QgsVectorLayerFeatureCounter
-       task and call waitForFinished().
+   If the count features for symbols has been already done a
+       None is returned. If you need to wait for the results,
+       you can call waitForFinished() on the feature counter.
 
 .. versionadded:: 3.0
- :rtype: bool
+ :rtype: QgsVectorLayerFeatureCounter
 %End
 
     virtual bool setSubsetString( const QString &subset );
@@ -905,7 +938,7 @@ Return the provider type for this layer
  :rtype: QgsFeatureIterator
 %End
 
-    QgsFeature getFeature( QgsFeatureId fid );
+    QgsFeature getFeature( QgsFeatureId fid ) const;
 %Docstring
  Query the layer for the feature with the given id.
  If there is no such feature, the returned feature will be invalid.
@@ -927,13 +960,16 @@ Return the provider type for this layer
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
 
 
-    bool updateFeature( QgsFeature &f );
+    bool updateFeature( const QgsFeature &feature, bool skipDefaultValues = false );
 %Docstring
  Updates an existing feature. This method needs to query the datasource
-on every call. Consider using changeAttributeValue() or
-changeGeometry() instead.
-\param f  Feature to update
-:return:   True in case of success and False in case of error
+ on every call. Consider using changeAttributeValue() or
+ changeGeometry() instead. The id of the feature will be used to match
+ an existing feature.
+
+  \param feature  Feature with changed geometry or attributes.
+  \param skipDefaultValues Default values will not be updated if this is true. False by default.
+  :return:   True in case of success and False in case of error
  :rtype: bool
 %End
 
@@ -1058,7 +1094,8 @@ changeGeometry() instead.
  :rtype: int
 %End
 
-    const QgsAbstractVectorLayerLabeling *labeling() const;
+
+    QgsAbstractVectorLayerLabeling *labeling();
 %Docstring
  Access to labeling configuration. May be null if labeling is not used.
 .. versionadded:: 3.0
@@ -1086,6 +1123,15 @@ Returns true if this is a geometry layer and false in case of NoGeometry (table 
     virtual bool isModified() const;
 %Docstring
 Returns true if the provider has been modified since the last commit
+ :rtype: bool
+%End
+
+    bool isAuxiliaryField( int index, int &srcIndex ) const;
+%Docstring
+ Returns true if the field comes from the auxiliary layer,
+ false otherwise.
+
+.. versionadded:: 3.0
  :rtype: bool
 %End
 
@@ -1174,13 +1220,13 @@ Returns list of attributes making up the primary key
  :rtype: bool
 %End
 
-    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom );
+    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom, bool skipDefaultValue = false );
 %Docstring
 Change feature's geometry
  :rtype: bool
 %End
 
-    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
+    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant(), bool skipDefaultValues = false );
 %Docstring
  Changes an attribute value (but does not commit it)
 
@@ -1188,6 +1234,8 @@ Change feature's geometry
  \param field The index of the field to be updated
  \param newValue The value which will be assigned to the field
  \param oldValue The previous value to restore on undo (will otherwise be retrieved)
+ \param skipDefaultValues If this is set to true, default values will not
+ be updated. This can be used to override default values. Defaults to false.
 
  :return: true in case of success
  :rtype: bool
@@ -1266,7 +1314,7 @@ Returns a map of field name to attribute alias
  A set of attributes that are not advertised in WFS requests with QGIS server.
 %End
 
-    bool deleteAttribute( int attr );
+    virtual bool deleteAttribute( int attr );
 %Docstring
 Delete an attribute field (but does not commit it)
  :rtype: bool
@@ -1380,14 +1428,21 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
 
     void updateFields();
 %Docstring
-Assembles mUpdatedFields considering provider fields, joined fields and added fields
+ Will regenerate the `fields` property of this layer by obtaining all fields
+ from the dataProvider, joined fields and virtual fields. It will also
+ take any changes made to default values into consideration.
+
+.. note::
+
+   Unless the fields on the provider have directly been modified, there is
+ no reason to call this method.
 %End
 
     QVariant defaultValue( int index, const QgsFeature &feature = QgsFeature(),
                            QgsExpressionContext *context = 0 ) const;
 %Docstring
  Returns the calculated default value for the specified field index. The default
- value may be taken from a client side default value expression (see setDefaultValueExpression())
+ value may be taken from a client side default value expression (see setDefaultValueDefinition())
  or taken from the underlying data provider.
  \param index field index
  \param feature optional feature to use for default value evaluation. If passed,
@@ -1397,31 +1452,34 @@ Assembles mUpdatedFields considering provider fields, joined fields and added fi
  specified, a default context will be created
  :return: calculated default value
 .. versionadded:: 3.0
-.. seealso:: setDefaultValueExpression()
+.. seealso:: setDefaultValueDefinition()
  :rtype: QVariant
 %End
 
-    void setDefaultValueExpression( int index, const QString &expression );
+    void setDefaultValueDefinition( int index, const QgsDefaultValue &definition );
 %Docstring
- Sets an expression to use when calculating the default value for a field.
+ Sets the definition of the expression to use when calculating the default value for a field.
  \param index field index
- \param expression expression to evaluate when calculating default values for field. Pass
+ \param definition default value definition to use and evaluate
+ when calculating default values for field. Pass
  an empty expression to clear the default.
+
 .. versionadded:: 3.0
 .. seealso:: defaultValue()
-.. seealso:: defaultValueExpression()
+.. seealso:: defaultValueDefinition()
 %End
 
-    QString defaultValueExpression( int index ) const;
+    QgsDefaultValue defaultValueDefinition( int index ) const;
 %Docstring
- Returns the expression used when calculating the default value for a field.
+ Returns the definition of the expression used when calculating the default value for a field.
  \param index field index
- :return: expression evaluated when calculating default values for field, or an
+ :return: definition of the default value with the expression evaluated
+ when calculating default values for field, or definition with an
  empty string if no default is set
 .. versionadded:: 3.0
 .. seealso:: defaultValue()
-.. seealso:: setDefaultValueExpression()
- :rtype: str
+.. seealso:: setDefaultValueDefinition()
+ :rtype: QgsDefaultValue
 %End
 
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
@@ -1727,6 +1785,33 @@ Returns the current blending mode for features
 .. versionadded:: 3.0
 %End
 
+    void setReadExtentFromXml( bool readExtentFromXml );
+%Docstring
+ Flag allowing to indicate if the extent has to be read from the XML
+ document when data source has no metadata or if the data provider has
+ to determine it.
+
+.. versionadded:: 3.0
+%End
+
+    bool readExtentFromXml() const;
+%Docstring
+ Returns true if the extent is read from the XML document when data
+ source has no metadata, false if it's the data provider which determines
+ it.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    bool isEditCommandActive() const;
+%Docstring
+ Test if an edit command is active
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
   public slots:
 
     void select( QgsFeatureId featureId );
@@ -1772,10 +1857,12 @@ Returns the current blending mode for features
 .. seealso:: selectByIds()
 %End
 
-    virtual void updateExtents();
+    virtual void updateExtents( bool force = false );
 %Docstring
  Update the extents for the layer. This is necessary if features are
   added/deleted or the layer has been subsetted.
+
+ \param force true to update layer extent even if it's read from xml by default, false otherwise
 %End
 
     bool startEditing();
@@ -1786,10 +1873,6 @@ Returns the current blending mode for features
  rollBack().
  :rtype: bool
 %End
-
-
-  protected slots:
-    void invalidateSymbolCountedFlag();
 
   signals:
 
@@ -2069,6 +2152,7 @@ Set the extent
   private:                       // Private methods
     QgsVectorLayer( const QgsVectorLayer &rhs );
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -26,6 +26,7 @@ QgsComposerPolylineWidget::QgsComposerPolylineWidget( QgsComposerPolyline *compo
   , mComposerPolyline( composerPolyline )
 {
   setupUi( this );
+  connect( mLineStyleButton, &QPushButton::clicked, this, &QgsComposerPolylineWidget::mLineStyleButton_clicked );
   setPanelTitle( tr( "Polyline properties" ) );
 
   //add widget for general composer item properties
@@ -42,11 +43,7 @@ QgsComposerPolylineWidget::QgsComposerPolylineWidget( QgsComposerPolyline *compo
     connect( mComposerPolyline, &QgsComposerObject::itemChanged, this, &QgsComposerPolylineWidget::setGuiElementValues );
 }
 
-QgsComposerPolylineWidget::~QgsComposerPolylineWidget()
-{
-}
-
-void QgsComposerPolylineWidget::on_mLineStyleButton_clicked()
+void QgsComposerPolylineWidget::mLineStyleButton_clicked()
 {
   if ( !mComposerPolyline )
     return;

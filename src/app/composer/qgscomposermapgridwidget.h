@@ -22,7 +22,8 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposermapgrid.h"
 
-/** \ingroup app
+/**
+ * \ingroup app
  * Input widget for the configuration of QgsComposerMapGrids
  * */
 class QgsComposerMapGridWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerMapGridWidgetBase
@@ -31,64 +32,63 @@ class QgsComposerMapGridWidget: public QgsComposerItemBaseWidget, private Ui::Qg
 
   public:
     explicit QgsComposerMapGridWidget( QgsComposerMapGrid *mapGrid, QgsComposerMap *composerMap );
-    virtual ~QgsComposerMapGridWidget();
 
   public slots:
 
     void setGridItems();
-    void on_mGridLineStyleButton_clicked();
-    void on_mGridMarkerStyleButton_clicked();
-    void on_mIntervalXSpinBox_editingFinished();
-    void on_mIntervalYSpinBox_editingFinished();
-    void on_mOffsetXSpinBox_valueChanged( double value );
-    void on_mOffsetYSpinBox_valueChanged( double value );
-    void on_mCrossWidthSpinBox_valueChanged( double val );
-    void on_mFrameWidthSpinBox_valueChanged( double val );
-    void on_mFrameStyleComboBox_currentIndexChanged( const QString &text );
-    void on_mGridFramePenSizeSpinBox_valueChanged( double d );
-    void on_mGridFramePenColorButton_colorChanged( const QColor &newColor );
-    void on_mGridFrameFill1ColorButton_colorChanged( const QColor &newColor );
-    void on_mGridFrameFill2ColorButton_colorChanged( const QColor &newColor );
-    void on_mGridTypeComboBox_currentIndexChanged( const QString &text );
-    void on_mMapGridCRSButton_clicked();
-    void on_mMapGridUnitComboBox_currentIndexChanged( const QString &text );
-    void on_mGridBlendComboBox_currentIndexChanged( int index );
-    void on_mCheckGridLeftSide_toggled( bool checked );
-    void on_mCheckGridRightSide_toggled( bool checked );
-    void on_mCheckGridTopSide_toggled( bool checked );
-    void on_mCheckGridBottomSide_toggled( bool checked );
+    void mGridLineStyleButton_clicked();
+    void mGridMarkerStyleButton_clicked();
+    void mIntervalXSpinBox_editingFinished();
+    void mIntervalYSpinBox_editingFinished();
+    void mOffsetXSpinBox_valueChanged( double value );
+    void mOffsetYSpinBox_valueChanged( double value );
+    void mCrossWidthSpinBox_valueChanged( double val );
+    void mFrameWidthSpinBox_valueChanged( double val );
+    void mFrameStyleComboBox_currentIndexChanged( const QString &text );
+    void mGridFramePenSizeSpinBox_valueChanged( double d );
+    void mGridFramePenColorButton_colorChanged( const QColor &newColor );
+    void mGridFrameFill1ColorButton_colorChanged( const QColor &newColor );
+    void mGridFrameFill2ColorButton_colorChanged( const QColor &newColor );
+    void mGridTypeComboBox_currentIndexChanged( const QString &text );
+    void mMapGridCRSButton_clicked();
+    void mMapGridUnitComboBox_currentIndexChanged( const QString &text );
+    void mGridBlendComboBox_currentIndexChanged( int index );
+    void mCheckGridLeftSide_toggled( bool checked );
+    void mCheckGridRightSide_toggled( bool checked );
+    void mCheckGridTopSide_toggled( bool checked );
+    void mCheckGridBottomSide_toggled( bool checked );
 
     //frame divisions display
-    void on_mFrameDivisionsLeftComboBox_currentIndexChanged( int index );
-    void on_mFrameDivisionsRightComboBox_currentIndexChanged( int index );
-    void on_mFrameDivisionsTopComboBox_currentIndexChanged( int index );
-    void on_mFrameDivisionsBottomComboBox_currentIndexChanged( int index );
+    void mFrameDivisionsLeftComboBox_currentIndexChanged( int index );
+    void mFrameDivisionsRightComboBox_currentIndexChanged( int index );
+    void mFrameDivisionsTopComboBox_currentIndexChanged( int index );
+    void mFrameDivisionsBottomComboBox_currentIndexChanged( int index );
 
-    void on_mDrawAnnotationGroupBox_toggled( bool state );
-    void on_mAnnotationFormatButton_clicked();
+    void mDrawAnnotationGroupBox_toggled( bool state );
+    void mAnnotationFormatButton_clicked();
 
     //annotation display
-    void on_mAnnotationDisplayLeftComboBox_currentIndexChanged( const QString &text );
-    void on_mAnnotationDisplayRightComboBox_currentIndexChanged( const QString &text );
-    void on_mAnnotationDisplayTopComboBox_currentIndexChanged( const QString &text );
-    void on_mAnnotationDisplayBottomComboBox_currentIndexChanged( const QString &text );
+    void mAnnotationDisplayLeftComboBox_currentIndexChanged( const QString &text );
+    void mAnnotationDisplayRightComboBox_currentIndexChanged( const QString &text );
+    void mAnnotationDisplayTopComboBox_currentIndexChanged( const QString &text );
+    void mAnnotationDisplayBottomComboBox_currentIndexChanged( const QString &text );
 
     //annotation position
-    void on_mAnnotationPositionLeftComboBox_currentIndexChanged( const QString &text );
-    void on_mAnnotationPositionRightComboBox_currentIndexChanged( const QString &text );
-    void on_mAnnotationPositionTopComboBox_currentIndexChanged( const QString &text );
-    void on_mAnnotationPositionBottomComboBox_currentIndexChanged( const QString &text );
+    void mAnnotationPositionLeftComboBox_currentIndexChanged( const QString &text );
+    void mAnnotationPositionRightComboBox_currentIndexChanged( const QString &text );
+    void mAnnotationPositionTopComboBox_currentIndexChanged( const QString &text );
+    void mAnnotationPositionBottomComboBox_currentIndexChanged( const QString &text );
 
     //annotation direction
-    void on_mAnnotationDirectionComboBoxLeft_currentIndexChanged( int index );
-    void on_mAnnotationDirectionComboBoxRight_currentIndexChanged( int index );
-    void on_mAnnotationDirectionComboBoxTop_currentIndexChanged( int index );
-    void on_mAnnotationDirectionComboBoxBottom_currentIndexChanged( int index );
+    void mAnnotationDirectionComboBoxLeft_currentIndexChanged( int index );
+    void mAnnotationDirectionComboBoxRight_currentIndexChanged( int index );
+    void mAnnotationDirectionComboBoxTop_currentIndexChanged( int index );
+    void mAnnotationDirectionComboBoxBottom_currentIndexChanged( int index );
 
-    void on_mAnnotationFormatComboBox_currentIndexChanged( int index );
-    void on_mCoordinatePrecisionSpinBox_valueChanged( int value );
-    void on_mDistanceToMapFrameSpinBox_valueChanged( double d );
-    void on_mAnnotationFontColorButton_colorChanged( const QColor &color );
+    void mAnnotationFormatComboBox_currentIndexChanged( int index );
+    void mCoordinatePrecisionSpinBox_valueChanged( int value );
+    void mDistanceToMapFrameSpinBox_valueChanged( double d );
+    void mAnnotationFontColorButton_colorChanged( const QColor &color );
 
   protected:
 

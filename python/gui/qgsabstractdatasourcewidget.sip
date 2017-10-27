@@ -77,9 +77,12 @@ Emitted when a DB layer has been selected for addition
 Emitted when a raster layer has been selected for addition
 %End
 
-    void addVectorLayer( const QString &uri, const QString &layerName );
+    void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() );
 %Docstring
-Emitted when a vector layer has been selected for addition
+ Emitted when a vector layer has been selected for addition.
+
+ If ``providerKey`` is not specified, the default provider key associated with the source
+ will be used.
 %End
 
     void addVectorLayers( const QStringList &layerList, const QString &encoding, const QString &dataSourceType );
@@ -89,6 +92,16 @@ Emitted when a vector layer has been selected for addition
  \param encoding encoding
  \param dataSourceType string (can be "file" or "database")
 %End
+
+    void replaceVectorLayer( const QString &oldId, const QString &source, const QString &name, const QString &provider );
+%Docstring
+ Emitted when a layer needs to be replaced
+ \param oldId old layer ID
+ \param source URI of the layer
+ \param name of the layer
+ \param provider key
+%End
+
 
     void progress( int, int );
 %Docstring

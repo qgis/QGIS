@@ -39,7 +39,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools.postgis import uri_from_name, GeoDB
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 
 class Ogr2OgrTableToPostGisList(GdalAlgorithm):
@@ -77,6 +76,8 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.DB_CONNECTIONS = self.dbConnectionNames()
         self.addParameter(ParameterSelection(self.DATABASE,
                                              self.tr('Database (connection name)'), self.DB_CONNECTIONS))
@@ -131,7 +132,7 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         GdalAlgorithm.processAlgorithm(parameters, self, context)
         self.processing = False
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
         uri = uri_from_name(connection)
         if self.processing:
@@ -139,7 +140,7 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
             uri = GeoDB(uri=uri).uri
 
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
         shapeEncoding = self.getParameterValue(self.SHAPE_ENCODING)
         schema = str(self.getParameterValue(self.SCHEMA))
         table = str(self.getParameterValue(self.TABLE))
@@ -174,7 +175,7 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         arguments.append('"')
         arguments.append(ogrLayer)
         arguments.append('-nlt NONE')
-        arguments.append(ogrLayerName(inLayer))
+        arguments.append(GdalUtils.ogrLayerName(inLayer))
         if launder:
             arguments.append(launderstring)
         if append:
@@ -188,7 +189,7 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         elif primary_key is not None:
             arguments.append("-lco FID=" + primary_key)
         if len(table) == 0:
-            table = ogrLayerName(inLayer).lower()
+            table = GdalUtils.ogrLayerName(inLayer).lower()
         if schema:
             table = '{}.{}'.format(schema, table)
         arguments.append('-nln')

@@ -320,7 +320,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
     {
       if ( provider->doesStrictFeatureTypeCheck() )
       {
-        for ( QgsFeature f : mAddedFeatures )
+        for ( const auto &f : qgis::as_const( mAddedFeatures ) )
         {
           if ( ( ! f.hasGeometry() ) ||
                ( f.geometry().wkbType() == provider->wkbType() ) )
@@ -456,7 +456,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
       attributeChangesOk = false;   // don't try attribute updates - they'll fail.
     }
 
-    for ( int i = 0; i < qMin( oldFields.count(), newFields.count() ); ++i )
+    for ( int i = 0; i < std::min( oldFields.count(), newFields.count() ); ++i )
     {
       QgsField oldField = oldFields.at( i );
       QgsField newField = newFields.at( i );
@@ -770,7 +770,7 @@ void QgsVectorLayerEditBuffer::handleAttributeDeleted( int index )
 void QgsVectorLayerEditBuffer::updateAttributeMapIndex( QgsAttributeMap &map, int index, int offset ) const
 {
   QgsAttributeMap updatedMap;
-  for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); ++it )
+  for ( QgsAttributeMap::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
   {
     int attrIndex = it.key();
     updatedMap.insert( attrIndex < index ? attrIndex : attrIndex + offset, it.value() );

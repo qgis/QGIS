@@ -23,6 +23,7 @@
 #include <QLibrary>
 #include <QMap>
 #include <QString>
+#include <memory>
 
 #include "qgis_core.h"
 
@@ -30,7 +31,8 @@ class QgsAuthMethod;
 class QgsAuthMethodMetadata;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
   * A registry / canonical manager of authentication methods.
 
   This is a Singleton class that manages authentication method plugin access.
@@ -63,24 +65,28 @@ class CORE_EXPORT QgsAuthMethodRegistry
     //! Set library directory where to search for plugins
     void setLibraryDirectory( const QDir &path );
 
-    /** Create an instance of the auth method
+    /**
+     * Create an instance of the auth method
         \param authMethodKey identificator of the auth method
         \returns instance of auth method or nullptr on error
      */
-    QgsAuthMethod *authMethod( const QString &authMethodKey );
+    std::unique_ptr< QgsAuthMethod > authMethod( const QString &authMethodKey );
 
-    /** Return the auth method capabilities
+    /**
+     * Return the auth method capabilities
         \param authMethodKey identificator of the auth method
      */
     // int authMethodCapabilities( const QString& authMethodKey ) const;
 
-    /** Return the GUI edit widget associated with the auth method
+    /**
+     * Return the GUI edit widget associated with the auth method
      * \param parent Parent widget
      * \param authMethodKey identificator of the auth method
      */
     QWidget *editWidget( const QString &authMethodKey, QWidget *parent = nullptr );
 
-    /** Get pointer to auth method function
+    /**
+     * Get pointer to auth method function
         \param authMethodKey identificator of the auth method
         \param functionName name of function
         \returns pointer to function or nullptr on error
@@ -89,7 +95,7 @@ class CORE_EXPORT QgsAuthMethodRegistry
                                const QString &functionName );
 
     //! Return the library object associated with an auth method key
-    QLibrary *authMethodLibrary( const QString &authMethodKey ) const;
+    std::unique_ptr< QLibrary > authMethodLibrary( const QString &authMethodKey ) const;
 
     //! Return list of available auth methods by their keys
     QStringList authMethodList() const;

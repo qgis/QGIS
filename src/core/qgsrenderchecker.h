@@ -17,19 +17,20 @@
 #define QGSRENDERCHECKER_H
 
 #include "qgis_core.h"
-#include <qgis.h>
+#include "qgis.h"
 #include <QDir>
 #include <QString>
 #include <QRegExp>
 #include <QList>
 
-#include <qgslogger.h>
-#include <qgsmapsettings.h>
-#include <qgsdartmeasurement.h>
+#include "qgslogger.h"
+#include "qgsmapsettings.h"
+#include "qgsdartmeasurement.h"
 
 class QImage;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This is a helper class for unit tests that need to
  * write an image and compare it to an expected result
  * or render time.
@@ -38,7 +39,10 @@ class CORE_EXPORT QgsRenderChecker
 {
   public:
 
-    QgsRenderChecker();
+    /**
+     * Constructor for QgsRenderChecker.
+     */
+    QgsRenderChecker() = default;
 
     QString controlImagePath() const;
 
@@ -55,13 +59,15 @@ class CORE_EXPORT QgsRenderChecker
     int elapsedTime() { return mElapsedTime; }
     void setElapsedTimeTarget( int target ) { mElapsedTimeTarget = target; }
 
-    /** Base directory name for the control image (with control image path
+    /**
+     * Base directory name for the control image (with control image path
      * suffixed) the path to the image will be constructed like this:
      * controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
      */
     void setControlName( const QString &name );
 
-    /** Prefix where the control images are kept.
+    /**
+     * Prefix where the control images are kept.
      * This will be appended to controlImagePath
      */
     void setControlPathPrefix( const QString &name ) { mControlPathPrefix = name + '/'; }
@@ -84,7 +90,8 @@ class CORE_EXPORT QgsRenderChecker
     //! \since QGIS 2.4
     void setMapSettings( const QgsMapSettings &mapSettings );
 
-    /** Set tolerance for color components used by runTest() and compareImages().
+    /**
+     * Set tolerance for color components used by runTest() and compareImages().
      * Default value is 0.
      * \param colorTolerance is maximum difference for each color component
      * including alpha to be considered correct.
@@ -92,7 +99,8 @@ class CORE_EXPORT QgsRenderChecker
      */
     void setColorTolerance( unsigned int colorTolerance ) { mColorTolerance = colorTolerance; }
 
-    /** Sets the largest allowable difference in size between the rendered and the expected image.
+    /**
+     * Sets the largest allowable difference in size between the rendered and the expected image.
      * \param xTolerance x tolerance in pixels
      * \param yTolerance y tolerance in pixels
      * \since QGIS 2.12
@@ -122,9 +130,10 @@ class CORE_EXPORT QgsRenderChecker
      * \param renderedImageFile to optionally override the output filename
      * \note: make sure to call setExpectedImage and setRenderedImage first.
      */
-    bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = "" );
+    bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = QString() );
 
-    /** Get a list of all the anomalies. An anomaly is a rendered difference
+    /**
+     * Get a list of all the anomalies. An anomaly is a rendered difference
      * file where there is some red pixel content (indicating a render check
      * mismatch), but where the output was still acceptable. If the render
      * diff matches one of these anomalies we will still consider it to be
@@ -133,7 +142,8 @@ class CORE_EXPORT QgsRenderChecker
      */
     bool isKnownAnomaly( const QString &diffImageFile );
 
-    /** Draws a checkboard pattern for image backgrounds, so that opacity is visible
+    /**
+     * Draws a checkboard pattern for image backgrounds, so that opacity is visible
      * without requiring a transparent background for the image
      */
     static void drawBackground( QImage *image );
@@ -165,8 +175,8 @@ class CORE_EXPORT QgsRenderChecker
 
   protected:
     QString mReport;
-    unsigned int mMatchTarget;
-    int mElapsedTime;
+    unsigned int mMatchTarget = 0;
+    int mElapsedTime = 0;
     QString mRenderedImageFile;
     QString mExpectedImageFile;
 
@@ -175,20 +185,21 @@ class CORE_EXPORT QgsRenderChecker
     void emitDashMessage( const QString &name, QgsDartMeasurement::Type type, const QString &value );
 
     QString mControlName;
-    unsigned int mMismatchCount;
-    unsigned int mColorTolerance;
-    int mMaxSizeDifferenceX;
-    int mMaxSizeDifferenceY;
-    int mElapsedTimeTarget;
+    unsigned int mMismatchCount = 0;
+    unsigned int mColorTolerance = 0;
+    int mMaxSizeDifferenceX = 0;
+    int mMaxSizeDifferenceY = 0;
+    int mElapsedTimeTarget = 0;
     QgsMapSettings mMapSettings;
     QString mControlPathPrefix;
     QString mControlPathSuffix;
     QVector<QgsDartMeasurement> mDashMessages;
-    bool mBufferDashMessages;
+    bool mBufferDashMessages = false;
 }; // class QgsRenderChecker
 
 
-/** Compare two WKT strings with some tolerance
+/**
+ * Compare two WKT strings with some tolerance
  * \param a first WKT string
  * \param b second WKT string
  * \param tolerance tolerance to use (optional, defaults to 0.000001)

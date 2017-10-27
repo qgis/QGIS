@@ -16,26 +16,6 @@
 #include "qgsarrowsymbollayer.h"
 
 QgsArrowSymbolLayer::QgsArrowSymbolLayer()
-  : QgsLineSymbolLayer()
-  , mArrowWidth( 1.0 )
-  , mArrowWidthUnit( QgsUnitTypes::RenderMillimeters )
-  , mArrowStartWidth( 1.0 )
-  , mArrowStartWidthUnit( QgsUnitTypes::RenderMillimeters )
-  , mHeadLength( 1.5 )
-  , mHeadLengthUnit( QgsUnitTypes::RenderMillimeters )
-  , mHeadThickness( 1.5 )
-  , mHeadThicknessUnit( QgsUnitTypes::RenderMillimeters )
-  , mHeadType( HeadSingle )
-  , mArrowType( ArrowPlain )
-  , mIsCurved( true )
-  , mIsRepeated( true )
-  , mScaledArrowWidth( 1.0 )
-  , mScaledArrowStartWidth( 1.0 )
-  , mScaledHeadLength( 1.5 )
-  , mScaledHeadThickness( 1.5 )
-  , mScaledOffset( 0.0 )
-  , mComputedHeadType( HeadSingle )
-  , mComputedArrowType( ArrowPlain )
 {
   /* default values */
   setOffset( 0.0 );
@@ -201,7 +181,7 @@ void QgsArrowSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 
 inline qreal euclidian_distance( QPointF po, QPointF pd )
 {
-  return sqrt( ( po.x() - pd.x() ) * ( po.x() - pd.x() ) + ( po.y() - pd.y() ) * ( po.y() - pd.y() ) );
+  return std::sqrt( ( po.x() - pd.x() ) * ( po.x() - pd.x() ) + ( po.y() - pd.y() ) * ( po.y() - pd.y() ) );
 }
 
 QPolygonF straightArrow( QPointF po, QPointF pd,
@@ -355,7 +335,7 @@ bool pointsToCircle( QPointF a, QPointF b, QPointF c, QPointF &center, qreal &ra
   QPointF bc2 = ( b + c ) / 2.0;
 
   // Aligned points
-  if ( fabs( ab.x() * bc.y() - ab.y() * bc.x() ) < 0.001 ) // Empirical threshold for nearly aligned points
+  if ( std::fabs( ab.x() * bc.y() - ab.y() * bc.x() ) < 0.001 ) // Empirical threshold for nearly aligned points
     return false;
 
   // in case AB is horizontal
@@ -377,7 +357,7 @@ bool pointsToCircle( QPointF a, QPointF b, QPointF c, QPointF &center, qreal &ra
     cy = bc2.y() - ( cx - bc2.x() ) * bc.x() / bc.y();
   }
   // Radius
-  radius = sqrt( ( a.x() - cx ) * ( a.x() - cx ) + ( a.y() - cy ) * ( a.y() - cy ) );
+  radius = std::sqrt( ( a.x() - cx ) * ( a.x() - cx ) + ( a.y() - cy ) * ( a.y() - cy ) );
   // Center
   center.setX( cx );
   center.setY( cy );
@@ -387,7 +367,7 @@ bool pointsToCircle( QPointF a, QPointF b, QPointF c, QPointF &center, qreal &ra
 QPointF circlePoint( QPointF center, qreal radius, qreal angle )
 {
   // Y is oriented downward
-  return QPointF( cos( -angle ) * radius + center.x(), sin( -angle ) * radius + center.y() );
+  return QPointF( std::cos( -angle ) * radius + center.x(), std::sin( -angle ) * radius + center.y() );
 }
 
 void pathArcTo( QPainterPath &path, QPointF circleCenter, qreal circleRadius, qreal angle_o, qreal angle_d, int direction )
@@ -438,8 +418,8 @@ void spiralArcTo( QPainterPath &path, QPointF center, qreal startAngle, qreal st
   else
   {
     // angles in the new circle
-    qreal a1 = atan2( cCenter.y() - A.y(), A.x() - cCenter.x() );
-    qreal a2 = atan2( cCenter.y() - I2.y(), I2.x() - cCenter.x() );
+    qreal a1 = std::atan2( cCenter.y() - A.y(), A.x() - cCenter.x() );
+    qreal a2 = std::atan2( cCenter.y() - I2.y(), I2.x() - cCenter.x() );
     pathArcTo( path, cCenter, cRadius, a1, a2, direction );
   }
 
@@ -452,8 +432,8 @@ void spiralArcTo( QPainterPath &path, QPointF center, qreal startAngle, qreal st
   else
   {
     // angles in the new circle
-    qreal a1 = atan2( cCenter.y() - I2.y(), I2.x() - cCenter.x() );
-    qreal a2 = atan2( cCenter.y() - B.y(), B.x() - cCenter.x() );
+    qreal a1 = std::atan2( cCenter.y() - I2.y(), I2.x() - cCenter.x() );
+    qreal a2 = std::atan2( cCenter.y() - B.y(), B.x() - cCenter.x() );
     pathArcTo( path, cCenter, cRadius, a1, a2, direction );
   }
 }
@@ -473,9 +453,9 @@ QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd,
   }
 
   // angles of each point
-  qreal angle_o = clampAngle( atan2( circleCenter.y() - po.y(), po.x() - circleCenter.x() ) );
-  qreal angle_m = clampAngle( atan2( circleCenter.y() - pm.y(), pm.x() - circleCenter.x() ) );
-  qreal angle_d = clampAngle( atan2( circleCenter.y() - pd.y(), pd.x() - circleCenter.x() ) );
+  qreal angle_o = clampAngle( std::atan2( circleCenter.y() - po.y(), po.x() - circleCenter.x() ) );
+  qreal angle_m = clampAngle( std::atan2( circleCenter.y() - pm.y(), pm.x() - circleCenter.x() ) );
+  qreal angle_d = clampAngle( std::atan2( circleCenter.y() - pd.y(), pd.x() - circleCenter.x() ) );
 
   // arc direction : 1 = counter-clockwise, -1 = clockwise
   int direction = clampAngle( angle_m - angle_o ) < clampAngle( angle_m - angle_d ) ? 1 : -1;
@@ -493,9 +473,9 @@ QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd,
 
   qreal length = euclidian_distance( po, pd );
   // for close points and deltaAngle < 180, draw a straight line
-  if ( fabs( deltaAngle ) < M_PI && ( ( ( headType == QgsArrowSymbolLayer::HeadSingle ) && ( length < headWidth ) ) ||
-                                      ( ( headType == QgsArrowSymbolLayer::HeadReversed ) && ( length < headWidth ) ) ||
-                                      ( ( headType == QgsArrowSymbolLayer::HeadDouble ) && ( length < 2 * headWidth ) ) ) )
+  if ( std::fabs( deltaAngle ) < M_PI && ( ( ( headType == QgsArrowSymbolLayer::HeadSingle ) && ( length < headWidth ) ) ||
+       ( ( headType == QgsArrowSymbolLayer::HeadReversed ) && ( length < headWidth ) ) ||
+       ( ( headType == QgsArrowSymbolLayer::HeadDouble ) && ( length < 2 * headWidth ) ) ) )
   {
     return straightArrow( po, pd, startWidth, width, headWidth, headHeight, headType, arrowType, offset );
   }
@@ -506,7 +486,7 @@ QPolygonF curvedArrow( QPointF po, QPointF pm, QPointF pd,
   pm = circlePoint( circleCenter, circleRadius, angle_m );
   pd = circlePoint( circleCenter, circleRadius, angle_d );
 
-  qreal headAngle = direction * atan( headWidth / circleRadius );
+  qreal headAngle = direction * std::atan( headWidth / circleRadius );
 
   QPainterPath path;
 
@@ -802,7 +782,7 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
 
 void QgsArrowSymbolLayer::setColor( const QColor &c )
 {
-  if ( mSymbol.get() )
+  if ( mSymbol )
     mSymbol->setColor( c );
 
   mColor = c;

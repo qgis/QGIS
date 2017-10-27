@@ -56,7 +56,7 @@ class ZonalStatistics(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'zonalstats.png'))
 
     def group(self):
-        return self.tr('Raster tools')
+        return self.tr('Raster analysis')
 
     def __init__(self):
         super().__init__()
@@ -106,7 +106,7 @@ class ZonalStatistics(QgisAlgorithm):
         return 'zonalstatistics'
 
     def displayName(self):
-        return self.tr('Zonal Statistics')
+        return self.tr('Zonal statistics')
 
     def prepareAlgorithm(self, parameters, context, feedback):
         self.bandNumber = self.parameterAsInt(parameters, self.RASTER_BAND, context)

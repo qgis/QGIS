@@ -23,13 +23,6 @@
 #include <QNetworkReply>
 #include <QTextCodec>
 
-QgsNetworkContentFetcher::QgsNetworkContentFetcher()
-  : mReply( nullptr )
-  , mContentLoaded( false )
-{
-
-}
-
 QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
 {
   if ( mReply && mReply->isRunning() )

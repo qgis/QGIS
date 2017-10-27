@@ -27,7 +27,8 @@
 class QgsVectorLayer;
 class QPaintEvent;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A class for drawing transient features (e.g. digitizing lines) on the map.
  *
  * The QgsRubberBand class provides a transparent overlay widget
@@ -194,7 +195,8 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      */
     void addPoint( const QgsPointXY &p, bool doUpdate = true, int geometryIndex = 0 );
 
-    /** Ensures that a polygon geometry is closed and that the last vertex equals the
+    /**
+     * Ensures that a polygon geometry is closed and that the last vertex equals the
      * first vertex.
      * \param doUpdate set to true to update the map canvas immediately
      * \param geometryIndex index of the feature part (in case of multipart geometries)
@@ -257,11 +259,21 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * of the rubberband explicitly by calling reset() or setToGeometry() with appropriate arguments.
      * setToGeometry() is also to be preferred for backwards-compatibility.
      *
-     *  \param geom the geometry object. Will be treated as a collection of vertices.
+     *  \param geometry the geometry object. Will be treated as a collection of vertices.
      *  \param layer the layer containing the feature, used for coord transformation to map
      *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
      */
-    void addGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
+    void addGeometry( const QgsGeometry &geometry, QgsVectorLayer *layer );
+
+    /**
+     * Adds a \a geometry to the rubberband.
+     *
+     * If \a crs is specified, the geometry will be automatically reprojected from \a crs
+     * to the canvas CRS.
+     *
+     * \since QGIS 3.0
+     */
+    void addGeometry( const QgsGeometry &geometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
      * Adds translation to original coordinates (all in map coordinates)
@@ -310,7 +322,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      *  \param p The QPainter object
      *  \param pts A list of points used to draw the shape
      */
-    void drawShape( QPainter *p, QVector<QPointF> &pts );
+    void drawShape( QPainter *p, const QVector<QPointF> &pts );
 
     //! Recalculates needed rectangle
     void updateRect();
@@ -321,22 +333,22 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     QPen mSecondaryPen;
 
     //! The size of the icon for points.
-    int mIconSize;
+    int mIconSize = 5;
 
     //! Icon to be shown.
-    IconType mIconType;
+    IconType mIconType = ICON_CIRCLE;
 
     /**
      * Nested lists used for multitypes
      */
     QList< QList <QgsPointXY> > mPoints;
-    QgsWkbTypes::GeometryType mGeometryType;
-    double mTranslationOffsetX;
-    double mTranslationOffsetY;
+    QgsWkbTypes::GeometryType mGeometryType = QgsWkbTypes::PolygonGeometry;
+    double mTranslationOffsetX = 0.0;
+    double mTranslationOffsetY = 0.0;
 
     QgsRubberBand();
 
-    static QgsPolyline getPolyline( const QList<QgsPointXY> &points );
+    static QgsPolylineXY getPolyline( const QList<QgsPointXY> &points );
 
 };
 

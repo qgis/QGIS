@@ -23,23 +23,22 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
 {
   setupUi( this );
   setupButtons( buttonBox );
-  mQgsFileWidget->setFilter( QgsProviderRegistry::instance()->fileRasterFilters() );
-  connect( mQgsFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
+  mFileWidget->setDialogTitle( tr( "Open GDAL Supported Raster Dataset(s)" ) );
+  mFileWidget->setFilter( QgsProviderRegistry::instance()->fileRasterFilters() );
+  mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
     mRasterPath = path;
     emit enableButtons( ! mRasterPath.isEmpty() );
   } );
 }
 
-QgsGdalSourceSelect::~QgsGdalSourceSelect()
-{
-
-}
-
 void QgsGdalSourceSelect::addButtonClicked()
 {
-  QFileInfo baseName( mRasterPath );
-  emit addRasterLayer( mRasterPath, baseName.baseName(), QStringLiteral( "gdal" ) );
+  Q_FOREACH ( const QString &path, QgsFileWidget::splitFilePaths( mRasterPath ) )
+  {
+    emit addRasterLayer( path, QFileInfo( path ).baseName(), QStringLiteral( "gdal" ) );
+  }
 }
 
 QGISEXTERN QgsGdalSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )

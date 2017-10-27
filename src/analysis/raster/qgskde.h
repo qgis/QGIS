@@ -17,6 +17,7 @@
 #define QGSKDE_H
 
 #include "qgsrectangle.h"
+#include "qgsogrutils.h"
 #include <QString>
 
 // GDAL includes
@@ -26,7 +27,6 @@
 #include "qgis_analysis.h"
 
 class QgsFeatureSource;
-class QProgressDialog;
 class QgsFeature;
 
 
@@ -101,6 +101,11 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
      */
     QgsKernelDensityEstimation( const Parameters &parameters, const QString &outputFile, const QString &outputFormat );
 
+    //! QgsKernelDensityEstimation cannot be copied.
+    QgsKernelDensityEstimation( const QgsKernelDensityEstimation &other ) = delete;
+    //! QgsKernelDensityEstimation cannot be copied.
+    QgsKernelDensityEstimation &operator=( const QgsKernelDensityEstimation &other ) = delete;
+
     /**
      * Runs the KDE calculation across the whole layer at once. Either call this method, or manually
      * call run(), addFeature() and finalise() separately.
@@ -163,12 +168,16 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
 
     int mBufferSize;
 
-    GDALDatasetH mDatasetH;
+    gdal::dataset_unique_ptr mDatasetH;
     GDALRasterBandH mRasterBandH;
 
     //! Creates a new raster layer and initializes it to the no data value
     bool createEmptyLayer( GDALDriverH driver, const QgsRectangle &bounds, int rows, int columns ) const;
     int radiusSizeInPixels( double radius ) const;
+
+#ifdef SIP_RUN
+    QgsKernelDensityEstimation( const QgsKernelDensityEstimation &other );
+#endif
 };
 
 

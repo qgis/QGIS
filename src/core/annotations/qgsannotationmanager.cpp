@@ -62,7 +62,7 @@ bool QgsAnnotationManager::removeAnnotation( QgsAnnotation *annotation )
 
 void QgsAnnotationManager::clear()
 {
-  Q_FOREACH ( QgsAnnotation *a, mAnnotations )
+  for ( auto *a : qgis::as_const( mAnnotations ) )
   {
     removeAnnotation( a );
   }
@@ -76,7 +76,7 @@ QList<QgsAnnotation *> QgsAnnotationManager::annotations() const
 QList<QgsAnnotation *> QgsAnnotationManager::cloneAnnotations() const
 {
   QList<QgsAnnotation *> results;
-  Q_FOREACH ( const QgsAnnotation *a, mAnnotations )
+  for ( const auto *a : qgis::as_const( mAnnotations ) )
   {
     results << a->clone();
   }

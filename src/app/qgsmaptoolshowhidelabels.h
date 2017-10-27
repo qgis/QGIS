@@ -64,8 +64,7 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
     bool selectedLabelFeatures( QgsVectorLayer *vlayer,
                                 QList<QgsLabelPosition> &listPos );
 
-    //! Show label or diagram with feature ID
-    bool showHide( QgsVectorLayer *vl, const bool show );
+    bool showHide( const QgsLabelPosition &pos, bool show );
 };
 
 #endif // QGSMAPTOOLSHOWHIDELABELS_H

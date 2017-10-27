@@ -43,7 +43,7 @@ class QgsGeomColumnTypeThread : public QThread
     void stop();
 
   private:
-    QgsGeomColumnTypeThread() {}
+    QgsGeomColumnTypeThread() = default;
 
     QgsPostgresConn *mConn = nullptr;
     QString mName;

@@ -47,7 +47,6 @@
 ///@cond PRIVATE
 
 QgsGraduatedSymbolRendererModel::QgsGraduatedSymbolRendererModel( QObject *parent ) : QAbstractItemModel( parent )
-  , mRenderer( nullptr )
   , mMimeFormat( QStringLiteral( "application/x-qgsgraduatedsymbolrendererv2model" ) )
 {
 }
@@ -423,8 +422,7 @@ QgsExpressionContext QgsGraduatedSymbolRendererWidget::createExpressionContext()
 
 QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-  , mRenderer( nullptr )
-  , mModel( nullptr )
+
 {
 
 
@@ -441,6 +439,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   // setup user interface
   setupUi( this );
+  connect( methodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mModel = new QgsGraduatedSymbolRendererModel( this );
@@ -458,7 +457,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
 
   // set project default color ramp
   QString defaultColorRamp = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QLatin1String( "" ) );
-  if ( defaultColorRamp != QLatin1String( "" ) )
+  if ( !defaultColorRamp.isEmpty() )
   {
     btnColorRamp->setColorRampFromName( defaultColorRamp );
   }
@@ -502,7 +501,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   connect( btnGraduatedAdd, &QAbstractButton::clicked, this, &QgsGraduatedSymbolRendererWidget::addClass );
   connect( cbxLinkBoundaries, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::toggleBoundariesLink );
 
-  connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsGraduatedSymbolRendererWidget::on_mSizeUnitWidget_changed );
+  connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed );
 
   connectUpdateHandlers();
 
@@ -530,7 +529,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   mExpressionWidget->registerExpressionContextGenerator( this );
 }
 
-void QgsGraduatedSymbolRendererWidget::on_mSizeUnitWidget_changed()
+void QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed()
 {
   if ( !mGraduatedSymbol ) return;
   mGraduatedSymbol->setOutputUnit( mSizeUnitWidget->unit() );
@@ -667,7 +666,7 @@ void QgsGraduatedSymbolRendererWidget::graduatedColumnChanged( const QString &fi
   mRenderer->setClassAttribute( field );
 }
 
-void QgsGraduatedSymbolRendererWidget::on_methodComboBox_currentIndexChanged( int idx )
+void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int idx )
 {
   toggleMethodWidgets( idx );
   if ( idx == 0 )
@@ -1110,7 +1109,7 @@ QgsSymbol *QgsGraduatedSymbolRendererWidget::findSymbolForRange( double lowerBou
   int decimalPlaces = mRenderer->labelFormat().precision() + 2;
   if ( decimalPlaces < 0 )
     decimalPlaces = 0;
-  double precision = 1.0 / qPow( 10, decimalPlaces );
+  double precision = 1.0 / std::pow( 10, decimalPlaces );
 
   for ( QgsRangeList::const_iterator it = ranges.begin(); it != ranges.end(); ++it )
   {
@@ -1181,7 +1180,7 @@ void QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend()
   QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {
-    connect( panel, &QgsPanelWidget::widgetChanged, [ = ]
+    connect( panel, &QgsPanelWidget::widgetChanged, this, [ = ]
     {
       mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
       emit widgetChanged();

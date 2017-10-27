@@ -33,7 +33,8 @@ class QgsSpinBoxLineEdit;
 #endif
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsSpinBox is a spin box with a clear button that will set the value to the defined clear value.
  * The clear value can be either the minimum or the maiximum value of the spin box or a custom value.
  * This value can then be handled by a special value text.
@@ -65,31 +66,36 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
       CustomValue, //!< Reset value to custom value (see setClearValue() )
     };
 
-    /** Constructor for QgsDoubleSpinBox.
+    /**
+     * Constructor for QgsDoubleSpinBox.
      * \param parent parent widget
      */
     explicit QgsDoubleSpinBox( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
-    /** Sets whether the widget will show a clear button. The clear button
+    /**
+     * Sets whether the widget will show a clear button. The clear button
      * allows users to reset the widget to a default or empty state.
      * \param showClearButton set to true to show the clear button, or false to hide it
      * \see showClearButton()
      */
     void setShowClearButton( const bool showClearButton );
 
-    /** Returns whether the widget is showing a clear button.
+    /**
+     * Returns whether the widget is showing a clear button.
      * \see setShowClearButton()
      */
     bool showClearButton() const {return mShowClearButton;}
 
-    /** Sets if the widget will allow entry of simple expressions, which are
+    /**
+     * Sets if the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
      * \param enabled set to true to allow expression entry
      * \since QGIS 2.7
      */
     void setExpressionsEnabled( const bool enabled );
 
-    /** Returns whether the widget will allow entry of simple expressions, which are
+    /**
+     * Returns whether the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
      * \returns true if spin box allows expression entry
      * \since QGIS 2.7
@@ -114,7 +120,8 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      */
     void setClearValueMode( ClearValueMode mode, const QString &clearValueText = QString() );
 
-    /** Returns the value used when clear() is called.
+    /**
+     * Returns the value used when clear() is called.
      * \see setClearValue()
      */
     double clearValue() const;
@@ -136,11 +143,11 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
 
     QgsSpinBoxLineEdit *mLineEdit = nullptr;
 
-    bool mShowClearButton;
-    ClearValueMode mClearValueMode;
-    double mCustomClearValue;
+    bool mShowClearButton = true;
+    ClearValueMode mClearValueMode = MinimumValue;
+    double mCustomClearValue = 0.0;
 
-    bool mExpressionsEnabled;
+    bool mExpressionsEnabled = true;
 
     QString stripped( const QString &originalText ) const;
 };

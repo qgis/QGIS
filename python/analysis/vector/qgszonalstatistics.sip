@@ -44,7 +44,7 @@ class QgsZonalStatistics
 
     QgsZonalStatistics( QgsVectorLayer *polygonLayer,
                         QgsRasterLayer *rasterLayer,
-                        const QString &attributePrefix = "",
+                        const QString &attributePrefix = QString(),
                         int rasterBand = 1,
                         QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
 %Docstring
@@ -62,6 +62,7 @@ class QgsZonalStatistics
 };
 
 QFlags<QgsZonalStatistics::Statistic> operator|(QgsZonalStatistics::Statistic f1, QFlags<QgsZonalStatistics::Statistic> f2);
+
 
 
 /************************************************************************

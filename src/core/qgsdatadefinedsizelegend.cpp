@@ -20,9 +20,6 @@
 #include "qgssymbollayerutils.h"
 #include "qgsxmlutils.h"
 
-QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend()
-{
-}
 
 QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend( const QgsDataDefinedSizeLegend &other )
   : mType( other.mType )
@@ -156,9 +153,9 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   // make sure we draw bigger symbols first
   std::sort( classes.begin(), classes.end(), []( const SizeClass & a, const SizeClass & b ) { return a.size > b.size; } );
 
-  int hLengthLine = qRound( context.convertToPainterUnits( hLengthLineMM, QgsUnitTypes::RenderMillimeters ) );
-  int hSpaceLineText = qRound( context.convertToPainterUnits( hSpaceLineTextMM, QgsUnitTypes::RenderMillimeters ) );
-  int dpm = qRound( context.scaleFactor() * 1000 );  // scale factor = dots per millimeter
+  int hLengthLine = std::round( context.convertToPainterUnits( hLengthLineMM, QgsUnitTypes::RenderMillimeters ) );
+  int hSpaceLineText = std::round( context.convertToPainterUnits( hSpaceLineTextMM, QgsUnitTypes::RenderMillimeters ) );
+  int dpm = std::round( context.scaleFactor() * 1000 );  // scale factor = dots per millimeter
 
   // get font metrics - we need a temporary image just to get the metrics right for the given DPI
   QImage tmpImg( QSize( 1, 1 ), QImage::Format_ARGB32_Premultiplied );
@@ -194,10 +191,10 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
     switch ( mVAlign )
     {
       case AlignCenter:
-        symbolTopY << qRound( outputLargestSize / 2 - outputSymbolSize / 2 );
+        symbolTopY << std::round( outputLargestSize / 2 - outputSymbolSize / 2 );
         break;
       case AlignBottom:
-        symbolTopY << qRound( outputLargestSize - outputSymbolSize );
+        symbolTopY << std::round( outputLargestSize - outputSymbolSize );
         break;
     }
   }
@@ -222,7 +219,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   int totalTextHeight = textBottomY - textTopY;
 
   int fullWidth = outputLargestSize + hLengthLine + hSpaceLineText + maxTextWidth;
-  int fullHeight = qMax( qRound( outputLargestSize ) - textTopY, totalTextHeight );
+  int fullHeight = std::max( static_cast< int >( std::round( outputLargestSize ) ) - textTopY, totalTextHeight );
 
   if ( outputSize )
     *outputSize = QSize( fullWidth, fullHeight );
@@ -292,8 +289,8 @@ QImage QgsDataDefinedSizeLegend::collapsedLegendImage( QgsRenderContext &context
   QSize contentSize;
   drawCollapsedLegend( context, &contentSize );
 
-  int padding = qRound( context.convertToPainterUnits( paddingMM, QgsUnitTypes::RenderMillimeters ) );
-  int dpm = qRound( context.scaleFactor() * 1000 );  // scale factor = dots per millimeter
+  int padding = std::round( context.convertToPainterUnits( paddingMM, QgsUnitTypes::RenderMillimeters ) );
+  int dpm = std::round( context.scaleFactor() * 1000 );  // scale factor = dots per millimeter
 
   QImage img( contentSize.width() + padding * 2, contentSize.height() + padding * 2, QImage::Format_ARGB32_Premultiplied );
   img.setDotsPerMeterX( dpm );
@@ -320,18 +317,18 @@ QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegend::readXml( const QDomElement &
   if ( elem.isNull() )
     return nullptr;
   QgsDataDefinedSizeLegend *ddsLegend = new QgsDataDefinedSizeLegend;
-  ddsLegend->setLegendType( elem.attribute( "type" ) == "collapsed" ? LegendCollapsed : LegendSeparated );
-  ddsLegend->setVerticalAlignment( elem.attribute( "valign" ) == "center" ? AlignCenter : AlignBottom );
-  ddsLegend->setTitle( elem.attribute( "title" ) );
+  ddsLegend->setLegendType( elem.attribute( QStringLiteral( "type" ) ) == QLatin1String( "collapsed" ) ? LegendCollapsed : LegendSeparated );
+  ddsLegend->setVerticalAlignment( elem.attribute( QStringLiteral( "valign" ) ) == QLatin1String( "center" ) ? AlignCenter : AlignBottom );
+  ddsLegend->setTitle( elem.attribute( QStringLiteral( "title" ) ) );
 
-  QDomElement elemSymbol = elem.firstChildElement( "symbol" );
+  QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !elemSymbol.isNull() )
   {
     ddsLegend->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( elemSymbol, context ) );
   }
 
   QgsSizeScaleTransformer *transformer = nullptr;
-  QDomElement elemTransformer = elem.firstChildElement( "transformer" );
+  QDomElement elemTransformer = elem.firstChildElement( QStringLiteral( "transformer" ) );
   if ( !elemTransformer.isNull() )
   {
     transformer = new QgsSizeScaleTransformer;
@@ -339,27 +336,27 @@ QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegend::readXml( const QDomElement &
   }
   ddsLegend->setSizeScaleTransformer( transformer );
 
-  QDomElement elemTextStyle = elem.firstChildElement( "text-style" );
+  QDomElement elemTextStyle = elem.firstChildElement( QStringLiteral( "text-style" ) );
   if ( !elemTextStyle.isNull() )
   {
-    QDomElement elemFont = elemTextStyle.firstChildElement( "font" );
+    QDomElement elemFont = elemTextStyle.firstChildElement( QStringLiteral( "font" ) );
     if ( !elemFont.isNull() )
     {
-      ddsLegend->setFont( QFont( elemFont.attribute( "family" ), elemFont.attribute( "size" ).toInt(),
-                                 elemFont.attribute( "weight" ).toInt(), elemFont.attribute( "italic" ).toInt() ) );
+      ddsLegend->setFont( QFont( elemFont.attribute( QStringLiteral( "family" ) ), elemFont.attribute( QStringLiteral( "size" ) ).toInt(),
+                                 elemFont.attribute( QStringLiteral( "weight" ) ).toInt(), elemFont.attribute( QStringLiteral( "italic" ) ).toInt() ) );
     }
-    ddsLegend->setTextColor( QgsSymbolLayerUtils::decodeColor( elemTextStyle.attribute( "color" ) ) );
-    ddsLegend->setTextAlignment( static_cast<Qt::AlignmentFlag>( elemTextStyle.attribute( "align" ).toInt() ) );
+    ddsLegend->setTextColor( QgsSymbolLayerUtils::decodeColor( elemTextStyle.attribute( QStringLiteral( "color" ) ) ) );
+    ddsLegend->setTextAlignment( static_cast<Qt::AlignmentFlag>( elemTextStyle.attribute( QStringLiteral( "align" ) ).toInt() ) );
   }
 
-  QDomElement elemClasses = elem.firstChildElement( "classes" );
+  QDomElement elemClasses = elem.firstChildElement( QStringLiteral( "classes" ) );
   if ( !elemClasses.isNull() )
   {
     QList<SizeClass> classes;
-    QDomElement elemClass = elemClasses.firstChildElement( "class" );
+    QDomElement elemClass = elemClasses.firstChildElement( QStringLiteral( "class" ) );
     while ( !elemClass.isNull() )
     {
-      classes << SizeClass( elemClass.attribute( "size" ).toDouble(), elemClass.attribute( "label" ) );
+      classes << SizeClass( elemClass.attribute( QStringLiteral( "size" ) ).toDouble(), elemClass.attribute( QStringLiteral( "label" ) ) );
       elemClass = elemClass.nextSiblingElement();
     }
     ddsLegend->setClasses( classes );
@@ -372,43 +369,43 @@ void QgsDataDefinedSizeLegend::writeXml( QDomElement &elem, const QgsReadWriteCo
 {
   QDomDocument doc = elem.ownerDocument();
 
-  elem.setAttribute( "type", mType == LegendCollapsed ? "collapsed" : "separated" );
-  elem.setAttribute( "valign", mVAlign == AlignCenter ? "center" : "bottom" );
-  elem.setAttribute( "title", mTitleLabel );
+  elem.setAttribute( QStringLiteral( "type" ), mType == LegendCollapsed ? "collapsed" : "separated" );
+  elem.setAttribute( QStringLiteral( "valign" ), mVAlign == AlignCenter ? "center" : "bottom" );
+  elem.setAttribute( QStringLiteral( "title" ), mTitleLabel );
 
   if ( mSymbol )
   {
-    QDomElement elemSymbol = QgsSymbolLayerUtils::saveSymbol( "source", mSymbol.get(), doc, context );
+    QDomElement elemSymbol = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "source" ), mSymbol.get(), doc, context );
     elem.appendChild( elemSymbol );
   }
 
   if ( mSizeScaleTransformer )
   {
     QDomElement elemTransformer = QgsXmlUtils::writeVariant( mSizeScaleTransformer->toVariant(), doc );
-    elemTransformer.setTagName( "transformer" );
+    elemTransformer.setTagName( QStringLiteral( "transformer" ) );
     elem.appendChild( elemTransformer );
   }
 
-  QDomElement elemFont = doc.createElement( "font" );
-  elemFont.setAttribute( "family", mFont.family() );
-  elemFont.setAttribute( "size", mFont.pointSize() );
-  elemFont.setAttribute( "weight", mFont.weight() );
-  elemFont.setAttribute( "italic", mFont.italic() );
+  QDomElement elemFont = doc.createElement( QStringLiteral( "font" ) );
+  elemFont.setAttribute( QStringLiteral( "family" ), mFont.family() );
+  elemFont.setAttribute( QStringLiteral( "size" ), mFont.pointSize() );
+  elemFont.setAttribute( QStringLiteral( "weight" ), mFont.weight() );
+  elemFont.setAttribute( QStringLiteral( "italic" ), mFont.italic() );
 
-  QDomElement elemTextStyle = doc.createElement( "text-style" );
-  elemTextStyle.setAttribute( "color", QgsSymbolLayerUtils::encodeColor( mTextColor ) );
-  elemTextStyle.setAttribute( "align", static_cast<int>( mTextAlignment ) );
+  QDomElement elemTextStyle = doc.createElement( QStringLiteral( "text-style" ) );
+  elemTextStyle.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mTextColor ) );
+  elemTextStyle.setAttribute( QStringLiteral( "align" ), static_cast<int>( mTextAlignment ) );
   elemTextStyle.appendChild( elemFont );
   elem.appendChild( elemTextStyle );
 
   if ( !mSizeClasses.isEmpty() )
   {
-    QDomElement elemClasses = doc.createElement( "classes" );
+    QDomElement elemClasses = doc.createElement( QStringLiteral( "classes" ) );
     Q_FOREACH ( const SizeClass &sc, mSizeClasses )
     {
-      QDomElement elemClass = doc.createElement( "class" );
-      elemClass.setAttribute( "size", sc.size );
-      elemClass.setAttribute( "label", sc.label );
+      QDomElement elemClass = doc.createElement( QStringLiteral( "class" ) );
+      elemClass.setAttribute( QStringLiteral( "size" ), sc.size );
+      elemClass.setAttribute( QStringLiteral( "label" ), sc.label );
       elemClasses.appendChild( elemClass );
     }
     elem.appendChild( elemClasses );

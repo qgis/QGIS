@@ -34,7 +34,8 @@ class QgsMapRendererQImageJob;
 #include "qgsmapsettings.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A widget that displays an overview map.
  */
 class GUI_EXPORT QgsMapOverviewCanvas : public QWidget

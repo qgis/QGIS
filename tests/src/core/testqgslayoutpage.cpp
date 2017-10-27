@@ -20,6 +20,10 @@
 #include "qgslayoutitemregistry.h"
 #include "qgis.h"
 #include "qgsproject.h"
+#include "qgssymbol.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslinesymbollayer.h"
 #include <QObject>
 #include "qgstest.h"
 
@@ -37,6 +41,8 @@ class TestQgsLayoutPage : public QObject
     void decodePageOrientation();
     void grid();
 
+    void hiddenPages(); //test hidden page boundaries
+
   private:
     QString mReport;
 
@@ -44,7 +50,7 @@ class TestQgsLayoutPage : public QObject
 
 void TestQgsLayoutPage::initTestCase()
 {
-  mReport = "<h1>Layout Page Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Layout Page Tests</h1>\n" );
 }
 
 void TestQgsLayoutPage::cleanupTestCase()
@@ -73,7 +79,7 @@ void TestQgsLayoutPage::itemType()
 {
   QgsProject p;
   QgsLayout l( &p );
-  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
   QCOMPARE( page->type(), static_cast< int >( QgsLayoutItemRegistry::LayoutPage ) );
 }
 
@@ -81,7 +87,7 @@ void TestQgsLayoutPage::pageSize()
 {
   QgsProject p;
   QgsLayout l( &p );
-  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
   page->setPageSize( QgsLayoutSize( 270, 297, QgsUnitTypes::LayoutMeters ) );
   QCOMPARE( page->pageSize().width(), 270.0 );
   QCOMPARE( page->pageSize().height(), 297.0 );
@@ -131,7 +137,7 @@ void TestQgsLayoutPage::grid()
   // test that grid follows page around
   QgsProject p;
   QgsLayout l( &p );
-  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
 
   // should have a grid
   QVERIFY( page->mGrid.get() );
@@ -157,6 +163,34 @@ void TestQgsLayoutPage::grid()
   QCOMPARE( page->mGrid->pos().x(), 0.0 );
   QCOMPARE( page->mGrid->pos().y(), 0.0 );
 
+}
+
+void TestQgsLayoutPage::hiddenPages()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
+  page->setPageSize( QgsLayoutSize( 297, 210, QgsUnitTypes::LayoutMillimeters ) );
+  l.pageCollection()->addPage( page.release() );
+
+#if 0 //TODO
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( Qt::blue );
+  simpleFill->setStrokeColor( Qt::transparent );
+  mComposition->setPageStyleSymbol( fillSymbol );
+  delete fillSymbol;
+#endif
+
+  l.context().setPagesVisible( false );
+#if 0 //TODO
+  QgsCompositionChecker checker( QStringLiteral( "composerpaper_hidden" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
+  bool result = checker.testComposition( mReport );
+  mComposition->setPagesVisible( true );
+  QVERIFY( result );
+#endif
 }
 
 QGSTEST_MAIN( TestQgsLayoutPage )

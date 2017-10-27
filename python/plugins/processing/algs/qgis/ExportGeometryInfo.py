@@ -32,9 +32,11 @@ from qgis.PyQt.QtCore import QVariant
 
 from qgis.core import (QgsCoordinateTransform,
                        QgsField,
+                       QgsFields,
                        QgsWkbTypes,
                        QgsFeatureSink,
                        QgsDistanceArea,
+                       QgsProcessingUtils,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink)
@@ -55,10 +57,10 @@ class ExportGeometryInfo(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'export_geometry.png'))
 
     def tags(self):
-        return self.tr('export,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons').split(',')
+        return self.tr('export,add,information,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons').split(',')
 
     def group(self):
-        return self.tr('Vector table tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -80,7 +82,7 @@ class ExportGeometryInfo(QgisAlgorithm):
         return 'exportaddgeometrycolumns'
 
     def displayName(self):
-        return self.tr('Export/Add geometry columns')
+        return self.tr('Export geometry columns')
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
@@ -89,28 +91,23 @@ class ExportGeometryInfo(QgisAlgorithm):
         wkb_type = source.wkbType()
         fields = source.fields()
 
+        new_fields = QgsFields()
         if QgsWkbTypes.geometryType(wkb_type) == QgsWkbTypes.PolygonGeometry:
-            areaName = vector.createUniqueFieldName('area', fields)
-            fields.append(QgsField(areaName, QVariant.Double))
-            perimeterName = vector.createUniqueFieldName('perimeter', fields)
-            fields.append(QgsField(perimeterName, QVariant.Double))
+            new_fields.append(QgsField('area', QVariant.Double))
+            new_fields.append(QgsField('perimeter', QVariant.Double))
         elif QgsWkbTypes.geometryType(wkb_type) == QgsWkbTypes.LineGeometry:
-            lengthName = vector.createUniqueFieldName('length', fields)
-            fields.append(QgsField(lengthName, QVariant.Double))
+            new_fields.append(QgsField('length', QVariant.Double))
         else:
-            xName = vector.createUniqueFieldName('xcoord', fields)
-            fields.append(QgsField(xName, QVariant.Double))
-            yName = vector.createUniqueFieldName('ycoord', fields)
-            fields.append(QgsField(yName, QVariant.Double))
+            new_fields.append(QgsField('xcoord', QVariant.Double))
+            new_fields.append(QgsField('ycoord', QVariant.Double))
             if QgsWkbTypes.hasZ(source.wkbType()):
                 self.export_z = True
-                zName = vector.createUniqueFieldName('zcoord', fields)
-                fields.append(QgsField(zName, QVariant.Double))
+                new_fields.append(QgsField('zcoord', QVariant.Double))
             if QgsWkbTypes.hasM(source.wkbType()):
                 self.export_m = True
-                zName = vector.createUniqueFieldName('mvalue', fields)
-                fields.append(QgsField(zName, QVariant.Double))
+                new_fields.append(QgsField('mvalue', QVariant.Double))
 
+        fields = QgsProcessingUtils.combineFields(fields, new_fields)
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, wkb_type, source.sourceCrs())
 
@@ -158,7 +155,7 @@ class ExportGeometryInfo(QgisAlgorithm):
     def point_attributes(self, geometry):
         pt = None
         if not geometry.isMultipart():
-            pt = geometry.geometry()
+            pt = geometry.constGet()
         else:
             if geometry.numGeometries() > 0:
                 pt = geometry.geometryN(0)

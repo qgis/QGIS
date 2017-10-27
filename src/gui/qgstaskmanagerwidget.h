@@ -43,7 +43,8 @@ class GUI_EXPORT QgsTaskManagerWidget : public QWidget
 
   public:
 
-    /** Constructor for QgsTaskManagerWidget
+    /**
+     * Constructor for QgsTaskManagerWidget
      * \param manager task manager associated with widget
      * \param parent parent widget
      */
@@ -78,7 +79,8 @@ class GUI_EXPORT QgsTaskManagerFloatingWidget : public QgsFloatingWidget
 
   public:
 
-    /** Constructor for QgsTaskManagerWidget
+    /**
+     * Constructor for QgsTaskManagerWidget
      * \param manager task manager associated with widget
      * \param parent parent widget
      */
@@ -100,7 +102,8 @@ class GUI_EXPORT QgsTaskManagerStatusBarWidget : public QToolButton
 
   public:
 
-    /** Constructor for QgsTaskManagerWidget.
+    /**
+     * Constructor for QgsTaskManagerWidget.
      * \param manager task manager associated with widget
      * \param parent parent widget
      */
@@ -143,7 +146,8 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
       Status = 2,
     };
 
-    /** Constructor for QgsTaskManagerModel
+    /**
+     * Constructor for QgsTaskManagerModel
      * \param manager task manager for model
      * \param parent parent object
      */
@@ -200,7 +204,8 @@ class GUI_EXPORT QgsTaskStatusWidget : public QWidget
 
   public:
 
-    /** Constructor for QgsTaskStatusWidget
+    /**
+     * Constructor for QgsTaskStatusWidget
      * \param parent parent object
      */
     QgsTaskStatusWidget( QWidget *parent = nullptr, QgsTask::TaskStatus status = QgsTask::Queued, bool canCancel = true );
@@ -235,7 +240,7 @@ class GUI_EXPORT QgsTaskStatusWidget : public QWidget
 
     bool mCanCancel;
     QgsTask::TaskStatus mStatus;
-    bool mInside;
+    bool mInside = false;
 };
 
 ///@endcond

@@ -27,7 +27,6 @@ class QgsMapCanvas : QGraphicsView
 %TypeHeaderCode
 #include "qgsmapcanvas.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsMapCanvas *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapCanvas;
@@ -45,6 +44,7 @@ Constructor
 
     double magnificationFactor() const;
 %Docstring
+ Returns the magnification factor
 .. versionadded:: 2.16
  :rtype: float
 %End
@@ -66,12 +66,14 @@ Constructor
 
     const QgsMapSettings &mapSettings() const /KeepReference/;
 %Docstring
+ Get access to properties used for map rendering
 .. versionadded:: 2.4
  :rtype: QgsMapSettings
 %End
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
+ sets destination coordinate reference system
 .. versionadded:: 2.4
 %End
 
@@ -83,28 +85,33 @@ Constructor
 
     const QgsLabelingResults *labelingResults() const;
 %Docstring
+ Get access to the labeling results (may be null)
 .. versionadded:: 2.4
  :rtype: QgsLabelingResults
 %End
 
     void setCachingEnabled( bool enabled );
 %Docstring
+ Set whether to cache images of rendered layers
 .. versionadded:: 2.4
 %End
 
     bool isCachingEnabled() const;
 %Docstring
+ Check whether images of rendered layers are curerently being cached
 .. versionadded:: 2.4
  :rtype: bool
 %End
 
     void clearCache();
 %Docstring
+ Make sure to remove any rendered images from cache (does nothing if cache is not enabled)
 .. versionadded:: 2.4
 %End
 
     void refreshAllLayers();
 %Docstring
+ Reload all layers, clear the cache and refresh the canvas
 .. versionadded:: 2.9
 %End
 
@@ -121,22 +128,26 @@ Constructor
 
     void setParallelRenderingEnabled( bool enabled );
 %Docstring
+ Set whether the layers are rendered in parallel or sequentially
 .. versionadded:: 2.4
 %End
 
     bool isParallelRenderingEnabled() const;
 %Docstring
+ Check whether the layers are rendered in parallel or sequentially
 .. versionadded:: 2.4
  :rtype: bool
 %End
 
     void setMapUpdateInterval( int timeMilliseconds );
 %Docstring
+ Set how often map preview should be updated while it is being rendered (in milliseconds)
 .. versionadded:: 2.4
 %End
 
     int mapUpdateInterval() const;
 %Docstring
+ Find out how often map preview should be updated while it is being rendered (in milliseconds)
 .. versionadded:: 2.4
  :rtype: int
 %End
@@ -172,22 +183,26 @@ Set the extent of the map canvas
 
     double rotation() const;
 %Docstring
+ Get the current map canvas rotation in clockwise degrees
 .. versionadded:: 2.8
  :rtype: float
 %End
 
     void setRotation( double degrees );
 %Docstring
+ Set the rotation of the map canvas in clockwise degrees
 .. versionadded:: 2.8
 %End
 
     void setCenter( const QgsPointXY &center );
 %Docstring
+ Set the center of the map canvas, in geographical coordinates
 .. versionadded:: 2.8
 %End
 
     QgsPointXY center() const;
 %Docstring
+ Get map center, in geographical coordinates
 .. versionadded:: 2.8
  :rtype: QgsPointXY
 %End
@@ -234,7 +249,41 @@ Zoom to the next extent (view)
 Pan to the selected features of current (vector) layer keeping same extent.
 %End
 
-    void setMapTool( QgsMapTool *mapTool );
+    void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids,
+                          const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
+                          int flashes = 3, int duration = 500 );
+%Docstring
+ Causes a set of features with matching ``ids`` from a vector ``layer`` to flash
+ within the canvas.
+
+ The ``startColor`` and ``endColor`` can be specified, along with the number of
+ ``flashes`` and ``duration`` of each flash (in milliseconds).
+
+.. note::
+
+   If the features or geometries are already available, flashGeometries() is much more efficient.
+
+.. versionadded:: 3.0
+.. seealso:: flashGeometries()
+%End
+
+    void flashGeometries( const QList< QgsGeometry > &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+                          const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
+                          int flashes = 3, int duration = 500 );
+%Docstring
+ Causes a set of ``geometries`` to flash within the canvas.
+
+ If ``crs`` is a valid coordinate reference system, the geometries will be automatically
+ transformed from this CRS to the canvas CRS.
+
+ The ``startColor`` and ``endColor`` can be specified, along with the number of
+ ``flashes`` and ``duration`` of each flash (in milliseconds).
+
+.. versionadded:: 3.0
+.. seealso:: flashFeatureIds()
+%End
+
+    void setMapTool( QgsMapTool *mapTool, bool clean = false );
 %Docstring
  Sets the map tool currently being used on the canvas
 %End
@@ -266,7 +315,15 @@ Read property of QColor bgColor.
 
     void setSelectionColor( const QColor &color );
 %Docstring
+ Set color of selected vector features
 .. versionadded:: 2.4
+%End
+
+    QColor selectionColor() const;
+%Docstring
+ Returns color for selected features
+.. versionadded:: 3.0
+ :rtype: QColor
 %End
 
     void updateScale();
@@ -412,7 +469,8 @@ set wheel zoom factor (should be greater than 1)
 
     void zoomByFactor( double scaleFactor, const QgsPointXY *center = 0 );
 %Docstring
-If point is given, re-center on it
+ Zoom with the factor supplied. Factor > 1 zooms out, interval (0,1) zooms in
+ If point is given, re-center on it
 %End
 
     void zoomWithCenter( int x, int y, bool zoomIn );
@@ -422,11 +480,14 @@ Zooms in/out with a given center
 
     void zoomToFeatureExtent( QgsRectangle &rect );
 %Docstring
-and does a pan if rect is empty (point extent)
+ Zooms to feature extent. Adds a small margin around the extent
+ and does a pan if rect is empty (point extent)
 %End
 
     bool scaleLocked() const;
 %Docstring
+ Returns whether the scale is locked, so zooming can be performed using magnication.
+.. versionadded:: 2.16
 .. seealso:: setScaleLocked()
  :rtype: bool
 %End
@@ -593,6 +654,27 @@ returns last position of mouse cursor
  :rtype: QgsLabelingEngineSettings
 %End
 
+    bool previewJobsEnabled() const;
+%Docstring
+ Returns true if canvas map preview jobs (low priority render jobs which render portions
+ of the view just outside of the canvas extent, to allow preview of these
+ out-of-canvas areas when panning or zooming out the map) are enabled
+ for the canvas.
+.. seealso:: setPreviewJobsEnabled()
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void setPreviewJobsEnabled( bool enabled );
+%Docstring
+ Sets whether canvas map preview jobs (low priority render jobs which render portions
+ of the view just outside of the canvas extent, to allow preview of these
+ out-of-canvas areas when panning or zooming out the map) are ``enabled``
+ for the canvas.
+.. seealso:: previewJobsEnabled()
+.. versionadded:: 3.0
+%End
+
   public slots:
 
     void refresh();
@@ -631,6 +713,7 @@ This slot is connected to the layer's CRS change
 
     void stopRendering();
 %Docstring
+ stop rendering (if there is any right now)
 .. versionadded:: 2.4
 %End
 
@@ -651,11 +734,16 @@ ask user about datum transformation
 
     void setMagnificationFactor( double factor );
 %Docstring
+ Sets the factor of magnification to apply to the map canvas. Indeed, we
+ increase/decrease the DPI of the map settings according to this factor
+ in order to render marker point, labels, ... bigger.
 .. versionadded:: 2.16
 %End
 
     void setScaleLocked( bool isLocked );
 %Docstring
+ Lock the scale, so zooming can be performed using magnication
+.. versionadded:: 2.16
 .. seealso:: scaleLocked()
 %End
 
@@ -691,17 +779,28 @@ Emitted when the extents of the map change
 
     void rotationChanged( double );
 %Docstring
+ Emitted when the rotation of the map changes
 .. versionadded:: 2.8
 %End
 
     void magnificationChanged( double );
 %Docstring
+ Emitted when the scale of the map changes
 .. versionadded:: 2.16
 %End
 
+    void canvasColorChanged();
+%Docstring
+ Emitted when canvas background color changes
+.. versionadded:: 3.0
+%End
+
+
     void renderComplete( QPainter * );
 %Docstring
-- additional drawing shall be done directly within the renderer job or independently as a map canvas item
+ TODO: deprecate when decorations are reimplemented as map canvas items
+ - anything related to rendering progress is not visible outside of map canvas
+ - additional drawing shall be done directly within the renderer job or independently as a map canvas item
 %End
 
     void mapCanvasRefreshed();
@@ -752,16 +851,19 @@ Emitted when zoom next status changed
 
     void destinationCrsChanged();
 %Docstring
+ Emitted when map CRS has changed
 .. versionadded:: 2.4
 %End
 
     void currentLayerChanged( QgsMapLayer *layer );
 %Docstring
+ Emitted when the current layer is changed
 .. versionadded:: 2.8
 %End
 
     void layerStyleOverridesChanged();
 %Docstring
+ Emitted when the configuration of overridden layer styles changes
 .. versionadded:: 2.12
 %End
 
@@ -866,7 +968,6 @@ called on resize or changed extent to notify canvas items to change their rectan
 %End
 
 }; // class QgsMapCanvas
-
 
 
 /************************************************************************

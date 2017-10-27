@@ -59,7 +59,7 @@ class PointsToPaths(QgisAlgorithm):
     OUTPUT_TEXT_DIR = 'OUTPUT_TEXT_DIR'
 
     def group(self):
-        return self.tr('Vector creation tools')
+        return self.tr('Vector creation')
 
     def __init__(self):
         super().__init__()
@@ -133,7 +133,7 @@ class PointsToPaths(QgisAlgorithm):
             if not f.hasGeometry():
                 continue
 
-            point = f.geometry().geometry().clone()
+            point = f.geometry().constGet().clone()
             if group_field_index >= 0:
                 group = f.attributes()[group_field_index]
             else:

@@ -20,9 +20,9 @@ email                : hugo dot mercier at oslandia dot com
 #define QGSVIRTUAL_LAYER_SOURCE_SELECT_H
 
 #include "ui_qgsvirtuallayersourceselectbase.h"
-#include <qgis.h>
+#include "qgis.h"
 #include "qgsguiutils.h"
-#include <qgsvirtuallayerdefinition.h>
+#include "qgsvirtuallayerdefinition.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
 
@@ -53,13 +53,10 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
     void onTableRowChanged( const QModelIndex &current, const QModelIndex &previous );
     void updateLayersList();
 
-  signals:
-    //! Old_id, source, name, provider
-    void replaceVectorLayer( QString, QString, QString, QString );
 
   private:
     QgsVirtualLayerDefinition getVirtualLayerDef();
-    long mSrid;
+    long mSrid = 0;
     QStringList mProviderList;
     QgsEmbeddedLayerSelectDialog *mEmbeddedSelectionDialog = nullptr;
     void addEmbeddedLayer( const QString &name, const QString &provider, const QString &encoding, const QString &source );

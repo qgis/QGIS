@@ -41,7 +41,8 @@ class QgsVectorLayerTools;
 % End
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRelationEditorWidget
  */
 class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
@@ -156,7 +157,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void updateUi();
 
     QgsDualView *mDualView = nullptr;
-    QgsDualView::ViewMode mViewMode;
+    QgsDualView::ViewMode mViewMode = QgsDualView::AttributeEditor;
     QgsGenericFeatureSelectionManager *mFeatureSelectionMgr = nullptr;
     QgsAttributeEditorContext mEditorContext;
     QgsRelation mRelation;
@@ -174,8 +175,8 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QGridLayout *mRelationLayout = nullptr;
     QButtonGroup *mViewModeButtonGroup = nullptr;
 
-    bool mShowLabel;
-    bool mVisible;
+    bool mShowLabel = true;
+    bool mVisible = false;
 };
 
 #endif // QGSRELATIONEDITOR_H

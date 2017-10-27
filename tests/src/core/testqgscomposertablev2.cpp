@@ -38,13 +38,7 @@ class TestQgsComposerTableV2 : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerTableV2()
-      : mComposition( 0 )
-      , mVectorLayer( 0 )
-      , mComposerAttributeTable( 0 )
-      , mFrame1( 0 )
-      , mFrame2( 0 )
-    {}
+    TestQgsComposerTableV2() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

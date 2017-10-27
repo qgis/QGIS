@@ -12,6 +12,7 @@
 
 
 
+
 class QgsDxfExport
 {
 
@@ -27,6 +28,9 @@ class QgsDxfExport
     };
 
     QgsDxfExport();
+%Docstring
+ Constructor for QgsDxfExport.
+%End
 
     void setMapSettings( const QgsMapSettings &settings );
 %Docstring
@@ -123,6 +127,21 @@ class QgsDxfExport
  Retrieve whether layer title (where set) instead of name shall be use
  :return: flag
 .. seealso:: setLayerTitleAsName
+ :rtype: bool
+%End
+
+    void setForce2d( bool force2d );
+%Docstring
+ Force 2d output (eg. to support linewidth in polylines)
+ \param force2d flag
+.. seealso:: force2d
+%End
+
+    bool force2d();
+%Docstring
+ Retrieve whether the output should be forced to 2d
+ :return: flag
+.. seealso:: setForce2d
  :rtype: bool
 %End
 
@@ -238,31 +257,52 @@ class QgsDxfExport
 
     void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
 %Docstring
+ Write line (as a polyline)
 .. versionadded:: 2.15
 %End
 
     void writePoint( const QString &layer, const QColor &color, const QgsPoint &pt ) /PyName=writePointV2/;
 %Docstring
+ Write point
+.. note::
+
+   available in Python bindings as writePointV2
 .. versionadded:: 2.15
 %End
 
     void writeFilledCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius ) /PyName=writeFillCircleV2/;
 %Docstring
+ Write filled circle (as hatch)
+.. note::
+
+   available in Python bindings as writePointV2
 .. versionadded:: 2.15
 %End
 
     void writeCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius, const QString &lineStyleName, double width ) /PyName=writeCircleV2/;
 %Docstring
+ Write circle (as polyline)
+.. note::
+
+   available in Python bindings as writeCircleV2
 .. versionadded:: 2.15
 %End
 
     void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color ) /PyName=writeTextV2/;
 %Docstring
+ Write text (TEXT)
+.. note::
+
+   available in Python bindings as writeTextV2
 .. versionadded:: 2.15
 %End
 
     void writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor &color );
 %Docstring
+ Write mtext (MTEXT)
+.. note::
+
+   available in Python bindings as writeMTextV2
 .. versionadded:: 2.15
 %End
 

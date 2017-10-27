@@ -32,7 +32,6 @@ class QgsRequestHandler
 
  Note that QgsServerRequest and QgsServerResponse MUST live in the same scope
 %End
-    ~QgsRequestHandler();
 
     void setServiceException( const QgsServerException &ex );
 %Docstring

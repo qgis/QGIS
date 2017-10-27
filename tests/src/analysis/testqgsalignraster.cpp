@@ -227,11 +227,11 @@ class TestAlignRaster : public QObject
       QgsCoordinateReferenceSystem outCRS( out.crs() );
       QCOMPARE( outCRS, destCRS );
       QCOMPARE( out.rasterSize(), QSize( 4, 4 ) );
-      // let's stick to integers to keep the test more robust
-      QCOMPARE( qRound( out.cellSize().width() ), 22293 ); // ~ 22293.256065
-      QCOMPARE( qRound( out.cellSize().height() ), 22293 ); // ~ 22293.256065
-      QCOMPARE( qRound( out.gridOffset().x() ), 4327 ); // ~ 4327.168434
-      QCOMPARE( qRound( out.gridOffset().y() ), 637 ); // ~ 637.007990
+      // tolerance of 1 to keep the test more robust
+      QGSCOMPARENEAR( out.cellSize().width(), 22293, 1 ); // ~ 22293.256065
+      QGSCOMPARENEAR( out.cellSize().height(), 22293, 1 ); // ~ 22293.256065
+      QGSCOMPARENEAR( out.gridOffset().x(), 4327, 1 ); // ~ 4327.168434
+      QGSCOMPARENEAR( out.gridOffset().y(), 637, 1 ); // ~ 637.007990
       QCOMPARE( out.identify( 1308405, -746611 ), 10. );
     }
 

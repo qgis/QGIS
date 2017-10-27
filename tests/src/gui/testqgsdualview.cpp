@@ -34,11 +34,7 @@ class TestQgsDualView : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsDualView()
-      : mCanvas( 0 )
-      , mPointsLayer( 0 )
-      , mDualView( 0 )
-    {}
+    TestQgsDualView() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -140,7 +136,7 @@ void TestQgsDualView::testFilterSelected()
 {
   QgsFeature feature;
   QList< QgsFeatureId > ids;
-  QgsFeatureIterator it = mPointsLayer->getFeatures( QgsFeatureRequest().setOrderBy( QgsFeatureRequest::OrderBy() << QgsFeatureRequest::OrderByClause( "Heading" ) ) );
+  QgsFeatureIterator it = mPointsLayer->getFeatures( QgsFeatureRequest().setOrderBy( QgsFeatureRequest::OrderBy() << QgsFeatureRequest::OrderByClause( QStringLiteral( "Heading" ) ) ) );
   while ( it.nextFeature( feature ) )
     ids << feature.id();
 
@@ -152,7 +148,7 @@ void TestQgsDualView::testFilterSelected()
   mDualView->setFilterMode( QgsAttributeTableFilterModel::ShowSelected );
   QCOMPARE( mDualView->tableView()->model()->rowCount(), 2 );
 
-  int headingIdx = mPointsLayer->fields().lookupField( "Heading" );
+  int headingIdx = mPointsLayer->fields().lookupField( QStringLiteral( "Heading" ) );
   QgsField fld = mPointsLayer->fields().at( headingIdx );
   for ( int i = 0; i < selected.count(); ++i )
   {

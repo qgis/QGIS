@@ -34,9 +34,7 @@
 #include <QLabel>
 
 #include <limits>
-#include <math.h>
-
-#define PI 3.14159265
+#include <cmath>
 
 QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *parent )
   : QWidget( parent )
@@ -80,16 +78,12 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *paren
   setFocusProxy( mAngleSpinBox );
 }
 
-QgsAngleMagnetWidget::~QgsAngleMagnetWidget()
-{
-}
-
 void QgsAngleMagnetWidget::setAngle( double angle )
 {
   const int magnet = mMagnetSpinBox->value();
   if ( magnet )
   {
-    mAngleSpinBox->setValue( qRound( angle / magnet ) * magnet );
+    mAngleSpinBox->setValue( std::round( angle / magnet ) * magnet );
   }
   else
   {
@@ -130,12 +124,9 @@ void QgsAngleMagnetWidget::angleSpinBoxValueChanged( double angle )
 
 QgsMapToolRotateFeature::QgsMapToolRotateFeature( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mRubberBand( nullptr )
   , mRotation( 0 )
   , mRotationOffset( 0 )
-  , mAnchorPoint( nullptr )
   , mRotationActive( false )
-  , mRotationWidget( nullptr )
 {
 }
 
@@ -152,7 +143,7 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QgsMapMouseEvent *e )
   {
     const double XDistance = e->pos().x() - mStPoint.x();
     const double YDistance = e->pos().y() - mStPoint.y();
-    double rotation = atan2( YDistance, XDistance ) * ( 180 / PI );
+    double rotation = std::atan2( YDistance, XDistance ) * ( 180 / M_PI );
 
     if ( mRotationWidget )
     {
@@ -281,7 +272,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     {
       mRotatedFeatures = vlayer->selectedFeatureIds();
 
-      mRubberBand = createRubberBand( vlayer->geometryType() ) ;
+      mRubberBand = createRubberBand( vlayer->geometryType() );
 
       QgsFeature feat;
       QgsFeatureIterator it = vlayer->getSelectedFeatures();
@@ -296,8 +287,8 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     mRubberBand->show();
 
     double XDistance = mInitialPos.x() - mAnchorPoint->x();
-    double YDistance = mInitialPos.y() - mAnchorPoint->y() ;
-    mRotationOffset = atan2( YDistance, XDistance ) * ( 180 / PI );
+    double YDistance = mInitialPos.y() - mAnchorPoint->y();
+    mRotationOffset = std::atan2( YDistance, XDistance ) * ( 180 / M_PI );
 
     createRotationWidget();
     if ( e->modifiers() & Qt::ShiftModifier )
@@ -349,14 +340,14 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   }
 
   //calculations for affine transformation
-  double angle = -1 * mRotation * ( PI / 180 );
+  double angle = -1 * mRotation * ( M_PI / 180 );
   QgsPointXY anchorPoint = toLayerCoordinates( vlayer, mStartPointMapCoords );
-  double a = cos( angle );
-  double b = -1 * sin( angle );
-  double c = anchorPoint.x() - cos( angle ) * anchorPoint.x() + sin( angle ) * anchorPoint.y();
-  double d = sin( angle );
-  double ee = cos( angle );
-  double f = anchorPoint.y() - sin( angle ) * anchorPoint.x() - cos( angle ) * anchorPoint.y();
+  double a = std::cos( angle );
+  double b = -1 * std::sin( angle );
+  double c = anchorPoint.x() - std::cos( angle ) * anchorPoint.x() + std::sin( angle ) * anchorPoint.y();
+  double d = std::sin( angle );
+  double ee = std::cos( angle );
+  double f = anchorPoint.y() - std::sin( angle ) * anchorPoint.x() - std::cos( angle ) * anchorPoint.y();
 
   vlayer->beginEditCommand( tr( "Features Rotated" ) );
 

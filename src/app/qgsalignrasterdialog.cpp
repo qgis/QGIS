@@ -59,9 +59,9 @@ static QString _rasterLayerName( const QString &filename )
 struct QgsAlignRasterDialogProgress : public QgsAlignRaster::ProgressHandler
 {
     explicit QgsAlignRasterDialogProgress( QProgressBar *pb ) : mPb( pb ) {}
-    virtual bool progress( double complete ) override
+    bool progress( double complete ) override
     {
-      mPb->setValue( ( int ) qRound( complete * 100 ) );
+      mPb->setValue( ( int ) std::round( complete * 100 ) );
       qApp->processEvents(); // to actually show the progress in GUI
       return true;
     }
@@ -108,6 +108,7 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
   // TODO: auto-detect reference layer
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAlignRasterDialog::runAlign );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsAlignRasterDialog::showHelp );
 
   populateLayersView();
 
@@ -119,6 +120,12 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
 QgsAlignRasterDialog::~QgsAlignRasterDialog()
 {
   delete mAlign;
+}
+
+
+void QgsAlignRasterDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_analysis.html#raster-alignment" ) );
 }
 
 

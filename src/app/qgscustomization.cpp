@@ -47,6 +47,12 @@ QgsCustomizationDialog::QgsCustomizationDialog( QWidget * parent, QSettings * se
 {
   mSettings = settings;
   setupUi( this );
+  connect( actionSave, &QAction::triggered, this, &QgsCustomizationDialog::actionSave_triggered );
+  connect( actionLoad, &QAction::triggered, this, &QgsCustomizationDialog::actionLoad_triggered );
+  connect( actionExpandAll, &QAction::triggered, this, &QgsCustomizationDialog::actionExpandAll_triggered );
+  connect( actionCollapseAll, &QAction::triggered, this, &QgsCustomizationDialog::actionCollapseAll_triggered );
+  connect( actionSelectAll, &QAction::triggered, this, &QgsCustomizationDialog::actionSelectAll_triggered );
+  connect( mCustomizationEnabledCheckBox, &QCheckBox::toggled, this, &QgsCustomizationDialog::mCustomizationEnabledCheckBox_toggled );
 
   QSettings appSettings;
   restoreGeometry( appSettings.value( QStringLiteral( "Windows/Customization/geometry" ) ).toByteArray() );
@@ -62,6 +68,7 @@ QgsCustomizationDialog::QgsCustomizationDialog( QWidget * parent, QSettings * se
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsCustomizationDialog::apply );
   connect( buttonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QgsCustomizationDialog::cancel );
   connect( buttonBox->button( QDialogButtonBox::Reset ), &QAbstractButton::clicked, this, &QgsCustomizationDialog::reset );
+  connect( buttonBox->button( QDialogButtonBox::Help ), &QAbstractButton::clicked, this, &QgsCustomizationDialog::showHelp );
 
 }
 
@@ -120,7 +127,7 @@ bool QgsCustomizationDialog::itemChecked( const QString &path )
   QTreeWidgetItem *myItem = item( path );
   if ( !myItem )
     return true;
-  return myItem->checkState( 0 ) == Qt::Checked ? true : false;
+  return myItem->checkState( 0 ) == Qt::Checked;
 }
 
 void QgsCustomizationDialog::setItemChecked( const QString &path, bool on )
@@ -158,7 +165,7 @@ void QgsCustomizationDialog::itemToSettings( const QString &path, QTreeWidgetIte
     return; // object is not identifiable
 
   QString myPath = path + '/' + objectName;
-  bool on = item->checkState( 0 ) == Qt::Checked ? true : false;
+  bool on = item->checkState( 0 ) == Qt::Checked;
   settings->setValue( myPath, on );
 
   for ( int i = 0; i < item->childCount(); ++i )
@@ -217,7 +224,7 @@ void QgsCustomizationDialog::cancel()
   hide();
 }
 
-void QgsCustomizationDialog::on_actionSave_triggered( bool checked )
+void QgsCustomizationDialog::actionSave_triggered( bool checked )
 {
   Q_UNUSED( checked );
   QSettings mySettings;
@@ -244,7 +251,7 @@ void QgsCustomizationDialog::on_actionSave_triggered( bool checked )
   treeToSettings( &fileSettings );
 }
 
-void QgsCustomizationDialog::on_actionLoad_triggered( bool checked )
+void QgsCustomizationDialog::actionLoad_triggered( bool checked )
 {
   Q_UNUSED( checked );
   QSettings mySettings;
@@ -263,19 +270,19 @@ void QgsCustomizationDialog::on_actionLoad_triggered( bool checked )
   settingsToTree( &fileSettings );
 }
 
-void QgsCustomizationDialog::on_actionExpandAll_triggered( bool checked )
+void QgsCustomizationDialog::actionExpandAll_triggered( bool checked )
 {
   Q_UNUSED( checked );
   treeWidget->expandAll();
 }
 
-void QgsCustomizationDialog::on_actionCollapseAll_triggered( bool checked )
+void QgsCustomizationDialog::actionCollapseAll_triggered( bool checked )
 {
   Q_UNUSED( checked );
   treeWidget->collapseAll();
 }
 
-void QgsCustomizationDialog::on_actionSelectAll_triggered( bool checked )
+void QgsCustomizationDialog::actionSelectAll_triggered( bool checked )
 {
   Q_UNUSED( checked );
   QList<QTreeWidgetItem *> items = treeWidget->findItems( QStringLiteral( "*" ), Qt::MatchWildcard | Qt::MatchRecursive, 0 );
@@ -284,7 +291,7 @@ void QgsCustomizationDialog::on_actionSelectAll_triggered( bool checked )
     item->setCheckState( 0, Qt::Checked );
 }
 
-void QgsCustomizationDialog::on_mCustomizationEnabledCheckBox_toggled( bool checked )
+void QgsCustomizationDialog::mCustomizationEnabledCheckBox_toggled( bool checked )
 {
   treeWidget->setEnabled( checked );
   toolBar->setEnabled( checked );
@@ -483,6 +490,12 @@ bool QgsCustomizationDialog::catchOn()
   return actionCatch->isChecked();
 }
 
+void QgsCustomizationDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#customization" ) );
+}
+
+
 void QgsCustomization::addTreeItemActions( QTreeWidgetItem *parentItem, const QList<QAction *> &actions )
 {
   Q_FOREACH ( QAction *action, actions )
@@ -629,18 +642,11 @@ QgsCustomization *QgsCustomization::instance()
 }
 
 QgsCustomization::QgsCustomization()
-  : pDialog( nullptr )
-  , mEnabled( false )
-  , mSettings( nullptr )
-  , mStatusPath( QStringLiteral( "/Customization/status" ) )
+  : mStatusPath( QStringLiteral( "/Customization/status" ) )
 {
 
   QSettings settings;
   mEnabled = settings.value( QStringLiteral( "UI/Customization/enabled" ), "false" ).toString() == QLatin1String( "true" );
-}
-
-QgsCustomization::~QgsCustomization()
-{
 }
 
 void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
@@ -947,7 +953,7 @@ void QgsCustomization::loadDefault()
     return;
 
   // Look for default
-  QString path =  QgsApplication::pkgDataPath() +  "/resources/customization.ini";
+  QString path = QgsApplication::pkgDataPath() +  "/resources/customization.ini";
   if ( ! QFile::exists( path ) )
   {
     QgsDebugMsg( "Default customization not found in " + path );
@@ -959,7 +965,7 @@ void QgsCustomization::loadDefault()
   QStringList keys = fileSettings.allKeys();
   QgsDebugMsg( QString( "size = %1" ).arg( keys.size() ) );
   QStringList::const_iterator i;
-  for ( i = keys.begin(); i != keys.end(); ++i )
+  for ( i = keys.constBegin(); i != keys.constEnd(); ++i )
   {
     QString p( *i );
 

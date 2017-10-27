@@ -16,13 +16,11 @@
 
 #include "qgsgeometrycheckerplugin.h"
 #include "qgisinterface.h"
-#include "ui/qgsgeometrycheckerdialog.h"
+#include "qgsgeometrycheckerdialog.h"
 
 QgsGeometryCheckerPlugin::QgsGeometryCheckerPlugin( QgisInterface *iface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
   , mIface( iface )
-  , mDialog( nullptr )
-  , mMenuAction( nullptr )
 {
 }
 

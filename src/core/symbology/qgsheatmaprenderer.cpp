@@ -33,19 +33,8 @@
 
 QgsHeatmapRenderer::QgsHeatmapRenderer()
   : QgsFeatureRenderer( QStringLiteral( "heatmapRenderer" ) )
-  , mCalculatedMaxValue( 0 )
-  , mRadius( 10 )
-  , mRadiusPixels( 0 )
-  , mRadiusSquared( 0 )
-  , mRadiusUnit( QgsUnitTypes::RenderMillimeters )
-  , mWeightAttrNum( -1 )
-  , mGradientRamp( nullptr )
-  , mExplicitMax( 0.0 )
-  , mRenderQuality( 3 )
-  , mFeaturesRendered( 0 )
 {
   mGradientRamp = new QgsGradientColorRamp( QColor( 255, 255, 255 ), QColor( 0, 0, 0 ) );
-
 }
 
 QgsHeatmapRenderer::~QgsHeatmapRenderer()
@@ -59,7 +48,7 @@ void QgsHeatmapRenderer::initializeValues( QgsRenderContext &context )
   mValues.fill( 0 );
   mCalculatedMaxValue = 0;
   mFeaturesRendered = 0;
-  mRadiusPixels = qRound( context.convertToPainterUnits( mRadius, mRadiusUnit, mRadiusMapUnitScale ) / mRenderQuality );
+  mRadiusPixels = std::round( context.convertToPainterUnits( mRadius, mRadiusUnit, mRadiusMapUnitScale ) / mRenderQuality );
   mRadiusSquared = mRadiusPixels * mRadiusPixels;
 }
 
@@ -156,22 +145,22 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &c
     QgsPointXY pixel = context.mapToPixel().transform( *pointIt );
     int pointX = pixel.x() / mRenderQuality;
     int pointY = pixel.y() / mRenderQuality;
-    for ( int x = qMax( pointX - mRadiusPixels, 0 ); x < qMin( pointX + mRadiusPixels, width ); ++x )
+    for ( int x = std::max( pointX - mRadiusPixels, 0 ); x < std::min( pointX + mRadiusPixels, width ); ++x )
     {
-      for ( int y = qMax( pointY - mRadiusPixels, 0 ); y < qMin( pointY + mRadiusPixels, height ); ++y )
+      for ( int y = std::max( pointY - mRadiusPixels, 0 ); y < std::min( pointY + mRadiusPixels, height ); ++y )
       {
         int index = y * width + x;
         if ( index >= mValues.count() )
         {
           continue;
         }
-        double distanceSquared = pow( pointX - x, 2.0 ) + pow( pointY - y, 2.0 );
+        double distanceSquared = std::pow( pointX - x, 2.0 ) + std::pow( pointY - y, 2.0 );
         if ( distanceSquared > mRadiusSquared )
         {
           continue;
         }
 
-        double score = weight * quarticKernel( sqrt( distanceSquared ), mRadiusPixels );
+        double score = weight * quarticKernel( std::sqrt( distanceSquared ), mRadiusPixels );
         double value = mValues.at( index ) + score;
         if ( value > mCalculatedMaxValue )
         {
@@ -203,17 +192,17 @@ double QgsHeatmapRenderer::uniformKernel( const double distance, const int bandw
 
 double QgsHeatmapRenderer::quarticKernel( const double distance, const int bandwidth ) const
 {
-  return pow( 1. - pow( distance / static_cast< double >( bandwidth ), 2 ), 2 );
+  return std::pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 2 );
 }
 
 double QgsHeatmapRenderer::triweightKernel( const double distance, const int bandwidth ) const
 {
-  return pow( 1. - pow( distance / static_cast< double >( bandwidth ), 2 ), 3 );
+  return std::pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 3 );
 }
 
 double QgsHeatmapRenderer::epanechnikovKernel( const double distance, const int bandwidth ) const
 {
-  return ( 1. - pow( distance / static_cast< double >( bandwidth ), 2 ) );
+  return ( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ) );
 }
 
 double QgsHeatmapRenderer::triangularKernel( const double distance, const int bandwidth ) const
@@ -250,7 +239,7 @@ void QgsHeatmapRenderer::renderImage( QgsRenderContext &context )
     for ( int widthIndex = 0; widthIndex < image.width(); ++widthIndex )
     {
       //scale result to fit in the range [0, 1]
-      pixVal = mValues.at( idx ) > 0 ? qMin( ( mValues.at( idx ) / scaleMax ), 1.0 ) : 0;
+      pixVal = mValues.at( idx ) > 0 ? std::min( ( mValues.at( idx ) / scaleMax ), 1.0 ) : 0;
 
       //convert value to color from ramp
       pixColor = mGradientRamp->color( pixVal );
@@ -341,7 +330,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument &doc, const QgsReadWriteConte
     QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), mGradientRamp, doc );
     rendererElem.appendChild( colorRampElem );
   }
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
@@ -352,7 +341,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument &doc, const QgsReadWriteConte
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   return rendererElem;
 }

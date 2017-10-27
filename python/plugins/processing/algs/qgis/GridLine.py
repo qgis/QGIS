@@ -68,7 +68,7 @@ class GridLine(QgisAlgorithm):
         return self.tr('grid,lines,vector,create,fishnet').split(',')
 
     def group(self):
-        return self.tr('Vector creation tools')
+        return self.tr('Vector creation')
 
     def __init__(self):
         super().__init__()
@@ -105,8 +105,8 @@ class GridLine(QgisAlgorithm):
         hOverlay = self.parameterAsDouble(parameters, self.HOVERLAY, context)
         vOverlay = self.parameterAsDouble(parameters, self.VOVERLAY, context)
 
-        bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
         crs = self.parameterAsCrs(parameters, self.CRS, context)
+        bbox = self.parameterAsExtent(parameters, self.EXTENT, context, crs)
 
         width = bbox.width()
         height = bbox.height()

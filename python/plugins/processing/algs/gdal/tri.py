@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
@@ -26,14 +25,15 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-
 import os
 
+from qgis.core import (QgsProcessingParameterDefinition,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -44,17 +44,32 @@ class tri(GdalAlgorithm):
     INPUT = 'INPUT'
     BAND = 'BAND'
     COMPUTE_EDGES = 'COMPUTE_EDGES'
+    OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
-        self.addParameter(ParameterNumber(self.BAND,
-                                          self.tr('Band number'), 1, 99, 1))
-        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
-                                           self.tr('Compute edges'), False))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Terrain Ruggedness Index')))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterBand(self.BAND,
+                                                     self.tr('Band number'),
+                                                     parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterBoolean(self.COMPUTE_EDGES,
+                                                        self.tr('Compute edges'),
+                                                        defaultValue=False))
+
+        options_param = QgsProcessingParameterString(self.OPTIONS,
+                                                     self.tr('Additional creation parameters'),
+                                                     defaultValue='',
+                                                     optional=True)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
+        self.addParameter(options_param)
+
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Terrain Ruggedness Index')))
 
     def name(self):
         return 'triterrainruggednessindex'
@@ -65,15 +80,22 @@ class tri(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def getConsoleCommands(self, parameters):
+    def getConsoleCommands(self, parameters, context, feedback):
         arguments = ['TRI']
-        arguments.append(str(self.getParameterValue(self.INPUT)))
-        arguments.append(str(self.getOutputValue(self.OUTPUT)))
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        arguments.append(inLayer.source())
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        arguments.append(out)
 
         arguments.append('-b')
-        arguments.append(str(self.getParameterValue(self.BAND)))
+        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if self.getParameterValue(self.COMPUTE_EDGES):
+        if self.parameterAsBool(parameters, self.COMPUTE_EDGES, context):
             arguments.append('-compute_edges')
+
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.append('-co')
+            arguments.append(options)
 
         return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]

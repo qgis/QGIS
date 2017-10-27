@@ -23,8 +23,6 @@
 #include <climits>
 
 QgsPgTableModel::QgsPgTableModel()
-  : QStandardItemModel()
-  , mTableCount( 0 )
 {
   QStringList headerLabels;
   headerLabels << tr( "Schema" );
@@ -190,7 +188,7 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
   QString geomName = itemFromIndex( geomSibling )->text();
 
   QList<QStandardItem *> schemaItems = findItems( schemaName, Qt::MatchExactly, DbtmSchema );
-  if ( schemaItems.size() < 1 )
+  if ( schemaItems.empty() )
   {
     return;
   }

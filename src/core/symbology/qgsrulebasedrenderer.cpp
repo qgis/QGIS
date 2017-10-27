@@ -45,7 +45,7 @@ QgsRuleBasedRenderer::Rule::Rule( QgsSymbol *symbol, int scaleMinDenom, int scal
   , mDescription( description )
   , mElseRule( elseRule )
   , mIsActive( true )
-  , mFilter( nullptr )
+
 {
   if ( mElseRule )
     mFilterExp = QStringLiteral( "ELSE" );
@@ -939,8 +939,8 @@ QDomElement QgsRuleBasedRenderer::save( QDomDocument &doc, const QgsReadWriteCon
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "RuleRenderer" ) );
-  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? "1" : "0" ) );
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   QgsSymbolMap symbols;
 
@@ -960,7 +960,7 @@ QDomElement QgsRuleBasedRenderer::save( QDomDocument &doc, const QgsReadWriteCon
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   return rendererElem;
 }
@@ -1107,7 +1107,7 @@ void QgsRuleBasedRenderer::refineRuleRanges( QgsRuleBasedRenderer::Rule *initial
   {
     // due to the loss of precision in double->string conversion we may miss out values at the limit of the range
     // TODO: have a possibility to construct expressions directly as a parse tree to avoid loss of precision
-    QString filter = QStringLiteral( "%1 %2 %3 AND %1 <= %4" ).arg( attr, firstRange ? ">=" : ">",
+    QString filter = QStringLiteral( "%1 %2 %3 AND %1 <= %4" ).arg( attr, firstRange ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
                      QString::number( rng.lowerValue(), 'f', 4 ),
                      QString::number( rng.upperValue(), 'f', 4 ) );
     firstRange = false;

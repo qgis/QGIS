@@ -58,7 +58,7 @@ def createLayerWithOneLine():
     linelayer = QgsVectorLayer("LineString?crs=epsg:4326&field=gid:int&field=name:string", "simple_line", "memory")
     one = QgsFeature(linelayer.dataProvider().fields(), 0)
     one.setAttributes([1, 'one'])
-    one.setGeometry(QgsGeometry.fromPolyline([QgsPointXY(-7, 38), QgsPointXY(-8, 42)]))
+    one.setGeometry(QgsGeometry.fromPolylineXY([QgsPointXY(-7, 38), QgsPointXY(-8, 42)]))
     linelayer.dataProvider().addFeatures([one])
     return linelayer
 

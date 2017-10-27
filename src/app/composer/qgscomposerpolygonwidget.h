@@ -31,7 +31,6 @@ class QgsComposerPolygonWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     Q_OBJECT
   public:
     explicit QgsComposerPolygonWidget( QgsComposerPolygon *composerPolygon );
-    ~QgsComposerPolygonWidget();
 
   private:
     QgsComposerPolygon *mComposerPolygon = nullptr;
@@ -39,7 +38,7 @@ class QgsComposerPolygonWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     void updatePolygonStyle();
 
   private slots:
-    void on_mPolygonStyleButton_clicked();
+    void mPolygonStyleButton_clicked();
 
     //! Sets the GUI elements to the currentValues of mComposerShape
     void setGuiElementValues();

@@ -34,6 +34,10 @@ class QgsRasterPipe
     };
 
     QgsRasterPipe();
+%Docstring
+ Constructor for QgsRasterPipe.
+%End
+
 
     ~QgsRasterPipe();
 

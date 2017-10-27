@@ -17,13 +17,6 @@
 #include "qgsfields.h"
 #include <QStringList>
 
-QgsAttributeTableConfig::QgsAttributeTableConfig()
-  : mActionWidgetStyle( DropDown )
-  , mSortOrder( Qt::AscendingOrder )
-{
-
-}
-
 QVector<QgsAttributeTableConfig::ColumnConfig> QgsAttributeTableConfig::columns() const
 {
   return mColumns;
@@ -80,7 +73,7 @@ void QgsAttributeTableConfig::update( const QgsFields &fields )
     }
   }
 
-  Q_FOREACH ( const QgsField &field, fields )
+  for ( const auto &field : fields )
   {
     if ( !columns.contains( field.name() ) )
     {

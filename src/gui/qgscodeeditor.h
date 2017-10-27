@@ -29,7 +29,8 @@ SIP_IF_MODULE( HAVE_QSCI_SIP )
 
 class QWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A text editor based on QScintilla2.
  * \since QGIS 2.6
  * \note may not be available in Python bindings, depending on platform support
@@ -49,26 +50,30 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \param margin false: Enable margin for code editor
      * \since QGIS 2.6
      */
-    QgsCodeEditor( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &title = "", bool folding = false, bool margin = false );
+    QgsCodeEditor( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &title = QString(), bool folding = false, bool margin = false );
 
-    /** Set the widget title
+    /**
+     * Set the widget title
      * \param title widget title
      */
     void setTitle( const QString &title );
 
-    /** Set margin visible state
+    /**
+     * Set margin visible state
      *  \param margin Set margin in the editor
      */
     void setMarginVisible( bool margin );
     bool marginVisible() { return mMargin; }
 
-    /** Set folding visible state
+    /**
+     * Set folding visible state
      *  \param folding Set folding in the editor
      */
     void setFoldingVisible( bool folding );
     bool foldingVisible() { return mFolding; }
 
-    /** Insert text at cursor position, or replace any selected text if user has
+    /**
+     * Insert text at cursor position, or replace any selected text if user has
      * made a selection.
      * \param text The text to be inserted
      */
@@ -91,5 +96,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     bool mFolding;
     bool mMargin;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

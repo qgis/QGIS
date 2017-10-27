@@ -34,9 +34,11 @@
 QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColor &color )
   : QDialog( parent, fl )
   , mPreviousColor( color )
-  , mAllowOpacity( true )
 {
   setupUi( this );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsColorDialog::mButtonBox_accepted );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsColorDialog::mButtonBox_rejected );
+  connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsColorDialog::mButtonBox_clicked );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/ColorDialog/geometry" ) ).toByteArray() );
@@ -57,6 +59,7 @@ QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColo
 
   connect( mColorWidget, &QgsCompoundColorWidget::currentColorChanged, this, &QgsColorDialog::currentColorChanged );
   connect( this, &QDialog::rejected, this, &QgsColorDialog::discardColor );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsColorDialog::showHelp );
 }
 
 QColor QgsColorDialog::color() const
@@ -151,19 +154,19 @@ QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, co
   }
 }
 
-void QgsColorDialog::on_mButtonBox_accepted()
+void QgsColorDialog::mButtonBox_accepted()
 {
   saveSettings();
   accept();
 }
 
-void QgsColorDialog::on_mButtonBox_rejected()
+void QgsColorDialog::mButtonBox_rejected()
 {
   saveSettings();
   reject();
 }
 
-void QgsColorDialog::on_mButtonBox_clicked( QAbstractButton *button )
+void QgsColorDialog::mButtonBox_clicked( QAbstractButton *button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ResetRole && mPreviousColor.isValid() )
   {
@@ -204,4 +207,9 @@ void QgsColorDialog::closeEvent( QCloseEvent *e )
 {
   saveSettings();
   QDialog::closeEvent( e );
+}
+
+void QgsColorDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#color-selector" ) );
 }

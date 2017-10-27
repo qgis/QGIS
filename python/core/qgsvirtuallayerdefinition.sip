@@ -88,7 +88,18 @@ Constructor with an optional file path
 
     static QgsVirtualLayerDefinition fromUrl( const QUrl &url );
 %Docstring
-field=column_name:[int|real|text]       represents a field with its name and its type
+ Constructor to build a definition from a QUrl
+ The path part of the URL is extracted as well as the following optional keys:
+ layer_ref=layer_id[:name]               represents a live layer referenced by its ID. An optional name can be given
+ layer=provider:source[:name[:encoding]] represents a layer given by its provider key, its source url (URL-encoded).
+ An optional name and encoding can be given
+ geometry=column_name[:type:srid]        gives the definition of the geometry column.
+ Type can be either a WKB type code or a string (point, linestring, etc.)
+ srid is an integer
+ uid=column_name                         is the name of a column with unique integer values.
+ nogeometry                              is a flag to force the layer to be a non-geometry layer
+ query=sql                               represents the SQL query. Must be URL-encoded
+ field=column_name:[int|real|text]       represents a field with its name and its type
  :rtype: QgsVirtualLayerDefinition
 %End
 
@@ -164,7 +175,9 @@ Set the name of the geometry field
 
     QgsWkbTypes::Type geometryWkbType() const;
 %Docstring
-QgsWkbTypes.Unknown for unknown types
+ Get the type of the geometry
+ QgsWkbTypes.NoGeometry to hide any geometry
+ QgsWkbTypes.Unknown for unknown types
  :rtype: QgsWkbTypes.Type
 %End
     void setGeometryWkbType( QgsWkbTypes::Type t );
@@ -211,6 +224,7 @@ Convenient method to test if the geometry is defined (not NoGeometry and not Unk
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

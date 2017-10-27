@@ -13,18 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrulebasedlabeling.h"
-
+#include "qgssymbollayerutils.h"
 
 QgsRuleBasedLabelProvider::QgsRuleBasedLabelProvider( const QgsRuleBasedLabeling &rules, QgsVectorLayer *layer, bool withFeatureLoop )
   : QgsVectorLayerLabelProvider( layer, QString(), withFeatureLoop, nullptr )
 {
   mRules.reset( rules.clone() );
   mRules->rootRule()->createSubProviders( layer, mSubProviders, this );
-}
-
-QgsRuleBasedLabelProvider::~QgsRuleBasedLabelProvider()
-{
-  // sub-providers owned by labeling engine
 }
 
 QgsVectorLayerLabelProvider *QgsRuleBasedLabelProvider::createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings )
@@ -68,7 +63,7 @@ QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings *settings, int scaleMinDen
   , mDescription( description )
   , mElseRule( elseRule )
   , mIsActive( true )
-  , mFilter( nullptr )
+
 {
   mRuleKey = QUuid::createUuid().toString();
   initFilter();
@@ -176,6 +171,20 @@ const QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::findRuleByKey( con
   Q_FOREACH ( Rule *rule, mChildren )
   {
     const Rule *r = rule->findRuleByKey( key );
+    if ( r )
+      return r;
+  }
+  return nullptr;
+}
+
+QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::findRuleByKey( const QString &key )
+{
+  if ( key == mRuleKey )
+    return this;
+
+  for ( Rule *rule : mChildren )
+  {
+    Rule *r = rule->findRuleByKey( key );
     if ( r )
       return r;
   }
@@ -455,4 +464,55 @@ QgsPalLayerSettings QgsRuleBasedLabeling::settings( const QString &providerId ) 
 bool QgsRuleBasedLabeling::requiresAdvancedEffects() const
 {
   return mRootRule->requiresAdvancedEffects();
+}
+
+void QgsRuleBasedLabeling::setSettings( QgsPalLayerSettings *settings, const QString &providerId )
+{
+  if ( settings )
+  {
+    Rule *rule = mRootRule->findRuleByKey( providerId );
+    if ( rule && rule->settings() )
+      return rule->setSettings( settings );
+  }
+}
+
+void QgsRuleBasedLabeling::toSld( QDomNode &parent, const QgsStringMap &props ) const
+{
+  if ( !mRootRule )
+  {
+    return;
+  }
+
+  const QgsRuleBasedLabeling::RuleList rules = mRootRule->children();
+  for ( Rule *rule : rules )
+  {
+    QgsPalLayerSettings *settings = rule->settings();
+
+    if ( settings->drawLabels )
+    {
+      QDomDocument doc = parent.ownerDocument();
+
+      QDomElement ruleElement = doc.createElement( QStringLiteral( "se:Rule" ) );
+      parent.appendChild( ruleElement );
+
+      if ( !rule->filterExpression().isEmpty() )
+      {
+        QgsSymbolLayerUtils::createFunctionElement( doc, ruleElement, rule->filterExpression() );
+      }
+
+      // scale dependencies, the actual behavior is that the PAL settings min/max and
+      // the rule min/max get intersected
+      QgsStringMap localProps = QgsStringMap( props );
+      QgsSymbolLayerUtils::mergeScaleDependencies( rule->maximumScale(), rule->minimumScale(), localProps );
+      if ( settings->scaleVisibility )
+      {
+        QgsSymbolLayerUtils::mergeScaleDependencies( settings->maximumScale, settings->minimumScale, localProps );
+      }
+      QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElement, localProps );
+
+      QgsAbstractVectorLayerLabeling::writeTextSymbolizer( ruleElement, *settings, props );
+    }
+
+  }
+
 }

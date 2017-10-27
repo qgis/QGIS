@@ -27,7 +27,7 @@
 #ifndef QGSOGRSOURCESELECT_H
 #define QGSOGRSOURCESELECT_H
 
-#include <ui_qgsogrsourceselectbase.h>
+#include "ui_qgsogrsourceselectbase.h"
 #include <QDialog>
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
@@ -91,17 +91,21 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     //! Sets the selected connection
     void setSelectedConnection();
 
-    void on_buttonSelectSrc_clicked();
-    void on_radioSrcFile_toggled( bool checked );
-    void on_radioSrcDirectory_toggled( bool checked );
-    void on_radioSrcDatabase_toggled( bool checked );
-    void on_radioSrcProtocol_toggled( bool checked );
-    void on_btnNew_clicked();
-    void on_btnEdit_clicked();
-    void on_btnDelete_clicked();
-    void on_cmbDatabaseTypes_currentIndexChanged( const QString &text );
-    void on_cmbConnections_currentIndexChanged( const QString &text );
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-layer-from-a-file" ) ); }
+    void radioSrcFile_toggled( bool checked );
+    void radioSrcDirectory_toggled( bool checked );
+    void radioSrcDatabase_toggled( bool checked );
+    void radioSrcProtocol_toggled( bool checked );
+    void btnNew_clicked();
+    void btnEdit_clicked();
+    void btnDelete_clicked();
+    void cmbDatabaseTypes_currentIndexChanged( const QString &text );
+    void cmbConnections_currentIndexChanged( const QString &text );
+    void showHelp();
+
+  private:
+
+    QString mVectorPath;
+
 };
 
 #endif // QGSOGRSOURCESELECT_H

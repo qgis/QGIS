@@ -28,34 +28,15 @@
 const QRgb QgsRasterBlock::NO_DATA_COLOR = qRgba( 0, 0, 0, 0 );
 
 QgsRasterBlock::QgsRasterBlock()
-  : mValid( true )
-  , mDataType( Qgis::UnknownDataType )
-  , mTypeSize( 0 )
-  , mWidth( 0 )
-  , mHeight( 0 )
-  , mHasNoDataValue( false )
-  , mNoDataValue( std::numeric_limits<double>::quiet_NaN() )
-  , mData( nullptr )
-  , mImage( nullptr )
-  , mNoDataBitmap( nullptr )
-  , mNoDataBitmapWidth( 0 )
-  , mNoDataBitmapSize( 0 )
+  : mNoDataValue( std::numeric_limits<double>::quiet_NaN() )
 {
 }
 
 QgsRasterBlock::QgsRasterBlock( Qgis::DataType dataType, int width, int height )
-  : mValid( true )
-  , mDataType( dataType )
-  , mTypeSize( 0 )
+  : mDataType( dataType )
   , mWidth( width )
   , mHeight( height )
-  , mHasNoDataValue( false )
   , mNoDataValue( std::numeric_limits<double>::quiet_NaN() )
-  , mData( nullptr )
-  , mImage( nullptr )
-  , mNoDataBitmap( nullptr )
-  , mNoDataBitmapWidth( 0 )
-  , mNoDataBitmapSize( 0 )
 {
   ( void )reset( mDataType, mWidth, mHeight );
 }
@@ -150,13 +131,9 @@ bool QgsRasterBlock::isEmpty() const
 {
   QgsDebugMsgLevel( QString( "mWidth= %1 mHeight = %2 mDataType = %3 mData = %4 mImage = %5" ).arg( mWidth ).arg( mHeight ).arg( mDataType )
                     .arg( reinterpret_cast< quint64 >( mData ) ).arg( reinterpret_cast< quint64 >( mImage ) ), 4 );
-  if ( mWidth == 0 || mHeight == 0 ||
-       ( typeIsNumeric( mDataType ) && !mData ) ||
-       ( typeIsColor( mDataType ) && !mImage ) )
-  {
-    return true;
-  }
-  return false;
+  return mWidth == 0 || mHeight == 0 ||
+         ( typeIsNumeric( mDataType ) && !mData ) ||
+         ( typeIsColor( mDataType ) && !mImage );
 }
 
 bool QgsRasterBlock::typeIsNumeric( Qgis::DataType dataType )
@@ -262,14 +239,10 @@ void QgsRasterBlock::resetNoDataValue()
 bool QgsRasterBlock::isNoDataValue( double value, double noDataValue )
 {
   // TODO: optimize no data value test by memcmp()
-  // More precise would be qIsNaN(value) && qIsNaN(noDataValue(bandNo)), but probably
+  // More precise would be std::isnan(value) && std::isnan(noDataValue(bandNo)), but probably
   // not important and slower
-  if ( qIsNaN( value ) ||
-       qgsDoubleNear( value, noDataValue ) )
-  {
-    return true;
-  }
-  return false;
+  return std::isnan( value ) ||
+         qgsDoubleNear( value, noDataValue );
 }
 
 double QgsRasterBlock::value( int row, int column ) const
@@ -279,7 +252,7 @@ double QgsRasterBlock::value( int row, int column ) const
 
 QRgb QgsRasterBlock::color( qgssize index ) const
 {
-  int row = floor( static_cast< double >( index ) / mWidth );
+  int row = std::floor( static_cast< double >( index ) / mWidth );
   int column = index % mWidth;
   return color( row, column );
 }
@@ -462,10 +435,10 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect exceptRect )
   int bottom = exceptRect.bottom();
   int left = exceptRect.left();
   int right = exceptRect.right();
-  top = qMin( qMax( top, 0 ), mHeight - 1 );
-  left = qMin( qMax( left, 0 ), mWidth - 1 );
-  bottom = qMax( 0, qMin( bottom, mHeight - 1 ) );
-  right = qMax( 0, qMin( right, mWidth - 1 ) );
+  top = std::min( std::max( top, 0 ), mHeight - 1 );
+  left = std::min( std::max( left, 0 ), mWidth - 1 );
+  bottom = std::max( 0, std::min( bottom, mHeight - 1 ) );
+  right = std::max( 0, std::min( right, mWidth - 1 ) );
 
   QgsDebugMsgLevel( "Entered", 4 );
   if ( typeIsNumeric( mDataType ) )
@@ -660,12 +633,12 @@ void QgsRasterBlock::setData( const QByteArray &data, int offset )
 
   if ( mData )
   {
-    int len = qMin( data.size(), typeSize( mDataType ) * mWidth * mHeight - offset );
+    int len = std::min( data.size(), typeSize( mDataType ) * mWidth * mHeight - offset );
     ::memcpy( static_cast<char *>( mData ) + offset, data.constData(), len );
   }
   else if ( mImage && mImage->constBits() )
   {
-    int len = qMin( data.size(), mImage->byteCount() - offset );
+    int len = std::min( data.size(), mImage->byteCount() - offset );
     ::memcpy( mImage->bits() + offset, data.constData(), len );
   }
 }
@@ -960,20 +933,20 @@ QRect QgsRasterBlock::subRect( const QgsRectangle &extent, int width, int height
 
   if ( subExtent.yMaximum() < extent.yMaximum() )
   {
-    top = qRound( ( extent.yMaximum() - subExtent.yMaximum() ) / yRes );
+    top = std::round( ( extent.yMaximum() - subExtent.yMaximum() ) / yRes );
   }
   if ( subExtent.yMinimum() > extent.yMinimum() )
   {
-    bottom = qRound( ( extent.yMaximum() - subExtent.yMinimum() ) / yRes ) - 1;
+    bottom = std::round( ( extent.yMaximum() - subExtent.yMinimum() ) / yRes ) - 1;
   }
 
   if ( subExtent.xMinimum() > extent.xMinimum() )
   {
-    left = qRound( ( subExtent.xMinimum() - extent.xMinimum() ) / xRes );
+    left = std::round( ( subExtent.xMinimum() - extent.xMinimum() ) / xRes );
   }
   if ( subExtent.xMaximum() < extent.xMaximum() )
   {
-    right = qRound( ( subExtent.xMaximum() - extent.xMinimum() ) / xRes ) - 1;
+    right = std::round( ( subExtent.xMaximum() - extent.xMinimum() ) / xRes ) - 1;
   }
   QRect subRect = QRect( left, top, right - left + 1, bottom - top + 1 );
   QgsDebugMsgLevel( QString( "subRect: %1 %2 %3 %4" ).arg( subRect.x() ).arg( subRect.y() ).arg( subRect.width() ).arg( subRect.height() ), 4 );

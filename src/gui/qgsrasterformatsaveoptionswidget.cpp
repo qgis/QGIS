@@ -40,13 +40,14 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
   : QWidget( parent )
   , mFormat( format )
   , mProvider( provider )
-  , mRasterLayer( nullptr )
-  , mRasterFileName( QString() )
-  , mPyramids( false )
-  , mPyramidsFormat( QgsRaster::PyramidsGTiff )
-
 {
   setupUi( this );
+  connect( mProfileNewButton, &QPushButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::mProfileNewButton_clicked );
+  connect( mProfileDeleteButton, &QPushButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::mProfileDeleteButton_clicked );
+  connect( mProfileResetButton, &QPushButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::mProfileResetButton_clicked );
+  connect( mOptionsAddButton, &QPushButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::mOptionsAddButton_clicked );
+  connect( mOptionsDeleteButton, &QPushButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::mOptionsDeleteButton_clicked );
+  connect( mOptionsLineEdit, &QLineEdit::editingFinished, this, &QgsRasterFormatSaveOptionsWidget::mOptionsLineEdit_editingFinished );
 
   setType( type );
 
@@ -169,7 +170,7 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
     if ( ! profileKeys.contains( profileKey ) && !it.value().isEmpty() )
     {
       // insert key if is for all formats or this format (GTiff)
-      if ( it.value()[0] == QLatin1String( "" ) ||  it.value()[0] == format )
+      if ( it.value()[0].isEmpty() ||  it.value()[0] == format )
       {
         profileKeys.insert( 0, profileKey );
       }
@@ -258,7 +259,7 @@ void QgsRasterFormatSaveOptionsWidget::helpOptions()
 {
   QString message;
 
-  if ( mProvider == QLatin1String( "gdal" ) && mFormat != QLatin1String( "" ) && ! mPyramids )
+  if ( mProvider == QLatin1String( "gdal" ) && !mFormat.isEmpty() && ! mPyramids )
   {
     // get helpCreationOptionsFormat() function ptr for provider
     std::unique_ptr< QLibrary > library( QgsProviderRegistry::instance()->createProviderLibrary( mProvider ) );
@@ -347,7 +348,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
       message = tr( "cannot validate pyramid options" );
     }
   }
-  else if ( !createOptions.isEmpty() && mProvider == QLatin1String( "gdal" ) && mFormat != QLatin1String( "" ) )
+  else if ( !createOptions.isEmpty() && mProvider == QLatin1String( "gdal" ) && !mFormat.isEmpty() )
   {
     if ( rasterLayer && rasterLayer->dataProvider() )
     {
@@ -406,7 +407,7 @@ void QgsRasterFormatSaveOptionsWidget::optionsTableChanged()
 {
   QTableWidgetItem *key, *value;
   QString options;
-  for ( int i = 0 ; i < mOptionsTable->rowCount(); i++ )
+  for ( int i = 0; i < mOptionsTable->rowCount(); i++ )
   {
     key = mOptionsTable->item( i, 0 );
     if ( ! key  || key->text().isEmpty() )
@@ -422,24 +423,24 @@ void QgsRasterFormatSaveOptionsWidget::optionsTableChanged()
   mOptionsLineEdit->setCursorPosition( 0 );
 }
 
-void QgsRasterFormatSaveOptionsWidget::on_mOptionsLineEdit_editingFinished()
+void QgsRasterFormatSaveOptionsWidget::mOptionsLineEdit_editingFinished()
 {
   mOptionsMap[ currentProfileKey()] = mOptionsLineEdit->text().trimmed();
 }
 
-void QgsRasterFormatSaveOptionsWidget::on_mProfileNewButton_clicked()
+void QgsRasterFormatSaveOptionsWidget::mProfileNewButton_clicked()
 {
   QString profileName = QInputDialog::getText( this, QLatin1String( "" ), tr( "Profile name:" ) );
   if ( ! profileName.isEmpty() )
   {
     profileName = profileName.trimmed();
-    mOptionsMap[ profileName ] = QLatin1String( "" );
+    mOptionsMap[ profileName ] = QString();
     mProfileComboBox->addItem( profileName, profileName );
     mProfileComboBox->setCurrentIndex( mProfileComboBox->count() - 1 );
   }
 }
 
-void QgsRasterFormatSaveOptionsWidget::on_mProfileDeleteButton_clicked()
+void QgsRasterFormatSaveOptionsWidget::mProfileDeleteButton_clicked()
 {
   int index = mProfileComboBox->currentIndex();
   QString profileKey = currentProfileKey();
@@ -450,7 +451,7 @@ void QgsRasterFormatSaveOptionsWidget::on_mProfileDeleteButton_clicked()
   }
 }
 
-void QgsRasterFormatSaveOptionsWidget::on_mProfileResetButton_clicked()
+void QgsRasterFormatSaveOptionsWidget::mProfileResetButton_clicked()
 {
   QString profileKey = currentProfileKey();
   if ( sBuiltinProfiles.contains( profileKey ) )
@@ -459,7 +460,7 @@ void QgsRasterFormatSaveOptionsWidget::on_mProfileResetButton_clicked()
   }
   else
   {
-    mOptionsMap[ profileKey ] = QLatin1String( "" );
+    mOptionsMap[ profileKey ] = QString();
   }
   mOptionsLineEdit->setText( mOptionsMap.value( currentProfileKey() ) );
   mOptionsLineEdit->setCursorPosition( 0 );
@@ -471,7 +472,7 @@ void QgsRasterFormatSaveOptionsWidget::optionsTableEnableDeleteButton()
   mOptionsDeleteButton->setEnabled( mOptionsTable->currentRow() >= 0 );
 }
 
-void QgsRasterFormatSaveOptionsWidget::on_mOptionsAddButton_clicked()
+void QgsRasterFormatSaveOptionsWidget::mOptionsAddButton_clicked()
 {
   mOptionsTable->insertRow( mOptionsTable->rowCount() );
   // select the added row
@@ -481,7 +482,7 @@ void QgsRasterFormatSaveOptionsWidget::on_mOptionsAddButton_clicked()
   mOptionsTable->setCurrentItem( item );
 }
 
-void QgsRasterFormatSaveOptionsWidget::on_mOptionsDeleteButton_clicked()
+void QgsRasterFormatSaveOptionsWidget::mOptionsDeleteButton_clicked()
 {
   if ( mOptionsTable->currentRow() >= 0 )
   {
@@ -495,7 +496,7 @@ void QgsRasterFormatSaveOptionsWidget::on_mOptionsDeleteButton_clicked()
 
 QString QgsRasterFormatSaveOptionsWidget::settingsKey( QString profileName ) const
 {
-  if ( profileName != QLatin1String( "" ) )
+  if ( !profileName.isEmpty() )
     profileName = "/profile_" + profileName;
   else
     profileName = "/profile_default" + profileName;
@@ -585,7 +586,7 @@ void QgsRasterFormatSaveOptionsWidget::swapOptionsUI( int newIndex )
 
 void QgsRasterFormatSaveOptionsWidget::updateControls()
 {
-  bool valid = mProvider == QLatin1String( "gdal" ) && mFormat != QLatin1String( "" );
+  bool valid = mProvider == QLatin1String( "gdal" ) && !mFormat.isEmpty();
   mOptionsValidateButton->setEnabled( valid );
   mOptionsHelpButton->setEnabled( valid );
 }

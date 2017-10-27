@@ -36,7 +36,8 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for point pattern fill symbol types.
  */
 class TestQgsPointPatternFillSymbol : public QObject
@@ -44,13 +45,7 @@ class TestQgsPointPatternFillSymbol : public QObject
     Q_OBJECT
 
   public:
-    TestQgsPointPatternFillSymbol()
-      : mTestHasError( false )
-      , mpPolysLayer( 0 )
-      , mPointPatternFill( 0 )
-      , mFillSymbol( 0 )
-      , mSymbolRenderer( 0 )
-    {}
+    TestQgsPointPatternFillSymbol() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -62,7 +57,7 @@ class TestQgsPointPatternFillSymbol : public QObject
     void dataDefinedSubSymbol();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
 
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
@@ -155,7 +150,7 @@ void TestQgsPointPatternFillSymbol::dataDefinedSubSymbol()
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
   QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
-  pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) );
+  pointSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
   mPointPatternFill->setSubSymbol( pointSymbol );
   QVERIFY( imageCheck( "datadefined_subsymbol" ) );
 }

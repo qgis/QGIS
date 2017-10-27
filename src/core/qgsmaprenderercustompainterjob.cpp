@@ -32,12 +32,12 @@ QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSett
   , mActive( false )
   , mRenderSynchronously( false )
 {
-  QgsDebugMsg( "QPAINTER construct" );
+  QgsDebugMsgLevel( "QPAINTER construct", 5 );
 }
 
 QgsMapRendererCustomPainterJob::~QgsMapRendererCustomPainterJob()
 {
-  QgsDebugMsg( "QPAINTER destruct" );
+  QgsDebugMsgLevel( "QPAINTER destruct", 5 );
   Q_ASSERT( !mFutureWatcher.isRunning() );
   //cancel();
 }
@@ -53,9 +53,9 @@ void QgsMapRendererCustomPainterJob::start()
 
   mErrors.clear();
 
-  QgsDebugMsg( "QPAINTER run!" );
+  QgsDebugMsgLevel( "QPAINTER run!", 5 );
 
-  QgsDebugMsg( "Preparing list of layer jobs for rendering" );
+  QgsDebugMsgLevel( "Preparing list of layer jobs for rendering", 5 );
   QTime prepareTime;
   prepareTime.start();
 
@@ -82,7 +82,7 @@ void QgsMapRendererCustomPainterJob::start()
   mLayerJobs = prepareJobs( mPainter, mLabelingEngineV2.get() );
   mLabelJob = prepareLabelingJob( mPainter, mLabelingEngineV2.get(), canUseLabelCache );
 
-  QgsDebugMsg( "Rendering prepared in (seconds): " + QString( "%1" ).arg( prepareTime.elapsed() / 1000.0 ) );
+  QgsDebugMsgLevel( "Rendering prepared in (seconds): " + QString( "%1" ).arg( prepareTime.elapsed() / 1000.0 ), 4 );
 
   if ( mRenderSynchronously )
   {
@@ -103,11 +103,11 @@ void QgsMapRendererCustomPainterJob::cancel()
 {
   if ( !isActive() )
   {
-    QgsDebugMsg( "QPAINTER not running!" );
+    QgsDebugMsgLevel( "QPAINTER not running!", 4 );
     return;
   }
 
-  QgsDebugMsg( "QPAINTER canceling" );
+  QgsDebugMsgLevel( "QPAINTER canceling", 5 );
   disconnect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererCustomPainterJob::futureFinished );
   cancelWithoutBlocking();
 
@@ -116,11 +116,11 @@ void QgsMapRendererCustomPainterJob::cancel()
 
   mFutureWatcher.waitForFinished();
 
-  QgsDebugMsg( QString( "QPAINER cancel waited %1 ms" ).arg( t.elapsed() / 1000.0 ) );
+  QgsDebugMsgLevel( QString( "QPAINER cancel waited %1 ms" ).arg( t.elapsed() / 1000.0 ), 5 );
 
   futureFinished();
 
-  QgsDebugMsg( "QPAINTER canceled" );
+  QgsDebugMsgLevel( "QPAINTER canceled", 5 );
 }
 
 void QgsMapRendererCustomPainterJob::cancelWithoutBlocking()
@@ -152,7 +152,7 @@ void QgsMapRendererCustomPainterJob::waitForFinished()
 
   mFutureWatcher.waitForFinished();
 
-  QgsDebugMsg( QString( "waitForFinished: %1 ms" ).arg( t.elapsed() / 1000.0 ) );
+  QgsDebugMsgLevel( QString( "waitForFinished: %1 ms" ).arg( t.elapsed() / 1000.0 ), 4 );
 
   futureFinished();
 }
@@ -197,7 +197,7 @@ void QgsMapRendererCustomPainterJob::futureFinished()
 {
   mActive = false;
   mRenderingTime = mRenderingStart.elapsed();
-  QgsDebugMsg( "QPAINTER futureFinished" );
+  QgsDebugMsgLevel( "QPAINTER futureFinished", 5 );
 
   logRenderingTime( mLayerJobs, mLabelJob );
 
@@ -223,7 +223,7 @@ void QgsMapRendererCustomPainterJob::staticRender( QgsMapRendererCustomPainterJo
   catch ( std::exception &e )
   {
     Q_UNUSED( e );
-    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
+    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromLatin1( e.what() ) );
   }
   catch ( ... )
   {
@@ -233,7 +233,7 @@ void QgsMapRendererCustomPainterJob::staticRender( QgsMapRendererCustomPainterJo
 
 void QgsMapRendererCustomPainterJob::doRender()
 {
-  QgsDebugMsg( "Starting to render layer stack." );
+  QgsDebugMsgLevel( "Starting to render layer stack.", 5 );
   QTime renderTime;
   renderTime.start();
 
@@ -277,7 +277,7 @@ void QgsMapRendererCustomPainterJob::doRender()
 
   }
 
-  QgsDebugMsg( "Done rendering map layers" );
+  QgsDebugMsgLevel( "Done rendering map layers", 5 );
 
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) && !mLabelJob.context.renderingStopped() )
   {
@@ -318,7 +318,7 @@ void QgsMapRendererCustomPainterJob::doRender()
 
 void QgsMapRendererJob::drawLabeling( const QgsMapSettings &settings, QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter )
 {
-  QgsDebugMsg( "Draw labeling start" );
+  QgsDebugMsgLevel( "Draw labeling start", 5 );
 
   QTime t;
   t.start();

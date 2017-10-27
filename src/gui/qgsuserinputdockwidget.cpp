@@ -20,7 +20,6 @@
 
 QgsUserInputDockWidget::QgsUserInputDockWidget( QWidget *parent )
   : QgsDockWidget( tr( "User Input Panel" ), parent )
-  , mLayoutHorizontal( true )
 {
   QWidget *w = new QWidget( nullptr );
   mLayout = new QBoxLayout( QBoxLayout::LeftToRight );

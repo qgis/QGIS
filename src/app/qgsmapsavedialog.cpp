@@ -40,7 +40,7 @@
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
-QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, QList< QgsDecorationItem * > decorations, QList< QgsAnnotation *> annotations, DialogType type )
+QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList<QgsDecorationItem *> &decorations, const QList< QgsAnnotation *> &annotations, DialogType type )
   : QDialog( parent )
   , mDialogType( type )
   , mMapCanvas( mapCanvas )
@@ -73,7 +73,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, QL
     if ( activeDecorations.isEmpty() )
       activeDecorations = decoration->name().toLower();
     else
-      activeDecorations += QString( ", %1" ).arg( decoration->name().toLower() );
+      activeDecorations += QStringLiteral( ", %1" ).arg( decoration->name().toLower() );
   }
   mDrawDecorations->setText( tr( "Draw active decorations: %1" ).arg( !activeDecorations.isEmpty() ? activeDecorations : tr( "none" ) ) );
 
@@ -100,7 +100,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, QL
         layers << QChar( 0x2026 );
       }
       mInfo->setText( tr( "The following layer(s) use advanced effects:\n%1\nRasterizing map is recommended for proper rendering." ).arg(
-                        QChar( 0x2022 ) + QString( " " ) + layers.join( QString( "\n" ) + QChar( 0x2022 ) + QString( " " ) ) ) );
+                        QChar( 0x2022 ) + QStringLiteral( " " ) + layers.join( QStringLiteral( "\n" ) + QChar( 0x2022 ) + QStringLiteral( " " ) ) ) );
       mSaveAsRaster->setChecked( true );
     }
     else
@@ -118,7 +118,8 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, QL
     connect( button, &QPushButton::clicked, this, &QgsMapSaveDialog::copyToClipboard );
   }
 
-  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapSaveDialog::accepted );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapSaveDialog::onAccepted );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMapSaveDialog::showHelp );
 }
 
 void QgsMapSaveDialog::updateDpi( int dpi )
@@ -321,8 +322,8 @@ void QgsMapSaveDialog::copyToClipboard()
   QgsMapSettings ms = QgsMapSettings();
   applyMapSettings( ms );
 
-  QPainter *p;
-  QImage *img;
+  QPainter *p = nullptr;
+  QImage *img = nullptr;
 
   img = new QImage( ms.outputSize(), QImage::Format_ARGB32 );
   if ( img->isNull() )
@@ -348,7 +349,7 @@ void QgsMapSaveDialog::copyToClipboard()
     mapRendererTask->addDecorations( mDecorations );
   }
 
-  connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [ = ]
+  connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, this, [ = ]
   {
     QApplication::clipboard()->setImage( *img, QClipboard::Clipboard );
     QApplication::restoreOverrideCursor();
@@ -358,7 +359,7 @@ void QgsMapSaveDialog::copyToClipboard()
     delete img;
     setEnabled( true );
   } );
-  connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [ = ]( int )
+  connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, this, [ = ]( int )
   {
     QApplication::restoreOverrideCursor();
     QgisApp::instance()->messageBar()->pushWarning( tr( "Save as PDF" ), tr( "Could not copy the map to clipboard" ) );
@@ -374,12 +375,12 @@ void QgsMapSaveDialog::copyToClipboard()
   QgsApplication::taskManager()->addTask( mapRendererTask );
 }
 
-void QgsMapSaveDialog::accepted()
+void QgsMapSaveDialog::onAccepted()
 {
   if ( mDialogType == Image )
   {
     QPair< QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( QgisApp::instance(), tr( "Choose a file name to save the map image as" ) );
-    if ( fileNameAndFilter.first != QLatin1String( "" ) )
+    if ( !fileNameAndFilter.first.isEmpty() )
     {
       QgsMapSettings ms = QgsMapSettings();
       applyMapSettings( ms );
@@ -458,4 +459,9 @@ void QgsMapSaveDialog::accepted()
       QgsApplication::taskManager()->addTask( mapRendererTask );
     }
   }
+}
+
+void QgsMapSaveDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/getting_started.html#output" ) );
 }

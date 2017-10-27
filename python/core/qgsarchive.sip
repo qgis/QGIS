@@ -124,6 +124,13 @@ class QgsProjectArchive : QgsArchive
  :return: true if the file is well removed, false otherwise
  :rtype: bool
 %End
+
+    QString auxiliaryStorageFile() const;
+%Docstring
+ Returns the current .qgd auxiliary storage file or an empty string if
+ there's none
+ :rtype: str
+%End
 };
 
 /************************************************************************

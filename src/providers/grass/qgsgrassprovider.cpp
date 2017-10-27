@@ -101,19 +101,6 @@ int QgsGrassProvider::sEditedCount = 0;
 
 QgsGrassProvider::QgsGrassProvider( const QString &uri )
   : QgsVectorDataProvider( uri )
-  , mLayerField( -1 )
-  , mLayerType( Point )
-  , mGrassType( 0 )
-  , mQgisType( QgsWkbTypes::Unknown )
-  , mLayer( 0 )
-  , mMapVersion( 0 )
-  , mNumberFeatures( 0 )
-  , mEditBuffer( 0 )
-  , mEditLayer( 0 )
-  , mNewFeatureType( 0 )
-  , mPoints( 0 )
-  , mCats( 0 )
-  , mLastType( 0 )
 {
   QgsDebugMsg( "uri = " + uri );
 
@@ -1219,7 +1206,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     }
     QgsFeature feature = mEditBuffer->addedFeatures().value( fid );
     QgsGeometry featureGeometry = feature.geometry();
-    geometry = featureGeometry.geometry();
+    geometry = featureGeometry.constGet();
     if ( !geometry )
     {
       QgsDebugMsg( "geometry is null" );
@@ -1235,7 +1222,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     if ( wkbType == QgsWkbTypes::Polygon )
     {
       QgsGeometry addedFeatureGeom = addedFeatures[fid].geometry();
-      const QgsPolygonV2 *polygon = dynamic_cast<const QgsPolygonV2 *>( addedFeatureGeom.geometry() );
+      const QgsPolygonV2 *polygon = dynamic_cast<const QgsPolygonV2 *>( addedFeatureGeom.constGet() );
       if ( polygon )
       {
         QgsLineString *lineString = polygon->exteriorRing()->curveToLine();
@@ -1675,7 +1662,7 @@ void QgsGrassProvider::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &g
     }
   }
 
-  setPoints( mPoints, geom.geometry() );
+  setPoints( mPoints, geom.constGet() );
 
   mLayer->map()->lockReadWrite();
   // Vect_rewrite_line may delete/write the line with a new id
@@ -1905,25 +1892,25 @@ void QgsGrassProvider::setAddedFeaturesSymbol()
     return;
   }
   QgsFeatureMap &features = mEditBuffer->mAddedFeatures;
-  Q_FOREACH ( QgsFeatureId fid, features.keys() )
+  for ( auto it = features.constBegin(); it != features.constEnd(); ++it )
   {
-    QgsFeature feature = features[fid];
+    QgsFeature feature = it.value();
     if ( !feature.hasGeometry() )
     {
       continue;
     }
-    int lid = QgsGrassFeatureIterator::lidFromFid( fid );
+    int lid = QgsGrassFeatureIterator::lidFromFid( it.key() );
     int realLid = lid;
     if ( mLayer->map()->newLids().contains( lid ) )
     {
       realLid = mLayer->map()->newLids().value( lid );
     }
-    QgsDebugMsg( QString( "fid = %1 lid = %2 realLid = %3" ).arg( fid ).arg( lid ).arg( realLid ) );
+    QgsDebugMsg( QString( "fid = %1 lid = %2 realLid = %3" ).arg( it.key() ).arg( lid ).arg( realLid ) );
     QgsGrassVectorMap::TopoSymbol symbol = mLayer->map()->topoSymbol( realLid );
     // the feature may be without fields and set attribute by name does not work
     int index = mLayer->fields().indexFromName( QgsGrassVectorMap::topoSymbolFieldName() );
     feature.setAttribute( index, symbol );
-    features[fid] = feature;
+    features[it.key()] = feature;
   }
 }
 

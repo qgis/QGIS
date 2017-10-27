@@ -17,7 +17,6 @@
 
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
-#include <qgstestutils.h>
 #include <qgstracer.h>
 #include <qgsvectorlayer.h>
 
@@ -35,6 +34,7 @@ class TestQgsTracer : public QObject
     void testExtent();
     void testReprojection();
     void testCurved();
+    void testOffset();
 
   private:
 
@@ -121,21 +121,21 @@ void TestQgsTracer::testSimple()
   QgsTracer tracer;
   tracer.setLayers( QList<QgsVectorLayer *>() << vl );
 
-  QgsPolyline points1 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 20, 10 ) );
+  QgsPolylineXY points1 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 20, 10 ) );
   QCOMPARE( points1.count(), 3 );
   QCOMPARE( points1[0], QgsPointXY( 0, 0 ) );
   QCOMPARE( points1[1], QgsPointXY( 10, 0 ) );
   QCOMPARE( points1[2], QgsPointXY( 20, 10 ) );
 
   // one joined point
-  QgsPolyline points2 = tracer.findShortestPath( QgsPointXY( 5, 10 ), QgsPointXY( 0, 0 ) );
+  QgsPolylineXY points2 = tracer.findShortestPath( QgsPointXY( 5, 10 ), QgsPointXY( 0, 0 ) );
   QCOMPARE( points2.count(), 3 );
   QCOMPARE( points2[0], QgsPointXY( 5, 10 ) );
   QCOMPARE( points2[1], QgsPointXY( 0, 10 ) );
   QCOMPARE( points2[2], QgsPointXY( 0, 0 ) );
 
   // two joined points
-  QgsPolyline points3 = tracer.findShortestPath( QgsPointXY( 0, 1 ), QgsPointXY( 11, 1 ) );
+  QgsPolylineXY points3 = tracer.findShortestPath( QgsPointXY( 0, 1 ), QgsPointXY( 11, 1 ) );
   QCOMPARE( points3.count(), 4 );
   QCOMPARE( points3[0], QgsPointXY( 0, 1 ) );
   QCOMPARE( points3[1], QgsPointXY( 0, 0 ) );
@@ -143,13 +143,13 @@ void TestQgsTracer::testSimple()
   QCOMPARE( points3[3], QgsPointXY( 11, 1 ) );
 
   // two joined points on one line
-  QgsPolyline points4 = tracer.findShortestPath( QgsPointXY( 11, 1 ), QgsPointXY( 19, 9 ) );
+  QgsPolylineXY points4 = tracer.findShortestPath( QgsPointXY( 11, 1 ), QgsPointXY( 19, 9 ) );
   QCOMPARE( points4.count(), 2 );
   QCOMPARE( points4[0], QgsPointXY( 11, 1 ) );
   QCOMPARE( points4[1], QgsPointXY( 19, 9 ) );
 
   // no path to (1,1)
-  QgsPolyline points5 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 1, 1 ) );
+  QgsPolylineXY points5 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 1, 1 ) );
   QCOMPARE( points5.count(), 0 );
 
   delete vl;
@@ -168,7 +168,7 @@ void TestQgsTracer::testPolygon()
   QgsTracer tracer;
   tracer.setLayers( QList<QgsVectorLayer *>() << vl );
 
-  QgsPolyline points = tracer.findShortestPath( QgsPointXY( 1, 0 ), QgsPointXY( 0, 1 ) );
+  QgsPolylineXY points = tracer.findShortestPath( QgsPointXY( 1, 0 ), QgsPointXY( 0, 1 ) );
   QCOMPARE( points.count(), 3 );
   QCOMPARE( points[0], QgsPointXY( 1, 0 ) );
   QCOMPARE( points[1], QgsPointXY( 0, 0 ) );
@@ -197,7 +197,7 @@ void TestQgsTracer::testButterfly()
   QgsTracer tracer;
   tracer.setLayers( QList<QgsVectorLayer *>() << vl );
 
-  QgsPolyline points = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 10, 0 ) );
+  QgsPolylineXY points = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 10, 0 ) );
 
   QCOMPARE( points.count(), 3 );
   QCOMPARE( points[0], QgsPointXY( 0, 0 ) );
@@ -224,7 +224,7 @@ void TestQgsTracer::testLayerUpdates()
   tracer.setLayers( QList<QgsVectorLayer *>() << vl );
   tracer.init();
 
-  QgsPolyline points1 = tracer.findShortestPath( QgsPointXY( 10, 0 ), QgsPointXY( 10, 10 ) );
+  QgsPolylineXY points1 = tracer.findShortestPath( QgsPointXY( 10, 0 ), QgsPointXY( 10, 10 ) );
   QCOMPARE( points1.count(), 3 );
   QCOMPARE( points1[0], QgsPointXY( 10, 0 ) );
   QCOMPARE( points1[1], QgsPointXY( 20, 10 ) );
@@ -236,7 +236,7 @@ void TestQgsTracer::testLayerUpdates()
   QgsFeature f( make_feature( QStringLiteral( "LINESTRING(10 0, 10 10)" ) ) );
   vl->addFeature( f );
 
-  QgsPolyline points2 = tracer.findShortestPath( QgsPointXY( 10, 0 ), QgsPointXY( 10, 10 ) );
+  QgsPolylineXY points2 = tracer.findShortestPath( QgsPointXY( 10, 0 ), QgsPointXY( 10, 10 ) );
   QCOMPARE( points2.count(), 2 );
   QCOMPARE( points2[0], QgsPointXY( 10, 0 ) );
   QCOMPARE( points2[1], QgsPointXY( 10, 10 ) );
@@ -244,7 +244,7 @@ void TestQgsTracer::testLayerUpdates()
   // delete the shortcut
   vl->deleteFeature( f.id() );
 
-  QgsPolyline points3 = tracer.findShortestPath( QgsPointXY( 10, 0 ), QgsPointXY( 10, 10 ) );
+  QgsPolylineXY points3 = tracer.findShortestPath( QgsPointXY( 10, 0 ), QgsPointXY( 10, 10 ) );
   QCOMPARE( points3.count(), 3 );
   QCOMPARE( points3[0], QgsPointXY( 10, 0 ) );
   QCOMPARE( points3[1], QgsPointXY( 20, 10 ) );
@@ -254,12 +254,12 @@ void TestQgsTracer::testLayerUpdates()
   QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(10 0, 10 10)" ) );
   vl->changeGeometry( 2, g );  // change bottom line (second item in wkts)
 
-  QgsPolyline points4 = tracer.findShortestPath( QgsPointXY( 10, 0 ), QgsPointXY( 10, 10 ) );
+  QgsPolylineXY points4 = tracer.findShortestPath( QgsPointXY( 10, 0 ), QgsPointXY( 10, 10 ) );
   QCOMPARE( points4.count(), 2 );
   QCOMPARE( points4[0], QgsPointXY( 10, 0 ) );
   QCOMPARE( points4[1], QgsPointXY( 10, 10 ) );
 
-  QgsPolyline points5 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 10, 0 ) );
+  QgsPolylineXY points5 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 10, 0 ) );
   QCOMPARE( points5.count(), 4 );
   QCOMPARE( points5[0], QgsPointXY( 0, 0 ) );
   QCOMPARE( points5[1], QgsPointXY( 0, 10 ) );
@@ -289,12 +289,12 @@ void TestQgsTracer::testExtent()
   tracer.setExtent( QgsRectangle( 0, 0, 5, 5 ) );
   tracer.init();
 
-  QgsPolyline points1 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 10, 0 ) );
+  QgsPolylineXY points1 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 10, 0 ) );
   QCOMPARE( points1.count(), 2 );
   QCOMPARE( points1[0], QgsPointXY( 0, 0 ) );
   QCOMPARE( points1[1], QgsPointXY( 10, 0 ) );
 
-  QgsPolyline points2 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 20, 10 ) );
+  QgsPolylineXY points2 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 20, 10 ) );
   QCOMPARE( points2.count(), 0 );
 }
 
@@ -315,7 +315,7 @@ void TestQgsTracer::testReprojection()
   tracer.setDestinationCrs( dstCrs );
   tracer.init();
 
-  QgsPolyline points1 = tracer.findShortestPath( p1, p2 );
+  QgsPolylineXY points1 = tracer.findShortestPath( p1, p2 );
   QCOMPARE( points1.count(), 2 );
 }
 
@@ -335,11 +335,11 @@ void TestQgsTracer::testCurved()
   QgsTracer tracer;
   tracer.setLayers( QList<QgsVectorLayer *>() << vl );
 
-  QgsPolyline points1 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 10, 10 ) );
+  QgsPolylineXY points1 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 10, 10 ) );
 
   QVERIFY( points1.count() != 0 );
 
-  QgsGeometry tmpG1 = QgsGeometry::fromPolyline( points1 );
+  QgsGeometry tmpG1 = QgsGeometry::fromPolylineXY( points1 );
   double l = tmpG1.length();
 
   // fuzzy comparison as QCOMPARE is too strict for this case
@@ -348,6 +348,45 @@ void TestQgsTracer::testCurved()
 
   QCOMPARE( points1[0], QgsPointXY( 0, 0 ) );
   QCOMPARE( points1[points1.count() - 1], QgsPointXY( 10, 10 ) );
+
+  delete vl;
+}
+
+void TestQgsTracer::testOffset()
+{
+  QStringList wkts;
+  wkts  << QStringLiteral( "LINESTRING(0 0, 0 10)" )
+        << QStringLiteral( "LINESTRING(0 0, 10 0)" )
+        << QStringLiteral( "LINESTRING(0 10, 20 10)" )
+        << QStringLiteral( "LINESTRING(10 0, 20 10)" );
+
+  /* This shape - nearly a square (one side is shifted to have exactly one shortest
+   * path between corners):
+   * 0,10 +----+  20,10
+   *      |   /
+   * 0,0  +--+  10,0
+   */
+
+  QgsVectorLayer *vl = make_layer( wkts );
+
+  QgsTracer tracer;
+  tracer.setLayers( QList<QgsVectorLayer *>() << vl );
+
+  // curve on the right side
+  tracer.setOffset( -1 );
+  QgsPolylineXY points1 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 20, 10 ) );
+  QCOMPARE( points1.count(), 3 );
+  QCOMPARE( points1[0], QgsPointXY( 0, -1 ) );
+  QCOMPARE( points1[1], QgsPointXY( 10 + sqrt( 2 ) - 1, -1 ) );
+  QCOMPARE( points1[2], QgsPointXY( 20 + sqrt( 2 ) / 2, 10 - sqrt( 2 ) / 2 ) );
+
+  // curve on the left side
+  tracer.setOffset( 1 );
+  QgsPolylineXY points2 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 20, 10 ) );
+  QCOMPARE( points2.count(), 3 );
+  QCOMPARE( points2[0], QgsPointXY( 0, 1 ) );
+  QCOMPARE( points2[1], QgsPointXY( 10 - sqrt( 2 ) + 1, 1 ) );
+  QCOMPARE( points2[2], QgsPointXY( 20 - sqrt( 2 ) / 2, 10 + sqrt( 2 ) / 2 ) );
 
   delete vl;
 }

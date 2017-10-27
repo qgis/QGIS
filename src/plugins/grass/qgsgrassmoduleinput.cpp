@@ -52,7 +52,6 @@ extern "C"
 /**************************** QgsGrassModuleInputModel ****************************/
 QgsGrassModuleInputModel::QgsGrassModuleInputModel( QObject *parent )
   : QStandardItemModel( parent )
-  , mWatcher( 0 )
 {
   setColumnCount( 1 );
 
@@ -314,10 +313,6 @@ void QgsGrassModuleInputModel::onMapsetSearchPathChanged()
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
 
-QgsGrassModuleInputModel::~QgsGrassModuleInputModel()
-{
-
-}
 
 QgsGrassModuleInputModel *QgsGrassModuleInputModel::instance()
 {
@@ -330,7 +325,7 @@ QVariant QgsGrassModuleInputModel::data( const QModelIndex &index, int role ) co
   QVariant data = QStandardItemModel::data( index, role );
   if ( role == Qt::DisplayRole  || role == Qt::EditRole ) // EditRole for combo
   {
-    int type =  QStandardItemModel::data( index, QgsGrassModuleInputModel::TypeRole ).toInt();
+    int type = QStandardItemModel::data( index, QgsGrassModuleInputModel::TypeRole ).toInt();
     if ( type == QgsGrassObject::Raster || type == QgsGrassObject::Vector )
     {
       QString mapset = QStandardItemModel::data( index, QgsGrassModuleInputModel::MapsetRole ).toString();
@@ -536,9 +531,6 @@ bool QgsGrassModuleInputCompleter::eventFilter( QObject *watched, QEvent *event 
 QgsGrassModuleInputComboBox::QgsGrassModuleInputComboBox( QgsGrassObject::Type type, QWidget *parent )
   : QComboBox( parent )
   , mType( type )
-  , mModel( 0 )
-  , mProxy( 0 )
-  , mTreeView( 0 )
   , mSkipHide( false )
 {
   setEditable( true );
@@ -622,10 +614,6 @@ void QgsGrassModuleInputComboBox::hidePopup()
   //QComboBox::hidePopup();
   // reset state to fix the bug after drag
   mTreeView->resetState();
-}
-
-QgsGrassModuleInputComboBox::~QgsGrassModuleInputComboBox()
-{
 }
 
 void QgsGrassModuleInputComboBox::setCurrent( const QModelIndex &proxyIndex )
@@ -754,8 +742,8 @@ void QgsGrassModuleInputSelectedView::setModel( QAbstractItemModel *model )
   QTreeView::setModel( model );
   header()->hide();
   header()->setStretchLastSection( false );
-  header()->setResizeMode( 0, QHeaderView::Stretch );
-  header()->setResizeMode( 1, QHeaderView::Fixed );
+  header()->setSectionResizeMode( 0, QHeaderView::Stretch );
+  header()->setSectionResizeMode( 1, QHeaderView::Fixed );
   header()->resizeSection( 1, 16 );
 }
 
@@ -795,14 +783,6 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
   , mType( QgsGrassObject::Vector )
   , mModuleStandardOptions( options )
-  , mModel( 0 )
-  , mSelectedModel( 0 )
-  , mComboBox( 0 )
-  , mRegionButton( 0 )
-  , mLayerLabel( 0 )
-  , mLayerComboBox( 0 )
-  , mSelectedTreeView( 0 )
-  , mVector( 0 )
   , mUpdate( false )
   , mUsesRegion( false )
   , mRequired( false )
@@ -1037,10 +1017,6 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   onChanged( QLatin1String( "" ) );
 }
 
-QgsGrassModuleInput::~QgsGrassModuleInput()
-{
-}
-
 bool QgsGrassModuleInput::useRegion()
 {
 
@@ -1069,7 +1045,7 @@ QStringList QgsGrassModuleInput::options()
     {
       if ( !grassObject.name().isEmpty() )
       {
-        list << mKey + "=" + grassObject.fullName() ;
+        list << mKey + "=" + grassObject.fullName();
       }
     }
 

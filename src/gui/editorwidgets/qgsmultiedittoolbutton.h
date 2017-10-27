@@ -21,7 +21,8 @@
 #include <QToolButton>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsMultiEditToolButton
  * A tool button widget which is displayed next to editor widgets in attribute forms, and
  * allows for controlling how the widget behaves and interacts with the form while in multi
@@ -42,16 +43,19 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
       Changed, //!< Value for widget has changed but changes have not yet been committed
     };
 
-    /** Constructor for QgsMultiEditToolButton.
+    /**
+     * Constructor for QgsMultiEditToolButton.
      * \param parent parent object
      */
     explicit QgsMultiEditToolButton( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
-    /** Returns the current displayed state of the button.
+    /**
+     * Returns the current displayed state of the button.
      */
     State state() const { return mState; }
 
-    /** Sets the field associated with this button. This is used to customise the widget menu
+    /**
+     * Sets the field associated with this button. This is used to customise the widget menu
      * and tooltips to match the field properties.
      * \param field associated field
      */
@@ -59,7 +63,8 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
 
   public slots:
 
-    /** Sets whether the associated field contains mixed values.
+    /**
+     * Sets whether the associated field contains mixed values.
      * \param mixed whether field values are mixed
      * \see isMixed()
      * \see setIsChanged()
@@ -67,7 +72,8 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
      */
     void setIsMixed( bool mixed ) { mIsMixedValues = mixed; updateState(); }
 
-    /** Sets whether the associated field has changed.
+    /**
+     * Sets whether the associated field has changed.
      * \param changed whether field has changed
      * \see isChanged()
      * \see setIsMixed()
@@ -75,14 +81,16 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
      */
     void setIsChanged( bool changed ) { mIsChanged = changed; updateState(); }
 
-    /** Resets the changed state for the field.
+    /**
+     * Resets the changed state for the field.
      * \see setIsMixed()
      * \see setIsChanged()
      * \see changesCommitted()
      */
     void resetChanges() { mIsChanged = false; updateState(); }
 
-    /** Called when field values have been changed and field now contains all the same values.
+    /**
+     * Called when field values have been changed and field now contains all the same values.
      * \see resetChanges()
      */
     void changesCommitted() { mIsMixedValues = false; mIsChanged = false; updateState(); }
@@ -103,9 +111,9 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
 
   private:
 
-    bool mIsMixedValues;
-    bool mIsChanged;
-    State mState;
+    bool mIsMixedValues = false;
+    bool mIsChanged = false;
+    State mState = Default;
     QgsField mField;
 
     QMenu *mMenu = nullptr;

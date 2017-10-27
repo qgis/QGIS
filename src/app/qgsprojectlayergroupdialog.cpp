@@ -28,10 +28,12 @@
 
 QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const QString &projectFile, Qt::WindowFlags f )
   : QDialog( parent, f )
-  , mShowEmbeddedContent( false )
   , mRootGroup( new QgsLayerTree )
 {
   setupUi( this );
+  connect( mBrowseFileToolButton, &QToolButton::clicked, this, &QgsProjectLayerGroupDialog::mBrowseFileToolButton_clicked );
+  connect( mProjectFileLineEdit, &QLineEdit::editingFinished, this, &QgsProjectLayerGroupDialog::mProjectFileLineEdit_editingFinished );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProjectLayerGroupDialog::mButtonBox_accepted );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/EmbedLayer/geometry" ) ).toByteArray() );
@@ -47,6 +49,7 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
   }
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectLayerGroupDialog::showHelp );
 }
 
 QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
@@ -106,7 +109,7 @@ bool QgsProjectLayerGroupDialog::isValid() const
   return nullptr != mTreeView->layerTreeModel();
 }
 
-void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
+void QgsProjectLayerGroupDialog::mBrowseFileToolButton_clicked()
 {
   //line edit might emit editingFinished signal when losing focus
   mProjectFileLineEdit->blockSignals( true );
@@ -124,7 +127,7 @@ void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
   mProjectFileLineEdit->blockSignals( false );
 }
 
-void QgsProjectLayerGroupDialog::on_mProjectFileLineEdit_editingFinished()
+void QgsProjectLayerGroupDialog::mProjectFileLineEdit_editingFinished()
 {
   changeProjectFile();
 }
@@ -223,7 +226,7 @@ void QgsProjectLayerGroupDialog::deselectChildren( const QModelIndex &index )
   }
 }
 
-void QgsProjectLayerGroupDialog::on_mButtonBox_accepted()
+void QgsProjectLayerGroupDialog::mButtonBox_accepted()
 {
   QgsSettings s;
   QFileInfo fi( mProjectPath );
@@ -232,4 +235,10 @@ void QgsProjectLayerGroupDialog::on_mButtonBox_accepted()
     s.setValue( QStringLiteral( "/qgis/last_embedded_project_path" ), fi.absolutePath() );
   }
   accept();
+}
+
+void QgsProjectLayerGroupDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#nesting-projects" ) );
+
 }

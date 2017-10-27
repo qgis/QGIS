@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <QFileInfo>
 #include <QSettings>
 #include <QDir>
 
 #include "qgssettings.h"
+#include "qgslogger.h"
 
 QString QgsSettings::sGlobalSettingsPath = QString();
 
-bool QgsSettings::setGlobalSettingsPath( QString path )
+bool QgsSettings::setGlobalSettingsPath( const QString &path )
 {
   if ( QFileInfo::exists( path ) )
   {
@@ -82,12 +83,13 @@ QgsSettings::~QgsSettings()
 }
 
 
-void QgsSettings::beginGroup( const QString &prefix )
+void QgsSettings::beginGroup( const QString &prefix, const QgsSettings::Section section )
 {
-  mUserSettings->beginGroup( sanitizeKey( prefix ) );
+  QString pKey = prefixedKey( prefix, section );
+  mUserSettings->beginGroup( pKey );
   if ( mGlobalSettings )
   {
-    mGlobalSettings->beginGroup( sanitizeKey( prefix ) );
+    mGlobalSettings->beginGroup( pKey );
   }
 }
 
@@ -149,6 +151,15 @@ QStringList QgsSettings::childGroups() const
   }
   return keys;
 }
+QStringList QgsSettings::globalChildGroups() const
+{
+  QStringList keys;
+  if ( mGlobalSettings )
+  {
+    keys = mGlobalSettings->childGroups();
+  }
+  return keys;
+}
 
 QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue, const QgsSettings::Section section ) const
 {
@@ -181,9 +192,10 @@ void QgsSettings::sync()
   return mUserSettings->sync();
 }
 
-void QgsSettings::remove( const QString &key )
+void QgsSettings::remove( const QString &key, const QgsSettings::Section section )
 {
-  mUserSettings->remove( sanitizeKey( key ) );
+  QString pKey = prefixedKey( key, section );
+  mUserSettings->remove( pKey );
 }
 
 QString QgsSettings::prefixedKey( const QString &key, const Section section ) const
@@ -192,28 +204,28 @@ QString QgsSettings::prefixedKey( const QString &key, const Section section ) co
   switch ( section )
   {
     case Section::Core :
-      prefix = "core";
+      prefix = QStringLiteral( "core" );
       break;
     case Section::Server :
-      prefix = "server";
+      prefix = QStringLiteral( "server" );
       break;
     case Section::Gui :
-      prefix = "gui";
+      prefix = QStringLiteral( "gui" );
       break;
     case Section::Plugins :
-      prefix = "plugins";
+      prefix = QStringLiteral( "plugins" );
       break;
     case Section::Misc :
-      prefix = "misc";
+      prefix = QStringLiteral( "misc" );
       break;
     case Section::Auth :
-      prefix = "auth";
+      prefix = QStringLiteral( "auth" );
       break;
     case Section::App :
-      prefix = "app";
+      prefix = QStringLiteral( "app" );
       break;
     case Section::Providers :
-      prefix = "providers";
+      prefix = QStringLiteral( "providers" );
       break;
     case Section::NoSection:
     default:
@@ -269,7 +281,7 @@ void QgsSettings::setValue( const QString &key, const QVariant &value, const Qgs
 }
 
 // To lower case and clean the path
-QString QgsSettings::sanitizeKey( QString key ) const
+QString QgsSettings::sanitizeKey( const QString &key ) const
 {
   return QDir::cleanPath( key );
 }

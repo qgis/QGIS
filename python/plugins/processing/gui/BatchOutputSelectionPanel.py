@@ -64,7 +64,7 @@ class BatchOutputSelectionPanel(QWidget):
                                 QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QPushButton()
-        self.pushButton.setText('...')
+        self.pushButton.setText('…')
         self.pushButton.clicked.connect(self.showSelectionDialog)
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)
@@ -84,8 +84,8 @@ class BatchOutputSelectionPanel(QWidget):
                                                                    self.tr('Save file'), path, filefilter)
         if filename:
             if not filename.lower().endswith(
-                    tuple(re.findall("\*(\.[a-z]{1,10})", filefilter))):
-                ext = re.search("\*(\.[a-z]{1,10})", selectedFileFilter)
+                    tuple(re.findall("\\*(\\.[a-z]{1,10})", filefilter))):
+                ext = re.search("\\*(\\.[a-z]{1,10})", selectedFileFilter)
                 if ext:
                     filename += ext.group(1)
             settings.setValue('/Processing/LastBatchOutputPath', os.path.dirname(filename))

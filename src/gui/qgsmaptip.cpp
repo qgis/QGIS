@@ -37,7 +37,7 @@
 #include "qgsmaptip.h"
 
 QgsMapTip::QgsMapTip()
-  : mWidget( nullptr ), mWebView( nullptr )
+
 {
   // init the visible flag
   mMapTipVisible = false;

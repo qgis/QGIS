@@ -125,7 +125,7 @@ class TestQgsEditorWidgetRegistry: public QObject
       relation.setName( QStringLiteral( "vl1->vl2" ) );
       relation.setReferencingLayer( vl1.id() );
       relation.setReferencedLayer( vl2.id() );
-      relation.addFieldPair( "fk", "pk" );
+      relation.addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
       QVERIFY( relation.isValid() );
       QgsProject::instance()->relationManager()->addRelation( relation );
 

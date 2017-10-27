@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsProcessingParameterNumber)
+from qgis.core import (QgsProcessingParameterNumber,
+                       QgsProcessing)
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
@@ -41,7 +42,7 @@ class DensifyGeometries(QgisFeatureBasedAlgorithm):
         return self.tr('add,vertices,points').split(',')
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -60,6 +61,9 @@ class DensifyGeometries(QgisFeatureBasedAlgorithm):
 
     def outputName(self):
         return self.tr('Densified')
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon]
 
     def prepareAlgorithm(self, parameters, context, feedback):
         self.vertices = self.parameterAsInt(parameters, self.VERTICES, context)

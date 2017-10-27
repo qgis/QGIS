@@ -32,15 +32,14 @@
 QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsShortcutsManager *manager )
   : QDialog( parent )
   , mManager( manager )
-  , mGettingShortcut( false )
-  , mModifiers( 0 )
-  , mKey( 0 )
 {
   setupUi( this );
+  connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsConfigureShortcutsDialog::mLeFilter_textChanged );
 
   if ( !mManager )
     mManager = QgsGui::shortcutsManager();
 
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsConfigureShortcutsDialog::showHelp ); // Vérifier nommage des boutons
   connect( btnChangeShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::changeShortcut );
   connect( btnResetShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::resetShortcut );
   connect( btnSetNoShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::setNoShortcut );
@@ -476,7 +475,7 @@ void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence &
   actionChanged( treeActions->currentItem(), nullptr );
 }
 
-void QgsConfigureShortcutsDialog::on_mLeFilter_textChanged( const QString &text )
+void QgsConfigureShortcutsDialog::mLeFilter_textChanged( const QString &text )
 {
   for ( int i = 0; i < treeActions->topLevelItemCount(); i++ )
   {
@@ -490,4 +489,9 @@ void QgsConfigureShortcutsDialog::on_mLeFilter_textChanged( const QString &text 
       item->setHidden( false );
     }
   }
+}
+
+void QgsConfigureShortcutsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#keyboard-shortcuts" ) );
 }

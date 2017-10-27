@@ -24,8 +24,10 @@
 #include "qgis_analysis.h"
 
 class QgsInterpolator;
+class QgsFeedback;
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * A class that does interpolation to a grid and writes the results to an ascii grid*/
 //todo: extend such that writing to other file types is possible
 class ANALYSIS_EXPORT QgsGridFileWriter
@@ -33,25 +35,27 @@ class ANALYSIS_EXPORT QgsGridFileWriter
   public:
     QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows, double cellSizeX, double cellSizeY );
 
-    /** Writes the grid file.
-     \param showProgressDialog shows a dialog with the possibility to cancel
+    /**
+     * Writes the grid file.
+     \param feedback optional feedback object for progress reports and cancelation support
     \returns 0 in case of success*/
 
-    int writeFile( bool showProgressDialog = false );
+    int writeFile( QgsFeedback *feedback = nullptr );
 
   private:
 
-    QgsGridFileWriter(); //forbidden
+    QgsGridFileWriter() = delete;
+
     int writeHeader( QTextStream &outStream );
 
     QgsInterpolator *mInterpolator = nullptr;
     QString mOutputFilePath;
     QgsRectangle mInterpolationExtent;
-    int mNumColumns;
-    int mNumRows;
+    int mNumColumns = 0;
+    int mNumRows = 0;
 
-    double mCellSizeX;
-    double mCellSizeY;
+    double mCellSizeX = 0;
+    double mCellSizeY = 0;
 };
 
 #endif

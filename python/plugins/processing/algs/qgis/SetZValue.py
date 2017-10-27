@@ -42,7 +42,7 @@ class SetZValue(QgisFeatureBasedAlgorithm):
     Z_VALUE = 'Z_VALUE'
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -52,7 +52,7 @@ class SetZValue(QgisFeatureBasedAlgorithm):
         return 'setzvalue'
 
     def displayName(self):
-        return self.tr('Set Z Value')
+        return self.tr('Set Z value')
 
     def outputName(self):
         return self.tr('Z Added')
@@ -74,7 +74,7 @@ class SetZValue(QgisFeatureBasedAlgorithm):
     def processFeature(self, feature, feedback):
         input_geometry = feature.geometry()
         if input_geometry:
-            new_geom = input_geometry.geometry().clone()
+            new_geom = input_geometry.constGet().clone()
             if QgsWkbTypes.hasZ(new_geom.wkbType()):
                 # addZValue won't alter existing Z values, so drop them first
                 new_geom.dropZValue()

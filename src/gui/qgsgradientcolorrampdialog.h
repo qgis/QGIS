@@ -20,6 +20,7 @@
 #include "qgis.h"
 
 #include "ui_qgsgradientcolorrampdialogbase.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
 class QgsGradientColorRamp;
@@ -28,7 +29,8 @@ class QwtPlotCurve;
 class QwtPlotMarker;
 class QgsGradientPlotEventFilter;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsGradientColorRampDialog
  * A dialog which allows users to modify the properties of a QgsGradientColorRamp.
  * \since QGIS 3.0
@@ -40,19 +42,22 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
 
   public:
 
-    /** Constructor for QgsGradientColorRampDialog.
+    /**
+     * Constructor for QgsGradientColorRampDialog.
      * \param ramp initial ramp to show in dialog
      * \param parent parent widget
      */
     QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent SIP_TRANSFERTHIS = 0 );
     ~QgsGradientColorRampDialog();
 
-    /** Returns a color ramp representing the current settings from the dialog.
+    /**
+     * Returns a color ramp representing the current settings from the dialog.
      * \see setRamp()
      */
     QgsGradientColorRamp ramp() const { return mRamp; }
 
-    /** Sets the color ramp to show in the dialog.
+    /**
+     * Sets the color ramp to show in the dialog.
      * \param ramp color ramp
      * \see ramp()
      */
@@ -65,32 +70,35 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
 
   public slots:
 
-    /** Sets the start color for the gradient ramp.
+    /**
+     * Sets the start color for the gradient ramp.
      * \see setColor2()
      */
     void setColor1( const QColor &color );
 
-    /** Sets the end color for the gradient ramp.
+    /**
+     * Sets the end color for the gradient ramp.
      * \see setColor1()
      */
     void setColor2( const QColor &color );
 
   private slots:
-    void on_cboType_currentIndexChanged( int index );
-    void on_btnInformation_pressed();
+    void cboType_currentIndexChanged( int index );
+    void btnInformation_pressed();
     void updateRampFromStopEditor();
     void updateColorButtons();
     void updateStopEditor();
     void selectedStopChanged( const QgsGradientStop &stop );
     void colorWidgetChanged( const QColor &color );
-    void on_mPositionSpinBox_valueChanged( double val );
-    void on_mPlotHueCheckbox_toggled( bool checked );
-    void on_mPlotLightnessCheckbox_toggled( bool checked );
-    void on_mPlotSaturationCheckbox_toggled( bool checked );
-    void on_mPlotAlphaCheckbox_toggled( bool checked );
+    void mPositionSpinBox_valueChanged( double val );
+    void mPlotHueCheckbox_toggled( bool checked );
+    void mPlotLightnessCheckbox_toggled( bool checked );
+    void mPlotSaturationCheckbox_toggled( bool checked );
+    void mPlotAlphaCheckbox_toggled( bool checked );
     void plotMousePress( QPointF point );
     void plotMouseRelease( QPointF point );
     void plotMouseMove( QPointF point );
+    void showHelp();
 
   private:
 

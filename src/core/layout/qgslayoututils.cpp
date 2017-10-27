@@ -20,14 +20,14 @@
 #include "qgsrendercontext.h"
 #include "qgslayoutitemmap.h"
 #include <QPainter>
-#include <math.h>
+#include <cmath>
 
 double QgsLayoutUtils::normalizedAngle( const double angle, const bool allowNegative )
 {
   double clippedAngle = angle;
   if ( clippedAngle >= 360.0 || clippedAngle <= -360.0 )
   {
-    clippedAngle = fmod( clippedAngle, 360.0 );
+    clippedAngle = std::fmod( clippedAngle, 360.0 );
   }
   if ( !allowNegative && clippedAngle < 0.0 )
   {
@@ -87,4 +87,25 @@ QgsRenderContext QgsLayoutUtils::createRenderContextForLayout( QgsLayout *layout
   if ( layout )
     context.setFlags( layout->context().renderContextFlags() );
   return context;
+}
+
+void QgsLayoutUtils::relativeResizeRect( QRectF &rectToResize, const QRectF &boundsBefore, const QRectF &boundsAfter )
+{
+  //linearly scale rectToResize relative to the scaling from boundsBefore to boundsAfter
+  double left = relativePosition( rectToResize.left(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() );
+  double right = relativePosition( rectToResize.right(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() );
+  double top = relativePosition( rectToResize.top(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() );
+  double bottom = relativePosition( rectToResize.bottom(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() );
+
+  rectToResize.setRect( left, top, right - left, bottom - top );
+}
+
+double QgsLayoutUtils::relativePosition( const double position, const double beforeMin, const double beforeMax, const double afterMin, const double afterMax )
+{
+  //calculate parameters for linear scale between before and after ranges
+  double m = ( afterMax - afterMin ) / ( beforeMax - beforeMin );
+  double c = afterMin - ( beforeMin * m );
+
+  //return linearly scaled position
+  return m * position + c;
 }

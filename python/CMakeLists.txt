@@ -102,6 +102,7 @@ ENDIF ()
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/3d
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -112,9 +113,12 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
   ${CMAKE_SOURCE_DIR}/src/core/dxf
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/geocms
+  ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/gps
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/layout
+  ${CMAKE_SOURCE_DIR}/src/core/locator
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
@@ -220,11 +224,13 @@ ENDIF (WITH_SERVER AND WITH_SERVER_PLUGINS)
 
 # additional analysis includes
 INCLUDE_DIRECTORIES(BEFORE
+  ../src/analysis/processing
   ../src/analysis/vector
   ../src/analysis/raster
   ../src/analysis/network
   ../src/analysis/interpolation
   ../src/analysis/openstreetmap
+  ${CMAKE_BINARY_DIR}/src/analysis/processing
   ${CMAKE_BINARY_DIR}/src/analysis/vector
   ${CMAKE_BINARY_DIR}/src/analysis/raster
   ${CMAKE_BINARY_DIR}/src/analysis/network

@@ -20,13 +20,14 @@
 #include "qgsdb2dataitems.h"
 #include "qgsdb2featureiterator.h"
 #include "qgsdb2geometrycolumns.h"
-#include <qgscoordinatereferencesystem.h>
-#include <qgsdataitem.h>
-#include <qgslogger.h>
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdataitem.h"
+#include "qgslogger.h"
 #include "qgscredentials.h"
 
 #ifdef HAVE_GUI
 #include "qgsdb2sourceselect.h"
+#include "qgssourceselectprovider.h"
 #endif
 
 static const QString PROVIDER_KEY = QStringLiteral( "DB2" );
@@ -36,10 +37,7 @@ int QgsDb2Provider::sConnectionId = 0;
 
 QgsDb2Provider::QgsDb2Provider( const QString &uri )
   : QgsVectorDataProvider( uri )
-  , mNumberFeatures( 0 )
-  , mFidColIdx( -1 )
   , mEnvironment( ENV_LUW )
-  , mWkbType( QgsWkbTypes::Unknown )
 {
   QgsDebugMsg( "uri: " + uri );
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );
@@ -247,7 +245,7 @@ QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errM
     if ( db.open() )
     {
       connected = true;
-      errMsg = QLatin1String( "" );
+      errMsg.clear();
     }
     else
     {
@@ -407,7 +405,7 @@ QVariant::Type QgsDb2Provider::decodeSqlType( int typeId )
 // Return the DB2 type name for the type numeric value
 QString QgsDb2Provider::db2TypeName( int typeId )
 {
-  QString typeName = QLatin1String( "" );
+  QString typeName;
   switch ( typeId )
   {
     case -3:     //VARBINARY
@@ -431,27 +429,27 @@ QString QgsDb2Provider::db2TypeName( int typeId )
       break;
 
     case 3:     //NUMERIC and DECIMAL
-      typeName =  QStringLiteral( "DECIMAL" );
+      typeName = QStringLiteral( "DECIMAL" );
       break;
 
     case 7:     //REAL
-      typeName =  QStringLiteral( "REAL" );
+      typeName = QStringLiteral( "REAL" );
       break;
 
     case 8:     //DOUBLE
-      typeName =  QStringLiteral( "DOUBLE" );
+      typeName = QStringLiteral( "DOUBLE" );
       break;
 
     case 9:    //DATE
-      typeName =  QStringLiteral( "DATE" );
+      typeName = QStringLiteral( "DATE" );
       break;
 
     case 10:    //TIME
-      typeName =  QStringLiteral( "TIME" );
+      typeName = QStringLiteral( "TIME" );
       break;
 
     case 11:    //TIMESTAMP
-      typeName =  QStringLiteral( "TIMESTAMP" );
+      typeName = QStringLiteral( "TIMESTAMP" );
       break;
 
     default:
@@ -583,8 +581,8 @@ void QgsDb2Provider::updateStatistics() const
 
   QgsDebugMsg( QString( "mSRId: %1" ).arg( mSRId ) );
   QgsDb2GeometryColumns gc( mDatabase );
-  int rc = gc.open( mSchemaName, mTableName );  // returns SQLCODE if failure
-  if ( rc == 0 )
+  QString rc = gc.open( mSchemaName, mTableName );  // returns SQLCODE if failure
+  if ( rc.isEmpty() || rc == QStringLiteral( "0" ) )
   {
     mEnvironment = gc.db2Environment();
     if ( -1 == mSRId )
@@ -1105,10 +1103,10 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
       query.bindValue( bindIdx,  bytea, QSql::In | QSql::Binary );
     }
 
-    QList<QVariant> list = query.boundValues().values();
-
 // Show bound values
 #if 0
+    QList<QVariant> list = query.boundValues().values();
+
     for ( int i = 0; i < list.size(); ++i )
     {
       QgsDebugMsg( QString( "i: %1; value: %2; type: %3" )
@@ -1394,7 +1392,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
     sql = "DROP TABLE " + fullName;
     if ( !q.exec( sql ) )
     {
-      if ( q.lastError().number() != -206 ) // -206 is "not found" just ignore
+      if ( q.lastError().nativeErrorCode() != QStringLiteral( "-206" ) ) // -206 is "not found" just ignore
       {
         QString lastError = q.lastError().text();
         QgsDebugMsg( lastError );
@@ -1410,7 +1408,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
   // add fields to the layer
   if ( oldToNewAttrIdxMap )
     oldToNewAttrIdxMap->clear();
-  QString attr2Create = QLatin1String( "" );
+  QString attr2Create;
   if ( fields.size() > 0 )
   {
     int offset = 0;
@@ -1498,8 +1496,8 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
 
 // get the environment
       QgsDb2GeometryColumns gc( db );
-      int rc = gc.open( schemaName, tableName );  // returns SQLCODE if failure
-      if ( rc == 0 )
+      QString rc = gc.open( schemaName, tableName );  // returns SQLCODE if failure
+      if ( rc.isEmpty() || rc == QStringLiteral( "0" ) )
       {
         db2Environment = gc.db2Environment();
       }
@@ -1565,7 +1563,7 @@ QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QStr
 
 QString QgsDb2Provider::qgsFieldToDb2Field( const QgsField &field )
 {
-  QString result = QLatin1String( "" );
+  QString result;
   switch ( field.type() )
   {
     case QVariant::LongLong:
@@ -1748,3 +1746,34 @@ QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
            oldToNewAttrIdxMap, errorMessage, options
          );
 }
+
+
+#ifdef HAVE_GUI
+
+//! Provider for DB2 source select
+class QgsDb2SourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "DB2" ); }
+    virtual QString text() const override { return QObject::tr( "DB2" ); }
+    virtual int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 40; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDb2Layer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsDb2SourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsDb2SourceSelectProvider;
+
+  return providers;
+}
+
+#endif

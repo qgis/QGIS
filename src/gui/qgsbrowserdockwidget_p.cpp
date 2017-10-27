@@ -220,7 +220,7 @@ void QgsBrowserLayerProperties::setCondensedMode( bool condensedMode )
 
 QgsBrowserDirectoryProperties::QgsBrowserDirectoryProperties( QWidget *parent )
   : QgsBrowserPropertiesWidget( parent )
-  , mDirectoryWidget( nullptr )
+
 {
   setupUi( this );
 
@@ -234,14 +234,13 @@ void QgsBrowserDirectoryProperties::setItem( QgsDataItem *item )
   if ( !item )
     return;
 
-  mPathLabel->setText( directoryItem->dirPath() );
+  mPathLabel->setText( QDir::toNativeSeparators( directoryItem->dirPath() ) );
   mDirectoryWidget = new QgsDirectoryParamWidget( directoryItem->dirPath(), this );
   mLayout->addWidget( mDirectoryWidget );
 }
 
 QgsBrowserPropertiesDialog::QgsBrowserPropertiesDialog( const QString &settingsSection, QWidget *parent )
   : QDialog( parent )
-  , mPropertiesWidget( nullptr )
   , mSettingsSection( settingsSection )
 {
   setupUi( this );
@@ -336,7 +335,6 @@ void QgsDockBrowserTreeView::dropEvent( QDropEvent *e )
 
 QgsBrowserTreeFilterProxyModel::QgsBrowserTreeFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
-  , mModel( nullptr )
   , mPatternSyntax( QStringLiteral( "normal" ) )
   , mCaseSensitivity( Qt::CaseInsensitive )
 {

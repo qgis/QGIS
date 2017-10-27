@@ -28,7 +28,8 @@ class QHBoxLayout;
 #include "qgis.h"
 #include "qgsfilterlineedit.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsFileWidget class creates a widget for selecting a file or a folder.
  */
 class GUI_EXPORT QgsFileWidget : public QWidget
@@ -61,8 +62,9 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      */
     enum StorageMode
     {
-      GetFile,
-      GetDirectory
+      GetFile, //! Select a single file
+      GetDirectory, //! Select a directory
+      GetMultipleFiles, //! Select multiple files
     };
 
     /**
@@ -80,8 +82,19 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      */
     explicit QgsFileWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! Returns the current file path
+    /**
+     * \brief Returns the current file path(s)
+     * when multiple files are selected, they are quoted and separated
+     * by a single space (for example: '"/path/foo" "path/bar"')
+     * \see filePaths
+     */
     QString filePath();
+
+    /**
+     * \brief Split the the quoted and space separated \a path and returns a QString list
+     * \see filePath
+     */
+    static QStringList splitFilePaths( const QString &path );
 
     //! Sets the file path
     void setFilePath( QString path );
@@ -94,7 +107,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
     /**
      * \brief setDialogTitle defines the open file dialog title
-     * \note if not defined, the title is "Select a file" or "Select a directory" depending on the configuration.
+     * \note if not defined, the title is "Select a file" or "Select a directory" or "Select one or more files" depending on the configuration.
      */
     void setDialogTitle( const QString &title );
 
@@ -154,14 +167,14 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
   private:
     QString mFilePath;
-    bool mButtonVisible;
-    bool mUseLink;
-    bool mFullUrl;
+    bool mButtonVisible = true;
+    bool mUseLink = false;
+    bool mFullUrl = false;
     QString mDialogTitle;
     QString mFilter;
     QString mDefaultRoot;
-    StorageMode mStorageMode;
-    RelativeStorage mRelativeStorage;
+    StorageMode mStorageMode = GetFile;
+    RelativeStorage mRelativeStorage = Absolute;
 
     QLabel *mLinkLabel = nullptr;
     QgsFileDropEdit *mLineEdit = nullptr;
@@ -183,7 +196,8 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
 #ifndef SIP_RUN
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A line edit for capturing file names that can have files dropped onto
  * it via drag & drop.
  *
@@ -211,9 +225,7 @@ class GUI_EXPORT QgsFileDropEdit: public QgsFilterLineEdit
 
   private:
 
-    /**
-      Return file name if object meets drop criteria.
-    */
+    //! Return file name if object meets drop criteria.
     QString acceptableFilePath( QDropEvent *event ) const;
 
     QStringList mAcceptableExtensions;

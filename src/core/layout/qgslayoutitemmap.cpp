@@ -24,6 +24,16 @@ QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
 {
 }
 
+int QgsLayoutItemMap::type() const
+{
+  return QgsLayoutItemRegistry::LayoutMap;
+}
+
+QString QgsLayoutItemMap::stringType() const
+{
+  return QStringLiteral( "ItemMap" );
+}
+
 void QgsLayoutItemMap::draw( QgsRenderContext &, const QStyleOptionGraphicsItem * )
 {
 

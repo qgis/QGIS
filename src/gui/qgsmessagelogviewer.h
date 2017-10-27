@@ -17,7 +17,7 @@
 #ifndef QGSMESSAGELOGVIEWER_H
 #define QGSMESSAGELOGVIEWER_H
 
-#include <ui_qgsmessagelogviewer.h>
+#include "ui_qgsmessagelogviewer.h"
 #include "qgsguiutils.h"
 #include "qgsmessagelog.h"
 
@@ -28,7 +28,8 @@
 class QStatusBar;
 class QCloseEvent;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A generic dialog widget for displaying QGIS log messages.
  */
 class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogViewer

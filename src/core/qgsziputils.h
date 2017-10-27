@@ -29,14 +29,16 @@
 namespace QgsZipUtils
 {
 
-  /** Returns true if the file name is a zipped file ( i.e with a '.qgz'
+  /**
+   * Returns true if the file name is a zipped file ( i.e with a '.qgz'
    *  extension, false otherwise.
    * \param filename The name of the file
    * \returns true if the file is zipped, false otherwise
    */
   CORE_EXPORT bool isZipFile( const QString &filename );
 
-  /** Unzip a zip file in an output directory. An error is returned if the zip
+  /**
+   * Unzip a zip file in an output directory. An error is returned if the zip
    *  filename does not exist, the output directory does not exist or is
    *  not writable.
    * \param zip The zip filename
@@ -46,7 +48,8 @@ namespace QgsZipUtils
    */
   CORE_EXPORT bool unzip( const QString &zip, const QString &dir, QStringList &files SIP_OUT );
 
-  /** Zip the list of files in the zip file. If the zip file already exists or is
+  /**
+   * Zip the list of files in the zip file. If the zip file already exists or is
    *  empty, an error is returned. If an input file does not exist, an error is
    *  also returned.
    * \param zip The zip filename

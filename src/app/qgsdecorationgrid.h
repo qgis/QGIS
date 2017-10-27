@@ -19,7 +19,7 @@
 #define QGSDECORATIONGRID_H
 
 #include "qgsdecorationitem.h"
-#include <qgis.h>
+#include "qgis.h"
 
 class QPainter;
 class QgsLineSymbol;
@@ -196,32 +196,37 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
 
     QgsUnitTypes::DistanceUnit mMapUnits;
 
-    /** Draw coordinates for mGridAnnotationType Coordinate
+    /**
+     * Draw coordinates for mGridAnnotationType Coordinate
         \param p drawing painter
     \param hLines horizontal coordinate lines in item coordinates
         \param vLines vertical coordinate lines in item coordinates*/
     void drawCoordinateAnnotations( QPainter *p, const QList< QPair< qreal, QLineF > > &hLines, const QList< QPair< qreal, QLineF > > &vLines );
     void drawCoordinateAnnotation( QPainter *p, QPointF pos, const QString &annotationString );
 
-    /** Draws a single annotation
+    /**
+     * Draws a single annotation
         \param p drawing painter
         \param pos item coordinates where to draw
         \param rotation text rotation
         \param annotationText the text to draw*/
     void drawAnnotation( QPainter *p, QPointF pos, int rotation, const QString &annotationText );
 
-    /** Returns the grid lines with associated coordinate value
+    /**
+     * Returns the grid lines with associated coordinate value
         \returns 0 in case of success*/
     int xGridLines( const QgsMapSettings &mapSettings, QList< QPair< qreal, QLineF > > &lines ) const;
 
-    /** Returns the grid lines for the y-coordinates. Not vertical in case of rotation
+    /**
+     * Returns the grid lines for the y-coordinates. Not vertical in case of rotation
         \returns 0 in case of success*/
     int yGridLines( const QgsMapSettings &mapSettings, QList< QPair< qreal, QLineF > > &lines ) const;
 
     //! Returns the item border of a point (in item coordinates)
     Border borderForLineCoord( QPointF point, QPainter *p ) const;
 
-    /** Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
+    /**
+     * Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
      to work around the Qt font bug)*/
     void drawText( QPainter *p, double x, double y, const QString &text, const QFont &font ) const;
     //! Like the above, but with a rectangle for multiline text

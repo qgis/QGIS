@@ -55,9 +55,11 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   , mFeatureList( features )
   , mVectorLayer( vl )
   , mMapCanvas( canvas )
-  , mSelectionRubberBand( nullptr )
+
 {
   setupUi( this );
+  connect( mFromSelectedPushButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mFromSelectedPushButton_clicked );
+  connect( mRemoveFeatureFromSelectionButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked );
   createTableWidgetContents();
 
   QHeaderView *verticalHeader = mTableWidget->verticalHeader();
@@ -79,12 +81,10 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
 }
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog()
-  : QDialog()
-  , mVectorLayer( nullptr )
-  , mMapCanvas( nullptr )
-  , mSelectionRubberBand( nullptr )
 {
   setupUi( this );
+  connect( mFromSelectedPushButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mFromSelectedPushButton_clicked );
+  connect( mRemoveFeatureFromSelectionButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/MergeAttributes/geometry" ) ).toByteArray() );
@@ -369,7 +369,7 @@ QVariant QgsMergeAttributesDialog::calcStatistic( int col, QgsStatisticalSummary
   summary.calculate( values );
 
   double val = summary.statistic( stat );
-  return qIsNaN( val ) ? QVariant( QVariant::Double ) : val;
+  return std::isnan( val ) ? QVariant( QVariant::Double ) : val;
 }
 
 QVariant QgsMergeAttributesDialog::concatenationAttribute( int col )
@@ -383,7 +383,7 @@ QVariant QgsMergeAttributesDialog::concatenationAttribute( int col )
   return concatString.join( QStringLiteral( "," ) ); //todo: make separator user configurable
 }
 
-void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
+void QgsMergeAttributesDialog::mFromSelectedPushButton_clicked()
 {
   //find the selected feature
   if ( !mVectorLayer )
@@ -431,7 +431,7 @@ void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
   }
 }
 
-void QgsMergeAttributesDialog::on_mRemoveFeatureFromSelectionButton_clicked()
+void QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked()
 {
   if ( !mVectorLayer )
   {
@@ -526,7 +526,7 @@ void QgsMergeAttributesDialog::createRubberBandForFeature( QgsFeatureId featureI
 
 QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
 {
-  if ( mFeatureList.size() < 1 )
+  if ( mFeatureList.empty() )
   {
     return QgsAttributes();
   }

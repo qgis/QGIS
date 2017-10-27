@@ -18,7 +18,8 @@
 #include <qgswmsprovider.h>
 #include <qgsapplication.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the WMS provider.
  */
 class TestQgsWmsProvider: public QObject

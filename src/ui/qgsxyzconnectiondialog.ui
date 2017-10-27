@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>869</width>
-    <height>787</height>
+    <width>525</width>
+    <height>332</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,106 +20,34 @@
       <string>Connection details</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="3" column="0">
-       <widget class="QCheckBox" name="mCheckBoxZMin">
+      <item row="9" column="0" colspan="2">
+       <widget class="QLabel" name="lblReferer">
         <property name="text">
-         <string>Min. Zoom Level</string>
+         <string>Referer</string>
+        </property>
+        <property name="buddy">
+         <cstring>mEditReferer</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="2">
+       <widget class="QLineEdit" name="mEditReferer">
+        <property name="toolTip">
+         <string>Optional custom referer</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0" colspan="2">
+       <widget class="QCheckBox" name="mCheckBoxZMax">
+        <property name="text">
+         <string>Max. Zoom Level</string>
         </property>
         <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QTabWidget" name="mTabAuth">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <widget class="QWidget" name="tab">
-         <attribute name="title">
-          <string>Authentication</string>
-         </attribute>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>&amp;User name</string>
-            </property>
-            <property name="buddy">
-             <cstring>mEditUsername</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="mEditUsername"/>
-          </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QLabel" name="label_4">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>If the service requires basic authentication, enter a user name and optional password</string>
-            </property>
-            <property name="textFormat">
-             <enum>Qt::PlainText</enum>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Password</string>
-            </property>
-            <property name="buddy">
-             <cstring>mEditPassword</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QgsPasswordLineEdit" name="mEditPassword">
-            <property name="echoMode">
-             <enum>QLineEdit::Password</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="mEditName">
-        <property name="toolTip">
-         <string>Name of the new connection</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
+      <item row="8" column="2">
        <widget class="QSpinBox" name="mSpinZMax">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -132,31 +60,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QSpinBox" name="mSpinZMin">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>URL</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Name</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
+      <item row="1" column="2">
        <widget class="QLineEdit" name="mEditUrl">
         <property name="toolTip">
          <string>URL of the connection, {z}, {y}, and {z} will be replaced with actual values. Use {-y} for inverted y axis.</string>
@@ -166,48 +70,86 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="0">
-       <widget class="QCheckBox" name="mCheckBoxZMax">
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="label">
         <property name="text">
-         <string>Max. Zoom Level</string>
+         <string>Name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="mEditName">
+        <property name="toolTip">
+         <string>Name of the new connection</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="2">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="2" column="0" rowspan="2" colspan="3">
+       <widget class="QGroupBox" name="mAuthGroupBox">
+        <property name="title">
+         <string>Authentication</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <property name="leftMargin">
+          <number>6</number>
+         </property>
+         <property name="topMargin">
+          <number>6</number>
+         </property>
+         <property name="rightMargin">
+          <number>6</number>
+         </property>
+         <property name="bottomMargin">
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="QgsAuthSettingsWidget" name="mAuthSettings" native="true"/>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>URL</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="2">
+       <widget class="QCheckBox" name="mCheckBoxZMin">
+        <property name="text">
+         <string>Min. Zoom Level</string>
         </property>
         <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="lblReferer">
-        <property name="text">
-         <string>Referer</string>
-        </property>
-        <property name="buddy">
-         <cstring>mEditReferer</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
-       <widget class="QLineEdit" name="mEditReferer">
-        <property name="toolTip">
-         <string>Optional custom referer</string>
+      <item row="4" column="2">
+       <widget class="QSpinBox" name="mSpinZMin">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -223,15 +165,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsPasswordLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgspasswordlineedit.h</header>
+   <class>QgsAuthSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>auth/qgsauthsettingswidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mEditUrl</tabstop>
   <tabstop>mCheckBoxZMin</tabstop>
-  <tabstop>mSpinZMin</tabstop>
   <tabstop>mCheckBoxZMax</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>

@@ -26,17 +26,17 @@
 #include "qgsdb2newconnection.h"
 #include "qgsdb2dataitems.h"
 #include "qgsdb2provider.h"
-#include "qgscontexthelp.h"
 
 QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mOriginalConnName( connName )
-  , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
+  connect( btnConnect, &QPushButton::clicked, this, &QgsDb2NewConnection::btnConnect_clicked );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDb2NewConnection::showHelp );
 
-  mAuthConfigSelect = new QgsAuthConfigSelect( this, QStringLiteral( "db2" ) );
-  tabAuthentication->insertTab( 1, mAuthConfigSelect, tr( "Configurations" ) );
+  mAuthSettings->setDataprovider( QStringLiteral( "db2" ) );
+  mAuthSettings->showStoreCheckboxes( true );
 
   if ( !connName.isEmpty() )
   {
@@ -53,23 +53,19 @@ QgsDb2NewConnection::QgsDb2NewConnection( QWidget *parent, const QString &connNa
 
     if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
     {
-      txtUsername->setText( settings.value( key + "/username" ).toString() );
-      chkStoreUsername->setChecked( true );
+      mAuthSettings->setUsername( settings.value( key + "/username" ).toString() );
+      mAuthSettings->setStoreUsernameChecked( true );
     }
 
     if ( settings.value( key + "/savePassword" ).toString() == QLatin1String( "true" ) )
     {
-      txtPassword->setText( settings.value( key + "/password" ).toString() );
-      chkStorePassword->setChecked( true );
+      mAuthSettings->setPassword( settings.value( key + "/password" ).toString() );
+      mAuthSettings->setStorePasswordChecked( true );
     }
 
     QString authcfg = settings.value( key + "/authcfg" ).toString();
     QgsDebugMsg( QString( "authcfg: %1" ).arg( authcfg ) );
-    mAuthConfigSelect->setConfigId( authcfg );
-    if ( !authcfg.isEmpty() )
-    {
-      tabAuthentication->setCurrentIndex( tabAuthentication->indexOf( mAuthConfigSelect ) );
-    }
+    mAuthSettings->setConfigId( authcfg );
 
     txtName->setText( connName );
   }
@@ -82,9 +78,9 @@ void QgsDb2NewConnection::accept()
   QgsSettings settings;
   QString baseKey = QStringLiteral( "/DB2/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
-  bool hasAuthConfigID = !mAuthConfigSelect->configId().isEmpty();
+  bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
   QgsDebugMsg( QString( "hasAuthConfigID: %1" ).arg( hasAuthConfigID ) );
-  if ( !hasAuthConfigID && chkStorePassword->isChecked() &&
+  if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked( ) &&
        QMessageBox::question( this,
                               tr( "Saving passwords" ),
                               tr( "WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.\n" ),
@@ -119,16 +115,16 @@ void QgsDb2NewConnection::accept()
   settings.setValue( baseKey + "/port", txtPort->text() );
   settings.setValue( baseKey + "/driver", txtDriver->text() );
   settings.setValue( baseKey + "/database", txtDatabase->text() );
-  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() && !hasAuthConfigID ? txtUsername->text() : QLatin1String( "" ) );
-  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() && !hasAuthConfigID ? txtPassword->text() : QLatin1String( "" ) );
-  settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() && !hasAuthConfigID ? "true" : "false" );
-  settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() && !hasAuthConfigID ? "true" : "false" );
-  settings.setValue( baseKey + "/authcfg", mAuthConfigSelect->configId() );
+  settings.setValue( baseKey + "/username", mAuthSettings->storeUsernameIsChecked( ) && !hasAuthConfigID ? mAuthSettings->username( ) : QLatin1String( "" ) );
+  settings.setValue( baseKey + "/password", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? mAuthSettings->password( ) : QLatin1String( "" ) );
+  settings.setValue( baseKey + "/saveUsername", mAuthSettings->storeUsernameIsChecked() && !hasAuthConfigID ? "true" : "false" );
+  settings.setValue( baseKey + "/savePassword", mAuthSettings->storePasswordIsChecked( )  && !hasAuthConfigID ? "true" : "false" );
+  settings.setValue( baseKey + "/authcfg", mAuthSettings->configId() );
 
   QDialog::accept();
 }
 
-void QgsDb2NewConnection::on_btnConnect_clicked()
+void QgsDb2NewConnection::btnConnect_clicked()
 {
   testConnection();
 }
@@ -145,10 +141,6 @@ void QgsDb2NewConnection::on_cb_trustedConnection_clicked()
 
 //! End  Autoconnected SLOTS *
 
-QgsDb2NewConnection::~QgsDb2NewConnection()
-{
-}
-
 bool QgsDb2NewConnection::testConnection()
 {
   QSqlDatabase db;
@@ -156,14 +148,19 @@ bool QgsDb2NewConnection::testConnection()
   QString authcfg;
   QString connInfo;
   QString errMsg;
+  // If the configuration tab is selected, test the authcfg in the connection
+  if ( mAuthSettings->configurationTabIsSelected( ) )
+  {
+    authcfg = mAuthSettings->configId( );
+  }
   bool rc = QgsDb2ConnectionItem::ConnInfoFromParameters(
               txtService->text().trimmed(),
               txtDriver->text().trimmed(),
               txtHost->text().trimmed(),
               txtPort->text().trimmed(),
               txtDatabase->text().trimmed(),
-              txtUsername->text().trimmed(),
-              txtPassword->text().trimmed(),
+              mAuthSettings->username().trimmed(),
+              mAuthSettings->password().trimmed(),
               authcfg,
               connInfo, errMsg );
 
@@ -194,4 +191,9 @@ bool QgsDb2NewConnection::testConnection()
 
 void QgsDb2NewConnection::listDatabases()
 {
+}
+
+void QgsDb2NewConnection::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-db2-spatial" ) );
 }

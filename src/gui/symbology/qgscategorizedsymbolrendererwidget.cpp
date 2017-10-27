@@ -50,7 +50,6 @@
 ///@cond PRIVATE
 
 QgsCategorizedSymbolRendererModel::QgsCategorizedSymbolRendererModel( QObject *parent ) : QAbstractItemModel( parent )
-  , mRenderer( nullptr )
   , mMimeFormat( QStringLiteral( "application/x-qgscategorizedsymbolrendererv2model" ) )
 {
 }
@@ -391,8 +390,7 @@ QgsRendererWidget *QgsCategorizedSymbolRendererWidget::create( QgsVectorLayer *l
 
 QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-  , mRenderer( nullptr )
-  , mModel( nullptr )
+
 {
 
   // try to recognize the previous renderer
@@ -420,7 +418,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
 
   // set project default color ramp
   QString defaultColorRamp = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QLatin1String( "" ) );
-  if ( defaultColorRamp != QLatin1String( "" ) )
+  if ( !defaultColorRamp.isEmpty() )
   {
     btnColorRamp->setColorRampFromName( defaultColorRamp );
   }
@@ -1049,7 +1047,7 @@ void QgsCategorizedSymbolRendererWidget::dataDefinedSizeLegend()
   QgsDataDefinedSizeLegendWidget *panel = createDataDefinedSizeLegendWidget( s, mRenderer->dataDefinedSizeLegend() );
   if ( panel )
   {
-    connect( panel, &QgsPanelWidget::widgetChanged, [ = ]
+    connect( panel, &QgsPanelWidget::widgetChanged, this, [ = ]
     {
       mRenderer->setDataDefinedSizeLegend( panel->dataDefinedSizeLegend() );
       emit widgetChanged();

@@ -57,7 +57,7 @@ class LinesToPolygons(QgisFeatureBasedAlgorithm):
         return self.tr('line,polygon,convert').split(',')
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -73,6 +73,9 @@ class LinesToPolygons(QgisFeatureBasedAlgorithm):
 
     def outputType(self):
         return QgsProcessing.TypeVectorPolygon
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine]
 
     def outputWkbType(self, input_wkb_type):
         return self.convertWkbToPolygons(input_wkb_type)
@@ -98,7 +101,7 @@ class LinesToPolygons(QgisFeatureBasedAlgorithm):
         return multi_wkb
 
     def convertToPolygons(self, geometry):
-        surfaces = self.getSurfaces(geometry.geometry())
+        surfaces = self.getSurfaces(geometry.constGet())
         output_wkb = self.convertWkbToPolygons(geometry.wkbType())
         out_geom = None
         if QgsWkbTypes.flatType(output_wkb) == QgsWkbTypes.MultiPolygon:

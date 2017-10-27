@@ -23,7 +23,9 @@ my @lang;
 
 # script to generate a html list of the qgis application translations
 # showing the percentage finished and the names of the translators
-
+#
+# try to always use ISO 639-1 language codes
+#
 # without argument it generates html which is used in the about-dialog of the application
 # output to std-out, to be piped to doc/TRANSLATORS so it can be used in dialog
 #   scripts/tsstat.pl > doc/TRANSLATORS
@@ -62,6 +64,7 @@ my $translators= {
 	'ka' => 'Shota Murtskhvaladze, George Machitidze',
 	'km' => 'Khoem Sokhem',
 	'ko' => 'OSGeo Korean Chapter',
+	'ky' => 'Stéphane Henriod, Azamat Karypov, Salaidin Kamaldinov, Akylbek Chymyrov, Chinara Saparova, Almaz Abdiev, Nurlan Tokbaev, Tatygul, Urmambetova, Adilet Bekturov, Nursultan Ismailov, Nurlan Zhusupov',
 	'lo' => 'Anousak Souphavanh, Soukanh Lathsavong',
 	'lv' => 'Maris Nartiss, Pēteris Brūns',
 	'lt' => 'Paulius Litvinas, Tomas Straupis, Kestas M',
@@ -70,7 +73,7 @@ my $translators= {
 	'mr' => '',
 	'nb' => 'James Stott, Maléne Peterson',
 	'nl' => 'Richard Duivenvoorde, Raymond Nijssen, Carlo van Rijswijk, Diethard Jansen, Willem Hoffmans, Dick Groskamp',
-	'pl' => 'Robert Szczepanek, Milena Nowotarska, Borys Jurgiel, Mateusz Łoskot, Tomasz Paul, Andrzej Świąder, Radosław Pasiok, Michał Kułach, Ewelina Krawczak, Michał Smoczyk, Jakub Bobrowski',
+	'pl' => 'Robert Szczepanek, Milena Nowotarska, Borys Jurgiel, Mateusz Łoskot, Tomasz Paul, Andrzej Świąder, Radosław Pasiok, Michał Kułach, Ewelina Krawczak, Michał Smoczyk, Jakub Bobrowski, Kuba Kiszkurno, Beata Baziak, Bartosz Mazurkiewcz',
 	'pt_BR' => 'Sidney Schaberle Goveia, Arthur Nanni, Marcelo Soares Souza, Narcélio de Sá Pereira Filho, Leônidas Descovi Filho, Felipe Sodré Barros ',
 	'pt_PT' => 'Giovanni Manghi, Joana Simões, Duarte Carreira, Alexandre Neto, Pedro Pereira, Pedro Palheiro, Nelson Silva, Ricardo Sena, Leandro Infantini, João Gaspar',
 	'ro' => 'Sorin Călinică, Tudor Bărăscu, Georgiana Ioanovici, Alex Bădescu, Lonut Losifescu-Enescu, Bogdan Pacurar',

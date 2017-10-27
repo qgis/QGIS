@@ -20,7 +20,11 @@ class QgsFeatureListModel : QAbstractProxyModel, QgsFeatureModel
     struct FeatureInfo
     {
       public:
+
         FeatureInfo();
+%Docstring
+ Constructor for FeatureInfo.
+%End
 
         bool isNew;
         bool isEdited;
@@ -34,7 +38,6 @@ class QgsFeatureListModel : QAbstractProxyModel, QgsFeatureModel
 
   public:
     explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent /TransferThis/ = 0 );
-    virtual ~QgsFeatureListModel();
 
     virtual void setSourceModel( QgsAttributeTableFilterModel *sourceModel );
     QgsVectorLayerCache *layerCache();

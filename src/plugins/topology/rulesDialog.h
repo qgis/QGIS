@@ -20,7 +20,7 @@
 
 #include <QDialog>
 
-#include <qgsvectorlayer.h>
+#include "qgsvectorlayer.h"
 
 #include "ui_rulesDialog.h"
 #include "topolTest.h"
@@ -41,7 +41,7 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
      * \param parent parent widget
      */
     rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterface *qgisIface, QWidget *parent );
-    ~rulesDialog();
+
     /*
      * Returns pointer to the test table
      */

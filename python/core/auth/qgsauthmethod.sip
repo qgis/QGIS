@@ -28,6 +28,7 @@ class QgsAuthMethod : QObject
       NetworkReply,
       DataSourceUri,
       GenericDataSourceUri,
+      NetworkProxy,
       All
     };
     typedef QFlags<QgsAuthMethod::Expansion> Expansions;
@@ -105,6 +106,18 @@ Increment this if method is significantly updated, allow updater code to be writ
  \param connectionItems QStringlist of 'key=value' pairs, as utilized in QgsDataSourceUri.connectionInfo()
  \param authcfg Authentication configuration ID
  \param dataprovider Textual key for a data provider, e.g. 'postgres', that allows
+ for custom updater code specific to the provider
+ :return: Whether the update succeeded
+ :rtype: bool
+%End
+
+    virtual bool updateNetworkProxy( QNetworkProxy &proxy, const QString &authcfg,
+                                     const QString &dataprovider = QString() );
+%Docstring
+ Update proxy settings with authentication components
+ \param proxy
+ \param authcfg Authentication configuration ID
+ \param dataprovider Textual key for a data provider, e.g. 'proxy', that allows
  for custom updater code specific to the provider
  :return: Whether the update succeeded
  :rtype: bool

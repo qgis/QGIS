@@ -31,10 +31,6 @@ class QgsErrorDialog: QDialog
  \param fl widget flags
 %End
 
-  public slots:
-    void on_mDetailPushButton_clicked();
-    void on_mDetailCheckBox_stateChanged( int state );
-
 };
 
 /************************************************************************

@@ -18,7 +18,6 @@ class QgsFileWidget : QWidget
 %TypeHeaderCode
 #include "qgsfilewidget.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsFileWidget *>( sipCpp ) )
       sipType = sipType_QgsFileWidget;
@@ -30,7 +29,8 @@ class QgsFileWidget : QWidget
     enum StorageMode
     {
       GetFile,
-      GetDirectory
+      GetDirectory,
+      GetMultipleFiles,
     };
 
     enum RelativeStorage
@@ -47,8 +47,18 @@ class QgsFileWidget : QWidget
 
     QString filePath();
 %Docstring
-Returns the current file path
+ Returns the current file path(s)
+ when multiple files are selected, they are quoted and separated
+ by a single space (for example: '"/path/foo" "path/bar"')
+.. seealso:: filePaths
  :rtype: str
+%End
+
+    static QStringList splitFilePaths( const QString &path );
+%Docstring
+ Split the the quoted and space separated ``path`` and returns a QString list
+.. seealso:: filePath
+ :rtype: list of str
 %End
 
     void setFilePath( QString path );
@@ -72,7 +82,7 @@ returns the open file dialog title
  setDialogTitle defines the open file dialog title
 .. note::
 
-   if not defined, the title is "Select a file" or "Select a directory" depending on the configuration.
+   if not defined, the title is "Select a file" or "Select a directory" or "Select one or more files" depending on the configuration.
 %End
 
     QString filter() const;

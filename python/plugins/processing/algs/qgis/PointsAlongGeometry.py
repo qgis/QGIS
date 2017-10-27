@@ -61,7 +61,7 @@ class PointsAlongGeometry(QgisAlgorithm):
         return self.tr('create,interpolate,points,lines').split(',')
 
     def group(self):
-        return self.tr('Vector geometry tools')
+        return self.tr('Vector geometry')
 
     def __init__(self):
         super().__init__()
@@ -108,7 +108,7 @@ class PointsAlongGeometry(QgisAlgorithm):
                 sink.addFeature(input_feature, QgsFeatureSink.FastInsert)
             else:
                 if input_geometry.type == QgsWkbTypes.PolygonGeometry:
-                    length = input_geometry.geometry().perimeter()
+                    length = input_geometry.constGet().perimeter()
                 else:
                     length = input_geometry.length() - end_offset
                 current_distance = start_offset

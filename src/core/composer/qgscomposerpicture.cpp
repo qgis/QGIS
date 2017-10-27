@@ -46,15 +46,6 @@
 
 QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
   : QgsComposerItem( composition )
-  , mMode( Unknown )
-  , mPictureRotation( 0 )
-  , mRotationMap( nullptr )
-  , mNorthMode( GridNorth )
-  , mNorthOffset( 0.0 )
-  , mResizeMode( QgsComposerPicture::Zoom )
-  , mPictureAnchor( UpperLeft )
-  , mHasExpressionError( false )
-  , mLoadingSvg( false )
 {
   mPictureWidth = rect().width();
   init();
@@ -62,15 +53,6 @@ QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
 
 QgsComposerPicture::QgsComposerPicture()
   : QgsComposerItem( nullptr )
-  , mMode( Unknown )
-  , mPictureRotation( 0 )
-  , mRotationMap( nullptr )
-  , mNorthMode( GridNorth )
-  , mNorthOffset( 0.0 )
-  , mResizeMode( QgsComposerPicture::Zoom )
-  , mPictureAnchor( UpperLeft )
-  , mHasExpressionError( false )
-  , mLoadingSvg( false )
 {
   mPictureHeight = rect().height();
   init();
@@ -263,7 +245,7 @@ QRect QgsComposerPicture::clippedImageRect( double &boundRectWidthMM, double &bo
     case UpperRight:
     case MiddleRight:
     case LowerRight:
-      leftClip =  imageRectPixels.width() - boundRectWidthPixels;
+      leftClip = imageRectPixels.width() - boundRectWidthPixels;
       break;
   }
 
@@ -482,7 +464,7 @@ QRectF QgsComposerPicture::boundedImageRect( double deviceWidth, double deviceHe
   double imageToDeviceRatio;
   if ( mImage.width() / deviceWidth > mImage.height() / deviceHeight )
   {
-    imageToDeviceRatio =  deviceWidth / mImage.width();
+    imageToDeviceRatio = deviceWidth / mImage.width();
     double height = imageToDeviceRatio * mImage.height();
     return QRectF( 0, 0, deviceWidth, height );
   }
@@ -578,8 +560,8 @@ void QgsComposerPicture::setSceneRect( const QRectF &rectangle )
 
       //if height has changed more than width, then fix width and set height correspondingly
       //else, do the opposite
-      if ( qAbs( rect().width() - rectangle.width() ) <
-           qAbs( rect().height() - rectangle.height() ) )
+      if ( std::fabs( rect().width() - rectangle.width() ) <
+           std::fabs( rect().height() - rectangle.height() ) )
       {
         newRect.setHeight( targetImageSize.height() * newRect.width() / targetImageSize.width() );
       }
@@ -747,7 +729,7 @@ bool QgsComposerPicture::writeXml( QDomElement &elem, QDomDocument &doc ) const
   {
     // convert from absolute path to relative. For SVG we also need to consider system SVG paths
     QgsPathResolver pathResolver = mComposition->project()->pathResolver();
-    if ( imagePath.endsWith( ".svg", Qt::CaseInsensitive ) )
+    if ( imagePath.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
       imagePath = QgsSymbolLayerUtils::svgSymbolPathToName( imagePath, pathResolver );
     else
       imagePath = pathResolver.writePath( imagePath );
@@ -828,7 +810,7 @@ bool QgsComposerPicture::readXml( const QDomElement &itemElem, const QDomDocumen
   {
     // convert from relative path to absolute. For SVG we also need to consider system SVG paths
     QgsPathResolver pathResolver = mComposition->project()->pathResolver();
-    if ( imagePath.endsWith( ".svg", Qt::CaseInsensitive ) )
+    if ( imagePath.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
       imagePath = QgsSymbolLayerUtils::svgSymbolNameToPath( imagePath, pathResolver );
     else
       imagePath = pathResolver.readPath( imagePath );

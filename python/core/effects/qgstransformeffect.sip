@@ -32,6 +32,9 @@ class QgsTransformEffect : QgsPaintEffect
 %End
 
     QgsTransformEffect();
+%Docstring
+ Constructor for QgsTransformEffect.
+%End
 
     virtual QString type() const;
     virtual QgsStringMap properties() const;

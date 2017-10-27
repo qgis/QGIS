@@ -18,14 +18,11 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsbrightnesscontrastfilter.h"
 
-#include <qmath.h>
 #include <QDomDocument>
 #include <QDomElement>
 
 QgsBrightnessContrastFilter::QgsBrightnessContrastFilter( QgsRasterInterface *input )
   : QgsRasterInterface( input )
-  , mBrightness( 0 )
-  , mContrast( 0 )
 {
 }
 
@@ -141,7 +138,7 @@ QgsRasterBlock *QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  co
   QRgb myColor;
 
   int r, g, b, alpha;
-  double f = qPow( ( mContrast + 100 ) / 100.0, 2 );
+  double f = std::pow( ( mContrast + 100 ) / 100.0, 2 );
 
   for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
   {

@@ -20,9 +20,10 @@
 #include <QEvent>
 #include <QStringList>
 
-#include <qgis.h>
-#include <qgsconfig.h>
+#include "qgis.h"
+#include "qgsconfig.h"
 
+class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
 class QgsRuntimeProfiler;
 class QgsTaskManager;
@@ -43,8 +44,10 @@ class QgsUserProfile;
 class QgsUserProfileManager;
 class QgsPageSizeRegistry;
 class QgsLayoutItemRegistry;
+class QgsAuthManager;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
  * as theme paths, database paths etc.
  *
@@ -151,7 +154,8 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QgsApplication *instance();
 
-    /** This method initializes paths etc for QGIS. Called by the ctor or call it manually
+    /**
+     * This method initializes paths etc for QGIS. Called by the ctor or call it manually
         when your app does not extend the QApplication class.
         \note you will probably want to call initQgis too to load the providers in
         the above case.
@@ -168,7 +172,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Set the FileOpen event receiver
     static void setFileOpenEventReceiver( QObject *receiver );
 
-    /** Set the active theme to the specified theme.
+    /**
+     * Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
      * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
      * but plugin writers etc can use themeName() as a basis for searching
@@ -179,7 +184,8 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static void setThemeName( const QString &themeName );
 
-    /** Set the active theme to the specified theme.
+    /**
+     * Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
      * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
      * but plugin writers etc can use this method as a basis for searching
@@ -207,12 +213,14 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to the authors file.
     static QString authorsFilePath();
 
-    /** Returns the path to the contributors file.
+    /**
+     * Returns the path to the contributors file.
      * Contributors are people who have submitted patches
      * but don't have commit access. */
     static QString contributorsFilePath();
 
-    /** Returns the path to the developers map file.
+    /**
+     * Returns the path to the developers map file.
      * The developers map was created by using leaflet framework,
      * it shows the doc/contributors.json file.
      * \since QGIS 2.7 */
@@ -224,6 +232,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to the donors file.
     static QString donorsFilePath();
 
+    //! Returns the path to the server resources directory.
+    static QString serverResourcesPath();
+
     /**
      * Returns the path to the sponsors file.
      */
@@ -234,11 +245,14 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QString licenceFilePath();
 
-    //! Returns the path to the help application.
-    static QString helpAppPath();
-
     //! Returns the path to the translation directory.
     static QString i18nPath();
+
+    /**
+     * Returns the path to the metadata directory.
+    * \since QGIS 3.0
+    */
+    static QString metadataPath();
 
     //! Returns the path to the master qgis.db file.
     static QString qgisMasterDatabaseFilePath();
@@ -285,16 +299,22 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the path to the default theme directory.
     static QString defaultThemePath();
 
-    //! Returns path to the desired icon file.
-    //! First it tries to use the active theme path, then default theme path
+    /**
+     * Returns path to the desired icon file.
+     * First it tries to use the active theme path, then default theme path
+     */
     static QString iconPath( const QString &iconFile );
 
-    //! Helper to get a theme icon. It will fall back to the
-    //! default theme if the active theme does not have the required icon.
+    /**
+     * Helper to get a theme icon. It will fall back to the
+     * default theme if the active theme does not have the required icon.
+     */
     static QIcon getThemeIcon( const QString &name );
 
-    //! Helper to get a theme icon as a pixmap. It will fall back to the
-    //! default theme if the active theme does not have the required icon.
+    /**
+     * Helper to get a theme icon as a pixmap. It will fall back to the
+     * default theme if the active theme does not have the required icon.
+     */
     static QPixmap getThemePixmap( const QString &name );
 
     //! Returns the path to user's style.
@@ -303,31 +323,36 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the short name regular expression for line edit validator
     static QRegExp shortNameRegExp();
 
-    /** Returns the user's operating system login account name.
+    /**
+     * Returns the user's operating system login account name.
      * \since QGIS 2.14
      * \see userFullName()
      */
     static QString userLoginName();
 
-    /** Returns the user's operating system login account full display name.
+    /**
+     * Returns the user's operating system login account full display name.
      * \since QGIS 2.14
      * \see userLoginName()
      */
     static QString userFullName();
 
-    /** Returns a string name of the operating system QGIS is running on.
+    /**
+     * Returns a string name of the operating system QGIS is running on.
      * \since QGIS 2.14
      * \see platform()
      */
     static QString osName();
 
-    /** Returns the QGIS platform name, e.g., "desktop" or "server".
+    /**
+     * Returns the QGIS platform name, e.g., "desktop" or "server".
      * \since QGIS 2.14
      * \see osName()
      */
     static QString platform();
 
-    /** Returns the QGIS locale.
+    /**
+     * Returns the QGIS locale.
      * \since QGIS 3.0
      */
     static QString locale();
@@ -387,7 +412,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns whether this machine uses big or little endian
     static endian_t endian();
 
-    /** Swap the endianness of the specified value.
+    /**
+     * Swap the endianness of the specified value.
      * \note not available in Python bindings
      */
 #ifndef SIP_RUN
@@ -403,7 +429,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     }
 #endif
 
-    /** \brief get a standard css style sheet for reports.
+    /**
+     * \brief get a standard css style sheet for reports.
      * Typically you will use this method by doing:
      * QString myStyle = QgsApplication::reportStyleSheet();
      * textBrowserReport->document()->setDefaultStyleSheet(myStyle);
@@ -413,11 +440,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QString reportStyleSheet();
 
-    /** Convenience function to get a summary of the paths used in this
+    /**
+     * Convenience function to get a summary of the paths used in this
      * application instance useful for debugging mainly.*/
     static QString showSettings();
 
-    /** Register OGR drivers ensuring this only happens once.
+    /**
+     * Register OGR drivers ensuring this only happens once.
      * This is a workaround for an issue with older gdal versions that
      * caused duplicate driver name entries to appear in the list
      * of registered drivers when QgsApplication::registerOgrDrivers was called multiple
@@ -440,34 +469,40 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns path to the build output directory. Valid only when running from build directory
     static QString buildOutputPath() { return ABISYM( mBuildOutputPath ); }
 
-    /** Sets the GDAL_SKIP environment variable to include the specified driver
+    /**
+     * Sets the GDAL_SKIP environment variable to include the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      */
     static void skipGdalDriver( const QString &driver );
 
-    /** Sets the GDAL_SKIP environment variable to exclude the specified driver
+    /**
+     * Sets the GDAL_SKIP environment variable to exclude the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      */
     static void restoreGdalDriver( const QString &driver );
 
-    /** Returns the list of gdal drivers that should be skipped (based on
+    /**
+     * Returns the list of gdal drivers that should be skipped (based on
      * GDAL_SKIP environment variable)
      */
     static QStringList skippedGdalDrivers() { return ABISYM( mGdalSkipList ); }
 
-    /** Apply the skipped drivers list to gdal
+    /**
+     * Apply the skipped drivers list to gdal
      * \see skipGdalDriver
      * \see restoreGdalDriver
      * \see skippedGdalDrivers */
     static void applyGdalSkippedDrivers();
 
-    /** Get maximum concurrent thread count
+    /**
+     * Get maximum concurrent thread count
      * \since QGIS 2.4 */
     static int maxThreads() { return ABISYM( mMaxThreads ); }
 
-    /** Set maximum concurrent thread count
+    /**
+     * Set maximum concurrent thread count
      * \note must be between 1 and \#cores, -1 means use all available cores
      * \since QGIS 2.4 */
     static void setMaxThreads( int maxThreads );
@@ -549,6 +584,14 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsMessageLog *messageLog();
 
     /**
+     * Returns the application's authentication manager instance
+     * \note this can be a null pointer if called before initQgis
+     * \see initQgis
+     * \since QGIS 3.0
+     */
+    static QgsAuthManager *authManager();
+
+    /**
      * Returns the application's processing registry, used for managing processing providers,
      * algorithms, and various parameters and outputs.
      * \since QGIS 3.0
@@ -585,6 +628,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Get the registry of available field formatters.
      */
     static QgsFieldFormatterRegistry *fieldFormatterRegistry();
+
+    /**
+     * Returns registry of available 3D renderers.
+     * \note not available in Python bindings
+     * \since QGIS 3.0
+     */
+    static Qgs3DRendererRegistry *renderer3DRegistry();
 
     /**
      * This string is used to represent the value `NULL` throughout QGIS.
@@ -679,7 +729,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Path to the output directory of the build. valid only when running from build directory
     static QString ABISYM( mBuildOutputPath );
 
-    /** List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
+    /**
+     * List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
      * \see skipGdalDriver, restoreGdalDriver */
     static QStringList ABISYM( mGdalSkipList );
 
@@ -698,9 +749,11 @@ class CORE_EXPORT QgsApplication : public QApplication
     QMap<QString, QIcon> mIconCache;
 
     QgsDataItemProviderRegistry *mDataItemProviderRegistry = nullptr;
+    QgsAuthManager *mAuthManager = nullptr;
 
     struct ApplicationMembers
     {
+      Qgs3DRendererRegistry *m3DRendererRegistry = nullptr;
       QgsActionScopeRegistry *mActionScopeRegistry = nullptr;
       QgsAnnotationRegistry *mAnnotationRegistry = nullptr;
       QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;
@@ -732,5 +785,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     static ApplicationMembers *members();
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

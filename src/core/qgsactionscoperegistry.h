@@ -21,7 +21,8 @@
 #include <QSet>
 #include "qgsactionscope.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * The action scope registry is an application wide registry that
  * contains a list of available action scopes.
  * Some scopes are available by default, additional ones can be registered

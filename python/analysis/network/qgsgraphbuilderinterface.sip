@@ -23,7 +23,6 @@ class QgsGraphBuilderInterface
 %TypeHeaderCode
 #include "qgsgraphbuilderinterface.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast< QgsGraphBuilder * >( sipCpp ) != NULL )
       sipType = sipType_QgsGraphBuilder;
@@ -91,6 +90,7 @@ Returns measurement tool
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

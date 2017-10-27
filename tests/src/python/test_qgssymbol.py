@@ -114,18 +114,18 @@ class TestQgsSymbol(unittest.TestCase):
 
             #test with Z
             geom_z = QgsGeometry.fromWkt(test['wkt'])
-            geom_z.geometry().addZValue(5)
+            geom_z.get().addZValue(5)
             rendered_image = self.renderGeometry(geom_z)
             assert self.imageCheck(test['name'] + 'Z', test['reference_image'], rendered_image)
 
             #test with ZM
-            geom_z.geometry().addMValue(15)
+            geom_z.get().addMValue(15)
             rendered_image = self.renderGeometry(geom_z)
             assert self.imageCheck(test['name'] + 'ZM', test['reference_image'], rendered_image)
 
             #test with M
             geom_m = QgsGeometry.fromWkt(test['wkt'])
-            geom_m.geometry().addMValue(15)
+            geom_m.get().addMValue(15)
             rendered_image = self.renderGeometry(geom_m)
             assert self.imageCheck(test['name'] + 'M', test['reference_image'], rendered_image)
 
@@ -137,12 +137,12 @@ class TestQgsSymbol(unittest.TestCase):
 
         painter = QPainter()
         ms = QgsMapSettings()
-        extent = geom.geometry().boundingBox()
+        extent = geom.get().boundingBox()
         # buffer extent by 10%
         if extent.width() > 0:
-            extent = extent.buffer((extent.height() + extent.width()) / 20.0)
+            extent = extent.buffered((extent.height() + extent.width()) / 20.0)
         else:
-            extent = extent.buffer(10)
+            extent = extent.buffered(10)
 
         ms.setExtent(extent)
         ms.setOutputSize(image.size())

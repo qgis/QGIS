@@ -39,15 +39,6 @@
 QgsColorRampButton::QgsColorRampButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
   , mColorRampDialogTitle( dialogTitle.isEmpty() ? tr( "Select Color Ramp" ) : dialogTitle )
-  , mShowGradientOnly( false )
-  , mColorRamp( nullptr )
-  , mDefaultColorRamp( nullptr ) //default to invalid ramp
-  , mAcceptLiveUpdates( true )
-  , mColorRampSet( false )
-  , mShowRandomColorRamp( false )
-  , mShowNull( false )
-  , mMenu( nullptr )
-
 {
   setAcceptDrops( true );
   setMinimumSize( QSize( 24, 16 ) );
@@ -180,7 +171,7 @@ void QgsColorRampButton::showColorRampDialog()
 
 void QgsColorRampButton::setToDefaultColorRamp()
 {
-  if ( mDefaultColorRamp == nullptr )
+  if ( !mDefaultColorRamp )
   {
     return;
   }
@@ -253,7 +244,7 @@ void QgsColorRampButton::prepareMenu()
   mMenu->addSeparator();
 
   //show default color option if set
-  if ( mDefaultColorRamp != nullptr )
+  if ( mDefaultColorRamp )
   {
     QAction *defaultColorRampAction = new QAction( tr( "Default color ramp" ), this );
     defaultColorRampAction->setIcon( createMenuIcon( mDefaultColorRamp ) );
@@ -337,7 +328,7 @@ void QgsColorRampButton::loadColorRamp()
   QAction *selectedItem = qobject_cast<QAction *>( sender() );
   if ( selectedItem )
   {
-    QString name = selectedItem->text();
+    QString name = selectedItem->iconText();
     setColorRampName( name );
     setColorRampFromName( name );
   }
@@ -513,7 +504,7 @@ void QgsColorRampButton::setRandomColorRamp()
 void QgsColorRampButton::setButtonBackground( QgsColorRamp *colorramp )
 {
   QgsColorRamp *backgroundColorRamp = colorramp;
-  if ( colorramp == nullptr )
+  if ( !colorramp )
   {
     backgroundColorRamp = mColorRamp;
   }
@@ -565,7 +556,7 @@ void QgsColorRampButton::setButtonBackground( QgsColorRamp *colorramp )
 
     painter.begin( &pm );
     painter.setPen( pen );
-    painter.drawText( QRect( 0, 0, currentIconSize.width(), currentIconSize.height() ), Qt::AlignCenter, "Random colors" );
+    painter.drawText( QRect( 0, 0, currentIconSize.width(), currentIconSize.height() ), Qt::AlignCenter, QStringLiteral( "Random colors" ) );
     painter.end();
   }
   else
@@ -613,8 +604,7 @@ void QgsColorRampButton::setDefaultColorRamp( QgsColorRamp *colorramp )
 
 bool QgsColorRampButton::isRandomColorRamp() const
 {
-  QgsRandomColorRamp *randomRamp = dynamic_cast<QgsRandomColorRamp *>( mColorRamp );
-  return randomRamp ? true : false;
+  return dynamic_cast<QgsRandomColorRamp *>( mColorRamp );
 }
 
 void QgsColorRampButton::setShowNull( bool showNull )
@@ -629,7 +619,7 @@ bool QgsColorRampButton::showNull() const
 
 bool QgsColorRampButton::isNull() const
 {
-  return mColorRamp == nullptr;
+  return !mColorRamp;
 }
 
 void QgsColorRampButton::rampWidgetUpdated()

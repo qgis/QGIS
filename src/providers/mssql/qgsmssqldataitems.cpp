@@ -43,7 +43,6 @@ QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem *parent, QString nam
   , mUseGeometryColumns( false )
   , mUseEstimatedMetadata( false )
   , mAllowGeometrylessTables( true )
-  , mColumnTypeThread( nullptr )
 {
   mCapabilities |= Fast | Collapse;
   mIconName = QStringLiteral( "mIconConnect.png" );
@@ -75,7 +74,7 @@ void QgsMssqlConnectionItem::readConnectionSettings()
   mUseEstimatedMetadata = settings.value( key + "/estimatedMetadata", false ).toBool();
   mAllowGeometrylessTables = settings.value( key + "/allowGeometrylessTables", true ).toBool();
 
-  mConnInfo =  "dbname='" + mDatabase + "' host='" + mHost + "' user='" + mUsername + "' password='" + mPassword + '\'';
+  mConnInfo = "dbname='" + mDatabase + "' host='" + mHost + "' user='" + mUsername + "' password='" + mPassword + '\'';
   if ( !mService.isEmpty() )
     mConnInfo += " service='" + mService + '\'';
   if ( mUseEstimatedMetadata )
@@ -304,7 +303,7 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
   QStringList sridList = layerProperty.srid.split( ',', QString::SkipEmptyParts );
   Q_ASSERT( typeList.size() == sridList.size() );
 
-  for ( int i = 0 ; i < typeList.size(); i++ )
+  for ( int i = 0; i < typeList.size(); i++ )
   {
     QgsWkbTypes::Type wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList[i] );
     if ( wkbType == QgsWkbTypes::Unknown )
@@ -331,20 +330,20 @@ bool QgsMssqlConnectionItem::equal( const QgsDataItem *other )
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsMssqlConnectionItem::actions()
+QList<QAction *> QgsMssqlConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
-  QAction *actionShowNoGeom = new QAction( tr( "Show Non-Spatial Tables" ), this );
+  QAction *actionShowNoGeom = new QAction( tr( "Show Non-Spatial Tables" ), parent );
   actionShowNoGeom->setCheckable( true );
   actionShowNoGeom->setChecked( mAllowGeometrylessTables );
   connect( actionShowNoGeom, &QAction::toggled, this, &QgsMssqlConnectionItem::setAllowGeometrylessTables );
   lst.append( actionShowNoGeom );
 
-  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), this );
+  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsMssqlConnectionItem::editConnection );
   lst.append( actionEdit );
 
-  QAction *actionDelete = new QAction( tr( "Delete Connection" ), this );
+  QAction *actionDelete = new QAction( tr( "Delete Connection" ), parent );
   connect( actionDelete, &QAction::triggered, this, &QgsMssqlConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
@@ -605,11 +604,11 @@ QVector<QgsDataItem *> QgsMssqlRootItem::createChildren()
 }
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsMssqlRootItem::actions()
+QList<QAction *> QgsMssqlRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsMssqlRootItem::newConnection );
   lst.append( actionNew );
 
@@ -619,11 +618,11 @@ QList<QAction *> QgsMssqlRootItem::actions()
 QWidget *QgsMssqlRootItem::paramWidget()
 {
   QgsMssqlSourceSelect *select = new QgsMssqlSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsMssqlSourceSelect::connectionsChanged, this, &QgsMssqlRootItem::connectionsChanged );
+  connect( select, &QgsMssqlSourceSelect::connectionsChanged, this, &QgsMssqlRootItem::onConnectionsChanged );
   return select;
 }
 
-void QgsMssqlRootItem::connectionsChanged()
+void QgsMssqlRootItem::onConnectionsChanged()
 {
   refresh();
 }

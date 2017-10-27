@@ -36,12 +36,12 @@ class APP_EXPORT QgsDecorationGridDialog : public QDialog, private Ui::QgsDecora
 
   private slots:
     void apply();
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
-    void on_mGridTypeComboBox_currentIndexChanged( int index );
-    void on_mPbtnUpdateFromExtents_clicked();
-    void on_mPbtnUpdateFromLayer_clicked();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
+    void showHelp();
+    void mGridTypeComboBox_currentIndexChanged( int index );
+    void mPbtnUpdateFromExtents_clicked();
+    void mPbtnUpdateFromLayer_clicked();
 
     // from composer map
     /* void on_mLineColorButton_clicked(); */

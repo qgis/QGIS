@@ -23,7 +23,6 @@ class QgsAccessControl : QgsFeatureFilterProvider
 
 %TypeHeaderCode
 #include "qgsaccesscontrol.h"
-
 #include "qgsaccesscontrolfilter.h"
 %End
   public:

@@ -53,7 +53,8 @@ class QAbstractButton;
 % End
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Abstract base class for all map tools.
  * Map tools are user interactive tools for manipulating the
  * map canvas. For example map pan and zoom features are
@@ -81,8 +82,10 @@ class GUI_EXPORT QgsMapTool : public QObject
 
   public:
 
-    //! Enumeration of flags that adjust the way the map tool operates
-    //! \since QGIS 2.16
+    /**
+     * Enumeration of flags that adjust the way the map tool operates
+     * \since QGIS 2.16
+     */
     enum Flag
     {
       Transient = 1 << 1, /*!< Indicates that this map tool performs a transient (one-off) operation.
@@ -93,7 +96,8 @@ class GUI_EXPORT QgsMapTool : public QObject
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    /** Returns the flags for the map tool.
+    /**
+     * Returns the flags for the map tool.
      * \since QGIS 2.16
      */
     virtual Flags flags() const { return Flags(); }
@@ -124,7 +128,8 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! gesture event for overriding. Default implementation does nothing.
     virtual bool gestureEvent( QGestureEvent *e );
 
-    /** Use this to associate a QAction to this maptool. Then when the setMapTool
+    /**
+     * Use this to associate a QAction to this maptool. Then when the setMapTool
      * method of mapcanvas is called the action state will be set to on.
      * Usually this will cause e.g. a toolbutton to appear pressed in and
      * the previously used toolbutton to pop out. */
@@ -133,7 +138,8 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! Return associated action with map tool or NULL if no action is associated
     QAction *action();
 
-    /** Use this to associate a button to this maptool. It has the same meaning
+    /**
+     * Use this to associate a button to this maptool. It has the same meaning
      * as setAction() function except it works with a button instead of an QAction. */
     void setButton( QAbstractButton *button );
 
@@ -149,25 +155,33 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! called when map tool is being deactivated
     virtual void deactivate();
 
+    //! convenient method to clean members
+    virtual void clean();
+
     //! returns pointer to the tool's map canvas
     QgsMapCanvas *canvas();
 
-    //! Emit map tool changed with the old tool
-    //! \since QGIS 2.3
+    /**
+     * Emit map tool changed with the old tool
+     * \since QGIS 2.3
+     */
     QString toolName() { return mToolName; }
 
-    /** Get search radius in mm. Used by identify, tip etc.
+    /**
+     * Get search radius in mm. Used by identify, tip etc.
      *  The values is currently set in identify tool options (move somewhere else?)
      *  and defaults to Qgis::DEFAULT_SEARCH_RADIUS_MM.
      *  \since QGIS 2.3 */
     static double searchRadiusMM();
 
-    /** Get search radius in map units for given context. Used by identify, tip etc.
+    /**
+     * Get search radius in map units for given context. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
      *  \since QGIS 2.3 */
     static double searchRadiusMU( const QgsRenderContext &context );
 
-    /** Get search radius in map units for given canvas. Used by identify, tip etc.
+    /**
+     * Get search radius in map units for given canvas. Used by identify, tip etc.
      *  The values is calculated from searchRadiusMM().
      *  \since QGIS 2.3 */
     static double searchRadiusMU( QgsMapCanvas *canvas );
@@ -206,8 +220,10 @@ class GUI_EXPORT QgsMapTool : public QObject
     //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
     QgsPointXY toMapCoordinates( const QgsMapLayer *layer, const QgsPointXY &point );
 
-    //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
-    //! \note available in Python bindings as toMapCoordinatesV2
+    /**
+     * transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
+     * \note available in Python bindings as toMapCoordinatesV2
+     */
     QgsPoint toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) SIP_PYNAME( toMapCoordinatesV2 );
 
     //! trnasformation of the rect from map coordinates to layer's coordinates
@@ -222,12 +238,16 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! cursor used in map tool
     QCursor mCursor;
 
-    //! optionally map tool can have pointer to action
-    //! which will be used to set that action as active
+    /**
+     * optionally map tool can have pointer to action
+     * which will be used to set that action as active
+     */
     QAction *mAction = nullptr;
 
-    //! optionally map tool can have pointer to a button
-    //! which will be used to set that action as active
+    /**
+     * optionally map tool can have pointer to a button
+     * which will be used to set that action as active
+     */
     QAbstractButton *mButton = nullptr;
 
     //! translated name of the map tool

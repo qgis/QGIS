@@ -532,7 +532,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         type += QLatin1String( "ZM" );
       layerProperty.types = QList<QgsWkbTypes::Type>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
       layerProperty.srids = QList<int>() << srid;
-      layerProperty.sql = QLatin1String( "" );
+      layerProperty.sql.clear();
       layerProperty.relKind = relkind;
       layerProperty.isView = isView;
       layerProperty.tableComment = comment;
@@ -573,7 +573,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                   " JOIN pg_namespace n ON n.oid=c.relnamespace"
                   " JOIN pg_type t ON t.oid=a.atttypid"
                   " LEFT JOIN pg_type b ON b.oid=t.typbasetype"
-                  " WHERE c.relkind IN ('v','r','m')"
+                  " WHERE c.relkind IN ('v','r','m','p')"
                   " AND has_schema_privilege( n.nspname, 'usage' )"
                   " AND has_table_privilege( '\"' || n.nspname || '\".\"' || c.relname || '\"', 'select' )"
                   " AND (t.typname IN ('geometry','geography','topogeometry') OR b.typname IN ('geometry','geography','topogeometry','pcpatch'))";
@@ -669,7 +669,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         continue;
       }
 
-      layerProperty.sql = QLatin1String( "" );
+      layerProperty.sql.clear();
 
       mLayersSupported << layerProperty;
       nColumns++;
@@ -689,7 +689,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                   " WHERE pg_namespace.oid=pg_class.relnamespace"
                   " AND has_schema_privilege(pg_namespace.nspname,'usage')"
                   " AND has_table_privilege('\"' || pg_namespace.nspname || '\".\"' || pg_class.relname || '\"','select')"
-                  " AND pg_class.relkind IN ('v','r','m')";
+                  " AND pg_class.relkind IN ('v','r','m','p')";
 
     // user has select privilege
     if ( searchPublicOnly )
@@ -745,7 +745,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         continue;
 
       addColumnInfo( layerProperty, schema, table, isView );
-      layerProperty.sql = QLatin1String( "" );
+      layerProperty.sql.clear();
 
       mLayersSupported << layerProperty;
       nColumns++;
@@ -1010,7 +1010,7 @@ QString QgsPostgresConn::quotedValue( const QVariant &value )
   }
 }
 
-PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError )
+PGresult *QgsPostgresConn::PQexec( const QString &query, bool logError ) const
 {
   if ( PQstatus() != CONNECTION_OK )
   {
@@ -1066,7 +1066,7 @@ bool QgsPostgresConn::openCursor( const QString &cursorName, const QString &sql 
 {
   if ( mOpenCursors++ == 0 && !mTransaction )
   {
-    QgsDebugMsg( QString( "Starting read-only transaction: %1" ).arg( mPostgresqlVersion ) );
+    QgsDebugMsgLevel( QString( "Starting read-only transaction: %1" ).arg( mPostgresqlVersion ), 4 );
     if ( mPostgresqlVersion >= 80000 )
       PQexecNR( QStringLiteral( "BEGIN READ ONLY" ) );
     else
@@ -1084,7 +1084,7 @@ bool QgsPostgresConn::closeCursor( const QString &cursorName )
 
   if ( --mOpenCursors == 0 && !mTransaction )
   {
-    QgsDebugMsg( "Committing read-only transaction" );
+    QgsDebugMsgLevel( "Committing read-only transaction", 4 );
     PQexecNR( QStringLiteral( "COMMIT" ) );
   }
 
@@ -1192,13 +1192,13 @@ void QgsPostgresConn::PQfinish()
   mConn = nullptr;
 }
 
-int QgsPostgresConn::PQstatus()
+int QgsPostgresConn::PQstatus() const
 {
   Q_ASSERT( mConn );
   return ::PQstatus( mConn );
 }
 
-QString QgsPostgresConn::PQerrorMessage()
+QString QgsPostgresConn::PQerrorMessage() const
 {
   Q_ASSERT( mConn );
   return QString::fromUtf8( ::PQerrorMessage( mConn ) );
@@ -1566,17 +1566,17 @@ void QgsPostgresConn::postgisWkbType( QgsWkbTypes::Type wkbType, QString &geomet
 
   if ( QgsWkbTypes::hasZ( wkbType ) && QgsWkbTypes::hasM( wkbType ) )
   {
-    geometryType += "ZM";
+    geometryType += QLatin1String( "ZM" );
     dim = 4;
   }
   else if ( QgsWkbTypes::hasZ( wkbType ) )
   {
-    geometryType += "Z";
+    geometryType += QLatin1String( "Z" );
     dim = 3;
   }
   else if ( QgsWkbTypes::hasM( wkbType ) )
   {
-    geometryType += "M";
+    geometryType += QLatin1String( "M" );
     dim = 3;
   }
   else if ( wkbType >= QgsWkbTypes::Point25D && wkbType <= QgsWkbTypes::MultiPolygon25D )
@@ -1854,4 +1854,22 @@ bool QgsPostgresConn::cancel()
     QgsMessageLog::logMessage( tr( "Query could not be canceled [%1]" ).arg( errbuf ), tr( "PostGIS" ) );
 
   return res == 0;
+}
+
+QString QgsPostgresConn::currentDatabase() const
+{
+  QString database;
+  QString sql = "SELECT current_database()";
+  QgsPostgresResult res( PQexec( sql ) );
+
+  if ( res.PQresultStatus() == PGRES_TUPLES_OK )
+  {
+    database = res.PQgetvalue( 0, 0 );
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "SQL:%1\nresult:%2\nerror:%3\n" ).arg( sql ).arg( res.PQresultStatus() ).arg( res.PQresultErrorMessage() ), tr( "PostGIS" ) );
+  }
+
+  return database;
 }

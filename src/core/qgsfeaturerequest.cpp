@@ -85,6 +85,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mOrderBy = rh.mOrderBy;
   mCrs = rh.mCrs;
   mTransformErrorCallback = rh.mTransformErrorCallback;
+  mConnectionTimeout = rh.mConnectionTimeout;
   return *this;
 }
 
@@ -114,7 +115,7 @@ QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCheck( QgsFeatureRequest
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCallback( std::function<void ( const QgsFeature & )> callback )
+QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCallback( const std::function<void ( const QgsFeature & )> &callback )
 {
   mInvalidGeometryCallback = callback;
   return *this;
@@ -248,7 +249,7 @@ QgsFeatureRequest &QgsFeatureRequest::setDestinationCrs( const QgsCoordinateRefe
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setTransformErrorCallback( std::function<void ( const QgsFeature & )> callback )
+QgsFeatureRequest &QgsFeatureRequest::setTransformErrorCallback( const std::function<void ( const QgsFeature & )> &callback )
 {
   mTransformErrorCallback = callback;
   return *this;
@@ -279,6 +280,16 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
   }
 
   return true;
+}
+
+int QgsFeatureRequest::connectionTimeout() const
+{
+  return mConnectionTimeout;
+}
+
+void QgsFeatureRequest::setConnectionTimeout( int connectionTimeout )
+{
+  mConnectionTimeout = connectionTimeout;
 }
 
 

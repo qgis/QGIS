@@ -40,11 +40,6 @@ class QgsFeedback : QObject
 Construct a feedback object
 %End
 
-    void cancel();
-%Docstring
-Tells the internal routines that the current operation should be canceled. This should be run by the main thread
-%End
-
     bool isCanceled() const;
 %Docstring
 Tells whether the operation has been canceled already
@@ -69,6 +64,13 @@ Tells whether the operation has been canceled already
 .. seealso:: progressChanged()
 .. versionadded:: 3.0
  :rtype: float
+%End
+
+  public slots:
+
+    void cancel();
+%Docstring
+Tells the internal routines that the current operation should be canceled. This should be run by the main thread
 %End
 
   signals:

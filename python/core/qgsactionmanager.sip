@@ -12,7 +12,7 @@
 
 
 
-class QgsActionManager
+class QgsActionManager: QObject
 {
 %Docstring
  Storage and management of actions associated with a layer.

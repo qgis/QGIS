@@ -20,7 +20,8 @@
 #include <QString>
 #include "qgsexpressioncontext.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * An action scope defines a "place" for an action to be shown and may add
  * additional expression variables.
  * Each QgsAction can be available in one or several action scopes.

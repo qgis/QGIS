@@ -19,12 +19,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgsnetworkaccessmanager.h>
+#include "qgsnetworkaccessmanager.h"
 
-#include <qgsapplication.h>
-#include <qgsmessagelog.h>
-#include <qgslogger.h>
-#include <qgis.h>
+#include "qgsapplication.h"
+#include "qgsmessagelog.h"
+#include "qgslogger.h"
+#include "qgis.h"
 #include "qgssettings.h"
 #include "qgsnetworkdiskcache.h"
 #include "qgsauthmanager.h"
@@ -48,7 +48,7 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::sMainNAM = nullptr;
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {
   public:
-    QgsNetworkProxyFactory() {}
+    QgsNetworkProxyFactory() = default;
 
     QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery &query = QNetworkProxyQuery() ) override
     {
@@ -118,8 +118,6 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::instance()
 
 QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
   : QNetworkAccessManager( parent )
-  , mUseSystemProxy( false )
-  , mInitialized( false )
 {
   setProxyFactory( new QgsNetworkProxyFactory() );
 }
@@ -182,17 +180,17 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 
 #ifndef QT_NO_SSL
   bool ishttps = pReq->url().scheme().toLower() == QLatin1String( "https" );
-  if ( ishttps && !QgsAuthManager::instance()->isDisabled() )
+  if ( ishttps && !QgsApplication::authManager()->isDisabled() )
   {
     QgsDebugMsg( "Adding trusted CA certs to request" );
     QSslConfiguration sslconfig( pReq->sslConfiguration() );
-    sslconfig.setCaCertificates( QgsAuthManager::instance()->getTrustedCaCertsCache() );
-
+    // Merge trusted CAs with any additional CAs added by the authentication methods
+    sslconfig.setCaCertificates( QgsAuthCertUtils::casMerge( QgsApplication::authManager()->getTrustedCaCertsCache(), sslconfig.caCertificates( ) ) );
     // check for SSL cert custom config
     QString hostport( QStringLiteral( "%1:%2" )
                       .arg( pReq->url().host().trimmed() )
                       .arg( pReq->url().port() != -1 ? pReq->url().port() : 443 ) );
-    QgsAuthConfigSslServer servconfig = QgsAuthManager::instance()->getSslCertCustomConfigByHost( hostport.trimmed() );
+    QgsAuthConfigSslServer servconfig = QgsApplication::authManager()->getSslCertCustomConfigByHost( hostport.trimmed() );
     if ( !servconfig.isNull() )
     {
       QgsDebugMsg( QString( "Adding SSL custom config to request for %1" ).arg( hostport ) );
@@ -323,6 +321,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
     //read type, host, port, user, passw from settings
     QString proxyHost = settings.value( QStringLiteral( "proxy/proxyHost" ), "" ).toString();
     int proxyPort = settings.value( QStringLiteral( "proxy/proxyPort" ), "" ).toString().toInt();
+
     QString proxyUser = settings.value( QStringLiteral( "proxy/proxyUser" ), "" ).toString();
     QString proxyPassword = settings.value( QStringLiteral( "proxy/proxyPassword" ), "" ).toString();
 
@@ -358,13 +357,23 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
       {
         proxyType = QNetworkProxy::FtpCachingProxy;
       }
-      QgsDebugMsg( QString( "setting proxy %1 %2:%3 %4/%5" )
+      QgsDebugMsg( QStringLiteral( "setting proxy %1 %2:%3 %4/%5" )
                    .arg( proxyType )
                    .arg( proxyHost ).arg( proxyPort )
                    .arg( proxyUser, proxyPassword )
                  );
       proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
     }
+  }
+
+  // Setup network proxy authentication configuration
+  QString authcfg = settings.value( QStringLiteral( "proxy/authcfg" ), "" ).toString();
+  if ( !authcfg.isEmpty( ) )
+  {
+    QgsDebugMsg( QStringLiteral( "setting proxy from stored authentication configuration %1" ).arg( authcfg ) );
+    // Never crash! Never.
+    if ( QgsApplication::authManager() )
+      QgsApplication::authManager()->updateNetworkProxy( proxy, authcfg );
   }
 
   setFallbackProxyAndExcludes( proxy, excludes );

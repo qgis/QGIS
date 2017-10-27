@@ -23,7 +23,8 @@ class QgsPointDisplacementRenderer: QgsPointDistanceRenderer
     enum Placement
     {
       Ring,
-      ConcentricRings
+      ConcentricRings,
+      Grid
     };
 
     QgsPointDisplacementRenderer( const QString &labelAttributeName = QString() );
@@ -137,7 +138,6 @@ Create a renderer from XML element
 %Docstring
  :rtype: QgsPointDisplacementRenderer
 %End
-  private:
     virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) ;
 };
 

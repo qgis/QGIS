@@ -63,6 +63,19 @@ end of iterating: free the resources / lock
  :rtype: CompileStatus
 %End
 
+    virtual bool isValid() const;
+%Docstring
+ Returns if this iterator is valid.
+ An invalid feature iterator is not able to provide a reliable source for data.
+ If an iterator is invalid, either give up or try to send the request again (preferably
+ after a timeout to give the system some time to stay responsive).
+
+ If you want to check if the iterator successfully completed, better use QgsFeatureIterator.isClosed().
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
   protected:
 
     virtual bool fetchFeature( QgsFeature &f ) = 0;
@@ -144,6 +157,7 @@ Remove reference, delete if refs == 0
 Setup the simplification of geometries to fetch using the specified simplify method
  :rtype: bool
 %End
+
 
 };
 
@@ -230,6 +244,18 @@ destructor deletes the iterator if it has no more references
 %End
     bool close();
 %Docstring
+ :rtype: bool
+%End
+
+    virtual bool isValid() const;
+%Docstring
+ Will return if this iterator is valid.
+ An invalid iterator was probably introduced by a failed attempt to acquire a connection
+ or is a default constructed iterator.
+
+.. seealso:: isClosed to check if the iterator successfully completed and returned all the features.
+
+.. versionadded:: 3.0
  :rtype: bool
 %End
 

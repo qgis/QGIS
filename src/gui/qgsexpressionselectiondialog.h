@@ -21,11 +21,13 @@
 
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
+#include "qgshelp.h"
 
 #include <QDialog>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This class offers a dialog to change feature selections.
  * To do so, a QgsExpressionBuilderWidget is shown in a dialog.
  * It offers the possibilities to create a new selection, add to the current selection
@@ -68,7 +70,8 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
      */
     void setGeomCalculator( const QgsDistanceArea &da );
 
-    /** Sets the message bar to display feedback from the dialog. This is used when zooming to
+    /**
+     * Sets the message bar to display feedback from the dialog. This is used when zooming to
      * features to display the count of selected features.
      * \param messageBar target message bar
      * \since QGIS 3.0
@@ -82,12 +85,13 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     void setMapCanvas( QgsMapCanvas *canvas );
 
   private slots:
-    void on_mActionSelect_triggered();
-    void on_mActionAddToSelection_triggered();
-    void on_mActionRemoveFromSelection_triggered();
-    void on_mActionSelectIntersect_triggered();
-    void on_mButtonZoomToFeatures_clicked();
-    void on_mPbnClose_clicked();
+    void mActionSelect_triggered();
+    void mActionAddToSelection_triggered();
+    void mActionRemoveFromSelection_triggered();
+    void mActionSelectIntersect_triggered();
+    void mButtonZoomToFeatures_clicked();
+    void mPbnClose_clicked();
+    void showHelp();
 
   protected:
 

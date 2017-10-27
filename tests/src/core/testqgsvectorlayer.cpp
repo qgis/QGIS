@@ -42,13 +42,11 @@ class TestSignalReceiver : public QObject
   public:
     TestSignalReceiver()
       : QObject( 0 )
-      , rendererChanged( false )
       , featureBlendMode( QPainter::CompositionMode( 0 ) )
-      , opacity( 1.0 )
     {}
-    bool rendererChanged;
+    bool rendererChanged =  false ;
     QPainter::CompositionMode featureBlendMode;
-    double opacity;
+    double opacity =  1.0 ;
   public slots:
     void onRendererChanged()
     {
@@ -64,23 +62,18 @@ class TestSignalReceiver : public QObject
     }
 };
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the vector layer class.
  */
 class TestQgsVectorLayer : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsVectorLayer()
-      : mTestHasError( false )
-      , mpPointsLayer( 0 )
-      , mpLinesLayer( 0 )
-      , mpPolysLayer( 0 )
-      , mpNonSpatialLayer( 0 )
-    {}
+    TestQgsVectorLayer() = default;
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
     QgsMapLayer *mpPointsLayer = nullptr;
     QgsMapLayer *mpLinesLayer = nullptr;
     QgsMapLayer *mpPolysLayer = nullptr;
@@ -342,13 +335,13 @@ void TestQgsVectorLayer::testAddTopologicalPoints()
 {
   // create a simple linestring layer
 
-  QgsVectorLayer *layerLine = new QgsVectorLayer( "LineString?crs=EPSG:27700", "layer line", "memory" );
+  QgsVectorLayer *layerLine = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
   QVERIFY( layerLine->isValid() );
 
-  QgsPolyline line1;
+  QgsPolylineXY line1;
   line1 << QgsPointXY( 2, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 3 );
   QgsFeature lineF1;
-  lineF1.setGeometry( QgsGeometry::fromPolyline( line1 ) );
+  lineF1.setGeometry( QgsGeometry::fromPolylineXY( line1 ) );
 
   layerLine->startEditing();
   layerLine->addFeature( lineF1 );

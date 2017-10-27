@@ -29,6 +29,18 @@
 QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel *label ): QgsComposerItemBaseWidget( nullptr, label ), mComposerLabel( label )
 {
   setupUi( this );
+  connect( mHtmlCheckBox, &QCheckBox::stateChanged, this, &QgsComposerLabelWidget::mHtmlCheckBox_stateChanged );
+  connect( mTextEdit, &QPlainTextEdit::textChanged, this, &QgsComposerLabelWidget::mTextEdit_textChanged );
+  connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsComposerLabelWidget::mInsertExpressionButton_clicked );
+  connect( mMarginXDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLabelWidget::mMarginXDoubleSpinBox_valueChanged );
+  connect( mMarginYDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLabelWidget::mMarginYDoubleSpinBox_valueChanged );
+  connect( mFontColorButton, &QgsColorButton::colorChanged, this, &QgsComposerLabelWidget::mFontColorButton_colorChanged );
+  connect( mCenterRadioButton, &QRadioButton::clicked, this, &QgsComposerLabelWidget::mCenterRadioButton_clicked );
+  connect( mLeftRadioButton, &QRadioButton::clicked, this, &QgsComposerLabelWidget::mLeftRadioButton_clicked );
+  connect( mRightRadioButton, &QRadioButton::clicked, this, &QgsComposerLabelWidget::mRightRadioButton_clicked );
+  connect( mTopRadioButton, &QRadioButton::clicked, this, &QgsComposerLabelWidget::mTopRadioButton_clicked );
+  connect( mBottomRadioButton, &QRadioButton::clicked, this, &QgsComposerLabelWidget::mBottomRadioButton_clicked );
+  connect( mMiddleRadioButton, &QRadioButton::clicked, this, &QgsComposerLabelWidget::mMiddleRadioButton_clicked );
   setPanelTitle( tr( "Label properties" ) );
 
   mFontButton->setMode( QgsFontButton::ModeQFont );
@@ -50,9 +62,10 @@ QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel *label ): QgsCo
   }
 
   connect( mFontButton, &QgsFontButton::changed, this, &QgsComposerLabelWidget::fontChanged );
+  connect( mJustifyRadioButton, &QRadioButton::clicked, this, &QgsComposerLabelWidget::justifyClicked );
 }
 
-void QgsComposerLabelWidget::on_mHtmlCheckBox_stateChanged( int state )
+void QgsComposerLabelWidget::mHtmlCheckBox_stateChanged( int state )
 {
   if ( mComposerLabel )
   {
@@ -71,7 +84,7 @@ void QgsComposerLabelWidget::on_mHtmlCheckBox_stateChanged( int state )
   }
 }
 
-void QgsComposerLabelWidget::on_mTextEdit_textChanged()
+void QgsComposerLabelWidget::mTextEdit_textChanged()
 {
   if ( mComposerLabel )
   {
@@ -96,7 +109,18 @@ void QgsComposerLabelWidget::fontChanged()
   }
 }
 
-void QgsComposerLabelWidget::on_mMarginXDoubleSpinBox_valueChanged( double d )
+void QgsComposerLabelWidget::justifyClicked()
+{
+  if ( mComposerLabel )
+  {
+    mComposerLabel->beginCommand( tr( "Label alignment changed" ) );
+    mComposerLabel->setHAlign( Qt::AlignJustify );
+    mComposerLabel->update();
+    mComposerLabel->endCommand();
+  }
+}
+
+void QgsComposerLabelWidget::mMarginXDoubleSpinBox_valueChanged( double d )
 {
   if ( mComposerLabel )
   {
@@ -107,7 +131,7 @@ void QgsComposerLabelWidget::on_mMarginXDoubleSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerLabelWidget::on_mMarginYDoubleSpinBox_valueChanged( double d )
+void QgsComposerLabelWidget::mMarginYDoubleSpinBox_valueChanged( double d )
 {
   if ( mComposerLabel )
   {
@@ -118,7 +142,7 @@ void QgsComposerLabelWidget::on_mMarginYDoubleSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerLabelWidget::on_mFontColorButton_colorChanged( const QColor &newLabelColor )
+void QgsComposerLabelWidget::mFontColorButton_colorChanged( const QColor &newLabelColor )
 {
   if ( !mComposerLabel )
   {
@@ -131,7 +155,7 @@ void QgsComposerLabelWidget::on_mFontColorButton_colorChanged( const QColor &new
   mComposerLabel->endCommand();
 }
 
-void QgsComposerLabelWidget::on_mInsertExpressionButton_clicked()
+void QgsComposerLabelWidget::mInsertExpressionButton_clicked()
 {
   if ( !mComposerLabel )
   {
@@ -152,7 +176,7 @@ void QgsComposerLabelWidget::on_mInsertExpressionButton_clicked()
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
-    QString expression =  exprDlg.expressionText();
+    QString expression = exprDlg.expressionText();
     if ( !expression.isEmpty() )
     {
       mComposerLabel->beginCommand( tr( "Insert expression" ) );
@@ -162,7 +186,7 @@ void QgsComposerLabelWidget::on_mInsertExpressionButton_clicked()
   }
 }
 
-void QgsComposerLabelWidget::on_mCenterRadioButton_clicked()
+void QgsComposerLabelWidget::mCenterRadioButton_clicked()
 {
   if ( mComposerLabel )
   {
@@ -173,7 +197,7 @@ void QgsComposerLabelWidget::on_mCenterRadioButton_clicked()
   }
 }
 
-void QgsComposerLabelWidget::on_mRightRadioButton_clicked()
+void QgsComposerLabelWidget::mRightRadioButton_clicked()
 {
   if ( mComposerLabel )
   {
@@ -184,7 +208,7 @@ void QgsComposerLabelWidget::on_mRightRadioButton_clicked()
   }
 }
 
-void QgsComposerLabelWidget::on_mLeftRadioButton_clicked()
+void QgsComposerLabelWidget::mLeftRadioButton_clicked()
 {
   if ( mComposerLabel )
   {
@@ -195,7 +219,7 @@ void QgsComposerLabelWidget::on_mLeftRadioButton_clicked()
   }
 }
 
-void QgsComposerLabelWidget::on_mTopRadioButton_clicked()
+void QgsComposerLabelWidget::mTopRadioButton_clicked()
 {
   if ( mComposerLabel )
   {
@@ -206,7 +230,7 @@ void QgsComposerLabelWidget::on_mTopRadioButton_clicked()
   }
 }
 
-void QgsComposerLabelWidget::on_mBottomRadioButton_clicked()
+void QgsComposerLabelWidget::mBottomRadioButton_clicked()
 {
   if ( mComposerLabel )
   {
@@ -217,7 +241,7 @@ void QgsComposerLabelWidget::on_mBottomRadioButton_clicked()
   }
 }
 
-void QgsComposerLabelWidget::on_mMiddleRadioButton_clicked()
+void QgsComposerLabelWidget::mMiddleRadioButton_clicked()
 {
   if ( mComposerLabel )
   {
@@ -240,6 +264,7 @@ void QgsComposerLabelWidget::setGuiElementValues()
   mMiddleRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignVCenter );
   mBottomRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignBottom );
   mLeftRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignLeft );
+  mJustifyRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignJustify );
   mCenterRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignHCenter );
   mRightRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignRight );
   mFontColorButton->setColor( mComposerLabel->fontColor() );
@@ -264,6 +289,7 @@ void QgsComposerLabelWidget::blockAllSignals( bool block )
   mLeftRadioButton->blockSignals( block );
   mCenterRadioButton->blockSignals( block );
   mRightRadioButton->blockSignals( block );
+  mJustifyRadioButton->blockSignals( block );
   mFontColorButton->blockSignals( block );
   mFontButton->blockSignals( block );
 }

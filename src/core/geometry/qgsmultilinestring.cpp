@@ -23,14 +23,31 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmulticurve.h"
 
 QgsMultiLineString::QgsMultiLineString()
-  : QgsMultiCurve()
 {
   mWkbType = QgsWkbTypes::MultiLineString;
+}
+
+QString QgsMultiLineString::geometryType() const
+{
+  return QStringLiteral( "MultiLineString" );
+}
+
+QgsMultiLineString *QgsMultiLineString::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsMultiLineString >();
+  result->mWkbType = mWkbType;
+  return result.release();
 }
 
 QgsMultiLineString *QgsMultiLineString::clone() const
 {
   return new QgsMultiLineString( *this );
+}
+
+void QgsMultiLineString::clear()
+{
+  QgsGeometryCollection::clear();
+  mWkbType = QgsWkbTypes::MultiLineString;
 }
 
 bool QgsMultiLineString::fromWkt( const QString &wkt )
@@ -41,17 +58,17 @@ bool QgsMultiLineString::fromWkt( const QString &wkt )
 QDomElement QgsMultiLineString::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
-  {
-    if ( dynamic_cast<const QgsLineString *>( geom ) )
-    {
-      const QgsLineString *lineString = static_cast<const QgsLineString *>( geom );
 
+  if ( isEmpty() )
+    return elemMultiLineString;
+
+  for ( const QgsAbstractGeometry *geom : mGeometries )
+  {
+    if ( const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )
+    {
       QDomElement elemLineStringMember = doc.createElementNS( ns, QStringLiteral( "lineStringMember" ) );
       elemLineStringMember.appendChild( lineString->asGML2( doc, precision, ns ) );
       elemMultiLineString.appendChild( elemLineStringMember );
-
-      delete lineString;
     }
   }
 
@@ -61,12 +78,14 @@ QDomElement QgsMultiLineString::asGML2( QDomDocument &doc, int precision, const 
 QDomElement QgsMultiLineString::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiCurve" ) );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
-  {
-    if ( dynamic_cast<const QgsLineString *>( geom ) )
-    {
-      const QgsLineString *lineString = static_cast<const QgsLineString *>( geom );
 
+  if ( isEmpty() )
+    return elemMultiCurve;
+
+  for ( const QgsAbstractGeometry *geom : mGeometries )
+  {
+    if ( const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )
+    {
       QDomElement elemCurveMember = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
       elemCurveMember.appendChild( lineString->asGML3( doc, precision, ns ) );
       elemMultiCurve.appendChild( elemCurveMember );
@@ -79,9 +98,9 @@ QDomElement QgsMultiLineString::asGML3( QDomDocument &doc, int precision, const 
 QString QgsMultiLineString::asJSON( int precision ) const
 {
   QString json = QStringLiteral( "{\"type\": \"MultiLineString\", \"coordinates\": [" );
-  Q_FOREACH ( const QgsAbstractGeometry *geom, mGeometries )
+  for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( dynamic_cast<const QgsCurve *>( geom ) )
+    if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
     {
       const QgsLineString *lineString = static_cast<const QgsLineString *>( geom );
       QgsPointSequence pts;
@@ -105,17 +124,44 @@ bool QgsMultiLineString::addGeometry( QgsAbstractGeometry *g )
     return false;
   }
 
-  setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiLineString );
+  if ( mGeometries.empty() )
+  {
+    setZMTypeFromSubGeometry( g, QgsWkbTypes::MultiLineString );
+  }
+  if ( is3D() && !g->is3D() )
+    g->addZValue();
+  else if ( !is3D() && g->is3D() )
+    g->dropZValue();
+  if ( isMeasure() && !g->isMeasure() )
+    g->addMValue();
+  else if ( !isMeasure() && g->isMeasure() )
+    g->dropMValue();
   return QgsGeometryCollection::addGeometry( g );
 }
 
-QgsAbstractGeometry *QgsMultiLineString::toCurveType() const
+bool QgsMultiLineString::insertGeometry( QgsAbstractGeometry *g, int index )
+{
+  if ( !g || QgsWkbTypes::flatType( g->wkbType() ) != QgsWkbTypes::LineString )
+  {
+    delete g;
+    return false;
+  }
+
+  return QgsGeometryCollection::insertGeometry( g, index );
+}
+
+QgsMultiCurve *QgsMultiLineString::toCurveType() const
 {
   QgsMultiCurve *multiCurve = new QgsMultiCurve();
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
-    multiCurve->addGeometry( mGeometries.at( i )->clone() );
+    multiCurve->addGeometry( mGeometries.at( i )->toCurveType() );
   }
   return multiCurve;
+}
+
+bool QgsMultiLineString::wktOmitChildType() const
+{
+  return true;
 }
 

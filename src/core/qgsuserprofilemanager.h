@@ -26,7 +26,8 @@
 
 #include <memory>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * User profile manager is used to manager list, and manage user profiles on the users machine.
  *
  * In QGIS 3 all settings, plugins, etc were moved into a %APPDATA%/profiles folder for each platform.
@@ -53,7 +54,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * \param basePath The base path to resolve the path from to append the \\profiles folder to.
      * \return The root path to store user profiles.
      */
-    static QString resolveProfilesFolder( const QString  &basePath = QString() );
+    static QString resolveProfilesFolder( const QString &basePath = QString() );
 
     /**
      * Return the profile from the given root profile location.
@@ -73,13 +74,34 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * location. Will also contain a profiles.ini for holding profile settings.
      * \param rootProfileLocation Path to the top level profile folder which contains folders for each profile.
      */
-    void setRootLocation( QString rootProfileLocation );
+    void setRootLocation( const QString &rootProfileLocation );
 
     /**
      * Returns the path to the root profiles location.
      * \return The root path to the profiles folder.
      */
     QString rootLocation() { return mRootProfilePath; }
+
+    /**
+     * Sets whether the manager should watch for the creation of new user profiles and emit
+     * the profilesChanged() signal when this occurs. By default new profile notification
+     * is disabled.
+     *
+     * Before calling this, ensure that the correct root location has been set via
+     * calling setRootLocation().
+     *
+     * \see isNewProfileNotificationEnabled()
+     */
+    void setNewProfileNotificationEnabled( bool enabled );
+
+    /**
+     * Returns whether the manager is watching for the creation of new user profiles and emitting
+     * the profilesChanged() signal when this occurs. By default new profile notification
+     * is disabled.
+     *
+     * \see setNewProfileNotificationEnabled()
+     */
+    bool isNewProfileNotificationEnabled() const;
 
     /**
      * Check if the root location has been set for the manager.
@@ -126,7 +148,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * \param name The name of the profile to return.
      * \return A QgsUserprofile pointing to the location of the user profile.
      */
-    QgsUserProfile *profileForName( const QString name ) const;
+    QgsUserProfile *profileForName( const QString &name ) const SIP_FACTORY;
 
     /**
      * Create a user profile given by the name
@@ -141,7 +163,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * \param name The name of the profile to delete.
      * \return A QgsError with a message if the profile failed to be deleted.
      */
-    QgsError deleteProfile( const QString name );
+    QgsError deleteProfile( const QString &name );
 
     /**
      * The currently active user profile.
@@ -168,20 +190,29 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
 
     /**
      * Emitted when the list of profiles is changed.
+     *
+     * This signal will only be emitted when isNewProfileNotificationEnabled() is true.
+     * By default new profile notification is disabled.
+     *
+     * \see isNewProfileNotificationEnabled()
+     * \see setNewProfileNotificationEnabled()
      */
-    void profilesChanged( );
+    void profilesChanged();
 
   private:
 
+    bool mWatchProfiles = false;
     std::unique_ptr<QFileSystemWatcher> mWatcher;
 
     QString mRootProfilePath;
 
     std::unique_ptr<QgsUserProfile> mUserProfile;
 
-    QString settingsFile();
+    QString settingsFile() const;
 
-    QSettings *mSettings = nullptr;
+    std::unique_ptr< QSettings > mSettings;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSUSERPROFILEMANAGER_H

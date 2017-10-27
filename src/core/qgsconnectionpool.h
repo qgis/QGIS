@@ -32,7 +32,8 @@
 #define CONN_POOL_EXPIRATION_TIME           60    // in seconds
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Template that stores data related to one server.
  *
  * It is assumed that following functions exist:
@@ -68,7 +69,6 @@ class QgsConnectionPoolGroup
     QgsConnectionPoolGroup( const QString &ci )
       : connInfo( ci )
       , sem( CONN_POOL_MAX_CONCURRENT_CONNS )
-      , expirationTimer( nullptr )
     {
     }
 
@@ -85,10 +85,18 @@ class QgsConnectionPoolGroup
     //! QgsConnectionPoolGroup cannot be copied
     QgsConnectionPoolGroup &operator=( const QgsConnectionPoolGroup &other ) = delete;
 
-    T acquire()
+    /**
+     * Try to acquire a connection for a maximum of \a timeout milliseconds.
+     * If \a timeout is a negative value the calling thread will be blocked
+     * until a connection becomes available. This is the default behavior.
+     *
+     * \returns initialized connection or nullptr if unsuccessful
+     */
+    T acquire( int timeout )
     {
       // we are going to acquire a resource - if no resource is available, we will block here
-      sem.acquire();
+      if ( !sem.tryAcquire( 1, timeout ) )
+        return nullptr;
 
       // quick (preferred) way - use cached connection
       {
@@ -224,7 +232,8 @@ class QgsConnectionPoolGroup
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Template class responsible for keeping a pool of open connections.
  * This is desired to avoid the overhead of creation of new connection every time.
  *
@@ -257,9 +266,14 @@ class QgsConnectionPool
       mMutex.unlock();
     }
 
-    //! Try to acquire a connection: if no connections are available, the thread will get blocked.
-    //! \returns initialized connection or null on error
-    T acquireConnection( const QString &connInfo )
+    /**
+     * Try to acquire a connection for a maximum of \a timeout milliseconds.
+     * If \a timeout is a negative value the calling thread will be blocked
+     * until a connection becomes available. This is the default behavior.
+     *
+     * \returns initialized connection or nullptr if unsuccessful
+     */
+    T acquireConnection( const QString &connInfo, int timeout = -1 )
     {
       mMutex.lock();
       typename T_Groups::iterator it = mGroups.find( connInfo );
@@ -270,7 +284,7 @@ class QgsConnectionPool
       T_Group *group = *it;
       mMutex.unlock();
 
-      return group->acquire();
+      return group->acquire( timeout );
     }
 
     //! Release an existing connection so it will get back into the pool and can be reused
@@ -285,11 +299,13 @@ class QgsConnectionPool
       group->release( conn );
     }
 
-    //! Invalidates all connections to the specified resource.
-    //! The internal state of certain handles (for instance OGR) are altered
-    //! when a dataset is modified. Consquently, all open handles need to be
-    //! invalidated when such datasets are changed to ensure the handles are
-    //! refreshed. See the OGR provider for an example where this is needed.
+    /**
+     * Invalidates all connections to the specified resource.
+     * The internal state of certain handles (for instance OGR) are altered
+     * when a dataset is modified. Consquently, all open handles need to be
+     * invalidated when such datasets are changed to ensure the handles are
+     * refreshed. See the OGR provider for an example where this is needed.
+     */
     void invalidateConnections( const QString &connInfo )
     {
       mMutex.lock();

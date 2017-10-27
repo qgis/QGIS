@@ -45,7 +45,8 @@ class QgsAtlasComposition;
 // long story short - don't change this without good reason. If you add a new item type, inherit
 // from QgsComposerItemWidget and trust that everything else has been done for you.
 
-/** An object for property widgets for composer items. All composer config type widgets should contain
+/**
+ * An object for property widgets for composer items. All composer config type widgets should contain
  * this object.
 */
 class QgsComposerConfigObject: public QObject
@@ -53,9 +54,9 @@ class QgsComposerConfigObject: public QObject
     Q_OBJECT
   public:
     QgsComposerConfigObject( QWidget *parent, QgsComposerObject *composerObject );
-    ~QgsComposerConfigObject();
 
-    /** Registers a data defined button, setting up its initial value, connections and description.
+    /**
+     * Registers a data defined button, setting up its initial value, connections and description.
      * \param button button to register
      * \param key corresponding data defined property key
      */
@@ -97,7 +98,8 @@ class QgsComposerItemBaseWidget: public QgsPanelWidget
 
   protected:
 
-    /** Registers a data defined button, setting up its initial value, connections and description.
+    /**
+     * Registers a data defined button, setting up its initial value, connections and description.
      * \param button button to register
      * \param property corresponding data defined property key
      */
@@ -119,14 +121,14 @@ class QgsComposerItemBaseWidget: public QgsPanelWidget
     QgsComposerConfigObject *mConfigObject = nullptr;
 };
 
-/** A class to enter generic properties for composer items (e.g. background, stroke, frame).
+/**
+ * A class to enter generic properties for composer items (e.g. background, stroke, frame).
  This widget can be embedded into other item widgets*/
 class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBase
 {
     Q_OBJECT
   public:
     QgsComposerItemWidget( QWidget *parent, QgsComposerItem *item );
-    ~QgsComposerItemWidget();
 
     //! A combination of upper/middle/lower and left/middle/right
     QgsComposerItem::ItemPositionMode positionMode() const;
@@ -138,44 +140,46 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
 
   public slots:
 
-    /** Set the frame color
+    /**
+     * Set the frame color
      */
-    void on_mFrameColorButton_colorChanged( const QColor &newFrameColor );
-    void on_mBackgroundColorButton_clicked();
+    void mFrameColorButton_colorChanged( const QColor &newFrameColor );
+    void mBackgroundColorButton_clicked();
 
-    /** Set the background color
+    /**
+     * Set the background color
      */
-    void on_mBackgroundColorButton_colorChanged( const QColor &newBackgroundColor );
+    void mBackgroundColorButton_colorChanged( const QColor &newBackgroundColor );
 //    void on_mTransparencySlider_valueChanged( int value );
 //    void on_mTransparencySpinBox_valueChanged( int value );
-    void on_mStrokeWidthSpinBox_valueChanged( double d );
-    void on_mFrameGroupBox_toggled( bool state );
-    void on_mFrameJoinStyleCombo_currentIndexChanged( int index );
-    void on_mBackgroundGroupBox_toggled( bool state );
-    void on_mItemIdLineEdit_editingFinished();
+    void mStrokeWidthSpinBox_valueChanged( double d );
+    void mFrameGroupBox_toggled( bool state );
+    void mFrameJoinStyleCombo_currentIndexChanged( int index );
+    void mBackgroundGroupBox_toggled( bool state );
+    void mItemIdLineEdit_editingFinished();
 
     //adjust coordinates in line edits
-    void on_mPageSpinBox_valueChanged( int );
-    void on_mXPosSpin_valueChanged( double );
-    void on_mYPosSpin_valueChanged( double );
-    void on_mWidthSpin_valueChanged( double );
-    void on_mHeightSpin_valueChanged( double );
+    void mPageSpinBox_valueChanged( int );
+    void mXPosSpin_valueChanged( double );
+    void mYPosSpin_valueChanged( double );
+    void mWidthSpin_valueChanged( double );
+    void mHeightSpin_valueChanged( double );
 
-    void on_mUpperLeftCheckBox_stateChanged( int state );
-    void on_mUpperMiddleCheckBox_stateChanged( int state );
-    void on_mUpperRightCheckBox_stateChanged( int state );
-    void on_mMiddleLeftCheckBox_stateChanged( int state );
-    void on_mMiddleCheckBox_stateChanged( int state );
-    void on_mMiddleRightCheckBox_stateChanged( int state );
-    void on_mLowerLeftCheckBox_stateChanged( int state );
-    void on_mLowerMiddleCheckBox_stateChanged( int state );
-    void on_mLowerRightCheckBox_stateChanged( int state );
+    void mUpperLeftCheckBox_stateChanged( int state );
+    void mUpperMiddleCheckBox_stateChanged( int state );
+    void mUpperRightCheckBox_stateChanged( int state );
+    void mMiddleLeftCheckBox_stateChanged( int state );
+    void mMiddleCheckBox_stateChanged( int state );
+    void mMiddleRightCheckBox_stateChanged( int state );
+    void mLowerLeftCheckBox_stateChanged( int state );
+    void mLowerMiddleCheckBox_stateChanged( int state );
+    void mLowerRightCheckBox_stateChanged( int state );
 
-    void on_mBlendModeCombo_currentIndexChanged( int index );
+    void mBlendModeCombo_currentIndexChanged( int index );
     void opacityChanged( double value );
 
-    void on_mItemRotationSpinBox_valueChanged( double val );
-    void on_mExcludeFromPrintsCheckBox_toggled( bool checked );
+    void mItemRotationSpinBox_valueChanged( double val );
+    void mExcludeFromPrintsCheckBox_toggled( bool checked );
 
     void setValuesForGuiElements();
     //sets the values for all position related (x, y, width, height) elements

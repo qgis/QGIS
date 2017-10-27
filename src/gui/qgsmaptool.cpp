@@ -27,9 +27,6 @@ QgsMapTool::QgsMapTool( QgsMapCanvas *canvas )
   : QObject( canvas )
   , mCanvas( canvas )
   , mCursor( Qt::CrossCursor )
-  , mAction( nullptr )
-  , mButton( nullptr )
-  , mToolName( QString() )
 {
 }
 
@@ -77,7 +74,7 @@ QPoint QgsMapTool::toCanvasCoordinates( const QgsPointXY &point )
 {
   qreal x = point.x(), y = point.y();
   mCanvas->getCoordinateTransform()->transformInPlace( x, y );
-  return QPoint( qRound( x ), qRound( y ) );
+  return QPoint( std::round( x ), std::round( y ) );
 }
 
 
@@ -105,6 +102,11 @@ void QgsMapTool::deactivate()
     mButton->setChecked( false );
 
   emit deactivated();
+}
+
+void QgsMapTool::clean()
+{
+
 }
 
 void QgsMapTool::setAction( QAction *action )

@@ -22,14 +22,7 @@
 #include "qgsunittypes.h"
 
 QgsGlowEffect::QgsGlowEffect()
-  : QgsPaintEffect()
-  , mSpread( 2.0 )
-  , mSpreadUnit( QgsUnitTypes::RenderMillimeters )
-  , mRamp( nullptr )
-  , mBlurLevel( 3 )
-  , mColor( Qt::white )
-  , mBlendMode( QPainter::CompositionMode_SourceOver )
-  , mColorType( SingleColor )
+  : mColor( Qt::white )
 {
 
 }
@@ -39,7 +32,6 @@ QgsGlowEffect::QgsGlowEffect( const QgsGlowEffect &other )
   , mSpread( other.spread() )
   , mSpreadUnit( other.spreadUnit() )
   , mSpreadMapUnitScale( other.spreadMapUnitScale() )
-  , mRamp( nullptr )
   , mBlurLevel( other.blurLevel() )
   , mOpacity( other.opacity() )
   , mColor( other.color() )

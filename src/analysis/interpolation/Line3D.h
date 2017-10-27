@@ -21,8 +21,13 @@
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
 
-/** \ingroup analysis
- * This class represents a line. It is implemented as a single directed linked list of nodes (with related QgsPoint objects). Attention: the points inserted in a line are not deleted from Line3D*/
+#define SIP_NO_FILE
+
+/**
+ * \ingroup analysis
+ * This class represents a line. It is implemented as a single directed linked list of nodes (with related QgsPoint objects). Attention: the points inserted in a line are not deleted from Line3D
+ * \note Not available in Python bindings
+*/
 class ANALYSIS_EXPORT Line3D SIP_NODEFAULTCTORS
 {
   private:

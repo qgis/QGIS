@@ -34,11 +34,6 @@
 #include <QDomElement>
 #include <QSettings> // for legend
 
-QgsRendererCategory::QgsRendererCategory()
-  : mRender( true )
-{
-}
-
 QgsRendererCategory::QgsRendererCategory( const QVariant &value, QgsSymbol *symbol, const QString &label, bool render )
   : mValue( value )
   , mSymbol( symbol )
@@ -152,8 +147,6 @@ void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QgsStr
 QgsCategorizedSymbolRenderer::QgsCategorizedSymbolRenderer( const QString &attrName, const QgsCategoryList &categories )
   : QgsFeatureRenderer( QStringLiteral( "categorizedSymbol" ) )
   , mAttrName( attrName )
-  , mAttrNum( -1 )
-  , mCounting( false )
 {
   //important - we need a deep copy of the categories list, not a shared copy. This is required because
   //QgsRendererCategory::symbol() is marked const, and so retrieving the symbol via this method does not
@@ -166,10 +159,6 @@ QgsCategorizedSymbolRenderer::QgsCategorizedSymbolRenderer( const QString &attrN
     }
     mCategories << cat;
   }
-}
-
-QgsCategorizedSymbolRenderer::~QgsCategorizedSymbolRenderer()
-{
 }
 
 void QgsCategorizedSymbolRenderer::rebuildHash()
@@ -648,7 +637,7 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
     }
   }
 
-  QDomElement ddsLegendSizeElem = element.firstChildElement( "data-defined-size-legend" );
+  QDomElement ddsLegendSizeElem = element.firstChildElement( QStringLiteral( "data-defined-size-legend" ) );
   if ( !ddsLegendSizeElem.isNull() )
   {
     r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
@@ -660,10 +649,11 @@ QgsFeatureRenderer *QgsCategorizedSymbolRenderer::create( QDomElement &element, 
 
 QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
+  // clazy:skip
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "categorizedSymbol" ) );
-  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? "1" : "0" ) );
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
   rendererElem.setAttribute( QStringLiteral( "attr" ), mAttrName );
 
   // categories
@@ -726,7 +716,7 @@ QDomElement QgsCategorizedSymbolRenderer::save( QDomDocument &doc, const QgsRead
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   if ( mDataDefinedSizeLegend )
   {

@@ -81,6 +81,9 @@ class ConfigOptionsPage(QgsOptionsPageWidget):
     def apply(self):
         self.config_widget.accept()
 
+    def helpKey(self):
+        return 'processing/index.html'
+
 
 class ConfigDialog(BASE, WIDGET):
 
@@ -405,7 +408,7 @@ class FileDirectorySelector(QWidget):
 
         # create gui
         self.btnSelect = QToolButton()
-        self.btnSelect.setText(self.tr('...'))
+        self.btnSelect.setText('…')
         self.lineEdit = QLineEdit()
         self.hbl = QHBoxLayout()
         self.hbl.setMargin(0)
@@ -452,7 +455,7 @@ class MultipleDirectorySelector(QWidget):
 
         # create gui
         self.btnSelect = QToolButton()
-        self.btnSelect.setText(self.tr('...'))
+        self.btnSelect.setText('…')
         self.lineEdit = QLineEdit()
         self.hbl = QHBoxLayout()
         self.hbl.setMargin(0)

@@ -24,7 +24,8 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class describes the origin of min/max values. It does not store by
  * itself the min/max values.
  * \since QGIS 3.0
@@ -148,9 +149,9 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
 
   private:
 
-    Limits mLimits;
-    Extent mExtent;
-    StatAccuracy mAccuracy;
+    Limits mLimits = None;
+    Extent mExtent = WholeRaster;
+    StatAccuracy mAccuracy = Estimated;
     double mCumulativeCutLower;
     double mCumulativeCutUpper;
     double mStdDevFactor;

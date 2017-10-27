@@ -43,7 +43,7 @@
 //
 //QGIS Includes
 //
-#include <qgisplugin.h>
+#include "qgisplugin.h"
 class QgisInterface;
 class QgsGeorefPluginGui;
 
@@ -75,8 +75,6 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     * \param Pointer to the QgisIface object.
      */
     explicit QgsGeorefPlugin( QgisInterface * );
-
-    virtual ~ QgsGeorefPlugin();
 
   public slots:
     //! init the gui

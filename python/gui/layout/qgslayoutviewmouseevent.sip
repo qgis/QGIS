@@ -23,7 +23,6 @@ class QgsLayoutViewMouseEvent : QMouseEvent
 %TypeHeaderCode
 #include "qgslayoutviewmouseevent.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsLayoutViewMouseEvent *>( sipCpp ) )
       sipType = sipType_QgsLayoutViewMouseEvent;
@@ -38,6 +37,14 @@ class QgsLayoutViewMouseEvent : QMouseEvent
  \param view The view in which the event occurred.
  \param event The original mouse event
  \param snap set to true to snap the point using the layout's snapping settings
+%End
+
+    void snapPoint( QGraphicsLineItem *horizontalSnapLine = 0, QGraphicsLineItem *verticalSnapLine = 0 );
+%Docstring
+ Manually triggers a snap for the mouse event position using the layout's snapper.
+
+ If the ``horizontalSnapLine`` and ``verticalSnapLine`` arguments are specified, then the snapper
+ will automatically display and position these lines to indicate snapping positions to item bounds.
 %End
 
     QPointF layoutPoint() const;

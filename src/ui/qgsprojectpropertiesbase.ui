@@ -118,7 +118,7 @@
          </item>
          <item>
           <property name="text">
-           <string>Identify layers</string>
+           <string>Identify Layers</string>
           </property>
           <property name="toolTip">
            <string>Identifiable layers</string>
@@ -130,7 +130,7 @@
          </item>
          <item>
           <property name="text">
-           <string>Default styles</string>
+           <string>Default Styles</string>
           </property>
           <property name="toolTip">
            <string>Default styles</string>
@@ -142,10 +142,10 @@
          </item>
          <item>
           <property name="text">
-           <string>OWS server</string>
+           <string>QGIS Server</string>
           </property>
           <property name="toolTip">
-           <string>WMS/WFS Server Configuration</string>
+           <string>WMS/WFS/WCS Server Configuration</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -230,9 +230,9 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
-         <widget class="QWidget" name="mProjOpts_01">
+         <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <property name="leftMargin">
             <number>0</number>
@@ -259,8 +259,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>778</height>
+                <width>565</width>
+                <height>697</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -743,7 +743,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mProjOpts_02">
+         <widget class="QWidget" name="mProjOptsCRS">
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <property name="leftMargin">
             <number>0</number>
@@ -770,8 +770,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>778</height>
+                <width>676</width>
+                <height>764</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -802,7 +802,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mProjOpts_03">
+         <widget class="QWidget" name="mProjOptsLayers">
           <layout class="QVBoxLayout" name="verticalLayout_9">
            <property name="leftMargin">
             <number>0</number>
@@ -829,8 +829,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>778</height>
+                <width>132</width>
+                <height>100</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -888,7 +888,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mProjOpts_04">
+         <widget class="QWidget" name="mProjOptsSymbols">
           <layout class="QVBoxLayout" name="verticalLayout_11">
            <property name="leftMargin">
             <number>0</number>
@@ -915,8 +915,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>778</height>
+                <width>269</width>
+                <height>597</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1311,7 +1311,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mProjOpts_05">
+         <widget class="QWidget" name="mProjOptsOWS">
           <layout class="QVBoxLayout" name="verticalLayout_14">
            <property name="leftMargin">
             <number>0</number>
@@ -1338,8 +1338,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>624</width>
-                <height>2451</height>
+                <width>598</width>
+                <height>2361</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2391,7 +2391,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mProjOpts_06">
+         <widget class="QWidget" name="mProjOptsMacros">
           <layout class="QVBoxLayout" name="verticalLayout_15">
            <property name="leftMargin">
             <number>0</number>
@@ -2418,8 +2418,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>165</width>
-                <height>57</height>
+                <width>156</width>
+                <height>59</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2488,6 +2488,16 @@
              </property>
              <property name="text">
               <string>Evaluate default values on provider side</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QCheckBox" name="mTrustProjectCheckBox">
+             <property name="toolTip">
+              <string>Speed up project loading by skipping data checks. Useful in qgis server context or project with huge database views or materialized views.</string>
+             </property>
+             <property name="text">
+              <string>Trust project when data source has no metadata</string>
              </property>
             </widget>
            </item>
@@ -2563,27 +2573,26 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsVariableEditorWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsvariableeditorwidget.h</header>
-   <container>1</container>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2593,9 +2602,10 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
+   <class>QgsVariableEditorWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsvariableeditorwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorSchemeList</class>

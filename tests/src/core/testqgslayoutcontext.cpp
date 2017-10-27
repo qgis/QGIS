@@ -37,6 +37,7 @@ class TestQgsLayoutContext: public QObject
     void layer();
     void dpi();
     void renderContextFlags();
+    void boundingBoxes();
 
   private:
     QString mReport;
@@ -45,7 +46,7 @@ class TestQgsLayoutContext: public QObject
 
 void TestQgsLayoutContext::initTestCase()
 {
-  mReport = "<h1>Layout Context Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Layout Context Tests</h1>\n" );
 }
 
 void TestQgsLayoutContext::cleanupTestCase()
@@ -117,7 +118,7 @@ void TestQgsLayoutContext::layer()
   QVERIFY( !context.layer() );
 
   //test setting/getting layer
-  QgsVectorLayer *layer = new QgsVectorLayer( "Point?field=id_a:integer", "A", "memory" );
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
   context.setLayer( layer );
   QCOMPARE( context.layer(), layer );
 
@@ -156,6 +157,15 @@ void TestQgsLayoutContext::renderContextFlags()
   QVERIFY( ( flags & QgsRenderContext::Antialiasing ) );
   QVERIFY( ( flags & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( flags & QgsRenderContext::ForceVectorOutput ) );
+}
+
+void TestQgsLayoutContext::boundingBoxes()
+{
+  QgsLayoutContext context;
+  context.setBoundingBoxesVisible( false );
+  QVERIFY( !context.boundingBoxesVisible() );
+  context.setBoundingBoxesVisible( true );
+  QVERIFY( context.boundingBoxesVisible() );
 }
 
 QGSTEST_MAIN( TestQgsLayoutContext )

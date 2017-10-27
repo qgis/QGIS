@@ -1,5 +1,9 @@
 #!/bin/sh
 
+set -e
+
+echo "SET client_min_messages TO WARNING;" >> ~/.psqlrc
+
 SCRIPTS="
   tests/testdata/provider/testdata_pg.sql
   tests/testdata/provider/testdata_pg_reltests.sql
@@ -10,7 +14,7 @@ SCRIPTS="
 "
 
 dropdb qgis_test 2> /dev/null || true
-createdb qgis_test || exit 1
+createdb qgis_test -E UTF8 -T template0 || exit 1
 for f in ${SCRIPTS}; do
-  psql -q -f $f qgis_test --set ON_ERROR_STOP=1 || exit 1
+  psql -q --echo-errors -f $f qgis_test -v ON_ERROR_STOP=1
 done

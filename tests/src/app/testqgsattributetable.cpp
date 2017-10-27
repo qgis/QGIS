@@ -29,7 +29,8 @@
 
 #include "qgstest.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the attribute table dialog
  */
 class TestQgsAttributeTable : public QObject
@@ -53,11 +54,7 @@ class TestQgsAttributeTable : public QObject
     QgisApp *mQgisApp = nullptr;
 };
 
-TestQgsAttributeTable::TestQgsAttributeTable()
-  : mQgisApp( nullptr )
-{
-
-}
+TestQgsAttributeTable::TestQgsAttributeTable() = default;
 
 //runs before all tests
 void TestQgsAttributeTable::initTestCase()
@@ -92,9 +89,9 @@ void TestQgsAttributeTable::testFieldCalculation()
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
-  QgsPolyline line3111;
+  QgsPolylineXY line3111;
   line3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 );
-  QgsGeometry line3111G = QgsGeometry::fromPolyline( line3111 ) ;
+  QgsGeometry line3111G = QgsGeometry::fromPolylineXY( line3111 ) ;
   f1.setGeometry( line3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
@@ -114,7 +111,7 @@ void TestQgsAttributeTable::testFieldCalculation()
   QgsFeature f;
   QVERIFY( fit.nextFeature( f ) );
   double expected = 26932.156;
-  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 
   // change project length unit, check calculation respects unit
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
@@ -126,7 +123,7 @@ void TestQgsAttributeTable::testFieldCalculation()
   fit = tempLayer->dataProvider()->getFeatures();
   QVERIFY( fit.nextFeature( f ) );
   expected = 88360.0918635;
-  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 }
 
 void TestQgsAttributeTable::testFieldCalculationArea()
@@ -140,7 +137,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
 
-  QgsPolyline polygonRing3111;
+  QgsPolylineXY polygonRing3111;
   polygonRing3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 ) << QgsPointXY( 2520109, 2397715 ) << QgsPointXY( 2520792, 2425494 ) << QgsPointXY( 2484588, 2425722 );
   QgsPolygon polygon3111;
   polygon3111 << polygonRing3111;
@@ -164,7 +161,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   QgsFeature f;
   QVERIFY( fit.nextFeature( f ) );
   double expected = 1009089817.0;
-  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 1.0 ) );
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 1.0 );
 
   // change project area unit, check calculation respects unit
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
@@ -176,7 +173,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   fit = tempLayer->dataProvider()->getFeatures();
   QVERIFY( fit.nextFeature( f ) );
   expected = 389.6117565069;
-  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 }
 
 void TestQgsAttributeTable::testNoGeom()
@@ -255,7 +252,7 @@ void TestQgsAttributeTable::testRegression15974()
   QString path = QDir::tempPath() + "/testshp15974.shp";
   std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
-  QgsVectorFileWriter::writeAsVectorFormat( tempLayer.get(), path, "system", QgsCoordinateReferenceSystem( 4326 ), "ESRI Shapefile" );
+  QgsVectorFileWriter::writeAsVectorFormat( tempLayer.get(), path, QStringLiteral( "system" ), QgsCoordinateReferenceSystem( 4326 ), QStringLiteral( "ESRI Shapefile" ) );
   std::unique_ptr< QgsVectorLayer> shpLayer( new QgsVectorLayer( path, QStringLiteral( "test" ),  QStringLiteral( "ogr" ) ) );
   QgsFeature f1( shpLayer->dataProvider()->fields(), 1 );
   QgsGeometry geom;

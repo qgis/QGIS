@@ -25,7 +25,8 @@
 class QgsMapLayer;
 class QgsComposerMapOverview;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * Input widget for the configuration of QgsComposerMap
  * */
 class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerMapWidgetBase
@@ -34,55 +35,54 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
 
   public:
     explicit QgsComposerMapWidget( QgsComposerMap *composerMap );
-    virtual ~QgsComposerMapWidget();
 
   public slots:
-    void on_mScaleLineEdit_editingFinished();
-    void on_mSetToMapCanvasExtentButton_clicked();
-    void on_mViewExtentInCanvasButton_clicked();
-    void on_mUpdatePreviewButton_clicked();
-    void on_mFollowVisibilityPresetCheckBox_stateChanged( int state );
-    void on_mKeepLayerListCheckBox_stateChanged( int state );
-    void on_mKeepLayerStylesCheckBox_stateChanged( int state );
-    void on_mDrawCanvasItemsCheckBox_stateChanged( int state );
+    void mScaleLineEdit_editingFinished();
+    void mSetToMapCanvasExtentButton_clicked();
+    void mViewExtentInCanvasButton_clicked();
+    void mUpdatePreviewButton_clicked();
+    void mFollowVisibilityPresetCheckBox_stateChanged( int state );
+    void mKeepLayerListCheckBox_stateChanged( int state );
+    void mKeepLayerStylesCheckBox_stateChanged( int state );
+    void mDrawCanvasItemsCheckBox_stateChanged( int state );
     void overviewMapChanged( QgsComposerItem *item );
-    void on_mOverviewFrameStyleButton_clicked();
-    void on_mOverviewBlendModeComboBox_currentIndexChanged( int index );
-    void on_mOverviewInvertCheckbox_toggled( bool state );
-    void on_mOverviewCenterCheckbox_toggled( bool state );
+    void mOverviewFrameStyleButton_clicked();
+    void mOverviewBlendModeComboBox_currentIndexChanged( int index );
+    void mOverviewInvertCheckbox_toggled( bool state );
+    void mOverviewCenterCheckbox_toggled( bool state );
 
-    void on_mXMinLineEdit_editingFinished();
-    void on_mXMaxLineEdit_editingFinished();
-    void on_mYMinLineEdit_editingFinished();
-    void on_mYMaxLineEdit_editingFinished();
+    void mXMinLineEdit_editingFinished();
+    void mXMaxLineEdit_editingFinished();
+    void mYMinLineEdit_editingFinished();
+    void mYMaxLineEdit_editingFinished();
 
-    void on_mAtlasMarginRadio_toggled( bool checked );
+    void mAtlasMarginRadio_toggled( bool checked );
 
-    void on_mAtlasCheckBox_toggled( bool checked );
-    void on_mAtlasMarginSpinBox_valueChanged( int value );
-    void on_mAtlasFixedScaleRadio_toggled( bool checked );
-    void on_mAtlasPredefinedScaleRadio_toggled( bool checked );
+    void mAtlasCheckBox_toggled( bool checked );
+    void mAtlasMarginSpinBox_valueChanged( int value );
+    void mAtlasFixedScaleRadio_toggled( bool checked );
+    void mAtlasPredefinedScaleRadio_toggled( bool checked );
 
-    void on_mAddGridPushButton_clicked();
-    void on_mRemoveGridPushButton_clicked();
-    void on_mGridUpButton_clicked();
-    void on_mGridDownButton_clicked();
+    void mAddGridPushButton_clicked();
+    void mRemoveGridPushButton_clicked();
+    void mGridUpButton_clicked();
+    void mGridDownButton_clicked();
 
     QgsComposerMapGrid *currentGrid();
-    void on_mDrawGridCheckBox_toggled( bool state );
-    void on_mGridListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
-    void on_mGridListWidget_itemChanged( QListWidgetItem *item );
-    void on_mGridPropertiesButton_clicked();
+    void mDrawGridCheckBox_toggled( bool state );
+    void mGridListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
+    void mGridListWidget_itemChanged( QListWidgetItem *item );
+    void mGridPropertiesButton_clicked();
 
     //overviews
-    void on_mAddOverviewPushButton_clicked();
-    void on_mRemoveOverviewPushButton_clicked();
-    void on_mOverviewUpButton_clicked();
-    void on_mOverviewDownButton_clicked();
+    void mAddOverviewPushButton_clicked();
+    void mRemoveOverviewPushButton_clicked();
+    void mOverviewUpButton_clicked();
+    void mOverviewDownButton_clicked();
     QgsComposerMapOverview *currentOverview();
-    void on_mOverviewCheckBox_toggled( bool state );
-    void on_mOverviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
-    void on_mOverviewListWidget_itemChanged( QListWidgetItem *item );
+    void mOverviewCheckBox_toggled( bool state );
+    void mOverviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
+    void mOverviewListWidget_itemChanged( QListWidgetItem *item );
     void setOverviewItemsEnabled( bool enabled );
     void setOverviewItems( const QgsComposerMapOverview *overview );
     void blockOverviewItemsSignals( bool block );

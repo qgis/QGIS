@@ -16,15 +16,17 @@
 
 #include <QAction>
 #include <QComboBox>
-#include <QDoubleSpinBox>
 #include <QFont>
 #include <QHBoxLayout>
 #include <QHeaderView>
+#include <QLabel>
 #include <QMenu>
 #include <QToolBar>
 #include <QToolButton>
+#include <QWidgetAction>
 
 #include "qgsapplication.h"
+#include "qgsdoublespinbox.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertree.h"
 #include "qgslayertreeview.h"
@@ -47,7 +49,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   , mTypeAction( nullptr )
   , mToleranceAction( nullptr )
   , mUnitAction( nullptr )
-  , mLayerTreeView( nullptr )
+
 {
   // detect the type of display
   QToolBar *tb = qobject_cast<QToolBar *>( parent );
@@ -148,6 +150,22 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mEnableTracingAction->setShortcut( tr( "T", "Enable Tracing" ) );
   mEnableTracingAction->setObjectName( QStringLiteral( "EnableTracingAction" ) );
 
+  mTracingOffsetSpinBox = new QgsDoubleSpinBox;
+  mTracingOffsetSpinBox->setRange( -1000000, 1000000 );
+  mTracingOffsetSpinBox->setDecimals( 6 );
+  mTracingOffsetSpinBox->setClearValue( 0 );
+  mTracingOffsetSpinBox->setClearValueMode( QgsDoubleSpinBox::CustomValue );
+  QMenu *tracingMenu = new QMenu( this );
+  QWidgetAction *widgetAction = new QWidgetAction( tracingMenu );
+  QVBoxLayout *tracingWidgetLayout = new QVBoxLayout;
+  tracingWidgetLayout->addWidget( new QLabel( "Offset" ) );
+  tracingWidgetLayout->addWidget( mTracingOffsetSpinBox );
+  QWidget *tracingWidget = new QWidget;
+  tracingWidget->setLayout( tracingWidgetLayout );
+  widgetAction->setDefaultWidget( tracingWidget );
+  tracingMenu->addAction( widgetAction );
+  mEnableTracingAction->setMenu( tracingMenu );
+
   // layout
   if ( mDisplayMode == ToolBar )
   {
@@ -173,8 +191,8 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
 
     layout->addWidget( mModeButton );
     layout->addWidget( mTypeButton );
-    layout->addWidget( mToleranceSpinBox ) ;
-    layout->addWidget( mUnitsComboBox ) ;
+    layout->addWidget( mToleranceSpinBox );
+    layout->addWidget( mUnitsComboBox );
 
     QToolButton *topoButton = new QToolButton();
     topoButton->addAction( mTopologicalEditingAction );
@@ -238,7 +256,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   bool defaultSnapEnabled = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), false ).toBool();
   enableSnapping( defaultSnapEnabled );
 
-  restoreGeometry( QgsSettings().value( "/Windows/SnappingWidget/geometry" ).toByteArray() );
+  restoreGeometry( QgsSettings().value( QStringLiteral( "/Windows/SnappingWidget/geometry" ) ).toByteArray() );
 }
 
 QgsSnappingWidget::~QgsSnappingWidget()

@@ -119,8 +119,7 @@ int getrusage( int who, struct rusage *rusage )
 #endif
 
 QgsBench::QgsBench( int width, int height, int iterations )
-  : QObject()
-  , mWidth( width )
+  : mWidth( width )
   , mHeight( height )
   , mIterations( iterations )
   , mSetExtent( false )
@@ -133,10 +132,6 @@ QgsBench::QgsBench( int width, int height, int iterations )
 
   connect( QgsProject::instance(), &QgsProject::readProject,
            this, &QgsBench::readProject );
-}
-
-QgsBench::~QgsBench()
-{
 }
 
 bool QgsBench::openProject( const QString &fileName )
@@ -243,12 +238,12 @@ void QgsBench::render()
     {
       for ( int i = 0; i < mTimes.size(); i++ )
       {
-        double d = fabs( avg[t] - mTimes.at( i )[t] );
-        stdev[t] += pow( d, 2 );
+        double d = std::fabs( avg[t] - mTimes.at( i )[t] );
+        stdev[t] += std::pow( d, 2 );
         if ( i == 0 || d > maxdev[t] ) maxdev[t] = d;
       }
 
-      stdev[t] = sqrt( stdev[t] / mTimes.size() );
+      stdev[t] = std::sqrt( stdev[t] / mTimes.size() );
     }
 
     QMap<QString, QVariant> map;

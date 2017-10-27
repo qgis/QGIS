@@ -40,10 +40,6 @@ QgsRequestHandler::QgsRequestHandler( QgsServerRequest &request, QgsServerRespon
 {
 }
 
-QgsRequestHandler::~QgsRequestHandler()
-{
-}
-
 QMap<QString, QString> QgsRequestHandler::parameterMap() const
 {
   return mRequest.parameters();
@@ -234,7 +230,8 @@ void QgsRequestHandler::parseInput()
       QList<pair_t> items = query.queryItems();
       Q_FOREACH ( const pair_t &pair, items )
       {
-        mRequest.setParameter( pair.first.toUpper(), pair.second );
+        const QString value = QUrl::fromPercentEncoding( pair.second.toUtf8() );
+        mRequest.setParameter( pair.first.toUpper(), value );
       }
       setupParameters();
     }
@@ -245,15 +242,27 @@ void QgsRequestHandler::parseInput()
       setupParameters();
 
       QDomElement docElem = doc.documentElement();
-      if ( docElem.hasAttribute( QStringLiteral( "version" ) ) )
-      {
-        mRequest.setParameter( QStringLiteral( "VERSION" ), docElem.attribute( QStringLiteral( "version" ) ) );
-      }
-      if ( docElem.hasAttribute( QStringLiteral( "service" ) ) )
-      {
-        mRequest.setParameter( QStringLiteral( "SERVICE" ), docElem.attribute( QStringLiteral( "service" ) ) );
-      }
+      // the document element tag name is the request
       mRequest.setParameter( QStringLiteral( "REQUEST" ), docElem.tagName() );
+      // loop through the attributes which are the parameters
+      // excepting the attributes started by xmlns or xsi
+      QDomNamedNodeMap map = docElem.attributes();
+      for ( int i = 0 ; i < map.length() ; ++i )
+      {
+        if ( map.item( i ).isNull() )
+          continue;
+
+        const QDomNode attrNode = map.item( i );
+        const QDomAttr attr = attrNode.toAttr();
+        if ( attr.isNull() )
+          continue;
+
+        const QString attrName = attr.name();
+        if ( attrName.startsWith( "xmlns" ) || attrName.startsWith( "xsi:" ) )
+          continue;
+
+        mRequest.setParameter( attrName.toUpper(), attr.value() );
+      }
       mRequest.setParameter( QStringLiteral( "REQUEST_BODY" ), inputString );
     }
   }

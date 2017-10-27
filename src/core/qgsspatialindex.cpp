@@ -29,7 +29,8 @@ using namespace SpatialIndex;
 
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgisVisitor
  * \brief Custom visitor that adds found features to list.
  * \note not available in Python bindings
@@ -55,7 +56,8 @@ class QgisVisitor : public SpatialIndex::IVisitor
     QList<QgsFeatureId> &mList;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSpatialIndexCopyVisitor
  * \note not available in Python bindings
  */
@@ -84,7 +86,8 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsFeatureIteratorDataStream
  * \brief Utility class for bulk loading of R-trees. Not a part of public API.
  * \note not available in Python bindings
@@ -95,7 +98,6 @@ class QgsFeatureIteratorDataStream : public IDataStream
     //! constructor - needs to load all data to a vector for later access when bulk loading
     explicit QgsFeatureIteratorDataStream( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr )
       : mFi( fi )
-      , mNextData( nullptr )
       , mFeedback( feedback )
     {
       readNextEntry();
@@ -150,7 +152,8 @@ class QgsFeatureIteratorDataStream : public IDataStream
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  *  \class QgsSpatialIndexData
  * \brief Data of spatial index that may be implicitly shared
  * \note not available in Python bindings
@@ -196,6 +199,8 @@ class QgsSpatialIndexData : public QSharedData
       delete mStorage;
     }
 
+    QgsSpatialIndexData &operator=( const QgsSpatialIndexData &rh ) = delete;
+
     void initTree( IDataStream *inputStream = nullptr )
     {
       // for now only memory manager
@@ -225,9 +230,6 @@ class QgsSpatialIndexData : public QSharedData
     //! R-tree containing spatial index
     SpatialIndex::ISpatialIndex *mRTree = nullptr;
 
-  private:
-
-    QgsSpatialIndexData &operator=( const QgsSpatialIndexData &rh );
 };
 
 // -------------------------------------------------------------------------

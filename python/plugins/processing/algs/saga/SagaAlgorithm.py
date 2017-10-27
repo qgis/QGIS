@@ -138,6 +138,7 @@ class SagaAlgorithm(GeoAlgorithm):
         self.exportedLayers = {}
 
         self.preProcessInputs()
+        extent = None
 
         # 1: Export rasters to sgrd and vectors to shp
         # Tables must be in dbf format. We check that.

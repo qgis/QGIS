@@ -25,6 +25,7 @@
 #include "qgssnappingconfig.h"
 #include "qgssettings.h"
 #include "qgisapp.h"
+#include "qgsgeos.h"
 
 #include <QGraphicsProxyWidget>
 #include <QMouseEvent>
@@ -32,12 +33,8 @@
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mRubberBand( nullptr )
-  , mOriginalGeometry( nullptr )
   , mModifiedFeature( -1 )
   , mGeometryModified( false )
-  , mDistanceWidget( nullptr )
-  , mSnapVertexMarker( nullptr )
   , mForceCopy( false )
   , mMultiPartGeometry( false )
 {
@@ -91,6 +88,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
     QgsSnappingConfig config = snapping->config();
     // setup new settings (temporary)
     QgsSettings settings;
+    config.setEnabled( true );
     config.setMode( QgsSnappingConfig::AllLayers );
     config.setType( QgsSnappingConfig::Segment );
     config.setTolerance( settings.value( QStringLiteral( "qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
@@ -239,7 +237,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent *e )
   QgsPointXY minDistPoint;
   int beforeVertex;
   double leftOf;
-  double offset = sqrt( mOriginalGeometry.closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
+  double offset = std::sqrt( mOriginalGeometry.closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
   if ( offset == 0.0 )
   {
     return;
@@ -287,7 +285,7 @@ QgsGeometry QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer *vl, con
 
     //for background layers, try to merge selected entries together if snapped feature is contained in selection
     const QgsFeatureIds &selection = vl->selectedFeatureIds();
-    if ( selection.size() < 1 || !selection.contains( match.featureId() ) )
+    if ( selection.empty() || !selection.contains( match.featureId() ) )
     {
       return convertToSingleLine( snappedFeature.geometry(), partVertexNr, mMultiPartGeometry );
     }
@@ -352,6 +350,7 @@ void QgsMapToolOffsetCurve::deleteDistanceWidget()
 
 void QgsMapToolOffsetCurve::deleteRubberBandAndGeometry()
 {
+  mOriginalGeometry.set( nullptr );
   delete mRubberBand;
   mRubberBand = nullptr;
 }
@@ -370,7 +369,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
   }
 
   QgsGeometry geomCopy( mOriginalGeometry );
-  GEOSGeometry *geosGeom = geomCopy.exportToGeos();
+  geos::unique_ptr geosGeom( geomCopy.exportToGeos() );
   if ( geosGeom )
   {
     QgsSettings s;
@@ -378,8 +377,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
     int quadSegments = s.value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt();
     double miterLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
 
-    GEOSGeometry *offsetGeom = GEOSOffsetCurve_r( QgsGeometry::getGEOSHandler(), geosGeom, offset, quadSegments, joinStyle, miterLimit );
-    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), geosGeom );
+    geos::unique_ptr offsetGeom( GEOSOffsetCurve_r( QgsGeometry::getGEOSHandler(), geosGeom.get(), offset, quadSegments, joinStyle, miterLimit ) );
     if ( !offsetGeom )
     {
       deleteRubberBandAndGeometry();
@@ -395,7 +393,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
 
     if ( offsetGeom )
     {
-      mModifiedGeometry.fromGeos( offsetGeom );
+      mModifiedGeometry.fromGeos( offsetGeom.release() );
       mRubberBand->setToGeometry( mModifiedGeometry, sourceLayer );
     }
   }
@@ -437,7 +435,7 @@ QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry &fea
       if ( vertex < currentVertex )
       {
         //found, return ring
-        return QgsGeometry::fromPolyline( *polyIt );
+        return QgsGeometry::fromPolylineXY( *polyIt );
       }
     }
   }
@@ -471,7 +469,7 @@ QgsGeometry QgsMapToolOffsetCurve::convertToSingleLine( const QgsGeometry &geom,
       currentVertex += it->size();
       if ( vertex < currentVertex )
       {
-        return QgsGeometry::fromPolyline( *it );
+        return QgsGeometry::fromPolylineXY( *it );
       }
     }
   }

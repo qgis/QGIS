@@ -21,7 +21,8 @@
 #include "qgsabstractdatasourcewidget.h"
 
 
-/** \class QgsGdalSourceSelect
+/**
+ * \class QgsGdalSourceSelect
  * \brief Dialog to select GDAL supported rasters
  */
 class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsGdalSourceSelectBase
@@ -31,8 +32,6 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
   public:
     //! Constructor
     QgsGdalSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
-
-    ~QgsGdalSourceSelect();
 
   public slots:
     //! Determines the tables the user selected and closes the dialog

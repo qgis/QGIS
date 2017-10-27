@@ -42,21 +42,13 @@ QgsProjContextStore::~QgsProjContextStore()
 }
 
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate()
-  : mIsValid( false )
-  , mShortCircuit( false )
-  , mSourceDatumTransform( -1 )
-  , mDestinationDatumTransform( -1 )
 {
   setFinder();
 }
 
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
-  : mIsValid( false )
-  , mShortCircuit( false )
-  , mSourceCRS( source )
+  : mSourceCRS( source )
   , mDestCRS( destination )
-  , mSourceDatumTransform( -1 )
-  , mDestinationDatumTransform( -1 )
 {
   setFinder();
   initialize();
@@ -236,7 +228,7 @@ QString QgsCoordinateTransformPrivate::datumTransformString( int datumTransform 
   QString transformString;
 
   sqlite3 *db = nullptr;
-  int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, 0 );
+  int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, nullptr );
   if ( openResult != SQLITE_OK )
   {
     sqlite3_close( db );

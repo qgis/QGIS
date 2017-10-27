@@ -16,7 +16,8 @@ class QgsReadWriteContext;
 typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsConditionalLayerStyles class holds conditional style information
  * for a layer. This includes field styles and full row styles.
  */
@@ -48,11 +49,13 @@ class CORE_EXPORT QgsConditionalLayerStyles
      */
     QList<QgsConditionalStyle> fieldStyles( const QString &fieldName );
 
-    /** Reads field ui properties specific state from Dom node.
+    /**
+     * Reads field ui properties specific state from Dom node.
      */
     bool readXml( const QDomNode &node, const QgsReadWriteContext &context );
 
-    /** Write field ui properties specific state from Dom node.
+    /**
+     * Write field ui properties specific state from Dom node.
      */
     bool writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
@@ -61,7 +64,8 @@ class CORE_EXPORT QgsConditionalLayerStyles
     QList<QgsConditionalStyle> mRowStyles;
 };
 
-/** \class QgsConditionalStyle
+/**
+ * \class QgsConditionalStyle
  *  \ingroup core
  * Conditional styling for a rule.
  */
@@ -221,18 +225,20 @@ class CORE_EXPORT QgsConditionalStyle
      */
     static QgsConditionalStyle compressStyles( const QList<QgsConditionalStyle> &styles );
 
-    /** Reads vector conditional style specific state from layer Dom node.
+    /**
+     * Reads vector conditional style specific state from layer Dom node.
      */
     bool readXml( const QDomNode &node, const QgsReadWriteContext &context );
 
-    /** Write vector conditional style specific state from layer Dom node.
+    /**
+     * Write vector conditional style specific state from layer Dom node.
      */
     bool writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
 
   private:
 
-    bool mValid;
+    bool mValid = false;
     QString mName;
     QString mRule;
     std::unique_ptr<QgsSymbol> mSymbol;

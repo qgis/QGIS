@@ -41,6 +41,7 @@ class QgsRenderContext
       RenderMapTile,
       Antialiasing,
       RenderPartialOutput,
+      RenderPreviewJob,
     };
     typedef QFlags<QgsRenderContext::Flag> Flags;
 
@@ -73,6 +74,7 @@ class QgsRenderContext
 
     static QgsRenderContext fromMapSettings( const QgsMapSettings &mapSettings );
 %Docstring
+ create initialized QgsRenderContext instance from given QgsMapSettings
 .. versionadded:: 2.4
  :rtype: QgsRenderContext
 %End
@@ -189,7 +191,7 @@ Sets coordinate transformation.
 
     void setRenderingStopped( bool stopped );
 
-    void setDistanceArea( const QgsDistanceArea distanceArea );
+    void setDistanceArea( const QgsDistanceArea &distanceArea );
 %Docstring
  A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
  Will be used to convert meter distances to active MapUnit values for QgsUnitTypes.RenderMetersInMapUnits

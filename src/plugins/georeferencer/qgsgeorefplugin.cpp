@@ -45,10 +45,10 @@
 // Required qgis includes
 //
 
-#include <qgisinterface.h>
-#include <qgsapplication.h>
-#include <qgsmaplayer.h>
-#include <qgsrasterlayer.h>
+#include "qgisinterface.h"
+#include "qgsapplication.h"
+#include "qgsmaplayer.h"
+#include "qgsrasterlayer.h"
 #include "qgsgeorefplugin.h"
 
 #include <QFile>
@@ -81,12 +81,6 @@ static const QString sPluginIcon = QStringLiteral( ":/icons/default/mGeorefRun.p
 QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
   , mQGisIface( qgisInterface )
-  , mActionRunGeoref( nullptr )
-  , mPluginGui( nullptr )
-{
-}
-
-QgsGeorefPlugin::~QgsGeorefPlugin()
 {
 }
 

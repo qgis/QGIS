@@ -29,7 +29,8 @@ class QgsRenderContext;
 class QgsSizeScaleTransformer;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Object that keeps configuration of appearance of marker symbol's data-defined size in legend.
  * For example: the list of classes (size values), whether the classes should appear in separate
  * legend nodes or whether to collapse them into one legend node.
@@ -39,7 +40,11 @@ class QgsSizeScaleTransformer;
 class CORE_EXPORT QgsDataDefinedSizeLegend
 {
   public:
-    QgsDataDefinedSizeLegend();
+
+    /**
+     * Constructor for QgsDataDefinedSizeLegend.
+     */
+    QgsDataDefinedSizeLegend() = default;
 
     //! Copy constructor
     QgsDataDefinedSizeLegend( const QgsDataDefinedSizeLegend &other );
@@ -84,9 +89,9 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     QgsSizeScaleTransformer *sizeScaleTransformer() const;
 
     //! Sets list of classes: each class is a pair of symbol size (in units used by the symbol) and label
-    void setClasses( const QList<QgsDataDefinedSizeLegend::SizeClass> &classes ) { mSizeClasses = classes; }
+    void setClasses( const QList< QgsDataDefinedSizeLegend::SizeClass > &classes ) { mSizeClasses = classes; }
     //! Returns list of classes: each class is a pair of symbol size (in units used by the symbol) and label
-    QList<QgsDataDefinedSizeLegend::SizeClass> classes() const { return mSizeClasses; }
+    QList< QgsDataDefinedSizeLegend::SizeClass > classes() const { return mSizeClasses; }
 
     //! Sets title label for data-defined size legend
     void setTitle( const QString &title ) { mTitleLabel = title; }
@@ -121,9 +126,11 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
     //! Generates legend symbol items according to the configuration
     QgsLegendSymbolList legendSymbolList() const;
 
-    //! Draw the legend if using LegendOneNodeForAll and optionally output size of the legend and x offset of labels (in painter units).
-    //! If the painter in context is null, it only does size calculation without actual rendering.
-    //! Does nothing if legend is not configured as collapsed.
+    /**
+     * Draw the legend if using LegendOneNodeForAll and optionally output size of the legend and x offset of labels (in painter units).
+     * If the painter in context is null, it only does size calculation without actual rendering.
+     * Does nothing if legend is not configured as collapsed.
+     */
     void drawCollapsedLegend( QgsRenderContext &context, QSize *outputSize SIP_OUT = nullptr, int *labelXOffset SIP_OUT = nullptr ) const;
 
     //! Returns output image that would be shown in the legend. Returns invalid image if legend is not configured as collapsed.
@@ -138,7 +145,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
   private:
     LegendType mType = LegendSeparated;
     QString mTitleLabel;  //!< Title label for the following size-based item(s)
-    QList<SizeClass> mSizeClasses;  //!< List of classes: symbol size (in whatever units symbol uses) + label
+    QList< SizeClass > mSizeClasses;  //!< List of classes: symbol size (in whatever units symbol uses) + label
     std::unique_ptr<QgsMarkerSymbol> mSymbol;
     std::unique_ptr<QgsSizeScaleTransformer> mSizeScaleTransformer;  //!< Optional transformer for classes
     VerticalAlignment mVAlign = AlignBottom;

@@ -28,7 +28,6 @@ class QgsComposerArrowWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
     Q_OBJECT
   public:
     explicit QgsComposerArrowWidget( QgsComposerArrow *arrow );
-    ~QgsComposerArrowWidget();
 
   private:
     QgsComposerArrow *mArrow = nullptr;
@@ -43,18 +42,18 @@ class QgsComposerArrowWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
     void updateLineSymbolMarker();
 
   private slots:
-    void on_mStrokeWidthSpinBox_valueChanged( double d );
-    void on_mArrowHeadWidthSpinBox_valueChanged( double d );
-    void on_mArrowHeadFillColorButton_colorChanged( const QColor &newColor );
-    void on_mArrowHeadStrokeColorButton_colorChanged( const QColor &newColor );
-    void on_mDefaultMarkerRadioButton_toggled( bool toggled );
-    void on_mNoMarkerRadioButton_toggled( bool toggled );
-    void on_mSvgMarkerRadioButton_toggled( bool toggled );
-    void on_mStartMarkerLineEdit_textChanged( const QString &text );
-    void on_mEndMarkerLineEdit_textChanged( const QString &text );
-    void on_mStartMarkerToolButton_clicked();
-    void on_mEndMarkerToolButton_clicked();
-    void on_mLineStyleButton_clicked();
+    void mStrokeWidthSpinBox_valueChanged( double d );
+    void mArrowHeadWidthSpinBox_valueChanged( double d );
+    void mArrowHeadFillColorButton_colorChanged( const QColor &newColor );
+    void mArrowHeadStrokeColorButton_colorChanged( const QColor &newColor );
+    void mDefaultMarkerRadioButton_toggled( bool toggled );
+    void mNoMarkerRadioButton_toggled( bool toggled );
+    void mSvgMarkerRadioButton_toggled( bool toggled );
+    void mStartMarkerLineEdit_textChanged( const QString &text );
+    void mEndMarkerLineEdit_textChanged( const QString &text );
+    void mStartMarkerToolButton_clicked();
+    void mEndMarkerToolButton_clicked();
+    void mLineStyleButton_clicked();
 
     void setGuiElementValues();
 

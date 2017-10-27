@@ -185,11 +185,11 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
       QgsPolygon poly( selectGeomTrans.asPolygon() );
       if ( poly.size() == 1 && poly.at( 0 ).size() == 5 )
       {
-        const QgsPolyline &ringIn = poly.at( 0 );
+        const QgsPolylineXY &ringIn = poly.at( 0 );
 
         QgsPolygon newpoly( 1 );
         newpoly[0].resize( 41 );
-        QgsPolyline &ringOut = newpoly[0];
+        QgsPolylineXY &ringOut = newpoly[0];
 
         ringOut[ 0 ] = ringIn.at( 0 );
 

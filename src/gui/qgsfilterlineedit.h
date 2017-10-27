@@ -23,9 +23,10 @@
 #include "qgis_gui.h"
 
 class QToolButton;
+class QgsAnimatedIcon;
 
-
-/** \class QgsFilterLineEdit
+/**
+ * \class QgsFilterLineEdit
  * \ingroup gui
  * QLineEdit subclass with built in support for clearing the widget's value and
  * handling custom null value representations.
@@ -47,13 +48,13 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 #endif
 
     Q_OBJECT
-    Q_ENUMS( ClearMode )
     Q_PROPERTY( ClearMode clearMode READ clearMode WRITE setClearMode )
     Q_PROPERTY( QString nullValue READ nullValue WRITE setNullValue )
     Q_PROPERTY( QString defaultValue READ defaultValue WRITE setDefaultValue )
     Q_PROPERTY( QString value READ value WRITE setValue NOTIFY valueChanged )
     Q_PROPERTY( bool showClearButton READ showClearButton WRITE setShowClearButton )
     Q_PROPERTY( bool showSearchIcon READ showSearchIcon WRITE setShowSearchIcon )
+    Q_PROPERTY( bool showSpinner READ showSpinner WRITE setShowSpinner NOTIFY showSpinnerChanged )
 
   public:
 
@@ -63,41 +64,48 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
       ClearToNull = 0, //!< Reset value to null
       ClearToDefault, //!< Reset value to default value (see defaultValue() )
     };
+    Q_ENUM( ClearMode );
 
-    /** Constructor for QgsFilterLineEdit.
+    /**
+     * Constructor for QgsFilterLineEdit.
      * \param parent parent widget
      * \param nullValue string for representing null values
      */
     QgsFilterLineEdit( QWidget *parent SIP_TRANSFERTHIS = 0, const QString &nullValue = QString() );
 
-    /** Returns true if the widget's clear button is visible.
+    /**
+     * Returns true if the widget's clear button is visible.
      * \see setShowClearButton()
      * \since QGIS 3.0
      */
     bool showClearButton() const { return mClearButtonVisible; }
 
-    /** Sets whether the widget's clear button is visible.
+    /**
+     * Sets whether the widget's clear button is visible.
      * \param visible set to false to hide the clear button
      * \see showClearButton()
      * \since QGIS 3.0
      */
     void setShowClearButton( bool visible );
 
-    /** Returns the clear mode for the widget. The clear mode defines the behavior of the
+    /**
+     * Returns the clear mode for the widget. The clear mode defines the behavior of the
      * widget when its value is cleared. This defaults to ClearToNull.
      * \see setClearMode()
      * \since QGIS 3.0
      */
     ClearMode clearMode() const { return mClearMode; }
 
-    /** Sets the clear mode for the widget. The clear mode defines the behavior of the
+    /**
+     * Sets the clear mode for the widget. The clear mode defines the behavior of the
      * widget when its value is cleared. This defaults to ClearToNull.
      * \see clearMode()
      * \since QGIS 3.0
      */
     void setClearMode( ClearMode mode ) { mClearMode = mode; }
 
-    /** Sets the string representation for null values in the widget. This does not
+    /**
+     * Sets the string representation for null values in the widget. This does not
      * affect the values returned for null values by value(), rather it only affects
      * the text that is shown to users when the widget's value is null.
      * \param nullValue string to show when widget's value is null
@@ -105,26 +113,30 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     void setNullValue( const QString &nullValue ) { mNullValue = nullValue; }
 
-    /** Returns the string used for representating null values in the widget.
+    /**
+     * Returns the string used for representating null values in the widget.
      * \see setNullValue()
      * \see isNull()
      */
     QString nullValue() const { return mNullValue; }
 
-    /** Define if a search icon shall be shown on the left of the image
+    /**
+     * Define if a search icon shall be shown on the left of the image
      * when no text is entered
      * \param visible set to false to hide the search icon
      * \since QGIS 3.0
      */
     void setShowSearchIcon( bool visible );
 
-    /** Returns if a search icon shall be shown on the left of the image
+    /**
+     * Returns if a search icon shall be shown on the left of the image
      * when no text is entered
      * \since QGIS 3.0
      */
     bool showSearchIcon() const { return mSearchIconVisible; }
 
-    /** Sets the default value for the widget. The default value is a value
+    /**
+     * Sets the default value for the widget. The default value is a value
      * which the widget will be reset to if it is cleared and the clearMode()
      * is equal to ClearToDefault.
      * \param defaultValue default value
@@ -134,7 +146,8 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     void setDefaultValue( const QString &defaultValue ) { mDefaultValue = defaultValue; }
 
-    /** Returns the default value for the widget. The default value is a value
+    /**
+     * Returns the default value for the widget. The default value is a value
      * which the widget will be reset to if it is cleared and the clearMode()
      * is equal to ClearToDefault.
      * \see setDefaultValue()
@@ -170,9 +183,40 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     inline bool isNull() const { return text() == mNullValue; }
 
+    /**
+     * Show a spinner icon. This can be used for search boxes to indicate that
+     * something is going on in the background.
+     *
+     * \since QGIS 3.0
+     */
+    bool showSpinner() const;
+
+    /**
+     * Show a spinner icon. This can be used for search boxes to indicate that
+     * something is going on in the background.
+     *
+     * \since QGIS 3.0
+     */
+    void setShowSpinner( bool showSpinner );
+
+    /**
+     * Will select all text when this widget receives the focus.
+     *
+     * \since QGIS 3.0
+     */
+    bool selectOnFocus() const;
+
+    /**
+     * Will select all text when this widget receives the focus.
+     *
+     * \since QGIS 3.0
+     */
+    void setSelectOnFocus( bool selectOnFocus );
+
   public slots:
 
-    /** Clears the widget and resets it to the null value.
+    /**
+     * Clears the widget and resets it to the null value.
      * \see nullValue()
      * \since QGIS 3.0
      */
@@ -180,7 +224,8 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
   signals:
 
-    /** Emitted when the widget is cleared
+    /**
+     * Emitted when the widget is cleared
      * \see clearValue()
      */
     void cleared();
@@ -192,6 +237,22 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     void valueChanged( const QString &value );
 
+    /**
+     * Show a spinner icon. This can be used for search boxes to indicate that
+     * something is going on in the background.
+     *
+     * \since QGIS 3.0
+     */
+    void showSpinnerChanged();
+
+
+    /**
+     * Will select all text when this widget receives the focus.
+     *
+     * \since QGIS 3.0
+     */
+    void selectOnFocusChanged();
+
   protected:
     void mousePressEvent( QMouseEvent *e ) override;
     void mouseMoveEvent( QMouseEvent *e ) override;
@@ -201,19 +262,22 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
   private slots:
     void onTextChanged( const QString &text );
+    void updateBusySpinner();
 
   private:
 
-    bool mClearButtonVisible;
-    bool mSearchIconVisible;
+    bool mClearButtonVisible = true;
+    bool mSearchIconVisible = false;
+    bool mShowSpinner = false;
 
-    ClearMode mClearMode;
+    ClearMode mClearMode = ClearToNull;
 
     QString mNullValue;
     QString mDefaultValue;
     QString mStyleSheet;
-    bool mFocusInEvent;
-    bool mClearHover;
+    bool mFocusInEvent = false;
+    bool mClearHover = false;
+    bool mSelectOnFocus = false;
 
     QSize mClearIconSize;
     QPixmap mClearIconPixmap;
@@ -221,17 +285,20 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
     QSize mSearchIconSize;
     QPixmap mSearchIconPixmap;
+    QgsAnimatedIcon *mBusySpinner = nullptr;
 
     //! Returns true if clear button should be shown
     bool shouldShowClear() const;
 
     QRect clearRect() const;
     QRect searchRect() const;
+    QRect busySpinnerRect() const;
 };
 
 /// @cond PRIVATE
 
-/** Private QgsFilterLineEdit subclass for use as a line edit in QgsSpinBox/QgsDoubleSpinBox
+/**
+ * Private QgsFilterLineEdit subclass for use as a line edit in QgsSpinBox/QgsDoubleSpinBox
  * we let QgsFilterLineEdit handle display of the clear button and detection
  * of clicks, but override clearValue() and let Qgs(Double)SpinBox handle the clearing
  * themselves.

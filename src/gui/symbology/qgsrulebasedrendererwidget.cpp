@@ -396,10 +396,24 @@ void QgsRuleBasedRendererWidget::keyPressEvent( QKeyEvent *event )
 
 void QgsRuleBasedRendererWidget::setRenderingOrder()
 {
-  QgsSymbolLevelsDialog dlg( mRenderer->legendSymbolItems(), true, this );
-  dlg.setForceOrderingEnabled( true );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( mRenderer, true, panel );
+    widget->setForceOrderingEnabled( true );
+    widget->setPanelTitle( tr( "Symbol Levels" ) );
+    connect( widget, &QgsPanelWidget::widgetChanged, widget, &QgsSymbolLevelsWidget::apply );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
+    panel->openPanel( widget );
+    return;
+  }
 
-  dlg.exec();
+  QgsSymbolLevelsDialog dlg( mRenderer, true, panel );
+  dlg.setForceOrderingEnabled( true );
+  if ( dlg.exec() )
+  {
+    emit widgetChanged();
+  }
 }
 
 void QgsRuleBasedRendererWidget::saveSectionWidth( int section, int oldSize, int newSize )
@@ -602,8 +616,6 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   : QgsPanelWidget( parent )
   , mRule( rule )
   , mLayer( layer )
-  , mSymbolSelector( nullptr )
-  , mSymbol( nullptr )
   , mContext( context )
 {
   setupUi( this );
@@ -619,8 +631,8 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   if ( mRule->dependsOnScale() )
   {
     groupScale->setChecked( true );
-    mScaleRangeWidget->setMaximumScale( qMax( rule->maximumScale(), 0.0 ) );
-    mScaleRangeWidget->setMinimumScale( qMax( rule->minimumScale(), 0.0 ) );
+    mScaleRangeWidget->setMaximumScale( std::max( rule->maximumScale(), 0.0 ) );
+    mScaleRangeWidget->setMinimumScale( std::max( rule->minimumScale(), 0.0 ) );
   }
   mScaleRangeWidget->setMapCanvas( mContext.mapCanvas() );
 
@@ -851,10 +863,11 @@ QVariant QgsRuleBasedRendererModel::data( const QModelIndex &index, int role ) c
             if ( mFeatureCountMap[rule].duplicateCount > 0 )
             {
               QString tip = QStringLiteral( "<p style='margin:0px;'><ul>" );
-              Q_FOREACH ( QgsRuleBasedRenderer::Rule *duplicateRule, mFeatureCountMap[rule].duplicateCountMap.keys() )
+              const auto duplicateMap = mFeatureCountMap[rule].duplicateCountMap;
+              for ( auto it = duplicateMap.constBegin(); it != duplicateMap.constEnd(); ++it )
               {
-                QString label = duplicateRule->label().replace( '&', QLatin1String( "&amp;" ) ).replace( '>', QLatin1String( "&gt;" ) ).replace( '<', QLatin1String( "&lt;" ) );
-                tip += tr( "<li><nobr>%1 features also in rule %2</nobr></li>" ).arg( mFeatureCountMap[rule].duplicateCountMap[duplicateRule] ).arg( label );
+                QString label = it.key()->label().replace( '&', QLatin1String( "&amp;" ) ).replace( '>', QLatin1String( "&gt;" ) ).replace( '<', QLatin1String( "&lt;" ) );
+                tip += tr( "<li><nobr>%1 features also in rule %2</nobr></li>" ).arg( it.value() ).arg( label );
               }
               tip += QLatin1String( "</ul>" );
               return tip;
@@ -1227,7 +1240,7 @@ void QgsRuleBasedRendererModel::willAddRules( const QModelIndex &parent, int cou
 
 void QgsRuleBasedRendererModel::finishedAddingRules()
 {
-  emit endInsertRows();
+  endInsertRows();
 }
 
 void QgsRuleBasedRendererModel::setFeatureCounts( const QHash<QgsRuleBasedRenderer::Rule *, QgsRuleBasedRendererCount> &countMap )

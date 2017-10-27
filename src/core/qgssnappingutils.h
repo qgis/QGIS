@@ -26,7 +26,8 @@
 
 class QgsSnappingConfig;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class has all the configuration of snapping and can return answers to snapping queries.
  * Internally, it keeps a cache of QgsPointLocator instances for multiple layers.
  *
@@ -63,7 +64,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = nullptr );
 
     //! Snap to current layer
-    QgsPointLocator::Match snapToCurrentLayer( QPoint point, int type, QgsPointLocator::MatchFilter *filter = nullptr );
+    QgsPointLocator::Match snapToCurrentLayer( QPoint point, QgsPointLocator::Types type, QgsPointLocator::MatchFilter *filter = nullptr );
 
     // environment setup
 
@@ -143,7 +144,8 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! Query layers used for snapping
     QList<QgsSnappingUtils::LayerConfig> layers() const { return mLayers; }
 
-    /** Get extra information about the instance
+    /**
+     * Get extra information about the instance
      * \since QGIS 2.14
      */
     QString dump();
@@ -208,7 +210,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     QgsSnappingConfig mSnappingConfig;
 
     // configuration
-    IndexingStrategy mStrategy;
+    IndexingStrategy mStrategy = IndexHybrid;
     QList<LayerConfig> mLayers;
 
     // internal data
@@ -219,20 +221,23 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     LocatorsMap mTemporaryLocators;
     //! list of layer IDs that are too large to be indexed (hybrid strategy will use temporary locators for those)
     QSet<QString> mHybridNonindexableLayers;
-    //! a record for each layer seen:
-    //! - value -1  == it is small layer -> fully indexed
-    //! - value > 0 == maximum area (in map units) for which it may make sense to build index.
-    //!   This means that index is built in area around the point with this total area, because
-    //!   for a larger area the number of features will likely exceed the limit. When the limit
-    //!   is exceeded, the maximum area is lowered to prevent that from happening.
-    //!   When requesting snap in area that is not currently indexed, layer's index is destroyed
-    //!   and a new one is built in the different area.
+
+    /**
+     * a record for each layer seen:
+     * - value -1  == it is small layer -> fully indexed
+     * - value > 0 == maximum area (in map units) for which it may make sense to build index.
+     * This means that index is built in area around the point with this total area, because
+     * for a larger area the number of features will likely exceed the limit. When the limit
+     * is exceeded, the maximum area is lowered to prevent that from happening.
+     * When requesting snap in area that is not currently indexed, layer's index is destroyed
+     * and a new one is built in the different area.
+     */
     QHash<QString, double> mHybridMaxAreaPerLayer;
     //! if using hybrid strategy, how many features of one layer may be indexed (to limit amount of consumed memory)
-    int mHybridPerLayerFeatureLimit;
+    int mHybridPerLayerFeatureLimit = 50000;
 
     //! internal flag that an indexing process is going on. Prevents starting two processes in parallel.
-    bool mIsIndexing;
+    bool mIsIndexing = false;
 };
 
 

@@ -31,7 +31,8 @@ class QgsFeature;
 class QgsFeatureRequest;
 class QgsAttributes;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsRelation
  */
 class CORE_EXPORT QgsRelation
@@ -47,6 +48,17 @@ class CORE_EXPORT QgsRelation
 
   public:
 
+    /**
+     * enum for the relation strength
+     * Association, Composition
+     */
+    enum RelationStrength
+    {
+      Association, //!< Loose relation, related elements are not part of the parent and a parent copy will not copy any children.
+      Composition  //!< Fix relation, related elements are part of the parent and a parent copy will copy any children or delete of parent will delete children
+
+    };
+
 #ifndef SIP_RUN
 
     /**
@@ -61,8 +73,7 @@ class CORE_EXPORT QgsRelation
     {
       public:
         //! Default constructor: NULL strings
-        FieldPair()
-          : QPair< QString, QString >() {}
+        FieldPair() {}
 
         //! Constructor which takes two fields
         FieldPair( const QString &referencingField, const QString &referencedField )
@@ -80,7 +91,7 @@ class CORE_EXPORT QgsRelation
     /**
      * Default constructor. Creates an invalid relation.
      */
-    QgsRelation();
+    QgsRelation() = default;
 
     /**
      * Creates a relation from an XML structure. Used for reading .qgs projects.
@@ -108,6 +119,12 @@ class CORE_EXPORT QgsRelation
      * Set a name for this relation
      */
     void setName( const QString &name );
+
+    /**
+     * Set a strength for this relation
+     * \since QGIS 3.0
+     */
+    void setStrength( const RelationStrength &strength );
 
     /**
      * Set the referencing (child) layer id. This layer will be searched in the registry.
@@ -163,7 +180,8 @@ class CORE_EXPORT QgsRelation
      */
     QgsFeatureRequest getRelatedFeaturesRequest( const QgsFeature &feature ) const;
 
-    /** Returns a filter expression which returns all the features on the referencing (child) layer
+    /**
+     * Returns a filter expression which returns all the features on the referencing (child) layer
      * which have a foreign key pointing to the provided feature.
      * \param feature A feature from the referenced (parent) layer
      * \returns expression filter string for all the referencing features
@@ -212,6 +230,14 @@ class CORE_EXPORT QgsRelation
      * \returns A name
      */
     QString name() const;
+
+    /**
+     * Returns the relation strength as a string
+     *
+     * \returns strength
+     * \since QGIS 3.0
+     */
+    RelationStrength strength() const;
 
     /**
      * A (project-wide) unique id for this relation
@@ -344,16 +370,20 @@ class CORE_EXPORT QgsRelation
     //! The parent layer
     QgsVectorLayer *mReferencedLayer = nullptr;
 
-    /** A list of fields which define the relation.
+    RelationStrength mRelationStrength;
+
+    /**
+     * A list of fields which define the relation.
      *  In most cases there will be only one value, but multiple values
      *  are supported for composited foreign keys.
      *  The first field is on the referencing layer, the second on the referenced */
     QList< FieldPair > mFieldPairs;
 
-    bool mValid;
+    bool mValid = false;
 };
 
 // Register QgsRelation for usage with QVariant
 Q_DECLARE_METATYPE( QgsRelation )
+Q_DECLARE_METATYPE( QgsRelation::RelationStrength )
 
 #endif // QGSRELATION_H

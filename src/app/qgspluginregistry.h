@@ -96,16 +96,18 @@ class APP_EXPORT QgsPluginRegistry
 
   protected:
     //! protected constructor
-    QgsPluginRegistry();
+    QgsPluginRegistry() = default;
 
     //! Try to load and get metadata from c++ plugin, return true on success
     bool checkCppPlugin( const QString &pluginFullPath );
     //! Try to load and get metadata from Python plugin, return true on success
     bool checkPythonPlugin( const QString &packageName );
 
-    //! Check current QGIS version against requested minimal and optionally maximal QGIS version
-    //! if maxVersion not specified, the default value is assumed: floor(minVersion) + 0.99.99
-    bool checkQgisVersion( const QString &minVersion, const QString &maxVersion = "" ) const;
+    /**
+     * Check current QGIS version against requested minimal and optionally maximal QGIS version
+     * if maxVersion not specified, the default value is assumed: std::floor(minVersion) + 0.99.99
+     */
+    bool checkQgisVersion( const QString &minVersion, const QString &maxVersion = QString() ) const;
 
   private:
     static QgsPluginRegistry *sInstance;
@@ -113,4 +115,7 @@ class APP_EXPORT QgsPluginRegistry
     QgsPythonUtils *mPythonUtils = nullptr;
     QgisInterface *mQgisInterface = nullptr;
 };
+
+// clazy:excludeall=qstring-allocations
+
 #endif //QgsPluginRegistry_H

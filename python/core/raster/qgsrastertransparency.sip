@@ -19,7 +19,11 @@ class QgsRasterTransparency
 #include "qgsrastertransparency.h"
 %End
   public:
+
     QgsRasterTransparency();
+%Docstring
+ Constructor for QgsRasterTransparency.
+%End
 
     struct TransparentThreeValuePixel
     {
@@ -87,8 +91,14 @@ True if there are no entries in the pixel lists except the nodata value
 %End
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
+%Docstring
+ Writes the transparency information to an XML document.
+%End
 
     void readXml( const QDomElement &elem );
+%Docstring
+ Reads the transparency information from an XML document.
+%End
 
 };
 /************************************************************************

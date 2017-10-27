@@ -29,14 +29,23 @@
 #include "qgsproviderregistry.h"
 #include "ogr/qgsnewogrconnection.h"
 #include "ogr/qgsogrhelperfunctions.h"
-#include "qgscontexthelp.h"
 #include "qgsapplication.h"
 
 QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
+  connect( radioSrcFile, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcFile_toggled );
+  connect( radioSrcDirectory, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcDirectory_toggled );
+  connect( radioSrcDatabase, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcDatabase_toggled );
+  connect( radioSrcProtocol, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcProtocol_toggled );
+  connect( btnNew, &QPushButton::clicked, this, &QgsOgrSourceSelect::btnNew_clicked );
+  connect( btnEdit, &QPushButton::clicked, this, &QgsOgrSourceSelect::btnEdit_clicked );
+  connect( btnDelete, &QPushButton::clicked, this, &QgsOgrSourceSelect::btnDelete_clicked );
+  connect( cmbDatabaseTypes, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOgrSourceSelect::cmbDatabaseTypes_currentIndexChanged );
+  connect( cmbConnections, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOgrSourceSelect::cmbConnections_currentIndexChanged );
   setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOgrSourceSelect::showHelp );
 
   if ( mWidgetMode != QgsProviderRegistry::WidgetMode::None )
   {
@@ -97,49 +106,29 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   }
   cmbDatabaseTypes->blockSignals( false );
   cmbConnections->blockSignals( false );
+
+  mFileWidget->setDialogTitle( tr( "Open OGR Supported Vector Dataset(s)" ) );
+  mFileWidget->setFilter( mVectorFileFilter );
+  mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
+
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
+  {
+    mVectorPath = path;
+    if ( radioSrcFile->isChecked() || radioSrcDirectory->isChecked() )
+      emit enableButtons( ! mVectorPath.isEmpty() );
+  } );
+
+  connect( protocolURI, &QLineEdit::textChanged, this, [ = ]( const QString & text )
+  {
+    if ( radioSrcProtocol->isChecked() )
+      emit enableButtons( !text.isEmpty() );
+  } );
 }
 
 QgsOgrSourceSelect::~QgsOgrSourceSelect()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/OpenVectorLayer/geometry" ), saveGeometry() );
-}
-
-QStringList QgsOgrSourceSelect::openFile()
-{
-  QStringList selectedFiles;
-  QgsDebugMsg( "Vector file filters: " + mVectorFileFilter );
-  QString enc = encoding();
-  QString title = tr( "Open an OGR Supported Vector Layer" );
-  QgsGuiUtils::openFilesRememberingFilter( QStringLiteral( "lastVectorFileFilter" ), mVectorFileFilter, selectedFiles, enc, title );
-
-  return selectedFiles;
-}
-
-QString QgsOgrSourceSelect::openDirectory()
-{
-  QgsSettings settings;
-
-  bool haveLastUsedDir = settings.contains( QStringLiteral( "/UI/LastUsedDirectory" ) );
-  QString lastUsedDir = settings.value( QStringLiteral( "UI/LastUsedDirectory" ), QDir::homePath() ).toString();
-  if ( !haveLastUsedDir )
-    lastUsedDir = QLatin1String( "" );
-
-  QString path = QFileDialog::getExistingDirectory( this,
-                 tr( "Open Directory" ), lastUsedDir,
-                 QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks );
-
-  settings.setValue( QStringLiteral( "UI/LastUsedDirectory" ), path );
-  //process path if it is grass
-  if ( cmbDirectoryTypes->currentText() == QLatin1String( "Grass Vector" ) )
-  {
-#ifdef Q_OS_WIN
-    //replace backslashes with forward slashes
-    path.replace( '\\', '/' );
-#endif
-    path = path + "/head";
-  }
-  return path;
 }
 
 QStringList QgsOgrSourceSelect::dataSources()
@@ -272,29 +261,6 @@ void QgsOgrSourceSelect::setSelectedConnection()
   QgsDebugMsg( "Setting selected connection to " + cmbConnections->currentText() );
 }
 
-
-void QgsOgrSourceSelect::on_buttonSelectSrc_clicked()
-{
-  if ( radioSrcFile->isChecked() )
-  {
-    QStringList selected = openFile();
-    if ( !selected.isEmpty() )
-    {
-      inputSrcDataset->setText( selected.join( QStringLiteral( ";" ) ) );
-      addButton()->setFocus();
-      emit enableButtons( true );
-    }
-  }
-  else if ( radioSrcDirectory->isChecked() )
-  {
-    inputSrcDataset->setText( openDirectory() );
-  }
-  else if ( !radioSrcDatabase->isChecked() )
-  {
-    Q_ASSERT( !"SHOULD NEVER GET HERE" );
-  }
-}
-
 void QgsOgrSourceSelect::addButtonClicked()
 {
   QgsSettings settings;
@@ -359,7 +325,7 @@ void QgsOgrSourceSelect::addButtonClicked()
   }
   else if ( radioSrcFile->isChecked() )
   {
-    if ( inputSrcDataset->text().isEmpty() )
+    if ( mVectorPath.isEmpty() )
     {
       QMessageBox::information( this,
                                 tr( "Add vector layer" ),
@@ -367,11 +333,11 @@ void QgsOgrSourceSelect::addButtonClicked()
       return;
     }
 
-    mDataSources << inputSrcDataset->text().split( ';' );
+    mDataSources << QgsFileWidget::splitFilePaths( mVectorPath );
   }
   else if ( radioSrcDirectory->isChecked() )
   {
-    if ( inputSrcDataset->text().isEmpty() )
+    if ( mVectorPath.isEmpty() )
     {
       QMessageBox::information( this,
                                 tr( "Add vector layer" ),
@@ -379,7 +345,17 @@ void QgsOgrSourceSelect::addButtonClicked()
       return;
     }
 
-    mDataSources << inputSrcDataset->text();
+    //process path if it is grass
+    if ( cmbDirectoryTypes->currentText() == QLatin1String( "Grass Vector" ) )
+    {
+#ifdef Q_OS_WIN
+      //replace backslashes with forward slashes
+      mVectorPath.replace( '\\', '/' );
+#endif
+      mVectorPath = mVectorPath + "/head";
+    }
+
+    mDataSources << mVectorPath;
   }
 
   // Save the used encoding
@@ -393,7 +369,7 @@ void QgsOgrSourceSelect::addButtonClicked()
 
 //********************auto connected slots *****************/
 
-void QgsOgrSourceSelect::on_radioSrcFile_toggled( bool checked )
+void QgsOgrSourceSelect::radioSrcFile_toggled( bool checked )
 {
   if ( checked )
   {
@@ -402,11 +378,19 @@ void QgsOgrSourceSelect::on_radioSrcFile_toggled( bool checked )
     fileGroupBox->show();
     dbGroupBox->hide();
     protocolGroupBox->hide();
+
+    mFileWidget->setDialogTitle( tr( "Open an OGR Supported Vector Layer" ) );
+    mFileWidget->setFilter( mVectorFileFilter );
+    mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
+    mFileWidget->setFilePath( QString() );
+
     mDataSourceType = QStringLiteral( "file" );
+
+    emit enableButtons( ! mFileWidget->filePath().isEmpty() );
   }
 }
 
-void QgsOgrSourceSelect::on_radioSrcDirectory_toggled( bool checked )
+void QgsOgrSourceSelect::radioSrcDirectory_toggled( bool checked )
 {
   if ( checked )
   {
@@ -415,11 +399,18 @@ void QgsOgrSourceSelect::on_radioSrcDirectory_toggled( bool checked )
     fileGroupBox->show();
     dbGroupBox->hide();
     protocolGroupBox->hide();
+
+    mFileWidget->setDialogTitle( tr( "Open Directory" ) );
+    mFileWidget->setStorageMode( QgsFileWidget::GetDirectory );
+    mFileWidget->setFilePath( QString() );
+
     mDataSourceType = QStringLiteral( "directory" );
+
+    emit enableButtons( ! mFileWidget->filePath().isEmpty() );
   }
 }
 
-void QgsOgrSourceSelect::on_radioSrcDatabase_toggled( bool checked )
+void QgsOgrSourceSelect::radioSrcDatabase_toggled( bool checked )
 {
   if ( checked )
   {
@@ -432,10 +423,12 @@ void QgsOgrSourceSelect::on_radioSrcDatabase_toggled( bool checked )
     populateConnectionList();
     setConnectionListPosition();
     mDataSourceType = QStringLiteral( "database" );
+
+    emit enableButtons( true );
   }
 }
 
-void QgsOgrSourceSelect::on_radioSrcProtocol_toggled( bool checked )
+void QgsOgrSourceSelect::radioSrcProtocol_toggled( bool checked )
 {
   if ( checked )
   {
@@ -443,41 +436,47 @@ void QgsOgrSourceSelect::on_radioSrcProtocol_toggled( bool checked )
     dbGroupBox->hide();
     protocolGroupBox->show();
     mDataSourceType = QStringLiteral( "protocol" );
+
+    emit enableButtons( ! protocolURI->text().isEmpty() );
   }
 }
 
 // Slot for adding a new connection
-void QgsOgrSourceSelect::on_btnNew_clicked()
+void QgsOgrSourceSelect::btnNew_clicked()
 {
   addNewConnection();
 }
 // Slot for deleting an existing connection
-void QgsOgrSourceSelect::on_btnDelete_clicked()
+void QgsOgrSourceSelect::btnDelete_clicked()
 {
   deleteConnection();
 }
 
 
 // Slot for editing a connection
-void QgsOgrSourceSelect::on_btnEdit_clicked()
+void QgsOgrSourceSelect::btnEdit_clicked()
 {
   editConnection();
 }
 
-void QgsOgrSourceSelect::on_cmbDatabaseTypes_currentIndexChanged( const QString &text )
+void QgsOgrSourceSelect::cmbDatabaseTypes_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
   populateConnectionList();
   setSelectedConnectionType();
 }
 
-void QgsOgrSourceSelect::on_cmbConnections_currentIndexChanged( const QString &text )
+void QgsOgrSourceSelect::cmbConnections_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
   setSelectedConnection();
 }
 //********************end auto connected slots *****************/
 
+void QgsOgrSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-layer-from-a-file" ) );
+}
 
 QGISEXTERN QgsOgrSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {

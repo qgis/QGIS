@@ -27,6 +27,26 @@
 QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar *scaleBar ): QgsComposerItemBaseWidget( nullptr, scaleBar ), mComposerScaleBar( scaleBar )
 {
   setupUi( this );
+  connect( mHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerScaleBarWidget::mHeightSpinBox_valueChanged );
+  connect( mLineWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerScaleBarWidget::mLineWidthSpinBox_valueChanged );
+  connect( mSegmentSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerScaleBarWidget::mSegmentSizeSpinBox_valueChanged );
+  connect( mSegmentsLeftSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsComposerScaleBarWidget::mSegmentsLeftSpinBox_valueChanged );
+  connect( mNumberOfSegmentsSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsComposerScaleBarWidget::mNumberOfSegmentsSpinBox_valueChanged );
+  connect( mUnitLabelLineEdit, &QLineEdit::textChanged, this, &QgsComposerScaleBarWidget::mUnitLabelLineEdit_textChanged );
+  connect( mMapUnitsPerBarUnitSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerScaleBarWidget::mMapUnitsPerBarUnitSpinBox_valueChanged );
+  connect( mFontColorButton, &QgsColorButton::colorChanged, this, &QgsComposerScaleBarWidget::mFontColorButton_colorChanged );
+  connect( mFillColorButton, &QgsColorButton::colorChanged, this, &QgsComposerScaleBarWidget::mFillColorButton_colorChanged );
+  connect( mFillColor2Button, &QgsColorButton::colorChanged, this, &QgsComposerScaleBarWidget::mFillColor2Button_colorChanged );
+  connect( mStrokeColorButton, &QgsColorButton::colorChanged, this, &QgsComposerScaleBarWidget::mStrokeColorButton_colorChanged );
+  connect( mStyleComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsComposerScaleBarWidget::mStyleComboBox_currentIndexChanged );
+  connect( mLabelBarSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerScaleBarWidget::mLabelBarSpaceSpinBox_valueChanged );
+  connect( mBoxSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerScaleBarWidget::mBoxSizeSpinBox_valueChanged );
+  connect( mAlignmentComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsComposerScaleBarWidget::mAlignmentComboBox_currentIndexChanged );
+  connect( mUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsComposerScaleBarWidget::mUnitsComboBox_currentIndexChanged );
+  connect( mLineJoinStyleCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsComposerScaleBarWidget::mLineJoinStyleCombo_currentIndexChanged );
+  connect( mLineCapStyleCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsComposerScaleBarWidget::mLineCapStyleCombo_currentIndexChanged );
+  connect( mMinWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerScaleBarWidget::mMinWidthSpinBox_valueChanged );
+  connect( mMaxWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerScaleBarWidget::mMaxWidthSpinBox_valueChanged );
   setPanelTitle( tr( "Scalebar properties" ) );
 
   mFontButton->setMode( QgsFontButton::ModeQFont );
@@ -104,11 +124,6 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar *scale
   connect( mFontButton, &QgsFontButton::changed, this, &QgsComposerScaleBarWidget::fontChanged );
 }
 
-QgsComposerScaleBarWidget::~QgsComposerScaleBarWidget()
-{
-
-}
-
 void QgsComposerScaleBarWidget::setGuiElements()
 {
   if ( !mComposerScaleBar )
@@ -173,7 +188,7 @@ void QgsComposerScaleBarWidget::setGuiElements()
 
 //slots
 
-void QgsComposerScaleBarWidget::on_mLineWidthSpinBox_valueChanged( double d )
+void QgsComposerScaleBarWidget::mLineWidthSpinBox_valueChanged( double d )
 {
   if ( !mComposerScaleBar )
   {
@@ -188,7 +203,7 @@ void QgsComposerScaleBarWidget::on_mLineWidthSpinBox_valueChanged( double d )
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mSegmentSizeSpinBox_valueChanged( double d )
+void QgsComposerScaleBarWidget::mSegmentSizeSpinBox_valueChanged( double d )
 {
   if ( !mComposerScaleBar )
   {
@@ -203,7 +218,7 @@ void QgsComposerScaleBarWidget::on_mSegmentSizeSpinBox_valueChanged( double d )
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mSegmentsLeftSpinBox_valueChanged( int i )
+void QgsComposerScaleBarWidget::mSegmentsLeftSpinBox_valueChanged( int i )
 {
   if ( !mComposerScaleBar )
   {
@@ -218,7 +233,7 @@ void QgsComposerScaleBarWidget::on_mSegmentsLeftSpinBox_valueChanged( int i )
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mNumberOfSegmentsSpinBox_valueChanged( int i )
+void QgsComposerScaleBarWidget::mNumberOfSegmentsSpinBox_valueChanged( int i )
 {
   if ( !mComposerScaleBar )
   {
@@ -233,7 +248,7 @@ void QgsComposerScaleBarWidget::on_mNumberOfSegmentsSpinBox_valueChanged( int i 
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mHeightSpinBox_valueChanged( int i )
+void QgsComposerScaleBarWidget::mHeightSpinBox_valueChanged( double d )
 {
   if ( !mComposerScaleBar )
   {
@@ -241,7 +256,7 @@ void QgsComposerScaleBarWidget::on_mHeightSpinBox_valueChanged( int i )
   }
   mComposerScaleBar->beginCommand( tr( "Scalebar height changed" ), QgsComposerMergeCommand::ScaleBarHeight );
   disconnectUpdateSignal();
-  mComposerScaleBar->setHeight( i );
+  mComposerScaleBar->setHeight( d );
   mComposerScaleBar->update();
   connectUpdateSignal();
   mComposerScaleBar->endCommand();
@@ -262,7 +277,7 @@ void QgsComposerScaleBarWidget::fontChanged()
   mComposerScaleBar->update();
 }
 
-void QgsComposerScaleBarWidget::on_mFontColorButton_colorChanged( const QColor &newColor )
+void QgsComposerScaleBarWidget::mFontColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mComposerScaleBar )
   {
@@ -277,7 +292,7 @@ void QgsComposerScaleBarWidget::on_mFontColorButton_colorChanged( const QColor &
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mFillColorButton_colorChanged( const QColor &newColor )
+void QgsComposerScaleBarWidget::mFillColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mComposerScaleBar )
   {
@@ -292,7 +307,7 @@ void QgsComposerScaleBarWidget::on_mFillColorButton_colorChanged( const QColor &
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mFillColor2Button_colorChanged( const QColor &newColor )
+void QgsComposerScaleBarWidget::mFillColor2Button_colorChanged( const QColor &newColor )
 {
   if ( !mComposerScaleBar )
   {
@@ -307,7 +322,7 @@ void QgsComposerScaleBarWidget::on_mFillColor2Button_colorChanged( const QColor 
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mStrokeColorButton_colorChanged( const QColor &newColor )
+void QgsComposerScaleBarWidget::mStrokeColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mComposerScaleBar )
   {
@@ -322,7 +337,7 @@ void QgsComposerScaleBarWidget::on_mStrokeColorButton_colorChanged( const QColor
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mUnitLabelLineEdit_textChanged( const QString &text )
+void QgsComposerScaleBarWidget::mUnitLabelLineEdit_textChanged( const QString &text )
 {
   if ( !mComposerScaleBar )
   {
@@ -337,7 +352,7 @@ void QgsComposerScaleBarWidget::on_mUnitLabelLineEdit_textChanged( const QString
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mMapUnitsPerBarUnitSpinBox_valueChanged( double d )
+void QgsComposerScaleBarWidget::mMapUnitsPerBarUnitSpinBox_valueChanged( double d )
 {
   if ( !mComposerScaleBar )
   {
@@ -352,7 +367,7 @@ void QgsComposerScaleBarWidget::on_mMapUnitsPerBarUnitSpinBox_valueChanged( doub
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mStyleComboBox_currentIndexChanged( const QString &text )
+void QgsComposerScaleBarWidget::mStyleComboBox_currentIndexChanged( const QString &text )
 {
   if ( !mComposerScaleBar )
   {
@@ -441,7 +456,7 @@ void QgsComposerScaleBarWidget::toggleStyleSpecificControls( const QString &styl
   }
 }
 
-void QgsComposerScaleBarWidget::on_mLabelBarSpaceSpinBox_valueChanged( double d )
+void QgsComposerScaleBarWidget::mLabelBarSpaceSpinBox_valueChanged( double d )
 {
   if ( !mComposerScaleBar )
   {
@@ -456,7 +471,7 @@ void QgsComposerScaleBarWidget::on_mLabelBarSpaceSpinBox_valueChanged( double d 
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mBoxSizeSpinBox_valueChanged( double d )
+void QgsComposerScaleBarWidget::mBoxSizeSpinBox_valueChanged( double d )
 {
   if ( !mComposerScaleBar )
   {
@@ -471,7 +486,7 @@ void QgsComposerScaleBarWidget::on_mBoxSizeSpinBox_valueChanged( double d )
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mAlignmentComboBox_currentIndexChanged( int index )
+void QgsComposerScaleBarWidget::mAlignmentComboBox_currentIndexChanged( int index )
 {
   if ( !mComposerScaleBar )
   {
@@ -485,7 +500,7 @@ void QgsComposerScaleBarWidget::on_mAlignmentComboBox_currentIndexChanged( int i
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mUnitsComboBox_currentIndexChanged( int index )
+void QgsComposerScaleBarWidget::mUnitsComboBox_currentIndexChanged( int index )
 {
   if ( !mComposerScaleBar )
   {
@@ -562,6 +577,8 @@ void QgsComposerScaleBarWidget::blockMemberSignals( bool block )
   mSegmentSizeRadioGroup.blockSignals( block );
   mMapItemComboBox->blockSignals( block );
   mFontButton->blockSignals( block );
+  mMinWidthSpinBox->blockSignals( block );
+  mMaxWidthSpinBox->blockSignals( block );
 }
 
 void QgsComposerScaleBarWidget::connectUpdateSignal()
@@ -580,7 +597,7 @@ void QgsComposerScaleBarWidget::disconnectUpdateSignal()
   }
 }
 
-void QgsComposerScaleBarWidget::on_mLineJoinStyleCombo_currentIndexChanged( int index )
+void QgsComposerScaleBarWidget::mLineJoinStyleCombo_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
   if ( !mComposerScaleBar )
@@ -593,7 +610,7 @@ void QgsComposerScaleBarWidget::on_mLineJoinStyleCombo_currentIndexChanged( int 
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mLineCapStyleCombo_currentIndexChanged( int index )
+void QgsComposerScaleBarWidget::mLineCapStyleCombo_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
   if ( !mComposerScaleBar )
@@ -651,7 +668,7 @@ void QgsComposerScaleBarWidget::composerMapChanged( QgsComposerItem *item )
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mMinWidthSpinBox_valueChanged( int )
+void QgsComposerScaleBarWidget::mMinWidthSpinBox_valueChanged( double )
 {
   if ( !mComposerScaleBar )
   {
@@ -666,7 +683,7 @@ void QgsComposerScaleBarWidget::on_mMinWidthSpinBox_valueChanged( int )
   mComposerScaleBar->endCommand();
 }
 
-void QgsComposerScaleBarWidget::on_mMaxWidthSpinBox_valueChanged( int )
+void QgsComposerScaleBarWidget::mMaxWidthSpinBox_valueChanged( double )
 {
   if ( !mComposerScaleBar )
   {

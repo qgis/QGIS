@@ -27,10 +27,6 @@
 
 #include <cmath>
 
-#ifndef M_SQRT2
-#define M_SQRT2 1.41421356237309504880
-#endif
-
 QgsPointDistanceRenderer::QgsPointDistanceRenderer( const QString &rendererName, const QString &labelAttributeName )
   : QgsFeatureRenderer( rendererName )
   , mLabelAttributeName( labelAttributeName )
@@ -38,7 +34,7 @@ QgsPointDistanceRenderer::QgsPointDistanceRenderer( const QString &rendererName,
   , mTolerance( 3 )
   , mToleranceUnit( QgsUnitTypes::RenderMillimeters )
   , mDrawLabels( true )
-  , mSpatialIndex( nullptr )
+
 {
   mRenderer.reset( QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::PointGeometry ) );
 }
@@ -54,6 +50,11 @@ bool QgsPointDistanceRenderer::renderFeature( QgsFeature &feature, QgsRenderCont
   Q_UNUSED( drawVertexMarker );
   Q_UNUSED( context );
   Q_UNUSED( layer );
+
+  /*
+   * IMPORTANT: This algorithm is ported to Python in the processing "Points Displacement" algorithm.
+   * Please port any changes/improvements to that algorithm too!
+   */
 
   //check if there is already a point at that position
   if ( !feature.hasGeometry() )
@@ -141,7 +142,7 @@ void QgsPointDistanceRenderer::drawGroup( const ClusteredGroup &group, QgsRender
   QgsMultiPointV2 *groupMultiPoint = new QgsMultiPointV2();
   Q_FOREACH ( const GroupedFeature &f, group )
   {
-    groupMultiPoint->addGeometry( f.feature.geometry().geometry()->clone() );
+    groupMultiPoint->addGeometry( f.feature.geometry().constGet()->clone() );
   }
   QgsGeometry groupGeom( groupMultiPoint );
   QgsGeometry centroid = groupGeom.centroid();

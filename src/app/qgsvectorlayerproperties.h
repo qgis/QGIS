@@ -25,6 +25,8 @@
 #include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoininfo.h"
+#include "layertree/qgslayertree.h"
 #include "layertree/qgslayertreemodel.h"
 #include "layertree/qgslayertreegroup.h"
 #include "qgis_app.h"
@@ -40,6 +42,7 @@ class QgsFieldsProperties;
 class QgsRendererPropertiesDialog;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
+class QgsMetadataWidget;
 class QgsPanelWidget;
 
 class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
@@ -55,19 +58,29 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     };
 
     QgsVectorLayerProperties( QgsVectorLayer *lyr = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    ~QgsVectorLayerProperties();
-    //! Returns the display name entered in the dialog
-    QString displayName();
-    void setRendererDirty( bool ) {}
 
-    /** Adds an attribute to the table (but does not commit it yet)
-    \param field the field to add
-    \returns false in case of a name conflict, true in case of success */
+    //! Returns the display name entered in the dialog
+    QString displayName()
+    {
+      return txtDisplayName->text();
+    }
+
+    /**
+     * Adds an attribute to the layer.
+     * The layer will need to be in edit mode. It will only be added to the provider when the edit buffer
+     * is committed.
+     * \param field the field to add
+     * \returns false in case of a name conflict, true in case of success
+     */
     bool addAttribute( const QgsField &field );
 
-    /** Deletes an attribute (but does not commit it)
-      \param name attribute name
-      \returns false in case of a non-existing attribute.*/
+    /**
+     * Deletes an attribute.
+     * The layer will need to be in edit mode. It will only be added to the provider when the edit buffer
+     * is committed.
+     * \param name attribute name
+     * \returns false in case of a non-existing attribute.
+     */
     bool deleteAttribute( int attr );
 
     //! Adds a properties page factory to the vector layer properties dialog.
@@ -84,7 +97,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QString htmlMetadata();
 
     //! Slot to update layer display name as original is edited
-    void on_mLayerOrigNameLineEdit_textEdited( const QString &text );
+    void mLayerOrigNameLineEdit_textEdited( const QString &text );
 
     //! Called when apply button is pressed or dialog is accepted
     void apply();
@@ -96,23 +109,22 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //methods reimplemented from qt designer base class
     //
 
-    void on_pbnQueryBuilder_clicked();
-    void on_pbnIndex_clicked();
-    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
+    void pbnQueryBuilder_clicked();
+    void pbnIndex_clicked();
+    void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
     void loadDefaultStyle_clicked();
     void saveDefaultStyle_clicked();
     void loadStyle_clicked();
     void saveStyleAs_clicked();
     void mOptionsStackedWidget_CurrentChanged( int indx );
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html" ) ); }
-    void on_pbnUpdateExtents_clicked();
+    void pbnUpdateExtents_clicked();
 
-    void on_mButtonAddJoin_clicked();
-    void on_mButtonEditJoin_clicked();
-    void on_mJoinTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
-    void on_mButtonRemoveJoin_clicked();
+    void mButtonAddJoin_clicked();
+    void mButtonEditJoin_clicked();
+    void mJoinTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void mButtonRemoveJoin_clicked();
 
-    void on_mSimplifyDrawingGroupBox_toggled( bool checked );
+    void mSimplifyDrawingGroupBox_toggled( bool checked );
 
   signals:
 
@@ -134,7 +146,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void aboutToShowStyleMenu();
 
-    /** Updates the variable editor to reflect layer changes
+    /**
+     * Updates the variable editor to reflect layer changes
      */
     void updateVariableEditor();
 
@@ -142,6 +155,18 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
      * \brief updates the FieldsPropertiesDialog when syncing the layer properties
      */
     void updateFieldsPropertiesDialog();
+
+    void onAuxiliaryLayerNew();
+
+    void onAuxiliaryLayerClear();
+
+    void onAuxiliaryLayerDelete();
+
+    void onAuxiliaryLayerDeleteField();
+
+    void onAuxiliaryLayerAddField();
+
+    void onAuxiliaryLayerExport();
 
   private:
 
@@ -156,7 +181,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     QgsVectorLayer *mLayer = nullptr;
 
-    bool mMetadataFilled;
+    bool mMetadataFilled = false;
 
     QString mOriginalSubsetSQL;
 
@@ -183,7 +208,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //! A list of additional pages provided by plugins
     QList<QgsMapLayerConfigWidget *> mLayerPropertiesPages;
 
-    /** Previous layer style. Used to reset style to previous state if new style
+    /**
+     * Previous layer style. Used to reset style to previous state if new style
      * was loaded but dialog is canceled */
     QgsMapLayerStyle mOldStyle;
 
@@ -192,6 +218,9 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //! Adds a new join to mJoinTreeWidget
     void addJoinToTreeWidget( const QgsVectorLayerJoinInfo &join, const int insertIndex = -1 );
 
+    void updateAuxiliaryStoragePage( bool reset = false );
+    void deleteAuxiliaryField( int index );
+
     QgsExpressionContext mContext;
 
     QgsExpressionContext createExpressionContext() const override;
@@ -199,12 +228,20 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     std::unique_ptr<QgsLayerTree> mLayersDependenciesTreeGroup;
     std::unique_ptr<QgsLayerTreeModel> mLayersDependenciesTreeModel;
 
+    void showHelp();
+
+    QgsMetadataWidget *mMetadataWidget = nullptr;
+
+    QAction *mAuxiliaryLayerActionNew = nullptr;
+    QAction *mAuxiliaryLayerActionClear = nullptr;
+    QAction *mAuxiliaryLayerActionDelete = nullptr;
+    QAction *mAuxiliaryLayerActionExport = nullptr;
+    QAction *mAuxiliaryLayerActionDeleteField = nullptr;
+    QAction *mAuxiliaryLayerActionAddField = nullptr;
+
   private slots:
     void openPanel( QgsPanelWidget *panel );
 };
 
-inline QString QgsVectorLayerProperties::displayName()
-{
-  return txtDisplayName->text();
-}
+
 #endif

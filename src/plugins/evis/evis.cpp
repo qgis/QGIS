@@ -50,10 +50,10 @@
 //
 // QGIS Specific includes
 //
-#include <qgsapplication.h>
-#include <qgsrasterlayer.h>
-#include <qgisinterface.h>
-#include <qgsmaplayer.h>
+#include "qgsapplication.h"
+#include "qgsrasterlayer.h"
+#include "qgisinterface.h"
+#include "qgsmaplayer.h"
 #include "qgsguiutils.h"
 
 //the gui subclass
@@ -85,15 +85,8 @@ static const QString sIcon = QStringLiteral( ":/evis/eVisEventBrowser.png" );
 eVis::eVis( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
   , mQGisIface( qgisInterface )
-  , mDatabaseConnectionActionPointer( nullptr )
-  , mEventIdToolActionPointer( nullptr )
-  , mEventBrowserActionPointer( nullptr )
 {
   mIdTool = nullptr;
-}
-
-eVis::~eVis()
-{
 }
 
 void eVis::initGui()

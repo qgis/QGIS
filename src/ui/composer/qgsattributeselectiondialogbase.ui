@@ -77,6 +77,13 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QPushButton" name="mClearColumnsPushButton">
+           <property name="text">
+            <string>Clear</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item row="1" column="1">
@@ -113,7 +120,7 @@
           <enum>Qt::IgnoreAction</enum>
          </property>
          <property name="selectionMode">
-          <enum>QAbstractItemView::SingleSelection</enum>
+          <enum>QAbstractItemView::MultiSelection</enum>
          </property>
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>

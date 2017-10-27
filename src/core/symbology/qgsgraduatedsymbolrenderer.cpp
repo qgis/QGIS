@@ -40,15 +40,6 @@
 #include <ctime>
 
 
-QgsRendererRange::QgsRendererRange()
-  : mLowerValue( 0 )
-  , mUpperValue( 0 )
-  , mSymbol( nullptr )
-  , mLabel()
-  , mRender( true )
-{
-}
-
 QgsRendererRange::QgsRendererRange( double lowerValue, double upperValue, QgsSymbol *symbol, const QString &label, bool render )
   : mLowerValue( lowerValue )
   , mUpperValue( upperValue )
@@ -169,7 +160,7 @@ void QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, QgsString
   // create the ogc:Filter for the range
   QString filterFunc = QStringLiteral( "\"%1\" %2 %3 AND \"%1\" <= %4" )
                        .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ),
-                             firstRange ? ">=" : ">",
+                             firstRange ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
                              qgsDoubleToString( mLowerValue ),
                              qgsDoubleToString( mUpperValue ) );
   QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, filterFunc );
@@ -184,10 +175,6 @@ const int QgsRendererRangeLabelFormat::MIN_PRECISION = -6;
 
 QgsRendererRangeLabelFormat::QgsRendererRangeLabelFormat()
   : mFormat( QStringLiteral( " %1 - %2 " ) )
-  , mPrecision( 4 )
-  , mTrimTrailingZeroes( false )
-  , mNumberScale( 1.0 )
-  , mNumberSuffix( QLatin1String( "" ) )
   , mReTrailingZeroes( "[.,]?0*$" )
   , mReNegativeZero( "^\\-0(?:[.,]0*)?$" )
 {
@@ -222,7 +209,7 @@ void QgsRendererRangeLabelFormat::setPrecision( int precision )
   precision = qBound( MIN_PRECISION, precision, MAX_PRECISION );
   mPrecision = precision;
   mNumberScale = 1.0;
-  mNumberSuffix = QLatin1String( "" );
+  mNumberSuffix.clear();
   while ( precision < 0 )
   {
     precision++;
@@ -282,7 +269,7 @@ void QgsRendererRangeLabelFormat::saveToDomElement( QDomElement &element )
 {
   element.setAttribute( QStringLiteral( "format" ), mFormat );
   element.setAttribute( QStringLiteral( "decimalplaces" ), mPrecision );
-  element.setAttribute( QStringLiteral( "trimtrailingzeroes" ), mTrimTrailingZeroes ? "true" : "false" );
+  element.setAttribute( QStringLiteral( "trimtrailingzeroes" ), mTrimTrailingZeroes ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
 }
 
 ///////////
@@ -290,11 +277,6 @@ void QgsRendererRangeLabelFormat::saveToDomElement( QDomElement &element )
 QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QString &attrName, const QgsRangeList &ranges )
   : QgsFeatureRenderer( QStringLiteral( "graduatedSymbol" ) )
   , mAttrName( attrName )
-  , mMode( Custom )
-  , mGraduatedMethod( GraduatedColor )
-  , mAttrNum( -1 )
-  , mCounting( false )
-
 {
   // TODO: check ranges for sanity (NULL symbols, invalid ranges)
 
@@ -629,8 +611,8 @@ static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList
   for ( int i = 0; i < n; i++ )
   {
     mean += values[i];
-    minimum = qMin( values[i], minimum ); // could use precomputed max and min
-    maximum = qMax( values[i], maximum ); // but have to go through entire list anyway
+    minimum = std::min( values[i], minimum ); // could use precomputed max and min
+    maximum = std::max( values[i], maximum ); // but have to go through entire list anyway
   }
   mean = mean / static_cast< double >( n );
 
@@ -640,7 +622,7 @@ static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList
     sd = values[i] - mean;
     stdDev += sd * sd;
   }
-  stdDev = sqrt( stdDev / n );
+  stdDev = std::sqrt( stdDev / n );
 
   QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( ( minimum - mean ) / stdDev, ( maximum - mean ) / stdDev, classes );
   for ( int i = 0; i < breaks.count(); i++ )
@@ -688,7 +670,7 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
     // is larger. This will produce a more representative sample for very large
     // layers, but could end up being computationally intensive...
 
-    sample.resize( qMax( maximumSize, values.size() / 10 ) );
+    sample.resize( std::max( maximumSize, values.size() / 10 ) );
 
     QgsDebugMsg( QString( "natural breaks (jenks) sample size: %1" ).arg( sample.size() ) );
     QgsDebugMsg( QString( "values:%1" ).arg( values.size() ) );
@@ -699,7 +681,7 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
     {
       // pick a random integer from 0 to n
       double r = qrand();
-      int j = floor( r / RAND_MAX * ( values.size() - 1 ) );
+      int j = std::floor( r / RAND_MAX * ( values.size() - 1 ) );
       sample[ i ] = values[ j ];
     }
   }
@@ -1040,7 +1022,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
     r->setLabelFormat( labelFormat );
   }
 
-  QDomElement ddsLegendSizeElem = element.firstChildElement( "data-defined-size-legend" );
+  QDomElement ddsLegendSizeElem = element.firstChildElement( QStringLiteral( "data-defined-size-legend" ) );
   if ( !ddsLegendSizeElem.isNull() )
   {
     r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
@@ -1054,8 +1036,8 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "graduatedSymbol" ) );
-  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? "1" : "0" ) );
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
   rendererElem.setAttribute( QStringLiteral( "attr" ), mAttrName );
   rendererElem.setAttribute( QStringLiteral( "graduatedMethod" ), graduatedMethodStr( mGraduatedMethod ) );
 
@@ -1075,7 +1057,7 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
     rangeElem.setAttribute( QStringLiteral( "upper" ), QString::number( range.upperValue(), 'f', 15 ) );
     rangeElem.setAttribute( QStringLiteral( "symbol" ), symbolName );
     rangeElem.setAttribute( QStringLiteral( "label" ), range.label() );
-    rangeElem.setAttribute( QStringLiteral( "render" ), range.renderState() ? "true" : "false" );
+    rangeElem.setAttribute( QStringLiteral( "render" ), range.renderState() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
     rangesElem.appendChild( rangeElem );
     i++;
   }
@@ -1140,7 +1122,7 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   if ( mDataDefinedSizeLegend )
   {
@@ -1251,7 +1233,7 @@ double QgsGraduatedSymbolRenderer::minSymbolSize() const
       sz = static_cast< QgsMarkerSymbol * >( mRanges[i].symbol() )->size();
     else if ( mRanges[i].symbol()->type() == QgsSymbol::Line )
       sz = static_cast< QgsLineSymbol * >( mRanges[i].symbol() )->width();
-    min = qMin( sz, min );
+    min = std::min( sz, min );
   }
   return min;
 }
@@ -1266,7 +1248,7 @@ double QgsGraduatedSymbolRenderer::maxSymbolSize() const
       sz = static_cast< QgsMarkerSymbol * >( mRanges[i].symbol() )->size();
     else if ( mRanges[i].symbol()->type() == QgsSymbol::Line )
       sz = static_cast< QgsLineSymbol * >( mRanges[i].symbol() )->width();
-    max = qMax( sz, max );
+    max = std::max( sz, max );
   }
   return max;
 }
@@ -1276,9 +1258,9 @@ void QgsGraduatedSymbolRenderer::setSymbolSizes( double minSize, double maxSize 
   for ( int i = 0; i < mRanges.count(); i++ )
   {
     std::unique_ptr<QgsSymbol> symbol( mRanges.at( i ).symbol() ? mRanges.at( i ).symbol()->clone() : nullptr );
-    const double size =  mRanges.count() > 1
-                         ? minSize + i * ( maxSize - minSize ) / ( mRanges.count() - 1 )
-                         : .5 * ( maxSize + minSize );
+    const double size = mRanges.count() > 1
+                        ? minSize + i * ( maxSize - minSize ) / ( mRanges.count() - 1 )
+                        : .5 * ( maxSize + minSize );
     if ( symbol->type() == QgsSymbol::Marker )
       static_cast< QgsMarkerSymbol * >( symbol.get() )->setSize( size );
     if ( symbol->type() == QgsSymbol::Line )

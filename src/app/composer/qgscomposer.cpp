@@ -57,7 +57,6 @@
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessageviewer.h"
-#include "qgscontexthelp.h"
 #include "qgscursors.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsgeometry.h"
@@ -77,6 +76,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QIcon>
+#include <QImageWriter>
 #include <QLabel>
 #include <QMatrix>
 #include <QMenuBar>
@@ -102,16 +102,94 @@
 #endif
 
 QgsComposer::QgsComposer( QgsComposition *composition )
-  : QMainWindow()
-  , mInterface( new QgsAppComposerInterface( this ) )
+  : mInterface( new QgsAppComposerInterface( this ) )
   , mComposition( composition )
   , mQgis( QgisApp::instance() )
 {
   setupUi( this );
+  connect( mActionZoomAll, &QAction::triggered, this, &QgsComposer::mActionZoomAll_triggered );
+  connect( mActionZoomIn, &QAction::triggered, this, &QgsComposer::mActionZoomIn_triggered );
+  connect( mActionZoomOut, &QAction::triggered, this, &QgsComposer::mActionZoomOut_triggered );
+  connect( mActionZoomActual, &QAction::triggered, this, &QgsComposer::mActionZoomActual_triggered );
+  connect( mActionRefreshView, &QAction::triggered, this, &QgsComposer::mActionRefreshView_triggered );
+  connect( mActionPrint, &QAction::triggered, this, &QgsComposer::mActionPrint_triggered );
+  connect( mActionPageSetup, &QAction::triggered, this, &QgsComposer::mActionPageSetup_triggered );
+  connect( mActionExportAsImage, &QAction::triggered, this, &QgsComposer::mActionExportAsImage_triggered );
+  connect( mActionExportAsSVG, &QAction::triggered, this, &QgsComposer::mActionExportAsSVG_triggered );
+  connect( mActionExportAsPDF, &QAction::triggered, this, &QgsComposer::mActionExportAsPDF_triggered );
+  connect( mActionSelectMoveItem, &QAction::triggered, this, &QgsComposer::mActionSelectMoveItem_triggered );
+  connect( mActionAddArrow, &QAction::triggered, this, &QgsComposer::mActionAddArrow_triggered );
+  connect( mActionAddNewMap, &QAction::triggered, this, &QgsComposer::mActionAddNewMap_triggered );
+  connect( mActionAddNewLegend, &QAction::triggered, this, &QgsComposer::mActionAddNewLegend_triggered );
+  connect( mActionAddNewLabel, &QAction::triggered, this, &QgsComposer::mActionAddNewLabel_triggered );
+  connect( mActionAddNewScalebar, &QAction::triggered, this, &QgsComposer::mActionAddNewScalebar_triggered );
+  connect( mActionAddImage, &QAction::triggered, this, &QgsComposer::mActionAddImage_triggered );
+  connect( mActionAddRectangle, &QAction::triggered, this, &QgsComposer::mActionAddRectangle_triggered );
+  connect( mActionAddTriangle, &QAction::triggered, this, &QgsComposer::mActionAddTriangle_triggered );
+  connect( mActionAddEllipse, &QAction::triggered, this, &QgsComposer::mActionAddEllipse_triggered );
+  connect( mActionEditNodesItem, &QAction::triggered, this, &QgsComposer::mActionEditNodesItem_triggered );
+  connect( mActionAddPolygon, &QAction::triggered, this, &QgsComposer::mActionAddPolygon_triggered );
+  connect( mActionAddPolyline, &QAction::triggered, this, &QgsComposer::mActionAddPolyline_triggered );
+  connect( mActionAddTable, &QAction::triggered, this, &QgsComposer::mActionAddTable_triggered );
+  connect( mActionAddAttributeTable, &QAction::triggered, this, &QgsComposer::mActionAddAttributeTable_triggered );
+  connect( mActionAddHtml, &QAction::triggered, this, &QgsComposer::mActionAddHtml_triggered );
+  connect( mActionSaveProject, &QAction::triggered, this, &QgsComposer::mActionSaveProject_triggered );
+  connect( mActionNewComposer, &QAction::triggered, this, &QgsComposer::mActionNewComposer_triggered );
+  connect( mActionDuplicateComposer, &QAction::triggered, this, &QgsComposer::mActionDuplicateComposer_triggered );
+  connect( mActionComposerManager, &QAction::triggered, this, &QgsComposer::mActionComposerManager_triggered );
+  connect( mActionSaveAsTemplate, &QAction::triggered, this, &QgsComposer::mActionSaveAsTemplate_triggered );
+  connect( mActionLoadFromTemplate, &QAction::triggered, this, &QgsComposer::mActionLoadFromTemplate_triggered );
+  connect( mActionMoveItemContent, &QAction::triggered, this, &QgsComposer::mActionMoveItemContent_triggered );
+  connect( mActionPan, &QAction::triggered, this, &QgsComposer::mActionPan_triggered );
+  connect( mActionMouseZoom, &QAction::triggered, this, &QgsComposer::mActionMouseZoom_triggered );
+  connect( mActionGroupItems, &QAction::triggered, this, &QgsComposer::mActionGroupItems_triggered );
+  connect( mActionPasteInPlace, &QAction::triggered, this, &QgsComposer::mActionPasteInPlace_triggered );
+  connect( mActionDeleteSelection, &QAction::triggered, this, &QgsComposer::mActionDeleteSelection_triggered );
+  connect( mActionSelectAll, &QAction::triggered, this, &QgsComposer::mActionSelectAll_triggered );
+  connect( mActionDeselectAll, &QAction::triggered, this, &QgsComposer::mActionDeselectAll_triggered );
+  connect( mActionInvertSelection, &QAction::triggered, this, &QgsComposer::mActionInvertSelection_triggered );
+  connect( mActionUngroupItems, &QAction::triggered, this, &QgsComposer::mActionUngroupItems_triggered );
+  connect( mActionLockItems, &QAction::triggered, this, &QgsComposer::mActionLockItems_triggered );
+  connect( mActionUnlockAll, &QAction::triggered, this, &QgsComposer::mActionUnlockAll_triggered );
+  connect( mActionSelectNextAbove, &QAction::triggered, this, &QgsComposer::mActionSelectNextAbove_triggered );
+  connect( mActionSelectNextBelow, &QAction::triggered, this, &QgsComposer::mActionSelectNextBelow_triggered );
+  connect( mActionRaiseItems, &QAction::triggered, this, &QgsComposer::mActionRaiseItems_triggered );
+  connect( mActionLowerItems, &QAction::triggered, this, &QgsComposer::mActionLowerItems_triggered );
+  connect( mActionMoveItemsToTop, &QAction::triggered, this, &QgsComposer::mActionMoveItemsToTop_triggered );
+  connect( mActionMoveItemsToBottom, &QAction::triggered, this, &QgsComposer::mActionMoveItemsToBottom_triggered );
+  connect( mActionAlignLeft, &QAction::triggered, this, &QgsComposer::mActionAlignLeft_triggered );
+  connect( mActionAlignHCenter, &QAction::triggered, this, &QgsComposer::mActionAlignHCenter_triggered );
+  connect( mActionAlignRight, &QAction::triggered, this, &QgsComposer::mActionAlignRight_triggered );
+  connect( mActionAlignTop, &QAction::triggered, this, &QgsComposer::mActionAlignTop_triggered );
+  connect( mActionAlignVCenter, &QAction::triggered, this, &QgsComposer::mActionAlignVCenter_triggered );
+  connect( mActionAlignBottom, &QAction::triggered, this, &QgsComposer::mActionAlignBottom_triggered );
+  connect( mActionUndo, &QAction::triggered, this, &QgsComposer::mActionUndo_triggered );
+  connect( mActionRedo, &QAction::triggered, this, &QgsComposer::mActionRedo_triggered );
+  connect( mActionShowGrid, &QAction::triggered, this, &QgsComposer::mActionShowGrid_triggered );
+  connect( mActionSnapGrid, &QAction::triggered, this, &QgsComposer::mActionSnapGrid_triggered );
+  connect( mActionShowGuides, &QAction::triggered, this, &QgsComposer::mActionShowGuides_triggered );
+  connect( mActionSnapGuides, &QAction::triggered, this, &QgsComposer::mActionSnapGuides_triggered );
+  connect( mActionSmartGuides, &QAction::triggered, this, &QgsComposer::mActionSmartGuides_triggered );
+  connect( mActionShowBoxes, &QAction::triggered, this, &QgsComposer::mActionShowBoxes_triggered );
+  connect( mActionShowPage, &QAction::triggered, this, &QgsComposer::mActionShowPage_triggered );
+  connect( mActionClearGuides, &QAction::triggered, this, &QgsComposer::mActionClearGuides_triggered );
+  connect( mActionOptions, &QAction::triggered, this, &QgsComposer::mActionOptions_triggered );
+  connect( mActionAtlasPreview, &QAction::triggered, this, &QgsComposer::mActionAtlasPreview_triggered );
+  connect( mActionAtlasNext, &QAction::triggered, this, &QgsComposer::mActionAtlasNext_triggered );
+  connect( mActionAtlasPrev, &QAction::triggered, this, &QgsComposer::mActionAtlasPrev_triggered );
+  connect( mActionAtlasFirst, &QAction::triggered, this, &QgsComposer::mActionAtlasFirst_triggered );
+  connect( mActionAtlasLast, &QAction::triggered, this, &QgsComposer::mActionAtlasLast_triggered );
+  connect( mActionPrintAtlas, &QAction::triggered, this, &QgsComposer::mActionPrintAtlas_triggered );
+  connect( mActionExportAtlasAsImage, &QAction::triggered, this, &QgsComposer::mActionExportAtlasAsImage_triggered );
+  connect( mActionExportAtlasAsSVG, &QAction::triggered, this, &QgsComposer::mActionExportAtlasAsSVG_triggered );
+  connect( mActionExportAtlasAsPDF, &QAction::triggered, this, &QgsComposer::mActionExportAtlasAsPDF_triggered );
+  connect( mActionAtlasSettings, &QAction::triggered, this, &QgsComposer::mActionAtlasSettings_triggered );
+  connect( mActionToggleFullScreen, &QAction::triggered, this, &QgsComposer::mActionToggleFullScreen_triggered );
+  connect( mActionHidePanels, &QAction::triggered, this, &QgsComposer::mActionHidePanels_triggered );
   setWindowTitle( mComposition->name() );
   setAttribute( Qt::WA_DeleteOnClose );
 #if QT_VERSION >= 0x050600
-  setDockOptions( dockOptions() | QMainWindow::GroupedDragging ) ;
+  setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
 #endif
   setupTheme();
 
@@ -592,9 +670,9 @@ QgsComposer::QgsComposer( QgsComposition *composition )
 
   mItemsTreeView->setColumnWidth( 0, 30 );
   mItemsTreeView->setColumnWidth( 1, 30 );
-  mItemsTreeView->header()->setResizeMode( 0, QHeaderView::Fixed );
-  mItemsTreeView->header()->setResizeMode( 1, QHeaderView::Fixed );
-  mItemsTreeView->header()->setMovable( false );
+  mItemsTreeView->header()->setSectionResizeMode( 0, QHeaderView::Fixed );
+  mItemsTreeView->header()->setSectionResizeMode( 1, QHeaderView::Fixed );
+  mItemsTreeView->header()->setSectionsMovable( false );
 
   mItemsTreeView->setDragEnabled( true );
   mItemsTreeView->setAcceptDrops( true );
@@ -821,7 +899,7 @@ void QgsComposer::activate()
   activateWindow();
   if ( !shown )
   {
-    on_mActionZoomAll_triggered();
+    mActionZoomAll_triggered();
   }
 }
 
@@ -933,7 +1011,7 @@ void QgsComposer::showItemOptions( QgsComposerItem *item )
   mItemPropertiesStack->setMainPanel( widget.release() );
 }
 
-void QgsComposer::on_mActionOptions_triggered()
+void QgsComposer::mActionOptions_triggered()
 {
   mQgis->showOptionsDialog( this, QStringLiteral( "mOptionsPageComposer" ) );
 }
@@ -1068,7 +1146,7 @@ QgsPanelWidget *QgsComposer::createItemWidget( QgsComposerItem *item )
   return nullptr; // no warnings!
 }
 
-void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
+void QgsComposer::mActionAtlasPreview_triggered( bool checked )
 {
   QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
 
@@ -1128,7 +1206,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
   }
 }
 
-void QgsComposer::on_mActionAtlasNext_triggered()
+void QgsComposer::mActionAtlasNext_triggered()
 {
   QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap->enabled() )
@@ -1143,7 +1221,7 @@ void QgsComposer::on_mActionAtlasNext_triggered()
   emit atlasPreviewFeatureChanged();
 }
 
-void QgsComposer::on_mActionAtlasPrev_triggered()
+void QgsComposer::mActionAtlasPrev_triggered()
 {
   QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap->enabled() )
@@ -1158,7 +1236,7 @@ void QgsComposer::on_mActionAtlasPrev_triggered()
   emit atlasPreviewFeatureChanged();
 }
 
-void QgsComposer::on_mActionAtlasFirst_triggered()
+void QgsComposer::mActionAtlasFirst_triggered()
 {
   QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap->enabled() )
@@ -1173,7 +1251,7 @@ void QgsComposer::on_mActionAtlasFirst_triggered()
   emit atlasPreviewFeatureChanged();
 }
 
-void QgsComposer::on_mActionAtlasLast_triggered()
+void QgsComposer::mActionAtlasLast_triggered()
 {
   QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap->enabled() )
@@ -1237,7 +1315,7 @@ void QgsComposer::zoomFull()
   }
 }
 
-void QgsComposer::on_mActionZoomAll_triggered()
+void QgsComposer::mActionZoomAll_triggered()
 {
   zoomFull();
   mView->updateRulers();
@@ -1245,7 +1323,7 @@ void QgsComposer::on_mActionZoomAll_triggered()
   emit zoomLevelChanged();
 }
 
-void QgsComposer::on_mActionZoomIn_triggered()
+void QgsComposer::mActionZoomIn_triggered()
 {
   mView->scaleSafe( 2 );
   mView->updateRulers();
@@ -1253,7 +1331,7 @@ void QgsComposer::on_mActionZoomIn_triggered()
   emit zoomLevelChanged();
 }
 
-void QgsComposer::on_mActionZoomOut_triggered()
+void QgsComposer::mActionZoomOut_triggered()
 {
   mView->scaleSafe( 0.5 );
   mView->updateRulers();
@@ -1261,12 +1339,12 @@ void QgsComposer::on_mActionZoomOut_triggered()
   emit zoomLevelChanged();
 }
 
-void QgsComposer::on_mActionZoomActual_triggered()
+void QgsComposer::mActionZoomActual_triggered()
 {
   mView->setZoomLevel( 1.0 );
 }
 
-void QgsComposer::on_mActionMouseZoom_triggered()
+void QgsComposer::mActionMouseZoom_triggered()
 {
   if ( mView )
   {
@@ -1274,7 +1352,7 @@ void QgsComposer::on_mActionMouseZoom_triggered()
   }
 }
 
-void QgsComposer::on_mActionRefreshView_triggered()
+void QgsComposer::mActionRefreshView_triggered()
 {
   if ( !mComposition )
   {
@@ -1295,7 +1373,7 @@ void QgsComposer::on_mActionRefreshView_triggered()
   mComposition->update();
 }
 
-void QgsComposer::on_mActionShowGrid_triggered( bool checked )
+void QgsComposer::mActionShowGrid_triggered( bool checked )
 {
   //show or hide grid
   if ( mComposition )
@@ -1304,7 +1382,7 @@ void QgsComposer::on_mActionShowGrid_triggered( bool checked )
   }
 }
 
-void QgsComposer::on_mActionSnapGrid_triggered( bool checked )
+void QgsComposer::mActionSnapGrid_triggered( bool checked )
 {
   //enable or disable snap items to grid
   if ( mComposition )
@@ -1313,7 +1391,7 @@ void QgsComposer::on_mActionSnapGrid_triggered( bool checked )
   }
 }
 
-void QgsComposer::on_mActionShowGuides_triggered( bool checked )
+void QgsComposer::mActionShowGuides_triggered( bool checked )
 {
   //show or hide guide lines
   if ( mComposition )
@@ -1322,7 +1400,7 @@ void QgsComposer::on_mActionShowGuides_triggered( bool checked )
   }
 }
 
-void QgsComposer::on_mActionSnapGuides_triggered( bool checked )
+void QgsComposer::mActionSnapGuides_triggered( bool checked )
 {
   //enable or disable snap items to guides
   if ( mComposition )
@@ -1331,7 +1409,7 @@ void QgsComposer::on_mActionSnapGuides_triggered( bool checked )
   }
 }
 
-void QgsComposer::on_mActionSmartGuides_triggered( bool checked )
+void QgsComposer::mActionSmartGuides_triggered( bool checked )
 {
   //enable or disable smart snapping guides
   if ( mComposition )
@@ -1340,7 +1418,7 @@ void QgsComposer::on_mActionSmartGuides_triggered( bool checked )
   }
 }
 
-void QgsComposer::on_mActionShowBoxes_triggered( bool checked )
+void QgsComposer::mActionShowBoxes_triggered( bool checked )
 {
   //show or hide bounding boxes
   if ( mComposition )
@@ -1349,7 +1427,7 @@ void QgsComposer::on_mActionShowBoxes_triggered( bool checked )
   }
 }
 
-void QgsComposer::on_mActionShowPage_triggered( bool checked )
+void QgsComposer::mActionShowPage_triggered( bool checked )
 {
   //toggle page display
   if ( mComposition )
@@ -1358,7 +1436,7 @@ void QgsComposer::on_mActionShowPage_triggered( bool checked )
   }
 }
 
-void QgsComposer::on_mActionClearGuides_triggered()
+void QgsComposer::mActionClearGuides_triggered()
 {
   //clear guide lines
   if ( mComposition )
@@ -1378,7 +1456,7 @@ void QgsComposer::toggleRulers( bool checked )
   myQSettings.setValue( QStringLiteral( "Composer/showRulers" ), checked );
 }
 
-void QgsComposer::on_mActionAtlasSettings_triggered()
+void QgsComposer::mActionAtlasSettings_triggered()
 {
   if ( !mAtlasDock->isVisible() )
   {
@@ -1388,7 +1466,7 @@ void QgsComposer::on_mActionAtlasSettings_triggered()
   mAtlasDock->raise();
 }
 
-void QgsComposer::on_mActionToggleFullScreen_triggered()
+void QgsComposer::mActionToggleFullScreen_triggered()
 {
   if ( mActionToggleFullScreen->isChecked() )
   {
@@ -1400,7 +1478,7 @@ void QgsComposer::on_mActionToggleFullScreen_triggered()
   }
 }
 
-void QgsComposer::on_mActionHidePanels_triggered()
+void QgsComposer::mActionHidePanels_triggered()
 {
   /*
   workaround the limited Qt dock widget API
@@ -1521,7 +1599,7 @@ void QgsComposer::dockVisibilityChanged( bool visible )
   }
 }
 
-void QgsComposer::on_mActionExportAtlasAsPDF_triggered()
+void QgsComposer::mActionExportAtlasAsPDF_triggered()
 {
   QgsComposition::AtlasMode previousMode = mComposition->atlasMode();
   mComposition->setAtlasMode( QgsComposition::ExportAtlas );
@@ -1536,7 +1614,7 @@ void QgsComposer::on_mActionExportAtlasAsPDF_triggered()
   }
 }
 
-void QgsComposer::on_mActionExportAsPDF_triggered()
+void QgsComposer::mActionExportAsPDF_triggered()
 {
   exportCompositionAsPDF( QgsComposer::Single );
 }
@@ -1678,7 +1756,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
       mComposition->beginPrintAsPDF( printer, outputFileName );
       // set the correct resolution
       mComposition->beginPrint( printer );
-      bool printReady =  painter.begin( &printer );
+      bool printReady = painter.begin( &printer );
       if ( !printReady )
       {
         QMessageBox::warning( this, tr( "Atlas processing error" ),
@@ -1777,13 +1855,13 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
   QApplication::restoreOverrideCursor();
 }
 
-void QgsComposer::on_mActionPrint_triggered()
+void QgsComposer::mActionPrint_triggered()
 {
   //print only current feature
   printComposition( QgsComposer::Single );
 }
 
-void QgsComposer::on_mActionPrintAtlas_triggered()
+void QgsComposer::mActionPrintAtlas_triggered()
 {
   //print whole atlas
   QgsComposition::AtlasMode previousMode = mComposition->atlasMode();
@@ -1898,7 +1976,7 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
   QApplication::restoreOverrideCursor();
 }
 
-void QgsComposer::on_mActionExportAtlasAsImage_triggered()
+void QgsComposer::mActionExportAtlasAsImage_triggered()
 {
   //print whole atlas
   QgsComposition::AtlasMode previousMode = mComposition->atlasMode();
@@ -1914,7 +1992,7 @@ void QgsComposer::on_mActionExportAtlasAsImage_triggered()
   }
 }
 
-void QgsComposer::on_mActionExportAsImage_triggered()
+void QgsComposer::mActionExportAsImage_triggered()
 {
   exportCompositionAsImage( QgsComposer::Single );
 }
@@ -2070,7 +2148,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
         outputFilePath = fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
       }
 
-      saveOk = image.save( outputFilePath, fileNExt.second.toLocal8Bit().constData() );
+      saveOk = saveImage( image, outputFilePath, fileNExt.second );
 
       if ( !saveOk )
       {
@@ -2126,7 +2204,6 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
 
     QgsSettings myQSettings;
     QString lastUsedDir = myQSettings.value( QStringLiteral( "UI/lastSaveAtlasAsImagesDir" ), QDir::homePath() ).toString();
-    QString lastUsedFormat = myQSettings.value( QStringLiteral( "UI/lastSaveAtlasAsImagesFormat" ), "jpg" ).toString();
 
     QFileDialog dlg( this, tr( "Export atlas to directory" ) );
     dlg.setFileMode( QFileDialog::Directory );
@@ -2138,7 +2215,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
       return;
     }
     QStringList s = dlg.selectedFiles();
-    if ( s.size() < 1 || s.at( 0 ).isEmpty() )
+    if ( s.empty() || s.at( 0 ).isEmpty() )
     {
       return;
     }
@@ -2271,7 +2348,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
           imageFilename = fi.absolutePath() + '/' + fi.baseName() + '_' + QString::number( i + 1 ) + '.' + fi.suffix();
         }
 
-        bool saveOk = image.save( imageFilename, format.toLocal8Bit().constData() );
+        bool saveOk = saveImage( image, imageFilename, format );
         if ( !saveOk )
         {
           QMessageBox::warning( this, tr( "Atlas processing error" ),
@@ -2313,7 +2390,17 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
   }
 }
 
-void QgsComposer::on_mActionExportAtlasAsSVG_triggered()
+bool QgsComposer::saveImage( const QImage &img, const QString &imageFilename, const QString &imageFormat )
+{
+  QImageWriter w( imageFilename, imageFormat.toLocal8Bit().constData() );
+  if ( imageFormat.compare( QLatin1String( "tiff" ), Qt::CaseInsensitive ) == 0 || imageFormat.compare( QLatin1String( "tif" ), Qt::CaseInsensitive ) == 0 )
+  {
+    w.setCompression( 1 ); //use LZW compression
+  }
+  return w.write( img );
+}
+
+void QgsComposer::mActionExportAtlasAsSVG_triggered()
 {
   QgsComposition::AtlasMode previousMode = mComposition->atlasMode();
   mComposition->setAtlasMode( QgsComposition::ExportAtlas );
@@ -2328,7 +2415,7 @@ void QgsComposer::on_mActionExportAtlasAsSVG_triggered()
   }
 }
 
-void QgsComposer::on_mActionExportAsSVG_triggered()
+void QgsComposer::mActionExportAsSVG_triggered()
 {
   exportCompositionAsSVG( QgsComposer::Single );
 }
@@ -2697,8 +2784,8 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
              && !mComposition->gridVisible() ) items.pop_back();
         QgsItemTempHider itemsHider( items );
         int composerItemLayerIdx = 0;
-        QList<QGraphicsItem *>::const_iterator it = items.begin();
-        for ( unsigned svgLayerId = 1; it != items.end(); ++svgLayerId )
+        QList<QGraphicsItem *>::const_iterator it = items.constBegin();
+        for ( unsigned svgLayerId = 1; it != items.constEnd(); ++svgLayerId )
         {
           itemsHider.hideAll();
           QgsComposerItem *composerItem = dynamic_cast<QgsComposerItem *>( *it );
@@ -2712,7 +2799,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
           else
           {
             // show all items until the next item that renders on a separate layer
-            for ( ; it != items.end(); ++it )
+            for ( ; it != items.constEnd(); ++it )
             {
               composerItem = dynamic_cast<QgsComposerMap *>( *it );
               if ( composerItem && composerItem->numberExportLayers() )
@@ -2805,7 +2892,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
   QgsProject::instance()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), prevSettingLabelsAsOutlines );
 }
 
-void QgsComposer::on_mActionSelectMoveItem_triggered()
+void QgsComposer::mActionSelectMoveItem_triggered()
 {
   if ( mView )
   {
@@ -2813,7 +2900,7 @@ void QgsComposer::on_mActionSelectMoveItem_triggered()
   }
 }
 
-void QgsComposer::on_mActionAddNewMap_triggered()
+void QgsComposer::mActionAddNewMap_triggered()
 {
   if ( mView )
   {
@@ -2821,7 +2908,7 @@ void QgsComposer::on_mActionAddNewMap_triggered()
   }
 }
 
-void QgsComposer::on_mActionAddNewLegend_triggered()
+void QgsComposer::mActionAddNewLegend_triggered()
 {
   if ( mView )
   {
@@ -2829,7 +2916,7 @@ void QgsComposer::on_mActionAddNewLegend_triggered()
   }
 }
 
-void QgsComposer::on_mActionAddNewLabel_triggered()
+void QgsComposer::mActionAddNewLabel_triggered()
 {
   if ( mView )
   {
@@ -2837,7 +2924,7 @@ void QgsComposer::on_mActionAddNewLabel_triggered()
   }
 }
 
-void QgsComposer::on_mActionAddNewScalebar_triggered()
+void QgsComposer::mActionAddNewScalebar_triggered()
 {
   if ( mView )
   {
@@ -2845,7 +2932,7 @@ void QgsComposer::on_mActionAddNewScalebar_triggered()
   }
 }
 
-void QgsComposer::on_mActionAddImage_triggered()
+void QgsComposer::mActionAddImage_triggered()
 {
   if ( mView )
   {
@@ -2853,7 +2940,7 @@ void QgsComposer::on_mActionAddImage_triggered()
   }
 }
 
-void QgsComposer::on_mActionAddRectangle_triggered()
+void QgsComposer::mActionAddRectangle_triggered()
 {
   if ( mView )
   {
@@ -2861,7 +2948,7 @@ void QgsComposer::on_mActionAddRectangle_triggered()
   }
 }
 
-void QgsComposer::on_mActionAddTriangle_triggered()
+void QgsComposer::mActionAddTriangle_triggered()
 {
   if ( mView )
   {
@@ -2869,7 +2956,7 @@ void QgsComposer::on_mActionAddTriangle_triggered()
   }
 }
 
-void QgsComposer::on_mActionAddEllipse_triggered()
+void QgsComposer::mActionAddEllipse_triggered()
 {
   if ( mView )
   {
@@ -2877,7 +2964,7 @@ void QgsComposer::on_mActionAddEllipse_triggered()
   }
 }
 
-void QgsComposer::on_mActionAddPolygon_triggered()
+void QgsComposer::mActionAddPolygon_triggered()
 {
   if ( mView )
   {
@@ -2885,7 +2972,7 @@ void QgsComposer::on_mActionAddPolygon_triggered()
   }
 }
 
-void QgsComposer::on_mActionAddPolyline_triggered()
+void QgsComposer::mActionAddPolyline_triggered()
 {
   if ( mView )
   {
@@ -2893,7 +2980,7 @@ void QgsComposer::on_mActionAddPolyline_triggered()
   }
 }
 
-void QgsComposer::on_mActionAddTable_triggered()
+void QgsComposer::mActionAddTable_triggered()
 {
   if ( mView )
   {
@@ -2901,7 +2988,7 @@ void QgsComposer::on_mActionAddTable_triggered()
   }
 }
 
-void QgsComposer::on_mActionAddAttributeTable_triggered()
+void QgsComposer::mActionAddAttributeTable_triggered()
 {
   if ( mView )
   {
@@ -2909,7 +2996,7 @@ void QgsComposer::on_mActionAddAttributeTable_triggered()
   }
 }
 
-void QgsComposer::on_mActionAddHtml_triggered()
+void QgsComposer::mActionAddHtml_triggered()
 {
   if ( mView )
   {
@@ -2917,7 +3004,7 @@ void QgsComposer::on_mActionAddHtml_triggered()
   }
 }
 
-void QgsComposer::on_mActionAddArrow_triggered()
+void QgsComposer::mActionAddArrow_triggered()
 {
   if ( mView )
   {
@@ -2925,12 +3012,12 @@ void QgsComposer::on_mActionAddArrow_triggered()
   }
 }
 
-void QgsComposer::on_mActionSaveProject_triggered()
+void QgsComposer::mActionSaveProject_triggered()
 {
   mQgis->actionSaveProject()->trigger();
 }
 
-void QgsComposer::on_mActionNewComposer_triggered()
+void QgsComposer::mActionNewComposer_triggered()
 {
   QString title;
   if ( !mQgis->uniqueComposerTitle( this, title, true ) )
@@ -2940,7 +3027,7 @@ void QgsComposer::on_mActionNewComposer_triggered()
   mQgis->createNewComposer( title );
 }
 
-void QgsComposer::on_mActionDuplicateComposer_triggered()
+void QgsComposer::mActionDuplicateComposer_triggered()
 {
   QString newTitle;
   if ( !mQgis->uniqueComposerTitle( this, newTitle, false, mComposition->name() + tr( " copy" ) ) )
@@ -2966,7 +3053,7 @@ void QgsComposer::on_mActionDuplicateComposer_triggered()
   }
 }
 
-void QgsComposer::on_mActionComposerManager_triggered()
+void QgsComposer::mActionComposerManager_triggered()
 {
   // NOTE: Avoid crash where composer that spawned modal manager from toolbar ends up
   // being deleted by user, but event loop tries to return to composer on manager close
@@ -2974,7 +3061,7 @@ void QgsComposer::on_mActionComposerManager_triggered()
   QTimer::singleShot( 0, mQgis->actionShowComposerManager(), SLOT( trigger() ) );
 }
 
-void QgsComposer::on_mActionSaveAsTemplate_triggered()
+void QgsComposer::mActionSaveAsTemplate_triggered()
 {
   //show file dialog
   QgsSettings settings;
@@ -3015,7 +3102,7 @@ void QgsComposer::on_mActionSaveAsTemplate_triggered()
   }
 }
 
-void QgsComposer::on_mActionLoadFromTemplate_triggered()
+void QgsComposer::mActionLoadFromTemplate_triggered()
 {
   if ( !mComposition )
     return;
@@ -3046,7 +3133,7 @@ void QgsComposer::on_mActionLoadFromTemplate_triggered()
   }
 }
 
-void QgsComposer::on_mActionMoveItemContent_triggered()
+void QgsComposer::mActionMoveItemContent_triggered()
 {
   if ( mView )
   {
@@ -3054,7 +3141,7 @@ void QgsComposer::on_mActionMoveItemContent_triggered()
   }
 }
 
-void QgsComposer::on_mActionEditNodesItem_triggered()
+void QgsComposer::mActionEditNodesItem_triggered()
 {
   if ( mView )
   {
@@ -3062,7 +3149,7 @@ void QgsComposer::on_mActionEditNodesItem_triggered()
   }
 }
 
-void QgsComposer::on_mActionPan_triggered()
+void QgsComposer::mActionPan_triggered()
 {
   if ( mView )
   {
@@ -3070,7 +3157,7 @@ void QgsComposer::on_mActionPan_triggered()
   }
 }
 
-void QgsComposer::on_mActionGroupItems_triggered()
+void QgsComposer::mActionGroupItems_triggered()
 {
   if ( mView )
   {
@@ -3078,7 +3165,7 @@ void QgsComposer::on_mActionGroupItems_triggered()
   }
 }
 
-void QgsComposer::on_mActionUngroupItems_triggered()
+void QgsComposer::mActionUngroupItems_triggered()
 {
   if ( mView )
   {
@@ -3086,7 +3173,7 @@ void QgsComposer::on_mActionUngroupItems_triggered()
   }
 }
 
-void QgsComposer::on_mActionLockItems_triggered()
+void QgsComposer::mActionLockItems_triggered()
 {
   if ( mComposition )
   {
@@ -3094,7 +3181,7 @@ void QgsComposer::on_mActionLockItems_triggered()
   }
 }
 
-void QgsComposer::on_mActionUnlockAll_triggered()
+void QgsComposer::mActionUnlockAll_triggered()
 {
   if ( mComposition )
   {
@@ -3138,7 +3225,7 @@ void QgsComposer::actionPasteTriggered()
   }
 }
 
-void QgsComposer::on_mActionPasteInPlace_triggered()
+void QgsComposer::mActionPasteInPlace_triggered()
 {
   if ( mView )
   {
@@ -3146,7 +3233,7 @@ void QgsComposer::on_mActionPasteInPlace_triggered()
   }
 }
 
-void QgsComposer::on_mActionDeleteSelection_triggered()
+void QgsComposer::mActionDeleteSelection_triggered()
 {
   if ( mView )
   {
@@ -3154,7 +3241,7 @@ void QgsComposer::on_mActionDeleteSelection_triggered()
   }
 }
 
-void QgsComposer::on_mActionSelectAll_triggered()
+void QgsComposer::mActionSelectAll_triggered()
 {
   if ( mView )
   {
@@ -3162,7 +3249,7 @@ void QgsComposer::on_mActionSelectAll_triggered()
   }
 }
 
-void QgsComposer::on_mActionDeselectAll_triggered()
+void QgsComposer::mActionDeselectAll_triggered()
 {
   if ( mView )
   {
@@ -3170,7 +3257,7 @@ void QgsComposer::on_mActionDeselectAll_triggered()
   }
 }
 
-void QgsComposer::on_mActionInvertSelection_triggered()
+void QgsComposer::mActionInvertSelection_triggered()
 {
   if ( mView )
   {
@@ -3178,7 +3265,7 @@ void QgsComposer::on_mActionInvertSelection_triggered()
   }
 }
 
-void QgsComposer::on_mActionSelectNextAbove_triggered()
+void QgsComposer::mActionSelectNextAbove_triggered()
 {
   if ( mComposition )
   {
@@ -3186,7 +3273,7 @@ void QgsComposer::on_mActionSelectNextAbove_triggered()
   }
 }
 
-void QgsComposer::on_mActionSelectNextBelow_triggered()
+void QgsComposer::mActionSelectNextBelow_triggered()
 {
   if ( mComposition )
   {
@@ -3194,7 +3281,7 @@ void QgsComposer::on_mActionSelectNextBelow_triggered()
   }
 }
 
-void QgsComposer::on_mActionRaiseItems_triggered()
+void QgsComposer::mActionRaiseItems_triggered()
 {
   if ( mComposition )
   {
@@ -3202,7 +3289,7 @@ void QgsComposer::on_mActionRaiseItems_triggered()
   }
 }
 
-void QgsComposer::on_mActionLowerItems_triggered()
+void QgsComposer::mActionLowerItems_triggered()
 {
   if ( mComposition )
   {
@@ -3210,7 +3297,7 @@ void QgsComposer::on_mActionLowerItems_triggered()
   }
 }
 
-void QgsComposer::on_mActionMoveItemsToTop_triggered()
+void QgsComposer::mActionMoveItemsToTop_triggered()
 {
   if ( mComposition )
   {
@@ -3218,7 +3305,7 @@ void QgsComposer::on_mActionMoveItemsToTop_triggered()
   }
 }
 
-void QgsComposer::on_mActionMoveItemsToBottom_triggered()
+void QgsComposer::mActionMoveItemsToBottom_triggered()
 {
   if ( mComposition )
   {
@@ -3226,7 +3313,7 @@ void QgsComposer::on_mActionMoveItemsToBottom_triggered()
   }
 }
 
-void QgsComposer::on_mActionAlignLeft_triggered()
+void QgsComposer::mActionAlignLeft_triggered()
 {
   if ( mComposition )
   {
@@ -3234,7 +3321,7 @@ void QgsComposer::on_mActionAlignLeft_triggered()
   }
 }
 
-void QgsComposer::on_mActionAlignHCenter_triggered()
+void QgsComposer::mActionAlignHCenter_triggered()
 {
   if ( mComposition )
   {
@@ -3242,7 +3329,7 @@ void QgsComposer::on_mActionAlignHCenter_triggered()
   }
 }
 
-void QgsComposer::on_mActionAlignRight_triggered()
+void QgsComposer::mActionAlignRight_triggered()
 {
   if ( mComposition )
   {
@@ -3250,7 +3337,7 @@ void QgsComposer::on_mActionAlignRight_triggered()
   }
 }
 
-void QgsComposer::on_mActionAlignTop_triggered()
+void QgsComposer::mActionAlignTop_triggered()
 {
   if ( mComposition )
   {
@@ -3258,7 +3345,7 @@ void QgsComposer::on_mActionAlignTop_triggered()
   }
 }
 
-void QgsComposer::on_mActionAlignVCenter_triggered()
+void QgsComposer::mActionAlignVCenter_triggered()
 {
   if ( mComposition )
   {
@@ -3266,7 +3353,7 @@ void QgsComposer::on_mActionAlignVCenter_triggered()
   }
 }
 
-void QgsComposer::on_mActionAlignBottom_triggered()
+void QgsComposer::mActionAlignBottom_triggered()
 {
   if ( mComposition )
   {
@@ -3274,7 +3361,7 @@ void QgsComposer::on_mActionAlignBottom_triggered()
   }
 }
 
-void QgsComposer::on_mActionUndo_triggered()
+void QgsComposer::mActionUndo_triggered()
 {
   if ( mComposition && mComposition->undoStack() )
   {
@@ -3282,7 +3369,7 @@ void QgsComposer::on_mActionUndo_triggered()
   }
 }
 
-void QgsComposer::on_mActionRedo_triggered()
+void QgsComposer::mActionRedo_triggered()
 {
   if ( mComposition && mComposition->undoStack() )
   {
@@ -3377,7 +3464,7 @@ void QgsComposer::deleteItem( QgsComposerItem * )
 void QgsComposer::setSelectionTool()
 {
   mActionSelectMoveItem->setChecked( true );
-  on_mActionSelectMoveItem_triggered();
+  mActionSelectMoveItem_triggered();
 }
 
 bool QgsComposer::containsWmsLayer() const
@@ -3511,7 +3598,7 @@ void QgsComposer::cleanupAfterTemplateRead()
   }
 }
 
-void QgsComposer::on_mActionPageSetup_triggered()
+void QgsComposer::mActionPageSetup_triggered()
 {
   if ( !mComposition )
   {

@@ -101,10 +101,16 @@ sub exit_with_error {
 }
 
 sub write_header_footer {
+    # small hack to turn files src/core/3d/X.h to src/core/./3d/X.h
+    # otherwise "sip up to date" test fails. This is because the test uses %Include entries
+    # and over there we have to use ./3d/X.h entries because SIP parser does not allow a number
+    # as the first letter of a relative path
+    my $headerfile_x = $headerfile;
+    $headerfile_x =~ s/src\/core\/3d/src\/core\/.\/3d/;
     push @OUTPUT,  "/************************************************************************\n";
     push @OUTPUT,  " * This file has been generated automatically from                      *\n";
     push @OUTPUT,  " *                                                                      *\n";
-    push @OUTPUT, sprintf " * %-*s *\n", 68, $headerfile;
+    push @OUTPUT, sprintf " * %-*s *\n", 68, $headerfile_x;
     push @OUTPUT,  " *                                                                      *\n";
     push @OUTPUT,  " * Do not edit manually ! Edit header and run scripts/sipify.pl again   *\n";
     push @OUTPUT,  " ************************************************************************/\n";
@@ -368,7 +374,8 @@ while ($LINE_IDX < $LINE_COUNT){
             $SIP_RUN = 1;
             if ($ACCESS[$#ACCESS] == PRIVATE){
                 dbg_info("writing private content");
-                write_output("PRV1", $PRIVATE_SECTION_LINE."\n");
+                write_output("PRV1", $PRIVATE_SECTION_LINE."\n") if $PRIVATE_SECTION_LINE ne '';
+                $PRIVATE_SECTION_LINE = '';
             }
             next;
         }
@@ -418,7 +425,8 @@ while ($LINE_IDX < $LINE_COUNT){
                     # code here will be printed out
                     if ($ACCESS[$#ACCESS] == PRIVATE){
                         dbg_info("writing private content");
-                        write_output("PRV2", $PRIVATE_SECTION_LINE."\n");
+                        write_output("PRV2", $PRIVATE_SECTION_LINE."\n") if $PRIVATE_SECTION_LINE ne '';
+                        $PRIVATE_SECTION_LINE = '';
                     }
                     $SIP_RUN = 1;
                     last;
@@ -463,8 +471,8 @@ while ($LINE_IDX < $LINE_COUNT){
     if ( $LINE =~ m/^\s*friend class \w+/ ){
         next;
     }
-    # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, Q_GADGET
-    if ($LINE =~ m/^\s*Q_(OBJECT|ENUMS|PROPERTY|GADGET|DECLARE_METATYPE|DECLARE_TYPEINFO|DECL_DEPRECATED).*?$/){
+    # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, Q_GADGET etc.
+    if ($LINE =~ m/^\s*Q_(OBJECT|ENUMS|ENUM|PROPERTY|GADGET|DECLARE_METATYPE|DECLARE_TYPEINFO|DECL_DEPRECATED|NOWARN_DEPRECATED_(PUSH|POP)).*?$/){
         next;
     }
 
@@ -643,7 +651,8 @@ while ($LINE_IDX < $LINE_COUNT){
     }
     elsif ( $ACCESS[$#ACCESS] == PRIVATE && $LINE =~ m/SIP_FORCE/){
         dbg_info("private with SIP_FORCE");
-        write_output("PRV3", $PRIVATE_SECTION_LINE."\n");
+        write_output("PRV3", $PRIVATE_SECTION_LINE."\n") if $PRIVATE_SECTION_LINE ne '';
+        $PRIVATE_SECTION_LINE = '';
     }
     elsif ( PRIVATE ~~ @ACCESS && $SIP_RUN == 0 ) {
         $COMMENT = '';
@@ -748,7 +757,7 @@ while ($LINE_IDX < $LINE_COUNT){
     };
 
     # remove struct member assignment
-    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $LINE =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = \w+(\([^()]+\))?;/ ){
+    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $LINE =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = [\-\w\:\.]+(\([^()]+\))?\s*;/ ){
         dbg_info("remove struct member assignment");
         $LINE = "$1;";
     }
@@ -757,8 +766,8 @@ while ($LINE_IDX < $LINE_COUNT){
     if ( $LINE =~ m/^(\s*)Q_DECLARE_FLAGS\(\s*(.*?)\s*,\s*(.*?)\s*\)\s*$/ ){
         my $ACTUAL_CLASS = $CLASSNAME[$#CLASSNAME];
         dbg_info("Declare flags: $ACTUAL_CLASS");
-        $LINE = "$1typedef QFlags<$ACTUAL_CLASS::$3> $2;\n";
-        $QFLAG_HASH{"$ACTUAL_CLASS::$2"} = "$ACTUAL_CLASS::$3";
+        $LINE = "$1typedef QFlags<${ACTUAL_CLASS}::$3> $2;\n";
+        $QFLAG_HASH{"${ACTUAL_CLASS}::$2"} = "${ACTUAL_CLASS}::$3";
     }
     # catch Q_DECLARE_OPERATORS_FOR_FLAGS
     if ( $LINE =~ m/^(\s*)Q_DECLARE_OPERATORS_FOR_FLAGS\(\s*(.*?)\s*\)\s*$/ ){
