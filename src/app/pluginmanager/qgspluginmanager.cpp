@@ -80,6 +80,7 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   connect( buttonEditRep, &QPushButton::clicked, this, &QgsPluginManager::buttonEditRep_clicked );
   connect( buttonDeleteRep, &QPushButton::clicked, this, &QgsPluginManager::buttonDeleteRep_clicked );
   connect( buttonRefreshRepos, &QPushButton::clicked, this, &QgsPluginManager::buttonRefreshRepos_clicked );
+  connect( ckbThirdParty, &QgsCollapsibleGroupBox::toggled, this, &QgsPluginManager::ckbThirdParty_toggled );
   connect( ckbExperimental, &QgsCollapsibleGroupBox::toggled, this, &QgsPluginManager::ckbExperimental_toggled );
   connect( ckbDeprecated, &QgsCollapsibleGroupBox::toggled, this, &QgsPluginManager::ckbDeprecated_toggled );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPluginManager::showHelp );
@@ -1424,6 +1425,15 @@ void QgsPluginManager::buttonDeleteRep_clicked()
 }
 
 
+void QgsPluginManager::ckbThirdParty_toggled( bool state )
+{
+  QString settingsGroup;
+  QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
+  QgsSettings settings;
+  settings.setValue( settingsGroup + "/allowThirdParty", QVariant( state ) );
+  QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.installer_data.plugins.rebuild()" ) );
+  QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().exportPluginsToManager()" ) );
+}
 
 void QgsPluginManager::ckbExperimental_toggled( bool state )
 {

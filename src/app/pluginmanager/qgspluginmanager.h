@@ -162,6 +162,9 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Reload all repositories
     void buttonRefreshRepos_clicked();
 
+    //! Reload plugin metadata registry after allowing/disallowing third party plugins
+    void ckbThirdParty_toggled( bool state );
+
     //! Reload plugin metadata registry after allowing/disallowing experimental plugins
     void ckbExperimental_toggled( bool state );
 

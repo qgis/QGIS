@@ -744,6 +744,7 @@ class Plugins(QObject):
         for i in list(self.localCache.keys()):
             self.mPlugins[i] = self.localCache[i].copy()
         settings = QgsSettings()
+        allowThirdParty = settings.value(settingsGroup + "/allowThirdParty", False, type=bool)
         allowExperimental = settings.value(settingsGroup + "/allowExperimental", False, type=bool)
         allowDeprecated = settings.value(settingsGroup + "/allowDeprecated", False, type=bool)
         for i in list(self.repoCache.values()):
@@ -751,7 +752,8 @@ class Plugins(QObject):
                 plugin = j.copy()  # do not update repoCache elements!
                 key = plugin["id"]
                 # check if the plugin is allowed and if there isn't any better one added already.
-                if (allowExperimental or not plugin["experimental"]) \
+                if (allowThirdParty or plugin["trusted"]) \
+                   and (allowExperimental or not plugin["experimental"]) \
                    and (allowDeprecated or not plugin["deprecated"]) \
                    and not (key in self.mPlugins and self.mPlugins[key]["version_available"] and compareVersions(self.mPlugins[key]["version_available"], plugin["version_available"]) < 2):
                     # The mPlugins dict contains now locally installed plugins.
