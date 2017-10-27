@@ -676,7 +676,7 @@ QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs(
   return configs;
 }
 
-QgsStringMap QgsAuthOAuth2Config::mappedOAuth2ConfigsCache(QObject *parent, const QString &extradir )
+QgsStringMap QgsAuthOAuth2Config::mappedOAuth2ConfigsCache( QObject *parent, const QString &extradir )
 {
   QgsStringMap configs;
   bool ok = false;

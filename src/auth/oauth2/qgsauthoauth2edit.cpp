@@ -18,6 +18,7 @@
 #include <QDir>
 #include <QFileDialog>
 
+#include "qgsapplication.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgsauthconfigedit.h"
@@ -752,7 +753,7 @@ void QgsAuthOAuth2Edit::exportOAuthConfig()
   settings.setValue( QStringLiteral( "UI/lastAuthSaveFileDir" ), QFileInfo( configpath ).absoluteDir().path() );
 
   // give it a kind of random id for re-importing
-  mOAuthConfigCustom->setId( QgsAuthManager::instance()->uniqueConfigId() );
+  mOAuthConfigCustom->setId( QgsApplication::authManager()->uniqueConfigId() );
 
   mOAuthConfigCustom->setQueryPairs( queryPairs() );
 

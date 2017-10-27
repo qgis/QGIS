@@ -30,7 +30,8 @@
 #include "qgsauthoauth2config.h"
 
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * Unit tests for QgsAuthOAuth2Config
  */
 class TestQgsAuthOAuth2Method: public QObject
