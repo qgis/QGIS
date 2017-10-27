@@ -37,7 +37,8 @@ class QgsVertexMarker : QgsMapCanvasItem
       ICON_CROSS,
       ICON_X,
       ICON_BOX,
-      ICON_CIRCLE
+      ICON_CIRCLE,
+      ICON_DOUBLE_TRIANGLE,
     };
 
     QgsVertexMarker( QgsMapCanvas *mapCanvas /TransferThis/ );

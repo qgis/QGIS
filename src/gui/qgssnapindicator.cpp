@@ -57,13 +57,13 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
     if ( match.hasVertex() )
     {
       if ( match.layer() )
-        iconType = QgsVertexMarker::ICON_CROSS;  // vertex snap
+        iconType = QgsVertexMarker::ICON_BOX;  // vertex snap
       else
         iconType = QgsVertexMarker::ICON_X;  // intersection snap
     }
     else  // must be segment snap
     {
-      iconType = QgsVertexMarker::ICON_BOX;
+      iconType = QgsVertexMarker::ICON_DOUBLE_TRIANGLE;
     }
     mSnappingMarker->setIconType( iconType );
 
