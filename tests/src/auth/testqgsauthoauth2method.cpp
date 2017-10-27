@@ -66,7 +66,7 @@ void TestQgsAuthOAuth2Method::initTestCase()
   //setPrefixEnviron();
   QgsApplication::init();
   QgsApplication::initQgis();
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
     QSKIP( "Auth system is disabled, skipping test case", SkipAll );
 
   //qDebug() << QgsApplication::showSettings().toUtf8().constData();
@@ -337,7 +337,7 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
   QCOMPARE( baseConfigTxt( true ), cfgtxt );
 
   qDebug() << "Verify writing config to file";
-  QString rndsuffix = QgsAuthManager::instance()->uniqueConfigId();
+  QString rndsuffix = QgsApplication::authManager()->uniqueConfigId();
   QString dirname = QString( "oauth2_configs_%1" ).arg( rndsuffix );
   QDir tmpdir = QDir::temp();
   tmpdir.mkdir( dirname );
