@@ -462,6 +462,20 @@ namespace QgsWms
                                QVariant()
                              };
     save( pGridY );
+
+    const Parameter pWithGeometry = { ParameterName::WITH_GEOMETRY,
+                                      QVariant::Bool,
+                                      QVariant( false ),
+                                      QVariant()
+                                    };
+    save( pWithGeometry );
+
+    const Parameter pWithMapTip = { ParameterName::WITH_MAPTIP,
+                                    QVariant::Bool,
+                                    QVariant( false ),
+                                    QVariant()
+                                  };
+    save( pWithMapTip );
   }
 
   QgsWmsParameters::QgsWmsParameters( const QgsServerRequest::Parameters &parameters )
@@ -1906,6 +1920,16 @@ namespace QgsWms
       wmsUri.setParam( paramIt.key().toLower(), paramIt.value() );
     }
     return wmsUri.encodedUri();
+  }
+
+  bool QgsWmsParameters::withGeometry() const
+  {
+    return toBool( ParameterName::WITH_GEOMETRY );
+  }
+
+  bool QgsWmsParameters::withMapTip() const
+  {
+    return toBool( ParameterName::WITH_MAPTIP );
   }
 
   QString QgsWmsParameters::name( ParameterName name ) const

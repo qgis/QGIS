@@ -141,7 +141,9 @@ namespace QgsWms
         EXTENT,
         ROTATION,
         GRID_INTERVAL_X,
-        GRID_INTERVAL_Y
+        GRID_INTERVAL_Y,
+        WITH_GEOMETRY,
+        WITH_MAPTIP
       };
       Q_ENUM( ParameterName )
 
@@ -915,6 +917,18 @@ namespace QgsWms
        * @return uri string or an empty string if the external wms id does not exist
        */
       QString externalWMSUri( const QString &id ) const;
+
+      /**
+       * \brief Returns if the client wants the feature info response with geometry information
+       * \returns true if geometry information is requested for feature info response
+       */
+      bool withGeometry() const;
+
+      /**
+       * \brief withMapTip
+       * \returns true if maptip information is requested for feature info response
+       */
+      bool withMapTip() const;
 
     private:
       QString name( ParameterName name ) const;
