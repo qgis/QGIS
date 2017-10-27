@@ -341,6 +341,12 @@ void QgsNodeTool::clearDragBands()
 
 void QgsNodeTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
+  if ( mSelectionMethod == SelectionRange )
+  {
+    rangeMethodPressEvent( e );
+    return;
+  }
+
   cleanupNodeEditor();
 
   if ( !mDraggingVertex && !mSelectedNodes.isEmpty() )
@@ -391,7 +397,7 @@ void QgsNodeTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
       if ( mLastMouseMoveMatch.isValid() && mLastMouseMoveMatch.layer() )
       {
         QMenu menu;
-        QAction *actionNodeEditor = menu.addAction( QStringLiteral( "Node editor" ) );
+        QAction *actionNodeEditor = menu.addAction( tr( "Node editor" ) );
         connect( actionNodeEditor, &QAction::triggered, this, &QgsNodeTool::showNodeEditor );
         menu.exec( mCanvas->mapToGlobal( e->pos() ) );
       }
@@ -401,6 +407,12 @@ void QgsNodeTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsNodeTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
+  if ( mSelectionMethod == SelectionRange )
+  {
+    rangeMethodReleaseEvent( e );
+    return;
+  }
+
   if ( mNewVertexFromDoubleClick )
   {
     QgsPointLocator::Match m( *mNewVertexFromDoubleClick );
@@ -478,6 +490,12 @@ void QgsNodeTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsNodeTool::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
+  if ( mSelectionMethod == SelectionRange )
+  {
+    rangeMethodMoveEvent( e );
+    return;
+  }
+
   if ( mDraggingVertex )
   {
     mouseMoveDraggingVertex( e );
@@ -719,15 +737,8 @@ void QgsNodeTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
   // possibility to move a node
   if ( m.type() == QgsPointLocator::Vertex )
   {
-    mVertexBand->setToGeometry( QgsGeometry::fromPoint( m.point() ), nullptr );
-    mVertexBand->setVisible( true );
-    bool isCircular = false;
-    if ( m.layer() )
-    {
-      isCircular = isCircularVertex( cachedGeometry( m.layer(), m.featureId() ), m.vertexIndex() );
-    }
+    updateVertexBand( m );
 
-    mVertexBand->setIcon( isCircular ? QgsRubberBand::ICON_FULL_DIAMOND : QgsRubberBand::ICON_CIRCLE );
     // if we are at an endpoint, let's show also the endpoint indicator
     // so user can possibly add a new vertex at the end
     if ( isMatchAtEndpoint( m ) )
@@ -809,6 +820,31 @@ void QgsNodeTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
     mEdgeBand->setVisible( false );
   }
 
+  updateFeatureBand( m );
+}
+
+void QgsNodeTool::updateVertexBand( const QgsPointLocator::Match &m )
+{
+  if ( m.hasVertex() && m.layer() )
+  {
+    mVertexBand->setToGeometry( QgsGeometry::fromPoint( m.point() ), nullptr );
+    mVertexBand->setVisible( true );
+    bool isCircular = false;
+    if ( m.layer() )
+    {
+      isCircular = isCircularVertex( cachedGeometry( m.layer(), m.featureId() ), m.vertexIndex() );
+    }
+
+    mVertexBand->setIcon( isCircular ? QgsRubberBand::ICON_FULL_DIAMOND : QgsRubberBand::ICON_CIRCLE );
+  }
+  else
+  {
+    mVertexBand->setVisible( false );
+  }
+}
+
+void QgsNodeTool::updateFeatureBand( const QgsPointLocator::Match &m )
+{
   // highlight feature
   if ( m.isValid() && m.layer() )
   {
@@ -835,6 +871,17 @@ void QgsNodeTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
 
 void QgsNodeTool::keyPressEvent( QKeyEvent *e )
 {
+  if ( !mDraggingVertex && !mDraggingEdge && e->key() == Qt::Key_R && e->modifiers() & Qt::ShiftModifier )
+  {
+    startRangeVertexSelection();
+    return;
+  }
+  if ( mSelectionMethod == SelectionRange && e->key() == Qt::Key_Escape )
+  {
+    stopRangeVertexSelection();
+    return;
+  }
+
   if ( !mDraggingVertex && mSelectedNodes.count() == 0 )
     return;
 
@@ -1904,4 +1951,158 @@ void QgsNodeTool::zoomToNode( const Vertex &node )
     mCanvas->setCenter( mapPoint );
     mCanvas->refresh();
   }
+}
+
+QList<Vertex> QgsNodeTool::verticesInRange( QgsVectorLayer *layer, QgsFeatureId fid, int vertexId0, int vertexId1, bool longWay )
+{
+  QgsGeometry geom = cachedGeometry( layer, fid );
+
+  if ( vertexId0 > vertexId1 )
+    std::swap( vertexId0, vertexId1 );
+
+  // check it is the same part and ring
+  QgsVertexId vid0, vid1;
+  geom.vertexIdFromVertexNr( vertexId0, vid0 );
+  geom.vertexIdFromVertexNr( vertexId1, vid1 );
+  if ( vid0.part != vid1.part || vid0.ring != vid1.ring )
+    return QList<Vertex>();
+
+  // check whether we are in a linear ring
+  int vertexIdTmp = vertexId0 - 1;
+  QgsVertexId vidTmp;
+  while ( geom.vertexIdFromVertexNr( vertexIdTmp, vidTmp ) &&
+          vidTmp.part == vid0.part && vidTmp.ring == vid0.ring )
+    --vertexIdTmp;
+  int startVertexIndex = vertexIdTmp + 1;
+
+  vertexIdTmp = vertexId1 + 1;
+  while ( geom.vertexIdFromVertexNr( vertexIdTmp, vidTmp ) &&
+          vidTmp.part == vid0.part && vidTmp.ring == vid0.ring )
+    ++vertexIdTmp;
+  int endVertexIndex = vertexIdTmp - 1;
+
+  QList<Vertex> lst;
+
+  if ( geom.vertexAt( startVertexIndex ) == geom.vertexAt( endVertexIndex ) )
+  {
+    // closed curve - we need to find out which way around the curve is shorter
+    double lengthTotal = 0, length0to1 = 0;
+    QgsPoint ptOld = geom.vertexAt( startVertexIndex );
+    for ( int i = startVertexIndex + 1; i <= endVertexIndex; ++i )
+    {
+      QgsPoint pt( geom.vertexAt( i ) );
+      double len = ptOld.distance( pt );
+      lengthTotal += len;
+      if ( i > vertexId0 && i <= vertexId1 )
+        length0to1 += len;
+      ptOld = pt;
+    }
+
+    bool use0to1 = length0to1 < lengthTotal / 2;
+    if ( longWay )
+      use0to1 = !use0to1;
+    for ( int i = startVertexIndex; i <= endVertexIndex; ++i )
+    {
+      bool isPickedVertex = i == vertexId0 || i == vertexId1;
+      bool is0to1 = i > vertexId0 && i < vertexId1;
+      if ( isPickedVertex || is0to1 == use0to1 )
+        lst.append( Vertex( layer, fid, i ) );
+    }
+  }
+  else
+  {
+    // curve that is not closed
+    for ( int i = vertexId0; i <= vertexId1; ++i )
+    {
+      lst.append( Vertex( layer, fid, i ) );
+    }
+  }
+  return lst;
+}
+
+void QgsNodeTool::rangeMethodPressEvent( QgsMapMouseEvent *e )
+{
+  // nothing to do here for now...
+  Q_UNUSED( e );
+}
+
+void QgsNodeTool::rangeMethodReleaseEvent( QgsMapMouseEvent *e )
+{
+  if ( e->button() == Qt::RightButton )
+  {
+    stopRangeVertexSelection();
+    return;
+  }
+  else if ( e->button() == Qt::LeftButton )
+  {
+    if ( mRangeSelectionFirstVertex )
+    {
+      // pick final vertex, make selection and switch back to normal selection
+      QgsPointLocator::Match m = snapToEditableLayer( e );
+      if ( m.hasVertex() )
+      {
+        if ( m.layer() == mRangeSelectionFirstVertex->layer && m.featureId() == mRangeSelectionFirstVertex->fid )
+        {
+          QList<Vertex> lst = verticesInRange( m.layer(), m.featureId(), mRangeSelectionFirstVertex->vertexId, m.vertexIndex(), e->modifiers() & Qt::ControlModifier );
+          setHighlightedNodes( lst );
+
+          mSelectionMethod = SelectionNormal;
+        }
+      }
+    }
+    else
+    {
+      // pick first vertex
+      QgsPointLocator::Match m = snapToEditableLayer( e );
+      if ( m.hasVertex() )
+      {
+        mRangeSelectionFirstVertex.reset( new Vertex( m.layer(), m.featureId(), m.vertexIndex() ) );
+        setHighlightedNodes( QList<Vertex>() << *mRangeSelectionFirstVertex );
+      }
+    }
+  }
+}
+
+void QgsNodeTool::rangeMethodMoveEvent( QgsMapMouseEvent *e )
+{
+  if ( e->buttons() )
+    return;  // only with no buttons pressed
+
+  QgsPointLocator::Match m = snapToEditableLayer( e );
+
+  updateFeatureBand( m );
+  updateVertexBand( m );
+
+  if ( !m.hasVertex() )
+  {
+    QList<Vertex> lst;
+    if ( mRangeSelectionFirstVertex )
+      lst << *mRangeSelectionFirstVertex;
+    setHighlightedNodes( lst );
+    return;
+  }
+
+  if ( mRangeSelectionFirstVertex )
+  {
+    // pick temporary final vertex and highlight vertices
+    if ( m.layer() == mRangeSelectionFirstVertex->layer && m.featureId() == mRangeSelectionFirstVertex->fid )
+    {
+      QList<Vertex> lst = verticesInRange( m.layer(), m.featureId(), mRangeSelectionFirstVertex->vertexId, m.vertexIndex(), e->modifiers() & Qt::ControlModifier );
+      setHighlightedNodes( lst );
+    }
+  }
+}
+
+
+void QgsNodeTool::startRangeVertexSelection()
+{
+  mSelectionMethod = SelectionRange;
+  setHighlightedNodes( QList<Vertex>() );
+  mRangeSelectionFirstVertex.reset();
+}
+
+void QgsNodeTool::stopRangeVertexSelection()
+{
+  mSelectionMethod = SelectionNormal;
+  setHighlightedNodes( QList<Vertex>() );
 }
