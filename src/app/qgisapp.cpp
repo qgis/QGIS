@@ -3859,6 +3859,10 @@ void QgisApp::saveRecentProjectPath( const QString &projectPath, bool savePrevie
 
   projectData.crs = QgsProject::instance()->crs().authid();
 
+  int idx = mRecentProjects.indexOf( projectData );
+  if ( idx != -1 )
+    projectData.pin = mRecentProjects.at( idx ).pin;
+
   if ( savePreviewImage )
   {
     // Generate a unique file name
@@ -3882,7 +3886,6 @@ void QgisApp::saveRecentProjectPath( const QString &projectPath, bool savePrevie
   }
   else
   {
-    int idx = mRecentProjects.indexOf( projectData );
     if ( idx != -1 )
       projectData.previewImagePath = mRecentProjects.at( idx ).previewImagePath;
   }
