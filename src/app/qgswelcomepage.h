@@ -37,6 +37,8 @@ class QgsWelcomePage : public QWidget
 
   signals:
     void projectRemoved( int row );
+    void projectPinned( int row );
+    void projectUnpinned( int row );
 
   private slots:
     void itemActivated( const QModelIndex &index );
