@@ -187,6 +187,35 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(len(page_about_to_be_removed_spy), 2)
         self.assertEqual(page_about_to_be_removed_spy[-1][0], 0)
 
+    def testExtendByNewPage(self):
+        """
+        Test extend by adding new page
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        # no existing page to extend
+        self.assertIsNone(collection.extendByNewPage())
+        self.assertEqual(collection.pageCount(), 0)
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize(QgsLayoutSize(10,10))
+        collection.addPage(page)
+        self.assertEqual(collection.pageCount(), 1)
+
+        new_page = collection.extendByNewPage()
+        self.assertIsNotNone(new_page)
+        self.assertEqual(collection.pageCount(), 2)
+        self.assertEqual(new_page.sizeWithUnits(), page.sizeWithUnits())
+
+        new_page.setPageSize(QgsLayoutSize(20, 20))
+        new_page2 = collection.extendByNewPage()
+        self.assertIsNotNone(new_page2)
+        self.assertEqual(collection.pageCount(), 3)
+        self.assertEqual(new_page2.sizeWithUnits(), new_page.sizeWithUnits())
+
     def testMaxPageWidth(self):
         """
         Test calculating maximum page width
@@ -353,6 +382,53 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(collection.positionOnPage(QPointF(-100, 270)), QPointF(-100, 270))
         self.assertEqual(collection.positionOnPage(QPointF(-100, 370)), QPointF(-100, 63))
         self.assertEqual(collection.positionOnPage(QPointF(-100, 1270)), QPointF(-100, 753))
+
+    def testPredictionPageNumberForPoint(self):
+        """
+        Test predictPageNumberForPoint
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize(QgsLayoutSize(100, 100))
+        collection.addPage(page)
+
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, -100)), 0)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, -1)), 0)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 20)), 0)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 120)), 1)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 230)), 2)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 350)), 3)
+
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize(QgsLayoutSize(100, 50))
+        collection.addPage(page2)
+
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, -100)), 0)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, -1)), 0)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 20)), 0)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 120)), 1)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 230)), 2)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 280)), 3)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 340)), 4)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 370)), 5)
+
+        page3 = QgsLayoutItemPage(l)
+        page3.setPageSize(QgsLayoutSize(100, 200))
+        collection.addPage(page3)
+
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, -100)), 0)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, -1)), 0)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 20)), 0)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 120)), 1)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 230)), 2)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 280)), 2)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 340)), 2)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 370)), 2)
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(-100, 470)), 3)
 
     def testPageAtPoint(self):
         """
