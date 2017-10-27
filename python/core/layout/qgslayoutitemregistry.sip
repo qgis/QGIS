@@ -109,6 +109,7 @@ class QgsLayoutItemRegistry : QObject
       LayoutShape,
       LayoutPolygon,
       LayoutPolyline,
+      LayoutFrame,
 
       // item
       PluginItem,

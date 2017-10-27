@@ -29,6 +29,7 @@
 
 class QgsLayoutItemMap;
 class QgsLayoutModel;
+class QgsLayoutMultiFrame;
 
 /**
  * \ingroup core
@@ -429,6 +430,27 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     void removeLayoutItem( QgsLayoutItem *item );
 
     /**
+     * Adds a \a multiFrame to the layout. The object is owned by the layout until removeMultiFrame() is called.
+     * \see removeMultiFrame()
+     * \see multiFrames()
+     */
+    void addMultiFrame( QgsLayoutMultiFrame *multiFrame SIP_TRANSFER );
+
+    /**
+     * Removes a \a multiFrame from the layout (but does not delete it).
+     * \see addMultiFrame()
+     * \see multiFrames()
+     */
+    void removeMultiFrame( QgsLayoutMultiFrame *multiFrame );
+
+    /**
+     * Returns a list of multi frames contained in the layout.
+     * \see addMultiFrame()
+     * \see removeMultiFrame()
+     */
+    QSet< QgsLayoutMultiFrame * > multiFrames() const;
+
+    /**
      * Returns the layout's state encapsulated in a DOM element.
      * \see readXml()
      */
@@ -528,6 +550,9 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     bool mBlockUndoCommands = false;
 
+    //! List of multiframe objects
+    QSet<QgsLayoutMultiFrame *> mMultiFrames;
+
     //! Writes only the layout settings (not member settings like grid settings, etc) to XML
     void writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
     //! Reads only the layout settings (not member settings like grid settings, etc) from XML
@@ -542,6 +567,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Removes an item from the layout, without adding the corresponding undo commands.
      */
     void removeLayoutItemPrivate( QgsLayoutItem *item );
+
+    void deleteAndRemoveMultiFrames();
 
     friend class QgsLayoutItemAddItemCommand;
     friend class QgsLayoutItemDeleteUndoCommand;

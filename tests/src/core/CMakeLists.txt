@@ -142,6 +142,7 @@ SET(TESTS
  testqgslayoutmapgrid.cpp
  testqgslayoutmapoverview.cpp
  testqgslayoutmodel.cpp
+ testqgslayoutmultiframe.cpp
  testqgslayoutobject.cpp
  testqgslayoutpage.cpp
  testqgslayoutpicture.cpp
