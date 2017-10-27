@@ -277,12 +277,13 @@ bool QgsAuthImportIdentityDialog::validatePkiPaths()
     ca_certs = certs;
   }
 
-  isvalid = clientcert.isValid();
+  isvalid = QgsAuthCertUtils::certIsViable( clientcert );
+
   QDateTime startdate( clientcert.effectiveDate() );
   QDateTime enddate( clientcert.expiryDate() );
 
   writeValidation( tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
-                   ( isvalid ? Valid : Invalid ) );
+                   ( QgsAuthCertUtils::certIsCurrent( clientcert ) ? Valid : Invalid ) );
   //TODO: set enabled on cert info button, relative to cert validity
 
   // check for valid private key and that any supplied password works

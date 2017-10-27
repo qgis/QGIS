@@ -292,9 +292,9 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
   // init client cert
   // Note: if this is not valid, no sense continuing
   QSslCertificate clientcert( bundlelist.at( 0 ).toLatin1() );
-  if ( !clientcert.isValid() )
+  if ( !QgsAuthCertUtils::certIsViable( clientcert ) )
   {
-    QgsDebugMsg( QString( "PKI bundle for authcfg %1: insert FAILED, client cert is not valid" ).arg( authcfg ) );
+    QgsDebugMsg( QString( "PKI bundle for authcfg %1: insert FAILED, client cert is not viable" ).arg( authcfg ) );
     return bundle;
   }
 

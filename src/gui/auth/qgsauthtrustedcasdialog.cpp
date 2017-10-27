@@ -22,6 +22,7 @@
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsauthcertificateinfo.h"
+#include "qgsauthcertutils.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
@@ -196,7 +197,7 @@ void QgsAuthTrustedCAsDialog::appendCertsToItem( const QList<QSslCertificate> &c
     QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, ( int )catype ) );
 
     item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
-    if ( !cert.isValid() )
+    if ( !QgsAuthCertUtils::certIsViable( cert ) )
     {
       item->setForeground( 2, redb );
       item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );

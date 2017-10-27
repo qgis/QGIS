@@ -275,7 +275,7 @@ bool QgsPkiBundle::isNull() const
 
 bool QgsPkiBundle::isValid() const
 {
-  return ( !isNull() && mCert.isValid() );
+  return ( !isNull() && QgsAuthCertUtils::certIsViable( mCert ) );
 }
 
 const QString QgsPkiBundle::certId() const

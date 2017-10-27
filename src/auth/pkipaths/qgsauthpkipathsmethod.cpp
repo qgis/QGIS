@@ -284,9 +284,9 @@ QgsPkiConfigBundle *QgsAuthPkiPathsMethod::getPkiConfigBundle( const QString &au
   // init client cert
   // Note: if this is not valid, no sense continuing
   QSslCertificate clientcert( QgsAuthCertUtils::certFromFile( mconfig.config( QStringLiteral( "certpath" ) ) ) );
-  if ( !clientcert.isValid() )
+  if ( !QgsAuthCertUtils::certIsViable( clientcert ) )
   {
-    QgsDebugMsg( QString( "PKI bundle for authcfg %1: insert FAILED, client cert is not valid" ).arg( authcfg ) );
+    QgsDebugMsg( QString( "PKI bundle for authcfg %1: insert FAILED, client cert is not viable" ).arg( authcfg ) );
     return bundle;
   }
 
