@@ -69,7 +69,7 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
     void setVisibility( const bool visible ) override;
 
     //overridden to move child items
-    void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false ) override;
+    void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false, int page = -1 ) override;
     void attemptResize( const QgsLayoutSize &size, bool includesFrame = false ) override;
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;

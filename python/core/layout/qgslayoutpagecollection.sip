@@ -195,6 +195,20 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
  :rtype: QgsLayoutItemPage
 %End
 
+    QPointF pagePositionToLayoutPosition( int page, const QgsLayoutPoint &position ) const;
+%Docstring
+ Converts a ``position`` on a ``page`` to an absolute position in layout coordinates.\
+.. seealso:: pagePositionToAbsolute()
+ :rtype: QPointF
+%End
+
+    QgsLayoutPoint pagePositionToAbsolute( int page, const QgsLayoutPoint &position ) const;
+%Docstring
+ Converts a ``position`` on a ``page`` to an absolute position in (maintaining the units from the input ``position``).
+.. seealso:: pagePositionToLayoutPosition()
+ :rtype: QgsLayoutPoint
+%End
+
     QPointF positionOnPage( QPointF point ) const;
 %Docstring
  Returns the position within a page of a ``point`` in the layout (in layout units).

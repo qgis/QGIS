@@ -324,6 +324,10 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * If \a includesFrame is true, then the position specified by \a point represents the
      * point at which to place the outside of the item's frame.
      *
+     * If \a page is not left at the default -1 value, then the position specified by \a point
+     * refers to the relative position on the corresponding layout \a page (where a \a page
+     * of 0 represents the first page).
+     *
      * Note that the final position of the item may not match the specified target position,
      * as data defined item position may override the specified value.
      *
@@ -331,8 +335,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see referencePoint()
      * \see positionWithUnits()
     */
-    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false );
-
+    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false, int page = -1 );
 
     /**
      * Attempts to update the item's position and size to match the passed \a rect in layout
@@ -360,6 +363,26 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see sizeWithUnits()
     */
     QgsLayoutPoint positionWithUnits() const { return mItemPosition; }
+
+    /**
+     * Returns the page the item is currently on, with the first page returning 0.
+     * \see pagePos()
+     */
+    int page() const;
+
+    /**
+     * Returns the item's position (in layout units) relative to the top left corner of its current page.
+     * \see page()
+     * \see pagePositionWithUnits()
+     */
+    QPointF pagePos() const;
+
+    /**
+     * Returns the item's position (in item units) relative to the top left corner of its current page.
+     * \see page()
+     * \see pagePos()
+     */
+    QgsLayoutPoint pagePositionWithUnits() const;
 
     /**
      * Returns the item's current size, including units.

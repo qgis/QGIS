@@ -127,7 +127,7 @@ void QgsLayoutItemGroup::setVisibility( const bool visible )
     mLayout->undoStack()->endMacro();
 }
 
-void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useReferencePoint, bool includesFrame )
+void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useReferencePoint, bool includesFrame, int page )
 {
   Q_UNUSED( useReferencePoint ); //groups should always have reference point in top left
   if ( !mLayout )
@@ -136,7 +136,12 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useRefer
   if ( !shouldBlockUndoCommands() )
     mLayout->undoStack()->beginMacro( tr( "Move group" ) );
 
-  QPointF scenePoint = mLayout->convertToLayoutUnits( point );
+  QPointF scenePoint;
+  if ( page < 0 )
+    scenePoint = mLayout->convertToLayoutUnits( point );
+  else
+    scenePoint = mLayout->pageCollection()->pagePositionToLayoutPosition( page, point );
+
   double deltaX = scenePoint.x() - pos().x();
   double deltaY = scenePoint.y() - pos().y();
 
