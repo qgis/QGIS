@@ -20,6 +20,7 @@
 #include <QDialog>
 #include <QEventLoop>
 #include <QTimer>
+#include <QMutex>
 
 #include "qgsauthmethod.h"
 
@@ -77,6 +78,8 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     static QMap<QString, QgsO2 *> sOAuth2ConfigCache;
 
     QgsO2 *authO2( const QString &authcfg );
+
+    QMutex mNetworkRequestMutex;
 };
 
 #endif // QGSAUTHOAUTH2METHOD_H

@@ -623,7 +623,7 @@ void QgsAuthOAuth2Edit::updateDefinedConfigsCache()
 {
   QString extradir = leDefinedDirPath->text();
   mDefinedConfigsCache.clear();
-  mDefinedConfigsCache = QgsAuthOAuth2Config::mappedOAuth2ConfigsCache( extradir );
+  mDefinedConfigsCache = QgsAuthOAuth2Config::mappedOAuth2ConfigsCache( this, extradir );
 }
 
 // slot
