@@ -14,6 +14,7 @@
 %Include qgsmapmouseevent.sip
 %Include qgsmaptip.sip
 %Include qgsrubberband.sip
+%Include qgssnapindicator.sip
 %Include qgstablewidgetitem.sip
 %Include qgsuserinputdockwidget.sip
 %Include qgsbrowserdockwidget.sip

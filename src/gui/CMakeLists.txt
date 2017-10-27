@@ -334,6 +334,7 @@ SET(QGIS_GUI_SRCS
   qgssearchquerybuilder.cpp
   qgsshortcutsmanager.cpp
   qgsslider.cpp
+  qgssnapindicator.cpp
   qgssublayersdialog.cpp
   qgssubstitutionlistwidget.cpp
   qgssqlcomposerdialog.cpp
@@ -713,6 +714,7 @@ SET(QGIS_GUI_HDRS
   qgsmapmouseevent.h
   qgsmaptip.h
   qgsrubberband.h
+  qgssnapindicator.h
   qgssqlcomposerdialog.h
   qgstablewidgetitem.h
   qgsuserinputdockwidget.h

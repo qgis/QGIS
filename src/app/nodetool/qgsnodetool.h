@@ -27,6 +27,7 @@ class QRubberBand;
 class QgsGeometryValidator;
 class QgsNodeEditor;
 class QgsSelectedFeature;
+class QgsSnapIndicator;
 class QgsVertexMarker;
 
 //! helper structure for a vertex being dragged
@@ -202,7 +203,7 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     // members used for temporary highlight of stuff
 
     //! marker of a snap match (if any) when dragging a vertex
-    QgsVertexMarker *mSnapMarker = nullptr;
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     /**
      * marker in the middle of an edge while pointer is close to a vertex and not dragging anything

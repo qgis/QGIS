@@ -26,6 +26,7 @@
 #include "qgis_gui.h"
 
 class QgsRubberBand;
+class QgsSnapIndicator;
 class QgsVertexMarker;
 class QgsMapLayer;
 class QgsGeometryValidator;
@@ -248,7 +249,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     bool mCaptureModeFromLayer;
 
-    QgsVertexMarker *mSnappingMarker = nullptr;
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     /**
      * Keeps point (in map units) snapped to a segment where we most recently finished tracing,

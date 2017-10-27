@@ -53,7 +53,8 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
       ICON_CROSS,
       ICON_X,
       ICON_BOX,
-      ICON_CIRCLE
+      ICON_CIRCLE,
+      ICON_DOUBLE_TRIANGLE,    //!< Added in QGIS 3.0
     };
 
     QgsVertexMarker( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS );
