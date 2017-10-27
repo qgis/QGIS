@@ -1,4 +1,4 @@
-INSTALL(FILES srs.db qgis.db symbology-style.xml spatialite.db customization.xml
+INSTALL(FILES srs.db qgis.db symbology-style.xml spatialite.db customization.xml 2to3migration.txt
         DESTINATION ${QGIS_DATA_DIR}/resources)
 INSTALL(FILES qgis_global_settings.ini
         DESTINATION ${QGIS_DATA_DIR})
