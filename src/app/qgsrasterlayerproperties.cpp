@@ -410,6 +410,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
       mBandRenderingGrpBx->setSizePolicy( sizep );
       mBandRenderingGrpBx->updateGeometry();
     }
+
+    if ( mRasterLayer->providerType() != QStringLiteral( "wms" ) )
+    {
+      mWMSPrintGroupBox->hide();
+      mPublishDataSourceUrlCheckBox->hide();
+      mBackgroundLayerCheckBox->hide();
+    }
   }
 
   mRenderTypeComboBox_currentIndexChanged( widgetIndex );
@@ -786,6 +793,19 @@ void QgsRasterLayerProperties::sync()
   mLayerLegendUrlLineEdit->setText( mRasterLayer->legendUrl() );
   mLayerLegendUrlFormatComboBox->setCurrentIndex( mLayerLegendUrlFormatComboBox->findText( mRasterLayer->legendUrlFormat() ) );
 
+  //WMS print layer
+  QVariant wmsPrintLayer = mRasterLayer->customProperty( QStringLiteral( "WMSPrintLayer" ) );
+  if ( wmsPrintLayer.isValid() )
+  {
+    mWMSPrintLayerLineEdit->setText( wmsPrintLayer.toString() );
+  }
+
+  QVariant wmsPublishDataSourceUrl = mRasterLayer->customProperty( QStringLiteral( "WMSPublishDataSourceUrl" ), false );
+  mPublishDataSourceUrlCheckBox->setChecked( wmsPublishDataSourceUrl.toBool() );
+
+  QVariant wmsBackgroundLayer = mRasterLayer->customProperty( QStringLiteral( "WMSBackgroundLayer" ), false );
+  mBackgroundLayerCheckBox->setChecked( wmsBackgroundLayer.toBool() );
+
   /*
    * Legend Tab
    */
@@ -1012,6 +1032,14 @@ void QgsRasterLayerProperties::apply()
   if ( mRasterLayer->legendUrlFormat() != mLayerLegendUrlFormatComboBox->currentText() )
     mMetadataFilled = false;
   mRasterLayer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
+
+  if ( !mWMSPrintLayerLineEdit->text().isEmpty() )
+  {
+    mRasterLayer->setCustomProperty( QStringLiteral( "WMSPrintLayer" ), mWMSPrintLayerLineEdit->text() );
+  }
+
+  mRasterLayer->setCustomProperty( "WMSPublishDataSourceUrl", mPublishDataSourceUrlCheckBox->isChecked() );
+  mRasterLayer->setCustomProperty( "WMSBackgroundLayer", mBackgroundLayerCheckBox->isChecked() );
 
   // update symbology
   emit refreshLegend( mRasterLayer->id(), false );
