@@ -56,6 +56,8 @@
     <addaction name="separator"/>
     <addaction name="mActionSnappingOptions"/>
     <addaction name="separator"/>
+    <addaction name="mActionProjectProperties"/>
+    <addaction name="separator"/>
     <addaction name="mActionNewPrintComposer"/>
     <addaction name="mActionShowComposerManager"/>
     <addaction name="mPrintComposersMenu"/>
@@ -217,7 +219,6 @@
     <property name="title">
      <string>&amp;Settings</string>
     </property>
-    <addaction name="mActionProjectProperties"/>
     <addaction name="mActionStyleManager"/>
     <addaction name="mActionCustomProjection"/>
     <addaction name="separator"/>
