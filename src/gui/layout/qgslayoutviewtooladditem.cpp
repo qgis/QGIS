@@ -99,7 +99,7 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
     {
       item->setReferencePoint( dlg.referencePoint() );
       item->attemptResize( dlg.itemSize() );
-      item->attemptMove( dlg.itemPosition() );
+      item->attemptMove( dlg.itemPosition(), true, false, dlg.page() );
     }
     else
     {
