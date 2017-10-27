@@ -90,7 +90,6 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
     mAttributeTypeDialog->setUnique( cfg.mConstraints & QgsFieldConstraints::ConstraintUnique );
     mAttributeTypeDialog->setUniqueEnforced( cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthHard ) == QgsFieldConstraints::ConstraintStrengthHard );
 
-    //confustion (will be removed): when we make this, the contraint stuff is allways reloaded from layer when we only change the widged-selection... : QgsFieldConstraints constraints = mLayer->fields().at( index ).constraints();
     QgsFieldConstraints constraints = cfg.mFieldConstraints;
     QgsFieldConstraints::Constraints providerConstraints = 0;
     if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
