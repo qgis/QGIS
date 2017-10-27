@@ -107,6 +107,27 @@ QgsLayoutItemPage *QgsLayoutPageCollection::pageAtPoint( QPointF point ) const
   return nullptr;
 }
 
+QPointF QgsLayoutPageCollection::pagePositionToLayoutPosition( int page, const QgsLayoutPoint &position ) const
+{
+  QPointF layoutUnitsPos = mLayout->convertToLayoutUnits( position );
+  if ( page > 0 && page < mPages.count() )
+  {
+    layoutUnitsPos.ry() += mPages.at( page )->pos().y();
+  }
+  return layoutUnitsPos;
+}
+
+QgsLayoutPoint QgsLayoutPageCollection::pagePositionToAbsolute( int page, const QgsLayoutPoint &position ) const
+{
+  double vDelta = 0.0;
+  if ( page > 0 && page < mPages.count() )
+  {
+    vDelta = mLayout->convertFromLayoutUnits( mPages.at( page )->pos().y(), position.units() ).length();
+  }
+
+  return QgsLayoutPoint( position.x(), position.y() + vDelta, position.units() );
+}
+
 QPointF QgsLayoutPageCollection::positionOnPage( QPointF position ) const
 {
   double startCurrentPageY = 0;

@@ -200,6 +200,18 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     QgsLayoutItemPage *pageAtPoint( QPointF point ) const;
 
     /**
+     * Converts a \a position on a \a page to an absolute position in layout coordinates.\
+     * \see pagePositionToAbsolute()
+     */
+    QPointF pagePositionToLayoutPosition( int page, const QgsLayoutPoint &position ) const;
+
+    /**
+     * Converts a \a position on a \a page to an absolute position in (maintaining the units from the input \a position).
+     * \see pagePositionToLayoutPosition()
+     */
+    QgsLayoutPoint pagePositionToAbsolute( int page, const QgsLayoutPoint &position ) const;
+
+    /**
      * Returns the position within a page of a \a point in the layout (in layout units).
      *
      * \see pageNumberForPoint()

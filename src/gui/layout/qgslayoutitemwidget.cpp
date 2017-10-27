@@ -331,7 +331,7 @@ void QgsLayoutItemPropertiesWidget::changeItemPosition()
   mItem->layout()->undoStack()->beginCommand( mItem, tr( "Move Item" ), QgsLayoutItem::UndoIncrementalMove );
 
   QgsLayoutPoint point( mXPosSpin->value(), mYPosSpin->value(), mPosUnitsComboBox->unit() );
-  mItem->attemptMove( point );
+  mItem->attemptMove( point, true, false, mPageSpinBox->value() - 1 );
 
   mItem->layout()->undoStack()->endCommand();
 }
@@ -493,9 +493,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements()
   };
   block( true );
 
-  QPointF pos; //TODO = mItem->pagePos();
-
-  QgsLayoutPoint point = mItem->positionWithUnits();
+  QgsLayoutPoint point = mItem->pagePositionWithUnits();
 
   if ( !mFreezeXPosSpin )
     mXPosSpin->setValue( point.x() );
@@ -571,10 +569,8 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements()
   mSizeLockAspectRatio->resetRatio();
   mPosLockAspectRatio->resetRatio();
 
-#if 0 //TODO
   if ( !mFreezePageSpin )
-    mPageSpinBox->setValue( mItem->page() );
-#endif
+    mPageSpinBox->setValue( mItem->page() + 1 );
 
   block( false );
 }

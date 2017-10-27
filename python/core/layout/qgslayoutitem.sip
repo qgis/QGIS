@@ -296,7 +296,7 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: sizeWithUnits()
 %End
 
-    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false );
+    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false, int page = -1 );
 %Docstring
  Attempts to move the item to a specified ``point``.
 
@@ -310,6 +310,10 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  If ``includesFrame`` is true, then the position specified by ``point`` represents the
  point at which to place the outside of the item's frame.
 
+ If ``page`` is not left at the default -1 value, then the position specified by ``point``
+ refers to the relative position on the corresponding layout ``page`` (where a ``page``
+ of 0 represents the first page).
+
  Note that the final position of the item may not match the specified target position,
  as data defined item position may override the specified value.
 
@@ -317,7 +321,6 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: referencePoint()
 .. seealso:: positionWithUnits()
 %End
-
 
     void attemptSetSceneRect( const QRectF &rect, bool includesFrame = false );
 %Docstring
@@ -344,6 +347,29 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: attemptMove()
 .. seealso:: referencePoint()
 .. seealso:: sizeWithUnits()
+ :rtype: QgsLayoutPoint
+%End
+
+    int page() const;
+%Docstring
+ Returns the page the item is currently on, with the first page returning 0.
+.. seealso:: pagePos()
+ :rtype: int
+%End
+
+    QPointF pagePos() const;
+%Docstring
+ Returns the item's position (in layout units) relative to the top left corner of its current page.
+.. seealso:: page()
+.. seealso:: pagePositionWithUnits()
+ :rtype: QPointF
+%End
+
+    QgsLayoutPoint pagePositionWithUnits() const;
+%Docstring
+ Returns the item's position (in item units) relative to the top left corner of its current page.
+.. seealso:: page()
+.. seealso:: pagePos()
  :rtype: QgsLayoutPoint
 %End
 
