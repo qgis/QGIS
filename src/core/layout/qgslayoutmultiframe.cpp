@@ -55,6 +55,7 @@ void QgsLayoutMultiFrame::addFrame( QgsLayoutFrame *frame, bool recalcFrameSizes
 
   mFrameItems.push_back( frame );
   frame->mMultiFrame = this;
+  connect( frame, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutMultiFrame::recalculateFrameSizes );
   connect( frame, &QgsLayoutFrame::destroyed, this, &QgsLayoutMultiFrame::handleFrameRemoval );
   if ( mLayout )
   {
