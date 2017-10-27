@@ -1033,8 +1033,7 @@ void QgsRasterLayerProperties::apply()
     mMetadataFilled = false;
   mRasterLayer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
 
-  QString wmsPrintLayer = mWMSPrintLayerLineEdit->text();
-  if ( !wmsPrintLayer.isEmpty() )
+  if ( !mWMSPrintLayerLineEdit->text().isEmpty() )
   {
     mRasterLayer->setCustomProperty( QStringLiteral( "WMSPrintLayer" ), mWMSPrintLayerLineEdit->text() );
   }
