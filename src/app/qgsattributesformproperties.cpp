@@ -34,8 +34,11 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mAttributeTypeFrame->layout()->setMargin( 0 );
   mAttributeTypeFrame->layout()->addWidget( mAttributeTypeDialog );
 
+  // RelationConfigDialog
+  mRelationConfigDialog = new QgsAttributeTypeDialog( mLayer, 0, mAttributeTypeFrame );
+
   connect( mAvailableWidgetsTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
-  connect( mFormLayoutTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
+  //connect( mFormLayoutTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
   connect( mAddTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::addTabOrGroupButton );
   connect( mRemoveTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::removeTabOrGroupButton );
 }
@@ -188,7 +191,7 @@ QgsAttributesFormProperties::FieldConfig QgsAttributesFormProperties::configForC
   return FieldConfig();
 }
 
-QgsAttributesFormProperties::RelationConfig QgsAttributesFormProperties::configForRelationChild( const QString &relationName )
+QgsAttributesFormProperties::RelationConfig QgsAttributesFormProperties::configForRelation( const QString &relationName )
 {
   QTreeWidgetItemIterator itemIt( mAvailableWidgetsTree );
   while ( *itemIt )
@@ -280,8 +283,23 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged()
     if ( mFormLayoutTree->selectedItems()[0]->data( 0, DnDTreeRole ).value<DnDTreeItemData>().type() == DnDTreeItemData::Container )
       isAddPossible = true;
 
-  storeAttributeTypeDialog();
-  loadAttributeTypeDialog();
+  storeAttributeTypeDialog(); //or storeRelationConfigDialog
+
+  switch ( mAvailableWidgetsTree->currentItem()->data( 0, DnDTreeRole ).value<DnDTreeItemData>().type() )
+  {
+    case DnDTreeItemData::Relation:
+    {
+      //loadAttributeTypeDialog();
+      mAttributeTypeFrame->layout()->removeWidget( mAttributeTypeDialog);
+      //mAttributeTypeFrame->layout()->addWidget( mRelationConfigDialog );
+      break;
+    }
+    default:
+    {
+      loadAttributeTypeDialog();
+      break;
+    }
+  }
 }
 
 void QgsAttributesFormProperties::initAvailableWidgetsTree()
@@ -508,7 +526,7 @@ void QgsAttributesFormProperties::apply()
     QTreeWidgetItem *relationItem = relationContainer->child( i );
     DnDTreeItemData itemData= relationItem->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
 
-    RelationConfig relCfg = configForRelChild( itemData.name() );
+    RelationConfig relCfg = configForRelation( itemData.name() );
 
     QVariantMap cfg;
     cfg[QStringLiteral( "nm-rel" )]=relCfg.mCardinality;
@@ -548,6 +566,7 @@ void QgsAttributesFormProperties::apply()
 
 QgsAttributesFormProperties::FieldConfig::FieldConfig()
   : mEditable( true )
+  , mAlias( QString() )
   , mEditableEnabled( true )
   , mLabelOnTop( false )
   , mConstraints( 0 )
@@ -581,10 +600,14 @@ QgsAttributesFormProperties::FieldConfig::operator QVariant()
   return QVariant::fromValue<QgsAttributesFormProperties::FieldConfig>( *this );
 }
 
-
 /*
  * RelationConfig implementation
  */
+QgsAttributesFormProperties::RelationConfig::RelationConfig()
+  : mCardinality( QString() )
+{
+}
+
 QgsAttributesFormProperties::RelationConfig::RelationConfig( QgsVectorLayer *layer, const QString &relationId )
 {
   const QVariant nmrelcfg = layer->editFormConfig().widgetConfig( relationId ).value( QStringLiteral( "nm-rel" ) );

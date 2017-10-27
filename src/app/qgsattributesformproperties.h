@@ -194,7 +194,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     FieldConfig configForChild( int index );
     void setConfigForChild( int index, const FieldConfig &cfg );
 
-    RelationConfig configForRelationChild( const QString &relationName );
+    RelationConfig configForRelation( const QString &relationName );
 
     //QList<QgsRelation> mRelations;
     QgsVectorLayer *mLayer = nullptr;
@@ -203,6 +203,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     DnDTree *mFormLayoutTree = nullptr;
 
     QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
+    QgsAttributeTypeDialog *mRelationConfigDialog = nullptr;
 
 
   private:
@@ -269,6 +270,7 @@ class DnDTree : public QTreeWidget
 
 
 Q_DECLARE_METATYPE( QgsAttributesFormProperties::FieldConfig )
+Q_DECLARE_METATYPE( QgsAttributesFormProperties::RelationConfig )
 Q_DECLARE_METATYPE( QgsAttributesFormProperties::DnDTreeItemData )
 
 #endif // QGSATTRIBUTESFORMPROPERTIES_H
