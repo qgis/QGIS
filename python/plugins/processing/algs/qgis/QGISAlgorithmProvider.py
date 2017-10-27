@@ -73,7 +73,6 @@ from .FindProjection import FindProjection
 from .FixedDistanceBuffer import FixedDistanceBuffer
 from .GeometryConvert import GeometryConvert
 from .GeometryByExpression import GeometryByExpression
-from .Gridify import Gridify
 from .GridLine import GridLine
 from .GridPolygon import GridPolygon
 from .Heatmap import Heatmap
@@ -200,7 +199,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 FixedDistanceBuffer(),
                 GeometryByExpression(),
                 GeometryConvert(),
-                Gridify(),
                 GridLine(),
                 GridPolygon(),
                 Heatmap(),

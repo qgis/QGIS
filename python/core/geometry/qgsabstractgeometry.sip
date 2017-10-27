@@ -514,6 +514,17 @@ Returns the centroid of the geometry
 
   protected:
 
+    virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 /Factory/;
+%Docstring
+ Creates a new geometry with the same class and same WKB type as the original and transfers ownership.
+ To create it, the geometry is default constructed and then the WKB is changed.
+.. seealso:: clone()
+.. versionadded:: 3.0
+.. note::
+
+   Not available in Python bindings
+ :rtype: QgsAbstractGeometry
+%End
 
     virtual bool hasChildGeometries() const;
 %Docstring

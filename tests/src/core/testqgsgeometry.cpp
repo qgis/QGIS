@@ -15820,8 +15820,6 @@ void TestQgsGeometry::snappedToGrid()
     std::unique_ptr<QgsAbstractGeometry> snapped { curve.constGet()->snappedToGrid( 1, 1 ) };
     QCOMPARE( snapped->asWkt(), QStringLiteral( "CompoundCurve ((59 402, 68 415),CircularString (68 415, 27 505, 27 406))" ) );
   }
-
-
 }
 
 QGSTEST_MAIN( TestQgsGeometry )

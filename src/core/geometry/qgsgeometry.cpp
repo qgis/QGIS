@@ -1073,6 +1073,15 @@ QgsGeometry QgsGeometry::orthogonalize( double tolerance, int maxIterations, dou
   return engine.orthogonalize( tolerance, maxIterations, angleThreshold );
 }
 
+QgsGeometry QgsGeometry::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+  return QgsGeometry( d->geometry->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) );
+}
+
 bool QgsGeometry::intersects( const QgsRectangle &r ) const
 {
   QgsGeometry g = fromRect( r );

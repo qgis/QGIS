@@ -510,9 +510,6 @@ qgis:snapgeometries: >
 
   Vertices will be inserted or removed as required to make the geometries match the reference geometries.
 
-qgis:snappointstogrid: >
-  This algorithm modifies the position of points in a vector layer, so they fall in the coordinates of a grid.
-
 qgis:splitwithlines: >
   This algorithm splits the lines or polygons in one layer using the lines in another layer to define the breaking points. Intersection between geometries in both layers are considered as split points.
 
