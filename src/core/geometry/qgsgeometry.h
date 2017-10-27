@@ -729,6 +729,20 @@ class CORE_EXPORT QgsGeometry
      */
     QgsGeometry orthogonalize( double tolerance = 1.0E-8, int maxIterations = 1000, double angleThreshold = 15.0 ) const;
 
+    /**
+     * Returns a new geometry with all points or vertices snapped to the closest point of the grid.
+     *
+     * If the gridified geometry could not be calculated (or was totally collapsed) an empty geometry will be returned.
+     * Note that snapping to grid may generate an invalid geometry in some corner cases.
+     * It can also be thought as rounding the edges and it may be useful for removing errors.
+     * \param hSpacing Horizontal spacing of the grid (x axis). 0 to disable.
+     * \param vSpacing Vertical spacing of the grid (y axis). 0 to disable.
+     * \param dSpacing Depth spacing of the grid (z axis). 0 (default) to disable.
+     * \param mSpacing Custom dimension spacing of the grid (m axis). 0 (default) to disable.
+     * \since 3.0
+     */
+    QgsGeometry snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const;
+
     //! Tests for intersection with a rectangle (uses GEOS)
     bool intersects( const QgsRectangle &r ) const;
 
