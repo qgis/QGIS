@@ -15,4 +15,3 @@
 ###########################################################################
 
 #pip3 install termcolor
-pip install psycopg2 numpy nose2 pyyaml mock future termcolor oauthlib
