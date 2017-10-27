@@ -1331,6 +1331,16 @@ QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificat
 QStringList QgsAuthCertUtils::validatePKIBundle( QgsPkiBundle &bundle, bool useIntermediates, bool trustRootCa )
 {
   QStringList errors;
+  if ( bundle.clientCert().isNull() )
+    errors << QObject::tr( "Client certificate is NULL." );
+
+  if ( bundle.clientKey().isNull() )
+    errors << QObject::tr( "Client certificate key is NULL." );
+
+  // immediately bail out if cert or key is NULL
+  if ( !errors.isEmpty() )
+    return errors;
+
   QList<QSslError> sslErrors;
   if ( useIntermediates )
   {
