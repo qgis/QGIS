@@ -35,7 +35,8 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mAttributeTypeFrame->layout()->setMargin( 0 );
   mAttributeTypeFrame->layout()->addWidget( mAttributeTypeDialog );
 
-  mAttributeRelationEdit = new QgsAttributeRelationEdit( mAttributeTypeFrame );
+  // AttributeRelationEdit
+  mAttributeRelationEdit = new QgsAttributeRelationEdit( "", mAttributeTypeFrame );
   mAttributeRelationEdit->layout()->setMargin( 0 );
   mAttributeTypeFrame->layout()->setMargin( 0 );
   mAttributeTypeFrame->layout()->addWidget( mAttributeRelationEdit );
@@ -192,16 +193,16 @@ void QgsAttributesFormProperties::loadAttributeRelationEdit()
     delete mAttributeRelationEdit;
 
     //oder mit dem? RelationConfig relCfg = configForRelation( itemData.name() );
-    RelationConfig cfg = mAvailableWidgetsTree->currentItem()->data( 0, RelationConfigRole).value<RelationConfig>();
+    RelationConfig cfg = currentItem->data( 0, RelationConfigRole).value<RelationConfig>();
 
-    mAttributeRelationEdit = new QgsAttributeRelationEdit( mAttributeTypeFrame );
-
-    //testdave     mAttributeRelationEdit->setCardinality( cfg.mCardinality );
-    //testdave mAttributeRelationEdit->setCardinality( "Cardinal Draft" );
+    mAttributeRelationEdit = new QgsAttributeRelationEdit( currentItem->data( 0, FieldNameRole ).toString(), mAttributeTypeFrame );
+    mAttributeRelationEdit->setCardinality( cfg.mCardinality );
 
     mAttributeRelationEdit->layout()->setMargin( 0 );
     mAttributeTypeFrame->layout()->setMargin( 0 );
 
+    mAttributeTypeFrame->layout()->removeWidget( mAttributeTypeDialog );
+    mAttributeTypeFrame->layout()->addWidget( mAttributeTypeDialog );
     mAttributeTypeFrame->layout()->addWidget( mAttributeRelationEdit );
   }
 }
@@ -209,8 +210,21 @@ void QgsAttributesFormProperties::loadAttributeRelationEdit()
 
 void QgsAttributesFormProperties::storeAttributeRelationEdit()
 {
-  //store it first
+    RelationConfig cfg;
 
+    cfg.mCardinality = mAttributeRelationEdit->cardinality();
+
+    QTreeWidgetItem* relationContainer=mAvailableWidgetsTree->invisibleRootItem()->child(1);
+
+    for ( int i = 0; i < relationContainer->childCount(); i++ )
+    {
+      QTreeWidgetItem *relationItem = relationContainer->child( i );
+      DnDTreeItemData itemData= relationItem->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
+
+      if( itemData.name()==mAttributeRelationEdit->mRelationId ){
+        relationItem->setData( 0, RelationConfigRole, QVariant::fromValue<RelationConfig>( cfg ) );
+      }
+    }
 }
 
 QgsAttributesFormProperties::FieldConfig QgsAttributesFormProperties::configForChild( int index )

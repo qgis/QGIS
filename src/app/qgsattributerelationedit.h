@@ -24,7 +24,7 @@ class APP_EXPORT QgsAttributeRelationEdit: public QWidget, private Ui::QgsAttrib
     Q_OBJECT
 
   public:
-    explicit QgsAttributeRelationEdit(QWidget *parent = 0);
+    explicit QgsAttributeRelationEdit(const QString &relationid, QWidget *parent = 0);
     ~QgsAttributeRelationEdit();
 
   /**
@@ -37,8 +37,10 @@ class APP_EXPORT QgsAttributeRelationEdit: public QWidget, private Ui::QgsAttrib
    */
   QString cardinality();
 
+  QString mRelationId;
   private:
-    Ui::QgsAttributeRelationEdit *ui;
+
+    //Ui::QgsAttributeRelationEdit *ui;
 };
 
 #endif // QGSATTRIBUTERELATIONEDIT_H

@@ -1,16 +1,15 @@
 #include "qgsattributerelationedit.h"
 #include "ui_qgsattributerelationedit.h"
 
-QgsAttributeRelationEdit::QgsAttributeRelationEdit(QWidget *parent) :
+QgsAttributeRelationEdit::QgsAttributeRelationEdit(const QString &relationid, QWidget *parent) :
   QWidget(parent),
-  ui(new Ui::QgsAttributeRelationEdit)
+  mRelationId( relationid )
 {
-  ui->setupUi(this);
+  setupUi(this);
 }
 
 QgsAttributeRelationEdit::~QgsAttributeRelationEdit()
 {
-  delete ui;
 }
 
 void QgsAttributeRelationEdit::setCardinality( const QString &cardinality )
