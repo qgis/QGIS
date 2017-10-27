@@ -37,6 +37,8 @@ class QDomElement;
 class QPainter;
 class QgsRenderContext;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * \class QgsComposerMapGridStack
@@ -45,6 +47,8 @@ class QgsRenderContext;
  * order they are drawn in.
  * \since QGIS 2.5
  * \see QgsComposerMapGrid
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
 {

@@ -29,6 +29,8 @@
 class QgsComposition;
 class QGraphicsItem;
 
+#define SIP_NO_FILE
+
 /**
  * \class QgsComposerModel
  * \ingroup core
@@ -45,6 +47,8 @@ class QGraphicsItem;
  * It is used as a cache of the last known stacking order, so that the model can compare the current
  * stacking of items in the composition to the last known state, and emit the corresponding signals
  * as required.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 
 class CORE_EXPORT QgsComposerModel: public QAbstractItemModel

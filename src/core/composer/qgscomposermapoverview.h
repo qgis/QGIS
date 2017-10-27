@@ -31,6 +31,8 @@ class QDomElement;
 class QgsFillSymbol;
 class QgsComposerMapOverview;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * \class QgsComposerMapOverviewStack
@@ -39,6 +41,8 @@ class QgsComposerMapOverview;
  * order they are drawn in.
  * \since QGIS 2.5
  * \see QgsComposerMapOverview
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
 {

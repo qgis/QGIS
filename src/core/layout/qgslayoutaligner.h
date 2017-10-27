@@ -23,6 +23,8 @@
 class QgsLayoutItem;
 class QgsLayout;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * \class QgsLayoutAligner
@@ -32,6 +34,8 @@ class QgsLayout;
  * sets of layout items, e.g. aligning a group of items to top or left sides.
  *
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutAligner
 {

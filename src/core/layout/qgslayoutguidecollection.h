@@ -27,6 +27,8 @@
 #include <QGraphicsLineItem>
 #include <memory>
 
+#define SIP_NO_FILE
+
 class QgsLayout;
 class QgsLayoutPageCollection;
 class QDomElement;
@@ -38,6 +40,8 @@ class QgsReadWriteContext;
  * \class QgsLayoutGuide
  * \brief Contains the configuration for a single snap guide used by a layout.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutGuide : public QObject
 {

@@ -852,6 +852,8 @@ class CORE_EXPORT QgsExpressionContextUtils
      */
     static QgsExpressionContextScope *updateSymbolScope( const QgsSymbol *symbol, QgsExpressionContextScope *symbolScope = nullptr );
 
+#ifndef SIP_RUN
+
     /**
      * Creates a new scope which contains variables and functions relating to a QgsComposition.
      * For instance, number of pages and page sizes.
@@ -944,6 +946,8 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \see composerItemScope()
      */
     static void setComposerItemVariables( QgsComposerItem *composerItem, const QVariantMap &variables );
+
+#endif
 
     /**
      * Helper function for creating an expression context which contains just a feature and fields

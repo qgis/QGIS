@@ -23,12 +23,17 @@
 
 class QgsComposerProxyModel;
 
+#define SIP_NO_FILE
+
+
 /**
  * \class QgsComposerItemComboBox
  * \ingroup gui
  * \brief The QgsComposerItemComboBox class is a combo box which displays items of
  * a matching type from a composition.
  * \since QGIS 2.16
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class GUI_EXPORT QgsComposerItemComboBox : public QComboBox
 {

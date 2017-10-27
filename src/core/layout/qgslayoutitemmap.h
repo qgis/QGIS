@@ -21,11 +21,15 @@
 #include "qgslayoutitem.h"
 #include "qgslayoutitemregistry.h"
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * \class QgsLayoutItemMap
  * \brief Layout graphical items for displaying a map.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 {

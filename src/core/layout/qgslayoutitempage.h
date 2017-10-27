@@ -22,6 +22,7 @@
 #include "qgslayoutitemregistry.h"
 #include "qgis_sip.h"
 
+#define SIP_NO_FILE
 
 ///@cond PRIVATE
 #ifndef SIP_RUN
@@ -31,6 +32,8 @@
  * Item representing a grid. This is drawn separately to the underlying page item since the grid needs to be
  * drawn above all other layout items, while the paper item is drawn below all others.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutItemPageGrid: public QGraphicsRectItem
 {

@@ -26,6 +26,7 @@
 #include <QSizeF>
 #include <QPointF>
 
+#define SIP_NO_FILE
 
 /**
  * \ingroup core
@@ -36,6 +37,8 @@
  * 300 DPI.
  * \see QgsLayoutMeasurement
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutMeasurementConverter
 {

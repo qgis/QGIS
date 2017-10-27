@@ -22,10 +22,15 @@
 #include "qgis.h"
 #include "qgscomposertablev2.h"
 
+
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * A text table item that reads text from string lists
  * \since QGIS 2.10
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
 */
 class CORE_EXPORT QgsComposerTextTableV2 : public QgsComposerTableV2
 {

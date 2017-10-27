@@ -25,10 +25,14 @@ class QgsLayoutItemMap;
 class QPainter;
 class QRectF;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * Utilities for layouts.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutUtils
 {

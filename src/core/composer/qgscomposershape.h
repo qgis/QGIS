@@ -26,9 +26,14 @@
 
 class QgsFillSymbol;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
- * A composer items that draws common shapes (ellipse, triangle, rectangle)*/
+ * A composer items that draws common shapes (ellipse, triangle, rectangle).
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
+*/
 class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 {
     Q_OBJECT

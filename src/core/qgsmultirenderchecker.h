@@ -143,6 +143,8 @@ SIP_IF_FEATURE( TESTS )
 
 ///@cond PRIVATE
 
+#ifndef SIP_RUN
+
 /**
  * \ingroup core
  * \class QgsCompositionChecker
@@ -166,6 +168,8 @@ class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
     int mDotsPerMeter;
 };
 ///@endcond
+
+#endif
 
 SIP_END
 #endif

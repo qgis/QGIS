@@ -25,9 +25,14 @@
 
 class QPainter;
 
+
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * Utilities for compositions.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class CORE_EXPORT QgsComposerUtils
 {

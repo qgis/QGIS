@@ -20,10 +20,14 @@
 #include "qgis_gui.h"
 #include "qgslayoutviewtool.h"
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup gui
  * Layout view tool for temporarily panning a layout while a key is depressed.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class GUI_EXPORT QgsLayoutViewToolTemporaryKeyPan : public QgsLayoutViewTool
 {

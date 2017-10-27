@@ -22,11 +22,15 @@
 #include <QBrush>
 #include <QPen>
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * An abstract composer item that provides generic methods for nodes based
  * shapes such as polygon or polylines.
  * \since QGIS 2.16
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class CORE_EXPORT QgsComposerNodesItem: public QgsComposerItem
 {

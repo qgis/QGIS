@@ -24,11 +24,15 @@
 
 class QgsLayoutMeasurementConverter;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup gui
  * A custom combo box for selecting units for layout settings.
  *
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class GUI_EXPORT QgsLayoutUnitsComboBox : public QComboBox
 {

@@ -26,11 +26,15 @@
 class QgsLayout;
 class QgsReadWriteContext;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * \class QgsLayoutGridSettings
  * \brief Contains settings relating to the appearance, spacing and offset for layout grids.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
 {

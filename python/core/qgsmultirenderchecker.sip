@@ -131,26 +131,6 @@ class QgsMultiRenderChecker
 %If (TESTS)
 
 
-class QgsCompositionChecker : QgsMultiRenderChecker
-{
-%Docstring
- Renders a composition to an image and compares with an expected output
-%End
-
-%TypeHeaderCode
-#include "qgsmultirenderchecker.h"
-%End
-  public:
-    QgsCompositionChecker( const QString &testName, QgsComposition *composition );
-
-    void setSize( QSize size );
-
-    bool testComposition( QString &checkedReport, int page = 0, int pixelDiff = 0 );
-%Docstring
- :rtype: bool
-%End
-
-};
 
 %End
 

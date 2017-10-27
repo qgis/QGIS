@@ -22,6 +22,9 @@
 #include <QUndoCommand>
 #include "qgscomposeritem.h"
 
+
+#define SIP_NO_FILE
+
 class QgsComposition;
 class QgsComposerItemGroup;
 
@@ -29,7 +32,9 @@ class QgsComposerItemGroup;
  * \ingroup core
  * A composer command class for grouping / ungrouping composer items.
  *
- * If mState == Ungrouped, the command owns the group item
+ * If mState == Ungrouped, the command owns the group item.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class CORE_EXPORT QgsGroupUngroupItemsCommand: public QObject, public QUndoCommand
 {

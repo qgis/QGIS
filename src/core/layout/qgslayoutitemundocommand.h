@@ -38,6 +38,8 @@ SIP_NO_FILE
  * the item deletion command.
  *
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
 */
 class CORE_EXPORT QgsLayoutItemUndoCommand: public QgsAbstractLayoutUndoCommand
 {
@@ -89,6 +91,7 @@ class CORE_EXPORT QgsLayoutItemUndoCommand: public QgsAbstractLayoutUndoCommand
  * the associated layout item is deleted and removed from the layout.
  *
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
 */
 class CORE_EXPORT QgsLayoutItemDeleteUndoCommand: public QgsLayoutItemUndoCommand
 {
@@ -117,6 +120,7 @@ class CORE_EXPORT QgsLayoutItemDeleteUndoCommand: public QgsLayoutItemUndoComman
  * the associated layout item is recreated and added to the layout.
  *
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
 */
 class CORE_EXPORT QgsLayoutItemAddItemCommand: public QgsLayoutItemUndoCommand
 {

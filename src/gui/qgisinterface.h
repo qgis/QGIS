@@ -164,6 +164,8 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Return the message bar of the main app
     virtual QgsMessageBar *messageBar() = 0;
 
+#if 0
+
     /**
      * Returns all currently open composer windows.
      * \since QGIS 3.0
@@ -175,7 +177,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.0
      */
     virtual QList<QgsLayoutDesignerInterface *> openLayoutDesigners() = 0;
-
+#endif
 
     //! Return changeable options built from settings and/or defaults
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
@@ -233,8 +235,10 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionSaveProjectAs() = 0;
     virtual QAction *actionSaveMapAsImage() = 0;
     virtual QAction *actionProjectProperties() = 0;
+#if 0
     virtual QAction *actionPrintComposer() = 0;
     virtual QAction *actionShowComposerManager() = 0;
+#endif
     virtual QAction *actionExit() = 0;
 
     // Edit menu actions
@@ -517,6 +521,8 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Adds a widget to the user input tool bar.
     virtual void addUserInputWidget( QWidget *widget ) = 0;
 
+#if 0
+
     /**
      * Opens a new composer window for the specified \a composition, or
      * brings an already open composer window to the foreground if one
@@ -542,6 +548,8 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see closeComposer()
      */
     virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) = 0;
+
+#endif
 
     /**
      * Opens the options dialog. The \a currentPage argument can be used to force
@@ -753,6 +761,8 @@ class GUI_EXPORT QgisInterface : public QObject
     */
     void currentThemeChanged( const QString &theme );
 
+#if 0
+
     /**
      * This signal is emitted when a new composer window has been opened.
      * \since QGIS 3.0
@@ -792,6 +802,8 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see layoutDesignerOpened()
      */
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
+
+#endif
 
     /**
      * This signal is emitted after a layout designer window is closed.

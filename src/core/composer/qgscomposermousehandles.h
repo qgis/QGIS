@@ -33,7 +33,8 @@ class QGraphicsView;
  * \ingroup core
  * Handles drawing of selection outlines and mouse handles. Responsible for mouse
  * interactions such as resizing and moving selected items.
- * \note not available in Python bindings
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  * */
 class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectItem
 {

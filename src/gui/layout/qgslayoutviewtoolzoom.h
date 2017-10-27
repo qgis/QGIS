@@ -22,10 +22,14 @@
 #include "qgslayoutviewrubberband.h"
 #include <memory>
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup gui
  * Layout view tool for zooming into and out of the layout.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class GUI_EXPORT QgsLayoutViewToolZoom : public QgsLayoutViewTool
 {

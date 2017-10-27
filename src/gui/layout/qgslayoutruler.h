@@ -25,6 +25,8 @@ class QGraphicsLineItem;
 class QgsLayoutView;
 class QgsLayoutGuide;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup gui
  * A custom ruler widget for use with QgsLayoutView, displaying the
@@ -32,6 +34,8 @@ class QgsLayoutGuide;
  * with guides in a layout.
  *
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class GUI_EXPORT QgsLayoutRuler: public QWidget
 {

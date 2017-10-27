@@ -26,10 +26,14 @@
 
 class QgsLayout;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * Base class for commands to undo/redo layout and layout object changes.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
 */
 class CORE_EXPORT QgsAbstractLayoutUndoCommand: public QUndoCommand
 {

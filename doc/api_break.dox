@@ -255,12 +255,6 @@ Removed Classes        {#qgis_api_break_3_0_removed_classes}
 - QgsColorDialog was removed, and QgsColorDialogV2 was renamed to QgsColorDialog. Hence, QgsColorButtonV2 does not exist anymore.
 All the functionality from the old QgsColorDialog has been moved to the new class.
 - QgsColorRampComboBox was removed, replaced by QgsColorRampButton
-- QgsComposerAttributeTable and associated classes (eg QgsComposerAttributeTableCompare,
-QgsComposerAttributeTableColumnModel, QgsComposerTableSortColumnsProxyModel) were removed.
-Use QgsComposerAttributeTableV2 instead.
-- QgsComposerLegendItem and subclasses were removed (QgsComposerSymbolItem, QgsComposerRasterSymbolItem, QgsComposerLayerItem, QgsComposerGroupItem, QgsComposerStyleItem).
-- QgsComposerTable was removed. Use QgsComposerAttributeTableV2 instead.
-- ComposerTextTable was removed. Use ComposerTextTableV2 instead.
 - QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,
 so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).
@@ -338,6 +332,14 @@ General changes        {#qgis_api_break_3_0_global}
 - All methods taking or returning QGis::WkbType have been changed to use QgsWkbTypes::Type
 - All methods taking or returning QGis::GeometryType have been changed to use QgsWkbTypes::GeometryType
 - Network analysis library has been merged into analysis library
+
+
+Composer     {#qgis_api_break_3_0_Composer}
+--------
+
+All composer related methods have been removed from the public API and Python bindings. These classes
+will be replaced by the reworked layouts classes in 3.2 and are not considered part of the stable
+3.x API.
 
 
 Labeling    {#qgis_api_break_3_0_Labeling}

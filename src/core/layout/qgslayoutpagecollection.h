@@ -28,11 +28,15 @@
 class QgsLayout;
 class QgsLayoutGuideCollection;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * \class QgsLayoutPageCollection
  * \brief A manager for a collection of pages in a layout.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSerializableObject
 {

@@ -23,11 +23,15 @@
 #include "qgssymbol.h"
 #include "qgslayoutmeasurement.h"
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * \class QgsLayoutItemShape
  * \brief Base class for layout items which are basic shapes (e.g. rectangles, ellipses).
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
 {

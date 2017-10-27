@@ -421,14 +421,6 @@ Convenience function to query topological editing status
 %End
 
 
-    QgsLayoutManager *layoutManager();
-%Docstring
- Returns the project's layout manager, which manages compositions within
- the project.
-.. versionadded:: 3.0
- :rtype: QgsLayoutManager
-%End
-
     QgsLayerTree *layerTreeRoot() const;
 %Docstring
  Return pointer to the root (invisible) node of the project's layer tree

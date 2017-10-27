@@ -405,6 +405,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsRelationManager *relationManager() const;
 
+#ifndef SIP_RUN
+
     /**
      * Returns the project's layout manager, which manages compositions within
      * the project.
@@ -417,8 +419,10 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Returns the project's layout manager, which manages compositions within
      * the project.
      * \since QGIS 3.0
+     * \note not available in Python bindings
      */
     QgsLayoutManager *layoutManager();
+#endif
 
     /**
      * Return pointer to the root (invisible) node of the project's layer tree

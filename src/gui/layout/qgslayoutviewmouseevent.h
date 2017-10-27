@@ -23,6 +23,8 @@
 class QgsLayoutView;
 class QGraphicsLineItem;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup gui
  * A QgsLayoutViewMouseEvent is the result of a user interaction with the mouse on a QgsLayoutView.
@@ -30,6 +32,8 @@ class QGraphicsLineItem;
  * It is sent whenever the user moves, clicks, releases or double clicks the mouse.
  * In addition to the coordinates in pixel space it also knows the coordinates the layout space.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class GUI_EXPORT QgsLayoutViewMouseEvent : public QMouseEvent
 {

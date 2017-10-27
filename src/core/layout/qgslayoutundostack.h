@@ -26,10 +26,14 @@
 class QgsLayout;
 class QUndoStack;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * An undo stack for QgsLayouts.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
 */
 class CORE_EXPORT QgsLayoutUndoStack
 {

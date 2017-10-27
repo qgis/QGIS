@@ -36,12 +36,16 @@ class QgsLayoutItem;
 % End
 #endif
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup gui
  * Abstract base class for all layout view tools.
  * Layout view tools are user interactive tools for manipulating and adding items
  * to QgsLayoutView widgets.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class GUI_EXPORT QgsLayoutViewTool : public QObject
 {
