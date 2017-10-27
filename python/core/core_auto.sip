@@ -406,6 +406,7 @@
 %Include layout/qgslayoutcontext.sip
 %Include layout/qgslayouteffect.sip
 %Include layout/qgslayoutguidecollection.sip
+%Include layout/qgslayoutframe.sip
 %Include layout/qgslayoutitem.sip
 %Include layout/qgslayoutitemgroup.sip
 %Include layout/qgslayoutitemlabel.sip
@@ -422,6 +423,7 @@
 %Include layout/qgslayoutitemregistry.sip
 %Include layout/qgslayoutitemshape.sip
 %Include layout/qgslayoutmodel.sip
+%Include layout/qgslayoutmultiframe.sip
 %Include layout/qgslayoutpagecollection.sip
 %Include layout/qgslayoutobject.sip
 %Include layout/qgslayoutundostack.sip

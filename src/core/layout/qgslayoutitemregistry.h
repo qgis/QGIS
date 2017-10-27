@@ -191,6 +191,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
       LayoutShape, //!< Shape item
       LayoutPolygon, //!< Polygon shape item
       LayoutPolyline, //!< Polyline shape item
+      LayoutFrame, //!< Frame item, part of a QgsLayoutMultiFrame object
 
       // item types provided by plugins
       PluginItem, //!< Starting point for plugin item types

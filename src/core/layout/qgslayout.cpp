@@ -43,6 +43,8 @@ QgsLayout::~QgsLayout()
   // no need for undo commands when we're destroying the layout
   mBlockUndoCommands = true;
 
+  deleteAndRemoveMultiFrames();
+
   // make sure that all layout items are removed before
   // this class is deconstructed - to avoid segfaults
   // when layout items access in destructor layout that isn't valid anymore
@@ -413,6 +415,24 @@ void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
   }
 }
 
+void QgsLayout::addMultiFrame( QgsLayoutMultiFrame *multiFrame )
+{
+  if ( !multiFrame )
+    return;
+
+  mMultiFrames.insert( multiFrame );
+}
+
+void QgsLayout::removeMultiFrame( QgsLayoutMultiFrame *multiFrame )
+{
+  mMultiFrames.remove( multiFrame );
+}
+
+QSet<QgsLayoutMultiFrame *> QgsLayout::multiFrames() const
+{
+  return mMultiFrames;
+}
+
 QgsLayoutUndoStack *QgsLayout::undoStack()
 {
   return mUndoStack.get();
@@ -579,6 +599,12 @@ void QgsLayout::removeLayoutItemPrivate( QgsLayoutItem *item )
   emit itemRemoved( item );
 #endif
   delete item;
+}
+
+void QgsLayout::deleteAndRemoveMultiFrames()
+{
+  qDeleteAll( mMultiFrames );
+  mMultiFrames.clear();
 }
 
 void QgsLayout::updateZValues( const bool addUndoCommands )

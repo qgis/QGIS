@@ -369,6 +369,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutexporter.cpp
   layout/qgslayoutgridsettings.cpp
   layout/qgslayoutguidecollection.cpp
+  layout/qgslayoutframe.cpp
   layout/qgslayoutitem.cpp
   layout/qgslayoutitemgroup.cpp
   layout/qgslayoutitemgroupundocommand.cpp
@@ -389,6 +390,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutmeasurement.cpp
   layout/qgslayoutmeasurementconverter.cpp
   layout/qgslayoutmodel.cpp
+  layout/qgslayoutmultiframe.cpp
   layout/qgslayoutobject.cpp
   layout/qgslayoutpagecollection.cpp
   layout/qgslayoutserializableobject.cpp
@@ -729,6 +731,7 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayoutcontext.h
   layout/qgslayouteffect.h
   layout/qgslayoutguidecollection.h
+  layout/qgslayoutframe.h
   layout/qgslayoutitem.h
   layout/qgslayoutitemgroup.h
   layout/qgslayoutitemgroupundocommand.h
@@ -746,6 +749,7 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayoutitemregistry.h
   layout/qgslayoutitemshape.h
   layout/qgslayoutmodel.h
+  layout/qgslayoutmultiframe.h
   layout/qgslayoutpagecollection.h
   layout/qgslayoutobject.h
   layout/qgslayoutundostack.h
