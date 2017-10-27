@@ -24,6 +24,7 @@
 #include <QSslKey>
 
 #include "qgsapplication.h"
+#include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
 #include "qgsauthguiutils.h"
 #include "qgslogger.h"
@@ -97,21 +98,21 @@ bool QgsAuthPkiPathsEdit::validateConfig()
     return validityChange( false );
   }
 
-  bool certvalid = cert.isValid();
   QDateTime startdate( cert.effectiveDate() );
   QDateTime enddate( cert.expiryDate() );
 
   writePkiMessage( lePkiPathsMsg,
                    tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
-                   ( certvalid ? Valid : Invalid ) );
+                   ( QgsAuthCertUtils::certIsCurrent( cert ) ? Valid : Invalid ) );
 
-  bool showCas( certvalid && populateCas() );
+  bool certviable = QgsAuthCertUtils::certIsViable( cert );
+  bool showCas( certviable && populateCas() );
   lblCas->setVisible( showCas );
   twCas->setVisible( showCas );
   cbAddCas->setVisible( showCas );
   cbAddRootCa->setVisible( showCas );
 
-  return validityChange( certvalid );
+  return validityChange( certviable );
 }
 
 QgsStringMap QgsAuthPkiPathsEdit::configMap() const

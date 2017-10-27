@@ -1784,7 +1784,7 @@ const QPair<QSslCertificate, QSslKey> QgsAuthManager::certIdentityBundle( const 
 const QStringList QgsAuthManager::certIdentityBundleToPem( const QString &id )
 {
   QPair<QSslCertificate, QSslKey> bundle( certIdentityBundle( id ) );
-  if ( bundle.first.isValid() && !bundle.second.isNull() )
+  if ( QgsAuthCertUtils::certIsViable( bundle.first ) && !bundle.second.isNull() )
   {
     return QStringList() << QString( bundle.first.toPem() ) << QString( bundle.second.toPem() );
   }
@@ -2719,7 +2719,7 @@ const QList<QSslCertificate> QgsAuthManager::trustedCaCerts( bool includeinvalid
     }
     else if ( defaultpolicy == QgsAuthCertUtils::Trusted && !untrustedids.contains( certid ) )
     {
-      if ( !includeinvalid && !cert.isValid() )
+      if ( !includeinvalid && !QgsAuthCertUtils::certIsViable( cert ) )
         continue;
       trustedcerts.append( cert );
     }

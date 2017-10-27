@@ -1241,6 +1241,43 @@ QList<QPair<QSslError::SslError, QString> > QgsAuthCertUtils::sslErrorEnumString
   return errenums;
 }
 
+bool QgsAuthCertUtils::certIsCurrent( const QSslCertificate &cert )
+{
+  if ( cert.isNull() )
+    return false;
+  const QDateTime currentTime = QDateTime::currentDateTime();
+  return cert.effectiveDate() <= currentTime && cert.expiryDate() >= currentTime;
+}
+
+QList<QSslError> QgsAuthCertUtils::certViabilityErrors( const QSslCertificate &cert )
+{
+  QList<QSslError> sslErrors;
+
+  if ( cert.isNull() )
+    return sslErrors;
+
+  const QDateTime currentTime = QDateTime::currentDateTime();
+  if ( cert.expiryDate() <= currentTime )
+  {
+    sslErrors << QSslError( QSslError::SslError::CertificateExpired, cert );
+  }
+  if ( cert.effectiveDate() >= QDateTime::currentDateTime() )
+  {
+    sslErrors << QSslError( QSslError::SslError::CertificateNotYetValid, cert );
+  }
+  if ( cert.isBlacklisted() )
+  {
+    sslErrors << QSslError( QSslError::SslError::CertificateBlacklisted, cert );
+  }
+
+  return sslErrors;
+}
+
+bool QgsAuthCertUtils::certIsViable( const QSslCertificate &cert )
+{
+  return !cert.isNull() && QgsAuthCertUtils::certViabilityErrors( cert ).isEmpty();
+}
+
 QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificate> &certificateChain,
     const QString &hostName,
     bool trustRootCa )
@@ -1269,20 +1306,7 @@ QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificat
   const QList<QSslCertificate> constTrustedChain( trustedChain );
   for ( const auto &cert : constTrustedChain )
   {
-    // TODO: move all the checks to QgsAuthCertUtils::certIsViable( )
-    const QDateTime currentTime = QDateTime::currentDateTime();
-    if ( cert.expiryDate() <= currentTime )
-    {
-      sslErrors << QSslError( QSslError::SslError::CertificateExpired, cert );
-    }
-    if ( cert.effectiveDate() >= QDateTime::currentDateTime() )
-    {
-      sslErrors << QSslError( QSslError::SslError::CertificateNotYetValid, cert );
-    }
-    if ( cert.isBlacklisted() )
-    {
-      sslErrors << QSslError( QSslError::SslError::CertificateBlacklisted, cert );
-    }
+    sslErrors << QgsAuthCertUtils::certViabilityErrors( cert );
   }
 
   // Merge in the root CA if present and asked for
@@ -1307,6 +1331,16 @@ QList<QSslError> QgsAuthCertUtils::validateCertChain( const QList<QSslCertificat
 QStringList QgsAuthCertUtils::validatePKIBundle( QgsPkiBundle &bundle, bool useIntermediates, bool trustRootCa )
 {
   QStringList errors;
+  if ( bundle.clientCert().isNull() )
+    errors << QObject::tr( "Client certificate is NULL." );
+
+  if ( bundle.clientKey().isNull() )
+    errors << QObject::tr( "Client certificate key is NULL." );
+
+  // immediately bail out if cert or key is NULL
+  if ( !errors.isEmpty() )
+    return errors;
+
   QList<QSslError> sslErrors;
   if ( useIntermediates )
   {

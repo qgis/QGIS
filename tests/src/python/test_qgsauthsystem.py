@@ -20,7 +20,7 @@ import tempfile
 from qgis.core import QgsAuthCertUtils, QgsPkiBundle, QgsAuthMethodConfig, QgsAuthMethod, QgsAuthConfigSslServer, QgsApplication
 from qgis.gui import QgsAuthEditorWidgets
 from qgis.PyQt.QtCore import QFileInfo, qDebug
-from qgis.PyQt.QtNetwork import QSsl, QSslError, QSslSocket
+from qgis.PyQt.QtNetwork import QSsl, QSslError, QSslCertificate, QSslSocket
 from qgis.PyQt.QtTest import QTest
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
 from qgis.testing import start_app, unittest
@@ -713,6 +713,35 @@ class TestQgsAuthManager(unittest.TestCase):
         QgsApplication.authManager().rebuildCaCertsCache()
         # Test valid with intermediates and untrusted root
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), ['The issuer certificate of a locally looked up certificate could not be found'])
+
+    def test_160_cert_viable(self):
+        """Text the viability of a given certificate"""
+
+        # null cert
+        cert = QSslCertificate()
+        self.assertFalse(QgsAuthCertUtils.certIsCurrent(cert))
+        res = QgsAuthCertUtils.certViabilityErrors(cert)
+        self.assertTrue(len(res) == 0)
+        self.assertFalse(QgsAuthCertUtils.certIsViable(cert))
+
+        cert.clear()
+        res.clear()
+        # valid cert
+        cert = QgsAuthCertUtils.certFromFile(PKIDATA + '/gerardus_cert.pem')
+        self.assertTrue(QgsAuthCertUtils.certIsCurrent(cert))
+        res = QgsAuthCertUtils.certViabilityErrors(cert)
+        self.assertTrue(len(res) == 0)
+        self.assertTrue(QgsAuthCertUtils.certIsViable(cert))
+
+        cert.clear()
+        res.clear()
+        # expired cert
+        cert = QgsAuthCertUtils.certFromFile(PKIDATA + '/marinus_cert-EXPIRED.pem')
+        self.assertFalse(QgsAuthCertUtils.certIsCurrent(cert))
+        res = QgsAuthCertUtils.certViabilityErrors(cert)
+        self.assertTrue(len(res) > 0)
+        self.assertTrue(QSslError(QSslError.CertificateExpired, cert) in res)
+        self.assertFalse(QgsAuthCertUtils.certIsViable(cert))
 
 
 if __name__ == '__main__':

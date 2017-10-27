@@ -295,7 +295,7 @@ void QgsAuthCertInfo::updateCurrentCertInfo( int chainindx )
     mCurrentTrustPolicy = trustpolicy;
 
     cmbbxTrust->setTrustPolicy( trustpolicy );
-    if ( !mCurrentQCert.isValid() )
+    if ( !QgsAuthCertUtils::certIsViable( mCurrentQCert ) )
     {
       cmbbxTrust->setDefaultTrustPolicy( QgsAuthCertUtils::Untrusted );
     }
@@ -880,7 +880,7 @@ void QgsAuthCertInfo::decorateCertTreeItem( const QSslCertificate &cert,
     return;
   }
 
-  if ( !cert.isValid() )
+  if ( !QgsAuthCertUtils::certIsViable( cert ) )
   {
     item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
     return;

@@ -170,7 +170,7 @@ void QgsAuthImportCertDialog::validateCertificates()
 
   Q_FOREACH ( const QSslCertificate &cert, certs )
   {
-    if ( cert.isValid() )
+    if ( QgsAuthCertUtils::certIsViable( cert ) )
       ++validcerts;
 
     if ( filterCAs )
