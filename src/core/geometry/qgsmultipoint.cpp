@@ -29,6 +29,13 @@ QString QgsMultiPointV2::geometryType() const
   return QStringLiteral( "MultiPoint" );
 }
 
+QgsMultiPointV2 *QgsMultiPointV2::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsMultiPointV2 >();
+  result->mWkbType = mWkbType;
+  return result.release();
+}
+
 QgsMultiPointV2 *QgsMultiPointV2::clone() const
 {
   return new QgsMultiPointV2( *this );

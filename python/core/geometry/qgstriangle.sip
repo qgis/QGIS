@@ -419,6 +419,11 @@ Inherited method not used. You cannot delete or insert a vertex directly. Return
 %End
 
 
+  protected:
+
+    virtual QgsTriangle *createEmptyWithSameType() const /Factory/;
+
+
 };
 /************************************************************************
  * This file has been generated automatically from                      *

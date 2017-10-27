@@ -65,6 +65,8 @@ class QgsCurvePolygon: QgsSurface
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
+    virtual QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
+
 
     int numInteriorRings() const;
 %Docstring
@@ -196,8 +198,12 @@ Adds an interior ring to the geometry (takes ownership)
     virtual QgsCurvePolygon *toCurveType() const /Factory/;
 
   protected:
+    virtual QgsCurvePolygon *createEmptyWithSameType() const /Factory/;
+
     virtual int childCount() const;
+
     virtual QgsAbstractGeometry *childGeometry( int index ) const;
+
 
   protected:
 

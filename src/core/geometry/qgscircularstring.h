@@ -36,16 +36,16 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
   public:
     QgsCircularString();
 
-    virtual bool operator==( const QgsCurve &other ) const override;
-    virtual bool operator!=( const QgsCurve &other ) const override;
+    bool operator==( const QgsCurve &other ) const override;
+    bool operator!=( const QgsCurve &other ) const override;
 
-    virtual QString geometryType() const override;
-    virtual int dimension() const override;
-    virtual QgsCircularString *clone() const override SIP_FACTORY;
-    virtual void clear() override;
+    QString geometryType() const override;
+    int dimension() const override;
+    QgsCircularString *clone() const override SIP_FACTORY;
+    void clear() override;
 
-    virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
-    virtual bool fromWkt( const QString &wkt ) override;
+    bool fromWkb( QgsConstWkbPtr &wkb ) override;
+    bool fromWkt( const QString &wkt ) override;
 
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
@@ -68,9 +68,9 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      */
     void setPoints( const QgsPointSequence &points );
 
-    virtual double length() const override;
-    virtual QgsPoint startPoint() const override;
-    virtual QgsPoint endPoint() const override;
+    double length() const override;
+    QgsPoint startPoint() const override;
+    QgsPoint endPoint() const override;
 
     /**
      * Returns a new line string geometry corresponding to a segmentized approximation
@@ -81,24 +81,20 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      * Uses a MaximumAngle tolerance of 1 degrees by default (360
      * segments in a full circle)
      */
-    virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
+    QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
+
+    QgsCircularString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
 
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false ) override;
     void transform( const QTransform &t ) override;
     void addToPainterPath( QPainterPath &path ) const override;
-
     void drawAsPolygon( QPainter &p ) const override;
-
-    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
-    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
-    virtual bool deleteVertex( QgsVertexId position ) override;
-
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
-                                   QgsVertexId &vertexAfter SIP_OUT,
-                                   bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
-
+    bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
+    bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
+    bool deleteVertex( QgsVertexId position ) override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
     bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const override;
     void sumUpArea( double &sum SIP_OUT ) const override;
     bool hasCurvedSegments() const override;
@@ -109,13 +105,13 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
         \returns rotation in radians, clockwise from north*/
     double vertexAngle( QgsVertexId vertex ) const override;
 
-    virtual QgsCircularString *reversed() const override  SIP_FACTORY;
+    QgsCircularString *reversed() const override  SIP_FACTORY;
 
-    virtual bool addZValue( double zValue = 0 ) override;
-    virtual bool addMValue( double mValue = 0 ) override;
+    bool addZValue( double zValue = 0 ) override;
+    bool addMValue( double mValue = 0 ) override;
 
-    virtual bool dropZValue() override;
-    virtual bool dropMValue() override;
+    bool dropZValue() override;
+    bool dropMValue() override;
 
     double xAt( int index ) const override;
     double yAt( int index ) const override;
@@ -137,8 +133,8 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 #endif
 
   protected:
-
-    virtual QgsRectangle calculateBoundingBox() const override;
+    QgsCircularString *createEmptyWithSameType() const override SIP_FACTORY;
+    QgsRectangle calculateBoundingBox() const override;
 
   private:
     QVector<double> mX;

@@ -33,6 +33,13 @@ QString QgsMultiCurve::geometryType() const
   return QStringLiteral( "MultiCurve" );
 }
 
+QgsMultiCurve *QgsMultiCurve::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsMultiCurve >();
+  result->mWkbType = mWkbType;
+  return result.release();
+}
+
 QgsMultiCurve *QgsMultiCurve::clone() const
 {
   return new QgsMultiCurve( *this );

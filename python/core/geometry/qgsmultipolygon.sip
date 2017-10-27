@@ -51,6 +51,7 @@ class QgsMultiPolygonV2: QgsMultiSurface
 
 
   protected:
+    virtual QgsMultiPolygonV2 *createEmptyWithSameType() const /Factory/;
 
     virtual bool wktOmitChildType() const;
 

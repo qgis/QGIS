@@ -179,6 +179,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     QgsLineString *clone() const override SIP_FACTORY;
     void clear() override;
     bool isEmpty() const override;
+    QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
 
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
@@ -253,7 +254,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     }
 #endif
   protected:
-
+    QgsLineString *createEmptyWithSameType() const override SIP_FACTORY;
     QgsRectangle calculateBoundingBox() const override;
 
   private:

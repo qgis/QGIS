@@ -51,6 +51,7 @@ class QgsGeometryCollection: QgsAbstractGeometry
 
     virtual void clear();
 
+    virtual QgsGeometryCollection *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
     virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const;
@@ -173,8 +174,12 @@ Adds a geometry and takes ownership. Returns true in case of success.
 
 
   protected:
+    virtual QgsGeometryCollection *createEmptyWithSameType() const /Factory/;
+
     virtual int childCount() const;
+
     virtual QgsAbstractGeometry *childGeometry( int index ) const;
+
 
   protected:
 

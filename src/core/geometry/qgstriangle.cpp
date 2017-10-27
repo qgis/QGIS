@@ -89,6 +89,13 @@ QString QgsTriangle::geometryType() const
   return QStringLiteral( "Triangle" );
 }
 
+QgsTriangle *QgsTriangle::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsTriangle >();
+  result->mWkbType = mWkbType;
+  return result.release();
+}
+
 void QgsTriangle::clear()
 {
   QgsCurvePolygon::clear();

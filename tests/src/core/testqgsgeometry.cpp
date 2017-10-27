@@ -13,6 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+#include <cmath>
+#include <memory>
+#include <limits>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -61,6 +64,11 @@ class TestQgsGeometry : public QObject
   public:
     TestQgsGeometry();
 
+    static QgsAbstractGeometry *createEmpty( QgsAbstractGeometry *geom )
+    {
+      return geom->createEmptyWithSameType();
+    }
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -101,6 +109,8 @@ class TestQgsGeometry : public QObject
     void comparePolylines();
     void comparePolygons();
 
+    void createEmptyWithSameType();
+
     // MK, Disabled 14.11.2014
     // Too unclear what exactly should be tested and which variations are allowed for the line
 #if 0
@@ -138,6 +148,7 @@ class TestQgsGeometry : public QObject
 
     void minimalEnclosingCircle( );
     void splitGeometry();
+    void snappedToGrid();
 
   private:
     //! A helper method to do a render check to see if the geometry op is as expected
@@ -198,6 +209,7 @@ class TestQgsGeometry : public QObject
     QPen mPen1;
     QPen mPen2;
     QString mReport;
+
 };
 
 TestQgsGeometry::TestQgsGeometry()
@@ -14749,6 +14761,66 @@ void TestQgsGeometry::comparePolygons()
 }
 
 
+// Helper function (in anonymous namespace to prevent possible link with the extirior)
+namespace
+{
+  template<typename T>
+  inline void testCreateEmptyWithSameType( bool canBeEmpty = true )
+  {
+    std::unique_ptr<QgsAbstractGeometry> geom { new T() };
+    std::unique_ptr<QgsAbstractGeometry> created { TestQgsGeometry::createEmpty( geom.get() ) };
+    if ( canBeEmpty )
+    {
+      QVERIFY( created->isEmpty() );
+    }
+    // Check that it is the correct type
+    QVERIFY( static_cast<T *>( created.get() ) != nullptr );
+  }
+}
+
+void TestQgsGeometry::createEmptyWithSameType()
+{
+  qDebug( "createEmptyWithSameType(): QgsCircularString" );
+  testCreateEmptyWithSameType<QgsCircularString>();
+
+  qDebug( "createEmptyWithSameType(): QgsCompoundCurve" );
+  testCreateEmptyWithSameType<QgsCompoundCurve>();
+
+  qDebug( "createEmptyWithSameType(): QgsLineString" );
+  testCreateEmptyWithSameType<QgsLineString>();
+
+
+  qDebug( "createEmptyWithSameType(): QgsGeometryCollection" );
+  testCreateEmptyWithSameType<QgsGeometryCollection>();
+
+  qDebug( "createEmptyWithSameType(): QgsMultiCurve" );
+  testCreateEmptyWithSameType<QgsMultiCurve>();
+
+  qDebug( "createEmptyWithSameType(): QgsMultiLineString" );
+  testCreateEmptyWithSameType<QgsMultiLineString>();
+
+  qDebug( "createEmptyWithSameType(): QgsMultiPointV2" );
+  testCreateEmptyWithSameType<QgsMultiPointV2>();
+
+  qDebug( "createEmptyWithSameType(): QgsMultiSurface" );
+  testCreateEmptyWithSameType<QgsMultiSurface>();
+
+
+  qDebug( "createEmptyWithSameType(): QgsPoint" );
+  testCreateEmptyWithSameType<QgsPoint>( false );
+
+
+  qDebug( "createEmptyWithSameType(): QgsCurvePolygon" );
+  testCreateEmptyWithSameType<QgsCurvePolygon>();
+
+  qDebug( "createEmptyWithSameType(): QgsPolygonV2" );
+  testCreateEmptyWithSameType<QgsPolygonV2>();
+
+  qDebug( "createEmptyWithSameType(): QgsTriangle" );
+  testCreateEmptyWithSameType<QgsTriangle>();
+
+}
+
 
 // MK, Disabled 14.11.2014
 // Too unclear what exactly should be tested and which variations are allowed for the line
@@ -15595,6 +15667,160 @@ void TestQgsGeometry::splitGeometry()
   QVERIFY( newGeoms.isEmpty() );
 }
 
+void TestQgsGeometry::snappedToGrid()
+{
+  qDebug( "SnappedToGrid" );
+  // points
+  {
+    qDebug( "\tPoints:" );
+    auto check = []( QgsPoint * _a, QgsPoint const & b )
+    {
+      std::unique_ptr<QgsPoint> a {_a};
+      // because it is to check after snapping, there shouldn't be small precision errors
+
+      qDebug( "\t\tGridified point: %f, %f, %f, %f", a->x(), a->y(), a->z(), a->m() );
+      qDebug( "\t\tExpected point: %f, %f, %f, %f", b.x(), b.y(), b.z(), b.m() );
+      if ( !std::isnan( b.x() ) )
+        QVERIFY( ( float )a->x() == ( float )b.x() );
+
+      if ( !std::isnan( b.y() ) )
+        QVERIFY( ( float )a->y() == ( float )b.y() );
+
+      if ( !std::isnan( b.z() ) )
+        QVERIFY( ( float )a->z() == ( float )b.z() );
+
+      if ( !std::isnan( b.m() ) )
+        QVERIFY( ( float )a->m() == ( float )b.m() );
+    };
+
+
+    check( QgsPoint( 0, 0 ).snappedToGrid( 1, 1 ),
+           QgsPoint( 0, 0 ) );
+
+    check( QgsPoint( 1, 2.732 ).snappedToGrid( 1, 1 ),
+           QgsPoint( 1, 3 ) );
+
+    check( QgsPoint( 1.3, 6.4 ).snappedToGrid( 1, 1 ),
+           QgsPoint( 1, 6 ) );
+
+    check( QgsPoint( 1.3, 6.4 ).snappedToGrid( 1, 0 ),
+           QgsPoint( 1, 6.4 ) );
+
+
+    // multiple checks with the same point
+    auto p1 = QgsPoint( 1.38, 2.4432 );
+
+    check( p1.snappedToGrid( 1, 1 ),
+           QgsPoint( 1, 2 ) );
+
+    check( p1.snappedToGrid( 1, 0.1 ),
+           QgsPoint( 1, 2.4 ) );
+
+    check( p1.snappedToGrid( 1, 0.01 ),
+           QgsPoint( 1, 2.44 ) );
+
+    // Let's test more dimensions
+    auto p2 = QgsPoint( 4.2134212, 543.1231, 0.123, 12.944145 );
+
+    check( p2.snappedToGrid( 0, 0, 0, 0 ),
+           p2 );
+
+    check( p2.snappedToGrid( 0, 0, 1, 1 ),
+           QgsPoint( 4.2134212, 543.1231, 0, 13 ) );
+
+    check( p2.snappedToGrid( 1, 0.1, 0.01, 0.001 ),
+           QgsPoint( 4, 543.1, 0.12, 12.944 ) );
+
+  }
+
+  // MultiPolygon (testing QgsCollection, QgsCurvePolygon and QgsLineString)
+  {
+    /*
+     * List of tested edge cases:
+     *
+     * - QgsLineString becoming a point
+     * - QgsLineString losing enough points so it is no longer closed
+     * - QgsCurvePolygon losing its external ring
+     * - QgsCurvePolygon losing an internal ring
+     * - QgsCurvePolygon losing all internal rings
+     * - QgsCollection losing one of its members
+     * - QgsCollection losing all its members
+     */
+
+    auto in = QString( "MultiPolygon (((-1.2 -0.87, -0.943 0.8, 0.82 1.4, 1.2 0.9, 0.9 -0.6, -1.2 -0.87),(0.4 0, -0.4 0, 0 0.2, 0.4 0)),((2 0, 2.2 0.2, 2.2 -0.2)),((3 0, 4 0.2, 4 -0.2, 3 0)),((4 8, 3.6 4.1, 0.3 4.9, -0.2 7.8, 4 8),(6.7 7.3, 7 6.4, 5.6 5.9, 6.2 6.8, 6.7 7.3),(6 5.2, 4.9 5.3, 4.8 6.2, 6 5.2)))" );
+    auto out = QString( "MultiPolygon (((-1 -1, -1 1, 1 1, 1 -1, -1 -1)),((4 8, 4 4, 0 5, 0 8, 4 8),(7 7, 7 6, 6 6, 6 7, 7 7),(6 5, 5 5, 5 6, 6 5)))" );
+
+    auto inGeom = QgsGeometryFactory::geomFromWkt( in );
+
+    std::unique_ptr<QgsAbstractGeometry> snapped { inGeom->snappedToGrid( 1, 1 ) };
+    QCOMPARE( snapped->asWkt( 5 ), out );
+  }
+
+  {
+    // Curves
+    QgsGeometry curve = QgsGeometry::fromWkt( "CircularString( 68.1 415.2, 27.1 505.2, 27.1 406.2 )" );
+    std::unique_ptr<QgsAbstractGeometry> snapped { curve.constGet()->snappedToGrid( 1, 1 ) };
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "CircularString (68 415, 27 505, 27 406)" ) );
+    snapped.reset( curve.constGet()->snappedToGrid( 10, 1 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "CircularString (70 415, 30 505, 30 406)" ) );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 10 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "CircularString (68 420, 27 510, 27 410)" ) );
+    snapped.reset( curve.constGet()->snappedToGrid( 0, 0 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "CircularString (68.1 415.2, 27.1 505.2, 27.1 406.2)" ) );
+
+    curve = QgsGeometry::fromWkt( "CircularString (68.1 415.2, 27.1 505.2, 27.1 406.2, 35.1 410.1, 39.2 403.2)" );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "CircularString (68 415, 27 505, 27 406, 35 410, 39 403)" ) );
+  }
+
+  {
+    // Lines
+    QgsGeometry curve = QgsGeometry::fromWkt( "LineString( 68.1 415.2, 27.1 505.2, 27.1 406.2 )" );
+    std::unique_ptr<QgsAbstractGeometry> snapped { curve.constGet()->snappedToGrid( 1, 1 ) };
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineString (68 415, 27 505, 27 406)" ) );
+    snapped.reset( curve.constGet()->snappedToGrid( 10, 1 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineString (70 415, 30 505, 30 406)" ) );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 10 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineString (68 420, 27 510, 27 410)" ) );
+
+    snapped.reset( curve.constGet()->snappedToGrid( 0, 1 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineString (68.1 415, 27.1 505, 27.1 406)" ) );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 0 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineString (68 415.2, 27 505.2, 27 406.2)" ) );
+
+    curve = QgsGeometry::fromWkt( "LineStringZ (68.1 415.2 11.2, 27.1 505.2 23.6, 27.1 406.2 39.9)" );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineStringZ (68 415 11.2, 27 505 23.6, 27 406 39.9)" ) );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1, 1 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineStringZ (68 415 11, 27 505 24, 27 406 40)" ) );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1, 10 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineStringZ (68 415 10, 27 505 20, 27 406 40)" ) );
+
+    curve = QgsGeometry::fromWkt( "LineStringM (68.1 415.2 11.2, 27.1 505.2 23.6, 27.1 406.2 39.9)" );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineStringM (68 415 11.2, 27 505 23.6, 27 406 39.9)" ) );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1, 0, 1 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineStringM (68 415 11, 27 505 24, 27 406 40)" ) );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1, 0, 10 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineStringM (68 415 10, 27 505 20, 27 406 40)" ) );
+
+    curve = QgsGeometry::fromWkt( "LineStringZM (68.1 415.2 11.2 56.7, 27.1 505.2 23.6 49.1, 27.1 406.2 39.9 32.4)" );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineStringZM (68 415 11.2 56.7, 27 505 23.6 49.1, 27 406 39.9 32.4)" ) );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1, 1, 1 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineStringZM (68 415 11 57, 27 505 24 49, 27 406 40 32)" ) );
+    snapped.reset( curve.constGet()->snappedToGrid( 1, 1, 10, 10 ) );
+    QCOMPARE( snapped->asWkt( 5 ), QStringLiteral( "LineStringZM (68 415 10 60, 27 505 20 50, 27 406 40 30)" ) );
+  }
+
+  //compound curve
+  {
+    // Curves
+    QgsGeometry curve = QgsGeometry::fromWkt( "CompoundCurve(LineString(59.1 402.1, 68.1 415.2),CircularString( 68.1 415.2, 27.1 505.2, 27.1 406.2))" );
+    std::unique_ptr<QgsAbstractGeometry> snapped { curve.constGet()->snappedToGrid( 1, 1 ) };
+    QCOMPARE( snapped->asWkt(), QStringLiteral( "CompoundCurve ((59 402, 68 415),CircularString (68 415, 27 505, 27 406))" ) );
+  }
+}
 
 QGSTEST_MAIN( TestQgsGeometry )
 #include "testqgsgeometry.moc"

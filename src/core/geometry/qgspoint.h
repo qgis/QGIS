@@ -391,6 +391,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QString geometryType() const override;
     int dimension() const override;
     QgsPoint *clone() const override SIP_FACTORY;
+    virtual QgsPoint *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     void clear() override;
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
@@ -453,8 +454,9 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 #endif
 
   protected:
-    virtual int childCount() const override;
-    virtual QgsPoint childPoint( int index ) const override;
+    QgsPoint *createEmptyWithSameType() const override SIP_FACTORY;
+    int childCount() const override;
+    QgsPoint childPoint( int index ) const override;
 
   private:
     double mX;

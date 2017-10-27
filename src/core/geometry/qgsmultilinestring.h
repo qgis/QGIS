@@ -63,7 +63,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     }
 #endif
   protected:
-
+    QgsMultiLineString *createEmptyWithSameType() const override SIP_FACTORY;
     bool wktOmitChildType() const override;
 };
 

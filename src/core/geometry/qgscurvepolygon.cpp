@@ -38,6 +38,13 @@ QgsCurvePolygon::~QgsCurvePolygon()
   clear();
 }
 
+QgsCurvePolygon *QgsCurvePolygon::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsCurvePolygon >();
+  result->mWkbType = mWkbType;
+  return result.release();
+}
+
 QString QgsCurvePolygon::geometryType() const
 {
   return QStringLiteral( "CurvePolygon" );
@@ -493,6 +500,40 @@ QgsAbstractGeometry *QgsCurvePolygon::boundary() const
     }
     return multiCurve;
   }
+}
+
+QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+{
+  if ( !mExteriorRing )
+    return nullptr;
+
+
+  std::unique_ptr< QgsCurvePolygon > polygon( createEmptyWithSameType() );
+
+  // exterior ring
+  auto exterior = std::unique_ptr<QgsCurve> { static_cast< QgsCurve *>( mExteriorRing->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) ) };
+
+  if ( !exterior )
+    return nullptr;
+
+  polygon->mExteriorRing = std::move( exterior );
+
+  //interior rings
+  for ( auto interior : mInteriorRings )
+  {
+    if ( !interior )
+      continue;
+
+    QgsCurve *gridifiedInterior = static_cast< QgsCurve * >( interior->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) );
+
+    if ( !gridifiedInterior )
+      continue;
+
+    polygon->mInteriorRings.append( gridifiedInterior );
+  }
+
+  return polygon.release();
+
 }
 
 QgsPolygonV2 *QgsCurvePolygon::toPolygon( double tolerance, SegmentationToleranceType toleranceType ) const

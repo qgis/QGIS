@@ -64,7 +64,7 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
 #endif
 
   protected:
-
+    QgsMultiPolygonV2 *createEmptyWithSameType() const override SIP_FACTORY;
     bool wktOmitChildType() const override;
 };
 

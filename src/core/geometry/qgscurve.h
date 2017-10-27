@@ -189,6 +189,17 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     virtual int childCount() const override;
     virtual QgsPoint childPoint( int index ) const override;
 
+#ifndef SIP_RUN
+
+    /**
+     * Helper function for QgsCurve subclasses to snap to grids.
+     * \note Not available in Python bindings.
+     */
+    bool snapToGridPrivate( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
+                            const QVector<double> &srcX, const QVector<double> &srcY, const QVector<double> &srcZ, const QVector<double> &srcM,
+                            QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, QVector<double> &outM ) const;
+#endif
+
   private:
 
     mutable QgsRectangle mBoundingBox;

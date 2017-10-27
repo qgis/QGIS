@@ -81,5 +81,12 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
       return nullptr;
     }
 #endif
+
+  protected:
+
+    QgsPolygonV2 *createEmptyWithSameType() const override SIP_FACTORY;
+
+    friend class QgsCurvePolygon;
+
 };
 #endif // QGSPOLYGONV2_H

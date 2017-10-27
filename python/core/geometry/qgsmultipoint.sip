@@ -50,6 +50,7 @@ class QgsMultiPointV2: QgsGeometryCollection
 
 
   protected:
+    virtual QgsMultiPointV2 *createEmptyWithSameType() const /Factory/;
 
     virtual bool wktOmitChildType() const;
 

@@ -25,15 +25,23 @@ class QgsCircularString: QgsCurve
     QgsCircularString();
 
     virtual bool operator==( const QgsCurve &other ) const;
+
     virtual bool operator!=( const QgsCurve &other ) const;
 
+
     virtual QString geometryType() const;
+
     virtual int dimension() const;
+
     virtual QgsCircularString *clone() const /Factory/;
+
     virtual void clear();
 
+
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
+
     virtual bool fromWkt( const QString &wkt );
+
 
     virtual QByteArray asWkb() const;
 
@@ -66,10 +74,14 @@ class QgsCircularString: QgsCurve
 %End
 
     virtual double length() const;
+
     virtual QgsPoint startPoint() const;
+
     virtual QgsPoint endPoint() const;
 
+
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
+
 %Docstring
  Returns a new line string geometry corresponding to a segmentized approximation
  of the curve.
@@ -81,6 +93,9 @@ class QgsCircularString: QgsCurve
  :rtype: QgsLineString
 %End
 
+    virtual QgsCircularString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
+
+
     virtual void draw( QPainter &p ) const;
 
      virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
@@ -89,17 +104,15 @@ class QgsCircularString: QgsCurve
 
     virtual void addToPainterPath( QPainterPath &path ) const;
 
-
     virtual void drawAsPolygon( QPainter &p ) const;
 
-
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
+
     virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
+
     virtual bool deleteVertex( QgsVertexId position );
 
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
-                                   QgsVertexId &vertexAfter /Out/,
-                                   bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
 
     virtual bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const;
 
@@ -119,11 +132,16 @@ class QgsCircularString: QgsCurve
 
     virtual QgsCircularString *reversed() const  /Factory/;
 
+
     virtual bool addZValue( double zValue = 0 );
+
     virtual bool addMValue( double mValue = 0 );
 
+
     virtual bool dropZValue();
+
     virtual bool dropMValue();
+
 
     virtual double xAt( int index ) const;
 
@@ -131,8 +149,10 @@ class QgsCircularString: QgsCurve
 
 
   protected:
+    virtual QgsCircularString *createEmptyWithSameType() const /Factory/;
 
     virtual QgsRectangle calculateBoundingBox() const;
+
 
 };
 

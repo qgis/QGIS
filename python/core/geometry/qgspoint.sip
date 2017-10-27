@@ -338,6 +338,7 @@ class QgsPoint: QgsAbstractGeometry
 
     virtual QgsPoint *clone() const /Factory/;
 
+    virtual QgsPoint *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
     virtual void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
@@ -416,8 +417,12 @@ class QgsPoint: QgsAbstractGeometry
 
 
   protected:
+    virtual QgsPoint *createEmptyWithSameType() const /Factory/;
+
     virtual int childCount() const;
+
     virtual QgsPoint childPoint( int index ) const;
+
 
 };
 

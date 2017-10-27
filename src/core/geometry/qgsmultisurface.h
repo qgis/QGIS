@@ -65,6 +65,9 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
     }
 #endif
 
+  protected:
+    QgsMultiSurface *createEmptyWithSameType() const override SIP_FACTORY;
+
 };
 
 // clazy:excludeall=qstring-allocations

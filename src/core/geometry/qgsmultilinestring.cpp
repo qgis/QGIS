@@ -32,6 +32,13 @@ QString QgsMultiLineString::geometryType() const
   return QStringLiteral( "MultiLineString" );
 }
 
+QgsMultiLineString *QgsMultiLineString::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsMultiLineString >();
+  result->mWkbType = mWkbType;
+  return result.release();
+}
+
 QgsMultiLineString *QgsMultiLineString::clone() const
 {
   return new QgsMultiLineString( *this );

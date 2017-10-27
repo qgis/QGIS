@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+
 #include "qgscurve.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
@@ -205,4 +207,95 @@ QgsPoint QgsCurve::childPoint( int index ) const
   bool res = pointAt( index, point, type );
   Q_ASSERT( res );
   return point;
+}
+
+bool QgsCurve::snapToGridPrivate( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
+                                  const QVector<double> &srcX, const QVector<double> &srcY, const QVector<double> &srcZ, const QVector<double> &srcM,
+                                  QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, QVector<double> &outM ) const
+{
+  int length = numPoints();
+
+  if ( length <= 0 )
+    return false;
+
+  bool hasZ = is3D();
+  bool hasM = isMeasure();
+
+  // helper functions
+  auto roundVertex = [hSpacing, vSpacing, dSpacing, mSpacing, hasZ, hasM, &srcX, &srcY, &srcZ, &srcM]( QgsPoint & out, int i )
+  {
+    if ( hSpacing > 0 )
+      out.setX( std::round( srcX.at( i ) / hSpacing ) * hSpacing );
+    else
+      out.setX( srcX.at( i ) );
+
+    if ( vSpacing > 0 )
+      out.setY( std::round( srcY.at( i ) / vSpacing ) * vSpacing );
+    else
+      out.setY( srcY.at( i ) );
+
+    if ( hasZ )
+    {
+      if ( dSpacing > 0 )
+        out.setZ( std::round( srcZ.at( i ) / dSpacing ) * dSpacing );
+      else
+        out.setZ( srcZ.at( i ) );
+    }
+
+    if ( hasM )
+    {
+      if ( mSpacing > 0 )
+        out.setM( std::round( srcM.at( i ) / mSpacing ) * mSpacing );
+      else
+        out.setM( srcM.at( i ) );
+    }
+  };
+
+
+  auto append = [hasZ, hasM, &outX, &outY, &outM, &outZ]( QgsPoint const & point )
+  {
+    outX.append( point.x() );
+
+    outY.append( point.y() );
+
+    if ( hasZ )
+      outZ.append( point.z() );
+
+    if ( hasM )
+      outM.append( point.m() );
+  };
+
+  auto isPointEqual = [dSpacing, mSpacing, hasZ, hasM]( const QgsPoint & a, const QgsPoint & b )
+  {
+    return ( a.x() == b.x() )
+           && ( a.y() == b.y() )
+           && ( !hasZ || dSpacing <= 0 || a.z() == b.z() )
+           && ( !hasM || mSpacing <= 0 || a.m() == b.m() );
+  };
+
+  // temporary values
+  QgsWkbTypes::Type pointType = QgsWkbTypes::zmType( QgsWkbTypes::Point, hasZ, hasM );
+  QgsPoint last( pointType );
+  QgsPoint current( pointType );
+
+  // Actual code (what does all the work)
+  roundVertex( last, 0 );
+  append( last );
+
+  for ( int i = 1; i < length; ++i )
+  {
+    roundVertex( current, i );
+    if ( !isPointEqual( current, last ) )
+    {
+      append( current );
+      last = current;
+    }
+  }
+
+  // if it's not closed, with 2 points you get a correct line
+  // if it is, you need at least 4 (3 + the vertex that closes)
+  if ( outX.length() < 2 || ( isClosed() && outX.length() < 4 ) )
+    return false;
+
+  return true;
 }

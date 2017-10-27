@@ -62,6 +62,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     double perimeter() const override;
     QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
 
     //curve polygon interface
     int numInteriorRings() const;
@@ -173,8 +174,9 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     }
 #endif
   protected:
-    virtual int childCount() const override;
-    virtual QgsAbstractGeometry *childGeometry( int index ) const override;
+    QgsCurvePolygon *createEmptyWithSameType() const override SIP_FACTORY;
+    int childCount() const override;
+    QgsAbstractGeometry *childGeometry( int index ) const override;
 
   protected:
 

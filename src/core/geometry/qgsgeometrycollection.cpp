@@ -26,6 +26,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspolygon.h"
 #include "qgsmultipolygon.h"
 #include "qgswkbptr.h"
+#include <memory>
 
 QgsGeometryCollection::QgsGeometryCollection()
 {
@@ -63,6 +64,13 @@ QgsGeometryCollection::~QgsGeometryCollection()
   clear();
 }
 
+QgsGeometryCollection *QgsGeometryCollection::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsGeometryCollection >();
+  result->mWkbType = mWkbType;
+  return result.release();
+}
+
 QgsGeometryCollection *QgsGeometryCollection::clone() const
 {
   return new QgsGeometryCollection( *this );
@@ -73,6 +81,25 @@ void QgsGeometryCollection::clear()
   qDeleteAll( mGeometries );
   mGeometries.clear();
   clearCache(); //set bounding box invalid
+}
+
+QgsGeometryCollection *QgsGeometryCollection::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+{
+  std::unique_ptr<QgsGeometryCollection> result;
+
+  for ( auto geom : mGeometries )
+  {
+    std::unique_ptr<QgsAbstractGeometry> gridified { geom->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) };
+    if ( gridified )
+    {
+      if ( !result )
+        result = std::unique_ptr<QgsGeometryCollection> { createEmptyWithSameType() };
+
+      result->mGeometries.append( gridified.release() );
+    }
+  }
+
+  return result.release();
 }
 
 QgsAbstractGeometry *QgsGeometryCollection::boundary() const

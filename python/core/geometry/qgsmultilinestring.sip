@@ -49,6 +49,7 @@ class QgsMultiLineString: QgsMultiCurve
 %End
 
   protected:
+    virtual QgsMultiLineString *createEmptyWithSameType() const /Factory/;
 
     virtual bool wktOmitChildType() const;
 

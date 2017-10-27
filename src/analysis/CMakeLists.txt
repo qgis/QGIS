@@ -53,6 +53,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsaveselectedfeatures.cpp
   processing/qgsalgorithmsimplify.cpp
   processing/qgsalgorithmsmooth.cpp
+  processing/qgsalgorithmsnaptogrid.cpp
   processing/qgsalgorithmsplitwithlines.cpp
   processing/qgsalgorithmstringconcatenation.cpp
   processing/qgsalgorithmsubdivide.cpp

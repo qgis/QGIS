@@ -32,6 +32,13 @@ QString QgsPolygonV2::geometryType() const
   return QStringLiteral( "Polygon" );
 }
 
+QgsPolygonV2 *QgsPolygonV2::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsPolygonV2 >();
+  result->mWkbType = mWkbType;
+  return result.release();
+}
+
 QgsPolygonV2 *QgsPolygonV2::clone() const
 {
   return new QgsPolygonV2( *this );

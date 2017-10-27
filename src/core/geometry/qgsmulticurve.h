@@ -71,6 +71,10 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
     }
 #endif
 
+  protected:
+
+    QgsMultiCurve *createEmptyWithSameType() const override SIP_FACTORY;
+
 };
 
 // clazy:excludeall=qstring-allocations

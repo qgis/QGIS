@@ -63,7 +63,7 @@ class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollection
     }
 #endif
   protected:
-
+    QgsMultiPointV2 *createEmptyWithSameType() const override SIP_FACTORY;
     bool wktOmitChildType() const override;
 
 };
