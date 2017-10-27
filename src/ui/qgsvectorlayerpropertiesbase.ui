@@ -345,7 +345,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>17</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -421,8 +421,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>644</width>
-                <height>522</height>
+                <width>662</width>
+                <height>534</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -710,8 +710,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>662</width>
+                <height>534</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -811,8 +811,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>644</width>
-                <height>522</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -856,8 +856,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>646</width>
-                <height>518</height>
+                <width>70</width>
+                <height>22</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_3">
@@ -889,8 +889,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>646</width>
-                <height>518</height>
+                <width>70</width>
+                <height>22</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_11">
@@ -937,8 +937,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>673</width>
-                <height>507</height>
+                <width>725</width>
+                <height>394</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1427,8 +1427,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>199</width>
-                <height>123</height>
+                <width>662</width>
+                <height>534</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1707,8 +1707,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>359</width>
-                <height>527</height>
+                <width>371</width>
+                <height>608</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2116,7 +2116,7 @@ border-radius: 2px;</string>
               <property name="checkable">
                <bool>false</bool>
               </property>
-              <property name="syncGroup">
+              <property name="syncGroup" stdset="0">
                <string notr="true">vectormeta</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_11">
@@ -2415,21 +2415,9 @@ border-radius: 2px;</string>
    <header>qgsscalerangewidget.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsLayerTreeEmbeddedConfigWidget</class>
    <extends>QWidget</extends>
    <header>qgslayertreeembeddedconfigwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsLayerTreeView</class>
-   <extends>QTreeView</extends>
-   <header>qgslayertreeview.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

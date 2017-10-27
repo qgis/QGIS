@@ -1,5 +1,6 @@
 #include "qgsattributesformproperties.h"
 #include "qgsattributetypedialog.h"
+#include "qgsattributerelationedit.h"
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -34,11 +35,12 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mAttributeTypeFrame->layout()->setMargin( 0 );
   mAttributeTypeFrame->layout()->addWidget( mAttributeTypeDialog );
 
-  // RelationConfigDialog
-  mRelationConfigDialog = new QgsAttributeTypeDialog( mLayer, 0, mAttributeTypeFrame );
+  mAttributeRelationEdit = new QgsAttributeRelationEdit( mAttributeTypeFrame );
+  mAttributeRelationEdit->layout()->setMargin( 0 );
+  mAttributeTypeFrame->layout()->setMargin( 0 );
+  mAttributeTypeFrame->layout()->addWidget( mAttributeRelationEdit );
 
   connect( mAvailableWidgetsTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
-  //connect( mFormLayoutTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
   connect( mAddTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::addTabOrGroupButton );
   connect( mRemoveTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::removeTabOrGroupButton );
 }
@@ -53,14 +55,16 @@ void QgsAttributesFormProperties::init()
 {
   initAvailableWidgetsTree();
   initFormLayoutTree();
-  loadAttributeTypeDialog();
+
+  mAttributeTypeDialog->setEnabled( false );
+  mAttributeRelationEdit->setEnabled( false );
 }
 
 void QgsAttributesFormProperties::loadAttributeTypeDialog()
 {
   QTreeWidgetItem *currentItem = mAvailableWidgetsTree->currentItem();
 
-  if ( !currentItem || !( currentItem->data( 0, DnDTreeRole ).value<DnDTreeItemData>().type()==DnDTreeItemData::Field ) )
+  if ( !currentItem )
     mAttributeTypeDialog->setEnabled( false );
   else
   {
@@ -171,6 +175,42 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
       item->setData( 0, FieldConfigRole, QVariant::fromValue<FieldConfig>( cfg ) );
     ++itemIt;
   }
+
+}
+
+
+void QgsAttributesFormProperties::loadAttributeRelationEdit()
+{
+  QTreeWidgetItem *currentItem = mAvailableWidgetsTree->currentItem();
+
+  if ( !currentItem )
+    mAttributeRelationEdit->setEnabled( false );
+  else
+  {
+    mAttributeRelationEdit->setEnabled( true );
+    mAttributeTypeFrame->layout()->removeWidget( mAttributeRelationEdit );
+    delete mAttributeRelationEdit;
+
+    //oder mit dem? RelationConfig relCfg = configForRelation( itemData.name() );
+    RelationConfig cfg = mAvailableWidgetsTree->currentItem()->data( 0, RelationConfigRole).value<RelationConfig>();
+
+    mAttributeRelationEdit = new QgsAttributeRelationEdit( mAttributeTypeFrame );
+
+    //testdave     mAttributeRelationEdit->setCardinality( cfg.mCardinality );
+    //testdave mAttributeRelationEdit->setCardinality( "Cardinal Draft" );
+
+    mAttributeRelationEdit->layout()->setMargin( 0 );
+    mAttributeTypeFrame->layout()->setMargin( 0 );
+
+    mAttributeTypeFrame->layout()->addWidget( mAttributeRelationEdit );
+  }
+}
+
+
+void QgsAttributesFormProperties::storeAttributeRelationEdit()
+{
+  //store it first
+
 }
 
 QgsAttributesFormProperties::FieldConfig QgsAttributesFormProperties::configForChild( int index )
@@ -283,19 +323,20 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged()
     if ( mFormLayoutTree->selectedItems()[0]->data( 0, DnDTreeRole ).value<DnDTreeItemData>().type() == DnDTreeItemData::Container )
       isAddPossible = true;
 
-  storeAttributeTypeDialog(); //or storeRelationConfigDialog
+  storeAttributeTypeDialog();
+  storeAttributeRelationEdit();
 
   switch ( mAvailableWidgetsTree->currentItem()->data( 0, DnDTreeRole ).value<DnDTreeItemData>().type() )
   {
     case DnDTreeItemData::Relation:
     {
-      //loadAttributeTypeDialog();
-      mAttributeTypeFrame->layout()->removeWidget( mAttributeTypeDialog);
-      //mAttributeTypeFrame->layout()->addWidget( mRelationConfigDialog );
+      mAttributeTypeDialog->setEnabled( false );
+      loadAttributeRelationEdit();
       break;
     }
-    default:
+    case DnDTreeItemData::Field:
     {
+      mAttributeRelationEdit->setEnabled( false );
       loadAttributeTypeDialog();
       break;
     }
@@ -446,7 +487,13 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
 
 void QgsAttributesFormProperties::apply()
 {
-  storeAttributeTypeDialog();
+  if( mAttributeTypeDialog )
+  {
+    storeAttributeTypeDialog();
+  }else
+  {
+    storeAttributeRelationEdit();
+  }
 
   QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
 
@@ -566,7 +613,6 @@ void QgsAttributesFormProperties::apply()
 
 QgsAttributesFormProperties::FieldConfig::FieldConfig()
   : mEditable( true )
-  , mAlias( QString() )
   , mEditableEnabled( true )
   , mLabelOnTop( false )
   , mConstraints( 0 )

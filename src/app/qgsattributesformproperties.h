@@ -41,6 +41,7 @@
 #include "qgsfieldexpressionwidget.h"
 #include "qgsaddtaborgroup.h"
 #include "qgsattributetypedialog.h"
+#include "qgsattributerelationedit.h"
 #include "qgsgui.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
@@ -203,12 +204,16 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     DnDTree *mFormLayoutTree = nullptr;
 
     QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
-    QgsAttributeTypeDialog *mRelationConfigDialog = nullptr;
+    QgsAttributeRelationEdit *mAttributeRelationEdit = nullptr;
 
 
   private:
     void loadAttributeTypeDialog();
     void storeAttributeTypeDialog( );
+
+    void loadAttributeRelationEdit();
+    void storeAttributeRelationEdit( );
+
 
   private slots:
     void addTabOrGroupButton();
