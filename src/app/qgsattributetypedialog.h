@@ -202,9 +202,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
      * \param index index of value in combobox
      */
     void onCurrentWidgetChanged( int index );
-    
-//removed selectionListWidget:     void selectionListWidget_currentRowChanged( int index );
-    
+
     void defaultExpressionChanged();
 
     void showHelp();

@@ -7,7 +7,7 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
   if ( !layer )
     return;
 
-  setupUi(this);
+  setupUi( this );
 
   //button appearance
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
@@ -136,19 +136,19 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
   if ( sorted )
     mFieldsList->setSortingEnabled( true );
 
-  for( int i = 0; i < 7/*mFieldsList->columnCount()*/; i++ ){
+  for( int i = 0; i < 7; i++ ){     // mFieldsList->columnCount()
     switch ( mLayer->fields().fieldOrigin( idx ) )
     {
       case QgsFields::OriginExpression:
-        mFieldsList->item(idx,i)->setBackgroundColor(QColor(200, 200, 255));
+        mFieldsList->item( idx, i )->setBackgroundColor( QColor( 200, 200, 255 ) );
         break;
 
       case QgsFields::OriginJoin:
-        mFieldsList->item(idx,i)->setBackgroundColor(QColor(200, 255, 200));
+        mFieldsList->item( idx, i )->setBackgroundColor( QColor( 200, 255, 200 ) );
         break;
 
       default:
-        mFieldsList->item(idx,i)->setBackgroundColor(QColor(255, 255, 200));
+        mFieldsList->item( idx, i )->setBackgroundColor( QColor( 255, 255, 200 ) );
         break;
     }
   }
@@ -267,7 +267,8 @@ void QgsSourceFieldsProperties::editingToggled()
   updateFieldRenamingStatus();
 }
 
-void QgsSourceFieldsProperties::addAttributeClicked(){
+void QgsSourceFieldsProperties::addAttributeClicked()
+{
   QgsAddAttrDialog dialog( mLayer, this );
   if ( dialog.exec() == QDialog::Accepted )
   {
@@ -276,7 +277,8 @@ void QgsSourceFieldsProperties::addAttributeClicked(){
   }
 }
 
-void QgsSourceFieldsProperties::deleteAttributeClicked(){
+void QgsSourceFieldsProperties::deleteAttributeClicked()
+{
   QSet<int> providerFields;
   QSet<int> expressionFields;
   Q_FOREACH ( QTableWidgetItem *item, mFieldsList->selectedItems() )
@@ -307,7 +309,8 @@ void QgsSourceFieldsProperties::deleteAttributeClicked(){
   }
 }
 
-void QgsSourceFieldsProperties::calculateFieldClicked(){
+void QgsSourceFieldsProperties::calculateFieldClicked()
+{
   if ( !mLayer )
   {
     return;

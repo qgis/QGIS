@@ -25,7 +25,6 @@
 #include <QSpinBox>
 #include <QTreeWidgetItem>
 #include <QDropEvent>
-#include <QPushButton>
 #include <QTableWidgetItem>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -55,7 +54,8 @@ class APP_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourc
     void loadRows();
     void setRow( int row, int idx, const QgsField &field );
 
-    /** Adds an attribute to the table (but does not commit it yet)
+    /**
+     * Adds an attribute to the table (but does not commit it yet)
     \param field the field to add
     \returns false in case of a name conflict, true in case of success */
     bool addAttribute( const QgsField &field );
@@ -94,18 +94,18 @@ class APP_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourc
 
   private slots:
 
-  void updateExpression();
+    void updateExpression();
 
-   //! Editing of layer was toggled
-   void editingToggled();
-   void addAttributeClicked();
-   void deleteAttributeClicked();
-   void calculateFieldClicked();
-   
-   void attributeAdded( int idx );
-   void attributeDeleted( int idx );
+    //! Editing of layer was toggled
+    void editingToggled();
+    void addAttributeClicked();
+    void deleteAttributeClicked();
+    void calculateFieldClicked();
 
-   void attributesListCellChanged( int row, int column );
+    void attributeAdded( int idx );
+    void attributeDeleted( int idx );
+
+    void attributesListCellChanged( int row, int column );
 
 };
 

@@ -1,11 +1,11 @@
 #include "qgsattributerelationedit.h"
 #include "ui_qgsattributerelationedit.h"
 
-QgsAttributeRelationEdit::QgsAttributeRelationEdit(const QString &relationid, QWidget *parent) :
-  QWidget(parent),
+QgsAttributeRelationEdit::QgsAttributeRelationEdit( const QString &relationid, QWidget *parent ) :
+  QWidget( parent ),
   mRelationId( relationid )
 {
-  setupUi(this);
+  setupUi( this );
 }
 
 QgsAttributeRelationEdit::~QgsAttributeRelationEdit()
