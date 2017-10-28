@@ -23,7 +23,7 @@ class QgsTransaction : QObject /Abstract/
  and all layers need to be in read-only mode for a transaction to be committed
  or rolled back.
 
- Layers cannot only be included in one transaction at a time.
+ Layers can only be included in one transaction at a time.
 
  When editing layers which are part of a transaction group, all changes are
  sent directly to the data provider (bypassing the undo/redo stack), and the
@@ -105,7 +105,7 @@ class QgsTransaction : QObject /Abstract/
 
     static bool supportsTransaction( const QgsVectorLayer *layer );
 %Docstring
- Checks if a the provider of a given ``layer`` supports transactions.
+ Checks if the provider of a given ``layer`` supports transactions.
  :rtype: bool
 %End
 

@@ -40,7 +40,7 @@ class QgsVectorLayer;
  * and all layers need to be in read-only mode for a transaction to be committed
  * or rolled back.
  *
- * Layers cannot only be included in one transaction at a time.
+ * Layers can only be included in one transaction at a time.
  *
  * When editing layers which are part of a transaction group, all changes are
  * sent directly to the data provider (bypassing the undo/redo stack), and the
@@ -115,7 +115,7 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     virtual bool executeSql( const QString &sql, QString &error SIP_OUT, bool isDirty = false ) = 0;
 
     /**
-     * Checks if a the provider of a given \a layer supports transactions.
+     * Checks if the provider of a given \a layer supports transactions.
      */
     static bool supportsTransaction( const QgsVectorLayer *layer );
 
