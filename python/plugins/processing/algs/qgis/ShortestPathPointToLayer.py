@@ -250,8 +250,13 @@ class ShortestPathPointToLayer(QgisAlgorithm):
 
             if tree[idxEnd] == -1:
                 msg = self.tr('There is no route from start point ({}) to end point ({}).'.format(startPoint.toString(), points[i].toString()))
-                feedback.setProgressText(msg)
-                QgsMessageLog.logMessage(msg, self.tr('Processing'), QgsMessageLog.WARNING)
+                feedback.reportError(msg)
+                # add feature with no geometry
+                feat.clearGeometry()
+                attrs = source_attributes[i]
+                attrs.extend([NULL, points[i].toString()])
+                feat.setAttributes(attrs)
+                sink.addFeature(feat, QgsFeatureSink.FastInsert)
                 continue
 
             cost = 0.0

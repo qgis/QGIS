@@ -246,12 +246,18 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
                 break
 
             idxStart = graph.findVertex(snappedPoints[i])
+
             tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
 
             if tree[idxEnd] == -1:
                 msg = self.tr('There is no route from start point ({}) to end point ({}).'.format(points[i].toString(), endPoint.toString()))
-                feedback.setProgressText(msg)
-                QgsMessageLog.logMessage(msg, self.tr('Processing'), QgsMessageLog.WARNING)
+                feedback.reportError(msg)
+                # add feature with no geometry
+                feat.clearGeometry()
+                attrs = source_attributes[i]
+                attrs.append(points[i].toString())
+                feat.setAttributes(attrs)
+                sink.addFeature(feat, QgsFeatureSink.FastInsert)
                 continue
 
             cost = 0.0
