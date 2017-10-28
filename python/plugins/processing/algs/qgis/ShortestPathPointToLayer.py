@@ -238,7 +238,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
 
         nPoints = len(snappedPoints)
         total = 100.0 / nPoints if nPoints else 1
-        for i in range(1, nPoints + 1):
+        for i in range(1, nPoints):
             if feedback.isCanceled():
                 break
 
