@@ -28,13 +28,15 @@
 
 QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>( source, ownSource, request )
-  , sqliteStatement( nullptr )
   , mExpressionCompiled( false )
 {
+
   mHandle = mSource->getQSqliteHandle();
-  mFetchGeometry = !mSource->getGeometryColumn() .isNull() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
-  mHasPrimaryKey = !mSource->getPrimaryKey().isEmpty();
+
+  mFetchGeometry = !mSource->mGeometryColumn.isNull() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
+  mHasPrimaryKey = !mSource->mPrimaryKey.isEmpty();
   mRowNumber = 0;
+
   QStringList whereClauses;
   bool useFallbackWhereClause = false;
   QString fallbackWhereClause;
@@ -51,7 +53,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   catch ( QgsCsException & )
   {
     // can't reproject mFilterRect
-    mClosed = true;
+    close();
     return;
   }
 
@@ -59,7 +61,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   //by the provider (e.g., utilising QGIS expression filters)
   bool limitAtProvider = ( mRequest.limit() >= 0 );
 
-  if ( !mFilterRect.isNull() && !mSource->getGeometryColumn() .isNull() )
+  if ( !mFilterRect.isNull() && !mSource->mGeometryColumn.isNull() )
   {
     // some kind of MBR spatial filtering is required
     whereClause = whereClauseRect();
@@ -88,10 +90,13 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   }
   else if ( request.filterType() == QgsFeatureRequest::FilterFids )
   {
-    whereClause = whereClauseFids();
-    if ( ! whereClause.isEmpty() )
+    if ( request.filterFids().isEmpty() )
     {
-      whereClauses.append( whereClause );
+      close();
+    }
+    else
+    {
+      whereClauses.append( whereClauseFids() );
     }
   }
   //IMPORTANT - this MUST be the last clause added!
@@ -102,7 +107,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     {
       QgsAttributeList attrs = request.subsetOfAttributes();
       //ensure that all fields required for filter expressions are prepared
-      QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->getAttributeFields() );
+      QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
       attributeIndexes += attrs.toSet();
       mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
     }
@@ -113,7 +118,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
     if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
     {
-      QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( mSource->getAttributeFields() );
+      QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
 
       QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
 
@@ -142,78 +147,80 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     }
   }
 
-  whereClause = whereClauses.join( QStringLiteral( " AND " ) );
-
-  // Setup the order by
-  QStringList orderByParts;
-
-  mOrderByCompiled = true;
-
-  if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
+  if ( !mClosed )
   {
-    Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
-    {
-      QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( mSource->getAttributeFields() );
-      QgsExpression expression = clause.expression();
-      if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
-      {
-        QString part;
-        part = compiler.result();
+    whereClause = whereClauses.join( QStringLiteral( " AND " ) );
 
-        if ( clause.nullsFirst() )
-          orderByParts << QStringLiteral( "%1 IS NOT NULL" ).arg( part );
+    // Setup the order by
+    QStringList orderByParts;
+
+    mOrderByCompiled = true;
+
+    if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
+    {
+      Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
+      {
+        QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
+        QgsExpression expression = clause.expression();
+        if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
+        {
+          QString part;
+          part = compiler.result();
+
+          if ( clause.nullsFirst() )
+            orderByParts << QStringLiteral( "%1 IS NOT NULL" ).arg( part );
+          else
+            orderByParts << QStringLiteral( "%1 IS NULL" ).arg( part );
+
+          part += clause.ascending() ? " COLLATE NOCASE ASC" : " COLLATE NOCASE DESC";
+          orderByParts << part;
+        }
         else
-          orderByParts << QStringLiteral( "%1 IS NULL" ).arg( part );
-
-        part += clause.ascending() ? " COLLATE NOCASE ASC" : " COLLATE NOCASE DESC";
-        orderByParts << part;
-      }
-      else
-      {
-        // Bail out on first non-complete compilation.
-        // Most important clauses at the beginning of the list
-        // will still be sent and used to pre-sort so the local
-        // CPU can use its cycles for fine-tuning.
-        mOrderByCompiled = false;
-        break;
+        {
+          // Bail out on first non-complete compilation.
+          // Most important clauses at the beginning of the list
+          // will still be sent and used to pre-sort so the local
+          // CPU can use its cycles for fine-tuning.
+          mOrderByCompiled = false;
+          break;
+        }
       }
     }
-  }
-  else
-  {
-    mOrderByCompiled = false;
-  }
-
-  if ( !mOrderByCompiled )
-    limitAtProvider = false;
-
-  // also need attributes required by order by
-  if ( !mOrderByCompiled && mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
-  {
-    QSet<int> attributeIndexes;
-    Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+    else
     {
-      attributeIndexes << mSource->getAttributeFields().lookupField( attr ); // mSource->mFields.lookupField( attr );
+      mOrderByCompiled = false;
     }
-    attributeIndexes += mRequest.subsetOfAttributes().toSet();
-    mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
-  }
 
-  // preparing the SQL statement
-  // whereClause["id_geometry" IN (SELECT pkid FROM "idx_berlin_linestrings_soldner_linestring" WHERE xmin <= 24685.53663580332067795 AND xmax >= 24640.70353396030259319 AND ymin <= 22091.64312717200664338 AND ymax >= 22058.88187432484119199)]
-  bool success = prepareStatement( whereClause, limitAtProvider ? mRequest.limit() : -1, orderByParts.join( QStringLiteral( "," ) ) );
-  if ( !success && useFallbackWhereClause )
-  {
-    //try with the fallback where clause, e.g., for cases when using compiled expression failed to prepare
-    mExpressionCompiled = false;
-    success = prepareStatement( fallbackWhereClause, -1, orderByParts.join( QStringLiteral( "," ) ) );
-  }
+    if ( !mOrderByCompiled )
+      limitAtProvider = false;
 
-  if ( !success )
-  {
-    // some error occurred
-    sqliteStatement = nullptr;
-    close();
+    // also need attributes required by order by
+    if ( !mOrderByCompiled && mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes && !mRequest.orderBy().isEmpty() )
+    {
+      QSet<int> attributeIndexes;
+      Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+      {
+        attributeIndexes << mSource->mFields.lookupField( attr );
+      }
+      attributeIndexes += mRequest.subsetOfAttributes().toSet();
+      mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
+    }
+
+    // preparing the SQL statement
+    bool success = prepareStatement( whereClause, limitAtProvider ? mRequest.limit() : -1, orderByParts.join( QStringLiteral( "," ) ) );
+    if ( !success && useFallbackWhereClause )
+    {
+      //try with the fallback where clause, e.g., for cases when using compiled expression failed to prepare
+      mExpressionCompiled = false;
+      success = prepareStatement( fallbackWhereClause, -1, orderByParts.join( QStringLiteral( "," ) ) );
+    }
+
+    if ( !success )
+    {
+      // some error occurred
+      sqliteStatement = nullptr;
+      close();
+    }
   }
 }
 

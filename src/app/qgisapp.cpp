@@ -5600,39 +5600,46 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
       return true;
     }
   }
-  qDebug().noquote() << QString("-I-> QgisApp::openLayer: allowInteractive[%2] file[%1]").arg(fileName).arg(allowInteractive);
-  bool bLoadLayers = true;
-  bool bShared = true;
-  SpatialiteDbInfo *spatialiteDbInfo = QgsSpatiaLiteUtils::CreateSpatialiteConnection( fileName, bLoadLayers, bShared );
+  SpatialiteDbInfo *spatialiteDbInfo = QgsSpatiaLiteUtils::CreateSpatialiteConnection( fileName, true, true );
   if ( spatialiteDbInfo )
-  { // The file exists, is a Sqlite3-File and a connection has been made.
+  {
+    // The file exists, is a Sqlite3-File and a connection has been made.
     if ( ( spatialiteDbInfo->isDbSpatialite() ) || ( spatialiteDbInfo->isDbGdalOgr() ) )
     {
       // The read Sqlite3 Container is supported by QgsSpatiaLiteProvider, QRasterLite2Provider,QgsOgrProvider or QgsGdalProvider.
-      bool bLoadGdalOrg=true;
-      if (spatialiteDbInfo->isDbGdalOgr())
+      bool bLoadGdalOrg = true;
+      if ( spatialiteDbInfo->isDbGdalOgr() )
       {
-       // QgsSpatiaLiteSourceSelect can display Gdal/Ogr sqlite3 based Sourses (GeoPackage, MbTiles, FDO etc)
-       //  and when selected call the needed QgsOgrProvider or QgsGdalProvider
-       // - if not desired (possible User-Setting), then this can be prevented here
-       // bLoadGdalOrg=false;
+        // QgsSpatiaLiteSourceSelect can display Gdal/Ogr sqlite3 based Sourses (GeoPackage, MbTiles, FDO etc)
+        //  and when selected call the needed QgsOgrProvider or QgsGdalProvider
+        // - if not desired (possible User-Setting), then this can be prevented here
+        // bLoadGdalOrg=false;
       }
-      if ( (bLoadGdalOrg) && (spatialiteDbInfo->dbLayersCount() > 0) )
+      if ( ( bLoadGdalOrg ) && ( spatialiteDbInfo->dbLayersCount() > 0 ) )
       {
-        QgsAbstractDataSourceWidget *dbs = dynamic_cast<QgsAbstractDataSourceWidget *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "spatialite" ), this ) );
-        if ( dbs )
+        if ( spatialiteDbInfo->dbLayersCount() > 1 )
         {
-          emit dbs->addDatabaseLayers( QStringList( fileName ),QStringLiteral( "spatialite" ));
-          dbs->exec();
-          return true;
+          QgsAbstractDataSourceWidget *dbs = dynamic_cast<QgsAbstractDataSourceWidget *>( QgsProviderRegistry::instance()->createSelectionWidget( QStringLiteral( "spatialite" ), this ) );
+          if ( dbs )
+          {
+            // Load selected file into DataSourceWidget
+            emit dbs->addDatabaseLayers( QStringList( fileName ), QStringLiteral( "spatialite" ) );
+            dbs->exec();
+            return true;
+          }
+        }
+        else
+        {
+          // When only 1 Layer, load directly through spatialiteDbInfo
+          if ( spatialiteDbInfo->addDbMapLayers( QStringList( fileName ), QStringList( ) ) )
+          {
+            return true;
+          }
         }
       }
-      else
-      {
-       // - loading is not desired, close connection and free
-       delete spatialiteDbInfo;
-       spatialiteDbInfo = nullptr;
-      }
+      // - loading is not desired or possible, close connection and free
+      delete spatialiteDbInfo;
+      spatialiteDbInfo = nullptr;
     }
     // Not a Spatialite based source, continue
   }
@@ -9300,7 +9307,6 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
 
 void QgisApp::loadPythonSupport()
 {
-  return;
   QString pythonlibName( QStringLiteral( "qgispython" ) );
 #if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
   pythonlibName.prepend( QgsApplication::libraryPath() );
@@ -9309,8 +9315,6 @@ void QgisApp::loadPythonSupport()
   pythonlibName.prepend( "lib" );
 #endif
   QString version = QStringLiteral( "%1.%2.%3" ).arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 ).arg( Qgis::QGIS_VERSION_INT % 100 );
-  QgsDebugMsg( QString( "load library %1 (%2)" ).arg( pythonlibName, version ) );
-
   QLibrary pythonlib( pythonlibName, version );
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
   // see http://lists.kde.org/?l=pykde&m=117190116820758&w=2
@@ -9320,7 +9324,6 @@ void QgisApp::loadPythonSupport()
     pythonlib.setFileName( pythonlibName );
     if ( !pythonlib.load() )
     {
-      qDebug() << QString( "-E-> load library %1 (%2)" ).arg( pythonlibName, version );
       QgsMessageLog::logMessage( tr( "Couldn't load Python support library: %1" ).arg( pythonlib.errorString() ) );
       return;
     }

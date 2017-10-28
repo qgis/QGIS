@@ -25,11 +25,18 @@ struct sqlite3;
 
 #include "qgsspatialiteutils.h"
 
+/**
+ * Class to connect to Spatialite/Rasterlite2 Database
+  * - replaces previous QgsSLConnect class used for static connections
+  * - contains and SpatialiteDbInfo object when used as a instance class
+  * \note
+  *  SpatialiteDbInfo is the backbone of the QgisSpatialite/RasterLite2 Providers
+  *  When shared, the QgsSqliteHandle class will used the same connection of each Layer in the same Database
+  * \see SpatialiteDbLayer
+  * \since QGIS 3.0
+ */
 class CORE_EXPORT QgsSqliteHandle
 {
-    //
-    // a class allowing to reuse the same sqlite handle for more layers
-    //
   public:
     QgsSqliteHandle( sqlite3 *handle, const QString &dbPath, bool shared )
       : ref( shared ? 1 : -1 )

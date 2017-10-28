@@ -8,15 +8,22 @@ ENDIF(WITH_QSPATIALITE)
 SET(SPATIALITE_SRCS
   qgsspatialiteprovider.cpp
   qgsspatialitefeatureiterator.cpp
-  qgsspatialitesourceselect.cpp
   qgsspatialitetablemodel.cpp
 )
 
 SET(SPATIALITE_MOC_HDRS
   qgsspatialiteprovider.h
-  qgsspatialitesourceselect.h
   qgsspatialitetablemodel.h
 )
+
+IF (WITH_GUI)
+  SET(SPATIALITE_SRCS ${SPATIALITE_SRCS}
+    qgsspatialitesourceselect.cpp
+  )
+  SET(SPATIALITE_MOC_HDRS ${SPATIALITE_MOC_HDRS}
+    qgsspatialitesourceselect.h
+  )
+ENDIF ()
 
 SET(RASTERLITE2_SRCS
   qgsrasterlite2provider.cpp
