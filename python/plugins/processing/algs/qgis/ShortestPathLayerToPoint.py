@@ -171,7 +171,7 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
         defaultSpeed = self.parameterAsDouble(parameters, self.DEFAULT_SPEED, context)
         tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
 
-        fields = QgsFields()
+        fields = startPoints.fields()
         fields.append(QgsField('start', QVariant.String, '', 254, 0))
         fields.append(QgsField('end', QVariant.String, '', 254, 0))
         fields.append(QgsField('cost', QVariant.Double, '', 20, 7))
@@ -213,18 +213,22 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
 
         feedback.pushInfo(self.tr('Loading start points...'))
         request = QgsFeatureRequest()
-        request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
         request.setDestinationCrs(network.sourceCrs())
         features = startPoints.getFeatures(request)
         total = 100.0 / startPoints.featureCount() if startPoints.featureCount() else 0
 
         points = [endPoint]
+        source_attributes = {}
+        i = 1
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
 
             points.append(f.geometry().asPoint())
+            source_attributes[i] = f.attributes()
+
             feedback.setProgress(int(current * total))
+            i += 1
 
         feedback.pushInfo(self.tr('Building graph...'))
         snappedPoints = director.makeGraph(builder, points, feedback)
@@ -262,9 +266,9 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
 
             geom = QgsGeometry.fromPolylineXY(route)
             feat.setGeometry(geom)
-            feat['start'] = points[i].toString()
-            feat['end'] = endPoint.toString()
-            feat['cost'] = cost / multiplier
+            attrs = source_attributes[i]
+            attrs.extend([points[i].toString(), endPoint.toString(), cost / multiplier])
+            feat.setAttributes(attrs)
             sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
             route[:] = []

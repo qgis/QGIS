@@ -171,7 +171,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
         defaultSpeed = self.parameterAsDouble(parameters, self.DEFAULT_SPEED, context)
         tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
 
-        fields = QgsFields()
+        fields = endPoints.fields()
         fields.append(QgsField('start', QVariant.String, '', 254, 0))
         fields.append(QgsField('end', QVariant.String, '', 254, 0))
         fields.append(QgsField('cost', QVariant.Double, '', 20, 7))
@@ -213,18 +213,22 @@ class ShortestPathPointToLayer(QgisAlgorithm):
 
         feedback.pushInfo(self.tr('Loading end points...'))
         request = QgsFeatureRequest()
-        request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
         request.setDestinationCrs(network.sourceCrs())
         features = endPoints.getFeatures(request)
         total = 100.0 / endPoints.featureCount() if endPoints.featureCount() else 0
 
         points = [startPoint]
+        source_attributes = {}
+        i = 1
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
 
             points.append(f.geometry().asPoint())
+            source_attributes[i] = f.attributes()
+
             feedback.setProgress(int(current * total))
+            i += 1
 
         feedback.pushInfo(self.tr('Building graph...'))
         snappedPoints = director.makeGraph(builder, points, feedback)
@@ -261,10 +265,10 @@ class ShortestPathPointToLayer(QgisAlgorithm):
             route.reverse()
 
             geom = QgsGeometry.fromPolylineXY(route)
+            attrs = source_attributes[i]
+            attrs.extend([startPoint.toString(), points[i].toString(), cost / multiplier])
+            feat.setAttributes(attrs)
             feat.setGeometry(geom)
-            feat['start'] = startPoint.toString()
-            feat['end'] = points[i].toString()
-            feat['cost'] = cost / multiplier
             sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
             route[:] = []
