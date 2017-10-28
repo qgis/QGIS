@@ -33,8 +33,8 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
   mHandle = mSource->getQSqliteHandle();
 
-  mFetchGeometry = !mSource->mGeometryColumn.isNull() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
-  mHasPrimaryKey = !mSource->mPrimaryKey.isEmpty();
+  mFetchGeometry = !mSource->getGeometryColumn().isNull() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
+  mHasPrimaryKey = !mSource->getPrimaryKey().isEmpty();
   mRowNumber = 0;
 
   QStringList whereClauses;
@@ -61,7 +61,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   //by the provider (e.g., utilising QGIS expression filters)
   bool limitAtProvider = ( mRequest.limit() >= 0 );
 
-  if ( !mFilterRect.isNull() && !mSource->mGeometryColumn.isNull() )
+  if ( !mFilterRect.isNull() && !mSource->getGeometryColumn().isNull() )
   {
     // some kind of MBR spatial filtering is required
     whereClause = whereClauseRect();
@@ -107,7 +107,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     {
       QgsAttributeList attrs = request.subsetOfAttributes();
       //ensure that all fields required for filter expressions are prepared
-      QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
+      QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->getAttributeFields() );
       attributeIndexes += attrs.toSet();
       mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
     }
@@ -118,7 +118,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
     if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
     {
-      QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
+      QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->getAttributeFields() );
 
       QgsSqlExpressionCompiler::Result result = compiler.compile( request.filterExpression() );
 
@@ -160,7 +160,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     {
       Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
       {
-        QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->mFields );
+        QgsSQLiteExpressionCompiler compiler = QgsSQLiteExpressionCompiler( source->getAttributeFields() );
         QgsExpression expression = clause.expression();
         if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
         {
@@ -200,7 +200,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       QSet<int> attributeIndexes;
       Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
       {
-        attributeIndexes << mSource->mFields.lookupField( attr );
+        attributeIndexes << mSource->getAttributeFields().lookupField( attr );
       }
       attributeIndexes += mRequest.subsetOfAttributes().toSet();
       mRequest.setSubsetOfAttributes( attributeIndexes.toList() );
