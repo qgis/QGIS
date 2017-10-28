@@ -303,6 +303,41 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertNotEqual(f[0]['obj_id'], NULL, f[0].attributes())
         vl.deleteFeatures([f[0].id()])
 
+    def testNull(self):
+        """
+        Asserts that 0, '' and NULL are treated as different values on insert
+        """
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'gid\' table="qgis_test"."constraints" sql=', 'test1', 'postgres')
+        self.assertTrue(vl.isValid())
+        QgsProject.instance().addMapLayer(vl)
+        tg = QgsTransactionGroup()
+        tg.addLayer(vl)
+        vl.startEditing()
+
+        def onError(message):
+            """We should not get here. If we do, fail and say why"""
+            self.assertFalse(True, message)
+
+        vl.raiseError.connect(onError)
+
+        f = QgsFeature(vl.fields())
+        f['gid'] = 100
+        f['val'] = 0
+        f['name'] = ''
+        self.assertTrue(vl.addFeature(f))
+        feature = next(vl.getFeatures('"gid" = 100'))
+        self.assertEqual(f['val'], feature['val'])
+        self.assertEqual(f['name'], feature['name'])
+
+        f = QgsFeature(vl.fields())
+        f['gid'] = 101
+        f['val'] = NULL
+        f['name'] = NULL
+        vl.addFeature(f)
+        feature = next(vl.getFeatures('"gid" = 101'))
+        self.assertEqual(f['val'], feature['val'])
+        self.assertEqual(f['name'], feature['name'])
+
     def testNestedInsert(self):
         tg = QgsTransactionGroup()
         tg.addLayer(self.vl)
