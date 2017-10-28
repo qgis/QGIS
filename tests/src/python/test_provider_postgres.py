@@ -329,15 +329,6 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f['val'], feature['val'])
         self.assertEqual(f['name'], feature['name'])
 
-        f = QgsFeature(vl.fields())
-        f['gid'] = 101
-        f['val'] = NULL
-        f['name'] = NULL
-        vl.addFeature(f)
-        feature = next(vl.getFeatures('"gid" = 101'))
-        self.assertEqual(f['val'], feature['val'])
-        self.assertEqual(f['name'], feature['name'])
-
     def testNestedInsert(self):
         tg = QgsTransactionGroup()
         tg.addLayer(self.vl)
