@@ -52,6 +52,7 @@ class QgsVectorLayer;
  *
  * Edits on features can get rejected if another conflicting transaction is active.
  */
+
 class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
 {
     Q_OBJECT
@@ -65,20 +66,13 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     static QgsTransaction *create( const QString &connString, const QString &providerKey ) SIP_FACTORY;
 
     /**
-     * Create a transaction which includes the layers specified with
-     * \a layerIds.
+     * Create a transaction which includes the \a layers.
      * All layers are expected to have the same connection string and data
      * provider.
      */
-    static QgsTransaction *create( const QStringList &layerIds ) SIP_FACTORY;
+    static QgsTransaction *create( const QSet<QgsVectorLayer *> &layers ) SIP_FACTORY;
 
     virtual ~QgsTransaction();
-
-    /**
-     * Add the layer with \a layerId to the transaction. The layer must not be
-     * in edit mode and the connection string must match.
-     */
-    bool addLayer( const QString &layerId );
 
     /**
      * Add the \a layer to the transaction. The layer must not be
@@ -182,7 +176,7 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     QString mConnString;
 
   private slots:
-    void onLayersDeleted( const QStringList &layerids );
+    void onLayerDeleted();
 
   private:
 
