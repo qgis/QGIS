@@ -230,39 +230,43 @@ void TestQgsNetworkAnalysis::testBuildTolerance()
   QCOMPARE( graph->edge( 5 ).fromVertex(), 3 );
   QCOMPARE( graph->edge( 5 ).toVertex(), 4 );
 
-#if 0 // broken
   // with tolerance
-  builder = qgis::make_unique< QgsGraphBuilder > ( network->sourceCrs(), true, 0.11 );
+#if 0 //BROKEN, but should be sufficient
+  double tolerance = 0.11;
+#else
+  double tolerance = 6;
+#endif
+
+  builder = qgis::make_unique< QgsGraphBuilder > ( network->sourceCrs(), true, tolerance );
   director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
   graph.reset( builder->graph() );
   QCOMPARE( graph->vertexCount(), 5 );
   QCOMPARE( graph->edgeCount(), 6 );
   QCOMPARE( graph->vertex( 0 ).point(), QgsPointXY( 0, 0 ) );
-  QCOMPARE( graph->vertex( 0 ).inEdges(), QList< int >() << 1 );
-  QCOMPARE( graph->edge( 1 ).inVertex(), 0 );
-  QCOMPARE( graph->edge( 1 ).outVertex(), 1 );
-  QCOMPARE( graph->vertex( 0 ).outEdges(), QList< int >()  << 0 );
-  QCOMPARE( graph->edge( 0 ).inVertex(), 1 );
-  QCOMPARE( graph->edge( 0 ).outVertex(), 0 );
+  QCOMPARE( graph->vertex( 0 ).outgoingEdges(), QList< int >() << 1 );
+  QCOMPARE( graph->edge( 1 ).fromVertex(), 0 );
+  QCOMPARE( graph->edge( 1 ).toVertex(), 1 );
+  QCOMPARE( graph->vertex( 0 ).incomingEdges(), QList< int >()  << 0 );
+  QCOMPARE( graph->edge( 0 ).fromVertex(), 1 );
+  QCOMPARE( graph->edge( 0 ).toVertex(), 0 );
   QCOMPARE( graph->vertex( 1 ).point(), QgsPointXY( 10, 0 ) );
-  QCOMPARE( graph->vertex( 1 ).inEdges(), QList< int >() << 0 << 3 );
-  QCOMPARE( graph->vertex( 1 ).outEdges(), QList< int >() << 1 << 2 );
-  QCOMPARE( graph->edge( 2 ).inVertex(), 2 );
-  QCOMPARE( graph->edge( 2 ).outVertex(), 1 );
-  QCOMPARE( graph->edge( 3 ).inVertex(), 1 );
-  QCOMPARE( graph->edge( 3 ).outVertex(), 2 );
+  QCOMPARE( graph->vertex( 1 ).outgoingEdges(), QList< int >() << 0 << 3 );
+  QCOMPARE( graph->vertex( 1 ).incomingEdges(), QList< int >() << 1 << 2 );
+  QCOMPARE( graph->edge( 2 ).fromVertex(), 2 );
+  QCOMPARE( graph->edge( 2 ).toVertex(), 1 );
+  QCOMPARE( graph->edge( 3 ).fromVertex(), 1 );
+  QCOMPARE( graph->edge( 3 ).toVertex(), 2 );
   QCOMPARE( graph->vertex( 2 ).point(), QgsPointXY( 10, 10 ) );
-  QCOMPARE( graph->vertex( 2 ).inEdges(), QList< int >() << 2 << 5 );
-  QCOMPARE( graph->vertex( 2 ).outEdges(), QList< int >() << 3 << 4 );
+  QCOMPARE( graph->vertex( 2 ).outgoingEdges(), QList< int >() << 2 << 5 );
+  QCOMPARE( graph->vertex( 2 ).incomingEdges(), QList< int >() << 3 << 4 );
   QCOMPARE( graph->vertex( 3 ).point(), QgsPointXY( 10.1, 10 ) );
-  QCOMPARE( graph->vertex( 3 ).inEdges(), QList< int >() );
-  QCOMPARE( graph->vertex( 3 ).outEdges(), QList< int >() );
+  QCOMPARE( graph->vertex( 3 ).outgoingEdges(), QList< int >() );
+  QCOMPARE( graph->vertex( 3 ).incomingEdges(), QList< int >() );
   QCOMPARE( graph->vertex( 4 ).point(), QgsPointXY( 20, 10 ) );
-  QCOMPARE( graph->edge( 4 ).inVertex(), 4 );
-  QCOMPARE( graph->edge( 4 ).outVertex(), 2 );
-  QCOMPARE( graph->edge( 5 ).inVertex(), 2 );
-  QCOMPARE( graph->edge( 5 ).outVertex(), 4 );
-#endif
+  QCOMPARE( graph->edge( 4 ).fromVertex(), 4 );
+  QCOMPARE( graph->edge( 4 ).toVertex(), 2 );
+  QCOMPARE( graph->edge( 5 ).fromVertex(), 2 );
+  QCOMPARE( graph->edge( 5 ).toVertex(), 4 );
 }
 
 

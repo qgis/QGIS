@@ -89,19 +89,19 @@ template <typename RandIter, typename Type, typename CompareOp > RandIter my_bin
 
 struct TiePointInfo
 {
+  TiePointInfo() = default;
+  TiePointInfo( QgsFeatureId featureId, const QgsPointXY &start, const QgsPointXY &end )
+    : mNetworkFeatureId( featureId )
+    , mFirstPoint( start )
+    , mLastPoint( end )
+  {}
+
   QgsPointXY mTiedPoint;
-  double mLength;
+  double mLength = DBL_MAX;
+  QgsFeatureId mNetworkFeatureId = -1;
   QgsPointXY mFirstPoint;
   QgsPointXY mLastPoint;
 };
-
-bool TiePointInfoCompare( const TiePointInfo &a, const TiePointInfo &b )
-{
-  if ( a.mFirstPoint == b.mFirstPoint )
-    return a.mLastPoint.x() == b.mLastPoint.x() ? a.mLastPoint.y() < b.mLastPoint.y() : a.mLastPoint.x() < b.mLastPoint.x();
-
-  return a.mFirstPoint.x() == b.mFirstPoint.x() ? a.mFirstPoint.y() < b.mFirstPoint.y() : a.mFirstPoint.x() < b.mFirstPoint.x();
-}
 
 QgsVectorLayerDirector::QgsVectorLayerDirector( QgsFeatureSource *source,
     int directionFieldId,
@@ -157,11 +157,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
 
   snappedPoints = QVector< QgsPointXY >( additionalPoints.size(), QgsPointXY( 0.0, 0.0 ) );
 
-  TiePointInfo tmpInfo;
-  tmpInfo.mLength = std::numeric_limits<double>::infinity();
-
-  QVector< TiePointInfo > pointLengthMap( additionalPoints.size(), tmpInfo );
-  QVector< TiePointInfo >::iterator pointLengthIt;
+  QVector< TiePointInfo > additionalTiePoints( additionalPoints.size() );
 
   //Graph's points;
   QVector< QgsPointXY > points;
@@ -199,7 +195,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
           int i = 0;
           for ( i = 0; i != additionalPoints.size(); ++i )
           {
-            TiePointInfo info;
+            TiePointInfo info( feature.id(), pt1, pt2 );
             if ( pt1 == pt2 )
             {
               info.mLength = additionalPoints[ i ].sqrDist( pt1 );
@@ -211,12 +207,9 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
                              pt2.x(), pt2.y(), info.mTiedPoint );
             }
 
-            if ( pointLengthMap[ i ].mLength > info.mLength )
+            if ( additionalTiePoints[ i ].mLength > info.mLength )
             {
-              info.mFirstPoint = pt1;
-              info.mLastPoint = pt2;
-
-              pointLengthMap[ i ] = info;
+              additionalTiePoints[ i ] = info;
               snappedPoints[ i ] = info.mTiedPoint;
             }
           }
@@ -231,10 +224,15 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
     }
 
   }
-  // end: tie points to graph
+  QHash< QgsFeatureId, QList< int > > tiePointNetworkFeatures;
+  int i = 0;
+  for ( TiePointInfo &info : additionalTiePoints )
+  {
+    tiePointNetworkFeatures[ info.mNetworkFeatureId ] << i;
+    i++;
+  }
 
   // add tied point to graph
-  int i = 0;
   for ( i = 0; i < snappedPoints.size(); ++i )
   {
     if ( snappedPoints[ i ] != QgsPointXY( 0.0, 0.0 ) )
@@ -254,8 +252,6 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
 
   for ( i = 0; i < snappedPoints.size() ; ++i )
     snappedPoints[ i ] = *( my_binary_search( points.begin(), points.end(), snappedPoints[ i ], pointCompare ) );
-
-  std::sort( pointLengthMap.begin(), pointLengthMap.end(), TiePointInfoCompare );
 
   // begin graph construction
   fit = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( requiredAttributes() ) );
@@ -307,27 +303,15 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
           pointsOnArc[ 0.0 ] = pt1;
           pointsOnArc[ pt1.sqrDist( pt2 )] = pt2;
 
-          TiePointInfo t;
-          t.mFirstPoint = pt1;
-          t.mLastPoint  = pt2;
-          t.mLength = 0.0;
-          pointLengthIt = my_binary_search( pointLengthMap.begin(), pointLengthMap.end(), t, TiePointInfoCompare );
-
-          if ( pointLengthIt != pointLengthMap.end() )
+          const QList< int > tiePointsForCurrentFeature = tiePointNetworkFeatures.value( feature.id() );
+          if ( !tiePointsForCurrentFeature.empty() )
           {
-            QVector< TiePointInfo >::iterator it;
-            for ( it = pointLengthIt; it - pointLengthMap.begin() >= 0; --it )
+            for ( int tiePointIdx : tiePointsForCurrentFeature )
             {
-              if ( it->mFirstPoint == pt1 && it->mLastPoint == pt2 )
+              const TiePointInfo &t = additionalTiePoints.at( tiePointIdx );
+              if ( t.mFirstPoint == pt1 && t.mLastPoint == pt2 )
               {
-                pointsOnArc[ pt1.sqrDist( it->mTiedPoint )] = it->mTiedPoint;
-              }
-            }
-            for ( it = pointLengthIt + 1; it != pointLengthMap.end(); ++it )
-            {
-              if ( it->mFirstPoint == pt1 && it->mLastPoint == pt2 )
-              {
-                pointsOnArc[ pt1.sqrDist( it->mTiedPoint )] = it->mTiedPoint;
+                pointsOnArc[ pt1.sqrDist( t.mTiedPoint )] = t.mTiedPoint;
               }
             }
           }
