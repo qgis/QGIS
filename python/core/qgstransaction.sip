@@ -11,6 +11,7 @@
 
 
 
+
 class QgsTransaction : QObject /Abstract/
 {
 %Docstring
@@ -47,23 +48,15 @@ class QgsTransaction : QObject /Abstract/
  :rtype: QgsTransaction
 %End
 
-    static QgsTransaction *create( const QStringList &layerIds ) /Factory/;
+    static QgsTransaction *create( const QSet<QgsVectorLayer *> &layers ) /Factory/;
 %Docstring
- Create a transaction which includes the layers specified with
- ``layerIds``.
+ Create a transaction which includes the ``layers``.
  All layers are expected to have the same connection string and data
  provider.
  :rtype: QgsTransaction
 %End
 
     virtual ~QgsTransaction();
-
-    bool addLayer( const QString &layerId );
-%Docstring
- Add the layer with ``layerId`` to the transaction. The layer must not be
- in edit mode and the connection string must match.
- :rtype: bool
-%End
 
     bool addLayer( QgsVectorLayer *layer );
 %Docstring
