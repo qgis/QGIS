@@ -28,18 +28,8 @@ class QgsNetworkSpeedStrategy : QgsNetworkStrategy
 
     virtual QVariant cost( double distance, const QgsFeature &f ) const;
 
-%Docstring
-Returns edge cost
- :rtype: QVariant
-%End
+    virtual QSet< int > requiredAttributes() const;
 
-    virtual QgsAttributeList requiredAttributes() const;
-
-%Docstring
- Returns list of the source layer attributes needed for cost calculation.
- This method called by QgsGraphDirector.
- :rtype: QgsAttributeList
-%End
 
 };
 

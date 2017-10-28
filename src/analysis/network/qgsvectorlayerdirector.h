@@ -87,6 +87,8 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
     QString mReverseDirectionValue;
     QString mBothDirectionValue;
     Direction mDefaultDirection;
+
+    QgsAttributeList requiredAttributes() const;
 };
 
 #endif // QGSVECTORLAYERDIRECTOR_H

@@ -63,11 +63,10 @@ class ANALYSIS_EXPORT QgsNetworkStrategy
     virtual ~QgsNetworkStrategy() = default;
 
     /**
-     * Returns list of the source layer attributes needed for cost calculation.
-     * This method called by QgsGraphDirector.
-     * \returns list of required attributes
+     * Returns a list of the source layer attributes needed for cost calculation.
+     * This is method called by QgsGraphDirector.
      */
-    virtual QgsAttributeList requiredAttributes() const { return QgsAttributeList(); }
+    virtual QSet< int > requiredAttributes() const { return QSet< int >(); }
 
     /**
      * Returns edge cost

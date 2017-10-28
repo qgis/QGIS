@@ -124,6 +124,20 @@ QString QgsVectorLayerDirector::name() const
   return QStringLiteral( "Vector line" );
 }
 
+QgsAttributeList QgsVectorLayerDirector::requiredAttributes() const
+{
+  QSet< int > attrs;
+
+  if ( mDirectionFieldId != -1 )
+    attrs.insert( mDirectionFieldId );
+
+  for ( const QgsNetworkStrategy *strategy : mStrategies )
+  {
+    attrs.unite( strategy->requiredAttributes() );
+  }
+  return attrs.toList();
+}
+
 void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPointXY > &additionalPoints,
                                         QVector< QgsPointXY > &snappedPoints, QgsFeedback *feedback ) const
 {
@@ -155,7 +169,6 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
   QgsFeatureIterator fit = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
 
   // begin: tie points to the graph
-  QgsAttributeList la;
   QgsFeature feature;
   while ( fit.nextFeature( feature ) )
   {
@@ -244,43 +257,8 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
 
   std::sort( pointLengthMap.begin(), pointLengthMap.end(), TiePointInfoCompare );
 
-  {
-    // fill attribute list 'la'
-    QgsAttributeList tmpAttr;
-    if ( mDirectionFieldId != -1 )
-    {
-      tmpAttr.push_back( mDirectionFieldId );
-    }
-
-    QList< QgsNetworkStrategy * >::const_iterator it;
-    QgsAttributeList::const_iterator it2;
-
-    for ( it = mStrategies.constBegin(); it != mStrategies.constEnd(); ++it )
-    {
-      QgsAttributeList tmp = ( *it )->requiredAttributes();
-      for ( it2 = tmp.constBegin(); it2 != tmp.constEnd(); ++it2 )
-      {
-        tmpAttr.push_back( *it2 );
-      }
-    }
-    std::sort( tmpAttr.begin(), tmpAttr.end() );
-
-    int lastAttrId = -1;
-    for ( it2 = tmpAttr.constBegin(); it2 != tmpAttr.constEnd(); ++it2 )
-    {
-      if ( *it2 == lastAttrId )
-      {
-        continue;
-      }
-
-      la.push_back( *it2 );
-
-      lastAttrId = *it2;
-    }
-  } // end fill attribute list 'la'
-
   // begin graph construction
-  fit = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( la ) );
+  fit = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( requiredAttributes() ) );
   while ( fit.nextFeature( feature ) )
   {
     if ( feedback && feedback->isCanceled() )
