@@ -1,3 +1,18 @@
+/***************************************************************************
+    qgsattributerelationedit.h
+    ---------------------
+    begin                : October 2017
+    copyright            : (C) 2017 by David Signer
+    email                : david at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef QGSATTRIBUTERELATIONEDIT_H
 #define QGSATTRIBUTERELATIONEDIT_H
 
@@ -24,25 +39,25 @@ class APP_EXPORT QgsAttributeRelationEdit: public QWidget, private Ui::QgsAttrib
     Q_OBJECT
 
   public:
-    explicit QgsAttributeRelationEdit(const QString &relationid, QWidget *parent = 0);
+    explicit QgsAttributeRelationEdit( const QString &relationid, QWidget *parent = 0 );
     ~QgsAttributeRelationEdit();
 
-  /**
-   * Setter for combo cardinality item
-   */
-  void setCardinalityCombo( const QString &cardinalityComboItem );
+    /**
+     * Setter for combo cardinality item
+     */
+    void setCardinalityCombo( const QString &cardinalityComboItem );
 
-  /**
-   * Setter for combo cardinality
-   */
-  void setCardinality( const QString &cardinality );
+    /**
+     * Setter for combo cardinality
+     */
+    void setCardinality( const QString &cardinality );
 
-  /**
-   * Getter for combo cardinality
-   */
-  QString cardinality();
+    /**
+     * Getter for combo cardinality
+     */
+    QString cardinality();
 
-  QString mRelationId;
+    QString mRelationId;
   private:
 
     //Ui::QgsAttributeRelationEdit *ui;
