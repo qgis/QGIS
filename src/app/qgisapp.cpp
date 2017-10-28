@@ -4542,6 +4542,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   QgsSublayersDialog::LayerDefinitionList list;
   QMap< QString, int > mapLayerNameToCount;
   bool uniqueNames = true;
+  int lastLayerId = -1;
   Q_FOREACH ( const QString &sublayer, sublayers )
   {
     // OGR provider returns items in this format:
@@ -4562,9 +4563,13 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
       def.layerName = elements[1];
       def.count = elements[2].toInt();
       def.type = elements[3];
-      int count = ++mapLayerNameToCount[def.layerName];
-      if ( count > 1 || def.layerName.isEmpty() )
-        uniqueNames = false;
+      if ( lastLayerId != def.layerId )
+      {
+        int count = ++mapLayerNameToCount[def.layerName];
+        if ( count > 1 || def.layerName.isEmpty() )
+          uniqueNames = false;
+        lastLayerId = def.layerId;
+      }
       list << def;
     }
     else
