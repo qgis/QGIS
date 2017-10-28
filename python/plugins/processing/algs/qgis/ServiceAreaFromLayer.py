@@ -245,13 +245,13 @@ class ServiceAreaFromLayer(QgisAlgorithm):
             tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
             for j, v in enumerate(cost):
                 if v > travelCost and tree[j] != -1:
-                    vertexId = graph.edge(tree[j]).outVertex()
+                    vertexId = graph.edge(tree[j]).toVertex()
                     if cost[vertexId] <= travelCost:
                         vertices.append(j)
 
             for j in vertices:
-                upperBoundary.append(graph.vertex(graph.edge(tree[j]).inVertex()).point())
-                lowerBoundary.append(graph.vertex(graph.edge(tree[j]).outVertex()).point())
+                upperBoundary.append(graph.vertex(graph.edge(tree[j]).fromVertex()).point())
+                lowerBoundary.append(graph.vertex(graph.edge(tree[j]).toVertex()).point())
 
             geomUpper = QgsGeometry.fromMultiPointXY(upperBoundary)
             geomLower = QgsGeometry.fromMultiPointXY(lowerBoundary)

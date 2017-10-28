@@ -208,15 +208,15 @@ class ServiceAreaFromPoint(QgisAlgorithm):
         vertices = []
         for i, v in enumerate(cost):
             if v > travelCost and tree[i] != -1:
-                vertexId = graph.edge(tree[i]).outVertex()
+                vertexId = graph.edge(tree[i]).toVertex()
                 if cost[vertexId] <= travelCost:
                     vertices.append(i)
 
         upperBoundary = []
         lowerBoundary = []
         for i in vertices:
-            upperBoundary.append(graph.vertex(graph.edge(tree[i]).inVertex()).point())
-            lowerBoundary.append(graph.vertex(graph.edge(tree[i]).outVertex()).point())
+            upperBoundary.append(graph.vertex(graph.edge(tree[i]).fromVertex()).point())
+            lowerBoundary.append(graph.vertex(graph.edge(tree[i]).toVertex()).point())
 
         feedback.pushInfo(self.tr('Writing results...'))
 

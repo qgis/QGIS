@@ -42,7 +42,7 @@ void QgsGraphBuilder::addVertex( int, const QgsPointXY &pt )
 
 void QgsGraphBuilder::addEdge( int pt1id, const QgsPointXY &, int pt2id, const QgsPointXY &, const QVector< QVariant > &prop )
 {
-  mGraph->addEdge( pt1id, pt2id, prop );
+  mGraph->addEdge( pt2id, pt1id, prop );
 }
 
 QgsGraph *QgsGraphBuilder::graph()

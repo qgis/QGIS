@@ -267,8 +267,8 @@ class ShortestPathPointToLayer(QgisAlgorithm):
             current = idxEnd
             while current != idxStart:
                 cost += graph.edge(tree[current]).cost(0)
-                route.append(graph.vertex(graph.edge(tree[current]).inVertex()).point())
-                current = graph.edge(tree[current]).outVertex()
+                route.append(graph.vertex(graph.edge(tree[current]).fromVertex()).point())
+                current = graph.edge(tree[current]).toVertex()
 
             route.append(snappedPoints[0])
             route.reverse()

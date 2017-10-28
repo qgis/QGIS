@@ -46,9 +46,9 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
     /*
      * MANDATORY BUILDER PROPERTY DECLARATION
      */
-    virtual void addVertex( int id, const QgsPointXY &pt ) override;
+    void addVertex( int id, const QgsPointXY &pt ) override;
 
-    virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector< QVariant > &prop ) override;
+    void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector< QVariant > &prop ) override;
 
     /**
      * Returns generated QgsGraph
