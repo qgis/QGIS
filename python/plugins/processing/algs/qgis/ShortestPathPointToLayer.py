@@ -31,15 +31,15 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsWkbTypes,
+from qgis.core import (NULL,
+                       QgsWkbTypes,
                        QgsUnitTypes,
                        QgsFeature,
                        QgsFeatureSink,
                        QgsGeometry,
                        QgsFeatureRequest,
-                       QgsFields,
                        QgsField,
-                       QgsMessageLog,
+                       QgsPointXY,
                        QgsProcessing,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterPoint,
@@ -224,11 +224,15 @@ class ShortestPathPointToLayer(QgisAlgorithm):
             if feedback.isCanceled():
                 break
 
-            points.append(f.geometry().asPoint())
-            source_attributes[i] = f.attributes()
+            if not f.hasGeometry():
+                continue
+
+            for p in f.geometry().vertices():
+                points.append(QgsPointXY(p))
+                source_attributes[i] = f.attributes()
+                i += 1
 
             feedback.setProgress(int(current * total))
-            i += 1
 
         feedback.pushInfo(self.tr('Building graph...'))
         snappedPoints = director.makeGraph(builder, points, feedback)

@@ -37,9 +37,8 @@ from qgis.core import (QgsWkbTypes,
                        QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsGeometry,
-                       QgsFields,
                        QgsField,
-                       QgsMessageLog,
+                       QgsPointXY,
                        QgsProcessing,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterPoint,
@@ -224,11 +223,16 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
             if feedback.isCanceled():
                 break
 
-            points.append(f.geometry().asPoint())
-            source_attributes[i] = f.attributes()
+            if not f.hasGeometry():
+                continue
+
+            for p in f.geometry().vertices():
+                points.append(QgsPointXY(p))
+                source_attributes[i] = f.attributes()
+                i += 1
 
             feedback.setProgress(int(current * total))
-            i += 1
+
 
         feedback.pushInfo(self.tr('Building graph...'))
         snappedPoints = director.makeGraph(builder, points, feedback)

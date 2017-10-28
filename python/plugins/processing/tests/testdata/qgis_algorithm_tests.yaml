@@ -2662,6 +2662,56 @@ tests:
           geometry:
             precision: 5
 
+  - algorithm: qgis:shortestpathlayertopoint
+    name: Shortest path layer to point
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      END_POINT: 1004160.8843928401,6223198.426763908 [EPSG:32733]
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINTS:
+        name: custom/route_points.gml
+        type: vector
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/shortest_path_layer_to_point.shp
+        type: vector
+        compare:
+          geometry:
+            precision: 5
+
+  - algorithm: qgis:shortestpathpointtolayer
+    name: Shortest path point to layer
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      END_POINTS:
+        name: custom/route_points.gml
+        type: vector
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINT: 1001285.5030045575,6219636.580449594 [EPSG:32733]
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/shortest_path_point_to_layer.shp
+        type: vector
+        compare:
+          geometry:
+            precision: 5
+
   - algorithm: qgis:serviceareafrompoint
     name: Service area (from point, shortest)
     params:
