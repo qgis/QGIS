@@ -339,6 +339,18 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.vl.addFeature(f)  # Should not deadlock during an active iteration
         f = next(it)
 
+    def testTimeout(self):
+        """
+        Asserts that we will not deadlock if more iterators are opened in parallel than
+        available in the connection pool
+        """
+        request = QgsFeatureRequest()
+        request.setConnectionTimeout(1)
+
+        iterators = list()
+        for i in range(100):
+            iterators.append(self.vl.getFeatures(request))
+
     def testTransactionNotDirty(self):
         # create a vector ayer based on postgres
         vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
