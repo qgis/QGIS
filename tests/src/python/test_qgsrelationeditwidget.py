@@ -233,7 +233,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         """
         lyrs = [self.vl_a, self.vl_b, self.vl_link]
 
-        self.transaction = QgsTransaction.create([l.id() for l in lyrs])
+        self.transaction = QgsTransaction.create(lyrs)
         self.transaction.begin()
         for l in lyrs:
             l.startEditing()

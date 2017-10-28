@@ -2426,6 +2426,11 @@ QgsTracer        {#qgis_api_break_3_0_QgsTracer}
 
 - hasCrsTransformEnabled() and setCrsTransformEnabled() were removed. CRS transformation is now always enabled when required.
 
+QgsTransaction        {#qgis_api_break_3_0_QgsTransaction}
+--------------
+
+- `createTransaction()` takes a set of map layers instead of a layer ids
+
 
 QgsTreeWidgetItem        {#qgis_api_break_3_0_QgsTreeWidgetItem}
 -----------------
