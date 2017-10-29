@@ -113,7 +113,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
   }
 
   // convert the geometry to multipoint
-  QgsMultiPoint multiPoints;
+  QgsMultiPointXY multiPoints;
   if ( !featureGeometry.isMultipart() )
   {
     QgsPointXY p = featureGeometry.asPoint();
@@ -148,7 +148,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
   Result result = Success;
 
   //loop through all points in multipoint
-  for ( QgsMultiPoint::const_iterator pointIt = multiPoints.constBegin(); pointIt != multiPoints.constEnd(); ++pointIt )
+  for ( QgsMultiPointXY::const_iterator pointIt = multiPoints.constBegin(); pointIt != multiPoints.constEnd(); ++pointIt )
   {
     // avoiding any empty points or out of extent points
     if ( !mBounds.contains( *pointIt ) )

@@ -191,7 +191,7 @@ QgsGeometry QgsGeometry::fromPolygon( const QgsPolygonXY &polygon )
   return QgsGeometry();
 }
 
-QgsGeometry QgsGeometry::fromMultiPoint( const QgsMultiPoint &multipoint )
+QgsGeometry QgsGeometry::fromMultiPoint( const QgsMultiPointXY &multipoint )
 {
   std::unique_ptr< QgsMultiPointV2 > geom = QgsGeometryFactory::fromMultiPoint( multipoint );
   if ( geom )
@@ -983,7 +983,7 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox() const
   return orientedMinimumBoundingBox( area, angle, width, height );
 }
 
-static QgsCircle __recMinimalEnclosingCircle( QgsMultiPoint points, QgsMultiPoint boundary )
+static QgsCircle __recMinimalEnclosingCircle( QgsMultiPointXY points, QgsMultiPointXY boundary )
 {
   auto l_boundary = boundary.length();
   QgsCircle circ_mec;
@@ -1046,8 +1046,8 @@ QgsGeometry QgsGeometry::minimalEnclosingCircle( QgsPointXY &center, double &rad
   if ( hull.isNull() )
     return QgsGeometry();
 
-  QgsMultiPoint P = hull.convertToPoint( true ).asMultiPoint();
-  QgsMultiPoint R;
+  QgsMultiPointXY P = hull.convertToPoint( true ).asMultiPoint();
+  QgsMultiPointXY R;
 
   QgsCircle circ = __recMinimalEnclosingCircle( P, R );
   center = QgsPointXY( circ.center() );
@@ -1370,21 +1370,21 @@ QgsPolygonXY QgsGeometry::asPolygon() const
   return polygon;
 }
 
-QgsMultiPoint QgsGeometry::asMultiPoint() const
+QgsMultiPointXY QgsGeometry::asMultiPoint() const
 {
   if ( !d->geometry || QgsWkbTypes::flatType( d->geometry->wkbType() ) != QgsWkbTypes::MultiPoint )
   {
-    return QgsMultiPoint();
+    return QgsMultiPointXY();
   }
 
   const QgsMultiPointV2 *mp = qgsgeometry_cast<QgsMultiPointV2 *>( d->geometry.get() );
   if ( !mp )
   {
-    return QgsMultiPoint();
+    return QgsMultiPointXY();
   }
 
   int nPoints = mp->numGeometries();
-  QgsMultiPoint multiPoint( nPoints );
+  QgsMultiPointXY multiPoint( nPoints );
   for ( int i = 0; i < nPoints; ++i )
   {
     const QgsPoint *pt = static_cast<const QgsPoint *>( mp->geometryN( i ) );
@@ -2805,12 +2805,12 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
       if ( destMultipart )
       {
         // layer is multipart => make a multipoint with a single point
-        return fromMultiPoint( QgsMultiPoint() << asPoint() );
+        return fromMultiPoint( QgsMultiPointXY() << asPoint() );
       }
       else
       {
         // destination is singlepart => make a single part if possible
-        QgsMultiPoint multiPoint = asMultiPoint();
+        QgsMultiPointXY multiPoint = asMultiPoint();
         if ( multiPoint.count() == 1 )
         {
           return fromPoint( multiPoint[0] );
@@ -2829,7 +2829,7 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
       if ( isMultipart() )
       {
         const QgsMultiPolyline multiLine = asMultiPolyline();
-        QgsMultiPoint multiPoint;
+        QgsMultiPointXY multiPoint;
         for ( const QgsPolylineXY &l : multiLine )
           for ( const QgsPointXY &p : l )
             multiPoint << p;
@@ -2855,7 +2855,7 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
       if ( isMultipart() )
       {
         const QgsMultiPolygon multiPolygon = asMultiPolygon();
-        QgsMultiPoint multiPoint;
+        QgsMultiPointXY multiPoint;
         for ( const QgsPolygonXY &poly : multiPolygon )
           for ( const QgsPolylineXY &line : poly )
             for ( const QgsPointXY &pt : line )
@@ -2866,7 +2866,7 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
       else
       {
         const QgsPolygonXY polygon = asPolygon();
-        QgsMultiPoint multiPoint;
+        QgsMultiPointXY multiPoint;
         for ( const QgsPolylineXY &line : polygon )
           for ( const QgsPointXY &pt : line )
             multiPoint << pt;
@@ -2888,7 +2888,7 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
       if ( !isMultipart() )
         return QgsGeometry();
 
-      QgsMultiPoint multiPoint = asMultiPoint();
+      QgsMultiPointXY multiPoint = asMultiPoint();
       if ( multiPoint.count() < 2 )
         return QgsGeometry();
 
@@ -2995,7 +2995,7 @@ QgsGeometry QgsGeometry::convertToPolygon( bool destMultipart ) const
       if ( !isMultipart() )
         return QgsGeometry();
 
-      QgsMultiPoint multiPoint = asMultiPoint();
+      QgsMultiPointXY multiPoint = asMultiPoint();
       if ( multiPoint.count() < 3 )
         return QgsGeometry();
 

@@ -276,7 +276,7 @@ void QgsHighlight::paint( QPainter *p )
         }
         else
         {
-          QgsMultiPoint m = mGeometry->asMultiPoint();
+          QgsMultiPointXY m = mGeometry->asMultiPoint();
           for ( int i = 0; i < m.size(); i++ )
           {
             paintPoint( p, m[i] );

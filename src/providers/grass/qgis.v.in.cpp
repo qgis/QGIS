@@ -258,7 +258,7 @@ int main( int argc, char **argv )
       }
       else if ( geometryType == QgsWkbTypes::MultiPoint )
       {
-        QgsMultiPoint multiPoint = geometry.asMultiPoint();
+        QgsMultiPointXY multiPoint = geometry.asMultiPoint();
         Q_FOREACH ( const QgsPointXY &point, multiPoint )
         {
           writePoint( map, GV_POINT, point, cats );

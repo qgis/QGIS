@@ -21,7 +21,7 @@ typedef QVector<QgsPoint> QgsPolyline;
 
 typedef QVector<QVector<QgsPointXY>> QgsPolygonXY;
 
-typedef QVector<QgsPointXY> QgsMultiPoint;
+typedef QVector<QgsPointXY> QgsMultiPointXY;
 
 typedef QVector<QVector<QgsPointXY>> QgsMultiPolyline;
 
@@ -150,9 +150,9 @@ Creates a new geometry from a WKT string
 Creates a new geometry from a QgsPointXY object
  :rtype: QgsGeometry
 %End
-    static QgsGeometry fromMultiPoint( const QgsMultiPoint &multipoint );
+    static QgsGeometry fromMultiPoint( const QgsMultiPointXY &multipoint );
 %Docstring
-Creates a new geometry from a QgsMultiPoint object
+Creates a new geometry from a QgsMultiPointXY object
  :rtype: QgsGeometry
 %End
 
@@ -1151,11 +1151,11 @@ Returns an extruded version of this geometry.
  :rtype: QgsPolygonXY
 %End
 
-    QgsMultiPoint asMultiPoint() const;
+    QgsMultiPointXY asMultiPoint() const;
 %Docstring
  Returns contents of the geometry as a multi point
  if wkbType is WKBMultiPoint, otherwise an empty list
- :rtype: QgsMultiPoint
+ :rtype: QgsMultiPointXY
 %End
 
     QgsMultiPolyline asMultiPolyline() const;

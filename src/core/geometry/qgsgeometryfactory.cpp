@@ -137,10 +137,10 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryFactory::fromPoint( const QgsP
   return qgis::make_unique< QgsPoint >( point.x(), point.y() );
 }
 
-std::unique_ptr<QgsMultiPointV2> QgsGeometryFactory::fromMultiPoint( const QgsMultiPoint &multipoint )
+std::unique_ptr<QgsMultiPointV2> QgsGeometryFactory::fromMultiPoint( const QgsMultiPointXY &multipoint )
 {
   std::unique_ptr< QgsMultiPointV2 > mp = qgis::make_unique< QgsMultiPointV2 >();
-  QgsMultiPoint::const_iterator ptIt = multipoint.constBegin();
+  QgsMultiPointXY::const_iterator ptIt = multipoint.constBegin();
   for ( ; ptIt != multipoint.constEnd(); ++ptIt )
   {
     QgsPoint *pt = new QgsPoint( ptIt->x(), ptIt->y() );

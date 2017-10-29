@@ -299,7 +299,7 @@ void TestQgsGML::testMultiPointGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPoint );
-  QgsMultiPoint multi = features[0].first->geometry().asMultiPoint();
+  QgsMultiPointXY multi = features[0].first->geometry().asMultiPoint();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0], QgsPointXY( 10, 20 ) );
   QCOMPARE( multi[1], QgsPointXY( 30, 40 ) );

@@ -276,7 +276,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     case QgsWkbTypes::MultiPoint:
     case QgsWkbTypes::MultiPoint25D:
     {
-      const QgsMultiPoint mpt = geom.asMultiPoint();
+      const QgsMultiPointXY mpt = geom.asMultiPoint();
       for ( QgsPointXY pt : mpt )
       {
         addPoint( pt, false, idx );
@@ -616,7 +616,7 @@ QgsGeometry QgsRubberBand::asGeometry() const
 
     case QgsWkbTypes::PointGeometry:
     {
-      QgsMultiPoint multiPoint;
+      QgsMultiPointXY multiPoint;
 
       QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
       for ( ; it != mPoints.constEnd(); ++it )
