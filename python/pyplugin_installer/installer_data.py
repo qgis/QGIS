@@ -98,9 +98,9 @@ mPlugins = dict of dicts {id : {
 
 translatableAttributes = ["name", "description", "about", "tags"]
 
-reposGroup = "/Qgis/plugin-repos"
-settingsGroup = "/Qgis/plugin-installer"
-seenPluginGroup = "/Qgis/plugin-seen"
+settingsGroup = "PluginInstaller"
+reposGroup = "PluginInstaller/repositories"
+seenPluginGroup = "PluginInstaller/seenPlugins"
 
 officialRepo = (QCoreApplication.translate("QgsPluginInstaller", "QGIS Official Plugin Repository"), "https://plugins.qgis.org/plugins/plugins.xml")
 
