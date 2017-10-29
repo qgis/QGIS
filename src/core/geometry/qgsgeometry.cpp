@@ -183,7 +183,7 @@ QgsGeometry QgsGeometry::fromPolyline( const QgsPolyline &polyline )
 
 QgsGeometry QgsGeometry::fromPolygon( const QgsPolygonXY &polygon )
 {
-  std::unique_ptr< QgsPolygonV2 > geom = QgsGeometryFactory::fromPolygon( polygon );
+  std::unique_ptr< QgsPolygon > geom = QgsGeometryFactory::fromPolygon( polygon );
   if ( geom )
   {
     return QgsGeometry( std::move( geom.release() ) );
@@ -1342,8 +1342,8 @@ QgsPolygonXY QgsGeometry::asPolygon() const
 
   bool doSegmentation = ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::CurvePolygon );
 
-  QgsPolygonV2 *p = nullptr;
-  std::unique_ptr< QgsPolygonV2 > segmentized;
+  QgsPolygon *p = nullptr;
+  std::unique_ptr< QgsPolygon > segmentized;
   if ( doSegmentation )
   {
     QgsCurvePolygon *curvePoly = qgsgeometry_cast<QgsCurvePolygon *>( d->geometry.get() );
@@ -1356,7 +1356,7 @@ QgsPolygonXY QgsGeometry::asPolygon() const
   }
   else
   {
-    p = qgsgeometry_cast<QgsPolygonV2 *>( d->geometry.get() );
+    p = qgsgeometry_cast<QgsPolygon *>( d->geometry.get() );
   }
 
   if ( !p )
@@ -1460,7 +1460,7 @@ QgsMultiPolygonXY QgsGeometry::asMultiPolygon() const
   QgsMultiPolygonXY mp;
   for ( int i = 0; i < nPolygons; ++i )
   {
-    const QgsPolygonV2 *polygon = qgsgeometry_cast<const QgsPolygonV2 *>( geomCollection->geometryN( i ) );
+    const QgsPolygon *polygon = qgsgeometry_cast<const QgsPolygon *>( geomCollection->geometryN( i ) );
     if ( !polygon )
     {
       const QgsCurvePolygon *cPolygon = qgsgeometry_cast<const QgsCurvePolygon *>( geomCollection->geometryN( i ) );
@@ -2519,7 +2519,7 @@ void QgsGeometry::convertToPolyline( const QgsPointSequence &input, QgsPolylineX
   }
 }
 
-void QgsGeometry::convertPolygon( const QgsPolygonV2 &input, QgsPolygonXY &output )
+void QgsGeometry::convertPolygon( const QgsPolygon &input, QgsPolygonXY &output )
 {
   output.clear();
   QgsCoordinateSequence coords = input.coordinateSequence();
@@ -2650,7 +2650,7 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
 
     case QgsWkbTypes::Polygon:
     {
-      QgsPolygonV2 *poly = static_cast< QgsPolygonV2 * >( d->geometry.get() );
+      QgsPolygon *poly = static_cast< QgsPolygon * >( d->geometry.get() );
       return QgsGeometry( smoothPolygon( *poly, iterations, offset, minimumDistance, maxAngle ) );
     }
 
@@ -2661,7 +2661,7 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
       std::unique_ptr< QgsMultiPolygonV2 > resultMultiPoly = qgis::make_unique< QgsMultiPolygonV2 >();
       for ( int i = 0; i < multiPoly->numGeometries(); ++i )
       {
-        resultMultiPoly->addGeometry( smoothPolygon( *( static_cast< QgsPolygonV2 * >( multiPoly->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ).release() );
+        resultMultiPoly->addGeometry( smoothPolygon( *( static_cast< QgsPolygon * >( multiPoly->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ).release() );
       }
       return QgsGeometry( std::move( resultMultiPoly ) );
     }
@@ -2771,11 +2771,11 @@ std::unique_ptr<QgsLineString> QgsGeometry::smoothLine( const QgsLineString &lin
   return smoothCurve( line, iterations, offset, squareDistThreshold, maxAngleRads, false );
 }
 
-std::unique_ptr<QgsPolygonV2> QgsGeometry::smoothPolygon( const QgsPolygonV2 &polygon, const unsigned int iterations, const double offset, double minimumDistance, double maxAngle ) const
+std::unique_ptr<QgsPolygonV2> QgsGeometry::smoothPolygon( const QgsPolygon &polygon, const unsigned int iterations, const double offset, double minimumDistance, double maxAngle ) const
 {
   double maxAngleRads = maxAngle * M_PI / 180.0;
   double squareDistThreshold = minimumDistance > 0 ? minimumDistance * minimumDistance : -1;
-  std::unique_ptr< QgsPolygonV2 > resultPoly = qgis::make_unique< QgsPolygonV2 >();
+  std::unique_ptr< QgsPolygon > resultPoly = qgis::make_unique< QgsPolygon >();
 
   resultPoly->setExteriorRing( smoothCurve( *( static_cast< const QgsLineString *>( polygon.exteriorRing() ) ), iterations, offset,
                                squareDistThreshold, maxAngleRads, true ).release() );

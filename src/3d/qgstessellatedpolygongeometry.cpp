@@ -65,7 +65,7 @@ QgsTessellatedPolygonGeometry::~QgsTessellatedPolygonGeometry()
   qDeleteAll( mPolygons );
 }
 
-void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygonV2 *> &polygons, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon )
+void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &polygons, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon )
 {
   qDeleteAll( mPolygons );
   mPolygons = polygons;
@@ -73,7 +73,7 @@ void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygonV2 *> &po
   QgsTessellator tesselator( origin.x(), origin.y(), mWithNormals );
   for ( int i = 0; i < polygons.count(); ++i )
   {
-    QgsPolygonV2 *polygon = polygons.at( i );
+    QgsPolygon *polygon = polygons.at( i );
     float extr = extrusionHeightPerPolygon.isEmpty() ? extrusionHeight : extrusionHeightPerPolygon.at( i );
     tesselator.addPolygon( *polygon, extr );
   }

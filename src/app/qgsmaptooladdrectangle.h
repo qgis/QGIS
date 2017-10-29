@@ -20,7 +20,7 @@
 #include "qgsrectangle.h"
 #include "qgsmaptoolcapture.h"
 
-class QgsPolygonV2;
+class QgsPolygon;
 
 class QgsMapToolAddRectangle: public QgsMapToolCapture
 {
@@ -56,7 +56,7 @@ class QgsMapToolAddRectangle: public QgsMapToolCapture
     //! Convenient method to export a QgsRectangle to a LineString
     QgsLineString *rectangleToLinestring( const bool isOriented = false ) const;
     //! Convenient method to export a QgsRectangle to a Polygon
-    QgsPolygonV2 *rectangleToPolygon( const bool isOriented = false ) const;
+    QgsPolygon *rectangleToPolygon( const bool isOriented = false ) const;
 
     //! Sets the azimuth. \see mAzimuth
     void setAzimuth( const double azimuth );

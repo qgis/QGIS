@@ -320,7 +320,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     }
     boundLineString->close();
 
-    QgsPolygonV2 *obstaclePolygon = new QgsPolygonV2();
+    QgsPolygon *obstaclePolygon = new QgsPolygon();
     obstaclePolygon->setExteriorRing( boundLineString );
 
     if ( isMultiPoint )

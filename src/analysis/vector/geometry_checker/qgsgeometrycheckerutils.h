@@ -100,7 +100,7 @@ namespace QgsGeometryCheckerUtils
   QgsAbstractGeometry *getGeomPart( QgsAbstractGeometry *geom, int partIdx );
   const QgsAbstractGeometry *getGeomPart( const QgsAbstractGeometry *geom, int partIdx );
 
-  QList<const QgsLineString *> polygonRings( const QgsPolygonV2 *polygon );
+  QList<const QgsLineString *> polygonRings( const QgsPolygon *polygon );
 
   void filter1DTypes( QgsAbstractGeometry *geom );
 

@@ -31,7 +31,7 @@ class QgsRectangle;
 class QgsGeometryCollection;
 class QgsMultiPointV2;
 class QgsMultiLineString;
-class QgsPolygonV2;
+class QgsPolygon;
 class QgsMultiPolygonV2;
 
 //compatibility with old classes

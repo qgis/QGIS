@@ -287,7 +287,7 @@ static QgsAbstractGeometry *parseEsriEnvelope( const QVariantMap &geometryData )
   ext->addVertex( QgsPoint( xmax, ymax ) );
   ext->addVertex( QgsPoint( xmin, ymax ) );
   ext->addVertex( QgsPoint( xmin, ymin ) );
-  QgsPolygonV2 *poly = new QgsPolygonV2();
+  QgsPolygon *poly = new QgsPolygon();
   poly->setExteriorRing( ext );
   return poly;
 }

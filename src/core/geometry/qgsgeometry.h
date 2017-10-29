@@ -45,7 +45,7 @@ class QgsGeometryEngine;
 class QgsVectorLayer;
 class QgsMapToPixel;
 class QPainter;
-class QgsPolygonV2;
+class QgsPolygon;
 class QgsLineString;
 
 /**
@@ -1651,7 +1651,7 @@ class CORE_EXPORT QgsGeometry
     void reset( std::unique_ptr< QgsAbstractGeometry > newGeometry );
 
     static void convertToPolyline( const QgsPointSequence &input, QgsPolylineXY &output );
-    static void convertPolygon( const QgsPolygonV2 &input, QgsPolygonXY &output );
+    static void convertPolygon( const QgsPolygon &input, QgsPolygonXY &output );
 
     //! Try to convert the geometry to a point
     QgsGeometry convertToPoint( bool destMultipart ) const;
@@ -1685,7 +1685,7 @@ class CORE_EXPORT QgsGeometry
      * \param minimumDistance minimum segment length to apply smoothing to
      * \param maxAngle maximum angle at node (0-180) at which smoothing will be applied
     */
-    std::unique_ptr< QgsPolygonV2 > smoothPolygon( const QgsPolygonV2 &polygon, const unsigned int iterations = 1, const double offset = 0.25,
+    std::unique_ptr< QgsPolygon > smoothPolygon( const QgsPolygon &polygon, const unsigned int iterations = 1, const double offset = 0.25,
         double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
 

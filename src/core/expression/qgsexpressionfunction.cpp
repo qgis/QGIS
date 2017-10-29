@@ -1973,7 +1973,7 @@ static QVariant fcnMakePolygon( const QVariantList &values, const QgsExpressionC
   if ( outerRing.type() != QgsWkbTypes::LineGeometry || outerRing.isMultipart() || outerRing.isNull() )
     return QVariant();
 
-  QgsPolygonV2 *polygon = new QgsPolygonV2();
+  QgsPolygon *polygon = new QgsPolygon();
   polygon->setExteriorRing( qgsgeometry_cast< QgsCurve * >( outerRing.constGet()->clone() ) );
 
   for ( int i = 1; i < values.count(); ++i )

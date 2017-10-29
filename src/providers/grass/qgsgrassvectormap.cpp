@@ -641,7 +641,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::lineGeometry( int id )
   }
   else if ( type & GV_FACE )
   {
-    QgsPolygonV2 *polygon = new QgsPolygonV2();
+    QgsPolygon *polygon = new QgsPolygon();
     QgsLineString *ring = new QgsLineString();
     ring->setPoints( pointList );
     polygon->setExteriorRing( ring );
@@ -663,7 +663,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::nodeGeometry( int id )
 QgsAbstractGeometry *QgsGrassVectorMap::areaGeometry( int id )
 {
   QgsDebugMsgLevel( QString( "id = %1" ).arg( id ), 3 );
-  QgsPolygonV2 *polygon = new QgsPolygonV2();
+  QgsPolygon *polygon = new QgsPolygon();
 
   struct line_pnts *points = Vect_new_line_struct();
   QgsDebugMsgLevel( QString( "points= %1" ).arg( ( quint64 )points ), 3 );

@@ -65,8 +65,8 @@ class CORE_EXPORT QgsAbstractGeometry
       sipType = sipType_QgsCompoundCurve;
     else if ( qgsgeometry_cast<QgsTriangle *>( sipCpp ) != nullptr )
       sipType = sipType_QgsTriangle;
-    else if ( qgsgeometry_cast<QgsPolygonV2 *>( sipCpp ) != nullptr )
-      sipType = sipType_QgsPolygonV2;
+    else if ( qgsgeometry_cast<QgsPolygon *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPolygon;
     else if ( qgsgeometry_cast<QgsCurvePolygon *>( sipCpp ) != nullptr )
       sipType = sipType_QgsCurvePolygon;
     else if ( qgsgeometry_cast<QgsMultiPointV2 *>( sipCpp ) != nullptr )
@@ -405,7 +405,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * Returns the geometry converted to the more generic curve type.
-     * E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
+     * E.g. QgsLineString -> QgsCompoundCurve, QgsPolygon -> QgsCurvePolygon,
      * QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
      * \returns the converted geometry. Caller takes ownership
     */

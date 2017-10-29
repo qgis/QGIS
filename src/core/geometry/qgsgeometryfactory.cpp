@@ -91,7 +91,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkt( const QStr
   }
   else if ( trimmed.startsWith( QLatin1String( "Polygon" ), Qt::CaseInsensitive ) )
   {
-    geom = qgis::make_unique< QgsPolygonV2 >();
+    geom = qgis::make_unique< QgsPolygon >();
   }
   else if ( trimmed.startsWith( QLatin1String( "CurvePolygon" ), Qt::CaseInsensitive ) )
   {
@@ -166,7 +166,7 @@ std::unique_ptr<QgsMultiLineString> QgsGeometryFactory::fromMultiPolyline( const
 
 std::unique_ptr<QgsPolygonV2> QgsGeometryFactory::fromPolygon( const QgsPolygonXY &polygon )
 {
-  std::unique_ptr< QgsPolygonV2 > poly = qgis::make_unique< QgsPolygonV2 >();
+  std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
 
   QList<QgsCurve *> holes;
   for ( int i = 0; i < polygon.size(); ++i )
@@ -227,7 +227,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkbType( QgsWkb
     case QgsWkbTypes::CompoundCurve:
       return qgis::make_unique< QgsCompoundCurve >();
     case QgsWkbTypes::Polygon:
-      return qgis::make_unique< QgsPolygonV2 >();
+      return qgis::make_unique< QgsPolygon >();
     case QgsWkbTypes::CurvePolygon:
       return qgis::make_unique< QgsCurvePolygon >();
     case QgsWkbTypes::MultiLineString:

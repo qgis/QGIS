@@ -206,14 +206,14 @@ class GeometryConvert(QgisAlgorithm):
                         points.append(p)
             linestring = QgsLineString(points)
             linestring.close()
-            p = QgsPolygonV2()
+            p = QgsPolygon()
             p.setExteriorRing(linestring)
             return [QgsGeometry(p)]
         elif QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.LineGeometry:
             if QgsWkbTypes.isMultiType(geom):
                 parts = []
                 for i in range(geom.constGet().numGeometries()):
-                    p = QgsPolygonV2()
+                    p = QgsPolygon()
                     linestring = geom.constGet().geometryN(i).clone()
                     linestring.close()
                     p.setExteriorRing(linestring)
@@ -221,7 +221,7 @@ class GeometryConvert(QgisAlgorithm):
                 return QgsGeometry.collectGeometry(parts)
             else:
                 # linestring to polygon
-                p = QgsPolygonV2()
+                p = QgsPolygon()
                 linestring = geom.constGet().clone()
                 linestring.close()
                 p.setExteriorRing(linestring)

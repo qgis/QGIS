@@ -123,7 +123,7 @@ class LinesToPolygons(QgisFeatureBasedAlgorithm):
         else:
             # not collection
             if geometry.vertexCount() > 2:
-                surface = QgsPolygonV2()
+                surface = QgsPolygon()
                 surface.setExteriorRing(geometry.clone())
                 surfaces.append(surface)
 

@@ -49,7 +49,7 @@ class QgsFillSymbolLayer;
 class QgsSymbolRenderContext;
 class QgsFeatureRenderer;
 class QgsCurve;
-class QgsPolygonV2;
+class QgsPolygon;
 class QgsExpressionContext;
 
 typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
@@ -365,7 +365,7 @@ class CORE_EXPORT QgsSymbol
     /**
      * Creates a polygon in screen coordinates from a QgsPolygonXYin map coordinates
      */
-    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygonV2 &polygon, bool clipToExtent = true );
+    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true );
 
     /**
      * Retrieve a cloned list of all layers that make up this symbol.

@@ -178,9 +178,9 @@ QgsPointSequence QgsRegularPolygon::points() const
   return pts;
 }
 
-QgsPolygonV2 *QgsRegularPolygon::toPolygon() const
+QgsPolygon *QgsRegularPolygon::toPolygon() const
 {
-  std::unique_ptr<QgsPolygonV2> polygon( new QgsPolygonV2() );
+  std::unique_ptr<QgsPolygonV2> polygon( new QgsPolygon() );
   if ( isEmpty() )
   {
     return polygon.release();

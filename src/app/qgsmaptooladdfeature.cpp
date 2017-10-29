@@ -277,7 +277,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         }
         else
         {
-          poly = new QgsPolygonV2();
+          poly = new QgsPolygon();
         }
         poly->setExteriorRing( curveToAdd );
         QgsGeometry g( poly );

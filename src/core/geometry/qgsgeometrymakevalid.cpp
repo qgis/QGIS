@@ -341,7 +341,7 @@ static GEOSGeometry *LWGEOM_GEOS_getPointN( const GEOSGeometry *g_in, uint32_t n
 
 
 static bool lwline_make_geos_friendly( QgsLineString *line );
-static bool lwpoly_make_geos_friendly( QgsPolygonV2 *poly );
+static bool lwpoly_make_geos_friendly( QgsPolygon *poly );
 static bool lwcollection_make_geos_friendly( QgsGeometryCollection *g );
 
 
@@ -364,7 +364,7 @@ static bool lwgeom_make_geos_friendly( QgsAbstractGeometry *geom )
 
     case QgsWkbTypes::Polygon:
       // polygons need all rings closed and with npoints > 3
-      return lwpoly_make_geos_friendly( qgsgeometry_cast<QgsPolygonV2 *>( geom ) );
+      return lwpoly_make_geos_friendly( qgsgeometry_cast<QgsPolygon *>( geom ) );
       break;
 
     case QgsWkbTypes::MultiLineString:
@@ -404,7 +404,7 @@ static bool ring_make_geos_friendly( QgsCurve *ring )
 }
 
 // Make sure all rings are closed and have > 3 points.
-static bool lwpoly_make_geos_friendly( QgsPolygonV2 *poly )
+static bool lwpoly_make_geos_friendly( QgsPolygon *poly )
 {
   // If the polygon has no rings there's nothing to do
   // TODO: in qgis representation there always is exterior ring

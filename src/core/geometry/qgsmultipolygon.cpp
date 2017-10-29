@@ -65,7 +65,7 @@ QDomElement QgsMultiPolygonV2::asGML2( QDomDocument &doc, int precision, const Q
 
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( qgsgeometry_cast<const QgsPolygonV2 *>( geom ) )
+    if ( qgsgeometry_cast<const QgsPolygon *>( geom ) )
     {
       QDomElement elemPolygonMember = doc.createElementNS( ns, QStringLiteral( "polygonMember" ) );
       elemPolygonMember.appendChild( geom->asGML2( doc, precision, ns ) );
@@ -85,7 +85,7 @@ QDomElement QgsMultiPolygonV2::asGML3( QDomDocument &doc, int precision, const Q
 
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( qgsgeometry_cast<const QgsPolygonV2 *>( geom ) )
+    if ( qgsgeometry_cast<const QgsPolygon *>( geom ) )
     {
       QDomElement elemSurfaceMember = doc.createElementNS( ns, QStringLiteral( "polygonMember" ) );
       elemSurfaceMember.appendChild( geom->asGML3( doc, precision, ns ) );
@@ -102,11 +102,11 @@ QString QgsMultiPolygonV2::asJSON( int precision ) const
   QString json = QStringLiteral( "{\"type\": \"MultiPolygon\", \"coordinates\": [" );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    if ( qgsgeometry_cast<const QgsPolygonV2 *>( geom ) )
+    if ( qgsgeometry_cast<const QgsPolygon *>( geom ) )
     {
       json += '[';
 
-      const QgsPolygonV2 *polygon = static_cast<const QgsPolygonV2 *>( geom );
+      const QgsPolygon *polygon = static_cast<const QgsPolygon *>( geom );
 
       std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;
@@ -139,7 +139,7 @@ QString QgsMultiPolygonV2::asJSON( int precision ) const
 
 bool QgsMultiPolygonV2::addGeometry( QgsAbstractGeometry *g )
 {
-  if ( !qgsgeometry_cast<QgsPolygonV2 *>( g ) )
+  if ( !qgsgeometry_cast<QgsPolygon *>( g ) )
   {
     delete g;
     return false;
@@ -163,7 +163,7 @@ bool QgsMultiPolygonV2::addGeometry( QgsAbstractGeometry *g )
 
 bool QgsMultiPolygonV2::insertGeometry( QgsAbstractGeometry *g, int index )
 {
-  if ( !g || !qgsgeometry_cast< QgsPolygonV2 * >( g ) )
+  if ( !g || !qgsgeometry_cast< QgsPolygon * >( g ) )
   {
     delete g;
     return false;
@@ -187,7 +187,7 @@ QgsAbstractGeometry *QgsMultiPolygonV2::boundary() const
   std::unique_ptr< QgsMultiLineString > multiLine( new QgsMultiLineString() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
-    if ( QgsPolygonV2 *polygon = qgsgeometry_cast<QgsPolygonV2 *>( mGeometries.at( i ) ) )
+    if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( mGeometries.at( i ) ) )
     {
       QgsAbstractGeometry *polygonBoundary = polygon->boundary();
 
