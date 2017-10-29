@@ -39,7 +39,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      *
      * \since QGIS 3.0
      */
-    class QgsDuplicateFeatureContext
+    class CORE_EXPORT QgsDuplicateFeatureContext
     {
       public:
 

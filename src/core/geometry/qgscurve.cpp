@@ -206,6 +206,7 @@ QgsPoint QgsCurve::childPoint( int index ) const
   QgsVertexId::VertexType type;
   bool res = pointAt( index, point, type );
   Q_ASSERT( res );
+  Q_UNUSED( res );
   return point;
 }
 

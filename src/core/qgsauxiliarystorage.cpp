@@ -381,7 +381,7 @@ QgsField QgsAuxiliaryLayer::createAuxiliaryField( const QgsPropertyDefinition &d
 
   if ( !def.name().isEmpty() || !def.comment().isEmpty() )
   {
-    QVariant::Type type;
+    QVariant::Type type = QVariant::Invalid;
     QString typeName;
     int len( 0 ), precision( 0 );
     switch ( def.dataType() )
