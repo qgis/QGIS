@@ -109,7 +109,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     QgsFeatureRenderer *getRenderer( QgsRenderContext &context, const QColor &color, const QColor &fillColor );
     void paintPoint( QPainter *p, const QgsPointXY &point );
     void paintLine( QPainter *p, QgsPolylineXY line );
-    void paintPolygon( QPainter *p, QgsPolygonXY polygon );
+    void paintPolygon( QPainter *p, const QgsPolygonXY &polygon );
 
     QBrush mBrush;
     QPen mPen;
