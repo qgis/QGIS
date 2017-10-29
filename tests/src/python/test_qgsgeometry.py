@@ -1423,7 +1423,7 @@ class TestQgsGeometry(unittest.TestCase):
         # test adding a part with Z values
         point = QgsGeometry.fromPoint(points[0])
         point.get().addZValue(4.0)
-        self.assertEqual(point.addPointsV2([QgsPoint(points[1][0], points[1][1], 3.0, wkbType=QgsWkbTypes.PointZ)]), 0)
+        self.assertEqual(point.addPoints([QgsPoint(points[1][0], points[1][1], 3.0, wkbType=QgsWkbTypes.PointZ)]), 0)
         expwkt = "MultiPointZ ((0 0 4), (1 0 3))"
         wkt = point.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
@@ -1453,7 +1453,7 @@ class TestQgsGeometry(unittest.TestCase):
         polyline = QgsGeometry.fromPolylineXY(points[0])
         polyline.get().addZValue(4.0)
         points2 = [QgsPoint(p[0], p[1], 3.0, wkbType=QgsWkbTypes.PointZ) for p in points[1]]
-        self.assertEqual(polyline.addPointsV2(points2), QgsGeometry.Success)
+        self.assertEqual(polyline.addPoints(points2), QgsGeometry.Success)
         expwkt = "MultiLineStringZ ((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 0 4),(3 0 3, 3 1 3, 5 1 3, 5 0 3, 6 0 3))"
         wkt = polyline.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
@@ -1497,7 +1497,7 @@ class TestQgsGeometry(unittest.TestCase):
         polygon = QgsGeometry.fromPolygon(points[0])
         polygon.get().addZValue(4.0)
         points2 = [QgsPoint(pi[0], pi[1], 3.0, wkbType=QgsWkbTypes.PointZ) for pi in points[1][0]]
-        self.assertEqual(polygon.addPointsV2(points2), QgsGeometry.Success)
+        self.assertEqual(polygon.addPoints(points2), QgsGeometry.Success)
         expwkt = "MultiPolygonZ (((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 2 4, 0 2 4, 0 0 4)),((4 0 3, 5 0 3, 5 2 3, 3 2 3, 3 1 3, 4 1 3, 4 0 3)))"
         wkt = polygon.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
