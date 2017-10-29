@@ -102,26 +102,7 @@ reposGroup = "/Qgis/plugin-repos"
 settingsGroup = "/Qgis/plugin-installer"
 seenPluginGroup = "/Qgis/plugin-seen"
 
-
-# Repositories: (name, url, possible depreciated url)
-officialRepo = (QCoreApplication.translate("QgsPluginInstaller", "QGIS Official Plugin Repository"), "https://plugins.qgis.org/plugins/plugins.xml", "https://plugins.qgis.org/plugins")
-depreciatedRepos = [
-    ("Old QGIS Official Repository", "http://pyqgis.org/repo/official"),
-    ("Old QGIS Contributed Repository", "http://pyqgis.org/repo/contributed"),
-    ("Aaron Racicot's Repository", "http://qgisplugins.z-pulley.com"),
-    ("Barry Rowlingson's Repository", "http://www.maths.lancs.ac.uk/~rowlings/Qgis/Plugins/plugins.xml"),
-    ("Bob Bruce's Repository", "http://www.mappinggeek.ca/QGISPythonPlugins/Bobs-QGIS-plugins.xml"),
-    ("Borys Jurgiel's Repository", "http://bwj.aster.net.pl/qgis/plugins.xml"),
-    ("Carson Farmer's Repository", "http://www.ftools.ca/cfarmerQgisRepo.xml"),
-    ("CatAIS Repository", "http://www.catais.org/qgis/plugins.xml"),
-    ("Faunalia Repository", "http://www.faunalia.it/qgis/plugins.xml"),
-    ("GIS-Lab Repository", "http://gis-lab.info/programs/qgis/qgis-repo.xml"),
-    ("Kappasys Repository", "http://www.kappasys.org/qgis/plugins.xml"),
-    ("Martin Dobias' Sandbox", "http://mapserver.sk/~wonder/qgis/plugins-sandbox.xml"),
-    ("Marco Hugentobler's Repository", "http://karlinapp.ethz.ch/python_plugins/python_plugins.xml"),
-    ("Sourcepole Repository", "http://build.sourcepole.ch/qgis/plugins.xml"),
-    ("Volkan Kepoglu's Repository", "http://ggit.metu.edu.tr/~volkan/plugins.xml")
-]
+officialRepo = (QCoreApplication.translate("QgsPluginInstaller", "QGIS Official Plugin Repository"), "https://plugins.qgis.org/plugins/plugins.xml")
 
 
 # --- common functions ------------------------------------------------------------------- #
@@ -326,9 +307,6 @@ class Repositories(QObject):
         for key in settings.childGroups():
             url = settings.value(key + "/url", "", type=str)
             if url == officialRepo[1]:
-                officialRepoPresent = True
-            if url == officialRepo[2]:
-                settings.setValue(key + "/url", officialRepo[1])  # correct a depreciated url
                 officialRepoPresent = True
         if not officialRepoPresent:
             settings.setValue(officialRepo[0] + "/url", officialRepo[1])
