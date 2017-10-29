@@ -41,7 +41,7 @@ QgsPolygon *QgsPolygon::createEmptyWithSameType() const
 
 QgsPolygon *QgsPolygon::clone() const
 {
-  return new QgsPolygonV2( *this );
+  return new QgsPolygon( *this );
 }
 
 void QgsPolygon::clear()

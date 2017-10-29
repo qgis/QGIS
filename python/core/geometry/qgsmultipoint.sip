@@ -8,7 +8,7 @@
 
 
 
-class QgsMultiPointV2: QgsGeometryCollection
+class QgsMultiPoint: QgsGeometryCollection
 {
 %Docstring
  Multi point geometry collection.

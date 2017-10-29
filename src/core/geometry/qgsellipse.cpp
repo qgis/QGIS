@@ -212,7 +212,7 @@ QgsPointSequence QgsEllipse::points( unsigned int segments ) const
 
 QgsPolygon *QgsEllipse::toPolygon( unsigned int segments ) const
 {
-  std::unique_ptr<QgsPolygonV2> polygon( new QgsPolygon() );
+  std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
   if ( segments < 3 )
   {
     return polygon.release();
@@ -280,7 +280,7 @@ QString QgsEllipse::toString( int pointPrecision, int axisPrecision, int azimuth
 
 QgsPolygon *QgsEllipse::orientedBoundingBox() const
 {
-  std::unique_ptr<QgsPolygonV2> ombb( new QgsPolygon() );
+  std::unique_ptr<QgsPolygon> ombb( new QgsPolygon() );
   if ( isEmpty() )
   {
     return ombb.release();

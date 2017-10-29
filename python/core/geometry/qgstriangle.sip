@@ -9,7 +9,7 @@
 
 
 
-class QgsTriangle : QgsPolygonV2
+class QgsTriangle : QgsPolygon
 {
 %Docstring
  Triangle geometry type.

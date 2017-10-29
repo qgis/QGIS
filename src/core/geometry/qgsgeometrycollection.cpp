@@ -299,7 +299,7 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
 
 bool QgsGeometryCollection::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry *>() << new QgsPoint << new QgsLineString << new QgsPolygonV2
+  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry *>() << new QgsPoint << new QgsLineString << new QgsPolygon
                             << new QgsCircularString << new QgsCompoundCurve
                             << new QgsCurvePolygon
                             << new QgsMultiPoint << new QgsMultiLineString

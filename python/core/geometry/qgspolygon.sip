@@ -9,7 +9,7 @@
 
 
 
-class QgsPolygonV2: QgsCurvePolygon
+class QgsPolygon: QgsCurvePolygon
 {
 %Docstring
  Polygon geometry type.

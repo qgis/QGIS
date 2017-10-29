@@ -180,7 +180,7 @@ QgsPointSequence QgsRegularPolygon::points() const
 
 QgsPolygon *QgsRegularPolygon::toPolygon() const
 {
-  std::unique_ptr<QgsPolygonV2> polygon( new QgsPolygon() );
+  std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
   if ( isEmpty() )
   {
     return polygon.release();

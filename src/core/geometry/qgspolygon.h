@@ -24,11 +24,11 @@
 
 /**
  * \ingroup core
- * \class QgsPolygonV2
+ * \class QgsPolygon
  * \brief Polygon geometry type.
  * \since QGIS 2.10
  */
-class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
+class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
 {
   public:
     QgsPolygon();

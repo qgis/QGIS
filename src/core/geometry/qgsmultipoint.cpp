@@ -38,7 +38,7 @@ QgsMultiPoint *QgsMultiPoint::createEmptyWithSameType() const
 
 QgsMultiPoint *QgsMultiPoint::clone() const
 {
-  return new QgsMultiPointV2( *this );
+  return new QgsMultiPoint( *this );
 }
 
 QgsMultiPoint *QgsMultiPoint::toCurveType() const

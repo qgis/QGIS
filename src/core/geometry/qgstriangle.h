@@ -30,7 +30,7 @@
  * \brief Triangle geometry type.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsTriangle : public QgsPolygonV2
+class CORE_EXPORT QgsTriangle : public QgsPolygon
 {
   public:
     QgsTriangle();

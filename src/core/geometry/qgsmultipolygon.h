@@ -22,11 +22,11 @@ email                : marco.hugentobler at sourcepole dot com
 
 /**
  * \ingroup core
- * \class QgsMultiPolygonV2
+ * \class QgsMultiPolygon
  * \brief Multi polygon geometry collection.
  * \since QGIS 2.10
  */
-class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
+class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
 {
   public:
     QgsMultiPolygon();

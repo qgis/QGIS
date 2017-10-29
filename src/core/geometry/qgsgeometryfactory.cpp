@@ -137,7 +137,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryFactory::fromPoint( const QgsP
   return qgis::make_unique< QgsPoint >( point.x(), point.y() );
 }
 
-std::unique_ptr<QgsMultiPointV2> QgsGeometryFactory::fromMultiPoint( const QgsMultiPointXY &multipoint )
+std::unique_ptr<QgsMultiPoint> QgsGeometryFactory::fromMultiPoint( const QgsMultiPointXY &multipoint )
 {
   std::unique_ptr< QgsMultiPoint > mp = qgis::make_unique< QgsMultiPoint >();
   QgsMultiPointXY::const_iterator ptIt = multipoint.constBegin();
@@ -164,7 +164,7 @@ std::unique_ptr<QgsMultiLineString> QgsGeometryFactory::fromMultiPolyline( const
   return mLine;
 }
 
-std::unique_ptr<QgsPolygonV2> QgsGeometryFactory::fromPolygon( const QgsPolygonXY &polygon )
+std::unique_ptr<QgsPolygon> QgsGeometryFactory::fromPolygon( const QgsPolygonXY &polygon )
 {
   std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
 

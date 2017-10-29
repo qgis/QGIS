@@ -8,7 +8,7 @@
 
 
 
-class QgsMultiPolygonV2: QgsMultiSurface
+class QgsMultiPolygon: QgsMultiSurface
 {
 %Docstring
  Multi polygon geometry collection.

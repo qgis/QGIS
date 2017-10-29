@@ -14800,7 +14800,7 @@ void TestQgsGeometry::createEmptyWithSameType()
   testCreateEmptyWithSameType<QgsMultiLineString>();
 
   qDebug( "createEmptyWithSameType(): QgsMultiPointV2" );
-  testCreateEmptyWithSameType<QgsMultiPointV2>();
+  testCreateEmptyWithSameType<QgsMultiPoint>();
 
   qDebug( "createEmptyWithSameType(): QgsMultiSurface" );
   testCreateEmptyWithSameType<QgsMultiSurface>();
@@ -14814,7 +14814,7 @@ void TestQgsGeometry::createEmptyWithSameType()
   testCreateEmptyWithSameType<QgsCurvePolygon>();
 
   qDebug( "createEmptyWithSameType(): QgsPolygonV2" );
-  testCreateEmptyWithSameType<QgsPolygonV2>();
+  testCreateEmptyWithSameType<QgsPolygon>();
 
   qDebug( "createEmptyWithSameType(): QgsTriangle" );
   testCreateEmptyWithSameType<QgsTriangle>();

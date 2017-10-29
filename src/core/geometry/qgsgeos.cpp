@@ -1109,7 +1109,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
   return nullptr;
 }
 
-std::unique_ptr<QgsPolygonV2> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
+std::unique_ptr<QgsPolygon> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
 {
   if ( GEOSGeomTypeId_r( geosinit.ctxt, geos ) != GEOS_POLYGON )
   {

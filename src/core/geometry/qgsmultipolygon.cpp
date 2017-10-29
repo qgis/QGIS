@@ -47,12 +47,12 @@ QgsMultiPolygon *QgsMultiPolygon::createEmptyWithSameType() const
 
 QgsMultiPolygon *QgsMultiPolygon::clone() const
 {
-  return new QgsMultiPolygonV2( *this );
+  return new QgsMultiPolygon( *this );
 }
 
 bool QgsMultiPolygon::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry *>() << new QgsPolygonV2, QStringLiteral( "Polygon" ) );
+  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry *>() << new QgsPolygon, QStringLiteral( "Polygon" ) );
 }
 
 QDomElement QgsMultiPolygon::asGML2( QDomDocument &doc, int precision, const QString &ns ) const

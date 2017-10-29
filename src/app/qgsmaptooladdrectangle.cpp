@@ -116,7 +116,7 @@ QgsLineString *QgsMapToolAddRectangle::rectangleToLinestring( const bool isOrien
 
 QgsPolygon *QgsMapToolAddRectangle::rectangleToPolygon( const bool isOriented ) const
 {
-  std::unique_ptr<QgsPolygonV2> polygon( new QgsPolygon() );
+  std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
   if ( mRectangle.isEmpty() )
   {
     return polygon.release();
