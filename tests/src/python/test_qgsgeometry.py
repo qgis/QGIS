@@ -1415,7 +1415,7 @@ class TestQgsGeometry(unittest.TestCase):
         points = [QgsPointXY(0, 0), QgsPointXY(1, 0)]
 
         point = QgsGeometry.fromPoint(points[0])
-        self.assertEqual(point.addPoints([points[1]]), 0)
+        self.assertEqual(point.addPointsXY([points[1]]), 0)
         expwkt = "MultiPoint ((0 0), (1 0))"
         wkt = point.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
@@ -1437,14 +1437,14 @@ class TestQgsGeometry(unittest.TestCase):
         ]
 
         polyline = QgsGeometry.fromPolylineXY(points[0])
-        self.assertEqual(polyline.addPoints(points[1][0:1]), QgsGeometry.InvalidInput, "addPoints with one point line unexpectedly succeeded.")
-        self.assertEqual(polyline.addPoints(points[1][0:2]), QgsGeometry.Success, "addPoints with two point line failed.")
+        self.assertEqual(polyline.addPointsXY(points[1][0:1]), QgsGeometry.InvalidInput, "addPoints with one point line unexpectedly succeeded.")
+        self.assertEqual(polyline.addPointsXY(points[1][0:2]), QgsGeometry.Success, "addPoints with two point line failed.")
         expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1))"
         wkt = polyline.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         polyline = QgsGeometry.fromPolylineXY(points[0])
-        self.assertEqual(polyline.addPoints(points[1]), QgsGeometry.Success, "addPoints with %d point line failed." % len(points[1]))
+        self.assertEqual(polyline.addPointsXY(points[1]), QgsGeometry.Success, "addPoints with %d point line failed." % len(points[1]))
         expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1, 5 1, 5 0, 6 0))"
         wkt = polyline.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
@@ -1470,12 +1470,12 @@ class TestQgsGeometry(unittest.TestCase):
 
         polygon = QgsGeometry.fromPolygon(points[0])
 
-        self.assertEqual(polygon.addPoints(points[1][0][0:1]), QgsGeometry.InvalidInput, "addPoints with one point ring unexpectedly succeeded.")
-        self.assertEqual(polygon.addPoints(points[1][0][0:2]), QgsGeometry.InvalidInput, "addPoints with two point ring unexpectedly succeeded.")
-        self.assertEqual(polygon.addPoints(points[1][0][0:3]), QgsGeometry.InvalidInput, "addPoints with unclosed three point ring unexpectedly succeeded.")
-        self.assertEqual(polygon.addPoints([QgsPointXY(4, 0), QgsPointXY(5, 0), QgsPointXY(4, 0)]), QgsGeometry.InvalidInput, "addPoints with 'closed' three point ring unexpectedly succeeded.")
+        self.assertEqual(polygon.addPointsXY(points[1][0][0:1]), QgsGeometry.InvalidInput, "addPoints with one point ring unexpectedly succeeded.")
+        self.assertEqual(polygon.addPointsXY(points[1][0][0:2]), QgsGeometry.InvalidInput, "addPoints with two point ring unexpectedly succeeded.")
+        self.assertEqual(polygon.addPointsXY(points[1][0][0:3]), QgsGeometry.InvalidInput, "addPoints with unclosed three point ring unexpectedly succeeded.")
+        self.assertEqual(polygon.addPointsXY([QgsPointXY(4, 0), QgsPointXY(5, 0), QgsPointXY(4, 0)]), QgsGeometry.InvalidInput, "addPoints with 'closed' three point ring unexpectedly succeeded.")
 
-        self.assertEqual(polygon.addPoints(points[1][0]), QgsGeometry.Success, "addPoints failed")
+        self.assertEqual(polygon.addPointsXY(points[1][0]), QgsGeometry.Success, "addPoints failed")
         expwkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
         wkt = polygon.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
@@ -1505,38 +1505,38 @@ class TestQgsGeometry(unittest.TestCase):
         # Test adding parts to empty geometry, should become first part
         empty = QgsGeometry()
         # if not default type specified, addPart should fail
-        result = empty.addPoints([QgsPointXY(4, 0)])
+        result = empty.addPointsXY([QgsPointXY(4, 0)])
         assert result != QgsGeometry.Success, 'Got return code {}'.format(result)
-        result = empty.addPoints([QgsPointXY(4, 0)], QgsWkbTypes.PointGeometry)
+        result = empty.addPointsXY([QgsPointXY(4, 0)], QgsWkbTypes.PointGeometry)
         self.assertEqual(result, QgsGeometry.Success, 'Got return code {}'.format(result))
         wkt = empty.exportToWkt()
         expwkt = 'MultiPoint ((4 0))'
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
-        result = empty.addPoints([QgsPointXY(5, 1)])
+        result = empty.addPointsXY([QgsPointXY(5, 1)])
         self.assertEqual(result, QgsGeometry.Success, 'Got return code {}'.format(result))
         wkt = empty.exportToWkt()
         expwkt = 'MultiPoint ((4 0),(5 1))'
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
         # next try with lines
         empty = QgsGeometry()
-        result = empty.addPoints(points[0][0], QgsWkbTypes.LineGeometry)
+        result = empty.addPointsXY(points[0][0], QgsWkbTypes.LineGeometry)
         self.assertEqual(result, QgsGeometry.Success, 'Got return code {}'.format(result))
         wkt = empty.exportToWkt()
         expwkt = 'MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))'
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
-        result = empty.addPoints(points[1][0])
+        result = empty.addPointsXY(points[1][0])
         self.assertEqual(result, QgsGeometry.Success, 'Got return code {}'.format(result))
         wkt = empty.exportToWkt()
         expwkt = 'MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0),(4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0))'
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
         # finally try with polygons
         empty = QgsGeometry()
-        result = empty.addPoints(points[0][0], QgsWkbTypes.PolygonGeometry)
+        result = empty.addPointsXY(points[0][0], QgsWkbTypes.PolygonGeometry)
         self.assertEqual(result, QgsGeometry.Success, 'Got return code {}'.format(result))
         wkt = empty.exportToWkt()
         expwkt = 'MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))'
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
-        result = empty.addPoints(points[1][0])
+        result = empty.addPointsXY(points[1][0])
         self.assertEqual(result, QgsGeometry.Success, 'Got return code {}'.format(result))
         wkt = empty.exportToWkt()
         expwkt = 'MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))'

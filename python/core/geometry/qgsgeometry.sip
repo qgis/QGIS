@@ -519,7 +519,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: OperationResult
 %End
 
-    OperationResult addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPoints/;
+    OperationResult addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPointsXY/;
 %Docstring
  Adds a new part to a the geometry.
  \param points points describing part to add
@@ -528,7 +528,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: OperationResult
 %End
 
-    OperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPointsV2/;
+    OperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPoints/;
 %Docstring
  Adds a new part to a the geometry.
  \param points points describing part to add
@@ -1581,16 +1581,16 @@ Returns an extruded version of this geometry.
 
     static void convertPointList( const QList<QgsPointXY> &input, QgsPointSequence &output );
 %Docstring
- Upgrades a point list from QgsPointXY to QgsPointV2
+ Upgrades a point list from QgsPointXY to QgsPoint
  \param input list of QgsPointXY objects to be upgraded
- \param output destination for list of points converted to QgsPointV2
+ \param output destination for list of points converted to QgsPoint
 %End
 
     static void convertPointList( const QgsPointSequence &input, QList<QgsPointXY> &output );
 %Docstring
- Downgrades a point list from QgsPoint to QgsPoint
+ Downgrades a point list from QgsPoint to QgsPointXY
  \param input list of QgsPoint objects to be downgraded
- \param output destination for list of points converted to QgsPoint
+ \param output destination for list of points converted to QgsPointXY
 %End
 
     operator QVariant() const;

@@ -582,7 +582,7 @@ class CORE_EXPORT QgsGeometry
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPoints );
+    OperationResult addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPointsXY );
 
     /**
      * Adds a new part to a the geometry.
@@ -590,7 +590,7 @@ class CORE_EXPORT QgsGeometry
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPointsV2 );
+    OperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPoints );
 
     /**
      * Adds a new part to this geometry.
@@ -1605,16 +1605,16 @@ class CORE_EXPORT QgsGeometry
     static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry ) SIP_FACTORY;
 
     /**
-     * Upgrades a point list from QgsPointXY to QgsPointV2
+     * Upgrades a point list from QgsPointXY to QgsPoint
      * \param input list of QgsPointXY objects to be upgraded
-     * \param output destination for list of points converted to QgsPointV2
+     * \param output destination for list of points converted to QgsPoint
      */
     static void convertPointList( const QList<QgsPointXY> &input, QgsPointSequence &output );
 
     /**
-     * Downgrades a point list from QgsPoint to QgsPoint
+     * Downgrades a point list from QgsPoint to QgsPointXY
      * \param input list of QgsPoint objects to be downgraded
-     * \param output destination for list of points converted to QgsPoint
+     * \param output destination for list of points converted to QgsPointXY
      */
     static void convertPointList( const QgsPointSequence &input, QList<QgsPointXY> &output );
 

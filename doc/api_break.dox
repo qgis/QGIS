@@ -1311,8 +1311,8 @@ method if the geometry is not being modified.
 empty geometry collection)
 - wkbSize() and asWkb() has been replaced by exportToWkb(). WKB representation is no longer cached within QgsGeometry
 - asGeos() has been replaced by exportToGeos(). GEOS representation is no longer cached within QgsGeometry
-- int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType ) has been renamed to addPoints
-- int addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType ) has been renamed to addPointsV2
+- int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType ) has been renamed to addPointsXY
+- int addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType ) has been renamed to addPoints
 - static bool compare( const QgsPolyline& p1, const QgsPolyline& p2, double epsilon ) has been renamed to comparePolylines
 - static bool compare( const QgsPolygon& p1, const QgsPolygon& p2, double epsilon ) has been renamed to comparePolygons
 - static bool compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon ) has been renamed to compareMultiPolygons
