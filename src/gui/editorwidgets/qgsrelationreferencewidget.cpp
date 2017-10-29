@@ -816,7 +816,6 @@ void QgsRelationReferenceWidget::filterChanged()
     }
   }
 
-  bool filtered = false;
   if ( mChainFilters )
   {
     QComboBox *ccb = nullptr;
