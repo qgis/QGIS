@@ -29,7 +29,7 @@ class QgsLineString;
 class QgsConstWkbPtr;
 class QgsRectangle;
 class QgsGeometryCollection;
-class QgsMultiPointV2;
+class QgsMultiPoint;
 class QgsMultiLineString;
 class QgsPolygon;
 class QgsMultiPolygonV2;

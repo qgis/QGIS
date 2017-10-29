@@ -180,7 +180,7 @@ QgsMultiCurve *QgsMultiCurve::reversed() const
 
 QgsAbstractGeometry *QgsMultiCurve::boundary() const
 {
-  std::unique_ptr< QgsMultiPointV2 > multiPoint( new QgsMultiPointV2() );
+  std::unique_ptr< QgsMultiPoint > multiPoint( new QgsMultiPoint() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
     if ( QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( mGeometries.at( i ) ) )

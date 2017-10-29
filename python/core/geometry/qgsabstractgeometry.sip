@@ -39,8 +39,8 @@ class QgsAbstractGeometry
       sipType = sipType_QgsPolygon;
     else if ( qgsgeometry_cast<QgsCurvePolygon *>( sipCpp ) != nullptr )
       sipType = sipType_QgsCurvePolygon;
-    else if ( qgsgeometry_cast<QgsMultiPointV2 *>( sipCpp ) != nullptr )
-      sipType = sipType_QgsMultiPointV2;
+    else if ( qgsgeometry_cast<QgsMultiPoint *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsMultiPoint;
     else if ( qgsgeometry_cast<QgsMultiLineString *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMultiLineString;
     else if ( qgsgeometry_cast<QgsMultiPolygonV2 *>( sipCpp ) != nullptr )

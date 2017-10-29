@@ -90,7 +90,7 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, c
       {
         case QgsWkbTypes::MultiPoint:
         {
-          geomCollection = new QgsMultiPointV2();
+          geomCollection = new QgsMultiPoint();
           break;
         }
         case QgsWkbTypes::MultiLineString:

@@ -193,7 +193,7 @@ QgsGeometry QgsGeometry::fromPolygon( const QgsPolygonXY &polygon )
 
 QgsGeometry QgsGeometry::fromMultiPoint( const QgsMultiPointXY &multipoint )
 {
-  std::unique_ptr< QgsMultiPointV2 > geom = QgsGeometryFactory::fromMultiPoint( multipoint );
+  std::unique_ptr< QgsMultiPoint > geom = QgsGeometryFactory::fromMultiPoint( multipoint );
   if ( geom )
   {
     return QgsGeometry( std::move( geom ) );
@@ -664,7 +664,7 @@ QgsGeometry::OperationResult QgsGeometry::addPart( QgsAbstractGeometry *part, Qg
     switch ( geomType )
     {
       case QgsWkbTypes::PointGeometry:
-        reset( qgis::make_unique< QgsMultiPointV2 >() );
+        reset( qgis::make_unique< QgsMultiPoint >() );
         break;
       case QgsWkbTypes::LineGeometry:
         reset( qgis::make_unique< QgsMultiLineString >() );
@@ -1377,7 +1377,7 @@ QgsMultiPointXY QgsGeometry::asMultiPoint() const
     return QgsMultiPointXY();
   }
 
-  const QgsMultiPointV2 *mp = qgsgeometry_cast<QgsMultiPointV2 *>( d->geometry.get() );
+  const QgsMultiPoint *mp = qgsgeometry_cast<QgsMultiPoint *>( d->geometry.get() );
   if ( !mp )
   {
     return QgsMultiPointXY();

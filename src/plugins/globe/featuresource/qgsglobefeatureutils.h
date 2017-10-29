@@ -104,7 +104,7 @@ class QgsGlobeFeatureUtils
         case QgsWkbTypes::MultiPoint:
         {
           osgEarth::Features::PointSet *pointSet = new osgEarth::Features::PointSet();
-          QgsMultiPointV2 *multiPoint = static_cast<QgsMultiPointV2 *>( geom.geometry() );
+          QgsMultiPoint *multiPoint = static_cast<QgsMultiPoint *>( geom.geometry() );
           for ( int i = 0, n = multiPoint->numGeometries(); i < n; ++i )
           {
             pointSet->push_back( pointFromQgsPoint( *static_cast<QgsPoint *>( multiPoint->geometryN( i ) ) ) );

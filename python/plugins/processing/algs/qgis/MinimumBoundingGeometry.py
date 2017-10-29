@@ -228,7 +228,7 @@ class MinimumBoundingGeometry(QgisAlgorithm):
         if class_field is not None:
             attrs.append(class_field)
 
-        multi_point = QgsMultiPointV2()
+        multi_point = QgsMultiPoint()
 
         for g in geometries:
             if feedback.isCanceled():

@@ -19,34 +19,34 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspoint.h"
 #include "qgswkbptr.h"
 
-QgsMultiPointV2::QgsMultiPointV2()
+QgsMultiPoint::QgsMultiPoint()
 {
   mWkbType = QgsWkbTypes::MultiPoint;
 }
 
-QString QgsMultiPointV2::geometryType() const
+QString QgsMultiPoint::geometryType() const
 {
   return QStringLiteral( "MultiPoint" );
 }
 
-QgsMultiPointV2 *QgsMultiPointV2::createEmptyWithSameType() const
+QgsMultiPoint *QgsMultiPoint::createEmptyWithSameType() const
 {
-  auto result = qgis::make_unique< QgsMultiPointV2 >();
+  auto result = qgis::make_unique< QgsMultiPoint >();
   result->mWkbType = mWkbType;
   return result.release();
 }
 
-QgsMultiPointV2 *QgsMultiPointV2::clone() const
+QgsMultiPoint *QgsMultiPoint::clone() const
 {
   return new QgsMultiPointV2( *this );
 }
 
-QgsMultiPointV2 *QgsMultiPointV2::toCurveType() const
+QgsMultiPoint *QgsMultiPoint::toCurveType() const
 {
   return clone();
 }
 
-bool QgsMultiPointV2::fromWkt( const QString &wkt )
+bool QgsMultiPoint::fromWkt( const QString &wkt )
 {
   QString collectionWkt( wkt );
   //test for non-standard MultiPoint(x1 y1, x2 y2) format
@@ -61,13 +61,13 @@ bool QgsMultiPointV2::fromWkt( const QString &wkt )
   return fromCollectionWkt( collectionWkt, QList<QgsAbstractGeometry *>() << new QgsPoint, QStringLiteral( "Point" ) );
 }
 
-void QgsMultiPointV2::clear()
+void QgsMultiPoint::clear()
 {
   QgsGeometryCollection::clear();
   mWkbType = QgsWkbTypes::MultiPoint;
 }
 
-QDomElement QgsMultiPointV2::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsMultiPoint::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
 
@@ -87,7 +87,7 @@ QDomElement QgsMultiPointV2::asGML2( QDomDocument &doc, int precision, const QSt
   return elemMultiPoint;
 }
 
-QDomElement QgsMultiPointV2::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsMultiPoint::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
 
@@ -107,7 +107,7 @@ QDomElement QgsMultiPointV2::asGML3( QDomDocument &doc, int precision, const QSt
   return elemMultiPoint;
 }
 
-QString QgsMultiPointV2::asJSON( int precision ) const
+QString QgsMultiPoint::asJSON( int precision ) const
 {
   QString json = QStringLiteral( "{\"type\": \"MultiPoint\", \"coordinates\": " );
 
@@ -125,12 +125,12 @@ QString QgsMultiPointV2::asJSON( int precision ) const
   return json;
 }
 
-int QgsMultiPointV2::nCoordinates() const
+int QgsMultiPoint::nCoordinates() const
 {
   return mGeometries.size();
 }
 
-bool QgsMultiPointV2::addGeometry( QgsAbstractGeometry *g )
+bool QgsMultiPoint::addGeometry( QgsAbstractGeometry *g )
 {
   if ( !qgsgeometry_cast<QgsPoint *>( g ) )
   {
@@ -153,7 +153,7 @@ bool QgsMultiPointV2::addGeometry( QgsAbstractGeometry *g )
   return QgsGeometryCollection::addGeometry( g );
 }
 
-bool QgsMultiPointV2::insertGeometry( QgsAbstractGeometry *g, int index )
+bool QgsMultiPoint::insertGeometry( QgsAbstractGeometry *g, int index )
 {
   if ( !g || QgsWkbTypes::flatType( g->wkbType() ) != QgsWkbTypes::Point )
   {
@@ -164,12 +164,12 @@ bool QgsMultiPointV2::insertGeometry( QgsAbstractGeometry *g, int index )
   return QgsGeometryCollection::insertGeometry( g, index );
 }
 
-QgsAbstractGeometry *QgsMultiPointV2::boundary() const
+QgsAbstractGeometry *QgsMultiPoint::boundary() const
 {
   return nullptr;
 }
 
-int QgsMultiPointV2::vertexNumberFromVertexId( QgsVertexId id ) const
+int QgsMultiPoint::vertexNumberFromVertexId( QgsVertexId id ) const
 {
   if ( id.part < 0 || id.part >= mGeometries.count() || id.vertex != 0 || id.ring != 0 )
     return -1;
@@ -177,7 +177,7 @@ int QgsMultiPointV2::vertexNumberFromVertexId( QgsVertexId id ) const
   return id.part; // can shortcut the calculation, since each part will have 1 vertex
 }
 
-bool QgsMultiPointV2::wktOmitChildType() const
+bool QgsMultiPoint::wktOmitChildType() const
 {
   return true;
 }

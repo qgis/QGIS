@@ -947,7 +947,7 @@ std::unique_ptr< QgsAbstractGeometry > _qgis_lwgeom_make_valid( const QgsAbstrac
     switch ( QgsWkbTypes::multiType( lwgeom_out->wkbType() ) )
     {
       case QgsWkbTypes::MultiPoint:
-        collection = new QgsMultiPointV2();
+        collection = new QgsMultiPoint();
         break;
       case QgsWkbTypes::MultiLineString:
         collection = new QgsMultiLineString();

@@ -148,7 +148,7 @@ class GeometryConvert(QgisAlgorithm):
         return [geom.centroid()]
 
     def convertToNodes(self, geom):
-        mp = QgsMultiPointV2()
+        mp = QgsMultiPoint()
         # TODO: mega inefficient - needs rework when geometry iterators land
         # (but at least it doesn't lose Z/M values)
         for g in geom.constGet().coordinateSequence():

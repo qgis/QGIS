@@ -1725,7 +1725,7 @@ static QVariant fcnNodesToPoints( const QVariantList &values, const QgsExpressio
     ignoreClosing = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
   }
 
-  QgsMultiPointV2 *mp = new QgsMultiPointV2();
+  QgsMultiPoint *mp = new QgsMultiPoint();
 
   const QgsCoordinateSequence sequence = geom.constGet()->coordinateSequence();
   for ( const QgsRingSequence &part : sequence )

@@ -164,7 +164,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
       else if ( layerWKBType == QgsWkbTypes::MultiPoint25D )
       {
-        QgsMultiPointV2 *mp = new QgsMultiPointV2();
+        QgsMultiPoint *mp = new QgsMultiPoint();
         mp->addGeometry( new QgsPoint( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
         g = QgsGeometry( mp );
       }

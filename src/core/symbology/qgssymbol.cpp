@@ -813,7 +813,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         break;
       }
 
-      const QgsMultiPointV2 &mp = static_cast< const QgsMultiPointV2 & >( *segmentizedGeometry.constGet() );
+      const QgsMultiPoint &mp = static_cast< const QgsMultiPoint & >( *segmentizedGeometry.constGet() );
 
       if ( drawVertexMarker && !usingSegmentizedGeometry )
       {
