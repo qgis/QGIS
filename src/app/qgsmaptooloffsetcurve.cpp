@@ -412,7 +412,7 @@ QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry &fea
 
   if ( geomType == QgsWkbTypes::Polygon || geomType == QgsWkbTypes::Polygon25D )
   {
-    QgsPolygonXYpolygon = featureGeom.asPolygon();
+    QgsPolygonXY polygon = featureGeom.asPolygon();
     multiPoly.append( polygon );
   }
   else if ( geomType == QgsWkbTypes::MultiPolygon || geomType == QgsWkbTypes::MultiPolygon25D )

@@ -127,7 +127,7 @@ QgsGeometry QgsMapToolDeleteRing::ringUnderPoint( const QgsPointXY &p, QgsFeatur
   QgsGeometry g;
   QgsGeometry ringGeom;
   QgsMultiPolygonXY pol;
-  QgsPolygonXYtempPol;
+  QgsPolygonXY tempPol;
   QgsGeometry tempGeom;
   double area = std::numeric_limits<double>::max();
   while ( fit.nextFeature( f ) )
@@ -202,7 +202,7 @@ void QgsMapToolDeleteRing::deleteRing( QgsFeatureId fId, int beforeVertexNr, Qgs
 
 int QgsMapToolDeleteRing::ringNumInPolygon( const QgsGeometry &g, int vertexNr )
 {
-  QgsPolygonXYpolygon = g.asPolygon();
+  QgsPolygonXY polygon = g.asPolygon();
   for ( int ring = 0; ring < polygon.count(); ring++ )
   {
     if ( vertexNr < polygon[ring].count() )

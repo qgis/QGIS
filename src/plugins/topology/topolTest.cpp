@@ -636,7 +636,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
       QgsMultiPolygonXY polys = g1.asMultiPolygon();
       for ( int m = 0; m < polys.count(); m++ )
       {
-        QgsPolygonXYpolygon = polys[m];
+        QgsPolygonXY polygon = polys[m];
 
         QgsGeometry polyGeom = QgsGeometry::fromPolygon( polygon );
 
@@ -980,7 +980,7 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer *layer
 
   QList<FeatureLayer>::iterator it;
 
-  QgsPolygonXYpol;
+  QgsPolygonXY pol;
 
   QgsMultiPolygonXY mpol;
   QgsPolylineXY segm;

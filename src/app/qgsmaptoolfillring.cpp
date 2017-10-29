@@ -216,7 +216,7 @@ QgsGeometry QgsMapToolFillRing::ringUnderPoint( const QgsPointXY &p, QgsFeatureI
       {
         for ( int j = 1; j < pol[i].size(); ++j )
         {
-          QgsPolygonXYtempPol = QgsPolygonXY() << pol[i][j];
+          QgsPolygonXY tempPol = QgsPolygonXY() << pol[i][j];
           QgsGeometry tempGeom = QgsGeometry::fromPolygon( tempPol );
           if ( tempGeom.area() < area && tempGeom.contains( &p ) )
           {
