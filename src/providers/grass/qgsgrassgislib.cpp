@@ -1079,7 +1079,7 @@ double QgsGrassGisLib::G_area_of_polygon( const double *x, const double *y, int 
   {
     polyline.append( QgsPointXY( x[i], y[i] ) );
   }
-  QgsPolygon polygon;
+  QgsPolygonXYpolygon;
   polygon.append( polyline );
   QgsGeometry *geo = QgsGeometry::fromPolygon( polygon );
   double area = mDistanceArea.measure( geo );

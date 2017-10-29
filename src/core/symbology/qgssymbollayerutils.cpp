@@ -735,7 +735,7 @@ static QPolygonF makeOffsetGeometry( const QgsPolylineXY &polyline )
 
   return resultLine;
 }
-static QList<QPolygonF> makeOffsetGeometry( const QgsPolygon &polygon )
+static QList<QPolygonF> makeOffsetGeometry( const QgsPolygonXY &polygon )
 {
   QList<QPolygonF> resultGeom;
   resultGeom.reserve( polygon.size() );
@@ -761,7 +761,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
   for ( i = 0; i < pointCount; ++i, tempPtr++ )
     tempPolyline[i] = QgsPointXY( tempPtr->rx(), tempPtr->ry() );
 
-  QgsGeometry tempGeometry = geometryType == QgsWkbTypes::PolygonGeometry ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolylineXY( tempPolyline );
+  QgsGeometry tempGeometry = geometryType == QgsWkbTypes::PolygonGeometry ? QgsGeometry::fromPolygon( QgsPolygonXY() << tempPolyline ) : QgsGeometry::fromPolylineXY( tempPolyline );
   if ( !tempGeometry.isNull() )
   {
     int quadSegments = 0; // we want miter joins, not round joins
@@ -3785,7 +3785,7 @@ QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points )
     QgsPolylineXY polyline( pointCount );
     for ( i = 0; i < pointCount; ++i ) polyline[i] = QgsPointXY( points[i].x(), points[i].y() );
 
-    QgsGeometry geom = QgsGeometry::fromPolygon( QgsPolygon() << polyline );
+    QgsGeometry geom = QgsGeometry::fromPolygon( QgsPolygonXY() << polyline );
     if ( !geom.isNull() )
     {
       QgsGeometry pointOnSurfaceGeom = geom.pointOnSurface();

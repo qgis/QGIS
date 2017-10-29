@@ -556,7 +556,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
     case QgsWkbTypes::Polygon25D:
     case QgsWkbTypes::Polygon:
     {
-      QgsPolygon polygon = geom.asPolygon();
+      QgsPolygonXY polygon = geom.asPolygon();
       QgsPolylineXY currentRing;
 
       for ( int i = 0; i < polygon.size(); ++i )
@@ -579,7 +579,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
     case QgsWkbTypes::MultiPolygon:
     {
       QgsMultiPolygon multiPolygon = geom.asMultiPolygon();
-      QgsPolygon currentPolygon;
+      QgsPolygonXY currentPolygon;
       QgsPolylineXY currentRing;
 
       for ( int i = 0; i < multiPolygon.size(); ++i )

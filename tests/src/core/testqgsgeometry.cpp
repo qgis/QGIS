@@ -156,7 +156,7 @@ class TestQgsGeometry : public QObject
     //! A helper method to dump to qdebug the geometry of a multipolygon
     void dumpMultiPolygon( QgsMultiPolygon &multiPolygon );
     //! A helper method to dump to qdebug the geometry of a polygon
-    void dumpPolygon( QgsPolygon &polygon );
+    void dumpPolygon( QgsPolygonXY &polygon );
     //! A helper method to dump to qdebug the geometry of a polyline
     void dumpPolyline( QgsPolylineXY &polyline );
 
@@ -196,9 +196,9 @@ class TestQgsGeometry : public QObject
     QgsPolylineXY mPolylineB;
     QgsPolylineXY mPolylineC;
     QgsGeometry mpPolylineGeometryD;
-    QgsPolygon mPolygonA;
-    QgsPolygon mPolygonB;
-    QgsPolygon mPolygonC;
+    QgsPolygonXY mPolygonA;
+    QgsPolygonXY mPolygonB;
+    QgsPolygonXY mPolygonC;
     QgsGeometry mpPolygonGeometryA;
     QgsGeometry mpPolygonGeometryB;
     QgsGeometry mpPolygonGeometryC;
@@ -14637,7 +14637,7 @@ void TestQgsGeometry::fromQPolygonF()
   polygon << QPointF( 1.0, 2.0 ) << QPointF( 4.0, 6.0 ) << QPointF( 4.0, 3.0 ) << QPointF( 2.0, 2.0 ) << QPointF( 1.0, 2.0 );
   QgsGeometry result2( QgsGeometry::fromQPolygonF( polygon ) );
   QCOMPARE( result2.wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon resultPolygon = result2.asPolygon();
+  QgsPolygonXY resultPolygon = result2.asPolygon();
   QCOMPARE( resultPolygon.size(), 1 );
   QCOMPARE( resultPolygon.at( 0 ).at( 0 ), QgsPointXY( 1.0, 2.0 ) );
   QCOMPARE( resultPolygon.at( 0 ).at( 1 ), QgsPointXY( 4.0, 6.0 ) );
@@ -14743,19 +14743,19 @@ void TestQgsGeometry::comparePolygons()
   ring1 << mPoint1 << mPoint2 << mPoint3 << mPoint1;
   QgsPolylineXY ring2;
   ring2 << mPoint4 << mPointA << mPointB << mPoint4;
-  QgsPolygon poly1;
+  QgsPolygonXY poly1;
   poly1 << ring1 << ring2;
-  QgsPolygon poly2;
+  QgsPolygonXY poly2;
   poly2 << ring1 << ring2;
   QVERIFY( QgsGeometry::compare( poly1, poly2 ) );
 
   //different number of rings
-  QgsPolygon poly3;
+  QgsPolygonXY poly3;
   poly3 << ring1;
   QVERIFY( !QgsGeometry::compare( poly1, poly3 ) );
 
   //different rings
-  QgsPolygon poly4;
+  QgsPolygonXY poly4;
   poly4 << ring2;
   QVERIFY( !QgsGeometry::compare( poly3, poly4 ) );
 }
@@ -14853,7 +14853,7 @@ void TestQgsGeometry::intersectionCheck1()
   QgsGeometry mypIntersectionGeometry  =  mpPolygonGeometryA.intersection( mpPolygonGeometryB );
   qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypIntersectionGeometry.wkbType() );
   QVERIFY( mypIntersectionGeometry.wkbType() == QgsWkbTypes::Polygon );
-  QgsPolygon myPolygon = mypIntersectionGeometry.asPolygon();
+  QgsPolygonXY myPolygon = mypIntersectionGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   dumpPolygon( myPolygon );
   QVERIFY( renderCheck( "geometry_intersectionCheck1", "Checking if A intersects B" ) );
@@ -14956,7 +14956,7 @@ void TestQgsGeometry::unionCheck2()
   QgsGeometry mypUnionGeometry  =  mpPolygonGeometryA.combine( mpPolygonGeometryB );
   qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypUnionGeometry.wkbType() );
   QVERIFY( mypUnionGeometry.wkbType() == QgsWkbTypes::Polygon );
-  QgsPolygon myPolygon = mypUnionGeometry.asPolygon();
+  QgsPolygonXY myPolygon = mypUnionGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   dumpPolygon( myPolygon );
   QVERIFY( renderCheck( "geometry_unionCheck2", "Checking A union B produces single union poly" ) );
@@ -14968,7 +14968,7 @@ void TestQgsGeometry::differenceCheck1()
   QgsGeometry mypDifferenceGeometry( mpPolygonGeometryA.difference( mpPolygonGeometryC ) );
   qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypDifferenceGeometry.wkbType() );
   QVERIFY( mypDifferenceGeometry.wkbType() == QgsWkbTypes::Polygon );
-  QgsPolygon myPolygon = mypDifferenceGeometry.asPolygon();
+  QgsPolygonXY myPolygon = mypDifferenceGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union did not fail
   dumpPolygon( myPolygon );
   QVERIFY( renderCheck( "geometry_differenceCheck1", "Checking (A - C) = A" ) );
@@ -14980,7 +14980,7 @@ void TestQgsGeometry::differenceCheck2()
   QgsGeometry mypDifferenceGeometry( mpPolygonGeometryA.difference( mpPolygonGeometryB ) );
   qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypDifferenceGeometry.wkbType() );
   QVERIFY( mypDifferenceGeometry.wkbType() == QgsWkbTypes::Polygon );
-  QgsPolygon myPolygon = mypDifferenceGeometry.asPolygon();
+  QgsPolygonXY myPolygon = mypDifferenceGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   dumpPolygon( myPolygon );
   QVERIFY( renderCheck( "geometry_differenceCheck2", "Checking (A - B) = subset of A" ) );
@@ -14991,7 +14991,7 @@ void TestQgsGeometry::bufferCheck()
   QgsGeometry mypBufferGeometry( mpPolygonGeometryB.buffer( 10, 10 ) );
   qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypBufferGeometry.wkbType() );
   QVERIFY( mypBufferGeometry.wkbType() == QgsWkbTypes::Polygon );
-  QgsPolygon myPolygon = mypBufferGeometry.asPolygon();
+  QgsPolygonXY myPolygon = mypBufferGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the buffer created a feature
   dumpPolygon( myPolygon );
   QVERIFY( renderCheck( "geometry_bufferCheck", "Checking buffer(10,10) of B", 10 ) );
@@ -15070,8 +15070,8 @@ void TestQgsGeometry::smoothCheck()
   wkt = QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ),(2 2, 4 2, 4 4, 2 4, 2 2))" );
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.25 );
-  QgsPolygon poly = result.asPolygon();
-  QgsPolygon expectedPolygon;
+  QgsPolygonXY poly = result.asPolygon();
+  QgsPolygonXY expectedPolygon;
   expectedPolygon << ( QgsPolylineXY() << QgsPointXY( 2.5, 0 ) << QgsPointXY( 7.5, 0 ) << QgsPointXY( 10.0, 2.5 )
                        <<  QgsPointXY( 10.0, 7.5 ) << QgsPointXY( 7.5, 10.0 ) << QgsPointXY( 2.5, 10.0 ) << QgsPointXY( 0, 7.5 )
                        << QgsPointXY( 0, 2.5 ) << QgsPointXY( 2.5, 0 ) )
@@ -15097,12 +15097,12 @@ void TestQgsGeometry::smoothCheck()
   QgsMultiPolygon multipoly = result.asMultiPolygon();
   QgsMultiPolygon expectedMultiPoly;
   expectedMultiPoly
-      << ( QgsPolygon() << ( QgsPolylineXY() << QgsPointXY( 1.0, 0 ) << QgsPointXY( 9, 0 ) << QgsPointXY( 10.0, 1 )
-                             <<  QgsPointXY( 10.0, 9 ) << QgsPointXY( 9, 10.0 ) << QgsPointXY( 1, 10.0 ) << QgsPointXY( 0, 9 )
-                             << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 0 ) ) )
-      << ( QgsPolygon() << ( QgsPolylineXY() << QgsPointXY( 2.2, 2.0 ) << QgsPointXY( 3.8, 2.0 ) << QgsPointXY( 4.0, 2.2 )
-                             <<  QgsPointXY( 4.0, 3.8 ) << QgsPointXY( 3.8, 4.0 ) << QgsPointXY( 2.2, 4.0 ) << QgsPointXY( 2.0, 3.8 )
-                             << QgsPointXY( 2, 2.2 ) << QgsPointXY( 2.2, 2 ) ) );
+      << ( QgsPolygonXY() << ( QgsPolylineXY() << QgsPointXY( 1.0, 0 ) << QgsPointXY( 9, 0 ) << QgsPointXY( 10.0, 1 )
+                               <<  QgsPointXY( 10.0, 9 ) << QgsPointXY( 9, 10.0 ) << QgsPointXY( 1, 10.0 ) << QgsPointXY( 0, 9 )
+                               << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 0 ) ) )
+      << ( QgsPolygonXY() << ( QgsPolylineXY() << QgsPointXY( 2.2, 2.0 ) << QgsPointXY( 3.8, 2.0 ) << QgsPointXY( 4.0, 2.2 )
+                               <<  QgsPointXY( 4.0, 3.8 ) << QgsPointXY( 3.8, 4.0 ) << QgsPointXY( 2.2, 4.0 ) << QgsPointXY( 2.0, 3.8 )
+                               << QgsPointXY( 2, 2.2 ) << QgsPointXY( 2.2, 2 ) ) );
   QVERIFY( QgsGeometry::compare( multipoly, expectedMultiPoly ) );
 }
 
@@ -15220,13 +15220,13 @@ void TestQgsGeometry::dumpMultiPolygon( QgsMultiPolygon &multiPolygon )
   qDebug( "Multipolygon Geometry Dump" );
   for ( int i = 0; i < multiPolygon.size(); i++ )
   {
-    QgsPolygon myPolygon = multiPolygon.at( i );
+    QgsPolygonXY myPolygon = multiPolygon.at( i );
     qDebug( "\tPolygon in multipolygon: %d", i );
     dumpPolygon( myPolygon );
   }
 }
 
-void TestQgsGeometry::dumpPolygon( QgsPolygon &polygon )
+void TestQgsGeometry::dumpPolygon( QgsPolygonXY &polygon )
 {
   QVector<QPointF> myPoints;
   for ( int j = 0; j < polygon.size(); j++ )

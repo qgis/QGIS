@@ -19,7 +19,7 @@ typedef QVector<QgsPointXY> QgsPolylineXY;
 
 typedef QVector<QgsPoint> QgsPolyline;
 
-typedef QVector<QVector<QgsPointXY>> QgsPolygon;
+typedef QVector<QVector<QgsPointXY>> QgsPolygonXY;
 
 typedef QVector<QgsPointXY> QgsMultiPoint;
 
@@ -189,7 +189,7 @@ Creates a new geometry from a QgsMultiPoint object
 Creates a new geometry from a QgsMultiPolyline object
  :rtype: QgsGeometry
 %End
-    static QgsGeometry fromPolygon( const QgsPolygon &polygon );
+    static QgsGeometry fromPolygon( const QgsPolygonXY &polygon );
 %Docstring
 Creates a new geometry from a QgsPolygon
  :rtype: QgsGeometry
@@ -1144,11 +1144,11 @@ Returns an extruded version of this geometry.
  :rtype: QgsPolylineXY
 %End
 
-    QgsPolygon asPolygon() const;
+    QgsPolygonXY asPolygon() const;
 %Docstring
  Returns contents of the geometry as a polygon
  if wkbType is WKBPolygon, otherwise an empty list
- :rtype: QgsPolygon
+ :rtype: QgsPolygonXY
 %End
 
     QgsMultiPoint asMultiPoint() const;
@@ -1430,20 +1430,20 @@ Returns an extruded version of this geometry.
  :rtype: QgsPolylineXY
 %End
 
-    static QgsPolygon createPolygonFromQPolygonF( const QPolygonF &polygon ) /Factory/;
+    static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) /Factory/;
 %Docstring
- Creates a QgsPolygon from a QPolygonF.
+ Creates a QgsPolygonXYfrom a QPolygonF.
  \param polygon source polygon
  :return: QgsPolygon
 .. seealso:: createPolylineFromQPolygonF
- :rtype: QgsPolygon
+ :rtype: QgsPolygonXY
 %End
 
 
     static bool compare( PyObject *obj1, PyObject *obj2, double epsilon = 4 * DBL_EPSILON );
 %Docstring
  Compares two geometry objects for equality within a specified tolerance.
- The objects can be of type QgsPolylineXY, QgsPolygon or QgsMultiPolygon.
+ The objects can be of type QgsPolylineXY, QgsPolygonXYor QgsMultiPolygon.
  The 2 types should match.
  \param p1 first geometry object
  \param p2 second geometry object
@@ -1507,10 +1507,10 @@ Returns an extruded version of this geometry.
                    sipCanConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
                    sipCanConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
               {
-                QgsPolygon *p0;
-                QgsPolygon *p1;
-                p0 = reinterpret_cast<QgsPolygon *>( sipConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-                p1 = reinterpret_cast<QgsPolygon *>( sipConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+                QgsPolygonXY *p0;
+                QgsPolygonXY *p1;
+                p0 = reinterpret_cast<QgsPolygonXY *>( sipConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+                p1 = reinterpret_cast<QgsPolygonXY *>( sipConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
                 if ( sipIsErr )
                 {
                   sipReleaseType( p0, sipType_QVector_0600QVector_0100QgsPointXY, state0 );

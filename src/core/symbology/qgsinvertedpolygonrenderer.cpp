@@ -253,7 +253,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
   }
 
   QgsMultiPolygon finalMulti; //avoid expensive allocation for list for every feature
-  QgsPolygon newPoly;
+  QgsPolygonXY newPoly;
 
   Q_FOREACH ( const CombinedFeature &cit, mFeaturesCategories )
   {

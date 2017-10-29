@@ -154,7 +154,7 @@ int QgsMapToolSimplify::vertexCount( const QgsGeometry &g ) const
       int count = 0;
       if ( g.isMultipart() )
       {
-        Q_FOREACH ( const QgsPolygon &polygon, g.asMultiPolygon() )
+        Q_FOREACH ( const QgsPolygonXY &polygon, g.asMultiPolygon() )
           Q_FOREACH ( const QgsPolylineXY &ring, polygon )
             count += ring.count();
       }

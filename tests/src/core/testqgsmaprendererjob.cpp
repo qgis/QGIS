@@ -138,7 +138,7 @@ void TestQgsMapRendererJob::initTestCase()
         QgsPointXY myPoint3 = QgsPointXY( i + myInterval, j + myInterval );
         QgsPointXY myPoint4 = QgsPointXY( i, j + myInterval );
         myPolyline << myPoint1 << myPoint2 << myPoint3 << myPoint4 << myPoint1;
-        QgsPolygon myPolygon;
+        QgsPolygonXY myPolygon;
         myPolygon << myPolyline;
         //polygon: first item of the list is outer ring,
         // inner rings (if any) start from second item

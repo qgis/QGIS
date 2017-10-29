@@ -440,7 +440,7 @@ void extractLinework( const QgsGeometry &g, QgsMultiPolyline &mpl )
       break;
 
     case QgsWkbTypes::MultiPolygon:
-      Q_FOREACH ( const QgsPolygon &polygon, geom.asMultiPolygon() )
+      Q_FOREACH ( const QgsPolygonXY &polygon, geom.asMultiPolygon() )
         Q_FOREACH ( const QgsPolylineXY &ring, polygon )
           mpl << ring;
       break;

@@ -412,7 +412,7 @@ QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry &fea
 
   if ( geomType == QgsWkbTypes::Polygon || geomType == QgsWkbTypes::Polygon25D )
   {
-    QgsPolygon polygon = featureGeom.asPolygon();
+    QgsPolygonXYpolygon = featureGeom.asPolygon();
     multiPoly.append( polygon );
   }
   else if ( geomType == QgsWkbTypes::MultiPolygon || geomType == QgsWkbTypes::MultiPolygon25D )
@@ -428,7 +428,7 @@ QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry &fea
   QgsMultiPolygon::const_iterator multiPolyIt = multiPoly.constBegin();
   for ( ; multiPolyIt != multiPoly.constEnd(); ++multiPolyIt )
   {
-    QgsPolygon::const_iterator polyIt = multiPolyIt->constBegin();
+    QgsPolygonXY::const_iterator polyIt = multiPolyIt->constBegin();
     for ( ; polyIt != multiPolyIt->constEnd(); ++polyIt )
     {
       currentVertex += polyIt->size();

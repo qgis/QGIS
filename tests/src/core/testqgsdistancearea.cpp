@@ -291,7 +291,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
        << QgsPointXY( 2, 2 )
        << QgsPointXY( 0, 2 )
        << QgsPointXY( 0, 0 );
-  QgsPolygon poly;
+  QgsPolygonXY poly;
   poly << ring;
 
   QgsGeometry polygon( QgsGeometry::fromPolygon( poly ) );

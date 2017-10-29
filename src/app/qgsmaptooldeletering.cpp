@@ -127,7 +127,7 @@ QgsGeometry QgsMapToolDeleteRing::ringUnderPoint( const QgsPointXY &p, QgsFeatur
   QgsGeometry g;
   QgsGeometry ringGeom;
   QgsMultiPolygon pol;
-  QgsPolygon tempPol;
+  QgsPolygonXYtempPol;
   QgsGeometry tempGeom;
   double area = std::numeric_limits<double>::max();
   while ( fit.nextFeature( f ) )
@@ -151,7 +151,7 @@ QgsGeometry QgsMapToolDeleteRing::ringUnderPoint( const QgsPointXY &p, QgsFeatur
       {
         for ( int j = 1; j < pol[i].size(); ++j )
         {
-          tempPol = QgsPolygon() << pol[i][j];
+          tempPol = QgsPolygonXY() << pol[i][j];
           tempGeom = QgsGeometry::fromPolygon( tempPol );
           if ( tempGeom.area() < area && tempGeom.contains( &p ) )
           {
@@ -202,7 +202,7 @@ void QgsMapToolDeleteRing::deleteRing( QgsFeatureId fId, int beforeVertexNr, Qgs
 
 int QgsMapToolDeleteRing::ringNumInPolygon( const QgsGeometry &g, int vertexNr )
 {
-  QgsPolygon polygon = g.asPolygon();
+  QgsPolygonXYpolygon = g.asPolygon();
   for ( int ring = 0; ring < polygon.count(); ring++ )
   {
     if ( vertexNr < polygon[ring].count() )
@@ -218,7 +218,7 @@ int QgsMapToolDeleteRing::ringNumInMultiPolygon( const QgsGeometry &g, int verte
   QgsMultiPolygon mpolygon = g.asMultiPolygon();
   for ( int part = 0; part < mpolygon.count(); part++ )
   {
-    const QgsPolygon &polygon = mpolygon[part];
+    const QgsPolygonXY &polygon = mpolygon[part];
     for ( int ring = 0; ring < polygon.count(); ring++ )
     {
       if ( vertexNr < polygon[ring].count() )

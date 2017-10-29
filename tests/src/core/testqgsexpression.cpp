@@ -1858,7 +1858,7 @@ class TestQgsExpression: public QObject
       QgsPolylineXY polyline, polygon_ring;
       polyline << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 );
       polygon_ring << QgsPointXY( 2, 1 ) << QgsPointXY( 10, 1 ) << QgsPointXY( 10, 6 ) << QgsPointXY( 2, 6 ) << QgsPointXY( 2, 1 );
-      QgsPolygon polygon;
+      QgsPolygonXY polygon;
       polygon << polygon_ring;
       QgsFeature fPolygon, fPolyline;
       QgsGeometry polylineGeom = QgsGeometry::fromPolylineXY( polyline );
@@ -1991,7 +1991,7 @@ class TestQgsExpression: public QObject
       QgsFeature feat;
       QgsPolylineXY polygonRing3111;
       polygonRing3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 ) << QgsPointXY( 2520109, 2397715 ) << QgsPointXY( 2520792, 2425494 ) << QgsPointXY( 2484588, 2425722 );
-      QgsPolygon polygon3111;
+      QgsPolygonXY polygon3111;
       polygon3111 << polygonRing3111;
       QgsGeometry polygon3111G = QgsGeometry::fromPolygon( polygon3111 );
       feat.setGeometry( polygon3111G );
@@ -2104,7 +2104,7 @@ class TestQgsExpression: public QObject
       polyline << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 );
       polygon_ring << QgsPointXY( 2, 1 ) << QgsPointXY( 10, 1 ) << QgsPointXY( 10, 6 ) << QgsPointXY( 2, 6 ) << QgsPointXY( 2, 1 );
 
-      QgsPolygon polygon;
+      QgsPolygonXY polygon;
       polygon << polygon_ring;
 
       QgsFeature fPoint, fPolygon, fPolyline;
@@ -2150,7 +2150,7 @@ class TestQgsExpression: public QObject
       QgsPolylineXY polyline, polygon_ring;
       polyline << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 );
       polygon_ring << QgsPointXY( 1, 1 ) << QgsPointXY( 6, 1 ) << QgsPointXY( 6, 6 ) << QgsPointXY( 1, 6 ) << QgsPointXY( 1, 1 );
-      QgsPolygon polygon;
+      QgsPolygonXY polygon;
       polygon << polygon_ring;
 
       QgsGeometry sourcePoint( QgsGeometry::fromPoint( point ) );
@@ -2214,7 +2214,7 @@ class TestQgsExpression: public QObject
       QgsPolylineXY polyline, polygon_ring;
       polyline << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 0 );
       polygon_ring << QgsPointXY( 1, 1 ) << QgsPointXY( 6, 1 ) << QgsPointXY( 6, 6 ) << QgsPointXY( 1, 6 ) << QgsPointXY( 1, 1 );
-      QgsPolygon polygon;
+      QgsPolygonXY polygon;
       polygon << polygon_ring;
 
       QTest::newRow( "geometry Point" ) << "geometry( $currentfeature )" << QgsGeometry::fromPoint( point ) << false << true;
@@ -2272,7 +2272,7 @@ class TestQgsExpression: public QObject
       QgsPolylineXY line, polygon_ring;
       line << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 10 );
       polygon_ring << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 10 ) << QgsPointXY( 10, 0 ) << QgsPointXY( 0, 0 );
-      QgsPolygon polygon;
+      QgsPolygonXY polygon;
       polygon << polygon_ring;
 
       QTest::newRow( "No Intersects" ) << "intersects( $geometry, geomFromWKT('LINESTRING ( 2 0, 0 2 )') )" << QgsGeometry::fromPoint( point ) << false << QVariant( 0 );
@@ -2329,7 +2329,7 @@ class TestQgsExpression: public QObject
       QgsPolylineXY line, polygon_ring;
       line << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 10 );
       polygon_ring << QgsPointXY( 0, 0 ) << QgsPointXY( 10, 10 ) << QgsPointXY( 10, 0 ) << QgsPointXY( 0, 0 );
-      QgsPolygon polygon;
+      QgsPolygonXY polygon;
       polygon << polygon_ring;
 
       QgsGeometry geom;

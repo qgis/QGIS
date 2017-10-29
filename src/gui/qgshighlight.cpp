@@ -221,7 +221,7 @@ void QgsHighlight::paintLine( QPainter *p, QgsPolylineXY line )
   p->drawPolyline( polygon );
 }
 
-void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
+void QgsHighlight::paintPolygon( QPainter *p, QgsPolygonXY polygon )
 {
   // OddEven fill rule by default
   QPainterPath path;

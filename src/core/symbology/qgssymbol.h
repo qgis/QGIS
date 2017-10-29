@@ -363,7 +363,7 @@ class CORE_EXPORT QgsSymbol
     static QPolygonF _getPolygonRing( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent );
 
     /**
-     * Creates a polygon in screen coordinates from a QgsPolygon in map coordinates
+     * Creates a polygon in screen coordinates from a QgsPolygonXYin map coordinates
      */
     static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygonV2 &polygon, bool clipToExtent = true );
 

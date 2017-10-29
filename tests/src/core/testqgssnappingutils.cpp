@@ -62,7 +62,7 @@ class TestQgsSnappingUtils : public QObject
       //           + (1,0)
       mVL = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature ff( 0 );
-      QgsPolygon polygon;
+      QgsPolygonXY polygon;
       QgsPolylineXY polyline;
       polyline << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 0 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 0, 1 );
       polygon << polyline;

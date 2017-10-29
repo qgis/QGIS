@@ -139,7 +139,7 @@ void TestQgsAttributeTable::testFieldCalculationArea()
 
   QgsPolylineXY polygonRing3111;
   polygonRing3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 ) << QgsPointXY( 2520109, 2397715 ) << QgsPointXY( 2520792, 2425494 ) << QgsPointXY( 2484588, 2425722 );
-  QgsPolygon polygon3111;
+  QgsPolygonXY polygon3111;
   polygon3111 << polygonRing3111;
   QgsGeometry polygon3111G = QgsGeometry::fromPolygon( polygon3111 );
   f1.setGeometry( polygon3111G );

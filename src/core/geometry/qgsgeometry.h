@@ -70,9 +70,9 @@ typedef QVector<QgsPoint> QgsPolyline;
 
 //! Polygon: first item of the list is outer ring, inner rings (if any) start from second item
 #ifndef SIP_RUN
-typedef QVector<QgsPolylineXY> QgsPolygon;
+typedef QVector<QgsPolylineXY> QgsPolygonXY;
 #else
-typedef QVector<QVector<QgsPointXY>> QgsPolygon;
+typedef QVector<QVector<QgsPointXY>> QgsPolygonXY;
 #endif
 
 //! A collection of QgsPoints that share a common collection of attributes
@@ -87,7 +87,7 @@ typedef QVector<QVector<QgsPointXY>> QgsMultiPolyline;
 
 //! A collection of QgsPolygons that share a common collection of attributes
 #ifndef SIP_RUN
-typedef QVector<QgsPolygon> QgsMultiPolygon;
+typedef QVector<QgsPolygonXY> QgsMultiPolygon;
 #else
 typedef QVector<QVector<QVector<QgsPointXY>>> QgsMultiPolygon;
 #endif
@@ -244,7 +244,7 @@ class CORE_EXPORT QgsGeometry
     //! Creates a new geometry from a QgsMultiPolyline object
     static QgsGeometry fromMultiPolyline( const QgsMultiPolyline &multiline );
     //! Creates a new geometry from a QgsPolygon
-    static QgsGeometry fromPolygon( const QgsPolygon &polygon );
+    static QgsGeometry fromPolygon( const QgsPolygonXY &polygon );
     //! Creates a new geometry from a QgsMultiPolygon
     static QgsGeometry fromMultiPolygon( const QgsMultiPolygon &multipoly );
     //! Creates a new geometry from a QgsRectangle
@@ -1152,7 +1152,7 @@ class CORE_EXPORT QgsGeometry
      * Returns contents of the geometry as a polygon
      * if wkbType is WKBPolygon, otherwise an empty list
      */
-    QgsPolygon asPolygon() const;
+    QgsPolygonXY asPolygon() const;
 
     /**
      * Returns contents of the geometry as a multi point
@@ -1420,12 +1420,12 @@ class CORE_EXPORT QgsGeometry
     static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
 
     /**
-     * Creates a QgsPolygon from a QPolygonF.
+     * Creates a QgsPolygonXYfrom a QPolygonF.
      * \param polygon source polygon
      * \returns QgsPolygon
      * \see createPolylineFromQPolygonF
      */
-    static QgsPolygon createPolygonFromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
+    static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
 
 #ifndef SIP_RUN
 
@@ -1450,7 +1450,7 @@ class CORE_EXPORT QgsGeometry
      * number of points and all points are equal within the specified tolerance
      * \since QGIS 2.9
      */
-    static bool compare( const QgsPolygon &p1, const QgsPolygon &p2,
+    static bool compare( const QgsPolygonXY &p1, const QgsPolygonXY &p2,
                          double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 
     /**
@@ -1469,7 +1469,7 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Compares two geometry objects for equality within a specified tolerance.
-     * The objects can be of type QgsPolylineXY, QgsPolygon or QgsMultiPolygon.
+     * The objects can be of type QgsPolylineXY, QgsPolygonXYor QgsMultiPolygon.
      * The 2 types should match.
      * \param p1 first geometry object
      * \param p2 second geometry object
@@ -1533,10 +1533,10 @@ class CORE_EXPORT QgsGeometry
                    sipCanConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
                    sipCanConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
               {
-                QgsPolygon *p0;
-                QgsPolygon *p1;
-                p0 = reinterpret_cast<QgsPolygon *>( sipConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-                p1 = reinterpret_cast<QgsPolygon *>( sipConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+                QgsPolygonXY *p0;
+                QgsPolygonXY *p1;
+                p0 = reinterpret_cast<QgsPolygonXY *>( sipConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+                p1 = reinterpret_cast<QgsPolygonXY *>( sipConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
                 if ( sipIsErr )
                 {
                   sipReleaseType( p0, sipType_QVector_0600QVector_0100QgsPointXY, state0 );
@@ -1651,7 +1651,7 @@ class CORE_EXPORT QgsGeometry
     void reset( std::unique_ptr< QgsAbstractGeometry > newGeometry );
 
     static void convertToPolyline( const QgsPointSequence &input, QgsPolylineXY &output );
-    static void convertPolygon( const QgsPolygonV2 &input, QgsPolygon &output );
+    static void convertPolygon( const QgsPolygonV2 &input, QgsPolygonXY &output );
 
     //! Try to convert the geometry to a point
     QgsGeometry convertToPoint( bool destMultipart ) const;

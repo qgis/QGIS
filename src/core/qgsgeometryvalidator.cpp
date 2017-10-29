@@ -180,7 +180,7 @@ void QgsGeometryValidator::validatePolyline( int i, QgsPolylineXY line, bool rin
   }
 }
 
-void QgsGeometryValidator::validatePolygon( int idx, const QgsPolygon &polygon )
+void QgsGeometryValidator::validatePolygon( int idx, const QgsPolygonXY &polygon )
 {
   // check if holes are inside polygon
   for ( int i = 1; !mStop && i < polygon.size(); i++ )

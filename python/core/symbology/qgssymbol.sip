@@ -344,7 +344,7 @@ Generate symbol as image
 
     static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygonV2 &polygon, bool clipToExtent = true );
 %Docstring
- Creates a polygon in screen coordinates from a QgsPolygon in map coordinates
+ Creates a polygon in screen coordinates from a QgsPolygonXYin map coordinates
 %End
 
     QgsSymbolLayerList cloneLayers() const /Factory/;

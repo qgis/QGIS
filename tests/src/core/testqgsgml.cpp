@@ -261,7 +261,7 @@ void TestQgsGML::testPolygonGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon poly = features[0].first->geometry().asPolygon();
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 2 );
   QCOMPARE( poly[0].size(), 5 );
   QCOMPARE( poly[1].size(), 4 );
@@ -610,7 +610,7 @@ void TestQgsGML::testPolygonGML3()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon poly = features[0].first->geometry().asPolygon();
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 2 );
   QCOMPARE( poly[0].size(), 5 );
   QCOMPARE( poly[1].size(), 4 );
@@ -643,7 +643,7 @@ void TestQgsGML::testPolygonGML3_srsDimension_on_Polygon()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon poly = features[0].first->geometry().asPolygon();
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 1 );
   QCOMPARE( poly[0].size(), 5 );
   delete features[0].first;
@@ -786,7 +786,7 @@ void TestQgsGML::testBoundingBoxGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon poly = features[0].first->geometry().asPolygon();
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 1 );
   QCOMPARE( poly[0].size(), 5 );
   delete features[0].first;
@@ -815,7 +815,7 @@ void TestQgsGML::testBoundingBoxGML3()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon poly = features[0].first->geometry().asPolygon();
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 1 );
   QCOMPARE( poly[0].size(), 5 );
   delete features[0].first;
