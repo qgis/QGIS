@@ -43,8 +43,8 @@ class QgsAbstractGeometry
       sipType = sipType_QgsMultiPoint;
     else if ( qgsgeometry_cast<QgsMultiLineString *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMultiLineString;
-    else if ( qgsgeometry_cast<QgsMultiPolygonV2 *>( sipCpp ) != nullptr )
-      sipType = sipType_QgsMultiPolygonV2;
+    else if ( qgsgeometry_cast<QgsMultiPolygon *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsMultiPolygon;
     else if ( qgsgeometry_cast<QgsMultiSurface *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMultiSurface;
     else if ( qgsgeometry_cast<QgsMultiCurve *>( sipCpp ) != nullptr )
@@ -397,7 +397,7 @@ Returns the centroid of the geometry
 %Docstring
  Returns the geometry converted to the more generic curve type.
  E.g. QgsLineString -> QgsCompoundCurve, QgsPolygon -> QgsCurvePolygon,
- QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
+ QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygon -> QgsMultiSurface
  :return: the converted geometry. Caller takes ownership
  :rtype: QgsAbstractGeometry
 %End

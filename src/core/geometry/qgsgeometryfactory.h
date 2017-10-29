@@ -32,7 +32,7 @@ class QgsGeometryCollection;
 class QgsMultiPoint;
 class QgsMultiLineString;
 class QgsPolygon;
-class QgsMultiPolygonV2;
+class QgsMultiPolygon;
 
 //compatibility with old classes
 #include "qgspointxy.h"
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsGeometryFactory
 
     /**
      * Returns a new geometry collection matching a specified WKB \a type. For instance, if
-     * type is PolygonM the returned geometry will be a QgsMultiPolygonV2 with M values.
+     * type is PolygonM the returned geometry will be a QgsMultiPolygon with M values.
      */
     static std::unique_ptr< QgsGeometryCollection > createCollectionOfType( QgsWkbTypes::Type type );
 

@@ -59,7 +59,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
     linesToProcess << static_cast<QgsLineString *>( curve->segmentize() );
   }
 
-  std::unique_ptr<QgsMultiPolygonV2> multipolygon( linesToProcess.size() > 1 ? new QgsMultiPolygonV2() : nullptr );
+  std::unique_ptr<QgsMultiPolygonV2> multipolygon( linesToProcess.size() > 1 ? new QgsMultiPolygon() : nullptr );
   QgsPolygon *polygon = nullptr;
 
   if ( !linesToProcess.empty() )

@@ -29,10 +29,10 @@ email                : marco.hugentobler at sourcepole dot com
 class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
 {
   public:
-    QgsMultiPolygonV2();
+    QgsMultiPolygon();
     QString geometryType() const override;
     void clear() override;
-    QgsMultiPolygonV2 *clone() const override SIP_FACTORY;
+    QgsMultiPolygon *clone() const override SIP_FACTORY;
     bool fromWkt( const QString &wkt ) override;
     QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
@@ -50,21 +50,21 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
 
     /**
      * Cast the \a geom to a QgsMultiPolygonV2.
-     * Should be used by qgsgeometry_cast<QgsMultiPolygonV2 *>( geometry ).
+     * Should be used by qgsgeometry_cast<QgsMultiPolygon *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      * \since QGIS 3.0
      */
-    inline const QgsMultiPolygonV2 *cast( const QgsAbstractGeometry *geom ) const
+    inline const QgsMultiPolygon *cast( const QgsAbstractGeometry *geom ) const
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPolygon )
-        return static_cast<const QgsMultiPolygonV2 *>( geom );
+        return static_cast<const QgsMultiPolygon *>( geom );
       return nullptr;
     }
 #endif
 
   protected:
-    QgsMultiPolygonV2 *createEmptyWithSameType() const override SIP_FACTORY;
+    QgsMultiPolygon *createEmptyWithSameType() const override SIP_FACTORY;
     bool wktOmitChildType() const override;
 };
 

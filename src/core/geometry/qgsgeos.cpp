@@ -1078,7 +1078,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     }
     case GEOS_MULTIPOLYGON:
     {
-      std::unique_ptr< QgsMultiPolygonV2 > multiPolygon( new QgsMultiPolygonV2() );
+      std::unique_ptr< QgsMultiPolygon > multiPolygon( new QgsMultiPolygon() );
 
       int nParts = GEOSGetNumGeometries_r( geosinit.ctxt, geos );
       for ( int i = 0; i < nParts; ++i )

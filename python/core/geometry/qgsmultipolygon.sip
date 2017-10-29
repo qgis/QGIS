@@ -19,12 +19,12 @@ class QgsMultiPolygonV2: QgsMultiSurface
 #include "qgsmultipolygon.h"
 %End
   public:
-    QgsMultiPolygonV2();
+    QgsMultiPolygon();
     virtual QString geometryType() const;
 
     virtual void clear();
 
-    virtual QgsMultiPolygonV2 *clone() const /Factory/;
+    virtual QgsMultiPolygon *clone() const /Factory/;
 
     virtual bool fromWkt( const QString &wkt );
 
@@ -51,7 +51,7 @@ class QgsMultiPolygonV2: QgsMultiSurface
 
 
   protected:
-    virtual QgsMultiPolygonV2 *createEmptyWithSameType() const /Factory/;
+    virtual QgsMultiPolygon *createEmptyWithSameType() const /Factory/;
 
     virtual bool wktOmitChildType() const;
 

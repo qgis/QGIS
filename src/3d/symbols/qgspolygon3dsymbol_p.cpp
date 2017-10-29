@@ -163,7 +163,7 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
       if ( hasDDExtrusion )
         extrusionHeightPerPolygon.append( extrusionHeight );
     }
-    else if ( const QgsMultiPolygonV2 *mpoly = qgsgeometry_cast< const QgsMultiPolygonV2 *>( g ) )
+    else if ( const QgsMultiPolygon *mpoly = qgsgeometry_cast< const QgsMultiPolygon *>( g ) )
     {
       for ( int i = 0; i < mpoly->numGeometries(); ++i )
       {

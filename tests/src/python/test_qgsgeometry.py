@@ -3419,7 +3419,7 @@ class TestQgsGeometry(unittest.TestCase):
     def testMisc(self):
 
         # Test that we cannot add a CurvePolygon in a MultiPolygon
-        multipolygon = QgsMultiPolygonV2()
+        multipolygon = QgsMultiPolygon()
         cp = QgsCurvePolygon()
         cp.fromWkt("CurvePolygon ((0 0,0 1,1 1,0 0))")
         assert not multipolygon.addGeometry(cp)
@@ -3436,7 +3436,7 @@ class TestQgsGeometry(unittest.TestCase):
             self.assertTrue(False)
         geom = QgsGeometry()
         geom.fromWkb(wkb)
-        self.assertEqual(geom.exportToWkt(), QgsMultiPolygonV2().asWkt())
+        self.assertEqual(geom.exportToWkt(), QgsMultiPolygon().asWkt())
 
         # Test that fromWkt() on a GeometryCollection works with all possible geometries
         wkt = "GeometryCollection( "

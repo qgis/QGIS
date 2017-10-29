@@ -128,7 +128,7 @@ Qt3DRender::QGeometryRenderer *QgsLine3DSymbolEntityNode::renderer( const Qgs3DM
     }
     else if ( QgsWkbTypes::flatType( buffered->wkbType() ) == QgsWkbTypes::MultiPolygon )
     {
-      QgsMultiPolygonV2 *mpolyBuffered = static_cast<QgsMultiPolygonV2 *>( buffered );
+      QgsMultiPolygon *mpolyBuffered = static_cast<QgsMultiPolygon *>( buffered );
       for ( int i = 0; i < mpolyBuffered->numGeometries(); ++i )
       {
         QgsAbstractGeometry *partBuffered = mpolyBuffered->geometryN( i );

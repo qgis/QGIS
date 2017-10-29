@@ -73,7 +73,7 @@ void TestQgsGeometryUtils::testExtractLinestrings()
   innerRing2->setPoints( QList<QgsPoint>() << QgsPoint( 14, 14 ) << QgsPoint( 14, 16 ) << QgsPoint( 16, 16 ) << QgsPoint( 16, 14 ) << QgsPoint( 14, 14 ) );
   polygon2->setInteriorRings( QList<QgsCurve *>() << innerRing2 );
 
-  QgsMultiPolygonV2 mpg;
+  QgsMultiPolygon mpg;
   mpg.addGeometry( polygon1 );
   mpg.addGeometry( polygon2 );
 

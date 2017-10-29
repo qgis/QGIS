@@ -213,7 +213,7 @@ QgsGeometry QgsGeometry::fromMultiPolyline( const QgsMultiPolylineXY &multiline 
 
 QgsGeometry QgsGeometry::fromMultiPolygon( const QgsMultiPolygonXY &multipoly )
 {
-  std::unique_ptr< QgsMultiPolygonV2 > geom = QgsGeometryFactory::fromMultiPolygon( multipoly );
+  std::unique_ptr< QgsMultiPolygon > geom = QgsGeometryFactory::fromMultiPolygon( multipoly );
   if ( geom )
   {
     return QgsGeometry( std::move( geom ) );
@@ -670,7 +670,7 @@ QgsGeometry::OperationResult QgsGeometry::addPart( QgsAbstractGeometry *part, Qg
         reset( qgis::make_unique< QgsMultiLineString >() );
         break;
       case QgsWkbTypes::PolygonGeometry:
-        reset( qgis::make_unique< QgsMultiPolygonV2 >() );
+        reset( qgis::make_unique< QgsMultiPolygon >() );
         break;
       default:
         reset( nullptr );
@@ -2656,9 +2656,9 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
 
     case QgsWkbTypes::MultiPolygon:
     {
-      QgsMultiPolygonV2 *multiPoly = static_cast< QgsMultiPolygonV2 * >( d->geometry.get() );
+      QgsMultiPolygon *multiPoly = static_cast< QgsMultiPolygon * >( d->geometry.get() );
 
-      std::unique_ptr< QgsMultiPolygonV2 > resultMultiPoly = qgis::make_unique< QgsMultiPolygonV2 >();
+      std::unique_ptr< QgsMultiPolygon > resultMultiPoly = qgis::make_unique< QgsMultiPolygon >();
       for ( int i = 0; i < multiPoly->numGeometries(); ++i )
       {
         resultMultiPoly->addGeometry( smoothPolygon( *( static_cast< QgsPolygon * >( multiPoly->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ).release() );

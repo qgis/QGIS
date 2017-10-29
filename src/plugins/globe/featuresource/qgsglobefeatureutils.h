@@ -139,7 +139,7 @@ class QgsGlobeFeatureUtils
         case QgsWkbTypes::MultiPolygon:
         {
           osgEarth::Features::MultiGeometry *multiGeometry = new osgEarth::Features::MultiGeometry();
-          QgsMultiPolygonV2 *multiPolygon = static_cast<QgsMultiPolygonV2 *>( geom.geometry() );
+          QgsMultiPolygon *multiPolygon = static_cast<QgsMultiPolygon *>( geom.geometry() );
           for ( int i = 0, n = multiPolygon->numGeometries(); i < n; ++i )
           {
             multiGeometry->getComponents().push_back( polygonFromQgsPolygon( static_cast<QgsPolygon *>( multiPolygon->geometryN( i ) ) ) );

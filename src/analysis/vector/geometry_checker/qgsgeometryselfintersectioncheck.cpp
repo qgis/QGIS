@@ -231,7 +231,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
           // Otherwise, create multipolygon
           else
           {
-            QgsMultiPolygonV2 *multiPoly = new QgsMultiPolygonV2();
+            QgsMultiPolygon *multiPoly = new QgsMultiPolygon();
             multiPoly->addGeometry( poly->clone() );
             multiPoly->addGeometry( poly2 );
             feature.setGeometry( QgsGeometry( multiPoly ) );

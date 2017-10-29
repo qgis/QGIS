@@ -953,7 +953,7 @@ std::unique_ptr< QgsAbstractGeometry > _qgis_lwgeom_make_valid( const QgsAbstrac
         collection = new QgsMultiLineString();
         break;
       case QgsWkbTypes::MultiPolygon:
-        collection = new QgsMultiPolygonV2();
+        collection = new QgsMultiPolygon();
         break;
       default:
         collection = new QgsGeometryCollection();

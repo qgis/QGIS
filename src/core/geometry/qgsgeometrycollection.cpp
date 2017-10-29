@@ -303,7 +303,7 @@ bool QgsGeometryCollection::fromWkt( const QString &wkt )
                             << new QgsCircularString << new QgsCompoundCurve
                             << new QgsCurvePolygon
                             << new QgsMultiPoint << new QgsMultiLineString
-                            << new QgsMultiPolygonV2 << new QgsGeometryCollection
+                            << new QgsMultiPolygon << new QgsGeometryCollection
                             << new QgsMultiCurve << new QgsMultiSurface, QStringLiteral( "GeometryCollection" ) );
 }
 

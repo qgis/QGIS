@@ -100,7 +100,7 @@ void QgsGeometryTypeCheck::fixError( QgsGeometryCheckError *error, int method, c
         }
         case QgsWkbTypes::MultiPolygon:
         {
-          geomCollection = new QgsMultiPolygonV2();
+          geomCollection = new QgsMultiPolygon();
           break;
         }
         case QgsWkbTypes::MultiCurve:
