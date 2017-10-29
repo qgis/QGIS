@@ -27,10 +27,10 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeature,
                        QgsGeometry,
-                       QgsMultiPointV2,
+                       QgsMultiPoint,
                        QgsMultiLineString,
                        QgsLineString,
-                       QgsPolygonV2,
+                       QgsPolygon,
                        QgsFeatureSink,
                        QgsWkbTypes,
                        QgsProcessingException,

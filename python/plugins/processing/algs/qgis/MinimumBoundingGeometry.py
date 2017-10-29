@@ -46,7 +46,7 @@ from qgis.core import (QgsField,
                        QgsProcessing,
                        QgsFeature,
                        QgsVertexId,
-                       QgsMultiPointV2)
+                       QgsMultiPoint)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 

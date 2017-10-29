@@ -29,10 +29,10 @@ from qgis.core import (
     QgsLineString,
     QgsMultiCurve,
     QgsMultiLineString,
-    QgsMultiPointV2,
-    QgsMultiPolygonV2,
+    QgsMultiPoint,
+    QgsMultiPolygon,
     QgsMultiSurface,
-    QgsPolygonV2,
+    QgsPolygon,
     QgsCoordinateTransform,
     QgsRectangle,
     QgsWkbTypes,
@@ -1947,11 +1947,11 @@ class TestQgsGeometry(unittest.TestCase):
             (QgsLineString, "LineString", QgsWkbTypes.LineString),
             (QgsMultiCurve, "MultiCurve", QgsWkbTypes.MultiCurve),
             (QgsMultiLineString, "MultiLineString", QgsWkbTypes.MultiLineString),
-            (QgsMultiPointV2, "MultiPoint", QgsWkbTypes.MultiPoint),
-            (QgsMultiPolygonV2, "MultiPolygon", QgsWkbTypes.MultiPolygon),
+            (QgsMultiPoint, "MultiPoint", QgsWkbTypes.MultiPoint),
+            (QgsMultiPolygon, "MultiPolygon", QgsWkbTypes.MultiPolygon),
             (QgsMultiSurface, "MultiSurface", QgsWkbTypes.MultiSurface),
             (QgsPoint, "Point", QgsWkbTypes.Point),
-            (QgsPolygonV2, "Polygon", QgsWkbTypes.Polygon),
+            (QgsPolygon, "Polygon", QgsWkbTypes.Polygon),
         ]
 
         for geomtype in types:

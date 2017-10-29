@@ -85,7 +85,7 @@ class TestQgsGeometry : public QObject
     void point(); //test QgsPointV2
     void lineString(); //test QgsLineString
     void circularString();
-    void polygon(); //test QgsPolygonV2
+    void polygon(); //test QgsPolygon
     void curvePolygon();
     void triangle();
     void circle();
