@@ -231,16 +231,12 @@ void TestQgsNetworkAnalysis::testBuildTolerance()
   QCOMPARE( graph->edge( 5 ).toVertex(), 4 );
 
   // with tolerance
-#if 0 //BROKEN, but should be sufficient
   double tolerance = 0.11;
-#else
-  double tolerance = 6;
-#endif
 
   builder = qgis::make_unique< QgsGraphBuilder > ( network->sourceCrs(), true, tolerance );
   director->makeGraph( builder.get(), QVector<QgsPointXY>(), snapped );
   graph.reset( builder->graph() );
-  QCOMPARE( graph->vertexCount(), 5 );
+  QCOMPARE( graph->vertexCount(), 4 );
   QCOMPARE( graph->edgeCount(), 6 );
   QCOMPARE( graph->vertex( 0 ).point(), QgsPointXY( 0, 0 ) );
   QCOMPARE( graph->vertex( 0 ).outgoingEdges(), QList< int >() << 1 );
@@ -259,14 +255,13 @@ void TestQgsNetworkAnalysis::testBuildTolerance()
   QCOMPARE( graph->vertex( 2 ).point(), QgsPointXY( 10, 10 ) );
   QCOMPARE( graph->vertex( 2 ).outgoingEdges(), QList< int >() << 2 << 5 );
   QCOMPARE( graph->vertex( 2 ).incomingEdges(), QList< int >() << 3 << 4 );
-  QCOMPARE( graph->vertex( 3 ).point(), QgsPointXY( 10.1, 10 ) );
-  QCOMPARE( graph->vertex( 3 ).outgoingEdges(), QList< int >() );
-  QCOMPARE( graph->vertex( 3 ).incomingEdges(), QList< int >() );
-  QCOMPARE( graph->vertex( 4 ).point(), QgsPointXY( 20, 10 ) );
-  QCOMPARE( graph->edge( 4 ).fromVertex(), 4 );
+  QCOMPARE( graph->vertex( 3 ).point(), QgsPointXY( 20, 10 ) );
+  QCOMPARE( graph->vertex( 3 ).outgoingEdges(), QList< int >() << 4 );
+  QCOMPARE( graph->vertex( 3 ).incomingEdges(), QList< int >() << 5 );
+  QCOMPARE( graph->edge( 4 ).fromVertex(), 3 );
   QCOMPARE( graph->edge( 4 ).toVertex(), 2 );
   QCOMPARE( graph->edge( 5 ).fromVertex(), 2 );
-  QCOMPARE( graph->edge( 5 ).toVertex(), 4 );
+  QCOMPARE( graph->edge( 5 ).toVertex(), 3 );
 }
 
 
