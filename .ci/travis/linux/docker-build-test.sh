@@ -7,6 +7,9 @@ set -e
 ##############
 export CCACHE_TEMPDIR=/tmp
 ccache -M 500M
+
+# Temporarily uncomment to debug ccache issues
+# export CCACHE_LOGFILE=/tmp/cache.debug
 ccache -z
 
 ############################
@@ -57,6 +60,11 @@ echo "travis_fold:start:ninja-build.1"
 echo "${bold}Building QGIS...${endbold}"
 ${CTEST_BUILD_COMMAND}
 echo "travis_fold:end:ninja-build.1"
+
+# Temporarily uncomment to debug ccache issues
+# echo "travis_fold:start:ccache-debug"
+# cat /tmp/cache.debug
+# echo "travis_fold:end:ccache-debug"
 
 ############################
 # Restore postgres test data
