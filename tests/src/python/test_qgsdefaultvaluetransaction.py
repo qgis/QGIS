@@ -63,6 +63,12 @@ class TestQgsDefaultValueTransaction(unittest.TestCase):
         transaction = QgsTransaction.create([self.vl.id()])
         transaction.begin()
         self.vl.startEditing()
+        
+        def onError(message):
+            """We should not get here. If we do, fail and say why"""
+            self.assertFalse(True, message)
+
+        self.vl.raiseError.connect(onError)
 
         init_fields = self.vl.fields()
         f = QgsFeature(init_fields)
