@@ -282,7 +282,7 @@ void QgsGeometryValidator::run()
       }
       else if ( flatType == QgsWkbTypes::MultiPolygon )
       {
-        QgsMultiPolygon mp = mGeometry.asMultiPolygon();
+        QgsMultiPolygonXY mp = mGeometry.asMultiPolygon();
         for ( int i = 0; !mStop && i < mp.size(); i++ )
         {
           validatePolygon( i, mp[i] );

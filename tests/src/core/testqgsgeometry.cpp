@@ -154,7 +154,7 @@ class TestQgsGeometry : public QObject
     //! A helper method to do a render check to see if the geometry op is as expected
     bool renderCheck( const QString &testName, const QString &comment = QString(), int mismatchCount = 0 );
     //! A helper method to dump to qdebug the geometry of a multipolygon
-    void dumpMultiPolygon( QgsMultiPolygon &multiPolygon );
+    void dumpMultiPolygon( QgsMultiPolygonXY &multiPolygon );
     //! A helper method to dump to qdebug the geometry of a polygon
     void dumpPolygon( QgsPolygonXY &polygon );
     //! A helper method to dump to qdebug the geometry of a polyline
@@ -14944,7 +14944,7 @@ void TestQgsGeometry::unionCheck1()
   QgsGeometry mypUnionGeometry  =  mpPolygonGeometryA.combine( mpPolygonGeometryC );
   qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypUnionGeometry.wkbType() );
   QVERIFY( mypUnionGeometry.wkbType() == QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon myMultiPolygon = mypUnionGeometry.asMultiPolygon();
+  QgsMultiPolygonXY myMultiPolygon = mypUnionGeometry.asMultiPolygon();
   QVERIFY( myMultiPolygon.size() > 0 ); //check that the union did not fail
   dumpMultiPolygon( myMultiPolygon );
   QVERIFY( renderCheck( "geometry_unionCheck1", "Checking A union C produces 2 polys" ) );
@@ -15094,8 +15094,8 @@ void TestQgsGeometry::smoothCheck()
   wkt = QStringLiteral( "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0 )),((2 2, 4 2, 4 4, 2 4, 2 2)))" );
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.1 );
-  QgsMultiPolygon multipoly = result.asMultiPolygon();
-  QgsMultiPolygon expectedMultiPoly;
+  QgsMultiPolygonXY multipoly = result.asMultiPolygon();
+  QgsMultiPolygonXY expectedMultiPoly;
   expectedMultiPoly
       << ( QgsPolygonXY() << ( QgsPolylineXY() << QgsPointXY( 1.0, 0 ) << QgsPointXY( 9, 0 ) << QgsPointXY( 10.0, 1 )
                                <<  QgsPointXY( 10.0, 9 ) << QgsPointXY( 9, 10.0 ) << QgsPointXY( 1, 10.0 ) << QgsPointXY( 0, 9 )
@@ -15215,7 +15215,7 @@ bool TestQgsGeometry::renderCheck( const QString &testName, const QString &comme
   return myResultFlag;
 }
 
-void TestQgsGeometry::dumpMultiPolygon( QgsMultiPolygon &multiPolygon )
+void TestQgsGeometry::dumpMultiPolygon( QgsMultiPolygonXY &multiPolygon )
 {
   qDebug( "Multipolygon Geometry Dump" );
   for ( int i = 0; i < multiPolygon.size(); i++ )

@@ -376,7 +376,7 @@ void TestQgsGML::testMultiPolygonGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QgsMultiPolygonXY multi = features[0].first->geometry().asMultiPolygon();
   QCOMPARE( multi.size(), 1 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 5 );
@@ -728,7 +728,7 @@ void TestQgsGML::testMultiPolygonGML3()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QgsMultiPolygonXY multi = features[0].first->geometry().asMultiPolygon();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 5 );
@@ -1060,7 +1060,7 @@ void TestQgsGML::testThroughOGRGeometry()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QgsMultiPolygonXY multi = features[0].first->geometry().asMultiPolygon();
   QCOMPARE( multi.size(), 1 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 5 );
@@ -1096,7 +1096,7 @@ void TestQgsGML::testThroughOGRGeometry_urn_EPSG_4326()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QgsMultiPolygonXY multi = features[0].first->geometry().asMultiPolygon();
   QCOMPARE( multi.size(), 1 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 4 );
@@ -1146,7 +1146,7 @@ void TestQgsGML::testAccents()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QgsMultiPolygonXY multi = features[0].first->geometry().asMultiPolygon();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 5 );

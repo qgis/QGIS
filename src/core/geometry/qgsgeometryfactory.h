@@ -40,7 +40,7 @@ typedef QVector<QgsPointXY> QgsPolylineXY;
 typedef QVector<QgsPolylineXY> QgsPolygonXY;
 typedef QVector<QgsPointXY> QgsMultiPointXY;
 typedef QVector<QgsPolylineXY> QgsMultiPolylineXY;
-typedef QVector<QgsPolygonXY> QgsMultiPolygon;
+typedef QVector<QgsPolygonXY> QgsMultiPolygonXY;
 
 /**
  * \ingroup core
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsGeometryFactory
     //! Construct geometry from a polygon
     static std::unique_ptr<QgsPolygonV2> fromPolygon( const QgsPolygonXY &polygon );
     //! Construct geometry from a multipolygon
-    static std::unique_ptr<QgsMultiPolygonV2> fromMultiPolygon( const QgsMultiPolygon &multipoly );
+    static std::unique_ptr<QgsMultiPolygonV2> fromMultiPolygon( const QgsMultiPolygonXY &multipoly );
     //! Return empty geometry from wkb type
     static std::unique_ptr< QgsAbstractGeometry > geomFromWkbType( QgsWkbTypes::Type t );
 

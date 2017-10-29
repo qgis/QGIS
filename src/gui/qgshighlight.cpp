@@ -311,7 +311,7 @@ void QgsHighlight::paint( QPainter *p )
         }
         else
         {
-          QgsMultiPolygon m = mGeometry->asMultiPolygon();
+          QgsMultiPolygonXY m = mGeometry->asMultiPolygon();
           for ( int i = 0; i < m.size(); i++ )
           {
             paintPolygon( p, m[i] );

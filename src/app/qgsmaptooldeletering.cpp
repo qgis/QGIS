@@ -126,7 +126,7 @@ QgsGeometry QgsMapToolDeleteRing::ringUnderPoint( const QgsPointXY &p, QgsFeatur
   QgsFeature f;
   QgsGeometry g;
   QgsGeometry ringGeom;
-  QgsMultiPolygon pol;
+  QgsMultiPolygonXY pol;
   QgsPolygonXYtempPol;
   QgsGeometry tempGeom;
   double area = std::numeric_limits<double>::max();
@@ -137,7 +137,7 @@ QgsGeometry QgsMapToolDeleteRing::ringUnderPoint( const QgsPointXY &p, QgsFeatur
       continue;
     if ( g.wkbType() == QgsWkbTypes::Polygon ||  g.wkbType()  == QgsWkbTypes::Polygon25D )
     {
-      pol = QgsMultiPolygon() << g.asPolygon();
+      pol = QgsMultiPolygonXY() << g.asPolygon();
     }
     else
     {
@@ -215,7 +215,7 @@ int QgsMapToolDeleteRing::ringNumInPolygon( const QgsGeometry &g, int vertexNr )
 
 int QgsMapToolDeleteRing::ringNumInMultiPolygon( const QgsGeometry &g, int vertexNr, int &partNum )
 {
-  QgsMultiPolygon mpolygon = g.asMultiPolygon();
+  QgsMultiPolygonXY mpolygon = g.asMultiPolygon();
   for ( int part = 0; part < mpolygon.count(); part++ )
   {
     const QgsPolygonXY &polygon = mpolygon[part];

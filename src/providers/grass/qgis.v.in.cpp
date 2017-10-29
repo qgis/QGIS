@@ -287,7 +287,7 @@ int main( int argc, char **argv )
       }
       else if ( geometryType == QgsWkbTypes::MultiPolygon )
       {
-        QgsMultiPolygon multiPolygon = geometry.asMultiPolygon();
+        QgsMultiPolygonXY multiPolygon = geometry.asMultiPolygon();
         Q_FOREACH ( const QgsPolygonXY &polygon, multiPolygon )
         {
           Q_FOREACH ( const QgsPolylineXY &polyline, polygon )

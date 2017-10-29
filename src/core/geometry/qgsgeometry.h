@@ -87,9 +87,9 @@ typedef QVector<QVector<QgsPointXY>> QgsMultiPolylineXY;
 
 //! A collection of QgsPolygons that share a common collection of attributes
 #ifndef SIP_RUN
-typedef QVector<QgsPolygonXY> QgsMultiPolygon;
+typedef QVector<QgsPolygonXY> QgsMultiPolygonXY;
 #else
-typedef QVector<QVector<QVector<QgsPointXY>>> QgsMultiPolygon;
+typedef QVector<QVector<QVector<QgsPointXY>>> QgsMultiPolygonXY;
 #endif
 
 class QgsRectangle;
@@ -246,7 +246,7 @@ class CORE_EXPORT QgsGeometry
     //! Creates a new geometry from a QgsPolygon
     static QgsGeometry fromPolygon( const QgsPolygonXY &polygon );
     //! Creates a new geometry from a QgsMultiPolygon
-    static QgsGeometry fromMultiPolygon( const QgsMultiPolygon &multipoly );
+    static QgsGeometry fromMultiPolygon( const QgsMultiPolygonXY &multipoly );
     //! Creates a new geometry from a QgsRectangle
     static QgsGeometry fromRect( const QgsRectangle &rect );
     //! Creates a new multipart geometry from a list of QgsGeometry objects
@@ -1170,7 +1170,7 @@ class CORE_EXPORT QgsGeometry
      * Returns contents of the geometry as a multi polygon
      * if wkbType is WKBMultiPolygon, otherwise an empty list
      */
-    QgsMultiPolygon asMultiPolygon() const;
+    QgsMultiPolygonXY asMultiPolygon() const;
 
     /**
      * Return contents of the geometry as a list of geometries
@@ -1463,7 +1463,7 @@ class CORE_EXPORT QgsGeometry
      * tolerance
      * \since QGIS 2.9
      */
-    static bool compare( const QgsMultiPolygon &p1, const QgsMultiPolygon &p2,
+    static bool compare( const QgsMultiPolygonXY &p1, const QgsMultiPolygonXY &p2,
                          double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 #else
 
@@ -1560,10 +1560,10 @@ class CORE_EXPORT QgsGeometry
                        sipCanConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
                        sipCanConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
                   {
-                    QgsMultiPolygon *p0;
-                    QgsMultiPolygon *p1;
-                    p0 = reinterpret_cast<QgsMultiPolygon *>( sipConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-                    p1 = reinterpret_cast<QgsMultiPolygon *>( sipConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+                    QgsMultiPolygonXY *p0;
+                    QgsMultiPolygonXY *p1;
+                    p0 = reinterpret_cast<QgsMultiPolygonXY *>( sipConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+                    p1 = reinterpret_cast<QgsMultiPolygonXY *>( sipConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
                     if ( sipIsErr )
                     {
                       sipReleaseType( p0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, state0 );

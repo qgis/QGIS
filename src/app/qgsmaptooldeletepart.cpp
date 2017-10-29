@@ -175,7 +175,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
         fid = f.id();
         return geomPart;
       }
-      QgsMultiPolygon mpolygon = g.asMultiPolygon();
+      QgsMultiPolygonXY mpolygon = g.asMultiPolygon();
       for ( int part = 0; part < mpolygon.count(); part++ ) // go through the polygons
       {
         const QgsPolygonXY &polygon = mpolygon[part];

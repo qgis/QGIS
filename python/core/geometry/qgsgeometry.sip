@@ -25,7 +25,7 @@ typedef QVector<QgsPointXY> QgsMultiPointXY;
 
 typedef QVector<QVector<QgsPointXY>> QgsMultiPolylineXY;
 
-typedef QVector<QVector<QVector<QgsPointXY>>> QgsMultiPolygon;
+typedef QVector<QVector<QVector<QgsPointXY>>> QgsMultiPolygonXY;
 
 
 
@@ -194,7 +194,7 @@ Creates a new geometry from a QgsMultiPolylineXY object
 Creates a new geometry from a QgsPolygon
  :rtype: QgsGeometry
 %End
-    static QgsGeometry fromMultiPolygon( const QgsMultiPolygon &multipoly );
+    static QgsGeometry fromMultiPolygon( const QgsMultiPolygonXY &multipoly );
 %Docstring
 Creates a new geometry from a QgsMultiPolygon
  :rtype: QgsGeometry
@@ -1165,11 +1165,11 @@ Returns an extruded version of this geometry.
  :rtype: QgsMultiPolylineXY
 %End
 
-    QgsMultiPolygon asMultiPolygon() const;
+    QgsMultiPolygonXY asMultiPolygon() const;
 %Docstring
  Returns contents of the geometry as a multi polygon
  if wkbType is WKBMultiPolygon, otherwise an empty list
- :rtype: QgsMultiPolygon
+ :rtype: QgsMultiPolygonXY
 %End
 
     QList<QgsGeometry> asGeometryCollection() const;
@@ -1534,10 +1534,10 @@ Returns an extruded version of this geometry.
                        sipCanConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
                        sipCanConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
                   {
-                    QgsMultiPolygon *p0;
-                    QgsMultiPolygon *p1;
-                    p0 = reinterpret_cast<QgsMultiPolygon *>( sipConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-                    p1 = reinterpret_cast<QgsMultiPolygon *>( sipConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+                    QgsMultiPolygonXY *p0;
+                    QgsMultiPolygonXY *p1;
+                    p0 = reinterpret_cast<QgsMultiPolygonXY *>( sipConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+                    p1 = reinterpret_cast<QgsMultiPolygonXY *>( sipConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
                     if ( sipIsErr )
                     {
                       sipReleaseType( p0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, state0 );

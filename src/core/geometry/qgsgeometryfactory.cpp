@@ -187,7 +187,7 @@ std::unique_ptr<QgsPolygonV2> QgsGeometryFactory::fromPolygon( const QgsPolygonX
   return poly;
 }
 
-std::unique_ptr< QgsMultiPolygonV2 > QgsGeometryFactory::fromMultiPolygon( const QgsMultiPolygon &multipoly )
+std::unique_ptr< QgsMultiPolygonV2 > QgsGeometryFactory::fromMultiPolygon( const QgsMultiPolygonXY &multipoly )
 {
   std::unique_ptr< QgsMultiPolygonV2 > mp = qgis::make_unique< QgsMultiPolygonV2 >();
   for ( int i = 0; i < multipoly.size(); ++i )

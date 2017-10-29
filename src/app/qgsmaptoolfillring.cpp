@@ -199,10 +199,10 @@ QgsGeometry QgsMapToolFillRing::ringUnderPoint( const QgsPointXY &p, QgsFeatureI
     if ( g.isNull() )
       continue;
 
-    QgsMultiPolygon pol;
+    QgsMultiPolygonXY pol;
     if ( g.wkbType() == QgsWkbTypes::Polygon ||  g.wkbType()  == QgsWkbTypes::Polygon25D )
     {
-      pol = QgsMultiPolygon() << g.asPolygon();
+      pol = QgsMultiPolygonXY() << g.asPolygon();
     }
     else
     {

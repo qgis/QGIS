@@ -252,7 +252,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
     return;
   }
 
-  QgsMultiPolygon finalMulti; //avoid expensive allocation for list for every feature
+  QgsMultiPolygonXY finalMulti; //avoid expensive allocation for list for every feature
   QgsPolygonXY newPoly;
 
   Q_FOREACH ( const CombinedFeature &cit, mFeaturesCategories )
@@ -284,7 +284,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
       finalMulti.append( mExtentPolygon );
       Q_FOREACH ( const QgsGeometry &geom, cit.geometries )
       {
-        QgsMultiPolygon multi;
+        QgsMultiPolygonXY multi;
         QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom.constGet()->wkbType() );
 
         if ( ( type == QgsWkbTypes::Polygon ) || ( type == QgsWkbTypes::CurvePolygon ) )

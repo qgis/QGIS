@@ -334,7 +334,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     case QgsWkbTypes::MultiPolygon25D:
     {
 
-      const QgsMultiPolygon multipoly = geom.asMultiPolygon();
+      const QgsMultiPolygonXY multipoly = geom.asMultiPolygon();
       for ( const QgsPolygonXY &poly : multipoly )
       {
         if ( poly.empty() )
