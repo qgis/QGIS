@@ -51,11 +51,6 @@ Source5:        %{name}-mime.xml
 # https://github.com/qgis/QGIS/commit/718581ffb12b723f9a3c0ae01b7ec2d8aed9d4bb.patch
 Patch0:         %{name}-lib64.patch
 
-# Some plug-ins need Pyspatialite (bundled)
-# The license is not totally clear, see:
-# http://code.google.com/p/pyspatialite/issues/detail?id=3
-# It also is sort of a fork of pysqlite, which is not elegant.
-
 # Compiling stuff
 BuildRequires: bison
 BuildRequires: clang
