@@ -535,7 +535,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
     case QgsWkbTypes::MultiLineString25D:
     case QgsWkbTypes::MultiLineString:
     {
-      QgsMultiPolyline multiLine = geom.asMultiPolyline();
+      QgsMultiPolylineXY multiLine = geom.asMultiPolyline();
       QgsPolylineXY currentPolyline;
 
       for ( int i = 0; i < multiLine.size(); ++i )

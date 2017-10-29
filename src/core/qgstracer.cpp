@@ -409,7 +409,7 @@ void resetGraph( QgsTracerGraph &g )
 }
 
 
-void extractLinework( const QgsGeometry &g, QgsMultiPolyline &mpl )
+void extractLinework( const QgsGeometry &g, QgsMultiPolylineXY &mpl )
 {
   QgsGeometry geom = g;
   // segmentize curved geometries - we will use noding algorithm from GEOS
@@ -463,7 +463,7 @@ bool QgsTracer::initGraph()
   mHasTopologyProblem = false;
 
   QgsFeature f;
-  QgsMultiPolyline mpl;
+  QgsMultiPolylineXY mpl;
 
   // extract linestrings
 

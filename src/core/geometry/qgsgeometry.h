@@ -80,9 +80,9 @@ typedef QVector<QgsPointXY> QgsMultiPointXY;
 
 //! A collection of QgsPolylines that share a common collection of attributes
 #ifndef SIP_RUN
-typedef QVector<QgsPolylineXY> QgsMultiPolyline;
+typedef QVector<QgsPolylineXY> QgsMultiPolylineXY;
 #else
-typedef QVector<QVector<QgsPointXY>> QgsMultiPolyline;
+typedef QVector<QVector<QgsPointXY>> QgsMultiPolylineXY;
 #endif
 
 //! A collection of QgsPolygons that share a common collection of attributes
@@ -241,8 +241,8 @@ class CORE_EXPORT QgsGeometry
      */
     static QgsGeometry fromPolyline( const QgsPolyline &polyline );
 
-    //! Creates a new geometry from a QgsMultiPolyline object
-    static QgsGeometry fromMultiPolyline( const QgsMultiPolyline &multiline );
+    //! Creates a new geometry from a QgsMultiPolylineXY object
+    static QgsGeometry fromMultiPolyline( const QgsMultiPolylineXY &multiline );
     //! Creates a new geometry from a QgsPolygon
     static QgsGeometry fromPolygon( const QgsPolygonXY &polygon );
     //! Creates a new geometry from a QgsMultiPolygon
@@ -1164,7 +1164,7 @@ class CORE_EXPORT QgsGeometry
      * Returns contents of the geometry as a multi linestring
      * if wkbType is WKBMultiLineString, otherwise an empty list
      */
-    QgsMultiPolyline asMultiPolyline() const;
+    QgsMultiPolylineXY asMultiPolyline() const;
 
     /**
      * Returns contents of the geometry as a multi polygon

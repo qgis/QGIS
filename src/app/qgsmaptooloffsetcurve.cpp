@@ -462,8 +462,8 @@ QgsGeometry QgsMapToolOffsetCurve::convertToSingleLine( const QgsGeometry &geom,
     //search vertex
     isMulti = true;
     int currentVertex = 0;
-    QgsMultiPolyline multiLine = geom.asMultiPolyline();
-    QgsMultiPolyline::const_iterator it = multiLine.constBegin();
+    QgsMultiPolylineXY multiLine = geom.asMultiPolyline();
+    QgsMultiPolylineXY::const_iterator it = multiLine.constBegin();
     for ( ; it != multiLine.constEnd(); ++it )
     {
       currentVertex += it->size();

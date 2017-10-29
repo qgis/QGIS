@@ -39,7 +39,7 @@ class QgsMultiPolygonV2;
 typedef QVector<QgsPointXY> QgsPolylineXY;
 typedef QVector<QgsPolylineXY> QgsPolygonXY;
 typedef QVector<QgsPointXY> QgsMultiPointXY;
-typedef QVector<QgsPolylineXY> QgsMultiPolyline;
+typedef QVector<QgsPolylineXY> QgsMultiPolylineXY;
 typedef QVector<QgsPolygonXY> QgsMultiPolygon;
 
 /**
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsGeometryFactory
     //! Construct geometry from a polyline
     static std::unique_ptr< QgsAbstractGeometry > fromPolyline( const QgsPolylineXY &polyline );
     //! Construct geometry from a multipolyline
-    static std::unique_ptr<QgsMultiLineString> fromMultiPolyline( const QgsMultiPolyline &multiline );
+    static std::unique_ptr<QgsMultiLineString> fromMultiPolyline( const QgsMultiPolylineXY &multiline );
     //! Construct geometry from a polygon
     static std::unique_ptr<QgsPolygonV2> fromPolygon( const QgsPolygonXY &polygon );
     //! Construct geometry from a multipolygon

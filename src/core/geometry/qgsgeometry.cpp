@@ -201,7 +201,7 @@ QgsGeometry QgsGeometry::fromMultiPoint( const QgsMultiPointXY &multipoint )
   return QgsGeometry();
 }
 
-QgsGeometry QgsGeometry::fromMultiPolyline( const QgsMultiPolyline &multiline )
+QgsGeometry QgsGeometry::fromMultiPolyline( const QgsMultiPolylineXY &multiline )
 {
   std::unique_ptr< QgsMultiLineString > geom = QgsGeometryFactory::fromMultiPolyline( multiline );
   if ( geom )
@@ -1394,26 +1394,26 @@ QgsMultiPointXY QgsGeometry::asMultiPoint() const
   return multiPoint;
 }
 
-QgsMultiPolyline QgsGeometry::asMultiPolyline() const
+QgsMultiPolylineXY QgsGeometry::asMultiPolyline() const
 {
   if ( !d->geometry )
   {
-    return QgsMultiPolyline();
+    return QgsMultiPolylineXY();
   }
 
   QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( d->geometry.get() );
   if ( !geomCollection )
   {
-    return QgsMultiPolyline();
+    return QgsMultiPolylineXY();
   }
 
   int nLines = geomCollection->numGeometries();
   if ( nLines < 1 )
   {
-    return QgsMultiPolyline();
+    return QgsMultiPolylineXY();
   }
 
-  QgsMultiPolyline mpl;
+  QgsMultiPolylineXY mpl;
   for ( int i = 0; i < nLines; ++i )
   {
     const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( geomCollection->geometryN( i ) );
@@ -2828,7 +2828,7 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
       // input geometry is multipart
       if ( isMultipart() )
       {
-        const QgsMultiPolyline multiLine = asMultiPolyline();
+        const QgsMultiPolylineXY multiLine = asMultiPolyline();
         QgsMultiPointXY multiPoint;
         for ( const QgsPolylineXY &l : multiLine )
           for ( const QgsPointXY &p : l )
@@ -2893,7 +2893,7 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
         return QgsGeometry();
 
       if ( destMultipart )
-        return fromMultiPolyline( QgsMultiPolyline() << multiPoint );
+        return fromMultiPolyline( QgsMultiPolylineXY() << multiPoint );
       else
         return fromPolylineXY( multiPoint );
     }
@@ -2913,12 +2913,12 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
         // destination is multipart => makes a multipoint with a single line
         QgsPolylineXY line = asPolyline();
         if ( !line.isEmpty() )
-          return fromMultiPolyline( QgsMultiPolyline() << line );
+          return fromMultiPolyline( QgsMultiPolylineXY() << line );
       }
       else
       {
         // destination is singlepart => make a single part if possible
-        QgsMultiPolyline multiLine = asMultiPolyline();
+        QgsMultiPolylineXY multiLine = asMultiPolyline();
         if ( multiLine.count() == 1 )
           return fromPolylineXY( multiLine[0] );
       }
@@ -2931,7 +2931,7 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
       if ( isMultipart() )
       {
         const QgsMultiPolygon multiPolygon = asMultiPolygon();
-        QgsMultiPolyline multiLine;
+        QgsMultiPolylineXY multiLine;
         for ( const QgsPolygonXY &poly : multiPolygon )
           for ( const QgsPolylineXY &line : poly )
             multiLine << line;
@@ -2959,7 +2959,7 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
           if ( destMultipart )
           {
             const QgsPolygonXY polygon = asPolygon();
-            QgsMultiPolyline multiLine;
+            QgsMultiPolylineXY multiLine;
             for ( const QgsPolylineXY &line : polygon )
               multiLine << line;
             return fromMultiPolyline( multiLine );
@@ -3014,9 +3014,9 @@ QgsGeometry QgsGeometry::convertToPolygon( bool destMultipart ) const
       // input geometry is multiline
       if ( isMultipart() )
       {
-        QgsMultiPolyline multiLine = asMultiPolyline();
+        QgsMultiPolylineXY multiLine = asMultiPolyline();
         QgsMultiPolygon multiPolygon;
-        for ( QgsMultiPolyline::iterator multiLineIt = multiLine.begin(); multiLineIt != multiLine.end(); ++multiLineIt )
+        for ( QgsMultiPolylineXY::iterator multiLineIt = multiLine.begin(); multiLineIt != multiLine.end(); ++multiLineIt )
         {
           // do not create polygon for a 1 segment line
           if ( ( *multiLineIt ).count() < 3 )

@@ -337,7 +337,7 @@ void TestQgsGML::testMultiLineStringGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiLineString );
-  QgsMultiPolyline multi = features[0].first->geometry().asMultiPolyline();
+  QgsMultiPolylineXY multi = features[0].first->geometry().asMultiPolyline();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0].size(), 2 );
   QCOMPARE( multi[0][0], QgsPointXY( 10, 20 ) );
@@ -680,7 +680,7 @@ void TestQgsGML::testMultiLineStringGML3()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiLineString );
-  QgsMultiPolyline multi = features[0].first->geometry().asMultiPolyline();
+  QgsMultiPolylineXY multi = features[0].first->geometry().asMultiPolyline();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0].size(), 2 );
   QCOMPARE( multi[0][0], QgsPointXY( 10, 20 ) );

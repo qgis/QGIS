@@ -285,7 +285,7 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer *layer
 
     if ( g1.isMultipart() )
     {
-      QgsMultiPolyline lines = g1.asMultiPolyline();
+      QgsMultiPolylineXY lines = g1.asMultiPolyline();
       for ( int m = 0; m < lines.count(); m++ )
       {
         QgsPolylineXY line = lines[m];
@@ -772,7 +772,7 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
 
     if ( g1.isMultipart() )
     {
-      QgsMultiPolyline lines = g1.asMultiPolyline();
+      QgsMultiPolylineXY lines = g1.asMultiPolyline();
       for ( int m = 0; m < lines.count(); m++ )
       {
         QgsPolylineXY line = lines[m];
@@ -985,7 +985,7 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer *layer
   QgsMultiPolygon mpol;
   QgsPolylineXY segm;
   QgsPolylineXY ls;
-  QgsMultiPolyline mls;
+  QgsMultiPolylineXY mls;
   QList<FeatureLayer> fls;
   TopolErrorShort *err = nullptr;
   double distance;

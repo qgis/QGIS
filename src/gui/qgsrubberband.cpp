@@ -301,7 +301,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     case QgsWkbTypes::MultiLineString25D:
     {
 
-      const QgsMultiPolyline mline = geom.asMultiPolyline();
+      const QgsMultiPolylineXY mline = geom.asMultiPolyline();
       for ( const QgsPolylineXY &line : mline )
       {
         if ( line.isEmpty() )
@@ -634,7 +634,7 @@ QgsGeometry QgsRubberBand::asGeometry() const
       {
         if ( mPoints.size() > 1 )
         {
-          QgsMultiPolyline multiPolyline;
+          QgsMultiPolylineXY multiPolyline;
           QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
           for ( ; it != mPoints.constEnd(); ++it )
           {

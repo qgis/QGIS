@@ -145,7 +145,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
       }
       if ( g.wkbType() == QgsWkbTypes::MultiLineString || g.wkbType() == QgsWkbTypes::MultiLineString25D )
       {
-        QgsMultiPolyline mline = g.asMultiPolyline();
+        QgsMultiPolylineXY mline = g.asMultiPolyline();
         for ( int part = 0; part < mline.count(); part++ )
         {
           if ( snapVertex < mline[part].count() )

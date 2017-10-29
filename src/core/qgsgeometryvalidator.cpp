@@ -272,7 +272,7 @@ void QgsGeometryValidator::run()
       }
       else if ( flatType == QgsWkbTypes::MultiLineString )
       {
-        QgsMultiPolyline mp = mGeometry.asMultiPolyline();
+        QgsMultiPolylineXY mp = mGeometry.asMultiPolyline();
         for ( int i = 0; !mStop && i < mp.size(); i++ )
           validatePolyline( i, mp[i] );
       }

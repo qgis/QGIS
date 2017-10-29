@@ -293,7 +293,7 @@ void QgsHighlight::paint( QPainter *p )
         }
         else
         {
-          QgsMultiPolyline m = mGeometry->asMultiPolyline();
+          QgsMultiPolylineXY m = mGeometry->asMultiPolyline();
 
           for ( int i = 0; i < m.size(); i++ )
           {

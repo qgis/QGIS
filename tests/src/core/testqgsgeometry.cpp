@@ -15058,8 +15058,8 @@ void TestQgsGeometry::smoothCheck()
   wkt = QStringLiteral( "MultiLineString ((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))" );
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.25 );
-  QgsMultiPolyline multiLine = result.asMultiPolyline();
-  QgsMultiPolyline expectedMultiline;
+  QgsMultiPolylineXY multiLine = result.asMultiPolyline();
+  QgsMultiPolylineXY expectedMultiline;
   expectedMultiline << ( QgsPolylineXY() << QgsPointXY( 0, 0 ) << QgsPointXY( 7.5, 0 ) << QgsPointXY( 10.0, 2.5 )
                          <<  QgsPointXY( 10.0, 7.5 ) << QgsPointXY( 12.5, 10.0 ) << QgsPointXY( 20.0, 10.0 ) )
                     << ( QgsPolylineXY() << QgsPointXY( 30.0, 30.0 ) << QgsPointXY( 37.5, 30.0 ) << QgsPointXY( 40.0, 32.5 )

@@ -271,7 +271,7 @@ int main( int argc, char **argv )
       }
       else if ( geometryType == QgsWkbTypes::MultiLineString )
       {
-        QgsMultiPolyline multiPolyline = geometry.asMultiPolyline();
+        QgsMultiPolylineXY multiPolyline = geometry.asMultiPolyline();
         Q_FOREACH ( const QgsPolylineXY &polyline, multiPolyline )
         {
           writePolyline( map, GV_LINE, polyline, cats );

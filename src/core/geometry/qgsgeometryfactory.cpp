@@ -154,7 +154,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromPolyline( const Qgs
   return linestringFromPolyline( polyline );
 }
 
-std::unique_ptr<QgsMultiLineString> QgsGeometryFactory::fromMultiPolyline( const QgsMultiPolyline &multiline )
+std::unique_ptr<QgsMultiLineString> QgsGeometryFactory::fromMultiPolyline( const QgsMultiPolylineXY &multiline )
 {
   std::unique_ptr< QgsMultiLineString > mLine = qgis::make_unique< QgsMultiLineString >();
   for ( int i = 0; i < multiline.size(); ++i )
