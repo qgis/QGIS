@@ -20,7 +20,6 @@
 #include "qgstransaction.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
-#include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
