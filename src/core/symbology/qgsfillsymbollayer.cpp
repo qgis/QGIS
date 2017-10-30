@@ -3434,8 +3434,6 @@ void QgsCentroidFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<Q
     }
   }
 
-  QgsDebugMsg( QString( "num: %1, count: %2" ).arg( context.geometryPartNum() ).arg( context.geometryPartCount() ) );
-
   if ( mPointOnAllParts || ( context.geometryPartNum() == mBiggestPartIndex ) )
   {
     QPointF centroid = mPointOnSurface ? QgsSymbolLayerUtils::polygonPointOnSurface( points ) : QgsSymbolLayerUtils::polygonCentroid( points );
