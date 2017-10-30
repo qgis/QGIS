@@ -342,8 +342,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   leProxyHost->setText( mSettings->value( QStringLiteral( "proxy/proxyHost" ), "" ).toString() );
   leProxyPort->setText( mSettings->value( QStringLiteral( "proxy/proxyPort" ), "" ).toString() );
 
-  mAuthSettings->setPassword( mSettings->value( QStringLiteral( "proxy/proxyUser" ), "" ).toString() );
-  mAuthSettings->setUsername( mSettings->value( QStringLiteral( "proxy/proxyPassword" ), "" ).toString() );
+  mAuthSettings->setPassword( mSettings->value( QStringLiteral( "proxy/proxyPassword" ), "" ).toString() );
+  mAuthSettings->setUsername( mSettings->value( QStringLiteral( "proxy/proxyUser" ), "" ).toString() );
 
   //available proxy types
   mProxyTypeComboBox->insertItem( 0, QStringLiteral( "DefaultProxy" ) );
