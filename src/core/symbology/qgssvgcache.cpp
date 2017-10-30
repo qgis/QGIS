@@ -101,6 +101,8 @@ QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &
   fitsInCache = true;
   QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio );
 
+  QImage result;
+
   //if current entry image is 0: cache image for entry
   // checks to see if image will fit into cache
   //update stats for memory usage
@@ -134,15 +136,23 @@ QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &
       {
         cachePicture( currentEntry, false );
       }
+
+      // ...and render cached picture to result image
+      result = imageFromCachedPicture( *currentEntry );
     }
     else
     {
       cacheImage( currentEntry );
+      result = *( currentEntry->image );
     }
     trimToMaximumSize();
   }
+  else
+  {
+    result = *( currentEntry->image );
+  }
 
-  return *( currentEntry->image );
+  return result;
 }
 
 QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
@@ -479,47 +489,25 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
   delete entry->image;
   entry->image = nullptr;
 
-  bool isFixedAR = entry->fixedAspectRatio > 0;
+  QSizeF viewBoxSize;
+  QSizeF scaledSize;
+  QSize imageSize = sizeForImage( *entry, viewBoxSize, scaledSize );
 
-  QSvgRenderer r( entry->svgContent );
-  double hwRatio = 1.0;
-  if ( r.viewBoxF().width() > 0 )
-  {
-    if ( isFixedAR )
-    {
-      hwRatio = entry->fixedAspectRatio;
-    }
-    else
-    {
-      hwRatio = r.viewBoxF().height() / r.viewBoxF().width();
-    }
-  }
-  double wSize = entry->size;
-  int wImgSize = static_cast< int >( wSize );
-  if ( wImgSize < 1 )
-  {
-    wImgSize = 1;
-  }
-  double hSize = wSize * hwRatio;
-  int hImgSize = static_cast< int >( hSize );
-  if ( hImgSize < 1 )
-  {
-    hImgSize = 1;
-  }
   // cast double image sizes to int for QImage
-  QImage *image = new QImage( wImgSize, hImgSize, QImage::Format_ARGB32_Premultiplied );
+  QImage *image = new QImage( imageSize, QImage::Format_ARGB32_Premultiplied );
   image->fill( 0 ); // transparent background
 
   QPainter p( image );
-  if ( qgsDoubleNear( r.viewBoxF().width(), r.viewBoxF().height() ) )
+  QSvgRenderer r( entry->svgContent );
+  if ( qgsDoubleNear( viewBoxSize.width(), viewBoxSize.height() ) )
   {
     r.render( &p );
   }
   else
   {
-    QSizeF s( r.viewBoxF().size() );
-    s.scale( wSize, hSize, Qt::KeepAspectRatio );
-    QRectF rect( ( wImgSize - s.width() ) / 2, ( hImgSize - s.height() ) / 2, s.width(), s.height() );
+    QSizeF s( viewBoxSize );
+    s.scale( scaledSize.width(), scaledSize.height(), Qt::KeepAspectRatio );
+    QRectF rect( ( imageSize.width() - s.width() ) / 2, ( imageSize.height() - s.height() ) / 2, s.width(), s.height() );
     r.render( &p, rect );
   }
 
@@ -904,6 +892,53 @@ void QgsSvgCache::printEntryList()
     QgsDebugMsg( "Width scale factor" + QString::number( entry->widthScaleFactor ) );
     entry = entry->nextEntry;
   }
+}
+
+QSize QgsSvgCache::sizeForImage( const QgsSvgCacheEntry &entry, QSizeF &viewBoxSize, QSizeF &scaledSize ) const
+{
+  bool isFixedAR = entry.fixedAspectRatio > 0;
+
+  QSvgRenderer r( entry.svgContent );
+  double hwRatio = 1.0;
+  viewBoxSize = r.viewBoxF().size();
+  if ( viewBoxSize.width() > 0 )
+  {
+    if ( isFixedAR )
+    {
+      hwRatio = entry.fixedAspectRatio;
+    }
+    else
+    {
+      hwRatio = viewBoxSize.height() / viewBoxSize.width();
+    }
+  }
+
+  // cast double image sizes to int for QImage
+  scaledSize.setWidth( entry.size );
+  int wImgSize = static_cast< int >( scaledSize.width() );
+  if ( wImgSize < 1 )
+  {
+    wImgSize = 1;
+  }
+  scaledSize.setHeight( scaledSize.width() * hwRatio );
+  int hImgSize = static_cast< int >( scaledSize.height() );
+  if ( hImgSize < 1 )
+  {
+    hImgSize = 1;
+  }
+  return QSize( wImgSize, hImgSize );
+}
+
+QImage QgsSvgCache::imageFromCachedPicture( const QgsSvgCacheEntry &entry ) const
+{
+  QSizeF viewBoxSize;
+  QSizeF scaledSize;
+  QImage image( sizeForImage( entry, viewBoxSize, scaledSize ), QImage::Format_ARGB32_Premultiplied );
+  image.fill( 0 ); // transparent background
+
+  QPainter p( &image );
+  p.drawPicture( QPoint( 0, 0 ), *entry.picture );
+  return image;
 }
 
 void QgsSvgCache::trimToMaximumSize()
