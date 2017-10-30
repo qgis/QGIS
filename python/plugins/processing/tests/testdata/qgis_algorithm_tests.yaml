@@ -2631,10 +2631,12 @@ tests:
         compare:
           ignore_crs_check: true
           geometry:
-            precision: 5
+            precision: 2
           fields:
             cost:
               precision: 2
+            start: skip
+            end: skip
 
   - algorithm: qgis:shortestpathpointtopoint
     name: Shortest path (point to point, fastest route)
@@ -2660,6 +2662,11 @@ tests:
           ignore_crs_check: true
           geometry:
             precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
 
   - algorithm: qgis:shortestpathlayertopoint
     name: Shortest path layer to point
@@ -2685,6 +2692,11 @@ tests:
         compare:
           geometry:
             precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
 
   - algorithm: qgis:shortestpathpointtolayer
     name: Shortest path point to layer
@@ -2710,6 +2722,11 @@ tests:
         compare:
           geometry:
             precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
 
   - algorithm: qgis:serviceareafrompoint
     name: Service area (from point, shortest)
@@ -2734,6 +2751,11 @@ tests:
           ignore_crs_check: true
           geometry:
             precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
 
   - algorithm: qgis:serviceareafromlayer
     name: Service area from layer
@@ -2760,9 +2782,15 @@ tests:
           ignore_crs_check: true
           geometry:
             precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
         pk:
         - d
         - type
+
 
   - algorithm: qgis:createattributeindex
     name: Create attribute index
