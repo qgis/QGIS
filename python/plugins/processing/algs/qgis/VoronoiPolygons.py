@@ -135,7 +135,7 @@ class VoronoiPolygons(QgisAlgorithm):
             inFeat = next(source.getFeatures(request))
             lines = self.clip_voronoi(edges, c, width, height, extent, extraX, extraY)
 
-            geom = QgsGeometry.fromMultiPoint(lines)
+            geom = QgsGeometry.fromMultiPointXY(lines)
             geom = QgsGeometry(geom.convexHull())
             outFeat.setGeometry(geom)
             outFeat.setAttributes(inFeat.attributes())

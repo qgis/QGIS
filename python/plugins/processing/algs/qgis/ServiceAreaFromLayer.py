@@ -253,8 +253,8 @@ class ServiceAreaFromLayer(QgisAlgorithm):
                 upperBoundary.append(graph.vertex(graph.edge(tree[j]).inVertex()).point())
                 lowerBoundary.append(graph.vertex(graph.edge(tree[j]).outVertex()).point())
 
-            geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
-            geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
+            geomUpper = QgsGeometry.fromMultiPointXY(upperBoundary)
+            geomLower = QgsGeometry.fromMultiPointXY(lowerBoundary)
 
             feat.setGeometry(geomUpper)
             feat['type'] = 'upper'
