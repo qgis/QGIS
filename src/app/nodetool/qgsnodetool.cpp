@@ -124,7 +124,7 @@ static bool isCircularVertex( const QgsGeometry &geom, int vertexIndex )
 //! Create a multi-point geometry that can be used to highlight vertices of a feature
 static QgsGeometry geometryToMultiPoint( const QgsGeometry &geom )
 {
-  QgsMultiPointV2 *multiPoint = new QgsMultiPointV2();
+  QgsMultiPoint *multiPoint = new QgsMultiPoint();
   QgsGeometry outputGeom( multiPoint );
   const QgsAbstractGeometry *g = geom.constGet();
   for ( int i = 0; i < g->partCount(); ++i )
@@ -827,7 +827,7 @@ void QgsNodeTool::updateVertexBand( const QgsPointLocator::Match &m )
 {
   if ( m.hasVertex() && m.layer() )
   {
-    mVertexBand->setToGeometry( QgsGeometry::fromPoint( m.point() ), nullptr );
+    mVertexBand->setToGeometry( QgsGeometry::fromPointXY( m.point() ), nullptr );
     mVertexBand->setVisible( true );
     bool isCircular = false;
     if ( m.layer() )

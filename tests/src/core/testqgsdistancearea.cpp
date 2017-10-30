@@ -291,10 +291,10 @@ void TestQgsDistanceArea::measureAreaAndUnits()
        << QgsPointXY( 2, 2 )
        << QgsPointXY( 0, 2 )
        << QgsPointXY( 0, 0 );
-  QgsPolygon poly;
+  QgsPolygonXY poly;
   poly << ring;
 
-  QgsGeometry polygon( QgsGeometry::fromPolygon( poly ) );
+  QgsGeometry polygon( QgsGeometry::fromPolygonXY( poly ) );
 
   // We check both the measured area AND the units, in case the logic regarding
   // ellipsoids and units changes in future
@@ -329,7 +329,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
        << QgsPointXY( 1850000, 4423000 );
   poly.clear();
   poly << ring;
-  polygon = QgsGeometry::fromPolygon( poly );
+  polygon = QgsGeometry::fromPolygonXY( poly );
 
   da.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 27469 ) );
   da.setEllipsoid( QStringLiteral( "NONE" ) );

@@ -168,7 +168,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     QMap<QByteArray, int> mSymbolCategories;
 
     //! The polygon used as exterior ring that covers the current extent
-    QgsPolygon mExtentPolygon;
+    QgsPolygonXY mExtentPolygon;
 
     //! The context used for rendering
     QgsRenderContext mContext;

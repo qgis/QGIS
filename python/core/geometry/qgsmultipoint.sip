@@ -8,7 +8,7 @@
 
 
 
-class QgsMultiPointV2: QgsGeometryCollection
+class QgsMultiPoint: QgsGeometryCollection
 {
 %Docstring
  Multi point geometry collection.
@@ -19,13 +19,13 @@ class QgsMultiPointV2: QgsGeometryCollection
 #include "qgsmultipoint.h"
 %End
   public:
-    QgsMultiPointV2();
+    QgsMultiPoint();
 
     virtual QString geometryType() const;
 
-    virtual QgsMultiPointV2 *clone() const /Factory/;
+    virtual QgsMultiPoint *clone() const /Factory/;
 
-    virtual QgsMultiPointV2 *toCurveType() const /Factory/;
+    virtual QgsMultiPoint *toCurveType() const /Factory/;
 
     virtual bool fromWkt( const QString &wkt );
 
@@ -50,7 +50,7 @@ class QgsMultiPointV2: QgsGeometryCollection
 
 
   protected:
-    virtual QgsMultiPointV2 *createEmptyWithSameType() const /Factory/;
+    virtual QgsMultiPoint *createEmptyWithSameType() const /Factory/;
 
     virtual bool wktOmitChildType() const;
 

@@ -24,7 +24,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include <geos_c.h>
 
 class QgsLineString;
-class QgsPolygonV2;
+class QgsPolygon;
 class QgsGeometry;
 class QgsGeometryCollection;
 
@@ -314,7 +314,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param geos GEOSGeometry. Ownership is NOT transferred.
      */
     static std::unique_ptr< QgsAbstractGeometry > fromGeos( const GEOSGeometry *geos );
-    static std::unique_ptr< QgsPolygonV2 > fromGeosPolygon( const GEOSGeometry *geos );
+    static std::unique_ptr< QgsPolygon > fromGeosPolygon( const GEOSGeometry *geos );
     static geos::unique_ptr asGeos( const QgsAbstractGeometry *geom, double precision = 0 );
     static QgsPoint coordSeqPoint( const GEOSCoordSequence *cs, int i, bool hasZ, bool hasM );
 

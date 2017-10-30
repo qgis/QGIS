@@ -240,7 +240,7 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertEqual(f.attributes(), [NULL, NULL, NULL])
 
         # set geometry
-        g = QgsGeometry.fromPoint(QgsPointXY(100, 200))
+        g = QgsGeometry.fromPointXY(QgsPointXY(100, 200))
         f = QgsVectorLayerUtils.createFeature(layer, g)
         self.assertTrue(f.hasGeometry())
         self.assertEqual(f.geometry().exportToWkt(), g.exportToWkt())

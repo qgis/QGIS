@@ -122,7 +122,7 @@ QgsPolygon3DSymbolEntityNode::QgsPolygon3DSymbolEntityNode( const Qgs3DMapSettin
 Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs3DMapSettings &map, const QgsPolygon3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
   QgsPointXY origin( map.originX(), map.originY() );
-  QList<QgsPolygonV2 *> polygons;
+  QList<QgsPolygon *> polygons;
   QList<float> extrusionHeightPerPolygon;  // will stay empty if not needed per polygon
 
   QgsExpressionContext ctx( _expressionContext3D() );
@@ -155,21 +155,21 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
     if ( hasDDExtrusion )
       extrusionHeight = ddp.valueAsDouble( QgsAbstract3DSymbol::PropertyExtrusionHeight, ctx, extrusionHeight );
 
-    if ( const QgsPolygonV2 *poly = qgsgeometry_cast< const QgsPolygonV2 *>( g ) )
+    if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon *>( g ) )
     {
-      QgsPolygonV2 *polyClone = poly->clone();
+      QgsPolygon *polyClone = poly->clone();
       Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), height, map );
       polygons.append( polyClone );
       if ( hasDDExtrusion )
         extrusionHeightPerPolygon.append( extrusionHeight );
     }
-    else if ( const QgsMultiPolygonV2 *mpoly = qgsgeometry_cast< const QgsMultiPolygonV2 *>( g ) )
+    else if ( const QgsMultiPolygon *mpoly = qgsgeometry_cast< const QgsMultiPolygon *>( g ) )
     {
       for ( int i = 0; i < mpoly->numGeometries(); ++i )
       {
         const QgsAbstractGeometry *g2 = mpoly->geometryN( i );
         Q_ASSERT( QgsWkbTypes::flatType( g2->wkbType() ) == QgsWkbTypes::Polygon );
-        QgsPolygonV2 *polyClone = static_cast< const QgsPolygonV2 *>( g2 )->clone();
+        QgsPolygon *polyClone = static_cast< const QgsPolygon *>( g2 )->clone();
         Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), height, map );
         polygons.append( polyClone );
         if ( hasDDExtrusion )

@@ -50,7 +50,7 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( QList<QgsGeometryChec
               errors.append( new QgsGeometryCheckError( this, layerFeature, inter, QgsVertexId( iPart ), checkFeature.id() ) );
             }
           }
-          else if ( const QgsPolygonV2 *polygon = dynamic_cast<const QgsPolygonV2 *>( part ) )
+          else if ( const QgsPolygon *polygon = dynamic_cast<const QgsPolygon *>( part ) )
           {
             for ( const QgsLineString *ring : QgsGeometryCheckerUtils::polygonRings( polygon ) )
             {

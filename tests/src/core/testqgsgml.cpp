@@ -261,7 +261,7 @@ void TestQgsGML::testPolygonGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon poly = features[0].first->geometry().asPolygon();
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 2 );
   QCOMPARE( poly[0].size(), 5 );
   QCOMPARE( poly[1].size(), 4 );
@@ -299,7 +299,7 @@ void TestQgsGML::testMultiPointGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPoint );
-  QgsMultiPoint multi = features[0].first->geometry().asMultiPoint();
+  QgsMultiPointXY multi = features[0].first->geometry().asMultiPoint();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0], QgsPointXY( 10, 20 ) );
   QCOMPARE( multi[1], QgsPointXY( 30, 40 ) );
@@ -337,7 +337,7 @@ void TestQgsGML::testMultiLineStringGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiLineString );
-  QgsMultiPolyline multi = features[0].first->geometry().asMultiPolyline();
+  QgsMultiPolylineXY multi = features[0].first->geometry().asMultiPolyline();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0].size(), 2 );
   QCOMPARE( multi[0][0], QgsPointXY( 10, 20 ) );
@@ -376,7 +376,7 @@ void TestQgsGML::testMultiPolygonGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QgsMultiPolygonXY multi = features[0].first->geometry().asMultiPolygon();
   QCOMPARE( multi.size(), 1 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 5 );
@@ -610,7 +610,7 @@ void TestQgsGML::testPolygonGML3()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon poly = features[0].first->geometry().asPolygon();
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 2 );
   QCOMPARE( poly[0].size(), 5 );
   QCOMPARE( poly[1].size(), 4 );
@@ -643,7 +643,7 @@ void TestQgsGML::testPolygonGML3_srsDimension_on_Polygon()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon poly = features[0].first->geometry().asPolygon();
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 1 );
   QCOMPARE( poly[0].size(), 5 );
   delete features[0].first;
@@ -680,7 +680,7 @@ void TestQgsGML::testMultiLineStringGML3()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiLineString );
-  QgsMultiPolyline multi = features[0].first->geometry().asMultiPolyline();
+  QgsMultiPolylineXY multi = features[0].first->geometry().asMultiPolyline();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0].size(), 2 );
   QCOMPARE( multi[0][0], QgsPointXY( 10, 20 ) );
@@ -728,7 +728,7 @@ void TestQgsGML::testMultiPolygonGML3()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QgsMultiPolygonXY multi = features[0].first->geometry().asMultiPolygon();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 5 );
@@ -786,7 +786,7 @@ void TestQgsGML::testBoundingBoxGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon poly = features[0].first->geometry().asPolygon();
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 1 );
   QCOMPARE( poly[0].size(), 5 );
   delete features[0].first;
@@ -815,7 +815,7 @@ void TestQgsGML::testBoundingBoxGML3()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon poly = features[0].first->geometry().asPolygon();
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 1 );
   QCOMPARE( poly[0].size(), 5 );
   delete features[0].first;
@@ -1060,7 +1060,7 @@ void TestQgsGML::testThroughOGRGeometry()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QgsMultiPolygonXY multi = features[0].first->geometry().asMultiPolygon();
   QCOMPARE( multi.size(), 1 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 5 );
@@ -1096,7 +1096,7 @@ void TestQgsGML::testThroughOGRGeometry_urn_EPSG_4326()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QgsMultiPolygonXY multi = features[0].first->geometry().asMultiPolygon();
   QCOMPARE( multi.size(), 1 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 4 );
@@ -1146,7 +1146,7 @@ void TestQgsGML::testAccents()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QgsMultiPolygonXY multi = features[0].first->geometry().asMultiPolygon();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 5 );

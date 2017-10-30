@@ -23,7 +23,7 @@
 #include "qgsabstractgeometry.h"
 #include "qgsrectangle.h"
 
-class QgsPolygonV2;
+class QgsPolygon;
 
 /**
  * \ingroup core
@@ -37,7 +37,7 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
      * Get a polygon representation of this surface.
      * Ownership is transferred to the caller.
      */
-    virtual QgsPolygonV2 *surfaceToPolygon() const = 0 SIP_FACTORY;
+    virtual QgsPolygon *surfaceToPolygon() const = 0 SIP_FACTORY;
 
     /**
      * Returns the minimal bounding box for the geometry

@@ -68,7 +68,7 @@ QgsRectangle QgsRectangle::fromWkt( const QString &wkt )
   if ( geom.isMultipart() )
     return QgsRectangle();
 
-  QgsPolygon poly = geom.asPolygon();
+  QgsPolygonXY poly = geom.asPolygon();
 
   if ( poly.size() != 1 )
     return QgsRectangle();

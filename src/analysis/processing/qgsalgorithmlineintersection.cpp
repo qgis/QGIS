@@ -180,7 +180,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
         QgsGeometry tmpGeom = inFeatureB.geometry();
         if ( engine->intersects( tmpGeom.constGet() ) )
         {
-          QgsMultiPoint points;
+          QgsMultiPointXY points;
           QgsGeometry intersectGeom = inGeom.intersection( tmpGeom );
           QgsAttributes outAttributes;
           for ( int a : qgis::as_const( fieldsAIndices ) )
@@ -204,7 +204,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
 
             for ( const QgsPointXY &j : qgis::as_const( points ) )
             {
-              outFeature.setGeometry( QgsGeometry::fromPoint( j ) );
+              outFeature.setGeometry( QgsGeometry::fromPointXY( j ) );
               outFeature.setAttributes( outAttributes );
               sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
             }

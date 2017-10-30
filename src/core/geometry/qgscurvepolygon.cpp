@@ -462,9 +462,9 @@ double QgsCurvePolygon::perimeter() const
   return perimeter;
 }
 
-QgsPolygonV2 *QgsCurvePolygon::surfaceToPolygon() const
+QgsPolygon *QgsCurvePolygon::surfaceToPolygon() const
 {
-  std::unique_ptr< QgsPolygonV2 > polygon( new QgsPolygonV2() );
+  std::unique_ptr< QgsPolygon > polygon( new QgsPolygon() );
   if ( !mExteriorRing )
     return polygon.release();
 
@@ -536,9 +536,9 @@ QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacin
 
 }
 
-QgsPolygonV2 *QgsCurvePolygon::toPolygon( double tolerance, SegmentationToleranceType toleranceType ) const
+QgsPolygon *QgsCurvePolygon::toPolygon( double tolerance, SegmentationToleranceType toleranceType ) const
 {
-  std::unique_ptr< QgsPolygonV2 > poly( new QgsPolygonV2() );
+  std::unique_ptr< QgsPolygon > poly( new QgsPolygon() );
   if ( !mExteriorRing )
   {
     return poly.release();

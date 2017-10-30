@@ -180,7 +180,7 @@ void QgsGeometryValidator::validatePolyline( int i, QgsPolylineXY line, bool rin
   }
 }
 
-void QgsGeometryValidator::validatePolygon( int idx, const QgsPolygon &polygon )
+void QgsGeometryValidator::validatePolygon( int idx, const QgsPolygonXY &polygon )
 {
   // check if holes are inside polygon
   for ( int i = 1; !mStop && i < polygon.size(); i++ )
@@ -272,7 +272,7 @@ void QgsGeometryValidator::run()
       }
       else if ( flatType == QgsWkbTypes::MultiLineString )
       {
-        QgsMultiPolyline mp = mGeometry.asMultiPolyline();
+        QgsMultiPolylineXY mp = mGeometry.asMultiPolyline();
         for ( int i = 0; !mStop && i < mp.size(); i++ )
           validatePolyline( i, mp[i] );
       }
@@ -282,7 +282,7 @@ void QgsGeometryValidator::run()
       }
       else if ( flatType == QgsWkbTypes::MultiPolygon )
       {
-        QgsMultiPolygon mp = mGeometry.asMultiPolygon();
+        QgsMultiPolygonXY mp = mGeometry.asMultiPolygon();
         for ( int i = 0; !mStop && i < mp.size(); i++ )
         {
           validatePolygon( i, mp[i] );

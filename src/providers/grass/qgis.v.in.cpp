@@ -258,7 +258,7 @@ int main( int argc, char **argv )
       }
       else if ( geometryType == QgsWkbTypes::MultiPoint )
       {
-        QgsMultiPoint multiPoint = geometry.asMultiPoint();
+        QgsMultiPointXY multiPoint = geometry.asMultiPoint();
         Q_FOREACH ( const QgsPointXY &point, multiPoint )
         {
           writePoint( map, GV_POINT, point, cats );
@@ -271,7 +271,7 @@ int main( int argc, char **argv )
       }
       else if ( geometryType == QgsWkbTypes::MultiLineString )
       {
-        QgsMultiPolyline multiPolyline = geometry.asMultiPolyline();
+        QgsMultiPolylineXY multiPolyline = geometry.asMultiPolyline();
         Q_FOREACH ( const QgsPolylineXY &polyline, multiPolyline )
         {
           writePolyline( map, GV_LINE, polyline, cats );
@@ -279,7 +279,7 @@ int main( int argc, char **argv )
       }
       else if ( geometryType == QgsWkbTypes::Polygon )
       {
-        QgsPolygon polygon = geometry.asPolygon();
+        QgsPolygonXYpolygon = geometry.asPolygon();
         Q_FOREACH ( const QgsPolylineXY &polyline, polygon )
         {
           writePolyline( map, GV_BOUNDARY, polyline, cats );
@@ -287,8 +287,8 @@ int main( int argc, char **argv )
       }
       else if ( geometryType == QgsWkbTypes::MultiPolygon )
       {
-        QgsMultiPolygon multiPolygon = geometry.asMultiPolygon();
-        Q_FOREACH ( const QgsPolygon &polygon, multiPolygon )
+        QgsMultiPolygonXY multiPolygon = geometry.asMultiPolygon();
+        Q_FOREACH ( const QgsPolygonXY &polygon, multiPolygon )
         {
           Q_FOREACH ( const QgsPolylineXY &polyline, polygon )
           {
@@ -393,7 +393,7 @@ int main( int argc, char **argv )
       }
       QgsPointXY point( x, y );
       QgsFeature feature( area );
-      feature.setGeometry( QgsGeometry::fromPoint( point ) );
+      feature.setGeometry( QgsGeometry::fromPointXY( point ) );
       feature.setValid( true );
       centroids.insert( area, feature );
       spatialIndex.insertFeature( feature );

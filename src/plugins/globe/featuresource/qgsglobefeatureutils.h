@@ -53,9 +53,9 @@ class QgsGlobeFeatureUtils
       return retLineString;
     }
 
-    static inline osgEarth::Features::Polygon *polygonFromQgsPolygon( const QgsPolygonV2 *polygon )
+    static inline osgEarth::Features::Polygon *polygonFromQgsPolygon( const QgsPolygon *polygon )
     {
-      QgsPolygonV2 *linearPolygon = polygon->toPolygon();
+      QgsPolygon *linearPolygon = polygon->toPolygon();
       // a ring for osg earth is open (first point != last point)
       // an outer ring is oriented CCW, an inner ring is oriented CW
       osgEarth::Features::Polygon *retPoly = new osgEarth::Features::Polygon();
@@ -104,7 +104,7 @@ class QgsGlobeFeatureUtils
         case QgsWkbTypes::MultiPoint:
         {
           osgEarth::Features::PointSet *pointSet = new osgEarth::Features::PointSet();
-          QgsMultiPointV2 *multiPoint = static_cast<QgsMultiPointV2 *>( geom.geometry() );
+          QgsMultiPoint *multiPoint = static_cast<QgsMultiPoint *>( geom.geometry() );
           for ( int i = 0, n = multiPoint->numGeometries(); i < n; ++i )
           {
             pointSet->push_back( pointFromQgsPoint( *static_cast<QgsPoint *>( multiPoint->geometryN( i ) ) ) );
@@ -133,16 +133,16 @@ class QgsGlobeFeatureUtils
         case QgsWkbTypes::Polygon:
         case QgsWkbTypes::CurvePolygon:
         {
-          return polygonFromQgsPolygon( static_cast<QgsPolygonV2 *>( geom.geometry() ) );
+          return polygonFromQgsPolygon( static_cast<QgsPolygon *>( geom.geometry() ) );
         }
 
         case QgsWkbTypes::MultiPolygon:
         {
           osgEarth::Features::MultiGeometry *multiGeometry = new osgEarth::Features::MultiGeometry();
-          QgsMultiPolygonV2 *multiPolygon = static_cast<QgsMultiPolygonV2 *>( geom.geometry() );
+          QgsMultiPolygon *multiPolygon = static_cast<QgsMultiPolygon *>( geom.geometry() );
           for ( int i = 0, n = multiPolygon->numGeometries(); i < n; ++i )
           {
-            multiGeometry->getComponents().push_back( polygonFromQgsPolygon( static_cast<QgsPolygonV2 *>( multiPolygon->geometryN( i ) ) ) );
+            multiGeometry->getComponents().push_back( polygonFromQgsPolygon( static_cast<QgsPolygon *>( multiPolygon->geometryN( i ) ) ) );
           }
           return multiGeometry;
         }

@@ -197,7 +197,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
         poly->setExteriorRing( ringGeom1 );
 
         // If original feature was a linear polygon, also create the new part as a linear polygon
-        QgsCurvePolygon *poly2 = dynamic_cast<QgsPolygonV2 *>( part ) ? new QgsPolygonV2() : new QgsCurvePolygon();
+        QgsCurvePolygon *poly2 = dynamic_cast<QgsPolygon *>( part ) ? new QgsPolygon() : new QgsCurvePolygon();
         poly2->setExteriorRing( ringGeom2 );
 
         // Reassing interiors as necessary
@@ -231,7 +231,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
           // Otherwise, create multipolygon
           else
           {
-            QgsMultiPolygonV2 *multiPoly = new QgsMultiPolygonV2();
+            QgsMultiPolygon *multiPoly = new QgsMultiPolygon();
             multiPoly->addGeometry( poly->clone() );
             multiPoly->addGeometry( poly2 );
             feature.setGeometry( QgsGeometry( multiPoly ) );

@@ -276,7 +276,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     case QgsWkbTypes::MultiPoint:
     case QgsWkbTypes::MultiPoint25D:
     {
-      const QgsMultiPoint mpt = geom.asMultiPoint();
+      const QgsMultiPointXY mpt = geom.asMultiPoint();
       for ( QgsPointXY pt : mpt )
       {
         addPoint( pt, false, idx );
@@ -301,7 +301,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     case QgsWkbTypes::MultiLineString25D:
     {
 
-      const QgsMultiPolyline mline = geom.asMultiPolyline();
+      const QgsMultiPolylineXY mline = geom.asMultiPolyline();
       for ( const QgsPolylineXY &line : mline )
       {
         if ( line.isEmpty() )
@@ -321,7 +321,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     case QgsWkbTypes::Polygon:
     case QgsWkbTypes::Polygon25D:
     {
-      const QgsPolygon poly = geom.asPolygon();
+      const QgsPolygonXY poly = geom.asPolygon();
       const QgsPolylineXY line = poly.at( 0 );
       for ( QgsPointXY pt : line )
       {
@@ -334,8 +334,8 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     case QgsWkbTypes::MultiPolygon25D:
     {
 
-      const QgsMultiPolygon multipoly = geom.asMultiPolygon();
-      for ( const QgsPolygon &poly : multipoly )
+      const QgsMultiPolygonXY multipoly = geom.asMultiPolygon();
+      for ( const QgsPolygonXY &poly : multipoly )
       {
         if ( poly.empty() )
           continue;
@@ -604,26 +604,26 @@ QgsGeometry QgsRubberBand::asGeometry() const
   {
     case QgsWkbTypes::PolygonGeometry:
     {
-      QgsPolygon polygon;
+      QgsPolygonXY polygon;
       QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
       for ( ; it != mPoints.constEnd(); ++it )
       {
         polygon.append( getPolyline( *it ) );
       }
-      geom = QgsGeometry::fromPolygon( polygon );
+      geom = QgsGeometry::fromPolygonXY( polygon );
       break;
     }
 
     case QgsWkbTypes::PointGeometry:
     {
-      QgsMultiPoint multiPoint;
+      QgsMultiPointXY multiPoint;
 
       QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
       for ( ; it != mPoints.constEnd(); ++it )
       {
         multiPoint += getPolyline( *it );
       }
-      geom = QgsGeometry::fromMultiPoint( multiPoint );
+      geom = QgsGeometry::fromMultiPointXY( multiPoint );
       break;
     }
 
@@ -634,13 +634,13 @@ QgsGeometry QgsRubberBand::asGeometry() const
       {
         if ( mPoints.size() > 1 )
         {
-          QgsMultiPolyline multiPolyline;
+          QgsMultiPolylineXY multiPolyline;
           QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
           for ( ; it != mPoints.constEnd(); ++it )
           {
             multiPolyline.append( getPolyline( *it ) );
           }
-          geom = QgsGeometry::fromMultiPolyline( multiPolyline );
+          geom = QgsGeometry::fromMultiPolylineXY( multiPolyline );
         }
         else
         {

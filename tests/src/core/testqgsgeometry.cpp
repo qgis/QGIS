@@ -85,7 +85,7 @@ class TestQgsGeometry : public QObject
     void point(); //test QgsPointV2
     void lineString(); //test QgsLineString
     void circularString();
-    void polygon(); //test QgsPolygonV2
+    void polygon(); //test QgsPolygon
     void curvePolygon();
     void triangle();
     void circle();
@@ -154,9 +154,9 @@ class TestQgsGeometry : public QObject
     //! A helper method to do a render check to see if the geometry op is as expected
     bool renderCheck( const QString &testName, const QString &comment = QString(), int mismatchCount = 0 );
     //! A helper method to dump to qdebug the geometry of a multipolygon
-    void dumpMultiPolygon( QgsMultiPolygon &multiPolygon );
+    void dumpMultiPolygon( QgsMultiPolygonXY &multiPolygon );
     //! A helper method to dump to qdebug the geometry of a polygon
-    void dumpPolygon( QgsPolygon &polygon );
+    void dumpPolygon( QgsPolygonXY &polygon );
     //! A helper method to dump to qdebug the geometry of a polyline
     void dumpPolyline( QgsPolylineXY &polyline );
 
@@ -196,9 +196,9 @@ class TestQgsGeometry : public QObject
     QgsPolylineXY mPolylineB;
     QgsPolylineXY mPolylineC;
     QgsGeometry mpPolylineGeometryD;
-    QgsPolygon mPolygonA;
-    QgsPolygon mPolygonB;
-    QgsPolygon mPolygonC;
+    QgsPolygonXY mPolygonA;
+    QgsPolygonXY mPolygonB;
+    QgsPolygonXY mPolygonC;
     QgsGeometry mpPolygonGeometryA;
     QgsGeometry mpPolygonGeometryB;
     QgsGeometry mpPolygonGeometryC;
@@ -290,9 +290,9 @@ void TestQgsGeometry::init()
 
   //polygon: first item of the list is outer ring,
   // inner rings (if any) start from second item
-  mpPolygonGeometryA = QgsGeometry::fromPolygon( mPolygonA );
-  mpPolygonGeometryB = QgsGeometry::fromPolygon( mPolygonB );
-  mpPolygonGeometryC = QgsGeometry::fromPolygon( mPolygonC );
+  mpPolygonGeometryA = QgsGeometry::fromPolygonXY( mPolygonA );
+  mpPolygonGeometryB = QgsGeometry::fromPolygonXY( mPolygonB );
+  mpPolygonGeometryC = QgsGeometry::fromPolygonXY( mPolygonC );
 
   mImage = QImage( 250, 250, QImage::Format_RGB32 );
   mImage.fill( qRgb( 152, 219, 249 ) );
@@ -2268,7 +2268,7 @@ void TestQgsGeometry::circularString()
   QVERIFY( !boundary1.boundary() );
   boundary1.setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
   QgsAbstractGeometry *boundary = boundary1.boundary();
-  QgsMultiPointV2 *mpBoundary = dynamic_cast< QgsMultiPointV2 * >( boundary );
+  QgsMultiPoint *mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->y(), 0.0 );
@@ -2283,7 +2283,7 @@ void TestQgsGeometry::circularString()
   //boundary with z
   boundary1.setPoints( QList<QgsPoint>() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
   boundary = boundary1.boundary();
-  mpBoundary = dynamic_cast< QgsMultiPointV2 * >( boundary );
+  mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->geometryN( 0 )->wkbType(), QgsWkbTypes::PointZ );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
@@ -3940,7 +3940,7 @@ void TestQgsGeometry::lineString()
   QVERIFY( !boundary1.boundary() );
   boundary1.setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
   QgsAbstractGeometry *boundary = boundary1.boundary();
-  QgsMultiPointV2 *mpBoundary = dynamic_cast< QgsMultiPointV2 * >( boundary );
+  QgsMultiPoint *mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->y(), 0.0 );
@@ -3956,7 +3956,7 @@ void TestQgsGeometry::lineString()
   //boundary with z
   boundary1.setPoints( QList<QgsPoint>() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 10 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 0, 15 ) << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 20 ) );
   boundary = boundary1.boundary();
-  mpBoundary = dynamic_cast< QgsMultiPointV2 * >( boundary );
+  mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->geometryN( 0 )->wkbType(), QgsWkbTypes::PointZ );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
@@ -4051,7 +4051,7 @@ void TestQgsGeometry::lineString()
 void TestQgsGeometry::polygon()
 {
   //test constructor
-  QgsPolygonV2 p1;
+  QgsPolygon p1;
   QVERIFY( p1.isEmpty() );
   QCOMPARE( p1.numInteriorRings(), 0 );
   QCOMPARE( p1.nCoordinates(), 0 );
@@ -4131,7 +4131,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p1.nCoordinates(), 5 );
 
   //initial setting of exterior ring should set z/m type
-  QgsPolygonV2 p2;
+  QgsPolygon p2;
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 )
                   << QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 3 )
@@ -4143,7 +4143,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p2.wktTypeStr(), QString( "PolygonZ" ) );
   QCOMPARE( p2.geometryType(), QString( "Polygon" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( p2.exteriorRing() ) ), *ext );
-  QgsPolygonV2 p3;
+  QgsPolygon p3;
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 0, 0, 0, 1 )
                   << QgsPoint( QgsWkbTypes::PointM, 0, 10, 0, 2 ) << QgsPoint( QgsWkbTypes::PointM, 10, 10, 0, 3 )
@@ -4154,7 +4154,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p3.wkbType(), QgsWkbTypes::PolygonM );
   QCOMPARE( p3.wktTypeStr(), QString( "PolygonM" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( p3.exteriorRing() ) ), *ext );
-  QgsPolygonV2 p4;
+  QgsPolygon p4;
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 2, 1 )
                   << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 3, 2 ) << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 5, 3 )
@@ -4165,7 +4165,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p4.wkbType(), QgsWkbTypes::PolygonZM );
   QCOMPARE( p4.wktTypeStr(), QString( "PolygonZM" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( p4.exteriorRing() ) ), *ext );
-  QgsPolygonV2 p5;
+  QgsPolygon p5;
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point25D, 0, 0, 1 )
                   << QgsPoint( QgsWkbTypes::Point25D, 0, 10, 2 ) << QgsPoint( QgsWkbTypes::Point25D, 10, 10, 3 )
@@ -4187,7 +4187,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p5.exteriorRing()->wkbType(), QgsWkbTypes::LineString );
 
   //addInteriorRing
-  QgsPolygonV2 p6;
+  QgsPolygon p6;
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 )
                   << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) );
@@ -4253,7 +4253,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p6.interiorRing( 3 )->wkbType(), QgsWkbTypes::LineString );
 
   //addInteriorRing without z/m to PolygonZM
-  QgsPolygonV2 p6b;
+  QgsPolygon p6b;
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1 )
                   << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2 ) << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3 )
@@ -4284,7 +4284,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p6b.interiorRing( 1 )->wkbType(), QgsWkbTypes::LineStringZM );
   QCOMPARE( p6b.interiorRing( 1 )->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 0.1, 0.1, 1, 0 ) );
   //test handling of 25D rings/polygons
-  QgsPolygonV2 p6c;
+  QgsPolygon p6c;
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point25D, 0, 0, 1 )
                   << QgsPoint( QgsWkbTypes::Point25D, 0, 10, 2 ) << QgsPoint( QgsWkbTypes::Point25D, 10, 10, 3 )
@@ -4331,7 +4331,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p6c.interiorRing( 2 )->wkbType(), QgsWkbTypes::LineString25D );
 
   //set interior rings
-  QgsPolygonV2 p7;
+  QgsPolygon p7;
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 )
                   << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) );
@@ -4386,7 +4386,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p7.numInteriorRings(), 0 );
 
   //change dimensionality of interior rings using setExteriorRing
-  QgsPolygonV2 p7a;
+  QgsPolygon p7a;
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 ) << QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 )
                   << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 1 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 0, 3 ) << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 ) );
@@ -4439,7 +4439,7 @@ void TestQgsGeometry::polygon()
 
 
   //removeInteriorRing
-  QgsPolygonV2 p8;
+  QgsPolygon p8;
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 )
                   << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) );
@@ -4473,7 +4473,7 @@ void TestQgsGeometry::polygon()
   QVERIFY( !p8.removeInteriorRing( 0 ) );
 
   //clear
-  QgsPolygonV2 p9;
+  QgsPolygon p9;
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 )
                   << QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 3 )
@@ -4496,8 +4496,8 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p9.wkbType(), QgsWkbTypes::Polygon );
 
   //equality operator
-  QgsPolygonV2 p10;
-  QgsPolygonV2 p10b;
+  QgsPolygon p10;
+  QgsPolygon p10b;
   QVERIFY( p10 == p10b );
   QVERIFY( !( p10 != p10b ) );
   ext = new QgsLineString();
@@ -4549,8 +4549,8 @@ void TestQgsGeometry::polygon()
 
   //clone
 
-  QgsPolygonV2 p11;
-  std::unique_ptr< QgsPolygonV2 >cloned( p11.clone() );
+  QgsPolygon p11;
+  std::unique_ptr< QgsPolygon >cloned( p11.clone() );
   QCOMPARE( p11, *cloned );
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
@@ -4566,8 +4566,8 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p11, *cloned );
 
   //copy constructor
-  QgsPolygonV2 p12;
-  QgsPolygonV2 p13( p12 );
+  QgsPolygon p12;
+  QgsPolygon p13( p12 );
   QCOMPARE( p12, p13 );
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
@@ -4579,21 +4579,21 @@ void TestQgsGeometry::polygon()
                    << QgsPoint( QgsWkbTypes::PointZM, 1, 9, 2, 3 ) << QgsPoint( QgsWkbTypes::PointZM, 9, 9, 3, 6 )
                    << QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
   p12.addInteriorRing( ring );
-  QgsPolygonV2 p14( p12 );
+  QgsPolygon p14( p12 );
   QCOMPARE( p12, p14 );
 
   //assignment operator
-  QgsPolygonV2 p15;
+  QgsPolygon p15;
   p15 = p13;
   QCOMPARE( p13, p15 );
   p15 = p12;
   QCOMPARE( p12, p15 );
 
   //surfaceToPolygon - should be identical given polygon has no curves
-  std::unique_ptr< QgsPolygonV2 > surface( p12.surfaceToPolygon() );
+  std::unique_ptr< QgsPolygon > surface( p12.surfaceToPolygon() );
   QCOMPARE( *surface, p12 );
   //toPolygon - should be identical given polygon has no curves
-  std::unique_ptr< QgsPolygonV2 > toP( p12.toPolygon() );
+  std::unique_ptr< QgsPolygon > toP( p12.toPolygon() );
   QCOMPARE( *toP, p12 );
 
   //toCurveType
@@ -4614,7 +4614,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( curveType->interiorRing( 0 )->vertexAt( QgsVertexId( 0, 0, 4 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 1, 1, 7 ) );
 
   //to/fromWKB
-  QgsPolygonV2 p16;
+  QgsPolygon p16;
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 0, 0 )
                   << QgsPoint( QgsWkbTypes::Point, 0, 10 ) << QgsPoint( QgsWkbTypes::Point, 10, 10 )
@@ -4626,7 +4626,7 @@ void TestQgsGeometry::polygon()
                    << QgsPoint( QgsWkbTypes::Point, 9, 1 ) << QgsPoint( QgsWkbTypes::Point, 1, 1 ) );
   p16.addInteriorRing( ring );
   QByteArray wkb16 = p16.asWkb();
-  QgsPolygonV2 p17;
+  QgsPolygon p17;
   QgsConstWkbPtr wkb16ptr( wkb16 );
   p17.fromWkb( wkb16ptr );
   QCOMPARE( p16, p17 );
@@ -4712,7 +4712,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p17.wkbType(), QgsWkbTypes::Polygon );
 
   //to/from WKT
-  QgsPolygonV2 p18;
+  QgsPolygon p18;
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
                   << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 )
@@ -4726,7 +4726,7 @@ void TestQgsGeometry::polygon()
 
   QString wkt = p18.asWkt();
   QVERIFY( !wkt.isEmpty() );
-  QgsPolygonV2 p19;
+  QgsPolygon p19;
   QVERIFY( p19.fromWkt( wkt ) );
   QCOMPARE( p18, p19 );
 
@@ -4740,7 +4740,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p19.wkbType(), QgsWkbTypes::Polygon );
 
   //as JSON
-  QgsPolygonV2 exportPolygon;
+  QgsPolygon exportPolygon;
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 0, 0 )
                   << QgsPoint( QgsWkbTypes::Point, 0, 10 ) << QgsPoint( QgsWkbTypes::Point, 10, 10 )
@@ -4754,13 +4754,13 @@ void TestQgsGeometry::polygon()
   QString expectedSimpleGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">0,0 0,10 10,10 10,0 0,0</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
   QGSCOMPAREGML( elemToString( exportPolygon.asGML2( doc ) ), expectedSimpleGML2 );
   QString expectedGML2empty( QStringLiteral( "<Polygon xmlns=\"gml\"/>" ) );
-  QGSCOMPAREGML( elemToString( QgsPolygonV2().asGML2( doc ) ), expectedGML2empty );
+  QGSCOMPAREGML( elemToString( QgsPolygon().asGML2( doc ) ), expectedGML2empty );
 
   //as GML3
   QString expectedSimpleGML3( QStringLiteral( "<Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">0 0 0 10 10 10 10 0 0 0</posList></LinearRing></exterior></Polygon>" ) );
   QCOMPARE( elemToString( exportPolygon.asGML3( doc ) ), expectedSimpleGML3 );
   QString expectedGML3empty( QStringLiteral( "<Polygon xmlns=\"gml\"/>" ) );
-  QGSCOMPAREGML( elemToString( QgsPolygonV2().asGML3( doc ) ), expectedGML3empty );
+  QGSCOMPAREGML( elemToString( QgsPolygon().asGML3( doc ) ), expectedGML3empty );
 
   // as JSON
   QString expectedSimpleJson( QStringLiteral( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]] }" ) );
@@ -4775,7 +4775,7 @@ void TestQgsGeometry::polygon()
   QString expectedJson( QStringLiteral( "{\"type\": \"Polygon\", \"coordinates\": [[ [0, 0], [0, 10], [10, 10], [10, 0], [0, 0]], [ [1, 1], [1, 9], [9, 9], [9, 1], [1, 1]]] }" ) );
   QCOMPARE( exportPolygon.asJSON(), expectedJson );
 
-  QgsPolygonV2 exportPolygonFloat;
+  QgsPolygon exportPolygonFloat;
   ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 10 / 9.0, 10 / 9.0 )
                   << QgsPoint( QgsWkbTypes::Point, 10 / 9.0, 100 / 9.0 ) << QgsPoint( QgsWkbTypes::Point, 100 / 9.0, 100 / 9.0 )
@@ -4808,7 +4808,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( elemToString( exportPolygonFloat.asGML3( doc, 3 ) ), expectedGML3prec3 );
 
   //removing the fourth to last vertex removes the whole ring
-  QgsPolygonV2 p20;
+  QgsPolygon p20;
   QgsLineString *p20ExteriorRing = new QgsLineString();
   p20ExteriorRing->setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
   p20.setExteriorRing( p20ExteriorRing );
@@ -4819,7 +4819,7 @@ void TestQgsGeometry::polygon()
   //boundary
   QgsLineString boundary1;
   boundary1.setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 )  << QgsPoint( 0, 0 ) );
-  QgsPolygonV2 boundaryPolygon;
+  QgsPolygon boundaryPolygon;
   QVERIFY( !boundaryPolygon.boundary() );
 
   boundaryPolygon.setExteriorRing( boundary1.clone() );
@@ -4896,7 +4896,7 @@ void TestQgsGeometry::polygon()
 
   QgsLineString pd1;
   pd1.setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 ) << QgsPoint( 0, 0 ) );
-  QgsPolygonV2 pd;
+  QgsPolygon pd;
   // no meaning, but let's not crash
   ( void )pd.pointDistanceToBoundary( 0, 0 );
 
@@ -4918,7 +4918,7 @@ void TestQgsGeometry::polygon()
   // remove interior rings
   QgsLineString removeRingsExt;
   removeRingsExt.setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 )  << QgsPoint( 0, 0 ) );
-  QgsPolygonV2 removeRings1;
+  QgsPolygon removeRings1;
   removeRings1.removeInteriorRings();
 
   removeRings1.setExteriorRing( boundary1.clone() );
@@ -4941,16 +4941,16 @@ void TestQgsGeometry::polygon()
   QCOMPARE( removeRings1.numInteriorRings(), 0 );
 
   // cast
-  QVERIFY( !QgsPolygonV2().cast( nullptr ) );
-  QgsPolygonV2 pCast;
-  QVERIFY( QgsPolygonV2().cast( &pCast ) );
-  QgsPolygonV2 pCast2;
+  QVERIFY( !QgsPolygon().cast( nullptr ) );
+  QgsPolygon pCast;
+  QVERIFY( QgsPolygon().cast( &pCast ) );
+  QgsPolygon pCast2;
   pCast2.fromWkt( QStringLiteral( "PolygonZ((0 0 0, 0 1 1, 1 0 2, 0 0 0))" ) );
-  QVERIFY( QgsPolygonV2().cast( &pCast2 ) );
+  QVERIFY( QgsPolygon().cast( &pCast2 ) );
   pCast2.fromWkt( QStringLiteral( "PolygonM((0 0 1, 0 1 2, 1 0 3, 0 0 1))" ) );
-  QVERIFY( QgsPolygonV2().cast( &pCast2 ) );
+  QVERIFY( QgsPolygon().cast( &pCast2 ) );
   pCast2.fromWkt( QStringLiteral( "PolygonZM((0 0 0 1, 0 1 1 2, 1 0 2 3, 0 0 0 1))" ) );
-  QVERIFY( QgsPolygonV2().cast( &pCast2 ) );
+  QVERIFY( QgsPolygon().cast( &pCast2 ) );
 
   //transform
   //CRS transform
@@ -4961,7 +4961,7 @@ void TestQgsGeometry::polygon()
   QgsCoordinateTransform tr( sourceSrs, destSrs );
 
   // 2d CRS transform
-  QgsPolygonV2 pTransform;
+  QgsPolygon pTransform;
   QgsLineString l21;
   l21.setPoints( QgsPointSequence() << QgsPoint( 6374985, -3626584 )
                  << QgsPoint( 6274985, -3526584 )
@@ -5126,7 +5126,7 @@ void TestQgsGeometry::polygon()
                  << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 )
                  << QgsPoint( QgsWkbTypes::PointZM, 1, 12, 23, 24 )
                  << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
-  QgsPolygonV2 pTransform2;
+  QgsPolygon pTransform2;
   pTransform2.setExteriorRing( l23.clone() );
   pTransform2.addInteriorRing( l23.clone() );
   pTransform2.transform( qtr );
@@ -5178,10 +5178,10 @@ void TestQgsGeometry::polygon()
   QgsPoint pt;
   QgsVertexId v;
   bool leftOf = false;
-  QgsPolygonV2 empty;
+  QgsPolygon empty;
   ( void )empty.closestSegment( QgsPoint( 1, 2 ), pt, v ); // empty polygon, just want no crash
 
-  QgsPolygonV2 p21;
+  QgsPolygon p21;
   QgsLineString p21ls;
   p21ls.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 7, 12 ) << QgsPoint( 5, 15 ) << QgsPoint( 5, 10 ) );
   p21.setExteriorRing( p21ls.clone() );
@@ -5248,7 +5248,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( v, QgsVertexId( 0, 1, 2 ) );
 
   //nextVertex
-  QgsPolygonV2 p22;
+  QgsPolygon p22;
   QVERIFY( !p22.nextVertex( v, pt ) );
   v = QgsVertexId( 0, 0, -2 );
   QVERIFY( !p22.nextVertex( v, pt ) );
@@ -5308,7 +5308,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( pt, QgsPoint( 21, 22 ) );
 
   // dropZValue
-  QgsPolygonV2 p23;
+  QgsPolygon p23;
   p23.dropZValue();
   QCOMPARE( p23.wkbType(), QgsWkbTypes::Polygon );
   QgsLineString lp23;
@@ -5387,7 +5387,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( static_cast< const QgsLineString *>( p23.interiorRing( 0 ) )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZ, 1, 2, 3 ) );
 
   //vertexAngle
-  QgsPolygonV2 p24;
+  QgsPolygon p24;
   ( void )p24.vertexAngle( QgsVertexId() ); //just want no crash
   ( void )p24.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash
   ( void )p24.vertexAngle( QgsVertexId( 0, 1, 0 ) ); //just want no crash
@@ -5414,7 +5414,7 @@ void TestQgsGeometry::polygon()
   //insert vertex
 
   //insert vertex in empty polygon
-  QgsPolygonV2 p25;
+  QgsPolygon p25;
   QVERIFY( !p25.insertVertex( QgsVertexId( 0, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
   QVERIFY( !p25.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( 6.0, 7.0 ) ) );
   QVERIFY( !p25.insertVertex( QgsVertexId( 0, 1, 0 ), QgsPoint( 6.0, 7.0 ) ) );
@@ -5482,7 +5482,7 @@ void TestQgsGeometry::polygon()
   //move vertex
 
   //empty polygon
-  QgsPolygonV2 p26;
+  QgsPolygon p26;
   QVERIFY( !p26.moveVertex( QgsVertexId( 0, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
   QVERIFY( p26.isEmpty() );
 
@@ -5523,7 +5523,7 @@ void TestQgsGeometry::polygon()
   //delete vertex
 
   //empty polygon
-  QgsPolygonV2 p27;
+  QgsPolygon p27;
   QVERIFY( !p27.deleteVertex( QgsVertexId( 0, 0, 0 ) ) );
   QVERIFY( !p27.deleteVertex( QgsVertexId( 0, 1, 0 ) ) );
   QVERIFY( p27.isEmpty() );
@@ -5617,7 +5617,7 @@ void TestQgsGeometry::polygon()
   // test adjacent vertices - should wrap around!
   QgsLineString *closedRing1 = new QgsLineString();
   closedRing1->setPoints( QList<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
-  QgsPolygonV2 p28;
+  QgsPolygon p28;
   QgsVertexId previous( 1, 2, 3 );
   QgsVertexId next( 4, 5, 6 );
   p28.adjacentVertices( QgsVertexId( 0, 0, 0 ), previous, next );
@@ -5681,7 +5681,7 @@ void TestQgsGeometry::polygon()
 
   QgsLineString *closedRing2 = new QgsLineString();
   closedRing2->setPoints( QList<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
-  QgsPolygonV2 p29;
+  QgsPolygon p29;
   QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
   QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 1, 0, 0 ) ), -1 );
   QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, -1, 0 ) ), -1 );
@@ -6018,16 +6018,16 @@ void TestQgsGeometry::triangle()
   QCOMPARE( t5, t6 );
 
   // conversion
-  QgsPolygonV2 p1;
+  QgsPolygon p1;
   ext.reset( new QgsLineString() );
   ext->setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 )
                   << QgsPoint( QgsWkbTypes::PointZM, 0, 10, 2, 6 ) << QgsPoint( QgsWkbTypes::PointZM, 10, 10, 3, 7 ) );
   p1.setExteriorRing( ext.release() );
   //toPolygon
-  std::unique_ptr< QgsPolygonV2 > poly( t5.toPolygon() );
+  std::unique_ptr< QgsPolygon > poly( t5.toPolygon() );
   QCOMPARE( *poly, p1 );
   //surfaceToPolygon
-  std::unique_ptr< QgsPolygonV2 > surface( t5.surfaceToPolygon() );
+  std::unique_ptr< QgsPolygon > surface( t5.surfaceToPolygon() );
   QCOMPARE( *surface, p1 );
 
   //bad WKT
@@ -6329,9 +6329,9 @@ void TestQgsGeometry::triangle()
 
   // cast
   QgsTriangle pCast;
-  QVERIFY( QgsPolygonV2().cast( &pCast ) );
+  QVERIFY( QgsPolygon().cast( &pCast ) );
   QgsTriangle pCast2( QgsPoint( 7, 4 ), QgsPoint( 13, 3 ), QgsPoint( 9, 6 ) );;
-  QVERIFY( QgsPolygonV2().cast( &pCast2 ) );
+  QVERIFY( QgsPolygon().cast( &pCast2 ) );
 }
 
 void TestQgsGeometry::ellipse()
@@ -6532,7 +6532,7 @@ void TestQgsGeometry::ellipse()
   QCOMPARE( pts, pts_l );
 
   // polygon
-  std::unique_ptr< QgsPolygonV2 > p1( new QgsPolygonV2() );
+  std::unique_ptr< QgsPolygon > p1( new QgsPolygon() );
 
   p1.reset( QgsEllipse( QgsPoint( 0, 0 ), 5, 2, 0 ).toPolygon( 2 ) );
   QVERIFY( p1->isEmpty() ); // segments too low
@@ -6568,15 +6568,15 @@ void TestQgsGeometry::ellipse()
   QCOMPARE( 5, p1->exteriorRing()->numPoints() );
 
   // oriented bounding box
-  std::unique_ptr< QgsPolygonV2 > ombb( QgsEllipse().orientedBoundingBox() );
+  std::unique_ptr< QgsPolygon > ombb( QgsEllipse().orientedBoundingBox() );
   QVERIFY( ombb->isEmpty() );
 
   elpq = QgsEllipse( QgsPoint( 0, 0 ), 5, 2 );
-  ombb.reset( new QgsPolygonV2() );
+  ombb.reset( new QgsPolygon() );
   QgsLineString *ext = new QgsLineString();
   ext->setPoints( QgsPointSequence() << QgsPoint( 5, 2 ) << QgsPoint( 5, -2 ) << QgsPoint( -5, -2 ) << QgsPoint( -5, 2 ) );
   ombb->setExteriorRing( ext );
-  std::unique_ptr< QgsPolygonV2 >ombb2( elpq.orientedBoundingBox() );
+  std::unique_ptr< QgsPolygon >ombb2( elpq.orientedBoundingBox() );
   QCOMPARE( ombb->asWkt( 2 ), ombb2->asWkt( 2 ) );
 
   elpq = QgsEllipse( QgsPoint( 0, 0 ), 5, 2.5, 45 );
@@ -6740,7 +6740,7 @@ void TestQgsGeometry::circle()
 
 //test conversion
   QgsPointSequence ptsPol;
-  std::unique_ptr< QgsPolygonV2 > pol( new QgsPolygonV2() );
+  std::unique_ptr< QgsPolygon > pol( new QgsPolygon() );
 // polygon
   pol.reset( QgsCircle( QgsPoint( 0, 0 ), 5 ).toPolygon( 4 ) );
   QCOMPARE( pol->numInteriorRings(), 0 );
@@ -6979,11 +6979,11 @@ void TestQgsGeometry::regularPolygon()
   QVERIFY( QgsRegularPolygon().triangulate().isEmpty() );
 
   // polygon
-  std::unique_ptr< QgsPolygonV2 > toP( QgsRegularPolygon().toPolygon() );
+  std::unique_ptr< QgsPolygon > toP( QgsRegularPolygon().toPolygon() );
   QVERIFY( toP->isEmpty() );
 
   QgsPointSequence ptsPol;
-  std::unique_ptr< QgsPolygonV2 > pol( new QgsPolygonV2() );
+  std::unique_ptr< QgsPolygon > pol( new QgsPolygon() );
   pol.reset( rp10.toPolygon() );
   QCOMPARE( pol->numInteriorRings(), 0 );
   QCOMPARE( pol->exteriorRing()->numPoints(), 5 );
@@ -7473,7 +7473,7 @@ void TestQgsGeometry::curvePolygon()
 
   //surfaceToPolygon
   QgsCurvePolygon p12a;
-  std::unique_ptr< QgsPolygonV2 > surface( p12a.surfaceToPolygon() );
+  std::unique_ptr< QgsPolygon > surface( p12a.surfaceToPolygon() );
   QVERIFY( surface->isEmpty() );
 
   ext = new QgsCircularString();
@@ -10119,7 +10119,7 @@ void TestQgsGeometry::compoundCurve()
   boundary1.setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
   cBoundary1.addCurve( boundary1.clone() );
   QgsAbstractGeometry *boundary = cBoundary1.boundary();
-  QgsMultiPointV2 *mpBoundary = dynamic_cast< QgsMultiPointV2 * >( boundary );
+  QgsMultiPoint *mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->y(), 0.0 );
@@ -10138,7 +10138,7 @@ void TestQgsGeometry::compoundCurve()
   cBoundary1.clear();
   cBoundary1.addCurve( boundary1.clone() );
   boundary = cBoundary1.boundary();
-  mpBoundary = dynamic_cast< QgsMultiPointV2 * >( boundary );
+  mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->geometryN( 0 )->wkbType(), QgsWkbTypes::PointZ );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
@@ -10320,7 +10320,7 @@ void TestQgsGeometry::compoundCurve()
 void TestQgsGeometry::multiPoint()
 {
   //test constructor
-  QgsMultiPointV2 c1;
+  QgsMultiPoint c1;
   QVERIFY( c1.isEmpty() );
   QCOMPARE( c1.nCoordinates(), 0 );
   QCOMPARE( c1.ringCount(), 0 );
@@ -10391,7 +10391,7 @@ void TestQgsGeometry::multiPoint()
 
   //initial adding of geometry should set z/m type
   part = QgsPoint( QgsWkbTypes::PointZ, 10, 11, 1 );
-  QgsMultiPointV2 c2;
+  QgsMultiPoint c2;
   c2.addGeometry( part.clone() );
   QVERIFY( c2.is3D() );
   QVERIFY( !c2.isMeasure() );
@@ -10399,7 +10399,7 @@ void TestQgsGeometry::multiPoint()
   QCOMPARE( c2.wktTypeStr(), QString( "MultiPointZ" ) );
   QCOMPARE( c2.geometryType(), QString( "MultiPoint" ) );
   QCOMPARE( *( static_cast< const QgsPoint * >( c2.geometryN( 0 ) ) ), part );
-  QgsMultiPointV2 c3;
+  QgsMultiPoint c3;
   part = QgsPoint( QgsWkbTypes::PointM, 10, 10, 0, 3 );
   c3.addGeometry( part.clone() );
   QVERIFY( !c3.is3D() );
@@ -10407,7 +10407,7 @@ void TestQgsGeometry::multiPoint()
   QCOMPARE( c3.wkbType(), QgsWkbTypes::MultiPointM );
   QCOMPARE( c3.wktTypeStr(), QString( "MultiPointM" ) );
   QCOMPARE( *( static_cast< const QgsPoint * >( c3.geometryN( 0 ) ) ), part );
-  QgsMultiPointV2 c4;
+  QgsMultiPoint c4;
   part = QgsPoint( QgsWkbTypes::PointZM, 10, 10, 5, 3 );
   c4.addGeometry( part.clone() );
   QVERIFY( c4.is3D() );
@@ -10417,7 +10417,7 @@ void TestQgsGeometry::multiPoint()
   QCOMPARE( *( static_cast< const QgsPoint * >( c4.geometryN( 0 ) ) ), part );
 
   //add another part
-  QgsMultiPointV2 c6;
+  QgsMultiPoint c6;
   part = QgsPoint( 10, 11 );
   c6.addGeometry( part.clone() );
   QCOMPARE( c6.vertexCount( 0, 0 ), 1 );
@@ -10511,7 +10511,7 @@ void TestQgsGeometry::multiPoint()
   QCOMPARE( *( static_cast< const QgsPoint * >( c6.geometryN( 3 ) ) ), QgsPoint( QgsWkbTypes::PointZM, 31, 32, 0, 4 ) );
 
   //clear
-  QgsMultiPointV2 c7;
+  QgsMultiPoint c7;
   c7.addGeometry( new  QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 ) );
   c7.addGeometry( new  QgsPoint( QgsWkbTypes::PointZ, 11, 12, 3 ) );
   QCOMPARE( c7.numGeometries(), 2 );
@@ -10526,8 +10526,8 @@ void TestQgsGeometry::multiPoint()
   QCOMPARE( c7.wkbType(), QgsWkbTypes::MultiPoint );
 
   //clone
-  QgsMultiPointV2 c11;
-  std::unique_ptr< QgsMultiPointV2 >cloned( c11.clone() );
+  QgsMultiPoint c11;
+  std::unique_ptr< QgsMultiPoint >cloned( c11.clone() );
   QVERIFY( cloned->isEmpty() );
   c11.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 0, 0, 1, 5 ) );
   c11.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
@@ -10537,19 +10537,19 @@ void TestQgsGeometry::multiPoint()
   QCOMPARE( *static_cast< const QgsPoint * >( cloned->geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 ) );
 
   //copy constructor
-  QgsMultiPointV2 c12;
-  QgsMultiPointV2 c13( c12 );
+  QgsMultiPoint c12;
+  QgsMultiPoint c13( c12 );
   QVERIFY( c13.isEmpty() );
   c12.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
   c12.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 20, 10, 14, 18 ) );
-  QgsMultiPointV2 c14( c12 );
+  QgsMultiPoint c14( c12 );
   QCOMPARE( c14.numGeometries(), 2 );
   QCOMPARE( c14.wkbType(), QgsWkbTypes::MultiPointZM );
   QCOMPARE( *static_cast< const QgsPoint * >( c14.geometryN( 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
   QCOMPARE( *static_cast< const QgsPoint * >( c14.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 20, 10, 14, 18 ) );
 
   //assignment operator
-  QgsMultiPointV2 c15;
+  QgsMultiPoint c15;
   c15 = c13;
   QCOMPARE( c15.numGeometries(), 0 );
   c15 = c14;
@@ -10558,7 +10558,7 @@ void TestQgsGeometry::multiPoint()
   QCOMPARE( *static_cast< const QgsPoint * >( c15.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 20, 10, 14, 18 ) );
 
   //toCurveType
-  std::unique_ptr< QgsMultiPointV2 > curveType( c12.toCurveType() );
+  std::unique_ptr< QgsMultiPoint > curveType( c12.toCurveType() );
   QCOMPARE( curveType->wkbType(), QgsWkbTypes::MultiPointZM );
   QCOMPARE( curveType->numGeometries(), 2 );
   const QgsPoint *curve = static_cast< const QgsPoint * >( curveType->geometryN( 0 ) );
@@ -10567,11 +10567,11 @@ void TestQgsGeometry::multiPoint()
   QCOMPARE( *curve, QgsPoint( QgsWkbTypes::PointZM, 20, 10, 14, 18 ) );
 
   //to/fromWKB
-  QgsMultiPointV2 c16;
+  QgsMultiPoint c16;
   c16.addGeometry( new QgsPoint( QgsWkbTypes::Point, 10, 11 ) );
   c16.addGeometry( new QgsPoint( QgsWkbTypes::Point, 20, 21 ) );
   QByteArray wkb16 = c16.asWkb();
-  QgsMultiPointV2 c17;
+  QgsMultiPoint c17;
   QgsConstWkbPtr wkb16ptr( wkb16 );
   c17.fromWkb( wkb16ptr );
   QCOMPARE( c17.numGeometries(), 2 );
@@ -10629,27 +10629,27 @@ void TestQgsGeometry::multiPoint()
   QCOMPARE( c17.wkbType(), QgsWkbTypes::MultiPoint );
 
   //to/from WKT
-  QgsMultiPointV2 c18;
+  QgsMultiPoint c18;
   c18.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
   c18.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
 
   QString wkt = c18.asWkt();
   QVERIFY( !wkt.isEmpty() );
-  QgsMultiPointV2 c19;
+  QgsMultiPoint c19;
   QVERIFY( c19.fromWkt( wkt ) );
   QCOMPARE( c19.numGeometries(), 2 );
   QCOMPARE( *static_cast< const QgsPoint * >( c19.geometryN( 0 ) ), QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
   QCOMPARE( *static_cast< const QgsPoint * >( c19.geometryN( 1 ) ), QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
 
   //bad WKT
-  QgsMultiPointV2 c20;
+  QgsMultiPoint c20;
   QVERIFY( !c20.fromWkt( "Point()" ) );
   QVERIFY( c20.isEmpty() );
   QCOMPARE( c20.numGeometries(), 0 );
   QCOMPARE( c20.wkbType(), QgsWkbTypes::MultiPoint );
 
   //as JSON
-  QgsMultiPointV2 exportC;
+  QgsMultiPoint exportC;
   exportC.addGeometry( new QgsPoint( QgsWkbTypes::Point, 0, 10 ) );
   exportC.addGeometry( new QgsPoint( QgsWkbTypes::Point, 10, 0 ) );
 
@@ -10661,21 +10661,21 @@ void TestQgsGeometry::multiPoint()
   QString res = elemToString( exportC.asGML2( doc ) );
   QGSCOMPAREGML( res, expectedSimpleGML2 );
   QString expectedGML2empty( QStringLiteral( "<MultiPoint xmlns=\"gml\"/>" ) );
-  QGSCOMPAREGML( elemToString( QgsMultiPointV2().asGML2( doc ) ), expectedGML2empty );
+  QGSCOMPAREGML( elemToString( QgsMultiPoint().asGML2( doc ) ), expectedGML2empty );
 
   //as GML3
   QString expectedSimpleGML3( QStringLiteral( "<MultiPoint xmlns=\"gml\"><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">0 10</pos></Point></pointMember><pointMember xmlns=\"gml\"><Point xmlns=\"gml\"><pos xmlns=\"gml\" srsDimension=\"2\">10 0</pos></Point></pointMember></MultiPoint>" ) );
   res = elemToString( exportC.asGML3( doc ) );
   QCOMPARE( res, expectedSimpleGML3 );
   QString expectedGML3empty( QStringLiteral( "<MultiPoint xmlns=\"gml\"/>" ) );
-  QGSCOMPAREGML( elemToString( QgsMultiPointV2().asGML3( doc ) ), expectedGML3empty );
+  QGSCOMPAREGML( elemToString( QgsMultiPoint().asGML3( doc ) ), expectedGML3empty );
 
   // as JSON
   QString expectedSimpleJson( "{\"type\": \"MultiPoint\", \"coordinates\": [ [0, 10], [10, 0]] }" );
   res = exportC.asJSON();
   QCOMPARE( res, expectedSimpleJson );
 
-  QgsMultiPointV2 exportFloat;
+  QgsMultiPoint exportFloat;
   exportFloat.addGeometry( new QgsPoint( QgsWkbTypes::Point, 10 / 9.0, 100 / 9.0 ) );
   exportFloat.addGeometry( new QgsPoint( QgsWkbTypes::Point, 4 / 3.0, 2 / 3.0 ) );
 
@@ -10695,7 +10695,7 @@ void TestQgsGeometry::multiPoint()
   QCOMPARE( res, expectedGML3prec3 );
 
   // insert geometry
-  QgsMultiPointV2 rc;
+  QgsMultiPoint rc;
   rc.clear();
   rc.insertGeometry( nullptr, 0 );
   QVERIFY( rc.isEmpty() );
@@ -10712,21 +10712,21 @@ void TestQgsGeometry::multiPoint()
   QCOMPARE( rc.numGeometries(), 0 );
 
   // cast
-  QVERIFY( !QgsMultiPointV2().cast( nullptr ) );
-  QgsMultiPointV2 pCast;
-  QVERIFY( QgsMultiPointV2().cast( &pCast ) );
-  QgsMultiPointV2 pCast2;
+  QVERIFY( !QgsMultiPoint().cast( nullptr ) );
+  QgsMultiPoint pCast;
+  QVERIFY( QgsMultiPoint().cast( &pCast ) );
+  QgsMultiPoint pCast2;
   pCast2.fromWkt( QStringLiteral( "MultiPointZ(PointZ(0 1 1))" ) );
-  QVERIFY( QgsMultiPointV2().cast( &pCast2 ) );
+  QVERIFY( QgsMultiPoint().cast( &pCast2 ) );
   pCast2.fromWkt( QStringLiteral( "MultiPointM(PointM(0 1 1))" ) );
-  QVERIFY( QgsMultiPointV2().cast( &pCast2 ) );
+  QVERIFY( QgsMultiPoint().cast( &pCast2 ) );
   pCast2.fromWkt( QStringLiteral( "MultiPointZM(PointZM(0 1 1 2))" ) );
-  QVERIFY( QgsMultiPointV2().cast( &pCast2 ) );
+  QVERIFY( QgsMultiPoint().cast( &pCast2 ) );
 
   //boundary
 
   //multipoints have no boundary defined
-  QgsMultiPointV2 boundaryMP;
+  QgsMultiPoint boundaryMP;
   QVERIFY( !boundaryMP.boundary() );
   // add some points and retest, should still be undefined
   boundaryMP.addGeometry( new QgsPoint( 0, 0 ) );
@@ -10759,7 +10759,7 @@ void TestQgsGeometry::multiPoint()
   QVERIFY( !it2.hasNext() );
 
   //adjacent vertices - both should be invalid
-  QgsMultiPointV2 c21;
+  QgsMultiPoint c21;
   c21.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
   c21.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 9, 1, 4, 4 ) );
   QgsVertexId prev( 1, 2, 3 ); // start with something
@@ -10772,7 +10772,7 @@ void TestQgsGeometry::multiPoint()
   QCOMPARE( next, QgsVertexId() );
 
   // vertex number
-  QgsMultiPointV2 c22;
+  QgsMultiPoint c22;
   QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
   QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), -1 );
   QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( 1, 0, 0 ) ), -1 );
@@ -11259,7 +11259,7 @@ void TestQgsGeometry::multiLineString()
   boundaryLine1.setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
   multiLine1.addGeometry( boundaryLine1.clone() );
   QgsAbstractGeometry *boundary = multiLine1.boundary();
-  QgsMultiPointV2 *mpBoundary = dynamic_cast< QgsMultiPointV2 * >( boundary );
+  QgsMultiPoint *mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->numGeometries(), 2 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
@@ -11272,7 +11272,7 @@ void TestQgsGeometry::multiLineString()
   boundaryLine2.setPoints( QList<QgsPoint>() << QgsPoint( 10, 10 ) << QgsPoint( 11, 10 ) << QgsPoint( 11, 11 ) );
   multiLine1.addGeometry( boundaryLine2.clone() );
   boundary = multiLine1.boundary();
-  mpBoundary = dynamic_cast< QgsMultiPointV2 * >( boundary );
+  mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->numGeometries(), 4 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
@@ -11329,7 +11329,7 @@ void TestQgsGeometry::multiLineString()
   boundaryLine3.setPoints( QList<QgsPoint>() << QgsPoint( 20, 20 ) << QgsPoint( 21, 20 ) << QgsPoint( 21, 21 ) << QgsPoint( 20, 20 ) );
   multiLine1.addGeometry( boundaryLine3.clone() );
   boundary = multiLine1.boundary();
-  mpBoundary = dynamic_cast< QgsMultiPointV2 * >( boundary );
+  mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->numGeometries(), 4 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
@@ -11352,7 +11352,7 @@ void TestQgsGeometry::multiLineString()
   multiLine2.addGeometry( boundaryLine5.clone() );
 
   boundary = multiLine2.boundary();
-  mpBoundary = dynamic_cast< QgsMultiPointV2 * >( boundary );
+  mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->numGeometries(), 4 );
   QCOMPARE( mpBoundary->geometryN( 0 )->wkbType(), QgsWkbTypes::PointZ );
@@ -11868,7 +11868,7 @@ void TestQgsGeometry::multiCurve()
   boundaryLine1.setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
   multiLine1.addGeometry( boundaryLine1.clone() );
   QgsAbstractGeometry *boundary = multiLine1.boundary();
-  QgsMultiPointV2 *mpBoundary = dynamic_cast< QgsMultiPointV2 * >( boundary );
+  QgsMultiPoint *mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->numGeometries(), 2 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
@@ -11881,7 +11881,7 @@ void TestQgsGeometry::multiCurve()
   boundaryLine2.setPoints( QList<QgsPoint>() << QgsPoint( 10, 10 ) << QgsPoint( 11, 10 ) << QgsPoint( 11, 11 ) );
   multiLine1.addGeometry( boundaryLine2.clone() );
   boundary = multiLine1.boundary();
-  mpBoundary = dynamic_cast< QgsMultiPointV2 * >( boundary );
+  mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->numGeometries(), 4 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
@@ -11899,7 +11899,7 @@ void TestQgsGeometry::multiCurve()
   boundaryLine3.setPoints( QList<QgsPoint>() << QgsPoint( 20, 20 ) << QgsPoint( 21, 20 ) <<  QgsPoint( 20, 20 ) );
   multiLine1.addGeometry( boundaryLine3.clone() );
   boundary = multiLine1.boundary();
-  mpBoundary = dynamic_cast< QgsMultiPointV2 * >( boundary );
+  mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->numGeometries(), 4 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
@@ -11922,7 +11922,7 @@ void TestQgsGeometry::multiCurve()
   multiLine2.addGeometry( boundaryLine5.clone() );
 
   boundary = multiLine2.boundary();
-  mpBoundary = dynamic_cast< QgsMultiPointV2 * >( boundary );
+  mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->numGeometries(), 4 );
   QCOMPARE( mpBoundary->geometryN( 0 )->wkbType(), QgsWkbTypes::PointZ );
@@ -12575,7 +12575,7 @@ void TestQgsGeometry::multiSurface()
 void TestQgsGeometry::multiPolygon()
 {
   //test constructor
-  QgsMultiPolygonV2 c1;
+  QgsMultiPolygon c1;
   QVERIFY( c1.isEmpty() );
   QCOMPARE( c1.nCoordinates(), 0 );
   QCOMPARE( c1.ringCount(), 0 );
@@ -12620,7 +12620,7 @@ void TestQgsGeometry::multiPolygon()
   QVERIFY( !c1.geometryN( -1 ) );
 
   //valid geometry
-  QgsPolygonV2 part;
+  QgsPolygon part;
   QgsLineString ring;
   ring.setPoints( QgsPointSequence() << QgsPoint( 1, 10 ) << QgsPoint( 2, 11 ) << QgsPoint( 2, 21 ) << QgsPoint( 1, 10 ) );
   part.setExteriorRing( ring.clone() );
@@ -12638,7 +12638,7 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( c1.dimension(), 2 );
   QVERIFY( !c1.hasCurvedSegments() );
   QVERIFY( c1.geometryN( 0 ) );
-  QCOMPARE( *static_cast< const QgsPolygonV2 * >( c1.geometryN( 0 ) ), part );
+  QCOMPARE( *static_cast< const QgsPolygon * >( c1.geometryN( 0 ) ), part );
   QVERIFY( !c1.geometryN( 100 ) );
   QVERIFY( !c1.geometryN( -1 ) );
   QCOMPARE( c1.vertexCount( 0, 0 ), 4 );
@@ -12649,15 +12649,15 @@ void TestQgsGeometry::multiPolygon()
                   << QgsPoint( QgsWkbTypes::PointZ, 10, 11, 1 ) );
   part.clear();
   part.setExteriorRing( ring.clone() );
-  QgsMultiPolygonV2 c2;
+  QgsMultiPolygon c2;
   c2.addGeometry( part.clone() );
   QVERIFY( c2.is3D() );
   QVERIFY( !c2.isMeasure() );
   QCOMPARE( c2.wkbType(), QgsWkbTypes::MultiPolygonZ );
   QCOMPARE( c2.wktTypeStr(), QString( "MultiPolygonZ" ) );
   QCOMPARE( c2.geometryType(), QString( "MultiPolygon" ) );
-  QCOMPARE( *( static_cast< const QgsPolygonV2 * >( c2.geometryN( 0 ) ) ), part );
-  QgsMultiPolygonV2 c3;
+  QCOMPARE( *( static_cast< const QgsPolygon * >( c2.geometryN( 0 ) ) ), part );
+  QgsMultiPolygon c3;
   ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 10, 11, 0, 1 ) << QgsPoint( QgsWkbTypes::PointM, 20, 21, 0, 2 ) << QgsPoint( QgsWkbTypes::PointM, 30, 31, 0, 2 )
                   << QgsPoint( QgsWkbTypes::PointM, 10, 11, 0, 1 ) );
   part.clear();
@@ -12667,8 +12667,8 @@ void TestQgsGeometry::multiPolygon()
   QVERIFY( c3.isMeasure() );
   QCOMPARE( c3.wkbType(), QgsWkbTypes::MultiPolygonM );
   QCOMPARE( c3.wktTypeStr(), QString( "MultiPolygonM" ) );
-  QCOMPARE( *( static_cast< const QgsPolygonV2 * >( c3.geometryN( 0 ) ) ), part );
-  QgsMultiPolygonV2 c4;
+  QCOMPARE( *( static_cast< const QgsPolygon * >( c3.geometryN( 0 ) ) ), part );
+  QgsMultiPolygon c4;
   ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 10, 11, 2, 1 ) << QgsPoint( QgsWkbTypes::PointZM, 20, 21, 3, 2 ) << QgsPoint( QgsWkbTypes::PointZM, 30, 31, 3, 2 )
                   << QgsPoint( QgsWkbTypes::PointZM, 10, 11, 2, 1 ) );
   part.clear();
@@ -12678,10 +12678,10 @@ void TestQgsGeometry::multiPolygon()
   QVERIFY( c4.isMeasure() );
   QCOMPARE( c4.wkbType(), QgsWkbTypes::MultiPolygonZM );
   QCOMPARE( c4.wktTypeStr(), QString( "MultiPolygonZM" ) );
-  QCOMPARE( *( static_cast< const QgsPolygonV2 * >( c4.geometryN( 0 ) ) ), part );
+  QCOMPARE( *( static_cast< const QgsPolygon * >( c4.geometryN( 0 ) ) ), part );
 
   //add another part
-  QgsMultiPolygonV2 c6;
+  QgsMultiPolygon c6;
   ring.setPoints( QgsPointSequence() << QgsPoint( 1, 10 ) << QgsPoint( 2, 11 ) << QgsPoint( 10, 21 ) << QgsPoint( 1, 10 ) );
   part.clear();
   part.setExteriorRing( ring.clone() );
@@ -12694,7 +12694,7 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( c6.vertexCount( 1, 0 ), 4 );
   QCOMPARE( c6.numGeometries(), 2 );
   QVERIFY( c6.geometryN( 0 ) );
-  QCOMPARE( *static_cast< const QgsPolygonV2 * >( c6.geometryN( 1 ) ), part );
+  QCOMPARE( *static_cast< const QgsPolygon * >( c6.geometryN( 1 ) ), part );
 
   //adding subsequent points should not alter z/m type, regardless of parts type
   c6.clear();
@@ -12713,12 +12713,12 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( c6.ringCount(), 1 );
   QCOMPARE( c6.partCount(), 2 );
   QVERIFY( !c6.is3D() );
-  const QgsPolygonV2 *ls = static_cast< const QgsPolygonV2 * >( c6.geometryN( 0 ) );
+  const QgsPolygon *ls = static_cast< const QgsPolygon * >( c6.geometryN( 0 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( 9, 12 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( 3, 13 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( 4, 17 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 3 ), QgsPoint( 9, 12 ) );
-  ls = static_cast< const QgsPolygonV2 * >( c6.geometryN( 1 ) );
+  ls = static_cast< const QgsPolygon * >( c6.geometryN( 1 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( 1, 10 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( 2, 11 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( 10, 13 ) );
@@ -12738,7 +12738,7 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( c6.partCount(), 3 );
   QVERIFY( !c6.is3D() );
   QVERIFY( !c6.isMeasure() );
-  ls = static_cast< const QgsPolygonV2 * >( c6.geometryN( 2 ) );
+  ls = static_cast< const QgsPolygon * >( c6.geometryN( 2 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( 21, 30 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( 32, 41 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( 42, 61 ) );
@@ -12756,12 +12756,12 @@ void TestQgsGeometry::multiPolygon()
   c6.addGeometry( part.clone() );
   QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPolygonZ );
   QVERIFY( c6.is3D() );
-  ls = static_cast< const QgsPolygonV2 * >( c6.geometryN( 0 ) );
+  ls = static_cast< const QgsPolygon * >( c6.geometryN( 0 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( 1, 10, 2 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( 2, 11, 3 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( 9, 15, 3 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 3 ), QgsPoint( 1, 10, 2 ) );
-  ls = static_cast< const QgsPolygonV2 * >( c6.geometryN( 1 ) );
+  ls = static_cast< const QgsPolygon * >( c6.geometryN( 1 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( 2, 20, 0 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( 3, 31, 0 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( 7, 34, 0 ) );
@@ -12774,7 +12774,7 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPolygonZ );
   QVERIFY( c6.is3D() );
   QVERIFY( !c6.isMeasure() );
-  ls = static_cast< const QgsPolygonV2 * >( c6.geometryN( 2 ) );
+  ls = static_cast< const QgsPolygon * >( c6.geometryN( 2 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( 5, 50, 0 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( 6, 61, 0 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( 9, 65, 0 ) );
@@ -12794,12 +12794,12 @@ void TestQgsGeometry::multiPolygon()
   c6.addGeometry( part.clone() );
   QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPolygonM );
   QVERIFY( c6.isMeasure() );
-  ls = static_cast< const QgsPolygonV2 * >( c6.geometryN( 0 ) );
+  ls = static_cast< const QgsPolygon * >( c6.geometryN( 0 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 5, 50, 0, 4 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 6, 61, 0, 5 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( QgsWkbTypes::PointM, 9, 76, 0, 8 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 3 ), QgsPoint( QgsWkbTypes::PointM, 5, 50, 0, 4 ) );
-  ls = static_cast< const QgsPolygonV2 * >( c6.geometryN( 1 ) );
+  ls = static_cast< const QgsPolygon * >( c6.geometryN( 1 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 2, 20, 0, 0 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 3, 31, 0, 0 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( QgsWkbTypes::PointM, 7, 39, 0, 0 ) );
@@ -12811,7 +12811,7 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPolygonM );
   QVERIFY( !c6.is3D() );
   QVERIFY( c6.isMeasure() );
-  ls = static_cast< const QgsPolygonV2 * >( c6.geometryN( 2 ) );
+  ls = static_cast< const QgsPolygon * >( c6.geometryN( 2 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointM, 11, 12, 0, 0 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( QgsWkbTypes::PointM, 14, 15, 0, 0 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( QgsWkbTypes::PointM, 24, 21, 0, 0 ) );
@@ -12832,12 +12832,12 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPolygonZM );
   QVERIFY( c6.isMeasure() );
   QVERIFY( c6.is3D() );
-  ls = static_cast< const QgsPolygonV2 * >( c6.geometryN( 0 ) );
+  ls = static_cast< const QgsPolygon * >( c6.geometryN( 0 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 6, 61, 3, 5 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 9, 71, 4, 9 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 3 ), QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) );
-  ls = static_cast< const QgsPolygonV2 * >( c6.geometryN( 1 ) );
+  ls = static_cast< const QgsPolygon * >( c6.geometryN( 1 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 7, 17, 0, 0 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 3, 13, 0, 0 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 13, 27, 0, 0 ) );
@@ -12850,7 +12850,7 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPolygonZM );
   QVERIFY( c6.is3D() );
   QVERIFY( c6.isMeasure() );
-  ls = static_cast< const QgsPolygonV2 * >( c6.geometryN( 2 ) );
+  ls = static_cast< const QgsPolygon * >( c6.geometryN( 2 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 77, 87, 7, 0 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 83, 83, 8, 0 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 93, 85, 10, 0 ) );
@@ -12863,14 +12863,14 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( c6.wkbType(), QgsWkbTypes::MultiPolygonZM );
   QVERIFY( c6.is3D() );
   QVERIFY( c6.isMeasure() );
-  ls = static_cast< const QgsPolygonV2 * >( c6.geometryN( 3 ) );
+  ls = static_cast< const QgsPolygon * >( c6.geometryN( 3 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 177, 187, 0, 9 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 183, 183, 0, 11 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 2 ), QgsPoint( QgsWkbTypes::PointZM, 185, 193, 0, 13 ) );
   QCOMPARE( static_cast< const QgsLineString *>( ls->exteriorRing() )->pointN( 3 ), QgsPoint( QgsWkbTypes::PointZM, 177, 187, 0, 9 ) );
 
   //clear
-  QgsMultiPolygonV2 c7;
+  QgsMultiPolygon c7;
   ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 5, 50, 1, 4 ) << QgsPoint( QgsWkbTypes::PointZM, 6, 61, 3, 5 )
                   << QgsPoint( QgsWkbTypes::PointZM, 9, 71, 4, 15 ) << QgsPoint( QgsWkbTypes::PointZM, 5, 71, 4, 6 ) ) ;
   part.clear();
@@ -12889,54 +12889,54 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( c7.wkbType(), QgsWkbTypes::MultiPolygon );
 
   //clone
-  QgsMultiPolygonV2 c11;
-  std::unique_ptr< QgsMultiPolygonV2 >cloned( c11.clone() );
+  QgsMultiPolygon c11;
+  std::unique_ptr< QgsMultiPolygon >cloned( c11.clone() );
   QVERIFY( cloned->isEmpty() );
   c11.addGeometry( part.clone() );
   c11.addGeometry( part.clone() );
   cloned.reset( c11.clone() );
   QCOMPARE( cloned->numGeometries(), 2 );
-  ls = static_cast< const QgsPolygonV2 * >( cloned->geometryN( 0 ) );
+  ls = static_cast< const QgsPolygon * >( cloned->geometryN( 0 ) );
   QCOMPARE( *ls, part );
-  ls = static_cast< const QgsPolygonV2 * >( cloned->geometryN( 1 ) );
+  ls = static_cast< const QgsPolygon * >( cloned->geometryN( 1 ) );
   QCOMPARE( *ls, part );
 
   //copy constructor
-  QgsMultiPolygonV2 c12;
-  QgsMultiPolygonV2 c13( c12 );
+  QgsMultiPolygon c12;
+  QgsMultiPolygon c13( c12 );
   QVERIFY( c13.isEmpty() );
   c12.addGeometry( part.clone() );
   c12.addGeometry( part.clone() );
-  QgsMultiPolygonV2 c14( c12 );
+  QgsMultiPolygon c14( c12 );
   QCOMPARE( c14.numGeometries(), 2 );
   QCOMPARE( c14.wkbType(), QgsWkbTypes::MultiPolygonZM );
-  ls = static_cast< const QgsPolygonV2 * >( c14.geometryN( 0 ) );
+  ls = static_cast< const QgsPolygon * >( c14.geometryN( 0 ) );
   QCOMPARE( *ls, part );
-  ls = static_cast< const QgsPolygonV2 * >( c14.geometryN( 1 ) );
+  ls = static_cast< const QgsPolygon * >( c14.geometryN( 1 ) );
   QCOMPARE( *ls, part );
 
   //assignment operator
-  QgsMultiPolygonV2 c15;
+  QgsMultiPolygon c15;
   c15 = c13;
   QCOMPARE( c15.numGeometries(), 0 );
   c15 = c14;
   QCOMPARE( c15.numGeometries(), 2 );
-  ls = static_cast< const QgsPolygonV2 * >( c15.geometryN( 0 ) );
+  ls = static_cast< const QgsPolygon * >( c15.geometryN( 0 ) );
   QCOMPARE( *ls, part );
-  ls = static_cast< const QgsPolygonV2 * >( c15.geometryN( 1 ) );
+  ls = static_cast< const QgsPolygon * >( c15.geometryN( 1 ) );
   QCOMPARE( *ls, part );
 
   //toCurveType
   std::unique_ptr< QgsMultiSurface > curveType( c12.toCurveType() );
   QCOMPARE( curveType->wkbType(), QgsWkbTypes::MultiSurfaceZM );
   QCOMPARE( curveType->numGeometries(), 2 );
-  const QgsPolygonV2 *curve = static_cast< const QgsPolygonV2 * >( curveType->geometryN( 0 ) );
-  QCOMPARE( *curve, *static_cast< const QgsPolygonV2 * >( c12.geometryN( 0 ) ) );
-  curve = static_cast< const QgsPolygonV2 * >( curveType->geometryN( 1 ) );
-  QCOMPARE( *curve, *static_cast< const QgsPolygonV2 * >( c12.geometryN( 1 ) ) );
+  const QgsPolygon *curve = static_cast< const QgsPolygon * >( curveType->geometryN( 0 ) );
+  QCOMPARE( *curve, *static_cast< const QgsPolygon * >( c12.geometryN( 0 ) ) );
+  curve = static_cast< const QgsPolygon * >( curveType->geometryN( 1 ) );
+  QCOMPARE( *curve, *static_cast< const QgsPolygon * >( c12.geometryN( 1 ) ) );
 
   //to/fromWKB
-  QgsMultiPolygonV2 c16;
+  QgsMultiPolygon c16;
   ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7, 17 ) << QgsPoint( QgsWkbTypes::Point, 3, 13 ) << QgsPoint( QgsWkbTypes::Point, 9, 27 ) << QgsPoint( QgsWkbTypes::Point, 7, 17 ) ) ;
   part.clear();
   part.setExteriorRing( ring.clone() );
@@ -12946,12 +12946,12 @@ void TestQgsGeometry::multiPolygon()
   part.setExteriorRing( ring.clone() );
   c16.addGeometry( part.clone() );
   QByteArray wkb16 = c16.asWkb();
-  QgsMultiPolygonV2 c17;
+  QgsMultiPolygon c17;
   QgsConstWkbPtr wkb16ptr( wkb16 );
   c17.fromWkb( wkb16ptr );
   QCOMPARE( c17.numGeometries(), 2 );
-  QCOMPARE( *static_cast< const QgsPolygonV2 * >( c17.geometryN( 0 ) ), *static_cast< const QgsPolygonV2 * >( c16.geometryN( 0 ) ) );
-  QCOMPARE( *static_cast< const QgsPolygonV2 * >( c17.geometryN( 1 ) ), *static_cast< const QgsPolygonV2 * >( c16.geometryN( 1 ) ) );
+  QCOMPARE( *static_cast< const QgsPolygon * >( c17.geometryN( 0 ) ), *static_cast< const QgsPolygon * >( c16.geometryN( 0 ) ) );
+  QCOMPARE( *static_cast< const QgsPolygon * >( c17.geometryN( 1 ) ), *static_cast< const QgsPolygon * >( c16.geometryN( 1 ) ) );
 
   //parts with Z
   c16.clear();
@@ -12969,8 +12969,8 @@ void TestQgsGeometry::multiPolygon()
   c17.fromWkb( wkb16ptr2 );
   QCOMPARE( c17.numGeometries(), 2 );
   QCOMPARE( c17.wkbType(), QgsWkbTypes::MultiPolygonZ );
-  QCOMPARE( *static_cast< const QgsPolygonV2 * >( c17.geometryN( 0 ) ), *static_cast< const QgsPolygonV2 * >( c16.geometryN( 0 ) ) );
-  QCOMPARE( *static_cast< const QgsPolygonV2 * >( c17.geometryN( 1 ) ), *static_cast< const QgsPolygonV2 * >( c16.geometryN( 1 ) ) );
+  QCOMPARE( *static_cast< const QgsPolygon * >( c17.geometryN( 0 ) ), *static_cast< const QgsPolygon * >( c16.geometryN( 0 ) ) );
+  QCOMPARE( *static_cast< const QgsPolygon * >( c17.geometryN( 1 ) ), *static_cast< const QgsPolygon * >( c16.geometryN( 1 ) ) );
 
   //parts with m
   c16.clear();
@@ -12990,8 +12990,8 @@ void TestQgsGeometry::multiPolygon()
   c17.fromWkb( wkb16ptr3 );
   QCOMPARE( c17.numGeometries(), 2 );
   QCOMPARE( c17.wkbType(), QgsWkbTypes::MultiPolygonM );
-  QCOMPARE( *static_cast< const QgsPolygonV2 * >( c17.geometryN( 0 ) ), *static_cast< const QgsPolygonV2 * >( c16.geometryN( 0 ) ) );
-  QCOMPARE( *static_cast< const QgsPolygonV2 * >( c17.geometryN( 1 ) ), *static_cast< const QgsPolygonV2 * >( c16.geometryN( 1 ) ) );
+  QCOMPARE( *static_cast< const QgsPolygon * >( c17.geometryN( 0 ) ), *static_cast< const QgsPolygon * >( c16.geometryN( 0 ) ) );
+  QCOMPARE( *static_cast< const QgsPolygon * >( c17.geometryN( 1 ) ), *static_cast< const QgsPolygon * >( c16.geometryN( 1 ) ) );
 
   // parts with ZM
   c16.clear();
@@ -13011,8 +13011,8 @@ void TestQgsGeometry::multiPolygon()
   c17.fromWkb( wkb16ptr4 );
   QCOMPARE( c17.numGeometries(), 2 );
   QCOMPARE( c17.wkbType(), QgsWkbTypes::MultiPolygonZM );
-  QCOMPARE( *static_cast< const QgsPolygonV2 * >( c17.geometryN( 0 ) ), *static_cast< const QgsPolygonV2 * >( c16.geometryN( 0 ) ) );
-  QCOMPARE( *static_cast< const QgsPolygonV2 * >( c17.geometryN( 1 ) ), *static_cast< const QgsPolygonV2 * >( c16.geometryN( 1 ) ) );
+  QCOMPARE( *static_cast< const QgsPolygon * >( c17.geometryN( 0 ) ), *static_cast< const QgsPolygon * >( c16.geometryN( 0 ) ) );
+  QCOMPARE( *static_cast< const QgsPolygon * >( c17.geometryN( 1 ) ), *static_cast< const QgsPolygon * >( c16.geometryN( 1 ) ) );
 
   //bad WKB - check for no crash
   c17.clear();
@@ -13026,7 +13026,7 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( c17.wkbType(), QgsWkbTypes::MultiPolygon );
 
   //to/from WKT
-  QgsMultiPolygonV2 c18;
+  QgsMultiPolygon c18;
   ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 7, 17, 4, 1 ) << QgsPoint( QgsWkbTypes::PointZM, 3, 13, 1, 4 )
                   << QgsPoint( QgsWkbTypes::PointZM, 13, 19, 3, 10 ) << QgsPoint( QgsWkbTypes::PointZM, 7, 11, 2, 8 ) ) ;
   part.clear();
@@ -13040,21 +13040,21 @@ void TestQgsGeometry::multiPolygon()
 
   QString wkt = c18.asWkt();
   QVERIFY( !wkt.isEmpty() );
-  QgsMultiPolygonV2 c19;
+  QgsMultiPolygon c19;
   QVERIFY( c19.fromWkt( wkt ) );
   QCOMPARE( c19.numGeometries(), 2 );
-  QCOMPARE( *static_cast< const QgsPolygonV2 * >( c19.geometryN( 0 ) ), *static_cast< const QgsPolygonV2 * >( c18.geometryN( 0 ) ) );
-  QCOMPARE( *static_cast< const QgsPolygonV2 * >( c19.geometryN( 1 ) ), *static_cast< const QgsPolygonV2 * >( c18.geometryN( 1 ) ) );
+  QCOMPARE( *static_cast< const QgsPolygon * >( c19.geometryN( 0 ) ), *static_cast< const QgsPolygon * >( c18.geometryN( 0 ) ) );
+  QCOMPARE( *static_cast< const QgsPolygon * >( c19.geometryN( 1 ) ), *static_cast< const QgsPolygon * >( c18.geometryN( 1 ) ) );
 
   //bad WKT
-  QgsMultiPolygonV2 c20;
+  QgsMultiPolygon c20;
   QVERIFY( !c20.fromWkt( "Point()" ) );
   QVERIFY( c20.isEmpty() );
   QCOMPARE( c20.numGeometries(), 0 );
   QCOMPARE( c20.wkbType(), QgsWkbTypes::MultiPolygon );
 
   //as JSON
-  QgsMultiPolygonV2 exportC;
+  QgsMultiPolygon exportC;
   ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7, 17 ) << QgsPoint( QgsWkbTypes::Point, 3, 13 )
                   << QgsPoint( QgsWkbTypes::Point, 7, 21 ) << QgsPoint( QgsWkbTypes::Point, 7, 17 ) ) ;
   part.clear();
@@ -13074,14 +13074,14 @@ void TestQgsGeometry::multiPolygon()
   QString res = elemToString( exportC.asGML2( doc, 1 ) );
   QGSCOMPAREGML( res, expectedSimpleGML2 );
   QString expectedGML2empty( QStringLiteral( "<MultiPolygon xmlns=\"gml\"/>" ) );
-  QGSCOMPAREGML( elemToString( QgsMultiPolygonV2().asGML2( doc ) ), expectedGML2empty );
+  QGSCOMPAREGML( elemToString( QgsMultiPolygon().asGML2( doc ) ), expectedGML2empty );
 
   //as GML3
   QString expectedSimpleGML3( QStringLiteral( "<MultiPolygon xmlns=\"gml\"><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">7 17 3 13 7 21 7 17</posList></LinearRing></exterior></Polygon></polygonMember><polygonMember xmlns=\"gml\"><Polygon xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">27 37 43 43 41 39 27 37</posList></LinearRing></exterior></Polygon></polygonMember></MultiPolygon>" ) );
   res = elemToString( exportC.asGML3( doc ) );
   QCOMPARE( res, expectedSimpleGML3 );
   QString expectedGML3empty( QStringLiteral( "<MultiPolygon xmlns=\"gml\"/>" ) );
-  QGSCOMPAREGML( elemToString( QgsMultiPolygonV2().asGML3( doc ) ), expectedGML3empty );
+  QGSCOMPAREGML( elemToString( QgsMultiPolygon().asGML3( doc ) ), expectedGML3empty );
 
   // as JSON
   QString expectedSimpleJson( "{\"type\": \"MultiPolygon\", \"coordinates\": [[[ [7, 17], [3, 13], [7, 21], [7, 17]]], [[ [27, 37], [43, 43], [41, 39], [27, 37]]]] }" );
@@ -13096,7 +13096,7 @@ void TestQgsGeometry::multiPolygon()
   res = exportC.asJSON( 1 );
   QCOMPARE( res, expectedJsonWithRings );
 
-  QgsMultiPolygonV2 exportFloat;
+  QgsMultiPolygon exportFloat;
   ring.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::Point, 7 / 3.0, 17 / 3.0 ) << QgsPoint( QgsWkbTypes::Point, 3 / 5.0, 13 / 3.0 )
                   << QgsPoint( QgsWkbTypes::Point, 8 / 3.0, 27 / 3.0 ) << QgsPoint( QgsWkbTypes::Point, 7 / 3.0, 17 / 3.0 ) ) ;
   part.clear();
@@ -13122,7 +13122,7 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( res, expectedGML3prec3 );
 
   // insert geometry
-  QgsMultiPolygonV2 rc;
+  QgsMultiPolygon rc;
   rc.clear();
   rc.insertGeometry( nullptr, 0 );
   QVERIFY( rc.isEmpty() );
@@ -13143,25 +13143,25 @@ void TestQgsGeometry::multiPolygon()
   QCOMPARE( rc.numGeometries(), 1 );
 
   // cast
-  QVERIFY( !QgsMultiPolygonV2().cast( nullptr ) );
-  QgsMultiPolygonV2 pCast;
-  QVERIFY( QgsMultiPolygonV2().cast( &pCast ) );
-  QgsMultiPolygonV2 pCast2;
+  QVERIFY( !QgsMultiPolygon().cast( nullptr ) );
+  QgsMultiPolygon pCast;
+  QVERIFY( QgsMultiPolygon().cast( &pCast ) );
+  QgsMultiPolygon pCast2;
   pCast2.fromWkt( QStringLiteral( "MultiPolygonZ()" ) );
-  QVERIFY( QgsMultiPolygonV2().cast( &pCast2 ) );
+  QVERIFY( QgsMultiPolygon().cast( &pCast2 ) );
   pCast2.fromWkt( QStringLiteral( "MultiPolygonM()" ) );
-  QVERIFY( QgsMultiPolygonV2().cast( &pCast2 ) );
+  QVERIFY( QgsMultiPolygon().cast( &pCast2 ) );
   pCast2.fromWkt( QStringLiteral( "MultiPolygonZM()" ) );
-  QVERIFY( QgsMultiPolygonV2().cast( &pCast2 ) );
+  QVERIFY( QgsMultiPolygon().cast( &pCast2 ) );
 
 
   //boundary
-  QgsMultiPolygonV2 multiPolygon1;
+  QgsMultiPolygon multiPolygon1;
   QVERIFY( !multiPolygon1.boundary() );
 
   QgsLineString ring1;
   ring1.setPoints( QList<QgsPoint>() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 )  << QgsPoint( 0, 0 ) );
-  QgsPolygonV2 polygon1;
+  QgsPolygon polygon1;
   polygon1.setExteriorRing( ring1.clone() );
   multiPolygon1.addGeometry( polygon1.clone() );
 
@@ -13182,7 +13182,7 @@ void TestQgsGeometry::multiPolygon()
   // add polygon with interior rings
   QgsLineString ring2;
   ring2.setPoints( QList<QgsPoint>() << QgsPoint( 10, 10 ) << QgsPoint( 11, 10 ) << QgsPoint( 11, 11 )  << QgsPoint( 10, 10 ) );
-  QgsPolygonV2 polygon2;
+  QgsPolygon polygon2;
   polygon2.setExteriorRing( ring2.clone() );
   QgsLineString boundaryRing1;
   boundaryRing1.setPoints( QList<QgsPoint>() << QgsPoint( 10.1, 10.1 ) << QgsPoint( 10.2, 10.1 ) << QgsPoint( 10.2, 10.2 )  << QgsPoint( 10.1, 10.1 ) );
@@ -14557,7 +14557,7 @@ void TestQgsGeometry::geometryCollection()
   QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 1, 0, 1 ) ), 4 );
   QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 1, 0, 2 ) ), 5 );
   QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 1, 0, 3 ) ), -1 );
-  QgsPolygonV2 polyPart;
+  QgsPolygon polyPart;
   vertexLine2.close();
   polyPart.setExteriorRing( vertexLine2.clone() );
   c32.addGeometry( polyPart.clone() );
@@ -14602,7 +14602,7 @@ void TestQgsGeometry::geometryCollection()
 void TestQgsGeometry::fromQgsPointXY()
 {
   QgsPointXY point( 1.0, 2.0 );
-  QgsGeometry result( QgsGeometry::fromPoint( point ) );
+  QgsGeometry result( QgsGeometry::fromPointXY( point ) );
   QCOMPARE( result.wkbType(), QgsWkbTypes::Point );
   QgsPointXY resultPoint = result.asPoint();
   QCOMPARE( resultPoint, point );
@@ -14637,7 +14637,7 @@ void TestQgsGeometry::fromQPolygonF()
   polygon << QPointF( 1.0, 2.0 ) << QPointF( 4.0, 6.0 ) << QPointF( 4.0, 3.0 ) << QPointF( 2.0, 2.0 ) << QPointF( 1.0, 2.0 );
   QgsGeometry result2( QgsGeometry::fromQPolygonF( polygon ) );
   QCOMPARE( result2.wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon resultPolygon = result2.asPolygon();
+  QgsPolygonXY resultPolygon = result2.asPolygon();
   QCOMPARE( resultPolygon.size(), 1 );
   QCOMPARE( resultPolygon.at( 0 ).at( 0 ), QgsPointXY( 1.0, 2.0 ) );
   QCOMPARE( resultPolygon.at( 0 ).at( 1 ), QgsPointXY( 4.0, 6.0 ) );
@@ -14713,7 +14713,7 @@ void TestQgsGeometry::asQPolygonF()
   QCOMPARE( fromLine.at( 2 ).y(), mPoint3.y() );
 
   //test a bad geometry
-  QgsGeometry badGeom( QgsGeometry::fromPoint( mPoint1 ) );
+  QgsGeometry badGeom( QgsGeometry::fromPointXY( mPoint1 ) );
   QPolygonF fromBad = badGeom.asQPolygonF();
   QVERIFY( fromBad.isEmpty() );
 }
@@ -14743,19 +14743,19 @@ void TestQgsGeometry::comparePolygons()
   ring1 << mPoint1 << mPoint2 << mPoint3 << mPoint1;
   QgsPolylineXY ring2;
   ring2 << mPoint4 << mPointA << mPointB << mPoint4;
-  QgsPolygon poly1;
+  QgsPolygonXY poly1;
   poly1 << ring1 << ring2;
-  QgsPolygon poly2;
+  QgsPolygonXY poly2;
   poly2 << ring1 << ring2;
   QVERIFY( QgsGeometry::compare( poly1, poly2 ) );
 
   //different number of rings
-  QgsPolygon poly3;
+  QgsPolygonXY poly3;
   poly3 << ring1;
   QVERIFY( !QgsGeometry::compare( poly1, poly3 ) );
 
   //different rings
-  QgsPolygon poly4;
+  QgsPolygonXY poly4;
   poly4 << ring2;
   QVERIFY( !QgsGeometry::compare( poly3, poly4 ) );
 }
@@ -14800,7 +14800,7 @@ void TestQgsGeometry::createEmptyWithSameType()
   testCreateEmptyWithSameType<QgsMultiLineString>();
 
   qDebug( "createEmptyWithSameType(): QgsMultiPointV2" );
-  testCreateEmptyWithSameType<QgsMultiPointV2>();
+  testCreateEmptyWithSameType<QgsMultiPoint>();
 
   qDebug( "createEmptyWithSameType(): QgsMultiSurface" );
   testCreateEmptyWithSameType<QgsMultiSurface>();
@@ -14814,7 +14814,7 @@ void TestQgsGeometry::createEmptyWithSameType()
   testCreateEmptyWithSameType<QgsCurvePolygon>();
 
   qDebug( "createEmptyWithSameType(): QgsPolygonV2" );
-  testCreateEmptyWithSameType<QgsPolygonV2>();
+  testCreateEmptyWithSameType<QgsPolygon>();
 
   qDebug( "createEmptyWithSameType(): QgsTriangle" );
   testCreateEmptyWithSameType<QgsTriangle>();
@@ -14853,7 +14853,7 @@ void TestQgsGeometry::intersectionCheck1()
   QgsGeometry mypIntersectionGeometry  =  mpPolygonGeometryA.intersection( mpPolygonGeometryB );
   qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypIntersectionGeometry.wkbType() );
   QVERIFY( mypIntersectionGeometry.wkbType() == QgsWkbTypes::Polygon );
-  QgsPolygon myPolygon = mypIntersectionGeometry.asPolygon();
+  QgsPolygonXY myPolygon = mypIntersectionGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   dumpPolygon( myPolygon );
   QVERIFY( renderCheck( "geometry_intersectionCheck1", "Checking if A intersects B" ) );
@@ -14944,7 +14944,7 @@ void TestQgsGeometry::unionCheck1()
   QgsGeometry mypUnionGeometry  =  mpPolygonGeometryA.combine( mpPolygonGeometryC );
   qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypUnionGeometry.wkbType() );
   QVERIFY( mypUnionGeometry.wkbType() == QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon myMultiPolygon = mypUnionGeometry.asMultiPolygon();
+  QgsMultiPolygonXY myMultiPolygon = mypUnionGeometry.asMultiPolygon();
   QVERIFY( myMultiPolygon.size() > 0 ); //check that the union did not fail
   dumpMultiPolygon( myMultiPolygon );
   QVERIFY( renderCheck( "geometry_unionCheck1", "Checking A union C produces 2 polys" ) );
@@ -14956,7 +14956,7 @@ void TestQgsGeometry::unionCheck2()
   QgsGeometry mypUnionGeometry  =  mpPolygonGeometryA.combine( mpPolygonGeometryB );
   qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypUnionGeometry.wkbType() );
   QVERIFY( mypUnionGeometry.wkbType() == QgsWkbTypes::Polygon );
-  QgsPolygon myPolygon = mypUnionGeometry.asPolygon();
+  QgsPolygonXY myPolygon = mypUnionGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   dumpPolygon( myPolygon );
   QVERIFY( renderCheck( "geometry_unionCheck2", "Checking A union B produces single union poly" ) );
@@ -14968,7 +14968,7 @@ void TestQgsGeometry::differenceCheck1()
   QgsGeometry mypDifferenceGeometry( mpPolygonGeometryA.difference( mpPolygonGeometryC ) );
   qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypDifferenceGeometry.wkbType() );
   QVERIFY( mypDifferenceGeometry.wkbType() == QgsWkbTypes::Polygon );
-  QgsPolygon myPolygon = mypDifferenceGeometry.asPolygon();
+  QgsPolygonXY myPolygon = mypDifferenceGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union did not fail
   dumpPolygon( myPolygon );
   QVERIFY( renderCheck( "geometry_differenceCheck1", "Checking (A - C) = A" ) );
@@ -14980,7 +14980,7 @@ void TestQgsGeometry::differenceCheck2()
   QgsGeometry mypDifferenceGeometry( mpPolygonGeometryA.difference( mpPolygonGeometryB ) );
   qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypDifferenceGeometry.wkbType() );
   QVERIFY( mypDifferenceGeometry.wkbType() == QgsWkbTypes::Polygon );
-  QgsPolygon myPolygon = mypDifferenceGeometry.asPolygon();
+  QgsPolygonXY myPolygon = mypDifferenceGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   dumpPolygon( myPolygon );
   QVERIFY( renderCheck( "geometry_differenceCheck2", "Checking (A - B) = subset of A" ) );
@@ -14991,7 +14991,7 @@ void TestQgsGeometry::bufferCheck()
   QgsGeometry mypBufferGeometry( mpPolygonGeometryB.buffer( 10, 10 ) );
   qDebug() << "Geometry Type: " << QgsWkbTypes::displayString( mypBufferGeometry.wkbType() );
   QVERIFY( mypBufferGeometry.wkbType() == QgsWkbTypes::Polygon );
-  QgsPolygon myPolygon = mypBufferGeometry.asPolygon();
+  QgsPolygonXY myPolygon = mypBufferGeometry.asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the buffer created a feature
   dumpPolygon( myPolygon );
   QVERIFY( renderCheck( "geometry_bufferCheck", "Checking buffer(10,10) of B", 10 ) );
@@ -15058,8 +15058,8 @@ void TestQgsGeometry::smoothCheck()
   wkt = QStringLiteral( "MultiLineString ((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))" );
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.25 );
-  QgsMultiPolyline multiLine = result.asMultiPolyline();
-  QgsMultiPolyline expectedMultiline;
+  QgsMultiPolylineXY multiLine = result.asMultiPolyline();
+  QgsMultiPolylineXY expectedMultiline;
   expectedMultiline << ( QgsPolylineXY() << QgsPointXY( 0, 0 ) << QgsPointXY( 7.5, 0 ) << QgsPointXY( 10.0, 2.5 )
                          <<  QgsPointXY( 10.0, 7.5 ) << QgsPointXY( 12.5, 10.0 ) << QgsPointXY( 20.0, 10.0 ) )
                     << ( QgsPolylineXY() << QgsPointXY( 30.0, 30.0 ) << QgsPointXY( 37.5, 30.0 ) << QgsPointXY( 40.0, 32.5 )
@@ -15070,8 +15070,8 @@ void TestQgsGeometry::smoothCheck()
   wkt = QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ),(2 2, 4 2, 4 4, 2 4, 2 2))" );
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.25 );
-  QgsPolygon poly = result.asPolygon();
-  QgsPolygon expectedPolygon;
+  QgsPolygonXY poly = result.asPolygon();
+  QgsPolygonXY expectedPolygon;
   expectedPolygon << ( QgsPolylineXY() << QgsPointXY( 2.5, 0 ) << QgsPointXY( 7.5, 0 ) << QgsPointXY( 10.0, 2.5 )
                        <<  QgsPointXY( 10.0, 7.5 ) << QgsPointXY( 7.5, 10.0 ) << QgsPointXY( 2.5, 10.0 ) << QgsPointXY( 0, 7.5 )
                        << QgsPointXY( 0, 2.5 ) << QgsPointXY( 2.5, 0 ) )
@@ -15094,15 +15094,15 @@ void TestQgsGeometry::smoothCheck()
   wkt = QStringLiteral( "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0 )),((2 2, 4 2, 4 4, 2 4, 2 2)))" );
   geom = QgsGeometry::fromWkt( wkt );
   result = geom.smooth( 1, 0.1 );
-  QgsMultiPolygon multipoly = result.asMultiPolygon();
-  QgsMultiPolygon expectedMultiPoly;
+  QgsMultiPolygonXY multipoly = result.asMultiPolygon();
+  QgsMultiPolygonXY expectedMultiPoly;
   expectedMultiPoly
-      << ( QgsPolygon() << ( QgsPolylineXY() << QgsPointXY( 1.0, 0 ) << QgsPointXY( 9, 0 ) << QgsPointXY( 10.0, 1 )
-                             <<  QgsPointXY( 10.0, 9 ) << QgsPointXY( 9, 10.0 ) << QgsPointXY( 1, 10.0 ) << QgsPointXY( 0, 9 )
-                             << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 0 ) ) )
-      << ( QgsPolygon() << ( QgsPolylineXY() << QgsPointXY( 2.2, 2.0 ) << QgsPointXY( 3.8, 2.0 ) << QgsPointXY( 4.0, 2.2 )
-                             <<  QgsPointXY( 4.0, 3.8 ) << QgsPointXY( 3.8, 4.0 ) << QgsPointXY( 2.2, 4.0 ) << QgsPointXY( 2.0, 3.8 )
-                             << QgsPointXY( 2, 2.2 ) << QgsPointXY( 2.2, 2 ) ) );
+      << ( QgsPolygonXY() << ( QgsPolylineXY() << QgsPointXY( 1.0, 0 ) << QgsPointXY( 9, 0 ) << QgsPointXY( 10.0, 1 )
+                               <<  QgsPointXY( 10.0, 9 ) << QgsPointXY( 9, 10.0 ) << QgsPointXY( 1, 10.0 ) << QgsPointXY( 0, 9 )
+                               << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 0 ) ) )
+      << ( QgsPolygonXY() << ( QgsPolylineXY() << QgsPointXY( 2.2, 2.0 ) << QgsPointXY( 3.8, 2.0 ) << QgsPointXY( 4.0, 2.2 )
+                               <<  QgsPointXY( 4.0, 3.8 ) << QgsPointXY( 3.8, 4.0 ) << QgsPointXY( 2.2, 4.0 ) << QgsPointXY( 2.0, 3.8 )
+                               << QgsPointXY( 2, 2.2 ) << QgsPointXY( 2.2, 2 ) ) );
   QVERIFY( QgsGeometry::compare( multipoly, expectedMultiPoly ) );
 }
 
@@ -15215,18 +15215,18 @@ bool TestQgsGeometry::renderCheck( const QString &testName, const QString &comme
   return myResultFlag;
 }
 
-void TestQgsGeometry::dumpMultiPolygon( QgsMultiPolygon &multiPolygon )
+void TestQgsGeometry::dumpMultiPolygon( QgsMultiPolygonXY &multiPolygon )
 {
   qDebug( "Multipolygon Geometry Dump" );
   for ( int i = 0; i < multiPolygon.size(); i++ )
   {
-    QgsPolygon myPolygon = multiPolygon.at( i );
+    QgsPolygonXY myPolygon = multiPolygon.at( i );
     qDebug( "\tPolygon in multipolygon: %d", i );
     dumpPolygon( myPolygon );
   }
 }
 
-void TestQgsGeometry::dumpPolygon( QgsPolygon &polygon )
+void TestQgsGeometry::dumpPolygon( QgsPolygonXY &polygon )
 {
   QVector<QPointF> myPoints;
   for ( int j = 0; j < polygon.size(); j++ )
@@ -15563,25 +15563,25 @@ void TestQgsGeometry::createCollectionOfType()
   QVERIFY( !collect );
   collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::Point );
   QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiPoint );
-  QVERIFY( dynamic_cast< QgsMultiPointV2 *>( collect.get() ) );
+  QVERIFY( dynamic_cast< QgsMultiPoint *>( collect.get() ) );
   collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::PointM );
   QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiPointM );
-  QVERIFY( dynamic_cast< QgsMultiPointV2 *>( collect.get() ) );
+  QVERIFY( dynamic_cast< QgsMultiPoint *>( collect.get() ) );
   collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::PointZM );
   QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiPointZM );
-  QVERIFY( dynamic_cast< QgsMultiPointV2 *>( collect.get() ) );
+  QVERIFY( dynamic_cast< QgsMultiPoint *>( collect.get() ) );
   collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::PointZ );
   QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiPointZ );
-  QVERIFY( dynamic_cast< QgsMultiPointV2 *>( collect.get() ) );
+  QVERIFY( dynamic_cast< QgsMultiPoint *>( collect.get() ) );
   collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::MultiPoint );
   QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiPoint );
-  QVERIFY( dynamic_cast< QgsMultiPointV2 *>( collect.get() ) );
+  QVERIFY( dynamic_cast< QgsMultiPoint *>( collect.get() ) );
   collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::LineStringZ );
   QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiLineStringZ );
   QVERIFY( dynamic_cast< QgsMultiLineString *>( collect.get() ) );
   collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::PolygonM );
   QCOMPARE( collect->wkbType(), QgsWkbTypes::MultiPolygonM );
-  QVERIFY( dynamic_cast< QgsMultiPolygonV2 *>( collect.get() ) );
+  QVERIFY( dynamic_cast< QgsMultiPolygon *>( collect.get() ) );
   collect = QgsGeometryFactory::createCollectionOfType( QgsWkbTypes::GeometryCollectionZ );
   QCOMPARE( collect->wkbType(), QgsWkbTypes::GeometryCollectionZ );
   QVERIFY( dynamic_cast< QgsGeometryCollection *>( collect.get() ) );
@@ -15604,7 +15604,7 @@ void TestQgsGeometry::minimalEnclosingCircle()
   QCOMPARE( result, QgsGeometry() );
 
   // caase 1
-  geomTest = QgsGeometry::fromPoint( QgsPointXY( 5, 5 ) );
+  geomTest = QgsGeometry::fromPointXY( QgsPointXY( 5, 5 ) );
   result = geomTest.minimalEnclosingCircle( center, radius );
   QCOMPARE( center, QgsPointXY( 5, 5 ) );
   QCOMPARE( radius, 0.0 );

@@ -267,8 +267,8 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
   }
   else if ( flatType == QgsWkbTypes::Polygon )
   {
-    const QgsPolygonV2 &srcPolygon = dynamic_cast<const QgsPolygonV2 &>( geometry );
-    std::unique_ptr<QgsPolygonV2> polygon( new QgsPolygonV2() );
+    const QgsPolygon &srcPolygon = dynamic_cast<const QgsPolygon &>( geometry );
+    std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
     polygon->setExteriorRing( qgsgeometry_cast<QgsCurve *>( simplifyGeometry( simplifyFlags, simplifyAlgorithm, srcPolygon.exteriorRing()->wkbType(), *srcPolygon.exteriorRing(), envelope, map2pixelTol, true ).constGet()->clone() ) );
     for ( int i = 0; i < srcPolygon.numInteriorRings(); ++i )
     {

@@ -61,19 +61,19 @@ void TestQgsGeometryUtils::testExtractLinestrings()
 {
   QgsLineString *outerRing1 = new QgsLineString();
   outerRing1->setPoints( QList<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
-  QgsPolygonV2 *polygon1 = new QgsPolygonV2();
+  QgsPolygon *polygon1 = new QgsPolygon();
   polygon1->setExteriorRing( outerRing1 );
 
   QgsLineString *outerRing2 = new QgsLineString();
   outerRing2->setPoints( QList<QgsPoint>() << QgsPoint( 10, 10 ) << QgsPoint( 10, 20 ) << QgsPoint( 20, 20 ) << QgsPoint( 20, 10 ) << QgsPoint( 10, 10 ) );
-  QgsPolygonV2 *polygon2 = new QgsPolygonV2();
+  QgsPolygon *polygon2 = new QgsPolygon();
   polygon2->setExteriorRing( outerRing2 );
 
   QgsLineString *innerRing2 = new QgsLineString();
   innerRing2->setPoints( QList<QgsPoint>() << QgsPoint( 14, 14 ) << QgsPoint( 14, 16 ) << QgsPoint( 16, 16 ) << QgsPoint( 16, 14 ) << QgsPoint( 14, 14 ) );
   polygon2->setInteriorRings( QList<QgsCurve *>() << innerRing2 );
 
-  QgsMultiPolygonV2 mpg;
+  QgsMultiPolygon mpg;
   mpg.addGeometry( polygon1 );
   mpg.addGeometry( polygon2 );
 
@@ -355,7 +355,7 @@ void TestQgsGeometryUtils::testDistanceToVertex()
   QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 1, 1 ) ), -1.0 );
 
   //test with polygon
-  QgsPolygonV2 polygon1;
+  QgsPolygon polygon1;
   polygon1.setExteriorRing( outerRing1 );
   QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 0, 0 ) ), 0.0 );
   QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 0, 1 ) ), 1.0 );
@@ -423,7 +423,7 @@ void TestQgsGeometryUtils::testVerticesAtDistance()
   QCOMPARE( next, QgsVertexId( 0, 0, 4 ) );
 
   // test with polygon
-  QgsPolygonV2 polygon1;
+  QgsPolygon polygon1;
   polygon1.setExteriorRing( closedRing1 );
   QVERIFY( QgsGeometryUtils::verticesAtDistance( polygon1, .5, previous, next ) );
   QCOMPARE( previous, QgsVertexId( 0, 0, 0 ) );

@@ -27,7 +27,7 @@
 static QgsFeature _pointFeature( QgsFeatureId id, qreal x, qreal y )
 {
   QgsFeature f( id );
-  QgsGeometry g = QgsGeometry::fromPoint( QgsPointXY( x, y ) );
+  QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( x, y ) );
   f.setGeometry( g );
   return f;
 }
@@ -145,7 +145,7 @@ class TestQgsSpatialIndex : public QObject
         for ( int k = 0; k < 500; ++k )
         {
           QgsFeature f( i * 1000 + k );
-          QgsGeometry g = QgsGeometry::fromPoint( QgsPointXY( i / 10, i % 10 ) );
+          QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( i / 10, i % 10 ) );
           f.setGeometry( g );
           index.insertFeature( f );
         }
@@ -167,7 +167,7 @@ class TestQgsSpatialIndex : public QObject
         for ( int k = 0; k < 500; ++k )
         {
           QgsFeature f( i * 1000 + k );
-          QgsGeometry g = QgsGeometry::fromPoint( QgsPointXY( i / 10, i % 10 ) );
+          QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( i / 10, i % 10 ) );
           f.setGeometry( g );
           flist << f;
         }

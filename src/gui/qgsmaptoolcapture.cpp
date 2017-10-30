@@ -716,7 +716,7 @@ void QgsMapToolCapture::validateGeometry()
         return;
       QgsLineString *exteriorRing = mCaptureCurve.curveToLine();
       exteriorRing->close();
-      QgsPolygonV2 *polygon = new QgsPolygonV2();
+      QgsPolygon *polygon = new QgsPolygon();
       polygon->setExteriorRing( exteriorRing );
       geom = QgsGeometry( polygon );
       break;

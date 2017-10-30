@@ -194,7 +194,7 @@ class QgsPointLocator_VisitorArea : public IVisitor
     QgsPointLocator_VisitorArea( QgsPointLocator *pl, const QgsPointXY &origPt, QgsPointLocator::MatchList &list )
       : mLocator( pl )
       , mList( list )
-      , mGeomPt( QgsGeometry::fromPoint( origPt ) )
+      , mGeomPt( QgsGeometry::fromPointXY( origPt ) )
     {}
 
     void visitNode( const INode &n ) override { Q_UNUSED( n ); }

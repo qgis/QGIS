@@ -227,8 +227,8 @@ class ServiceAreaFromPoint(QgisAlgorithm):
         feat = QgsFeature()
         feat.setFields(fields)
 
-        geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
-        geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
+        geomUpper = QgsGeometry.fromMultiPointXY(upperBoundary)
+        geomLower = QgsGeometry.fromMultiPointXY(lowerBoundary)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.MultiPoint, network.sourceCrs())
@@ -245,7 +245,7 @@ class ServiceAreaFromPoint(QgisAlgorithm):
 
         upperBoundary.append(startPoint)
         lowerBoundary.append(startPoint)
-        geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
-        geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
+        geomUpper = QgsGeometry.fromMultiPointXY(upperBoundary)
+        geomLower = QgsGeometry.fromMultiPointXY(lowerBoundary)
 
         return {self.OUTPUT: dest_id}

@@ -408,11 +408,11 @@ QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry &fea
 
   QgsWkbTypes::Type geomType = featureGeom.wkbType();
   int currentVertex = 0;
-  QgsMultiPolygon multiPoly;
+  QgsMultiPolygonXY multiPoly;
 
   if ( geomType == QgsWkbTypes::Polygon || geomType == QgsWkbTypes::Polygon25D )
   {
-    QgsPolygon polygon = featureGeom.asPolygon();
+    QgsPolygonXY polygon = featureGeom.asPolygon();
     multiPoly.append( polygon );
   }
   else if ( geomType == QgsWkbTypes::MultiPolygon || geomType == QgsWkbTypes::MultiPolygon25D )
@@ -425,10 +425,10 @@ QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry &fea
     return QgsGeometry();
   }
 
-  QgsMultiPolygon::const_iterator multiPolyIt = multiPoly.constBegin();
+  QgsMultiPolygonXY::const_iterator multiPolyIt = multiPoly.constBegin();
   for ( ; multiPolyIt != multiPoly.constEnd(); ++multiPolyIt )
   {
-    QgsPolygon::const_iterator polyIt = multiPolyIt->constBegin();
+    QgsPolygonXY::const_iterator polyIt = multiPolyIt->constBegin();
     for ( ; polyIt != multiPolyIt->constEnd(); ++polyIt )
     {
       currentVertex += polyIt->size();
@@ -462,8 +462,8 @@ QgsGeometry QgsMapToolOffsetCurve::convertToSingleLine( const QgsGeometry &geom,
     //search vertex
     isMulti = true;
     int currentVertex = 0;
-    QgsMultiPolyline multiLine = geom.asMultiPolyline();
-    QgsMultiPolyline::const_iterator it = multiLine.constBegin();
+    QgsMultiPolylineXY multiLine = geom.asMultiPolyline();
+    QgsMultiPolylineXY::const_iterator it = multiLine.constBegin();
     for ( ; it != multiLine.constEnd(); ++it )
     {
       currentVertex += it->size();

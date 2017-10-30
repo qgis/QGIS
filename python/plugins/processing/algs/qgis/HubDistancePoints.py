@@ -144,7 +144,7 @@ class HubDistancePoints(QgisAlgorithm):
             feat = QgsFeature()
             feat.setAttributes(attributes)
 
-            feat.setGeometry(QgsGeometry.fromPoint(src))
+            feat.setGeometry(QgsGeometry.fromPointXY(src))
 
             sink.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))

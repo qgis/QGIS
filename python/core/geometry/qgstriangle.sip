@@ -9,7 +9,7 @@
 
 
 
-class QgsTriangle : QgsPolygonV2
+class QgsTriangle : QgsPolygon
 {
 %Docstring
  Triangle geometry type.
@@ -68,7 +68,7 @@ class QgsTriangle : QgsPolygonV2
     virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
 
-    virtual QgsPolygonV2 *surfaceToPolygon() const /Factory/;
+    virtual QgsPolygon *surfaceToPolygon() const /Factory/;
 
 
     virtual QgsCurvePolygon *toCurveType() const /Factory/;

@@ -154,15 +154,15 @@ void TestQgsNodeTool::initTestCase()
   QgsFeature lineF1;
   lineF1.setGeometry( QgsGeometry::fromPolylineXY( line1 ) );
 
-  QgsPolygon polygon1;
+  QgsPolygonXY polygon1;
   QgsPolylineXY polygon1exterior;
   polygon1exterior << QgsPointXY( 4, 1 ) << QgsPointXY( 7, 1 ) << QgsPointXY( 7, 4 ) << QgsPointXY( 4, 4 ) << QgsPointXY( 4, 1 );
   polygon1 << polygon1exterior;
   QgsFeature polygonF1;
-  polygonF1.setGeometry( QgsGeometry::fromPolygon( polygon1 ) );
+  polygonF1.setGeometry( QgsGeometry::fromPolygonXY( polygon1 ) );
 
   QgsFeature pointF1;
-  pointF1.setGeometry( QgsGeometry::fromPoint( QgsPointXY( 2, 3 ) ) );
+  pointF1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 2, 3 ) ) );
 
   mLayerLine->startEditing();
   mLayerLine->addFeature( lineF1 );

@@ -30,7 +30,7 @@
  * \brief Triangle geometry type.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsTriangle : public QgsPolygonV2
+class CORE_EXPORT QgsTriangle : public QgsPolygon
 {
   public:
     QgsTriangle();
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygonV2
     QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     // inherited: QString asJSON( int precision = 17 ) const;
 
-    QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
+    QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
 
     QgsCurvePolygon *toCurveType() const override SIP_FACTORY;
 

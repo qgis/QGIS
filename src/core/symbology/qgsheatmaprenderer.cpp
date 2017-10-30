@@ -71,9 +71,9 @@ void QgsHeatmapRenderer::startRender( QgsRenderContext &context, const QgsFields
   initializeValues( context );
 }
 
-QgsMultiPoint QgsHeatmapRenderer::convertToMultipoint( const QgsGeometry *geom )
+QgsMultiPointXY QgsHeatmapRenderer::convertToMultipoint( const QgsGeometry *geom )
 {
-  QgsMultiPoint multiPoint;
+  QgsMultiPointXY multiPoint;
   if ( !geom->isMultipart() )
   {
     multiPoint << geom->asPoint();
@@ -137,10 +137,10 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &c
   }
 
   //convert point to multipoint
-  QgsMultiPoint multiPoint = convertToMultipoint( &geom );
+  QgsMultiPointXY multiPoint = convertToMultipoint( &geom );
 
   //loop through all points in multipoint
-  for ( QgsMultiPoint::const_iterator pointIt = multiPoint.constBegin(); pointIt != multiPoint.constEnd(); ++pointIt )
+  for ( QgsMultiPointXY::const_iterator pointIt = multiPoint.constBegin(); pointIt != multiPoint.constEnd(); ++pointIt )
   {
     QgsPointXY pixel = context.mapToPixel().transform( *pointIt );
     int pointX = pixel.x() / mRenderQuality;

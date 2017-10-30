@@ -152,7 +152,7 @@ class CheckValidity(QgisAlgorithm):
                     reasons = []
                     for error in errors:
                         errFeat = QgsFeature()
-                        error_geom = QgsGeometry.fromPoint(error.where())
+                        error_geom = QgsGeometry.fromPointXY(error.where())
                         errFeat.setGeometry(error_geom)
                         errFeat.setAttributes([error.what()])
                         if error_output_sink:

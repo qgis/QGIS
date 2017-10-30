@@ -133,10 +133,10 @@ void TestQgsTessellator::cleanupTestCase()
 
 void TestQgsTessellator::testBasic()
 {
-  QgsPolygonV2 polygon;
+  QgsPolygon polygon;
   polygon.fromWkt( "POLYGON((1 1, 2 1, 3 2, 1 2, 1 1))" );
 
-  QgsPolygonV2 polygonZ;
+  QgsPolygon polygonZ;
   polygonZ.fromWkt( "POLYGONZ((1 1 0, 2 1 0, 3 2 0, 1 2 0, 1 1 0))" );
 
   QList<TriangleCoords> tc;
