@@ -1285,7 +1285,6 @@ QgisApp::~QgisApp()
   delete mMapTools.mZoomIn;
   delete mMapTools.mZoomOut;
   delete mMapTools.mPan;
-  delete mMapTools.mAddFeature;
   delete mMapTools.mAddPart;
   delete mMapTools.mAddRing;
   delete mMapTools.mFillRing;
@@ -1338,6 +1337,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mRegularPolygon2Points;
   delete mMapTools.mRegularPolygonCenterPoint;
   delete mMapTools.mRegularPolygonCenterCorner;
+  delete mMapTools.mAddFeature;
   delete mpMaptip;
 
   delete mpGpsWidget;
