@@ -136,7 +136,8 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
   if ( sorted )
     mFieldsList->setSortingEnabled( true );
 
-  for( int i = 0; i < 7; i++ ){     // mFieldsList->columnCount()
+  for ( int i = 0; i < 7; i++ )     // mFieldsList->columnCount()
+  {
     switch ( mLayer->fields().fieldOrigin( idx ) )
     {
       case QgsFields::OriginExpression:
