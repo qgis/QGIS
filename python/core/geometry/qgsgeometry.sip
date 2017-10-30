@@ -150,7 +150,7 @@ Creates a new geometry from a WKT string
 Creates a new geometry from a QgsPointXY object
  :rtype: QgsGeometry
 %End
-    static QgsGeometry fromMultiPoint( const QgsMultiPointXY &multipoint );
+    static QgsGeometry fromMultiPointXY( const QgsMultiPointXY &multipoint );
 %Docstring
 Creates a new geometry from a QgsMultiPointXY object
  :rtype: QgsGeometry
@@ -184,17 +184,17 @@ Creates a new geometry from a QgsMultiPointXY object
  :rtype: QgsGeometry
 %End
 
-    static QgsGeometry fromMultiPolyline( const QgsMultiPolylineXY &multiline );
+    static QgsGeometry fromMultiPolylineXY( const QgsMultiPolylineXY &multiline );
 %Docstring
 Creates a new geometry from a QgsMultiPolylineXY object
  :rtype: QgsGeometry
 %End
-    static QgsGeometry fromPolygon( const QgsPolygonXY &polygon );
+    static QgsGeometry fromPolygonXY( const QgsPolygonXY &polygon );
 %Docstring
 Creates a new geometry from a QgsPolygon
  :rtype: QgsGeometry
 %End
-    static QgsGeometry fromMultiPolygon( const QgsMultiPolygonXY &multipoly );
+    static QgsGeometry fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly );
 %Docstring
 Creates a new geometry from a QgsMultiPolygon
  :rtype: QgsGeometry

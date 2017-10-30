@@ -159,7 +159,7 @@ void TestQgsNodeTool::initTestCase()
   polygon1exterior << QgsPointXY( 4, 1 ) << QgsPointXY( 7, 1 ) << QgsPointXY( 7, 4 ) << QgsPointXY( 4, 4 ) << QgsPointXY( 4, 1 );
   polygon1 << polygon1exterior;
   QgsFeature polygonF1;
-  polygonF1.setGeometry( QgsGeometry::fromPolygon( polygon1 ) );
+  polygonF1.setGeometry( QgsGeometry::fromPolygonXY( polygon1 ) );
 
   QgsFeature pointF1;
   pointF1.setGeometry( QgsGeometry::fromPoint( QgsPointXY( 2, 3 ) ) );

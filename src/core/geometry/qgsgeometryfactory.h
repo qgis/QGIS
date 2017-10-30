@@ -67,15 +67,15 @@ class CORE_EXPORT QgsGeometryFactory
     //! Construct geometry from a point
     static std::unique_ptr< QgsAbstractGeometry > fromPoint( const QgsPointXY &point );
     //! Construct geometry from a multipoint
-    static std::unique_ptr<QgsMultiPoint> fromMultiPoint( const QgsMultiPointXY &multipoint );
+    static std::unique_ptr<QgsMultiPoint> fromMultiPointXY( const QgsMultiPointXY &multipoint );
     //! Construct geometry from a polyline
     static std::unique_ptr< QgsAbstractGeometry > fromPolyline( const QgsPolylineXY &polyline );
     //! Construct geometry from a multipolyline
-    static std::unique_ptr<QgsMultiLineString> fromMultiPolyline( const QgsMultiPolylineXY &multiline );
+    static std::unique_ptr<QgsMultiLineString> fromMultiPolylineXY( const QgsMultiPolylineXY &multiline );
     //! Construct geometry from a polygon
-    static std::unique_ptr<QgsPolygon> fromPolygon( const QgsPolygonXY &polygon );
+    static std::unique_ptr<QgsPolygon> fromPolygonXY( const QgsPolygonXY &polygon );
     //! Construct geometry from a multipolygon
-    static std::unique_ptr<QgsMultiPolygon> fromMultiPolygon( const QgsMultiPolygonXY &multipoly );
+    static std::unique_ptr<QgsMultiPolygon> fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly );
     //! Return empty geometry from wkb type
     static std::unique_ptr< QgsAbstractGeometry > geomFromWkbType( QgsWkbTypes::Type t );
 

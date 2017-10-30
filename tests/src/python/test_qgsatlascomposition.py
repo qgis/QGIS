@@ -336,7 +336,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         polygonLayer = QgsVectorLayer('Polygon', 'test_polygon', 'memory')
         poly = QgsFeature(polygonLayer.pendingFields())
         points = [(10, 15), (15, 10), (45, 40), (40, 45)]
-        poly.setGeometry(QgsGeometry.fromPolygon([[QgsPointXY(x[0], x[1]) for x in points]]))
+        poly.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(x[0], x[1]) for x in points]]))
         polygonLayer.dataProvider().addFeatures([poly])
         QgsProject.instance().addMapLayer(polygonLayer)
 

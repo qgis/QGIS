@@ -264,7 +264,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
       // compute the unary union on the polygons
       QgsGeometry unioned( QgsGeometry::unaryUnion( cit.geometries ) );
       // compute the difference with the extent
-      QgsGeometry rect = QgsGeometry::fromPolygon( mExtentPolygon );
+      QgsGeometry rect = QgsGeometry::fromPolygonXY( mExtentPolygon );
       QgsGeometry final = rect.difference( unioned );
       feat.setGeometry( final );
     }
@@ -315,7 +315,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
           }
         }
       }
-      feat.setGeometry( QgsGeometry::fromMultiPolygon( finalMulti ) );
+      feat.setGeometry( QgsGeometry::fromMultiPolygonXY( finalMulti ) );
     }
     if ( feat.hasGeometry() )
     {
@@ -332,7 +332,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
   {
     // empty feature with default attributes
     QgsFeature feat( mFields );
-    feat.setGeometry( QgsGeometry::fromPolygon( mExtentPolygon ) );
+    feat.setGeometry( QgsGeometry::fromPolygonXY( mExtentPolygon ) );
     mSubRenderer->renderFeature( feat, mContext );
   }
 

@@ -137,7 +137,7 @@ std::unique_ptr< QgsAbstractGeometry > QgsGeometryFactory::fromPoint( const QgsP
   return qgis::make_unique< QgsPoint >( point.x(), point.y() );
 }
 
-std::unique_ptr<QgsMultiPoint> QgsGeometryFactory::fromMultiPoint( const QgsMultiPointXY &multipoint )
+std::unique_ptr<QgsMultiPoint> QgsGeometryFactory::fromMultiPointXY( const QgsMultiPointXY &multipoint )
 {
   std::unique_ptr< QgsMultiPoint > mp = qgis::make_unique< QgsMultiPoint >();
   QgsMultiPointXY::const_iterator ptIt = multipoint.constBegin();
@@ -154,7 +154,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromPolyline( const Qgs
   return linestringFromPolyline( polyline );
 }
 
-std::unique_ptr<QgsMultiLineString> QgsGeometryFactory::fromMultiPolyline( const QgsMultiPolylineXY &multiline )
+std::unique_ptr<QgsMultiLineString> QgsGeometryFactory::fromMultiPolylineXY( const QgsMultiPolylineXY &multiline )
 {
   std::unique_ptr< QgsMultiLineString > mLine = qgis::make_unique< QgsMultiLineString >();
   for ( int i = 0; i < multiline.size(); ++i )
@@ -164,7 +164,7 @@ std::unique_ptr<QgsMultiLineString> QgsGeometryFactory::fromMultiPolyline( const
   return mLine;
 }
 
-std::unique_ptr<QgsPolygon> QgsGeometryFactory::fromPolygon( const QgsPolygonXY &polygon )
+std::unique_ptr<QgsPolygon> QgsGeometryFactory::fromPolygonXY( const QgsPolygonXY &polygon )
 {
   std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
 
@@ -187,12 +187,12 @@ std::unique_ptr<QgsPolygon> QgsGeometryFactory::fromPolygon( const QgsPolygonXY 
   return poly;
 }
 
-std::unique_ptr< QgsMultiPolygon > QgsGeometryFactory::fromMultiPolygon( const QgsMultiPolygonXY &multipoly )
+std::unique_ptr< QgsMultiPolygon > QgsGeometryFactory::fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly )
 {
   std::unique_ptr< QgsMultiPolygon > mp = qgis::make_unique< QgsMultiPolygon >();
   for ( int i = 0; i < multipoly.size(); ++i )
   {
-    mp->addGeometry( fromPolygon( multipoly.at( i ) ).release() );
+    mp->addGeometry( fromPolygonXY( multipoly.at( i ) ).release() );
   }
   return mp;
 }

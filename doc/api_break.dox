@@ -1324,6 +1324,11 @@ empty geometry collection)
 - fromPolyline() now requires a list of QgsPoint objects, instead of QgsPointXY 2d points. A new method fromPolylineXY was
 added which uses the old list of 2d QgsPointXY objects. Using the newer method with QgsPoint is greatly preferred, as it
 maintains Z or M dimensions from the input points and is more efficient.
+- fromPoint() was renamed to fromPointXY()
+- fromMultiPoint() was renamed to fromMultiPointXY()
+- fromMultiPolyline() was renamed to fromMultiPolylineXY()
+- fromPolygon() was renamed to fromPolygonXY()
+- fromMultiPolygon() was renamed to fromMultiPolygonXY()
 
 
 QgsGeometryAnalyzer        {#qgis_api_break_3_0_QgsGeometryAnalyzer}

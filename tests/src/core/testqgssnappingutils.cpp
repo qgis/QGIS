@@ -66,7 +66,7 @@ class TestQgsSnappingUtils : public QObject
       QgsPolylineXY polyline;
       polyline << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 0 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 0, 1 );
       polygon << polyline;
-      QgsGeometry polygonGeom = QgsGeometry::fromPolygon( polygon );
+      QgsGeometry polygonGeom = QgsGeometry::fromPolygonXY( polygon );
       ff.setGeometry( polygonGeom );
       QgsFeatureList flist;
       flist << ff;

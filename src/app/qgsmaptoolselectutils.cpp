@@ -204,7 +204,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
           }
           ringOut[ i++ ] = ringIn.at( j );
         }
-        selectGeomTrans = QgsGeometry::fromPolygon( newpoly );
+        selectGeomTrans = QgsGeometry::fromPolygonXY( newpoly );
       }
     }
 

@@ -125,7 +125,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       return;
     }
 
-    g = QgsGeometry::fromPolygon( QgsPolygonXY() << pointList.toVector() );
+    g = QgsGeometry::fromPolygonXY( QgsPolygonXY() << pointList.toVector() );
   }
   else
   {
@@ -217,7 +217,7 @@ QgsGeometry QgsMapToolFillRing::ringUnderPoint( const QgsPointXY &p, QgsFeatureI
         for ( int j = 1; j < pol[i].size(); ++j )
         {
           QgsPolygonXY tempPol = QgsPolygonXY() << pol[i][j];
-          QgsGeometry tempGeom = QgsGeometry::fromPolygon( tempPol );
+          QgsGeometry tempGeom = QgsGeometry::fromPolygonXY( tempPol );
           if ( tempGeom.area() < area && tempGeom.contains( &p ) )
           {
             fid = f.id();

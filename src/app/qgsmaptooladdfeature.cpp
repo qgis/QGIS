@@ -160,7 +160,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
       else if ( layerWKBType == QgsWkbTypes::MultiPoint )
       {
-        g = QgsGeometry::fromMultiPoint( QgsMultiPointXY() << savePoint );
+        g = QgsGeometry::fromMultiPointXY( QgsMultiPointXY() << savePoint );
       }
       else if ( layerWKBType == QgsWkbTypes::MultiPoint25D )
       {

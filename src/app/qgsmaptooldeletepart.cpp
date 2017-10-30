@@ -179,7 +179,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
       for ( int part = 0; part < mpolygon.count(); part++ ) // go through the polygons
       {
         const QgsPolygonXY &polygon = mpolygon[part];
-        QgsGeometry partGeo = QgsGeometry::fromPolygon( polygon );
+        QgsGeometry partGeo = QgsGeometry::fromPolygonXY( polygon );
         if ( partGeo.contains( &layerCoords ) )
         {
           fid = f.id();

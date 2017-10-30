@@ -215,7 +215,7 @@ class CORE_EXPORT QgsGeometry
     //! Creates a new geometry from a QgsPointXY object
     static QgsGeometry fromPoint( const QgsPointXY &point );
     //! Creates a new geometry from a QgsMultiPointXY object
-    static QgsGeometry fromMultiPoint( const QgsMultiPointXY &multipoint );
+    static QgsGeometry fromMultiPointXY( const QgsMultiPointXY &multipoint );
 
     /**
      * Creates a new LineString geometry from a list of QgsPointXY points.
@@ -242,11 +242,11 @@ class CORE_EXPORT QgsGeometry
     static QgsGeometry fromPolyline( const QgsPolyline &polyline );
 
     //! Creates a new geometry from a QgsMultiPolylineXY object
-    static QgsGeometry fromMultiPolyline( const QgsMultiPolylineXY &multiline );
+    static QgsGeometry fromMultiPolylineXY( const QgsMultiPolylineXY &multiline );
     //! Creates a new geometry from a QgsPolygon
-    static QgsGeometry fromPolygon( const QgsPolygonXY &polygon );
+    static QgsGeometry fromPolygonXY( const QgsPolygonXY &polygon );
     //! Creates a new geometry from a QgsMultiPolygon
-    static QgsGeometry fromMultiPolygon( const QgsMultiPolygonXY &multipoly );
+    static QgsGeometry fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly );
     //! Creates a new geometry from a QgsRectangle
     static QgsGeometry fromRect( const QgsRectangle &rect );
     //! Creates a new multipart geometry from a list of QgsGeometry objects

@@ -290,9 +290,9 @@ void TestQgsGeometry::init()
 
   //polygon: first item of the list is outer ring,
   // inner rings (if any) start from second item
-  mpPolygonGeometryA = QgsGeometry::fromPolygon( mPolygonA );
-  mpPolygonGeometryB = QgsGeometry::fromPolygon( mPolygonB );
-  mpPolygonGeometryC = QgsGeometry::fromPolygon( mPolygonC );
+  mpPolygonGeometryA = QgsGeometry::fromPolygonXY( mPolygonA );
+  mpPolygonGeometryB = QgsGeometry::fromPolygonXY( mPolygonB );
+  mpPolygonGeometryC = QgsGeometry::fromPolygonXY( mPolygonC );
 
   mImage = QImage( 250, 250, QImage::Format_RGB32 );
   mImage.fill( qRgb( 152, 219, 249 ) );

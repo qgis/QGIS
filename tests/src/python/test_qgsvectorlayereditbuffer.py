@@ -101,7 +101,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
             [QgsPointXY(3, 3), QgsPointXY(4, 4)],
         ]
         f1 = QgsFeature(layer.fields(), 1)
-        f1.setGeometry(QgsGeometry.fromMultiPolyline(multiline))
+        f1.setGeometry(QgsGeometry.fromMultiPolylineXY(multiline))
         f1.setAttributes(["test", 123])
         self.assertTrue(layer.addFeatures([f1]))
         self.assertFalse(layer.commitChanges())

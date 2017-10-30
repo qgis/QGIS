@@ -80,7 +80,7 @@ def createLayerWithOnePolygon():
     assert layer.isValid()
     f1 = QgsFeature(layer.dataProvider().fields(), 1)
     f1.setAttribute("pk", 1)
-    f1.setGeometry(QgsGeometry.fromPolygon([[QgsPointXY(2484588, 2425722), QgsPointXY(2482767, 2398853), QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494), QgsPointXY(2484588, 2425722)]]))
+    f1.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(2484588, 2425722), QgsPointXY(2482767, 2398853), QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494), QgsPointXY(2484588, 2425722)]]))
     assert layer.dataProvider().addFeatures([f1])
     return layer
 

@@ -610,7 +610,7 @@ QgsGeometry QgsRubberBand::asGeometry() const
       {
         polygon.append( getPolyline( *it ) );
       }
-      geom = QgsGeometry::fromPolygon( polygon );
+      geom = QgsGeometry::fromPolygonXY( polygon );
       break;
     }
 
@@ -623,7 +623,7 @@ QgsGeometry QgsRubberBand::asGeometry() const
       {
         multiPoint += getPolyline( *it );
       }
-      geom = QgsGeometry::fromMultiPoint( multiPoint );
+      geom = QgsGeometry::fromMultiPointXY( multiPoint );
       break;
     }
 
@@ -640,7 +640,7 @@ QgsGeometry QgsRubberBand::asGeometry() const
           {
             multiPolyline.append( getPolyline( *it ) );
           }
-          geom = QgsGeometry::fromMultiPolyline( multiPolyline );
+          geom = QgsGeometry::fromMultiPolylineXY( multiPolyline );
         }
         else
         {
