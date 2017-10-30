@@ -65,11 +65,11 @@ class CORE_EXPORT QgsGeometryFactory
     static std::unique_ptr< QgsAbstractGeometry > geomFromWkt( const QString &text );
 
     //! Construct geometry from a point
-    static std::unique_ptr< QgsAbstractGeometry > fromPoint( const QgsPointXY &point );
+    static std::unique_ptr< QgsAbstractGeometry > fromPointXY( const QgsPointXY &point );
     //! Construct geometry from a multipoint
     static std::unique_ptr<QgsMultiPoint> fromMultiPointXY( const QgsMultiPointXY &multipoint );
     //! Construct geometry from a polyline
-    static std::unique_ptr< QgsAbstractGeometry > fromPolyline( const QgsPolylineXY &polyline );
+    static std::unique_ptr< QgsAbstractGeometry > fromPolylineXY( const QgsPolylineXY &polyline );
     //! Construct geometry from a multipolyline
     static std::unique_ptr<QgsMultiLineString> fromMultiPolylineXY( const QgsMultiPolylineXY &multiline );
     //! Construct geometry from a polygon

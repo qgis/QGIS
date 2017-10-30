@@ -298,7 +298,7 @@ void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
                                           layerCoords.x() + r, layerCoords.y() + r );
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setSubsetOfAttributes( QgsAttributeList() ) );
 
-  QgsGeometry geometry = QgsGeometry::fromPoint( layerCoords );
+  QgsGeometry geometry = QgsGeometry::fromPointXY( layerCoords );
   double minDistance = DBL_MAX;
   double currentDistance;
   QgsFeature minDistanceFeature;

@@ -132,7 +132,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkt( const QStr
   return geom;
 }
 
-std::unique_ptr< QgsAbstractGeometry > QgsGeometryFactory::fromPoint( const QgsPointXY &point )
+std::unique_ptr< QgsAbstractGeometry > QgsGeometryFactory::fromPointXY( const QgsPointXY &point )
 {
   return qgis::make_unique< QgsPoint >( point.x(), point.y() );
 }
@@ -149,7 +149,7 @@ std::unique_ptr<QgsMultiPoint> QgsGeometryFactory::fromMultiPointXY( const QgsMu
   return mp;
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromPolyline( const QgsPolylineXY &polyline )
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromPolylineXY( const QgsPolylineXY &polyline )
 {
   return linestringFromPolyline( polyline );
 }
@@ -159,7 +159,7 @@ std::unique_ptr<QgsMultiLineString> QgsGeometryFactory::fromMultiPolylineXY( con
   std::unique_ptr< QgsMultiLineString > mLine = qgis::make_unique< QgsMultiLineString >();
   for ( int i = 0; i < multiline.size(); ++i )
   {
-    mLine->addGeometry( fromPolyline( multiline.at( i ) ).release() );
+    mLine->addGeometry( fromPolylineXY( multiline.at( i ) ).release() );
   }
   return mLine;
 }

@@ -827,7 +827,7 @@ void QgsNodeTool::updateVertexBand( const QgsPointLocator::Match &m )
 {
   if ( m.hasVertex() && m.layer() )
   {
-    mVertexBand->setToGeometry( QgsGeometry::fromPoint( m.point() ), nullptr );
+    mVertexBand->setToGeometry( QgsGeometry::fromPointXY( m.point() ), nullptr );
     mVertexBand->setVisible( true );
     bool isCircular = false;
     if ( m.layer() )

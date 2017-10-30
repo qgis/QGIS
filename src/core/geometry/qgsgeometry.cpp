@@ -156,9 +156,9 @@ QgsGeometry QgsGeometry::fromWkt( const QString &wkt )
   return QgsGeometry( std::move( geom ) );
 }
 
-QgsGeometry QgsGeometry::fromPoint( const QgsPointXY &point )
+QgsGeometry QgsGeometry::fromPointXY( const QgsPointXY &point )
 {
-  std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::fromPoint( point ) );
+  std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::fromPointXY( point ) );
   if ( geom )
   {
     return QgsGeometry( geom.release() );
@@ -168,7 +168,7 @@ QgsGeometry QgsGeometry::fromPoint( const QgsPointXY &point )
 
 QgsGeometry QgsGeometry::fromPolylineXY( const QgsPolylineXY &polyline )
 {
-  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromPolyline( polyline );
+  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromPolylineXY( polyline );
   if ( geom )
   {
     return QgsGeometry( std::move( geom ) );
@@ -2813,7 +2813,7 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
         QgsMultiPointXY multiPoint = asMultiPoint();
         if ( multiPoint.count() == 1 )
         {
-          return fromPoint( multiPoint[0] );
+          return fromPointXY( multiPoint[0] );
         }
       }
       return QgsGeometry();

@@ -162,7 +162,7 @@ void TestQgsNodeTool::initTestCase()
   polygonF1.setGeometry( QgsGeometry::fromPolygonXY( polygon1 ) );
 
   QgsFeature pointF1;
-  pointF1.setGeometry( QgsGeometry::fromPoint( QgsPointXY( 2, 3 ) ) );
+  pointF1.setGeometry( QgsGeometry::fromPointXY( QgsPointXY( 2, 3 ) ) );
 
   mLayerLine->startEditing();
   mLayerLine->addFeature( lineF1 );

@@ -393,7 +393,7 @@ int main( int argc, char **argv )
       }
       QgsPointXY point( x, y );
       QgsFeature feature( area );
-      feature.setGeometry( QgsGeometry::fromPoint( point ) );
+      feature.setGeometry( QgsGeometry::fromPointXY( point ) );
       feature.setValid( true );
       centroids.insert( area, feature );
       spatialIndex.insertFeature( feature );

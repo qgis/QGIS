@@ -204,7 +204,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
 
             for ( const QgsPointXY &j : qgis::as_const( points ) )
             {
-              outFeature.setGeometry( QgsGeometry::fromPoint( j ) );
+              outFeature.setGeometry( QgsGeometry::fromPointXY( j ) );
               outFeature.setAttributes( outAttributes );
               sink->addFeature( outFeature, QgsFeatureSink::FastInsert );
             }

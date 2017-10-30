@@ -14602,7 +14602,7 @@ void TestQgsGeometry::geometryCollection()
 void TestQgsGeometry::fromQgsPointXY()
 {
   QgsPointXY point( 1.0, 2.0 );
-  QgsGeometry result( QgsGeometry::fromPoint( point ) );
+  QgsGeometry result( QgsGeometry::fromPointXY( point ) );
   QCOMPARE( result.wkbType(), QgsWkbTypes::Point );
   QgsPointXY resultPoint = result.asPoint();
   QCOMPARE( resultPoint, point );
@@ -14713,7 +14713,7 @@ void TestQgsGeometry::asQPolygonF()
   QCOMPARE( fromLine.at( 2 ).y(), mPoint3.y() );
 
   //test a bad geometry
-  QgsGeometry badGeom( QgsGeometry::fromPoint( mPoint1 ) );
+  QgsGeometry badGeom( QgsGeometry::fromPointXY( mPoint1 ) );
   QPolygonF fromBad = badGeom.asQPolygonF();
   QVERIFY( fromBad.isEmpty() );
 }
@@ -15604,7 +15604,7 @@ void TestQgsGeometry::minimalEnclosingCircle()
   QCOMPARE( result, QgsGeometry() );
 
   // caase 1
-  geomTest = QgsGeometry::fromPoint( QgsPointXY( 5, 5 ) );
+  geomTest = QgsGeometry::fromPointXY( QgsPointXY( 5, 5 ) );
   result = geomTest.minimalEnclosingCircle( center, radius );
   QCOMPARE( center, QgsPointXY( 5, 5 ) );
   QCOMPARE( radius, 0.0 );

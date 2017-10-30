@@ -120,7 +120,7 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(geom.constGet().geometryN(1).y(), 31)
 
     def testFromPoint(self):
-        myPoint = QgsGeometry.fromPoint(QgsPointXY(10, 10))
+        myPoint = QgsGeometry.fromPointXY(QgsPointXY(10, 10))
         self.assertEqual(myPoint.wkbType(), QgsWkbTypes.Point)
 
     def testFromMultiPoint(self):
@@ -245,7 +245,7 @@ class TestQgsGeometry(unittest.TestCase):
             QgsPointXY(0, 0),
             QgsPointXY(1, 1),
             QgsPointXY(2, 2)])
-        myPoint = QgsGeometry.fromPoint(QgsPointXY(1, 1))
+        myPoint = QgsGeometry.fromPointXY(QgsPointXY(1, 1))
         intersectionGeom = QgsGeometry.intersection(myLine, myPoint)
         self.assertEqual(intersectionGeom.wkbType(), QgsWkbTypes.Point)
 
@@ -261,10 +261,10 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(layer.featureCount(), 1)
 
     def testBuffer(self):
-        myPoint = QgsGeometry.fromPoint(QgsPointXY(1, 1))
+        myPoint = QgsGeometry.fromPointXY(QgsPointXY(1, 1))
         bufferGeom = myPoint.buffer(10, 5)
         self.assertEqual(bufferGeom.wkbType(), QgsWkbTypes.Polygon)
-        myTestPoint = QgsGeometry.fromPoint(QgsPointXY(3, 3))
+        myTestPoint = QgsGeometry.fromPointXY(QgsPointXY(3, 3))
         self.assertTrue(bufferGeom.intersects(myTestPoint))
 
     def testContains(self):
@@ -274,7 +274,7 @@ class TestQgsGeometry(unittest.TestCase):
               QgsPointXY(2, 2),
               QgsPointXY(0, 2),
               QgsPointXY(0, 0)]])
-        myPoint = QgsGeometry.fromPoint(QgsPointXY(1, 1))
+        myPoint = QgsGeometry.fromPointXY(QgsPointXY(1, 1))
         self.assertTrue(QgsGeometry.contains(myPoly, myPoint))
 
     def testTouches(self):
@@ -327,8 +327,8 @@ class TestQgsGeometry(unittest.TestCase):
         assert withinGeom, myMessage
 
     def testEquals(self):
-        myPointA = QgsGeometry.fromPoint(QgsPointXY(1, 1))
-        myPointB = QgsGeometry.fromPoint(QgsPointXY(1, 1))
+        myPointA = QgsGeometry.fromPointXY(QgsPointXY(1, 1))
+        myPointB = QgsGeometry.fromPointXY(QgsPointXY(1, 1))
         equalsGeom = QgsGeometry.equals(myPointA, myPointB)
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
                      ("True", equalsGeom))
@@ -1373,7 +1373,7 @@ class TestQgsGeometry(unittest.TestCase):
 
     def testCollectGeometry(self):
         # collect points
-        geometries = [QgsGeometry.fromPoint(QgsPointXY(0, 0)), QgsGeometry.fromPoint(QgsPointXY(1, 1))]
+        geometries = [QgsGeometry.fromPointXY(QgsPointXY(0, 0)), QgsGeometry.fromPointXY(QgsPointXY(1, 1))]
         geometry = QgsGeometry.collectGeometry(geometries)
         expwkt = "MultiPoint ((0 0), (1 1))"
         wkt = geometry.exportToWkt()
@@ -1414,14 +1414,14 @@ class TestQgsGeometry(unittest.TestCase):
         # add a part to a multipoint
         points = [QgsPointXY(0, 0), QgsPointXY(1, 0)]
 
-        point = QgsGeometry.fromPoint(points[0])
+        point = QgsGeometry.fromPointXY(points[0])
         self.assertEqual(point.addPointsXY([points[1]]), 0)
         expwkt = "MultiPoint ((0 0), (1 0))"
         wkt = point.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         # test adding a part with Z values
-        point = QgsGeometry.fromPoint(points[0])
+        point = QgsGeometry.fromPointXY(points[0])
         point.get().addZValue(4.0)
         self.assertEqual(point.addPoints([QgsPoint(points[1][0], points[1][1], 3.0, wkbType=QgsWkbTypes.PointZ)]), 0)
         expwkt = "MultiPointZ ((0 0 4), (1 0 3))"
@@ -1557,7 +1557,7 @@ class TestQgsGeometry(unittest.TestCase):
         ]
         # ####### TO POINT ########
         # POINT TO POINT
-        point = QgsGeometry.fromPoint(QgsPointXY(1, 1))
+        point = QgsGeometry.fromPointXY(QgsPointXY(1, 1))
         wkt = point.convertToType(QgsWkbTypes.PointGeometry, False).exportToWkt()
         expWkt = "Point (1 1)"
         assert compareWkt(expWkt, wkt), "convertToType failed: from point to point. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
@@ -1588,7 +1588,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # ####### TO LINE ########
         # POINT TO LINE
-        point = QgsGeometry.fromPoint(QgsPointXY(1, 1))
+        point = QgsGeometry.fromPointXY(QgsPointXY(1, 1))
         self.assertFalse(point.convertToType(QgsWkbTypes.LineGeometry, False)), "convertToType with a point should return a null geometry"
         # MultiPoint TO LINE
         multipoint = QgsGeometry.fromMultiPointXY(points[0][0])

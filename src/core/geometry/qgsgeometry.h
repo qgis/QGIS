@@ -213,7 +213,7 @@ class CORE_EXPORT QgsGeometry
     //! Creates a new geometry from a WKT string
     static QgsGeometry fromWkt( const QString &wkt );
     //! Creates a new geometry from a QgsPointXY object
-    static QgsGeometry fromPoint( const QgsPointXY &point );
+    static QgsGeometry fromPointXY( const QgsPointXY &point );
     //! Creates a new geometry from a QgsMultiPointXY object
     static QgsGeometry fromMultiPointXY( const QgsMultiPointXY &multipoint );
 

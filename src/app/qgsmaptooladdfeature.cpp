@@ -152,7 +152,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgsGeometry g;
       if ( layerWKBType == QgsWkbTypes::Point )
       {
-        g = QgsGeometry::fromPoint( savePoint );
+        g = QgsGeometry::fromPointXY( savePoint );
       }
       else if ( layerWKBType == QgsWkbTypes::Point25D )
       {
@@ -171,7 +171,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       else
       {
         // if layer supports more types (mCheckGeometryType is false)
-        g = QgsGeometry::fromPoint( savePoint );
+        g = QgsGeometry::fromPointXY( savePoint );
       }
 
       f.setGeometry( g );

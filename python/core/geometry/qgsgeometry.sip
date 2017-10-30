@@ -145,7 +145,7 @@ Copy constructor will prompt a deep copy of the object
 Creates a new geometry from a WKT string
  :rtype: QgsGeometry
 %End
-    static QgsGeometry fromPoint( const QgsPointXY &point );
+    static QgsGeometry fromPointXY( const QgsPointXY &point );
 %Docstring
 Creates a new geometry from a QgsPointXY object
  :rtype: QgsGeometry
