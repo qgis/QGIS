@@ -168,7 +168,7 @@ class ShortestPathPointToPoint(QgisAlgorithm):
         forwardValue = self.parameterAsString(parameters, self.VALUE_FORWARD, context)
         backwardValue = self.parameterAsString(parameters, self.VALUE_BACKWARD, context)
         bothValue = self.parameterAsString(parameters, self.VALUE_BOTH, context)
-        defaultDirection = self.DIRECTIONS[self.parameterAsEnum(parameters, self.DEFAULT_DIRECTION, context)]
+        defaultDirection = self.parameterAsEnum(parameters, self.DEFAULT_DIRECTION, context)
         speedFieldName = self.parameterAsString(parameters, self.SPEED_FIELD, context)
         defaultSpeed = self.parameterAsDouble(parameters, self.DEFAULT_SPEED, context)
         tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
@@ -222,15 +222,13 @@ class ShortestPathPointToPoint(QgisAlgorithm):
             raise QgsProcessingException(
                 self.tr('There is no route from start point to end point.'))
 
-        route = []
-        cost = 0.0
+        route = [graph.vertex(idxEnd).point()]
+        cost = costs[idxEnd]
         current = idxEnd
         while current != idxStart:
-            cost += costs[current]
             current = graph.edge(tree[current]).fromVertex()
             route.append(graph.vertex(current).point())
 
-        route.append(snappedPoints[0])
         route.reverse()
 
         feedback.pushInfo(self.tr('Writing results...'))

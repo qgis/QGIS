@@ -165,7 +165,7 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
         forwardValue = self.parameterAsString(parameters, self.VALUE_FORWARD, context)
         backwardValue = self.parameterAsString(parameters, self.VALUE_BACKWARD, context)
         bothValue = self.parameterAsString(parameters, self.VALUE_BOTH, context)
-        defaultDirection = self.DIRECTIONS[self.parameterAsEnum(parameters, self.DEFAULT_DIRECTION, context)]
+        defaultDirection = self.parameterAsEnum(parameters, self.DEFAULT_DIRECTION, context)
         speedFieldName = self.parameterAsString(parameters, self.SPEED_FIELD, context)
         defaultSpeed = self.parameterAsDouble(parameters, self.DEFAULT_SPEED, context)
         tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
@@ -240,7 +240,6 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
         graph = builder.graph()
 
         idxEnd = graph.findVertex(snappedPoints[0])
-        route = []
 
         nPoints = len(snappedPoints)
         total = 100.0 / nPoints if nPoints else 1
@@ -263,14 +262,13 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
                 sink.addFeature(feat, QgsFeatureSink.FastInsert)
                 continue
 
-            cost = 0.0
+            route = [graph.vertex(idxEnd).point()]
+            cost = costs[idxEnd]
             current = idxEnd
             while current != idxStart:
-                cost += costs[current]
                 current = graph.edge(tree[current]).fromVertex()
                 route.append(graph.vertex(current).point())
 
-            route.append(snappedPoints[i])
             route.reverse()
 
             geom = QgsGeometry.fromPolylineXY(route)
@@ -279,8 +277,6 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
             attrs.extend([points[i].toString(), endPoint.toString(), cost / multiplier])
             feat.setAttributes(attrs)
             sink.addFeature(feat, QgsFeatureSink.FastInsert)
-
-            route[:] = []
 
             feedback.setProgress(int(i * total))
 

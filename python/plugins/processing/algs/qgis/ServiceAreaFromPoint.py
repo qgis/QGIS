@@ -165,7 +165,7 @@ class ServiceAreaFromPoint(QgisAlgorithm):
         forwardValue = self.parameterAsString(parameters, self.VALUE_FORWARD, context)
         backwardValue = self.parameterAsString(parameters, self.VALUE_BACKWARD, context)
         bothValue = self.parameterAsString(parameters, self.VALUE_BOTH, context)
-        defaultDirection = self.DIRECTIONS[self.parameterAsEnum(parameters, self.DEFAULT_DIRECTION, context)]
+        defaultDirection = self.parameterAsEnum(parameters, self.DEFAULT_DIRECTION, context)
         speedFieldName = self.parameterAsString(parameters, self.SPEED_FIELD, context)
         defaultSpeed = self.parameterAsDouble(parameters, self.DEFAULT_SPEED, context)
         tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
@@ -208,15 +208,15 @@ class ServiceAreaFromPoint(QgisAlgorithm):
         vertices = []
         for i, v in enumerate(cost):
             if v > travelCost and tree[i] != -1:
-                vertexId = graph.edge(tree[i]).toVertex()
+                vertexId = graph.edge(tree[i]).fromVertex()
                 if cost[vertexId] <= travelCost:
                     vertices.append(i)
 
         upperBoundary = []
         lowerBoundary = []
         for i in vertices:
-            upperBoundary.append(graph.vertex(graph.edge(tree[i]).fromVertex()).point())
-            lowerBoundary.append(graph.vertex(graph.edge(tree[i]).toVertex()).point())
+            upperBoundary.append(graph.vertex(graph.edge(tree[i]).toVertex()).point())
+            lowerBoundary.append(graph.vertex(graph.edge(tree[i]).fromVertex()).point())
 
         feedback.pushInfo(self.tr('Writing results...'))
 
