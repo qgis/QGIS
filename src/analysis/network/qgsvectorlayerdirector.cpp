@@ -112,6 +112,7 @@ QgsVectorLayerDirector::Direction QgsVectorLayerDirector::directionForFeature( c
   }
 }
 
+///@cond PRIVATE
 class QgsNetworkVisitor : public SpatialIndex::IVisitor
 {
   public:
@@ -132,6 +133,8 @@ class QgsNetworkVisitor : public SpatialIndex::IVisitor
   private:
     QVector< int > &mPoints;
 };
+
+///@endcond
 
 std::unique_ptr< SpatialIndex::ISpatialIndex > createVertexSpatialIndex( SpatialIndex::IStorageManager &storageManager )
 {

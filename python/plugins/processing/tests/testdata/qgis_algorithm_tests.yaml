@@ -2659,7 +2659,7 @@ tests:
         compare:
           ignore_crs_check: true
           geometry:
-            precision: 5
+            precision: 2
 
   - algorithm: qgis:shortestpathlayertopoint
     name: Shortest path layer to point
@@ -2684,7 +2684,7 @@ tests:
         type: vector
         compare:
           geometry:
-            precision: 5
+            precision: 2
 
   - algorithm: qgis:shortestpathpointtolayer
     name: Shortest path point to layer
@@ -2709,7 +2709,7 @@ tests:
         type: vector
         compare:
           geometry:
-            precision: 5
+            precision: 2
 
   - algorithm: qgis:serviceareafrompoint
     name: Service area (from point, shortest)
@@ -2733,7 +2733,7 @@ tests:
         compare:
           ignore_crs_check: true
           geometry:
-            precision: 5
+            precision: 2
 
   - algorithm: qgis:serviceareafromlayer
     name: Service area from layer
@@ -2759,7 +2759,7 @@ tests:
         compare:
           ignore_crs_check: true
           geometry:
-            precision: 5
+            precision: 2
         pk:
         - d
         - type
