@@ -14,8 +14,9 @@
 #                                                                         #
 ###########################################################################
 
-min_version="3.0.0"
+min_version="3"
 astyle_version_check() {
+	$1 --version
 	[ `printf "$($1 --version | cut -d ' ' -f4)\n$min_version" | sort -V | head -n1` = "$min_version" ]
 }
 
