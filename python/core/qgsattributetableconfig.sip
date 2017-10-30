@@ -50,6 +50,9 @@ Constructor for ColumnConfig
     };
 
     QgsAttributeTableConfig();
+%Docstring
+ Constructor for QgsAttributeTableConfig.
+%End
 
     QVector<QgsAttributeTableConfig::ColumnConfig> columns() const;
 %Docstring

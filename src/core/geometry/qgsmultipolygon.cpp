@@ -23,7 +23,6 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultilinestring.h"
 
 QgsMultiPolygonV2::QgsMultiPolygonV2()
-  : QgsMultiSurface()
 {
   mWkbType = QgsWkbTypes::MultiPolygon;
 }
@@ -37,6 +36,13 @@ void QgsMultiPolygonV2::clear()
 {
   QgsMultiSurface::clear();
   mWkbType = QgsWkbTypes::MultiPolygon;
+}
+
+QgsMultiPolygonV2 *QgsMultiPolygonV2::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsMultiPolygonV2 >();
+  result->mWkbType = mWkbType;
+  return result.release();
 }
 
 QgsMultiPolygonV2 *QgsMultiPolygonV2::clone() const
@@ -53,6 +59,10 @@ QDomElement QgsMultiPolygonV2::asGML2( QDomDocument &doc, int precision, const Q
 {
   // GML2 does not support curves
   QDomElement elemMultiPolygon = doc.createElementNS( ns, QStringLiteral( "MultiPolygon" ) );
+
+  if ( isEmpty() )
+    return elemMultiPolygon;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsPolygonV2 *>( geom ) )
@@ -69,6 +79,10 @@ QDomElement QgsMultiPolygonV2::asGML2( QDomDocument &doc, int precision, const Q
 QDomElement QgsMultiPolygonV2::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiSurface = doc.createElementNS( ns, QStringLiteral( "MultiPolygon" ) );
+
+  if ( isEmpty() )
+    return elemMultiSurface;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsPolygonV2 *>( geom ) )

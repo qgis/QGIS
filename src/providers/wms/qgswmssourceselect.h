@@ -59,20 +59,21 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     void refresh() override;
 
     //! Opens the create connection dialog to build a new connection
-    void on_btnNew_clicked();
+    void btnNew_clicked();
     //! Opens a dialog to edit an existing connection
-    void on_btnEdit_clicked();
+    void btnEdit_clicked();
     //! Deletes the selected connection
-    void on_btnDelete_clicked();
+    void btnDelete_clicked();
     //! Saves connections to the file
-    void on_btnSave_clicked();
+    void btnSave_clicked();
     //! Loads connections from the file
-    void on_btnLoad_clicked();
+    void btnLoad_clicked();
 
-    /** Connects to the database using the stored connection parameters.
+    /**
+     * Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
      */
-    void on_btnConnect_clicked();
+    void btnConnect_clicked();
 
     //! Determines the layers the user selected
     void addButtonClicked() override;
@@ -80,10 +81,10 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     void searchFinished();
 
     //! Opens the Spatial Reference System dialog.
-    void on_btnChangeSpatialRefSys_clicked();
+    void btnChangeSpatialRefSys_clicked();
 
     //! Signaled when a layer selection is changed.
-    void on_lstLayers_itemSelectionChanged();
+    void lstLayers_itemSelectionChanged();
 
     //! Set status message to theMessage
     void showStatusMessage( QString const &message );
@@ -92,10 +93,10 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     void showError( QgsWmsProvider *wms );
 
     //! Stores the selected datasource whenerver it is changed
-    void on_cmbConnections_activated( int );
+    void cmbConnections_activated( int );
 
     //! Add some default wms servers to the list
-    void on_btnAddDefault_clicked();
+    void btnAddDefault_clicked();
 
   private:
     //! Populate the connection list combo box
@@ -185,12 +186,12 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     QList<QgsWmtsTileLayer> mTileLayers;
 
   private slots:
-    void on_btnSearch_clicked();
-    void on_btnAddWMS_clicked();
-    void on_tableWidgetWMSList_itemSelectionChanged();
-    void on_lstTilesets_itemClicked( QTableWidgetItem *item );
-    void on_mLayerUpButton_clicked();
-    void on_mLayerDownButton_clicked();
+    void btnSearch_clicked();
+    void btnAddWMS_clicked();
+    void tableWidgetWMSList_itemSelectionChanged();
+    void lstTilesets_itemClicked( QTableWidgetItem *item );
+    void mLayerUpButton_clicked();
+    void mLayerDownButton_clicked();
     void updateButtons();
     void showHelp();
 };

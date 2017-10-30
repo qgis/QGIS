@@ -37,12 +37,19 @@ class QgsMapSettings
 
     QgsRectangle extent() const;
 %Docstring
-of output size. Use visibleExtent() to get the resulting extent.
+ Return geographical coordinates of the rectangle that should be rendered.
+ The actual visible extent used for rendering could be slightly different
+ since the given extent may be expanded in order to fit the aspect ratio
+ of output size. Use visibleExtent() to get the resulting extent.
  :rtype: QgsRectangle
 %End
+
     void setExtent( const QgsRectangle &rect, bool magnified = true );
 %Docstring
-of output size. Use visibleExtent() to get the resulting extent.
+ Set coordinates of the rectangle which should be rendered.
+ The actual visible extent used for rendering could be slightly different
+ since the given extent may be expanded in order to fit the aspect ratio
+ of output size. Use visibleExtent() to get the resulting extent.
 %End
 
     QSize outputSize() const;
@@ -72,7 +79,8 @@ Set the size of the resulting map image
 
     double outputDpi() const;
 %Docstring
-Default value is 96
+ Return DPI used for conversion between real world units (e.g. mm) and pixels
+ Default value is 96
  :rtype: float
 %End
     void setOutputDpi( double dpi );
@@ -90,32 +98,42 @@ Set DPI used for conversion between real world units (e.g. mm) and pixels
 
     double magnificationFactor() const;
 %Docstring
+ Return the magnification factor.
+.. versionadded:: 2.16
 .. seealso:: setMagnificationFactor()
  :rtype: float
 %End
 
     QStringList layerIds() const;
 %Docstring
-The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+ Get list of layer IDs for map rendering
+ The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
  :rtype: list of str
 %End
+
     QList<QgsMapLayer *> layers() const;
 %Docstring
-The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+ Get list of layers for map rendering
+ The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
  :rtype: list of QgsMapLayer
 %End
+
     void setLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
-The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+ Set list of layers for map rendering. The layers must be registered in QgsProject.
+ The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
 %End
 
     QMap<QString, QString> layerStyleOverrides() const;
 %Docstring
+ Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
 .. versionadded:: 2.8
  :rtype: QMap<str, QString>
 %End
+
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 %Docstring
+ Set map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
 .. versionadded:: 2.8
 %End
 
@@ -204,6 +222,7 @@ Get color that is used for drawing of selected vector features
       DrawSymbolBounds,
       RenderMapTile,
       RenderPartialOutput,
+      RenderPreviewJob,
       // TODO
     };
     typedef QFlags<QgsMapSettings::Flag> Flags;
@@ -248,8 +267,10 @@ Check whether the map settings are valid and can be used for rendering
 Return the actual extent derived from requested extent that takes takes output image size into account
  :rtype: QgsRectangle
 %End
+
     QPolygonF visiblePolygon() const;
 %Docstring
+ Return the visible area as a polygon (may be rotated)
 .. versionadded:: 2.8
  :rtype: QPolygonF
 %End

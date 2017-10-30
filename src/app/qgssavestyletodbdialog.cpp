@@ -26,6 +26,7 @@ QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
+  connect( mFilePickButton, &QToolButton::clicked, this, &QgsSaveStyleToDbDialog::mFilePickButton_clicked );
   setWindowTitle( QStringLiteral( "Save Style in Database" ) );
   mDescriptionEdit->setTabChangesFocus( true );
   setTabOrder( mNameEdit, mDescriptionEdit );
@@ -74,7 +75,7 @@ void QgsSaveStyleToDbDialog::accept()
   QDialog::accept();
 }
 
-void QgsSaveStyleToDbDialog::on_mFilePickButton_clicked()
+void QgsSaveStyleToDbDialog::mFilePickButton_clicked()
 {
   QgsSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();

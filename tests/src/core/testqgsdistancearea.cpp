@@ -283,7 +283,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   da.setEllipsoid( QStringLiteral( "NONE" ) );
   QgsCoordinateReferenceSystem daCRS;
   daCRS.createFromSrsId( da.sourceCrs().srsid() );
-  QgsPolyline ring;
+  QgsPolylineXY ring;
   ring << QgsPointXY( 0, 0 )
        << QgsPointXY( 1, 0 )
        << QgsPointXY( 1, 1 )

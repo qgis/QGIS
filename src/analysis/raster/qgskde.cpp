@@ -90,10 +90,10 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::prepare()
     return FileCreationError;
 
   // open the raster in GA_Update mode
-  mDatasetH = GDALOpen( mOutputFile.toUtf8().constData(), GA_Update );
+  mDatasetH.reset( GDALOpen( mOutputFile.toUtf8().constData(), GA_Update ) );
   if ( !mDatasetH )
     return FileCreationError;
-  mRasterBandH = GDALGetRasterBand( mDatasetH, 1 );
+  mRasterBandH = GDALGetRasterBand( mDatasetH.get(), 1 );
   if ( !mRasterBandH )
     return FileCreationError;
 
@@ -207,8 +207,7 @@ QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::addFeature( const
 
 QgsKernelDensityEstimation::Result QgsKernelDensityEstimation::finalise()
 {
-  GDALClose( ( GDALDatasetH ) mDatasetH );
-  mDatasetH = nullptr;
+  mDatasetH.reset();
   mRasterBandH = nullptr;
   return Success;
 }
@@ -226,18 +225,18 @@ int QgsKernelDensityEstimation::radiusSizeInPixels( double radius ) const
 bool QgsKernelDensityEstimation::createEmptyLayer( GDALDriverH driver, const QgsRectangle &bounds, int rows, int columns ) const
 {
   double geoTransform[6] = { bounds.xMinimum(), mPixelSize, 0, bounds.yMaximum(), 0, -mPixelSize };
-  GDALDatasetH emptyDataset = GDALCreate( driver, mOutputFile.toUtf8(), columns, rows, 1, GDT_Float32, nullptr );
+  gdal::dataset_unique_ptr emptyDataset( GDALCreate( driver, mOutputFile.toUtf8(), columns, rows, 1, GDT_Float32, nullptr ) );
   if ( !emptyDataset )
     return false;
 
-  if ( GDALSetGeoTransform( emptyDataset, geoTransform ) != CE_None )
+  if ( GDALSetGeoTransform( emptyDataset.get(), geoTransform ) != CE_None )
     return false;
 
   // Set the projection on the raster destination to match the input layer
-  if ( GDALSetProjection( emptyDataset, mSource->sourceCrs().toWkt().toLocal8Bit().data() ) != CE_None )
+  if ( GDALSetProjection( emptyDataset.get(), mSource->sourceCrs().toWkt().toLocal8Bit().data() ) != CE_None )
     return false;
 
-  GDALRasterBandH poBand = GDALGetRasterBand( emptyDataset, 1 );
+  GDALRasterBandH poBand = GDALGetRasterBand( emptyDataset.get(), 1 );
   if ( !poBand )
     return false;
 
@@ -259,8 +258,6 @@ bool QgsKernelDensityEstimation::createEmptyLayer( GDALDriverH driver, const Qgs
   }
 
   CPLFree( line );
-  //close the dataset
-  GDALClose( emptyDataset );
   return true;
 }
 

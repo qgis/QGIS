@@ -20,7 +20,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis.h"
 #include "qgsgeometrycollection.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMultiPointV2
  * \brief Multi point geometry collection.
  * \since QGIS 2.10
@@ -42,6 +43,8 @@ class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollection
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    int vertexNumberFromVertexId( QgsVertexId id ) const override;
+
 
 #ifndef SIP_RUN
 
@@ -60,7 +63,7 @@ class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollection
     }
 #endif
   protected:
-
+    QgsMultiPointV2 *createEmptyWithSameType() const override SIP_FACTORY;
     bool wktOmitChildType() const override;
 
 };

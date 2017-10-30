@@ -15,6 +15,7 @@
 %Include qgscachedfeatureiterator.sip
 %Include qgscacheindex.sip
 %Include qgscacheindexfeatureid.sip
+%Include qgscadutils.sip
 %Include qgsclipper.sip
 %Include qgscolorramp.sip
 %Include qgscolorscheme.sip
@@ -156,6 +157,7 @@
 %Include composer/qgscomposermultiframecommand.sip
 %Include composer/qgscomposertexttable.sip
 %Include composer/qgspaperitem.sip
+%Include layout/qgslayoutaligner.sip
 %Include layout/qgslayoutcontext.sip
 %Include layout/qgslayoutgridsettings.sip
 %Include layout/qgslayoutmeasurement.sip
@@ -280,6 +282,8 @@
 %Include geometry/qgssurface.sip
 %Include geometry/qgswkbptr.sip
 %Include geometry/qgswkbtypes.sip
+%Include ./3d/qgs3drendererregistry.sip
+%Include ./3d/qgsabstract3drenderer.sip
 %Include fieldformatter/qgsdatetimefieldformatter.sip
 %Include fieldformatter/qgsfallbackfieldformatter.sip
 %Include fieldformatter/qgskeyvaluefieldformatter.sip
@@ -293,6 +297,7 @@
 %Include qgsapplication.sip
 %Include qgsactionscoperegistry.sip
 %Include qgsanimatedicon.sip
+%Include qgsauxiliarystorage.sip
 %Include qgsbrowsermodel.sip
 %Include qgscoordinatereferencesystem.sip
 %Include qgscredentials.sip
@@ -305,6 +310,8 @@
 %Include qgsfieldformatterregistry.sip
 %Include qgsfieldmodel.sip
 %Include qgsfieldproxymodel.sip
+%Include qgsfiledownloader.sip
+%Include qgsfeaturefiltermodel.sip
 %Include qgsgeometryvalidator.sip
 %Include qgsgml.sip
 %Include qgsgmlschema.sip
@@ -398,10 +405,12 @@
 %Include layout/qgslayout.sip
 %Include layout/qgslayoutguidecollection.sip
 %Include layout/qgslayoutitem.sip
+%Include layout/qgslayoutitemgroup.sip
 %Include layout/qgslayoutitemmap.sip
 %Include layout/qgslayoutitempage.sip
 %Include layout/qgslayoutitemregistry.sip
 %Include layout/qgslayoutitemshape.sip
+%Include layout/qgslayoutmodel.sip
 %Include layout/qgslayoutpagecollection.sip
 %Include layout/qgslayoutobject.sip
 %Include symbology/qgscptcityarchive.sip

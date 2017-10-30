@@ -34,7 +34,8 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for gradient fill types.
  */
 class TestQgsGradients : public QObject
@@ -42,8 +43,7 @@ class TestQgsGradients : public QObject
     Q_OBJECT
 
   public:
-    TestQgsGradients()
-    {}
+    TestQgsGradients() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

@@ -235,3 +235,8 @@ QgsFeatureIterator &QgsFeatureIterator::operator=( const QgsFeatureIterator &oth
   }
   return *this;
 }
+
+bool QgsFeatureIterator::isValid() const
+{
+  return mIter && mIter->isValid();
+}

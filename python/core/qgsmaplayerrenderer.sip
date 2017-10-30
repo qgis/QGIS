@@ -50,6 +50,7 @@ Do the rendering (based on data stored in the class)
 
     virtual QgsFeedback *feedback() const;
 %Docstring
+ Access to feedback object of the layer renderer (may be null)
 .. versionadded:: 3.0
  :rtype: QgsFeedback
 %End

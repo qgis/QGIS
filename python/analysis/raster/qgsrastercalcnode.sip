@@ -54,6 +54,10 @@ class QgsRasterCalcNode
     };
 
     QgsRasterCalcNode();
+%Docstring
+ Constructor for QgsRasterCalcNode.
+%End
+
     QgsRasterCalcNode( double number );
     QgsRasterCalcNode( QgsRasterMatrix *matrix );
     QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right );

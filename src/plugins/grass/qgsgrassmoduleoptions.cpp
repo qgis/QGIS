@@ -52,10 +52,6 @@ QgsGrassModuleOptions::QgsGrassModuleOptions(
   mCanvas = mIface->mapCanvas();
 }
 
-QgsGrassModuleOptions::~QgsGrassModuleOptions()
-{
-}
-
 QStringList QgsGrassModuleOptions::arguments()
 {
   return QStringList();
@@ -865,11 +861,6 @@ bool QgsGrassModuleStandardOptions::getCurrentMapRegion( QgsGrassModuleInput *in
     return false;
   }
   return true;
-}
-
-
-QgsGrassModuleStandardOptions::~QgsGrassModuleStandardOptions()
-{
 }
 
 QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QString &xname, QStringList &errors )

@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
+                       QgsProcessing,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterEnum)
@@ -71,6 +72,9 @@ class AddTableField(QgisFeatureBasedAlgorithm):
 
     def outputName(self):
         return self.tr('Added')
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVector]
 
     def prepareAlgorithm(self, parameters, context, feedback):
         field_type = self.parameterAsEnum(parameters, self.FIELD_TYPE, context)

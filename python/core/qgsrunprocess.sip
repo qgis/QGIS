@@ -38,7 +38,6 @@ class QgsRunProcess: QObject /NoDefaultCtors/
 
   private:
     QgsRunProcess( const QString &action, bool capture ) ;
-  private:
     ~QgsRunProcess() ;
 };
 

@@ -28,7 +28,6 @@ import codecs
 
 from qgis.core import (QgsApplication,
                        QgsProcessingParameterDefinition)
-from processing.core.Processing import Processing
 from processing.core.parameters import ParameterMultipleInput, ParameterTableField, ParameterVector, ParameterSelection
 from processing.tools.system import mkdir
 
@@ -106,7 +105,7 @@ def baseHelpForAlgorithm(alg, folder):
 
 
 def createBaseHelpFiles(folder):
-    for provider in Processing.providers:
+    for provider in QgsApplication.processingRegistry().providers():
         if 'grass' in provider.id():
             continue
 

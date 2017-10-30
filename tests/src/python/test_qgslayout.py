@@ -25,7 +25,10 @@ from qgis.core import (QgsUnitTypes,
                        QgsLayoutPageCollection,
                        QgsLayoutMeasurement,
                        QgsFillSymbol,
-                       QgsReadWriteContext)
+                       QgsReadWriteContext,
+                       QgsLayoutItemMap,
+                       QgsLayoutSize,
+                       QgsLayoutPoint)
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -52,7 +55,7 @@ class TestQgsLayout(unittest.TestCase):
         grid = l.gridSettings()
         grid.setResolution(QgsLayoutMeasurement(5, QgsUnitTypes.LayoutPoints))
 
-        g1 = QgsLayoutGuide(QgsLayoutGuide.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters),
+        g1 = QgsLayoutGuide(Qt.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters),
                             l.pageCollection().page(0))
         l.guides().addGuide(g1)
 
@@ -73,10 +76,203 @@ class TestQgsLayout(unittest.TestCase):
         self.assertEqual(collection2.page(0).pageSize().height(), 148)
         self.assertEqual(l2.gridSettings().resolution().length(), 5.0)
         self.assertEqual(l2.gridSettings().resolution().units(), QgsUnitTypes.LayoutPoints)
-        self.assertEqual(l2.guides().guidesOnPage(0)[0].orientation(), QgsLayoutGuide.Horizontal)
+        self.assertEqual(l2.guides().guidesOnPage(0)[0].orientation(), Qt.Horizontal)
         self.assertEqual(l2.guides().guidesOnPage(0)[0].position().length(), 5.0)
         self.assertEqual(l2.guides().guidesOnPage(0)[0].position().units(), QgsUnitTypes.LayoutCentimeters)
         self.assertEqual(l2.snapper().snapTolerance(), 7)
+
+    def testSelectedItems(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        l.addItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        l.addItem(item2)
+        item3 = QgsLayoutItemMap(l)
+        l.addItem(item3)
+
+        self.assertFalse(l.selectedLayoutItems())
+        item1.setSelected(True)
+        self.assertEqual(set(l.selectedLayoutItems()), set([item1]))
+        item2.setSelected(True)
+        self.assertEqual(set(l.selectedLayoutItems()), set([item1, item2]))
+        item3.setSelected(True)
+        self.assertEqual(set(l.selectedLayoutItems()), set([item1, item2, item3]))
+        item3.setLocked(True)
+        self.assertEqual(set(l.selectedLayoutItems(False)), set([item1, item2]))
+        self.assertEqual(set(l.selectedLayoutItems(True)), set([item1, item2, item3]))
+
+    def testSelections(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        l.addItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        l.addItem(item2)
+        item3 = QgsLayoutItemMap(l)
+        l.addItem(item3)
+
+        select_changed_spy = QSignalSpy(l.selectedItemChanged)
+        l.setSelectedItem(None)
+        self.assertFalse(l.selectedLayoutItems())
+        self.assertEqual(len(select_changed_spy), 1)
+        self.assertEqual(select_changed_spy[-1][0], None)
+
+        l.setSelectedItem(item1)
+        self.assertEqual(l.selectedLayoutItems(), [item1])
+        self.assertEqual(len(select_changed_spy), 2)
+        self.assertEqual(select_changed_spy[-1][0], item1)
+
+        l.setSelectedItem(None)
+        self.assertFalse(l.selectedLayoutItems())
+        self.assertEqual(len(select_changed_spy), 3)
+        self.assertEqual(select_changed_spy[-1][0], None)
+
+        l.setSelectedItem(item2)
+        self.assertEqual(l.selectedLayoutItems(), [item2])
+        self.assertEqual(len(select_changed_spy), 4)
+        self.assertEqual(select_changed_spy[-1][0], item2)
+
+        l.deselectAll()
+        self.assertFalse(l.selectedLayoutItems())
+        self.assertEqual(len(select_changed_spy), 5)
+        self.assertEqual(select_changed_spy[-1][0], None)
+
+    def testLayoutItemAt(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        l.addItem(item1)
+
+        item2 = QgsLayoutItemMap(l)
+        item2.attemptMove(QgsLayoutPoint(6, 10, QgsUnitTypes.LayoutMillimeters))
+        item2.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        l.addItem(item2)
+
+        item3 = QgsLayoutItemMap(l)
+        item3.attemptMove(QgsLayoutPoint(8, 12, QgsUnitTypes.LayoutMillimeters))
+        item3.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        item3.setLocked(True)
+        l.addItem(item3)
+
+        self.assertIsNone(l.layoutItemAt(QPointF(0, 0)))
+        self.assertIsNone(l.layoutItemAt(QPointF(100, 100)))
+
+        self.assertEqual(l.layoutItemAt(QPointF(5, 9)), item1)
+        self.assertEqual(l.layoutItemAt(QPointF(25, 23)), item3)
+        self.assertIsNone(l.layoutItemAt(QPointF(25, 23), True))
+        self.assertEqual(l.layoutItemAt(QPointF(7, 11)), item2)
+        self.assertEqual(l.layoutItemAt(QPointF(9, 13)), item3)
+        self.assertEqual(l.layoutItemAt(QPointF(9, 13), True), item2)
+
+        self.assertEqual(l.layoutItemAt(QPointF(9, 13), item3), item2)
+        self.assertEqual(l.layoutItemAt(QPointF(9, 13), item2), item1)
+        self.assertIsNone(l.layoutItemAt(QPointF(9, 13), item1))
+        item2.setLocked(True)
+        self.assertEqual(l.layoutItemAt(QPointF(9, 13), item3, True), item1)
+
+    def testStacking(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        l.addLayoutItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        l.addLayoutItem(item2)
+        item3 = QgsLayoutItemMap(l)
+        l.addLayoutItem(item3)
+
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 2)
+        self.assertEqual(item3.zValue(), 3)
+
+        # no effect interactions
+        self.assertFalse(l.raiseItem(None))
+        self.assertFalse(l.lowerItem(None))
+        self.assertFalse(l.moveItemToTop(None))
+        self.assertFalse(l.moveItemToBottom(None))
+
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 2)
+        self.assertEqual(item3.zValue(), 3)
+
+        # raising
+        self.assertFalse(l.raiseItem(item3))
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 2)
+        self.assertEqual(item3.zValue(), 3)
+
+        self.assertTrue(l.raiseItem(item2))
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 2)
+
+        self.assertFalse(l.raiseItem(item2))
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 2)
+
+        self.assertTrue(l.raiseItem(item1))
+        self.assertEqual(item1.zValue(), 2)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 1)
+
+        # lower
+        self.assertFalse(l.lowerItem(item3))
+        self.assertEqual(item1.zValue(), 2)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 1)
+
+        self.assertTrue(l.lowerItem(item2))
+        self.assertEqual(item1.zValue(), 3)
+        self.assertEqual(item2.zValue(), 2)
+        self.assertEqual(item3.zValue(), 1)
+
+        self.assertTrue(l.lowerItem(item2))
+        self.assertEqual(item1.zValue(), 3)
+        self.assertEqual(item2.zValue(), 1)
+        self.assertEqual(item3.zValue(), 2)
+
+        # raise to top
+        self.assertFalse(l.moveItemToTop(item1))
+        self.assertEqual(item1.zValue(), 3)
+        self.assertEqual(item2.zValue(), 1)
+        self.assertEqual(item3.zValue(), 2)
+
+        self.assertTrue(l.moveItemToTop(item3))
+        self.assertEqual(item1.zValue(), 2)
+        self.assertEqual(item2.zValue(), 1)
+        self.assertEqual(item3.zValue(), 3)
+
+        self.assertTrue(l.moveItemToTop(item2))
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 2)
+
+        # move to bottom
+        self.assertFalse(l.moveItemToBottom(item1))
+        self.assertEqual(item1.zValue(), 1)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 2)
+
+        self.assertTrue(l.moveItemToBottom(item3))
+        self.assertEqual(item1.zValue(), 2)
+        self.assertEqual(item2.zValue(), 3)
+        self.assertEqual(item3.zValue(), 1)
+
+        self.assertTrue(l.moveItemToBottom(item2))
+        self.assertEqual(item1.zValue(), 3)
+        self.assertEqual(item2.zValue(), 1)
+        self.assertEqual(item3.zValue(), 2)
 
 
 if __name__ == '__main__':

@@ -238,7 +238,7 @@ class TestItem : public QgsLayoutItem
   public:
 
     TestItem( QgsLayout *layout ) : QgsLayoutItem( layout ) {}
-    ~TestItem() {}
+    ~TestItem() = default;
 
     //implement pure virtual methods
     int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }

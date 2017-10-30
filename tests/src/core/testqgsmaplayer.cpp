@@ -44,7 +44,8 @@ class TestSignalReceiver : public QObject
     }
 };
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsMapLayer class.
  */
 class TestQgsMapLayer : public QObject
@@ -52,8 +53,7 @@ class TestQgsMapLayer : public QObject
     Q_OBJECT
 
   public:
-    TestQgsMapLayer()
-    {}
+    TestQgsMapLayer() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

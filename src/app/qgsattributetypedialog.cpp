@@ -40,11 +40,11 @@
 #include <cfloat>
 
 QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx )
-  : QDialog()
-  , mLayer( vl )
+  : mLayer( vl )
   , mFieldIdx( fieldIdx )
 {
   setupUi( this );
+  connect( selectionListWidget, &QListWidget::currentRowChanged, this, &QgsAttributeTypeDialog::selectionListWidget_currentRowChanged );
   setWindowTitle( tr( "Edit Widget Properties - %1 (%2)" ).arg( vl->fields().at( fieldIdx ).name(), vl->name() ) );
 
   QMapIterator<QString, QgsEditorWidgetFactory *> it( QgsGui::editorWidgetRegistry()->factories() );
@@ -333,7 +333,7 @@ void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )
   labelOnTopCheckBox->setChecked( onTop );
 }
 
-void QgsAttributeTypeDialog::on_selectionListWidget_currentRowChanged( int index )
+void QgsAttributeTypeDialog::selectionListWidget_currentRowChanged( int index )
 {
   const QString editType = selectionListWidget->item( index )->data( Qt::UserRole ).toString();
 

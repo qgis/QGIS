@@ -19,7 +19,8 @@
 #include "qgsmimedatautils.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Abstract base class that may be implemented to handle new types of data to be dropped in QGIS.
  *
  * Implementations have three approaches they can use to handle drops.

@@ -31,6 +31,17 @@ QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const
   , mExtension( theExtensions )
 {
   setupUi( this );
+  connect( btnConnect, &QPushButton::clicked, this, &QgsOgrDbSourceSelect::btnConnect_clicked );
+  connect( btnNew, &QPushButton::clicked, this, &QgsOgrDbSourceSelect::btnNew_clicked );
+  connect( btnDelete, &QPushButton::clicked, this, &QgsOgrDbSourceSelect::btnDelete_clicked );
+  connect( mSearchGroupBox, &QGroupBox::toggled, this, &QgsOgrDbSourceSelect::mSearchGroupBox_toggled );
+  connect( mSearchTableEdit, &QLineEdit::textChanged, this, &QgsOgrDbSourceSelect::mSearchTableEdit_textChanged );
+  connect( mSearchColumnComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOgrDbSourceSelect::mSearchColumnComboBox_currentIndexChanged );
+  connect( mSearchModeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOgrDbSourceSelect::mSearchModeComboBox_currentIndexChanged );
+  connect( cbxAllowGeometrylessTables, &QCheckBox::stateChanged, this, &QgsOgrDbSourceSelect::cbxAllowGeometrylessTables_stateChanged );
+  connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsOgrDbSourceSelect::cmbConnections_activated );
+  connect( mTablesTreeView, &QTreeView::clicked, this, &QgsOgrDbSourceSelect::mTablesTreeView_clicked );
+  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsOgrDbSourceSelect::mTablesTreeView_doubleClicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOgrDbSourceSelect::showHelp );
 
@@ -101,7 +112,7 @@ QgsOgrDbSourceSelect::~QgsOgrDbSourceSelect()
 
 
 // Remember which database is selected
-void QgsOgrDbSourceSelect::on_cmbConnections_activated( int )
+void QgsOgrDbSourceSelect::cmbConnections_activated( int )
 {
   dbChanged();
 }
@@ -112,30 +123,30 @@ void QgsOgrDbSourceSelect::buildQuery()
 }
 
 
-void QgsOgrDbSourceSelect::on_cbxAllowGeometrylessTables_stateChanged( int )
+void QgsOgrDbSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
 {
-  on_btnConnect_clicked();
+  btnConnect_clicked();
 }
 
-void QgsOgrDbSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
+void QgsOgrDbSourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
 {
   mBuildQueryButton->setEnabled( index.parent().isValid() && mTablesTreeView->currentIndex().data( Qt::UserRole + 2 ) != QStringLiteral( "Raster" ) );
 }
 
-void QgsOgrDbSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsOgrDbSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
   setSql( index );
 }
 
-void QgsOgrDbSourceSelect::on_mSearchGroupBox_toggled( bool checked )
+void QgsOgrDbSourceSelect::mSearchGroupBox_toggled( bool checked )
 {
   if ( mSearchTableEdit->text().isEmpty() )
     return;
 
-  on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
+  mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
 }
 
-void QgsOgrDbSourceSelect::on_mSearchTableEdit_textChanged( const QString &text )
+void QgsOgrDbSourceSelect::mSearchTableEdit_textChanged( const QString &text )
 {
   if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )
   {
@@ -147,7 +158,7 @@ void QgsOgrDbSourceSelect::on_mSearchTableEdit_textChanged( const QString &text 
   }
 }
 
-void QgsOgrDbSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString &text )
+void QgsOgrDbSourceSelect::mSearchColumnComboBox_currentIndexChanged( const QString &text )
 {
   if ( text == tr( "All" ) )
   {
@@ -171,10 +182,10 @@ void QgsOgrDbSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const Q
   }
 }
 
-void QgsOgrDbSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString &text )
+void QgsOgrDbSourceSelect::mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
-  on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
+  mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
 
@@ -195,7 +206,7 @@ void QgsOgrDbSourceSelect::populateConnectionList()
   cmbConnections->setDisabled( cmbConnections->count() == 0 );
 }
 
-void QgsOgrDbSourceSelect::on_btnNew_clicked()
+void QgsOgrDbSourceSelect::btnNew_clicked()
 {
   if ( QgsOgrDataCollectionItem::createConnection( name(), extension(), ogrDriverName() ) )
   {
@@ -217,7 +228,7 @@ QString QgsOgrDbSourceSelect::layerURI( const QModelIndex &index )
 }
 
 // Slot for deleting an existing connection
-void QgsOgrDbSourceSelect::on_btnDelete_clicked()
+void QgsOgrDbSourceSelect::btnDelete_clicked()
 {
   QString subKey = cmbConnections->currentText();
   int idx = subKey.indexOf( '@' );
@@ -288,11 +299,11 @@ void QgsOgrDbSourceSelect::addButtonClicked()
   else
   {
     // Use OGR
-    for ( const LayerInfo &info : qgsAsConst( selectedVectors ) )
+    for ( const LayerInfo &info : qgis::as_const( selectedVectors ) )
     {
       emit addVectorLayer( info.first, info.second );
     }
-    for ( const LayerInfo &info : qgsAsConst( selectedRasters ) )
+    for ( const LayerInfo &info : qgis::as_const( selectedRasters ) )
     {
       emit addRasterLayer( info.first, info.second, QStringLiteral( "gdal" ) );
     }
@@ -303,7 +314,7 @@ void QgsOgrDbSourceSelect::addButtonClicked()
   }
 }
 
-void QgsOgrDbSourceSelect::on_btnConnect_clicked()
+void QgsOgrDbSourceSelect::btnConnect_clicked()
 {
   cbxAllowGeometrylessTables->setEnabled( false );
 

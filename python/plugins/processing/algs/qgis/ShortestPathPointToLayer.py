@@ -260,7 +260,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
             route.append(snappedPoints[0])
             route.reverse()
 
-            geom = QgsGeometry.fromPolyline(route)
+            geom = QgsGeometry.fromPolylineXY(route)
             feat.setGeometry(geom)
             feat['start'] = startPoint.toString()
             feat['end'] = points[i].toString()

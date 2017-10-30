@@ -179,8 +179,6 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       addFeature( vlayer, &f, false );
 
-      vlayer->triggerRepaint();
-
       // we are done with digitizing for now so instruct advanced digitizing dock to reset its CAD points
       cadDockWidget()->clearPoints();
     }

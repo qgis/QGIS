@@ -24,13 +24,15 @@
 #include <qgsattributeform.h>
 #include <qgsrelationmanager.h>
 #include <attributetable/qgsattributetablefiltermodel.h>
+#include "qgsfeaturelistcombobox.h"
+#include "qgsfeaturefiltermodel.h"
 #include "qgsgui.h"
 
 class TestQgsRelationReferenceWidget : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsRelationReferenceWidget() {}
+    TestQgsRelationReferenceWidget() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -40,6 +42,7 @@ class TestQgsRelationReferenceWidget : public QObject
 
     void testChainFilter();
     void testChainFilterRefreshed();
+    void testChainFilterDeleteForeignKey();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -178,12 +181,17 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   cbs[2]->setCurrentIndex( cbs[2]->findText( QStringLiteral( "brides" ) ) );
   cbs[1]->setCurrentIndex( cbs[1]->findText( QStringLiteral( "diameter" ) ) );
 
+  QEventLoop loop;
+  connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+  loop.exec();
+
   // combobox should propose NULL, 10 and 11 because the filter is now:
   // "material" == 'iron'
   QCOMPARE( w.mComboBox->count(), 3 );
 
   // if there's no filter at all, all features' id should be proposed
   cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "material" ) ) );
+  loop.exec();
   QCOMPARE( w.mComboBox->count(), 4 );
 }
 
@@ -220,6 +228,49 @@ void TestQgsRelationReferenceWidget::testChainFilterRefreshed()
   QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
   QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
   QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
+}
+
+void TestQgsRelationReferenceWidget::testChainFilterDeleteForeignKey()
+{
+  // init a relation reference widget
+  QStringList filterFields = { "material", "diameter", "raccord" };
+
+  QgsRelationReferenceWidget w( new QWidget() );
+  w.setChainFilters( true );
+  w.setFilterFields( filterFields );
+  w.setRelation( *mRelation, true );
+  w.init();
+
+  // check the default status of filter comboboxes
+  QList<QComboBox *> cbs = w.mFilterComboBoxes;
+
+  QCOMPARE( cbs[0]->currentText(), QString( "material" ) );
+  QCOMPARE( cbs[0]->isEnabled(), true );
+
+  QCOMPARE( cbs[1]->currentText(), QString( "diameter" ) );
+  QCOMPARE( cbs[1]->isEnabled(), false );
+
+  QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
+  QCOMPARE( cbs[2]->isEnabled(), false );
+
+  // set a foreign key
+  w.setForeignKey( QVariant( 11 ) );
+
+  QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
+  QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
+  QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
+
+  // delete the foreign key
+  w.deleteForeignKey();
+
+  QCOMPARE( cbs[0]->currentText(), QString( "material" ) );
+  QCOMPARE( cbs[0]->isEnabled(), true );
+
+  QCOMPARE( cbs[1]->currentText(), QString( "diameter" ) );
+  QCOMPARE( cbs[1]->isEnabled(), false );
+
+  QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
+  QCOMPARE( cbs[2]->isEnabled(), false );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )

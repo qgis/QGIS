@@ -39,7 +39,8 @@
 #include "qgspallabeling.h"
 #include "qgsproject.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * Unit tests for the diagram renderer
  */
 class TestQgsDiagram : public QObject
@@ -47,8 +48,7 @@ class TestQgsDiagram : public QObject
     Q_OBJECT
 
   public:
-    TestQgsDiagram()
-    {}
+    TestQgsDiagram() = default;
 
   private:
     bool mTestHasError =  false ;

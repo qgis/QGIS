@@ -25,7 +25,7 @@
 #include <QPainterPath>
 #include <memory>
 
-QgsCompoundCurve::QgsCompoundCurve(): QgsCurve()
+QgsCompoundCurve::QgsCompoundCurve()
 {
   mWkbType = QgsWkbTypes::CompoundCurve;
 }
@@ -59,6 +59,13 @@ bool QgsCompoundCurve::operator==( const QgsCurve &other ) const
 bool QgsCompoundCurve::operator!=( const QgsCurve &other ) const
 {
   return !operator==( other );
+}
+
+QgsCompoundCurve *QgsCompoundCurve::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsCompoundCurve >();
+  result->mWkbType = mWkbType;
+  return result.release();
 }
 
 QString QgsCompoundCurve::geometryType() const
@@ -200,7 +207,7 @@ bool QgsCompoundCurve::fromWkt( const QString &wkt )
   //if so, update the type dimensionality of the compound curve to match
   bool hasZ = false;
   bool hasM = false;
-  for ( const QgsCurve *curve : qgsAsConst( mCurves ) )
+  for ( const QgsCurve *curve : qgis::as_const( mCurves ) )
   {
     hasZ = hasZ || curve->is3D();
     hasM = hasM || curve->isMeasure();
@@ -232,7 +239,7 @@ QByteArray QgsCompoundCurve::asWkb() const
   wkb << static_cast<char>( QgsApplication::endian() );
   wkb << static_cast<quint32>( wkbType() );
   wkb << static_cast<quint32>( mCurves.size() );
-  for ( const QByteArray &wkbForCurve : qgsAsConst( wkbForCurves ) )
+  for ( const QByteArray &wkbForCurve : qgis::as_const( wkbForCurves ) )
   {
     wkb << wkbForCurve;
   }
@@ -271,6 +278,10 @@ QDomElement QgsCompoundCurve::asGML2( QDomDocument &doc, int precision, const QS
 QDomElement QgsCompoundCurve::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement compoundCurveElem = doc.createElementNS( ns, QStringLiteral( "CompositeCurve" ) );
+
+  if ( isEmpty() )
+    return compoundCurveElem;
+
   for ( const QgsCurve *curve : mCurves )
   {
     QDomElement curveMemberElem = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
@@ -380,6 +391,25 @@ QgsLineString *QgsCompoundCurve::curveToLine( double tolerance, SegmentationTole
   return line;
 }
 
+QgsCompoundCurve *QgsCompoundCurve::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+{
+  std::unique_ptr<QgsCompoundCurve> result( createEmptyWithSameType() );
+
+  for ( QgsCurve *curve : mCurves )
+  {
+    std::unique_ptr<QgsCurve> gridified( static_cast< QgsCurve * >( curve->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) ) );
+    if ( gridified )
+    {
+      result->mCurves.append( gridified.release() );
+    }
+  }
+
+  if ( result->mCurves.empty() )
+    return nullptr;
+  else
+    return result.release();
+}
+
 const QgsCurve *QgsCompoundCurve::curveAt( int i ) const
 {
   if ( i < 0 || i >= mCurves.size() )
@@ -475,7 +505,7 @@ void QgsCompoundCurve::draw( QPainter &p ) const
 
 void QgsCompoundCurve::transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d, bool transformZ )
 {
-  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
+  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
   {
     curve->transform( ct, d, transformZ );
   }
@@ -484,7 +514,7 @@ void QgsCompoundCurve::transform( const QgsCoordinateTransform &ct, QgsCoordinat
 
 void QgsCompoundCurve::transform( const QTransform &t )
 {
-  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
+  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
   {
     curve->transform( t );
   }
@@ -795,7 +825,7 @@ bool QgsCompoundCurve::addZValue( double zValue )
 
   mWkbType = QgsWkbTypes::addZ( mWkbType );
 
-  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
+  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
   {
     curve->addZValue( zValue );
   }
@@ -810,7 +840,7 @@ bool QgsCompoundCurve::addMValue( double mValue )
 
   mWkbType = QgsWkbTypes::addM( mWkbType );
 
-  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
+  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
   {
     curve->addMValue( mValue );
   }
@@ -824,7 +854,7 @@ bool QgsCompoundCurve::dropZValue()
     return false;
 
   mWkbType = QgsWkbTypes::dropZ( mWkbType );
-  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
+  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
   {
     curve->dropZValue();
   }
@@ -838,7 +868,7 @@ bool QgsCompoundCurve::dropMValue()
     return false;
 
   mWkbType = QgsWkbTypes::dropM( mWkbType );
-  for ( QgsCurve *curve : qgsAsConst( mCurves ) )
+  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
   {
     curve->dropMValue();
   }

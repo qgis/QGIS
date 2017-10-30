@@ -27,6 +27,7 @@ QgsPresetColorRampWidget::QgsPresetColorRampWidget( const QgsPresetSchemeColorRa
   , mRamp( ramp )
 {
   setupUi( this );
+  connect( mButtonAddColor, &QToolButton::clicked, this, &QgsPresetColorRampWidget::mButtonAddColor_clicked );
   mTreeColors->setScheme( &mRamp );
 
   connect( mButtonCopyColors, &QAbstractButton::clicked, mTreeColors, &QgsColorSchemeList::copyColors );
@@ -66,7 +67,7 @@ void QgsPresetColorRampWidget::setColors()
   emit changed();
 }
 
-void QgsPresetColorRampWidget::on_mButtonAddColor_clicked()
+void QgsPresetColorRampWidget::mButtonAddColor_clicked()
 {
   if ( dockMode() )
   {

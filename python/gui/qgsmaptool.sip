@@ -33,7 +33,6 @@ class QgsMapTool : QObject
 %TypeHeaderCode
 #include "qgsmaptool.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsMapToolZoom *>( sipCpp ) != NULL )
       sipType = sipType_QgsMapToolZoom;
@@ -148,6 +147,11 @@ called when set as currently active map tool
 called when map tool is being deactivated
 %End
 
+    virtual void clean();
+%Docstring
+convenient method to clean members
+%End
+
     QgsMapCanvas *canvas();
 %Docstring
 returns pointer to the tool's map canvas
@@ -156,6 +160,7 @@ returns pointer to the tool's map canvas
 
     QString toolName();
 %Docstring
+ Emit map tool changed with the old tool
 .. versionadded:: 2.3
  :rtype: str
 %End
@@ -239,6 +244,7 @@ transformation from layer's coordinates to map coordinates (which is different i
 
     QgsPoint toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) /PyName=toMapCoordinatesV2/;
 %Docstring
+ transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
 .. note::
 
    available in Python bindings as toMapCoordinatesV2

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgswmsparameters.h"
+#include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
 #include <iostream>
 
@@ -461,6 +462,20 @@ namespace QgsWms
                                QVariant()
                              };
     save( pGridY );
+
+    const Parameter pWithGeometry = { ParameterName::WITH_GEOMETRY,
+                                      QVariant::Bool,
+                                      QVariant( false ),
+                                      QVariant()
+                                    };
+    save( pWithGeometry );
+
+    const Parameter pWithMapTip = { ParameterName::WITH_MAPTIP,
+                                    QVariant::Bool,
+                                    QVariant( false ),
+                                    QVariant()
+                                  };
+    save( pWithMapTip );
   }
 
   QgsWmsParameters::QgsWmsParameters( const QgsServerRequest::Parameters &parameters )
@@ -510,6 +525,16 @@ namespace QgsWms
           if ( !value.canConvert( mParameters[name].mType ) )
           {
             raiseError( name );
+          }
+        }
+        else //maybe an external wms parameter?
+        {
+          int separator = key.indexOf( ":" );
+          if ( separator >= 1 )
+          {
+            QString id = key.left( separator );
+            QString param = key.right( key.length() - separator - 1 );
+            mExternalWMSParameters[id].insert( param, parameters[key] );
           }
         }
       }
@@ -875,6 +900,12 @@ namespace QgsWms
           }
         }
 
+        if ( d[0] > d[2] || d[1] > d[3] )
+        {
+          *error = true;
+          return extent;
+        }
+
         extent = QgsRectangle( d[0], d[1], d[2], d[3] );
       }
       else
@@ -1179,8 +1210,12 @@ namespace QgsWms
       f = Format::XML;
     else if ( fStr.startsWith( QLatin1String( "text/html" ), Qt::CaseInsensitive ) )
       f = Format::HTML;
+    else if ( fStr.startsWith( QLatin1String( "text/plain" ), Qt::CaseInsensitive ) )
+      f = Format::TEXT;
     else if ( fStr.startsWith( QLatin1String( "application/vnd.ogc.gml" ), Qt::CaseInsensitive ) )
       f = Format::GML;
+    else
+      f = Format::NONE;
 
     return f;
   }
@@ -1834,7 +1869,7 @@ namespace QgsWms
     QList<QColor> bufferColors = toColorList( toStringList( ParameterName::HIGHLIGHT_LABELBUFFERCOLOR, mapId, ';' ), ParameterName::HIGHLIGHT_LABELBUFFERCOLOR, mapId );
     QList<float> bufferSizes = toFloatList( toStringList( ParameterName::HIGHLIGHT_LABELBUFFERSIZE, mapId, ';' ), ParameterName::HIGHLIGHT_LABELBUFFERSIZE, mapId );
 
-    int nHLayers = qMin( geoms.size(), slds.size() );
+    int nHLayers = std::min( geoms.size(), slds.size() );
     for ( int i = 0; i < nHLayers; i++ )
     {
       QgsWmsParametersHighlightLayer hParam;
@@ -1868,6 +1903,33 @@ namespace QgsWms
     param.mHighlightLayers = hParams;
 
     return param;
+  }
+
+  QString QgsWmsParameters::externalWMSUri( const QString &id ) const
+  {
+    if ( !mExternalWMSParameters.contains( id ) )
+    {
+      return QString();
+    }
+
+    QgsDataSourceUri wmsUri;
+    const QMap<QString, QString> &paramMap = mExternalWMSParameters[ id ];
+    QMap<QString, QString>::const_iterator paramIt = paramMap.constBegin();
+    for ( ; paramIt != paramMap.constEnd(); ++paramIt )
+    {
+      wmsUri.setParam( paramIt.key().toLower(), paramIt.value() );
+    }
+    return wmsUri.encodedUri();
+  }
+
+  bool QgsWmsParameters::withGeometry() const
+  {
+    return toBool( ParameterName::WITH_GEOMETRY );
+  }
+
+  bool QgsWmsParameters::withMapTip() const
+  {
+    return toBool( ParameterName::WITH_MAPTIP );
   }
 
   QString QgsWmsParameters::name( ParameterName name ) const

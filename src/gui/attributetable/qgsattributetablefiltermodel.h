@@ -29,7 +29,8 @@ class QgsVectorLayerCache;
 class QgsMapCanvas;
 class QItemSelectionModel;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsAttributeTableFilterModel
  */
 class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, public QgsFeatureModel

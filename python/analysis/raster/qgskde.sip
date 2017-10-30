@@ -96,6 +96,7 @@ Type of output value
  to generate the surface. The output path and file format are also required.
 %End
 
+
     Result run();
 %Docstring
  Runs the KDE calculation across the whole layer at once. Either call this method, or manually
@@ -128,6 +129,8 @@ Type of output value
  :rtype: Result
 %End
 
+  private:
+    QgsKernelDensityEstimation( const QgsKernelDensityEstimation &other );
 };
 
 

@@ -177,6 +177,8 @@ Closes the line string by appending the first point to the end of the line, if i
 
     virtual bool isEmpty() const;
 
+    virtual QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
+
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
 
@@ -268,6 +270,7 @@ Closes the line string by appending the first point to the end of the line, if i
 
 
   protected:
+    virtual QgsLineString *createEmptyWithSameType() const /Factory/;
 
     virtual QgsRectangle calculateBoundingBox() const;
 

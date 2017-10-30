@@ -83,6 +83,18 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
     void setSnapToGuides( bool enabled );
 
     /**
+     * Returns true if snapping to items is enabled.
+     * \see setSnapToItems()
+     */
+    bool snapToItems() const { return mSnapToItems; }
+
+    /**
+     * Sets whether snapping to items is \a enabled.
+     * \see snapToItems()
+     */
+    void setSnapToItems( bool enabled );
+
+    /**
      * Snaps a layout coordinate \a point. If \a point was snapped, \a snapped will be set to true.
      *
      * The \a scaleFactor argument should be set to the transformation from
@@ -90,8 +102,40 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
      * graphics view transform().m11() value.
      *
      * This method considers snapping to the grid, snap lines, etc.
+     *
+     * If the \a horizontalSnapLine and \a verticalSnapLine arguments are specified, then the snapper
+     * will automatically display and position these lines to indicate snapping positions to item bounds.
+     *
+     * A list of items to ignore during the snapping can be specified via the \a ignoreItems list.
+
+     * \see snapRect()
      */
-    QPointF snapPoint( QPointF point, double scaleFactor, bool &snapped SIP_OUT ) const;
+    QPointF snapPoint( QPointF point, double scaleFactor, bool &snapped SIP_OUT, QGraphicsLineItem *horizontalSnapLine = nullptr,
+                       QGraphicsLineItem *verticalSnapLine = nullptr,
+                       const QList< QgsLayoutItem * > *ignoreItems = nullptr ) const;
+
+    /**
+     * Snaps a layout coordinate \a rect. If \a rect was snapped, \a snapped will be set to true.
+     *
+     * Snapping occurs by moving the rectangle alone. The rectangle will not be resized
+     * as a result of the snap operation.
+     *
+     * The \a scaleFactor argument should be set to the transformation from
+     * scalar transform from layout coordinates to pixels, i.e. the
+     * graphics view transform().m11() value.
+     *
+     * This method considers snapping to the grid, snap lines, etc.
+     *
+     * If the \a horizontalSnapLine and \a verticalSnapLine arguments are specified, then the snapper
+     * will automatically display and position these lines to indicate snapping positions to item bounds.
+     *
+     * A list of items to ignore during the snapping can be specified via the \a ignoreItems list.
+     *
+     * \see snapPoint()
+     */
+    QRectF snapRect( const QRectF &rect, double scaleFactor, bool &snapped SIP_OUT, QGraphicsLineItem *horizontalSnapLine = nullptr,
+                     QGraphicsLineItem *verticalSnapLine = nullptr,
+                     const QList< QgsLayoutItem * > *ignoreItems = nullptr ) const;
 
     /**
      * Snaps a layout coordinate \a point to the grid. If \a point
@@ -104,21 +148,98 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
      *
      * If snapToGrid() is disabled, this method will return the point
      * unchanged.
+     *
+     * \see snapPointsToGrid()
      */
     QPointF snapPointToGrid( QPointF point, double scaleFactor, bool &snappedX SIP_OUT, bool &snappedY SIP_OUT ) const;
 
     /**
-     * Snaps a layout coordinate \a point to the grid. If \a point
+     * Snaps a set of \a points to the grid. If the points
+     * were snapped, \a snapped will be set to true.
+     *
+     * The \a scaleFactor argument should be set to the transformation from
+     * scalar transform from layout coordinates to pixels, i.e. the
+     * graphics view transform().m11() value.
+     *
+     * If snapToGrid() is disabled, this method will not attempt to snap the points.
+     *
+     * The returned value is the smallest delta which the points need to be shifted by in order to align
+     * one of the points to the grid.
+     *
+     * \see snapPointToGrid()
+     */
+    QPointF snapPointsToGrid( const QList< QPointF > &points, double scaleFactor, bool &snappedX SIP_OUT, bool &snappedY SIP_OUT ) const;
+
+    /**
+     * Snaps an \a original layout coordinate to the guides. If the point
      * was snapped, \a snapped will be set to true.
      *
      * The \a scaleFactor argument should be set to the transformation from
      * scalar transform from layout coordinates to pixels, i.e. the
      * graphics view transform().m11() value.
      *
-     * If snapToGrid() is disabled, this method will return the point
+     * If snapToGuides() is disabled, this method will return the point
      * unchanged.
+     *
+     * \see snapPointsToGuides()
      */
-    double snapPointToGuides( double original, QgsLayoutGuide::Orientation orientation, double scaleFactor, bool &snapped SIP_OUT ) const;
+    double snapPointToGuides( double original, Qt::Orientation orientation, double scaleFactor, bool &snapped SIP_OUT ) const;
+
+    /**
+     * Snaps a set of \a points to the guides. If the points
+     * were snapped, \a snapped will be set to true.
+     *
+     * The \a scaleFactor argument should be set to the transformation from
+     * scalar transform from layout coordinates to pixels, i.e. the
+     * graphics view transform().m11() value.
+     *
+     * If snapToGuides() is disabled, this method will not attempt to snap the points.
+     *
+     * The returned value is the smallest delta which the points need to be shifted by in order to align
+     * one of the points to a guide.
+     *
+     * \see snapPointToGuides()
+     */
+    double snapPointsToGuides( const QList< double > &points, Qt::Orientation orientation, double scaleFactor, bool &snapped SIP_OUT ) const;
+
+    /**
+     * Snaps an \a original layout coordinate to the item bounds. If the point
+     * was snapped, \a snapped will be set to true.
+     *
+     * The \a scaleFactor argument should be set to the transformation from
+     * scalar transform from layout coordinates to pixels, i.e. the
+     * graphics view transform().m11() value.
+     *
+     * If snapToItems() is disabled, this method will return the point
+     * unchanged.
+     *
+     * A list of items to ignore during the snapping can be specified via the \a ignoreItems list.
+     *
+     * If \a snapLine is specified, the snapper will automatically show (or hide) the snap line
+     * based on the result of the snap, and position it at the correct location for the snap.
+     *
+     * \see snapPointsToItems()
+     */
+    double snapPointToItems( double original, Qt::Orientation orientation, double scaleFactor, const QList< QgsLayoutItem * > &ignoreItems, bool &snapped SIP_OUT,
+                             QGraphicsLineItem *snapLine = nullptr ) const;
+
+    /**
+     * Snaps a set of \a points to the item bounds. If the points
+     * were snapped, \a snapped will be set to true.
+     *
+     * The \a scaleFactor argument should be set to the transformation from
+     * scalar transform from layout coordinates to pixels, i.e. the
+     * graphics view transform().m11() value.
+     *
+     * If snapToItems() is disabled, this method will not attempt to snap the points.
+     *
+     * The returned value is the smallest delta which the points need to be shifted by in order to align
+     * one of the points to an item bound.
+     *
+     * \see snapPointToItems()
+     */
+    double snapPointsToItems( const QList< double > &points, Qt::Orientation orientation, double scaleFactor, const QList< QgsLayoutItem * > &ignoreItems, bool &snapped SIP_OUT,
+                              QGraphicsLineItem *snapLine = nullptr ) const;
 
     /**
      * Stores the snapper's state in a DOM element. The \a parentElement should refer to the parent layout's DOM element.
@@ -147,6 +268,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
     int mTolerance = 5;
     bool mSnapToGrid = false;
     bool mSnapToGuides = true;
+    bool mSnapToItems = true;
 
     friend class QgsLayoutSnapperUndoCommand;
 

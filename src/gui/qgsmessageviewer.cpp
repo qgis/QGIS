@@ -22,6 +22,7 @@ QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WindowFlags fl, bool de
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( checkBox, &QCheckBox::toggled, this, &QgsMessageViewer::checkBox_toggled );
   if ( deleteOnClose )
   {
     setAttribute( Qt::WA_DeleteOnClose );
@@ -109,7 +110,7 @@ void QgsMessageViewer::setCheckBoxQgsSettingsLabel( const QString &label )
 }
 
 
-void QgsMessageViewer::on_checkBox_toggled( bool toggled )
+void QgsMessageViewer::checkBox_toggled( bool toggled )
 {
   Q_UNUSED( toggled );
   if ( !mCheckBoxQgsSettingsLabel.isEmpty() )

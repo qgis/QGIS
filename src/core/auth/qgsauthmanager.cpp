@@ -41,7 +41,6 @@
 #include "keychain.h"
 
 // QGIS includes
-#include "qgsapplication.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthcrypto.h"
 #include "qgsauthmethod.h"
@@ -83,13 +82,27 @@ static const QString sDescription = QObject::tr( "Master Password <-> KeyChain s
 #endif
 
 
+
 QgsAuthManager *QgsAuthManager::instance()
 {
   if ( !sInstance )
   {
-    sInstance = new QgsAuthManager();
+    static QMutex sMutex;
+    QMutexLocker locker( &sMutex );
+    if ( !sInstance )
+    {
+      sInstance = new QgsAuthManager( );
+    }
   }
   return sInstance;
+}
+
+
+QgsAuthManager::QgsAuthManager()
+{
+  mMutex = new QMutex( QMutex::Recursive );
+  connect( this, &QgsAuthManager::messageOut,
+           this, &QgsAuthManager::writeToConsole );
 }
 
 QSqlDatabase QgsAuthManager::authDatabaseConnection() const
@@ -121,7 +134,7 @@ QSqlDatabase QgsAuthManager::authDatabaseConnection() const
   return authdb;
 }
 
-bool QgsAuthManager::init( const QString &pluginPath )
+bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabasePath )
 {
   if ( mAuthInit )
     return true;
@@ -184,7 +197,7 @@ bool QgsAuthManager::init( const QString &pluginPath )
     return isDisabled();
   }
 
-  mAuthDbPath = QDir::cleanPath( QgsApplication::qgisAuthDatabaseFilePath() );
+  mAuthDbPath = QDir::cleanPath( authDatabasePath );
   QgsDebugMsg( QString( "Auth database path: %1" ).arg( authenticationDatabasePath() ) );
 
   QFileInfo dbinfo( authenticationDatabasePath() );
@@ -1401,7 +1414,6 @@ bool QgsAuthManager::updateNetworkRequest( QNetworkRequest &request, const QStri
     }
     return true;
   }
-
   return false;
 }
 
@@ -1523,7 +1535,7 @@ bool QgsAuthManager::storeAuthSetting( const QString &key, const QVariant &value
   return true;
 }
 
-QVariant QgsAuthManager::getAuthSetting( const QString &key, const QVariant &defaultValue, bool decrypt )
+QVariant QgsAuthManager::authSetting( const QString &key, const QVariant &defaultValue, bool decrypt )
 {
   if ( key.isEmpty() )
     return QVariant();
@@ -1682,7 +1694,7 @@ bool QgsAuthManager::storeCertIdentity( const QSslCertificate &cert, const QSslK
   return true;
 }
 
-const QSslCertificate QgsAuthManager::getCertIdentity( const QString &id )
+const QSslCertificate QgsAuthManager::certIdentity( const QString &id )
 {
   QSslCertificate emptycert;
   QSslCertificate cert;
@@ -1715,7 +1727,7 @@ const QSslCertificate QgsAuthManager::getCertIdentity( const QString &id )
   return cert;
 }
 
-const QPair<QSslCertificate, QSslKey> QgsAuthManager::getCertIdentityBundle( const QString &id )
+const QPair<QSslCertificate, QSslKey> QgsAuthManager::certIdentityBundle( const QString &id )
 {
   QPair<QSslCertificate, QSslKey> bundle;
   if ( id.isEmpty() )
@@ -1769,17 +1781,17 @@ const QPair<QSslCertificate, QSslKey> QgsAuthManager::getCertIdentityBundle( con
   return bundle;
 }
 
-const QStringList QgsAuthManager::getCertIdentityBundleToPem( const QString &id )
+const QStringList QgsAuthManager::certIdentityBundleToPem( const QString &id )
 {
-  QPair<QSslCertificate, QSslKey> bundle( getCertIdentityBundle( id ) );
-  if ( bundle.first.isValid() && !bundle.second.isNull() )
+  QPair<QSslCertificate, QSslKey> bundle( certIdentityBundle( id ) );
+  if ( QgsAuthCertUtils::certIsViable( bundle.first ) && !bundle.second.isNull() )
   {
     return QStringList() << QString( bundle.first.toPem() ) << QString( bundle.second.toPem() );
   }
   return QStringList();
 }
 
-const QList<QSslCertificate> QgsAuthManager::getCertIdentities()
+const QList<QSslCertificate> QgsAuthManager::certIdentities()
 {
   QList<QSslCertificate> certs;
 
@@ -1800,7 +1812,7 @@ const QList<QSslCertificate> QgsAuthManager::getCertIdentities()
   return certs;
 }
 
-QStringList QgsAuthManager::getCertIdentityIds() const
+QStringList QgsAuthManager::certIdentityIds() const
 {
   QStringList identityids = QStringList();
 
@@ -1925,7 +1937,7 @@ bool QgsAuthManager::storeSslCertCustomConfig( const QgsAuthConfigSslServer &con
   return true;
 }
 
-const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfig( const QString &id, const QString &hostport )
+const QgsAuthConfigSslServer QgsAuthManager::sslCertCustomConfig( const QString &id, const QString &hostport )
 {
   QgsAuthConfigSslServer config;
 
@@ -1966,7 +1978,7 @@ const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfig( const QStri
   return config;
 }
 
-const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfigByHost( const QString &hostport )
+const QgsAuthConfigSslServer QgsAuthManager::sslCertCustomConfigByHost( const QString &hostport )
 {
   QgsAuthConfigSslServer config;
 
@@ -2006,7 +2018,7 @@ const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfigByHost( const
   return config;
 }
 
-const QList<QgsAuthConfigSslServer> QgsAuthManager::getSslCertCustomConfigs()
+const QList<QgsAuthConfigSslServer> QgsAuthManager::sslCertCustomConfigs()
 {
   QList<QgsAuthConfigSslServer> configs;
 
@@ -2310,7 +2322,7 @@ bool QgsAuthManager::storeCertAuthority( const QSslCertificate &cert )
   return true;
 }
 
-const QSslCertificate QgsAuthManager::getCertAuthority( const QString &id )
+const QSslCertificate QgsAuthManager::certAuthority( const QString &id )
 {
   QSslCertificate emptycert;
   QSslCertificate cert;
@@ -2409,7 +2421,7 @@ bool QgsAuthManager::removeCertAuthority( const QSslCertificate &cert )
   return true;
 }
 
-const QList<QSslCertificate> QgsAuthManager::getSystemRootCAs()
+const QList<QSslCertificate> QgsAuthManager::systemRootCAs()
 {
 #ifndef Q_OS_MAC
   return QSslSocket::systemCaCertificates();
@@ -2419,15 +2431,15 @@ const QList<QSslCertificate> QgsAuthManager::getSystemRootCAs()
 #endif
 }
 
-const QList<QSslCertificate> QgsAuthManager::getExtraFileCAs()
+const QList<QSslCertificate> QgsAuthManager::extraFileCAs()
 {
   QList<QSslCertificate> certs;
   QList<QSslCertificate> filecerts;
-  QVariant cafileval = QgsAuthManager::instance()->getAuthSetting( QStringLiteral( "cafile" ) );
+  QVariant cafileval = QgsAuthManager::instance()->authSetting( QStringLiteral( "cafile" ) );
   if ( cafileval.isNull() )
     return certs;
 
-  QVariant allowinvalid = QgsAuthManager::instance()->getAuthSetting( QStringLiteral( "cafileallowinvalid" ), QVariant( false ) );
+  QVariant allowinvalid = QgsAuthManager::instance()->authSetting( QStringLiteral( "cafileallowinvalid" ), QVariant( false ) );
   if ( allowinvalid.isNull() )
     return certs;
 
@@ -2437,7 +2449,7 @@ const QList<QSslCertificate> QgsAuthManager::getExtraFileCAs()
     filecerts = QgsAuthCertUtils::certsFromFile( cafile );
   }
   // only CAs or certs capable of signing other certs are allowed
-  for ( const auto &cert : qgsAsConst( filecerts ) )
+  for ( const auto &cert : qgis::as_const( filecerts ) )
   {
     if ( !allowinvalid.toBool() && !cert.isValid() )
     {
@@ -2452,7 +2464,7 @@ const QList<QSslCertificate> QgsAuthManager::getExtraFileCAs()
   return certs;
 }
 
-const QList<QSslCertificate> QgsAuthManager::getDatabaseCAs()
+const QList<QSslCertificate> QgsAuthManager::databaseCAs()
 {
   QList<QSslCertificate> certs;
 
@@ -2473,18 +2485,18 @@ const QList<QSslCertificate> QgsAuthManager::getDatabaseCAs()
   return certs;
 }
 
-const QMap<QString, QSslCertificate> QgsAuthManager::getMappedDatabaseCAs()
+const QMap<QString, QSslCertificate> QgsAuthManager::mappedDatabaseCAs()
 {
-  return QgsAuthCertUtils::mapDigestToCerts( getDatabaseCAs() );
+  return QgsAuthCertUtils::mapDigestToCerts( databaseCAs() );
 }
 
 bool QgsAuthManager::rebuildCaCertsCache()
 {
   mCaCertsCache.clear();
   // in reverse order of precedence, with regards to duplicates, so QMap inserts overwrite
-  insertCaCertInCache( QgsAuthCertUtils::SystemRoot, getSystemRootCAs() );
-  insertCaCertInCache( QgsAuthCertUtils::FromFile, getExtraFileCAs() );
-  insertCaCertInCache( QgsAuthCertUtils::InDatabase, getDatabaseCAs() );
+  insertCaCertInCache( QgsAuthCertUtils::SystemRoot, systemRootCAs() );
+  insertCaCertInCache( QgsAuthCertUtils::FromFile, extraFileCAs() );
+  insertCaCertInCache( QgsAuthCertUtils::InDatabase, databaseCAs() );
 
   bool res = !mCaCertsCache.isEmpty(); // should at least contain system root CAs
   QgsDebugMsg( QString( "Rebuild of CA certs cache %1" ).arg( res ? "SUCCEEDED" : "FAILED" ) );
@@ -2529,7 +2541,7 @@ bool QgsAuthManager::storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthC
   return true;
 }
 
-QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertTrustPolicy( const QSslCertificate &cert )
+QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::certTrustPolicy( const QSslCertificate &cert )
 {
   if ( cert.isNull() )
   {
@@ -2612,7 +2624,7 @@ bool QgsAuthManager::removeCertTrustPolicy( const QSslCertificate &cert )
   return true;
 }
 
-QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertificateTrustPolicy( const QSslCertificate &cert )
+QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::certificateTrustPolicy( const QSslCertificate &cert )
 {
   if ( cert.isNull() )
   {
@@ -2647,7 +2659,7 @@ bool QgsAuthManager::setDefaultCertTrustPolicy( QgsAuthCertUtils::CertTrustPolic
 
 QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::defaultCertTrustPolicy()
 {
-  QVariant policy( getAuthSetting( QStringLiteral( "certdefaulttrust" ) ) );
+  QVariant policy( authSetting( QStringLiteral( "certdefaulttrust" ) ) );
   if ( policy.isNull() )
   {
     return QgsAuthCertUtils::Trusted;
@@ -2688,7 +2700,7 @@ bool QgsAuthManager::rebuildCertTrustCache()
   return true;
 }
 
-const QList<QSslCertificate> QgsAuthManager::getTrustedCaCerts( bool includeinvalid )
+const QList<QSslCertificate> QgsAuthManager::trustedCaCerts( bool includeinvalid )
 {
   QgsAuthCertUtils::CertTrustPolicy defaultpolicy( defaultCertTrustPolicy() );
   QStringList trustedids = mCertTrustCache.value( QgsAuthCertUtils::Trusted );
@@ -2707,7 +2719,7 @@ const QList<QSslCertificate> QgsAuthManager::getTrustedCaCerts( bool includeinva
     }
     else if ( defaultpolicy == QgsAuthCertUtils::Trusted && !untrustedids.contains( certid ) )
     {
-      if ( !includeinvalid && !cert.isValid() )
+      if ( !includeinvalid && !QgsAuthCertUtils::certIsViable( cert ) )
         continue;
       trustedcerts.append( cert );
     }
@@ -2721,7 +2733,7 @@ const QList<QSslCertificate> QgsAuthManager::getTrustedCaCerts( bool includeinva
   return trustedcerts;
 }
 
-const QList<QSslCertificate> QgsAuthManager::getUntrustedCaCerts( QList<QSslCertificate> trustedCAs )
+const QList<QSslCertificate> QgsAuthManager::untrustedCaCerts( QList<QSslCertificate> trustedCAs )
 {
   if ( trustedCAs.isEmpty() )
   {
@@ -2729,7 +2741,7 @@ const QList<QSslCertificate> QgsAuthManager::getUntrustedCaCerts( QList<QSslCert
     {
       rebuildTrustedCaCertsCache();
     }
-    trustedCAs = getTrustedCaCertsCache();
+    trustedCAs = trustedCaCertsCache();
   }
 
   const QList<QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > &certpairs( mCaCertsCache.values() );
@@ -2748,26 +2760,15 @@ const QList<QSslCertificate> QgsAuthManager::getUntrustedCaCerts( QList<QSslCert
 
 bool QgsAuthManager::rebuildTrustedCaCertsCache()
 {
-  mTrustedCaCertsCache = getTrustedCaCerts();
+  mTrustedCaCertsCache = trustedCaCerts();
   QgsDebugMsg( "Rebuilt trusted cert authorities cache" );
   // TODO: add some error trapping for the operation
   return true;
 }
 
-const QByteArray QgsAuthManager::getTrustedCaCertsPemText()
+const QByteArray QgsAuthManager::trustedCaCertsPemText()
 {
-  QByteArray capem;
-  const QList<QSslCertificate> certs( getTrustedCaCertsCache() );
-  if ( !certs.isEmpty() )
-  {
-    QStringList certslist;
-    for ( const auto &cert : certs )
-    {
-      certslist << cert.toPem();
-    }
-    capem = certslist.join( QStringLiteral( "\n" ) ).toLatin1(); //+ "\n";
-  }
-  return capem;
+  return QgsAuthCertUtils::certsToPemText( trustedCaCertsCache() );
 }
 
 bool QgsAuthManager::passwordHelperSync()
@@ -2867,14 +2868,6 @@ void QgsAuthManager::tryToStartDbErase()
   QgsDebugMsg( "authDatabaseEraseRequest emit skipped" );
 }
 
-QgsAuthManager::QgsAuthManager()
-  : QObject()
-  , mIgnoredSslErrorsCache( QHash<QString, QSet<QSslError::SslError> >() )
-{
-  mMutex = new QMutex( QMutex::Recursive );
-  connect( this, &QgsAuthManager::messageOut,
-           this, &QgsAuthManager::writeToConsole );
-}
 
 QgsAuthManager::~QgsAuthManager()
 {
@@ -3405,7 +3398,7 @@ bool QgsAuthManager::reencryptAllAuthenticationSettings( const QString &prevpass
   QStringList encryptedsettings;
   encryptedsettings << "";
 
-  for ( const auto & sett, qgsAsConst( encryptedsettings ) )
+  for ( const auto & sett, qgis::as_const( encryptedsettings ) )
   {
     if ( sett.isEmpty() || !existsAuthSetting( sett ) )
       continue;
@@ -3478,7 +3471,7 @@ bool QgsAuthManager::reencryptAllAuthenticationIdentities( const QString &prevpa
     return false;
 
   bool res = true;
-  const QStringList ids = getCertIdentityIds();
+  const QStringList ids = certIdentityIds();
   for ( const auto &identid : ids )
   {
     res = res && reencryptAuthenticationIdentity( identid, prevpass, prevciv );

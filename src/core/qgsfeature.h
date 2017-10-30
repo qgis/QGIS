@@ -53,7 +53,8 @@ typedef qint64 QgsFeatureId SIP_SKIP;
 #define STRING_TO_FID(str)  (str).toLongLong()
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * The feature class encapsulates a single feature including its id,
  * geometry and a list of field/values attributes.
  * \note QgsFeature objects are implicitly shared.
@@ -176,7 +177,8 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Constructor for QgsFeature
+    /**
+     * Constructor for QgsFeature
      * \param id feature id
      */
 #ifndef SIP_RUN
@@ -185,7 +187,8 @@ class CORE_EXPORT QgsFeature
     QgsFeature( qint64 id = 0 );
 #endif
 
-    /** Constructor for QgsFeature
+    /**
+     * Constructor for QgsFeature
      * \param fields feature's fields
      * \param id feature id
      */
@@ -195,11 +198,13 @@ class CORE_EXPORT QgsFeature
     QgsFeature( const QgsFields &fields, qint64 id = 0 );
 #endif
 
-    /** Copy constructor
+    /**
+     * Copy constructor
      */
     QgsFeature( const QgsFeature &rhs );
 
-    /** Assignment operator
+    /**
+     * Assignment operator
      */
     QgsFeature &operator=( const QgsFeature &rhs ) SIP_SKIP;
 
@@ -215,19 +220,22 @@ class CORE_EXPORT QgsFeature
 
     virtual ~QgsFeature();
 
-    /** Get the feature ID for this feature.
+    /**
+     * Get the feature ID for this feature.
      * \returns feature ID
      * \see setId()
      */
     QgsFeatureId id() const;
 
-    /** Sets the feature ID for this feature.
+    /**
+     * Sets the feature ID for this feature.
      * \param id feature id
      * \see id
      */
     void setId( QgsFeatureId id );
 
-    /** Returns the feature's attributes.
+    /**
+     * Returns the feature's attributes.
      * \returns list of feature's attributes
      * \see setAttributes
      * \since QGIS 2.9
@@ -235,7 +243,8 @@ class CORE_EXPORT QgsFeature
      */
     QgsAttributes attributes() const;
 
-    /** Sets the feature's attributes.
+    /**
+     * Sets the feature's attributes.
      * The feature will be valid after.
      * \param attrs attribute list
      * \see setAttribute
@@ -243,7 +252,8 @@ class CORE_EXPORT QgsFeature
      */
     void setAttributes( const QgsAttributes &attrs );
 
-    /** Set an attribute's value by field index.
+    /**
+     * Set an attribute's value by field index.
      * The feature will be valid if it was successful.
      * \param field the index of the field to set
      * \param attr the value of the attribute
@@ -278,12 +288,14 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Initialize this feature with the given number of fields. Discard any previously set attribute data.
+    /**
+     * Initialize this feature with the given number of fields. Discard any previously set attribute data.
      * \param fieldCount Number of fields to initialize
      */
     void initAttributes( int fieldCount );
 
-    /** Deletes an attribute and its value.
+    /**
+     * Deletes an attribute and its value.
      * \param field the index of the field
      * \see setAttribute
      * \note For Python: raises a KeyError exception if the field is not found
@@ -302,47 +314,54 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Returns the validity of this feature. This is normally set by
+    /**
+     * Returns the validity of this feature. This is normally set by
      * the provider to indicate some problem that makes the feature
      * invalid or to indicate a null feature.
      * \see setValid
      */
     bool isValid() const;
 
-    /** Sets the validity of the feature.
+    /**
+     * Sets the validity of the feature.
      * \param validity set to true if feature is valid
      * \see isValid
      */
     void setValid( bool validity );
 
-    /** Returns true if the feature has an associated geometry.
+    /**
+     * Returns true if the feature has an associated geometry.
      * \see geometry()
      * \since QGIS 3.0.
      */
     bool hasGeometry() const;
 
-    /** Returns the geometry associated with this feature. If the feature has no geometry,
+    /**
+     * Returns the geometry associated with this feature. If the feature has no geometry,
      * an empty QgsGeometry object will be returned.
      * \see hasGeometry()
      * \see setGeometry()
      */
     QgsGeometry geometry() const;
 
-    /** Set the feature's geometry. The feature will be valid after.
+    /**
+     * Set the feature's geometry. The feature will be valid after.
      * \param geometry new feature geometry
      * \see geometry()
      * \see clearGeometry()
      */
     void setGeometry( const QgsGeometry &geometry );
 
-    /** Removes any geometry associated with the feature.
+    /**
+     * Removes any geometry associated with the feature.
      * \see setGeometry()
      * \see hasGeometry()
      * \since QGIS 3.0
      */
     void clearGeometry();
 
-    /** Assign a field map with the feature to allow attribute access by attribute name.
+    /**
+     * Assign a field map with the feature to allow attribute access by attribute name.
      *  \param fields The attribute fields which this feature holds
      *  \param initAttributes If true, attributes are initialized. Clears any data previously assigned.
      *                        C++: Defaults to false
@@ -352,12 +371,14 @@ class CORE_EXPORT QgsFeature
      */
     void setFields( const QgsFields &fields, bool initAttributes = false SIP_PYARGDEFAULT( true ) );
 
-    /** Returns the field map associated with the feature.
+    /**
+     * Returns the field map associated with the feature.
      * \see setFields
      */
     QgsFields fields() const;
 
-    /** Insert a value into attribute. Returns false if attribute name could not be converted to index.
+    /**
+     * Insert a value into attribute. Returns false if attribute name could not be converted to index.
      *  Field map must be associated using setFields() before this method can be used.
      *  The feature will be valid if it was successful
      *  \param name The name of the field to set
@@ -392,7 +413,8 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Removes an attribute value by field name. Field map must be associated using setFields()
+    /**
+     * Removes an attribute value by field name. Field map must be associated using setFields()
      *  before this method can be used.
      *  \param name The name of the field to delete
      *  \returns false if attribute name could not be converted to index (C++ only)
@@ -418,7 +440,8 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Lookup attribute value from attribute name. Field map must be associated using setFields()
+    /**
+     * Lookup attribute value from attribute name. Field map must be associated using setFields()
      *  before this method can be used.
      *  \param name The name of the attribute to get
      *  \returns The value of the attribute (C++: Invalid variant if no such name exists )
@@ -445,7 +468,8 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Lookup attribute value from its index. Field map must be associated using setFields()
+    /**
+     * Lookup attribute value from its index. Field map must be associated using setFields()
      *  before this method can be used.
      *  \param fieldIdx The index of the attribute to get
      *  \returns The value of the attribute (C++: Invalid variant if no such index exists )
@@ -473,7 +497,8 @@ class CORE_EXPORT QgsFeature
     % End
 #endif
 
-    /** Utility method to get attribute index from name. Field map must be associated using setFields()
+    /**
+     * Utility method to get attribute index from name. Field map must be associated using setFields()
      *  before this method can be used.
      *  \param fieldName name of field to get attribute index of
      *  \returns -1 if field does not exist or field map is not associated.

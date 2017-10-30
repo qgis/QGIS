@@ -15,11 +15,6 @@
 
 #include "qgsmaplayerconfigwidgetfactory.h"
 
-QgsMapLayerConfigWidgetFactory::QgsMapLayerConfigWidgetFactory()
-{
-
-}
-
 QgsMapLayerConfigWidgetFactory::QgsMapLayerConfigWidgetFactory( const QString &title, const QIcon &icon )
   : mIcon( icon )
   , mTitle( title )

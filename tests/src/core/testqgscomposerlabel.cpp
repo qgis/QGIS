@@ -32,8 +32,7 @@ class TestQgsComposerLabel : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerLabel()
-    {}
+    TestQgsComposerLabel() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

@@ -27,7 +27,6 @@ class QgsMetadataWidget : QWidget
 %Docstring
  Constructor for the wizard.
 %End
-    ~QgsMetadataWidget();
 
     void saveMetadata( QgsLayerMetadata &layerMetadata ) const;
 %Docstring

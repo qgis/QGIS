@@ -43,9 +43,6 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
       QgisInterface *iface,
       QWidget *parent = 0, Qt::WindowFlags f = 0 );
 
-
-    ~QgsGrassMapcalc();
-
     // Current tool
     enum Tool
     {
@@ -127,11 +124,11 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     void mapChanged( const QString &text );
 
     //! Constant changed
-    void on_mConstantLineEdit_textChanged() { constantChanged(); }
+    void mConstantLineEdit_textChanged() { constantChanged(); }
     void constantChanged();
 
     //! Function selection changed
-    void on_mFunctionComboBox_activated() { functionChanged(); }
+    void mFunctionComboBox_activated() { functionChanged(); }
     void functionChanged();
 
     //! Save current state to file
@@ -215,11 +212,11 @@ class QgsGrassMapcalcFunction
       Function
     };
 
-    QgsGrassMapcalcFunction();
+    QgsGrassMapcalcFunction() = default;
     QgsGrassMapcalcFunction( int type, QString name, int count = 2,
                              QString description = "", QString label = "",
                              QString labels = "", bool drawLabel = true );
-    ~QgsGrassMapcalcFunction();
+    ~QgsGrassMapcalcFunction() = default;
 
     QString name() { return mName; }
     int     type() { return mType; }
@@ -262,8 +259,8 @@ class QgsGrassMapcalcFunction
 class QgsGrassMapcalcItem
 {
   public:
-    QgsGrassMapcalcItem();
-    virtual ~QgsGrassMapcalcItem();
+    QgsGrassMapcalcItem() = default;
+    virtual ~QgsGrassMapcalcItem() = default;
 
     virtual void setSelected( bool s ) { mSelected = s; }
     bool selected( void ) { return mSelected; }

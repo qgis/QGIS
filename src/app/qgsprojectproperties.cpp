@@ -74,6 +74,31 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   , mEllipsoidIndex( 0 )
 {
   setupUi( this );
+  connect( pbnAddScale, &QToolButton::clicked, this, &QgsProjectProperties::pbnAddScale_clicked );
+  connect( pbnRemoveScale, &QToolButton::clicked, this, &QgsProjectProperties::pbnRemoveScale_clicked );
+  connect( pbnImportScales, &QToolButton::clicked, this, &QgsProjectProperties::pbnImportScales_clicked );
+  connect( pbnExportScales, &QToolButton::clicked, this, &QgsProjectProperties::pbnExportScales_clicked );
+  connect( pbnWMSExtCanvas, &QPushButton::clicked, this, &QgsProjectProperties::pbnWMSExtCanvas_clicked );
+  connect( pbnWMSAddSRS, &QToolButton::clicked, this, &QgsProjectProperties::pbnWMSAddSRS_clicked );
+  connect( pbnWMSRemoveSRS, &QToolButton::clicked, this, &QgsProjectProperties::pbnWMSRemoveSRS_clicked );
+  connect( pbnWMSSetUsedSRS, &QPushButton::clicked, this, &QgsProjectProperties::pbnWMSSetUsedSRS_clicked );
+  connect( mAddWMSComposerButton, &QToolButton::clicked, this, &QgsProjectProperties::mAddWMSComposerButton_clicked );
+  connect( mRemoveWMSComposerButton, &QToolButton::clicked, this, &QgsProjectProperties::mRemoveWMSComposerButton_clicked );
+  connect( mAddLayerRestrictionButton, &QToolButton::clicked, this, &QgsProjectProperties::mAddLayerRestrictionButton_clicked );
+  connect( mRemoveLayerRestrictionButton, &QToolButton::clicked, this, &QgsProjectProperties::mRemoveLayerRestrictionButton_clicked );
+  connect( mWMSInspireScenario1, &QGroupBox::toggled, this, &QgsProjectProperties::mWMSInspireScenario1_toggled );
+  connect( mWMSInspireScenario2, &QGroupBox::toggled, this, &QgsProjectProperties::mWMSInspireScenario2_toggled );
+  connect( pbnWFSLayersSelectAll, &QPushButton::clicked, this, &QgsProjectProperties::pbnWFSLayersSelectAll_clicked );
+  connect( pbnWFSLayersDeselectAll, &QPushButton::clicked, this, &QgsProjectProperties::pbnWFSLayersDeselectAll_clicked );
+  connect( pbnWCSLayersSelectAll, &QPushButton::clicked, this, &QgsProjectProperties::pbnWCSLayersSelectAll_clicked );
+  connect( pbnWCSLayersDeselectAll, &QPushButton::clicked, this, &QgsProjectProperties::pbnWCSLayersDeselectAll_clicked );
+  connect( pbnLaunchOWSChecker, &QPushButton::clicked, this, &QgsProjectProperties::pbnLaunchOWSChecker_clicked );
+  connect( pbtnStyleManager, &QPushButton::clicked, this, &QgsProjectProperties::pbtnStyleManager_clicked );
+  connect( pbtnStyleMarker, &QToolButton::clicked, this, &QgsProjectProperties::pbtnStyleMarker_clicked );
+  connect( pbtnStyleLine, &QToolButton::clicked, this, &QgsProjectProperties::pbtnStyleLine_clicked );
+  connect( pbtnStyleFill, &QToolButton::clicked, this, &QgsProjectProperties::pbtnStyleFill_clicked );
+  connect( pbtnStyleColorRamp, &QToolButton::clicked, this, &QgsProjectProperties::pbtnStyleColorRamp_clicked );
+  connect( mButtonAddColor, &QToolButton::clicked, this, &QgsProjectProperties::mButtonAddColor_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectProperties::showHelp );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -128,6 +153,28 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   updateGuiForMapUnits( QgsProject::instance()->crs().mapUnits() );
   projectionSelector->setCrs( QgsProject::instance()->crs() );
+
+  QPolygonF mainCanvasPoly = mapCanvas->mapSettings().visiblePolygon();
+  QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
+  // close polygon
+  mainCanvasPoly << mainCanvasPoly.at( 0 );
+  if ( QgsProject::instance()->crs() !=
+       QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
+  {
+    // reproject extent
+    QgsCoordinateTransform ct( QgsProject::instance()->crs(),
+                               QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+
+    g = g.densifyByCount( 5 );
+    try
+    {
+      g.transform( ct );
+    }
+    catch ( QgsCsException & )
+    {
+    }
+  }
+  projectionSelector->setPreviewRect( g.boundingBox() );
 
   mMapTileRenderingCheckBox->setChecked( mMapCanvas->mapSettings().testFlag( QgsMapSettings::RenderMapTile ) );
 
@@ -1298,7 +1345,7 @@ void QgsProjectProperties::restoreState()
 {
 }
 
-void QgsProjectProperties::on_pbnWMSExtCanvas_clicked()
+void QgsProjectProperties::pbnWMSExtCanvas_clicked()
 {
   QgsRectangle ext = mMapCanvas->extent();
   mWMSExtMinX->setText( qgsDoubleToString( ext.xMinimum() ) );
@@ -1307,7 +1354,7 @@ void QgsProjectProperties::on_pbnWMSExtCanvas_clicked()
   mWMSExtMaxY->setText( qgsDoubleToString( ext.yMaximum() ) );
 }
 
-void QgsProjectProperties::on_pbnWMSAddSRS_clicked()
+void QgsProjectProperties::pbnWMSAddSRS_clicked()
 {
   QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
   mySelector->setMessage( QString() );
@@ -1333,7 +1380,7 @@ void QgsProjectProperties::on_pbnWMSAddSRS_clicked()
   delete mySelector;
 }
 
-void QgsProjectProperties::on_pbnWMSRemoveSRS_clicked()
+void QgsProjectProperties::pbnWMSRemoveSRS_clicked()
 {
   Q_FOREACH ( QListWidgetItem *item, mWMSList->selectedItems() )
   {
@@ -1341,7 +1388,7 @@ void QgsProjectProperties::on_pbnWMSRemoveSRS_clicked()
   }
 }
 
-void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
+void QgsProjectProperties::pbnWMSSetUsedSRS_clicked()
 {
   if ( mWMSList->count() > 1 )
   {
@@ -1367,7 +1414,7 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
   mWMSList->addItems( crsList.values() );
 }
 
-void QgsProjectProperties::on_mAddWMSComposerButton_clicked()
+void QgsProjectProperties::mAddWMSComposerButton_clicked()
 {
   QList<QgsComposition *> projectComposers = QgsProject::instance()->layoutManager()->compositions();
   QStringList composerTitles;
@@ -1388,7 +1435,7 @@ void QgsProjectProperties::on_mAddWMSComposerButton_clicked()
   }
 }
 
-void QgsProjectProperties::on_mRemoveWMSComposerButton_clicked()
+void QgsProjectProperties::mRemoveWMSComposerButton_clicked()
 {
   QListWidgetItem *currentItem = mComposerListWidget->currentItem();
   if ( currentItem )
@@ -1397,7 +1444,7 @@ void QgsProjectProperties::on_mRemoveWMSComposerButton_clicked()
   }
 }
 
-void QgsProjectProperties::on_mAddLayerRestrictionButton_clicked()
+void QgsProjectProperties::mAddLayerRestrictionButton_clicked()
 {
   QgsProjectLayerGroupDialog d( this, QgsProject::instance()->fileName() );
   d.setWindowTitle( tr( "Select Restricted Layers and Groups" ) );
@@ -1425,7 +1472,7 @@ void QgsProjectProperties::on_mAddLayerRestrictionButton_clicked()
   }
 }
 
-void QgsProjectProperties::on_mRemoveLayerRestrictionButton_clicked()
+void QgsProjectProperties::mRemoveLayerRestrictionButton_clicked()
 {
   QListWidgetItem *currentItem = mLayerRestrictionsListWidget->currentItem();
   if ( currentItem )
@@ -1434,7 +1481,7 @@ void QgsProjectProperties::on_mRemoveLayerRestrictionButton_clicked()
   }
 }
 
-void QgsProjectProperties::on_pbnWFSLayersSelectAll_clicked()
+void QgsProjectProperties::pbnWFSLayersSelectAll_clicked()
 {
   for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
   {
@@ -1443,21 +1490,21 @@ void QgsProjectProperties::on_pbnWFSLayersSelectAll_clicked()
   }
 }
 
-void QgsProjectProperties::on_mWMSInspireScenario1_toggled( bool on )
+void QgsProjectProperties::mWMSInspireScenario1_toggled( bool on )
 {
   mWMSInspireScenario2->blockSignals( true );
   mWMSInspireScenario2->setChecked( !on );
   mWMSInspireScenario2->blockSignals( false );
 }
 
-void QgsProjectProperties::on_mWMSInspireScenario2_toggled( bool on )
+void QgsProjectProperties::mWMSInspireScenario2_toggled( bool on )
 {
   mWMSInspireScenario1->blockSignals( true );
   mWMSInspireScenario1->setChecked( !on );
   mWMSInspireScenario1->blockSignals( false );
 }
 
-void QgsProjectProperties::on_pbnWFSLayersDeselectAll_clicked()
+void QgsProjectProperties::pbnWFSLayersDeselectAll_clicked()
 {
   for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
   {
@@ -1466,7 +1513,7 @@ void QgsProjectProperties::on_pbnWFSLayersDeselectAll_clicked()
   }
 }
 
-void QgsProjectProperties::on_pbnWCSLayersSelectAll_clicked()
+void QgsProjectProperties::pbnWCSLayersSelectAll_clicked()
 {
   for ( int i = 0; i < twWCSLayers->rowCount(); i++ )
   {
@@ -1475,7 +1522,7 @@ void QgsProjectProperties::on_pbnWCSLayersSelectAll_clicked()
   }
 }
 
-void QgsProjectProperties::on_pbnWCSLayersDeselectAll_clicked()
+void QgsProjectProperties::pbnWCSLayersDeselectAll_clicked()
 {
   for ( int i = 0; i < twWCSLayers->rowCount(); i++ )
   {
@@ -1484,7 +1531,7 @@ void QgsProjectProperties::on_pbnWCSLayersDeselectAll_clicked()
   }
 }
 
-void QgsProjectProperties::on_pbnLaunchOWSChecker_clicked()
+void QgsProjectProperties::pbnLaunchOWSChecker_clicked()
 {
   QString myStyle = QgsApplication::reportStyleSheet();
   teOWSChecker->clear();
@@ -1541,7 +1588,7 @@ void QgsProjectProperties::on_pbnLaunchOWSChecker_clicked()
   teOWSChecker->setHtml( teOWSChecker->toHtml() + "<h1>" + tr( "Start checking QGIS Server" ) + "</h1>" );
 }
 
-void QgsProjectProperties::on_pbnAddScale_clicked()
+void QgsProjectProperties::pbnAddScale_clicked()
 {
   int myScale = QInputDialog::getInt(
                   this,
@@ -1558,14 +1605,14 @@ void QgsProjectProperties::on_pbnAddScale_clicked()
   }
 }
 
-void QgsProjectProperties::on_pbnRemoveScale_clicked()
+void QgsProjectProperties::pbnRemoveScale_clicked()
 {
   int currentRow = lstScales->currentRow();
   QListWidgetItem *itemToRemove = lstScales->takeItem( currentRow );
   delete itemToRemove;
 }
 
-void QgsProjectProperties::on_pbnImportScales_clicked()
+void QgsProjectProperties::pbnImportScales_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load scales" ), QDir::homePath(),
                      tr( "XML files (*.xml *.XML)" ) );
@@ -1587,7 +1634,7 @@ void QgsProjectProperties::on_pbnImportScales_clicked()
   }
 }
 
-void QgsProjectProperties::on_pbnExportScales_clicked()
+void QgsProjectProperties::pbnExportScales_clicked()
 {
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save scales" ), QDir::homePath(),
                      tr( "XML files (*.xml *.XML)" ) );
@@ -1700,33 +1747,33 @@ void QgsProjectProperties::populateStyles()
   mDefaultOpacityWidget->setOpacity( opacity );
 }
 
-void QgsProjectProperties::on_pbtnStyleManager_clicked()
+void QgsProjectProperties::pbtnStyleManager_clicked()
 {
   QgsStyleManagerDialog dlg( mStyle, this );
   dlg.exec();
   populateStyles();
 }
 
-void QgsProjectProperties::on_pbtnStyleMarker_clicked()
+void QgsProjectProperties::pbtnStyleMarker_clicked()
 {
   editSymbol( cboStyleMarker );
 }
 
-void QgsProjectProperties::on_pbtnStyleLine_clicked()
+void QgsProjectProperties::pbtnStyleLine_clicked()
 {
   editSymbol( cboStyleLine );
 }
 
-void QgsProjectProperties::on_pbtnStyleFill_clicked()
+void QgsProjectProperties::pbtnStyleFill_clicked()
 {
   editSymbol( cboStyleFill );
 }
 
-void QgsProjectProperties::on_pbtnStyleColorRamp_clicked()
+void QgsProjectProperties::pbtnStyleColorRamp_clicked()
 {
   // TODO for now just open style manager
   // code in QgsStyleManagerDialog::editColorRamp()
-  on_pbtnStyleManager_clicked();
+  pbtnStyleManager_clicked();
 }
 
 void QgsProjectProperties::editSymbol( QComboBox *cbo )
@@ -1919,7 +1966,7 @@ void QgsProjectProperties::projectionSelectorInitialized()
   updateEllipsoidUI( myIndex );
 }
 
-void QgsProjectProperties::on_mButtonAddColor_clicked()
+void QgsProjectProperties::mButtonAddColor_clicked()
 {
   QColor newColor = QgsColorDialog::getColor( QColor(), this->parentWidget(), tr( "Select Color" ), true );
   if ( !newColor.isValid() )

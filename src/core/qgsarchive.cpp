@@ -19,6 +19,7 @@
 #include "qgsarchive.h"
 #include "qgsziputils.h"
 #include "qgsmessagelog.h"
+#include "qgsauxiliarystorage.h"
 #include <iostream>
 
 QgsArchive::QgsArchive()
@@ -135,4 +136,18 @@ bool QgsProjectArchive::unzip( const QString &filename )
 bool QgsProjectArchive::clearProjectFile()
 {
   return removeFile( projectFile() );
+}
+
+QString QgsProjectArchive::auxiliaryStorageFile() const
+{
+  const QString extension = QgsAuxiliaryStorage::extension();
+
+  for ( const QString &file : files() )
+  {
+    const QFileInfo fileInfo( file );
+    if ( fileInfo.suffix().compare( extension, Qt::CaseInsensitive ) == 0 )
+      return file;
+  }
+
+  return QString();
 }

@@ -72,8 +72,6 @@ class Topol: public QObject, public QgisPlugin
      */
     explicit Topol( QgisInterface *interface );
 
-    virtual ~Topol();
-
   public slots:
     //! init the gui
     virtual void initGui() override;

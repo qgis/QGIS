@@ -663,6 +663,12 @@ class Plugins(QObject):
         if QFileInfo(icon).isRelative():
             icon = path + "/" + icon
 
+        changelog = pluginMetadata("changelog")
+        changelogFile = os.path.join(path, "CHANGELOG")
+        if not changelog and QFile(changelogFile).exists():
+            with open(changelogFile) as f:
+                changelog = f.read()
+
         plugin = {
             "id": key,
             "plugin_id": None,
@@ -672,7 +678,7 @@ class Plugins(QObject):
             "icon": icon,
             "category": pluginMetadata("category"),
             "tags": pluginMetadata("tags"),
-            "changelog": pluginMetadata("changelog"),
+            "changelog": changelog,
             "author_name": pluginMetadata("author_name") or pluginMetadata("author"),
             "author_email": pluginMetadata("email"),
             "homepage": pluginMetadata("homepage"),

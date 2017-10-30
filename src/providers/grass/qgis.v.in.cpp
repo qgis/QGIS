@@ -52,7 +52,7 @@ void writePoint( struct Map_info *map, int type, const QgsPointXY &point, struct
   Vect_write_line( map, type, gLine, cats );
 }
 
-void writePolyline( struct Map_info *map, int type, const QgsPolyline &polyline, struct line_cats *cats )
+void writePolyline( struct Map_info *map, int type, const QgsPolylineXY &polyline, struct line_cats *cats )
 {
   Vect_reset_line( gLine );
   Q_FOREACH ( const QgsPointXY &point, polyline )
@@ -266,13 +266,13 @@ int main( int argc, char **argv )
       }
       else if ( geometryType == QgsWkbTypes::LineString )
       {
-        QgsPolyline polyline = geometry.asPolyline();
+        QgsPolylineXY polyline = geometry.asPolyline();
         writePolyline( map, GV_LINE, polyline, cats );
       }
       else if ( geometryType == QgsWkbTypes::MultiLineString )
       {
         QgsMultiPolyline multiPolyline = geometry.asMultiPolyline();
-        Q_FOREACH ( const QgsPolyline &polyline, multiPolyline )
+        Q_FOREACH ( const QgsPolylineXY &polyline, multiPolyline )
         {
           writePolyline( map, GV_LINE, polyline, cats );
         }
@@ -280,7 +280,7 @@ int main( int argc, char **argv )
       else if ( geometryType == QgsWkbTypes::Polygon )
       {
         QgsPolygon polygon = geometry.asPolygon();
-        Q_FOREACH ( const QgsPolyline &polyline, polygon )
+        Q_FOREACH ( const QgsPolylineXY &polyline, polygon )
         {
           writePolyline( map, GV_BOUNDARY, polyline, cats );
         }
@@ -290,7 +290,7 @@ int main( int argc, char **argv )
         QgsMultiPolygon multiPolygon = geometry.asMultiPolygon();
         Q_FOREACH ( const QgsPolygon &polygon, multiPolygon )
         {
-          Q_FOREACH ( const QgsPolyline &polyline, polygon )
+          Q_FOREACH ( const QgsPolylineXY &polyline, polygon )
           {
             writePolyline( map, GV_BOUNDARY, polyline, cats );
           }

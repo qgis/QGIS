@@ -88,10 +88,13 @@ ENDMACRO (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 
+IF (WITH_BINDINGS)
 ADD_QGIS_TEST(apppythontest testqgisapppython.cpp)
+ENDIF ()
 ADD_QGIS_TEST(qgisappclipboard testqgisappclipboard.cpp)
 ADD_QGIS_TEST(attributetabletest testqgsattributetable.cpp)
 ADD_QGIS_TEST(fieldcalculatortest testqgsfieldcalculator.cpp)
+ADD_QGIS_TEST(maptooladdfeature testqgsmaptooladdfeature.cpp)
 ADD_QGIS_TEST(maptoolidentifyaction testqgsmaptoolidentifyaction.cpp)
 ADD_QGIS_TEST(maptoolselect testqgsmaptoolselect.cpp)
 ADD_QGIS_TEST(measuretool testqgsmeasuretool.cpp)

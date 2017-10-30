@@ -39,34 +39,18 @@ class QgsQueryBuilder : QDialog
     virtual void showEvent( QShowEvent *event );
 
 
+    QString sql();
+%Docstring
+ :rtype: str
+%End
+    void setSql( const QString &sqlStatement );
+
   public slots:
     virtual void accept();
 
     virtual void reject();
 
     void clear();
-    void on_btnEqual_clicked();
-    void on_btnLessThan_clicked();
-    void on_btnGreaterThan_clicked();
-    void on_btnPct_clicked();
-    void on_btnIn_clicked();
-    void on_btnNotIn_clicked();
-    void on_btnLike_clicked();
-    void on_btnILike_clicked();
-    QString sql();
-%Docstring
- :rtype: str
-%End
-    void setSql( const QString &sqlStatement );
-    void on_lstFields_clicked( const QModelIndex &index );
-    void on_lstFields_doubleClicked( const QModelIndex &index );
-    void on_lstValues_doubleClicked( const QModelIndex &index );
-    void on_btnLessEqual_clicked();
-    void on_btnGreaterEqual_clicked();
-    void on_btnNotEqual_clicked();
-    void on_btnAnd_clicked();
-    void on_btnNot_clicked();
-    void on_btnOr_clicked();
 
     void test();
 %Docstring
@@ -74,19 +58,6 @@ class QgsQueryBuilder : QDialog
  The number of rows that would be returned is displayed in a message box.
  The test uses a "select count(*) from ..." query to test the SQL
  statement.
-%End
-
-    void on_btnGetAllValues_clicked();
-%Docstring
- Get all distinct values for the field. Values are inserted
- into the value list box
-%End
-
-    void on_btnSampleValues_clicked();
-%Docstring
- Get sample distinct values for the selected field. The sample size is
- limited to an arbitrary value (currently set to 25). The values
- are inserted into the values list box.
 %End
 
     void setDatasourceDescription( const QString &uri );

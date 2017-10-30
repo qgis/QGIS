@@ -45,7 +45,8 @@ typedef QList<int> QgsAttributeList;
 class QgsVectorLayerLabelProvider;
 class QgsVectorLayerDiagramProvider;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Interruption checker used by QgsVectorLayerRenderer::render()
  * \note not available in Python bindings
  */
@@ -59,7 +60,8 @@ class QgsVectorLayerRendererInterruptionChecker: public QgsInterruptionChecker
     const QgsRenderContext &mContext;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Implementation of threaded rendering for vector layers.
  *
  * \since QGIS 2.4
@@ -75,18 +77,21 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
   private:
 
-    /** Registers label and diagram layer
+    /**
+     * Registers label and diagram layer
       \param layer diagram layer
       \param attributeNames attributes needed for labeling and diagrams will be added to the list
      */
     void prepareLabeling( QgsVectorLayer *layer, QSet<QString> &attributeNames );
     void prepareDiagrams( QgsVectorLayer *layer, QSet<QString> &attributeNames );
 
-    /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
+    /**
+     * Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
      */
     void drawRenderer( QgsFeatureIterator &fit );
 
-    /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
+    /**
+     * Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
      */
     void drawRendererLevels( QgsFeatureIterator &fit );
 
@@ -124,11 +129,16 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     //! used with new labeling engine (QgsPalLabeling): whether diagrams are enabled
     bool mDiagrams;
 
-    //! used with new labeling engine (QgsLabelingEngine): provider for labels.
-    //! may be null. no need to delete: if exists it is owned by labeling engine
+    /**
+     * used with new labeling engine (QgsLabelingEngine): provider for labels.
+     * may be null. no need to delete: if exists it is owned by labeling engine
+     */
     QgsVectorLayerLabelProvider *mLabelProvider = nullptr;
-    //! used with new labeling engine (QgsLabelingEngine): provider for diagrams.
-    //! may be null. no need to delete: if exists it is owned by labeling engine
+
+    /**
+     * used with new labeling engine (QgsLabelingEngine): provider for diagrams.
+     * may be null. no need to delete: if exists it is owned by labeling engine
+     */
     QgsVectorLayerDiagramProvider *mDiagramProvider = nullptr;
 
     QPainter::CompositionMode mFeatureBlendMode;

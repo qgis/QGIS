@@ -60,13 +60,13 @@ def TimestampFromTicks(ticks):
 class ConnectionError(Exception):
 
     def __init__(self, *args, **kwargs):
-        super(Exception, self).__init__(*args, **kwargs)
+        super(ConnectionError, self).__init__(*args, **kwargs)
 
 
 class ExecError(Exception):
 
     def __init__(self, *args, **kwargs):
-        super(Exception, self).__init__(*args, **kwargs)
+        super(ExecError, self).__init__(*args, **kwargs)
 
 
 class QtSqlDBCursor(object):

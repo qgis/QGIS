@@ -29,7 +29,6 @@ class QgsDataProvider : QObject
 %TypeHeaderCode
 #include "qgsdataprovider.h"
 %End
-
 %ConvertToSubClassCode
     if ( qobject_cast<QgsVectorDataProvider *>( sipCpp ) )
     {
@@ -391,7 +390,7 @@ Current time stamp of data source
    feature ids should be invalidated.
 %End
 
-    void notify( const QString &msg ) const;
+    void notify( const QString &msg );
 %Docstring
  Emitted when datasource issues a notification
 

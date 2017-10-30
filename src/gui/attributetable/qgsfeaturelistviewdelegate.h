@@ -24,7 +24,8 @@ class QgsFeatureListModel;
 class QgsFeatureSelectionModel;
 class QPosition;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFeatureListViewDelegate
  */
 class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate

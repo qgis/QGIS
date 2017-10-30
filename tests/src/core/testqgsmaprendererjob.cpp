@@ -42,7 +42,8 @@
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsMapRendererJob class.
  * It will do some performance testing too
  *
@@ -52,9 +53,7 @@ class TestQgsMapRendererJob : public QObject
     Q_OBJECT
 
   public:
-    TestQgsMapRendererJob()
-    {
-    }
+    TestQgsMapRendererJob() = default;
 
     ~TestQgsMapRendererJob()
     {
@@ -70,7 +69,8 @@ class TestQgsMapRendererJob : public QObject
     //! This method tests render performance
     void performanceTest();
 
-    /** This unit test checks if rendering of adjacent tiles (e.g. to render images for tile caches)
+    /**
+     * This unit test checks if rendering of adjacent tiles (e.g. to render images for tile caches)
      * does not result in border effects
      */
     void testFourAdjacentTiles_data();
@@ -109,7 +109,7 @@ void TestQgsMapRendererJob::initTestCase()
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + '/';
   QString myTmpDir = QDir::tempPath() + '/';
-  QString myFileName = myTmpDir +  "maprender_testdata.shp";
+  QString myFileName = myTmpDir +  "maprender_testdata.gpkg";
   //copy over the default qml for our generated layer
   QString myQmlFileName = myTestDataDir +  "maprender_testdata.qml";
   QFile::remove( myTmpDir + "maprender_testdata.qml" );
@@ -132,7 +132,7 @@ void TestQgsMapRendererJob::initTestCase()
         //
         // Create a polygon feature
         //
-        QgsPolyline myPolyline;
+        QgsPolylineXY myPolyline;
         QgsPointXY myPoint1 = QgsPointXY( i, j );
         QgsPointXY myPoint2 = QgsPointXY( i + myInterval, j );
         QgsPointXY myPoint3 = QgsPointXY( i + myInterval, j + myInterval );

@@ -49,6 +49,8 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   QgsDebugMsg( "QgsGrassMapcalc()" );
 
   setupUi( this );
+  connect( mConstantLineEdit, &QLineEdit::textChanged, this, &QgsGrassMapcalc::mConstantLineEdit_textChanged );
+  connect( mFunctionComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGrassMapcalc::mFunctionComboBox_activated );
 
   mStartMoveConnectorPoints.resize( 2 );
   mNextId = 0;
@@ -611,10 +613,6 @@ QStringList QgsGrassMapcalc::output( int type )
     list.append( mOutputLineEdit->text() );
   }
   return list;
-}
-
-QgsGrassMapcalc::~QgsGrassMapcalc()
-{
 }
 
 void QgsGrassMapcalc::showOptions( int tool )
@@ -1382,13 +1380,6 @@ void QgsGrassMapcalc::clear()
 }
 
 /******************** CANVAS ITEMS ******************************/
-QgsGrassMapcalcItem::QgsGrassMapcalcItem()
-{
-}
-
-QgsGrassMapcalcItem::~QgsGrassMapcalcItem()
-{
-}
 
 /**************************** OBJECT ************************/
 QgsGrassMapcalcObject::QgsGrassMapcalcObject( int type )
@@ -1803,8 +1794,7 @@ QString QgsGrassMapcalcObject::expression()
 
 /************************* CONNECTOR **********************************/
 QgsGrassMapcalcConnector::QgsGrassMapcalcConnector( QGraphicsScene *canvas )
-  : QGraphicsLineItem()
-  , QgsGrassMapcalcItem()
+  : QgsGrassMapcalcItem()
   , mSelectedEnd( -1 )
 {
 
@@ -2015,14 +2005,6 @@ QgsGrassMapcalcFunction::QgsGrassMapcalcFunction( int type, QString name,
   {
     mInputLabels = labels.split( QStringLiteral( "," ), QString::SkipEmptyParts );
   }
-}
-
-QgsGrassMapcalcFunction::QgsGrassMapcalcFunction()
-{
-}
-
-QgsGrassMapcalcFunction::~QgsGrassMapcalcFunction()
-{
 }
 
 /******************** CANVAS VIEW ******************************/

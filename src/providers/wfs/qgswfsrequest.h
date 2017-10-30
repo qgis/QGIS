@@ -103,7 +103,8 @@ class QgsWfsRequest : public QObject
     //! base service URL
     QUrl baseURL() const { return mUri.baseURL(); }
 
-    /** Return (translated) error message, composed with a
+    /**
+     * Return (translated) error message, composed with a
         (possibly translated, but sometimes coming from server) reason  */
     virtual QString errorMessageWithReason( const QString &reason ) = 0;
 

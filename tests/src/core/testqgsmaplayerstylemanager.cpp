@@ -27,8 +27,7 @@ class TestQgsMapLayerStyleManager : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapLayerStyleManager()
-    {}
+    TestQgsMapLayerStyleManager() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

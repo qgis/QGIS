@@ -30,7 +30,8 @@ class QDomElement;
 class QPainter;
 class QgsRasterTransparency;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Raster renderer pipe that applies colors to a raster.
   */
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
@@ -97,7 +98,8 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     //! Sets base class members from xml. Usually called from create() methods of subclasses
     void readXml( const QDomElement &rendererElem ) override;
 
-    /** Copies common properties like opacity / transparency data from other renderer.
+    /**
+     * Copies common properties like opacity / transparency data from other renderer.
      *  Useful when cloning renderers.
      *  \since QGIS 2.16  */
     void copyCommonProperties( const QgsRasterRenderer *other, bool copyMinMaxOrigin = true );
@@ -123,7 +125,8 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     //! Raster transparency per color or value. Overwrites global alpha value
     QgsRasterTransparency *mRasterTransparency = nullptr;
 
-    /** Read alpha value from band. Is combined with value from raster transparency / global alpha value.
+    /**
+     * Read alpha value from band. Is combined with value from raster transparency / global alpha value.
         Default: -1 (not set)*/
     int mAlphaBand = -1;
 

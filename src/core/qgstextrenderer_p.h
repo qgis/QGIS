@@ -40,7 +40,7 @@
 //
 
 
-class CORE_EXPORT QgsTextBufferSettingsPrivate : public QSharedData
+class QgsTextBufferSettingsPrivate : public QSharedData
 {
   public:
 
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsTextBufferSettingsPrivate : public QSharedData
 };
 
 
-class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
+class QgsTextBackgroundSettingsPrivate : public QSharedData
 {
   public:
 
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsTextBackgroundSettingsPrivate : public QSharedData
 
 
 
-class CORE_EXPORT QgsTextShadowSettingsPrivate : public QSharedData
+class QgsTextShadowSettingsPrivate : public QSharedData
 {
   public:
 
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsTextShadowSettingsPrivate : public QSharedData
 };
 
 
-class CORE_EXPORT QgsTextSettingsPrivate : public QSharedData
+class QgsTextSettingsPrivate : public QSharedData
 {
   public:
 

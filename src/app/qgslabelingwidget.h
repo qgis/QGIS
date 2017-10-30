@@ -38,6 +38,13 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
   public:
     QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
+    /**
+     * Returns the labeling gui widget or a nullptr if none.
+     *
+     * \since QGIS 3.0
+     */
+    QgsLabelingGui *labelingGui();
+
   public slots:
     void setLayer( QgsMapLayer *layer );
     //! save config to layer
@@ -50,6 +57,10 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     void adaptToLayer();
 
     void resetSettings();
+
+  signals:
+
+    void auxiliaryFieldCreated();
 
   protected slots:
     void labelModeChanged( int index );

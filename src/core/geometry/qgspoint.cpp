@@ -22,6 +22,8 @@
 #include "qgsgeometryutils.h"
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
+
+#include <cmath>
 #include <QPainter>
 #include <QRegularExpression>
 
@@ -32,8 +34,7 @@
  ****************************************************************************/
 
 QgsPoint::QgsPoint( double x, double y, double z, double m, QgsWkbTypes::Type wkbType )
-  : QgsAbstractGeometry()
-  , mX( x )
+  : mX( x )
   , mY( y )
   , mZ( z )
   , mM( m )
@@ -57,8 +58,7 @@ QgsPoint::QgsPoint( double x, double y, double z, double m, QgsWkbTypes::Type wk
 }
 
 QgsPoint::QgsPoint( const QgsPointXY &p )
-  : QgsAbstractGeometry()
-  , mX( p.x() )
+  : mX( p.x() )
   , mY( p.y() )
   , mZ( std::numeric_limits<double>::quiet_NaN() )
   , mM( std::numeric_limits<double>::quiet_NaN() )
@@ -67,8 +67,7 @@ QgsPoint::QgsPoint( const QgsPointXY &p )
 }
 
 QgsPoint::QgsPoint( QPointF p )
-  : QgsAbstractGeometry()
-  , mX( p.x() )
+  : mX( p.x() )
   , mY( p.y() )
   , mZ( std::numeric_limits<double>::quiet_NaN() )
   , mM( std::numeric_limits<double>::quiet_NaN() )
@@ -77,8 +76,7 @@ QgsPoint::QgsPoint( QPointF p )
 }
 
 QgsPoint::QgsPoint( QgsWkbTypes::Type wkbType, double x, double y, double z, double m )
-  : QgsAbstractGeometry()
-  , mX( x )
+  : mX( x )
   , mY( y )
   , mZ( QgsWkbTypes::hasZ( wkbType ) ? z : std::numeric_limits<double>::quiet_NaN() )
   , mM( QgsWkbTypes::hasM( wkbType ) ? m : std::numeric_limits<double>::quiet_NaN() )
@@ -116,6 +114,27 @@ bool QgsPoint::operator!=( const QgsPoint &pt ) const
 QgsPoint *QgsPoint::clone() const
 {
   return new QgsPoint( *this );
+}
+
+QgsPoint *QgsPoint::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+{
+  // helper function
+  auto gridifyValue = []( double value, double spacing, bool extraCondition = true ) -> double
+  {
+    if ( spacing > 0 && extraCondition )
+      return  std::round( value / spacing ) * spacing;
+    else
+      return value;
+  };
+
+  // Get the new values
+  auto x = gridifyValue( mX, hSpacing );
+  auto y = gridifyValue( mY, vSpacing );
+  auto z = gridifyValue( mZ, dSpacing, QgsWkbTypes::hasZ( mWkbType ) );
+  auto m = gridifyValue( mM, mSpacing, QgsWkbTypes::hasM( mWkbType ) );
+
+  // return the new object
+  return new QgsPoint( mWkbType, x, y, z, m );
 }
 
 bool QgsPoint::fromWkb( QgsConstWkbPtr &wkbPtr )
@@ -324,6 +343,14 @@ int QgsPoint::nCoordinates() const
   return 1;
 }
 
+int QgsPoint::vertexNumberFromVertexId( QgsVertexId id ) const
+{
+  if ( id.vertex != 0 )
+    return -1;
+  else
+    return 0;
+}
+
 QgsAbstractGeometry *QgsPoint::boundary() const
 {
   return nullptr;
@@ -395,6 +422,12 @@ bool QgsPoint::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
   {
     return false;
   }
+}
+
+void QgsPoint::adjacentVertices( QgsVertexId, QgsVertexId &previousVertex, QgsVertexId &nextVertex ) const
+{
+  previousVertex = QgsVertexId();
+  nextVertex = QgsVertexId();
 }
 
 double QgsPoint::vertexAngle( QgsVertexId vertex ) const
@@ -647,4 +680,21 @@ QString QgsPoint::geometryType() const
 int QgsPoint::dimension() const
 {
   return 0;
+}
+
+int QgsPoint::childCount() const
+{
+  return 1;
+}
+
+QgsPoint QgsPoint::childPoint( int index ) const
+{
+  Q_ASSERT( index == 0 );
+  return *this;
+}
+
+QgsPoint *QgsPoint::createEmptyWithSameType() const
+{
+  double nan = std::numeric_limits<double>::quiet_NaN();
+  return new QgsPoint( nan, nan, nan, nan, mWkbType );
 }

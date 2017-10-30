@@ -24,10 +24,6 @@ QgsOfflineEditingProgressDialog::QgsOfflineEditingProgressDialog( QWidget *paren
   setupUi( this );
 }
 
-QgsOfflineEditingProgressDialog::~QgsOfflineEditingProgressDialog()
-{
-}
-
 void QgsOfflineEditingProgressDialog::setTitle( const QString &title )
 {
   setWindowTitle( title );

@@ -28,7 +28,8 @@ SIP_NO_FILE
 
 class QgsValueRelationWidgetFactory;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a value relation widget. This widget will offer a combobox with values from another layer
  * referenced by a foreign key (a constraint may be set but is not required on data level).
  * This is useful for having value lists on a separate layer containing codes and their

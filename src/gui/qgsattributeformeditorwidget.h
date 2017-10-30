@@ -23,6 +23,7 @@
 #include "qgsattributeeditorcontext.h"
 #include "qgssearchwidgetwrapper.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetwrapper.h"
 
 class QgsAttributeForm;
 class QgsEditorWidgetWrapper;
@@ -31,8 +32,10 @@ class QgsSearchWidgetToolButton;
 class QgsVectorLayer;
 class QStackedWidget;
 class QgsAttributeEditorContext;
+class QLabel;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsAttributeFormEditorWidget
  * A widget consisting of both an editor widget and additional widgets for controlling the behavior
  * of the editor widget depending on a number of possible modes. For instance, if the parent attribute
@@ -54,7 +57,8 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
       SearchMode, //!< Layer search/filter mode
     };
 
-    /** Constructor for QgsAttributeFormEditorWidget.
+    /**
+     * Constructor for QgsAttributeFormEditorWidget.
      * \param editorWidget associated editor widget wrapper (for default/edit modes)
      * \param form parent attribute form
      */
@@ -63,7 +67,8 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
 
     ~QgsAttributeFormEditorWidget();
 
-    /** Creates the search widget wrappers for the widget used when the form is in
+    /**
+     * Creates the search widget wrappers for the widget used when the form is in
      * search mode.
      * \param widgetId id of the widget type to create a search wrapper for
      * \param fieldIdx index of field associated with widget
@@ -74,58 +79,74 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
                                      const QVariantMap &config,
                                      const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() );
 
-    /** Sets the current mode for the widget. The widget will adapt its state and visible widgets to
+    /**
+     * Sets the current mode for the widget. The widget will adapt its state and visible widgets to
      * reflect the updated mode. For example, showing multi edit tool buttons if the mode is set to MultiEditMode.
      * \param mode widget mode
      * \see mode()
      */
     void setMode( Mode mode );
 
-    /** Returns the current mode for the widget.
+    /**
+     * Returns the current mode for the widget.
      * \see setMode()
      */
     Mode mode() const { return mMode; }
 
-    /** Resets the widget to an initial value.
+    /**
+     * Resets the widget to an initial value.
      * \param initialValue initial value to show in widget
      * \param mixedValues set to true to initially show the mixed values state
      */
     void initialize( const QVariant &initialValue, bool mixedValues = false );
 
-    /** Returns true if the widget's value has been changed since it was initialized.
+    /**
+     * Returns true if the widget's value has been changed since it was initialized.
      * \see initialize()
      */
     bool hasChanged() const { return mIsChanged; }
 
-    /** Returns the current value of the attached editor widget.
+    /**
+     * Returns the current value of the attached editor widget.
      */
     QVariant currentValue() const;
 
-    /** Creates an expression matching the current search filter value and
+    /**
+     * Creates an expression matching the current search filter value and
      * search properties represented in the widget.
      * \since QGIS 2.16
      */
     QString currentFilterExpression() const;
 
+    /**
+     * Set the constraint status for this widget.
+     */
+    void setConstraintStatus( const QString &constraint, const QString &description, const QString &err, QgsEditorWidgetWrapper::ConstraintResult result );
+
   public slots:
 
-    /** Sets whether the widget should be displayed in a "mixed values" mode.
+    /**
+     * Sets whether the widget should be displayed in a "mixed values" mode.
      * \param mixed set to true to show in a mixed values state
      */
     void setIsMixed( bool mixed );
 
-    /** Called when field values have been committed;
+    /**
+     * Called when field values have been committed;
      */
     void changesCommitted();
 
-    /** Resets the search/filter value of the widget.
+    /**
+     * Resets the search/filter value of the widget.
      */
     void resetSearch();
 
   signals:
 
-    //! Emitted when the widget's value changes
-    //! \param value new widget value
+    /**
+     * Emitted when the widget's value changes
+     * \param value new widget value
+     */
     void valueChanged( const QVariant &value );
 
   private slots:
@@ -144,13 +165,15 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
 
   protected:
 
-    /** Returns a pointer to the search widget tool button in the widget.
+    /**
+     * Returns a pointer to the search widget tool button in the widget.
      * \note this method is in place for unit testing only, and is not considered
      * stable API
      */
     QgsSearchWidgetToolButton *searchWidgetToolButton();
 
-    /** Sets the search widget wrapper for the widget used when the form is in
+    /**
+     * Sets the search widget wrapper for the widget used when the form is in
      * search mode.
      * \param wrapper search widget wrapper.
      * \note the search widget wrapper should be created using searchWidgetFrame()
@@ -160,14 +183,16 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
      */
     void setSearchWidgetWrapper( QgsSearchWidgetWrapper *wrapper );
 
-    /** Returns the widget which should be used as a parent during construction
+    /**
+     * Returns the widget which should be used as a parent during construction
      * of the search widget wrapper.
      * \note this method is in place for unit testing only, and is not considered
      * stable AP
      */
     QWidget *searchWidgetFrame();
 
-    /** Returns the search widget wrapper used in this widget. The wrapper must
+    /**
+     * Returns the search widget wrapper used in this widget. The wrapper must
      * first be created using createSearchWidgetWrapper()
      * \note this method is in place for unit testing only, and is not considered
      * stable AP
@@ -184,6 +209,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
     QgsEditorWidgetWrapper *mWidget = nullptr;
     QList< QgsSearchWidgetWrapper * > mSearchWidgets;
     QgsAttributeForm *mForm = nullptr;
+    QLabel *mConstraintResultLabel = nullptr;
     Mode mMode;
 
     QgsMultiEditToolButton *mMultiEditButton = nullptr;
@@ -192,7 +218,6 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
     bool mBlockValueUpdate;
     bool mIsMixed;
     bool mIsChanged;
-
 
     QgsVectorLayer *layer();
     void updateWidgets();

@@ -24,6 +24,7 @@ class QFont;
 class QToolButton;
 class QTreeView;
 
+class QgsDoubleSpinBox;
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
 class QgsLayerTreeView;
@@ -73,6 +74,9 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
      * Returns the enable tracing action widget
      */
     QAction *enableTracingAction() { return mEnableTracingAction; }
+
+    //! Returns spin box used to set offset for tracing
+    QgsDoubleSpinBox *tracingOffsetSpinBox() { return mTracingOffsetSpinBox; }
 
   signals:
     void snappingConfigChanged();
@@ -136,6 +140,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mTopologicalEditingAction = nullptr;
     QAction *mIntersectionSnappingAction = nullptr;
     QAction *mEnableTracingAction = nullptr;
+    QgsDoubleSpinBox *mTracingOffsetSpinBox = nullptr;
     QTreeView *mLayerTreeView = nullptr;
 
     void cleanGroup( QgsLayerTreeNode *node );

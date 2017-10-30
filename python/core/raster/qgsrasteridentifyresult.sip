@@ -19,7 +19,11 @@ class QgsRasterIdentifyResult
 #include "qgsrasteridentifyresult.h"
 %End
   public:
+
     QgsRasterIdentifyResult();
+%Docstring
+ Constructor for QgsRasterIdentifyResult.
+%End
 
     QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant> &results );
 %Docstring

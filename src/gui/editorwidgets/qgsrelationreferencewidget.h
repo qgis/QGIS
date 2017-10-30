@@ -34,9 +34,7 @@ class QgsMessageBar;
 class QgsHighlight;
 class QgsMapToolIdentifyFeature;
 class QgsMessageBarItem;
-class QgsAttributeTableModel;
-class QgsAttributeTableFilterModel;
-class QgsFeatureListModel;
+class QgsFeatureListComboBox;
 class QgsCollapsibleGroupBox;
 class QLabel;
 
@@ -49,7 +47,8 @@ class QLabel;
 % End
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRelationReferenceWidget
  */
 class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
@@ -130,11 +129,14 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      */
     void setChainFilters( bool chainFilters );
 
-    //! return the related feature (from the referenced layer)
-    //! if no feature is related, it returns an invalid feature
+    /**
+     * return the related feature (from the referenced layer)
+     * if no feature is related, it returns an invalid feature
+     */
     QgsFeature referencedFeature() const;
 
-    /** Sets the widget to display in an indeterminate "mixed value" state.
+    /**
+     * Sets the widget to display in an indeterminate "mixed value" state.
      * \since QGIS 2.16
      */
     void showIndeterminateState();
@@ -194,9 +196,10 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QVariant mForeignKey;
     QgsFeature mFeature;
     // Index of the referenced layer key
-    int mReferencedFieldIdx;
-    int mReferencingFieldIdx;
-    bool mAllowNull;
+    int mReferencedFieldIdx = -1;
+    QString mReferencedField;
+    int mReferencingFieldIdx = -1;
+    bool mAllowNull = true;
     QgsHighlight *mHighlight = nullptr;
     QgsMapToolIdentifyFeature *mMapTool = nullptr;
     QgsMessageBarItem *mMessageBarItem = nullptr;
@@ -204,25 +207,23 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsAttributeForm *mReferencedAttributeForm = nullptr;
     QgsVectorLayer *mReferencedLayer = nullptr;
     QgsVectorLayer *mReferencingLayer = nullptr;
-    QgsAttributeTableModel *mMasterModel = nullptr;
-    QgsAttributeTableFilterModel *mFilterModel = nullptr;
-    QgsFeatureListModel *mFeatureListModel = nullptr;
+    QgsFeatureListComboBox *mComboBox = nullptr;
     QList<QComboBox *> mFilterComboBoxes;
     QWidget *mWindowWidget = nullptr;
-    bool mShown;
+    bool mShown = false;
     QgsRelation mRelation;
-    bool mIsEditable;
+    bool mIsEditable = true;
     QStringList mFilterFields;
     QMap<QString, QMap<QString, QSet<QString> > > mFilterCache;
 
     // Q_PROPERTY
-    bool mEmbedForm;
-    bool mReadOnlySelector;
-    bool mAllowMapIdentification;
-    bool mOrderByValue;
-    bool mOpenFormButtonVisible;
-    bool mChainFilters;
-    bool mAllowAddFeatures;
+    bool mEmbedForm = false;
+    bool mReadOnlySelector = false;
+    bool mAllowMapIdentification = false;
+    bool mOrderByValue = false;
+    bool mOpenFormButtonVisible = true;
+    bool mChainFilters = false;
+    bool mAllowAddFeatures = false;
 
     // UI
     QVBoxLayout *mTopLayout = nullptr;
@@ -234,7 +235,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QAction *mHighlightFeatureAction = nullptr;
     QAction *mScaleHighlightFeatureAction = nullptr;
     QAction *mPanHighlightFeatureAction = nullptr;
-    QComboBox *mComboBox = nullptr;
     QWidget *mChooserContainer = nullptr;
     QWidget *mFilterContainer = nullptr;
     QHBoxLayout *mFilterLayout = nullptr;

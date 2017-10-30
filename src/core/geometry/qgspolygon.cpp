@@ -23,7 +23,6 @@
 #include "qgswkbptr.h"
 
 QgsPolygonV2::QgsPolygonV2()
-  : QgsCurvePolygon()
 {
   mWkbType = QgsWkbTypes::Polygon;
 }
@@ -31,6 +30,13 @@ QgsPolygonV2::QgsPolygonV2()
 QString QgsPolygonV2::geometryType() const
 {
   return QStringLiteral( "Polygon" );
+}
+
+QgsPolygonV2 *QgsPolygonV2::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsPolygonV2 >();
+  result->mWkbType = mWkbType;
+  return result.release();
 }
 
 QgsPolygonV2 *QgsPolygonV2::clone() const
@@ -197,7 +203,7 @@ void QgsPolygonV2::setExteriorRing( QgsCurve *ring )
   setZMTypeFromSubGeometry( ring, QgsWkbTypes::Polygon );
 
   //match dimensionality for rings
-  for ( QgsCurve *ring : qgsAsConst( mInteriorRings ) )
+  for ( QgsCurve *ring : qgis::as_const( mInteriorRings ) )
   {
     ring->convertTo( mExteriorRing->wkbType() );
   }

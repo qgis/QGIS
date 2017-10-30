@@ -60,6 +60,13 @@ class QgsPolygonV2: QgsCurvePolygon
  :rtype: float
 %End
 
+
+  protected:
+
+    virtual QgsPolygonV2 *createEmptyWithSameType() const /Factory/;
+
+
+
 };
 /************************************************************************
  * This file has been generated automatically from                      *

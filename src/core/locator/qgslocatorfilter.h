@@ -41,8 +41,7 @@ class CORE_EXPORT QgsLocatorResult
     /**
      * Constructor for QgsLocatorResult.
      */
-    QgsLocatorResult()
-    {}
+    QgsLocatorResult() = default;
 
     /**
      * Constructor for QgsLocatorResult.

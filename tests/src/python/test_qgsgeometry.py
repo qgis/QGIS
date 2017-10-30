@@ -70,7 +70,7 @@ class TestQgsGeometry(unittest.TestCase):
         myWKT = 'Point (10 10)'
         g = QgsGeometry.fromWkt(myWKT)
         self.assertTrue(g)
-        g.setGeometry(None)
+        g.set(None)
         self.assertFalse(g)
 
     def testIsEmpty(self):
@@ -85,6 +85,14 @@ class TestQgsGeometry(unittest.TestCase):
         g = QgsGeometry.fromWkt('MultiPoint ()')
         self.assertTrue(g.isEmpty())
 
+    def testVertexIterator(self):
+        g = QgsGeometry.fromWkt('Linestring(11 12, 13 14)')
+        it = g.vertices()
+        self.assertEqual(next(it), QgsPoint(11, 12))
+        self.assertEqual(next(it), QgsPoint(13, 14))
+        with self.assertRaises(StopIteration):
+            next(it)
+
     def testWktPointLoading(self):
         myWKT = 'Point (10 10)'
         myGeometry = QgsGeometry.fromWkt(myWKT)
@@ -95,21 +103,21 @@ class TestQgsGeometry(unittest.TestCase):
         wkt = 'MultiPoint ((10 15),(20 30))'
         geom = QgsGeometry.fromWkt(wkt)
         self.assertEqual(geom.wkbType(), QgsWkbTypes.MultiPoint, ('Expected:\n%s\nGot:\n%s\n' % (QgsWkbTypes.Point, geom.type())))
-        self.assertEqual(geom.geometry().numGeometries(), 2)
-        self.assertEqual(geom.geometry().geometryN(0).x(), 10)
-        self.assertEqual(geom.geometry().geometryN(0).y(), 15)
-        self.assertEqual(geom.geometry().geometryN(1).x(), 20)
-        self.assertEqual(geom.geometry().geometryN(1).y(), 30)
+        self.assertEqual(geom.constGet().numGeometries(), 2)
+        self.assertEqual(geom.constGet().geometryN(0).x(), 10)
+        self.assertEqual(geom.constGet().geometryN(0).y(), 15)
+        self.assertEqual(geom.constGet().geometryN(1).x(), 20)
+        self.assertEqual(geom.constGet().geometryN(1).y(), 30)
 
         # Check MS SQL format
         wkt = 'MultiPoint (11 16, 21 31)'
         geom = QgsGeometry.fromWkt(wkt)
         self.assertEqual(geom.wkbType(), QgsWkbTypes.MultiPoint, ('Expected:\n%s\nGot:\n%s\n' % (QgsWkbTypes.Point, geom.type())))
-        self.assertEqual(geom.geometry().numGeometries(), 2)
-        self.assertEqual(geom.geometry().geometryN(0).x(), 11)
-        self.assertEqual(geom.geometry().geometryN(0).y(), 16)
-        self.assertEqual(geom.geometry().geometryN(1).x(), 21)
-        self.assertEqual(geom.geometry().geometryN(1).y(), 31)
+        self.assertEqual(geom.constGet().numGeometries(), 2)
+        self.assertEqual(geom.constGet().geometryN(0).x(), 11)
+        self.assertEqual(geom.constGet().geometryN(0).y(), 16)
+        self.assertEqual(geom.constGet().geometryN(1).x(), 21)
+        self.assertEqual(geom.constGet().geometryN(1).y(), 31)
 
     def testFromPoint(self):
         myPoint = QgsGeometry.fromPoint(QgsPointXY(10, 10))
@@ -121,7 +129,7 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(myMultiPoint.wkbType(), QgsWkbTypes.MultiPoint)
 
     def testFromLine(self):
-        myLine = QgsGeometry.fromPolyline([QgsPointXY(1, 1), QgsPointXY(2, 2)])
+        myLine = QgsGeometry.fromPolylineXY([QgsPointXY(1, 1), QgsPointXY(2, 2)])
         self.assertEqual(myLine.wkbType(), QgsWkbTypes.LineString)
 
     def testFromMultiLine(self):
@@ -171,12 +179,12 @@ class TestQgsGeometry(unittest.TestCase):
 
                 # test num points in geometry
                 exp_nodes = int(row['num_points'])
-                self.assertEqual(geom.geometry().nCoordinates(), exp_nodes, "Node count {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp_nodes, geom.geometry().nCoordinates()))
+                self.assertEqual(geom.constGet().nCoordinates(), exp_nodes, "Node count {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp_nodes, geom.constGet().nCoordinates()))
 
                 # test num geometries in collections
                 exp_geometries = int(row['num_geometries'])
                 try:
-                    self.assertEqual(geom.geometry().numGeometries(), exp_geometries, "Geometry count {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp_geometries, geom.geometry().numGeometries()))
+                    self.assertEqual(geom.constGet().numGeometries(), exp_geometries, "Geometry count {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp_geometries, geom.constGet().numGeometries()))
                 except:
                     # some geometry types don't have numGeometries()
                     assert exp_geometries <= 1, "Geometry count {}:  Expected:\n{} geometries but could not call numGeometries()\n".format(i + 1, exp_geometries)
@@ -184,15 +192,15 @@ class TestQgsGeometry(unittest.TestCase):
                 # test count of rings
                 exp_rings = int(row['num_rings'])
                 try:
-                    self.assertEqual(geom.geometry().numInteriorRings(), exp_rings, "Ring count {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp_rings, geom.geometry().numInteriorRings()))
+                    self.assertEqual(geom.constGet().numInteriorRings(), exp_rings, "Ring count {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp_rings, geom.constGet().numInteriorRings()))
                 except:
                     # some geometry types don't have numInteriorRings()
-                    assert exp_rings <= 1, "Ring count {}:  Expected:\n{} rings but could not call numInteriorRings()\n{}".format(i + 1, exp_rings, geom.geometry())
+                    assert exp_rings <= 1, "Ring count {}:  Expected:\n{} rings but could not call numInteriorRings()\n{}".format(i + 1, exp_rings, geom.constGet())
 
                 # test isClosed
                 exp = (row['is_closed'] == '1')
                 try:
-                    self.assertEqual(geom.geometry().isClosed(), exp, "isClosed {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, True, geom.geometry().isClosed()))
+                    self.assertEqual(geom.constGet().isClosed(), exp, "isClosed {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, True, geom.constGet().isClosed()))
                 except:
                     # some geometry types don't have isClosed()
                     assert not exp, "isClosed {}:  Expected:\n isClosed() but could not call isClosed()\n".format(i + 1)
@@ -203,7 +211,7 @@ class TestQgsGeometry(unittest.TestCase):
                 assert compareWkt(result, exp, 0.00001), "Centroid {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result)
 
                 # test bounding box limits
-                bbox = geom.geometry().boundingBox()
+                bbox = geom.constGet().boundingBox()
                 exp = float(row['x_min'])
                 result = bbox.xMinimum()
                 self.assertAlmostEqual(result, exp, 5, "Min X {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
@@ -219,21 +227,21 @@ class TestQgsGeometry(unittest.TestCase):
 
                 # test area calculation
                 exp = float(row['area'])
-                result = geom.geometry().area()
+                result = geom.constGet().area()
                 self.assertAlmostEqual(result, exp, 5, "Area {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
 
                 # test length calculation
                 exp = float(row['length'])
-                result = geom.geometry().length()
+                result = geom.constGet().length()
                 self.assertAlmostEqual(result, exp, 5, "Length {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
 
                 # test perimeter calculation
                 exp = float(row['perimeter'])
-                result = geom.geometry().perimeter()
+                result = geom.constGet().perimeter()
                 self.assertAlmostEqual(result, exp, 5, "Perimeter {}: mismatch Expected:\n{}\nGot:\n{}\n".format(i + 1, exp, result))
 
     def testIntersection(self):
-        myLine = QgsGeometry.fromPolyline([
+        myLine = QgsGeometry.fromPolylineXY([
             QgsPointXY(0, 0),
             QgsPointXY(1, 1),
             QgsPointXY(2, 2)])
@@ -270,7 +278,7 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(QgsGeometry.contains(myPoly, myPoint))
 
     def testTouches(self):
-        myLine = QgsGeometry.fromPolyline([
+        myLine = QgsGeometry.fromPolylineXY([
             QgsPointXY(0, 0),
             QgsPointXY(1, 1),
             QgsPointXY(2, 2)])
@@ -302,7 +310,7 @@ class TestQgsGeometry(unittest.TestCase):
         assert overlapsGeom, myMessage
 
     def testWithin(self):
-        myLine = QgsGeometry.fromPolyline([
+        myLine = QgsGeometry.fromPolylineXY([
             QgsPointXY(0.5, 0.5),
             QgsPointXY(1, 1),
             QgsPointXY(1.5, 1.5)
@@ -327,7 +335,7 @@ class TestQgsGeometry(unittest.TestCase):
         assert equalsGeom, myMessage
 
     def testCrosses(self):
-        myLine = QgsGeometry.fromPolyline([
+        myLine = QgsGeometry.fromPolylineXY([
             QgsPointXY(0, 0),
             QgsPointXY(1, 1),
             QgsPointXY(3, 3)])
@@ -387,7 +395,7 @@ class TestQgsGeometry(unittest.TestCase):
         assert myProvider is not None
 
         myFeature1 = QgsFeature()
-        myFeature1.setGeometry(QgsGeometry.fromPolyline([
+        myFeature1.setGeometry(QgsGeometry.fromPolylineXY([
             QgsPointXY(10, 10),
             QgsPointXY(20, 10),
             QgsPointXY(30, 10),
@@ -396,7 +404,7 @@ class TestQgsGeometry(unittest.TestCase):
         myFeature1.setAttributes(['Johny'])
 
         myFeature2 = QgsFeature()
-        myFeature2.setGeometry(QgsGeometry.fromPolyline([
+        myFeature2.setGeometry(QgsGeometry.fromPolylineXY([
             QgsPointXY(10, 10),
             QgsPointXY(20, 20),
             QgsPointXY(30, 30),
@@ -405,7 +413,7 @@ class TestQgsGeometry(unittest.TestCase):
         myFeature2.setAttributes(['Be'])
 
         myFeature3 = QgsFeature()
-        myFeature3.setGeometry(QgsGeometry.fromPolyline([
+        myFeature3.setGeometry(QgsGeometry.fromPolylineXY([
             QgsPointXY(10, 10),
             QgsPointXY(10, 20),
             QgsPointXY(10, 30),
@@ -480,7 +488,7 @@ class TestQgsGeometry(unittest.TestCase):
         # ! 5-+-+-+-4 !
         # |
         # 1-+-+-+-+-0 !
-        polyline = QgsGeometry.fromPolyline(
+        polyline = QgsGeometry.fromPolylineXY(
             [QgsPointXY(5, 0), QgsPointXY(0, 0), QgsPointXY(0, 4), QgsPointXY(5, 4), QgsPointXY(5, 1), QgsPointXY(1, 1), QgsPointXY(1, 3), QgsPointXY(4, 3), QgsPointXY(4, 2), QgsPointXY(2, 2)]
         )
 
@@ -624,7 +632,7 @@ class TestQgsGeometry(unittest.TestCase):
         # ! 5-+-+-+-4 !
         # |
         # 1-+-+-+-+-0 !
-        polyline = QgsGeometry.fromPolyline(
+        polyline = QgsGeometry.fromPolylineXY(
             [QgsPointXY(5, 0), QgsPointXY(0, 0), QgsPointXY(0, 4), QgsPointXY(5, 4), QgsPointXY(5, 1), QgsPointXY(1, 1), QgsPointXY(1, 3), QgsPointXY(4, 3), QgsPointXY(4, 2), QgsPointXY(2, 2)]
         )
 
@@ -764,7 +772,7 @@ class TestQgsGeometry(unittest.TestCase):
         # |
         # 1-+-+-+-+-0 !
         points = [QgsPointXY(5, 0), QgsPointXY(0, 0), QgsPointXY(0, 4), QgsPointXY(5, 4), QgsPointXY(5, 1), QgsPointXY(1, 1), QgsPointXY(1, 3), QgsPointXY(4, 3), QgsPointXY(4, 2), QgsPointXY(2, 2)]
-        polyline = QgsGeometry.fromPolyline(points)
+        polyline = QgsGeometry.fromPolylineXY(points)
 
         for i in range(0, len(points)):
             self.assertEqual(QgsPoint(points[i]), polyline.vertexAt(i), "Mismatch at %d" % i)
@@ -1215,7 +1223,7 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertTrue(g.extrude(1, 2).isNull())
 
         points = [QgsPointXY(1, 2), QgsPointXY(3, 2), QgsPointXY(4, 3)]
-        line = QgsGeometry.fromPolyline(points)
+        line = QgsGeometry.fromPolylineXY(points)
         expected = QgsGeometry.fromWkt('Polygon ((1 2, 3 2, 4 3, 5 5, 4 4, 2 4, 1 2))')
         self.assertEqual(line.extrude(1, 2).exportToWkt(), expected.exportToWkt())
 
@@ -1297,7 +1305,7 @@ class TestQgsGeometry(unittest.TestCase):
         # |
         # 1-+-+-+-+-0 !
         points = [QgsPointXY(5, 0), QgsPointXY(0, 0), QgsPointXY(0, 4), QgsPointXY(5, 4), QgsPointXY(5, 1), QgsPointXY(1, 1), QgsPointXY(1, 3), QgsPointXY(4, 3), QgsPointXY(4, 2), QgsPointXY(2, 2)]
-        polyline = QgsGeometry.fromPolyline(points)
+        polyline = QgsGeometry.fromPolylineXY(points)
         expbb = QgsRectangle(0, 0, 5, 4)
         bb = polyline.boundingBox()
         self.assertEqual(expbb, bb, "Expected:\n%s\nGot:\n%s\n" % (expbb.toString(), bb.toString()))
@@ -1360,7 +1368,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # NULL
         points = []
-        line = QgsGeometry.fromPolyline(points)
+        line = QgsGeometry.fromPolylineXY(points)
         assert line.boundingBox().isNull()
 
     def testCollectGeometry(self):
@@ -1376,7 +1384,7 @@ class TestQgsGeometry(unittest.TestCase):
             [QgsPointXY(0, 0), QgsPointXY(1, 0)],
             [QgsPointXY(2, 0), QgsPointXY(3, 0)]
         ]
-        geometries = [QgsGeometry.fromPolyline(points[0]), QgsGeometry.fromPolyline(points[1])]
+        geometries = [QgsGeometry.fromPolylineXY(points[0]), QgsGeometry.fromPolylineXY(points[1])]
         geometry = QgsGeometry.collectGeometry(geometries)
         expwkt = "MultiLineString ((0 0, 1 0), (2 0, 3 0))"
         wkt = geometry.exportToWkt()
@@ -1414,7 +1422,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # test adding a part with Z values
         point = QgsGeometry.fromPoint(points[0])
-        point.geometry().addZValue(4.0)
+        point.get().addZValue(4.0)
         self.assertEqual(point.addPointsV2([QgsPoint(points[1][0], points[1][1], 3.0, wkbType=QgsWkbTypes.PointZ)]), 0)
         expwkt = "MultiPointZ ((0 0 4), (1 0 3))"
         wkt = point.exportToWkt()
@@ -1428,22 +1436,22 @@ class TestQgsGeometry(unittest.TestCase):
             [QgsPointXY(3, 0), QgsPointXY(3, 1), QgsPointXY(5, 1), QgsPointXY(5, 0), QgsPointXY(6, 0), ]
         ]
 
-        polyline = QgsGeometry.fromPolyline(points[0])
+        polyline = QgsGeometry.fromPolylineXY(points[0])
         self.assertEqual(polyline.addPoints(points[1][0:1]), QgsGeometry.InvalidInput, "addPoints with one point line unexpectedly succeeded.")
         self.assertEqual(polyline.addPoints(points[1][0:2]), QgsGeometry.Success, "addPoints with two point line failed.")
         expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1))"
         wkt = polyline.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
-        polyline = QgsGeometry.fromPolyline(points[0])
+        polyline = QgsGeometry.fromPolylineXY(points[0])
         self.assertEqual(polyline.addPoints(points[1]), QgsGeometry.Success, "addPoints with %d point line failed." % len(points[1]))
         expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1, 5 1, 5 0, 6 0))"
         wkt = polyline.exportToWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         # test adding a part with Z values
-        polyline = QgsGeometry.fromPolyline(points[0])
-        polyline.geometry().addZValue(4.0)
+        polyline = QgsGeometry.fromPolylineXY(points[0])
+        polyline.get().addZValue(4.0)
         points2 = [QgsPoint(p[0], p[1], 3.0, wkbType=QgsWkbTypes.PointZ) for p in points[1]]
         self.assertEqual(polyline.addPointsV2(points2), QgsGeometry.Success)
         expwkt = "MultiLineStringZ ((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 0 4),(3 0 3, 3 1 3, 5 1 3, 5 0 3, 6 0 3))"
@@ -1487,7 +1495,7 @@ class TestQgsGeometry(unittest.TestCase):
 
         # test adding a part with Z values
         polygon = QgsGeometry.fromPolygon(points[0])
-        polygon.geometry().addZValue(4.0)
+        polygon.get().addZValue(4.0)
         points2 = [QgsPoint(pi[0], pi[1], 3.0, wkbType=QgsWkbTypes.PointZ) for pi in points[1][0]]
         self.assertEqual(polygon.addPointsV2(points2), QgsGeometry.Success)
         expwkt = "MultiPolygonZ (((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 2 4, 0 2 4, 0 0 4)),((4 0 3, 5 0 3, 5 2 3, 3 2 3, 3 1 3, 4 1 3, 4 0 3)))"
@@ -1558,7 +1566,7 @@ class TestQgsGeometry(unittest.TestCase):
         expWkt = "MultiPoint ((1 1))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from point to multipoint. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         # LINE TO MultiPoint
-        line = QgsGeometry.fromPolyline(points[0][0])
+        line = QgsGeometry.fromPolylineXY(points[0][0])
         wkt = line.convertToType(QgsWkbTypes.PointGeometry, True).exportToWkt()
         expWkt = "MultiPoint ((0 0),(1 0),(1 1),(2 1),(2 2),(0 2),(0 0))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from line to multipoint. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
@@ -1598,7 +1606,7 @@ class TestQgsGeometry(unittest.TestCase):
         expWkt = "LineString (0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
         assert compareWkt(expWkt, wkt), "convertToType failed: from multiline to line. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         # LINE TO MULTILINE
-        line = QgsGeometry.fromPolyline(points[0][0])
+        line = QgsGeometry.fromPolylineXY(points[0][0])
         wkt = line.convertToType(QgsWkbTypes.LineGeometry, True).exportToWkt()
         expWkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from line to multiline. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
@@ -1640,18 +1648,18 @@ class TestQgsGeometry(unittest.TestCase):
         expWkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from multipoint to multipolygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         # LINE TO Polygon
-        line = QgsGeometry.fromPolyline(points[0][0])
+        line = QgsGeometry.fromPolylineXY(points[0][0])
         wkt = line.convertToType(QgsWkbTypes.PolygonGeometry, False).exportToWkt()
         expWkt = "Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from line to polygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
         # LINE ( 3 vertices, with first = last ) TO Polygon
-        line = QgsGeometry.fromPolyline([QgsPointXY(1, 1), QgsPointXY(0, 0), QgsPointXY(1, 1)])
+        line = QgsGeometry.fromPolylineXY([QgsPointXY(1, 1), QgsPointXY(0, 0), QgsPointXY(1, 1)])
         self.assertFalse(line.convertToType(QgsWkbTypes.PolygonGeometry, False), "convertToType to polygon of a 3 vertices lines with first and last vertex identical should return a null geometry")
         # MULTILINE ( with a part of 3 vertices, with first = last ) TO MultiPolygon
         multiline = QgsGeometry.fromMultiPolyline([points[0][0], [QgsPointXY(1, 1), QgsPointXY(0, 0), QgsPointXY(1, 1)]])
         self.assertFalse(multiline.convertToType(QgsWkbTypes.PolygonGeometry, True), "convertToType to polygon of a 3 vertices lines with first and last vertex identical should return a null geometry")
         # LINE TO MultiPolygon
-        line = QgsGeometry.fromPolyline(points[0][0])
+        line = QgsGeometry.fromPolylineXY(points[0][0])
         wkt = line.convertToType(QgsWkbTypes.PolygonGeometry, True).exportToWkt()
         expWkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))"
         assert compareWkt(expWkt, wkt), "convertToType failed: from line to multipolygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
@@ -1812,24 +1820,24 @@ class TestQgsGeometry(unittest.TestCase):
 
         # circular string
         geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
-        assert geom.geometry().addZValue(2)
-        self.assertEqual(geom.geometry().wkbType(), QgsWkbTypes.CircularStringZ)
+        assert geom.constGet().addZValue(2)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.CircularStringZ)
         expWkt = 'CircularStringZ (1 5 2, 6 2 2, 7 3 2)'
         wkt = geom.exportToWkt()
         assert compareWkt(expWkt, wkt), "addZValue to CircularString failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
         # compound curve
         geom = QgsGeometry.fromWkt('CompoundCurve ((5 3, 5 13),CircularString (5 13, 7 15, 9 13),(9 13, 9 3),CircularString (9 3, 7 1, 5 3))')
-        assert geom.geometry().addZValue(2)
-        self.assertEqual(geom.geometry().wkbType(), QgsWkbTypes.CompoundCurveZ)
+        assert geom.constGet().addZValue(2)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.CompoundCurveZ)
         expWkt = 'CompoundCurveZ ((5 3 2, 5 13 2),CircularStringZ (5 13 2, 7 15 2, 9 13 2),(9 13 2, 9 3 2),CircularStringZ (9 3 2, 7 1 2, 5 3 2))'
         wkt = geom.exportToWkt()
         assert compareWkt(expWkt, wkt), "addZValue to CompoundCurve failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
         # curve polygon
         geom = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))')
-        assert geom.geometry().addZValue(3)
-        self.assertEqual(geom.geometry().wkbType(), QgsWkbTypes.PolygonZ)
+        assert geom.constGet().addZValue(3)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.PolygonZ)
         self.assertEqual(geom.wkbType(), QgsWkbTypes.PolygonZ)
         expWkt = 'PolygonZ ((0 0 3, 1 0 3, 1 1 3, 2 1 3, 2 2 3, 0 2 3, 0 0 3))'
         wkt = geom.exportToWkt()
@@ -1837,8 +1845,8 @@ class TestQgsGeometry(unittest.TestCase):
 
         # geometry collection
         geom = QgsGeometry.fromWkt('MultiPoint ((1 2),(2 3))')
-        assert geom.geometry().addZValue(4)
-        self.assertEqual(geom.geometry().wkbType(), QgsWkbTypes.MultiPointZ)
+        assert geom.constGet().addZValue(4)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.MultiPointZ)
         self.assertEqual(geom.wkbType(), QgsWkbTypes.MultiPointZ)
         expWkt = 'MultiPointZ ((1 2 4),(2 3 4))'
         wkt = geom.exportToWkt()
@@ -1846,8 +1854,8 @@ class TestQgsGeometry(unittest.TestCase):
 
         # LineString
         geom = QgsGeometry.fromWkt('LineString (1 2, 2 3)')
-        assert geom.geometry().addZValue(4)
-        self.assertEqual(geom.geometry().wkbType(), QgsWkbTypes.LineStringZ)
+        assert geom.constGet().addZValue(4)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.LineStringZ)
         self.assertEqual(geom.wkbType(), QgsWkbTypes.LineStringZ)
         expWkt = 'LineStringZ (1 2 4, 2 3 4)'
         wkt = geom.exportToWkt()
@@ -1855,8 +1863,8 @@ class TestQgsGeometry(unittest.TestCase):
 
         # Point
         geom = QgsGeometry.fromWkt('Point (1 2)')
-        assert geom.geometry().addZValue(4)
-        self.assertEqual(geom.geometry().wkbType(), QgsWkbTypes.PointZ)
+        assert geom.constGet().addZValue(4)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.PointZ)
         self.assertEqual(geom.wkbType(), QgsWkbTypes.PointZ)
         expWkt = 'PointZ (1 2 4)'
         wkt = geom.exportToWkt()
@@ -1867,48 +1875,48 @@ class TestQgsGeometry(unittest.TestCase):
 
         # circular string
         geom = QgsGeometry.fromWkt('CircularString (1 5, 6 2, 7 3)')
-        assert geom.geometry().addMValue(2)
-        self.assertEqual(geom.geometry().wkbType(), QgsWkbTypes.CircularStringM)
+        assert geom.constGet().addMValue(2)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.CircularStringM)
         expWkt = 'CircularStringM (1 5 2, 6 2 2, 7 3 2)'
         wkt = geom.exportToWkt()
         assert compareWkt(expWkt, wkt), "addMValue to CircularString failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
         # compound curve
         geom = QgsGeometry.fromWkt('CompoundCurve ((5 3, 5 13),CircularString (5 13, 7 15, 9 13),(9 13, 9 3),CircularString (9 3, 7 1, 5 3))')
-        assert geom.geometry().addMValue(2)
-        self.assertEqual(geom.geometry().wkbType(), QgsWkbTypes.CompoundCurveM)
+        assert geom.constGet().addMValue(2)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.CompoundCurveM)
         expWkt = 'CompoundCurveM ((5 3 2, 5 13 2),CircularStringM (5 13 2, 7 15 2, 9 13 2),(9 13 2, 9 3 2),CircularStringM (9 3 2, 7 1 2, 5 3 2))'
         wkt = geom.exportToWkt()
         assert compareWkt(expWkt, wkt), "addMValue to CompoundCurve failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
         # curve polygon
         geom = QgsGeometry.fromWkt('Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))')
-        assert geom.geometry().addMValue(3)
-        self.assertEqual(geom.geometry().wkbType(), QgsWkbTypes.PolygonM)
+        assert geom.constGet().addMValue(3)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.PolygonM)
         expWkt = 'PolygonM ((0 0 3, 1 0 3, 1 1 3, 2 1 3, 2 2 3, 0 2 3, 0 0 3))'
         wkt = geom.exportToWkt()
         assert compareWkt(expWkt, wkt), "addMValue to CurvePolygon failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
         # geometry collection
         geom = QgsGeometry.fromWkt('MultiPoint ((1 2),(2 3))')
-        assert geom.geometry().addMValue(4)
-        self.assertEqual(geom.geometry().wkbType(), QgsWkbTypes.MultiPointM)
+        assert geom.constGet().addMValue(4)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.MultiPointM)
         expWkt = 'MultiPointM ((1 2 4),(2 3 4))'
         wkt = geom.exportToWkt()
         assert compareWkt(expWkt, wkt), "addMValue to GeometryCollection failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
         # LineString
         geom = QgsGeometry.fromWkt('LineString (1 2, 2 3)')
-        assert geom.geometry().addMValue(4)
-        self.assertEqual(geom.geometry().wkbType(), QgsWkbTypes.LineStringM)
+        assert geom.constGet().addMValue(4)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.LineStringM)
         expWkt = 'LineStringM (1 2 4, 2 3 4)'
         wkt = geom.exportToWkt()
         assert compareWkt(expWkt, wkt), "addMValue to LineString failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
 
         # Point
         geom = QgsGeometry.fromWkt('Point (1 2)')
-        assert geom.geometry().addMValue(4)
-        self.assertEqual(geom.geometry().wkbType(), QgsWkbTypes.PointM)
+        assert geom.constGet().addMValue(4)
+        self.assertEqual(geom.constGet().wkbType(), QgsWkbTypes.PointM)
         expWkt = 'PointM (1 2 4)'
         wkt = geom.exportToWkt()
         assert compareWkt(expWkt, wkt), "addMValue to Point failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt)
@@ -1966,7 +1974,7 @@ class TestQgsGeometry(unittest.TestCase):
                 assert geom1, "Relates {} failed: could not create geom:\n{}\n".format(i + 1, test_data[0])
                 geom2 = QgsGeometry.fromWkt(test_data[1])
                 assert geom2, "Relates {} failed: could not create geom:\n{}\n".format(i + 1, test_data[1])
-                result = QgsGeometry.createGeometryEngine(geom1.geometry()).relate(geom2.geometry())
+                result = QgsGeometry.createGeometryEngine(geom1.constGet()).relate(geom2.constGet())
                 exp = test_data[2]
                 self.assertEqual(result, exp, "Relates {} failed: mismatch Expected:\n{}\nGot:\n{}\nGeom1:\n{}\nGeom2:\n{}\n".format(i + 1, exp, result, test_data[0], test_data[1]))
 
@@ -3610,6 +3618,11 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertAlmostEqual(linestring.angleAtVertex(0), math.radians(270), places=3)
         self.assertAlmostEqual(linestring.angleAtVertex(2), math.radians(180), places=3)
 
+        # closed linestring - angle at first/last vertex should be average angle
+        linestring = QgsGeometry.fromWkt('LineString (-1007697 1334641, -1007697 1334643, -1007695 1334643, -1007695 1334641, -1007696 1334641, -1007697 1334641)')
+        self.assertAlmostEqual(linestring.angleAtVertex(0), math.radians(315), places=3)
+        self.assertAlmostEqual(linestring.angleAtVertex(5), math.radians(315), places=3)
+
         # polygon
         polygon = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 10, 0 0))')
         self.assertAlmostEqual(polygon.angleAtVertex(0), math.radians(135.0), places=3)
@@ -4125,7 +4138,7 @@ class TestQgsGeometry(unittest.TestCase):
 
             # QGIS native algorithms are bad!
             if False:
-                result = QgsGeometry(input.geometry().centroid()).exportToWkt()
+                result = QgsGeometry(input.get().centroid()).exportToWkt()
                 self.assertTrue(compareWkt(result, exp, 0.00001),
                                 "centroid: mismatch using QgsAbstractGeometry methods Input {} \n Expected:\n{}\nGot:\n{}\n".format(t[0], exp, result))
 
@@ -4201,8 +4214,8 @@ class TestQgsGeometry(unittest.TestCase):
             # make sure area is unchanged
             self.assertAlmostEqual(input.area(), o.area(), 5)
             max_points = 999999
-            for p in range(o.geometry().numGeometries()):
-                part = o.geometry().geometryN(p)
+            for p in range(o.constGet().numGeometries()):
+                part = o.constGet().geometryN(p)
                 self.assertLessEqual(part.nCoordinates(), max(t[1], 8))
 
             if t[2]:
@@ -4278,11 +4291,11 @@ class TestQgsGeometry(unittest.TestCase):
 
         if as_painter_path:
             path = QPainterPath()
-            geom.geometry().addToPainterPath(path)
+            geom.constGet().addToPainterPath(path)
             painter.drawPath(path)
         else:
             if as_polygon:
-                geom.geometry().drawAsPolygon(painter)
+                geom.constGet().drawAsPolygon(painter)
             else:
                 geom.draw(painter)
         painter.end()
@@ -4330,7 +4343,7 @@ class TestQgsGeometry(unittest.TestCase):
             rendered_image = self.renderGeometry(geom, test['use_pen'])
             assert self.imageCheck(test['name'], test['reference_image'], rendered_image)
 
-            if hasattr(geom.geometry(), 'addToPainterPath'):
+            if hasattr(geom.constGet(), 'addToPainterPath'):
                 # also check using painter path
                 rendered_image = self.renderGeometry(geom, test['use_pen'], as_painter_path=True)
                 assert self.imageCheck(test['name'], test['reference_image'], rendered_image)

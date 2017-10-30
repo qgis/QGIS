@@ -21,7 +21,8 @@
 
 class QgsFloatingWidgetEventFilter;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFloatingWidget
  * A QWidget subclass for creating widgets which float outside of the normal Qt layout
  * system. Floating widgets use an "anchor widget" to determine how they are anchored
@@ -53,45 +54,52 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
     };
     Q_ENUM( AnchorPoint );
 
-    /** Constructor for QgsFloatingWidget.
+    /**
+     * Constructor for QgsFloatingWidget.
      * \param parent parent widget
      */
     QgsFloatingWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
-    /** Sets the widget to "anchor" the floating widget to. The floating widget will be repositioned whenever the
+    /**
+     * Sets the widget to "anchor" the floating widget to. The floating widget will be repositioned whenever the
      * anchor widget moves or is resized so that it maintains the same relative position to the anchor widget.
      * \param widget anchor widget. Both the floating widget and the anchor widget must share some common parent.
      * \see anchorWidget()
      */
     void setAnchorWidget( QWidget *widget );
 
-    /** Returns the widget that the floating widget is "anchored" tto. The floating widget will be repositioned whenever the
+    /**
+     * Returns the widget that the floating widget is "anchored" tto. The floating widget will be repositioned whenever the
      * anchor widget moves or is resized so that it maintains the same relative position to the anchor widget.
      * \see setAnchorWidget()
      */
     QWidget *anchorWidget();
 
-    /** Returns the floating widget's anchor point, which corresponds to the point on the widget which should remain
+    /**
+     * Returns the floating widget's anchor point, which corresponds to the point on the widget which should remain
      * fixed in the same relative position whenever the widget's parent is resized or moved.
      * \see setAnchorPoint()
      */
     AnchorPoint anchorPoint() const { return mFloatAnchorPoint; }
 
-    /** Sets the floating widget's anchor point, which corresponds to the point on the widget which should remain
+    /**
+     * Sets the floating widget's anchor point, which corresponds to the point on the widget which should remain
      * fixed in the same relative position whenever the widget's parent is resized or moved.
      * \param point anchor point
      * \see anchorPoint()
      */
     void setAnchorPoint( AnchorPoint point );
 
-    /** Returns the anchor widget's anchor point, which corresponds to the point on the anchor widget which
+    /**
+     * Returns the anchor widget's anchor point, which corresponds to the point on the anchor widget which
      * the floating widget should "attach" to. The floating widget should remain fixed in the same relative position
      * to this anchor widget whenever the widget's parent is resized or moved.
      * \see setAnchorWidgetPoint()
      */
     AnchorPoint anchorWidgetPoint() const { return mAnchorWidgetAnchorPoint; }
 
-    /** Returns the anchor widget's anchor point, which corresponds to the point on the anchor widget which
+    /**
+     * Returns the anchor widget's anchor point, which corresponds to the point on the anchor widget which
      * the floating widget should "attach" to. The floating widget should remain fixed in the same relative position
      * to this anchor widget whenever the widget's parent is resized or moved.
      * \see setAnchorWidgetPoint()

@@ -34,7 +34,6 @@ class QgsBench :  public QObject
     Q_OBJECT
   public:
     QgsBench( int width, int height, int cycles );
-    ~QgsBench();
 
     // start time counter
     void start();

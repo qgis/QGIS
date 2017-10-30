@@ -95,8 +95,7 @@ class TestQgsLegendRenderer : public QObject
     Q_OBJECT
 
   public:
-    TestQgsLegendRenderer()
-    {}
+    TestQgsLegendRenderer() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

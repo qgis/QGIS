@@ -16,7 +16,6 @@
 #include "qgsarrowsymbollayer.h"
 
 QgsArrowSymbolLayer::QgsArrowSymbolLayer()
-  : QgsLineSymbolLayer()
 {
   /* default values */
   setOffset( 0.0 );

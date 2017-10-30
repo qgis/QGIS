@@ -117,7 +117,7 @@ class PointsFromPolygons(QgisAlgorithm):
             (endRow, endColumn) = raster.mapToPixel(xMax, yMin, geoTransform)
 
             # use prepared geometries for faster intersection tests
-            engine = QgsGeometry.createGeometryEngine(geom.geometry())
+            engine = QgsGeometry.createGeometryEngine(geom.constGet())
             engine.prepareGeometry()
 
             for row in range(startRow, endRow + 1):

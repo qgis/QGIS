@@ -17,6 +17,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayerundopassthroughcommand.h"
+#include "qgstransaction.h"
 
 QgsVectorLayerEditPassthrough::QgsVectorLayerEditPassthrough( QgsVectorLayer *layer )
   : mModified( false )
@@ -35,7 +36,12 @@ bool QgsVectorLayerEditPassthrough::modify( QgsVectorLayerUndoPassthroughCommand
   if ( cmd->hasError() )
     return false;
 
-  mModified = true;
+  if ( !mModified )
+  {
+    mModified = true;
+    emit layerModified();
+  }
+
   return true;
 }
 
@@ -104,4 +110,9 @@ bool QgsVectorLayerEditPassthrough::commitChanges( QStringList & /*commitErrors*
 void QgsVectorLayerEditPassthrough::rollBack()
 {
   mModified = false;
+}
+
+bool QgsVectorLayerEditPassthrough::update( QgsTransaction *tr, const QString &sql )
+{
+  return modify( new QgsVectorLayerUndoPassthroughCommandUpdate( this, tr, sql ) );
 }

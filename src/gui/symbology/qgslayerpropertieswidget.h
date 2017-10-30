@@ -34,7 +34,8 @@ class SymbolLayerItem;
 #include <QStandardItemModel>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsLayerPropertiesWidget
  */
 class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExpressionContextGenerator, private Ui::LayerPropertiesWidget
@@ -42,16 +43,26 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     Q_OBJECT
 
   public:
-    QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+    /**
+     * Constructor for QgsLayerPropertiesWidget.
+     * \param layer the symbol layer
+     * \param symbol the symbol
+     * \param vl associated vector layer
+     * \param parent parent widget
+     */
+    QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \param context symbol widget context
      * \see context()
      * \since QGIS 3.0
      */
     void setContext( const QgsSymbolWidgetContext &context );
 
-    /** Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+    /**
+     * Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
      * \see setContext()
      * \since QGIS 3.0
      */
@@ -90,11 +101,11 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     QgsSymbolLayer *mLayer = nullptr;
 
     const QgsSymbol *mSymbol = nullptr;
-    const QgsVectorLayer *mVectorLayer = nullptr;
+    QgsVectorLayer *mVectorLayer = nullptr;
 
   private slots:
     void reloadLayer();
-    void on_mEnabledCheckBox_toggled( bool enabled );
+    void mEnabledCheckBox_toggled( bool enabled );
     void updateProperty();
 
   private:

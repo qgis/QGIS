@@ -18,11 +18,9 @@ class QgsRasterResampler
 
 %TypeHeaderCode
 #include "qgsrasterresampler.h"
-
 #include "qgsbilinearrasterresampler.h"
 #include "qgscubicrasterresampler.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsBilinearRasterResampler *>( sipCpp ) != NULL )
       sipType = sipType_QgsBilinearRasterResampler;

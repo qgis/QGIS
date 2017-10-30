@@ -20,8 +20,7 @@
 ///@cond NOT_STABLE
 
 QgsProcessingModelParameter::QgsProcessingModelParameter( const QString &parameterName )
-  : QgsProcessingModelComponent()
-  , mParameterName( parameterName )
+  : mParameterName( parameterName )
 {
 
 }

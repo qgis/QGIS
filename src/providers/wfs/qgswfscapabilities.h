@@ -27,7 +27,6 @@ class QgsWfsCapabilities : public QgsWfsRequest
     Q_OBJECT
   public:
     explicit QgsWfsCapabilities( const QString &uri );
-    virtual ~QgsWfsCapabilities();
 
     //! start network connection to get capabilities
     bool requestCapabilities( bool synchronous, bool forceRefresh );
@@ -36,7 +35,7 @@ class QgsWfsCapabilities : public QgsWfsRequest
     struct FeatureType
     {
       //! Default constructor
-      FeatureType() {}
+      FeatureType() = default;
 
       QString name;
       QString title;
@@ -80,7 +79,7 @@ class QgsWfsCapabilities : public QgsWfsRequest
       //! constructor with name and min,max number of arguments
       Function( const QString &nameIn, int minArgs, int maxArgsIn ) : name( nameIn ), minArgs( minArgs ), maxArgs( maxArgsIn ) {}
       //! default constructor
-      Function() {}
+      Function() = default;
     };
 
     //! parsed get capabilities document

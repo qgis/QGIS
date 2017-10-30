@@ -25,7 +25,8 @@
 class QgsMapLayerModel;
 class QgsMapLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsMapLayerProxyModel class provides an easy to use model to display the list of layers in widgets.
  * \since QGIS 2.3
  */

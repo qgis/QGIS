@@ -45,8 +45,12 @@ class QgsMultiPointV2: QgsGeometryCollection
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
+
+
 
   protected:
+    virtual QgsMultiPointV2 *createEmptyWithSameType() const /Factory/;
 
     virtual bool wktOmitChildType() const;
 

@@ -24,7 +24,8 @@
 #include <qgsfieldexpressionwidget.h>
 #include <qgsproject.h>
 
-/** @ingroup UnitTests
+/**
+ * @ingroup UnitTests
  * This is a unit test for the field expression widget
  *
  * @see QgsFieldExpressionWidget
@@ -34,8 +35,7 @@ class TestQgsFieldExpressionWidget : public QObject
     Q_OBJECT
 
   public:
-    TestQgsFieldExpressionWidget()
-    {}
+    TestQgsFieldExpressionWidget() = default;
 
   private slots:
     void initTestCase();      // will be called before the first testfunction is executed.

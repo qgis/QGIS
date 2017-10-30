@@ -23,7 +23,8 @@
 
 class QIcon;
 
-/** A model that holds the tables of a database in a hierarchy where the
+/**
+ * A model that holds the tables of a database in a hierarchy where the
 schemas are the root elements that contain the individual tables as children.
 The tables have the following columns: Type, Owner, Tablename, Geometry Column, Sql*/
 class QgsOracleTableModel : public QStandardItemModel

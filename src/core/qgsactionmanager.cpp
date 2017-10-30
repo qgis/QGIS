@@ -74,7 +74,7 @@ void QgsActionManager::addAction( const QgsAction &action )
 
 void QgsActionManager::onNotifyRunActions( const QString &message )
 {
-  for ( const QgsAction &act : qgsAsConst( mActions ) )
+  for ( const QgsAction &act : qgis::as_const( mActions ) )
   {
     if ( !act.notificationMessage().isEmpty() && QRegularExpression( act.notificationMessage() ).match( message ).hasMatch() )
     {
@@ -98,7 +98,7 @@ void QgsActionManager::onNotifyRunActions( const QString &message )
 void QgsActionManager::removeAction( const QUuid &actionId )
 {
   int i = 0;
-  for ( const QgsAction &action : qgsAsConst( mActions ) )
+  for ( const QgsAction &action : qgis::as_const( mActions ) )
   {
     if ( action.id() == actionId )
     {
@@ -111,7 +111,7 @@ void QgsActionManager::removeAction( const QUuid &actionId )
   if ( mOnNotifyConnected )
   {
     bool hasActionOnNotify = false;
-    for ( const QgsAction &action : qgsAsConst( mActions ) )
+    for ( const QgsAction &action : qgis::as_const( mActions ) )
       hasActionOnNotify |= !action.notificationMessage().isEmpty();
     if ( !hasActionOnNotify && mLayer && mLayer->dataProvider() )
     {
@@ -176,7 +176,7 @@ QList<QgsAction> QgsActionManager::actions( const QString &actionScope ) const
   {
     QList<QgsAction> actions;
 
-    for ( const QgsAction &action : qgsAsConst( mActions ) )
+    for ( const QgsAction &action : qgis::as_const( mActions ) )
     {
       if ( action.actionScopes().contains( actionScope ) )
         actions.append( action );
@@ -231,7 +231,7 @@ bool QgsActionManager::writeXml( QDomNode &layer_node ) const
     aActions.appendChild( defaultActionElement );
   }
 
-  for ( const QgsAction &action : qgsAsConst( mActions ) )
+  for ( const QgsAction &action : qgis::as_const( mActions ) )
   {
     action.writeXml( aActions );
   }
@@ -269,7 +269,7 @@ bool QgsActionManager::readXml( const QDomNode &layer_node )
 
 QgsAction QgsActionManager::action( const QUuid &id )
 {
-  for ( const QgsAction &action : qgsAsConst( mActions ) )
+  for ( const QgsAction &action : qgis::as_const( mActions ) )
   {
     if ( action.id() == id )
       return action;

@@ -53,6 +53,10 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char 
   Q_UNUSED( name );
   QgsDebugMsg( "QgsGrassTools()" );
   setupUi( this );
+  connect( mFilterInput, &QLineEdit::textChanged, this, &QgsGrassTools::mFilterInput_textChanged );
+  connect( mDebugButton, &QPushButton::clicked, this, &QgsGrassTools::mDebugButton_clicked );
+  connect( mCloseDebugButton, &QPushButton::clicked, this, &QgsGrassTools::mCloseDebugButton_clicked );
+  connect( mViewModeButton, &QToolButton::clicked, this, &QgsGrassTools::mViewModeButton_clicked );
   QPushButton *closeMapsetButton = new QPushButton( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileExit.png" ) ), tr( "Close mapset" ), this );
   mTabWidget->setCornerWidget( closeMapsetButton );
   connect( closeMapsetButton, &QAbstractButton::clicked, this, &QgsGrassTools::closeMapset );
@@ -544,7 +548,7 @@ void QgsGrassTools::closeTools()
 //
 // Helper function for Tim's experimental model list
 //
-void QgsGrassTools::on_mFilterInput_textChanged( QString text )
+void QgsGrassTools::mFilterInput_textChanged( QString text )
 {
   QgsDebugMsg( "GRASS modules filter changed to :" + text );
   mTreeModelProxy->setFilter( text );
@@ -602,7 +606,7 @@ void QgsGrassTools::itemClicked( const QModelIndex &index )
   }
 }
 
-void QgsGrassTools::on_mDebugButton_clicked()
+void QgsGrassTools::mDebugButton_clicked()
 {
 
   QApplication::setOverrideCursor( Qt::BusyCursor );
@@ -666,13 +670,13 @@ int QgsGrassTools::debug( QStandardItem *item )
   }
 }
 
-void QgsGrassTools::on_mCloseDebugButton_clicked()
+void QgsGrassTools::mCloseDebugButton_clicked()
 {
   QgsGrass::instance()->setModulesDebug( false );
 }
 
 
-void QgsGrassTools::on_mViewModeButton_clicked()
+void QgsGrassTools::mViewModeButton_clicked()
 {
   if ( mTreeView->isHidden() )
   {

@@ -2,13 +2,22 @@ SET(GDAL_SRCS
   qgsgdalproviderbase.cpp
   qgsgdalprovider.cpp
   qgsgdaldataitems.cpp
-  qgsgdalsourceselect.cpp
 )
 SET(GDAL_MOC_HDRS
   qgsgdalprovider.h
   qgsgdaldataitems.h
-  qgsgdalsourceselect.h
 )
+
+IF (WITH_GUI)
+  SET(GDAL_SRCS ${GDAL_SRCS}
+    qgsgdalsourceselect.cpp
+  )
+  SET(GDAL_MOC_HDRS ${GDAL_MOC_HDRS}
+    qgsgdalsourceselect.h
+  )
+ENDIF ()
+
+########################################################
 
 INCLUDE_DIRECTORIES (
   ${CMAKE_SOURCE_DIR}/src/core

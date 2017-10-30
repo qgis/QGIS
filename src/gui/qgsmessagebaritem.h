@@ -27,7 +27,8 @@
 #include <QHBoxLayout>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsMessageBarItem
  */
 class GUI_EXPORT QgsMessageBarItem : public QWidget

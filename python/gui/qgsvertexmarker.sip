@@ -9,6 +9,11 @@
 
 
 
+%ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsvertexmarker.h>
+%End
+
 class QgsVertexMarker : QgsMapCanvasItem
 {
 %Docstring
@@ -18,6 +23,12 @@ class QgsVertexMarker : QgsMapCanvasItem
 %TypeHeaderCode
 #include "qgsvertexmarker.h"
 %End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsVertexMarker *>( sipCpp ) )
+      sipType = sipType_QgsVertexMarker;
+    else
+      sipType = nullptr;
+%End
   public:
 
     enum IconType
@@ -26,7 +37,8 @@ class QgsVertexMarker : QgsMapCanvasItem
       ICON_CROSS,
       ICON_X,
       ICON_BOX,
-      ICON_CIRCLE
+      ICON_CIRCLE,
+      ICON_DOUBLE_TRIANGLE,
     };
 
     QgsVertexMarker( QgsMapCanvas *mapCanvas /TransferThis/ );

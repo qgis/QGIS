@@ -20,7 +20,11 @@ class QgsFeatureListModel : QAbstractProxyModel, QgsFeatureModel
     struct FeatureInfo
     {
       public:
+
         FeatureInfo();
+%Docstring
+ Constructor for FeatureInfo.
+%End
 
         bool isNew;
         bool isEdited;

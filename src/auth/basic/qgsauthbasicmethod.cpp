@@ -19,8 +19,10 @@
 
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 #include <QNetworkProxy>
+#include <QMutexLocker>
 
 static const QString AUTH_METHOD_KEY = QStringLiteral( "Basic" );
 static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "Basic authentication" );
@@ -29,7 +31,6 @@ QMap<QString, QgsAuthMethodConfig> QgsAuthBasicMethod::sAuthConfigCache = QMap<Q
 
 
 QgsAuthBasicMethod::QgsAuthBasicMethod()
-  : QgsAuthMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
@@ -41,10 +42,6 @@ QgsAuthBasicMethod::QgsAuthBasicMethod()
                     << QStringLiteral( "wcs" )
                     << QStringLiteral( "wms" )
                     << QStringLiteral( "proxy" ) );
-}
-
-QgsAuthBasicMethod::~QgsAuthBasicMethod()
-{
 }
 
 QString QgsAuthBasicMethod::key() const
@@ -174,6 +171,7 @@ void QgsAuthBasicMethod::clearCachedConfig( const QString &authcfg )
 
 QgsAuthMethodConfig QgsAuthBasicMethod::getMethodConfig( const QString &authcfg, bool fullconfig )
 {
+  QMutexLocker locker( &mConfigMutex );
   QgsAuthMethodConfig mconfig;
 
   // check if it is cached
@@ -185,13 +183,14 @@ QgsAuthMethodConfig QgsAuthBasicMethod::getMethodConfig( const QString &authcfg,
   }
 
   // else build basic bundle
-  if ( !QgsAuthManager::instance()->loadAuthenticationConfig( authcfg, mconfig, fullconfig ) )
+  if ( !QgsApplication::authManager()->loadAuthenticationConfig( authcfg, mconfig, fullconfig ) )
   {
     QgsDebugMsg( QString( "Retrieve config FAILED for authcfg: %1" ).arg( authcfg ) );
     return QgsAuthMethodConfig();
   }
 
   // cache bundle
+  locker.unlock();
   putMethodConfig( authcfg, mconfig );
 
   return mconfig;
@@ -199,12 +198,14 @@ QgsAuthMethodConfig QgsAuthBasicMethod::getMethodConfig( const QString &authcfg,
 
 void QgsAuthBasicMethod::putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig &mconfig )
 {
+  QMutexLocker locker( &mConfigMutex );
   QgsDebugMsg( QString( "Putting basic config for authcfg: %1" ).arg( authcfg ) );
   sAuthConfigCache.insert( authcfg, mconfig );
 }
 
 void QgsAuthBasicMethod::removeMethodConfig( const QString &authcfg )
 {
+  QMutexLocker locker( &mConfigMutex );
   if ( sAuthConfigCache.contains( authcfg ) )
   {
     sAuthConfigCache.remove( authcfg );
@@ -234,7 +235,8 @@ QGISEXTERN QgsAuthBasicMethod *classFactory()
   return new QgsAuthBasicMethod();
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
  */
 QGISEXTERN QString authMethodKey()
 {

@@ -498,9 +498,12 @@ void QgsCptCityArchive::clearArchives()
 QgsCptCityDataItem::QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem *parent,
                                         const QString &name, const QString &path )
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
-  : QObject()
-  , mType( type ), mParent( parent ), mPopulated( false )
-  , mName( name ), mPath( path ), mValid( true )
+  : mType( type )
+  , mParent( parent )
+  , mPopulated( false )
+  , mName( name )
+  , mPath( path )
+  , mValid( true )
 {
 }
 

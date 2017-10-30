@@ -22,11 +22,28 @@
 
 class QPainter;
 
-/** \ingroup gui
+#ifdef SIP_RUN
+% ModuleHeaderCode
+// For ConvertToSubClassCode.
+#include <qgsvertexmarker.h>
+% End
+#endif
+
+/**
+ * \ingroup gui
  * A class for marking vertices of features using e.g. circles or 'x'.
  */
 class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsVertexMarker *>( sipCpp ) )
+      sipType = sipType_QgsVertexMarker;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
   public:
 
     //! Icons
@@ -36,7 +53,8 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
       ICON_CROSS,
       ICON_X,
       ICON_BOX,
-      ICON_CIRCLE
+      ICON_CIRCLE,
+      ICON_DOUBLE_TRIANGLE,    //!< Added in QGIS 3.0
     };
 
     QgsVertexMarker( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS );

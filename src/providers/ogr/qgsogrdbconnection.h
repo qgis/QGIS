@@ -39,8 +39,11 @@ class QgsOgrDbConnection : public QObject
     static void setSelectedConnection( const QString &connName, const QString &settingsKey );
 
   public:
-    //! Return the uri
-    //! \see QgsDataSourceUri
+
+    /**
+     * Return the uri
+     * \see QgsDataSourceUri
+     */
     QgsDataSourceUri uri();
     //! Return the path
     QString path( ) const { return mPath; }

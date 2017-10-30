@@ -21,6 +21,7 @@
 #include "qgis_gui.h"
 
 class QgsLayoutView;
+class QGraphicsLineItem;
 
 /**
  * \ingroup gui
@@ -51,6 +52,14 @@ class GUI_EXPORT QgsLayoutViewMouseEvent : public QMouseEvent
      * \param snap set to true to snap the point using the layout's snapping settings
      */
     QgsLayoutViewMouseEvent( QgsLayoutView *view, QMouseEvent *event, bool snap = false );
+
+    /**
+     * Manually triggers a snap for the mouse event position using the layout's snapper.
+     *
+     * If the \a horizontalSnapLine and \a verticalSnapLine arguments are specified, then the snapper
+     * will automatically display and position these lines to indicate snapping positions to item bounds.
+     */
+    void snapPoint( QGraphicsLineItem *horizontalSnapLine = nullptr, QGraphicsLineItem *verticalSnapLine = nullptr );
 
     /**
      * Returns the event point location in layout coordinates.

@@ -22,7 +22,6 @@ class QgsOWSConnectionItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsOWSConnectionItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsOWSConnectionItem();
 
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
@@ -46,7 +45,6 @@ class QgsOWSRootItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsOWSRootItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsOWSRootItem();
 
     QVector<QgsDataItem *> createChildren() override;
 

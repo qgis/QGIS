@@ -26,7 +26,8 @@ class QgsMapCanvasAnnotationItem;
 class QgsMarkerSymbol;
 class QgsFillSymbol;
 
-/** A configuration widget to configure the annotation item properties. Usually embedded by QgsAnnotation
+/**
+ * A configuration widget to configure the annotation item properties. Usually embedded by QgsAnnotation
 subclass configuration dialogs*/
 class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationWidgetBase
 {

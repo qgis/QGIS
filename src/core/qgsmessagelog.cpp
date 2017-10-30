@@ -22,11 +22,6 @@
 
 class QgsMessageLogConsole;
 
-QgsMessageLog::QgsMessageLog()
-  : QObject()
-{
-}
-
 void QgsMessageLog::logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level )
 {
   QgsDebugMsg( QString( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( level ).arg( message ) );

@@ -42,6 +42,7 @@ QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &servi
   , mServiceType( serviceType )
 {
   setupUi( this );
+  connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsArcGisServiceSourceSelect::cmbConnections_activated );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsArcGisServiceSourceSelect::showHelp );
   setWindowTitle( QStringLiteral( "Add %1 Layer from a Server" ).arg( mServiceName ) );
@@ -399,7 +400,7 @@ void QgsArcGisServiceSourceSelect::changeCrsFilter()
   }
 }
 
-void QgsArcGisServiceSourceSelect::on_cmbConnections_activated( int index )
+void QgsArcGisServiceSourceSelect::cmbConnections_activated( int index )
 {
   Q_UNUSED( index );
   QgsOwsConnection::setSelectedConnection( mServiceName, cmbConnections->currentText() );

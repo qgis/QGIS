@@ -44,7 +44,7 @@ class SERVER_EXPORT QgsServerResponse
   public:
 
     //!constructor
-    QgsServerResponse();
+    QgsServerResponse() = default;
 
     //! destructor
     virtual ~QgsServerResponse() = default;
@@ -78,12 +78,14 @@ class SERVER_EXPORT QgsServerResponse
     virtual bool headersSent() const = 0;
 
 
-    /** Set the http status code
+    /**
+     * Set the http status code
      * \param code HTTP status code value
      */
     virtual void setStatusCode( int code ) = 0;
 
-    /** Return the http status code
+    /**
+     * Return the http status code
      */
     virtual int statusCode() const = 0;
 

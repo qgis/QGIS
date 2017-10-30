@@ -25,7 +25,8 @@
 
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsNewMemoryLayerDialog
  */
 class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemoryLayerDialogBase
@@ -34,7 +35,8 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
 
   public:
 
-    /** Runs the dialog and creates a new memory layer
+    /**
+     * Runs the dialog and creates a new memory layer
      * \param parent parent widget
      * \param defaultCrs default layer CRS to show in dialog
      * \returns new memory layer

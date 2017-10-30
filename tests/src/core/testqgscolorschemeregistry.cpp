@@ -26,7 +26,7 @@ class DummyColorScheme : public QgsColorScheme
 {
   public:
 
-    DummyColorScheme() {}
+    DummyColorScheme() = default;
 
     virtual QString schemeName() const override { return QStringLiteral( "Dummy scheme" ); }
 

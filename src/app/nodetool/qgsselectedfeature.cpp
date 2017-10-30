@@ -274,7 +274,7 @@ void QgsSelectedFeature::createVertexMap()
     return;
   }
 
-  const QgsAbstractGeometry *geom = mGeometry->geometry();
+  const QgsAbstractGeometry *geom = mGeometry->constGet();
   if ( !geom )
   {
     return;
@@ -310,7 +310,7 @@ void QgsSelectedFeature::deselectVertex( int vertexNr )
   emit selectionChanged();
 }
 
-void QgsSelectedFeature::deselectAllVertexes()
+void QgsSelectedFeature::deselectAllVertices()
 {
   for ( int i = 0; i < mVertexMap.size(); i++ )
   {

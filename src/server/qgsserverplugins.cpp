@@ -29,11 +29,6 @@
 // Initialize static members
 QgsPythonUtils *QgsServerPlugins::sPythonUtils;
 
-
-QgsServerPlugins::QgsServerPlugins()
-{
-}
-
 // Construct on first use
 QStringList &QgsServerPlugins::serverPlugins()
 {

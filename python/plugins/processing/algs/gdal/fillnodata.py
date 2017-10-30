@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,15 +27,14 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterRasterDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterBoolean
-from processing.core.outputs import OutputRaster
-
 from processing.tools.system import isWindows
-
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
@@ -45,31 +43,39 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 class fillnodata(GdalAlgorithm):
 
     INPUT = 'INPUT'
+    BAND = 'BAND'
     DISTANCE = 'DISTANCE'
     ITERATIONS = 'ITERATIONS'
-    BAND = 'BAND'
-    MASK = 'MASK'
-    NO_DEFAULT_MASK = 'NO_DEFAULT_MASK'
+    NO_MASK = 'NO_MASK'
+    MASK_LAYER = 'MASK_LAYER'
     OUTPUT = 'OUTPUT'
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterRaster(
-            self.INPUT, self.tr('Input layer'), False))
-        self.addParameter(ParameterNumber(self.DISTANCE,
-                                          self.tr('Search distance'), 0, 9999, 100))
-        self.addParameter(ParameterNumber(self.ITERATIONS,
-                                          self.tr('Smooth iterations'), 0, 9999, 0))
-        self.addParameter(ParameterNumber(self.BAND,
-                                          self.tr('Band to operate on'), 1, 9999, 1))
-        self.addParameter(ParameterRaster(self.MASK,
-                                          self.tr('Validity mask'), True))
-        self.addParameter(ParameterBoolean(self.NO_DEFAULT_MASK,
-                                           self.tr('Do not use default validity mask'), False))
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterBand(self.BAND,
+                                                     self.tr('Band number'),
+                                                     parentLayerParameterName=self.INPUT))
+        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
+                                                       self.tr('Maximum distance (in pixels) to search out for values to interpolate'),
+                                                       type=QgsProcessingParameterNumber.Integer,
+                                                       minValue=0,
+                                                       defaultValue=10))
+        self.addParameter(QgsProcessingParameterNumber(self.ITERATIONS,
+                                                       self.tr('Number of smoothing iterations to run after the interpolation'),
+                                                       type=QgsProcessingParameterNumber.Integer,
+                                                       minValue=0,
+                                                       defaultValue=0))
+        self.addParameter(QgsProcessingParameterBoolean(self.NO_MASK,
+                                                        self.tr('Do not use the default validity mask for the input band'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterRasterLayer(self.MASK_LAYER,
+                                                            self.tr('Validity mask'),
+                                                            optional=True))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Filled')))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Filled')))
 
     def name(self):
         return 'fillnodata'
@@ -81,32 +87,31 @@ class fillnodata(GdalAlgorithm):
         return self.tr('Raster analysis')
 
     def getConsoleCommands(self, parameters, context, feedback):
-        output = self.getOutputValue(self.OUTPUT)
-
         arguments = []
         arguments.append('-md')
-        arguments.append(str(self.getParameterValue(self.DISTANCE)))
+        arguments.append(str(self.parameterAsInt(parameters, self.DISTANCE, context)))
 
-        if self.getParameterValue(self.ITERATIONS) != 0:
+        nIterations = self.parameterAsInt(parameters, self.ITERATIONS, context)
+        if nIterations:
             arguments.append('-si')
-            arguments.append(str(self.getParameterValue(self.ITERATIONS)))
+            arguments.append(str(nIterations))
 
         arguments.append('-b')
-        arguments.append(str(self.getParameterValue(self.BAND)))
+        arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        mask = self.getParameterValue(self.MASK)
-        if mask is not None:
-            arguments.append('-mask')
-            arguments.append(mask)
-
-        if self.getParameterValue(self.NO_DEFAULT_MASK):
+        if self.parameterAsBool(parameters, self.NO_MASK, context):
             arguments.append('-nomask')
 
-        arguments.append('-of')
-        arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
+        mask = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if mask:
+            arguments.append('-mask {}'.format(mask.source()))
 
-        arguments.append(self.getParameterValue(self.INPUT))
-        arguments.append(output)
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+        arguments.append('-of')
+        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+
+        arguments.append(self.parameterAsRasterLayer(parameters, self.INPUT, context).source())
+        arguments.append(out)
 
         commands = []
         if isWindows():

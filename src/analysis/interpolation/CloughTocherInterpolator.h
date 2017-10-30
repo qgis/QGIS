@@ -25,7 +25,8 @@ class NormVecDecorator;
 
 #define SIP_NO_FILE
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * This is an implementation of a Clough-Tocher interpolator based on a triangular tessellation. The derivatives orthogonal to the boundary curves are interpolated linearly along a triangle edge.
  * \note Not available in Python bindings
 */
@@ -99,7 +100,8 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
 
   public:
     //! Standard constructor
-    CloughTocherInterpolator();
+    CloughTocherInterpolator() = default;
+
     //! Constructor with a pointer to the triangulation as argument
     CloughTocherInterpolator( NormVecDecorator *tin );
 

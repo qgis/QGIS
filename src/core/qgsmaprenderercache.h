@@ -25,7 +25,8 @@
 #include "qgsmaplayer.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class is responsible for keeping cache of rendered images resulting from
  * a map rendering job.
  *

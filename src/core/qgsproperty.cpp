@@ -21,14 +21,12 @@
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
 
-
-QgsPropertyDefinition::QgsPropertyDefinition()
-{}
-
-QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString &description, QgsPropertyDefinition::StandardPropertyTemplate type )
+QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString &description, QgsPropertyDefinition::StandardPropertyTemplate type, const QString &origin, const QString &comment )
   : mName( name )
   , mDescription( description )
   , mStandardType( type )
+  , mOrigin( origin )
+  , mComment( comment )
 {
   switch ( mStandardType )
   {
@@ -173,11 +171,13 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
   }
 }
 
-QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText )
+QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, const QString &origin, const QString &comment )
   : mName( name )
   , mDescription( description )
   , mTypes( dataType )
   , mHelpText( helpText )
+  , mOrigin( origin )
+  , mComment( comment )
 {}
 
 bool QgsPropertyDefinition::supportsAssistant() const
@@ -626,7 +626,7 @@ bool QgsProperty::valueAsBool( const QgsExpressionContext &context, bool default
   bool valOk = false;
   QVariant val = value( context, defaultValue, &valOk );
 
-  if ( !valOk || !val.isValid() )
+  if ( !valOk || !val.isValid() || val.isNull() )
     return defaultValue;
 
   if ( ok )

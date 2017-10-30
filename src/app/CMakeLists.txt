@@ -52,6 +52,7 @@ SET(QGIS_APP_SRCS
   qgsmapcanvasdockwidget.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmapsavedialog.cpp
+  qgsversionmigration.cpp
   qgsrulebasedlabelingwidget.cpp
   qgssavestyletodbdialog.cpp
   qgssnappinglayertreemodel.cpp
@@ -131,6 +132,25 @@ SET(QGIS_APP_SRCS
   qgsmaptooladdcircularstring.cpp
   qgsmaptoolcircularstringcurvepoint.cpp
   qgsmaptoolcircularstringradius.cpp
+  qgsmaptooladdcircle.cpp
+  qgsmaptoolcircle2points.cpp
+  qgsmaptoolcircle3points.cpp
+  qgsmaptoolcircle3tangents.cpp
+  qgsmaptoolcircle2tangentspoint.cpp
+  qgsmaptoolcirclecenterpoint.cpp
+  qgsmaptooladdellipse.cpp
+  qgsmaptoolellipsefoci.cpp
+  qgsmaptoolellipseextent.cpp
+  qgsmaptoolellipsecenterpoint.cpp
+  qgsmaptoolellipsecenter2points.cpp
+  qgsmaptooladdrectangle.cpp
+  qgsmaptooladdregularpolygon.cpp
+  qgsmaptoolrectanglecenter.cpp
+  qgsmaptoolrectangleextent.cpp
+  qgsmaptoolrectangle3points.cpp
+  qgsmaptoolregularpolygon2points.cpp
+  qgsmaptoolregularpolygoncenterpoint.cpp
+  qgsmaptoolregularpolygoncentercorner.cpp
 
   composer/qgsattributeselectiondialog.cpp
   composer/qgscomposer.cpp
@@ -166,10 +186,6 @@ SET(QGIS_APP_SRCS
 
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
-
-  openstreetmap/qgsosmdownloaddialog.cpp
-  openstreetmap/qgsosmimportdialog.cpp
-  openstreetmap/qgsosmexportdialog.cpp
 
   dwg/qgsdwgimportdialog.cpp
   dwg/qgsdwgimporter.cpp
@@ -288,6 +304,25 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooltextannotation.h
   qgsmaptooladdcircularstring.h
   qgsmaptoolcircularstringcurvepoint.h
+  qgsmaptooladdcircle.h
+  qgsmaptoolcircle2points.h
+  qgsmaptoolcircle3points.h
+  qgsmaptoolcircle3tangents.h
+  qgsmaptoolcircle2tangentspoint.h
+  qgsmaptoolcirclecenterpoint.h
+  qgsmaptooladdellipse.h
+  qgsmaptoolellipsefoci.h
+  qgsmaptoolellipseextent.h
+  qgsmaptoolellipsecenterpoint.h
+  qgsmaptoolellipsecenter2points.h
+  qgsmaptooladdrectangle.h
+  qgsmaptooladdregularpolygon.h
+  qgsmaptoolrectanglecenter.h
+  qgsmaptoolrectangleextent.h
+  qgsmaptoolrectangle3points.h
+  qgsmaptoolregularpolygon2points.h
+  qgsmaptoolregularpolygoncenterpoint.h
+  qgsmaptoolregularpolygoncentercorner.h
 
   nodetool/qgsselectedfeature.h
   nodetool/qgsnodeeditor.h
@@ -347,10 +382,6 @@ SET (QGIS_APP_MOC_HDRS
 
   gps/qgsgpsinformationwidget.h
 
-  openstreetmap/qgsosmdownloaddialog.h
-  openstreetmap/qgsosmimportdialog.h
-  openstreetmap/qgsosmexportdialog.h
-
   dwg/qgsdwgimportdialog.h
 
   pluginmanager/qgspluginmanager.h
@@ -364,6 +395,34 @@ SET (QGIS_APP_MOC_HDRS
   qgsvariantdelegate.h
   qgscrashdialog.h
   )
+
+
+IF (WITH_3D)
+  SET(QGIS_APP_SRCS
+    ${QGIS_APP_SRCS}
+    3d/qgs3dmapcanvas.cpp
+    3d/qgs3dmapcanvasdockwidget.cpp
+    3d/qgs3dmapconfigwidget.cpp
+    3d/qgsline3dsymbolwidget.cpp
+    3d/qgspoint3dsymbolwidget.cpp
+    3d/qgspolygon3dsymbolwidget.cpp
+    3d/qgsphongmaterialwidget.cpp
+    3d/qgsvectorlayer3drendererwidget.cpp
+  )
+
+  SET (QGIS_APP_MOC_HDRS
+    ${QGIS_APP_MOC_HDRS}
+    3d/qgs3dmapcanvas.h
+    3d/qgs3dmapcanvasdockwidget.h
+    3d/qgs3dmapconfigwidget.h
+    3d/qgsline3dsymbolwidget.h
+    3d/qgspoint3dsymbolwidget.h
+    3d/qgspolygon3dsymbolwidget.h
+    3d/qgsphongmaterialwidget.h
+    3d/qgsvectorlayer3drendererwidget.h
+  )
+ENDIF (WITH_3D)
+
 
 SET (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar should be built")
 
@@ -497,12 +556,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app/layout
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/app/gps
-  ${CMAKE_SOURCE_DIR}/src/app/openstreetmap
   ${CMAKE_SOURCE_DIR}/src/app/dwg
   ${CMAKE_SOURCE_DIR}/src/app/dwg/libdxfrw
   ${CMAKE_SOURCE_DIR}/src/app/locator
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
-  ${CMAKE_SOURCE_DIR}/src/analysis/openstreetmap
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
@@ -542,6 +599,18 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/native
 )
 
+IF (WITH_3D)
+  INCLUDE_DIRECTORIES(
+    ${CMAKE_SOURCE_DIR}/src/app/3d
+    ${CMAKE_SOURCE_DIR}/src/core/3d
+    ${CMAKE_SOURCE_DIR}/src/3d
+    ${CMAKE_SOURCE_DIR}/src/3d/symbols
+    ${CMAKE_SOURCE_DIR}/src/3d/terrain
+    ${CMAKE_SOURCE_DIR}/src/3d/chunks
+    ${CMAKE_BINARY_DIR}/src/3d
+  )
+ENDIF (WITH_3D)
+
 INCLUDE_DIRECTORIES(SYSTEM
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
@@ -549,8 +618,8 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QEXTSERIALPORT_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
+  ../analysis/processing
   ../analysis/raster
-  ../analysis/openstreetmap
   ../core
   ../core/annotations
   ../core/auth
@@ -562,6 +631,7 @@ INCLUDE_DIRECTORIES(
   ../core/layout
   ../core/metadata
   ../core/layertree
+  ../core/processing
   ../core/providers/memory
   ../core/raster
   ../core/scalebar
@@ -579,7 +649,6 @@ INCLUDE_DIRECTORIES(
   ../plugins
   ../python
   gps
-  openstreetmap
   dwg
   dwg/libdxfrw
   ${CMAKE_SOURCE_DIR}/src/native
@@ -638,6 +707,12 @@ TARGET_LINK_LIBRARIES(qgis_app
   qgis_native
   libdxfrw
 )
+
+IF (WITH_3D)
+  TARGET_LINK_LIBRARIES(qgis_app
+    qgis_3d
+  )
+ENDIF (WITH_3D)
 
 GENERATE_EXPORT_HEADER(
    qgis_app

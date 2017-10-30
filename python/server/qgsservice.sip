@@ -25,7 +25,6 @@ class QgsService
 
 %TypeHeaderCode
 #include "qgsservice.h"
-
 #include "qgsserverrequest.h"
 #include "qgsserverresponse.h"
 %End

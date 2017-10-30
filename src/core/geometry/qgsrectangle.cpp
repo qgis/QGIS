@@ -24,10 +24,13 @@
 #include <QTransform>
 #include <QRegExp>
 
+#include "qgsgeometry.h"
 #include "qgspointxy.h"
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 #include "qgsbox3d.h"
+#include "qgspolygon.h"
+#include "qgslinestring.h"
 
 QgsRectangle::QgsRectangle( double xMin, double yMin, double xMax, double yMax )
   : mXmin( xMin )
@@ -57,6 +60,24 @@ QgsRectangle::QgsRectangle( const QgsRectangle &r )
   mYmin = r.yMinimum();
   mXmax = r.xMaximum();
   mYmax = r.yMaximum();
+}
+
+QgsRectangle QgsRectangle::fromWkt( const QString &wkt )
+{
+  QgsGeometry geom = QgsGeometry::fromWkt( wkt );
+  if ( geom.isMultipart() )
+    return QgsRectangle();
+
+  QgsPolygon poly = geom.asPolygon();
+
+  if ( poly.size() != 1 )
+    return QgsRectangle();
+
+  QgsPolylineXY polyline = geom.asPolygon().at( 0 );
+  if ( polyline.size() == 5 && polyline.at( 0 ) == polyline.at( 4 ) && geom.isGeosValid() )
+    return QgsRectangle( polyline.at( 0 ).x(), polyline.at( 0 ).y(), polyline.at( 2 ).x(), polyline.at( 2 ).y() );
+  else
+    return QgsRectangle();
 }
 
 void QgsRectangle::set( const QgsPointXY &p1, const QgsPointXY &p2 )

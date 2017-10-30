@@ -30,9 +30,6 @@
 
 static int sRenderCounter = 0;
 
-QgsRenderChecker::QgsRenderChecker()
-{
-}
 
 QString QgsRenderChecker::controlImagePath() const
 {

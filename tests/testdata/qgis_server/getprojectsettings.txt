@@ -6,7 +6,7 @@ Content-Type: text/xml; charset=utf-8
  <Service>
   <Name>WMS</Name>
   <Title>QGIS TestProject</Title>
-  <Abstract>Some UTF8 text èòù</Abstract>
+  <Abstract><![CDATA[Some UTF8 text èòù]]></Abstract>
   <KeywordList>
    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
   </KeywordList>
@@ -113,7 +113,7 @@ Content-Type: text/xml; charset=utf-8
   <WFSLayers>
    <WFSLayer name="testlayer èé"/>
   </WFSLayers>
-  <Layer queryable="1">
+  <Layer>
    <Name>QGIS Test Project</Name>
    <Title>QGIS Test Project</Title>
    <CRS>CRS:84</CRS>
@@ -153,9 +153,9 @@ Content-Type: text/xml; charset=utf-8
     </Style>
     <TreeName>testlayer èé</TreeName>
     <Attributes>
-     <Attribute precision="0" type="qlonglong" editType="" typeName="Integer64" name="id" comment="" length="10"/>
-     <Attribute precision="0" type="QString" editType="" typeName="String" name="name" comment="" length="10"/>
-     <Attribute precision="0" type="QString" editType="" typeName="String" name="utf8nameè" comment="" length="13"/>
+     <Attribute precision="0" type="qlonglong" editType="TextEdit" typeName="Integer64" name="id" comment="" length="10"/>
+     <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="name" comment="" length="10"/>
+     <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="utf8nameè" comment="" length="13"/>
     </Attributes>
    </Layer>
   </Layer>

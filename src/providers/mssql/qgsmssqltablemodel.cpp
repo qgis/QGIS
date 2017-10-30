@@ -22,7 +22,6 @@
 #include "qgsdatasourceuri.h"
 
 QgsMssqlTableModel::QgsMssqlTableModel()
-  : QStandardItemModel()
 {
   QStringList headerLabels;
   headerLabels << tr( "Schema" );

@@ -104,7 +104,7 @@ class CORE_EXPORT QgsLayoutUndoStack
 
     std::unique_ptr< QUndoStack > mUndoStack;
 
-    std::unique_ptr< QgsAbstractLayoutUndoCommand > mActiveCommand;
+    std::vector< std::unique_ptr< QgsAbstractLayoutUndoCommand > > mActiveCommands;
 
 #ifdef SIP_RUN
     QgsLayoutUndoStack( const QgsLayoutUndoStack &other );

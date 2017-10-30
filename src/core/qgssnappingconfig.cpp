@@ -23,9 +23,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 
-QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings()
-{}
-
 
 QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units )
   : mValid( true )

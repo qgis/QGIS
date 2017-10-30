@@ -42,10 +42,10 @@
 #include "qgsuserprofile.h"
 #include "qgsuserprofilemanager.h"
 #include "qgsreferencedgeometry.h"
+#include "qgs3drendererregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
-#include "processing/qgsnativealgorithms.h"
 
 #include "layout/qgspagesizeregistry.h"
 
@@ -845,6 +845,11 @@ QString QgsApplication::defaultThemesFolder()
   return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/themes" );
 }
 
+QString QgsApplication::serverResourcesPath()
+{
+  return ABISYM( mPkgDataPath ) + QStringLiteral( "/resources/server/" );
+}
+
 QString QgsApplication::libraryPath()
 {
   return ABISYM( mLibraryPath );
@@ -870,26 +875,43 @@ void QgsApplication::initQgis()
   // create project instance if doesn't exist
   QgsProject::instance();
 
+  // Initialize authentication manager and connect to database
+  authManager()->init( pluginPath(), qgisAuthDatabaseFilePath() );
+
   // Make sure we have a NAM created on the main thread.
+  // Note that this might call QgsApplication::authManager to
+  // setup the proxy configuration that's why it needs to be
+  // called after the QgsAuthManager instance has been created
   QgsNetworkAccessManager::instance();
 
-  // initialize authentication manager and connect to database
-  QgsAuthManager::instance()->init( pluginPath() );
 }
+
+
+QgsAuthManager *QgsApplication::authManager()
+{
+  if ( ! instance()->mAuthManager )
+  {
+    instance()->mAuthManager = QgsAuthManager::instance();
+  }
+  return instance()->mAuthManager;
+}
+
 
 void QgsApplication::exitQgis()
 {
-  delete QgsAuthManager::instance();
+  delete QgsApplication::authManager();
 
   //Ensure that all remaining deleteLater QObjects are actually deleted before we exit.
   //This isn't strictly necessary (since we're exiting anyway) but doing so prevents a lot of
   //LeakSanitiser noise which hides real issues
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
 
-  delete QgsProviderRegistry::instance();
-
   //delete all registered functions from expression engine (see above comment)
   QgsExpression::cleanRegisteredFunctions();
+
+  delete QgsProject::instance();
+
+  delete QgsProviderRegistry::instance();
 
   // tear-down GDAL/OGR
   OGRCleanupAll();
@@ -1579,6 +1601,11 @@ QgsFieldFormatterRegistry *QgsApplication::fieldFormatterRegistry()
   return members()->mFieldFormatterRegistry;
 }
 
+Qgs3DRendererRegistry *QgsApplication::renderer3DRegistry()
+{
+  return members()->m3DRendererRegistry;
+}
+
 QgsApplication::ApplicationMembers::ApplicationMembers()
 {
   // don't use initializer lists or scoped pointers - as more objects are added here we
@@ -1601,13 +1628,14 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mPageSizeRegistry = new QgsPageSizeRegistry();
   mLayoutItemRegistry = new QgsLayoutItemRegistry();
   mLayoutItemRegistry->populate();
-  mProcessingRegistry->addProvider( new QgsNativeAlgorithms( mProcessingRegistry ) );
   mAnnotationRegistry = new QgsAnnotationRegistry();
+  m3DRendererRegistry = new Qgs3DRendererRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
 {
   delete mActionScopeRegistry;
+  delete m3DRendererRegistry;
   delete mAnnotationRegistry;
   delete mColorSchemeRegistry;
   delete mFieldFormatterRegistry;

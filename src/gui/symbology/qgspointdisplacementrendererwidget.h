@@ -26,7 +26,8 @@
 
 class QgsPointDisplacementRenderer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPointDisplacementRendererWidget
  */
 class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, public QgsExpressionContextGenerator, private Ui::QgsPointDisplacementRendererWidgetBase
@@ -49,19 +50,19 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, p
     void setupBlankUi( const QString &layerName );
 
   private slots:
-    void on_mLabelFieldComboBox_currentIndexChanged( const QString &text );
-    void on_mRendererComboBox_currentIndexChanged( int index );
-    void on_mPlacementComboBox_currentIndexChanged( int index );
+    void mLabelFieldComboBox_currentIndexChanged( const QString &text );
+    void mRendererComboBox_currentIndexChanged( int index );
+    void mPlacementComboBox_currentIndexChanged( int index );
     void labelFontChanged();
-    void on_mCircleWidthSpinBox_valueChanged( double d );
-    void on_mCircleColorButton_colorChanged( const QColor &newColor );
-    void on_mDistanceSpinBox_valueChanged( double d );
-    void on_mDistanceUnitWidget_changed();
-    void on_mLabelColorButton_colorChanged( const QColor &newColor );
-    void on_mCircleModificationSpinBox_valueChanged( double d );
-    void on_mScaleDependentLabelsCheckBox_stateChanged( int state );
+    void mCircleWidthSpinBox_valueChanged( double d );
+    void mCircleColorButton_colorChanged( const QColor &newColor );
+    void mDistanceSpinBox_valueChanged( double d );
+    void mDistanceUnitWidget_changed();
+    void mLabelColorButton_colorChanged( const QColor &newColor );
+    void mCircleModificationSpinBox_valueChanged( double d );
+    void mScaleDependentLabelsCheckBox_stateChanged( int state );
     void minLabelScaleChanged( double scale );
-    void on_mRendererSettingsButton_clicked();
+    void mRendererSettingsButton_clicked();
     void centerSymbolChanged();
     void updateRendererFromWidget();
 };

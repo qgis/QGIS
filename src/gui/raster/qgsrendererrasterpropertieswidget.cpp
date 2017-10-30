@@ -61,6 +61,7 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
     return;
 
   setupUi( this );
+  connect( mResetColorRenderingBtn, &QToolButton::clicked, this, &QgsRendererRasterPropertiesWidget::mResetColorRenderingBtn_clicked );
 
   _initRendererWidgetFunctions();
 
@@ -281,7 +282,7 @@ void QgsRendererRasterPropertiesWidget::syncToLayer( QgsRasterLayer *layer )
   }
 }
 
-void QgsRendererRasterPropertiesWidget::on_mResetColorRenderingBtn_clicked()
+void QgsRendererRasterPropertiesWidget::mResetColorRenderingBtn_clicked()
 {
   mBlendModeComboBox->setBlendMode( QPainter::CompositionMode_SourceOver );
   mSliderBrightness->setValue( 0 );

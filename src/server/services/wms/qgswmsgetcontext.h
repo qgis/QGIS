@@ -22,7 +22,8 @@
 namespace QgsWms
 {
 
-  /** Output GetContext response
+  /**
+   * Output GetContext response
    */
   void writeGetContext( QgsServerInterface *serverIface, const QgsProject *project,
                         const QString &version, const QgsServerRequest &request,

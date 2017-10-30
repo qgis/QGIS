@@ -120,7 +120,7 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext &context, const Q
   QRect e( context.painter()->viewport() );
   // add some space to hide borders and tend to infinity
   e.adjust( -e.width() * 5, -e.height() * 5, e.width() * 5, e.height() * 5 );
-  QgsPolyline exteriorRing;
+  QgsPolylineXY exteriorRing;
   exteriorRing << mtp.toMapCoordinates( e.topLeft() );
   exteriorRing << mtp.toMapCoordinates( e.topRight() );
   exteriorRing << mtp.toMapCoordinates( e.bottomRight() );
@@ -285,7 +285,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
       Q_FOREACH ( const QgsGeometry &geom, cit.geometries )
       {
         QgsMultiPolygon multi;
-        QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom.geometry()->wkbType() );
+        QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom.constGet()->wkbType() );
 
         if ( ( type == QgsWkbTypes::Polygon ) || ( type == QgsWkbTypes::CurvePolygon ) )
         {
@@ -298,7 +298,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
 
         for ( int i = 0; i < multi.size(); i++ )
         {
-          const QgsPolyline &exterior = multi[i][0];
+          const QgsPolylineXY &exterior = multi[i][0];
           // add the exterior ring as interior ring to the first polygon
           // make sure it satisfies at least very basic requirements of GEOS
           // (otherwise the creation of GEOS geometry will fail)

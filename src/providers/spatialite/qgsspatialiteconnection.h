@@ -85,7 +85,8 @@ class QgsSpatiaLiteConnection : public QObject
     //! Checks if geometry_columns and spatial_ref_sys exist and have expected layout
     int checkHasMetadataTables( sqlite3 *handle );
 
-    /** Inserts information about the spatial tables into mTables
+    /**
+     * Inserts information about the spatial tables into mTables
       \returns true if querying of tables was successful, false on error */
     bool getTableInfo( sqlite3 *handle, bool loadGeometrylessTables );
 

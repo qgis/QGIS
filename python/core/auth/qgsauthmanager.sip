@@ -32,13 +32,15 @@ class QgsAuthManager : QObject
       CRITICAL
     };
 
-    static QgsAuthManager *instance();
+    bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
 %Docstring
- Enforce singleton pattern
-.. note::
-
-   To set up the manager instance and initialize everything use QgsAuthManager.instance()->init()
- :rtype: QgsAuthManager
+ init initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
+ \param pluginPath the plugin path
+ \param authDatabasePath the authentication DB path
+ :return: true on success
+.. seealso:: QgsApplication.pluginPath
+.. seealso:: QgsApplication.qgisAuthDatabaseFilePath
+ :rtype: bool
 %End
 
     ~QgsAuthManager();
@@ -61,11 +63,6 @@ Name of the authentication database table that stores server exceptions/configs
  :rtype: str
 %End
 
-    bool init( const QString &pluginPath = QString() );
-%Docstring
-Initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
- :rtype: bool
-%End
 
     bool isDisabled() const;
 %Docstring
@@ -377,9 +374,14 @@ Store an authentication setting (stored as string via QVariant( value ).toString
  :rtype: bool
 %End
 
-    QVariant getAuthSetting( const QString &key, const QVariant &defaultValue = QVariant(), bool decrypt = false );
+    QVariant authSetting( const QString &key, const QVariant &defaultValue = QVariant(), bool decrypt = false );
 %Docstring
-Get an authentication setting (retrieved as string and returned as QVariant( QString ))
+ authSetting get an authentication setting (retrieved as string and returned as QVariant( QString ))
+ \param key setting key
+ \param defaultValue
+ \param decrypt if the value needs decrypted
+ :return: QVariant( QString ) authentication setting
+.. versionadded:: 3.0
  :rtype: QVariant
 %End
 
@@ -408,28 +410,39 @@ Store a certificate identity
  :rtype: bool
 %End
 
-    const QSslCertificate getCertIdentity( const QString &id );
+    const QSslCertificate certIdentity( const QString &id );
 %Docstring
-Get a certificate identity by id (sha hash)
+ certIdentity get a certificate identity by ``id`` (sha hash)
+ \param id sha hash of the cert
+ :return: the certificate
+.. versionadded:: 3.0
  :rtype: QSslCertificate
 %End
 
 
-    const QStringList getCertIdentityBundleToPem( const QString &id );
+    const QStringList certIdentityBundleToPem( const QString &id );
 %Docstring
-Get a certificate identity bundle by id (sha hash) returned as PEM text
+ certIdentityBundleToPem get a certificate identity bundle by ``id`` (sha hash) returned as PEM text
+ \param id sha hash
+ :return: a list of strings
+.. versionadded:: 3.0
  :rtype: list of str
 %End
 
-    const QList<QSslCertificate> getCertIdentities();
+    const QList<QSslCertificate> certIdentities();
 %Docstring
-Get certificate identities
+ certIdentities get certificate identities
+ :return: list of certificates
+.. versionadded:: 3.0
  :rtype: list of QSslCertificate
 %End
 
-    QStringList getCertIdentityIds() const;
+
+    QStringList certIdentityIds() const;
 %Docstring
-Get list of certificate identity ids from database
+ certIdentityIds get list of certificate identity ids from database
+ :return: list of certificate ids
+.. versionadded:: 3.0
  :rtype: list of str
 %End
 
@@ -452,21 +465,30 @@ Store an SSL certificate custom config
  :rtype: bool
 %End
 
-    const QgsAuthConfigSslServer getSslCertCustomConfig( const QString &id, const QString &hostport );
+    const QgsAuthConfigSslServer sslCertCustomConfig( const QString &id, const QString &hostport );
 %Docstring
-Get an SSL certificate custom config by id (sha hash) and host:port
+ sslCertCustomConfig get an SSL certificate custom config by ``id`` (sha hash) and ``hostport`` (host:port)
+ \param id sha hash
+ \param hostport string host:port
+ :return: a SSL certificate custom config
+.. versionadded:: 3.0
  :rtype: QgsAuthConfigSslServer
 %End
 
-    const QgsAuthConfigSslServer getSslCertCustomConfigByHost( const QString &hostport );
+    const QgsAuthConfigSslServer sslCertCustomConfigByHost( const QString &hostport );
 %Docstring
-Get an SSL certificate custom config by host:port
+ sslCertCustomConfigByHost get an SSL certificate custom config by ``hostport`` (host:port)
+ \param hostport host:port
+ :return: a SSL certificate custom config
+.. versionadded:: 3.0
  :rtype: QgsAuthConfigSslServer
 %End
 
-    const QList<QgsAuthConfigSslServer> getSslCertCustomConfigs();
+    const QList<QgsAuthConfigSslServer> sslCertCustomConfigs();
 %Docstring
-Get SSL certificate custom configs
+ sslCertCustomConfigs get SSL certificate custom configs
+ :return: list of SSL certificate custom config
+.. versionadded:: 3.0
  :rtype: list of QgsAuthConfigSslServer
 %End
 
@@ -519,9 +541,13 @@ Store a certificate authority
  :rtype: bool
 %End
 
-    const QSslCertificate getCertAuthority( const QString &id );
+
+    const QSslCertificate certAuthority( const QString &id );
 %Docstring
-Get a certificate authority by id (sha hash)
+ certAuthority get a certificate authority by ``id`` (sha hash)
+ \param id sha hash
+ :return: a certificate
+.. versionadded:: 3.0
  :rtype: QSslCertificate
 %End
 
@@ -537,27 +563,35 @@ Remove a certificate authority
  :rtype: bool
 %End
 
-    const QList<QSslCertificate> getSystemRootCAs();
+    const QList<QSslCertificate> systemRootCAs();
 %Docstring
-Get root system certificate authorities
+ systemRootCAs get root system certificate authorities
+ :return: list of certificate authorities
+.. versionadded:: 3.0
  :rtype: list of QSslCertificate
 %End
 
-    const QList<QSslCertificate> getExtraFileCAs();
+    const QList<QSslCertificate> extraFileCAs();
 %Docstring
-Get extra file-based certificate authorities
+ extraFileCAs extra file-based certificate authorities
+ :return: list of certificate authorities
+.. versionadded:: 3.0
  :rtype: list of QSslCertificate
 %End
 
-    const QList<QSslCertificate> getDatabaseCAs();
+    const QList<QSslCertificate> databaseCAs();
 %Docstring
-Get database-stored certificate authorities
+ databaseCAs get database-stored certificate authorities
+ :return: list of certificate authorities
+.. versionadded:: 3.0
  :rtype: list of QSslCertificate
 %End
 
-    const QMap<QString, QSslCertificate> getMappedDatabaseCAs();
+    const QMap<QString, QSslCertificate> mappedDatabaseCAs();
 %Docstring
-Get sha1-mapped database-stored certificate authorities
+ mappedDatabaseCAs get sha1-mapped database-stored certificate authorities
+ :return: sha1-mapped certificate authorities
+.. versionadded:: 3.0
  :rtype: QMap<str, QSslCertificate>
 %End
 
@@ -574,10 +608,12 @@ Store user trust value for a certificate
  :rtype: bool
 %End
 
-    QgsAuthCertUtils::CertTrustPolicy getCertTrustPolicy( const QSslCertificate &cert );
+    QgsAuthCertUtils::CertTrustPolicy certTrustPolicy( const QSslCertificate &cert );
 %Docstring
- Get a whether certificate is trusted by user
-:return: DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
+ certTrustPolicy get whether certificate ``cert`` is trusted by user
+ \param cert
+ :return: DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
+.. versionadded:: 3.0
  :rtype: QgsAuthCertUtils.CertTrustPolicy
 %End
 
@@ -593,9 +629,12 @@ Remove a certificate authority
  :rtype: bool
 %End
 
-    QgsAuthCertUtils::CertTrustPolicy getCertificateTrustPolicy( const QSslCertificate &cert );
+    QgsAuthCertUtils::CertTrustPolicy certificateTrustPolicy( const QSslCertificate &cert );
 %Docstring
-Get trust policy for a particular certificate
+ certificateTrustPolicy get trust policy for a particular certificate ``cert``
+ \param cert
+ :return: DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
+.. versionadded:: 3.0
  :rtype: QgsAuthCertUtils.CertTrustPolicy
 %End
 
@@ -611,9 +650,11 @@ Get the default certificate trust policy perferred by user
  :rtype: QgsAuthCertUtils.CertTrustPolicy
 %End
 
-    const QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > getCertTrustCache();
+    const QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > certTrustCache();
 %Docstring
-Get cache of certificate sha1s, per trust policy
+ certTrustCache get cache of certificate sha1s, per trust policy
+ :return: trust-policy-mapped certificate sha1s
+.. versionadded:: 3.0
  :rtype: QMap<QgsAuthCertUtils.CertTrustPolicy, list of str >
 %End
 
@@ -623,15 +664,20 @@ Rebuild certificate authority cache
  :rtype: bool
 %End
 
-    const QList<QSslCertificate> getTrustedCaCerts( bool includeinvalid = false );
+    const QList<QSslCertificate> trustedCaCerts( bool includeinvalid = false );
 %Docstring
-Get list of all trusted CA certificates
+ trustedCaCerts get list of all trusted CA certificates
+ \param includeinvalid whether invalid certs needs to be returned
+ :return: list of certificates
+.. versionadded:: 3.0
  :rtype: list of QSslCertificate
 %End
 
-    const QList<QSslCertificate> getUntrustedCaCerts( QList<QSslCertificate> trustedCAs = QList<QSslCertificate>() );
+    const QList<QSslCertificate> untrustedCaCerts( QList<QSslCertificate> trustedCAs = QList<QSslCertificate>() );
 %Docstring
-Get list of all untrusted CA certificates
+ untrustedCaCerts get list of untrusted certificate authorities
+ :return: list of certificates
+.. versionadded:: 3.0
  :rtype: list of QSslCertificate
 %End
 
@@ -641,15 +687,19 @@ Rebuild trusted certificate authorities cache
  :rtype: bool
 %End
 
-    const QList<QSslCertificate> getTrustedCaCertsCache();
+    const QList<QSslCertificate> trustedCaCertsCache();
 %Docstring
-Get cache of trusted certificate authorities, ready for network connections
+ trustedCaCertsCache cache of trusted certificate authorities, ready for network connections
+ :return: list of certificates
+.. versionadded:: 3.0
  :rtype: list of QSslCertificate
 %End
 
-    const QByteArray getTrustedCaCertsPemText();
+    const QByteArray trustedCaCertsPemText();
 %Docstring
-Get concatenated string of all trusted CA certificates
+ trustedCaCertsPemText get concatenated string of all trusted CA certificates
+ :return: bye array with all PEM encoded trusted CAs
+.. versionadded:: 3.0
  :rtype: QByteArray
 %End
 
@@ -700,28 +750,28 @@ The display name of the Authentication Manager
  \param level Message log level
 %End
 
-    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const;
+    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO );
 %Docstring
  Custom logging signal to inform the user about master password <-> password manager interactions
  @see QgsMessageLog
- @param message Message to send
- @param tag Associated tag (title)
- @param level Message log level
+ \param message Message to send
+ \param tag Associated tag (title)
+ \param level Message log level
 %End
 
 
-    void masterPasswordVerified( bool verified ) const;
+    void masterPasswordVerified( bool verified );
 %Docstring
  Emitted when a password has been verify (or not)
  \param verified The state of password's verification
 %End
 
-    void authDatabaseEraseRequested() const;
+    void authDatabaseEraseRequested();
 %Docstring
 Emitted when a user has indicated they may want to erase the authentication db.
 %End
 
-    void authDatabaseChanged() const;
+    void authDatabaseChanged();
 %Docstring
 Emitted when the authentication db is significantly changed, e.g. large record removal, erased, etc.
 %End
@@ -738,7 +788,8 @@ Clear an authentication config from its associated authentication method cache
 %End
 
   protected:
-    explicit QgsAuthManager();
+
+
 
 };
 

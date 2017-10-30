@@ -27,6 +27,7 @@ Required build dependencies:
 - QScintilla2
 - QCA
 - qtkeychain (>= 0.5)
+- libzip
 -
 
 Optional dependencies:

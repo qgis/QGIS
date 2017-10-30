@@ -1698,12 +1698,11 @@ class OracleDBConnector(DBConnector):
             if self.userTablesOnly:
                 sql = u"""
                 SELECT DISTINCT tablename
-                FROM "oracle_{0}" WHERE ownername = '{1}'
+                FROM "oracle_{conn}" WHERE ownername = '{user}'
                 UNION
                 SELECT DISTINCT ownername
-                FROM "oracle_{0}" WHERE ownername = '{1}'
-                """.format(self.connName, self.user, self.connName,
-                           self.user)
+                FROM "oracle_{conn}" WHERE ownername = '{user}'
+                """.format(conn=self.connName, user=self.user)
 
             c = self.cache_connection.cursor()
             c.execute(sql)

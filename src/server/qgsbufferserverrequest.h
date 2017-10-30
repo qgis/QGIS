@@ -55,8 +55,6 @@ class SERVER_EXPORT QgsBufferServerRequest : public QgsServerRequest
      */
     QgsBufferServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers(), QByteArray *data = nullptr );
 
-    ~QgsBufferServerRequest();
-
     virtual QByteArray data() const override { return mData; }
 
   private:

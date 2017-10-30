@@ -34,15 +34,15 @@
 #include "qgscomposermap.h"
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for 25d renderer.
  */
 class TestQgs25DRenderer : public QObject
 {
     Q_OBJECT
   public:
-    TestQgs25DRenderer()
-    {}
+    TestQgs25DRenderer() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

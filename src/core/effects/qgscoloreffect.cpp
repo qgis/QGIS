@@ -27,8 +27,7 @@ QgsPaintEffect *QgsColorEffect::create( const QgsStringMap &map )
 }
 
 QgsColorEffect::QgsColorEffect()
-  : QgsPaintEffect()
-  , mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
+  : mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
 {
 
 }

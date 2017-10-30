@@ -30,7 +30,8 @@
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
 class TestQgsRenderers : public QObject
@@ -38,8 +39,7 @@ class TestQgsRenderers : public QObject
     Q_OBJECT
 
   public:
-    TestQgsRenderers()
-    {}
+    TestQgsRenderers() = default;
     ~TestQgsRenderers()
     {
       delete mMapSettings;

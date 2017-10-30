@@ -20,12 +20,6 @@
 
 #include <memory>
 
-QgsRegularPolygon::QgsRegularPolygon()
-{
-
-}
-
-
 QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const unsigned int numSides, const ConstructionOption circle )
   : mCenter( center )
 {
@@ -209,6 +203,7 @@ QgsLineString *QgsRegularPolygon::toLineString() const
   pts = points();
 
   ext->setPoints( pts );
+  ext->addVertex( pts.at( 0 ) ); //close regular polygon
 
   return ext.release();
 }

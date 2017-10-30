@@ -57,7 +57,8 @@ if [ -z "$MODIFIED" ]; then
   exit 0
 fi
 
-[ -x ${TOPLEVEL}/scripts/spell_check/check_spelling.sh ] && ${TOPLEVEL}/scripts/spell_check/check_spelling.sh $MODIFIED
+if [[ -n "$QGIS_CHECK_SPELLING" && -x ${TOPLEVEL}/scripts/spell_check/check_spelling.sh ]]; then ${TOPLEVEL}/scripts/spell_check/check_spelling.sh $MODIFIED; fi
+
 
 # save original changes
 REV=$(git log -n1 --pretty=%H)
@@ -73,7 +74,7 @@ for f in $MODIFIED; do
   (( i++ )) || true
 
   case "$f" in
-  src/core/gps/qextserialport/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
+  src/core/gps/qextserialport/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|src/3d/poly2tri/*)
     echo $f skipped
     continue
     ;;

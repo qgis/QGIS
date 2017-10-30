@@ -37,10 +37,7 @@ class TestQgsAtlasComposition : public QObject
     Q_OBJECT
 
   public:
-    TestQgsAtlasComposition()
-    {}
-
-    ~TestQgsAtlasComposition();
+    TestQgsAtlasComposition() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -101,10 +98,6 @@ void TestQgsAtlasComposition::initTestCase()
 
   mReport = QStringLiteral( "<h1>Composer Atlas Tests</h1>\n" );
 }
-
-TestQgsAtlasComposition::~TestQgsAtlasComposition()
-{}
-
 
 void TestQgsAtlasComposition::cleanupTestCase()
 {

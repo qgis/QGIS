@@ -22,7 +22,8 @@
 #include "qgsauthcrypto.h"
 #include "qgsauthconfig.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * Unit tests for QgsAuthConfig
  */
 class TestQgsAuthConfig: public QObject

@@ -32,7 +32,8 @@
 
 #include "qgsstyle.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test to verify that styles are working correctly
  */
 class TestStyle : public QObject
@@ -69,10 +70,7 @@ class TestStyle : public QObject
 
 };
 
-TestStyle::TestStyle()
-{
-
-}
+TestStyle::TestStyle() = default;
 
 // slots
 void TestStyle::initTestCase()

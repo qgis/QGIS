@@ -174,7 +174,7 @@ bool QgsLayoutPageCollection::readXml( const QDomElement &e, const QDomDocument 
   mBlockUndoCommands = true;
 
   int i = 0;
-  for ( QgsLayoutItemPage *page : qgsAsConst( mPages ) )
+  for ( QgsLayoutItemPage *page : qgis::as_const( mPages ) )
   {
     emit pageAboutToBeRemoved( i );
     mLayout->removeItem( page );
@@ -277,7 +277,7 @@ QList<int> QgsLayoutPageCollection::visiblePageNumbers( QRectF region ) const
 void QgsLayoutPageCollection::addPage( QgsLayoutItemPage *page )
 {
   if ( !mBlockUndoCommands )
-    mLayout->undoStack()->beginCommand( this, tr( "Add page" ) );
+    mLayout->undoStack()->beginCommand( this, tr( "Add Page" ) );
   mPages.append( page );
   mLayout->addItem( page );
   reflow();
@@ -288,7 +288,7 @@ void QgsLayoutPageCollection::addPage( QgsLayoutItemPage *page )
 void QgsLayoutPageCollection::insertPage( QgsLayoutItemPage *page, int beforePage )
 {
   if ( !mBlockUndoCommands )
-    mLayout->undoStack()->beginCommand( this, tr( "Add page" ) );
+    mLayout->undoStack()->beginCommand( this, tr( "Add Page" ) );
 
   if ( beforePage < 0 )
     beforePage = 0;
@@ -314,8 +314,8 @@ void QgsLayoutPageCollection::deletePage( int pageNumber )
 
   if ( !mBlockUndoCommands )
   {
-    mLayout->undoStack()->beginMacro( tr( "Remove page" ) );
-    mLayout->undoStack()->beginCommand( this, tr( "Remove page" ) );
+    mLayout->undoStack()->beginMacro( tr( "Remove Page" ) );
+    mLayout->undoStack()->beginCommand( this, tr( "Remove Page" ) );
   }
   emit pageAboutToBeRemoved( pageNumber );
   QgsLayoutItemPage *page = mPages.takeAt( pageNumber );
@@ -336,8 +336,8 @@ void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
 
   if ( !mBlockUndoCommands )
   {
-    mLayout->undoStack()->beginMacro( tr( "Remove page" ) );
-    mLayout->undoStack()->beginCommand( this, tr( "Remove page" ) );
+    mLayout->undoStack()->beginMacro( tr( "Remove Page" ) );
+    mLayout->undoStack()->beginCommand( this, tr( "Remove Page" ) );
   }
   emit pageAboutToBeRemoved( mPages.indexOf( page ) );
   mPages.removeAll( page );

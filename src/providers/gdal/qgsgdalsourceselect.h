@@ -21,7 +21,8 @@
 #include "qgsabstractdatasourcewidget.h"
 
 
-/** \class QgsGdalSourceSelect
+/**
+ * \class QgsGdalSourceSelect
  * \brief Dialog to select GDAL supported rasters
  */
 class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsGdalSourceSelectBase

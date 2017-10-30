@@ -41,6 +41,8 @@ bool QgsLayoutItemUndoCommand::mergeWith( const QUndoCommand *command )
   {
     return false;
   }
+  if ( c->itemUuid() != itemUuid() )
+    return false;
 
   setAfterState( c->afterState() );
   return true;
@@ -75,7 +77,7 @@ void QgsLayoutItemUndoCommand::restoreState( QDomDocument &stateDoc )
 QgsLayoutItem *QgsLayoutItemUndoCommand::recreateItem( int itemType, QgsLayout *layout )
 {
   QgsLayoutItem *item = QgsApplication::layoutItemRegistry()->createItem( itemType, layout );
-  mLayout->addLayoutItem( item );
+  mLayout->addLayoutItemPrivate( item );
   return item;
 }
 
@@ -114,10 +116,42 @@ void QgsLayoutItemDeleteUndoCommand::redo()
   }
 
   QgsLayoutItem *item = layout()->itemByUuid( itemUuid() );
-  Q_ASSERT_X( item, "QgsLayoutItemDeleteUndoCommand::redo", "could not find item to re-delete!" );
+  //Q_ASSERT_X( item, "QgsLayoutItemDeleteUndoCommand::redo", "could not find item to re-delete!" );
 
-  layout()->removeItem( item );
-  item->deleteLater();
+  if ( item )
+    layout()->removeLayoutItemPrivate( item );
 }
+
+QgsLayoutItemAddItemCommand::QgsLayoutItemAddItemCommand( QgsLayoutItem *item, const QString &text, int id, QUndoCommand *parent )
+  : QgsLayoutItemUndoCommand( item, text, id, parent )
+{
+  saveAfterState();
+}
+
+bool QgsLayoutItemAddItemCommand::containsChange() const
+{
+  return true;
+}
+
+bool QgsLayoutItemAddItemCommand::mergeWith( const QUndoCommand * )
+{
+  return false;
+}
+
+void QgsLayoutItemAddItemCommand::undo()
+{
+  if ( mFirstRun )
+  {
+    mFirstRun = false;
+    return;
+  }
+
+  QgsLayoutItem *item = layout()->itemByUuid( itemUuid() );
+  if ( item )
+  {
+    layout()->removeLayoutItemPrivate( item );
+  }
+}
+
 
 ///@endcond

@@ -18,6 +18,7 @@
 #include <QDialog>
 #include "ui_qgsrelationadddlgbase.h"
 #include "qgis_app.h"
+#include "qgsrelation.h"
 
 class QgsVectorLayer;
 
@@ -33,7 +34,7 @@ class APP_EXPORT QgsRelationAddDlg : public QDialog, private Ui::QgsRelationAddD
     QList< QPair< QString, QString > > references();
     QString relationId();
     QString relationName();
-
+    QgsRelation::RelationStrength relationStrength();
 
   private slots:
 

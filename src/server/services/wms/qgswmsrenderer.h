@@ -57,7 +57,8 @@ class QPaintDevice;
 class QPainter;
 class QStandardItem;
 
-/** This class handles requestsi that share rendering:
+/**
+ * This class handles requestsi that share rendering:
  *
  * This includes
  *  - getfeatureinfo
@@ -76,40 +77,49 @@ namespace QgsWms
   {
     public:
 
-      /** Constructor. Does _NOT_ take ownership of
+      /**
+       * Constructor. Does _NOT_ take ownership of
           QgsConfigParser and QgsCapabilitiesCache*/
       QgsRenderer( QgsServerInterface *serverIface,
                    const QgsProject *project,
                    const QgsServerRequest::Parameters &parameters );
 
-      /** Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership
+      ~QgsRenderer();
+
+      /**
+       * Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership
       of the image object*/
       QImage *getLegendGraphics();
 
       typedef QSet<QString> SymbolSet;
       typedef QHash<QgsVectorLayer *, SymbolSet> HitTest;
 
-      /** Returns the map as an image (or a null pointer in case of error). The caller takes ownership
+      /**
+       * Returns the map as an image (or a null pointer in case of error). The caller takes ownership
       of the image object). If an instance to existing hit test structure is passed, instead of rendering
       it will fill the structure with symbols that would be used for rendering */
       QImage *getMap( HitTest *hitTest = nullptr );
 
-      /** Identical to getMap( HitTest* hitTest ) and updates the map settings actually used.
+      /**
+       * Identical to getMap( HitTest* hitTest ) and updates the map settings actually used.
         \since QGIS 3.0 */
       QImage *getMap( QgsMapSettings &mapSettings, HitTest *hitTest = nullptr );
 
-      /** Returns the map as DXF data
+      /**
+       * Returns the map as DXF data
        \param options: extracted from the FORMAT_OPTIONS parameter
        \returns the map as DXF data
        \since QGIS 3.0*/
       QgsDxfExport getDxf( const QMap<QString, QString> &options );
 
-      /** Returns printed page as binary
+      /**
+       * Returns printed page as binary
         \param formatString out: format of the print output (e.g. pdf, svg, png, ...)
         \returns printed page as binary or 0 in case of error*/
       QByteArray getPrint( const QString &formatString );
 
-      /** Creates an xml document that describes the result of the getFeatureInfo request.
+      /**
+       * Creates an xml document that describes the result of the getFeatureInfo request.
        * May throw an exception
        */
       QByteArray getFeatureInfo( const QString &version = "1.3.0" );
@@ -146,7 +156,7 @@ namespace QgsWms
       void annotationsRendering( QPainter *painter ) const;
 
       // Return a list of layers stylized with LAYERS/STYLES parameters
-      QList<QgsMapLayer *> stylizedLayers( const QList<QgsWmsParametersLayer> &params ) const;
+      QList<QgsMapLayer *> stylizedLayers( const QList<QgsWmsParametersLayer> &params );
 
       // Return a list of layers stylized with SLD parameter
       QList<QgsMapLayer *> sldStylizedLayers( const QString &sld ) const;
@@ -178,7 +188,8 @@ namespace QgsWms
       // Returns default dots per mm
       qreal dotsPerMm() const;
 
-      /** Creates a QImage from the HEIGHT and WIDTH parameters
+      /**
+       * Creates a QImage from the HEIGHT and WIDTH parameters
        * \param width image width (or -1 if width should be taken from WIDTH wms parameter)
        * \param height image height (or -1 if height should be taken from HEIGHT wms parameter)
        * \param useBbox flag to indicate if the BBOX has to be used to adapt aspect ratio
@@ -187,7 +198,8 @@ namespace QgsWms
        */
       QImage *createImage( int width = -1, int height = -1, bool useBbox = true ) const;
 
-      /** Configures mapSettings to the parameters
+      /**
+       * Configures mapSettings to the parameters
        * HEIGHT, WIDTH, BBOX, CRS.
        * \param paintDevice the device that is used for painting (for dpi)
        * may throw an exception
@@ -197,7 +209,8 @@ namespace QgsWms
       QDomDocument featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
                                         const QImage *outputImage, const QString &version ) const;
 
-      /** Appends feature info xml for the layer to the layer element of the feature info dom document
+      /**
+       * Appends feature info xml for the layer to the layer element of the feature info dom document
       \param featureBBox the bounding box of the selected features in output CRS
       \returns true in case of success*/
       bool featureInfoFromVectorLayer( QgsVectorLayer *layer,
@@ -223,13 +236,15 @@ namespace QgsWms
       //! Record which symbols within one layer would be rendered with the given renderer context
       void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, QgsRenderContext &context ) const;
 
-      /** Tests if a filter sql string is allowed (safe)
+      /**
+       * Tests if a filter sql string is allowed (safe)
         \returns true in case of success, false if string seems unsafe*/
       bool testFilterStringSafety( const QString &filter ) const;
       //! Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes
       static void groupStringList( QStringList &list, const QString &groupString );
 
-      /** Checks WIDTH/HEIGHT values against MaxWidth and MaxHeight
+      /**
+       * Checks WIDTH/HEIGHT values against MaxWidth and MaxHeight
         \returns true if width/height values are okay*/
       bool checkMaximumWidthHeight() const;
 
@@ -261,6 +276,11 @@ namespace QgsWms
       //! configure the composition for the GetPrint request
       bool configureComposition( QgsComposition *c, const QgsMapSettings &mapSettings );
 
+      //! Creates external WMS layer. Caller takes ownership
+      QgsMapLayer *createExternalWMSLayer( const QString &externalLayerId ) const;
+
+      void removeTemporaryLayers();
+
     private:
 
       const QgsServerRequest::Parameters &mParameters;
@@ -273,6 +293,7 @@ namespace QgsWms
       QgsWmsParameters mWmsParameters;
       QStringList mRestrictedLayers;
       QMap<QString, QgsMapLayer *> mNicknameLayers;
+      QList<QgsMapLayer *> mTemporaryLayers;
 
     public:
 

@@ -5,12 +5,10 @@ SET (OGR_SRCS
     qgsogrfeatureiterator.cpp
     qgsogrconnpool.cpp
     qgsogrexpressioncompiler.cpp
-    qgsogrsourceselect.cpp
     qgsgeopackagedataitems.cpp
     qgsgeopackagerasterwriter.cpp
     qgsgeopackagerasterwritertask.cpp
     qgsogrdbconnection.cpp
-    qgsogrdbsourceselect.cpp
     qgsogrdbtablemodel.cpp
 )
 
@@ -18,13 +16,22 @@ SET(OGR_MOC_HDRS
     qgsogrprovider.h
     qgsogrdataitems.h
     qgsogrconnpool.h
-    qgsogrsourceselect.h
     qgsgeopackagedataitems.h
     qgsgeopackagerasterwritertask.h
     qgsogrdbconnection.h
-    qgsogrdbsourceselect.h
     qgsogrdbtablemodel.h
 )
+
+IF (WITH_GUI)
+  SET(OGR_SRCS ${OGR_SRCS}
+    qgsogrdbsourceselect.cpp
+    qgsogrsourceselect.cpp
+  )
+  SET(OGR_MOC_HDRS ${OGR_MOC_HDRS}
+    qgsogrsourceselect.h
+    qgsogrdbsourceselect.h
+  )
+ENDIF ()
 
 ########################################################
 # Build

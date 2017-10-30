@@ -18,9 +18,6 @@
 #include "qgsgeometrysimplifier.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
 
-QgsSimplifyMethod::QgsSimplifyMethod()
-{
-}
 
 void QgsSimplifyMethod::setMethodType( MethodType methodType )
 {

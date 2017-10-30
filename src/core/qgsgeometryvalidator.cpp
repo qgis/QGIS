@@ -17,10 +17,10 @@ email                : jef at norbit dot de
 #include "qgsgeometryvalidator.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsgeos.h"
 
 QgsGeometryValidator::QgsGeometryValidator( const QgsGeometry &geometry, QList<QgsGeometry::Error> *errors, QgsGeometry::ValidationMethod method )
-  : QThread()
-  , mGeometry( geometry )
+  : mGeometry( geometry )
   , mErrors( errors )
   , mStop( false )
   , mErrorCount( 0 )
@@ -40,8 +40,8 @@ void QgsGeometryValidator::stop()
 }
 
 void QgsGeometryValidator::checkRingIntersections(
-  int p0, int i0, const QgsPolyline &ring0,
-  int p1, int i1, const QgsPolyline &ring1 )
+  int p0, int i0, const QgsPolylineXY &ring0,
+  int p1, int i1, const QgsPolylineXY &ring1 )
 {
   for ( int i = 0; !mStop && i < ring0.size() - 1; i++ )
   {
@@ -77,7 +77,7 @@ void QgsGeometryValidator::checkRingIntersections(
   }
 }
 
-void QgsGeometryValidator::validatePolyline( int i, QgsPolyline line, bool ring )
+void QgsGeometryValidator::validatePolyline( int i, QgsPolylineXY line, bool ring )
 {
   if ( ring )
   {
@@ -218,7 +218,7 @@ void QgsGeometryValidator::run()
     case QgsGeometry::ValidatorGeos:
     {
       char *r = nullptr;
-      GEOSGeometry *g0 = mGeometry.exportToGeos();
+      geos::unique_ptr g0( mGeometry.exportToGeos() );
       GEOSContextHandle_t handle = QgsGeometry::getGEOSHandler();
       if ( !g0 )
       {
@@ -227,8 +227,7 @@ void QgsGeometryValidator::run()
       else
       {
         GEOSGeometry *g1 = nullptr;
-        char res = GEOSisValidDetail_r( handle, g0, GEOSVALID_ALLOW_SELFTOUCHING_RING_FORMING_HOLE, &r, &g1 );
-        GEOSGeom_destroy_r( handle, g0 );
+        char res = GEOSisValidDetail_r( handle, g0.get(), GEOSVALID_ALLOW_SELFTOUCHING_RING_FORMING_HOLE, &r, &g1 );
         if ( res != 1 )
         {
           if ( g1 )
@@ -394,7 +393,7 @@ bool QgsGeometryValidator::intersectLines( const QgsPointXY &p, QgsVector v, con
   return true;
 }
 
-bool QgsGeometryValidator::pointInRing( const QgsPolyline &ring, const QgsPointXY &p )
+bool QgsGeometryValidator::pointInRing( const QgsPolylineXY &ring, const QgsPointXY &p )
 {
   bool inside = false;
   int j = ring.size() - 1;
@@ -417,7 +416,7 @@ bool QgsGeometryValidator::pointInRing( const QgsPolyline &ring, const QgsPointX
   return inside;
 }
 
-bool QgsGeometryValidator::ringInRing( const QgsPolyline &inside, const QgsPolyline &outside )
+bool QgsGeometryValidator::ringInRing( const QgsPolylineXY &inside, const QgsPolylineXY &outside )
 {
   for ( int i = 0; !mStop && i < inside.size(); i++ )
   {

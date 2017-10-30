@@ -35,11 +35,6 @@ void QgsEllipse::normalizeAxis()
   }
 }
 
-QgsEllipse::QgsEllipse()
-{
-
-}
-
 QgsEllipse::QgsEllipse( const QgsPoint &center, const double axis_a, const double axis_b, const double azimuth )
   : mCenter( center )
   , mSemiMajorAxis( axis_a )
@@ -238,6 +233,7 @@ QgsLineString *QgsEllipse::toLineString( unsigned int segments ) const
 
   QgsPointSequence pts;
   pts = points( segments );
+  pts.append( pts.at( 0 ) ); // close linestring
 
   ext->setPoints( pts );
 

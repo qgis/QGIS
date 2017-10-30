@@ -28,7 +28,8 @@
 class QStatusBar;
 class QCloseEvent;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A generic dialog widget for displaying QGIS log messages.
  */
 class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogViewer

@@ -95,7 +95,7 @@ class FindProjection(QgisAlgorithm):
                                                fields, QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
 
         # make intersection tests nice and fast
-        engine = QgsGeometry.createGeometryEngine(target_geom.geometry())
+        engine = QgsGeometry.createGeometryEngine(target_geom.constGet())
         engine.prepareGeometry()
 
         layer_bounds = QgsGeometry.fromRect(source.sourceExtent())
@@ -121,7 +121,7 @@ class FindProjection(QgisAlgorithm):
             except:
                 continue
 
-            if engine.intersects(transformed_bounds.geometry()):
+            if engine.intersects(transformed_bounds.constGet()):
                 feedback.pushInfo(self.tr('Found candidate CRS: {}').format(candidate_crs.authid()))
                 f = QgsFeature(fields)
                 f.setAttributes([candidate_crs.authid()])

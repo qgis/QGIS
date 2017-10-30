@@ -22,16 +22,27 @@
 
 class QgsVectorFieldSymbolLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsVectorFieldSymbolLayerWidget
  */
 class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::WidgetVectorFieldBase
 {
     Q_OBJECT
   public:
-    QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
-    static QgsSymbolLayerWidget *create( const QgsVectorLayer *vl ) SIP_FACTORY { return new QgsVectorFieldSymbolLayerWidget( vl ); }
+    /**
+     * Constructor for QgsVectorFieldSymbolLayerWidget.
+     * \param vl associated vector layer
+     * \param parent parent widget
+     */
+    QgsVectorFieldSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    /**
+     * Creates a new QgsVectorFieldSymbolLayerWidget.
+     * \param vl associated vector layer
+     */
+    static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsVectorFieldSymbolLayerWidget( vl ); }
 
     // from base class
     virtual void setSymbolLayer( QgsSymbolLayer *layer ) override;
@@ -41,17 +52,17 @@ class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerWidget, p
     QgsVectorFieldSymbolLayer *mLayer = nullptr;
 
   private slots:
-    void on_mScaleSpinBox_valueChanged( double d );
-    void on_mXAttributeComboBox_currentIndexChanged( int index );
-    void on_mYAttributeComboBox_currentIndexChanged( int index );
-    void on_mCartesianRadioButton_toggled( bool checked );
-    void on_mPolarRadioButton_toggled( bool checked );
-    void on_mHeightRadioButton_toggled( bool checked );
-    void on_mDegreesRadioButton_toggled( bool checked );
-    void on_mRadiansRadioButton_toggled( bool checked );
-    void on_mClockwiseFromNorthRadioButton_toggled( bool checked );
-    void on_mCounterclockwiseFromEastRadioButton_toggled( bool checked );
-    void on_mDistanceUnitWidget_changed();
+    void mScaleSpinBox_valueChanged( double d );
+    void mXAttributeComboBox_currentIndexChanged( int index );
+    void mYAttributeComboBox_currentIndexChanged( int index );
+    void mCartesianRadioButton_toggled( bool checked );
+    void mPolarRadioButton_toggled( bool checked );
+    void mHeightRadioButton_toggled( bool checked );
+    void mDegreesRadioButton_toggled( bool checked );
+    void mRadiansRadioButton_toggled( bool checked );
+    void mClockwiseFromNorthRadioButton_toggled( bool checked );
+    void mCounterclockwiseFromEastRadioButton_toggled( bool checked );
+    void mDistanceUnitWidget_changed();
 };
 
 #endif // QGSVECTORFIELDSYMBOLLAYERWIDGET_H

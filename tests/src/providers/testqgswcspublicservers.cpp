@@ -347,7 +347,7 @@ void TestQgsWcsPublicServers::test()
       myVersionLog << QStringLiteral( "totalCoverages:%1" ).arg( myCoverages.size() );
 
       int myCoverageCount = 0;
-      int myStep = myCoverages.size() / qMin( mMaxCoverages, myCoverages.size() );
+      int myStep = myCoverages.size() / std::min( mMaxCoverages, myCoverages.size() );
       int myStepCount = -1;
       bool myCoverageFound = false;
       Q_FOREACH ( QgsWcsCoverageSummary myCoverage, myCoverages )

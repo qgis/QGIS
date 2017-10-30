@@ -37,7 +37,6 @@ class QgsPaintEffect
 %TypeHeaderCode
 #include "qgspainteffect.h"
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->type() == "drawSource" && dynamic_cast<QgsDrawSourceEffect *>( sipCpp ) != NULL )
     {
@@ -86,6 +85,10 @@ class QgsPaintEffect
     };
 
     QgsPaintEffect();
+%Docstring
+ Constructor for QgsPaintEffect.
+%End
+
     QgsPaintEffect( const QgsPaintEffect &other );
     virtual ~QgsPaintEffect();
 

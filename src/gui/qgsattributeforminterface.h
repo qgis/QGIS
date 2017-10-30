@@ -21,7 +21,8 @@
 class QgsAttributeForm;
 class QgsFeature;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsAttributeFormInterface
  */
 class GUI_EXPORT QgsAttributeFormInterface

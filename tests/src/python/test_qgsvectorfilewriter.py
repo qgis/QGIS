@@ -727,7 +727,8 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         formats = QgsVectorFileWriter.supportedFormatExtensions()
         self.assertTrue('gpkg' in formats)
         self.assertFalse('exe' in formats)
-        self.assertEqual(formats[0], 'shp')
+        self.assertEqual(formats[0], 'gpkg')
+        self.assertEqual(formats[1], 'shp')
 
     def testDriverForExtension(self):
         self.assertEqual(QgsVectorFileWriter.driverForExtension('shp'), 'ESRI Shapefile')

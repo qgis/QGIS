@@ -98,11 +98,14 @@ typedef SInt32 SRefCon;
 #include "qgsvectorlayer.h"
 #include "qgis_app.h"
 #include "qgscrashhandler.h"
+#include "qgsziputils.h"
+#include "qgsversionmigration.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
 
-/** Print usage text
+/**
+ * Print usage text
  */
 void usage( const QString &appName )
 {
@@ -137,6 +140,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--dxf-preset maptheme]\tmap theme to use for dxf output\n" )
       << QStringLiteral( "\t[--profile name]\tload a named profile from the users profiles folder.\n" )
       << QStringLiteral( "\t[--profiles-path path]\tpath to store user profile folders. Will create profiles inside a {path}\\profiles folder \n" )
+      << QStringLiteral( "\t[--version-migration]\tforce the settings migration from older version if found\n" )
       << QStringLiteral( "\t[--help]\t\tthis text\n" )
       << QStringLiteral( "\t[--]\t\ttreat all following arguments as FILEs\n\n" )
       << QStringLiteral( "  FILE:\n" )
@@ -499,6 +503,7 @@ int main( int argc, char *argv[] )
   int mySnapshotHeight = 600;
 
   bool myHideSplash = false;
+  bool mySettingsMigrationForce = false;
   bool mySkipVersionCheck = false;
 #if defined(ANDROID)
   QgsDebugMsg( QString( "Android: Splash hidden" ) );
@@ -567,6 +572,10 @@ int main( int argc, char *argv[] )
       else if ( arg == QLatin1String( "--nologo" ) || arg == QLatin1String( "-n" ) )
       {
         myHideSplash = true;
+      }
+      else if ( arg == QLatin1String( "--version-migration" ) )
+      {
+        mySettingsMigrationForce = true;
       }
       else if ( arg == QLatin1String( "--noversioncheck" ) || arg == QLatin1String( "-V" ) )
       {
@@ -844,6 +853,18 @@ int main( int argc, char *argv[] )
     else
     {
       QgsMessageLog::logMessage( QStringLiteral( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+    }
+  }
+
+  // Settings migration is only supported on the default profile for now.
+  if ( profileName == "default" )
+  {
+    QgsVersionMigration *migration = QgsVersionMigration::canMigrate( 20000, Qgis::QGIS_VERSION_INT );
+    if ( migration && ( mySettingsMigrationForce || migration->requiresMigration() ) )
+    {
+      QgsDebugMsg( "RUNNING MIGRATION" );
+      migration->runMigration();
+      delete migration;
     }
   }
 
@@ -1164,11 +1185,12 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
-  for ( const QString &layerName : qgsAsConst( sFileList ) )
+  for ( const QString &layerName : qgis::as_const( sFileList ) )
   {
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg( layerName ) );
     // don't load anything with a .qgs extension - these are project files
-    if ( !layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
+    if ( !layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive )
+         && !QgsZipUtils::isZipFile( layerName ) )
     {
       qgis->openLayer( layerName );
     }
@@ -1217,10 +1239,6 @@ int main( int argc, char *argv[] )
       // set extent from parsed values
       QgsRectangle rect( coords[0], coords[1], coords[2], coords[3] );
       qgis->setExtent( rect );
-      if ( qgis->mapCanvas() )
-      {
-        qgis->mapCanvas()->refresh();
-      }
     }
   }
 

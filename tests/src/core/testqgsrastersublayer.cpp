@@ -40,7 +40,8 @@
 //qgis unit test includes
 #include <qgsrenderchecker.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for raster sublayers
  */
 class TestQgsRasterSubLayer : public QObject
@@ -66,10 +67,7 @@ class TestQgsRasterSubLayer : public QObject
     bool mHasNetCDF =  false ;
 };
 
-TestQgsRasterSubLayer::TestQgsRasterSubLayer()
-{
-
-}
+TestQgsRasterSubLayer::TestQgsRasterSubLayer() = default;
 
 //runs before all tests
 void TestQgsRasterSubLayer::initTestCase()

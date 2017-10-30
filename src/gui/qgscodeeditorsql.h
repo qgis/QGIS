@@ -23,7 +23,8 @@
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A SQL editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
  * \since QGIS 2.6
@@ -45,13 +46,14 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
 #ifndef SIP_RUN
 ///@cond PRIVATE
 
-/** Internal use.
+/**
+ * Internal use.
 
    setAutoCompletionCaseSensitivity( false ) is not sufficient when installing
    a lexer, since its caseSensitive() method is actually used, and defaults
    to true.
-   @note not available in Python bindings
-   @ingroup gui
+   \note not available in Python bindings
+   \ingroup gui
 */
 class QgsCaseInsensitiveLexerSQL: public QsciLexerSQL
 {
