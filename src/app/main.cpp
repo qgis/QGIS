@@ -859,12 +859,11 @@ int main( int argc, char *argv[] )
   // Settings migration is only supported on the default profile for now.
   if ( profileName == "default" )
   {
-    QgsVersionMigration *migration = QgsVersionMigration::canMigrate( 20000, Qgis::QGIS_VERSION_INT );
+    std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::QGIS_VERSION_INT ) );
     if ( migration && ( mySettingsMigrationForce || migration->requiresMigration() ) )
     {
       QgsDebugMsg( "RUNNING MIGRATION" );
       migration->runMigration();
-      delete migration;
     }
   }
 

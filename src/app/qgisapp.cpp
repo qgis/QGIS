@@ -1358,10 +1358,9 @@ QgisApp::~QgisApp()
   QgsApplication::setFileOpenEventReceiver( nullptr );
 
   delete mPythonUtils;
-
   delete mTray;
-
   delete mDataSourceManagerDialog;
+  qDeleteAll( mCustomDropHandlers );
 
   // This function *MUST* be the last one called, as it destroys in
   // particular GDAL. As above objects can hold GDAL/OGR objects, it is not
