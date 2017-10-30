@@ -1,4 +1,4 @@
-# version=1
+# version=2
 # If you update this file make sure you bump the above version number it must be higher then the last run.
 #oldkey;newkey
 
@@ -17,3 +17,8 @@ Qgis/compileExpressions;*
 variables/names;*
 variables/values;*
 
+#Plugin installer
+Qgis/plugin-installer/*;PluginInstaller/*
+Qgis/plugin-repos/*;PluginInstaller/repositories/*
+Qgis/plugin-seen;PluginInstaller/seenPlugins
+Qgis/plugin-installer/fetching_geometry;Windows/PluginInstallerFetchingDialog/geometry
