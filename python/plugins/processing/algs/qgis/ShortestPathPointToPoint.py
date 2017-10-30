@@ -90,8 +90,8 @@ class ShortestPathPointToPoint(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.DIRECTIONS = OrderedDict([
             (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
-            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
-            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionForward)])
+            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionBackward),
+            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionBoth)])
 
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
@@ -168,7 +168,7 @@ class ShortestPathPointToPoint(QgisAlgorithm):
         forwardValue = self.parameterAsString(parameters, self.VALUE_FORWARD, context)
         backwardValue = self.parameterAsString(parameters, self.VALUE_BACKWARD, context)
         bothValue = self.parameterAsString(parameters, self.VALUE_BOTH, context)
-        defaultDirection = self.parameterAsEnum(parameters, self.DEFAULT_DIRECTION, context)
+        defaultDirection = self.DIRECTIONS[self.parameterAsEnum(parameters, self.DEFAULT_DIRECTION, context)]
         speedFieldName = self.parameterAsString(parameters, self.SPEED_FIELD, context)
         defaultSpeed = self.parameterAsDouble(parameters, self.DEFAULT_SPEED, context)
         tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
