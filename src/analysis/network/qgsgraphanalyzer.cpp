@@ -59,21 +59,20 @@ void QgsGraphAnalyzer::dijkstra( const QgsGraph *source, int startPointIdx, int 
     not_begin.erase( it );
 
     // edge index list
-    QgsGraphEdgeIds l = source->vertex( curVertex ).incomingEdges();
-    QgsGraphEdgeIds::iterator arcIt;
-    for ( arcIt = l.begin(); arcIt != l.end(); ++arcIt )
+    const QgsGraphEdgeIds &outgoingEdges = source->vertex( curVertex ).outgoingEdges();
+    for ( int edgeId : outgoingEdges )
     {
-      const QgsGraphEdge arc = source->edge( *arcIt );
+      const QgsGraphEdge &arc = source->edge( edgeId );
       double cost = arc.cost( criterionNum ).toDouble() + curCost;
 
-      if ( cost < ( *result )[ arc.fromVertex()] )
+      if ( cost < ( *result )[ arc.toVertex()] )
       {
-        ( *result )[ arc.fromVertex()] = cost;
+        ( *result )[ arc.toVertex()] = cost;
         if ( resultTree )
         {
-          ( *resultTree )[ arc.fromVertex()] = *arcIt;
+          ( *resultTree )[ arc.toVertex()] = edgeId;
         }
-        not_begin.insert( cost, arc.fromVertex() );
+        not_begin.insert( cost, arc.toVertex() );
       }
     }
   }

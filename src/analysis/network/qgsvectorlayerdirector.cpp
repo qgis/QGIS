@@ -39,12 +39,14 @@ using namespace SpatialIndex;
 struct TiePointInfo
 {
   TiePointInfo() = default;
-  TiePointInfo( QgsFeatureId featureId, const QgsPointXY &start, const QgsPointXY &end )
-    : mNetworkFeatureId( featureId )
+  TiePointInfo( int additionalPointId, QgsFeatureId featureId, const QgsPointXY &start, const QgsPointXY &end )
+    : additionalPointId( additionalPointId )
+    , mNetworkFeatureId( featureId )
     , mFirstPoint( start )
     , mLastPoint( end )
   {}
 
+  int additionalPointId = -1;
   QgsPointXY mTiedPoint;
   double mLength = DBL_MAX;
   QgsFeatureId mNetworkFeatureId = -1;
@@ -255,7 +257,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
             if ( thisSegmentClosestDist < additionalTiePoints[ i ].mLength )
             {
               // found a closer segment for this additional point
-              TiePointInfo info( feature.id(), pt1, pt2 );
+              TiePointInfo info( i, feature.id(), pt1, pt2 );
               info.mLength = thisSegmentClosestDist;
               info.mTiedPoint = snappedPoint;
 
@@ -300,8 +302,11 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
       snappedPoints[ i ] = graphVertices.at( ptIdx );
     }
   }
-
   // also need to update tie points - they need to be matched for snapped points
+  for ( int i = 0; i < additionalTiePoints.count(); ++i )
+  {
+    additionalTiePoints[ i ].mTiedPoint = snappedPoints.at( additionalTiePoints.at( i ).additionalPointId );
+  }
 
 
   // begin graph construction
@@ -361,9 +366,9 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
           int pt1idx = -1;
           int pt2idx = -1;
           bool isFirstPoint = true;
-          for ( const QgsPointXY &arcPoint : qgis::as_const( pointsOnArc ) )
+          for ( auto arcPointIt = pointsOnArc.constBegin(); arcPointIt != pointsOnArc.constEnd(); ++arcPointIt )
           {
-            pt2 = arcPoint;
+            pt2 = arcPointIt.value();
 
             pt2idx = findPointWithinTolerance( pt2 );
             Q_ASSERT_X( pt2idx >= 0, "QgsVectorLayerDirectory::makeGraph", "encountered a vertex which was not present in graph" );
@@ -372,10 +377,9 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
             {
               double distance = builder->distanceArea()->measureLine( pt1, pt2 );
               QVector< QVariant > prop;
-              QList< QgsNetworkStrategy * >::const_iterator it;
-              for ( it = mStrategies.begin(); it != mStrategies.end(); ++it )
+              for ( QgsNetworkStrategy *strategy : mStrategies )
               {
-                prop.push_back( ( *it )->cost( distance, feature ) );
+                prop.push_back( strategy->cost( distance, feature ) );
               }
 
               if ( direction == Direction::DirectionForward ||

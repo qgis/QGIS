@@ -217,7 +217,7 @@ class ShortestPathPointToPoint(QgisAlgorithm):
         idxStart = graph.findVertex(snappedPoints[0])
         idxEnd = graph.findVertex(snappedPoints[1])
 
-        tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
+        tree, costs = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
         if tree[idxEnd] == -1:
             raise QgsProcessingException(
                 self.tr('There is no route from start point to end point.'))
@@ -226,9 +226,9 @@ class ShortestPathPointToPoint(QgisAlgorithm):
         cost = 0.0
         current = idxEnd
         while current != idxStart:
-            cost += graph.edge(tree[current]).cost(0)
-            route.append(graph.vertex(graph.edge(tree[current]).fromVertex()).point())
-            current = graph.edge(tree[current]).toVertex()
+            cost += costs[current]
+            current = graph.edge(tree[current]).fromVertex()
+            route.append(graph.vertex(current).point())
 
         route.append(snappedPoints[0])
         route.reverse()
