@@ -128,7 +128,7 @@ void TestQgsLayoutMultiFrame::layoutMethods()
   l->addMultiFrame( nullptr );
   QVERIFY( l->multiFrames().empty() );
   TestMultiFrame *mF = new TestMultiFrame( l );
-
+  QPointer< TestMultiFrame > pMF( mF );
   QCOMPARE( l->multiFrames().count(), 1 );
   QVERIFY( l->multiFrames().contains( mF ) );
 
@@ -155,6 +155,7 @@ void TestQgsLayoutMultiFrame::layoutMethods()
   delete mF2;
   QVERIFY( !pMF2 );
   delete l;
+  QVERIFY( !pMF );
 }
 
 void TestQgsLayoutMultiFrame::addFrame()

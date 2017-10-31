@@ -141,7 +141,7 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
     while ( ( mResizeMode == RepeatOnEveryPage ) || currentY < totalHeight )
     {
       //find out on which page the lower left point of the last frame is
-      int page = mLayout->pageCollection()->predictPageNumberForPoint( QPointF( 0, currentItem->pos().y() + currentItem->rect().height() ) );
+      int page = mLayout->pageCollection()->predictPageNumberForPoint( QPointF( 0, currentItem->pos().y() + currentItem->rect().height() ) ) + 1;
 
       if ( mResizeMode == RepeatOnEveryPage )
       {
@@ -343,14 +343,14 @@ void QgsLayoutMultiFrame::removeFrame( int i, const bool removeEmptyPages )
     mIsRecalculatingSize = true;
     int pageNumber = frameItem->page();
     //remove item, but don't create undo command
-#if 0 //TODO - block undo commands
-#endif
+    mLayout->mBlockUndoCommandCount++;
     mLayout->removeLayoutItem( frameItem );
     //if frame was the only item on the page, remove the page
     if ( removeEmptyPages && mLayout->pageCollection()->pageIsEmpty( pageNumber ) )
     {
       mLayout->pageCollection()->deletePage( pageNumber );
     }
+    mLayout->mBlockUndoCommandCount--;
     mIsRecalculatingSize = false;
   }
   mFrameItems.removeAt( i );
@@ -369,12 +369,12 @@ void QgsLayoutMultiFrame::deleteFrames()
   mBlockUpdates = true;
   ResizeMode bkResizeMode = mResizeMode;
   mResizeMode = UseExistingFrames;
+  mLayout->mBlockUndoCommandCount++;
   for ( QgsLayoutFrame *frame : qgis::as_const( mFrameItems ) )
   {
-#if 0 //TODO -block undo commands
-#endif
     mLayout->removeLayoutItem( frame );
   }
+  mLayout->mBlockUndoCommandCount--;
   mFrameItems.clear();
   mResizeMode = bkResizeMode;
   mBlockUpdates = false;
