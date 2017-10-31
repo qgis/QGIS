@@ -35,7 +35,7 @@ QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
 
   mCbxRelationStrength->addItem( "Association", QVariant::fromValue( QgsRelation::RelationStrength::Association ) );
   mCbxRelationStrength->addItem( "Composition", QVariant::fromValue( QgsRelation::RelationStrength::Composition ) );
-  mCbxRelationStrength->setToolTip( QStringLiteral( "Composition (child features will be copied too) or Association" ) );
+  mCbxRelationStrength->setToolTip( QStringLiteral( "On composition, the child features will be duplicated too. Duplications are made by the feature duplication default action" ) );
 
   mTxtRelationId->setPlaceholderText( tr( "[Generated automatically]" ) );
   checkDefinitionValid();
