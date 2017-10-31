@@ -55,11 +55,11 @@ class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDia
         repositories.anythingChanged.connect(self.displayState)
 
         settings = QgsSettings()
-        self.restoreGeometry(settings.value("/Qgis/plugin-installer/fetching_geometry", QByteArray()))
+        self.restoreGeometry(settings.value("Windows/PluginInstallerFetchingDialog/geometry", QByteArray()))
 
     def closeEvent(self, event):
         settings = QgsSettings()
-        settings.setValue("/Qgis/plugin-installer/fetching_geometry", self.saveGeometry())
+        settings.setValue("Windows/PluginInstallerFetchingDialog/geometry", self.saveGeometry())
         super(QgsPluginInstallerFetchingDialog, self).closeEvent(event)
 
     # ----------------------------------------- #
