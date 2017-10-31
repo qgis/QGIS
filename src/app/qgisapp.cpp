@@ -1657,6 +1657,7 @@ void QgisApp::readRecentProjects()
   }
   std::sort( projectKeys.begin(), projectKeys.end() );
 
+  int pinPos = 0;
   Q_FOREACH ( int key, projectKeys )
   {
     QgsWelcomePageItemsModel::RecentProjectData data;
@@ -1669,7 +1670,8 @@ void QgisApp::readRecentProjects()
     settings.endGroup();
     if ( data.pin )
     {
-      mRecentProjects.prepend( data );
+      mRecentProjects.insert( pinPos, data );
+      pinPos++;
     }
     else
     {
