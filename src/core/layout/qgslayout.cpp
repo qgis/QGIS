@@ -24,6 +24,7 @@
 #include "qgslayoutitemundocommand.h"
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutitemgroupundocommand.h"
+#include "qgslayoutmultiframe.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
@@ -41,7 +42,7 @@ QgsLayout::QgsLayout( QgsProject *project )
 QgsLayout::~QgsLayout()
 {
   // no need for undo commands when we're destroying the layout
-  mBlockUndoCommands = true;
+  mBlockUndoCommandCount++;
 
   deleteAndRemoveMultiFrames();
 
@@ -402,7 +403,7 @@ void QgsLayout::addLayoutItem( QgsLayoutItem *item )
 void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
 {
   std::unique_ptr< QgsLayoutItemDeleteUndoCommand > deleteCommand;
-  if ( !mBlockUndoCommands )
+  if ( mBlockUndoCommandCount == 0 )
   {
     mUndoStack->beginMacro( tr( "Delete Items" ) );
     deleteCommand.reset( new QgsLayoutItemDeleteUndoCommand( item, tr( "Delete Item" ) ) );

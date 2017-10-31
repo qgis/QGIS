@@ -551,7 +551,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     std::unique_ptr< QgsLayoutUndoStack > mUndoStack;
     QgsLayoutExporter mExporter;
 
-    bool mBlockUndoCommands = false;
+    int mBlockUndoCommandCount = 0;
 
     //! List of multiframe objects
     QSet<QgsLayoutMultiFrame *> mMultiFrames;
@@ -579,6 +579,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     friend class QgsLayoutUndoCommand;
     friend class QgsLayoutItemGroupUndoCommand;
     friend class QgsLayoutModel;
+    friend class QgsLayoutMultiFrame;
 };
 
 #endif //QGSLAYOUT_H
