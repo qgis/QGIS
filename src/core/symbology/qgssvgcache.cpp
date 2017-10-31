@@ -40,6 +40,7 @@
 
 QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &p, double s, double ow, double wsf, const QColor &fi, const QColor &ou, double far )
   : path( p )
+  , fileModified( QFileInfo( p ).lastModified() )
   , size( s )
   , strokeWidth( ow )
   , widthScaleFactor( wsf )
@@ -47,12 +48,18 @@ QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &p, double s, double ow, doubl
   , fill( fi )
   , stroke( ou )
 {
+  fileModifiedLastCheckTimer.start();
 }
 
 bool QgsSvgCacheEntry::operator==( const QgsSvgCacheEntry &other ) const
 {
-  return other.path == path && qgsDoubleNear( other.size, size ) && qgsDoubleNear( other.strokeWidth, strokeWidth ) && qgsDoubleNear( other.widthScaleFactor, widthScaleFactor )
-         && other.fill == fill && other.stroke == stroke;
+  bool equal = other.path == path && qgsDoubleNear( other.size, size ) && qgsDoubleNear( other.strokeWidth, strokeWidth ) && qgsDoubleNear( other.widthScaleFactor, widthScaleFactor )
+               && other.fixedAspectRatio == fixedAspectRatio && other.fill == fill && other.stroke == stroke;
+
+  if ( equal && ( mFileModifiedCheckTimeout <= 0 || fileModifiedLastCheckTimer.hasExpired( mFileModifiedCheckTimeout ) ) )
+    equal = other.fileModified == fileModified;
+
+  return equal;
 }
 
 int QgsSvgCacheEntry::dataSize() const
@@ -186,6 +193,7 @@ QgsSvgCacheEntry *QgsSvgCache::insertSvg( const QString &path, double size, cons
     double widthScaleFactor, double fixedAspectRatio )
 {
   QgsSvgCacheEntry *entry = new QgsSvgCacheEntry( path, size, strokeWidth, widthScaleFactor, fill, stroke, fixedAspectRatio );
+  entry->mFileModifiedCheckTimeout = mFileModifiedCheckTimeout;
 
   replaceParamsAndCacheSvg( entry );
 
@@ -552,7 +560,7 @@ QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, con
   //search entries in mEntryLookup
   QgsSvgCacheEntry *currentEntry = nullptr;
   QList<QgsSvgCacheEntry *> entries = mEntryLookup.values( path );
-
+  QDateTime modified;
   QList<QgsSvgCacheEntry *>::iterator entryIt = entries.begin();
   for ( ; entryIt != entries.end(); ++entryIt )
   {
@@ -561,6 +569,14 @@ QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, con
          qgsDoubleNear( cacheEntry->strokeWidth, strokeWidth ) && qgsDoubleNear( cacheEntry->widthScaleFactor, widthScaleFactor ) &&
          qgsDoubleNear( cacheEntry->fixedAspectRatio, fixedAspectRatio ) )
     {
+      if ( mFileModifiedCheckTimeout <= 0 || cacheEntry->fileModifiedLastCheckTimer.hasExpired( mFileModifiedCheckTimeout ) )
+      {
+        if ( !modified.isValid() )
+          modified = QFileInfo( path ).lastModified();
+
+        if ( cacheEntry->fileModified != modified )
+          continue;
+      }
       currentEntry = cacheEntry;
       break;
     }

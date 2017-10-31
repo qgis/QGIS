@@ -27,6 +27,8 @@
 #include <QUrl>
 #include <QObject>
 #include <QSizeF>
+#include <QDateTime>
+#include <QElapsedTimer>
 
 #include "qgis_core.h"
 
@@ -46,7 +48,7 @@ class CORE_EXPORT QgsSvgCacheEntry
 {
   public:
 
-    QgsSvgCacheEntry() = default;
+    QgsSvgCacheEntry() = delete;
 
     /**
      * Constructor.
@@ -68,6 +70,13 @@ class CORE_EXPORT QgsSvgCacheEntry
 
     //! Absolute path to SVG file
     QString path;
+
+    //! Timestamp when file was last modified
+    QDateTime fileModified;
+    //! Time since last check of file modified date
+    QElapsedTimer fileModifiedLastCheckTimer;
+    int mFileModifiedCheckTimeout = 30000;
+
     double size = 0.0; //size in pixels (cast to int for QImage)
     double strokeWidth = 0;
     double widthScaleFactor = 1.0;
@@ -248,6 +257,9 @@ class CORE_EXPORT QgsSvgCache : public QObject
     //Removes entry from the ordered list (but does not delete the entry itself)
     void takeEntryFromList( QgsSvgCacheEntry *entry );
 
+    //! Minimum time (in ms) between consecutive svg file modified time checks
+    int mFileModifiedCheckTimeout = 30000;
+
     //! Entry pointers accessible by file name
     QMultiHash< QString, QgsSvgCacheEntry * > mEntryLookup;
     //! Estimated total size of all images, pictures and svgContent
@@ -297,6 +309,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
     //! Mutex to prevent concurrent access to the class from multiple threads at once (may corrupt the entries otherwise).
     QMutex mMutex;
 
+    friend class TestQgsSvgCache;
 };
 
 #endif // QGSSVGCACHE_H

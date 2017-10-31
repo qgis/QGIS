@@ -23,7 +23,10 @@
 #include <QPicture>
 #include <QPainter>
 #include <QtConcurrent>
+#include <QElapsedTimer>
 #include "qgssvgcache.h"
+#include "qgsmultirenderchecker.h"
+#include "qgsapplication.h"
 
 /**
  * \ingroup UnitTests
@@ -33,8 +36,11 @@ class TestQgsSvgCache : public QObject
 {
     Q_OBJECT
 
-  public:
-    TestQgsSvgCache() = default;
+  private:
+
+    QString mReport;
+
+    bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -44,6 +50,7 @@ class TestQgsSvgCache : public QObject
     void fillCache();
     void threadSafePicture();
     void threadSafeImage();
+    void changeImage(); //check that cache is updated if svg source file changes
 
 };
 
@@ -52,10 +59,22 @@ void TestQgsSvgCache::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+  mReport += "<h1>QgsSvgCache Tests</h1>\n";
 }
 
 void TestQgsSvgCache::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
+
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+    //QDesktopServices::openUrl( "file:///" + myReportFile );
+  }
 }
 
 void TestQgsSvgCache::fillCache()
@@ -155,5 +174,86 @@ void TestQgsSvgCache::threadSafeImage()
   QtConcurrent::blockingMap( list, RenderImageWrapper( cache, svgPath ) );
 }
 
+void TestQgsSvgCache::changeImage()
+{
+  bool inCache;
+  QgsSvgCache cache;
+  // no minimum time between checks
+  cache.mFileModifiedCheckTimeout = 0;
+
+  //copy an image to the temp folder
+  QString tempImagePath = QDir::tempPath() + "/svg_cache.svg";
+
+  QString originalImage = TEST_DATA_DIR + QStringLiteral( "/test_symbol_svg.svg" );
+  if ( QFileInfo::exists( tempImagePath ) )
+    QFile::remove( tempImagePath );
+  QFile::copy( originalImage, tempImagePath );
+
+  //render it through the cache
+  QImage img = cache.svgAsImage( tempImagePath, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
+                                 1.0, inCache );
+  QVERIFY( imageCheck( "svgcache_changed_before", img, 30 ) );
+
+  // wait a second so that modified time is different
+  QElapsedTimer t;
+  t.start();
+  while ( !t.hasExpired( 1000 ) )
+  {}
+
+  //replace the image in the temp folder
+  QString newImage = TEST_DATA_DIR + QStringLiteral( "/test_symbol_svg2.svg" );
+  QFile::remove( tempImagePath );
+  QFile::copy( newImage, tempImagePath );
+
+  //re-render it
+  img = cache.svgAsImage( tempImagePath, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
+                          1.0, inCache );
+  QVERIFY( imageCheck( "svgcache_changed_after", img, 30 ) );
+
+  // repeat, with minimum time between checks
+  QgsSvgCache cache2;
+  QFile::remove( tempImagePath );
+  QFile::copy( originalImage, tempImagePath );
+  img = cache2.svgAsImage( tempImagePath, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
+                           1.0, inCache );
+  QVERIFY( imageCheck( "svgcache_changed_before", img, 30 ) );
+
+  // wait a second so that modified time is different
+  t.restart();
+  while ( !t.hasExpired( 1000 ) )
+  {}
+
+  //replace the image in the temp folder
+  QFile::remove( tempImagePath );
+  QFile::copy( newImage, tempImagePath );
+
+  //re-render it - not enough time has elapsed between checks, so file modification time will NOT be rechecked and
+  // existing cached image should be used
+  img = cache2.svgAsImage( tempImagePath, 200, QColor( 0, 0, 0 ), QColor( 0, 0, 0 ), 1.0,
+                           1.0, inCache );
+  QVERIFY( imageCheck( "svgcache_changed_before", img, 30 ) );
+}
+
+bool TestQgsSvgCache::imageCheck( const QString &testName, QImage &image, int mismatchCount )
+{
+  //draw background
+  QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );
+  QgsRenderChecker::drawBackground( &imageWithBackground );
+  QPainter painter( &imageWithBackground );
+  painter.drawImage( 0, 0, image );
+  painter.end();
+
+  mReport += "<h2>" + testName + "</h2>\n";
+  QString tempDir = QDir::tempPath() + '/';
+  QString fileName = tempDir + testName + ".png";
+  imageWithBackground.save( fileName, "PNG" );
+  QgsRenderChecker checker;
+  checker.setControlName( "expected_" + testName );
+  checker.setRenderedImage( fileName );
+  checker.setColorTolerance( 2 );
+  bool resultFlag = checker.compareImages( testName, mismatchCount );
+  mReport += checker.report();
+  return resultFlag;
+}
 QGSTEST_MAIN( TestQgsSvgCache )
 #include "testqgssvgcache.moc"
