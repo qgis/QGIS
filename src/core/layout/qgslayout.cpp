@@ -207,6 +207,19 @@ QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid )
   return nullptr;
 }
 
+QgsLayoutMultiFrame *QgsLayout::multiFrameByUuid( const QString &uuid ) const
+{
+  for ( QgsLayoutMultiFrame *mf : mMultiFrames )
+  {
+    if ( mf->uuid() == uuid )
+    {
+      return mf;
+    }
+  }
+
+  return nullptr;
+}
+
 QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const bool ignoreLocked ) const
 {
   return layoutItemAt( position, nullptr, ignoreLocked );
@@ -397,7 +410,8 @@ void QgsLayout::addLayoutItem( QgsLayoutItem *item )
   {
     undoText = tr( "Create Item" );
   }
-  mUndoStack->stack()->push( new QgsLayoutItemAddItemCommand( item, undoText ) );
+  if ( mBlockUndoCommandCount == 0 )
+    mUndoStack->stack()->push( new QgsLayoutItemAddItemCommand( item, undoText ) );
 }
 
 void QgsLayout::removeLayoutItem( QgsLayoutItem *item )

@@ -30,6 +30,7 @@ class QgsLayout;
 class QgsLayoutView;
 class QgsLayoutItem;
 class QgsFillSymbol;
+class QgsLayoutMultiFrame;
 
 /**
  * \ingroup core
@@ -155,6 +156,129 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
 
 #endif
 
+/**
+ * \ingroup core
+ * \brief Stores metadata about one layout multiframe class.
+ *
+ * A companion class, QgsLayoutMultiFrameAbstractGuiMetadata, handles the
+ * GUI behavior of QgsLayoutMultiFrames.
+ *
+ * \note In C++ you can use QgsLayoutMultiFrameMetadata convenience class.
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsLayoutMultiFrameAbstractMetadata
+{
+  public:
+
+    /**
+     * Constructor for QgsLayoutMultiFrameAbstractMetadata with the specified class \a type
+     * and \a visibleName.
+     */
+    QgsLayoutMultiFrameAbstractMetadata( int type, const QString &visibleName )
+      : mType( type )
+      , mVisibleName( visibleName )
+    {}
+
+    virtual ~QgsLayoutMultiFrameAbstractMetadata() = default;
+
+    /**
+     * Returns the unique item type code for the layout multiframe class.
+     */
+    int type() const { return mType; }
+
+    /**
+     * Returns an icon representing the layout multiframe type.
+     */
+    virtual QIcon icon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
+
+    /**
+     * Returns a translated, user visible name for the layout multiframe class.
+     */
+    QString visibleName() const { return mVisibleName; }
+
+    /**
+     * Creates a layout multiframe of this class for a specified \a layout.
+     */
+    virtual QgsLayoutMultiFrame *createMultiFrame( QgsLayout *layout ) = 0 SIP_FACTORY;
+
+    /**
+     * Resolve paths in the item's \a properties (if there are any paths).
+     * When \a saving is true, paths are converted from absolute to relative,
+     * when \a saving is false, paths are converted from relative to absolute.
+     * This ensures that paths in project files can be relative, but in item
+     * instances the paths are always absolute.
+     */
+    virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving )
+    {
+      Q_UNUSED( properties );
+      Q_UNUSED( pathResolver );
+      Q_UNUSED( saving );
+    }
+
+  private:
+
+    int mType = -1;
+    QString mVisibleName;
+};
+
+//! Layout multiframe creation function
+typedef std::function<QgsLayoutMultiFrame *( QgsLayout * )> QgsLayoutMultiFrameCreateFunc SIP_SKIP;
+
+//! Layout multiframe path resolver function
+typedef std::function<void( QVariantMap &, const QgsPathResolver &, bool )> QgsLayoutMultiFramePathResolverFunc SIP_SKIP;
+
+#ifndef SIP_RUN
+
+/**
+ * \ingroup core
+ * Convenience metadata class that uses static functions to create layout multiframes and their configuration widgets.
+ * \since QGIS 3.0
+ * \note not available in Python bindings
+ */
+class CORE_EXPORT QgsLayoutMultiFrameMetadata : public QgsLayoutMultiFrameAbstractMetadata
+{
+  public:
+
+    /**
+     * Constructor for QgsLayoutMultiFrameMetadata with the specified class \a type
+     * and \a visibleName, and function pointers for the various item creation functions.
+     */
+    QgsLayoutMultiFrameMetadata( int type, const QString &visibleName, const QIcon &icon,
+                                 QgsLayoutMultiFrameCreateFunc pfCreate,
+                                 QgsLayoutMultiFramePathResolverFunc pfPathResolver = nullptr )
+      : QgsLayoutMultiFrameAbstractMetadata( type, visibleName )
+      , mIcon( icon )
+      , mCreateFunc( pfCreate )
+      , mPathResolverFunc( pfPathResolver )
+    {}
+
+    /**
+     * Returns the classes' multiframe creation function.
+     */
+    QgsLayoutMultiFrameCreateFunc createFunction() const { return mCreateFunc; }
+
+    /**
+     * Returns the classes' path resolver function.
+     */
+    QgsLayoutMultiFramePathResolverFunc pathResolverFunction() const { return mPathResolverFunc; }
+
+    QIcon icon() const override { return mIcon.isNull() ? QgsLayoutMultiFrameAbstractMetadata::icon() : mIcon; }
+    QgsLayoutMultiFrame *createMultiFrame( QgsLayout *layout ) override { return mCreateFunc ? mCreateFunc( layout ) : nullptr; }
+
+    void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) override
+    {
+      if ( mPathResolverFunc )
+        mPathResolverFunc( properties, pathResolver, saving );
+    }
+
+  protected:
+    QIcon mIcon;
+    QgsLayoutMultiFrameCreateFunc mCreateFunc = nullptr;
+    QgsLayoutMultiFramePathResolverFunc mPathResolverFunc = nullptr;
+
+};
+
+#endif
 
 
 /**
@@ -193,6 +317,9 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
       LayoutPolyline, //!< Polyline shape item
       LayoutFrame, //!< Frame item, part of a QgsLayoutMultiFrame object
 
+      // known multi-frame types
+      LayoutHtml, //!< Html multiframe item
+
       // item types provided by plugins
       PluginItem, //!< Starting point for plugin item types
     };
@@ -223,18 +350,40 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
     /**
      * Returns the metadata for the specified item \a type. Returns nullptr if
      * a corresponding type was not found in the registry.
+     * \see multiFrameMetadata()
      */
     QgsLayoutItemAbstractMetadata *itemMetadata( int type ) const;
 
     /**
+     * Returns the metadata for the specified multiframe \a type. Returns nullptr if
+     * a corresponding type was not found in the registry.
+     * \see itemMetadata()
+     */
+    QgsLayoutMultiFrameAbstractMetadata *multiFrameMetadata( int type ) const;
+
+    /**
      * Registers a new layout item type. Takes ownership of the metadata instance.
+     * \see addLayoutMultiFrameType()
      */
     bool addLayoutItemType( QgsLayoutItemAbstractMetadata *metadata SIP_TRANSFER );
 
     /**
+     * Registers a new layout multiframe type. Takes ownership of the metadata instance.
+     * \see addLayoutItemType()
+     */
+    bool addLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata SIP_TRANSFER );
+
+    /**
      * Creates a new instance of a layout item given the item \a type, and target \a layout.
+     * \see createMultiFrame()
      */
     QgsLayoutItem *createItem( int type, QgsLayout *layout ) const SIP_FACTORY;
+
+    /**
+     * Creates a new instance of a layout multiframe given the multiframe \a type, and target \a layout.
+     * \see createItem()
+     */
+    QgsLayoutMultiFrame *createMultiFrame( int type, QgsLayout *layout ) const SIP_FACTORY;
 
     /**
      * Resolve paths in properties of a particular symbol layer.
@@ -256,12 +405,19 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
      */
     void typeAdded( int type, const QString &name );
 
+    /**
+     * Emitted whenever a new multiframe type is added to the registry, with the specified
+     * \a type and visible \a name.
+     */
+    void multiFrameTypeAdded( int type, const QString &name );
+
   private:
 #ifdef SIP_RUN
     QgsLayoutItemRegistry( const QgsLayoutItemRegistry &rh );
 #endif
 
     QMap<int, QgsLayoutItemAbstractMetadata *> mMetadata;
+    QMap<int, QgsLayoutMultiFrameAbstractMetadata *> mMultiFrameMetadata;
 
 };
 

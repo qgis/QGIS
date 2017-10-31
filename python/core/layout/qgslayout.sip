@@ -175,7 +175,16 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Returns the layout item with matching ``uuid`` unique identifier, or a None
  if a matching item could not be found.
+.. seealso:: multiFrameByUuid()
  :rtype: QgsLayoutItem
+%End
+
+    QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid ) const;
+%Docstring
+ Returns the layout multiframe with matching ``uuid`` unique identifier, or a None
+ if a matching multiframe could not be found.
+.. seealso:: itemByUuid()
+ :rtype: QgsLayoutMultiFrame
 %End
 
     QgsLayoutItem *layoutItemAt( QPointF position, const bool ignoreLocked = false ) const;

@@ -392,6 +392,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutmeasurementconverter.cpp
   layout/qgslayoutmodel.cpp
   layout/qgslayoutmultiframe.cpp
+  layout/qgslayoutmultiframeundocommand.cpp
   layout/qgslayoutobject.cpp
   layout/qgslayoutpagecollection.cpp
   layout/qgslayoutserializableobject.cpp
@@ -1012,6 +1013,7 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutitemundocommand.h
   layout/qgslayoutmeasurement.h
   layout/qgslayoutmeasurementconverter.h
+  layout/qgslayoutmultiframeundocommand.h
   layout/qgspagesizeregistry.h
   layout/qgslayoutpoint.h
   layout/qgslayoutserializableobject.h

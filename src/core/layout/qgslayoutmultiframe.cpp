@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgslayoutmultiframe.h"
+#include "qgslayoutmultiframeundocommand.h"
 #include "qgslayoutframe.h"
 #include "qgslayout.h"
 #include <QtCore>
 
 QgsLayoutMultiFrame::QgsLayoutMultiFrame( QgsLayout *layout )
   : QgsLayoutObject( layout )
+  , mUuid( QUuid::createUuid().toString() )
 {
   mLayout->addMultiFrame( this );
 
@@ -97,6 +99,9 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
   {
     return;
   }
+
+  if ( mBlockUndoCommands )
+    mLayout->mBlockUndoCommandCount++;
 
   double currentY = 0;
   double currentHeight = 0;
@@ -206,6 +211,9 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
       currentItem = newFrame;
     }
   }
+
+  if ( mBlockUndoCommands )
+    mLayout->mBlockUndoCommandCount--;
 }
 
 void QgsLayoutMultiFrame::recalculateFrameRects()
@@ -255,6 +263,31 @@ QgsLayoutFrame *QgsLayoutMultiFrame::createNewFrame( QgsLayoutFrame *currentFram
 QString QgsLayoutMultiFrame::displayName() const
 {
   return tr( "<Multiframe>" );
+}
+
+QgsAbstractLayoutUndoCommand *QgsLayoutMultiFrame::createCommand( const QString &text, int id, QUndoCommand *parent )
+{
+  return new QgsLayoutMultiFrameUndoCommand( this, text, id, parent );
+}
+
+void QgsLayoutMultiFrame::beginCommand( const QString &commandText, QgsLayoutMultiFrame::UndoCommand command )
+{
+  if ( !mLayout )
+    return;
+
+  mLayout->undoStack()->beginCommand( this, commandText, command );
+}
+
+void QgsLayoutMultiFrame::endCommand()
+{
+  if ( mLayout )
+    mLayout->undoStack()->endCommand();
+}
+
+void QgsLayoutMultiFrame::cancelCommand()
+{
+  if ( mLayout )
+    mLayout->undoStack()->cancelCommand();
 }
 
 void QgsLayoutMultiFrame::handleFrameRemoval()
@@ -394,10 +427,15 @@ int QgsLayoutMultiFrame::frameIndex( QgsLayoutFrame *frame ) const
   return mFrameItems.indexOf( frame );
 }
 
-bool QgsLayoutMultiFrame::_writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames ) const
+bool QgsLayoutMultiFrame::writeXml( QDomElement &parentElement, QDomDocument &doc, const QgsReadWriteContext &context, bool ignoreFrames ) const
 {
+  QDomElement element = doc.createElement( QStringLiteral( "LayoutMultiFrame" ) );
+  element.setAttribute( QStringLiteral( "resizeMode" ), mResizeMode );
+  element.setAttribute( QStringLiteral( "uuid" ), mUuid );
+  element.setAttribute( QStringLiteral( "type" ), stringType() );
+
 #if 0 //TODO
-  elem.setAttribute( QStringLiteral( "resizeMode" ), mResizeMode );
+
   if ( !ignoreFrames )
   {
     QList<QgsComposerFrame *>::const_iterator frameIt = mFrameItems.constBegin();
@@ -406,17 +444,34 @@ bool QgsLayoutMultiFrame::_writeXml( QDomElement &elem, QDomDocument &doc, bool 
       ( *frameIt )->writeXml( elem, doc );
     }
   }
-  QgsComposerObject::writeXml( elem, doc );
 #endif
+
+  writeObjectPropertiesToElement( element, doc, context );
+  writePropertiesToElement( element, doc, context );
+  parentElement.appendChild( element );
   return true;
 }
 
-bool QgsLayoutMultiFrame::_readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames )
+bool QgsLayoutMultiFrame::readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context, bool ignoreFrames )
 {
-#if 0 //TODO
-  QgsComposerObject::readXml( itemElem, doc );
+  if ( element.nodeName() != QStringLiteral( "LayoutMultiFrame" ) || element.attribute( QStringLiteral( "type" ) ) != stringType() )
+  {
+    return false;
+  }
 
-  mResizeMode = static_cast< ResizeMode >( itemElem.attribute( QStringLiteral( "resizeMode" ), QStringLiteral( "0" ) ).toInt() );
+  mBlockUndoCommands = true;
+
+  readObjectPropertiesFromElement( element, doc, context );
+
+  mUuid = element.attribute( QStringLiteral( "uuid" ), QUuid::createUuid().toString() );
+  mResizeMode = static_cast< ResizeMode >( element.attribute( QStringLiteral( "resizeMode" ), QStringLiteral( "0" ) ).toInt() );
+#if 0 //TODO
+  if ( !ignoreFrames )
+  {
+    deleteFrames();
+  }
+
+
   if ( !ignoreFrames )
   {
     QDomNodeList frameList = itemElem.elementsByTagName( QStringLiteral( "ComposerFrame" ) );
@@ -431,7 +486,22 @@ bool QgsLayoutMultiFrame::_readXml( const QDomElement &itemElem, const QDomDocum
     //TODO - think there should be a recalculateFrameSizes() call here
   }
 #endif
+
+
+  bool result = readPropertiesFromElement( element, doc, context );
+
+  mBlockUndoCommands = false;
+  return result;
+}
+
+bool QgsLayoutMultiFrame::writePropertiesToElement( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const
+{
   return true;
 }
 
+bool QgsLayoutMultiFrame::readPropertiesFromElement( const QDomElement &, const QDomDocument &, const QgsReadWriteContext & )
+{
+
+  return true;
+}
 
