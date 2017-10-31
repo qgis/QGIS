@@ -41,11 +41,16 @@ QgsLayoutFrame::QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFra
   }
 }
 
+QgsLayoutFrame *QgsLayoutFrame::create( QgsLayout *layout )
+{
+  return new QgsLayoutFrame( layout, nullptr );
+}
+
 QgsLayoutMultiFrame *QgsLayoutFrame::multiFrame() const
 {
   return mMultiFrame;
 }
-#if 0// TODO
+#if 0// TODO - save/restore multiframe uuid!
 bool QgsLayoutFrame::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   QDomElement frameElem = doc.createElement( QStringLiteral( "ComposerFrame" ) );

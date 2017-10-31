@@ -74,6 +74,70 @@ class QgsLayoutItemAbstractMetadata
 
 
 
+class QgsLayoutMultiFrameAbstractMetadata
+{
+%Docstring
+ Stores metadata about one layout multiframe class.
+
+ A companion class, QgsLayoutMultiFrameAbstractGuiMetadata, handles the
+ GUI behavior of QgsLayoutMultiFrames.
+
+.. note::
+
+   In C++ you can use QgsLayoutMultiFrameMetadata convenience class.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayoutitemregistry.h"
+%End
+  public:
+
+    QgsLayoutMultiFrameAbstractMetadata( int type, const QString &visibleName );
+%Docstring
+ Constructor for QgsLayoutMultiFrameAbstractMetadata with the specified class ``type``
+ and ``visibleName``.
+%End
+
+    virtual ~QgsLayoutMultiFrameAbstractMetadata();
+
+    int type() const;
+%Docstring
+ Returns the unique item type code for the layout multiframe class.
+ :rtype: int
+%End
+
+    virtual QIcon icon() const;
+%Docstring
+ Returns an icon representing the layout multiframe type.
+ :rtype: QIcon
+%End
+
+    QString visibleName() const;
+%Docstring
+ Returns a translated, user visible name for the layout multiframe class.
+ :rtype: str
+%End
+
+    virtual QgsLayoutMultiFrame *createMultiFrame( QgsLayout *layout ) = 0 /Factory/;
+%Docstring
+ Creates a layout multiframe of this class for a specified ``layout``.
+ :rtype: QgsLayoutMultiFrame
+%End
+
+    virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
+%Docstring
+ Resolve paths in the item's ``properties`` (if there are any paths).
+ When ``saving`` is true, paths are converted from absolute to relative,
+ when ``saving`` is false, paths are converted from relative to absolute.
+ This ensures that paths in project files can be relative, but in item
+ instances the paths are always absolute.
+%End
+
+};
+
+
+
 
 
 class QgsLayoutItemRegistry : QObject
@@ -111,6 +175,9 @@ class QgsLayoutItemRegistry : QObject
       LayoutPolyline,
       LayoutFrame,
 
+      // known
+      LayoutHtml,
+
       // item
       PluginItem,
     };
@@ -139,19 +206,44 @@ class QgsLayoutItemRegistry : QObject
 %Docstring
  Returns the metadata for the specified item ``type``. Returns None if
  a corresponding type was not found in the registry.
+.. seealso:: multiFrameMetadata()
  :rtype: QgsLayoutItemAbstractMetadata
+%End
+
+    QgsLayoutMultiFrameAbstractMetadata *multiFrameMetadata( int type ) const;
+%Docstring
+ Returns the metadata for the specified multiframe ``type``. Returns None if
+ a corresponding type was not found in the registry.
+.. seealso:: itemMetadata()
+ :rtype: QgsLayoutMultiFrameAbstractMetadata
 %End
 
     bool addLayoutItemType( QgsLayoutItemAbstractMetadata *metadata /Transfer/ );
 %Docstring
  Registers a new layout item type. Takes ownership of the metadata instance.
+.. seealso:: addLayoutMultiFrameType()
+ :rtype: bool
+%End
+
+    bool addLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata /Transfer/ );
+%Docstring
+ Registers a new layout multiframe type. Takes ownership of the metadata instance.
+.. seealso:: addLayoutItemType()
  :rtype: bool
 %End
 
     QgsLayoutItem *createItem( int type, QgsLayout *layout ) const /Factory/;
 %Docstring
  Creates a new instance of a layout item given the item ``type``, and target ``layout``.
+.. seealso:: createMultiFrame()
  :rtype: QgsLayoutItem
+%End
+
+    QgsLayoutMultiFrame *createMultiFrame( int type, QgsLayout *layout ) const /Factory/;
+%Docstring
+ Creates a new instance of a layout multiframe given the multiframe ``type``, and target ``layout``.
+.. seealso:: createItem()
+ :rtype: QgsLayoutMultiFrame
 %End
 
     void resolvePaths( int type, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const;
@@ -172,6 +264,12 @@ class QgsLayoutItemRegistry : QObject
     void typeAdded( int type, const QString &name );
 %Docstring
  Emitted whenever a new item type is added to the registry, with the specified
+ ``type`` and visible ``name``.
+%End
+
+    void multiFrameTypeAdded( int type, const QString &name );
+%Docstring
+ Emitted whenever a new multiframe type is added to the registry, with the specified
  ``type`` and visible ``name``.
 %End
 

@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgslayoutobject.h"
+#include "qgslayoutundocommand.h"
 #include <QObject>
 #include <QSizeF>
 #include <QPointF>
@@ -41,10 +42,7 @@ class QgsRenderContext;
  * \since QGIS 3.0
  */
 
-// sip crashes out on this file - reexamine after composer removal
-#ifndef SIP_RUN
-
-class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject
+class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutUndoObjectInterface
 {
 
     Q_OBJECT
@@ -63,6 +61,12 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject
                               until the entire multiframe content is visible */
     };
 
+    //! Multiframe item undo commands, used for collapsing undo commands
+    enum UndoCommand
+    {
+      UndoNone = -1, //!< No command suppression
+    };
+
     /**
      * Construct a new multiframe item, attached to the specified \a layout.
      */
@@ -71,9 +75,29 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject
     ~QgsLayoutMultiFrame();
 
     /**
+     * Returns the multiframe identification string. This is a unique random string set for the multiframe
+     * upon creation.
+     * \note There is no corresponding setter for the uuid - it's created automatically.
+    */
+    QString uuid() const { return mUuid; }
+
+    /**
      * Returns the total size of the multiframe's content, in layout units.
      */
     virtual QSizeF totalSize() const = 0;
+
+    /**
+     * Returns unique multiframe type id.
+     */
+    virtual int type() const = 0;
+
+    /**
+     * Return the multiframe type as a string.
+     *
+     * This string must be a unique, single word, character only representation of the item type, eg "LayoutHtml"
+     * \see type()
+     */
+    virtual QString stringType() const = 0;
 
     /**
      * Returns the fixed size for a frame, if desired. If the fixed frame size changes,
@@ -157,51 +181,30 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject
     ResizeMode resizeMode() const { return mResizeMode; }
 
     /**
-     * Stores state information about multiframe in DOM element. Implementations of writeXml
-     * should also call the _writeXML method to save general multiframe properties.
-     * \param elem is DOM element
-     * \param doc is the DOM document
+     * Stores the multiframe state in a DOM element.
+     * \param parentElement parent DOM element (e.g. 'Layout' element)
+     * \param document DOM document
+     * \param context read write context
      * \param ignoreFrames set to false to avoid writing state information about child frames into DOM
-     * \see _writeXML
+     * \see readXml()
      */
-    virtual bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const = 0;
+    bool writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context, bool ignoreFrames = false ) const;
 
     /**
-     * Stores state information about base multiframe object in DOM element. Implementations of writeXml
-     * should call this method.
-     * \param elem is DOM element
-     * \param doc is the DOM document
-     * \param ignoreFrames set to false to avoid writing state information about child frames into DOM
-     * \see writeXml
-     */
-    bool _writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const;
-
-    /**
-     * Reads multiframe state information from a DOM element. Implementations of readXml
-     * should also call the _readXML method to restore general multiframe properties.
-     * \param itemElem is DOM element
-     * \param doc is the DOM document
+     * Sets the item state from a DOM element.
+     * \param itemElement is the DOM node corresponding to item (e.g. 'LayoutItem' element)
+     * \param document DOM document
+     * \param context read write context
      * \param ignoreFrames set to false to avoid read state information about child frames from DOM
-     * \see _readXML
+     * \see writeXml()
      */
-    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false ) = 0;
-
-    /**
-     * Restores state information about base multiframe object from a DOM element. Implementations of readXml
-     * should call this method.
-     * \param itemElem is DOM element
-     * \param doc is the DOM document
-     * \param ignoreFrames set to false to avoid reading state information about child frames from DOM
-     * \see readXml
-     */
-    bool _readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false );
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context, bool ignoreFrames = false );
 
     /**
      * Returns a list of all child frames for this multiframe.
      * \see frameCount()
-     * \note Not available in Python bindings
      */
-    QList<QgsLayoutFrame *> frames() const SIP_SKIP;
+    QList<QgsLayoutFrame *> frames() const;
 
     /**
      * Returns the number of frames associated with this multiframe.
@@ -235,6 +238,32 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject
      * Returns the multiframe display name.
      */
     virtual QString displayName() const;
+
+    QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
+
+    /**
+     * Starts new undo command for this item.
+     * The \a commandText should be a capitalized, imperative tense description (e.g. "Add Map Item").
+     * If specified, multiple consecutive commands for this item with the same \a command will
+     * be collapsed into a single undo command in the layout history.
+     * \see endCommand()
+     * \see cancelCommand()
+    */
+    void beginCommand( const QString &commandText, UndoCommand command = UndoNone );
+
+    /**
+     * Completes the current item command and push it onto the layout's undo stack.
+     * \see beginCommand()
+     * \see cancelCommand()
+     */
+    void endCommand();
+
+    /**
+     * Cancels the current item command and discards it.
+     * \see beginCommand()
+     * \see endCommand()
+     */
+    void cancelCommand();
 
   public slots:
 
@@ -278,6 +307,26 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject
 
   protected:
 
+    /**
+     * Stores multiframe state within an XML DOM element.
+     * \param element is the DOM element to store the multiframe's properties in
+     * \param document DOM document
+     * \param context read write context
+     * \see writeXml()
+     * \see readPropertiesFromElement()
+     */
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Sets multiframe state from a DOM element.
+     * \param element is the DOM element for the multiframe
+     * \param document DOM document
+     * \param context read write context
+     * \see writePropertiesToElement()
+     * \see readXml()
+     */
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+
     QList<QgsLayoutFrame *> mFrameItems;
 
     ResizeMode mResizeMode = UseExistingFrames;
@@ -302,8 +351,11 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject
     bool mIsRecalculatingSize = false;
 
     bool mBlockUpdates = false;
+    bool mBlockUndoCommands = false;
+
+    //! Unique id
+    QString mUuid;
 };
 
-#endif
 
 #endif // QGSLAYOUTMULTIFRAME_H

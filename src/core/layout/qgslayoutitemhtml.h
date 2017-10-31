@@ -55,6 +55,14 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
 
     ~QgsLayoutItemHtml();
 
+    int type() const override;
+    QString stringType() const override;
+
+    /**
+     * Returns a new QgsLayoutItemHtml for the specified parent \a layout.
+     */
+    static QgsLayoutItemHtml *create( QgsLayout *layout ) SIP_FACTORY;
+
     /**
      * Sets the source \a mode for item's HTML content.
      * \see contentMode()
@@ -199,8 +207,6 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
     void render( QgsRenderContext &context, const QRectF &renderExtent, const int frameIndex,
                  const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
 
-    bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const override;
-    bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false ) override;
     //overridden to break frames without dividing lines of text
     double findNearbyPageBreak( double yPos ) override;
 
@@ -221,6 +227,11 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
     void refreshExpressionContext();
 
     void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+
+  protected:
+
+    bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    bool readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
   private slots:
     void frameLoaded( bool ok = true );

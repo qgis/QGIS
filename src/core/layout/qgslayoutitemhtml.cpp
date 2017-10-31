@@ -90,6 +90,21 @@ QgsLayoutItemHtml::~QgsLayoutItemHtml()
   mFetcher->deleteLater();
 }
 
+int QgsLayoutItemHtml::type() const
+{
+  return QgsLayoutItemRegistry::LayoutHtml;
+}
+
+QString QgsLayoutItemHtml::stringType() const
+{
+  return QStringLiteral( "LayoutHtml" );
+}
+
+QgsLayoutItemHtml *QgsLayoutItemHtml::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemHtml( layout );
+}
+
 void QgsLayoutItemHtml::setUrl( const QUrl &url )
 {
   if ( !mWebPage )
@@ -449,9 +464,8 @@ QString QgsLayoutItemHtml::displayName() const
   return tr( "<HTML frame>" );
 }
 
-bool QgsLayoutItemHtml::writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames ) const
+bool QgsLayoutItemHtml::writePropertiesToElement( QDomElement &htmlElem, QDomDocument &, const QgsReadWriteContext & ) const
 {
-  QDomElement htmlElem = doc.createElement( QStringLiteral( "ComposerHtml" ) );
   htmlElem.setAttribute( QStringLiteral( "contentMode" ), QString::number( static_cast< int >( mContentMode ) ) );
   htmlElem.setAttribute( QStringLiteral( "url" ), mUrl.toString() );
   htmlElem.setAttribute( QStringLiteral( "html" ), mHtml );
@@ -460,25 +474,11 @@ bool QgsLayoutItemHtml::writeXml( QDomElement &elem, QDomDocument &doc, bool ign
   htmlElem.setAttribute( QStringLiteral( "maxBreakDistance" ), QString::number( mMaxBreakDistance ) );
   htmlElem.setAttribute( QStringLiteral( "stylesheet" ), mUserStylesheet );
   htmlElem.setAttribute( QStringLiteral( "stylesheetEnabled" ), mEnableUserStylesheet ? "true" : "false" );
-
-  bool state = _writeXml( htmlElem, doc, ignoreFrames );
-  elem.appendChild( htmlElem );
-  return state;
+  return true;
 }
 
-bool QgsLayoutItemHtml::readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames )
+bool QgsLayoutItemHtml::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &, const QgsReadWriteContext & )
 {
-  if ( !ignoreFrames )
-  {
-    deleteFrames();
-  }
-
-  //first create the frames
-  if ( !_readXml( itemElem, doc, ignoreFrames ) )
-  {
-    return false;
-  }
-
   bool contentModeOK;
   mContentMode = static_cast< QgsLayoutItemHtml::ContentMode >( itemElem.attribute( QStringLiteral( "contentMode" ) ).toInt( &contentModeOK ) );
   if ( !contentModeOK )

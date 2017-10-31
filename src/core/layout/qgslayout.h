@@ -208,8 +208,16 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     /**
      * Returns the layout item with matching \a uuid unique identifier, or a nullptr
      * if a matching item could not be found.
+     * \see multiFrameByUuid()
      */
     QgsLayoutItem *itemByUuid( const QString &uuid );
+
+    /**
+     * Returns the layout multiframe with matching \a uuid unique identifier, or a nullptr
+     * if a matching multiframe could not be found.
+     * \see itemByUuid()
+     */
+    QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid ) const;
 
     /**
      * Returns the topmost layout item at a specified \a position. Ignores paper items.

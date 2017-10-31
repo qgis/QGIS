@@ -23,8 +23,6 @@
 class QgsLayout;
 class QgsLayoutMultiFrame;
 
-#ifndef SIP_RUN
-
 /**
  * \ingroup core
  * Base class for frame items, which form a layout multiframe item.
@@ -41,6 +39,11 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
      * and belonging to a \a multiFrame.
      */
     QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFrame );
+
+    /**
+     * Creates a new QgsLayoutFrame belonging to the specified \a layout.
+     */
+    static QgsLayoutFrame *create( QgsLayout *layout ) SIP_FACTORY;
 
     int type() const override;
     QString stringType() const override;
@@ -133,7 +136,5 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
     friend class QgsLayoutMultiFrame;
 
 };
-
-#endif
 
 #endif // QGSLAYOUTFRAME_H
