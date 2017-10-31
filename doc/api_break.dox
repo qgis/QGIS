@@ -1379,11 +1379,32 @@ QgsGraduatedSymbolRenderer        {#qgis_api_break_3_0_QgsGraduatedSymbolRendere
 - sizeScaleFieldChanged() and scaleMethodChanged() were removed. These settings are no longer exposed in the widget's GUI.
 
 
+QgsGraph        {#qgis_api_break_3_0_QgsGraph}
+--------
+
+- addEdge now explicitly takes the fromVertex as first argument, and toVertex as second argument. The original
+API design was unclear due to the reversed methods in QgsGraphEdge and QgsGraphVertex.
+
+
 QgsGraphBuilderInterface        {#qgis_api_break_3_0_QgsGraphBuilderInterface}
 ------------------------
 
 - destinationCrs() now returns a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
 plugins calling this method will need to be updated.
+
+
+QgsGraphEdge        {#qgis_api_break_3_0_QgsGraphEdge}
+------------
+
+- outVertex() was renamed as toVertex() (yes, the original name was the opposite of the returned value!)
+- inVertex() was renamed as fromVertex() (yes, the original name was the opposite of the returned value!) 
+
+
+QgsGraphVertex        {#qgis_api_break_3_0_QgsGraphVertex}
+--------------
+
+- outEdges() was renamed as incomingEdges() (yes, the original name was the opposite of the returned value!)
+- inEdges() was renamed as outgoingEdges() (yes, the original name was the opposite of the returned value!)
 
 
 QgsEditorWidgetRegistry        {#qgis_api_break_3_0_QgsEditorWidgetRegistry}
@@ -1776,6 +1797,13 @@ QgsNetworkAccessManager        {#qgis_api_break_3_0_QgsNetworkAccessManager}
 - sendGet() was removed. Use get() directly.
 - deleteReply() was removed. Use abort() and deleteLayer() on the reply directly.
 - requestSent signal was removed. This is no longer emitted.
+
+
+QgsNetworkStrategy        {#qgis_api_break_3_0_QgsNetworkStrategy}
+------------------
+
+- requiredAttributes() now returns a set of attributes, instead of a list
+
 
 QgsNewVectorLayerDialog        {#qgis_api_break_3_0_QgsNewVectorLayerDialog}
 -----------------------
