@@ -170,7 +170,9 @@ QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QCol
     trimToMaximumSize();
   }
 
-  return *( currentEntry->picture );
+  QPicture p = *( currentEntry->picture );
+  p.detach();
+  return p;
 }
 
 QByteArray QgsSvgCache::svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
