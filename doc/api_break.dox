@@ -319,6 +319,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - QgsEditorWidgetConfig was removed. Use QVariantMap instead.
 - QgsScaleExpression. Use QgsProperty with a QgsSizeScalePropertyTransformer instead.
 - QgsSvgAnnotationItem. Use QgsSvgAnnotation instead.
+- QgsSvgCacheEntry. This is an internal class and is no longer exposed to public API.
 - QgsSymbologyV2Conversion was removed. Reading of renderers from pre-1.0 versions is not supported anymore.
 - QgsTextAnnotationItem. Use QgsTextAnnotation instead.
 - QgsTransectSample. This class was unused and unmaintained.
@@ -2289,6 +2290,8 @@ QgsSvgCache        {#qgis_api_break_3_0_QgsSvgCache}
 - containsParamsV2() was removed. Use containsParamsV3() instead.
 - The rasterScaleFactor parameter was removed from all methods
 - svgAsImage(), svgAsPicture(), svgViewboxSize(), svgContent(), insertSvg(), cacheEntry() only accept absolute path to SVG file (relative paths will not be resolved).
+- The protected member insertSvg() was made private. QgsSvgCache is not intended to be subclassed.
+
 
 QgsSvgCacheEntry       {#qgis_api_break_3_0_QgsSvgCacheEntry}
 ----------------

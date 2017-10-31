@@ -34,6 +34,10 @@ class QDomElement;
 class QImage;
 class QPicture;
 
+#ifndef SIP_RUN
+
+///@cond PRIVATE
+
 /**
  * \ingroup core
  * \class QgsSvgCacheEntry
@@ -42,7 +46,7 @@ class CORE_EXPORT QgsSvgCacheEntry
 {
   public:
 
-    QgsSvgCacheEntry();
+    QgsSvgCacheEntry() = default;
 
     /**
      * Constructor.
@@ -56,7 +60,6 @@ class CORE_EXPORT QgsSvgCacheEntry
      */
     QgsSvgCacheEntry( const QString &path, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke,
                       double fixedAspectRatio = 0 ) ;
-    ~QgsSvgCacheEntry();
 
     //! QgsSvgCacheEntry cannot be copied.
     QgsSvgCacheEntry( const QgsSvgCacheEntry &rh ) = delete;
@@ -78,10 +81,10 @@ class CORE_EXPORT QgsSvgCacheEntry
      */
     QSizeF viewboxSize;
 
-    QColor fill;
-    QColor stroke;
-    QImage *image = nullptr;
-    QPicture *picture = nullptr;
+    QColor fill = Qt::black;
+    QColor stroke = Qt::black;
+    std::unique_ptr< QImage > image;
+    std::unique_ptr< QPicture > picture;
     //content (with params replaced)
     QByteArray svgContent;
 
@@ -100,6 +103,9 @@ class CORE_EXPORT QgsSvgCacheEntry
 #endif
 
 };
+
+///@endcond
+#endif
 
 /**
  * \ingroup core
@@ -211,7 +217,10 @@ class CORE_EXPORT QgsSvgCache : public QObject
     //! Emit a signal to be caught by qgisapp and display a msg on status bar
     void statusChanged( const QString  &statusQString );
 
-  protected:
+  private slots:
+    void downloadProgress( qint64, qint64 );
+
+  private:
 
     /**
      * Creates new cache entry and returns pointer to it
@@ -239,10 +248,6 @@ class CORE_EXPORT QgsSvgCache : public QObject
     //Removes entry from the ordered list (but does not delete the entry itself)
     void takeEntryFromList( QgsSvgCacheEntry *entry );
 
-  private slots:
-    void downloadProgress( qint64, qint64 );
-
-  private:
     //! Entry pointers accessible by file name
     QMultiHash< QString, QgsSvgCacheEntry * > mEntryLookup;
     //! Estimated total size of all images, pictures and svgContent

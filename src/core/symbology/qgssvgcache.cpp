@@ -36,12 +36,7 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 
-QgsSvgCacheEntry::QgsSvgCacheEntry()
-  : path( QString() )
-  , fill( Qt::black )
-  , stroke( Qt::black )
-{
-}
+///@cond PRIVATE
 
 QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &p, double s, double ow, double wsf, const QColor &fi, const QColor &ou, double far )
   : path( p )
@@ -52,13 +47,6 @@ QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &p, double s, double ow, doubl
   , fill( fi )
   , stroke( ou )
 {
-}
-
-
-QgsSvgCacheEntry::~QgsSvgCacheEntry()
-{
-  delete image;
-  delete picture;
 }
 
 bool QgsSvgCacheEntry::operator==( const QgsSvgCacheEntry &other ) const
@@ -80,6 +68,8 @@ int QgsSvgCacheEntry::dataSize() const
   }
   return size;
 }
+///@endcond
+
 
 QgsSvgCache::QgsSvgCache( QObject *parent )
   : QObject( parent )
@@ -127,9 +117,7 @@ QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &
     if ( cachedDataSize > MAXIMUM_SIZE / 2 )
     {
       fitsInCache = false;
-      delete currentEntry->image;
-      currentEntry->image = nullptr;
-      //currentEntry->image = new QImage( 0, 0 );
+      currentEntry->image.reset();
 
       // instead cache picture
       if ( !currentEntry->picture )
@@ -488,18 +476,17 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
     return;
   }
 
-  delete entry->image;
-  entry->image = nullptr;
+  entry->image.reset();
 
   QSizeF viewBoxSize;
   QSizeF scaledSize;
   QSize imageSize = sizeForImage( *entry, viewBoxSize, scaledSize );
 
   // cast double image sizes to int for QImage
-  QImage *image = new QImage( imageSize, QImage::Format_ARGB32_Premultiplied );
+  std::unique_ptr< QImage > image = qgis::make_unique< QImage >( imageSize, QImage::Format_ARGB32_Premultiplied );
   image->fill( 0 ); // transparent background
 
-  QPainter p( image );
+  QPainter p( image.get() );
   QSvgRenderer r( entry->svgContent );
   if ( qgsDoubleNear( viewBoxSize.width(), viewBoxSize.height() ) )
   {
@@ -513,8 +500,8 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
     r.render( &p, rect );
   }
 
-  entry->image = image;
   mTotalSize += ( image->width() * image->height() * 32 );
+  entry->image = std::move( image );
 }
 
 void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput )
@@ -525,13 +512,12 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
     return;
   }
 
-  delete entry->picture;
-  entry->picture = nullptr;
+  entry->picture.reset();
 
   bool isFixedAR = entry->fixedAspectRatio > 0;
 
   //correct QPictures dpi correction
-  QPicture *picture = new QPicture();
+  std::unique_ptr< QPicture > picture = qgis::make_unique< QPicture >();
   QRectF rect;
   QSvgRenderer r( entry->svgContent );
   double hwRatio = 1.0;
@@ -554,9 +540,9 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
   s.scale( wSize, hSize, isFixedAR ? Qt::IgnoreAspectRatio : Qt::KeepAspectRatio );
   rect = QRectF( -s.width() / 2.0, -s.height() / 2.0, s.width(), s.height() );
 
-  QPainter p( picture );
+  QPainter p( picture.get() );
   r.render( &p, rect );
-  entry->picture = picture;
+  entry->picture = std::move( picture );
   mTotalSize += entry->picture->size();
 }
 
