@@ -429,6 +429,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     void removeLayoutItem( QgsLayoutItem *item );
 
+#ifndef SIP_RUN
+
     /**
      * Adds a \a multiFrame to the layout. The object is owned by the layout until removeMultiFrame() is called.
      * \see removeMultiFrame()
@@ -449,6 +451,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see removeMultiFrame()
      */
     QSet< QgsLayoutMultiFrame * > multiFrames() const;
+#endif
 
     /**
      * Returns the layout's state encapsulated in a DOM element.

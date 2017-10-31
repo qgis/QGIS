@@ -41,6 +41,9 @@ class QgsRenderContext;
  * \since QGIS 3.0
  */
 
+// sip crashes out on this file - reexamine after composer removal
+#ifndef SIP_RUN
+
 class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject
 {
 
@@ -300,5 +303,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject
 
     bool mBlockUpdates = false;
 };
+
+#endif
 
 #endif // QGSLAYOUTMULTIFRAME_H

@@ -23,6 +23,8 @@
 class QgsLayout;
 class QgsLayoutMultiFrame;
 
+#ifndef SIP_RUN
+
 /**
  * \ingroup core
  * Base class for frame items, which form a layout multiframe item.
@@ -131,5 +133,7 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
     friend class QgsLayoutMultiFrame;
 
 };
+
+#endif
 
 #endif // QGSLAYOUTFRAME_H
