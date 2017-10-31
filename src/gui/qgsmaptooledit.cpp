@@ -131,6 +131,7 @@ QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::Ge
   color.setAlphaF( myAlpha );
   rb->setStrokeColor( color );
   rb->setFillColor( color );
+  rb->setStrokeWidth( digitizingStrokeWidth() );
   rb->show();
   return rb;
 }
