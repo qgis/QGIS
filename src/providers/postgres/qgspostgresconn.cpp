@@ -222,7 +222,26 @@ QgsPostgresConn::QgsPostgresConn( const QString& conninfo, bool readOnly, bool s
     {
       QString fileName = expandedUri.param( param );
       fileName.remove( "'" );
-      QFile::remove( fileName );
+      QFile file( fileName );
+      // set minimal permission to allow removing on Win.
+      // On linux and Mac if file is set with QFile::>ReadUser
+      // does not create problem removin certs
+      if ( !file.setPermissions( QFile::WriteOwner ) )
+      {
+        QString errorMsg = tr( "Cannot set WriteOwner permission to cert: %0 to allow removing it" ).arg( file.fileName() );
+        PQfinish();
+        QgsMessageLog::logMessage( tr( "Client security failure" ) + '\n' + errorMsg, tr( "PostGIS" ) );
+        mRef = 0;
+        return;
+      }
+      if ( !file.remove() )
+      {
+        QString errorMsg = tr( "Cannot remove cert: %0 to allow removing it" ).arg( file.fileName() );
+        PQfinish();
+        QgsMessageLog::logMessage( tr( "Client security failure" ) + '\n' + errorMsg, tr( "PostGIS" ) );
+        mRef = 0;
+        return;
+      }
     }
   }
 
