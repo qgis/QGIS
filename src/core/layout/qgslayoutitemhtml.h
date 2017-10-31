@@ -28,6 +28,8 @@ class QgsVectorLayer;
 class QgsNetworkContentFetcher;
 class QgsDistanceArea;
 
+#ifndef SIP_RUN
+
 /**
  * \ingroup core
  * A layout multiframe subclass for HTML content.
@@ -265,5 +267,7 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
     //! Calculates the max width of frames in the html multiframe
     double maxFrameWidth() const;
 };
+
+#endif
 
 #endif // QGSLAYOUTITEMHTML_H
