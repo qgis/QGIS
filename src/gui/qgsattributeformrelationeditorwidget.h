@@ -1,0 +1,40 @@
+/***************************************************************************
+    qgsattributeformrelationeditorwidget.h
+     --------------------------------------
+    Date                 : Nov 2017
+    Copyright            : (C) 2017 Matthias Kuhn
+    Email                : matthias@opengis.ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef QGSATTRIBUTEFORMRELATIONEDITORWIDGET_H
+#define QGSATTRIBUTEFORMRELATIONEDITORWIDGET_H
+
+#include "qgis_gui.h"
+#include "qgsattributeformwidget.h"
+
+class QgsRelationWidgetWrapper;
+class QgsRelationAggregateSearchWidgetWrapper;
+
+class GUI_EXPORT QgsAttributeFormRelationEditorWidget : public QgsAttributeFormWidget
+{
+    Q_OBJECT
+
+  public:
+    explicit QgsAttributeFormRelationEditorWidget( QgsRelationWidgetWrapper *wrapper, QgsAttributeForm *form );
+
+    virtual void createSearchWidgetWrappers( const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() ) override;
+    virtual QString currentFilterExpression() const override;
+
+  private:
+    QgsRelationAggregateSearchWidgetWrapper *mSearchWidget;
+    QgsRelationWidgetWrapper *mWrapper;
+};
+
+#endif // QGSATTRIBUTEFORMRELATIONEDITORWIDGET_H

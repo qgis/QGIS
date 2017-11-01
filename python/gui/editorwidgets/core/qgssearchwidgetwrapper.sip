@@ -169,6 +169,25 @@ class QgsSearchWidgetWrapper : QgsWidgetWrapper
  :rtype: str
 %End
 
+    QString createFieldIdentifier() const;
+%Docstring
+ :rtype: str
+%End
+
+
+
+    QString aggregate() const;
+%Docstring
+ :rtype: str
+%End
+    void setAggregate( const QString &aggregate );
+
+    QgsRelation aggregateRelation() const;
+%Docstring
+ :rtype: QgsRelation
+%End
+    void setAggregateRelation( const QgsRelation &aggregateRelation );
+
   public slots:
 
     virtual void clearWidget();

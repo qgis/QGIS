@@ -25,6 +25,7 @@ class QgsAttributeForm : QWidget
       AddFeatureMode,
       MultiEditMode,
       SearchMode,
+      AggregateSearchMode,
     };
 
     enum FilterType
@@ -121,6 +122,11 @@ class QgsAttributeForm : QWidget
  mode to display the count of selected features.
  \param messageBar target message bar
 .. versionadded:: 2.16
+%End
+
+    QString aggregateFilter() const;
+%Docstring
+ :rtype: str
 %End
 
   signals:

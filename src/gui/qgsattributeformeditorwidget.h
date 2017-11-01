@@ -28,6 +28,7 @@ class QgsVectorLayer;
 class QStackedWidget;
 class QgsAttributeEditorContext;
 class QLabel;
+class QgsAggregateToolButton;
 
 /**
  * \ingroup gui
@@ -75,13 +76,6 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     QVariant currentValue() const;
 
     /**
-     * Creates an expression matching the current search filter value and
-     * search properties represented in the widget.
-     * \since QGIS 2.16
-     */
-    QString currentFilterExpression() const override;
-
-    /**
      * Set the constraint status for this widget.
      */
     void setConstraintStatus( const QString &constraint, const QString &description, const QString &err, QgsEditorWidgetWrapper::ConstraintResult result );
@@ -104,11 +98,6 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
      */
     void changesCommitted();
 
-    /**
-     * Resets the search/filter value of the widget.
-     */
-    void resetSearch();
-
   signals:
 
     /**
@@ -128,60 +117,16 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     //! Triggered when the multi edit tool button "set field value" action is selected
     void setFieldTriggered();
 
-    //! Triggered when search button flags are changed
-    void searchWidgetFlagsChanged( QgsSearchWidgetWrapper::FilterFlags flags );
-
-  protected:
-
-    /**
-     * Returns a pointer to the search widget tool button in the widget.
-     * \note this method is in place for unit testing only, and is not considered
-     * stable API
-     */
-    QgsSearchWidgetToolButton *searchWidgetToolButton();
-
-    /**
-     * Sets the search widget wrapper for the widget used when the form is in
-     * search mode.
-     * \param wrapper search widget wrapper.
-     * \note the search widget wrapper should be created using searchWidgetFrame()
-     * as its parent
-     * \note this method is in place for unit testing only, and is not considered
-     * stable API
-     */
-    void setSearchWidgetWrapper( QgsSearchWidgetWrapper *wrapper );
-
-    /**
-     * Returns the widget which should be used as a parent during construction
-     * of the search widget wrapper.
-     * \note this method is in place for unit testing only, and is not considered
-     * stable AP
-     */
-    QWidget *searchWidgetFrame();
-
-    /**
-     * Returns the search widget wrapper used in this widget. The wrapper must
-     * first be created using createSearchWidgetWrapper()
-     * \note this method is in place for unit testing only, and is not considered
-     * stable API
-     */
-    QList< QgsSearchWidgetWrapper * > searchWidgetWrappers();
+    void onAggregateChanged();
 
   private:
-
-    QWidget *mEditPage = nullptr;
-    QWidget *mSearchPage = nullptr;
-    QStackedWidget *mStack = nullptr;
-    QWidget *mSearchFrame = nullptr;
-
     QString mWidgetType;
     QgsEditorWidgetWrapper *mWidget = nullptr;
-    QList< QgsSearchWidgetWrapper * > mSearchWidgets;
     QgsAttributeForm *mForm = nullptr;
     QLabel *mConstraintResultLabel = nullptr;
 
     QgsMultiEditToolButton *mMultiEditButton = nullptr;
-    QgsSearchWidgetToolButton *mSearchWidgetToolButton = nullptr;
+    QgsAggregateToolButton *mAggregateButton = nullptr;
     QVariant mPreviousValue;
     bool mBlockValueUpdate;
     bool mIsMixed;

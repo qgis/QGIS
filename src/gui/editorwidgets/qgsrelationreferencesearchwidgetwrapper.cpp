@@ -63,7 +63,7 @@ QgsSearchWidgetWrapper::FilterFlags QgsRelationReferenceSearchWidgetWrapper::def
 
 QString QgsRelationReferenceSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const
 {
-  QString fieldName = QgsExpression::quotedColumnRef( layer()->fields().at( mFieldIdx ).name() );
+  QString fieldName = createFieldIdentifier();
 
   //clear any unsupported flags
   flags &= supportedFlags();

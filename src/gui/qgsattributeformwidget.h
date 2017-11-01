@@ -10,6 +10,8 @@
 #include <QVariant>
 
 class QgsAttributeForm;
+class QStackedWidget;
+class QgsSearchWidgetToolButton;
 
 class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
 {
@@ -23,6 +25,7 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
       DefaultMode, //!< Default mode, only the editor widget is shown
       MultiEditMode, //!< Multi edit mode, both the editor widget and a QgsMultiEditToolButton is shown
       SearchMode, //!< Layer search/filter mode
+      AggregateSearchMode,
     };
 
     explicit QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAttributeForm *form );
@@ -40,7 +43,7 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
      * search properties represented in the widget.
      * \since QGIS 2.16
      */
-    virtual QString currentFilterExpression() const = 0;
+    virtual QString currentFilterExpression() const;
 
 
     /**
@@ -61,10 +64,72 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
 
     QgsAttributeForm *form() const;
 
+    /**
+     * Returns the widget which should be used as a parent during construction
+     * of the search widget wrapper.
+     * \note this method is in place for unit testing only, and is not considered
+     * stable API
+     */
+    QWidget *searchWidgetFrame() SIP_SKIP;
+
+
+    /**
+     * Sets the search widget wrapper for the widget used when the form is in
+     * search mode.
+     * \param wrapper search widget wrapper.
+     * \note the search widget wrapper should be created using searchWidgetFrame()
+     * as its parent
+     * \note this method is in place for unit testing only, and is not considered
+     * stable API
+     */
+    void setSearchWidgetWrapper( QgsSearchWidgetWrapper *wrapper );
+
+    void addAdditionalSearchWidgetWrapper( QgsSearchWidgetWrapper *wrapper );
+
+    /**
+     * Returns the search widget wrapper used in this widget. The wrapper must
+     * first be created using createSearchWidgetWrapper()
+     * \note this method is in place for unit testing only, and is not considered
+     * stable API
+     */
+    QList< QgsSearchWidgetWrapper * > searchWidgetWrappers();
+
+    /**
+     * Resets the search/filter value of the widget.
+     */
+    void resetSearch();
+
+  protected:
+    QWidget *editPage() const SIP_SKIP;
+
+    QStackedWidget *stack() const SIP_SKIP;
+
+    QWidget *searchPage() const SIP_SKIP;
+
+    /**
+     * Returns a pointer to the search widget tool button in the widget.
+     * \note this method is in place for unit testing only, and is not considered
+     * stable API
+     */
+    QgsSearchWidgetToolButton *searchWidgetToolButton();
+
+  private slots:
+
+    //! Triggered when search button flags are changed
+    void searchWidgetFlagsChanged( QgsSearchWidgetWrapper::FilterFlags flags );
+
   private:
+    virtual void updateWidgets();
+
     QgsAttributeFormWidget::Mode mMode = DefaultMode;
-    virtual void updateWidgets() = 0;
+    QgsSearchWidgetToolButton *mSearchWidgetToolButton = nullptr;
+    QWidget *mEditPage = nullptr;
+    QWidget *mSearchPage = nullptr;
+    QStackedWidget *mStack = nullptr;
+    QWidget *mSearchFrame = nullptr;
     QgsAttributeForm *mForm = nullptr;
+    QList< QgsSearchWidgetWrapper * > mSearchWidgets;
+    QgsWidgetWrapper *mWidget = nullptr;
 };
 
 #endif // QGSATTRIBUTEFORMWIDGET_H

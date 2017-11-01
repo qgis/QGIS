@@ -125,6 +125,7 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsrangeconfigdlg.cpp
   editorwidgets/qgsrangewidgetwrapper.cpp
   editorwidgets/qgsrangewidgetfactory.cpp
+  editorwidgets/qgsrelationaggregatesearchwidgetwrapper.cpp
   editorwidgets/qgssearchwidgettoolbutton.cpp
   editorwidgets/qgsspinbox.cpp
   editorwidgets/qgsrelationwidgetwrapper.cpp
@@ -191,6 +192,7 @@ SET(QGIS_GUI_SRCS
   qgsactionmenu.cpp
   qgsadvanceddigitizingcanvasitem.cpp
   qgsadvanceddigitizingdockwidget.cpp
+  qgsaggregatetoolbutton.cpp
   qgsattributedialog.cpp
   qgsattributeform.cpp
   qgsattributeformeditorwidget.cpp
@@ -198,6 +200,7 @@ SET(QGIS_GUI_SRCS
   qgsattributeformlegacyinterface.cpp
   qgsattributetypeloaddialog.cpp
   qgsattributeformwidget.cpp
+  qgsattributeformrelationeditorwidget.cpp
   qgsblendmodecombobox.cpp
   qgsbrowsertreeview.cpp
   qgsbrowserdockwidget.cpp
@@ -368,9 +371,11 @@ SET(QGIS_GUI_MOC_HDRS
   qgisinterface.h
   qgsactionmenu.h
   qgsadvanceddigitizingdockwidget.h
+  qgsaggregatetoolbutton.h
   qgsattributedialog.h
   qgsattributeform.h
   qgsattributeformeditorwidget.h
+  qgsattributeformrelationeditorwidget.h
   qgsattributeformwidget.h
   qgsattributetypeloaddialog.h
   qgsblendmodecombobox.h
@@ -647,6 +652,7 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsrelationreferencewidget.h
   editorwidgets/qgsrelationreferencewidgetwrapper.h
   editorwidgets/qgsrelationwidgetwrapper.h
+  editorwidgets/qgsrelationaggregatesearchwidgetwrapper.h
   editorwidgets/qgssearchwidgettoolbutton.h
   editorwidgets/qgsspinbox.h
   editorwidgets/qgstexteditconfigdlg.h
