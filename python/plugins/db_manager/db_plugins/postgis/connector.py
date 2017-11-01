@@ -22,7 +22,7 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import QRegExp
+from qgis.PyQt.QtCore import QRegExp, QFile
 from qgis.core import QgsCredentials, QgsDataSourceURI
 from functools import cmp_to_key
 
