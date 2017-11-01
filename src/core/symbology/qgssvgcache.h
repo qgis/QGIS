@@ -29,12 +29,12 @@
 #include <QSizeF>
 #include <QDateTime>
 #include <QElapsedTimer>
+#include <QPicture>
+#include <QImage>
 
 #include "qgis_core.h"
 
 class QDomElement;
-class QImage;
-class QPicture;
 
 #ifndef SIP_RUN
 
