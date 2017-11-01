@@ -382,7 +382,7 @@ void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty &layerProperty, co
   }
   else
   {
-    QgsMessageLog::logMessage( tr( "SQL:%1\nresult:%2\nerror:%3\n" ).arg( sql ).arg( colRes.PQresultStatus() ).arg( colRes.PQresultErrorMessage() ), tr( "PostGIS" ) );
+    QgsMessageLog::logMessage( tr( "SQL: %1\nresult: %2\nerror: %3\n" ).arg( sql ).arg( colRes.PQresultStatus() ).arg( colRes.PQresultErrorMessage() ), tr( "PostGIS" ) );
   }
 
 }
@@ -1868,7 +1868,7 @@ QString QgsPostgresConn::currentDatabase() const
   }
   else
   {
-    QgsMessageLog::logMessage( tr( "SQL:%1\nresult:%2\nerror:%3\n" ).arg( sql ).arg( res.PQresultStatus() ).arg( res.PQresultErrorMessage() ), tr( "PostGIS" ) );
+    QgsMessageLog::logMessage( tr( "SQL: %1\nresult: %2\nerror: %3\n" ).arg( sql ).arg( res.PQresultStatus() ).arg( res.PQresultErrorMessage() ), tr( "PostGIS" ) );
   }
 
   return database;

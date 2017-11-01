@@ -72,11 +72,11 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
         label = self.tr('eXtensible Markup Language (*.xml *.XML)')
 
         if self.mode == 0:
-            slabel = self.tr('Save connections')
+            slabel = self.tr('Save Connections')
             self.filename, filter = QFileDialog.getSaveFileName(self, slabel,
                                                                 '.', label)
         else:
-            slabel = self.tr('Load connections')
+            slabel = self.tr('Load Connections')
             self.filename, selected_filter = QFileDialog.getOpenFileName(self, slabel,
                                                                          '.', label)
 
@@ -134,7 +134,7 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
         with open(self.filename, 'w') as fileobj:
             fileobj.write(prettify_xml(etree.tostring(doc)))
         QMessageBox.information(self, self.tr('Save Connections'),
-                                self.tr('Saved to {0}').format(self.filename))
+                                self.tr('Saved to {0}.').format(self.filename))
         self.reject()
 
     def load(self, items):

@@ -304,7 +304,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
     hDS.reset( OGR_Dr_CreateDataSource( hGpkgDriver, fileName.toUtf8().constData(), nullptr ) );
     if ( !hDS )
     {
-      QString msg( tr( "Creation of database failed (OGR error:%1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+      QString msg( tr( "Creation of database failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
       if ( !property( "hideDialogs" ).toBool() )
         QMessageBox::critical( this, tr( "Layer creation failed" ), msg );
       return false;
@@ -316,7 +316,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
     hDS.reset( OGROpen( fileName.toUtf8().constData(), true, &hDriver ) );
     if ( !hDS )
     {
-      QString msg( tr( "Opening of database failed (OGR error:%1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+      QString msg( tr( "Opening of database failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
       if ( !property( "hideDialogs" ).toBool() )
         QMessageBox::critical( this, tr( "Layer creation failed" ), msg );
       return false;
@@ -401,7 +401,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
     OSRRelease( hSRS );
   if ( !hLayer )
   {
-    QString msg( tr( "Creation of layer failed (OGR error:%1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    QString msg( tr( "Creation of layer failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     if ( !property( "hideDialogs" ).toBool() )
       QMessageBox::critical( this, tr( "Layer creation failed" ), msg );
     return false;
@@ -453,7 +453,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   OGR_L_ResetReading( hLayer );
   if ( CPLGetLastErrorType() != CE_None )
   {
-    QString msg( tr( "Creation of layer failed (OGR error:%1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    QString msg( tr( "Creation of layer failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     if ( !property( "hideDialogs" ).toBool() )
       QMessageBox::critical( this, tr( "Layer creation failed" ), msg );
     return false;

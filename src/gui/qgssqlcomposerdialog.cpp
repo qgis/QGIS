@@ -212,13 +212,13 @@ void QgsSQLComposerDialog::accept()
     if ( !mSQLValidatorCallback->isValid( sql(), errorMsg, warningMsg ) )
     {
       if ( errorMsg.isEmpty() )
-        errorMsg = tr( "An error occurred during evaluation of the SQL statement" );
-      QMessageBox::critical( this, tr( "SQL error" ), errorMsg );
+        errorMsg = tr( "An error occurred during evaluation of the SQL statement." );
+      QMessageBox::critical( this, tr( "SQL Error" ), errorMsg );
       return;
     }
     if ( !warningMsg.isEmpty() )
     {
-      QMessageBox::warning( this, tr( "SQL warning" ), warningMsg );
+      QMessageBox::warning( this, tr( "SQL Warning" ), warningMsg );
     }
   }
   QDialog::accept();

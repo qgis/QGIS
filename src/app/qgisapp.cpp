@@ -4047,7 +4047,7 @@ void QgisApp::about()
 #ifdef HAVE_POSTGRESQL
     versionString += PG_VERSION;
 #else
-    versionString += tr( "No support." );
+    versionString += tr( "No support" );
 #endif
     versionString += QLatin1String( "</td>" );
 
@@ -4205,14 +4205,14 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       }
       else
       {
-        QString msg = tr( "%1 doesn't have any layers" ).arg( src );
+        QString msg = tr( "%1 doesn't have any layers." ).arg( src );
         messageBar()->pushMessage( tr( "Invalid Data Source" ), msg, QgsMessageBar::CRITICAL, messageTimeout() );
         delete layer;
       }
     }
     else
     {
-      QString msg = tr( "%1 is not a valid or recognized data source" ).arg( src );
+      QString msg = tr( "%1 is not a valid or recognized data source." ).arg( src );
       messageBar()->pushMessage( tr( "Invalid Data Source" ), msg, QgsMessageBar::CRITICAL, messageTimeout() );
 
       // since the layer is bad, stomp on it
@@ -7606,7 +7606,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   {
     messageBar()->pushMessage(
       tr( "Not enough features selected" ),
-      tr( "The merge tool requires at least two selected features" ),
+      tr( "The merge tool requires at least two selected features." ),
       QgsMessageBar::WARNING );
     return;
   }
@@ -7761,7 +7761,7 @@ void QgisApp::mergeSelectedFeatures()
     {
       messageBar()->pushMessage(
         tr( "Merge failed" ),
-        tr( "An error occurred during the merge operation" ),
+        tr( "An error occurred during the merge operation." ),
         QgsMessageBar::CRITICAL );
     }
     return;
@@ -7797,7 +7797,7 @@ void QgisApp::mergeSelectedFeatures()
       {
         messageBar()->pushMessage(
           tr( "Merge failed" ),
-          tr( "An error occurred during the merge operation" ),
+          tr( "An error occurred during the merge operation." ),
           QgsMessageBar::CRITICAL );
       }
       return;
@@ -7823,7 +7823,7 @@ void QgisApp::mergeSelectedFeatures()
     {
       messageBar()->pushMessage(
         tr( "Invalid result" ),
-        tr( "Could not store value '%1' in field of type %2" ).arg( attrs.at( i ).toString(), vl->fields().at( i ).typeName() ),
+        tr( "Could not store value '%1' in field of type %2." ).arg( attrs.at( i ).toString(), vl->fields().at( i ).typeName() ),
         QgsMessageBar::WARNING );
     }
     attrs[i] = val;
@@ -7953,7 +7953,7 @@ void QgisApp::selectAll()
   {
     messageBar()->pushMessage(
       tr( "No active vector layer" ),
-      tr( "To select all, choose a vector layer in the legend" ),
+      tr( "To select all, choose a vector layer in the legend." ),
       QgsMessageBar::INFO,
       messageTimeout() );
     return;
@@ -7977,7 +7977,7 @@ void QgisApp::selectByExpression()
   {
     messageBar()->pushMessage(
       tr( "No active vector layer" ),
-      tr( "To select features, choose a vector layer in the legend" ),
+      tr( "To select features, choose a vector layer in the legend." ),
       QgsMessageBar::INFO,
       messageTimeout() );
     return;
@@ -7997,7 +7997,7 @@ void QgisApp::selectByForm()
   {
     messageBar()->pushMessage(
       tr( "No active vector layer" ),
-      tr( "To select features, choose a vector layer in the legend" ),
+      tr( "To select features, choose a vector layer in the legend." ),
       QgsMessageBar::INFO,
       messageTimeout() );
     return;

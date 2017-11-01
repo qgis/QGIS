@@ -110,7 +110,7 @@ void QgsMapThemes::addPreset()
   dlg.setWindowTitle( tr( "Map Themes" ) );
   dlg.setHintString( tr( "Name of the new theme" ) );
   dlg.setOverwriteEnabled( false );
-  dlg.setConflictingNameWarning( tr( "A theme with this name already exists" ) );
+  dlg.setConflictingNameWarning( tr( "A theme with this name already exists." ) );
   if ( dlg.exec() != QDialog::Accepted || dlg.name().isEmpty() )
     return;
 
@@ -133,7 +133,7 @@ void QgsMapThemes::replaceTriggered()
   if ( !actionPreset )
     return;
 
-  int res = QMessageBox::question( mMenu, tr( "Replace theme" ),
+  int res = QMessageBox::question( mMenu, tr( "Replace Theme" ),
                                    trUtf8( "Are you sure you want to replace the existing theme “%1”?" ).arg( actionPreset->text() ),
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
   if ( res != QMessageBox::Yes )

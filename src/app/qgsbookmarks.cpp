@@ -173,7 +173,7 @@ void QgsBookmarks::addClicked()
   }
   else
   {
-    QMessageBox::warning( this, tr( "Error" ), tr( "Unable to create the bookmark.\nDriver:%1\nDatabase:%2" )
+    QMessageBox::warning( this, tr( "Error" ), tr( "Unable to create the bookmark.\nDriver: %1\nDatabase: %2" )
                           .arg( query.lastError().driverText(),
                                 query.lastError().databaseText() ) );
   }
@@ -194,7 +194,7 @@ void QgsBookmarks::deleteClicked()
     return;
 
   // make sure the user really wants to delete these bookmarks
-  if ( QMessageBox::Cancel == QMessageBox::information( this, tr( "Really Delete?" ),
+  if ( QMessageBox::Cancel == QMessageBox::information( this, tr( "Delete Bookmarks" ),
        tr( "Are you sure you want to delete %n bookmark(s)?", "number of rows", rows.size() ),
        QMessageBox::Ok | QMessageBox::Cancel ) )
     return;
@@ -236,7 +236,7 @@ void QgsBookmarks::zoomToBookmark()
     rect = ct.transform( rect );
     if ( rect.isEmpty() )
     {
-      QMessageBox::warning( this, tr( "Empty extent" ), tr( "Reprojected extent is empty." ) );
+      QMessageBox::warning( this, tr( "Empty Extent" ), tr( "Reprojected extent is empty." ) );
       return;
     }
   }
@@ -326,7 +326,7 @@ void QgsBookmarks::exportToXml()
   QgsSettings settings;
 
   QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Export bookmarks" ), lastUsedDir,
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Export Bookmarks" ), lastUsedDir,
                      tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {

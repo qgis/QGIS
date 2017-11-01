@@ -284,7 +284,7 @@ bool QgsWmsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapa
   {
     mErrorCaption = QObject::tr( "Dom Exception" );
     mErrorFormat = QStringLiteral( "text/plain" );
-    mError = QObject::tr( "Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found.\nThis might be due to an incorrect WMS Server URL.\nTag:%3\nResponse was:\n%4" )
+    mError = QObject::tr( "Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found.\nThis might be due to an incorrect WMS Server URL.\nTag: %3\nResponse was:\n%4" )
              .arg( QStringLiteral( "WMS_Capabilities" ),
                    QStringLiteral( "WMT_MS_Capabilities" ),
                    docElem.tagName(),

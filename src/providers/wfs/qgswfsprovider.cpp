@@ -512,7 +512,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
     QgsSQLStatement::Node *column = selectedcolumn->column();
     if ( column->nodeType() != QgsSQLStatement::ntColumnRef )
     {
-      errorMsg = tr( "Column '%1' is not a direct reference to a table column" ).arg( column->dump() );
+      errorMsg = tr( "Column '%1' is not a direct reference to a table column." ).arg( column->dump() );
       return false;
     }
     QgsSQLStatement::NodeColumnRef *columnRef = dynamic_cast<QgsSQLStatement::NodeColumnRef *>( column );
@@ -551,7 +551,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
           field.setName( fieldName );
           if ( mapFieldNameToSrcLayerNameFieldName.contains( fieldName ) )
           {
-            errorMsg = tr( "Field '%1': a field with the same name already exists" ).arg( field.name() );
+            errorMsg = tr( "Field '%1': a field with the same name already exists." ).arg( field.name() );
             return false;
           }
 
@@ -592,7 +592,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
     {
       if ( columnTableTypename != mShared->mURI.typeName() )
       {
-        warningMsg = tr( "The geometry field of a typename that is not the main typename is ignored in the selected fields" );
+        warningMsg = tr( "The geometry field of a typename that is not the main typename is ignored in the selected fields." );
         QgsDebugMsg( warningMsg );
       }
     }
@@ -621,7 +621,7 @@ bool QgsWFSProvider::processSQL( const QString &sqlString, QString &errorMsg, QS
       }
       if ( mapFieldNameToSrcLayerNameFieldName.contains( fieldName ) )
       {
-        errorMsg = tr( "Field '%1': a field with the same name already exists" ).arg( column->dump() );
+        errorMsg = tr( "Field '%1': a field with the same name already exists." ).arg( column->dump() );
         return false;
       }
 
@@ -1263,7 +1263,7 @@ bool QgsWFSProvider::readAttributesFromSchema( QDomDocument &schemaDoc,
     }
     if ( foundImport && onlyIncludeOrImport )
     {
-      errorMsg = tr( "it is probably a schema for Complex Features" );
+      errorMsg = tr( "It is probably a schema for Complex Features." );
     }
     else
     {
@@ -1645,19 +1645,19 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
   QDomElement exceptionElem = serverResponse.documentElement();
   if ( exceptionElem.isNull() )
   {
-    pushError( tr( "empty response" ) );
+    pushError( tr( "Empty response" ) );
     return;
   }
 
   if ( exceptionElem.tagName() == QLatin1String( "ServiceExceptionReport" ) )
   {
-    pushError( tr( "WFS service exception:%1" ).arg( exceptionElem.firstChildElement( QStringLiteral( "ServiceException" ) ).text() ) );
+    pushError( tr( "WFS service exception: %1" ).arg( exceptionElem.firstChildElement( QStringLiteral( "ServiceException" ) ).text() ) );
     return;
   }
 
   if ( exceptionElem.tagName() == QLatin1String( "WFS_TransactionResponse" ) )
   {
-    pushError( tr( "unsuccessful service response: %1" ).arg( exceptionElem.firstChildElement( QStringLiteral( "TransactionResult" ) ).firstChildElement( QStringLiteral( "Message" ) ).text() ) );
+    pushError( tr( "Unsuccessful service response: %1" ).arg( exceptionElem.firstChildElement( QStringLiteral( "TransactionResult" ) ).firstChildElement( QStringLiteral( "Message" ) ).text() ) );
     return;
   }
 
@@ -1671,7 +1671,7 @@ void QgsWFSProvider::handleException( const QDomDocument &serverResponse )
     return;
   }
 
-  pushError( tr( "unhandled response: %1" ).arg( exceptionElem.tagName() ) );
+  pushError( tr( "Unhandled response: %1" ).arg( exceptionElem.tagName() ) );
 }
 
 QGISEXTERN QgsWFSProvider *classFactory( const QString *uri )

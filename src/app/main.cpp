@@ -302,7 +302,7 @@ void qgisCrash( int signal )
 #endif
     if ( len < 0 )
     {
-      myPrint( "Could not read link (%d:%s)\n", errno, strerror( errno ) );
+      myPrint( "Could not read link (%d: %s)\n", errno, strerror( errno ) );
     }
     else
     {
@@ -327,7 +327,7 @@ void qgisCrash( int signal )
       }
       else
       {
-        myPrint( "Cannot fork (%d:%s)\n", errno, strerror( errno ) );
+        myPrint( "Cannot fork (%d: %s)\n", errno, strerror( errno ) );
         dumpBacktrace( 256 );
       }
     }
