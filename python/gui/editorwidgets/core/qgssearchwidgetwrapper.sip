@@ -206,7 +206,11 @@ class QgsSearchWidgetWrapper : QgsWidgetWrapper
 
   protected slots:
 
-    virtual void setExpression( const QString &value ) = 0;
+    virtual void setExpression( const QString &expression ) = 0;
+%Docstring
+ Set the ``expression`` which is currently used as filter for this widget.
+%End
+
     virtual void setFeature( const QgsFeature &feature );
 
 
