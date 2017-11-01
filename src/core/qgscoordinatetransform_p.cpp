@@ -206,7 +206,6 @@ QPair<projPJ, projPJ> QgsCoordinateTransformPrivate::threadLocalProjData()
   QPair<projPJ, projPJ> res = qMakePair( pj_init_plus_ctx( pContext, mSourceProjString.toUtf8() ),
                                              pj_init_plus_ctx( pContext, mDestProjString.toUtf8() ) );
   mProjProjections.insert( reinterpret_cast< uintptr_t>( pContext ), res );
-  mProjProjections.insert( reinterpret_cast< uintptr_t>( mProjContext.localData()->get() ), res );
   mProjLock.unlock();
   return res;
 }
