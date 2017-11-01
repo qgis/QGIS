@@ -27,10 +27,10 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeature,
                        QgsGeometry,
-                       QgsMultiPointV2,
+                       QgsMultiPoint,
                        QgsMultiLineString,
                        QgsLineString,
-                       QgsPolygonV2,
+                       QgsPolygon,
                        QgsFeatureSink,
                        QgsWkbTypes,
                        QgsProcessingException,
@@ -148,7 +148,7 @@ class GeometryConvert(QgisAlgorithm):
         return [geom.centroid()]
 
     def convertToNodes(self, geom):
-        mp = QgsMultiPointV2()
+        mp = QgsMultiPoint()
         # TODO: mega inefficient - needs rework when geometry iterators land
         # (but at least it doesn't lose Z/M values)
         for g in geom.constGet().coordinateSequence():
@@ -206,14 +206,14 @@ class GeometryConvert(QgisAlgorithm):
                         points.append(p)
             linestring = QgsLineString(points)
             linestring.close()
-            p = QgsPolygonV2()
+            p = QgsPolygon()
             p.setExteriorRing(linestring)
             return [QgsGeometry(p)]
         elif QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.LineGeometry:
             if QgsWkbTypes.isMultiType(geom):
                 parts = []
                 for i in range(geom.constGet().numGeometries()):
-                    p = QgsPolygonV2()
+                    p = QgsPolygon()
                     linestring = geom.constGet().geometryN(i).clone()
                     linestring.close()
                     p.setExteriorRing(linestring)
@@ -221,7 +221,7 @@ class GeometryConvert(QgisAlgorithm):
                 return QgsGeometry.collectGeometry(parts)
             else:
                 # linestring to polygon
-                p = QgsPolygonV2()
+                p = QgsPolygon()
                 linestring = geom.constGet().clone()
                 linestring.close()
                 p.setExteriorRing(linestring)

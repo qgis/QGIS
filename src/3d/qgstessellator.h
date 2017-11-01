@@ -18,7 +18,7 @@
 
 #include "qgis_3d.h"
 
-class QgsPolygonV2;
+class QgsPolygon;
 
 #include <QVector>
 
@@ -41,7 +41,7 @@ class _3D_EXPORT QgsTessellator
     QgsTessellator( double originX, double originY, bool addNormals );
 
     //! Tessellates a triangle and adds its vertex entries to the output data array
-    void addPolygon( const QgsPolygonV2 &polygon, float extrusionHeight );
+    void addPolygon( const QgsPolygon &polygon, float extrusionHeight );
 
     //! Returns array of triangle vertex data
     QVector<float> data() const { return mData; }

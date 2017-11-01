@@ -35,16 +35,16 @@ class QgsAbstractGeometry
       sipType = sipType_QgsCompoundCurve;
     else if ( qgsgeometry_cast<QgsTriangle *>( sipCpp ) != nullptr )
       sipType = sipType_QgsTriangle;
-    else if ( qgsgeometry_cast<QgsPolygonV2 *>( sipCpp ) != nullptr )
-      sipType = sipType_QgsPolygonV2;
+    else if ( qgsgeometry_cast<QgsPolygon *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPolygon;
     else if ( qgsgeometry_cast<QgsCurvePolygon *>( sipCpp ) != nullptr )
       sipType = sipType_QgsCurvePolygon;
-    else if ( qgsgeometry_cast<QgsMultiPointV2 *>( sipCpp ) != nullptr )
-      sipType = sipType_QgsMultiPointV2;
+    else if ( qgsgeometry_cast<QgsMultiPoint *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsMultiPoint;
     else if ( qgsgeometry_cast<QgsMultiLineString *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMultiLineString;
-    else if ( qgsgeometry_cast<QgsMultiPolygonV2 *>( sipCpp ) != nullptr )
-      sipType = sipType_QgsMultiPolygonV2;
+    else if ( qgsgeometry_cast<QgsMultiPolygon *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsMultiPolygon;
     else if ( qgsgeometry_cast<QgsMultiSurface *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMultiSurface;
     else if ( qgsgeometry_cast<QgsMultiCurve *>( sipCpp ) != nullptr )
@@ -396,8 +396,8 @@ Returns the centroid of the geometry
     virtual QgsAbstractGeometry *toCurveType() const = 0 /Factory/;
 %Docstring
  Returns the geometry converted to the more generic curve type.
- E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
- QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
+ E.g. QgsLineString -> QgsCompoundCurve, QgsPolygon -> QgsCurvePolygon,
+ QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygon -> QgsMultiSurface
  :return: the converted geometry. Caller takes ownership
  :rtype: QgsAbstractGeometry
 %End

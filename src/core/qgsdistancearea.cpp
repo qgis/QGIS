@@ -158,7 +158,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
       if ( !surface )
         return 0.0;
 
-      QgsPolygonV2 *polygon = surface->surfaceToPolygon();
+      QgsPolygon *polygon = surface->surfaceToPolygon();
 
       double area = 0;
       const QgsCurve *outerRing = polygon->exteriorRing();
@@ -235,7 +235,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
       continue;
     }
 
-    QgsPolygonV2 *poly = ( *surfaceIt )->surfaceToPolygon();
+    QgsPolygon *poly = ( *surfaceIt )->surfaceToPolygon();
     const QgsCurve *outerRing = poly->exteriorRing();
     if ( outerRing )
     {

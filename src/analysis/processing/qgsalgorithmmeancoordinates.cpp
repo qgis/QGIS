@@ -196,7 +196,7 @@ QVariantMap QgsMeanCoordinatesAlgorithm::processAlgorithm( const QVariantMap &pa
     double cy = it.value().at( 1 ) / it.value().at( 2 );
 
     QgsPointXY meanPoint( cx, cy );
-    outFeat.setGeometry( QgsGeometry::fromPoint( meanPoint ) );
+    outFeat.setGeometry( QgsGeometry::fromPointXY( meanPoint ) );
 
     QgsAttributes attributes;
     attributes << cx << cy;

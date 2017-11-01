@@ -159,7 +159,7 @@ class CORE_EXPORT QgsRegularPolygon
     /**
      * Returns as a polygon.
      */
-    QgsPolygonV2 *toPolygon() const SIP_FACTORY;
+    QgsPolygon *toPolygon() const SIP_FACTORY;
 
     /**
      * Returns as a linestring.

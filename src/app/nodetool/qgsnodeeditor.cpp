@@ -373,7 +373,7 @@ void QgsNodeEditor::zoomToNode( int idx )
   //close polygon
   ext.append( ext.first() );
   QgsGeometry extGeom( QgsGeometry::fromQPolygonF( ext ) );
-  QgsGeometry nodeGeom( QgsGeometry::fromPoint( tCenter ) );
+  QgsGeometry nodeGeom( QgsGeometry::fromPointXY( tCenter ) );
   if ( !nodeGeom.within( extGeom ) )
   {
     mCanvas->setCenter( tCenter );

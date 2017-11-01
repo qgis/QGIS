@@ -111,7 +111,7 @@ void QgsMapToolLabel::createRubberBands()
         fixPoint = s.mapToLayerCoordinates( vlayer, fixPoint );
       }
 
-      QgsGeometry pointGeom = QgsGeometry::fromPoint( fixPoint );
+      QgsGeometry pointGeom = QgsGeometry::fromPointXY( fixPoint );
       mFixPointRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::LineGeometry );
       mFixPointRubberBand->setColor( QColor( 0, 0, 255, 65 ) );
       mFixPointRubberBand->setToGeometry( pointGeom, vlayer );

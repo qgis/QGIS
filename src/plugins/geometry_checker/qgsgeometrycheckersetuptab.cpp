@@ -371,7 +371,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
     // Error if an output layer could not be created
     if ( !createErrors.isEmpty() )
     {
-      QMessageBox::critical( this, tr( "Layer Creation Failed" ), tr( "Failed to create one or moure output layers:\n%1" ).arg( createErrors.join( "\n" ) ) );
+      QMessageBox::critical( this, tr( "Layer Creation Failed" ), tr( "Failed to create one or more output layers:\n%1" ).arg( createErrors.join( "\n" ) ) );
       mRunButton->setEnabled( true );
       ui.labelStatus->hide();
       unsetCursor();
@@ -399,7 +399,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
     {
       nonEditableLayerNames.append( layer->name() );
     }
-    if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Non-editable Output Layers" ), tr( "The following output layers are ina format that does not support editing features:\n%1\n\nThe geometry check can be performed, but it will not be possible to fix any errors. Do you want to continue?" ).arg( nonEditableLayerNames.join( "\n" ) ), QMessageBox::Yes, QMessageBox::No ) )
+    if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Non-editable Output Layers" ), tr( "The following output layers are in a format that does not support editing features:\n%1\n\nThe geometry check can be performed, but it will not be possible to fix any errors. Do you want to continue?" ).arg( nonEditableLayerNames.join( "\n" ) ), QMessageBox::Yes, QMessageBox::No ) )
     {
       if ( ui.radioButtonOutputNew->isChecked() )
       {

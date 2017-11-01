@@ -409,7 +409,7 @@ void resetGraph( QgsTracerGraph &g )
 }
 
 
-void extractLinework( const QgsGeometry &g, QgsMultiPolyline &mpl )
+void extractLinework( const QgsGeometry &g, QgsMultiPolylineXY &mpl )
 {
   QgsGeometry geom = g;
   // segmentize curved geometries - we will use noding algorithm from GEOS
@@ -440,7 +440,7 @@ void extractLinework( const QgsGeometry &g, QgsMultiPolyline &mpl )
       break;
 
     case QgsWkbTypes::MultiPolygon:
-      Q_FOREACH ( const QgsPolygon &polygon, geom.asMultiPolygon() )
+      Q_FOREACH ( const QgsPolygonXY &polygon, geom.asMultiPolygon() )
         Q_FOREACH ( const QgsPolylineXY &ring, polygon )
           mpl << ring;
       break;
@@ -463,7 +463,7 @@ bool QgsTracer::initGraph()
   mHasTopologyProblem = false;
 
   QgsFeature f;
-  QgsMultiPolyline mpl;
+  QgsMultiPolylineXY mpl;
 
   // extract linestrings
 
@@ -520,7 +520,7 @@ bool QgsTracer::initGraph()
 #if 0
   // without noding - if data are known to be noded beforehand
 #else
-  QgsGeometry allGeom = QgsGeometry::fromMultiPolyline( mpl );
+  QgsGeometry allGeom = QgsGeometry::fromMultiPolylineXY( mpl );
 
   try
   {

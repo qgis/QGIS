@@ -269,7 +269,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
   bool isMultiPoint = fet.geometry().constGet()->nCoordinates() > 1;
   QgsAbstractGeometry *obstacleGeom = nullptr;
   if ( isMultiPoint )
-    obstacleGeom = new QgsMultiPolygonV2();
+    obstacleGeom = new QgsMultiPolygon();
 
   // for each point
   for ( int i = 0; i < fet.geometry().constGet()->nCoordinates(); ++i )
@@ -320,12 +320,12 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     }
     boundLineString->close();
 
-    QgsPolygonV2 *obstaclePolygon = new QgsPolygonV2();
+    QgsPolygon *obstaclePolygon = new QgsPolygon();
     obstaclePolygon->setExteriorRing( boundLineString );
 
     if ( isMultiPoint )
     {
-      static_cast<QgsMultiPolygonV2 *>( obstacleGeom )->addGeometry( obstaclePolygon );
+      static_cast<QgsMultiPolygon *>( obstacleGeom )->addGeometry( obstaclePolygon );
     }
     else
     {

@@ -266,7 +266,7 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
     if ( !readFeature( std::move( fet ), feature ) )
       continue;
 
-    if ( !mFilterRect.isNull() && !feature.hasGeometry() )
+    if ( !mFilterRect.isNull() && ( !feature.hasGeometry() || feature.geometry().isEmpty() ) )
       continue;
 
     // we have a feature, end this cycle

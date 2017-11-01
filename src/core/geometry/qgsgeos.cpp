@@ -1050,7 +1050,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     }
     case GEOS_MULTIPOINT:
     {
-      std::unique_ptr< QgsMultiPointV2 > multiPoint( new QgsMultiPointV2() );
+      std::unique_ptr< QgsMultiPoint > multiPoint( new QgsMultiPoint() );
       int nParts = GEOSGetNumGeometries_r( geosinit.ctxt, geos );
       for ( int i = 0; i < nParts; ++i )
       {
@@ -1078,12 +1078,12 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
     }
     case GEOS_MULTIPOLYGON:
     {
-      std::unique_ptr< QgsMultiPolygonV2 > multiPolygon( new QgsMultiPolygonV2() );
+      std::unique_ptr< QgsMultiPolygon > multiPolygon( new QgsMultiPolygon() );
 
       int nParts = GEOSGetNumGeometries_r( geosinit.ctxt, geos );
       for ( int i = 0; i < nParts; ++i )
       {
-        std::unique_ptr< QgsPolygonV2 > poly = fromGeosPolygon( GEOSGetGeometryN_r( geosinit.ctxt, geos, i ) );
+        std::unique_ptr< QgsPolygon > poly = fromGeosPolygon( GEOSGetGeometryN_r( geosinit.ctxt, geos, i ) );
         if ( poly )
         {
           multiPolygon->addGeometry( poly.release() );
@@ -1109,7 +1109,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::fromGeos( const GEOSGeometry *geos
   return nullptr;
 }
 
-std::unique_ptr<QgsPolygonV2> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
+std::unique_ptr<QgsPolygon> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
 {
   if ( GEOSGeomTypeId_r( geosinit.ctxt, geos ) != GEOS_POLYGON )
   {
@@ -1121,7 +1121,7 @@ std::unique_ptr<QgsPolygonV2> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos
   bool hasZ = ( nCoordDims == 3 );
   bool hasM = ( ( nDims - nCoordDims ) == 1 );
 
-  std::unique_ptr< QgsPolygonV2 > polygon( new QgsPolygonV2() );
+  std::unique_ptr< QgsPolygon > polygon( new QgsPolygon() );
 
   const GEOSGeometry *ring = GEOSGetExteriorRing_r( geosinit.ctxt, geos );
   if ( ring )
@@ -1302,7 +1302,7 @@ geos::unique_ptr QgsGeos::asGeos( const QgsAbstractGeometry *geom, double precis
         break;
 
       case QgsWkbTypes::PolygonGeometry:
-        return createGeosPolygon( static_cast<const QgsPolygonV2 *>( geom ), precision );
+        return createGeosPolygon( static_cast<const QgsPolygon *>( geom ), precision );
         break;
 
       case QgsWkbTypes::UnknownGeometry:

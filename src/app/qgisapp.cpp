@@ -1285,7 +1285,6 @@ QgisApp::~QgisApp()
   delete mMapTools.mZoomIn;
   delete mMapTools.mZoomOut;
   delete mMapTools.mPan;
-  delete mMapTools.mAddFeature;
   delete mMapTools.mAddPart;
   delete mMapTools.mAddRing;
   delete mMapTools.mFillRing;
@@ -1338,6 +1337,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mRegularPolygon2Points;
   delete mMapTools.mRegularPolygonCenterPoint;
   delete mMapTools.mRegularPolygonCenterCorner;
+  delete mMapTools.mAddFeature;
   delete mpMaptip;
 
   delete mpGpsWidget;
@@ -1358,10 +1358,9 @@ QgisApp::~QgisApp()
   QgsApplication::setFileOpenEventReceiver( nullptr );
 
   delete mPythonUtils;
-
   delete mTray;
-
   delete mDataSourceManagerDialog;
+  qDeleteAll( mCustomDropHandlers );
 
   // This function *MUST* be the last one called, as it destroys in
   // particular GDAL. As above objects can hold GDAL/OGR objects, it is not
@@ -1658,6 +1657,7 @@ void QgisApp::readRecentProjects()
   }
   std::sort( projectKeys.begin(), projectKeys.end() );
 
+  int pinPos = 0;
   Q_FOREACH ( int key, projectKeys )
   {
     QgsWelcomePageItemsModel::RecentProjectData data;
@@ -1670,7 +1670,8 @@ void QgisApp::readRecentProjects()
     settings.endGroup();
     if ( data.pin )
     {
-      mRecentProjects.prepend( data );
+      mRecentProjects.insert( pinPos, data );
+      pinPos++;
     }
     else
     {
@@ -1809,7 +1810,7 @@ void QgisApp::createActions()
   connect( mActionCopyStyle, &QAction::triggered, this, [ = ] { copyStyle(); } );
   connect( mActionPasteStyle, &QAction::triggered, this, [ = ] { pasteStyle(); } );
   connect( mActionAddFeature, &QAction::triggered, this, &QgisApp::addFeature );
-  connect( mActionCircularStringCurvePoint, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircularStringRadius ); } );
+  connect( mActionCircularStringCurvePoint, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircularStringCurvePoint ); } );
   connect( mActionCircularStringRadius, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircularStringRadius ); } );
   connect( mActionCircle2Points, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircle2Points, true ); } );
   connect( mActionCircle3Points, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircle3Points, true ); } );
@@ -3808,6 +3809,10 @@ void QgisApp::updateRecentProjectPaths()
                       QDir::toNativeSeparators( recentProject.path ) ) );
     //action->setEnabled( QFile::exists( ( recentProject.path ) ) );
     action->setData( recentProject.path );
+    if ( recentProject.pin )
+    {
+      action->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/pin.svg" ) ) );
+    }
   }
 
   if ( mWelcomePage )

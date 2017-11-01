@@ -172,7 +172,7 @@ QPolygonF QgsSymbol::_getPolygonRing( QgsRenderContext &context, const QgsCurve 
   return poly;
 }
 
-void QgsSymbol::_getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygonV2 &polygon, bool clipToExtent )
+void QgsSymbol::_getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent )
 {
   holes.clear();
 
@@ -784,7 +784,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         QgsDebugMsg( "polygon can be drawn only with fill symbol!" );
         break;
       }
-      const QgsPolygonV2 &polygon = dynamic_cast<const QgsPolygonV2 &>( *segmentizedGeometry.constGet() );
+      const QgsPolygon &polygon = dynamic_cast<const QgsPolygon &>( *segmentizedGeometry.constGet() );
       if ( !polygon.exteriorRing() )
       {
         QgsDebugMsg( "cannot render polygon with no exterior ring" );
@@ -813,7 +813,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         break;
       }
 
-      const QgsMultiPointV2 &mp = static_cast< const QgsMultiPointV2 & >( *segmentizedGeometry.constGet() );
+      const QgsMultiPoint &mp = static_cast< const QgsMultiPoint & >( *segmentizedGeometry.constGet() );
 
       if ( drawVertexMarker && !usingSegmentizedGeometry )
       {
@@ -894,7 +894,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       std::map<double, QList<unsigned int> > mapAreaToPartNum;
       for ( unsigned int i = 0; i < num; ++i )
       {
-        const QgsPolygonV2 &polygon = dynamic_cast<const QgsPolygonV2 &>( *geomCollection.geometryN( i ) );
+        const QgsPolygon &polygon = dynamic_cast<const QgsPolygon &>( *geomCollection.geometryN( i ) );
         const QgsRectangle r( polygon.boundingBox() );
         mapAreaToPartNum[ r.width() * r.height()] << i;
       }
@@ -913,7 +913,10 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
           mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1, true ) );
 
           context.setGeometry( geomCollection.geometryN( i ) );
-          const QgsPolygonV2 &polygon = dynamic_cast<const QgsPolygonV2 &>( *geomCollection.geometryN( i ) );
+          const QgsPolygon &polygon = dynamic_cast<const QgsPolygon &>( *geomCollection.geometryN( i ) );
+          if ( !polygon.exteriorRing() )
+            break;
+
           _getPolygon( pts, holes, context, polygon, !tileMapRendering && clipFeaturesToExtent() );
           static_cast<QgsFillSymbol *>( this )->renderPolygon( pts, ( !holes.isEmpty() ? &holes : nullptr ), &feature, context, layer, selected );
 

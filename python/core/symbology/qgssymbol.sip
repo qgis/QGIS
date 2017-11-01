@@ -342,9 +342,9 @@ Generate symbol as image
  :rtype: QPolygonF
 %End
 
-    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygonV2 &polygon, bool clipToExtent = true );
+    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true );
 %Docstring
- Creates a polygon in screen coordinates from a QgsPolygon in map coordinates
+ Creates a polygon in screen coordinates from a QgsPolygonXYin map coordinates
 %End
 
     QgsSymbolLayerList cloneLayers() const /Factory/;

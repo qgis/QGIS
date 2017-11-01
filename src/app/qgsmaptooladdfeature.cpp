@@ -152,7 +152,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgsGeometry g;
       if ( layerWKBType == QgsWkbTypes::Point )
       {
-        g = QgsGeometry::fromPoint( savePoint );
+        g = QgsGeometry::fromPointXY( savePoint );
       }
       else if ( layerWKBType == QgsWkbTypes::Point25D )
       {
@@ -160,18 +160,18 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
       else if ( layerWKBType == QgsWkbTypes::MultiPoint )
       {
-        g = QgsGeometry::fromMultiPoint( QgsMultiPoint() << savePoint );
+        g = QgsGeometry::fromMultiPointXY( QgsMultiPointXY() << savePoint );
       }
       else if ( layerWKBType == QgsWkbTypes::MultiPoint25D )
       {
-        QgsMultiPointV2 *mp = new QgsMultiPointV2();
+        QgsMultiPoint *mp = new QgsMultiPoint();
         mp->addGeometry( new QgsPoint( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
         g = QgsGeometry( mp );
       }
       else
       {
         // if layer supports more types (mCheckGeometryType is false)
-        g = QgsGeometry::fromPoint( savePoint );
+        g = QgsGeometry::fromPointXY( savePoint );
       }
 
       f.setGeometry( g );
@@ -277,7 +277,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         }
         else
         {
-          poly = new QgsPolygonV2();
+          poly = new QgsPolygon();
         }
         poly->setExteriorRing( curveToAdd );
         QgsGeometry g( poly );

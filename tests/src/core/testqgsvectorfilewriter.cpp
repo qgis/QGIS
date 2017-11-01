@@ -142,7 +142,7 @@ void TestQgsVectorFileWriter::createPoint()
   // Create a feature
   //
   //
-  QgsGeometry mypPointGeometry = QgsGeometry::fromPoint( mPoint1 );
+  QgsGeometry mypPointGeometry = QgsGeometry::fromPointXY( mPoint1 );
   QgsFeature myFeature;
   myFeature.setGeometry( mypPointGeometry );
   myFeature.initAttributes( 1 );
@@ -231,12 +231,12 @@ void TestQgsVectorFileWriter::createPolygon()
   //
   QgsPolylineXY myPolyline;
   myPolyline << mPoint1 << mPoint2 << mPoint3 << mPoint1;
-  QgsPolygon myPolygon;
+  QgsPolygonXY myPolygon;
   myPolygon << myPolyline;
   //polygon: first item of the list is outer ring,
   // inner rings (if any) start from second item
   //
-  QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+  QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygonXY( myPolygon );
   QgsFeature myFeature;
   myFeature.setGeometry( mypPolygonGeometry );
   myFeature.initAttributes( 1 );
@@ -288,12 +288,12 @@ void TestQgsVectorFileWriter::polygonGridTest()
       QgsPointXY myPoint3 = QgsPointXY( i + myInterval, j + myInterval );
       QgsPointXY myPoint4 = QgsPointXY( i, j + myInterval );
       myPolyline << myPoint1 << myPoint2 << myPoint3 << myPoint4 << myPoint1;
-      QgsPolygon myPolygon;
+      QgsPolygonXY myPolygon;
       myPolygon << myPolyline;
       //polygon: first item of the list is outer ring,
       // inner rings (if any) start from second item
       //
-      QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+      QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygonXY( myPolygon );
       QgsFeature myFeature;
       myFeature.setGeometry( mypPolygonGeometry );
       myFeature.initAttributes( 1 );
@@ -358,12 +358,12 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
       QgsPointXY myPoint3 = QgsPointXY( i + myInterval, j + myInterval );
       QgsPointXY myPoint4 = QgsPointXY( i, j + myInterval );
       myPolyline << myPoint1 << myPoint2 << myPoint3 << myPoint4 << myPoint1;
-      QgsPolygon myPolygon;
+      QgsPolygonXY myPolygon;
       myPolygon << myPolyline;
       //polygon: first item of the list is outer ring,
       // inner rings (if any) start from second item
       //
-      QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+      QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygonXY( myPolygon );
       QgsFeature myFeature;
       myFeature.setGeometry( mypPolygonGeometry );
       myFeature.initAttributes( 1 );
@@ -425,7 +425,7 @@ void TestQgsVectorFileWriter::regression1141()
                                   crs );
 
     QgsPointXY myPoint = QgsPointXY( 10.0, 10.0 );
-    QgsGeometry mypPointGeometry = QgsGeometry::fromPoint( myPoint );
+    QgsGeometry mypPointGeometry = QgsGeometry::fromPointXY( myPoint );
     QgsFeature myFeature;
     myFeature.setGeometry( mypPointGeometry );
     myFeature.initAttributes( 1 );

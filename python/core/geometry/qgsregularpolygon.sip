@@ -145,10 +145,10 @@ A regular polygon is empty if radius equal to 0 or number of sides < 3
  :rtype: QgsPointSequence
 %End
 
-    QgsPolygonV2 *toPolygon() const /Factory/;
+    QgsPolygon *toPolygon() const /Factory/;
 %Docstring
  Returns as a polygon.
- :rtype: QgsPolygonV2
+ :rtype: QgsPolygon
 %End
 
     QgsLineString *toLineString() const /Factory/;

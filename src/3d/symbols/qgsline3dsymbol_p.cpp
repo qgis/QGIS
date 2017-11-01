@@ -101,7 +101,7 @@ Qt3DRender::QGeometryRenderer *QgsLine3DSymbolEntityNode::renderer( const Qgs3DM
   QgsGeometry::JoinStyle joinStyle = QgsGeometry::JoinStyleRound;
   double mitreLimit = 0;
 
-  QList<QgsPolygonV2 *> polygons;
+  QList<QgsPolygon *> polygons;
   QgsFeature f;
   QgsFeatureIterator fi = layer->getFeatures( request );
   while ( fi.nextFeature( f ) )
@@ -122,18 +122,18 @@ Qt3DRender::QGeometryRenderer *QgsLine3DSymbolEntityNode::renderer( const Qgs3DM
 
     if ( QgsWkbTypes::flatType( buffered->wkbType() ) == QgsWkbTypes::Polygon )
     {
-      QgsPolygonV2 *polyBuffered = static_cast<QgsPolygonV2 *>( buffered );
+      QgsPolygon *polyBuffered = static_cast<QgsPolygon *>( buffered );
       Qgs3DUtils::clampAltitudes( polyBuffered, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), map );
       polygons.append( polyBuffered );
     }
     else if ( QgsWkbTypes::flatType( buffered->wkbType() ) == QgsWkbTypes::MultiPolygon )
     {
-      QgsMultiPolygonV2 *mpolyBuffered = static_cast<QgsMultiPolygonV2 *>( buffered );
+      QgsMultiPolygon *mpolyBuffered = static_cast<QgsMultiPolygon *>( buffered );
       for ( int i = 0; i < mpolyBuffered->numGeometries(); ++i )
       {
         QgsAbstractGeometry *partBuffered = mpolyBuffered->geometryN( i );
         Q_ASSERT( QgsWkbTypes::flatType( partBuffered->wkbType() ) == QgsWkbTypes::Polygon );
-        QgsPolygonV2 *polyBuffered = static_cast<QgsPolygonV2 *>( partBuffered )->clone(); // need to clone individual geometry parts
+        QgsPolygon *polyBuffered = static_cast<QgsPolygon *>( partBuffered )->clone(); // need to clone individual geometry parts
         Qgs3DUtils::clampAltitudes( polyBuffered, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), map );
         polygons.append( polyBuffered );
       }

@@ -816,7 +816,6 @@ void QgsRelationReferenceWidget::filterChanged()
     }
   }
 
-  bool filtered = false;
   if ( mChainFilters )
   {
     QComboBox *ccb = nullptr;
@@ -833,7 +832,6 @@ void QgsRelationReferenceWidget::filterChanged()
       if ( ccb->currentIndex() != 0 )
       {
         const QString fieldName = cb->property( "Field" ).toString();
-        filtered = true;
 
         cb->blockSignals( true );
         cb->clear();

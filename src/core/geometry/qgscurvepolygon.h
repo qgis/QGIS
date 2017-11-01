@@ -23,7 +23,7 @@
 #include "qgssurface.h"
 #include <memory>
 
-class QgsPolygonV2;
+class QgsPolygon;
 
 /**
  * \ingroup core
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     //surface interface
     double area() const override;
     double perimeter() const override;
-    QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
+    QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
 
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * of the curve.
      * \param tolerance segmentation tolerance
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsPolygonV2 *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const SIP_FACTORY;
+    virtual QgsPolygon *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const SIP_FACTORY;
 
     /**
      * Sets the exterior ring of the polygon. The CurvePolygon type will be updated to match the dimensionality

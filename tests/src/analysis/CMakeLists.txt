@@ -17,6 +17,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/analysis
+  ${CMAKE_SOURCE_DIR}/src/analysis/network
   ${CMAKE_SOURCE_DIR}/src/analysis/processing
   ${CMAKE_SOURCE_DIR}/src/analysis/vector
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
@@ -71,6 +72,7 @@ SET(TESTS
  testqgszonalstatistics.cpp
  testqgsrastercalculator.cpp
  testqgsalignraster.cpp
+ testqgsnetworkanalysis.cpp
     )
 
 FOREACH(TESTSRC ${TESTS})

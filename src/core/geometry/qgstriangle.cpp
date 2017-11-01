@@ -231,7 +231,7 @@ QDomElement QgsTriangle::asGML3( QDomDocument &doc, int precision, const QString
   return elemTriangle;
 }
 
-QgsPolygonV2 *QgsTriangle::surfaceToPolygon() const
+QgsPolygon *QgsTriangle::surfaceToPolygon() const
 {
   return toPolygon();
 }

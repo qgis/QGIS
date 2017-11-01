@@ -201,7 +201,7 @@ static QgsAbstractGeometry *parseEsriGeometryMultiPoint( const QVariantMap &geom
   if ( coordsList.isEmpty() )
     return nullptr;
 
-  QgsMultiPointV2 *multiPoint = new QgsMultiPointV2();
+  QgsMultiPoint *multiPoint = new QgsMultiPoint();
   Q_FOREACH ( const QVariant &coordData, coordsList )
   {
     QVariantList coordList = coordData.toList();
@@ -287,7 +287,7 @@ static QgsAbstractGeometry *parseEsriEnvelope( const QVariantMap &geometryData )
   ext->addVertex( QgsPoint( xmax, ymax ) );
   ext->addVertex( QgsPoint( xmin, ymax ) );
   ext->addVertex( QgsPoint( xmin, ymin ) );
-  QgsPolygonV2 *poly = new QgsPolygonV2();
+  QgsPolygon *poly = new QgsPolygon();
   poly->setExteriorRing( ext );
   return poly;
 }

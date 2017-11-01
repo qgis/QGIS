@@ -1556,7 +1556,7 @@ void QgsDwgImporter::addLWPolyline( const DRW_LWPolyline &data )
       QgsVector vs( v * 0.5 * staWidth );
       QgsVector ve( v * 0.5 * endWidth );
 
-      QgsPolygonV2 poly;
+      QgsPolygon poly;
       QgsLineString *ls = new QgsLineString();
       ls->setPoints( QgsPointSequence()
                      << QgsPoint( ps + vs )
@@ -1758,7 +1758,7 @@ void QgsDwgImporter::addPolyline( const DRW_Polyline &data )
       QgsVector vs( v * 0.5 * staWidth );
       QgsVector ve( v * 0.5 * endWidth );
 
-      QgsPolygonV2 poly;
+      QgsPolygon poly;
       QgsLineString *ls = new QgsLineString();
       QgsPointSequence s;
       s << QgsPoint( ps + vs );
@@ -2143,7 +2143,7 @@ void QgsDwgImporter::addSolid( const DRW_Solid &data )
   setPoint( dfn, f, QStringLiteral( "ext" ), data.extPoint );
   setString( dfn, f, QStringLiteral( "hpattern" ), "SOLID" );
 
-  QgsPolygonV2 poly;
+  QgsPolygon poly;
 
   // pt1 pt2
   // pt3 pt4

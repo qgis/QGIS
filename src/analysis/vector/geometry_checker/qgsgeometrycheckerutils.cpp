@@ -197,7 +197,7 @@ namespace QgsGeometryCheckerUtils
     return geom;
   }
 
-  QList<const QgsLineString *> polygonRings( const QgsPolygonV2 *polygon )
+  QList<const QgsLineString *> polygonRings( const QgsPolygon *polygon )
   {
     QList<const QgsLineString *> rings;
     if ( const QgsLineString *exterior = dynamic_cast<const QgsLineString *>( polygon->exteriorRing() ) )

@@ -381,7 +381,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         #   +-+ +-+-+
         #   | | |   |
         # +-+ + +   +-+
-        linestring = QgsGeometry.fromMultiPolyline(
+        linestring = QgsGeometry.fromMultiPolylineXY(
             [
                 [QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(1, 1), QgsPointXY(2, 1), QgsPointXY(2, 0), ],
                 [QgsPointXY(3, 0), QgsPointXY(3, 1), QgsPointXY(5, 1), QgsPointXY(5, 0), QgsPointXY(6, 0), ]
@@ -399,7 +399,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         # + +-+
         # | |
         # +-+
-        polygon = QgsGeometry.fromPolygon(
+        polygon = QgsGeometry.fromPolygonXY(
             [[
                 QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(1, 1), QgsPointXY(2, 1), QgsPointXY(2, 2), QgsPointXY(0, 2), QgsPointXY(0, 0),
             ]]
@@ -420,7 +420,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         # + +-+ +
         # |     |
         # +-+-+-+
-        polygon = QgsGeometry.fromPolygon(
+        polygon = QgsGeometry.fromPolygonXY(
             [
                 [QgsPointXY(0, 0), QgsPointXY(3, 0), QgsPointXY(3, 3), QgsPointXY(0, 3), QgsPointXY(0, 0)],
                 [QgsPointXY(1, 1), QgsPointXY(2, 1), QgsPointXY(2, 2), QgsPointXY(1, 2), QgsPointXY(1, 1)],
@@ -440,7 +440,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         # + +-+ +-+ +
         # | |     | |
         # +-+     +-+
-        polygon = QgsGeometry.fromMultiPolygon(
+        polygon = QgsGeometry.fromMultiPolygonXY(
             [
                 [[QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(1, 1), QgsPointXY(2, 1), QgsPointXY(2, 2), QgsPointXY(0, 2), QgsPointXY(0, 0), ]],
                 [[QgsPointXY(4, 0), QgsPointXY(5, 0), QgsPointXY(5, 2), QgsPointXY(3, 2), QgsPointXY(3, 1), QgsPointXY(4, 1), QgsPointXY(4, 0), ]]
@@ -530,7 +530,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         da.setSourceCrs(QgsCoordinateReferenceSystem.fromSrsId(3452))
         da.setEllipsoid("NONE")
 
-        polygon = QgsGeometry.fromPolygon(
+        polygon = QgsGeometry.fromPolygonXY(
             [[
                 QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(1, 1), QgsPointXY(2, 1), QgsPointXY(2, 2), QgsPointXY(0, 2), QgsPointXY(0, 0),
             ]]
@@ -559,7 +559,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertAlmostEqual(area, 14446.7378, delta=0.001)
 
         # now try with a source CRS which is in feet
-        polygon = QgsGeometry.fromPolygon(
+        polygon = QgsGeometry.fromPolygonXY(
             [[
                 QgsPointXY(1850000, 4423000), QgsPointXY(1851000, 4423000), QgsPointXY(1851000, 4424000), QgsPointXY(1852000, 4424000), QgsPointXY(1852000, 4425000), QgsPointXY(1851000, 4425000), QgsPointXY(1850000, 4423000)
             ]]

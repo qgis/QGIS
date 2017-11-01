@@ -125,7 +125,7 @@ QgsAbstractGeometry *QgsCurve::boundary() const
   if ( isClosed() )
     return nullptr;
 
-  QgsMultiPointV2 *multiPoint = new QgsMultiPointV2();
+  QgsMultiPoint *multiPoint = new QgsMultiPoint();
   multiPoint->addGeometry( new QgsPoint( startPoint() ) );
   multiPoint->addGeometry( new QgsPoint( endPoint() ) );
   return multiPoint;

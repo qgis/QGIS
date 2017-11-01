@@ -61,7 +61,7 @@ class QgsCurvePolygon: QgsSurface
 
     virtual double perimeter() const;
 
-    virtual QgsPolygonV2 *surfaceToPolygon() const /Factory/;
+    virtual QgsPolygon *surfaceToPolygon() const /Factory/;
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
@@ -81,13 +81,13 @@ class QgsCurvePolygon: QgsSurface
  :rtype: QgsCurve
 %End
 
-    virtual QgsPolygonV2 *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
+    virtual QgsPolygon *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 %Docstring
  Returns a new polygon geometry corresponding to a segmentized approximation
  of the curve.
  \param tolerance segmentation tolerance
  \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*
- :rtype: QgsPolygonV2
+ :rtype: QgsPolygon
 %End
 
     virtual void setExteriorRing( QgsCurve *ring /Transfer/ );

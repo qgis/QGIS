@@ -148,7 +148,7 @@ class RandomPointsAlongLines(QgisAlgorithm):
 
                 # generate random point
                 p = QgsPointXY(rx, ry)
-                geom = QgsGeometry.fromPoint(p)
+                geom = QgsGeometry.fromPointXY(p)
                 if vector.checkMinDistance(p, index, minDistance, points):
                     f = QgsFeature(nPoints)
                     f.initAttributes(1)

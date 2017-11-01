@@ -222,7 +222,7 @@ static void _ringToPoly2tri( const QgsCurve *ring, const QgsPoint &ptFirst, cons
   }
 }
 
-static bool _check_intersecting_rings( const QgsPolygonV2 &polygon )
+static bool _check_intersecting_rings( const QgsPolygon &polygon )
 {
   // At this point we assume that input polygons are valid according to the OGC definition.
   // This means e.g. no duplicate points, polygons are simple (no butterfly shaped polygon with self-intersection),
@@ -259,7 +259,7 @@ static bool _check_intersecting_rings( const QgsPolygonV2 &polygon )
 }
 
 
-void QgsTessellator::addPolygon( const QgsPolygonV2 &polygon, float extrusionHeight )
+void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeight )
 {
   if ( !_check_intersecting_rings( polygon ) )
   {
