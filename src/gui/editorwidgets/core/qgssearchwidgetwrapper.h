@@ -225,7 +225,11 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
   protected slots:
 
-    virtual void setExpression( const QString &value ) = 0;
+    /**
+     * Set the \a expression which is currently used as filter for this widget.
+     */
+    virtual void setExpression( const QString &expression ) = 0;
+
     void setFeature( const QgsFeature &feature ) override;
 
   protected:
