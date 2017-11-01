@@ -29,7 +29,7 @@ extern "C"
 
 /// @cond PRIVATE
 
-QThreadStorage< QgsProjContextStore* > QgsCoordinateTransformPrivate::mProjContext;
+QThreadStorage< QgsProjContextStore * > QgsCoordinateTransformPrivate::mProjContext;
 
 QgsProjContextStore::QgsProjContextStore()
 {
