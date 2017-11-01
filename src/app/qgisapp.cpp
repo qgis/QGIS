@@ -3809,6 +3809,10 @@ void QgisApp::updateRecentProjectPaths()
                       QDir::toNativeSeparators( recentProject.path ) ) );
     //action->setEnabled( QFile::exists( ( recentProject.path ) ) );
     action->setData( recentProject.path );
+    if ( recentProject.pin )
+    {
+      action->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/pin.svg" ) ) );
+    }
   }
 
   if ( mWelcomePage )
