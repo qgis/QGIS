@@ -210,6 +210,7 @@ sub remove_following_body_or_initializerlist {
 sub fix_annotations {
     my $line = $_[0];
     # printed annotations
+    $line =~ s/\b\/\/\s*SIP_ABSTRACT\b/\/Abstract\//;
     $line =~ s/\bSIP_ABSTRACT\b/\/Abstract\//;
     $line =~ s/\bSIP_ALLOWNONE\b/\/AllowNone\//;
     $line =~ s/\bSIP_ARRAY\b/\/Array\//g;
