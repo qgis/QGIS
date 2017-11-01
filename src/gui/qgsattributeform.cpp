@@ -151,24 +151,24 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
   }
 
   //update all form editor widget modes to match
-  Q_FOREACH ( QgsAttributeFormEditorWidget *w, findChildren<  QgsAttributeFormEditorWidget * >() )
+  for ( QgsAttributeFormWidget *w : findChildren<  QgsAttributeFormWidget * >() )
   {
     switch ( mode )
     {
       case QgsAttributeForm::SingleEditMode:
-        w->setMode( QgsAttributeFormEditorWidget::DefaultMode );
+        w->setMode( QgsAttributeFormWidget::DefaultMode );
         break;
 
       case QgsAttributeForm::AddFeatureMode:
-        w->setMode( QgsAttributeFormEditorWidget::DefaultMode );
+        w->setMode( QgsAttributeFormWidget::DefaultMode );
         break;
 
       case QgsAttributeForm::MultiEditMode:
-        w->setMode( QgsAttributeFormEditorWidget::MultiEditMode );
+        w->setMode( QgsAttributeFormWidget::MultiEditMode );
         break;
 
       case QgsAttributeForm::SearchMode:
-        w->setMode( QgsAttributeFormEditorWidget::SearchMode );
+        w->setMode( QgsAttributeFormWidget::SearchMode );
         break;
     }
   }
@@ -1221,10 +1221,10 @@ void QgsAttributeForm::init()
       QWidget *w = nullptr;
       if ( eww )
       {
-        QgsAttributeFormEditorWidget *formWidget = new QgsAttributeFormEditorWidget( eww, this );
+        QgsAttributeFormEditorWidget *formWidget = new QgsAttributeFormEditorWidget( eww, widgetSetup.type(), this );
         w = formWidget;
         mFormEditorWidgets.insert( idx, formWidget );
-        formWidget->createSearchWidgetWrappers( widgetSetup.type(), idx, widgetSetup.config(), mContext );
+        formWidget->createSearchWidgetWrappers( mContext );
 
         l->setBuddy( eww->widget() );
       }
@@ -1523,10 +1523,10 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, fieldDef->name() );
 
         QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( widgetSetup.type(), mLayer, fldIdx, widgetSetup.config(), nullptr, this, mContext );
-        QgsAttributeFormEditorWidget *w = new QgsAttributeFormEditorWidget( eww, this );
+        QgsAttributeFormEditorWidget *w = new QgsAttributeFormEditorWidget( eww, widgetSetup.type(), this );
         mFormEditorWidgets.insert( fldIdx, w );
 
-        w->createSearchWidgetWrappers( widgetSetup.type(), fldIdx, widgetSetup.config(), mContext );
+        w->createSearchWidgetWrappers( mContext );
 
         newWidgetInfo.widget = w;
         addWidgetWrapper( eww );

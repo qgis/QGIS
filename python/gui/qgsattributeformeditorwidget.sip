@@ -9,7 +9,7 @@
 
 
 
-class QgsAttributeFormEditorWidget : QWidget
+class QgsAttributeFormEditorWidget : QgsAttributeFormWidget
 {
 %Docstring
  A widget consisting of both an editor widget and additional widgets for controlling the behavior
@@ -24,15 +24,8 @@ class QgsAttributeFormEditorWidget : QWidget
 %End
   public:
 
-    enum Mode
-    {
-      DefaultMode,
-      MultiEditMode,
-      SearchMode,
-    };
-
-    explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget,
-                                           QgsAttributeForm *form /TransferThis/ );
+    explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType,
+                                           QgsAttributeForm *form  /TransferThis/ );
 %Docstring
  Constructor for QgsAttributeFormEditorWidget.
  \param editorWidget associated editor widget wrapper (for default/edit modes)
@@ -41,32 +34,7 @@ class QgsAttributeFormEditorWidget : QWidget
 
     ~QgsAttributeFormEditorWidget();
 
-    void createSearchWidgetWrappers( const QString &widgetId, int fieldIdx,
-                                     const QVariantMap &config );
-
-%Docstring
- Creates the search widget wrappers for the widget used when the form is in
- search mode.
- \param widgetId id of the widget type to create a search wrapper for
- \param fieldIdx index of field associated with widget
- \param config configuration which should be used for the widget creation
- \param context editor context (not available in Python bindings)
-%End
-
-    void setMode( Mode mode );
-%Docstring
- Sets the current mode for the widget. The widget will adapt its state and visible widgets to
- reflect the updated mode. For example, showing multi edit tool buttons if the mode is set to MultiEditMode.
- \param mode widget mode
-.. seealso:: mode()
-%End
-
-    Mode mode() const;
-%Docstring
- Returns the current mode for the widget.
-.. seealso:: setMode()
- :rtype: Mode
-%End
+    virtual void createSearchWidgetWrappers();
 
     void initialize( const QVariant &initialValue, bool mixedValues = false );
 %Docstring
@@ -88,7 +56,8 @@ class QgsAttributeFormEditorWidget : QWidget
  :rtype: QVariant
 %End
 
-    QString currentFilterExpression() const;
+    virtual QString currentFilterExpression() const;
+
 %Docstring
  Creates an expression matching the current search filter value and
  search properties represented in the widget.
@@ -156,7 +125,7 @@ class QgsAttributeFormEditorWidget : QWidget
 .. note::
 
    this method is in place for unit testing only, and is not considered
- stable AP
+ stable API
 %End
 
     QWidget *searchWidgetFrame();
@@ -177,7 +146,7 @@ class QgsAttributeFormEditorWidget : QWidget
 .. note::
 
    this method is in place for unit testing only, and is not considered
- stable AP
+ stable API
  :rtype: list of QgsSearchWidgetWrapper
 %End
 

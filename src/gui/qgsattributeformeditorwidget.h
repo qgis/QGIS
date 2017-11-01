@@ -16,16 +16,11 @@
 #ifndef QGSATTRIBUTEFORMEDITORWIDGET_H
 #define QGSATTRIBUTEFORMEDITORWIDGET_H
 
-#include <QWidget>
 #include "qgis_sip.h"
-#include "qgis.h"
-#include <QVariant>
-#include "qgsattributeeditorcontext.h"
-#include "qgssearchwidgetwrapper.h"
 #include "qgis_gui.h"
 #include "qgseditorwidgetwrapper.h"
+#include "qgsattributeformwidget.h"
 
-class QgsAttributeForm;
 class QgsEditorWidgetWrapper;
 class QgsMultiEditToolButton;
 class QgsSearchWidgetToolButton;
@@ -43,55 +38,23 @@ class QLabel;
  * controlling the multi edit results.
  * \since QGIS 2.16
  */
-class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
+class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
 {
     Q_OBJECT
 
   public:
-
-    //! Widget modes
-    enum Mode
-    {
-      DefaultMode, //!< Default mode, only the editor widget is shown
-      MultiEditMode, //!< Multi edit mode, both the editor widget and a QgsMultiEditToolButton is shown
-      SearchMode, //!< Layer search/filter mode
-    };
 
     /**
      * Constructor for QgsAttributeFormEditorWidget.
      * \param editorWidget associated editor widget wrapper (for default/edit modes)
      * \param form parent attribute form
      */
-    explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget,
-                                           QgsAttributeForm *form SIP_TRANSFERTHIS );
+    explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType,
+                                           QgsAttributeForm *form  SIP_TRANSFERTHIS );
 
     ~QgsAttributeFormEditorWidget();
 
-    /**
-     * Creates the search widget wrappers for the widget used when the form is in
-     * search mode.
-     * \param widgetId id of the widget type to create a search wrapper for
-     * \param fieldIdx index of field associated with widget
-     * \param config configuration which should be used for the widget creation
-     * \param context editor context (not available in Python bindings)
-     */
-    void createSearchWidgetWrappers( const QString &widgetId, int fieldIdx,
-                                     const QVariantMap &config,
-                                     const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() );
-
-    /**
-     * Sets the current mode for the widget. The widget will adapt its state and visible widgets to
-     * reflect the updated mode. For example, showing multi edit tool buttons if the mode is set to MultiEditMode.
-     * \param mode widget mode
-     * \see mode()
-     */
-    void setMode( Mode mode );
-
-    /**
-     * Returns the current mode for the widget.
-     * \see setMode()
-     */
-    Mode mode() const { return mMode; }
+    virtual void createSearchWidgetWrappers( const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() ) override;
 
     /**
      * Resets the widget to an initial value.
@@ -116,7 +79,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
      * search properties represented in the widget.
      * \since QGIS 2.16
      */
-    QString currentFilterExpression() const;
+    QString currentFilterExpression() const override;
 
     /**
      * Set the constraint status for this widget.
@@ -184,7 +147,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
      * \note the search widget wrapper should be created using searchWidgetFrame()
      * as its parent
      * \note this method is in place for unit testing only, and is not considered
-     * stable AP
+     * stable API
      */
     void setSearchWidgetWrapper( QgsSearchWidgetWrapper *wrapper );
 
@@ -200,7 +163,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
      * Returns the search widget wrapper used in this widget. The wrapper must
      * first be created using createSearchWidgetWrapper()
      * \note this method is in place for unit testing only, and is not considered
-     * stable AP
+     * stable API
      */
     QList< QgsSearchWidgetWrapper * > searchWidgetWrappers();
 
@@ -211,11 +174,11 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
     QStackedWidget *mStack = nullptr;
     QWidget *mSearchFrame = nullptr;
 
+    QString mWidgetType;
     QgsEditorWidgetWrapper *mWidget = nullptr;
     QList< QgsSearchWidgetWrapper * > mSearchWidgets;
     QgsAttributeForm *mForm = nullptr;
     QLabel *mConstraintResultLabel = nullptr;
-    Mode mMode;
 
     QgsMultiEditToolButton *mMultiEditButton = nullptr;
     QgsSearchWidgetToolButton *mSearchWidgetToolButton = nullptr;
@@ -224,8 +187,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
     bool mIsMixed;
     bool mIsChanged;
 
-    QgsVectorLayer *layer();
-    void updateWidgets();
+    void updateWidgets() override;
 };
 
 #endif // QGSATTRIBUTEFORMEDITORWIDGET_H

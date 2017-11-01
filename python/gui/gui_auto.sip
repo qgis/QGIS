@@ -55,6 +55,7 @@
 %Include qgsattributedialog.sip
 %Include qgsattributeform.sip
 %Include qgsattributeformeditorwidget.sip
+%Include qgsattributeformwidget.sip
 %Include qgsattributetypeloaddialog.sip
 %Include qgsblendmodecombobox.sip
 %Include qgsbrowsertreeview.sip

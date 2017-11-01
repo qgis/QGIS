@@ -34,6 +34,7 @@ class QgsMessageBar;
 class QgsMessageBarItem;
 class QgsWidgetWrapper;
 class QgsTabWidget;
+class QgsAttributeFormWidget;
 
 /**
  * \ingroup gui
