@@ -188,6 +188,16 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     // TODO QGIS 3.0 - make pure virtual
     virtual QString createExpression( FilterFlags flags ) const { Q_UNUSED( flags ); return QStringLiteral( "TRUE" ); }
 
+    QString createFieldIdentifier() const;
+
+
+
+    QString aggregate() const;
+    void setAggregate( const QString &aggregate );
+
+    QgsRelation aggregateRelation() const;
+    void setAggregateRelation( const QgsRelation &aggregateRelation );
+
   public slots:
 
     /**
@@ -239,6 +249,9 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     QString mExpression;
     int mFieldIdx;
 
+  private:
+    QString mAggregate;
+    QgsRelation mAggregateRelation;
 };
 // We'll use this class inside a QVariant in the widgets properties
 Q_DECLARE_METATYPE( QgsSearchWidgetWrapper * )

@@ -43,6 +43,13 @@ class CORE_EXPORT QgsAggregateCalculator
 {
   public:
 
+    struct AggregateInfo
+    {
+      QString function;
+      QString name;
+      QSet<QVariant::Type> supportedTypes;
+    };
+
     /**
      * Available aggregates to calculate. Not all aggregates are available for all field
      * types.
@@ -154,6 +161,8 @@ class CORE_EXPORT QgsAggregateCalculator
      * \returns aggregate type
      */
     static Aggregate stringToAggregate( const QString &string, bool *ok = nullptr );
+
+    static QList< QgsAggregateCalculator::AggregateInfo > aggregates();
 
   private:
 

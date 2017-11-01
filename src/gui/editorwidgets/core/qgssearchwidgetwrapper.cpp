@@ -100,6 +100,15 @@ QgsSearchWidgetWrapper::FilterFlags QgsSearchWidgetWrapper::defaultFlags() const
   return FilterFlags();
 }
 
+QString QgsSearchWidgetWrapper::createFieldIdentifier() const
+{
+  QString field = QgsExpression::quotedColumnRef( layer()->fields().at( mFieldIdx ).name() );
+  if ( mAggregate.isEmpty() )
+    return field;
+  else
+    return QStringLiteral( "relation_aggregate('%1','%2',%3)" ).arg( context().relation().id(), mAggregate, field );
+}
+
 void QgsSearchWidgetWrapper::setFeature( const QgsFeature &feature )
 {
   Q_UNUSED( feature )
@@ -108,5 +117,25 @@ void QgsSearchWidgetWrapper::setFeature( const QgsFeature &feature )
 void QgsSearchWidgetWrapper::clearExpression()
 {
   mExpression = QStringLiteral( "TRUE" );
+}
+
+QgsRelation QgsSearchWidgetWrapper::aggregateRelation() const
+{
+  return mAggregateRelation;
+}
+
+void QgsSearchWidgetWrapper::setAggregateRelation( const QgsRelation &aggregateRelation )
+{
+  mAggregateRelation = aggregateRelation;
+}
+
+QString QgsSearchWidgetWrapper::aggregate() const
+{
+  return mAggregate;
+}
+
+void QgsSearchWidgetWrapper::setAggregate( const QString &aggregate )
+{
+  mAggregate = aggregate;
 }
 

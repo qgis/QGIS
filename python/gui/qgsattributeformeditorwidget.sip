@@ -56,15 +56,6 @@ class QgsAttributeFormEditorWidget : QgsAttributeFormWidget
  :rtype: QVariant
 %End
 
-    virtual QString currentFilterExpression() const;
-
-%Docstring
- Creates an expression matching the current search filter value and
- search properties represented in the widget.
-.. versionadded:: 2.16
- :rtype: str
-%End
-
     void setConstraintStatus( const QString &constraint, const QString &description, const QString &err, QgsEditorWidgetWrapper::ConstraintResult result );
 %Docstring
  Set the constraint status for this widget.
@@ -88,66 +79,12 @@ class QgsAttributeFormEditorWidget : QgsAttributeFormWidget
  Called when field values have been committed;
 %End
 
-    void resetSearch();
-%Docstring
- Resets the search/filter value of the widget.
-%End
-
   signals:
 
     void valueChanged( const QVariant &value );
 %Docstring
  Emitted when the widget's value changes
  \param value new widget value
-%End
-
-  protected:
-
-    QgsSearchWidgetToolButton *searchWidgetToolButton();
-%Docstring
- Returns a pointer to the search widget tool button in the widget.
-.. note::
-
-   this method is in place for unit testing only, and is not considered
- stable API
- :rtype: QgsSearchWidgetToolButton
-%End
-
-    void setSearchWidgetWrapper( QgsSearchWidgetWrapper *wrapper );
-%Docstring
- Sets the search widget wrapper for the widget used when the form is in
- search mode.
- \param wrapper search widget wrapper.
-.. note::
-
-   the search widget wrapper should be created using searchWidgetFrame()
- as its parent
-.. note::
-
-   this method is in place for unit testing only, and is not considered
- stable API
-%End
-
-    QWidget *searchWidgetFrame();
-%Docstring
- Returns the widget which should be used as a parent during construction
- of the search widget wrapper.
-.. note::
-
-   this method is in place for unit testing only, and is not considered
- stable AP
- :rtype: QWidget
-%End
-
-    QList< QgsSearchWidgetWrapper * > searchWidgetWrappers();
-%Docstring
- Returns the search widget wrapper used in this widget. The wrapper must
- first be created using createSearchWidgetWrapper()
-.. note::
-
-   this method is in place for unit testing only, and is not considered
- stable API
- :rtype: list of QgsSearchWidgetWrapper
 %End
 
 };

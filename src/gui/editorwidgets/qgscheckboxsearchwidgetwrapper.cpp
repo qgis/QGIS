@@ -61,7 +61,7 @@ QgsSearchWidgetWrapper::FilterFlags QgsCheckboxSearchWidgetWrapper::defaultFlags
 QString QgsCheckboxSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const
 {
   QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
-  QString fieldName = QgsExpression::quotedColumnRef( layer()->fields().at( mFieldIdx ).name() );
+  QString fieldName = createFieldIdentifier();
 
   //clear any unsupported flags
   flags &= supportedFlags();

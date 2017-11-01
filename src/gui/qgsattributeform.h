@@ -54,6 +54,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       will add a new feature when the form is accepted. */
       MultiEditMode, //!< Multi edit mode, for editing fields of multiple features at once
       SearchMode, //!< Form values are used for searching/filtering the layer
+      AggregateSearchMode,
     };
 
     //! Filter types
@@ -159,6 +160,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \since QGIS 2.16
      */
     void setMessageBar( QgsMessageBar *messageBar );
+
+    QString aggregateFilter() const;
 
   signals:
 
@@ -351,6 +354,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QWidget *mSearchButtonBox = nullptr;
     QList<QgsAttributeFormInterface *> mInterfaces;
     QMap< int, QgsAttributeFormEditorWidget * > mFormEditorWidgets;
+    QList< QgsAttributeFormWidget *> mFormWidgets;
     QgsExpressionContext mExpressionContext;
     QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
 

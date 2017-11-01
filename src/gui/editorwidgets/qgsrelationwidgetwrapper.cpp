@@ -46,6 +46,11 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
     mWidget->setVisible( visible );
 }
 
+QgsRelation QgsRelationWidgetWrapper::relation() const
+{
+  return mRelation;
+}
+
 bool QgsRelationWidgetWrapper::showUnlinkButton() const
 {
   return mWidget->showUnlinkButton();

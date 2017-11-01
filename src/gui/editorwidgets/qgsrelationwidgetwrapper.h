@@ -79,6 +79,8 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      */
     void setShowUnlinkButton( bool showUnlinkButton );
 
+    QgsRelation relation() const;
+
   protected:
     QWidget *createWidget( QWidget *parent ) override;
     void initWidget( QWidget *editor ) override;
