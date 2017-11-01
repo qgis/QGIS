@@ -145,7 +145,7 @@ class QgsSearchWidgetWrapper : QgsWidgetWrapper
  :rtype: FilterFlags
 %End
 
-    virtual QString expression() = 0;
+    virtual QString expression() const = 0;
 %Docstring
  Will be used to access the widget's value. Read the value from the widget and
  return it properly formatted to be saved in the attribute.
@@ -206,7 +206,7 @@ class QgsSearchWidgetWrapper : QgsWidgetWrapper
 
   protected slots:
 
-    virtual void setExpression( QString value ) = 0;
+    virtual void setExpression( const QString &value ) = 0;
     virtual void setFeature( const QgsFeature &feature );
 
 

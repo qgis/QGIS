@@ -44,7 +44,7 @@ class QgsCheckboxSearchWidgetWrapper : QgsSearchWidgetWrapper
 
     virtual bool applyDirectly();
 
-    virtual QString expression();
+    virtual QString expression() const;
 
     virtual bool valid() const;
 
@@ -66,7 +66,7 @@ class QgsCheckboxSearchWidgetWrapper : QgsSearchWidgetWrapper
 
 
   protected slots:
-    virtual void setExpression( QString exp );
+    virtual void setExpression( const QString &expression );
 
 
 };
