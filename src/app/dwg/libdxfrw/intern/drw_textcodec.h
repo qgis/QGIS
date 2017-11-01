@@ -20,12 +20,12 @@ class DRW_TextCodec
     std::string getCodePage() {return cp;}
 
   private:
-    std::string correctCodePage( const std::string& s );
+    std::string correctCodePage( const std::string &s );
 
   private:
     int version;
     std::string cp;
-    DRW_Converter *conv;
+    DRW_Converter *conv = nullptr;
 };
 
 class DRW_Converter
@@ -34,7 +34,7 @@ class DRW_Converter
     DRW_Converter( const int *t, int l )
     {
       table = t;
-      cpLenght = l;
+      cpLength = l;
     }
     virtual ~DRW_Converter() = default;
     virtual std::string fromUtf8( std::string *s ) {return *s;}
@@ -43,8 +43,8 @@ class DRW_Converter
     std::string decodeText( int c );
     std::string encodeNum( int c );
     int decodeNum( std::string s, int *b );
-    const int *table;
-    int cpLenght;
+    const int *table = nullptr;
+    int cpLength;
 };
 
 class DRW_ConvUTF16 : public DRW_Converter
@@ -75,7 +75,7 @@ class DRW_ConvDBCSTable : public DRW_Converter
     virtual std::string fromUtf8( std::string *s );
     virtual std::string toUtf8( std::string *s );
   private:
-    const int *leadTable;
+    const int *leadTable = nullptr;
     const int ( *doubleTable )[2];
 
 };
@@ -92,7 +92,7 @@ class DRW_Conv932Table : public DRW_Converter
     virtual std::string fromUtf8( std::string *s );
     virtual std::string toUtf8( std::string *s );
   private:
-    const int *leadTable;
+    const int *leadTable = nullptr;
     const int ( *doubleTable )[2];
 
 };

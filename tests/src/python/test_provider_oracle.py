@@ -16,9 +16,9 @@ import qgis  # NOQA
 
 import os
 
-from qgis.core import QgsVectorLayer, QgsFeatureRequest, NULL
+from qgis.core import QgsSettings, QgsVectorLayer, QgsFeatureRequest, NULL
 
-from qgis.PyQt.QtCore import QSettings, QDate, QTime, QDateTime, QVariant
+from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
 
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
@@ -40,7 +40,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         cls.vl = QgsVectorLayer(
             cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="QGIS"."SOME_DATA" (GEOM) sql=', 'test', 'oracle')
         assert(cls.vl.isValid())
-        cls.provider = cls.vl.dataProvider()
+        cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsVectorLayer(
             cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="QGIS"."SOME_POLY_DATA" (GEOM) sql=', 'test', 'oracle')
         assert(cls.poly_vl.isValid())
@@ -51,10 +51,10 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         """Run after all tests"""
 
     def enableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', True)
+        QgsSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', False)
+        QgsSettings().setValue('/qgis/compileExpressions', False)
 
     def uncompiledFilters(self):
         filters = set([
@@ -151,8 +151,9 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
             QDate(2004, 3, 4), QTime(13, 41, 52)))
 
     def testDefaultValue(self):
-        self.assertEqual(self.provider.defaultValue(1), NULL)
-        self.assertEqual(self.provider.defaultValue(2), "'qgis'")
+        self.assertEqual(self.source.defaultValue(1), NULL)
+        self.assertEqual(self.source.defaultValue(2), "'qgis'")
+
 
 if __name__ == '__main__':
     unittest.main()

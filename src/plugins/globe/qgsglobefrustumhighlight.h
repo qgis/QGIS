@@ -16,7 +16,7 @@
 #ifndef QGSGLOBEFRUSTUMHIGHLIGHT_H
 #define QGSGLOBEFRUSTUMHIGHLIGHT_H
 
-#include <osg/NodeCallback>
+#include <osg/Callback>
 
 class QgsRubberBand;
 namespace osg { class View; }
@@ -26,19 +26,19 @@ namespace osgEarth
   class SpatialReference;
 }
 
-class QgsGlobeFrustumHighlightCallback : public osg::NodeCallback
+struct QgsGlobeFrustumHighlightCallback : public osg::Callback
 {
   public:
-    QgsGlobeFrustumHighlightCallback( osg::View* view, osgEarth::Terrain* terrain, QgsMapCanvas* mapCanvas, QColor color );
+    QgsGlobeFrustumHighlightCallback( osg::View *view, osgEarth::Terrain *terrain, QgsMapCanvas *mapCanvas, QColor color );
     ~QgsGlobeFrustumHighlightCallback();
 
-    void operator()( osg::Node*, osg::NodeVisitor* ) override;
+    bool run( osg::Object *object, osg::Object *data ) override;
 
   private:
-    osg::View* mView;
-    osgEarth::Terrain* mTerrain;
-    QgsRubberBand* mRubberBand;
-    osgEarth::SpatialReference* mSrs;
+    osg::View *mView = nullptr;
+    osgEarth::Terrain *mTerrain = nullptr;
+    QgsRubberBand *mRubberBand = nullptr;
+    osgEarth::SpatialReference *mSrs = nullptr;
 };
 
 #endif // QGSGLOBEFRUSTUMHIGHLIGHT_H

@@ -19,15 +19,15 @@
 #define QGSDB2PROVIDER_H
 
 #include "qgsvectordataprovider.h"
-#include "qgsvectorlayerimport.h"
-#include <qgscoordinatereferencesystem.h>
+#include "qgsvectorlayerexporter.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
 #include "qgsfields.h"
 #include <QtSql>
 
 /**
- * @class QgsDb2Provider
- * @brief Data provider for DB2 server.
+ * \class QgsDb2Provider
+ * \brief Data provider for DB2 server.
  */
 class QgsDb2Provider : public QgsVectorDataProvider
 {
@@ -44,15 +44,15 @@ class QgsDb2Provider : public QgsVectorDataProvider
      * If service is provided, then username and password is required.
      * If service is not provided, the remaining arguments are required.
      *
-     * @param connInfo A string containing all connection information.
+     * \param connInfo A string containing all connection information.
      */
     static QSqlDatabase getDatabase( const QString &connInfo, QString &errMsg );
 
     static bool openDatabase( QSqlDatabase db );
 
-    virtual QgsAbstractFeatureSource* featureSource() const override;
+    virtual QgsAbstractFeatureSource *featureSource() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) const override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
     virtual QgsWkbTypes::Type wkbType() const override;
 
@@ -71,7 +71,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     virtual bool isValid() const override;
     QString subsetString() const override;
 
-    bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
+    bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() const override { return true; }
 
@@ -83,20 +83,20 @@ class QgsDb2Provider : public QgsVectorDataProvider
 
     virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
-    virtual bool addFeatures( QgsFeatureList & flist ) override;
+    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
 
-    virtual bool deleteFeatures( const QgsFeatureIds & id ) override;
+    virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
 
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
     //! Import a vector layer into the database
-    static QgsVectorLayerImport::ImportError createEmptyLayer(
-      const QString& uri,
+    static QgsVectorLayerExporter::ExportError createEmptyLayer(
+      const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
-      const QgsCoordinateReferenceSystem& srs,
+      const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
@@ -125,8 +125,8 @@ class QgsDb2Provider : public QgsVectorDataProvider
     bool mValid;
     bool mUseEstimatedMetadata;
     bool mSkipFailures;
-    long mNumberFeatures;
-    int mFidColIdx;
+    long mNumberFeatures = 0;
+    int mFidColIdx = -1;
     QString mFidColName;
     QString mExtents;
     mutable long mSRId;
@@ -135,7 +135,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     mutable QString mGeometryColName, mGeometryColType;
     QString mLastError; //string containing the last reported error message
     mutable QgsCoordinateReferenceSystem mCrs; //coordinate reference system
-    QgsWkbTypes::Type mWkbType;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
     QSqlQuery mQuery; //current SQL query
     QString mConnInfo; // full connection information
     QString mSchemaName, mTableName; //current layer schema/name
@@ -144,7 +144,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     static int sConnectionId;
 
     //sets the error messages
-    void setLastError( const QString& error )
+    void setLastError( const QString &error )
     {
       mLastError = error;
     }

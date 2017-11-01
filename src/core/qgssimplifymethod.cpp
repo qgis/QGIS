@@ -18,13 +18,6 @@
 #include "qgsgeometrysimplifier.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
 
-QgsSimplifyMethod::QgsSimplifyMethod()
-    : mMethodType( QgsSimplifyMethod::NoSimplification )
-    , mTolerance( 1 )
-    , mThreshold( 1 )
-    , mForceLocalOptimization( true )
-{
-}
 
 void QgsSimplifyMethod::setMethodType( MethodType methodType )
 {
@@ -41,7 +34,7 @@ void QgsSimplifyMethod::setForceLocalOptimization( bool localOptimization )
   mForceLocalOptimization = localOptimization;
 }
 
-QgsAbstractGeometrySimplifier* QgsSimplifyMethod::createGeometrySimplifier( const QgsSimplifyMethod& simplifyMethod )
+QgsAbstractGeometrySimplifier *QgsSimplifyMethod::createGeometrySimplifier( const QgsSimplifyMethod &simplifyMethod )
 {
   QgsSimplifyMethod::MethodType methodType = simplifyMethod.methodType();
 

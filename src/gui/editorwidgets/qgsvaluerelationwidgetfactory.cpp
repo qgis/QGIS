@@ -24,12 +24,12 @@
 
 #include <QSettings>
 
-QgsValueRelationWidgetFactory::QgsValueRelationWidgetFactory( const QString& name )
-    :  QgsEditorWidgetFactory( name )
+QgsValueRelationWidgetFactory::QgsValueRelationWidgetFactory( const QString &name )
+  :  QgsEditorWidgetFactory( name )
 {
 }
 
-QgsEditorWidgetWrapper* QgsValueRelationWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
+QgsEditorWidgetWrapper *QgsValueRelationWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {
   return new QgsValueRelationWidgetWrapper( vl, fieldIdx, editor, parent );
 }
@@ -39,7 +39,7 @@ QgsSearchWidgetWrapper *QgsValueRelationWidgetFactory::createSearchWidget( QgsVe
   return new QgsValueRelationSearchWidgetWrapper( vl, fieldIdx, parent );
 }
 
-QgsEditorConfigWidget* QgsValueRelationWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+QgsEditorConfigWidget *QgsValueRelationWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
   return new QgsValueRelationConfigDlg( vl, fieldIdx, parent );
 }

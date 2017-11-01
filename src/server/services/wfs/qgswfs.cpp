@@ -3,6 +3,7 @@
                               -------------------------
   begin                : December 20 , 2016
   copyright            : (C) 2007 by Marco Hugentobler  ( parts fron qgswmshandler)
+                         (C) 2012 by René-Luc D'Hont    ( parts fron qgswmshandler)
                          (C) 2014 by Alessandro Pasotti ( parts from qgswmshandler)
                          (C) 2016 by David Marteau
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
@@ -22,9 +23,11 @@
 #include "qgsmodule.h"
 #include "qgswfsutils.h"
 #include "qgswfsgetcapabilities.h"
+#include "qgswfsgetcapabilities_1_0_0.h"
 #include "qgswfsgetfeature.h"
 #include "qgswfsdescribefeaturetype.h"
 #include "qgswfstransaction.h"
+#include "qgswfstransaction_1_0_0.h"
 
 #define QSTR_COMPARE( str, lit )\
   (str.compare( QStringLiteral( lit ), Qt::CaseInsensitive ) == 0)
@@ -36,8 +39,8 @@ namespace QgsWfs
   {
     public:
       // Constructor
-      Service( QgsServerInterface* serverIface )
-          : mServerIface( serverIface )
+      Service( QgsServerInterface *serverIface )
+        : mServerIface( serverIface )
       {}
 
       QString name()    const { return QStringLiteral( "WFS" ); }
@@ -48,8 +51,8 @@ namespace QgsWfs
         return method == QgsServerRequest::GetMethod || method == QgsServerRequest::PostMethod;
       }
 
-      void executeRequest( const QgsServerRequest& request, QgsServerResponse& response,
-                           const QgsProject* project )
+      void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
+                           const QgsProject *project )
       {
         QgsServerRequest::Parameters params = request.parameters();
         QString versionString = params.value( "VERSION" );
@@ -70,7 +73,15 @@ namespace QgsWfs
 
         if ( QSTR_COMPARE( req, "GetCapabilities" ) )
         {
-          writeGetCapabilities( mServerIface, project, versionString, request, response );
+          // Supports WFS 1.0.0
+          if ( QSTR_COMPARE( versionString, "1.0.0" ) )
+          {
+            v1_0_0::writeGetCapabilities( mServerIface, project, versionString, request, response );
+          }
+          else
+          {
+            writeGetCapabilities( mServerIface, project, versionString, request, response );
+          }
         }
         else if ( QSTR_COMPARE( req, "GetFeature" ) )
         {
@@ -78,11 +89,19 @@ namespace QgsWfs
         }
         else if ( QSTR_COMPARE( req, "DescribeFeatureType" ) )
         {
-          writeDescribeFeatureType( mServerIface, versionString, request, response );
+          writeDescribeFeatureType( mServerIface, project, versionString, request, response );
         }
         else if ( QSTR_COMPARE( req, "Transaction" ) )
         {
-          writeTransaction( mServerIface, versionString, request, response );
+          // Supports WFS 1.0.0
+          if ( QSTR_COMPARE( versionString, "1.0.0" ) )
+          {
+            v1_0_0::writeTransaction( mServerIface, project, versionString, request, response );
+          }
+          else
+          {
+            writeTransaction( mServerIface, project, versionString, request, response );
+          }
         }
         else
         {
@@ -93,7 +112,7 @@ namespace QgsWfs
       }
 
     private:
-      QgsServerInterface* mServerIface;
+      QgsServerInterface *mServerIface = nullptr;
   };
 
 
@@ -104,7 +123,7 @@ namespace QgsWfs
 class QgsWfsModule: public QgsServiceModule
 {
   public:
-    void registerSelf( QgsServiceRegistry& registry, QgsServerInterface* serverIface )
+    void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface )
     {
       QgsDebugMsg( "WFSModule::registerSelf called" );
       registry.registerService( new  QgsWfs::Service( serverIface ) );
@@ -113,12 +132,12 @@ class QgsWfsModule: public QgsServiceModule
 
 
 // Entry points
-QGISEXTERN QgsServiceModule* QGS_ServiceModule_Init()
+QGISEXTERN QgsServiceModule *QGS_ServiceModule_Init()
 {
   static QgsWfsModule module;
   return &module;
 }
-QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule* )
+QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule * )
 {
   // Nothing to do
 }

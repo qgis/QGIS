@@ -13,16 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-/** QGIS - Plugin API
+/**
+ * QGIS - Plugin API
  *
  *  \section about  About QGis Plugins
  * Plugins provide additional functionality to QGis. Plugins must
  * implement several required methods in order to be registered with
  * QGis. These methods include:
- * <ul>name
- * <li>version
- * <li>description
- * </ul>
+ * name:
+ * - version
+ * - description
  *
  * All QGis plugins must inherit from the abstract base class QgisPlugin.
  * This list will grow as the API is expanded.
@@ -35,6 +35,8 @@
 #ifndef QGISPLUGIN_H
 #define QGISPLUGIN_H
 
+#define SIP_NO_FILE
+
 
 #include <QString>
 
@@ -42,7 +44,8 @@ class QgisInterface;
 
 //#include "qgisplugingui.h"
 
-/** \ingroup plugins
+/**
+ * \ingroup plugins
  * \class QgisPlugin
  * \brief Abstract base class from which all plugins must inherit
  * \note not available in Python bindings
@@ -77,77 +80,76 @@ class QgisPlugin
     /**
      * Constructor for QgisPlugin
      */
-    QgisPlugin( QString const & name = "",
-                QString const & description = "",
-                QString const & category = "",
-                QString const & version = "",
+    QgisPlugin( QString const &name = "",
+                QString const &description = "",
+                QString const &category = "",
+                QString const &version = "",
                 PluginType type = MapLayer )
-        : mName( name )
-        , mDescription( description )
-        , mCategory( category )
-        , mVersion( version )
-        , mType( type )
+      : mName( name )
+      , mDescription( description )
+      , mCategory( category )
+      , mVersion( version )
+      , mType( type )
     {}
 
-    virtual ~QgisPlugin()
-    {}
+    virtual ~QgisPlugin() = default;
 
     //! Get the name of the plugin
-    QString const & name() const
+    QString const &name() const
     {
       return mName;
     }
 
-    QString       & name()
+    QString        &name()
     {
       return mName;
     }
 
     //! Version of the plugin
-    QString const & version() const
+    QString const &version() const
     {
       return mVersion;
     }
 
     //! Version of the plugin
-    QString & version()
+    QString &version()
     {
       return mVersion;
     }
 
     //! A brief description of the plugin
-    QString const & description() const
+    QString const &description() const
     {
       return mDescription;
     }
 
     //! A brief description of the plugin
-    QString       & description()
+    QString        &description()
     {
       return mDescription;
     }
 
     //! Plugin category
-    QString const & category() const
+    QString const &category() const
     {
       return mCategory;
     }
 
     //! Plugin category
-    QString       & category()
+    QString        &category()
     {
       return mCategory;
     }
 
     //! Plugin type, either UI or map layer
-    QgisPlugin::PluginType const & type() const
+    QgisPlugin::PluginType const &type() const
     {
       return mType;
     }
 
 
     //! Plugin type, either UI or map layer
-    QgisPlugin::PluginType       & type()
+    QgisPlugin::PluginType        &type()
     {
       return mType;
     }

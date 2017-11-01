@@ -16,23 +16,28 @@
 #include "qgsdataprovider.h"
 
 
-void QgsDataProvider::setProviderProperty( QgsDataProvider::ProviderProperty property, const QVariant& value )
+void QgsDataProvider::setProviderProperty( QgsDataProvider::ProviderProperty property, const QVariant &value )
 {
   mProviderProperties.insert( property, value );
 }
 
-void QgsDataProvider::setProviderProperty( int property, const QVariant& value )
+void QgsDataProvider::setProviderProperty( int property, const QVariant &value )
 {
   mProviderProperties.insert( property, value );
 }
 
-QVariant QgsDataProvider::providerProperty( QgsDataProvider::ProviderProperty property, const QVariant& defaultValue ) const
+QVariant QgsDataProvider::providerProperty( QgsDataProvider::ProviderProperty property, const QVariant &defaultValue ) const
 {
   return mProviderProperties.value( property, defaultValue );
 }
 
-QVariant QgsDataProvider::providerProperty( int property, const QVariant& defaultValue = QVariant() ) const
+QVariant QgsDataProvider::providerProperty( int property, const QVariant &defaultValue = QVariant() ) const
 {
   return mProviderProperties.value( property, defaultValue );
+}
+
+void QgsDataProvider::setListening( bool isListening )
+{
+  Q_UNUSED( isListening );
 }
 

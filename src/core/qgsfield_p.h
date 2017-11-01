@@ -27,8 +27,11 @@
 // version without notice, or even be removed.
 //
 
+#define SIP_NO_FILE
+
 #include "qgsfieldconstraints.h"
 #include "qgseditorwidgetsetup.h"
+#include "qgsdefaultvalue.h"
 #include <QString>
 #include <QVariant>
 #include <QSharedData>
@@ -43,46 +46,46 @@ class QgsFieldPrivate : public QSharedData
 {
   public:
 
-    QgsFieldPrivate( const QString& name = QString(),
+    QgsFieldPrivate( const QString &name = QString(),
                      QVariant::Type type = QVariant::Invalid,
                      QVariant::Type subType = QVariant::Invalid,
-                     const QString& typeName = QString(),
+                     const QString &typeName = QString(),
                      int len = 0,
                      int prec = 0,
-                     const QString& comment = QString() )
-        : name( name )
-        , type( type )
-        , subType( subType )
-        , typeName( typeName )
-        , length( len )
-        , precision( prec )
-        , comment( comment )
+                     const QString &comment = QString() )
+      : name( name )
+      , type( type )
+      , subType( subType )
+      , typeName( typeName )
+      , length( len )
+      , precision( prec )
+      , comment( comment )
     {
     }
 
-    QgsFieldPrivate( const QgsFieldPrivate& other )
-        : QSharedData( other )
-        , name( other.name )
-        , type( other.type )
-        , subType( other.subType )
-        , typeName( other.typeName )
-        , length( other.length )
-        , precision( other.precision )
-        , comment( other.comment )
-        , alias( other.alias )
-        , defaultValueExpression( other.defaultValueExpression )
-        , constraints( other.constraints )
+    QgsFieldPrivate( const QgsFieldPrivate &other )
+      : QSharedData( other )
+      , name( other.name )
+      , type( other.type )
+      , subType( other.subType )
+      , typeName( other.typeName )
+      , length( other.length )
+      , precision( other.precision )
+      , comment( other.comment )
+      , alias( other.alias )
+      , defaultValueDefinition( other.defaultValueDefinition )
+      , constraints( other.constraints )
     {
     }
 
     ~QgsFieldPrivate() {}
 
-    bool operator==( const QgsFieldPrivate& other ) const
+    bool operator==( const QgsFieldPrivate &other ) const
     {
-      return (( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
-              && ( length == other.length ) && ( precision == other.precision )
-              && ( alias == other.alias ) && ( defaultValueExpression == other.defaultValueExpression )
-              && ( constraints == other.constraints ) );
+      return ( ( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
+               && ( length == other.length ) && ( precision == other.precision )
+               && ( alias == other.alias ) && ( defaultValueDefinition == other.defaultValueDefinition )
+               && ( constraints == other.constraints ) );
     }
 
     //! Name
@@ -109,8 +112,8 @@ class QgsFieldPrivate : public QSharedData
     //! Alias for field name (friendly name shown to users)
     QString alias;
 
-    //! Default value expression
-    QString defaultValueExpression;
+    //! Default value
+    QgsDefaultValue defaultValueDefinition;
 
     //! Field constraints
     QgsFieldConstraints constraints;

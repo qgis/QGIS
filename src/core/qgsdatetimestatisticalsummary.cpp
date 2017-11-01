@@ -20,7 +20,7 @@
 #include <QObject>
 #include <QVariant>
 #include <QVariantList>
-#include "limits.h"
+#include <limits>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -29,7 +29,7 @@
  ****************************************************************************/
 
 QgsDateTimeStatisticalSummary::QgsDateTimeStatisticalSummary( QgsDateTimeStatisticalSummary::Statistics stats )
-    : mStatistics( stats )
+  : mStatistics( stats )
 {
   reset();
 }
@@ -44,18 +44,18 @@ void QgsDateTimeStatisticalSummary::reset()
   mIsTimes = false;
 }
 
-void QgsDateTimeStatisticalSummary::calculate( const QVariantList& values )
+void QgsDateTimeStatisticalSummary::calculate( const QVariantList &values )
 {
   reset();
 
-  Q_FOREACH ( const QVariant& variant, values )
+  Q_FOREACH ( const QVariant &variant, values )
   {
     addValue( variant );
   }
   finalize();
 }
 
-void QgsDateTimeStatisticalSummary::addValue( const QVariant& value )
+void QgsDateTimeStatisticalSummary::addValue( const QVariant &value )
 {
   if ( value.type() == QVariant::DateTime )
   {
@@ -88,7 +88,7 @@ void QgsDateTimeStatisticalSummary::finalize()
   //if statistics are implemented which require a post-calculation step
 }
 
-void QgsDateTimeStatisticalSummary::testDateTime( const QDateTime& dateTime )
+void QgsDateTimeStatisticalSummary::testDateTime( const QDateTime &dateTime )
 {
   mCount++;
 
@@ -103,7 +103,7 @@ void QgsDateTimeStatisticalSummary::testDateTime( const QDateTime& dateTime )
   {
     if ( mMin.isValid() && dateTime.isValid() )
     {
-      mMin = qMin( mMin, dateTime );
+      mMin = std::min( mMin, dateTime );
     }
     else if ( !mMin.isValid() && dateTime.isValid() )
     {
@@ -114,7 +114,7 @@ void QgsDateTimeStatisticalSummary::testDateTime( const QDateTime& dateTime )
   {
     if ( mMax.isValid() && dateTime.isValid() )
     {
-      mMax = qMax( mMax, dateTime );
+      mMax = std::max( mMax, dateTime );
     }
     else if ( !mMax.isValid() && dateTime.isValid() )
     {

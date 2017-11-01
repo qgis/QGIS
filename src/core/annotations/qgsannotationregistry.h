@@ -16,6 +16,8 @@
 #ifndef QGSANNOTATIONREGISTRY_H
 #define QGSANNOTATIONREGISTRY_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgsannotation.h"
 #include "qgstextannotation.h"
@@ -35,7 +37,7 @@ typedef std::function < QgsAnnotation*() > QgsCreateAnnotationFunc;
  * \class QgsAnnotationMetadata
  * \ingroup core
  * Metadata item for an annotation type within a QgsAnnotationRegistry.
- * \note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsAnnotationMetadata
 {
@@ -45,9 +47,9 @@ class CORE_EXPORT QgsAnnotationMetadata
      * Constructor for QgsAnnotationMetadata. \a typeName should be a unique string
      * identifying the annotation type.
      */
-    QgsAnnotationMetadata( const QString& typeName, QgsCreateAnnotationFunc createFunc )
-        : mTypeName( typeName )
-        , mCreateFunc( createFunc )
+    QgsAnnotationMetadata( const QString &typeName, QgsCreateAnnotationFunc createFunc )
+      : mTypeName( typeName )
+      , mCreateFunc( createFunc )
     {}
 
     /**
@@ -58,7 +60,7 @@ class CORE_EXPORT QgsAnnotationMetadata
     /**
      * Creates a new annotation of the associated type.
      */
-    QgsAnnotation* createAnnotation() const { return mCreateFunc ? mCreateFunc() : nullptr ; }
+    QgsAnnotation *createAnnotation() const { return mCreateFunc ? mCreateFunc() : nullptr ; }
 
   private:
 
@@ -74,7 +76,7 @@ class CORE_EXPORT QgsAnnotationMetadata
  * \class QgsAnnotationRegistry
  * \ingroup core
  * Handles registration and creation of annotation item types.
- * \note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsAnnotationRegistry
 {
@@ -97,7 +99,7 @@ class CORE_EXPORT QgsAnnotationRegistry
      * was successful, or false if an annotation with duplicate type already exists
      * in the registry.
      */
-    bool addAnnotationType( const QgsAnnotationMetadata& metadata )
+    bool addAnnotationType( const QgsAnnotationMetadata &metadata )
     {
       if ( mMetadata.contains( metadata.type() ) )
         return false;
@@ -110,7 +112,7 @@ class CORE_EXPORT QgsAnnotationRegistry
      * Creates a new annotation of the specified type. Returns nullptr if no
      * matching annotations types were found.
      */
-    QgsAnnotation* create( const QString& typeName ) const
+    QgsAnnotation *create( const QString &typeName ) const
     {
       if ( !mMetadata.contains( typeName ) )
         return nullptr;

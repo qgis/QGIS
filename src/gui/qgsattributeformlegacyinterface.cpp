@@ -22,10 +22,10 @@
 #include <QDateTime>
 #include <QRegExp>
 
-QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString& function, const QString& pyFormName, QgsAttributeForm* form )
-    : QgsAttributeFormInterface( form )
-    , mPyFunctionName( function )
-    , mPyFormVarName( pyFormName )
+QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString &function, const QString &pyFormName, QgsAttributeForm *form )
+  : QgsAttributeFormInterface( form )
+  , mPyFunctionName( function )
+  , mPyFormVarName( pyFormName )
 {
   static int sLayerCounter = 0;
   mPyLayerVarName = QStringLiteral( "_qgis_layer_%1_%2" ).arg( form->layer()->id() ).arg( sLayerCounter++ );
@@ -33,7 +33,7 @@ QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString&
 
   QString initLayer = QStringLiteral( "%1 = sip.wrapinstance( %2, qgis.core.QgsVectorLayer )" )
                       .arg( mPyLayerVarName )
-                      .arg(( quint64 ) form->layer() );
+                      .arg( ( quint64 ) form->layer() );
 
   QgsPythonRunner::run( initLayer );
 }
@@ -46,7 +46,7 @@ QgsAttributeFormLegacyInterface::~QgsAttributeFormLegacyInterface()
 
 void QgsAttributeFormLegacyInterface::featureChanged()
 {
-  QDialogButtonBox* buttonBox = form()->findChild<QDialogButtonBox*>();
+  QDialogButtonBox *buttonBox = form()->findChild<QDialogButtonBox *>();
   if ( buttonBox )
   {
     // If the init function did not call disconnect, we do it here before reconnecting
@@ -61,7 +61,7 @@ void QgsAttributeFormLegacyInterface::featureChanged()
   QString pyFeatureVarName = QStringLiteral( "_qgis_feature_%1" ).arg( dt.toString( QStringLiteral( "yyyyMMddhhmmsszzz" ) ) );
   QString initFeature = QStringLiteral( "%1 = sip.wrapinstance( %2, qgis.core.QgsFeature )" )
                         .arg( pyFeatureVarName )
-                        .arg(( quint64 ) & form()->feature() );
+                        .arg( ( quint64 ) & form()->feature() );
 
   QgsPythonRunner::run( initFeature );
 

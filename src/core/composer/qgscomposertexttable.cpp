@@ -20,25 +20,25 @@
 #include "qgscomposerframe.h"
 #include "qgscomposition.h"
 
-QgsComposerTextTableV2::QgsComposerTextTableV2( QgsComposition* c, bool createUndoCommands )
-    : QgsComposerTableV2( c, createUndoCommands )
+QgsComposerTextTableV2::QgsComposerTextTableV2( QgsComposition *c, bool createUndoCommands )
+  : QgsComposerTableV2( c, createUndoCommands )
 {
 
 }
 
-void QgsComposerTextTableV2::addRow( const QStringList& row )
+void QgsComposerTextTableV2::addRow( const QStringList &row )
 {
   mRowText.append( row );
   refreshAttributes();
 }
 
-void QgsComposerTextTableV2::setContents( const QList<QStringList>& contents )
+void QgsComposerTextTableV2::setContents( const QList<QStringList> &contents )
 {
   mRowText = contents;
   refreshAttributes();
 }
 
-bool QgsComposerTextTableV2::getTableContents( QgsComposerTableContents& contents )
+bool QgsComposerTextTableV2::getTableContents( QgsComposerTableContents &contents )
 {
   contents.clear();
 
@@ -65,10 +65,10 @@ bool QgsComposerTextTableV2::getTableContents( QgsComposerTableContents& content
   return true;
 }
 
-void QgsComposerTextTableV2::addFrame( QgsComposerFrame* frame, bool recalcFrameSizes )
+void QgsComposerTextTableV2::addFrame( QgsComposerFrame *frame, bool recalcFrameSizes )
 {
   mFrameItems.push_back( frame );
-  connect( frame, SIGNAL( sizeChanged() ), this, SLOT( recalculateFrameSizes() ) );
+  connect( frame, &QgsComposerItem::sizeChanged, this, &QgsComposerTableV2::recalculateFrameSizes );
 
   if ( mComposition )
   {

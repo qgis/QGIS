@@ -17,11 +17,12 @@
 #define QGSGROUPWMSDATADIALOG_H
 
 #include "ui_qgsgroupwmsdatadialogbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgis.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsGroupWmsDataDialog
  */
 class GUI_EXPORT QgsGroupWmsDataDialog: public QDialog, private Ui::QgsGroupWMSDataDialogBase
@@ -30,7 +31,7 @@ class GUI_EXPORT QgsGroupWmsDataDialog: public QDialog, private Ui::QgsGroupWMSD
 
   public:
     //! Constructor
-    QgsGroupWmsDataDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsGroupWmsDataDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     //~QgsGroupWMSDataDialog();
 
     //! return group WMS title
@@ -45,13 +46,13 @@ class GUI_EXPORT QgsGroupWmsDataDialog: public QDialog, private Ui::QgsGroupWMSD
 
   public slots:
     //! set group WMS title
-    void setGroupTitle( const QString& title );
+    void setGroupTitle( const QString &title );
 
     //! set group WMS short name
-    void setGroupShortName( const QString& shortName );
+    void setGroupShortName( const QString &shortName );
 
     //! set group WMS abstract
-    void setGroupAbstract( const QString& abstract );
+    void setGroupAbstract( const QString &abstract );
 
 
   private:

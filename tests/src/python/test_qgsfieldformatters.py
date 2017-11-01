@@ -14,14 +14,11 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsFeature, QgsGeometry, QgsPoint,
-                       QgsProject, QgsRelation, QgsVectorLayer, NULL, QgsField,
+from qgis.core import (QgsFeature, QgsProject, QgsRelation, QgsVectorLayer,
                        QgsValueMapFieldFormatter, QgsValueRelationFieldFormatter,
-                       QgsRelationReferenceFieldFormatter)
+                       QgsRelationReferenceFieldFormatter, QgsSettings)
 
 from qgis.testing import start_app, unittest
-from qgis.PyQt.QtCore import QVariant
-from qgis.PyQt.QtWidgets import QTextEdit
 
 start_app()
 
@@ -31,6 +28,7 @@ class TestQgsValueMapFieldFormatter(unittest.TestCase):
     VALUEMAP_NULL_TEXT = "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}"
 
     def test_representValue(self):
+        QgsSettings().setValue("qgis/nullValue", "NULL")
         layer = QgsVectorLayer("none?field=number1:integer&field=number2:double&field=text1:string&field=number3:integer&field=number4:double&field=text2:string",
                                "layer", "memory")
         self.assertTrue(layer.isValid())
@@ -133,8 +131,8 @@ class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
         fieldFormatter = QgsRelationReferenceFieldFormatter()
 
         rel = QgsRelation()
-        rel.setRelationId('rel1')
-        rel.setRelationName('Relation Number One')
+        rel.setId('rel1')
+        rel.setName('Relation Number One')
         rel.setReferencingLayer(first_layer.id())
         rel.setReferencedLayer(second_layer.id())
         rel.addFieldPair('foreign_key', 'pkid')
@@ -184,8 +182,8 @@ class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
 
         # Invalid relation
         rel = QgsRelation()
-        rel.setRelationId('rel2')
-        rel.setRelationName('Relation Number Two')
+        rel.setId('rel2')
+        rel.setName('Relation Number Two')
         rel.setReferencingLayer(first_layer.id())
         rel.addFieldPair('foreign_key', 'pkid')
         self.assertFalse(rel.isValid())
@@ -197,6 +195,7 @@ class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
         self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '123'), '123')
 
         QgsProject.instance().removeAllMapLayers()
+
 
 if __name__ == '__main__':
     unittest.main()

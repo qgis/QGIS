@@ -1,14 +1,26 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspainting.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 class QgsPainting
 {
-%TypeHeaderCode
-#include <qgspainting.h>
+%Docstring
+ Misc painting enums and functions.
+
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgspainting.h"
+%End
   public:
 
-    /** Blending modes enum defining the available composition modes that can
-     * be used when rendering a layer
-     */
     enum BlendMode
     {
       BlendNormal,
@@ -37,9 +49,23 @@ class QgsPainting
       BlendXor,
     };
 
-    //! Returns a QPainter::CompositionMode corresponding to a BlendMode
     static QPainter::CompositionMode getCompositionMode( QgsPainting::BlendMode blendMode );
-    //! Returns a BlendMode corresponding to a QPainter::CompositionMode
+%Docstring
+Returns a QPainter.CompositionMode corresponding to a BlendMode
+ :rtype: QPainter.CompositionMode
+%End
     static QgsPainting::BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
+%Docstring
+Returns a BlendMode corresponding to a QPainter.CompositionMode
+ :rtype: QgsPainting.BlendMode
+%End
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspainting.h                                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

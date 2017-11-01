@@ -17,6 +17,7 @@
 #define QGSKDE_H
 
 #include "qgsrectangle.h"
+#include "qgsogrutils.h"
 #include <QString>
 
 // GDAL includes
@@ -25,8 +26,7 @@
 #include <cpl_conv.h>
 #include "qgis_analysis.h"
 
-class QgsVectorLayer;
-class QProgressDialog;
+class QgsFeatureSource;
 class QgsFeature;
 
 
@@ -34,7 +34,7 @@ class QgsFeature;
  * \class QgsKernelDensityEstimation
  * \ingroup analysis
  * Performs Kernel Density Estimation ("heatmap") calculations on a vector layer.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class ANALYSIS_EXPORT QgsKernelDensityEstimation
 {
@@ -70,8 +70,8 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     //! KDE parameters
     struct Parameters
     {
-      //! Vector point layer
-      QgsVectorLayer* vectorLayer;
+      //! Point feature source
+      QgsFeatureSource *source = nullptr;
 
       //! Fixed radius, in map units
       double radius;
@@ -86,20 +86,25 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
       double pixelSize;
 
       //! Kernel shape
-      KernelShape shape;
+      QgsKernelDensityEstimation::KernelShape shape;
 
       //! Decay ratio (Triangular kernels only)
       double decayRatio;
 
       //! Type of output value
-      OutputValues outputValues;
+      QgsKernelDensityEstimation::OutputValues outputValues;
     };
 
     /**
      * Constructor for QgsKernelDensityEstimation. Requires a Parameters object specifying the options to use
      * to generate the surface. The output path and file format are also required.
      */
-    QgsKernelDensityEstimation( const Parameters& parameters, const QString& outputFile, const QString& outputFormat );
+    QgsKernelDensityEstimation( const Parameters &parameters, const QString &outputFile, const QString &outputFormat );
+
+    //! QgsKernelDensityEstimation cannot be copied.
+    QgsKernelDensityEstimation( const QgsKernelDensityEstimation &other ) = delete;
+    //! QgsKernelDensityEstimation cannot be copied.
+    QgsKernelDensityEstimation &operator=( const QgsKernelDensityEstimation &other ) = delete;
 
     /**
      * Runs the KDE calculation across the whole layer at once. Either call this method, or manually
@@ -110,22 +115,22 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     /**
      * Prepares the output file for writing and setups up the surface calculation. This must be called
      * before adding features via addFeature().
-     * @see addFeature()
-     * @see finalise()
+     * \see addFeature()
+     * \see finalise()
      */
     Result prepare();
 
     /**
      * Adds a single feature to the KDE surface. prepare() must be called before adding features.
-     * @see prepare()
-     * @see finalise()
+     * \see prepare()
+     * \see finalise()
      */
-    Result addFeature( const QgsFeature& feature );
+    Result addFeature( const QgsFeature &feature );
 
     /**
      * Finalises the output file. Must be called after adding all features via addFeature().
-     * @see prepare()
-     * @see addFeature()
+     * \see prepare()
+     * \see addFeature()
      */
     Result finalise();
 
@@ -146,7 +151,7 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
 
     QgsRectangle calculateBounds() const;
 
-    QgsVectorLayer* mInputLayer;
+    QgsFeatureSource *mSource = nullptr;
 
     QString mOutputFile;
     QString mOutputFormat;
@@ -163,12 +168,16 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
 
     int mBufferSize;
 
-    GDALDatasetH mDatasetH;
+    gdal::dataset_unique_ptr mDatasetH;
     GDALRasterBandH mRasterBandH;
 
     //! Creates a new raster layer and initializes it to the no data value
-    bool createEmptyLayer( GDALDriverH driver, const QgsRectangle& bounds, int rows, int columns ) const;
+    bool createEmptyLayer( GDALDriverH driver, const QgsRectangle &bounds, int rows, int columns ) const;
     int radiusSizeInPixels( double radius ) const;
+
+#ifdef SIP_RUN
+    QgsKernelDensityEstimation( const QgsKernelDensityEstimation &other );
+#endif
 };
 
 

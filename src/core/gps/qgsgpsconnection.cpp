@@ -29,10 +29,10 @@
 #include "qgsnmeaconnection.h"
 #include "qgslogger.h"
 
-QgsGPSConnection::QgsGPSConnection( QIODevice* dev ): QObject( nullptr ), mSource( dev ), mStatus( NotConnected )
+QgsGPSConnection::QgsGPSConnection( QIODevice *dev ): QObject( nullptr ), mSource( dev ), mStatus( NotConnected )
 {
   clearLastGPSInformation();
-  QObject::connect( dev, SIGNAL( readyRead() ), this, SLOT( parseData() ) );
+  QObject::connect( dev, &QIODevice::readyRead, this, &QgsGPSConnection::parseData );
 }
 
 QgsGPSConnection::~QgsGPSConnection()
@@ -76,7 +76,7 @@ void QgsGPSConnection::cleanupSource()
   mSource = nullptr;
 }
 
-void QgsGPSConnection::setSource( QIODevice* source )
+void QgsGPSConnection::setSource( QIODevice *source )
 {
   cleanupSource();
   mSource = source;

@@ -27,19 +27,19 @@ class APP_EXPORT QgsDisplayAngle: public QDialog, private Ui::QgsDisplayAngleBas
     Q_OBJECT
 
   public:
-    QgsDisplayAngle( QgsMapToolMeasureAngle * tool = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsDisplayAngle();
+    QgsDisplayAngle( QgsMapToolMeasureAngle *tool = nullptr, Qt::WindowFlags f = 0 );
 
-    /** Sets the measured angle value (in radians). The value is going to
+    /**
+     * Sets the measured angle value (in radians). The value is going to
       be converted to degrees / gon automatically if necessary*/
     void setValueInRadians( double value );
 
   private:
     //! pointer to tool which owns this dialog
-    QgsMapToolMeasureAngle * mTool;
+    QgsMapToolMeasureAngle *mTool = nullptr;
 
     //! The value we're showing
-    double mValue;
+    double mValue = 0.0;
 
     //! Updates UI according to user settings.
     void updateUi();

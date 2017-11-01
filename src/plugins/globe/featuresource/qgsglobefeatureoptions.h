@@ -28,16 +28,16 @@ class QgsGlobeFeatureOptions : public osgEarth::Features::FeatureSourceOptions /
     class RefPtr : public osg::Referenced
     {
       public:
-        RefPtr( T* ptr ) : mPtr( ptr ) {}
-        T* ptr() { return mPtr; }
+        RefPtr( T *ptr ) : mPtr( ptr ) {}
+        T *ptr() { return mPtr; }
 
       private:
-        T* mPtr;
+        T *mPtr = nullptr;
     };
 
   public:
-    QgsGlobeFeatureOptions( const ConfigOptions& opt = ConfigOptions() )
-        : osgEarth::Features::FeatureSourceOptions( opt )
+    QgsGlobeFeatureOptions( const ConfigOptions &opt = ConfigOptions() )
+      : osgEarth::Features::FeatureSourceOptions( opt )
     {
       // Call the driver declared as "osgearth_feature_qgis"
       setDriver( "qgis" );
@@ -52,21 +52,21 @@ class QgsGlobeFeatureOptions : public osgEarth::Features::FeatureSourceOptions /
       return conf;
     }
 
-    osgEarth::optional<std::string>& layerId() { return mLayerId; }
-    const osgEarth::optional<std::string>& layerId() const { return mLayerId; }
+    osgEarth::optional<std::string> &layerId() { return mLayerId; }
+    const osgEarth::optional<std::string> &layerId() const { return mLayerId; }
 
-    QgsVectorLayer* layer() const { return mLayer; }
-    void setLayer( QgsVectorLayer* layer ) { mLayer = layer; }
+    QgsVectorLayer *layer() const { return mLayer; }
+    void setLayer( QgsVectorLayer *layer ) { mLayer = layer; }
 
   protected:
-    void mergeConfig( const osgEarth::Config& conf ) override
+    void mergeConfig( const osgEarth::Config &conf ) override
     {
       osgEarth::Features::FeatureSourceOptions::mergeConfig( conf );
       fromConfig( conf );
     }
 
   private:
-    void fromConfig( const osgEarth::Config& conf )
+    void fromConfig( const osgEarth::Config &conf )
     {
       conf.getIfSet( "layerId", mLayerId );
       RefPtr< QgsVectorLayer > *layer_ptr = conf.getNonSerializable< RefPtr< QgsVectorLayer > >( "layer" );
@@ -74,7 +74,7 @@ class QgsGlobeFeatureOptions : public osgEarth::Features::FeatureSourceOptions /
     }
 
     osgEarth::optional<std::string> mLayerId;
-    QgsVectorLayer*       mLayer;
+    QgsVectorLayer *mLayer = nullptr;
 };
 
 #endif // QGSGLOBEFEATUREOPTIONS_H

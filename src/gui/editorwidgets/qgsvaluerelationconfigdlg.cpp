@@ -18,23 +18,23 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
 
-QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
   mLayerName->setFilters( QgsMapLayerProxyModel::VectorLayer );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mKeyColumn, &QgsFieldComboBox::setLayer );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mValueColumn, &QgsFieldComboBox::setLayer );
-  connect( mEditExpression, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
+  connect( mEditExpression, &QAbstractButton::clicked, this, &QgsValueRelationConfigDlg::editExpression );
 
-  connect( mLayerName, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SIGNAL( changed() ) );
-  connect( mKeyColumn, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( changed() ) );
-  connect( mValueColumn, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( changed() ) );
-  connect( mAllowMulti, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mAllowNull, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mOrderByValue, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-  connect( mFilterExpression, SIGNAL( textChanged() ), this, SIGNAL( changed() ) );
-  connect( mUseCompleter, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+  connect( mLayerName, &QgsMapLayerComboBox::layerChanged, this, &QgsEditorConfigWidget::changed );
+  connect( mKeyColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( mValueColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( mAllowMulti, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mAllowNull, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mOrderByValue, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mFilterExpression, &QTextEdit::textChanged, this, &QgsEditorConfigWidget::changed );
+  connect( mUseCompleter, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
 }
 
 QVariantMap QgsValueRelationConfigDlg::config()
@@ -53,9 +53,9 @@ QVariantMap QgsValueRelationConfigDlg::config()
   return cfg;
 }
 
-void QgsValueRelationConfigDlg::setConfig( const QVariantMap& config )
+void QgsValueRelationConfigDlg::setConfig( const QVariantMap &config )
 {
-  QgsVectorLayer* lyr = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( config.value( QStringLiteral( "Layer" ) ).toString() ) );
+  QgsVectorLayer *lyr = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( config.value( QStringLiteral( "Layer" ) ).toString() ) );
   mLayerName->setLayer( lyr );
   mKeyColumn->setField( config.value( QStringLiteral( "Key" ) ).toString() );
   mValueColumn->setField( config.value( QStringLiteral( "Value" ) ).toString() );
@@ -68,14 +68,14 @@ void QgsValueRelationConfigDlg::setConfig( const QVariantMap& config )
 
 void QgsValueRelationConfigDlg::editExpression()
 {
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer*>( mLayerName->currentLayer() );
+  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerName->currentLayer() );
   if ( !vl )
     return;
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vl ) );
 
   QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this, QStringLiteral( "generic" ), context );
-  dlg.setWindowTitle( tr( "Edit filter expression" ) );
+  dlg.setWindowTitle( tr( "Edit Filter Expression" ) );
 
   if ( dlg.exec() == QDialog::Accepted )
   {

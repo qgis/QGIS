@@ -29,30 +29,65 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsRectangle
+from qgis.core import (QgsProcessingUtils,
+                       QgsProcessing,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterRasterDestination,
+                       QgsWkbTypes,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingException,
+                       QgsCoordinateReferenceSystem)
 from qgis.analysis import (QgsInterpolator,
                            QgsTINInterpolator,
-                           QgsGridFileWriter
-                           )
+                           QgsGridFileWriter)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import (Parameter,
-                                        ParameterNumber,
-                                        ParameterExtent,
-                                        ParameterSelection,
-                                        _splitParameterOptions
-                                        )
-from processing.core.outputs import (OutputRaster,
-                                     OutputVector
-                                     )
-from processing.tools import dataobjects
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class TinInterpolation(GeoAlgorithm):
+class ParameterInterpolationData(QgsProcessingParameterDefinition):
 
+    def __init__(self, name='', description=''):
+        super().__init__(name, description)
+        self.setMetadata({
+            'widget_wrapper': 'processing.algs.qgis.ui.InterpolationDataWidget.InterpolationDataWidgetWrapper'
+        })
+
+    def type(self):
+        return 'tin_interpolation_data'
+
+    def clone(self):
+        return ParameterInterpolationData(self.name(), self.description())
+
+    @staticmethod
+    def parseValue(value):
+        if value is None:
+            return None
+
+        if value == '':
+            return None
+
+        if isinstance(value, str):
+            return value if value != '' else None
+        else:
+            return ParameterInterpolationData.dataToString(value)
+
+    @staticmethod
+    def dataToString(data):
+        s = ''
+        for c in data:
+            s += '{}, {}, {:d}, {:d};'.format(c[0],
+                                              c[1],
+                                              c[2],
+                                              c[3])
+        return s[:-1]
+
+
+class TinInterpolation(QgisAlgorithm):
     INTERPOLATION_DATA = 'INTERPOLATION_DATA'
     METHOD = 'METHOD'
     COLUMNS = 'COLUMNS'
@@ -60,127 +95,92 @@ class TinInterpolation(GeoAlgorithm):
     CELLSIZE_X = 'CELLSIZE_X'
     CELLSIZE_Y = 'CELLSIZE_Y'
     EXTENT = 'EXTENT'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
-    TRIANULATION_FILE = 'TRIANULATION_FILE'
+    OUTPUT = 'OUTPUT'
+    TRIANGULATION = 'TRIANGULATION'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'interpolation.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('TIN interpolation')
-        self.group, self.i18n_group = self.trAlgorithm('Interpolation')
+    def group(self):
+        return self.tr('Interpolation')
 
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.METHODS = [self.tr('Linear'),
                         self.tr('Clough-Toucher (cubic)')
                         ]
 
-        class ParameterInterpolationData(Parameter):
-            default_metadata = {
-                'widget_wrapper': 'processing.algs.qgis.ui.InterpolationDataWidget.InterpolationDataWidgetWrapper'
-            }
-
-            def __init__(self, name='', description=''):
-                Parameter.__init__(self, name, description)
-
-            def setValue(self, value):
-                if value is None:
-                    if not self.optional:
-                        return False
-                    self.value = None
-                    return True
-
-                if value == '':
-                    if not self.optional:
-                        return False
-
-                if isinstance(value, str):
-                    self.value = value if value != '' else None
-                else:
-                    self.value = ParameterInterpolationData.dataToString(value)
-                return True
-
-            def getValueAsCommandLineParameter(self):
-                return '"{}"'.format(self.value)
-
-            def getAsScriptCode(self):
-                param_type = ''
-                param_type += 'interpolation data '
-                return '##' + self.name + '=' + param_type
-
-            @classmethod
-            def fromScriptCode(self, line):
-                isOptional, name, definition = _splitParameterOptions(line)
-                descName = _createDescriptiveName(name)
-                parent = definition.lower().strip()[len('interpolation data') + 1:]
-                return ParameterInterpolationData(name, description, parent)
-
-            @staticmethod
-            def dataToString(data):
-                s = ''
-                for d in data:
-                    s += '{}, {}, {:d}, {:d};'.format(c[0],
-                                                      c[1],
-                                                      c[2],
-                                                      c[3])
-                return s[:-1]
-
         self.addParameter(ParameterInterpolationData(self.INTERPOLATION_DATA,
                                                      self.tr('Input layer(s)')))
-        self.addParameter(ParameterSelection(self.METHOD,
-                                             self.tr('Interpolation method'),
-                                             self.METHODS,
-                                             0))
-        self.addParameter(ParameterNumber(self.COLUMNS,
-                                          self.tr('Number of columns'),
-                                          0, 10000000, 300))
-        self.addParameter(ParameterNumber(self.ROWS,
-                                          self.tr('Number of rows'),
-                                          0, 10000000, 300))
-        self.addParameter(ParameterNumber(self.CELLSIZE_X,
-                                          self.tr('Cell size X'),
-                                          0.0, 999999.000000, 0.0))
-        self.addParameter(ParameterNumber(self.CELLSIZE_Y,
-                                          self.tr('Cell size Y'),
-                                          0.0, 999999.000000, 0.0))
-        self.addParameter(ParameterExtent(self.EXTENT,
-                                          self.tr('Extent'),
-                                          optional=False))
-        self.addOutput(OutputRaster(self.OUTPUT_LAYER,
-                                    self.tr('Interpolated')))
-        self.addOutput(OutputVector(self.TRIANULATION_FILE,
-                                    self.tr('Triangulation'),
-                                    ))  # datatype=dataobjects.TYPE_VECTOR_LINE))
+        self.addParameter(QgsProcessingParameterEnum(self.METHOD,
+                                                     self.tr('Interpolation method'),
+                                                     options=self.METHODS,
+                                                     defaultValue=0))
+        self.addParameter(QgsProcessingParameterNumber(self.COLUMNS,
+                                                       self.tr('Number of columns'),
+                                                       minValue=0, maxValue=10000000, defaultValue=300))
+        self.addParameter(QgsProcessingParameterNumber(self.ROWS,
+                                                       self.tr('Number of rows'),
+                                                       minValue=0, maxValue=10000000, defaultValue=300))
+        self.addParameter(QgsProcessingParameterNumber(self.CELLSIZE_X,
+                                                       self.tr('Cell size X'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0, maxValue=999999.000000, defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterNumber(self.CELLSIZE_Y,
+                                                       self.tr('Cell size Y'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0, maxValue=999999.000000, defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
+                                                       self.tr('Extent'),
+                                                       optional=False))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
+                                                                  self.tr('Interpolated')))
 
-    def processAlgorithm(self, feedback):
-        interpolationData = self.getParameterValue(self.INTERPOLATION_DATA)
-        method = self.getParameterValue(self.METHOD)
-        columns = self.getParameterValue(self.COLUMNS)
-        rows = self.getParameterValue(self.ROWS)
-        cellsizeX = self.getParameterValue(self.CELLSIZE_X)
-        cellsizeY = self.getParameterValue(self.CELLSIZE_Y)
-        extent = self.getParameterValue(self.EXTENT).split(',')
-        output = self.getOutputValue(self.OUTPUT_LAYER)
-        triangulation = self.getOutputValue(self.TRIANULATION_FILE)
+        triangulation_file_param = QgsProcessingParameterFeatureSink(self.TRIANGULATION,
+                                                                     self.tr('Triangulation'),
+                                                                     type=QgsProcessing.TypeVectorLine,
+                                                                     optional=True)
+        triangulation_file_param.setCreateByDefault(False)
+        self.addParameter(triangulation_file_param)
+
+    def name(self):
+        return 'tininterpolation'
+
+    def displayName(self):
+        return self.tr('TIN interpolation')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        interpolationData = ParameterInterpolationData.parseValue(parameters[self.INTERPOLATION_DATA])
+        method = self.parameterAsEnum(parameters, self.METHOD, context)
+        columns = self.parameterAsInt(parameters, self.COLUMNS, context)
+        rows = self.parameterAsInt(parameters, self.ROWS, context)
+        cellsizeX = self.parameterAsDouble(parameters, self.CELLSIZE_X, context)
+        cellsizeY = self.parameterAsDouble(parameters, self.CELLSIZE_Y, context)
+        bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
+        output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         if interpolationData is None:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('You need to specify at least one input layer.'))
 
         if cellsizeX == 0.0 or cellsizeY == 0.0:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Cellsize should be greater than 0.'))
 
-        xMin = float(extent[0])
-        xMax = float(extent[1])
-        yMin = float(extent[2])
-        yMax = float(extent[3])
-        bbox = QgsRectangle(xMin, yMin, xMax, yMax)
-
         layerData = []
+        layers = []
+        crs = QgsCoordinateReferenceSystem()
         for row in interpolationData.split(';'):
             v = row.split(',')
             data = QgsInterpolator.LayerData()
-            data.vectorLayer = dataobjects.getObjectFromUri(v[0])
+
+            # need to keep a reference until interpolation is complete
+            layer = QgsProcessingUtils.mapLayerFromString(v[0], context)
+            data.vectorLayer = layer
+            layers.append(layer)
+            if not crs.isValid():
+                crs = layer.crs()
+
             data.zCoordInterpolation = bool(v[1])
             data.interpolationAttribute = int(v[2])
             if v[3] == '0':
@@ -196,9 +196,12 @@ class TinInterpolation(GeoAlgorithm):
         else:
             interpolationMethod = QgsTINInterpolator.CloughTocher
 
-        interpolator = QgsTINInterpolator(layerData, interpolationMethod)
-        interpolator.setExportTriangulationToFile(True)
-        interpolator.setTriangulationFilePath(triangulation)
+        (triangulation_sink, triangulation_dest_id) = self.parameterAsSink(parameters, self.TRIANGULATION, context,
+                                                                           QgsTINInterpolator.triangulationFields(), QgsWkbTypes.LineString, crs)
+
+        interpolator = QgsTINInterpolator(layerData, interpolationMethod, feedback)
+        if triangulation_sink is not None:
+            interpolator.setTriangulationSink(triangulation_sink)
 
         writer = QgsGridFileWriter(interpolator,
                                    output,
@@ -208,4 +211,5 @@ class TinInterpolation(GeoAlgorithm):
                                    cellsizeX,
                                    cellsizeY)
 
-        writer.writeFile()
+        writer.writeFile(feedback)
+        return {self.OUTPUT: output, self.TRIANGULATION: triangulation_dest_id}

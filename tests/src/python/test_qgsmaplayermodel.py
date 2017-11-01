@@ -159,7 +159,7 @@ class TestQgsMapLayerModel(unittest.TestCase):
         l2 = create_layer('l2')
         QgsProject.instance().addMapLayers([l1, l2])
         m = QgsMapLayerModel()
-        l3 = create_layer('l3') # not in registry
+        l3 = create_layer('l3')  # not in registry
 
         self.assertEqual(m.indexFromLayer(l1).row(), 0)
         self.assertEqual(m.indexFromLayer(l2).row(), 1)
@@ -356,6 +356,7 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertFalse(m.setData(m.index(3, 0), True, Qt.CheckStateRole))
 
         QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
+
 
 if __name__ == '__main__':
     unittest.main()

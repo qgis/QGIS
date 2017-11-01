@@ -56,13 +56,13 @@ class MetaSearchPlugin(object):
 
         # run
         run_icon = QIcon('%s/%s' % (self.context.ppath,
-                                    'images/MetaSearch.png'))
+                                    'images/MetaSearch.svg'))
         self.action_run = QAction(run_icon, 'MetaSearch',
                                   self.iface.mainWindow())
         self.action_run.setWhatsThis(QCoreApplication.translate('MetaSearch',
                                                                 'MetaSearch plugin'))
         self.action_run.setStatusTip(QCoreApplication.translate('MetaSearch',
-                                                                'Search Metadata Catalogues'))
+                                                                'Search Metadata Catalogs'))
 
         self.action_run.triggered.connect(self.run)
 

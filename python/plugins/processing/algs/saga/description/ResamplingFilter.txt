@@ -1,0 +1,6 @@
+Resampling Filter
+grid_filter
+ParameterRaster|GRID|Grid|False
+OutputRaster|LOPASS|Low Pass Filter
+OutputRaster|HIPASS|High Pass Filter
+ParameterNumber|SCALE|Scale Factor| 1.000000|None| 10.000000

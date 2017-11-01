@@ -14,11 +14,12 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsFeatureRenderer,
-                       QgsRendererAbstractMetadata,
-                       QgsRendererRegistry,
+from qgis.core import (QgsRendererAbstractMetadata,
                        QgsApplication,
-                       QgsVectorLayer
+                       QgsVectorLayer,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint
                        )
 from qgis.testing import start_app, unittest
 
@@ -32,11 +33,11 @@ def createReferencingLayer():
     f1 = QgsFeature()
     f1.setFields(layer.pendingFields())
     f1.setAttributes(["test1", 123])
-    f1.setGeometry(QgsGeometry.fromPoint(QgsPoint(100, 200)))
+    f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
     f2 = QgsFeature()
     f2.setFields(layer.pendingFields())
     f2.setAttributes(["test2", 123])
-    f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(101, 201)))
+    f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(101, 201)))
     assert pr.addFeatures([f1, f2])
     return layer
 
@@ -99,7 +100,7 @@ class TestQgsRendererV2Registry(unittest.TestCase):
         self.assertTrue(QgsApplication.rendererRegistry().addRenderer(TestRenderer('test3')))
         self.assertTrue('test3' in QgsApplication.rendererRegistry().renderersList())
 
-        # try removing it again - should be ok this time
+        # try removing it again - should be OK this time
         self.assertTrue(QgsApplication.rendererRegistry().removeRenderer('test3'))
         self.assertFalse('test3' in QgsApplication.rendererRegistry().renderersList())
 
@@ -172,6 +173,7 @@ class TestQgsRendererV2Registry(unittest.TestCase):
         self.assertEqual(QgsApplication.rendererRegistry().renderersList(point_layer), ['singleSymbol', 'test1', 'test4'])
         self.assertEqual(QgsApplication.rendererRegistry().renderersList(line_layer), ['singleSymbol', 'test2', 'test4'])
         self.assertEqual(QgsApplication.rendererRegistry().renderersList(polygon_layer), ['singleSymbol', 'test3'])
+
 
 if __name__ == '__main__':
     unittest.main()

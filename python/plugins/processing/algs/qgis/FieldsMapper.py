@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import print_function
-from builtins import str
-from builtins import range
 
 __author__ = 'Arnaud Morvan'
 __date__ = 'October 2014'
@@ -28,145 +25,143 @@ __copyright__ = '(C) 2014, Arnaud Morvan'
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import (
+    QgsDistanceArea,
+    QgsExpression,
+    QgsField,
+    QgsFields,
+    QgsProcessing,
+    QgsProcessingException,
+    QgsProcessingParameterDefinition)
 
-from qgis.core import QgsField, QgsExpression, QgsExpressionContext, QgsExpressionContextUtils, QgsDistanceArea, QgsProject, QgsFeature, GEO_NONE
-from qgis.utils import iface
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import Parameter
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class FieldsMapper(GeoAlgorithm):
+class FieldsMapper(QgisFeatureBasedAlgorithm):
 
     INPUT_LAYER = 'INPUT_LAYER'
     FIELDS_MAPPING = 'FIELDS_MAPPING'
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
-    def __init__(self):
-        GeoAlgorithm.__init__(self)
-        self.mapping = None
+    def group(self):
+        return self.tr('Vector table')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Refactor fields')
-        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
-        self.addParameter(ParameterTable(self.INPUT_LAYER,
-                                         self.tr('Input layer'),
-                                         False))
+    def initParameters(self, config=None):
 
-        class ParameterFieldsMapping(Parameter):
+        class ParameterFieldsMapping(QgsProcessingParameterDefinition):
 
-            default_metadata = {
-                'widget_wrapper': 'processing.algs.qgis.ui.FieldsMappingPanel.FieldsMappingWidgetWrapper'
-            }
+            def __init__(self, name, description, parentLayerParameterName='INPUT'):
+                super().__init__(name, description)
+                self._parentLayerParameter = parentLayerParameterName
 
-            def __init__(self, name='', description='', parent=None):
-                Parameter.__init__(self, name, description)
-                self.parent = parent
-                self.value = []
+            def clone(self):
+                copy = ParameterFieldsMapping(self.name(), self.description(), self._parentLayerParameter)
+                return copy
 
-            def getValueAsCommandLineParameter(self):
-                return '"' + str(self.value) + '"'
+            def type(self):
+                return 'fields_mapping'
 
-            def setValue(self, value):
-                if value is None:
+            def checkValueIsAcceptable(self, value, context=None):
+                if not isinstance(value, list):
                     return False
-                if isinstance(value, list):
-                    self.value = value
-                    return True
-                if isinstance(value, str):
-                    try:
-                        self.value = eval(value)
-                        return True
-                    except Exception as e:
-                        # fix_print_with_import
-                        print(str(e))  # display error in console
+                for field_def in value:
+                    if not isinstance(field_def, dict):
                         return False
-                return False
+                    if 'name' not in field_def.keys():
+                        return False
+                    if 'type' not in field_def.keys():
+                        return False
+                    if 'expression' not in field_def.keys():
+                        return False
+                return True
 
-        self.addParameter(ParameterFieldsMapping(self.FIELDS_MAPPING,
-                                                 self.tr('Fields mapping'),
-                                                 self.INPUT_LAYER))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER,
-                                    self.tr('Refactored'),
-                                    base_input=self.INPUT_LAYER))
+            def valueAsPythonString(self, value, context):
+                return str(value)
 
-    def processAlgorithm(self, feedback):
-        layer = self.getParameterValue(self.INPUT_LAYER)
-        mapping = self.getParameterValue(self.FIELDS_MAPPING)
-        output = self.getOutputFromName(self.OUTPUT_LAYER)
+            def asScriptCode(self):
+                raise NotImplementedError()
 
-        layer = dataobjects.getObjectFromUri(layer)
-        fields = []
-        expressions = []
+            @classmethod
+            def fromScriptCode(cls, name, description, isOptional, definition):
+                raise NotImplementedError()
+
+            def parentLayerParameter(self):
+                return self._parentLayerParameter
+
+        fields_mapping = ParameterFieldsMapping(self.FIELDS_MAPPING,
+                                                description=self.tr('Fields mapping'))
+        fields_mapping.setMetadata({
+            'widget_wrapper': 'processing.algs.qgis.ui.FieldsMappingPanel.FieldsMappingWidgetWrapper'
+        })
+        self.addParameter(fields_mapping)
+
+    def name(self):
+        return 'refactorfields'
+
+    def displayName(self):
+        return self.tr('Refactor fields')
+
+    def outputName(self):
+        return self.tr('Refactored')
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVector]
+
+    def parameterAsFieldsMapping(self, parameters, name, context):
+        return parameters[name]
+
+    def prepareAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, 'INPUT', context)
+        mapping = self.parameterAsFieldsMapping(parameters, self.FIELDS_MAPPING, context)
+
+        self.fields = QgsFields()
+        self.expressions = []
 
         da = QgsDistanceArea()
-        da.setSourceCrs(layer.crs().srsid())
-        da.setEllipsoidalMode(
-            iface.mapCanvas().mapSettings().hasCrsTransformEnabled())
-        da.setEllipsoid(QgsProject.instance().readEntry(
-            'Measure', '/Ellipsoid', GEO_NONE)[0])
-
-        exp_context = layer.createExpressionContext()
+        da.setSourceCrs(source.sourceCrs())
+        da.setEllipsoid(context.project().ellipsoid())
 
         for field_def in mapping:
-            fields.append(QgsField(name=field_def['name'],
-                                   type=field_def['type'],
-                                   len=field_def['length'],
-                                   prec=field_def['precision']))
-
+            self.fields.append(QgsField(name=field_def['name'],
+                                        type=field_def['type'],
+                                        typeName="",
+                                        len=field_def.get('length', 0),
+                                        prec=field_def.get('precision', 0)))
             expression = QgsExpression(field_def['expression'])
             expression.setGeomCalculator(da)
-            expression.setDistanceUnits(QgsProject.instance().distanceUnits())
-            expression.setAreaUnits(QgsProject.instance().areaUnits())
-            expression.prepare(exp_context)
+            expression.setDistanceUnits(context.project().distanceUnits())
+            expression.setAreaUnits(context.project().areaUnits())
             if expression.hasParserError():
-                raise GeoAlgorithmExecutionException(
+                raise QgsProcessingException(
                     self.tr(u'Parser error in expression "{}": {}')
-                    .format(unicode(expression.expression()),
-                            unicode(expression.parserErrorString())))
-            expressions.append(expression)
+                    .format(str(expression.expression()),
+                            str(expression.parserErrorString())))
+            self.expressions.append(expression)
+        return True
 
-        writer = output.getVectorWriter(fields,
-                                        layer.wkbType(),
-                                        layer.crs())
+    def outputFields(self, inputFields):
+        return self.fields
 
-        # Create output vector layer with new attributes
-        error_exp = None
-        inFeat = QgsFeature()
-        outFeat = QgsFeature()
-        features = vector.features(layer)
-        total = 100.0 / len(features)
-        for current, inFeat in enumerate(features):
-            rownum = current + 1
+    def processAlgorithm(self, parameters, context, feeback):
+        # create an expression context using thead safe processing context
+        self.expr_context = self.createExpressionContext(parameters, context)
+        for expression in self.expressions:
+            expression.prepare(self.expr_context)
+        self._row_number = 0
+        return super().processAlgorithm(parameters, context, feeback)
 
-            geometry = inFeat.geometry()
-            outFeat.setGeometry(geometry)
-
-            attrs = []
-            for i in range(0, len(mapping)):
-                field_def = mapping[i]
-                expression = expressions[i]
-                exp_context.setFeature(inFeat)
-                exp_context.lastScope().setVariable("row_number", rownum)
-                value = expression.evaluate(exp_context)
-                if expression.hasEvalError():
-                    error_exp = expression
-                    break
-
-                attrs.append(value)
-            outFeat.setAttributes(attrs)
-
-            writer.addFeature(outFeat)
-
-            feedback.setProgress(int(current * total))
-
-        del writer
-
-        if error_exp is not None:
-            raise GeoAlgorithmExecutionException(
-                self.tr(u'Evaluation error in expression "{}": {}')
-                    .format(unicode(error_exp.expression()),
-                            unicode(error_exp.parserErrorString())))
+    def processFeature(self, feature, feedback):
+        attributes = []
+        for expression in self.expressions:
+            self.expr_context.setFeature(feature)
+            self.expr_context.lastScope().setVariable("row_number", self._row_number)
+            value = expression.evaluate(self.expr_context)
+            if expression.hasEvalError():
+                raise QgsProcessingException(
+                    self.tr(u'Evaluation error in expression "{}": {}')
+                        .format(str(expression.expression()),
+                                str(expression.parserErrorString())))
+            attributes.append(value)
+        feature.setAttributes(attributes)
+        self._row_number += 1
+        return feature

@@ -1,0 +1,26 @@
+# black list
+PyQgsJsonUtils
+PyQgsLocalServer
+PyQgsPalLabelingServer
+qgis_composermapgridtest
+qgis_composerutils
+ProcessingGrass7AlgorithmsImageryTest
+ProcessingGrass7AlgorithmsRasterTest
+PyQgsDBManagerGpkg
+PyQgsAppStartup
+
+# temporary during processing refactoring
+ProcessingParametersTest
+
+# code layout tests are run on separate build
+qgis_spelling
+qgis_sipify
+qgis_sip_include
+qgis_sip_uptodate
+
+# flacky
+qgis_filedownloader
+qgis_openstreetmaptest
+qgis_wcsprovidertest
+PyQgsWFSProviderGUI
+qgis_ziplayertest

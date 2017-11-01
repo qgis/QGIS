@@ -46,7 +46,7 @@
        <item>
         <widget class="QToolButton" name="btnInfoCa">
          <property name="text">
-          <string>...</string>
+          <string>…</string>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
@@ -60,7 +60,7 @@
           <string>Group by organization</string>
          </property>
          <property name="text">
-          <string>...</string>
+          <string>…</string>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">

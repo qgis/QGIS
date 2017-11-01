@@ -20,13 +20,16 @@
 #define QGSRASTERCALCNODE_H
 
 #include <QMap>
+#include "qgis_sip.h"
+#include "qgis.h"
 #include <QString>
 #include "qgis_analysis.h"
 
 class QgsRasterBlock;
 class QgsRasterMatrix;
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * \class QgsRasterCalcNode
  */
 class ANALYSIS_EXPORT QgsRasterCalcNode
@@ -70,44 +73,53 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       opNONE,
     };
 
-    QgsRasterCalcNode();
+    /**
+     * Constructor for QgsRasterCalcNode.
+     */
+    QgsRasterCalcNode() = default;
+
     QgsRasterCalcNode( double number );
-    QgsRasterCalcNode( QgsRasterMatrix* matrix );
-    QgsRasterCalcNode( Operator op, QgsRasterCalcNode* left, QgsRasterCalcNode* right );
-    QgsRasterCalcNode( const QString& rasterName );
+    QgsRasterCalcNode( QgsRasterMatrix *matrix );
+    QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right );
+    QgsRasterCalcNode( const QString &rasterName );
     ~QgsRasterCalcNode();
 
     //! QgsRasterCalcNode cannot be copied
-    QgsRasterCalcNode( const QgsRasterCalcNode& rh ) = delete;
+    QgsRasterCalcNode( const QgsRasterCalcNode &rh ) = delete;
     //! QgsRasterCalcNode cannot be copied
-    QgsRasterCalcNode& operator=( const QgsRasterCalcNode& rh ) = delete;
+    QgsRasterCalcNode &operator=( const QgsRasterCalcNode &rh ) = delete;
 
     Type type() const { return mType; }
 
     //set left node
-    void setLeft( QgsRasterCalcNode* left ) { delete mLeft; mLeft = left; }
-    void setRight( QgsRasterCalcNode* right ) { delete mRight; mRight = right; }
+    void setLeft( QgsRasterCalcNode *left ) { delete mLeft; mLeft = left; }
+    void setRight( QgsRasterCalcNode *right ) { delete mRight; mRight = right; }
 
-    /** Calculates result of raster calculation (might be real matrix or single number).
-     * @param rasterData input raster data references, map of raster name to raster data block
-     * @param result destination raster matrix for calculation results
-     * @param row optional row number to calculate for calculating result by rows, or -1 to
+    /**
+     * Calculates result of raster calculation (might be real matrix or single number).
+     * \param rasterData input raster data references, map of raster name to raster data block
+     * \param result destination raster matrix for calculation results
+     * \param row optional row number to calculate for calculating result by rows, or -1 to
      * calculate entire result
-     * @note added in QGIS 2.10
-     * @note not available in Python bindings
+     * \since QGIS 2.10
+     * \note not available in Python bindings
      */
-    bool calculate( QMap<QString, QgsRasterBlock* >& rasterData, QgsRasterMatrix& result, int row = -1 ) const;
+    bool calculate( QMap<QString, QgsRasterBlock * > &rasterData, QgsRasterMatrix &result, int row = -1 ) const SIP_SKIP;
 
-    static QgsRasterCalcNode* parseRasterCalcString( const QString& str, QString& parserErrorMsg );
+    static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) SIP_FACTORY;
 
   private:
-    Type mType;
-    QgsRasterCalcNode* mLeft;
-    QgsRasterCalcNode* mRight;
-    double mNumber;
+#ifdef SIP_RUN
+    QgsRasterCalcNode( const QgsRasterCalcNode &rh );
+#endif
+
+    Type mType = tNumber;
+    QgsRasterCalcNode *mLeft = nullptr;
+    QgsRasterCalcNode *mRight = nullptr;
+    double mNumber = 0;
     QString mRasterName;
-    QgsRasterMatrix* mMatrix;
-    Operator mOperator;
+    QgsRasterMatrix *mMatrix = nullptr;
+    Operator mOperator = opNONE;
 
 };
 

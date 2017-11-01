@@ -22,11 +22,11 @@ email                : jef at norbit dot de
 #include <QMetaType>
 
 QgsOracleColumnTypeThread::QgsOracleColumnTypeThread( QString name, bool useEstimatedMetadata, bool allowGeometrylessTables )
-    : QThread()
-    , mName( name )
-    , mUseEstimatedMetadata( useEstimatedMetadata )
-    , mAllowGeometrylessTables( allowGeometrylessTables )
-    , mStopped( false )
+  : QThread()
+  , mName( name )
+  , mUseEstimatedMetadata( useEstimatedMetadata )
+  , mAllowGeometrylessTables( allowGeometrylessTables )
+  , mStopped( false )
 {
   qRegisterMetaType<QgsOracleLayerProperty>( "QgsOracleLayerProperty" );
 }

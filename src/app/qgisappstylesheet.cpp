@@ -20,23 +20,15 @@
 #include "qgsapplication.h"
 #include "qgisapp.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QFont>
-#include <QSettings>
 #include <QStyle>
 
-/** @class QgisAppStyleSheet
- * @brief Adjustable stylesheet for the Qgis application
- */
-
 QgisAppStyleSheet::QgisAppStyleSheet( QObject *parent )
-    : QObject( parent )
+  : QObject( parent )
 {
   setActiveValues();
-}
-
-QgisAppStyleSheet::~QgisAppStyleSheet()
-{
 }
 
 QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
@@ -46,11 +38,11 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   // the following default values, before insertion in opts, can be
   // configured using the platforms and window servers defined in the
   // constructor to set reasonable non-Qt defaults for the app stylesheet
-  QSettings settings;
-  // handle move from old QSettings group (/) to new (/qgis/stylesheet)
-  // NOTE: don't delete old QSettings keys, in case user is also running older QGIS
-  QVariant oldFontPointSize = settings.value( QStringLiteral( "/fontPointSize" ) );
-  QVariant oldFontFamily = settings.value( QStringLiteral( "/fontFamily" ) );
+  QgsSettings settings;
+  // handle move from old QgsSettings group (/) to new (/qgis/stylesheet)
+  // NOTE: don't delete old QgsSettings keys, in case user is also running older QGIS
+  QVariant oldFontPointSize = settings.value( QStringLiteral( "fontPointSize" ) );
+  QVariant oldFontFamily = settings.value( QStringLiteral( "fontFamily" ) );
 
   settings.beginGroup( QStringLiteral( "qgis/stylesheet" ) );
 
@@ -87,17 +79,17 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   QgsDebugMsg( QString( "fontFamily: %1" ).arg( fontFamily ) );
   opts.insert( QStringLiteral( "fontFamily" ), QVariant( fontFamily ) );
 
-  bool gbxCustom = ( mMacStyle ? true : false );
+  bool gbxCustom = ( mMacStyle );
   opts.insert( QStringLiteral( "groupBoxCustom" ), settings.value( QStringLiteral( "groupBoxCustom" ), QVariant( gbxCustom ) ) );
 
   settings.endGroup(); // "qgis/stylesheet"
 
-  opts.insert( QStringLiteral( "iconSize" ), settings.value( QStringLiteral( "/IconSize" ), QGIS_ICON_SIZE ) );
+  opts.insert( QStringLiteral( "iconSize" ), settings.value( QStringLiteral( "IconSize" ), QGIS_ICON_SIZE ) );
 
   return opts;
 }
 
-void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
+void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
 {
   QString ss;
 
@@ -151,8 +143,11 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
 
   //sidebar style
   QString style = "QListWidget#mOptionsListWidget {"
-                  "    background-color: rgb(69, 69, 69, 220);"
+                  "    background-color: rgb(69, 69, 69, 0);"
                   "    outline: 0;"
+                  "}"
+                  "QFrame#mOptionsListFrame {"
+                  "    background-color: rgb(69, 69, 69, 220);"
                   "}"
                   "QListWidget#mOptionsListWidget::item {"
                   "    color: white;"
@@ -180,9 +175,9 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
   emit appStyleSheetChanged( ss );
 }
 
-void QgisAppStyleSheet::saveToSettings( const QMap<QString, QVariant>& opts )
+void QgisAppStyleSheet::saveToSettings( const QMap<QString, QVariant> &opts )
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( QStringLiteral( "qgis/stylesheet" ) );
 
   QMap<QString, QVariant>::const_iterator opt = opts.constBegin();
@@ -199,16 +194,16 @@ void QgisAppStyleSheet::setActiveValues()
   mStyle = qApp->style()->objectName(); // active style name (lowercase)
   QgsDebugMsg( QString( "Style name: %1" ).arg( mStyle ) );
 
-  mMotifStyle = mStyle.contains( QLatin1String( "motif" ) ) ? true : false; // motif
-  mCdeStyle = mStyle.contains( QLatin1String( "cde" ) ) ? true : false; // cde
-  mPlastqStyle = mStyle.contains( QLatin1String( "plastique" ) ) ? true : false; // plastique
-  mCleanLkStyle = mStyle.contains( QLatin1String( "cleanlooks" ) ) ? true : false; // cleanlooks
-  mGtkStyle = mStyle.contains( QLatin1String( "gtk" ) ) ? true : false; // gtk+
-  mWinStyle = mStyle.contains( QLatin1String( "windows" ) ) ? true : false; // windows
-  mWinXpStyle = mStyle.contains( QLatin1String( "windowsxp" ) ) ? true : false; // windowsxp
-  mWinVistaStyle = mStyle.contains( QLatin1String( "windowsvista" ) ) ? true : false; // windowsvista
-  mMacStyle = mStyle.contains( QLatin1String( "macintosh" ) ) ? true : false; // macintosh (aqua)
-  mOxyStyle = mStyle.contains( QLatin1String( "oxygen" ) ) ? true : false; // oxygen
+  mMotifStyle = mStyle.contains( QLatin1String( "motif" ) ); // motif
+  mCdeStyle = mStyle.contains( QLatin1String( "cde" ) ); // cde
+  mPlastqStyle = mStyle.contains( QLatin1String( "plastique" ) ); // plastique
+  mCleanLkStyle = mStyle.contains( QLatin1String( "cleanlooks" ) ); // cleanlooks
+  mGtkStyle = mStyle.contains( QLatin1String( "gtk" ) ); // gtk+
+  mWinStyle = mStyle.contains( QLatin1String( "windows" ) ); // windows
+  mWinXpStyle = mStyle.contains( QLatin1String( "windowsxp" ) ); // windowsxp
+  mWinVistaStyle = mStyle.contains( QLatin1String( "windowsvista" ) ); // windowsvista
+  mMacStyle = mStyle.contains( QLatin1String( "macintosh" ) ); // macintosh (aqua)
+  mOxyStyle = mStyle.contains( QLatin1String( "oxygen" ) ); // oxygen
 
   mDefaultFont = qApp->font(); // save before it is changed in any way
 

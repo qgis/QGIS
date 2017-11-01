@@ -22,10 +22,6 @@
 
 #include <QFileInfo>
 
-
-QgsGrassUtils::QgsGrassUtils() {}
-QgsGrassUtils::~QgsGrassUtils() {}
-
 QString QgsGrassUtils::vectorLayerName( QString map, QString layer,
                                         int nLayers )
 {
@@ -82,22 +78,13 @@ QString QgsGrassUtils::htmlBrowserPath()
 }
 
 QgsGrassElementDialog::QgsGrassElementDialog( QWidget *parent )
-    : QObject()
-    , mDialog( 0 )
-    , mLineEdit( 0 )
-    , mLabel( 0 )
-    , mErrorLabel( 0 )
-    , mOkButton( 0 )
-    , mCancelButton( 0 )
-    , mParent( parent )
+  : mParent( parent )
 {
 }
 
-QgsGrassElementDialog::~QgsGrassElementDialog() {}
-
 QString QgsGrassElementDialog::getItem( QString element,
                                         QString title, QString label,
-                                        QString text, QString source, bool * ok )
+                                        QString text, QString source, bool *ok )
 {
   if ( ok )
     *ok = false;
@@ -139,9 +126,9 @@ QString QgsGrassElementDialog::getItem( QString element,
   buttonLayout->addWidget( mOkButton );
   buttonLayout->addWidget( mCancelButton );
 
-  connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( textChanged() ) );
-  connect( mOkButton, SIGNAL( clicked() ), mDialog, SLOT( accept() ) );
-  connect( mCancelButton, SIGNAL( clicked() ), mDialog, SLOT( reject() ) );
+  connect( mLineEdit, &QLineEdit::textChanged, this, &QgsGrassElementDialog::textChanged );
+  connect( mOkButton, &QAbstractButton::clicked, mDialog, &QDialog::accept );
+  connect( mCancelButton, &QAbstractButton::clicked, mDialog, &QDialog::reject );
 
   textChanged();
   if ( ok && mDialog->exec() == QDialog::Accepted )
@@ -161,7 +148,7 @@ void QgsGrassElementDialog::textChanged()
   QString text = mLineEdit->text().trimmed();
 
   mErrorLabel->setText( QStringLiteral( "   " ) );
-  mOkButton->setText( tr( "Ok" ) );
+  mOkButton->setText( tr( "OK" ) );
   mOkButton->setEnabled( true );
 
   if ( text.length() == 0 )

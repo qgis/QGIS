@@ -25,7 +25,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the field calculator
  */
 class TestQgsFieldCalculator : public QObject
@@ -43,14 +44,10 @@ class TestQgsFieldCalculator : public QObject
     void testAreaCalculations();
 
   private:
-    QgisApp * mQgisApp;
+    QgisApp *mQgisApp = nullptr;
 };
 
-TestQgsFieldCalculator::TestQgsFieldCalculator()
-    : mQgisApp( nullptr )
-{
-
-}
+TestQgsFieldCalculator::TestQgsFieldCalculator() = default;
 
 //runs before all tests
 void TestQgsFieldCalculator::initTestCase()
@@ -78,14 +75,13 @@ void TestQgsFieldCalculator::testLengthCalculations()
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
-  QgsPolyline line3111;
-  line3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 );
-  QgsGeometry line3111G = QgsGeometry::fromPolyline( line3111 ) ;
+  QgsPolylineXY line3111;
+  line3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 );
+  QgsGeometry line3111G = QgsGeometry::fromPolylineXY( line3111 ) ;
   f1.setGeometry( line3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
@@ -108,7 +104,7 @@ void TestQgsFieldCalculator::testLengthCalculations()
   QgsFeature f;
   QVERIFY( fit.nextFeature( f ) );
   double expected = 26932.156;
-  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 
   // change project length unit, check calculation respects unit
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
@@ -123,7 +119,7 @@ void TestQgsFieldCalculator::testLengthCalculations()
   fit = tempLayer->dataProvider()->getFeatures();
   QVERIFY( fit.nextFeature( f ) );
   expected = 88360.0918635;
-  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 
 }
 
@@ -138,16 +134,15 @@ void TestQgsFieldCalculator::testAreaCalculations()
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
 
-  QgsPolyline polygonRing3111;
-  polygonRing3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 ) << QgsPoint( 2520109, 2397715 ) << QgsPoint( 2520792, 2425494 ) << QgsPoint( 2484588, 2425722 );
-  QgsPolygon polygon3111;
+  QgsPolylineXY polygonRing3111;
+  polygonRing3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 ) << QgsPointXY( 2520109, 2397715 ) << QgsPointXY( 2520792, 2425494 ) << QgsPointXY( 2484588, 2425722 );
+  QgsPolygonXY polygon3111;
   polygon3111 << polygonRing3111;
-  QgsGeometry polygon3111G = QgsGeometry::fromPolygon( polygon3111 ) ;
+  QgsGeometry polygon3111G = QgsGeometry::fromPolygonXY( polygon3111 ) ;
   f1.setGeometry( polygon3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   // set project CRS and ellipsoid
-  QgisApp::instance()->mapCanvas()->setCrsTransformEnabled( true );
   QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
   QgsProject::instance()->setCrs( srs );
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
@@ -170,7 +165,7 @@ void TestQgsFieldCalculator::testAreaCalculations()
   QgsFeature f;
   QVERIFY( fit.nextFeature( f ) );
   double expected = 1009089817.0;
-  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 1.0 ) );
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 1.0 );
 
   // change project area unit, check calculation respects unit
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
@@ -185,7 +180,7 @@ void TestQgsFieldCalculator::testAreaCalculations()
   fit = tempLayer->dataProvider()->getFeatures();
   QVERIFY( fit.nextFeature( f ) );
   expected = 389.6117565069;
-  QVERIFY( qgsDoubleNear( f.attribute( "col1" ).toDouble(), expected, 0.001 ) );
+  QGSCOMPARENEAR( f.attribute( "col1" ).toDouble(), expected, 0.001 );
 }
 
 QGSTEST_MAIN( TestQgsFieldCalculator )

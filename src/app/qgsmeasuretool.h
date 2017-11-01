@@ -33,7 +33,7 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
   public:
 
-    QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea );
+    QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea );
 
     ~QgsMeasureTool();
 
@@ -49,21 +49,21 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     void restart();
 
     //! Add new point
-    void addPoint( const QgsPoint &point );
+    void addPoint( const QgsPointXY &point );
 
     //! Returns reference to array of the points
-    QList<QgsPoint> points();
+    QList<QgsPointXY> points();
 
     // Inherited from QgsMapTool
 
     //! Mouse move event for overriding
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Mouse press event for overriding
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Mouse release event for overriding
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     //! called when set as currently active map tool
     virtual void activate() override;
@@ -71,7 +71,7 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     //! called when map tool is being deactivated
     virtual void deactivate() override;
 
-    virtual void keyPressEvent( QKeyEvent* e ) override;
+    virtual void keyPressEvent( QKeyEvent *e ) override;
 
   public slots:
     //! updates the projections we're using
@@ -79,15 +79,15 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
   protected:
 
-    QList<QgsPoint> mPoints;
+    QList<QgsPointXY> mPoints;
 
-    QgsMeasureDialog* mDialog;
+    QgsMeasureDialog *mDialog = nullptr;
 
     //! Rubberband widget tracking the lines being drawn
-    QgsRubberBand *mRubberBand;
+    QgsRubberBand *mRubberBand = nullptr;
 
     //! Rubberband widget tracking the added nodes to line
-    QgsRubberBand *mRubberBandPoints;
+    QgsRubberBand *mRubberBandPoints = nullptr;
 
     //! indicates whether we're measuring distances or areas
     bool mMeasureArea;
@@ -103,8 +103,8 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     QgsCoordinateReferenceSystem mDestinationCrs;
 
     //! Returns the snapped (map) coordinate
-    //@param p (pixel) coordinate
-    QgsPoint snapPoint( QPoint p );
+    //\param p (pixel) coordinate
+    QgsPointXY snapPoint( QPoint p );
 
     //! Removes the last vertex from mRubberBand
     void undo();

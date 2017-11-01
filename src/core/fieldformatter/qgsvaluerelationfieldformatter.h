@@ -28,16 +28,16 @@
  * A value relation field formatter looks up the values from
  * features on another layer.
  *
- * \note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
 {
   public:
     struct ValueRelationItem
     {
-      ValueRelationItem( const QVariant& key, const QString& value )
-          : key( key )
-          , value( value )
+      ValueRelationItem( const QVariant &key, const QString &value )
+        : key( key )
+        , value( value )
       {}
 
       ValueRelationItem()
@@ -47,9 +47,12 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
       QString value;
     };
 
-    typedef QVector < ValueRelationItem > ValueRelationCache;
+    typedef QVector < QgsValueRelationFieldFormatter::ValueRelationItem > ValueRelationCache;
 
-    QgsValueRelationFieldFormatter();
+    /**
+     * Constructor for QgsValueRelationFieldFormatter.
+     */
+    QgsValueRelationFieldFormatter() = default;
 
     QString id() const override;
     QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
@@ -63,9 +66,9 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
      * This can be used to keep the value map in the local memory
      * if doing multiple lookups in a loop.
      *
-     * \note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
-    static ValueRelationCache createCache( const QVariantMap& config );
+    static QgsValueRelationFieldFormatter::ValueRelationCache createCache( const QVariantMap &config );
 };
 
 Q_DECLARE_METATYPE( QgsValueRelationFieldFormatter::ValueRelationCache )

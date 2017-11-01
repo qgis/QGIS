@@ -31,14 +31,28 @@ __revision__ = '$Format:%H$'
 import os
 import sys
 
-from qgis.PyQt.QtCore import QCoreApplication, QSettings
+from qgis.PyQt.QtCore import QCoreApplication
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools.system import isWindows, getTempFilenameInTempFolder, getTempDirInTempFolder
-from processing.tools.vector import VectorWriter, TableWriter
+from processing.tools.system import isWindows, getTempDirInTempFolder
+from processing.tools.vector import TableWriter, NOGEOMETRY_EXTENSIONS
 from processing.tools import dataobjects
 
-from qgis.core import QgsExpressionContext, QgsExpressionContextUtils, QgsExpression, QgsExpressionContextScope, QgsProject
+from qgis.core import (QgsExpressionContext,
+                       QgsExpressionContextUtils,
+                       QgsExpression,
+                       QgsExpressionContextScope,
+                       QgsProject,
+                       QgsSettings,
+                       QgsVectorFileWriter,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingOutputRasterLayer,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingOutputHtml,
+                       QgsProcessingOutputNumber,
+                       QgsProcessingOutputString,
+                       QgsProcessingOutputFolder)
 
 
 def _expressionContext(alg):
@@ -56,24 +70,11 @@ class Output(object):
 
     def __init__(self, name='', description='', hidden=False):
         self.name = name
-        self.description = description
 
         # The value of an output is a string representing the location
         # of the output. For a file based output, it should be the
         # filepath to it.
         self.value = None
-
-        # A hidden output will not be shown to the user, who will not
-        # be able to select where to store it. Use this to generate
-        # outputs that are modified version of inputs (like a selection
-        # in a vector layer). In the case of layers, hidden outputs are
-        # not loaded into QGIS after the algorithm is executed. Other
-        # outputs not representing layers or tables should always be hidden.
-        self.hidden = str(hidden).lower() == str(True).lower()
-
-        # This value indicates whether the output has to be opened
-        # after being produced by the algorithm or not
-        self.open = True
 
     def __str__(self):
         return u'{} <{}>'.format(self.name, self.__class__.__name__)
@@ -98,13 +99,13 @@ class Output(object):
 
     def _resolveTemporary(self, alg):
         ext = self.getDefaultFileExtension()
-        return getTempFilenameInTempFolder(self.name + '.' + ext)
+        return QgsProcessingUtils.generateTempFilename(self.name + '.' + ext)
 
     def _supportedExtensions(self):
         return []
 
     def resolveValue(self, alg):
-        if self.hidden:
+        if self.flags() & QgsProcessingParameterDefinition.FlagHidden:
             return
         if not bool(self.value):
             self.value = self._resolveTemporary(alg)
@@ -132,9 +133,6 @@ class Output(object):
     def expressionContext(self, alg):
         return _expressionContext(alg)
 
-    def typeName(self):
-        return self.__class__.__name__.replace('Output', '').lower()
-
     def tr(self, string, context=''):
         if context == '':
             context = 'Output'
@@ -151,9 +149,8 @@ class OutputExtent(Output):
 
     def __init__(self, name='', description=''):
         self.name = name
-        self.description = description
         self.value = None
-        self.hidden = True
+        self.setFlags(self.flags() | QgsProcessingParameterDefinition.FlagHidden)
 
     def setValue(self, value):
         try:
@@ -180,9 +177,9 @@ class OutputFile(Output):
 
     def getFileFilter(self, alg):
         if self.ext is None:
-            return self.tr('All files(*.*)', 'OutputFile')
+            return self.tr('All files (*.*)', 'OutputFile')
         else:
-            return self.tr('%s files(*.%s)', 'OutputFile') % (self.ext, self.ext)
+            return self.tr('{0} files (*.{1})', 'OutputFile').format(self.ext, self.ext)
 
     def getDefaultFileExtension(self):
         return self.ext or 'file'
@@ -191,7 +188,7 @@ class OutputFile(Output):
 class OutputHTML(Output):
 
     def getFileFilter(self, alg):
-        return self.tr('HTML files(*.html)', 'OutputHTML')
+        return self.tr('HTML files (*.html)', 'OutputHTML')
 
     def getDefaultFileExtension(self):
         return 'html'
@@ -210,7 +207,7 @@ class OutputRaster(Output):
     def getFileFilter(self, alg):
         exts = dataobjects.getSupportedOutputRasterLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = self.tr('%s files (*.%s)', 'OutputVector') % (exts[i].upper(), exts[i].lower())
+            exts[i] = self.tr('{0} files (*.{1})', 'OutputVector').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self):
@@ -227,14 +224,14 @@ class OutputRaster(Output):
         """
 
         ext = self.value[self.value.rfind('.') + 1:]
-        if ext in alg.provider.getSupportedOutputRasterLayerExtensions():
+        if ext in alg.provider().supportedOutputRasterLayerExtensions():
             return self.value
         else:
             if self.compatible is None:
-                supported = alg.provider.getSupportedOutputRasterLayerExtensions()
+                supported = alg.provider().supportedOutputRasterLayerExtensions()
                 default = ProcessingConfig.getSetting(ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT, True)
                 ext = default if default in supported else supported[0]
-                self.compatible = getTempFilenameInTempFolder(self.name + '.' + ext)
+                self.compatible = QgsProcessingUtils.generateTempFilename(self.name + '.' + ext)
             return self.compatible
 
 
@@ -252,7 +249,7 @@ class OutputTable(Output):
     def getFileFilter(self, alg):
         exts = ['dbf']
         for i in range(len(exts)):
-            exts[i] = exts[i].upper() + ' files(*.' + exts[i].lower() + ')'
+            exts[i] = self.tr("{0} files (*.{1})").format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self):
@@ -269,12 +266,12 @@ class OutputTable(Output):
         """
 
         ext = self.value[self.value.rfind('.') + 1:]
-        if ext in alg.provider.getSupportedOutputTableExtensions():
+        if ext in alg.provider().supportedOutputTableExtensions():
             return self.value
         else:
             if self.compatible is None:
-                self.compatible = getTempFilenameInTempFolder(
-                    self.name + '.' + alg.provider.getSupportedOutputTableExtensions()[0])
+                self.compatible = QgsProcessingUtils.generateTempFilename(
+                    self.name + '.' + alg.provider().supportedOutputTableExtensions()[0])
             return self.compatible
 
     def getTableWriter(self, fields):
@@ -289,7 +286,7 @@ class OutputTable(Output):
         """
 
         if self.encoding is None:
-            settings = QSettings()
+            settings = QgsSettings()
             self.encoding = settings.value('/Processing/encoding', 'System')
 
         return TableWriter(self.value, self.encoding, fields)
@@ -313,18 +310,18 @@ class OutputVector(Output):
     def hasGeometry(self):
         if self.base_layer is None:
             return True
-        return dataobjects.canUseVectorLayer(self.base_layer, [-1])
+        return self.base_layer.isSpatial()
 
     def getSupportedOutputVectorLayerExtensions(self):
-        exts = dataobjects.getSupportedOutputVectorLayerExtensions()
+        exts = QgsVectorFileWriter.supportedFormatExtensions()
         if not self.hasGeometry():
-            exts = ['dbf'] + [ext for ext in exts if ext in VectorWriter.nogeometry_extensions]
+            exts = ['dbf'] + [ext for ext in exts if ext in NOGEOMETRY_EXTENSIONS]
         return exts
 
     def getFileFilter(self, alg):
         exts = self.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
-            exts[i] = self.tr('%s files (*.%s)', 'OutputVector') % (exts[i].upper(), exts[i].lower())
+            exts[i] = self.tr('{0} files (*.{1})', 'OutputVector').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
     def getDefaultFileExtension(self):
@@ -344,17 +341,17 @@ class OutputVector(Output):
         generate the output result.
         """
         ext = self.value[self.value.rfind('.') + 1:]
-        if ext in alg.provider.getSupportedOutputVectorLayerExtensions():
+        if ext in alg.provider().supportedOutputVectorLayerExtensions():
             return self.value
         else:
             if self.compatible is None:
                 default = self.getDefaultFileExtension()
-                supported = alg.provider.getSupportedOutputVectorLayerExtensions()
+                supported = alg.provider().supportedOutputVectorLayerExtensions()
                 ext = default if default in supported else supported[0]
-                self.compatible = getTempFilenameInTempFolder(self.name + '.' + ext)
+                self.compatible = QgsProcessingUtils.generateTempFilename(self.name + '.' + ext)
             return self.compatible
 
-    def getVectorWriter(self, fields, geomType, crs, options=None):
+    def getVectorWriter(self, fields, geomType, crs, context):
         """Returns a suitable writer to which features can be added as
         a result of the algorithm. Use this to transparently handle
         output values instead of creating your own method.
@@ -371,27 +368,26 @@ class OutputVector(Output):
         @param crs      the crs of the layer to create
 
         @return writer  instance of the vector writer class
+        :param context:
         """
 
         if self.encoding is None:
-            settings = QSettings()
+            settings = QgsSettings()
             self.encoding = settings.value('/Processing/encoding', 'System', str)
 
-        w = VectorWriter(self.value, self.encoding, fields, geomType,
-                         crs, options)
-        self.layer = w.layer
-        self.value = w.destination
+        w, w_dest = QgsProcessingUtils.createFeatureSink(self.value, context, fields, geomType, crs, {'fileEncoding': self.encoding})
+        self.value = w_dest
         return w
 
     def dataType(self):
         return dataobjects.vectorDataType(self)
 
     def _resolveTemporary(self, alg):
-        if alg.provider.supportsNonFileBasedOutput():
+        if alg.provider().supportsNonFileBasedOutput():
             return "memory:"
         else:
             ext = self.getDefaultFileExtension()
-            return getTempFilenameInTempFolder(self.name + '.' + ext)
+            return QgsProcessingUtils.generateTempFilename(self.name + '.' + ext)
 
 
 def getOutputFromString(s):
@@ -403,36 +399,42 @@ def getOutputFromString(s):
             return clazz(*params)
         else:
             tokens = s.split("=")
+            if not tokens[1].lower()[:len('output')] == 'output':
+                return None
+
+            name = tokens[0]
+            description = tokens[0]
+
             token = tokens[1].strip()[len('output') + 1:]
             out = None
 
-            if token.lower().strip().startswith('raster'):
-                out = OutputRaster()
-            elif token.lower().strip() == 'vector':
-                out = OutputVector()
-            elif token.lower().strip() == 'vector point':
-                out = OutputVector(datatype=[dataobjects.TYPE_VECTOR_POINT])
-            elif token.lower().strip() == 'vector line':
-                out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_LINE])
-            elif token.lower().strip() == 'vector polygon':
-                out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_POLYGON])
-            elif token.lower().strip().startswith('table'):
-                out = OutputTable()
-            elif token.lower().strip().startswith('html'):
-                out = OutputHTML()
-            elif token.lower().strip().startswith('file'):
-                out = OutputFile()
-                ext = token.strip()[len('file') + 1:]
-                if ext:
-                    out.ext = ext
-            elif token.lower().strip().startswith('directory'):
-                out = OutputDirectory()
-            elif token.lower().strip().startswith('number'):
-                out = OutputNumber()
-            elif token.lower().strip().startswith('string'):
-                out = OutputString()
-            elif token.lower().strip().startswith('extent'):
-                out = OutputExtent()
+            if token.lower().strip().startswith('outputraster'):
+                out = QgsProcessingOutputRasterLayer(name, description)
+            elif token.lower().strip() == 'outputvector':
+                out = QgsProcessingOutputVectorLayer(name, description)
+#            elif token.lower().strip() == 'vector point':
+#                out = OutputVector(datatype=[dataobjects.TYPE_VECTOR_POINT])
+#            elif token.lower().strip() == 'vector line':
+#                out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_LINE])
+#            elif token.lower().strip() == 'vector polygon':
+#                out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_POLYGON])
+#            elif token.lower().strip().startswith('table'):
+#                out = OutputTable()
+            elif token.lower().strip().startswith('outputhtml'):
+                out = QgsProcessingOutputHtml(name, description)
+#            elif token.lower().strip().startswith('file'):
+#                out = OutputFile()
+#                ext = token.strip()[len('file') + 1:]
+#                if ext:
+#                    out.ext = ext
+            elif token.lower().strip().startswith('outputfolder'):
+                out = QgsProcessingOutputFolder(name, description)
+            elif token.lower().strip().startswith('outputnumber'):
+                out = QgsProcessingOutputNumber(name, description)
+            elif token.lower().strip().startswith('outputstring'):
+                out = QgsProcessingOutputString(name, description)
+#            elif token.lower().strip().startswith('extent'):
+#                out = OutputExtent()
 
             return out
     except:

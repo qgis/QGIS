@@ -22,7 +22,10 @@
 #include "qgseditorconfigwidget.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
  * \class QgsRelationReferenceConfigDlg
  * \note not available in Python bindings
  */
@@ -32,22 +35,22 @@ class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, p
     Q_OBJECT
 
   public:
-    explicit QgsRelationReferenceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
+    explicit QgsRelationReferenceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
     virtual QVariantMap config() override;
-    virtual void setConfig( const QVariantMap& config ) override;
+    virtual void setConfig( const QVariantMap &config ) override;
 
   private:
     void loadFields();
-    void addFilterField( const QString& field );
-    void addFilterField( QListWidgetItem* item );
-    int indexFromListWidgetItem( QListWidgetItem* item );
+    void addFilterField( const QString &field );
+    void addFilterField( QListWidgetItem *item );
+    int indexFromListWidgetItem( QListWidgetItem *item );
 
-    QgsVectorLayer* mReferencedLayer;
+    QgsVectorLayer *mReferencedLayer = nullptr;
 
   private slots:
     void relationChanged( int idx );
-    void on_mAddFilterButton_clicked();
-    void on_mRemoveFilterButton_clicked();
+    void mAddFilterButton_clicked();
+    void mRemoveFilterButton_clicked();
 };
 
 #endif // QGSRELATIONREFERENCECONFIGDLGBASE_H

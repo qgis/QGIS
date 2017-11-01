@@ -24,15 +24,16 @@ class QgsProject;
 class QgsVectorLayer;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This is a container for configuration of the snapping of the project
- * @note added in 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsSnappingConfig
 {
     Q_GADGET
 
-    Q_PROPERTY( QgsProject* project READ project WRITE setProject )
+    Q_PROPERTY( QgsProject *project READ project WRITE setProject )
 
   public:
 
@@ -56,27 +57,28 @@ class CORE_EXPORT QgsSnappingConfig
       Segment = 3, //!< On segments only
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * This is a container of advanced configuration (per layer) of the snapping of the project
-     * @note added in 3.0
+     * \since QGIS 3.0
      */
     class CORE_EXPORT IndividualLayerSettings
     {
       public:
 
         /**
-         * @brief IndividualLayerSettings
-         * @param enabled
-         * @param type
-         * @param tolerance
-         * @param units
+         * \brief IndividualLayerSettings
+         * \param enabled
+         * \param type
+         * \param tolerance
+         * \param units
          */
         IndividualLayerSettings( bool enabled, QgsSnappingConfig::SnappingType type, double tolerance, QgsTolerance::UnitType units );
 
         /**
          * Constructs an invalid setting
          */
-        IndividualLayerSettings();
+        IndividualLayerSettings() = default;
 
         //! return if settings are valid
         bool valid() const;
@@ -108,24 +110,24 @@ class CORE_EXPORT QgsSnappingConfig
         /**
          * Compare this configuration to other.
          */
-        bool operator!= ( const IndividualLayerSettings& other ) const;
+        bool operator!= ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 
-        bool operator== ( const IndividualLayerSettings& other ) const;
+        bool operator== ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 
       private:
-        bool mValid;
-        bool mEnabled;
-        SnappingType mType;
-        double mTolerance;
-        QgsTolerance::UnitType mUnits;
+        bool mValid = false;
+        bool mEnabled = false;
+        SnappingType mType = Vertex;
+        double mTolerance = 0;
+        QgsTolerance::UnitType mUnits = QgsTolerance::Pixels;
     };
 
     /**
      * Constructor with default parameters defined in global settings
      */
-    explicit QgsSnappingConfig( QgsProject* project = nullptr );
+    explicit QgsSnappingConfig( QgsProject *project = nullptr );
 
-    bool operator==( const QgsSnappingConfig& other ) const;
+    bool operator==( const QgsSnappingConfig &other ) const;
 
     //! reset to default values
     void reset();
@@ -167,32 +169,75 @@ class CORE_EXPORT QgsSnappingConfig
     void setIntersectionSnapping( bool enabled );
 
     //! return individual snapping settings for all layers
-    QHash<QgsVectorLayer*, QgsSnappingConfig::IndividualLayerSettings> individualLayerSettings() const;
+#ifndef SIP_RUN
+    QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> individualLayerSettings() const;
+#else
+    SIP_PYDICT individualLayerSettings() const;
+    % MethodCode
+    // Create the dictionary.
+    PyObject *d = PyDict_New();
+    if ( !d )
+      return nullptr;
+    // Set the dictionary elements.
+    QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> container = sipCpp->individualLayerSettings();
+    QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings>::const_iterator i = container.constBegin();
+    while ( i != container.constEnd() )
+    {
+      QgsVectorLayer *vl = i.key();
+      QgsSnappingConfig::IndividualLayerSettings *ils = new QgsSnappingConfig::IndividualLayerSettings( i.value() );
+
+      PyObject *vlobj = sipConvertFromType( vl, sipType_QgsVectorLayer, nullptr );
+      PyObject *ilsobj = sipConvertFromType( ils, sipType_QgsSnappingConfig_IndividualLayerSettings, Py_None );
+
+      if ( !vlobj || !ilsobj || PyDict_SetItem( d, vlobj, ilsobj ) < 0 )
+      {
+        Py_DECREF( d );
+        if ( vlobj )
+        {
+          Py_DECREF( vlobj );
+        }
+        if ( ilsobj )
+        {
+          Py_DECREF( ilsobj );
+        }
+        else
+        {
+          delete ils;
+        }
+        PyErr_SetString( PyExc_StopIteration, "" );
+      }
+      Py_DECREF( vlobj );
+      Py_DECREF( ilsobj );
+      ++i;
+    }
+    sipRes = d;
+    % End
+#endif
 
     //! return individual layer snappings settings (applied if mode is AdvancedConfiguration)
-    QgsSnappingConfig::IndividualLayerSettings individualLayerSettings( QgsVectorLayer* vl ) const;
+    QgsSnappingConfig::IndividualLayerSettings individualLayerSettings( QgsVectorLayer *vl ) const;
 
     //! set individual layer snappings settings (applied if mode is AdvancedConfiguration)
-    void setIndividualLayerSettings( QgsVectorLayer* vl, const IndividualLayerSettings &individualLayerSettings );
+    void setIndividualLayerSettings( QgsVectorLayer *vl, const QgsSnappingConfig::IndividualLayerSettings &individualLayerSettings );
 
     /**
      * Compare this configuration to other.
      */
-    bool operator!= ( const QgsSnappingConfig& other ) const;
+    bool operator!= ( const QgsSnappingConfig &other ) const;
 
     /**
      * Reads the configuration from the specified QGIS project document.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
-    void readProject( const QDomDocument& doc );
+    void readProject( const QDomDocument &doc );
 
     /**
      * Writes the configuration to the specified QGIS project document.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
-    void writeProject( QDomDocument& doc );
+    void writeProject( QDomDocument &doc );
 
     /**
      * Adds the specified layers as individual layers to the configuration
@@ -200,11 +245,11 @@ class CORE_EXPORT QgsSnappingConfig
      * When implementing a long-living QgsSnappingConfig (like the one in QgsProject)
      * it is best to directly feed this with information from the layer registry.
      *
-     * @return True if changes have been done.
+     * \returns True if changes have been done.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
-    bool addLayers( const QList<QgsMapLayer*>& layers );
+    bool addLayers( const QList<QgsMapLayer *> &layers );
 
 
     /**
@@ -212,31 +257,31 @@ class CORE_EXPORT QgsSnappingConfig
      * When implementing a long-living QgsSnappingConfig (like the one in QgsProject)
      * it is best to directly feed this with information from the layer registry.
      *
-     * @return True if changes have been done.
+     * \returns True if changes have been done.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
-    bool removeLayers( const QList<QgsMapLayer*>& layers );
+    bool removeLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * The project from which the snapped layers should be retrieved
      *
-     * \note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
-    QgsProject* project() const;
+    QgsProject *project() const;
 
     /**
      * The project from which the snapped layers should be retrieved
      *
-     * \note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
-    void setProject( QgsProject* project );
+    void setProject( QgsProject *project );
 
   private:
     void readLegacySettings();
 
     //! associated project for this snapping configuration
-    QgsProject* mProject;
+    QgsProject *mProject = nullptr;
     bool mEnabled = false;
     SnappingMode mMode = ActiveLayer;
     SnappingType mType = Vertex;
@@ -244,7 +289,7 @@ class CORE_EXPORT QgsSnappingConfig
     QgsTolerance::UnitType mUnits = QgsTolerance::ProjectUnits;
     bool mIntersectionSnapping = false;
 
-    QHash<QgsVectorLayer*, IndividualLayerSettings> mIndividualLayerSettings;
+    QHash<QgsVectorLayer *, IndividualLayerSettings> mIndividualLayerSettings;
 
 };
 

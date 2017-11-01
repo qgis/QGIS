@@ -19,8 +19,8 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from builtins import str
 from builtins import object
+
 __author__ = 'Alessandro Pasotti'
 __date__ = '2016-06-30'
 __copyright__ = 'Copyright 2016, The QGIS Project'
@@ -28,12 +28,11 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 from time import sleep
-import os
 
 from qgis.core import (
     QgsFeature,
     QgsGeometry,
-    QgsPoint,
+    QgsPointXY,
     QgsFeatureRequest,
     QgsExpression,
     QgsProject,
@@ -44,16 +43,16 @@ from qgis.core import (
 # Tet features, fields: [id, name, geometry]
 # "id" is used as a pk to retriev features by attribute
 TEST_FEATURES = [
-    (1, 'name 1', QgsPoint(9, 45)),
-    (2, 'name 2', QgsPoint(9.5, 45.5)),
-    (3, 'name 3', QgsPoint(9.5, 46)),
-    (4, 'name 4', QgsPoint(10, 46.5)),
+    (1, 'name 1', QgsPointXY(9, 45)),
+    (2, 'name 2', QgsPointXY(9.5, 45.5)),
+    (3, 'name 3', QgsPointXY(9.5, 46)),
+    (4, 'name 4', QgsPointXY(10, 46.5)),
 ]
 
 # Additional features for insert test
 TEST_FEATURES_INSERT = [
-    (5, 'name 5', QgsPoint(9.7, 45.7)),
-    (6, 'name 6', QgsPoint(10.6, 46.6)),
+    (5, 'name 5', QgsPointXY(9.7, 45.7)),
+    (6, 'name 6', QgsPointXY(10.6, 46.6)),
 ]
 
 
@@ -71,7 +70,7 @@ class OfflineTestBase(object):
             f = QgsFeature(layer.pendingFields())
             f['id'] = id
             f['name'] = name
-            f.setGeometry(QgsGeometry.fromPoint(geom))
+            f.setGeometry(QgsGeometry.fromPointXY(geom))
             features.append(f)
         layer.addFeatures(features)
         assert layer.commitChanges()
@@ -136,12 +135,12 @@ class OfflineTestBase(object):
         # goes offline
         ol = QgsOfflineEditing()
         online_layer = list(self.registry.mapLayers().values())[0]
-        self.assertTrue(online_layer.hasGeometryType())
+        self.assertTrue(online_layer.isSpatial())
         # Check we have features
         self.assertEqual(len([f for f in online_layer.getFeatures()]), len(TEST_FEATURES))
         self.assertTrue(ol.convertToOfflineProject(self.temp_path, 'offlineDbFile.sqlite', [online_layer.id()]))
         offline_layer = list(self.registry.mapLayers().values())[0]
-        self.assertTrue(offline_layer.hasGeometryType())
+        self.assertTrue(offline_layer.isSpatial())
         self.assertTrue(offline_layer.isValid())
         self.assertTrue(offline_layer.name().find('(offline)') > -1)
         self.assertEqual(len([f for f in offline_layer.getFeatures()]), len(TEST_FEATURES))
@@ -153,7 +152,7 @@ class OfflineTestBase(object):
         feat2 = self._getFeatureByAttribute(offline_layer, 'name', "'name 2'")
         self.assertTrue(offline_layer.startEditing())
         self.assertTrue(offline_layer.changeAttributeValue(feat2.id(), offline_layer.fields().lookupField('name'), 'name 2 edited'))
-        self.assertTrue(offline_layer.changeGeometry(feat2.id(), QgsGeometry.fromPoint(QgsPoint(33.0, 60.0))))
+        self.assertTrue(offline_layer.changeGeometry(feat2.id(), QgsGeometry.fromPointXY(QgsPointXY(33.0, 60.0))))
         self.assertTrue(offline_layer.commitChanges())
         feat2 = self._getFeatureByAttribute(offline_layer, 'name', "'name 2 edited'")
         self.assertTrue(ol.isOfflineProject())
@@ -168,7 +167,7 @@ class OfflineTestBase(object):
         # Check that data have changed in the backend (raise exception if not found)
         feat2 = self._getFeatureByAttribute(self._getLayer('test_point'), 'name', "'name 2 edited'")
         feat2 = self._getFeatureByAttribute(online_layer, 'name', "'name 2 edited'")
-        self.assertEqual(feat2.geometry().asPoint().toString(), QgsPoint(33.0, 60.0).toString())
+        self.assertEqual(feat2.geometry().asPoint().toString(), QgsPointXY(33.0, 60.0).toString())
         # Check that all other features have not changed
         layer = self._getLayer('test_point')
         self.assertTrue(self._compareFeature(layer, TEST_FEATURES[1 - 1]))
@@ -183,7 +182,7 @@ class OfflineTestBase(object):
         feat2 = self._getFeatureByAttribute(offline_layer, 'name', "'name 2 edited'")
         self.assertTrue(offline_layer.startEditing())
         self.assertTrue(offline_layer.changeAttributeValue(feat2.id(), offline_layer.fields().lookupField('name'), 'name 2'))
-        self.assertTrue(offline_layer.changeGeometry(feat2.id(), QgsGeometry.fromPoint(TEST_FEATURES[1][2])))
+        self.assertTrue(offline_layer.changeGeometry(feat2.id(), QgsGeometry.fromPointXY(TEST_FEATURES[1][2])))
         # Edit feat 4
         feat4 = self._getFeatureByAttribute(offline_layer, 'name', "'name 4'")
         self.assertTrue(offline_layer.changeAttributeValue(feat4.id(), offline_layer.fields().lookupField('name'), 'name 4 edited'))
@@ -275,7 +274,7 @@ class OfflineTestBase(object):
             f = QgsFeature(offline_layer.pendingFields())
             f['id'] = id
             f['name'] = name
-            f.setGeometry(QgsGeometry.fromPoint(geom))
+            f.setGeometry(QgsGeometry.fromPointXY(geom))
             features.append(f)
         offline_layer.addFeatures(features)
         self.assertTrue(offline_layer.commitChanges())

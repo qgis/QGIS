@@ -1,3 +1,6 @@
+# append :* to avoid in word check_spelling
+# append :% to exclude script files
+#...:…:%
 abailable:available
 abandonded:abandoned
 abandonned:abandoned
@@ -116,6 +119,7 @@ accumlate:accumulate
 accumlated:accumulated
 accumlates:accumulates
 accumlating:accumulating
+accurancy:accuracy
 accussed:accused
 acedemic:academic
 acess:access
@@ -179,7 +183,7 @@ acqures:acquires
 acquring:acquiring
 actaul:actual
 actaully:actually
-actived:activated
+actived:activated:*
 activete:activate
 activites:activities
 activly:actively
@@ -387,7 +391,11 @@ alliviate:alleviate
 allmost:almost
 allopone:allophone
 allopones:allophones
+allow one to (\S+):allow %sing
+allow to (\S+):allow %sing
 allowd:allowed:*
+allows one to (\S+):allows %sing
+allows to (\S+):allows %sing
 allpication:application
 allready:already
 allthough:although
@@ -400,6 +408,7 @@ alocated:allocated
 alocates:allocates
 alocating:allocating
 alochol:alcohol
+alog:along
 alogirhtms:algorithms
 alogrithm:algorithm
 alogrithms:algorithms
@@ -459,7 +468,7 @@ analagous:analogous
 analitic:analytic
 analogeous:analogous
 analysator:analyzer
-analysies:analyses
+analysies:analyzes
 anarchim:anarchism
 anarchistm:anarchism
 anbd:and
@@ -742,6 +751,7 @@ asychronously:asynchronously
 asycronous:asynchronous
 asynchonous:asynchronous
 asynchonously:asynchronously
+asynchroneously:asynchronously
 asyncronous:asynchronous
 asyncronously:asynchronously
 atain:attain
@@ -758,6 +768,7 @@ atorney:attorney
 atribute:attribute
 atributed:attributed
 atributes:attributes
+atrributes:attributes
 attachement:attachment
 attaindre:attainder
 attatch:attach
@@ -1120,6 +1131,7 @@ carrers:careers
 Carribbean:Caribbean
 Carribean:Caribbean
 cartdridge:cartridge
+cartesian:Cartesian
 carthographer:cartographer
 cartilege:cartilage
 cartilidge:cartilage
@@ -1137,6 +1149,7 @@ casulaty:casualty
 catagories:categories
 catagorized:categorized
 catagory:category
+catalogue:catalog
 catched:caught
 catepillar:caterpillar
 catepillars:caterpillars
@@ -1230,6 +1243,8 @@ chcek:check
 chceked:checked
 chceking:checking
 chceks:checks
+check box:checkbox
+check-box:checkbox
 checkk:check
 checksuming:checksumming
 cheif:chief
@@ -1291,8 +1306,10 @@ cleints:clients
 clera:clear
 clincial:clinical
 clinicaly:clinically
+clipoing:clipping
 closeing:closing
 cmoputer:computer
+cna:can
 co-incided:coincided
 Coca Cola:Coca-Cola
 coctail:cocktail
@@ -1542,6 +1559,7 @@ condidtions:conditions
 conditionaly:conditionally
 conditionnaly:conditionally
 conditionsof:conditions of
+condtion:condition
 conect:connect
 conected:connected
 conecting:connecting
@@ -1557,6 +1575,7 @@ conesencus:consensus
 confidental:confidential
 confidentally:confidentially
 confids:confides
+configire:configure
 configration:configuration
 configrations:configurations
 configuation:configuration
@@ -1743,6 +1762,7 @@ convinient:convenient
 conviniently:conveniently
 coodinate:coordinate
 coodinates:coordinates
+coordiante:coordinate
 coordiantion:coordination
 coorperation:corporation
 coorperations:corporations
@@ -1866,10 +1886,12 @@ dacquiri:daiquiri
 daed:dead
 dael:deal
 dafault:default
+dafaut:default
 dalmation:dalmatian
 damenor:demeanor
 dammage:damage
 Dardenelles:Dardanelles
+databse:database
 daugher:daughter
 deafault:default
 deafult:default
@@ -2114,6 +2136,7 @@ determinining:determining
 determins:determines
 determinstic:deterministic
 determinstically:deterministically
+detination:destination
 detremental:detrimental
 detroy:destroy
 detroyed:destroyed
@@ -2378,6 +2401,8 @@ donwloads:downloads
 dosen't:doesn't
 dosent':doesn't
 doub:doubt
+double click:double-click
+doubleclick:double-click
 doulbe:double
 dowloads:downloads
 downlad:download
@@ -2390,6 +2415,7 @@ Dravadian:Dravidian
 dreasm:dreams
 driectly:directly
 drnik:drink
+drop down:drop-down
 droped:dropped:*
 droppped:dropped
 druming:drumming
@@ -2485,6 +2511,7 @@ embarras:embarrass
 embarrased:embarrassed
 embarrasing:embarrassing
 embarrasment:embarrassment
+embbeded:embedded
 embeddded:embedded
 embeddeding:embedding
 embeded:embedded
@@ -2521,6 +2548,7 @@ empirial:imperial
 emporer:emperor
 emprisoned:imprisoned
 emptry:empty
+empy:empty
 emtied:emptied
 emties:empties
 emtpy:empty
@@ -2883,6 +2911,7 @@ facillitate:facilitate
 facinated:fascinated
 facist:fascist
 faild:failed
+faile:failed
 failue:failure
 failuer:failure
 failues:failures
@@ -2932,6 +2961,8 @@ filesytems:filesystems
 fileystem:filesystem
 fileystems:filesystems
 filiament:filament
+fille:file
+filles:files
 fimilies:families
 finacial:financial
 finaly:finally
@@ -3110,6 +3141,7 @@ gausian:Gaussian
 geneological:genealogical
 geneologies:genealogies
 geneology:genealogy
+generaates:generates
 generaly:generally
 generater:generator
 generaters:generators
@@ -3129,6 +3161,7 @@ genreated:generated
 genreates:generates
 genreating:generating
 genric:generic
+geographich:geographic
 geographicial:geographical
 geometrician:geometer
 geometricians:geometers
@@ -3146,6 +3179,7 @@ gnawwed:gnawed
 godess:goddess
 godesses:goddesses
 Godounov:Godunov
+goemetries:geometries
 gogin:going
 goign:going
 goind:going
@@ -3185,6 +3219,7 @@ greatful:grateful
 greatfully:gratefully
 greif:grief
 gridles:griddles
+grometry:geometry
 gropu:group
 gruop:group
 grwo:grow
@@ -3283,6 +3318,7 @@ heathy:healthy
 Heidelburg:Heidelberg
 heigh:height
 heigher:higher
+heighest:highest
 heigt:height
 heigth:height
 heirachies:hierarchies
@@ -3527,6 +3563,7 @@ imprisonned:imprisoned
 improvision:improvisation
 improvment:improvement
 improvments:improvements
+imput:input
 imrovement:improvement
 inablility:inability
 inacccessible:inaccessible
@@ -3719,7 +3756,7 @@ inherantly:inherently
 inheritage:inheritance
 inheritence:inheritance
 inifinite:infinite
-inital:initial
+inital:initial:*
 initalisation:initialization
 initalise:initialize
 initalised:initialized
@@ -4232,6 +4269,8 @@ mannual:manual
 mannually:manually
 manoeuverability:maneuverability
 manoeuvering:maneuvering
+manoeuvre:maneuver
+manoeuvres:maneuvers
 manouver:maneuver
 manouverability:manoeuvrability
 manouverable:maneuverable
@@ -4241,10 +4280,9 @@ mantained:maintained
 mantainer:maintainer
 mantaining:maintaining
 mantains:maintains
+manualy:manually
 manuever:maneuver
-manoeuvre:maneuver
 manuevers:maneuvers
-manoeuvres:maneuvers
 manufacturedd:manufactured
 manufature:manufacture
 manufatured:manufactured
@@ -4313,6 +4351,7 @@ mentionned:mentioned
 mercentile:mercantile
 mesage:message
 mesages:messages
+mesaureed:measured
 messagin:messaging
 messags:messages
 messanger:messenger
@@ -4335,7 +4374,7 @@ methaphors:metaphors
 metres:meters
 Michagan:Michigan
 micoscopy:microscopy
-microprocesspr:microprocessor
+microprocesspr:microprocessor:*
 midwifes:midwives
 mileau:milieu
 milennia:millennia
@@ -4420,6 +4459,7 @@ missonary:missionary
 misterious:mysterious
 mistery:mystery
 misteryous:mysterious
+mitre:miter:*
 mkae:make
 mkaes:makes
 mkaing:making
@@ -4564,6 +4604,7 @@ neigbour:neighbor
 neigbourhood:neighbourhood
 neigbouring:neighboring
 neigbours:neighbors
+neighbout:neighbor
 neolitic:neolithic
 nescessarily:necessarily
 nescessary:necessary
@@ -4718,6 +4759,7 @@ officals:officials
 officaly:officially
 officialy:officially
 offred:offered
+offseting:offsetting
 oftenly:often
 ofthe:of the
 oging:going
@@ -4808,6 +4850,7 @@ orignally:originally
 orignially:originally
 orthagonal:orthogonal
 orthagonalize:orthogonalize
+osbscure:obscure
 oscilate:oscillate
 oscilated:oscillated
 oscilating:oscillating
@@ -5189,6 +5232,7 @@ poulations:populations
 poverful:powerful
 poweful:powerful
 powerfull:powerful
+ppolygons:polygons
 ppublisher:publisher
 practial:practical
 practially:practically
@@ -5346,7 +5390,7 @@ proceses:processes
 processer:processor:*
 processess:processes
 processessing:processing
-processpr:processor
+processpr:processor:*
 processs:process:*
 processsed:processed
 processses:processes
@@ -5490,6 +5534,7 @@ pususading:persuading
 puting:putting:*
 pwoer:power
 pyscic:psychic
+qgsi:qgis
 qoute:quote
 qouted:quoted
 qoutes:quotes
@@ -5695,6 +5740,7 @@ regarless:regardless
 registe:register
 registed:registered
 registeing:registering
+registing:registering
 registerd:registered:*
 registes:registers
 registraration:registration
@@ -5746,6 +5792,7 @@ relected:reelected
 releive:relieve
 releived:relieved
 releiver:reliever
+releoad:reload
 releses:releases
 reletive:relative
 reletively:relatively
@@ -5817,7 +5864,7 @@ repetions:repetitions
 repid:rapid
 replacable:replaceable
 replacments:replacements
-replys:replies
+replys:replies:*
 reponse:response
 reponses:responses
 reponsibilities:responsibilities
@@ -5898,6 +5945,7 @@ reslove:resolve
 resloved:resolved
 resloves:resolves
 resloving:resolving
+reson:reason
 resonable:reasonable
 resopnse:response
 resorce:resource
@@ -6155,8 +6203,8 @@ sempahores:semaphores
 senario:scenario
 senarios:scenarios
 sence:sense
-sensistive:insensitive
-sensistively:insensitively
+sensistive:sensitive
+sensistively:sensitively
 senstive:sensitive
 sensure:censure
 sentance:sentence
@@ -6208,6 +6256,7 @@ sertificates:certificates
 serveral:several
 sesssion:session
 sesssions:sessions
+seting:setting:*
 setted:set
 settelement:settlement
 settlment:settlement
@@ -6727,6 +6776,7 @@ symetry:symmetry
 symettric:symmetric
 symmetral:symmetric
 symmetricaly:symmetrically
+symobl:symbol
 synagouge:synagogue
 synax:syntax
 synchonisation:synchronisation
@@ -6739,6 +6789,7 @@ synchonize:synchronize
 synchonized:synchronized
 synchonizes:synchronizes
 synchonizing:synchronizing
+synchroneously:synchronously
 syncronise:synchronise
 syncronised:synchronised
 syncronises:synchronises
@@ -6770,6 +6821,7 @@ tabacco:tobacco
 tahn:than
 taht:that
 talekd:talked
+tangeant:tangent
 targetted:targeted
 targetting:targeting
 tast:taste
@@ -7052,6 +7104,7 @@ tyrranies:tyrannies
 tyrrany:tyranny
 ubiquitious:ubiquitous
 ublisher:publisher
+updat:update
 udpate:update
 udpated:updated
 udpates:updates
@@ -7276,6 +7329,7 @@ usetnet:Usenet
 usuable:usable
 usualy:usually
 ususally:usually
+utilise:utilize
 utilites:utilities
 utillities:utilities
 utilties:utilities
@@ -7294,6 +7348,7 @@ vailidty:validity
 valetta:valletta
 validing:validating
 valied:valid
+valu:value
 valuble:valuable
 valueable:valuable
 varable:variable
@@ -7319,6 +7374,7 @@ vauled:valued
 vaules:values
 vauling:valuing
 vebrose:verbose
+vecotr:vector
 vegatarian:vegetarian
 vegitable:vegetable
 vegitables:vegetables
@@ -7345,6 +7401,7 @@ versitlity:versatility
 verson:version
 versoned:versioned
 versons:versions
+vertexes:vertices
 verticaly:vertically
 verticies:vertices
 veryified:verified

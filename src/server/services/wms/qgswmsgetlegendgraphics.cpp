@@ -22,17 +22,19 @@
 #include "qgswmsgetlegendgraphics.h"
 #include "qgswmsrenderer.h"
 
+#include <QImage>
+
 namespace QgsWms
 {
 
-  void writeGetLegendGraphics( QgsServerInterface* serverIface, const QgsProject* project,
-                               const QString& version, const QgsServerRequest& request,
-                               QgsServerResponse& response )
+  void writeGetLegendGraphics( QgsServerInterface *serverIface, const QgsProject *project,
+                               const QString &version, const QgsServerRequest &request,
+                               QgsServerResponse &response )
   {
     Q_UNUSED( version );
 
     QgsServerRequest::Parameters params = request.parameters();
-    QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
+    QgsRenderer renderer( serverIface, project, params );
 
     std::unique_ptr<QImage> result( renderer.getLegendGraphics() );
 

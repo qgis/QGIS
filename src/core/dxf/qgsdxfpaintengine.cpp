@@ -20,14 +20,14 @@
 #include "qgsdxfpaintdevice.h"
 #include "qgslogger.h"
 
-QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxfExport* dxf )
-    : QPaintEngine( QPaintEngine::AllFeatures /*QPaintEngine::PainterPaths | QPaintEngine::PaintOutsidePaintEvent*/ )
-    , mPaintDevice( dxfDevice )
-    , mDxf( dxf )
+QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice *dxfDevice, QgsDxfExport *dxf )
+  : QPaintEngine( QPaintEngine::AllFeatures /*QPaintEngine::PainterPaths | QPaintEngine::PaintOutsidePaintEvent*/ )
+  , mPaintDevice( dxfDevice )
+  , mDxf( dxf )
 {
 }
 
-bool QgsDxfPaintEngine::begin( QPaintDevice* pdev )
+bool QgsDxfPaintEngine::begin( QPaintDevice *pdev )
 {
   Q_UNUSED( pdev );
   return true;
@@ -43,14 +43,14 @@ QPaintEngine::Type QgsDxfPaintEngine::type() const
   return QPaintEngine::User;
 }
 
-void QgsDxfPaintEngine::drawPixmap( const QRectF& r, const QPixmap& pm, const QRectF& sr )
+void QgsDxfPaintEngine::drawPixmap( const QRectF &r, const QPixmap &pm, const QRectF &sr )
 {
   Q_UNUSED( r );
   Q_UNUSED( pm );
   Q_UNUSED( sr );
 }
 
-void QgsDxfPaintEngine::updateState( const QPaintEngineState& state )
+void QgsDxfPaintEngine::updateState( const QPaintEngineState &state )
 {
   if ( state.state() & QPaintEngine::DirtyTransform )
     mTransform = state.transform();
@@ -91,12 +91,12 @@ void QgsDxfPaintEngine::drawPolygon( const QPointF *points, int pointCount, Poly
   }
 }
 
-void QgsDxfPaintEngine::drawPath( const QPainterPath& path )
+void QgsDxfPaintEngine::drawPath( const QPainterPath &path )
 {
   int pathLength = path.elementCount();
   for ( int i = 0; i < pathLength; ++i )
   {
-    const QPainterPath::Element& pathElem = path.elementAt( i );
+    const QPainterPath::Element &pathElem = path.elementAt( i );
     if ( pathElem.type == QPainterPath::MoveToElement )
     {
       moveTo( pathElem.x, pathElem.y );
@@ -160,10 +160,10 @@ void QgsDxfPaintEngine::endPolygon()
 
 void QgsDxfPaintEngine::endCurve()
 {
-  if ( mCurrentCurve.size() < 1 )
+  if ( mCurrentCurve.empty() )
     return;
 
-  if ( mCurrentPolygon.size() < 1 )
+  if ( mCurrentPolygon.empty() )
   {
     mCurrentCurve.clear();
     return;
@@ -185,7 +185,7 @@ void QgsDxfPaintEngine::endCurve()
   mCurrentCurve.clear();
 }
 
-void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )
+void QgsDxfPaintEngine::drawLines( const QLineF *lines, int lineCount )
 {
   if ( !mDxf || !mPaintDevice || !lines || mPen.style() == Qt::NoPen )
     return;
@@ -198,13 +198,13 @@ void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )
   }
 }
 
-QgsPointV2 QgsDxfPaintEngine::toDxfCoordinates( QPointF pt ) const
+QgsPoint QgsDxfPaintEngine::toDxfCoordinates( QPointF pt ) const
 {
   if ( !mPaintDevice || !mDxf )
-    return QgsPointV2( pt.x(), pt.y() );
+    return QgsPoint( pt.x(), pt.y() );
 
   QPointF dxfPt = mPaintDevice->dxfCoordinates( mTransform.map( pt ) ) + mShift;
-  return QgsPointV2( dxfPt.x(), dxfPt.y() );
+  return QgsPoint( dxfPt.x(), dxfPt.y() );
 }
 
 
@@ -216,7 +216,7 @@ double QgsDxfPaintEngine::currentWidth() const
   return mPen.widthF() * mPaintDevice->widthScaleFactor();
 }
 
-QPointF QgsDxfPaintEngine::bezierPoint( const QList<QPointF>& controlPolygon, double t )
+QPointF QgsDxfPaintEngine::bezierPoint( const QList<QPointF> &controlPolygon, double t )
 {
   double x = 0;
   double y = 0;
@@ -241,14 +241,14 @@ double QgsDxfPaintEngine::bernsteinPoly( int n, int i, double t )
   if ( i < 0 )
     return 0;
 
-  return lower( n, i )*power( t, i )*power(( 1 - t ), ( n - i ) );
+  return lower( n, i ) * power( t, i ) * power( ( 1 - t ), ( n - i ) );
 }
 
 int QgsDxfPaintEngine::lower( int n, int i )
 {
   if ( i >= 0 && i <= n )
   {
-    return faculty( n ) / ( faculty( i )*faculty( n - i ) );
+    return faculty( n ) / ( faculty( i ) * faculty( n - i ) );
   }
   else
   {
@@ -262,7 +262,7 @@ double QgsDxfPaintEngine::power( double a, int b )
     return 1;
 
   double tmp = a;
-  for ( int i = 2; i <= qAbs( static_cast< double >( b ) ); i++ )
+  for ( int i = 2; i <= std::abs( b ); i++ )
     a *= tmp;
 
   if ( b > 0 )

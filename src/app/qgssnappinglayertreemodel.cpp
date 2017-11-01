@@ -26,20 +26,20 @@
 #include "qgsvectorlayer.h"
 
 
-QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas* canvas, QObject* parent )
-    : QItemDelegate( parent )
-    , mCanvas( canvas )
+QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObject *parent )
+  : QItemDelegate( parent )
+  , mCanvas( canvas )
 {
 }
 
-QWidget* QgsSnappingLayerDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
   Q_UNUSED( index );
 
   if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn )
   {
-    QComboBox* w = new QComboBox( parent );
+    QComboBox *w = new QComboBox( parent );
     w->addItem( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertex.svg" ) ), QStringLiteral( "Vertex" ), QgsSnappingConfig::Vertex );
     w->addItem( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertexAndSegment.svg" ) ), QStringLiteral( "Vertex and segment" ), QgsSnappingConfig::VertexAndSegment );
     w->addItem( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSegment.svg" ) ), QStringLiteral( "Segment" ), QgsSnappingConfig::Segment );
@@ -48,7 +48,7 @@ QWidget* QgsSnappingLayerDelegate::createEditor( QWidget* parent, const QStyleOp
 
   if ( index.column() == QgsSnappingLayerTreeModel::ToleranceColumn )
   {
-    QDoubleSpinBox* w = new QDoubleSpinBox( parent );
+    QDoubleSpinBox *w = new QDoubleSpinBox( parent );
     QVariant val = index.model()->data( index.model()->sibling( index.row(), QgsSnappingLayerTreeModel::UnitsColumn, index ), Qt::UserRole );
     if ( val.isValid() )
     {
@@ -72,7 +72,7 @@ QWidget* QgsSnappingLayerDelegate::createEditor( QWidget* parent, const QStyleOp
 
   if ( index.column() == QgsSnappingLayerTreeModel::UnitsColumn )
   {
-    QComboBox* w = new QComboBox( parent );
+    QComboBox *w = new QComboBox( parent );
     w->addItem( tr( "px" ), QgsTolerance::Pixels );
     w->addItem( QgsUnitTypes::toString( QgsProject::instance()->distanceUnits() ), QgsTolerance::ProjectUnits );
     return w;
@@ -81,7 +81,7 @@ QWidget* QgsSnappingLayerDelegate::createEditor( QWidget* parent, const QStyleOp
   return nullptr;
 }
 
-void QgsSnappingLayerDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
+void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
   QVariant val = index.model()->data( index, Qt::UserRole );
   if ( !val.isValid() )
@@ -115,7 +115,7 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget* editor, const QModelIndex
   }
 }
 
-void QgsSnappingLayerDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const
+void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn ||
        index.column() == QgsSnappingLayerTreeModel::UnitsColumn )
@@ -137,34 +137,30 @@ void QgsSnappingLayerDelegate::setModelData( QWidget* editor, QAbstractItemModel
 }
 
 
-QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject* project, QObject *parent )
-    : QSortFilterProxyModel( parent )
-    , mProject( project )
-    , mIndividualLayerSettings( project->snappingConfig().individualLayerSettings() )
-    , mLayerTreeModel( nullptr )
+QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QObject *parent )
+  : QSortFilterProxyModel( parent )
+  , mProject( project )
+  , mIndividualLayerSettings( project->snappingConfig().individualLayerSettings() )
+
 {
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
   connect( project, &QgsProject::avoidIntersectionsLayersChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
 }
 
-QgsSnappingLayerTreeModel::~QgsSnappingLayerTreeModel()
-{
-}
-
-int QgsSnappingLayerTreeModel::columnCount( const QModelIndex& parent ) const
+int QgsSnappingLayerTreeModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
   return 5;
 }
 
-Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex& idx ) const
+Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex &idx ) const
 {
   if ( idx.column() == LayerColumn )
   {
     return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
   }
 
-  QgsVectorLayer* vl = vectorLayer( idx );
+  QgsVectorLayer *vl = vectorLayer( idx );
   if ( !vl )
   {
     return Qt::NoItemFlags;
@@ -194,51 +190,51 @@ Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex& idx ) const
   return Qt::NoItemFlags;
 }
 
-QModelIndex QgsSnappingLayerTreeModel::index( int row, int column, const QModelIndex& parent ) const
+QModelIndex QgsSnappingLayerTreeModel::index( int row, int column, const QModelIndex &parent ) const
 {
-  QModelIndex newIndex = QSortFilterProxyModel::index( row, 0, parent );
+  QModelIndex newIndex = QSortFilterProxyModel::index( row, LayerColumn, parent );
   if ( column == LayerColumn )
     return newIndex;
 
   return createIndex( row, column, newIndex.internalId() );
 }
 
-QModelIndex QgsSnappingLayerTreeModel::parent( const QModelIndex& child ) const
+QModelIndex QgsSnappingLayerTreeModel::parent( const QModelIndex &child ) const
 {
-  return QSortFilterProxyModel::parent( createIndex( child.row(), 0, child.internalId() ) );
+  return QSortFilterProxyModel::parent( createIndex( child.row(), LayerColumn, child.internalId() ) );
 }
 
-QModelIndex QgsSnappingLayerTreeModel::sibling( int row, int column, const QModelIndex& idx ) const
+QModelIndex QgsSnappingLayerTreeModel::sibling( int row, int column, const QModelIndex &idx ) const
 {
   QModelIndex parent = idx.parent();
   return index( row, column, parent );
 }
 
-QgsVectorLayer* QgsSnappingLayerTreeModel::vectorLayer( const QModelIndex& idx ) const
+QgsVectorLayer *QgsSnappingLayerTreeModel::vectorLayer( const QModelIndex &idx ) const
 {
-  QgsLayerTreeNode* node;
+  QgsLayerTreeNode *node = nullptr;
   if ( idx.column() == LayerColumn )
   {
     node = mLayerTreeModel->index2node( mapToSource( idx ) );
   }
   else
   {
-    node = mLayerTreeModel->index2node( mapToSource( index( idx.row(), 0, idx.parent() ) ) );
+    node = mLayerTreeModel->index2node( mapToSource( index( idx.row(), LayerColumn, idx.parent() ) ) );
   }
 
   if ( !node || !QgsLayerTree::isLayer( node ) )
     return nullptr;
 
-  return qobject_cast<QgsVectorLayer*>( QgsLayerTree::toLayer( node )->layer() );
+  return qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
 }
 
 void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
 {
-  const QHash<QgsVectorLayer*, QgsSnappingConfig::IndividualLayerSettings> oldSettings = mIndividualLayerSettings;
+  const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> oldSettings = mIndividualLayerSettings;
 
-  Q_FOREACH ( QgsVectorLayer* vl, oldSettings.keys() )
+  for ( auto it = oldSettings.constBegin(); it != oldSettings.constEnd(); ++it )
   {
-    if ( !mProject->snappingConfig().individualLayerSettings().contains( vl ) )
+    if ( !mProject->snappingConfig().individualLayerSettings().contains( it.key() ) )
     {
       beginResetModel();
       mIndividualLayerSettings = mProject->snappingConfig().individualLayerSettings();
@@ -246,7 +242,7 @@ void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
       return;
     }
   }
-  Q_FOREACH ( QgsVectorLayer* vl, mProject->snappingConfig().individualLayerSettings().keys() )
+  Q_FOREACH ( QgsVectorLayer *vl, mProject->snappingConfig().individualLayerSettings().keys() )
   {
     if ( !oldSettings.contains( vl ) )
     {
@@ -260,7 +256,7 @@ void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
   hasRowchanged( mLayerTreeModel->rootGroup(), oldSettings );
 }
 
-void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode* node, const QHash<QgsVectorLayer*, QgsSnappingConfig::IndividualLayerSettings> &oldSettings )
+void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings )
 {
   if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
   {
@@ -272,7 +268,7 @@ void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode* node, const QHa
   else
   {
     QModelIndex idx = mapFromSource( mLayerTreeModel->node2index( node ) );
-    QgsVectorLayer* vl = vectorLayer( idx );
+    QgsVectorLayer *vl = vectorLayer( idx );
     if ( !vl )
     {
       emit dataChanged( QModelIndex(), idx );
@@ -285,24 +281,24 @@ void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode* node, const QHa
   }
 }
 
-QgsLayerTreeModel* QgsSnappingLayerTreeModel::layerTreeModel() const
+QgsLayerTreeModel *QgsSnappingLayerTreeModel::layerTreeModel() const
 {
   return mLayerTreeModel;
 }
 
-void QgsSnappingLayerTreeModel::setLayerTreeModel( QgsLayerTreeModel* layerTreeModel )
+void QgsSnappingLayerTreeModel::setLayerTreeModel( QgsLayerTreeModel *layerTreeModel )
 {
   mLayerTreeModel = layerTreeModel;
   QSortFilterProxyModel::setSourceModel( layerTreeModel );
 }
 
-bool QgsSnappingLayerTreeModel::filterAcceptsRow( int sourceRow, const QModelIndex& sourceParent ) const
+bool QgsSnappingLayerTreeModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
-  QgsLayerTreeNode* node = mLayerTreeModel->index2node( mLayerTreeModel->index( sourceRow, 0, sourceParent ) );
+  QgsLayerTreeNode *node = mLayerTreeModel->index2node( mLayerTreeModel->index( sourceRow, LayerColumn, sourceParent ) );
   return nodeShown( node );
 }
 
-bool QgsSnappingLayerTreeModel::nodeShown( QgsLayerTreeNode* node ) const
+bool QgsSnappingLayerTreeModel::nodeShown( QgsLayerTreeNode *node ) const
 {
   if ( !node )
     return false;
@@ -319,8 +315,8 @@ bool QgsSnappingLayerTreeModel::nodeShown( QgsLayerTreeNode* node ) const
   }
   else
   {
-    QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsLayerTree::toLayer( node )->layer() );
-    return layer && layer->hasGeometryType();
+    QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
+    return layer && layer->isSpatial();
   }
 }
 
@@ -350,7 +346,7 @@ QVariant QgsSnappingLayerTreeModel::headerData( int section, Qt::Orientation ori
   return mLayerTreeModel->headerData( section, orientation, role );
 }
 
-QVariant QgsSnappingLayerTreeModel::data( const QModelIndex& idx, int role ) const
+QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) const
 {
   if ( idx.column() == LayerColumn )
   {
@@ -375,12 +371,12 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex& idx, int role ) con
       }
       else
       {
-        // i.e. this is a group, analyse its children
+        // i.e. this is a group, analyze its children
         bool hasChecked = false, hasUnchecked = false;
         int n;
         for ( n = 0; !hasChecked || !hasUnchecked; n++ )
         {
-          QVariant v = data( idx.child( n, 0 ), role );
+          QVariant v = data( idx.child( n, LayerColumn ), role );
           if ( !v.isValid() )
             break;
 
@@ -509,7 +505,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex& idx, int role ) con
   return QVariant();
 }
 
-bool QgsSnappingLayerTreeModel::setData( const QModelIndex& index, const QVariant& value, int role )
+bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
   if ( index.column() == LayerColumn )
   {
@@ -518,7 +514,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex& index, const QVarian
       int i = 0;
       for ( i = 0; ; i++ )
       {
-        QModelIndex child = index.child( i, 0 );
+        QModelIndex child = index.child( i, LayerColumn );
         if ( !child.isValid() )
           break;
 
@@ -527,7 +523,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex& index, const QVarian
 
       if ( i == 0 )
       {
-        QgsVectorLayer* vl = vectorLayer( index );
+        QgsVectorLayer *vl = vectorLayer( index );
         if ( !vl || !mIndividualLayerSettings.contains( vl ) )
         {
           return false;
@@ -564,7 +560,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex& index, const QVarian
       if ( !ls.valid() )
         return false;
 
-      ls.setType(( QgsSnappingConfig::SnappingType )value.toInt() );
+      ls.setType( ( QgsSnappingConfig::SnappingType )value.toInt() );
       QgsSnappingConfig config = mProject->snappingConfig();
       config.setIndividualLayerSettings( vl, ls );
       mProject->setSnappingConfig( config );
@@ -604,7 +600,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex& index, const QVarian
       if ( !ls.valid() )
         return false;
 
-      ls.setUnits(( QgsTolerance::UnitType )value.toInt() );
+      ls.setUnits( ( QgsTolerance::UnitType )value.toInt() );
       QgsSnappingConfig config = mProject->snappingConfig();
       config.setIndividualLayerSettings( vl, ls );
       mProject->setSnappingConfig( config );
@@ -614,13 +610,13 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex& index, const QVarian
 
   if ( index.column() == AvoidIntersectionColumn && role == Qt::CheckStateRole )
   {
-    QgsVectorLayer* vl = vectorLayer( index );
+    QgsVectorLayer *vl = vectorLayer( index );
     if ( vl )
     {
       if ( !mIndividualLayerSettings.contains( vl ) )
         return false;
 
-      QList<QgsVectorLayer*> avoidIntersectionsList = mProject->avoidIntersectionsLayers();
+      QList<QgsVectorLayer *> avoidIntersectionsList = mProject->avoidIntersectionsLayers();
 
       if ( value.toInt() == Qt::Checked && !avoidIntersectionsList.contains( vl ) )
         avoidIntersectionsList.append( vl );

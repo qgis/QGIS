@@ -24,35 +24,39 @@ class QgsMapLayer;
 class QDomElement;
 
 
-/** \ingroup core
- * @brief The QgsDatumTransformStore class keeps track of datum transformations
+/**
+ * \ingroup core
+ * \brief The QgsDatumTransformStore class keeps track of datum transformations
  * as chosen by the user.
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsDatumTransformStore
 {
   public:
-    explicit QgsDatumTransformStore( const QgsCoordinateReferenceSystem& destCrs );
+    explicit QgsDatumTransformStore( const QgsCoordinateReferenceSystem &destCrs );
 
     void clear();
 
-    void setDestinationCrs( const QgsCoordinateReferenceSystem& destCrs );
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &destCrs );
 
-    void addEntry( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform, int destDatumTransform );
+    void addEntry( const QString &layerId, const QString &srcAuthId, const QString &destAuthId, int srcDatumTransform, int destDatumTransform );
 
-    bool hasEntryForLayer( QgsMapLayer* layer ) const;
+    bool hasEntryForLayer( QgsMapLayer *layer ) const;
 
-    /** Will return transform from layer's CRS to current destination CRS.
-     *  Will emit datumTransformInfoRequested signal if the layer has no entry.
-     *  @returns transformation associated with layer, or an invalid QgsCoordinateTransform
-     *  if no transform is associated with the layer
+    /**
+     * Will return transform from layer's CRS to current destination CRS.
+     * \returns transformation associated with layer, or an invalid QgsCoordinateTransform
+     * if no transform is associated with the layer
+     * \param layer the associated layer
+     * \param srcAuthId source CRS (defaults to layer crs)
+     * \param dstAuthId destination CRS (defaults to store's crs)
      */
-    QgsCoordinateTransform transformation( QgsMapLayer* layer ) const;
+    QgsCoordinateTransform transformation( const QgsMapLayer *layer, QString srcAuthId = QString(), QString dstAuthId = QString() ) const;
 
-    void readXml( const QDomNode& parentNode );
+    void readXml( const QDomNode &parentNode );
 
-    void writeXml( QDomNode& parentNode, QDomDocument& theDoc ) const;
+    void writeXml( QDomNode &parentNode, QDomDocument &doc ) const;
 
     struct CORE_EXPORT Entry
     {

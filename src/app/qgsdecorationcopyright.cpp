@@ -24,11 +24,12 @@ email                : tim@linfiniti.com
 #include "qgsdecorationcopyright.h"
 #include "qgsdecorationcopyrightdialog.h"
 
+#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
-#include "qgisapp.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 #include <QMenu>
@@ -41,10 +42,8 @@ email                : tim@linfiniti.com
 #include <cmath>
 
 
-QgsDecorationCopyright::QgsDecorationCopyright( QObject* parent )
-    : QgsDecorationItem( parent )
-    , mMarginHorizontal( 0 )
-    , mMarginVertical( 0 )
+QgsDecorationCopyright::QgsDecorationCopyright( QObject *parent )
+  : QgsDecorationItem( parent )
 {
   mPlacement = BottomRight;
   mMarginUnit = QgsUnitTypes::RenderMillimeters;
@@ -64,23 +63,22 @@ void QgsDecorationCopyright::projectRead()
   // there is no font setting in the UI, so just use the Qt/QGIS default font (what mQFont gets when created)
   //  mQFont.setFamily( QgsProject::instance()->readEntry( "CopyrightLabel", "/FontName", "Sans Serif" ) );
   //  mQFont.setPointSize( QgsProject::instance()->readNumEntry( "CopyrightLabel", "/FontSize", 9 ) );
-  QgsProject* prj = QgsProject::instance();
-  mLabelQString = prj->readEntry( mNameConfig, QStringLiteral( "/Label" ), defString );
+
+  mLabelQString = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Label" ), defString );
   mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
   mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
-  mLabelQColor.setNamedColor( prj->readEntry( mNameConfig, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) ); // default color is black
+  mColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
 }
 
 void QgsDecorationCopyright::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject* prj = QgsProject::instance();
-  prj->writeEntry( mNameConfig, QStringLiteral( "/FontName" ), mQFont.family() );
-  prj->writeEntry( mNameConfig, QStringLiteral( "/FontSize" ), mQFont.pointSize() );
-  prj->writeEntry( mNameConfig, QStringLiteral( "/Label" ), mLabelQString );
-  prj->writeEntry( mNameConfig, QStringLiteral( "/Color" ), mLabelQColor.name() );
-  prj->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
-  prj->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/FontName" ), mQFont.family() );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/FontSize" ), mQFont.pointSize() );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Label" ), mLabelQString );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
 }
 
 // Slot called when the buffer menu item is activated
@@ -91,20 +89,22 @@ void QgsDecorationCopyright::run()
 }
 
 
-void QgsDecorationCopyright::render( QPainter * theQPainter )
+void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRenderContext &context )
 {
+  Q_UNUSED( mapSettings );
   //Large IF statement to enable/disable copyright label
   if ( enabled() )
   {
     // need width/height of paint device
-    int myHeight = theQPainter->device()->height();
-    int myWidth = theQPainter->device()->width();
+    int myHeight = context.painter()->device()->height();
+    int myWidth = context.painter()->device()->width();
 
     QTextDocument text;
     text.setDefaultFont( mQFont );
     // To set the text color in a QTextDocument we use a CSS style
+
     QString style = "<style type=\"text/css\"> p {color: " +
-                    mLabelQColor.name() + "}</style>";
+                    QStringLiteral( "rgba( %1, %2, %3, %4 )" ).arg( mColor.red() ).arg( mColor.green() ).arg( mColor.blue() ).arg( QString::number( mColor.alphaF(), 'f', 2 ) ) + "}</style>";
     text.setHtml( style + "<p>" + mLabelQString + "</p>" );
     QSizeF size = text.size();
 
@@ -115,8 +115,8 @@ void QgsDecorationCopyright::render( QPainter * theQPainter )
     {
       case QgsUnitTypes::RenderMillimeters:
       {
-        int myPixelsInchX = theQPainter->device()->logicalDpiX();
-        int myPixelsInchY = theQPainter->device()->logicalDpiY();
+        int myPixelsInchX = context.painter()->device()->logicalDpiX();
+        int myPixelsInchY = context.painter()->device()->logicalDpiY();
         myXOffset = myPixelsInchX * INCHES_TO_MM * mMarginHorizontal;
         myYOffset = myPixelsInchY * INCHES_TO_MM * mMarginVertical;
         break;
@@ -128,8 +128,8 @@ void QgsDecorationCopyright::render( QPainter * theQPainter )
         break;
 
       case QgsUnitTypes::RenderPercentage:
-        myXOffset = (( myWidth - size.width() ) / 100. ) * mMarginHorizontal;
-        myYOffset = (( myHeight - size.height() ) / 100. ) * mMarginVertical;
+        myXOffset = ( ( myWidth - size.width() ) / 100. ) * mMarginHorizontal;
+        myYOffset = ( ( myHeight - size.height() ) / 100. ) * mMarginVertical;
         break;
 
       default:  // Use default of top left
@@ -156,11 +156,11 @@ void QgsDecorationCopyright::render( QPainter * theQPainter )
     }
 
     //Paint label to canvas
-    QMatrix worldMatrix = theQPainter->worldMatrix();
-    theQPainter->translate( myXOffset, myYOffset );
-    text.drawContents( theQPainter );
+    QMatrix worldMatrix = context.painter()->worldMatrix();
+    context.painter()->translate( myXOffset, myYOffset );
+    text.drawContents( context.painter() );
     // Put things back how they were
-    theQPainter->setWorldMatrix( worldMatrix );
+    context.painter()->setWorldMatrix( worldMatrix );
   }
 }
 

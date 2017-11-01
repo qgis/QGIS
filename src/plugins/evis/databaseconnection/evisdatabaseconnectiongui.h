@@ -27,7 +27,7 @@
 #ifndef eVisDatabaseConnectionGUI_H
 #define eVisDatabaseConnectionGUI_H
 
-#include <ui_evisdatabaseconnectionguibase.h>
+#include "ui_evisdatabaseconnectionguibase.h"
 #include "evisdatabaseconnection.h"
 #include "evisdatabaselayerfieldselectiongui.h"
 #include "evisquerydefinition.h"
@@ -50,40 +50,40 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
 
   public:
     //! \brief Constructor
-    eVisDatabaseConnectionGui( QList<QTemporaryFile*>*, QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
+    eVisDatabaseConnectionGui( QList<QTemporaryFile *> *, QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
 
     ~eVisDatabaseConnectionGui();
 
   private:
     //! \brief Pointer to a database connection
-    eVisDatabaseConnection* mDatabaseConnection;
+    eVisDatabaseConnection *mDatabaseConnection = nullptr;
 
     //! \brief Pointer to a temporary file which will hold the results of our query
-    QList<QTemporaryFile*>* mTempOutputFileList;
+    QList<QTemporaryFile *> *mTempOutputFileList;
 
     //! \brief Pointer to another GUI component that will select which fields contain x, y coordinates
-    eVisDatabaseLayerFieldSelectionGui* mDatabaseLayerFieldSelector;
+    eVisDatabaseLayerFieldSelectionGui *mDatabaseLayerFieldSelector = nullptr;
 
     //! \brief Pointer to a QMap which will hold the definition of preexisting query that can be loaded from an xml file
-    QMap<int, eVisQueryDefinition>* mQueryDefinitionMap;
+    QMap<int, eVisQueryDefinition> *mQueryDefinitionMap;
 
   private slots:
     //! \brief Slot called after the user selects the x, y fields in the field selection gui component
-    void drawNewVectorLayer( const QString&, const QString&, const QString& );
+    void drawNewVectorLayer( const QString &, const QString &, const QString & );
 
-    void on_buttonBox_accepted();
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "plugins/plugins_evis.html#id11" ) ); }
+    void buttonBox_accepted();
+    void showHelp();
 
-    void on_cboxDatabaseType_currentIndexChanged( int );
-    void on_cboxPredefinedQueryList_currentIndexChanged( int );
-    void on_pbtnConnect_clicked();
-    void on_pbtnLoadPredefinedQueries_clicked();
-    void on_pbtnOpenFile_clicked();
-    void on_pbtnRunQuery_clicked();
+    void cboxDatabaseType_currentIndexChanged( int );
+    void cboxPredefinedQueryList_currentIndexChanged( int );
+    void pbtnConnect_clicked();
+    void pbtnLoadPredefinedQueries_clicked();
+    void pbtnOpenFile_clicked();
+    void pbtnRunQuery_clicked();
 
   signals:
     //! \brief signal emitted by the drawNewVectorLayer slot
-    void drawVectorLayer( const QString&, const QString&, const QString& );
+    void drawVectorLayer( const QString &, const QString &, const QString & );
 };
 
 #endif

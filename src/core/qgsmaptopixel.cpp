@@ -22,7 +22,7 @@
 #include <QTransform>
 
 #include "qgslogger.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 
 
 QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
@@ -31,28 +31,25 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
                               int width,
                               int height,
                               double rotation )
-    : mMapUnitsPerPixel( mapUnitsPerPixel )
-    , mWidth( width )
-    , mHeight( height )
-    , mRotation( rotation )
-    , mXCenter( xc )
-    , mYCenter( yc )
-    , xMin( xc - ( mWidth * mMapUnitsPerPixel / 2.0 ) )
-    , yMin( yc - ( mHeight * mMapUnitsPerPixel / 2.0 ) )
+  : mMapUnitsPerPixel( mapUnitsPerPixel )
+  , mWidth( width )
+  , mHeight( height )
+  , mRotation( rotation )
+  , mXCenter( xc )
+  , mYCenter( yc )
+  , xMin( xc - ( mWidth * mMapUnitsPerPixel / 2.0 ) )
+  , yMin( yc - ( mHeight * mMapUnitsPerPixel / 2.0 ) )
 {
   Q_ASSERT( mapUnitsPerPixel > 0 );
   updateMatrix();
 }
 
 QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel )
-    : mMapUnitsPerPixel( mapUnitsPerPixel )
-    , mWidth( 0 )
-    , mHeight( 0 )
-    , mRotation( 0 )
-    , mXCenter( 0 )
-    , mYCenter( 0 )
-    , xMin( 0 )
-    , yMin( 0 )
+  : mMapUnitsPerPixel( mapUnitsPerPixel )
+  , mWidth( 0 )
+  , mHeight( 0 )
+  , mXCenter( 0 )
+  , mYCenter( 0 )
 {
   updateMatrix();
 }
@@ -61,18 +58,10 @@ QgsMapToPixel QgsMapToPixel::fromScale( double scale, QgsUnitTypes::DistanceUnit
 {
   double metersPerPixel = 25.4 / dpi / 1000.0;
   double mapUnitsPerPixel = metersPerPixel * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mapUnits );
-  return QgsMapToPixel( mapUnitsPerPixel / scale );
+  return QgsMapToPixel( mapUnitsPerPixel * scale );
 }
 
 QgsMapToPixel::QgsMapToPixel()
-    : mMapUnitsPerPixel( 1 )
-    , mWidth( 1 )
-    , mHeight( 1 )
-    , mRotation( 0.0 )
-    , mXCenter( 0.5 )
-    , mYCenter( 0.5 )
-    , xMin( 0 )
-    , yMin( 0 )
 {
   updateMatrix();
 }
@@ -91,7 +80,7 @@ bool QgsMapToPixel::updateMatrix()
 {
   QTransform newMatrix = transform();
 
-  // http://hub.qgis.org/issues/12757
+  // https://issues.qgis.org/issues/12757
   if ( !newMatrix.isInvertible() )
     return false;
 
@@ -99,7 +88,7 @@ bool QgsMapToPixel::updateMatrix()
   return true;
 }
 
-QgsPoint QgsMapToPixel::toMapPoint( double x, double y ) const
+QgsPointXY QgsMapToPixel::toMapPoint( double x, double y ) const
 {
   bool invertible;
   QTransform matrix = mMatrix.inverted( &invertible );
@@ -108,21 +97,21 @@ QgsPoint QgsMapToPixel::toMapPoint( double x, double y ) const
   qreal x_qreal = x, y_qreal = y;
   matrix.map( x_qreal, y_qreal, &mx, &my );
   //QgsDebugMsg(QString("XXX toMapPoint x:%1 y:%2 -> x:%3 y:%4").arg(x).arg(y).arg(mx).arg(my));
-  return QgsPoint( mx, my );
+  return QgsPointXY( mx, my );
 }
 
-QgsPoint QgsMapToPixel::toMapCoordinates( QPoint p ) const
+QgsPointXY QgsMapToPixel::toMapCoordinates( QPoint p ) const
 {
-  QgsPoint mapPt = toMapPoint( p.x(), p.y() );
-  return QgsPoint( mapPt );
+  QgsPointXY mapPt = toMapPoint( p.x(), p.y() );
+  return QgsPointXY( mapPt );
 }
 
-QgsPoint QgsMapToPixel::toMapCoordinates( int x, int y ) const
+QgsPointXY QgsMapToPixel::toMapCoordinates( int x, int y ) const
 {
   return toMapPoint( x, y );
 }
 
-QgsPoint QgsMapToPixel::toMapCoordinatesF( double x, double y ) const
+QgsPointXY QgsMapToPixel::toMapCoordinatesF( double x, double y ) const
 {
   return toMapPoint( x, y );
 }
@@ -155,7 +144,7 @@ void QgsMapToPixel::setMapRotation( double degrees, double cx, double cy )
   if ( mWidth < 0 )
   {
     // set width not that we can compute it
-    mWidth = (( mXCenter - xMin ) * 2 ) / mMapUnitsPerPixel;
+    mWidth = ( ( mXCenter - xMin ) * 2 ) / mMapUnitsPerPixel;
   }
 
   if ( !updateMatrix() )
@@ -214,27 +203,27 @@ QString QgsMapToPixel::showParameters() const
 {
   QString rep;
   QTextStream( &rep ) << "Map units/pixel: " << mMapUnitsPerPixel
-  << " center: " << mXCenter << ',' << mYCenter
-  << " rotation: " << mRotation
-  << " size: " << mWidth << 'x' << mHeight;
+                      << " center: " << mXCenter << ',' << mYCenter
+                      << " rotation: " << mRotation
+                      << " size: " << mWidth << 'x' << mHeight;
   return rep;
 }
 
-QgsPoint QgsMapToPixel::transform( qreal x, qreal y ) const
+QgsPointXY QgsMapToPixel::transform( qreal x, qreal y ) const
 {
   transformInPlace( x, y );
-  return QgsPoint( x, y );
+  return QgsPointXY( x, y );
 }
 
-QgsPoint QgsMapToPixel::transform( const QgsPoint &p ) const
+QgsPointXY QgsMapToPixel::transform( const QgsPointXY &p ) const
 {
   qreal x = p.x(), y = p.y();
   transformInPlace( x, y );
 // QgsDebugMsg(QString("Point to pixel...X : %1-->%2, Y: %3 -->%4").arg(p.x()).arg(dx).arg(p.y()).arg(dy));
-  return QgsPoint( x, y );
+  return QgsPointXY( x, y );
 }
 
-void QgsMapToPixel::transform( QgsPoint *p ) const
+void QgsMapToPixel::transform( QgsPointXY *p ) const
 {
   qreal x = p->x(), y = p->y();
   transformInPlace( x, y );
@@ -242,7 +231,7 @@ void QgsMapToPixel::transform( QgsPoint *p ) const
   p->set( x, y );
 }
 
-void QgsMapToPixel::transformInPlace( double& x, double& y ) const
+void QgsMapToPixel::transformInPlace( double &x, double &y ) const
 {
   // Map 2 Pixel
   qreal mx, my;
@@ -253,7 +242,7 @@ void QgsMapToPixel::transformInPlace( double& x, double& y ) const
   y = my;
 }
 
-void QgsMapToPixel::transformInPlace( float& x, float& y ) const
+void QgsMapToPixel::transformInPlace( float &x, float &y ) const
 {
   double mx = x, my = y;
   transformInPlace( mx, my );

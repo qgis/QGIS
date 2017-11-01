@@ -18,10 +18,12 @@
 #define QGSAUTHCERTTRUSTPOLICYCOMBOBOX_H
 
 #include <QComboBox>
+#include "qgis.h"
 #include "qgsauthcertutils.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for editing the trust policy associated with a Certificate (Intermediate) Authority
  */
 class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
@@ -32,14 +34,14 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
 
     /**
      * Construct a combo box for defining certificate trust policy
-     * @param parent Parent widget
-     * @param policy Defined trust policy
-     * @param defaultpolicy Default trust policy
+     * \param parent Parent widget
+     * \param policy Defined trust policy
+     * \param defaultpolicy Default trust policy
      */
     explicit QgsAuthCertTrustPolicyComboBox(
-      QWidget *parent = nullptr,
+      QWidget *parent SIP_TRANSFERTHIS = 0,
       QgsAuthCertUtils::CertTrustPolicy policy = QgsAuthCertUtils::DefaultTrust,
-      QgsAuthCertUtils::CertTrustPolicy defaultpolicy =  QgsAuthCertUtils::DefaultTrust );
+      QgsAuthCertUtils::CertTrustPolicy defaultpolicy = QgsAuthCertUtils::DefaultTrust );
 
     //! Get currently set trust policy
     QgsAuthCertUtils::CertTrustPolicy trustPolicy();
@@ -59,7 +61,7 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
 
   private:
     const QString defaultTrustText(
-      QgsAuthCertUtils::CertTrustPolicy defaultpolicy =  QgsAuthCertUtils::DefaultTrust );
+      QgsAuthCertUtils::CertTrustPolicy defaultpolicy = QgsAuthCertUtils::DefaultTrust );
 };
 
 #endif // QGSAUTHCERTTRUSTPOLICYCOMBOBOX_H

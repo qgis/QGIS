@@ -17,25 +17,29 @@
 
 #include "qgscomposerimageexportoptionsdialog.h"
 #include "qgis.h"
-#include <QSettings>
+#include "qgssettings.h"
+
 #include <QCheckBox>
 #include <QPushButton>
 
-QgsComposerImageExportOptionsDialog::QgsComposerImageExportOptionsDialog( QWidget* parent, Qt::WindowFlags flags )
-    : QDialog( parent, flags )
+QgsComposerImageExportOptionsDialog::QgsComposerImageExportOptionsDialog( QWidget *parent, Qt::WindowFlags flags )
+  : QDialog( parent, flags )
 {
   setupUi( this );
+  connect( mWidthSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsComposerImageExportOptionsDialog::mWidthSpinBox_valueChanged );
+  connect( mHeightSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsComposerImageExportOptionsDialog::mHeightSpinBox_valueChanged );
+  connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsComposerImageExportOptionsDialog::mResolutionSpinBox_valueChanged );
 
-  connect( mClipToContentGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( clipToContentsToggled( bool ) ) );
+  connect( mClipToContentGroupBox, &QGroupBox::toggled, this, &QgsComposerImageExportOptionsDialog::clipToContentsToggled );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ComposerImageExportOptionsDialog/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ComposerImageExportOptionsDialog/geometry" ) ).toByteArray() );
 }
 
 QgsComposerImageExportOptionsDialog::~QgsComposerImageExportOptionsDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ComposerImageExportOptionsDialog/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/ComposerImageExportOptionsDialog/geometry" ), saveGeometry() );
 }
 
 void QgsComposerImageExportOptionsDialog::setResolution( int resolution )
@@ -97,7 +101,7 @@ bool QgsComposerImageExportOptionsDialog::cropToContents() const
   return mClipToContentGroupBox->isChecked();
 }
 
-void QgsComposerImageExportOptionsDialog::getCropMargins( int& topMargin, int& rightMargin, int& bottomMargin, int& leftMargin ) const
+void QgsComposerImageExportOptionsDialog::getCropMargins( int &topMargin, int &rightMargin, int &bottomMargin, int &leftMargin ) const
 {
   topMargin = mTopMarginSpinBox->value();
   rightMargin = mRightMarginSpinBox->value();
@@ -113,7 +117,7 @@ void QgsComposerImageExportOptionsDialog::setCropMargins( int topMargin, int rig
   mLeftMarginSpinBox->setValue( leftMargin );
 }
 
-void QgsComposerImageExportOptionsDialog::on_mWidthSpinBox_valueChanged( int value )
+void QgsComposerImageExportOptionsDialog::mWidthSpinBox_valueChanged( int value )
 {
   mHeightSpinBox->blockSignals( true );
   mResolutionSpinBox->blockSignals( true );
@@ -123,7 +127,7 @@ void QgsComposerImageExportOptionsDialog::on_mWidthSpinBox_valueChanged( int val
   mResolutionSpinBox->blockSignals( false );
 }
 
-void QgsComposerImageExportOptionsDialog::on_mHeightSpinBox_valueChanged( int value )
+void QgsComposerImageExportOptionsDialog::mHeightSpinBox_valueChanged( int value )
 {
   mWidthSpinBox->blockSignals( true );
   mResolutionSpinBox->blockSignals( true );
@@ -133,7 +137,7 @@ void QgsComposerImageExportOptionsDialog::on_mHeightSpinBox_valueChanged( int va
   mResolutionSpinBox->blockSignals( false );
 }
 
-void QgsComposerImageExportOptionsDialog::on_mResolutionSpinBox_valueChanged( int value )
+void QgsComposerImageExportOptionsDialog::mResolutionSpinBox_valueChanged( int value )
 {
   mWidthSpinBox->blockSignals( true );
   mHeightSpinBox->blockSignals( true );

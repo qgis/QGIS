@@ -27,8 +27,9 @@
 #include "qgsrunprocess.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include <qgslogger.h>
+#include "qgslogger.h"
 #include "qgsexpression.h"
+#include "qgsdataprovider.h"
 
 #include <QList>
 #include <QStringList>
@@ -38,45 +39,94 @@
 #include <QUrl>
 #include <QDir>
 #include <QFileInfo>
+#include <QRegularExpression>
 
 
-QUuid QgsActionManager::addAction( QgsAction::ActionType type, const QString& name, const QString& command, bool capture )
+QUuid QgsActionManager::addAction( QgsAction::ActionType type, const QString &name, const QString &command, bool capture )
 {
   QgsAction action( type, name, command, capture );
   addAction( action );
   return action.id();
 }
 
-QUuid QgsActionManager::addAction( QgsAction::ActionType type, const QString& name, const QString& command, const QString& icon, bool capture )
+QUuid QgsActionManager::addAction( QgsAction::ActionType type, const QString &name, const QString &command, const QString &icon, bool capture )
 {
   QgsAction action( type, name, command, icon, capture );
   addAction( action );
   return action.id();
 }
 
-void QgsActionManager::addAction( const QgsAction& action )
+void QgsActionManager::addAction( const QgsAction &action )
 {
+  QgsDebugMsg( "add action " + action.name() );
   mActions.append( action );
+  if ( mLayer && mLayer->dataProvider() && !action.notificationMessage().isEmpty() )
+  {
+    mLayer->dataProvider()->setListening( true );
+    if ( !mOnNotifyConnected )
+    {
+      QgsDebugMsg( "connecting to notify" );
+      connect( mLayer->dataProvider(), &QgsDataProvider::notify, this, &QgsActionManager::onNotifyRunActions );
+      mOnNotifyConnected = true;
+    }
+  }
 }
 
-void QgsActionManager::removeAction( const QUuid& actionId )
+void QgsActionManager::onNotifyRunActions( const QString &message )
+{
+  for ( const QgsAction &act : qgis::as_const( mActions ) )
+  {
+    if ( !act.notificationMessage().isEmpty() && QRegularExpression( act.notificationMessage() ).match( message ).hasMatch() )
+    {
+      if ( !act.isValid() || !act.runable() )
+        continue;
+
+      QgsExpressionContext context = createExpressionContext();
+
+      Q_ASSERT( mLayer ); // if there is no layer, then where is the notification coming from ?
+      context << QgsExpressionContextUtils::layerScope( mLayer );
+      context << QgsExpressionContextUtils::notificationScope( message );
+
+      QString expandedAction = QgsExpression::replaceExpressionText( act.command(), &context );
+      if ( expandedAction.isEmpty() )
+        continue;
+      runAction( QgsAction( act.type(), act.name(), expandedAction, act.capture() ) );
+    }
+  }
+}
+
+void QgsActionManager::removeAction( const QUuid &actionId )
 {
   int i = 0;
-  Q_FOREACH ( const QgsAction& action, mActions )
+  for ( const QgsAction &action : qgis::as_const( mActions ) )
   {
     if ( action.id() == actionId )
     {
       mActions.removeAt( i );
-      return;
+      break;
     }
     ++i;
   }
+
+  if ( mOnNotifyConnected )
+  {
+    bool hasActionOnNotify = false;
+    for ( const QgsAction &action : qgis::as_const( mActions ) )
+      hasActionOnNotify |= !action.notificationMessage().isEmpty();
+    if ( !hasActionOnNotify && mLayer && mLayer->dataProvider() )
+    {
+      // note that there is no way of knowing if the provider is listening only because
+      // this class has hasked it to, so we do not reset the provider listening state here
+      disconnect( mLayer->dataProvider(), &QgsDataProvider::notify, this, &QgsActionManager::onNotifyRunActions );
+      mOnNotifyConnected = false;
+    }
+  }
 }
 
-void QgsActionManager::doAction( const QUuid& actionId, const QgsFeature& feature, int defaultValueIndex )
+void QgsActionManager::doAction( const QUuid &actionId, const QgsFeature &feature, int defaultValueIndex )
 {
   QgsExpressionContext context = createExpressionContext();
-  QgsExpressionContextScope* actionScope = new QgsExpressionContextScope();
+  QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
   actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "field_index" ), defaultValueIndex, true ) );
   if ( defaultValueIndex >= 0 && defaultValueIndex < feature.fields().size() )
     actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "field_name" ), feature.fields().at( defaultValueIndex ).name(), true ) );
@@ -85,7 +135,7 @@ void QgsActionManager::doAction( const QUuid& actionId, const QgsFeature& featur
   doAction( actionId, feature, context );
 }
 
-void QgsActionManager::doAction( const QUuid& actionId, const QgsFeature& feat, const QgsExpressionContext& context )
+void QgsActionManager::doAction( const QUuid &actionId, const QgsFeature &feat, const QgsExpressionContext &context )
 {
   QgsAction act = action( actionId );
 
@@ -109,9 +159,16 @@ void QgsActionManager::doAction( const QUuid& actionId, const QgsFeature& feat, 
 void QgsActionManager::clearActions()
 {
   mActions.clear();
+  if ( mOnNotifyConnected && mLayer && mLayer->dataProvider() )
+  {
+    // note that there is no way of knowing if the provider is listening only because
+    // this class has hasked it to, so we do not reset the provider listening state here
+    disconnect( mLayer->dataProvider(), &QgsDataProvider::notify, this, &QgsActionManager::onNotifyRunActions );
+    mOnNotifyConnected = false;
+  }
 }
 
-QList<QgsAction> QgsActionManager::actions( const QString& actionScope ) const
+QList<QgsAction> QgsActionManager::actions( const QString &actionScope ) const
 {
   if ( actionScope.isNull() )
     return mActions;
@@ -119,7 +176,7 @@ QList<QgsAction> QgsActionManager::actions( const QString& actionScope ) const
   {
     QList<QgsAction> actions;
 
-    Q_FOREACH ( const QgsAction& action, mActions )
+    for ( const QgsAction &action : qgis::as_const( mActions ) )
     {
       if ( action.actionScopes().contains( actionScope ) )
         actions.append( action );
@@ -156,14 +213,14 @@ QgsExpressionContext QgsActionManager::createExpressionContext() const
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
   if ( mLayer )
     context << QgsExpressionContextUtils::layerScope( mLayer );
 
   return context;
 }
 
-bool QgsActionManager::writeXml( QDomNode& layer_node ) const
+bool QgsActionManager::writeXml( QDomNode &layer_node ) const
 {
   QDomElement aActions = layer_node.ownerDocument().createElement( QStringLiteral( "attributeactions" ) );
   for ( QMap<QString, QUuid>::const_iterator defaultAction = mDefaultActions.constBegin(); defaultAction != mDefaultActions.constEnd(); ++ defaultAction )
@@ -174,7 +231,7 @@ bool QgsActionManager::writeXml( QDomNode& layer_node ) const
     aActions.appendChild( defaultActionElement );
   }
 
-  Q_FOREACH ( const QgsAction& action, mActions )
+  for ( const QgsAction &action : qgis::as_const( mActions ) )
   {
     action.writeXml( aActions );
   }
@@ -183,9 +240,9 @@ bool QgsActionManager::writeXml( QDomNode& layer_node ) const
   return true;
 }
 
-bool QgsActionManager::readXml( const QDomNode& layer_node )
+bool QgsActionManager::readXml( const QDomNode &layer_node )
 {
-  mActions.clear();
+  clearActions();
 
   QDomNode aaNode = layer_node.namedItem( QStringLiteral( "attributeactions" ) );
 
@@ -196,23 +253,23 @@ bool QgsActionManager::readXml( const QDomNode& layer_node )
     {
       QgsAction action;
       action.readXml( actionsettings.item( i ) );
-      mActions.append( action );
+      addAction( action );
     }
 
-    QDomNodeList defaultActionNodes = aaNode.toElement().elementsByTagName( "defaultAction" );
+    QDomNodeList defaultActionNodes = aaNode.toElement().elementsByTagName( QStringLiteral( "defaultAction" ) );
 
     for ( int i = 0; i < defaultActionNodes.size(); ++i )
     {
       QDomElement defaultValueElem = defaultActionNodes.at( i ).toElement();
-      mDefaultActions.insert( defaultValueElem.attribute( "key" ), defaultValueElem.attribute( "value" ) );
+      mDefaultActions.insert( defaultValueElem.attribute( QStringLiteral( "key" ) ), defaultValueElem.attribute( QStringLiteral( "value" ) ) );
     }
   }
   return true;
 }
 
-QgsAction QgsActionManager::action( const QUuid& id )
+QgsAction QgsActionManager::action( const QUuid &id )
 {
-  Q_FOREACH ( const QgsAction& action, mActions )
+  for ( const QgsAction &action : qgis::as_const( mActions ) )
   {
     if ( action.id() == id )
       return action;
@@ -221,12 +278,12 @@ QgsAction QgsActionManager::action( const QUuid& id )
   return QgsAction();
 }
 
-void QgsActionManager::setDefaultAction( const QString& actionScope, const QUuid& actionId )
+void QgsActionManager::setDefaultAction( const QString &actionScope, const QUuid &actionId )
 {
   mDefaultActions[ actionScope ] = actionId;
 }
 
-QgsAction QgsActionManager::defaultAction( const QString& actionScope )
+QgsAction QgsActionManager::defaultAction( const QString &actionScope )
 {
   return action( mDefaultActions.value( actionScope ) );
 }

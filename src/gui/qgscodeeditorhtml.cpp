@@ -23,7 +23,7 @@
 
 
 QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
-    : QgsCodeEditor( parent )
+  : QgsCodeEditor( parent )
 {
   if ( !parent )
   {
@@ -36,7 +36,7 @@ QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
 
 void QgsCodeEditorHTML::setSciLexerHTML()
 {
-  QsciLexerHTML* lexer = new QsciLexerHTML( this );
+  QsciLexerHTML *lexer = new QsciLexerHTML( this );
   lexer->setDefaultFont( QFont( QStringLiteral( "Sans" ), 10 ) );
 
   setLexer( lexer );

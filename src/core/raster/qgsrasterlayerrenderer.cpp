@@ -22,30 +22,66 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
 #include "qgsrendercontext.h"
-#include "qgscsexception.h"
+#include "qgsproject.h"
+#include "qgsexception.h"
 
-QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRenderContext& rendererContext )
-    : QgsMapLayerRenderer( layer->id() )
-    , mRasterViewPort( nullptr )
-    , mPipe( nullptr )
-    , mContext( rendererContext )
-    , mFeedback( new Feedback( this ) )
+
+///@cond PRIVATE
+
+QgsRasterLayerRendererFeedback::QgsRasterLayerRendererFeedback( QgsRasterLayerRenderer *r )
+  : mR( r )
+  , mMinimalPreviewInterval( 250 )
+{
+  setRenderPartialOutput( r->mContext.testFlag( QgsRenderContext::RenderPartialOutput ) );
+}
+
+void QgsRasterLayerRendererFeedback::onNewData()
+{
+  if ( !renderPartialOutput() )
+    return;  // we were not asked for partial renders and we may not have a temporary image for overwriting...
+
+  // update only once upon a time
+  // (preview itself takes some time)
+  if ( mLastPreview.isValid() && mLastPreview.msecsTo( QTime::currentTime() ) < mMinimalPreviewInterval )
+    return;
+
+  // TODO: update only the area that got new data
+
+  QgsDebugMsg( QString( "new raster preview! %1" ).arg( mLastPreview.msecsTo( QTime::currentTime() ) ) );
+  QTime t;
+  t.start();
+  QgsRasterBlockFeedback feedback;
+  feedback.setPreviewOnly( true );
+  feedback.setRenderPartialOutput( true );
+  QgsRasterIterator iterator( mR->mPipe->last() );
+  QgsRasterDrawer drawer( &iterator );
+  drawer.draw( mR->mPainter, mR->mRasterViewPort, mR->mMapToPixel, &feedback );
+  QgsDebugMsg( QString( "total raster preview time: %1 ms" ).arg( t.elapsed() ) );
+  mLastPreview = QTime::currentTime();
+}
+
+///@endcond
+///
+QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext )
+  : QgsMapLayerRenderer( layer->id() )
+  , mContext( rendererContext )
+  , mFeedback( new QgsRasterLayerRendererFeedback( this ) )
 {
   mPainter = rendererContext.painter();
-  const QgsMapToPixel& theQgsMapToPixel = rendererContext.mapToPixel();
-  mMapToPixel = &theQgsMapToPixel;
+  const QgsMapToPixel &qgsMapToPixel = rendererContext.mapToPixel();
+  mMapToPixel = &qgsMapToPixel;
 
-  QgsMapToPixel mapToPixel = theQgsMapToPixel;
+  QgsMapToPixel mapToPixel = qgsMapToPixel;
   if ( mapToPixel.mapRotation() )
   {
     // unset rotation for the sake of local computations.
     // Rotation will be handled by QPainter later
     // TODO: provide a method of QgsMapToPixel to fetch map center
     //       in geographical units
-    QgsPoint center = mapToPixel.toMapCoordinates(
-                        mapToPixel.mapWidth() / 2.0,
-                        mapToPixel.mapHeight() / 2.0
-                      );
+    QgsPointXY center = mapToPixel.toMapCoordinates(
+                          mapToPixel.mapWidth() / 2.0,
+                          mapToPixel.mapHeight() / 2.0
+                        );
     mapToPixel.setMapRotation( 0, center.x(), center.y() );
   }
 
@@ -125,16 +161,16 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   mRasterViewPort->mTopLeftPoint = mapToPixel.transform( myRasterExtent.xMinimum(), myRasterExtent.yMaximum() );
   mRasterViewPort->mBottomRightPoint = mapToPixel.transform( myRasterExtent.xMaximum(), myRasterExtent.yMinimum() );
 
-  // align to output device grid, i.e. floor/ceil to integers
+  // align to output device grid, i.e. std::floor/ceil to integers
   // TODO: this should only be done if paint device is raster - screen, image
   // for other devices (pdf) it can have floating point origin
   // we could use floating point for raster devices as well, but respecting the
   // output device grid should make it more effective as the resampling is done in
   // the provider anyway
-  mRasterViewPort->mTopLeftPoint.setX( floor( mRasterViewPort->mTopLeftPoint.x() ) );
-  mRasterViewPort->mTopLeftPoint.setY( floor( mRasterViewPort->mTopLeftPoint.y() ) );
-  mRasterViewPort->mBottomRightPoint.setX( ceil( mRasterViewPort->mBottomRightPoint.x() ) );
-  mRasterViewPort->mBottomRightPoint.setY( ceil( mRasterViewPort->mBottomRightPoint.y() ) );
+  mRasterViewPort->mTopLeftPoint.setX( std::floor( mRasterViewPort->mTopLeftPoint.x() ) );
+  mRasterViewPort->mTopLeftPoint.setY( std::floor( mRasterViewPort->mTopLeftPoint.y() ) );
+  mRasterViewPort->mBottomRightPoint.setX( std::ceil( mRasterViewPort->mBottomRightPoint.x() ) );
+  mRasterViewPort->mBottomRightPoint.setY( std::ceil( mRasterViewPort->mBottomRightPoint.y() ) );
   // recalc myRasterExtent to aligned values
   myRasterExtent.set(
     mapToPixel.toMapCoordinatesF( mRasterViewPort->mTopLeftPoint.x(),
@@ -177,8 +213,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
 
   // copy the whole raster pipe!
   mPipe = new QgsRasterPipe( *layer->pipe() );
-  QgsRasterRenderer* rasterRenderer = mPipe->renderer();
-  if ( rasterRenderer )
+  QgsRasterRenderer *rasterRenderer = mPipe->renderer();
+  if ( rasterRenderer && !( rendererContext.flags() & QgsRenderContext::RenderPreviewJob ) )
     layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
 }
 
@@ -212,7 +248,7 @@ bool QgsRasterLayerRenderer::render()
   // params in QgsRasterProjector
   if ( projector )
   {
-    projector->setCrs( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS );
+    projector->setCrs( mRasterViewPort->mSrcCRS, mRasterViewPort->mDestCRS, mRasterViewPort->mSrcDatumTransform, mRasterViewPort->mDestDatumTransform );
   }
 
   // Drawer to pipe?
@@ -225,39 +261,8 @@ bool QgsRasterLayerRenderer::render()
   return true;
 }
 
-QgsFeedback* QgsRasterLayerRenderer::feedback() const
+QgsFeedback *QgsRasterLayerRenderer::feedback() const
 {
   return mFeedback;
 }
 
-QgsRasterLayerRenderer::Feedback::Feedback( QgsRasterLayerRenderer *r )
-    : mR( r )
-    , mMinimalPreviewInterval( 250 )
-{
-  setRenderPartialOutput( r->mContext.testFlag( QgsRenderContext::RenderPartialOutput ) );
-}
-
-void QgsRasterLayerRenderer::Feedback::onNewData()
-{
-  if ( !renderPartialOutput() )
-    return;  // we were not asked for partial renders and we may not have a temporary image for overwriting...
-
-  // update only once upon a time
-  // (preview itself takes some time)
-  if ( mLastPreview.isValid() && mLastPreview.msecsTo( QTime::currentTime() ) < mMinimalPreviewInterval )
-    return;
-
-  // TODO: update only the area that got new data
-
-  QgsDebugMsg( QString( "new raster preview! %1" ).arg( mLastPreview.msecsTo( QTime::currentTime() ) ) );
-  QTime t;
-  t.start();
-  QgsRasterBlockFeedback feedback;
-  feedback.setPreviewOnly( true );
-  feedback.setRenderPartialOutput( true );
-  QgsRasterIterator iterator( mR->mPipe->last() );
-  QgsRasterDrawer drawer( &iterator );
-  drawer.draw( mR->mPainter, mR->mRasterViewPort, mR->mMapToPixel, &feedback );
-  QgsDebugMsg( QString( "total raster preview time: %1 ms" ).arg( t.elapsed() ) );
-  mLastPreview = QTime::currentTime();
-}

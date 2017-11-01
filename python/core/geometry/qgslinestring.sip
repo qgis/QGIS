@@ -1,170 +1,287 @@
-/** \ingroup core
- * \class QgsLineString
- * \brief Line string geometry type, with support for z-dimension and m-values.
- * \note added in QGIS 2.10
- */
-class QgsLineString: public QgsCurve
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgslinestring.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsLineString: QgsCurve
 {
-%TypeHeaderCode
-#include <qgslinestring.h>
+%Docstring
+ Line string geometry type, with support for z-dimension and m-values.
+.. versionadded:: 2.10
 %End
 
+%TypeHeaderCode
+#include "qgslinestring.h"
+%End
   public:
     QgsLineString();
-    ~QgsLineString();
 
-    bool operator==( const QgsCurve& other ) const;
-    bool operator!=( const QgsCurve& other ) const;
+    QgsLineString( const QVector<QgsPoint> &points );
+%Docstring
+ Construct a linestring from a vector of points.
+ Z and M type will be set based on the type of the first point
+ in the vector.
+.. versionadded:: 3.0
+%End
 
-    /** Returns the specified point from inside the line string.
-     * @param i index of point, starting at 0 for the first point
-     */
-    QgsPointV2 pointN( int i ) const;
+    QgsLineString( const QVector<double> &x, const QVector<double> &y,
+                   const QVector<double> &z = QVector<double>(),
+                   const QVector<double> &m = QVector<double>() );
+%Docstring
+ Construct a linestring from arrays of coordinates. If the z or m
+ arrays are non-empty then the resultant linestring will have
+ z and m types accordingly.
+ This constructor is more efficient then calling setPoints()
+ or repeatedly calling addVertex()
+.. versionadded:: 3.0
+%End
 
-    /** Returns the z-coordinate of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0
-     * @returns z-coordinate of node, or 0.0 if index is out of bounds or the line
-     * does not have a z dimension
-     * @see setZAt()
-     */
+    QgsLineString( const QList<QgsPointXY> &points );
+%Docstring
+ Construct a linestring from list of points.
+ This constructor is more efficient then calling setPoints()
+ or repeatedly calling addVertex()
+.. versionadded:: 3.0
+%End
+
+    virtual bool operator==( const QgsCurve &other ) const;
+
+    virtual bool operator!=( const QgsCurve &other ) const;
+
+
+    QgsPoint pointN( int i ) const;
+%Docstring
+ Returns the specified point from inside the line string.
+ \param i index of point, starting at 0 for the first point
+ :rtype: QgsPoint
+%End
+
+    virtual double xAt( int index ) const;
+
+    virtual double yAt( int index ) const;
+
+
     double zAt( int index ) const;
+%Docstring
+ Returns the z-coordinate of the specified node in the line string.
+ \param index index of node, where the first node in the line is 0
+ :return: z-coordinate of node, or ``nan`` if index is out of bounds or the line
+ does not have a z dimension
+.. seealso:: setZAt()
+ :rtype: float
+%End
 
-    /** Returns the m value of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0
-     * @returns m value of node, or 0.0 if index is out of bounds or the line
-     * does not have m values
-     * @see setMAt()
-     */
     double mAt( int index ) const;
+%Docstring
+ Returns the m value of the specified node in the line string.
+ \param index index of node, where the first node in the line is 0
+ :return: m value of node, or ``nan`` if index is out of bounds or the line
+ does not have m values
+.. seealso:: setMAt()
+ :rtype: float
+%End
 
-    /** Sets the x-coordinate of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0. Corresponding
-     * node must already exist in line string.
-     * @param x x-coordinate of node
-     * @see xAt()
-     */
     void setXAt( int index, double x );
+%Docstring
+ Sets the x-coordinate of the specified node in the line string.
+ \param index index of node, where the first node in the line is 0. Corresponding
+ node must already exist in line string.
+ \param x x-coordinate of node
+.. seealso:: xAt()
+%End
 
-    /** Sets the y-coordinate of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0. Corresponding
-     * node must already exist in line string.
-     * @param y y-coordinate of node
-     * @see yAt()
-     */
     void setYAt( int index, double y );
+%Docstring
+ Sets the y-coordinate of the specified node in the line string.
+ \param index index of node, where the first node in the line is 0. Corresponding
+ node must already exist in line string.
+ \param y y-coordinate of node
+.. seealso:: yAt()
+%End
 
-    /** Sets the z-coordinate of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0. Corresponding
-     * node must already exist in line string, and the line string must have z-dimension.
-     * @param z z-coordinate of node
-     * @see zAt()
-     */
     void setZAt( int index, double z );
+%Docstring
+ Sets the z-coordinate of the specified node in the line string.
+ \param index index of node, where the first node in the line is 0. Corresponding
+ node must already exist in line string, and the line string must have z-dimension.
+ \param z z-coordinate of node
+.. seealso:: zAt()
+%End
 
-    /** Sets the m value of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0. Corresponding
-     * node must already exist in line string, and the line string must have m values.
-     * @param m m value of node
-     * @see mAt()
-     */
     void setMAt( int index, double m );
+%Docstring
+ Sets the m value of the specified node in the line string.
+ \param index index of node, where the first node in the line is 0. Corresponding
+ node must already exist in line string, and the line string must have m values.
+ \param m m value of node
+.. seealso:: mAt()
+%End
 
-    /** Resets the line string to match the specified list of points. The line string will
-     * inherit the dimensionality of the first point in the list.
-     * @param points new points for line string. If empty, line string will be cleared.
-     */
-    void setPoints( const QList<QgsPointV2>& points );
+    void setPoints( const QgsPointSequence &points );
+%Docstring
+ Resets the line string to match the specified list of points. The line string will
+ inherit the dimensionality of the first point in the list.
+ \param points new points for line string. If empty, line string will be cleared.
+%End
 
-    /** Appends the contents of another line string to the end of this line string.
-     * @param line line to append. Ownership is not transferred.
-     */
-    void append( const QgsLineString* line );
+    void append( const QgsLineString *line );
+%Docstring
+ Appends the contents of another line string to the end of this line string.
+ \param line line to append. Ownership is not transferred.
+%End
 
-    /** Adds a new vertex to the end of the line string.
-     * @param pt vertex to add
-     */
-    void addVertex( const QgsPointV2& pt );
+    void addVertex( const QgsPoint &pt );
+%Docstring
+ Adds a new vertex to the end of the line string.
+ \param pt vertex to add
+%End
 
-    /** Closes the line string by appending the first point to the end of the line, if it is not already closed.*/
     void close();
+%Docstring
+Closes the line string by appending the first point to the end of the line, if it is not already closed.
+%End
 
-    /** Returns the geometry converted to the more generic curve type QgsCompoundCurve
-        @return the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry* toCurveType() const /Factory/;
+    virtual QgsCompoundCurve *toCurveType() const /Factory/;
 
-    /**
-     * Extends the line geometry by extrapolating out the start or end of the line
-     * by a specified distance. Lines are extended using the bearing of the first or last
-     * segment in the line.
-     * @note added in QGIS 3.0
-     */
+%Docstring
+ Returns the geometry converted to the more generic curve type QgsCompoundCurve
+:return: the converted geometry. Caller takes ownership*
+ :rtype: QgsCompoundCurve
+%End
+
     void extend( double startDistance, double endDistance );
+%Docstring
+ Extends the line geometry by extrapolating out the start or end of the line
+ by a specified distance. Lines are extended using the bearing of the first or last
+ segment in the line.
+.. versionadded:: 3.0
+%End
 
-    //reimplemented methods
 
     virtual QString geometryType() const;
+
     virtual int dimension() const;
-    virtual QgsLineString* clone() const /Factory/;
+
+    virtual QgsLineString *clone() const /Factory/;
+
     virtual void clear();
-    bool isEmpty() const;
-    virtual bool fromWkb( QgsConstWkbPtr& wkb );
-    virtual bool fromWkt( const QString& wkt );
 
-    QByteArray asWkb() const;
-    QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QString asJSON( int precision = 17 ) const;
+    virtual bool isEmpty() const;
 
-    //curve interface
+    virtual QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
+
+
+    virtual bool fromWkb( QgsConstWkbPtr &wkb );
+
+    virtual bool fromWkt( const QString &wkt );
+
+
+    virtual QByteArray asWkb() const;
+
+    virtual QString asWkt( int precision = 17 ) const;
+
+    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+
+    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+
+    virtual QString asJSON( int precision = 17 ) const;
+
+
     virtual double length() const;
-    virtual QgsPointV2 startPoint() const;
-    virtual QgsPointV2 endPoint() const;
-    /** Returns a new line string geometry corresponding to a segmentized approximation
-     * of the curve.
-     * @param tolerance segmentation tolerance
-     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
-    int numPoints() const;
+    virtual QgsPoint startPoint() const;
+
+    virtual QgsPoint endPoint() const;
+
+
+    virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const  /Factory/;
+
+%Docstring
+ Returns a new line string geometry corresponding to a segmentized approximation
+ of the curve.
+ \param tolerance segmentation tolerance
+ \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*
+ :rtype: QgsLineString
+%End
+
+    virtual int numPoints() const;
+
     virtual int nCoordinates() const;
-    void points( QList<QgsPointV2>& pt ) const;
 
-    void draw( QPainter& p ) const;
-    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
+    virtual void points( QgsPointSequence &pt /Out/ ) const;
+
+
+    virtual void draw( QPainter &p ) const;
+
+
+     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false );
-    void transform( const QTransform& t );
+    virtual void transform( const QTransform &t );
 
-    void addToPainterPath( QPainterPath& path ) const;
-    void drawAsPolygon( QPainter& p ) const;
 
-    virtual bool insertVertex( QgsVertexId position, const QgsPointV2& vertex );
-    virtual bool moveVertex( QgsVertexId position, const QgsPointV2& newPos );
+    virtual void addToPainterPath( QPainterPath &path ) const;
+
+    virtual void drawAsPolygon( QPainter &p ) const;
+
+
+    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );
+
+    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos );
+
     virtual bool deleteVertex( QgsVertexId position );
 
-    virtual QgsLineString* reversed() const /Factory/;
 
-    double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
-    bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const;
+    virtual QgsLineString *reversed() const /Factory/;
 
-    virtual QgsPointV2 centroid() const;
 
-    void sumUpArea( double& sum ) const;
-    double vertexAngle( QgsVertexId vertex ) const;
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
+
+    virtual bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const;
+
+
+    virtual QgsPoint centroid() const;
+
+
+    virtual void sumUpArea( double &sum /Out/ ) const;
+
+    virtual double vertexAngle( QgsVertexId vertex ) const;
+
 
     virtual bool addZValue( double zValue = 0 );
+
     virtual bool addMValue( double mValue = 0 );
 
+
     virtual bool dropZValue();
+
     virtual bool dropMValue();
+
 
     virtual bool convertTo( QgsWkbTypes::Type type );
 
-    virtual double xAt( int index ) const;
-    virtual double yAt( int index ) const;
 
   protected:
+    virtual QgsLineString *createEmptyWithSameType() const /Factory/;
 
     virtual QgsRectangle calculateBoundingBox() const;
 
+
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgslinestring.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -25,12 +25,14 @@
 
 #include "qgsmessagelog.h"
 #include "qgis_server.h"
+#include "qgis_sip.h"
 
 /**
   * QgsServerSettingsEnv provides some enum describing the environment
   * currently supported for configuration.
-  * @note added in QGIS 3.0
+  * \since QGIS 3.0
   */
+#ifndef SIP_RUN
 class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 {
     Q_OBJECT
@@ -58,16 +60,18 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
     };
     Q_ENUM( EnvVar )
 };
+#endif
 
-/** \ingroup server
+/**
+ * \ingroup server
  * QgsServerSettings provides a way to retrieve settings by prioritizing
  * according to environment variables, ini file and default values.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsServerSettings
 {
   public:
-    struct Setting
+    struct Setting SIP_SKIP
     {
       QgsServerSettingsEnv::EnvVar envVar;
       QgsServerSettingsEnv::Source src;
@@ -78,66 +82,78 @@ class SERVER_EXPORT QgsServerSettings
       QVariant val;
     };
 
-    /** Constructor.
+    /**
+     * Constructor.
       */
     QgsServerSettings();
 
-    /** Load settings according to current environment variables.
+    /**
+     * Load settings according to current environment variables.
       */
     void load();
 
-    /** Load setting for a specific environment variable name.
-      * @return true if loading is successful, false in case of an invalid name.
+    /**
+     * Load setting for a specific environment variable name.
+      * \returns true if loading is successful, false in case of an invalid name.
       */
-    bool load( const QString& envVarName );
+    bool load( const QString &envVarName );
 
-    /** Log a summary of settings currently loaded.
+    /**
+     * Log a summary of settings currently loaded.
       */
     void logSummary() const;
 
-    /** Returns the ini file loaded by QSetting.
-      * @return the path of the ini file or an empty string if none is loaded.
+    /**
+     * Returns the ini file loaded by QSetting.
+      * \returns the path of the ini file or an empty string if none is loaded.
       */
     QString iniFile() const;
 
-    /** Returns parallel rendering setting.
-      * @return true if parallel rendering is activated, false otherwise.
+    /**
+     * Returns parallel rendering setting.
+      * \returns true if parallel rendering is activated, false otherwise.
       */
     bool parallelRendering() const;
 
-    /** Returns the maximum number of threads to use.
-      * @return the number of threads.
+    /**
+     * Returns the maximum number of threads to use.
+      * \returns the number of threads.
       */
     int maxThreads() const;
 
     /**
       * Returns the maximum number of cached layers.
-      * @return the number of cached layers.
+      * \returns the number of cached layers.
       */
     int maxCacheLayers() const;
 
-    /** Returns the log level.
-      * @return the log level.
+    /**
+     * Returns the log level.
+      * \returns the log level.
       */
     QgsMessageLog::MessageLevel logLevel() const;
 
-    /** Returns the QGS project file to use.
-      * @return the path of the QGS project or an empty string if none is defined.
+    /**
+     * Returns the QGS project file to use.
+      * \returns the path of the QGS project or an empty string if none is defined.
       */
     QString projectFile() const;
 
-    /** Returns the log file.
-      * @return the path of the log file or an empty string if none is defined.
+    /**
+     * Returns the log file.
+      * \returns the path of the log file or an empty string if none is defined.
       */
     QString logFile() const;
 
-    /** Returns the cache size.
-      * @return the cache size.
+    /**
+     * Returns the cache size.
+      * \returns the cache size.
       */
     qint64 cacheSize() const;
 
-    /** Returns the cache directory.
-      * @return the directory.
+    /**
+     * Returns the cache directory.
+      * \returns the directory.
       */
     QString cacheDirectory() const;
 
@@ -145,8 +161,8 @@ class SERVER_EXPORT QgsServerSettings
     void initSettings();
     QVariant value( QgsServerSettingsEnv::EnvVar envVar ) const;
     QMap<QgsServerSettingsEnv::EnvVar, QString> getEnv() const;
-    void loadQSettings( const QString& envOptPath ) const;
-    void prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QString>& env );
+    void loadQSettings( const QString &envOptPath ) const;
+    void prioritize( const QMap<QgsServerSettingsEnv::EnvVar, QString> &env );
 
     QMap< QgsServerSettingsEnv::EnvVar, Setting > mSettings;
 };

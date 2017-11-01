@@ -25,9 +25,8 @@ class APP_EXPORT QgsMapToolReshape: public QgsMapToolCapture
     Q_OBJECT
 
   public:
-    QgsMapToolReshape( QgsMapCanvas* canvas );
-    virtual ~QgsMapToolReshape();
-    void cadCanvasReleaseEvent( QgsMapMouseEvent * e ) override;
+    QgsMapToolReshape( QgsMapCanvas *canvas );
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 };
 
 #endif

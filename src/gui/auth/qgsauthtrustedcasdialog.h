@@ -18,6 +18,7 @@
 #define QGSAUTHTRUSTEDCASDIALOG_H
 
 #include <QDialog>
+#include "qgis.h"
 #include "ui_qgsauthtrustedcasdialog.h"
 
 #include <QSslCertificate>
@@ -27,7 +28,8 @@
 
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for listing trusted Certificate (Intermediate) Authorities used in secure connections
  */
 class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTrustedCAsDialog
@@ -38,11 +40,11 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
 
     /**
      * Construct a dialog that will list the trusted Certificate Authorities
-     * @param parent Parent widget
-     * @param trustedCAs List of trusted Certificate Authorities objects
+     * \param parent Parent widget
+     * \param trustedCAs List of trusted Certificate Authorities objects
      */
-    explicit QgsAuthTrustedCAsDialog( QWidget *parent = nullptr,
-                                      const QList<QSslCertificate>& trustedCAs = QList<QSslCertificate>() );
+    explicit QgsAuthTrustedCAsDialog( QWidget *parent SIP_TRANSFERTHIS = 0,
+                                      const QList<QSslCertificate> &trustedCAs = QList<QSslCertificate>() );
 
   private slots:
     void populateCaCertsView();
@@ -50,19 +52,19 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
     void showCertInfo( QTreeWidgetItem *item );
 
     //! Pass selection change on to UI update
-    void selectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
     //! Update UI based upon current selection
     void checkSelection();
 
-    void handleDoubleClick( QTreeWidgetItem* item, int col );
+    void handleDoubleClick( QTreeWidgetItem *item, int col );
 
-    void on_btnInfoCa_clicked();
+    void btnInfoCa_clicked();
 
-    void on_btnGroupByOrg_toggled( bool checked );
+    void btnGroupByOrg_toggled( bool checked );
 
     //! Relay messages to widget's messagebar
-    void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
+    void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
 
   protected:
 
@@ -78,26 +80,26 @@ class GUI_EXPORT QgsAuthTrustedCAsDialog : public QDialog, private Ui::QgsAuthTr
 
     void setupCaCertsTree();
 
-    void populateCaCertsSection( QTreeWidgetItem *item, const QList<QSslCertificate>& certs,
+    void populateCaCertsSection( QTreeWidgetItem *item, const QList<QSslCertificate> &certs,
                                  QgsAuthTrustedCAsDialog::CaType catype );
 
-    void appendCertsToGroup( const QList<QSslCertificate>& certs,
+    void appendCertsToGroup( const QList<QSslCertificate> &certs,
                              QgsAuthTrustedCAsDialog::CaType catype,
                              QTreeWidgetItem *parent = nullptr );
 
-    void appendCertsToItem( const QList<QSslCertificate>& certs,
+    void appendCertsToItem( const QList<QSslCertificate> &certs,
                             QgsAuthTrustedCAsDialog::CaType catype,
                             QTreeWidgetItem *parent = nullptr );
 
-    QgsMessageBar * messageBar();
+    QgsMessageBar *messageBar();
     int messageTimeout();
 
     QList<QSslCertificate> mTrustedCAs;
-    bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    bool mDisabled = false;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 
-    QTreeWidgetItem * mRootCaSecItem;
+    QTreeWidgetItem *mRootCaSecItem = nullptr;
 };
 
 #endif // QGSAUTHTRUSTEDCASDIALOG_H

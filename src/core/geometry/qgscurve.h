@@ -19,124 +19,186 @@
 #define QGSCURVEV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsabstractgeometry.h"
 #include "qgsrectangle.h"
 
 class QgsLineString;
 class QPainterPath;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCurve
  * \brief Abstract base class for curved geometry type
- * \note added in QGIS 2.10
+ * \since QGIS 2.10
  */
 class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 {
   public:
-    QgsCurve();
 
-    virtual bool operator==( const QgsCurve& other ) const = 0;
-    virtual bool operator!=( const QgsCurve& other ) const = 0;
-
-    virtual QgsCurve* clone() const override = 0;
-
-    /** Returns the starting point of the curve.
-     * @see endPoint
+    /**
+     * Constructor for QgsCurve.
      */
-    virtual QgsPointV2 startPoint() const = 0;
+    QgsCurve() = default;
 
-    /** Returns the end point of the curve.
-     * @see startPoint
+    virtual bool operator==( const QgsCurve &other ) const = 0;
+    virtual bool operator!=( const QgsCurve &other ) const = 0;
+
+    QgsCurve *clone() const override = 0 SIP_FACTORY;
+
+    /**
+     * Returns the starting point of the curve.
+     * \see endPoint
      */
-    virtual QgsPointV2 endPoint() const = 0;
+    virtual QgsPoint startPoint() const = 0;
 
-    /** Returns true if the curve is closed.
+    /**
+     * Returns the end point of the curve.
+     * \see startPoint
+     */
+    virtual QgsPoint endPoint() const = 0;
+
+    /**
+     * Returns true if the curve is closed.
      */
     virtual bool isClosed() const;
 
-    /** Returns true if the curve is a ring.
+    /**
+     * Returns true if the curve is a ring.
      */
     virtual bool isRing() const;
 
-    /** Returns a new line string geometry corresponding to a segmentized approximation
+    /**
+     * Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
-     * @param tolerance segmentation tolerance
-     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineString* curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const = 0;
+     * \param tolerance segmentation tolerance
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+    virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const = 0 SIP_FACTORY;
 
-    /** Adds a curve to a painter path.
+    /**
+     * Adds a curve to a painter path.
      */
-    virtual void addToPainterPath( QPainterPath& path ) const = 0;
+    virtual void addToPainterPath( QPainterPath &path ) const = 0;
 
-    /** Draws the curve as a polygon on the specified QPainter.
-     * @param p destination QPainter
+    /**
+     * Draws the curve as a polygon on the specified QPainter.
+     * \param p destination QPainter
      */
-    virtual void drawAsPolygon( QPainter& p ) const = 0;
+    virtual void drawAsPolygon( QPainter &p ) const = 0;
 
-    /** Returns a list of points within the curve.
+    /**
+     * Returns a list of points within the curve.
      */
-    virtual void points( QgsPointSequence &pt ) const = 0;
+    virtual void points( QgsPointSequence &pt SIP_OUT ) const = 0;
 
-    /** Returns the number of points in the curve.
+    /**
+     * Returns the number of points in the curve.
      */
     virtual int numPoints() const = 0;
 
-    /** Sums up the area of the curve by iterating over the vertices (shoelace formula).
+    /**
+     * Sums up the area of the curve by iterating over the vertices (shoelace formula).
      */
-    virtual void sumUpArea( double& sum ) const = 0;
+    virtual void sumUpArea( double &sum SIP_OUT ) const = 0;
 
-    virtual QgsCoordinateSequence coordinateSequence() const override;
-    virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
+    QgsCoordinateSequence coordinateSequence() const override;
+    bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
+    void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
+    int vertexNumberFromVertexId( QgsVertexId id ) const override;
 
-    /** Returns the point and vertex id of a point within the curve.
-     * @param node node number, where the first node is 0
-     * @param point will be set to point at corresponding node in the curve
-     * @param type will be set to the vertex type of the node
-     * @returns true if node exists within the curve
+    /**
+     * Returns the point and vertex id of a point within the curve.
+     * \param node node number, where the first node is 0
+     * \param point will be set to point at corresponding node in the curve
+     * \param type will be set to the vertex type of the node
+     * \returns true if node exists within the curve
      */
-    virtual bool pointAt( int node, QgsPointV2& point, QgsVertexId::VertexType& type ) const = 0;
+    virtual bool pointAt( int node, QgsPoint &point SIP_OUT, QgsVertexId::VertexType &type SIP_OUT ) const = 0;
 
-    /** Returns a reversed copy of the curve, where the direction of the curve has been flipped.
-     * @note added in QGIS 2.14
+    /**
+     * Returns a reversed copy of the curve, where the direction of the curve has been flipped.
+     * \since QGIS 2.14
      */
-    virtual QgsCurve* reversed() const = 0;
+    virtual QgsCurve *reversed() const = 0 SIP_FACTORY;
 
-    virtual QgsAbstractGeometry* boundary() const override;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
-    /** Returns a geometry without curves. Caller takes ownership
-     * @param tolerance segmentation tolerance
-     * @param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    QgsCurve* segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override;
+    /**
+     * Returns a geometry without curves. Caller takes ownership
+     * \param tolerance segmentation tolerance
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+    QgsCurve *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
-    virtual int vertexCount( int part = 0, int ring = 0 ) const override { Q_UNUSED( part );  Q_UNUSED( ring ); return numPoints(); }
-    virtual int ringCount( int part = 0 ) const override { Q_UNUSED( part ); return numPoints() > 0 ? 1 : 0; }
-    virtual int partCount() const override { return numPoints() > 0 ? 1 : 0; }
-    virtual QgsPointV2 vertexAt( QgsVertexId id ) const override;
+    int vertexCount( int part = 0, int ring = 0 ) const override;
+    int ringCount( int part = 0 ) const override;
+    int partCount() const override;
+    QgsPoint vertexAt( QgsVertexId id ) const override;
+    QgsCurve *toCurveType() const override SIP_FACTORY;
 
-    virtual QgsRectangle boundingBox() const override;
+    QgsRectangle boundingBox() const override;
 
-    /** Returns the x-coordinate of the specified node in the line string.
-    * @param index index of node, where the first node in the line is 0
-    * @returns x-coordinate of node, or 0.0 if index is out of bounds
-    * @see setXAt()
+    /**
+     * Returns the x-coordinate of the specified node in the line string.
+    * \param index index of node, where the first node in the line is 0
+    * \returns x-coordinate of node, or 0.0 if index is out of bounds
+    * \see setXAt()
     */
     virtual double xAt( int index ) const = 0;
 
-    /** Returns the y-coordinate of the specified node in the line string.
-     * @param index index of node, where the first node in the line is 0
-     * @returns y-coordinate of node, or 0.0 if index is out of bounds
-     * @see setYAt()
+    /**
+     * Returns the y-coordinate of the specified node in the line string.
+     * \param index index of node, where the first node in the line is 0
+     * \returns y-coordinate of node, or 0.0 if index is out of bounds
+     * \see setYAt()
      */
     virtual double yAt( int index ) const = 0;
 
-    /** Returns a QPolygonF representing the points.
+    /**
+     * Returns a QPolygonF representing the points.
      */
     QPolygonF asQPolygonF() const;
+
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsCurve.
+     * Should be used by qgsgeometry_cast<QgsCurve *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsCurve *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( !geom )
+        return nullptr;
+
+      QgsWkbTypes::Type type = geom->wkbType();
+      if ( QgsWkbTypes::geometryType( type ) == QgsWkbTypes::LineGeometry && QgsWkbTypes::isSingleType( type ) )
+      {
+        return static_cast<const QgsCurve *>( geom );
+      }
+      return nullptr;
+    }
+#endif
 
 
   protected:
 
-    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometry::clearCache(); }
+    void clearCache() const override;
+
+    virtual int childCount() const override;
+    virtual QgsPoint childPoint( int index ) const override;
+
+#ifndef SIP_RUN
+
+    /**
+     * Helper function for QgsCurve subclasses to snap to grids.
+     * \note Not available in Python bindings.
+     */
+    bool snapToGridPrivate( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
+                            const QVector<double> &srcX, const QVector<double> &srcY, const QVector<double> &srcZ, const QVector<double> &srcM,
+                            QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, QVector<double> &outM ) const;
+#endif
 
   private:
 

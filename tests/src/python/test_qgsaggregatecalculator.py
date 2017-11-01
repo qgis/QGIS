@@ -17,7 +17,6 @@ import qgis  # NOQA
 from qgis.core import (QgsAggregateCalculator,
                        QgsVectorLayer,
                        QgsFeature,
-                       QgsVectorDataProvider,
                        QgsInterval,
                        QgsExpressionContext,
                        QgsExpressionContextScope,
@@ -27,9 +26,7 @@ from qgis.core import (QgsAggregateCalculator,
 from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.testing import unittest, start_app
 
-from utilities import(
-    compareWkt
-)
+from utilities import compareWkt
 
 start_app()
 
@@ -133,13 +130,15 @@ class TestQgsAggregateCalculator(unittest.TestCase):
                  [QgsAggregateCalculator.ThirdQuartile, 'flddbl', 7.5],
                  [QgsAggregateCalculator.InterQuartileRange, 'fldint', 3.0],
                  [QgsAggregateCalculator.InterQuartileRange, 'flddbl', 2.5],
+                 [QgsAggregateCalculator.ArrayAggregate, 'fldint', int_values],
+                 [QgsAggregateCalculator.ArrayAggregate, 'flddbl', dbl_values],
                  ]
 
         agg = QgsAggregateCalculator(layer)
         for t in tests:
             val, ok = agg.calculate(t[0], t[1])
             self.assertTrue(ok)
-            if isinstance(t[2], int):
+            if isinstance(t[2], (int, list)):
                 self.assertEqual(val, t[2])
             else:
                 self.assertAlmostEqual(val, t[2], 3)
@@ -174,6 +173,7 @@ class TestQgsAggregateCalculator(unittest.TestCase):
                  [QgsAggregateCalculator.Max, 'fldstring', 'eeee'],
                  [QgsAggregateCalculator.StringMinimumLength, 'fldstring', 0],
                  [QgsAggregateCalculator.StringMaximumLength, 'fldstring', 8],
+                 [QgsAggregateCalculator.ArrayAggregate, 'fldstring', values],
                  ]
 
         agg = QgsAggregateCalculator(layer)
@@ -254,6 +254,8 @@ class TestQgsAggregateCalculator(unittest.TestCase):
                  [QgsAggregateCalculator.Range, 'flddatetime', QgsInterval(693871147)],
                  [QgsAggregateCalculator.Range, 'flddate', QgsInterval(693792000)],
 
+                 [QgsAggregateCalculator.ArrayAggregate, 'flddatetime', [None if v.isNull() else v for v in datetime_values]],
+                 [QgsAggregateCalculator.ArrayAggregate, 'flddate', [None if v.isNull() else v for v in date_values]],
                  ]
 
         agg = QgsAggregateCalculator(layer)
@@ -328,7 +330,7 @@ class TestQgsAggregateCalculator(unittest.TestCase):
             features.append(f)
         assert pr.addFeatures(features)
 
-        #int
+        # int
         agg = QgsAggregateCalculator(layer)
         val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint * 2')
         self.assertTrue(ok)
@@ -427,6 +429,12 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         val, ok = agg.calculate(QgsAggregateCalculator.Max, 'fldint * 2')
         self.assertTrue(ok)
         self.assertEqual(val, None)
+
+        # array_agg
+        agg = QgsAggregateCalculator(layer)
+        val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldint * 2')
+        self.assertTrue(ok)
+        self.assertEqual(val, [])
 
     def testStringToAggregate(self):
         """ test converting strings to aggregate types """

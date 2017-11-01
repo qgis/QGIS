@@ -6,16 +6,17 @@
 #include "qgis_core.h"
 
 /**
- * @ingroup core
+ * \ingroup core
  * Misc painting enums and functions.
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsPainting
 {
   public:
 
-    /** Blending modes enum defining the available composition modes that can
+    /**
+     * Blending modes enum defining the available composition modes that can
      * be used when rendering a layer
      */
     enum BlendMode
@@ -47,9 +48,9 @@ class CORE_EXPORT QgsPainting
     };
 
     //! Returns a QPainter::CompositionMode corresponding to a BlendMode
-    static QPainter::CompositionMode getCompositionMode( BlendMode blendMode );
+    static QPainter::CompositionMode getCompositionMode( QgsPainting::BlendMode blendMode );
     //! Returns a BlendMode corresponding to a QPainter::CompositionMode
-    static BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
+    static QgsPainting::BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
 
 };
 

@@ -34,10 +34,7 @@ class TestQgsComposerShapes : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerShapes()
-        : mComposition( 0 )
-        , mComposerShape( 0 )
-    {}
+    TestQgsComposerShapes() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -51,8 +48,8 @@ class TestQgsComposerShapes : public QObject
     void symbol(); //test is styling shapes via symbol is working
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerShape* mComposerShape;
+    QgsComposition *mComposition = nullptr;
+    QgsComposerShape *mComposerShape = nullptr;
     QString mReport;
 };
 
@@ -139,12 +136,12 @@ void TestQgsComposerShapes::symbol()
   mComposerShape->setShapeType( QgsComposerShape::Rectangle );
 
   //setup simple fill
-  QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
-  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::green );
-  simpleFill->setBorderColor( Qt::yellow );
-  simpleFill->setBorderWidth( 6 );
+  simpleFill->setStrokeColor( Qt::yellow );
+  simpleFill->setStrokeWidth( 6 );
 
   mComposerShape->setShapeStyleSymbol( fillSymbol );
   mComposerShape->setUseSymbol( true );

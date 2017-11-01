@@ -23,8 +23,6 @@
 #include "qgsapplication.h"
 
 QgsDb2TableModel::QgsDb2TableModel()
-    : QStandardItemModel()
-    , mTableCount( 0 )
 {
   QStringList headerLabels;
   headerLabels << tr( "Schema" );
@@ -38,9 +36,6 @@ QgsDb2TableModel::QgsDb2TableModel()
   setHorizontalHeaderLabels( headerLabels );
 }
 
-QgsDb2TableModel::~QgsDb2TableModel()
-{
-}
 void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
 {
   QgsDebugMsg( QString( " DB2 **** %1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7" )
@@ -53,8 +48,8 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
                .arg( layerProperty.sql ) );
 
   // is there already a root item with the given scheme Name?
-  QStandardItem *schemaItem;
-  QList<QStandardItem*> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, DbtmSchema );
+  QStandardItem *schemaItem = nullptr;
+  QList<QStandardItem *> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, DbtmSchema );
 
   // there is already an item for this schema
   if ( schemaItems.size() > 0 )
@@ -77,7 +72,7 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
 
   bool needToDetect = wkbType == QgsWkbTypes::Unknown && layerProperty.type != QLatin1String( "GEOMETRYCOLLECTION" );
 
-  QList<QStandardItem*> childItemList;
+  QList<QStandardItem *> childItemList;
 
   QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
   schemaNameItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
@@ -94,11 +89,11 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
   QStandardItem *sridItem = new QStandardItem( layerProperty.srid );
   sridItem->setEditable( false );
 
-  QString pkText, pkCol = QLatin1String( "" );
+  QString pkText;
+  QString pkCol;
   switch ( layerProperty.pkCols.size() )
   {
     case 0:
-      pkText = QLatin1String( "" );
       break;
     case 1:
       pkText = layerProperty.pkCols[0];
@@ -121,7 +116,7 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
   selItem->setCheckState( Qt::Checked );
   selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
 
-  QStandardItem* sqlItem = new QStandardItem( layerProperty.sql );
+  QStandardItem *sqlItem = new QStandardItem( layerProperty.sql );
 
   childItemList << schemaNameItem;
   childItemList << tableItem;
@@ -173,13 +168,13 @@ void QgsDb2TableModel::setSql( const QModelIndex &index, const QString &sql )
   QString tableName = itemFromIndex( tableSibling )->text();
   QString geomName = itemFromIndex( geomSibling )->text();
 
-  QList<QStandardItem*> schemaItems = findItems( schemaName, Qt::MatchExactly, DbtmSchema );
+  QList<QStandardItem *> schemaItems = findItems( schemaName, Qt::MatchExactly, DbtmSchema );
   if ( schemaItems.size() < 1 )
   {
     return;
   }
 
-  QStandardItem* schemaItem = schemaItems.at( DbtmSchema );
+  QStandardItem *schemaItem = schemaItems.at( DbtmSchema );
 
   int n = schemaItem->rowCount();
   for ( int i = 0; i < n; i++ )
@@ -221,8 +216,8 @@ void QgsDb2TableModel::setGeometryTypesForTable( QgsDb2LayerProperty layerProper
   Q_ASSERT( typeList.size() == sridList.size() );
 
   //find schema item and table item
-  QStandardItem* schemaItem;
-  QList<QStandardItem*> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, DbtmSchema );
+  QStandardItem *schemaItem = nullptr;
+  QList<QStandardItem *> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, DbtmSchema );
 
   if ( schemaItems.size() < 1 )
   {
@@ -354,12 +349,12 @@ bool QgsDb2TableModel::setData( const QModelIndex &idx, const QVariant &value, i
 QString QgsDb2TableModel::layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata )
 {
   if ( !index.isValid() )
-    return QString::null;
+    return QString();
 
   QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt();
   if ( wkbType == QgsWkbTypes::Unknown )
     // no geometry type selected
-    return QString::null;
+    return QString();
 
   QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
   QString pkColumnName = pkItem->data( Qt::UserRole + 2 ).toString();
@@ -367,7 +362,7 @@ QString QgsDb2TableModel::layerURI( const QModelIndex &index, const QString &con
   if ( pkItem->data( Qt::UserRole + 1 ).toStringList().size() > 0 &&
        !pkItem->data( Qt::UserRole + 1 ).toStringList().contains( pkColumnName ) )
     // no valid primary candidate selected
-    return QString::null;
+    return QString();
 
   QString schemaName = index.sibling( index.row(), DbtmSchema ).data( Qt::DisplayRole ).toString();
   QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
@@ -382,7 +377,7 @@ QString QgsDb2TableModel::layerURI( const QModelIndex &index, const QString &con
     bool ok;
     srid.toInt( &ok );
     if ( !ok )
-      return QString::null;
+      return QString();
   }
 
   bool selectAtId = itemFromIndex( index.sibling( index.row(), DbtmSelectAtId ) )->checkState() == Qt::Checked;

@@ -19,25 +19,25 @@
 #include <cstdarg>
 #include <stdexcept>
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 
 
 class QgsLeastSquares
 {
   public:
-    static void linear( const QVector<QgsPoint> &mapCoords,
-                        const QVector<QgsPoint> &pixelCoords,
-                        QgsPoint& origin, double& pixelXSize, double& pixelYSize );
+    static void linear( const QVector<QgsPointXY> &mapCoords,
+                        const QVector<QgsPointXY> &pixelCoords,
+                        QgsPointXY &origin, double &pixelXSize, double &pixelYSize );
 
-    static void helmert( const QVector<QgsPoint>& mapCoords,
-                         const QVector<QgsPoint>& pixelCoords,
-                         QgsPoint& origin, double& pixelSize, double& rotation );
+    static void helmert( const QVector<QgsPointXY> &mapCoords,
+                         const QVector<QgsPointXY> &pixelCoords,
+                         QgsPointXY &origin, double &pixelSize, double &rotation );
 
-    static void affine( QVector<QgsPoint> mapCoords,
-                        QVector<QgsPoint> pixelCoords );
+    static void affine( QVector<QgsPointXY> mapCoords,
+                        QVector<QgsPointXY> pixelCoords );
 
-    static void projective( QVector<QgsPoint> mapCoords,
-                            QVector<QgsPoint> pixelCoords,
+    static void projective( QVector<QgsPointXY> mapCoords,
+                            QVector<QgsPointXY> pixelCoords,
                             double H[9] );
 };
 

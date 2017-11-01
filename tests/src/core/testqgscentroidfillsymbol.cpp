@@ -34,7 +34,8 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for line fill symbol types.
  */
 class TestQgsCentroidFillSymbol : public QObject
@@ -42,13 +43,7 @@ class TestQgsCentroidFillSymbol : public QObject
     Q_OBJECT
 
   public:
-    TestQgsCentroidFillSymbol()
-        : mTestHasError( false )
-        , mpPolysLayer( 0 )
-        , mCentroidFill( 0 )
-        , mFillSymbol( 0 )
-        , mSymbolRenderer( 0 )
-    {}
+    TestQgsCentroidFillSymbol() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -60,14 +55,14 @@ class TestQgsCentroidFillSymbol : public QObject
     void centroidFillSymbolPartBiggest();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
 
-    bool imageCheck( const QString& theType );
+    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
-    QgsCentroidFillSymbolLayer* mCentroidFill;
-    QgsFillSymbol* mFillSymbol;
-    QgsSingleSymbolRenderer* mSymbolRenderer;
+    QgsVectorLayer *mpPolysLayer = nullptr;
+    QgsCentroidFillSymbolLayer *mCentroidFill = nullptr;
+    QgsFillSymbol *mFillSymbol = nullptr;
+    QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -108,7 +103,7 @@ void TestQgsCentroidFillSymbol::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   mReport += QLatin1String( "<h1>Centroid Fill Symbol Tests</h1>\n" );
 
 }
@@ -147,7 +142,7 @@ void TestQgsCentroidFillSymbol::centroidFillSymbolPartBiggest()
 //
 
 
-bool TestQgsCentroidFillSymbol::imageCheck( const QString& theTestType )
+bool TestQgsCentroidFillSymbol::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
@@ -155,9 +150,9 @@ bool TestQgsCentroidFillSymbol::imageCheck( const QString& theTestType )
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_centroidfill" ) );
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType );
+  bool myResultFlag = myChecker.runTest( testType );
   mReport += myChecker.report();
   return myResultFlag;
 }

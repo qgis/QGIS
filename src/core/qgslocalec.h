@@ -18,15 +18,18 @@
 #ifndef QGSLOCALENUMC_H
 #define QGSLOCALENUMC_H
 
+#define SIP_NO_FILE
+
 #include <QMutex>
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsLocaleNumC
 {
-    char *mOldlocale;
+    char *mOldlocale = nullptr;
     static QMutex sLocaleLock;
 
   public:
@@ -34,9 +37,9 @@ class CORE_EXPORT QgsLocaleNumC
     ~QgsLocaleNumC();
 
     //! QgsLocaleNumC cannot be copied
-    QgsLocaleNumC( const QgsLocaleNumC& rh ) = delete;
+    QgsLocaleNumC( const QgsLocaleNumC &rh ) = delete;
     //! QgsLocaleNumC cannot be copied
-    QgsLocaleNumC& operator=( const QgsLocaleNumC& rh ) = delete;
+    QgsLocaleNumC &operator=( const QgsLocaleNumC &rh ) = delete;
 
 };
 

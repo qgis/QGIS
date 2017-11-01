@@ -19,7 +19,8 @@
 #include "qgis_core.h"
 #include "qgsrenderchecker.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class allows checking rendered images against comparison images.
  * Its main purpose is for the unit testing framework.
  *
@@ -46,13 +47,17 @@
  * For every control image, the allowed mismatch and color tolerance values will be calculated
  * individually.
  *
- * @note added in 2.8
+ * \since QGIS 2.8
  */
 
 class CORE_EXPORT QgsMultiRenderChecker
 {
   public:
-    QgsMultiRenderChecker();
+
+    /**
+     * Constructor for QgsMultiRenderChecker.
+     */
+    QgsMultiRenderChecker() = default;
 
     virtual ~QgsMultiRenderChecker() = default;
 
@@ -61,101 +66,108 @@ class CORE_EXPORT QgsMultiRenderChecker
      * suffixed) the path to the image will be constructed like this:
      * controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
      */
-    void setControlName( const QString& theName );
+    void setControlName( const QString &name );
 
-    void setControlPathPrefix( const QString& prefix );
+    void setControlPathPrefix( const QString &prefix );
 
     /**
-     * Set the path to the rendered image. If this is not set or set to QString::Null, an image
+     * Set the path to the rendered image. If this is not set or set to null QString, an image
      * will be rendered based on the provided mapsettings
      *
-     * @param renderedImagePath A path to the rendered image with which control images will be compared
+     * \param renderedImagePath A path to the rendered image with which control images will be compared
      */
-    void setRenderedImage( const QString& renderedImagePath ) { mRenderedImage = renderedImagePath; }
+    void setRenderedImage( const QString &renderedImagePath ) { mRenderedImage = renderedImagePath; }
 
     /**
      * Set the map settings to use to render the image
      *
-     * @param mapSettings The map settings
+     * \param mapSettings The map settings
      */
-    void setMapSettings( const QgsMapSettings& mapSettings );
+    void setMapSettings( const QgsMapSettings &mapSettings );
 
     /**
      * Set tolerance for color components used by runTest()
      * Default value is 0.
      *
-     * @param theColorTolerance The maximum difference for each color component
+     * \param colorTolerance The maximum difference for each color component
      *                          including alpha to be considered correct.
      */
-    void setColorTolerance( unsigned int theColorTolerance ) { mColorTolerance = theColorTolerance; }
+    void setColorTolerance( unsigned int colorTolerance ) { mColorTolerance = colorTolerance; }
 
     /**
      * Test using renderer to generate the image to be compared.
      *
-     * @param theTestName - to be used as the basis for writing a file to
+     * \param testName - to be used as the basis for writing a file to
      * e.g. /tmp/theTestName.png
      *
-     * @param theMismatchCount - defaults to 0 - the number of pixels that
+     * \param mismatchCount - defaults to 0 - the number of pixels that
      * are allowed to be different from the control image. In some cases
      * rendering may be non-deterministic. This parameter allows you to account
      * for that by providing a tolerance.
      *
-     * @note make sure to call setExpectedImage and setMapSettings first
+     * \note make sure to call setExpectedImage and setMapSettings first
      */
-    bool runTest( const QString& theTestName, unsigned int theMismatchCount = 0 );
+    bool runTest( const QString &testName, unsigned int mismatchCount = 0 );
 
     /**
      * Returns a report for this test
      *
-     * @return A report
+     * \returns A report
      */
     QString report() const { return mReport; }
 
     /**
-     * @brief controlImagePath
-     * @return
+     * \brief controlImagePath
+     * \returns
      */
     QString controlImagePath() const;
 
-    /** Draws a checkboard pattern for image backgrounds, so that transparency is visible
+    /**
+     * Draws a checkboard pattern for image backgrounds, so that opacity is visible
      * without requiring a transparent background for the image
      */
-    static void drawBackground( QImage* image ) { QgsRenderChecker::drawBackground( image ); }
+    static void drawBackground( QImage *image ) { QgsRenderChecker::drawBackground( image ); }
 
   private:
     QString mReport;
     QString mRenderedImage;
     QString mControlName;
     QString mControlPathPrefix;
-    unsigned int mColorTolerance;
+    unsigned int mColorTolerance = 0;
     QgsMapSettings mMapSettings;
 };
 
 #ifdef ENABLE_TESTS
+SIP_FEATURE( TESTS )
+SIP_IF_FEATURE( TESTS )
+
 ///@cond PRIVATE
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCompositionChecker
  * Renders a composition to an image and compares with an expected output
  */
 class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
 {
   public:
-    QgsCompositionChecker( const QString& testName, QgsComposition* composition );
+    QgsCompositionChecker( const QString &testName, QgsComposition *composition );
 
     void setSize( QSize size ) { mSize = size; }
 
-    bool testComposition( QString &theReport, int page = 0, int pixelDiff = 0 );
+    bool testComposition( QString &checkedReport, int page = 0, int pixelDiff = 0 );
 
   private:
     QgsCompositionChecker(); //forbidden
 
     QString mTestName;
-    QgsComposition* mComposition;
+    QgsComposition *mComposition = nullptr;
     QSize mSize;
     int mDotsPerMeter;
 };
 ///@endcond
+
+SIP_END
 #endif
 
 

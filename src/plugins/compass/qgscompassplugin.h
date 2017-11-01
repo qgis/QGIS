@@ -36,7 +36,7 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
     /**
      * Constructor for a plugin. The QgisInterface pointer is passed by
      * QGIS when it attempts to instantiate the plugin.
-     * @param qI Pointer to the QgisInterface object
+     * \param qI Pointer to the QgisInterface object
      */
     explicit QgsCompassPlugin( QgisInterface * );
 
@@ -77,8 +77,8 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
     //! show the help document
     void help();
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( QString theThemeName );
-    QIcon getThemeIcon( const QString &theThemeName );
+    void setCurrentTheme( QString themeName );
+    QIcon getThemeIcon( const QString &themeName );
     void about();
   private:
 
@@ -92,13 +92,13 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
     //! Category of the plugin
     QString pluginCategoryQString;
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
+    QgisInterface *mQGisIface = nullptr;
     //! Pointer to the QAction object used in the menu and toolbar
-    QAction *mActionRunCompass;
-    QAction *mActionAboutCompass;
+    QAction *mActionRunCompass = nullptr;
+    QAction *mActionAboutCompass = nullptr;
 
-    QDockWidget *mDock;
-    QgsCompassPluginGui *mQgsCompassPluginGui;
+    QDockWidget *mDock = nullptr;
+    QgsCompassPluginGui *mQgsCompassPluginGui = nullptr;
 };
 
 #endif

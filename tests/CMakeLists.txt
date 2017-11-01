@@ -1,8 +1,11 @@
 IF (ENABLE_TESTS)
-  ADD_SUBDIRECTORY(src)
-  ADD_SUBDIRECTORY(bench)
+
+  IF (WITH_CORE)
+    ADD_SUBDIRECTORY(src)
+    ADD_SUBDIRECTORY(bench)
+  ENDIF (WITH_CORE)
+
+  ADD_SUBDIRECTORY(code_layout)
 ENDIF (ENABLE_TESTS)
 
-IF(WITH_ASTYLE)
-  ADD_TEST(qgis_indentation ${CMAKE_SOURCE_DIR}/scripts/verify-indentation.sh)
-ENDIF(WITH_ASTYLE)
+

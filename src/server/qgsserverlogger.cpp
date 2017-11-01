@@ -24,9 +24,9 @@
 
 #include <cstdlib>
 
-QgsServerLogger* QgsServerLogger::sInstance = nullptr;
+QgsServerLogger *QgsServerLogger::sInstance = nullptr;
 
-QgsServerLogger* QgsServerLogger::instance()
+QgsServerLogger *QgsServerLogger::instance()
 {
   if ( !sInstance )
   {
@@ -36,11 +36,10 @@ QgsServerLogger* QgsServerLogger::instance()
 }
 
 QgsServerLogger::QgsServerLogger()
-    : mLogFile( nullptr )
-    , mLogLevel( QgsMessageLog::NONE )
+  : mLogFile( nullptr )
 {
-  connect( QgsApplication::messageLog(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ), this,
-           SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
+  connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &, const QString &, QgsMessageLog::MessageLevel )>( &QgsMessageLog::messageReceived ), this,
+           &QgsServerLogger::logMessage );
 }
 
 void QgsServerLogger::setLogLevel( QgsMessageLog::MessageLevel level )
@@ -48,7 +47,7 @@ void QgsServerLogger::setLogLevel( QgsMessageLog::MessageLevel level )
   mLogLevel = level;
 }
 
-void QgsServerLogger::setLogFile( const QString& f )
+void QgsServerLogger::setLogFile( const QString &f )
 {
   if ( ! f.isEmpty() )
   {
@@ -66,7 +65,7 @@ void QgsServerLogger::setLogFile( const QString& f )
   }
 }
 
-void QgsServerLogger::logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level )
+void QgsServerLogger::logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level )
 {
   Q_UNUSED( tag );
   if ( !mLogFile.isOpen() || mLogLevel > level )

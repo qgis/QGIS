@@ -26,27 +26,28 @@ class QgsFeature;
 class QgsDistanceArea;
 class QgsWebPage;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A label that can be placed onto a map composition.
  */
 class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 {
     Q_OBJECT
   public:
-    QgsComposerLabel( QgsComposition *composition );
+    QgsComposerLabel( QgsComposition *composition SIP_TRANSFERTHIS );
     ~QgsComposerLabel();
 
     //! Return correct graphics item type.
     virtual int type() const override { return ComposerLabel; }
 
     //! \brief Reimplementation of QCanvasItem::paint
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     //! Resizes the widget such that the text fits to the item. Keeps top left point
     void adjustSizeToText();
 
     QString text() { return mText; }
-    void setText( const QString& text );
+    void setText( const QString &text );
 
     int htmlState() { return mHtmlState; }
     void setHtmlState( int state );
@@ -55,104 +56,118 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     QString displayText() const;
 
     QFont font() const;
-    void setFont( const QFont& f );
+    void setFont( const QFont &f );
 
-    /** Accessor for the vertical alignment of the label
-     * @returns Qt::AlignmentFlag
+    /**
+     * Accessor for the vertical alignment of the label
+     * \returns Qt::AlignmentFlag
      */
     Qt::AlignmentFlag vAlign() const { return mVAlignment; }
 
-    /** Accessor for the horizontal alignment of the label
-     * @returns Qt::AlignmentFlag
+    /**
+     * Accessor for the horizontal alignment of the label
+     * \returns Qt::AlignmentFlag
      */
     Qt::AlignmentFlag hAlign() const { return mHAlignment; }
 
-    /** Mutator for the horizontal alignment of the label
-     * @param a alignment
-     * @returns void
+    /**
+     * Mutator for the horizontal alignment of the label
+     * \param a alignment
+     * \returns void
      */
-    void setHAlign( Qt::AlignmentFlag a ) {mHAlignment = a;}
+    void setHAlign( Qt::AlignmentFlag a ) { mHAlignment = a; }
 
-    /** Mutator for the vertical alignment of the label
-     * @param a alignment
-     * @returns void
+    /**
+     * Mutator for the vertical alignment of the label
+     * \param a alignment
+     * \returns void
      */
     void setVAlign( Qt::AlignmentFlag a ) { mVAlignment = a; }
 
-    /** Returns the horizontal margin between the edge of the frame and the label
+    /**
+     * Returns the horizontal margin between the edge of the frame and the label
      * contents.
-     * @returns horizontal margin in mm
-     * @note added in QGIS 2.7
+     * \returns horizontal margin in mm
+     * \since QGIS 2.7
      */
     double marginX() const { return mMarginX; }
 
-    /** Returns the vertical margin between the edge of the frame and the label
+    /**
+     * Returns the vertical margin between the edge of the frame and the label
      * contents.
-     * @returns vertical margin in mm
-     * @note added in QGIS 2.7
+     * \returns vertical margin in mm
+     * \since QGIS 2.7
      */
     double marginY() const { return mMarginY; }
 
-    /** Sets the margin between the edge of the frame and the label contents.
+    /**
+     * Sets the margin between the edge of the frame and the label contents.
      * This method sets both the horizontal and vertical margins to the same
      * value. The margins can be individually controlled using the setMarginX
      * and setMarginY methods.
-     * @param m margin in mm
-     * @see setMarginX
-     * @see setMarginY
+     * \param m margin in mm
+     * \see setMarginX
+     * \see setMarginY
      */
     void setMargin( const double m );
 
-    /** Sets the horizontal margin between the edge of the frame and the label
+    /**
+     * Sets the horizontal margin between the edge of the frame and the label
      * contents.
-     * @param margin horizontal margin in mm
-     * @see setMargin
-     * @see setMarginY
-     * @note added in QGIS 2.7
+     * \param margin horizontal margin in mm
+     * \see setMargin
+     * \see setMarginY
+     * \since QGIS 2.7
      */
     void setMarginX( const double margin );
 
-    /** Sets the vertical margin between the edge of the frame and the label
+    /**
+     * Sets the vertical margin between the edge of the frame and the label
      * contents.
-     * @param margin vertical margin in mm
-     * @see setMargin
-     * @see setMarginX
-     * @note added in QGIS 2.7
+     * \param margin vertical margin in mm
+     * \see setMargin
+     * \see setMarginX
+     * \since QGIS 2.7
      */
     void setMarginY( const double margin );
 
     //! Sets text color
-    void setFontColor( const QColor& c ) { mFontColor = c; }
+    void setFontColor( const QColor &c ) { mFontColor = c; }
     //! Get font color
     QColor fontColor() const { return mFontColor; }
 
-    /** Stores state in Dom element
-     * @param elem is Dom element corresponding to 'Composer' tag
-     * @param doc document
+    /**
+     * Stores state in Dom element
+     * \param elem is Dom element corresponding to 'Composer' tag
+     * \param doc document
      */
-    bool writeXml( QDomElement& elem, QDomDocument & doc ) const override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
-    /** Sets state from Dom document
-     * @param itemElem is Dom element corresponding to 'ComposerLabel' tag
-     * @param doc document
+    /**
+     * Sets state from Dom document
+     * \param itemElem is Dom element corresponding to 'ComposerLabel' tag
+     * \param doc document
      */
-    bool readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     //Overridden to contain part of label's text
     virtual QString displayName() const override;
 
-    /** In case of negative margins, the bounding rect may be larger than the
+    /**
+     * In case of negative margins, the bounding rect may be larger than the
      * label's frame
      */
     QRectF boundingRect() const override;
 
-    /** Reimplemented to call prepareGeometryChange after toggling frame
+    /**
+     * Reimplemented to call prepareGeometryChange after toggling frame
      */
     virtual void setFrameEnabled( const bool drawFrame ) override;
 
-    /** Reimplemented to call prepareGeometryChange after changing outline width
+    /**
+     * Reimplemented to call prepareGeometryChange after changing stroke width
      */
-    virtual void setFrameOutlineWidth( const double outlineWidth ) override;
+    virtual void setFrameStrokeWidth( const double strokeWidth ) override;
 
   public slots:
     void refreshExpressionContext();
@@ -162,6 +177,8 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     void loadingHtmlFinished( bool );
 
   private:
+    bool mFirstRender = true;
+
     // Text
     QString mText;
 
@@ -172,7 +189,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     bool mHtmlLoaded;
 
     //! Helper function to calculate x/y shift for adjustSizeToText() depending on rotation, current size and alignment
-    void itemShiftAdjustSize( double newWidth, double newHeight, double& xShift, double& yShift ) const;
+    void itemShiftAdjustSize( double newWidth, double newHeight, double &xShift, double &yShift ) const;
 
     //! Called when the content is changed to handle HTML loading
     void contentChanged();
@@ -195,16 +212,14 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     Qt::AlignmentFlag mVAlignment;
 
     //! Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)
-    void replaceDateText( QString& text ) const;
+    void replaceDateText( QString &text ) const;
 
     //! Creates an encoded stylesheet url using the current font and label appearance settings
     QUrl createStylesheetUrl() const;
 
-    std::unique_ptr<QgsFeature> mExpressionFeature;
-    QgsVectorLayer* mExpressionLayer;
-    QgsDistanceArea* mDistanceArea;
+    QgsDistanceArea *mDistanceArea = nullptr;
 
-    QgsWebPage* mWebPage;
+    QgsWebPage *mWebPage = nullptr;
 };
 
 #endif

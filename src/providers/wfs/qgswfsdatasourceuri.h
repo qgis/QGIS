@@ -19,6 +19,7 @@
 #include "qgsauthmanager.h"
 #include "qgsdatasourceuri.h"
 #include "qgsrectangle.h"
+#include "qgsapplication.h"
 
 #include <QNetworkRequest>
 #include <QString>
@@ -26,10 +27,10 @@
 // TODO: merge with QgsWmsAuthorization?
 struct QgsWFSAuthorization
 {
-  QgsWFSAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& authcfg = QString() )
-      : mUserName( userName )
-      , mPassword( password )
-      , mAuthCfg( authcfg )
+  QgsWFSAuthorization( const QString &userName = QString(), const QString &password = QString(), const QString &authcfg = QString() )
+    : mUserName( userName )
+    , mPassword( password )
+    , mAuthCfg( authcfg )
   {}
 
   //! update authorization for request
@@ -37,7 +38,7 @@ struct QgsWFSAuthorization
   {
     if ( !mAuthCfg.isEmpty() ) // must be non-empty value
     {
-      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
+      return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
     }
     else if ( !mUserName.isNull() || !mPassword.isNull() ) // allow empty values
     {
@@ -51,7 +52,7 @@ struct QgsWFSAuthorization
   {
     if ( !mAuthCfg.isEmpty() )
     {
-      return QgsAuthManager::instance()->updateNetworkReply( reply, mAuthCfg );
+      return QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
     }
     return true;
   }
@@ -66,14 +67,15 @@ struct QgsWFSAuthorization
   QString mAuthCfg;
 };
 
-/** Utility class that wraps a QgsDataSourceUri with conveniency
+/**
+ * Utility class that wraps a QgsDataSourceUri with conveniency
  * methods with the parameters used for a WFS URI.
  */
 class QgsWFSDataSourceURI
 {
   public:
 
-    explicit QgsWFSDataSourceURI( const QString& uri );
+    explicit QgsWFSDataSourceURI( const QString &uri );
 
     //! Return the URI, avoiding expansion of authentication configuration, which is handled during network access
     const QString uri( bool expandAuthConfig = false ) const;
@@ -94,28 +96,34 @@ class QgsWFSDataSourceURI
     QString typeName() const;
 
     //! Set typename (with prefix)
-    void setTypeName( const QString& typeName );
+    void setTypeName( const QString &typeName );
 
     //! Get SRS name (in the normalized form EPSG:xxxx)
     QString SRSName() const;
 
     //! Set SRS name (in the normalized form EPSG:xxxx)
-    void setSRSName( const QString& crsString );
+    void setSRSName( const QString &crsString );
 
     //! Set version
-    void setVersion( const QString& versionString );
+    void setVersion( const QString &versionString );
 
     //! Get OGC filter xml or a QGIS expression
     QString filter() const;
 
     //! Set OGC filter xml or a QGIS expression
-    void setFilter( const QString& filterIn );
+    void setFilter( const QString &filterIn );
 
     //! Get SQL query
     QString sql() const;
 
     //! Set SQL query
-    void setSql( const QString& sql );
+    void setSql( const QString &sql );
+
+    //! Get GetFeature output format
+    QString outputFormat() const;
+
+    //! Set GetFeature output format
+    void setOutputFormat( const QString &outputFormat );
 
     //! Returns whether GetFeature request should include the request bounding box. Defaults to false
     bool isRestrictedToRequestBBOX() const;
@@ -133,13 +141,13 @@ class QgsWFSDataSourceURI
     bool hideDownloadProgressDialog() const;
 
     //! Return authorization parameters
-    QgsWFSAuthorization& auth() { return mAuth; }
+    QgsWFSAuthorization &auth() { return mAuth; }
 
     //! Builds a derived uri from a base uri
-    static QString build( const QString& uri,
-                          const QString& typeName,
-                          const QString& crsString = QString(),
-                          const QString& sql = QString(),
+    static QString build( const QString &uri,
+                          const QString &typeName,
+                          const QString &crsString = QString(),
+                          const QString &sql = QString(),
                           bool restrictToCurrentViewExtent = false );
 
   private:

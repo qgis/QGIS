@@ -16,6 +16,8 @@
 #ifndef QGSWEBPAGE_H
 #define QGSWEBPAGE_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgsmessagelog.h"
 #include <QObject>
@@ -32,8 +34,9 @@
 #include <QTextBrowser>
 
 
-/** \ingroup core
- * @brief The QWebSettings class is a collection of stubs to mimic the API of a QWebSettings on systems
+/**
+ * \ingroup core
+ * \brief The QWebSettings class is a collection of stubs to mimic the API of a QWebSettings on systems
  * where QtWebkit is not available.
  */
 class CORE_EXPORT QWebSettings : public QObject
@@ -77,12 +80,12 @@ class CORE_EXPORT QWebSettings : public QObject
       CaretBrowsingEnabled,
       NotificationsEnabled
     };
-    explicit QWebSettings( QObject* parent = 0 )
-        : QObject( parent )
+    explicit QWebSettings( QObject *parent = 0 )
+      : QObject( parent )
     {
     }
 
-    void setUserStyleSheetUrl( const QUrl& )
+    void setUserStyleSheetUrl( const QUrl & )
     {
     }
 
@@ -94,7 +97,7 @@ class CORE_EXPORT QWebSettings : public QObject
 
 /**
  * \ingroup core
- * @brief The QWebPage class is a collection of stubs to mimic the API of a QWebPage on systems
+ * \brief The QWebPage class is a collection of stubs to mimic the API of a QWebPage on systems
  * where QtWebkit is not available.
  */
 class CORE_EXPORT QWebPage : public QObject
@@ -117,10 +120,10 @@ class CORE_EXPORT QWebPage : public QObject
       WebModalDialog
     };
 
-    explicit QWebPage( QObject* parent = 0 )
-        : QObject( parent )
-        , mSettings( new QWebSettings() )
-        , mFrame( new QWebFrame() )
+    explicit QWebPage( QObject *parent = 0 )
+      : QObject( parent )
+      , mSettings( new QWebSettings() )
+      , mFrame( new QWebFrame() )
     {
     }
 
@@ -135,12 +138,12 @@ class CORE_EXPORT QWebPage : public QObject
       return QPalette();
     }
 
-    void setPalette( const QPalette& palette )
+    void setPalette( const QPalette &palette )
     {
       Q_UNUSED( palette );
     }
 
-    void setViewportSize( const QSize & size ) const
+    void setViewportSize( const QSize &size ) const
     {
       Q_UNUSED( size );
     }
@@ -157,17 +160,17 @@ class CORE_EXPORT QWebPage : public QObject
       tb->setOpenExternalLinks( linkDelegationPolicy != DontDelegateLinks );
     }
 
-    void setNetworkAccessManager( QNetworkAccessManager* networkAccessManager )
+    void setNetworkAccessManager( QNetworkAccessManager *networkAccessManager )
     {
       Q_UNUSED( networkAccessManager );
     }
 
-    QWebFrame* mainFrame() const
+    QWebFrame *mainFrame() const
     {
       return mFrame;
     }
 
-    QWebSettings* settings() const
+    QWebSettings *settings() const
     {
       return mSettings;
     }
@@ -177,7 +180,7 @@ class CORE_EXPORT QWebPage : public QObject
       return QSize();
     }
 
-    QMenu* createStandardContextMenu()
+    QMenu *createStandardContextMenu()
     {
       return new QMenu();
     }
@@ -186,23 +189,28 @@ class CORE_EXPORT QWebPage : public QObject
 
     void loadFinished( bool ok );
 
+    void downloadRequested( const QNetworkRequest &request );
+
+    void unsupportedContent( QNetworkReply *reply );
+
   public slots:
 
   protected:
 
-    virtual void javaScriptConsoleMessage( const QString& , int, const QString& ) {}
+    virtual void javaScriptConsoleMessage( const QString &, int, const QString & ) {}
 
   private:
-    QWebSettings* mSettings;
-    QWebFrame* mFrame;
+    QWebSettings *mSettings = nullptr;
+    QWebFrame *mFrame = nullptr;
 /// @endcond
 };
 #endif
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsWebPage
  * \brief QWebPage subclass which redirects JavaScript errors and console output to the QGIS message log.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  * \note Not available in Python bindings
  */
 class CORE_EXPORT QgsWebPage : public QWebPage
@@ -211,35 +219,38 @@ class CORE_EXPORT QgsWebPage : public QWebPage
 
   public:
 
-    /** Constructor for QgsWebPage.
-     * @param parent parent object
+    /**
+     * Constructor for QgsWebPage.
+     * \param parent parent object
      */
-    explicit QgsWebPage( QObject* parent = 0 )
-        : QWebPage( parent )
+    explicit QgsWebPage( QObject *parent = 0 )
+      : QWebPage( parent )
     {}
 
-    /** Sets an identifier for the QgsWebPage. The page's identifier is included in messages written to the
+    /**
+     * Sets an identifier for the QgsWebPage. The page's identifier is included in messages written to the
      * log, and should be set to a user-friendly string so that users can identify which QgsWebPage has
      * logged the message.
-     * @param identifier identifier string
-     * @see identifier()
+     * \param identifier identifier string
+     * \see identifier()
      */
-    void setIdentifier( const QString& identifier ) { mIdentifier = identifier; }
+    void setIdentifier( const QString &identifier ) { mIdentifier = identifier; }
 
-    /** Returns the QgsWebPage's identifier. The page's identifier is included in messages written to the
+    /**
+     * Returns the QgsWebPage's identifier. The page's identifier is included in messages written to the
      * log so that users can identify which QgsWebPage has logged the message.
-     * @see setIdentifier()
+     * \see setIdentifier()
      */
     QString identifier() const { return mIdentifier; }
 
   protected:
 
-    virtual void javaScriptConsoleMessage( const QString& message, int lineNumber, const QString& ) override
+    virtual void javaScriptConsoleMessage( const QString &message, int lineNumber, const QString & ) override
     {
       if ( mIdentifier.isEmpty() )
-        QgsMessageLog::logMessage( tr( "Line %1: %2" ).arg( lineNumber ).arg( message ), tr( "Javascript" ) );
+        QgsMessageLog::logMessage( tr( "Line %1: %2" ).arg( lineNumber ).arg( message ), tr( "JavaScript" ) );
       else
-        QgsMessageLog::logMessage( tr( "%1 (line %2): %3" ).arg( mIdentifier ).arg( lineNumber ).arg( message ), tr( "Javascript" ) );
+        QgsMessageLog::logMessage( tr( "%1 (line %2): %3" ).arg( mIdentifier ).arg( lineNumber ).arg( message ), tr( "JavaScript" ) );
     }
 
   private:

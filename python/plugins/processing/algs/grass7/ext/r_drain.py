@@ -25,8 +25,6 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-import os
-
 
 def checkParameterValuesBeforeExecuting(alg):
     """ Verify if we have the right parameters """

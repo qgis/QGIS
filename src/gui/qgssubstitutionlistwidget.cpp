@@ -24,18 +24,22 @@
 #include <QMessageBox>
 #include <QTextStream>
 
-QgsSubstitutionListWidget::QgsSubstitutionListWidget( QWidget* parent )
-    : QgsPanelWidget( parent )
+QgsSubstitutionListWidget::QgsSubstitutionListWidget( QWidget *parent )
+  : QgsPanelWidget( parent )
 {
   setupUi( this );
-  connect( mTableSubstitutions, SIGNAL( cellChanged( int, int ) ), this, SLOT( tableChanged() ) );
+  connect( mButtonAdd, &QToolButton::clicked, this, &QgsSubstitutionListWidget::mButtonAdd_clicked );
+  connect( mButtonRemove, &QToolButton::clicked, this, &QgsSubstitutionListWidget::mButtonRemove_clicked );
+  connect( mButtonExport, &QToolButton::clicked, this, &QgsSubstitutionListWidget::mButtonExport_clicked );
+  connect( mButtonImport, &QToolButton::clicked, this, &QgsSubstitutionListWidget::mButtonImport_clicked );
+  connect( mTableSubstitutions, &QTableWidget::cellChanged, this, &QgsSubstitutionListWidget::tableChanged );
 }
 
-void QgsSubstitutionListWidget::setSubstitutions( const QgsStringReplacementCollection& substitutions )
+void QgsSubstitutionListWidget::setSubstitutions( const QgsStringReplacementCollection &substitutions )
 {
   mTableSubstitutions->blockSignals( true );
   mTableSubstitutions->clearContents();
-  Q_FOREACH ( const QgsStringReplacement& replacement, substitutions.replacements() )
+  Q_FOREACH ( const QgsStringReplacement &replacement, substitutions.replacements() )
   {
     addSubstitution( replacement );
   }
@@ -53,8 +57,8 @@ QgsStringReplacementCollection QgsSubstitutionListWidget::substitutions() const
     if ( mTableSubstitutions->item( i, 0 )->text().isEmpty() )
       continue;
 
-    QCheckBox* chkCaseSensitive = qobject_cast<QCheckBox*>( mTableSubstitutions->cellWidget( i, 2 ) );
-    QCheckBox* chkWholeWord = qobject_cast<QCheckBox*>( mTableSubstitutions->cellWidget( i, 3 ) );
+    QCheckBox *chkCaseSensitive = qobject_cast<QCheckBox *>( mTableSubstitutions->cellWidget( i, 2 ) );
+    QCheckBox *chkWholeWord = qobject_cast<QCheckBox *>( mTableSubstitutions->cellWidget( i, 3 ) );
 
     QgsStringReplacement replacement( mTableSubstitutions->item( i, 0 )->text(),
                                       mTableSubstitutions->item( i, 1 )->text(),
@@ -65,14 +69,14 @@ QgsStringReplacementCollection QgsSubstitutionListWidget::substitutions() const
   return QgsStringReplacementCollection( result );
 }
 
-void QgsSubstitutionListWidget::on_mButtonAdd_clicked()
+void QgsSubstitutionListWidget::mButtonAdd_clicked()
 {
   addSubstitution( QgsStringReplacement( QString(), QString(), false, true ) );
   mTableSubstitutions->setFocus();
   mTableSubstitutions->setCurrentCell( mTableSubstitutions->rowCount() - 1, 0 );
 }
 
-void QgsSubstitutionListWidget::on_mButtonRemove_clicked()
+void QgsSubstitutionListWidget::mButtonRemove_clicked()
 {
   int currentRow = mTableSubstitutions->currentRow();
   mTableSubstitutions->removeRow( currentRow );
@@ -84,7 +88,7 @@ void QgsSubstitutionListWidget::tableChanged()
   emit substitutionsChanged( substitutions() );
 }
 
-void QgsSubstitutionListWidget::on_mButtonExport_clicked()
+void QgsSubstitutionListWidget::mButtonExport_clicked()
 {
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save substitutions" ), QDir::homePath(),
                      tr( "XML files (*.xml *.XML)" ) );
@@ -120,7 +124,7 @@ void QgsSubstitutionListWidget::on_mButtonExport_clicked()
   doc.save( out, 4 );
 }
 
-void QgsSubstitutionListWidget::on_mButtonImport_clicked()
+void QgsSubstitutionListWidget::mButtonImport_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load substitutions" ), QDir::homePath(),
                      tr( "XML files (*.xml *.XML)" ) );
@@ -172,7 +176,7 @@ void QgsSubstitutionListWidget::on_mButtonImport_clicked()
   tableChanged();
 }
 
-void QgsSubstitutionListWidget::addSubstitution( const QgsStringReplacement& substitution )
+void QgsSubstitutionListWidget::addSubstitution( const QgsStringReplacement &substitution )
 {
   int row = mTableSubstitutions->rowCount();
   mTableSubstitutions->insertRow( row );
@@ -180,22 +184,22 @@ void QgsSubstitutionListWidget::addSubstitution( const QgsStringReplacement& sub
   Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable
                             | Qt::ItemIsEditable;
 
-  QTableWidgetItem* matchItem = new QTableWidgetItem( substitution.match() );
+  QTableWidgetItem *matchItem = new QTableWidgetItem( substitution.match() );
   matchItem->setFlags( itemFlags );
   mTableSubstitutions->setItem( row, 0, matchItem );
-  QTableWidgetItem* replaceItem = new QTableWidgetItem( substitution.replacement() );
+  QTableWidgetItem *replaceItem = new QTableWidgetItem( substitution.replacement() );
   replaceItem->setFlags( itemFlags );
   mTableSubstitutions->setItem( row, 1, replaceItem );
 
-  QCheckBox* caseSensitiveChk = new QCheckBox( this );
+  QCheckBox *caseSensitiveChk = new QCheckBox( this );
   caseSensitiveChk->setChecked( substitution.caseSensitive() );
   mTableSubstitutions->setCellWidget( row, 2, caseSensitiveChk );
-  connect( caseSensitiveChk, SIGNAL( toggled( bool ) ), this, SLOT( tableChanged() ) );
+  connect( caseSensitiveChk, &QAbstractButton::toggled, this, &QgsSubstitutionListWidget::tableChanged );
 
-  QCheckBox* wholeWordChk = new QCheckBox( this );
+  QCheckBox *wholeWordChk = new QCheckBox( this );
   wholeWordChk->setChecked( substitution.wholeWordOnly() );
   mTableSubstitutions->setCellWidget( row, 3, wholeWordChk );
-  connect( wholeWordChk, SIGNAL( toggled( bool ) ), this, SLOT( tableChanged() ) );
+  connect( wholeWordChk, &QAbstractButton::toggled, this, &QgsSubstitutionListWidget::tableChanged );
 }
 
 
@@ -204,22 +208,22 @@ void QgsSubstitutionListWidget::addSubstitution( const QgsStringReplacement& sub
 //
 
 
-QgsSubstitutionListDialog::QgsSubstitutionListDialog( QWidget* parent )
-    : QDialog( parent )
-    , mWidget( nullptr )
+QgsSubstitutionListDialog::QgsSubstitutionListDialog( QWidget *parent )
+  : QDialog( parent )
+
 {
   setWindowTitle( tr( "Substitutions" ) );
-  QVBoxLayout* vLayout = new QVBoxLayout();
+  QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsSubstitutionListWidget();
   vLayout->addWidget( mWidget );
-  QDialogButtonBox* bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
-  connect( bbox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( bbox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  connect( bbox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( bbox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   vLayout->addWidget( bbox );
   setLayout( vLayout );
 }
 
-void QgsSubstitutionListDialog::setSubstitutions( const QgsStringReplacementCollection& substitutions )
+void QgsSubstitutionListDialog::setSubstitutions( const QgsStringReplacementCollection &substitutions )
 {
   mWidget->setSubstitutions( substitutions );
 }

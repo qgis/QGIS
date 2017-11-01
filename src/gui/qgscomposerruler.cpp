@@ -27,11 +27,9 @@ const int QgsComposerRuler::VALID_SCALE_MULTIPLES[] = {1, 2, 5};
 const int QgsComposerRuler::VALID_SCALE_MAGNITUDES[] = {1, 10, 100, 1000, 10000};
 
 QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d )
-    : QWidget( nullptr )
-    , mDirection( d )
-    , mComposition( nullptr )
-    , mLineSnapItem( nullptr )
-    , mScaleMinPixelsWidth( 0 )
+  : QWidget( nullptr )
+  , mDirection( d )
+  , mScaleMinPixelsWidth( 0 )
 {
   setMouseTracking( true );
 
@@ -68,7 +66,7 @@ QSize QgsComposerRuler::minimumSizeHint() const
   return QSize( mRulerMinSize, mRulerMinSize );
 }
 
-void QgsComposerRuler::paintEvent( QPaintEvent* event )
+void QgsComposerRuler::paintEvent( QPaintEvent *event )
 {
   Q_UNUSED( event );
   if ( !mComposition )
@@ -103,7 +101,7 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
     double endX = t.map( QPointF( width(), 0 ) ).x();
 
     //start marker position in mm
-    double markerPos = ( floor( startX / mmDisplay ) + 1 ) * mmDisplay;
+    double markerPos = ( std::floor( startX / mmDisplay ) + 1 ) * mmDisplay;
 
     //draw minor ticks marks which occur before first major tick
     drawSmallDivisions( &p, markerPos, numSmallDivisions, -mmDisplay );
@@ -196,7 +194,7 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
         nextPageStartPixel = 0;
       }
 
-      while (( totalCoord < nextPageStartPos ) || (( nextPageStartPos == 0 ) && ( totalCoord <= endY ) ) )
+      while ( ( totalCoord < nextPageStartPos ) || ( ( nextPageStartPos == 0 ) && ( totalCoord <= endY ) ) )
       {
         double pixelCoord = mTransform.map( QPointF( 0, totalCoord ) ).y();
         p.drawLine( 0, pixelCoord, mRulerMinSize, pixelCoord );
@@ -205,8 +203,8 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
         int labelSize = mRulerFontMetrics->width( label );
 
         //draw label only if it fits in before start of next page
-        if (( pixelCoord + labelSize + 8 < nextPageStartPixel )
-            || ( nextPageStartPixel == 0 ) )
+        if ( ( pixelCoord + labelSize + 8 < nextPageStartPixel )
+             || ( nextPageStartPixel == 0 ) )
         {
           drawRotatedText( &p, QPointF( mTextBaseline, pixelCoord + mMinSpacingVerticalLabels + labelSize ), label );
         }
@@ -281,7 +279,7 @@ void QgsComposerRuler::drawSmallDivisions( QPainter *painter, double startPos, i
 
     //calculate height of small division line
     double lineSize;
-    if (( numDivisions == 10 && i == 4 ) || ( numDivisions == 4 && i == 1 ) )
+    if ( ( numDivisions == 10 && i == 4 ) || ( numDivisions == 4 && i == 1 ) )
     {
       //if drawing the 5th line of 10 or drawing the 2nd line of 4, then draw it slightly longer
       lineSize = mRulerMinSize / 1.5;
@@ -373,7 +371,7 @@ int QgsComposerRuler::optimumNumberDivisions( double rulerScale, int scaleMultip
 }
 
 
-void QgsComposerRuler::setSceneTransform( const QTransform& transform )
+void QgsComposerRuler::setSceneTransform( const QTransform &transform )
 {
 #if 0
   QString debug = QString::number( transform.dx() ) + ',' + QString::number( transform.dy() ) + ','
@@ -383,14 +381,14 @@ void QgsComposerRuler::setSceneTransform( const QTransform& transform )
   update();
 }
 
-void QgsComposerRuler::mouseMoveEvent( QMouseEvent* event )
+void QgsComposerRuler::mouseMoveEvent( QMouseEvent *event )
 {
   //qWarning( "QgsComposerRuler::mouseMoveEvent" );
-  updateMarker( event->posF() );
-  setSnapLinePosition( event->posF() );
+  updateMarker( event->pos() );
+  setSnapLinePosition( event->pos() );
 
   //update cursor position in status bar
-  QPointF displayPos = mTransform.inverted().map( event->posF() );
+  QPointF displayPos = mTransform.inverted().map( event->pos() );
   if ( mDirection == Horizontal )
   {
     //mouse is over a horizontal ruler, so don't show a y coordinate
@@ -404,7 +402,7 @@ void QgsComposerRuler::mouseMoveEvent( QMouseEvent* event )
   emit cursorPosChanged( displayPos );
 }
 
-void QgsComposerRuler::mouseReleaseEvent( QMouseEvent* event )
+void QgsComposerRuler::mouseReleaseEvent( QMouseEvent *event )
 {
   Q_UNUSED( event );
 
@@ -413,11 +411,11 @@ void QgsComposerRuler::mouseReleaseEvent( QMouseEvent* event )
   bool removeItem = false;
   if ( mDirection == Horizontal )
   {
-    removeItem = pos.x() < 0 ? true : false;
+    removeItem = pos.x() < 0;
   }
   else
   {
-    removeItem = pos.y() < 0 ? true : false;
+    removeItem = pos.y() < 0;
   }
 
   if ( removeItem )
@@ -428,7 +426,7 @@ void QgsComposerRuler::mouseReleaseEvent( QMouseEvent* event )
   mLineSnapItem = nullptr;
 }
 
-void QgsComposerRuler::mousePressEvent( QMouseEvent* event )
+void QgsComposerRuler::mousePressEvent( QMouseEvent *event )
 {
   double x = 0;
   double y = 0;
@@ -442,7 +440,7 @@ void QgsComposerRuler::mousePressEvent( QMouseEvent* event )
   }
 
   //horizontal ruler means vertical snap line
-  QGraphicsLineItem* line = mComposition->nearestSnapLine( mDirection != Horizontal, x, y, 10.0, mSnappedItems );
+  QGraphicsLineItem *line = mComposition->nearestSnapLine( mDirection != Horizontal, x, y, 10.0, mSnappedItems );
   if ( !line )
   {
     //create new snap line
@@ -478,7 +476,7 @@ void QgsComposerRuler::setSnapLinePosition( QPointF pos )
   }
 
   //move snapped items together with the snap line
-  QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >::const_iterator itemIt = mSnappedItems.constBegin();
+  QList< QPair< QgsComposerItem *, QgsComposerItem::ItemPositionMode > >::const_iterator itemIt = mSnappedItems.constBegin();
   for ( ; itemIt != mSnappedItems.constEnd(); ++itemIt )
   {
     if ( mDirection == Horizontal )

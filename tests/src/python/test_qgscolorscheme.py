@@ -15,8 +15,8 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.testing import unittest, start_app
-from qgis.core import QgsColorScheme, QgsUserColorScheme, QgsRecentColorScheme
-from qgis.PyQt.QtCore import QCoreApplication, QSettings
+from qgis.core import QgsColorScheme, QgsUserColorScheme, QgsRecentColorScheme, QgsSettings
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QColor
 
 # Make a dummy color scheme for testing
@@ -50,7 +50,7 @@ class TestQgsColorScheme(unittest.TestCase):
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsColorScheme.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsColorScheme")
-        QSettings().clear()
+        QgsSettings().clear()
         start_app()
 
     def testCreateScheme(self):

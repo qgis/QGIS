@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgsmaptooladdfeature.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsapplication.h"
 #include "qgsattributedialog.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgscurvepolygon.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
@@ -35,21 +36,20 @@
 #include <QMouseEvent>
 #include <QSettings>
 
-QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas, CaptureMode mode )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
-    , mCheckGeometryType( true )
+QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
+  , mCheckGeometryType( true )
 {
   mToolName = tr( "Add feature" );
-}
-
-QgsMapToolAddFeature::~QgsMapToolAddFeature()
-{
+  connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddFeature::stopCapturing );
+  connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddFeature::stopCapturing );
 }
 
 bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bool showModal )
 {
+  QgsExpressionContextScope *scope = QgsExpressionContextUtils::mapToolCaptureScope( snappingMatches() );
   QgsFeatureAction *action = new QgsFeatureAction( tr( "add feature" ), *f, vlayer, QString(), -1, this );
-  bool res = action->addFeature( QgsAttributeMap(), showModal );
+  bool res = action->addFeature( QgsAttributeMap(), showModal, scope );
   if ( showModal )
     delete action;
   return res;
@@ -68,9 +68,19 @@ void QgsMapToolAddFeature::activate()
   QgsMapToolCapture::activate();
 }
 
-void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
+bool QgsMapToolAddFeature::checkGeometryType() const
 {
-  QgsVectorLayer* vlayer = currentVectorLayer();
+  return mCheckGeometryType;
+}
+
+void QgsMapToolAddFeature::setCheckGeometryType( bool checkGeometryType )
+{
+  mCheckGeometryType = checkGeometryType;
+}
+
+void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
+{
+  QgsVectorLayer *vlayer = currentVectorLayer();
 
   if ( !vlayer )
   {
@@ -80,7 +90,7 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 
   QgsWkbTypes::Type layerWKBType = vlayer->wkbType();
 
-  QgsVectorDataProvider* provider = vlayer->dataProvider();
+  QgsVectorDataProvider *provider = vlayer->dataProvider();
 
   if ( !( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
   {
@@ -109,15 +119,15 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 
 
 
-    QgsPoint savePoint; //point in layer coordinates
+    QgsPointXY savePoint; //point in layer coordinates
     try
     {
-      QgsPointV2 fetchPoint;
+      QgsPoint fetchPoint;
       int res;
       res = fetchLayerPoint( e->mapPointMatch(), fetchPoint );
       if ( res == 0 )
       {
-        savePoint = QgsPoint( fetchPoint.x(), fetchPoint.y() );
+        savePoint = QgsPointXY( fetchPoint.x(), fetchPoint.y() );
       }
       else
       {
@@ -142,26 +152,26 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       QgsGeometry g;
       if ( layerWKBType == QgsWkbTypes::Point )
       {
-        g = QgsGeometry::fromPoint( savePoint );
+        g = QgsGeometry::fromPointXY( savePoint );
       }
       else if ( layerWKBType == QgsWkbTypes::Point25D )
       {
-        g = QgsGeometry( new QgsPointV2( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), 0.0 ) );
+        g = QgsGeometry( new QgsPoint( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
       }
       else if ( layerWKBType == QgsWkbTypes::MultiPoint )
       {
-        g = QgsGeometry::fromMultiPoint( QgsMultiPoint() << savePoint );
+        g = QgsGeometry::fromMultiPointXY( QgsMultiPointXY() << savePoint );
       }
       else if ( layerWKBType == QgsWkbTypes::MultiPoint25D )
       {
-        QgsMultiPointV2* mp = new QgsMultiPointV2();
-        mp->addGeometry( new QgsPointV2( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), 0.0 ) );
+        QgsMultiPoint *mp = new QgsMultiPoint();
+        mp->addGeometry( new QgsPoint( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
         g = QgsGeometry( mp );
       }
       else
       {
         // if layer supports more types (mCheckGeometryType is false)
-        g = QgsGeometry::fromPoint( savePoint );
+        g = QgsGeometry::fromPointXY( savePoint );
       }
 
       f.setGeometry( g );
@@ -169,7 +179,8 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 
       addFeature( vlayer, &f, false );
 
-      vlayer->triggerRepaint();
+      // we are done with digitizing for now so instruct advanced digitizing dock to reset its CAD points
+      cadDockWidget()->clearPoints();
     }
   }
 
@@ -240,7 +251,8 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
       bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
-      QgsCurve* curveToAdd = nullptr;
+      QList<QgsPointLocator::Match> snappingMatchesList;
+      QgsCurve *curveToAdd = nullptr;
       if ( hasCurvedSegments && providerSupportsCurvedSegments )
       {
         curveToAdd = captureCurve()->clone();
@@ -248,29 +260,28 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
       else
       {
         curveToAdd = captureCurve()->curveToLine();
+        snappingMatchesList = snappingMatches();
       }
 
       if ( mode() == CaptureLine )
       {
-        QgsGeometry* g = new QgsGeometry( curveToAdd );
-        f->setGeometry( *g );
-        delete g;
+        QgsGeometry g( curveToAdd );
+        f->setGeometry( g );
       }
       else
       {
-        QgsCurvePolygon* poly = nullptr;
+        QgsCurvePolygon *poly = nullptr;
         if ( hasCurvedSegments && providerSupportsCurvedSegments )
         {
           poly = new QgsCurvePolygon();
         }
         else
         {
-          poly = new QgsPolygonV2();
+          poly = new QgsPolygon();
         }
         poly->setExteriorRing( curveToAdd );
-        QgsGeometry* g = new QgsGeometry( poly );
-        f->setGeometry( *g );
-        delete g;
+        QgsGeometry g( poly );
+        f->setGeometry( g );
 
         QgsGeometry featGeom = f->geometry();
         int avoidIntersectionsReturn = featGeom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
@@ -295,11 +306,11 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 
         //use always topological editing for avoidIntersection.
         //Otherwise, no way to guarantee the geometries don't have a small gap in between.
-        QList<QgsVectorLayer*> intersectionLayers = QgsProject::instance()->avoidIntersectionsLayers();
+        QList<QgsVectorLayer *> intersectionLayers = QgsProject::instance()->avoidIntersectionsLayers();
         bool avoidIntersection = !intersectionLayers.isEmpty();
         if ( avoidIntersection ) //try to add topological points also to background layers
         {
-          Q_FOREACH ( QgsVectorLayer* vl, intersectionLayers )
+          Q_FOREACH ( QgsVectorLayer *vl, intersectionLayers )
           {
             //can only add topological points if background layer is editable...
             if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )

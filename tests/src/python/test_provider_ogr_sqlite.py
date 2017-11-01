@@ -17,12 +17,10 @@ import qgis  # NOQA
 import os
 import tempfile
 import shutil
-import glob
 from osgeo import gdal, ogr
 
-from qgis.core import QgsVectorLayer, QgsFeature, QgsGeometry, QgsFeatureRequest, QgsField, QgsFieldConstraints, NULL
+from qgis.core import QgsVectorLayer, QgsFeature, QgsFeatureRequest, QgsFieldConstraints, NULL
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime
 
 start_app()
@@ -200,6 +198,77 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         # time may pass, so we allow 1 second difference here
         self.assertTrue(vl.dataProvider().defaultValue(5).secsTo(QTime.currentTime()) < 1)
         self.assertTrue(vl.dataProvider().defaultValue(6).secsTo(QDateTime.currentDateTime()) < 1)
+
+    def testSubsetStringFids(self):
+        """
+          - tests that feature ids are stable even if a subset string is set
+          - tests that the subset string is correctly set on the ogr layer event when reloading the data source (issue #17122)
+        """
+
+        tmpfile = os.path.join(self.basetestpath, 'subsetStringFids.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
+        lyr.CreateField(ogr.FieldDefn('type', ogr.OFTInteger))
+        lyr.CreateField(ogr.FieldDefn('value', ogr.OFTInteger))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetFID(0)
+        f.SetField(0, 1)
+        f.SetField(1, 11)
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetFID(1)
+        f.SetField(0, 1)
+        f.SetField(1, 12)
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetFID(2)
+        f.SetField(0, 1)
+        f.SetField(1, 13)
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetFID(3)
+        f.SetField(0, 2)
+        f.SetField(1, 14)
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetFID(4)
+        f.SetField(0, 2)
+        f.SetField(1, 15)
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetFID(5)
+        f.SetField(0, 2)
+        f.SetField(1, 16)
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(tmpfile + "|subset=type=2", 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.fields().at(vl.fields().count() - 1).name() == "orig_ogc_fid")
+
+        req = QgsFeatureRequest()
+        req.setFilterExpression("value=16")
+        it = vl.getFeatures(req)
+        f = QgsFeature()
+        self.assertTrue(it.nextFeature(f))
+        self.assertTrue(f.id() == 5)
+
+        # Ensure that orig_ogc_fid is still retrieved even if attribute subset is passed
+        req = QgsFeatureRequest()
+        req.setSubsetOfAttributes([])
+        it = vl.getFeatures(req)
+        ids = []
+        while it.nextFeature(f):
+            ids.append(f.id())
+        self.assertTrue(len(ids) == 3)
+        self.assertTrue(3 in ids)
+        self.assertTrue(4 in ids)
+        self.assertTrue(5 in ids)
+
+        # Check that subset string is correctly set on reload
+        vl.reload()
+        self.assertTrue(vl.fields().at(vl.fields().count() - 1).name() == "orig_ogc_fid")
 
 
 if __name__ == '__main__':

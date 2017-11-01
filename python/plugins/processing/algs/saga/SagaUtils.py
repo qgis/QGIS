@@ -31,15 +31,18 @@ import subprocess
 import time
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsApplication
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import isWindows, isMac, userFolder
 
 SAGA_LOG_COMMANDS = 'SAGA_LOG_COMMANDS'
 SAGA_LOG_CONSOLE = 'SAGA_LOG_CONSOLE'
-SAGA_FOLDER = 'SAGA_FOLDER'
 SAGA_IMPORT_EXPORT_OPTIMIZATION = 'SAGA_IMPORT_EXPORT_OPTIMIZATION'
+
+_installedVersion = None
+_installedVersionFound = False
 
 
 def sagaBatchJobFilename():
@@ -64,21 +67,26 @@ def findSagaFolder():
             if os.path.exists(os.path.join(testfolder, 'saga_cmd')):
                 folder = testfolder
     elif isWindows():
-        testfolder = os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'saga')
-        if os.path.exists(os.path.join(testfolder, 'saga_cmd.exe')):
-            folder = testfolder
+        folders = []
+        folders.append(os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'saga-ltr'))
+        folders.append(os.path.join(os.path.dirname(QgsApplication.prefixPath()), 'saga'))
+        if "OSGEO4W_ROOT" in os.environ:
+            folders.append(os.path.join(str(os.environ['OSGEO4W_ROOT']), "apps", "saga-ltr"))
+            folders.append(os.path.join(str(os.environ['OSGEO4W_ROOT']), "apps", "saga"))
+
+        for testfolder in folders:
+            if os.path.exists(os.path.join(testfolder, 'saga_cmd.exe')):
+                folder = testfolder
+                break
+
     return folder
 
 
 def sagaPath():
-    folder = ProcessingConfig.getSetting(SAGA_FOLDER)
-    if folder and not os.path.isdir(folder):
-        folder = None
-        ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                               'Specified SAGA folder does not exist. Will try to find built-in binaries.')
-    if folder is None or folder == '':
-        folder = findSagaFolder()
+    if not isWindows() and not isMac():
+        return ''
 
+    folder = findSagaFolder()
     return folder or ''
 
 
@@ -107,9 +115,6 @@ def createSagaBatchJobFileFromSagaCommands(commands):
                 fout.write('saga_cmd ' + command + '\n')
 
         fout.write('exit')
-
-_installedVersion = None
-_installedVersionFound = False
 
 
 def getInstalledVersion(runSaga=False):
@@ -161,8 +166,8 @@ def executeSaga(feedback):
     if isWindows():
         command = ['cmd.exe', '/C ', sagaBatchJobFilename()]
     else:
-        os.chmod(sagaBatchJobFilename(), stat.S_IEXEC
-                 | stat.S_IREAD | stat.S_IWRITE)
+        os.chmod(sagaBatchJobFilename(), stat.S_IEXEC |
+                 stat.S_IREAD | stat.S_IWRITE)
         command = [sagaBatchJobFilename()]
     loglines = []
     loglines.append(QCoreApplication.translate('SagaUtils', 'SAGA execution console output'))
@@ -191,4 +196,4 @@ def executeSaga(feedback):
             pass
 
     if ProcessingConfig.getSetting(SAGA_LOG_CONSOLE):
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+        QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)

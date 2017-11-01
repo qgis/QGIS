@@ -25,10 +25,9 @@
 
 #include <QSettings>
 
-QgsDateTimeSearchWidgetWrapper::QgsDateTimeSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-    , mDateTimeEdit( nullptr )
-    , mLayer( nullptr )
+QgsDateTimeSearchWidgetWrapper::QgsDateTimeSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
+
 {
 }
 
@@ -124,7 +123,7 @@ void QgsDateTimeSearchWidgetWrapper::setExpression( QString exp )
   mExpression = str;
 }
 
-void QgsDateTimeSearchWidgetWrapper::dateTimeChanged( const QDateTime& dt )
+void QgsDateTimeSearchWidgetWrapper::dateTimeChanged( const QDateTime &dt )
 {
   if ( mDateTimeEdit )
   {
@@ -138,16 +137,16 @@ void QgsDateTimeSearchWidgetWrapper::dateTimeChanged( const QDateTime& dt )
   }
 }
 
-QWidget* QgsDateTimeSearchWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsDateTimeSearchWidgetWrapper::createWidget( QWidget *parent )
 {
-  QgsDateTimeEdit* widget = new QgsDateTimeEdit( parent );
+  QgsDateTimeEdit *widget = new QgsDateTimeEdit( parent );
   widget->setEmpty();
   return widget;
 }
 
-void QgsDateTimeSearchWidgetWrapper::initWidget( QWidget* editor )
+void QgsDateTimeSearchWidgetWrapper::initWidget( QWidget *editor )
 {
-  mDateTimeEdit = qobject_cast<QgsDateTimeEdit*>( editor );
+  mDateTimeEdit = qobject_cast<QgsDateTimeEdit *>( editor );
 
   if ( mDateTimeEdit )
   {
@@ -168,7 +167,7 @@ void QgsDateTimeSearchWidgetWrapper::initWidget( QWidget* editor )
 
     mDateTimeEdit->setEmpty();
 
-    connect( mDateTimeEdit, SIGNAL( dateTimeChanged( QDateTime ) ), this, SLOT( dateTimeChanged( QDateTime ) ) );
+    connect( mDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeSearchWidgetWrapper::dateTimeChanged );
   }
 }
 

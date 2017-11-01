@@ -78,6 +78,8 @@ if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 set CMAKE_OPT=^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python36/sip.exe ^
+	-D CMAKE_CXX_FLAGS_RELEASE="/MD /Zi /MP /O2 /Ob2 /D NDEBUG" ^
+	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELEASE=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
 	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
 
@@ -90,7 +92,7 @@ set GRASS_VERSIONS=%GRASS72_VERSION%
 set PYTHONPATH=
 path %PATH%;c:\cygwin\bin;%PF86%\CMake\bin
 
-PROMPT qgis%VERSION%$g 
+PROMPT qgis%VERSION%$g
 
 set BUILDCONF=Release
 
@@ -156,11 +158,9 @@ cmake -G Ninja ^
 	-D WITH_SERVER=TRUE ^
 	-D SERVER_SKIP_ECW=TRUE ^
 	-D WITH_GRASS=TRUE ^
-	-D WITH_GRASS6=FALSE ^
 	-D WITH_GRASS7=TRUE ^
 	-D GRASS_PREFIX7=%GRASS72_PATH:\=/% ^
 	-D WITH_GLOBE=FALSE ^
-	-D WITH_TOUCH=TRUE ^
 	-D WITH_ORACLE=TRUE ^
 	-D WITH_CUSTOM_WIDGETS=TRUE ^
 	-D CMAKE_CXX_FLAGS_RELEASE="/MD /MP /O2 /Ob2 /D NDEBUG" ^
@@ -178,22 +178,9 @@ cmake -G Ninja ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
 	-D FCGI_LIBRARY=%O4W_ROOT%/lib/libfcgi.lib ^
-	-D WITH_INTERNAL_JINJA2=FALSE ^
-	-D WITH_INTERNAL_MARKUPSAFE=FALSE ^
-	-D WITH_INTERNAL_PYGMENTS=FALSE ^
-	-D WITH_INTERNAL_REQUESTS=FALSE ^
-	-D WITH_INTERNAL_DATEUTIL=FALSE ^
-	-D WITH_INTERNAL_PYTZ=FALSE ^
-	-D WITH_INTERNAL_SIX=FALSE ^
-	-D WITH_INTERNAL_NOSE2=FALSE ^
-	-D WITH_INTERNAL_MOCK=FALSE ^
-	-D WITH_INTERNAL_HTTPLIB2=FALSE ^
-	-D WITH_INTERNAL_FUTURE=FALSE ^
-	-D WITH_PYSPATIALITE=TRUE ^
 	-D QCA_INCLUDE_DIR=%OSGEO4W_ROOT%\apps\Qt5\include\QtCrypto ^
 	-D QCA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qca-qt5.lib ^
 	-D QSCINTILLA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qscintilla2.lib ^
-	-D SUPPRESS_SIP_WARNINGS=TRUE ^
 	%CMAKE_OPT% ^
 	%SRCDIR:\=/%
 if errorlevel 1 (echo cmake failed & goto error)
@@ -255,9 +242,6 @@ if errorlevel 1 (echo creation of desktop preremove failed & goto error)
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
 if errorlevel 1 (echo creation of desktop template failed & goto error)
 
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' browser.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser.bat.tmpl
-if errorlevel 1 (echo creation of browser template & goto error)
-
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' designer.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-designer.bat.tmpl
 if errorlevel 1 (echo creation of designer template failed & goto error)
 
@@ -290,11 +274,14 @@ for %%g IN (%GRASS_VERSIONS%) do (
 	if errorlevel 1 (echo creation of grass desktop preremove failed & goto error)
 	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' -e 's/@grassmajor@/!v!/g' qgis-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-grass!v!.bat.tmpl
 	if errorlevel 1 (echo creation of grass desktop template failed & goto error)
-	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' -e 's/@grassmajor@/!v!/g' browser-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-grass!v!.bat.tmpl
-	if errorlevel 1 (echo creation of grass browser template & goto error)
 
 	set packages=!packages! "-grass-plugin!w!"
 )
+
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' preremove-grass-plugin-common.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%-grass-plugin-common.bat
+if errorlevel 1 (echo creation of grass common preremove failed & goto error)
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' postinstall-grass-plugin-common.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%-grass-plugin-common.bat
+if errorlevel 1 (echo creation of grass common postinstall failed & goto error)
 
 touch exclude
 
@@ -313,9 +300,9 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-common/%PACKAGENAME
 	"apps/%PACKAGENAME%/plugins/basicauthmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/delimitedtextprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/gdalprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/geonodeprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpxprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/identcertauthmethod.dll" ^
-	"apps/%PACKAGENAME%/plugins/memoryprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/mssqlprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/db2provider.dll" ^
 	"apps/%PACKAGENAME%/plugins/ogrprovider.dll" ^
@@ -333,7 +320,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-common/%PACKAGENAME
 	"apps/%PACKAGENAME%/resources/qgis.db" ^
 	"apps/%PACKAGENAME%/resources/spatialite.db" ^
 	"apps/%PACKAGENAME%/resources/srs.db" ^
-	"apps/%PACKAGENAME%/resources/symbology-ng-style.xml" ^
+	"apps/%PACKAGENAME%/resources/symbology-style.xml" ^
 	"apps/%PACKAGENAME%/resources/cpt-city-qgis-min/" ^
 	"apps/%PACKAGENAME%/svg/" ^
 	"apps/%PACKAGENAME%/crssync.exe" ^
@@ -357,8 +344,8 @@ if errorlevel 1 (echo tar server failed & goto error)
 
 move %PKGDIR%\bin\qgis.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.exe
 if errorlevel 1 (echo move of desktop executable failed & goto error)
-move %PKGDIR%\bin\qbrowser.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-bin.exe
-if errorlevel 1 (echo move of browser executable failed & goto error)
+copy qgis.vars %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.vars
+if errorlevel 1 (echo copy of desktop executable vars failed & goto error)
 
 if not exist %PKGDIR%\qtplugins\sqldrivers mkdir %PKGDIR%\qtplugins\sqldrivers
 move %OSGEO4W_ROOT%\apps\qt5\plugins\sqldrivers\qsqlocispatial.dll %PKGDIR%\qtplugins\sqldrivers
@@ -381,8 +368,8 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	--exclude "apps/%PACKAGENAME%/python/qgis/_server.pyd" ^
 	--exclude "apps/%PACKAGENAME%/python/qgis/_server.lib" ^
 	--exclude "apps/%PACKAGENAME%/python/qgis/server" ^
-	"bin/%PACKAGENAME%-browser-bin.exe" ^
 	"bin/%PACKAGENAME%-bin.exe" ^
+	"bin/%PACKAGENAME%-bin.vars" ^
 	"bin/python-%PACKAGENAME%.bat.tmpl" ^
 	"apps/%PACKAGENAME%/bin/qgis_app.dll" ^
 	"apps/%PACKAGENAME%/bin/qgis.reg.tmpl" ^
@@ -394,21 +381,23 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"apps/%PACKAGENAME%/plugins/georefplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpsimporterplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/offlineeditingplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/spatialqueryplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/topolplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/geometrycheckerplugin.dll" ^
-	"apps/%PACKAGENAME%/qgis_help.exe" ^
 	"apps/%PACKAGENAME%/qtplugins/sqldrivers/qsqlspatialite.dll" ^
 	"apps/%PACKAGENAME%/qtplugins/designer/" ^
 	"apps/%PACKAGENAME%/python/" ^
 	"apps/%PACKAGENAME%/resources/customization.xml" ^
 	"apps/%PACKAGENAME%/resources/themes/" ^
 	"bin/%PACKAGENAME%.bat.tmpl" ^
-	"bin/%PACKAGENAME%-browser.bat.tmpl" ^
 	"bin/%PACKAGENAME%-designer.bat.tmpl" ^
 	"etc/postinstall/%PACKAGENAME%.bat" ^
 	"etc/preremove/%PACKAGENAME%.bat"
 if errorlevel 1 (echo tar desktop failed & goto error)
+
+if not exist %ARCH%\release\qgis\%PACKAGENAME%-pdb mkdir %ARCH%\release\qgis\%PACKAGENAME%-pdb
+tar -C %BUILDDIR% -cjf %ARCH%/release/qgis/%PACKAGENAME%-pdb/%PACKAGENAME%-pdb-%VERSION%-%PACKAGE%.tar.bz2 ^
+	apps/%PACKAGENAME%/pdb
+if errorlevel 1 (echo tar failed & goto error)
 
 tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin-common/%PACKAGENAME%-grass-plugin-common-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
@@ -423,7 +412,9 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin-common
 	--exclude "apps/%PACKAGENAME%/grass/modules/qgis.v.in7.exe" ^
 	--exclude "apps/%PACKAGENAME%/grass/bin/qgis.g.browser6.exe" ^
 	--exclude "apps/%PACKAGENAME%/grass/bin/qgis.g.browser7.exe" ^
-	"apps/%PACKAGENAME%/grass"
+	"apps/%PACKAGENAME%/grass" ^
+	"etc/postinstall/%PACKAGENAME%-grass-plugin-common.bat" ^
+	"etc/preremove/%PACKAGENAME%-grass-plugin-common.bat"
 if errorlevel 1 (echo tar grass-plugin failed & goto error)
 
 for %%g IN (%GRASS_VERSIONS%) do (
@@ -441,7 +432,6 @@ for %%g IN (%GRASS_VERSIONS%) do (
 		"apps/%PACKAGENAME%/plugins/grassplugin!v!.dll" ^
 		"apps/%PACKAGENAME%/plugins/grassprovider!v!.dll" ^
 		"apps/%PACKAGENAME%/plugins/grassrasterprovider!v!.dll" ^
-		"bin/%PACKAGENAME%-browser-grass!v!.bat.tmpl" ^
 		"bin/%PACKAGENAME%-grass!v!.bat.tmpl" ^
 		"etc/postinstall/%PACKAGENAME%-grass-plugin!w!.bat" ^
 		"etc/preremove/%PACKAGENAME%-grass-plugin!w!.bat"
@@ -473,7 +463,7 @@ goto end
 :usage
 echo usage: %0 version package packagename arch [sha [site]]
 echo sample: %0 2.0.1 3 qgis x86 f802808
-exit
+exit /b 1
 
 :error
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%

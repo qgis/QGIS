@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgsmessageviewer.h"
-#include <QSettings>
+#include "qgssettings.h"
 
 QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WindowFlags fl, bool deleteOnClose )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( checkBox, &QCheckBox::toggled, this, &QgsMessageViewer::checkBox_toggled );
   if ( deleteOnClose )
   {
     setAttribute( Qt::WA_DeleteOnClose );
@@ -30,16 +31,14 @@ QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WindowFlags fl, bool de
   setCheckBoxVisible( false );
   setCheckBoxState( Qt::Unchecked );
 
-  mCheckBoxQSettingsLabel = QLatin1String( "" );
-
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/MessageViewer/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/MessageViewer/geometry" ) ).toByteArray() );
 }
 
 QgsMessageViewer::~QgsMessageViewer()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/MessageViewer/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/MessageViewer/geometry" ), saveGeometry() );
 }
 
 void QgsMessageViewer::setMessageAsHtml( const QString &msg )
@@ -80,12 +79,12 @@ void QgsMessageViewer::showMessage( bool blocking )
   }
 }
 
-void QgsMessageViewer::setTitle( const QString& title )
+void QgsMessageViewer::setTitle( const QString &title )
 {
   setWindowTitle( title );
 }
 
-void QgsMessageViewer::setCheckBoxText( const QString& text )
+void QgsMessageViewer::setCheckBoxText( const QString &text )
 {
   checkBox->setText( text );
 }
@@ -105,21 +104,21 @@ Qt::CheckState QgsMessageViewer::checkBoxState()
   return checkBox->checkState();
 }
 
-void QgsMessageViewer::setCheckBoxQSettingsLabel( const QString& label )
+void QgsMessageViewer::setCheckBoxQgsSettingsLabel( const QString &label )
 {
-  mCheckBoxQSettingsLabel = label;
+  mCheckBoxQgsSettingsLabel = label;
 }
 
 
-void QgsMessageViewer::on_checkBox_toggled( bool toggled )
+void QgsMessageViewer::checkBox_toggled( bool toggled )
 {
   Q_UNUSED( toggled );
-  if ( !mCheckBoxQSettingsLabel.isEmpty() )
+  if ( !mCheckBoxQgsSettingsLabel.isEmpty() )
   {
-    QSettings settings;
+    QgsSettings settings;
     if ( checkBox->checkState() == Qt::Checked )
-      settings.setValue( mCheckBoxQSettingsLabel, false );
+      settings.setValue( mCheckBoxQgsSettingsLabel, false );
     else
-      settings.setValue( mCheckBoxQSettingsLabel, true );
+      settings.setValue( mCheckBoxQgsSettingsLabel, true );
   }
 }

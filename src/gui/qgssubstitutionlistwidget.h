@@ -19,16 +19,18 @@
 #define QGSSUBSTITUTIONLISTWIDGET_H
 
 #include <QDialog>
+#include "qgis.h"
 #include "qgspanelwidget.h"
 #include "ui_qgssubstitutionlistwidgetbase.h"
 #include "qgsstringutils.h"
 #include "qgis_gui.h"
 
-/** \class QgsSubstitutionListWidget
+/**
+ * \class QgsSubstitutionListWidget
  * \ingroup gui
  * A widget which allows users to specify a list of substitutions to apply to a string, with
  * options for exporting and importing substitution lists.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  * \see QgsSubstitutionListDialog
  */
 class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::QgsSubstitutionListWidgetBase
@@ -38,46 +40,50 @@ class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
 
   public:
 
-    /** Constructor for QgsSubstitutionListWidget.
-     * @param parent parent widget
+    /**
+     * Constructor for QgsSubstitutionListWidget.
+     * \param parent parent widget
      */
-    QgsSubstitutionListWidget( QWidget* parent = nullptr );
+    QgsSubstitutionListWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
-    /** Sets the list of substitutions to show in the widget.
-     * @param substitutions substitution list
-     * @see substitutions()
+    /**
+     * Sets the list of substitutions to show in the widget.
+     * \param substitutions substitution list
+     * \see substitutions()
      */
-    void setSubstitutions( const QgsStringReplacementCollection& substitutions );
+    void setSubstitutions( const QgsStringReplacementCollection &substitutions );
 
-    /** Returns the list of substitutions currently defined by the widget.
-     * @see setSubstitutions()
+    /**
+     * Returns the list of substitutions currently defined by the widget.
+     * \see setSubstitutions()
      */
     QgsStringReplacementCollection substitutions() const;
 
   signals:
 
     //! Emitted when the substitution definitions change.
-    void substitutionsChanged( const QgsStringReplacementCollection& substitutions );
+    void substitutionsChanged( const QgsStringReplacementCollection &substitutions );
 
   private slots:
 
-    void on_mButtonAdd_clicked();
-    void on_mButtonRemove_clicked();
+    void mButtonAdd_clicked();
+    void mButtonRemove_clicked();
     void tableChanged();
-    void on_mButtonExport_clicked();
-    void on_mButtonImport_clicked();
+    void mButtonExport_clicked();
+    void mButtonImport_clicked();
 
   private:
 
-    void addSubstitution( const QgsStringReplacement& substitution );
+    void addSubstitution( const QgsStringReplacement &substitution );
 
 };
 
-/** \class QgsSubstitutionListDialog
+/**
+ * \class QgsSubstitutionListDialog
  * \ingroup gui
  * A dialog which allows users to specify a list of substitutions to apply to a string, with
  * options for exporting and importing substitution lists.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  * \see QgsSubstitutionListWidget
 */
 class GUI_EXPORT QgsSubstitutionListDialog : public QDialog
@@ -87,26 +93,29 @@ class GUI_EXPORT QgsSubstitutionListDialog : public QDialog
 
   public:
 
-    /** Constructor for QgsSubstitutionListDialog.
-     * @param parent parent widget
+    /**
+     * Constructor for QgsSubstitutionListDialog.
+     * \param parent parent widget
      */
-    QgsSubstitutionListDialog( QWidget* parent = nullptr );
+    QgsSubstitutionListDialog( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
-    /** Sets the list of substitutions to show in the dialog.
-     * @param substitutions substitution list
-     * @see substitutions()
+    /**
+     * Sets the list of substitutions to show in the dialog.
+     * \param substitutions substitution list
+     * \see substitutions()
      */
-    void setSubstitutions( const QgsStringReplacementCollection& substitutions );
+    void setSubstitutions( const QgsStringReplacementCollection &substitutions );
 
-    /** Returns the list of substitutions currently defined by the dialog.
-     * @see setSubstitutions()
+    /**
+     * Returns the list of substitutions currently defined by the dialog.
+     * \see setSubstitutions()
      */
     QgsStringReplacementCollection substitutions() const;
 
 
   private:
 
-    QgsSubstitutionListWidget* mWidget;
+    QgsSubstitutionListWidget *mWidget = nullptr;
 
 };
 

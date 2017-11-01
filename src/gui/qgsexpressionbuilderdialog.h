@@ -18,9 +18,12 @@
 
 #include <QDialog>
 #include "ui_qgsexpressionbuilderdialogbase.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+
+/**
+ * \ingroup gui
  * A generic dialog for building expression strings
   * @remarks This class also shows an example on how to use QgsExpressionBuilderWidget
   */
@@ -29,33 +32,38 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     Q_OBJECT
 
   public:
-    QgsExpressionBuilderDialog( QgsVectorLayer* layer, const QString& startText = QString(), QWidget* parent = nullptr, const QString& key = "generic",
-                                const QgsExpressionContext& context = QgsExpressionContext() );
+    QgsExpressionBuilderDialog( QgsVectorLayer *layer,
+                                const QString &startText = QString(),
+                                QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                                const QString &key = "generic",
+                                const QgsExpressionContext &context = QgsExpressionContext() );
 
     //! The builder widget that is used by the dialog
-    QgsExpressionBuilderWidget* expressionBuilder();
+    QgsExpressionBuilderWidget *expressionBuilder();
 
-    void setExpressionText( const QString& text );
+    void setExpressionText( const QString &text );
 
     QString expressionText();
 
-    /** Returns the expression context for the dialog. The context is used for the expression
+    /**
+     * Returns the expression context for the dialog. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
-     * @see setExpressionContext
-     * @note added in QGIS 2.12
+     * \see setExpressionContext
+     * \since QGIS 2.12
      */
     QgsExpressionContext expressionContext() const;
 
-    /** Sets the expression context for the dialog. The context is used for the expression
+    /**
+     * Sets the expression context for the dialog. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
-     * @param context expression context
-     * @see expressionContext
-     * @note added in QGIS 2.12
+     * \param context expression context
+     * \see expressionContext
+     * \since QGIS 2.12
      */
-    void setExpressionContext( const QgsExpressionContext& context );
+    void setExpressionContext( const QgsExpressionContext &context );
 
     //! Sets geometry calculator used in distance/area calculations.
-    void setGeomCalculator( const QgsDistanceArea & da );
+    void setGeomCalculator( const QgsDistanceArea &da );
 
   protected:
 
@@ -63,7 +71,7 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
      * Is called when the dialog get accepted or rejected
      * Used to save geometry
      *
-     * @param r result value (unused)
+     * \param r result value (unused)
      */
     virtual void done( int r ) override;
 
@@ -71,6 +79,12 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
 
   private:
     QString mRecentKey;
+
+  private slots:
+    void showHelp();
+
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

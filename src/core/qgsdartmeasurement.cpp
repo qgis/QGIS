@@ -17,10 +17,10 @@
 
 #include <QTextStream>
 
-QgsDartMeasurement::QgsDartMeasurement( const QString& name, Type type, const QString& value )
-    : mName( name )
-    , mType( type )
-    , mValue( value )
+QgsDartMeasurement::QgsDartMeasurement( const QString &name, Type type, const QString &value )
+  : mName( name )
+  , mType( type )
+  , mValue( value )
 {
 }
 

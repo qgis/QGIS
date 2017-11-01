@@ -22,6 +22,7 @@
 #define QGSRASTERLAYER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QColor>
 #include <QDateTime>
 #include <QList>
@@ -32,6 +33,7 @@
 #include "qgis.h"
 #include "qgsmaplayer.h"
 #include "qgsraster.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterpipe.h"
 #include "qgsrasterviewport.h"
 #include "qgsrasterminmaxorigin.h"
@@ -47,7 +49,8 @@ class QSlider;
 
 typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 
-/** \ingroup core
+/**
+ * \ingroup core
  *  This class provides qgis with the ability to render raster datasets
  *  onto the mapcanvas.
  *
@@ -163,7 +166,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! \brief Constructor. Provider is not set.
     QgsRasterLayer();
 
-    /** \brief This is the constructor for the RasterLayer class.
+    /**
+     * \brief This is the constructor for the RasterLayer class.
      *
      * The main tasks carried out by the constructor are:
      *
@@ -186,6 +190,14 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     ~QgsRasterLayer();
 
+    /**
+     * Returns a new instance equivalent to this one. A new provider is
+     *  created for the same data source and renderer is cloned too.
+     * \returns a new layer instance
+     * \since QGIS 3.0
+     */
+    virtual QgsRasterLayer *clone() const override SIP_FACTORY;
+
     //! \brief This enumerator describes the types of shading that can be used
     enum ColorShadingAlgorithm
     {
@@ -205,35 +217,36 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       ColorLayer
     };
 
-    /** This helper checks to see whether the file name appears to be a valid
+    /**
+     * This helper checks to see whether the file name appears to be a valid
      *  raster file name.  If the file name looks like it could be valid,
      *  but some sort of error occurs in processing the file, the error is
      *  returned in retError.
      */
-    static bool isValidRasterFileName( const QString & theFileNameQString, QString &retError );
-    static bool isValidRasterFileName( const QString & theFileNameQString );
+    static bool isValidRasterFileName( const QString &fileNameQString, QString &retError );
+    static bool isValidRasterFileName( const QString &fileNameQString );
 
     //! Return time stamp for given file name
-    static QDateTime lastModified( const QString &  name );
+    static QDateTime lastModified( const QString   &name );
 
     //! [ data provider interface ] Set the data provider
-    void setDataProvider( const QString & provider );
+    void setDataProvider( const QString &provider );
 
     //! \brief  Accessor for raster layer type (which is a read only property)
     LayerType rasterType() { return mRasterType; }
 
     //! Set raster renderer. Takes ownership of the renderer object
-    void setRenderer( QgsRasterRenderer* theRenderer );
-    QgsRasterRenderer* renderer() const { return mPipe.renderer(); }
+    void setRenderer( QgsRasterRenderer *renderer SIP_TRANSFER );
+    QgsRasterRenderer *renderer() const { return mPipe.renderer(); }
 
     //! Set raster resample filter. Takes ownership of the resample filter object
-    QgsRasterResampleFilter * resampleFilter() const { return mPipe.resampleFilter(); }
+    QgsRasterResampleFilter *resampleFilter() const { return mPipe.resampleFilter(); }
 
-    QgsBrightnessContrastFilter * brightnessFilter() const { return mPipe.brightnessFilter(); }
-    QgsHueSaturationFilter * hueSaturationFilter() const { return mPipe.hueSaturationFilter(); }
+    QgsBrightnessContrastFilter *brightnessFilter() const { return mPipe.brightnessFilter(); }
+    QgsHueSaturationFilter *hueSaturationFilter() const { return mPipe.hueSaturationFilter(); }
 
     //! Get raster pipe
-    QgsRasterPipe * pipe() { return &mPipe; }
+    QgsRasterPipe *pipe() { return &mPipe; }
 
     //! \brief Accessor that returns the width of the (unclipped) raster
     int width() const;
@@ -245,92 +258,95 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     int bandCount() const;
 
     //! \brief Get the name of a band given its number
-    QString bandName( int theBandNoInt ) const;
+    QString bandName( int bandNoInt ) const;
 
-    //! Returns the data provider
-    QgsRasterDataProvider* dataProvider();
+    QgsRasterDataProvider *dataProvider() override;
 
-    /** Returns the data provider in a const-correct manner
-      @note available in python bindings as constDataProvider()
+    /**
+     * Returns the data provider in a const-correct manner
+      \note available in Python bindings as constDataProvider()
      */
-    const QgsRasterDataProvider* dataProvider() const;
+    const QgsRasterDataProvider *dataProvider() const SIP_PYNAME( constDataProvider ) override;
 
     //! Synchronises with changes in the datasource
     virtual void reload() override;
 
-    /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-     * @note added in 2.4
+    /**
+     * Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+     * \since QGIS 2.4
      */
-    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) override;
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
     //! \brief This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap
-    void draw( QPainter * theQPainter,
-               QgsRasterViewPort * myRasterViewPort,
-               const QgsMapToPixel* theQgsMapToPixel = nullptr );
+    void draw( QPainter *theQPainter,
+               QgsRasterViewPort *myRasterViewPort,
+               const QgsMapToPixel *qgsMapToPixel = nullptr );
 
     //! Returns a list with classification items (Text and color)
     QgsLegendColorList legendSymbologyItems() const;
 
     virtual bool isSpatial() const override { return true; }
 
-    //! \brief Obtain GDAL Metadata for this layer
-    QString metadata() const override;
+    QString htmlMetadata() const override;
 
     //! \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
-    QPixmap paletteAsPixmap( int theBandNumber = 1 );
+    QPixmap paletteAsPixmap( int bandNumber = 1 );
 
     //! \brief [ data provider interface ] Which provider is being used for this Raster Layer?
     QString providerType() const;
 
-    //! \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign)
-    double rasterUnitsPerPixelX();
-    double rasterUnitsPerPixelY();
+    //! \brief Returns the number of raster units per each raster pixel in X axis. In a world file, this is normally the first row (without the sign)
+    double rasterUnitsPerPixelX() const;
+    //! \brief Returns the number of raster units per each raster pixel in Y axis. In a world file, this is normally the first row (without the sign)
+    double rasterUnitsPerPixelY() const;
 
-    /** \brief Set contrast enhancement algorithm
-     *  @param theAlgorithm Contrast enhancement algorithm
-     *  @param theLimits Limits
-     *  @param theExtent Extent used to calculate limits, if empty, use full layer extent
-     *  @param theSampleSize Size of data sample to calculate limits, if 0, use full resolution
-     *  @param theGenerateLookupTableFlag Generate lookup table. */
+    /**
+     * \brief Set contrast enhancement algorithm
+     *  \param algorithm Contrast enhancement algorithm
+     *  \param limits Limits
+     *  \param extent Extent used to calculate limits, if empty, use full layer extent
+     *  \param sampleSize Size of data sample to calculate limits, if 0, use full resolution
+     *  \param generateLookupTableFlag Generate lookup table. */
 
 
-    void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
-                                 QgsRasterMinMaxOrigin::Limits theLimits = QgsRasterMinMaxOrigin::MinMax,
-                                 const QgsRectangle& theExtent = QgsRectangle(),
-                                 int theSampleSize = SAMPLE_SIZE,
-                                 bool theGenerateLookupTableFlag = true );
+    void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
+                                 QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
+                                 const QgsRectangle &extent = QgsRectangle(),
+                                 int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
+                                 bool generateLookupTableFlag = true );
 
-    /** \brief Refresh contrast enhancement with new extent.
-     *  @note not available in python bindings
+    /**
+     * \brief Refresh contrast enhancement with new extent.
+     *  \note not available in Python bindings
      */
     // Used by QgisApp::legendLayerStretchUsingCurrentExtent()
-    void refreshContrastEnhancement( const QgsRectangle& theExtent );
+    void refreshContrastEnhancement( const QgsRectangle &extent ) SIP_SKIP;
 
-    /** \brief Refresh renderer with new extent, if needed
-     *  @note not available in python bindings
+    /**
+     * \brief Refresh renderer with new extent, if needed
+     *  \note not available in Python bindings
      */
     // Used by QgsRasterLayerRenderer
-    void refreshRendererIfNeeded( QgsRasterRenderer* rasterRenderer, const QgsRectangle& theExtent );
+    void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent ) SIP_SKIP;
 
-    /** \brief Return default contrast enhancemnt settings for that type of raster.
-     *  @note not available in python bindings
+    /**
+     * \brief Return default contrast enhancemnt settings for that type of raster.
+     *  \note not available in Python bindings
      */
     bool defaultContrastEnhancementSettings(
-      QgsContrastEnhancement::ContrastEnhancementAlgorithm& myAlgorithm,
-      QgsRasterMinMaxOrigin::Limits& myLimits ) const;
+      QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm,
+      QgsRasterMinMaxOrigin::Limits &myLimits ) const SIP_SKIP;
 
     //! \brief Set default contrast enhancement
     void setDefaultContrastEnhancement();
 
-    //! \brief [ data provider interface ] A wrapper function to emit a progress update signal
-    void showProgress( int theValue );
-
     //! \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS
     virtual QStringList subLayers() const override;
 
-    /** \brief Draws a preview of the rasterlayer into a QImage
-     @note added in 2.4 */
-    QImage previewAsImage( QSize size, const QColor& bgColor = Qt::white,
+    /**
+     * \brief Draws a preview of the rasterlayer into a QImage
+     \since QGIS 2.4 */
+    QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 
     /**
@@ -344,39 +360,32 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /**
      * Set the visibility of the given sublayer name
      */
-    virtual void setSubLayerVisibility( const QString& name, bool vis ) override;
+    virtual void setSubLayerVisibility( const QString &name, bool vis ) override;
 
     //! Time stamp of data source in the moment when data/metadata were loaded by provider
     virtual QDateTime timestamp() const override;
 
   public slots:
-    void showStatusMessage( const QString & theMessage );
-
-    //! \brief receive progress signal from provider
-    void onProgress( int, double, const QString& );
-
-  signals:
-    //! \brief Signal for notifying listeners of long running processes
-    void progressUpdate( int theValue );
+    void showStatusMessage( const QString &message );
 
   protected:
     //! \brief Read the symbology for the current layer from the Dom node supplied
-    bool readSymbology( const QDomNode& node, QString& errorMessage ) override;
+    bool readSymbology( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) override;
 
     //! \brief Read the style information for the current layer from the Dom node supplied
-    bool readStyle( const QDomNode &node, QString &errorMessage ) override;
+    bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) override;
 
     //! \brief Reads layer specific state from project file Dom node
-    bool readXml( const QDomNode& layer_node ) override;
+    bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context ) override;
 
     //! \brief Write the symbology for the layer into the docment provided
-    bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const override;
+    bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
 
     //! \brief Write the style for the layer into the docment provided
-    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const override;
+    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
 
     //! \brief Write layer specific state to project file Dom node
-    bool writeXml( QDomNode & layer_node, QDomDocument & doc ) const override;
+    bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
   private:
     //! \brief Initialize default values
@@ -389,28 +398,28 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool update();
 
     //! Sets corresponding renderer for style
-    void setRendererForDrawingStyle( QgsRaster::DrawingStyle theDrawingStyle );
+    void setRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle );
 
-    void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
-                                 QgsRasterMinMaxOrigin::Limits theLimits,
-                                 const QgsRectangle& theExtent,
-                                 int theSampleSize,
-                                 bool theGenerateLookupTableFlag,
-                                 QgsRasterRenderer* rasterRenderer );
+    void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
+                                 QgsRasterMinMaxOrigin::Limits limits,
+                                 const QgsRectangle &extent,
+                                 int sampleSize,
+                                 bool generateLookupTableFlag,
+                                 QgsRasterRenderer *rasterRenderer );
 
     void computeMinMax( int band,
-                        const QgsRasterMinMaxOrigin& mmo,
+                        const QgsRasterMinMaxOrigin &mmo,
                         QgsRasterMinMaxOrigin::Limits limits,
-                        const QgsRectangle& extent,
+                        const QgsRectangle &extent,
                         int sampleSize,
-                        double& min, double& max );
+                        double &min, double &max );
 
     //! \brief  Constant defining flag for XML and a constant that signals property not used
     const QString QSTRING_NOT_SET;
     const QString TRSTRING_NOT_SET;
 
     //! Pointer to data provider
-    QgsRasterDataProvider* mDataProvider;
+    QgsRasterDataProvider *mDataProvider = nullptr;
 
     //! [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created
     QDateTime mLastModified;
@@ -427,5 +436,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! To save computations and possible infinite cycle of notifications
     QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

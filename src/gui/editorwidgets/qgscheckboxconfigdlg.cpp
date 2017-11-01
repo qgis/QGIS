@@ -15,13 +15,22 @@
 
 #include "qgscheckboxconfigdlg.h"
 
-QgsCheckBoxConfigDlg::QgsCheckBoxConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsCheckBoxConfigDlg::QgsCheckBoxConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
-  connect( leCheckedState, SIGNAL( textEdited( QString ) ), this, SIGNAL( changed() ) );
-  connect( leUncheckedState, SIGNAL( textEdited( QString ) ), this, SIGNAL( changed() ) );
+  connect( leCheckedState, &QLineEdit::textEdited, this, &QgsEditorConfigWidget::changed );
+  connect( leUncheckedState, &QLineEdit::textEdited, this, &QgsEditorConfigWidget::changed );
+
+  if ( vl->fields().at( fieldIdx ).type() == QVariant::Bool )
+  {
+    leCheckedState->setEnabled( false );
+    leUncheckedState->setEnabled( false );
+
+    leCheckedState->setPlaceholderText( QStringLiteral( "TRUE" ) );
+    leUncheckedState->setPlaceholderText( QStringLiteral( "FALSE" ) );
+  }
 }
 
 QVariantMap QgsCheckBoxConfigDlg::config()
@@ -34,8 +43,11 @@ QVariantMap QgsCheckBoxConfigDlg::config()
   return cfg;
 }
 
-void QgsCheckBoxConfigDlg::setConfig( const QVariantMap& config )
+void QgsCheckBoxConfigDlg::setConfig( const QVariantMap &config )
 {
-  leCheckedState->setText( config.value( QStringLiteral( "CheckedState" ) ).toString() );
-  leUncheckedState->setText( config.value( QStringLiteral( "UncheckedState" ) ).toString() );
+  if ( layer()->fields().at( field() ).type() != QVariant::Bool )
+  {
+    leCheckedState->setText( config.value( QStringLiteral( "CheckedState" ) ).toString() );
+    leUncheckedState->setText( config.value( QStringLiteral( "UncheckedState" ) ).toString() );
+  }
 }

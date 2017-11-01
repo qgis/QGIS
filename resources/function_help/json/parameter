@@ -1,0 +1,11 @@
+{
+  "name": "parameter",
+  "type": "function",
+  "description": "Returns the value of a processing algorithm input parameter.",
+  "arguments": [
+	{"arg":"name", "description":"name of the corresponding input parameter"}
+  ],
+  "examples": [
+	{ "expression":"parameter('BUFFER_SIZE')", "returns":"5.6"}
+  ]
+}

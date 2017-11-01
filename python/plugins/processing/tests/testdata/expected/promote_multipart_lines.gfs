@@ -1,0 +1,16 @@
+<GMLFeatureClassList>
+  <GMLFeatureClass>
+    <Name>promote_multipart_lines</Name>
+    <ElementPath>promote_multipart_lines</ElementPath>
+    <!--MULTILINESTRING-->
+    <GeometryType>5</GeometryType>
+    <SRSName>EPSG:4326</SRSName>
+    <DatasetSpecificInfo>
+      <FeatureCount>7</FeatureCount>
+      <ExtentXMin>-1.00000</ExtentXMin>
+      <ExtentXMax>11.00000</ExtentXMax>
+      <ExtentYMin>-3.00000</ExtentYMin>
+      <ExtentYMax>5.00000</ExtentYMax>
+    </DatasetSpecificInfo>
+  </GMLFeatureClass>
+</GMLFeatureClassList>

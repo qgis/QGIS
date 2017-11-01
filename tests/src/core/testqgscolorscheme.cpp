@@ -25,7 +25,7 @@ class DummyColorScheme : public QgsColorScheme
 {
   public:
 
-    DummyColorScheme() {}
+    DummyColorScheme() = default;
 
     virtual QString schemeName() const override { return QStringLiteral( "Dummy scheme" ); }
 
@@ -48,7 +48,7 @@ class DummyColorScheme : public QgsColorScheme
       return colors;
     }
 
-    virtual QgsColorScheme* clone() const override
+    virtual QgsColorScheme *clone() const override
     {
       return new DummyColorScheme();
     }

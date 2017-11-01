@@ -102,5 +102,6 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
         self.assertEqual(s.min(), '9')
         self.assertEqual(s.max(), 'eeee')
 
+
 if __name__ == '__main__':
     unittest.main()

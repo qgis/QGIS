@@ -31,6 +31,7 @@
 #include "qgsrequesthandler.h"
 #include "qgsapplication.h"
 #include "qgsconfigcache.h"
+#include "qgsconfigparserutils.h"
 #include "qgscapabilitiescache.h"
 #include "qgsmapsettings.h"
 #include "qgsmessagelog.h"
@@ -40,90 +41,95 @@
 #include "qgsserverfilter.h"
 #include "qgsserverinterfaceimpl.h"
 #include "qgis_server.h"
+#include "qgsserverrequest.h"
 
-class QgsServerRequest;
 class QgsServerResponse;
 class QgsProject;
 
-/** \ingroup server
+/**
+ * \ingroup server
  * The QgsServer class provides OGC web services.
  */
 class SERVER_EXPORT QgsServer
 {
   public:
 
-    /** Creates the server instance
+    /**
+     * Creates the server instance
      */
     QgsServer();
 
-    /** Set environment variable
-     * @param var environment variable name
-     * @param val value
-     * @note added in 2.14
+    /**
+     * Set environment variable
+     * \param var environment variable name
+     * \param val value
+     * \since QGIS 2.14
      */
     void putenv( const QString &var, const QString &val );
 
-    /** Handles the request.
+    /**
+     * Handles the request.
      * The query string is normally read from environment
      * but can be also passed in args and in this case overrides the environment
      * variable
      *
-     * @param request a QgsServerRequest holding request parameters
-     * @param response a QgsServerResponse for handling response I/O)
+     * \param request a QgsServerRequest holding request parameters
+     * \param response a QgsServerResponse for handling response I/O)
+     * \param project a QgsProject or nullptr, if it is nullptr the project
+     *        is created from the MAP param specified in request or from
+     *        the QGIS_PROJECT_FILE setting
      */
-    void handleRequest( QgsServerRequest& request, QgsServerResponse& response );
+    void handleRequest( QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project = nullptr );
 
-    /** Handles the request from query string
-     * The query string is normally read from environment
-     * but can be also passed in args and in this case overrides the environment
-     * variable.
-     *
-     * @param queryString QString containing the query string
-     * @return the response headers and body QPair of QByteArray
-     */
-    QPair<QByteArray, QByteArray> handleRequest( const QString& queryString );
 
     //! Returns a pointer to the server interface
-    QgsServerInterfaceImpl* serverInterface() { return sServerInterface; }
+    QgsServerInterfaceImpl SIP_PYALTERNATIVETYPE( QgsServerInterface ) *serverInterface() { return sServerInterface; }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    //! Initialize python
-    //! Note: not in python bindings
-    void initPython( );
+
+    /**
+     * Initialize Python
+     * Note: not in Python bindings
+     */
+    void initPython();
 #endif
 
   private:
+#ifdef SIP_RUN
+    QgsServer( const QgsServer & );
+    QgsServer &operator=( const QgsServer & );
+#endif
 
     //! Server initialization
     static bool init();
 
     // All functions that where previously in the main file are now
     // static methods of this class
-    static QString configPath( const QString& defaultConfigPath,
-                               const QMap<QString, QString>& parameters );
+    static QString configPath( const QString &defaultConfigPath,
+                               const QMap<QString, QString> &parameters );
 
     /**
-     * @brief QgsServer::printRequestParameters prints the request parameters
-     * @param parameterMap
-     * @param logLevel
+     * \brief QgsServer::printRequestParameters prints the request parameters
+     * \param parameterMap
+     * \param logLevel
      */
     static void printRequestParameters(
-      const QMap< QString, QString>& parameterMap,
+      const QMap< QString, QString> &parameterMap,
       QgsMessageLog::MessageLevel logLevel );
 
     static QFileInfo defaultProjectFile();
     static QFileInfo defaultAdminSLD();
     static void setupNetworkAccessManager();
     //! Create and return a request handler instance
-    static QgsRequestHandler* createRequestHandler( const QgsServerRequest& request, QgsServerResponse& response );
+    static QgsRequestHandler *createRequestHandler( const QgsServerRequest &request, QgsServerResponse &response );
 
     // Return the server name
     static QString &serverName();
 
     // Status
-    static QString* sConfigFilePath;
-    static QgsCapabilitiesCache* sCapabilitiesCache;
-    static QgsServerInterfaceImpl* sServerInterface;
+    static QString *sConfigFilePath;
+    static QgsCapabilitiesCache *sCapabilitiesCache;
+    static QgsServerInterfaceImpl *sServerInterface;
     //! Initialization must run once for all servers
     static bool sInitialized;
 
@@ -132,8 +138,8 @@ class SERVER_EXPORT QgsServer
 
     static QgsServerSettings sSettings;
 
-    // map of QgsProject
-    QMap<QString, const QgsProject*> mProjectRegistry;
+    //! cache
+    QgsConfigCache *mConfigCache = nullptr;
 };
 #endif // QGSSERVER_H
 

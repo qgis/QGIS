@@ -31,22 +31,21 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
       CopyMove  //!< Copy and move feature
     };
 
-    QgsMapToolMoveFeature( QgsMapCanvas* canvas, MoveMode mode = Move );
+    QgsMapToolMoveFeature( QgsMapCanvas *canvas, MoveMode mode = Move );
     virtual ~QgsMapToolMoveFeature();
 
-    virtual void cadCanvasMoveEvent( QgsMapMouseEvent* e ) override;
+    virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    //! called when map tool is being deactivated
     void deactivate() override;
 
   private:
     //! Start point of the move in map coordinates
-    QgsPoint mStartPointMapCoords;
+    QgsPointXY mStartPointMapCoords;
 
     //! Rubberband that shows the feature being moved
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand *mRubberBand = nullptr;
 
     //! Id of moved feature
     QgsFeatureIds mMovedFeatures;

@@ -25,37 +25,43 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsVectorDataProvider, QgsFields
+from qgis.core import (QgsVectorDataProvider,
+                       QgsFields,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterField,
+                       QgsProcessingOutputVectorLayer)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputVector
-
-from processing.tools import dataobjects
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
-class CreateAttributeIndex(GeoAlgorithm):
+class CreateAttributeIndex(QgisAlgorithm):
 
     INPUT = 'INPUT'
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Create attribute index')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def group(self):
+        return self.tr('Vector general')
 
-        self.addParameter(ParameterTable(self.INPUT,
-                                         self.tr('Input Layer')))
-        self.addParameter(ParameterTableField(self.FIELD,
-                                              self.tr('Attribute to index'), self.INPUT))
-        self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Indexed layer'), True))
+    def __init__(self):
+        super().__init__()
 
-    def processAlgorithm(self, feedback):
-        file_name = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(file_name)
-        field = self.getParameterValue(self.FIELD)
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Input Layer')))
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Attribute to index'), None, self.INPUT))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Indexed layer')))
+
+    def name(self):
+        return 'createattributeindex'
+
+    def displayName(self):
+        return self.tr('Create attribute index')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        field = self.parameterAsString(parameters, self.FIELD, context)
         provider = layer.dataProvider()
 
         field_index = layer.fields().lookupField(field)
@@ -70,4 +76,4 @@ class CreateAttributeIndex(GeoAlgorithm):
                 feedback.pushInfo(self.tr("Layer's data provider does not support "
                                           "creating attribute indexes"))
 
-        self.setOutputValue(self.OUTPUT, file_name)
+        return {self.OUTPUT: layer.id()}

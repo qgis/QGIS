@@ -24,6 +24,9 @@
 #include <QList>
 #include <QString>
 #include "qgis_server.h"
+#include "qgis_sip.h"
+
+SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 
 class QgsServerInterface;
 class QgsMapLayer;
@@ -50,11 +53,12 @@ class SERVER_EXPORT QgsAccessControlFilter
 
   public:
 
-    /** Constructor
+    /**
+     * Constructor
      * QgsServerInterface passed to plugins constructors
      * and must be passed to QgsAccessControlFilter instances.
      */
-    QgsAccessControlFilter( const QgsServerInterface* serverInterface );
+    QgsAccessControlFilter( const QgsServerInterface *serverInterface );
 
     virtual ~QgsAccessControlFilter() = default;
 
@@ -68,54 +72,60 @@ class SERVER_EXPORT QgsAccessControlFilter
     };
 
     //! Return the QgsServerInterface instance
-    const QgsServerInterface* serverInterface() const { return mServerInterface; }
+    const QgsServerInterface *serverInterface() const { return mServerInterface; }
 
-    /** Return an additional expression filter
-     * @param layer the layer to control
-     * @return the filter expression
+    /**
+     * Return an additional expression filter
+     * \param layer the layer to control
+     * \returns the filter expression
      */
-    virtual QString layerFilterExpression( const QgsVectorLayer* layer ) const;
+    virtual QString layerFilterExpression( const QgsVectorLayer *layer ) const;
 
-    /** Return an additional subset string (typically SQL) filter
-     * @param layer the layer to control
-     * @return the subset string
+    /**
+     * Return an additional subset string (typically SQL) filter
+     * \param layer the layer to control
+     * \returns the subset string
      */
-    virtual QString layerFilterSubsetString( const QgsVectorLayer* layer ) const;
+    virtual QString layerFilterSubsetString( const QgsVectorLayer *layer ) const;
 
-    /** Return the layer permissions
-     * @param layer the layer to control
-     * @return the permission to use on the layer
+    /**
+     * Return the layer permissions
+     * \param layer the layer to control
+     * \returns the permission to use on the layer
      */
-    virtual LayerPermissions layerPermissions( const QgsMapLayer* layer ) const;
+    virtual LayerPermissions layerPermissions( const QgsMapLayer *layer ) const;
 
-    /** Return the authorized layer attributes
-     * @param layer the layer to control
-     * @param attributes the current list of visible attribute
-     * @return the new list of visible attributes
+    /**
+     * Return the authorized layer attributes
+     * \param layer the layer to control
+     * \param attributes the current list of visible attribute
+     * \returns the new list of visible attributes
      */
-    virtual QStringList authorizedLayerAttributes( const QgsVectorLayer* layer, const QStringList& attributes ) const;
+    virtual QStringList authorizedLayerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
 
-    /** Are we authorized to modify the following geometry
-     * @param layer the layer to control
-     * @param feature the concerned feature
-     * @return true if we are allowed to edit
+    /**
+     * Are we authorized to modify the following geometry
+     * \param layer the layer to control
+     * \param feature the concerned feature
+     * \returns true if we are allowed to edit
      */
-    virtual bool allowToEdit( const QgsVectorLayer* layer, const QgsFeature& feature ) const;
+    virtual bool allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const;
 
-    /** Cache key to used to create the capabilities cache
-     * @return the cache key, "" for no cache
+    /**
+     * Cache key to used to create the capabilities cache
+     * \returns the cache key, "" for no cache
      */
     virtual QString cacheKey() const;
 
   private:
 
     //! The server interface
-    const QgsServerInterface* mServerInterface;
+    const QgsServerInterface *mServerInterface = nullptr;
 
 };
 
 //! The registry definition
-typedef QMultiMap<int, QgsAccessControlFilter*> QgsAccessControlFilterMap;
+typedef QMultiMap<int, QgsAccessControlFilter *> QgsAccessControlFilterMap;
 
 
 #endif // QGSSERVERSECURITY_H

@@ -36,7 +36,7 @@ endif
 
 QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch xenial yakkety"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch xenial yakkety zesty artful"))
 	DISTRIBUTION := sid
 endif
 
@@ -54,6 +54,7 @@ QGIS_PATCH=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")/\1/p
 QGIS_ABI=$(QGIS_MAJOR).$(QGIS_MINOR).$(QGIS_PATCH)
 GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
 GRASSVER=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1))
+GRASSABI=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2,3|sed -e 's/RC/-/'))
 
 CMAKE_OPTS := \
 	-G Ninja \
@@ -63,27 +64,15 @@ CMAKE_OPTS := \
 	-DBINDINGS_GLOBAL_INSTALL=TRUE \
 	-DPEDANTIC=TRUE \
 	-DSERVER_SKIP_ECW=TRUE \
-        -DSUPPRESS_SIP_WARNINGS=TRUE \
 	-DQGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-DWITH_APIDOC=TRUE \
 	-DGENERATE_QHP=TRUE \
 	-DWITH_CUSTOM_WIDGETS=TRUE \
-	-DWITH_INTERNAL_HTTPLIB2=FALSE \
-	-DWITH_INTERNAL_JINJA2=FALSE \
-	-DWITH_INTERNAL_MARKUPSAFE=FALSE \
-	-DWITH_INTERNAL_PYGMENTS=FALSE \
-	-DWITH_INTERNAL_REQUESTS=FALSE \
-	-DWITH_INTERNAL_DATEUTIL=FALSE \
-	-DWITH_INTERNAL_PYTZ=FALSE \
-	-DWITH_INTERNAL_YAML=FALSE \
-	-DWITH_INTERNAL_NOSE2=FALSE \
-        -DWITH_INTERNAL_SIX=FALSE \
 	-DWITH_GLOBE=FALSE \
 	-DWITH_SERVER=TRUE \
 	-DWITH_SERVER_PLUGINS=TRUE \
 	-DWITH_QWTPOLAR=FALSE \
 	-DWITH_QSPATIALITE=TRUE \
-	-DWITH_PYSPATIALITE=TRUE \
 	-DQT_PLUGINS_DIR=$(QT_PLUGINS_DIR) \
 	-DPYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's\#-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$\#\1/lib\2.so\#') \
 	-DDOXYGEN_ON_DEMAND=TRUE
@@ -97,11 +86,6 @@ ifeq ($(GRASSVER),7)
 		-DWITH_GRASS=TRUE \
 		-DWITH_GRASS7=TRUE \
 		-DGRASS_PREFIX7=/usr/lib/$(GRASS)
-else
-	CMAKE_OPTS += \
-		-DWITH_GRASS=TRUE \
-		-DWITH_GRASS6=TRUE \
-		-DGRASS_PREFIX=/usr/lib/$(GRASS)
 endif
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
@@ -118,8 +102,10 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid"))
-	CMAKE_OPTS += -DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
+ifneq (,$(findstring $(DISTRIBUTION),"artful sid"))
+	CMAKE_OPTS += \
+		-DWITH_3D=TRUE \
+		-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
 endif
 
 
@@ -204,6 +190,7 @@ $(2): $(1)
 		-e "s/\{QGIS_ABI\}/$(QGIS_ABI)/g" \
 		-e "s/\{GRASS\}/$(GRASS)/g" \
 		-e "s/\{GRASSVER\}/$(GRASSVER)/g" \
+		-e "s/\{GRASSABI\}/$(GRASSABI)/g" \
 		-e "s/\{GRASSVER_QGISABI\}/$(GRASSVER)-$(QGIS_ABI)/g" \
 		$$^ >$$@
 
@@ -225,7 +212,7 @@ binary binary-arch binary-indep build build-arch build-indep clean install insta
 	dh $@ --with python3 --parallel --builddirectory=$(QGIS_BUILDDIR)
 
 override_dh_clean: cleantemplates
-	dh_clean qgis.bin.1 qbrowser.bin.1
+	dh_clean qgis.bin.1
 
 	-$(RM) -r $(CURDIR)/$(QGIS_BUILDDIR)/
 
@@ -282,7 +269,6 @@ override_dh_auto_install:
 
 	# Man pages are installed by dh_installman
 	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qgis.1
-	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qbrowser.1
 
 	# Don't ship srs.db, automatically updated in postinst with crssync
 	mv $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs.db $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs-template.db
@@ -290,9 +276,7 @@ override_dh_auto_install:
 	# Install menu pixmap
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.svg
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qbrowser_icon.svg $(CURDIR)/debian/tmp/usr/share/pixmaps/qbrowser.svg
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.png
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qbrowser-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qbrowser.png
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon-512x512.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.png
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-mime-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis-mime.png
 
 	# Install MIME type icon
@@ -315,32 +299,24 @@ override_dh_auto_install:
 	for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do \
 		install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps ; \
 		install -o root -g root -m 644 $(CURDIR)/debian/icons/qgis-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps/qgis.png ; \
-		install -o root -g root -m 644 $(CURDIR)/debian/icons/qbrowser-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps/qbrowser.png ; \
 	done
 	
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps/qgis.svg
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qbrowser_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps/qbrowser.svg
 
 	# Install desktop files
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/applications
 	install -o root -g root -m 644 $(CURDIR)/debian/qgis.desktop $(CURDIR)/debian/tmp/usr/share/applications
-	install -o root -g root -m 644 $(CURDIR)/debian/qbrowser.desktop $(CURDIR)/debian/tmp/usr/share/applications
 
 	# Mime info
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/mime/packages
 	install -o root -g root -m 644 $(CURDIR)/debian/qgis.xml $(CURDIR)/debian/tmp/usr/share/mime/packages
 
-	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/mimelnk/application
-	install -o root -g root -m 644 $(CURDIR)/debian/mime/application/* $(CURDIR)/debian/tmp/usr/share/mimelnk/application
-
 	# qgis binaries
 	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis/usr/bin
 	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/qgis/usr/bin/qgis.bin
-	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qbrowser $(CURDIR)/debian/qgis/usr/bin/qbrowser.bin
 
 	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis
-	$(RM) $(CURDIR)/debian/tmp/usr/bin/qbrowser
 
 	# qgis binary wrappers
 	sed -r \
@@ -349,7 +325,6 @@ override_dh_auto_install:
 		$(CURDIR)/debian/qgis.sh.in >$(CURDIR)/debian/qgis.sh
 
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qgis
-	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis/usr/bin/qbrowser
 
 override_dh_install:
 	dh_install --autodest --list-missing
@@ -359,9 +334,8 @@ override_dh_installchangelogs:
 
 override_dh_installman:
 	cp qgis.1 qgis.bin.1
-	cp qbrowser.1 qbrowser.bin.1
 
-	dh_installman -pqgis qgis.1 qbrowser.1 qgis.bin.1 qbrowser.bin.1
+	dh_installman -pqgis qgis.1 qgis.bin.1
 
 override_dh_installmime:
 	dh_installmime -pqgis

@@ -22,21 +22,22 @@
 #include <QDialogButtonBox>
 #include <QMessageBox>
 
-QgsPresetColorRampWidget::QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp& ramp, QWidget* parent )
-    : QgsPanelWidget( parent )
-    , mRamp( ramp )
+QgsPresetColorRampWidget::QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp &ramp, QWidget *parent )
+  : QgsPanelWidget( parent )
+  , mRamp( ramp )
 {
   setupUi( this );
+  connect( mButtonAddColor, &QToolButton::clicked, this, &QgsPresetColorRampWidget::mButtonAddColor_clicked );
   mTreeColors->setScheme( &mRamp );
 
-  connect( mButtonCopyColors, SIGNAL( clicked() ), mTreeColors, SLOT( copyColors() ) );
-  connect( mButtonRemoveColor, SIGNAL( clicked() ), mTreeColors, SLOT( removeSelection() ) );
-  connect( mButtonPasteColors, SIGNAL( clicked() ), mTreeColors, SLOT( pasteColors() ) );
-  connect( mButtonImportColors, SIGNAL( clicked( bool ) ), mTreeColors, SLOT( showImportColorsDialog() ) );
-  connect( mButtonExportColors, SIGNAL( clicked( bool ) ), mTreeColors, SLOT( showExportColorsDialog() ) );
+  connect( mButtonCopyColors, &QAbstractButton::clicked, mTreeColors, &QgsColorSchemeList::copyColors );
+  connect( mButtonRemoveColor, &QAbstractButton::clicked, mTreeColors, &QgsColorSchemeList::removeSelection );
+  connect( mButtonPasteColors, &QAbstractButton::clicked, mTreeColors, &QgsColorSchemeList::pasteColors );
+  connect( mButtonImportColors, &QAbstractButton::clicked, mTreeColors, &QgsColorSchemeList::showImportColorsDialog );
+  connect( mButtonExportColors, &QAbstractButton::clicked, mTreeColors, &QgsColorSchemeList::showExportColorsDialog );
 
-  connect( mTreeColors->model(), SIGNAL( dataChanged( QModelIndex, QModelIndex, QVector<int> ) ), this, SLOT( schemeChanged() ) );
-  connect( mTreeColors->model(), SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( schemeChanged() ) );
+  connect( mTreeColors->model(), &QAbstractItemModel::dataChanged, this, &QgsPresetColorRampWidget::schemeChanged );
+  connect( mTreeColors->model(), &QAbstractItemModel::rowsRemoved, this, &QgsPresetColorRampWidget::schemeChanged );
 
   updatePreview();
 }
@@ -46,7 +47,7 @@ QgsPresetSchemeColorRamp QgsPresetColorRampWidget::ramp() const
   return mRamp;
 }
 
-void QgsPresetColorRampWidget::setRamp( const QgsPresetSchemeColorRamp& ramp )
+void QgsPresetColorRampWidget::setRamp( const QgsPresetSchemeColorRamp &ramp )
 {
   mRamp = ramp;
   mTreeColors->setScheme( &mRamp );
@@ -66,16 +67,16 @@ void QgsPresetColorRampWidget::setColors()
   emit changed();
 }
 
-void QgsPresetColorRampWidget::on_mButtonAddColor_clicked()
+void QgsPresetColorRampWidget::mButtonAddColor_clicked()
 {
   if ( dockMode() )
   {
     mTreeColors->addColor( QgsRecentColorScheme::lastUsedColor(), QgsSymbolLayerUtils::colorToName( QgsRecentColorScheme::lastUsedColor() ), true );
 
-    QgsCompoundColorWidget* colorWidget = new QgsCompoundColorWidget( this, QgsRecentColorScheme::lastUsedColor(), QgsCompoundColorWidget::LayoutVertical );
+    QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( this, QgsRecentColorScheme::lastUsedColor(), QgsCompoundColorWidget::LayoutVertical );
     colorWidget->setPanelTitle( tr( "Select Color" ) );
-    colorWidget->setAllowAlpha( true );
-    connect( colorWidget, SIGNAL( currentColorChanged( QColor ) ), this, SLOT( newColorChanged( QColor ) ) );
+    colorWidget->setAllowOpacity( true );
+    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, &QgsPresetColorRampWidget::newColorChanged );
     openPanel( colorWidget );
   }
   else
@@ -98,23 +99,23 @@ void QgsPresetColorRampWidget::schemeChanged()
   emit changed();
 }
 
-void QgsPresetColorRampWidget::newColorChanged( const QColor& color )
+void QgsPresetColorRampWidget::newColorChanged( const QColor &color )
 {
   int row = mTreeColors->model()->rowCount() - 1;
   QModelIndex colorIndex = mTreeColors->model()->index( row, 0 );
   mTreeColors->model()->setData( colorIndex, color );
 }
 
-QgsPresetColorRampDialog::QgsPresetColorRampDialog( const QgsPresetSchemeColorRamp& ramp, QWidget* parent )
-    : QDialog( parent )
+QgsPresetColorRampDialog::QgsPresetColorRampDialog( const QgsPresetSchemeColorRamp &ramp, QWidget *parent )
+  : QDialog( parent )
 {
-  QVBoxLayout* vLayout = new QVBoxLayout();
+  QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsPresetColorRampWidget( ramp );
   vLayout->addWidget( mWidget );
-  QDialogButtonBox* bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
-  connect( bbox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( bbox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  connect( bbox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( bbox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   vLayout->addWidget( bbox );
   setLayout( vLayout );
-  connect( mWidget, SIGNAL( changed() ), this, SIGNAL( changed() ) );
+  connect( mWidget, &QgsPresetColorRampWidget::changed, this, &QgsPresetColorRampDialog::changed );
 }

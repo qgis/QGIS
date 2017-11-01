@@ -19,22 +19,22 @@
 #include "qgsvectorlayer.h"
 #include <QDial>
 
-QgsRangeWidgetFactory::QgsRangeWidgetFactory( const QString& name )
-    : QgsEditorWidgetFactory( name )
+QgsRangeWidgetFactory::QgsRangeWidgetFactory( const QString &name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 
-QgsEditorWidgetWrapper* QgsRangeWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
+QgsEditorWidgetWrapper *QgsRangeWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {
   return new QgsRangeWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
-QgsEditorConfigWidget* QgsRangeWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+QgsEditorConfigWidget *QgsRangeWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
   return new QgsRangeConfigDlg( vl, fieldIdx, parent );
 }
 
-unsigned int QgsRangeWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
+unsigned int QgsRangeWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().at( fieldIdx );
   if ( field.type() == QVariant::Int || field.type() == QVariant::Double ) return 20;
@@ -42,9 +42,9 @@ unsigned int QgsRangeWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fi
   return 0;
 }
 
-QHash<const char*, int> QgsRangeWidgetFactory::supportedWidgetTypes()
+QHash<const char *, int> QgsRangeWidgetFactory::supportedWidgetTypes()
 {
-  QHash<const char*, int> map = QHash<const char*, int>();
+  QHash<const char *, int> map = QHash<const char *, int>();
   map.insert( QSlider::staticMetaObject.className(), 10 );
   map.insert( QDial::staticMetaObject.className(), 10 );
   map.insert( QSpinBox::staticMetaObject.className(), 10 );

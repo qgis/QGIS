@@ -34,11 +34,6 @@ QgsQtLocationConnection::QgsQtLocationConnection(): QgsGPSConnection( new QLocal
   QTimer::singleShot( 500, this, SLOT( broadcastConnectionAvailable() ) );
 }
 
-QgsQtLocationConnection::~QgsQtLocationConnection()
-{
-  //connection will be closed by base class
-}
-
 //Needed to make connection detectable (half HACK)
 //this signals that the device has started the GPS successfully,
 //not that it has a fix yet.
@@ -98,7 +93,7 @@ void QgsQtLocationConnection::parseData()
 }
 
 void QgsQtLocationConnection::satellitesInViewUpdated(
-  const QList<QGeoSatelliteInfo>& satellites )
+  const QList<QGeoSatelliteInfo> &satellites )
 {
   // The number of satellites in view is updated
   mLastGPSInformation.satellitesInView.clear();
@@ -122,7 +117,7 @@ void QgsQtLocationConnection::satellitesInViewUpdated(
 }
 
 void QgsQtLocationConnection::satellitesInUseUpdated(
-  const QList<QGeoSatelliteInfo>& satellites )
+  const QList<QGeoSatelliteInfo> &satellites )
 {
   // The number of satellites in use is updated
   mLastGPSInformation.satellitesUsed = QString::number( satellites.count() ).toInt();
@@ -171,10 +166,10 @@ void QgsQtLocationConnection::startGPS()
       locationDataSource->setUpdateInterval( 1000 );
       // Whenever the location data source signals that the current
       // position is updated, the positionUpdated function is called.
-      QObject::connect( locationDataSource,
-                        SIGNAL( positionUpdated( QGeoPositionInfo ) ),
+      QObject::connect( locationDataSource.data(),
+                        &QGeoPositionInfoSource::positionUpdated,
                         this,
-                        SLOT( positionUpdated( QGeoPositionInfo ) ) );
+                        &QgsQtLocationConnection::positionUpdated );
       // Start listening for position updates
       locationDataSource->startUpdates();
     }
@@ -204,22 +199,18 @@ void QgsQtLocationConnection::startSatelliteMonitor()
       // Whenever the satellite info source signals that the number of
       // satellites in use is updated, the satellitesInUseUpdated function
       // is called
-      QObject::connect( satelliteInfoSource,
-                        SIGNAL( satellitesInUseUpdated(
-                                  const QList<QGeoSatelliteInfo>& ) ),
+      QObject::connect( satelliteInfoSource.data(),
+                        &QGeoSatelliteInfoSource::satellitesInUseUpdated,
                         this,
-                        SLOT( satellitesInUseUpdated(
-                                const QList<QGeoSatelliteInfo>& ) ) );
+                        &QgsQtLocationConnection::satellitesInUseUpdated );
 
       // Whenever the satellite info source signals that the number of
       // satellites in view is updated, the satellitesInViewUpdated function
       // is called
-      QObject::connect( satelliteInfoSource,
-                        SIGNAL( satellitesInViewUpdated(
-                                  const QList<QGeoSatelliteInfo>& ) ),
+      QObject::connect( satelliteInfoSource.data(),
+                        &QGeoSatelliteInfoSource::satellitesInViewUpdated,
                         this,
-                        SLOT( satellitesInViewUpdated(
-                                const QList<QGeoSatelliteInfo>& ) ) );
+                        &QgsQtLocationConnection::satellitesInViewUpdated );
 
       // Start listening for satellite updates
       satelliteInfoSource->startUpdates();

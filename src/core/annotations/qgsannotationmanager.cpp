@@ -18,9 +18,9 @@
 #include "qgsannotation.h"
 #include "qgsannotationregistry.h"
 
-QgsAnnotationManager::QgsAnnotationManager( QgsProject* project )
-    : QObject( project )
-    , mProject( project )
+QgsAnnotationManager::QgsAnnotationManager( QgsProject *project )
+  : QObject( project )
+  , mProject( project )
 {
 
 }
@@ -30,7 +30,7 @@ QgsAnnotationManager::~QgsAnnotationManager()
   clear();
 }
 
-bool QgsAnnotationManager::addAnnotation( QgsAnnotation* annotation )
+bool QgsAnnotationManager::addAnnotation( QgsAnnotation *annotation )
 {
   if ( !annotation )
     return false;
@@ -44,7 +44,7 @@ bool QgsAnnotationManager::addAnnotation( QgsAnnotation* annotation )
   return true;
 }
 
-bool QgsAnnotationManager::removeAnnotation( QgsAnnotation* annotation )
+bool QgsAnnotationManager::removeAnnotation( QgsAnnotation *annotation )
 {
   if ( !annotation )
     return false;
@@ -62,18 +62,28 @@ bool QgsAnnotationManager::removeAnnotation( QgsAnnotation* annotation )
 
 void QgsAnnotationManager::clear()
 {
-  Q_FOREACH ( QgsAnnotation* a, mAnnotations )
+  for ( auto *a : qgis::as_const( mAnnotations ) )
   {
     removeAnnotation( a );
   }
 }
 
-QList<QgsAnnotation*> QgsAnnotationManager::annotations() const
+QList<QgsAnnotation *> QgsAnnotationManager::annotations() const
 {
   return mAnnotations;
 }
 
-bool QgsAnnotationManager::readXml( const QDomElement& element, const QDomDocument& doc )
+QList<QgsAnnotation *> QgsAnnotationManager::cloneAnnotations() const
+{
+  QList<QgsAnnotation *> results;
+  for ( const auto *a : qgis::as_const( mAnnotations ) )
+  {
+    results << a->clone();
+  }
+  return results;
+}
+
+bool QgsAnnotationManager::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   clear();
   //restore each annotation
@@ -84,62 +94,62 @@ bool QgsAnnotationManager::readXml( const QDomElement& element, const QDomDocume
   QDomNodeList annotationNodes = annotationsElem.elementsByTagName( QStringLiteral( "Annotation" ) );
   for ( int i = 0; i < annotationNodes.size(); ++i )
   {
-    createAnnotationFromXml( annotationNodes.at( i ).toElement(), doc );
+    createAnnotationFromXml( annotationNodes.at( i ).toElement(), context );
   }
 
   // restore old (pre 3.0) project annotations
   QDomNodeList oldItemList = element.elementsByTagName( QStringLiteral( "TextAnnotationItem" ) );
   for ( int i = 0; i < oldItemList.size(); ++i )
   {
-    createAnnotationFromXml( oldItemList.at( i ).toElement(), doc );
+    createAnnotationFromXml( oldItemList.at( i ).toElement(), context );
   }
   oldItemList = element.elementsByTagName( QStringLiteral( "FormAnnotationItem" ) );
   for ( int i = 0; i < oldItemList.size(); ++i )
   {
-    createAnnotationFromXml( oldItemList.at( i ).toElement(), doc );
+    createAnnotationFromXml( oldItemList.at( i ).toElement(), context );
   }
   oldItemList = element.elementsByTagName( QStringLiteral( "HtmlAnnotationItem" ) );
   for ( int i = 0; i < oldItemList.size(); ++i )
   {
-    createAnnotationFromXml( oldItemList.at( i ).toElement(), doc );
+    createAnnotationFromXml( oldItemList.at( i ).toElement(), context );
   }
   oldItemList = element.elementsByTagName( QStringLiteral( "SVGAnnotationItem" ) );
   for ( int i = 0; i < oldItemList.size(); ++i )
   {
-    createAnnotationFromXml( oldItemList.at( i ).toElement(), doc );
+    createAnnotationFromXml( oldItemList.at( i ).toElement(), context );
   }
 
   return result;
 }
 
-QDomElement QgsAnnotationManager::writeXml( QDomDocument& doc ) const
+QDomElement QgsAnnotationManager::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement annotationsElem = doc.createElement( QStringLiteral( "Annotations" ) );
-  QListIterator<QgsAnnotation*> i( mAnnotations );
+  QListIterator<QgsAnnotation *> i( mAnnotations );
   // save lowermost annotation (at end of list) first
   i.toBack();
   while ( i.hasPrevious() )
   {
-    QgsAnnotation* annotation = i.previous();
+    QgsAnnotation *annotation = i.previous();
 
     if ( !annotation )
     {
       continue;
     }
 
-    annotation->writeXml( annotationsElem, doc );
+    annotation->writeXml( annotationsElem, doc, context );
   }
   return annotationsElem;
 }
 
-void QgsAnnotationManager::createAnnotationFromXml( const QDomElement& element, const QDomDocument& doc )
+void QgsAnnotationManager::createAnnotationFromXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   QString type = element.tagName();
-  QgsAnnotation* annotation = QgsApplication::annotationRegistry()->create( type );
+  QgsAnnotation *annotation = QgsApplication::annotationRegistry()->create( type );
   if ( !annotation )
     return;
 
-  annotation->readXml( element, doc );
+  annotation->readXml( element, context );
 
   if ( !annotation->mapPositionCrs().isValid() )
   {

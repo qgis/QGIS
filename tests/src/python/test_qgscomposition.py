@@ -20,16 +20,15 @@ from qgis.PyQt.QtCore import QFileInfo, QDir
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsComposition,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsRasterLayer,
                        QgsMultiBandColorRenderer,
-                       QgsProject,
-                       QgsMapSettings
-                       )
+                       QgsProject)
 
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
 from utilities import unitTestDataPath
+from qgis.PyQt.QtXml import QDomDocument
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -49,7 +48,7 @@ class TestQgsComposition(unittest.TestCase):
         """Test that we can use degree symbols in substitutions.
         """
         # Create a point and convert it to text containing a degree symbol.
-        myPoint = QgsPoint(12.3, -33.33)
+        myPoint = QgsPointXY(12.3, -33.33)
         myCoordinates = myPoint.toDegreesMinutesSeconds(2)
         myTokens = myCoordinates.split(',')
         myLongitude = myTokens[0]
@@ -95,7 +94,7 @@ class TestQgsComposition(unittest.TestCase):
         myRenderer = QgsMultiBandColorRenderer(
             myRasterLayer.dataProvider(), 2, 3, 4
         )
-        #mRasterLayer.setRenderer( rasterRenderer )
+        # mRasterLayer.setRenderer( rasterRenderer )
         myPipe = myRasterLayer.pipe()
         assert myPipe.set(myRenderer), "Cannot set pipe renderer"
 
@@ -134,6 +133,23 @@ class TestQgsComposition(unittest.TestCase):
                      ' for %s' %
                      (myExpectedFileSize, myFileSize, myImagePath))
         assert myFileSize > myExpectedFileSize, myMessage
+
+    def testSaveRestore(self):
+        # test that properties are restored correctly from XML
+        composition = QgsComposition(QgsProject.instance())
+        composition.setName('test composition')
+
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("qgis")
+        doc.appendChild(elem)
+        elem = doc.createElement("composer")
+        self.assertTrue(composition.writeXml(elem, doc))
+
+        composition2 = QgsComposition(QgsProject.instance())
+        self.assertTrue(composition2.readXml(elem, doc))
+
+        self.assertEqual(composition.name(), 'test composition')
+
 
 if __name__ == '__main__':
     unittest.main()

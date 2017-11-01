@@ -24,7 +24,7 @@ QString QgsValueMapFieldFormatter::id() const
   return QStringLiteral( "ValueMap" );
 }
 
-QString QgsValueMapFieldFormatter::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsValueMapFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
   Q_UNUSED( cache )
 
@@ -39,7 +39,7 @@ QString QgsValueMapFieldFormatter::representValue( QgsVectorLayer* layer, int fi
   return map.key( valueInternalText, QVariant( QStringLiteral( "(%1)" ).arg( layer->fields().at( fieldIndex ).displayString( value ) ) ).toString() );
 }
 
-QVariant QgsValueMapFieldFormatter::sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QVariant QgsValueMapFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
   return representValue( layer, fieldIndex, config, cache, value );
 }

@@ -29,15 +29,10 @@
 // Initialize static members
 QgsPythonUtils *QgsServerPlugins::sPythonUtils;
 
-
-QgsServerPlugins::QgsServerPlugins()
-{
-}
-
 // Construct on first use
 QStringList &QgsServerPlugins::serverPlugins()
 {
-  static QStringList* pluginList = new QStringList();
+  static QStringList *pluginList = new QStringList();
   return *pluginList;
 }
 

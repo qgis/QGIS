@@ -1,0 +1,8 @@
+Normal Bayes Classification (OpenCV)
+imagery_opencv
+ParameterMultipleInput|FEATURES|Features|3|False
+ParameterBoolean|NORMALIZE|Normalize|False
+OutputRaster|PROBABILITY|Probability
+ParameterVector|TRAIN_AREAS|Training Areas|-1|False
+ParameterTable|TRAIN_CLASS|Class Identifier|False
+OutputRaster|CLASSES|Classification

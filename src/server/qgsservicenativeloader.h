@@ -19,6 +19,9 @@
 #ifndef QGSSERVICENATIVELOADER_H
 #define QGSSERVICENATIVELOADER_H
 
+#define SIP_NO_FILE
+
+
 class QgsServiceModule;
 class QgsServiceRegistry;
 class QgsServiceNativeModuleEntry;
@@ -42,19 +45,16 @@ class SERVER_EXPORT QgsServiceNativeLoader
   public:
 
     //! Constructor
-    QgsServiceNativeLoader();
-
-    //! Destructor
-    ~QgsServiceNativeLoader();
+    QgsServiceNativeLoader() = default;
 
     /**
      * Lead all medules from path
-     * @param modulePath the path to look for module
-     * @param registrar QgsServiceRegistry instance for registering services
-     * @param serverIface QgsServerInterface instarce
+     * \param modulePath the path to look for module
+     * \param registrar QgsServiceRegistry instance for registering services
+     * \param serverIface QgsServerInterface instarce
      */
-    void loadModules( const QString& modulePath, QgsServiceRegistry& registrar,
-                      QgsServerInterface* serverIface = nullptr );
+    void loadModules( const QString &modulePath, QgsServiceRegistry &registrar,
+                      QgsServerInterface *serverIface = nullptr );
 
     /**
      * Unload all modules
@@ -64,10 +64,10 @@ class SERVER_EXPORT QgsServiceNativeLoader
     /**
      * Load the native module from path
      *
-     * @param location QString location holding the module relalive path
-     * @return a qgsservicemodule instance
+     * \param location QString location holding the module relalive path
+     * \returns a qgsservicemodule instance
      */
-    QgsServiceModule* loadNativeModule( const QString& location );
+    QgsServiceModule *loadNativeModule( const QString &location );
 
 
   private:
@@ -75,15 +75,15 @@ class SERVER_EXPORT QgsServiceNativeLoader
 
     /**
      * Find module
-     * @param path the module path
-     * @return a module hook entry
+     * \param path the module path
+     * \returns a module hook entry
      */
-    QgsServiceNativeModuleEntry* findModuleEntry( const QString& path );
+    QgsServiceNativeModuleEntry *findModuleEntry( const QString &path );
 
     /**
      *  Unload medule hook
      */
-    void unloadModuleEntry( QgsServiceNativeModuleEntry* entry );
+    void unloadModuleEntry( QgsServiceNativeModuleEntry *entry );
 
     //! Associative storage for module handles
     ModuleTable mModules;

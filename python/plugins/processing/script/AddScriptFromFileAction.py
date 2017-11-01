@@ -28,15 +28,14 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
-from qgis.PyQt.QtCore import QSettings, QFileInfo
+from qgis.PyQt.QtCore import QFileInfo
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsSettings
 
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.script.WrongScriptException import WrongScriptException
 from processing.script.ScriptUtils import ScriptUtils
-from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -51,7 +50,7 @@ class AddScriptFromFileAction(ToolboxAction):
         return QgsApplication.getThemeIcon("/processingScript.svg")
 
     def execute(self):
-        settings = QSettings()
+        settings = QgsSettings()
         lastDir = settings.value('Processing/lastScriptsDir', '')
         filenames, selected_filter = QFileDialog.getOpenFileNames(self.toolbox,
                                                                   self.tr('Script files', 'AddScriptFromFileAction'), lastDir,
@@ -71,9 +70,9 @@ class AddScriptFromFileAction(ToolboxAction):
                 except WrongScriptException:
                     wrongAlgs.append(os.path.basename(filename))
             if validAlgs:
-                algList.reloadProvider('script')
+                QgsApplication.processingRegistry().providerById('script').refreshAlgorithms()
             if wrongAlgs:
                 QMessageBox.warning(self.toolbox,
                                     self.tr('Error reading scripts', 'AddScriptFromFileAction'),
-                                    self.tr('The following files do not contain a valid script:\n-', 'AddScriptFromFileAction')
-                                    + "\n-".join(wrongAlgs))
+                                    self.tr('The following files do not contain a valid script:\n-', 'AddScriptFromFileAction') +
+                                    "\n-".join(wrongAlgs))

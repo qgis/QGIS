@@ -24,9 +24,8 @@ class APP_EXPORT QgsMapToolSplitFeatures: public QgsMapToolCapture
 {
     Q_OBJECT
   public:
-    QgsMapToolSplitFeatures( QgsMapCanvas* canvas );
-    virtual ~QgsMapToolSplitFeatures();
-    void cadCanvasReleaseEvent( QgsMapMouseEvent * e ) override;
+    QgsMapToolSplitFeatures( QgsMapCanvas *canvas );
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 };
 
 #endif

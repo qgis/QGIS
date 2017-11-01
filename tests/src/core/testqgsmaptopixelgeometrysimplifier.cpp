@@ -32,7 +32,7 @@
 #if 0
 #include <qgspoint.h>
 #include "qgsgeometryutils.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgscircularstring.h"
@@ -41,7 +41,8 @@
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsMapToPixelGeometrySimplifier class
  */
 class TestQgsMapToPixelGeometrySimplifier : public QObject
@@ -78,9 +79,7 @@ class TestQgsMapToPixelGeometrySimplifier : public QObject
 
 };
 
-TestQgsMapToPixelGeometrySimplifier::TestQgsMapToPixelGeometrySimplifier()
-{
-}
+TestQgsMapToPixelGeometrySimplifier::TestQgsMapToPixelGeometrySimplifier() = default;
 
 void TestQgsMapToPixelGeometrySimplifier::initTestCase()
 {
@@ -168,7 +167,7 @@ TestQgsMapToPixelGeometrySimplifier::testIsGeneralizableByMapBoundingBox()
 void TestQgsMapToPixelGeometrySimplifier::testWkbDimensionMismatch()
 {
   // 2D multilinestring containing 2 3DZ linestrings
-  // See http://hub.qgis.org/issues/12416
+  // See https://issues.qgis.org/issues/12416
   // NOTE: the first line needs to be 5 vertices or more, or
   // simplification won't even be attempted
   const char *hexwkb = "010500000002000000010200008005000000000000000000000000000000000000000000000000000000000000000000F03F000000000000F03F00000000000000000000000000000040000000000000000000000000000000000000000000000840000000000000F03F0000000000000000000000000000244000000000000000008DEDB5A0F7C6B0BE010200008002000000000000000000000000000000000000000000000000000000000000000000000000000000000000008DEDB5A0F7C6B03E";

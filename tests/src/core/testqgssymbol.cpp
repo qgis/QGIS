@@ -33,7 +33,8 @@
 
 #include "qgsstyle.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test to verify that symbols are working correctly
  */
 class TestQgsSymbol : public QObject
@@ -49,9 +50,9 @@ class TestQgsSymbol : public QObject
     QString mReport;
     QString mTestDataDir;
 
-    QgsVectorLayer * mpPointsLayer;
-    QgsVectorLayer * mpLinesLayer;
-    QgsVectorLayer * mpPolysLayer;
+    QgsVectorLayer *mpPointsLayer = nullptr;
+    QgsVectorLayer *mpLinesLayer = nullptr;
+    QgsVectorLayer *mpPolysLayer = nullptr;
 
     bool imageCheck( QgsMapSettings &ms, const QString &testName );
 
@@ -70,13 +71,7 @@ class TestQgsSymbol : public QObject
     void symbolProperties();
 };
 
-TestQgsSymbol::TestQgsSymbol()
-    : mpPointsLayer( 0 )
-    , mpLinesLayer( 0 )
-    , mpPolysLayer( 0 )
-{
-
-}
+TestQgsSymbol::TestQgsSymbol() = default;
 
 // slots
 void TestQgsSymbol::initTestCase()
@@ -84,13 +79,13 @@ void TestQgsSymbol::initTestCase()
   // initialize with test settings directory so we don't mess with user's stuff
   QgsApplication::init( QDir::tempPath() + "/dot-qgis" );
   QgsApplication::initQgis();
-  QgsApplication::createDB();
+  QgsApplication::createDatabase();
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   // output test environment
   QgsApplication::showSettings();
 
-  // Set up the QSettings environment
+  // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
@@ -157,7 +152,7 @@ void TestQgsSymbol::cleanupTestCase()
   }
 }
 
-bool TestQgsSymbol::imageCheck( QgsMapSettings& ms, const QString& testName )
+bool TestQgsSymbol::imageCheck( QgsMapSettings &ms, const QString &testName )
 {
   QgsMultiRenderChecker checker;
   ms.setOutputDpi( 96 );
@@ -178,13 +173,13 @@ void TestQgsSymbol::testCanvasClip()
 
   //line
   mReport += QLatin1String( "<h2>Line canvas clip</h2>\n" );
-  ms.setLayers( QList<QgsMapLayer*>() << mpLinesLayer );
+  ms.setLayers( QList<QgsMapLayer *>() << mpLinesLayer );
 
-  QgsMarkerLineSymbolLayer* markerLine = new QgsMarkerLineSymbolLayer();
+  QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setPlacement( QgsMarkerLineSymbolLayer:: CentralPoint );
-  QgsLineSymbol* lineSymbol = new QgsLineSymbol();
+  QgsLineSymbol *lineSymbol = new QgsLineSymbol();
   lineSymbol->changeSymbolLayer( 0, markerLine );
-  QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( lineSymbol );
+  QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( lineSymbol );
   mpLinesLayer->setRenderer( renderer );
   bool result;
 
@@ -198,10 +193,10 @@ void TestQgsSymbol::testCanvasClip()
 
   //poly
   mReport += QLatin1String( "<h2>Polygon canvas clip</h2>\n" );
-  ms.setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
+  ms.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
 
-  QgsCentroidFillSymbolLayer* centroidFill = new QgsCentroidFillSymbolLayer();
-  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
+  QgsCentroidFillSymbolLayer *centroidFill = new QgsCentroidFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, centroidFill );
   renderer = new QgsSingleSymbolRenderer( fillSymbol );
   mpPolysLayer->setRenderer( renderer );
@@ -410,8 +405,8 @@ void TestQgsSymbol::testParseColorList()
   while ( it != colorListTests.constEnd() )
   {
     QgsDebugMsg( "color list string: " + ( *it ).first );
-    QList< QColor > result = QgsSymbolLayerUtils::parseColorList(( *it ).first );
-    if (( *it ).second.length() > 0 )
+    QList< QColor > result = QgsSymbolLayerUtils::parseColorList( ( *it ).first );
+    if ( ( *it ).second.length() > 0 )
     {
       QCOMPARE( result.length(), ( *it ).second.length() );
       int index = 0;
@@ -435,12 +430,12 @@ void TestQgsSymbol::symbolProperties()
   //test QgsSymbolLayerUtils::symbolProperties
 
   //make a symbol
-  QgsSimpleFillSymbolLayer* fill = new QgsSimpleFillSymbolLayer();
+  QgsSimpleFillSymbolLayer *fill = new QgsSimpleFillSymbolLayer();
   fill->setColor( QColor( 25, 125, 225 ) );
-  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, fill );
 
-  QgsFillSymbol* fillSymbol2 = static_cast< QgsFillSymbol* >( fillSymbol->clone() );
+  QgsFillSymbol *fillSymbol2 = static_cast< QgsFillSymbol * >( fillSymbol->clone() );
 
   //test that two different symbol pointers return same properties
   QCOMPARE( QgsSymbolLayerUtils::symbolProperties( fillSymbol ),

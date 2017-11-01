@@ -22,7 +22,8 @@
 
 class QgsMarkerSymbol;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * \class QgsMapToolPointSymbol
  * \brief An abstract base class that allows interactive manipulation of the symbols for point layers. Handles
  * snapping the mouse press to a feature, and detecting whether the clicked feature has symbology which is
@@ -33,22 +34,22 @@ class APP_EXPORT QgsMapToolPointSymbol: public QgsMapToolEdit
     Q_OBJECT
 
   public:
-    QgsMapToolPointSymbol( QgsMapCanvas* canvas );
+    QgsMapToolPointSymbol( QgsMapCanvas *canvas );
 
     virtual Flags flags() const override { return QgsMapTool::EditTool; }
 
-    void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
   protected:
-    QgsVectorLayer* mActiveLayer;
+    QgsVectorLayer *mActiveLayer = nullptr;
     QgsFeatureId mFeatureNumber;
 
     //! Screen coordinate of the snapped feature
     QPoint mSnappedPoint;
 
-    virtual void canvasPressOnFeature( QgsMapMouseEvent* e, const QgsFeature& feature, const QgsPoint& snappedPoint ) = 0;
+    virtual void canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint ) = 0;
 
-    virtual bool checkSymbolCompatibility( QgsMarkerSymbol* markerSymbol, QgsRenderContext& context ) = 0;
+    virtual bool checkSymbolCompatibility( QgsMarkerSymbol *markerSymbol, QgsRenderContext &context ) = 0;
 
     virtual void noCompatibleSymbols() {}
 

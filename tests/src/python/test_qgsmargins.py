@@ -119,5 +119,6 @@ class TestQgsOptional(unittest.TestCase):
         self.assertEqual(QgsMargins.fromString('1,2,3,4'), QgsMargins(1, 2, 3, 4))
         self.assertEqual(QgsMargins.fromString('1,-2,3,-4'), QgsMargins(1, -2, 3, -4))
 
+
 if __name__ == '__main__':
     unittest.main()

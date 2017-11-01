@@ -30,20 +30,21 @@ def template_file(file):
 def plugin_file(pluginDir, file):
     return os.path.join(pluginDir, file)
 
+
 # make sure we are in the plugins directory otherwise the changes this script
 # will make will wreak havoc....
 
 myDir = os.getcwd()
-print "Checking that we are in the <qgis dir>/src/plugins/ directory....",
+print("Checking that we are in the <qgis dir>/src/plugins/ directory....", end='')
 
 pluginsDirectory = os.path.join('src', 'plugins')
 
 if myDir[-len(pluginsDirectory):] == pluginsDirectory:
-    print "yes"
+    print("yes")
 else:
-    print "no"
-    print myDir
-    print "Please relocate to the plugins directory before attempting to run this script."
+    print("no")
+    print(myDir)
+    print("Please relocate to the plugins directory before attempting to run this script.")
     sys.exit(1)
 
 

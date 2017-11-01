@@ -22,65 +22,94 @@
 #include "qgis.h"
 #include "qgscolorscheme.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsColorRamp
  * \brief Abstract base class for color ramps
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsColorRamp
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->type() == "gradient" )
+      sipType = sipType_QgsGradientColorRamp;
+    else if ( sipCpp->type() == "random" )
+      sipType = sipType_QgsLimitedRandomColorRamp;
+    else if ( sipCpp->type() == "randomcolors" )
+      sipType = sipType_QgsRandomColorRamp;
+    else if ( sipCpp->type() == "preset" )
+      sipType = sipType_QgsPresetSchemeColorRamp;
+    else if ( sipCpp->type() == "colorbrewer" )
+      sipType = sipType_QgsColorBrewerColorRamp;
+    else if ( sipCpp->type() == "cpt-city" )
+      sipType = sipType_QgsCptCityColorRamp;
+    else
+      sipType = 0;
+    SIP_END
+#endif
   public:
 
     virtual ~QgsColorRamp() = default;
 
-    /** Returns number of defined colors, or -1 if undefined
+    /**
+     * Returns number of defined colors, or -1 if undefined
      */
     virtual int count() const = 0;
 
-    /** Returns relative value between [0,1] of color at specified index
+    /**
+     * Returns relative value between [0,1] of color at specified index
      */
     virtual double value( int index ) const = 0;
 
-    /** Returns the color corresponding to a specified value.
-     * @param value value between [0, 1] inclusive
-     * @returns color for value
+    /**
+     * Returns the color corresponding to a specified value.
+     * \param value value between [0, 1] inclusive
+     * \returns color for value
      */
     virtual QColor color( double value ) const = 0;
 
-    /** Returns a string representing the color ramp type.
+    /**
+     * Returns a string representing the color ramp type.
      */
     virtual QString type() const = 0;
 
 
-    /** Inverts the ordering of the color ramp.
+    /**
+     * Inverts the ordering of the color ramp.
      */
     virtual void invert() {}
 
-    /** Creates a clone of the color ramp.
+    /**
+     * Creates a clone of the color ramp.
      */
-    virtual QgsColorRamp* clone() const = 0;
+    virtual QgsColorRamp *clone() const = 0 SIP_FACTORY;
 
-    /** Returns a string map containing all the color ramp's properties.
+    /**
+     * Returns a string map containing all the color ramp's properties.
      */
     virtual QgsStringMap properties() const = 0;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGradientStop
  * \brief Represents a color stop within a QgsGradientColorRamp color ramp.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsGradientStop
 {
   public:
 
-    /** Constructor for QgsGradientStop
-     * @param offset positional offset for stop, between 0 and 1.0
-     * @param color color for stop
+    /**
+     * Constructor for QgsGradientStop
+     * \param offset positional offset for stop, between 0 and 1.0
+     * \param color color for stop
      */
-    QgsGradientStop( double offset, const QColor& color )
-        : offset( offset )
-        , color( color )
+    QgsGradientStop( double offset, const QColor &color )
+      : offset( offset )
+      , color( color )
     { }
 
     //! Relative positional offset, between 0 and 1
@@ -88,7 +117,7 @@ class CORE_EXPORT QgsGradientStop
     //! Gradient color at stop
     QColor color;
 
-    bool operator==( const QgsGradientStop& other ) const
+    bool operator==( const QgsGradientStop &other ) const
     {
       return other.color == color && qgsDoubleNear( other.offset, offset );
     }
@@ -100,118 +129,132 @@ typedef QList<QgsGradientStop> QgsGradientStopsList;
 #define DEFAULT_GRADIENT_COLOR1 QColor(0,0,255)
 #define DEFAULT_GRADIENT_COLOR2 QColor(0,255,0)
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGradientColorRamp
  * \brief Gradient color ramp, which smoothly interpolates between two colors and also
  * supports optional extra color stops.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
 {
   public:
 
-    /** Constructor for QgsGradientColorRamp
-     * @param color1 start color, corresponding to a position of 0.0
-     * @param color2 end color, corresponding to a position of 1.0
-     * @param discrete set to true for discrete interpolation instead of smoothly
+    /**
+     * Constructor for QgsGradientColorRamp
+     * \param color1 start color, corresponding to a position of 0.0
+     * \param color2 end color, corresponding to a position of 1.0
+     * \param discrete set to true for discrete interpolation instead of smoothly
      * interpolating between colors
-     * @param stops optional list of additional color stops
+     * \param stops optional list of additional color stops
      */
-    QgsGradientColorRamp( const QColor& color1 = DEFAULT_GRADIENT_COLOR1,
-                          const QColor& color2 = DEFAULT_GRADIENT_COLOR2,
+    QgsGradientColorRamp( const QColor &color1 = DEFAULT_GRADIENT_COLOR1,
+                          const QColor &color2 = DEFAULT_GRADIENT_COLOR2,
                           bool discrete = false,
-                          const QgsGradientStopsList& stops = QgsGradientStopsList() );
+                          const QgsGradientStopsList &stops = QgsGradientStopsList() );
 
     //! Creates a new QgsColorRamp from a map of properties
-    static QgsColorRamp* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     virtual int count() const override { return mStops.count() + 2; }
     virtual double value( int index ) const override;
     virtual QColor color( double value ) const override;
     virtual QString type() const override { return QStringLiteral( "gradient" ); }
     virtual void invert() override;
-    virtual QgsGradientColorRamp* clone() const override;
+    virtual QgsGradientColorRamp *clone() const override SIP_FACTORY;
     virtual QgsStringMap properties() const override;
 
-    /** Returns the gradient start color.
-     * @see setColor1()
-     * @see color2()
+    /**
+     * Returns the gradient start color.
+     * \see setColor1()
+     * \see color2()
      */
     QColor color1() const { return mColor1; }
 
-    /** Returns the gradient end color.
-     * @see setColor2()
-     * @see color1()
+    /**
+     * Returns the gradient end color.
+     * \see setColor2()
+     * \see color1()
      */
     QColor color2() const { return mColor2; }
 
-    /** Sets the gradient start color.
-     * @param color start color
-     * @see color1()
-     * @see setColor2()
+    /**
+     * Sets the gradient start color.
+     * \param color start color
+     * \see color1()
+     * \see setColor2()
      */
-    void setColor1( const QColor& color ) { mColor1 = color; }
+    void setColor1( const QColor &color ) { mColor1 = color; }
 
-    /** Sets the gradient end color.
-     * @param color end color
-     * @see color2()
-     * @see setColor1()
+    /**
+     * Sets the gradient end color.
+     * \param color end color
+     * \see color2()
+     * \see setColor1()
      */
-    void setColor2( const QColor& color ) { mColor2 = color; }
+    void setColor2( const QColor &color ) { mColor2 = color; }
 
-    /** Returns true if the gradient is using discrete interpolation, rather than
+    /**
+     * Returns true if the gradient is using discrete interpolation, rather than
      * smoothly interpolating between colors.
-     * @see setDiscrete()
+     * \see setDiscrete()
      */
     bool isDiscrete() const { return mDiscrete; }
 
-    /** Sets whether the gradient should use discrete interpolation, rather than
+    /**
+     * Sets whether the gradient should use discrete interpolation, rather than
      * smoothly interpolating between colors.
-     * @param discrete set to true to use discrete interpolation
-     * @see convertToDiscrete()
-     * @see isDiscrete()
+     * \param discrete set to true to use discrete interpolation
+     * \see convertToDiscrete()
+     * \see isDiscrete()
      */
     void setDiscrete( bool discrete ) { mDiscrete = discrete; }
 
-    /** Converts a gradient with existing color stops to or from discrete
+    /**
+     * Converts a gradient with existing color stops to or from discrete
      * interpolation.
-     * @param discrete set to true to convert the gradient stops to discrete,
+     * \param discrete set to true to convert the gradient stops to discrete,
      * or false to convert them to smooth interpolation
-     * @see isDiscrete()
+     * \see isDiscrete()
      */
     void convertToDiscrete( bool discrete );
 
-    /** Sets the list of intermediate gradient stops for the ramp.
-     * @param stops list of stops. Any existing color stops will be replaced. The stop
+    /**
+     * Sets the list of intermediate gradient stops for the ramp.
+     * \param stops list of stops. Any existing color stops will be replaced. The stop
      * list will be automatically reordered so that stops are listed in ascending offset
      * order.
-     * @see stops()
+     * \see stops()
      */
-    void setStops( const QgsGradientStopsList& stops );
+    void setStops( const QgsGradientStopsList &stops );
 
-    /** Returns the list of intermediate gradient stops for the ramp.
-     * @see setStops()
+    /**
+     * Returns the list of intermediate gradient stops for the ramp.
+     * \see setStops()
      */
     QgsGradientStopsList stops() const { return mStops; }
 
-    /** Returns any additional info attached to the gradient ramp (e.g., authorship notes)
-     * @see setInfo()
+    /**
+     * Returns any additional info attached to the gradient ramp (e.g., authorship notes)
+     * \see setInfo()
      */
     QgsStringMap info() const { return mInfo; }
 
-    /** Sets additional info to attach to the gradient ramp (e.g., authorship notes)
-     * @param info map of string info to attach
-     * @see info()
+    /**
+     * Sets additional info to attach to the gradient ramp (e.g., authorship notes)
+     * \param info map of string info to attach
+     * \see info()
      */
-    void setInfo( const QgsStringMap& info ) { mInfo = info; }
+    void setInfo( const QgsStringMap &info ) { mInfo = info; }
 
-    /** Copy color ramp stops to a QGradient
-     * @param gradient gradient to copy stops into
-     * @param alpha alpha multiplier. Opacity of colors will be multiplied
+    /**
+     * Copy color ramp stops to a QGradient
+     * \param gradient gradient to copy stops into
+     * \param opacity opacity multiplier. Opacity of colors will be multiplied
      * by this factor before adding to the gradient.
-     * @note added in 2.1
+     * \since QGIS 2.1
      */
-    void addStopsToGradient( QGradient* gradient, double alpha = 1 );
+    void addStopsToGradient( QGradient *gradient, double opacity = 1 );
 
   protected:
     QColor mColor1;
@@ -221,6 +264,8 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
     QgsStringMap mInfo;
 };
 
+Q_DECLARE_METATYPE( QgsGradientColorRamp )
+
 #define DEFAULT_RANDOM_COUNT   10
 #define DEFAULT_RANDOM_HUE_MIN 0
 #define DEFAULT_RANDOM_HUE_MAX 359
@@ -229,136 +274,164 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
 #define DEFAULT_RANDOM_SAT_MIN 100
 #define DEFAULT_RANDOM_SAT_MAX 240
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsLimitedRandomColorRamp
  * \brief Constrained random color ramp, which returns random colors based on preset parameters.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
 {
   public:
 
-    /** Constructor for QgsLimitedRandomColorRamp
-     * @param count number of colors in ramp
-     * @param hueMin minimum hue
-     * @param hueMax maximum hue
-     * @param satMin minimum saturation
-     * @param satMax maximum saturation
-     * @param valMin minimum color value
-     * @param valMax maximum color value
+    /**
+     * Constructor for QgsLimitedRandomColorRamp
+     * \param count number of colors in ramp
+     * \param hueMin minimum hue
+     * \param hueMax maximum hue
+     * \param satMin minimum saturation
+     * \param satMax maximum saturation
+     * \param valMin minimum color value
+     * \param valMax maximum color value
      */
     QgsLimitedRandomColorRamp( int count = DEFAULT_RANDOM_COUNT,
                                int hueMin = DEFAULT_RANDOM_HUE_MIN, int hueMax = DEFAULT_RANDOM_HUE_MAX,
                                int satMin = DEFAULT_RANDOM_SAT_MIN, int satMax = DEFAULT_RANDOM_SAT_MAX,
                                int valMin = DEFAULT_RANDOM_VAL_MIN, int valMax = DEFAULT_RANDOM_VAL_MAX );
 
-    /** Returns a new QgsLimitedRandomColorRamp color ramp created using the properties encoded in a string
+    /**
+     * Returns a new QgsLimitedRandomColorRamp color ramp created using the properties encoded in a string
      * map.
-     * @param properties color ramp properties
-     * @see properties()
+     * \param properties color ramp properties
+     * \see properties()
      */
-    static QgsColorRamp* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     virtual double value( int index ) const override;
     virtual QColor color( double value ) const override;
     virtual QString type() const override { return QStringLiteral( "random" ); }
-    virtual QgsLimitedRandomColorRamp* clone() const override;
+    virtual QgsLimitedRandomColorRamp *clone() const override SIP_FACTORY;
     virtual QgsStringMap properties() const override;
     int count() const override { return mCount; }
 
-    /** Get a list of random colors
-     * @note added in 2.4
+    /**
+     * Get a list of random colors
+     * \since QGIS 2.4
      */
     static QList<QColor> randomColors( int count,
                                        int hueMax = DEFAULT_RANDOM_HUE_MAX, int hueMin = DEFAULT_RANDOM_HUE_MIN,
                                        int satMax = DEFAULT_RANDOM_SAT_MAX, int satMin = DEFAULT_RANDOM_SAT_MIN,
                                        int valMax = DEFAULT_RANDOM_VAL_MAX, int valMin = DEFAULT_RANDOM_VAL_MIN );
 
-    /** Must be called after changing the properties of the color ramp
+    /**
+     * Must be called after changing the properties of the color ramp
      * to regenerate the list of random colors.
      */
     void updateColors();
 
-    /** Returns the minimum hue for generated colors
-     * @see setHueMin()
+    /**
+     * Returns the minimum hue for generated colors
+     * \see setHueMin()
      */
     int hueMin() const { return mHueMin; }
 
-    /** Returns the maximum hue for generated colors
-     * @see setHueMax()
+    /**
+     * Returns the maximum hue for generated colors
+     * \see setHueMax()
      */
     int hueMax() const { return mHueMax; }
 
-    /** Returns the minimum saturation for generated colors
-     * @see setSatMin()
+    /**
+     * Returns the minimum saturation for generated colors
+     * \see setSatMin()
      */
     int satMin() const { return mSatMin; }
 
-    /** Returns the maximum saturation for generated colors
-     * @see setSatMax()
+    /**
+     * Returns the maximum saturation for generated colors
+     * \see setSatMax()
      */
     int satMax() const { return mSatMax; }
 
-    /** Returns the minimum value for generated colors
-     * @see setValMin()
+    /**
+     * Returns the minimum value for generated colors
+     * \see setValMin()
      */
     int valMin() const { return mValMin; }
 
-    /** Returns the maximum value for generated colors
-     * @see setValMax()
+    /**
+     * Returns the maximum value for generated colors
+     * \see setValMax()
      */
     int valMax() const { return mValMax; }
 
-    /** Sets the number of colors contained in the ramp.
+    /**
+     * Sets the number of colors contained in the ramp.
      */
     void setCount( int val ) { mCount = val; }
 
-    /** Sets the minimum hue for generated colors
-     * @see hueMin()
+    /**
+     * Sets the minimum hue for generated colors
+     * \see hueMin()
      */
     void setHueMin( int val ) { mHueMin = val; }
 
-    /** Sets the maximum hue for generated colors
-     * @see hueMax()
+    /**
+     * Sets the maximum hue for generated colors
+     * \see hueMax()
      */
     void setHueMax( int val ) { mHueMax = val; }
 
-    /** Sets the minimum saturation for generated colors
-     * @see satMin()
+    /**
+     * Sets the minimum saturation for generated colors
+     * \see satMin()
      */
     void setSatMin( int val ) { mSatMin = val; }
 
-    /** Sets the maximum saturation for generated colors
-     * @see satMax()
+    /**
+     * Sets the maximum saturation for generated colors
+     * \see satMax()
      */
     void setSatMax( int val ) { mSatMax = val; }
 
-    /** Sets the minimum value for generated colors
-     * @see valMin()
+    /**
+     * Sets the minimum value for generated colors
+     * \see valMin()
      */
     void setValMin( int val ) { mValMin = val; }
 
-    /** Sets the maximum value for generated colors
-     * @see valMax()
+    /**
+     * Sets the maximum value for generated colors
+     * \see valMax()
      */
     void setValMax( int val ) { mValMax = val; }
 
   protected:
     int mCount;
-    int mHueMin, mHueMax, mSatMin, mSatMax, mValMin, mValMax;
+    int mHueMin;
+    int mHueMax;
+    int mSatMin;
+    int mSatMax;
+    int mValMin;
+    int mValMax;
     QList<QColor> mColors;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsRandomColorRamp
  * \brief Totally random color ramp. Returns colors generated at random, but constrained
  * to some hardcoded saturation and value ranges to prevent ugly color generation.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
 {
   public:
-    QgsRandomColorRamp();
+
+    /**
+     * Constructor for QgsRandomColorRamp.
+     */
+    QgsRandomColorRamp() = default;
 
     int count() const override;
 
@@ -366,79 +439,83 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
 
     QColor color( double value ) const override;
 
-    /** Sets the desired total number of unique colors for the resultant ramp. Calling
+    /**
+     * Sets the desired total number of unique colors for the resultant ramp. Calling
      * this method pregenerates a set of visually distinct colors which are returned
      * by subsequent calls to color().
-     * @param colorCount number of unique colors
-     * @note added in QGIS 2.5
+     * \param colorCount number of unique colors
+     * \since QGIS 2.5
      */
     virtual void setTotalColorCount( const int colorCount );
 
     QString type() const override;
 
-    QgsRandomColorRamp* clone() const override;
+    virtual QgsRandomColorRamp *clone() const override SIP_FACTORY;
 
-    QgsStringMap properties() const override;
+    virtual QgsStringMap properties() const override;
 
   protected:
 
-    int mTotalColorCount;
+    int mTotalColorCount = 0;
     QList<QColor> mPrecalculatedColors;
 
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsPresetSchemeColorRamp
  * \brief A scheme based color ramp consisting of a list of predefined colors.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColorScheme
 {
   public:
 
-    /** Constructor for QgsPresetSchemeColorRamp.
-     * @param colors list of colors in ramp
+    /**
+     * Constructor for QgsPresetSchemeColorRamp.
+     * \param colors list of colors in ramp
      */
-    QgsPresetSchemeColorRamp( const QList< QColor >& colors = QList< QColor >() );
+    QgsPresetSchemeColorRamp( const QList< QColor > &colors = QList< QColor >() );
 
-    /** Constructor for QgsPresetColorRamp.
-     * @param colors list of named colors in ramp
-     * @note not available in Python bindings - use setColors instead
+    /**
+     * Constructor for QgsPresetColorRamp.
+     * \param colors list of named colors in ramp
+     * \note not available in Python bindings - use setColors instead
      */
-    QgsPresetSchemeColorRamp( const QgsNamedColorList& colors );
+    QgsPresetSchemeColorRamp( const QgsNamedColorList &colors );
 
-    /** Returns a new QgsPresetSchemeColorRamp color ramp created using the properties encoded in a string
+    /**
+     * Returns a new QgsPresetSchemeColorRamp color ramp created using the properties encoded in a string
      * map.
-     * @param properties color ramp properties
-     * @see properties()
+     * \param properties color ramp properties
+     * \see properties()
      */
-    static QgsColorRamp* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
-    /** Sets the list of colors used by the ramp.
-     * @param colors list of colors
-     * @see colors()
+    /**
+     * Sets the list of colors used by the ramp.
+     * \param colors list of colors
+     * \see colors()
      */
-    bool setColors( const QgsNamedColorList& colors, const QString& = QString(), const QColor& = QColor() ) override { mColors = colors; return true; }
+    bool setColors( const QgsNamedColorList &colors, const QString & = QString(), const QColor & = QColor() ) override { mColors = colors; return true; }
 
-    /** Returns the list of colors used by the ramp.
-     * @see setColors()
+    /**
+     * Returns the list of colors used by the ramp.
+     * \see setColors()
      */
     QList< QColor > colors() const;
 
-    // QgsColorRamp interface
     virtual double value( int index ) const override;
     virtual QColor color( double value ) const override;
     virtual QString type() const override { return QStringLiteral( "preset" ); }
     virtual void invert() override;
-    virtual QgsPresetSchemeColorRamp* clone() const override;
+    virtual QgsPresetSchemeColorRamp *clone() const override SIP_FACTORY;
     virtual QgsStringMap properties() const override;
     int count() const override;
 
-    // QgsColorScheme interface
     QString schemeName() const override { return QStringLiteral( "preset" ); }
-    QgsNamedColorList fetchColors( const QString &context = QString(),
-                                   const QColor &baseColor = QColor() ) override;
+    QgsNamedColorList fetchColors( const QString &context = QString(), const QColor &baseColor = QColor() ) override;
     bool isEditable() const override { return true; }
 
   private:
@@ -450,74 +527,83 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
 #define DEFAULT_COLORBREWER_SCHEMENAME "Spectral"
 #define DEFAULT_COLORBREWER_COLORS     5
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsColorBrewerColorRamp
  * \brief Color ramp utilising "Color Brewer" preset color schemes.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
 {
   public:
 
-    /** Constructor for QgsColorBrewerColorRamp
-     * @param schemeName color brewer scheme name
-     * @param colors number of colors in ramp
-     * @param inverted invert ramp ordering
+    /**
+     * Constructor for QgsColorBrewerColorRamp
+     * \param schemeName color brewer scheme name
+     * \param colors number of colors in ramp
+     * \param inverted invert ramp ordering
      */
-    QgsColorBrewerColorRamp( const QString& schemeName = DEFAULT_COLORBREWER_SCHEMENAME,
+    QgsColorBrewerColorRamp( const QString &schemeName = DEFAULT_COLORBREWER_SCHEMENAME,
                              int colors = DEFAULT_COLORBREWER_COLORS,
                              bool inverted = false );
 
-    /** Returns a new QgsColorBrewerColorRamp color ramp created using the properties encoded in a string
+    /**
+     * Returns a new QgsColorBrewerColorRamp color ramp created using the properties encoded in a string
      * map.
-     * @param properties color ramp properties
-     * @see properties()
+     * \param properties color ramp properties
+     * \see properties()
      */
-    static QgsColorRamp* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     virtual double value( int index ) const override;
     virtual QColor color( double value ) const override;
     virtual QString type() const override { return QStringLiteral( "colorbrewer" ); }
     virtual void invert() override;
-    virtual QgsColorBrewerColorRamp* clone() const override;
+    virtual QgsColorBrewerColorRamp *clone() const override SIP_FACTORY;
     virtual QgsStringMap properties() const override;
     virtual int count() const override { return mColors; }
 
-    /** Returns the name of the color brewer color scheme.
-     * @see setSchemeName()
+    /**
+     * Returns the name of the color brewer color scheme.
+     * \see setSchemeName()
      */
     QString schemeName() const { return mSchemeName; }
 
-    /** Returns the number of colors in the ramp.
-     * @see setColors()
+    /**
+     * Returns the number of colors in the ramp.
+     * \see setColors()
      */
     int colors() const { return mColors; }
 
-    /** Sets the name of the color brewer color scheme.
-     * @param schemeName scheme name, must match a valid color brewer scheme name
-     * @see schemeName()
-     * @see listSchemeNames()
+    /**
+     * Sets the name of the color brewer color scheme.
+     * \param schemeName scheme name, must match a valid color brewer scheme name
+     * \see schemeName()
+     * \see listSchemeNames()
      */
-    void setSchemeName( const QString& schemeName ) { mSchemeName = schemeName; loadPalette(); }
+    void setSchemeName( const QString &schemeName ) { mSchemeName = schemeName; loadPalette(); }
 
-    /** Sets the number of colors in the ramp.
-     * @param colors number of colors. Must match a valid value for the scheme,
+    /**
+     * Sets the number of colors in the ramp.
+     * \param colors number of colors. Must match a valid value for the scheme,
      * which can be retrieved using listSchemeVariants()
-     * @see colors()
+     * \see colors()
      */
     void setColors( int colors ) { mColors = colors; loadPalette(); }
 
-    /** Returns a list of all valid color brewer scheme names.
-     * @see listSchemeVariants()
+    /**
+     * Returns a list of all valid color brewer scheme names.
+     * \see listSchemeVariants()
      */
     static QStringList listSchemeNames();
 
-    /** Returns a list of the valid variants (numbers of colors) for a specified
+    /**
+     * Returns a list of the valid variants (numbers of colors) for a specified
      * color brewer scheme name
-     * @param schemeName color brewer scheme name
-     * @see listSchemeNames()
+     * \param schemeName color brewer scheme name
+     * \see listSchemeNames()
      */
-    static QList<int> listSchemeVariants( const QString& schemeName );
+    static QList<int> listSchemeVariants( const QString &schemeName );
 
   protected:
 
@@ -534,44 +620,47 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
 #define DEFAULT_CPTCITY_SCHEMENAME "cb/div/BrBG_" //change this
 #define DEFAULT_CPTCITY_VARIANTNAME "05"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCptCityColorRamp
  */
 class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
 {
   public:
 
-    /** Constructor for QgsCptCityColorRamp
-     * @param schemeName cpt-city scheme name
-     * @param variantName cpt-city variant name
-     * @param inverted invert ramp ordering
-     * @param doLoadFile load cpt-city ramp from file
+    /**
+     * Constructor for QgsCptCityColorRamp
+     * \param schemeName cpt-city scheme name
+     * \param variantName cpt-city variant name
+     * \param inverted invert ramp ordering
+     * \param doLoadFile load cpt-city ramp from file
      */
-    QgsCptCityColorRamp( const QString& schemeName = DEFAULT_CPTCITY_SCHEMENAME,
-                         const QString& variantName = DEFAULT_CPTCITY_VARIANTNAME,
+    QgsCptCityColorRamp( const QString &schemeName = DEFAULT_CPTCITY_SCHEMENAME,
+                         const QString &variantName = DEFAULT_CPTCITY_VARIANTNAME,
                          bool inverted = false,
                          bool doLoadFile = true );
 
-    /** Constructor for QgsCptCityColorRamp
-     * @param schemeName cpt-city scheme name
-     * @param variantList cpt-city variant list
-     * @param variantName cpt-city variant name
-     * @param inverted invert ramp ordering
-     * @param doLoadFile load cpt-city ramp from file
+    /**
+     * Constructor for QgsCptCityColorRamp
+     * \param schemeName cpt-city scheme name
+     * \param variantList cpt-city variant list
+     * \param variantName cpt-city variant name
+     * \param inverted invert ramp ordering
+     * \param doLoadFile load cpt-city ramp from file
      */
-    QgsCptCityColorRamp( const QString& schemeName, const QStringList& variantList,
-                         const QString& variantName = QString(), bool inverted = false,
+    QgsCptCityColorRamp( const QString &schemeName, const QStringList &variantList,
+                         const QString &variantName = QString(), bool inverted = false,
                          bool doLoadFile = true );
 
-    static QgsColorRamp* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
     virtual QString type() const override { return QStringLiteral( "cpt-city" ); }
 
     virtual void invert() override;
 
-    virtual QgsCptCityColorRamp* clone() const override;
-    void copy( const QgsCptCityColorRamp* other );
-    QgsGradientColorRamp* cloneGradientRamp() const;
+    virtual QgsCptCityColorRamp *clone() const override SIP_FACTORY;
+    void copy( const QgsCptCityColorRamp *other );
+    QgsGradientColorRamp *cloneGradientRamp() const SIP_FACTORY;
 
     virtual QgsStringMap properties() const override;
 
@@ -579,11 +668,11 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
     QString variantName() const { return mVariantName; }
     QStringList variantList() const { return mVariantList; }
 
-    /* lazy loading - have to call loadPalette() explicitly */
-    void setSchemeName( const QString& schemeName ) { mSchemeName = schemeName; mFileLoaded = false; }
-    void setVariantName( const QString& variantName ) { mVariantName = variantName; mFileLoaded = false; }
-    void setVariantList( const QStringList& variantList ) { mVariantList = variantList; }
-    void setName( const QString& schemeName, const QString& variantName = "", const QStringList& variantList = QStringList() )
+    // lazy loading - have to call loadPalette() explicitly
+    void setSchemeName( const QString &schemeName ) { mSchemeName = schemeName; mFileLoaded = false; }
+    void setVariantName( const QString &variantName ) { mVariantName = variantName; mFileLoaded = false; }
+    void setVariantList( const QStringList &variantList ) { mVariantList = variantList; }
+    void setName( const QString &schemeName, const QString &variantName = QString(), const QStringList &variantList = QStringList() )
     { mSchemeName = schemeName; mVariantName = variantName; mVariantList = variantList; mFileLoaded = false; }
 
     void loadPalette() { loadFile(); }
@@ -598,14 +687,15 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
     QgsStringMap copyingInfo() const;
 
   protected:
-
     QString mSchemeName;
     QString mVariantName;
     QStringList mVariantList;
-    bool mFileLoaded;
-    bool mMultiStops;
+    bool mFileLoaded = false;
+    bool mMultiStops = false;
     bool mInverted;
+
 };
 
+// clazy:excludeall=qstring-allocations
 
 #endif

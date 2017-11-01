@@ -21,46 +21,52 @@
 
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
-    : QgsLayerTreeNode( NodeLayer, true )
-    , mRef( layer )
-    , mLayerName( layer->name() )
+  : QgsLayerTreeNode( NodeLayer, true )
+  , mRef( layer )
+  , mLayerName( layer->name() )
 {
   attachToLayer();
 }
 
-QgsLayerTreeLayer::QgsLayerTreeLayer( const QString& layerId, const QString& name )
-    : QgsLayerTreeNode( NodeLayer, true )
-    , mRef( layerId )
-    , mLayerName( name.isEmpty() ? QStringLiteral( "(?)" ) : name )
+QgsLayerTreeLayer::QgsLayerTreeLayer( const QString &layerId, const QString &name, const QString &source, const QString &provider )
+  : QgsLayerTreeNode( NodeLayer, true )
+  , mRef( layerId, name, source, provider )
+  , mLayerName( name.isEmpty() ? QStringLiteral( "(?)" ) : name )
 {
 }
 
-QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer& other )
-    : QgsLayerTreeNode( other )
-    , mRef( other.mRef )
-    , mLayerName( other.mLayerName )
+QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer &other )
+  : QgsLayerTreeNode( other )
+  , mRef( other.mRef )
+  , mLayerName( other.mLayerName )
 {
   attachToLayer();
 }
 
-void QgsLayerTreeLayer::resolveReferences( const QgsProject* project )
+void QgsLayerTreeLayer::resolveReferences( const QgsProject *project, bool looseMatching )
 {
-  if ( mRef.layer )
+  if ( mRef )
     return;  // already assigned
 
-  QgsMapLayer* layer = project->mapLayer( mRef.layerId );
-  if ( !layer )
+  if ( !looseMatching )
+  {
+    mRef.resolve( project );
+  }
+  else
+  {
+    mRef.resolveWeakly( project );
+  }
+
+  if ( !mRef )
     return;
 
-  mRef.layer = layer;
-  mRef.layerId = layer->id();
   attachToLayer();
   emit layerLoaded();
 }
 
 void QgsLayerTreeLayer::attachToLayer()
 {
-  if ( !mRef.layer )
+  if ( !mRef )
     return;
 
   connect( mRef.layer, &QgsMapLayer::nameChanged, this, &QgsLayerTreeLayer::layerNameChanged );
@@ -70,16 +76,16 @@ void QgsLayerTreeLayer::attachToLayer()
 
 QString QgsLayerTreeLayer::name() const
 {
-  return mRef.layer ? mRef.layer->name() : mLayerName;
+  return mRef ? mRef->name() : mLayerName;
 }
 
-void QgsLayerTreeLayer::setName( const QString& n )
+void QgsLayerTreeLayer::setName( const QString &n )
 {
-  if ( mRef.layer )
+  if ( mRef )
   {
-    if ( mRef.layer->name() == n )
+    if ( mRef->name() == n )
       return;
-    mRef.layer->setName( n );
+    mRef->setName( n );
     // no need to emit signal: we will be notified from layer's nameChanged() signal
   }
   else
@@ -91,18 +97,22 @@ void QgsLayerTreeLayer::setName( const QString& n )
   }
 }
 
-QgsLayerTreeLayer* QgsLayerTreeLayer::readXml( QDomElement& element )
+QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element )
 {
   if ( element.tagName() != QLatin1String( "layer-tree-layer" ) )
     return nullptr;
 
   QString layerID = element.attribute( QStringLiteral( "id" ) );
   QString layerName = element.attribute( QStringLiteral( "name" ) );
+
+  QString providerKey = element.attribute( QStringLiteral( "providerKey" ) );
+  QString source = element.attribute( QStringLiteral( "source" ) );
+
   Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) );
   bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
 
   // needs to have the layer reference resolved later
-  QgsLayerTreeLayer* nodeLayer = new QgsLayerTreeLayer( layerID, layerName );
+  QgsLayerTreeLayer *nodeLayer = new QgsLayerTreeLayer( layerID, layerName, source, providerKey );
 
   nodeLayer->readCommonXml( element );
 
@@ -111,20 +121,27 @@ QgsLayerTreeLayer* QgsLayerTreeLayer::readXml( QDomElement& element )
   return nodeLayer;
 }
 
-QgsLayerTreeLayer* QgsLayerTreeLayer::readXml( QDomElement& element, const QgsProject* project )
+QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsProject *project )
 {
-  QgsLayerTreeLayer* node = readXml( element );
+  QgsLayerTreeLayer *node = readXml( element );
   if ( node )
     node->resolveReferences( project );
   return node;
 }
 
-void QgsLayerTreeLayer::writeXml( QDomElement& parentElement )
+void QgsLayerTreeLayer::writeXml( QDomElement &parentElement )
 {
   QDomDocument doc = parentElement.ownerDocument();
   QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-layer" ) );
   elem.setAttribute( QStringLiteral( "id" ), layerId() );
   elem.setAttribute( QStringLiteral( "name" ), name() );
+
+  if ( mRef )
+  {
+    elem.setAttribute( QStringLiteral( "source" ), mRef->publicSource() );
+    elem.setAttribute( QStringLiteral( "providerKey" ), mRef->dataProvider() ? mRef->dataProvider()->name() : QString() );
+  }
+
   elem.setAttribute( QStringLiteral( "checked" ), mChecked ? QStringLiteral( "Qt::Checked" ) : QStringLiteral( "Qt::Unchecked" ) );
   elem.setAttribute( QStringLiteral( "expanded" ), mExpanded ? "1" : "0" );
 
@@ -138,16 +155,16 @@ QString QgsLayerTreeLayer::dump() const
   return QStringLiteral( "LAYER: %1 checked=%2 expanded=%3 id=%4\n" ).arg( name() ).arg( mChecked ).arg( mExpanded ).arg( layerId() );
 }
 
-QgsLayerTreeLayer* QgsLayerTreeLayer::clone() const
+QgsLayerTreeLayer *QgsLayerTreeLayer::clone() const
 {
   return new QgsLayerTreeLayer( *this );
 }
 
 void QgsLayerTreeLayer::layerWillBeDeleted()
 {
-  Q_ASSERT( mRef.layer );
+  Q_ASSERT( mRef );
 
-  mLayerName = mRef.layer->name();
+  mLayerName = mRef->name();
   // in theory we do not even need to do this - the weak ref should clear itself
   mRef.layer.clear();
   // layerId stays in the reference
@@ -158,6 +175,6 @@ void QgsLayerTreeLayer::layerWillBeDeleted()
 
 void QgsLayerTreeLayer::layerNameChanged()
 {
-  Q_ASSERT( mRef.layer );
-  emit nameChanged( this, mRef.layer->name() );
+  Q_ASSERT( mRef );
+  emit nameChanged( this, mRef->name() );
 }

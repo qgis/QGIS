@@ -27,11 +27,10 @@ __revision__ = '$Format:%H$'
 
 
 import os
-from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QTreeWidgetItem, QMessageBox
 from qgis.PyQt import uic
-from qgis.core import QgsDataSourceUri, QgsCredentials
+from qgis.core import QgsSettings
 from processing.tools.postgis import GeoDB
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -47,7 +46,7 @@ class PostgisTableSelector(BASE, WIDGET):
         self.table = None
         self.schema = None
         self.setupUi(self)
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup('/PostgreSQL/connections/')
         names = settings.childGroups()
         settings.endGroup()

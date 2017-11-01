@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from future import standard_library
-standard_library.install_aliases()
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
@@ -28,7 +26,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # Remove output for command
     output_dir = alg.getOutputFromName('output_dir')
     alg.removeOutputFromName('output_dir')

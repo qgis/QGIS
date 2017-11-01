@@ -1,4 +1,0 @@
-Convert Lines to Polygons
-shapes_polygons
-ParameterVector|LINES|Lines|1|False
-OutputVector|POLYGONS|Polygons

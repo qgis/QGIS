@@ -25,7 +25,7 @@ class APP_EXPORT QgsLabelEngineConfigDialog : public QDialog, private Ui::QgsLab
 {
     Q_OBJECT
   public:
-    QgsLabelEngineConfigDialog( QWidget* parent = nullptr );
+    QgsLabelEngineConfigDialog( QWidget *parent = nullptr );
 
   public slots:
     void onOK();

@@ -23,24 +23,31 @@
 #include "qgsraster.h"
 #include "qgserror.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Raster identify results container.
  */
 class CORE_EXPORT QgsRasterIdentifyResult
 {
   public:
-    QgsRasterIdentifyResult();
 
-    /** \brief Constructor. Creates valid result.
-     *  @param theFormat the result format
-     *  @param theResults the results
+    /**
+     * Constructor for QgsRasterIdentifyResult.
      */
-    QgsRasterIdentifyResult( QgsRaster::IdentifyFormat theFormat, const QMap<int, QVariant>& theResults );
+    QgsRasterIdentifyResult() = default;
 
-    /** \brief Constructor. Creates invalid result with error.
-     *  @param theError the error
+    /**
+     * \brief Constructor. Creates valid result.
+     *  \param format the result format
+     *  \param results the results
      */
-    QgsRasterIdentifyResult( const QgsError& theError );
+    QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant> &results );
+
+    /**
+     * \brief Constructor. Creates invalid result with error.
+     *  \param error the error
+     */
+    QgsRasterIdentifyResult( const QgsError &error );
 
     virtual ~QgsRasterIdentifyResult() = default;
 
@@ -50,7 +57,8 @@ class CORE_EXPORT QgsRasterIdentifyResult
     //! \brief Get results format
     QgsRaster::IdentifyFormat format() const { return mFormat; }
 
-    /** \brief Get results. Results are different for each format:
+    /**
+     * \brief Get results. Results are different for each format:
      * QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers (from 1).
      * QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer (WMS)
      * QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
@@ -58,7 +66,7 @@ class CORE_EXPORT QgsRasterIdentifyResult
     QMap<int, QVariant> results() const { return mResults; }
 
     //! Set map of optional parameters
-    void setParams( const QMap<QString, QVariant> & theParams ) { mParams = theParams; }
+    void setParams( const QMap<QString, QVariant> &params ) { mParams = params; }
 
     //! Get map of optional parameters
     QMap<QString, QVariant> params() const { return mParams; }
@@ -67,14 +75,14 @@ class CORE_EXPORT QgsRasterIdentifyResult
     QgsError error() const { return mError; }
 
     //! \brief Set error
-    void setError( const QgsError & theError ) { mError = theError;}
+    void setError( const QgsError &error ) { mError = error;}
 
   private:
     //! \brief Is valid
-    bool mValid;
+    bool mValid = false;
 
     //! \brief Results format
-    QgsRaster::IdentifyFormat mFormat;
+    QgsRaster::IdentifyFormat mFormat = QgsRaster::IdentifyFormatUndefined;
 
     //! \brief Results
     // TODO: better hierarchy (sublayer multiple feature sets)?

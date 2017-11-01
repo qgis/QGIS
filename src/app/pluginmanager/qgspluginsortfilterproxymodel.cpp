@@ -40,7 +40,7 @@ bool QgsPluginSortFilterProxyModel::filterAcceptsRow( int sourceRow, const QMode
 
 
 
-void QgsPluginSortFilterProxyModel::setAcceptedStatuses( const QStringList& statuses )
+void QgsPluginSortFilterProxyModel::setAcceptedStatuses( const QStringList &statuses )
 {
   mAcceptedStatuses = statuses;
   invalidateFilter();
@@ -48,7 +48,7 @@ void QgsPluginSortFilterProxyModel::setAcceptedStatuses( const QStringList& stat
 
 
 
-void QgsPluginSortFilterProxyModel::setAcceptedSpacers( const QString& spacers )
+void QgsPluginSortFilterProxyModel::setAcceptedSpacers( const QString &spacers )
 {
   mAcceptedSpacers = spacers;
   invalidateFilter();
@@ -61,7 +61,7 @@ bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
   if ( mAcceptedStatuses.contains( QStringLiteral( "invalid" ) )
        && sourceModel()->data( index, PLUGIN_ERROR_ROLE ).toString().isEmpty() )
   {
-    // Don't accept if the "invalid" filter is set and the plugin is ok
+    // Don't accept if the "invalid" filter is set and the plugin is OK
     return false;
   }
 

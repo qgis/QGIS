@@ -17,6 +17,8 @@ import qgis  # NOQA
 from qgis.gui import QgsColorButton
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtGui import QColor
+
+
 start_app()
 
 
@@ -29,7 +31,7 @@ class TestQgsColorButton(unittest.TestCase):
 
         # start with a valid color
         button = QgsColorButton()
-        button.setAllowAlpha(True)
+        button.setAllowOpacity(True)
         button.setColor(QColor(255, 100, 200, 255))
         self.assertEqual(button.color(), QColor(255, 100, 200, 255))
 

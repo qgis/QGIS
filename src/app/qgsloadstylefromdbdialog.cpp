@@ -16,14 +16,13 @@
 #include "qgsloadstylefromdbdialog.h"
 #include "qgslogger.h"
 #include "qgisapp.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QMessageBox>
 #include <QVector>
 
 QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
-    : QDialog( parent )
-    , mSectionLimit( 0 )
+  : QDialog( parent )
 {
   setupUi( this );
   setWindowTitle( QStringLiteral( "Database styles manager" ) );
@@ -53,17 +52,17 @@ QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
   setTabOrder( mCancelButton, mDeleteButton );
   setTabOrder( mDeleteButton, mLoadButton );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/loadStyleFromDb/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/loadStyleFromDb/geometry" ) ).toByteArray() );
 }
 
 QgsLoadStyleFromDBDialog::~QgsLoadStyleFromDBDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/loadStyleFromDb/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/loadStyleFromDb/geometry" ), saveGeometry() );
 }
 
-void QgsLoadStyleFromDBDialog::initializeLists( const QStringList& ids, const QStringList& names, const QStringList& descriptions, int sectionLimit )
+void QgsLoadStyleFromDBDialog::initializeLists( const QStringList &ids, const QStringList &names, const QStringList &descriptions, int sectionLimit )
 {
   mSectionLimit = sectionLimit;
   int relatedTableNOfCols = sectionLimit > 0 ? 2 : 1;
@@ -107,7 +106,7 @@ QString QgsLoadStyleFromDBDialog::getSelectedStyleId()
 void QgsLoadStyleFromDBDialog::setLayer( QgsVectorLayer *l )
 {
   mLayer = l;
-  mDeleteButton->setVisible( mLayer->dataProvider()->isDeleteStyleFromDbSupported() );
+  mDeleteButton->setVisible( mLayer->dataProvider()->isDeleteStyleFromDatabaseSupported() );
 }
 
 void QgsLoadStyleFromDBDialog::onRelatedTableSelectionChanged()
@@ -142,7 +141,7 @@ void QgsLoadStyleFromDBDialog::onOthersTableSelectionChanged()
 
 void QgsLoadStyleFromDBDialog::selectionChanged( QTableWidget *styleTable )
 {
-  QTableWidgetItem *item;
+  QTableWidgetItem *item = nullptr;
   QList<QTableWidgetItem *> selected = styleTable->selectedItems();
 
   if ( !selected.isEmpty() )
@@ -176,11 +175,11 @@ void QgsLoadStyleFromDBDialog::deleteStyleFromDB()
   if ( !msgError.isNull() )
   {
     QgsDebugMsg( opInfo + " failed." );
-    QgisApp::instance()->messageBar()->pushMessage( opInfo , tr( "%1: fail. %2" ).arg( opInfo, msgError ), QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
+    QgisApp::instance()->messageBar()->pushMessage( opInfo, tr( "%1: fail. %2" ).arg( opInfo, msgError ), QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
   }
   else
   {
-    QgisApp::instance()->messageBar()->pushMessage( opInfo , tr( "%1: success" ).arg( opInfo ), QgsMessageBar::INFO, QgisApp::instance()->messageTimeout() );
+    QgisApp::instance()->messageBar()->pushMessage( opInfo, tr( "%1: success" ).arg( opInfo ), QgsMessageBar::INFO, QgisApp::instance()->messageTimeout() );
 
     //Delete all rows from the UI table widgets
     mRelatedTable->setRowCount( 0 );

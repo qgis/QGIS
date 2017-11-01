@@ -18,30 +18,30 @@
 #include "qgsattributetypeloaddialog.h"
 #include "qgsvaluemapfieldformatter.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
 
-QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
   tableWidget->insertRow( 0 );
 
-  connect( addNullButton, SIGNAL( clicked() ), this, SLOT( addNullButtonPushed() ) );
-  connect( removeSelectedButton, SIGNAL( clicked() ), this, SLOT( removeSelectedButtonPushed() ) );
-  connect( loadFromLayerButton, SIGNAL( clicked() ), this, SLOT( loadFromLayerButtonPushed() ) );
-  connect( loadFromCSVButton, SIGNAL( clicked() ), this, SLOT( loadFromCSVButtonPushed() ) );
-  connect( tableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( vCellChanged( int, int ) ) );
+  connect( addNullButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::addNullButtonPushed );
+  connect( removeSelectedButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::removeSelectedButtonPushed );
+  connect( loadFromLayerButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::loadFromLayerButtonPushed );
+  connect( loadFromCSVButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::loadFromCSVButtonPushed );
+  connect( tableWidget, &QTableWidget::cellChanged, this, &QgsValueMapConfigDlg::vCellChanged );
 }
 
 QVariantMap QgsValueMapConfigDlg::config()
 {
   QVariantMap values;
-  QSettings settings;
+  QgsSettings settings;
 
   //store data to map
   for ( int i = 0; i < tableWidget->rowCount() - 1; i++ )
@@ -53,7 +53,7 @@ QVariantMap QgsValueMapConfigDlg::config()
       continue;
 
     QString ks = ki->text();
-    if (( ks == QgsApplication::nullRepresentation() ) && !( ki->flags() & Qt::ItemIsEditable ) )
+    if ( ( ks == QgsApplication::nullRepresentation() ) && !( ki->flags() & Qt::ItemIsEditable ) )
       ks = QgsValueMapFieldFormatter::NULL_VALUE;
 
     if ( !vi || vi->text().isNull() )
@@ -71,7 +71,7 @@ QVariantMap QgsValueMapConfigDlg::config()
   return cfg;
 }
 
-void QgsValueMapConfigDlg::setConfig( const QVariantMap& config )
+void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
 {
   tableWidget->clearContents();
   for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )
@@ -81,7 +81,7 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap& config )
 
   int row = 0;
   QVariantMap values = config.value( QStringLiteral( "map" ) ).toMap();
-  for ( QVariantMap::ConstIterator mit = values.begin(); mit != values.end(); mit++, row++ )
+  for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++, row++ )
   {
     if ( mit.value().isNull() )
       setRow( row, mit.key(), QString() );
@@ -150,11 +150,11 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
   }
 }
 
-void QgsValueMapConfigDlg::setRow( int row, const QString& value, const QString& description )
+void QgsValueMapConfigDlg::setRow( int row, const QString &value, const QString &description )
 {
-  QSettings settings;
-  QTableWidgetItem* valueCell;
-  QTableWidgetItem* descriptionCell = new QTableWidgetItem( description );
+  QgsSettings settings;
+  QTableWidgetItem *valueCell = nullptr;
+  QTableWidgetItem *descriptionCell = new QTableWidgetItem( description );
   tableWidget->insertRow( row );
   if ( value == QgsValueMapFieldFormatter::NULL_VALUE )
   {
@@ -189,7 +189,7 @@ void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
 
 void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 {
-  QSettings settings;
+  QgsSettings settings;
 
   QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Select a file" ), QDir::homePath() );
   if ( fileName.isNull() )
@@ -235,14 +235,14 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
     else
       continue;
 
-    if (( key.startsWith( '\"' ) && key.endsWith( '\"' ) ) ||
-        ( key.startsWith( '\'' ) && key.endsWith( '\'' ) ) )
+    if ( ( key.startsWith( '\"' ) && key.endsWith( '\"' ) ) ||
+         ( key.startsWith( '\'' ) && key.endsWith( '\'' ) ) )
     {
       key = key.mid( 1, key.length() - 2 );
     }
 
-    if (( val.startsWith( '\"' ) && val.endsWith( '\"' ) ) ||
-        ( val.startsWith( '\'' ) && val.endsWith( '\'' ) ) )
+    if ( ( val.startsWith( '\"' ) && val.endsWith( '\"' ) ) ||
+         ( val.startsWith( '\'' ) && val.endsWith( '\'' ) ) )
     {
       val = val.mid( 1, val.length() - 2 );
     }

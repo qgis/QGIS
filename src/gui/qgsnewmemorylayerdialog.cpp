@@ -22,116 +22,91 @@
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
+#include "qgsmemoryproviderutils.h"
 
 #include <QPushButton>
 #include <QComboBox>
 #include <QLibrary>
-#include <QSettings>
 #include <QUuid>
 #include <QFileDialog>
 
-QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
+QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent, const QgsCoordinateReferenceSystem &defaultCrs )
 {
   QgsNewMemoryLayerDialog dialog( parent );
+  dialog.setCrs( defaultCrs );
   if ( dialog.exec() == QDialog::Rejected )
   {
     return nullptr;
   }
 
   QgsWkbTypes::Type geometrytype = dialog.selectedType();
-
-  QString geomType;
-  switch ( geometrytype )
-  {
-    case QgsWkbTypes::Point:
-      geomType = QStringLiteral( "point" );
-      break;
-    case QgsWkbTypes::LineString:
-      geomType = QStringLiteral( "linestring" );
-      break;
-    case QgsWkbTypes::Polygon:
-      geomType = QStringLiteral( "polygon" );
-      break;
-    case QgsWkbTypes::MultiPoint:
-      geomType = QStringLiteral( "multipoint" );
-      break;
-    case QgsWkbTypes::MultiLineString:
-      geomType = QStringLiteral( "multilinestring" );
-      break;
-    case QgsWkbTypes::MultiPolygon:
-      geomType = QStringLiteral( "multipolygon" );
-      break;
-    case QgsWkbTypes::NoGeometry:
-      geomType = QStringLiteral( "none" );
-      break;
-    default:
-      geomType = QStringLiteral( "point" );
-  }
-
-  QString layerProperties = QStringLiteral( "%1?" ).arg( geomType );
-  if ( QgsWkbTypes::NoGeometry != geometrytype )
-    layerProperties.append( QStringLiteral( "crs=%1&" ).arg( dialog.crs().authid() ) );
-  layerProperties.append( QStringLiteral( "memoryid=%1" ).arg( QUuid::createUuid().toString() ) );
-
   QString name = dialog.layerName().isEmpty() ? tr( "New scratch layer" ) : dialog.layerName();
-  QgsVectorLayer* newLayer = new QgsVectorLayer( layerProperties, name, QStringLiteral( "memory" ) );
+  QgsVectorLayer *newLayer = QgsMemoryProviderUtils::createMemoryLayer( name, QgsFields(), geometrytype, dialog.crs() );
   return newLayer;
 }
 
 QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/NewMemoryLayer/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/NewMemoryLayer/geometry" ) ).toByteArray() );
 
   mPointRadioButton->setChecked( true );
-
-  QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
-  defaultCrs.validate();
-  mCrsSelector->setCrs( defaultCrs );
-
   mNameLineEdit->setText( tr( "New scratch layer" ) );
+
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsNewMemoryLayerDialog::showHelp );
 }
 
 QgsNewMemoryLayerDialog::~QgsNewMemoryLayerDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/NewMemoryLayer/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/NewMemoryLayer/geometry" ), saveGeometry() );
 }
 
 QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
 {
+  QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
   if ( !buttonGroupGeometry->isChecked() )
   {
-    return QgsWkbTypes::NoGeometry;
+    wkbType = QgsWkbTypes::NoGeometry;
   }
   else if ( mPointRadioButton->isChecked() )
   {
-    return QgsWkbTypes::Point;
+    wkbType = QgsWkbTypes::Point;
   }
   else if ( mLineRadioButton->isChecked() )
   {
-    return QgsWkbTypes::LineString;
+    wkbType = QgsWkbTypes::LineString;
   }
   else if ( mPolygonRadioButton->isChecked() )
   {
-    return QgsWkbTypes::Polygon;
+    wkbType = QgsWkbTypes::Polygon;
   }
   else if ( mMultiPointRadioButton->isChecked() )
   {
-    return QgsWkbTypes::MultiPoint;
+    wkbType = QgsWkbTypes::MultiPoint;
   }
   else if ( mMultiLineRadioButton->isChecked() )
   {
-    return QgsWkbTypes::MultiLineString;
+    wkbType = QgsWkbTypes::MultiLineString;
   }
   else if ( mMultiPolygonRadioButton->isChecked() )
   {
-    return QgsWkbTypes::MultiPolygon;
+    wkbType = QgsWkbTypes::MultiPolygon;
   }
-  return QgsWkbTypes::Unknown;
+
+  if ( mGeometryWithZCheckBox->isChecked() && wkbType != QgsWkbTypes::Unknown && wkbType != QgsWkbTypes::NoGeometry )
+    wkbType = QgsWkbTypes::zmType( wkbType, true, true );
+
+  return wkbType;
+}
+
+void QgsNewMemoryLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mCrsSelector->setCrs( crs );
 }
 
 QgsCoordinateReferenceSystem QgsNewMemoryLayerDialog::crs() const
@@ -142,4 +117,9 @@ QgsCoordinateReferenceSystem QgsNewMemoryLayerDialog::crs() const
 QString QgsNewMemoryLayerDialog::layerName() const
 {
   return mNameLineEdit->text();
+}
+
+void QgsNewMemoryLayerDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-a-new-temporary-scratch-layer" ) );
 }

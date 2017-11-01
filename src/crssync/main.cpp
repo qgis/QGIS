@@ -36,31 +36,42 @@ void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
   }
 }
 
-int main( int argc, char ** argv )
+int main( int argc, char **argv )
 {
   QCoreApplication app( argc, argv );
+
+  const QStringList args = QCoreApplication::arguments();
+
+  bool verbose = false;
+
+  for ( const QString &arg : args )
+  {
+    if ( arg == QLatin1String( "--verbose" ) )
+      verbose = true;
+  }
 
   QgsApplication::init();
 
   if ( !QgsApplication::isRunningFromBuildDir() )
   {
-    char* prefixPath = getenv( "QGIS_PREFIX_PATH" );
+    char *prefixPath = getenv( "QGIS_PREFIX_PATH" );
     QgsApplication::setPrefixPath( prefixPath ? prefixPath : CMAKE_INSTALL_PREFIX, TRUE );
   }
 
-  std::cout << "Synchronizing CRS database with GDAL/PROJ definitions." << std::endl;
+  if ( verbose )
+    std::cout << "Synchronizing CRS database with GDAL/PROJ definitions." << std::endl;
 
   CPLPushErrorHandler( showError );
 
-  int res = QgsCoordinateReferenceSystem::syncDb();
+  int res = QgsCoordinateReferenceSystem::syncDatabase();
 
   CPLPopErrorHandler();
 
-  if ( res == 0 )
+  if ( res == 0 && verbose )
   {
     std::cout << "No CRS updates were necessary." << std::endl;
   }
-  else if ( res > 0 )
+  else if ( res > 0 && verbose )
   {
     std::cout << res << " CRSs updated." << std::endl;
   }

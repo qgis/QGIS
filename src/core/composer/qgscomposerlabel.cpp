@@ -28,6 +28,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsmapsettings.h"
 #include "qgscomposermap.h"
+#include "qgssettings.h"
 
 #include "qgswebview.h"
 #include "qgswebframe.h"
@@ -37,29 +38,27 @@
 #include <QDate>
 #include <QDomElement>
 #include <QPainter>
-#include <QSettings>
 #include <QTimer>
 #include <QEventLoop>
 
 QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
-    : QgsComposerItem( composition )
-    , mHtmlState( 0 )
-    , mHtmlUnitsToMM( 1.0 )
-    , mHtmlLoaded( false )
-    , mMarginX( 1.0 )
-    , mMarginY( 1.0 )
-    , mFontColor( QColor( 0, 0, 0 ) )
-    , mHAlignment( Qt::AlignLeft )
-    , mVAlignment( Qt::AlignTop )
-    , mExpressionLayer( nullptr )
-    , mDistanceArea( nullptr )
+  : QgsComposerItem( composition )
+  , mHtmlState( 0 )
+  , mHtmlUnitsToMM( 1.0 )
+  , mHtmlLoaded( false )
+  , mMarginX( 1.0 )
+  , mMarginY( 1.0 )
+  , mFontColor( QColor( 0, 0, 0 ) )
+  , mHAlignment( Qt::AlignJustify )
+  , mVAlignment( Qt::AlignTop )
+
 {
   mDistanceArea = new QgsDistanceArea();
   mHtmlUnitsToMM = htmlUnitsToMM();
 
   //get default composer font from settings
-  QSettings settings;
-  QString defaultFontString = settings.value( QStringLiteral( "/Composer/defaultFont" ) ).toString();
+  QgsSettings settings;
+  QString defaultFontString = settings.value( QStringLiteral( "Composer/defaultFont" ) ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mFont.setFamily( defaultFontString );
@@ -79,7 +78,8 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
   {
     //connect to atlas feature changes
     //to update the expression context
-    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshExpressionContext() ) );
+    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerLabel::refreshExpressionContext );
+    connect( mComposition, &QgsComposition::refreshItemsTriggered, this, &QgsComposerLabel::contentChanged );
   }
 
   mWebPage = new QgsWebPage( this );
@@ -96,7 +96,7 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
 
-  connect( mWebPage, SIGNAL( loadFinished( bool ) ), SLOT( loadingHtmlFinished( bool ) ) );
+  connect( mWebPage, &QWebPage::loadFinished, this, &QgsComposerLabel::loadingHtmlFinished );
 }
 
 QgsComposerLabel::~QgsComposerLabel()
@@ -105,7 +105,7 @@ QgsComposerLabel::~QgsComposerLabel()
   delete mWebPage;
 }
 
-void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsComposerLabel::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -131,6 +131,11 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
   if ( mHtmlState )
   {
+    if ( mFirstRender )
+    {
+      contentChanged();
+      mFirstRender = false;
+    }
     painter->scale( 1.0 / mHtmlUnitsToMM / 10.0, 1.0 / mHtmlUnitsToMM / 10.0 );
     mWebPage->setViewportSize( QSize( painterRect.width() * mHtmlUnitsToMM * 10.0, painterRect.height() * mHtmlUnitsToMM * 10.0 ) );
     mWebPage->settings()->setUserStyleSheetUrl( createStylesheetUrl() );
@@ -178,12 +183,12 @@ void QgsComposerLabel::contentChanged()
       QEventLoop loop;
 
       //Connect timeout and webpage loadFinished signals to loop
-      connect( mWebPage, SIGNAL( loadFinished( bool ) ), &loop, SLOT( quit() ) );
+      connect( mWebPage, &QWebPage::loadFinished, &loop, &QEventLoop::quit );
 
       // Start a 20 second timeout in case html loading will never complete
       QTimer timeoutTimer;
       timeoutTimer.setSingleShot( true );
-      connect( &timeoutTimer, SIGNAL( timeout() ), &loop, SLOT( quit() ) );
+      connect( &timeoutTimer, &QTimer::timeout, &loop, &QEventLoop::quit );
       timeoutTimer.start( 20000 );
 
       // Pause until html is loaded
@@ -210,7 +215,7 @@ double QgsComposerLabel::htmlUnitsToMM()
   return ( mComposition->printResolution() / 72.0 ); //webkit seems to assume a standard dpi of 72
 }
 
-void QgsComposerLabel::setText( const QString& text )
+void QgsComposerLabel::setText( const QString &text )
 {
   mText = text;
   emit itemChanged();
@@ -243,13 +248,10 @@ void QgsComposerLabel::setHtmlState( int state )
 
 void QgsComposerLabel::refreshExpressionContext()
 {
-  mExpressionLayer = nullptr;
-  mExpressionFeature.reset();
-
   if ( !mComposition )
     return;
 
-  QgsVectorLayer* layer = nullptr;
+  QgsVectorLayer *layer = nullptr;
   if ( mComposition->atlasComposition().enabled() )
   {
     layer = mComposition->atlasComposition().coverageLayer();
@@ -258,16 +260,15 @@ void QgsComposerLabel::refreshExpressionContext()
   //setup distance area conversion
   if ( layer )
   {
-    mDistanceArea->setSourceCrs( layer->crs().srsid() );
+    mDistanceArea->setSourceCrs( layer->crs() );
   }
   else
   {
     //set to composition's reference map's crs
-    QgsComposerMap* referenceMap = mComposition->referenceMap();
+    QgsComposerMap *referenceMap = mComposition->referenceMap();
     if ( referenceMap )
-      mDistanceArea->setSourceCrs( referenceMap->crs().srsid() );
+      mDistanceArea->setSourceCrs( referenceMap->crs() );
   }
-  mDistanceArea->setEllipsoidalMode( true );
   mDistanceArea->setEllipsoid( mComposition->project()->ellipsoid() );
   contentChanged();
 
@@ -280,17 +281,11 @@ QString QgsComposerLabel::displayText() const
   replaceDateText( displayText );
 
   QgsExpressionContext context = createExpressionContext();
-  //overwrite layer/feature if they have been set via setExpressionContext
-  //TODO remove when setExpressionContext is removed
-  if ( mExpressionFeature.get() )
-    context.setFeature( *mExpressionFeature.get() );
-  if ( mExpressionLayer )
-    context.setFields( mExpressionLayer->fields() );
 
   return QgsExpression::replaceExpressionText( displayText, &context, mDistanceArea );
 }
 
-void QgsComposerLabel::replaceDateText( QString& text ) const
+void QgsComposerLabel::replaceDateText( QString &text ) const
 {
   QString constant = QStringLiteral( "$CURRENT_DATE" );
   int currentDatePos = text.indexOf( constant );
@@ -315,7 +310,7 @@ void QgsComposerLabel::replaceDateText( QString& text ) const
   }
 }
 
-void QgsComposerLabel::setFont( const QFont& f )
+void QgsComposerLabel::setFont( const QFont &f )
 {
   mFont = f;
 }
@@ -364,7 +359,7 @@ QFont QgsComposerLabel::font() const
   return mFont;
 }
 
-bool QgsComposerLabel::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerLabel::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   if ( elem.isNull() )
   {
@@ -396,7 +391,7 @@ bool QgsComposerLabel::writeXml( QDomElement& elem, QDomDocument & doc ) const
   return _writeXml( composerLabelElem, doc );
 }
 
-bool QgsComposerLabel::readXml( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerLabel::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   if ( itemElem.isNull() )
   {
@@ -464,7 +459,6 @@ bool QgsComposerLabel::readXml( const QDomElement& itemElem, const QDomDocument&
     _readXml( composerItemElem, doc );
   }
   emit itemChanged();
-  contentChanged();
   return true;
 }
 
@@ -520,13 +514,13 @@ void QgsComposerLabel::setFrameEnabled( const bool drawFrame )
   prepareGeometryChange();
 }
 
-void QgsComposerLabel::setFrameOutlineWidth( const double outlineWidth )
+void QgsComposerLabel::setFrameStrokeWidth( const double strokeWidth )
 {
-  QgsComposerItem::setFrameOutlineWidth( outlineWidth );
+  QgsComposerItem::setFrameStrokeWidth( strokeWidth );
   prepareGeometryChange();
 }
 
-void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, double& xShift, double& yShift ) const
+void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, double &xShift, double &yShift ) const
 {
   //keep alignment point constant
   double currentWidth = rect().width();
@@ -615,10 +609,10 @@ void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, d
 QUrl QgsComposerLabel::createStylesheetUrl() const
 {
   QString stylesheet;
-  stylesheet += QStringLiteral( "body { margin: %1 %2;" ).arg( qMax( mMarginY * mHtmlUnitsToMM, 0.0 ) ).arg( qMax( mMarginX * mHtmlUnitsToMM, 0.0 ) );
+  stylesheet += QStringLiteral( "body { margin: %1 %2;" ).arg( std::max( mMarginY * mHtmlUnitsToMM, 0.0 ) ).arg( std::max( mMarginX * mHtmlUnitsToMM, 0.0 ) );
   stylesheet += QgsFontUtils::asCSS( mFont, 0.352778 * mHtmlUnitsToMM );
   stylesheet += QStringLiteral( "color: %1;" ).arg( mFontColor.name() );
-  stylesheet += QStringLiteral( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? "left" : mHAlignment == Qt::AlignRight ? "right" : "center" );
+  stylesheet += QStringLiteral( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? QStringLiteral( "left" ) : mHAlignment == Qt::AlignRight ? QStringLiteral( "right" ) : mHAlignment == Qt::AlignHCenter ? QStringLiteral( "center" ) : QStringLiteral( "justify" ) );
 
   QByteArray ba;
   ba.append( stylesheet.toUtf8() );

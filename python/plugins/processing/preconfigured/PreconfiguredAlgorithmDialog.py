@@ -33,11 +33,11 @@ from processing.preconfigured.PreconfiguredUtils import algAsDict
 from processing.preconfigured.PreconfiguredUtils import preconfiguredAlgorithmsFolder
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmDialog import AlgorithmDialog
-from processing.core.alglist import algList
-
+from processing.tools import dataobjects
 from qgis.PyQt.QtWidgets import QMessageBox, QVBoxLayout, QLabel, QLineEdit, QWidget
 from qgis.PyQt.QtGui import QPalette, QColor
 
+from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar
 
 
@@ -53,10 +53,12 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
         self.tabWidget.addTab(self.settingsPanel, "Description")
 
     def accept(self):
+        context = dataobjects.createContext()
         try:
-            self.setParamValues()
-            msg = self.alg._checkParameterValuesBeforeExecuting()
-            if msg:
+            parameters = self.getParamValues()
+            self.setOutputValues()
+            ok, msg = self.alg.checkParameterValues(parameters, context)
+            if not ok:
                 QMessageBox.warning(
                     self, self.tr('Unable to execute algorithm'), msg)
                 return
@@ -71,16 +73,15 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
             filepath = os.path.join(preconfiguredAlgorithmsFolder(), filename)
             with open(filepath, "w") as f:
                 json.dump(description, f)
-            algList.reloadProvider('preconfigured')
+            QgsApplication.processingRegistry().providerById('preconfigured').refreshAlgorithms()
         except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
-                self.buttonBox.accepted.connect(lambda:
-                                                e.widget.setPalette(QPalette()))
+                self.buttonBox.accepted.connect(lambda: e.widget.setPalette(QPalette()))
                 palette = e.widget.palette()
                 palette.setColor(QPalette.Base, QColor(255, 255, 0))
                 e.widget.setPalette(palette)
-                self.parent.bar.pushMessage("", self.tr('Missing parameter value: %s')
-                                            % e.parameter.description,
+                self.parent.bar.pushMessage("", self.tr('Missing parameter value: {0}').format(
+                                            e.parameter.description()),
                                             level=QgsMessageBar.WARNING, duration=5)
                 return
             except:

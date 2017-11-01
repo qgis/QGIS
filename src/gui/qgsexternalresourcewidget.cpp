@@ -28,18 +28,12 @@
 
 
 QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
-    : QWidget( parent )
-    , mFileWidgetVisible( true )
-    , mDocumentViewerContent( NoContent )
-    , mDocumentViewerHeight( 0 )
-    , mDocumentViewerWidth( 0 )
-    , mRelativeStorage( QgsFileWidget::Absolute )
-
+  : QWidget( parent )
 {
   setBackgroundRole( QPalette::Window );
   setAutoFillBackground( true );
 
-  QGridLayout* layout = new QGridLayout();
+  QGridLayout *layout = new QGridLayout();
   layout->setMargin( 0 );
 
   mFileWidget = new QgsFileWidget( this );
@@ -58,7 +52,8 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
 
   setLayout( layout );
 
-  connect( mFileWidget, SIGNAL( fileChanged( QString ) ), this, SLOT( loadDocument( QString ) ) );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsExternalResourceWidget::loadDocument );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsExternalResourceWidget::valueChanged );
 }
 
 QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
@@ -74,12 +69,12 @@ QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const
   }
 }
 
-void QgsExternalResourceWidget::setDocumentPath( const QVariant& path )
+void QgsExternalResourceWidget::setDocumentPath( const QVariant &path )
 {
   mFileWidget->setFilePath( path.toString() );
 }
 
-QgsFileWidget*QgsExternalResourceWidget::fileWidget()
+QgsFileWidget *QgsExternalResourceWidget::fileWidget()
 {
   return mFileWidget;
 }
@@ -143,7 +138,7 @@ void QgsExternalResourceWidget::updateDocumentViewer()
 
   if ( mDocumentViewerContent == Image )
   {
-    const QPixmap* pm = mPixmapLabel->pixmap();
+    const QPixmap *pm = mPixmapLabel->pixmap();
 
     if ( !pm || pm->isNull() )
     {
@@ -170,7 +165,7 @@ void QgsExternalResourceWidget::updateDocumentViewer()
   }
 }
 
-QString QgsExternalResourceWidget::resolvePath( const QString& path )
+QString QgsExternalResourceWidget::resolvePath( const QString &path )
 {
   switch ( mRelativeStorage )
   {
@@ -192,7 +187,7 @@ QString QgsExternalResourceWidget::defaultRoot() const
   return mDefaultRoot;
 }
 
-void QgsExternalResourceWidget::setDefaultRoot( const QString& defaultRoot )
+void QgsExternalResourceWidget::setDefaultRoot( const QString &defaultRoot )
 {
   mFileWidget->setDefaultRoot( defaultRoot );
   mDefaultRoot = defaultRoot;
@@ -209,7 +204,7 @@ void QgsExternalResourceWidget::setRelativeStorage( QgsFileWidget::RelativeStora
   mRelativeStorage = relativeStorage;
 }
 
-void QgsExternalResourceWidget::loadDocument( const QString& path )
+void QgsExternalResourceWidget::loadDocument( const QString &path )
 {
   QString resolvedPath;
 

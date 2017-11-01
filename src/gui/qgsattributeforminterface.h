@@ -21,28 +21,29 @@
 class QgsAttributeForm;
 class QgsFeature;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsAttributeFormInterface
  */
 class GUI_EXPORT QgsAttributeFormInterface
 {
   public:
-    explicit QgsAttributeFormInterface( QgsAttributeForm* form );
+    explicit QgsAttributeFormInterface( QgsAttributeForm *form );
 
     virtual ~QgsAttributeFormInterface() = default;
 
-    virtual bool acceptChanges( const QgsFeature& feature );
+    virtual bool acceptChanges( const QgsFeature &feature );
 
     virtual void initForm();
 
     virtual void featureChanged();
 
-    QgsAttributeForm* form();
+    QgsAttributeForm *form();
 
-    const QgsFeature& feature();
+    const QgsFeature &feature();
 
   private:
-    QgsAttributeForm* mForm;
+    QgsAttributeForm *mForm = nullptr;
 };
 
 #endif // QGSATTRIBUTEFORMINTERFACE_H

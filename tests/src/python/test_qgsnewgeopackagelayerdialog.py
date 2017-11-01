@@ -12,21 +12,17 @@ __copyright__ = 'Copyright 2016, Even Rouault'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import hashlib
 import os
-import sys
 import tempfile
 import shutil
 
-from qgis.PyQt.QtCore import QObject, QCoreApplication, QSettings, Qt, QEventLoop, QItemSelectionModel, QModelIndex
-from qgis.PyQt.QtWidgets import QApplication, QWidget, QLineEdit, QDialogButtonBox, QTreeWidget, QComboBox, QPushButton, QToolButton
+from qgis.PyQt.QtCore import QCoreApplication, Qt
+from qgis.PyQt.QtWidgets import QLineEdit, QDialogButtonBox, QTreeWidget, QComboBox, QToolButton
 from qgis.PyQt.QtTest import QTest
 
-from qgis.core import Qgis, QgsProject, QgsWkbTypes
+from qgis.core import QgsProject, QgsSettings, QgsWkbTypes
 from qgis.gui import QgsNewGeoPackageLayerDialog
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.testing import start_app, unittest
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
@@ -41,14 +37,14 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsNewGeoPackageLayerDialog.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsNewGeoPackageLayerDialog")
-        QSettings().clear()
+        QgsSettings().clear()
         start_app()
         cls.basetestpath = tempfile.mkdtemp()
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        QSettings().clear()
+        QgsSettings().clear()
         if cls.basetestpath is not None:
             shutil.rmtree(cls.basetestpath, True)
 
@@ -274,6 +270,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
 
     def accepted_slot(self):
         self.accepted = True
+
 
 if __name__ == '__main__':
     unittest.main()

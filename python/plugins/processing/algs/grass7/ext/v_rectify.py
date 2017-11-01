@@ -36,7 +36,7 @@ def checkParameterValuesBeforeExecuting(alg):
     return None
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # handle inline add data
     input_txt = alg.getParameterFromName('inline_points')
     inputParameter = alg.getParameterFromName('points')

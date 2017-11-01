@@ -23,11 +23,11 @@
   modify field dialog. #13089
 
 * Import Table does not work because of a problem in
-  QgsVectorLayerImport. After the creation of the table, QGIS tries to
+  QgsVectorLayerExporter. After the creation of the table, QGIS tries to
   open the layer but, as there is no geometries in it, QGIS can't
   determinate the geometry type of the layer and refuses to open
   it. Then, no data importation can occur. Must dig into
-  src/core/qgsvectorlayerimport.cpp and into the provider code.
+  src/core/qgsvectorlayerexporter.cpp and into the provider code.
   See #13096 .
 
 # Future work

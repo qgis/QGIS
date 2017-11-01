@@ -24,28 +24,27 @@ class QgsComposerPolyline;
 
 /**
  * Input widget for QgsComposerPolyline
- * @note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 class QgsComposerPolylineWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerPolylineWidgetBase
 {
     Q_OBJECT
   public:
-    explicit QgsComposerPolylineWidget( QgsComposerPolyline* composerPolyline );
-    ~QgsComposerPolylineWidget();
+    explicit QgsComposerPolylineWidget( QgsComposerPolyline *composerPolyline );
 
   private:
-    QgsComposerPolyline* mComposerPolyline;
+    QgsComposerPolyline *mComposerPolyline = nullptr;
 
     void updatePolylineStyle();
 
   private slots:
-    void on_mLineStyleButton_clicked();
+    void mLineStyleButton_clicked();
 
     //! Sets the GUI elements to the currentValues of mComposerShape
     void setGuiElementValues();
 
     void updateStyleFromWidget();
-    void cleanUpStyleSelector( QgsPanelWidget* container );
+    void cleanUpStyleSelector( QgsPanelWidget *container );
 };
 
 #endif // QGSCOMPOSERPOLYLINEWIDGET_H

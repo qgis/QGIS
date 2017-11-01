@@ -29,19 +29,17 @@
 
 #ifdef Q_OS_MACX
 QgsAbout::QgsAbout( QWidget *parent )
-    : QgsOptionsDialogBase( "about", parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
+  : QgsOptionsDialogBase( "about", parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
 #else
-QgsAbout::QgsAbout( QWidget *parent )
-    : QgsOptionsDialogBase( QStringLiteral( "about" ), parent )  // Normal dialog in non Mac-OS
+QgsAbout::QgsAbout( QWidget * parent )
+  : QgsOptionsDialogBase( QStringLiteral( "about" ), parent )  // Normal dialog in non Mac-OS
 #endif
 {
   setupUi( this );
+  connect( btnQgisUser, &QPushButton::clicked, this, &QgsAbout::btnQgisUser_clicked );
+  connect( btnQgisHome, &QPushButton::clicked, this, &QgsAbout::btnQgisHome_clicked );
   initOptionsBase( true, QStringLiteral( "%1 - %2 Bit" ).arg( windowTitle() ).arg( QSysInfo::WordSize ) );
   init();
-}
-
-QgsAbout::~QgsAbout()
-{
 }
 
 void QgsAbout::init()
@@ -65,7 +63,7 @@ void QgsAbout::init()
   developersMapView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
   developersMapView->setContextMenuPolicy( Qt::NoContextMenu );
 
-  connect( developersMapView, SIGNAL( linkClicked( const QUrl & ) ), this, SLOT( openUrl( const QUrl & ) ) );
+  connect( developersMapView, &QgsWebView::linkClicked, this, &QgsAbout::openUrl );
 
   // set the 60x60 icon pixmap
   qgisIcon->setPixmap( QPixmap( QgsApplication::appIconPath() ) );
@@ -190,7 +188,7 @@ void QgsAbout::init()
 #endif
   if ( translatorFile.open( QIODevice::ReadOnly ) )
   {
-    QString translatorHTML = QLatin1String( "" );
+    QString translatorHTML;
     QTextStream translatorStream( &translatorFile );
     // Always use UTF-8
     translatorStream.setCodec( "UTF-8" );
@@ -221,7 +219,7 @@ void QgsAbout::setLicence()
   }
 }
 
-void QgsAbout::setVersion( const QString& v )
+void QgsAbout::setVersion( const QString &v )
 {
   txtVersion->setBackgroundRole( QPalette::NoRole );
   txtVersion->setAutoFillBackground( true );
@@ -255,8 +253,8 @@ void QgsAbout::setPluginInfo()
   myString += QApplication::libraryPaths().join( QStringLiteral( "<br>" ) );
   myString += QLatin1String( "<ol>\n<li>\n" );
   QList<QByteArray> myImageFormats = QImageReader::supportedImageFormats();
-  QList<QByteArray>::const_iterator myIterator = myImageFormats.begin();
-  while ( myIterator != myImageFormats.end() )
+  QList<QByteArray>::const_iterator myIterator = myImageFormats.constBegin();
+  while ( myIterator != myImageFormats.constEnd() )
   {
     QString myFormat = ( *myIterator ).data();
     myString += myFormat + "</li>\n<li>";
@@ -270,12 +268,12 @@ void QgsAbout::setPluginInfo()
   txtProviders->setText( myString );
 }
 
-void QgsAbout::on_btnQgisUser_clicked()
+void QgsAbout::btnQgisUser_clicked()
 {
   openUrl( QStringLiteral( "http://lists.osgeo.org/mailman/listinfo/qgis-user" ) );
 }
 
-void QgsAbout::on_btnQgisHome_clicked()
+void QgsAbout::btnQgisHome_clicked()
 {
   openUrl( QStringLiteral( "http://qgis.org" ) );
 }
@@ -292,7 +290,7 @@ void QgsAbout::openUrl( const QUrl &url )
  * Step 2: Replace all bytes of the UTF-8 above 0x7f with the hexcode in lower case.
  * Step 2: Replace all non [a-z][a-Z][0-9] with underscore (backward compatibility)
  */
-QString QgsAbout::fileSystemSafe( const QString& fileName )
+QString QgsAbout::fileSystemSafe( const QString &fileName )
 {
   QString result;
   QByteArray utf8 = fileName.toUtf8();

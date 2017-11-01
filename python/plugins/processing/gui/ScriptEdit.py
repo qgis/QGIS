@@ -27,14 +27,12 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtCore import Qt, QSettings
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QFont, QColor, QKeySequence
 from qgis.PyQt.QtWidgets import QShortcut
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsSettings
 
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
-
-from processing.gui.LexerR import LexerR
 
 
 class ScriptEdit(QsciScintilla):
@@ -111,7 +109,7 @@ class ScriptEdit(QsciScintilla):
     def setFonts(self, size):
 
         # Load font from Python console settings
-        settings = QSettings()
+        settings = QgsSettings()
         fontName = settings.value('pythonConsole/fontfamilytext', 'Monospace')
         fontSize = int(settings.value('pythonConsole/fontsize', size))
 
@@ -138,16 +136,16 @@ class ScriptEdit(QsciScintilla):
         # Disable some shortcuts
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D') + ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl
-                           + shift)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl +
+                           shift)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl)
 
-        #self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Z") + ctrl)
-        #self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Y") + ctrl)
+        # self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Z") + ctrl)
+        # self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Y") + ctrl)
 
         # Use Ctrl+Space for autocompletion
-        self.shortcutAutocomplete = QShortcut(QKeySequence(Qt.CTRL
-                                                           + Qt.Key_Space), self)
+        self.shortcutAutocomplete = QShortcut(QKeySequence(Qt.CTRL +
+                                                           Qt.Key_Space), self)
         self.shortcutAutocomplete.setContext(Qt.WidgetShortcut)
         self.shortcutAutocomplete.activated.connect(self.autoComplete)
 
@@ -191,7 +189,7 @@ class ScriptEdit(QsciScintilla):
 
             self.api = QsciAPIs(self.lexer)
 
-            settings = QSettings()
+            settings = QgsSettings()
             useDefaultAPI = bool(settings.value('pythonConsole/preloadAPI',
                                                 True))
             if useDefaultAPI:
@@ -206,8 +204,5 @@ class ScriptEdit(QsciScintilla):
                     self.api.load(path)
                 self.api.prepare()
                 self.lexer.setAPIs(self.api)
-        elif self.lexerType == self.LEXER_R:
-            # R lexer
-            self.lexer = LexerR()
 
         self.setLexer(self.lexer)

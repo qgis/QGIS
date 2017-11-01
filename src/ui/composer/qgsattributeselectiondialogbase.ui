@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Select attributes</string>
+   <string>Select Attributes</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
@@ -77,6 +77,13 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QPushButton" name="mClearColumnsPushButton">
+           <property name="text">
+            <string>Clear</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item row="1" column="1">
@@ -113,7 +120,7 @@
           <enum>Qt::IgnoreAction</enum>
          </property>
          <property name="selectionMode">
-          <enum>QAbstractItemView::SingleSelection</enum>
+          <enum>QAbstractItemView::MultiSelection</enum>
          </property>
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>
@@ -183,7 +190,7 @@
            </property>
            <property name="icon">
             <iconset resource="../../../images/images.qrc">
-             <normaloff>:/images/themes/default/symbologyUp.png</normaloff>:/images/themes/default/symbologyUp.png</iconset>
+             <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
            </property>
           </widget>
          </item>

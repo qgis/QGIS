@@ -18,14 +18,16 @@
 #include "qgsvectordataprovider.h"
 #include "qgsfields.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsvectorlayerjoinbuffer.h"
+#include "qgsvectorlayerjoininfo.h"
 
 #include <QTableView>
 
-QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsWidgetWrapper( vl, editor, parent )
-    , mValidConstraint( true )
-    , mIsBlockingCommit( false )
-    , mFieldIdx( fieldIdx )
+QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsWidgetWrapper( vl, editor, parent )
+  , mValidConstraint( true )
+  , mIsBlockingCommit( false )
+  , mFieldIdx( fieldIdx )
 {
 }
 
@@ -49,27 +51,27 @@ QVariant QgsEditorWidgetWrapper::defaultValue() const
   return mDefaultValue;
 }
 
-QgsEditorWidgetWrapper* QgsEditorWidgetWrapper::fromWidget( QWidget* widget )
+QgsEditorWidgetWrapper *QgsEditorWidgetWrapper::fromWidget( QWidget *widget )
 {
-  return qobject_cast<QgsEditorWidgetWrapper*>( widget->property( "EWV2Wrapper" ).value<QgsWidgetWrapper*>() );
+  return qobject_cast<QgsEditorWidgetWrapper *>( widget->property( "EWV2Wrapper" ).value<QgsWidgetWrapper *>() );
 }
 
 void QgsEditorWidgetWrapper::setEnabled( bool enabled )
 {
-  QWidget* wdg = widget();
+  QWidget *wdg = widget();
   if ( wdg )
   {
     wdg->setEnabled( enabled );
   }
 }
 
-void QgsEditorWidgetWrapper::setFeature( const QgsFeature& feature )
+void QgsEditorWidgetWrapper::setFeature( const QgsFeature &feature )
 {
   mFeature = feature;
   setValue( feature.attribute( mFieldIdx ) );
 }
 
-void QgsEditorWidgetWrapper::valueChanged( const QString& value )
+void QgsEditorWidgetWrapper::valueChanged( const QString &value )
 {
   emit valueChanged( QVariant( value ) );
 }
@@ -108,78 +110,101 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult cons
       break;
 
     case ConstraintResultFailHard:
-      widget()->setStyleSheet( QStringLiteral( "background-color: #dd7777;" ) );
+      widget()->setStyleSheet( QStringLiteral( "background-color: #FFE0B2;" ) );
       break;
 
     case ConstraintResultFailSoft:
-      widget()->setStyleSheet( QStringLiteral( "background-color: #ffd85d;" ) );
+      widget()->setStyleSheet( QStringLiteral( "background-color: #FFECB3;" ) );
       break;
   }
 }
 
 void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft, QgsFieldConstraints::ConstraintOrigin constraintOrigin )
 {
-  bool toEmit( false );
-  QgsField field = layer()->fields().at( mFieldIdx );
+  updateConstraint( layer(), mFieldIdx, ft, constraintOrigin );
+}
 
-  QString expression = field.constraints().constraintExpression();
-  QStringList expressions, descriptions;
-
-  if ( ! expression.isEmpty() )
-  {
-    expressions << expression;
-    descriptions << field.constraints().constraintDescription();
-    toEmit = true;
-  }
-
-  if ( field.constraints().constraints() & QgsFieldConstraints::ConstraintNotNull )
-  {
-    descriptions << tr( "Not NULL" );
-    if ( !expression.isEmpty() )
-    {
-      expressions << field.name() + QStringLiteral( " IS NOT NULL" );
-    }
-    else
-    {
-      expressions << QStringLiteral( "IS NOT NULL" );
-    }
-    toEmit = true;
-  }
-
-  if ( field.constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
-  {
-    descriptions << tr( "Unique" );
-    if ( !expression.isEmpty() )
-    {
-      expressions << field.name() + QStringLiteral( " IS UNIQUE" );
-    }
-    else
-    {
-      expressions << QStringLiteral( "IS UNIQUE" );
-    }
-    toEmit = true;
-  }
-
+void QgsEditorWidgetWrapper::updateConstraint( const QgsVectorLayer *layer, int index, const QgsFeature &ft, QgsFieldConstraints::ConstraintOrigin constraintOrigin )
+{
   QStringList errors;
-  bool hardConstraintsOk = QgsVectorLayerUtils::validateAttribute( layer(), ft, mFieldIdx, errors, QgsFieldConstraints::ConstraintStrengthHard, constraintOrigin );
-
   QStringList softErrors;
-  bool softConstraintsOk = QgsVectorLayerUtils::validateAttribute( layer(), ft, mFieldIdx, softErrors, QgsFieldConstraints::ConstraintStrengthSoft, constraintOrigin );
-  errors << softErrors;
+  QStringList expressions;
+  QStringList descriptions;
+  bool toEmit( false );
+  bool hardConstraintsOk( true );
+  bool softConstraintsOk( true );
+
+  QgsField field = layer->fields().at( index );
+  QString expression = field.constraints().constraintExpression();
+
+  if ( ft.isValid() )
+  {
+    if ( ! expression.isEmpty() )
+    {
+      expressions << expression;
+      descriptions << field.constraints().constraintDescription();
+      toEmit = true;
+    }
+
+    if ( field.constraints().constraints() & QgsFieldConstraints::ConstraintNotNull )
+    {
+      descriptions << tr( "Not NULL" );
+      if ( !expression.isEmpty() )
+      {
+        expressions << field.name() + QStringLiteral( " IS NOT NULL" );
+      }
+      else
+      {
+        expressions << QStringLiteral( "IS NOT NULL" );
+      }
+      toEmit = true;
+    }
+
+    if ( field.constraints().constraints() & QgsFieldConstraints::ConstraintUnique )
+    {
+      descriptions << tr( "Unique" );
+      if ( !expression.isEmpty() )
+      {
+        expressions << field.name() + QStringLiteral( " IS UNIQUE" );
+      }
+      else
+      {
+        expressions << QStringLiteral( "IS UNIQUE" );
+      }
+      toEmit = true;
+    }
+
+    hardConstraintsOk = QgsVectorLayerUtils::validateAttribute( layer, ft, index, errors, QgsFieldConstraints::ConstraintStrengthHard, constraintOrigin );
+
+    softConstraintsOk = QgsVectorLayerUtils::validateAttribute( layer, ft, index, softErrors, QgsFieldConstraints::ConstraintStrengthSoft, constraintOrigin );
+    errors << softErrors;
+  }
+  else // invalid feature
+  {
+    if ( ! expression.isEmpty() )
+    {
+      hardConstraintsOk = true;
+      softConstraintsOk = false;
+
+      errors << QStringLiteral( "Invalid feature" );
+
+      toEmit = true;
+    }
+  }
 
   mValidConstraint = hardConstraintsOk && softConstraintsOk;
   mIsBlockingCommit = !hardConstraintsOk;
 
-  mConstraintFailureReason = errors.join( ", " );
+  mConstraintFailureReason = errors.join( QStringLiteral( ", " ) );
 
   if ( toEmit )
   {
     QString errStr = errors.isEmpty() ? tr( "Constraint checks passed" ) : mConstraintFailureReason;
 
-    QString description = descriptions.join( ", " );
+    QString description = descriptions.join( QStringLiteral( ", " ) );
     QString expressionDesc;
     if ( expressions.size() > 1 )
-      expressionDesc = "( " + expressions.join( " ) AND ( " ) + " )";
+      expressionDesc = "( " + expressions.join( QStringLiteral( " ) AND ( " ) ) + " )";
     else if ( !expressions.isEmpty() )
       expressionDesc = expressions.at( 0 );
 
@@ -205,9 +230,14 @@ QString QgsEditorWidgetWrapper::constraintFailureReason() const
   return mConstraintFailureReason;
 }
 
-bool QgsEditorWidgetWrapper::isInTable( const QWidget* parent )
+bool QgsEditorWidgetWrapper::isInTable( const QWidget *parent )
 {
   if ( !parent ) return false;
-  if ( qobject_cast<const QTableView*>( parent ) ) return true;
+  if ( qobject_cast<const QTableView *>( parent ) ) return true;
   return isInTable( parent->parentWidget() );
+}
+
+void QgsEditorWidgetWrapper::setHint( const QString &hintText )
+{
+  widget()->setToolTip( hintText );
 }

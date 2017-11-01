@@ -27,7 +27,7 @@
 static MINHEAP initiate_minheap( int npoints )
 {
   MINHEAP tree;
-  tree.key_array = ( areanode** )lwalloc( npoints * sizeof( void* ) );
+  tree.key_array = ( areanode ** )lwalloc( npoints * sizeof( void * ) );
   tree.maxSize = npoints;
   tree.usedSize = 0;
   return tree;
@@ -41,15 +41,15 @@ static void destroy_minheap( MINHEAP tree )
 /**
  * Calculate the area of a triangle in 2d
  */
-static double triarea2d( const QgsPointV2 &P1, const QgsPointV2 &P2, const QgsPointV2 &P3 )
+static double triarea2d( const QgsPoint &P1, const QgsPoint &P2, const QgsPoint &P3 )
 {
-  return qAbs( 0.5 * (( P1.x() - P2.x() ) * ( P3.y() - P2.y() ) - ( P1.y() - P2.y() ) * ( P3.x() - P2.x() ) ) );
+  return std::fabs( 0.5 * ( ( P1.x() - P2.x() ) * ( P3.y() - P2.y() ) - ( P1.y() - P2.y() ) * ( P3.x() - P2.x() ) ) );
 }
 
 /**
  * Calculate the area of a triangle in 3d space
  */
-static double triarea3d( const QgsPointV2 &P1, const QgsPointV2 &P2, const QgsPointV2 &P3 )
+static double triarea3d( const QgsPoint &P1, const QgsPoint &P2, const QgsPoint &P3 )
 {
   //LWDEBUG( 2, "Entered  triarea3d" );
   double ax, bx, ay, by, az, bz, cx, cy, cz, area;
@@ -65,24 +65,24 @@ static double triarea3d( const QgsPointV2 &P1, const QgsPointV2 &P2, const QgsPo
   cy = az * bx - ax * bz;
   cz = ax * by - ay * bx;
 
-  area = qAbs( 0.5 * ( sqrt( cx * cx + cy * cy + cz * cz ) ) );
+  area = std::fabs( 0.5 * ( std::sqrt( cx * cx + cy * cy + cz * cz ) ) );
   return area;
 }
 
 /**
  * We create the minheap by ordering the minheap array by the areas in the areanode structs that the minheap keys refere to
  */
-static int cmpfunc( const void * a, const void * b )
+static int cmpfunc( const void *a, const void *b )
 {
-  double v1 = ( *( areanode** )a )->area;
-  double v2 = ( *( areanode** )b )->area;
+  double v1 = ( *( areanode ** )a )->area;
+  double v2 = ( *( areanode ** )b )->area;
 
   /* qsort gives unpredictable results when comaping identical values.
    * If two values is the same we force returning the last point in hte point array.
    * That way we get the same ordering on diffreent machines and pllatforms
    */
   if ( v1 == v2 )
-    return ( *( areanode** )a ) - ( *( areanode** )b );
+    return ( *( areanode ** )a ) - ( *( areanode ** )b );
   else
     return ( v1 > v2 ) ? 1 : -1;
 }
@@ -96,32 +96,32 @@ static void down( MINHEAP *tree, areanode *arealist, int parent )
   areanode **treearray = tree->key_array;
   int left = parent * 2 + 1;
   int right = left + 1;
-  areanode *tmp;
+  areanode *tmp = nullptr;
   int swap = parent;
   double leftarea = 0;
   double rightarea = 0;
-  double parentarea = (( areanode* )treearray[parent] )->area;
+  double parentarea = ( ( areanode * )treearray[parent] )->area;
 
   if ( left < tree->usedSize )
   {
-    leftarea = (( areanode* )treearray[left] )->area;
+    leftarea = ( ( areanode * )treearray[left] )->area;
     if ( parentarea > leftarea ) swap = left;
   }
   if ( right < tree->usedSize )
   {
-    rightarea = (( areanode* )treearray[right] )->area;
+    rightarea = ( ( areanode * )treearray[right] )->area;
     if ( rightarea < parentarea && rightarea < leftarea ) swap = right;
   }
   if ( swap > parent )
   {
-    // ok, we have to swap something
+    // OK, we have to swap something
     tmp = treearray[parent];
     treearray[parent] = treearray[swap];
     // Update reference
-    (( areanode* )treearray[parent] )->treeindex = parent;
+    ( ( areanode * )treearray[parent] )->treeindex = parent;
     treearray[swap] = tmp;
     // Update reference
-    (( areanode* )treearray[swap] )->treeindex = swap;
+    ( ( areanode * )treearray[swap] )->treeindex = swap;
     if ( swap < tree->usedSize ) down( tree, arealist, swap );
   }
 }
@@ -132,23 +132,23 @@ static void down( MINHEAP *tree, areanode *arealist, int parent )
 static void up( MINHEAP *tree, areanode *arealist, int c )
 {
   //LWDEBUG( 2, "Entered  up" );
-  areanode *tmp;
+  areanode *tmp = nullptr;
 
   Q_UNUSED( arealist );
 
   areanode **treearray = tree->key_array;
   int parent = ( c - 1 ) / 2;
 
-  while ((( areanode* )treearray[c] )->area < (( areanode* )treearray[parent] )->area )
+  while ( ( ( areanode * )treearray[c] )->area < ( ( areanode * )treearray[parent] )->area )
   {
-    // ok, we have to swap
+    // OK, we have to swap
     tmp = treearray[parent];
     treearray[parent] = treearray[c];
     // Update reference
-    (( areanode* )treearray[parent] )->treeindex = parent;
+    ( ( areanode * )treearray[parent] )->treeindex = parent;
     treearray[c] = tmp;
     // Update reference
-    (( areanode* )treearray[c] )->treeindex = c;
+    ( ( areanode * )treearray[c] )->treeindex = c;
     c = parent;
     parent = ( c - 1 ) / 2;
   }
@@ -157,14 +157,14 @@ static void up( MINHEAP *tree, areanode *arealist, int c )
 /**
  * Get a reference to the point with the smallest effective area from the root of the min heap
  */
-static areanode* minheap_pop( MINHEAP *tree, areanode *arealist )
+static areanode *minheap_pop( MINHEAP *tree, areanode *arealist )
 {
   //LWDEBUG( 2, "Entered  minheap_pop" );
   areanode *res = tree->key_array[0];
 
   // put last value first
   tree->key_array[0] = tree->key_array[( tree->usedSize ) - 1];
-  (( areanode* )tree->key_array[0] )->treeindex = 0;
+  ( ( areanode * )tree->key_array[0] )->treeindex = 0;
 
   tree->usedSize--;
   down( tree, arealist, 0 );
@@ -179,7 +179,7 @@ static void minheap_update( MINHEAP *tree, areanode *arealist, int idx )
   areanode **treearray = tree->key_array;
   int parent = ( idx - 1 ) / 2;
 
-  if ((( areanode* )treearray[idx] )->area < (( areanode* )treearray[parent] )->area )
+  if ( ( ( areanode * )treearray[idx] )->area < ( ( areanode * )treearray[parent] )->area )
     up( tree, arealist, idx );
   else
     down( tree, arealist, idx );
@@ -191,9 +191,9 @@ static void minheap_update( MINHEAP *tree, areanode *arealist, int idx )
 static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double trshld )
 {
   //LWDEBUG( 2, "Entered  tune_areas" );
-  QgsPointV2 P1;
-  QgsPointV2 P2;
-  QgsPointV2 P3;
+  QgsPoint P1;
+  QgsPoint P2;
+  QgsPoint P3;
   double area;
   int go_on = 1;
   double check_order_min_area = 0;
@@ -213,16 +213,16 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
   tree.usedSize = npoints;
 
   // order the keys by area, small to big
-  qsort( tree.key_array, npoints, sizeof( void* ), cmpfunc );
+  qsort( tree.key_array, npoints, sizeof( void * ), cmpfunc );
 
   // We have to put references to our tree in our point-list
   for ( i = 0; i < npoints; i++ )
   {
-    (( areanode* )tree.key_array[i] )->treeindex = i;
+    ( ( areanode * )tree.key_array[i] )->treeindex = i;
     //LWDEBUGF( 4, "Check ordering qsort gives, area=%lf and belong to point %d", (( areanode* )tree.key_array[i] )->area, tree.key_array[i] - ea->initial_arealist );
   }
 
-  // Ok, now we have a minHeap, just need to keep it
+  // OK, now we have a minHeap, just need to keep it
   i = 0;
   while ( go_on )
   {
@@ -282,7 +282,7 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
     ea->initial_arealist[after_current ].prev = ea->initial_arealist[current].prev;
 
     // Check if we are finnished
-    if (( !set_area && ea->res_arealist[current] > trshld ) || ( ea->initial_arealist[0].next == ( npoints - 1 ) ) )
+    if ( ( !set_area && ea->res_arealist[current] > trshld ) || ( ea->initial_arealist[0].next == ( npoints - 1 ) ) )
       go_on = 0;
 
     i++;
@@ -300,9 +300,9 @@ void ptarray_calc_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, d
   int npoints = ea->inpts.size();
   double area;
 
-  QgsPointV2 P1;
-  QgsPointV2 P2;
-  QgsPointV2 P3;
+  QgsPoint P1;
+  QgsPoint P2;
+  QgsPoint P3;
   P1 = ea->inpts.at( 0 );
   P2 = ea->inpts.at( 1 );
 

@@ -23,10 +23,10 @@
 #include "qgsrasterdataprovider.h"
 
 QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
-    : QSortFilterProxyModel( parent )
-    , mFilters( All )
-    , mExceptList( QList<QgsMapLayer*>() )
-    , mModel( new QgsMapLayerModel( parent ) )
+  : QSortFilterProxyModel( parent )
+  , mFilters( All )
+  , mExceptList( QList<QgsMapLayer*>() )
+  , mModel( new QgsMapLayerModel( parent ) )
 {
   setSourceModel( mModel );
   setDynamicSortFilter( true );
@@ -42,7 +42,7 @@ QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Filters filters )
   return this;
 }
 
-void QgsMapLayerProxyModel::setExceptedLayerList( const QList<QgsMapLayer*>& exceptList )
+void QgsMapLayerProxyModel::setExceptedLayerList( const QList<QgsMapLayer *> &exceptList )
 {
   if ( mExceptList == exceptList )
     return;
@@ -51,13 +51,13 @@ void QgsMapLayerProxyModel::setExceptedLayerList( const QList<QgsMapLayer*>& exc
   invalidateFilter();
 }
 
-void QgsMapLayerProxyModel::setExceptedLayerIds( const QStringList& ids )
+void QgsMapLayerProxyModel::setExceptedLayerIds( const QStringList &ids )
 {
   mExceptList.clear();
 
-  Q_FOREACH ( const QString& id, ids )
+  Q_FOREACH ( const QString &id, ids )
   {
-    QgsMapLayer* l = QgsProject::instance()->mapLayer( id );
+    QgsMapLayer *l = QgsProject::instance()->mapLayer( id );
     if ( l )
       mExceptList << l;
   }
@@ -68,13 +68,13 @@ QStringList QgsMapLayerProxyModel::exceptedLayerIds() const
 {
   QStringList lst;
 
-  Q_FOREACH ( QgsMapLayer* l, mExceptList )
+  Q_FOREACH ( QgsMapLayer *l, mExceptList )
     lst << l->id();
 
   return lst;
 }
 
-void QgsMapLayerProxyModel::setExcludedProviders( const QStringList& providers )
+void QgsMapLayerProxyModel::setExcludedProviders( const QStringList &providers )
 {
   mExcludedProviders = providers;
   invalidateFilter();
@@ -91,27 +91,23 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
        || sourceModel()->data( index, QgsMapLayerModel::AdditionalRole ).toBool() )
     return true;
 
-  QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
+  QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
   if ( !layer )
     return false;
 
   if ( mExceptList.contains( layer ) )
     return false;
 
-  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
-  if ( vl && mExcludedProviders.contains( vl->dataProvider()->name() ) )
-    return false;
-  QgsRasterLayer* rl = qobject_cast<QgsRasterLayer*>( layer );
-  if ( rl && mExcludedProviders.contains( rl->dataProvider()->name() ) )
+  if ( mExcludedProviders.contains( layer->dataProvider()->name() ) )
     return false;
 
   if ( mFilters.testFlag( WritableLayer ) && layer->readOnly() )
     return false;
 
   // layer type
-  if (( mFilters.testFlag( RasterLayer ) && layer->type() == QgsMapLayer::RasterLayer ) ||
-      ( mFilters.testFlag( VectorLayer ) && layer->type() == QgsMapLayer::VectorLayer ) ||
-      ( mFilters.testFlag( PluginLayer ) && layer->type() == QgsMapLayer::PluginLayer ) )
+  if ( ( mFilters.testFlag( RasterLayer ) && layer->type() == QgsMapLayer::RasterLayer ) ||
+       ( mFilters.testFlag( VectorLayer ) && layer->type() == QgsMapLayer::VectorLayer ) ||
+       ( mFilters.testFlag( PluginLayer ) && layer->type() == QgsMapLayer::PluginLayer ) )
     return true;
 
   // geometry type
@@ -122,9 +118,9 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
                         mFilters.testFlag( HasGeometry );
   if ( detectGeometry && layer->type() == QgsMapLayer::VectorLayer )
   {
-    if ( vl )
+    if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
     {
-      if ( mFilters.testFlag( HasGeometry ) && vl->hasGeometryType() )
+      if ( mFilters.testFlag( HasGeometry ) && vl->isSpatial() )
         return true;
       if ( mFilters.testFlag( NoGeometry ) && vl->geometryType() == QgsWkbTypes::NullGeometry )
         return true;

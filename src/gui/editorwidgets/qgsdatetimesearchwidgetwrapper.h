@@ -17,6 +17,7 @@
 #define QGSDATETIMESEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
+#include "qgis.h"
 
 #include <QComboBox>
 #include <QListWidget>
@@ -26,10 +27,11 @@
 class QgsDateTimeEditFactory;
 class QgsDateTimeEdit;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsDateTimeSearchWidgetWrapper
  * Wraps a date/time edit widget for searching.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 
 class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
@@ -38,14 +40,16 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
 
   public:
 
-    /** Constructor for QgsDateTimeSearchWidgetWrapper.
-     * @param vl associated vector layer
-     * @param fieldIdx index of associated field
-     * @param parent parent widget
+    /**
+     * Constructor for QgsDateTimeSearchWidgetWrapper.
+     * \param vl associated vector layer
+     * \param fieldIdx index of associated field
+     * \param parent parent widget
      */
-    explicit QgsDateTimeSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+    explicit QgsDateTimeSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
-    /** Returns a variant representing the current state of the widget, respecting
+    /**
+     * Returns a variant representing the current state of the widget, respecting
      * the editor widget's configured field format for date/time values.
      */
     QVariant value() const;
@@ -53,9 +57,9 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
     bool applyDirectly() override;
     QString expression() override;
     bool valid() const override;
-    FilterFlags supportedFlags() const override;
-    FilterFlags defaultFlags() const override;
-    virtual QString createExpression( FilterFlags flags ) const override;
+    QgsSearchWidgetWrapper::FilterFlags supportedFlags() const override;
+    QgsSearchWidgetWrapper::FilterFlags defaultFlags() const override;
+    virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
 
   public slots:
 
@@ -63,8 +67,8 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
     virtual void setEnabled( bool enabled ) override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
 
   protected slots:
     void setExpression( QString exp ) override;
@@ -73,8 +77,8 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
     void dateTimeChanged( const QDateTime &date );
 
   private:
-    QgsDateTimeEdit* mDateTimeEdit;
-    QgsVectorLayer* mLayer;
+    QgsDateTimeEdit *mDateTimeEdit = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
 
     friend class QgsDateTimeEditFactory;
 };

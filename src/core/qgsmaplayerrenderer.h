@@ -22,7 +22,8 @@
 
 class QgsFeedback;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Base class for utility classes that encapsulate information necessary
  * for rendering of map layers. The rendering is typically done in a background
  * thread, so it is necessary to keep all structures required for rendering away
@@ -42,20 +43,22 @@ class QgsFeedback;
  * 3. renderer job (in worker thread) calls QgsMapLayerRenderer::render()
  * 4. renderer job (again in GUI thread) will check errors() and report them
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapLayerRenderer
 {
   public:
-    QgsMapLayerRenderer( const QString& layerID ) : mLayerID( layerID ) {}
+    QgsMapLayerRenderer( const QString &layerID ) : mLayerID( layerID ) {}
     virtual ~QgsMapLayerRenderer() = default;
 
     //! Do the rendering (based on data stored in the class)
     virtual bool render() = 0;
 
-    //! Access to feedback object of the layer renderer (may be null)
-    //! @note added in QGIS 3.0
-    virtual QgsFeedback* feedback() const { return nullptr; }
+    /**
+     * Access to feedback object of the layer renderer (may be null)
+     * \since QGIS 3.0
+     */
+    virtual QgsFeedback *feedback() const { return nullptr; }
 
     //! Return list of errors (problems) that happened during the rendering
     QStringList errors() const { return mErrors; }

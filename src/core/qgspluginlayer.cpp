@@ -17,11 +17,10 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerrenderer.h"
 
-QgsPluginLayer::QgsPluginLayer( const QString& layerType, const QString& layerName )
-    : QgsMapLayer( PluginLayer, layerName )
-    , mPluginLayerType( layerType )
+QgsPluginLayer::QgsPluginLayer( const QString &layerType, const QString &layerName )
+  : QgsMapLayer( PluginLayer, layerName )
+  , mPluginLayerType( layerType )
 {
-  setLegend( QgsMapLayerLegend::defaultPluginLegend( this ) );
 }
 
 QgsPluginLayer::~QgsPluginLayer()
@@ -41,13 +40,7 @@ void QgsPluginLayer::setExtent( const QgsRectangle &extent )
   mExtent = extent;
 }
 
-void QgsPluginLayer::setSource( const QString& source )
+void QgsPluginLayer::setSource( const QString &source )
 {
   mDataSource = source;
-}
-
-QgsLegendSymbologyList QgsPluginLayer::legendSymbologyItems( QSize iconSize )
-{
-  Q_UNUSED( iconSize );
-  return QgsLegendSymbologyList();
 }

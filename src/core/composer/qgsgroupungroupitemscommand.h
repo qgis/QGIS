@@ -25,7 +25,8 @@
 class QgsComposition;
 class QgsComposerItemGroup;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A composer command class for grouping / ungrouping composer items.
  *
  * If mState == Ungrouped, the command owns the group item
@@ -43,16 +44,17 @@ class CORE_EXPORT QgsGroupUngroupItemsCommand: public QObject, public QUndoComma
       Ungrouped
     };
 
-    /** Create a group or ungroup command
+    /**
+     * Create a group or ungroup command
      *
-     * @param s command kind (@see State)
-     * @param item the group item being created or ungrouped
-     * @param c the composition including this group
-     * @param text command label
-     * @param parent parent command, if any
+     * \param s command kind (\see State)
+     * \param item the group item being created or ungrouped
+     * \param c the composition including this group
+     * \param text command label
+     * \param parent parent command, if any
      *
      */
-    QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup* item, QgsComposition* c, const QString& text, QUndoCommand* parent = nullptr );
+    QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup *item, QgsComposition *c, const QString &text, QUndoCommand *parent = nullptr );
     ~QgsGroupUngroupItemsCommand();
 
     void redo() override;
@@ -60,14 +62,14 @@ class CORE_EXPORT QgsGroupUngroupItemsCommand: public QObject, public QUndoComma
 
   signals:
     //! Signals addition of an item (the group)
-    void itemAdded( QgsComposerItem* item );
+    void itemAdded( QgsComposerItem *item );
     //! Signals removal of an item (the group)
-    void itemRemoved( QgsComposerItem* item );
+    void itemRemoved( QgsComposerItem *item );
 
   private:
-    QgsComposerItemGroup* mGroup;
-    QSet<QgsComposerItem*> mItems;
-    QgsComposition* mComposition;
+    QgsComposerItemGroup *mGroup = nullptr;
+    QSet<QgsComposerItem *> mItems;
+    QgsComposition *mComposition = nullptr;
     State mState;
     bool mFirstRun; //flag to prevent execution when the command is pushed to the QUndoStack
 

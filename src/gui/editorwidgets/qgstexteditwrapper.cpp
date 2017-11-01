@@ -21,11 +21,9 @@
 
 #include <QSettings>
 
-QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mTextEdit( nullptr )
-    , mPlainTextEdit( nullptr )
-    , mLineEdit( nullptr )
+QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
+  : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+
 {
 }
 
@@ -55,8 +53,8 @@ QVariant QgsTextEditWrapper::value() const
     v = mLineEdit->text();
   }
 
-  if (( v.isEmpty() && ( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) ) ||
-      v == QgsApplication::nullRepresentation() )
+  if ( ( v.isEmpty() && ( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) ) ||
+       v == QgsApplication::nullRepresentation() )
     return QVariant( field().type() );
 
   if ( !defaultValue().isNull() && v == defaultValue().toString() )
@@ -81,7 +79,7 @@ QVariant QgsTextEditWrapper::value() const
   }
 }
 
-QWidget* QgsTextEditWrapper::createWidget( QWidget* parent )
+QWidget *QgsTextEditWrapper::createWidget( QWidget *parent )
 {
   if ( config( QStringLiteral( "IsMultiline" ) ).toBool() )
   {
@@ -100,17 +98,17 @@ QWidget* QgsTextEditWrapper::createWidget( QWidget* parent )
   }
 }
 
-void QgsTextEditWrapper::initWidget( QWidget* editor )
+void QgsTextEditWrapper::initWidget( QWidget *editor )
 {
-  mTextEdit = qobject_cast<QTextEdit*>( editor );
-  mPlainTextEdit = qobject_cast<QPlainTextEdit*>( editor );
-  mLineEdit = qobject_cast<QLineEdit*>( editor );
+  mTextEdit = qobject_cast<QTextEdit *>( editor );
+  mPlainTextEdit = qobject_cast<QPlainTextEdit *>( editor );
+  mLineEdit = qobject_cast<QLineEdit *>( editor );
 
   if ( mTextEdit )
-    connect( mTextEdit, SIGNAL( textChanged() ), this, SLOT( valueChanged() ) );
+    connect( mTextEdit, &QTextEdit::textChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
 
   if ( mPlainTextEdit )
-    connect( mPlainTextEdit, SIGNAL( textChanged() ), this, SLOT( valueChanged() ) );
+    connect( mPlainTextEdit, &QPlainTextEdit::textChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
 
   if ( mLineEdit )
   {
@@ -122,7 +120,7 @@ void QgsTextEditWrapper::initWidget( QWidget* editor )
       defVal = QgsApplication::nullRepresentation();
     }
 
-    QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
+    QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit *>( mLineEdit );
     if ( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date )
     {
       mPlaceholderText = defVal.toString();
@@ -133,8 +131,8 @@ void QgsTextEditWrapper::initWidget( QWidget* editor )
       fle->setNullValue( defVal.toString() );
     }
 
-    connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
-    connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( textChanged( QString ) ) );
+    connect( mLineEdit, &QLineEdit::textChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )( const QString & )>( &QgsEditorWidgetWrapper::valueChanged ) );
+    connect( mLineEdit, &QLineEdit::textChanged, this, &QgsTextEditWrapper::textChanged );
 
     mWritablePalette = mLineEdit->palette();
     mReadOnlyPalette = mLineEdit->palette();
@@ -172,7 +170,7 @@ void QgsTextEditWrapper::showIndeterminateState()
     mLineEdit->blockSignals( false );
 }
 
-void QgsTextEditWrapper::setValue( const QVariant& val )
+void QgsTextEditWrapper::setValue( const QVariant &val )
 {
   if ( mLineEdit )
   {
@@ -200,7 +198,7 @@ void QgsTextEditWrapper::setEnabled( bool enabled )
   }
 }
 
-void QgsTextEditWrapper::textChanged( const QString& )
+void QgsTextEditWrapper::textChanged( const QString & )
 {
   if ( mLineEdit )
   {
@@ -209,7 +207,7 @@ void QgsTextEditWrapper::textChanged( const QString& )
   }
 }
 
-void QgsTextEditWrapper::setWidgetValue( const QVariant& val )
+void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
 {
   QString v;
   if ( val.isNull() )
@@ -239,4 +237,17 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant& val )
 
   if ( mLineEdit )
     mLineEdit->setText( v );
+}
+
+void QgsTextEditWrapper::setHint( const QString &hintText )
+{
+  if ( hintText.isNull() )
+    mPlaceholderText = mPlaceholderTextBackup;
+  else
+  {
+    mPlaceholderTextBackup = mPlaceholderText;
+    mPlaceholderText = hintText;
+  }
+
+  mLineEdit->setPlaceholderText( mPlaceholderText );
 }

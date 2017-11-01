@@ -14,12 +14,11 @@
  ***************************************************************************/
 #include "qgsspatialiteconnection.h"
 #include "qgsslconnect.h"
+#include "qgssettings.h"
+#include "qgslogger.h"
 
 #include <QFileInfo>
-#include <QSettings>
-#include <stdlib.h> // atoi
-
-#include "qgslogger.h"
+#include <cstdlib> // atoi
 
 #ifdef _MSC_VER
 #define strcasecmp(a,b) stricmp(a,b)
@@ -27,33 +26,33 @@
 
 QStringList QgsSpatiaLiteConnection::connectionList()
 {
-  QSettings settings;
-  settings.beginGroup( QStringLiteral( "/SpatiaLite/connections" ) );
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "SpatiaLite/connections" ) );
   return settings.childGroups();
 }
 
-void QgsSpatiaLiteConnection::deleteConnection( const QString& name )
+void QgsSpatiaLiteConnection::deleteConnection( const QString &name )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString key = "/SpatiaLite/connections/" + name;
   settings.remove( key + "/sqlitepath" );
   settings.remove( key );
 }
 
-QString QgsSpatiaLiteConnection::connectionPath( const QString& name )
+QString QgsSpatiaLiteConnection::connectionPath( const QString &name )
 {
-  QSettings settings;
+  QgsSettings settings;
   return settings.value( "/SpatiaLite/connections/" + name + "/sqlitepath" ).toString();
 }
 
 // -------
 
-QgsSpatiaLiteConnection::QgsSpatiaLiteConnection( const QString& name )
+QgsSpatiaLiteConnection::QgsSpatiaLiteConnection( const QString &name )
 {
   // "name" can be either a saved connection or a path to database
 
-  QSettings settings;
-  mPath = settings.value( QStringLiteral( "/SpatiaLite/connections/%1/sqlitepath" ).arg( name ) ).toString();
+  QgsSettings settings;
+  mPath = settings.value( QStringLiteral( "SpatiaLite/connections/%1/sqlitepath" ).arg( name ) ).toString();
   if ( mPath.isNull() )
     mPath = name; // not found in settings - probably it's a path
 }
@@ -113,7 +112,7 @@ bool QgsSpatiaLiteConnection::updateStatistics()
   if ( !fi.exists() )
     return false;
 
-  sqlite3* handle = openSpatiaLiteDb( fi.canonicalFilePath() );
+  sqlite3 *handle = openSpatiaLiteDb( fi.canonicalFilePath() );
   if ( !handle )
     return false;
 
@@ -127,7 +126,7 @@ bool QgsSpatiaLiteConnection::updateStatistics()
 #endif
 }
 
-sqlite3 *QgsSpatiaLiteConnection::openSpatiaLiteDb( const QString& path )
+sqlite3 *QgsSpatiaLiteConnection::openSpatiaLiteDb( const QString &path )
 {
   sqlite3 *handle = nullptr;
   int ret;
@@ -142,13 +141,13 @@ sqlite3 *QgsSpatiaLiteConnection::openSpatiaLiteDb( const QString& path )
   return handle;
 }
 
-void QgsSpatiaLiteConnection::closeSpatiaLiteDb( sqlite3 * handle )
+void QgsSpatiaLiteConnection::closeSpatiaLiteDb( sqlite3 *handle )
 {
   if ( handle )
     QgsSLConnect::sqlite3_close( handle );
 }
 
-int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3* handle )
+int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3 *handle )
 {
   bool gcSpatiaLite = false;
   bool rsSpatiaLite = false;
@@ -168,9 +167,9 @@ int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3* handle )
   bool proj4text = false;
   bool srtext = false;
   int ret;
-  const char *name;
+  const char *name = nullptr;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -267,11 +266,11 @@ error:
 
 #ifdef SPATIALITE_VERSION_GE_4_0_0
 // only if libspatialite version is >= 4.0.0
-bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 * handle, bool loadGeometrylessTables )
+bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 *handle, bool loadGeometrylessTables )
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -378,11 +377,11 @@ error:
 }
 #endif
 
-bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 * handle, bool loadGeometrylessTables )
+bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 *handle, bool loadGeometrylessTables )
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -490,11 +489,11 @@ QString QgsSpatiaLiteConnection::quotedValue( QString value ) const
   return value.prepend( '\'' ).append( '\'' );
 }
 
-bool QgsSpatiaLiteConnection::checkGeometryColumnsAuth( sqlite3 * handle )
+bool QgsSpatiaLiteConnection::checkGeometryColumnsAuth( sqlite3 *handle )
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   bool exists = false;
@@ -524,11 +523,11 @@ bool QgsSpatiaLiteConnection::checkGeometryColumnsAuth( sqlite3 * handle )
 }
 
 
-bool QgsSpatiaLiteConnection::checkViewsGeometryColumns( sqlite3 * handle )
+bool QgsSpatiaLiteConnection::checkViewsGeometryColumns( sqlite3 *handle )
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   bool exists = false;
@@ -557,11 +556,11 @@ bool QgsSpatiaLiteConnection::checkViewsGeometryColumns( sqlite3 * handle )
   return exists;
 }
 
-bool QgsSpatiaLiteConnection::checkVirtsGeometryColumns( sqlite3 * handle )
+bool QgsSpatiaLiteConnection::checkVirtsGeometryColumns( sqlite3 *handle )
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   bool exists = false;
@@ -590,12 +589,12 @@ bool QgsSpatiaLiteConnection::checkVirtsGeometryColumns( sqlite3 * handle )
   return exists;
 }
 
-bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 * handle, const char *table )
+bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 *handle, const char *table )
 {
 // testing for RasterLite-1 datasources
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   bool exists = false;
@@ -610,7 +609,7 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 * handle, const c
     return false;
   if ( strcmp( table_raster + len - 9, "_metadata" ) != 0 )
     return false;
-  // ok, possible candidate
+  // OK, possible candidate
   strcpy( table_raster + len - 9, "_rasters" );
 
   // checking if the related "_RASTERS table exists
@@ -637,11 +636,11 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 * handle, const c
   return exists;
 }
 
-bool QgsSpatiaLiteConnection::isDeclaredHidden( sqlite3 * handle, const QString& table, const QString& geom )
+bool QgsSpatiaLiteConnection::isDeclaredHidden( sqlite3 *handle, const QString &table, const QString &geom )
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   char *errMsg = nullptr;
@@ -699,7 +698,7 @@ bool QgsSqliteHandle::checkMetadata( sqlite3 *handle )
 {
   int ret;
   int i;
-  char **results;
+  char **results = nullptr;
   int rows;
   int columns;
   int spatial_type = 0;
@@ -720,9 +719,9 @@ skip:
   return false;
 }
 
-QgsSqliteHandle* QgsSqliteHandle::openDb( const QString & dbPath, bool shared )
+QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
 {
-  sqlite3 *sqlite_handle;
+  sqlite3 *sqlite_handle = nullptr;
 
   //QMap < QString, QgsSqliteHandle* >&handles = QgsSqliteHandle::handles;
 
@@ -752,7 +751,7 @@ QgsSqliteHandle* QgsSqliteHandle::openDb( const QString & dbPath, bool shared )
     return nullptr;
   }
   // activating Foreign Key constraints
-  ( void )sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", nullptr, 0, nullptr );
+  ( void )sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", nullptr, nullptr, nullptr );
 
   QgsDebugMsg( "Connection to the database was successful" );
 
@@ -763,7 +762,7 @@ QgsSqliteHandle* QgsSqliteHandle::openDb( const QString & dbPath, bool shared )
   return handle;
 }
 
-void QgsSqliteHandle::closeDb( QgsSqliteHandle * &handle )
+void QgsSqliteHandle::closeDb( QgsSqliteHandle *&handle )
 {
   if ( handle->ref == -1 )
   {

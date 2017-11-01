@@ -40,7 +40,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsMapSettings
                        )
 
-from qgis.testing import start_app, unittest
+from qgis.testing import unittest
 
 from qgis.testing.mocked import get_iface
 
@@ -148,8 +148,8 @@ class TestQgsBlendModes(unittest.TestCase):
         # Reset layers
         self.mLineLayer.setFeatureBlendMode(QPainter.CompositionMode_SourceOver)
 
-    def testVectorLayerTransparency(self):
-        """Test that layer transparency works for vector layers."""
+    def testVectorLayerOpacity(self):
+        """Test that layer opacity works for vector layers."""
 
         # Add vector layers to map
         myLayers = [self.mLineLayer, self.mPolygonLayer]
@@ -157,7 +157,7 @@ class TestQgsBlendModes(unittest.TestCase):
         self.mapSettings.setExtent(self.extent)
 
         # Set feature blending for line layer
-        self.mLineLayer.setLayerTransparency(50)
+        self.mLineLayer.setOpacity(0.5)
 
         checker = QgsMultiRenderChecker()
         checker.setControlName("expected_vector_layertransparency")
@@ -186,6 +186,7 @@ class TestQgsBlendModes(unittest.TestCase):
         myResult = checker.runTest("raster_blendmodes", 20)
         myMessage = ('raster blending failed')
         assert myResult, myMessage
+
 
 if __name__ == '__main__':
     unittest.main()

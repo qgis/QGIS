@@ -26,8 +26,8 @@ from qgis.testing import unittest
 
 # Convenience instances in case you may need them
 # not used in this test
-#from qgis.testing import start_app
-#start_app()
+# from qgis.testing import start_app
+# start_app()
 
 
 class TestQgsLogger(unittest.TestCase):
@@ -55,6 +55,7 @@ class TestQgsLogger(unittest.TestCase):
         finally:
             pass
             os.remove(myFilename)
+
 
 if __name__ == '__main__':
     unittest.main()

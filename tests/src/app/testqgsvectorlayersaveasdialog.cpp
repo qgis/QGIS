@@ -23,8 +23,10 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgsgui.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the save as dialog
  */
 class TestQgsVectorLayerSaveAsDialog : public QObject
@@ -42,14 +44,10 @@ class TestQgsVectorLayerSaveAsDialog : public QObject
     void testAttributesAsDisplayedValues();
 
   private:
-    QgisApp * mQgisApp;
+    QgisApp *mQgisApp = nullptr;
 };
 
-TestQgsVectorLayerSaveAsDialog::TestQgsVectorLayerSaveAsDialog()
-    : mQgisApp( nullptr )
-{
-
-}
+TestQgsVectorLayerSaveAsDialog::TestQgsVectorLayerSaveAsDialog() = default;
 
 //runs before all tests
 void TestQgsVectorLayerSaveAsDialog::initTestCase()
@@ -59,7 +57,7 @@ void TestQgsVectorLayerSaveAsDialog::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   mQgisApp = new QgisApp();
-  QgsEditorWidgetRegistry::initEditors();
+  QgsGui::editorWidgetRegistry()->initEditors();
 }
 
 //runs after all tests
@@ -79,11 +77,11 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
 
   QgsVectorLayerSaveAsDialog d( tempLayer.get() );
 
-  QPushButton* mDeselectAllAttributes = d.findChild<QPushButton*>( QStringLiteral( "mDeselectAllAttributes" ) );
+  QPushButton *mDeselectAllAttributes = d.findChild<QPushButton *>( QStringLiteral( "mDeselectAllAttributes" ) );
   QTest::mouseClick( mDeselectAllAttributes, Qt::LeftButton );
 
-  QTableWidget* mAttributeTable = d.findChild<QTableWidget*>( QStringLiteral( "mAttributeTable" ) );
-  QCheckBox* mReplaceRawFieldValues = d.findChild<QCheckBox*>( QStringLiteral( "mReplaceRawFieldValues" ) );
+  QTableWidget *mAttributeTable = d.findChild<QTableWidget *>( QStringLiteral( "mAttributeTable" ) );
+  QCheckBox *mReplaceRawFieldValues = d.findChild<QCheckBox *>( QStringLiteral( "mReplaceRawFieldValues" ) );
 
   QCOMPARE( mAttributeTable->rowCount(), 2 );
   QCOMPARE( mAttributeTable->columnCount(), 3 );

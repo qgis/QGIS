@@ -18,9 +18,9 @@
 
 #include <QPushButton>
 
-QgsDiscoverRelationsDlg::QgsDiscoverRelationsDlg( const QList<QgsRelation>& existingRelations, const QList<QgsVectorLayer*>& layers, QWidget *parent )
-    : QDialog( parent )
-    , mLayers( layers )
+QgsDiscoverRelationsDlg::QgsDiscoverRelationsDlg( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers, QWidget *parent )
+  : QDialog( parent )
+  , mLayers( layers )
 {
   setupUi( this );
 
@@ -28,7 +28,7 @@ QgsDiscoverRelationsDlg::QgsDiscoverRelationsDlg( const QList<QgsRelation>& exis
   connect( mRelationsTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDiscoverRelationsDlg::onSelectionChanged );
 
   mFoundRelations = QgsRelationManager::discoverRelations( existingRelations, layers );
-  Q_FOREACH ( const QgsRelation& relation, mFoundRelations ) addRelation( relation );
+  Q_FOREACH ( const QgsRelation &relation, mFoundRelations ) addRelation( relation );
 
   mRelationsTable->resizeColumnsToContents();
 
@@ -43,12 +43,23 @@ void QgsDiscoverRelationsDlg::addRelation( const QgsRelation &rel )
   mRelationsTable->setItem( row, 2, new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencingField() ) );
   mRelationsTable->setItem( row, 3, new QTableWidgetItem( rel.referencedLayer()->name() ) );
   mRelationsTable->setItem( row, 4, new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencedField() ) );
+  if ( rel.strength() == QgsRelation::RelationStrength::Composition )
+  {
+    mRelationsTable->setItem( row, 5, new QTableWidgetItem( QStringLiteral( "Composition" ) ) );
+  }
+  else
+  {
+    mRelationsTable->setItem( row, 5, new QTableWidgetItem( QStringLiteral( "Association" ) ) );
+  }
+
+  mRelationsTable->item( row, 5 )->setToolTip( QStringLiteral( "Composition (child features will be copied too) or Association" ) );
+
 }
 
 QList<QgsRelation> QgsDiscoverRelationsDlg::relations() const
 {
   QList<QgsRelation> result;
-  Q_FOREACH ( const QModelIndex& row, mRelationsTable->selectionModel()->selectedRows() )
+  Q_FOREACH ( const QModelIndex &row, mRelationsTable->selectionModel()->selectedRows() )
   {
     result.append( mFoundRelations.at( row.row() ) );
   }

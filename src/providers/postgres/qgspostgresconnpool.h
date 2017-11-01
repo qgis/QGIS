@@ -20,39 +20,39 @@
 #include "qgspostgresconn.h"
 
 
-inline QString qgsConnectionPool_ConnectionToName( QgsPostgresConn* c )
+inline QString qgsConnectionPool_ConnectionToName( QgsPostgresConn *c )
 {
   return c->connInfo();
 }
 
-inline void qgsConnectionPool_ConnectionCreate( const QString& connInfo, QgsPostgresConn*& c )
+inline void qgsConnectionPool_ConnectionCreate( const QString &connInfo, QgsPostgresConn *&c )
 {
   c = QgsPostgresConn::connectDb( connInfo, true, false );
 }
 
-inline void qgsConnectionPool_ConnectionDestroy( QgsPostgresConn* c )
+inline void qgsConnectionPool_ConnectionDestroy( QgsPostgresConn *c )
 {
   c->unref(); // will delete itself
 }
 
-inline void qgsConnectionPool_InvalidateConnection( QgsPostgresConn* c )
+inline void qgsConnectionPool_InvalidateConnection( QgsPostgresConn *c )
 {
   Q_UNUSED( c );
 }
 
-inline bool qgsConnectionPool_ConnectionIsValid( QgsPostgresConn* c )
+inline bool qgsConnectionPool_ConnectionIsValid( QgsPostgresConn *c )
 {
   Q_UNUSED( c );
   return true;
 }
 
 
-class QgsPostgresConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsPostgresConn*>
+class QgsPostgresConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsPostgresConn *>
 {
     Q_OBJECT
 
   public:
-    explicit QgsPostgresConnPoolGroup( const QString& name ) : QgsConnectionPoolGroup<QgsPostgresConn*>( name ) { initTimer( this ); }
+    explicit QgsPostgresConnPoolGroup( const QString &name ) : QgsConnectionPoolGroup<QgsPostgresConn*>( name ) { initTimer( this ); }
 
   protected slots:
     void handleConnectionExpired() { onConnectionExpired(); }
@@ -65,10 +65,10 @@ class QgsPostgresConnPoolGroup : public QObject, public QgsConnectionPoolGroup<Q
 };
 
 //! PostgreSQL connection pool - singleton
-class QgsPostgresConnPool : public QgsConnectionPool<QgsPostgresConn*, QgsPostgresConnPoolGroup>
+class QgsPostgresConnPool : public QgsConnectionPool<QgsPostgresConn *, QgsPostgresConnPoolGroup>
 {
   public:
-    static QgsPostgresConnPool* instance();
+    static QgsPostgresConnPool *instance();
 
     static void cleanupInstance();
 
@@ -79,7 +79,7 @@ class QgsPostgresConnPool : public QgsConnectionPool<QgsPostgresConn*, QgsPostgr
     QgsPostgresConnPool();
     ~QgsPostgresConnPool();
 
-    static QgsPostgresConnPool* sInstance;
+    static QgsPostgresConnPool *sInstance;
 };
 
 

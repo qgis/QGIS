@@ -17,8 +17,10 @@
 #define QGSGRADIENTCOLORRAMPDIALOG_H
 
 #include <QDialog>
+#include "qgis.h"
 
 #include "ui_qgsgradientcolorrampdialogbase.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
 class QgsGradientColorRamp;
@@ -27,10 +29,11 @@ class QwtPlotCurve;
 class QwtPlotMarker;
 class QgsGradientPlotEventFilter;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsGradientColorRampDialog
  * A dialog which allows users to modify the properties of a QgsGradientColorRamp.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGradientColorRampDialogBase
 {
@@ -39,23 +42,26 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
 
   public:
 
-    /** Constructor for QgsGradientColorRampDialog.
-     * @param ramp initial ramp to show in dialog
-     * @param parent parent widget
+    /**
+     * Constructor for QgsGradientColorRampDialog.
+     * \param ramp initial ramp to show in dialog
+     * \param parent parent widget
      */
-    QgsGradientColorRampDialog( const QgsGradientColorRamp& ramp, QWidget* parent = nullptr );
+    QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent SIP_TRANSFERTHIS = 0 );
     ~QgsGradientColorRampDialog();
 
-    /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
+    /**
+     * Returns a color ramp representing the current settings from the dialog.
+     * \see setRamp()
      */
     QgsGradientColorRamp ramp() const { return mRamp; }
 
-    /** Sets the color ramp to show in the dialog.
-     * @param ramp color ramp
-     * @see ramp()
+    /**
+     * Sets the color ramp to show in the dialog.
+     * \param ramp color ramp
+     * \see ramp()
      */
-    void setRamp( const QgsGradientColorRamp& ramp );
+    void setRamp( const QgsGradientColorRamp &ramp );
 
   signals:
 
@@ -64,42 +70,45 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
 
   public slots:
 
-    /** Sets the start color for the gradient ramp.
-     * @see setColor2()
+    /**
+     * Sets the start color for the gradient ramp.
+     * \see setColor2()
      */
-    void setColor1( const QColor& color );
+    void setColor1( const QColor &color );
 
-    /** Sets the end color for the gradient ramp.
-     * @see setColor1()
+    /**
+     * Sets the end color for the gradient ramp.
+     * \see setColor1()
      */
-    void setColor2( const QColor& color );
+    void setColor2( const QColor &color );
 
   private slots:
-    void on_cboType_currentIndexChanged( int index );
-    void on_btnInformation_pressed();
+    void cboType_currentIndexChanged( int index );
+    void btnInformation_pressed();
     void updateRampFromStopEditor();
     void updateColorButtons();
     void updateStopEditor();
-    void selectedStopChanged( const QgsGradientStop& stop );
-    void colorWidgetChanged( const QColor& color );
-    void on_mPositionSpinBox_valueChanged( double val );
-    void on_mPlotHueCheckbox_toggled( bool checked );
-    void on_mPlotLightnessCheckbox_toggled( bool checked );
-    void on_mPlotSaturationCheckbox_toggled( bool checked );
-    void on_mPlotAlphaCheckbox_toggled( bool checked );
+    void selectedStopChanged( const QgsGradientStop &stop );
+    void colorWidgetChanged( const QColor &color );
+    void mPositionSpinBox_valueChanged( double val );
+    void mPlotHueCheckbox_toggled( bool checked );
+    void mPlotLightnessCheckbox_toggled( bool checked );
+    void mPlotSaturationCheckbox_toggled( bool checked );
+    void mPlotAlphaCheckbox_toggled( bool checked );
     void plotMousePress( QPointF point );
     void plotMouseRelease( QPointF point );
     void plotMouseMove( QPointF point );
+    void showHelp();
 
   private:
 
     QgsGradientColorRamp mRamp;
-    QwtPlotCurve* mLightnessCurve;
-    QwtPlotCurve* mSaturationCurve;
-    QwtPlotCurve* mHueCurve;
-    QwtPlotCurve* mAlphaCurve;
-    QList< QwtPlotMarker* > mMarkers;
-    QgsGradientPlotEventFilter* mPlotFilter;
+    QwtPlotCurve *mLightnessCurve = nullptr;
+    QwtPlotCurve *mSaturationCurve = nullptr;
+    QwtPlotCurve *mHueCurve = nullptr;
+    QwtPlotCurve *mAlphaCurve = nullptr;
+    QList< QwtPlotMarker * > mMarkers;
+    QgsGradientPlotEventFilter *mPlotFilter = nullptr;
     int mCurrentPlotColorComponent;
     int mCurrentPlotMarkerIndex;
 
@@ -109,6 +118,7 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
 };
 
 
+#ifndef SIP_RUN
 //
 // NOTE:
 // For private only, not part of stable api or exposed to Python bindings
@@ -122,7 +132,7 @@ class GUI_EXPORT QgsGradientPlotEventFilter: public QObject
 
     QgsGradientPlotEventFilter( QwtPlot *plot );
 
-    virtual bool eventFilter( QObject* object, QEvent* event ) override;
+    virtual bool eventFilter( QObject *object, QEvent *event ) override;
 
   signals:
 
@@ -132,9 +142,10 @@ class GUI_EXPORT QgsGradientPlotEventFilter: public QObject
 
   private:
 
-    QwtPlot* mPlot;
+    QwtPlot *mPlot = nullptr;
     QPointF mapPoint( QPointF point ) const;
 };
 ///@endcond
+#endif
 
 #endif

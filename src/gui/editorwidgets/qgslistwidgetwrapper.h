@@ -19,12 +19,15 @@
 #include "qgseditorwidgetwrapper.h"
 #include "qgis_gui.h"
 
+SIP_NO_FILE
+
 class QgsListWidget;
 
-/** @ingroup gui
+/**
+ * \ingroup gui
  * Wraps a list widget.
- * @note added in QGIS 3.0
- * @note not available in Python bindings
+ * \since QGIS 3.0
+ * \note not available in Python bindings
  */
 class GUI_EXPORT QgsListWidgetWrapper : public QgsEditorWidgetWrapper
 {
@@ -34,7 +37,7 @@ class GUI_EXPORT QgsListWidgetWrapper : public QgsEditorWidgetWrapper
     /**
      * Constructor.
      */
-    explicit QgsListWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
+    explicit QgsListWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor = nullptr, QWidget *parent = nullptr );
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -42,12 +45,12 @@ class GUI_EXPORT QgsListWidgetWrapper : public QgsEditorWidgetWrapper
     void showIndeterminateState() override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
   public slots:
-    void setValue( const QVariant& value ) override;
+    void setValue( const QVariant &value ) override;
 
   private slots:
     void onValueChanged();
@@ -55,7 +58,7 @@ class GUI_EXPORT QgsListWidgetWrapper : public QgsEditorWidgetWrapper
   private:
     void updateConstraintWidgetStatus( ConstraintResult status ) override;
 
-    QgsListWidget* mWidget;
+    QgsListWidget *mWidget = nullptr;
 };
 
 #endif // QGSLISTWIDGETWRAPPER_H

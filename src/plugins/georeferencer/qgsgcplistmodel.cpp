@@ -18,14 +18,14 @@
 #include "qgis.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftransform.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <cmath>
 
 class QgsStandardItem : public QStandardItem
 {
   public:
-    explicit QgsStandardItem( const QString& text ) : QStandardItem( text )
+    explicit QgsStandardItem( const QString &text ) : QStandardItem( text )
     {
       // In addition to the DisplayRole, also set the user role, which is used for sorting.
       // This is needed for numerical sorting to work correctly (otherwise sorting is lexicographic).
@@ -50,9 +50,7 @@ class QgsStandardItem : public QStandardItem
 };
 
 QgsGCPListModel::QgsGCPListModel( QObject *parent )
-    : QStandardItemModel( parent )
-    , mGCPList( nullptr )
-    , mGeorefTransform( nullptr )
+  : QStandardItemModel( parent )
 {
   // Use data provided by Qt::UserRole as sorting key (needed for numerical sorting).
   setSortRole( Qt::UserRole );
@@ -65,9 +63,9 @@ void QgsGCPListModel::setGCPList( QgsGCPList *theGCPList )
 }
 
 // ------------------------------- public ---------------------------------- //
-void QgsGCPListModel::setGeorefTransform( QgsGeorefTransform *theGeorefTransform )
+void QgsGCPListModel::setGeorefTransform( QgsGeorefTransform *georefTransform )
 {
-  mGeorefTransform = theGeorefTransform;
+  mGeorefTransform = georefTransform;
   updateModel();
 }
 
@@ -79,13 +77,13 @@ void QgsGCPListModel::updateModel()
 
   bool bTransformUpdated = false;
 
-  QVector<QgsPoint> mapCoords, pixelCoords;
+  QVector<QgsPointXY> mapCoords, pixelCoords;
   mGCPList->createGCPVectors( mapCoords, pixelCoords );
 
   //  // Setup table header
   QStringList itemLabels;
   QString unitType;
-  QSettings s;
+  QgsSettings s;
   bool mapUnitsPossible = false;
 
   if ( mGeorefTransform )
@@ -105,14 +103,14 @@ void QgsGCPListModel::updateModel()
   }
 
   itemLabels << tr( "Visible" )
-  << tr( "ID" )
-  << tr( "Source X" )
-  << tr( "Source Y" )
-  << tr( "Dest. X" )
-  << tr( "Dest. Y" )
-  << tr( "dX (%1)" ).arg( unitType )
-  << tr( "dY (%1)" ).arg( unitType )
-  << tr( "Residual (%1)" ).arg( unitType );
+             << tr( "ID" )
+             << tr( "Source X" )
+             << tr( "Source Y" )
+             << tr( "Dest. X" )
+             << tr( "Dest. Y" )
+             << tr( "dX (%1)" ).arg( unitType )
+             << tr( "dY (%1)" ).arg( unitType )
+             << tr( "Residual (%1)" ).arg( unitType );
 
   setHorizontalHeaderLabels( itemLabels );
   setRowCount( mGCPList->size() );
@@ -148,8 +146,8 @@ void QgsGCPListModel::updateModel()
     // Calculate residual if transform is available and up-to-date
     if ( mGeorefTransform && bTransformUpdated && mGeorefTransform->parametersInitialized() )
     {
-      QgsPoint dst;
-      QgsPoint pixel = mGeorefTransform->hasCrs() ? mGeorefTransform->toColumnLine( p->pixelCoords() ) : p->pixelCoords();
+      QgsPointXY dst;
+      QgsPointXY pixel = mGeorefTransform->hasCrs() ? mGeorefTransform->toColumnLine( p->pixelCoords() ) : p->pixelCoords();
       if ( unitType == tr( "pixels" ) )
       {
         // Transform from world to raster coordinate:
@@ -171,7 +169,7 @@ void QgsGCPListModel::updateModel()
         }
       }
     }
-    residual = sqrt( dX * dX + dY * dY );
+    residual = std::sqrt( dX * dX + dY * dY );
 
     p->setResidual( QPointF( dX, dY ) );
 

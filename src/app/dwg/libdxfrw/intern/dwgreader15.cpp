@@ -135,7 +135,7 @@ bool dwgReader15::readFileHeader()
   return ret;
 }
 
-bool dwgReader15::readDwgHeader( DRW_Header& hdr )
+bool dwgReader15::readDwgHeader( DRW_Header &hdr )
 {
   QgsDebugMsg( "Entering." );
 
@@ -212,7 +212,7 @@ bool dwgReader15::readDwgHandles()
  * Reads all the object referenced in the object map section of the DWG file
  * (using their object file offsets)
  */
-bool dwgReader15::readDwgTables( DRW_Header& hdr )
+bool dwgReader15::readDwgTables( DRW_Header &hdr )
 {
   bool ret = dwgReader::readDwgTables( hdr, fileBuf );
 
@@ -223,7 +223,7 @@ bool dwgReader15::readDwgTables( DRW_Header& hdr )
  * Reads all the object referenced in the object map section of the DWG file
  * (using their object file offsets)
  */
-bool dwgReader15::readDwgBlocks( DRW_Interface& intfa )
+bool dwgReader15::readDwgBlocks( DRW_Interface &intfa )
 {
   bool ret = true;
   ret = dwgReader::readDwgBlocks( intfa, fileBuf );

@@ -24,7 +24,9 @@
 
 #include "qgsabstractgeometry.h"
 #include "qgscurve.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
+
+#define SIP_NO_FILE
 
 #ifndef _EFFECTIVEAREA_H
 #define _EFFECTIVEAREA_H 1
@@ -32,7 +34,7 @@
 
 #define LWDEBUG //
 #define LWDEBUGF //
-#define FP_MAX qMax
+#define FP_MAX std::max
 #define FLAGS_GET_Z( flags ) ( ( flags ) & 0x01 )
 #define LW_MSG_MAXLEN 256
 #define lwalloc qgsMalloc
@@ -62,7 +64,7 @@ struct MINHEAP
 {
   int maxSize;
   int usedSize;
-  areanode **key_array;
+  areanode **key_array = nullptr;
 };
 
 /**
@@ -70,10 +72,8 @@ struct MINHEAP
  */
 struct EFFECTIVE_AREAS
 {
-  EFFECTIVE_AREAS( const QgsCurve& curve )
-      : is3d( curve.is3D() )
-      , initial_arealist( nullptr )
-      , res_arealist( nullptr )
+  EFFECTIVE_AREAS( const QgsCurve &curve )
+    : is3d( curve.is3D() )
   {
     curve.points( inpts );
     initial_arealist = new areanode[ inpts.size()];
@@ -86,13 +86,13 @@ struct EFFECTIVE_AREAS
     delete [] res_arealist;
   }
 
-  EFFECTIVE_AREAS( const EFFECTIVE_AREAS& other ) = delete;
-  EFFECTIVE_AREAS& operator=( const EFFECTIVE_AREAS& other ) = delete;
+  EFFECTIVE_AREAS( const EFFECTIVE_AREAS &other ) = delete;
+  EFFECTIVE_AREAS &operator=( const EFFECTIVE_AREAS &other ) = delete;
 
   bool is3d;
   QgsPointSequence inpts;
-  areanode *initial_arealist;
-  double *res_arealist;
+  areanode *initial_arealist = nullptr;
+  double *res_arealist = nullptr;
 
 
 };

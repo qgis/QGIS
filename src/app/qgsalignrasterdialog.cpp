@@ -33,10 +33,10 @@
 #include <QVBoxLayout>
 
 
-static QgsMapLayer* _rasterLayer( const QString& filename )
+static QgsMapLayer *_rasterLayer( const QString &filename )
 {
-  QMap<QString, QgsMapLayer*> layers = QgsProject::instance()->mapLayers();
-  Q_FOREACH ( QgsMapLayer* layer, layers )
+  QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
+  Q_FOREACH ( QgsMapLayer *layer, layers )
   {
     if ( layer->type() == QgsMapLayer::RasterLayer && layer->source() == filename )
       return layer;
@@ -44,9 +44,9 @@ static QgsMapLayer* _rasterLayer( const QString& filename )
   return nullptr;
 }
 
-static QString _rasterLayerName( const QString& filename )
+static QString _rasterLayerName( const QString &filename )
 {
-  if ( QgsMapLayer* layer = _rasterLayer( filename ) )
+  if ( QgsMapLayer *layer = _rasterLayer( filename ) )
     return layer->name();
 
   QFileInfo fi( filename );
@@ -58,21 +58,21 @@ static QString _rasterLayerName( const QString& filename )
 //! Helper class to report progress
 struct QgsAlignRasterDialogProgress : public QgsAlignRaster::ProgressHandler
 {
-  explicit QgsAlignRasterDialogProgress( QProgressBar* pb ) : mPb( pb ) {}
-  virtual bool progress( double complete ) override
-  {
-    mPb->setValue(( int ) qRound( complete * 100 ) );
-    qApp->processEvents(); // to actually show the progress in GUI
-    return true;
-  }
+    explicit QgsAlignRasterDialogProgress( QProgressBar *pb ) : mPb( pb ) {}
+    bool progress( double complete ) override
+    {
+      mPb->setValue( ( int ) std::round( complete * 100 ) );
+      qApp->processEvents(); // to actually show the progress in GUI
+      return true;
+    }
 
-protected:
-  QProgressBar* mPb;
+  protected:
+    QProgressBar *mPb = nullptr;
 };
 
 
 QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   setupUi( this );
 
@@ -83,31 +83,32 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
   mAlign = new QgsAlignRaster;
   mAlign->setProgressHandler( new QgsAlignRasterDialogProgress( mProgress ) );
 
-  connect( mBtnAdd, SIGNAL( clicked( bool ) ), this, SLOT( addLayer() ) );
-  connect( mBtnRemove, SIGNAL( clicked( bool ) ), this, SLOT( removeLayer() ) );
-  connect( mBtnEdit, SIGNAL( clicked( bool ) ), this, SLOT( editLayer() ) );
+  connect( mBtnAdd, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::addLayer );
+  connect( mBtnRemove, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::removeLayer );
+  connect( mBtnEdit, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::editLayer );
 
-  connect( mCboReferenceLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( referenceLayerChanged() ) );
-  connect( mCrsSelector, SIGNAL( crsChanged( QgsCoordinateReferenceSystem ) ), this, SLOT( destinationCrsChanged() ) );
-  connect( mSpinCellSizeX, SIGNAL( valueChanged( double ) ), this, SLOT( updateParametersFromReferenceLayer() ) );
-  connect( mSpinCellSizeY, SIGNAL( valueChanged( double ) ), this, SLOT( updateParametersFromReferenceLayer() ) );
-  connect( mSpinGridOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( updateParametersFromReferenceLayer() ) );
-  connect( mSpinGridOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( updateParametersFromReferenceLayer() ) );
+  connect( mCboReferenceLayer, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ] { referenceLayerChanged(); } );
+  connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsAlignRasterDialog::destinationCrsChanged );
+  connect( mSpinCellSizeX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsAlignRasterDialog::updateParametersFromReferenceLayer );
+  connect( mSpinCellSizeY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsAlignRasterDialog::updateParametersFromReferenceLayer );
+  connect( mSpinGridOffsetX, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsAlignRasterDialog::updateParametersFromReferenceLayer );
+  connect( mSpinGridOffsetY, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsAlignRasterDialog::updateParametersFromReferenceLayer );
 
-  connect( mChkCustomCRS, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomCrs() ) );
-  connect( mChkCustomCellSize, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomCellSize() ) );
-  connect( mChkCustomGridOffset, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomGridOffset() ) );
+  connect( mChkCustomCRS, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::updateCustomCrs );
+  connect( mChkCustomCellSize, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::updateCustomCellSize );
+  connect( mChkCustomGridOffset, &QAbstractButton::clicked, this, &QgsAlignRasterDialog::updateCustomGridOffset );
 
   mClipExtentGroupBox->setChecked( false );
   mClipExtentGroupBox->setCollapsed( true );
   mClipExtentGroupBox->setTitleBase( tr( "Clip to Extent" ) );
-  QgsMapCanvas* mc = QgisApp::instance()->mapCanvas();
+  QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
   mClipExtentGroupBox->setCurrentExtent( mc->extent(), mc->mapSettings().destinationCrs() );
-  connect( mClipExtentGroupBox, SIGNAL( extentChanged( QgsRectangle ) ), this, SLOT( clipExtentChanged() ) );
+  connect( mClipExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsAlignRasterDialog::clipExtentChanged );
 
   // TODO: auto-detect reference layer
 
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( runAlign() ) );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAlignRasterDialog::runAlign );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsAlignRasterDialog::showHelp );
 
   populateLayersView();
 
@@ -122,19 +123,25 @@ QgsAlignRasterDialog::~QgsAlignRasterDialog()
 }
 
 
+void QgsAlignRasterDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_analysis.html#raster-alignment" ) );
+}
+
+
 void QgsAlignRasterDialog::populateLayersView()
 {
   mCboReferenceLayer->clear();
 
   int refLayerIndex = mAlign->suggestedReferenceLayer();
 
-  QStandardItemModel* model = new QStandardItemModel();
+  QStandardItemModel *model = new QStandardItemModel();
   int i = 0;
   Q_FOREACH ( QgsAlignRaster::Item item, mAlign->rasters() )
   {
     QString layerName = _rasterLayerName( item.inputFilename );
 
-    QStandardItem* si = new QStandardItem( QgsLayerItem::iconRaster(), layerName );
+    QStandardItem *si = new QStandardItem( QgsLayerItem::iconRaster(), layerName );
     model->appendRow( si );
 
     if ( i == refLayerIndex )
@@ -358,9 +365,9 @@ void QgsAlignRasterDialog::runAlign()
   {
     if ( mChkAddToCanvas->isChecked() )
     {
-      Q_FOREACH ( const QgsAlignRaster::Item& item, mAlign->rasters() )
+      Q_FOREACH ( const QgsAlignRaster::Item &item, mAlign->rasters() )
       {
-        QgsRasterLayer* layer = new QgsRasterLayer( item.outputFilename, QFileInfo( item.outputFilename ).baseName() );
+        QgsRasterLayer *layer = new QgsRasterLayer( item.outputFilename, QFileInfo( item.outputFilename ).baseName() );
         if ( layer->isValid() )
           QgsProject::instance()->addMapLayer( layer );
         else
@@ -380,7 +387,8 @@ void QgsAlignRasterDialog::runAlign()
 
 QgsAlignRasterLayerConfigDialog::QgsAlignRasterLayerConfigDialog()
 {
-  QVBoxLayout* layout = new QVBoxLayout();
+  setWindowTitle( tr( "Configure Layer Resampling" ) );
+  QVBoxLayout *layout = new QVBoxLayout();
 
   cboLayers = new QgsMapLayerComboBox( this );
   cboLayers->setFilters( QgsMapLayerProxyModel::RasterLayer );
@@ -401,17 +409,17 @@ QgsAlignRasterLayerConfigDialog::QgsAlignRasterLayerConfigDialog()
 
   editOutput = new QLineEdit( this );
   btnBrowse = new QPushButton( tr( "Browse..." ), this );
-  connect( btnBrowse, SIGNAL( clicked( bool ) ), this, SLOT( browseOutputFilename() ) );
+  connect( btnBrowse, &QAbstractButton::clicked, this, &QgsAlignRasterLayerConfigDialog::browseOutputFilename );
 
-  QHBoxLayout* layoutOutput = new QHBoxLayout();
+  QHBoxLayout *layoutOutput = new QHBoxLayout();
   layoutOutput->addWidget( editOutput );
   layoutOutput->addWidget( btnBrowse );
 
   chkRescale = new QCheckBox( tr( "Rescale values according to the cell size" ), this );
 
   btnBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
-  connect( btnBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( btnBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( btnBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( btnBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
   layout->addWidget( new QLabel( tr( "Input raster layer:" ), this ) );
   layout->addWidget( cboLayers );
@@ -426,7 +434,7 @@ QgsAlignRasterLayerConfigDialog::QgsAlignRasterLayerConfigDialog()
 
 QString QgsAlignRasterLayerConfigDialog::inputFilename() const
 {
-  QgsRasterLayer* l = qobject_cast<QgsRasterLayer*>( cboLayers->currentLayer() );
+  QgsRasterLayer *l = qobject_cast<QgsRasterLayer *>( cboLayers->currentLayer() );
   return l ? l->source() : QString();
 }
 
@@ -445,7 +453,7 @@ bool QgsAlignRasterLayerConfigDialog::rescaleValues() const
   return chkRescale->isChecked();
 }
 
-void QgsAlignRasterLayerConfigDialog::setItem( const QString& inputFilename, const QString& outputFilename,
+void QgsAlignRasterLayerConfigDialog::setItem( const QString &inputFilename, const QString &outputFilename,
     QgsAlignRaster::ResampleAlg resampleMethod, bool rescaleValues )
 {
   cboLayers->setLayer( _rasterLayer( inputFilename ) );
@@ -456,8 +464,8 @@ void QgsAlignRasterLayerConfigDialog::setItem( const QString& inputFilename, con
 
 void QgsAlignRasterLayerConfigDialog::browseOutputFilename()
 {
-  QSettings settings;
-  QString dirName = editOutput->text().isEmpty() ? settings.value( QStringLiteral( "/UI/lastRasterFileDir" ), QDir::homePath() ).toString() : editOutput->text();
+  QgsSettings settings;
+  QString dirName = editOutput->text().isEmpty() ? settings.value( QStringLiteral( "UI/lastRasterFileDir" ), QDir::homePath() ).toString() : editOutput->text();
 
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), dirName, tr( "GeoTIFF" ) + " (*.tif *.tiff *.TIF *.TIFF)" );
 

@@ -19,8 +19,8 @@
 #include <QIcon>
 
 #include "ui_qgsglobevectorlayerpropertiespage.h"
-#include <qgsmaplayerconfigwidget.h>
-#include <qgsmaplayerconfigwidgetfactory.h>
+#include "qgsmaplayerconfigwidget.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
 #include <osgEarthSymbology/AltitudeSymbol>
 
 class QgsGlobeVectorLayerConfig;
@@ -32,6 +32,7 @@ class QListWidgetItem;
 
 class QgsGlobeVectorLayerConfig : public QObject
 {
+    Q_OBJECT
   public:
     enum RenderingMode
     {
@@ -40,22 +41,22 @@ class QgsGlobeVectorLayerConfig : public QObject
       RenderingModeModelAdvanced
     };
 
-    QgsGlobeVectorLayerConfig( QObject* parent = 0 )
-        : QObject( parent )
-        , renderingMode( RenderingModeRasterized )
-        , altitudeClamping( osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN )
-        , altitudeTechnique( osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE )
-        , altitudeBinding( osgEarth::Symbology::AltitudeSymbol::BINDING_VERTEX )
-        , verticalOffset( 0.0 )
-        , verticalScale( 0.0 )
-        , clampingResolution( 0.0 )
-        , extrusionEnabled( false )
-        , extrusionHeight( "10" )
-        , extrusionFlatten( false )
-        , extrusionWallGradient( 0.5 )
-        , labelingEnabled( false )
-        , labelingDeclutter( false )
-        , lightingEnabled( true )
+    QgsGlobeVectorLayerConfig( QObject *parent = 0 )
+      : QObject( parent )
+      , renderingMode( RenderingModeRasterized )
+      , altitudeClamping( osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN )
+      , altitudeTechnique( osgEarth::Symbology::AltitudeSymbol::TECHNIQUE_DRAPE )
+      , altitudeBinding( osgEarth::Symbology::AltitudeSymbol::BINDING_VERTEX )
+      , verticalOffset( 0.0 )
+      , verticalScale( 0.0 )
+      , clampingResolution( 0.0 )
+      , extrusionEnabled( false )
+      , extrusionHeight( "10" )
+      , extrusionFlatten( false )
+      , extrusionWallGradient( 0.5 )
+      , labelingEnabled( false )
+      , labelingDeclutter( false )
+      , lightingEnabled( true )
     {
     }
 
@@ -79,7 +80,7 @@ class QgsGlobeVectorLayerConfig : public QObject
 
     bool lightingEnabled;
 
-    static QgsGlobeVectorLayerConfig* getConfig( QgsVectorLayer* layer );
+    static QgsGlobeVectorLayerConfig *getConfig( QgsVectorLayer *layer );
 };
 
 
@@ -88,7 +89,7 @@ class QgsGlobeVectorLayerPropertiesPage : public QgsMapLayerConfigWidget, privat
     Q_OBJECT
 
   public:
-    explicit QgsGlobeVectorLayerPropertiesPage( QgsVectorLayer* layer, QgsMapCanvas* canvas, QWidget *parent = 0 );
+    explicit QgsGlobeVectorLayerPropertiesPage( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 
   public slots:
     virtual void apply();
@@ -99,10 +100,10 @@ class QgsGlobeVectorLayerPropertiesPage : public QgsMapLayerConfigWidget, privat
     void showRenderingModeWidget( int index );
 
   signals:
-    void layerSettingsChanged( QgsMapLayer* );
+    void layerSettingsChanged( QgsMapLayer * );
 
   private:
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer *mLayer = nullptr;
 };
 
 
@@ -110,8 +111,8 @@ class QgsGlobeLayerPropertiesFactory : public QObject, public QgsMapLayerConfigW
 {
     Q_OBJECT
   public:
-    explicit QgsGlobeLayerPropertiesFactory( QObject* parent = 0 );
-    QgsMapLayerConfigWidget* createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const override;
+    explicit QgsGlobeLayerPropertiesFactory( QObject *parent = 0 );
+    QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const override;
 
     QIcon icon() const override;
 
@@ -122,11 +123,11 @@ class QgsGlobeLayerPropertiesFactory : public QObject, public QgsMapLayerConfigW
     bool supportsLayer( QgsMapLayer *layer ) const override;
 
   signals:
-    void layerSettingsChanged( QgsMapLayer* layer );
+    void layerSettingsChanged( QgsMapLayer *layer );
 
   private slots:
-    void readGlobeVectorLayerConfig( QgsMapLayer* mapLayer, const QDomElement &elem );
-    void writeGlobeVectorLayerConfig( QgsMapLayer* mapLayer, QDomElement& elem, QDomDocument& doc );
+    void readGlobeVectorLayerConfig( QgsMapLayer *mapLayer, const QDomElement &elem );
+    void writeGlobeVectorLayerConfig( QgsMapLayer *mapLayer, QDomElement &elem, QDomDocument &doc );
 };
 
 #endif // QGSGLOBEVECTORLAYERPROPERTIES_H

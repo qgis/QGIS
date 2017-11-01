@@ -17,13 +17,6 @@
 #include "qgsfields.h"
 #include <QStringList>
 
-QgsAttributeTableConfig::QgsAttributeTableConfig()
-    : mActionWidgetStyle( DropDown )
-    , mSortOrder( Qt::AscendingOrder )
-{
-
-}
-
 QVector<QgsAttributeTableConfig::ColumnConfig> QgsAttributeTableConfig::columns() const
 {
   return mColumns;
@@ -49,12 +42,12 @@ int QgsAttributeTableConfig::mapVisibleColumnToIndex( int visibleColumn ) const
   return -1;
 }
 
-void QgsAttributeTableConfig::setColumns( const QVector<ColumnConfig>& columns )
+void QgsAttributeTableConfig::setColumns( const QVector<ColumnConfig> &columns )
 {
   mColumns = columns;
 }
 
-void QgsAttributeTableConfig::update( const QgsFields& fields )
+void QgsAttributeTableConfig::update( const QgsFields &fields )
 {
   QStringList columns;
 
@@ -62,7 +55,7 @@ void QgsAttributeTableConfig::update( const QgsFields& fields )
 
   for ( int i = mColumns.count() - 1; i >= 0; --i )
   {
-    const ColumnConfig& column = mColumns.at( i );
+    const ColumnConfig &column = mColumns.at( i );
     if ( column.type == Field )
     {
       if ( fields.indexOf( column.name ) == -1 )
@@ -80,7 +73,7 @@ void QgsAttributeTableConfig::update( const QgsFields& fields )
     }
   }
 
-  Q_FOREACH ( const QgsField& field, fields )
+  for ( const auto &field : fields )
   {
     if ( !columns.contains( field.name() ) )
     {
@@ -106,9 +99,9 @@ void QgsAttributeTableConfig::update( const QgsFields& fields )
 
 bool QgsAttributeTableConfig::actionWidgetVisible() const
 {
-  Q_FOREACH ( const ColumnConfig& columnConfig, mColumns )
+  Q_FOREACH ( const ColumnConfig &columnConfig, mColumns )
   {
-    if ( columnConfig.type == Action && columnConfig.hidden == false )
+    if ( columnConfig.type == Action && !columnConfig.hidden )
       return true;
   }
   return false;
@@ -136,7 +129,7 @@ void QgsAttributeTableConfig::setActionWidgetStyle( ActionWidgetStyle actionWidg
 }
 
 
-void QgsAttributeTableConfig::readXml( const QDomNode& node )
+void QgsAttributeTableConfig::readXml( const QDomNode &node )
 {
   mColumns.clear();
 
@@ -197,7 +190,8 @@ void QgsAttributeTableConfig::readXml( const QDomNode& node )
   }
 
   mSortExpression = configNode.toElement().attribute( QStringLiteral( "sortExpression" ) );
-  mSortOrder = static_cast<Qt::SortOrder>( configNode.toElement().attribute( QStringLiteral( "sortOrder" ) ).toInt() );
+  Qt::SortOrder sortOrder = static_cast<Qt::SortOrder>( configNode.toElement().attribute( QStringLiteral( "sortOrder" ) ).toInt() );
+  setSortOrder( sortOrder );
 }
 
 QString QgsAttributeTableConfig::sortExpression() const
@@ -205,7 +199,7 @@ QString QgsAttributeTableConfig::sortExpression() const
   return mSortExpression;
 }
 
-void QgsAttributeTableConfig::setSortExpression( const QString& sortExpression )
+void QgsAttributeTableConfig::setSortExpression( const QString &sortExpression )
 {
   mSortExpression = sortExpression;
 }
@@ -230,7 +224,7 @@ void QgsAttributeTableConfig::setColumnHidden( int column, bool hidden )
   mColumns[ column ].hidden = hidden;
 }
 
-bool QgsAttributeTableConfig::operator!=( const QgsAttributeTableConfig& other ) const
+bool QgsAttributeTableConfig::operator!=( const QgsAttributeTableConfig &other ) const
 {
   return mSortExpression != other.mSortExpression || mColumns != other.mColumns || mActionWidgetStyle != other.mActionWidgetStyle || mSortOrder != other.mSortOrder;
 }
@@ -242,10 +236,16 @@ Qt::SortOrder QgsAttributeTableConfig::sortOrder() const
 
 void QgsAttributeTableConfig::setSortOrder( Qt::SortOrder sortOrder )
 {
+  // fix https://hub.qgis.org/issues/15803
+  if ( sortOrder != Qt::AscendingOrder && sortOrder != Qt::DescendingOrder )
+  {
+    sortOrder = Qt::AscendingOrder;
+  }
+
   mSortOrder = sortOrder;
 }
 
-void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
+void QgsAttributeTableConfig::writeXml( QDomNode &node ) const
 {
   QDomDocument doc( node.ownerDocument() );
 
@@ -258,7 +258,7 @@ void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
 
   QDomElement columnsElement  = doc.createElement( QStringLiteral( "columns" ) );
 
-  Q_FOREACH ( const ColumnConfig& column, mColumns )
+  Q_FOREACH ( const ColumnConfig &column, mColumns )
   {
     QDomElement columnElement = doc.createElement( QStringLiteral( "column" ) );
 
@@ -283,7 +283,7 @@ void QgsAttributeTableConfig::writeXml( QDomNode& node ) const
   node.appendChild( configElement );
 }
 
-bool QgsAttributeTableConfig::ColumnConfig::operator== ( const ColumnConfig& other ) const
+bool QgsAttributeTableConfig::ColumnConfig::operator== ( const ColumnConfig &other ) const
 {
   return type == other.type && name == other.name && hidden == other.hidden && width == other.width;
 }

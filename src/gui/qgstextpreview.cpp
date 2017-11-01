@@ -17,10 +17,8 @@
 #include <QDesktopWidget>
 #include <QPainter>
 
-QgsTextPreview::QgsTextPreview( QWidget* parent )
-    : QLabel( parent )
-    , mScale( -1 )
-    , mMapUnits( QgsUnitTypes::DistanceMeters )
+QgsTextPreview::QgsTextPreview( QWidget *parent )
+  : QLabel( parent )
 {
   // initially use a basic transform with no scale
   QgsMapToPixel newCoordXForm;
@@ -44,14 +42,14 @@ void QgsTextPreview::paintEvent( QPaintEvent *e )
   if ( mFormat.buffer().enabled() )
     xtrans = mContext.convertToPainterUnits( mFormat.buffer().size(), mFormat.buffer().sizeUnit(), mFormat.buffer().sizeMapUnitScale() );
   if ( mFormat.background().enabled() && mFormat.background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
-    xtrans = qMax( xtrans, mContext.convertToPainterUnits( mFormat.background().size().width(), mFormat.background().sizeUnit(), mFormat.background().sizeMapUnitScale() ) );
+    xtrans = std::max( xtrans, mContext.convertToPainterUnits( mFormat.background().size().width(), mFormat.background().sizeUnit(), mFormat.background().sizeMapUnitScale() ) );
   xtrans += 4;
 
   double ytrans = 0.0;
   if ( mFormat.buffer().enabled() )
-    ytrans = qMax( ytrans, mContext.convertToPainterUnits( mFormat.buffer().size(), mFormat.buffer().sizeUnit(), mFormat.buffer().sizeMapUnitScale() ) );
+    ytrans = std::max( ytrans, mContext.convertToPainterUnits( mFormat.buffer().size(), mFormat.buffer().sizeUnit(), mFormat.buffer().sizeMapUnitScale() ) );
   if ( mFormat.background().enabled() )
-    ytrans = qMax( ytrans, mContext.convertToPainterUnits( mFormat.background().size().height(), mFormat.background().sizeUnit(), mFormat.background().sizeMapUnitScale() ) );
+    ytrans = std::max( ytrans, mContext.convertToPainterUnits( mFormat.background().size().height(), mFormat.background().sizeUnit(), mFormat.background().sizeMapUnitScale() ) );
   ytrans += 4;
 
   QRectF textRect = rect();
@@ -64,11 +62,11 @@ void QgsTextPreview::paintEvent( QPaintEvent *e )
     textRect.setWidth( 2000 );
 
   mContext.setPainter( &p );
-  QgsTextRenderer::drawText( textRect, 0 , QgsTextRenderer::AlignLeft, QStringList() << text(),
+  QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::AlignLeft, QStringList() << text(),
                              mContext, mFormat );
 }
 
-void QgsTextPreview::setFormat( const QgsTextFormat& format )
+void QgsTextPreview::setFormat( const QgsTextFormat &format )
 {
   mFormat = format;
   update();

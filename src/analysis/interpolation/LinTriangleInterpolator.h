@@ -21,41 +21,47 @@
 #include "DualEdgeTriangulation.h"
 #include "qgis_analysis.h"
 
-/** \ingroup analysis
- * LinTriangleInterpolator is a class which interpolates linearly on a triangulation*/
+#define SIP_NO_FILE
+
+/**
+ * \ingroup analysis
+ * LinTriangleInterpolator is a class which interpolates linearly on a triangulation.
+ * \note Not available in Python bindings.
+*/
 class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
 {
   public:
     //! Default constructor
     LinTriangleInterpolator();
     //! Constructor with reference to a DualEdgeTriangulation object
-    LinTriangleInterpolator( DualEdgeTriangulation* tin );
+    LinTriangleInterpolator( DualEdgeTriangulation *tin );
     virtual ~LinTriangleInterpolator();
     //! Calculates the normal vector and assigns it to vec
-    virtual bool calcNormVec( double x, double y, Vector3D* result ) override;
+    virtual bool calcNormVec( double x, double y, Vector3D *result SIP_OUT ) override;
     //! Performs a linear interpolation in a triangle and assigns the x-,y- and z-coordinates to point
-    virtual bool calcPoint( double x, double y, Point3D* result ) override;
+    virtual bool calcPoint( double x, double y, QgsPoint *result SIP_OUT ) override;
     //! Returns a pointer to the current Triangulation object
-    virtual DualEdgeTriangulation* getTriangulation() const;
+    virtual DualEdgeTriangulation *getTriangulation() const;
     //! Sets a Triangulation
-    virtual void setTriangulation( DualEdgeTriangulation* tin );
+    virtual void setTriangulation( DualEdgeTriangulation *tin );
 
 
   protected:
-    DualEdgeTriangulation* mTIN;
+    DualEdgeTriangulation *mTIN = nullptr;
     //! Calculates the first derivative with respect to x for a linear surface and assigns it to vec
-    virtual bool calcFirstDerX( double x, double y, Vector3D* result );
+    virtual bool calcFirstDerX( double x, double y, Vector3D *result SIP_OUT );
     //! Calculates the first derivative with respect to y for a linear surface and assigns it to vec
-    virtual bool calcFirstDerY( double x, double y, Vector3D* result );
+    virtual bool calcFirstDerY( double x, double y, Vector3D *result SIP_OUT );
 };
 
+#ifndef SIP_RUN
+
 inline LinTriangleInterpolator::LinTriangleInterpolator()
-    : mTIN( nullptr )
 {
 
 }
 
-inline LinTriangleInterpolator::LinTriangleInterpolator( DualEdgeTriangulation* tin ): mTIN( tin )
+inline LinTriangleInterpolator::LinTriangleInterpolator( DualEdgeTriangulation *tin ): mTIN( tin )
 {
 
 }
@@ -65,16 +71,17 @@ inline LinTriangleInterpolator::~LinTriangleInterpolator()
 
 }
 
-inline DualEdgeTriangulation* LinTriangleInterpolator::getTriangulation() const
+inline DualEdgeTriangulation *LinTriangleInterpolator::getTriangulation() const
 {
   return mTIN;
 }
 
-inline void LinTriangleInterpolator::setTriangulation( DualEdgeTriangulation* tin )
+inline void LinTriangleInterpolator::setTriangulation( DualEdgeTriangulation *tin )
 {
   mTIN = tin;
 }
 
+#endif
 #endif
 
 

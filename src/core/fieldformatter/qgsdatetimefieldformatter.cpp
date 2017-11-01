@@ -15,8 +15,7 @@
  ***************************************************************************/
 #include "qgsdatetimefieldformatter.h"
 
-#include <QSettings>
-
+#include "qgssettings.h"
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
 
@@ -30,7 +29,7 @@ QString QgsDateTimeFieldFormatter::id() const
   return QStringLiteral( "DateTime" );
 }
 
-QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
   Q_UNUSED( cache )
 
@@ -38,7 +37,7 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer* layer, int fi
 
   if ( value.isNull() )
   {
-    QSettings settings;
+    QgsSettings settings;
     return QgsApplication::nullRepresentation();
   }
 

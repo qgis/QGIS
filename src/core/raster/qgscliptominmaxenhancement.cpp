@@ -19,33 +19,28 @@ email                : ersts@amnh.org
 #include "qgscliptominmaxenhancement.h"
 #include "qgscontrastenhancement.h"
 
-QgsClipToMinMaxEnhancement::QgsClipToMinMaxEnhancement( Qgis::DataType theQgsRasterDataType, double theMinimumValue, double theMaximumValue ) : QgsContrastEnhancementFunction( theQgsRasterDataType, theMinimumValue, theMaximumValue )
+QgsClipToMinMaxEnhancement::QgsClipToMinMaxEnhancement( Qgis::DataType qgsRasterDataType, double minimumValue, double maximumValue ) : QgsContrastEnhancementFunction( qgsRasterDataType, minimumValue, maximumValue )
 {
 }
 
-int QgsClipToMinMaxEnhancement::enhance( double theValue )
+int QgsClipToMinMaxEnhancement::enhance( double value )
 {
-  if ( theValue < mMinimumValue || theValue > mMaximumValue )
+  if ( value < mMinimumValue || value > mMaximumValue )
   {
     return -1;
   }
 
   if ( mQgsRasterDataType == Qgis::Byte )
   {
-    return static_cast<int>( theValue );
+    return static_cast<int>( value );
   }
   else
   {
-    return static_cast<int>(((( theValue - QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) ) / ( QgsContrastEnhancement::maximumValuePossible( mQgsRasterDataType ) - QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) ) )*255.0 ) );
+    return static_cast<int>( ( ( ( value - QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) ) / ( QgsContrastEnhancement::maximumValuePossible( mQgsRasterDataType ) - QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) ) ) * 255.0 ) );
   }
 }
 
-bool QgsClipToMinMaxEnhancement::isValueInDisplayableRange( double theValue )
+bool QgsClipToMinMaxEnhancement::isValueInDisplayableRange( double value )
 {
-  if ( theValue < mMinimumValue || theValue > mMaximumValue )
-  {
-    return false;
-  }
-
-  return true;
+  return !( value < mMinimumValue || value > mMaximumValue );
 }

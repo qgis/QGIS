@@ -35,7 +35,7 @@ struct EnumData
 };
 BOOL CALLBACK EnumProc( HWND hWnd, LPARAM lParam )
 {
-  EnumData& ed = *( EnumData* )lParam;
+  EnumData &ed = *( EnumData * )lParam;
   DWORD dwProcessId = 0x0;
   GetWindowThreadProcessId( hWnd, &dwProcessId );
   if ( ed.dwProcessId == dwProcessId )
@@ -63,7 +63,7 @@ void QgsGrassWin::hideWindow( int pid )
   Q_UNUSED( pid )
   QgsDebugMsg( QString( "pid = %1" ).arg( pid ) );
 #ifdef Q_OS_WIN
-  HWND hWnd = FindWindowFromProcessId(( DWORD )pid );
+  HWND hWnd = FindWindowFromProcessId( ( DWORD )pid );
   if ( hWnd )
   {
     QgsDebugMsg( "driver window found -> minimize" );

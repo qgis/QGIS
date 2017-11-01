@@ -36,12 +36,7 @@ class TestQgsComposerScaleBar : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerScaleBar()
-        : mComposition( 0 )
-        , mComposerMap( 0 )
-        , mComposerScaleBar( 0 )
-        , mRasterLayer( 0 )
-    {}
+    TestQgsComposerScaleBar() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -56,10 +51,10 @@ class TestQgsComposerScaleBar : public QObject
     void dataDefined();
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerMap* mComposerMap;
-    QgsComposerScaleBar* mComposerScaleBar;
-    QgsRasterLayer* mRasterLayer;
+    QgsComposition *mComposition = nullptr;
+    QgsComposerMap *mComposerMap = nullptr;
+    QgsComposerScaleBar *mComposerScaleBar = nullptr;
+    QgsRasterLayer *mRasterLayer = nullptr;
     QString mReport;
 };
 
@@ -84,7 +79,7 @@ void TestQgsComposerScaleBar::initTestCase()
   QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
-  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
+  QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
   mRasterLayer->setRenderer( rasterRenderer );
 
   //create composition with composer map
@@ -95,14 +90,14 @@ void TestQgsComposerScaleBar::initTestCase()
   mComposerMap->setFrameEnabled( true );
   mComposition->addComposerMap( mComposerMap );
   mComposerMap->setNewExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
-  mComposerMap->setLayers( QList<QgsMapLayer*>() << mRasterLayer );
+  mComposerMap->setLayers( QList<QgsMapLayer *>() << mRasterLayer );
 
   mComposerScaleBar = new QgsComposerScaleBar( mComposition );
   mComposerScaleBar->setSceneRect( QRectF( 20, 180, 50, 20 ) );
   mComposition->addComposerScaleBar( mComposerScaleBar );
   mComposerScaleBar->setComposerMap( mComposerMap );
   mComposerScaleBar->setFont( QgsFontUtils::getStandardTestFont() );
-  mComposerScaleBar->setUnits( QgsComposerScaleBar::Meters );
+  mComposerScaleBar->setUnits( QgsUnitTypes::DistanceMeters );
   mComposerScaleBar->setNumUnitsPerSegment( 2000 );
   mComposerScaleBar->setNumSegmentsLeft( 0 );
   mComposerScaleBar->setNumSegments( 2 );
@@ -179,11 +174,19 @@ void TestQgsComposerScaleBar::doubleBox()
 
 void TestQgsComposerScaleBar::numeric()
 {
+  QFont f = mComposerScaleBar->font();
+
+  QFont newFont = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
+  newFont.setPointSizeF( 12 );
+  mComposerScaleBar->setFont( newFont );
+
   mComposerScaleBar->setStyle( QStringLiteral( "Numeric" ) );
   mComposerScaleBar->setSceneRect( QRectF( 20, 180, 50, 20 ) );
   QgsCompositionChecker checker( QStringLiteral( "composerscalebar_numeric" ), mComposition );
   checker.setControlPathPrefix( QStringLiteral( "composer_scalebar" ) );
-  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
+  bool result = checker.testComposition( mReport, 0, 0 );
+  mComposerScaleBar->setFont( f );
+  QVERIFY( result );
 }
 
 void TestQgsComposerScaleBar::tick()
@@ -197,10 +200,10 @@ void TestQgsComposerScaleBar::tick()
 
 void TestQgsComposerScaleBar::dataDefined()
 {
-  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarFillColor, QgsProperty::fromExpression( "'red'" ) );
-  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarFillColor2, QgsProperty::fromExpression( "'blue'" ) );
-  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarLineColor, QgsProperty::fromExpression( "'yellow'" ) );
-  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarLineWidth, QgsProperty::fromExpression( "1.2" ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarFillColor, QgsProperty::fromExpression( QStringLiteral( "'red'" ) ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarFillColor2, QgsProperty::fromExpression( QStringLiteral( "'blue'" ) ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarLineColor, QgsProperty::fromExpression( QStringLiteral( "'yellow'" ) ) );
+  mComposerScaleBar->dataDefinedProperties().setProperty( QgsComposerObject::ScalebarLineWidth, QgsProperty::fromExpression( QStringLiteral( "1.2" ) ) );
   mComposerScaleBar->refreshDataDefinedProperty();
   QCOMPARE( mComposerScaleBar->brush().color().name(), QColor( 255, 0, 0 ).name() );
   QCOMPARE( mComposerScaleBar->brush2().color().name(), QColor( 0, 0, 255 ).name() );

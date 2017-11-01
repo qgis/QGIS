@@ -20,13 +20,13 @@
 #include "qgsmapcanvas.h"
 
 
-QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
-    : QgsPanelWidget( parent )
+QgsUndoWidget::QgsUndoWidget( QWidget *parent, QgsMapCanvas *mapCanvas )
+  : QgsPanelWidget( parent )
 {
   setupUi( this );
 
-  connect( undoButton, SIGNAL( clicked() ), this, SLOT( undo() ) );
-  connect( redoButton, SIGNAL( clicked() ), this, SLOT( redo() ) );
+  connect( undoButton, &QAbstractButton::clicked, this, &QgsUndoWidget::undo );
+  connect( redoButton, &QAbstractButton::clicked, this, &QgsUndoWidget::redo );
 
   undoButton->setDisabled( true );
   redoButton->setDisabled( true );
@@ -78,7 +78,7 @@ void QgsUndoWidget::indexChanged( int curIndx )
     canRedo = mUndoStack->canRedo();
     curCount = mUndoStack->count();
   }
-  int offset = qAbs( mPreviousIndex - curIndx );
+  int offset = std::abs( mPreviousIndex - curIndx );
 
   // when individually redoing, differentiate between last redo and a new command added to stack
   bool lastRedo = ( mPreviousIndex == ( mPreviousCount - 1 ) && mPreviousCount == curCount && !canRedo );
@@ -120,7 +120,7 @@ void QgsUndoWidget::redo()
     mUndoStack->redo();
 }
 
-void QgsUndoWidget::setUndoStack( QUndoStack* undoStack )
+void QgsUndoWidget::setUndoStack( QUndoStack *undoStack )
 {
   if ( mUndoView )
   {
@@ -138,11 +138,11 @@ void QgsUndoWidget::setUndoStack( QUndoStack* undoStack )
   mUndoView->setObjectName( QStringLiteral( "undoView" ) );
   gridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
 //  setWidget( dockWidgetContents );
-  connect( mUndoStack, SIGNAL( canUndoChanged( bool ) ), this, SLOT( undoChanged( bool ) ) );
-  connect( mUndoStack, SIGNAL( canRedoChanged( bool ) ), this, SLOT( redoChanged( bool ) ) );
+  connect( mUndoStack, &QUndoStack::canUndoChanged, this, &QgsUndoWidget::undoChanged );
+  connect( mUndoStack, &QUndoStack::canRedoChanged, this, &QgsUndoWidget::redoChanged );
 
   // gets triggered also when a new command is added to stack, and twice when clicking a command in QUndoView
-  connect( mUndoStack, SIGNAL( indexChanged( int ) ), this, SLOT( indexChanged( int ) ) );
+  connect( mUndoStack, &QUndoStack::indexChanged, this, &QgsUndoWidget::indexChanged );
 
   undoButton->setDisabled( !mUndoStack->canUndo() );
   redoButton->setDisabled( !mUndoStack->canRedo() );

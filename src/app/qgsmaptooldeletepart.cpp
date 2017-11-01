@@ -27,12 +27,10 @@
 
 #include <QMouseEvent>
 
-QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
-    , vlayer( nullptr )
-    , mRubberBand( nullptr )
-    , mPressedFid( 0 )
-    , mPressedPartNum( 0 )
+QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas *canvas )
+  : QgsMapToolEdit( canvas )
+  , mPressedFid( 0 )
+  , mPressedPartNum( 0 )
 {
   mToolName = tr( "Delete part" );
 }
@@ -42,20 +40,20 @@ QgsMapToolDeletePart::~QgsMapToolDeletePart()
   delete mRubberBand;
 }
 
-void QgsMapToolDeletePart::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolDeletePart::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
   //nothing to do
 }
 
-void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent *e )
 {
   mPressedFid = -1;
   mPressedPartNum = -1;
   delete mRubberBand;
   mRubberBand = nullptr;
 
-  QgsMapLayer* currentLayer = mCanvas->currentLayer();
+  QgsMapLayer *currentLayer = mCanvas->currentLayer();
   if ( !currentLayer )
     return;
 
@@ -76,7 +74,7 @@ void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent* e )
 
   if ( mPressedFid != -1 )
   {
-    mRubberBand = createRubberBand( vlayer->geometryType() ) ;
+    mRubberBand = createRubberBand( vlayer->geometryType() );
 
     mRubberBand->setToGeometry( geomPart, vlayer );
     mRubberBand->show();
@@ -84,7 +82,7 @@ void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent* e )
 
 }
 
-void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
 
@@ -117,7 +115,7 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent* e )
   return;
 }
 
-QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fid, int& partNum )
+QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fid, int &partNum )
 {
   QgsFeature f;
   QgsGeometry geomPart;
@@ -127,7 +125,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fi
     case QgsWkbTypes::PointGeometry:
     case QgsWkbTypes::LineGeometry:
     {
-      QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Vertex | QgsPointLocator::Edge );
+      QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Types( QgsPointLocator::Vertex | QgsPointLocator::Edge ) );
       if ( !match.isValid() )
         return geomPart;
 
@@ -137,24 +135,24 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fi
       if ( !g.isMultipart() )
       {
         fid = match.featureId();
-        return QgsGeometry::fromPoint( match.point() );
+        return QgsGeometry::fromPointXY( match.point() );
       }
       if ( g.wkbType() == QgsWkbTypes::MultiPoint || g.wkbType() == QgsWkbTypes::MultiPoint25D )
       {
         fid = match.featureId();
         partNum = snapVertex;
-        return QgsGeometry::fromPoint( match.point() );
+        return QgsGeometry::fromPointXY( match.point() );
       }
       if ( g.wkbType() == QgsWkbTypes::MultiLineString || g.wkbType() == QgsWkbTypes::MultiLineString25D )
       {
-        QgsMultiPolyline mline = g.asMultiPolyline();
+        QgsMultiPolylineXY mline = g.asMultiPolyline();
         for ( int part = 0; part < mline.count(); part++ )
         {
           if ( snapVertex < mline[part].count() )
           {
             fid = match.featureId();
             partNum = part;
-            return QgsGeometry::fromPolyline( mline[part] );
+            return QgsGeometry::fromPolylineXY( mline[part] );
           }
           snapVertex -= mline[part].count();
         }
@@ -163,7 +161,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fi
     }
     case QgsWkbTypes::PolygonGeometry:
     {
-      QgsPoint layerCoords = toLayerCoordinates( vlayer, point );
+      QgsPointXY layerCoords = toLayerCoordinates( vlayer, point );
       double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
       QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
                                layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
@@ -177,11 +175,11 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& fi
         fid = f.id();
         return geomPart;
       }
-      QgsMultiPolygon mpolygon = g.asMultiPolygon();
+      QgsMultiPolygonXY mpolygon = g.asMultiPolygon();
       for ( int part = 0; part < mpolygon.count(); part++ ) // go through the polygons
       {
-        const QgsPolygon& polygon = mpolygon[part];
-        QgsGeometry partGeo = QgsGeometry::fromPolygon( polygon );
+        const QgsPolygonXY &polygon = mpolygon[part];
+        QgsGeometry partGeo = QgsGeometry::fromPolygonXY( polygon );
         if ( partGeo.contains( &layerCoords ) )
         {
           fid = f.id();

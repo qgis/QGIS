@@ -17,7 +17,8 @@
 #define QGSGRASSSELECT_H
 #include "ui_qgsgrassselectbase.h"
 
-/** \class QgsGrassSelect
+/**
+ * \class QgsGrassSelect
  * \brief Dialog to select GRASS layer.
  *
  */
@@ -29,8 +30,6 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
     //! Constructor
     //QgsGrassSelect(QWidget *parent = 0, int type = VECTOR );
     QgsGrassSelect( QWidget *parent, int type = Vector );
-
-    ~QgsGrassSelect();
 
     enum Type
     {
@@ -52,22 +51,22 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
     void accept() override;
 
     //! Open dialog for Gisdbase
-    void on_GisdbaseBrowse_clicked();
+    void GisdbaseBrowse_clicked();
 
     //! Reset combobox of locations for current Gisdbase
-    void on_egisdbase_textChanged() { setLocations(); }
+    void egisdbase_textChanged() { setLocations(); }
     void setLocations();
 
     //! Reset combobox of mapsets for current Location
-    void on_elocation_activated() { setMapsets(); }
+    void elocation_activated() { setMapsets(); }
     void setMapsets();
 
     //! Reset combobox of maps for current Gisdbase + Location
-    void on_emapset_activated() { setMaps(); }
+    void emapset_activated() { setMaps(); }
     void setMaps();
 
     //! Reset combobox of layers for current Gisdbase + Location + Map
-    void on_emap_activated() { setLayers(); }
+    void emap_activated() { setLayers(); }
     void setLayers();
 
   private:

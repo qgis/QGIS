@@ -27,80 +27,87 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsGeometry, QgsWkbTypes
+from qgis.core import (QgsFeatureSink,
+                       QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterFeatureSink)
 
-from qgis.PyQt.QtGui import QIcon
-
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector, ParameterSelection, ParameterNumber
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class OffsetLine(GeoAlgorithm):
+class OffsetLine(QgisFeatureBasedAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
     DISTANCE = 'DISTANCE'
     SEGMENTS = 'SEGMENTS'
     JOIN_STYLE = 'JOIN_STYLE'
-    MITRE_LIMIT = 'MITRE_LIMIT'
+    MITER_LIMIT = 'MITER_LIMIT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Offset line')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def group(self):
+        return self.tr('Vector geometry')
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterNumber(self.DISTANCE,
-                                          self.tr('Distance'), default=10.0))
-        self.addParameter(ParameterNumber(self.SEGMENTS,
-                                          self.tr('Segments'), 1, default=8))
+    def __init__(self):
+        super().__init__()
+
+        self.distance = None
+        self.segments = None
+        self.join_style = None
+        self.miter_limit = None
+
+    def initParameters(self, config=None):
+        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
+                                                       self.tr('Distance'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       defaultValue=10.0))
+        self.addParameter(QgsProcessingParameterNumber(self.SEGMENTS,
+                                                       self.tr('Segments'),
+                                                       type=QgsProcessingParameterNumber.Integer,
+                                                       minValue=1, defaultValue=8))
         self.join_styles = [self.tr('Round'),
-                            'Mitre',
+                            'Miter',
                             'Bevel']
-        self.addParameter(ParameterSelection(
+        self.addParameter(QgsProcessingParameterEnum(
             self.JOIN_STYLE,
             self.tr('Join style'),
-            self.join_styles))
-        self.addParameter(ParameterNumber(self.MITRE_LIMIT,
-                                          self.tr('Mitre limit'), 1, default=2))
+            options=self.join_styles))
+        self.addParameter(QgsProcessingParameterNumber(self.MITER_LIMIT,
+                                                       self.tr('Miter limit'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=1, defaultValue=2))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Offset'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
+    def name(self):
+        return 'offsetline'
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
+    def displayName(self):
+        return self.tr('Offset line')
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields().toList(),
-                QgsWkbTypes.LineString,
-                layer.crs())
+    def outputName(self):
+        return self.tr('Offset')
 
-        distance = self.getParameterValue(self.DISTANCE)
-        segments = int(self.getParameterValue(self.SEGMENTS))
-        join_style = self.getParameterValue(self.JOIN_STYLE) + 1
-        miter_limit = self.getParameterValue(self.MITRE_LIMIT)
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine]
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+    def outputType(self):
+        return QgsProcessing.TypeVectorLine
 
-        for current, input_feature in enumerate(features):
-            output_feature = input_feature
-            input_geometry = input_feature.geometry()
-            if input_geometry:
-                output_geometry = input_geometry.offsetCurve(distance, segments, join_style, miter_limit)
-                if not output_geometry:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Error calculating line offset'))
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
+        self.segments = self.parameterAsInt(parameters, self.SEGMENTS, context)
+        self.join_style = self.parameterAsEnum(parameters, self.JOIN_STYLE, context) + 1
+        self.miter_limit = self.parameterAsDouble(parameters, self.MITER_LIMIT, context)
+        return True
 
-                output_feature.setGeometry(output_geometry)
+    def processFeature(self, feature, feedback):
+        input_geometry = feature.geometry()
+        if input_geometry:
+            output_geometry = input_geometry.offsetCurve(self.distance, self.segments, self.join_style, self.miter_limit)
+            if not output_geometry:
+                raise QgsProcessingException(
+                    self.tr('Error calculating line offset'))
 
-            writer.addFeature(output_feature)
-            feedback.setProgress(int(current * total))
+            feature.setGeometry(output_geometry)
 
-        del writer
+        return feature

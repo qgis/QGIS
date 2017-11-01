@@ -29,7 +29,7 @@ bool dwgReader27::readFileHeader()
   return ret;
 }
 
-bool dwgReader27::readDwgHeader( DRW_Header& hdr )
+bool dwgReader27::readDwgHeader( DRW_Header &hdr )
 {
   DRW_DBG( "dwgReader27::readDwgHeader\n" );
   bool ret = dwgReader18::readDwgHeader( hdr );

@@ -25,18 +25,17 @@ class APP_EXPORT QgsFormAnnotationDialog: public QDialog, private Ui::QgsFormAnn
 {
     Q_OBJECT
   public:
-    QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem* item, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsFormAnnotationDialog();
+    QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
 
   private:
-    QgsMapCanvasAnnotationItem* mItem = nullptr;
-    QgsAnnotationWidget* mEmbeddedWidget = nullptr;
+    QgsMapCanvasAnnotationItem *mItem = nullptr;
+    QgsAnnotationWidget *mEmbeddedWidget = nullptr;
 
   private slots:
     void applySettingsToItem();
-    void on_mBrowseToolButton_clicked();
+    void mBrowseToolButton_clicked();
     void deleteItem();
-    void on_mButtonBox_clicked( QAbstractButton* button );
+    void mButtonBox_clicked( QAbstractButton *button );
 };
 
 #endif // QGSFORMANNOTATIONDIALOG_H

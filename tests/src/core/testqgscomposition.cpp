@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgscomposition.h"
+#include "qgscomposerattributetablev2.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposershape.h"
 #include "qgscomposerarrow.h"
@@ -27,10 +28,15 @@
 #include "qgsmultirenderchecker.h"
 #include "qgsfillsymbollayer.h"
 #include "qgsproject.h"
+#include "qgscomposerlegend.h"
+#include "qgsrasterlayer.h"
+#include "qgsvectorlayer.h"
+#include "qgslayertreegroup.h"
+#include "qgslayertreelayer.h"
+#include "qgslayertree.h"
 
 #include <QObject>
 #include "qgstest.h"
-#include "qgstestutils.h"
 
 class TestQgsComposition : public QObject
 {
@@ -58,17 +64,20 @@ class TestQgsComposition : public QObject
     void variablesEdited();
     void itemVariablesFunction();
     void referenceMap();
+    void legendRestoredFromTemplate();
+    void legendRestoredFromTemplateAutoUpdate();
+    void attributeTableRestoredFromTemplate();
+    void mapLayersRestoredFromTemplate();
+    void mapLayersStyleOverrideRestoredFromTemplate();
+    void atlasLayerRestoredFromTemplate();
 
   private:
-    QgsComposition *mComposition;
+    QgsComposition *mComposition = nullptr;
     QString mReport;
 
 };
 
-TestQgsComposition::TestQgsComposition()
-    : mComposition( 0 )
-{
-}
+TestQgsComposition::TestQgsComposition() = default;
 
 void TestQgsComposition::initTestCase()
 {
@@ -110,30 +119,30 @@ void TestQgsComposition::cleanup()
 void TestQgsComposition::itemsOnPage()
 {
   //add some items to the composition
-  QgsComposerLabel* label1 = new QgsComposerLabel( mComposition );
+  QgsComposerLabel *label1 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( label1 );
   label1->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 1 );
-  QgsComposerLabel* label2 = new QgsComposerLabel( mComposition );
+  QgsComposerLabel *label2 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( label2 );
   label2->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 1 );
-  QgsComposerLabel* label3 = new QgsComposerLabel( mComposition );
+  QgsComposerLabel *label3 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( label3 );
   label3->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 2 );
-  QgsComposerShape* shape1 = new QgsComposerShape( mComposition );
+  QgsComposerShape *shape1 = new QgsComposerShape( mComposition );
   mComposition->addComposerShape( shape1 );
   shape1->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 1 );
-  QgsComposerShape* shape2 = new QgsComposerShape( mComposition );
+  QgsComposerShape *shape2 = new QgsComposerShape( mComposition );
   mComposition->addComposerShape( shape2 );
   shape2->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 2 );
-  QgsComposerArrow* arrow1 = new QgsComposerArrow( mComposition );
+  QgsComposerArrow *arrow1 = new QgsComposerArrow( mComposition );
   mComposition->addComposerArrow( arrow1 );
   arrow1->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 3 );
-  QgsComposerArrow* arrow2 = new QgsComposerArrow( mComposition );
+  QgsComposerArrow *arrow2 = new QgsComposerArrow( mComposition );
   mComposition->addComposerArrow( arrow2 );
   arrow2->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 3 );
 
   //fetch items - remember that these numbers include the paper item!
-  QList<QgsComposerItem*> items;
+  QList<QgsComposerItem *> items;
   mComposition->composerItemsOnPage( items, 0 );
   //should be 4 items on page 1
   QCOMPARE( items.length(), 4 );
@@ -145,7 +154,7 @@ void TestQgsComposition::itemsOnPage()
   QCOMPARE( items.length(), 3 );
 
   //check fetching specific item types
-  QList<QgsComposerLabel*> labels;
+  QList<QgsComposerLabel *> labels;
   mComposition->composerItemsOnPage( labels, 0 );
   //should be 2 labels on page 1
   QCOMPARE( labels.length(), 2 );
@@ -156,7 +165,7 @@ void TestQgsComposition::itemsOnPage()
   //should be no label on page 3
   QCOMPARE( labels.length(), 0 );
 
-  QList<QgsComposerShape*> shapes;
+  QList<QgsComposerShape *> shapes;
   mComposition->composerItemsOnPage( shapes, 0 );
   //should be 1 shapes on page 1
   QCOMPARE( shapes.length(), 1 );
@@ -167,7 +176,7 @@ void TestQgsComposition::itemsOnPage()
   //should be no shapes on page 3
   QCOMPARE( shapes.length(), 0 );
 
-  QList<QgsComposerArrow*> arrows;
+  QList<QgsComposerArrow *> arrows;
   mComposition->composerItemsOnPage( arrows, 0 );
   //should be no arrows on page 1
   QCOMPARE( arrows.length(), 0 );
@@ -200,11 +209,11 @@ void TestQgsComposition::shouldExportPage()
   mComposition->setPaperSize( 297, 200 );
   mComposition->setNumPages( 2 );
 
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerHtml *htmlItem = new QgsComposerHtml( mComposition, false );
   //frame on page 1
-  QgsComposerFrame* frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 100 );
+  QgsComposerFrame *frame1 = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 100 );
   //frame on page 2
-  QgsComposerFrame* frame2 = new QgsComposerFrame( mComposition, htmlItem, 0, 320, 100, 100 );
+  QgsComposerFrame *frame2 = new QgsComposerFrame( mComposition, htmlItem, 0, 320, 100, 100 );
   frame2->setHidePageIfEmpty( true );
   htmlItem->addFrame( frame1 );
   htmlItem->addFrame( frame2 );
@@ -237,13 +246,13 @@ void TestQgsComposition::shouldExportPage()
 void TestQgsComposition::pageIsEmpty()
 {
   //add some items to the composition
-  QgsComposerLabel* label1 = new QgsComposerLabel( mComposition );
+  QgsComposerLabel *label1 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( label1 );
   label1->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 1 );
-  QgsComposerLabel* label2 = new QgsComposerLabel( mComposition );
+  QgsComposerLabel *label2 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( label2 );
   label2->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 1 );
-  QgsComposerLabel* label3 = new QgsComposerLabel( mComposition );
+  QgsComposerLabel *label3 = new QgsComposerLabel( mComposition );
   mComposition->addComposerLabel( label3 );
   label3->setItemPosition( 10, 10, 50, 50, QgsComposerItem::UpperLeft, false, 3 );
 
@@ -266,7 +275,7 @@ void TestQgsComposition::pageIsEmpty()
 
 void TestQgsComposition::customProperties()
 {
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
 
   QCOMPARE( composition->customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
   QVERIFY( composition->customProperties().isEmpty() );
@@ -294,7 +303,7 @@ void TestQgsComposition::customProperties()
 
 void TestQgsComposition::writeRetrieveCustomProperties()
 {
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
   composition->setCustomProperty( QStringLiteral( "testprop" ), "testval" );
   composition->setCustomProperty( QStringLiteral( "testprop2" ), 5 );
 
@@ -313,7 +322,7 @@ void TestQgsComposition::writeRetrieveCustomProperties()
   QDomElement compositionElem = evalNodeList.at( 0 ).toElement();
 
   //test reading node containing custom properties
-  QgsComposition* readComposition = new QgsComposition( QgsProject::instance() );
+  QgsComposition *readComposition = new QgsComposition( QgsProject::instance() );
   QVERIFY( readComposition->readXml( compositionElem, doc ) );
 
   //test retrieved custom properties
@@ -330,21 +339,21 @@ void TestQgsComposition::writeRetrieveCustomProperties()
 void TestQgsComposition::bounds()
 {
   //add some items to a composition
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
-  QgsComposerShape* shape1 = new QgsComposerShape( composition );
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
+  QgsComposerShape *shape1 = new QgsComposerShape( composition );
   shape1->setShapeType( QgsComposerShape::Rectangle );
   composition->addComposerShape( shape1 );
   shape1->setItemPosition( 90, 50, 90, 50, QgsComposerItem::UpperLeft, false, 1 );
   shape1->setItemRotation( 45 );
-  QgsComposerShape* shape2 = new QgsComposerShape( composition );
+  QgsComposerShape *shape2 = new QgsComposerShape( composition );
   shape2->setShapeType( QgsComposerShape::Rectangle );
   composition->addComposerShape( shape2 );
   shape2->setItemPosition( 100, 150, 110, 50, QgsComposerItem::UpperLeft, false, 1 );
-  QgsComposerShape* shape3 = new QgsComposerShape( composition );
+  QgsComposerShape *shape3 = new QgsComposerShape( composition );
   shape3->setShapeType( QgsComposerShape::Rectangle );
   composition->addComposerShape( shape3 );
   shape3->setItemPosition( 210, 30, 50, 100, QgsComposerItem::UpperLeft, false, 2 );
-  QgsComposerShape* shape4 = new QgsComposerShape( composition );
+  QgsComposerShape *shape4 = new QgsComposerShape( composition );
   shape4->setShapeType( QgsComposerShape::Rectangle );
   composition->addComposerShape( shape4 );
   shape4->setItemPosition( 10, 120, 50, 30, QgsComposerItem::UpperLeft, false, 2 );
@@ -352,34 +361,34 @@ void TestQgsComposition::bounds()
 
   //check bounds
   QRectF compositionBounds = composition->compositionBounds( false );
-  QVERIFY( qgsDoubleNear( compositionBounds.height(), 372.15, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBounds.width(), 301.00, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBounds.left(), -2, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBounds.top(), -2, 0.01 ) );
+  QGSCOMPARENEAR( compositionBounds.height(), 372.15, 0.01 );
+  QGSCOMPARENEAR( compositionBounds.width(), 301.00, 0.01 );
+  QGSCOMPARENEAR( compositionBounds.left(), -2, 0.01 );
+  QGSCOMPARENEAR( compositionBounds.top(), -2, 0.01 );
 
   QRectF compositionBoundsNoPage = composition->compositionBounds( true );
-  QVERIFY( qgsDoubleNear( compositionBoundsNoPage.height(), 320.36, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBoundsNoPage.width(), 250.30, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBoundsNoPage.left(), 9.85, 0.01 ) );
-  QVERIFY( qgsDoubleNear( compositionBoundsNoPage.top(), 49.79, 0.01 ) );
+  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 320.36, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 250.30, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 9.85, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 49.79, 0.01 );
 
   QRectF page1Bounds = composition->pageItemBounds( 0, true );
-  QVERIFY( qgsDoubleNear( page1Bounds.height(), 150.36, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page1Bounds.width(), 155.72, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page1Bounds.left(), 54.43, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page1Bounds.top(), 49.79, 0.01 ) );
+  QGSCOMPARENEAR( page1Bounds.height(), 150.36, 0.01 );
+  QGSCOMPARENEAR( page1Bounds.width(), 155.72, 0.01 );
+  QGSCOMPARENEAR( page1Bounds.left(), 54.43, 0.01 );
+  QGSCOMPARENEAR( page1Bounds.top(), 49.79, 0.01 );
 
   QRectF page2Bounds = composition->pageItemBounds( 1, true );
-  QVERIFY( qgsDoubleNear( page2Bounds.height(), 100.30, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2Bounds.width(), 50.30, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2Bounds.left(), 209.85, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2Bounds.top(), 249.85, 0.01 ) );
+  QGSCOMPARENEAR( page2Bounds.height(), 100.30, 0.01 );
+  QGSCOMPARENEAR( page2Bounds.width(), 50.30, 0.01 );
+  QGSCOMPARENEAR( page2Bounds.left(), 209.85, 0.01 );
+  QGSCOMPARENEAR( page2Bounds.top(), 249.85, 0.01 );
 
   QRectF page2BoundsWithHidden = composition->pageItemBounds( 1, false );
-  QVERIFY( qgsDoubleNear( page2BoundsWithHidden.height(), 120.30, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2BoundsWithHidden.width(), 250.30, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2BoundsWithHidden.left(), 9.85, 0.01 ) );
-  QVERIFY( qgsDoubleNear( page2BoundsWithHidden.top(), 249.85, 0.01 ) );
+  QGSCOMPARENEAR( page2BoundsWithHidden.height(), 120.30, 0.01 );
+  QGSCOMPARENEAR( page2BoundsWithHidden.width(), 250.30, 0.01 );
+  QGSCOMPARENEAR( page2BoundsWithHidden.left(), 9.85, 0.01 );
+  QGSCOMPARENEAR( page2BoundsWithHidden.top(), 249.85, 0.01 );
 
   delete composition;
 }
@@ -388,27 +397,27 @@ void TestQgsComposition::bounds()
 void TestQgsComposition::resizeToContents()
 {
   //add some items to a composition
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
-  QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
-  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::yellow );
-  simpleFill->setBorderColor( Qt::transparent );
+  simpleFill->setStrokeColor( Qt::transparent );
   composition->setPageStyleSymbol( fillSymbol );
   delete fillSymbol;
 
-  QgsComposerShape* shape1 = new QgsComposerShape( composition );
+  QgsComposerShape *shape1 = new QgsComposerShape( composition );
   shape1->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   shape1->setShapeType( QgsComposerShape::Rectangle );
   composition->addComposerShape( shape1 );
   shape1->setItemPosition( 90, 50, 90, 50, QgsComposerItem::UpperLeft, false, 1 );
   shape1->setItemRotation( 45 );
-  QgsComposerShape* shape2 = new QgsComposerShape( composition );
+  QgsComposerShape *shape2 = new QgsComposerShape( composition );
   shape2->setShapeType( QgsComposerShape::Rectangle );
   shape2->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   composition->addComposerShape( shape2 );
   shape2->setItemPosition( 100, 150, 110, 50, QgsComposerItem::UpperLeft, false, 1 );
-  QgsComposerShape* shape3 = new QgsComposerShape( composition );
+  QgsComposerShape *shape3 = new QgsComposerShape( composition );
   shape3->setShapeType( QgsComposerShape::Rectangle );
   shape3->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   composition->addComposerShape( shape3 );
@@ -429,27 +438,27 @@ void TestQgsComposition::resizeToContentsMargin()
 {
   //resize to contents, with margin
 
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
-  QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
-  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::yellow );
-  simpleFill->setBorderColor( Qt::transparent );
+  simpleFill->setStrokeColor( Qt::transparent );
   composition->setPageStyleSymbol( fillSymbol );
   delete fillSymbol;
 
-  QgsComposerShape* shape1 = new QgsComposerShape( composition );
+  QgsComposerShape *shape1 = new QgsComposerShape( composition );
   shape1->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   shape1->setShapeType( QgsComposerShape::Rectangle );
   composition->addComposerShape( shape1 );
   shape1->setItemPosition( 90, 50, 90, 50, QgsComposerItem::UpperLeft, false, 1 );
   shape1->setItemRotation( 45 );
-  QgsComposerShape* shape2 = new QgsComposerShape( composition );
+  QgsComposerShape *shape2 = new QgsComposerShape( composition );
   shape2->setShapeType( QgsComposerShape::Rectangle );
   shape2->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   composition->addComposerShape( shape2 );
   shape2->setItemPosition( 100, 150, 110, 50, QgsComposerItem::UpperLeft, false, 1 );
-  QgsComposerShape* shape3 = new QgsComposerShape( composition );
+  QgsComposerShape *shape3 = new QgsComposerShape( composition );
   shape3->setShapeType( QgsComposerShape::Rectangle );
   shape3->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   composition->addComposerShape( shape3 );
@@ -470,29 +479,29 @@ void TestQgsComposition::resizeToContentsMultiPage()
 {
   //resize to contents with multi-page composition, should result in a single page
 
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
-  QgsSimpleFillSymbolLayer* simpleFill = new QgsSimpleFillSymbolLayer();
-  QgsFillSymbol* fillSymbol = new QgsFillSymbol();
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::yellow );
-  simpleFill->setBorderColor( Qt::transparent );
+  simpleFill->setStrokeColor( Qt::transparent );
   composition->setPageStyleSymbol( fillSymbol );
   delete fillSymbol;
 
   composition->setNumPages( 3 );
 
-  QgsComposerShape* shape1 = new QgsComposerShape( composition );
+  QgsComposerShape *shape1 = new QgsComposerShape( composition );
   shape1->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   shape1->setShapeType( QgsComposerShape::Rectangle );
   composition->addComposerShape( shape1 );
   shape1->setItemPosition( 90, 50, 90, 50, QgsComposerItem::UpperLeft, false, 1 );
   shape1->setItemRotation( 45 );
-  QgsComposerShape* shape2 = new QgsComposerShape( composition );
+  QgsComposerShape *shape2 = new QgsComposerShape( composition );
   shape2->setShapeType( QgsComposerShape::Rectangle );
   shape2->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   composition->addComposerShape( shape2 );
   shape2->setItemPosition( 100, 150, 110, 50, QgsComposerItem::UpperLeft, false, 2 );
-  QgsComposerShape* shape3 = new QgsComposerShape( composition );
+  QgsComposerShape *shape3 = new QgsComposerShape( composition );
   shape3->setShapeType( QgsComposerShape::Rectangle );
   shape3->setBackgroundColor( QColor::fromRgb( 255, 150, 100 ) );
   composition->addComposerShape( shape3 );
@@ -514,66 +523,66 @@ void TestQgsComposition::resizeToContentsMultiPage()
 void TestQgsComposition::georeference()
 {
   QgsRectangle extent( 2000, 2800, 2500, 2900 );
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
 
   // no map
-  double* t = composition->computeGeoTransform( nullptr );
+  double *t = composition->computeGeoTransform( nullptr );
   QVERIFY( !t );
 
-  QgsComposerMap* map = new QgsComposerMap( composition );
+  QgsComposerMap *map = new QgsComposerMap( composition );
   map->setNewExtent( extent );
   map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
   composition->addComposerMap( map );
 
   t = composition->computeGeoTransform( map );
-  QVERIFY( qgsDoubleNear( t[0], 1925.0, 1.0 ) );
-  QVERIFY( qgsDoubleNear( t[1], 0.211719, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[3], 3200, 1 ) );
-  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[5], -0.211694, 0.0001 ) );
+  QGSCOMPARENEAR( t[0], 1925.0, 1.0 );
+  QGSCOMPARENEAR( t[1], 0.211719, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 3200, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.211694, 0.0001 );
   delete[] t;
 
   // don't specify map
   composition->setReferenceMap( map );
   t = composition->computeGeoTransform();
-  QVERIFY( qgsDoubleNear( t[0], 1925.0, 1.0 ) );
-  QVERIFY( qgsDoubleNear( t[1], 0.211719, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[3], 3200, 1 ) );
-  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[5], -0.211694, 0.0001 ) );
+  QGSCOMPARENEAR( t[0], 1925.0, 1.0 );
+  QGSCOMPARENEAR( t[1], 0.211719, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 3200, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.211694, 0.0001 );
   delete[] t;
 
   // specify extent
   t = composition->computeGeoTransform( map, QRectF( 70, 100, 50, 60 ) );
-  QVERIFY( qgsDoubleNear( t[0], 2100.0, 1.0 ) );
-  QVERIFY( qgsDoubleNear( t[1], 0.211864, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[3], 2950, 1 ) );
-  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[5], -0.211864, 0.0001 ) );
+  QGSCOMPARENEAR( t[0], 2100.0, 1.0 );
+  QGSCOMPARENEAR( t[1], 0.211864, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 2950, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.211864, 0.0001 );
   delete[] t;
 
   // specify dpi
   t = composition->computeGeoTransform( map, QRectF(), 75 );
-  QVERIFY( qgsDoubleNear( t[0], 1925.0, 1 ) );
-  QVERIFY( qgsDoubleNear( t[1], 0.847603, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[2], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[3], 3200.0, 1 ) );
-  QVERIFY( qgsDoubleNear( t[4], 0.0 ) );
-  QVERIFY( qgsDoubleNear( t[5], -0.846774, 0.0001 ) );
+  QGSCOMPARENEAR( t[0], 1925.0, 1 );
+  QGSCOMPARENEAR( t[1], 0.847603, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 3200.0, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.846774, 0.0001 );
   delete[] t;
 
   // rotation
   map->setMapRotation( 45 );
   t = composition->computeGeoTransform( map );
-  QVERIFY( qgsDoubleNear( t[0], 1825.7, 1 ) );
-  QVERIFY( qgsDoubleNear( t[1], 0.149708, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[2], 0.149708, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[3], 2889.64, 1 ) );
-  QVERIFY( qgsDoubleNear( t[4], 0.14969, 0.0001 ) );
-  QVERIFY( qgsDoubleNear( t[5], -0.14969, 0.0001 ) );
+  QGSCOMPARENEAR( t[0], 1825.7, 1 );
+  QGSCOMPARENEAR( t[1], 0.149708, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.149708, 0.0001 );
+  QGSCOMPARENEAR( t[3], 2889.64, 1 );
+  QGSCOMPARENEAR( t[4], 0.14969, 0.0001 );
+  QGSCOMPARENEAR( t[5], -0.14969, 0.0001 );
   delete[] t;
 
   delete composition;
@@ -595,34 +604,34 @@ void TestQgsComposition::variablesEdited()
 void TestQgsComposition::itemVariablesFunction()
 {
   QgsRectangle extent( 2000, 2800, 2500, 2900 );
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
 
-  QgsExpression e( "map_get( item_variables( 'map_id' ), 'map_scale' )" );
+  QgsExpression e( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_scale' )" ) );
   // no map
   QgsExpressionContext c = composition->createExpressionContext();
   QVariant r = e.evaluate( &c );
   QVERIFY( !r.isValid() );
 
-  QgsComposerMap* map = new QgsComposerMap( composition );
+  QgsComposerMap *map = new QgsComposerMap( composition );
   map->setNewExtent( extent );
   map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
   map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   composition->addComposerMap( map );
-  map->setId( "map_id" );
+  map->setId( QStringLiteral( "map_id" ) );
 
   c = composition->createExpressionContext();
   r = e.evaluate( &c );
   QGSCOMPARENEAR( r.toDouble(), 1.38916e+08, 100 );
 
-  QgsExpression e2( "map_get( item_variables( 'map_id' ), 'map_crs' )" );
+  QgsExpression e2( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_crs' )" ) );
   r = e2.evaluate( &c );
   QCOMPARE( r.toString(), QString( "EPSG:4326" ) );
 
-  QgsExpression e3( "map_get( item_variables( 'map_id' ), 'map_crs_definition' )" );
+  QgsExpression e3( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_crs_definition' )" ) );
   r = e3.evaluate( &c );
   QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
 
-  QgsExpression e4( "map_get( item_variables( 'map_id' ), 'map_units' )" );
+  QgsExpression e4( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_units' )" ) );
   r = e4.evaluate( &c );
   QCOMPARE( r.toString(), QString( "degrees" ) );
 
@@ -632,12 +641,12 @@ void TestQgsComposition::itemVariablesFunction()
 void TestQgsComposition::referenceMap()
 {
   QgsRectangle extent( 2000, 2800, 2500, 2900 );
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
 
   // no maps
   QVERIFY( !composition->referenceMap() );
 
-  QgsComposerMap* map = new QgsComposerMap( composition );
+  QgsComposerMap *map = new QgsComposerMap( composition );
   map->setNewExtent( extent );
   map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
   composition->addComposerMap( map );
@@ -645,7 +654,7 @@ void TestQgsComposition::referenceMap()
   QCOMPARE( composition->referenceMap(), map );
 
   // add a larger map
-  QgsComposerMap* map2 = new QgsComposerMap( composition );
+  QgsComposerMap *map2 = new QgsComposerMap( composition );
   map2->setNewExtent( extent );
   map2->setSceneRect( QRectF( 30, 60, 250, 150 ) );
   composition->addComposerMap( map2 );
@@ -657,6 +666,356 @@ void TestQgsComposition::referenceMap()
   QCOMPARE( composition->referenceMap(), map );
 
   delete composition;
+}
+
+void TestQgsComposition::legendRestoredFromTemplate()
+{
+  // load a layer
+
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsProject p;
+  p.addMapLayer( layer );
+
+  // create composition
+  QgsComposition c( &p );
+  // add a legend
+  QgsComposerLegend *legend = new QgsComposerLegend( &c );
+  c.addComposerLegend( legend );
+  legend->setAutoUpdateModel( false );
+
+  QgsLegendModel *model = legend->model();
+  QgsLayerTreeNode *node = model->rootGroup()->children().at( 0 );
+  // make sure we've got right node
+  QgsLayerTreeLayer *layerNode = dynamic_cast< QgsLayerTreeLayer * >( node );
+  QVERIFY( layerNode );
+  QCOMPARE( layerNode->layer(), layer );
+
+  // got it!
+  layerNode->setCustomProperty( QStringLiteral( "legend/title-label" ), QStringLiteral( "new title!" ) );
+  // make sure new title stuck
+  QCOMPARE( model->data( model->node2index( layerNode ), Qt::DisplayRole ).toString(), QString( "new title!" ) );
+
+  // save composition to template
+  QDomDocument doc;
+  QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
+  doc.appendChild( composerElem );
+  c.writeXml( composerElem, doc );
+  c.atlasComposition().writeXml( composerElem, doc );
+
+
+  // make a new composition from template
+  QgsComposition c2( &p );
+  QVERIFY( c2.loadFromTemplate( doc ) );
+  // get legend from new composition
+  QList< QgsComposerLegend * > legends2;
+  c2.composerItems( legends2 );
+  QgsComposerLegend *legend2 = legends2.at( 0 );
+  QVERIFY( legend2 );
+
+  QgsLegendModel *model2 = legend2->model();
+  QgsLayerTreeNode *node2 = model2->rootGroup()->children().at( 0 );
+  QgsLayerTreeLayer *layerNode2 = dynamic_cast< QgsLayerTreeLayer * >( node2 );
+  QVERIFY( layerNode2 );
+  QCOMPARE( layerNode2->layer(), layer );
+  QCOMPARE( model2->data( model->node2index( layerNode2 ), Qt::DisplayRole ).toString(), QString( "new title!" ) );
+
+  QString oldId = layer->id();
+  // new test
+  // remove existing layer
+  p.removeMapLayer( layer );
+
+  // reload it, with a new id
+  QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  p.addMapLayer( layer2 );
+  QVERIFY( oldId != layer2->id() );
+
+  // load composition from template
+  QgsComposition c3( &p );
+  QVERIFY( c3.loadFromTemplate( doc ) );
+  // get legend from new composition
+  QList< QgsComposerLegend * > legends3;
+  c3.composerItems( legends3 );
+  QgsComposerLegend *legend3 = legends3.at( 0 );
+  QVERIFY( legend3 );
+
+  //make sure customisation remains intact
+  QgsLegendModel *model3 = legend3->model();
+  QgsLayerTreeNode *node3 = model3->rootGroup()->children().at( 0 );
+  QgsLayerTreeLayer *layerNode3 = dynamic_cast< QgsLayerTreeLayer * >( node3 );
+  QVERIFY( layerNode3 );
+  QCOMPARE( layerNode3->layer(), layer2 );
+  QCOMPARE( model3->data( model->node2index( layerNode3 ), Qt::DisplayRole ).toString(), QString( "new title!" ) );
+}
+
+void TestQgsComposition::legendRestoredFromTemplateAutoUpdate()
+{
+  // load a layer
+
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsProject p;
+  p.addMapLayer( layer );
+
+  // create composition
+  QgsComposition c( &p );
+  // add a legend
+  QgsComposerLegend *legend = new QgsComposerLegend( &c );
+  c.addComposerLegend( legend );
+  legend->setAutoUpdateModel( true );
+
+  QgsLegendModel *model = legend->model();
+  QgsLayerTreeNode *node = model->rootGroup()->children().at( 0 );
+  // make sure we've got right node
+  QgsLayerTreeLayer *layerNode = dynamic_cast< QgsLayerTreeLayer * >( node );
+  QVERIFY( layerNode );
+  QCOMPARE( layerNode->layer(), layer );
+  QCOMPARE( model->data( model->node2index( layerNode ), Qt::DisplayRole ).toString(), QString( "points" ) );
+
+  // save composition to template
+  QDomDocument doc;
+  QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
+  doc.appendChild( composerElem );
+  c.writeXml( composerElem, doc );
+  c.atlasComposition().writeXml( composerElem, doc );
+
+  //new project
+  QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsProject p2;
+  p2.addMapLayer( layer2 );
+
+  // make a new composition from template
+  QgsComposition c2( &p2 );
+  QVERIFY( c2.loadFromTemplate( doc ) );
+  // get legend from new composition
+  QList< QgsComposerLegend * > legends2;
+  c2.composerItems( legends2 );
+  QgsComposerLegend *legend2 = legends2.at( 0 );
+  QVERIFY( legend2 );
+
+  QgsLegendModel *model2 = legend2->model();
+  QgsLayerTreeNode *node2 = model2->rootGroup()->children().at( 0 );
+  QgsLayerTreeLayer *layerNode2 = dynamic_cast< QgsLayerTreeLayer * >( node2 );
+  QVERIFY( layerNode2 );
+  QCOMPARE( layerNode2->layer(), layer2 );
+  QCOMPARE( model2->data( model->node2index( layerNode2 ), Qt::DisplayRole ).toString(), QString( "points" ) );
+}
+
+void TestQgsComposition::attributeTableRestoredFromTemplate()
+{
+  // load some layers
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "memory" ), QStringLiteral( "memory" ) );
+  QgsProject p;
+  p.addMapLayer( layer2 );
+  p.addMapLayer( layer );
+
+  // create composition
+  QgsComposition c( &p );
+  // add an attribute table
+  QgsComposerAttributeTableV2 *table = new QgsComposerAttributeTableV2( &c, false );
+  c.addMultiFrame( table );
+  table->setVectorLayer( layer );
+  QgsComposerFrame *frame = new QgsComposerFrame( &c, table, 1, 1, 10, 10 );
+  c.addComposerTableFrame( table, frame );
+  table->addFrame( frame );
+
+  // save composition to template
+  QDomDocument doc;
+  QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
+  doc.appendChild( composerElem );
+  c.writeXml( composerElem, doc );
+  c.atlasComposition().writeXml( composerElem, doc );
+
+  // new project
+  QgsProject p2;
+  QgsVectorLayer *layer3 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer4 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "memory" ), QStringLiteral( "memory" ) );
+  p2.addMapLayer( layer4 );
+  p2.addMapLayer( layer3 );
+
+  // make a new composition from template
+  QgsComposition c2( &p2 );
+  QVERIFY( c2.loadFromTemplate( doc ) );
+  // get table from new composition
+  QList< QgsComposerFrame * > frames2;
+  c2.composerItems( frames2 );
+  QgsComposerAttributeTableV2 *table2 = static_cast< QgsComposerAttributeTableV2 *>( frames2.at( 0 )->multiFrame() );
+  QVERIFY( table2 );
+
+  QCOMPARE( table2->vectorLayer(), layer3 );
+}
+
+void TestQgsComposition::mapLayersRestoredFromTemplate()
+{
+  // load some layers
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QFileInfo vectorFileInfo2( QStringLiteral( TEST_DATA_DIR ) + "/polys.shp" );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo2.filePath(),
+      vectorFileInfo2.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
+  QgsRasterLayer *rl = new QgsRasterLayer( rasterFileInfo.filePath(),
+      rasterFileInfo.completeBaseName() );
+
+  QgsProject p;
+  p.addMapLayer( layer2 );
+  p.addMapLayer( layer );
+  p.addMapLayer( rl );
+
+  // create composition
+  QgsComposition c( &p );
+  // add a map
+  QgsComposerMap *map = new QgsComposerMap( &c, 1, 1, 10, 10 );
+  c.addComposerMap( map );
+  map->setLayers( QList<QgsMapLayer *>() << layer << layer2 << rl );
+
+  // save composition to template
+  QDomDocument doc;
+  QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
+  doc.appendChild( composerElem );
+  c.writeXml( composerElem, doc );
+  c.atlasComposition().writeXml( composerElem, doc );
+
+  // new project
+  QgsProject p2;
+  QgsVectorLayer *layer3 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer4 = new QgsVectorLayer( vectorFileInfo2.filePath(),
+      vectorFileInfo2.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsRasterLayer *rl5 = new QgsRasterLayer( rasterFileInfo.filePath(),
+      rasterFileInfo.completeBaseName() );
+  p2.addMapLayer( layer4 );
+  p2.addMapLayer( layer3 );
+  p2.addMapLayer( rl5 );
+
+  // make a new composition from template
+  QgsComposition c2( &p2 );
+  QVERIFY( c2.loadFromTemplate( doc ) );
+  // get map from new composition
+  QList< QgsComposerMap * > maps;
+  c2.composerItems( maps );
+  QgsComposerMap *map2 = static_cast< QgsComposerMap *>( maps.at( 0 ) );
+  QVERIFY( map2 );
+
+  QCOMPARE( map2->layers(), QList<QgsMapLayer *>() << layer3 << layer4 << rl5 );
+}
+
+void TestQgsComposition::mapLayersStyleOverrideRestoredFromTemplate()
+{
+  // load some layers
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QFileInfo vectorFileInfo2( QStringLiteral( TEST_DATA_DIR ) + "/polys.shp" );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo2.filePath(),
+      vectorFileInfo2.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsProject p;
+  p.addMapLayer( layer2 );
+  p.addMapLayer( layer );
+
+  // create composition
+  QgsComposition c( &p );
+  // add a map
+  QgsComposerMap *map = new QgsComposerMap( &c, 1, 1, 10, 10 );
+  c.addComposerMap( map );
+  map->setKeepLayerStyles( true );
+  QgsStringMap styles;
+  // just close your eyes and pretend these are real styles
+  styles.insert( layer->id(), QStringLiteral( "<b>xxxxx</b>" ) );
+  styles.insert( layer2->id(), QStringLiteral( "<blink>yyyyy</blink>" ) );
+  map->setLayerStyleOverrides( styles );
+
+  // save composition to template
+  QDomDocument doc;
+  QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
+  doc.appendChild( composerElem );
+  c.writeXml( composerElem, doc );
+  c.atlasComposition().writeXml( composerElem, doc );
+
+  // new project
+  QgsProject p2;
+  QgsVectorLayer *layer3 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer4 = new QgsVectorLayer( vectorFileInfo2.filePath(),
+      vectorFileInfo2.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  p2.addMapLayer( layer4 );
+  p2.addMapLayer( layer3 );
+
+  // make a new composition from template
+  QgsComposition c2( &p2 );
+  QVERIFY( c2.loadFromTemplate( doc ) );
+  // get map from new composition
+  QList< QgsComposerMap * > maps;
+  c2.composerItems( maps );
+  QgsComposerMap *map2 = static_cast< QgsComposerMap *>( maps.at( 0 ) );
+  QVERIFY( map2 );
+  QVERIFY( map2->keepLayerStyles() );
+
+  QgsStringMap restoredStyles = map2->layerStyleOverrides();
+  QVERIFY( restoredStyles.contains( layer3->id() ) );
+  QCOMPARE( restoredStyles.value( layer3->id() ).trimmed(), QStringLiteral( "<b>xxxxx</b>" ) );
+  QVERIFY( restoredStyles.contains( layer4->id() ) );
+  QCOMPARE( restoredStyles.value( layer4->id() ).trimmed(), QStringLiteral( "<blink>yyyyy</blink>" ) );
+}
+
+void TestQgsComposition::atlasLayerRestoredFromTemplate()
+{
+  // load some layers
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsProject p;
+  p.addMapLayer( layer );
+
+  // create composition
+  QgsComposition c( &p );
+  // set atlas layer
+  c.atlasComposition().setEnabled( true );
+  c.atlasComposition().setCoverageLayer( layer );
+
+  // save composition to template
+  QDomDocument doc;
+  QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
+  doc.appendChild( composerElem );
+  c.writeXml( composerElem, doc );
+  c.atlasComposition().writeXml( composerElem, doc );
+
+  // new project
+  QgsProject p2;
+  QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  p2.addMapLayer( layer2 );
+
+  // make a new composition from template
+  QgsComposition c2( &p2 );
+  QVERIFY( c2.loadFromTemplate( doc ) );
+  // check atlas layer
+  QCOMPARE( c2.atlasComposition().coverageLayer(), layer2 );
 }
 
 QGSTEST_MAIN( TestQgsComposition )

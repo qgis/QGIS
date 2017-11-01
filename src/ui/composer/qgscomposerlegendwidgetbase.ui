@@ -52,7 +52,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -64,8 +64,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>375</width>
-        <height>1506</height>
+        <width>374</width>
+        <height>1314</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -128,7 +128,7 @@
           <item row="0" column="2">
            <widget class="QgsPropertyOverrideButton" name="mLegendTitleDDBtn">
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
            </widget>
           </item>
@@ -286,7 +286,7 @@
                <string>Add group</string>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
@@ -458,7 +458,7 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <widget class="QPushButton" name="mTitleFontButton">
+           <widget class="QgsFontButton" name="mTitleFontButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -466,28 +466,46 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Title font...</string>
+             <string>Title font</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="mLayerFontButton">
+           <widget class="QgsFontButton" name="mGroupFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
-             <string>Subgroup font...</string>
+             <string>Group font</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="mGroupFontButton">
+           <widget class="QgsFontButton" name="mLayerFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
-             <string>Group font...</string>
+             <string>Subgroup font</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="mItemFontButton">
+           <widget class="QgsFontButton" name="mItemFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
-             <string>Item font...</string>
+             <string>Item font</string>
             </property>
            </widget>
           </item>
@@ -575,7 +593,7 @@
           <item row="0" column="2">
            <widget class="QgsPropertyOverrideButton" name="mColumnsDDBtn">
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
            </widget>
           </item>
@@ -674,9 +692,9 @@
            </widget>
           </item>
           <item row="2" column="0" colspan="2">
-           <widget class="QgsCollapsibleGroupBoxBasic" name="mRasterBorderGroupBox">
+           <widget class="QgsCollapsibleGroupBoxBasic" name="mRasterStrokeGroupBox">
             <property name="title">
-             <string>Draw border for raster symbols</string>
+             <string>Draw stroke for raster symbols</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -691,14 +709,14 @@
              <item row="0" column="0">
               <widget class="QLabel" name="label_17">
                <property name="text">
-                <string>Border color</string>
+                <string>Stroke color</string>
                </property>
               </widget>
              </item>
              <item row="0" column="1">
               <layout class="QHBoxLayout" name="horizontalLayout_6">
                <item>
-                <widget class="QgsColorButton" name="mRasterBorderColorButton">
+                <widget class="QgsColorButton" name="mRasterStrokeColorButton">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -738,17 +756,17 @@
               </layout>
              </item>
              <item row="1" column="0">
-              <widget class="QLabel" name="mOutlineWidthLabel">
+              <widget class="QLabel" name="mStrokeWidthLabel">
                <property name="text">
                 <string>Thickness</string>
                </property>
                <property name="buddy">
-                <cstring>mRasterBorderWidthSpinBox</cstring>
+                <cstring>mRasterStrokeWidthSpinBox</cstring>
                </property>
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QgsDoubleSpinBox" name="mRasterBorderWidthSpinBox">
+              <widget class="QgsDoubleSpinBox" name="mRasterStrokeWidthSpinBox">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1029,15 +1047,22 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -1045,20 +1070,24 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsComposerItemComboBox</class>
    <extends>QComboBox</extends>
    <header>qgscomposeritemcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsLayerTreeView</class>
@@ -1096,8 +1125,8 @@
   <tabstop>mFilterLegendByAtlasCheckBox</tabstop>
   <tabstop>mFontsColGroupBox</tabstop>
   <tabstop>mTitleFontButton</tabstop>
-  <tabstop>mLayerFontButton</tabstop>
   <tabstop>mGroupFontButton</tabstop>
+  <tabstop>mLayerFontButton</tabstop>
   <tabstop>mItemFontButton</tabstop>
   <tabstop>mFontColorButton</tabstop>
   <tabstop>mColumnsColGroupBox</tabstop>
@@ -1108,9 +1137,9 @@
   <tabstop>mSymbolsColGroupBox</tabstop>
   <tabstop>mSymbolWidthSpinBox</tabstop>
   <tabstop>mSymbolHeightSpinBox</tabstop>
-  <tabstop>mRasterBorderGroupBox</tabstop>
-  <tabstop>mRasterBorderColorButton</tabstop>
-  <tabstop>mRasterBorderWidthSpinBox</tabstop>
+  <tabstop>mRasterStrokeGroupBox</tabstop>
+  <tabstop>mRasterStrokeColorButton</tabstop>
+  <tabstop>mRasterStrokeWidthSpinBox</tabstop>
   <tabstop>mSymbolsColGroupBox_2</tabstop>
   <tabstop>mWmsLegendWidthSpinBox</tabstop>
   <tabstop>mWmsLegendHeightSpinBox</tabstop>
@@ -1125,6 +1154,29 @@
   <tabstop>mLineSpacingSpinBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

@@ -25,7 +25,8 @@
 
 class QgsGPSConnection;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A class to register / unregister existing GPS connections such that the information
  * is available to all classes and plugins.
  *
@@ -35,24 +36,31 @@ class QgsGPSConnection;
 class CORE_EXPORT QgsGPSConnectionRegistry
 {
   public:
-    QgsGPSConnectionRegistry();
+
+    /**
+     * Constructor for QgsGPSConnectionRegistry.
+     */
+    QgsGPSConnectionRegistry() = default;
     ~QgsGPSConnectionRegistry();
 
     //! QgsGPSConnectionRegistry cannot be copied.
-    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry& rh ) = delete;
+    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry &rh ) = delete;
     //! QgsGPSConnectionRegistry cannot be copied.
-    QgsGPSConnectionRegistry& operator=( const QgsGPSConnectionRegistry& rh ) = delete;
+    QgsGPSConnectionRegistry &operator=( const QgsGPSConnectionRegistry &rh ) = delete;
 
     //! Inserts a connection into the registry. The connection is owned by the registry class until it is unregistered again
-    void registerConnection( QgsGPSConnection* c );
+    void registerConnection( QgsGPSConnection *c );
     //! Unregisters connection. The registry does no longer own the connection
-    void unregisterConnection( QgsGPSConnection* c );
+    void unregisterConnection( QgsGPSConnection *c );
 
     QList< QgsGPSConnection *> connectionList() const;
 
   private:
+#ifdef SIP_RUN
+    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry &rh );
+#endif
 
-    QSet<QgsGPSConnection*> mConnections;
+    QSet<QgsGPSConnection *> mConnections;
 };
 
 #endif // QGSGPSCONNECTIONREGISTRY_H

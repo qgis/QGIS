@@ -29,11 +29,11 @@
 
 #include <QLabel>
 #include <QWidget>
-#include <QScrollArea>
 #include <QPushButton>
 #include <QBuffer>
-
 #include <QResizeEvent>
+
+class QgsScrollArea;
 
 /**
 * \class eVisGenericEventBrowserGui
@@ -49,15 +49,15 @@ class eVisImageDisplayWidget : public QWidget
 
   public:
     //! \brief Constructor
-    eVisImageDisplayWidget( QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
+    eVisImageDisplayWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
 
     ~eVisImageDisplayWidget();
 
     //! \brief Load an image from disk and display
-    void displayImage( const QString& );
+    void displayImage( const QString & );
 
     //! \brief Load an image from a remote location using http and display
-    void displayUrlImage( const QString& );
+    void displayUrlImage( const QString & );
 
     /*
      * There needs to be more logic around setting the zoom steps as you could change it mid display
@@ -75,31 +75,31 @@ class eVisImageDisplayWidget : public QWidget
   private:
 
     //! \brief Used to hold the http request to match the correct emits with the correct result
-    int mCurrentHttpImageRequestId;
+    int mCurrentHttpImageRequestId = 0;
 
     //! \brief CUrrent Zoom level
     int mCurrentZoomStep;
 
     //! \brief widget to display the image in
-    QScrollArea* mDisplayArea;
+    QgsScrollArea *mDisplayArea = nullptr;
 
     //! \brief Method that actually display the image in the widget
     void displayImage();
 
     //! \brief Pointer to the http buffer
-    QBuffer* mHttpBuffer;
+    QBuffer *mHttpBuffer = nullptr;
 
     //! \brief This is a point to the actual image being displayed
-    QPixmap* mImage;
+    QPixmap *mImage = nullptr;
 
     //! \brief Label to hold the image
-    QLabel* mImageLabel;
+    QLabel *mImageLabel = nullptr;
 
     //! \brief Flag to indicate the success of the last load request
     bool mImageLoaded;
 
     //! \brief Ratio if height to width or width to height for the original image, which ever is smaller
-    double mImageSizeRatio;
+    double mImageSizeRatio = 0.0;
 
     //! \brief Boolean to indicate which feature the mImageSizeRation corresponds to
     bool mScaleByHeight;
@@ -108,19 +108,19 @@ class eVisImageDisplayWidget : public QWidget
     bool mScaleByWidth;
 
     //! \brief The increment by which the image is scaled during each scaling event
-    double mScaleFactor;
+    double mScaleFactor = 1.0;
 
     //! \brief The single factor by which the original image needs to be scaled to fit into current display area
-    double mScaleToFit;
+    double mScaleToFit = 0.0;
 
     //! \brief Zoom in button
-    QPushButton* pbtnZoomIn;
+    QPushButton *pbtnZoomIn = nullptr;
 
     //! \brief Zoom out button
-    QPushButton* pbtnZoomOut;
+    QPushButton *pbtnZoomOut = nullptr;
 
     //! \brief Zoom to full extent button
-    QPushButton* pbtnZoomFull;
+    QPushButton *pbtnZoomFull = nullptr;
 
     //! \brief Method called to compute the various scaling parameters
     void setScalers();
@@ -129,11 +129,11 @@ class eVisImageDisplayWidget : public QWidget
     int ZOOM_STEPS;
 
   private slots:
-    void on_pbtnZoomIn_clicked();
+    void pbtnZoomIn_clicked();
 
-    void on_pbtnZoomOut_clicked();
+    void pbtnZoomOut_clicked();
 
-    void on_pbtnZoomFull_clicked();
+    void pbtnZoomFull_clicked();
 
     //! \brief Slot called when the http request is completed
     void displayUrlImage( int, bool );

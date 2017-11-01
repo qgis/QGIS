@@ -12,24 +12,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgstest.h"
+
 #include <QApplication>
 #include <QObject>
 #include <QSplashScreen>
 #include <QString>
 #include <QStringList>
-#include "qgstest.h"
 
-#include <qgisapp.h>
-#include <qgsapplication.h>
-#include <qgsfeature.h>
+#include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgsfeature.h"
 #include "qgsfeaturestore.h"
-#include <qgsfield.h>
-#include <qgsclipboard.h>
-#include <qgsvectorlayer.h>
+#include "qgsfield.h"
+#include "qgsclipboard.h"
+#include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
+#include "qgssettings.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgisApp clipboard.
  */
 class TestQgisAppClipboard : public QObject
@@ -53,20 +56,16 @@ class TestQgisAppClipboard : public QObject
     void clipboardLogic(); //test clipboard logic
 
   private:
-    QgisApp * mQgisApp;
+    QgisApp *mQgisApp = nullptr;
     QString mTestDataDir;
 };
 
-TestQgisAppClipboard::TestQgisAppClipboard()
-    : mQgisApp( nullptr )
-{
-
-}
+TestQgisAppClipboard::TestQgisAppClipboard() = default;
 
 //runs before all tests
 void TestQgisAppClipboard::initTestCase()
 {
-  // Set up the QSettings environment
+  // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
@@ -94,7 +93,7 @@ void TestQgisAppClipboard::copyPaste()
   filesCounts.insert( QStringLiteral( "lines.shp" ), 6 );
   filesCounts.insert( QStringLiteral( "polys.shp" ), 10 );
 
-  Q_FOREACH ( const QString& fileName, filesCounts.keys() )
+  Q_FOREACH ( const QString &fileName, filesCounts.keys() )
   {
     // add vector layer
     QString filePath = mTestDataDir + fileName;
@@ -128,11 +127,11 @@ void TestQgisAppClipboard::copyToText()
   QgsFeature feat( fields, 5 );
   feat.setAttribute( QStringLiteral( "int_field" ), 9 );
   feat.setAttribute( QStringLiteral( "string_field" ), "val" );
-  feat.setGeometry( QgsGeometry( new QgsPointV2( 5, 6 ) ) );
+  feat.setGeometry( QgsGeometry( new QgsPoint( 5, 6 ) ) );
   QgsFeature feat2( fields, 6 );
   feat2.setAttribute( QStringLiteral( "int_field" ), 19 );
   feat2.setAttribute( QStringLiteral( "string_field" ), "val2" );
-  feat2.setGeometry( QgsGeometry( new QgsPointV2( 7, 8 ) ) );
+  feat2.setGeometry( QgsGeometry( new QgsPoint( 7, 8 ) ) );
   QgsFeatureStore feats;
   feats.addFeature( feat );
   feats.addFeature( feat2 );
@@ -140,7 +139,7 @@ void TestQgisAppClipboard::copyToText()
   mQgisApp->clipboard()->replaceWithCopyOf( feats );
 
   // attributes only
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesOnly );
   QString result = mQgisApp->clipboard()->generateClipboardText();
   QCOMPARE( result, QString( "int_field\tstring_field\n9\tval\n19\tval2" ) );
@@ -178,7 +177,7 @@ void TestQgisAppClipboard::copyToText()
   QgsCoordinateReferenceSystem crs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
   feats = QgsFeatureStore();
   feats.setCrs( crs );
-  feat.setGeometry( QgsGeometry( new QgsPointV2( 2502577, 2403869 ) ) );
+  feat.setGeometry( QgsGeometry( new QgsPoint( 2502577, 2403869 ) ) );
   feats.addFeature( feat );
   feats.setFields( fields );
   mQgisApp->clipboard()->replaceWithCopyOf( feats );
@@ -192,8 +191,8 @@ void TestQgisAppClipboard::copyToText()
   QStringList list = regex.capturedTexts();
   QCOMPARE( list.count(), 3 );
 
-  int x = qRound( list.at( 1 ).toDouble() );
-  int y = qRound( list.at( 2 ).toDouble() );
+  int x = std::round( list.at( 1 ).toDouble() );
+  int y = std::round( list.at( 2 ).toDouble() );
 
   QCOMPARE( x, 145 );
   QCOMPARE( y, -38 );
@@ -206,16 +205,41 @@ void TestQgisAppClipboard::pasteWkt()
   QgsFeatureList features = mQgisApp->clipboard()->copyOf();
   QCOMPARE( features.length(), 2 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
-  QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
   QgsGeometry featureGeom = features.at( 0 ).geometry();
-  const QgsPointV2* point = dynamic_cast< QgsPointV2* >( featureGeom.geometry() );
+  const QgsPoint *point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
-  QCOMPARE( features.at( 1 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
-  point = dynamic_cast< QgsPointV2* >( features.at( 1 ).geometry().geometry() );
+  QCOMPARE( features.at( 1 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
+  point = dynamic_cast< const QgsPoint * >( features.at( 1 ).geometry().constGet() );
   QCOMPARE( point->x(), 111.0 );
   QCOMPARE( point->y(), 30.0 );
+
+  // be sure parsing does not consider attached parameters that
+  // can change geometryType as in https://issues.qgis.org/issues/16870
+  mQgisApp->clipboard()->setText( QStringLiteral( "POINT (111 30)\t GoodFieldValue\nPOINT (125 10)\t(WrongFieldValue)" ) );
+
+  features = mQgisApp->clipboard()->copyOf();
+  QCOMPARE( features.length(), 2 );
+
+  QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
+  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
+  featureGeom = features.at( 0 ).geometry();
+  point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
+  QCOMPARE( point->x(), 111.0 );
+  QCOMPARE( point->y(), 30.0 );
+
+  QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
+  QCOMPARE( features.at( 1 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
+  point = dynamic_cast< const QgsPoint * >( features.at( 1 ).geometry().constGet() );
+  QCOMPARE( point->x(), 125.0 );
+  QCOMPARE( point->y(), 10.0 );
+
+  // only fields => no geom so no feature list is returned
+  mQgisApp->clipboard()->setText( QStringLiteral( "MNL		11	282	km			\nMNL		11	347.80000000000001	km				" ) );
+  features = mQgisApp->clipboard()->copyOf();
+  QCOMPARE( features.length(), 0 );
 }
 
 void TestQgisAppClipboard::pasteGeoJson()
@@ -227,9 +251,9 @@ void TestQgisAppClipboard::pasteGeoJson()
   QgsFeatureList features = mQgisApp->clipboard()->copyOf( fields );
   QCOMPARE( features.length(), 1 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
-  QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
   QgsGeometry featureGeom = features.at( 0 ).geometry();
-  const QgsPointV2* point = dynamic_cast< QgsPointV2* >( featureGeom.geometry() );
+  const QgsPoint *point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
@@ -238,7 +262,7 @@ void TestQgisAppClipboard::pasteGeoJson()
 void TestQgisAppClipboard::retrieveFields()
 {
   //empty string
-  mQgisApp->clipboard()->setText( QLatin1String( "" ) );
+  mQgisApp->clipboard()->setText( QString() );
 
   QgsFields fields = mQgisApp->clipboard()->fields();
   QCOMPARE( fields.count(), 0 );

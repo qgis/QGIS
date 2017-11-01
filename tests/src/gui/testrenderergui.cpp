@@ -25,11 +25,11 @@
 #include <QToolBar>
 
 TestRendererGUI::TestRendererGUI( QWidget *parent ) :
-    QMainWindow( parent )
+  QMainWindow( parent )
 {
   resize( 640, 480 );
 
-  QToolBar* toolBar = addToolBar( "Actions" );
+  QToolBar *toolBar = addToolBar( "Actions" );
   toolBar->addAction( "set renderer", this, SLOT( setRenderer() ) );
 
   mMapCanvas = new QgsMapCanvas( this );
@@ -42,8 +42,8 @@ TestRendererGUI::TestRendererGUI( QWidget *parent ) :
 void TestRendererGUI::loadLayers()
 {
   // load just first vector layer
-  QList<QgsMapLayer*> canvasLayers;
-  foreach ( QgsMapLayer* layer, QgsProject::instance()->mapLayers().values() )
+  QList<QgsMapLayer *> canvasLayers;
+  foreach ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
   {
     if ( layer->type() == QgsMapLayer::VectorLayer )
       canvasLayers << layer;
@@ -54,10 +54,10 @@ void TestRendererGUI::loadLayers()
 
 void TestRendererGUI::setRenderer()
 {
-  QgsMapLayer* layer = mMapCanvas->layer( 0 );
+  QgsMapLayer *layer = mMapCanvas->layer( 0 );
   Q_ASSERT( layer );
   Q_ASSERT( layer->type() == QgsMapLayer::VectorLayer );
-  QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( layer );
+  QgsVectorLayer *vlayer = static_cast<QgsVectorLayer *>( layer );
 
   QgsRendererPropertiesDialog dlg( vlayer, QgsStyle::defaultStyle() );
   dlg.exec();
@@ -65,7 +65,7 @@ void TestRendererGUI::setRenderer()
   mMapCanvas->refresh();
 }
 
-int main( int argc, char* argv[] )
+int main( int argc, char *argv[] )
 {
   QApplication app( argc, argv );
 

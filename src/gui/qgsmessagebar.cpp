@@ -18,6 +18,7 @@
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsapplication.h"
+#include "qgsmessagelog.h"
 
 #include <QWidget>
 #include <QPalette>
@@ -31,8 +32,8 @@
 #include <QLabel>
 
 QgsMessageBar::QgsMessageBar( QWidget *parent )
-    : QFrame( parent )
-    , mCurrentItem( nullptr )
+  : QFrame( parent )
+
 {
   QPalette pal = palette();
   pal.setBrush( backgroundRole(), pal.window() );
@@ -70,7 +71,7 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mCloseMenu->setObjectName( QStringLiteral( "mCloseMenu" ) );
   mActionCloseAll = new QAction( tr( "Close all" ), this );
   mCloseMenu->addAction( mActionCloseAll );
-  connect( mActionCloseAll, SIGNAL( triggered() ), this, SLOT( clearWidgets() ) );
+  connect( mActionCloseAll, &QAction::triggered, this, &QgsMessageBar::clearWidgets );
 
   mCloseBtn = new QToolButton( this );
   mCloseMenu->setObjectName( QStringLiteral( "mCloseMenu" ) );
@@ -85,21 +86,21 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mCloseBtn->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
   mCloseBtn->setMenu( mCloseMenu );
   mCloseBtn->setPopupMode( QToolButton::MenuButtonPopup );
-  connect( mCloseBtn, SIGNAL( clicked() ), this, SLOT( popWidget() ) );
+  connect( mCloseBtn, &QAbstractButton::clicked, this, static_cast < bool ( QgsMessageBar::* )() > ( &QgsMessageBar::popWidget ) );
   mLayout->addWidget( mCloseBtn, 0, 3, 1, 1 );
 
   mCountdownTimer = new QTimer( this );
   mCountdownTimer->setInterval( 1000 );
-  connect( mCountdownTimer, SIGNAL( timeout() ), this, SLOT( updateCountdown() ) );
+  connect( mCountdownTimer, &QTimer::timeout, this, &QgsMessageBar::updateCountdown );
 
-  connect( this, SIGNAL( widgetAdded( QgsMessageBarItem* ) ), this, SLOT( updateItemCount() ) );
-  connect( this, SIGNAL( widgetRemoved( QgsMessageBarItem* ) ), this, SLOT( updateItemCount() ) );
+  connect( this, &QgsMessageBar::widgetAdded, this, &QgsMessageBar::updateItemCount );
+  connect( this, &QgsMessageBar::widgetRemoved, this, &QgsMessageBar::updateItemCount );
 
   // start hidden
   setVisible( false );
 }
 
-void QgsMessageBar::mousePressEvent( QMouseEvent * e )
+void QgsMessageBar::mousePressEvent( QMouseEvent *e )
 {
   if ( mCountProgress == childAt( e->pos() ) && e->button() == Qt::LeftButton )
   {
@@ -130,8 +131,8 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
       QWidget *widget = mCurrentItem;
       mLayout->removeWidget( widget );
       mCurrentItem->hide();
-      disconnect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
-      delete mCurrentItem;
+      disconnect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
+      mCurrentItem->deleteLater();
       mCurrentItem = nullptr;
     }
 
@@ -168,7 +169,7 @@ bool QgsMessageBar::popWidget( QgsMessageBarItem *item )
     if ( existingItem == item )
     {
       mItems.removeOne( existingItem );
-      delete existingItem;
+      existingItem->deleteLater();
       return true;
     }
   }
@@ -203,22 +204,22 @@ bool QgsMessageBar::clearWidgets()
   return !mCurrentItem && mItems.empty();
 }
 
-void QgsMessageBar::pushSuccess( const QString& title, const QString& message )
+void QgsMessageBar::pushSuccess( const QString &title, const QString &message )
 {
   pushMessage( title, message, SUCCESS );
 }
 
-void QgsMessageBar::pushInfo( const QString& title, const QString& message )
+void QgsMessageBar::pushInfo( const QString &title, const QString &message )
 {
   pushMessage( title, message, INFO );
 }
 
-void QgsMessageBar::pushWarning( const QString& title, const QString& message )
+void QgsMessageBar::pushWarning( const QString &title, const QString &message )
 {
   pushMessage( title, message, WARNING );
 }
 
-void QgsMessageBar::pushCritical( const QString& title, const QString& message )
+void QgsMessageBar::pushCritical( const QString &title, const QString &message )
 {
   pushMessage( title, message, CRITICAL );
 }
@@ -228,7 +229,7 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
   Q_ASSERT( item );
 
   if ( mCurrentItem )
-    disconnect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
+    disconnect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
 
   if ( item == mCurrentItem )
     return;
@@ -255,7 +256,7 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
     mCountdownTimer->start();
   }
 
-  connect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
+  connect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
   setStyleSheet( item->getStyleSheet() );
   show();
 
@@ -268,12 +269,33 @@ void QgsMessageBar::pushItem( QgsMessageBarItem *item )
   // avoid duplicated widget
   popWidget( item );
   showItem( item );
+
+  // Log all messages that are sent to the message bar into the message log so the
+  // user can get them back easier.
+  QString formattedTitle = QStringLiteral( "%1 : %2" ).arg( item->title(), item->text() );
+  QgsMessageLog::MessageLevel level;
+  switch ( item->level() )
+  {
+    case QgsMessageBar::INFO:
+      level = QgsMessageLog::INFO;
+      break;
+    case QgsMessageBar::WARNING:
+      level = QgsMessageLog::WARNING;
+      break;
+    case QgsMessageBar::CRITICAL:
+      level = QgsMessageLog::CRITICAL;
+      break;
+    default:
+      level = QgsMessageLog::NONE;
+      break;
+  }
+  QgsMessageLog::logMessage( formattedTitle, tr( "Messages" ), level );
 }
 
-QgsMessageBarItem* QgsMessageBar::pushWidget( QWidget *widget, QgsMessageBar::MessageLevel level, int duration )
+QgsMessageBarItem *QgsMessageBar::pushWidget( QWidget *widget, QgsMessageBar::MessageLevel level, int duration )
 {
-  QgsMessageBarItem *item;
-  item = dynamic_cast<QgsMessageBarItem*>( widget );
+  QgsMessageBarItem *item = nullptr;
+  item = dynamic_cast<QgsMessageBarItem *>( widget );
   if ( item )
   {
     item->setLevel( level )->setDuration( duration );
@@ -292,18 +314,18 @@ void QgsMessageBar::pushMessage( const QString &title, const QString &text, QgsM
   pushItem( item );
 }
 
-QgsMessageBarItem* QgsMessageBar::createMessage( const QString &text, QWidget *parent )
+QgsMessageBarItem *QgsMessageBar::createMessage( const QString &text, QWidget *parent )
 {
-  QgsMessageBarItem* item = new QgsMessageBarItem( text, INFO, 0, parent );
+  QgsMessageBarItem *item = new QgsMessageBarItem( text, INFO, 0, parent );
   return item;
 }
 
-QgsMessageBarItem* QgsMessageBar::createMessage( const QString &title, const QString &text, QWidget *parent )
+QgsMessageBarItem *QgsMessageBar::createMessage( const QString &title, const QString &text, QWidget *parent )
 {
   return new QgsMessageBarItem( title, text, QgsMessageBar::INFO, 0, parent );
 }
 
-QgsMessageBarItem* QgsMessageBar::createMessage( QWidget *widget, QWidget *parent )
+QgsMessageBarItem *QgsMessageBar::createMessage( QWidget *widget, QWidget *parent )
 {
   return new QgsMessageBarItem( widget, INFO, 0, parent );
 }

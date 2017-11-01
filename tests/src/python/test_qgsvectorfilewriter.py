@@ -8,6 +8,7 @@ the Free Software Foundation; either version 2 of the License, or
 """
 from builtins import next
 from builtins import str
+
 __author__ = 'Tim Sutton'
 __date__ = '20/08/2012'
 __copyright__ = 'Copyright 2012, The QGIS Project'
@@ -20,20 +21,22 @@ from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsField,
                        QgsGeometry,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsCoordinateReferenceSystem,
                        QgsVectorFileWriter,
                        QgsFeatureRequest,
-                       QgsWkbTypes
+                       QgsWkbTypes,
+                       QgsRectangle,
+                       QgsCoordinateTransform
                        )
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir
 import os
-import osgeo.gdal
+import osgeo.gdal  # NOQA
 from osgeo import gdal, ogr
-import platform
 from qgis.testing import start_app, unittest
-from utilities import writeShape, compareWkt
+from utilities import writeShape, compareWkt, unitTestDataPath
 
+TEST_DATA_DIR = unitTestDataPath()
 start_app()
 
 
@@ -66,8 +69,7 @@ class TestFieldValueConverter(QgsVectorFileWriter.FieldValueConverter):
         return 'unexpected_idx'
 
 
-class TestQgsVectorLayer(unittest.TestCase):
-
+class TestQgsVectorFileWriter(unittest.TestCase):
     mMemoryLayer = None
 
     def testWrite(self):
@@ -83,7 +85,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertIsNotNone(myProvider)
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
+        ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
         ft.setAttributes(['Johny', 20, 0.3])
         myResult, myFeatures = myProvider.addFeatures([ft])
         self.assertTrue(myResult)
@@ -104,7 +106,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertIsNotNone(provider)
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
+        ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
         ft.setAttributes([1, QDate(2014, 3, 5), QTime(13, 45, 22), QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22))])
         res, features = provider.addFeatures([ft])
         self.assertTrue(res)
@@ -113,22 +115,22 @@ class TestQgsVectorLayer(unittest.TestCase):
         dest_file_name = os.path.join(str(QDir.tempPath()), 'datetime.shp')
         crs = QgsCoordinateReferenceSystem()
         crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             dest_file_name,
             'utf-8',
             crs,
             'ESRI Shapefile')
-        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
         # Open result and check
         created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
 
         fields = created_layer.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName('date_f')).type(), QVariant.Date)
-        #shapefiles do not support time types, result should be string
+        # shapefiles do not support time types, result should be string
         self.assertEqual(fields.at(fields.indexFromName('time_f')).type(), QVariant.String)
-        #shapefiles do not support datetime types, result should be string
+        # shapefiles do not support datetime types, result should be string
         self.assertEqual(fields.at(fields.indexFromName('dt_f')).type(), QVariant.String)
 
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
@@ -137,13 +139,63 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertIsInstance(f.attributes()[date_idx], QDate)
         self.assertEqual(f.attributes()[date_idx], QDate(2014, 3, 5))
         time_idx = created_layer.fields().lookupField('time_f')
-        #shapefiles do not support time types
+        # shapefiles do not support time types
         self.assertIsInstance(f.attributes()[time_idx], str)
         self.assertEqual(f.attributes()[time_idx], '13:45:22')
-        #shapefiles do not support datetime types
+        # shapefiles do not support datetime types
         datetime_idx = created_layer.fields().lookupField('dt_f')
         self.assertIsInstance(f.attributes()[datetime_idx], str)
-        self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22)).toString("yyyy/MM/dd hh:mm:ss.zzz"))
+        self.assertEqual(f.attributes()[datetime_idx],
+                         QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22)).toString("yyyy/MM/dd hh:mm:ss.zzz"))
+
+    def testWriterWithExtent(self):
+        """Check writing using extent filter."""
+        source_file = os.path.join(TEST_DATA_DIR, 'points.shp')
+        source_layer = QgsVectorLayer(source_file, 'Points', 'ogr')
+        self.assertTrue(source_layer.isValid())
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'ESRI Shapefile'
+        options.filterExtent = QgsRectangle(-111, 26, -96, 38)
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'extent_no_transform.shp')
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            source_layer,
+            dest_file_name,
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
+
+        # Open result and check
+        created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
+        features = [f for f in created_layer.getFeatures()]
+        self.assertEqual(len(features), 5)
+        for f in features:
+            self.assertTrue(f.geometry().intersects(options.filterExtent))
+
+    def testWriterWithExtentAndReprojection(self):
+        """Check writing using extent filter with reprojection."""
+        source_file = os.path.join(TEST_DATA_DIR, 'points.shp')
+        source_layer = QgsVectorLayer(source_file, 'Points', 'ogr')
+        self.assertTrue(source_layer.isValid())
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+        options.driverName = 'ESRI Shapefile'
+        options.filterExtent = QgsRectangle(-12511460, 3045157, -10646621, 4683497)
+        options.ct = QgsCoordinateTransform(source_layer.crs(), QgsCoordinateReferenceSystem.fromEpsgId(3785))
+
+        dest_file_name = os.path.join(str(QDir.tempPath()), 'extent_transform.shp')
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
+            source_layer,
+            dest_file_name,
+            options)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
+
+        # Open result and check
+        created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
+        features = [f for f in created_layer.getFeatures()]
+        self.assertEqual(len(features), 5)
+        for f in features:
+            self.assertTrue(f.geometry().intersects(options.filterExtent))
 
     def testDateTimeWriteTabfile(self):
         """Check writing date and time fields to an MapInfo tabfile."""
@@ -159,7 +211,7 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertIsNotNone(provider)
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10, 10)))
+        ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
         ft.setAttributes([1, QDate(2014, 3, 5), QTime(13, 45, 22), QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22))])
         res, features = provider.addFeatures([ft])
         self.assertTrue(res)
@@ -168,13 +220,13 @@ class TestQgsVectorLayer(unittest.TestCase):
         dest_file_name = os.path.join(str(QDir.tempPath()), 'datetime.tab')
         crs = QgsCoordinateReferenceSystem()
         crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             dest_file_name,
             'utf-8',
             crs,
             'MapInfo File')
-        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
         # Open result and check
         created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
@@ -199,7 +251,7 @@ class TestQgsVectorLayer(unittest.TestCase):
     def testWriteShapefileWithZ(self):
         """Check writing geometries with Z dimension to an ESRI shapefile."""
 
-        #start by saving a memory layer and forcing z
+        # start by saving a memory layer and forcing z
         ml = QgsVectorLayer(
             ('Point?crs=epsg:4326&field=id:int'),
             'test',
@@ -222,14 +274,14 @@ class TestQgsVectorLayer(unittest.TestCase):
             dest_file_name = os.path.join(str(QDir.tempPath()), 'point_{}.shp'.format(QgsWkbTypes.displayString(t)))
             crs = QgsCoordinateReferenceSystem()
             crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-            write_result = QgsVectorFileWriter.writeAsVectorFormat(
+            write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
                 ml,
                 dest_file_name,
                 'utf-8',
                 crs,
                 'ESRI Shapefile',
                 overrideGeometryType=t)
-            self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+            self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
             # Open result and check
             created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
@@ -237,28 +289,31 @@ class TestQgsVectorLayer(unittest.TestCase):
             g = f.geometry()
             wkt = g.exportToWkt()
             expWkt = 'PointZ (1 2 3)'
-            self.assertTrue(compareWkt(expWkt, wkt), "saving geometry with Z failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+            self.assertTrue(compareWkt(expWkt, wkt),
+                            "saving geometry with Z failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
-            #also try saving out the shapefile version again, as an extra test
-            #this tests that saving a layer with z WITHOUT explicitly telling the writer to keep z values,
-            #will stay retain the z values
-            dest_file_name = os.path.join(str(QDir.tempPath()), 'point_{}_copy.shp'.format(QgsWkbTypes.displayString(t)))
+            # also try saving out the shapefile version again, as an extra test
+            # this tests that saving a layer with z WITHOUT explicitly telling the writer to keep z values,
+            # will stay retain the z values
+            dest_file_name = os.path.join(str(QDir.tempPath()),
+                                          'point_{}_copy.shp'.format(QgsWkbTypes.displayString(t)))
             crs = QgsCoordinateReferenceSystem()
             crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-            write_result = QgsVectorFileWriter.writeAsVectorFormat(
+            write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
                 created_layer,
                 dest_file_name,
                 'utf-8',
                 crs,
                 'ESRI Shapefile')
-            self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+            self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
             # Open result and check
             created_layer_from_shp = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
             f = next(created_layer_from_shp.getFeatures(QgsFeatureRequest()))
             g = f.geometry()
             wkt = g.exportToWkt()
-            self.assertTrue(compareWkt(expWkt, wkt), "saving geometry with Z failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+            self.assertTrue(compareWkt(expWkt, wkt),
+                            "saving geometry with Z failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
     def testWriteShapefileWithMultiConversion(self):
         """Check writing geometries to an ESRI shapefile with conversion to multi."""
@@ -282,14 +337,14 @@ class TestQgsVectorLayer(unittest.TestCase):
         dest_file_name = os.path.join(str(QDir.tempPath()), 'to_multi.shp')
         crs = QgsCoordinateReferenceSystem()
         crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             dest_file_name,
             'utf-8',
             crs,
             'ESRI Shapefile',
             forceMulti=True)
-        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
         # Open result and check
         created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
@@ -297,7 +352,9 @@ class TestQgsVectorLayer(unittest.TestCase):
         g = f.geometry()
         wkt = g.exportToWkt()
         expWkt = 'MultiPoint ((1 2))'
-        self.assertTrue(compareWkt(expWkt, wkt), "saving geometry with multi conversion failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+        self.assertTrue(compareWkt(expWkt, wkt),
+                        "saving geometry with multi conversion failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
+                        expWkt, wkt))
 
     def testWriteShapefileWithAttributeSubsets(self):
         """Tests writing subsets of attributes to files."""
@@ -318,18 +375,18 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertTrue(res)
         self.assertTrue(features)
 
-        #first write out with all attributes
+        # first write out with all attributes
         dest_file_name = os.path.join(str(QDir.tempPath()), 'all_attributes.shp')
         crs = QgsCoordinateReferenceSystem()
         crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             dest_file_name,
             'utf-8',
             crs,
             'ESRI Shapefile',
             attributes=[])
-        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
         # Open result and check
         created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
@@ -340,16 +397,16 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(f['field2'], 12)
         self.assertEqual(f['field3'], 13)
 
-        #now test writing out only a subset of attributes
+        # now test writing out only a subset of attributes
         dest_file_name = os.path.join(str(QDir.tempPath()), 'subset_attributes.shp')
-        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             dest_file_name,
             'utf-8',
             crs,
             'ESRI Shapefile',
             attributes=[1, 3])
-        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
         # Open result and check
         created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
@@ -358,16 +415,16 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertEqual(f['field1'], 11)
         self.assertEqual(f['field3'], 13)
 
-        #finally test writing no attributes
+        # finally test writing no attributes
         dest_file_name = os.path.join(str(QDir.tempPath()), 'no_attributes.shp')
-        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             dest_file_name,
             'utf-8',
             crs,
             'ESRI Shapefile',
             skipAttributeCreation=True)
-        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
         # Open result and check
         created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
@@ -380,7 +437,9 @@ class TestQgsVectorLayer(unittest.TestCase):
         g = f.geometry()
         wkt = g.exportToWkt()
         expWkt = 'Point (1 2)'
-        self.assertTrue(compareWkt(expWkt, wkt), "geometry not saved correctly when saving without attributes : mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
+        self.assertTrue(compareWkt(expWkt, wkt),
+                        "geometry not saved correctly when saving without attributes : mismatch Expected:\n%s\nGot:\n%s\n" % (
+                        expWkt, wkt))
         self.assertEqual(f['FID'], 0)
 
     def testValueConverter(self):
@@ -404,7 +463,7 @@ class TestQgsVectorLayer(unittest.TestCase):
 
         dest_file_name = os.path.join(str(QDir.tempPath()), 'value_converter.shp')
         converter = TestFieldValueConverter(ml)
-        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             dest_file_name,
             'utf-8',
@@ -412,7 +471,7 @@ class TestQgsVectorLayer(unittest.TestCase):
             'ESRI Shapefile',
             attributes=[0, 2],
             fieldValueConverter=converter)
-        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
         # Open result and check
         created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
@@ -442,13 +501,13 @@ class TestQgsVectorLayer(unittest.TestCase):
         dest_file_name = os.path.join(str(QDir.tempPath()), 'integer64.tab')
         crs = QgsCoordinateReferenceSystem()
         crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             dest_file_name,
             'utf-8',
             crs,
             'MapInfo File')
-        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
         # Open result and check
         created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
@@ -499,11 +558,11 @@ class TestQgsVectorLayer(unittest.TestCase):
         options.driverName = 'GPKG'
         options.layerName = 'test'
         filename = '/vsimem/out.gpkg'
-        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             filename,
             options)
-        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
         ds = ogr.Open(filename, update=1)
         lyr = ds.GetLayerByName('test')
@@ -538,11 +597,11 @@ class TestQgsVectorLayer(unittest.TestCase):
         options.layerName = 'test'
         options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
         filename = '/vsimem/out.gpkg'
-        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             filename,
             options)
-        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
         ds = ogr.Open(filename)
         lyr = ds.GetLayerByName('test')
@@ -567,11 +626,11 @@ class TestQgsVectorLayer(unittest.TestCase):
         options.driverName = 'GPKG'
         options.layerName = 'test'
         filename = '/vsimem/out.gpkg'
-        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             filename,
             options)
-        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
         ds = ogr.Open(filename)
         lyr = ds.GetLayerByName('test')
@@ -599,11 +658,11 @@ class TestQgsVectorLayer(unittest.TestCase):
         options.layerName = 'test'
         options.actionOnExistingFile = QgsVectorFileWriter.AppendToLayerNoNewFields
         filename = '/vsimem/out.gpkg'
-        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             filename,
             options)
-        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
         ds = ogr.Open(filename)
         lyr = ds.GetLayerByName('test')
@@ -632,11 +691,11 @@ class TestQgsVectorLayer(unittest.TestCase):
         options.layerName = 'test'
         options.actionOnExistingFile = QgsVectorFileWriter.AppendToLayerAddFields
         filename = '/vsimem/out.gpkg'
-        write_result = QgsVectorFileWriter.writeAsVectorFormat(
+        write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
             ml,
             filename,
             options)
-        self.assertEqual(write_result, QgsVectorFileWriter.NoError)
+        self.assertEqual(write_result, QgsVectorFileWriter.NoError, error_message)
 
         ds = ogr.Open(filename)
         lyr = ds.GetLayerByName('test')
@@ -644,10 +703,17 @@ class TestQgsVectorLayer(unittest.TestCase):
         self.assertIsNotNone(lyr)
         f = lyr.GetNextFeature()
         self.assertEqual(f['firstfield'], 3)
-        self.assertFalse(f.IsFieldSet('secondfield'))
+        if hasattr(f, "IsFieldSetAndNotNull"):
+            # GDAL >= 2.2
+            self.assertFalse(f.IsFieldSetAndNotNull('secondfield'))
+        else:
+            self.assertFalse(f.IsFieldSet('secondfield'))
         f = lyr.GetNextFeature()
         self.assertEqual(f['firstfield'], 4)
-        self.assertFalse(f.IsFieldSet('secondfield'))
+        if hasattr(f, "IsFieldSetAndNotNull"):
+            self.assertFalse(f.IsFieldSetAndNotNull('secondfield'))
+        else:
+            self.assertFalse(f.IsFieldSet('secondfield'))
         f = lyr.GetNextFeature()
         self.assertEqual(f['firstfield'], 5)
         self.assertEqual(f['secondfield'], -1)
@@ -656,6 +722,24 @@ class TestQgsVectorLayer(unittest.TestCase):
         del ds
 
         gdal.Unlink(filename)
+
+    def testSupportedFormatExtensions(self):
+        formats = QgsVectorFileWriter.supportedFormatExtensions()
+        self.assertTrue('gpkg' in formats)
+        self.assertFalse('exe' in formats)
+        self.assertEqual(formats[0], 'gpkg')
+        self.assertEqual(formats[1], 'shp')
+
+    def testDriverForExtension(self):
+        self.assertEqual(QgsVectorFileWriter.driverForExtension('shp'), 'ESRI Shapefile')
+        self.assertEqual(QgsVectorFileWriter.driverForExtension('SHP'), 'ESRI Shapefile')
+        self.assertEqual(QgsVectorFileWriter.driverForExtension('sHp'), 'ESRI Shapefile')
+        self.assertEqual(QgsVectorFileWriter.driverForExtension('.shp'), 'ESRI Shapefile')
+        self.assertEqual(QgsVectorFileWriter.driverForExtension('tab'), 'MapInfo File')
+        self.assertEqual(QgsVectorFileWriter.driverForExtension('.GML'), 'GML')
+        self.assertEqual(QgsVectorFileWriter.driverForExtension('not a format'), '')
+        self.assertEqual(QgsVectorFileWriter.driverForExtension(''), '')
+
 
 if __name__ == '__main__':
     unittest.main()

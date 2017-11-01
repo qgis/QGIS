@@ -24,6 +24,7 @@
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"
 #include "qgsmessagelog.h"
+#include "qgspathresolver.h"
 #include "qgsproperty.h"
 #include "qgsnetworkcontentfetcher.h"
 #include "qgssymbollayerutils.h"
@@ -44,32 +45,14 @@
 #include <QCoreApplication>
 
 QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
-    : QgsComposerItem( composition )
-    , mMode( Unknown )
-    , mPictureRotation( 0 )
-    , mRotationMap( nullptr )
-    , mNorthMode( GridNorth )
-    , mNorthOffset( 0.0 )
-    , mResizeMode( QgsComposerPicture::Zoom )
-    , mPictureAnchor( UpperLeft )
-    , mHasExpressionError( false )
-    , mLoadingSvg( false )
+  : QgsComposerItem( composition )
 {
   mPictureWidth = rect().width();
   init();
 }
 
 QgsComposerPicture::QgsComposerPicture()
-    : QgsComposerItem( nullptr )
-    , mMode( Unknown )
-    , mPictureRotation( 0 )
-    , mRotationMap( nullptr )
-    , mNorthMode( GridNorth )
-    , mNorthOffset( 0.0 )
-    , mResizeMode( QgsComposerPicture::Zoom )
-    , mPictureAnchor( UpperLeft )
-    , mHasExpressionError( false )
-    , mLoadingSvg( false )
+  : QgsComposerItem( nullptr )
 {
   mPictureHeight = rect().height();
   init();
@@ -84,13 +67,13 @@ void QgsComposerPicture::init()
 
   //connect to atlas feature changing
   //to update the picture source expression
-  connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( refreshPicture() ) );
+  connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, [ = ] { refreshPicture(); } );
 
   //connect to composer print resolution changing
-  connect( mComposition, SIGNAL( printResolutionChanged() ), this, SLOT( recalculateSize() ) );
+  connect( mComposition, &QgsComposition::printResolutionChanged, this, &QgsComposerPicture::recalculateSize );
 }
 
-void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsComposerPicture::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -262,7 +245,7 @@ QRect QgsComposerPicture::clippedImageRect( double &boundRectWidthMM, double &bo
     case UpperRight:
     case MiddleRight:
     case LowerRight:
-      leftClip =  imageRectPixels.width() - boundRectWidthPixels;
+      leftClip = imageRectPixels.width() - boundRectWidthPixels;
       break;
   }
 
@@ -292,7 +275,7 @@ QRect QgsComposerPicture::clippedImageRect( double &boundRectWidthMM, double &bo
 void QgsComposerPicture::refreshPicture( const QgsExpressionContext *context )
 {
   QgsExpressionContext scopedContext = createExpressionContext();
-  const QgsExpressionContext* evalContext = context ? context : &scopedContext;
+  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
 
   QString source = mSourcePath;
 
@@ -326,14 +309,14 @@ void QgsComposerPicture::loadRemotePicture( const QString &url )
   //pause until HTML fetch
   mLoaded = false;
   fetcher.fetchContent( QUrl( url ) );
-  connect( &fetcher, SIGNAL( finished() ), this, SLOT( remotePictureLoaded() ) );
+  connect( &fetcher, &QgsNetworkContentFetcher::finished, this, &QgsComposerPicture::remotePictureLoaded );
 
   while ( !mLoaded )
   {
     qApp->processEvents();
   }
 
-  QNetworkReply* reply = fetcher.reply();
+  QNetworkReply *reply = fetcher.reply();
   if ( reply )
   {
     QImageReader imageReader( reply );
@@ -365,9 +348,9 @@ void QgsComposerPicture::loadLocalPicture( const QString &path )
       //try to open svg
       QgsExpressionContext context = createExpressionContext();
       QColor fillColor = mDataDefinedProperties.valueAsColor( QgsComposerObject::PictureSvgBackgroundColor, context, mSvgFillColor );
-      QColor outlineColor = mDataDefinedProperties.valueAsColor( QgsComposerObject::PictureSvgOutlineColor, context, mSvgBorderColor );
-      double outlineWidth = mDataDefinedProperties.valueAsDouble( QgsComposerObject::PictureSvgOutlineWidth, context, mSvgBorderWidth );
-      const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( pic.fileName(), rect().width(), fillColor, outlineColor, outlineWidth,
+      QColor strokeColor = mDataDefinedProperties.valueAsColor( QgsComposerObject::PictureSvgStrokeColor, context, mSvgStrokeColor );
+      double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsComposerObject::PictureSvgStrokeWidth, context, mSvgStrokeWidth );
+      const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, rect().width(), fillColor, strokeColor, strokeWidth,
                                      1.0 );
       mSVG.load( svgContent );
       if ( mSVG.isValid() )
@@ -420,7 +403,7 @@ void QgsComposerPicture::updateMapRotation()
 
     case TrueNorth:
     {
-      QgsPoint center = mRotationMap->currentMapExtent()->center();
+      QgsPointXY center = mRotationMap->currentMapExtent()->center();
       QgsCoordinateReferenceSystem crs = mRotationMap->crs();
 
       try
@@ -428,7 +411,7 @@ void QgsComposerPicture::updateMapRotation()
         double bearing = QgsBearingUtils::bearingTrueNorth( crs, center );
         rotation += bearing;
       }
-      catch ( QgsException& e )
+      catch ( QgsException &e )
       {
         Q_UNUSED( e );
         QgsDebugMsg( QString( "Caught exception %1" ).arg( e.what() ) );
@@ -481,7 +464,7 @@ QRectF QgsComposerPicture::boundedImageRect( double deviceWidth, double deviceHe
   double imageToDeviceRatio;
   if ( mImage.width() / deviceWidth > mImage.height() / deviceHeight )
   {
-    imageToDeviceRatio =  deviceWidth / mImage.width();
+    imageToDeviceRatio = deviceWidth / mImage.width();
     double height = imageToDeviceRatio * mImage.height();
     return QRectF( 0, 0, deviceWidth, height );
   }
@@ -545,7 +528,7 @@ QRectF QgsComposerPicture::boundedSVGRect( double deviceWidth, double deviceHeig
 }
 #endif //0
 
-void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
+void QgsComposerPicture::setSceneRect( const QRectF &rectangle )
 {
   QSizeF currentPictureSize = pictureSize();
 
@@ -577,8 +560,8 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
 
       //if height has changed more than width, then fix width and set height correspondingly
       //else, do the opposite
-      if ( qAbs( rect().width() - rectangle.width() ) <
-           qAbs( rect().height() - rectangle.height() ) )
+      if ( std::fabs( rect().width() - rectangle.width() ) <
+           std::fabs( rect().height() - rectangle.height() ) )
       {
         newRect.setHeight( targetImageSize.height() * newRect.width() / targetImageSize.width() );
       }
@@ -621,10 +604,10 @@ void QgsComposerPicture::setSceneRect( const QRectF& rectangle )
   }
 }
 
-void QgsComposerPicture::setPictureRotation( double r )
+void QgsComposerPicture::setPictureRotation( double rotation )
 {
   double oldRotation = mPictureRotation;
-  mPictureRotation = r;
+  mPictureRotation = rotation;
 
   if ( mResizeMode == Zoom )
   {
@@ -666,24 +649,24 @@ void QgsComposerPicture::setRotationMap( int composerMapId )
 
   if ( composerMapId == -1 ) //disable rotation from map
   {
-    disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( updateMapRotation() ) );
-    disconnect( mRotationMap, SIGNAL( extentChanged() ), this, SLOT( updateMapRotation() ) );
+    disconnect( mRotationMap, &QgsComposerMap::mapRotationChanged, this, &QgsComposerPicture::updateMapRotation );
+    disconnect( mRotationMap, &QgsComposerMap::extentChanged, this, &QgsComposerPicture::updateMapRotation );
     mRotationMap = nullptr;
   }
 
-  const QgsComposerMap* map = mComposition->getComposerMapById( composerMapId );
+  const QgsComposerMap *map = mComposition->getComposerMapById( composerMapId );
   if ( !map )
   {
     return;
   }
   if ( mRotationMap )
   {
-    disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( updateMapRotation() ) );
-    disconnect( mRotationMap, SIGNAL( extentChanged() ), this, SLOT( updateMapRotation() ) );
+    disconnect( mRotationMap, &QgsComposerMap::mapRotationChanged, this, &QgsComposerPicture::updateMapRotation );
+    disconnect( mRotationMap, &QgsComposerMap::extentChanged, this, &QgsComposerPicture::updateMapRotation );
   }
   mPictureRotation = map->mapRotation();
-  connect( map, SIGNAL( mapRotationChanged( double ) ), this, SLOT( updateMapRotation() ) );
-  connect( map, SIGNAL( extentChanged() ), this, SLOT( updateMapRotation() ) );
+  connect( map, &QgsComposerMap::mapRotationChanged, this, &QgsComposerPicture::updateMapRotation );
+  connect( map, &QgsComposerMap::extentChanged, this, &QgsComposerPicture::updateMapRotation );
   mRotationMap = map;
   updateMapRotation();
   emit pictureRotationChanged( mPictureRotation );
@@ -708,13 +691,13 @@ void QgsComposerPicture::recalculateSize()
   setSceneRect( QRectF( pos().x(), pos().y(), rect().width(), rect().height() ) );
 }
 
-void QgsComposerPicture::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext* context )
+void QgsComposerPicture::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext *context )
 {
   QgsExpressionContext scopedContext = createExpressionContext();
-  const QgsExpressionContext* evalContext = context ? context : &scopedContext;
+  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
 
   if ( property == QgsComposerObject::PictureSource || property == QgsComposerObject::PictureSvgBackgroundColor
-       || property == QgsComposerObject::PictureSvgOutlineColor || property == QgsComposerObject::PictureSvgOutlineWidth
+       || property == QgsComposerObject::PictureSvgStrokeColor || property == QgsComposerObject::PictureSvgStrokeWidth
        || property == QgsComposerObject::AllProperties )
   {
     refreshPicture( evalContext );
@@ -734,21 +717,31 @@ QString QgsComposerPicture::picturePath() const
   return mSourcePath;
 }
 
-bool QgsComposerPicture::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerPicture::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   if ( elem.isNull() )
   {
     return false;
   }
   QDomElement composerPictureElem = doc.createElement( QStringLiteral( "ComposerPicture" ) );
-  composerPictureElem.setAttribute( QStringLiteral( "file" ), mComposition->project()->writePath( mSourcePath ) );
+  QString imagePath = mSourcePath;
+  if ( mComposition )
+  {
+    // convert from absolute path to relative. For SVG we also need to consider system SVG paths
+    QgsPathResolver pathResolver = mComposition->project()->pathResolver();
+    if ( imagePath.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
+      imagePath = QgsSymbolLayerUtils::svgSymbolPathToName( imagePath, pathResolver );
+    else
+      imagePath = pathResolver.writePath( imagePath );
+  }
+  composerPictureElem.setAttribute( QStringLiteral( "file" ), imagePath );
   composerPictureElem.setAttribute( QStringLiteral( "pictureWidth" ), QString::number( mPictureWidth ) );
   composerPictureElem.setAttribute( QStringLiteral( "pictureHeight" ), QString::number( mPictureHeight ) );
   composerPictureElem.setAttribute( QStringLiteral( "resizeMode" ), QString::number( static_cast< int >( mResizeMode ) ) );
   composerPictureElem.setAttribute( QStringLiteral( "anchorPoint" ), QString::number( static_cast< int >( mPictureAnchor ) ) );
   composerPictureElem.setAttribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( mSvgFillColor ) );
-  composerPictureElem.setAttribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSvgBorderColor ) );
-  composerPictureElem.setAttribute( QStringLiteral( "svgBorderWidth" ), QString::number( mSvgBorderWidth ) );
+  composerPictureElem.setAttribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSvgStrokeColor ) );
+  composerPictureElem.setAttribute( QStringLiteral( "svgBorderWidth" ), QString::number( mSvgStrokeWidth ) );
 
   //rotation
   composerPictureElem.setAttribute( QStringLiteral( "pictureRotation" ), QString::number( mPictureRotation ) );
@@ -768,7 +761,7 @@ bool QgsComposerPicture::writeXml( QDomElement& elem, QDomDocument & doc ) const
   return true;
 }
 
-bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerPicture::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   if ( itemElem.isNull() )
   {
@@ -782,8 +775,8 @@ bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocumen
   mPictureAnchor = static_cast< QgsComposerItem::ItemPositionMode >( itemElem.attribute( QStringLiteral( "anchorPoint" ), QString::number( QgsComposerItem::Middle ) ).toInt() );
 
   mSvgFillColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 255, 255, 255 ) ) ) );
-  mSvgBorderColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 0, 0, 0 ) ) ) );
-  mSvgBorderWidth = itemElem.attribute( QStringLiteral( "svgBorderWidth" ), QStringLiteral( "0.2" ) ).toDouble();
+  mSvgStrokeColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 0, 0, 0 ) ) ) );
+  mSvgStrokeWidth = itemElem.attribute( QStringLiteral( "svgBorderWidth" ), QStringLiteral( "0.2" ) ).toDouble();
 
   QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
   if ( !composerItemList.isEmpty() )
@@ -807,20 +800,22 @@ bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocumen
     QString sourceExpression = itemElem.attribute( QStringLiteral( "sourceExpression" ), QLatin1String( "" ) );
     QString useExpression = itemElem.attribute( QStringLiteral( "useExpression" ) );
     bool expressionActive;
-    if ( useExpression.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
-    {
-      expressionActive = true;
-    }
-    else
-    {
-      expressionActive = false;
-    }
+    expressionActive = ( useExpression.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
 
     mDataDefinedProperties.setProperty( QgsComposerObject::PictureSource, QgsProperty::fromExpression( sourceExpression, expressionActive ) );
   }
 
-  mSourcePath = mComposition ? mComposition->project()->readPath( itemElem.attribute( QStringLiteral( "file" ) ) )
-                : itemElem.attribute( QStringLiteral( "file" ) );
+  QString imagePath = itemElem.attribute( QStringLiteral( "file" ) );
+  if ( mComposition )
+  {
+    // convert from relative path to absolute. For SVG we also need to consider system SVG paths
+    QgsPathResolver pathResolver = mComposition->project()->pathResolver();
+    if ( imagePath.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
+      imagePath = QgsSymbolLayerUtils::svgSymbolNameToPath( imagePath, pathResolver );
+    else
+      imagePath = pathResolver.readPath( imagePath );
+  }
+  mSourcePath = imagePath;
 
   //picture rotation
   if ( !qgsDoubleNear( itemElem.attribute( QStringLiteral( "pictureRotation" ), QStringLiteral( "0" ) ).toDouble(), 0.0 ) )
@@ -842,12 +837,12 @@ bool QgsComposerPicture::readXml( const QDomElement& itemElem, const QDomDocumen
 
     if ( mRotationMap )
     {
-      disconnect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( updateMapRotation() ) );
-      disconnect( mRotationMap, SIGNAL( extentChanged() ), this, SLOT( updateMapRotation() ) );
+      disconnect( mRotationMap, &QgsComposerMap::mapRotationChanged, this, &QgsComposerPicture::updateMapRotation );
+      disconnect( mRotationMap, &QgsComposerMap::extentChanged, this, &QgsComposerPicture::updateMapRotation );
     }
     mRotationMap = mComposition->getComposerMapById( rotationMapId );
-    connect( mRotationMap, SIGNAL( mapRotationChanged( double ) ), this, SLOT( updateMapRotation() ) );
-    connect( mRotationMap, SIGNAL( extentChanged() ), this, SLOT( updateMapRotation() ) );
+    connect( mRotationMap, &QgsComposerMap::mapRotationChanged, this, &QgsComposerPicture::updateMapRotation );
+    connect( mRotationMap, &QgsComposerMap::extentChanged, this, &QgsComposerPicture::updateMapRotation );
   }
 
   refreshPicture();
@@ -886,20 +881,20 @@ void QgsComposerPicture::setPictureAnchor( QgsComposerItem::ItemPositionMode anc
   update();
 }
 
-void QgsComposerPicture::setSvgFillColor( const QColor& color )
+void QgsComposerPicture::setSvgFillColor( const QColor &color )
 {
   mSvgFillColor = color;
   refreshPicture();
 }
 
-void QgsComposerPicture::setSvgBorderColor( const QColor& color )
+void QgsComposerPicture::setSvgStrokeColor( const QColor &color )
 {
-  mSvgBorderColor = color;
+  mSvgStrokeColor = color;
   refreshPicture();
 }
 
-void QgsComposerPicture::setSvgBorderWidth( double width )
+void QgsComposerPicture::setSvgStrokeWidth( double width )
 {
-  mSvgBorderWidth = width;
+  mSvgStrokeWidth = width;
   refreshPicture();
 }

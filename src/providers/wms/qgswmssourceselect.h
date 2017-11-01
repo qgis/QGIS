@@ -19,16 +19,15 @@
 #define QGSWMSSOURCESELECT_H
 #include "ui_qgswmssourceselectbase.h"
 #include "qgsdatasourceuri.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgshelp.h"
-
+#include "qgsproviderregistry.h"
 #include "qgswmsprovider.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QStringList>
 #include <QPushButton>
 
-class QgisApp;
-class QgsWmsProvider;
 class QButtonGroup;
 class QgsTreeWidgetItem;
 class QDomDocument;
@@ -44,58 +43,60 @@ class QgsWmsCapabilities;
  * The user can then connect and add
  * layers from the WMS server to the map canvas.
  */
-class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
+class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWMSSourceSelectBase
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsWMSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsWMSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     ~QgsWMSSourceSelect();
 
   public slots:
 
-    //! Opens the create connection dialog to build a new connection
-    void on_btnNew_clicked();
-    //! Opens a dialog to edit an existing connection
-    void on_btnEdit_clicked();
-    //! Deletes the selected connection
-    void on_btnDelete_clicked();
-    //! Saves connections to the file
-    void on_btnSave_clicked();
-    //! Loads connections from the file
-    void on_btnLoad_clicked();
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh() override;
 
-    /** Connects to the database using the stored connection parameters.
+    //! Opens the create connection dialog to build a new connection
+    void btnNew_clicked();
+    //! Opens a dialog to edit an existing connection
+    void btnEdit_clicked();
+    //! Deletes the selected connection
+    void btnDelete_clicked();
+    //! Saves connections to the file
+    void btnSave_clicked();
+    //! Loads connections from the file
+    void btnLoad_clicked();
+
+    /**
+     * Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
      */
-    void on_btnConnect_clicked();
+    void btnConnect_clicked();
 
     //! Determines the layers the user selected
-    void addClicked();
+    void addButtonClicked() override;
 
     void searchFinished();
 
     //! Opens the Spatial Reference System dialog.
-    void on_btnChangeSpatialRefSys_clicked();
+    void btnChangeSpatialRefSys_clicked();
 
     //! Signaled when a layer selection is changed.
-    void on_lstLayers_itemSelectionChanged();
+    void lstLayers_itemSelectionChanged();
 
     //! Set status message to theMessage
-    void showStatusMessage( QString const &theMessage );
+    void showStatusMessage( QString const &message );
 
     //! show whatever error is exposed by the QgsWmsProvider.
     void showError( QgsWmsProvider *wms );
 
     //! Stores the selected datasource whenerver it is changed
-    void on_cmbConnections_activated( int );
+    void cmbConnections_activated( int );
 
     //! Add some default wms servers to the list
-    void on_btnAddDefault_clicked();
-
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html#id5" ) ); }
+    void btnAddDefault_clicked();
 
   private:
     //! Populate the connection list combo box
@@ -109,12 +110,6 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
 
     //! Add a few example servers to the list.
     void addDefaultServers();
-
-    //! Connections manager mode
-    bool mManagerMode;
-
-    //! Embedded mode, without 'Close'
-    bool mEmbeddedMode;
 
     //! Selected CRS
     QString mCRS;
@@ -145,7 +140,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
      * \retval false if the layers could not be retrieved or parsed -
      *         see mWmsProvider->errorString() for more info
      */
-    bool populateLayerList( const QgsWmsCapabilities& capabilities );
+    bool populateLayerList( const QgsWmsCapabilities &capabilities );
 
     //! create an item including possible parents
     QgsTreeWidgetItem *createItem( int id,
@@ -156,10 +151,10 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
                                    const QMap<int, QStringList> &layerParentNames );
 
     //! Returns a textual description for the authority id
-    QString descriptionForAuthId( const QString& authId );
+    QString descriptionForAuthId( const QString &authId );
 
     //! Keeps the layer order list up-to-date with changed layers and styles
-    void updateLayerOrderTab( const QStringList& newLayerList, const QStringList& newStyleList, const QStringList &newTitleList );
+    void updateLayerOrderTab( const QStringList &newLayerList, const QStringList &newStyleList, const QStringList &newTitleList );
 
     //! Name for selected connection
     QString mConnName;
@@ -171,14 +166,12 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     QString mLastLayerName;
 
     //! The widget that controls the image format radio buttons
-    QButtonGroup *mImageFormatGroup;
-
-    QPushButton *mAddButton;
+    QButtonGroup *mImageFormatGroup = nullptr;
 
     QMap<QString, QString> mCrsNames;
 
-    void addWMSListRow( const QDomElement& item, int row );
-    void addWMSListItem( const QDomElement& el, int row, int column );
+    void addWMSListRow( const QDomElement &item, int row );
+    void addWMSListItem( const QDomElement &el, int row, int column );
 
     void applySelectionConstraints( QTreeWidgetItem *item );
     void collectNamedLayers( QTreeWidgetItem *item, QStringList &layers, QStringList &styles, QStringList &titles );
@@ -187,24 +180,20 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     void collectSelectedLayers( QStringList &layers, QStringList &styles, QStringList &titles );
     QString selectedImageEncoding();
 
-    QList<QTreeWidgetItem*> mCurrentSelection;
-    QTableWidgetItem* mCurrentTileset;
+    QList<QTreeWidgetItem *> mCurrentSelection;
+    QTableWidgetItem *mCurrentTileset = nullptr;
 
     QList<QgsWmtsTileLayer> mTileLayers;
 
-  signals:
-    void addRasterLayer( QString const & rasterLayerPath,
-                         QString const & baseName,
-                         QString const & providerKey );
-    void connectionsChanged();
   private slots:
-    void on_btnSearch_clicked();
-    void on_btnAddWMS_clicked();
-    void on_tableWidgetWMSList_itemSelectionChanged();
-    void on_lstTilesets_itemClicked( QTableWidgetItem *item );
-    void on_mLayerUpButton_clicked();
-    void on_mLayerDownButton_clicked();
+    void btnSearch_clicked();
+    void btnAddWMS_clicked();
+    void tableWidgetWMSList_itemSelectionChanged();
+    void lstTilesets_itemClicked( QTableWidgetItem *item );
+    void mLayerUpButton_clicked();
+    void mLayerDownButton_clicked();
     void updateButtons();
+    void showHelp();
 };
 
 

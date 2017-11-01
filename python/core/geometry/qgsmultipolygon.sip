@@ -1,32 +1,67 @@
-class QgsMultiPolygonV2: public QgsMultiSurface
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsmultipolygon.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsMultiPolygon: QgsMultiSurface
 {
+%Docstring
+ Multi polygon geometry collection.
+.. versionadded:: 2.10
+%End
+
 %TypeHeaderCode
-#include <qgsmultipolygon.h>
+#include "qgsmultipolygon.h"
 %End
   public:
+    QgsMultiPolygon();
     virtual QString geometryType() const;
-    virtual QgsMultiPolygonV2* clone() const /Factory/;
 
-    bool fromWkt( const QString& wkt );
+    virtual void clear();
 
-    // inherited: int wkbSize() const;
-    // inherited: unsigned char* asWkb( int& binarySize ) const;
-    // inherited: QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QString asJSON( int precision = 17 ) const;
+    virtual QgsMultiPolygon *clone() const /Factory/;
+
+    virtual bool fromWkt( const QString &wkt );
+
+    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+
+    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+
+    virtual QString asJSON( int precision = 17 ) const;
+
+    virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
+
+    virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
 
 
-    /** Adds a geometry and takes ownership. Returns true in case of success*/
-    virtual bool addGeometry( QgsAbstractGeometry* g /Transfer/ );
+    virtual QgsMultiSurface *toCurveType() const /Factory/;
 
-    /** Returns the geometry converted to the more generic curve type QgsMultiSurface
-    @return the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry* toCurveType() const /Factory/;
+%Docstring
+ Returns the geometry converted to the more generic curve type QgsMultiSurface
+:return: the converted geometry. Caller takes ownership*
+ :rtype: QgsMultiSurface
+%End
 
-    virtual QgsAbstractGeometry* boundary() const /Factory/;
+    virtual QgsAbstractGeometry *boundary() const /Factory/;
+
 
   protected:
+    virtual QgsMultiPolygon *createEmptyWithSameType() const /Factory/;
 
     virtual bool wktOmitChildType() const;
+
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsmultipolygon.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -30,7 +30,7 @@ namespace
 {
 
 // Build a key entry from name and version
-  QString makeServiceKey( const QString& name, const QString& version )
+  QString makeServiceKey( const QString &name, const QString &version )
   {
     return QString( "%1_%2" ).arg( name, version );
   }
@@ -42,7 +42,7 @@ namespace
 // If both segments can be interpreted as numbers the are compared as numbers, otherwise
 // They are compared lexicographically.
 // Return true if v1 is greater than v2
-  bool isVersionGreater( const QString& v1, const QString& v2 )
+  bool isVersionGreater( const QString &v1, const QString &v2 )
   {
     QStringList l1 = v1.split( '.' );
     QStringList l2 = v2.split( '.' );
@@ -81,18 +81,14 @@ namespace
 
 } // namespace
 
-QgsServiceRegistry::QgsServiceRegistry()
-{
-}
-
 QgsServiceRegistry::~QgsServiceRegistry()
 {
   cleanUp();
 }
 
-QgsService* QgsServiceRegistry::getService( const QString& name, const QString& version )
+QgsService *QgsServiceRegistry::getService( const QString &name, const QString &version )
 {
-  QgsService* service = nullptr;
+  QgsService *service = nullptr;
   QString key;
 
   // Check that we have a service of that name
@@ -119,7 +115,7 @@ QgsService* QgsServiceRegistry::getService( const QString& name, const QString& 
   return service;
 }
 
-void QgsServiceRegistry::registerService( QgsService* service )
+void QgsServiceRegistry::registerService( QgsService *service )
 {
   QString name    = service->name();
   QString version = service->version();
@@ -163,7 +159,7 @@ void QgsServiceRegistry::registerService( QgsService* service )
 
 }
 
-int QgsServiceRegistry::unregisterService( const QString& name, const QString& version )
+int QgsServiceRegistry::unregisterService( const QString &name, const QString &version )
 {
   // Check that we have a service of that name
   int removed = 0;
@@ -176,7 +172,7 @@ int QgsServiceRegistry::unregisterService( const QString& name, const QString& v
       ServiceTable::iterator it = mServices.begin();
       while ( it != mServices.end() )
       {
-        if (( *it )->name() == name )
+        if ( ( *it )->name() == name )
         {
           QgsMessageLog::logMessage( QString( "Unregistering service %1 %2" ).arg( name, ( *it )->version() ) );
           it = mServices.erase( it );
@@ -204,8 +200,8 @@ int QgsServiceRegistry::unregisterService( const QString& name, const QString& v
         // but with different version
         //
         QString maxVer;
-        std::function < void ( const ServiceTable::mapped_type& ) >
-        findGreaterVersion = [name,&maxVer]( const ServiceTable::mapped_type & service )
+        std::function < void ( const ServiceTable::mapped_type & ) >
+        findGreaterVersion = [name, &maxVer]( const ServiceTable::mapped_type & service )
         {
           if ( service->name() == name &&
                ( maxVer.isEmpty() || isVersionGreater( service->version(), maxVer ) ) )
@@ -227,7 +223,7 @@ int QgsServiceRegistry::unregisterService( const QString& name, const QString& v
   return removed;
 }
 
-void QgsServiceRegistry::init( const QString& nativeModulePath, QgsServerInterface* serverIface )
+void QgsServiceRegistry::init( const QString &nativeModulePath, QgsServerInterface *serverIface )
 {
   mNativeLoader.loadModules( nativeModulePath, *this, serverIface );
 }

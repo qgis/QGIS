@@ -106,7 +106,7 @@ class DatabaseInfo(object):
             typename = self.db.connection().typeNameString()
             spatial_info = HtmlContent(spatial_info)
             if not spatial_info.hasContents():
-                spatial_info = QApplication.translate("DBManagerPlugin", '<warning> %s support not enabled!') % typename
+                spatial_info = QApplication.translate("DBManagerPlugin", '<warning> {0} support not enabled!').format(typename)
             ret.append(HtmlSection(typename, spatial_info))
 
         # privileges

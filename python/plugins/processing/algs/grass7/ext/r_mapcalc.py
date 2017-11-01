@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
@@ -67,14 +64,14 @@ def processInputs(alg):
     if cellsize:
         command += ' res=' + str(cellsize)
     else:
-        command += ' res=' + str(alg.getDefaultCellsize())
+        command += ' res=' + str(alg.getDefaultCellsize(parameters, context))
     alignToResolution = alg.getParameterValue(alg.GRASS_REGION_ALIGN_TO_RESOLUTION)
     if alignToResolution:
         command += ' -a'
     alg.commands.append(command)
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # Remove output for command
     output_dir = alg.getOutputFromName('output_dir')
     maps = alg.getParameterFromName('maps')

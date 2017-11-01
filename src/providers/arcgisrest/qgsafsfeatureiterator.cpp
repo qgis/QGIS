@@ -14,33 +14,45 @@
  ***************************************************************************/
 #include "qgsafsfeatureiterator.h"
 #include "qgsspatialindex.h"
-#include "qgsafsprovider.h"
+#include "qgsafsshareddata.h"
 #include "qgsmessagelog.h"
 #include "geometry/qgsgeometry.h"
+#include "qgsexception.h"
 
-
-QgsAfsFeatureSource::QgsAfsFeatureSource( const QgsAfsProvider* provider )
-// FIXME: ugly const_cast...
-    : mProvider( const_cast<QgsAfsProvider*>( provider ) )
+QgsAfsFeatureSource::QgsAfsFeatureSource( const std::shared_ptr<QgsAfsSharedData> &sharedData )
+  : mSharedData( sharedData )
 {
 }
 
-QgsFeatureIterator QgsAfsFeatureSource::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsAfsFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   return QgsFeatureIterator( new QgsAfsFeatureIterator( this, false, request ) );
 }
 
-QgsAfsProvider* QgsAfsFeatureSource::provider() const
+QgsAfsSharedData *QgsAfsFeatureSource::sharedData() const
 {
-  return mProvider;
+  return mSharedData.get();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsAfsFeatureSource>( source, ownSource, request )
+QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
+  : QgsAbstractFeatureIteratorFromSource<QgsAfsFeatureSource>( source, ownSource, request )
 {
-  mFeatureIterator = 0;
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->sharedData()->crs() )
+  {
+    mTransform = QgsCoordinateTransform( mSource->sharedData()->crs(), mRequest.destinationCrs() );
+  }
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
 }
 
 QgsAfsFeatureIterator::~QgsAfsFeatureIterator()
@@ -48,39 +60,42 @@ QgsAfsFeatureIterator::~QgsAfsFeatureIterator()
   close();
 }
 
-bool QgsAfsFeatureIterator::fetchFeature( QgsFeature& f )
+bool QgsAfsFeatureIterator::fetchFeature( QgsFeature &f )
 {
   if ( mClosed )
     return false;
 
-  if ( mFeatureIterator >= mSource->provider()->featureCount() )
+  if ( mFeatureIterator >= mSource->sharedData()->featureCount() )
     return false;
 
   bool fetchGeometries = ( mRequest.flags() & QgsFeatureRequest::NoGeometry ) == 0;
   QgsAttributeList fetchAttribures;
-  if (( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) != 0 )
+  if ( ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) != 0 )
     fetchAttribures = mRequest.subsetOfAttributes();
   else
   {
-    for ( int i = 0; i < mSource->provider()->fields().size(); ++i )
+    for ( int i = 0; i < mSource->sharedData()->fields().size(); ++i )
       fetchAttribures.append( i );
   }
 
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
-    return mSource->provider()->getFeature( mRequest.filterFid(), f, fetchGeometries, fetchAttribures );
+    bool result = mSource->sharedData()->getFeature( mRequest.filterFid(), f, fetchGeometries, fetchAttribures );
+    geometryToDestinationCrs( f, mTransform );
+    return result;
   }
   else
   {
-    QgsRectangle filterRect = mSource->provider()->extent();
-    if ( mRequest.filterType() == QgsFeatureRequest::FilterRect )
-      filterRect = filterRect.intersect( &mRequest.filterRect() );
-    while ( mFeatureIterator < mSource->provider()->featureCount() )
+    QgsRectangle filterRect = mSource->sharedData()->extent();
+    if ( !mRequest.filterRect().isNull() )
+      filterRect = filterRect.intersect( &mFilterRect );
+    while ( mFeatureIterator < mSource->sharedData()->featureCount() )
     {
-      bool success = mSource->provider()->getFeature( mFeatureIterator, f, fetchGeometries, fetchAttribures, filterRect );
+      bool success = mSource->sharedData()->getFeature( mFeatureIterator, f, fetchGeometries, fetchAttribures, filterRect );
       ++mFeatureIterator;
       if ( !success )
         continue;
+      geometryToDestinationCrs( f, mTransform );
       return true;
     }
   }

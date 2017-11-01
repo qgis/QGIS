@@ -1,5 +1,0 @@
-Grid Difference
-grid_calculus
-ParameterRaster|A|A|False
-ParameterRaster|B|B|False
-OutputRaster|C|Difference (A - B)

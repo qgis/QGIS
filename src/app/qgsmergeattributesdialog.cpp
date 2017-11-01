@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "qgsmergeattributesdialog.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
@@ -28,10 +27,11 @@
 #include "qgsvectordataprovider.h"
 #include "qgsstatisticalsummary.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <limits>
 #include <QComboBox>
-#include <QSettings>
 
 const QList< QgsStatisticalSummary::Statistic > QgsMergeAttributesDialog::DISPLAY_STATS =
   QList< QgsStatisticalSummary::Statistic > () << QgsStatisticalSummary::Count
@@ -51,19 +51,21 @@ const QList< QgsStatisticalSummary::Statistic > QgsMergeAttributesDialog::DISPLA
   << QgsStatisticalSummary::InterQuartileRange;
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
-    : QDialog( parent, f )
-    , mFeatureList( features )
-    , mVectorLayer( vl )
-    , mMapCanvas( canvas )
-    , mSelectionRubberBand( nullptr )
+  : QDialog( parent, f )
+  , mFeatureList( features )
+  , mVectorLayer( vl )
+  , mMapCanvas( canvas )
+
 {
   setupUi( this );
+  connect( mFromSelectedPushButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mFromSelectedPushButton_clicked );
+  connect( mRemoveFeatureFromSelectionButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked );
   createTableWidgetContents();
 
-  QHeaderView* verticalHeader = mTableWidget->verticalHeader();
+  QHeaderView *verticalHeader = mTableWidget->verticalHeader();
   if ( verticalHeader )
   {
-    QObject::connect( mTableWidget, SIGNAL( itemSelectionChanged() ), this, SLOT( selectedRowChanged() ) );
+    connect( mTableWidget, &QTableWidget::itemSelectionChanged, this, &QgsMergeAttributesDialog::selectedRowChanged );
   }
   mTableWidget->setSelectionBehavior( QAbstractItemView::SelectRows );
   mTableWidget->setSelectionMode( QAbstractItemView::SingleSelection );
@@ -71,29 +73,27 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   mFromSelectedPushButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFromSelectedFeature.png" ) ) );
   mRemoveFeatureFromSelectionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRemoveSelectedFeature.png" ) ) );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/MergeAttributes/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/MergeAttributes/geometry" ) ).toByteArray() );
 
-  connect( mSkipAllButton, SIGNAL( clicked() ), this, SLOT( setAllToSkip() ) );
-  connect( mTableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( tableWidgetCellChanged( int, int ) ) );
+  connect( mSkipAllButton, &QAbstractButton::clicked, this, &QgsMergeAttributesDialog::setAllToSkip );
+  connect( mTableWidget, &QTableWidget::cellChanged, this, &QgsMergeAttributesDialog::tableWidgetCellChanged );
 }
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog()
-    : QDialog()
-    , mVectorLayer( nullptr )
-    , mMapCanvas( nullptr )
-    , mSelectionRubberBand( nullptr )
 {
   setupUi( this );
+  connect( mFromSelectedPushButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mFromSelectedPushButton_clicked );
+  connect( mRemoveFeatureFromSelectionButton, &QPushButton::clicked, this, &QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/MergeAttributes/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/MergeAttributes/geometry" ) ).toByteArray() );
 }
 
 QgsMergeAttributesDialog::~QgsMergeAttributesDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/MergeAttributes/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/MergeAttributes/geometry" ), saveGeometry() );
 
   delete mSelectionRubberBand;
 }
@@ -116,7 +116,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   mHiddenAttributes.clear();
   for ( int idx = 0; idx < mFields.count(); ++idx )
   {
-    const QgsEditorWidgetSetup setup = QgsEditorWidgetRegistry::instance()->findBest( mVectorLayer, mFields.at( idx ).name() );
+    const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mVectorLayer, mFields.at( idx ).name() );
     if ( setup.type() == QLatin1String( "Hidden" ) || setup.type() == QLatin1String( "Immutable" ) )
     {
       mHiddenAttributes.insert( idx );
@@ -153,10 +153,10 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
     {
       int idx = mTableWidget->horizontalHeaderItem( j )->data( FieldIndex ).toInt();
 
-      QTableWidgetItem* attributeValItem = new QTableWidgetItem( attrs.at( idx ).toString() );
+      QTableWidgetItem *attributeValItem = new QTableWidgetItem( attrs.at( idx ).toString() );
       attributeValItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       mTableWidget->setItem( i + 1, j, attributeValItem );
-      QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( mVectorLayer, idx, nullptr, mTableWidget, context );
+      QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( mVectorLayer, idx, nullptr, mTableWidget, context );
       if ( eww )
       {
         eww->setValue( attrs.at( idx ) );
@@ -195,7 +195,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
     {
       Q_FOREACH ( QgsStatisticalSummary::Statistic stat, DISPLAY_STATS )
       {
-        newComboBox->addItem( QgsStatisticalSummary::displayName( stat ) , stat );
+        newComboBox->addItem( QgsStatisticalSummary::displayName( stat ), stat );
       }
       break;
     }
@@ -203,7 +203,7 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
       newComboBox->addItem( tr( "Concatenation" ), "concat" );
       break;
 
-      //TODO - add date/time/datetime handling
+    //TODO - add date/time/datetime handling
     default:
       break;
   }
@@ -211,12 +211,12 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
   newComboBox->addItem( tr( "Skip attribute" ), "skip" );
   newComboBox->addItem( tr( "Manual value" ), "manual" );
 
-  QObject::connect( newComboBox, SIGNAL( currentIndexChanged( const QString& ) ),
-                    this, SLOT( comboValueChanged( const QString& ) ) );
+  connect( newComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ),
+           this, &QgsMergeAttributesDialog::comboValueChanged );
   return newComboBox;
 }
 
-int QgsMergeAttributesDialog::findComboColumn( QComboBox* c ) const
+int QgsMergeAttributesDialog::findComboColumn( QComboBox *c ) const
 {
   for ( int i = 0; i < mTableWidget->columnCount(); ++i )
   {
@@ -262,7 +262,7 @@ void QgsMergeAttributesDialog::selectedRowChanged()
   }
 
   //read the feature id
-  QTableWidgetItem* idItem = mTableWidget->verticalHeaderItem( row );
+  QTableWidgetItem *idItem = mTableWidget->verticalHeaderItem( row );
   if ( !idItem )
   {
     return;
@@ -282,7 +282,7 @@ void QgsMergeAttributesDialog::selectedRowChanged()
 
 void QgsMergeAttributesDialog::refreshMergedValue( int col )
 {
-  QComboBox* comboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, col ) );
+  QComboBox *comboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, col ) );
   if ( !comboBox )
   {
     return;
@@ -317,7 +317,7 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   }
 
   //insert string into table widget
-  QTableWidgetItem* newTotalItem = new QTableWidgetItem();
+  QTableWidgetItem *newTotalItem = new QTableWidgetItem();
   newTotalItem->setData( Qt::DisplayRole, mergeResult );
   newTotalItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
 
@@ -337,7 +337,7 @@ QVariant QgsMergeAttributesDialog::featureAttribute( QgsFeatureId featureId, int
 
   if ( i < mFeatureList.size() )
   {
-    QgsEditorWidgetWrapper* wrapper = QgsEditorWidgetWrapper::fromWidget( mTableWidget->cellWidget( i + 1, col ) );
+    QgsEditorWidgetWrapper *wrapper = QgsEditorWidgetWrapper::fromWidget( mTableWidget->cellWidget( i + 1, col ) );
     if ( wrapper )
       return wrapper->value();
   }
@@ -369,7 +369,7 @@ QVariant QgsMergeAttributesDialog::calcStatistic( int col, QgsStatisticalSummary
   summary.calculate( values );
 
   double val = summary.statistic( stat );
-  return qIsNaN( val ) ? QVariant( QVariant::Double ) : val;
+  return std::isnan( val ) ? QVariant( QVariant::Double ) : val;
 }
 
 QVariant QgsMergeAttributesDialog::concatenationAttribute( int col )
@@ -383,7 +383,7 @@ QVariant QgsMergeAttributesDialog::concatenationAttribute( int col )
   return concatString.join( QStringLiteral( "," ) ); //todo: make separator user configurable
 }
 
-void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
+void QgsMergeAttributesDialog::mFromSelectedPushButton_clicked()
 {
   //find the selected feature
   if ( !mVectorLayer )
@@ -399,9 +399,9 @@ void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
   }
 
   //assume all selected items to be in the same row
-  QTableWidgetItem* selectedItem = selectionList[0];
+  QTableWidgetItem *selectedItem = selectionList[0];
   int selectedRow = selectedItem->row();
-  QTableWidgetItem* selectedHeaderItem = mTableWidget->verticalHeaderItem( selectedRow );
+  QTableWidgetItem *selectedHeaderItem = mTableWidget->verticalHeaderItem( selectedRow );
   if ( !selectedHeaderItem )
   {
     return;
@@ -416,7 +416,7 @@ void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
 
   for ( int i = 0; i < mTableWidget->columnCount(); ++i )
   {
-    QComboBox* currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
+    QComboBox *currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
     if ( !currentComboBox )
       continue;
 
@@ -431,7 +431,7 @@ void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
   }
 }
 
-void QgsMergeAttributesDialog::on_mRemoveFeatureFromSelectionButton_clicked()
+void QgsMergeAttributesDialog::mRemoveFeatureFromSelectionButton_clicked()
 {
   if ( !mVectorLayer )
   {
@@ -446,9 +446,9 @@ void QgsMergeAttributesDialog::on_mRemoveFeatureFromSelectionButton_clicked()
   }
 
   //assume all selected items to be in the same row
-  QTableWidgetItem* selectedItem = selectionList[0];
+  QTableWidgetItem *selectedItem = selectionList[0];
   int selectedRow = selectedItem->row();
-  QTableWidgetItem* selectedHeaderItem = mTableWidget->verticalHeaderItem( selectedRow );
+  QTableWidgetItem *selectedHeaderItem = mTableWidget->verticalHeaderItem( selectedRow );
   if ( !selectedHeaderItem )
   {
     return;
@@ -474,7 +474,7 @@ void QgsMergeAttributesDialog::on_mRemoveFeatureFromSelectionButton_clicked()
   //remove feature option from the combo box (without altering the current merge values)
   for ( int i = 0; i < mTableWidget->columnCount(); ++i )
   {
-    QComboBox* currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
+    QComboBox *currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
     if ( !currentComboBox )
       continue;
 
@@ -504,7 +504,7 @@ void QgsMergeAttributesDialog::tableWidgetCellChanged( int row, int column )
     return;
   }
 
-  QComboBox* currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, column ) );
+  QComboBox *currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, column ) );
   if ( currentComboBox )
   {
     currentComboBox->blockSignals( true );
@@ -526,7 +526,7 @@ void QgsMergeAttributesDialog::createRubberBandForFeature( QgsFeatureId featureI
 
 QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
 {
-  if ( mFeatureList.size() < 1 )
+  if ( mFeatureList.empty() )
   {
     return QgsAttributes();
   }
@@ -597,7 +597,7 @@ void QgsMergeAttributesDialog::setAllToSkip()
 {
   for ( int i = 0; i < mTableWidget->columnCount(); ++i )
   {
-    QComboBox* currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
+    QComboBox *currentComboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
     if ( currentComboBox )
     {
       currentComboBox->setCurrentIndex( currentComboBox->findData( "skip" ) );

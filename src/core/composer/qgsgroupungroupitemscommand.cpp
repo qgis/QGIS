@@ -23,8 +23,8 @@
 #include "qgscomposermodel.h"
 #include "qgslogger.h"
 
-QgsGroupUngroupItemsCommand::QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup* item, QgsComposition* c, const QString& text, QUndoCommand* parent ):
-    QUndoCommand( text, parent ), mGroup( item ), mComposition( c ), mState( s ), mFirstRun( true )
+QgsGroupUngroupItemsCommand::QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup *item, QgsComposition *c, const QString &text, QUndoCommand *parent ):
+  QUndoCommand( text, parent ), mGroup( item ), mComposition( c ), mState( s ), mFirstRun( true )
 {
   mItems = mGroup->items();
 }
@@ -79,7 +79,7 @@ void QgsGroupUngroupItemsCommand::switchState()
     if ( mComposition )
     {
       //delete mGroup; mGroup = new QgsComposerItemGroup( mCompoiser );
-      QSet<QgsComposerItem*>::iterator itemIter = mItems.begin();
+      QSet<QgsComposerItem *>::iterator itemIter = mItems.begin();
       for ( ; itemIter != mItems.end(); ++itemIter )
       {
         mGroup->addItem( *itemIter );

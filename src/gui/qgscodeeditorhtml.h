@@ -17,13 +17,16 @@
 #define QGSCODEEDITORHTML_H
 
 #include "qgscodeeditor.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
+SIP_IF_MODULE( HAVE_QSCI_SIP )
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A HTML editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
- * \note added in 2.6
+ * \since QGIS 2.6
  * \note may not be available in Python bindings, depending on platform support
  */
 class GUI_EXPORT QgsCodeEditorHTML : public QgsCodeEditor
@@ -31,7 +34,7 @@ class GUI_EXPORT QgsCodeEditorHTML : public QgsCodeEditor
     Q_OBJECT
 
   public:
-    QgsCodeEditorHTML( QWidget *parent = nullptr );
+    QgsCodeEditorHTML( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
   private:
     void setSciLexerHTML();

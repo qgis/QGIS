@@ -42,11 +42,7 @@
 
 extern "C"
 {
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#endif
 }
 
 class QgsGrassModuleInputModel : public QStandardItemModel
@@ -62,12 +58,11 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     };
 
     explicit QgsGrassModuleInputModel( QObject *parent = 0 );
-    ~QgsGrassModuleInputModel();
 
     //! Get singleton instance of this class.
-    static QgsGrassModuleInputModel* instance();
+    static QgsGrassModuleInputModel *instance();
 
-    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
 
   public slots:
@@ -76,21 +71,21 @@ class QgsGrassModuleInputModel : public QStandardItemModel
 
     void onMapsetChanged();
 
-    void onDirectoryChanged( const QString & path );
-    void onFileChanged( const QString & path );
+    void onDirectoryChanged( const QString &path );
+    void onFileChanged( const QString &path );
     void onMapsetSearchPathChanged();
 
   private:
-    void addMapset( const QString & mapset );
-    void refreshMapset( QStandardItem *mapsetItem, const QString & mapset, const QList<QgsGrassObject::Type> & theTypes = QList<QgsGrassObject::Type>() );
+    void addMapset( const QString &mapset );
+    void refreshMapset( QStandardItem *mapsetItem, const QString &mapset, const QList<QgsGrassObject::Type> &types = QList<QgsGrassObject::Type>() );
     // Add to watched paths if exists and if not yet watched
-    void watch( const QString & path );
+    void watch( const QString &path );
     QString mLocationPath;
     // mapset watched dirs
     QStringList watchedDirs() { QStringList l; l << QStringLiteral( "cellhd" ) << QStringLiteral( "vector" ) << QStringLiteral( "tgis" ); return l; }
     // names of
     QStringList locationDirNames();
-    QFileSystemWatcher *mWatcher;
+    QFileSystemWatcher *mWatcher = nullptr;
 
 };
 
@@ -104,10 +99,10 @@ class QgsGrassModuleInputProxy : public QSortFilterProxyModel
 
   protected:
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
-    bool lessThan( const QModelIndex & left, const QModelIndex & right ) const override;
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   private:
-    QgsGrassModuleInputModel *mSourceModel;
+    QgsGrassModuleInputModel *mSourceModel = nullptr;
     QgsGrassObject::Type mType;
 };
 
@@ -115,7 +110,7 @@ class QgsGrassModuleInputTreeView : public QTreeView
 {
     Q_OBJECT
   public:
-    explicit QgsGrassModuleInputTreeView( QWidget * parent = 0 );
+    explicit QgsGrassModuleInputTreeView( QWidget *parent = 0 );
 
     void resetState();
 };
@@ -124,9 +119,9 @@ class QgsGrassModuleInputPopup : public QTreeView
 {
     Q_OBJECT
   public:
-    explicit QgsGrassModuleInputPopup( QWidget * parent = 0 );
+    explicit QgsGrassModuleInputPopup( QWidget *parent = 0 );
 
-    virtual void setModel( QAbstractItemModel * model ) override;
+    virtual void setModel( QAbstractItemModel *model ) override;
 };
 
 // Flattens tree to list of maps for completer
@@ -134,46 +129,49 @@ class QgsGrassModuleInputCompleterProxy : public QAbstractProxyModel
 {
     Q_OBJECT
   public:
-    explicit QgsGrassModuleInputCompleterProxy( QObject * parent = 0 );
+    explicit QgsGrassModuleInputCompleterProxy( QObject *parent = 0 );
 
-    virtual int columnCount( const QModelIndex & parent = QModelIndex() ) const override { Q_UNUSED( parent ); return 1; }
-    virtual int rowCount( const QModelIndex & parent = QModelIndex() ) const override;
-    virtual QModelIndex index( int row, int column, const QModelIndex & parent = QModelIndex() ) const override;
-    virtual QModelIndex parent( const QModelIndex & index ) const override;
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const override { Q_UNUSED( parent ); return 1; }
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    virtual QModelIndex parent( const QModelIndex &index ) const override;
 
 
-    virtual void setSourceModel( QAbstractItemModel * sourceModel ) override;
+    virtual void setSourceModel( QAbstractItemModel *sourceModel ) override;
 
-    virtual QModelIndex mapFromSource( const QModelIndex & sourceIndex ) const override;
-    virtual QModelIndex mapToSource( const QModelIndex & proxyIndex ) const override;
+    virtual QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const override;
+    virtual QModelIndex mapToSource( const QModelIndex &proxyIndex ) const override;
 
   private:
     void refreshMapping();
-    void map( const QModelIndex & parent, int level = 0 );
+    void map( const QModelIndex &parent, int level = 0 );
     QMap<int, QModelIndex> mIndexes;
     QMap<QModelIndex, int> mRows;
 };
 
 class QgsGrassModuleInputCompleter : public QCompleter
 {
-  public:
-    explicit QgsGrassModuleInputCompleter( QAbstractItemModel * model, QWidget * parent = 0 );
+    Q_OBJECT
 
-    virtual bool eventFilter( QObject * watched, QEvent * event ) override;
+  public:
+    explicit QgsGrassModuleInputCompleter( QAbstractItemModel *model, QWidget *parent = 0 );
+
+    virtual bool eventFilter( QObject *watched, QEvent *event ) override;
 };
 
 class QgsGrassModuleInputComboBox : public QComboBox
 {
+    Q_OBJECT
+
   public:
     explicit QgsGrassModuleInputComboBox( QgsGrassObject::Type type, QWidget *parent = 0 );
-    ~QgsGrassModuleInputComboBox();
 
-    virtual bool eventFilter( QObject * watched, QEvent * event ) override;
+    virtual bool eventFilter( QObject *watched, QEvent *event ) override;
     virtual void showPopup() override;
     virtual void hidePopup() override;
 
     // set current index
-    void setCurrent( const QModelIndex & proxyIndex );
+    void setCurrent( const QModelIndex &proxyIndex );
 
     // set current item to map/mapset if exists
     bool setCurrent( const QString &map, const QString &mapset = QString() );
@@ -183,9 +181,9 @@ class QgsGrassModuleInputComboBox : public QComboBox
 
   protected:
     QgsGrassObject::Type mType;
-    QgsGrassModuleInputModel *mModel;
-    QgsGrassModuleInputProxy *mProxy;
-    QgsGrassModuleInputTreeView *mTreeView;
+    QgsGrassModuleInputModel *mModel = nullptr;
+    QgsGrassModuleInputProxy *mProxy = nullptr;
+    QgsGrassModuleInputTreeView *mTreeView = nullptr;
     // Skip next hidePopup
     bool mSkipHide;
 };
@@ -209,7 +207,7 @@ class QgsGrassModuleInputSelectedView : public QTreeView
 {
     Q_OBJECT
   public:
-    explicit QgsGrassModuleInputSelectedView( QWidget * parent = 0 );
+    explicit QgsGrassModuleInputSelectedView( QWidget *parent = 0 );
 
     void setModel( QAbstractItemModel *model );
 
@@ -220,11 +218,12 @@ class QgsGrassModuleInputSelectedView : public QTreeView
     bool eventFilter( QObject *obj, QEvent *event );
 
   private:
-    QgsGrassModuleInputSelectedDelegate *mDelegate;
+    QgsGrassModuleInputSelectedDelegate *mDelegate = nullptr;
 };
 
 
-/** \class QgsGrassModuleInput
+/**
+ * \class QgsGrassModuleInput
  *  \brief Class representing raster or vector module input
  */
 class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
@@ -233,17 +232,15 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
 
   public:
 
-    /** \brief Constructor
+    /**
+     * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
     QgsGrassModuleInput( QgsGrassModule *module,
                          QgsGrassModuleStandardOptions *options, QString key,
                          QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                         bool direct, QWidget * parent = 0 );
-
-
-    ~QgsGrassModuleInput();
+                         bool direct, QWidget *parent = 0 );
 
     //! Returns list of options which will be passed to module
     virtual QStringList options() override;
@@ -257,7 +254,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
 
     QString currentMap();
 
-    QgsGrassVectorLayer * currentLayer();
+    QgsGrassVectorLayer *currentLayer();
 
     QStringList currentGeometryTypeNames();
 
@@ -273,16 +270,16 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
 
     QgsGrassObject::Type type() { return mType; }
 
-    void setGeometryTypeOption( const QString & optionName ) { mGeometryTypeOption = optionName; }
+    void setGeometryTypeOption( const QString &optionName ) { mGeometryTypeOption = optionName; }
     QString geometryTypeOption() const { return mGeometryTypeOption; }
 
     // list of selected layers in <field>_<type> form, used by QgsGrassModuleSelection
     QStringList currentLayerCodes();
 
   public slots:
-    void onActivated( const QString & text );
+    void onActivated( const QString &text );
 
-    void onChanged( const QString & text );
+    void onChanged( const QString &text );
 
     void onLayerChanged();
 
@@ -297,7 +294,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     QgsGrassObject::Type mType;
 
     // Module options
-    QgsGrassModuleStandardOptions *mModuleStandardOptions;
+    QgsGrassModuleStandardOptions *mModuleStandardOptions = nullptr;
 
     //! Vector type mask read from option defined by "typeoption" tag, used for QGIS layers in combo
     //  + type mask defined in configuration file
@@ -310,28 +307,28 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     QString mVectorLayerOption;
 
     //! Model used in combo
-    QgsGrassModuleInputModel *mModel;
+    QgsGrassModuleInputModel *mModel = nullptr;
 
     //! Model containing currently selected maps
-    QStandardItemModel *mSelectedModel;
+    QStandardItemModel *mSelectedModel = nullptr;
 
     //! Combo box with GRASS layers
-    QgsGrassModuleInputComboBox *mComboBox;
+    QgsGrassModuleInputComboBox *mComboBox = nullptr;
 
     //! Region button
-    QPushButton *mRegionButton;
+    QPushButton *mRegionButton = nullptr;
 
     //! Vector sublayer label
-    QLabel *mLayerLabel;
+    QLabel *mLayerLabel = nullptr;
 
     //! Vector sublayer combo
-    QComboBox *mLayerComboBox;
+    QComboBox *mLayerComboBox = nullptr;
 
     //! List of multiple selected maps
-    QTreeView *mSelectedTreeView;
+    QgsGrassModuleInputSelectedView *mSelectedTreeView = nullptr;
 
     // Vector type checkboxes
-    QMap<int, QCheckBox*> mTypeCheckBoxes;
+    QMap<int, QCheckBox *> mTypeCheckBoxes;
 
     //! Optional map option id, if defined, only the layers from the
     //  map currently selected in that option are available.
@@ -339,12 +336,12 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     QString mMapId;
 
     // Currently selected vector
-    QgsGrassVector * mVector;
+    QgsGrassVector *mVector = nullptr;
 
     // List of vector layers matching mGeometryTypes for currently selected vector
-    QList<QgsGrassVectorLayer*> mLayers;
+    QList<QgsGrassVectorLayer *> mLayers;
 
-    //! The imput map will be updated -> must be from current mapset
+    //! The input map will be updated -> must be from current mapset
     // TODO
     bool mUpdate;
 

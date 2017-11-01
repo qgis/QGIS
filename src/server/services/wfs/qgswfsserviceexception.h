@@ -25,53 +25,65 @@
 namespace QgsWfs
 {
 
-  /** \ingroup server
+  /**
+   * \ingroup server
    * \class  QgsserviceException
    * \brief Exception class for WFS service exceptions.
    */
   class QgsServiceException : public QgsOgcServiceException
   {
     public:
-      QgsServiceException( const QString& code, const QString& message,
+      QgsServiceException( const QString &code, const QString &message,
                            int responseCode = 200 )
-          : QgsOgcServiceException( code, message, QString(), responseCode, QStringLiteral( "1.2.0" ) )
+        : QgsOgcServiceException( code, message, QString(), responseCode, QStringLiteral( "1.2.0" ) )
       {}
 
-      QgsServiceException( const QString& code, const QString& message, const QString& locator,
+      QgsServiceException( const QString &code, const QString &message, const QString &locator,
                            int responseCode = 200 )
-          : QgsOgcServiceException( code, message, locator, responseCode, QStringLiteral( "1.2.0" ) )
+        : QgsOgcServiceException( code, message, locator, responseCode, QStringLiteral( "1.2.0" ) )
       {}
 
   };
 
 
-  /** \ingroup server
+  /**
+   * \ingroup server
    * \class  QgsSecurityAccessException
    * \brief Exception thrown when data access violates access controls
    */
   class QgsSecurityAccessException: public QgsServiceException
   {
     public:
-      QgsSecurityAccessException( const QString& message, const QString& locator = QString() )
-          : QgsServiceException( QStringLiteral( "Security" ), message, locator, 403 )
+      QgsSecurityAccessException( const QString &message, const QString &locator = QString() )
+        : QgsServiceException( QStringLiteral( "Security" ), message, locator, 403 )
       {}
   };
 
-  /** \ingroup server
+  /**
+   * \ingroup server
    * \class  QgsRequestNotWellFormedException
    * \brief Exception thrown in case of malformed request
    */
   class QgsRequestNotWellFormedException: public QgsServiceException
   {
     public:
-      QgsRequestNotWellFormedException( const QString& message, const QString& locator = QString() )
-          : QgsServiceException( QStringLiteral( "RequestNotWellFormed" ), message, locator, 400 )
+      QgsRequestNotWellFormedException( const QString &message, const QString &locator = QString() )
+        : QgsServiceException( QStringLiteral( "RequestNotWellFormed" ), message, locator, 400 )
       {}
   };
 
-
-
-
+  /**
+   * \ingroup server
+   * \class  QgsBadRequestException
+   * \brief Exception thrown in case of malformed request
+   */
+  class QgsBadRequestException: public QgsServiceException
+  {
+    public:
+      QgsBadRequestException( const QString &code, const QString &message, const QString &locator = QString() )
+        : QgsServiceException( code, message, locator, 400 )
+      {}
+  };
 
 
 } // namespace QgsWfs

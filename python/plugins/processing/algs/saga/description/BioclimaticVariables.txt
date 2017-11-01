@@ -1,0 +1,26 @@
+Bioclimatic Variables
+climate_tools
+ParameterMultipleInput|TMEAN|Mean Temperature|3|False
+ParameterMultipleInput|TMIN|Minimum Temperature|3|False
+ParameterMultipleInput|TMAX|Maximum Temperature|3|False
+ParameterMultipleInput|P|Precipitation|3|False
+OutputRaster|BIO_01|Annual Mean Temperature
+OutputRaster|BIO_02|Mean Diurnal Range
+OutputRaster|BIO_03|Isothermality
+OutputRaster|BIO_04|Temperature Seasonality
+OutputRaster|BIO_05|Maximum Temperature of Warmest Month
+OutputRaster|BIO_06|Minimum Temperature of Coldest Month
+OutputRaster|BIO_07|Temperature Annual Range
+OutputRaster|BIO_08|Mean Temperature of Wettest Quarter
+OutputRaster|BIO_09|Mean Temperature of Driest Quarter
+OutputRaster|BIO_10|Mean Temperature of Warmest Quarter
+OutputRaster|BIO_11|Mean Temperature of Coldest Quarter
+OutputRaster|BIO_12|Annual Precipitation
+OutputRaster|BIO_13|Precipitation of Wettest Month
+OutputRaster|BIO_14|Precipitation of Driest Month
+OutputRaster|BIO_15|Precipitation Seasonality
+OutputRaster|BIO_16|Precipitation of Wettest Quarter
+OutputRaster|BIO_17|Precipitation of Driest Quarter
+OutputRaster|BIO_18|Precipitation of Warmest Quarter
+OutputRaster|BIO_19|Precipitation of Coldest Quarter
+ParameterSelection|SEASONALITY|Temperature Seasonality|[0] Coefficient of Variation;[1] Standard Deviation| 1

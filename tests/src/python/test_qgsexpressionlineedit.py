@@ -14,10 +14,6 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-import os
-
-from qgis.gui import QgsExpressionLineEdit
-
 try:
     from qgis.PyQt.QtTest import QSignalSpy
     use_signal_spy = True
@@ -25,6 +21,7 @@ except:
     use_signal_spy = False
 
 from qgis.testing import start_app, unittest
+from qgis.gui import QgsExpressionLineEdit
 
 start_app()
 
@@ -33,13 +30,13 @@ class TestQgsExpressionLineEdit(unittest.TestCase):
 
     def testDialog(self):
         """ test dialog related methods """
-        w = qgis.gui.QgsExpressionLineEdit()
+        w = QgsExpressionLineEdit()
         w.setExpressionDialogTitle('test')
         self.assertEqual(w.expressionDialogTitle(), 'test')
 
     def testSetGetExpression(self):
         """ test setting and getting expression """
-        w = qgis.gui.QgsExpressionLineEdit()
+        w = QgsExpressionLineEdit()
         self.assertFalse(w.expression())
         w.setExpression('1+2')
         self.assertEqual(w.expression(), '1+2')
@@ -65,7 +62,7 @@ class TestQgsExpressionLineEdit(unittest.TestCase):
     def test_ChangedSignals(self):
         """ test that signals are correctly emitted when changing expressions"""
 
-        w = qgis.gui.QgsExpressionLineEdit()
+        w = QgsExpressionLineEdit()
 
         expression_changed_spy = QSignalSpy(w.expressionChanged)
         w.setExpression('1+1')

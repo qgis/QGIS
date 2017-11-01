@@ -24,7 +24,6 @@
 #include "qgsdxfwriter.h"
 #include "qgswmsgetcapabilities.h"
 #include "qgswmsgetmap.h"
-#include "qgswmsgetstyle.h"
 #include "qgswmsgetstyles.h"
 #include "qgswmsgetcontext.h"
 #include "qgswmsgetschemaextension.h"
@@ -43,9 +42,9 @@ namespace QgsWms
   {
     public:
       // Constructor
-      Service( const QString& version, QgsServerInterface* serverIface )
-          : mVersion( version )
-          , mServerIface( serverIface )
+      Service( const QString &version, QgsServerInterface *serverIface )
+        : mVersion( version )
+        , mServerIface( serverIface )
       {}
 
       QString name()    const { return QStringLiteral( "WMS" ); }
@@ -56,8 +55,8 @@ namespace QgsWms
         return method == QgsServerRequest::GetMethod;
       }
 
-      void executeRequest( const QgsServerRequest& request, QgsServerResponse& response,
-                           const QgsProject* project )
+      void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
+                           const QgsProject *project )
       {
         QgsServerRequest::Parameters params = request.parameters();
         QString versionString = params.value( "VERSION" );
@@ -81,8 +80,8 @@ namespace QgsWms
                                      QStringLiteral( "Please check the value of the REQUEST parameter" ) );
         }
 
-        if (( QSTR_COMPARE( mVersion, "1.1.1" ) && QSTR_COMPARE( req, "capabilities" ) )
-            || QSTR_COMPARE( req, "GetCapabilities" ) )
+        if ( ( QSTR_COMPARE( mVersion, "1.1.1" ) && QSTR_COMPARE( req, "capabilities" ) )
+             || QSTR_COMPARE( req, "GetCapabilities" ) )
         {
           writeGetCapabilities( mServerIface, project, versionString, request, response, false );
         }
@@ -97,7 +96,7 @@ namespace QgsWms
           QString format = params.value( QStringLiteral( "FORMAT" ) );
           if QSTR_COMPARE( format, "application/dxf" )
           {
-            writeAsDxf( mServerIface, versionString, request, response );
+            writeAsDxf( mServerIface, project, versionString, request, response );
           }
           else
           {
@@ -118,11 +117,11 @@ namespace QgsWms
         }
         else if ( QSTR_COMPARE( req, "GetStyle" ) )
         {
-          writeGetStyle( mServerIface, versionString, request, response );
+          writeGetStyle( mServerIface, project, versionString, request, response );
         }
         else if ( QSTR_COMPARE( req, "GetStyles" ) )
         {
-          writeGetStyles( mServerIface, versionString, request, response );
+          writeGetStyles( mServerIface, project, versionString, request, response );
         }
         else if ( QSTR_COMPARE( req, "DescribeLayer" ) )
         {
@@ -146,7 +145,7 @@ namespace QgsWms
 
     private:
       QString mVersion;
-      QgsServerInterface* mServerIface;
+      QgsServerInterface *mServerIface = nullptr;
   };
 
 
@@ -157,7 +156,7 @@ namespace QgsWms
 class QgsWmsModule: public QgsServiceModule
 {
   public:
-    void registerSelf( QgsServiceRegistry& registry, QgsServerInterface* serverIface )
+    void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface )
     {
       QgsDebugMsg( "WMSModule::registerSelf called" );
       registry.registerService( new  QgsWms::Service( "1.3.0", serverIface ) );
@@ -166,12 +165,12 @@ class QgsWmsModule: public QgsServiceModule
 
 
 // Entry points
-QGISEXTERN QgsServiceModule* QGS_ServiceModule_Init()
+QGISEXTERN QgsServiceModule *QGS_ServiceModule_Init()
 {
   static QgsWmsModule sModule;
   return &sModule;
 }
-QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule* )
+QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule * )
 {
   // Nothing to do
 }

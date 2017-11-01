@@ -25,11 +25,10 @@
 #include <QPainter>
 #include "qgslogger.h"
 
-QgsMapCanvasItem::QgsMapCanvasItem( QgsMapCanvas* mapCanvas )
-    : QGraphicsItem()
-    , mMapCanvas( mapCanvas )
-    , mRectRotation( 0.0 )
-    , mItemSize( 0, 0 )
+QgsMapCanvasItem::QgsMapCanvasItem( QgsMapCanvas *mapCanvas )
+  : mMapCanvas( mapCanvas )
+  , mRectRotation( 0.0 )
+  , mItemSize( 0, 0 )
 {
   Q_ASSERT( mapCanvas && mapCanvas->scene() );
   mapCanvas->scene()->addItem( this );
@@ -40,9 +39,9 @@ QgsMapCanvasItem::~QgsMapCanvasItem()
   update(); // schedule redraw of canvas
 }
 
-void QgsMapCanvasItem::paint( QPainter * painter,
-                              const QStyleOptionGraphicsItem * option,
-                              QWidget * widget )
+void QgsMapCanvasItem::paint( QPainter *painter,
+                              const QStyleOptionGraphicsItem *option,
+                              QWidget *widget )
 {
   Q_UNUSED( option );
   Q_UNUSED( widget );
@@ -53,13 +52,13 @@ void QgsMapCanvasItem::paint( QPainter * painter,
   paint( painter ); // call the derived item's drawing routines
 }
 
-QgsPoint QgsMapCanvasItem::toMapCoordinates( QPoint point ) const
+QgsPointXY QgsMapCanvasItem::toMapCoordinates( QPoint point ) const
 {
   return mMapCanvas->getCoordinateTransform()->toMapCoordinates( point );
 }
 
 
-QPointF QgsMapCanvasItem::toCanvasCoordinates( const QgsPoint& point ) const
+QPointF QgsMapCanvasItem::toCanvasCoordinates( const QgsPointXY &point ) const
 {
   qreal x = point.x(), y = point.y();
   mMapCanvas->getCoordinateTransform()->transformInPlace( x, y );
@@ -72,7 +71,7 @@ QgsRectangle QgsMapCanvasItem::rect() const
 }
 
 
-void QgsMapCanvasItem::setRect( const QgsRectangle& rect, bool resetRotation )
+void QgsMapCanvasItem::setRect( const QgsRectangle &rect, bool resetRotation )
 {
   mRect = rect;
   //updatePosition();
@@ -83,7 +82,7 @@ void QgsMapCanvasItem::setRect( const QgsRectangle& rect, bool resetRotation )
     // rect encodes origin of the item (xMin,yMax from map to canvas units)
     // and size (rect size / map units per pixel)
     r.setTopLeft( toCanvasCoordinates( QPointF( mRect.xMinimum(), mRect.yMaximum() ) ) );
-    const QgsMapToPixel* m2p = mMapCanvas->getCoordinateTransform();
+    const QgsMapToPixel *m2p = mMapCanvas->getCoordinateTransform();
     double res = m2p->mapUnitsPerPixel();
     r.setSize( QSizeF( mRect.width() / res, mRect.height() / res ) );
   }
@@ -117,13 +116,13 @@ void QgsMapCanvasItem::updateCanvas()
   //mMapCanvas->scene()->update(); //Contents();
 }
 
-bool QgsMapCanvasItem::setRenderContextVariables( QPainter* p, QgsRenderContext& context ) const
+bool QgsMapCanvasItem::setRenderContextVariables( QPainter *p, QgsRenderContext &context ) const
 {
   if ( !mMapCanvas || !p )
   {
     return false;
   }
-  const QgsMapSettings& ms = mMapCanvas->mapSettings();
+  const QgsMapSettings &ms = mMapCanvas->mapSettings();
 
   context.setPainter( p );
   context.setRendererScale( mMapCanvas->scale() );

@@ -17,7 +17,7 @@
 #define COORDINATECAPTUREMAPTOOL_H
 
 #include "qgsmaptool.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 
 #include <QObject>
 #include <QPointer>
@@ -32,18 +32,16 @@ class CoordinateCaptureMapTool : public QgsMapTool
     Q_OBJECT
 
   public:
-    explicit CoordinateCaptureMapTool( QgsMapCanvas* thepCanvas );
-
-    ~CoordinateCaptureMapTool();
+    explicit CoordinateCaptureMapTool( QgsMapCanvas *thepCanvas );
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     //! called when map tool is being deactivated
     virtual void deactivate() override;
@@ -51,12 +49,12 @@ class CoordinateCaptureMapTool : public QgsMapTool
   public slots:
 
   signals:
-    void mouseMoved( const QgsPoint& );
-    void mouseClicked( const QgsPoint& );
+    void mouseMoved( const QgsPointXY & );
+    void mouseClicked( const QgsPointXY & );
   private:
 
     //! Rubber band for highlighting identified feature
-    QgsRubberBand * mpRubberBand;
+    QgsRubberBand *mpRubberBand = nullptr;
     QPointer<QgsMapCanvas> mpMapCanvas;
 
 };

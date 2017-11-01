@@ -20,25 +20,27 @@
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsaddtaborgroup.h"
+#include "qgssettings.h"
 
 #include <QTreeWidgetItem>
 #include <QComboBox>
 #include <QRadioButton>
-#include <QSettings>
 
-QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >& tabList, QWidget * parent )
-    : QDialog( parent )
-    , mLayer( lyr )
-    , mTabs( tabList )
+QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair > &tabList, QWidget *parent )
+  : QDialog( parent )
+  , mLayer( lyr )
+  , mTabs( tabList )
 {
   setupUi( this );
+  connect( mGroupButton, &QRadioButton::toggled, this, &QgsAddTabOrGroup::mGroupButton_toggled );
+  connect( mTabButton, &QRadioButton::toggled, this, &QgsAddTabOrGroup::mTabButton_toggled );
 
   mTabButton->setChecked( true );
   mTabList->setEnabled( false );
   if ( !mTabs.isEmpty() )
   {
     int i = 0;
-    Q_FOREACH ( const TabPair& tab, mTabs )
+    Q_FOREACH ( const TabPair &tab, mTabs )
     {
       mTabList->addItem( tab.first, i );
       ++i;
@@ -49,16 +51,11 @@ QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >
     mGroupButton->setEnabled( false );
   }
 
-  connect( mTabButton, SIGNAL( toggled( bool ) ), this, SLOT( on_mTabButton_toggled( bool ) ) );
-  connect( mGroupButton, SIGNAL( toggled( bool ) ), this, SLOT( on_mGroupButton_toggled( bool ) ) );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsAddTabOrGroup::showHelp );
 
-  mColumnCountSpinBox->setValue( QSettings().value( QStringLiteral( "/qgis/attributeForm/defaultTabColumnCount" ), 1 ).toInt() );
+  mColumnCountSpinBox->setValue( QgsSettings().value( QStringLiteral( "/qgis/attributeForm/defaultTabColumnCount" ), 1 ).toInt() );
 
-  setWindowTitle( tr( "Add tab or group for %1" ).arg( mLayer->name() ) );
-} // QgsVectorLayerProperties ctor
-
-QgsAddTabOrGroup::~QgsAddTabOrGroup()
-{
+  setWindowTitle( tr( "Add Tab or Group for %1" ).arg( mLayer->name() ) );
 }
 
 QString QgsAddTabOrGroup::name()
@@ -66,7 +63,7 @@ QString QgsAddTabOrGroup::name()
   return mName->text();
 }
 
-QTreeWidgetItem* QgsAddTabOrGroup::tab()
+QTreeWidgetItem *QgsAddTabOrGroup::tab()
 {
   TabPair tab = mTabs.at( mTabList->currentData().toInt() );
   return tab.second;
@@ -88,30 +85,35 @@ void QgsAddTabOrGroup::accept()
   {
     if ( mGroupButton->isChecked() )
     {
-      QSettings().setValue( QStringLiteral( "/qgis/attributeForm/defaultGroupColumnCount" ), mColumnCountSpinBox->value() );
+      QgsSettings().setValue( QStringLiteral( "/qgis/attributeForm/defaultGroupColumnCount" ), mColumnCountSpinBox->value() );
     }
     else
     {
-      QSettings().setValue( QStringLiteral( "/qgis/attributeForm/defaultTabColumnCount" ), mColumnCountSpinBox->value() );
+      QgsSettings().setValue( QStringLiteral( "/qgis/attributeForm/defaultTabColumnCount" ), mColumnCountSpinBox->value() );
     }
   }
 
   QDialog::accept();
 }
 
-void QgsAddTabOrGroup::on_mGroupButton_toggled( bool checked )
+void QgsAddTabOrGroup::mGroupButton_toggled( bool checked )
 {
   mTabList->setEnabled( checked );
 
   if ( checked )
   {
-    mColumnCountSpinBox->setValue( QSettings().value( QStringLiteral( "/qgis/attributeForm/defaultGroupColumnCount" ), 1 ).toInt() );
+    mColumnCountSpinBox->setValue( QgsSettings().value( QStringLiteral( "/qgis/attributeForm/defaultGroupColumnCount" ), 1 ).toInt() );
   }
 }
 
-void QgsAddTabOrGroup::on_mTabButton_toggled( bool checked )
+void QgsAddTabOrGroup::mTabButton_toggled( bool checked )
 {
   mTabList->setEnabled( !checked );
   if ( checked )
-    mColumnCountSpinBox->setValue( QSettings().value( QStringLiteral( "/qgis/attributeForm/defaultTabColumnCount" ), 1 ).toInt() );
+    mColumnCountSpinBox->setValue( QgsSettings().value( QStringLiteral( "/qgis/attributeForm/defaultTabColumnCount" ), 1 ).toInt() );
+}
+
+void QgsAddTabOrGroup::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#customize-a-form-for-your-data" ) );
 }

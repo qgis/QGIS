@@ -18,8 +18,7 @@
 #ifndef QGSWMTSDIMENSIONS_H
 #define QGSWMTSDIMENSIONS_H
 #include "ui_qgswmtsdimensionsbase.h"
-#include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgsguiutils.h"
 #include "qgswmsprovider.h"
 
 #include <QHash>
@@ -43,7 +42,6 @@ class QgsWmtsDimensions : public QDialog, private Ui::QgsWmtsDimensionsBase
 
     void selectedDimensions( QHash<QString, QString> &dims );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 };
 
 

@@ -24,7 +24,7 @@ email                : hugo dot mercier at oslandia dot com
 namespace QgsVirtualLayerQueryParser
 {
 
-  QStringList referencedTables( const QString& query )
+  QStringList referencedTables( const QString &query )
   {
     QStringList tables;
 
@@ -59,7 +59,7 @@ namespace QgsVirtualLayerQueryParser
     return tables;
   }
 
-  QMap<QString, ColumnDef> columnCommentDefinitions( const QString& query )
+  QMap<QString, ColumnDef> columnCommentDefinitions( const QString &query )
   {
     QMap<QString, ColumnDef> defs;
 
@@ -68,7 +68,7 @@ namespace QgsVirtualLayerQueryParser
     QRegExp rx( "([a-zA-Z_\x80-\xFF][a-zA-Z0-9_\x80-\xFF]*)\\s*/\\*:(int|real|text|((?:multi)?(?:point|linestring|polygon)):(\\d+))\\s*\\*/", Qt::CaseInsensitive );
     int pos = 0;
 
-    while (( pos = rx.indexIn( query, pos ) ) != -1 )
+    while ( ( pos = rx.indexIn( query, pos ) ) != -1 )
     {
       QString column = rx.cap( 1 );
       QString type = rx.cap( 2 );
@@ -94,7 +94,7 @@ namespace QgsVirtualLayerQueryParser
   }
 
 // set the type of the column type, given its text representation
-  void setColumnDefType( const QString& columnType, ColumnDef& d )
+  void setColumnDefType( const QString &columnType, ColumnDef &d )
   {
     // geometry type
     QRegExp geometryTypeRx( "\\(([0-9]+),([0-9]+)\\)" );
@@ -116,7 +116,7 @@ namespace QgsVirtualLayerQueryParser
       int pos = geometryTypeRx.indexIn( columnType, 0 );
       if ( pos != -1 )
       {
-        QgsWkbTypes::Type type = static_cast<QgsWkbTypes::Type>( geometryTypeRx.cap( 1 ).toInt() );
+        QgsWkbTypes::Type type = static_cast<QgsWkbTypes::Type>( geometryTypeRx.cap( 1 ).toLong() );
         long srid = geometryTypeRx.cap( 2 ).toLong();
         d.setGeometry( type );
         d.setSrid( srid );
@@ -124,7 +124,7 @@ namespace QgsVirtualLayerQueryParser
     }
   }
 
-  ColumnDef geometryDefinitionFromVirtualTable( sqlite3* db, const QString& tableName )
+  ColumnDef geometryDefinitionFromVirtualTable( sqlite3 *db, const QString &tableName )
   {
     ColumnDef d;
     Sqlite::Query q( db, QStringLiteral( "PRAGMA table_info(%1)" ).arg( tableName ) );
@@ -144,7 +144,7 @@ namespace QgsVirtualLayerQueryParser
     return d;
   }
 
-  TableDef columnDefinitionsFromQuery( sqlite3* db, const QString& query )
+  TableDef columnDefinitionsFromQuery( sqlite3 *db, const QString &query )
   {
     // get column types defined by comments
     QMap<QString, ColumnDef> definedColumns = columnCommentDefinitions( query );
@@ -250,7 +250,7 @@ namespace QgsVirtualLayerQueryParser
     return tableDef;
   }
 
-  TableDef tableDefinitionFromVirtualTable( sqlite3* db, const QString& tableName )
+  TableDef tableDefinitionFromVirtualTable( sqlite3 *db, const QString &tableName )
   {
     TableDef td;
     Sqlite::Query q( db, QStringLiteral( "PRAGMA table_info(%1)" ).arg( tableName ) );

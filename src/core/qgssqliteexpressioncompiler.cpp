@@ -17,22 +17,23 @@
 
 #include "qgssqliteexpressioncompiler.h"
 #include "qgssqlexpressioncompiler.h"
+#include "qgsexpressionnodeimpl.h"
 
-QgsSQLiteExpressionCompiler::QgsSQLiteExpressionCompiler( const QgsFields& fields )
-    : QgsSqlExpressionCompiler( fields, QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
+QgsSQLiteExpressionCompiler::QgsSQLiteExpressionCompiler( const QgsFields &fields )
+  : QgsSqlExpressionCompiler( fields, QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
 {
 }
 
-QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const QgsExpression::Node* node, QString& result )
+QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
   switch ( node->nodeType() )
   {
-    case QgsExpression::ntBinaryOperator:
+    case QgsExpressionNode::ntBinaryOperator:
     {
-      switch ( static_cast<const QgsExpression::NodeBinaryOperator*>( node )->op() )
+      switch ( static_cast<const QgsExpressionNodeBinaryOperator *>( node )->op() )
       {
-        case QgsExpression::boPow:
-        case QgsExpression::boRegexp:
+        case QgsExpressionNodeBinaryOperator::boPow:
+        case QgsExpressionNodeBinaryOperator::boRegexp:
           return Fail; //not supported by SQLite
 
         default:
@@ -48,14 +49,14 @@ QgsSqlExpressionCompiler::Result QgsSQLiteExpressionCompiler::compileNode( const
   return QgsSqlExpressionCompiler::compileNode( node, result );
 }
 
-QString QgsSQLiteExpressionCompiler::quotedIdentifier( const QString& identifier )
+QString QgsSQLiteExpressionCompiler::quotedIdentifier( const QString &identifier )
 {
   QString id( identifier );
   id.replace( '\"', QLatin1String( "\"\"" ) );
   return id.prepend( '\"' ).append( '\"' );
 }
 
-QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
+QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
   ok = true;
 
@@ -84,7 +85,7 @@ QString QgsSQLiteExpressionCompiler::quotedValue( const QVariant& value, bool& o
   }
 }
 
-QString QgsSQLiteExpressionCompiler::sqlFunctionFromFunctionName( const QString& fnName ) const
+QString QgsSQLiteExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
 {
   static const QMap<QString, QString> FN_NAMES
   {
@@ -100,12 +101,12 @@ QString QgsSQLiteExpressionCompiler::sqlFunctionFromFunctionName( const QString&
   return FN_NAMES.value( fnName, QString() );
 }
 
-QString QgsSQLiteExpressionCompiler::castToReal( const QString& value ) const
+QString QgsSQLiteExpressionCompiler::castToReal( const QString &value ) const
 {
   return QStringLiteral( "CAST((%1) AS REAL)" ).arg( value );
 }
 
-QString QgsSQLiteExpressionCompiler::castToInt( const QString& value ) const
+QString QgsSQLiteExpressionCompiler::castToInt( const QString &value ) const
 {
   return QStringLiteral( "CAST((%1) AS INTEGER)" ).arg( value );
 }

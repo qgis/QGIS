@@ -22,17 +22,12 @@
 #include "qgsproject.h"
 #include <QMouseEvent>
 
-QgsMapToolFormAnnotation::QgsMapToolFormAnnotation( QgsMapCanvas* canvas ): QgsMapToolAnnotation( canvas )
+QgsMapToolFormAnnotation::QgsMapToolFormAnnotation( QgsMapCanvas *canvas ): QgsMapToolAnnotation( canvas )
 {
 
 }
 
-QgsMapToolFormAnnotation::~QgsMapToolFormAnnotation()
-{
-
-}
-
-QgsAnnotation* QgsMapToolFormAnnotation::createItem() const
+QgsAnnotation *QgsMapToolFormAnnotation::createItem() const
 {
   return new QgsFormAnnotation();
 }

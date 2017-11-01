@@ -38,12 +38,6 @@
 #  define DRW_POSIX
 #endif
 
-#ifndef M_PI
-#define M_PI   3.141592653589793238462643
-#endif
-#ifndef M_PI_2
-#define M_PI_2 1.57079632679489661923
-#endif
 #define M_PIx2 6.283185307179586 // 2*PI
 #define ARAD 57.29577951308232
 
@@ -126,7 +120,7 @@ namespace DRW
   //! Shadow mode
   enum ShadowMode
   {
-    CastAndReceieveShadows = 0,
+    CastAndReceiveShadows = 0,
     CastShadows = 1,
     ReceiveShadows = 2,
     IgnoreShadows = 3
@@ -164,18 +158,11 @@ class DRW_Coord
     DRW_Coord(): x( 0 ), y( 0 ), z( 0 ) {}
     DRW_Coord( double ix, double iy, double iz ): x( ix ), y( iy ), z( iz ) {}
 
-    DRW_Coord& operator = ( const DRW_Coord& data )
-    {
-      x = data.x;
-      y = data.y;
-      z = data.z;
-      return *this;
-    }
     //! < convert to unitary vector
     void unitize()
     {
       double dist;
-      dist = sqrt( x * x + y * y + z * z );
+      dist = std::sqrt( x * x + y * y + z * z );
       if ( dist > 0.0 )
       {
         x = x / dist;
@@ -241,7 +228,7 @@ class DRW_Variant
 
     DRW_Variant( int c, DRW_Coord crd ): sdata( std::string() ), vdata( crd ), content( &vdata ), vType( COORD ), vCode( c ) {}
 
-    DRW_Variant( const DRW_Variant& d ): sdata( d.sdata ), vdata( d.vdata ), content( d.content ), vType( d.vType ), vCode( d.vCode )
+    DRW_Variant( const DRW_Variant &d ): sdata( d.sdata ), vdata( d.vdata ), content( d.content ), vType( d.vType ), vCode( d.vCode )
     {
       if ( d.vType == COORD )
         content.v = &vdata;
@@ -270,10 +257,10 @@ class DRW_Variant
   private:
     union DRW_VarContent
     {
-      UTF8STRING *s;
+      UTF8STRING *s; //skip-init-check
       dint32 i;
       double d;
-      DRW_Coord *v;
+      DRW_Coord *v; //skip-init-check
 
       DRW_VarContent( UTF8STRING *sd ): s( sd ) {}
       DRW_VarContent( dint32 id ): i( id ) {}
@@ -528,7 +515,7 @@ class DRW_LW_Conv
 
     static enum lineWidth dwgInt2lineWidth( int i )
     {
-      if (( i > -1 && i < 24 ) || ( i > 28 && i < 32 ) )
+      if ( ( i > -1 && i < 24 ) || ( i > 28 && i < 32 ) )
       {
         return static_cast<lineWidth>( i );
       }

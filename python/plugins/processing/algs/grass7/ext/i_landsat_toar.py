@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import absolute_import
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'March 2016'
@@ -26,7 +25,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from .i import multipleOutputDir, verifyRasterNum, regroupRasters, orderedInput
+from .i import multipleOutputDir, verifyRasterNum, orderedInput
 from processing.core.parameters import getParameterFromString
 
 
@@ -40,7 +39,7 @@ def processInputs(alg):
                  [1, 2, 3, 4, 5, 61, 62, 7, 8])
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # Remove rasters parameter
     rasters = alg.getParameterFromName('rasters')
     alg.parameters.remove(rasters)

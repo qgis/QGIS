@@ -68,7 +68,7 @@ public:
     /**
      * Create a pty master/slave pair.
      *
-     * @return true if a pty pair was successfully opened
+     * \returns true if a pty pair was successfully opened
      */
     virtual bool open(OpenMode mode = ReadWrite | Unbuffered);
 
@@ -81,9 +81,9 @@ public:
      * Note that you will need to use setSuspended() on both devices to
      * control which one gets the incoming data from the pty.
      *
-     * @param fd an open pty master file descriptor.
-     * @param mode the device mode to open the pty with.
-     * @return true if a pty pair was successfully opened
+     * \param fd an open pty master file descriptor.
+     * \param mode the device mode to open the pty with.
+     * \returns true if a pty pair was successfully opened
      */
     bool open(int fd, OpenMode mode = ReadWrite | Unbuffered);
 
@@ -117,7 +117,7 @@ public:
     bool isSuspended() const;
 
     /**
-     * @return always true
+     * \returns always true
      */
     virtual bool isSequential() const;
 
@@ -251,7 +251,7 @@ public:
         } else {
             buffers.last().resize(tail);
             QByteArray tmp;
-            tmp.resize(qMax(CHUNKSIZE, bytes));
+            tmp.resize(std::max(CHUNKSIZE, bytes));
             ptr = tmp.data();
             buffers << tmp;
             tail = bytes;
@@ -286,7 +286,7 @@ public:
                 return -1;
             const QByteArray &buf = *it;
             ++it;
-            int len = qMin((it == buffers.end() ? tail : buf.size()) - start,
+            int len = std::min((it == buffers.end() ? tail : buf.size()) - start,
                            maxLength);
             const char *ptr = buf.data() + start;
             if (const char *rptr = (const char *)memchr(ptr, c, len))
@@ -309,11 +309,11 @@ public:
 
     int read(char *data, int maxLength)
     {
-        int bytesToRead = qMin(size(), maxLength);
+        int bytesToRead = std::min(size(), maxLength);
         int readSoFar = 0;
         while (readSoFar < bytesToRead) {
             const char *ptr = readPointer();
-            int bs = qMin(bytesToRead - readSoFar, readSize());
+            int bs = std::min(bytesToRead - readSoFar, readSize());
             memcpy(data + readSoFar, ptr, bs);
             readSoFar += bs;
             free(bs);
@@ -323,7 +323,7 @@ public:
 
     int readLine(char *data, int maxLength)
     {
-        return read(data, lineSize(qMin(maxLength, size())));
+        return read(data, lineSize(std::min(maxLength, size())));
     }
 
 private:

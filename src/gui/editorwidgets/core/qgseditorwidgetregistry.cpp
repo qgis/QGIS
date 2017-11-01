@@ -40,36 +40,24 @@
 #include "qgsvaluemapwidgetfactory.h"
 #include "qgsvaluerelationwidgetfactory.h"
 
-
-QgsEditorWidgetRegistry* QgsEditorWidgetRegistry::instance()
-{
-  static QgsEditorWidgetRegistry sInstance;
-  return &sInstance;
-}
-
 void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBar *messageBar )
 {
-  QgsEditorWidgetRegistry *reg = instance();
-  reg->registerWidget( QStringLiteral( "TextEdit" ), new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
-  reg->registerWidget( QStringLiteral( "Classification" ), new QgsClassificationWidgetWrapperFactory( tr( "Classification" ) ) );
-  reg->registerWidget( QStringLiteral( "Range" ), new QgsRangeWidgetFactory( tr( "Range" ) ) );
-  reg->registerWidget( QStringLiteral( "UniqueValues" ), new QgsUniqueValueWidgetFactory( tr( "Unique Values" ) ) );
-  reg->registerWidget( QStringLiteral( "ValueMap" ), new QgsValueMapWidgetFactory( tr( "Value Map" ) ) );
-  reg->registerWidget( QStringLiteral( "Enumeration" ), new QgsEnumerationWidgetFactory( tr( "Enumeration" ) ) );
-  reg->registerWidget( QStringLiteral( "Hidden" ), new QgsHiddenWidgetFactory( tr( "Hidden" ) ) );
-  reg->registerWidget( QStringLiteral( "CheckBox" ), new QgsCheckboxWidgetFactory( tr( "Check Box" ) ) );
-  reg->registerWidget( QStringLiteral( "ValueRelation" ), new QgsValueRelationWidgetFactory( tr( "Value Relation" ) ) );
-  reg->registerWidget( QStringLiteral( "UuidGenerator" ), new QgsUuidWidgetFactory( tr( "Uuid Generator" ) ) );
-  reg->registerWidget( QStringLiteral( "Color" ), new QgsColorWidgetFactory( tr( "Color" ) ) );
-  reg->registerWidget( QStringLiteral( "RelationReference" ), new QgsRelationReferenceFactory( tr( "Relation Reference" ), mapCanvas, messageBar ) );
-  reg->registerWidget( QStringLiteral( "DateTime" ), new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
-  reg->registerWidget( QStringLiteral( "ExternalResource" ), new QgsExternalResourceWidgetFactory( tr( "Attachment" ) ) );
-  reg->registerWidget( QStringLiteral( "KeyValue" ), new QgsKeyValueWidgetFactory( tr( "Key/Value" ) ) );
-  reg->registerWidget( QStringLiteral( "List" ), new QgsListWidgetFactory( tr( "List" ) ) );
-}
-
-QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
-{
+  registerWidget( QStringLiteral( "TextEdit" ), new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
+  registerWidget( QStringLiteral( "Classification" ), new QgsClassificationWidgetWrapperFactory( tr( "Classification" ) ) );
+  registerWidget( QStringLiteral( "Range" ), new QgsRangeWidgetFactory( tr( "Range" ) ) );
+  registerWidget( QStringLiteral( "UniqueValues" ), new QgsUniqueValueWidgetFactory( tr( "Unique Values" ) ) );
+  registerWidget( QStringLiteral( "ValueMap" ), new QgsValueMapWidgetFactory( tr( "Value Map" ) ) );
+  registerWidget( QStringLiteral( "Enumeration" ), new QgsEnumerationWidgetFactory( tr( "Enumeration" ) ) );
+  registerWidget( QStringLiteral( "Hidden" ), new QgsHiddenWidgetFactory( tr( "Hidden" ) ) );
+  registerWidget( QStringLiteral( "CheckBox" ), new QgsCheckboxWidgetFactory( tr( "Checkbox" ) ) );
+  registerWidget( QStringLiteral( "ValueRelation" ), new QgsValueRelationWidgetFactory( tr( "Value Relation" ) ) );
+  registerWidget( QStringLiteral( "UuidGenerator" ), new QgsUuidWidgetFactory( tr( "Uuid Generator" ) ) );
+  registerWidget( QStringLiteral( "Color" ), new QgsColorWidgetFactory( tr( "Color" ) ) );
+  registerWidget( QStringLiteral( "RelationReference" ), new QgsRelationReferenceFactory( tr( "Relation Reference" ), mapCanvas, messageBar ) );
+  registerWidget( QStringLiteral( "DateTime" ), new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
+  registerWidget( QStringLiteral( "ExternalResource" ), new QgsExternalResourceWidgetFactory( tr( "Attachment" ) ) );
+  registerWidget( QStringLiteral( "KeyValue" ), new QgsKeyValueWidgetFactory( tr( "Key/Value" ) ) );
+  registerWidget( QStringLiteral( "List" ), new QgsListWidgetFactory( tr( "List" ) ) );
 }
 
 QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
@@ -77,7 +65,7 @@ QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
   qDeleteAll( mWidgetFactories );
 }
 
-QgsEditorWidgetSetup QgsEditorWidgetRegistry::findBest( const QgsVectorLayer* vl, const QString& fieldName ) const
+QgsEditorWidgetSetup QgsEditorWidgetRegistry::findBest( const QgsVectorLayer *vl, const QString &fieldName ) const
 {
   QgsFields fields = vl->fields();
   int index = fields.indexOf( fieldName );
@@ -91,18 +79,18 @@ QgsEditorWidgetSetup QgsEditorWidgetRegistry::findBest( const QgsVectorLayer* vl
   return mAutoConf.editorWidgetSetup( vl, fieldName );
 }
 
-QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent, const QgsAttributeEditorContext &context )
+QgsEditorWidgetWrapper *QgsEditorWidgetRegistry::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent, const QgsAttributeEditorContext &context )
 {
   const QString fieldName = vl->fields().field( fieldIdx ).name();
   const QgsEditorWidgetSetup setup = findBest( vl, fieldName );
   return create( setup.type(), vl, fieldIdx, setup.config(), editor, parent, context );
 }
 
-QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, QWidget* editor, QWidget* parent, const QgsAttributeEditorContext &context )
+QgsEditorWidgetWrapper *QgsEditorWidgetRegistry::create( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, QWidget *editor, QWidget *parent, const QgsAttributeEditorContext &context )
 {
   if ( mWidgetFactories.contains( widgetId ) )
   {
-    QgsEditorWidgetWrapper* ww = mWidgetFactories[widgetId]->create( vl, fieldIdx, editor, parent );
+    QgsEditorWidgetWrapper *ww = mWidgetFactories[widgetId]->create( vl, fieldIdx, editor, parent );
 
     if ( ww )
     {
@@ -129,11 +117,11 @@ QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId
   return nullptr;
 }
 
-QgsSearchWidgetWrapper* QgsEditorWidgetRegistry::createSearchWidget( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QVariantMap& config, QWidget* parent, const QgsAttributeEditorContext &context )
+QgsSearchWidgetWrapper *QgsEditorWidgetRegistry::createSearchWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, const QVariantMap &config, QWidget *parent, const QgsAttributeEditorContext &context )
 {
   if ( mWidgetFactories.contains( widgetId ) )
   {
-    QgsSearchWidgetWrapper* ww = mWidgetFactories[widgetId]->createSearchWidget( vl, fieldIdx, parent );
+    QgsSearchWidgetWrapper *ww = mWidgetFactories[widgetId]->createSearchWidget( vl, fieldIdx, parent );
 
     if ( ww )
     {
@@ -149,7 +137,7 @@ QgsSearchWidgetWrapper* QgsEditorWidgetRegistry::createSearchWidget( const QStri
   return nullptr;
 }
 
-QgsEditorConfigWidget* QgsEditorWidgetRegistry::createConfigWidget( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
+QgsEditorConfigWidget *QgsEditorWidgetRegistry::createConfigWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
 {
   if ( mWidgetFactories.contains( widgetId ) )
   {
@@ -158,7 +146,7 @@ QgsEditorConfigWidget* QgsEditorWidgetRegistry::createConfigWidget( const QStrin
   return nullptr;
 }
 
-QString QgsEditorWidgetRegistry::name( const QString& widgetId )
+QString QgsEditorWidgetRegistry::name( const QString &widgetId )
 {
   if ( mWidgetFactories.contains( widgetId ) )
   {
@@ -168,17 +156,17 @@ QString QgsEditorWidgetRegistry::name( const QString& widgetId )
   return QString();
 }
 
-QMap<QString, QgsEditorWidgetFactory*> QgsEditorWidgetRegistry::factories()
+QMap<QString, QgsEditorWidgetFactory *> QgsEditorWidgetRegistry::factories()
 {
   return mWidgetFactories;
 }
 
-QgsEditorWidgetFactory* QgsEditorWidgetRegistry::factory( const QString& widgetId )
+QgsEditorWidgetFactory *QgsEditorWidgetRegistry::factory( const QString &widgetId )
 {
   return mWidgetFactories.value( widgetId );
 }
 
-bool QgsEditorWidgetRegistry::registerWidget( const QString& widgetId, QgsEditorWidgetFactory* widgetFactory )
+bool QgsEditorWidgetRegistry::registerWidget( const QString &widgetId, QgsEditorWidgetFactory *widgetFactory )
 {
   if ( !widgetFactory )
   {
@@ -194,9 +182,9 @@ bool QgsEditorWidgetRegistry::registerWidget( const QString& widgetId, QgsEditor
   {
     mWidgetFactories.insert( widgetId, widgetFactory );
 
-    // Use this factory as default where it provides the heighest priority
-    QHash<const char*, int> types = widgetFactory->supportedWidgetTypes();
-    QHash<const char*, int>::ConstIterator it;
+    // Use this factory as default where it provides the highest priority
+    QHash<const char *, int> types = widgetFactory->supportedWidgetTypes();
+    QHash<const char *, int>::ConstIterator it;
     it = types.constBegin();
 
     for ( ; it != types.constEnd(); ++it )
@@ -211,9 +199,9 @@ bool QgsEditorWidgetRegistry::registerWidget( const QString& widgetId, QgsEditor
   }
 }
 
-QString QgsEditorWidgetRegistry::findSuitableWrapper( QWidget* editor, const QString& defaultWidget )
+QString QgsEditorWidgetRegistry::findSuitableWrapper( QWidget *editor, const QString &defaultWidget )
 {
-  QMap<const char*, QPair<int, QString> >::ConstIterator it;
+  QMap<const char *, QPair<int, QString> >::ConstIterator it;
 
   QString widgetid;
 

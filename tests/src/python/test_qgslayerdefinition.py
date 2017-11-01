@@ -110,5 +110,6 @@ class TestQgsLayerDefinition(unittest.TestCase):
         self.assertEqual(len(layers), 2)
         QgsProject.instance().removeAllMapLayers()
 
+
 if __name__ == '__main__':
     unittest.main()

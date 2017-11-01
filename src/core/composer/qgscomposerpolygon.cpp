@@ -17,21 +17,23 @@
 #include "qgscomposerpolygon.h"
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
+#include "qgspathresolver.h"
+#include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
 #include "qgssymbol.h"
 #include "qgsmapsettings.h"
 #include <limits>
 
-QgsComposerPolygon::QgsComposerPolygon( QgsComposition* c )
-    : QgsComposerNodesItem( QStringLiteral( "ComposerPolygon" ), c )
-    , mPolygonStyleSymbol( nullptr )
+QgsComposerPolygon::QgsComposerPolygon( QgsComposition *c )
+  : QgsComposerNodesItem( QStringLiteral( "ComposerPolygon" ), c )
+  , mPolygonStyleSymbol( nullptr )
 {
   createDefaultPolygonStyleSymbol();
 }
 
-QgsComposerPolygon::QgsComposerPolygon( const QPolygonF& polygon, QgsComposition* c )
-    : QgsComposerNodesItem( QStringLiteral( "ComposerPolygon" ), polygon, c )
-    , mPolygonStyleSymbol( nullptr )
+QgsComposerPolygon::QgsComposerPolygon( const QPolygonF &polygon, QgsComposition *c )
+  : QgsComposerNodesItem( QStringLiteral( "ComposerPolygon" ), polygon, c )
+  , mPolygonStyleSymbol( nullptr )
 {
   createDefaultPolygonStyleSymbol();
 }
@@ -93,21 +95,28 @@ void QgsComposerPolygon::_draw( QPainter *painter )
 
 void QgsComposerPolygon::_readXmlStyle( const QDomElement &elmt )
 {
-  mPolygonStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elmt ) );
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
+  mPolygonStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elmt, context ) );
 }
 
-void QgsComposerPolygon::setPolygonStyleSymbol( QgsFillSymbol* symbol )
+void QgsComposerPolygon::setPolygonStyleSymbol( QgsFillSymbol *symbol )
 {
-  mPolygonStyleSymbol.reset( static_cast<QgsFillSymbol*>( symbol->clone() ) );
+  mPolygonStyleSymbol.reset( static_cast<QgsFillSymbol *>( symbol->clone() ) );
   update();
   emit frameChanged();
 }
 
 void QgsComposerPolygon::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const
 {
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
   const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
                          mPolygonStyleSymbol.get(),
-                         doc );
+                         doc,
+                         context );
   elmt.appendChild( pe );
 }
 

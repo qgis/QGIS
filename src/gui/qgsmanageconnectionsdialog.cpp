@@ -14,33 +14,33 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QSettings>
 #include <QTextStream>
 
+#include "qgssettings.h"
 #include "qgsmanageconnectionsdialog.h"
 
-QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString& fileName )
-    : QDialog( parent )
-    , mFileName( fileName )
-    , mDialogMode( mode )
-    , mConnectionType( type )
+
+QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString &fileName )
+  : QDialog( parent )
+  , mFileName( fileName )
+  , mDialogMode( mode )
+  , mConnectionType( type )
 {
   setupUi( this );
 
   // additional buttons
-  QPushButton *pb;
+  QPushButton *pb = nullptr;
   pb = new QPushButton( tr( "Select all" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
+  connect( pb, &QAbstractButton::clicked, this, &QgsManageConnectionsDialog::selectAll );
 
   pb = new QPushButton( tr( "Clear selection" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
-  connect( pb, SIGNAL( clicked() ), this, SLOT( clearSelection() ) );
+  connect( pb, &QAbstractButton::clicked, this, &QgsManageConnectionsDialog::clearSelection );
 
   if ( mDialogMode == Import )
   {
@@ -60,11 +60,11 @@ QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mo
     QApplication::postEvent( this, new QCloseEvent() );
   }
 
-  // use Ok button for starting import and export operations
-  disconnect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( doExportImport() ) );
+  // use OK button for starting import and export operations
+  disconnect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsManageConnectionsDialog::doExportImport );
 
-  connect( listConnections, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
+  connect( listConnections, &QListWidget::itemSelectionChanged, this, &QgsManageConnectionsDialog::selectionChanged );
 }
 
 void QgsManageConnectionsDialog::selectionChanged()
@@ -129,6 +129,9 @@ void QgsManageConnectionsDialog::doExportImport()
         break;
       case DB2:
         doc = saveDb2Connections( items );
+        break;
+      case GeoNode:
+        doc = saveGeonodeConnections( items );
         break;
     }
 
@@ -195,13 +198,16 @@ void QgsManageConnectionsDialog::doExportImport()
       case DB2:
         loadDb2Connections( doc, items );
         break;
+      case GeoNode:
+        loadGeonodeConnections( doc, items );
+        break;
     }
     // clear connections list and close window
     listConnections->clear();
     accept();
   }
 
-  mFileName = QLatin1String( "" );
+  mFileName.clear();
 }
 
 bool QgsManageConnectionsDialog::populateConnections()
@@ -209,17 +215,17 @@ bool QgsManageConnectionsDialog::populateConnections()
   // Export mode. Populate connections list from settings
   if ( mDialogMode == Export )
   {
-    QSettings settings;
+    QgsSettings settings;
     switch ( mConnectionType )
     {
       case WMS:
-        settings.beginGroup( QStringLiteral( "/Qgis/connections-wms" ) );
+        settings.beginGroup( QStringLiteral( "/qgis/connections-wms" ) );
         break;
       case WFS:
-        settings.beginGroup( QStringLiteral( "/Qgis/connections-wfs" ) );
+        settings.beginGroup( QStringLiteral( "/qgis/connections-wfs" ) );
         break;
       case WCS:
-        settings.beginGroup( QStringLiteral( "/Qgis/connections-wcs" ) );
+        settings.beginGroup( QStringLiteral( "/qgis/connections-wcs" ) );
         break;
       case PostGIS:
         settings.beginGroup( QStringLiteral( "/PostgreSQL/connections" ) );
@@ -232,6 +238,9 @@ bool QgsManageConnectionsDialog::populateConnections()
         break;
       case DB2:
         settings.beginGroup( QStringLiteral( "/DB2/connections" ) );
+        break;
+      case GeoNode:
+        settings.beginGroup( QStringLiteral( "/qgis/connections-geonode" ) );
         break;
     }
     QStringList keys = settings.childGroups();
@@ -280,7 +289,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsWMSConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
-                                    tr( "The file is not an WMS connections exchange file." ) );
+                                    tr( "The file is not a WMS connections exchange file." ) );
           return false;
         }
         break;
@@ -289,7 +298,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsWFSConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
-                                    tr( "The file is not an WFS connections exchange file." ) );
+                                    tr( "The file is not a WFS connections exchange file." ) );
           return false;
         }
         break;
@@ -298,7 +307,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsWCSConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
-                                    tr( "The file is not an WCS connections exchange file." ) );
+                                    tr( "The file is not a WCS connections exchange file." ) );
           return false;
         }
         break;
@@ -307,7 +316,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsPgConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
-                                    tr( "The file is not an PostGIS connections exchange file." ) );
+                                    tr( "The file is not a PostGIS connections exchange file." ) );
           return false;
         }
         break;
@@ -316,7 +325,7 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsMssqlConnections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
-                                    tr( "The file is not an MSSQL connections exchange file." ) );
+                                    tr( "The file is not a MSSQL connections exchange file." ) );
           return false;
         }
         break;
@@ -332,7 +341,15 @@ bool QgsManageConnectionsDialog::populateConnections()
         if ( root.tagName() != QLatin1String( "qgsDb2Connections" ) )
         {
           QMessageBox::information( this, tr( "Loading connections" ),
-                                    tr( "The file is not an DB2 connections exchange file." ) );
+                                    tr( "The file is not a DB2 connections exchange file." ) );
+          return false;
+        }
+        break;
+      case GeoNode:
+        if ( root.tagName() != QLatin1String( "qgsGeoNodeConnections" ) )
+        {
+          QMessageBox::information( this, tr( "Loading connections" ),
+                                    tr( "The file is not a GeoNode connections exchange file." ) );
           return false;
         }
         break;
@@ -350,18 +367,18 @@ bool QgsManageConnectionsDialog::populateConnections()
   return true;
 }
 
-QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &connections, const QString & service )
+QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &connections, const QString &service )
 {
   QDomDocument doc( QStringLiteral( "connections" ) );
   QDomElement root = doc.createElement( "qgs" + service.toUpper() + "Connections" );
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  QSettings settings;
+  QgsSettings settings;
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = "/Qgis/connections-" + service.toLower() + '/';
+    path = "/qgis/connections-" + service.toLower() + '/';
     QDomElement el = doc.createElement( service.toLower() );
     el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
     el.setAttribute( QStringLiteral( "url" ), settings.value( path + connections[ i ] + "/url", "" ).toString() );
@@ -377,7 +394,7 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
       el.setAttribute( QStringLiteral( "dpiMode" ), settings.value( path + connections[i] + "/dpiMode", "7" ).toInt() );
     }
 
-    path = "/Qgis/" + service.toUpper() + '/';
+    path = "/qgis/" + service.toUpper() + '/';
     el.setAttribute( QStringLiteral( "username" ), settings.value( path + connections[ i ] + "/username", "" ).toString() );
     el.setAttribute( QStringLiteral( "password" ), settings.value( path + connections[ i ] + "/password", "" ).toString() );
     root.appendChild( el );
@@ -393,18 +410,18 @@ QDomDocument QgsManageConnectionsDialog::saveWfsConnections( const QStringList &
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  QSettings settings;
+  QgsSettings settings;
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = QStringLiteral( "/Qgis/connections-wfs/" );
+    path = QStringLiteral( "/qgis/connections-wfs/" );
     QDomElement el = doc.createElement( QStringLiteral( "wfs" ) );
     el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
     el.setAttribute( QStringLiteral( "url" ), settings.value( path + connections[ i ] + "/url", "" ).toString() );
 
     el.setAttribute( QStringLiteral( "referer" ), settings.value( path + connections[ i ] + "/referer", "" ).toString() );
 
-    path = QStringLiteral( "/Qgis/WFS/" );
+    path = QStringLiteral( "/qgis/WFS/" );
     el.setAttribute( QStringLiteral( "username" ), settings.value( path + connections[ i ] + "/username", "" ).toString() );
     el.setAttribute( QStringLiteral( "password" ), settings.value( path + connections[ i ] + "/password", "" ).toString() );
     root.appendChild( el );
@@ -420,7 +437,7 @@ QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &c
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  QSettings settings;
+  QgsSettings settings;
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
@@ -461,7 +478,7 @@ QDomDocument QgsManageConnectionsDialog::saveMssqlConnections( const QStringList
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  QSettings settings;
+  QgsSettings settings;
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
@@ -502,7 +519,7 @@ QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringLis
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  QSettings settings;
+  QgsSettings settings;
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
@@ -546,7 +563,7 @@ QDomDocument QgsManageConnectionsDialog::saveDb2Connections( const QStringList &
   root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
   doc.appendChild( root );
 
-  QSettings settings;
+  QgsSettings settings;
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
@@ -580,19 +597,44 @@ QDomDocument QgsManageConnectionsDialog::saveDb2Connections( const QStringList &
   return doc;
 }
 
+QDomDocument QgsManageConnectionsDialog::saveGeonodeConnections( const QStringList &connections )
+{
+  QDomDocument doc( QStringLiteral( "connections" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgsGeoNodeConnections" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
+  doc.appendChild( root );
+
+  QgsSettings settings;
+  QString path;
+  for ( int i = 0; i < connections.count(); ++i )
+  {
+    path = QStringLiteral( "/qgis/connections-geonode/" );
+    QDomElement el = doc.createElement( QStringLiteral( "geonode" ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "url" ), settings.value( path + connections[ i ] + "/url", "" ).toString() );
+
+    path = QStringLiteral( "/qgis/GeoNode/" );
+    el.setAttribute( QStringLiteral( "username" ), settings.value( path + connections[ i ] + "/username", "" ).toString() );
+    el.setAttribute( QStringLiteral( "password" ), settings.value( path + connections[ i ] + "/password", "" ).toString() );
+    root.appendChild( el );
+  }
+
+  return doc;
+}
+
 void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, const QStringList &items, const QString &service )
 {
   QDomElement root = doc.documentElement();
   if ( root.tagName() != "qgs" + service.toUpper() + "Connections" )
   {
     QMessageBox::information( this, tr( "Loading connections" ),
-                              tr( "The file is not an %1 connections exchange file." ).arg( service ) );
+                              tr( "The file is not a %1 connections exchange file." ).arg( service ) );
     return;
   }
 
   QString connectionName;
-  QSettings settings;
-  settings.beginGroup( "/Qgis/connections-" + service.toLower() );
+  QgsSettings settings;
+  settings.beginGroup( "/qgis/connections-" + service.toLower() );
   QStringList keys = settings.childGroups();
   settings.endGroup();
   QDomElement child = root.firstChildElement();
@@ -645,7 +687,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
     }
 
     // no dups detected or overwrite is allowed
-    settings.beginGroup( "/Qgis/connections-" + service.toLower() );
+    settings.beginGroup( "/qgis/connections-" + service.toLower() );
     settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( QStringLiteral( "url" ) ) );
     settings.setValue( QString( '/' + connectionName + "/ignoreGetMapURI" ), child.attribute( QStringLiteral( "ignoreGetMapURI" ) ) == QLatin1String( "true" ) );
     settings.setValue( QString( '/' + connectionName + "/ignoreGetFeatureInfoURI" ), child.attribute( QStringLiteral( "ignoreGetFeatureInfoURI" ) ) == QLatin1String( "true" ) );
@@ -658,7 +700,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
 
     if ( !child.attribute( QStringLiteral( "username" ) ).isEmpty() )
     {
-      settings.beginGroup( "/Qgis/" + service.toUpper() + '/' + connectionName );
+      settings.beginGroup( "/qgis/" + service.toUpper() + '/' + connectionName );
       settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
       settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
       settings.endGroup();
@@ -673,13 +715,13 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
   if ( root.tagName() != QLatin1String( "qgsWFSConnections" ) )
   {
     QMessageBox::information( this, tr( "Loading connections" ),
-                              tr( "The file is not an WFS connections exchange file." ) );
+                              tr( "The file is not a WFS connections exchange file." ) );
     return;
   }
 
   QString connectionName;
-  QSettings settings;
-  settings.beginGroup( QStringLiteral( "/Qgis/connections-wfs" ) );
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/qgis/connections-wfs" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
   QDomElement child = root.firstChildElement();
@@ -732,13 +774,13 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
     }
 
     // no dups detected or overwrite is allowed
-    settings.beginGroup( QStringLiteral( "/Qgis/connections-wfs" ) );
+    settings.beginGroup( QStringLiteral( "/qgis/connections-wfs" ) );
     settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( QStringLiteral( "url" ) ) );
     settings.endGroup();
 
     if ( !child.attribute( QStringLiteral( "username" ) ).isEmpty() )
     {
-      settings.beginGroup( "/Qgis/WFS/" + connectionName );
+      settings.beginGroup( "/qgis/WFS/" + connectionName );
       settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
       settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
       settings.endGroup();
@@ -755,12 +797,12 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
   {
     QMessageBox::information( this,
                               tr( "Loading connections" ),
-                              tr( "The file is not an PostGIS connections exchange file." ) );
+                              tr( "The file is not a PostGIS connections exchange file." ) );
     return;
   }
 
   QString connectionName;
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/PostgreSQL/connections" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
@@ -845,12 +887,12 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
   {
     QMessageBox::information( this,
                               tr( "Loading connections" ),
-                              tr( "The file is not an MSSQL connections exchange file." ) );
+                              tr( "The file is not a MSSQL connections exchange file." ) );
     return;
   }
 
   QString connectionName;
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/MSSQL/connections" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
@@ -940,7 +982,7 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
   }
 
   QString connectionName;
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/Oracle/connections" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
@@ -1021,12 +1063,12 @@ void QgsManageConnectionsDialog::loadDb2Connections( const QDomDocument &doc, co
   {
     QMessageBox::information( this,
                               tr( "Loading connections" ),
-                              tr( "The file is not an DB2 connections exchange file." ) );
+                              tr( "The file is not a DB2 connections exchange file." ) );
     return;
   }
 
   QString connectionName;
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( QStringLiteral( "/DB2/connections" ) );
   QStringList keys = settings.childGroups();
   settings.endGroup();
@@ -1103,6 +1145,87 @@ void QgsManageConnectionsDialog::loadDb2Connections( const QDomDocument &doc, co
     child = child.nextSiblingElement();
   }
 }
+
+void QgsManageConnectionsDialog::loadGeonodeConnections( const QDomDocument &doc, const QStringList &items )
+{
+  QDomElement root = doc.documentElement();
+  if ( root.tagName() != QLatin1String( "qgsGeoNodeConnections" ) )
+  {
+    QMessageBox::information( this, tr( "Loading connections" ),
+                              tr( "The file is not a GeoNode connections exchange file." ) );
+    return;
+  }
+
+  QString connectionName;
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/qgis/connections-geonode" ) );
+  QStringList keys = settings.childGroups();
+  settings.endGroup();
+  QDomElement child = root.firstChildElement();
+  bool prompt = true;
+  bool overwrite = true;
+
+  while ( !child.isNull() )
+  {
+    connectionName = child.attribute( QStringLiteral( "name" ) );
+    if ( !items.contains( connectionName ) )
+    {
+      child = child.nextSiblingElement();
+      continue;
+    }
+
+    // check for duplicates
+    if ( keys.contains( connectionName ) && prompt )
+    {
+      int res = QMessageBox::warning( this,
+                                      tr( "Loading connections" ),
+                                      tr( "Connection with name '%1' already exists. Overwrite?" )
+                                      .arg( connectionName ),
+                                      QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+
+      switch ( res )
+      {
+        case QMessageBox::Cancel:
+          return;
+        case QMessageBox::No:
+          child = child.nextSiblingElement();
+          continue;
+        case QMessageBox::Yes:
+          overwrite = true;
+          break;
+        case QMessageBox::YesToAll:
+          prompt = false;
+          overwrite = true;
+          break;
+        case QMessageBox::NoToAll:
+          prompt = false;
+          overwrite = false;
+          break;
+      }
+    }
+
+    if ( keys.contains( connectionName ) && !overwrite )
+    {
+      child = child.nextSiblingElement();
+      continue;
+    }
+
+    // no dups detected or overwrite is allowed
+    settings.beginGroup( QStringLiteral( "/qgis/connections-geonode" ) );
+    settings.setValue( QString( '/' + connectionName + "/url" ), child.attribute( QStringLiteral( "url" ) ) );
+    settings.endGroup();
+
+    if ( !child.attribute( QStringLiteral( "username" ) ).isEmpty() )
+    {
+      settings.beginGroup( "/qgis/GeoNode/" + connectionName );
+      settings.setValue( QStringLiteral( "/username" ), child.attribute( QStringLiteral( "username" ) ) );
+      settings.setValue( QStringLiteral( "/password" ), child.attribute( QStringLiteral( "password" ) ) );
+      settings.endGroup();
+    }
+    child = child.nextSiblingElement();
+  }
+}
+
 void QgsManageConnectionsDialog::selectAll()
 {
   listConnections->selectAll();

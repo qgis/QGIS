@@ -13,14 +13,15 @@
 #include <QPointer>
 
 #include "qgsmaplayer.h"
+#include "qgsmaplayerref.h"
 
 /// @cond PRIVATE
 
-inline QList<QgsMapLayer*> _qgis_listQPointerToRaw( const QgsWeakMapLayerPointerList& layers )
+inline QList<QgsMapLayer *> _qgis_listQPointerToRaw( const QgsWeakMapLayerPointerList &layers )
 {
-  QList<QgsMapLayer*> lst;
+  QList<QgsMapLayer *> lst;
   lst.reserve( layers.count() );
-  Q_FOREACH ( const QgsWeakMapLayerPointer& layerPtr, layers )
+  Q_FOREACH ( const QgsWeakMapLayerPointer &layerPtr, layers )
   {
     if ( layerPtr )
       lst.append( layerPtr.data() );
@@ -28,22 +29,56 @@ inline QList<QgsMapLayer*> _qgis_listQPointerToRaw( const QgsWeakMapLayerPointer
   return lst;
 }
 
-inline QgsWeakMapLayerPointerList _qgis_listRawToQPointer( const QList<QgsMapLayer*>& layers )
+inline QgsWeakMapLayerPointerList _qgis_listRawToQPointer( const QList<QgsMapLayer *> &layers )
 {
   QgsWeakMapLayerPointerList lst;
   lst.reserve( layers.count() );
-  Q_FOREACH ( QgsMapLayer* layer, layers )
+  Q_FOREACH ( QgsMapLayer *layer, layers )
   {
     lst.append( layer );
   }
   return lst;
 }
 
-inline QStringList _qgis_listQPointerToIDs( const QgsWeakMapLayerPointerList& layers )
+inline QList<QgsMapLayer *> _qgis_listRefToRaw( const QList< QgsMapLayerRef > &layers )
+{
+  QList<QgsMapLayer *> lst;
+  lst.reserve( layers.count() );
+  Q_FOREACH ( const QgsMapLayerRef &layer, layers )
+  {
+    if ( layer )
+      lst.append( layer.get() );
+  }
+  return lst;
+}
+
+inline QList< QgsMapLayerRef > _qgis_listRawToRef( const QList<QgsMapLayer *> &layers )
+{
+  QList< QgsMapLayerRef > lst;
+  lst.reserve( layers.count() );
+  Q_FOREACH ( QgsMapLayer *layer, layers )
+  {
+    lst.append( QgsMapLayerRef( layer ) );
+  }
+  return lst;
+}
+
+inline void _qgis_removeLayers( QList< QgsMapLayerRef > &list, QList< QgsMapLayer *> layersToRemove )
+{
+  QMutableListIterator<QgsMapLayerRef> it( list );
+  while ( it.hasNext() )
+  {
+    QgsMapLayerRef &ref = it.next();
+    if ( layersToRemove.contains( ref.get() ) )
+      it.remove();
+  }
+}
+
+inline QStringList _qgis_listQPointerToIDs( const QgsWeakMapLayerPointerList &layers )
 {
   QStringList lst;
   lst.reserve( layers.count() );
-  Q_FOREACH ( const QgsWeakMapLayerPointer& layerPtr, layers )
+  Q_FOREACH ( const QgsWeakMapLayerPointer &layerPtr, layers )
   {
     if ( layerPtr )
       lst << layerPtr->id();
@@ -51,14 +86,14 @@ inline QStringList _qgis_listQPointerToIDs( const QgsWeakMapLayerPointerList& la
   return lst;
 }
 
-inline static QgsMapLayer* _qgis_findLayer( const QList< QgsMapLayer*> layers, const QString& identifier )
+inline static QgsMapLayer *_qgis_findLayer( const QList< QgsMapLayer *> layers, const QString &identifier )
 {
-  QgsMapLayer* matchId = nullptr;
-  QgsMapLayer* matchName = nullptr;
-  QgsMapLayer* matchNameInsensitive = nullptr;
+  QgsMapLayer *matchId = nullptr;
+  QgsMapLayer *matchName = nullptr;
+  QgsMapLayer *matchNameInsensitive = nullptr;
 
   // Look for match against layer IDs
-  Q_FOREACH ( QgsMapLayer* layer, layers )
+  Q_FOREACH ( QgsMapLayer *layer, layers )
   {
     if ( !matchId && layer->id() == identifier )
     {
@@ -93,7 +128,7 @@ inline static QgsMapLayer* _qgis_findLayer( const QList< QgsMapLayer*> layers, c
   }
 }
 
-inline uint qHash( const QgsWeakMapLayerPointer& key )
+inline uint qHash( const QgsWeakMapLayerPointer &key )
 {
   return qHash( key ? key->id() : QString() );
 }

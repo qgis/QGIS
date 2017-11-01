@@ -20,19 +20,15 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogcutils.h"
+#include "qgssettings.h"
 
 #include <QDomDocument>
-#include <QSettings>
 #include <QStringList>
 
-QgsWfsCapabilities::QgsWfsCapabilities( const QString& theUri )
-    : QgsWfsRequest( theUri )
+QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri )
+  : QgsWfsRequest( uri )
 {
-  connect( this, SIGNAL( downloadFinished() ), this, SLOT( capabilitiesReplyFinished() ) );
-}
-
-QgsWfsCapabilities::~QgsWfsCapabilities()
-{
+  connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWfsCapabilities::capabilitiesReplyFinished );
 }
 
 bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefresh )
@@ -40,7 +36,7 @@ bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefres
   QUrl url( baseURL() );
   url.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetCapabilities" ) );
 
-  const QString& version = mUri.version();
+  const QString &version = mUri.version();
   if ( version == QgsWFSConstants::VERSION_AUTO )
     // MapServer honours the order with the first value being the preferred one
     url.addQueryItem( QStringLiteral( "ACCEPTVERSIONS" ), QStringLiteral( "2.0.0,1.1.0,1.0.0" ) );
@@ -66,7 +62,7 @@ void QgsWfsCapabilities::Capabilities::clear()
   supportsHits = false;
   supportsPaging = false;
   supportsJoins = false;
-  version = QLatin1String( "" );
+  version.clear();
   featureTypes.clear();
   spatialPredicatesList.clear();
   functionList.clear();
@@ -76,7 +72,7 @@ void QgsWfsCapabilities::Capabilities::clear()
   useEPSGColumnFormat = false;
 }
 
-QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString& name ) const
+QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString &name ) const
 {
   if ( name.contains( ':' ) )
     return name;
@@ -87,7 +83,7 @@ QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString& name
 
 void QgsWfsCapabilities::capabilitiesReplyFinished()
 {
-  const QByteArray& buffer = mResponse;
+  const QByteArray &buffer = mResponse;
 
   QgsDebugMsg( "parsing capabilities: " + buffer );
 
@@ -140,6 +136,32 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
 
   // Note: for conveniency, we do not use the elementsByTagNameNS() method as
   // the WFS and OWS namespaces URI are not the same in all versions
+
+  if ( mCaps.version.startsWith( QLatin1String( "1.0" ) ) )
+  {
+    QDomElement capabilityElem = doc.firstChildElement( QStringLiteral( "Capability" ) );
+    if ( !capabilityElem.isNull() )
+    {
+      QDomElement requestElem = capabilityElem.firstChildElement( QStringLiteral( "Request" ) );
+      if ( !requestElem.isNull() )
+      {
+        QDomElement getFeatureElem = requestElem.firstChildElement( QStringLiteral( "GetFeature" ) );
+        if ( !getFeatureElem.isNull() )
+        {
+          QDomElement resultFormatElem = getFeatureElem.firstChildElement( QStringLiteral( "ResultFormat" ) );
+          if ( !resultFormatElem.isNull() )
+          {
+            QDomElement child = resultFormatElem.firstChildElement();
+            while ( !child.isNull() )
+            {
+              mCaps.outputFormats << child.tagName();
+              child = child.nextSiblingElement();
+            }
+          }
+        }
+      }
+    }
+  }
 
   // find <ows:OperationsMetadata>
   QDomElement operationsMetadataElem = doc.firstChildElement( QStringLiteral( "OperationsMetadata" ) );
@@ -230,6 +252,15 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
               }
             }
           }
+          else if ( parameter.attribute( QStringLiteral( "name" ) ) == QLatin1String( "outputFormat" ) )
+          {
+            QDomNodeList valueList = parameter.elementsByTagName( QStringLiteral( "Value" ) );
+            for ( int k = 0; k < valueList.size(); ++k )
+            {
+              QDomElement value = valueList.at( k ).toElement();
+              mCaps.outputFormats << value.text();
+            }
+          }
         }
 
         break;
@@ -259,11 +290,11 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   }
   else // WFS 2.0.0 tested on GeoServer
   {
-    QDomNodeList operationNodes = doc.elementsByTagName( "Operation" );
+    QDomNodeList operationNodes = doc.elementsByTagName( QStringLiteral( "Operation" ) );
     for ( int i = 0; i < operationNodes.count(); i++ )
     {
-      QDomElement operationElement = operationNodes.at( i ).toElement( );
-      if ( operationElement.isElement( ) && "Transaction" == operationElement.attribute( "name" ) )
+      QDomElement operationElement = operationNodes.at( i ).toElement();
+      if ( operationElement.isElement() && "Transaction" == operationElement.attribute( QStringLiteral( "name" ) ) )
       {
         insertCap = true;
         updateCap = true;
@@ -359,19 +390,19 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
           QgsCoordinateReferenceSystem crsWGS84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
           QgsCoordinateTransform ct( crsWGS84, crs );
 
-          QgsPoint ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
-          QgsPoint ptMinBack( ct.transform( ct.transform( ptMin, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
-          QgsPoint ptMax( featureType.bbox.xMaximum(), featureType.bbox.yMaximum() );
-          QgsPoint ptMaxBack( ct.transform( ct.transform( ptMax, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
+          QgsPointXY ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
+          QgsPointXY ptMinBack( ct.transform( ct.transform( ptMin, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
+          QgsPointXY ptMax( featureType.bbox.xMaximum(), featureType.bbox.yMaximum() );
+          QgsPointXY ptMaxBack( ct.transform( ct.transform( ptMax, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
 
           QgsDebugMsg( featureType.bbox.toString() );
           QgsDebugMsg( ptMinBack.toString() );
           QgsDebugMsg( ptMaxBack.toString() );
 
-          if ( fabs( featureType.bbox.xMinimum() - ptMinBack.x() ) < 1e-5 &&
-               fabs( featureType.bbox.yMinimum() - ptMinBack.y() ) < 1e-5 &&
-               fabs( featureType.bbox.xMaximum() - ptMaxBack.x() ) < 1e-5 &&
-               fabs( featureType.bbox.yMaximum() - ptMaxBack.y() ) < 1e-5 )
+          if ( std::fabs( featureType.bbox.xMinimum() - ptMinBack.x() ) < 1e-5 &&
+               std::fabs( featureType.bbox.yMinimum() - ptMinBack.y() ) < 1e-5 &&
+               std::fabs( featureType.bbox.xMaximum() - ptMaxBack.x() ) < 1e-5 &&
+               std::fabs( featureType.bbox.yMaximum() - ptMaxBack.y() ) < 1e-5 )
           {
             QgsDebugMsg( "Values of LatLongBoundingBox are consistent with WGS84 long/lat bounds, so as the CRS is projected, assume they are indeed in WGS84 and not in the CRS units" );
             featureType.bboxSRSIsWGS84 = true;
@@ -416,7 +447,7 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     mCaps.featureTypes.push_back( featureType );
   }
 
-  Q_FOREACH ( const FeatureType& f, mCaps.featureTypes )
+  Q_FOREACH ( const FeatureType &f, mCaps.featureTypes )
   {
     mCaps.setAllTypenames.insert( f.name );
     QString unprefixed( QgsWFSUtils::removeNamespacePrefix( f.name ) );
@@ -481,14 +512,14 @@ QString QgsWfsCapabilities::NormalizeSRSName( QString crsName )
 
 int QgsWfsCapabilities::defaultExpirationInSec()
 {
-  QSettings s;
-  return s.value( QStringLiteral( "/qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60;
+  QgsSettings s;
+  return s.value( QStringLiteral( "qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60;
 }
 
-void QgsWfsCapabilities::parseSupportedOperations( const QDomElement& operationsElem,
-    bool& insertCap,
-    bool& updateCap,
-    bool& deleteCap )
+void QgsWfsCapabilities::parseSupportedOperations( const QDomElement &operationsElem,
+    bool &insertCap,
+    bool &updateCap,
+    bool &deleteCap )
 {
   insertCap = false;
   updateCap = false;
@@ -537,7 +568,7 @@ void QgsWfsCapabilities::parseSupportedOperations( const QDomElement& operations
   }
 }
 
-static QgsWfsCapabilities::Function getSpatialPredicate( const QString& name )
+static QgsWfsCapabilities::Function getSpatialPredicate( const QString &name )
 {
   QgsWfsCapabilities::Function f;
   // WFS 1.0 advertize Intersect, but for conveniency we internally convert it to Intersects
@@ -564,7 +595,7 @@ static QgsWfsCapabilities::Function getSpatialPredicate( const QString& name )
   return f;
 }
 
-void QgsWfsCapabilities::parseFilterCapabilities( const QDomElement& filterCapabilitiesElem )
+void QgsWfsCapabilities::parseFilterCapabilities( const QDomElement &filterCapabilitiesElem )
 {
   // WFS 1.0
   QDomElement spatial_Operators = filterCapabilitiesElem.firstChildElement( QStringLiteral( "Spatial_Capabilities" ) ).firstChildElement( QStringLiteral( "Spatial_Operators" ) );
@@ -677,7 +708,7 @@ void QgsWfsCapabilities::parseFilterCapabilities( const QDomElement& filterCapab
   }
 }
 
-QString QgsWfsCapabilities::errorMessageWithReason( const QString& reason )
+QString QgsWfsCapabilities::errorMessageWithReason( const QString &reason )
 {
   return tr( "Download of capabilities failed: %1" ).arg( reason );
 }

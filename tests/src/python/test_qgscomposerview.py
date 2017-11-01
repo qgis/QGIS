@@ -14,9 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-import os
-
-from qgis.gui import (QgsComposerView)
+from qgis.gui import QgsComposerView
 from qgis.PyQt.QtCore import QRectF
 from qgis.PyQt.QtGui import QTransform
 

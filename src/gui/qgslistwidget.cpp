@@ -15,15 +15,15 @@
 
 #include "qgslistwidget.h"
 
-QgsListWidget::QgsListWidget( QVariant::Type subType, QWidget* parent )
-    : QgsTableWidgetBase( parent )
-    , mModel( subType, this )
-    , mSubType( subType )
+QgsListWidget::QgsListWidget( QVariant::Type subType, QWidget *parent )
+  : QgsTableWidgetBase( parent )
+  , mModel( subType, this )
+  , mSubType( subType )
 {
   init( &mModel );
 }
 
-void QgsListWidget::setList( const QVariantList& list )
+void QgsListWidget::setList( const QVariantList &list )
 {
   removeButton->setEnabled( false );
   mModel.setList( list );
@@ -32,16 +32,16 @@ void QgsListWidget::setList( const QVariantList& list )
 
 ///@cond PRIVATE
 QgsListModel::QgsListModel( QVariant::Type subType, QObject *parent ) :
-    QAbstractTableModel( parent ),
-    mSubType( subType )
+  QAbstractTableModel( parent ),
+  mSubType( subType )
 {
 }
 
-void QgsListModel::setList( const QVariantList& list )
+void QgsListModel::setList( const QVariantList &list )
 {
-  emit beginResetModel();
+  beginResetModel();
   mLines = list;
-  emit endResetModel();
+  endResetModel();
 }
 
 QVariantList QgsListModel::list() const
@@ -66,13 +66,13 @@ bool QgsListModel::valid() const
   return true;
 }
 
-int QgsListModel::rowCount( const QModelIndex& parent ) const
+int QgsListModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
   return mLines.count();
 }
 
-int QgsListModel::columnCount( const QModelIndex & parent ) const
+int QgsListModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
   return 1;
@@ -87,7 +87,7 @@ QVariant QgsListModel::headerData( int section, Qt::Orientation orientation, int
   return QVariant();
 }
 
-QVariant QgsListModel::data( const QModelIndex& index, int role ) const
+QVariant QgsListModel::data( const QModelIndex &index, int role ) const
 {
   if ( index.row() < 0 ||
        index.row() >= mLines.count() ||
@@ -99,7 +99,7 @@ QVariant QgsListModel::data( const QModelIndex& index, int role ) const
   return mLines.at( index.row() );
 }
 
-bool QgsListModel::setData( const QModelIndex & index, const QVariant & value, int role )
+bool QgsListModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
   if ( index.row() < 0 || index.row() >= mLines.count() ||
        index.column() != 0 || role != Qt::EditRole )
@@ -116,7 +116,7 @@ Qt::ItemFlags QgsListModel::flags( const QModelIndex &index ) const
   return QAbstractTableModel::flags( index ) | Qt::ItemIsEditable;
 }
 
-bool QgsListModel::insertRows( int position, int rows, const QModelIndex & parent )
+bool QgsListModel::insertRows( int position, int rows, const QModelIndex &parent )
 {
   Q_UNUSED( parent );
   beginInsertRows( QModelIndex(), position, position + rows - 1 );

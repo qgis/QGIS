@@ -20,33 +20,34 @@
 #include <cmath>
 #include "qgis_analysis.h"
 
-/** \ingroup analysis
+#define SIP_NO_FILE
+
+/**
+ * \ingroup analysis
  * Class Vector3D represents a 3D-Vector, capable to store x-,y- and
- * z-coordinates in double values. In fact, the class is the same as Point3D.
+ * z-coordinates in double values. In fact, the class is the same as QgsPoint.
  * The name 'vector' makes it easier to understand the programs.
+ * \note Not available in Python bindings
  */
 
 class ANALYSIS_EXPORT Vector3D
 {
   protected:
     //! X-component of the vector
-    double mX;
+    double mX = 0;
     //! Y-component of the vector
-    double mY;
+    double mY = 0;
     //! Z-component of the vector
-    double mZ;
+    double mZ = 0;
 
   public:
     //! Constructor taking the three components as arguments
     Vector3D( double x, double y, double z );
     //! Default constructor
     Vector3D();
-    //! Copy constructor
-    Vector3D( const Vector3D& v );
 
-    Vector3D& operator=( const Vector3D& v );
-    bool operator==( const Vector3D& v ) const;
-    bool operator!=( const Vector3D& v ) const;
+    bool operator==( const Vector3D &v ) const;
+    bool operator!=( const Vector3D &v ) const;
     //! Returns the x-component of the vector
     double getX() const;
     //! Returns the y-component of the vector
@@ -63,22 +64,26 @@ class ANALYSIS_EXPORT Vector3D
     void setZ( double z );
     //! Standardises the vector
     void standardise();
+
+  private:
+#ifdef SIP_RUN
+    Vector3D( const Vector3D &v );
+#endif
 };
+
+#ifndef SIP_RUN
 
 //------------------------------------------constructors------------------------------------
 
 inline Vector3D::Vector3D( double x, double y, double z )
-    : mX( x )
-    , mY( y )
-    , mZ( z )
+  : mX( x )
+  , mY( y )
+  , mZ( z )
 {
 
 }
 
 inline Vector3D::Vector3D()
-    : mX( 0 )
-    , mY( 0 )
-    , mZ( 0 )//using a list
 {
 
 }
@@ -115,4 +120,5 @@ inline void Vector3D::setZ( double z )
   mZ = z;
 }
 
+#endif
 #endif

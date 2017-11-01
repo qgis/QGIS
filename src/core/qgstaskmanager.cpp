@@ -17,6 +17,7 @@
 
 #include "qgstaskmanager.h"
 #include "qgsproject.h"
+#include "qgsmaplayerlistutils.h"
 #include <QtConcurrentRun>
 
 
@@ -24,23 +25,17 @@
 // QgsTask
 //
 
-QgsTask::QgsTask( const QString &name, const Flags& flags )
-    : QObject()
-    , mFlags( flags )
-    , mDescription( name )
-    , mStatus( Queued )
-    , mOverallStatus( Queued )
-    , mProgress( 0.0 )
-    , mTotalProgress( 0.0 )
-    , mShouldTerminate( false )
-    , mStartCount( 0 )
-{}
+QgsTask::QgsTask( const QString &name, const Flags &flags )
+  : mFlags( flags )
+  , mDescription( name )
+{
+}
 
 QgsTask::~QgsTask()
 {
   Q_ASSERT_X( mStatus != Running, "delete", QString( "status was %1" ).arg( mStatus ).toLatin1() );
 
-  Q_FOREACH ( const SubTask& subTask, mSubTasks )
+  Q_FOREACH ( const SubTask &subTask, mSubTasks )
   {
     delete subTask.task;
   }
@@ -48,6 +43,7 @@ QgsTask::~QgsTask()
 
 void QgsTask::start()
 {
+  mNotFinishedMutex.lock();
   mStartCount++;
   Q_ASSERT( mStartCount == 1 );
 
@@ -93,7 +89,7 @@ void QgsTask::cancel()
     processSubTasksForTermination();
   }
 
-  Q_FOREACH ( const SubTask& subTask, mSubTasks )
+  Q_FOREACH ( const SubTask &subTask, mSubTasks )
   {
     subTask.task->cancel();
   }
@@ -107,7 +103,7 @@ void QgsTask::hold()
     processSubTasksForHold();
   }
 
-  Q_FOREACH ( const SubTask& subTask, mSubTasks )
+  Q_FOREACH ( const SubTask &subTask, mSubTasks )
   {
     subTask.task->hold();
   }
@@ -122,28 +118,49 @@ void QgsTask::unhold()
     emit statusChanged( Queued );
   }
 
-  Q_FOREACH ( const SubTask& subTask, mSubTasks )
+  Q_FOREACH ( const SubTask &subTask, mSubTasks )
   {
     subTask.task->unhold();
   }
 }
 
-void QgsTask::addSubTask( QgsTask* subTask, const QgsTaskList& dependencies,
+void QgsTask::addSubTask( QgsTask *subTask, const QgsTaskList &dependencies,
                           SubTaskDependency subTaskDependency )
 {
   mSubTasks << SubTask( subTask, dependencies, subTaskDependency );
-  connect( subTask, &QgsTask::progressChanged, this, [=] { setProgress( mProgress ); } );
+  connect( subTask, &QgsTask::progressChanged, this, [ = ] { setProgress( mProgress ); } );
   connect( subTask, &QgsTask::statusChanged, this, &QgsTask::subTaskStatusChanged );
 }
 
-void QgsTask::setDependentLayers( const QStringList& dependentLayerIds )
+QList<QgsMapLayer *> QgsTask::dependentLayers() const
 {
-  mDependentLayerIds = dependentLayerIds;
+  return _qgis_listQPointerToRaw( mDependentLayers );
+}
+
+bool QgsTask::waitForFinished( unsigned long timeout )
+{
+  bool rv = true;
+  if ( mOverallStatus == Complete || mOverallStatus == Terminated )
+  {
+    rv = true;
+  }
+  else
+  {
+    if ( timeout == 0 )
+      timeout = ULONG_MAX;
+    rv = mTaskFinished.wait( &mNotFinishedMutex, timeout );
+  }
+  return rv;
+}
+
+void QgsTask::setDependentLayers( const QList< QgsMapLayer * > &dependentLayers )
+{
+  mDependentLayers = _qgis_listRawToQPointer( dependentLayers );
 }
 
 void QgsTask::subTaskStatusChanged( int status )
 {
-  QgsTask* subTask = qobject_cast< QgsTask* >( sender() );
+  QgsTask *subTask = qobject_cast< QgsTask * >( sender() );
   if ( !subTask )
     return;
 
@@ -156,12 +173,12 @@ void QgsTask::subTaskStatusChanged( int status )
     //check again if all subtasks are complete
     processSubTasksForCompletion();
   }
-  else if (( status == Complete || status == Terminated ) && mStatus == Terminated )
+  else if ( ( status == Complete || status == Terminated ) && mStatus == Terminated )
   {
     //check again if all subtasks are terminated
     processSubTasksForTermination();
   }
-  else if (( status == Complete || status == Terminated || status == OnHold ) && mStatus == OnHold )
+  else if ( ( status == Complete || status == Terminated || status == OnHold ) && mStatus == OnHold )
   {
     processSubTasksForHold();
   }
@@ -181,7 +198,7 @@ void QgsTask::setProgress( double progress )
     // calculate total progress including subtasks
 
     double totalProgress = 0.0;
-    Q_FOREACH ( const SubTask& subTask, mSubTasks )
+    Q_FOREACH ( const SubTask &subTask, mSubTasks )
     {
       if ( subTask.task->status() == QgsTask::Complete )
       {
@@ -208,7 +225,7 @@ void QgsTask::completed()
 void QgsTask::processSubTasksForCompletion()
 {
   bool subTasksCompleted = true;
-  Q_FOREACH ( const SubTask& subTask, mSubTasks )
+  Q_FOREACH ( const SubTask &subTask, mSubTasks )
   {
     if ( subTask.task->status() != Complete )
     {
@@ -220,9 +237,13 @@ void QgsTask::processSubTasksForCompletion()
   if ( mStatus == Complete && subTasksCompleted )
   {
     mOverallStatus = Complete;
+
     setProgress( 100.0 );
     emit statusChanged( Complete );
     emit taskCompleted();
+    mTaskFinished.wakeAll();
+    mNotFinishedMutex.unlock();
+    mTaskFinished.wakeAll();
   }
   else if ( mStatus == Complete )
   {
@@ -234,7 +255,7 @@ void QgsTask::processSubTasksForCompletion()
 void QgsTask::processSubTasksForTermination()
 {
   bool subTasksTerminated = true;
-  Q_FOREACH ( const SubTask& subTask, mSubTasks )
+  Q_FOREACH ( const SubTask &subTask, mSubTasks )
   {
     if ( subTask.task->status() != Terminated && subTask.task->status() != Complete )
     {
@@ -246,8 +267,12 @@ void QgsTask::processSubTasksForTermination()
   if ( mStatus == Terminated && subTasksTerminated && mOverallStatus != Terminated )
   {
     mOverallStatus = Terminated;
+
     emit statusChanged( Terminated );
     emit taskTerminated();
+    mTaskFinished.wakeAll();
+    mNotFinishedMutex.unlock();
+    mTaskFinished.wakeAll();
   }
   else if ( mStatus == Terminated && !subTasksTerminated )
   {
@@ -259,7 +284,7 @@ void QgsTask::processSubTasksForTermination()
 void QgsTask::processSubTasksForHold()
 {
   bool subTasksRunning = false;
-  Q_FOREACH ( const SubTask& subTask, mSubTasks )
+  Q_FOREACH ( const SubTask &subTask, mSubTasks )
   {
     if ( subTask.task->status() == Running )
     {
@@ -293,9 +318,8 @@ class QgsTaskRunnableWrapper : public QRunnable
 {
   public:
 
-    QgsTaskRunnableWrapper( QgsTask* task )
-        : QRunnable()
-        , mTask( task )
+    explicit QgsTaskRunnableWrapper( QgsTask *task )
+      : mTask( task )
     {
       setAutoDelete( true );
     }
@@ -308,7 +332,7 @@ class QgsTaskRunnableWrapper : public QRunnable
 
   private:
 
-    QgsTask* mTask;
+    QgsTask *mTask = nullptr;
 
 };
 
@@ -320,13 +344,12 @@ class QgsTaskRunnableWrapper : public QRunnable
 // QgsTaskManager
 //
 
-QgsTaskManager::QgsTaskManager( QObject* parent )
-    : QObject( parent )
-    , mTaskMutex( new QMutex( QMutex::Recursive ) )
-    , mNextTaskId( 0 )
+QgsTaskManager::QgsTaskManager( QObject *parent )
+  : QObject( parent )
+  , mTaskMutex( new QMutex( QMutex::Recursive ) )
 {
-  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
-           this, SLOT( layersWillBeRemoved( QStringList ) ) );
+  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList< QgsMapLayer * >& ) > ( &QgsProject::layersWillBeRemoved ),
+           this, &QgsTaskManager::layersWillBeRemoved );
 }
 
 QgsTaskManager::~QgsTaskManager()
@@ -348,12 +371,12 @@ QgsTaskManager::~QgsTaskManager()
   delete mTaskMutex;
 }
 
-long QgsTaskManager::addTask( QgsTask* task, int priority )
+long QgsTaskManager::addTask( QgsTask *task, int priority )
 {
   return addTaskPrivate( task, QgsTaskList(), false, priority );
 }
 
-long QgsTaskManager::addTask( const QgsTaskManager::TaskDefinition& definition, int priority )
+long QgsTaskManager::addTask( const QgsTaskManager::TaskDefinition &definition, int priority )
 {
   return addTaskPrivate( definition.task,
                          definition.dependentTasks,
@@ -362,7 +385,7 @@ long QgsTaskManager::addTask( const QgsTaskManager::TaskDefinition& definition, 
 }
 
 
-long QgsTaskManager::addTaskPrivate( QgsTask* task, QgsTaskList dependencies, bool isSubTask, int priority )
+long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bool isSubTask, int priority )
 {
   long taskId = mNextTaskId++;
 
@@ -376,8 +399,8 @@ long QgsTaskManager::addTaskPrivate( QgsTask* task, QgsTaskList dependencies, bo
   {
     mParentTasks << task;
   }
-  if ( !task->dependentLayerIds().isEmpty() )
-    mLayerDependencies.insert( taskId, task->dependentLayerIds() );
+  if ( !task->dependentLayers().isEmpty() )
+    mLayerDependencies.insert( taskId, _qgis_listRawToQPointer( task->dependentLayers() ) );
   mTaskMutex->unlock();
 
   connect( task, &QgsTask::statusChanged, this, &QgsTaskManager::taskStatusChanged );
@@ -387,7 +410,7 @@ long QgsTaskManager::addTaskPrivate( QgsTask* task, QgsTaskList dependencies, bo
   }
 
   // add all subtasks, must be done before dependency resolution
-  Q_FOREACH ( const QgsTask::SubTask& subTask, task->mSubTasks )
+  Q_FOREACH ( const QgsTask::SubTask &subTask, task->mSubTasks )
   {
     switch ( subTask.dependency )
     {
@@ -422,16 +445,16 @@ long QgsTaskManager::addTaskPrivate( QgsTask* task, QgsTaskList dependencies, bo
   return taskId;
 }
 
-QgsTask* QgsTaskManager::task( long id ) const
+QgsTask *QgsTaskManager::task( long id ) const
 {
   QMutexLocker ml( mTaskMutex );
-  QgsTask* t = nullptr;
+  QgsTask *t = nullptr;
   if ( mTasks.contains( id ) )
     t = mTasks.value( id ).task;
   return t;
 }
 
-QList<QgsTask*> QgsTaskManager::tasks() const
+QList<QgsTask *> QgsTaskManager::tasks() const
 {
   QMutexLocker ml( mTaskMutex );
   return mParentTasks.toList();
@@ -463,11 +486,11 @@ long QgsTaskManager::taskId( QgsTask *task ) const
 void QgsTaskManager::cancelAll()
 {
   mTaskMutex->lock();
-  QSet< QgsTask* > parents = mParentTasks;
+  QSet< QgsTask * > parents = mParentTasks;
   parents.detach();
   mTaskMutex->unlock();
 
-  Q_FOREACH ( QgsTask* task, parents )
+  Q_FOREACH ( QgsTask *task, parents )
   {
     task->cancel();
   }
@@ -483,7 +506,7 @@ bool QgsTaskManager::dependenciesSatisfied( long taskId ) const
   if ( !dependencies.contains( taskId ) )
     return true;
 
-  Q_FOREACH ( QgsTask* task, dependencies.value( taskId ) )
+  Q_FOREACH ( QgsTask *task, dependencies.value( taskId ) )
   {
     if ( task->status() != QgsTask::Complete )
       return false;
@@ -501,7 +524,7 @@ QSet<long> QgsTaskManager::dependencies( long taskId ) const
     return QSet<long>();
 }
 
-bool QgsTaskManager::resolveDependencies( long firstTaskId, long currentTaskId, QSet<long>& results ) const
+bool QgsTaskManager::resolveDependencies( long firstTaskId, long currentTaskId, QSet<long> &results ) const
 {
   mTaskMutex->lock();
   QMap< long, QgsTaskList > dependencies = mTaskDependencies;
@@ -511,7 +534,7 @@ bool QgsTaskManager::resolveDependencies( long firstTaskId, long currentTaskId, 
   if ( !dependencies.contains( currentTaskId ) )
     return true;
 
-  Q_FOREACH ( QgsTask* task, dependencies.value( currentTaskId ) )
+  Q_FOREACH ( QgsTask *task, dependencies.value( currentTaskId ) )
   {
     long dependentTaskId = taskId( task );
     if ( dependentTaskId >= 0 )
@@ -546,22 +569,22 @@ bool QgsTaskManager::hasCircularDependencies( long taskId ) const
   return !resolveDependencies( taskId, taskId, d );
 }
 
-QStringList QgsTaskManager::dependentLayers( long taskId ) const
+QList<QgsMapLayer *> QgsTaskManager::dependentLayers( long taskId ) const
 {
   QMutexLocker ml( mTaskMutex );
-  return mLayerDependencies.value( taskId, QStringList() );
+  return _qgis_listQPointerToRaw( mLayerDependencies.value( taskId, QgsWeakMapLayerPointerList() ) );
 }
 
-QList<QgsTask*> QgsTaskManager::tasksDependentOnLayer( const QString& layerId ) const
+QList<QgsTask *> QgsTaskManager::tasksDependentOnLayer( QgsMapLayer *layer ) const
 {
   QMutexLocker ml( mTaskMutex );
-  QList< QgsTask* > tasks;
-  QMap< long, QStringList >::const_iterator layerIt = mLayerDependencies.constBegin();
+  QList< QgsTask * > tasks;
+  QMap< long, QgsWeakMapLayerPointerList >::const_iterator layerIt = mLayerDependencies.constBegin();
   for ( ; layerIt != mLayerDependencies.constEnd(); ++layerIt )
   {
-    if ( layerIt.value().contains( layerId ) )
+    if ( _qgis_listQPointerToRaw( layerIt.value() ).contains( layer ) )
     {
-      QgsTask* layerTask = task( layerIt.key() );
+      QgsTask *layerTask = task( layerIt.key() );
       if ( layerTask )
         tasks << layerTask;
     }
@@ -569,10 +592,10 @@ QList<QgsTask*> QgsTaskManager::tasksDependentOnLayer( const QString& layerId ) 
   return tasks;
 }
 
-QList<QgsTask*> QgsTaskManager::activeTasks() const
+QList<QgsTask *> QgsTaskManager::activeTasks() const
 {
   QMutexLocker ml( mTaskMutex );
-  QSet< QgsTask* > activeTasks = mActiveTasks;
+  QSet< QgsTask * > activeTasks = mActiveTasks;
   activeTasks.intersect( mParentTasks );
   return activeTasks.toList();
 }
@@ -580,13 +603,13 @@ QList<QgsTask*> QgsTaskManager::activeTasks() const
 int QgsTaskManager::countActiveTasks() const
 {
   QMutexLocker ml( mTaskMutex );
-  QSet< QgsTask* > tasks = mActiveTasks;
+  QSet< QgsTask * > tasks = mActiveTasks;
   return tasks.intersect( mParentTasks ).count();
 }
 
 void QgsTaskManager::taskProgressChanged( double progress )
 {
-  QgsTask* task = qobject_cast< QgsTask* >( sender() );
+  QgsTask *task = qobject_cast< QgsTask * >( sender() );
 
   //find ID of task
   long id = taskId( task );
@@ -603,7 +626,7 @@ void QgsTaskManager::taskProgressChanged( double progress )
 
 void QgsTaskManager::taskStatusChanged( int status )
 {
-  QgsTask* task = qobject_cast< QgsTask* >( sender() );
+  QgsTask *task = qobject_cast< QgsTask * >( sender() );
 
   //find ID of task
   long id = taskId( task );
@@ -613,7 +636,7 @@ void QgsTaskManager::taskStatusChanged( int status )
 
 #if QT_VERSION >= 0x050500
   mTaskMutex->lock();
-  QgsTaskRunnableWrapper* runnable = mTasks.value( id ).runnable;
+  QgsTaskRunnableWrapper *runnable = mTasks.value( id ).runnable;
   mTaskMutex->unlock();
   QThreadPool::globalInstance()->cancel( runnable );
 #endif
@@ -648,27 +671,27 @@ void QgsTaskManager::taskStatusChanged( int status )
 
 }
 
-void QgsTaskManager::layersWillBeRemoved( const QStringList& layerIds )
+void QgsTaskManager::layersWillBeRemoved( const QList< QgsMapLayer * > &layers )
 {
   mTaskMutex->lock();
   // scan through layers to be removed
-  QMap< long, QStringList > layerDependencies = mLayerDependencies;
+  QMap< long, QgsWeakMapLayerPointerList > layerDependencies = mLayerDependencies;
   layerDependencies.detach();
   mTaskMutex->unlock();
 
-  Q_FOREACH ( const QString& layerId, layerIds )
+  Q_FOREACH ( QgsMapLayer *layer, layers )
   {
     // scan through tasks with layer dependencies
-    for ( QMap< long, QStringList >::const_iterator it = layerDependencies.constBegin();
+    for ( QMap< long, QgsWeakMapLayerPointerList >::const_iterator it = layerDependencies.constBegin();
           it != layerDependencies.constEnd(); ++it )
     {
-      if ( !it.value().contains( layerId ) )
+      if ( !( _qgis_listQPointerToRaw( it.value() ).contains( layer ) ) )
       {
         //task not dependent on this layer
         continue;
       }
 
-      QgsTask* dependentTask = task( it.key() );
+      QgsTask *dependentTask = task( it.key() );
       if ( dependentTask && ( dependentTask->status() != QgsTask::Complete && dependentTask->status() != QgsTask::Terminated ) )
       {
         // incomplete task is dependent on this layer!
@@ -688,7 +711,7 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   if ( id < 0 )
     return false;
 
-  QgsTaskRunnableWrapper* runnable = mTasks.value( id ).runnable;
+  QgsTaskRunnableWrapper *runnable = mTasks.value( id ).runnable;
 
   task->disconnect( this );
 
@@ -748,7 +771,7 @@ void QgsTaskManager::processQueue()
   mActiveTasks.clear();
   for ( QMap< long, TaskInfo >::iterator it = mTasks.begin(); it != mTasks.end(); ++it )
   {
-    QgsTask* task = it.value().task;
+    QgsTask *task = it.value().task;
     if ( task && task->mStatus == QgsTask::Queued && dependenciesSatisfied( it.key() ) && it.value().added.testAndSetRelaxed( 0, 1 ) )
     {
       QThreadPool::globalInstance()->start( it.value().runnable, it.value().priority );
@@ -777,7 +800,7 @@ void QgsTaskManager::processQueue()
 
 void QgsTaskManager::cancelDependentTasks( long taskId )
 {
-  QgsTask* canceledTask = task( taskId );
+  QgsTask *canceledTask = task( taskId );
 
   //deep copy
   mTaskMutex->lock();
@@ -794,16 +817,16 @@ void QgsTaskManager::cancelDependentTasks( long taskId )
 
       // cancel it - note that this will be recursive, so any tasks dependent
       // on this one will also be canceled
-      QgsTask* dependentTask = task( it.key() );
+      QgsTask *dependentTask = task( it.key() );
       if ( dependentTask )
         dependentTask->cancel();
     }
   }
 }
 
-QgsTaskManager::TaskInfo::TaskInfo( QgsTask* task, int priority )
-    : task( task )
-    , added( 0 )
-    , priority( priority )
-    , runnable( new QgsTaskRunnableWrapper( task ) )
+QgsTaskManager::TaskInfo::TaskInfo( QgsTask *task, int priority )
+  : task( task )
+  , added( 0 )
+  , priority( priority )
+  , runnable( new QgsTaskRunnableWrapper( task ) )
 {}

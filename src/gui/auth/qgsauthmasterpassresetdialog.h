@@ -22,12 +22,15 @@
 #include "ui_qgsauthmasterpassresetdialog.h"
 #include "qgis_gui.h"
 
+#define SIP_NO_FILE
+
 class QLabel;
 class QVBoxLayout;
 class QgsMessageBar;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief Dialog to verify current master password and initiate reset of
  * authentication database with a new password
  * \note not available in Python bindings
@@ -42,19 +45,16 @@ class GUI_EXPORT QgsMasterPasswordResetDialog : public QDialog, private Ui::QgsM
     bool requestMasterPasswordReset( QString *newpass, QString *oldpass, bool *keepbackup );
 
   private slots:
-    void on_leMasterPassCurrent_textChanged( const QString& pass );
-    void on_leMasterPassNew_textChanged( const QString& pass );
-
-    void on_chkPassShowCurrent_stateChanged( int state );
-    void on_chkPassShowNew_stateChanged( int state );
+    void leMasterPassCurrent_textChanged( const QString &pass );
+    void leMasterPassNew_textChanged( const QString &pass );
 
   private:
     void validatePasswords();
 
-    bool mPassCurOk;
-    bool mPassNewOk;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    bool mPassCurOk = false;
+    bool mPassNewOk = false;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 };
 
 #endif // QGSAUTHMASTERPASSWORDRESETDIALOG_H

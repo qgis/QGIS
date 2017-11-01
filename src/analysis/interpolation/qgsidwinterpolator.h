@@ -21,20 +21,22 @@
 #include "qgsinterpolator.h"
 #include "qgis_analysis.h"
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * \class QgsIDWInterpolator
  */
 class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
 {
   public:
-    QgsIDWInterpolator( const QList<LayerData>& layerData );
+    QgsIDWInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
 
-    /** Calculates interpolation value for map coordinates x, y
-       @param x x-coordinate (in map units)
-       @param y y-coordinate (in map units)
-       @param result out: interpolation result
-       @return 0 in case of success*/
-    int interpolatePoint( double x, double y, double& result ) override;
+    /**
+     * Calculates interpolation value for map coordinates x, y
+       \param x x-coordinate (in map units)
+       \param y y-coordinate (in map units)
+       \param result out: interpolation result
+       \returns 0 in case of success*/
+    int interpolatePoint( double x, double y, double &result ) override;
 
     void setDistanceCoefficient( double p ) {mDistanceCoefficient = p;}
 
@@ -42,10 +44,11 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
 
     QgsIDWInterpolator(); //forbidden
 
-    /** The parameter that sets how the values are weighted with distance.
+    /**
+     * The parameter that sets how the values are weighted with distance.
        Smaller values mean sharper peaks at the data points. The default is a
        value of 2*/
-    double mDistanceCoefficient;
+    double mDistanceCoefficient = 2.0;
 };
 
 #endif

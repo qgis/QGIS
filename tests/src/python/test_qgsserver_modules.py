@@ -1,13 +1,11 @@
 """ QGIS test for server services
 """
 import os
-from qgis.PyQt.QtCore import QBuffer, QIODevice, QTextStream
+from qgis.PyQt.QtCore import QBuffer, QIODevice
 from qgis.testing import unittest
 from qgis.core import QgsApplication
 from qgis.server import (QgsServer,
-                         QgsServiceRegistry,
                          QgsService,
-                         QgsServerRequest,
                          QgsServerResponse)
 
 from utilities import unitTestDataPath
@@ -20,7 +18,7 @@ class Response(QgsServerResponse):
         self._buffer = QBuffer()
         self._buffer.open(QIODevice.ReadWrite)
 
-    def setReturnCode(self, code):
+    def setStatusCode(self, code):
         pass
 
     def setHeader(self, key, val):
@@ -48,15 +46,12 @@ class MyService(QgsService):
         return self._version
 
     def executeRequest(self, request, response):
-
-        url = request.url()
-
         response.setReturnCode(201)
         response.write(self._response)
 
 
 class TestModules(unittest.TestCase):
-    """ 
+    """
     """
 
     @classmethod

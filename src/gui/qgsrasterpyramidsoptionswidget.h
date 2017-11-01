@@ -19,30 +19,31 @@
 #define QGSRASTERPYRAMIDSOPTIONSWIDGET_H
 
 #include "ui_qgsrasterpyramidsoptionswidgetbase.h"
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QCheckBox;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A widget to select format-specific raster saving options
  */
-class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
-      private Ui::QgsRasterPyramidsOptionsWidgetBase
+class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget, private Ui::QgsRasterPyramidsOptionsWidgetBase
 {
     Q_OBJECT
 
   public:
 
-    QgsRasterPyramidsOptionsWidget( QWidget* parent = nullptr, const QString& provider = "gdal" );
+    QgsRasterPyramidsOptionsWidget( QWidget *parent SIP_TRANSFERTHIS = 0, const QString &provider = "gdal" );
 
     QStringList configOptions() const { return mSaveOptionsWidget->options(); }
-    QgsRasterFormatSaveOptionsWidget* createOptionsWidget() { return mSaveOptionsWidget; }
+    QgsRasterFormatSaveOptionsWidget *createOptionsWidget() SIP_FACTORY { return mSaveOptionsWidget; }
     const QList<int> overviewList() const { return mOverviewList; }
     QgsRaster::RasterPyramidsFormat pyramidsFormat() const
     { return static_cast< QgsRaster::RasterPyramidsFormat >( cbxPyramidsFormat->currentIndex() ); }
     QString resamplingMethod() const;
-    void setRasterLayer( QgsRasterLayer* rasterLayer ) { mSaveOptionsWidget->setRasterLayer( rasterLayer ); }
-    void setRasterFileName( const QString& file ) { mSaveOptionsWidget->setRasterFileName( file ); }
+    void setRasterLayer( QgsRasterLayer *rasterLayer ) { mSaveOptionsWidget->setRasterLayer( rasterLayer ); }
+    void setRasterFileName( const QString &file ) { mSaveOptionsWidget->setRasterFileName( file ); }
 
   public slots:
 
@@ -51,10 +52,10 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
 
   private slots:
 
-    void on_cbxPyramidsLevelsCustom_toggled( bool toggled );
-    void on_cbxPyramidsFormat_currentIndexChanged( int index );
-    void setOverviewList();
-    void updateUi();
+    void cbxPyramidsLevelsCustom_toggled( bool toggled ) SIP_FORCE;
+    void cbxPyramidsFormat_currentIndexChanged( int index ) SIP_FORCE;
+    void setOverviewList() SIP_FORCE;
+    void updateUi() SIP_FORCE;
 
   signals:
     void overviewListChanged();
@@ -73,7 +74,9 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
 
     QString mProvider;
     QList< int > mOverviewList;
-    QMap< int, QCheckBox* > mOverviewCheckBoxes;
+    QMap< int, QCheckBox * > mOverviewCheckBoxes;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSRASTERLAYERSAVEASDIALOG_H

@@ -29,51 +29,92 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsWkbTypes
+from qgis.core import (QgsGeometry,
+                       QgsGeometryCollection,
+                       QgsMultiLineString,
+                       QgsMultiCurve,
+                       QgsWkbTypes,
+                       QgsProcessing)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class PolygonsToLines(GeoAlgorithm):
+class PolygonsToLines(QgisFeatureBasedAlgorithm):
 
-    INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
-
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'to_lines.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Polygons to lines')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
-        self.tags = self.tr('line,polygon,convert')
+    def tags(self):
+        return self.tr('line,polygon,convert').split(',')
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
+    def group(self):
+        return self.tr('Vector geometry')
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Lines from polygons'), datatype=[dataobjects.TYPE_VECTOR_LINE]))
+    def __init__(self):
+        super().__init__()
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+    def name(self):
+        return 'polygonstolines'
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.fields().toList(), QgsWkbTypes.LineString, layer.crs())
+    def displayName(self):
+        return self.tr('Polygons to lines')
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
-        for current, f in enumerate(features):
-            if f.hasGeometry():
-                lines = QgsGeometry(f.geometry().geometry().boundary()).asGeometryCollection()
-                for line in lines:
-                    f.setGeometry(line)
-                    writer.addFeature(f)
-            else:
-                writer.addFeature(f)
+    def outputName(self):
+        return self.tr('Lines')
 
-            feedback.setProgress(int(current * total))
+    def outputType(self):
+        return QgsProcessing.TypeVectorLine
 
-        del writer
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorPolygon]
+
+    def outputWkbType(self, input_wkb_type):
+        return self.convertWkbToLines(input_wkb_type)
+
+    def processFeature(self, feature, feedback):
+        if feature.hasGeometry():
+            feature.setGeometry(QgsGeometry(self.convertToLines(feature.geometry())))
+        return feature
+
+    def convertWkbToLines(self, wkb):
+        multi_wkb = None
+        if QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb)) == QgsWkbTypes.Polygon:
+            multi_wkb = QgsWkbTypes.MultiLineString
+        elif QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb)) == QgsWkbTypes.CurvePolygon:
+            multi_wkb = QgsWkbTypes.MultiCurve
+        if QgsWkbTypes.hasM(wkb):
+            multi_wkb = QgsWkbTypes.addM(multi_wkb)
+        if QgsWkbTypes.hasZ(wkb):
+            multi_wkb = QgsWkbTypes.addZ(multi_wkb)
+
+        return multi_wkb
+
+    def convertToLines(self, geometry):
+        rings = self.getRings(geometry.constGet())
+        output_wkb = self.convertWkbToLines(geometry.wkbType())
+        out_geom = None
+        if QgsWkbTypes.flatType(output_wkb) == QgsWkbTypes.MultiLineString:
+            out_geom = QgsMultiLineString()
+        else:
+            out_geom = QgsMultiCurve()
+
+        for ring in rings:
+            out_geom.addGeometry(ring)
+
+        return out_geom
+
+    def getRings(self, geometry):
+        rings = []
+        if isinstance(geometry, QgsGeometryCollection):
+            # collection
+            for i in range(geometry.numGeometries()):
+                rings.extend(self.getRings(geometry.geometryN(i)))
+        else:
+            # not collection
+            rings.append(geometry.exteriorRing().clone())
+            for i in range(geometry.numInteriorRings()):
+                rings.append(geometry.interiorRing(i).clone())
+
+        return rings

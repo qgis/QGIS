@@ -20,14 +20,14 @@
 #include <QDomDocument>
 
 // QgsServerException
-QgsServerException::QgsServerException( const QString& message, int responseCode )
-    : QgsException( message )
-    , mResponseCode( responseCode )
+QgsServerException::QgsServerException( const QString &message, int responseCode )
+  : QgsException( message )
+  , mResponseCode( responseCode )
 {
 
 }
 
-QByteArray QgsServerException::formatResponse( QString& responseFormat ) const
+QByteArray QgsServerException::formatResponse( QString &responseFormat ) const
 {
   QDomDocument doc;
   QDomElement root = doc.createElement( QStringLiteral( "ServerException" ) );
@@ -40,23 +40,23 @@ QByteArray QgsServerException::formatResponse( QString& responseFormat ) const
 
 
 // QgsOgcServiceException
-QgsOgcServiceException:: QgsOgcServiceException( const QString& code, const QString& message, const QString& locator,
-    int responseCode, const QString& version )
-    : QgsServerException( message, responseCode )
-    , mCode( code )
-    , mMessage( message )
-    , mLocator( locator )
-    , mVersion( version )
+QgsOgcServiceException:: QgsOgcServiceException( const QString &code, const QString &message, const QString &locator,
+    int responseCode, const QString &version )
+  : QgsServerException( message, responseCode )
+  , mCode( code )
+  , mMessage( message )
+  , mLocator( locator )
+  , mVersion( version )
 {
 
 }
 
-QByteArray QgsOgcServiceException::formatResponse( QString& responseFormat ) const
+QByteArray QgsOgcServiceException::formatResponse( QString &responseFormat ) const
 {
   QDomDocument doc;
   QDomElement root = doc.createElement( QStringLiteral( "ServiceExceptionReport" ) );
   root.setAttribute( QStringLiteral( "version" ), mVersion );
-  root.setAttribute( QStringLiteral( "xmlns" ) , QStringLiteral( "http://www.opengis.net/ogc" ) );
+  root.setAttribute( QStringLiteral( "xmlns" ), QStringLiteral( "http://www.opengis.net/ogc" ) );
   doc.appendChild( root );
 
   QDomElement elem = doc.createElement( QStringLiteral( "ServiceException" ) );

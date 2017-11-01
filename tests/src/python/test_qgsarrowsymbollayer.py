@@ -38,7 +38,6 @@ from qgis.core import (
     QgsProject,
     QgsRectangle,
     QgsArrowSymbolLayer,
-    QgsSymbol,
     QgsMultiRenderChecker,
     QgsProperty,
     QgsSymbolLayer

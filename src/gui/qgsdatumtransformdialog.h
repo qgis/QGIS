@@ -21,7 +21,10 @@
 #include "ui_qgsdatumtransformdialogbase.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+#define SIP_NO_FILE
+
+/**
+ * \ingroup gui
  * \class QgsDatumTransformDialog
  * \note not available in Python bindings
  */
@@ -29,11 +32,11 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
 {
     Q_OBJECT
   public:
-    QgsDatumTransformDialog( const QString& layerName, const QList< QList< int > >& dt, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsDatumTransformDialog( const QString &layerName, const QList< QList< int > > &dt, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsDatumTransformDialog();
 
-    //! @note added in 2.4
-    void setDatumTransformInfo( const QString& srcCRSauthId, const QString& destCRSauthId );
+    //! \since QGIS 2.4
+    void setDatumTransformInfo( const QString &srcCRSauthId, const QString &destCRSauthId );
 
     //! getter for selected datum transformations
     QList< int > selectedDatumTransform();
@@ -41,16 +44,16 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     //! dialog shall remember the selection
     bool rememberSelection() const;
 
-  public slots:
-    void on_mHideDeprecatedCheckBox_stateChanged( int state );
-    void on_mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * );
+  private slots:
+    void mHideDeprecatedCheckBox_stateChanged( int state );
+    void mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * );
 
   private:
     QgsDatumTransformDialog();
     void updateTitle();
-    bool gridShiftTransformation( const QString& itemText ) const;
+    bool gridShiftTransformation( const QString &itemText ) const;
     //! Returns false if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there
-    bool testGridShiftFileAvailability( QTreeWidgetItem* item, int col ) const;
+    bool testGridShiftFileAvailability( QTreeWidgetItem *item, int col ) const;
     void load();
 
     const QList< QList< int > > &mDt;

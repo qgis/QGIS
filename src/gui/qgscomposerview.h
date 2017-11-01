@@ -18,6 +18,7 @@
 #define QGSCOMPOSERVIEW_H
 
 #include <QGraphicsView>
+#include "qgis.h"
 #include "qgsprevieweffect.h" // for QgsPreviewEffect::PreviewMode
 #include <QGraphicsPolygonItem>
 #include "qgis_gui.h"
@@ -42,7 +43,8 @@ class QgsComposerNodesItem;
 class QgsComposerAttributeTableV2;
 class QgsMapCanvas;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget to display the composer items. Manages the composer tools and the
  * mouse/key events.
  * Creates the composer items according to the current map tools and keeps track
@@ -50,6 +52,15 @@ class QgsMapCanvas;
  */
 class GUI_EXPORT QgsComposerView: public QGraphicsView
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->inherits( "QgsComposerView" ) )
+      sipType = sipType_QgsComposerView;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
     Q_OBJECT
 
   public:
@@ -98,7 +109,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
       ActiveUntilMouseRelease
     };
 
-    QgsComposerView( QWidget* parent = nullptr, const char* name = nullptr, Qt::WindowFlags f = 0 );
+    QgsComposerView( QWidget *parent SIP_TRANSFERTHIS = nullptr, const char *name = nullptr, Qt::WindowFlags f = 0 );
 
     //! Add an item group containing the selected items
     void groupItems();
@@ -127,16 +138,17 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QgsComposerView::Tool currentTool() const {return mCurrentTool;}
     void setCurrentTool( QgsComposerView::Tool t );
 
-    /** Sets the composition for the view. If the composition is being set manually and not by a QgsComposer, then this must
+    /**
+     * Sets the composition for the view. If the composition is being set manually and not by a QgsComposer, then this must
      * be set BEFORE adding any items to the composition.
      */
-    void setComposition( QgsComposition* c );
+    void setComposition( QgsComposition *c SIP_KEEPREFERENCE );
 
     //! Returns the composition or 0 in case of error
-    QgsComposition* composition();
+    QgsComposition *composition();
 
     //! Returns the composer main window
-    QMainWindow* composerWindow();
+    QMainWindow *composerWindow();
 
     void setPaintingEnabled( bool enabled ) { mPaintingEnabled = enabled; }
     bool paintingEnabled() const { return mPaintingEnabled; }
@@ -144,97 +156,101 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     //! Update rulers with current scene rect
     void updateRulers();
 
-    void setHorizontalRuler( QgsComposerRuler* r ) { mHorizontalRuler = r; }
-    void setVerticalRuler( QgsComposerRuler* r ) { mVerticalRuler = r; }
+    void setHorizontalRuler( QgsComposerRuler *r ) { mHorizontalRuler = r; }
+    void setVerticalRuler( QgsComposerRuler *r ) { mVerticalRuler = r; }
 
     //! Set zoom level, where a zoom level of 1.0 corresponds to 100%
     void setZoomLevel( double zoomLevel );
 
-    /** Scales the view in a safe way, by limiting the acceptable range
+    /**
+     * Scales the view in a safe way, by limiting the acceptable range
      * of the scale applied.
-     * @param scale factor to scale view by
-     * @note added in QGIS 2.16
+     * \param scale factor to scale view by
+     * \since QGIS 2.16
      */
     void scaleSafe( double scale );
 
-    /** Sets whether a preview effect should be used to alter the view's appearance
-     * @param enabled Set to true to enable the preview effect on the view
-     * @note added in 2.3
-     * @see setPreviewMode
+    /**
+     * Sets whether a preview effect should be used to alter the view's appearance
+     * \param enabled Set to true to enable the preview effect on the view
+     * \since QGIS 2.3
+     * \see setPreviewMode
      */
     void setPreviewModeEnabled( bool enabled );
 
-    /** Sets the preview mode which should be used to modify the view's appearance. Preview modes are only used
+    /**
+     * Sets the preview mode which should be used to modify the view's appearance. Preview modes are only used
      * if setPreviewMode is set to true.
-     * @param mode PreviewMode to be used to draw the view
-     * @note added in 2.3
-     * @see setPreviewModeEnabled
+     * \param mode PreviewMode to be used to draw the view
+     * \since QGIS 2.3
+     * \see setPreviewModeEnabled
      */
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 
-    /** Sets the map canvas associated with the view. This allows the
+    /**
+     * Sets the map canvas associated with the view. This allows the
      * view to retrieve map settings from the canvas.
-     * @note added in QGIS 3.0
-     * @see mapCanvas()
+     * \since QGIS 3.0
+     * \see mapCanvas()
      */
-    void setMapCanvas( QgsMapCanvas* canvas );
+    void setMapCanvas( QgsMapCanvas *canvas );
 
     /**
      * Returns the map canvas associated with the view.
-     * @see setMapCanvas()
-     * @note added in QGIS 3.0
+     * \see setMapCanvas()
+     * \since QGIS 3.0
      */
-    QgsMapCanvas* mapCanvas() const;
+    QgsMapCanvas *mapCanvas() const;
 
   protected:
-    void mousePressEvent( QMouseEvent* ) override;
-    void mouseReleaseEvent( QMouseEvent* ) override;
-    void mouseMoveEvent( QMouseEvent* ) override;
-    void mouseDoubleClickEvent( QMouseEvent* e ) override;
+    void mousePressEvent( QMouseEvent * ) override;
+    void mouseReleaseEvent( QMouseEvent * ) override;
+    void mouseMoveEvent( QMouseEvent * ) override;
+    void mouseDoubleClickEvent( QMouseEvent *e ) override;
 
-    void keyPressEvent( QKeyEvent * e ) override;
-    void keyReleaseEvent( QKeyEvent * e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
+    void keyReleaseEvent( QKeyEvent *e ) override;
 
-    void wheelEvent( QWheelEvent* event ) override;
+    void wheelEvent( QWheelEvent *event ) override;
 
-    void paintEvent( QPaintEvent* event ) override;
+    void paintEvent( QPaintEvent *event ) override;
 
-    void hideEvent( QHideEvent* e ) override;
-    void showEvent( QShowEvent* e ) override;
+    void hideEvent( QHideEvent *e ) override;
+    void showEvent( QShowEvent *e ) override;
 
-    void resizeEvent( QResizeEvent* event ) override;
+    void resizeEvent( QResizeEvent *event ) override;
     void scrollContentsBy( int dx, int dy ) override;
 
   private:
     //! Current composer tool
-    QgsComposerView::Tool mCurrentTool;
+    QgsComposerView::Tool mCurrentTool = Select;
     //! Previous composer tool
-    QgsComposerView::Tool mPreviousTool;
+    QgsComposerView::Tool mPreviousTool = Select;
 
     //! Rubber band item
-    QGraphicsRectItem* mRubberBandItem;
+    QGraphicsRectItem *mRubberBandItem = nullptr;
     //! Rubber band item for arrows
-    QGraphicsLineItem* mRubberBandLineItem;
+    QGraphicsLineItem *mRubberBandLineItem = nullptr;
     //! Item to move content
-    QgsComposerItem* mMoveContentItem;
+    QgsComposerItem *mMoveContentItem = nullptr;
     //! Start position of content move
     QPointF mMoveContentStartPos;
     //! Start of rubber band creation
     QPointF mRubberBandStartPos;
 
     //! True if user is currently selecting by marquee
-    bool mMarqueeSelect;
+    bool mMarqueeSelect = false;
     //! True if user is currently zooming by marquee
-    bool mMarqueeZoom;
+    bool mMarqueeZoom = false;
     //! True if user is currently temporarily activating the zoom tool by holding control+space
-    QgsComposerView::ToolStatus mTemporaryZoomStatus;
+    QgsComposerView::ToolStatus mTemporaryZoomStatus = QgsComposerView::Inactive;
 
-    bool mPaintingEnabled;
+    bool mPaintingEnabled = true;
 
-    QgsComposerRuler* mHorizontalRuler;
-    QgsComposerRuler* mVerticalRuler;
+    QgsComposerRuler *mHorizontalRuler = nullptr;
+    QgsComposerRuler *mVerticalRuler = nullptr;
 
-    QgsMapCanvas* mCanvas = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
 
     //! Draw a shape on the canvas
     void addShape( Tool currentTool );
@@ -246,58 +262,59 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void setSelectedNode( QgsComposerNodesItem *shape, const int index );
     void deselectNode();
 
-    float mMoveContentSearchRadius;
-    QgsComposerNodesItem* mNodesItem;
-    int mNodesItemIndex;
+    float mMoveContentSearchRadius = 25;
+    QgsComposerNodesItem *mNodesItem = nullptr;
+    int mNodesItemIndex = -1;
     std::unique_ptr<QGraphicsPolygonItem> mPolygonItem;
     std::unique_ptr<QGraphicsPathItem> mPolylineItem;
 
     //! True if user is currently panning by clicking and dragging with the pan tool
-    bool mToolPanning;
+    bool mToolPanning = false;
     //! True if user is currently panning by holding the middle mouse button
-    bool mMousePanning;
+    bool mMousePanning = false;
     //! True if user is currently panning by holding the space key
-    bool mKeyPanning;
+    bool mKeyPanning = false;
 
     //! True if user is currently dragging with the move item content tool
-    bool mMovingItemContent;
+    bool mMovingItemContent = false;
 
     QPoint mMouseLastXY;
     QPoint mMouseCurrentXY;
     QPoint mMousePressStartPos;
 
-    QgsPreviewEffect* mPreviewEffect;
+    QgsPreviewEffect *mPreviewEffect = nullptr;
 
     //! Returns the default mouse cursor for a tool
     QCursor defaultCursorForTool( Tool currentTool );
 
     //! Zoom composition from a mouse wheel event
-    void wheelZoom( QWheelEvent * event );
+    void wheelZoom( QWheelEvent *event );
     //! Redraws the rectangular rubber band
-    void updateRubberBandRect( QPointF & pos, const bool constrainSquare = false, const bool fromCenter = false );
+    void updateRubberBandRect( QPointF &pos, const bool constrainSquare = false, const bool fromCenter = false );
     //! Redraws the linear rubber band
     void updateRubberBandLine( QPointF pos, const bool constrainAngles = false );
     //! Removes the rubber band and cleans up
     void removeRubberBand();
 
     //! Starts a marquee selection
-    void startMarqueeSelect( QPointF & scenePoint );
+    void startMarqueeSelect( QPointF &scenePoint );
     //! Finalises a marquee selection
-    void endMarqueeSelect( QMouseEvent* e );
+    void endMarqueeSelect( QMouseEvent *e );
     //! Starts a zoom in marquee
-    void startMarqueeZoom( QPointF & scenePoint );
+    void startMarqueeZoom( QPointF &scenePoint );
     //! Finalises a marquee zoom
-    void endMarqueeZoom( QMouseEvent* e );
+    void endMarqueeZoom( QMouseEvent *e );
 
     //void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 
   signals:
     //! Is emitted when selected item changed. If 0, no item is selected
-    void selectedItemChanged( QgsComposerItem* selected );
+    void selectedItemChanged( QgsComposerItem *selected );
     //! Is emitted when a composer item has been removed from the scene
-    void itemRemoved( QgsComposerItem* );
+    void itemRemoved( QgsComposerItem * );
 
-    /** Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
+    /**
+     * Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
      QgsComposer may set the selection tool again*/
     void actionFinished();
     //! Is emitted when mouse cursor coordinates change
@@ -306,12 +323,12 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void zoomLevelChanged();
 
     //! Emitted before composerview is shown
-    void composerViewShow( QgsComposerView* );
+    void composerViewShow( QgsComposerView * );
     //! Emitted before composerview is hidden
-    void composerViewHide( QgsComposerView* );
+    void composerViewHide( QgsComposerView * );
 
     //! Emitted when the composition is set for the view
-    void compositionSet( QgsComposition* );
+    void compositionSet( QgsComposition * );
 };
 
 #endif

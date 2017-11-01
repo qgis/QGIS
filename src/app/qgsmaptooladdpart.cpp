@@ -27,17 +27,15 @@
 
 #include <QMouseEvent>
 
-QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
+QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas *canvas )
+  : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), CaptureNone )
 {
   mToolName = tr( "Add part" );
+  connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolAddPart::stopCapturing );
+  connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolAddPart::stopCapturing );
 }
 
-QgsMapToolAddPart::~QgsMapToolAddPart()
-{
-}
-
-void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( checkSelection() )
   {
@@ -49,7 +47,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QgsMapMouseEvent * e )
   }
 }
 
-void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
+void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //check if we operate on a vector layer
   QgsVectorLayer *vlayer = currentVectorLayer();
@@ -66,7 +64,8 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
   }
 
   bool isGeometryEmpty = false;
-  if ( vlayer->selectedFeatures()[0].geometry().isNull() )
+  QgsFeatureList selectedFeatures = vlayer->selectedFeatures();
+  if ( !selectedFeatures.isEmpty() && selectedFeatures.at( 0 ).geometry().isNull() )
     isGeometryEmpty = true;
 
   if ( !checkSelection() )
@@ -80,10 +79,10 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
   {
     case CapturePoint:
     {
-      QgsPointV2 layerPoint;
-      QgsPoint mapPoint = e->mapPoint();
+      QgsPoint layerPoint;
+      QgsPointXY mapPoint = e->mapPoint();
 
-      if ( nextPoint( QgsPointV2( mapPoint ), layerPoint ) != 0 )
+      if ( nextPoint( QgsPoint( mapPoint ), layerPoint ) != 0 )
       {
         QgsDebugMsg( "nextPoint failed" );
         return;
@@ -136,7 +135,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       bool hasCurvedSegments = captureCurve()->hasCurvedSegments();
       bool providerSupportsCurvedSegments = vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::CircularGeometries;
 
-      QgsCurve* curveToAdd = nullptr;
+      QgsCurve *curveToAdd = nullptr;
       if ( hasCurvedSegments && providerSupportsCurvedSegments )
       {
         curveToAdd = captureCurve()->clone();
@@ -150,12 +149,12 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
       if ( mode() == CapturePolygon )
       {
         //avoid intersections
-        QgsCurvePolygon* cp = new QgsCurvePolygon();
+        QgsCurvePolygon *cp = new QgsCurvePolygon();
         cp->setExteriorRing( curveToAdd );
-        QgsGeometry* geom = new QgsGeometry( cp );
+        QgsGeometry *geom = new QgsGeometry( cp );
         geom->avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
 
-        const QgsCurvePolygon* cpGeom = dynamic_cast<const QgsCurvePolygon*>( geom->geometry() );
+        const QgsCurvePolygon *cpGeom = qgsgeometry_cast<const QgsCurvePolygon *>( geom->constGet() );
         if ( !cpGeom )
         {
           stopCapturing();
@@ -199,7 +198,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent * e )
 
       vlayer->triggerRepaint();
 
-      if (( !isGeometryEmpty ) && QgsWkbTypes::isSingleType( vlayer->wkbType() ) )
+      if ( ( !isGeometryEmpty ) && QgsWkbTypes::isSingleType( vlayer->wkbType() ) )
       {
         emit messageEmitted( tr( "Add part: Feature geom is single part and you've added more than one" ), QgsMessageBar::WARNING );
       }

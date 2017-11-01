@@ -30,8 +30,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.core import QgsSettings
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QByteArray
 from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QFileDialog
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 
@@ -65,7 +66,14 @@ class MultipleFileInputDialog(BASE, WIDGET):
         self.btnRemove.clicked.connect(lambda: self.removeRows())
         self.btnRemoveAll.clicked.connect(lambda: self.removeRows(True))
 
+        self.settings = QgsSettings()
+        self.restoreGeometry(self.settings.value("/Processing/multipleFileInputDialogGeometry", QByteArray()))
+
         self.populateList()
+        self.finished.connect(self.saveWindowGeometry)
+
+    def saveWindowGeometry(self):
+        self.settings.setValue("/Processing/multipleInputDialogGeometry", self.saveGeometry())
 
     def populateList(self):
         model = QStandardItemModel()
@@ -87,7 +95,7 @@ class MultipleFileInputDialog(BASE, WIDGET):
         QDialog.reject(self)
 
     def addFile(self):
-        settings = QSettings()
+        settings = QgsSettings()
         if settings.contains('/Processing/LastInputPath'):
             path = settings.value('/Processing/LastInputPath')
         else:

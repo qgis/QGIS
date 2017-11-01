@@ -30,17 +30,17 @@ class QgsMssqlProvider;
 class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    explicit QgsMssqlFeatureSource( const QgsMssqlProvider* p );
+    explicit QgsMssqlFeatureSource( const QgsMssqlProvider *p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
     QgsFields mFields;
     QString mFidColName;
     long mSRId;
 
     /* sql geo type */
-    bool mIsGeography;
+    bool mIsGeography = false;
 
     QString mGeometryColName;
     QString mGeometryColType;
@@ -61,6 +61,8 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
     // SQL statement used to limit the features retrieved
     QString mSqlWhereClause;
 
+    QgsCoordinateReferenceSystem mCrs;
+
     // Return True if this feature source has spatial attributes.
     bool isSpatial() { return !mGeometryColName.isEmpty() || !mGeometryColType.isEmpty(); }
 
@@ -71,7 +73,7 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
 class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>
 {
   public:
-    QgsMssqlFeatureIterator( QgsMssqlFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
+    QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsMssqlFeatureIterator();
 
@@ -79,10 +81,13 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     virtual bool close() override;
 
   protected:
-    void BuildStatement( const QgsFeatureRequest& request );
 
-    virtual bool fetchFeature( QgsFeature& feature ) override;
-    bool nextFeatureFilterExpression( QgsFeature& f ) override;
+    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool nextFeatureFilterExpression( QgsFeature &f ) override;
+
+  private:
+    void BuildStatement( const QgsFeatureRequest &request );
+
 
   private:
 
@@ -92,7 +97,7 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     QSqlDatabase mDatabase;
 
     // The current sql query
-    QSqlQuery* mQuery;
+    std::unique_ptr< QSqlQuery > mQuery;
 
     // The current sql statement
     QString mStatement;
@@ -101,7 +106,7 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     QString mFallbackStatement;
 
     // Field index of FID column
-    long mFidCol;
+    long mFidCol = -1;
 
     // List of attribute indices to fetch with nextFeature calls
     QgsAttributeList mAttributesToFetch;
@@ -109,8 +114,11 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     // for parsing sql geometries
     QgsMssqlGeometryParser mParser;
 
-    bool mExpressionCompiled;
-    bool mOrderByCompiled;
+    bool mExpressionCompiled = false;
+    bool mOrderByCompiled = false;
+
+    QgsCoordinateTransform mTransform;
+    QgsRectangle mFilterRect;
 };
 
 #endif // QGSMSSQLFEATUREITERATOR_H

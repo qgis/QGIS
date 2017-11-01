@@ -23,25 +23,27 @@
 #include <QTableWidget>
 #include <QKeyEvent>
 
-QgsOrderByDialog::QgsOrderByDialog( QgsVectorLayer* layer, QWidget* parent )
-    : QDialog( parent )
-    , mLayer( layer )
+QgsOrderByDialog::QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent )
+  : QDialog( parent )
+  , mLayer( layer )
 {
   setupUi( this );
 
-  mOrderByTableWidget->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
-  mOrderByTableWidget->horizontalHeader()->setResizeMode( 1, QHeaderView::ResizeToContents );
-  mOrderByTableWidget->horizontalHeader()->setResizeMode( 2, QHeaderView::ResizeToContents );
+  mOrderByTableWidget->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
+  mOrderByTableWidget->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::ResizeToContents );
+  mOrderByTableWidget->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::ResizeToContents );
 
   mOrderByTableWidget->installEventFilter( this );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOrderByDialog::showHelp );
 }
 
-void QgsOrderByDialog::setOrderBy( const QgsFeatureRequest::OrderBy& orderBy )
+void QgsOrderByDialog::setOrderBy( const QgsFeatureRequest::OrderBy &orderBy )
 {
   mOrderByTableWidget->setRowCount( orderBy.length() + 1 );
 
   int i = 0;
-  Q_FOREACH ( const QgsFeatureRequest::OrderByClause& orderByClause, orderBy )
+  Q_FOREACH ( const QgsFeatureRequest::OrderByClause &orderByClause, orderBy )
   {
     setRow( i, orderByClause );
 
@@ -58,18 +60,18 @@ QgsFeatureRequest::OrderBy QgsOrderByDialog::orderBy()
 
   for ( int i = 0; i < mOrderByTableWidget->rowCount(); ++i )
   {
-    QString expressionText = static_cast<QgsFieldExpressionWidget*>( mOrderByTableWidget->cellWidget( i, 0 ) )->currentText();
-    bool isExpression = static_cast<QgsFieldExpressionWidget*>( mOrderByTableWidget->cellWidget( i, 0 ) )->isExpression();
+    QString expressionText = static_cast<QgsFieldExpressionWidget *>( mOrderByTableWidget->cellWidget( i, 0 ) )->currentText();
+    bool isExpression = static_cast<QgsFieldExpressionWidget *>( mOrderByTableWidget->cellWidget( i, 0 ) )->isExpression();
 
     if ( ! expressionText.isEmpty() )
     {
       bool asc = true;
-      int ascIndex = static_cast<QComboBox*>( mOrderByTableWidget->cellWidget( i, 1 ) )->currentIndex();
+      int ascIndex = static_cast<QComboBox *>( mOrderByTableWidget->cellWidget( i, 1 ) )->currentIndex();
       if ( ascIndex == 1 )
         asc = false;
 
       bool nullsFirst = false;
-      int nullsFirstIndex = static_cast<QComboBox*>( mOrderByTableWidget->cellWidget( i, 2 ) )->currentIndex();
+      int nullsFirstIndex = static_cast<QComboBox *>( mOrderByTableWidget->cellWidget( i, 2 ) )->currentIndex();
       if ( nullsFirstIndex == 1 )
         nullsFirst = true;
 
@@ -85,7 +87,7 @@ QgsFeatureRequest::OrderBy QgsOrderByDialog::orderBy()
   return orderBy;
 }
 
-void QgsOrderByDialog::onExpressionChanged( const QString& expression )
+void QgsOrderByDialog::onExpressionChanged( const QString &expression )
 {
   // The sender() is the field widget which is the cell widget of the first column
   int row;
@@ -108,19 +110,19 @@ void QgsOrderByDialog::onExpressionChanged( const QString& expression )
   }
 }
 
-void QgsOrderByDialog::setRow( int row, const QgsFeatureRequest::OrderByClause& orderByClause )
+void QgsOrderByDialog::setRow( int row, const QgsFeatureRequest::OrderByClause &orderByClause )
 {
-  QgsFieldExpressionWidget* fieldExpression = new QgsFieldExpressionWidget();
+  QgsFieldExpressionWidget *fieldExpression = new QgsFieldExpressionWidget();
   fieldExpression->setLayer( mLayer );
   fieldExpression->setField( orderByClause.expression().expression() );
-  connect( fieldExpression, SIGNAL( fieldChanged( QString ) ), this, SLOT( onExpressionChanged( QString ) ) );
+  connect( fieldExpression, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsOrderByDialog::onExpressionChanged );
 
-  QComboBox* ascComboBox = new QComboBox();
+  QComboBox *ascComboBox = new QComboBox();
   ascComboBox->addItem( tr( "Ascending" ) );
   ascComboBox->addItem( tr( "Descending" ) );
   ascComboBox->setCurrentIndex( orderByClause.ascending() ? 0 : 1 );
 
-  QComboBox* nullsFirstComboBox = new QComboBox();
+  QComboBox *nullsFirstComboBox = new QComboBox();
   nullsFirstComboBox->addItem( tr( "NULLs last" ) );
   nullsFirstComboBox->addItem( tr( "NULLs first" ) );
   nullsFirstComboBox->setCurrentIndex( orderByClause.nullsFirst() ? 1 : 0 );
@@ -130,14 +132,14 @@ void QgsOrderByDialog::setRow( int row, const QgsFeatureRequest::OrderByClause& 
   mOrderByTableWidget->setCellWidget( row, 2, nullsFirstComboBox );
 }
 
-bool QgsOrderByDialog::eventFilter( QObject* obj, QEvent* e )
+bool QgsOrderByDialog::eventFilter( QObject *obj, QEvent *e )
 {
   Q_UNUSED( obj )
   Q_ASSERT( obj == mOrderByTableWidget );
 
   if ( e->type() == QEvent::KeyPress )
   {
-    QKeyEvent* keyEvent = static_cast<QKeyEvent*>( e );
+    QKeyEvent *keyEvent = static_cast<QKeyEvent *>( e );
 
     if ( keyEvent->key() == Qt::Key_Delete )
     {
@@ -150,3 +152,7 @@ bool QgsOrderByDialog::eventFilter( QObject* obj, QEvent* e )
   return false;
 }
 
+void QgsOrderByDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#layer-rendering" ) );
+}

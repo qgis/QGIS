@@ -19,10 +19,16 @@
 #include <QVector>
 #include <QVariant>
 
-#include <qgspoint.h>
-#include <qgscoordinatereferencesystem.h>
-#include <qgsdistancearea.h>
+#include "qgspoint.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdistancearea.h"
 #include "qgis_analysis.h"
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgsgraphbuilder.h>
+% End
+#endif
 
 /**
 * \ingroup analysis
@@ -32,23 +38,32 @@
 */
 class ANALYSIS_EXPORT QgsGraphBuilderInterface
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast< QgsGraphBuilder * >( sipCpp ) != NULL )
+      sipType = sipType_QgsGraphBuilder;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
   public:
 
     /**
      * Default constructor
-     * @param crs Coordinate reference system for new graph vertex
-     * @param ctfEnabled enable coordinate transform from source graph CRS to CRS graph
-     * @param topologyTolerance sqrt distance between source point as one graph vertex
-     * @param ellipsoidID ellipsoid for edge measurement
+     * \param crs Coordinate reference system for new graph vertex
+     * \param ctfEnabled enable coordinate transform from source graph CRS to CRS graph
+     * \param topologyTolerance sqrt distance between source point as one graph vertex
+     * \param ellipsoidID ellipsoid for edge measurement
      */
-    QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem& crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString& ellipsoidID = "WGS84" )
-        : mCrs( crs )
-        , mCtfEnabled( ctfEnabled )
-        , mTopologyTolerance( topologyTolerance )
+    QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem &crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" )
+      : mCrs( crs )
+      , mCtfEnabled( ctfEnabled )
+      , mTopologyTolerance( topologyTolerance )
     {
-      mDa.setSourceCrs( mCrs.srsid() );
+      mDa.setSourceCrs( mCrs );
       mDa.setEllipsoid( ellipsoidID );
-      mDa.setEllipsoidalMode( ctfEnabled );
     }
 
     virtual ~QgsGraphBuilderInterface()
@@ -73,18 +88,18 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
     }
 
     //! Returns measurement tool
-    QgsDistanceArea* distanceArea()
+    QgsDistanceArea *distanceArea()
     {
       return &mDa;
     }
 
     /**
      * Add vertex to the graph
-     * @param id vertex identifier
-     * @param pt vertex coordinates
-     * @note id and pt are redundant. You can use pt or id to identify the vertex
+     * \param id vertex identifier
+     * \param pt vertex coordinates
+     * \note id and pt are redundant. You can use pt or id to identify the vertex
      */
-    virtual void addVertex( int id, const QgsPoint &pt )
+    virtual void addVertex( int id, const QgsPointXY &pt )
     {
       Q_UNUSED( id );
       Q_UNUSED( pt );
@@ -92,14 +107,14 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
 
     /**
      * Add edge to the graph
-     * @param pt1id first vertex identificator
-     * @param pt1   first vertex coordinates
-     * @param pt2id second vertex identificator
-     * @param pt2   second vertex coordinates
-     * @param strategies optimization strategies
-     * @note pt1id, pt1 and pt2id, pt2 is a redundant interface. You can use vertex coordinates or their identificators.
+     * \param pt1id first vertex identificator
+     * \param pt1   first vertex coordinates
+     * \param pt2id second vertex identificator
+     * \param pt2   second vertex coordinates
+     * \param strategies optimization strategies
+     * \note pt1id, pt1 and pt2id, pt2 is a redundant interface. You can use vertex coordinates or their identificators.
      */
-    virtual void addEdge( int pt1id, const QgsPoint& pt1, int pt2id, const QgsPoint& pt2, const QVector< QVariant >& strategies )
+    virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector< QVariant > &strategies )
     {
       Q_UNUSED( pt1id );
       Q_UNUSED( pt1 );
@@ -118,5 +133,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
     double mTopologyTolerance;
 
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSGRAPHBUILDERINTERFACE_H

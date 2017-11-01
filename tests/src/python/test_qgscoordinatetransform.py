@@ -47,5 +47,6 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         self.assertAlmostEqual(myExpectedValues[2], myProjectedExtent.xMaximum(), msg=myMessage)
         self.assertAlmostEqual(myExpectedValues[3], myProjectedExtent.yMaximum(), msg=myMessage)
 
+
 if __name__ == '__main__':
     unittest.main()

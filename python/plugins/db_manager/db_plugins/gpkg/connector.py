@@ -200,9 +200,9 @@ class GPKGDBConnector(DBConnector):
             raise DbError(e)
 
     @classmethod
-    def isValidDatabase(self, path):
+    def isValidDatabase(cls, path):
         if hasattr(gdal, 'OpenEx'):
-            ds = gdal.OpenEx(self.dbname)
+            ds = gdal.OpenEx(path)
             if ds is None or ds.GetDriver().ShortName != 'GPKG':
                 return False
         else:
@@ -286,7 +286,7 @@ class GPKGDBConnector(DBConnector):
             pass
 
         for i, tbl in enumerate(items):
-            tbl.insert(3, False) # not system table
+            tbl.insert(3, False)  # not system table
 
         return sorted(items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1])))
 
@@ -300,6 +300,7 @@ class GPKGDBConnector(DBConnector):
                 geomtype_flatten = ogr.GT_Flatten(geomtype)
             else:
                 geomtype_flatten = geomtype
+            geomname = 'GEOMETRY'
             if geomtype_flatten == ogr.wkbPoint:
                 geomname = 'POINT'
             elif geomtype_flatten == ogr.wkbLineString:
@@ -351,12 +352,12 @@ class GPKGDBConnector(DBConnector):
             if geomtype == ogr.wkbNone:
                 item = list([Table.TableType,
                              lyr.GetName(),
-                             False, # is_view
+                             False,  # is_view
                              ])
             else:
                 item = list([Table.VectorType,
                              lyr.GetName(),
-                             False, # is_view
+                             False,  # is_view
                              lyr.GetName(),
                              lyr.GetGeometryColumn(),
                              geomname,
@@ -630,9 +631,9 @@ class GPKGDBConnector(DBConnector):
             return True
 
         if tablename.find('"') >= 0:
-            tablename = self.quotedId(tablename)
+            tablename = self.quoteId(tablename)
         if new_table.find('"') >= 0:
-            new_table = self.quotedId(new_table)
+            new_table = self.quoteId(new_table)
 
         gdal.ErrorReset()
         self.gdal_ds.ExecuteSQL('ALTER TABLE %s RENAME TO %s' % (tablename, new_table))
@@ -776,7 +777,7 @@ class GPKGDBConnector(DBConnector):
         return True
 
     def deleteGeometryColumn(self, table, geom_column):
-        return False # not supported
+        return False  # not supported
 
     def addTableUniqueConstraint(self, table, column):
         """ add a unique constraint to a table """

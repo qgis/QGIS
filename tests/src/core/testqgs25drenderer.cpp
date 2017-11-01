@@ -34,16 +34,15 @@
 #include "qgscomposermap.h"
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for 25d renderer.
  */
 class TestQgs25DRenderer : public QObject
 {
     Q_OBJECT
   public:
-    TestQgs25DRenderer()
-        : mpPolysLayer( nullptr )
-    {}
+    TestQgs25DRenderer() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -55,9 +54,9 @@ class TestQgs25DRenderer : public QObject
     void renderComposition();
 
   private:
-    bool imageCheck( const QString& theType );
+    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPolysLayer;
+    QgsVectorLayer *mpPolysLayer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -90,7 +89,7 @@ void TestQgs25DRenderer::initTestCase()
   QgsExpressionContextUtils::setLayerVariable( mpPolysLayer, QStringLiteral( "qgis_25d_height" ), 8 );
   QgsExpressionContextUtils::setLayerVariable( mpPolysLayer, QStringLiteral( "qgis_25d_angle" ), 45 );
 
-  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   mReport += QLatin1String( "<h1>25D Renderer Tests</h1>\n" );
 
 }
@@ -115,7 +114,7 @@ void TestQgs25DRenderer::render()
   mReport += QLatin1String( "<h2>Render</h2>\n" );
 
   //setup 25d renderer
-  Qgs25DRenderer* renderer = new Qgs25DRenderer( );
+  Qgs25DRenderer *renderer = new Qgs25DRenderer();
   renderer->setShadowEnabled( false );
   renderer->setWallShadingEnabled( false );
   renderer->setRoofColor( QColor( "#fdbf6f" ) );
@@ -126,11 +125,11 @@ void TestQgs25DRenderer::render()
 
 void TestQgs25DRenderer::renderComposition()
 {
-  QgsComposition* composition = new QgsComposition( QgsProject::instance() );
+  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
   composition->setPaperSize( 297, 210 ); //A4 landscape
-  QgsComposerMap* map = new QgsComposerMap( composition, 20, 20, 200, 100 );
+  QgsComposerMap *map = new QgsComposerMap( composition, 20, 20, 200, 100 );
   map->setFrameEnabled( true );
-  map->setLayers( QList< QgsMapLayer* >() << mpPolysLayer );
+  map->setLayers( QList< QgsMapLayer * >() << mpPolysLayer );
   composition->addComposerMap( map );
 
   map->setNewExtent( mpPolysLayer->extent() );
@@ -140,7 +139,7 @@ void TestQgs25DRenderer::renderComposition()
   QVERIFY( checker.testComposition( mReport, 0, 100 ) );
 }
 
-bool TestQgs25DRenderer::imageCheck( const QString& theTestType )
+bool TestQgs25DRenderer::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
@@ -152,10 +151,10 @@ bool TestQgs25DRenderer::imageCheck( const QString& theTestType )
   mMapSettings.setExpressionContext( context );
   QgsMultiRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "25d_renderer" ) );
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 20 );
-  bool myResultFlag = myChecker.runTest( theTestType, 500 );
+  bool myResultFlag = myChecker.runTest( testType, 500 );
   mReport += myChecker.report();
   return myResultFlag;
 }

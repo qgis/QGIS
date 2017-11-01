@@ -20,12 +20,15 @@
 #include "qgscomposition.h"
 #include "qgsproject.h"
 
-QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent ):
-    QUndoCommand( text, parent ), mMultiFrame( multiFrame ), mFirstRun( true )
+QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand( QgsComposerMultiFrame *multiFrame, const QString &text, QUndoCommand *parent )
+  : QUndoCommand( text, parent )
+  , mMultiFrame( multiFrame )
+  , mFirstRun( true )
 {
 }
 
-QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand(): QUndoCommand( QLatin1String( "" ), nullptr ), mMultiFrame( nullptr ), mFirstRun( false )
+QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand()
+  : QUndoCommand( QString(), nullptr )
 {
 }
 
@@ -53,7 +56,7 @@ void QgsComposerMultiFrameCommand::saveAfterState()
   saveState( mAfterState );
 }
 
-void QgsComposerMultiFrameCommand::saveState( QDomDocument& stateDoc )
+void QgsComposerMultiFrameCommand::saveState( QDomDocument &stateDoc )
 {
   if ( mMultiFrame )
   {
@@ -64,7 +67,7 @@ void QgsComposerMultiFrameCommand::saveState( QDomDocument& stateDoc )
   }
 }
 
-void QgsComposerMultiFrameCommand::restoreState( QDomDocument& stateDoc )
+void QgsComposerMultiFrameCommand::restoreState( QDomDocument &stateDoc )
 {
   if ( mMultiFrame )
   {
@@ -90,15 +93,15 @@ bool QgsComposerMultiFrameCommand::containsChange() const
 
 
 QgsComposerMultiFrameMergeCommand::QgsComposerMultiFrameMergeCommand( QgsComposerMultiFrameMergeCommand::Context c, QgsComposerMultiFrame *multiFrame, const QString &text )
-    : QgsComposerMultiFrameCommand( multiFrame, text )
-    , mContext( c )
+  : QgsComposerMultiFrameCommand( multiFrame, text )
+  , mContext( c )
 {
 
 }
 
 bool QgsComposerMultiFrameMergeCommand::mergeWith( const QUndoCommand *command )
 {
-  const QgsComposerMultiFrameCommand* c = dynamic_cast<const QgsComposerMultiFrameCommand*>( command );
+  const QgsComposerMultiFrameCommand *c = dynamic_cast<const QgsComposerMultiFrameCommand *>( command );
   if ( !c || mMultiFrame != c->multiFrame() )
   {
     return false;

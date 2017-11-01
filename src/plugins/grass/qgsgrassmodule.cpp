@@ -86,16 +86,18 @@ QProcessEnvironment QgsGrassModule::processEnvironment( bool direct )
 
 QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
                                 bool direct, QWidget *parent, Qt::WindowFlags f )
-    : QWidget( parent, f )
-    , QgsGrassModuleBase()
-    , mOptions( 0 )
-    , mSuccess( false )
-    , mDirect( direct )
+  : QWidget( parent, f )
+  , QgsGrassModuleBase()
+  , mSuccess( false )
+  , mDirect( direct )
 {
   Q_UNUSED( f );
   QgsDebugMsg( "called" );
 
   setupUi( this );
+  connect( mRunButton, &QPushButton::clicked, this, &QgsGrassModule::mRunButton_clicked );
+  connect( mCloseButton, &QPushButton::clicked, this, &QgsGrassModule::mCloseButton_clicked );
+  connect( mViewButton, &QPushButton::clicked, this, &QgsGrassModule::mViewButton_clicked );
   // use fixed width font because module's output may be formatted
   mOutputTextBrowser->setStyleSheet( QStringLiteral( "font-family: Monospace; font-size: 9pt;" ) );
   lblModuleName->setText( tr( "Module: %1" ).arg( moduleName ) );
@@ -203,12 +205,12 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
     mManualTextBrowser->insertPlainText( tr( "Please ensure you have the GRASS documentation installed." ) );
   }
 
-  connect( &mProcess, SIGNAL( readyReadStandardOutput() ), this, SLOT( readStdout() ) );
-  connect( &mProcess, SIGNAL( readyReadStandardError() ), this, SLOT( readStderr() ) );
-  connect( &mProcess, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( finished( int, QProcess::ExitStatus ) ) );
+  connect( &mProcess, &QProcess::readyReadStandardOutput, this, &QgsGrassModule::readStdout );
+  connect( &mProcess, &QProcess::readyReadStandardError, this, &QgsGrassModule::readStderr );
+  connect( &mProcess, static_cast<void ( QProcess::* )( int, QProcess::ExitStatus )>( &QProcess::finished ), this, &QgsGrassModule::finished );
 
   const char *env = "GRASS_MESSAGE_FORMAT=gui";
-  char *envstr = new char[strlen( env )+1];
+  char *envstr = new char[strlen( env ) + 1];
   strcpy( envstr, env );
   putenv( envstr );
 
@@ -434,7 +436,7 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
       painter.drawPixmap( pos, 0, plusPixmap );
       pos += buffer + plusWidth;
     }
-    if (( i == 1 && pixmaps.size() == 2 ) || ( i == 2 && pixmaps.size() == 3 ) ) // ->
+    if ( ( i == 1 && pixmaps.size() == 2 ) || ( i == 2 && pixmaps.size() == 3 ) ) // ->
     {
       pos += buffer;
       painter.drawPixmap( pos, 0, arrowPixmap );
@@ -537,15 +539,7 @@ void QgsGrassModule::run()
         if ( ret == QMessageBox::Cancel )
           return;
 
-#if GRASS_VERSION_MAJOR < 7
-        // r.mapcalc does not use standard parser (does not accept --o) in GRASS 6
-        if ( mXName != "r.mapcalc" )
-        {
-          arguments.append( "--o" );
-        }
-#else
         arguments.append( QStringLiteral( "--o" ) );
-#endif
       }
     }
 
@@ -587,7 +581,7 @@ void QgsGrassModule::run()
      * G_GISRC_MODE_MEMORY mode, the variable remains set in variable when a module is run
      * -> unset GISRC_MODE_MEMORY. Remove later once 6.1.x / 6.0.1 is widespread.
     *   */
-    putenv(( char* ) "GISRC_MODE_MEMORY" );  // unset
+    putenv( ( char * ) "GISRC_MODE_MEMORY" ); // unset
 
     mOutputTextBrowser->clear();
 
@@ -627,7 +621,7 @@ void QgsGrassModule::run()
 
       // Print some important variables
       variables << QStringLiteral( "QGIS_PREFIX_PATH" ) << QStringLiteral( "QGIS_GRASS_CRS" ) << QStringLiteral( "GRASS_REGION" );
-      Q_FOREACH ( const QString& v, variables )
+      Q_FOREACH ( const QString &v, variables )
       {
         mOutputTextBrowser->append( v + "=" + environment.value( v ) + "<BR>" );
       }
@@ -807,7 +801,7 @@ void QgsGrassModule::readStderr()
 
     QString text, html;
     int percent;
-    QgsGrass::ModuleOutput type =  QgsGrass::parseModuleOutput( line, text, html, percent );
+    QgsGrass::ModuleOutput type = QgsGrass::parseModuleOutput( line, text, html, percent );
     if ( type == QgsGrass::OutputPercent )
     {
       setProgress( percent );
@@ -951,7 +945,7 @@ QString QgsGrassModule::libraryPathVariable()
 #endif
 }
 
-void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment & environment )
+void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment &environment )
 {
   QString pathVariable = libraryPathVariable();
   QString separator;
@@ -963,7 +957,7 @@ void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment & environment )
   separator = QStringLiteral( ":" );
 #endif
   QString lp = environment.value( pathVariable );
-  lp =  QgsApplication::pluginPath() + separator + lp;
+  lp = QgsApplication::pluginPath() + separator + lp;
   environment.insert( pathVariable, lp );
   QgsDebugMsg( pathVariable + "=" + lp );
 }

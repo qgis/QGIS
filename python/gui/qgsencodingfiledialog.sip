@@ -1,25 +1,58 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsencodingfiledialog.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** A file dialog which lets the user select the preferred encoding type for a data provider*/
-class QgsEncodingFileDialog : QFileDialog
+
+
+
+class QgsEncodingFileDialog: QFileDialog
 {
-%TypeHeaderCode
-#include <qgsencodingfiledialog.h>
+%Docstring
+ A file dialog which lets the user select the preferred encoding type for a data provider.
+*
 %End
 
+%TypeHeaderCode
+#include "qgsencodingfiledialog.h"
+%End
   public:
-    QgsEncodingFileDialog( QWidget * parent /TransferThis/ = 0,
-                           const QString & caption = QString(), const QString & directory = QString(),
-                           const QString & filter = QString(), const QString & encoding = QString() );
-    ~QgsEncodingFileDialog();
-    /** Returns a string describing the chosen encoding*/
+
+    QgsEncodingFileDialog( QWidget *parent /TransferThis/ = 0,
+                           const QString &caption = QString(), const QString &directory = QString(),
+                           const QString &filter = QString(), const QString &encoding = QString() );
+%Docstring
+ QgsEncodingFileDialog constructor for QgsEncodingFileDialog
+%End
     QString encoding() const;
-    /** Adds a 'Cancel All' button for the user to click */
+%Docstring
+Returns a string describing the chosen encoding
+ :rtype: str
+%End
     void addCancelAll();
-    /** Returns true if the user clicked 'Cancel All' */
+%Docstring
+Adds a 'Cancel All' button for the user to click
+%End
     bool cancelAll();
+%Docstring
+Returns true if the user clicked 'Cancel All'
+ :rtype: bool
+%End
 
   public slots:
     void saveUsedEncoding();
 
     void pbnCancelAll_clicked();
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsencodingfiledialog.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

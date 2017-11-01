@@ -18,13 +18,13 @@
 #define QGSNEWGEOPACKAGELAYERDIALOG_H
 
 #include "ui_qgsnewgeopackagelayerdialogbase.h"
-#include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgsguiutils.h"
 
 #include "qgis.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Dialog to set up parameters to create a new GeoPackage layer, and on accept() to create it and add it to the layers */
 class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNewGeoPackageLayerDialogBase
 {
@@ -32,34 +32,52 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
 
   public:
     //! Constructor
-    QgsNewGeoPackageLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewGeoPackageLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsNewGeoPackageLayerDialog();
 
+    /**
+     * Sets the \a crs value for the new layer in the dialog.
+     * \since QGIS 3.0
+     */
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Returns the database path
+     * \since QGIS 3.0
+     */
+    QString databasePath() const { return mDatabaseEdit->text(); }
+
+    /**
+     * Sets the the database \a path
+     * \since QGIS 3.0
+     */
+    void setDatabasePath( const QString &path ) { mDatabaseEdit->setText( path ); }
+
   private slots:
-    void on_mAddAttributeButton_clicked();
-    void on_mRemoveAttributeButton_clicked();
-    void on_mFieldTypeBox_currentIndexChanged( int index );
-    void on_mGeometryTypeBox_currentIndexChanged( int index );
-    void on_mSelectDatabaseButton_clicked();
-    void on_mDatabaseEdit_textChanged( const QString& text );
-    void on_mTableNameEdit_textChanged( const QString& text );
-    void on_mTableNameEdit_textEdited( const QString& text );
-    void on_mLayerIdentifierEdit_textEdited( const QString& text );
-    void fieldNameChanged( const QString& );
+    void mAddAttributeButton_clicked();
+    void mRemoveAttributeButton_clicked();
+    void mFieldTypeBox_currentIndexChanged( int index );
+    void mGeometryTypeBox_currentIndexChanged( int index );
+    void mSelectDatabaseButton_clicked();
+    void mDatabaseEdit_textChanged( const QString &text );
+    void mTableNameEdit_textChanged( const QString &text );
+    void mTableNameEdit_textEdited( const QString &text );
+    void mLayerIdentifierEdit_textEdited( const QString &text );
+    void fieldNameChanged( const QString & );
     void selectionChanged();
     void checkOk();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+    void showHelp();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
 
   private:
     bool apply();
 
-    QPushButton *mOkButton;
+    QPushButton *mOkButton = nullptr;
     QString mCrsId;
-    bool mTableNameEdited;
-    bool mLayerIdentifierEdited;
+    bool mTableNameEdited = false;
+    bool mLayerIdentifierEdited = false;
 };
 
 #endif // QGSNEWVECTORLAYERDIALOG_H

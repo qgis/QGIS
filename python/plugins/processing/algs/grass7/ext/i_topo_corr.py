@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import absolute_import
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'April 2016'
@@ -26,11 +25,11 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from .i import multipleOutputDir, verifyRasterNum
+from .i import multipleOutputDir
 from processing.core.parameters import getParameterFromString
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # Remove output
     output = alg.getOutputFromName('output')
     alg.removeOutputFromName('output')

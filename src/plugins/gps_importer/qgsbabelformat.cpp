@@ -22,13 +22,8 @@
 #include <QString>
 
 
-QgsBabelFormat::QgsBabelFormat( const QString& name )
-    : mName( name )
-    , mSupportsImport( false )
-    , mSupportsExport( false )
-    , mSupportsWaypoints( false )
-    , mSupportsRoutes( false )
-    , mSupportsTracks( false )
+QgsBabelFormat::QgsBabelFormat( const QString &name )
+  : mName( name )
 {
 }
 
@@ -39,10 +34,10 @@ QString QgsBabelFormat::name() const
 }
 
 
-QStringList QgsBabelFormat::importCommand( const QString& babel,
-    const QString& featuretype,
-    const QString& input,
-    const QString& output ) const
+QStringList QgsBabelFormat::importCommand( const QString &babel,
+    const QString &featuretype,
+    const QString &input,
+    const QString &output ) const
 {
   Q_UNUSED( babel );
   Q_UNUSED( featuretype );
@@ -52,10 +47,10 @@ QStringList QgsBabelFormat::importCommand( const QString& babel,
 }
 
 
-QStringList QgsBabelFormat::exportCommand( const QString& babel,
-    const QString& featuretype,
-    const QString& input,
-    const QString& output ) const
+QStringList QgsBabelFormat::exportCommand( const QString &babel,
+    const QString &featuretype,
+    const QString &input,
+    const QString &output ) const
 {
   Q_UNUSED( babel );
   Q_UNUSED( featuretype );
@@ -96,7 +91,7 @@ bool QgsBabelFormat::supportsTracks() const
 
 
 
-QgsSimpleBabelFormat::QgsSimpleBabelFormat( const QString& format,
+QgsSimpleBabelFormat::QgsSimpleBabelFormat( const QString &format,
     bool hasWaypoints, bool hasRoutes,
     bool hasTracks ) : mFormat( format )
 {
@@ -108,27 +103,27 @@ QgsSimpleBabelFormat::QgsSimpleBabelFormat( const QString& format,
 }
 
 
-QStringList QgsSimpleBabelFormat::importCommand( const QString& babel,
-    const QString& featuretype,
-    const QString& input,
-    const QString& output )const
+QStringList QgsSimpleBabelFormat::importCommand( const QString &babel,
+    const QString &featuretype,
+    const QString &input,
+    const QString &output )const
 {
   QStringList args;
   args
-  << QStringLiteral( "\"%1\"" ).arg( babel )
-  << featuretype
-  << QStringLiteral( "-i" )
-  << mFormat
-  << QStringLiteral( "-o" ) << QStringLiteral( "gpx" )
-  << QStringLiteral( "\"%1\"" ).arg( input )
-  << QStringLiteral( "\"%1\"" ).arg( output );
+      << QStringLiteral( "\"%1\"" ).arg( babel )
+      << featuretype
+      << QStringLiteral( "-i" )
+      << mFormat
+      << QStringLiteral( "-o" ) << QStringLiteral( "gpx" )
+      << QStringLiteral( "\"%1\"" ).arg( input )
+      << QStringLiteral( "\"%1\"" ).arg( output );
   return args;
 }
 
 
 
-QgsBabelCommand::QgsBabelCommand( const QString& importCmd,
-                                  const QString& exportCmd )
+QgsBabelCommand::QgsBabelCommand( const QString &importCmd,
+                                  const QString &exportCmd )
 {
   mSupportsWaypoints = true;
   mSupportsRoutes = true;
@@ -148,10 +143,10 @@ QgsBabelCommand::QgsBabelCommand( const QString& importCmd,
 }
 
 
-QStringList QgsBabelCommand::importCommand( const QString& babel,
-    const QString& featuretype,
-    const QString& input,
-    const QString& output ) const
+QStringList QgsBabelCommand::importCommand( const QString &babel,
+    const QString &featuretype,
+    const QString &input,
+    const QString &output ) const
 {
   QStringList copy;
   QStringList::const_iterator iter;
@@ -172,10 +167,10 @@ QStringList QgsBabelCommand::importCommand( const QString& babel,
 }
 
 
-QStringList QgsBabelCommand::exportCommand( const QString& babel,
-    const QString& featuretype,
-    const QString& input,
-    const QString& output ) const
+QStringList QgsBabelCommand::exportCommand( const QString &babel,
+    const QString &featuretype,
+    const QString &input,
+    const QString &output ) const
 {
   QStringList copy;
   QStringList::const_iterator iter;

@@ -17,16 +17,19 @@
 #define QGSANNOTATIONMANAGER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QObject>
 #include <QDomElement>
 
+class QgsReadWriteContext;
 class QgsProject;
 class QgsAnnotation;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsAnnotationManager
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  *
  * \brief Manages storage of a set of QgsAnnotation annotation objects.
  *
@@ -47,71 +50,80 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * Constructor for QgsAnnotationManager. The project will become the parent object for this
      * manager.
      */
-    explicit QgsAnnotationManager( QgsProject* project = nullptr );
+    explicit QgsAnnotationManager( QgsProject *project SIP_TRANSFERTHIS = nullptr );
 
     ~QgsAnnotationManager();
 
     /**
      * Adds an annotation to the manager. Ownership of the annotation is transferred to the manager.
      * Returns true if the addition was successful, or false if the annotation could not be added.
-     * @see removeAnnotation()
-     * @see annotationAdded()
+     * \see removeAnnotation()
+     * \see annotationAdded()
      */
-    bool addAnnotation( QgsAnnotation* annotation );
+    bool addAnnotation( QgsAnnotation *annotation SIP_TRANSFER );
 
     /**
      * Removes an annotation from the manager. The annotation is deleted.
      * Returns true if the removal was successful, or false if the removal failed (eg as a result
      * of removing an annotation which is not contained in the manager).
-     * @see addAnnotation()
-     * @see compositionRemoved()
-     * @see compositionAboutToBeRemoved()
-     * @see clear()
+     * \see addAnnotation()
+     * \see compositionRemoved()
+     * \see compositionAboutToBeRemoved()
+     * \see clear()
      */
-    bool removeAnnotation( QgsAnnotation* annotation );
+    bool removeAnnotation( QgsAnnotation *annotation );
 
     /**
      * Removes and deletes all annotations from the manager.
-     * @see removeAnnotation()
+     * \see removeAnnotation()
      */
     void clear();
 
     /**
      * Returns a list of all annotations contained in the manager.
+     * \see cloneAnnotations()
      */
-    QList< QgsAnnotation* > annotations() const;
+    QList< QgsAnnotation * > annotations() const;
+
+    /**
+     * Returns a list containing clones of all annotations contained
+     * in the manager. The caller takes responsibility for deleting
+     * all returned annotations.
+     * \see annotations()
+     */
+    QList< QgsAnnotation * > cloneAnnotations() const SIP_FACTORY;
 
     /**
      * Reads the manager's state from a DOM element, restoring all annotations
      * present in the XML document.
-     * @see writeXml()
+     * \see writeXml()
      */
-    bool readXml( const QDomElement& element, const QDomDocument& doc );
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Returns a DOM element representing the state of the manager.
-     * @see readXml()
+     * \see readXml()
      */
-    QDomElement writeXml( QDomDocument& doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
   signals:
 
     //! Emitted when a annotation has been added to the manager
-    void annotationAdded( QgsAnnotation* annotation );
+    void annotationAdded( QgsAnnotation *annotation );
 
     //! Emitted when an annotation was removed from the manager
     void annotationRemoved();
 
     //! Emitted when an annotation is about to be removed from the manager
-    void annotationAboutToBeRemoved( QgsAnnotation* annotation );
+    void annotationAboutToBeRemoved( QgsAnnotation *annotation );
 
   private:
 
-    QgsProject* mProject = nullptr;
+    QgsProject *mProject = nullptr;
 
-    QList< QgsAnnotation* > mAnnotations;
+    QList< QgsAnnotation * > mAnnotations;
 
-    void createAnnotationFromXml( const QDomElement& element, const QDomDocument& doc );
+    void createAnnotationFromXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 };
 

@@ -27,9 +27,9 @@
 
 
 
-QgsLegendRenderer::QgsLegendRenderer( QgsLayerTreeModel* legendModel, const QgsLegendSettings& settings )
-    : mLegendModel( legendModel )
-    , mSettings( settings )
+QgsLegendRenderer::QgsLegendRenderer( QgsLayerTreeModel *legendModel, const QgsLegendSettings &settings )
+  : mLegendModel( legendModel )
+  , mSettings( settings )
 {
 }
 
@@ -38,16 +38,16 @@ QSizeF QgsLegendRenderer::minimumSize()
   return paintAndDetermineSize( nullptr );
 }
 
-void QgsLegendRenderer::drawLegend( QPainter* painter )
+void QgsLegendRenderer::drawLegend( QPainter *painter )
 {
   paintAndDetermineSize( painter );
 }
 
 
-QSizeF QgsLegendRenderer::paintAndDetermineSize( QPainter* painter )
+QSizeF QgsLegendRenderer::paintAndDetermineSize( QPainter *painter )
 {
   QSizeF size( 0, 0 );
-  QgsLayerTreeGroup* rootGroup = mLegendModel->rootGroup();
+  QgsLayerTreeGroup *rootGroup = mLegendModel->rootGroup();
   if ( !rootGroup ) return size;
 
   QList<Atom> atomList = createAtomList( rootGroup, mSettings.splitLayer() );
@@ -57,9 +57,9 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QPainter* painter )
   qreal maxColumnWidth = 0;
   if ( mSettings.equalColumnWidth() )
   {
-    Q_FOREACH ( const Atom& atom, atomList )
+    Q_FOREACH ( const Atom &atom, atomList )
     {
-      maxColumnWidth = qMax( atom.size.width(), maxColumnWidth );
+      maxColumnWidth = std::max( atom.size.width(), maxColumnWidth );
     }
   }
 
@@ -74,7 +74,7 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QPainter* painter )
   double columnMaxHeight = 0;
   qreal columnWidth = 0;
   int column = 0;
-  Q_FOREACH ( const Atom& atom, atomList )
+  Q_FOREACH ( const Atom &atom, atomList )
   {
     if ( atom.column > column )
     {
@@ -98,10 +98,10 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QPainter* painter )
     }
 
     QSizeF atomSize = drawAtom( atom, painter, point );
-    columnWidth = qMax( atomSize.width(), columnWidth );
+    columnWidth = std::max( atomSize.width(), columnWidth );
 
     point.ry() += atom.size.height();
-    columnMaxHeight = qMax( point.y() - columnTop, columnMaxHeight );
+    columnMaxHeight = std::max( point.y() - columnTop, columnMaxHeight );
 
     firstInColumn = false;
   }
@@ -111,14 +111,14 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QPainter* painter )
   size.rwidth() = point.x();
   if ( !mSettings.title().isEmpty() )
   {
-    size.rwidth() = qMax( titleSize.width(), size.width() );
+    size.rwidth() = std::max( titleSize.width(), size.width() );
   }
 
   // override the size if it was set by the user
   if ( mLegendSize.isValid() )
   {
-    qreal w = qMax( size.width(), mLegendSize.width() );
-    qreal h = qMax( size.height(), mLegendSize.height() );
+    qreal w = std::max( size.width(), mLegendSize.width() );
+    qreal h = std::max( size.height(), mLegendSize.height() );
     size = QSizeF( w, h );
   }
 
@@ -145,21 +145,21 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QPainter* painter )
 }
 
 
-QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGroup* parentGroup, bool splitLayer )
+QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGroup *parentGroup, bool splitLayer )
 {
   QList<Atom> atoms;
 
   if ( !parentGroup ) return atoms;
 
-  Q_FOREACH ( QgsLayerTreeNode* node, parentGroup->children() )
+  Q_FOREACH ( QgsLayerTreeNode *node, parentGroup->children() )
   {
     if ( QgsLayerTree::isGroup( node ) )
     {
-      QgsLayerTreeGroup* nodeGroup = QgsLayerTree::toGroup( node );
+      QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
 
       // Group subitems
       QList<Atom> groupAtoms = createAtomList( nodeGroup, splitLayer );
-      bool hasSubItems = groupAtoms.size() > 0;
+      bool hasSubItems = !groupAtoms.empty();
 
       if ( nodeLegendStyle( nodeGroup ) != QgsLegendStyle::Hidden )
       {
@@ -174,7 +174,7 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
           // Prepend this group title to the first atom
           groupAtoms[0].nucleons.prepend( nucleon );
           groupAtoms[0].size.rheight() += nucleon.size.height();
-          groupAtoms[0].size.rwidth() = qMax( nucleon.size.width(), groupAtoms[0].size.width() );
+          groupAtoms[0].size.rwidth() = std::max( nucleon.size.width(), groupAtoms[0].size.width() );
         }
         else
         {
@@ -183,7 +183,7 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
           atom.nucleons.append( nucleon );
           atom.size.rwidth() += nucleon.size.width();
           atom.size.rheight() += nucleon.size.height();
-          atom.size.rwidth() = qMax( nucleon.size.width(), atom.size.width() );
+          atom.size.rwidth() = std::max( nucleon.size.width(), atom.size.width() );
           groupAtoms.append( atom );
         }
       }
@@ -196,7 +196,7 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
     }
     else if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
+      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
 
       Atom atom;
 
@@ -210,7 +210,7 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
         atom.size.rheight() = nucleon.size.height();
       }
 
-      QList<QgsLayerTreeModelLegendNode*> legendNodes = mLegendModel->layerLegendNodes( nodeLayer );
+      QList<QgsLayerTreeModelLegendNode *> legendNodes = mLegendModel->layerLegendNodes( nodeLayer );
 
       // workaround for the issue that "filtering by map" does not remove layer nodes that have no symbols present
       // on the map. We explicitly skip such layers here. In future ideally that should be handled directly
@@ -222,7 +222,7 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
 
       for ( int j = 0; j < legendNodes.count(); j++ )
       {
-        QgsLayerTreeModelLegendNode* legendNode = legendNodes.at( j );
+        QgsLayerTreeModelLegendNode *legendNode = legendNodes.at( j );
 
         Nucleon symbolNucleon = drawSymbolItem( legendNode );
 
@@ -230,7 +230,7 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
         {
           // append to layer atom
           // the width is not correct at this moment, we must align all symbol labels
-          atom.size.rwidth() = qMax( symbolNucleon.size.width(), atom.size.width() );
+          atom.size.rwidth() = std::max( symbolNucleon.size.width(), atom.size.width() );
           // Add symbol space only if there is already title or another item above
           if ( !atom.nucleons.isEmpty() )
           {
@@ -258,18 +258,18 @@ QList<QgsLegendRenderer::Atom> QgsLegendRenderer::createAtomList( QgsLayerTreeGr
 }
 
 
-void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
+void QgsLegendRenderer::setColumns( QList<Atom> &atomList )
 {
   if ( mSettings.columnCount() == 0 ) return;
 
   // Divide atoms to columns
   double totalHeight = 0;
   qreal maxAtomHeight = 0;
-  Q_FOREACH ( const Atom& atom, atomList )
+  Q_FOREACH ( const Atom &atom, atomList )
   {
     totalHeight += spaceAboveAtom( atom );
     totalHeight += atom.size.height();
-    maxAtomHeight = qMax( atom.size.height(), maxAtomHeight );
+    maxAtomHeight = std::max( atom.size.height(), maxAtomHeight );
   }
 
   // We know height of each atom and we have to split them into columns
@@ -320,42 +320,42 @@ void QgsLegendRenderer::setColumns( QList<Atom>& atomList )
     }
     atomList[i].column = currentColumn;
     currentColumnAtomCount++;
-    maxColumnHeight = qMax( currentColumnHeight, maxColumnHeight );
+    maxColumnHeight = std::max( currentColumnHeight, maxColumnHeight );
   }
 
   // Align labels of symbols for each layr/column to the same labelXOffset
   QMap<QString, qreal> maxSymbolWidth;
   for ( int i = 0; i < atomList.size(); i++ )
   {
-    Atom& atom = atomList[i];
+    Atom &atom = atomList[i];
     for ( int j = 0; j < atom.nucleons.size(); j++ )
     {
-      if ( QgsLayerTreeModelLegendNode* legendNode = qobject_cast<QgsLayerTreeModelLegendNode*>( atom.nucleons.at( j ).item ) )
+      if ( QgsLayerTreeModelLegendNode *legendNode = qobject_cast<QgsLayerTreeModelLegendNode *>( atom.nucleons.at( j ).item ) )
       {
         QString key = QStringLiteral( "%1-%2" ).arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( atom.column );
-        maxSymbolWidth[key] = qMax( atom.nucleons.at( j ).symbolSize.width(), maxSymbolWidth[key] );
+        maxSymbolWidth[key] = std::max( atom.nucleons.at( j ).symbolSize.width(), maxSymbolWidth[key] );
       }
     }
   }
   for ( int i = 0; i < atomList.size(); i++ )
   {
-    Atom& atom = atomList[i];
+    Atom &atom = atomList[i];
     for ( int j = 0; j < atom.nucleons.size(); j++ )
     {
-      if ( QgsLayerTreeModelLegendNode* legendNode = qobject_cast<QgsLayerTreeModelLegendNode*>( atom.nucleons.at( j ).item ) )
+      if ( QgsLayerTreeModelLegendNode *legendNode = qobject_cast<QgsLayerTreeModelLegendNode *>( atom.nucleons.at( j ).item ) )
       {
         QString key = QStringLiteral( "%1-%2" ).arg( reinterpret_cast< qulonglong >( legendNode->layerNode() ) ).arg( atom.column );
         double space = mSettings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Right ) +
                        mSettings.style( QgsLegendStyle::SymbolLabel ).margin( QgsLegendStyle::Left );
-        atom.nucleons[j].labelXOffset =  maxSymbolWidth[key] + space;
-        atom.nucleons[j].size.rwidth() =  maxSymbolWidth[key] + space + atom.nucleons.at( j ).labelSize.width();
+        atom.nucleons[j].labelXOffset = maxSymbolWidth[key] + space;
+        atom.nucleons[j].size.rwidth() = maxSymbolWidth[key] + space + atom.nucleons.at( j ).labelSize.width();
       }
     }
   }
 }
 
 
-QSizeF QgsLegendRenderer::drawTitle( QPainter* painter, QPointF point, Qt::AlignmentFlag halignment, double legendWidth )
+QSizeF QgsLegendRenderer::drawTitle( QPainter *painter, QPointF point, Qt::AlignmentFlag halignment, double legendWidth )
 {
   QSizeF size( 0, 0 );
   if ( mSettings.title().isEmpty() )
@@ -377,7 +377,7 @@ QSizeF QgsLegendRenderer::drawTitle( QPainter* painter, QPointF point, Qt::Align
   switch ( halignment )
   {
     case Qt::AlignHCenter:
-      textBoxWidth = ( qMin( static_cast< double >( point.x() ), legendWidth - point.x() ) - mSettings.boxSpace() ) * 2.0;
+      textBoxWidth = ( std::min( static_cast< double >( point.x() ), legendWidth - point.x() ) - mSettings.boxSpace() ) * 2.0;
       textBoxLeft = point.x() - textBoxWidth / 2.;
       break;
     case Qt::AlignRight:
@@ -408,7 +408,7 @@ QSizeF QgsLegendRenderer::drawTitle( QPainter* painter, QPointF point, Qt::Align
     }
 
     //update max width of title
-    size.rwidth() = qMax( width, size.rwidth() );
+    size.rwidth() = std::max( width, size.rwidth() );
 
     y += height;
     if ( titlePart != ( lines.end() - 1 ) )
@@ -422,21 +422,21 @@ QSizeF QgsLegendRenderer::drawTitle( QPainter* painter, QPointF point, Qt::Align
 }
 
 
-double QgsLegendRenderer::spaceAboveAtom( const Atom& atom )
+double QgsLegendRenderer::spaceAboveAtom( const Atom &atom )
 {
   if ( atom.nucleons.isEmpty() ) return 0;
 
   Nucleon nucleon = atom.nucleons.first();
 
-  if ( QgsLayerTreeGroup* nodeGroup = qobject_cast<QgsLayerTreeGroup*>( nucleon.item ) )
+  if ( QgsLayerTreeGroup *nodeGroup = qobject_cast<QgsLayerTreeGroup *>( nucleon.item ) )
   {
     return mSettings.style( nodeLegendStyle( nodeGroup ) ).margin( QgsLegendStyle::Top );
   }
-  else if ( QgsLayerTreeLayer* nodeLayer = qobject_cast<QgsLayerTreeLayer*>( nucleon.item ) )
+  else if ( QgsLayerTreeLayer *nodeLayer = qobject_cast<QgsLayerTreeLayer *>( nucleon.item ) )
   {
     return mSettings.style( nodeLegendStyle( nodeLayer ) ).margin( QgsLegendStyle::Top );
   }
-  else if ( qobject_cast<QgsLayerTreeModelLegendNode*>( nucleon.item ) )
+  else if ( qobject_cast<QgsLayerTreeModelLegendNode *>( nucleon.item ) )
   {
     // TODO: use Symbol or SymbolLabel Top margin
     return mSettings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Top );
@@ -447,13 +447,13 @@ double QgsLegendRenderer::spaceAboveAtom( const Atom& atom )
 
 
 // Draw atom and expand its size (using actual nucleons labelXOffset)
-QSizeF QgsLegendRenderer::drawAtom( const Atom& atom, QPainter* painter, QPointF point )
+QSizeF QgsLegendRenderer::drawAtom( const Atom &atom, QPainter *painter, QPointF point )
 {
   bool first = true;
   QSizeF size = QSizeF( atom.size );
-  Q_FOREACH ( const Nucleon& nucleon, atom.nucleons )
+  Q_FOREACH ( const Nucleon &nucleon, atom.nucleons )
   {
-    if ( QgsLayerTreeGroup* groupItem = qobject_cast<QgsLayerTreeGroup*>( nucleon.item ) )
+    if ( QgsLayerTreeGroup *groupItem = qobject_cast<QgsLayerTreeGroup *>( nucleon.item ) )
     {
       QgsLegendStyle::Style s = nodeLegendStyle( groupItem );
       if ( s != QgsLegendStyle::Hidden )
@@ -465,7 +465,7 @@ QSizeF QgsLegendRenderer::drawAtom( const Atom& atom, QPainter* painter, QPointF
         drawGroupTitle( groupItem, painter, point );
       }
     }
-    else if ( QgsLayerTreeLayer* layerItem = qobject_cast<QgsLayerTreeLayer*>( nucleon.item ) )
+    else if ( QgsLayerTreeLayer *layerItem = qobject_cast<QgsLayerTreeLayer *>( nucleon.item ) )
     {
       QgsLegendStyle::Style s = nodeLegendStyle( layerItem );
       if ( s != QgsLegendStyle::Hidden )
@@ -477,7 +477,7 @@ QSizeF QgsLegendRenderer::drawAtom( const Atom& atom, QPainter* painter, QPointF
         drawLayerTitle( layerItem, painter, point );
       }
     }
-    else if ( QgsLayerTreeModelLegendNode* legendNode = qobject_cast<QgsLayerTreeModelLegendNode*>( nucleon.item ) )
+    else if ( QgsLayerTreeModelLegendNode *legendNode = qobject_cast<QgsLayerTreeModelLegendNode *>( nucleon.item ) )
     {
       if ( !first )
       {
@@ -486,7 +486,7 @@ QSizeF QgsLegendRenderer::drawAtom( const Atom& atom, QPainter* painter, QPointF
 
       Nucleon symbolNucleon = drawSymbolItem( legendNode, painter, point, nucleon.labelXOffset );
       // expand width, it may be wider because of labelXOffset
-      size.rwidth() = qMax( symbolNucleon.size.width(), size.width() );
+      size.rwidth() = std::max( symbolNucleon.size.width(), size.width() );
     }
     point.ry() += nucleon.size.height();
     first = false;
@@ -495,7 +495,7 @@ QSizeF QgsLegendRenderer::drawAtom( const Atom& atom, QPainter* painter, QPointF
 }
 
 
-QgsLegendRenderer::Nucleon QgsLegendRenderer::drawSymbolItem( QgsLayerTreeModelLegendNode* symbolItem, QPainter* painter, QPointF point, double labelXOffset )
+QgsLegendRenderer::Nucleon QgsLegendRenderer::drawSymbolItem( QgsLayerTreeModelLegendNode *symbolItem, QPainter *painter, QPointF point, double labelXOffset )
 {
   QgsLayerTreeModelLegendNode::ItemContext ctx;
   ctx.painter = painter;
@@ -509,14 +509,14 @@ QgsLegendRenderer::Nucleon QgsLegendRenderer::drawSymbolItem( QgsLayerTreeModelL
   nucleon.symbolSize = im.symbolSize;
   nucleon.labelSize = im.labelSize;
   //QgsDebugMsg( QString( "symbol height = %1 label height = %2").arg( symbolSize.height()).arg( labelSize.height() ));
-  double width = qMax( static_cast< double >( im.symbolSize.width() ), labelXOffset ) + im.labelSize.width();
-  double height = qMax( im.symbolSize.height(), im.labelSize.height() );
+  double width = std::max( static_cast< double >( im.symbolSize.width() ), labelXOffset ) + im.labelSize.width();
+  double height = std::max( im.symbolSize.height(), im.labelSize.height() );
   nucleon.size = QSizeF( width, height );
   return nucleon;
 }
 
 
-QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer* nodeLayer, QPainter* painter, QPointF point )
+QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer *nodeLayer, QPainter *painter, QPointF point )
 {
   QSizeF size( 0, 0 );
   QModelIndex idx = mLegendModel->node2index( nodeLayer );
@@ -536,7 +536,7 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer* nodeLayer, QPainter
     y += mSettings.fontAscentMillimeters( layerFont );
     if ( painter ) mSettings.drawText( painter, point.x(), y, *layerItemPart, layerFont );
     qreal width = mSettings.textWidthMillimeters( layerFont, *layerItemPart );
-    size.rwidth() = qMax( width, size.width() );
+    size.rwidth() = std::max( width, size.width() );
     if ( layerItemPart != ( lines.end() - 1 ) )
     {
       y += mSettings.lineSpacing();
@@ -548,7 +548,7 @@ QSizeF QgsLegendRenderer::drawLayerTitle( QgsLayerTreeLayer* nodeLayer, QPainter
 }
 
 
-QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup* nodeGroup, QPainter* painter, QPointF point )
+QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup *nodeGroup, QPainter *painter, QPointF point )
 {
   QSizeF size( 0, 0 );
   QModelIndex idx = mLegendModel->node2index( nodeGroup );
@@ -565,7 +565,7 @@ QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup* nodeGroup, QPainter
     y += mSettings.fontAscentMillimeters( groupFont );
     if ( painter ) mSettings.drawText( painter, point.x(), y, *groupPart, groupFont );
     qreal width = mSettings.textWidthMillimeters( groupFont, *groupPart );
-    size.rwidth() = qMax( width, size.width() );
+    size.rwidth() = std::max( width, size.width() );
     if ( groupPart != ( lines.end() - 1 ) )
     {
       y += mSettings.lineSpacing();
@@ -577,7 +577,7 @@ QSizeF QgsLegendRenderer::drawGroupTitle( QgsLayerTreeGroup* nodeGroup, QPainter
 
 
 
-QgsLegendStyle::Style QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNode* node, QgsLayerTreeModel* model )
+QgsLegendStyle::Style QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNode *node, QgsLayerTreeModel *model )
 {
   QString style = node->customProperty( QStringLiteral( "legend/title-style" ) ).toString();
   if ( style == QLatin1String( "hidden" ) )
@@ -600,12 +600,12 @@ QgsLegendStyle::Style QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNode* node
   return QgsLegendStyle::Undefined; // should not happen, only if corrupted project file
 }
 
-QgsLegendStyle::Style QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNode* node )
+QgsLegendStyle::Style QgsLegendRenderer::nodeLegendStyle( QgsLayerTreeNode *node )
 {
   return nodeLegendStyle( node, mLegendModel );
 }
 
-void QgsLegendRenderer::setNodeLegendStyle( QgsLayerTreeNode* node, QgsLegendStyle::Style style )
+void QgsLegendRenderer::setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendStyle::Style style )
 {
   QString str;
   switch ( style )

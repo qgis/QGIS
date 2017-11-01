@@ -20,19 +20,16 @@ from qgis.core import (QgsProject,
                        QgsMapSettings,
                        QgsSnappingUtils,
                        QgsSnappingConfig,
-                       QgsPointLocator,
                        QgsTolerance,
                        QgsRectangle,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsFeature,
                        QgsGeometry,
-                       QgsProject,
                        QgsLayerDefinition,
                        QgsMapLayerDependency
                        )
 
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
 
 from qgis.PyQt.QtCore import QSize, QPoint
 
@@ -50,7 +47,7 @@ class TestLayerDependencies(unittest.TestCase):
     def setUpClass(cls):
         """Run before all tests"""
 
-        # create a temp spatialite db with a trigger
+        # create a temp SpatiaLite db with a trigger
         fo = tempfile.NamedTemporaryFile()
         fn = fo.name
         fo.close()
@@ -123,7 +120,7 @@ class TestLayerDependencies(unittest.TestCase):
         m = u.snapToMap(QPoint(95, 100))
         self.assertTrue(m.isValid())
         self.assertTrue(m.hasVertex())
-        self.assertEqual(m.point(), QgsPoint(1, 0))
+        self.assertEqual(m.point(), QgsPointXY(1, 0))
 
         f = QgsFeature(self.linesLayer.fields())
         f.setId(1)
@@ -150,11 +147,11 @@ class TestLayerDependencies(unittest.TestCase):
         self.linesLayer.startEditing()
         self.linesLayer.addFeatures([f])
         self.linesLayer.commitChanges()
-        # check the snapped point is ok
+        # check the snapped point is OK
         m = u.snapToMap(QPoint(45, 50))
         self.assertTrue(m.isValid())
         self.assertTrue(m.hasVertex())
-        self.assertEqual(m.point(), QgsPoint(0.5, 0.5))
+        self.assertEqual(m.point(), QgsPointXY(0.5, 0.5))
         self.pointsLayer.setDependencies([])
 
         # test chained layer dependencies A -> B -> C
@@ -172,11 +169,11 @@ class TestLayerDependencies(unittest.TestCase):
         self.linesLayer.startEditing()
         self.linesLayer.addFeatures([f])
         self.linesLayer.commitChanges()
-        # check the second snapped point is ok
+        # check the second snapped point is OK
         m = u.snapToMap(QPoint(75, 100 - 80))
         self.assertTrue(m.isValid())
         self.assertTrue(m.hasVertex())
-        self.assertEqual(m.point(), QgsPoint(0.7, 0.8))
+        self.assertEqual(m.point(), QgsPointXY(0.7, 0.8))
         self.pointsLayer.setDependencies([])
         self.pointsLayer2.setDependencies([])
 
@@ -205,8 +202,8 @@ class TestLayerDependencies(unittest.TestCase):
                 newPointsLayer = l.layer()
             elif l.layerId().startswith('lines'):
                 newLinesLayer = l.layer()
-        self.assertFalse(newPointsLayer is None)
-        self.assertFalse(newLinesLayer is None)
+        self.assertIsNotNone(newPointsLayer)
+        self.assertIsNotNone(newLinesLayer)
         self.assertTrue(newLinesLayer.id() in [dep.layerId() for dep in newPointsLayer.dependencies()])
 
         self.pointsLayer.setDependencies([])
@@ -253,11 +250,11 @@ class TestLayerDependencies(unittest.TestCase):
         self.linesLayer.startEditing()
         self.linesLayer.addFeatures([f])
         self.linesLayer.commitChanges()
-        # check the second snapped point is ok
+        # check the second snapped point is OK
         m = u.snapToMap(QPoint(75, 100 - 0))
         self.assertTrue(m.isValid())
         self.assertTrue(m.hasVertex())
-        self.assertEqual(m.point(), QgsPoint(0.8, 0.0))
+        self.assertEqual(m.point(), QgsPointXY(0.8, 0.0))
 
         self.pointsLayer.setDependencies([])
         self.pointsLayer2.setDependencies([])

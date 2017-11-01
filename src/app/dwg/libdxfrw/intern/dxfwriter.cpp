@@ -82,7 +82,7 @@
     else if (code == 1071) //TODO this is an int 32b
         readInt32();
     else if (skip)
-        //skip safely this dxf entry ( ok for ascii dxf)
+        //skip safely this dxf entry ( OK for ascii dxf)
         readString();
     else
         //break in binary files because the conduct is unpredictable
@@ -100,7 +100,7 @@ bool dxfWriter::writeUtf8String( int code, std::string text )
 bool dxfWriter::writeUtf8Caps( int code, std::string text )
 {
   std::string strname = text;
-  std::transform( strname.begin(), strname.end(), strname.begin(),::toupper );
+  std::transform( strname.begin(), strname.end(), strname.begin(), ::toupper );
   std::string t = encoder.fromUtf8( strname );
   return writeString( code, t );
 }

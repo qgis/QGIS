@@ -56,10 +56,10 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
 
   public:
     //! \brief Constructor called when button is pressed in the plugin toolbar
-    eVisGenericEventBrowserGui( QWidget* parent, QgisInterface* interface, Qt::WindowFlags fl );
+    eVisGenericEventBrowserGui( QWidget *parent, QgisInterface *interface, Qt::WindowFlags fl );
 
     //! \brief Constructor called when new browser is requested by the eVisEventIdTool
-    eVisGenericEventBrowserGui( QWidget* parent, QgsMapCanvas* canvas, Qt::WindowFlags fl );
+    eVisGenericEventBrowserGui( QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl );
 
     ~eVisGenericEventBrowserGui();
 
@@ -87,16 +87,16 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     int mDefaultEventImagePathField;
 
     //! \brief Pointer to the QgisInferface
-    QgisInterface* mInterface;
+    QgisInterface *mInterface = nullptr;
 
     //! \brief Pointer to the map canvas
-    QgsMapCanvas* mCanvas;
+    QgsMapCanvas *mCanvas = nullptr;
 
     //! \brief Pointer to the vector layer
-    QgsVectorLayer* mVectorLayer;
+    QgsVectorLayer *mVectorLayer = nullptr;
 
     //! \brief Pointer to the vector data provider
-    QgsVectorDataProvider* mDataProvider;
+    QgsVectorDataProvider *mDataProvider = nullptr;
 
     //! \brief QPixmap holding the default highlighting symbol
     QPixmap mHighlightSymbol;
@@ -133,7 +133,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     void displayImage();
 
     //! \brief Generic method to get a feature by id. Access mLocalFeatureList when layer is of type delimitedtext otherwise calls existing methods in mDataProvider
-    QgsFeature* featureAtId( QgsFeatureId );
+    QgsFeature *featureAtId( QgsFeatureId );
 
     //! \brief Functionality common to both constructors
     bool initBrowser();
@@ -152,30 +152,30 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
 
   private slots:
     void launchExternalApplication( QTreeWidgetItem *, int );
-    void on_buttonboxOptions_clicked( QAbstractButton* );
-    void on_chkboxApplyPathRulesToDocs_stateChanged( int );
-    void on_cboxEventImagePathField_currentIndexChanged( int );
-    void on_cboxCompassBearingField_currentIndexChanged( int );
-    void on_cboxCompassOffsetField_currentIndexChanged( int );
-    void on_chkboxDisplayCompassBearing_stateChanged( int );
-    void on_chkboxEventImagePathRelative_stateChanged( int );
-    void on_chkboxUseOnlyFilename_stateChanged( int );
-    void on_displayArea_currentChanged( int );
-    void on_dsboxCompassOffset_valueChanged( double );
-    void on_leBasePath_textChanged( const QString& );
-    void on_pbtnAddFileType_clicked();
-    void on_pbtnDeleteFileType_clicked();
-    void on_pbtnNext_clicked();
-    void on_pbtnPrevious_clicked();
-    void on_pbtnResetApplyPathRulesToDocs_clicked();
-    void on_pbtnResetBasePathData_clicked();
-    void on_pbtnResetCompassBearingData_clicked();
-    void on_pbtnResetCompassOffsetData_clicked();
-    void on_pbtnResetEventImagePathData_clicked();
-    void on_pbtnResetUseOnlyFilenameData_clicked();
-    void on_rbtnManualCompassOffset_toggled( bool );
-    void on_tableFileTypeAssociations_cellDoubleClicked( int, int );
+    void buttonboxOptions_clicked( QAbstractButton * );
+    void chkboxApplyPathRulesToDocs_stateChanged( int );
+    void cboxEventImagePathField_currentIndexChanged( int );
+    void cboxCompassBearingField_currentIndexChanged( int );
+    void cboxCompassOffsetField_currentIndexChanged( int );
+    void chkboxDisplayCompassBearing_stateChanged( int );
+    void chkboxEventImagePathRelative_stateChanged( int );
+    void chkboxUseOnlyFilename_stateChanged( int );
+    void displayArea_currentChanged( int );
+    void dsboxCompassOffset_valueChanged( double );
+    void leBasePath_textChanged( const QString & );
+    void pbtnAddFileType_clicked();
+    void pbtnDeleteFileType_clicked();
+    void pbtnNext_clicked();
+    void pbtnPrevious_clicked();
+    void pbtnResetApplyPathRulesToDocs_clicked();
+    void pbtnResetBasePathData_clicked();
+    void pbtnResetCompassBearingData_clicked();
+    void pbtnResetCompassOffsetData_clicked();
+    void pbtnResetEventImagePathData_clicked();
+    void pbtnResetUseOnlyFilenameData_clicked();
+    void rbtnManualCompassOffset_toggled( bool );
+    void tableFileTypeAssociations_cellDoubleClicked( int, int );
     //! \brief Slot called when the map canvas is done refreshing. Draws the highlighting symbol over the current selected feature
-    void renderSymbol( QPainter* );
+    void renderSymbol( QPainter * );
 };
 #endif

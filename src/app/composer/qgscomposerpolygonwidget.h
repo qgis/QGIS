@@ -24,28 +24,27 @@ class QgsComposerPolygon;
 
 /**
  * Input widget for QgsComposerPolygon
- * @note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 class QgsComposerPolygonWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerPolygonWidgetBase
 {
     Q_OBJECT
   public:
-    explicit QgsComposerPolygonWidget( QgsComposerPolygon* composerPolygon );
-    ~QgsComposerPolygonWidget();
+    explicit QgsComposerPolygonWidget( QgsComposerPolygon *composerPolygon );
 
   private:
-    QgsComposerPolygon* mComposerPolygon;
+    QgsComposerPolygon *mComposerPolygon = nullptr;
 
     void updatePolygonStyle();
 
   private slots:
-    void on_mPolygonStyleButton_clicked();
+    void mPolygonStyleButton_clicked();
 
     //! Sets the GUI elements to the currentValues of mComposerShape
     void setGuiElementValues();
 
     void updateStyleFromWidget();
-    void cleanUpStyleSelector( QgsPanelWidget* container );
+    void cleanUpStyleSelector( QgsPanelWidget *container );
 };
 
 #endif // QGSCOMPOSERPOLYGONWIDGET_H

@@ -23,7 +23,8 @@
 
 class QIcon;
 
-/** A model that holds the tables of a database in a hierarchy where the
+/**
+ * A model that holds the tables of a database in a hierarchy where the
 schemas are the root elements that contain the individual tables as children.
 The tables have the following columns: Type, Owner, Tablename, Geometry Column, Sql*/
 class QgsOracleTableModel : public QStandardItemModel
@@ -37,7 +38,7 @@ class QgsOracleTableModel : public QStandardItemModel
     void addTableEntry( const QgsOracleLayerProperty &property );
 
     //! Sets an sql statement that belongs to a cell specified by a model index
-    void setSql( const QModelIndex& index, const QString& sql );
+    void setSql( const QModelIndex &index, const QString &sql );
 
     //! Returns the number of tables in the model
     int tableCount() const { return mTableCount; }

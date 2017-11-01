@@ -30,23 +30,22 @@ class APP_EXPORT QgsRelationManagerDialog : public QWidget, private Ui::QgsRelat
     Q_OBJECT
 
   public:
-    explicit QgsRelationManagerDialog( QgsRelationManager* relationMgr, QWidget *parent = nullptr );
-    ~QgsRelationManagerDialog();
+    explicit QgsRelationManagerDialog( QgsRelationManager *relationMgr, QWidget *parent = nullptr );
 
-    void setLayers( const QList<QgsVectorLayer*>& );
+    void setLayers( const QList<QgsVectorLayer *> & );
 
-    void addRelation( const QgsRelation& rel );
+    void addRelation( const QgsRelation &rel );
     QList< QgsRelation > relations();
 
   private slots:
-    void on_mBtnAddRelation_clicked();
-    void on_mBtnDiscoverRelations_clicked();
-    void on_mBtnRemoveRelation_clicked();
+    void mBtnAddRelation_clicked();
+    void mBtnDiscoverRelations_clicked();
+    void mBtnRemoveRelation_clicked();
     void onSelectionChanged();
 
   private:
-    QgsRelationManager* mRelationManager;
-    QList< QgsVectorLayer* > mLayers;
+    QgsRelationManager *mRelationManager = nullptr;
+    QList< QgsVectorLayer * > mLayers;
 };
 
 #endif // QGSRELATIONMANAGERDIALOG_H

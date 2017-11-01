@@ -20,7 +20,8 @@
 #include <QString>
 #include "qgsexpressioncontext.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * An action scope defines a "place" for an action to be shown and may add
  * additional expression variables.
  * Each QgsAction can be available in one or several action scopes.
@@ -40,9 +41,8 @@
  *   <dd>Show in attribute table and work on the layer or selection.</dd>
  * </dl>
  *
- * @note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
-
 class CORE_EXPORT QgsActionScope
 {
   public:
@@ -50,7 +50,7 @@ class CORE_EXPORT QgsActionScope
     /**
      * Creates a new invalid action scope.
      *
-     * @note Added in QGSI 3.0
+     * \since QGIS 3.0
      */
     explicit QgsActionScope();
 
@@ -59,62 +59,62 @@ class CORE_EXPORT QgsActionScope
      * For details concerning the parameters check the documentation
      * of the corresponding properties.
      */
-    explicit QgsActionScope( const QString& id, const QString& title, const QString& description, const QgsExpressionContextScope& expressionContextScope = QgsExpressionContextScope() );
+    explicit QgsActionScope( const QString &id, const QString &title, const QString &description, const QgsExpressionContextScope &expressionContextScope = QgsExpressionContextScope() );
 
     /**
      * Compares two action scopes
      */
-    bool operator==( const QgsActionScope& other ) const;
+    bool operator==( const QgsActionScope &other ) const;
 
     /**
      * An expression scope may offer additional variables for an action scope.
      * This can be an `field_name` for the attribute which was clicked or
      * `clicked_x` and `clicked_y` for actions which are available as map canvas clicks.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsExpressionContextScope expressionContextScope() const;
 
     /**
      * \copydoc expressionContextScope()
      */
-    void setExpressionContextScope( const QgsExpressionContextScope& expressionContextScope );
+    void setExpressionContextScope( const QgsExpressionContextScope &expressionContextScope );
 
     /**
      * A unique identifier for this action scope.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QString id() const;
 
     //! \copydoc id()
-    void setId( const QString& id );
+    void setId( const QString &id );
 
     /**
      * The title is a human readable and translated string that will be
      * presented to the user in the properties dialog.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QString title() const;
     //! \copydoc title()
-    void setTitle( const QString& title );
+    void setTitle( const QString &title );
 
     /**
      * The description should be a longer description of where actions in this scope
      * are available. It is not necessary to list the available expression variables
      * in here, they are extracted automatically from the expressionContextScope().
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QString description() const;
     //! \copydoc description()
-    void setDescription( const QString& description );
+    void setDescription( const QString &description );
 
     /**
      * Returns if this scope is valid.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool isValid() const;
 
@@ -125,6 +125,6 @@ class CORE_EXPORT QgsActionScope
     QgsExpressionContextScope mExpressionContextScope;
 };
 
-CORE_EXPORT uint qHash( const QgsActionScope& key, uint seed = 0 );
+CORE_EXPORT uint qHash( const QgsActionScope &key, uint seed = 0 ) SIP_SKIP;
 
 #endif // QGSACTIONSCOPE_H

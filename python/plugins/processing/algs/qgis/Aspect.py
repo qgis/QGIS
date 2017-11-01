@@ -30,43 +30,55 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.analysis import QgsAspectFilter
-
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputRaster
-from processing.tools import raster
+from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterRasterDestination)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.tools.dataobjects import exportRasterLayer
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class Aspect(GeoAlgorithm):
+class Aspect(QgisAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
+    INPUT = 'INPUT'
     Z_FACTOR = 'Z_FACTOR'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'dem.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Aspect')
-        self.group, self.i18n_group = self.trAlgorithm('Raster terrain analysis')
+    def group(self):
+        return self.tr('Raster terrain analysis')
 
-        self.addParameter(ParameterRaster(self.INPUT_LAYER,
-                                          self.tr('Elevation layer')))
-        self.addParameter(ParameterNumber(self.Z_FACTOR,
-                                          self.tr('Z factor'), 1.0, 999999.99, 1.0))
-        self.addOutput(OutputRaster(self.OUTPUT_LAYER,
-                                    self.tr('Aspect')))
+    def __init__(self):
+        super().__init__()
 
-    def processAlgorithm(self, feedback):
-        inputFile = self.getParameterValue(self.INPUT_LAYER)
-        zFactor = self.getParameterValue(self.Z_FACTOR)
-        outputFile = self.getOutputValue(self.OUTPUT_LAYER)
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
+                                                            self.tr('Elevation layer')))
+        self.addParameter(QgsProcessingParameterNumber(self.Z_FACTOR,
+                                                       self.tr('Z factor'), QgsProcessingParameterNumber.Double,
+                                                       1, False, 0.00, 999999.99))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Aspect')))
 
-        outputFormat = raster.formatShortNameFromFileName(outputFile)
+    def name(self):
+        return 'aspect'
+
+    def displayName(self):
+        return self.tr('Aspect')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        inputFile = exportRasterLayer(self.parameterAsRasterLayer(parameters, self.INPUT, context))
+        zFactor = self.parameterAsDouble(parameters, self.Z_FACTOR, context)
+
+        outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+
+        outputFormat = QgsRasterFileWriter.driverForExtension(os.path.splitext(outputFile)[1])
 
         aspect = QgsAspectFilter(inputFile, outputFile, outputFormat)
         aspect.setZFactor(zFactor)
-        aspect.processRaster(None)
+        aspect.processRaster(feedback)
+
+        return {self.OUTPUT: outputFile}

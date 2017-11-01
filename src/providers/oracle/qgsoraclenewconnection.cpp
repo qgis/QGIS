@@ -15,26 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QRegExpValidator>
 
+#include "qgssettings.h"
 #include "qgsoraclenewconnection.h"
-#include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
 #include "qgsoracletablemodel.h"
 #include "qgsoracleconnpool.h"
 
-QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl ), mOriginalConnName( connName )
+QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
+  : QDialog( parent, fl ), mOriginalConnName( connName )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOracleNewConnection::showHelp );
 
   if ( !connName.isEmpty() )
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
-    QSettings settings;
+    QgsSettings settings;
 
     QString key = "/Oracle/connections/" + connName;
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
@@ -80,11 +81,12 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& 
 
     txtName->setText( connName );
   }
+  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
 }
 //! Autoconnected SLOTS *
 void QgsOracleNewConnection::accept()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString baseKey = "/Oracle/connections/";
   settings.setValue( baseKey + "selected", txtName->text() );
 
@@ -98,13 +100,13 @@ void QgsOracleNewConnection::accept()
   }
 
   // warn if entry was renamed to an existing connection
-  if (( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
-      ( settings.contains( baseKey + txtName->text() + "/service" ) ||
-        settings.contains( baseKey + txtName->text() + "/host" ) ) &&
-      QMessageBox::question( this,
-                             tr( "Save connection" ),
-                             tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
-                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
+       ( settings.contains( baseKey + txtName->text() + "/service" ) ||
+         settings.contains( baseKey + txtName->text() + "/host" ) ) &&
+       QMessageBox::question( this,
+                              tr( "Save connection" ),
+                              tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -150,18 +152,15 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
   if ( conn )
   {
     // Database successfully opened; we can now issue SQL commands.
-    QMessageBox::information( this,
-                              tr( "Test connection" ),
-                              tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ) );
-
+    bar->pushMessage( tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ),
+                      QgsMessageBar::INFO );
     // free connection resources
     QgsOracleConnPool::instance()->releaseConnection( conn );
   }
   else
   {
-    QMessageBox::information( this,
-                              tr( "Test connection" ),
-                              tr( "Connection failed - consult message log for details.\n\n" ) );
+    bar->pushMessage( tr( "Connection failed - consult message log for details." ),
+                      QgsMessageBar::WARNING );
   }
 }
 
@@ -169,4 +168,10 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
 
 QgsOracleNewConnection::~QgsOracleNewConnection()
 {
+}
+
+
+void QgsOracleNewConnection::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-oracle-spatial" ) );
 }

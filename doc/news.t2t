@@ -38,6 +38,36 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= What's new in Version 2.18 'Las Palmas'? =
+
+This release has following new features:
+
+- Symbology: Color picker is now embedded in layer style panel
+- Labeling: Substitution list support for labeling
+- Labeling: Improved line label placement algorithm
+- Labeling: Label polygons using curved labels along perimeter
+- Data Management: Add flag to only copy selected features
+- Forms and Widgets: Allow controlling labels for individual edit widgets
+- Forms and Widgets: Conditional visibility for tabs and group boxes
+- Forms and Widgets: Client side default field values
+- Map Composer: True North Arrows
+- Processing: Point on surface algorithm  added
+- Processing: New algorithm for geometry boundary
+- Processing: New algorithm for calculating feature bounding box
+- Processing: Processing dissolve algorithm accepts multiple fields
+- Processing: Optimised processing clip algorithm
+- Processing: New algorithm for merging connected lines
+- General: Automatic links in identify results
+- General: Mouse wheel over color dialog sliders
+- General: Add custom color schemes to color button drop-down menu
+- Data Providers: Preview for WMTS + added XYZ tile layers
+- QGIS Server: Possibility to segmentize feature info geometry in server
+- Plugins: DB Manager: Add the ability to update SQL Layer
+- Programmability: New expression functions
+- Programmability: Expose GEOS linear referencing function to QgsGeometry
+-
+
+
 = What's new in Version 2.16 'Nødebo'? =
 
 This release has following new features:
@@ -88,7 +118,7 @@ This release has following new features:
 - Map Composer: Parametrized svg support for composer svg images
 - Map Composer: Easier use of HTML in labels
 - Map Composer: Relative links in composer labels
-- Map Composer: Georeference outputs (eg PDF) from composer
+- Map Composer: Georeference outputs (e.g., PDF) from composer
 - Map Composer: Composer maps now auto-update with presets
 - Analysis tools: Named parameters in expressions
 - Analysis tools: More distance units
@@ -498,7 +528,7 @@ key new features.
       normal map view as well as in print composer.
 - HTML support has been added map composer label item to give you even
       more control over your final maps. HTML labels support full css styles
-      sheets, html, and even javascript if you are that way inclined.
+      sheets, html, and even JavaScript if you are that way inclined.
 - The labeling system has been totally overhauled - it now includes many
       new features such as drop shadows, 'highway shields', many more data bound
       options, and various performance enhancements. We are slowly doing away
@@ -526,7 +556,7 @@ key new features.
       a simple key lookup, no more index lookup and attribute maps.
       **Note:** Most plugins written for QGIS < 1.x will need to be
         ported to work correctly in QGIS 2.x. Please consult
-        http://hub.qgis.org/wiki/quantum-gis/Python_plugin_API_changes_from_18_to_20
+        https://github.com/qgis/QGIS/wiki/Python_plugin_API_changes_from_18_to_20
         for more details.
 - The raster data provider system has been completely overhauled. One of
       the best new features stemming from this work is the ability to 'Layer ->
@@ -650,7 +680,7 @@ were made.
 http://linfiniti.com/2011/08/improvements-to-raster-performance-in-qgis-master/]
 - Update version on cmakelists and splash to 1.7.1
 - Move setting projection to after we have features
-- symbology-ng: sort the category items when classifying them #4206
+- symbology: sort the category items when classifying them #4206
 - Fix feature_count consideration in wms feature info
 - Check topological editing yes/no when opening snapping dialog
 - Updated required version for bison and cmake
@@ -725,7 +755,7 @@ changed so we will just provide a bullet list of key new features here.
 
 - New symbology now used by default!
 - Diagram system that uses the same smart placement system as labeling-ng
-- Export and import of styles (symbology-ng).
+- Export and import of styles (symbology).
 - Labels for rules in rule-based renderers.
 - Ability to set label distance in map units.
 - Rotation for svg fills.
@@ -779,7 +809,7 @@ changed so we will just provide a bullet list of key new features here.
  - Make NULL value string representation configurable.
  - Fix feature updates in feature form from attribute table.
  - Add support for NULL values in value maps (comboboxes).
- - Use layer names instead of ids in drop down list when loading value maps from layers.
+ - Use layer names instead of ids in drop-down list when loading value maps from layers.
  - Support feature form expression fields: line edits on the form which
       name prefix "expr_" are evaluated. Their value is interpreted as field
       calculator string and replaced with the calculated value.
@@ -893,7 +923,7 @@ Breaks (based on pretty from the R statistical environment).
 [Read more...
 http://linfiniti.com/2010/09/new-class-breaks-for-graduated-symbols-in-qgis/]
 - Improved loading speed of the symbol properties dialog.
-- Data-defined rotation and size for categorized and graduated renderer (symbology-ng).
+- Data-defined rotation and size for categorized and graduated renderer (symbology).
 - Use size scale also for line symbols to modify line width.
 - Replaced raster histogram implementation with one based on Qwt. Added
 option to save histogram as image file. Show actual pixel values on x axis
@@ -956,7 +986,7 @@ pkgDataPath/composer_templates
 colors
 - Center map if user clicks into the map
 - New plugin for carrying out spatial selections
-- Data-defined size and rotation for single symbol renderer in symbology-ng
+- Data-defined size and rotation for single symbol renderer in symbology
 - IdentifyAsHtml to raster layer and use it in identify
 - Export legend groups and layers with legendinterface and use this
 information to display groups in the composer legend.
@@ -964,11 +994,11 @@ information to display groups in the composer legend.
 - Query option added to layer menu to subset vector layers
 - Option to label only selected features (on the 'old' labeling tool)
 - Load/save queries created in the query builder.
-- Manual adding of categories in symbology-ng.
+- Manual adding of categories in symbology.
 - Georeferencer: possibility to configure if residuals should be showed in
 pixels or map units
 - Delimited text provider: allow empty values in numeric columns
-- Added rule-based renderer for symbology-ng
+- Added rule-based renderer for symbology
 - Ability to create spatial lite databases from within QGIS
 - Inclusion of GDAL Raster tools plugin into QGIS core
 - New python console (with history)
@@ -1023,7 +1053,7 @@ release series. In all other cases we recommend that you use this version.
 
 
 This release includes around 200 bug fixes, nearly 30 new features and has had
-a lot of love and attention poured in to it to take our favorite desktop GIS
+a lot of love and attention poured into it to take our favorite desktop GIS
 application another step on the road to GIS nirvana! So much has happened in
 the 3 months since our last release that it is impossible to document
 everything here. Instead we will just highlight a couple of important new
@@ -1478,7 +1508,7 @@ under construction.
     in ogr provider
 - 2004-12-05 [gsherman] 0.6.0rc2 Fixed bug 1079392 that caused QGIS to crash when a query was entered that
  resulted in the layer being created with no records. Additional validation
- of the SQL query was added to the query builder.  When Ok is clicked on
+ of the SQL query was added to the query builder.  When OK is clicked on
  the builder dialog, the query is sent to the database and the result
  checked to ensure that it will create a valid PostreSQL layer.  Added tr
  to a number of strings that weren't prepared for translation in the vector
@@ -1646,7 +1676,7 @@ Added Simon splash screen
 Fixed command line loading bug to eliminate bogus warning for vector layers
 Modified splashscreen.cpp to allow specification of x,y for text drawing on
    the splash image
-Imperfectly fixed problem where postgis attributes aren't displayed if the
+Imperfectly fixed problem where PostGIS attributes aren't displayed if the
    primary key is not of type int4 (bug 1042706).
 Added Latvian translation file (untranslated at present)
 
@@ -1964,7 +1994,7 @@ Implemented a new map cursor type : Capture Point (little pencil icon on your to
    are placed into the system clipboard. 
 
   In release 0.5 this will be extended to provide simple point vector file data capture / 
-  digitizing facility. This will be implemented by means of a plugin which will utilise the 
+  digitizing facility. This will be implemented by means of a plugin which will utilize the 
   aforementioned xyClickCoordinate(QgsPoint) signal.
 
 2004-06-12 [gsherman] 0.3.0devel30
@@ -2081,7 +2111,7 @@ not need src parameter (this can be obtained from painter->device()).
 More work on print system - still only works well on A4 landscape.
 
 Northarrow and copyright label plugins now hidethemselves before emitting
-  update signals when ok is pressed.
+  update signals when OK is pressed.
 
 QGSMapCanvas can now return the (last calculated) scale using getScale
 
@@ -2496,7 +2526,7 @@ Added QgsRasterLayer::filterLayer which gets called near the end of each of
 
 2004-03-06 [didge] 0.1.0devel6
 Changed configure stuff to write DEFINES in config.h.
-   Postgresql stuff needs testing as I commented the compileflags in src/Makefile.am
+   PostgreSQL stuff needs testing as I commented the compileflags in src/Makefile.am
 Infos will be posted on the devel mailinglist
 
 2004-03-04 [ts] 0.1.0devel5

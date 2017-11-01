@@ -17,7 +17,7 @@
 #define QGSFIELDCALCULATOR_H
 
 #include "ui_qgsfieldcalculatorbase.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgsfields.h"
 #include "qgis_app.h"
 
@@ -28,7 +28,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
 {
     Q_OBJECT
   public:
-    QgsFieldCalculator( QgsVectorLayer* vl, QWidget* parent = nullptr );
+    QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent = nullptr );
     ~QgsFieldCalculator();
 
     int changedAttributeId() const { return mAttributeId; }
@@ -36,18 +36,17 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
   public slots:
     void accept() override;
 
-    void on_mNewFieldGroupBox_toggled( bool on );
-    void on_mUpdateExistingGroupBox_toggled( bool on );
-    void on_mCreateVirtualFieldCheckbox_stateChanged( int state );
-    void on_mOutputFieldNameLineEdit_textChanged( const QString& text );
-    void on_mOutputFieldTypeComboBox_activated( int index );
-
-    void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void mNewFieldGroupBox_toggled( bool on );
+    void mUpdateExistingGroupBox_toggled( bool on );
+    void mCreateVirtualFieldCheckbox_stateChanged( int state );
+    void mOutputFieldNameLineEdit_textChanged( const QString &text );
+    void mOutputFieldTypeComboBox_activated( int index );
 
   private slots:
-    //! Sets the ok button enabled / disabled
+    //! Sets the OK button enabled / disabled
     void setOkButtonState();
     void setPrecisionMinMax();
+    void showHelp();
 
   private:
     //! default constructor forbidden
@@ -57,7 +56,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     //! Inserts the types supported by the provider into the combo box
     void populateOutputFieldTypes();
 
-    QgsVectorLayer* mVectorLayer;
+    QgsVectorLayer *mVectorLayer = nullptr;
     //! Key: field name, Value: field index
     QMap<QString, int> mFieldMap;
 

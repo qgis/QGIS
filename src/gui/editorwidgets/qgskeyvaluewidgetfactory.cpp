@@ -22,17 +22,17 @@
 #include <QVariant>
 #include <QSettings>
 
-QgsKeyValueWidgetFactory::QgsKeyValueWidgetFactory( const QString& name ):
-    QgsEditorWidgetFactory( name )
+QgsKeyValueWidgetFactory::QgsKeyValueWidgetFactory( const QString &name ):
+  QgsEditorWidgetFactory( name )
 {
 }
 
-QgsEditorWidgetWrapper* QgsKeyValueWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
+QgsEditorWidgetWrapper *QgsKeyValueWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {
   return new QgsKeyValueWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
-QgsEditorConfigWidget* QgsKeyValueWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
+QgsEditorConfigWidget *QgsKeyValueWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
   Q_UNUSED( vl );
   Q_UNUSED( fieldIdx );
@@ -40,7 +40,7 @@ QgsEditorConfigWidget* QgsKeyValueWidgetFactory::configWidget( QgsVectorLayer *v
   return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "Key/Value field" ) );
 }
 
-unsigned int QgsKeyValueWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
+unsigned int QgsKeyValueWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
   return field.type() == QVariant::Map && field.subType() != QVariant::Invalid ? 20 : 0;

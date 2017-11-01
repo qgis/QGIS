@@ -16,13 +16,11 @@
 
 #include "qgsgeometrycheckerplugin.h"
 #include "qgisinterface.h"
-#include "ui/qgsgeometrycheckerdialog.h"
+#include "qgsgeometrycheckerdialog.h"
 
-QgsGeometryCheckerPlugin::QgsGeometryCheckerPlugin( QgisInterface* iface )
-    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mIface( iface )
-    , mDialog( nullptr )
-    , mMenuAction( nullptr )
+QgsGeometryCheckerPlugin::QgsGeometryCheckerPlugin( QgisInterface *iface )
+  : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+  , mIface( iface )
 {
 }
 
@@ -31,8 +29,8 @@ void QgsGeometryCheckerPlugin::initGui()
   mDialog = new QgsGeometryCheckerDialog( mIface, mIface->mainWindow() );
   mDialog->setWindowModality( Qt::NonModal );
   mMenuAction = new QAction( QIcon( ":/geometrychecker/icons/geometrychecker.png" ), QApplication::translate( "QgsGeometryCheckerPlugin", "Check Geometries" ), this );
-  connect( mMenuAction, SIGNAL( triggered() ), mDialog, SLOT( show() ) );
-  connect( mMenuAction, SIGNAL( triggered() ), mDialog, SLOT( raise() ) );
+  connect( mMenuAction, &QAction::triggered, mDialog, &QWidget::show );
+  connect( mMenuAction, &QAction::triggered, mDialog, &QWidget::raise );
   mIface->addPluginToVectorMenu( QApplication::translate( "QgsGeometryCheckerPlugin", "G&eometry Tools" ), mMenuAction );
 }
 
@@ -63,9 +61,9 @@ void QgsGeometryCheckerPlugin::unload()
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
+QGISEXTERN QgisPlugin *classFactory( QgisInterface *qgisInterfacePointer )
 {
-  return new QgsGeometryCheckerPlugin( theQgisInterfacePointer );
+  return new QgsGeometryCheckerPlugin( qgisInterfacePointer );
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
@@ -104,7 +102,7 @@ QGISEXTERN QString icon()
 }
 
 // Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
+QGISEXTERN void unload( QgisPlugin *pluginPointer )
 {
-  delete thePluginPointer;
+  delete pluginPointer;
 }

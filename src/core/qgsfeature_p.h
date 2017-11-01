@@ -42,18 +42,18 @@ class QgsFeaturePrivate : public QSharedData
   public:
 
     explicit QgsFeaturePrivate( QgsFeatureId id )
-        : fid( id )
-        , valid( false )
+      : fid( id )
+      , valid( false )
     {
     }
 
-    QgsFeaturePrivate( const QgsFeaturePrivate& other )
-        : QSharedData( other )
-        , fid( other.fid )
-        , attributes( other.attributes )
-        , geometry( other.geometry )
-        , valid( other.valid )
-        , fields( other.fields )
+    QgsFeaturePrivate( const QgsFeaturePrivate &other )
+      : QSharedData( other )
+      , fid( other.fid )
+      , attributes( other.attributes )
+      , geometry( other.geometry )
+      , valid( other.valid )
+      , fields( other.fields )
     {
     }
 

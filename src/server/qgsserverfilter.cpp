@@ -28,7 +28,7 @@
  */
 
 QgsServerFilter::QgsServerFilter( QgsServerInterface *serverInterface ):
-    mServerInterface( serverInterface )
+  mServerInterface( serverInterface )
 {
 }
 

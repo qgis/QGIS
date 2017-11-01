@@ -17,19 +17,16 @@
 
 #include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
+#include "qgsanimatedicon.h"
 
 #include <QToolButton>
 #include <QStyle>
 #include <QFocusEvent>
 #include <QPainter>
 
-QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue )
-    : QLineEdit( parent )
-    , mClearButtonVisible( true )
-    , mClearMode( ClearToNull )
-    , mNullValue( nullValue )
-    , mFocusInEvent( false )
-    , mClearHover( false )
+QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue )
+  : QLineEdit( parent )
+  , mNullValue( nullValue )
 {
   // need mouse tracking to handle cursor changes
   setMouseTracking( true );
@@ -40,8 +37,12 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue 
   QIcon hoverIcon = QgsApplication::getThemeIcon( "/mIconClearTextHover.svg" );
   mClearHoverPixmap = hoverIcon.pixmap( mClearIconSize );
 
-  connect( this, SIGNAL( textChanged( const QString& ) ), this,
-           SLOT( onTextChanged( const QString& ) ) );
+  QIcon searchIcon = QgsApplication::getThemeIcon( "/search.svg" );
+  mSearchIconSize = QSize( 16, 16 );
+  mSearchIconPixmap = searchIcon.pixmap( mSearchIconSize );
+
+  connect( this, &QLineEdit::textChanged, this,
+           &QgsFilterLineEdit::onTextChanged );
 }
 
 void QgsFilterLineEdit::setShowClearButton( bool visible )
@@ -55,7 +56,17 @@ void QgsFilterLineEdit::setShowClearButton( bool visible )
     update();
 }
 
-void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
+void QgsFilterLineEdit::setShowSearchIcon( bool visible )
+{
+  bool changed = mSearchIconVisible != visible;
+  if ( changed )
+  {
+    mSearchIconVisible = visible;
+    update();
+  }
+}
+
+void QgsFilterLineEdit::mousePressEvent( QMouseEvent *e )
 {
   if ( !mFocusInEvent )
     QLineEdit::mousePressEvent( e );
@@ -68,7 +79,7 @@ void QgsFilterLineEdit::mousePressEvent( QMouseEvent* e )
   }
 }
 
-void QgsFilterLineEdit::mouseMoveEvent( QMouseEvent* e )
+void QgsFilterLineEdit::mouseMoveEvent( QMouseEvent *e )
 {
   QLineEdit::mouseMoveEvent( e );
   if ( shouldShowClear() && clearRect().contains( e->pos() ) )
@@ -88,10 +99,10 @@ void QgsFilterLineEdit::mouseMoveEvent( QMouseEvent* e )
   }
 }
 
-void QgsFilterLineEdit::focusInEvent( QFocusEvent* e )
+void QgsFilterLineEdit::focusInEvent( QFocusEvent *e )
 {
   QLineEdit::focusInEvent( e );
-  if ( e->reason() == Qt::MouseFocusReason && isNull() )
+  if ( e->reason() == Qt::MouseFocusReason && ( isNull() || mSelectOnFocus ) )
   {
     mFocusInEvent = true;
     selectAll();
@@ -122,7 +133,7 @@ void QgsFilterLineEdit::clearValue()
   emit cleared();
 }
 
-void QgsFilterLineEdit::paintEvent( QPaintEvent* e )
+void QgsFilterLineEdit::paintEvent( QPaintEvent *e )
 {
   QLineEdit::paintEvent( e );
   if ( shouldShowClear() )
@@ -130,13 +141,27 @@ void QgsFilterLineEdit::paintEvent( QPaintEvent* e )
     QRect r = clearRect();
     QPainter p( this );
     if ( mClearHover )
-      p.drawPixmap( r.left() , r.top() , mClearHoverPixmap );
+      p.drawPixmap( r.left(), r.top(), mClearHoverPixmap );
     else
-      p.drawPixmap( r.left() , r.top() , mClearIconPixmap );
+      p.drawPixmap( r.left(), r.top(), mClearIconPixmap );
+  }
+
+  if ( mSearchIconVisible && !shouldShowClear() )
+  {
+    QRect r = searchRect();
+    QPainter p( this );
+    p.drawPixmap( r.left(), r.top(), mSearchIconPixmap );
+  }
+
+  if ( mShowSpinner )
+  {
+    QRect r = busySpinnerRect();
+    QPainter p( this );
+    p.drawPixmap( r.left(), r.top(), mBusySpinner->icon().pixmap( r.size() ) );
   }
 }
 
-void QgsFilterLineEdit::leaveEvent( QEvent* e )
+void QgsFilterLineEdit::leaveEvent( QEvent *e )
 {
   if ( mClearHover )
   {
@@ -152,7 +177,7 @@ void QgsFilterLineEdit::onTextChanged( const QString &text )
   if ( isNull() )
   {
     setStyleSheet( QStringLiteral( "QLineEdit { font: italic; color: gray; } %1" ).arg( mStyleSheet ) );
-    emit valueChanged( QString::null );
+    emit valueChanged( QString() );
   }
   else
   {
@@ -165,6 +190,52 @@ void QgsFilterLineEdit::onTextChanged( const QString &text )
     setCursor( Qt::IBeamCursor );
     mClearHover = false;
   }
+}
+
+void QgsFilterLineEdit::updateBusySpinner()
+{
+  update();
+}
+
+bool QgsFilterLineEdit::selectOnFocus() const
+{
+  return mSelectOnFocus;
+}
+
+void QgsFilterLineEdit::setSelectOnFocus( bool selectOnFocus )
+{
+  if ( mSelectOnFocus == selectOnFocus )
+    return;
+
+  mSelectOnFocus = selectOnFocus;
+  emit selectOnFocusChanged();
+}
+
+bool QgsFilterLineEdit::showSpinner() const
+{
+  return mShowSpinner;
+}
+
+void QgsFilterLineEdit::setShowSpinner( bool showSpinner )
+{
+  if ( showSpinner == mShowSpinner )
+    return;
+
+  if ( showSpinner )
+  {
+    if ( !mBusySpinner )
+      mBusySpinner = new QgsAnimatedIcon( QgsApplication::iconPath( QStringLiteral( "/mIconLoading.gif" ) ), this );
+
+    mBusySpinner->connectFrameChanged( this, &QgsFilterLineEdit::updateBusySpinner );
+  }
+  else
+  {
+    mBusySpinner->disconnectFrameChanged( this, &QgsFilterLineEdit::updateBusySpinner );
+    update();
+  }
+
+  mShowSpinner = showSpinner;
+  emit showSpinnerChanged();
 }
 
 bool QgsFilterLineEdit::shouldShowClear() const
@@ -190,4 +261,25 @@ QRect QgsFilterLineEdit::clearRect() const
                 ( rect().bottom() + 1 - mClearIconSize.height() ) / 2,
                 mClearIconSize.width(),
                 mClearIconSize.height() );
+}
+
+QRect QgsFilterLineEdit::busySpinnerRect() const
+{
+  int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
+
+  int offset = shouldShowClear() ? mClearIconSize.width() + frameWidth * 2 : frameWidth;
+
+  return QRect( rect().right() - offset - mClearIconSize.width(),
+                ( rect().bottom() + 1 - mClearIconSize.height() ) / 2,
+                mClearIconSize.width(),
+                mClearIconSize.height() );
+}
+
+QRect QgsFilterLineEdit::searchRect() const
+{
+  int frameWidth = style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
+  return QRect( rect().left() + frameWidth * 2,
+                ( rect().bottom() + 1 - mSearchIconSize.height() ) / 2,
+                mSearchIconSize.width(),
+                mSearchIconSize.height() );
 }

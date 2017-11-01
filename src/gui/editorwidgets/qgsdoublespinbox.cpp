@@ -27,11 +27,7 @@
 #define CLEAR_ICON_SIZE 16
 
 QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
-    : QDoubleSpinBox( parent )
-    , mShowClearButton( true )
-    , mClearValueMode( MinimumValue )
-    , mCustomClearValue( 0.0 )
-    , mExpressionsEnabled( true )
+  : QDoubleSpinBox( parent )
 {
   mLineEdit = new QgsSpinBoxLineEdit();
 
@@ -39,10 +35,10 @@ QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
 
   QSize msz = minimumSizeHint();
   setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2,
-                  qMax( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
+                  std::max( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
 
-  connect( mLineEdit, SIGNAL( cleared() ), this, SLOT( clear() ) );
-  connect( this, SIGNAL( valueChanged( double ) ), this, SLOT( changed( double ) ) );
+  connect( mLineEdit, &QgsFilterLineEdit::cleared, this, &QgsDoubleSpinBox::clear );
+  connect( this, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsDoubleSpinBox::changed );
 }
 
 void QgsDoubleSpinBox::setShowClearButton( const bool showClearButton )
@@ -62,6 +58,28 @@ void QgsDoubleSpinBox::changeEvent( QEvent *event )
   mLineEdit->setShowClearButton( shouldShowClearForValue( value() ) );
 }
 
+void QgsDoubleSpinBox::wheelEvent( QWheelEvent *event )
+{
+  double step = singleStep();
+  if ( event->modifiers() & Qt::ControlModifier )
+  {
+    // ctrl modifier results in finer increments - 10% of usual step
+    double newStep = step / 10;
+    // but don't ever use an increment smaller than would be visible in the widget
+    // i.e. if showing 2 decimals, smallest increment will be 0.01
+    newStep = std::max( newStep, std::pow( 10.0, 0.0 - decimals() ) );
+
+    setSingleStep( newStep );
+
+    // clear control modifier before handing off event - Qt uses it for unwanted purposes
+    // (*increasing* step size, whereas QGIS UX convention is that control modifier
+    // results in finer changes!)
+    event->setModifiers( event->modifiers() & ~Qt::ControlModifier );
+  }
+  QDoubleSpinBox::wheelEvent( event );
+  setSingleStep( step );
+}
+
 void QgsDoubleSpinBox::paintEvent( QPaintEvent *event )
 {
   mLineEdit->setShowClearButton( shouldShowClearForValue( value() ) );
@@ -78,7 +96,7 @@ void QgsDoubleSpinBox::clear()
   setValue( clearValue() );
 }
 
-void QgsDoubleSpinBox::setClearValue( double customValue, const QString& specialValueText )
+void QgsDoubleSpinBox::setClearValue( double customValue, const QString &specialValueText )
 {
   mClearValueMode = CustomValue;
   mCustomClearValue = customValue;
@@ -92,7 +110,7 @@ void QgsDoubleSpinBox::setClearValue( double customValue, const QString& special
   }
 }
 
-void QgsDoubleSpinBox::setClearValueMode( QgsDoubleSpinBox::ClearValueMode mode, const QString& clearValueText )
+void QgsDoubleSpinBox::setClearValueMode( QgsDoubleSpinBox::ClearValueMode mode, const QString &clearValueText )
 {
   mClearValueMode = mode;
   mCustomClearValue = 0;
@@ -109,7 +127,7 @@ void QgsDoubleSpinBox::setClearValueMode( QgsDoubleSpinBox::ClearValueMode mode,
 double QgsDoubleSpinBox::clearValue() const
 {
   if ( mClearValueMode == MinimumValue )
-    return minimum() ;
+    return minimum();
   else if ( mClearValueMode == MaximumValue )
     return maximum();
   else

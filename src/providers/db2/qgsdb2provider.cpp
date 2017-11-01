@@ -20,22 +20,24 @@
 #include "qgsdb2dataitems.h"
 #include "qgsdb2featureiterator.h"
 #include "qgsdb2geometrycolumns.h"
-#include <qgscoordinatereferencesystem.h>
-#include <qgsdataitem.h>
-#include <qgslogger.h>
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdataitem.h"
+#include "qgslogger.h"
 #include "qgscredentials.h"
+
+#ifdef HAVE_GUI
+#include "qgsdb2sourceselect.h"
+#include "qgssourceselectprovider.h"
+#endif
 
 static const QString PROVIDER_KEY = QStringLiteral( "DB2" );
 static const QString PROVIDER_DESCRIPTION = QStringLiteral( "DB2 Spatial Extender provider" );
 
 int QgsDb2Provider::sConnectionId = 0;
 
-QgsDb2Provider::QgsDb2Provider( const QString& uri )
-    : QgsVectorDataProvider( uri )
-    , mNumberFeatures( 0 )
-    , mFidColIdx( -1 )
-    , mEnvironment( ENV_LUW )
-    , mWkbType( QgsWkbTypes::Unknown )
+QgsDb2Provider::QgsDb2Provider( const QString &uri )
+  : QgsVectorDataProvider( uri )
+  , mEnvironment( ENV_LUW )
 {
   QgsDebugMsg( "uri: " + uri );
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );
@@ -243,7 +245,7 @@ QSqlDatabase QgsDb2Provider::getDatabase( const QString &connInfo, QString &errM
     if ( db.open() )
     {
       connected = true;
-      errMsg = QLatin1String( "" );
+      errMsg.clear();
     }
     else
     {
@@ -403,7 +405,7 @@ QVariant::Type QgsDb2Provider::decodeSqlType( int typeId )
 // Return the DB2 type name for the type numeric value
 QString QgsDb2Provider::db2TypeName( int typeId )
 {
-  QString typeName = QLatin1String( "" );
+  QString typeName;
   switch ( typeId )
   {
     case -3:     //VARBINARY
@@ -427,27 +429,27 @@ QString QgsDb2Provider::db2TypeName( int typeId )
       break;
 
     case 3:     //NUMERIC and DECIMAL
-      typeName =  QStringLiteral( "DECIMAL" );
+      typeName = QStringLiteral( "DECIMAL" );
       break;
 
     case 7:     //REAL
-      typeName =  QStringLiteral( "REAL" );
+      typeName = QStringLiteral( "REAL" );
       break;
 
     case 8:     //DOUBLE
-      typeName =  QStringLiteral( "DOUBLE" );
+      typeName = QStringLiteral( "DOUBLE" );
       break;
 
     case 9:    //DATE
-      typeName =  QStringLiteral( "DATE" );
+      typeName = QStringLiteral( "DATE" );
       break;
 
     case 10:    //TIME
-      typeName =  QStringLiteral( "TIME" );
+      typeName = QStringLiteral( "TIME" );
       break;
 
     case 11:    //TIMESTAMP
-      typeName =  QStringLiteral( "TIMESTAMP" );
+      typeName = QStringLiteral( "TIMESTAMP" );
       break;
 
     default:
@@ -457,12 +459,12 @@ QString QgsDb2Provider::db2TypeName( int typeId )
   return typeName;
 }
 
-QgsAbstractFeatureSource* QgsDb2Provider::featureSource() const
+QgsAbstractFeatureSource *QgsDb2Provider::featureSource() const
 {
   return new QgsDb2FeatureSource( this );
 }
 
-QgsFeatureIterator QgsDb2Provider::getFeatures( const QgsFeatureRequest& request ) const
+QgsFeatureIterator QgsDb2Provider::getFeatures( const QgsFeatureRequest &request ) const
 {
   if ( !mValid )
   {
@@ -579,8 +581,8 @@ void QgsDb2Provider::updateStatistics() const
 
   QgsDebugMsg( QString( "mSRId: %1" ).arg( mSRId ) );
   QgsDb2GeometryColumns gc( mDatabase );
-  int rc = gc.open( mSchemaName, mTableName );  // returns SQLCODE if failure
-  if ( rc == 0 )
+  QString rc = gc.open( mSchemaName, mTableName );  // returns SQLCODE if failure
+  if ( rc.isEmpty() || rc == QStringLiteral( "0" ) )
   {
     mEnvironment = gc.db2Environment();
     if ( -1 == mSRId )
@@ -649,7 +651,7 @@ QString QgsDb2Provider::subsetString() const
   return mSqlWhereClause;
 }
 
-bool QgsDb2Provider::setSubsetString( const QString& theSQL, bool )
+bool QgsDb2Provider::setSubsetString( const QString &theSQL, bool )
 {
   QString prevWhere = mSqlWhereClause;
   QgsDebugMsg( theSQL );
@@ -730,7 +732,7 @@ void QgsDb2Provider::db2WkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString 
     dim = 0;
 }
 
-bool QgsDb2Provider::deleteFeatures( const QgsFeatureIds & id )
+bool QgsDb2Provider::deleteFeatures( const QgsFeatureIds &id )
 {
   if ( mFidColName.isEmpty() )
     return false;
@@ -786,7 +788,7 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     if ( FID_IS_NEW( fid ) )
       continue;
 
-    const QgsAttributeMap& attrs = it.value();
+    const QgsAttributeMap &attrs = it.value();
     if ( attrs.isEmpty() )
       continue;
 
@@ -897,7 +899,7 @@ bool QgsDb2Provider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   return true;
 }
 
-bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
+bool QgsDb2Provider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   QgsDebugMsg( "mGeometryColType: " + mGeometryColType );
   int writeCount = 0;
@@ -931,7 +933,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
   bool first = true;
 
 // Get the first geometry and its wkbType as when we are doing drag/drop,
-// the wkbType is not passed to the DB2 provider from QgsVectorLayerImport
+// the wkbType is not passed to the DB2 provider from QgsVectorLayerExporter
 // Can't figure out how to resolved "unreferenced" wkbType compile message
 // Don't really do anything with it at this point
 #if 0
@@ -948,7 +950,7 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
   {
     copyOperation = true; // FID is first field but no attribute in attrs
   }
-  else if ( mAttributeFields.count() !=  attrs.count() )
+  else if ( mAttributeFields.count() != attrs.count() )
   {
     QgsDebugMsg( "Count mismatch - failing" );
     return false;
@@ -1101,10 +1103,10 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
       query.bindValue( bindIdx,  bytea, QSql::In | QSql::Binary );
     }
 
-    QList<QVariant> list = query.boundValues().values();
-
 // Show bound values
 #if 0
+    QList<QVariant> list = query.boundValues().values();
+
     for ( int i = 0; i < list.size(); ++i )
     {
       QgsDebugMsg( QString( "i: %1; value: %2; type: %3" )
@@ -1122,31 +1124,34 @@ bool QgsDb2Provider::addFeatures( QgsFeatureList & flist )
       }
     }
 
-    statement = QString( "select IDENTITY_VAL_LOCAL() AS IDENTITY "
-                         "FROM SYSIBM.SYSDUMMY1" );
+    if ( !( flags & QgsFeatureSink::FastInsert ) )
+    {
+      statement = QString( "select IDENTITY_VAL_LOCAL() AS IDENTITY "
+                           "FROM SYSIBM.SYSDUMMY1" );
 //    QgsDebugMsg( statement );
-    if ( !queryFid.exec( statement ) )
-    {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
-      if ( !mSkipFailures )
+      if ( !queryFid.exec( statement ) )
       {
-        pushError( msg );
-        return false;
+        QString msg = query.lastError().text();
+        QgsDebugMsg( msg );
+        if ( !mSkipFailures )
+        {
+          pushError( msg );
+          return false;
+        }
       }
-    }
 
-    if ( !queryFid.next() )
-    {
-      QString msg = query.lastError().text();
-      QgsDebugMsg( msg );
-      if ( !mSkipFailures )
+      if ( !queryFid.next() )
       {
-        pushError( msg );
-        return false;
+        QString msg = query.lastError().text();
+        QgsDebugMsg( msg );
+        if ( !mSkipFailures )
+        {
+          pushError( msg );
+          return false;
+        }
       }
+      it->setId( queryFid.value( 0 ).toLongLong() );
     }
-    it->setId( queryFid.value( 0 ).toLongLong() );
     writeCount++;
 //    QgsDebugMsg( QString( "count: %1; featureId: %2" ).arg( writeCount ).arg( queryFid.value( 0 ).toLongLong() ) );
   }
@@ -1244,10 +1249,10 @@ bool QgsDb2Provider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   return true;
 }
 
-QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QString& uri,
+QgsVectorLayerExporter::ExportError QgsDb2Provider::createEmptyLayer( const QString &uri,
     const QgsFields &fields,
     QgsWkbTypes::Type wkbType,
-    const QgsCoordinateReferenceSystem& srs,
+    const QgsCoordinateReferenceSystem &srs,
     bool overwrite,
     QMap<int, int> *oldToNewAttrIdxMap,
     QString *errorMessage,
@@ -1270,7 +1275,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
   {
     if ( errorMessage )
       *errorMessage = errMsg;
-    return QgsVectorLayerImport::ErrConnectionFailed;
+    return QgsVectorLayerExporter::ErrConnectionFailed;
   }
 
   // Get the SRS name using srid, needed to register the spatial column
@@ -1323,7 +1328,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
   // a multi-type, the insert will fail if the actual data is a single-type
   // due to type mismatch.
   // We could potentially defer adding the spatial column until addFeatures is
-  // called the first time, but QgsVectorLayerImport doesn't pass the CRS/srid
+  // called the first time, but QgsVectorLayerExporter doesn't pass the CRS/srid
   // information to the DB2 provider and we need this information to register
   // the spatial column.
   // This hack is problematic because the drag/drop will fail if the
@@ -1387,7 +1392,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
     sql = "DROP TABLE " + fullName;
     if ( !q.exec( sql ) )
     {
-      if ( q.lastError().number() != -206 ) // -206 is "not found" just ignore
+      if ( q.lastError().nativeErrorCode() != QStringLiteral( "-206" ) ) // -206 is "not found" just ignore
       {
         QString lastError = q.lastError().text();
         QgsDebugMsg( lastError );
@@ -1395,7 +1400,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
         {
           *errorMessage = lastError;
         }
-        return QgsVectorLayerImport::ErrCreateLayer;
+        return QgsVectorLayerExporter::ErrCreateLayer;
       }
     }
   }
@@ -1403,7 +1408,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
   // add fields to the layer
   if ( oldToNewAttrIdxMap )
     oldToNewAttrIdxMap->clear();
-  QString attr2Create = QLatin1String( "" );
+  QString attr2Create;
   if ( fields.size() > 0 )
   {
     int offset = 0;
@@ -1418,7 +1423,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
 
       if ( oldToNewAttrIdxMap && fld.name() == primaryKey )
       {
-        oldToNewAttrIdxMap->insert( i , 0 );
+        oldToNewAttrIdxMap->insert( i, 0 );
         continue;
       }
 
@@ -1435,7 +1440,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
         {
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
         }
-        return QgsVectorLayerImport::ErrAttributeTypeUnsupported;
+        return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
       }
 
       if ( oldToNewAttrIdxMap )
@@ -1475,7 +1480,7 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
       {
         *errorMessage = lastError;
       }
-      return QgsVectorLayerImport::ErrCreateLayer;
+      return QgsVectorLayerExporter::ErrCreateLayer;
     }
 
 
@@ -1491,8 +1496,8 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
 
 // get the environment
       QgsDb2GeometryColumns gc( db );
-      int rc = gc.open( schemaName, tableName );  // returns SQLCODE if failure
-      if ( rc == 0 )
+      QString rc = gc.open( schemaName, tableName );  // returns SQLCODE if failure
+      if ( rc.isEmpty() || rc == QStringLiteral( "0" ) )
       {
         db2Environment = gc.db2Environment();
       }
@@ -1553,12 +1558,12 @@ QgsVectorLayerImport::ImportError QgsDb2Provider::createEmptyLayer( const QStrin
 
   }
   QgsDebugMsg( "successfully created empty layer" );
-  return QgsVectorLayerImport::NoError;
+  return QgsVectorLayerExporter::NoError;
 }
 
-QString QgsDb2Provider::qgsFieldToDb2Field( const QgsField& field )
+QString QgsDb2Provider::qgsFieldToDb2Field( const QgsField &field )
 {
-  QString result = QLatin1String( "" );
+  QString result;
   switch ( field.type() )
   {
     case QVariant::LongLong:
@@ -1711,21 +1716,23 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Database;
 }
 
-QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+#ifdef HAVE_GUI
+QGISEXTERN void *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  return new QgsDb2SourceSelect( parent, fl );
+  return new QgsDb2SourceSelect( parent, fl, widgetMode );
 }
+#endif
 
-QGISEXTERN QgsDataItem *dataItem( QString thePath, QgsDataItem *parentItem )
+QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
-  Q_UNUSED( thePath );
+  Q_UNUSED( path );
   QgsDebugMsg( "DB2: Browser Panel; data item detected." );
   return new QgsDb2RootItem( parentItem, PROVIDER_KEY, QStringLiteral( "DB2:" ) );
 }
 
 
-QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
-  const QString& uri,
+QGISEXTERN QgsVectorLayerExporter::ExportError createEmptyLayer(
+  const QString &uri,
   const QgsFields &fields,
   QgsWkbTypes::Type wkbType,
   const QgsCoordinateReferenceSystem &srs,
@@ -1739,3 +1746,34 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
            oldToNewAttrIdxMap, errorMessage, options
          );
 }
+
+
+#ifdef HAVE_GUI
+
+//! Provider for DB2 source select
+class QgsDb2SourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "DB2" ); }
+    virtual QString text() const override { return QObject::tr( "DB2" ); }
+    virtual int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 40; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDb2Layer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsDb2SourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsDb2SourceSelectProvider;
+
+  return providers;
+}
+
+#endif

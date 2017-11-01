@@ -30,12 +30,16 @@
 #ifndef PALSTAT_H
 #define PALSTAT_H
 
+#define SIP_NO_FILE
+
+
 #include <QStringList>
 
 namespace pal
 {
 
-  /** \ingroup core
+  /**
+   * \ingroup core
    * \brief Summary statistics of labeling problem.
    * \class pal::PalStat
    * \note not available in Python bindings
@@ -52,9 +56,9 @@ namespace pal
       ~PalStat();
 
       //! PalStat cannot be copied
-      PalStat( const PalStat& other ) = delete;
+      PalStat( const PalStat &other ) = delete;
       //! PalStat cannot be copied
-      PalStat& operator=( const PalStat& other ) = delete;
+      PalStat &operator=( const PalStat &other ) = delete;
 
       /**
        * \brief the number of object in problem

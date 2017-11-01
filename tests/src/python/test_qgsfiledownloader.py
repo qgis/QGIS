@@ -2,21 +2,21 @@
 """
 Test the QgsFileDownloader class
 
+Run test with:
+LC_ALL=en_US.UTF-8 ctest -V -R PyQgsFileDownloader
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-from __future__ import print_function
-from future import standard_library
+
 import os
 import tempfile
 from functools import partial
-from qgis.PyQt.QtCore import QEventLoop, QUrl, QTimer
-from qgis.gui import (QgsFileDownloader,)
+from qgis.PyQt.QtCore import QEventLoop, QUrl
+from qgis.core import (QgsFileDownloader,)
 from qgis.testing import start_app, unittest
-
-standard_library.install_aliases()
 
 __author__ = 'Alessandro Pasotti'
 __date__ = '08/11/2016'
@@ -43,7 +43,7 @@ class TestQgsFileDownloader(unittest.TestCase):
 
         loop = QEventLoop()
 
-        downloader = QgsFileDownloader(QUrl(url), destination, False)
+        downloader = QgsFileDownloader(QUrl(url), destination)
         downloader.downloadCompleted.connect(partial(self._set_slot, 'completed'))
         downloader.downloadExited.connect(partial(self._set_slot, 'exited'))
         downloader.downloadCanceled.connect(partial(self._set_slot, 'canceled'))
@@ -53,7 +53,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         downloader.downloadExited.connect(loop.quit)
 
         if cancel:
-            downloader.downloadProgress.connect(downloader.onDownloadCanceled)
+            downloader.downloadProgress.connect(downloader.cancelDownload)
 
         loop.exec_()
 
@@ -107,7 +107,7 @@ class TestQgsFileDownloader(unittest.TestCase):
         self.assertFalse(self.completed_was_called)
         self.assertFalse(self.canceled_was_called)
         self.assertTrue(self.error_was_called)
-        self.assertEqual(self.error_args[1], [u"Cannot open output file: "])
+        self.assertEqual(self.error_args[1], [u"No output filename specified"])
 
     def test_BlankUrl(self):
         destination = tempfile.mktemp()

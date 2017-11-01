@@ -1,0 +1,4 @@
+Covered Distance
+grid_analysis
+ParameterMultipleInput|INPUT|Grids|3|False
+OutputRaster|RESULT|Covered Distance

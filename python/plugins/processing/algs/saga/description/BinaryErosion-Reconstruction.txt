@@ -1,0 +1,5 @@
+Binary Erosion-Reconstruction
+grid_filter
+ParameterRaster|INPUT_GRID|Input Grid|False
+OutputRaster|OUTPUT_GRID|Output Grid
+ParameterNumber|RADIUS|Filter Size (Radius)|None|None| 3

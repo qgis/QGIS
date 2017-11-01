@@ -20,12 +20,13 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import Qt, QSettings, QTimer
+from qgis.PyQt.QtCore import Qt, QTimer
 from qgis.PyQt.QtGui import QColor, QCursor
 from qgis.PyQt.QtWidgets import QApplication
 
 from qgis.gui import QgsMapCanvas, QgsMessageBar
-from qgis.core import QgsVectorLayer, QgsProject
+from qgis.core import QgsVectorLayer, QgsProject, QgsSettings
+from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import Table
 
@@ -42,9 +43,8 @@ class LayerPreview(QgsMapCanvas):
         self.currentLayer = None
 
         # reuse settings from QGIS
-        settings = QSettings()
+        settings = QgsSettings()
         self.enableAntiAliasing(settings.value("/qgis/enable_anti_aliasing", False, type=bool))
-        action = settings.value("/qgis/wheel_action", 0, type=float)
         zoomFactor = settings.value("/qgis/zoom_factor", 2, type=float)
         self.setWheelFactor(zoomFactor)
 
@@ -78,7 +78,7 @@ class LayerPreview(QgsMapCanvas):
     def _clear(self):
         """ remove any layers from preview canvas """
         if self.item is not None:
-            ## skip exception on RuntimeError fixes #6892
+            # skip exception on RuntimeError fixes #6892
             try:
                 self.item.aboutToChange.disconnect(self.setDirty)
             except RuntimeError:
@@ -90,45 +90,44 @@ class LayerPreview(QgsMapCanvas):
 
     def _loadTablePreview(self, table, limit=False):
         """ if has geometry column load to map canvas """
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        self.setRenderFlag(False)
-        vl = None
+        with OverrideCursor(Qt.WaitCursor):
+            self.freeze()
+            vl = None
 
-        if table and table.geomType:
-            # limit the query result if required
-            if limit and table.rowCount > 1000:
-                uniqueField = table.getValidQgisUniqueFields(True)
-                if uniqueField is None:
-                    self.parent.tabs.setCurrentWidget(self.parent.info)
-                    self.parent.infoBar.pushMessage(
-                        QApplication.translate("DBManagerPlugin", "Unable to find a valid unique field"),
-                        QgsMessageBar.WARNING, self.parent.iface.messageTimeout())
-                    return
+            if table and table.geomType:
+                # limit the query result if required
+                if limit and table.rowCount > 1000:
+                    uniqueField = table.getValidQgisUniqueFields(True)
+                    if uniqueField is None:
+                        self.parent.tabs.setCurrentWidget(self.parent.info)
+                        self.parent.infoBar.pushMessage(
+                            QApplication.translate("DBManagerPlugin", "Unable to find a valid unique field"),
+                            QgsMessageBar.WARNING, self.parent.iface.messageTimeout())
+                        return
 
-                uri = table.database().uri()
-                uri.setDataSource("", u"(SELECT * FROM %s LIMIT 1000)" % table.quotedName(), table.geomColumn, "",
-                                  uniqueField.name)
-                provider = table.database().dbplugin().providerName()
-                vl = QgsVectorLayer(uri.uri(False), table.name, provider)
+                    uri = table.database().uri()
+                    uri.setDataSource("", u"(SELECT * FROM %s LIMIT 1000)" % table.quotedName(), table.geomColumn, "",
+                                      uniqueField.name)
+                    provider = table.database().dbplugin().providerName()
+                    vl = QgsVectorLayer(uri.uri(False), table.name, provider)
+                else:
+                    vl = table.toMapLayer()
+
+                if not vl.isValid():
+                    vl.deleteLater()
+                    vl = None
+
+            # remove old layer (if any) and set new
+            if self.currentLayer:
+                QgsProject.instance().removeMapLayers([self.currentLayer.id()])
+
+            if vl:
+                self.setLayers([vl])
+                QgsProject.instance().addMapLayers([vl], False)
+                self.zoomToFullExtent()
             else:
-                vl = table.toMapLayer()
+                self.setLayers([])
 
-            if not vl.isValid():
-                vl.deleteLater()
-                vl = None
+            self.currentLayer = vl
 
-        # remove old layer (if any) and set new
-        if self.currentLayer:
-            QgsProject.instance().removeMapLayers([self.currentLayer.id()])
-
-        if vl:
-            self.setLayers([vl])
-            QgsProject.instance().addMapLayers([vl], False)
-            self.zoomToFullExtent()
-        else:
-            self.setLayers([])
-
-        self.currentLayer = vl
-
-        self.setRenderFlag(True)
-        QApplication.restoreOverrideCursor()
+            self.freeze(False)

@@ -32,11 +32,7 @@ class TestQgsComposerLabel : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerLabel()
-        : mComposition( 0 )
-        , mComposerLabel( 0 )
-        , mVectorLayer( 0 )
-    {}
+    TestQgsComposerLabel() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -56,9 +52,9 @@ class TestQgsComposerLabel : public QObject
     void renderAsHtmlRelative();
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerLabel* mComposerLabel;
-    QgsVectorLayer* mVectorLayer;
+    QgsComposition *mComposition = nullptr;
+    QgsComposerLabel *mComposerLabel = nullptr;
+    QgsVectorLayer *mVectorLayer = nullptr;
     QString mReport;
 };
 

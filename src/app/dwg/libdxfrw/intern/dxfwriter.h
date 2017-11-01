@@ -19,7 +19,7 @@ class dxfWriter
 {
   public:
     explicit dxfWriter( std::ofstream *stream )
-        : filestr( stream )
+      : filestr( stream )
 //    , count( 0 )
     {}
     virtual ~dxfWriter() = default;
@@ -36,7 +36,7 @@ class dxfWriter
     void setCodePage( std::string *c ) {encoder.setCodePage( c, true );}
     std::string getCodePage() {return encoder.getCodePage();}
   protected:
-    std::ofstream *filestr;
+    std::ofstream *filestr = nullptr;
   private:
     DRW_TextCodec encoder;
 };
@@ -45,7 +45,7 @@ class dxfWriterBinary : public dxfWriter
 {
   public:
     explicit dxfWriterBinary( std::ofstream *stream )
-        : dxfWriter( stream )
+      : dxfWriter( stream )
     {}
     virtual bool writeString( int code, std::string text );
     virtual bool writeInt16( int code, int data );

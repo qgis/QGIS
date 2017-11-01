@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QSettings
+from qgis.core import QgsSettings
 from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QFileDialog
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 
@@ -85,7 +85,7 @@ class DirectorySelectorDialog(BASE, WIDGET):
         QDialog.reject(self)
 
     def addDirectory(self):
-        settings = QSettings()
+        settings = QgsSettings()
         if settings.contains('/Processing/lastDirectory'):
             path = settings.value('/Processing/lastDirectory')
         else:

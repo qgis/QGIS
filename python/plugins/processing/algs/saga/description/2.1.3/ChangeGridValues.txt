@@ -1,6 +1,0 @@
-Change Grid Values
-grid_tools
-ParameterRaster|GRID_IN|Grid|False
-ParameterSelection|METHOD|Replace Condition|[0] Grid value equals low value;[1] Low value < grid value < high value;[2] Low value <= grid value < high value
-ParameterFixedTable|LOOKUP|Lookup Table|3|Low Value;High Value;Replace with|False
-OutputRaster|GRID_OUT|Changed Grid

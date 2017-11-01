@@ -22,7 +22,10 @@
 #include <QWidget>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+#define SIP_NO_FILE
+
+/**
+ * \ingroup gui
  * \brief Custom widget for editing an authentication configuration ID
  * \note Validates the input against the database and for ID's 7-character alphanumeric syntax
  * \note not available in Python bindings
@@ -35,9 +38,9 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
 
     /**
      * Widget to unlock and edit an authentication configuration ID
-     * @param parent Parent widget
-     * @param authcfg Authentication configuration ID
-     * @param allowEmpty Whether to allow no ID to be set, even when editing, e.g. Add config functions
+     * \param parent Parent widget
+     * \param authcfg Authentication configuration ID
+     * \param allowEmpty Whether to allow no ID to be set, even when editing, e.g. Add config functions
      */
     explicit QgsAuthConfigIdEdit( QWidget *parent = nullptr, const QString &authcfg = QString(), bool allowEmpty = true );
 
@@ -67,15 +70,15 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
   private slots:
     void updateValidityStyle( bool valid );
 
-    void on_btnLock_toggled( bool checked );
+    void btnLock_toggled( bool checked );
 
-    void on_leAuthCfg_textChanged( const QString &txt );
+    void leAuthCfg_textChanged( const QString &txt );
 
   private:
     bool isAlphaNumeric( const QString &authcfg );
 
     QString mAuthCfgOrig;
-    bool mValid;
+    bool mValid = false;
     bool mAllowEmpty;
 };
 

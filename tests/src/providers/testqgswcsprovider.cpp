@@ -29,7 +29,8 @@
 
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
 class TestQgsWcsProvider: public QObject
@@ -43,7 +44,7 @@ class TestQgsWcsProvider: public QObject
 
     void read();
   private:
-    bool read( const QString& theIdentifier, const QString& theWcsUri, const QString& theFilePath, QString & theReport );
+    bool read( const QString &identifier, const QString &wcsUri, const QString &filePath, QString &report );
     QString mTestDataDir;
     QString mReport;
     QString mUrl;
@@ -114,13 +115,13 @@ void TestQgsWcsProvider::read()
   identifiers << QStringLiteral( "band3_float32_noct_epsg4326" );
 
   // How to reasonably log multiple fails within this loop?
-  QTemporaryFile* tmpFile = new QTemporaryFile( QStringLiteral( "qgis-wcs-test-XXXXXX.tif" ) );
+  QTemporaryFile *tmpFile = new QTemporaryFile( QStringLiteral( "qgis-wcs-test-XXXXXX.tif" ) );
   tmpFile->open();
   QString tmpFilePath = tmpFile->fileName();
   delete tmpFile; // removes the file
-  Q_FOREACH ( const QString& version, versions )
+  Q_FOREACH ( const QString &version, versions )
   {
-    Q_FOREACH ( const QString& identifier, identifiers )
+    Q_FOREACH ( const QString &identifier, identifiers )
     {
       // copy to temporary to avoid creation/changes/use of GDAL .aux.xml files
       QString testFilePath = mTestDataDir + '/' + identifier + ".tif";
@@ -149,14 +150,14 @@ void TestQgsWcsProvider::read()
   QVERIFY2( ok, "Reading data failed. See report for details." );
 }
 
-bool TestQgsWcsProvider::read( const QString& theIdentifier, const QString& theWcsUri, const QString& theFilePath, QString & theReport )
+bool TestQgsWcsProvider::read( const QString &identifier, const QString &wcsUri, const QString &filePath, QString &report )
 {
-  theReport += QStringLiteral( "<h2>Identifier (coverage): %1</h2>" ).arg( theIdentifier );
+  report += QStringLiteral( "<h2>Identifier (coverage): %1</h2>" ).arg( identifier );
 
   QgsRasterChecker checker;
-  bool ok = checker.runTest( QStringLiteral( "wcs" ), theWcsUri, QStringLiteral( "gdal" ), theFilePath );
+  bool ok = checker.runTest( QStringLiteral( "wcs" ), wcsUri, QStringLiteral( "gdal" ), filePath );
 
-  theReport += checker.report();
+  report += checker.report();
   return ok;
 }
 

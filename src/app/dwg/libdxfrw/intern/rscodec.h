@@ -47,13 +47,13 @@ class RScodec
     bool encode( unsigned char *data, unsigned char *parity );
     int decode( unsigned char *data );
     bool isOkey() {return isOk;}
-    const unsigned int* indexOf() {return index_of;}
-    const int* alphaTo() {return alpha_to;}
+    const unsigned int *indexOf() {return index_of;}
+    const int *alphaTo() {return alpha_to;}
 
   private:
     void RSgenerate_gf( unsigned int pp );
     void RSgen_poly();
-    int calcDecode( unsigned char* data, int* recd, int** elp, int* d, int* l, int* u_lu, int* s, int* root, int* loc, int* z, int* err, int* reg, int bb );
+    int calcDecode( unsigned char *data, int *recd, int **elp, int *d, int *l, int *u_lu, int *s, int *root, int *loc, int *z, int *err, int *reg, int bb );
 
 
   private:
@@ -62,10 +62,10 @@ class RScodec
     int nn; //(2^mm) - 1   length of codeword
     int kk; //nn-2*tt length of original data
 
-    int *gg;
+    int *gg = nullptr;
     bool isOk;
     unsigned int *index_of;
-    int *alpha_to;
+    int *alpha_to = nullptr;
 };
 
 #endif // RSCODEC_H

@@ -30,6 +30,9 @@
 #ifndef PAL_PRIORITYQUEUE_H
 #define PAL_PRIORITYQUEUE_H
 
+#define SIP_NO_FILE
+
+
 #include <iostream>
 
 #define LEFT(x) (2*x+1)
@@ -50,10 +53,11 @@ namespace pal
 
     public:
 
-      /** \brief Create a priority queue of max size n
-       * \@param n max size of the queuet
-       * \@param p external vector representing the priority
-       * \@param min best element has the smalest p when min is True ans has the biggest when min is false
+      /**
+       * \brief Create a priority queue of max size n
+       * \\param n max size of the queuet
+       * \\param p external vector representing the priority
+       * \\param min best element has the smalest p when min is True ans has the biggest when min is false
        */
       PriorityQueue( int n, int maxId, bool min );
       ~PriorityQueue();
@@ -90,9 +94,9 @@ namespace pal
       int size;
       int maxsize;
       int maxId;
-      int *heap;
-      double *p;
-      int *pos;
+      int *heap = nullptr;
+      double *p = nullptr;
+      int *pos = nullptr;
 
       bool ( *greater )( double l, double r );
   };

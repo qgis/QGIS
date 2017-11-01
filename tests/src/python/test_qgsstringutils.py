@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.PyQt.QtXml import (QDomDocument, QDomElement)
+from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsStringUtils,
                        QgsStringReplacement,
@@ -176,6 +176,7 @@ class PyQgsStringUtils(unittest.TestCase):
         self.assertEqual(QgsStringUtils.capitalize('    TESTING ABC', QgsStringUtils.ForceFirstLetterToCapital), '    TESTING ABC')
         self.assertEqual(QgsStringUtils.capitalize('    testing abc', QgsStringUtils.ForceFirstLetterToCapital),
                          '    Testing Abc')
+
 
 if __name__ == '__main__':
     unittest.main()

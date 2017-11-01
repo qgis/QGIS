@@ -82,9 +82,9 @@ public:
      * Copies the color entries which form the palette for this color scheme
      * into @p table.  @p table should be an array with TABLE_COLORS entries.
      *
-     * @param table Array into which the color entries for this color scheme
+     * \param table Array into which the color entries for this color scheme
      * are copied.
-     * @param randomSeed Color schemes may allow certain colors in their
+     * \param randomSeed Color schemes may allow certain colors in their
      * palette to be randomized.  The seed is used to pick the random color.
      */
     void getColorTable(ColorEntry* table, uint randomSeed = 0) const;
@@ -314,7 +314,7 @@ public:
     /** Returns the global color scheme manager instance. */
     static ColorSchemeManager* instance();
 
-    /** @brief Loads a custom color scheme under given \em path.
+    /** \brief Loads a custom color scheme under given \em path.
      *
      * The \em path may refer to either KDE 4 .colorscheme or KDE 3
      * .schema file
@@ -323,8 +323,8 @@ public:
      * the base name of the \em path via the allColorSchemes() and
      * findColorScheme() methods after this call if loaded successfully.
      *
-     * @param[in] path The path to KDE 4 .colorscheme or KDE 3 .schema.
-     * @return Whether the color scheme is loaded successfully.
+     * \param[in] path The path to KDE 4 .colorscheme or KDE 3 .schema.
+     * \returns Whether the color scheme is loaded successfully.
      */
     bool loadCustomColorScheme(const QString& path);
 private:
@@ -349,7 +349,7 @@ private:
 
     static const ColorScheme _defaultColorScheme;
 
-    static ColorSchemeManager * theColorSchemeManager;
+    static ColorSchemeManager * sColorSchemeManager;
 };
 
 }

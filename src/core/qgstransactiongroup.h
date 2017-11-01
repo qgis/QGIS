@@ -24,7 +24,8 @@
 
 class QgsVectorLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsTransactionGroup
  */
 class CORE_EXPORT QgsTransactionGroup : public QObject
@@ -38,14 +39,14 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
      *
      * Will return true if it is compatible and has been added.
      */
-    bool addLayer( QgsVectorLayer* layer );
+    bool addLayer( QgsVectorLayer *layer );
 
     /**
      * Get the set of layers currently managed by this transaction group.
      *
-     * @return Layer set
+     * \returns Layer set
      */
-    QSet<QgsVectorLayer*> layers() const;
+    QSet<QgsVectorLayer *> layers() const;
 
     /**
      * Returns true if any of the layers in this group reports a modification.
@@ -74,7 +75,7 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     /**
      * Will be emitted whenever there is a commit error
      */
-    void commitError( const QString& msg );
+    void commitError( const QString &msg );
 
   private slots:
     void onEditingStarted();
@@ -83,12 +84,12 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     void onRollback();
 
   private:
-    bool mEditingStarting;
-    bool mEditingStopping;
+    bool mEditingStarting = false;
+    bool mEditingStopping = false;
 
     void disableTransaction();
 
-    QSet<QgsVectorLayer*> mLayers;
+    QSet<QgsVectorLayer *> mLayers;
     //! Only set while a transaction is active
     std::unique_ptr<QgsTransaction> mTransaction;
     //! Layers have to be compatible with the connection string

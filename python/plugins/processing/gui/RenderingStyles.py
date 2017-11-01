@@ -64,8 +64,8 @@ class RenderingStyles(object):
         with open(RenderingStyles.configFile(), 'w') as fout:
             for alg in list(RenderingStyles.styles.keys()):
                 for out in list(RenderingStyles.styles[alg].keys()):
-                    fout.write(alg + '|' + out + '|'
-                               + RenderingStyles.styles[alg][out] + '\n')
+                    fout.write(alg + '|' + out + '|' +
+                               RenderingStyles.styles[alg][out] + '\n')
 
     @staticmethod
     def getStyle(algname, outputname):

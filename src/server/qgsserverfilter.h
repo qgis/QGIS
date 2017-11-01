@@ -22,6 +22,9 @@
 
 #include <QMultiMap>
 #include "qgis_server.h"
+#include "qgis_sip.h"
+
+SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 
 class QgsServerInterface;
 
@@ -42,28 +45,32 @@ class SERVER_EXPORT QgsServerFilter
 
   public:
 
-    /** Constructor
+    /**
+     * Constructor
      * QgsServerInterface passed to plugins constructors
      * and must be passed to QgsServerFilter instances.
      */
-    QgsServerFilter( QgsServerInterface* serverInterface );
+    QgsServerFilter( QgsServerInterface *serverInterface );
 
     virtual ~QgsServerFilter() = default;
 
     //! Return the QgsServerInterface instance
-    QgsServerInterface* serverInterface() { return mServerInterface; }
+    QgsServerInterface *serverInterface() { return mServerInterface; }
 
-    /** Method called when the QgsRequestHandler is ready and populated with
+    /**
+     * Method called when the QgsRequestHandler is ready and populated with
     * parameters, just before entering the main switch for core services.*/
     virtual void requestReady();
 
-    /** Method called when the QgsRequestHandler processing has done and
+    /**
+     * Method called when the QgsRequestHandler processing has done and
      * the response is ready, just after the main switch for core services
      * and before final sending response to FCGI stdout.
      */
     virtual void responseComplete();
 
-    /** Method called when the QgsRequestHandler sends its data to FCGI stdout.
+    /**
+     * Method called when the QgsRequestHandler sends its data to FCGI stdout.
      * This normally occurs at the end of core services processing just after
      * the responseComplete() plugin hook. For streaming services (like WFS on
      * getFeature requests, sendResponse() might have been called several times
@@ -74,10 +81,10 @@ class SERVER_EXPORT QgsServerFilter
 
   private:
 
-    QgsServerInterface* mServerInterface;
+    QgsServerInterface *mServerInterface = nullptr;
 
 };
 
-typedef QMultiMap<int, QgsServerFilter*> QgsServerFiltersMap;
+typedef QMultiMap<int, QgsServerFilter *> QgsServerFiltersMap;
 
 #endif // QGSSERVERFILTER_H

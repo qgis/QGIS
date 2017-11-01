@@ -27,7 +27,7 @@ from qgis.core import (
 )
 
 from qgis.gui import (
-    QgsEditorWidgetRegistry,
+    QgsGui,
     QgsRelationWidgetWrapper,
     QgsAttributeEditorContext
 )
@@ -47,7 +47,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         Setup the involved layers and relations for a n:m relation
         :return:
         """
-        QgsEditorWidgetRegistry.initEditors()
+        QgsGui.editorWidgetRegistry().initEditors()
         cls.dbconn = 'service=\'qgis_test\''
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
@@ -66,7 +66,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         cls.rel_a.setReferencingLayer(cls.vl_link.id())
         cls.rel_a.setReferencedLayer(cls.vl_a.id())
         cls.rel_a.addFieldPair('fk_author', 'pk')
-        cls.rel_a.setRelationId('rel_a')
+        cls.rel_a.setId('rel_a')
         assert(cls.rel_a.isValid())
         cls.relMgr.addRelation(cls.rel_a)
 
@@ -74,7 +74,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         cls.rel_b.setReferencingLayer(cls.vl_link.id())
         cls.rel_b.setReferencedLayer(cls.vl_b.id())
         cls.rel_b.addFieldPair('fk_book', 'pk')
-        cls.rel_b.setRelationId('rel_b')
+        cls.rel_b.setId('rel_b')
         assert(cls.rel_b.isValid())
         cls.relMgr.addRelation(cls.rel_b)
 
@@ -124,7 +124,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
 
         self.assertEqual(self.table_view.model().rowCount(), 4)
 
-    @unittest.expectedFailure(os.environ.get('QT_VERSION', '5') == '4' and os.environ.get('TRAVIS_OS_NAME', '') == 'linux') # It's probably not related to this variables at all, but that's the closest we can get to the real source of this problem at the moment...
+    @unittest.expectedFailure(os.environ.get('QT_VERSION', '5') == '4' and os.environ.get('TRAVIS_OS_NAME', '') == 'linux')  # It's probably not related to this variables at all, but that's the closest we can get to the real source of this problem at the moment...
     def test_add_feature(self):
         """
         Check if a new related feature is added
@@ -180,7 +180,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         """
         Check if a linked feature can be unlinked
         """
-        wrapper = self.createWrapper(self.vl_b)
+        wrapper = self.createWrapper(self.vl_b)   # NOQA
 
         # All authors are listed
         self.assertEqual(self.table_view.model().rowCount(), 4)
@@ -233,7 +233,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         """
         lyrs = [self.vl_a, self.vl_b, self.vl_link]
 
-        self.transaction = QgsTransaction.create([l.id() for l in lyrs])
+        self.transaction = QgsTransaction.create(lyrs)
         self.transaction.begin()
         for l in lyrs:
             l.startEditing()
@@ -333,6 +333,7 @@ class VlTools(QgsVectorLayerTools):
 
     def saveEdits(self, layer):
         pass
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -17,6 +17,8 @@
  ***************************************************************************/
 #include "qgscursors.h"
 
+#define SIP_NO_FILE
+
 // cursors
 const char *zoom_in[] =
 {

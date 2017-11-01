@@ -19,13 +19,15 @@
 #define QGSADDREMOVEMULTIFRAMECOMMAND_H
 
 #include <QUndoCommand>
+#include "qgis.h"
 
 #include "qgis_core.h"
 
 class QgsComposerMultiFrame;
 class QgsComposition;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsAddRemoveMultiFrameCommand
  */
 class CORE_EXPORT QgsAddRemoveMultiFrameCommand: public QUndoCommand
@@ -38,22 +40,22 @@ class CORE_EXPORT QgsAddRemoveMultiFrameCommand: public QUndoCommand
       Removed
     };
 
-    QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame* multiFrame, QgsComposition* c, const QString& text, QUndoCommand* parent = nullptr );
+    QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame *multiFrame, QgsComposition *c, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = 0 );
     ~QgsAddRemoveMultiFrameCommand();
     void redo() override;
     void undo() override;
 
   private:
-    QgsAddRemoveMultiFrameCommand();
+    QgsAddRemoveMultiFrameCommand() = delete;
 
     //changes between added / removed state
     void switchState();
     bool checkFirstRun();
 
-    QgsComposerMultiFrame* mMultiFrame;
-    QgsComposition* mComposition;
-    State mState;
-    bool mFirstRun;
+    QgsComposerMultiFrame *mMultiFrame = nullptr;
+    QgsComposition *mComposition = nullptr;
+    State mState = Added;
+    bool mFirstRun = true;
 };
 
 #endif // QGSADDREMOVEMULTIFRAMECOMMAND_H

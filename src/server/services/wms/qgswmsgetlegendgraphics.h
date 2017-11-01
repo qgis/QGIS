@@ -22,11 +22,12 @@
 namespace QgsWms
 {
 
-  /** Output GetLegendGRaphics response
+  /**
+   * Output GetLegendGRaphics response
    */
-  void writeGetLegendGraphics( QgsServerInterface* serverIface, const QgsProject* project,
-                               const QString& version, const QgsServerRequest& request,
-                               QgsServerResponse& response );
+  void writeGetLegendGraphics( QgsServerInterface *serverIface, const QgsProject *project,
+                               const QString &version, const QgsServerRequest &request,
+                               QgsServerResponse &response );
 
 } // samespace QgsWms
 

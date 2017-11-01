@@ -45,13 +45,13 @@
 #include "qgsgpxprovider.h"
 #include "gpsdata.h"
 
-const char* QgsGPXProvider::ATTR[] = { "name", "elevation", "symbol", "number",
+const char *QgsGPXProvider::ATTR[] = { "name", "elevation", "symbol", "number",
                                        "comment", "description", "source",
                                        "url", "url name"
                                      };
 QVariant::Type QgsGPXProvider::attrType[] = { QVariant::String, QVariant::Double, QVariant::String, QVariant::Int,
-    QVariant::String, QVariant::String, QVariant::String,
-    QVariant::String, QVariant::String
+                                              QVariant::String, QVariant::String, QVariant::String,
+                                              QVariant::String, QVariant::String
                                             };
 QgsGPXProvider::DataType QgsGPXProvider::attrUsed[] =
 {
@@ -60,18 +60,15 @@ QgsGPXProvider::DataType QgsGPXProvider::attrUsed[] =
   QgsGPXProvider::AllType, QgsGPXProvider::AllType
 };
 
-const int QgsGPXProvider::ATTR_COUNT = sizeof( QgsGPXProvider::ATTR ) / sizeof( const char* );
+const int QgsGPXProvider::ATTR_COUNT = sizeof( QgsGPXProvider::ATTR ) / sizeof( const char * );
 
 const QString GPX_KEY = QStringLiteral( "gpx" );
 
 const QString GPX_DESCRIPTION = QObject::tr( "GPS eXchange format provider" );
 
 
-QgsGPXProvider::QgsGPXProvider( const QString& uri )
-    : QgsVectorDataProvider( uri )
-    , data( nullptr )
-    , mFeatureType( WaypointType )
-    , mValid( false ) // assume that it won't work
+QgsGPXProvider::QgsGPXProvider( const QString &uri )
+  : QgsVectorDataProvider( uri )
 {
   // we always use UTF-8
   setEncoding( QStringLiteral( "utf8" ) );
@@ -114,7 +111,7 @@ QgsGPXProvider::~QgsGPXProvider()
   QgsGPSData::releaseData( mFileName );
 }
 
-QgsAbstractFeatureSource* QgsGPXProvider::featureSource() const
+QgsAbstractFeatureSource *QgsGPXProvider::featureSource() const
 {
   return new QgsGPXFeatureSource( this );
 }
@@ -184,20 +181,20 @@ bool QgsGPXProvider::isValid() const
 }
 
 
-QgsFeatureIterator QgsGPXProvider::getFeatures( const QgsFeatureRequest& request ) const
+QgsFeatureIterator QgsGPXProvider::getFeatures( const QgsFeatureRequest &request ) const
 {
   return QgsFeatureIterator( new QgsGPXFeatureIterator( new QgsGPXFeatureSource( this ), true, request ) );
 }
 
 
-bool QgsGPXProvider::addFeatures( QgsFeatureList & flist )
+bool QgsGPXProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
 
   // add all the features
   for ( QgsFeatureList::iterator iter = flist.begin();
         iter != flist.end(); ++iter )
   {
-    if ( !addFeature( *iter ) )
+    if ( !addFeature( *iter, flags ) )
       return false;
   }
 
@@ -211,13 +208,13 @@ bool QgsGPXProvider::addFeatures( QgsFeatureList & flist )
 }
 
 
-bool QgsGPXProvider::addFeature( QgsFeature& f )
+bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
 {
   QByteArray wkb( f.geometry().exportToWkb() );
-  const char* geo = wkb.constData();
+  const char *geo = wkb.constData();
   QgsWkbTypes::Type wkbType = f.geometry().wkbType();
   bool success = false;
-  QgsGPSObject* obj = nullptr;
+  QgsGPSObject *obj = nullptr;
   QgsAttributes attrs = f.attributes();
   QgsAttributeMap::const_iterator it;
 
@@ -381,7 +378,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
 }
 
 
-bool QgsGPXProvider::deleteFeatures( const QgsFeatureIds & id )
+bool QgsGPXProvider::deleteFeatures( const QgsFeatureIds &id )
 {
   if ( mFeatureType == WaypointType )
     data->removeWaypoints( id );
@@ -450,11 +447,11 @@ bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 }
 
 
-void QgsGPXProvider::changeAttributeValues( QgsGPSObject& obj, const QgsAttributeMap& attrs )
+void QgsGPXProvider::changeAttributeValues( QgsGPSObject &obj, const QgsAttributeMap &attrs )
 {
 
-  QgsWaypoint* wpt = dynamic_cast<QgsWaypoint*>( &obj );
-  QgsGPSExtended* ext = dynamic_cast<QgsGPSExtended*>( &obj );
+  QgsWaypoint *wpt = dynamic_cast<QgsWaypoint *>( &obj );
+  QgsGPSExtended *ext = dynamic_cast<QgsGPSExtended *>( &obj );
 
   QgsAttributeMap::const_iterator aIter = attrs.begin();
   for ( ; aIter != attrs.end(); ++aIter )
@@ -550,13 +547,14 @@ QgsCoordinateReferenceSystem QgsGPXProvider::crs() const
  * Class factory to return a pointer to a newly created
  * QgsGPXProvider object
  */
-QGISEXTERN QgsGPXProvider * classFactory( const QString *uri )
+QGISEXTERN QgsGPXProvider *classFactory( const QString *uri )
 {
   return new QgsGPXProvider( *uri );
 }
 
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {

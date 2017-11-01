@@ -17,6 +17,7 @@
 #define QGSATTRIBUTETABLEDELEGATE_H
 
 #include <QItemDelegate>
+#include "qgis_sip.h"
 #include "qgis_gui.h"
 
 class QgsFeatureSelectionModel;
@@ -25,7 +26,8 @@ class QgsVectorLayer;
 class QgsAttributeTableModel;
 class QToolButton;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A delegate item class for QgsAttributeTable (see Qt documentation for
  * QItemDelegate).
  */
@@ -34,19 +36,17 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
 {
     Q_OBJECT
 
-    static QgsVectorLayer* layer( const QAbstractItemModel* model );
-    static const QgsAttributeTableModel* masterModel( const QAbstractItemModel* model );
+    static QgsVectorLayer *layer( const QAbstractItemModel *model );
+    static const QgsAttributeTableModel *masterModel( const QAbstractItemModel *model );
 
   public:
 
     /**
      * Constructor
-     * @param parent parent object
+     * \param parent parent object
      */
-    QgsAttributeTableDelegate( QObject* parent = nullptr )
-        : QItemDelegate( parent )
-        , mLayer( nullptr )
-        , mFeatureSelectionModel( nullptr )
+    QgsAttributeTableDelegate( QObject *parent SIP_TRANSFERTHIS = 0 )
+      : QItemDelegate( parent )
     {
     }
 
@@ -54,29 +54,29 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
      * Used to create an editor for when the user tries to
      * change the contents of a cell
      */
-    QWidget * createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const override;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
     /**
      * Overloads the paint method form the QItemDelegate base class
      */
-    void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
     /**
      * Sets data from editor back to model. Overloads default method
-     * @param editor editor which was created by create editor function in this class
-     * @param model model where data should be updated
-     * @param index index of field which is to be modified
+     * \param editor editor which was created by create editor function in this class
+     * \param model model where data should be updated
+     * \param index index of field which is to be modified
      */
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 
     /**
      * Sets data from model into the editor. Overloads default method
-     * @param editor editor which was created by create editor function in this class
-     * @param index index of field which is to be retrieved
+     * \param editor editor which was created by create editor function in this class
+     * \param index index of field which is to be retrieved
      */
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
 
-    void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
+    void setFeatureSelectionModel( QgsFeatureSelectionModel *featureSelectionModel );
 
   signals:
 
@@ -84,15 +84,15 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
      * Is emitted when an action column item is painted.
      * The consumer of this signal can initialize the index widget.
      *
-     * @note This signal is emitted repeatedly whenever the item is being painted.
+     * \note This signal is emitted repeatedly whenever the item is being painted.
      *       It is the consumers responsibility to check if initialization has already
      *       happened before.
      */
-    void actionColumnItemPainted( const QModelIndex& index ) const;
+    void actionColumnItemPainted( const QModelIndex &index ) const;
 
   private:
-    QgsVectorLayer* mLayer;
-    QgsFeatureSelectionModel* mFeatureSelectionModel;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsFeatureSelectionModel *mFeatureSelectionModel = nullptr;
 };
 
 #endif //QGSATTRIBUTETABLEDELEGATE_H

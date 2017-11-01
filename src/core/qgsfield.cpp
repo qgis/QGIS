@@ -18,10 +18,9 @@
 #include "qgsfield_p.h"
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QDataStream>
-#include <QtCore/qmath.h>
 #include <QIcon>
 
 /***************************************************************************
@@ -33,8 +32,8 @@
 #if 0
 QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
                     QString comment )
-    : mName( nam ), mType( typ ), mLength( len ), mPrecision( prec ), mNumeric( num )
-    , mComment( comment )
+  : mName( nam ), mType( typ ), mLength( len ), mPrecision( prec ), mNumeric( num )
+  , mComment( comment )
 {
   // This function used to lower case the field name since some stores
   // use upper case (e.g., shapefiles), but that caused problems with
@@ -43,15 +42,15 @@ QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
   // names how they are now.
 }
 #endif
-QgsField::QgsField( const QString& name, QVariant::Type type,
-                    const QString& typeName, int len, int prec, const QString& comment,
+QgsField::QgsField( const QString &name, QVariant::Type type,
+                    const QString &typeName, int len, int prec, const QString &comment,
                     QVariant::Type subType )
 {
   d = new QgsFieldPrivate( name, type, subType, typeName, len, prec, comment );
 }
 
-QgsField::QgsField( const QgsField &other )
-    : d( other.d )
+QgsField::QgsField( const QgsField &other ) //NOLINT
+  : d( other.d )
 {
 
 }
@@ -62,18 +61,18 @@ QgsField::QgsField( const QgsField &other )
  * See details in QEP #17
  ****************************************************************************/
 
-QgsField &QgsField::operator =( const QgsField & other )
+QgsField &QgsField::operator =( const QgsField &other )  //NOLINT
 {
   d = other.d;
   return *this;
 }
 
-bool QgsField::operator==( const QgsField& other ) const
+bool QgsField::operator==( const QgsField &other ) const
 {
   return *( other.d ) == *d;
 }
 
-bool QgsField::operator!=( const QgsField& other ) const
+bool QgsField::operator!=( const QgsField &other ) const
 {
   return !( *this == other );
 }
@@ -132,7 +131,7 @@ bool QgsField::isNumeric() const
  * See details in QEP #17
  ****************************************************************************/
 
-void QgsField::setName( const QString& name )
+void QgsField::setName( const QString &name )
 {
   d->name = name;
 }
@@ -147,7 +146,7 @@ void QgsField::setSubType( QVariant::Type subType )
   d->subType = subType;
 }
 
-void QgsField::setTypeName( const QString& typeName )
+void QgsField::setTypeName( const QString &typeName )
 {
   d->typeName = typeName;
 }
@@ -161,27 +160,27 @@ void QgsField::setPrecision( int precision )
   d->precision = precision;
 }
 
-void QgsField::setComment( const QString& comment )
+void QgsField::setComment( const QString &comment )
 {
   d->comment = comment;
 }
 
-QString QgsField::defaultValueExpression() const
+QgsDefaultValue QgsField::defaultValueDefinition() const
 {
-  return d->defaultValueExpression;
+  return d->defaultValueDefinition;
 }
 
-void QgsField::setDefaultValueExpression( const QString& expression )
+void QgsField::setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition )
 {
-  d->defaultValueExpression = expression;
+  d->defaultValueDefinition = defaultValueDefinition;
 }
 
-void QgsField::setConstraints( const QgsFieldConstraints& constraints )
+void QgsField::setConstraints( const QgsFieldConstraints &constraints )
 {
   d->constraints = constraints;
 }
 
-const QgsFieldConstraints& QgsField::constraints() const
+const QgsFieldConstraints &QgsField::constraints() const
 {
   return d->constraints;
 }
@@ -191,7 +190,7 @@ QString QgsField::alias() const
   return d->alias;
 }
 
-void QgsField::setAlias( const QString& alias )
+void QgsField::setAlias( const QString &alias )
 {
   d->alias = alias;
 }
@@ -202,11 +201,11 @@ void QgsField::setAlias( const QString& alias )
  * See details in QEP #17
  ****************************************************************************/
 
-QString QgsField::displayString( const QVariant& v ) const
+QString QgsField::displayString( const QVariant &v ) const
 {
   if ( v.isNull() )
   {
-    QSettings settings;
+    QgsSettings settings;
     return QgsApplication::nullRepresentation();
   }
 
@@ -222,7 +221,7 @@ QString QgsField::displayString( const QVariant& v ) const
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsField::convertCompatible( QVariant& v ) const
+bool QgsField::convertCompatible( QVariant &v ) const
 {
   if ( v.isNull() )
   {
@@ -249,14 +248,14 @@ bool QgsField::convertCompatible( QVariant& v ) const
       return false;
     }
 
-    double round = qgsRound( dbl );
+    double round = std::round( dbl );
     if ( round  > INT_MAX || round < -INT_MAX )
     {
       //double too large to fit in int
       v = QVariant( d->type );
       return false;
     }
-    v = QVariant( qRound( dbl ) );
+    v = QVariant( static_cast< int >( std::round( dbl ) ) );
     return true;
   }
 
@@ -268,9 +267,9 @@ bool QgsField::convertCompatible( QVariant& v ) const
 
   if ( d->type == QVariant::Double && d->precision > 0 )
   {
-    double s = qPow( 10, d->precision );
+    double s = std::pow( 10, d->precision );
     double d = v.toDouble() * s;
-    v = QVariant(( d < 0 ? ceil( d - 0.5 ) : floor( d + 0.5 ) ) / s );
+    v = QVariant( ( d < 0 ? std::ceil( d - 0.5 ) : std::floor( d + 0.5 ) ) / s );
     return true;
   }
 
@@ -283,7 +282,7 @@ bool QgsField::convertCompatible( QVariant& v ) const
   return true;
 }
 
-void QgsField::setEditorWidgetSetup( const QgsEditorWidgetSetup& v )
+void QgsField::setEditorWidgetSetup( const QgsEditorWidgetSetup &v )
 {
   d->editorWidgetSetup = v;
 }
@@ -299,7 +298,7 @@ QgsEditorWidgetSetup QgsField::editorWidgetSetup() const
  * See details in QEP #17
  ****************************************************************************/
 
-QDataStream& operator<<( QDataStream& out, const QgsField& field )
+QDataStream &operator<<( QDataStream &out, const QgsField &field )
 {
   out << field.name();
   out << static_cast< quint32 >( field.type() );
@@ -308,7 +307,8 @@ QDataStream& operator<<( QDataStream& out, const QgsField& field )
   out << field.precision();
   out << field.comment();
   out << field.alias();
-  out << field.defaultValueExpression();
+  out << field.defaultValueDefinition().expression();
+  out << field.defaultValueDefinition().applyOnUpdate();
   out << field.constraints().constraints();
   out << static_cast< quint32 >( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) );
   out << static_cast< quint32 >( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintUnique ) );
@@ -322,13 +322,33 @@ QDataStream& operator<<( QDataStream& out, const QgsField& field )
   return out;
 }
 
-QDataStream& operator>>( QDataStream& in, QgsField& field )
+QDataStream &operator>>( QDataStream &in, QgsField &field )
 {
-  quint32 type, subType, length, precision, constraints, originNotNull, originUnique, originExpression, strengthNotNull, strengthUnique, strengthExpression;
-  QString name, typeName, comment, alias, defaultValueExpression, constraintExpression, constraintDescription;
+  quint32 type;
+  quint32 subType;
+  quint32 length;
+  quint32 precision;
+  quint32 constraints;
+  quint32 originNotNull;
+  quint32 originUnique;
+  quint32 originExpression;
+  quint32 strengthNotNull;
+  quint32 strengthUnique;
+  quint32 strengthExpression;
+
+  bool applyOnUpdate;
+
+  QString name;
+  QString typeName;
+  QString comment;
+  QString alias;
+  QString defaultValueExpression;
+  QString constraintExpression;
+  QString constraintDescription;
+
   in >> name >> type >> typeName >> length >> precision >> comment >> alias
-  >> defaultValueExpression >> constraints >> originNotNull >> originUnique >> originExpression >> strengthNotNull >> strengthUnique >> strengthExpression >>
-  constraintExpression >> constraintDescription >> subType;
+     >> defaultValueExpression >> applyOnUpdate >> constraints >> originNotNull >> originUnique >> originExpression >> strengthNotNull >> strengthUnique >> strengthExpression >>
+     constraintExpression >> constraintDescription >> subType;
   field.setName( name );
   field.setType( static_cast< QVariant::Type >( type ) );
   field.setTypeName( typeName );
@@ -336,7 +356,7 @@ QDataStream& operator>>( QDataStream& in, QgsField& field )
   field.setPrecision( static_cast< int >( precision ) );
   field.setComment( comment );
   field.setAlias( alias );
-  field.setDefaultValueExpression( defaultValueExpression );
+  field.setDefaultValueDefinition( QgsDefaultValue( defaultValueExpression, applyOnUpdate ) );
   QgsFieldConstraints fieldConstraints;
   if ( constraints & QgsFieldConstraints::ConstraintNotNull )
   {

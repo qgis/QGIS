@@ -35,7 +35,7 @@ class TestQgsClipper: public QObject
     void cleanup() {} // will be called after every testfunction.
     void basic();
   private:
-    bool checkBoundingBox( const QPolygonF& polygon, const QgsRectangle& clipRect );
+    bool checkBoundingBox( const QPolygonF &polygon, const QgsRectangle &clipRect );
 };
 
 void TestQgsClipper::initTestCase()
@@ -78,7 +78,7 @@ void TestQgsClipper::basic()
   QVERIFY( ! checkBoundingBox( polygon, clipRectInner ) );
 }
 
-bool TestQgsClipper::checkBoundingBox( const QPolygonF& polygon, const QgsRectangle& clipRect )
+bool TestQgsClipper::checkBoundingBox( const QPolygonF &polygon, const QgsRectangle &clipRect )
 {
   QgsRectangle bBox( polygon.boundingRect() );
 

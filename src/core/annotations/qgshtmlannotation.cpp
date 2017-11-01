@@ -36,8 +36,8 @@
 #include <QWidget>
 
 
-QgsHtmlAnnotation::QgsHtmlAnnotation( QObject* parent )
-    : QgsAnnotation( parent )
+QgsHtmlAnnotation::QgsHtmlAnnotation( QObject *parent )
+  : QgsAnnotation( parent )
 {
   mWebPage = new QgsWebPage();
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
@@ -47,16 +47,21 @@ QgsHtmlAnnotation::QgsHtmlAnnotation( QObject* parent )
   connect( mWebPage->mainFrame(), &QWebFrame::javaScriptWindowObjectCleared, this, &QgsHtmlAnnotation::javascript );
 }
 
-QgsHtmlAnnotation::~QgsHtmlAnnotation()
-{}
+QgsHtmlAnnotation *QgsHtmlAnnotation::clone() const
+{
+  std::unique_ptr< QgsHtmlAnnotation > c( new QgsHtmlAnnotation() );
+  copyCommonProperties( c.get() );
+  c->setSourceFile( mHtmlFile );
+  return c.release();
+}
 
-void QgsHtmlAnnotation::setSourceFile( const QString& htmlFile )
+void QgsHtmlAnnotation::setSourceFile( const QString &htmlFile )
 {
   QFile file( htmlFile );
   mHtmlFile = htmlFile;
   if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    mHtmlSource = QLatin1String( "" );
+    mHtmlSource.clear();
   }
   else
   {
@@ -70,7 +75,7 @@ void QgsHtmlAnnotation::setSourceFile( const QString& htmlFile )
   emit appearanceChanged();
 }
 
-void QgsHtmlAnnotation::renderAnnotation( QgsRenderContext& context, QSizeF size ) const
+void QgsHtmlAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size ) const
 {
   if ( !context.painter() )
   {
@@ -95,22 +100,22 @@ QSizeF QgsHtmlAnnotation::minimumFrameSize() const
   }
 }
 
-void QgsHtmlAnnotation::writeXml( QDomElement& elem, QDomDocument & doc ) const
+void QgsHtmlAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement formAnnotationElem = doc.createElement( QStringLiteral( "HtmlAnnotationItem" ) );
   formAnnotationElem.setAttribute( QStringLiteral( "htmlfile" ), sourceFile() );
 
-  _writeXml( formAnnotationElem, doc );
+  _writeXml( formAnnotationElem, doc, context );
   elem.appendChild( formAnnotationElem );
 }
 
-void QgsHtmlAnnotation::readXml( const QDomElement& itemElem, const QDomDocument& doc )
+void QgsHtmlAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteContext &context )
 {
   mHtmlFile = itemElem.attribute( QStringLiteral( "htmlfile" ), QLatin1String( "" ) );
   QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {
-    _readXml( annotationElem, doc );
+    _readXml( annotationElem, context );
   }
 
   // upgrade old layer
@@ -125,11 +130,11 @@ void QgsHtmlAnnotation::readXml( const QDomElement& itemElem, const QDomDocument
   }
 }
 
-void QgsHtmlAnnotation::setAssociatedFeature( const QgsFeature& feature )
+void QgsHtmlAnnotation::setAssociatedFeature( const QgsFeature &feature )
 {
   QgsAnnotation::setAssociatedFeature( feature );
   QString newText;
-  QgsVectorLayer* vectorLayer = qobject_cast< QgsVectorLayer* >( mapLayer() );
+  QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( mapLayer() );
   if ( feature.isValid() && vectorLayer )
   {
     QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vectorLayer ) );

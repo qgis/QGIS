@@ -45,10 +45,10 @@ def processInputs(alg):
         alg.exportedLayers[rstable]
     )
     alg.commands.append(command)
-    alg.processInputs()
+    alg.processInputs(context, parameters)
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     in_file = alg.getParameterValue('in_file')
     if in_file:
         # Creates a temporary txt file
@@ -61,7 +61,7 @@ def processCommand(alg):
         ruleFile = alg.getParameterValue('file')
 
     output = alg.getOutputFromName(u'output')
-    alg.exportedLayers[output.value] = output.name + alg.uniqueSufix
+    alg.exportedLayers[output.value] = output.name + alg.uniqueSuffix
 
     command = 'v.lrs.segment input={} file={} rstable={} output={} --overwrite'.format(
         alg.exportedLayers[alg.getParameterValue('input')],

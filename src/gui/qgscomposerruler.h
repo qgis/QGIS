@@ -21,7 +21,8 @@
 class QgsComposition;
 class QGraphicsLineItem;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A class to show paper scale and the current cursor position
 */
 class GUI_EXPORT QgsComposerRuler: public QWidget
@@ -40,19 +41,19 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
 
     QSize minimumSizeHint() const override;
 
-    void setSceneTransform( const QTransform& transform );
+    void setSceneTransform( const QTransform &transform );
     void updateMarker( QPointF pos ) { mMarkerPos = pos; repaint(); }
 
-    void setComposition( QgsComposition* c ) { mComposition = c; }
-    QgsComposition* composition() { return mComposition; }
+    void setComposition( QgsComposition *c ) { mComposition = c; }
+    QgsComposition *composition() { return mComposition; }
 
     int rulerSize() { return mRulerMinSize; }
 
   protected:
-    void paintEvent( QPaintEvent* event ) override;
-    void mouseMoveEvent( QMouseEvent* event ) override;
-    void mouseReleaseEvent( QMouseEvent* event ) override;
-    void mousePressEvent( QMouseEvent* event ) override;
+    void paintEvent( QPaintEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
 
   private:
     static const int VALID_SCALE_MULTIPLES[];
@@ -61,13 +62,13 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     Direction mDirection;
     QTransform mTransform;
     QPointF mMarkerPos;
-    QgsComposition* mComposition; //reference to composition for paper size, nPages
-    QGraphicsLineItem* mLineSnapItem;
+    QgsComposition *mComposition = nullptr; //reference to composition for paper size, nPages
+    QGraphicsLineItem *mLineSnapItem = nullptr;
     //items snapped to the current snap line
-    QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > > mSnappedItems;
+    QList< QPair< QgsComposerItem *, QgsComposerItem::ItemPositionMode > > mSnappedItems;
 
-    QFont * mRulerFont;
-    QFontMetrics * mRulerFontMetrics;
+    QFont *mRulerFont = nullptr;
+    QFontMetrics *mRulerFontMetrics = nullptr;
     double mScaleMinPixelsWidth;
     int mRulerMinSize;
     int mMinPixelsPerDivision;

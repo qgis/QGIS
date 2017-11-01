@@ -22,21 +22,18 @@
 #include "NormVecDecorator.h"
 #include "LinTriangleInterpolator.h"
 #include "Line3D.h"
-#include "Point3D.h"
+#include "qgspoint.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbptr.h"
-#include <QProgressDialog>
+#include "qgsfeedback.h"
 
-QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData>& inputData, TINInterpolation interpolation, bool showProgressDialog )
-    : QgsInterpolator( inputData )
-    , mTriangulation( nullptr )
-    , mTriangleInterpolator( nullptr )
-    , mIsInitialized( false )
-    , mShowProgressDialog( showProgressDialog )
-    , mExportTriangulationToFile( false )
-    , mInterpolation( interpolation )
+QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData> &inputData, TINInterpolation interpolation, QgsFeedback *feedback )
+  : QgsInterpolator( inputData )
+  , mIsInitialized( false )
+  , mFeedback( feedback )
+  , mInterpolation( interpolation )
 {
 }
 
@@ -46,7 +43,7 @@ QgsTINInterpolator::~QgsTINInterpolator()
   delete mTriangleInterpolator;
 }
 
-int QgsTINInterpolator::interpolatePoint( double x, double y, double& result )
+int QgsTINInterpolator::interpolatePoint( double x, double y, double &result )
 {
   if ( !mIsInitialized )
   {
@@ -58,35 +55,45 @@ int QgsTINInterpolator::interpolatePoint( double x, double y, double& result )
     return 1;
   }
 
-  Point3D r;
+  QgsPoint r( 0, 0, 0 );
   if ( !mTriangleInterpolator->calcPoint( x, y, &r ) )
   {
     return 2;
   }
-  result = r.getZ();
+  result = r.z();
   return 0;
+}
+
+QgsFields QgsTINInterpolator::triangulationFields()
+{
+  return Triangulation::triangulationFields();
+}
+
+void QgsTINInterpolator::setTriangulationSink( QgsFeatureSink *sink )
+{
+  mTriangulationSink = sink;
 }
 
 void QgsTINInterpolator::initialize()
 {
-  DualEdgeTriangulation* theDualEdgeTriangulation = new DualEdgeTriangulation( 100000, nullptr );
+  DualEdgeTriangulation *dualEdgeTriangulation = new DualEdgeTriangulation( 100000, nullptr );
   if ( mInterpolation == CloughTocher )
   {
-    NormVecDecorator* dec = new NormVecDecorator();
-    dec->addTriangulation( theDualEdgeTriangulation );
+    NormVecDecorator *dec = new NormVecDecorator();
+    dec->addTriangulation( dualEdgeTriangulation );
     mTriangulation = dec;
   }
   else
   {
-    mTriangulation = theDualEdgeTriangulation;
+    mTriangulation = dualEdgeTriangulation;
   }
 
   //get number of features if we use a progress bar
   int nFeatures = 0;
   int nProcessedFeatures = 0;
-  if ( mShowProgressDialog )
+  if ( mFeedback )
   {
-    Q_FOREACH ( const LayerData& layer, mLayerData )
+    Q_FOREACH ( const LayerData &layer, mLayerData )
     {
       if ( layer.vectorLayer )
       {
@@ -95,16 +102,8 @@ void QgsTINInterpolator::initialize()
     }
   }
 
-  QProgressDialog* theProgressDialog = nullptr;
-  if ( mShowProgressDialog )
-  {
-    theProgressDialog = new QProgressDialog( QObject::tr( "Building triangulation..." ), QObject::tr( "Abort" ), 0, nFeatures, nullptr );
-    theProgressDialog->setWindowModality( Qt::WindowModal );
-  }
-
-
   QgsFeature f;
-  Q_FOREACH ( const LayerData& layer, mLayerData )
+  Q_FOREACH ( const LayerData &layer, mLayerData )
   {
     if ( layer.vectorLayer )
     {
@@ -118,13 +117,14 @@ void QgsTINInterpolator::initialize()
 
       while ( fit.nextFeature( f ) )
       {
-        if ( mShowProgressDialog )
+        if ( mFeedback )
         {
-          if ( theProgressDialog->wasCanceled() )
+          if ( mFeedback->isCanceled() )
           {
             break;
           }
-          theProgressDialog->setValue( nProcessedFeatures );
+          if ( nFeatures > 0 )
+            mFeedback->setProgress( 100.0 * static_cast< double >( nProcessedFeatures ) / nFeatures );
         }
         insertData( &f, layer.zCoordInterpolation, layer.interpolationAttribute, layer.mInputType );
         ++nProcessedFeatures;
@@ -132,22 +132,13 @@ void QgsTINInterpolator::initialize()
     }
   }
 
-  delete theProgressDialog;
-
   if ( mInterpolation == CloughTocher )
   {
-    CloughTocherInterpolator* ctInterpolator = new CloughTocherInterpolator();
-    NormVecDecorator* dec = dynamic_cast<NormVecDecorator*>( mTriangulation );
+    CloughTocherInterpolator *ctInterpolator = new CloughTocherInterpolator();
+    NormVecDecorator *dec = dynamic_cast<NormVecDecorator *>( mTriangulation );
     if ( dec )
     {
-      QProgressDialog* progressDialog = nullptr;
-      if ( mShowProgressDialog ) //show a progress dialog because it can take a long time...
-      {
-        progressDialog = new QProgressDialog();
-        progressDialog->setLabelText( QObject::tr( "Estimating normal derivatives..." ) );
-      }
-      dec->estimateFirstDerivatives( progressDialog );
-      delete progressDialog;
+      dec->estimateFirstDerivatives( mFeedback );
       ctInterpolator->setTriangulation( dec );
       dec->setTriangleInterpolator( ctInterpolator );
       mTriangleInterpolator = ctInterpolator;
@@ -155,18 +146,18 @@ void QgsTINInterpolator::initialize()
   }
   else //linear
   {
-    mTriangleInterpolator = new LinTriangleInterpolator( theDualEdgeTriangulation );
+    mTriangleInterpolator = new LinTriangleInterpolator( dualEdgeTriangulation );
   }
   mIsInitialized = true;
 
   //debug
-  if ( mExportTriangulationToFile )
+  if ( mTriangulationSink )
   {
-    theDualEdgeTriangulation->saveAsShapefile( mTriangulationFilePath );
+    dualEdgeTriangulation->saveTriangulation( mTriangulationSink, mFeedback );
   }
 }
 
-int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputType type )
+int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputType type )
 {
   if ( !f )
   {
@@ -192,20 +183,20 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       return 3;
     }
     attributeValue = attributeVariant.toDouble( &attributeConversionOk );
-    if ( !attributeConversionOk || qIsNaN( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
+    if ( !attributeConversionOk || std::isnan( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
     {
       return 4;
     }
   }
 
-  //parse WKB. It is ugly, but we cannot use the methods with QgsPoint because they don't contain z-values for 25D types
+  //parse WKB. It is ugly, but we cannot use the methods with QgsPointXY because they don't contain z-values for 25D types
   bool hasZValue = false;
   double x, y, z;
   QByteArray wkb( g.exportToWkb() );
   QgsConstWkbPtr currentWkbPtr( wkb );
   currentWkbPtr.readHeader();
   //maybe a structure or break line
-  Line3D* line = nullptr;
+  Line3D *line = nullptr;
 
   QgsWkbTypes::Type wkbType = g.wkbType();
   switch ( wkbType )
@@ -224,8 +215,8 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
       {
         z = attributeValue;
       }
-      Point3D* thePoint = new Point3D( x, y, z );
-      if ( mTriangulation->addPoint( thePoint ) == -100 )
+      QgsPoint *point = new QgsPoint( x, y, z );
+      if ( mTriangulation->addPoint( point ) == -100 )
       {
         return -1;
       }
@@ -279,11 +270,11 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
         if ( type == POINTS )
         {
           //todo: handle error code -100
-          mTriangulation->addPoint( new Point3D( x, y, z ) );
+          mTriangulation->addPoint( new QgsPoint( x, y, z ) );
         }
         else
         {
-          line->insertPoint( new Point3D( x, y, z ) );
+          line->insertPoint( new QgsPoint( x, y, z ) );
         }
       }
 
@@ -323,11 +314,11 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
           if ( type == POINTS )
           {
             //todo: handle error code -100
-            mTriangulation->addPoint( new Point3D( x, y, z ) );
+            mTriangulation->addPoint( new QgsPoint( x, y, z ) );
           }
           else
           {
-            line->insertPoint( new Point3D( x, y, z ) );
+            line->insertPoint( new QgsPoint( x, y, z ) );
           }
         }
         if ( type != POINTS )
@@ -367,11 +358,11 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
           if ( type == POINTS )
           {
             //todo: handle error code -100
-            mTriangulation->addPoint( new Point3D( x, y, z ) );
+            mTriangulation->addPoint( new QgsPoint( x, y, z ) );
           }
           else
           {
-            line->insertPoint( new Point3D( x, y, z ) );
+            line->insertPoint( new QgsPoint( x, y, z ) );
           }
         }
 
@@ -417,11 +408,11 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
             if ( type == POINTS )
             {
               //todo: handle error code -100
-              mTriangulation->addPoint( new Point3D( x, y, z ) );
+              mTriangulation->addPoint( new QgsPoint( x, y, z ) );
             }
             else
             {
-              line->insertPoint( new Point3D( x, y, z ) );
+              line->insertPoint( new QgsPoint( x, y, z ) );
             }
           }
           if ( type != POINTS )

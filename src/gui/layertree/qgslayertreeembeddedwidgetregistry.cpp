@@ -18,22 +18,15 @@
 #include "qgslayertreeembeddedwidgetsimpl.h"
 
 
-
-QgsLayerTreeEmbeddedWidgetRegistry* QgsLayerTreeEmbeddedWidgetRegistry::instance()
-{
-  static QgsLayerTreeEmbeddedWidgetRegistry* sInstance( new QgsLayerTreeEmbeddedWidgetRegistry() );
-  return sInstance;
-}
-
 QgsLayerTreeEmbeddedWidgetRegistry::QgsLayerTreeEmbeddedWidgetRegistry()
 {
   // populate with default implementations
-  addProvider( new QgsLayerTreeTransparencyWidget::Provider() );
+  addProvider( new QgsLayerTreeOpacityWidget::Provider() );
 }
 
 QgsLayerTreeEmbeddedWidgetRegistry::~QgsLayerTreeEmbeddedWidgetRegistry()
 {
-  Q_FOREACH ( QgsLayerTreeEmbeddedWidgetProvider* provider, mProviders )
+  Q_FOREACH ( QgsLayerTreeEmbeddedWidgetProvider *provider, mProviders )
   {
     removeProvider( provider->id() );
   }
@@ -44,12 +37,12 @@ QStringList QgsLayerTreeEmbeddedWidgetRegistry::providers() const
   return mProviders.keys();
 }
 
-QgsLayerTreeEmbeddedWidgetProvider* QgsLayerTreeEmbeddedWidgetRegistry::provider( const QString& providerId ) const
+QgsLayerTreeEmbeddedWidgetProvider *QgsLayerTreeEmbeddedWidgetRegistry::provider( const QString &providerId ) const
 {
   return mProviders.value( providerId );
 }
 
-bool QgsLayerTreeEmbeddedWidgetRegistry::addProvider( QgsLayerTreeEmbeddedWidgetProvider* provider )
+bool QgsLayerTreeEmbeddedWidgetRegistry::addProvider( QgsLayerTreeEmbeddedWidgetProvider *provider )
 {
   if ( mProviders.contains( provider->id() ) )
     return false;
@@ -58,7 +51,7 @@ bool QgsLayerTreeEmbeddedWidgetRegistry::addProvider( QgsLayerTreeEmbeddedWidget
   return true;
 }
 
-bool QgsLayerTreeEmbeddedWidgetRegistry::removeProvider( const QString& providerId )
+bool QgsLayerTreeEmbeddedWidgetRegistry::removeProvider( const QString &providerId )
 {
   if ( !mProviders.contains( providerId ) )
     return false;

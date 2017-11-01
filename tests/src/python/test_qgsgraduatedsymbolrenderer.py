@@ -23,9 +23,8 @@ from qgis.core import (QgsGraduatedSymbolRenderer,
                        QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
-                       QgsSymbol,
-                       QgsSymbolLayerUtils,
+                       QgsPointXY,
+                       QgsReadWriteContext,
                        QgsRenderContext
                        )
 from qgis.PyQt.QtCore import Qt
@@ -59,7 +58,7 @@ def createMemoryLayer(values):
         feat = QgsFeature(fields)
         feat['id'] = id
         feat['value'] = value
-        g = QgsGeometry.fromPoint(QgsPoint(x, x))
+        g = QgsGeometry.fromPointXY(QgsPointXY(x, x))
         feat.setGeometry(g)
         pr.addFeatures([feat])
     ml.updateExtents()
@@ -374,8 +373,8 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         # Check save and reload from Dom works
 
         doc = QDomDocument()
-        element = renderer.save(doc)
-        renderer2 = QgsGraduatedSymbolRenderer.create(element)
+        element = renderer.save(doc, QgsReadWriteContext())
+        renderer2 = QgsGraduatedSymbolRenderer.create(element, QgsReadWriteContext())
         self.assertEqual(
             dumpGraduatedRenderer(renderer),
             dumpGraduatedRenderer(renderer2),
@@ -456,6 +455,7 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
         # Other calculation method tests
         # createRenderer function
         # symbolForFeature correctly selects range
+
 
 if __name__ == "__main__":
     unittest.main()

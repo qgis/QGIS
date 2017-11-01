@@ -26,21 +26,17 @@
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgshillshaderenderer.h"
 #include "qgsapplication.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QIcon>
 
-QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString& theName, const QString& theVisibleName,
+QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString &name, const QString &visibleName,
     QgsRasterRendererCreateFunc rendererFunction,
     QgsRasterRendererWidgetCreateFunc widgetFunction )
-    : name( theName )
-    , visibleName( theVisibleName )
-    , rendererCreateFunction( rendererFunction )
-    , widgetCreateFunction( widgetFunction )
-{
-}
-
-QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry(): rendererCreateFunction( nullptr ), widgetCreateFunction( nullptr )
+  : name( name )
+  , visibleName( visibleName )
+  , rendererCreateFunction( rendererFunction )
+  , widgetCreateFunction( widgetFunction )
 {
 }
 
@@ -54,7 +50,7 @@ QgsRasterRendererRegistry::QgsRasterRendererRegistry()
   // insert items in a particular order, which is returned in renderersList()
   insert( QgsRasterRendererRegistryEntry( QStringLiteral( "multibandcolor" ), QObject::tr( "Multiband color" ),
                                           QgsMultiBandColorRenderer::create, nullptr ) );
-  insert( QgsRasterRendererRegistryEntry( QStringLiteral( "paletted" ), QObject::tr( "Paletted" ), QgsPalettedRasterRenderer::create, nullptr ) );
+  insert( QgsRasterRendererRegistryEntry( QStringLiteral( "paletted" ), QObject::tr( "Paletted/Unique values" ), QgsPalettedRasterRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( QStringLiteral( "singlebandgray" ), QObject::tr( "Singleband gray" ),
                                           QgsSingleBandGrayRenderer::create, nullptr ) );
   insert( QgsRasterRendererRegistryEntry( QStringLiteral( "singlebandpseudocolor" ), QObject::tr( "Singleband pseudocolor" ),
@@ -65,13 +61,13 @@ QgsRasterRendererRegistry::QgsRasterRendererRegistry()
                                           QgsHillshadeRenderer::create, nullptr ) );
 }
 
-void QgsRasterRendererRegistry::insert( const QgsRasterRendererRegistryEntry& entry )
+void QgsRasterRendererRegistry::insert( const QgsRasterRendererRegistryEntry &entry )
 {
   mEntries.insert( entry.name, entry );
   mSortedEntries.append( entry.name );
 }
 
-void QgsRasterRendererRegistry::insertWidgetFunction( const QString& rendererName, QgsRasterRendererWidgetCreateFunc func )
+void QgsRasterRendererRegistry::insertWidgetFunction( const QString &rendererName, QgsRasterRendererWidgetCreateFunc func )
 {
   if ( !mEntries.contains( rendererName ) )
   {
@@ -80,7 +76,7 @@ void QgsRasterRendererRegistry::insertWidgetFunction( const QString& rendererNam
   mEntries[rendererName].widgetCreateFunction = func;
 }
 
-bool QgsRasterRendererRegistry::rendererData( const QString& rendererName, QgsRasterRendererRegistryEntry& data ) const
+bool QgsRasterRendererRegistry::rendererData( const QString &rendererName, QgsRasterRendererRegistryEntry &data ) const
 {
   QHash< QString, QgsRasterRendererRegistryEntry >::const_iterator it = mEntries.find( rendererName );
   if ( it == mEntries.constEnd() )
@@ -108,7 +104,7 @@ QList< QgsRasterRendererRegistryEntry > QgsRasterRendererRegistry::entries() con
   return result;
 }
 
-QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( QgsRaster::DrawingStyle theDrawingStyle, QgsRasterDataProvider* provider ) const
+QgsRasterRenderer *QgsRasterRendererRegistry::defaultRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle, QgsRasterDataProvider *provider ) const
 {
   if ( !provider || provider->bandCount() < 1 )
   {
@@ -116,45 +112,16 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
   }
 
 
-  QgsRasterRenderer* renderer = nullptr;
-  switch ( theDrawingStyle )
+  QgsRasterRenderer *renderer = nullptr;
+  switch ( drawingStyle )
   {
     case QgsRaster::PalettedColor:
     {
       int grayBand = 1; //reasonable default
-      QList<QgsColorRampShader::ColorRampItem> colorEntries = provider->colorTable( grayBand );
-
-      //go through list and take maximum value (it could be that entries don't start at 0 or indices are not contiguous)
-      int colorArraySize = 0;
-      QList<QgsColorRampShader::ColorRampItem>::const_iterator colorIt = colorEntries.constBegin();
-      for ( ; colorIt != colorEntries.constEnd(); ++colorIt )
-      {
-        if ( colorIt->value > colorArraySize )
-        {
-          colorArraySize = ( int )( colorIt->value );
-        }
-      }
-
-      colorArraySize += 1; //usually starts at 0
-      QColor* colorArray = new QColor[ colorArraySize ];
-      colorIt = colorEntries.constBegin();
-      QVector<QString> labels;
-      for ( ; colorIt != colorEntries.constEnd(); ++colorIt )
-      {
-        int idx = ( int )( colorIt->value );
-        colorArray[idx] = colorIt->color;
-        if ( !colorIt->label.isEmpty() )
-        {
-          if ( labels.size() <= idx ) labels.resize( idx + 1 );
-          labels[idx] = colorIt->label;
-        }
-      }
-
+      QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::colorTableToClassData( provider->colorTable( grayBand ) );
       renderer = new QgsPalettedRasterRenderer( provider,
           grayBand,
-          colorArray,
-          colorArraySize,
-          labels );
+          classes );
     }
     break;
     case QgsRaster::MultiBandSingleBandGray:
@@ -163,11 +130,11 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       int grayBand = 1;
       renderer = new QgsSingleBandGrayRenderer( provider, grayBand );
 
-      QgsContrastEnhancement* ce = new QgsContrastEnhancement(( Qgis::DataType )(
+      QgsContrastEnhancement *ce = new QgsContrastEnhancement( ( Qgis::DataType )(
             provider->dataType( grayBand ) ) );
 
 // Default contrast enhancement is set from QgsRasterLayer, it has already setContrastEnhancementAlgorithm(). Default enhancement must only be set if default style was not loaded (to avoid stats calculation).
-      (( QgsSingleBandGrayRenderer* )renderer )->setContrastEnhancement( ce );
+      ( ( QgsSingleBandGrayRenderer * )renderer )->setContrastEnhancement( ce );
       break;
     }
     case QgsRaster::SingleBandPseudoColor:
@@ -177,13 +144,13 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       double maxValue = 0;
       // TODO: avoid calculating statistics if not necessary (default style loaded)
       minMaxValuesForBand( bandNo, provider, minValue, maxValue );
-      QgsRasterShader* shader = new QgsRasterShader( minValue, maxValue );
+      QgsRasterShader *shader = new QgsRasterShader( minValue, maxValue );
       renderer = new QgsSingleBandPseudoColorRenderer( provider, bandNo, shader );
       break;
     }
     case QgsRaster::MultiBandColor:
     {
-      QSettings s;
+      QgsSettings s;
 
       int redBand = s.value( QStringLiteral( "/Raster/defaultRedBand" ), 1 ).toInt();
       if ( redBand < 0 || redBand > provider->bandCount() )
@@ -213,7 +180,7 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
       return nullptr;
   }
 
-  QgsRasterTransparency* tr = new QgsRasterTransparency(); //renderer takes ownership
+  QgsRasterTransparency *tr = new QgsRasterTransparency(); //renderer takes ownership
   int bandCount = renderer->usesBands().size();
   if ( bandCount == 1 )
   {
@@ -229,7 +196,7 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( Qg
   return renderer;
 }
 
-bool QgsRasterRendererRegistry::minMaxValuesForBand( int band, QgsRasterDataProvider* provider, double& minValue, double& maxValue ) const
+bool QgsRasterRendererRegistry::minMaxValuesForBand( int band, QgsRasterDataProvider *provider, double &minValue, double &maxValue ) const
 {
   if ( !provider )
   {
@@ -239,7 +206,7 @@ bool QgsRasterRendererRegistry::minMaxValuesForBand( int band, QgsRasterDataProv
   minValue = 0;
   maxValue = 0;
 
-  QSettings s;
+  QgsSettings s;
   if ( s.value( QStringLiteral( "/Raster/useStandardDeviation" ), false ).toBool() )
   {
     QgsRasterBandStats stats = provider->bandStatistics( band, QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev );

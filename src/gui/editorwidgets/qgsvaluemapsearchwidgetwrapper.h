@@ -17,10 +17,12 @@
 #define QGSVALUEMAPSEARCHWIDGETWRAPPER_H
 
 #include "qgssearchwidgetwrapper.h"
+#include "qgis.h"
 #include <QComboBox>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a value map search widget. This widget will offer a combobox with values from another layer
  * referenced by a foreign key (a constraint may be set but is not required on data level).
  * It will be used as a search widget and produces expression to look for in the layer.
@@ -30,13 +32,13 @@ class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsValueMapSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = nullptr );
+    explicit QgsValueMapSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
     bool applyDirectly() override;
     QString expression() override;
     bool valid() const override;
-    FilterFlags supportedFlags() const override;
-    FilterFlags defaultFlags() const override;
-    virtual QString createExpression( FilterFlags flags ) const override;
+    QgsSearchWidgetWrapper::FilterFlags supportedFlags() const override;
+    QgsSearchWidgetWrapper::FilterFlags defaultFlags() const override;
+    virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
 
   public slots:
 
@@ -44,8 +46,8 @@ class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsSearchWidgetWrapper
     virtual void setEnabled( bool enabled ) override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
 
   protected slots:
     void setExpression( QString exp ) override;
@@ -54,7 +56,7 @@ class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsSearchWidgetWrapper
     void comboBoxIndexChanged( int idx );
 
   private:
-    QComboBox * mComboBox;
+    QComboBox *mComboBox = nullptr;
 };
 
 #endif // QGSVALUEMAPSEARCHWIDGETWRAPPER_H

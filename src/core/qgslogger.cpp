@@ -53,11 +53,11 @@ void QgsLogger::init()
                 ;
 
   sPrefixLength = sizeof( CMAKE_SOURCE_DIR );
-  if ( CMAKE_SOURCE_DIR[sPrefixLength-1] == '/' )
+  if ( CMAKE_SOURCE_DIR[sPrefixLength - 1] == '/' )
     sPrefixLength++;
 }
 
-void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, const char* function, int line )
+void QgsLogger::debug( const QString &msg, int debuglevel, const char *file, const char *function, int line )
 {
   init();
 
@@ -111,35 +111,35 @@ void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, con
   }
 }
 
-void QgsLogger::debug( const QString& var, int val, int debuglevel, const char* file, const char* function, int line )
+void QgsLogger::debug( const QString &var, int val, int debuglevel, const char *file, const char *function, int line )
 {
   debug( QStringLiteral( "%1: %2" ).arg( var ).arg( val ), debuglevel, file, function, line );
 }
 
-void QgsLogger::debug( const QString& var, double val, int debuglevel, const char* file, const char* function, int line )
+void QgsLogger::debug( const QString &var, double val, int debuglevel, const char *file, const char *function, int line )
 {
   debug( QStringLiteral( "%1: %2" ).arg( var ).arg( val ), debuglevel, file, function, line );
 }
 
-void QgsLogger::warning( const QString& msg )
+void QgsLogger::warning( const QString &msg )
 {
   logMessageToFile( msg );
   qWarning( "%s", msg.toLocal8Bit().constData() );
 }
 
-void QgsLogger::critical( const QString& msg )
+void QgsLogger::critical( const QString &msg )
 {
   logMessageToFile( msg );
   qCritical( "%s", msg.toLocal8Bit().constData() );
 }
 
-void QgsLogger::fatal( const QString& msg )
+void QgsLogger::fatal( const QString &msg )
 {
   logMessageToFile( msg );
   qFatal( "%s", msg.toLocal8Bit().constData() );
 }
 
-void QgsLogger::logMessageToFile( const QString& theMessage )
+void QgsLogger::logMessageToFile( const QString &message )
 {
   if ( sLogFile.isEmpty() )
     return;
@@ -148,7 +148,7 @@ void QgsLogger::logMessageToFile( const QString& theMessage )
   QFile file( sLogFile );
   if ( !file.open( QIODevice::Append ) )
     return;
-  file.write( theMessage.toLocal8Bit().constData() );
+  file.write( message.toLocal8Bit().constData() );
   file.write( "\n" );
   file.close();
 }

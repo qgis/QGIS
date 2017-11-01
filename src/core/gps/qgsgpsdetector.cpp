@@ -44,7 +44,10 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
 
 #ifdef Q_OS_LINUX
   // look for linux serial devices
-  Q_FOREACH ( const QString& linuxDev, QStringList() << "/dev/ttyS%1" << "/dev/ttyUSB%1" << "/dev/rfcomm%1" << "/dev/ttyACM%1" )
+  const QStringList devices { QStringLiteral( "/dev/ttyS%1" ),
+          QStringLiteral( "/dev/ttyUSB%1" ),
+          QStringLiteral( "/dev/rfcomm%1" ), QStringLiteral( "/dev/ttyACM%1" ) };
+  for ( const QString &linuxDev : devices )
   {
     for ( int i = 0; i < 10; ++i )
     {
@@ -58,7 +61,7 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
 
 #ifdef Q_OS_FREEBSD
   // and freebsd devices (untested)
-  Q_FOREACH ( const QString& freebsdDev, QStringList() << "/dev/cuaa%1" << "/dev/ucom%1" )
+  Q_FOREACH ( const QString &freebsdDev, QStringList() << "/dev/cuaa%1" << "/dev/ucom%1" )
   {
     for ( int i = 0; i < 10; ++i )
     {
@@ -95,7 +98,7 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
   return devs;
 }
 
-QgsGPSDetector::QgsGPSDetector( const QString& portName )
+QgsGPSDetector::QgsGPSDetector( const QString &portName )
 {
   mConn = nullptr;
   mBaudList << BAUD4800 << BAUD9600 << BAUD38400 << BAUD57600 << BAUD115200;  //add 57600 for SXBlueII GPS unit
@@ -183,14 +186,14 @@ void QgsGPSDetector::advance()
     }
   }
 
-  connect( mConn, SIGNAL( stateChanged( const QgsGPSInformation & ) ), this, SLOT( detected( const QgsGPSInformation & ) ) );
-  connect( mConn, SIGNAL( destroyed( QObject * ) ), this, SLOT( connDestroyed( QObject * ) ) );
+  connect( mConn, &QgsGPSConnection::stateChanged, this, static_cast < void ( QgsGPSDetector::* )( const QgsGPSInformation & ) >( &QgsGPSDetector::detected ) );
+  connect( mConn, &QObject::destroyed, this, &QgsGPSDetector::connDestroyed );
 
   // leave 2s to pickup a valid string
-  QTimer::singleShot( 2000, this, SLOT( advance() ) );
+  QTimer::singleShot( 2000, this, &QgsGPSDetector::advance );
 }
 
-void QgsGPSDetector::detected( const QgsGPSInformation& info )
+void QgsGPSDetector::detected( const QgsGPSInformation &info )
 {
   Q_UNUSED( info );
 

@@ -29,19 +29,10 @@
 extern "C"
 {
 #include <grass/version.h>
-
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#define BOUND_BOX bound_box
-#endif
 }
 
-#if GRASS_VERSION_MAJOR < 7
-#else
-
-void copy_boxlist_and_destroy( struct boxlist *blist, struct ilist * list )
+void copy_boxlist_and_destroy( struct boxlist *blist, struct ilist *list )
 {
   Vect_reset_list( list );
   for ( int i = 0; i < blist->n_values; i++ )
@@ -63,22 +54,18 @@ void copy_boxlist_and_destroy( struct boxlist *blist, struct ilist * list )
     Vect_select_areas_by_box( (map), (box), blist); \
     copy_boxlist_and_destroy( blist, (list) );\
   }
-#endif
 
 //QMutex QgsGrassFeatureIterator::sMutex;
 
-QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource<QgsGrassFeatureSource>( source, ownSource, request )
-    , mCanceled( false )
-    , mNextCidx( 0 )
-    , mNextLid( 1 )
+QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
+  : QgsAbstractFeatureIteratorFromSource<QgsGrassFeatureSource>( source, ownSource, request )
 {
 
   // WARNING: the iterater cannot use mutex lock for its whole life, because QgsVectorLayerFeatureIterator is opening
   // multiple iterators if features are edited -> lock only critical sections
 
   // Create selection
-  int size = 1 + qMax( Vect_get_num_lines( mSource->map() ), Vect_get_num_areas( mSource->map() ) );
+  int size = 1 + std::max( Vect_get_num_lines( mSource->map() ), Vect_get_num_areas( mSource->map() ) );
   QgsDebugMsg( QString( "mSelection.resize(%1)" ).arg( size ) );
   mSelection.resize( size );
 
@@ -92,7 +79,7 @@ QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource* source,
     mSelection.fill( true );
   }
 
-  connect( mSource->mLayer->map(), SIGNAL( cancelIterators() ), this, SLOT( cancel() ), Qt::DirectConnection );
+  connect( mSource->mLayer->map(), &QgsGrassVectorMap::cancelIterators, this, &QgsGrassFeatureIterator::cancel, Qt::DirectConnection );
 
   Qt::ConnectionType connectionType = Qt::DirectConnection;
   if ( mSource->mLayer->map()->thread() != thread() )
@@ -101,7 +88,7 @@ QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource* source,
     QgsDebugMsg( "map and iterator are on different threads -> connect closeIterators() with BlockingQueuedConnection" );
     connectionType = Qt::BlockingQueuedConnection;
   }
-  connect( mSource->mLayer->map(), SIGNAL( closeIterators() ), this, SLOT( doClose() ), connectionType );
+  connect( mSource->mLayer->map(), &QgsGrassVectorMap::closeIterators, this, &QgsGrassFeatureIterator::doClose, connectionType );
 }
 
 QgsGrassFeatureIterator::~QgsGrassFeatureIterator()
@@ -121,7 +108,7 @@ void QgsGrassFeatureIterator::doClose()
   close();
 }
 
-void QgsGrassFeatureIterator::setSelectionRect( const QgsRectangle& rect, bool useIntersect )
+void QgsGrassFeatureIterator::setSelectionRect( const QgsRectangle &rect, bool useIntersect )
 {
   QgsDebugMsg( QString( "useIntersect = %1 rect = %2" ).arg( useIntersect ).arg( rect.toString() ) );
 
@@ -133,7 +120,7 @@ void QgsGrassFeatureIterator::setSelectionRect( const QgsRectangle& rect, bool u
 
   mSelection.fill( false );
 
-  BOUND_BOX box;
+  bound_box box;
   box.N = rect.yMaximum();
   box.S = rect.yMinimum();
   box.E = rect.xMaximum();
@@ -142,10 +129,11 @@ void QgsGrassFeatureIterator::setSelectionRect( const QgsRectangle& rect, bool u
   box.B = -PORT_DOUBLE_MAX;
 
   // Init structures
-  struct ilist * list = Vect_new_list();
+  struct ilist *list = Vect_new_list();
 
   if ( !useIntersect )
-  { // select by bounding boxes only
+  {
+    // select by bounding boxes only
     if ( mSource->mLayerType == QgsGrassProvider::Point || mSource->mLayerType == QgsGrassProvider::Centroid ||
          mSource->mLayerType == QgsGrassProvider::Line || mSource->mLayerType == QgsGrassProvider::Face ||
          mSource->mLayerType == QgsGrassProvider::Boundary ||
@@ -171,7 +159,8 @@ void QgsGrassFeatureIterator::setSelectionRect( const QgsRectangle& rect, bool u
     }
   }
   else
-  { // check intersection
+  {
+    // check intersection
     struct line_pnts *polygon = Vect_new_line_struct();
 
     // Using z coor -PORT_DOUBLE_MAX/PORT_DOUBLE_MAX we cover 3D, Vect_select_lines_by_polygon is
@@ -226,7 +215,7 @@ void QgsGrassFeatureIterator::setSelectionRect( const QgsRectangle& rect, bool u
   QgsGrass::unlock();
 }
 
-bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
+bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
 {
   QgsDebugMsgLevel( "entered", 3 );
   if ( mClosed )
@@ -519,12 +508,8 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
   {
     feature.initAttributes( mSource->mFields.size() );
     feature.setAttribute( 0, lid );
-#if GRASS_VERSION_MAJOR < 7
-    if ( mSource->mLayerType == QgsGrassProvider::TOPO_POINT || mSource->mLayerType == QgsGrassProvider::TOPO_LINE )
-#else
     /* No more topo points in GRASS 7 */
     if ( mSource->mLayerType == QgsGrassProvider::TopoLine )
-#endif
     {
       feature.setAttribute( 1, QgsGrass::vectorTypeName( type ) );
 
@@ -597,7 +582,7 @@ bool QgsGrassFeatureIterator::close()
   return true;
 }
 
-void QgsGrassFeatureIterator::setFeatureGeometry( QgsFeature& feature, int id, int type )
+void QgsGrassFeatureIterator::setFeatureGeometry( QgsFeature &feature, int id, int type )
 {
   QgsDebugMsgLevel( QString( "id = %1 type = %2" ).arg( id ).arg( type ), 3 );
 
@@ -679,7 +664,7 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
 {
   QgsDebugMsgLevel( QString( "setFeatureAttributes cat = %1" ).arg( cat ), 3 );
   QgsAttributeList attlist;
-  int nFields =  mSource->mLayer->fields().size();
+  int nFields = mSource->mLayer->fields().size();
   if ( nFields > 0 )
   {
     for ( int i = 0; i <  mSource->mLayer->fields().size(); i++ )
@@ -694,7 +679,7 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
   return setFeatureAttributes( cat, feature, attlist, symbol );
 }
 
-void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList& attlist, QgsGrassVectorMap::TopoSymbol symbol )
+void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature, const QgsAttributeList &attlist, QgsGrassVectorMap::TopoSymbol symbol )
 {
   QgsDebugMsgLevel( QString( "setFeatureAttributes cat = %1 symbol = %2" ).arg( cat ).arg( symbol ), 3 );
   feature->initAttributes( mSource->mLayer->fields().size() );
@@ -719,7 +704,7 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
     QVariant value;
     if ( isEditedLayer )
     {
-      value =  mSource->mLayer->attribute( cat, *iter );
+      value = mSource->mLayer->attribute( cat, *iter );
       if ( value.type() == QVariant::ByteArray )
       {
         value = QVariant( mSource->mEncoding->toUnicode( value.toByteArray() ) );
@@ -751,14 +736,14 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
 }
 
 //  ------------------ QgsGrassFeatureSource ------------------
-QgsGrassFeatureSource::QgsGrassFeatureSource( const QgsGrassProvider* p )
-    : mLayer( p->openLayer() )
-    , mLayerType( p->mLayerType )
-    , mGrassType( p->mGrassType )
-    , mQgisType( p->mQgisType )
-    , mFields( p->fields() )
-    , mEncoding( p->textEncoding() )
-    , mEditing( p->mEditBuffer )
+QgsGrassFeatureSource::QgsGrassFeatureSource( const QgsGrassProvider *p )
+  : mLayer( p->openLayer() )
+  , mLayerType( p->mLayerType )
+  , mGrassType( p->mGrassType )
+  , mQgisType( p->mQgisType )
+  , mFields( p->fields() )
+  , mEncoding( p->textEncoding() )
+  , mEditing( p->mEditBuffer )
 {
   Q_ASSERT( mLayer );
 
@@ -770,13 +755,13 @@ QgsGrassFeatureSource::~QgsGrassFeatureSource()
   mLayer->close();
 }
 
-QgsFeatureIterator QgsGrassFeatureSource::getFeatures( const QgsFeatureRequest& request )
+QgsFeatureIterator QgsGrassFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   QgsDebugMsg( "QgsGrassFeatureSource::getFeatures" );
   return QgsFeatureIterator( new QgsGrassFeatureIterator( this, false, request ) );
 }
 
-struct Map_info* QgsGrassFeatureSource::map()
+struct Map_info *QgsGrassFeatureSource::map()
 {
   return  mLayer->map()->map();
 }

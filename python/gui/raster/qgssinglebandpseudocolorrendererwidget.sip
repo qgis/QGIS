@@ -1,28 +1,57 @@
-class QgsSingleBandPseudoColorRendererWidget : QgsRasterRendererWidget
-{
-%TypeHeaderCode
-#include <qgssinglebandpseudocolorrendererwidget.h>
-%End
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgssinglebandpseudocolorrendererwidget.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
+
+
+
+
+class QgsSingleBandPseudoColorRendererWidget: QgsRasterRendererWidget
+{
+
+%TypeHeaderCode
+#include "qgssinglebandpseudocolorrendererwidget.h"
+%End
   public:
 
-    QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
-    ~QgsSingleBandPseudoColorRendererWidget();
+    QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) /Factory/;
-    QgsRasterRenderer* renderer();
-    void setMapCanvas( QgsMapCanvas* canvas );
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;
+%Docstring
+ :rtype: QgsRasterRendererWidget
+%End
+    virtual QgsRasterRenderer *renderer();
 
-    void setFromRenderer( const QgsRasterRenderer* r );
+    virtual void setMapCanvas( QgsMapCanvas *canvas );
 
-    void doComputations();
+    virtual void doComputations();
+
+    virtual QgsRasterMinMaxWidget *minMaxWidget();
+
+    void setFromRenderer( const QgsRasterRenderer *r );
 
   public slots:
 
-    /** Executes the single band pseudo raster classficiation
-     */
     void classify();
-    void loadMinMax( int theBandNo, double theMin, double theMax );
+%Docstring
+ Executes the single band pseudo raster classficiation
+%End
+    void loadMinMax( int bandNo, double min, double max );
+%Docstring
+called when new min/max values are loaded
+%End
 
 };
 
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgssinglebandpseudocolorrendererwidget.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

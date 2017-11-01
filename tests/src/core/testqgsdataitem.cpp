@@ -13,18 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QSettings>
 
 //qgis includes...
-#include <qgsdataitem.h>
-#include <qgsvectorlayer.h>
-#include <qgsapplication.h>
-#include <qgslogger.h>
+#include "qgsdataitem.h"
+#include "qgsvectorlayer.h"
+#include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsDataItem class.
  */
 class TestQgsDataItem : public QObject
@@ -44,16 +46,12 @@ class TestQgsDataItem : public QObject
     void testDirItemChildren();
 
   private:
-    QgsDirectoryItem* mDirItem;
+    QgsDirectoryItem *mDirItem = nullptr;
     QString mScanItemsSetting;
     bool isValidDirItem( QgsDirectoryItem *item );
 };
 
-TestQgsDataItem::TestQgsDataItem()
-    : mDirItem( nullptr )
-{
-
-}
+TestQgsDataItem::TestQgsDataItem() = default;
 
 void TestQgsDataItem::initTestCase()
 {
@@ -65,12 +63,12 @@ void TestQgsDataItem::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  // Set up the QSettings environment
+  // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
   // save current scanItemsSetting value
-  QSettings settings;
+  QgsSettings settings;
   mScanItemsSetting = settings.value( QStringLiteral( "/qgis/scanItemsInBrowser2" ), QVariant( "" ) ).toString();
 
   //create a directory item that will be used in all tests...
@@ -80,7 +78,7 @@ void TestQgsDataItem::initTestCase()
 void TestQgsDataItem::cleanupTestCase()
 {
   // restore scanItemsSetting
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ), mScanItemsSetting );
   if ( mDirItem )
     delete mDirItem;
@@ -104,20 +102,20 @@ void TestQgsDataItem::testValid()
 
 void TestQgsDataItem::testDirItemChildren()
 {
-  QSettings settings;
+  QgsSettings settings;
   QStringList tmpSettings;
   tmpSettings << QLatin1String( "" ) << QStringLiteral( "contents" ) << QStringLiteral( "extension" );
-  Q_FOREACH ( const QString& tmpSetting, tmpSettings )
+  Q_FOREACH ( const QString &tmpSetting, tmpSettings )
   {
     settings.setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ), tmpSetting );
-    QgsDirectoryItem* dirItem = new QgsDirectoryItem( 0, QStringLiteral( "Test" ), TEST_DATA_DIR );
+    QgsDirectoryItem *dirItem = new QgsDirectoryItem( 0, QStringLiteral( "Test" ), TEST_DATA_DIR );
     QVERIFY( isValidDirItem( dirItem ) );
 
-    QVector<QgsDataItem*> children = dirItem->createChildren();
+    QVector<QgsDataItem *> children = dirItem->createChildren();
     for ( int i = 0; i < children.size(); i++ )
     {
-      QgsDataItem* dataItem = children[i];
-      QgsLayerItem* layerItem = dynamic_cast<QgsLayerItem*>( dataItem );
+      QgsDataItem *dataItem = children[i];
+      QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( dataItem );
       if ( ! layerItem )
         continue;
 

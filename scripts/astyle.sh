@@ -14,17 +14,25 @@
 #                                                                         #
 ###########################################################################
 
-for ASTYLE in $(dirname $0)/qgisstyle $(dirname $0)/RelWithDebInfo/qgisstyle
+min_version="3"
+astyle_version_check() {
+	$1 --version
+	[ `printf "$($1 --version | cut -d ' ' -f4)\n$min_version" | sort -V | head -n1` = "$min_version" ]
+}
+
+for ASTYLE in ${QGISSTYLE} $(dirname $0)/qgisstyle $(dirname $0)/RelWithDebInfo/qgisstyle astyle
 do
-	if type -p $ASTYLE >/dev/null; then
-		break
+	if type -p $ASTYLE >/dev/null ; then
+		if astyle_version_check $ASTYLE ; then
+			break
+		fi
 	fi
 	ASTYLE=
 done
 
 if [ -z "$ASTYLE" ]; then
-	echo "qgisstyle not found - please enable WITH_ASTYLE in cmake and build it" >&2
-	exit 1	
+	echo "qgisstyle / astyle not found - please install astyle >= $min_version or enable WITH_ASTYLE in cmake and build" >&2
+	exit 1
 fi
 
 if type -p tput >/dev/null; then
@@ -72,7 +80,7 @@ astyleit() {
 
 for f in "$@"; do
 	case "$f" in
-		src/app/gps/qwtpolar-*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|src/astyle/*|python/ext-libs/*|src/providers/spatialite/qspatialite/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|python/ext-libs/*|*/ui_*.py)
+		src/app/gps/qwtpolar-*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|external/astyle/*|python/ext-libs/*|src/providers/spatialite/qspatialite/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|python/ext-libs/*|*/ui_*.py|*.astyle|tests/testdata/*|editors/*)
 			echo -ne "$f skipped $elcr"
 			continue
 			;;

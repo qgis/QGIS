@@ -23,30 +23,29 @@
 #include "qgis_app.h"
 
 class APP_EXPORT QgsHandleBadLayersHandler
-      : public QObject
-      , public QgsProjectBadLayerHandler
+  : public QObject
+  , public QgsProjectBadLayerHandler
 {
     Q_OBJECT
 
   public:
-    QgsHandleBadLayersHandler();
+    QgsHandleBadLayersHandler() = default;
 
     //! Implementation of the handler
-    virtual void handleBadLayers( const QList<QDomNode>& layers ) override;
+    virtual void handleBadLayers( const QList<QDomNode> &layers ) override;
 };
 
 
 class QPushButton;
 
 class APP_EXPORT QgsHandleBadLayers
-      : public QDialog
-      , private Ui::QgsHandleBadLayersBase
+  : public QDialog
+  , private Ui::QgsHandleBadLayersBase
 {
     Q_OBJECT
 
   public:
-    QgsHandleBadLayers( const QList<QDomNode>& layers );
-    ~QgsHandleBadLayers();
+    QgsHandleBadLayers( const QList<QDomNode> &layers );
 
     int layerCount();
 
@@ -59,14 +58,14 @@ class APP_EXPORT QgsHandleBadLayers
     void rejected();
 
   private:
-    QPushButton *mBrowseButton;
+    QPushButton *mBrowseButton = nullptr;
     const QList<QDomNode> &mLayers;
     QList<int> mRows;
     QString mVectorFileFilter;
     QString mRasterFileFilter;
 
     QString filename( int row );
-    void setFilename( int row, const QString& filename );
+    void setFilename( int row, const QString &filename );
 };
 
 #endif

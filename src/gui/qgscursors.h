@@ -20,7 +20,10 @@
 
 #include "qgis_gui.h"
 
-/** \ingroup gui
+#define SIP_NO_FILE
+
+/**
+ * \ingroup gui
  * Bitmap cursors for map operations.
  */
 extern GUI_EXPORT const char *zoom_in[];
@@ -33,4 +36,3 @@ extern GUI_EXPORT const char *cross_hair_cursor[];
 extern GUI_EXPORT const char *sampler_cursor[];
 
 #endif
-

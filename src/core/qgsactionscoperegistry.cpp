@@ -17,8 +17,8 @@
 
 #include "qgsexpressioncontext.h"
 
-QgsActionScopeRegistry::QgsActionScopeRegistry( QObject* parent )
-    : QObject( parent )
+QgsActionScopeRegistry::QgsActionScopeRegistry( QObject *parent )
+  : QObject( parent )
 {
   // Register some default action scopes:
 
@@ -42,23 +42,23 @@ QSet<QgsActionScope> QgsActionScopeRegistry::actionScopes() const
   return mActionScopes;
 }
 
-void QgsActionScopeRegistry::registerActionScope( const QgsActionScope& actionScope )
+void QgsActionScopeRegistry::registerActionScope( const QgsActionScope &actionScope )
 {
   mActionScopes.insert( actionScope );
 
   emit actionScopesChanged();
 }
 
-void QgsActionScopeRegistry::unregisterActionScope( const QgsActionScope& actionScope )
+void QgsActionScopeRegistry::unregisterActionScope( const QgsActionScope &actionScope )
 {
   mActionScopes.remove( actionScope );
 
   emit actionScopesChanged();
 }
 
-QgsActionScope QgsActionScopeRegistry::actionScope( const QString& id )
+QgsActionScope QgsActionScopeRegistry::actionScope( const QString &id )
 {
-  Q_FOREACH ( const QgsActionScope& actionScope, mActionScopes )
+  Q_FOREACH ( const QgsActionScope &actionScope, mActionScopes )
   {
     if ( actionScope.id() == id )
     {

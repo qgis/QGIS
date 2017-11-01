@@ -20,9 +20,10 @@
 
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsHelp
- * @brief Helper class for showing help topic URI for the given key.
+ * \brief Helper class for showing help topic URI for the given key.
  *
  * Help can be stored online, on the local directory or on the intranet
  * server. Location of the QGIS help can be configured in QGIS options.
@@ -36,34 +37,37 @@
  * If no help found, default error page with information how to setup
  * help system will be shown.
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsHelp
 {
   public:
 
-    /** Opens help topic for the given help key using default system
+    /**
+     * Opens help topic for the given help key using default system
      * web browser. If help topic not found, builtin error page shown.
-     * @param key key which identified help topic
-     * @note added in QGIS 3.0
+     * \param key key which identified help topic
+     * \since QGIS 3.0
      */
-    static void openHelp( const QString& key );
+    static void openHelp( const QString &key );
 
-    /** Returns URI of the help topic for the given key. If help topic
+    /**
+     * Returns URI of the help topic for the given key. If help topic
      * not found, URI of the builtin error page returned.
-     * @param key key which identified help topic
-     * @note added in QGIS 3.0
+     * \param key key which identified help topic
+     * \since QGIS 3.0
      */
-    static QUrl helpUrl( const QString& key );
+    static QUrl helpUrl( const QString &key );
 
   private:
 
-    /** Check if given URL accessible by issuing HTTP HEAD request.
+    /**
+     * Check if given URL accessible by issuing HTTP HEAD request.
      * Returns true if URL accessible, false otherwise.
-     * @param url URL to check
-     * @note added in QGIS 3.0
+     * \param url URL to check
+     * \since QGIS 3.0
      */
-    static bool urlExists( const QString& url );
+    static bool urlExists( const QString &url );
 };
 
 #endif // QGSHELP_H

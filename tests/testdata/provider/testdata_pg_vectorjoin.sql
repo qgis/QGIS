@@ -1,4 +1,3 @@
-﻿
 --CREATE SCHEMA IF NOT EXISTS qgis_test;
 
 
@@ -34,4 +33,3 @@ CREATE TABLE qgis_test.table_x
   value_x2 integer,
   CONSTRAINT table_x_pkey PRIMARY KEY (id_x)
 );
-

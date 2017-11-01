@@ -23,8 +23,6 @@
 #include <climits>
 
 QgsPgTableModel::QgsPgTableModel()
-    : QStandardItemModel()
-    , mTableCount( 0 )
 {
   QStringList headerLabels;
   headerLabels << tr( "Schema" );
@@ -40,11 +38,7 @@ QgsPgTableModel::QgsPgTableModel()
   setHorizontalHeaderLabels( headerLabels );
 }
 
-QgsPgTableModel::~QgsPgTableModel()
-{
-}
-
-void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProperty )
+void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProperty )
 {
   QgsDebugMsg( layerProperty.toString() );
 
@@ -112,9 +106,9 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
     selItem->setCheckState( Qt::Checked );
     selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
 
-    QStandardItem* sqlItem = new QStandardItem( layerProperty.sql );
+    QStandardItem *sqlItem = new QStandardItem( layerProperty.sql );
 
-    QList<QStandardItem*> childItemList;
+    QList<QStandardItem *> childItemList;
 
     childItemList << schemaNameItem;
     childItemList << tableItem;
@@ -150,7 +144,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
 
     if ( !schemaItem )
     {
-      QList<QStandardItem*> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, DbtmSchema );
+      QList<QStandardItem *> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, DbtmSchema );
 
       // there is already an item for this schema
       if ( !schemaItems.isEmpty() )
@@ -193,13 +187,13 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
   QString tableName = itemFromIndex( tableSibling )->text();
   QString geomName = itemFromIndex( geomSibling )->text();
 
-  QList<QStandardItem*> schemaItems = findItems( schemaName, Qt::MatchExactly, DbtmSchema );
-  if ( schemaItems.size() < 1 )
+  QList<QStandardItem *> schemaItems = findItems( schemaName, Qt::MatchExactly, DbtmSchema );
+  if ( schemaItems.empty() )
   {
     return;
   }
 
-  QStandardItem* schemaItem = schemaItems.at( DbtmSchema );
+  QStandardItem *schemaItem = schemaItems.at( DbtmSchema );
 
   int n = schemaItem->rowCount();
   for ( int i = 0; i < n; i++ )
@@ -315,12 +309,12 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
   return true;
 }
 
-QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString& connInfo, bool useEstimatedMetadata )
+QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata )
 {
   if ( !index.isValid() )
   {
     QgsDebugMsg( "invalid index" );
-    return QString::null;
+    return QString();
   }
 
   QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt();
@@ -328,7 +322,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString& conn
   {
     QgsDebugMsg( "unknown geometry type" );
     // no geometry type selected
-    return QString::null;
+    return QString();
   }
 
   QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
@@ -338,7 +332,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString& conn
   {
     // no valid primary candidate selected
     QgsDebugMsg( "no pk candidate selected" );
-    return QString::null;
+    return QString();
   }
 
   QString schemaName = index.sibling( index.row(), DbtmSchema ).data( Qt::DisplayRole ).toString();
@@ -356,7 +350,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString& conn
     if ( !ok )
     {
       QgsDebugMsg( "srid not numeric" );
-      return QString::null;
+      return QString();
     }
   }
 
@@ -366,7 +360,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString& conn
   QgsDataSourceUri uri( connInfo );
 
   QStringList cols;
-  Q_FOREACH ( const QString& col, s1 )
+  Q_FOREACH ( const QString &col, s1 )
   {
     cols << QgsPostgresConn::quotedIdentifier( col );
   }

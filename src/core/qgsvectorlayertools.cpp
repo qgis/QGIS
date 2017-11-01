@@ -21,10 +21,10 @@
 
 
 QgsVectorLayerTools::QgsVectorLayerTools()
-    : QObject( nullptr )
+  : QObject( nullptr )
 {}
 
-bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureRequest& request, double dx, double dy, QString* errorMsg ) const
+bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx, double dy, QString *errorMsg ) const
 {
   bool res = false;
   if ( !layer || !layer->isEditable() )
@@ -60,7 +60,7 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer* layer, QgsFeatureReq
       const QgsFeatureId fid = f.id();
 #endif
       // paste feature
-      if ( !layer->addFeature( f, false ) )
+      if ( !layer->addFeature( f ) )
       {
         couldNotWriteCount++;
         QgsDebugMsg( QString( "Could not add new feature. Original copied feature id: %1" ).arg( fid ) );

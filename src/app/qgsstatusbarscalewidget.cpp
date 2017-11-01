@@ -26,8 +26,8 @@
 #include "qgsscalecombobox.h"
 
 QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget *parent )
-    : QWidget( parent )
-    , mMapCanvas( canvas )
+  : QWidget( parent )
+  , mMapCanvas( canvas )
 {
   // add a label to show current scale
   mLabel = new QLabel();
@@ -67,14 +67,10 @@ QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget 
 
   setLayout( mLayout );
 
-  connect( mScale, SIGNAL( scaleChanged( double ) ), this, SLOT( userScale() ) );
+  connect( mScale, &QgsScaleComboBox::scaleChanged, this, &QgsStatusBarScaleWidget::userScale );
 
-  connect( mLockButton, SIGNAL( toggled( bool ) ), this, SIGNAL( scaleLockChanged( bool ) ) );
-  connect( mLockButton, SIGNAL( toggled( bool ) ), mScale, SLOT( setDisabled( bool ) ) );
-}
-
-QgsStatusBarScaleWidget::~QgsStatusBarScaleWidget()
-{
+  connect( mLockButton, &QAbstractButton::toggled, this, &QgsStatusBarScaleWidget::scaleLockChanged );
+  connect( mLockButton, &QAbstractButton::toggled, mScale, &QWidget::setDisabled );
 }
 
 void QgsStatusBarScaleWidget::setScale( double scale )
@@ -102,6 +98,5 @@ void QgsStatusBarScaleWidget::updateScales( const QStringList &scales )
 
 void QgsStatusBarScaleWidget::userScale() const
 {
-  // Why has MapCanvas the scale inverted?
-  mMapCanvas->zoomScale( 1.0 / mScale->scale() );
+  mMapCanvas->zoomScale( mScale->scale() );
 }

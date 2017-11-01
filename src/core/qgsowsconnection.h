@@ -28,7 +28,8 @@
 #include <QStringList>
 #include <QPushButton>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Connections management
  */
 class CORE_EXPORT QgsOwsConnection : public QObject
@@ -39,30 +40,70 @@ class CORE_EXPORT QgsOwsConnection : public QObject
 
     /**
      * Constructor
-     * @param theService service name: WMS,WFS,WCS
-     * @param theConnName connection name
+     * \param service service name: WMS,WFS,WCS
+     * \param connName connection name
      */
-    QgsOwsConnection( const QString & theService, const QString & theConnName );
+    QgsOwsConnection( const QString &service, const QString &connName );
+
+    /**
+     * Returns the connection name.
+     * \since QGIS 3.0
+     */
+    QString connectionName() const;
+
+    /**
+     * Returns connection info string.
+     * \since QGIS 3.0
+     */
+    QString connectionInfo() const;
+
+    /**
+     * Returns a string representing the service type, e.g. "WMS".
+     * \since QGIS 3.0
+     */
+    QString service() const;
+
+    /**
+     * Returns the connection uri.
+     */
+    QgsDataSourceUri uri() const;
+
+    /**
+     * Adds uri parameters relating to the settings for a WMS or WCS connection to a QgsDataSourceUri \a uri.
+     * Connection settings are taken from the specified QSettings \a settingsKey.
+     * \since QGIS 3.0
+     */
+    static QgsDataSourceUri &addWmsWcsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
+
+    /**
+     * Adds uri parameters relating to the settings for a WFS connection to a QgsDataSourceUri \a uri.
+     * Connection settings are taken from the specified QSettings \a settingsKey.
+     * \since QGIS 3.0
+     */
+    static QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
 
     //! Returns the list of connections for the specified service
-    static QStringList connectionList( const QString & theService );
+    static QStringList connectionList( const QString &service );
 
     //! Deletes the connection for the specified service with the specified name
-    static void deleteConnection( const QString & theService, const QString & name );
+    static void deleteConnection( const QString &service, const QString &name );
 
     //! Retrieves the selected connection for the specified service
-    static QString selectedConnection( const QString & theService );
+    static QString selectedConnection( const QString &service );
     //! Marks the specified connection for the specified service as selected
-    static void setSelectedConnection( const QString & theService, const QString & name );
-
-    QString mConnName;
-    //! Returns the connection uri
-    QgsDataSourceUri uri() const;
-    QString mConnectionInfo;
+    static void setSelectedConnection( const QString &service, const QString &name );
 
   protected:
     QgsDataSourceUri mUri;
+
+  private:
+
+    QString mConnName;
     QString mService;
+    QString mConnectionInfo;
+
+    static void addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
+
 };
 
 

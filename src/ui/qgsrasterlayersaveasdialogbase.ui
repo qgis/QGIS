@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Save raster layer as...</string>
+   <string>Save Raster Layer as...</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -174,7 +174,7 @@ datasets with maximum width and height specified below.</string>
     </widget>
    </item>
    <item>
-    <widget class="QScrollArea" name="mScrollArea">
+    <widget class="QgsScrollArea" name="mScrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -674,7 +674,7 @@ datasets with maximum width and height specified below.</string>
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -682,21 +682,27 @@ datasets with maximum width and height specified below.</string>
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsExtentGroupBox</class>
-   <extends>QgsCollapsibleGroupBox</extends>
-   <header>qgsextentgroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsExtentGroupBox</class>
+   <extends>QgsCollapsibleGroupBox</extends>
+   <header>qgsextentgroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

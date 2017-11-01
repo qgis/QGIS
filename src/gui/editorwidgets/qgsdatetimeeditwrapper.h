@@ -21,9 +21,12 @@
 #include "qgseditorwidgetwrapper.h"
 #include "qgis_gui.h"
 
+SIP_NO_FILE
+
 class QgsDateTimeEdit;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a date time widget. Users will be able to choose date and time from an appropriate dialog.
  *
  * Options:
@@ -40,14 +43,14 @@ class GUI_EXPORT QgsDateTimeEditWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsDateTimeEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent = nullptr );
+    explicit QgsDateTimeEditWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent = nullptr );
 
   private slots:
     void dateTimeChanged( const QDateTime &dateTime );
 
   private:
-    QDateTimeEdit* mQDateTimeEdit;
-    QgsDateTimeEdit* mQgsDateTimeEdit;
+    QDateTimeEdit *mQDateTimeEdit = nullptr;
+    QgsDateTimeEdit *mQgsDateTimeEdit = nullptr;
 
 
     // QgsEditorWidgetWrapper interface

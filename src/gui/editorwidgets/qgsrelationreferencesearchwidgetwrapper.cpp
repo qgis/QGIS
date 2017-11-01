@@ -21,15 +21,13 @@
 #include "qgsproject.h"
 #include "qgsrelationreferencewidget.h"
 #include "qgsrelationmanager.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QStringListModel>
 
-QgsRelationReferenceSearchWidgetWrapper::QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QgsMapCanvas* canvas, QWidget* parent )
-    : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-    , mWidget( nullptr )
-    , mLayer( nullptr )
-    , mCanvas( canvas )
+QgsRelationReferenceSearchWidgetWrapper::QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent )
+  : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
+  , mCanvas( canvas )
 {
 
 }
@@ -127,7 +125,7 @@ bool QgsRelationReferenceSearchWidgetWrapper::valid() const
   return true;
 }
 
-void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( const QVariant& value )
+void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( const QVariant &value )
 {
   if ( !value.isValid() )
   {
@@ -136,7 +134,7 @@ void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( const QVariant& va
   }
   else
   {
-    QSettings settings;
+    QgsSettings settings;
     setExpression( value.isNull() ? QgsApplication::nullRepresentation() : value.toString() );
     emit valueChanged();
   }
@@ -145,7 +143,7 @@ void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( const QVariant& va
 
 void QgsRelationReferenceSearchWidgetWrapper::setExpression( QString exp )
 {
-  QSettings settings;
+  QgsSettings settings;
   QString nullValue = QgsApplication::nullRepresentation();
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
@@ -164,14 +162,14 @@ void QgsRelationReferenceSearchWidgetWrapper::setExpression( QString exp )
   mExpression = str;
 }
 
-QWidget* QgsRelationReferenceSearchWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsRelationReferenceSearchWidgetWrapper::createWidget( QWidget *parent )
 {
   return new QgsRelationReferenceWidget( parent );
 }
 
-void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget* editor )
+void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
 {
-  mWidget = qobject_cast<QgsRelationReferenceWidget*>( editor );
+  mWidget = qobject_cast<QgsRelationReferenceWidget *>( editor );
   if ( !mWidget )
     return;
 
@@ -194,7 +192,7 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget* editor )
   mWidget->setRelation( relation, false );
 
   mWidget->showIndeterminateState();
-  connect( mWidget, SIGNAL( foreignKeyChanged( QVariant ) ), this, SLOT( onValueChanged( QVariant ) ) );
+  connect( mWidget, &QgsRelationReferenceWidget::foreignKeyChanged, this, &QgsRelationReferenceSearchWidgetWrapper::onValueChanged );
 }
 
 

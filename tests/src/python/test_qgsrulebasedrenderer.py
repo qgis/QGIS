@@ -246,5 +246,6 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         self.assertEqual(r.rootRule().children()[0].filterExpression(), '"id" >= 0.000000 AND "id" <= 1.000000')
         self.assertEqual(r.rootRule().children()[1].filterExpression(), '"id" > 1.000000 AND "id" <= 2.000000')
 
+
 if __name__ == '__main__':
     unittest.main()

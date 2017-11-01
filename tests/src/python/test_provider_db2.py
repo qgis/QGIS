@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for the MS SQL provider.
+"""QGIS Unit tests for the DB2 provider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -12,31 +12,16 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
-import os
-import sys
-from qgis.core import NULL
-from pprint import pprint
-from qgis.core import (
-    QgsVectorLayer,
-    QgsFeatureRequest,
-    QgsFeature,
-    QgsProviderRegistry
-)
+import qgis  # NOQA
 
-from PyQt4.QtCore import (
-    QSettings,
-    QDate,
-    QTime,
-    QDateTime,
-    QVariant
-)
+import os
+
+from qgis.core import QgsVectorLayer
+
+from PyQt4.QtCore import QgsSettings
 
 from utilities import unitTestDataPath
-from qgis.testing import (
-    start_app,
-    unittest
-)
+from qgis.testing import start_app, unittest
 from providertestbase import ProviderTestCase
 
 start_app()
@@ -54,7 +39,7 @@ class TestPyQgsDb2Provider(unittest.TestCase, ProviderTestCase):
         # Create test layer
         cls.vl = QgsVectorLayer(cls.dbconn + ' srid=4326 type=Point  table="QGIS_TEST"."SOMEDATA" (GEOM) sql=', 'test', 'DB2')
         assert(cls.vl.isValid())
-        cls.provider = cls.vl.dataProvider()
+        cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsVectorLayer(
             cls.dbconn + ' srid=4326 type=POLYGON table="QGIS_TEST"."SOME_POLY_DATA" (geom) sql=', 'test', 'DB2')
         assert(cls.poly_vl.isValid())
@@ -72,10 +57,11 @@ class TestPyQgsDb2Provider(unittest.TestCase, ProviderTestCase):
         return 'cnt > 100 and cnt < 410'
 
     def enableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', True)
+        QgsSettings().setValue('/qgis/compileExpressions', True)
 
     def disableCompiler(self):
-        QSettings().setValue('/qgis/compileExpressions', False)
+        QgsSettings().setValue('/qgis/compileExpressions', False)
+
 
 if __name__ == '__main__':
     unittest.main()

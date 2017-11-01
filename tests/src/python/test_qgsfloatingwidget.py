@@ -15,11 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 from qgis.PyQt.QtWidgets import QWidget, QGridLayout
 
-import os
-
-from qgis.gui import (
-    QgsFloatingWidget
-)
+from qgis.gui import QgsFloatingWidget
 
 from qgis.testing import start_app, unittest
 

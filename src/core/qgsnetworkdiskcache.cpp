@@ -18,11 +18,13 @@
 
 #include "qgsnetworkdiskcache.h"
 
-QgsNetworkDiskCache::ExpirableNetworkDiskCache QgsNetworkDiskCache::sDiskCache;
+///@cond PRIVATE
+ExpirableNetworkDiskCache QgsNetworkDiskCache::sDiskCache;
+///@endcond
 QMutex QgsNetworkDiskCache::sDiskCacheMutex;
 
 QgsNetworkDiskCache::QgsNetworkDiskCache( QObject *parent )
-    : QNetworkDiskCache( parent )
+  : QNetworkDiskCache( parent )
 {
 }
 

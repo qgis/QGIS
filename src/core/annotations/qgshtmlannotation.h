@@ -29,7 +29,7 @@ class QgsWebPage;
  * \class QgsHtmlAnnotation
  * \ingroup core
  * An annotation item that embeds HTML content.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
 */
 
 class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
@@ -40,44 +40,46 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
     /**
      * Constructor for QgsHtmlAnnotation.
      */
-    QgsHtmlAnnotation( QObject* parent = nullptr );
+    QgsHtmlAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsHtmlAnnotation();
+    ~QgsHtmlAnnotation() = default;
+
+    QgsHtmlAnnotation *clone() const override SIP_FACTORY;
 
     QSizeF minimumFrameSize() const override;
 
     /**
      * Sets the file path for the source HTML file.
-     * @see sourceFile()
+     * \see sourceFile()
      */
-    void setSourceFile( const QString& htmlFile );
+    void setSourceFile( const QString &htmlFile );
 
     /**
      * Returns the file path for the source HTML file.
-     * @see setSourceFile()
+     * \see setSourceFile()
      */
     QString sourceFile() const { return mHtmlFile; }
 
-    virtual void writeXml( QDomElement& elem, QDomDocument & doc ) const override;
-    virtual void readXml( const QDomElement& itemElem, const QDomDocument& doc ) override;
+    virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    virtual void readXml( const QDomElement &itemElem, const QgsReadWriteContext &context ) override;
 
-    void setAssociatedFeature( const QgsFeature& feature ) override;
+    void setAssociatedFeature( const QgsFeature &feature ) override;
 
     /**
      * Returns a new QgsHtmlAnnotation object.
      */
-    static QgsHtmlAnnotation* create() { return new QgsHtmlAnnotation(); }
+    static QgsHtmlAnnotation *create() SIP_FACTORY { return new QgsHtmlAnnotation(); }
 
   protected:
 
-    void renderAnnotation( QgsRenderContext& context, QSizeF size ) const override;
+    void renderAnnotation( QgsRenderContext &context, QSizeF size ) const override;
 
   private slots:
 
     void javascript();
 
   private:
-    QgsWebPage* mWebPage = nullptr;
+    QgsWebPage *mWebPage = nullptr;
     QString mHtmlFile;
     QString mHtmlSource;
 

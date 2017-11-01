@@ -14,7 +14,6 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.PyQt.QtWidgets import QWidget
 from qgis.gui import QgsPanelWidget, QgsPanelWidgetStack
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtTest import QSignalSpy
@@ -161,5 +160,7 @@ class TestQgsPanelWidgetStack(unittest.TestCase):
         self.assertEqual(len(p1_accept_spy), 1)
         self.assertEqual(len(p2_accept_spy), 1)
         self.assertEqual(len(p3_accept_spy), 1)
+
+
 if __name__ == '__main__':
     unittest.main()

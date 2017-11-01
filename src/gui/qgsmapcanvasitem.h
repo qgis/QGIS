@@ -17,6 +17,7 @@
 #define QGSMAPCANVASITEM_H
 
 #include <QGraphicsItem>
+#include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgis_gui.h"
 
@@ -24,7 +25,8 @@ class QgsMapCanvas;
 class QgsRenderContext;
 class QPainter;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * An abstract class for items that can be placed on the
  * map canvas.
  */
@@ -33,25 +35,26 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
   protected:
 
     //! protected constructor: cannot be constructed directly
-    QgsMapCanvasItem( QgsMapCanvas* mapCanvas );
+    QgsMapCanvasItem( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS );
 
     virtual ~QgsMapCanvasItem();
 
     //! function to be implemented by derived classes
-    virtual void paint( QPainter * painter ) = 0;
+    virtual void paint( QPainter *painter ) = 0;
 
-    virtual void paint( QPainter * painter,
-                        const QStyleOptionGraphicsItem * option,
-                        QWidget * widget = nullptr ) override;
+    virtual void paint( QPainter *painter,
+                        const QStyleOptionGraphicsItem *option,
+                        QWidget *widget = nullptr ) override;
 
     //! schedules map canvas for repaint
     void updateCanvas();
 
-    /** Sets render context parameters
-    @param p painter for rendering
-    @param context out: configured context
-    @return true in case of success */
-    bool setRenderContextVariables( QPainter* p, QgsRenderContext& context ) const;
+    /**
+     * Sets render context parameters
+    \param p painter for rendering
+    \param context out: configured context
+    \returns true in case of success */
+    bool setRenderContextVariables( QPainter *p, QgsRenderContext &context ) const;
 
   public:
 
@@ -64,27 +67,29 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     QgsRectangle rect() const;
 
     //! sets canvas item rectangle in map units
-    void setRect( const QgsRectangle& r, bool resetRotation = true );
+    void setRect( const QgsRectangle &r, bool resetRotation = true );
 
     //! transformation from screen coordinates to map coordinates
-    QgsPoint toMapCoordinates( QPoint point ) const;
+    QgsPointXY toMapCoordinates( QPoint point ) const;
 
     //! transformation from map coordinates to screen coordinates
-    QPointF toCanvasCoordinates( const QgsPoint& point ) const;
+    QPointF toCanvasCoordinates( const QgsPointXY &point ) const;
 
   protected:
 
     //! pointer to map canvas
-    QgsMapCanvas* mMapCanvas;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
-    //! cached canvas item rectangle in map coordinates
-    //! encodes position (xmin,ymax) and size (width/height)
-    //! used to re-position and re-size the item on zoom/pan
-    //! while waiting for the renderer to complete.
-    //!
-    //! NOTE: does not include rotation information, so cannot
-    //!       be used to correctly present pre-rendered map
-    //!       on rotation change
+    /**
+     * cached canvas item rectangle in map coordinates
+     * encodes position (xmin,ymax) and size (width/height)
+     * used to re-position and re-size the item on zoom/pan
+     * while waiting for the renderer to complete.
+     *
+     * NOTE: does not include rotation information, so cannot
+     * be used to correctly present pre-rendered map
+     * on rotation change
+     */
     QgsRectangle mRect;
 
     double mRectRotation;

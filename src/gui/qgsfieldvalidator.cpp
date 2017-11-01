@@ -23,18 +23,18 @@
 #include <QRegExpValidator>
 #include <QDate>
 #include <QVariant>
-#include <QSettings>
 
+#include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgslonglongvalidator.h"
 #include "qgsfields.h"
 #include "qgsapplication.h"
 
-QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, const QString& defaultValue, const QString& dateFormat )
-    : QValidator( parent )
-    , mField( field )
-    , mDefaultValue( defaultValue )
-    , mDateFormat( dateFormat )
+QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, const QString &defaultValue, const QString &dateFormat )
+  : QValidator( parent )
+  , mField( field )
+  , mDefaultValue( defaultValue )
+  , mDateFormat( dateFormat )
 {
   switch ( mField.type() )
   {
@@ -84,7 +84,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
       mValidator = nullptr;
   }
 
-  QSettings settings;
+  QgsSettings settings;
   mNullValue = QgsApplication::nullRepresentation();
 }
 

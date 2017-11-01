@@ -19,6 +19,7 @@
 #define QGSGPSCONNECTION_H
 
 #include <QDateTime>
+#include "qgis.h"
 #include <QObject>
 #include <QString>
 
@@ -46,8 +47,8 @@ struct CORE_EXPORT QgsGPSInformation
   double pdop;
   double hdop;
   double vdop;
-  double hacc; //horizontal accurancy in meters
-  double vacc; //vertical accurancy in meters
+  double hacc; //horizontal accuracy in meters
+  double vacc; //vertical accuracy in meters
   QDateTime utcDateTime;
   QChar fixMode;
   int fixType;
@@ -58,10 +59,28 @@ struct CORE_EXPORT QgsGPSInformation
   bool satInfoComplete; // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Abstract base class for connection to a GPS device*/
 class CORE_EXPORT QgsGPSConnection : public QObject
 {
+#ifdef SIP_RUN
+#include <qgsgpsdconnection.h>
+#include <qgsnmeaconnection.h>
+#endif
+
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->inherits( "QgsGpsdConnection" ) )
+      sipType = sipType_QgsGpsdConnection;
+    else if ( sipCpp->inherits( "QgsNMEAConnection" ) )
+      sipType = sipType_QgsNMEAConnection;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
     Q_OBJECT
   public:
 
@@ -73,10 +92,11 @@ class CORE_EXPORT QgsGPSConnection : public QObject
       GPSDataReceived
     };
 
-    /** Constructor
-        @param dev input device for the connection (e.g. serial device). The class takes ownership of the object
+    /**
+     * Constructor
+        \param dev input device for the connection (e.g. serial device). The class takes ownership of the object
       */
-    QgsGPSConnection( QIODevice* dev );
+    QgsGPSConnection( QIODevice *dev SIP_TRANSFER );
     virtual ~QgsGPSConnection();
     //! Opens connection to device
     bool connect();
@@ -84,7 +104,7 @@ class CORE_EXPORT QgsGPSConnection : public QObject
     bool close();
 
     //! Sets the GPS source. The class takes ownership of the device class
-    void setSource( QIODevice* source );
+    void setSource( QIODevice *source SIP_TRANSFER );
 
     //! Returns the status. Possible state are not connected, connected, data received
     Status status() const { return mStatus; }
@@ -93,12 +113,12 @@ class CORE_EXPORT QgsGPSConnection : public QObject
     QgsGPSInformation currentGPSInformation() const { return mLastGPSInformation; }
 
   signals:
-    void stateChanged( const QgsGPSInformation& info );
-    void nmeaSentenceReceived( const QString& substring ); // added to capture 'raw' data
+    void stateChanged( const QgsGPSInformation &info );
+    void nmeaSentenceReceived( const QString &substring ); // added to capture 'raw' data
 
   protected:
     //! Data source (e.g. serial device, socket, file,...)
-    QIODevice* mSource;
+    QIODevice *mSource = nullptr;
     //! Last state of the gps related variables (e.g. position, time, ...)
     QgsGPSInformation mLastGPSInformation;
     //! Connection status

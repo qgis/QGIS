@@ -22,30 +22,21 @@
 #include "qgsunittypes.h"
 
 QgsGlowEffect::QgsGlowEffect()
-    : QgsPaintEffect()
-    , mSpread( 2.0 )
-    , mSpreadUnit( QgsUnitTypes::RenderMillimeters )
-    , mRamp( nullptr )
-    , mBlurLevel( 3 )
-    , mTransparency( 0.5 )
-    , mColor( Qt::white )
-    , mBlendMode( QPainter::CompositionMode_SourceOver )
-    , mColorType( SingleColor )
+  : mColor( Qt::white )
 {
 
 }
 
 QgsGlowEffect::QgsGlowEffect( const QgsGlowEffect &other )
-    : QgsPaintEffect( other )
-    , mSpread( other.spread() )
-    , mSpreadUnit( other.spreadUnit() )
-    , mSpreadMapUnitScale( other.spreadMapUnitScale() )
-    , mRamp( nullptr )
-    , mBlurLevel( other.blurLevel() )
-    , mTransparency( other.transparency() )
-    , mColor( other.color() )
-    , mBlendMode( other.blendMode() )
-    , mColorType( other.colorType() )
+  : QgsPaintEffect( other )
+  , mSpread( other.spread() )
+  , mSpreadUnit( other.spreadUnit() )
+  , mSpreadMapUnitScale( other.spreadMapUnitScale() )
+  , mBlurLevel( other.blurLevel() )
+  , mOpacity( other.opacity() )
+  , mColor( other.color() )
+  , mBlendMode( other.blendMode() )
+  , mColorType( other.colorType() )
 {
   if ( other.ramp() )
   {
@@ -65,7 +56,8 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
 
   QImage im = sourceAsImage( context )->copy();
 
-  QgsColorRamp* ramp = nullptr;
+  QgsColorRamp *ramp = nullptr;
+  std::unique_ptr< QgsGradientColorRamp > tempRamp;
   if ( mColorType == ColorRamp && mRamp )
   {
     ramp = mRamp;
@@ -75,7 +67,8 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
     //create a temporary ramp
     QColor transparentColor = mColor;
     transparentColor.setAlpha( 0 );
-    ramp = new QgsGradientColorRamp( mColor, transparentColor );
+    tempRamp.reset( new QgsGradientColorRamp( mColor, transparentColor ) );
+    ramp = tempRamp.get();
   }
 
   QgsImageOperation::DistanceTransformProperties dtProps;
@@ -90,7 +83,7 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
     QgsImageOperation::stackBlur( im, mBlurLevel );
   }
 
-  QgsImageOperation::multiplyOpacity( im, 1.0 - mTransparency );
+  QgsImageOperation::multiplyOpacity( im, mOpacity );
 
   if ( !shadeExterior() )
   {
@@ -102,17 +95,11 @@ void QgsGlowEffect::draw( QgsRenderContext &context )
     p.end();
   }
 
-  QPainter* painter = context.painter();
+  QPainter *painter = context.painter();
   painter->save();
   painter->setCompositionMode( mBlendMode );
   painter->drawImage( imageOffset( context ), im );
   painter->restore();
-
-  if ( !mRamp )
-  {
-    //delete temporary ramp
-    delete ramp;
-  }
 }
 
 QgsStringMap QgsGlowEffect::properties() const
@@ -121,7 +108,7 @@ QgsStringMap QgsGlowEffect::properties() const
   props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
   props.insert( QStringLiteral( "draw_mode" ), QString::number( int( mDrawMode ) ) );
   props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
-  props.insert( QStringLiteral( "transparency" ), QString::number( mTransparency ) );
+  props.insert( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
   props.insert( QStringLiteral( "blur_level" ), QString::number( mBlurLevel ) );
   props.insert( QStringLiteral( "spread" ), QString::number( mSpread ) );
   props.insert( QStringLiteral( "spread_unit" ), QgsUnitTypes::encodeUnit( mSpreadUnit ) );
@@ -145,10 +132,21 @@ void QgsGlowEffect::readProperties( const QgsStringMap &props )
   {
     mBlendMode = mode;
   }
-  double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
-  if ( ok )
+  if ( props.contains( QStringLiteral( "transparency" ) ) )
   {
-    mTransparency = transparency;
+    double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
+    if ( ok )
+    {
+      mOpacity = 1.0 - transparency;
+    }
+  }
+  else
+  {
+    double opacity = props.value( QStringLiteral( "opacity" ) ).toDouble( &ok );
+    if ( ok )
+    {
+      mOpacity = opacity;
+    }
   }
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
   mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
@@ -174,7 +172,7 @@ void QgsGlowEffect::readProperties( const QgsStringMap &props )
     mColor = QgsSymbolLayerUtils::decodeColor( props.value( QStringLiteral( "single_color" ) ) );
   }
 
-  //attempt to create color ramp from props
+//attempt to create color ramp from props
   delete mRamp;
   if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QStringLiteral( "cpt-city" ) )
   {
@@ -192,7 +190,7 @@ void QgsGlowEffect::setRamp( QgsColorRamp *ramp )
   mRamp = ramp;
 }
 
-QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect & rhs )
+QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect &rhs )
 {
   if ( &rhs == this )
     return *this;
@@ -202,7 +200,7 @@ QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect & rhs )
   mSpread = rhs.spread();
   mRamp = rhs.ramp() ? rhs.ramp()->clone() : nullptr;
   mBlurLevel = rhs.blurLevel();
-  mTransparency = rhs.transparency();
+  mOpacity = rhs.opacity();
   mColor = rhs.color();
   mBlendMode = rhs.blendMode();
   mColorType = rhs.colorType();
@@ -210,7 +208,7 @@ QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect & rhs )
   return *this;
 }
 
-QRectF QgsGlowEffect::boundingRect( const QRectF &rect, const QgsRenderContext& context ) const
+QRectF QgsGlowEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
   //spread size
   double spread = context.convertToPainterUnits( mSpread, mSpreadUnit, mSpreadMapUnitScale );
@@ -225,21 +223,21 @@ QRectF QgsGlowEffect::boundingRect( const QRectF &rect, const QgsRenderContext& 
 //
 
 QgsOuterGlowEffect::QgsOuterGlowEffect()
-    : QgsGlowEffect()
+  : QgsGlowEffect()
 {
 
 }
 
 QgsPaintEffect *QgsOuterGlowEffect::create( const QgsStringMap &map )
 {
-  QgsOuterGlowEffect* effect = new QgsOuterGlowEffect();
+  QgsOuterGlowEffect *effect = new QgsOuterGlowEffect();
   effect->readProperties( map );
   return effect;
 }
 
-QgsOuterGlowEffect* QgsOuterGlowEffect::clone() const
+QgsOuterGlowEffect *QgsOuterGlowEffect::clone() const
 {
-  QgsOuterGlowEffect* newEffect = new QgsOuterGlowEffect( *this );
+  QgsOuterGlowEffect *newEffect = new QgsOuterGlowEffect( *this );
   return newEffect;
 }
 
@@ -249,20 +247,20 @@ QgsOuterGlowEffect* QgsOuterGlowEffect::clone() const
 //
 
 QgsInnerGlowEffect::QgsInnerGlowEffect()
-    : QgsGlowEffect()
+  : QgsGlowEffect()
 {
 
 }
 
 QgsPaintEffect *QgsInnerGlowEffect::create( const QgsStringMap &map )
 {
-  QgsInnerGlowEffect* effect = new QgsInnerGlowEffect();
+  QgsInnerGlowEffect *effect = new QgsInnerGlowEffect();
   effect->readProperties( map );
   return effect;
 }
 
-QgsInnerGlowEffect* QgsInnerGlowEffect::clone() const
+QgsInnerGlowEffect *QgsInnerGlowEffect::clone() const
 {
-  QgsInnerGlowEffect* newEffect = new QgsInnerGlowEffect( *this );
+  QgsInnerGlowEffect *newEffect = new QgsInnerGlowEffect( *this );
   return newEffect;
 }

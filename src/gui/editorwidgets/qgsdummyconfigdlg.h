@@ -20,8 +20,11 @@
 #include "qgseditorconfigwidget.h"
 #include "qgis_gui.h"
 
+SIP_NO_FILE
 
-/** \ingroup gui
+
+/**
+ * \ingroup gui
  * \class QgsDummyConfigDlg
  * \note not available in Python bindings
  */
@@ -31,12 +34,12 @@ class GUI_EXPORT QgsDummyConfigDlg : public QgsEditorConfigWidget, private Ui::Q
     Q_OBJECT
 
   public:
-    explicit QgsDummyConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent, const QString& description );
+    explicit QgsDummyConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent, const QString &description );
 
     // QgsEditorConfigWidget interface
   public:
     virtual QVariantMap config() override;
-    virtual void setConfig( const QVariantMap& config ) override;
+    virtual void setConfig( const QVariantMap &config ) override;
 };
 
 #endif // QGSDUMMYCONFIGDLG_H

@@ -35,64 +35,70 @@
 namespace pal
 {
 
-  /** \brief Various Exceptions
+  /**
+   * \brief Various Exceptions
    * \ingroup core
    */
   class InternalException
   {
     public:
 
-      /** \brief Thrown when something is added in a Full set
+      /**
+       * \brief Thrown when something is added in a Full set
        * \ingroup core
       */
       class Full : public std::exception
       {
-          const char* what() const throw() override
+          const char *what() const throw() override
           {
             return "This set is full...";
           }
       };
 
-      /** \brief Thrown when trying to access an empty dada set
+      /**
+       * \brief Thrown when trying to access an empty data set
        * \ingroup core
       */
       class Empty : public std::exception
       {
-          const char* what() const throw() override
+          const char *what() const throw() override
           {
             return "This set is empty...";
           }
       };
 
-      /** \brief Thrown when a geometry type is not like expected
+      /**
+       * \brief Thrown when a geometry type is not like expected
        * \ingroup core
       */
       class WrongGeometry : public std::exception
       {
-          const char* what() const throw() override
+          const char *what() const throw() override
           {
             return "GeometryTypeId is not expected...";
           }
       };
 
-      /** \brief Thrown when a geometry type is not like expected
+      /**
+       * \brief Thrown when a geometry type is not like expected
        * \ingroup core
       */
       class UnknownGeometry : public std::exception
       {
-          const char* what() const throw() override
+          const char *what() const throw() override
           {
             return "Geometry Type is unknown";
           }
       };
 
 
-      /** \brief Throw an exception when it's impossible to compute labelPosition
+      /**
+       * \brief Throw an exception when it's impossible to compute labelPosition
        * \ingroup core
       */
       class NoLabelPosition : public std::exception
       {
-          const char * what() const throw() override
+          const char *what() const throw() override
           {
             return "No way to compute positions";
           }

@@ -17,41 +17,57 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSMULTIPOINTV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsgeometrycollection.h"
 
-/** \ingroup core
- * \class QgsMultiPointV2
+/**
+ * \ingroup core
+ * \class QgsMultiPoint
  * \brief Multi point geometry collection.
- * \note added in QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
+ * \since QGIS 2.10
  */
-class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollection
+class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
 {
   public:
-    QgsMultiPointV2();
-    virtual QString geometryType() const override { return QStringLiteral( "MultiPoint" ); }
-    QgsMultiPointV2* clone() const override;
+    QgsMultiPoint();
 
-    bool fromWkt( const QString& wkt ) override;
-
-    // inherited: int wkbSize() const;
-    // inherited: unsigned char* asWkb( int& binarySize ) const;
-    // inherited: QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QString geometryType() const override;
+    QgsMultiPoint *clone() const override SIP_FACTORY;
+    QgsMultiPoint *toCurveType() const override SIP_FACTORY;
+    bool fromWkt( const QString &wkt ) override;
+    void clear() override;
+    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
     QString asJSON( int precision = 17 ) const override;
+    int nCoordinates() const override;
+    bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    int vertexNumberFromVertexId( QgsVertexId id ) const override;
 
-    virtual int nCoordinates() const override { return mGeometries.size(); }
 
-    //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry* g ) override;
+#ifndef SIP_RUN
 
-    virtual QgsAbstractGeometry* boundary() const override;
-
+    /**
+     * Cast the \a geom to a QgsLineString.
+     * Should be used by qgsgeometry_cast<QgsLineString *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsMultiPoint *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPoint )
+        return static_cast<const QgsMultiPoint *>( geom );
+      return nullptr;
+    }
+#endif
   protected:
-
-    virtual bool wktOmitChildType() const override { return true; }
+    QgsMultiPoint *createEmptyWithSameType() const override SIP_FACTORY;
+    bool wktOmitChildType() const override;
 
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSMULTIPOINTV2_H

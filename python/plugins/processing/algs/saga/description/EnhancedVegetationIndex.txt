@@ -1,0 +1,10 @@
+Enhanced Vegetation Index
+imagery_tools
+ParameterRaster|BLUE|Blue Reflectance|True
+ParameterRaster|RED|Red Reflectance|False
+ParameterRaster|NIR|Near Infrared Reflectance|False
+OutputRaster|EVI|Enhanced Vegetation Index
+ParameterNumber|GAIN|Gain| 0.000000|None| 2.500000
+ParameterNumber|L|Canopy Background Adjustment| 0.000000|None| 1.000000
+ParameterNumber|CBLUE|Aerosol Resistance Coefficient (Blue)| 0.000000|None| 7.500000
+ParameterNumber|CRED|Aerosol Resistance Coefficient (Red)| 0.000000|None| 6.000000

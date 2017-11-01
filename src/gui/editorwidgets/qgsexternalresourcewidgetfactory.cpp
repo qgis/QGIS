@@ -19,22 +19,22 @@
 #include "qgsexternalresourcewidgetwrapper.h"
 #include "qgsexternalresourceconfigdlg.h"
 
-QgsExternalResourceWidgetFactory::QgsExternalResourceWidgetFactory( const QString& name )
-    : QgsEditorWidgetFactory( name )
+QgsExternalResourceWidgetFactory::QgsExternalResourceWidgetFactory( const QString &name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 
-QgsEditorWidgetWrapper* QgsExternalResourceWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
+QgsEditorWidgetWrapper *QgsExternalResourceWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {
   return new QgsExternalResourceWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
-QgsEditorConfigWidget* QgsExternalResourceWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+QgsEditorConfigWidget *QgsExternalResourceWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
   return new QgsExternalResourceConfigDlg( vl, fieldIdx, parent );
 }
 
-unsigned int QgsExternalResourceWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
+unsigned int QgsExternalResourceWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   if ( vl->fields().at( fieldIdx ).type() == QVariant::String )
     return 5;

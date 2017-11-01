@@ -1,9 +1,0 @@
-LS Factor
-ta_hydrology
-ParameterRaster|SLOPE|Slope|False
-ParameterRaster|AREA|Catchment Area|False
-ParameterSelection|CONV|Area to Length Conversion|[0] no conversion (areas already given as specific catchment area);[1] 1 / cell size (specific catchment area);[2] square root (catchment length)
-ParameterSelection|METHOD|Method (LS)|[0] Moore et al. 1991;[1] Desmet & Govers 1996;[2] Boehner & Selige 2006
-ParameterNumber|EROSIVITY|Rill/Interrill Erosivity|None|None|0.0
-ParameterSelection|STABILITY|Stability|[0] stable;[1] instable (thawing)
-OutputRaster|LS|LS Factor

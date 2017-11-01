@@ -31,68 +31,92 @@ import math
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import QgsFeature, QgsGeometry, QgsWkbTypes, QgsField
+from qgis.core import (QgsFeature,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsField,
+                       QgsFeatureSink,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ExtractNodes(GeoAlgorithm):
+class ExtractNodes(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'extract_nodes.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Extract nodes')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def group(self):
+        return self.tr('Vector geometry')
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'),
-                                          [dataobjects.TYPE_VECTOR_POLYGON,
-                                           dataobjects.TYPE_VECTOR_LINE]))
+    def __init__(self):
+        super().__init__()
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Nodes'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Nodes'), QgsProcessing.TypeVectorPoint))
 
-        fields = layer.fields()
+    def name(self):
+        return 'extractnodes'
+
+    def displayName(self):
+        return self.tr('Extract nodes')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+
+        fields = source.fields()
         fields.append(QgsField('node_index', QVariant.Int))
         fields.append(QgsField('distance', QVariant.Double))
         fields.append(QgsField('angle', QVariant.Double))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            fields, QgsWkbTypes.Point, layer.crs())
+        out_wkb = QgsWkbTypes.Point
+        if QgsWkbTypes.hasM(source.wkbType()):
+            out_wkb = QgsWkbTypes.addM(out_wkb)
+        if QgsWkbTypes.hasZ(source.wkbType()):
+            out_wkb = QgsWkbTypes.addZ(out_wkb)
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, out_wkb, source.sourceCrs())
+
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, f in enumerate(features):
+            if feedback.isCanceled():
+                break
+
             input_geometry = f.geometry()
             if not input_geometry:
-                writer.addFeature(f)
+                sink.addFeature(f, QgsFeatureSink.FastInsert)
             else:
-                points = vector.extractPoints(input_geometry)
+                i = 0
+                for part in input_geometry.constGet().coordinateSequence():
+                    for ring in part:
+                        if feedback.isCanceled():
+                            break
 
-                for i, point in enumerate(points):
-                    distance = input_geometry.distanceToVertex(i)
-                    angle = math.degrees(input_geometry.angleAtVertex(i))
-                    attrs = f.attributes()
-                    attrs.append(i)
-                    attrs.append(distance)
-                    attrs.append(angle)
-                    output_feature = QgsFeature()
-                    output_feature.setAttributes(attrs)
-                    output_feature.setGeometry(QgsGeometry.fromPoint(point))
-                    writer.addFeature(output_feature)
+                        for point in ring:
+                            distance = input_geometry.distanceToVertex(i)
+                            angle = math.degrees(input_geometry.angleAtVertex(i))
+                            attrs = f.attributes()
+                            attrs.append(i)
+                            attrs.append(distance)
+                            attrs.append(angle)
+                            output_feature = QgsFeature()
+                            output_feature.setAttributes(attrs)
+                            output_feature.setGeometry(QgsGeometry(point.clone()))
+                            sink.addFeature(output_feature, QgsFeatureSink.FastInsert)
+                            i += 1
 
             feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

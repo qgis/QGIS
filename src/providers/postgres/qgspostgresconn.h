@@ -151,10 +151,10 @@ struct QgsPostgresLayerProperty
 class QgsPostgresResult
 {
   public:
-    explicit QgsPostgresResult( PGresult *theResult = nullptr ) : mRes( theResult ) {}
+    explicit QgsPostgresResult( PGresult *result = nullptr ) : mRes( result ) {}
     ~QgsPostgresResult();
 
-    QgsPostgresResult &operator=( PGresult *theResult );
+    QgsPostgresResult &operator=( PGresult *result );
     QgsPostgresResult &operator=( const QgsPostgresResult &src );
 
     ExecStatusType PQresultStatus();
@@ -175,9 +175,9 @@ class QgsPostgresResult
     PGresult *result() const { return mRes; }
 
   private:
-    PGresult *mRes;
+    PGresult *mRes = nullptr;
 
-    QgsPostgresResult( const QgsPostgresResult& rh );
+    QgsPostgresResult( const QgsPostgresResult &rh );
 };
 
 
@@ -187,7 +187,7 @@ class QgsPostgresConn : public QObject
 
   public:
     /*
-     * @param shared allow using a shared connection. Should never be
+     * \param shared allow using a shared connection. Should never be
      *        called from a thread other than the main one.
      *        An assertion guards against such programmatic error.
      */
@@ -227,11 +227,11 @@ class QgsPostgresConn : public QObject
     int pgVersion() { return mPostgresqlVersion; }
 
     //! run a query and free result buffer
-    bool PQexecNR( const QString& query, bool retry = true );
+    bool PQexecNR( const QString &query, bool retry = true );
 
     //! cursor handling
-    bool openCursor( const QString& cursorName, const QString& declare );
-    bool closeCursor( const QString& cursorName );
+    bool openCursor( const QString &cursorName, const QString &declare );
+    bool closeCursor( const QString &cursorName );
 
     QString uniqueCursorName();
 
@@ -244,14 +244,14 @@ class QgsPostgresConn : public QObject
     //
 
     // run a query and check for errors
-    PGresult *PQexec( const QString& query, bool logError = true );
+    PGresult *PQexec( const QString &query, bool logError = true ) const;
     void PQfinish();
-    QString PQerrorMessage();
-    int PQsendQuery( const QString& query );
-    int PQstatus();
+    QString PQerrorMessage() const;
+    int PQsendQuery( const QString &query );
+    int PQstatus() const;
     PGresult *PQgetResult();
-    PGresult *PQprepare( const QString& stmtName, const QString& query, int nParams, const Oid *paramTypes );
-    PGresult *PQexecPrepared( const QString& stmtName, const QStringList &params );
+    PGresult *PQprepare( const QString &stmtName, const QString &query, int nParams, const Oid *paramTypes );
+    PGresult *PQexecPrepared( const QString &stmtName, const QStringList &params );
 
     bool begin();
     bool commit();
@@ -261,22 +261,25 @@ class QgsPostgresConn : public QObject
     // cancel running query
     bool cancel();
 
-    /** Double quote a PostgreSQL identifier for placement in a SQL string.
+    /**
+     * Double quote a PostgreSQL identifier for placement in a SQL string.
      */
-    static QString quotedIdentifier( const QString& ident );
+    static QString quotedIdentifier( const QString &ident );
 
-    /** Quote a value for placement in a SQL string.
+    /**
+     * Quote a value for placement in a SQL string.
      */
-    static QString quotedValue( const QVariant& value );
+    static QString quotedValue( const QVariant &value );
 
-    /** Get the list of supported layers
-     * @param layers list to store layers in
-     * @param searchGeometryColumnsOnly only look for geometry columns which are
+    /**
+     * Get the list of supported layers
+     * \param layers list to store layers in
+     * \param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
-     * @param searchPublicOnly
-     * @param allowGeometrylessTables
-     * @param schema restrict layers to layers within specified schema
-     * @returns true if layers were fetched successfully
+     * \param searchPublicOnly
+     * \param allowGeometrylessTables
+     * \param schema restrict layers to layers within specified schema
+     * \returns true if layers were fetched successfully
      */
     bool supportedLayers( QVector<QgsPostgresLayerProperty> &layers,
                           bool searchGeometryColumnsOnly = true,
@@ -284,25 +287,27 @@ class QgsPostgresConn : public QObject
                           bool allowGeometrylessTables = false,
                           const QString &schema = QString() );
 
-    /** Get the list of database schemas
-     * @param schemas list to store schemas in
-     * @returns true if schemas where fetched successfully
-     * @note added in QGIS 2.7
+    /**
+     * Get the list of database schemas
+     * \param schemas list to store schemas in
+     * \returns true if schemas where fetched successfully
+     * \since QGIS 2.7
      */
     bool getSchemas( QList<QgsPostgresSchemaProperty> &schemas );
 
     void retrieveLayerTypes( QgsPostgresLayerProperty &layerProperty, bool useEstimatedMetadata );
 
-    /** Gets information about the spatial tables
-     * @param searchGeometryColumnsOnly only look for geometry columns which are
+    /**
+     * Gets information about the spatial tables
+     * \param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
-     * @param searchPublicOnly
-     * @param allowGeometrylessTables
-     * @param schema restrict tables to those within specified schema
-     * @returns true if tables were successfully queried
+     * \param searchPublicOnly
+     * \param allowGeometrylessTables
+     * \param schema restrict tables to those within specified schema
+     * \returns true if tables were successfully queried
      */
     bool getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables,
-                       const QString& schema = QString() );
+                       const QString &schema = QString() );
 
     qint64 getBinaryInt( QgsPostgresResult &queryResult, int row, int col );
 
@@ -310,15 +315,22 @@ class QgsPostgresConn : public QObject
 
     QString connInfo() const { return mConnInfo; }
 
+    /**
+     * Returns the underlying database.
+     *
+     * \since QGIS 3.0
+     */
+    QString currentDatabase() const;
+
     static const int GEOM_TYPE_SELECT_LIMIT;
 
     static QString displayStringForWkbType( QgsWkbTypes::Type wkbType );
     static QString displayStringForGeomType( QgsPostgresGeometryColumnType geomType );
-    static QgsWkbTypes::Type wkbTypeFromPostgis( const QString& dbType );
+    static QgsWkbTypes::Type wkbTypeFromPostgis( const QString &dbType );
 
     static QString postgisWkbTypeName( QgsWkbTypes::Type wkbType );
     static int postgisWkbTypeDim( QgsWkbTypes::Type wkbType );
-    static void postgisWkbType( QgsWkbTypes::Type wkbType, QString& geometryType, int& dim );
+    static void postgisWkbType( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
 
     static QString postgisTypeFilter( QString geomCol, QgsWkbTypes::Type wkbType, bool castToGeometry );
 
@@ -327,25 +339,25 @@ class QgsPostgresConn : public QObject
 
     static QStringList connectionList();
     static QString selectedConnection();
-    static void setSelectedConnection( const QString& theConnName );
-    static QgsDataSourceUri connUri( const QString& theConnName );
-    static bool publicSchemaOnly( const QString& theConnName );
-    static bool geometryColumnsOnly( const QString& theConnName );
-    static bool dontResolveType( const QString& theConnName );
-    static bool allowGeometrylessTables( const QString& theConnName );
-    static void deleteConnection( const QString& theConnName );
+    static void setSelectedConnection( const QString &connName );
+    static QgsDataSourceUri connUri( const QString &connName );
+    static bool publicSchemaOnly( const QString &connName );
+    static bool geometryColumnsOnly( const QString &connName );
+    static bool dontResolveType( const QString &connName );
+    static bool allowGeometrylessTables( const QString &connName );
+    static void deleteConnection( const QString &connName );
 
     //! A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback}
     void lock() { mLock.lock(); }
     void unlock() { mLock.unlock(); }
 
   private:
-    QgsPostgresConn( const QString& conninfo, bool readOnly, bool shared, bool transaction );
+    QgsPostgresConn( const QString &conninfo, bool readOnly, bool shared, bool transaction );
     ~QgsPostgresConn();
 
     int mRef;
     int mOpenCursors;
-    PGconn *mConn;
+    PGconn *mConn = nullptr;
     QString mConnInfo;
 
     //! GEOS capability
@@ -387,7 +399,7 @@ class QgsPostgresConn : public QObject
     static QMap<QString, QgsPostgresConn *> sConnectionsRO;
 
     //! Count number of spatial columns in a given relation
-    void addColumnInfo( QgsPostgresLayerProperty& layerProperty, const QString& schemaName, const QString& viewName, bool fetchPkCandidates );
+    void addColumnInfo( QgsPostgresLayerProperty &layerProperty, const QString &schemaName, const QString &viewName, bool fetchPkCandidates );
 
     //! List of the supported layers
     QVector<QgsPostgresLayerProperty> mLayersSupported;
@@ -395,7 +407,7 @@ class QgsPostgresConn : public QObject
     /**
      * Flag indicating whether data from binary cursors must undergo an
      * endian conversion prior to use
-     @note
+     \note
 
      XXX Umm, it'd be helpful to know what we're swapping from and to.
      XXX Presumably this means swapping from big-endian (network) byte order
@@ -414,5 +426,6 @@ class QgsPostgresConn : public QObject
     QMutex mLock;
 };
 
+// clazy:excludeall=qstring-allocations
 
 #endif

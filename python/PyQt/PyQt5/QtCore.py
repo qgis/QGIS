@@ -2,6 +2,7 @@ from PyQt5.QtCore import *
 
 from types import MethodType
 
+
 _QVariant__repr__ = QVariant.__repr__
 _QVariant__eq__ = QVariant.__eq__
 _QVariant__ne__ = QVariant.__ne__
@@ -38,6 +39,7 @@ def __hash__(self):
         return 2178309
     else:
         return _QVariant__hash__(self)
+
 
 QVariant.__bool__ = __bool__
 QVariant.__repr__ = __repr__

@@ -2,6 +2,5 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Set the region to match multiple rasters" module="g.region">
-	<option key="rast" version_max="6.4"/>
-	<option key="raster" version_min="7.0"/>
+  <option key="raster"/>
 </qgisgrassmodule>

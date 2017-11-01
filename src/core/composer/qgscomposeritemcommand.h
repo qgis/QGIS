@@ -19,6 +19,7 @@
 #define QGSCOMPOSERITEMCOMMAND_H
 
 #include <QUndoCommand>
+#include "qgis.h"
 #include <QDomDocument>
 
 #include "qgis_core.h"
@@ -26,13 +27,14 @@
 class QgsComposerItem;
 class QgsComposerMultiFrame;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Undo command to undo/redo all composer item related changes
 */
 class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 {
   public:
-    QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent = nullptr );
+    QgsComposerItemCommand( QgsComposerItem *item, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = 0 );
 
     //! Reverses the command
     void undo() override;
@@ -50,32 +52,36 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     //! Returns true if previous state and after state are valid and different
     bool containsChange() const;
 
-    /** Returns the target item the command applies to.
-     * @returns target composer item
+    /**
+     * Returns the target item the command applies to.
+     * \returns target composer item
      */
     QgsComposerItem *item() const;
 
   protected:
     //! Target item of the command
-    QgsComposerItem* mItem;
+    QgsComposerItem *mItem = nullptr;
     //! XML that saves the state before executing the command
     QDomDocument mPreviousState;
     //! XML containing the state after executing the command
     QDomDocument mAfterState;
 
-    //! Parameters for frame items
-    //! Parent multiframe
-    QgsComposerMultiFrame* mMultiFrame;
+    /**
+     * Parameters for frame items
+     * Parent multiframe
+     */
+    QgsComposerMultiFrame *mMultiFrame = nullptr;
     int mFrameNumber;
 
     //! Flag to prevent the first redo() if the command is pushed to the undo stack
     bool mFirstRun;
 
-    void saveState( QDomDocument& stateDoc ) const;
-    void restoreState( QDomDocument& stateDoc ) const;
+    void saveState( QDomDocument &stateDoc ) const;
+    void restoreState( QDomDocument &stateDoc ) const;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A composer command that merges together with other commands having the same context (=id). Keeps the oldest previous state and uses the
   newest after state. The purpose is to avoid too many micro changes in the history
 */
@@ -113,13 +119,13 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       LegendBoxSpace,
       LegendColumnSpace,
       LegendLineSpacing,
-      LegendRasterBorderWidth,
+      LegendRasterStrokeWidth,
       LegendFontColor,
-      LegendRasterBorderColor,
+      LegendRasterStrokeColor,
       //composer picture
       ComposerPictureRotation,
       ComposerPictureFillColor,
-      ComposerPictureOutlineColor,
+      ComposerPictureStrokeColor,
       ComposerPictureNorthOffset,
       // composer scalebar
       ScaleBarLineWidth,
@@ -141,25 +147,25 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       TableGridStrokeWidth,
       //composer shape
       ShapeCornerRadius,
-      ShapeOutlineWidth,
+      ShapeStrokeWidth,
       //composer arrow
-      ArrowOutlineWidth,
+      ArrowStrokeWidth,
       ArrowHeadFillColor,
-      ArrowHeadOutlineColor,
+      ArrowHeadStrokeColor,
       ArrowHeadWidth,
       //item
-      ItemOutlineWidth,
-      ItemOutlineColor,
+      ItemStrokeWidth,
+      ItemStrokeColor,
       ItemBackgroundColor,
       ItemMove,
       ItemRotation,
-      ItemTransparency,
+      ItemOpacity, //!< Item opacity
       ItemZoomContent
     };
 
-    QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text );
+    QgsComposerMergeCommand( Context c, QgsComposerItem *item, const QString &text );
 
-    bool mergeWith( const QUndoCommand * command ) override;
+    bool mergeWith( const QUndoCommand *command ) override;
     int id() const override { return static_cast< int >( mContext ); }
 
   private:

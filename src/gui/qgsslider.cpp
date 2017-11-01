@@ -21,14 +21,13 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QRect>
-#include <qmath.h>
 
-QgsSlider::QgsSlider( QWidget * parent ) : QSlider( parent )
+QgsSlider::QgsSlider( QWidget *parent ) : QSlider( parent )
 {
   setMinimumSize( QSize( 100, 40 ) );
 }
 
-QgsSlider::QgsSlider( Qt::Orientation orientation, QWidget * parent ) : QSlider( orientation, parent )
+QgsSlider::QgsSlider( Qt::Orientation orientation, QWidget *parent ) : QSlider( orientation, parent )
 {
   setMinimumSize( QSize( 100, 40 ) );
 }
@@ -95,17 +94,17 @@ void QgsSlider::update()
     if ( minimum() != 0 )
       QSlider::setMinimum( 0 );
 
-    int max = qCeil(( mMax.toDouble() - mMin.toDouble() ) / mStep.toDouble() );
+    int max = std::ceil( ( mMax.toDouble() - mMin.toDouble() ) / mStep.toDouble() );
     if ( maximum() != max )
       QSlider::setMaximum( max );
 
     if ( singleStep() != 1 )
       QSlider::setSingleStep( 1 );
 
-    QSlider::setValue( qCeil(( mValue.toDouble() - mMin.toDouble() ) / mStep.toDouble() ) );
+    QSlider::setValue( std::ceil( ( mValue.toDouble() - mMin.toDouble() ) / mStep.toDouble() ) );
   }
 
-  connect( this, SIGNAL( valueChanged( int ) ), this, SLOT( valueChanged( int ) ) );
+  connect( this, &QSlider::valueChanged, this, &QgsSlider::onValueChanged );
 }
 
 QVariant QgsSlider::variantValue() const
@@ -113,7 +112,7 @@ QVariant QgsSlider::variantValue() const
   return mValue;
 }
 
-void QgsSlider::valueChanged( int value )
+void QgsSlider::onValueChanged( int value )
 {
   if ( mMin.isNull() || mMax.isNull() || mStep.isNull() )
   {

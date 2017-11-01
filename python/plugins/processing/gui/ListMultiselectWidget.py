@@ -15,7 +15,6 @@ __revision__ = '$Format:%H$'
 __date__ = '9/07/2013'
 
 from qgis.PyQt.QtWidgets import (QGroupBox,
-                                 QListWidget,
                                  QPushButton,
                                  QSizePolicy,
                                  QLabel,

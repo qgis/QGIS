@@ -58,8 +58,8 @@ class TestQgsComposerMap(unittest.TestCase):
                                            vector_file_info.completeBaseName(), 'ogr')
         assert self.vector_layer.isValid()
 
-        #pipe = mRasterLayer.pipe()
-        #assert pipe.set(rasterRenderer), 'Cannot set pipe renderer'
+        # pipe = mRasterLayer.pipe()
+        # assert pipe.set(rasterRenderer), 'Cannot set pipe renderer'
         QgsProject.instance().addMapLayers([self.raster_layer, self.vector_layer])
 
         # create composition with composer map
@@ -186,16 +186,14 @@ class TestQgsComposerMap(unittest.TestCase):
         self.assertEqual(map.crs().authid(), 'EPSG:4326')
         self.assertFalse(map.presetCrs().isValid())
 
-    # Fails because addItemsFromXml has been commented out in sip
-    @unittest.expectedFailure
     def testuniqueId(self):
         doc = QDomDocument()
         documentElement = doc.createElement('ComposerItemClipboard')
         self.mComposition.writeXml(documentElement, doc)
-        self.mComposition.addItemsFromXml(documentElement, doc, 0, False)
+        self.mComposition.addItemsFromXml(documentElement, doc)
 
         # test if both composer maps have different ids
-        newMap = QgsComposerMap()
+        newMap = QgsComposerMap(self.mComposition, 0, 0, 10, 10)
         mapList = self.mComposition.composerMapItems()
 
         for mapIt in mapList:
@@ -224,6 +222,7 @@ class TestQgsComposerMap(unittest.TestCase):
         ptolerance = (0.001, 0.001, 1, 0.001, 0.001, 1e+03)
         for i in range(0, 6):
             assert abs(p[i] - pexpected[i]) < ptolerance[i]
+
 
 if __name__ == '__main__':
     unittest.main()

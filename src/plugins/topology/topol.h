@@ -26,7 +26,7 @@
  *
  *   Additional useful conventions:
  *
- *   theVariableName - a method parameter (prefix with 'the')
+ *   variableName - a method parameter (prefix with 'the')
  *   myVariableName - a locally declared variable within a method ('my' prefix)
  *
  *   DO: Use mixed case variable names - myVariableName
@@ -68,11 +68,9 @@ class Topol: public QObject, public QgisPlugin
     /**
     * Constructor for a plugin. The QgisInterface pointer is passed by
     * QGIS when it attempts to instantiate the plugin.
-    * @param theInterface Pointer to the QgisInterface object.
+    * \param interface Pointer to the QgisInterface object.
      */
-    explicit Topol( QgisInterface * theInterface );
-
-    virtual ~Topol();
+    explicit Topol( QgisInterface *interface );
 
   public slots:
     //! init the gui
@@ -95,10 +93,10 @@ class Topol: public QObject, public QgisPlugin
     ////////////////////////////////////////////////////////////////////
 
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
+    QgisInterface *mQGisIface = nullptr;
     //!pointer to the qaction for this plugin
-    QAction * mQActionPointer;
-    checkDock* mDock;
+    QAction *mQActionPointer = nullptr;
+    checkDock *mDock = nullptr;
 
     ////////////////////////////////////////////////////////////////////
     //

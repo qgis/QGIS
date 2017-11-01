@@ -13,18 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 #include <QCloseEvent>
-#include <QSettings>
 #include <QSizeF>
 
+#include "qgssettings.h"
 #include "qgsgeorefconfigdialog.h"
 #include "qgis.h"
 
 QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsGeorefConfigDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsGeorefConfigDialog::buttonBox_rejected );
 
-  QSettings s;
+  QgsSettings s;
   restoreGeometry( s.value( QStringLiteral( "/Plugin-GeoReferencer/ConfigWindow/geometry" ) ).toByteArray() );
 
   mPaperSizeComboBox->addItem( tr( "A5 (148x210 mm)" ), QSizeF( 148, 210 ) );
@@ -58,7 +60,7 @@ QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent )
 
 QgsGeorefConfigDialog::~QgsGeorefConfigDialog()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/ConfigWindow/geometry" ), saveGeometry() );
 }
 
@@ -75,20 +77,20 @@ void QgsGeorefConfigDialog::changeEvent( QEvent *e )
   }
 }
 
-void QgsGeorefConfigDialog::on_buttonBox_accepted()
+void QgsGeorefConfigDialog::buttonBox_accepted()
 {
   writeSettings();
   accept();
 }
 
-void QgsGeorefConfigDialog::on_buttonBox_rejected()
+void QgsGeorefConfigDialog::buttonBox_rejected()
 {
   reject();
 }
 
 void QgsGeorefConfigDialog::readSettings()
 {
-  QSettings s;
+  QgsSettings s;
   if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowId" ) ).toBool() )
   {
     mShowIDsCheckBox->setChecked( true );
@@ -147,7 +149,7 @@ void QgsGeorefConfigDialog::readSettings()
 
 void QgsGeorefConfigDialog::writeSettings()
 {
-  QSettings s;
+  QgsSettings s;
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowId" ), mShowIDsCheckBox->isChecked() );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowCoords" ), mShowCoordsCheckBox->isChecked() );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/ShowDocked" ), mShowDockedCheckBox->isChecked() );

@@ -30,10 +30,8 @@
 
 
 QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
-    : QWidget( parent )
-    , mDizzyTimer( nullptr )
-    , mMapCanvas( nullptr )
-    , mMousePrecisionDecimalPlaces( 0 )
+  : QWidget( parent )
+  , mMousePrecisionDecimalPlaces( 0 )
 {
   // add a label to show current position
   mLabel = new QLabel( QString(), this );
@@ -52,7 +50,7 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   //mLineEdit->setMaximumHeight( 20 );
   mLineEdit->setContentsMargins( 0, 0, 0, 0 );
   mLineEdit->setAlignment( Qt::AlignCenter );
-  connect( mLineEdit, SIGNAL( returnPressed() ), this, SLOT( validateCoordinates() ) );
+  connect( mLineEdit, &QLineEdit::returnPressed, this, &QgsStatusBarCoordinatesWidget::validateCoordinates );
 
   QRegExp coordValidator( "[+-]?\\d+\\.?\\d*\\s*,\\s*[+-]?\\d+\\.?\\d*" );
   mCoordsEditValidator = new QRegExpValidator( coordValidator, this );
@@ -68,9 +66,9 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   mToggleExtentsViewButton->setToolTip( tr( "Toggle extents and mouse position display" ) );
   mToggleExtentsViewButton->setCheckable( true );
   mToggleExtentsViewButton->setAutoRaise( true );
-  connect( mToggleExtentsViewButton, SIGNAL( toggled( bool ) ), this, SLOT( extentsViewToggled( bool ) ) );
+  connect( mToggleExtentsViewButton, &QAbstractButton::toggled, this, &QgsStatusBarCoordinatesWidget::extentsViewToggled );
 
-  QHBoxLayout* layout = new QHBoxLayout( this );
+  QHBoxLayout *layout = new QHBoxLayout( this );
   setLayout( layout );
   layout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ) );
   layout->addWidget( mLabel );
@@ -82,23 +80,23 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
 
   // When you feel dizzy
   mDizzyTimer = new QTimer( this );
-  connect( mDizzyTimer, SIGNAL( timeout() ), this, SLOT( dizzy() ) );
+  connect( mDizzyTimer, &QTimer::timeout, this, &QgsStatusBarCoordinatesWidget::dizzy );
 }
 
 void QgsStatusBarCoordinatesWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
   if ( mMapCanvas )
   {
-    disconnect( mMapCanvas, SIGNAL( xyCoordinates( const QgsPoint & ) ), this, SLOT( showMouseCoordinates( const QgsPoint & ) ) );
-    disconnect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( showExtent() ) );
+    disconnect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsStatusBarCoordinatesWidget::showMouseCoordinates );
+    disconnect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsStatusBarCoordinatesWidget::showExtent );
   }
 
   mMapCanvas = mapCanvas;
-  connect( mMapCanvas, SIGNAL( xyCoordinates( const QgsPoint & ) ), this, SLOT( showMouseCoordinates( const QgsPoint & ) ) );
-  connect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( showExtent() ) );
+  connect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsStatusBarCoordinatesWidget::showMouseCoordinates );
+  connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsStatusBarCoordinatesWidget::showExtent );
 }
 
-void QgsStatusBarCoordinatesWidget::setFont( const QFont& myFont )
+void QgsStatusBarCoordinatesWidget::setFont( const QFont &myFont )
 {
   mLineEdit->setFont( myFont );
   mLabel->setFont( myFont );
@@ -164,7 +162,7 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   if ( !xOk || !yOk )
     return;
 
-  mMapCanvas->setCenter( QgsPoint( x, y ) );
+  mMapCanvas->setCenter( QgsPointXY( x, y ) );
   mMapCanvas->refresh();
 }
 
@@ -181,16 +179,16 @@ void QgsStatusBarCoordinatesWidget::dizzy()
   QRectF rect = mMapCanvas->sceneRect();
   if ( rect.x() < -d || rect.x() > d || rect.y() < -d || rect.y() > d )
     return; // do not affect panning
-  rect.moveTo(( qrand() % ( 2 * d ) ) - d, ( qrand() % ( 2 * d ) ) - d );
+  rect.moveTo( ( qrand() % ( 2 * d ) ) - d, ( qrand() % ( 2 * d ) ) - d );
   mMapCanvas->setSceneRect( rect );
   QTransform matrix;
-  matrix.rotate(( qrand() % ( 2 * r ) ) - r );
+  matrix.rotate( ( qrand() % ( 2 * r ) ) - r );
   mMapCanvas->setTransform( matrix );
 }
 
-void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool theFlag )
+void QgsStatusBarCoordinatesWidget::extentsViewToggled( bool flag )
 {
-  if ( theFlag )
+  if ( flag )
   {
     //extents view mode!
     mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "extents.svg" ) ) );
@@ -218,7 +216,7 @@ void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
   mMapCanvas->refreshAllLayers();
 }
 
-void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPoint & p )
+void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )
 {
   if ( !mMapCanvas || mToggleExtentsViewButton->isChecked() )
   {

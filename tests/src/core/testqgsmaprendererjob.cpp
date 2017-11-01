@@ -33,6 +33,7 @@
 #include <qgis.h> //defines GEOWkt
 #include "qgsmaprenderersequentialjob.h"
 #include <qgsmaplayer.h>
+#include <qgsreadwritecontext.h>
 #include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
@@ -41,7 +42,8 @@
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsMapRendererJob class.
  * It will do some performance testing too
  *
@@ -51,12 +53,7 @@ class TestQgsMapRendererJob : public QObject
     Q_OBJECT
 
   public:
-    TestQgsMapRendererJob()
-        : mError( QgsVectorFileWriter::NoError )
-        , mMapSettings( 0 )
-        , mpPolysLayer( 0 )
-    {
-    }
+    TestQgsMapRendererJob() = default;
 
     ~TestQgsMapRendererJob()
     {
@@ -72,7 +69,8 @@ class TestQgsMapRendererJob : public QObject
     //! This method tests render performance
     void performanceTest();
 
-    /** This unit test checks if rendering of adjacent tiles (e.g. to render images for tile caches)
+    /**
+     * This unit test checks if rendering of adjacent tiles (e.g. to render images for tile caches)
      * does not result in border effects
      */
     void testFourAdjacentTiles_data();
@@ -80,11 +78,11 @@ class TestQgsMapRendererJob : public QObject
 
   private:
     QString mEncoding;
-    QgsVectorFileWriter::WriterError mError;
+    QgsVectorFileWriter::WriterError mError =  QgsVectorFileWriter::NoError ;
     QgsCoordinateReferenceSystem mCRS;
     QgsFields mFields;
-    QgsMapSettings *mMapSettings;
-    QgsMapLayer * mpPolysLayer;
+    QgsMapSettings *mMapSettings = nullptr;
+    QgsMapLayer *mpPolysLayer = nullptr;
     QString mReport;
 };
 
@@ -111,7 +109,7 @@ void TestQgsMapRendererJob::initTestCase()
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + '/';
   QString myTmpDir = QDir::tempPath() + '/';
-  QString myFileName = myTmpDir +  "maprender_testdata.shp";
+  QString myFileName = myTmpDir +  "maprender_testdata.gpkg";
   //copy over the default qml for our generated layer
   QString myQmlFileName = myTestDataDir +  "maprender_testdata.qml";
   QFile::remove( myTmpDir + "maprender_testdata.qml" );
@@ -134,13 +132,13 @@ void TestQgsMapRendererJob::initTestCase()
         //
         // Create a polygon feature
         //
-        QgsPolyline myPolyline;
-        QgsPoint myPoint1 = QgsPoint( i, j );
-        QgsPoint myPoint2 = QgsPoint( i + myInterval, j );
-        QgsPoint myPoint3 = QgsPoint( i + myInterval, j + myInterval );
-        QgsPoint myPoint4 = QgsPoint( i, j + myInterval );
+        QgsPolylineXY myPolyline;
+        QgsPointXY myPoint1 = QgsPointXY( i, j );
+        QgsPointXY myPoint2 = QgsPointXY( i + myInterval, j );
+        QgsPointXY myPoint3 = QgsPointXY( i + myInterval, j + myInterval );
+        QgsPointXY myPoint4 = QgsPointXY( i, j + myInterval );
         myPolyline << myPoint1 << myPoint2 << myPoint3 << myPoint4 << myPoint1;
-        QgsPolygon myPolygon;
+        QgsPolygonXY myPolygon;
         myPolygon << myPolyline;
         //polygon: first item of the list is outer ring,
         // inner rings (if any) start from second item
@@ -148,7 +146,7 @@ void TestQgsMapRendererJob::initTestCase()
         // NOTE: don't delete this pointer again -
         // ownership is passed to the feature which will
         // delete it in its dtor!
-        QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+        QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygonXY( myPolygon );
         QgsFeature myFeature;
         myFeature.setGeometry( mypPolygonGeometry );
         myFeature.initAttributes( 1 );
@@ -185,7 +183,7 @@ void TestQgsMapRendererJob::initTestCase()
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   // add the test layer to the maprender
-  mMapSettings->setLayers( QList<QgsMapLayer*>() << mpPolysLayer );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   mReport += QLatin1String( "<h1>Map Render Tests</h1>\n" );
 }
 
@@ -264,7 +262,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
   QVERIFY( bboxList.size() == 4 );
 
   //create maplayer, set QML and add to maplayer registry
-  QgsVectorLayer* vectorLayer = new QgsVectorLayer( shapeFile, QStringLiteral( "testshape" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *vectorLayer = new QgsVectorLayer( shapeFile, QStringLiteral( "testshape" ), QStringLiteral( "ogr" ) );
 
   //todo: read QML
   QFile symbologyFile( qmlFile );
@@ -280,12 +278,12 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
   }
 
   QString errorMsg;
-  if ( !vectorLayer->readSymbology( qmlDoc.documentElement(), errorMsg ) )
+  if ( !vectorLayer->readSymbology( qmlDoc.documentElement(), errorMsg, QgsReadWriteContext() ) )
   {
     QFAIL( errorMsg.toLocal8Bit().data() );
   }
 
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer*>() << vectorLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << vectorLayer );
 
   QImage globalImage( 512, 512, QImage::Format_ARGB32_Premultiplied );
   globalImage.fill( Qt::white );
@@ -304,7 +302,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
     QgsRectangle rect( rectCoords[0].toDouble(), rectCoords[1].toDouble(), rectCoords[2].toDouble(), rectCoords[3].toDouble() );
     mapSettings.setExtent( rect );
     mapSettings.setOutputSize( QSize( 256, 256 ) );
-    mapSettings.setLayers( QList<QgsMapLayer*>() << vectorLayer );
+    mapSettings.setLayers( QList<QgsMapLayer *>() << vectorLayer );
     mapSettings.setFlags( QgsMapSettings::RenderMapTile );
     mapSettings.setOutputDpi( 96 );
 

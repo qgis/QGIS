@@ -28,7 +28,7 @@
  * QgsMargins defines a set of four margins; left, top, right and bottom, that describe the size of the borders surrounding a rectangle.
  *
  * The isNull() function returns true only if all margins are set to zero.
- * \note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 //This class was originally based off Qt's QgsMarginsF class
@@ -45,16 +45,16 @@ class CORE_EXPORT QgsMargins
 
     /**
      * Constructs margins with the given \a left, \a top, \a right, \a bottom
-     * @see setLeft()
-     * @see setRight()
-     * @see setTop()
-     * @see setBottom()
+     * \see setLeft()
+     * \see setRight()
+     * \see setTop()
+     * \see setBottom()
      */
     QgsMargins( double left, double top, double right, double bottom )
-        : mLeft( left )
-        , mTop( top )
-        , mRight( right )
-        , mBottom( bottom )
+      : mLeft( left )
+      , mTop( top )
+      , mRight( right )
+      , mBottom( bottom )
     {}
 
     /**
@@ -67,49 +67,49 @@ class CORE_EXPORT QgsMargins
 
     /**
      * Returns the left margin.
-     * @see setLeft()
+     * \see setLeft()
      */
     double left() const { return mLeft; }
 
     /**
      * Returns the top margin.
-     * @see setTop()
+     * \see setTop()
      */
     double top() const { return mTop; }
 
     /**
      * Returns the right margin.
-     * @see setRight()
+     * \see setRight()
      */
     double right() const { return mRight; }
 
     /**
      * Returns the bottom margin.
-     * @see setBottom()
+     * \see setBottom()
      */
     double bottom() const { return mBottom; }
 
     /**
      * Sets the left margin to \a left.
-     * @see left()
+     * \see left()
      */
     void setLeft( double left ) { mLeft = left; }
 
     /**
      * Sets the top margin to \a top.
-     * @see top()
+     * \see top()
      */
     void setTop( double top ) { mTop = top; }
 
     /**
      * Sets the right margin to \a right.
-     * @see right()
+     * \see right()
      */
     void setRight( double right ) { mRight = right; }
 
     /**
      * Sets the bottom margin to \a bottom.
-     * @see bottom()
+     * \see bottom()
      */
     void setBottom( double bottom ) { mBottom = bottom; }
 
@@ -150,16 +150,16 @@ class CORE_EXPORT QgsMargins
 
     /**
      * Returns the margins encoded to a string.
-     * @see fromString()
+     * \see fromString()
      */
     QString toString() const;
 
     /**
      * Returns a QgsMargins object decoded from a string, or a null QgsMargins
      * if the string could not be interpreted as margins.
-     * @see toString()
+     * \see toString()
      */
-    static QgsMargins fromString( const QString& string );
+    static QgsMargins fromString( const QString &string );
 
   private:
     double mLeft = 0.0;
@@ -167,6 +167,7 @@ class CORE_EXPORT QgsMargins
     double mRight = 0.0;
     double mBottom = 0.0;
 };
+
 
 /**
  * Returns \c true if \a lhs and \a rhs are equal; otherwise returns \c false.
@@ -264,17 +265,17 @@ inline QgsMargins operator/( const QgsMargins &margins, double divisor )
                      margins.right() / divisor, margins.bottom() / divisor );
 }
 
-inline QgsMargins& QgsMargins::operator+=( const QgsMargins & margins )
+inline QgsMargins &QgsMargins::operator+=( const QgsMargins &margins ) SIP_SKIP
 {
   return *this = *this + margins;
 }
 
-inline QgsMargins& QgsMargins::operator-=( const QgsMargins & margins )
+inline QgsMargins &QgsMargins::operator-=( const QgsMargins &margins ) SIP_SKIP
 {
   return *this = *this - margins;
 }
 
-inline QgsMargins& QgsMargins::operator+=( double addend )
+inline QgsMargins &QgsMargins::operator+=( double addend ) SIP_SKIP
 {
   mLeft += addend;
   mTop += addend;
@@ -283,7 +284,7 @@ inline QgsMargins& QgsMargins::operator+=( double addend )
   return *this;
 }
 
-inline QgsMargins& QgsMargins::operator-=( double subtrahend )
+inline QgsMargins &QgsMargins::operator-=( double subtrahend ) SIP_SKIP
 {
   mLeft -= subtrahend;
   mTop -= subtrahend;
@@ -292,12 +293,12 @@ inline QgsMargins& QgsMargins::operator-=( double subtrahend )
   return *this;
 }
 
-inline QgsMargins& QgsMargins::operator*=( double factor )
+inline QgsMargins &QgsMargins::operator*=( double factor ) SIP_SKIP
 {
   return *this = *this * factor;
 }
 
-inline QgsMargins& QgsMargins::operator/=( double divisor )
+inline QgsMargins &QgsMargins::operator/=( double divisor ) SIP_SKIP
 {
   return *this = *this / divisor;
 }

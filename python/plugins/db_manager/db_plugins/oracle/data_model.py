@@ -87,8 +87,8 @@ class ORTableDataModel(TableDataModel):
         self._deleteCursor()
 
     def getData(self, row, col):
-        if (row < self.fetchedFrom
-                or row >= self.fetchedFrom + self.fetchedCount):
+        if (row < self.fetchedFrom or
+                row >= self.fetchedFrom + self.fetchedCount):
             margin = self.fetchedCount / 2
             if row + margin >= self.rowCount():
                 start = self.rowCount() - margin

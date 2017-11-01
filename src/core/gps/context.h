@@ -37,22 +37,22 @@ extern "C"
 {
 #endif
 
-  typedef void ( *nmeaTraceFunc )( const char *str, int str_size );
-  typedef void ( *nmeaErrorFunc )( const char *str, int str_size );
+typedef void ( *nmeaTraceFunc )( const char *str, int str_size );
+typedef void ( *nmeaErrorFunc )( const char *str, int str_size );
 
-  typedef struct _nmeaPROPERTY
-  {
-    nmeaTraceFunc   trace_func;
-    nmeaErrorFunc   error_func;
-    int             parse_buff_size;
+typedef struct _nmeaPROPERTY
+{
+  nmeaTraceFunc   trace_func;
+  nmeaErrorFunc   error_func;
+  int             parse_buff_size;
 
-  } nmeaPROPERTY;
+} nmeaPROPERTY;
 
-  nmeaPROPERTY * nmea_property();
+nmeaPROPERTY *nmea_property();
 
-  void nmea_trace( const char *str, ... );
-  void nmea_trace_buff( const char *buff, int buff_size );
-  void nmea_error( const char *str, ... );
+void nmea_trace( const char *str, ... );
+void nmea_trace_buff( const char *buff, int buff_size );
+void nmea_error( const char *str, ... );
 
 #ifdef  __cplusplus
 }

@@ -21,7 +21,7 @@
 #include <QPushButton>
 
 QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   setupUi( this );
 
@@ -32,6 +32,10 @@ QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
   mCbxReferencingField->setLayer( mCbxReferencingLayer->currentLayer() );
   mCbxReferencedLayer->setFilters( QgsMapLayerProxyModel::VectorLayer );
   mCbxReferencedField->setLayer( mCbxReferencedLayer->currentLayer() );
+
+  mCbxRelationStrength->addItem( "Association", QVariant::fromValue( QgsRelation::RelationStrength::Association ) );
+  mCbxRelationStrength->addItem( "Composition", QVariant::fromValue( QgsRelation::RelationStrength::Composition ) );
+  mCbxRelationStrength->setToolTip( QStringLiteral( "Composition (child features will be copied too) or Association" ) );
 
   mTxtRelationId->setPlaceholderText( tr( "[Generated automatically]" ) );
   checkDefinitionValid();
@@ -74,6 +78,10 @@ QString QgsRelationAddDlg::relationName()
   return mTxtRelationName->text();
 }
 
+QgsRelation::RelationStrength QgsRelationAddDlg::relationStrength()
+{
+  return mCbxRelationStrength->currentData().value<QgsRelation::RelationStrength>();
+}
 
 void QgsRelationAddDlg::checkDefinitionValid()
 {

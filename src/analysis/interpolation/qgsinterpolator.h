@@ -19,6 +19,7 @@
 #define QGSINTERPOLATOR_H
 
 #include <QVector>
+#include "qgis_sip.h"
 #include "qgis_analysis.h"
 
 class QgsVectorLayer;
@@ -31,7 +32,8 @@ struct ANALYSIS_EXPORT vertexData
   double z;
 };
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * Interface class for interpolations. Interpolators take
 the vertices of a vector layer as base data. The z-Value
 can be an attribute or the z-coordinates in case of 25D types*/
@@ -49,50 +51,53 @@ class ANALYSIS_EXPORT QgsInterpolator
     //! A layer together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)
     struct LayerData
     {
-      QgsVectorLayer* vectorLayer;
+      QgsVectorLayer *vectorLayer = nullptr;
       bool zCoordInterpolation;
       int interpolationAttribute;
-      InputType mInputType;
+      QgsInterpolator::InputType mInputType;
     };
 
-    QgsInterpolator( const QList<LayerData>& layerData );
+    QgsInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
 
-    virtual ~QgsInterpolator();
+    virtual ~QgsInterpolator() = default;
 
-    /** Calculates interpolation value for map coordinates x, y
-       @param x x-coordinate (in map units)
-       @param y y-coordinate (in map units)
-       @param result out: interpolation result
-       @return 0 in case of success*/
-    virtual int interpolatePoint( double x, double y, double& result ) = 0;
+    /**
+     * Calculates interpolation value for map coordinates x, y
+       \param x x-coordinate (in map units)
+       \param y y-coordinate (in map units)
+       \param result out: interpolation result
+       \returns 0 in case of success*/
+    virtual int interpolatePoint( double x, double y, double &result ) = 0;
 
-    //! @note not available in Python bindings
-    QList<LayerData> layerData() const { return mLayerData; }
+    //! \note not available in Python bindings
+    QList<LayerData> layerData() const { return mLayerData; } SIP_SKIP
 
   protected:
 
-    /** Caches the vertex and value data from the provider. All the vertex data
+    /**
+     * Caches the vertex and value data from the provider. All the vertex data
      will be held in virtual memory
-    @return 0 in case of success*/
+    \returns 0 in case of success*/
     int cacheBaseData();
 
     QVector<vertexData> mCachedBaseData;
 
     //! Flag that tells if the cache already has been filled
-    bool mDataIsCached;
+    bool mDataIsCached = false;
 
     //Information about the input vector layers and the attributes (or z-values) that are used for interpolation
     QList<LayerData> mLayerData;
 
   private:
-    QgsInterpolator(); //forbidden
+    QgsInterpolator() = delete;
 
-    /** Helper method that adds the vertices of a geometry to the mCachedBaseData
-       @param geom the geometry
-       @param zCoord true if the z-coordinate of the geometry is to be interpolated
-       @param attributeValue the attribute value for interpolation (if not interpolated from z-coordinate)
-     @return 0 in case of success*/
-    int addVerticesToCache( const QgsGeometry& geom, bool zCoord, double attributeValue );
+    /**
+     * Helper method that adds the vertices of a geometry to the mCachedBaseData
+       \param geom the geometry
+       \param zCoord true if the z-coordinate of the geometry is to be interpolated
+       \param attributeValue the attribute value for interpolation (if not interpolated from z-coordinate)
+     \returns 0 in case of success*/
+    int addVerticesToCache( const QgsGeometry &geom, bool zCoord, double attributeValue );
 };
 
 #endif

@@ -24,14 +24,14 @@
 #include "feature.h"
 #include "labelposition.h"
 
-QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer* layer, bool ownFeatureLoop )
-    : QgsAbstractLabelProvider( layer )
-    , mSettings( *layer->diagramLayerSettings() )
-    , mDiagRenderer( layer->diagramRenderer()->clone() )
-    , mFields( layer->fields() )
-    , mLayerCrs( layer->crs() )
-    , mSource( ownFeatureLoop ? new QgsVectorLayerFeatureSource( layer ) : nullptr )
-    , mOwnsSource( ownFeatureLoop )
+QgsVectorLayerDiagramProvider::QgsVectorLayerDiagramProvider( QgsVectorLayer *layer, bool ownFeatureLoop )
+  : QgsAbstractLabelProvider( layer )
+  , mSettings( *layer->diagramLayerSettings() )
+  , mDiagRenderer( layer->diagramRenderer()->clone() )
+  , mFields( layer->fields() )
+  , mLayerCrs( layer->crs() )
+  , mSource( ownFeatureLoop ? new QgsVectorLayerFeatureSource( layer ) : nullptr )
+  , mOwnsSource( ownFeatureLoop )
 {
   init();
 }
@@ -57,7 +57,7 @@ QgsVectorLayerDiagramProvider::~QgsVectorLayerDiagramProvider()
 }
 
 
-QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( QgsRenderContext &context )
+QList<QgsLabelFeature *> QgsVectorLayerDiagramProvider::labelFeatures( QgsRenderContext &context )
 {
   if ( !mSource )
   {
@@ -68,7 +68,7 @@ QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( QgsRenderC
 
   QSet<QString> attributeNames;
   if ( !prepare( context, attributeNames ) )
-    return QList<QgsLabelFeature*>();
+    return QList<QgsLabelFeature *>();
 
   QgsRectangle layerExtent = context.extent();
   if ( mSettings.coordinateTransform().isValid() )
@@ -90,20 +90,20 @@ QList<QgsLabelFeature*> QgsVectorLayerDiagramProvider::labelFeatures( QgsRenderC
 }
 
 
-void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::LabelPosition* label ) const
+void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const
 {
 #if 1 // XXX strk
   // features are pre-rotated but not scaled/translated,
   // so we only disable rotation here. Ideally, they'd be
   // also pre-scaled/translated, as suggested here:
-  // http://hub.qgis.org/issues/11856
+  // https://issues.qgis.org/issues/11856
   QgsMapToPixel xform = context.mapToPixel();
   xform.setMapRotation( 0, 0, 0 );
 #else
-  const QgsMapToPixel& xform = context.mapToPixel();
+  const QgsMapToPixel &xform = context.mapToPixel();
 #endif
 
-  QgsDiagramLabelFeature* dlf = dynamic_cast<QgsDiagramLabelFeature*>( label->getFeaturePart()->feature() );
+  QgsDiagramLabelFeature *dlf = dynamic_cast<QgsDiagramLabelFeature *>( label->getFeaturePart()->feature() );
 
   QgsFeature feature;
   feature.setFields( mFields );
@@ -123,10 +123,10 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::L
     centerX += label->getX( i );
     centerY += label->getY( i );
   }
-  QgsPoint outPt( centerX / 4.0, centerY / 4.0 );
+  QgsPointXY outPt( centerX / 4.0, centerY / 4.0 );
   //then, calculate the top left point for the diagram with this center position
-  QgsPoint centerPt = xform.transform( outPt.x() - label->getWidth() / 2,
-                                       outPt.y() - label->getHeight() / 2 );
+  QgsPointXY centerPt = xform.transform( outPt.x() - label->getWidth() / 2,
+                                         outPt.y() - label->getHeight() / 2 );
 
   mSettings.renderer()->renderDiagram( feature, context, centerPt.toQPointF(), mSettings.dataDefinedProperties() );
 
@@ -136,24 +136,17 @@ void QgsVectorLayerDiagramProvider::drawLabel( QgsRenderContext& context, pal::L
 }
 
 
-bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext& context, QSet<QString>& attributeNames )
+bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext &context, QSet<QString> &attributeNames )
 {
-  QgsDiagramLayerSettings& s2 = mSettings;
-  const QgsMapSettings& mapSettings = mEngine->mapSettings();
+  QgsDiagramLayerSettings &s2 = mSettings;
+  const QgsMapSettings &mapSettings = mEngine->mapSettings();
 
-  if ( mapSettings.hasCrsTransformEnabled() )
-  {
-    if ( context.coordinateTransform().isValid() )
-      // this is context for layer rendering - use its CT as it includes correct datum transform
-      s2.setCoordinateTransform( context.coordinateTransform() );
-    else
-      // otherwise fall back to creating our own CT - this one may not have the correct datum transform!
-      s2.setCoordinateTransform( QgsCoordinateTransform( mLayerCrs, mapSettings.destinationCrs() ) );
-  }
+  if ( context.coordinateTransform().isValid() )
+    // this is context for layer rendering - use its CT as it includes correct datum transform
+    s2.setCoordinateTransform( context.coordinateTransform() );
   else
-  {
-    s2.setCoordinateTransform( QgsCoordinateTransform() );
-  }
+    // otherwise fall back to creating our own CT - this one may not have the correct datum transform!
+    s2.setCoordinateTransform( QgsCoordinateTransform( mLayerCrs, mapSettings.destinationCrs() ) );
 
   s2.setRenderer( mDiagRenderer );
 
@@ -166,32 +159,32 @@ bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext& context, QS
 }
 
 
-void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature& feature, QgsRenderContext& context, QgsGeometry* obstacleGeometry )
+void QgsVectorLayerDiagramProvider::registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
 {
-  QgsLabelFeature* label = registerDiagram( feature, context, obstacleGeometry );
+  QgsLabelFeature *label = registerDiagram( feature, context, obstacleGeometry );
   if ( label )
     mFeatures << label;
 }
 
 
-QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& feat, QgsRenderContext &context, QgsGeometry* obstacleGeometry )
+QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &feat, QgsRenderContext &context, const QgsGeometry &obstacleGeometry )
 {
-  const QgsMapSettings& mapSettings = mEngine->mapSettings();
+  const QgsMapSettings &mapSettings = mEngine->mapSettings();
 
-  const QgsDiagramRenderer* dr = mSettings.renderer();
+  const QgsDiagramRenderer *dr = mSettings.renderer();
   if ( dr )
   {
     QList<QgsDiagramSettings> settingList = dr->diagramSettings();
     if ( !settingList.isEmpty() && settingList.at( 0 ).scaleBasedVisibility )
     {
-      double minScale = settingList.at( 0 ).minScaleDenominator;
-      if ( minScale > 0 && context.rendererScale() < minScale )
+      double maxScale = settingList.at( 0 ).maximumScale;
+      if ( maxScale > 0 && context.rendererScale() < maxScale )
       {
         return nullptr;
       }
 
-      double maxScale = settingList.at( 0 ).maxScaleDenominator;
-      if ( maxScale > 0 && context.rendererScale() > maxScale )
+      double minScale = settingList.at( 0 ).minimumScale;
+      if ( minScale > 0 && context.rendererScale() > minScale )
       {
         return nullptr;
       }
@@ -214,12 +207,12 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     extentGeom.rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
   }
 
-  GEOSGeometry* geomCopy = nullptr;
+  GEOSGeometry *geomCopy = nullptr;
   std::unique_ptr<QgsGeometry> scopedPreparedGeom;
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), &extentGeom ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), extentGeom ) )
   {
-    scopedPreparedGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), &extentGeom ) ) );
-    QgsGeometry* preparedGeom = scopedPreparedGeom.get();
+    scopedPreparedGeom.reset( new QgsGeometry( QgsPalLabeling::prepareGeometry( geom, context, mSettings.coordinateTransform(), extentGeom ) ) );
+    QgsGeometry *preparedGeom = scopedPreparedGeom.get();
     if ( preparedGeom->isNull() )
       return nullptr;
     geomCopy = preparedGeom->exportToGeos();
@@ -232,16 +225,16 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   if ( !geomCopy )
     return nullptr; // invalid geometry
 
-  GEOSGeometry* geosObstacleGeomClone = nullptr;
+  GEOSGeometry *geosObstacleGeomClone = nullptr;
   std::unique_ptr<QgsGeometry> scopedObstacleGeom;
-  if ( isObstacle && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom ) )
+  if ( isObstacle && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom ) )
   {
-    QgsGeometry preparedObstacleGeom = QgsPalLabeling::prepareGeometry( *obstacleGeometry, context, mSettings.coordinateTransform(), &extentGeom );
+    QgsGeometry preparedObstacleGeom = QgsPalLabeling::prepareGeometry( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom );
     geosObstacleGeomClone = preparedObstacleGeom.exportToGeos();
   }
-  else if ( mSettings.isObstacle() && obstacleGeometry )
+  else if ( mSettings.isObstacle() && !obstacleGeometry.isNull() )
   {
-    geosObstacleGeomClone = obstacleGeometry->exportToGeos();
+    geosObstacleGeomClone = obstacleGeometry.exportToGeos();
   }
 
   double diagramWidth = 0;
@@ -273,7 +266,7 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     ddPosX = mSettings.dataDefinedProperties().valueAsDouble( QgsDiagramLayerSettings::PositionX, context.expressionContext(), std::numeric_limits<double>::quiet_NaN() );
     ddPosY = mSettings.dataDefinedProperties().valueAsDouble( QgsDiagramLayerSettings::PositionY, context.expressionContext(), std::numeric_limits<double>::quiet_NaN() );
 
-    ddPos = !qIsNaN( ddPosX ) && !qIsNaN( ddPosY );
+    ddPos = !std::isnan( ddPosX ) && !std::isnan( ddPosY );
 
     if ( ddPos )
     {
@@ -289,9 +282,9 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
     }
   }
 
-  QgsDiagramLabelFeature* lf = new QgsDiagramLabelFeature( feat.id(), geomCopy, QSizeF( diagramWidth, diagramHeight ) );
+  QgsDiagramLabelFeature *lf = new QgsDiagramLabelFeature( feat.id(), geomCopy, QSizeF( diagramWidth, diagramHeight ) );
   lf->setHasFixedPosition( ddPos );
-  lf->setFixedPosition( QgsPoint( ddPosX, ddPosY ) );
+  lf->setFixedPosition( QgsPointXY( ddPosX, ddPosY ) );
   lf->setHasFixedAngle( true );
   lf->setFixedAngle( 0 );
   lf->setAlwaysShow( alwaysShow );
@@ -329,8 +322,8 @@ QgsLabelFeature* QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature& fea
   lf->setZIndex( zIndex );
 
   // label distance
-  QgsPoint ptZero = mapSettings.mapToPixel().toMapCoordinates( 0, 0 );
-  QgsPoint ptOne = mapSettings.mapToPixel().toMapCoordinates( 1, 0 );
+  QgsPointXY ptZero = mapSettings.mapToPixel().toMapCoordinates( 0, 0 );
+  QgsPointXY ptOne = mapSettings.mapToPixel().toMapCoordinates( 1, 0 );
   double dist = mSettings.distance();
 
   if ( mSettings.dataDefinedProperties().hasProperty( QgsDiagramLayerSettings::Distance )

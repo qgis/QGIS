@@ -59,9 +59,10 @@ class gdalcalc(GdalAlgorithm):
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
     #DEBUG = 'DEBUG'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Raster calculator')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(
             self.INPUT_A, self.tr('Input layer A'), False))
         self.addParameter(ParameterString(self.BAND_A,
@@ -98,7 +99,16 @@ class gdalcalc(GdalAlgorithm):
                                           self.tr('Additional creation parameters'), '', optional=True))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Calculated')))
 
-    def getConsoleCommands(self):
+    def name(self):
+        return 'rastercalculator'
+
+    def displayName(self):
+        return self.tr('Raster calculator')
+
+    def group(self):
+        return self.tr('Raster miscellaneous')
+
+    def getConsoleCommands(self, parameters, context, feedback):
         out = self.getOutputValue(self.OUTPUT)
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:

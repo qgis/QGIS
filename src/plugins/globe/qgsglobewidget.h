@@ -1,7 +1,7 @@
 /***************************************************************************
     qgsglobewidget.h
     ---------------------
-    begin                : August 2010
+    begin                : August 2016
     copyright            : (C) 2016 Sandro Mani
     email                : smani at sourcepole dot ch
  ***************************************************************************
@@ -23,8 +23,8 @@ class QgsGlobeWidget : public QDockWidget
 {
     Q_OBJECT
   public:
-    QgsGlobeWidget( QgisInterface *iface, QWidget* parent = 0 );
-    QStringList getSelectedLayers() const;
+    QgsGlobeWidget( QgisInterface *iface, QWidget *parent = 0 );
+    QStringList getSelectedLayerIds() const;
 
   signals:
     void layersChanged();
@@ -33,10 +33,10 @@ class QgsGlobeWidget : public QDockWidget
     void syncExtent();
 
   private:
-    QgisInterface* mQgisIface;
-    QMenu* mLayerSelectionMenu;
+    QgisInterface *mQgisIface = nullptr;
+    QMenu *mLayerSelectionMenu = nullptr;
 
-    void contextMenuEvent( QContextMenuEvent * e ) override;
+    void contextMenuEvent( QContextMenuEvent *e ) override;
 
   private slots:
     void updateLayerSelectionMenu();

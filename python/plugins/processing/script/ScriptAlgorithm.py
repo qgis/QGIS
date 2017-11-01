@@ -31,20 +31,25 @@ import re
 import json
 from qgis.core import (QgsExpressionContextUtils,
                        QgsExpressionContext,
+                       QgsProcessingAlgorithm,
                        QgsProject,
-                       QgsApplication)
+                       QgsApplication,
+                       QgsMessageLog,
+                       QgsProcessingUtils,
+                       QgsProcessingAlgorithm)
+
+from qgis.PyQt.QtCore import (QCoreApplication)
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import getHtmlFromHelpFile
 from processing.core.parameters import getParameterFromString
 from processing.core.outputs import getOutputFromString
-from processing.core.ProcessingLog import ProcessingLog
 from processing.script.WrongScriptException import WrongScriptException
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
-class ScriptAlgorithm(GeoAlgorithm):
+class ScriptAlgorithm(QgsProcessingAlgorithm):
 
     def __init__(self, descriptionFile, script=None):
         """The script parameter can be used to directly pass the code
@@ -54,8 +59,12 @@ class ScriptAlgorithm(GeoAlgorithm):
         not be used in other cases.
         """
 
-        GeoAlgorithm.__init__(self)
+        super().__init__()
         self._icon = QgsApplication.getThemeIcon("/processingScript.svg")
+        self._name = ''
+        self._display_name = ''
+        self._group = ''
+        self._flags = None
 
         self.script = script
         self.allowEdit = True
@@ -66,20 +75,44 @@ class ScriptAlgorithm(GeoAlgorithm):
         if descriptionFile is not None:
             self.defineCharacteristicsFromFile()
 
-    def getCopy(self):
-        newone = ScriptAlgorithm(self.descriptionFile)
-        newone.provider = self.provider
-        return newone
+        self.ns = {}
+        self.cleaned_script = None
+        self.results = {}
+
+    def createInstance(self):
+        return ScriptAlgorithm(self.descriptionFile)
+
+    def initAlgorithm(self, config=None):
+        pass
 
     def icon(self):
         return self._icon
+
+    def name(self):
+        return self._name
+
+    def displayName(self):
+        return self._display_name
+
+    def group(self):
+        return self._group
+
+    def flags(self):
+        if self._flags is not None:
+            return QgsProcessingAlgorithm.Flags(self._flags)
+        else:
+            return QgsProcessingAlgorithm.flags(self)
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("processingScript.svg")
 
     def defineCharacteristicsFromFile(self):
         self.error = None
         self.script = ''
         filename = os.path.basename(self.descriptionFile)
-        self.name = filename[:filename.rfind('.')].replace('_', ' ')
-        self.group = self.tr('User scripts', 'ScriptAlgorithm')
+        self._name = filename[:filename.rfind('.')].replace('_', ' ')
+        self._display_name = self._name
+        self._group = self.tr('User scripts', 'ScriptAlgorithm')
         with open(self.descriptionFile) as lines:
             line = lines.readline()
             while line != '':
@@ -88,17 +121,17 @@ class ScriptAlgorithm(GeoAlgorithm):
                         self.processParameterLine(line.strip('\n'))
                     except:
                         self.error = self.tr('This script has a syntax errors.\n'
-                                             'Problem with line: %s', 'ScriptAlgorithm') % line
+                                             'Problem with line: {0}', 'ScriptAlgorithm').format(line)
                 self.script += line
                 line = lines.readline()
-        if self.group == self.tr('[Test scripts]', 'ScriptAlgorithm'):
-            self.showInModeler = False
-            self.showInToolbox = False
+        if self._group == self.tr('[Test scripts]', 'ScriptAlgorithm'):
+            self._flags = QgsProcessingAlgorithm.FlagHideFromToolbox | QgsProcessingAlgorithm.FlagHideFromModeler
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
-        self.name, self.i18n_name = self.trAlgorithm('[Unnamed algorithm]', 'ScriptAlgorithm')
-        self.group, self.i18n_group = self.trAlgorithm('User scripts', 'ScriptAlgorithm')
+        self._name = '[Unnamed algorithm]'
+        self._display_name = self.tr('[Unnamed algorithm]', 'ScriptAlgorithm')
+        self._group = self.tr('User scripts', 'ScriptAlgorithm')
         for line in lines:
             if line.startswith('##'):
                 try:
@@ -106,14 +139,14 @@ class ScriptAlgorithm(GeoAlgorithm):
                 except:
                     pass
 
-    def checkBeforeOpeningParametersDialog(self):
-        return self.error
+    def canExecute(self):
+        return not self.error, self.error
 
-    def checkInputCRS(self):
+    def validateInputCrs(self, parameters, context):
         if self.noCRSWarning:
             return True
         else:
-            return GeoAlgorithm.checkInputCRS(self)
+            return QgsProcessingAlgorithm.validateInputCrs(self, parameters, context)
 
     def createDescriptiveName(self, s):
         return s.replace('_', ' ')
@@ -123,7 +156,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         line = line.replace('#', '')
 
         if line == "nomodeler":
-            self.showInModeler = False
+            self._flags = self._flags | QgsProcessingAlgorithm.FlagHideFromModeler
             return
         if line == "nocrswarning":
             self.noCRSWarning = True
@@ -131,10 +164,10 @@ class ScriptAlgorithm(GeoAlgorithm):
         tokens = line.split('=', 1)
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == 'group':
-            self.group = self.i18n_group = tokens[0]
+            self._group = tokens[0]
             return
         if tokens[1].lower().strip() == 'name':
-            self.name = self.i18n_name = tokens[0]
+            self._name = self._display_name = tokens[0]
             return
 
         out = getOutputFromString(line)
@@ -144,53 +177,101 @@ class ScriptAlgorithm(GeoAlgorithm):
         if param is not None:
             self.addParameter(param)
         elif out is not None:
-            out.name = tokens[0]
-            out.description = desc
+            out.setName(tokens[0])
+            out.setDescription(desc)
             self.addOutput(out)
         else:
             raise WrongScriptException(
-                self.tr('Could not load script: %s.\n'
-                        'Problem with line "%s"', 'ScriptAlgorithm') % (self.descriptionFile or '', line))
+                self.tr('Could not load script: {0}.\n'
+                        'Problem with line "{1}"', 'ScriptAlgorithm').format(self.descriptionFile or '', line))
 
-    def processAlgorithm(self, feedback):
-        ns = {}
-        ns['feedback'] = feedback
-        ns['scriptDescriptionFile'] = self.descriptionFile
+    def prepareAlgorithm(self, parameters, context, feedback):
+        for param in self.parameterDefinitions():
+            method = None
+            if param.type() == "boolean":
+                method = self.parameterAsBool
+            elif param.type() == "crs":
+                method = self.parameterAsCrs
+            elif param.type() == "layer":
+                method = self.parameterAsLayer
+            elif param.type() == "extent":
+                method = self.parameterAsExtent
+            elif param.type() == "point":
+                method = self.parameterAsPoint
+            elif param.type() == "file":
+                method = self.parameterAsFile
+            elif param.type() == "matrix":
+                method = self.parameterAsMatrix
+            elif param.type() == "multilayer":
+                method = self.parameterAsLayerList
+            elif param.type() == "number":
+                method = self.parameterAsDouble
+            elif param.type() == "range":
+                method = self.parameterAsRange
+            elif param.type() == "raster":
+                method = self.parameterAsRasterLayer
+            elif param.type() == "enum":
+                method = self.parameterAsEnum
+            elif param.type() == "string":
+                method = self.parameterAsString
+            elif param.type() == "expression":
+                method = self.parameterAsString
+            elif param.type() == "vector":
+                method = self.parameterAsVectorLayer
+            elif param.type() == "field":
+                if param.allowMultiple():
+                    method = self.parameterAsFields
+                else:
+                    method = self.parameterAsString
+            elif param.type() == "source":
+                method = self.parameterAsSource
 
-        for param in self.parameters:
-            ns[param.name] = param.value
+            if method:
+                self.ns[param.name()] = method(parameters, param.name(), context)
 
-        for out in self.outputs:
-            ns[out.name] = out.value
+        self.ns['scriptDescriptionFile'] = self.descriptionFile
+        for out in self.outputDefinitions():
+            self.ns[out.name()] = None
 
+        self.ns['self'] = self
+        self.ns['parameters'] = parameters
+
+        expression_context = self.createExpressionContext(parameters, context)
         variables = re.findall('@[a-zA-Z0-9_]*', self.script)
         script = 'import processing\n'
         script += self.script
-
-        context = QgsExpressionContext()
-        context.appendScope(QgsExpressionContextUtils.globalScope())
-        context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
         for var in variables:
             varname = var[1:]
             if context.hasVariable(varname):
                 script = script.replace(var, context.variable(varname))
             else:
-                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING, 'Cannot find variable: %s' % varname)
+                # messy - it's probably NOT a variable, and instead an email address or some other string containing '@'
+                QgsMessageLog.logMessage(self.tr('Cannot find variable: {0}').format(varname), self.tr('Processing'), QgsMessageLog.WARNING)
+        self.cleaned_script = script
 
-        exec((script), ns)
-        for out in self.outputs:
-            out.setValue(ns[out.name])
+        return True
 
-    def help(self):
+    def processAlgorithm(self, parameters, context, feedback):
+        self.ns['feedback'] = feedback
+        self.ns['context'] = context
+
+        exec((self.cleaned_script), self.ns)
+        self.results = {}
+        for out in self.outputDefinitions():
+            self.results[out.name()] = self.ns[out.name()]
+        del self.ns
+        return self.results
+
+    def helpUrl(self):
         if self.descriptionFile is None:
-            return False, None
+            return None
         helpfile = self.descriptionFile + '.help'
         if os.path.exists(helpfile):
-            return True, getHtmlFromHelpFile(self, helpfile)
+            return getHtmlFromHelpFile(self, helpfile)
         else:
-            return False, None
+            return None
 
-    def shortHelp(self):
+    def shortHelpString(self):
         if self.descriptionFile is None:
             return None
         helpFile = str(self.descriptionFile) + '.help'
@@ -199,7 +280,7 @@ class ScriptAlgorithm(GeoAlgorithm):
                 try:
                     descriptions = json.load(f)
                     if 'ALG_DESC' in descriptions:
-                        return self._formatHelp(str(descriptions['ALG_DESC']))
+                        return str(descriptions['ALG_DESC'])
                 except:
                     return None
         return None
@@ -213,9 +294,14 @@ class ScriptAlgorithm(GeoAlgorithm):
             with open(helpFile) as f:
                 try:
                     descriptions = json.load(f)
-                    for param in self.parameters:
-                        if param.name in descriptions:
-                            descs[param.name] = str(descriptions[param.name])
+                    for param in self.parameterDefinitions():
+                        if param.name() in descriptions:
+                            descs[param.name()] = str(descriptions[param.name()])
                 except:
                     return descs
         return descs
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = self.__class__.__name__
+        return QCoreApplication.translate(context, string)

@@ -28,10 +28,10 @@
  * QgsServerRequest
  * Class defining request interface passed to services QgsService::executeRequest() method
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
-// Note about design: this interface must be passed along to python and thus signatures methods must be
+// Note about design: this interface must be passed along to Python and thus signatures methods must be
 // compatible with pyQGIS/pyQT api and rules.
 
 class SERVER_EXPORT QgsServerRequest
@@ -39,70 +39,103 @@ class SERVER_EXPORT QgsServerRequest
   public:
 
     typedef QMap<QString, QString> Parameters;
+    typedef QMap<QString, QString> Headers;
 
     /**
      * HTTP Method (or equivalent) used for the request
      */
     enum Method
     {
-      HeadMethod, PutMethod, GetMethod, PostMethod, DeleteMethod
+      HeadMethod,
+      PutMethod,
+      GetMethod,
+      PostMethod,
+      DeleteMethod
     };
 
 
     /**
      * Constructor
      */
-    QgsServerRequest();
+    QgsServerRequest() = default;
 
     /**
      * Constructor
      *
-     * @param url the url string
-     * @param method the request method
+     * \param url the url string
+     * \param method the request method
+     * \param headers
      */
-    QgsServerRequest( const QString& url, Method method = GetMethod );
+    QgsServerRequest( const QString &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 
     /**
      * Constructor
      *
-     * @param url QUrl
-     * @param method the request method
+     * \param url QUrl
+     * \param method the request method
+     * \param headers
      */
-    QgsServerRequest( const QUrl& url, Method method = GetMethod );
+    QgsServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 
     //! destructor
     virtual ~QgsServerRequest() = default;
 
     /**
-     * @return  the request url
+     * \returns  the request url
      */
     QUrl url() const;
 
     /**
-     * @return the request method
+     * \returns the request method
       */
-    Method method() const;
+    QgsServerRequest::Method method() const;
 
     /**
      * Return a map of query parameters with keys converted
      * to uppercase
      */
-    Parameters parameters() const;
+    QgsServerRequest::Parameters parameters() const;
 
     /**
      * Set a parameter
      */
-    void setParameter( const QString& key, const QString& value );
+    void setParameter( const QString &key, const QString &value );
 
     /**
      * Get a parameter value
      */
-    QString getParameter( const QString& key ) const;
+    QString parameter( const QString &key ) const;
 
     /**
      * Remove a parameter
      */
-    void removeParameter( const QString& key );
+    void removeParameter( const QString &key );
+
+    /**
+     * Return the header value
+     * @param name of the header
+     * @return the header value or an empty string
+     */
+    QString header( const QString &name ) const;
+
+    /**
+     * Set an header
+     * @param name
+     * @param value
+     */
+    void setHeader( const QString &name, const QString &value );
+
+    /**
+     * Return the header map
+     * @return the headers map
+     */
+    QMap<QString, QString> headers() const;
+
+    /**
+    * Remove an header
+    * @param name
+    */
+    void removeHeader( const QString &name );
 
     /**
      * Return post/put data
@@ -112,29 +145,25 @@ class SERVER_EXPORT QgsServerRequest
     virtual QByteArray data() const;
 
     /**
-     * @return the value of the header field for that request
-     */
-    virtual QString getHeader( const QString& name ) const;
-
-    /**
      * Set the request url
      */
-    void setUrl( const QUrl& url );
+    void setUrl( const QUrl &url );
 
     /**
      * Set the request method
      */
-    void setMethod( Method method );
+    void setMethod( QgsServerRequest::Method method );
 
   private:
     QUrl       mUrl;
-    Method     mMethod;
+    Method     mMethod = GetMethod;
     // We mark as mutable in order
     // to support lazy initialization
     // Use QMap here because it will be faster for small
     // number of elements
-    mutable bool mDecoded;
-    mutable QMap<QString, QString> mParams;
+    mutable bool mDecoded = false;
+    mutable Parameters mParams;
+    mutable Headers mHeaders;
 };
 
 #endif

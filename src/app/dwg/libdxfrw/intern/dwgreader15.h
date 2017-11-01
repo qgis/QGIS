@@ -25,18 +25,18 @@ class dwgReader15 : public dwgReader
     dwgReader15( std::ifstream *stream, dwgR *p ): dwgReader( stream, p ) { }
     bool readMetaData();
     bool readFileHeader();
-    bool readDwgHeader( DRW_Header& hdr );
+    bool readDwgHeader( DRW_Header &hdr );
     bool readDwgClasses();
     bool readDwgHandles();
-    bool readDwgTables( DRW_Header& hdr );
-    bool readDwgBlocks( DRW_Interface& intfa );
-    bool readDwgEntities( DRW_Interface& intfa )
+    bool readDwgTables( DRW_Header &hdr );
+    bool readDwgBlocks( DRW_Interface &intfa );
+    bool readDwgEntities( DRW_Interface &intfa )
     {
       bool ret = true;
       ret = dwgReader::readDwgEntities( intfa, fileBuf );
       return ret;
     }
-    bool readDwgObjects( DRW_Interface& intfa )
+    bool readDwgObjects( DRW_Interface &intfa )
     {
       bool ret = true;
       ret = dwgReader::readDwgObjects( intfa, fileBuf );

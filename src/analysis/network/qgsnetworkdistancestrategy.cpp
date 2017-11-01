@@ -15,7 +15,7 @@
 
 #include "qgsnetworkdistancestrategy.h"
 
-QVariant QgsNetworkDistanceStrategy::cost( double distance, const QgsFeature& f ) const
+QVariant QgsNetworkDistanceStrategy::cost( double distance, const QgsFeature &f ) const
 {
   Q_UNUSED( f );
   return QVariant( distance );

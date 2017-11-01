@@ -18,39 +18,39 @@
 #include "qgstreewidgetitem.h"
 #include "qgis.h"
 
-QgsTreeWidgetItem::QgsTreeWidgetItem( QTreeWidget * parent, int type )
-    : QTreeWidgetItem( parent, type )
+QgsTreeWidgetItem::QgsTreeWidgetItem( QTreeWidget *parent, int type )
+  : QTreeWidgetItem( parent, type )
 {}
 
 QgsTreeWidgetItem::QgsTreeWidgetItem( int type )
-    : QTreeWidgetItem( type )
+  : QTreeWidgetItem( type )
 {}
 
-QgsTreeWidgetItem::QgsTreeWidgetItem( const QStringList& strings, int type )
-    : QTreeWidgetItem( strings, type )
+QgsTreeWidgetItem::QgsTreeWidgetItem( const QStringList &strings, int type )
+  : QTreeWidgetItem( strings, type )
 {}
 
-QgsTreeWidgetItem::QgsTreeWidgetItem( QTreeWidget* view, const QStringList& strings, int type )
-    : QTreeWidgetItem( view, strings, type )
+QgsTreeWidgetItem::QgsTreeWidgetItem( QTreeWidget *view, const QStringList &strings, int type )
+  : QTreeWidgetItem( view, strings, type )
 {}
 
-QgsTreeWidgetItem::QgsTreeWidgetItem( QTreeWidget* view, QTreeWidgetItem* after, int type )
-    : QTreeWidgetItem( view, after, type )
+QgsTreeWidgetItem::QgsTreeWidgetItem( QTreeWidget *view, QTreeWidgetItem *after, int type )
+  : QTreeWidgetItem( view, after, type )
 {}
 
-QgsTreeWidgetItem::QgsTreeWidgetItem( QTreeWidgetItem* parent, int type )
-    : QTreeWidgetItem( parent, type )
+QgsTreeWidgetItem::QgsTreeWidgetItem( QTreeWidgetItem *parent, int type )
+  : QTreeWidgetItem( parent, type )
 {}
 
-QgsTreeWidgetItem::QgsTreeWidgetItem( QTreeWidgetItem* parent, const QStringList& strings, int type )
-    : QTreeWidgetItem( parent, strings, type )
+QgsTreeWidgetItem::QgsTreeWidgetItem( QTreeWidgetItem *parent, const QStringList &strings, int type )
+  : QTreeWidgetItem( parent, strings, type )
 {}
 
-QgsTreeWidgetItem::QgsTreeWidgetItem( QTreeWidgetItem* parent, QTreeWidgetItem* after, int type )
-    : QTreeWidgetItem( parent, after, type )
+QgsTreeWidgetItem::QgsTreeWidgetItem( QTreeWidgetItem *parent, QTreeWidgetItem *after, int type )
+  : QTreeWidgetItem( parent, after, type )
 {}
 
-void QgsTreeWidgetItem::setSortData( int column, const QVariant& value )
+void QgsTreeWidgetItem::setSortData( int column, const QVariant &value )
 {
   setData( column, CustomSortRole, value );
 }
@@ -128,15 +128,15 @@ bool QgsTreeWidgetItem::operator<( const QTreeWidgetItem &other ) const
 //
 
 QgsTreeWidgetItemObject::QgsTreeWidgetItemObject( int type )
-    : QgsTreeWidgetItem( type )
+  : QgsTreeWidgetItem( type )
 {}
 
-QgsTreeWidgetItemObject::QgsTreeWidgetItemObject( QTreeWidget* parent, int type )
-    : QgsTreeWidgetItem( parent, type )
+QgsTreeWidgetItemObject::QgsTreeWidgetItemObject( QTreeWidget *parent, int type )
+  : QgsTreeWidgetItem( parent, type )
 {}
 
 // override setData to emit signal when edited. By default the itemChanged signal fires way too often
-void QgsTreeWidgetItemObject::setData( int column, int role, const QVariant& value )
+void QgsTreeWidgetItemObject::setData( int column, int role, const QVariant &value )
 {
   QgsTreeWidgetItem::setData( column, role, value );
   if ( role == Qt::EditRole )

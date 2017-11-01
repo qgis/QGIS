@@ -23,7 +23,7 @@
 #include <QString>
 #include <QStringList>
 
-#include <qgsbabelformat.h>
+#include "qgsbabelformat.h"
 
 
 class QgsGPSDevice : public QgsBabelFormat
@@ -31,19 +31,19 @@ class QgsGPSDevice : public QgsBabelFormat
   public:
     QgsGPSDevice() { }
 
-    QgsGPSDevice( const QString& wptDlCmd, const QString& wptUlCmd,
-                  const QString& rteDlCmd, const QString& rteUlCmd,
-                  const QString& trkDlCmd, const QString& trkUlCmd );
+    QgsGPSDevice( const QString &wptDlCmd, const QString &wptUlCmd,
+                  const QString &rteDlCmd, const QString &rteUlCmd,
+                  const QString &trkDlCmd, const QString &trkUlCmd );
 
-    QStringList importCommand( const QString& babel, const QString& type,
-                               const QString& in, const QString& out ) const override;
-    QStringList exportCommand( const QString& babel, const QString& type,
-                               const QString& in, const QString& out ) const override;
+    QStringList importCommand( const QString &babel, const QString &type,
+                               const QString &in, const QString &out ) const override;
+    QStringList exportCommand( const QString &babel, const QString &type,
+                               const QString &in, const QString &out ) const override;
 
   private:
 
     QStringList mWptDlCmd, mWptUlCmd, mRteDlCmd, mRteUlCmd,
-    mTrkDlCmd, mTrkUlCmd;
+                mTrkDlCmd, mTrkUlCmd;
 };
 
 

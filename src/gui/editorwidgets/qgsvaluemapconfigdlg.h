@@ -21,7 +21,10 @@
 #include "qgseditorconfigwidget.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
  * \class QgsValueMapConfigDlg
  * \note not available in Python bindings
  */
@@ -31,9 +34,9 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
     Q_OBJECT
 
   public:
-    explicit QgsValueMapConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
+    explicit QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
     virtual QVariantMap config() override;
-    virtual void setConfig( const QVariantMap& config ) override;
+    virtual void setConfig( const QVariantMap &config ) override;
 
     void updateMap( const QMap<QString, QVariant> &map, bool insertNull );
 

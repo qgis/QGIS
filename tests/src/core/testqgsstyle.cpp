@@ -32,7 +32,8 @@
 
 #include "qgsstyle.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test to verify that styles are working correctly
  */
 class TestStyle : public QObject
@@ -46,10 +47,10 @@ class TestStyle : public QObject
 
     QString mReport;
 
-    QgsStyle *mStyle;
+    QgsStyle *mStyle = nullptr;
     QString mTestDataDir;
 
-    bool testValidColor( QgsColorRamp *ramp, double value, const QColor& expected );
+    bool testValidColor( QgsColorRamp *ramp, double value, const QColor &expected );
     bool imageCheck( QgsMapSettings &ms, const QString &testName );
 
   private slots:
@@ -69,11 +70,7 @@ class TestStyle : public QObject
 
 };
 
-TestStyle::TestStyle()
-    : mStyle( nullptr )
-{
-
-}
+TestStyle::TestStyle() = default;
 
 // slots
 void TestStyle::initTestCase()
@@ -81,20 +78,20 @@ void TestStyle::initTestCase()
   // initialize with test settings directory so we don't mess with user's stuff
   QgsApplication::init( QDir::tempPath() + "/dot-qgis" );
   QgsApplication::initQgis();
-  QgsApplication::createDB();
+  QgsApplication::createDatabase();
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
   // output test environment
   QgsApplication::showSettings();
 
-  // Set up the QSettings environment
+  // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
   //initize a temporary memory-based style for tests to avoid clashing with shipped symbols
   mStyle = new QgsStyle();
-  mStyle->createMemoryDb();
+  mStyle->createMemoryDatabase();
 
   // cpt-city ramp, small selection available in <testdir>/cpt-city
   QgsCptCityArchive::initArchives();
@@ -122,7 +119,7 @@ void TestStyle::cleanupTestCase()
   }
 }
 
-bool TestStyle::imageCheck( QgsMapSettings& ms, const QString& testName )
+bool TestStyle::imageCheck( QgsMapSettings &ms, const QString &testName )
 {
   QgsMultiRenderChecker checker;
   ms.setOutputDpi( 96 );
@@ -133,7 +130,7 @@ bool TestStyle::imageCheck( QgsMapSettings& ms, const QString& testName )
   return result;
 }
 
-bool TestStyle::testValidColor( QgsColorRamp *ramp, double value, const QColor& expected )
+bool TestStyle::testValidColor( QgsColorRamp *ramp, double value, const QColor &expected )
 {
   QColor result = ramp->color( value );
   //use int color components when testing (builds some fuzziness into test)
@@ -150,30 +147,30 @@ bool TestStyle::testValidColor( QgsColorRamp *ramp, double value, const QColor& 
 void TestStyle::testCreateColorRamps()
 {
   // gradient ramp
-  QgsGradientColorRamp* gradientRamp = new QgsGradientColorRamp( QColor( Qt::red ), QColor( Qt::blue ) );
+  QgsGradientColorRamp *gradientRamp = new QgsGradientColorRamp( QColor( Qt::red ), QColor( Qt::blue ) );
   QgsGradientStopsList stops;
   stops.append( QgsGradientStop( 0.5, QColor( Qt::white ) ) );
   gradientRamp->setStops( stops );
   QVERIFY( mStyle->addColorRamp( "test_gradient", gradientRamp, true ) );
 
   // random ramp
-  QgsLimitedRandomColorRamp* randomRamp = new QgsLimitedRandomColorRamp();
+  QgsLimitedRandomColorRamp *randomRamp = new QgsLimitedRandomColorRamp();
   QVERIFY( mStyle->addColorRamp( "test_random", randomRamp, true ) );
 
   // color brewer ramp
-  QgsColorBrewerColorRamp* cb1Ramp = new QgsColorBrewerColorRamp();
+  QgsColorBrewerColorRamp *cb1Ramp = new QgsColorBrewerColorRamp();
   QVERIFY( mStyle->addColorRamp( "test_cb1", cb1Ramp, true ) );
-  QgsColorBrewerColorRamp* cb2Ramp = new QgsColorBrewerColorRamp( QStringLiteral( "RdYlGn" ), 6 );
+  QgsColorBrewerColorRamp *cb2Ramp = new QgsColorBrewerColorRamp( QStringLiteral( "RdYlGn" ), 6 );
   QVERIFY( mStyle->addColorRamp( "test_cb2", cb2Ramp, true ) );
 
   // discrete ramp with no variant
-  QgsCptCityColorRamp* cc1Ramp = new QgsCptCityColorRamp( QStringLiteral( "cb/seq/PuBuGn_06" ), QLatin1String( "" ) );
+  QgsCptCityColorRamp *cc1Ramp = new QgsCptCityColorRamp( QStringLiteral( "cb/seq/PuBuGn_06" ), QLatin1String( "" ) );
   QVERIFY( mStyle->addColorRamp( "test_cc1", cc1Ramp, true ) );
   // discrete ramp with variant
-  QgsCptCityColorRamp* cc2Ramp = new QgsCptCityColorRamp( QStringLiteral( "cb/div/PiYG" ), QStringLiteral( "_10" ) );
+  QgsCptCityColorRamp *cc2Ramp = new QgsCptCityColorRamp( QStringLiteral( "cb/div/PiYG" ), QStringLiteral( "_10" ) );
   QVERIFY( mStyle->addColorRamp( "test_cc2", cc2Ramp, true ) );
   // continuous ramp
-  QgsCptCityColorRamp* cc3Ramp = new QgsCptCityColorRamp( QStringLiteral( "grass/byr" ), QLatin1String( "" ) );
+  QgsCptCityColorRamp *cc3Ramp = new QgsCptCityColorRamp( QStringLiteral( "grass/byr" ), QLatin1String( "" ) );
   QVERIFY( mStyle->addColorRamp( "test_cc3", cc3Ramp, true ) );
 }
 
@@ -206,11 +203,11 @@ void TestStyle::testLoadColorRamps()
 
   QgsDebugMsg( "loaded colorRamps: " + colorRamps.join( " " ) );
 
-  Q_FOREACH ( const QString& name, colorRampsTest )
+  Q_FOREACH ( const QString &name, colorRampsTest )
   {
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
-    QgsColorRamp* ramp = mStyle->colorRamp( name );
+    QgsColorRamp *ramp = mStyle->colorRamp( name );
     QVERIFY( ramp != 0 );
     // test colors
     if ( colorTests.contains( name ) )
@@ -234,11 +231,11 @@ void TestStyle::testSaveLoad()
 
   QStringList colorRampsTest = QStringList() << QStringLiteral( "test_gradient" );
 
-  Q_FOREACH ( const QString& name, colorRampsTest )
+  Q_FOREACH ( const QString &name, colorRampsTest )
   {
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
-    QgsColorRamp* ramp = mStyle->colorRamp( name );
+    QgsColorRamp *ramp = mStyle->colorRamp( name );
     QVERIFY( ramp != 0 );
     if ( ramp )
       delete ramp;
@@ -258,9 +255,9 @@ void TestStyle::testFavorites()
   std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  mStyle->saveSymbol( "symbolA", sym1.get(), true, QStringList() );
-  mStyle->saveSymbol( "symbolB", sym2.get(), false, QStringList() );
-  mStyle->saveSymbol( "symbolC", sym3.get(), true, QStringList() );
+  mStyle->saveSymbol( QStringLiteral( "symbolA" ), sym1.get(), true, QStringList() );
+  mStyle->saveSymbol( QStringLiteral( "symbolB" ), sym2.get(), false, QStringList() );
+  mStyle->saveSymbol( QStringLiteral( "symbolC" ), sym3.get(), true, QStringList() );
 
   // check for added symbols to favorites
   favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
@@ -269,7 +266,7 @@ void TestStyle::testFavorites()
   QVERIFY( favorites.contains( "symbolC" ) );
 
   // remove one symbol from favorites
-  mStyle->removeFavorite( QgsStyle::SymbolEntity, "symbolA" );
+  mStyle->removeFavorite( QgsStyle::SymbolEntity, QStringLiteral( "symbolA" ) );
 
   // insure favorites updated after removal
   favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
@@ -313,7 +310,7 @@ void TestStyle::testTags()
   std::unique_ptr< QgsMarkerSymbol> sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   std::unique_ptr< QgsMarkerSymbol> sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   std::unique_ptr< QgsMarkerSymbol> sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  QVERIFY( mStyle->saveSymbol( "symbol1", sym1.get() , false, QStringList() << "red" << "starry" ) );
+  QVERIFY( mStyle->saveSymbol( "symbol1", sym1.get(), false, QStringList() << "red" << "starry" ) );
   mStyle->addSymbol( QStringLiteral( "blue starry" ), sym2.release(), true );
   mStyle->addSymbol( QStringLiteral( "red circle" ), sym3.release(), true );
 

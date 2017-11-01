@@ -26,10 +26,9 @@
 #include <QStringList>
 
 QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
-    : mReply( reply )
-    , mValid( false )
+  : mReply( reply )
+  , mValid( false )
 {
-  QgsDebugMsg( "Entered." );
   if ( !mReply ) return;
 
   // Content type examples:
@@ -119,7 +118,7 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
       QgsDebugMsg( "headers:\n" + headers );
 
       QStringList headerRows = QString( headers ).split( QRegExp( "[\n\r]+" ) );
-      Q_FOREACH ( const QString& row, headerRows )
+      Q_FOREACH ( const QString &row, headerRows )
       {
         QgsDebugMsg( "row = " + row );
         QStringList kv = row.split( QStringLiteral( ": " ) );

@@ -1,4 +1,0 @@
-Edge Contamination
-ta_hydrology
-ParameterRaster|DEM|Elevation|False
-OutputRaster|CONTAMINATION|Edge Contamination

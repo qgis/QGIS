@@ -17,18 +17,16 @@
 #include "qgscomposermultiframe.h"
 #include "qgscomposition.h"
 
-QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height )
-    : QgsComposerItem( x, y, width, height, c )
-    , mMultiFrame( mf )
-    , mHidePageIfEmpty( false )
-    , mHideBackgroundIfEmpty( false )
+QgsComposerFrame::QgsComposerFrame( QgsComposition *c, QgsComposerMultiFrame *mf, qreal x, qreal y, qreal width, qreal height )
+  : QgsComposerItem( x, y, width, height, c )
+  , mMultiFrame( mf )
 {
 
   //default to no background
   setBackgroundEnabled( false );
 
   //repaint frame when multiframe content changes
-  connect( mf, SIGNAL( contentsChanged() ), this, SLOT( repaint() ) );
+  connect( mf, &QgsComposerMultiFrame::contentsChanged, this, &QgsComposerItem::repaint );
   if ( mf )
   {
     //force recalculation of rect, so that multiframe specified sizes can be applied
@@ -37,16 +35,13 @@ QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf
 }
 
 QgsComposerFrame::QgsComposerFrame()
-    : QgsComposerItem( 0, 0, 0, 0, nullptr )
-    , mMultiFrame( nullptr )
-    , mHidePageIfEmpty( false )
-    , mHideBackgroundIfEmpty( false )
+  : QgsComposerItem( 0, 0, 0, 0, nullptr )
 {
   //default to no background
   setBackgroundEnabled( false );
 }
 
-bool QgsComposerFrame::writeXml( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerFrame::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   QDomElement frameElem = doc.createElement( QStringLiteral( "ComposerFrame" ) );
   frameElem.setAttribute( QStringLiteral( "sectionX" ), QString::number( mSection.x() ) );
@@ -60,7 +55,7 @@ bool QgsComposerFrame::writeXml( QDomElement& elem, QDomDocument & doc ) const
   return _writeXml( frameElem, doc );
 }
 
-bool QgsComposerFrame::readXml( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerFrame::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   double x = itemElem.attribute( QStringLiteral( "sectionX" ) ).toDouble();
   double y = itemElem.attribute( QStringLiteral( "sectionY" ) ).toDouble();
@@ -160,14 +155,14 @@ void QgsComposerFrame::setSceneRect( const QRectF &rectangle )
 
     //check minimum size
     QSizeF minSize = mMultiFrame->minFrameSize( frameIndex );
-    fixedRect.setWidth( qMax( minSize.width(), fixedRect.width() ) );
-    fixedRect.setHeight( qMax( minSize.height(), fixedRect.height() ) );
+    fixedRect.setWidth( std::max( minSize.width(), fixedRect.width() ) );
+    fixedRect.setHeight( std::max( minSize.height(), fixedRect.height() ) );
   }
 
   QgsComposerItem::setSceneRect( fixedRect );
 }
 
-void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsComposerFrame::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -204,7 +199,7 @@ void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
 }
 
-void QgsComposerFrame::beginItemCommand( const QString& text )
+void QgsComposerFrame::beginItemCommand( const QString &text )
 {
   if ( mComposition )
   {

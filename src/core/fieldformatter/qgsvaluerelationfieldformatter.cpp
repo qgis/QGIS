@@ -21,20 +21,14 @@
 
 #include <QSettings>
 
-bool orderByKeyLessThan( const QgsValueRelationFieldFormatter::ValueRelationItem& p1, const QgsValueRelationFieldFormatter::ValueRelationItem& p2 )
+bool orderByKeyLessThan( const QgsValueRelationFieldFormatter::ValueRelationItem &p1, const QgsValueRelationFieldFormatter::ValueRelationItem &p2 )
 {
   return qgsVariantLessThan( p1.key, p2.key );
 }
 
-bool orderByValueLessThan( const QgsValueRelationFieldFormatter::ValueRelationItem& p1, const QgsValueRelationFieldFormatter::ValueRelationItem& p2 )
+bool orderByValueLessThan( const QgsValueRelationFieldFormatter::ValueRelationItem &p1, const QgsValueRelationFieldFormatter::ValueRelationItem &p2 )
 {
   return qgsVariantLessThan( p1.value, p2.value );
-}
-
-
-QgsValueRelationFieldFormatter::QgsValueRelationFieldFormatter()
-{
-
 }
 
 QString QgsValueRelationFieldFormatter::id() const
@@ -42,7 +36,7 @@ QString QgsValueRelationFieldFormatter::id() const
   return QStringLiteral( "ValueRelation" );
 }
 
-QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
   Q_UNUSED( layer )
   Q_UNUSED( fieldIndex )
@@ -58,12 +52,12 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer* layer, i
     vrCache = QgsValueRelationFieldFormatter::createCache( config );
   }
 
-  if ( config.value( "AllowMulti" ).toBool() )
+  if ( config.value( QStringLiteral( "AllowMulti" ) ).toBool() )
   {
     QStringList keyList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
     QStringList valueList;
 
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& item, vrCache )
+    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : qgis::as_const( vrCache ) )
     {
       if ( keyList.contains( item.key.toString() ) )
       {
@@ -71,7 +65,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer* layer, i
       }
     }
 
-    return valueList.join( ", " ).prepend( '{' ).append( '}' );
+    return valueList.join( QStringLiteral( ", " ) ).prepend( '{' ).append( '}' );
   }
   else
   {
@@ -80,7 +74,7 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer* layer, i
       return QgsApplication::nullRepresentation();
     }
 
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem& item, vrCache )
+    for ( const QgsValueRelationFieldFormatter::ValueRelationItem &item : qgis::as_const( vrCache ) )
     {
       if ( item.key == value )
       {
@@ -89,15 +83,15 @@ QString QgsValueRelationFieldFormatter::representValue( QgsVectorLayer* layer, i
     }
   }
 
-  return QString( "(%1)" ).arg( value.toString() );
+  return QStringLiteral( "(%1)" ).arg( value.toString() );
 }
 
-QVariant QgsValueRelationFieldFormatter::sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QVariant QgsValueRelationFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
   return representValue( layer, fieldIndex, config, cache, value );
 }
 
-QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config ) const
+QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config ) const
 {
   Q_UNUSED( layer )
   Q_UNUSED( fieldIndex )
@@ -105,26 +99,26 @@ QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer* layer, int
 
 }
 
-QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache( const QVariantMap& config )
+QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache( const QVariantMap &config )
 {
   ValueRelationCache cache;
 
-  QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( config.value( "Layer" ).toString() ) );
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( config.value( QStringLiteral( "Layer" ) ).toString() ) );
 
   if ( !layer )
     return cache;
 
   QgsFields fields = layer->fields();
-  int ki = fields.indexOf( config.value( "Key" ).toString() );
-  int vi = fields.indexOf( config.value( "Value" ).toString() );
+  int ki = fields.indexOf( config.value( QStringLiteral( "Key" ) ).toString() );
+  int vi = fields.indexOf( config.value( QStringLiteral( "Value" ) ).toString() );
 
   QgsFeatureRequest request;
 
   request.setFlags( QgsFeatureRequest::NoGeometry );
   request.setSubsetOfAttributes( QgsAttributeList() << ki << vi );
-  if ( !config.value( "FilterExpression" ).toString().isEmpty() )
+  if ( !config.value( QStringLiteral( "FilterExpression" ) ).toString().isEmpty() )
   {
-    request.setFilterExpression( config.value( "FilterExpression" ).toString() );
+    request.setFilterExpression( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
   }
 
   QgsFeatureIterator fit = layer->getFeatures( request );
@@ -135,7 +129,7 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
     cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString() ) );
   }
 
-  if ( config.value( "OrderByValue" ).toBool() )
+  if ( config.value( QStringLiteral( "OrderByValue" ) ).toBool() )
   {
     std::sort( cache.begin(), cache.end(), orderByValueLessThan );
   }

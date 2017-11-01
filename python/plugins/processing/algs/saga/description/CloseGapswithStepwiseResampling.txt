@@ -1,0 +1,10 @@
+Close Gaps with Stepwise Resampling
+grid_tools
+ParameterRaster|INPUT|Grid|False
+ParameterRaster|MASK|Mask|True
+OutputRaster|RESULT|Result
+ParameterSelection|RESAMPLING|Resampling|[0] Nearest Neighbour;[1] Bilinear Interpolation;[2] Bicubic Spline Interpolation;[3] B-Spline Interpolation| 3
+ParameterNumber|GROW|Grow Factor| 1.000000|None| 2.000000
+ParameterBoolean|PYRAMIDS|Use Pyramids|False
+ParameterSelection|START|Start Size|[0] grid cell size;[1] user defined size| 0
+ParameterNumber|START_SIZE|User Defined Size| 0.000000|None| 1.000000

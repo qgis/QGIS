@@ -18,15 +18,15 @@
 #define WKBPTR_H
 
 #include <QSharedData>
+#include <QVector>
 
 union wkbPtr
 {
-  void *vPtr;
+  void *vPtr = nullptr;
   double *dPtr;
   int *iPtr;
   unsigned char *ucPtr;
   char *cPtr;
-
 };
 
 const int SDO_ARRAY_SIZE = 1024;
@@ -53,12 +53,12 @@ class QOCISpatialGeometry : public QSharedData
 {
   public:
     QOCISpatialGeometry()
-        : isNull( true )
-        , gtype( -1 )
-        , srid( -1 )
-        , x( 0.0 )
-        , y( 0.0 )
-        , z( 0.0 )
+      : isNull( true )
+      , gtype( -1 )
+      , srid( -1 )
+      , x( 0.0 )
+      , y( 0.0 )
+      , z( 0.0 )
     {}
 
     bool isNull;

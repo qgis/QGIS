@@ -28,6 +28,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.core import QgsProcessingUtils
+
 from qgis.PyQt.QtGui import QIcon
 
 from processing.core.parameters import ParameterVector
@@ -37,7 +39,7 @@ from processing.core.parameters import ParameterTableField
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-from processing.tools.vector import ogrConnectionString, ogrLayerName
+from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -48,35 +50,46 @@ class rasterize_over(GdalAlgorithm):
     INPUT_RASTER = 'INPUT_RASTER'
     FIELD = 'FIELD'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
 
-    def commandLineName(self):
-        return "gdal:rasterize_over"
+    def __init__(self):
+        super().__init__()
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Rasterize (write over existing raster)')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Attribute field'), self.INPUT))
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
                                           self.tr('Existing raster layer'), False))
 
-    def getConsoleCommands(self):
-        inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
-        inRasterLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_RASTER))
+    def name(self):
+        return 'rasterize_over'
 
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
-        ogrRasterLayer = ogrConnectionString(inRasterLayer)[1:-1]
+    def displayName(self):
+        return self.tr('Rasterize (write over existing raster)')
+
+    def group(self):
+        return self.tr('Vector conversion')
+
+    def getConsoleCommands(self, parameters, context, feedback):
+        context = dataobjects.createContext()
+        inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
+        inRasterLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_RASTER), context)
+
+        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
+        ogrRasterLayer = GdalUtils.ogrConnectionString(inRasterLayer, context)[1:-1]
 
         arguments = []
         arguments.append('-a')
         arguments.append(str(self.getParameterValue(self.FIELD)))
 
         arguments.append('-l')
-        arguments.append(ogrLayerName(inLayer))
+        arguments.append(GdalUtils.ogrLayerName(inLayer))
         arguments.append(ogrLayer)
         arguments.append(ogrRasterLayer)
 
         return ['gdal_rasterize', GdalUtils.escapeAndJoin(arguments)]
+
+    def commandName(self):
+        return "gdal_rasterize"

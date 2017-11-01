@@ -1,7 +1,7 @@
 ADD_SUBDIRECTORY(modules)
 ADD_SUBDIRECTORY(scripts)
 
-#ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
+#ADD_DEFINITIONS(-DGRASS_BASE="${GRASS_PREFIX}")
 if (HAVE_OPENPTY)
   ADD_DEFINITIONS(-DHAVE_OPENPTY)
 ENDIF (HAVE_OPENPTY)
@@ -13,7 +13,7 @@ ELSE (WIN32)
 ENDIF (WIN32)
 
 # GRASS Direct disabled in 2.0
-#ADD_DEFINITIONS("-DGRASS_DIRECT")
+#ADD_DEFINITIONS(-DGRASS_DIRECT)
 
 ########################################################
 # Files
@@ -133,10 +133,10 @@ IF(NOT WIN32)
 
 
   SET(KB_LAYOUT_DIR "${QGIS_DATA_DIR}/grass/qtermwidget/kb-layouts")
-  ADD_DEFINITIONS(-DKB_LAYOUT_DIR=\\\"${CMAKE_INSTALL_PREFIX}/${KB_LAYOUT_DIR}\\\")
+  ADD_DEFINITIONS(-DKB_LAYOUT_DIR="${CMAKE_INSTALL_PREFIX}/${KB_LAYOUT_DIR}")
 
   SET(COLORSCHEMES_DIR "${QGIS_DATA_DIR}/grass/qtermwidget/color-schemes")
-  ADD_DEFINITIONS(-DCOLORSCHEMES_DIR=\\\"${CMAKE_INSTALL_PREFIX}/${COLORSCHEMES_DIR}\\\")
+  ADD_DEFINITIONS(-DCOLORSCHEMES_DIR="${CMAKE_INSTALL_PREFIX}/${COLORSCHEMES_DIR}")
 
 ENDIF(NOT WIN32)
 
@@ -148,23 +148,26 @@ SET (GRASS_BROWSER_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/qgis.g.browser.cpp)
 
 
 INCLUDE_DIRECTORIES(
-  ..
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ../../app
-  ../../core
-  ../../core/geometry
-  ../../core/layertree
-  ../../core/raster
-  ../../core/symbology-ng
-  ../../gui
-  ../../gui/editorwidgets
-  ../../gui/symbology-ng
-  ../../gui/layertree
-  ../../providers/grass
-  ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+  ${CMAKE_SOURCE_DIR}/src/plugins
+  ${CMAKE_SOURCE_DIR}/src/app
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
+  ${CMAKE_SOURCE_DIR}/src/gui/symbology
+  ${CMAKE_SOURCE_DIR}/src/gui/layertree
+  ${CMAKE_SOURCE_DIR}/src/providers/grass
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/app
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}

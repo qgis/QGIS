@@ -26,16 +26,16 @@ class dxfWriter;
 class dxfRW
 {
   public:
-    explicit dxfRW( const char* name );
+    explicit dxfRW( const char *name );
     ~dxfRW();
     void setDebug( DRW::DBG_LEVEL lvl );
     /// reads the file specified in constructor
     /*!
      * An interface must be provided. It is used by the class to signal various
      * components being added.
-     * @param interface_ the interface to use
-     * @param ext should the extrusion be applied to convert in 2D?
-     * @return true for success
+     * \param interface_ the interface to use
+     * \param ext should the extrusion be applied to convert in 2D?
+     * \returns true for success
      */
     bool read( DRW_Interface *interface_, bool ext );
     void setBinary( bool b ) {binFile = b;}
@@ -101,7 +101,7 @@ class dxfRW
     bool processInsert();
     bool processLWPolyline();
     bool processPolyline();
-    bool processVertex( DRW_Polyline* pl );
+    bool processVertex( DRW_Polyline *pl );
     bool processText();
     bool processMText();
     bool processHatch();
@@ -118,7 +118,7 @@ class dxfRW
     bool writeTables();
     bool writeBlocks();
     bool writeObjects();
-    bool writeExtData( const std::vector<DRW_Variant*> &ed );
+    bool writeExtData( const std::vector<DRW_Variant *> &ed );
     /*use version from dwgutil.h*/
     std::string toHexStr( int n );//RLZ removeme
 
@@ -127,9 +127,9 @@ class dxfRW
     std::string fileName;
     std::string codePage;
     bool binFile;
-    dxfReader *reader;
-    dxfWriter *writer;
-    DRW_Interface *iface;
+    dxfReader *reader = nullptr;
+    dxfWriter *writer = nullptr;
+    DRW_Interface *iface = nullptr;
     DRW_Header header;
 //  int section;
     std::string nextentity;
@@ -140,7 +140,7 @@ class dxfRW
     bool writingBlock;
     int elParts;  //!< Parts number when convert ellipse to polyline
     std::map<std::string, int> blockMap;
-    std::vector<DRW_ImageDef*> imageDef;  //!< ImageDef list
+    std::vector<DRW_ImageDef *> imageDef; //!< ImageDef list
 
     int currHandle;
 };

@@ -29,7 +29,7 @@
 #include <QVector>
 #include <QVariant>
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgis_analysis.h"
 
 class QgsGraphVertex;
@@ -37,17 +37,21 @@ class QgsGraphVertex;
 /**
  * \ingroup analysis
  * \class QgsGraphEdge
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  * \brief This class implements a graph edge
  */
 class ANALYSIS_EXPORT QgsGraphEdge
 {
   public:
-    QgsGraphEdge();
+
+    /**
+     * Constructor for QgsGraphEdge.
+     */
+    QgsGraphEdge() = default;
 
     /**
      * Returns edge cost calculated using specified strategy
-     * @param strategyIndex strategy index
+     * \param strategyIndex strategy index
      */
     QVariant cost( int strategyIndex ) const;
 
@@ -57,21 +61,23 @@ class ANALYSIS_EXPORT QgsGraphEdge
     QVector< QVariant > strategies() const;
 
     /**
-     * Returns index of the outgoing vertex
+     * Returns the index of the vertex at the end of this edge.
+     * \see fromVertex()
      */
-    int outVertex() const;
+    int toVertex() const;
 
     /**
-     * Returns index of the incoming vertex
+     * Returns the index of the vertex at the start of this edge.
+     * \see toVertex()
      */
-    int inVertex() const;
+    int fromVertex() const;
 
   private:
 
     QVector< QVariant > mStrategies;
 
-    int mOut;
-    int mIn;
+    int mToIdx = 0;
+    int mFromIdx = 0;
 
     friend class QgsGraph;
 };
@@ -83,6 +89,7 @@ typedef QList< int > QgsGraphEdgeIds;
  * \ingroup analysis
  * \class QgsGraphVertex
  * \brief This class implements a graph vertex
+ * \since QGIS 3.0
  */
 class ANALYSIS_EXPORT QgsGraphVertex
 {
@@ -97,27 +104,29 @@ class ANALYSIS_EXPORT QgsGraphVertex
      * This constructor initializes QgsGraphVertex object and associates a vertex with a point
      */
 
-    QgsGraphVertex( const QgsPoint& point );
+    QgsGraphVertex( const QgsPointXY &point );
 
     /**
-     * Returns outgoing edges ids
+     * Returns the incoming edge ids, i.e. edges which end at this node.
+     * \see outgoingEdges()
      */
-    QgsGraphEdgeIds outEdges() const;
+    QgsGraphEdgeIds incomingEdges() const;
 
     /**
-     * Return incoming edges ids
+     * Returns outgoing edge ids, i.e. edges which start at this node.
+     * \see incomingEdges()
      */
-    QgsGraphEdgeIds inEdges() const;
+    QgsGraphEdgeIds outgoingEdges() const;
 
     /**
-     * Returns point associated with graph vertex
+     * Returns point associated with graph vertex.
      */
-    QgsPoint point() const;
+    QgsPointXY point() const;
 
   private:
-    QgsPoint mCoordinate;
-    QgsGraphEdgeIds mOutEdges;
-    QgsGraphEdgeIds mInEdges;
+    QgsPointXY mCoordinate;
+    QgsGraphEdgeIds mIncomingEdges;
+    QgsGraphEdgeIds mOutgoingEdges;
 
     friend class QgsGraph;
 };
@@ -126,24 +135,30 @@ class ANALYSIS_EXPORT QgsGraphVertex
  * \ingroup analysis
  * \class QgsGraph
  * \brief Mathematical graph representation
+ * \since QGIS 3.0
  */
 
 class ANALYSIS_EXPORT QgsGraph
 {
   public:
-    QgsGraph();
+
+    /**
+     * Constructor for QgsGraph.
+     */
+    QgsGraph() = default;
 
     // Graph constructing methods
 
     /**
      * Add a vertex to the graph
      */
-    int addVertex( const QgsPoint& pt );
+    int addVertex( const QgsPointXY &pt );
 
     /**
-     * Add an edge to the graph
+     * Add an edge to the graph, going from the \a fromVertexIdx
+     * to \a toVertexIdx.
      */
-    int addEdge( int outVertexIdx, int inVertexIdx, const QVector< QVariant >& strategies );
+    int addEdge( int fromVertexIdx, int toVertexIdx, const QVector< QVariant > &strategies );
 
     /**
      * Returns number of graph vertices
@@ -153,7 +168,7 @@ class ANALYSIS_EXPORT QgsGraph
     /**
      * Returns vertex at given index
      */
-    const QgsGraphVertex& vertex( int idx ) const;
+    const QgsGraphVertex &vertex( int idx ) const;
 
     /**
       * Returns number of graph edges
@@ -163,16 +178,16 @@ class ANALYSIS_EXPORT QgsGraph
     /**
      * Returns edge at given index
      */
-    const QgsGraphEdge& edge( int idx ) const;
+    const QgsGraphEdge &edge( int idx ) const;
 
     /**
      * Find vertex by associated point
-     * \return vertex index
+     * \returns vertex index
      */
-    int findVertex( const QgsPoint& pt ) const;
+    int findVertex( const QgsPointXY &pt ) const;
 
   private:
-    QVector<QgsGraphVertex> mGraphVertexes;
+    QVector<QgsGraphVertex> mGraphVertices;
 
     QVector<QgsGraphEdge> mGraphEdges;
 };

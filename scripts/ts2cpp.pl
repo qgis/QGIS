@@ -14,13 +14,19 @@
 #                                                                         #
 ###########################################################################
 
+use strict;
+use warnings;
+use Carp qw/croak/;
 use XML::Simple;
+
+$SIG{__WARN__} = sub { croak @_; };
 
 die "usage: $0 source.ts dest.cpp\n" unless @ARGV==2 && -f $ARGV[0];
 
 my $xml = XMLin($ARGV[0], ForceArray=>1);
 
 open F, ">$ARGV[1]";
+binmode(F, ":utf8");
 
 print F <<EOF;
 /*
@@ -46,7 +52,7 @@ foreach my $context ( @{ $xml->{context} } ) {
 			$message->{comment}->[0] =~ s/"/\\"/g;
 			$message->{comment}->[0] =~ s/\n/\\n/g;
 
-			print F ",\"$context->{comment}->[0]\"";
+			print F ",\"$message->{comment}->[0]\"";
 		}
 
 		if( exists $message->{numerus} && $message->{numerus} eq "yes" ) {

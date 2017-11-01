@@ -14,7 +14,16 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>3</number>
+   </property>
+   <property name="topMargin">
+    <number>3</number>
+   </property>
+   <property name="rightMargin">
+    <number>3</number>
+   </property>
+   <property name="bottomMargin">
     <number>3</number>
    </property>
    <item>
@@ -33,7 +42,7 @@
       <widget class="QLineEdit" name="mMaxLineEdit"/>
      </item>
      <item row="0" column="1" colspan="4">
-      <widget class="QComboBox" name="mGrayBandComboBox"/>
+      <widget class="QgsRasterBandComboBox" name="mGrayBandComboBox"/>
      </item>
      <item row="3" column="0">
       <widget class="QLabel" name="mContrastEnhancementLabel">
@@ -108,6 +117,13 @@ enhancement</string>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsRasterBandComboBox</class>
+   <extends>QComboBox</extends>
+   <header>raster/qgsrasterbandcombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mGrayBandComboBox</tabstop>
   <tabstop>mGradientComboBox</tabstop>

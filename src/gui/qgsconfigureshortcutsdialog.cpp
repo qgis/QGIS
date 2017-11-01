@@ -16,40 +16,38 @@
 #include "qgsconfigureshortcutsdialog.h"
 
 #include "qgsshortcutsmanager.h"
-
 #include "qgslogger.h"
+#include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QKeyEvent>
 #include <QKeySequence>
 #include <QMessageBox>
-
 #include <QShortcut>
 #include <QDomDocument>
 #include <QFileDialog>
 #include <QTextStream>
-#include <QSettings>
 #include <QDebug>
 
-QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget* parent, QgsShortcutsManager* manager )
-    : QDialog( parent )
-    , mManager( manager )
-    , mGettingShortcut( false )
-    , mModifiers( 0 )
-    , mKey( 0 )
+QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsShortcutsManager *manager )
+  : QDialog( parent )
+  , mManager( manager )
 {
   setupUi( this );
+  connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsConfigureShortcutsDialog::mLeFilter_textChanged );
 
   if ( !mManager )
-    mManager = QgsShortcutsManager::instance();
+    mManager = QgsGui::shortcutsManager();
 
-  connect( btnChangeShortcut, SIGNAL( clicked() ), this, SLOT( changeShortcut() ) );
-  connect( btnResetShortcut, SIGNAL( clicked() ), this, SLOT( resetShortcut() ) );
-  connect( btnSetNoShortcut, SIGNAL( clicked() ), this, SLOT( setNoShortcut() ) );
-  connect( btnSaveShortcuts, SIGNAL( clicked() ), this, SLOT( saveShortcuts() ) );
-  connect( btnLoadShortcuts, SIGNAL( clicked() ), this, SLOT( loadShortcuts() ) );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsConfigureShortcutsDialog::showHelp ); // Vérifier nommage des boutons
+  connect( btnChangeShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::changeShortcut );
+  connect( btnResetShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::resetShortcut );
+  connect( btnSetNoShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::setNoShortcut );
+  connect( btnSaveShortcuts, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::saveShortcuts );
+  connect( btnLoadShortcuts, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::loadShortcuts );
 
-  connect( treeActions, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ),
-           this, SLOT( actionChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
+  connect( treeActions, &QTreeWidget::currentItemChanged,
+           this, &QgsConfigureShortcutsDialog::actionChanged );
 
   populateActions();
 
@@ -61,47 +59,42 @@ QgsConfigureShortcutsDialog::~QgsConfigureShortcutsDialog()
   saveState();
 }
 
-/*!
- * Function to save dialog window state
- */
 void QgsConfigureShortcutsDialog::saveState()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ShortcutsDialog/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/ShortcutsDialog/geometry" ), saveGeometry() );
 }
 
-/*!
- * Function to restore dialog window state
- */
 void QgsConfigureShortcutsDialog::restoreState()
 {
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ShortcutsDialog/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ShortcutsDialog/geometry" ) ).toByteArray() );
 }
 
 void QgsConfigureShortcutsDialog::populateActions()
 {
-  QList<QObject*> objects = mManager->listAll();
+  QList<QObject *> objects = mManager->listAll();
 
   QList<QTreeWidgetItem *> items;
   items.reserve( objects.count() );
-  Q_FOREACH ( QObject* obj, objects )
+  Q_FOREACH ( QObject *obj, objects )
   {
     QString actionText;
     QString sequence;
     QIcon icon;
 
-    if ( QAction* action = qobject_cast< QAction* >( obj ) )
+    if ( QAction *action = qobject_cast< QAction * >( obj ) )
     {
       actionText = action->text();
       actionText.remove( '&' ); // remove the accelerator
       sequence = action->shortcut().toString();
       icon = action->icon();
     }
-    else if ( QShortcut* shortcut = qobject_cast< QShortcut* >( obj ) )
+    else if ( QShortcut *shortcut = qobject_cast< QShortcut * >( obj ) )
     {
       actionText = shortcut->whatsThis();
       sequence = shortcut->key().toString();
+      icon = shortcut->property( "Icon" ).value<QIcon>();
     }
     else
     {
@@ -110,7 +103,7 @@ void QgsConfigureShortcutsDialog::populateActions()
 
     QStringList lst;
     lst << actionText << sequence;
-    QTreeWidgetItem* item = new QTreeWidgetItem( lst );
+    QTreeWidgetItem *item = new QTreeWidgetItem( lst );
     item->setIcon( 0, icon );
     item->setData( 0, Qt::UserRole, qVariantFromValue( obj ) );
     items.append( item );
@@ -149,7 +142,7 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
     return;
   }
 
-  QSettings settings;
+  QgsSettings settings;
 
   QDomDocument doc( QStringLiteral( "shortcuts" ) );
   QDomElement root = doc.createElement( QStringLiteral( "qgsshortcuts" ) );
@@ -221,7 +214,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
     return;
   }
 
-  QSettings settings;
+  QgsSettings settings;
   QString currentLocale;
 
   bool localeOverrideFlag = settings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
@@ -266,7 +259,7 @@ void QgsConfigureShortcutsDialog::changeShortcut()
 
 void QgsConfigureShortcutsDialog::resetShortcut()
 {
-  QObject* object = currentObject();
+  QObject *object = currentObject();
   QString sequence = mManager->objectDefaultKeySequence( object );
   setCurrentActionShortcut( sequence );
 }
@@ -276,14 +269,14 @@ void QgsConfigureShortcutsDialog::setNoShortcut()
   setCurrentActionShortcut( QKeySequence() );
 }
 
-QAction* QgsConfigureShortcutsDialog::currentAction()
+QAction *QgsConfigureShortcutsDialog::currentAction()
 {
-  return qobject_cast<QAction*>( currentObject() );
+  return qobject_cast<QAction *>( currentObject() );
 }
 
-QShortcut* QgsConfigureShortcutsDialog::currentShortcut()
+QShortcut *QgsConfigureShortcutsDialog::currentShortcut()
 {
-  return qobject_cast<QShortcut*>( currentObject() );
+  return qobject_cast<QShortcut *>( currentObject() );
 }
 
 void QgsConfigureShortcutsDialog::actionChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
@@ -295,13 +288,13 @@ void QgsConfigureShortcutsDialog::actionChanged( QTreeWidgetItem *current, QTree
 
   QString shortcut;
   QKeySequence sequence;
-  if ( QAction* action = currentAction() )
+  if ( QAction *action = currentAction() )
   {
     // show which one is the default action
     shortcut = mManager->defaultKeySequence( action );
     sequence = action->shortcut();
   }
-  else if ( QShortcut* object = currentShortcut() )
+  else if ( QShortcut *object = currentShortcut() )
   {
     // show which one is the default action
     shortcut = mManager->defaultKeySequence( object );
@@ -322,7 +315,7 @@ void QgsConfigureShortcutsDialog::actionChanged( QTreeWidgetItem *current, QTree
   btnResetShortcut->setEnabled( sequence != QKeySequence( shortcut ) );
 }
 
-void QgsConfigureShortcutsDialog::keyPressEvent( QKeyEvent * event )
+void QgsConfigureShortcutsDialog::keyPressEvent( QKeyEvent *event )
 {
   if ( !mGettingShortcut )
   {
@@ -333,7 +326,7 @@ void QgsConfigureShortcutsDialog::keyPressEvent( QKeyEvent * event )
   int key = event->key();
   switch ( key )
   {
-      // modifiers
+    // modifiers
     case Qt::Key_Meta:
       mModifiers |= Qt::META;
       updateShortcutText();
@@ -351,7 +344,7 @@ void QgsConfigureShortcutsDialog::keyPressEvent( QKeyEvent * event )
       updateShortcutText();
       break;
 
-      // escape aborts the acquisition of shortcut
+    // escape aborts the acquisition of shortcut
     case Qt::Key_Escape:
       setGettingShortcut( false );
       break;
@@ -362,7 +355,7 @@ void QgsConfigureShortcutsDialog::keyPressEvent( QKeyEvent * event )
   }
 }
 
-void QgsConfigureShortcutsDialog::keyReleaseEvent( QKeyEvent * event )
+void QgsConfigureShortcutsDialog::keyReleaseEvent( QKeyEvent *event )
 {
   if ( !mGettingShortcut )
   {
@@ -373,7 +366,7 @@ void QgsConfigureShortcutsDialog::keyReleaseEvent( QKeyEvent * event )
   int key = event->key();
   switch ( key )
   {
-      // modifiers
+    // modifiers
     case Qt::Key_Meta:
       mModifiers &= ~Qt::META;
       updateShortcutText();
@@ -403,12 +396,12 @@ void QgsConfigureShortcutsDialog::keyReleaseEvent( QKeyEvent * event )
   }
 }
 
-QObject* QgsConfigureShortcutsDialog::currentObject()
+QObject *QgsConfigureShortcutsDialog::currentObject()
 {
   if ( !treeActions->currentItem() )
     return nullptr;
 
-  QObject* object = treeActions->currentItem()->data( 0, Qt::UserRole ).value<QObject*>();
+  QObject *object = treeActions->currentItem()->data( 0, Qt::UserRole ).value<QObject *>();
   return object;
 }
 
@@ -435,26 +428,26 @@ void QgsConfigureShortcutsDialog::setGettingShortcut( bool getting )
   }
 }
 
-void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence& s )
+void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence &s )
 {
-  QObject* object = currentObject();
+  QObject *object = currentObject();
   if ( !object )
     return;
 
   // first check whether this action is not taken already
-  QObject* otherObject = mManager->objectForSequence( s );
+  QObject *otherObject = mManager->objectForSequence( s );
   if ( otherObject == object )
     return;
 
   if ( otherObject )
   {
     QString otherText;
-    if ( QAction* otherAction = qobject_cast< QAction* >( otherObject ) )
+    if ( QAction *otherAction = qobject_cast< QAction * >( otherObject ) )
     {
       otherText = otherAction->text();
       otherText.remove( '&' ); // remove the accelerator
     }
-    else if ( QShortcut* otherShortcut = qobject_cast< QShortcut* >( otherObject ) )
+    else if ( QShortcut *otherShortcut = qobject_cast< QShortcut * >( otherObject ) )
     {
       otherText = otherShortcut->whatsThis();
     }
@@ -468,7 +461,7 @@ void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence& 
 
     // reset action of the conflicting other action!
     mManager->setObjectKeySequence( otherObject, QString() );
-    QList<QTreeWidgetItem*> items = treeActions->findItems( otherText, Qt::MatchExactly );
+    QList<QTreeWidgetItem *> items = treeActions->findItems( otherText, Qt::MatchExactly );
     if ( !items.isEmpty() ) // there should be exactly one
       items[0]->setText( 1, QString() );
   }
@@ -482,11 +475,11 @@ void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence& 
   actionChanged( treeActions->currentItem(), nullptr );
 }
 
-void QgsConfigureShortcutsDialog::on_mLeFilter_textChanged( const QString& text )
+void QgsConfigureShortcutsDialog::mLeFilter_textChanged( const QString &text )
 {
   for ( int i = 0; i < treeActions->topLevelItemCount(); i++ )
   {
-    QTreeWidgetItem* item = treeActions->topLevelItem( i );
+    QTreeWidgetItem *item = treeActions->topLevelItem( i );
     if ( !item->text( 0 ).contains( text, Qt::CaseInsensitive ) && !item->text( 1 ).contains( text, Qt::CaseInsensitive ) )
     {
       item->setHidden( true );
@@ -496,4 +489,9 @@ void QgsConfigureShortcutsDialog::on_mLeFilter_textChanged( const QString& text 
       item->setHidden( false );
     }
   }
+}
+
+void QgsConfigureShortcutsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#keyboard-shortcuts" ) );
 }

@@ -27,7 +27,7 @@ class QgsGeorefDescriptionDialog: public QDialog, private Ui::QgsGeorefDescripti
     Q_OBJECT
 
   public:
-    explicit QgsGeorefDescriptionDialog( QWidget* parent );
+    explicit QgsGeorefDescriptionDialog( QWidget *parent );
 };
 
 #endif

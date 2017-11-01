@@ -67,14 +67,18 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mVerticalDistanceUnitWidget" native="true"/>
+      <widget class="QgsUnitSelectionWidget" name="mVerticalDistanceUnitWidget" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
    <item row="2" column="2">
     <widget class="QgsPropertyOverrideButton" name="mVerticalDistanceDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -117,6 +121,9 @@
          <height>0</height>
         </size>
        </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
       </widget>
      </item>
     </layout>
@@ -124,7 +131,7 @@
    <item row="1" column="2">
     <widget class="QgsPropertyOverrideButton" name="mHorizontalDistanceDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -167,6 +174,9 @@
          <height>0</height>
         </size>
        </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
       </widget>
      </item>
     </layout>
@@ -174,7 +184,7 @@
    <item row="4" column="2">
     <widget class="QgsPropertyOverrideButton" name="mHorizontalDisplacementDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -210,6 +220,9 @@
          <height>0</height>
         </size>
        </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
       </widget>
      </item>
     </layout>
@@ -217,7 +230,7 @@
    <item row="5" column="2">
     <widget class="QgsPropertyOverrideButton" name="mVerticalDisplacementDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -238,14 +251,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
@@ -254,6 +267,20 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mHorizontalDistanceSpinBox</tabstop>
+  <tabstop>mHorizontalDistanceUnitWidget</tabstop>
+  <tabstop>mHorizontalDistanceDDBtn</tabstop>
+  <tabstop>mVerticalDistanceSpinBox</tabstop>
+  <tabstop>mVerticalDistanceUnitWidget</tabstop>
+  <tabstop>mVerticalDistanceDDBtn</tabstop>
+  <tabstop>mHorizontalDisplacementSpinBox</tabstop>
+  <tabstop>mHorizontalDisplacementUnitWidget</tabstop>
+  <tabstop>mHorizontalDisplacementDDBtn</tabstop>
+  <tabstop>mVerticalDisplacementSpinBox</tabstop>
+  <tabstop>mVerticalDisplacementUnitWidget</tabstop>
+  <tabstop>mVerticalDisplacementDDBtn</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

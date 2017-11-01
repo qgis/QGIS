@@ -32,11 +32,11 @@
 //
 
 QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent )
-    : QWidget( parent )
+  : QWidget( parent )
 {
   Q_ASSERT( manager );
 
-  QVBoxLayout* vLayout = new QVBoxLayout();
+  QVBoxLayout *vLayout = new QVBoxLayout();
   vLayout->setMargin( 0 );
   mTreeView = new QTreeView();
   mModel = new QgsTaskManagerModel( manager, this );
@@ -49,7 +49,7 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
   mTreeView->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   mTreeView->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
   mTreeView->header()->setStretchLastSection( false );
-  mTreeView->header()->setResizeMode( 0, QHeaderView::Stretch );
+  mTreeView->header()->setSectionResizeMode( 0, QHeaderView::Stretch );
 
   vLayout->addWidget( mTreeView );
 
@@ -62,15 +62,15 @@ QgsTaskManagerWidget::~QgsTaskManagerWidget()
 }
 
 
-void QgsTaskManagerWidget::modelRowsInserted( const QModelIndex&, int start, int end )
+void QgsTaskManagerWidget::modelRowsInserted( const QModelIndex &, int start, int end )
 {
   for ( int row = start; row <= end; ++row )
   {
-    QgsTask* task = mModel->indexToTask( mModel->index( row, 1 ) );
+    QgsTask *task = mModel->indexToTask( mModel->index( row, 1 ) );
     if ( !task )
       continue;
 
-    QProgressBar* progressBar = new QProgressBar();
+    QProgressBar *progressBar = new QProgressBar();
     progressBar->setAutoFillBackground( true );
     connect( task, &QgsTask::progressChanged, progressBar, [progressBar]( double progress )
     {
@@ -86,7 +86,7 @@ void QgsTaskManagerWidget::modelRowsInserted( const QModelIndex&, int start, int
            );
     mTreeView->setIndexWidget( mModel->index( row, QgsTaskManagerModel::Progress ), progressBar );
 
-    QgsTaskStatusWidget* statusWidget = new QgsTaskStatusWidget( nullptr, task->status(), task->canCancel() );
+    QgsTaskStatusWidget *statusWidget = new QgsTaskStatusWidget( nullptr, task->status(), task->canCancel() );
     statusWidget->setAutoFillBackground( true );
     connect( task, &QgsTask::statusChanged, statusWidget, &QgsTaskStatusWidget::setStatus );
     connect( statusWidget, &QgsTaskStatusWidget::cancelClicked, task, &QgsTask::cancel );
@@ -100,13 +100,13 @@ void QgsTaskManagerWidget::modelRowsInserted( const QModelIndex&, int start, int
 //
 
 QgsTaskManagerModel::QgsTaskManagerModel( QgsTaskManager *manager, QObject *parent )
-    : QAbstractItemModel( parent )
-    , mManager( manager )
+  : QAbstractItemModel( parent )
+  , mManager( manager )
 {
   Q_ASSERT( mManager );
 
   //populate row to id map
-  Q_FOREACH ( QgsTask* task, mManager->tasks() )
+  Q_FOREACH ( QgsTask *task, mManager->tasks() )
   {
     mRowToTaskIdList << mManager->taskId( task );
   }
@@ -167,7 +167,7 @@ QVariant QgsTaskManagerModel::data( const QModelIndex &index, int role ) const
   if ( !index.isValid() )
     return QVariant();
 
-  QgsTask* task = indexToTask( index );
+  QgsTask *task = indexToTask( index );
   if ( task )
   {
     switch ( role )
@@ -240,7 +240,7 @@ Qt::ItemFlags QgsTaskManagerModel::flags( const QModelIndex &index ) const
     return flags;
   }
 
-  QgsTask* task = indexToTask( index );
+  QgsTask *task = indexToTask( index );
   if ( index.column() == Status )
   {
     if ( task && task->canCancel() )
@@ -256,7 +256,7 @@ bool QgsTaskManagerModel::setData( const QModelIndex &index, const QVariant &val
   if ( !index.isValid() )
     return false;
 
-  QgsTask* task = indexToTask( index );
+  QgsTask *task = indexToTask( index );
   if ( !task )
     return false;
 
@@ -366,10 +366,9 @@ QModelIndex QgsTaskManagerModel::idToIndex( long id, int column ) const
 //
 
 QgsTaskStatusWidget::QgsTaskStatusWidget( QWidget *parent, QgsTask::TaskStatus status, bool canCancel )
-    : QWidget( parent )
-    , mCanCancel( canCancel )
-    , mStatus( status )
-    , mInside( false )
+  : QWidget( parent )
+  , mCanCancel( canCancel )
+  , mStatus( status )
 {
   setMouseTracking( true );
 }
@@ -385,33 +384,33 @@ void QgsTaskStatusWidget::setStatus( int status )
   update();
 }
 
-void QgsTaskStatusWidget::paintEvent( QPaintEvent* e )
+void QgsTaskStatusWidget::paintEvent( QPaintEvent *e )
 {
   QWidget::paintEvent( e );
 
   QIcon icon;
   if ( mInside && ( mCanCancel || ( mStatus == QgsTask::Queued || mStatus == QgsTask::OnHold ) ) )
   {
-    icon = QgsApplication::getThemeIcon( "/mTaskCancel.svg" );
+    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskCancel.svg" ) );
   }
   else
   {
     switch ( mStatus )
     {
       case QgsTask::Queued:
-        icon = QgsApplication::getThemeIcon( "/mTaskQueued.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskQueued.svg" ) );
         break;
       case QgsTask::OnHold:
-        icon = QgsApplication::getThemeIcon( "/mTaskOnHold.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskOnHold.svg" ) );
         break;
       case QgsTask::Running:
-        icon = QgsApplication::getThemeIcon( "/mTaskRunning.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskRunning.svg" ) );
         break;
       case QgsTask::Complete:
-        icon = QgsApplication::getThemeIcon( "/mTaskComplete.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskComplete.svg" ) );
         break;
       case QgsTask::Terminated:
-        icon = QgsApplication::getThemeIcon( "/mTaskTerminated.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskTerminated.svg" ) );
         break;
     }
   }
@@ -421,13 +420,13 @@ void QgsTaskStatusWidget::paintEvent( QPaintEvent* e )
   p.end();
 }
 
-void QgsTaskStatusWidget::mousePressEvent( QMouseEvent* )
+void QgsTaskStatusWidget::mousePressEvent( QMouseEvent * )
 {
   if ( mCanCancel || ( mStatus == QgsTask::Queued || mStatus == QgsTask::OnHold ) )
     emit cancelClicked();
 }
 
-void QgsTaskStatusWidget::mouseMoveEvent( QMouseEvent* )
+void QgsTaskStatusWidget::mouseMoveEvent( QMouseEvent * )
 {
   if ( !mInside )
   {
@@ -436,7 +435,7 @@ void QgsTaskStatusWidget::mouseMoveEvent( QMouseEvent* )
   }
 }
 
-void QgsTaskStatusWidget::leaveEvent( QEvent* )
+void QgsTaskStatusWidget::leaveEvent( QEvent * )
 {
   mInside = false;
   update();
@@ -466,10 +465,10 @@ bool QgsTaskStatusWidget::editorEvent( QEvent *event, QAbstractItemModel *model,
 */
 
 QgsTaskManagerFloatingWidget::QgsTaskManagerFloatingWidget( QgsTaskManager *manager, QWidget *parent )
-    : QgsFloatingWidget( parent )
+  : QgsFloatingWidget( parent )
 {
   setLayout( new QVBoxLayout() );
-  QgsTaskManagerWidget* w = new QgsTaskManagerWidget( manager );
+  QgsTaskManagerWidget *w = new QgsTaskManagerWidget( manager );
   setMinimumSize( 350, 270 );
   layout()->addWidget( w );
   setStyleSheet( ".QgsTaskManagerFloatingWidget { border-top-left-radius: 8px;"
@@ -478,9 +477,8 @@ QgsTaskManagerFloatingWidget::QgsTaskManagerFloatingWidget( QgsTaskManager *mana
 
 
 QgsTaskManagerStatusBarWidget::QgsTaskManagerStatusBarWidget( QgsTaskManager *manager, QWidget *parent )
-    : QToolButton( parent )
-    , mProgressBar( nullptr )
-    , mManager( manager )
+  : QToolButton( parent )
+  , mManager( manager )
 {
   setAutoRaise( true );
   setSizePolicy( QSizePolicy::Fixed, QSizePolicy::MinimumExpanding );
@@ -529,7 +527,7 @@ void QgsTaskManagerStatusBarWidget::overallProgressChanged( double progress )
   mProgressBar->setValue( progress );
   if ( qgsDoubleNear( progress, 0.0 ) )
     mProgressBar->setMaximum( 0 );
-  else if ( mProgressBar->maximum( ) == 0 )
+  else if ( mProgressBar->maximum() == 0 )
     mProgressBar->setMaximum( 100 );
   setToolTip( mManager->activeTasks().at( 0 )->description() );
 }

@@ -20,12 +20,14 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterrange.h"
 #include "qgis_gui.h"
+#include "qgshelp.h"
 
 class QgsRasterLayer;
 class QgsRasterDataProvider;
 class QgsRasterFormatOptionsWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRasterLayerSaveAsDialog
  */
 class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRasterLayerSaveAsDialogBase
@@ -49,10 +51,13 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
       UserResolution
     };
 
-    QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer,
-                                QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
-                                const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs,
-                                QWidget* parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer,
+                                QgsRasterDataProvider *sourceProvider,
+                                const QgsRectangle &currentExtent,
+                                const QgsCoordinateReferenceSystem &layerCrs,
+                                const QgsCoordinateReferenceSystem &currentCrs,
+                                QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                                Qt::WindowFlags f = 0 );
 
     Mode mode() const;
     int nColumns() const;
@@ -83,32 +88,34 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     virtual void accept() override { if ( validate() ) return QDialog::accept(); }
 
   private slots:
-    void on_mRawModeRadioButton_toggled( bool );
-    void on_mBrowseButton_clicked();
-    void on_mSaveAsLineEdit_textChanged( const QString& text );
-    void on_mFormatComboBox_currentIndexChanged( const QString& text );
-    void on_mResolutionRadioButton_toggled( bool ) { toggleResolutionSize(); }
-    void on_mOriginalResolutionPushButton_clicked() { setOriginalResolution(); }
-    void on_mXResolutionLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcSize(); }
-    void on_mYResolutionLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcSize(); }
+    void mRawModeRadioButton_toggled( bool );
+    void mBrowseButton_clicked();
+    void mSaveAsLineEdit_textChanged( const QString &text );
+    void mFormatComboBox_currentIndexChanged( const QString &text );
+    void mResolutionRadioButton_toggled( bool ) { toggleResolutionSize(); }
+    void mOriginalResolutionPushButton_clicked() { setOriginalResolution(); }
+    void mXResolutionLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcSize(); }
+    void mYResolutionLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcSize(); }
 
-    void on_mOriginalSizePushButton_clicked() { setOriginalSize(); }
-    void on_mColumnsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
-    void on_mRowsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
+    void mOriginalSizePushButton_clicked() { setOriginalSize(); }
+    void mColumnsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
+    void mRowsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
 
-    void on_mAddNoDataManuallyToolButton_clicked();
-    void on_mLoadTransparentNoDataToolButton_clicked();
-    void on_mRemoveSelectedNoDataToolButton_clicked();
-    void on_mRemoveAllNoDataToolButton_clicked();
-    void noDataCellTextEdited( const QString & text );
-    void on_mTileModeCheckBox_toggled( bool toggled );
-    void on_mPyramidsGroupBox_toggled( bool toggled );
+    void mAddNoDataManuallyToolButton_clicked();
+    void mLoadTransparentNoDataToolButton_clicked();
+    void mRemoveSelectedNoDataToolButton_clicked();
+    void mRemoveAllNoDataToolButton_clicked();
+    void noDataCellTextEdited( const QString &text );
+    void mTileModeCheckBox_toggled( bool toggled );
+    void mPyramidsGroupBox_toggled( bool toggled );
     void populatePyramidsLevels();
     void extentChanged();
+    void crsChanged();
+    void showHelp();
 
   private:
-    QgsRasterLayer* mRasterLayer;
-    QgsRasterDataProvider* mDataProvider;
+    QgsRasterLayer *mRasterLayer = nullptr;
+    QgsRasterDataProvider *mDataProvider = nullptr;
     QgsRectangle mCurrentExtent;
     QgsCoordinateReferenceSystem mLayerCrs; // may differ from provider CRS
     QgsCoordinateReferenceSystem mCurrentCrs;
@@ -118,7 +125,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
 
     void setValidators();
     void toggleResolutionSize();
-    void setResolution( double xRes, double yRes, const QgsCoordinateReferenceSystem& srcCrs );
+    void setResolution( double xRes, double yRes, const QgsCoordinateReferenceSystem &srcCrs );
     void setOriginalResolution();
     void setOriginalSize();
     void recalcSize();
@@ -132,8 +139,6 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void adjustNoDataCellWidth( int row, int column );
     bool validate() const;
 
-  private slots:
-    void crsChanged();
 };
 
 

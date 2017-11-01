@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from future import standard_library
-standard_library.install_aliases()
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -46,12 +44,11 @@ class SplitRGBBands(GeoAlgorithm):
     G = 'G'
     B = 'B'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Split RGB bands')
-        self.group, self.i18n_group = self.trAlgorithm('Image tools')
+    def __init__(self):
+        super().__init__()
         self.addParameter(ParameterRaster(SplitRGBBands.INPUT,
                                           self.tr('Input layer'), False))
         self.addOutput(OutputRaster(SplitRGBBands.R,
@@ -61,7 +58,16 @@ class SplitRGBBands(GeoAlgorithm):
         self.addOutput(OutputRaster(SplitRGBBands.B,
                                     self.tr('Output B band layer')))
 
-    def processAlgorithm(self, feedback):
+    def name(self):
+        return 'splitrgbbands'
+
+    def displayName(self):
+        return self.tr('Split RGB bands')
+
+    def group(self):
+        return self.tr('Image tools')
+
+    def processAlgorithm(self, parameters, context, feedback):
         # TODO: check correct num of bands
         input = self.getParameterValue(SplitRGBBands.INPUT)
         temp = getTempFilename(None).replace('.', '')
@@ -75,7 +81,7 @@ class SplitRGBBands(GeoAlgorithm):
         g = self.getOutputValue(SplitRGBBands.G)
         b = self.getOutputValue(SplitRGBBands.B)
         commands = []
-        version = SagaUtils.getSagaInstalledVersion(True)  # NOQA
+        version = SagaUtils.getInstalledVersion(True)
         trailing = ""
         lib = ""
         commands.append('%sio_gdal 0 -GRIDS "%s" -FILES "%s"' % (lib, temp, input)

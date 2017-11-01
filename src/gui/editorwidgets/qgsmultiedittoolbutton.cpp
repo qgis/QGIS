@@ -16,12 +16,8 @@
 #include "qgsmultiedittoolbutton.h"
 #include "qgsapplication.h"
 #include <QMenu>
-QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget* parent )
-    : QToolButton( parent )
-    , mIsMixedValues( false )
-    , mIsChanged( false )
-    , mState( Default )
-    , mMenu( nullptr )
+QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget *parent )
+  : QToolButton( parent )
 {
   setFocusPolicy( Qt::StrongFocus );
 
@@ -32,7 +28,7 @@ QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget* parent )
   setPopupMode( QToolButton::InstantPopup );
 
   mMenu = new QMenu( this );
-  connect( mMenu, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowMenu() ) );
+  connect( mMenu, &QMenu::aboutToShow, this, &QgsMultiEditToolButton::aboutToShowMenu );
   setMenu( mMenu );
 
   // sets initial appearance
@@ -47,7 +43,7 @@ void QgsMultiEditToolButton::aboutToShowMenu()
   {
     case Default:
     {
-      QAction* noAction = mMenu->addAction( tr( "No changes to commit" ) );
+      QAction *noAction = mMenu->addAction( tr( "No changes to commit" ) );
       noAction->setEnabled( false );
       break;
     }
@@ -55,14 +51,14 @@ void QgsMultiEditToolButton::aboutToShowMenu()
     {
       QString title = !mField.name().isEmpty() ? tr( "Set %1 for all selected features" ).arg( mField.name() )
                       : tr( "Set field for all selected features" );
-      QAction* setFieldAction = mMenu->addAction( title );
-      connect( setFieldAction, SIGNAL( triggered( bool ) ), this, SLOT( setFieldTriggered() ) );
+      QAction *setFieldAction = mMenu->addAction( title );
+      connect( setFieldAction, &QAction::triggered, this, &QgsMultiEditToolButton::setFieldTriggered );
       break;
     }
     case Changed:
     {
-      QAction* resetFieldAction = mMenu->addAction( tr( "Reset to original values" ) );
-      connect( resetFieldAction, SIGNAL( triggered( bool ) ), this, SLOT( resetFieldTriggered() ) );
+      QAction *resetFieldAction = mMenu->addAction( tr( "Reset to original values" ) );
+      connect( resetFieldAction, &QAction::triggered, this, &QgsMultiEditToolButton::resetFieldTriggered );
       break;
     }
   }

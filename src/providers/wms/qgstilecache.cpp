@@ -24,23 +24,24 @@ QCache<QUrl, QImage> QgsTileCache::sTileCache( 256 );
 QMutex QgsTileCache::sTileCacheMutex;
 
 
-void QgsTileCache::insertTile( const QUrl& url, const QImage& image )
+void QgsTileCache::insertTile( const QUrl &url, const QImage &image )
 {
   QMutexLocker locker( &sTileCacheMutex );
   sTileCache.insert( url, new QImage( image ) );
 }
 
-bool QgsTileCache::tile( const QUrl& url, QImage& image )
+bool QgsTileCache::tile( const QUrl &url, QImage &image )
 {
   QMutexLocker locker( &sTileCacheMutex );
-  if ( QImage* i = sTileCache.object( url ) )
+  bool success = false;
+  if ( QImage *i = sTileCache.object( url ) )
   {
     image = *i;
-    return true;
+    success = true;
   }
   else if ( QgsNetworkAccessManager::instance()->cache()->metaData( url ).isValid() )
   {
-    if ( QIODevice* data = QgsNetworkAccessManager::instance()->cache()->data( url ) )
+    if ( QIODevice *data = QgsNetworkAccessManager::instance()->cache()->data( url ) )
     {
       QByteArray imageData = data->readAll();
       delete data;
@@ -48,10 +49,13 @@ bool QgsTileCache::tile( const QUrl& url, QImage& image )
       image = QImage::fromData( imageData );
 
       // cache it as well (mutex is already locked)
-      sTileCache.insert( url, new QImage( image ) );
-
-      return true;
+      // Check for null because it could be a redirect (see: https://issues.qgis.org/issues/16427 )
+      if ( ! image.isNull( ) )
+      {
+        sTileCache.insert( url, new QImage( image ) );
+        success = true;
+      }
     }
   }
-  return false;
+  return success;
 }

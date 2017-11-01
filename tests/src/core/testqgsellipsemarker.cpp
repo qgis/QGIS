@@ -36,7 +36,8 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for ellipse marker symbol types.
  */
 class TestQgsEllipseMarkerSymbol : public QObject
@@ -44,13 +45,7 @@ class TestQgsEllipseMarkerSymbol : public QObject
     Q_OBJECT
 
   public:
-    TestQgsEllipseMarkerSymbol()
-        : mTestHasError( false )
-        , mpPointsLayer( 0 )
-        , mEllipseMarkerLayer( 0 )
-        , mMarkerSymbol( 0 )
-        , mSymbolRenderer( 0 )
-    {}
+    TestQgsEllipseMarkerSymbol() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -65,14 +60,14 @@ class TestQgsEllipseMarkerSymbol : public QObject
     void bounds();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
 
-    bool imageCheck( const QString& theType );
+    bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
-    QgsVectorLayer * mpPointsLayer;
-    QgsEllipseSymbolLayer* mEllipseMarkerLayer;
-    QgsMarkerSymbol* mMarkerSymbol;
-    QgsSingleSymbolRenderer* mSymbolRenderer;
+    QgsVectorLayer *mpPointsLayer = nullptr;
+    QgsEllipseSymbolLayer *mEllipseMarkerLayer = nullptr;
+    QgsMarkerSymbol *mMarkerSymbol = nullptr;
+    QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -109,7 +104,7 @@ void TestQgsEllipseMarkerSymbol::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mMapSettings.setLayers( QList<QgsMapLayer*>() << mpPointsLayer );
+  mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPointsLayer );
   mReport += QLatin1String( "<h1>Ellipse Marker Tests</h1>\n" );
 
 }
@@ -134,11 +129,11 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbol()
   mReport += QLatin1String( "<h2>Ellipse marker symbol layer test</h2>\n" );
 
   mEllipseMarkerLayer->setFillColor( Qt::blue );
-  mEllipseMarkerLayer->setOutlineColor( Qt::black );
+  mEllipseMarkerLayer->setStrokeColor( Qt::black );
   mEllipseMarkerLayer->setSymbolName( QStringLiteral( "circle" ) );
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
-  mEllipseMarkerLayer->setOutlineWidth( 0.8 );
+  mEllipseMarkerLayer->setStrokeWidth( 0.8 );
   QVERIFY( imageCheck( "ellipsemarker" ) );
 }
 
@@ -147,11 +142,11 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolBevelJoin()
   mReport += QLatin1String( "<h2>Ellipse marker symbol layer test</h2>\n" );
 
   mEllipseMarkerLayer->setFillColor( Qt::blue );
-  mEllipseMarkerLayer->setOutlineColor( Qt::black );
+  mEllipseMarkerLayer->setStrokeColor( Qt::black );
   mEllipseMarkerLayer->setSymbolName( QStringLiteral( "triangle" ) );
   mEllipseMarkerLayer->setSymbolHeight( 25 );
   mEllipseMarkerLayer->setSymbolWidth( 20 );
-  mEllipseMarkerLayer->setOutlineWidth( 3 );
+  mEllipseMarkerLayer->setStrokeWidth( 3 );
   mEllipseMarkerLayer->setPenJoinStyle( Qt::BevelJoin );
   QVERIFY( imageCheck( "ellipsemarker_beveljoin" ) );
 }
@@ -161,11 +156,11 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolMiterJoin()
   mReport += QLatin1String( "<h2>Ellipse marker symbol layer test</h2>\n" );
 
   mEllipseMarkerLayer->setFillColor( Qt::blue );
-  mEllipseMarkerLayer->setOutlineColor( Qt::black );
+  mEllipseMarkerLayer->setStrokeColor( Qt::black );
   mEllipseMarkerLayer->setSymbolName( QStringLiteral( "triangle" ) );
   mEllipseMarkerLayer->setSymbolHeight( 25 );
   mEllipseMarkerLayer->setSymbolWidth( 20 );
-  mEllipseMarkerLayer->setOutlineWidth( 3 );
+  mEllipseMarkerLayer->setStrokeWidth( 3 );
   mEllipseMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
   QVERIFY( imageCheck( "ellipsemarker_miterjoin" ) );
 }
@@ -175,11 +170,11 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolRoundJoin()
   mReport += QLatin1String( "<h2>Ellipse marker symbol layer test</h2>\n" );
 
   mEllipseMarkerLayer->setFillColor( Qt::blue );
-  mEllipseMarkerLayer->setOutlineColor( Qt::black );
+  mEllipseMarkerLayer->setStrokeColor( Qt::black );
   mEllipseMarkerLayer->setSymbolName( QStringLiteral( "triangle" ) );
   mEllipseMarkerLayer->setSymbolHeight( 25 );
   mEllipseMarkerLayer->setSymbolWidth( 20 );
-  mEllipseMarkerLayer->setOutlineWidth( 3 );
+  mEllipseMarkerLayer->setStrokeWidth( 3 );
   mEllipseMarkerLayer->setPenJoinStyle( Qt::RoundJoin );
   QVERIFY( imageCheck( "ellipsemarker_roundjoin" ) );
 }
@@ -187,12 +182,12 @@ void TestQgsEllipseMarkerSymbol::ellipseMarkerSymbolRoundJoin()
 void TestQgsEllipseMarkerSymbol::bounds()
 {
   mEllipseMarkerLayer->setFillColor( Qt::blue );
-  mEllipseMarkerLayer->setOutlineColor( Qt::black );
+  mEllipseMarkerLayer->setStrokeColor( Qt::black );
   mEllipseMarkerLayer->setSymbolName( QStringLiteral( "circle" ) );
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
   mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
-  mEllipseMarkerLayer->setOutlineWidth( 0.5 );
+  mEllipseMarkerLayer->setStrokeWidth( 0.5 );
 
   mMapSettings.setFlag( QgsMapSettings::DrawSymbolBounds, true );
   bool result = imageCheck( QStringLiteral( "ellipsemarker_bounds" ) );
@@ -206,7 +201,7 @@ void TestQgsEllipseMarkerSymbol::bounds()
 //
 
 
-bool TestQgsEllipseMarkerSymbol::imageCheck( const QString& theTestType )
+bool TestQgsEllipseMarkerSymbol::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
@@ -214,9 +209,9 @@ bool TestQgsEllipseMarkerSymbol::imageCheck( const QString& theTestType )
   mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( QStringLiteral( "symbol_ellipsemarker" ) );
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType );
+  bool myResultFlag = myChecker.runTest( testType );
   mReport += myChecker.report();
   return myResultFlag;
 }

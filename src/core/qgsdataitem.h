@@ -17,71 +17,61 @@
 #ifndef QGSDATAITEM_H
 #define QGSDATAITEM_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include <QFileSystemWatcher>
 #include <QFutureWatcher>
 #include <QIcon>
 #include <QLibrary>
-#include <QMovie>
 #include <QObject>
 #include <QPixmap>
 #include <QString>
 #include <QTreeWidget>
 #include <QVector>
+#include <QDateTime>
 
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmimedatautils.h"
 
+
 class QgsDataProvider;
 class QgsDataItem;
+class QgsAnimatedIcon;
 
-typedef QgsDataItem * dataItem_t( QString, QgsDataItem* );
+typedef QgsDataItem *dataItem_t( QString, QgsDataItem * ) SIP_SKIP;
 
-/** \ingroup core
- * Animated icon is keeping an animation running if there are listeners connected to frameChanged
-*/
-class CORE_EXPORT QgsAnimatedIcon : public QObject
-{
-    Q_OBJECT
-  public:
-
-    /** Constructor
-     * @param iconPath path to a movie, e.g. animated GIF */
-    QgsAnimatedIcon( const QString & iconPath = QString::null );
-
-    QString iconPath() const;
-    void setIconPath( const QString & iconPath );
-    QIcon icon() const { return mIcon; }
-
-    //! Connect listener to frameChanged() signal
-    void connectFrameChanged( const QObject * receiver, const char * method );
-    //! Disconnect listener from frameChanged() signal
-    void disconnectFrameChanged( const QObject * receiver, const char * method );
-
-  public slots:
-    void onFrameChanged();
-
-  signals:
-    //! Emitted when icon changed
-    void frameChanged();
-
-  private:
-    void resetMovie();
-    int mCount; // number of listeners
-    QMovie * mMovie;
-    QIcon mIcon;
-};
-
-/** \ingroup core
+/**
+ * \ingroup core
  * Base class for all items in the model.
  * Parent/children hierarchy is not based on QObject.
 */
 class CORE_EXPORT QgsDataItem : public QObject
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsLayerItem *>( sipCpp ) )
+      sipType = sipType_QgsLayerItem;
+    else if ( qobject_cast<QgsErrorItem *>( sipCpp ) )
+      sipType = sipType_QgsErrorItem;
+    else if ( qobject_cast<QgsDirectoryItem *>( sipCpp ) )
+      sipType = sipType_QgsDirectoryItem;
+    else if ( qobject_cast<QgsFavoritesItem *>( sipCpp ) )
+      sipType = sipType_QgsFavoritesItem;
+    else if ( qobject_cast<QgsZipItem *>( sipCpp ) )
+      sipType = sipType_QgsZipItem;
+    else if ( qobject_cast<QgsDataCollectionItem *>( sipCpp ) )
+      sipType = sipType_QgsDataCollectionItem;
+    else if ( qobject_cast<QgsProjectItem *>( sipCpp ) )
+      sipType = sipType_QgsProjectItem;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
     Q_OBJECT
-    Q_ENUMS( Type )
-    Q_ENUMS( State )
+
   public:
     enum Type
     {
@@ -90,20 +80,24 @@ class CORE_EXPORT QgsDataItem : public QObject
       Layer,
       Error,
       Favorites, //!< Represents a favorite item
-      Project //!< Represents a QGIS project
+      Project, //!< Represents a QGIS project
+      Custom, //!< Custom item type
     };
 
+    Q_ENUM( Type );
+
     //! Create new data item.
-    QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, const QString& name, const QString& path );
+    QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path );
     virtual ~QgsDataItem();
 
     bool hasChildren();
 
     int rowCount();
 
-    /** Create children. Children are not expected to have parent set.
+    /**
+     * Create children. Children are not expected to have parent set.
      * This method MUST BE THREAD SAFE. */
-    virtual QVector<QgsDataItem*> createChildren();
+    virtual QVector<QgsDataItem *> createChildren() SIP_FACTORY;
 
     enum State
     {
@@ -111,79 +105,112 @@ class CORE_EXPORT QgsDataItem : public QObject
       Populating,   //!< Creating children in separate thread (populating or refreshing)
       Populated     //!< Children created
     };
+    Q_ENUM( State );
 
-    //! @note added in 2.8
+    //! \since QGIS 2.8
     State state() const;
 
-    /** Set item state. It also take care about starting/stopping loading icon animation.
-     * @param state
-     * @note added in 2.8
+    /**
+     * Set item state. It also take care about starting/stopping loading icon animation.
+     * \param state
+     * \since QGIS 2.8
      */
     virtual void setState( State state );
 
-    /** Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
-     * @param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
-     * @param refresh - set to true to refresh populated item, emitting relevant signals to the model
-     * @see deleteChildItem()
+    /**
+     * Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
+     * \param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
+     * \param refresh - set to true to refresh populated item, emitting relevant signals to the model
+     * \see deleteChildItem()
      */
-    virtual void addChildItem( QgsDataItem *child, bool refresh = false );
+    virtual void addChildItem( QgsDataItem *child SIP_TRANSFER, bool refresh = false );
 
-    /** Removes and deletes a child item, emitting relevant signals to the model.
-     * @param child child to remove. Item must exist as a current child.
-     * @see addChildItem()
+    /**
+     * Removes and deletes a child item, emitting relevant signals to the model.
+     * \param child child to remove. Item must exist as a current child.
+     * \see addChildItem()
      */
-    virtual void deleteChildItem( QgsDataItem * child );
+    virtual void deleteChildItem( QgsDataItem *child );
 
-    /** Removes a child item and returns it without deleting it. Emits relevant signals to model as required.
-     * @param child child to remove
-     * @returns pointer to the removed item or null if no such item was found
+    /**
+     * Removes a child item and returns it without deleting it. Emits relevant signals to model as required.
+     * \param child child to remove
+     * \returns pointer to the removed item or null if no such item was found
      */
-    virtual QgsDataItem *removeChildItem( QgsDataItem * child );
+    virtual QgsDataItem *removeChildItem( QgsDataItem *child ) SIP_TRANSFERBACK;
 
-    /** Returns true if this item is equal to another item (by testing item type and path).
+    /**
+     * Returns true if this item is equal to another item (by testing item type and path).
      */
     virtual bool equal( const QgsDataItem *other );
 
-    virtual QWidget *paramWidget() { return nullptr; }
+    virtual QWidget *paramWidget() SIP_FACTORY { return nullptr; }
 
-    /** Returns the list of actions available for this item. This is usually used for the popup menu on right-clicking
+    /**
+     * Returns the list of actions available for this item. This is usually used for the popup menu on right-clicking
      * the item. Subclasses should override this to provide actions.
+     *
+     * Subclasses should ensure that ownership of created actions is correctly handled by parenting them
+     * to the specified parent widget.
      */
-    virtual QList<QAction*> actions() { return QList<QAction*>(); }
+    virtual QList<QAction *> actions( QWidget *parent );
 
-    /** Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
+    /**
+     * Returns the list of menus available for this item. This is usually used for the popup menu on right-clicking
+     * the item. Subclasses should override this to provide actions. Subclasses should ensure that ownership of
+     * created menus is correctly handled by parenting them to the specified parent widget.
+     * \param parent a parent widget of the menu
+     * \returns list of menus
+     * \since QGIS 3.0
+     */
+    virtual QList<QMenu *> menus( QWidget *parent );
+
+    /**
+     * Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
      * Subclasses should override this and handleDrop() to accept dropped layers.
-     * @see handleDrop()
+     * \see handleDrop()
      */
     virtual bool acceptDrop() { return false; }
 
-    /** Attempts to process the mime data dropped on this item. Subclasses must override this and acceptDrop() if they
+    /**
+     * Attempts to process the mime data dropped on this item. Subclasses must override this and acceptDrop() if they
      * accept dropped layers.
-     * @see acceptDrop()
+     * \see acceptDrop()
      */
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) { return false; }
 
-    /** Returns true if the item may be dragged.
+    /**
+     * Called when a user double clicks on the item. Subclasses should return true
+     * if they have implemented a double-click handler and do not want the default
+     * double-click behavior for items.
+     * \since QGIS 3.0
+     */
+    virtual bool handleDoubleClick();
+
+    /**
+     * Returns true if the item may be dragged.
      * Default implementation returns false.
      * A draggable item has to implement mimeUri() that will be used to pass data.
-     * @see mimeUri()
-     * @note added in 3.0
+     * \see mimeUri()
+     * \since QGIS 3.0
      */
     virtual bool hasDragEnabled() const { return false; }
 
-    /** Return mime URI for the data item.
+    /**
+     * Return mime URI for the data item.
      * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
-     * @see hasDragEnabled()
-     * @note added in 3.0
+     * \see hasDragEnabled()
+     * \since QGIS 3.0
      */
     virtual QgsMimeDataUtils::Uri mimeUri() const { return QgsMimeDataUtils::Uri(); }
 
     enum Capability
     {
-      NoCapabilities = 0,
-      SetCrs         = 1 << 0, //!< Can set CRS on layer or group of layers
-      Fertile        = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
-      Fast           = 1 << 2  //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QSettings
+      NoCapabilities    = 0,
+      SetCrs            = 1 << 0, //!< Can set CRS on layer or group of layers
+      Fertile           = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
+      Fast              = 1 << 2, //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
+      Collapse          = 1 << 3  //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
     };
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
@@ -191,7 +218,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Writes the selected crs into data source. The original data source will be modified when calling this
      * method.
      */
-    virtual bool setCrs( const QgsCoordinateReferenceSystem& crs ) { Q_UNUSED( crs ); return false; }
+    virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) { Q_UNUSED( crs ); return false; }
 
     // ### QGIS 3 - rename to capabilities()
     virtual Capabilities capabilities2() const { return mCapabilities; }
@@ -204,20 +231,22 @@ class CORE_EXPORT QgsDataItem : public QObject
     // static methods
 
     // Find child index in vector of items using '==' operator
-    static int findItem( QVector<QgsDataItem*> items, QgsDataItem * item );
+    static int findItem( QVector<QgsDataItem *> items, QgsDataItem *item );
 
     // members
 
     Type type() const { return mType; }
 
-    /** Get item parent. QgsDataItem maintains its own items hierarchy, it does not use
+    /**
+     * Get item parent. QgsDataItem maintains its own items hierarchy, it does not use
      *  QObject hierarchy. */
-    QgsDataItem* parent() const { return mParent; }
+    QgsDataItem *parent() const { return mParent; }
 
-    /** Set item parent and connect / disconnect parent to / from item signals.
+    /**
+     * Set item parent and connect / disconnect parent to / from item signals.
      *  It does not add itself to parents children (mChildren) */
-    void setParent( QgsDataItem* parent );
-    QVector<QgsDataItem*> children() const { return mChildren; }
+    void setParent( QgsDataItem *parent );
+    QVector<QgsDataItem *> children() const { return mChildren; }
     virtual QIcon icon();
     QString name() const { return mName; }
     void setName( const QString &name ) { mName = name; }
@@ -229,27 +258,28 @@ class CORE_EXPORT QgsDataItem : public QObject
     // Because QIcon (QPixmap) must not be used in outside the GUI thread, it is
     // not possible to set mIcon in constructor. Either use mIconName/setIconName()
     // or implement icon().
-    void setIcon( const QIcon& icon ) { mIcon = icon; }
-    void setIconName( const QString & iconName ) { mIconName = iconName; }
+    void setIcon( const QIcon &icon ) { mIcon = icon; }
+    void setIconName( const QString &iconName ) { mIconName = iconName; }
 
-    void setToolTip( const QString& msg ) { mToolTip = msg; }
+    void setToolTip( const QString &msg ) { mToolTip = msg; }
     QString toolTip() const { return mToolTip; }
 
     // deleteLater() items anc clear the vector
-    static void deleteLater( QVector<QgsDataItem*> &items );
+    static void deleteLater( QVector<QgsDataItem *> &items );
 
     //! Move object and all its descendants to thread
-    void moveToThread( QThread * targetThread );
+    void moveToThread( QThread *targetThread );
 
   protected:
-    virtual void populate( const QVector<QgsDataItem*>& children );
+    virtual void populate( const QVector<QgsDataItem *> &children );
 
     /**
      * Refresh the items from a specified list of child items.
      */
     virtual void refresh( const QVector<QgsDataItem *> &children );
 
-    /** The item is scheduled to be deleted. E.g. if deleteLater() is called when
+    /**
+     * The item is scheduled to be deleted. E.g. if deleteLater() is called when
      * item is in Populating state (createChildren() running in another thread),
      * the deferredDelete() returns true and item will be deleted once Populating finished.
      * Items with slow reateChildren() (for example network or database based) may
@@ -259,8 +289,8 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     Type mType;
     Capabilities mCapabilities;
-    QgsDataItem* mParent;
-    QVector<QgsDataItem*> mChildren; // easier to have it always
+    QgsDataItem *mParent = nullptr;
+    QVector<QgsDataItem *> mChildren; // easier to have it always
     State mState;
     QString mName;
     // Path is slash ('/') separated chain of item identifiers which are usually item names, but may be differen if it is
@@ -275,7 +305,8 @@ class CORE_EXPORT QgsDataItem : public QObject
 
   public slots:
 
-    /** Safely delete the item:
+    /**
+     * Safely delete the item:
      *   - disconnects parent
      *   - unsets parent (but does not remove itself)
      *   - deletes all its descendants recursively
@@ -285,7 +316,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual void deleteLater();
 
     // Populate children using children vector created by createChildren()
-    // @param foreground run createChildren in foreground
+    // \param foreground run createChildren in foreground
     virtual void populate( bool foreground = false );
 
     //! Remove children recursively and set as not populated. This is used when refreshing collapsed items.
@@ -293,35 +324,56 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual void refresh();
 
-    void emitDataChanged();
+    //! Refresh connections: update GUI and emit signal
+    virtual void refreshConnections();
+
     virtual void childrenCreated();
 
   signals:
-    void beginInsertItems( QgsDataItem* parent, int first, int last );
+    void beginInsertItems( QgsDataItem *parent, int first, int last );
     void endInsertItems();
-    void beginRemoveItems( QgsDataItem* parent, int first, int last );
+    void beginRemoveItems( QgsDataItem *parent, int first, int last );
     void endRemoveItems();
-    void dataChanged( QgsDataItem * item );
-    void stateChanged( QgsDataItem * item, QgsDataItem::State oldState );
+    void dataChanged( QgsDataItem *item );
+    void stateChanged( QgsDataItem *item, QgsDataItem::State oldState );
+
+    /**
+     * Emitted when the provider's connections of the child items have changed
+     * This signal is normally forwarded to the app in order to refresh the connection
+     * item in the provider dialogs and to refresh the connection items in the other
+     * open browsers
+     */
+    void connectionsChanged();
+
+  protected slots:
+
+    /**
+     * Will request a repaint of this icon.
+     *
+     * \since QGIS 3.0
+     */
+    void updateIcon();
 
   private:
-    static QVector<QgsDataItem*> runCreateChildren( QgsDataItem* item );
+    static QVector<QgsDataItem *> runCreateChildren( QgsDataItem *item );
 
     // Set to true if object has to be deleted when possible (nothing running in threads)
     bool mDeferredDelete;
-    QFutureWatcher< QVector <QgsDataItem*> > *mFutureWatcher;
+    QFutureWatcher< QVector <QgsDataItem *> > *mFutureWatcher;
     // number of items currently in loading (populating) state
-    static QgsAnimatedIcon * sPopulatingIcon;
+    static QgsAnimatedIcon *sPopulatingIcon;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataItem::Capabilities )
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Item that represents a layer that can be opened with one of the providers
 */
 class CORE_EXPORT QgsLayerItem : public QgsDataItem
 {
     Q_OBJECT
+
   public:
     enum LayerType
     {
@@ -337,7 +389,9 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       Plugin     //!< Added in 2.10
     };
 
-    QgsLayerItem( QgsDataItem* parent, const QString& name, const QString& path, const QString& uri, LayerType layerType, const QString& providerKey );
+    Q_ENUM( LayerType );
+
+    QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey );
 
     // --- reimplemented from QgsDataItem ---
 
@@ -358,20 +412,35 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     //! Returns provider key
     QString providerKey() const { return mProviderKey; }
 
-    /** Returns the supported CRS
-     *  @note Added in 2.8
+    /**
+     * Returns the supported CRS
+     *  \since QGIS 2.8
      */
     QStringList supportedCrs() const { return mSupportedCRS; }
 
-    /** Returns the supported formats
-     *  @note Added in 2.8
+    /**
+     * Returns the supported formats
+     *  \since QGIS 2.8
      */
     QStringList supportedFormats() const { return mSupportFormats; }
 
-    /** Returns comments of the layer
-     * @note added in 2.12
+    /**
+     * Returns comments of the layer
+     * \since QGIS 2.12
      */
     virtual QString comments() const { return QString(); }
+
+    /**
+     * Returns the string representation of the given \a layerType
+     * \since QGIS 3
+     */
+    static QString layerTypeAsString( const LayerType &layerType );
+
+    /**
+     * Returns the icon name of the given \a layerType
+     * \since QGIS 3
+     */
+    static QString iconName( const LayerType &layerType );
 
   protected:
 
@@ -394,28 +463,30 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconRaster();
     static QIcon iconDefault();
 
-    //! @return the layer name
+    //! \returns the layer name
     virtual QString layerName() const { return name(); }
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A Collection: logical collection of layers or subcollections, e.g. GRASS location/mapset, database? wms source?
 */
 class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-    QgsDataCollectionItem( QgsDataItem* parent, const QString& name, const QString& path = QString::null );
+    QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
     ~QgsDataCollectionItem();
 
-    void addChild( QgsDataItem *item ) { mChildren.append( item ); }
+    void addChild( QgsDataItem *item SIP_TRANSFER ) { mChildren.append( item ); }
 
     static QIcon iconDir(); // shared icon: open/closed directory
     static QIcon iconDataCollection(); // default icon for data collection
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A directory: contains subdirectories and layers
 */
 class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
@@ -433,26 +504,30 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
       Type
     };
 
-    QgsDirectoryItem( QgsDataItem* parent, const QString& name, const QString& path );
+    QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &path );
 
-    /** Constructor.
-     * @param parent
-     * @param name directory name
-     * @param dirPath path to directory in file system
-     * @param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites: */
-    QgsDirectoryItem( QgsDataItem* parent, const QString& name, const QString& dirPath, const QString& path );
+    /**
+     * Constructor.
+     * \param parent
+     * \param name directory name
+     * \param dirPath path to directory in file system
+     * \param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites: */
+    QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path );
 
     virtual void setState( State state ) override;
 
-    QVector<QgsDataItem*> createChildren() override;
+    QVector<QgsDataItem *> createChildren() override;
 
     QString dirPath() const { return mDirPath; }
     virtual bool equal( const QgsDataItem *other ) override;
     virtual QIcon icon() override;
-    virtual QWidget *paramWidget() override;
+    virtual QWidget *paramWidget() override SIP_FACTORY;
 
     //! Check if the given path is hidden from the browser model
     static bool hiddenPath( const QString &path );
+
+    QList<QAction *> actions( QWidget *parent ) override;
+
 
   public slots:
     virtual void childrenCreated() override;
@@ -463,11 +538,13 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QString mDirPath;
 
   private:
-    QFileSystemWatcher * mFileSystemWatcher;
+    QFileSystemWatcher *mFileSystemWatcher = nullptr;
     bool mRefreshLater;
+    QDateTime mLastScan;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  Data item that can be used to represent QGIS projects.
  */
 class CORE_EXPORT QgsProjectItem : public QgsDataItem
@@ -476,18 +553,19 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
   public:
 
     /**
-     * @brief A data item holding a reference to a QGIS project file.
-     * @param parent The parent data item.
-     * @param name The name of the of the project. Displayed to the user.
-     * @param path The full path to the project.
+     * \brief A data item holding a reference to a QGIS project file.
+     * \param parent The parent data item.
+     * \param name The name of the of the project. Displayed to the user.
+     * \param path The full path to the project.
      */
-    QgsProjectItem( QgsDataItem* parent, const QString& name, const QString& path );
+    QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     virtual bool hasDragEnabled() const override { return true; }
 
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  Data item that can be used to report problems (e.g. network error)
  */
 class CORE_EXPORT QgsErrorItem : public QgsDataItem
@@ -495,14 +573,15 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
     Q_OBJECT
   public:
 
-    QgsErrorItem( QgsDataItem* parent, const QString& error, const QString& path );
+    QgsErrorItem( QgsDataItem *parent, const QString &error, const QString &path );
 
 };
 
 
 // ---------
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsDirectoryParamWidget
  */
 class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
@@ -510,18 +589,19 @@ class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
     Q_OBJECT
 
   public:
-    QgsDirectoryParamWidget( const QString& path, QWidget* parent = nullptr );
+    QgsDirectoryParamWidget( const QString &path, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   protected:
-    void mousePressEvent( QMouseEvent* event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
 
   public slots:
     void showHideColumn();
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Contains various Favorites directories
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
 */
 class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
 {
@@ -532,19 +612,19 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
      * Constructor for QgsFavoritesItem. Accepts a path argument specifying the file path associated with
      * the item.
      */
-    QgsFavoritesItem( QgsDataItem* parent, const QString& name, const QString& path = QString() );
+    QgsFavoritesItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
 
-    QVector<QgsDataItem*> createChildren() override;
+    QVector<QgsDataItem *> createChildren() override;
 
     /**
      * Adds a new directory to the favorites group.
-     * @see removeDirectory()
+     * \see removeDirectory()
      */
-    void addDirectory( const QString& directory );
+    void addDirectory( const QString &directory );
 
     /**
      * Removes an existing directory from the favorites group.
-     * @see addDirectory()
+     * \see addDirectory()
      */
     void removeDirectory( QgsDirectoryItem *item );
 
@@ -552,10 +632,11 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
     static QIcon iconFavorites();
 
   private:
-    QVector<QgsDataItem*> createChildren( const QString& favDir );
+    QVector<QgsDataItem *> createChildren( const QString &favDir );
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A zip file: contains layers, using GDAL/OGR VSIFILE mechanism
 */
 class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
@@ -568,28 +649,28 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     QStringList mZipFileList;
 
   public:
-    QgsZipItem( QgsDataItem* parent, const QString& name, const QString& path );
-    QgsZipItem( QgsDataItem* parent, const QString& name, const QString& filePath, const QString& path );
+    QgsZipItem( QgsDataItem *parent, const QString &name, const QString &path );
+    QgsZipItem( QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path );
 
-    QVector<QgsDataItem*> createChildren() override;
+    QVector<QgsDataItem *> createChildren() override;
     QStringList getZipFileList();
 
-    //! @note not available via python bindings
-    static QVector<dataItem_t *> sDataItemPtr;
+    //! \note not available via Python bindings
+    static QVector<dataItem_t *> sDataItemPtr SIP_SKIP;
     static QStringList sProviderNames;
 
-    static QString vsiPrefix( const QString& uri ) { return qgsVsiPrefix( uri ); }
+    static QString vsiPrefix( const QString &uri ) { return qgsVsiPrefix( uri ); }
 
     /**
      * Creates a new data item from the specified path.
      */
-    static QgsDataItem* itemFromPath( QgsDataItem* parent, const QString &path, const QString &name );
+    static QgsDataItem *itemFromPath( QgsDataItem *parent, const QString &path, const QString &name ) SIP_FACTORY;
 
     /**
     * Creates a new data item from the specified path.
-    * @note available in python as itemFromFilePath
+    * \note available in Python as itemFromFilePath
     */
-    static QgsDataItem* itemFromPath( QgsDataItem* parent, const QString& filePath, const QString& name, const QString& path );
+    static QgsDataItem *itemFromPath( QgsDataItem *parent, const QString &filePath, const QString &name, const QString &path ) SIP_FACTORY SIP_PYNAME( itemFromFilePath );
 
     static QIcon iconZip();
 

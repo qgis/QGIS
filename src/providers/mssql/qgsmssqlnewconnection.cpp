@@ -15,22 +15,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
 #include <QInputDialog>
 #include <QMessageBox>
-
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlError>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QRegExpValidator>
 
 #include "qgsmssqlnewconnection.h"
 #include "qgsmssqlprovider.h"
-#include "qgscontexthelp.h"
+#include "qgssettings.h"
 
-QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl )
-    , mOriginalConnName( connName )
+QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mOriginalConnName( connName )
 {
   setupUi( this );
+  connect( btnListDatabase, &QPushButton::clicked, this, &QgsMssqlNewConnection::btnListDatabase_clicked );
+  connect( btnConnect, &QPushButton::clicked, this, &QgsMssqlNewConnection::btnConnect_clicked );
+  connect( cb_trustedConnection, &QCheckBox::clicked, this, &QgsMssqlNewConnection::cb_trustedConnection_clicked );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMssqlNewConnection::showHelp );
 
   lblWarning->hide();
 
@@ -38,7 +41,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& co
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
-    QSettings settings;
+    QgsSettings settings;
 
     QString key = "/MSSQL/connections/" + connName;
     txtService->setText( settings.value( key + "/service" ).toString() );
@@ -64,23 +67,24 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& co
 
     txtName->setText( connName );
   }
-  on_cb_trustedConnection_clicked();
+  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
+  cb_trustedConnection_clicked();
 }
 //! Autoconnected SLOTS *
 void QgsMssqlNewConnection::accept()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString baseKey = QStringLiteral( "/MSSQL/connections/" );
   settings.setValue( baseKey + "selected", txtName->text() );
 
   // warn if entry was renamed to an existing connection
-  if (( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
-      ( settings.contains( baseKey + txtName->text() + "/service" ) ||
-        settings.contains( baseKey + txtName->text() + "/host" ) ) &&
-      QMessageBox::question( this,
-                             tr( "Save connection" ),
-                             tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
-                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
+       ( settings.contains( baseKey + txtName->text() + "/service" ) ||
+         settings.contains( baseKey + txtName->text() + "/host" ) ) &&
+       QMessageBox::question( this,
+                              tr( "Save connection" ),
+                              tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -94,7 +98,7 @@ void QgsMssqlNewConnection::accept()
 
   baseKey += txtName->text();
   QString database;
-  QListWidgetItem* item = listDatabase->currentItem();
+  QListWidgetItem *item = listDatabase->currentItem();
   if ( item && item->text() != QLatin1String( "(from service)" ) )
   {
     database = item->text();
@@ -114,24 +118,24 @@ void QgsMssqlNewConnection::accept()
   QDialog::accept();
 }
 
-void QgsMssqlNewConnection::on_btnConnect_clicked()
+void QgsMssqlNewConnection::btnConnect_clicked()
 {
   testConnection();
 }
 
-void QgsMssqlNewConnection::on_btnListDatabase_clicked()
+void QgsMssqlNewConnection::btnListDatabase_clicked()
 {
   listDatabases();
 }
 
-void QgsMssqlNewConnection::on_cb_trustedConnection_clicked()
+void QgsMssqlNewConnection::cb_trustedConnection_clicked()
 {
   if ( cb_trustedConnection->checkState() == Qt::Checked )
   {
     txtUsername->setEnabled( false );
-    txtUsername->setText( QLatin1String( "" ) );
+    txtUsername->clear();
     txtPassword->setEnabled( false );
-    txtPassword->setText( QLatin1String( "" ) );
+    txtPassword->clear();
   }
   else
   {
@@ -142,12 +146,7 @@ void QgsMssqlNewConnection::on_cb_trustedConnection_clicked()
 
 //! End  Autoconnected SLOTS *
 
-QgsMssqlNewConnection::~QgsMssqlNewConnection()
-{
-  delete bar;
-}
-
-bool QgsMssqlNewConnection::testConnection( const QString& testDatabase )
+bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
 {
   bar->pushMessage( QStringLiteral( "Testing connection" ), QStringLiteral( "....." ) );
   // Gross but needed to show the last message.
@@ -161,7 +160,7 @@ bool QgsMssqlNewConnection::testConnection( const QString& testDatabase )
   }
 
   QString database;
-  QListWidgetItem* item = listDatabase->currentItem();
+  QListWidgetItem *item = listDatabase->currentItem();
   if ( !testDatabase.isEmpty() )
   {
     database = testDatabase;
@@ -233,3 +232,7 @@ void QgsMssqlNewConnection::listDatabases()
   }
 }
 
+void QgsMssqlNewConnection::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-mssql-spatial" ) );
+}

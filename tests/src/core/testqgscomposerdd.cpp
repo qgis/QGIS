@@ -36,12 +36,7 @@ class TestQgsComposerDD : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerDD()
-        : mComposition( 0 )
-        , mVectorLayer( 0 )
-        , mAtlasMap( 0 )
-        , mAtlas( 0 )
-    {}
+    TestQgsComposerDD() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -52,10 +47,10 @@ class TestQgsComposerDD : public QObject
     void ddEvaluate(); //test setting/evaluating data defined value
 
   private:
-    QgsComposition *mComposition;
-    QgsVectorLayer* mVectorLayer;
-    QgsComposerMap* mAtlasMap;
-    QgsAtlasComposition* mAtlas;
+    QgsComposition *mComposition = nullptr;
+    QgsVectorLayer *mVectorLayer = nullptr;
+    QgsComposerMap *mAtlasMap = nullptr;
+    QgsAtlasComposition *mAtlas = nullptr;
     QString mReport;
 };
 
@@ -85,8 +80,8 @@ void TestQgsComposerDD::initTestCase()
   // fix the renderer, fill with green
   QgsStringMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "0,127,0" ) );
-  QgsFillSymbol* fillSymbol = QgsFillSymbol::createSimple( props );
-  QgsSingleSymbolRenderer* renderer = new QgsSingleSymbolRenderer( fillSymbol );
+  QgsFillSymbol *fillSymbol = QgsFillSymbol::createSimple( props );
+  QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( fillSymbol );
   mVectorLayer->setRenderer( renderer );
 
   // the atlas map

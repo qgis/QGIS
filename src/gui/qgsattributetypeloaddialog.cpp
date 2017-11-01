@@ -29,7 +29,6 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QFrame>
-#include <QScrollArea>
 #include <QCompleter>
 #include <QSpinBox>
 #include <QPushButton>
@@ -37,15 +36,14 @@
 #include <QFileDialog>
 
 QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
-    : QDialog()
-    , mLayer( vl )
+  : mLayer( vl )
 {
   setupUi( this );
 
-  connect( layerComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( fillComboBoxes( int ) ) );
-  connect( keyComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( createPreview( int ) ) );
-  connect( valueComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( createPreview( int ) ) );
-  connect( previewButton, SIGNAL( pressed() ), this, SLOT( previewButtonPushed() ) );
+  connect( layerComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributeTypeLoadDialog::fillComboBoxes );
+  connect( keyComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index ) { createPreview( index ); } );
+  connect( valueComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index ) { createPreview( index ); } );
+  connect( previewButton, &QAbstractButton::pressed, this, &QgsAttributeTypeLoadDialog::previewButtonPushed );
 
   fillLayerList();
 
@@ -123,8 +121,8 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
   }
   int idx = keyComboBox->currentData().toInt();
   int idx2 = valueComboBox->currentData().toInt();
-  QgsMapLayer* dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentData().toString() );
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
+  QgsMapLayer *dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentData().toString() );
+  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( !vLayer )
     return;
 
@@ -172,8 +170,8 @@ void QgsAttributeTypeLoadDialog::loadDataToValueMap()
   mValueMap.clear();
   int idx = keyComboBox->currentData().toInt();
   int idx2 = valueComboBox->currentData().toInt();
-  QgsMapLayer* dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentData().toString() );
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
+  QgsMapLayer *dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentData().toString() );
+  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( !vLayer )
     return;
 

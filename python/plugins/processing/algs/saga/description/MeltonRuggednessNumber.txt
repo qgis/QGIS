@@ -1,0 +1,6 @@
+Melton Ruggedness Number
+ta_hydrology
+ParameterRaster|DEM|Elevation|False
+OutputRaster|AREA|Catchment Area
+OutputRaster|ZMAX|Maximum Height
+OutputRaster|MRN|Melton Ruggedness Number

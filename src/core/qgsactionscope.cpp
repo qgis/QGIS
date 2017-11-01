@@ -17,19 +17,19 @@
 #include "qgsexpressioncontext.h"
 
 QgsActionScope::QgsActionScope()
-    : mExpressionContextScope( nullptr )
+  : mExpressionContextScope( nullptr )
 {
 }
 
-QgsActionScope::QgsActionScope( const QString& id, const QString& title, const QString& description, const QgsExpressionContextScope& expressionContextScope )
-    : mId( id )
-    , mTitle( title )
-    , mDescription( description )
-    , mExpressionContextScope( expressionContextScope )
+QgsActionScope::QgsActionScope( const QString &id, const QString &title, const QString &description, const QgsExpressionContextScope &expressionContextScope )
+  : mId( id )
+  , mTitle( title )
+  , mDescription( description )
+  , mExpressionContextScope( expressionContextScope )
 {
 }
 
-bool QgsActionScope::operator==( const QgsActionScope& other ) const
+bool QgsActionScope::operator==( const QgsActionScope &other ) const
 {
   return other.mId == mId;
 }
@@ -39,7 +39,7 @@ QgsExpressionContextScope QgsActionScope::expressionContextScope() const
   return mExpressionContextScope;
 }
 
-void QgsActionScope::setExpressionContextScope( const QgsExpressionContextScope& expressionContextScope )
+void QgsActionScope::setExpressionContextScope( const QgsExpressionContextScope &expressionContextScope )
 {
   mExpressionContextScope = expressionContextScope;
 }
@@ -49,7 +49,7 @@ QString QgsActionScope::id() const
   return mId;
 }
 
-void QgsActionScope::setId( const QString& name )
+void QgsActionScope::setId( const QString &name )
 {
   mId = name;
 }
@@ -64,7 +64,7 @@ QString QgsActionScope::title() const
   return mTitle;
 }
 
-void QgsActionScope::setTitle( const QString& title )
+void QgsActionScope::setTitle( const QString &title )
 {
   mTitle = title;
 }
@@ -74,12 +74,12 @@ QString QgsActionScope::description() const
   return mDescription;
 }
 
-void QgsActionScope::setDescription( const QString& description )
+void QgsActionScope::setDescription( const QString &description )
 {
   mDescription = description;
 }
 
-uint qHash( const QgsActionScope& key, uint seed )
+uint qHash( const QgsActionScope &key, uint seed )
 {
   uint hash = seed;
 

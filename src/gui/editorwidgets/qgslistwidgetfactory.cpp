@@ -23,17 +23,17 @@
 #include <QVariant>
 #include <QSettings>
 
-QgsListWidgetFactory::QgsListWidgetFactory( const QString& name ):
-    QgsEditorWidgetFactory( name )
+QgsListWidgetFactory::QgsListWidgetFactory( const QString &name ):
+  QgsEditorWidgetFactory( name )
 {
 }
 
-QgsEditorWidgetWrapper* QgsListWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
+QgsEditorWidgetWrapper *QgsListWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {
   return new QgsListWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
-QgsEditorConfigWidget* QgsListWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
+QgsEditorConfigWidget *QgsListWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
   Q_UNUSED( vl );
   Q_UNUSED( fieldIdx );
@@ -41,7 +41,7 @@ QgsEditorConfigWidget* QgsListWidgetFactory::configWidget( QgsVectorLayer *vl, i
   return new QgsDummyConfigDlg( vl, fieldIdx, parent, QObject::tr( "List field" ) );
 }
 
-unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const
+unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
   return ( field.type() == QVariant::List || field.type() == QVariant::StringList ) && field.subType() != QVariant::Invalid ? 20 : 0;

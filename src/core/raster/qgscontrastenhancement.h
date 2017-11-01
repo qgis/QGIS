@@ -26,13 +26,15 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 
 #include "qgis.h"
 #include "qgsraster.h"
+#include <memory>
 
 class QgsContrastEnhancementFunction;
 class QDomDocument;
 class QDomElement;
 class QString;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Manipulates raster pixel values so that they enhanceContrast or clip into a
  * specified numerical range according to the specified
  * ContrastEnhancementAlgorithm.
@@ -52,11 +54,11 @@ class CORE_EXPORT QgsContrastEnhancement
       UserDefinedEnhancement
     };
 
-    QgsContrastEnhancement( Qgis::DataType theDatatype = Qgis::Byte );
-    QgsContrastEnhancement( const QgsContrastEnhancement& ce );
+    QgsContrastEnhancement( Qgis::DataType datatype = Qgis::Byte );
+    QgsContrastEnhancement( const QgsContrastEnhancement &ce );
     ~QgsContrastEnhancement();
 
-    const QgsContrastEnhancement& operator=( const QgsContrastEnhancement& ) = delete;
+    const QgsContrastEnhancement &operator=( const QgsContrastEnhancement & ) = delete;
 
     /*
      *
@@ -73,7 +75,7 @@ class CORE_EXPORT QgsContrastEnhancement
     static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
 
     //! \brief Deserialize ContrastEnhancementAlgorithm
-    static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString& contrastEnhancementString );
+    static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString &contrastEnhancementString );
 
     /*
      *
@@ -103,7 +105,7 @@ class CORE_EXPORT QgsContrastEnhancement
     void setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm, bool generateTable = true );
 
     //! \brief A public method that allows the user to set their own custom contrast enhancement function
-    void setContrastEnhancementFunction( QgsContrastEnhancementFunction* );
+    void setContrastEnhancementFunction( QgsContrastEnhancementFunction * );
 
     //! \brief Set the maximum value for the contrast enhancement range.
     void setMaximumValue( double, bool generateTable = true );
@@ -111,25 +113,29 @@ class CORE_EXPORT QgsContrastEnhancement
     //! \brief Return the minimum value for the contrast enhancement range.
     void setMinimumValue( double, bool generateTable = true );
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-    void readXml( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
 
   private:
+#ifdef SIP_RUN
+    const QgsContrastEnhancement &operator=( const QgsContrastEnhancement & );
+#endif
+
     //! \brief Current contrast enhancement algorithm
-    ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm;
+    ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm = NoEnhancement;
 
     //! \brief Pointer to the contrast enhancement function
-    QgsContrastEnhancementFunction* mContrastEnhancementFunction;
+    std::unique_ptr< QgsContrastEnhancementFunction > mContrastEnhancementFunction;
 
     //! \brief Flag indicating if the lookup table needs to be regenerated
-    bool mEnhancementDirty;
+    bool mEnhancementDirty = false;
 
     //! \brief Scalar so that values can be used as array indices
     double mLookupTableOffset;
 
     //! \brief Pointer to the lookup table
-    int *mLookupTable;
+    int *mLookupTable = nullptr;
 
     //! \brief User defineable minimum value for the band, used for enhanceContrasting
     double mMinimumValue;

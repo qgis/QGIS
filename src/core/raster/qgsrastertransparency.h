@@ -19,11 +19,13 @@ email                : ersts@amnh.org
 #define QGSRASTERTRANSPARENCY_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QList>
 class QDomDocument;
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Defines the list of pixel values to be considered as transparent or semi
  * transparent when rendering rasters.
  */
@@ -31,7 +33,11 @@ class CORE_EXPORT QgsRasterTransparency
 {
 
   public:
-    QgsRasterTransparency();
+
+    /**
+     * Constructor for QgsRasterTransparency.
+     */
+    QgsRasterTransparency() = default;
 
     //
     // Structs to hold transparent pixel vlaues
@@ -67,23 +73,29 @@ class CORE_EXPORT QgsRasterTransparency
     void initializeTransparentPixelList( double, double, double );
 
     //! \brief Mutator for transparentSingleValuePixelList
-    void setTransparentSingleValuePixelList( const QList<TransparentSingleValuePixel>& theNewList );
+    void setTransparentSingleValuePixelList( const QList<QgsRasterTransparency::TransparentSingleValuePixel> &newList SIP_TRANSFER );
 
     //! \brief Mutator for transparentThreeValuePixelList
-    void setTransparentThreeValuePixelList( const QList<TransparentThreeValuePixel>& theNewList );
+    void setTransparentThreeValuePixelList( const QList<QgsRasterTransparency::TransparentThreeValuePixel> &newList SIP_TRANSFER );
 
     //! \brief Returns the transparency value for a single value Pixel
-    int alphaValue( double, int theGlobalTransparency = 255 ) const;
+    int alphaValue( double, int globalTransparency = 255 ) const;
 
     //! \brief Return the transparency value for a RGB Pixel
-    int alphaValue( double, double, double, int theGlobalTransparency = 255 ) const;
+    int alphaValue( double, double, double, int globalTransparency = 255 ) const;
 
     //! True if there are no entries in the pixel lists except the nodata value
     bool isEmpty() const;
 
-    void writeXml( QDomDocument& doc, QDomElement& parentElem ) const;
+    /**
+     * Writes the transparency information to an XML document.
+     */
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-    void readXml( const QDomElement& elem );
+    /**
+     * Reads the transparency information from an XML document.
+     */
+    void readXml( const QDomElement &elem );
 
   private:
     //! \brief The list to hold transparency values for RGB layers

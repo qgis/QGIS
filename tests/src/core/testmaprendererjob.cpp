@@ -49,7 +49,7 @@ class TestQgsMapRendererJob : public QObject
 
 static QString _loadLayer( QString path )
 {
-  QgsMapLayer* layer = new QgsVectorLayer( path, "testlayer", "ogr" );
+  QgsMapLayer *layer = new QgsVectorLayer( path, "testlayer", "ogr" );
   Q_ASSERT( layer->isValid() );
   QgsProject::instance()->addMapLayer( layer );
   return layer->id();
@@ -223,7 +223,7 @@ void TestQgsMapRendererJob::testDestructWhileRunning()
 
 void TestQgsMapRendererJob::testErrors()
 {
-  QgsVectorLayer* l = new QgsVectorLayer( "/data/gis/sas/trans-trail-l.dbf", "test", "ogr" );
+  QgsVectorLayer *l = new QgsVectorLayer( "/data/gis/sas/trans-trail-l.dbf", "test", "ogr" );
   QVERIFY( l->isValid() );
   QgsProject::instance()->addMapLayer( l );
   QgsMapSettings settings( _mapSettings( QStringList( l->id() ) ) );
@@ -252,7 +252,7 @@ void TestQgsMapRendererJob::testErrors()
 
 void TestQgsMapRendererJob::testCache()
 {
-  QgsVectorLayer* l = new QgsVectorLayer( "/data/gis/sas/trans-trail-l.dbf", "test", "ogr" );
+  QgsVectorLayer *l = new QgsVectorLayer( "/data/gis/sas/trans-trail-l.dbf", "test", "ogr" );
   QVERIFY( l->isValid() );
   QgsProject::instance()->addMapLayer( l );
   QgsMapSettings settings( _mapSettings( QStringList( l->id() ) ) );

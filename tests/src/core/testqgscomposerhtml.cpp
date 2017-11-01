@@ -50,16 +50,12 @@ class TestQgsComposerHtml : public QObject
     void javascriptSetFeature(); //test that JavaScript setFeature() function is correctly called
 
   private:
-    QgsComposition *mComposition;
+    QgsComposition *mComposition = nullptr;
     QString mReport;
     QFont mTestFont;
 };
 
-TestQgsComposerHtml::TestQgsComposerHtml()
-    : mComposition( 0 )
-{
-
-}
+TestQgsComposerHtml::TestQgsComposerHtml() = default;
 
 void TestQgsComposerHtml::initTestCase()
 {
@@ -102,8 +98,8 @@ void TestQgsComposerHtml::cleanup()
 
 void TestQgsComposerHtml::sourceMode()
 {
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
-  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  QgsComposerHtml *htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame *htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
   htmlFrame->setFrameEnabled( true );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
@@ -120,8 +116,8 @@ void TestQgsComposerHtml::sourceMode()
 
 void TestQgsComposerHtml::userStylesheets()
 {
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
-  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  QgsComposerHtml *htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame *htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
   htmlFrame->setFrameEnabled( true );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
@@ -142,8 +138,8 @@ void TestQgsComposerHtml::userStylesheets()
 
 void TestQgsComposerHtml::evalExpressions()
 {
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
-  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  QgsComposerHtml *htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame *htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
   htmlFrame->setFrameEnabled( true );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
@@ -162,8 +158,8 @@ void TestQgsComposerHtml::evalExpressions()
 
 void TestQgsComposerHtml::evalExpressionsOff()
 {
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
-  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  QgsComposerHtml *htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame *htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
   htmlFrame->setFrameEnabled( true );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setContentMode( QgsComposerHtml::ManualHtml );
@@ -181,8 +177,8 @@ void TestQgsComposerHtml::evalExpressionsOff()
 
 void TestQgsComposerHtml::table()
 {
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
-  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  QgsComposerHtml *htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame *htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
   htmlFrame->setFrameEnabled( true );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setUrl( QUrl( QStringLiteral( "file:///%1/test_html.html" ).arg( TEST_DATA_DIR ) ) );
@@ -197,8 +193,8 @@ void TestQgsComposerHtml::table()
 
 void TestQgsComposerHtml::tableMultiFrame()
 {
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
-  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 10, 10, 100, 50 );
+  QgsComposerHtml *htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame *htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 10, 10, 100, 50 );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
   htmlItem->setUseSmartBreaks( false );
@@ -222,8 +218,8 @@ void TestQgsComposerHtml::tableMultiFrame()
 
 void TestQgsComposerHtml::htmlMultiFrameSmartBreak()
 {
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
-  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 10, 10, 100, 52 );
+  QgsComposerHtml *htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame *htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 10, 10, 100, 52 );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
   htmlItem->setUseSmartBreaks( true );
@@ -252,8 +248,8 @@ void TestQgsComposerHtml::javascriptSetFeature()
   // first need to setup some layers with a relation
 
   //parent layer
-  QgsVectorLayer* parentLayer = new QgsVectorLayer( QStringLiteral( "Point?field=fldtxt:string&field=fldint:integer&field=foreignkey:integer" ), QStringLiteral( "parent" ), QStringLiteral( "memory" ) );
-  QgsVectorDataProvider* pr = parentLayer->dataProvider();
+  QgsVectorLayer *parentLayer = new QgsVectorLayer( QStringLiteral( "Point?field=fldtxt:string&field=fldint:integer&field=foreignkey:integer" ), QStringLiteral( "parent" ), QStringLiteral( "memory" ) );
+  QgsVectorDataProvider *pr = parentLayer->dataProvider();
   QgsFeature pf1;
   pf1.setFields( parentLayer->fields() );
   pf1.setAttributes( QgsAttributes() << "test1" << 67 <<  123 );
@@ -263,7 +259,7 @@ void TestQgsComposerHtml::javascriptSetFeature()
   QVERIFY( pr->addFeatures( QgsFeatureList() << pf1 << pf2 ) );
 
   // child layer
-  QgsVectorLayer* childLayer = new QgsVectorLayer( QStringLiteral( "Point?field=x:string&field=y:integer&field=z:integer" ), QStringLiteral( "referencedlayer" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *childLayer = new QgsVectorLayer( QStringLiteral( "Point?field=x:string&field=y:integer&field=z:integer" ), QStringLiteral( "referencedlayer" ), QStringLiteral( "memory" ) );
   pr = childLayer->dataProvider();
   QgsFeature f1;
   f1.setFields( childLayer->fields() );
@@ -283,15 +279,15 @@ void TestQgsComposerHtml::javascriptSetFeature()
   mComposition->atlasComposition().setEnabled( true );
 
   QgsRelation rel;
-  rel.setRelationId( QStringLiteral( "rel1" ) );
-  rel.setRelationName( QStringLiteral( "relation one" ) );
+  rel.setId( QStringLiteral( "rel1" ) );
+  rel.setName( QStringLiteral( "relation one" ) );
   rel.setReferencingLayer( childLayer->id() );
   rel.setReferencedLayer( parentLayer->id() );
   rel.addFieldPair( QStringLiteral( "y" ), QStringLiteral( "foreignkey" ) );
   QgsProject::instance()->relationManager()->addRelation( rel );
 
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
-  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  QgsComposerHtml *htmlItem = new QgsComposerHtml( mComposition, false );
+  QgsComposerFrame *htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
   htmlFrame->setFrameEnabled( true );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setContentMode( QgsComposerHtml::ManualHtml );

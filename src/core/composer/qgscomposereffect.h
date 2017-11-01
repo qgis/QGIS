@@ -23,7 +23,8 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsComposerEffect
  */
 class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
@@ -31,7 +32,11 @@ class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
     Q_OBJECT
 
   public:
-    QgsComposerEffect();
+
+    /**
+     * Constructor for QgsComposerEffect.
+     */
+    QgsComposerEffect() = default;
 
     void setCompositionMode( QPainter::CompositionMode compositionMode );
 
@@ -41,7 +46,7 @@ class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
 
   private:
 
-    QPainter::CompositionMode mCompositionMode;
+    QPainter::CompositionMode mCompositionMode = QPainter::CompositionMode_SourceOver;
 };
 
 #endif // QGSCOMPOSEREFFECT_H

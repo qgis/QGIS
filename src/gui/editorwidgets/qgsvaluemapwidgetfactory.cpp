@@ -22,31 +22,31 @@
 
 #include <QSettings>
 
-QgsValueMapWidgetFactory::QgsValueMapWidgetFactory( const QString& name )
-    : QgsEditorWidgetFactory( name )
+QgsValueMapWidgetFactory::QgsValueMapWidgetFactory( const QString &name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 
 
-QgsEditorWidgetWrapper* QgsValueMapWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
+QgsEditorWidgetWrapper *QgsValueMapWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {
   return new QgsValueMapWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
 
-QgsSearchWidgetWrapper* QgsValueMapWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+QgsSearchWidgetWrapper *QgsValueMapWidgetFactory::createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
   return new QgsValueMapSearchWidgetWrapper( vl, fieldIdx, parent );
 }
 
-QgsEditorConfigWidget* QgsValueMapWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+QgsEditorConfigWidget *QgsValueMapWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
   return new QgsValueMapConfigDlg( vl, fieldIdx, parent );
 }
 
-QHash<const char*, int> QgsValueMapWidgetFactory::supportedWidgetTypes()
+QHash<const char *, int> QgsValueMapWidgetFactory::supportedWidgetTypes()
 {
-  QHash<const char*, int> map = QHash<const char*, int>();
+  QHash<const char *, int> map = QHash<const char *, int>();
   map.insert( QComboBox::staticMetaObject.className(), 10 );
   return map;
 }

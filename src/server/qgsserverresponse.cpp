@@ -22,15 +22,9 @@
 #include "qgsserverexception.h"
 
 
-//! constructor
-QgsServerResponse::QgsServerResponse()
+void QgsServerResponse::write( const QString &data )
 {
-}
-
-
-void QgsServerResponse::write( const QString& data )
-{
-  QIODevice* iodev = io();
+  QIODevice *iodev = io();
   if ( iodev )
   {
     //QTextStream stream( iodev );
@@ -44,9 +38,9 @@ void QgsServerResponse::write( const QString& data )
 }
 
 
-qint64 QgsServerResponse::write( const QByteArray& byteArray )
+qint64 QgsServerResponse::write( const QByteArray &byteArray )
 {
-  QIODevice* iodev = io();
+  QIODevice *iodev = io();
   if ( iodev )
   {
     return iodev->write( byteArray );
@@ -55,9 +49,9 @@ qint64 QgsServerResponse::write( const QByteArray& byteArray )
 }
 
 
-qint64 QgsServerResponse::write( const char* data, qint64 maxsize )
+qint64 QgsServerResponse::write( const char *data, qint64 maxsize )
 {
-  QIODevice* iodev = io();
+  QIODevice *iodev = io();
   if ( iodev )
   {
     return iodev->write( data, maxsize );
@@ -65,9 +59,9 @@ qint64 QgsServerResponse::write( const char* data, qint64 maxsize )
   return 0;
 }
 
-qint64 QgsServerResponse::write( const char* data )
+qint64 QgsServerResponse::write( const char *data )
 {
-  QIODevice* iodev = io();
+  QIODevice *iodev = io();
   if ( iodev )
   {
     return iodev->write( data );
@@ -75,7 +69,7 @@ qint64 QgsServerResponse::write( const char* data )
   return 0;
 }
 
-void QgsServerResponse::write( const QgsServerException& ex )
+void QgsServerResponse::write( const QgsServerException &ex )
 {
   QString responseFormat;
   QByteArray ba = ex.formatResponse( responseFormat );
@@ -87,7 +81,7 @@ void QgsServerResponse::write( const QgsServerException& ex )
   }
 
   clear();
-  setReturnCode( ex.responseCode() );
+  setStatusCode( ex.responseCode() );
   setHeader( "Content-Type", responseFormat );
   write( ba );
 }

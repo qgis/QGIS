@@ -20,10 +20,11 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgsrectangle.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 #include "qgsoracletablemodel.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfields.h"
+#include "qgsproviderregistry.h"
 
 #include <QVector>
 #include <QQueue>
@@ -61,8 +62,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
   public:
 
     //! Import a vector layer into the database
-    static QgsVectorLayerImport::ImportError createEmptyLayer(
-      const QString& uri,
+    static QgsVectorLayerExporter::ExportError createEmptyLayer(
+      const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
       const QgsCoordinateReferenceSystem *srs,
@@ -75,7 +76,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     /**
      * Constructor for the provider. The uri must be in the following format:
      * host=localhost user=gsherman dbname=test password=xxx table=test.alaska (the_geom)
-     * @param uri String containing the required parameters to connect to the database
+     * \param uri String containing the required parameters to connect to the database
      * and query the table.
      */
     explicit QgsOracleProvider( QString const &uri = "" );
@@ -88,8 +89,9 @@ class QgsOracleProvider : public QgsVectorDataProvider
     virtual QgsCoordinateReferenceSystem crs() const override;
     QgsWkbTypes::Type wkbType() const override;
 
-    /** Return the number of layers for the current data source
-     * @note Should this be subLayerCount() instead?
+    /**
+     * Return the number of layers for the current data source
+     * \note Should this be subLayerCount() instead?
      */
     size_t layerCount() const;
 
@@ -109,34 +111,36 @@ class QgsOracleProvider : public QgsVectorDataProvider
      * Changes the stored extent for this layer to the supplied extent.
      * For example, this is called when the extent worker thread has a result.
      */
-    void setExtent( QgsRectangle& newExtent );
+    void setExtent( QgsRectangle &newExtent );
 
     virtual QgsRectangle extent() const override;
     virtual void updateExtents() override;
 
-    /** Determine the fields making up the primary key
+    /**
+     * Determine the fields making up the primary key
      */
     bool determinePrimaryKey();
 
     QgsFields fields() const override;
     QString dataComment() const override;
 
-    /** Reset the layer
+    /**
+     * Reset the layer
      */
     void rewind();
 
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
+    virtual QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
     bool isValid() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
-    QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
+    QVariant defaultValue( QString fieldName, QString tableName = QString(), QString schemaName = QString() );
     QVariant defaultValue( int fieldId ) const override;
-    bool addFeatures( QgsFeatureList &flist ) override;
-    bool deleteFeatures( const QgsFeatureIds & id ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
+    bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool deleteAttributes( const QgsAttributeIds &ids ) override;
-    bool renameAttributes( const QgsFieldNameMap& renamedAttributes ) override;
+    bool renameAttributes( const QgsFieldNameMap &renamedAttributes ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     bool createSpatialIndex() override;
@@ -145,16 +149,16 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QString getTableName();
 
     QString subsetString() const override;
-    bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
+    bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     virtual bool supportsSubsetString() const override { return true; }
     QgsVectorDataProvider::Capabilities capabilities() const override;
     QString name() const override;
     QString description() const override;
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
-    static bool exec( QSqlQuery &qry, QString sql );
+    static bool exec( QSqlQuery &qry, QString sql, const QVariantList &args );
 
-    virtual bool isSaveAndLoadStyleToDBSupported() const override { return true; }
+    virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
 
     /**
      * Switch to oracle workspace
@@ -167,17 +171,18 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QString getWorkspace() const;
 
   private:
-    QString whereClause( QgsFeatureId featureId ) const;
+    QString whereClause( QgsFeatureId featureId, QVariantList &args ) const;
     QString pkParamWhereClause() const;
     QString paramValue( QString fieldvalue, const QString &defaultValue ) const;
-    void appendGeomParam( const QgsGeometry& geom, QSqlQuery &qry ) const;
+    void appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry ) const;
     void appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const;
 
     bool hasSufficientPermsAndCapabilities();
 
     QgsField field( int index ) const;
 
-    /** Load the field list
+    /**
+     * Load the field list
      */
     bool loadFields();
 
@@ -253,35 +258,35 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     struct OracleException
     {
-      OracleException( QString msg, const QSqlQuery &q )
+        OracleException( QString msg, const QSqlQuery &q )
           : mWhat( tr( "Oracle error: %1\nSQL: %2\nError: %3" )
                    .arg( msg )
                    .arg( q.lastError().text() )
                    .arg( q.lastQuery() )
                  )
-      {}
+        {}
 
-      OracleException( QString msg, const QSqlDatabase &q )
+        OracleException( QString msg, const QSqlDatabase &q )
           : mWhat( tr( "Oracle error: %1\nError: %2" )
                    .arg( msg )
                    .arg( q.lastError().text() )
                  )
-      {}
+        {}
 
-      OracleException( const OracleException &e )
+        OracleException( const OracleException &e )
           : mWhat( e.errorMessage() )
-      {}
+        {}
 
-      ~OracleException()
-      {}
+        ~OracleException()
+        {}
 
-      QString errorMessage() const
-      {
-        return mWhat;
-      }
+        QString errorMessage() const
+        {
+          return mWhat;
+        }
 
-    private:
-      QString mWhat;
+      private:
+        QString mWhat;
     };
 
     // A function that determines if the given schema.table.column
@@ -295,12 +300,12 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     QMap<QVariant, QgsFeatureId> mKeyToFid;  //! map key values to feature id
     QMap<QgsFeatureId, QVariant> mFidToKey;  //! map feature back to fea
-    QgsOracleConn *mConnection;
+    QgsOracleConn *mConnection = nullptr;
 
     bool mHasSpatialIndex;                   //! Geometry column is indexed
     QString mSpatialIndexName;               //! name of spatial index of geometry column
 
-    QSharedPointer<QgsOracleSharedData> mShared;
+    std::shared_ptr<QgsOracleSharedData> mShared;
 
     friend class QgsOracleFeatureIterator;
     friend class QgsOracleFeatureSource;
@@ -312,22 +317,25 @@ class QgsOracleUtils
 {
   public:
     static QString whereClause( QgsFeatureId featureId,
-                                const QgsFields& fields,
+                                const QgsFields &fields,
                                 QgsOraclePrimaryKeyType primaryKeyType,
-                                const QList<int>& primaryKeyAttrs,
-                                QSharedPointer<QgsOracleSharedData> sharedData );
+                                const QList<int> &primaryKeyAttrs,
+                                std::shared_ptr<QgsOracleSharedData> sharedData,
+                                QVariantList &params );
 
     static QString whereClause( QgsFeatureIds featureIds,
-                                const QgsFields& fields,
+                                const QgsFields &fields,
                                 QgsOraclePrimaryKeyType primaryKeyType,
-                                const QList<int>& primaryKeyAttrs,
-                                QSharedPointer<QgsOracleSharedData> sharedData );
+                                const QList<int> &primaryKeyAttrs,
+                                std::shared_ptr<QgsOracleSharedData> sharedData,
+                                QVariantList &params );
 
-    static QString andWhereClauses( const QString& c1, const QString& c2 );
+    static QString andWhereClauses( const QString &c1, const QString &c2 );
 };
 
 
-/** Data shared between provider class and its feature sources. Ideally there should
+/**
+ * Data shared between provider class and its feature sources. Ideally there should
  *  be as few members as possible because there could be simultaneous reads/writes
  *  from different threads and therefore locking has to be involved. */
 class QgsOracleSharedData
@@ -338,7 +346,7 @@ class QgsOracleSharedData
     // FID lookups
     QgsFeatureId lookupFid( const QVariant &v ); // lookup existing mapping or add a new one
     QVariant removeFid( QgsFeatureId fid );
-    void insertFid( QgsFeatureId fid, const QVariant& k );
+    void insertFid( QgsFeatureId fid, const QVariant &k );
     QVariant lookupKey( QgsFeatureId featureId );
 
   protected:

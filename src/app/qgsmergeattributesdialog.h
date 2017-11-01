@@ -43,38 +43,41 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     };
 
 
-    QgsMergeAttributesDialog( const QgsFeatureList& features, QgsVectorLayer* vl, QgsMapCanvas* canvas, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
     ~QgsMergeAttributesDialog();
 
     QgsAttributes mergedAttributes() const;
 
-    /** Returns a list of attribute indexes which should be skipped when merging (e.g., attributes
+    /**
+     * Returns a list of attribute indexes which should be skipped when merging (e.g., attributes
      * which have been set to "skip"
      */
     QSet<int> skippedAttributeIndexes() const;
 
   public slots:
 
-    /** Resets all columns to "skip"
+    /**
+     * Resets all columns to "skip"
      */
     void setAllToSkip();
 
   private slots:
-    void comboValueChanged( const QString & text );
+    void comboValueChanged( const QString &text );
     void selectedRowChanged();
-    void on_mFromSelectedPushButton_clicked();
-    void on_mRemoveFeatureFromSelectionButton_clicked();
+    void mFromSelectedPushButton_clicked();
+    void mRemoveFeatureFromSelectionButton_clicked();
     void tableWidgetCellChanged( int row, int column );
 
   private:
     QgsMergeAttributesDialog(); //default constructor forbidden
     void createTableWidgetContents();
     //! Create new combo box with the options for featureXX / mean / min / max
-    QComboBox* createMergeComboBox( QVariant::Type columnType ) const;
+    QComboBox *createMergeComboBox( QVariant::Type columnType ) const;
 
-    /** Returns the table widget column index of a combo box
-    @return the column index or -1 in case of error*/
-    int findComboColumn( QComboBox* c ) const;
+    /**
+     * Returns the table widget column index of a combo box
+    \returns the column index or -1 in case of error*/
+    int findComboColumn( QComboBox *c ) const;
     //! Calculates the merged value of a column (depending on the selected merge behavior) and inserts the value in the corresponding cell
     void refreshMergedValue( int col );
     //! Inserts the attribute value of a specific feature into the row of merged attributes
@@ -82,7 +85,8 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     //! Appends the values of the features for the final value
     QVariant concatenationAttribute( int col );
 
-    /** Calculates a summary statistic for a column. Returns null if no valid numerical
+    /**
+     * Calculates a summary statistic for a column. Returns null if no valid numerical
      * values found in column.
      */
     QVariant calcStatistic( int col, QgsStatisticalSummary::Statistic stat );
@@ -91,10 +95,10 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     void createRubberBandForFeature( QgsFeatureId featureId );
 
     QgsFeatureList mFeatureList;
-    QgsVectorLayer* mVectorLayer;
-    QgsMapCanvas* mMapCanvas;
+    QgsVectorLayer *mVectorLayer = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
     //! Item that highlights the selected feature in the merge table
-    QgsRubberBand* mSelectionRubberBand;
+    QgsRubberBand *mSelectionRubberBand = nullptr;
 
     QgsFields mFields;
     QSet<int> mHiddenAttributes;

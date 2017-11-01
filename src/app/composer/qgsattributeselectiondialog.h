@@ -59,7 +59,7 @@ class QgsComposerColumnSourceDelegate : public QItemDelegate, private QgsExpress
     Q_OBJECT
 
   public:
-    QgsComposerColumnSourceDelegate( QgsVectorLayer* vlayer, QObject *parent = nullptr, const QgsComposerObject* composerObject = nullptr );
+    QgsComposerColumnSourceDelegate( QgsVectorLayer *vlayer, QObject *parent = nullptr, const QgsComposerObject *composerObject = nullptr );
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
@@ -67,8 +67,8 @@ class QgsComposerColumnSourceDelegate : public QItemDelegate, private QgsExpress
   public slots:
     void commitAndCloseEditor();
   private:
-    QgsVectorLayer* mVectorLayer;
-    const QgsComposerObject* mComposerObject;
+    QgsVectorLayer *mVectorLayer = nullptr;
+    const QgsComposerObject *mComposerObject = nullptr;
     QgsExpressionContext createExpressionContext() const override;
 };
 
@@ -113,36 +113,37 @@ class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelec
 {
     Q_OBJECT
   public:
-    QgsAttributeSelectionDialog( QgsComposerAttributeTableV2* table, QgsVectorLayer* vLayer, QWidget * parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsAttributeSelectionDialog( QgsComposerAttributeTableV2 *table, QgsVectorLayer *vLayer, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
 
     ~QgsAttributeSelectionDialog();
 
   private slots:
-    void on_mRemoveColumnPushButton_clicked();
-    void on_mAddColumnPushButton_clicked();
-    void on_mColumnUpPushButton_clicked();
-    void on_mColumnDownPushButton_clicked();
-    void on_mResetColumnsPushButton_clicked();
-    void on_mAddSortColumnPushButton_clicked();
-    void on_mRemoveSortColumnPushButton_clicked();
-    void on_mSortColumnUpPushButton_clicked();
-    void on_mSortColumnDownPushButton_clicked();
+    void mRemoveColumnPushButton_clicked();
+    void mAddColumnPushButton_clicked();
+    void mColumnUpPushButton_clicked();
+    void mColumnDownPushButton_clicked();
+    void mResetColumnsPushButton_clicked();
+    void mClearColumnsPushButton_clicked();
+    void mAddSortColumnPushButton_clicked();
+    void mRemoveSortColumnPushButton_clicked();
+    void mSortColumnUpPushButton_clicked();
+    void mSortColumnDownPushButton_clicked();
 
   private:
-    QgsComposerAttributeTableV2* mComposerTable;
+    QgsComposerAttributeTableV2 *mComposerTable = nullptr;
 
-    const QgsVectorLayer* mVectorLayer;
+    const QgsVectorLayer *mVectorLayer = nullptr;
 
-    QgsComposerAttributeTableColumnModelV2* mColumnModel;
+    QgsComposerAttributeTableColumnModelV2 *mColumnModel = nullptr;
 
-    QgsComposerTableSortColumnsProxyModelV2* mSortedProxyModel;
+    QgsComposerTableSortColumnsProxyModelV2 *mSortedProxyModel = nullptr;
 
-    QgsComposerTableSortColumnsProxyModelV2* mAvailableSortProxyModel;
+    QgsComposerTableSortColumnsProxyModelV2 *mAvailableSortProxyModel = nullptr;
 
-    QgsComposerColumnAlignmentDelegate *mColumnAlignmentDelegate;
-    QgsComposerColumnSourceDelegate *mColumnSourceDelegate;
-    QgsComposerColumnSortOrderDelegate *mColumnSortOrderDelegate;
-    QgsComposerColumnWidthDelegate *mColumnWidthDelegate;
+    QgsComposerColumnAlignmentDelegate *mColumnAlignmentDelegate = nullptr;
+    QgsComposerColumnSourceDelegate *mColumnSourceDelegate = nullptr;
+    QgsComposerColumnSortOrderDelegate *mColumnSortOrderDelegate = nullptr;
+    QgsComposerColumnWidthDelegate *mColumnWidthDelegate = nullptr;
 
 };
 

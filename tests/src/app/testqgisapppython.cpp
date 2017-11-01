@@ -23,7 +23,8 @@
 #include <qgsapplication.h>
 #include "qgspythonutils.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgisApp python support.
  */
 class TestQgisAppPython : public QObject
@@ -43,20 +44,16 @@ class TestQgisAppPython : public QObject
     void evalString();
 
   private:
-    QgisApp * mQgisApp;
+    QgisApp *mQgisApp = nullptr;
     QString mTestDataDir;
 };
 
-TestQgisAppPython::TestQgisAppPython()
-    : mQgisApp( nullptr )
-{
-
-}
+TestQgisAppPython::TestQgisAppPython() = default;
 
 //runs before all tests
 void TestQgisAppPython::initTestCase()
 {
-  // Set up the QSettings environment
+  // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );

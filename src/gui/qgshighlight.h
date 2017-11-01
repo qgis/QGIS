@@ -30,53 +30,65 @@ class QgsMapLayer;
 class QgsVectorLayer;
 class QgsSymbol;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A class for highlight features on the map.
+ *
+ * The QgsHighlight class provides a transparent overlay widget
+  for highlighting features on the map.
  */
 class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 {
   public:
 
-    /** Constructor for QgsHighlight
-     * @param mapCanvas associated map canvas
-     * @param geom initial geometry of highlight
-     * @param layer associated map layer
+    /**
+     * Constructor for QgsHighlight
+     * \param mapCanvas associated map canvas
+     * \param geom initial geometry of highlight
+     * \param layer associated map layer
+     * \note not available in Python bindings
      */
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry& geom, QgsMapLayer *layer );
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsMapLayer *layer ) SIP_SKIP;
 
-    /** Constructor for QgsHighlight
-     * @param mapCanvas associated map canvas
-     * @param geom initial geometry of highlight
-     * @param layer associated vector layer
+    /**
+     * Constructor for QgsHighlight
+     * \param mapCanvas associated map canvas
+     * \param geom initial geometry of highlight
+     * \param layer associated vector layer
      */
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry& geom, QgsVectorLayer *layer );
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsVectorLayer *layer );
 
-    /** Constructor for highlighting true feature shape using feature attributes
+    /**
+     * Constructor for highlighting true feature shape using feature attributes
      * and renderer.
-     * @param mapCanvas map canvas
-     * @param feature
-     * @param layer vector layer
+     * \param mapCanvas map canvas
+     * \param feature
+     * \param layer vector layer
      */
-    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsFeature& feature, QgsVectorLayer *layer );
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsFeature &feature, QgsVectorLayer *layer );
     ~QgsHighlight();
 
-    /** Set line/outline to color, polygon fill to color with alpha = 63.
+    /**
+     * Set line/stroke to color, polygon fill to color with alpha = 63.
      *  This is legacy function, use setFillColor() after setColor() if different fill color is required. */
-    void setColor( const QColor & color );
+    void setColor( const QColor &color );
 
-    /** Set polygons fill color.
-     * @note: added in version 2.3 */
-    void setFillColor( const QColor & fillColor );
+    /**
+     * Set polygons fill color.
+     * \since QGIS 2.3 */
+    void setFillColor( const QColor &fillColor );
 
-    //! Set width. Ignored in feature mode.
+    //! Set stroke width. Ignored in feature mode.
     void setWidth( int width );
 
-    /** Set line / outline buffer in millimeters.
-     *  @note: added in version 2.3 */
+    /**
+     * Set line / stroke buffer in millimeters.
+     *  \since QGIS 2.3 */
     void setBuffer( double buffer ) { mBuffer = buffer; }
 
-    /** Set minimum line / outline width in millimeters.
-     *  @note: added in version 2.3 */
+    /**
+     * Set minimum line / stroke width in millimeters.
+     *  \since QGIS 2.3 */
     void setMinWidth( double width ) { mMinWidth = width; }
 
     const QgsMapLayer *layer() const { return mLayer; }
@@ -84,28 +96,28 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     virtual void updatePosition() override;
 
   protected:
-    virtual void paint( QPainter* p ) override;
+    virtual void paint( QPainter *p ) override;
 
     //! recalculates needed rectangle
     void updateRect();
 
   private:
     void init();
-    void setSymbol( QgsSymbol* symbol, const QgsRenderContext & context, const QColor & color, const QColor & fillColor );
-    double getSymbolWidth( const QgsRenderContext & context, double width, QgsUnitTypes::RenderUnit unit );
+    void setSymbol( QgsSymbol *symbol, const QgsRenderContext &context, const QColor &color, const QColor &fillColor );
+    double getSymbolWidth( const QgsRenderContext &context, double width, QgsUnitTypes::RenderUnit unit );
     //! Get renderer for current color mode and colors. The renderer should be freed by caller.
-    QgsFeatureRenderer * getRenderer( QgsRenderContext &context, const QColor & color, const QColor & fillColor );
-    void paintPoint( QPainter *p, const QgsPoint& point );
-    void paintLine( QPainter *p, QgsPolyline line );
-    void paintPolygon( QPainter *p, QgsPolygon polygon );
+    QgsFeatureRenderer *getRenderer( QgsRenderContext &context, const QColor &color, const QColor &fillColor );
+    void paintPoint( QPainter *p, const QgsPointXY &point );
+    void paintLine( QPainter *p, QgsPolylineXY line );
+    void paintPolygon( QPainter *p, const QgsPolygonXY &polygon );
 
     QBrush mBrush;
     QPen mPen;
-    QgsGeometry *mGeometry;
-    QgsMapLayer *mLayer;
+    QgsGeometry *mGeometry = nullptr;
+    QgsMapLayer *mLayer = nullptr;
     QgsFeature mFeature;
-    double mBuffer; // line / outline buffer in pixels
-    double mMinWidth; // line / outline minimum width in pixels
+    double mBuffer; // line / stroke buffer in pixels
+    double mMinWidth; // line / stroke minimum width in pixels
 };
 
 #endif

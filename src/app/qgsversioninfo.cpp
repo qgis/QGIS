@@ -19,17 +19,15 @@
 #include "qgsnetworkaccessmanager.h"
 
 QgsVersionInfo::QgsVersionInfo( QObject *parent )
-    : QObject( parent )
-    , mLatestVersion( 0 )
-    , mError( QNetworkReply::NoError )
+  : QObject( parent )
 {
 
 }
 
 void QgsVersionInfo::checkVersion()
 {
-  QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( QStringLiteral( "https://ubuntu.qgis.org/version.txt" ) ) ) );
-  connect( reply, SIGNAL( finished() ), this, SLOT( versionReplyFinished() ) );
+  QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( QStringLiteral( "https://version.qgis.org/version.txt" ) ) ) );
+  connect( reply, &QNetworkReply::finished, this, &QgsVersionInfo::versionReplyFinished );
 }
 
 bool QgsVersionInfo::newVersionAvailable() const
@@ -44,7 +42,7 @@ bool QgsVersionInfo::isDevelopmentVersion() const
 
 void QgsVersionInfo::versionReplyFinished()
 {
-  QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
+  QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
   Q_ASSERT( reply );
 
   mError = reply->error();
@@ -81,7 +79,7 @@ void QgsVersionInfo::versionReplyFinished()
       mErrorString = tr( "The host name %1 could not be resolved. Check your DNS settings or contact your system administrator." ).arg( reply->request().url().host() );
       break;
     case QNetworkReply::NoError:
-      mErrorString = QLatin1String( "" );
+      mErrorString.clear();
       break;
     default:
       mErrorString = reply->errorString();

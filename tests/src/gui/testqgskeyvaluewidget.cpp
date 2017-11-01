@@ -41,11 +41,11 @@ class TestQgsKeyValueWidget : public QObject
     void testUpdate()
     {
       const QgsKeyValueWidgetFactory factory( QStringLiteral( "testKeyValue" ) );
-      QgsEditorWidgetWrapper* wrapper = factory.create( nullptr, 0, nullptr, nullptr );
+      QgsEditorWidgetWrapper *wrapper = factory.create( nullptr, 0, nullptr, nullptr );
       QVERIFY( wrapper );
-      QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant& ) ) );
+      QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant & ) ) );
 
-      QgsKeyValueWidget* widget = qobject_cast< QgsKeyValueWidget* >( wrapper->widget() );
+      QgsKeyValueWidget *widget = qobject_cast< QgsKeyValueWidget * >( wrapper->widget() );
       QVERIFY( widget );
 
       QVariantMap initial;
@@ -58,7 +58,7 @@ class TestQgsKeyValueWidget : public QObject
       QCOMPARE( value.toMap(), initial );
       QCOMPARE( spy.count(), 0 );
 
-      QAbstractItemModel* model = widget->tableView->model();
+      QAbstractItemModel *model = widget->tableView->model();
       model->setData( model->index( 0, 1 ), "hello" );
       QCOMPARE( spy.count(), 1 );
 

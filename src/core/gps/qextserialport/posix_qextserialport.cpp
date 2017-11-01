@@ -1,7 +1,7 @@
 
 
 #include <fcntl.h>
-#include <stdio.h>
+#include <cstdio>
 #include "qextserialport.h"
 #include <QMutexLocker>
 #include <QDebug>
@@ -721,7 +721,7 @@ bool QextSerialPort::open(OpenMode mode)
 
             if (queryMode() == QextSerialPort::EventDriven) {
                 readNotifier = new QSocketNotifier(fd, QSocketNotifier::Read, this);
-                connect(readNotifier, SIGNAL(activated(int)), this, SIGNAL(readyRead()));
+                connect(readNotifier, &QSocketNotifier::activated, this, [=] { emit readyRead(); } );
             }
         } else {
             qDebug() << "could not open file:" << strerror(errno);

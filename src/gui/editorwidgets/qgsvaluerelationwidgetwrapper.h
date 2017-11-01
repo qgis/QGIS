@@ -24,9 +24,12 @@
 #include <QLineEdit>
 #include "qgis_gui.h"
 
+SIP_NO_FILE
+
 class QgsValueRelationWidgetFactory;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a value relation widget. This widget will offer a combobox with values from another layer
  * referenced by a foreign key (a constraint may be set but is not required on data level).
  * This is useful for having value lists on a separate layer containing codes and their
@@ -51,29 +54,34 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     Q_OBJECT
 
   public:
-    explicit QgsValueRelationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
+    explicit QgsValueRelationWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor = nullptr, QWidget *parent = nullptr );
 
     QVariant value() const override;
 
     void showIndeterminateState() override;
 
+    void setEnabled( bool enabled ) override;
+
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
   public slots:
-    void setValue( const QVariant& value ) override;
+    void setValue( const QVariant &value ) override;
 
   private:
-    QComboBox* mComboBox;
-    QListWidget* mListWidget;
-    QLineEdit* mLineEdit;
+    QComboBox *mComboBox = nullptr;
+    QListWidget *mListWidget = nullptr;
+    QLineEdit *mLineEdit = nullptr;
 
     QgsValueRelationFieldFormatter::ValueRelationCache mCache;
-    QgsVectorLayer* mLayer;
+    QgsVectorLayer *mLayer = nullptr;
+
+    bool mUpdating;
 
     friend class QgsValueRelationWidgetFactory;
+    friend class TestQgsValueRelationWidgetWrapper;
 };
 
 #endif // QGSVALUERELATIONWIDGETWRAPPER_H

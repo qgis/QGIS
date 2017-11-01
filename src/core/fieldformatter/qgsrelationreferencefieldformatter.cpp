@@ -27,38 +27,38 @@ QString QgsRelationReferenceFieldFormatter::id() const
   return QStringLiteral( "RelationReference" );
 }
 
-QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
   Q_UNUSED( cache );
 
   // Some sanity checks
   if ( !config.contains( QStringLiteral( "Relation" ) ) )
   {
-    QgsMessageLog::logMessage( "Missing Relation in configuration" );
+    QgsMessageLog::logMessage( QStringLiteral( "Missing Relation in configuration" ) );
     return value.toString();
   }
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() );
   if ( !relation.isValid() )
   {
-    QgsMessageLog::logMessage( "Invalid relation" );
+    QgsMessageLog::logMessage( QStringLiteral( "Invalid relation" ) );
     return value.toString();
   }
-  QgsVectorLayer* referencingLayer = relation.referencingLayer();
+  QgsVectorLayer *referencingLayer = relation.referencingLayer();
   if ( layer != referencingLayer )
   {
-    QgsMessageLog::logMessage( "representValue() with inconsistent layer parameter w.r.t relation referencingLayer" );
+    QgsMessageLog::logMessage( QStringLiteral( "representValue() with inconsistent layer parameter w.r.t relation referencingLayer" ) );
     return value.toString();
   }
   int referencingFieldIdx = referencingLayer->fields().lookupField( relation.fieldPairs().at( 0 ).first );
   if ( referencingFieldIdx != fieldIndex )
   {
-    QgsMessageLog::logMessage( "representValue() with inconsistent fieldIndex parameter w.r.t relation referencingFieldIdx" );
+    QgsMessageLog::logMessage( QStringLiteral( "representValue() with inconsistent fieldIndex parameter w.r.t relation referencingFieldIdx" ) );
     return value.toString();
   }
-  QgsVectorLayer* referencedLayer = relation.referencedLayer();
+  QgsVectorLayer *referencedLayer = relation.referencedLayer();
   if ( !referencedLayer )
   {
-    QgsMessageLog::logMessage( "Cannot find referenced layer" );
+    QgsMessageLog::logMessage( QStringLiteral( "Cannot find referenced layer" ) );
     return value.toString();
   }
 
@@ -85,7 +85,7 @@ QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer* laye
   return title;
 }
 
-QVariant QgsRelationReferenceFieldFormatter::sortValue( QgsVectorLayer* layer, int fieldIndex, const QVariantMap& config, const QVariant& cache, const QVariant& value ) const
+QVariant QgsRelationReferenceFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
   return representValue( layer, fieldIndex, config, cache, value );
 }

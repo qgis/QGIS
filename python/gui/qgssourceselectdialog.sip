@@ -1,43 +1,86 @@
-/**
- * Generic class listing layers available from a remote service.
- */
-class QgsSourceSelectDialog : public QDialog //, protected Ui::QgsSourceSelectBase
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgssourceselectdialog.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsSourceSelectDialog : QDialog, protected Ui::QgsSourceSelectBase
 {
+%Docstring
+ Generic class listing layers available from a remote service.
+%End
+
 %TypeHeaderCode
 #include "qgssourceselectdialog.h"
 %End
-
   public:
-    /** Whether the dialog is for a map service or a feature service */
     enum ServiceType { MapService, FeatureService };
 
-    /** Constructor */
-    QgsSourceSelectDialog( const QString& serviceName, ServiceType serviceType, QWidget* parent, Qt::WindowFlags fl );
-    /** Destructor */
+    QgsSourceSelectDialog( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl );
+%Docstring
+Constructor
+%End
+
     ~QgsSourceSelectDialog();
-    /** Sets the current extent and CRS. Used to select an appropriate CRS and possibly to retrieve data only in the current extent */
-    void setCurrentExtentAndCrs( const QgsRectangle& canvasExtent, const QgsCoordinateReferenceSystem& canvasCrs );
+    void setCurrentExtentAndCrs( const QgsRectangle &canvasExtent, const QgsCoordinateReferenceSystem &canvasCrs );
+%Docstring
+Sets the current extent and CRS. Used to select an appropriate CRS and possibly to retrieve data only in the current extent
+%End
 
   signals:
-    /** Emitted when a layer is added from the dialog */
     void addLayer( QString uri, QString typeName );
-    /** Emitted when the connections for the service were changed */
+%Docstring
+Emitted when a layer is added from the dialog
+%End
     void connectionsChanged();
+%Docstring
+Emitted when the connections for the service were changed
+%End
 
   protected:
-    /** To be implemented in the child class. Called when a new connection is initiated. */
-    virtual bool connectToService( const QgsOwsConnection& connection ) = 0;
-    /** May be implemented in child classes for services which support customized queries. */
-    virtual void buildQuery( const QgsOwsConnection&, const QModelIndex& );
-    /** To be implemented in the child class. Constructs an URI for the specified service layer. */
-    virtual QString getLayerURI( const QgsOwsConnection& connection,
-                                 const QString& layerTitle,
-                                 const QString& layerName,
-                                 const QString& crs = QString(),
-                                 const QString& filter = QString(),
-                                 const QgsRectangle& bBox = QgsRectangle() ) const = 0;
-    /** Updates the UI for the list of available image encodings from the specified list. */
-    void populateImageEncodings( const QStringList& availableEncodings );
-    /** Returns the selected image encoding. */
+
+    virtual bool connectToService( const QgsOwsConnection &connection ) = 0;
+%Docstring
+To be implemented in the child class. Called when a new connection is initiated.
+ :rtype: bool
+%End
+    virtual void buildQuery( const QgsOwsConnection &, const QModelIndex & );
+%Docstring
+May be implemented in child classes for services which support customized queries.
+%End
+    virtual QString getLayerURI( const QgsOwsConnection &connection,
+                                 const QString &layerTitle,
+                                 const QString &layerName,
+                                 const QString &crs = QString(),
+                                 const QString &filter = QString(),
+                                 const QgsRectangle &bBox = QgsRectangle() ) const = 0;
+%Docstring
+To be implemented in the child class. Constructs an URI for the specified service layer.
+ :rtype: str
+%End
+    void populateImageEncodings( const QStringList &availableEncodings );
+%Docstring
+Updates the UI for the list of available image encodings from the specified list.
+%End
     QString getSelectedImageEncoding() const;
+%Docstring
+Returns the selected image encoding.
+ :rtype: str
+%End
+
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgssourceselectdialog.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

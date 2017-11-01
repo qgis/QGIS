@@ -60,13 +60,13 @@ def TimestampFromTicks(ticks):
 class ConnectionError(Exception):
 
     def __init__(self, *args, **kwargs):
-        super(Exception, self).__init__(*args, **kwargs)
+        super(ConnectionError, self).__init__(*args, **kwargs)
 
 
 class ExecError(Exception):
 
     def __init__(self, *args, **kwargs):
-        super(Exception, self).__init__(*args, **kwargs)
+        super(ExecError, self).__init__(*args, **kwargs)
 
 
 class QtSqlDBCursor(object):
@@ -150,9 +150,9 @@ class QtSqlDBCursor(object):
         row = []
         for i in range(len(self.description)):
             value = self.qry.value(i)
-            if (isinstance(value, QDate)
-                    or isinstance(value, QTime)
-                    or isinstance(value, QDateTime)):
+            if (isinstance(value, QDate) or
+                    isinstance(value, QTime) or
+                    isinstance(value, QDateTime)):
                 value = value.toString()
             elif isinstance(value, QByteArray):
                 value = u"GEOMETRY"

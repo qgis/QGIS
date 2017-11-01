@@ -123,8 +123,8 @@ public:
     /**
      * Sets the current position and range of the display's scroll bar.
      *
-     * @param cursor The position of the scroll bar's thumb.
-     * @param lines The maximum value of the scroll bar.
+     * \param cursor The position of the scroll bar's thumb.
+     * \param lines The maximum value of the scroll bar.
      */
     void setScroll(int cursor, int lines);
 
@@ -241,11 +241,11 @@ public:
      * The keyboard cursor defaults to using the foreground color of the character
      * underneath it.
      *
-     * @param useForegroundColor If true, the cursor color will change to match
+     * \param useForegroundColor If true, the cursor color will change to match
      * the foreground color of the character underneath it as it is moved, in this
      * case, the @p color parameter is ignored and the color of the character
      * under the cursor is inverted to ensure that it is still readable.
-     * @param color The color to use to draw the cursor.  This is only taken into
+     * \param color The color to use to draw the cursor.  This is only taken into
      * account if @p useForegroundColor is false.
      */
     void setKeyboardCursorColor(bool useForegroundColor , const QColor& color);
@@ -297,7 +297,7 @@ public:
      * The word boundaries occur at the first and last characters which
      * are either a letter, number, or a character in @p wc
      *
-     * @param wc An array of characters which are to be considered parts
+     * \param wc An array of characters which are to be considered parts
      * of a word ( in addition to letters and numbers ).
      */
     void setWordCharacters(const QString& wc);
@@ -305,7 +305,7 @@ public:
      * Returns the characters which are considered part of a word for the
      * purpose of selecting words in the display with the mouse.
      *
-     * @see setWordCharacters()
+     * \see setWordCharacters()
      */
     QString wordCharacters() { return _wordCharacters; }
 
@@ -480,7 +480,7 @@ public slots:
      * Causes the widget to display or hide a message informing the user that terminal
      * output has been suspended (by using the flow control key combination Ctrl+S)
      *
-     * @param suspended True if terminal output has been suspended and the warning message should
+     * \param suspended True if terminal output has been suspended and the warning message should
      *                     be shown or false to indicate that terminal output has been resumed and that
      *                     the warning message should disappear.
      */
@@ -497,7 +497,7 @@ public slots:
      * view area - since the program running in the terminal is being allowed to handle normal mouse
      * events itself.
      *
-     * @param usesMouse Set to true if the program running in the terminal is interested in mouse events
+     * \param usesMouse Set to true if the program running in the terminal is interested in mouse events
      * or false otherwise.
      */
     void setUsesMouse(bool usesMouse);
@@ -513,13 +513,13 @@ public slots:
 
     /**
      * Sets the background of the display to the specified color.
-     * @see setColorTable(), setForegroundColor()
+     * \see setColorTable(), setForegroundColor()
      */
     void setBackgroundColor(const QColor& color);
 
     /**
      * Sets the text of the display to the specified color.
-     * @see setColorTable(), setBackgroundColor()
+     * \see setColorTable(), setBackgroundColor()
      */
     void setForegroundColor(const QColor& color);
 
@@ -534,10 +534,10 @@ signals:
 
     /**
      * A mouse event occurred.
-     * @param button The mouse button (0 for left button, 1 for middle button, 2 for right button, 3 for release)
-     * @param column The character column where the event occurred
-     * @param line The character row where the event occurred
-     * @param eventType The type of event.  0 for a mouse press / release or 1 for mouse motion
+     * \param button The mouse button (0 for left button, 1 for middle button, 2 for right button, 3 for release)
+     * \param column The character column where the event occurred
+     * \param line The character row where the event occurred
+     * \param eventType The type of event.  0 for a mouse press / release or 1 for mouse motion
      */
     void mouseSignal(int button, int column, int line, int eventType);
     void changedFontMetricSignal(int height, int width);

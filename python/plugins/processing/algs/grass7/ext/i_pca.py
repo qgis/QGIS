@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import absolute_import
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'March 2016'
@@ -34,7 +33,7 @@ def checkParameterValuesBeforeExecuting(alg):
     return verifyRasterNum(alg, 'input', 2)
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # Remove output
     output = alg.getOutputFromName('output')
     alg.removeOutputFromName('output')

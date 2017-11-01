@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsslconnect.h - thin wrapper class to connect to spatialite databases
+    qgsslconnect.h - thin wrapper class to connect to SpatiaLite databases
     ----------------------
     begin                : May 2015
     copyright            : (C) 2015 by Jürgen fischer
@@ -16,13 +16,16 @@
 #ifndef QGSSLCONNECT_H
 #define QGSSLCONNECT_H
 
+#define SIP_NO_FILE
+
 #include <QHash>
 
 #include "qgis_core.h"
 
 struct sqlite3;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSLConnect
  * \note not available in Python bindings
  */
@@ -30,10 +33,10 @@ class CORE_EXPORT QgsSLConnect
 {
   public:
     static int sqlite3_open( const char *filename, sqlite3 **ppDb );
-    static int sqlite3_close( sqlite3* );
+    static int sqlite3_close( sqlite3 * );
 
     static int sqlite3_open_v2( const char *filename, sqlite3 **ppDb, int flags, const char *zVfs );
-    static int sqlite3_close_v2( sqlite3* );
+    static int sqlite3_close_v2( sqlite3 * );
 
 #if defined(SPATIALITE_HAS_INIT_EX)
   private:

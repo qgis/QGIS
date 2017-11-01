@@ -267,8 +267,8 @@ class QgisLocalServer(object):
 
         servers = [
             ('spawn-fcgi', 'lighttpd')
-            #('fcgiwrap', 'nginx'),
-            #('uwsgi', 'nginx'),
+            # ('fcgiwrap', 'nginx'),
+            # ('uwsgi', 'nginx'),
         ]
 
         chkd = ''
@@ -514,9 +514,9 @@ class QgisLocalServer(object):
                 'Could not connect to process: ' + str(resp.code)
             )
 
-        if (tmp_png is not None
-                and tmp_png.info().getmaintype() == 'image'
-                and tmp_png.info().getheader('Content-Type') == 'image/png'):
+        if (tmp_png is not None and
+                tmp_png.info().getmaintype() == 'image' and
+                tmp_png.info().getheader('Content-Type') == 'image/png'):
 
             filepath = getTempfilePath('png')
             with open(filepath, 'wb') as temp_image:
@@ -730,9 +730,9 @@ def getLocalServer():
                     pass
             msg = 'Web server basic access to root index.html failed'
             # print repr(res)
-            assert (res is not None
-                    and res.getcode() == 200
-                    and 'Web Server Working' in res.read().decode('utf-8')), msg
+            assert (res is not None and
+                    res.getcode() == 200 and
+                    'Web Server Working' in res.read().decode('utf-8')), msg
 
             # verify basic wms service
             params = {

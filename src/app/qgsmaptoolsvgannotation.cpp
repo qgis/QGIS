@@ -20,17 +20,12 @@
 #include "qgsproject.h"
 #include <QMouseEvent>
 
-QgsMapToolSvgAnnotation::QgsMapToolSvgAnnotation( QgsMapCanvas* canvas ): QgsMapToolAnnotation( canvas )
+QgsMapToolSvgAnnotation::QgsMapToolSvgAnnotation( QgsMapCanvas *canvas ): QgsMapToolAnnotation( canvas )
 {
 
 }
 
-QgsMapToolSvgAnnotation::~QgsMapToolSvgAnnotation()
-{
-
-}
-
-QgsAnnotation* QgsMapToolSvgAnnotation::createItem() const
+QgsAnnotation *QgsMapToolSvgAnnotation::createItem() const
 {
   return new QgsSvgAnnotation();
 }

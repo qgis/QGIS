@@ -17,27 +17,22 @@
 #include "qgscomposition.h"
 #include <QDebug>
 
-QgsMultiRenderChecker::QgsMultiRenderChecker()
-    : mColorTolerance( 0 )
+void QgsMultiRenderChecker::setControlName( const QString &name )
 {
+  mControlName = name;
 }
 
-void QgsMultiRenderChecker::setControlName( const QString& theName )
-{
-  mControlName = theName;
-}
-
-void QgsMultiRenderChecker::setControlPathPrefix( const QString& prefix )
+void QgsMultiRenderChecker::setControlPathPrefix( const QString &prefix )
 {
   mControlPathPrefix = prefix;
 }
 
-void QgsMultiRenderChecker::setMapSettings( const QgsMapSettings& mapSettings )
+void QgsMultiRenderChecker::setMapSettings( const QgsMapSettings &mapSettings )
 {
   mMapSettings = mapSettings;
 }
 
-bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int theMismatchCount )
+bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int mismatchCount )
 {
   bool successful = false;
 
@@ -52,7 +47,7 @@ bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int th
 
   QVector<QgsDartMeasurement> dartMeasurements;
 
-  Q_FOREACH ( const QString& suffix, subDirs )
+  Q_FOREACH ( const QString &suffix, subDirs )
   {
     qDebug() << "Checking subdir " << suffix;
     bool result;
@@ -67,11 +62,11 @@ bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int th
     if ( !mRenderedImage.isNull() )
     {
       checker.setRenderedImage( mRenderedImage );
-      result = checker.compareImages( theTestName, theMismatchCount, mRenderedImage );
+      result = checker.compareImages( testName, mismatchCount, mRenderedImage );
     }
     else
     {
-      result = checker.runTest( theTestName, theMismatchCount );
+      result = checker.runTest( testName, mismatchCount );
       mRenderedImage = checker.renderedImage();
     }
 
@@ -84,7 +79,7 @@ bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int th
 
   if ( !successful )
   {
-    Q_FOREACH ( const QgsDartMeasurement& measurement, dartMeasurements )
+    Q_FOREACH ( const QgsDartMeasurement &measurement, dartMeasurements )
       measurement.send();
 
     QgsDartMeasurement msg( QStringLiteral( "Image not accepted by test" ), QgsDartMeasurement::Text, "This may be caused because the test is supposed to fail or rendering inconsistencies."
@@ -111,24 +106,23 @@ QString QgsMultiRenderChecker::controlImagePath() const
 
 ///@cond PRIVATE
 
-QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsComposition* composition )
-    : QgsMultiRenderChecker()
-    , mTestName( testName )
-    , mComposition( composition )
-    , mSize( 1122, 794 )
-    , mDotsPerMeter( 96 / 25.4 * 1000 )
+QgsCompositionChecker::QgsCompositionChecker( const QString &testName, QgsComposition *composition )
+  : QgsMultiRenderChecker()
+  , mTestName( testName )
+  , mComposition( composition )
+  , mSize( 1122, 794 )
+  , mDotsPerMeter( 96 / 25.4 * 1000 )
 {
   // The composer has some slight render inconsistencies on the whole image sometimes
   setColorTolerance( 5 );
 }
 
 QgsCompositionChecker::QgsCompositionChecker()
-    : mComposition( nullptr )
-    , mDotsPerMeter( 96 / 25.4 * 1000 )
+  : mDotsPerMeter( 96 / 25.4 * 1000 )
 {
 }
 
-bool QgsCompositionChecker::testComposition( QString &theReport, int page, int pixelDiff )
+bool QgsCompositionChecker::testComposition( QString &checkedReport, int page, int pixelDiff )
 {
   if ( !mComposition )
   {
@@ -171,7 +165,7 @@ bool QgsCompositionChecker::testComposition( QString &theReport, int page, int p
 
   bool testResult = runTest( mTestName, pixelDiff );
 
-  theReport += report();
+  checkedReport += report();
 
   return testResult;
 }

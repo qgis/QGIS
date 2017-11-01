@@ -17,9 +17,9 @@
 #include "qgspostgresconn.h"
 #include "qgslogger.h"
 
-QgsPostgresConnPool* QgsPostgresConnPool::sInstance = nullptr;
+QgsPostgresConnPool *QgsPostgresConnPool::sInstance = nullptr;
 
-QgsPostgresConnPool* QgsPostgresConnPool::instance()
+QgsPostgresConnPool *QgsPostgresConnPool::instance()
 {
   if ( !sInstance )
     sInstance = new QgsPostgresConnPool();
@@ -32,7 +32,7 @@ void QgsPostgresConnPool::cleanupInstance()
   sInstance = nullptr;
 }
 
-QgsPostgresConnPool::QgsPostgresConnPool() : QgsConnectionPool<QgsPostgresConn*, QgsPostgresConnPoolGroup>()
+QgsPostgresConnPool::QgsPostgresConnPool() : QgsConnectionPool<QgsPostgresConn *, QgsPostgresConnPoolGroup>()
 {
   QgsDebugCall;
 }

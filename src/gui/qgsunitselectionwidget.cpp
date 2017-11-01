@@ -19,12 +19,11 @@
 #include "qgsunitselectionwidget.h"
 #include <QDialogButtonBox>
 
-QgsMapUnitScaleWidget::QgsMapUnitScaleWidget( QWidget* parent )
-    : QgsPanelWidget( parent )
-    , mBlockSignals( true )
+QgsMapUnitScaleWidget::QgsMapUnitScaleWidget( QWidget *parent )
+  : QgsPanelWidget( parent )
 {
   setupUi( this );
-  mComboBoxMinScale->setScale( 0.0000001 );
+  mComboBoxMinScale->setScale( 10000000.0 );
   mComboBoxMaxScale->setScale( 1 );
   mSpinBoxMinSize->setShowClearButton( false );
   mSpinBoxMaxSize->setShowClearButton( false );
@@ -54,9 +53,9 @@ void QgsMapUnitScaleWidget::setMapUnitScale( const QgsMapUnitScale &scale )
   // can't block signals on the widgets themselves, some use them to update
   // internal states
   mBlockSignals = true;
-  mComboBoxMinScale->setScale( scale.minScale > 0.0 ? scale.minScale : 0.0000001 );
-  mCheckBoxMinScale->setChecked( scale.minScale > 0.0 );
-  mComboBoxMinScale->setEnabled( scale.minScale > 0.0 );
+  mComboBoxMinScale->setScale( scale.minScale > 0.0 ? scale.minScale : 10000000 );
+  mCheckBoxMinScale->setChecked( scale.minScale != 0.0 );
+  mComboBoxMinScale->setEnabled( scale.minScale != 0.0 );
   mComboBoxMaxScale->setScale( scale.maxScale > 0.0 ? scale.maxScale : 1.0 );
   mCheckBoxMaxScale->setChecked( scale.maxScale > 0.0 );
   mComboBoxMaxScale->setEnabled( scale.maxScale > 0.0 );
@@ -84,7 +83,7 @@ void QgsMapUnitScaleWidget::setMapCanvas( QgsMapCanvas *canvas )
 void QgsMapUnitScaleWidget::configureMinComboBox()
 {
   mComboBoxMinScale->setEnabled( mCheckBoxMinScale->isChecked() );
-  if ( mCheckBoxMinScale->isChecked() && mComboBoxMinScale->scale() > mComboBoxMaxScale->scale() )
+  if ( mCheckBoxMinScale->isChecked() && mComboBoxMinScale->scale() < mComboBoxMaxScale->scale() )
   {
     mComboBoxMinScale->setScale( mComboBoxMaxScale->scale() );
   }
@@ -93,7 +92,7 @@ void QgsMapUnitScaleWidget::configureMinComboBox()
 void QgsMapUnitScaleWidget::configureMaxComboBox()
 {
   mComboBoxMaxScale->setEnabled( mCheckBoxMaxScale->isChecked() );
-  if ( mCheckBoxMaxScale->isChecked() && mComboBoxMaxScale->scale() < mComboBoxMinScale->scale() )
+  if ( mCheckBoxMaxScale->isChecked() && mComboBoxMaxScale->scale() > mComboBoxMinScale->scale() )
   {
     mComboBoxMaxScale->setScale( mComboBoxMinScale->scale() );
   }
@@ -124,8 +123,8 @@ QgsMapUnitScale QgsMapUnitScaleWidget::mapUnitScale() const
 
 
 QgsUnitSelectionWidget::QgsUnitSelectionWidget( QWidget *parent )
-    : QWidget( parent )
-    , mCanvas( nullptr )
+  : QWidget( parent )
+
 {
   mMapUnitIdx = -1;
 
@@ -170,9 +169,13 @@ void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList &units
   {
     mUnitCombo->addItem( tr( "Pixels" ), QgsUnitTypes::RenderPixels );
   }
+  if ( units.contains( QgsUnitTypes::RenderMetersInMapUnits ) )
+  {
+    mUnitCombo->addItem( tr( "Meters (at Map Scale)" ), QgsUnitTypes::RenderMetersInMapUnits );
+  }
   if ( units.contains( QgsUnitTypes::RenderMapUnits ) )
   {
-    mUnitCombo->addItem( tr( "Map unit" ), QgsUnitTypes::RenderMapUnits );
+    mUnitCombo->addItem( tr( "Map Units" ), QgsUnitTypes::RenderMapUnits );
   }
   if ( units.contains( QgsUnitTypes::RenderPercentage ) )
   {
@@ -208,7 +211,7 @@ void QgsUnitSelectionWidget::setUnit( int unitIndex )
 
 void QgsUnitSelectionWidget::setUnit( QgsUnitTypes::RenderUnit unit )
 {
-  int idx = mUnitCombo->findData( QVariant(( int ) unit ) );
+  int idx = mUnitCombo->findData( QVariant( ( int ) unit ) );
   mUnitCombo->setCurrentIndex( idx == -1 ? 0 : idx );
 }
 
@@ -219,10 +222,10 @@ void QgsUnitSelectionWidget::setMapCanvas( QgsMapCanvas *canvas )
 
 void QgsUnitSelectionWidget::showDialog()
 {
-  QgsPanelWidget* panel = QgsPanelWidget::findParentPanel( this );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QgsMapUnitScaleWidget* widget = new QgsMapUnitScaleWidget( panel );
+    QgsMapUnitScaleWidget *widget = new QgsMapUnitScaleWidget( panel );
     widget->setPanelTitle( tr( "Adjust scaling range" ) );
     widget->setMapCanvas( mCanvas );
     widget->setMapUnitScale( mMapUnitScale );
@@ -256,21 +259,21 @@ void QgsUnitSelectionWidget::toggleUnitRangeButton()
   }
 }
 
-void QgsUnitSelectionWidget::widgetChanged( const QgsMapUnitScale& scale )
+void QgsUnitSelectionWidget::widgetChanged( const QgsMapUnitScale &scale )
 {
   mMapUnitScale = scale;
   emit changed();
 }
 
 
-QgsMapUnitScaleDialog::QgsMapUnitScaleDialog( QWidget* parent )
-    : QDialog( parent )
-    , mWidget( nullptr )
+QgsMapUnitScaleDialog::QgsMapUnitScaleDialog( QWidget *parent )
+  : QDialog( parent )
+
 {
-  QVBoxLayout* vLayout = new QVBoxLayout();
+  QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsMapUnitScaleWidget();
   vLayout->addWidget( mWidget );
-  QDialogButtonBox* bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
   connect( bbox, &QDialogButtonBox::accepted, this, &QgsMapUnitScaleDialog::accept );
   connect( bbox, &QDialogButtonBox::rejected, this, &QgsMapUnitScaleDialog::reject );
   vLayout->addWidget( bbox );
@@ -282,12 +285,12 @@ QgsMapUnitScale QgsMapUnitScaleDialog::getMapUnitScale() const
   return mWidget->mapUnitScale();
 }
 
-void QgsMapUnitScaleDialog::setMapUnitScale( const QgsMapUnitScale& scale )
+void QgsMapUnitScaleDialog::setMapUnitScale( const QgsMapUnitScale &scale )
 {
   mWidget->setMapUnitScale( scale );
 }
 
-void QgsMapUnitScaleDialog::setMapCanvas( QgsMapCanvas* canvas )
+void QgsMapUnitScaleDialog::setMapCanvas( QgsMapCanvas *canvas )
 {
   mWidget->setMapCanvas( canvas );
 }

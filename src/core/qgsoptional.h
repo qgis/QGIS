@@ -27,10 +27,12 @@
  * Often it is used for configuration options which can be enabled or disabled but also have
  * more internal configuration information that should not be lost when disabling and re-enabling.
  *
- * @note Added in QGIS 3.0
- * @note For python you need to use implementations for specific template classes
+ * \note For Python you need to use implementations for specific template classes
+ * \note Not available in Python bindings (although SIP file is present for specific implementations).
+ *
+ * \since QGIS 3.0
  */
-template<class T>
+template<typename T>
 class CORE_EXPORT QgsOptional
 {
   public:
@@ -39,25 +41,24 @@ class CORE_EXPORT QgsOptional
      * A QgsOptional is disabled by default if default constructed.
      */
     QgsOptional()
-        : mEnabled( false )
     {
     }
 
     /**
      * A QgsOptional is enabled by default if constructed with payload.
      */
-    QgsOptional( const T& data )
-        : mEnabled( true )
-        , mData( data )
+    QgsOptional( const T &data )
+      : mEnabled( true )
+      , mData( data )
     {
     }
 
     /**
      * A QgsOptional constructed with enabled status and data
      */
-    QgsOptional( const T& data, bool enabled )
-        : mEnabled( enabled )
-        , mData( data )
+    QgsOptional( const T &data, bool enabled )
+      : mEnabled( enabled )
+      , mData( data )
     {
     }
 
@@ -67,9 +68,9 @@ class CORE_EXPORT QgsOptional
      * This will compare the enabled flag and call the == operator
      * of the contained class.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
-    bool operator== ( const QgsOptional<T>& other ) const
+    bool operator== ( const QgsOptional<T> &other ) const
     {
       return mEnabled == other.mEnabled && mData == other.mData;
     }
@@ -85,7 +86,7 @@ class CORE_EXPORT QgsOptional
     /**
      * Check if this optional is enabled
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     bool enabled() const
     {
@@ -95,7 +96,7 @@ class CORE_EXPORT QgsOptional
     /**
      * Set if this optional is enabled
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     void setEnabled( bool enabled )
     {
@@ -105,9 +106,9 @@ class CORE_EXPORT QgsOptional
     /**
      * Access the payload data
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
-    const T* operator->() const
+    const T *operator->() const
     {
       return &mData;
     }
@@ -115,7 +116,7 @@ class CORE_EXPORT QgsOptional
     /**
      * Access the payload data
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     T data() const
     {
@@ -125,15 +126,15 @@ class CORE_EXPORT QgsOptional
     /**
      * Set the payload data
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
-    void setData( const T& data )
+    void setData( const T &data )
     {
       mData = data;
     }
 
   private:
-    bool mEnabled;
+    bool mEnabled = false;
     T mData;
 };
 

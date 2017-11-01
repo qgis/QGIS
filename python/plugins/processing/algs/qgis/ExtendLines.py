@@ -25,62 +25,56 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector, ParameterNumber
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from qgis.core import (QgsProcessingParameterNumber,
+                       QgsProcessingException,
+                       QgsProcessing)
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class ExtendLines(GeoAlgorithm):
+class ExtendLines(QgisFeatureBasedAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
     START_DISTANCE = 'START_DISTANCE'
     END_DISTANCE = 'END_DISTANCE'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Extend lines')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def group(self):
+        return self.tr('Vector geometry')
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterNumber(self.START_DISTANCE,
-                                          self.tr('Start distance'), default=0.0))
-        self.addParameter(ParameterNumber(self.END_DISTANCE,
-                                          self.tr('End distance'), default=0.0))
+    def __init__(self):
+        super().__init__()
+        self.start_distance = None
+        self.end_distance = None
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Extended lines')))
+    def initParameters(self, config=None):
+        self.addParameter(QgsProcessingParameterNumber(self.START_DISTANCE,
+                                                       self.tr('Start distance'), defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterNumber(self.END_DISTANCE,
+                                                       self.tr('End distance'), defaultValue=0.0))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
+    def name(self):
+        return 'extendlines'
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields(),
-                layer.wkbType(),
-                layer.crs())
+    def displayName(self):
+        return self.tr('Extend lines')
 
-        start_distance = self.getParameterValue(self.START_DISTANCE)
-        end_distance = self.getParameterValue(self.END_DISTANCE)
+    def outputName(self):
+        return self.tr('Extended')
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine]
 
-        for current, input_feature in enumerate(features):
-            output_feature = input_feature
-            input_geometry = input_feature.geometry()
-            if input_geometry:
-                output_geometry = input_geometry.extendLine(start_distance, end_distance)
-                if not output_geometry:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Error calculating extended line'))
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.start_distance = self.parameterAsDouble(parameters, self.START_DISTANCE, context)
+        self.end_distance = self.parameterAsDouble(parameters, self.END_DISTANCE, context)
+        return True
 
-                output_feature.setGeometry(output_geometry)
+    def processFeature(self, feature, feedback):
+        input_geometry = feature.geometry()
+        if input_geometry:
+            output_geometry = input_geometry.extendLine(self.start_distance, self.end_distance)
+            if not output_geometry:
+                raise QgsProcessingException(
+                    self.tr('Error calculating extended line'))
 
-            writer.addFeature(output_feature)
-            feedback.setProgress(int(current * total))
+            feature.setGeometry(output_geometry)
 
-        del writer
+        return feature

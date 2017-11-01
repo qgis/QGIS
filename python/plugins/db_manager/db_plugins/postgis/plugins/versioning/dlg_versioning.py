@@ -254,7 +254,7 @@ FOR EACH ROW EXECUTE PROCEDURE %(func_insert)s();""" % \
 CREATE OR REPLACE RULE "_DELETE" AS ON DELETE TO %(view)s DO INSTEAD
   DELETE FROM %(schematable)s WHERE %(origpkey)s = old.%(origpkey)s;
 CREATE OR REPLACE RULE "_INSERT" AS ON INSERT TO %(view)s DO INSTEAD
-  INSERT INTO %(schematable)s (%(cols)s) VALUES (%(newcols)s);
+  INSERT INTO %(schematable)s (%(cols)s) VALUES (%(newcols)s) RETURNING %(cols)s;
 CREATE OR REPLACE RULE "_UPDATE" AS ON UPDATE TO %(view)s DO INSTEAD
   UPDATE %(schematable)s SET %(assign)s WHERE %(origpkey)s = NEW.%(origpkey)s;""" % {'view': self.view,
                                                                                      'schematable': self.schematable,

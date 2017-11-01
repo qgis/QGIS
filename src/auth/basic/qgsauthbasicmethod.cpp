@@ -19,6 +19,10 @@
 
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
+
+#include <QNetworkProxy>
+#include <QMutexLocker>
 
 static const QString AUTH_METHOD_KEY = QStringLiteral( "Basic" );
 static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "Basic authentication" );
@@ -27,7 +31,6 @@ QMap<QString, QgsAuthMethodConfig> QgsAuthBasicMethod::sAuthConfigCache = QMap<Q
 
 
 QgsAuthBasicMethod::QgsAuthBasicMethod()
-    : QgsAuthMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
@@ -37,11 +40,8 @@ QgsAuthBasicMethod::QgsAuthBasicMethod()
                     << QStringLiteral( "ows" )
                     << QStringLiteral( "wfs" )  // convert to lowercase
                     << QStringLiteral( "wcs" )
-                    << QStringLiteral( "wms" ) );
-}
-
-QgsAuthBasicMethod::~QgsAuthBasicMethod()
-{
+                    << QStringLiteral( "wms" )
+                    << QStringLiteral( "proxy" ) );
 }
 
 QString QgsAuthBasicMethod::key() const
@@ -126,6 +126,28 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
   return true;
 }
 
+bool QgsAuthBasicMethod::updateNetworkProxy( QNetworkProxy &proxy, const QString &authcfg, const QString &dataprovider )
+{
+  Q_UNUSED( dataprovider )
+
+  QgsAuthMethodConfig mconfig = getMethodConfig( authcfg );
+  if ( !mconfig.isValid() )
+  {
+    QgsDebugMsg( QString( "Update proxy config FAILED for authcfg: %1: config invalid" ).arg( authcfg ) );
+    return false;
+  }
+
+  QString username = mconfig.config( QStringLiteral( "username" ) );
+  QString password = mconfig.config( QStringLiteral( "password" ) );
+
+  if ( !username.isEmpty() )
+  {
+    proxy.setUser( username );
+    proxy.setPassword( password );
+  }
+  return true;
+}
+
 void QgsAuthBasicMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 {
   if ( mconfig.hasConfig( QStringLiteral( "oldconfigstyle" ) ) )
@@ -149,6 +171,7 @@ void QgsAuthBasicMethod::clearCachedConfig( const QString &authcfg )
 
 QgsAuthMethodConfig QgsAuthBasicMethod::getMethodConfig( const QString &authcfg, bool fullconfig )
 {
+  QMutexLocker locker( &mConfigMutex );
   QgsAuthMethodConfig mconfig;
 
   // check if it is cached
@@ -160,26 +183,29 @@ QgsAuthMethodConfig QgsAuthBasicMethod::getMethodConfig( const QString &authcfg,
   }
 
   // else build basic bundle
-  if ( !QgsAuthManager::instance()->loadAuthenticationConfig( authcfg, mconfig, fullconfig ) )
+  if ( !QgsApplication::authManager()->loadAuthenticationConfig( authcfg, mconfig, fullconfig ) )
   {
     QgsDebugMsg( QString( "Retrieve config FAILED for authcfg: %1" ).arg( authcfg ) );
     return QgsAuthMethodConfig();
   }
 
   // cache bundle
+  locker.unlock();
   putMethodConfig( authcfg, mconfig );
 
   return mconfig;
 }
 
-void QgsAuthBasicMethod::putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig& mconfig )
+void QgsAuthBasicMethod::putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig &mconfig )
 {
+  QMutexLocker locker( &mConfigMutex );
   QgsDebugMsg( QString( "Putting basic config for authcfg: %1" ).arg( authcfg ) );
   sAuthConfigCache.insert( authcfg, mconfig );
 }
 
 void QgsAuthBasicMethod::removeMethodConfig( const QString &authcfg )
 {
+  QMutexLocker locker( &mConfigMutex );
   if ( sAuthConfigCache.contains( authcfg ) )
   {
     sAuthConfigCache.remove( authcfg );
@@ -187,14 +213,14 @@ void QgsAuthBasicMethod::removeMethodConfig( const QString &authcfg )
   }
 }
 
-QString QgsAuthBasicMethod::escapeUserPass( const QString &theVal, QChar delim ) const
+QString QgsAuthBasicMethod::escapeUserPass( const QString &val, QChar delim ) const
 {
-  QString val = theVal;
+  QString escaped = val;
 
-  val.replace( '\\', QLatin1String( "\\\\" ) );
-  val.replace( delim, QStringLiteral( "\\%1" ).arg( delim ) );
+  escaped.replace( '\\', QLatin1String( "\\\\" ) );
+  escaped.replace( delim, QStringLiteral( "\\%1" ).arg( delim ) );
 
-  return val;
+  return escaped;
 }
 
 //////////////////////////////////////////////
@@ -209,7 +235,8 @@ QGISEXTERN QgsAuthBasicMethod *classFactory()
   return new QgsAuthBasicMethod();
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
  */
 QGISEXTERN QString authMethodKey()
 {

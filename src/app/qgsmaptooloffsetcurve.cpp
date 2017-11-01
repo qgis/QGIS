@@ -23,21 +23,20 @@
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
 #include "qgssnappingconfig.h"
+#include "qgssettings.h"
+#include "qgisapp.h"
+#include "qgsgeos.h"
 
 #include <QGraphicsProxyWidget>
 #include <QMouseEvent>
 #include "qgisapp.h"
 
-QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
-    , mRubberBand( nullptr )
-    , mOriginalGeometry( nullptr )
-    , mModifiedFeature( -1 )
-    , mGeometryModified( false )
-    , mDistanceWidget( nullptr )
-    , mSnapVertexMarker( nullptr )
-    , mForceCopy( false )
-    , mMultiPartGeometry( false )
+QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )
+  : QgsMapToolEdit( canvas )
+  , mModifiedFeature( -1 )
+  , mGeometryModified( false )
+  , mForceCopy( false )
+  , mMultiPartGeometry( false )
 {
 }
 
@@ -49,14 +48,14 @@ QgsMapToolOffsetCurve::~QgsMapToolOffsetCurve()
 }
 
 
-void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( !mCanvas )
   {
     return;
   }
 
-  QgsVectorLayer* layer = currentVectorLayer();
+  QgsVectorLayer *layer = currentVectorLayer();
   if ( !layer )
   {
     deleteRubberBandAndGeometry();
@@ -82,17 +81,18 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent* e )
       return;
     }
 
-    QgsSnappingUtils* snapping = mCanvas->snappingUtils();
+    QgsSnappingUtils *snapping = mCanvas->snappingUtils();
 
     // store previous settings
     QgsSnappingConfig oldConfig = snapping->config();
     QgsSnappingConfig config = snapping->config();
     // setup new settings (temporary)
-    QSettings settings;
+    QgsSettings settings;
+    config.setEnabled( true );
     config.setMode( QgsSnappingConfig::AllLayers );
     config.setType( QgsSnappingConfig::Segment );
-    config.setTolerance( settings.value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
-    config.setUnits( static_cast<QgsTolerance::UnitType>( settings.value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ), QgsTolerance::Pixels ).toInt() ) );
+    config.setTolerance( settings.value( QStringLiteral( "qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
+    config.setUnits( static_cast<QgsTolerance::UnitType>( settings.value( QStringLiteral( "qgis/digitizing/search_radius_vertex_edit_unit" ), QgsTolerance::Pixels ).toInt() ) );
     snapping->setConfig( config );
 
     QgsPointLocator::Match match = snapping->snapToMap( e->pos() );
@@ -130,7 +130,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent* e )
 
 void QgsMapToolOffsetCurve::applyOffset()
 {
-  QgsVectorLayer* layer = currentVectorLayer();
+  QgsVectorLayer *layer = currentVectorLayer();
   if ( !layer )
   {
     deleteRubberBandAndGeometry();
@@ -166,7 +166,7 @@ void QgsMapToolOffsetCurve::applyOffset()
 
     //add empty values for all fields (allows inserting attribute values via the feature form in the same session)
     QgsAttributes attrs( layer->fields().count() );
-    const QgsFields& fields = layer->fields();
+    const QgsFields &fields = layer->fields();
     for ( int idx = 0; idx < fields.count(); ++idx )
     {
       attrs[idx] = QVariant();
@@ -197,7 +197,7 @@ void QgsMapToolOffsetCurve::placeOffsetCurveToValue()
   setOffsetForRubberBand( mDistanceWidget->value() );
 }
 
-void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   delete mSnapVertexMarker;
   mSnapVertexMarker = nullptr;
@@ -207,7 +207,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent* e )
     return;
   }
 
-  QgsVectorLayer* layer = currentVectorLayer();
+  QgsVectorLayer *layer = currentVectorLayer();
   if ( !layer )
   {
     return;
@@ -217,13 +217,13 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent* e )
   mGeometryModified = true;
 
   //get offset from current position rectangular to feature
-  QgsPoint layerCoords = toLayerCoordinates( layer, e->pos() );
+  QgsPointXY layerCoords = toLayerCoordinates( layer, e->pos() );
 
   //snap cursor to background layers
   QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToMap( e->pos() );
   if ( m.isValid() )
   {
-    if (( m.layer() && m.layer()->id() != mSourceLayerId ) || m.featureId() != mModifiedFeature )
+    if ( ( m.layer() && m.layer()->id() != mSourceLayerId ) || m.featureId() != mModifiedFeature )
     {
       layerCoords = toLayerCoordinates( layer, m.point() );
       mSnapVertexMarker = new QgsVertexMarker( mCanvas );
@@ -234,10 +234,10 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent* e )
     }
   }
 
-  QgsPoint minDistPoint;
+  QgsPointXY minDistPoint;
   int beforeVertex;
   double leftOf;
-  double offset = sqrt( mOriginalGeometry.closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
+  double offset = std::sqrt( mOriginalGeometry.closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
   if ( offset == 0.0 )
   {
     return;
@@ -258,7 +258,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent* e )
   }
 }
 
-QgsGeometry QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, const QgsPointLocator::Match& match, QgsFeature& snappedFeature )
+QgsGeometry QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer *vl, const QgsPointLocator::Match &match, QgsFeature &snappedFeature )
 {
   if ( !vl )
   {
@@ -284,8 +284,8 @@ QgsGeometry QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, con
     }
 
     //for background layers, try to merge selected entries together if snapped feature is contained in selection
-    const QgsFeatureIds& selection = vl->selectedFeatureIds();
-    if ( selection.size() < 1 || !selection.contains( match.featureId() ) )
+    const QgsFeatureIds &selection = vl->selectedFeatureIds();
+    if ( selection.empty() || !selection.contains( match.featureId() ) )
     {
       return convertToSingleLine( snappedFeature.geometry(), partVertexNr, mMultiPartGeometry );
     }
@@ -332,16 +332,16 @@ void QgsMapToolOffsetCurve::createDistanceWidget()
 
   mDistanceWidget->setFocus( Qt::TabFocusReason );
 
-  QObject::connect( mDistanceWidget, SIGNAL( valueChanged( double ) ), this, SLOT( placeOffsetCurveToValue() ) );
-  QObject::connect( mDistanceWidget, SIGNAL( editingFinished() ), this, SLOT( applyOffset() ) );
+  connect( mDistanceWidget, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolOffsetCurve::placeOffsetCurveToValue );
+  connect( mDistanceWidget, &QAbstractSpinBox::editingFinished, this, &QgsMapToolOffsetCurve::applyOffset );
 }
 
 void QgsMapToolOffsetCurve::deleteDistanceWidget()
 {
   if ( mDistanceWidget )
   {
-    QObject::disconnect( mDistanceWidget, SIGNAL( valueChanged( double ) ), this, SLOT( placeOffsetCurveToValue() ) );
-    QObject::disconnect( mDistanceWidget, SIGNAL( editingFinished() ), this, SLOT( applyOffset() ) );
+    disconnect( mDistanceWidget, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolOffsetCurve::placeOffsetCurveToValue );
+    disconnect( mDistanceWidget, &QAbstractSpinBox::editingFinished, this, &QgsMapToolOffsetCurve::applyOffset );
     mDistanceWidget->releaseKeyboard();
     mDistanceWidget->deleteLater();
   }
@@ -350,6 +350,7 @@ void QgsMapToolOffsetCurve::deleteDistanceWidget()
 
 void QgsMapToolOffsetCurve::deleteRubberBandAndGeometry()
 {
+  mOriginalGeometry.set( nullptr );
   delete mRubberBand;
   mRubberBand = nullptr;
 }
@@ -361,23 +362,22 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
     return;
   }
 
-  QgsVectorLayer* sourceLayer = dynamic_cast<QgsVectorLayer*>( QgsProject::instance()->mapLayer( mSourceLayerId ) );
+  QgsVectorLayer *sourceLayer = dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( mSourceLayerId ) );
   if ( !sourceLayer )
   {
     return;
   }
 
   QgsGeometry geomCopy( mOriginalGeometry );
-  GEOSGeometry* geosGeom = geomCopy.exportToGeos();
+  geos::unique_ptr geosGeom( geomCopy.exportToGeos() );
   if ( geosGeom )
   {
-    QSettings s;
+    QgsSettings s;
     int joinStyle = s.value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), 0 ).toInt();
     int quadSegments = s.value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt();
-    double mitreLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
+    double miterLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
 
-    GEOSGeometry* offsetGeom = GEOSOffsetCurve_r( QgsGeometry::getGEOSHandler(), geosGeom, offset, quadSegments, joinStyle, mitreLimit );
-    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), geosGeom );
+    geos::unique_ptr offsetGeom( GEOSOffsetCurve_r( QgsGeometry::getGEOSHandler(), geosGeom.get(), offset, quadSegments, joinStyle, miterLimit ) );
     if ( !offsetGeom )
     {
       deleteRubberBandAndGeometry();
@@ -393,13 +393,13 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
 
     if ( offsetGeom )
     {
-      mModifiedGeometry.fromGeos( offsetGeom );
+      mModifiedGeometry.fromGeos( offsetGeom.release() );
       mRubberBand->setToGeometry( mModifiedGeometry, sourceLayer );
     }
   }
 }
 
-QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry& featureGeom, int vertex )
+QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry &featureGeom, int vertex )
 {
   if ( featureGeom.isNull() )
   {
@@ -408,11 +408,11 @@ QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry& fea
 
   QgsWkbTypes::Type geomType = featureGeom.wkbType();
   int currentVertex = 0;
-  QgsMultiPolygon multiPoly;
+  QgsMultiPolygonXY multiPoly;
 
   if ( geomType == QgsWkbTypes::Polygon || geomType == QgsWkbTypes::Polygon25D )
   {
-    QgsPolygon polygon = featureGeom.asPolygon();
+    QgsPolygonXY polygon = featureGeom.asPolygon();
     multiPoly.append( polygon );
   }
   else if ( geomType == QgsWkbTypes::MultiPolygon || geomType == QgsWkbTypes::MultiPolygon25D )
@@ -425,17 +425,17 @@ QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry& fea
     return QgsGeometry();
   }
 
-  QgsMultiPolygon::const_iterator multiPolyIt = multiPoly.constBegin();
+  QgsMultiPolygonXY::const_iterator multiPolyIt = multiPoly.constBegin();
   for ( ; multiPolyIt != multiPoly.constEnd(); ++multiPolyIt )
   {
-    QgsPolygon::const_iterator polyIt = multiPolyIt->constBegin();
+    QgsPolygonXY::const_iterator polyIt = multiPolyIt->constBegin();
     for ( ; polyIt != multiPolyIt->constEnd(); ++polyIt )
     {
       currentVertex += polyIt->size();
       if ( vertex < currentVertex )
       {
         //found, return ring
-        return QgsGeometry::fromPolyline( *polyIt );
+        return QgsGeometry::fromPolylineXY( *polyIt );
       }
     }
   }
@@ -444,7 +444,7 @@ QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry& fea
 }
 
 
-QgsGeometry QgsMapToolOffsetCurve::convertToSingleLine( const QgsGeometry& geom, int vertex, bool& isMulti )
+QgsGeometry QgsMapToolOffsetCurve::convertToSingleLine( const QgsGeometry &geom, int vertex, bool &isMulti )
 {
   if ( geom.isNull() )
   {
@@ -462,22 +462,16 @@ QgsGeometry QgsMapToolOffsetCurve::convertToSingleLine( const QgsGeometry& geom,
     //search vertex
     isMulti = true;
     int currentVertex = 0;
-    QgsMultiPolyline multiLine = geom.asMultiPolyline();
-    QgsMultiPolyline::const_iterator it = multiLine.constBegin();
+    QgsMultiPolylineXY multiLine = geom.asMultiPolyline();
+    QgsMultiPolylineXY::const_iterator it = multiLine.constBegin();
     for ( ; it != multiLine.constEnd(); ++it )
     {
       currentVertex += it->size();
       if ( vertex < currentVertex )
       {
-        return QgsGeometry::fromPolyline( *it );
+        return QgsGeometry::fromPolylineXY( *it );
       }
     }
   }
   return QgsGeometry();
-}
-
-QgsGeometry* QgsMapToolOffsetCurve::convertToMultiLine( QgsGeometry* geom )
-{
-  Q_UNUSED( geom );
-  return nullptr;
 }

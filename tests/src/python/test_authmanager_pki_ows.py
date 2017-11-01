@@ -33,6 +33,7 @@ from shutil import rmtree
 
 from utilities import unitTestDataPath, waitServer
 from qgis.core import (
+    QgsApplication,
     QgsAuthManager,
     QgsAuthMethodConfig,
     QgsVectorLayer,
@@ -64,7 +65,7 @@ class TestAuthManager(unittest.TestCase):
     @classmethod
     def setUpAuth(cls):
         """Run before all tests and set up authentication"""
-        authm = QgsAuthManager.instance()
+        authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
         cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'chains_subissuer-issuer-root_issuer2-root2.pem')
         cls.sslcert = os.path.join(cls.certsdata_path, 'gerardus_cert.pem')
@@ -166,10 +167,7 @@ class TestAuthManager(unittest.TestCase):
         }
         if authcfg is not None:
             parms.update({'authcfg': authcfg})
-        try: # Py2
-            uri = ' '.join([("%s='%s'" % (k, v.decode('utf-8'))) for k, v in list(parms.items())])
-        except AttributeError: # Py3
-            uri = ' '.join([("%s='%s'" % (k, v)) for k, v in list(parms.items())])
+        uri = ' '.join([("%s='%s'" % (k, v)) for k, v in list(parms.items())])
         wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')
         return wfs_layer
 
@@ -189,7 +187,7 @@ class TestAuthManager(unittest.TestCase):
             'layers': urllib.parse.quote(layers.replace('_', ' ')),
             'styles': '',
             'version': 'auto',
-            #'sql': '',
+            # 'sql': '',
         }
         if authcfg is not None:
             parms.update({'authcfg': authcfg})

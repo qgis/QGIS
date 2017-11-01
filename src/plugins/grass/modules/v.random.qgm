@@ -2,7 +2,7 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Create random 2D vector points" module="v.random">
-	<option key="n" version_max="6"/>
-	<option key="npoints" version_min="7"/>
+
+	<option key="npoints"/>
 	<option key="output" />
 </qgisgrassmodule>

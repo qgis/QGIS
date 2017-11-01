@@ -1,6 +1,0 @@
-Convert Lines to Points
-shapes_points
-ParameterVector|LINES|Lines|1|False
-ParameterBoolean|ADD         |Insert Additional Points|True
-ParameterNumber|DIST|Insert Distance|0.0|None|1.0
-OutputVector|POINTS|Points

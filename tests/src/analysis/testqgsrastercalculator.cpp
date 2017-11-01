@@ -24,16 +24,12 @@ Email                : nyall dot dawson at gmail dot com
 
 Q_DECLARE_METATYPE( QgsRasterCalcNode::Operator )
 
-
 class TestQgsRasterCalculator : public QObject
 {
     Q_OBJECT
 
   public:
-    TestQgsRasterCalculator()
-        : mpLandsatRasterLayer( 0 )
-        , mpLandsatRasterLayer4326( 0 )
-    {}
+    TestQgsRasterCalculator() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -60,8 +56,8 @@ class TestQgsRasterCalculator : public QObject
 
   private:
 
-    QgsRasterLayer * mpLandsatRasterLayer;
-    QgsRasterLayer * mpLandsatRasterLayer4326;
+    QgsRasterLayer *mpLandsatRasterLayer = nullptr;
+    QgsRasterLayer *mpLandsatRasterLayer4326 = nullptr;
 };
 
 void  TestQgsRasterCalculator::initTestCase()
@@ -157,7 +153,7 @@ void TestQgsRasterCalculator::dualOp()
 
   QgsRasterMatrix result;
   result.setNodataValue( -9999 );
-  QMap<QString, QgsRasterBlock*> rasterData;
+  QMap<QString, QgsRasterBlock *> rasterData;
 
   QVERIFY( node.calculate( rasterData, result ) );
 
@@ -207,19 +203,19 @@ void TestQgsRasterCalculator::singleOp()
 
   QgsRasterMatrix result;
   result.setNodataValue( -9999 );
-  QMap<QString, QgsRasterBlock*> rasterData;
+  QMap<QString, QgsRasterBlock *> rasterData;
 
   QVERIFY( node.calculate( rasterData, result ) );
 
   qDebug() << "Result: " << result.number() << " expected: " << expected;
-  QVERIFY( qgsDoubleNear( result.number(), expected, 0.0000000001 ) );
+  QGSCOMPARENEAR( result.number(), expected, 0.0000000001 );
 
 }
 
 void TestQgsRasterCalculator::singleOpMatrices()
 {
   // test single op run on matrix
-  double* d = new double[6];
+  double *d = new double[6];
   d[0] = 1.0;
   d[1] = 2.0;
   d[2] = 3.0;
@@ -229,11 +225,11 @@ void TestQgsRasterCalculator::singleOpMatrices()
 
   QgsRasterMatrix m( 2, 3, d, -1.0 );
 
-  QgsRasterCalcNode node( QgsRasterCalcNode::opSIGN, new QgsRasterCalcNode( &m ) , 0 );
+  QgsRasterCalcNode node( QgsRasterCalcNode::opSIGN, new QgsRasterCalcNode( &m ), 0 );
 
   QgsRasterMatrix result;
   result.setNodataValue( -9999 );
-  QMap<QString, QgsRasterBlock*> rasterData;
+  QMap<QString, QgsRasterBlock *> rasterData;
 
   QVERIFY( node.calculate( rasterData, result ) );
 
@@ -248,7 +244,7 @@ void TestQgsRasterCalculator::singleOpMatrices()
 void TestQgsRasterCalculator::dualOpNumberMatrix()
 {
   // test dual op run on number and matrix
-  double* d = new double[6];
+  double *d = new double[6];
   d[0] = 1.0;
   d[1] = 2.0;
   d[2] = 3.0;
@@ -262,7 +258,7 @@ void TestQgsRasterCalculator::dualOpNumberMatrix()
 
   QgsRasterMatrix result;
   result.setNodataValue( -9999 );
-  QMap<QString, QgsRasterBlock*> rasterData;
+  QMap<QString, QgsRasterBlock *> rasterData;
 
   QVERIFY( node.calculate( rasterData, result ) );
 
@@ -282,7 +278,7 @@ void TestQgsRasterCalculator::dualOpNumberMatrix()
 void TestQgsRasterCalculator::dualOpMatrixNumber()
 {
   // test dual op run on matrix and number
-  double* d = new double[6];
+  double *d = new double[6];
   d[0] = 1.0;
   d[1] = 2.0;
   d[2] = 3.0;
@@ -296,7 +292,7 @@ void TestQgsRasterCalculator::dualOpMatrixNumber()
 
   QgsRasterMatrix result;
   result.setNodataValue( -9999 );
-  QMap<QString, QgsRasterBlock*> rasterData;
+  QMap<QString, QgsRasterBlock *> rasterData;
 
   QVERIFY( node.calculate( rasterData, result ) );
 
@@ -316,7 +312,7 @@ void TestQgsRasterCalculator::dualOpMatrixNumber()
 void TestQgsRasterCalculator::dualOpMatrixMatrix()
 {
   // test dual op run on matrix and matrix
-  double* d = new double[6];
+  double *d = new double[6];
   d[0] = 1.0;
   d[1] = 2.0;
   d[2] = -2.0;
@@ -325,7 +321,7 @@ void TestQgsRasterCalculator::dualOpMatrixMatrix()
   d[5] = -1.0; //nodata
   QgsRasterMatrix m1( 2, 3, d, -1.0 );
 
-  double* d2 = new double[6];
+  double *d2 = new double[6];
   d2[0] = -1.0;
   d2[1] = -2.0; //nodata
   d2[2] = 13.0;
@@ -338,7 +334,7 @@ void TestQgsRasterCalculator::dualOpMatrixMatrix()
 
   QgsRasterMatrix result;
   result.setNodataValue( -9999 );
-  QMap<QString, QgsRasterBlock*> rasterData;
+  QMap<QString, QgsRasterBlock *> rasterData;
 
   QVERIFY( node.calculate( rasterData, result ) );
 
@@ -357,7 +353,7 @@ void TestQgsRasterCalculator::rasterRefOp()
 
   QgsRasterMatrix result;
   result.setNodataValue( -9999 );
-  QMap<QString, QgsRasterBlock*> rasterData;
+  QMap<QString, QgsRasterBlock *> rasterData;
 
   //first test invalid raster ref
   QVERIFY( !node.calculate( rasterData, result ) );
@@ -394,7 +390,7 @@ void TestQgsRasterCalculator::dualOpRasterRaster()
   m1.setValue( 1, 1, -1.0 ); //nodata
   m1.setValue( 2, 0, 5.0 );
   m1.setValue( 2, 1, -1.0 ); //nodata
-  QMap<QString, QgsRasterBlock*> rasterData;
+  QMap<QString, QgsRasterBlock *> rasterData;
   rasterData.insert( QStringLiteral( "raster1" ), &m1 );
 
   QgsRasterBlock m2( Qgis::Float32, 2, 3 );
@@ -452,10 +448,10 @@ void TestQgsRasterCalculator::calcWithLayers()
   QCOMPARE( rc.processCalculation(), 0 );
 
   //open output file and check results
-  QgsRasterLayer* result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
+  QgsRasterLayer *result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
   QCOMPARE( result->width(), 2 );
   QCOMPARE( result->height(), 3 );
-  QgsRasterBlock* block = result->dataProvider()->block( 1, extent, 2, 3 );
+  QgsRasterBlock *block = result->dataProvider()->block( 1, extent, 2, 3 );
   QCOMPARE( block->value( 0, 0 ), 127.0 );
   QCOMPARE( block->value( 0, 1 ), 127.0 );
   QCOMPARE( block->value( 1, 0 ), 126.0 );
@@ -518,10 +514,10 @@ void TestQgsRasterCalculator::calcWithReprojectedLayers()
   QCOMPARE( rc.processCalculation(), 0 );
 
   //open output file and check results
-  QgsRasterLayer* result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
+  QgsRasterLayer *result = new QgsRasterLayer( tmpName, QStringLiteral( "result" ) );
   QCOMPARE( result->width(), 2 );
   QCOMPARE( result->height(), 3 );
-  QgsRasterBlock* block = result->dataProvider()->block( 1, extent, 2, 3 );
+  QgsRasterBlock *block = result->dataProvider()->block( 1, extent, 2, 3 );
   QCOMPARE( block->value( 0, 0 ), 264.0 );
   QCOMPARE( block->value( 0, 1 ), 263.0 );
   QCOMPARE( block->value( 1, 0 ), 264.0 );

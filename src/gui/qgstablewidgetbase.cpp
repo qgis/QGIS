@@ -15,24 +15,26 @@
 
 #include "qgstablewidgetbase.h"
 
-QgsTableWidgetBase::QgsTableWidgetBase( QWidget* parent )
-    : QWidget( parent )
+QgsTableWidgetBase::QgsTableWidgetBase( QWidget *parent )
+  : QWidget( parent )
 {
   setupUi( this );
+  connect( addButton, &QToolButton::clicked, this, &QgsTableWidgetBase::addButton_clicked );
+  connect( removeButton, &QToolButton::clicked, this, &QgsTableWidgetBase::removeButton_clicked );
 }
 
-void QgsTableWidgetBase::init( QAbstractTableModel* model )
+void QgsTableWidgetBase::init( QAbstractTableModel *model )
 {
   tableView->setModel( model );
-  connect( tableView->selectionModel(), SIGNAL( selectionChanged( const QItemSelection &, const QItemSelection & ) ), this, SLOT( onSelectionChanged() ) );
-  connect( model, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SIGNAL( valueChanged() ) );
+  connect( tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsTableWidgetBase::onSelectionChanged );
+  connect( model, &QAbstractItemModel::dataChanged, this, &QgsTableWidgetBase::valueChanged );
 }
 
-void QgsTableWidgetBase::on_addButton_clicked()
+void QgsTableWidgetBase::addButton_clicked()
 {
   const QItemSelectionModel *select = tableView->selectionModel();
   const int pos = select->hasSelection() ? select->selectedRows()[0].row() : 0;
-  QAbstractItemModel* model = tableView->model();
+  QAbstractItemModel *model = tableView->model();
   model->insertRows( pos, 1 );
   const QModelIndex index = model->index( pos, 0 );
   tableView->scrollTo( index );
@@ -40,7 +42,7 @@ void QgsTableWidgetBase::on_addButton_clicked()
   tableView->selectRow( pos );
 }
 
-void QgsTableWidgetBase::on_removeButton_clicked()
+void QgsTableWidgetBase::removeButton_clicked()
 {
   const QItemSelectionModel *select = tableView->selectionModel();
   // The UI is configured to have single row selection.

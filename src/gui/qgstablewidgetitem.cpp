@@ -15,15 +15,8 @@
  ***************************************************************************/
 #include "qgstablewidgetitem.h"
 
-QgsTableWidgetItem::QgsTableWidgetItem()
-    : QTableWidgetItem()
-    , mSortRole( Qt::DisplayRole )
-{
-}
-
-QgsTableWidgetItem::QgsTableWidgetItem( const QString& text )
-    : QTableWidgetItem( text )
-    , mSortRole( Qt::DisplayRole )
+QgsTableWidgetItem::QgsTableWidgetItem( const QString &text )
+  : QTableWidgetItem( text )
 {
 }
 
@@ -37,7 +30,7 @@ int QgsTableWidgetItem::sortRole() const
   return mSortRole;
 }
 
-bool QgsTableWidgetItem::operator<( const QTableWidgetItem& other ) const
+bool QgsTableWidgetItem::operator<( const QTableWidgetItem &other ) const
 {
   return data( mSortRole ) < other.data( mSortRole );
 }

@@ -27,11 +27,11 @@ namespace QgsWms
   QgsMapRendererJobProxy::QgsMapRendererJobProxy(
     bool parallelRendering
     , int maxThreads
-    , QgsAccessControl* accessControl
+    , QgsAccessControl *accessControl
   )
-      :
-      mParallelRendering( parallelRendering )
-      , mAccessControl( accessControl )
+    :
+    mParallelRendering( parallelRendering )
+    , mAccessControl( accessControl )
   {
 #ifndef HAVE_SERVER_PYTHON_PLUGINS
     Q_UNUSED( mAccessControl );
@@ -47,7 +47,7 @@ namespace QgsWms
     }
   }
 
-  void QgsMapRendererJobProxy::render( const QgsMapSettings& mapSettings, QImage* image )
+  void QgsMapRendererJobProxy::render( const QgsMapSettings &mapSettings, QImage *image )
   {
     if ( mParallelRendering )
     {
@@ -71,7 +71,7 @@ namespace QgsWms
     }
   }
 
-  QPainter* QgsMapRendererJobProxy::takePainter()
+  QPainter *QgsMapRendererJobProxy::takePainter()
   {
     return mPainter.release();
   }

@@ -46,10 +46,7 @@ class QgsOwsProvider : public QgsDataProvider
      *                otherwise we contact the host directly.
      *
      */
-    explicit QgsOwsProvider( const QString & uri = QString() );
-
-
-    ~QgsOwsProvider();
+    explicit QgsOwsProvider( const QString &uri = QString() );
 
     /* Pure virtuals */
 

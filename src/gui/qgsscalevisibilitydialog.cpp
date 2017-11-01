@@ -21,22 +21,22 @@
 #include "qgsscalerangewidget.h"
 
 
-QgsScaleVisibilityDialog::QgsScaleVisibilityDialog( QWidget *parent, const QString& title, QgsMapCanvas* mapCanvas )
-    : QDialog( parent )
+QgsScaleVisibilityDialog::QgsScaleVisibilityDialog( QWidget *parent, const QString &title, QgsMapCanvas *mapCanvas )
+  : QDialog( parent )
 {
   if ( !title.isEmpty() )
   {
     setWindowTitle( title );
   }
 
-  QGridLayout* dlgLayout = new QGridLayout( this );
+  QGridLayout *dlgLayout = new QGridLayout( this );
   //dlgLayout->setContentsMargins( 0, 0, 0, 0 );
 
   mGroupBox = new QGroupBox( this );
   mGroupBox->setCheckable( true );
   mGroupBox->setTitle( tr( "Scale visibility " ) );
 
-  QGridLayout* gbLayout = new QGridLayout( mGroupBox );
+  QGridLayout *gbLayout = new QGridLayout( mGroupBox );
   //gbLayout->setContentsMargins( 0, 0, 0, 0 );
 
   mScaleWidget = new QgsScaleRangeWidget( this );
@@ -46,9 +46,9 @@ QgsScaleVisibilityDialog::QgsScaleVisibilityDialog( QWidget *parent, const QStri
   }
   gbLayout->addWidget( mScaleWidget, 0, 0 );
 
-  QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok, Qt::Horizontal, this );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Ok, Qt::Horizontal, this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
   dlgLayout->addWidget( mGroupBox, 0, 0 );
   dlgLayout->addWidget( buttonBox, 1, 0 );
@@ -59,7 +59,7 @@ void QgsScaleVisibilityDialog::setScaleVisiblity( bool hasScaleVisibility )
   mGroupBox->setChecked( hasScaleVisibility );
 }
 
-bool QgsScaleVisibilityDialog::hasScaleVisibility()
+bool QgsScaleVisibilityDialog::hasScaleVisibility() const
 {
   return mGroupBox->isChecked();
 }
@@ -69,7 +69,7 @@ void QgsScaleVisibilityDialog::setMinimumScale( double minScale )
   mScaleWidget->setMinimumScale( minScale );
 }
 
-double QgsScaleVisibilityDialog::minimumScale()
+double QgsScaleVisibilityDialog::minimumScale() const
 {
   return mScaleWidget->minimumScale();
 }
@@ -79,7 +79,7 @@ void QgsScaleVisibilityDialog::setMaximumScale( double maxScale )
   mScaleWidget->setMaximumScale( maxScale );
 }
 
-double QgsScaleVisibilityDialog::maximumScale()
+double QgsScaleVisibilityDialog::maximumScale() const
 {
   return mScaleWidget->maximumScale();
 }

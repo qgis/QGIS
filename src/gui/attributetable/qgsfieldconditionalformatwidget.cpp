@@ -22,54 +22,32 @@
 #include "qgsvectorlayer.h"
 
 QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *parent )
-    : QWidget( parent )
-    , mLayer( nullptr )
-    , mEditIndex( 0 )
-    , mEditing( false )
-    , mSymbol( nullptr )
+  : QWidget( parent )
 {
   setupUi( this );
   mDeleteButton->hide();
-  connect( mFieldCombo, SIGNAL( fieldChanged( QString ) ), SLOT( fieldChanged( QString ) ) );
-  connect( fieldRadio, SIGNAL( clicked() ), SLOT( reloadStyles() ) );
-  connect( rowRadio, SIGNAL( clicked() ), SLOT( reloadStyles() ) );
-  connect( mNewButton, SIGNAL( clicked() ), SLOT( addNewRule() ) );
-  connect( mSaveRule, SIGNAL( clicked() ), SLOT( saveRule() ) );
-  connect( mCancelButton, SIGNAL( clicked() ), SLOT( cancelRule() ) );
-  connect( mDeleteButton, SIGNAL( clicked() ), SLOT( deleteRule() ) );
-  connect( listView, SIGNAL( clicked( QModelIndex ) ), SLOT( ruleClicked( QModelIndex ) ) );
-  connect( btnChangeIcon , SIGNAL( clicked() ), SLOT( updateIcon() ) );
-  connect( btnBuildExpression , SIGNAL( clicked() ), SLOT( setExpression() ) );
-  connect( mPresetsList , SIGNAL( currentIndexChanged( int ) ), SLOT( presetSet( int ) ) );
-  btnBackgroundColor->setAllowAlpha( true );
+  connect( mFieldCombo, &QgsFieldComboBox::fieldChanged, this, &QgsFieldConditionalFormatWidget::fieldChanged );
+  connect( fieldRadio, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::reloadStyles );
+  connect( rowRadio, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::reloadStyles );
+  connect( mNewButton, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::addNewRule );
+  connect( mSaveRule, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::saveRule );
+  connect( mCancelButton, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::cancelRule );
+  connect( mDeleteButton, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::deleteRule );
+  connect( listView, &QAbstractItemView::clicked, this, &QgsFieldConditionalFormatWidget::ruleClicked );
+  connect( btnBuildExpression, &QAbstractButton::clicked, this, &QgsFieldConditionalFormatWidget::setExpression );
+  connect( mPresetsList, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFieldConditionalFormatWidget::presetSet );
+  btnBackgroundColor->setAllowOpacity( true );
   btnBackgroundColor->setShowNoColor( true );
-  btnTextColor->setAllowAlpha( true );
+  btnTextColor->setAllowOpacity( true );
   btnTextColor->setShowNoColor( true );
   mPresetsModel = new QStandardItemModel( listView );
   mModel = new QStandardItemModel( listView );
   listView->setModel( mModel );
   mPresetsList->setModel( mPresetsModel );
+  btnChangeIcon->setSymbolType( QgsSymbol::Marker );
+  btnChangeIcon->setSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
 
   setPresets( defaultPresets() );
-}
-
-QgsFieldConditionalFormatWidget::~QgsFieldConditionalFormatWidget()
-{
-  delete mSymbol;
-}
-
-void QgsFieldConditionalFormatWidget::updateIcon()
-{
-  mSymbol = QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry );
-
-  QgsSymbolSelectorDialog dlg( mSymbol, QgsStyle::defaultStyle(), nullptr, this );
-  if ( !dlg.exec() )
-  {
-    return;
-  }
-
-  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSymbol, btnChangeIcon->iconSize() );
-  btnChangeIcon->setIcon( icon );
 }
 
 void QgsFieldConditionalFormatWidget::setExpression()
@@ -83,7 +61,7 @@ void QgsFieldConditionalFormatWidget::setExpression()
 
   if ( dlg.exec() )
   {
-    QString expression =  dlg.expressionBuilder()->expressionText();
+    QString expression = dlg.expressionBuilder()->expressionText();
     mRuleEdit->setText( expression );
   }
 }
@@ -97,21 +75,21 @@ void QgsFieldConditionalFormatWidget::presetSet( int index )
   setFormattingFromStyle( style );
 }
 
-void QgsFieldConditionalFormatWidget::setLayer( QgsVectorLayer *theLayer )
+void QgsFieldConditionalFormatWidget::setLayer( QgsVectorLayer *layer )
 {
-  mLayer = theLayer;
-  mFieldCombo->setLayer( theLayer );
+  mLayer = layer;
+  mFieldCombo->setLayer( layer );
   mFieldCombo->setCurrentIndex( 0 );
 }
 
-void QgsFieldConditionalFormatWidget::ruleClicked( const QModelIndex& index )
+void QgsFieldConditionalFormatWidget::ruleClicked( const QModelIndex &index )
 {
   QList<QgsConditionalStyle> styles = getStyles();
   QgsConditionalStyle style = styles.at( index.row() );
   editStyle( index.row(), style );
 }
 
-void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditionalStyle& style )
+void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditionalStyle &style )
 {
   pages->setCurrentIndex( 1 );
   mEditIndex = editIndex;
@@ -120,34 +98,24 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, const QgsConditi
   loadStyle( style );
 }
 
-void QgsFieldConditionalFormatWidget::loadStyle( const QgsConditionalStyle& style )
+void QgsFieldConditionalFormatWidget::loadStyle( const QgsConditionalStyle &style )
 {
   mRuleEdit->setText( style.rule() );
   mNameEdit->setText( style.name() );
   setFormattingFromStyle( style );
 }
-void QgsFieldConditionalFormatWidget::setFormattingFromStyle( const QgsConditionalStyle& style )
+void QgsFieldConditionalFormatWidget::setFormattingFromStyle( const QgsConditionalStyle &style )
 {
   btnBackgroundColor->setColor( style.backgroundColor() );
   btnTextColor->setColor( style.textColor() );
-  if ( !style.icon().isNull() )
+  if ( style.symbol() )
   {
+    btnChangeIcon->setSymbol( style.symbol()->clone() );
     checkIcon->setChecked( true );
-    QIcon icon( style.icon() );
-    btnChangeIcon->setIcon( icon );
   }
   else
   {
     checkIcon->setChecked( false );
-    btnChangeIcon->setIcon( QIcon() );
-  }
-  if ( style.symbol() )
-  {
-    mSymbol = style.symbol()->clone();
-  }
-  else
-  {
-    mSymbol = nullptr;
   }
   QFont font = style.font();
   mFontBoldBtn->setChecked( font.bold() );
@@ -178,7 +146,7 @@ void QgsFieldConditionalFormatWidget::deleteRule()
   QString fieldName;
   if ( fieldRadio->isChecked() )
   {
-    fieldName =  mFieldCombo->currentField();
+    fieldName = mFieldCombo->currentField();
     mLayer->conditionalStyles()->setFieldStyles( fieldName, styles );
   }
   if ( rowRadio->isChecked() )
@@ -206,7 +174,6 @@ void QgsFieldConditionalFormatWidget::addNewRule()
 
 void QgsFieldConditionalFormatWidget::reset()
 {
-  mSymbol = nullptr;
   mNameEdit->clear();
   mRuleEdit->clear();
   if ( fieldRadio->isChecked() )
@@ -230,15 +197,15 @@ void QgsFieldConditionalFormatWidget::reset()
 }
 
 
-void QgsFieldConditionalFormatWidget::setPresets( const QList<QgsConditionalStyle>& styles )
+void QgsFieldConditionalFormatWidget::setPresets( const QList<QgsConditionalStyle> &styles )
 {
   mPresets.clear();
   mPresetsModel->clear();
-  Q_FOREACH ( const QgsConditionalStyle& style, styles )
+  Q_FOREACH ( const QgsConditionalStyle &style, styles )
   {
     if ( style.isValid() )
     {
-      QStandardItem* item = new QStandardItem( QStringLiteral( "abc - 123" ) );
+      QStandardItem *item = new QStandardItem( QStringLiteral( "abc - 123" ) );
       if ( style.backgroundColor().isValid() )
         item->setBackground( style.backgroundColor() );
       if ( style.textColor().isValid() )
@@ -297,9 +264,9 @@ void QgsFieldConditionalFormatWidget::saveRule()
   style.setFont( font );
   style.setBackgroundColor( backColor );
   style.setTextColor( fontColor );
-  if ( mSymbol && checkIcon->isChecked() )
+  if ( checkIcon->isChecked() )
   {
-    style.setSymbol( mSymbol );
+    style.setSymbol( btnChangeIcon->clonedSymbol< QgsMarkerSymbol >() );
   }
   else
   {
@@ -317,7 +284,7 @@ void QgsFieldConditionalFormatWidget::saveRule()
   QString fieldName;
   if ( fieldRadio->isChecked() )
   {
-    fieldName =  mFieldCombo->currentField();
+    fieldName = mFieldCombo->currentField();
     mLayer->conditionalStyles()->setFieldStyles( fieldName, styles );
   }
   if ( rowRadio->isChecked() )
@@ -334,15 +301,15 @@ void QgsFieldConditionalFormatWidget::reloadStyles()
 {
   mModel->clear();
 
-  Q_FOREACH ( const QgsConditionalStyle& style, getStyles() )
+  Q_FOREACH ( const QgsConditionalStyle &style, getStyles() )
   {
-    QStandardItem* item = new QStandardItem( style.displayText() );
+    QStandardItem *item = new QStandardItem( style.displayText() );
     item->setIcon( QIcon( style.renderPreview() ) );
     mModel->appendRow( item );
   }
 }
 
-void QgsFieldConditionalFormatWidget::fieldChanged( const QString& fieldName )
+void QgsFieldConditionalFormatWidget::fieldChanged( const QString &fieldName )
 {
   Q_UNUSED( fieldName );
   reloadStyles();

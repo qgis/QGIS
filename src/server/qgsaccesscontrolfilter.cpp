@@ -27,13 +27,13 @@
 
 
 //! Constructor
-QgsAccessControlFilter::QgsAccessControlFilter( const QgsServerInterface* serverInterface ):
-    mServerInterface( serverInterface )
+QgsAccessControlFilter::QgsAccessControlFilter( const QgsServerInterface *serverInterface ):
+  mServerInterface( serverInterface )
 {
 }
 
 //! Return an additional layer expression filter
-QString QgsAccessControlFilter::layerFilterExpression( const QgsVectorLayer* layer ) const
+QString QgsAccessControlFilter::layerFilterExpression( const QgsVectorLayer *layer ) const
 {
   QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerFilterExpression called" ), QStringLiteral( "AccessControlFilter" ), QgsMessageLog::INFO );
   Q_UNUSED( layer );
@@ -41,7 +41,7 @@ QString QgsAccessControlFilter::layerFilterExpression( const QgsVectorLayer* lay
 }
 
 //! Return an additional layer subset string (typically SQL) filter
-QString QgsAccessControlFilter::layerFilterSubsetString( const QgsVectorLayer* layer ) const
+QString QgsAccessControlFilter::layerFilterSubsetString( const QgsVectorLayer *layer ) const
 {
   QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerFilterSQL called" ), QStringLiteral( "AccessControlFilter" ), QgsMessageLog::INFO );
   Q_UNUSED( layer );
@@ -49,7 +49,7 @@ QString QgsAccessControlFilter::layerFilterSubsetString( const QgsVectorLayer* l
 }
 
 //! Return the layer permissions
-QgsAccessControlFilter::LayerPermissions QgsAccessControlFilter::layerPermissions( const QgsMapLayer* layer ) const
+QgsAccessControlFilter::LayerPermissions QgsAccessControlFilter::layerPermissions( const QgsMapLayer *layer ) const
 {
   QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default layerPermissions called" ), QStringLiteral( "AccessControlFilter" ), QgsMessageLog::INFO );
   Q_UNUSED( layer );
@@ -59,7 +59,7 @@ QgsAccessControlFilter::LayerPermissions QgsAccessControlFilter::layerPermission
 }
 
 //! Return the authorized layer attributes
-QStringList QgsAccessControlFilter::authorizedLayerAttributes( const QgsVectorLayer* layer, const QStringList& attributes ) const
+QStringList QgsAccessControlFilter::authorizedLayerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const
 {
   Q_UNUSED( layer );
   QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default authorizedLayerAttributes called" ), QStringLiteral( "AccessControlFilter" ), QgsMessageLog::INFO );
@@ -67,7 +67,7 @@ QStringList QgsAccessControlFilter::authorizedLayerAttributes( const QgsVectorLa
 }
 
 //! Are we authorized to modify the feature
-bool QgsAccessControlFilter::allowToEdit( const QgsVectorLayer* layer, const QgsFeature& feature ) const
+bool QgsAccessControlFilter::allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const
 {
   QgsMessageLog::logMessage( QStringLiteral( "QgsAccessControlFilter plugin default allowToEdit called" ), QStringLiteral( "AccessControlFilter" ), QgsMessageLog::INFO );
   Q_UNUSED( layer );

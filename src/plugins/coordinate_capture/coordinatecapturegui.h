@@ -16,20 +16,17 @@
 #include "qgshelp.h"
 
 /**
-@author Tim Sutton
 */
 class CoordinateCaptureGui : public QDialog
 {
     Q_OBJECT
 
   public:
-    CoordinateCaptureGui( QWidget* parent = nullptr, Qt::WindowFlags fl = 0 );
-    ~CoordinateCaptureGui();
+    CoordinateCaptureGui( QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
 
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "plugins/plugins_coordinate_capture.html" ) ); }
 };
 
 #endif

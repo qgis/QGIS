@@ -21,13 +21,11 @@
 #include "qgshighlight.h"
 #include "qgsapplication.h"
 #include "qgsactionmenu.h"
+#include "qgssettings.h"
 
-#include <QSettings>
-
-QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, QWidget* parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
-    : QDialog( parent )
-    , mHighlight( nullptr )
-    , mOwnedFeature( featureOwner ? thepFeature : nullptr )
+QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
+  : QDialog( parent )
+  , mOwnedFeature( featureOwner ? thepFeature : nullptr )
 {
   init( vl, thepFeature, context, showDialogButtons );
 }
@@ -48,15 +46,15 @@ QgsAttributeDialog::~QgsAttributeDialog()
 
 void QgsAttributeDialog::saveGeometry()
 {
-  QSettings().setValue( mSettingsPath + "geometry", QDialog::saveGeometry() );
+  QgsSettings().setValue( mSettingsPath + "geometry", QDialog::saveGeometry() );
 }
 
 void QgsAttributeDialog::restoreGeometry()
 {
-  QDialog::restoreGeometry( QSettings().value( mSettingsPath + "geometry" ).toByteArray() );
+  QDialog::restoreGeometry( QgsSettings().value( mSettingsPath + "geometry" ).toByteArray() );
 }
 
-void QgsAttributeDialog::setHighlight( QgsHighlight* h )
+void QgsAttributeDialog::setHighlight( QgsHighlight *h )
 {
   delete mHighlight;
 
@@ -85,7 +83,7 @@ void QgsAttributeDialog::reject()
   QDialog::reject();
 }
 
-void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext& context, bool showDialogButtons )
+void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const QgsAttributeEditorContext &context, bool showDialogButtons )
 {
   QgsAttributeEditorContext trackedContext = context;
   setWindowTitle( tr( "%1 - Feature Attributes" ).arg( layer->name() ) );
@@ -99,15 +97,15 @@ void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, const
   mAttributeForm = new QgsAttributeForm( layer, *feature, trackedContext, this );
   mAttributeForm->disconnectButtonBox();
   layout()->addWidget( mAttributeForm );
-  QDialogButtonBox* buttonBox = mAttributeForm->findChild<QDialogButtonBox*>();
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( layer, SIGNAL( destroyed() ), this, SLOT( close() ) );
+  QDialogButtonBox *buttonBox = mAttributeForm->findChild<QDialogButtonBox *>();
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsAttributeDialog::reject );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAttributeDialog::accept );
+  connect( layer, &QObject::destroyed, this, &QWidget::close );
 
-  QgsActionMenu* menu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "AttributeTableRow" ), this );
+  QgsActionMenu *menu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "Feature" ), this );
   if ( !menu->actions().isEmpty() )
   {
-    QMenuBar* menuBar = new QMenuBar( this );
+    QMenuBar *menuBar = new QMenuBar( this );
     menuBar->addMenu( menu );
     layout()->setMenuBar( menuBar );
   }
@@ -120,7 +118,7 @@ void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, const
   focusNextChild();
 }
 
-bool QgsAttributeDialog::event( QEvent* e )
+bool QgsAttributeDialog::event( QEvent *e )
 {
   if ( e->type() == QEvent::WindowActivate && mHighlight )
     mHighlight->show();

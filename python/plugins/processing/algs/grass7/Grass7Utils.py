@@ -31,11 +31,13 @@ import stat
 import shutil
 import subprocess
 import os
-from qgis.core import QgsApplication
+
+from qgis.core import (QgsApplication,
+                       QgsProcessingUtils,
+                       QgsMessageLog)
 from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir
+from processing.tools.system import userFolder, isWindows, isMac, mkdir
 from processing.tests.TestData import points
 
 
@@ -59,6 +61,8 @@ class Grass7Utils(object):
 
     version = None
 
+    command = None
+
     @staticmethod
     def grassBatchJobFilename():
         '''This is used in Linux. This is the batch job that we assign to
@@ -76,13 +80,6 @@ class Grass7Utils(object):
         filename = 'grass7_script.bat'
         filename = os.path.join(userFolder(), filename)
         return filename
-
-    #~ @staticmethod
-    #~ def installedVersion():
-        #~ out = Grass7Utils.executeGrass7("grass -v")
-        #~ # FIXME: I do not know if this should be removed or let the user enter it
-        #~ # or something like that... This is just a temporary thing
-        #~ return '7.0.0'
 
     @staticmethod
     def installedVersion(run=False):
@@ -208,7 +205,7 @@ class Grass7Utils(object):
 
     @staticmethod
     def grassDataFolder():
-        tempfolder = os.path.join(tempFolder(), 'grassdata')
+        tempfolder = os.path.join(QgsProcessingUtils.tempFolder(), 'grassdata')
         mkdir(tempfolder)
         return tempfolder
 
@@ -278,7 +275,6 @@ class Grass7Utils(object):
                 command = os.path.join(Grass7Utils.grassPath(), 'grass.sh') + ' ' \
                     + os.path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT')
             else:
-                print("Grass {}".format(Grass7Utils.version))
                 command = Grass7Utils.command + ' ' + os.path.join(Grass7Utils.grassMapsetFolder(), 'PERMANENT')
 
         return command, env
@@ -339,7 +335,7 @@ class Grass7Utils(object):
                         feedback.pushConsoleInfo(line)
 
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_CONSOLE):
-            ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)
 
     # GRASS session is used to hold the layers already exported or
     # produced in GRASS between multiple calls to GRASS algorithms.
@@ -369,8 +365,8 @@ class Grass7Utils(object):
     @staticmethod
     def addSessionLayers(exportedLayers):
         Grass7Utils.sessionLayers = dict(
-            list(Grass7Utils.sessionLayers.items())
-            + list(exportedLayers.items()))
+            list(Grass7Utils.sessionLayers.items()) +
+            list(exportedLayers.items()))
 
     @staticmethod
     def checkGrass7IsInstalled(ignorePreviousState=False):
@@ -392,8 +388,8 @@ class Grass7Utils(object):
             if Grass7Utils.isGrass7Installed:
                 return
         try:
-            from processing import runalg
-            result = runalg(
+            from processing import run
+            result = run(
                 'grass7:v.voronoi',
                 points(),
                 False,
@@ -453,4 +449,10 @@ class Grass7Utils(object):
                         helpPath = os.path.abspath(path)
                         break
 
-        return helpPath if helpPath is not None else 'http://grass.osgeo.org/{}/manuals/'.format(Grass7Utils.command)
+        if helpPath is not None:
+            return helpPath
+        elif Grass7Utils.command:
+            return 'http://grass.osgeo.org/{}/manuals/'.format(Grass7Utils.command)
+        else:
+            # grass not available!
+            return 'http://grass.osgeo.org/72/manuals/'

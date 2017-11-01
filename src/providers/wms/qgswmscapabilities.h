@@ -24,6 +24,8 @@
 #include "qgsauthmanager.h"
 #include "qgsraster.h"
 #include "qgsrectangle.h"
+#include "qgsrasteriterator.h"
+#include "qgsapplication.h"
 
 class QNetworkReply;
 
@@ -301,10 +303,10 @@ struct QgsWmtsTheme
   QString identifier;
   QString title, abstract;
   QStringList keywords;
-  QgsWmtsTheme *subTheme;
+  QgsWmtsTheme *subTheme = nullptr;
   QStringList layerRefs;
 
-  QgsWmtsTheme() : subTheme( nullptr ) {}
+  QgsWmtsTheme() = default;
   ~QgsWmtsTheme() { delete subTheme; }
 };
 
@@ -316,24 +318,30 @@ struct QgsWmtsTileMatrix
   QString title, abstract;
   QStringList keywords;
   double scaleDenom;
-  QgsPoint topLeft;  //!< Top-left corner of the tile matrix in map units
+  QgsPointXY topLeft;  //!< Top-left corner of the tile matrix in map units
   int tileWidth;     //!< Width of a tile in pixels
   int tileHeight;    //!< Height of a tile in pixels
   int matrixWidth;   //!< Number of tiles horizontally
   int matrixHeight;  //!< Number of tiles vertically
   double tres;       //!< Pixel span in map units
 
-  //! Returns extent of a tile in map coordinates.
-  //! (same function as tileBBox() but returns QRectF instead of QgsRectangle)
+  /**
+   * Returns extent of a tile in map coordinates.
+   * (same function as tileBBox() but returns QRectF instead of QgsRectangle)
+   */
   QRectF tileRect( int col, int row ) const;
 
-  //! Returns extent of a tile in map coordinates
-  //! (same function as tileRect() but returns QgsRectangle instead of QRectF)
+  /**
+   * Returns extent of a tile in map coordinates
+   * (same function as tileRect() but returns QgsRectangle instead of QRectF)
+   */
   QgsRectangle tileBBox( int col, int row ) const;
 
-  //! Returns range of tiles that intersects with the view extent
-  //! (tml may be null)
-  void viewExtentIntersection( const QgsRectangle& viewExtent, const QgsWmtsTileMatrixLimits* tml, int& col0, int& row0, int& col1, int& row1 ) const;
+  /**
+   * Returns range of tiles that intersects with the view extent
+   * (tml may be null)
+   */
+  void viewExtentIntersection( const QgsRectangle &viewExtent, const QgsWmtsTileMatrixLimits *tml, int &col0, int &row0, int &col1, int &row1 ) const;
 
 };
 
@@ -349,10 +357,10 @@ struct QgsWmtsTileMatrixSet
   QMap<double, QgsWmtsTileMatrix> tileMatrices;
 
   //! Returns closest tile resolution to the requested one. (resolution = width [map units] / with [pixels])
-  const QgsWmtsTileMatrix* findNearestResolution( double vres ) const;
+  const QgsWmtsTileMatrix *findNearestResolution( double vres ) const;
 
   //! Return tile matrix for other near resolution from given tres (positive offset = lower resolution tiles)
-  const QgsWmtsTileMatrix* findOtherResolution( double tres, int offset ) const;
+  const QgsWmtsTileMatrix *findOtherResolution( double tres, int offset ) const;
 };
 
 enum QgsTileMode { WMTS, WMSC, XYZ };
@@ -479,8 +487,8 @@ enum QgsWmsDpiMode
 struct QgsWmsParserSettings
 {
   QgsWmsParserSettings( bool ignAxis = false, bool invAxis = false )
-      : ignoreAxisOrientation( ignAxis )
-      , invertAxisOrientation( invAxis )
+    : ignoreAxisOrientation( ignAxis )
+    , invertAxisOrientation( invAxis )
   {}
   bool ignoreAxisOrientation;
   bool invertAxisOrientation;
@@ -488,36 +496,36 @@ struct QgsWmsParserSettings
 
 struct QgsWmsAuthorization
 {
-  QgsWmsAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& referer = QString(), const QString& authcfg = QString() )
-      : mUserName( userName )
-      , mPassword( password )
-      , mReferer( referer )
-      , mAuthCfg( authcfg )
+  QgsWmsAuthorization( const QString &userName = QString(), const QString &password = QString(), const QString &referer = QString(), const QString &authcfg = QString() )
+    : mUserName( userName )
+    , mPassword( password )
+    , mReferer( referer )
+    , mAuthCfg( authcfg )
   {}
 
   bool setAuthorization( QNetworkRequest &request ) const
   {
     if ( !mAuthCfg.isEmpty() )
     {
-      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
+      return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
     }
-    else if ( !mUserName.isNull() || !mPassword.isNull() )
+    else if ( !mUserName.isEmpty() || !mPassword.isEmpty() )
     {
       request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toLatin1().toBase64() );
     }
 
-    if ( !mReferer.isNull() )
+    if ( !mReferer.isEmpty() )
     {
       request.setRawHeader( "Referer", QStringLiteral( "%1" ).arg( mReferer ).toLatin1() );
     }
     return true;
   }
   //! set authorization reply
-  bool setAuthorizationReply( QNetworkReply * reply ) const
+  bool setAuthorizationReply( QNetworkReply *reply ) const
   {
     if ( !mAuthCfg.isEmpty() )
     {
-      return QgsAuthManager::instance()->updateNetworkReply( reply, mAuthCfg );
+      return QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
     }
     return true;
   }
@@ -541,7 +549,7 @@ class QgsWmsSettings
 {
   public:
 
-    bool parseUri( const QString& uriString );
+    bool parseUri( const QString &uriString );
 
     QString baseUrl() const { return mBaseUrl; }
     QgsWmsAuthorization authorization() const { return mAuth; }
@@ -565,6 +573,12 @@ class QgsWmsSettings
      */
     int mMaxWidth;
     int mMaxHeight;
+
+    /**
+     * Step size when iterating the layer
+     */
+    int mStepWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+    int mStepHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
 
     //! Data source URI of the WMS for this layer
     QString mHttpUri;
@@ -611,11 +625,11 @@ class QgsWmsSettings
 class QgsWmsCapabilities
 {
   public:
-    QgsWmsCapabilities();
+    QgsWmsCapabilities() = default;
 
     bool isValid() const { return mValid; }
 
-    bool parseResponse( const QByteArray& response, QgsWmsParserSettings settings );
+    bool parseResponse( const QByteArray &response, QgsWmsParserSettings settings );
 
     QString lastError() const { return mError; }
     QString lastErrorFormat() const { return mErrorFormat; }
@@ -652,48 +666,48 @@ class QgsWmsCapabilities
     QHash<QString, QgsWmtsTileMatrixSet> supportedTileMatrixSets() const { return mTileMatrixSets; }
 
     //! Find out whether to invert axis orientation when parsing/writing coordinates
-    bool shouldInvertAxisOrientation( const QString& ogcCrs );
+    bool shouldInvertAxisOrientation( const QString &ogcCrs );
 
     //! Find out identify capabilities
     int identifyCapabilities() const;
 
   protected:
-    bool parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty& capabilitiesProperty );
+    bool parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty &capabilitiesProperty );
 
-    void parseService( QDomElement const & e, QgsWmsServiceProperty& serviceProperty );
-    void parseOnlineResource( QDomElement const & e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute );
-    void parseKeywordList( QDomElement  const & e, QStringList& keywordListProperty );
-    void parseContactInformation( QDomElement const & e, QgsWmsContactInformationProperty& contactInformationProperty );
-    void parseContactPersonPrimary( QDomElement const & e, QgsWmsContactPersonPrimaryProperty& contactPersonPrimaryProperty );
-    void parseContactAddress( QDomElement const & e, QgsWmsContactAddressProperty& contactAddressProperty );
+    void parseService( QDomElement const &e, QgsWmsServiceProperty &serviceProperty );
+    void parseOnlineResource( QDomElement const &e, QgsWmsOnlineResourceAttribute &onlineResourceAttribute );
+    void parseKeywordList( QDomElement  const &e, QStringList &keywordListProperty );
+    void parseContactInformation( QDomElement const &e, QgsWmsContactInformationProperty &contactInformationProperty );
+    void parseContactPersonPrimary( QDomElement const &e, QgsWmsContactPersonPrimaryProperty &contactPersonPrimaryProperty );
+    void parseContactAddress( QDomElement const &e, QgsWmsContactAddressProperty &contactAddressProperty );
 
-    void parseCapability( QDomElement const & e, QgsWmsCapabilityProperty& capabilityProperty );
-    void parseRequest( QDomElement const & e, QgsWmsRequestProperty& requestProperty );
+    void parseCapability( QDomElement const &e, QgsWmsCapabilityProperty &capabilityProperty );
+    void parseRequest( QDomElement const &e, QgsWmsRequestProperty &requestProperty );
     void parseLegendUrl( QDomElement const &e, QgsWmsLegendUrlProperty &legendUrlProperty );
-    void parseLayer( QDomElement const & e, QgsWmsLayerProperty& layerProperty, QgsWmsLayerProperty *parentProperty = nullptr );
-    void parseStyle( QDomElement const & e, QgsWmsStyleProperty& styleProperty );
+    void parseLayer( QDomElement const &e, QgsWmsLayerProperty &layerProperty, QgsWmsLayerProperty *parentProperty = nullptr );
+    void parseStyle( QDomElement const &e, QgsWmsStyleProperty &styleProperty );
 
-    void parseOperationType( QDomElement const & e, QgsWmsOperationType& operationType );
-    void parseDcpType( QDomElement const & e, QgsWmsDcpTypeProperty& dcpType );
-    void parseHttp( QDomElement const & e, QgsWmsHttpProperty& httpProperty );
-    void parseGet( QDomElement const & e, QgsWmsGetProperty& getProperty );
-    void parsePost( QDomElement const & e, QgsWmsPostProperty& postProperty );
+    void parseOperationType( QDomElement const &e, QgsWmsOperationType &operationType );
+    void parseDcpType( QDomElement const &e, QgsWmsDcpTypeProperty &dcpType );
+    void parseHttp( QDomElement const &e, QgsWmsHttpProperty &httpProperty );
+    void parseGet( QDomElement const &e, QgsWmsGetProperty &getProperty );
+    void parsePost( QDomElement const &e, QgsWmsPostProperty &postProperty );
 
     void parseTileSetProfile( QDomElement const &e );
     void parseWMTSContents( QDomElement const &e );
     void parseKeywords( const QDomNode &e, QStringList &keywords );
     void parseTheme( const QDomElement &e, QgsWmtsTheme &t );
 
-    QString nodeAttribute( const QDomElement &e, const QString& name, const QString& defValue = QString::null );
+    QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString() );
 
     /**
      * In case no bounding box is present in WMTS capabilities, try to estimate it from tile matrix sets.
      * Returns true if the detection went fine.
      */
-    bool detectTileLayerBoundingBox( QgsWmtsTileLayer& l );
+    bool detectTileLayerBoundingBox( QgsWmtsTileLayer &l );
 
   protected:
-    bool mValid;
+    bool mValid = false;
 
     QString mError;
     QString mErrorCaption;
@@ -702,7 +716,7 @@ class QgsWmsCapabilities
     QgsWmsParserSettings mParserSettings;
 
     //! number of layers and parents
-    int mLayerCount;
+    int mLayerCount = -1;
     QMap<int, int> mLayerParents;
     QMap<int, QStringList> mLayerParentNames;
 
@@ -749,22 +763,23 @@ class QgsWmsCapabilities
 
 
 
-/** Class that handles download of capabilities.
+/**
+ * Class that handles download of capabilities.
  */
 class QgsWmsCapabilitiesDownload : public QObject
 {
     Q_OBJECT
 
   public:
-    explicit QgsWmsCapabilitiesDownload( bool forceRefresh, QObject* parent = nullptr );
+    explicit QgsWmsCapabilitiesDownload( bool forceRefresh, QObject *parent = nullptr );
 
-    QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, bool forceRefresh, QObject* parent = nullptr );
+    QgsWmsCapabilitiesDownload( const QString &baseUrl, const QgsWmsAuthorization &auth, bool forceRefresh, QObject *parent = nullptr );
 
     virtual ~QgsWmsCapabilitiesDownload();
 
     bool downloadCapabilities();
 
-    bool downloadCapabilities( const QString& baseUrl, const QgsWmsAuthorization& auth );
+    bool downloadCapabilities( const QString &baseUrl, const QgsWmsAuthorization &auth );
 
     QString lastError() const { return mError; }
 
@@ -775,7 +790,7 @@ class QgsWmsCapabilitiesDownload : public QObject
 
   signals:
     //! \brief emit a signal to be caught by qgisapp and display a msg on status bar
-    void statusChanged( QString const &  theStatusQString );
+    void statusChanged( QString const   &statusQString );
 
     //! \brief emit a signal once the download is finished
     void downloadFinished();
@@ -791,7 +806,7 @@ class QgsWmsCapabilitiesDownload : public QObject
     QgsWmsAuthorization mAuth;
 
     //! The reply to the capabilities request
-    QNetworkReply *mCapabilitiesReply;
+    QNetworkReply *mCapabilitiesReply = nullptr;
 
     //! The error message associated with the last WMS error.
     QString mError;

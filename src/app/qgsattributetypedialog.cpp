@@ -27,6 +27,7 @@
 #include "qgsfieldformatter.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgsgui.h"
 
 #include <QTableWidgetItem>
 #include <QFile>
@@ -39,18 +40,18 @@
 #include <cfloat>
 
 QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx )
-    : QDialog()
-    , mLayer( vl )
-    , mFieldIdx( fieldIdx )
+  : mLayer( vl )
+  , mFieldIdx( fieldIdx )
 {
   setupUi( this );
+  connect( selectionListWidget, &QListWidget::currentRowChanged, this, &QgsAttributeTypeDialog::selectionListWidget_currentRowChanged );
   setWindowTitle( tr( "Edit Widget Properties - %1 (%2)" ).arg( vl->fields().at( fieldIdx ).name(), vl->name() ) );
 
-  QMapIterator<QString, QgsEditorWidgetFactory*> it( QgsEditorWidgetRegistry::instance()->factories() );
+  QMapIterator<QString, QgsEditorWidgetFactory *> it( QgsGui::editorWidgetRegistry()->factories() );
   while ( it.hasNext() )
   {
     it.next();
-    QListWidgetItem* item = new QListWidgetItem( selectionListWidget );
+    QListWidgetItem *item = new QListWidgetItem( selectionListWidget );
     item->setText( it.value()->name() );
     item->setData( Qt::UserRole, it.key() );
     if ( !it.value()->supportsField( vl, fieldIdx ) )
@@ -70,15 +71,17 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
     isFieldEditableCheckBox->setEnabled( false );
   }
 
+  mExpressionWidget->registerExpressionContextGenerator( this );
+
   connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsAttributeTypeDialog::defaultExpressionChanged );
-  connect( mUniqueCheckBox, &QCheckBox::toggled, this, [=]( bool checked )
+  connect( mUniqueCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
   {
     mCheckBoxEnforceUnique->setEnabled( checked );
     if ( !checked )
       mCheckBoxEnforceUnique->setChecked( false );
   }
          );
-  connect( notNullCheckBox, &QCheckBox::toggled, this, [=]( bool checked )
+  connect( notNullCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
   {
     mCheckBoxEnforceNotNull->setEnabled( checked );
     if ( !checked )
@@ -86,23 +89,24 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   }
          );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/QgsAttributeTypeDialog/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsAttributeTypeDialog/geometry" ) ).toByteArray() );
 
   constraintExpressionWidget->setLayer( vl );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsAttributeTypeDialog::showHelp );
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/QgsAttributeTypeDialog/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/QgsAttributeTypeDialog/geometry" ), saveGeometry() );
 
   qDeleteAll( mEditorConfigWidgets );
 }
 
 const QString QgsAttributeTypeDialog::editorWidgetType()
 {
-  QListWidgetItem* item = selectionListWidget->currentItem();
+  QListWidgetItem *item = selectionListWidget->currentItem();
   if ( item )
   {
     return item->data( Qt::UserRole ).toString();
@@ -115,7 +119,7 @@ const QString QgsAttributeTypeDialog::editorWidgetType()
 
 const QString QgsAttributeTypeDialog::editorWidgetText()
 {
-  QListWidgetItem* item = selectionListWidget->currentItem();
+  QListWidgetItem *item = selectionListWidget->currentItem();
   if ( item )
   {
     return item->text();
@@ -128,11 +132,11 @@ const QString QgsAttributeTypeDialog::editorWidgetText()
 
 const QVariantMap QgsAttributeTypeDialog::editorWidgetConfig()
 {
-  QListWidgetItem* item = selectionListWidget->currentItem();
+  QListWidgetItem *item = selectionListWidget->currentItem();
   if ( item )
   {
     QString widgetType = item->data( Qt::UserRole ).toString();
-    QgsEditorConfigWidget* cfgWdg = mEditorConfigWidgets[ widgetType ];
+    QgsEditorConfigWidget *cfgWdg = mEditorConfigWidgets[ widgetType ];
     if ( cfgWdg )
     {
       return cfgWdg->config();
@@ -142,11 +146,11 @@ const QVariantMap QgsAttributeTypeDialog::editorWidgetConfig()
   return QVariantMap();
 }
 
-void QgsAttributeTypeDialog::setEditorWidgetType( const QString& type )
+void QgsAttributeTypeDialog::setEditorWidgetType( const QString &type )
 {
   for ( int i = 0; i < selectionListWidget->count(); i++ )
   {
-    QListWidgetItem* item = selectionListWidget->item( i );
+    QListWidgetItem *item = selectionListWidget->item( i );
     if ( item->data( Qt::UserRole ).toString() == type )
     {
       selectionListWidget->setCurrentItem( item );
@@ -160,7 +164,7 @@ void QgsAttributeTypeDialog::setEditorWidgetType( const QString& type )
   }
   else
   {
-    QgsEditorConfigWidget* cfgWdg = QgsEditorWidgetRegistry::instance()->createConfigWidget( type, mLayer, mFieldIdx, this );
+    QgsEditorConfigWidget *cfgWdg = QgsGui::editorWidgetRegistry()->createConfigWidget( type, mLayer, mFieldIdx, this );
 
     if ( cfgWdg )
     {
@@ -181,7 +185,7 @@ void QgsAttributeTypeDialog::setEditorWidgetType( const QString& type )
   defaultExpressionChanged();
 }
 
-void QgsAttributeTypeDialog::setEditorWidgetConfig( const QVariantMap& config )
+void QgsAttributeTypeDialog::setEditorWidgetConfig( const QVariantMap &config )
 {
   mWidgetConfig = config;
 }
@@ -287,9 +291,31 @@ QString QgsAttributeTypeDialog::defaultValueExpression() const
   return mExpressionWidget->expression();
 }
 
-void QgsAttributeTypeDialog::setDefaultValueExpression( const QString& expression )
+void QgsAttributeTypeDialog::setDefaultValueExpression( const QString &expression )
 {
   mExpressionWidget->setExpression( expression );
+}
+
+QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
+{
+  QgsExpressionContext context;
+  context
+      << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::layerScope( mLayer )
+      << QgsExpressionContextUtils::mapToolCaptureScope( QList<QgsPointLocator::Match>() );
+
+  return context;
+}
+
+bool QgsAttributeTypeDialog::applyDefaultValueOnUpdate() const
+{
+  return mApplyDefaultValueOnUpdateCheckBox->isChecked();
+}
+
+void QgsAttributeTypeDialog::setApplyDefaultValueOnUpdate( bool applyDefaultValueOnUpdate )
+{
+  mApplyDefaultValueOnUpdateCheckBox->setChecked( applyDefaultValueOnUpdate );
 }
 
 QString QgsAttributeTypeDialog::constraintExpression() const
@@ -307,7 +333,7 @@ void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )
   labelOnTopCheckBox->setChecked( onTop );
 }
 
-void QgsAttributeTypeDialog::on_selectionListWidget_currentRowChanged( int index )
+void QgsAttributeTypeDialog::selectionListWidget_currentRowChanged( int index )
 {
   const QString editType = selectionListWidget->item( index )->data( Qt::UserRole ).toString();
 
@@ -350,9 +376,14 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
     return;
   }
 
-  QgsFieldFormatter* fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( editorWidgetType() );
+  QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( editorWidgetType() );
 
   QString previewText = fieldFormatter->representValue( mLayer, mFieldIdx, editorWidgetConfig(), QVariant(), val );
 
   mDefaultPreviewLabel->setText( "<i>" + previewText + "</i>" );
+}
+
+void QgsAttributeTypeDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#configure-the-field-behavior" ) );
 }

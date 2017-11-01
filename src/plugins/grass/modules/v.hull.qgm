@@ -4,7 +4,7 @@
 <qgisgrassmodule label="Convex hull" module="v.hull">
 	<option key="input"/>
 	<option key="output"/>
-	<flag key="a" answer="on" version_max="6"/>
-	<flag key="r" answer="off" version_min="7"/>
+
+	<flag key="r" answer="off"/>
 	<flag key="f" answer="on"/>
 </qgisgrassmodule>

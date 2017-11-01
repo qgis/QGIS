@@ -17,7 +17,7 @@
 #include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgslinestring.h"
 #include "qgsvectorlayer.h"
 #include <QEventLoop>
@@ -38,12 +38,12 @@ class TestQgsConnectionPool: public QObject
   private:
     struct ReadJob
     {
-      explicit ReadJob( QgsVectorLayer* _layer ) : layer( _layer ) {}
-      QgsVectorLayer* layer;
+      explicit ReadJob( QgsVectorLayer *_layer ) : layer( _layer ) {}
+      QgsVectorLayer *layer = nullptr;
       QList<QgsFeature> features;
     };
 
-    static void processJob( ReadJob& job )
+    static void processJob( ReadJob &job )
     {
       QgsFeatureIterator it = job.layer->getFeatures();
       QgsFeature f;
@@ -94,9 +94,9 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   testFile.write( "</gpx>\n" );
   testFile.close();
 
-  QgsVectorLayer* layer1 = new QgsVectorLayer( testFile.fileName() + "|layername=waypoints", QStringLiteral( "Waypoints" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer1 = new QgsVectorLayer( testFile.fileName() + "|layername=waypoints", QStringLiteral( "Waypoints" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer1->isValid() );
-  QgsVectorLayer* layer2 = new QgsVectorLayer( testFile.fileName() + "|layername=routes", QStringLiteral( "Routes" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( testFile.fileName() + "|layername=routes", QStringLiteral( "Routes" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer2->isValid() );
 
   QList<ReadJob> jobs = QList<ReadJob>() << ReadJob( layer1 ) << ReadJob( layer2 );
@@ -107,8 +107,8 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   futureWatcher.setFuture( QtConcurrent::map( jobs, processJob ) );
   evLoop.exec();
 
-  QList<QgsFeature>& layer1Features = jobs[0].features;
-  QList<QgsFeature>& layer2Features = jobs[1].features;
+  QList<QgsFeature> &layer1Features = jobs[0].features;
+  QList<QgsFeature> &layer2Features = jobs[1].features;
 
   QVERIFY( layer1Features.count() == nWaypoints );
   QVERIFY( layer2Features.count() == nRoutes );
@@ -116,21 +116,21 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   for ( int i = 0, n = layer1Features.count(); i < n; ++i )
   {
     QgsGeometry featureGeom = layer1Features[i].geometry();
-    const QgsPointV2* geom = dynamic_cast<const QgsPointV2*>( featureGeom.geometry() );
-    QVERIFY( geom != nullptr );
+    const QgsPoint *geom = dynamic_cast<const QgsPoint *>( featureGeom.constGet() );
+    QVERIFY( geom );
     QVERIFY( qFuzzyCompare( geom->x(), i ) );
     QVERIFY( qFuzzyCompare( geom->y(), i ) );
   }
   for ( int i = 0, n = layer2Features.count(); i < n; ++i )
   {
     QgsGeometry featureGeom = layer2Features[i].geometry();
-    const QgsLineString* geom = dynamic_cast<const QgsLineString*>( featureGeom.geometry() );
-    QVERIFY( geom != nullptr );
+    const QgsLineString *geom = dynamic_cast<const QgsLineString *>( featureGeom.constGet() );
+    QVERIFY( geom );
     int nVtx = geom->vertexCount();
     QVERIFY( nVtx == nRoutePts );
     for ( int j = 0; j < nVtx; ++j )
     {
-      QgsPointV2 p = geom->vertexAt( QgsVertexId( 0, 0, j ) );
+      QgsPoint p = geom->vertexAt( QgsVertexId( 0, 0, j ) );
       QVERIFY( qFuzzyCompare( p.x(), j ) );
       QVERIFY( qFuzzyCompare( p.y(), i ) );
     }

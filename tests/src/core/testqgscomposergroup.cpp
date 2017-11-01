@@ -33,13 +33,7 @@ class TestQgsComposerGroup : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerGroup()
-        : mComposition( 0 )
-        , mMapSettings( 0 )
-        , mItem1( 0 )
-        , mItem2( 0 )
-        , mGroup( 0 )
-    {}
+    TestQgsComposerGroup() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -53,18 +47,18 @@ class TestQgsComposerGroup : public QObject
 
   private:
 
-    void dumpUndoStack( const QUndoStack&, QString prefix = QLatin1String( QLatin1String( "" ) ) ) const;
+    void dumpUndoStack( const QUndoStack &, QString prefix = QString() ) const;
 
-    QgsComposition *mComposition;
-    QgsMapSettings *mMapSettings;
-    QgsComposerLabel* mItem1;
-    QgsComposerLabel* mItem2;
-    QgsComposerItemGroup* mGroup;
+    QgsComposition *mComposition = nullptr;
+    QgsMapSettings *mMapSettings = nullptr;
+    QgsComposerLabel *mItem1 = nullptr;
+    QgsComposerLabel *mItem2 = nullptr;
+    QgsComposerItemGroup *mGroup = nullptr;
     QString mReport;
 };
 
 // private
-void TestQgsComposerGroup::dumpUndoStack( const QUndoStack& us, QString prefix ) const
+void TestQgsComposerGroup::dumpUndoStack( const QUndoStack &us, QString prefix ) const
 {
   if ( ! prefix.isEmpty() ) prefix += QLatin1String( ": " );
   for ( int i = 0; i < us.count(); ++i )
@@ -124,7 +118,7 @@ void TestQgsComposerGroup::cleanup()
 void TestQgsComposerGroup::createGroup()
 {
   //group items
-  QList<QgsComposerItem*> items;
+  QList<QgsComposerItem *> items;
   items << mItem1 << mItem2;
   mGroup = mComposition->groupItems( items );
 
@@ -145,7 +139,7 @@ void TestQgsComposerGroup::ungroup()
   mComposition->ungroupItems( 0 ); //no item
 
   //ungroup mGroup
-  QList<QgsComposerItem*> ungroupedItems;
+  QList<QgsComposerItem *> ungroupedItems;
   ungroupedItems = mComposition->ungroupItems( mGroup );
 
   QCOMPARE( ungroupedItems.size(), 2 );
@@ -156,7 +150,7 @@ void TestQgsComposerGroup::ungroup()
   QVERIFY( !mItem2->isGroupMember() );
 
   //should also be no groups left in the composition
-  QList<QgsComposerItemGroup*> groups;
+  QList<QgsComposerItemGroup *> groups;
   mComposition->composerItems( groups );
   QCOMPARE( groups.size(), 0 );
 }
@@ -164,10 +158,10 @@ void TestQgsComposerGroup::ungroup()
 void TestQgsComposerGroup::deleteGroup()
 {
   //group items
-  QList<QgsComposerItem*> groupItems;
+  QList<QgsComposerItem *> groupItems;
   groupItems << mItem1 << mItem2;
   mGroup = mComposition->groupItems( groupItems );
-  QList<QgsComposerItem*> items;
+  QList<QgsComposerItem *> items;
   mComposition->composerItems( items );
   //expect initially 4 items, as paper counts as an item
   QCOMPARE( items.size(), 4 );
@@ -183,9 +177,9 @@ void TestQgsComposerGroup::deleteGroup()
   QVERIFY( mGroup->isRemoved() );
 }
 
-Q_DECLARE_METATYPE( QgsComposerItemGroup * );
-Q_DECLARE_METATYPE( QgsComposerPolygon * );
-Q_DECLARE_METATYPE( QgsComposerItem * );
+Q_DECLARE_METATYPE( QgsComposerItemGroup * )
+Q_DECLARE_METATYPE( QgsComposerPolygon * )
+Q_DECLARE_METATYPE( QgsComposerItem * )
 
 void TestQgsComposerGroup::undoRedo()
 {
@@ -195,15 +189,15 @@ void TestQgsComposerGroup::undoRedo()
   int itemsRemoved = 0;
 
   qRegisterMetaType<QgsComposerPolygon *>();
-  QSignalSpy spyPolygonAdded( mComposition, SIGNAL( composerPolygonAdded( QgsComposerPolygon* ) ) );
+  QSignalSpy spyPolygonAdded( mComposition, &QgsComposition::itemAdded );
   QCOMPARE( spyPolygonAdded.count(), 0 );
 
   qRegisterMetaType<QgsComposerItemGroup *>();
-  QSignalSpy spyGroupAdded( mComposition, SIGNAL( composerItemGroupAdded( QgsComposerItemGroup* ) ) );
+  QSignalSpy spyGroupAdded( mComposition, &QgsComposition::composerItemGroupAdded );
   QCOMPARE( spyGroupAdded.count(), 0 );
 
   qRegisterMetaType<QgsComposerItem *>();
-  QSignalSpy spyItemRemoved( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ) );
+  QSignalSpy spyItemRemoved( mComposition, &QgsComposition::itemRemoved );
   QCOMPARE( spyItemRemoved.count(), 0 );
 
   //test for crash when undo/redoing with groups
@@ -212,7 +206,7 @@ void TestQgsComposerGroup::undoRedo()
   QgsDebugMsg( QString( "clearing" ) );
   us->clear();
   QgsDebugMsg( QString( "clearing completed" ) );
-  QList<QgsComposerItem*> items;
+  QList<QgsComposerItem *> items;
   mComposition->composerItems( items );
   QCOMPARE( items.size(), 1 ); // paper only
   QgsDebugMsg( QString( "clear stack count:%1 index:%2" ) .arg( us->count() ) .arg( us->index() ) );

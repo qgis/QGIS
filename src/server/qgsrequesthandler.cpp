@@ -33,14 +33,10 @@
 #include <QUrl>
 #include <QUrlQuery>
 
-QgsRequestHandler::QgsRequestHandler( QgsServerRequest& request, QgsServerResponse& response )
-    : mExceptionRaised( false )
-    , mRequest( request )
-    , mResponse( response )
-{
-}
-
-QgsRequestHandler::~QgsRequestHandler()
+QgsRequestHandler::QgsRequestHandler( QgsServerRequest &request, QgsServerResponse &response )
+  : mExceptionRaised( false )
+  , mRequest( request )
+  , mResponse( response )
 {
 }
 
@@ -54,7 +50,7 @@ bool QgsRequestHandler::exceptionRaised() const
   return mExceptionRaised;
 }
 
-void QgsRequestHandler::setHeader( const QString &name, const QString &value )
+void QgsRequestHandler::setResponseHeader( const QString &name, const QString &value )
 {
   mResponse.setHeader( name, value );
 }
@@ -64,20 +60,42 @@ void QgsRequestHandler::clear()
   mResponse.clear();
 }
 
-void QgsRequestHandler::removeHeader( const QString &name )
+void QgsRequestHandler::removeResponseHeader( const QString &name )
 {
-  mResponse.clearHeader( name );
+  mResponse.removeHeader( name );
 }
 
-QString QgsRequestHandler::getHeader( const QString& name ) const
+QString QgsRequestHandler::responseHeader( const QString &name ) const
 {
-  return mResponse.getHeader( name );
+  return mResponse.header( name );
 }
 
-QList<QString> QgsRequestHandler::headerKeys() const
+QMap<QString, QString> QgsRequestHandler::responseHeaders() const
 {
-  return mResponse.headerKeys();
+  return mResponse.headers();
 }
+
+void QgsRequestHandler::setRequestHeader( const QString &name, const QString &value )
+{
+  mRequest.setHeader( name, value );
+}
+
+void QgsRequestHandler::removeRequestHeader( const QString &name )
+{
+  mRequest.removeHeader( name );
+}
+
+QString QgsRequestHandler::requestHeader( const QString &name ) const
+{
+  return mRequest.header( name );
+}
+
+
+QMap<QString, QString> QgsRequestHandler::requestHeaders() const
+{
+  return mRequest.headers();
+}
+
 
 bool QgsRequestHandler::headersSent() const
 {
@@ -89,13 +107,43 @@ void QgsRequestHandler::appendBody( const QByteArray &body )
   mResponse.write( body );
 }
 
+void QgsRequestHandler::clearBody()
+{
+  mResponse.truncate();
+}
+
+QByteArray QgsRequestHandler::body() const
+{
+  return mResponse.data();
+}
+
+QByteArray QgsRequestHandler::data() const
+{
+  return mRequest.data();
+}
+
+QString QgsRequestHandler::url() const
+{
+  return mRequest.url().toString();
+}
+
+void QgsRequestHandler::setStatusCode( int code )
+{
+  mResponse.setStatusCode( code );
+}
+
+int QgsRequestHandler::statusCode() const
+{
+  return mResponse.statusCode();
+}
+
 void QgsRequestHandler::sendResponse()
 {
   // Send data to output
   mResponse.flush();
 }
 
-void QgsRequestHandler::setServiceException( const QgsServerException& ex )
+void QgsRequestHandler::setServiceException( const QgsServerException &ex )
 {
   // Safety measure to avoid potential leaks if called repeatedly
   mExceptionRaised = true;
@@ -172,7 +220,7 @@ void QgsRequestHandler::parseInput()
     if ( !doc.setContent( inputString, true, &errorMsg, &line, &column ) )
     {
       // XXX Output error but continue processing request ?
-      QgsMessageLog::logMessage( QStringLiteral( "Error parsing post data: at line %1, column %2: %3." )
+      QgsMessageLog::logMessage( QStringLiteral( "Warning: error parsing post data as XML: at line %1, column %2: %3. Assuming urlencoded query string sent in the post body." )
                                  .arg( line ).arg( column ).arg( errorMsg ) );
 
       // Process input string as a simple query text
@@ -180,9 +228,10 @@ void QgsRequestHandler::parseInput()
       typedef QPair<QString, QString> pair_t;
       QUrlQuery query( inputString );
       QList<pair_t> items = query.queryItems();
-      Q_FOREACH ( const pair_t& pair, items )
+      Q_FOREACH ( const pair_t &pair, items )
       {
-        mRequest.setParameter( pair.first.toUpper(), pair.second );
+        const QString value = QUrl::fromPercentEncoding( pair.second.toUtf8() );
+        mRequest.setParameter( pair.first.toUpper(), value );
       }
       setupParameters();
     }
@@ -193,15 +242,27 @@ void QgsRequestHandler::parseInput()
       setupParameters();
 
       QDomElement docElem = doc.documentElement();
-      if ( docElem.hasAttribute( QStringLiteral( "version" ) ) )
-      {
-        mRequest.setParameter( QStringLiteral( "VERSION" ), docElem.attribute( QStringLiteral( "version" ) ) );
-      }
-      if ( docElem.hasAttribute( QStringLiteral( "service" ) ) )
-      {
-        mRequest.setParameter( QStringLiteral( "SERVICE" ), docElem.attribute( QStringLiteral( "service" ) ) );
-      }
+      // the document element tag name is the request
       mRequest.setParameter( QStringLiteral( "REQUEST" ), docElem.tagName() );
+      // loop through the attributes which are the parameters
+      // excepting the attributes started by xmlns or xsi
+      QDomNamedNodeMap map = docElem.attributes();
+      for ( int i = 0 ; i < map.length() ; ++i )
+      {
+        if ( map.item( i ).isNull() )
+          continue;
+
+        const QDomNode attrNode = map.item( i );
+        const QDomAttr attr = attrNode.toAttr();
+        if ( attr.isNull() )
+          continue;
+
+        const QString attrName = attr.name();
+        if ( attrName.startsWith( "xmlns" ) || attrName.startsWith( "xsi:" ) )
+          continue;
+
+        mRequest.setParameter( attrName.toUpper(), attr.value() );
+      }
       mRequest.setParameter( QStringLiteral( "REQUEST_BODY" ), inputString );
     }
   }
@@ -223,7 +284,7 @@ void QgsRequestHandler::setParameter( const QString &key, const QString &value )
 
 QString QgsRequestHandler::parameter( const QString &key ) const
 {
-  return mRequest.getParameter( key );
+  return mRequest.parameter( key );
 }
 
 void QgsRequestHandler::removeParameter( const QString &key )

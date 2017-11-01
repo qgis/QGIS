@@ -22,10 +22,9 @@
 #include <QSettings>
 #include <QCheckBox>
 
-QgsCheckboxSearchWidgetWrapper::QgsCheckboxSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-    , mCheckBox( nullptr )
-    , mLayer( nullptr )
+QgsCheckboxSearchWidgetWrapper::QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
+
 {
 }
 
@@ -148,21 +147,21 @@ void QgsCheckboxSearchWidgetWrapper::stateChanged( int )
   }
 }
 
-QWidget* QgsCheckboxSearchWidgetWrapper::createWidget( QWidget* parent )
+QWidget *QgsCheckboxSearchWidgetWrapper::createWidget( QWidget *parent )
 {
-  QCheckBox* c = new QCheckBox( parent );
+  QCheckBox *c = new QCheckBox( parent );
   c->setChecked( Qt::PartiallyChecked );
   return c;
 }
 
-void QgsCheckboxSearchWidgetWrapper::initWidget( QWidget* editor )
+void QgsCheckboxSearchWidgetWrapper::initWidget( QWidget *editor )
 {
-  mCheckBox = qobject_cast<QCheckBox*>( editor );
+  mCheckBox = qobject_cast<QCheckBox *>( editor );
 
   if ( mCheckBox )
   {
     mCheckBox->setChecked( Qt::PartiallyChecked );
-    connect( mCheckBox, SIGNAL( stateChanged( int ) ), this, SLOT( stateChanged( int ) ) );
+    connect( mCheckBox, &QCheckBox::stateChanged, this, &QgsCheckboxSearchWidgetWrapper::stateChanged );
   }
 }
 

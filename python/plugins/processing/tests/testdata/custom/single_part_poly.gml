@@ -10,11 +10,11 @@
       <gml:coord><gml:X>8.962880985074626</gml:X><gml:Y>7.163993643533122</gml:Y></gml:coord>
     </gml:Box>
   </gml:boundedBy>
-                                                                                              
+
   <gml:featureMember>
     <ogr:single_part_poly fid="single_part_poly.0">
       <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>0.80194134384858,7.16399364353312 0.672499728706625,4.76932376340694 5.20295625867508,4.2839177066246 5.26276665671642,6.74081294029851 0.80194134384858,7.16399364353312</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:id>1</ogr:id>
+      <ogr:id></ogr:id>
     </ogr:single_part_poly>
   </gml:featureMember>
   <gml:featureMember>

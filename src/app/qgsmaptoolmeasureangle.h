@@ -17,7 +17,7 @@
 #define QGSMAPTOOLMEASUREANGLE_H
 
 #include "qgsmaptool.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsdistancearea.h"
 #include "qgis_app.h"
 
@@ -29,16 +29,16 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
 {
     Q_OBJECT
   public:
-    QgsMapToolMeasureAngle( QgsMapCanvas* canvas );
+    QgsMapToolMeasureAngle( QgsMapCanvas *canvas );
     ~QgsMapToolMeasureAngle();
 
     virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
 
     //! Mouse move event for overriding
-    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Mouse release event for overriding
-    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     //! called when set as currently active map tool
     void activate() override;
@@ -48,14 +48,14 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
 
   private:
     //! Points defining the angle (three for measuring)
-    QList<QgsPoint> mAnglePoints;
-    QgsRubberBand* mRubberBand;
-    QgsDisplayAngle* mResultDisplay;
+    QList<QgsPointXY> mAnglePoints;
+    QgsRubberBand *mRubberBand = nullptr;
+    QgsDisplayAngle *mResultDisplay = nullptr;
 
     //! Creates a new rubber band and deletes the old one
     void createRubberBand();
     //! Snaps point to background layers
-    QgsPoint snapPoint( QPoint p );
+    QgsPointXY snapPoint( QPoint p );
 
     //! Tool for measuring
     QgsDistanceArea mDa;

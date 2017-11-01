@@ -19,7 +19,10 @@
 #include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
  * \class QgsDateTimeEditFactory
  * \note not available in Python bindings
  */
@@ -27,13 +30,13 @@
 class GUI_EXPORT QgsDateTimeEditFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsDateTimeEditFactory( const QString& name );
+    QgsDateTimeEditFactory( const QString &name );
 
-    QgsEditorWidgetWrapper* create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
-    QgsSearchWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const override;
-    QgsEditorConfigWidget* configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
-    virtual QHash<const char*, int> supportedWidgetTypes() override;
-    unsigned int fieldScore( const QgsVectorLayer* vl, int fieldIdx ) const override;
+    QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
+    QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
+    QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
+    virtual QHash<const char *, int> supportedWidgetTypes() override;
+    unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
 };
 
 #endif // QGSDATETIMEEDITFACTORY_H

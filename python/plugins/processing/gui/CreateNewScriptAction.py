@@ -27,13 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
 from qgis.core import QgsApplication
 
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.gui.ScriptEditorDialog import ScriptEditorDialog
-from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -41,7 +38,6 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class CreateNewScriptAction(ToolboxAction):
 
     SCRIPT_PYTHON = 0
-    SCRIPT_R = 1
 
     def __init__(self, actionName, scriptType):
         self.name, self.i18n_name = self.trAction(actionName)
@@ -52,18 +48,9 @@ class CreateNewScriptAction(ToolboxAction):
     def getIcon(self):
         if self.scriptType == self.SCRIPT_PYTHON:
             return QgsApplication.getThemeIcon("/processingScript.svg")
-        elif self.scriptType == self.SCRIPT_R:
-            return QgsApplication.getThemeIcon("/providerR.svg")
 
     def execute(self):
         dlg = None
         if self.scriptType == self.SCRIPT_PYTHON:
             dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_PYTHON, None)
-        if self.scriptType == self.SCRIPT_R:
-            dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_R, None)
         dlg.show()
-        if dlg.update:
-            if self.scriptType == self.SCRIPT_PYTHON:
-                algList.reloadProvider('script')
-            elif self.scriptType == self.SCRIPT_R:
-                algList.reloadProvider('r')

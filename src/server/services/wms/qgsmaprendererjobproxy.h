@@ -24,38 +24,42 @@
 namespace QgsWms
 {
 
-  /** \ingroup server
+  /**
+   * \ingroup server
     * thiss class provides a proxy for sequential or parallel map render job by
     * reading qsettings.
-    * @note added in QGIS 3.0
+    * \since QGIS 3.0
     */
   class QgsMapRendererJobProxy
   {
     public:
 
-      /** Constructor.
-        * @param accessControl Does not take ownership of QgsAccessControl
+      /**
+       * Constructor.
+        * \param accessControl Does not take ownership of QgsAccessControl
         */
       QgsMapRendererJobProxy(
         bool parallelRendering
         , int maxThreads
-        , QgsAccessControl* accessControl
+        , QgsAccessControl *accessControl
       );
 
-      /** Sequential or parallel map rendering according to qsettings.
-        * @param mapSettings passed to MapRendererJob
-        * @param the rendered image
+      /**
+       * Sequential or parallel map rendering according to qsettings.
+        * \param mapSettings passed to MapRendererJob
+        * \param the rendered image
         */
-      void render( const QgsMapSettings& mapSettings, QImage* image );
+      void render( const QgsMapSettings &mapSettings, QImage *image );
 
-      /** Take ownership of the painter used for rendering.
-        * @return painter
+      /**
+       * Take ownership of the painter used for rendering.
+        * \returns painter
         */
-      QPainter* takePainter();
+      QPainter *takePainter();
 
     private:
       bool mParallelRendering;
-      QgsAccessControl* mAccessControl;
+      QgsAccessControl *mAccessControl = nullptr;
       std::unique_ptr<QPainter> mPainter;
   };
 

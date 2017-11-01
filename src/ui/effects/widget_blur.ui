@@ -37,63 +37,9 @@
         <item row="2" column="0">
          <widget class="QLabel" name="label_28">
           <property name="text">
-           <string>Transparency</string>
+           <string>Opacity</string>
           </property>
          </widget>
-        </item>
-        <item row="2" column="1">
-         <layout class="QHBoxLayout" name="horizontalLayout_28">
-          <item>
-           <widget class="QSlider" name="mTransparencySlider">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximum">
-             <number>1000</number>
-            </property>
-            <property name="singleStep">
-             <number>10</number>
-            </property>
-            <property name="pageStep">
-             <number>100</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QgsDoubleSpinBox" name="mTransparencySpnBx">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-            <property name="suffix">
-             <string> %</string>
-            </property>
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <double>100.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </item>
         <item row="3" column="0">
          <widget class="QLabel" name="label_30">
@@ -139,6 +85,13 @@
           </property>
          </widget>
         </item>
+        <item row="2" column="1">
+         <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>
@@ -152,7 +105,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>189</height>
+       <height>0</height>
       </size>
      </property>
     </spacer>
@@ -160,11 +113,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
@@ -180,12 +128,17 @@
    <extends>QComboBox</extends>
    <header>qgseffectdrawmodecombobox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mBlurTypeCombo</tabstop>
   <tabstop>mBlurStrengthSpnBx</tabstop>
-  <tabstop>mTransparencySlider</tabstop>
-  <tabstop>mTransparencySpnBx</tabstop>
+  <tabstop>mOpacityWidget</tabstop>
   <tabstop>mBlendCmbBx</tabstop>
   <tabstop>mDrawModeComboBox</tabstop>
  </tabstops>

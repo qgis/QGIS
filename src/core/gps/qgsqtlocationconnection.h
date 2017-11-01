@@ -19,10 +19,12 @@
 #define QGSQTLOCATIONCONNECTION_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsgpsconnection.h"
 
 #include <QtCore/QPointer>
 
+#ifndef SIP_RUN
 #if defined(HAVE_QT_MOBILITY_LOCATION )
 #include <QtLocation/QGeoPositionInfoSource>
 #include <QtLocation/QGeoSatelliteInfo>
@@ -34,6 +36,11 @@ QTM_USE_NAMESPACE
 #include <QtPositioning/QGeoSatelliteInfo>
 #include <QtPositioning/QGeoSatelliteInfoSource>
 #endif
+#endif
+
+SIP_FEATURE( MOBILITY_LOCATION )
+
+SIP_IF_FEATURE( MOBILITY_LOCATION )
 
 /**
  * \ingroup core
@@ -45,7 +52,6 @@ class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
     Q_OBJECT
   public:
     QgsQtLocationConnection();
-    ~QgsQtLocationConnection();
 
   protected slots:
     //! Needed to make QtLocation detected
@@ -54,20 +60,31 @@ class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
     //! Parse available data source content
     void parseData();
 
-    /** Called when the position updated.
-      * @note not available in python binding
+    /**
+     * Called when the position updated.
+      * \note not available in Python bindings
       */
-    void positionUpdated( const QGeoPositionInfo &info );
+    void positionUpdated( const QGeoPositionInfo &info ) SIP_SKIP;
 
-    /** Called when the number of satellites in view is updated.
-      * @note not available in python bindings on android
-      */
-    void satellitesInViewUpdated( const QList<QGeoSatelliteInfo>& satellites );
+#ifdef SIP_RUN
+    SIP_IF_FEATURE( !ANDROID )
+#endif
 
-    /** Called when the number of satellites in use is updated.
-      * @note not available in python bindings on android
+    /**
+     * Called when the number of satellites in view is updated.
+      * \note not available in Python bindings on android
       */
-    void satellitesInUseUpdated( const QList<QGeoSatelliteInfo>& satellites );
+    void satellitesInViewUpdated( const QList<QGeoSatelliteInfo> &satellites );
+
+    /**
+     * Called when the number of satellites in use is updated.
+      * \note not available in Python bindings on android
+      */
+    void satellitesInUseUpdated( const QList<QGeoSatelliteInfo> &satellites );
+
+#ifdef SIP_RUN
+    SIP_END
+#endif
 
   private:
     void startGPS();
@@ -78,5 +95,7 @@ class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
     QPointer<QGeoSatelliteInfoSource> satelliteInfoSource;
 
 };
+
+SIP_END // MOBILITY_LOCATION
 
 #endif // QGSQTLOCATIONCONNECTION_H

@@ -18,15 +18,18 @@
 #include "qgscomposertablebackgroundcolorsdialog.h"
 #include "qgscomposertablev2.h"
 #include "qgscomposition.h"
-#include <QSettings>
+#include "qgssettings.h"
+
 #include <QCheckBox>
 #include <QPushButton>
 
-QgsComposerTableBackgroundColorsDialog::QgsComposerTableBackgroundColorsDialog( QgsComposerTableV2* table, QWidget* parent, Qt::WindowFlags flags )
-    : QDialog( parent, flags )
-    , mComposerTable( table )
+QgsComposerTableBackgroundColorsDialog::QgsComposerTableBackgroundColorsDialog( QgsComposerTableV2 *table, QWidget *parent, Qt::WindowFlags flags )
+  : QDialog( parent, flags )
+  , mComposerTable( table )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsComposerTableBackgroundColorsDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsComposerTableBackgroundColorsDialog::buttonBox_rejected );
 
   mCheckBoxMap.insert( QgsComposerTableV2::OddColumns, mOddColumnsCheckBox );
   mCheckBoxMap.insert( QgsComposerTableV2::EvenColumns, mEvenColumnsCheckBox );
@@ -48,18 +51,18 @@ QgsComposerTableBackgroundColorsDialog::QgsComposerTableBackgroundColorsDialog( 
   mColorButtonMap.insert( QgsComposerTableV2::FirstRow, mFirstRowColorButton );
   mColorButtonMap.insert( QgsComposerTableV2::LastRow, mLastRowColorButton );
 
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
+  connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsComposerTableBackgroundColorsDialog::apply );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ComposerTableBackgroundColorsDialog/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ComposerTableBackgroundColorsDialog/geometry" ) ).toByteArray() );
 
   setGuiElementValues();
 }
 
 QgsComposerTableBackgroundColorsDialog::~QgsComposerTableBackgroundColorsDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ComposerTableBackgroundColorsDialog/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/ComposerTableBackgroundColorsDialog/geometry" ), saveGeometry() );
 }
 
 void QgsComposerTableBackgroundColorsDialog::apply()
@@ -67,18 +70,18 @@ void QgsComposerTableBackgroundColorsDialog::apply()
   if ( !mComposerTable )
     return;
 
-  QgsComposition* composition = mComposerTable->composition();
+  QgsComposition *composition = mComposerTable->composition();
   if ( composition )
   {
     composition->beginMultiFrameCommand( mComposerTable, tr( "Table background customisation" ), QgsComposerMultiFrameMergeCommand::TableCellStyle );
   }
 
-  QMap< QgsComposerTableV2::CellStyleGroup, QCheckBox* >::const_iterator checkBoxIt = mCheckBoxMap.constBegin();
+  QMap< QgsComposerTableV2::CellStyleGroup, QCheckBox * >::const_iterator checkBoxIt = mCheckBoxMap.constBegin();
   for ( ; checkBoxIt != mCheckBoxMap.constEnd(); ++checkBoxIt )
   {
     QgsComposerTableStyle style;
     style.enabled = checkBoxIt.value()->isChecked();
-    if ( QgsColorButton* button = mColorButtonMap.value( checkBoxIt.key() ) )
+    if ( QgsColorButton *button = mColorButtonMap.value( checkBoxIt.key() ) )
       style.cellBackgroundColor = button->color();
 
     mComposerTable->setCellStyle( checkBoxIt.key(), style );
@@ -94,13 +97,13 @@ void QgsComposerTableBackgroundColorsDialog::apply()
   mComposerTable->update();
 }
 
-void QgsComposerTableBackgroundColorsDialog::on_buttonBox_accepted()
+void QgsComposerTableBackgroundColorsDialog::buttonBox_accepted()
 {
   apply();
   accept();
 }
 
-void QgsComposerTableBackgroundColorsDialog::on_buttonBox_rejected()
+void QgsComposerTableBackgroundColorsDialog::buttonBox_rejected()
 {
   reject();
 }
@@ -113,18 +116,18 @@ void QgsComposerTableBackgroundColorsDialog::setGuiElementValues()
   Q_FOREACH ( QgsComposerTableV2::CellStyleGroup styleGroup, mCheckBoxMap.keys() )
   {
     mCheckBoxMap.value( styleGroup )->setChecked( mComposerTable->cellStyle( styleGroup )->enabled );
-    QgsColorButton* button = mColorButtonMap.value( styleGroup );
+    QgsColorButton *button = mColorButtonMap.value( styleGroup );
     if ( !button )
       continue;
     button->setEnabled( mComposerTable->cellStyle( styleGroup )->enabled );
     button->setColor( mComposerTable->cellStyle( styleGroup )->cellBackgroundColor );
-    button->setAllowAlpha( true );
-    button->setColorDialogTitle( tr( "Select background color" ) );
+    button->setAllowOpacity( true );
+    button->setColorDialogTitle( tr( "Select Background Color" ) );
   }
 
   mDefaultColorButton->setColor( mComposerTable->backgroundColor() );
-  mDefaultColorButton->setAllowAlpha( true );
-  mDefaultColorButton->setColorDialogTitle( tr( "Select background color" ) );
+  mDefaultColorButton->setAllowOpacity( true );
+  mDefaultColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mDefaultColorButton->setShowNoColor( true );
   mDefaultColorButton->setNoColorString( tr( "No background" ) );
 }

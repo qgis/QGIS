@@ -16,8 +16,11 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsvectordataprovider.h"
 #include <QRegularExpression>
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
+#include "qgslogger.h"
 
-bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer* layer, int fieldIndex, const QVariant& value, const QgsFeatureIds& ignoreIds )
+bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer *layer, int fieldIndex, const QVariant &value, const QgsFeatureIds &ignoreIds )
 {
   if ( !layer )
     return false;
@@ -54,7 +57,7 @@ bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer* layer, int fieldInd
   return false;
 }
 
-QVariant QgsVectorLayerUtils::createUniqueValue( const QgsVectorLayer* layer, int fieldIndex, const QVariant& seed )
+QVariant QgsVectorLayerUtils::createUniqueValue( const QgsVectorLayer *layer, int fieldIndex, const QVariant &seed )
 {
   if ( !layer )
     return QVariant();
@@ -88,7 +91,7 @@ QVariant QgsVectorLayerUtils::createUniqueValue( const QgsVectorLayer* layer, in
         if ( !base.isEmpty() )
         {
           // strip any existing _1, _2 from the seed
-          QRegularExpression rx( "(.*)_\\d+" );
+          QRegularExpression rx( QStringLiteral( "(.*)_\\d+" ) );
           QRegularExpressionMatch match = rx.match( base );
           if ( match.hasMatch() )
           {
@@ -127,14 +130,14 @@ QVariant QgsVectorLayerUtils::createUniqueValue( const QgsVectorLayer* layer, in
 
       default:
         // todo other types - dates? times?
-        return QVariant();
+        break;
     }
   }
 
   return QVariant();
 }
 
-bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer* layer, const QgsFeature& feature, int attributeIndex, QStringList& errors,
+bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer *layer, const QgsFeature &feature, int attributeIndex, QStringList &errors,
     QgsFieldConstraints::ConstraintStrength strength, QgsFieldConstraints::ConstraintOrigin origin )
 {
   if ( !layer )
@@ -226,15 +229,15 @@ bool QgsVectorLayerUtils::validateAttribute( const QgsVectorLayer* layer, const 
   return valid;
 }
 
-QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer* layer, const QgsGeometry& geometry,
-    const QgsAttributeMap& attributes, QgsExpressionContext* context )
+QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer *layer, const QgsGeometry &geometry,
+    const QgsAttributeMap &attributes, QgsExpressionContext *context )
 {
   if ( !layer )
   {
     return QgsFeature();
   }
 
-  QgsExpressionContext* evalContext = context;
+  QgsExpressionContext *evalContext = context;
   std::unique_ptr< QgsExpressionContext > tempContext;
   if ( !evalContext )
   {
@@ -259,7 +262,7 @@ QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer* layer, const QgsG
     // in order of priority:
 
     // 1. client side default expression
-    if ( !layer->defaultValueExpression( idx ).isEmpty() )
+    if ( layer->defaultValueDefinition( idx ).isValid() )
     {
       // client side default expression set - takes precedence over all. Why? Well, this is the only default
       // which QGIS users have control over, so we assume that they're deliberately overriding any
@@ -320,3 +323,87 @@ QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer* layer, const QgsG
   return newFeature;
 }
 
+QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, int depth, QgsDuplicateFeatureContext &duplicateFeatureContext )
+{
+  if ( !layer )
+    return QgsFeature();
+
+  if ( !layer->isEditable() )
+    return QgsFeature();
+
+  //get context from layer
+  QgsExpressionContext context = layer->createExpressionContext();
+  context.setFeature( feature );
+
+  //create the attribute map
+  QgsAttributes srcAttr = feature.attributes();
+  QgsAttributeMap dstAttr;
+  for ( int src = 0; src < srcAttr.count(); ++src )
+  {
+    dstAttr[ src ] = srcAttr.at( src );
+  }
+
+  QgsFeature newFeature = createFeature( layer, feature.geometry(), dstAttr, &context );
+
+  const QList<QgsRelation> relations = project->relationManager()->referencedRelations( layer );
+
+  for ( const QgsRelation &relation : relations )
+  {
+    //check if composition (and not association)
+    if ( relation.strength() == QgsRelation::Composition && depth < 1 )
+    {
+      depth++;
+      //get features connected over this relation
+      QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( feature );
+      QgsFeatureIds childFeatureIds;
+      QgsFeature childFeature;
+      while ( relatedFeaturesIt.nextFeature( childFeature ) )
+      {
+        //set childlayer editable
+        relation.referencingLayer()->startEditing();
+        //change the fk of the child to the id of the new parent
+        for ( const QgsRelation::FieldPair &fieldPair : relation.fieldPairs() )
+        {
+          childFeature.setAttribute( fieldPair.first, newFeature.attribute( fieldPair.second ) );
+        }
+        //call the function for the child
+        duplicateFeature( relation.referencingLayer(), childFeature, project, depth, duplicateFeatureContext );
+
+        //add the new feature id for feedback
+        childFeatureIds.insert( childFeature.id() );
+      }
+
+      //store for feedback
+      duplicateFeatureContext.setDuplicatedFeatures( relation.referencingLayer(), childFeatureIds );
+    }
+  }
+
+  layer->addFeature( newFeature );
+
+  return newFeature;
+}
+
+QList<QgsVectorLayer *> QgsVectorLayerUtils::QgsDuplicateFeatureContext::layers() const
+{
+  QList<QgsVectorLayer *> layers;
+  QMap<QgsVectorLayer *, QgsFeatureIds>::const_iterator i;
+  for ( i = mDuplicatedFeatures.begin(); i != mDuplicatedFeatures.end(); ++i )
+    layers.append( i.key() );
+  return layers;
+}
+
+QgsFeatureIds QgsVectorLayerUtils::QgsDuplicateFeatureContext::duplicatedFeatures( QgsVectorLayer *layer ) const
+{
+  return mDuplicatedFeatures[layer];
+}
+
+void QgsVectorLayerUtils::QgsDuplicateFeatureContext::setDuplicatedFeatures( QgsVectorLayer *layer, QgsFeatureIds ids )
+{
+  mDuplicatedFeatures.insert( layer, ids );
+}
+/*
+QMap<QgsVectorLayer *, QgsFeatureIds>  QgsVectorLayerUtils::QgsDuplicateFeatureContext::duplicateFeatureContext() const
+{
+  return mDuplicatedFeatures;
+}
+*/

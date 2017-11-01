@@ -21,27 +21,11 @@
 #include <QPicture>
 #include <QTransform>
 
-QgsPaintEffect* QgsTransformEffect::create( const QgsStringMap &map )
+QgsPaintEffect *QgsTransformEffect::create( const QgsStringMap &map )
 {
-  QgsTransformEffect* newEffect = new QgsTransformEffect();
+  QgsTransformEffect *newEffect = new QgsTransformEffect();
   newEffect->readProperties( map );
   return newEffect;
-}
-
-QgsTransformEffect::QgsTransformEffect()
-    : QgsPaintEffect()
-    , mTranslateX( 0.0 )
-    , mTranslateY( 0.0 )
-    , mTranslateUnit( QgsUnitTypes::RenderMillimeters )
-    , mScaleX( 1.0 )
-    , mScaleY( 1.0 )
-    , mRotation( 0.0 )
-    , mShearX( 0.0 )
-    , mShearY( 0.0 )
-    , mReflectX( false )
-    , mReflectY( false )
-{
-
 }
 
 void QgsTransformEffect::draw( QgsRenderContext &context )
@@ -49,7 +33,7 @@ void QgsTransformEffect::draw( QgsRenderContext &context )
   if ( !source() || !enabled() || !context.painter() )
     return;
 
-  QPainter* painter = context.painter();
+  QPainter *painter = context.painter();
 
   //apply transformations
   painter->save();
@@ -89,25 +73,27 @@ void QgsTransformEffect::readProperties( const QgsStringMap &props )
   mScaleX = props.value( QStringLiteral( "scale_x" ), QStringLiteral( "1.0" ) ).toDouble();
   mScaleY = props.value( QStringLiteral( "scale_y" ), QStringLiteral( "1.0" ) ).toDouble();
   mRotation = props.value( QStringLiteral( "rotation" ), QStringLiteral( "0.0" ) ).toDouble();
+  mShearX = props.value( QStringLiteral( "shear_x" ), QStringLiteral( "0.0" ) ).toDouble();
+  mShearY = props.value( QStringLiteral( "shear_y" ), QStringLiteral( "0.0" ) ).toDouble();
   mTranslateX = props.value( QStringLiteral( "translate_x" ), QStringLiteral( "0.0" ) ).toDouble();
   mTranslateY = props.value( QStringLiteral( "translate_y" ), QStringLiteral( "0.0" ) ).toDouble();
   mTranslateUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "translate_unit" ) ) );
   mTranslateMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "translate_unit_scale" ) ) );
 }
 
-QgsTransformEffect* QgsTransformEffect::clone() const
+QgsTransformEffect *QgsTransformEffect::clone() const
 {
-  QgsTransformEffect* newEffect = new QgsTransformEffect( *this );
+  QgsTransformEffect *newEffect = new QgsTransformEffect( *this );
   return newEffect;
 }
 
-QRectF QgsTransformEffect::boundingRect( const QRectF &rect, const QgsRenderContext& context ) const
+QRectF QgsTransformEffect::boundingRect( const QRectF &rect, const QgsRenderContext &context ) const
 {
   QTransform t = createTransform( context );
   return t.mapRect( rect );
 }
 
-QTransform QgsTransformEffect::createTransform( const QgsRenderContext& context ) const
+QTransform QgsTransformEffect::createTransform( const QgsRenderContext &context ) const
 {
   QTransform t;
 

@@ -18,6 +18,9 @@
 #ifndef QGSSERVERLOGGER_H
 #define QGSSERVERLOGGER_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsmessagelog.h"
 
 #include <QFile>
@@ -34,47 +37,47 @@ class QgsServerLogger: public QObject
     /**
      * Get the singleton instance
      */
-    static QgsServerLogger* instance();
+    static QgsServerLogger *instance();
 
     /**
      * Get the current log level
-     * @return the log level
-     * @note added in QGIS 3.0
+     * \returns the log level
+     * \since QGIS 3.0
      */
     QgsMessageLog::MessageLevel logLevel() const { return mLogLevel; }
 
     /**
       * Set the current log level
-      * @param level the log level
-      * @note added in QGIS 3.0
+      * \param level the log level
+      * \since QGIS 3.0
       */
     void setLogLevel( QgsMessageLog::MessageLevel level );
 
     /**
       * Set the current log file
       */
-    void setLogFile( const QString& f );
+    void setLogFile( const QString &f );
 
   public slots:
 
     /**
      * Log a message from the server context
      *
-     * @param message the message
-     * @param tag tag of the message
-     * @param level log level of the message
+     * \param message the message
+     * \param tag tag of the message
+     * \param level log level of the message
      */
-    void logMessage( const QString& message, const QString& tag, QgsMessageLog::MessageLevel level );
+    void logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
 
   protected:
     QgsServerLogger();
 
   private:
-    static QgsServerLogger* sInstance;
+    static QgsServerLogger *sInstance;
 
     QFile mLogFile;
     QTextStream mTextStream;
-    QgsMessageLog::MessageLevel mLogLevel;
+    QgsMessageLog::MessageLevel mLogLevel = QgsMessageLog::NONE;
 };
 
 #endif // QGSSERVERLOGGER_H

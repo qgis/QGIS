@@ -21,32 +21,28 @@
 #include <QStringList>
 
 
-QgsObjectCustomProperties::QgsObjectCustomProperties()
-{
-}
-
 QStringList QgsObjectCustomProperties::keys() const
 {
   return mMap.keys();
 }
 
-void QgsObjectCustomProperties::setValue( const QString& key, const QVariant& value )
+void QgsObjectCustomProperties::setValue( const QString &key, const QVariant &value )
 {
   mMap[key] = value;
 }
 
-QVariant QgsObjectCustomProperties::value( const QString& key, const QVariant& defaultValue ) const
+QVariant QgsObjectCustomProperties::value( const QString &key, const QVariant &defaultValue ) const
 {
   return mMap.value( key, defaultValue );
 }
 
-void QgsObjectCustomProperties::remove( const QString& key )
+void QgsObjectCustomProperties::remove( const QString &key )
 {
   mMap.remove( key );
 }
 
 
-void QgsObjectCustomProperties::readXml( const QDomNode& parentNode, const QString& keyStartsWith )
+void QgsObjectCustomProperties::readXml( const QDomNode &parentNode, const QString &keyStartsWith )
 {
   QDomNode propsNode = parentNode.namedItem( QStringLiteral( "customproperties" ) );
   if ( propsNode.isNull() ) // no properties stored...
@@ -111,7 +107,7 @@ void QgsObjectCustomProperties::readXml( const QDomNode& parentNode, const QStri
 
 }
 
-void QgsObjectCustomProperties::writeXml( QDomNode& parentNode, QDomDocument& doc ) const
+void QgsObjectCustomProperties::writeXml( QDomNode &parentNode, QDomDocument &doc ) const
 {
   //remove already existing <customproperties> tags
   QDomNodeList propertyList = parentNode.toElement().elementsByTagName( QStringLiteral( "customproperties" ) );
@@ -132,7 +128,7 @@ void QgsObjectCustomProperties::writeXml( QDomNode& parentNode, QDomDocument& do
     }
     else if ( it.value().canConvert<QStringList>() )
     {
-      Q_FOREACH ( const QString& value, it.value().toStringList() )
+      Q_FOREACH ( const QString &value, it.value().toStringList() )
       {
         QDomElement itemElement = doc.createElement( QStringLiteral( "value" ) );
         itemElement.appendChild( doc.createTextNode( value ) );

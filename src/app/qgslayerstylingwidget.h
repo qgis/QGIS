@@ -39,6 +39,7 @@ class QgsRendererRasterPropertiesWidget;
 class QgsUndoWidget;
 class QgsRasterHistogramWidget;
 class QgsMapLayerStyleManagerWidget;
+class QgsVectorLayer3DRendererWidget;
 
 class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWidgetFactory
 {
@@ -52,9 +53,10 @@ class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWid
 class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
 {
   public:
-    QgsMapLayerStyleCommand( QgsMapLayer* layer, const QString& text, const QDomNode& current, const QDomNode& last );
+    QgsMapLayerStyleCommand( QgsMapLayer *layer, const QString &text, const QDomNode &current, const QDomNode &last );
 
-    /** Return unique ID for this kind of undo command.
+    /**
+     * Return unique ID for this kind of undo command.
      * Currently we do not have a central registry of undo command IDs, so it is a random magic number.
      */
     virtual int id() const override { return 0xbeef; }
@@ -63,10 +65,10 @@ class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
     virtual void redo() override;
 
     //! Try to merge with other commands of this type when they are created in small time interval
-    virtual bool mergeWith( const QUndoCommand* other ) override;
+    virtual bool mergeWith( const QUndoCommand *other ) override;
 
   private:
-    QgsMapLayer* mLayer;
+    QgsMapLayer *mLayer = nullptr;
     QDomNode mXml;
     QDomNode mLastState;
     QTime mTime;
@@ -84,57 +86,63 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
       RasterTransparency,
       RasterHistogram,
       History,
+      Symbology3D,
     };
 
     QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = 0 );
     ~QgsLayerStylingWidget();
-    QgsMapLayer* layer() { return mCurrentLayer; }
+    QgsMapLayer *layer() { return mCurrentLayer; }
 
     void setPageFactories( const QList<QgsMapLayerConfigWidgetFactory *> &factories );
 
-    /** Sets whether updates of the styling widget are blocked. This can be called to prevent
+    /**
+     * Sets whether updates of the styling widget are blocked. This can be called to prevent
      * the widget being refreshed multiple times when a batch of layer style changes are
      * about to be applied
-     * @param blocked set to true to block updates, or false to re-allow updates
+     * \param blocked set to true to block updates, or false to re-allow updates
      */
     void blockUpdates( bool blocked );
 
   signals:
-    void styleChanged( QgsMapLayer* layer );
+    void styleChanged( QgsMapLayer *layer );
 
   public slots:
-    void setLayer( QgsMapLayer* layer );
+    void setLayer( QgsMapLayer *layer );
     void apply();
     void autoApply();
     void undo();
     void redo();
     void updateCurrentWidgetLayer();
 
-    /** Sets the current visible page in the widget.
-     * @param page standard page to display
+    /**
+     * Sets the current visible page in the widget.
+     * \param page standard page to display
      */
     void setCurrentPage( Page page );
 
   private slots:
 
-    void layerAboutToBeRemoved( QgsMapLayer* layer );
+    void layerAboutToBeRemoved( QgsMapLayer *layer );
     void liveApplyToggled( bool value );
 
   private:
-    void pushUndoItem( const QString& name );
+    void pushUndoItem( const QString &name );
     int mNotSupportedPage;
     int mLayerPage;
-    QTimer* mAutoApplyTimer;
+    QTimer *mAutoApplyTimer = nullptr;
     QDomNode mLastStyleXml;
-    QgsMapCanvas* mMapCanvas;
+    QgsMapCanvas *mMapCanvas = nullptr;
     bool mBlockAutoApply;
-    QgsUndoWidget* mUndoWidget;
-    QgsMapLayer* mCurrentLayer;
-    QgsLabelingWidget *mLabelingWidget;
-    QgsRendererRasterPropertiesWidget* mRasterStyleWidget;
-    QList<QgsMapLayerConfigWidgetFactory*> mPageFactories;
-    QMap<int, QgsMapLayerConfigWidgetFactory*> mUserPages;
-    QgsLayerStyleManagerWidgetFactory* mStyleManagerFactory;
+    QgsUndoWidget *mUndoWidget = nullptr;
+    QgsMapLayer *mCurrentLayer = nullptr;
+    QgsLabelingWidget *mLabelingWidget = nullptr;
+#ifdef HAVE_3D
+    QgsVectorLayer3DRendererWidget *mVector3DWidget = nullptr;
+#endif
+    QgsRendererRasterPropertiesWidget *mRasterStyleWidget = nullptr;
+    QList<QgsMapLayerConfigWidgetFactory *> mPageFactories;
+    QMap<int, QgsMapLayerConfigWidgetFactory *> mUserPages;
+    QgsLayerStyleManagerWidgetFactory *mStyleManagerFactory = nullptr;
 };
 
 #endif // QGSLAYERSTYLESDOCK_H

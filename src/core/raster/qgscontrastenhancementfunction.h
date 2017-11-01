@@ -22,7 +22,8 @@ email                : ersts@amnh.org
 #include "qgis_core.h"
 #include "qgis.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A contrast enhancement function is the base class for all raster contrast enhancements.
  *
  * The purpose of a contrast enhancement is to enhanceContrast or clip a pixel value into
@@ -33,7 +34,7 @@ class CORE_EXPORT QgsContrastEnhancementFunction
 
   public:
     QgsContrastEnhancementFunction( Qgis::DataType, double, double );
-    QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction& f );
+    QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction &f );
     virtual ~QgsContrastEnhancementFunction() = default;
 
     //! \brief A customizable method that takes in a double and returns a int between 0 and 255

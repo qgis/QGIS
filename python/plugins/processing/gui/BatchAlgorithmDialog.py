@@ -26,25 +26,33 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+from pprint import pformat
+import time
+
 from qgis.PyQt.QtWidgets import QApplication, QMessageBox, QSizePolicy
 from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtCore import Qt
+
+from qgis.core import (QgsProcessingParameterDefinition,
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingOutputLayerDefinition,
+                       QgsProcessingOutputHtml,
+                       QgsProcessingOutputNumber,
+                       QgsProcessingOutputString,
+                       QgsProject)
 
 from qgis.gui import QgsMessageBar
 
 from processing.gui.BatchPanel import BatchPanel
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
-from processing.gui.AlgorithmExecutor import runalg
+from processing.gui.AlgorithmExecutor import execute
 from processing.gui.Postprocessing import handleAlgorithmResults
 
-from processing.core.ProcessingResults import ProcessingResults
-
-from processing.core.parameters import ParameterExtent
-from processing.core.outputs import OutputNumber
-from processing.core.outputs import OutputString
-from processing.core.outputs import OutputHTML
+from processing.core.ProcessingResults import resultsList
 
 from processing.tools.system import getTempFilename
+from processing.tools import dataobjects
 
 import codecs
 
@@ -56,7 +64,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
         self.alg = alg
 
-        self.setWindowTitle(self.tr('Batch Processing - %s') % self.alg.name)
+        self.setWindowTitle(self.tr('Batch Processing - {0}').format(self.alg.displayName()))
 
         self.setMainWidget(BatchPanel(self, self.alg))
 
@@ -67,51 +75,54 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         self.layout().insertWidget(0, self.bar)
 
     def accept(self):
-        self.algs = []
-        self.load = []
-        self.canceled = False
+        alg_parameters = []
+        load = []
+
+        feedback = self.createFeedback()
+        context = dataobjects.createContext(feedback)
 
         for row in range(self.mainWidget.tblParameters.rowCount()):
-            alg = self.alg.getCopy()
             col = 0
-            for param in alg.parameters:
-                if param.hidden:
+            parameters = {}
+            for param in self.alg.parameterDefinitions():
+                if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
                     continue
                 wrapper = self.mainWidget.wrappers[row][col]
-                if not self.mainWidget.setParamValue(param, wrapper, alg):
-                    self.bar.pushMessage("", self.tr('Wrong or missing parameter value: %s (row %d)')
-                                         % (param.description, row + 1),
+                parameters[param.name()] = wrapper.value()
+                if not param.checkValueIsAcceptable(wrapper.value(), context):
+                    self.bar.pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
+                                         param.description(), row + 1),
                                          level=QgsMessageBar.WARNING, duration=5)
-                    self.algs = None
                     return
                 col += 1
-            for out in alg.outputs:
-                if out.hidden:
+            count_visible_outputs = 0
+            for out in self.alg.destinationParameterDefinitions():
+                if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     continue
 
+                count_visible_outputs += 1
                 widget = self.mainWidget.tblParameters.cellWidget(row, col)
                 text = widget.getValue()
-                if text.strip() != '':
-                    out.value = text
+                if param.checkValueIsAcceptable(text, context):
+                    if isinstance(out, (QgsProcessingParameterRasterDestination,
+                                        QgsProcessingParameterFeatureSink)):
+                        # load rasters and sinks on completion
+                        parameters[out.name()] = QgsProcessingOutputLayerDefinition(text, context.project())
+                    else:
+                        parameters[out.name()] = text
                     col += 1
                 else:
-                    self.bar.pushMessage("", self.tr('Wrong or missing output value: %s (row %d)')
-                                         % (out.description, row + 1),
+                    self.bar.pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
+                                         out.description(), row + 1),
                                          level=QgsMessageBar.WARNING, duration=5)
-                    self.algs = None
                     return
 
-            self.algs.append(alg)
-            if self.alg.getVisibleOutputsCount():
-                widget = self.mainWidget.tblParameters.cellWidget(row, col)
-                self.load.append(widget.currentIndex() == 0)
-            else:
-                self.load.append(False)
+            alg_parameters.append(parameters)
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.mainWidget.setEnabled(False)
+        self.buttonCancel.setEnabled(True)
 
-        self.progressBar.setMaximum(len(self.algs))
         # Make sure the Log tab is visible before executing the algorithm
         try:
             self.tabWidget.setCurrentIndex(1)
@@ -119,44 +130,62 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         except:
             pass
 
-        for count, alg in enumerate(self.algs):
-            self.setText(self.tr('\nProcessing algorithm %d/%d...') % (count + 1, len(self.algs)))
-            self.setInfo(self.tr('<b>Algorithm %s starting...</b>' % alg.name))
-            if runalg(alg, self.feedback) and not self.canceled:
-                if self.load[count]:
-                    handleAlgorithmResults(alg, self.feedback, False)
-                self.setInfo(self.tr('Algorithm %s correctly executed...') % alg.name)
+        start_time = time.time()
+
+        algorithm_results = []
+        for count, parameters in enumerate(alg_parameters):
+            if feedback.isCanceled():
+                break
+            self.setText(self.tr('\nProcessing algorithm {0}/{1}...').format(count + 1, len(alg_parameters)))
+            self.setInfo(self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()), escape_html=False)
+
+            feedback.pushInfo(self.tr('Input parameters:'))
+            feedback.pushCommandInfo(pformat(parameters))
+            feedback.pushInfo('')
+
+            alg_start_time = time.time()
+            ret, results = execute(self.alg, parameters, context, feedback)
+            if ret:
+                self.setInfo(self.tr('Algorithm {0} correctly executed...').format(self.alg.displayName()), escape_html=False)
+                feedback.setProgress(100)
+                feedback.pushInfo(
+                    self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - alg_start_time)))
+                feedback.pushInfo(self.tr('Results:'))
+                feedback.pushCommandInfo(pformat(results))
+                feedback.pushInfo('')
+                algorithm_results.append(results)
             else:
-                QApplication.restoreOverrideCursor()
-                return
+                break
 
-        self.finish()
+        feedback.pushInfo(self.tr('Batch execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
 
-    def finish(self):
-        for count, alg in enumerate(self.algs):
-            self.loadHTMLResults(alg, count)
+        handleAlgorithmResults(self.alg, context, feedback, False)
 
-        self.createSummaryTable()
+        self.finish(algorithm_results)
+        self.buttonCancel.setEnabled(False)
+
+    def finish(self, algorithm_results):
+        for count, results in enumerate(algorithm_results):
+            self.loadHTMLResults(results, count)
+
+        self.createSummaryTable(algorithm_results)
         QApplication.restoreOverrideCursor()
 
         self.mainWidget.setEnabled(True)
         QMessageBox.information(self, self.tr('Batch processing'),
                                 self.tr('Batch processing completed'))
 
-    def loadHTMLResults(self, alg, num):
-        for out in alg.outputs:
-            if out.hidden or not out.open:
-                continue
+    def loadHTMLResults(self, results, num):
+        for out in self.alg.outputDefinitions():
+            if isinstance(out, QgsProcessingOutputHtml) and out.name() in results and results[out.name()]:
+                resultsList.addResult(icon=self.alg.icon(), name='{} [{}]'.format(out.description(), num),
+                                      result=results[out.name()])
 
-            if isinstance(out, OutputHTML):
-                ProcessingResults.addResult(
-                    '{} [{}]'.format(out.description, num), out.value)
-
-    def createSummaryTable(self):
+    def createSummaryTable(self, algorithm_results):
         createTable = False
 
-        for out in self.algs[0].outputs:
-            if isinstance(out, (OutputNumber, OutputString)):
+        for out in self.alg.outputDefinitions():
+            if isinstance(out, (QgsProcessingOutputNumber, QgsProcessingOutputString)):
                 createTable = True
                 break
 
@@ -165,12 +194,12 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
         outputFile = getTempFilename('html')
         with codecs.open(outputFile, 'w', encoding='utf-8') as f:
-            for alg in self.algs:
+            for res in algorithm_results:
                 f.write('<hr>\n')
-                for out in alg.outputs:
-                    if isinstance(out, (OutputNumber, OutputString)):
-                        f.write('<p>{}: {}</p>\n'.format(out.description, out.value))
+                for out in self.alg.outputDefinitions():
+                    if isinstance(out, (QgsProcessingOutputNumber, QgsProcessingOutputString)) and out.name() in res:
+                        f.write('<p>{}: {}</p>\n'.format(out.description(), res[out.name()]))
             f.write('<hr>\n')
 
-        ProcessingResults.addResult(
-            '{} [summary]'.format(self.algs[0].name), outputFile)
+        resultsList.addResult(self.alg.icon(),
+                              '{} [summary]'.format(self.alg.name()), outputFile)

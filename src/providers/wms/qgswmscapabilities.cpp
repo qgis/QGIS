@@ -19,15 +19,15 @@
 #include <QFile>
 #include <QDir>
 #include <QNetworkCacheMetaData>
-#include <QSettings>
 
+#include "qgssettings.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsunittypes.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsapplication.h"
 
 // %%% copied from qgswmsprovider.cpp
@@ -35,12 +35,22 @@ static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
 
 
 
-bool QgsWmsSettings::parseUri( const QString& uriString )
+bool QgsWmsSettings::parseUri( const QString &uriString )
 {
   QgsDebugMsg( "uriString = " + uriString );
   QgsDataSourceUri uri;
   uri.setEncodedUri( uriString );
 
+  // Setup authentication
+  mAuth.mUserName = uri.param( QStringLiteral( "username" ) );
+  mAuth.mPassword = uri.param( QStringLiteral( "password" ) );
+
+  if ( uri.hasParam( QStringLiteral( "authcfg" ) ) )
+  {
+    mAuth.mAuthCfg = uri.param( QStringLiteral( "authcfg" ) );
+  }
+
+  mAuth.mReferer = uri.param( QStringLiteral( "referer" ) );
   mXyz = false;  // assume WMS / WMTS
 
   if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "xyz" ) )
@@ -54,10 +64,6 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
     mMaxHeight = 0;
     mHttpUri = uri.param( QStringLiteral( "url" ) );
     mBaseUrl = mHttpUri;
-    mAuth.mUserName.clear();
-    mAuth.mPassword.clear();
-    mAuth.mReferer.clear();
-    mAuth.mAuthCfg.clear();
     mIgnoreGetMapUrl = false;
     mIgnoreGetFeatureInfoUrl = false;
     mSmoothPixmapTransform = true;
@@ -87,21 +93,6 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
 
   mDpiMode = uri.hasParam( QStringLiteral( "dpiMode" ) ) ? static_cast< QgsWmsDpiMode >( uri.param( QStringLiteral( "dpiMode" ) ).toInt() ) : DpiAll;
 
-  mAuth.mUserName = uri.param( QStringLiteral( "username" ) );
-  QgsDebugMsg( "set username to " + mAuth.mUserName );
-
-  mAuth.mPassword = uri.param( QStringLiteral( "password" ) );
-  QgsDebugMsg( "set password to " + mAuth.mPassword );
-
-  if ( uri.hasParam( QStringLiteral( "authcfg" ) ) )
-  {
-    mAuth.mAuthCfg = uri.param( QStringLiteral( "authcfg" ) );
-  }
-  QgsDebugMsg( "set authcfg to " + mAuth.mAuthCfg );
-
-  mAuth.mReferer = uri.param( QStringLiteral( "referer" ) );
-  QgsDebugMsg( "set referer to " + mAuth.mReferer );
-
   mActiveSubLayers = uri.params( QStringLiteral( "layers" ) );
   mActiveSubStyles = uri.params( QStringLiteral( "styles" ) );
   QgsDebugMsg( "Entering: layers:" + mActiveSubLayers.join( ", " ) + ", styles:" + mActiveSubStyles.join( ", " ) );
@@ -117,6 +108,14 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
     mMaxHeight = uri.param( QStringLiteral( "maxHeight" ) ).toInt();
   }
 
+  mStepWidth = 2000;
+  mStepHeight = 2000;
+  if ( uri.hasParam( QStringLiteral( "stepWidth" ) ) && uri.hasParam( QStringLiteral( "stepHeight" ) ) )
+  {
+    mStepWidth = uri.param( QStringLiteral( "stepWidth" ) ).toInt();
+    mStepHeight = uri.param( QStringLiteral( "stepHeight" ) ).toInt();
+  }
+
   if ( uri.hasParam( QStringLiteral( "tileMatrixSet" ) ) )
   {
     mTiled = true;
@@ -128,12 +127,12 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
   if ( uri.hasParam( QStringLiteral( "tileDimensions" ) ) )
   {
     mTiled = true;
-    Q_FOREACH ( const QString& param, uri.param( "tileDimensions" ).split( ';' ) )
+    Q_FOREACH ( const QString &param, uri.param( "tileDimensions" ).split( ';' ) )
     {
       QStringList kv = param.split( '=' );
       if ( kv.size() == 1 )
       {
-        mTileDimensionValues.insert( kv[0], QString::null );
+        mTileDimensionValues.insert( kv[0], QString() );
       }
       else if ( kv.size() == 2 )
       {
@@ -160,14 +159,7 @@ bool QgsWmsSettings::parseUri( const QString& uriString )
 // ----------------------
 
 
-QgsWmsCapabilities::QgsWmsCapabilities()
-    : mValid( false )
-    , mLayerCount( -1 )
-    , mCapabilities()
-{
-}
-
-bool QgsWmsCapabilities::parseResponse( const QByteArray& response, QgsWmsParserSettings settings )
+bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParserSettings settings )
 {
   mParserSettings = settings;
   mValid = false;
@@ -211,7 +203,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray& response, QgsWmsParser
   }
 
   // get identify formats
-  Q_FOREACH ( const QString& f, mCapabilities.capability.request.getFeatureInfo.format )
+  Q_FOREACH ( const QString &f, mCapabilities.capability.request.getFeatureInfo.format )
   {
     // Don't use mSupportedGetFeatureFormats, there are too many possibilities
     QgsDebugMsg( "supported format = " + f );
@@ -245,7 +237,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray& response, QgsWmsParser
 }
 
 
-bool QgsWmsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty& capabilitiesProperty )
+bool QgsWmsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty &capabilitiesProperty )
 {
 
 #ifdef QGISDEBUG
@@ -340,7 +332,7 @@ bool QgsWmsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapa
 }
 
 
-void QgsWmsCapabilities::parseService( QDomElement const & e, QgsWmsServiceProperty& serviceProperty )
+void QgsWmsCapabilities::parseService( QDomElement const &e, QgsWmsServiceProperty &serviceProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -404,7 +396,7 @@ void QgsWmsCapabilities::parseService( QDomElement const & e, QgsWmsServicePrope
 }
 
 
-void QgsWmsCapabilities::parseOnlineResource( QDomElement const & e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute )
+void QgsWmsCapabilities::parseOnlineResource( QDomElement const &e, QgsWmsOnlineResourceAttribute &onlineResourceAttribute )
 {
 
   onlineResourceAttribute.xlinkHref = QUrl::fromEncoded( e.attribute( QStringLiteral( "xlink:href" ) ).toUtf8() ).toString();
@@ -413,7 +405,7 @@ void QgsWmsCapabilities::parseOnlineResource( QDomElement const & e, QgsWmsOnlin
 }
 
 
-void QgsWmsCapabilities::parseKeywordList( QDomElement  const & e, QStringList& keywordListProperty )
+void QgsWmsCapabilities::parseKeywordList( QDomElement  const &e, QStringList &keywordListProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -440,7 +432,7 @@ void QgsWmsCapabilities::parseKeywordList( QDomElement  const & e, QStringList& 
   QgsDebugMsg( "exiting." );
 }
 
-void QgsWmsCapabilities::parseContactInformation( QDomElement const & e, QgsWmsContactInformationProperty& contactInformationProperty )
+void QgsWmsCapabilities::parseContactInformation( QDomElement const &e, QgsWmsContactInformationProperty &contactInformationProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -506,7 +498,7 @@ void QgsWmsCapabilities::parseContactInformation( QDomElement const & e, QgsWmsC
   QgsDebugMsg( "exiting." );
 }
 
-void QgsWmsCapabilities::parseContactPersonPrimary( QDomElement const & e, QgsWmsContactPersonPrimaryProperty& contactPersonPrimaryProperty )
+void QgsWmsCapabilities::parseContactPersonPrimary( QDomElement const &e, QgsWmsContactPersonPrimaryProperty &contactPersonPrimaryProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -535,7 +527,7 @@ void QgsWmsCapabilities::parseContactPersonPrimary( QDomElement const & e, QgsWm
 }
 
 
-void QgsWmsCapabilities::parseContactAddress( QDomElement const & e, QgsWmsContactAddressProperty& contactAddressProperty )
+void QgsWmsCapabilities::parseContactAddress( QDomElement const &e, QgsWmsContactAddressProperty &contactAddressProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -580,7 +572,7 @@ void QgsWmsCapabilities::parseContactAddress( QDomElement const & e, QgsWmsConta
 }
 
 
-void QgsWmsCapabilities::parseCapability( QDomElement const & e, QgsWmsCapabilityProperty& capabilityProperty )
+void QgsWmsCapabilities::parseCapability( QDomElement const &e, QgsWmsCapabilityProperty &capabilityProperty )
 {
 
   for ( QDomNode n1 = e.firstChild(); !n1.isNull(); n1 = n1.nextSibling() )
@@ -674,7 +666,7 @@ void QgsWmsCapabilities::parseCapability( QDomElement const & e, QgsWmsCapabilit
 }
 
 
-void QgsWmsCapabilities::parseRequest( QDomElement const & e, QgsWmsRequestProperty& requestProperty )
+void QgsWmsCapabilities::parseRequest( QDomElement const &e, QgsWmsRequestProperty &requestProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -713,7 +705,7 @@ void QgsWmsCapabilities::parseRequest( QDomElement const & e, QgsWmsRequestPrope
 
 
 
-void QgsWmsCapabilities::parseLegendUrl( QDomElement const & e, QgsWmsLegendUrlProperty& legendUrlProperty )
+void QgsWmsCapabilities::parseLegendUrl( QDomElement const &e, QgsWmsLegendUrlProperty &legendUrlProperty )
 {
 
   legendUrlProperty.width  = e.attribute( QStringLiteral( "width" ) ).toUInt();
@@ -744,16 +736,16 @@ void QgsWmsCapabilities::parseLegendUrl( QDomElement const & e, QgsWmsLegendUrlP
   QgsDebugMsg( "exiting." );
 }
 
-void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty& layerProperty,
+void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &layerProperty,
                                      QgsWmsLayerProperty *parentProperty )
 {
 
 // TODO: Delete this stanza completely, depending on success of "Inherit things into the sublayer" below.
 #if 0
   // enforce WMS non-inheritance rules
-  layerProperty.name =        QString::null;
-  layerProperty.title =       QString::null;
-  layerProperty.abstract =    QString::null;
+  layerProperty.name = QString();
+  layerProperty.title = QString();
+  layerProperty.abstract = QString();
   layerProperty.keywordList.clear();
 #endif
 
@@ -815,7 +807,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
       {
         // CRS can contain several definitions separated by whitespace
         // though this was deprecated in WMS 1.1.1
-        Q_FOREACH ( const QString& srs, e1.text().split( QRegExp( "\\s+" ) ) )
+        Q_FOREACH ( const QString &srs, e1.text().split( QRegExp( "\\s+" ) ) )
         {
           layerProperty.crs.push_back( srs );
         }
@@ -835,7 +827,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
           {
             QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( e1.attribute( QStringLiteral( "SRS" ) ) );
 
-            QgsCoordinateReferenceSystem dst =  QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
+            QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
 
             QgsCoordinateTransform ct( src, dst );
             layerProperty.ex_GeographicBoundingBox = ct.transformBoundingBox( layerProperty.ex_GeographicBoundingBox );
@@ -999,7 +991,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
 }
 
 
-void QgsWmsCapabilities::parseStyle( QDomElement const & e, QgsWmsStyleProperty& styleProperty )
+void QgsWmsCapabilities::parseStyle( QDomElement const &e, QgsWmsStyleProperty &styleProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -1045,7 +1037,7 @@ void QgsWmsCapabilities::parseStyle( QDomElement const & e, QgsWmsStyleProperty&
 }
 
 
-void QgsWmsCapabilities::parseOperationType( QDomElement const & e, QgsWmsOperationType& operationType )
+void QgsWmsCapabilities::parseOperationType( QDomElement const &e, QgsWmsOperationType &operationType )
 {
 
   QDomNode n1 = e.firstChild();
@@ -1078,7 +1070,7 @@ void QgsWmsCapabilities::parseOperationType( QDomElement const & e, QgsWmsOperat
 }
 
 
-void QgsWmsCapabilities::parseDcpType( QDomElement const & e, QgsWmsDcpTypeProperty& dcpType )
+void QgsWmsCapabilities::parseDcpType( QDomElement const &e, QgsWmsDcpTypeProperty &dcpType )
 {
 
   QDomNode n1 = e.firstChild();
@@ -1099,7 +1091,7 @@ void QgsWmsCapabilities::parseDcpType( QDomElement const & e, QgsWmsDcpTypePrope
   QgsDebugMsg( "exiting." );
 }
 
-void QgsWmsCapabilities::parseHttp( QDomElement const & e, QgsWmsHttpProperty& httpProperty )
+void QgsWmsCapabilities::parseHttp( QDomElement const &e, QgsWmsHttpProperty &httpProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -1129,7 +1121,7 @@ void QgsWmsCapabilities::parseHttp( QDomElement const & e, QgsWmsHttpProperty& h
   QgsDebugMsg( "exiting." );
 }
 
-void QgsWmsCapabilities::parseGet( QDomElement const & e, QgsWmsGetProperty& getProperty )
+void QgsWmsCapabilities::parseGet( QDomElement const &e, QgsWmsGetProperty &getProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -1154,7 +1146,7 @@ void QgsWmsCapabilities::parseGet( QDomElement const & e, QgsWmsGetProperty& get
   QgsDebugMsg( "exiting." );
 }
 
-void QgsWmsCapabilities::parsePost( QDomElement const & e, QgsWmsPostProperty& postProperty )
+void QgsWmsCapabilities::parsePost( QDomElement const &e, QgsWmsPostProperty &postProperty )
 {
 
   QDomNode n1 = e.firstChild();
@@ -1282,14 +1274,14 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
   mTileLayersSupported.append( l );
 
   int i = 0;
-  Q_FOREACH ( const QString& rS, resolutions )
+  Q_FOREACH ( const QString &rS, resolutions )
   {
     double r = rS.toDouble();
     m.identifier = QString::number( i );
     Q_ASSERT( l.boundingBoxes.size() == 1 );
-    m.matrixWidth  = ceil( l.boundingBoxes.at( 0 ).box.width() / m.tileWidth / r );
-    m.matrixHeight = ceil( l.boundingBoxes.at( 0 ).box.height() / m.tileHeight / r );
-    m.topLeft = QgsPoint( l.boundingBoxes.at( 0 ).box.xMinimum(), l.boundingBoxes.at( 0 ).box.yMinimum() + m.matrixHeight * m.tileHeight * r );
+    m.matrixWidth  = std::ceil( l.boundingBoxes.at( 0 ).box.width() / m.tileWidth / r );
+    m.matrixHeight = std::ceil( l.boundingBoxes.at( 0 ).box.height() / m.tileHeight / r );
+    m.topLeft = QgsPointXY( l.boundingBoxes.at( 0 ).box.xMinimum(), l.boundingBoxes.at( 0 ).box.yMinimum() + m.matrixHeight * m.tileHeight * r );
     m.tres = r;
     ms.tileMatrices.insert( r, m );
     i++;
@@ -1423,8 +1415,8 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
       if ( ll.size() == 2 && ur.size() == 2 )
       {
         bb.crs = DEFAULT_LATLON_CRS;
-        bb.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
-                               QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
+        bb.box = QgsRectangle( QgsPointXY( ll[0].toDouble(), ll[1].toDouble() ),
+                               QgsPointXY( ur[0].toDouble(), ur[1].toDouble() ) );
 
         l.boundingBoxes << bb;
       }
@@ -1439,8 +1431,8 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
       if ( ll.size() == 2 && ur.size() == 2 )
       {
-        bb.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
-                               QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
+        bb.box = QgsRectangle( QgsPointXY( ll[0].toDouble(), ll[1].toDouble() ),
+                               QgsPointXY( ur[0].toDouble(), ur[1].toDouble() ) );
 
         if ( bbox.hasAttribute( QStringLiteral( "SRS" ) ) )
           bb.crs = bbox.attribute( QStringLiteral( "SRS" ) );
@@ -1735,7 +1727,7 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
   // make sure that all layers have a bounding box
   for ( QList<QgsWmtsTileLayer>::iterator it = mTileLayersSupported.begin(); it != mTileLayersSupported.end(); ++it )
   {
-    QgsWmtsTileLayer& l = *it;
+    QgsWmtsTileLayer &l = *it;
 
     if ( l.boundingBoxes.isEmpty() )
     {
@@ -1792,7 +1784,7 @@ void QgsWmsCapabilities::parseTheme( const QDomElement &e, QgsWmtsTheme &t )
   }
 }
 
-QString QgsWmsCapabilities::nodeAttribute( const QDomElement &e, const QString& name, const QString& defValue )
+QString QgsWmsCapabilities::nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue )
 {
   if ( e.hasAttribute( name ) )
     return e.attribute( name );
@@ -1809,13 +1801,13 @@ QString QgsWmsCapabilities::nodeAttribute( const QDomElement &e, const QString& 
 }
 
 
-bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer& l )
+bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer &l )
 {
   if ( l.setLinks.isEmpty() )
     return false;
 
   // take first supported tile matrix set
-  const QgsWmtsTileMatrixSetLink& setLink = l.setLinks.constBegin().value();
+  const QgsWmtsTileMatrixSetLink &setLink = l.setLinks.constBegin().value();
 
   QHash<QString, QgsWmtsTileMatrixSet>::const_iterator tmsIt = mTileMatrixSets.constFind( setLink.tileMatrixSet );
   if ( tmsIt == mTileMatrixSets.constEnd() )
@@ -1830,13 +1822,13 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer& l )
   if ( tmIt == tmsIt->tileMatrices.constEnd() )
     return false;
 
-  const QgsWmtsTileMatrix& tm = *tmIt;
+  const QgsWmtsTileMatrix &tm = *tmIt;
   double metersPerUnit = QgsUnitTypes::fromUnitToUnitFactor( crs.mapUnits(), QgsUnitTypes::DistanceMeters );
   // the magic number below is "standardized rendering pixel size" defined
   // in WMTS (and WMS 1.3) standard, being 0.28 pixel
   double res = tm.scaleDenom * 0.00028 / metersPerUnit;
-  QgsPoint bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
-                        tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
+  QgsPointXY bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
+                          tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
 
   QgsDebugMsg( QString( "detecting WMTS layer bounding box: tileset %1 matrix %2 crs %3 res %4" )
                .arg( tmsIt->identifier, tm.identifier, tmsIt->crs ).arg( res ) );
@@ -1853,7 +1845,7 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer& l )
 }
 
 
-bool QgsWmsCapabilities::shouldInvertAxisOrientation( const QString& ogcCrs )
+bool QgsWmsCapabilities::shouldInvertAxisOrientation( const QString &ogcCrs )
 {
   //according to the WMS spec for 1.3, some CRS have inverted axis
   bool changeXY = false;
@@ -1867,8 +1859,8 @@ bool QgsWmsCapabilities::shouldInvertAxisOrientation( const QString& ogcCrs )
     }
 
     //create CRS from string
-    QgsCoordinateReferenceSystem theSrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( ogcCrs );
-    if ( theSrs.isValid() && theSrs.hasAxisInverted() )
+    QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( ogcCrs );
+    if ( srs.isValid() && srs.hasAxisInverted() )
     {
       changeXY = true;
     }
@@ -1887,9 +1879,9 @@ int QgsWmsCapabilities::identifyCapabilities() const
 {
   int capability = QgsRasterInterface::NoCapabilities;
 
-  Q_FOREACH ( QgsRaster::IdentifyFormat f, mIdentifyFormats.keys() )
+  for ( auto it = mIdentifyFormats.constBegin(); it != mIdentifyFormats.constEnd(); ++it )
   {
-    capability |= QgsRasterDataProvider::identifyFormatToCapability( f );
+    capability |= QgsRasterDataProvider::identifyFormatToCapability( it.key() );
   }
 
   return capability;
@@ -1900,20 +1892,18 @@ int QgsWmsCapabilities::identifyCapabilities() const
 // -----------------
 
 QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( bool forceRefresh, QObject *parent )
-    : QObject( parent )
-    , mCapabilitiesReply( nullptr )
-    , mIsAborted( false )
-    , mForceRefresh( forceRefresh )
+  : QObject( parent )
+  , mIsAborted( false )
+  , mForceRefresh( forceRefresh )
 {
 }
 
-QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString& baseUrl, const QgsWmsAuthorization& auth, bool forceRefresh, QObject *parent )
-    : QObject( parent )
-    , mBaseUrl( baseUrl )
-    , mAuth( auth )
-    , mCapabilitiesReply( nullptr )
-    , mIsAborted( false )
-    , mForceRefresh( forceRefresh )
+QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString &baseUrl, const QgsWmsAuthorization &auth, bool forceRefresh, QObject *parent )
+  : QObject( parent )
+  , mBaseUrl( baseUrl )
+  , mAuth( auth )
+  , mIsAborted( false )
+  , mForceRefresh( forceRefresh )
 {
 }
 
@@ -1922,7 +1912,7 @@ QgsWmsCapabilitiesDownload::~QgsWmsCapabilitiesDownload()
   abort();
 }
 
-bool QgsWmsCapabilitiesDownload::downloadCapabilities( const QString& baseUrl, const QgsWmsAuthorization& auth )
+bool QgsWmsCapabilitiesDownload::downloadCapabilities( const QString &baseUrl, const QgsWmsAuthorization &auth )
 {
   mBaseUrl = baseUrl;
   mAuth = auth;
@@ -1964,11 +1954,11 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
     QgsMessageLog::logMessage( mError, tr( "WMS" ) );
     return false;
   }
-  connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
-  connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
+  connect( mCapabilitiesReply, &QNetworkReply::finished, this, &QgsWmsCapabilitiesDownload::capabilitiesReplyFinished, Qt::DirectConnection );
+  connect( mCapabilitiesReply, &QNetworkReply::downloadProgress, this, &QgsWmsCapabilitiesDownload::capabilitiesReplyProgress, Qt::DirectConnection );
 
   QEventLoop loop;
-  connect( this, SIGNAL( downloadFinished() ), &loop, SLOT( quit() ) );
+  connect( this, &QgsWmsCapabilitiesDownload::downloadFinished, &loop, &QEventLoop::quit );
   loop.exec( QEventLoop::ExcludeUserInputEvents );
 
   return mError.isEmpty();
@@ -1997,13 +1987,13 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
   {
     if ( mCapabilitiesReply->error() == QNetworkReply::NoError )
     {
-      QgsDebugMsg( "reply ok" );
+      QgsDebugMsg( "reply OK" );
       QVariant redirect = mCapabilitiesReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {
         emit statusChanged( tr( "Capabilities request redirected." ) );
 
-        const QUrl& toUrl = redirect.toUrl();
+        const QUrl &toUrl = redirect.toUrl();
         mCapabilitiesReply->request();
         if ( toUrl == mCapabilitiesReply->url() )
         {
@@ -2042,8 +2032,8 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
             return;
           }
 
-          connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
-          connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
+          connect( mCapabilitiesReply, &QNetworkReply::finished, this, &QgsWmsCapabilitiesDownload::capabilitiesReplyFinished, Qt::DirectConnection );
+          connect( mCapabilitiesReply, &QNetworkReply::downloadProgress, this, &QgsWmsCapabilitiesDownload::capabilitiesReplyProgress, Qt::DirectConnection );
           return;
         }
       }
@@ -2066,8 +2056,8 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
           QgsDebugMsg( QString( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
           if ( cmd.expirationDate().isNull() )
           {
-            QSettings s;
-            cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( QStringLiteral( "/qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60 ) );
+            QgsSettings s;
+            cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( QStringLiteral( "qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60 ) );
           }
 
           nam->cache()->updateMetaData( cmd );
@@ -2125,7 +2115,7 @@ QgsRectangle QgsWmtsTileMatrix::tileBBox( int col, int row ) const
            topLeft.y() -         row * thMap );
 }
 
-void QgsWmtsTileMatrix::viewExtentIntersection( const QgsRectangle &viewExtent, const QgsWmtsTileMatrixLimits* tml, int &col0, int &row0, int &col1, int &row1 ) const
+void QgsWmtsTileMatrix::viewExtentIntersection( const QgsRectangle &viewExtent, const QgsWmtsTileMatrixLimits *tml, int &col0, int &row0, int &col1, int &row1 ) const
 {
   double twMap = tileWidth * tres;
   double thMap = tileHeight * tres;
@@ -2147,13 +2137,13 @@ void QgsWmtsTileMatrix::viewExtentIntersection( const QgsRectangle &viewExtent, 
     //             .arg( minTileRow ).arg( maxTileRow ) );
   }
 
-  col0 = qBound( minTileCol, ( int ) floor(( viewExtent.xMinimum() - topLeft.x() ) / twMap ), maxTileCol );
-  row0 = qBound( minTileRow, ( int ) floor(( topLeft.y() - viewExtent.yMaximum() ) / thMap ), maxTileRow );
-  col1 = qBound( minTileCol, ( int ) floor(( viewExtent.xMaximum() - topLeft.x() ) / twMap ), maxTileCol );
-  row1 = qBound( minTileRow, ( int ) floor(( topLeft.y() - viewExtent.yMinimum() ) / thMap ), maxTileRow );
+  col0 = qBound( minTileCol, ( int ) std::floor( ( viewExtent.xMinimum() - topLeft.x() ) / twMap ), maxTileCol );
+  row0 = qBound( minTileRow, ( int ) std::floor( ( topLeft.y() - viewExtent.yMaximum() ) / thMap ), maxTileRow );
+  col1 = qBound( minTileCol, ( int ) std::floor( ( viewExtent.xMaximum() - topLeft.x() ) / twMap ), maxTileCol );
+  row1 = qBound( minTileRow, ( int ) std::floor( ( topLeft.y() - viewExtent.yMinimum() ) / thMap ), maxTileRow );
 }
 
-const QgsWmtsTileMatrix* QgsWmtsTileMatrixSet::findNearestResolution( double vres ) const
+const QgsWmtsTileMatrix *QgsWmtsTileMatrixSet::findNearestResolution( double vres ) const
 {
   QMap<double, QgsWmtsTileMatrix>::const_iterator prev, it = tileMatrices.constBegin();
   while ( it != tileMatrices.constEnd() && it.key() < vres )

@@ -21,7 +21,7 @@ import os
 from qgis.testing import unittest, start_app
 from qgis.core import QgsNetworkContentFetcher
 from utilities import unitTestDataPath
-from qgis.PyQt.QtCore import QUrl, QCoreApplication
+from qgis.PyQt.QtCore import QUrl
 from qgis.PyQt.QtNetwork import QNetworkReply
 import socketserver
 import threading
@@ -119,6 +119,7 @@ class TestQgsNetworkContentFetcher(unittest.TestCase):
 
         html = fetcher.contentAsString()
         assert chr(6040) in html
+
 
 if __name__ == "__main__":
     unittest.main()

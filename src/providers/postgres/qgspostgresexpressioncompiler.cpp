@@ -15,24 +15,25 @@
 
 #include "qgspostgresexpressioncompiler.h"
 #include "qgssqlexpressioncompiler.h"
+#include "qgsexpressionnodeimpl.h"
 
-QgsPostgresExpressionCompiler::QgsPostgresExpressionCompiler( QgsPostgresFeatureSource* source )
-    : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
-    , mGeometryColumn( source->mGeometryColumn )
-    , mSpatialColType( source->mSpatialColType )
-    , mDetectedGeomType( source->mDetectedGeomType )
-    , mRequestedGeomType( source->mRequestedGeomType )
-    , mRequestedSrid( source->mRequestedSrid )
-    , mDetectedSrid( source->mDetectedSrid )
+QgsPostgresExpressionCompiler::QgsPostgresExpressionCompiler( QgsPostgresFeatureSource *source )
+  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
+  , mGeometryColumn( source->mGeometryColumn )
+  , mSpatialColType( source->mSpatialColType )
+  , mDetectedGeomType( source->mDetectedGeomType )
+  , mRequestedGeomType( source->mRequestedGeomType )
+  , mRequestedSrid( source->mRequestedSrid )
+  , mDetectedSrid( source->mDetectedSrid )
 {
 }
 
-QString QgsPostgresExpressionCompiler::quotedIdentifier( const QString& identifier )
+QString QgsPostgresExpressionCompiler::quotedIdentifier( const QString &identifier )
 {
   return QgsPostgresConn::quotedIdentifier( identifier );
 }
 
-QString QgsPostgresExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
+QString QgsPostgresExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
   ok = true;
   return QgsPostgresConn::quotedValue( value );
@@ -105,54 +106,54 @@ static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
   { "upper", "upper" },
 };
 
-QString QgsPostgresExpressionCompiler::sqlFunctionFromFunctionName( const QString& fnName ) const
+QString QgsPostgresExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
 {
   return FUNCTION_NAMES_SQL_FUNCTIONS_MAP.value( fnName, QString() );
 }
 
-QStringList QgsPostgresExpressionCompiler::sqlArgumentsFromFunctionName( const QString& fnName, const QStringList& fnArgs ) const
+QStringList QgsPostgresExpressionCompiler::sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const
 {
   QStringList args( fnArgs );
-  if ( fnName == "geom_from_wkt" )
+  if ( fnName == QLatin1String( "geom_from_wkt" ) )
   {
     args << ( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
   }
-  else if ( fnName == "geom_from_gml" )
+  else if ( fnName == QLatin1String( "geom_from_gml" ) )
   {
     args << ( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
   }
-  else if ( fnName == "x" || fnName == "y" )
+  else if ( fnName == QLatin1String( "x" ) || fnName == QLatin1String( "y" ) )
   {
     args = QStringList( QStringLiteral( "ST_Centroid(%1)" ).arg( args[0] ) );
   }
-  else if ( fnName == "buffer" && args.length() == 2 )
+  else if ( fnName == QLatin1String( "buffer" ) && args.length() == 2 )
   {
-    args << "8";
+    args << QStringLiteral( "8" );
   }
   // x and y functions have to be adapted
   return args;
 }
 
-QString QgsPostgresExpressionCompiler::castToReal( const QString& value ) const
+QString QgsPostgresExpressionCompiler::castToReal( const QString &value ) const
 {
   return QStringLiteral( "((%1)::real)" ).arg( value );
 }
 
-QString QgsPostgresExpressionCompiler::castToInt( const QString& value ) const
+QString QgsPostgresExpressionCompiler::castToInt( const QString &value ) const
 {
   return QStringLiteral( "((%1)::int)" ).arg( value );
 }
 
-QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( const QgsExpression::Node* node, QString& result )
+QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
   switch ( node->nodeType() )
   {
-    case QgsExpression::ntFunction:
+    case QgsExpressionNode::ntFunction:
     {
-      const QgsExpression::NodeFunction* n = static_cast<const QgsExpression::NodeFunction*>( node );
+      const QgsExpressionNodeFunction *n = static_cast<const QgsExpressionNodeFunction *>( node );
 
-      QgsExpression::Function* fd = QgsExpression::Functions()[n->fnIndex()];
-      if ( fd->name() == "$geometry" )
+      QgsExpressionFunction *fd = QgsExpression::Functions()[n->fnIndex()];
+      if ( fd->name() == QLatin1String( "$geometry" ) )
       {
         result = quotedIdentifier( mGeometryColumn );
         return Complete;
@@ -190,11 +191,12 @@ QgsSqlExpressionCompiler::Result QgsPostgresExpressionCompiler::compileNode( con
         return Complete;
       }
 #endif
+      FALLTHROUGH;
     }
 
     default:
-      return QgsSqlExpressionCompiler::compileNode( node, result );
+      break;
   }
 
-  return Fail;
+  return QgsSqlExpressionCompiler::compileNode( node, result );
 }

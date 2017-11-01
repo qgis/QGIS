@@ -53,19 +53,19 @@ class QgsOracleTableCache
     static QString cacheDatabaseFilename();
 
     //! check whether the given connection is cached (with equal flags)
-    static bool hasCache( const QString& connName, CacheFlags flags );
+    static bool hasCache( const QString &connName, CacheFlags flags );
 
     //! Store the given list of entries (layers) into the cache. Returns true on success.
-    static bool saveToCache( const QString& connName, CacheFlags flags, const QVector<QgsOracleLayerProperty>& layers );
+    static bool saveToCache( const QString &connName, CacheFlags flags, const QVector<QgsOracleLayerProperty> &layers );
 
     //! Try to load cached entries for the given connection and its flags. Returns true on success.
-    static bool loadFromCache( const QString& connName, CacheFlags flags, QVector<QgsOracleLayerProperty>& layers );
+    static bool loadFromCache( const QString &connName, CacheFlags flags, QVector<QgsOracleLayerProperty> &layers );
 
     //! Remove cached entries for given connection. Returns true on success.
-    static bool removeFromCache( const QString& connName );
+    static bool removeFromCache( const QString &connName );
 
     //! Rename cached connection (useful when an existing connection gets renamed). Returns true on success.
-    static bool renameConnectionInCache( const QString& oldName, const QString& newName );
+    static bool renameConnectionInCache( const QString &oldName, const QString &newName );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsOracleTableCache::CacheFlags )

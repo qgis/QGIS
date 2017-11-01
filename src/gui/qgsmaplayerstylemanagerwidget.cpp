@@ -17,10 +17,10 @@
 #include <QToolBar>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QSettings>
 #include <QFileDialog>
 
 #include "qgsmaplayerstylemanagerwidget.h"
+#include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
@@ -32,8 +32,8 @@
 #include "qgsrasterlayer.h"
 
 
-QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer* layer, QgsMapCanvas *canvas, QWidget *parent )
-    : QgsMapLayerConfigWidget( layer, canvas, parent )
+QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
+  : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   mModel = new QStandardItemModel( this );
   mStyleList = new QListView( this );
@@ -41,50 +41,47 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer* layer
   mStyleList->setViewMode( QListView::ListMode );
   mStyleList->setResizeMode( QListView::Adjust );
 
-  QToolBar* toolbar = new QToolBar( this );
-  QAction* addAction = toolbar->addAction( tr( "Add" ) );
+  QToolBar *toolbar = new QToolBar( this );
+  QAction *addAction = toolbar->addAction( tr( "Add" ) );
   addAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "symbologyAdd.svg" ) ) );
-  connect( addAction, SIGNAL( triggered() ), this, SLOT( addStyle() ) );
-  QAction* removeAction = toolbar->addAction( tr( "Remove Current" ) );
+  connect( addAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::addStyle );
+  QAction *removeAction = toolbar->addAction( tr( "Remove Current" ) );
   removeAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "symbologyRemove.svg" ) ) );
-  connect( removeAction, SIGNAL( triggered() ), this, SLOT( removeStyle() ) );
-  QAction* loadFromFileAction = toolbar->addAction( tr( "Load Style" ) );
+  connect( removeAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::removeStyle );
+  QAction *loadFromFileAction = toolbar->addAction( tr( "Load Style" ) );
   loadFromFileAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
-  connect( loadFromFileAction, SIGNAL( triggered() ), this, SLOT( loadStyle() ) );
-  QAction* saveAsDefaultAction = toolbar->addAction( tr( "Save as default" ) );
-  connect( saveAsDefaultAction, SIGNAL( triggered() ), this, SLOT( saveAsDefault() ) );
-  QAction* loadDefaultAction = toolbar->addAction( tr( "Restore default" ) );
-  connect( loadDefaultAction, SIGNAL( triggered() ), this, SLOT( loadDefault() ) );
+  connect( loadFromFileAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadStyle );
+  QAction *saveAsDefaultAction = toolbar->addAction( tr( "Save as default" ) );
+  connect( saveAsDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::saveAsDefault );
+  QAction *loadDefaultAction = toolbar->addAction( tr( "Restore default" ) );
+  connect( loadDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadDefault );
 
 
   // Save style doesn't work correctly yet so just disable for now.
 //  QAction* saveToFileAction = toolbar->addAction( tr( "Save Style" ) );
 //  connect( saveToFileAction, SIGNAL( triggered() ), this, SLOT( saveStyle() ) );
 
-  connect( canvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( updateCurrent() ) );
+  //broken connect - not sure what the purpose of this was?
+//  connect( canvas, &QgsMapCanvas::mapCanvasRefreshed, this, SLOT( updateCurrent() ) );
 
-  connect( mStyleList, SIGNAL( clicked( QModelIndex ) ), this, SLOT( styleClicked( QModelIndex ) ) );
+  connect( mStyleList, &QAbstractItemView::clicked, this, &QgsMapLayerStyleManagerWidget::styleClicked );
 
   setLayout( new QVBoxLayout() );
   layout()->setContentsMargins( 0, 0, 0, 0 );
   layout()->addWidget( toolbar );
   layout()->addWidget( mStyleList );
 
-  connect( mLayer->styleManager(), SIGNAL( currentStyleChanged( QString ) ), this, SLOT( currentStyleChanged( QString ) ) );
-  connect( mLayer->styleManager(), SIGNAL( styleAdded( QString ) ), this, SLOT( styleAdded( QString ) ) );
-  connect( mLayer->styleManager(), SIGNAL( styleremoved( QString ) ), this, SLOT( styleRemoved( QString ) ) );
-  connect( mLayer->styleManager(), SIGNAL( styleRenamed( QString, QString ) ), this, SLOT( styleRenamed( QString, QString ) ) );
+  connect( mLayer->styleManager(), &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayerStyleManagerWidget::currentStyleChanged );
+  connect( mLayer->styleManager(), &QgsMapLayerStyleManager::styleAdded, this, &QgsMapLayerStyleManagerWidget::styleAdded );
+  connect( mLayer->styleManager(), &QgsMapLayerStyleManager::styleRemoved, this, &QgsMapLayerStyleManagerWidget::styleRemoved );
+  connect( mLayer->styleManager(), &QgsMapLayerStyleManager::styleRenamed, this, &QgsMapLayerStyleManagerWidget::styleRenamed );
 
   mModel->clear();
 
   Q_FOREACH ( const QString name, mLayer->styleManager()->styles() )
   {
     QString stylename = name;
-
-    if ( stylename.isEmpty() )
-      stylename = QStringLiteral( "(default)" );
-
-    QStandardItem* item = new QStandardItem( stylename );
+    QStandardItem *item = new QStandardItem( stylename );
     mModel->appendRow( item );
   }
 
@@ -98,47 +95,44 @@ void QgsMapLayerStyleManagerWidget::styleClicked( const QModelIndex &index )
     return;
 
   QString name = index.data().toString();
-  if ( name == QLatin1String( "(default)" ) )
-    name = QLatin1String( "" );
-
   mLayer->styleManager()->setCurrentStyle( name );
 }
 
-void QgsMapLayerStyleManagerWidget::currentStyleChanged( const QString& name )
+void QgsMapLayerStyleManagerWidget::currentStyleChanged( const QString &name )
 {
-  QList<QStandardItem*> items = mModel->findItems( name );
+  QList<QStandardItem *> items = mModel->findItems( name );
   if ( items.isEmpty() )
     return;
 
-  QStandardItem* item = items.at( 0 );
+  QStandardItem *item = items.at( 0 );
 
   mStyleList->setCurrentIndex( item->index() );
 }
 
-void QgsMapLayerStyleManagerWidget::styleAdded( const QString& name )
+void QgsMapLayerStyleManagerWidget::styleAdded( const QString &name )
 {
   QgsDebugMsg( "Style added" );
-  QStandardItem* item = new QStandardItem( name );
+  QStandardItem *item = new QStandardItem( name );
   mModel->appendRow( item );
 }
 
-void QgsMapLayerStyleManagerWidget::styleRemoved( const QString& name )
+void QgsMapLayerStyleManagerWidget::styleRemoved( const QString &name )
 {
-  QList<QStandardItem*> items = mModel->findItems( name );
+  QList<QStandardItem *> items = mModel->findItems( name );
   if ( items.isEmpty() )
     return;
 
-  QStandardItem* item = items.at( 0 );
+  QStandardItem *item = items.at( 0 );
   mModel->removeRow( item->row() );
 }
 
-void QgsMapLayerStyleManagerWidget::styleRenamed( const QString& oldname, const QString& newname )
+void QgsMapLayerStyleManagerWidget::styleRenamed( const QString &oldname, const QString &newname )
 {
-  QList<QStandardItem*> items = mModel->findItems( oldname );
+  QList<QStandardItem *> items = mModel->findItems( oldname );
   if ( items.isEmpty() )
     return;
 
-  QStandardItem* item = items.at( 0 );
+  QStandardItem *item = items.at( 0 );
   item->setText( newname );
 }
 
@@ -164,12 +158,12 @@ void QgsMapLayerStyleManagerWidget::addStyle()
 
 void QgsMapLayerStyleManagerWidget::removeStyle()
 {
-  QString current =  mLayer->styleManager()->currentStyle();
-  QList<QStandardItem*> items = mModel->findItems( current );
+  QString current = mLayer->styleManager()->currentStyle();
+  QList<QStandardItem *> items = mModel->findItems( current );
   if ( items.isEmpty() )
     return;
 
-  QStandardItem* item = items.at( 0 );
+  QStandardItem *item = items.at( 0 );
   bool res = mLayer->styleManager()->removeStyle( current );
   if ( res )
   {
@@ -186,9 +180,9 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
 {
   QString errorMsg;
 
-  if ( QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mLayer ) )
+  if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mLayer ) )
   {
-    if ( layer->dataProvider()->isSaveAndLoadStyleToDBSupported() )
+    if ( layer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
     {
       QMessageBox askToUser;
       askToUser.setText( tr( "Save default style to: " ) );
@@ -228,9 +222,9 @@ void QgsMapLayerStyleManagerWidget::loadDefault()
   QString msg;
   bool defaultLoadedFlag = false;
 
-  if ( QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mLayer ) )
+  if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mLayer ) )
   {
-    if ( layer->dataProvider()->isSaveAndLoadStyleToDBSupported() )
+    if ( layer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
     {
       QMessageBox askToUser;
       askToUser.setText( tr( "Load default style from: " ) );
@@ -263,17 +257,17 @@ void QgsMapLayerStyleManagerWidget::loadDefault()
   }
 
   QString myMessage;
-  if ( QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mLayer ) )
+  if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mLayer ) )
   {
     myMessage = layer->loadNamedStyle( mLayer->styleURI(), defaultLoadedFlag, true );
   }
-  if ( QgsRasterLayer* layer = qobject_cast<QgsRasterLayer*>( mLayer ) )
+  if ( QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( mLayer ) )
   {
     myMessage = layer->loadNamedStyle( mLayer->styleURI(), defaultLoadedFlag );
   }
 
 //  QString myMessage = layer->loadDefaultStyle( defaultLoadedFlag );
-  //reset if the default style was loaded ok only
+  //reset if the default style was loaded OK only
 
 
   if ( !defaultLoadedFlag )
@@ -295,7 +289,7 @@ void QgsMapLayerStyleManagerWidget::saveStyle()
 
 void QgsMapLayerStyleManagerWidget::loadStyle()
 {
-  QSettings myQSettings;  // where we keep last used filter in persistent state
+  QgsSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), myLastUsedDir,
@@ -317,7 +311,7 @@ void QgsMapLayerStyleManagerWidget::loadStyle()
   {
     myMessage = mLayer->loadNamedStyle( myFileName, defaultLoadedFlag );
   }
-  //reset if the default style was loaded ok only
+  //reset if the default style was loaded OK only
   if ( defaultLoadedFlag )
   {
     emit widgetChanged();

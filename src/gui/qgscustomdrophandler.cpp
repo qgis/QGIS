@@ -14,3 +14,24 @@
  ***************************************************************************/
 
 #include "qgscustomdrophandler.h"
+
+QString QgsCustomDropHandler::customUriProviderKey() const
+{
+  return QString();
+}
+
+void QgsCustomDropHandler::handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const
+{
+  Q_UNUSED( uri );
+}
+
+void QgsCustomDropHandler::handleMimeData( const QMimeData *data )
+{
+  Q_UNUSED( data );
+}
+
+bool QgsCustomDropHandler::handleFileDrop( const QString &file )
+{
+  Q_UNUSED( file );
+  return false;
+}

@@ -62,6 +62,7 @@ call "%PF86%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86
 path %path%;%PF86%\Microsoft Visual Studio 14.0\VC\bin
 set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 14.0\VC\bin
 set SETUPAPI_LIBRARY=c:\Program Files (x86)\Windows Kits\10\Lib\10.0.14393.0\um\x86\SetupAPI.Lib
+if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=c:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x86\SetupAPI.Lib
 if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 
 set CMAKE_OPT=^
@@ -77,6 +78,7 @@ call "%PF86%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
 path %path%;%PF86%\Microsoft Visual Studio 14.0\VC\bin
 set CMAKE_COMPILER_PATH=%PF86%\Microsoft Visual Studio 14.0\VC\bin\amd64
 set SETUPAPI_LIBRARY=c:\Program Files (x86)\Windows Kits\10\Lib\10.0.14393.0\um\x64\SetupAPI.Lib
+if not exist "%SETUPAPI_LIBRARY%" set SETUPAPI_LIBRARY=c:\Program Files (x86)\Windows Kits\8.0\Lib\win8\um\x64\SetupAPI.Lib
 if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 
 set CMAKE_OPT=^
@@ -97,7 +99,7 @@ set PYTHONPATH=
 if exist "%PF86%\CMake\bin" path %PATH%;c:\cygwin\bin;%PF86%\CMake\bin
 if exist "%PROGRAMFILES%\CMake\bin" path %PATH%;c:\cygwin\bin;%PROGRAMFILES%\CMake\bin
 
-PROMPT qgis%VERSION%$g 
+PROMPT qgis%VERSION%$g
 
 set BUILDCONF=RelWithDebInfo
 
@@ -163,11 +165,10 @@ cmake -G Ninja ^
 	-D WITH_SERVER=TRUE ^
 	-D SERVER_SKIP_ECW=TRUE ^
 	-D WITH_GRASS=TRUE ^
-	-D WITH_GRASS6=FALSE ^
+	-D WITH_3D=TRUE ^
 	-D WITH_GRASS7=TRUE ^
 	-D GRASS_PREFIX7=%GRASS72_PATH:\=/% ^
 	-D WITH_GLOBE=FALSE ^
-	-D WITH_TOUCH=TRUE ^
 	-D WITH_ORACLE=TRUE ^
 	-D WITH_CUSTOM_WIDGETS=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
@@ -184,22 +185,9 @@ cmake -G Ninja ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
 	-D FCGI_LIBRARY=%O4W_ROOT%/lib/libfcgi.lib ^
-	-D WITH_INTERNAL_JINJA2=FALSE ^
-	-D WITH_INTERNAL_MARKUPSAFE=FALSE ^
-	-D WITH_INTERNAL_PYGMENTS=FALSE ^
-	-D WITH_INTERNAL_REQUESTS=FALSE ^
-	-D WITH_INTERNAL_DATEUTIL=FALSE ^
-	-D WITH_INTERNAL_PYTZ=FALSE ^
-	-D WITH_INTERNAL_SIX=FALSE ^
-	-D WITH_INTERNAL_NOSE2=FALSE ^
-	-D WITH_INTERNAL_MOCK=FALSE ^
-	-D WITH_INTERNAL_HTTPLIB2=FALSE ^
-	-D WITH_INTERNAL_FUTURE=FALSE ^
-	-D WITH_PYSPATIALITE=TRUE ^
 	-D QCA_INCLUDE_DIR=%OSGEO4W_ROOT%\apps\Qt5\include\QtCrypto ^
 	-D QCA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qca-qt5.lib ^
 	-D QSCINTILLA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qscintilla2.lib ^
-	-D SUPPRESS_SIP_WARNINGS=TRUE ^
 	%CMAKE_OPT% ^
 	%SRCDIR:\=/%
 if errorlevel 1 (echo cmake failed & goto error)
@@ -235,7 +223,8 @@ for %%g IN (%GRASS_VERSIONS%) do (
 	set path=!path!;%OSGEO4W_ROOT%\apps\grass\grass-%%g\lib
 	set GISBASE=%OSGEO4W_ROOT%\apps\grass\grass-%%g
 )
-PATH %path%;%BUILDDIR%\output\plugins\%BUILDCONF%
+PATH %path%;%BUILDDIR%\output\plugins
+set QT_PLUGIN_PATH=%BUILDDIR%\output\plugins;%OSGEO4W_ROOT%\apps\qt5\plugins
 
 cmake --build %BUILDDIR% --target Nightly --config %BUILDCONF%
 if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
@@ -275,10 +264,6 @@ for %%g IN (%GRASS_VERSIONS%) do (
 	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' qgis-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-g%%g.bat.tmpl
 	if errorlevel 1 (echo creation of desktop template failed & goto error)
 	set batches=!batches! bin/%PACKAGENAME%-g%%g.bat.tmpl
-
-	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' browser-grass.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-g%%g.bat.tmpl
-	if errorlevel 1 (echo creation of browser template & goto error)
-	set batches=!batches! bin/%PACKAGENAME%-browser-g%%g.bat.tmpl
 )
 
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' python.bat.tmpl >%OSGEO4W_ROOT%\bin\python-%PACKAGENAME%.bat.tmpl
@@ -293,8 +278,8 @@ touch exclude
 
 move %PKGDIR%\bin\qgis.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.exe
 if errorlevel 1 (echo move of desktop executable failed & goto error)
-move %PKGDIR%\bin\qbrowser.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-bin.exe
-if errorlevel 1 (echo move of browser executable failed & goto error)
+copy qgis.vars %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.vars
+if errorlevel 1 (echo copy of desktop executable vars failed & goto error)
 
 if not exist %PKGDIR%\qtplugins\sqldrivers mkdir %PKGDIR%\qtplugins\sqldrivers
 move %OSGEO4W_ROOT%\apps\qt5\plugins\sqldrivers\qsqlocispatial.dll %PKGDIR%\qtplugins\sqldrivers
@@ -316,7 +301,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	--exclude "*.pyc" ^
 	apps/%PACKAGENAME% ^
 	bin/%PACKAGENAME%-bin.exe ^
-	bin/%PACKAGENAME%-browser-bin.exe ^
+	bin/%PACKAGENAME%-bin.vars ^
 	%batches% ^
 	bin/%PACKAGENAME%-designer.bat.tmpl ^
 	bin/python-%PACKAGENAME%.bat.tmpl ^
@@ -334,11 +319,12 @@ goto end
 :usage
 echo usage: %0 version package packagename arch [sha [site]]
 echo sample: %0 2.11.0 38 qgis-dev x86_64 339dbf1 qgis.org
-exit
+exit /b 1
 
 :error
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%
 if exist %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2
+exit /b 1
 
 :end
 echo FINISHED: %DATE% %TIME%

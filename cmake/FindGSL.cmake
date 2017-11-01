@@ -107,7 +107,7 @@ ELSE(WIN32)
         #      MESSAGE("DBG  GSL_LINK_DIRECTORIES=${GSL_LINK_DIRECTORIES}")
         #      MESSAGE("DBG  GSL_EXE_LINKER_FLAGS=${GSL_EXE_LINKER_FLAGS}")
 
-        #      ADD_DEFINITIONS("-DHAVE_GSL")
+        #      ADD_DEFINITIONS(-DHAVE_GSL)
         #      SET(GSL_DEFINITIONS "-DHAVE_GSL")
         MARK_AS_ADVANCED(
             GSL_CXX_FLAGS
@@ -118,7 +118,7 @@ ELSE(WIN32)
         )
       
       ELSE(GSL_CONFIG)
-        MESSAGE("FindGSL.cmake: gsl-config not found. Please set it manually. GSL_CONFIG=${GSL_CONFIG}")
+        MESSAGE(FATAL_ERROR "FindGSL.cmake: gsl-config not found. Please install the libgsl development libraries or set the path with -DGSL_CONFIG=/path/to/gsl-config.")
       ENDIF(GSL_CONFIG)
     ENDIF (NOT GSL_INCLUDE_DIR OR NOT GSL_LIBRARIES OR NOT GSL_CONFIG)
   ENDIF(UNIX)

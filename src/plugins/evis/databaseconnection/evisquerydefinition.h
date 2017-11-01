@@ -76,34 +76,34 @@ class eVisQueryDefinition
     bool autoConnect() { return mAutoConnect; }
 
     //! \brief Mutator for query description
-    void setDescription( const QString& description ) { mDescription = description; }
+    void setDescription( const QString &description ) { mDescription = description; }
 
     //! \brief Mutator for query short description
-    void setShortDescription( const QString& description ) { mShortDescription = description; }
+    void setShortDescription( const QString &description ) { mShortDescription = description; }
 
     //! \brief Mutator for database type
-    void setDatabaseType( const QString& type ) { mDatabaseType = type; }
+    void setDatabaseType( const QString &type ) { mDatabaseType = type; }
 
     //! \brief Mutator for database host name
-    void setDatabaseHost( const QString& host ) { mDatabaseHost = host; }
+    void setDatabaseHost( const QString &host ) { mDatabaseHost = host; }
 
     //! \brief Mutator for database port
     void setDatabasePort( int port ) { mDatabasePort = port; }
 
     //! \brief Mutator for database name
-    void setDatabaseName( const QString& name ) { mDatabaseName = name; }
+    void setDatabaseName( const QString &name ) { mDatabaseName = name; }
 
     //! \brief Mutator for database username
-    void setDatabaseUsername( const QString& username ) { mDatabaseUsername = username; }
+    void setDatabaseUsername( const QString &username ) { mDatabaseUsername = username; }
 
     //! \brief Mutator for database password
-    void setDatabasePassword( const QString& password ) { mDatabasePassword = password; }
+    void setDatabasePassword( const QString &password ) { mDatabasePassword = password; }
 
     //! \brief Mutator for SQL statement
-    void setSqlStatement( const QString& statement ) { mSqlStatement = statement; }
+    void setSqlStatement( const QString &statement ) { mSqlStatement = statement; }
 
     //! \brief Mutator for auto connection flag
-    void setAutoConnect( const QString& autoconnect )
+    void setAutoConnect( const QString &autoconnect )
     {
       if ( autoconnect.startsWith( QLatin1String( "true" ), Qt::CaseInsensitive ) )
       {
@@ -130,7 +130,7 @@ class eVisQueryDefinition
     QString mDatabaseHost;
 
     //! \brief The port/socket on the database host to which a connection should be made
-    int mDatabasePort;
+    int mDatabasePort = -1;
 
     //! \brief The name, or filename, of the database to which a connection should be made
     QString mDatabaseName;
@@ -145,6 +145,6 @@ class eVisQueryDefinition
     QString mSqlStatement;
 
     //! \brief Boolean to allow for automated connection to the database when query definition is successfully loaded
-    bool mAutoConnect;
+    bool mAutoConnect = false;
 };
 #endif

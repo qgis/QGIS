@@ -27,9 +27,7 @@ class TestQgsMapLayerStyleManager : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapLayerStyleManager()
-        : mVL( 0 )
-    {}
+    TestQgsMapLayerStyleManager() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -43,7 +41,7 @@ class TestQgsMapLayerStyleManager : public QObject
     void testSwitchingStyles();
 
   private:
-    QgsVectorLayer* mVL;
+    QgsVectorLayer *mVL = nullptr;
 };
 
 void TestQgsMapLayerStyleManager::initTestCase()
@@ -70,11 +68,11 @@ void TestQgsMapLayerStyleManager::cleanup()
 
 void TestQgsMapLayerStyleManager::testDefault()
 {
-  QgsMapLayerStyleManager* mgr = mVL->styleManager();
+  QgsMapLayerStyleManager *mgr = mVL->styleManager();
   QVERIFY( mgr );
 
   QCOMPARE( mgr->styles().count(), 1 );
-  QCOMPARE( mgr->style( QString() ).isValid(), true );
+  QCOMPARE( mgr->style( QStringLiteral( "default" ) ).isValid(), true );
 }
 
 void TestQgsMapLayerStyleManager::testStyle()
@@ -82,7 +80,7 @@ void TestQgsMapLayerStyleManager::testStyle()
   QgsMapLayerStyle st;
   QCOMPARE( st.isValid(), false );
 
-  QgsLineSymbol* sym1 = new QgsLineSymbol();
+  QgsLineSymbol *sym1 = new QgsLineSymbol();
   sym1->setColor( Qt::magenta );
   mVL->setRenderer( new QgsSingleSymbolRenderer( sym1 ) );
 
@@ -92,7 +90,7 @@ void TestQgsMapLayerStyleManager::testStyle()
 
   qDebug( "CNT-1: %s", st1.xmlData().toAscii().data() );
 
-  QgsLineSymbol* sym2 = new QgsLineSymbol();
+  QgsLineSymbol *sym2 = new QgsLineSymbol();
   sym2->setColor( Qt::red );
   mVL->setRenderer( new QgsSingleSymbolRenderer( sym2 ) );
 
@@ -103,13 +101,13 @@ void TestQgsMapLayerStyleManager::testStyle()
 
   st1.writeToLayer( mVL );
 
-  QgsSingleSymbolRenderer* r1 = dynamic_cast<QgsSingleSymbolRenderer*>( mVL->renderer() );
+  QgsSingleSymbolRenderer *r1 = dynamic_cast<QgsSingleSymbolRenderer *>( mVL->renderer() );
   QVERIFY( r1 );
   QCOMPARE( r1->symbol()->color(), QColor( Qt::magenta ) );
 
   st2.writeToLayer( mVL );
 
-  QgsSingleSymbolRenderer* r2 = dynamic_cast<QgsSingleSymbolRenderer*>( mVL->renderer() );
+  QgsSingleSymbolRenderer *r2 = dynamic_cast<QgsSingleSymbolRenderer *>( mVL->renderer() );
   QVERIFY( r2 );
   QCOMPARE( r2->symbol()->color(), QColor( Qt::red ) );
 }
@@ -117,7 +115,7 @@ void TestQgsMapLayerStyleManager::testStyle()
 
 void TestQgsMapLayerStyleManager::testReadWrite()
 {
-  QgsSingleSymbolRenderer* r0 = dynamic_cast<QgsSingleSymbolRenderer*>( mVL->renderer() );
+  QgsSingleSymbolRenderer *r0 = dynamic_cast<QgsSingleSymbolRenderer *>( mVL->renderer() );
   QVERIFY( r0 );
   r0->symbol()->setColor( Qt::red );
 
@@ -127,7 +125,7 @@ void TestQgsMapLayerStyleManager::testReadWrite()
 
   sm0.addStyleFromLayer( QStringLiteral( "blue" ) );
   sm0.setCurrentStyle( QStringLiteral( "blue" ) );
-  QgsSingleSymbolRenderer* r1 = dynamic_cast<QgsSingleSymbolRenderer*>( mVL->renderer() );
+  QgsSingleSymbolRenderer *r1 = dynamic_cast<QgsSingleSymbolRenderer *>( mVL->renderer() );
   QVERIFY( r1 );
   r1->symbol()->setColor( Qt::blue );
 
@@ -147,28 +145,28 @@ void TestQgsMapLayerStyleManager::testReadWrite()
   sm1.readXml( mgrElem );
 
   QCOMPARE( sm1.styles().count(), 2 );
-  QCOMPARE( sm1.style( QString() ).isValid(), true );
+  QCOMPARE( sm1.style( QStringLiteral( "default" ) ).isValid(), true );
   QCOMPARE( sm1.style( "blue" ).isValid(), true );
   QCOMPARE( sm1.currentStyle(), QString( "blue" ) );
 
   // now use the default style - the symbol should get red color
-  sm1.setCurrentStyle( QString() );
+  sm1.setCurrentStyle( QStringLiteral( "default" ) );
 
-  QgsSingleSymbolRenderer* r2 = dynamic_cast<QgsSingleSymbolRenderer*>( mVL->renderer() );
+  QgsSingleSymbolRenderer *r2 = dynamic_cast<QgsSingleSymbolRenderer *>( mVL->renderer() );
   QVERIFY( r2 );
   QCOMPARE( r2->symbol()->color(), QColor( Qt::red ) );
 }
 
-static void _setVLColor( QgsVectorLayer* vl, const QColor& c )
+static void _setVLColor( QgsVectorLayer *vl, const QColor &c )
 {
-  QgsSingleSymbolRenderer* renderer = dynamic_cast<QgsSingleSymbolRenderer*>( vl->renderer() );
+  QgsSingleSymbolRenderer *renderer = dynamic_cast<QgsSingleSymbolRenderer *>( vl->renderer() );
   if ( renderer )
     renderer->symbol()->setColor( c );
 }
 
-static QColor _getVLColor( QgsVectorLayer* vl )
+static QColor _getVLColor( QgsVectorLayer *vl )
 {
-  QgsSingleSymbolRenderer* renderer = dynamic_cast<QgsSingleSymbolRenderer*>( vl->renderer() );
+  QgsSingleSymbolRenderer *renderer = dynamic_cast<QgsSingleSymbolRenderer *>( vl->renderer() );
   if ( renderer )
     return renderer->symbol()->color();
   else
@@ -187,7 +185,7 @@ void TestQgsMapLayerStyleManager::testSwitchingStyles()
 
   _setVLColor( mVL, Qt::green );
 
-  mVL->styleManager()->setCurrentStyle( QString() );
+  mVL->styleManager()->setCurrentStyle( QStringLiteral( "default" ) );
   QCOMPARE( _getVLColor( mVL ), QColor( Qt::red ) );
 
   mVL->styleManager()->setCurrentStyle( QStringLiteral( "s1" ) );
@@ -195,7 +193,7 @@ void TestQgsMapLayerStyleManager::testSwitchingStyles()
 
   _setVLColor( mVL, Qt::blue );
 
-  mVL->styleManager()->setCurrentStyle( QString() );
+  mVL->styleManager()->setCurrentStyle( QStringLiteral( "default" ) );
   QCOMPARE( _getVLColor( mVL ), QColor( Qt::red ) );
 
   mVL->styleManager()->setCurrentStyle( QStringLiteral( "s1" ) );

@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
@@ -55,19 +52,19 @@ def processInputs(alg):
     if cellsize:
         command += ' res=' + str(cellsize)
     else:
-        command += ' res=' + str(alg.getDefaultCellsize())
+        command += ' res=' + str(alg.getDefaultCellsize(parameters, context))
     alignToResolution = alg.getParameterValue(alg.GRASS_REGION_ALIGN_TO_RESOLUTION)
     if alignToResolution:
         command += ' -a'
     alg.commands.append(command)
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # We need to introduce something clever:
     # if the input raster is multiband: export each component directly
     raster = alg.exportedLayers[alg.getParameterValue('input')]
     for color in ['red', 'green', 'blue']:
-        alg.exportedLayers[alg.getOutputValue(color)] = color + alg.uniqueSufix
+        alg.exportedLayers[alg.getOutputValue(color)] = color + alg.uniqueSuffix
 
     commands = ["if [ $(g.list type=rast pattern='{}.*' | wc -l) -eq \"0\" ]; then".format(raster)]
     commands.append("  r.rgb input={} red={} green={} blue={} --overwrite".format(

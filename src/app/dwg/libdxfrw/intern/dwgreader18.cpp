@@ -35,7 +35,7 @@ void dwgReader18::genMagicNumber()
   }
   int j = 0;
   size = 0x114;
-  for ( int i = 0; i < size;i++ )
+  for ( int i = 0; i < size; i++ )
   {
     DRW_DBGH( tmpMagicStr[i] );
     if ( j == 15 )
@@ -52,7 +52,7 @@ void dwgReader18::genMagicNumber()
   delete[]tmpMagicStr;
 }
 
-duint32 dwgReader18::checksum( duint32 seed, duint8* data, duint32 sz )
+duint32 dwgReader18::checksum( duint32 seed, duint8 *data, duint32 sz )
 {
   duint32 size = sz;
   duint32 sum1 = seed & 0xffff;
@@ -104,9 +104,9 @@ void dwgReader18::parseSysPage( duint8 *decompSec, duint32 decompSize )
   DRW_DBG( "\n" );
 
 #ifdef DRW_DBG_DUMP
-  for ( unsigned int i = 0, j = 0; i < compSize;i++ )
+  for ( unsigned int i = 0, j = 0; i < compSize; i++ )
   {
-    DRW_DBGH(( unsigned char )compSec[i] );
+    DRW_DBGH( ( unsigned char )compSec[i] );
     if ( j == 7 )
     {
       DRW_DBG( "\n" );
@@ -116,7 +116,7 @@ void dwgReader18::parseSysPage( duint8 *decompSec, duint32 decompSize )
   }
   DRW_DBG( "\n" );
 #endif
-  DRW_DBG( "decompresing " );
+  DRW_DBG( "decompressing " );
   DRW_DBG( compSize );
   DRW_DBG( " bytes in " );
   DRW_DBG( decompSize );
@@ -124,7 +124,7 @@ void dwgReader18::parseSysPage( duint8 *decompSec, duint32 decompSize )
   dwgCompressor comp;
   comp.decompress18( tmpCompSec, decompSec, compSize, decompSize );
 #ifdef DRW_DBG_DUMP
-  for ( unsigned int i = 0, j = 0; i < decompSize;i++ )
+  for ( unsigned int i = 0, j = 0; i < decompSize; i++ )
   {
     DRW_DBGH( decompSec[i] );
     if ( j == 7 )
@@ -157,9 +157,9 @@ bool dwgReader18::parseDataPage( dwgSectionInfo si/*, duint8 *dData*/ )
     DRW_DBG( "Section  " );
     DRW_DBG( si.name );
     DRW_DBG( " page header=\n" );
-    for ( unsigned int i = 0, j = 0; i < 32;i++ )
+    for ( unsigned int i = 0, j = 0; i < 32; i++ )
     {
-      DRW_DBGH(( unsigned char )hdrData[i] );
+      DRW_DBGH( ( unsigned char )hdrData[i] );
       if ( j == 7 )
       {
         DRW_DBG( "\n" );
@@ -229,9 +229,9 @@ bool dwgReader18::parseDataPage( dwgSectionInfo si/*, duint8 *dData*/ )
     DRW_DBGH( calcsD );
     DRW_DBG( "\n" );
 
-    duint8* oData = objData + pi.startOffset;
+    duint8 *oData = objData + pi.startOffset;
     pi.uSize = si.maxSize;
-    DRW_DBG( "decompresing " );
+    DRW_DBG( "decompressing " );
     DRW_DBG( pi.cSize );
     DRW_DBG( " bytes in " );
     DRW_DBG( pi.uSize );
@@ -251,7 +251,7 @@ bool dwgReader18::readMetaData()
   if ( ! fileBuf->setPosition( 11 ) )
     return false;
   maintenanceVersion = fileBuf->getRawChar8();
-  DRW_DBG( "maintenance verion= " );
+  DRW_DBG( "maintenance version= " );
   DRW_DBGH( maintenanceVersion );
   DRW_DBG( "\nbyte at 0x0C= " );
   DRW_DBGH( fileBuf->getRawChar8() );
@@ -303,7 +303,7 @@ bool dwgReader18::readFileHeader()
   DRW_DBG( "Encrypted Header Data=\n" );
   duint8 byteStr[0x6C];
   int size = 0x6C;
-  for ( int i = 0, j = 0; i < 0x6C;i++ )
+  for ( int i = 0, j = 0; i < 0x6C; i++ )
   {
     duint8 ch = fileBuf->getRawChar8();
     DRW_DBGH( ch );
@@ -323,9 +323,9 @@ bool dwgReader18::readFileHeader()
 
 //    size =0x6C;
   DRW_DBG( "Decrypted Header Data=\n" );
-  for ( int i = 0, j = 0; i < size;i++ )
+  for ( int i = 0, j = 0; i < size; i++ )
   {
-    DRW_DBGH(( unsigned char )byteStr[i] );
+    DRW_DBGH( ( unsigned char )byteStr[i] );
     if ( j == 15 )
     {
       DRW_DBG( "\n" );
@@ -338,7 +338,7 @@ bool dwgReader18::readFileHeader()
     }
   }
   dwgBuffer buff( byteStr, 0x6C, &decoder );
-  std::string name = reinterpret_cast<char*>( byteStr );
+  std::string name = reinterpret_cast<char *>( byteStr );
   DRW_DBG( "\nFile ID string (AcFssFcAJMB)= " );
   DRW_DBG( name.c_str() );
   //ID string + nullptr = 12
@@ -399,12 +399,12 @@ bool dwgReader18::readFileHeader()
   DRW_DBGH( crcCalc );
 
   DRW_DBG( "\nEnd Encrypted Data. Reads 0x14 bytes, equal to magic number:\n" );
-  for ( int i = 0, j = 0; i < 0x14;i++ )
+  for ( int i = 0, j = 0; i < 0x14; i++ )
   {
     DRW_DBG( "magic num: " );
-    DRW_DBGH(( unsigned char )DRW_magicNumEnd18[i] );
+    DRW_DBGH( ( unsigned char )DRW_magicNumEnd18[i] );
     DRW_DBG( ",read " );
-    DRW_DBGH(( unsigned char )fileBuf->getRawChar8() );
+    DRW_DBGH( ( unsigned char )fileBuf->getRawChar8() );
     if ( j == 3 )
     {
       DRW_DBG( "\n" );
@@ -545,7 +545,7 @@ bool dwgReader18::readFileHeader()
     DRW_DBGH( secInfo.encrypted );
     duint8 nameCStr[64];
     buff3.getBytes( nameCStr, 64 );
-    secInfo.name = reinterpret_cast<char*>( nameCStr );
+    secInfo.name = reinterpret_cast<char *>( nameCStr );
     DRW_DBG( "\nSection std::Name= " );
     DRW_DBG( secInfo.name.c_str() );
     DRW_DBG( "\n" );
@@ -587,7 +587,7 @@ bool dwgReader18::readFileHeader()
   return true;
 }
 
-bool dwgReader18::readDwgHeader( DRW_Header& hdr )
+bool dwgReader18::readDwgHeader( DRW_Header &hdr )
 {
   DRW_DBG( "dwgReader18::readDwgHeader\n" );
   dwgSectionInfo si = sections[secEnum::HEADER];
@@ -719,7 +719,7 @@ bool dwgReader18::readDwgClasses()
     duint32 endDataPos = maxClassNum - 499;
     DRW_DBG( "\nbuff.getPosition: " );
     DRW_DBG( dataBuf.getPosition() );
-    for ( duint32 i = 0; i < endDataPos;i++ )
+    for ( duint32 i = 0; i < endDataPos; i++ )
     {
       DRW_Class *cl = new DRW_Class();
       cl->parseDwg( version, &dataBuf, strBuf );
@@ -802,7 +802,7 @@ bool dwgReader18::readDwgHandles()
  * Reads all the object referenced in the object map section of the DWG file
  * (using their object file offsets)
  */
-bool dwgReader18::readDwgTables( DRW_Header& hdr )
+bool dwgReader18::readDwgTables( DRW_Header &hdr )
 {
   DRW_DBG( "\ndwgReader18::readDwgTables\n" );
   dwgSectionInfo si = sections[secEnum::OBJECTS];

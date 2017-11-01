@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Delete fields</string>
+   <string>Delete Fields</string>
   </property>
   <layout class="QGridLayout">
    <property name="leftMargin">

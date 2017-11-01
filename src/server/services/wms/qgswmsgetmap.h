@@ -22,14 +22,11 @@
 namespace QgsWms
 {
 
-  /** Output GetMap response in Dfx format
+  /**
+   * Output GetMap response in DXF format
    */
-  void writeGetMap( QgsServerInterface* serverIface, const QgsProject* project,
-                    const QString& version,  const QgsServerRequest& request,
-                    QgsServerResponse& response );
+  void writeGetMap( QgsServerInterface *serverIface, const QgsProject *project,
+                    const QString &version,  const QgsServerRequest &request,
+                    QgsServerResponse &response );
 
-} // samespace QgsWms
-
-
-
-
+} // namespace QgsWms

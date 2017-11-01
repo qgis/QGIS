@@ -16,7 +16,7 @@
 
 QgsWkbPtr::QgsWkbPtr( QByteArray &wkb )
 {
-  mP = reinterpret_cast<unsigned char*>( wkb.data() );
+  mP = reinterpret_cast<unsigned char *>( wkb.data() );
   mStart = mP;
   mEnd = mP + wkb.length();
 }
@@ -88,7 +88,7 @@ const QgsConstWkbPtr &QgsConstWkbPtr::operator>>( QPolygonF &points ) const
   read( nPoints );
 
   points.resize( nPoints );
-  QPointF* ptr = points.data();
+  QPointF *ptr = points.data();
 
   for ( unsigned int i = 0; i < nPoints; ++i, ++ptr )
   {

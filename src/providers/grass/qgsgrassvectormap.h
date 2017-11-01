@@ -48,7 +48,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
       TopoNode2
     };
 
-    QgsGrassVectorMap( const QgsGrassObject & grassObject );
+    QgsGrassVectorMap( const QgsGrassObject &grassObject );
     ~QgsGrassVectorMap();
 
     QgsGrassObject grassObject() const { return mGrassObject; }
@@ -62,8 +62,9 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     // number of instances using this map
     int userCount() const;
 
-    /** Get current number of lines.
-     *   @return number of lines */
+    /**
+     * Get current number of lines.
+     *   \returns number of lines */
     int numLines();
     int numAreas();
     // 3D map with z coordinates
@@ -81,18 +82,19 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     void lockReadWrite();
     void unlockReadWrite();
 
-    QHash<int, int> & oldLids() { return mOldLids; }
-    QHash<int, int> & newLids() { return mNewLids; }
-    QHash<int, QgsAbstractGeometry*> & oldGeometries() { return mOldGeometries; }
-    QHash<int, int> & oldTypes() { return mOldTypes; }
-    QHash<QgsFeatureId, int> & newCats() { return mNewCats; }
-    QMap<int, QList<QgsGrassUndoCommand *> > & undoCommands() { return mUndoCommands; }
+    QHash<int, int> &oldLids() { return mOldLids; }
+    QHash<int, int> &newLids() { return mNewLids; }
+    QHash<int, QgsAbstractGeometry *> &oldGeometries() { return mOldGeometries; }
+    QHash<int, int> &oldTypes() { return mOldTypes; }
+    QHash<QgsFeatureId, int> &newCats() { return mNewCats; }
+    QMap<int, QList<QgsGrassUndoCommand *> > &undoCommands() { return mUndoCommands; }
 
-    /** Get geometry of line.
-     * @return geometry (point,line or polygon(GV_FACE)) or 0 */
-    QgsAbstractGeometry * lineGeometry( int id );
-    QgsAbstractGeometry * nodeGeometry( int id );
-    QgsAbstractGeometry * areaGeometry( int id );
+    /**
+     * Get geometry of line.
+     * \returns geometry (point,line or polygon(GV_FACE)) or 0 */
+    QgsAbstractGeometry *lineGeometry( int id );
+    QgsAbstractGeometry *nodeGeometry( int id );
+    QgsAbstractGeometry *areaGeometry( int id );
 
     //! Open map if not yet open. Open/close lock
     bool open();
@@ -113,26 +115,31 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     bool closeEdit( bool newMap );
     void clearUndoCommands();
 
-    /** Get layer, layer is created and loaded if not yet.
-     *  @param field
-     *  @return pointer to layer or 0 if layer doe not exist */
-    QgsGrassVectorMapLayer * openLayer( int field );
+    /**
+     * Get layer, layer is created and loaded if not yet.
+     *  \param field
+     *  \returns pointer to layer or 0 if layer doe not exist */
+    QgsGrassVectorMapLayer *openLayer( int field );
 
-    /** Close layer and release cached data if there are no more users and close map
+    /**
+     * Close layer and release cached data if there are no more users and close map
      *  if there are no more map users.
-     *  @param layer */
-    void closeLayer( QgsGrassVectorMapLayer * layer );
+     *  \param layer */
+    void closeLayer( QgsGrassVectorMapLayer *layer );
 
-    /** Update map. Close and reopen vector and refresh layers.
+    /**
+     * Update map. Close and reopen vector and refresh layers.
      *  Instances of QgsGrassProvider are not updated and should call update() method */
     void update();
 
-    /** The map is outdated. The map was for example rewritten by GRASS module outside QGIS.
+    /**
+     * The map is outdated. The map was for example rewritten by GRASS module outside QGIS.
      *  This function checks internal timestamp stored in QGIS.
      */
     bool mapOutdated();
 
-    /** The attributes are outdated. The table was for example updated by GRASS module outside QGIS.
+    /**
+     * The attributes are outdated. The table was for example updated by GRASS module outside QGIS.
      *  This function checks internal timestamp stored in QGIS.
      */
     bool attributesOutdated();
@@ -140,9 +147,10 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     //! Map description for debugging
     QString toString();
 
-    /** Get topology symbol code
-     * @param lid line or area number
-     * @param type geometry type */
+    /**
+     * Get topology symbol code
+     * \param lid line or area number
+     * \param type geometry type */
     TopoSymbol topoSymbol( int lid );
 
     static QString topoSymbolFieldName() { return QStringLiteral( "topo_symbol" ) ; }
@@ -151,7 +159,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 
   signals:
 
-    /** Ask all iterators to cancel iteration when possible. Connected to iterators with
+    /**
+     * Ask all iterators to cancel iteration when possible. Connected to iterators with
      * Qt::DirectConnection (non blocking) */
     void cancelIterators();
 
@@ -187,7 +196,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     // Is 3D, has z coordinates
     bool mIs3d;
     // Vector layers
-    QList<QgsGrassVectorMapLayer*> mLayers;
+    QList<QgsGrassVectorMapLayer *> mLayers;
     // Number of lines in vector before editing started
     int mOldNumLines;
     // Original line ids of rewritten GRASS lines (new lid -> old lid)
@@ -195,7 +204,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     // Current line ids for old line ids (old lid -> new lid)
     QHash<int, int> mNewLids;
     // Hash of original lines' geometries of lines which were changed, keys are GRASS lid
-    QHash<int, QgsAbstractGeometry*> mOldGeometries;
+    QHash<int, QgsAbstractGeometry *> mOldGeometries;
     // Hash of original lines' geometries GRASS types of lines which were changed, keys are GRASS lid
     QHash<int, int> mOldTypes;
     // New categories attached to new features or old features without category
@@ -218,27 +227,28 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
 class GRASS_LIB_EXPORT QgsGrassVectorMapStore
 {
   public:
-    QgsGrassVectorMapStore();
+    QgsGrassVectorMapStore() = default;
 
     static QgsGrassVectorMapStore *instance();
 
     // Default instance may be overridden explicitly to avoid (temporarily) to share maps by providers
     // This is only used for editing test to have an independent map
-    static void setStore( QgsGrassVectorMapStore * store ) { sStore = store; }
+    static void setStore( QgsGrassVectorMapStore *store ) { sStore = store; }
 
-    /** Open map.
-     *  @param grassObject
-     *  @return map, the map may be invalide  */
-    QgsGrassVectorMap * openMap( const QgsGrassObject & grassObject );
+    /**
+     * Open map.
+     *  \param grassObject
+     *  \returns map, the map may be invalide  */
+    QgsGrassVectorMap *openMap( const QgsGrassObject &grassObject );
 
   private:
     //! Open vector maps
-    QList<QgsGrassVectorMap*> mMaps;
+    QList<QgsGrassVectorMap *> mMaps;
 
     // Lock open/close map
     QMutex mMutex;
 
-    static QgsGrassVectorMapStore * sStore;
+    static QgsGrassVectorMapStore *sStore;
 };
 
 #endif // QGSGRASSVECTORMAP_H

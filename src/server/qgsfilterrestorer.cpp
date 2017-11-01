@@ -26,10 +26,10 @@
 
 //! Apply filter from AccessControal
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-void QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( const QgsAccessControl* accessControl, QgsMapLayer* mapLayer,
-    QHash<QgsMapLayer*, QString>& originalLayerFilters )
+void QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( const QgsAccessControl *accessControl, QgsMapLayer *mapLayer,
+    QHash<QgsMapLayer *, QString> &originalLayerFilters )
 {
-  if ( QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( mapLayer ) )
+  if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer ) )
   {
     QString sql = accessControl->extraSubsetString( layer );
     if ( !sql.isEmpty() )
@@ -40,8 +40,32 @@ void QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( const QgsAccess
       }
       if ( !layer->subsetString().isEmpty() )
       {
-        sql.prepend( " AND " );
+        sql.prepend( ") AND (" );
+        sql.append( ")" );
         sql.prepend( layer->subsetString() );
+        sql.prepend( "(" );
+      }
+      if ( !layer->setSubsetString( sql ) )
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "Layer does not support Subset String" ) );
+      }
+    }
+  }
+}
+
+void QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( const QgsAccessControl *accessControl, QgsMapLayer *mapLayer )
+{
+  if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer ) )
+  {
+    QString sql = accessControl->extraSubsetString( layer );
+    if ( !sql.isEmpty() )
+    {
+      if ( !layer->subsetString().isEmpty() )
+      {
+        sql.prepend( ") AND (" );
+        sql.append( ")" );
+        sql.prepend( layer->subsetString() );
+        sql.prepend( "(" );
       }
       if ( !layer->setSubsetString( sql ) )
       {
@@ -53,18 +77,17 @@ void QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( const QgsAccess
 #endif
 
 //! Restore layer filter as original
-void QgsOWSServerFilterRestorer::restoreLayerFilters( const QHash<QgsMapLayer*, QString>& filterMap )
+void QgsOWSServerFilterRestorer::restoreLayerFilters( const QHash<QgsMapLayer *, QString> &filterMap )
 {
-  QHash<QgsMapLayer*, QString>::const_iterator filterIt = filterMap.constBegin();
+  QHash<QgsMapLayer *, QString>::const_iterator filterIt = filterMap.constBegin();
   for ( ; filterIt != filterMap.constEnd(); ++filterIt )
   {
-    QgsVectorLayer* filteredLayer = qobject_cast<QgsVectorLayer*>( filterIt.key() );
+    QgsVectorLayer *filteredLayer = qobject_cast<QgsVectorLayer *>( filterIt.key() );
     if ( filteredLayer )
     {
-      QgsVectorDataProvider* dp = filteredLayer->dataProvider();
-      if ( dp )
+      if ( !filteredLayer->setSubsetString( filterIt.value() ) )
       {
-        dp->setSubsetString( filterIt.value() );
+        QgsMessageLog::logMessage( QStringLiteral( "Layer does not support Subset String" ) );
       }
     }
   }

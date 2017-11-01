@@ -30,7 +30,8 @@
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
 class TestQgsRenderers : public QObject
@@ -38,13 +39,7 @@ class TestQgsRenderers : public QObject
     Q_OBJECT
 
   public:
-    TestQgsRenderers()
-        : mTestHasError( false )
-        , mMapSettings( 0 )
-        , mpPointsLayer( 0 )
-        , mpLinesLayer( 0 )
-        , mpPolysLayer( 0 )
-    {}
+    TestQgsRenderers() = default;
     ~TestQgsRenderers()
     {
       delete mMapSettings;
@@ -61,13 +56,13 @@ class TestQgsRenderers : public QObject
 //    void graduatedSymbol();
 //    void continuousSymbol();
   private:
-    bool mTestHasError;
-    bool setQml( const QString& theType ); //uniquevalue / continuous / single /
-    bool imageCheck( const QString& theType ); //as above
-    QgsMapSettings *mMapSettings;
-    QgsMapLayer * mpPointsLayer;
-    QgsMapLayer * mpLinesLayer;
-    QgsMapLayer * mpPolysLayer;
+    bool mTestHasError =  false ;
+    bool setQml( const QString &type ); //uniquevalue / continuous / single /
+    bool imageCheck( const QString &type ); //as above
+    QgsMapSettings *mMapSettings = nullptr;
+    QgsMapLayer *mpPointsLayer = nullptr;
+    QgsMapLayer *mpLinesLayer = nullptr;
+    QgsMapLayer *mpPolysLayer = nullptr;
     QString mTestDataDir;
     QString mReport;
 };
@@ -127,7 +122,7 @@ void TestQgsRenderers::initTestCase()
   // and is more light weight
   //
   mMapSettings->setLayers(
-    QList<QgsMapLayer*>() << mpPointsLayer << mpPolysLayer << mpLinesLayer );
+    QList<QgsMapLayer *>() << mpPointsLayer << mpPolysLayer << mpLinesLayer );
   mReport += QLatin1String( "<h1>Vector Renderer Tests</h1>\n" );
 }
 void TestQgsRenderers::cleanupTestCase()
@@ -156,7 +151,7 @@ void TestQgsRenderers::singleSymbol()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsRenderers::setQml( const QString& theType )
+bool TestQgsRenderers::setQml( const QString &type )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
@@ -165,7 +160,7 @@ bool TestQgsRenderers::setQml( const QString& theType )
   {
     return false;
   }
-  QString myFileName = mTestDataDir + "points_" + theType + "_symbol.qml";
+  QString myFileName = mTestDataDir + "points_" + type + "_symbol.qml";
   bool myStyleFlag = false;
   QString error = mpPointsLayer->loadNamedStyle( myFileName, myStyleFlag );
   if ( !myStyleFlag )
@@ -177,7 +172,7 @@ bool TestQgsRenderers::setQml( const QString& theType )
   {
     myStyleFlag = false; //ready for next test
   }
-  myFileName = mTestDataDir + "polys_" + theType + "_symbol.qml";
+  myFileName = mTestDataDir + "polys_" + type + "_symbol.qml";
   mpPolysLayer->loadNamedStyle( myFileName, myStyleFlag );
   if ( !myStyleFlag )
   {
@@ -187,12 +182,12 @@ bool TestQgsRenderers::setQml( const QString& theType )
   {
     myStyleFlag = false; //ready for next test
   }
-  myFileName = mTestDataDir + "lines_" + theType + "_symbol.qml";
+  myFileName = mTestDataDir + "lines_" + type + "_symbol.qml";
   mpLinesLayer->loadNamedStyle( myFileName, myStyleFlag );
   return myStyleFlag;
 }
 
-bool TestQgsRenderers::imageCheck( const QString& theTestType )
+bool TestQgsRenderers::imageCheck( const QString &testType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
@@ -205,10 +200,10 @@ bool TestQgsRenderers::imageCheck( const QString& theTestType )
   mMapSettings->setFlag( QgsMapSettings::ForceVectorOutput );
   mMapSettings->setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
-  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 15 );
-  bool myResultFlag = myChecker.runTest( theTestType, 200 );
+  bool myResultFlag = myChecker.runTest( testType, 200 );
   mReport += myChecker.report();
   return myResultFlag;
 }

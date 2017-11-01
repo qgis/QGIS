@@ -20,7 +20,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgscursors.h"
 #include "qgsapplication.h"
-#include <QSettings>
+#include "qgssettings.h"
+
 #include <QPushButton>
 #include <QMenu>
 #include <QToolButton>
@@ -30,19 +31,21 @@
 #include <QMouseEvent>
 #include <QInputDialog>
 
-QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColor& color )
-    : QDialog( parent, fl )
-    , mPreviousColor( color )
-    , mAllowAlpha( true )
+QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColor &color )
+  : QDialog( parent, fl )
+  , mPreviousColor( color )
 {
   setupUi( this );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsColorDialog::mButtonBox_accepted );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsColorDialog::mButtonBox_rejected );
+  connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsColorDialog::mButtonBox_clicked );
 
-  QSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ColorDialog/geometry" ) ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ColorDialog/geometry" ) ).toByteArray() );
 
   if ( mPreviousColor.isValid() )
   {
-    QPushButton* resetButton = new QPushButton( tr( "Reset" ) );
+    QPushButton *resetButton = new QPushButton( tr( "Reset" ) );
     mButtonBox->addButton( resetButton, QDialogButtonBox::ResetRole );
   }
 
@@ -52,10 +55,11 @@ QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColo
     mColorWidget->setPreviousColor( color );
   }
 
-  mColorWidget->setAllowAlpha( true );
+  mColorWidget->setAllowOpacity( true );
 
-  connect( mColorWidget, SIGNAL( currentColorChanged( QColor ) ), this, SIGNAL( currentColorChanged( QColor ) ) );
-  connect( this, SIGNAL( rejected() ), this, SLOT( discardColor() ) );
+  connect( mColorWidget, &QgsCompoundColorWidget::currentColorChanged, this, &QgsColorDialog::currentColorChanged );
+  connect( this, &QDialog::rejected, this, &QgsColorDialog::discardColor );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsColorDialog::showHelp );
 }
 
 QColor QgsColorDialog::color() const
@@ -63,32 +67,32 @@ QColor QgsColorDialog::color() const
   return mColorWidget->color();
 }
 
-void QgsColorDialog::setTitle( const QString& title )
+void QgsColorDialog::setTitle( const QString &title )
 {
   setWindowTitle( title.isEmpty() ? tr( "Select Color" ) : title );
 }
 
-void QgsColorDialog::setAllowAlpha( const bool allowAlpha )
+void QgsColorDialog::setAllowOpacity( const bool allowOpacity )
 {
-  mAllowAlpha = allowAlpha;
-  mColorWidget->setAllowAlpha( allowAlpha );
+  mAllowOpacity = allowOpacity;
+  mColorWidget->setAllowOpacity( allowOpacity );
 }
 
-QColor QgsColorDialog::getLiveColor( const QColor &initialColor, QObject *updateObject, const char *updateSlot, QWidget *parent, const QString &title, const bool allowAlpha )
+QColor QgsColorDialog::getLiveColor( const QColor &initialColor, QObject *updateObject, const char *updateSlot, QWidget *parent, const QString &title, const bool allowOpacity )
 {
   QColor returnColor( initialColor );
 
-  QSettings settings;
+  QgsSettings settings;
 
   //using native color dialogs?
-  bool useNative = settings.value( QStringLiteral( "/qgis/native_color_dialogs" ), false ).toBool();
+  bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
   if ( useNative )
   {
-    QColorDialog* liveDialog = new QColorDialog( initialColor, parent );
+    QColorDialog *liveDialog = new QColorDialog( initialColor, parent );
     liveDialog->setWindowTitle( title.isEmpty() ? tr( "Select Color" ) : title );
-    liveDialog->setOptions( allowAlpha ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
+    liveDialog->setOptions( allowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
 
-    connect( liveDialog, SIGNAL( currentColorChanged( const QColor& ) ),
+    connect( liveDialog, SIGNAL( currentColorChanged( const QColor & ) ),
              updateObject, updateSlot );
 
     if ( liveDialog->exec() )
@@ -99,14 +103,14 @@ QColor QgsColorDialog::getLiveColor( const QColor &initialColor, QObject *update
   }
   else
   {
-    QgsColorDialog* liveDialog = new QgsColorDialog( parent, 0, initialColor );
+    QgsColorDialog *liveDialog = new QgsColorDialog( parent, 0, initialColor );
     liveDialog->setWindowTitle( title.isEmpty() ? tr( "Select Color" ) : title );
-    if ( !allowAlpha )
+    if ( !allowOpacity )
     {
-      liveDialog->setAllowAlpha( false );
+      liveDialog->setAllowOpacity( false );
     }
 
-    connect( liveDialog, SIGNAL( currentColorChanged( const QColor& ) ),
+    connect( liveDialog, SIGNAL( currentColorChanged( const QColor & ) ),
              updateObject, updateSlot );
 
     if ( liveDialog->exec() )
@@ -119,22 +123,22 @@ QColor QgsColorDialog::getLiveColor( const QColor &initialColor, QObject *update
   return returnColor;
 }
 
-QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, const QString &title, const bool allowAlpha )
+QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, const QString &title, const bool allowOpacity )
 {
   QString dialogTitle = title.isEmpty() ? tr( "Select Color" ) : title;
 
-  QSettings settings;
+  QgsSettings settings;
   //using native color dialogs?
-  bool useNative = settings.value( QStringLiteral( "/qgis/native_color_dialogs" ), false ).toBool();
+  bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
   if ( useNative )
   {
-    return QColorDialog::getColor( initialColor, parent, dialogTitle, allowAlpha ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
+    return QColorDialog::getColor( initialColor, parent, dialogTitle, allowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
   }
   else
   {
-    QgsColorDialog* dialog = new QgsColorDialog( parent, 0, initialColor );
+    QgsColorDialog *dialog = new QgsColorDialog( parent, 0, initialColor );
     dialog->setWindowTitle( dialogTitle );
-    dialog->setAllowAlpha( allowAlpha );
+    dialog->setAllowOpacity( allowOpacity );
 
     QColor result;
     if ( dialog->exec() )
@@ -150,19 +154,19 @@ QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, co
   }
 }
 
-void QgsColorDialog::on_mButtonBox_accepted()
+void QgsColorDialog::mButtonBox_accepted()
 {
   saveSettings();
   accept();
 }
 
-void QgsColorDialog::on_mButtonBox_rejected()
+void QgsColorDialog::mButtonBox_rejected()
 {
   saveSettings();
   reject();
 }
 
-void QgsColorDialog::on_mButtonBox_clicked( QAbstractButton * button )
+void QgsColorDialog::mButtonBox_clicked( QAbstractButton *button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ResetRole && mPreviousColor.isValid() )
   {
@@ -177,8 +181,8 @@ void QgsColorDialog::discardColor()
 
 void QgsColorDialog::saveSettings()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ColorDialog/geometry" ), saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/ColorDialog/geometry" ), saveGeometry() );
 }
 
 void QgsColorDialog::setColor( const QColor &color )
@@ -189,7 +193,7 @@ void QgsColorDialog::setColor( const QColor &color )
   }
 
   QColor fixedColor = QColor( color );
-  if ( !mAllowAlpha )
+  if ( !mAllowOpacity )
   {
     //alpha disallowed, so don't permit transparent colors
     fixedColor.setAlpha( 255 );
@@ -203,4 +207,9 @@ void QgsColorDialog::closeEvent( QCloseEvent *e )
 {
   saveSettings();
   QDialog::closeEvent( e );
+}
+
+void QgsColorDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#color-selector" ) );
 }

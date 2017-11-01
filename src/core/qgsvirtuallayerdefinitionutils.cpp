@@ -21,7 +21,7 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsproject.h"
 #include "qgsvirtuallayerdefinition.h"
 
-QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVectorLayer* layer )
+QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVectorLayer *layer )
 {
   QgsVirtualLayerDefinition def;
 
@@ -48,16 +48,17 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
       def.setUid( uid );
     }
   }
-  Q_FOREACH ( const QgsField& f, layer->dataProvider()->fields() )
+  const QgsFields providerFields = layer->dataProvider()->fields();
+  for ( const auto &f : providerFields )
   {
     columns << "t." + f.name();
   }
 
   int joinIdx = 0;
-  Q_FOREACH ( const QgsVectorLayerJoinInfo& join, layer->vectorJoins() )
+  Q_FOREACH ( const QgsVectorLayerJoinInfo &join, layer->vectorJoins() )
   {
     QString joinName = QStringLiteral( "j%1" ).arg( ++joinIdx );
-    QgsVectorLayer* joinedLayer = join.joinLayer();
+    QgsVectorLayer *joinedLayer = join.joinLayer();
     if ( !joinedLayer )
       continue;
     QString prefix = join.prefix().isEmpty() ? joinedLayer->name() + "_" : join.prefix();
@@ -65,14 +66,15 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVe
     leftJoins << QStringLiteral( "LEFT JOIN %1 AS %2 ON t.\"%5\"=%2.\"%3\"" ).arg( joinedLayer->id(), joinName, join.joinFieldName(), join.targetFieldName() );
     if ( join.joinFieldNamesSubset() )
     {
-      Q_FOREACH ( const QString& f, *join.joinFieldNamesSubset() )
+      Q_FOREACH ( const QString &f, *join.joinFieldNamesSubset() )
       {
         columns << joinName + "." + f + " AS " + prefix + f;
       }
     }
     else
     {
-      Q_FOREACH ( const QgsField& f, joinedLayer->fields() )
+      const QgsFields joinFields = joinedLayer->fields();
+      for ( const QgsField &f : joinFields )
       {
         if ( f.name() == join.joinFieldName() )
           continue;

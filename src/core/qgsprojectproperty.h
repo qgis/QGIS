@@ -42,9 +42,9 @@ class QDomDocument;
  * contain either QgsProjectPropertyKey or QgsProjectPropertyValues, thus describing an
  * hierarchy.  QgsProjectPropertyValues are always graph leaves.
  *
- * @note This class is used internally by QgsProject. It's generally recommended that the methods in
+ * \note This class is used internally by QgsProject. It's generally recommended that the methods in
  * QgsProject are used to modify project properties rather than using these low-level classes.
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
 */
 class CORE_EXPORT QgsProjectProperty
 {
@@ -55,21 +55,21 @@ class CORE_EXPORT QgsProjectProperty
     /**
      * Dumps out the keys and values
      *
-     * @param tabs is number of tabs to print; used for pretty-printing hierarchy
+     * \param tabs is number of tabs to print; used for pretty-printing hierarchy
      */
     virtual void dump( int tabs = 0 ) const = 0;
 
     /**
      * Returns true if the property is a QgsProjectPropertyKey.
-     * @see isValue()
-     * @see isLeaf()
+     * \see isValue()
+     * \see isLeaf()
      */
     virtual bool isKey() const = 0;
 
     /**
      * Returns true if the property is a QgsProjectPropertyValue.
-     * @see isKey()
-     * @see isLeaf()
+     * \see isKey()
+     * \see isLeaf()
      */
     virtual bool isValue() const = 0;
 
@@ -88,20 +88,20 @@ class CORE_EXPORT QgsProjectProperty
      *
      * Used for restoring properties from project file
      */
-    virtual bool readXml( const QDomNode& keyNode ) = 0;
+    virtual bool readXml( const QDomNode &keyNode ) = 0;
 
     /**
      * Writes the property hierarchy to a specified DOM element.
      *
      * Used for saving properties to project file.
      *
-     * @param nodeName the tag name associated with this element
-     * @param element the parent (or encompassing) property element
-     * @param document the overall project file Dom document
+     * \param nodeName the tag name associated with this element
+     * \param element the parent (or encompassing) property element
+     * \param document the overall project file Dom document
      */
-    virtual bool writeXml( const QString& nodeName,
-                           QDomElement& element,
-                           QDomDocument& document ) = 0;
+    virtual bool writeXml( const QString &nodeName,
+                           QDomElement &element,
+                           QDomDocument &document ) = 0;
 
     /**
      * Returns the node's value.
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsProjectProperty
  * \class QgsProjectPropertyValue
  * \ingroup core
  * Project property value node, contains a QgsProjectPropertyKey's value.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
 */
 class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
 {
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
      * Constructor for QgsProjectPropertyValue, initialized to a specified value.
      */
     QgsProjectPropertyValue( const QVariant &value )
-        : mValue( value )
+      : mValue( value )
     {}
 
     virtual bool isKey() const override { return false; }
@@ -146,10 +146,10 @@ class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
     bool isLeaf() const override { return true; }
 
     void dump( int tabs = 0 ) const override;
-    bool readXml( const QDomNode& keyNode ) override;
-    bool writeXml( const QString& nodeName,
-                   QDomElement& element,
-                   QDomDocument& document ) override;
+    bool readXml( const QDomNode &keyNode ) override;
+    bool writeXml( const QString &nodeName,
+                   QDomElement &element,
+                   QDomDocument &document ) override;
 
   private:
 
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
  * QgsProjectPropertyKey will, in turn, have an element that maps to itself, i.e. "bar",
  * that will contain a QgsProjectPropertyValue.
  *
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
 */
 class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
 {
@@ -186,22 +186,22 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     /**
      * Create a new QgsProjectPropertyKey with the specified identifier.
      */
-    QgsProjectPropertyKey( const QString& name = QString() );
+    QgsProjectPropertyKey( const QString &name = QString() );
     virtual ~QgsProjectPropertyKey();
 
     /**
      * The name of the property is used as identifier.
-     * @see setName()
+     * \see setName()
      */
     QString name() const { return mName; }
 
     /**
      * The name of the property is used as identifier.
      *
-     * @note Added in QGIS 3.0
-     * @see name()
+     * \since QGIS 3.0
+     * \see name()
      */
-    void setName( const QString& name );
+    void setName( const QString &name );
 
     /**
      * If this key has a value, it will be stored by its name in its
@@ -212,12 +212,12 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     /**
      * Adds the specified property key as a sub-key.
      */
-    QgsProjectPropertyKey* addKey( const QString& keyName )
+    QgsProjectPropertyKey *addKey( const QString &keyName )
     {
       if ( mProperties.contains( keyName ) )
         delete mProperties.take( keyName );
 
-      QgsProjectPropertyKey* p = new QgsProjectPropertyKey( keyName );
+      QgsProjectPropertyKey *p = new QgsProjectPropertyKey( keyName );
       mProperties.insert( keyName, p );
 
       return p;
@@ -226,41 +226,42 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     /**
      * Removes the specified key.
      */
-    void removeKey( const QString & keyName )
+    void removeKey( const QString &keyName )
     {
       delete mProperties.take( keyName );
     }
 
     /**
      * Sets the value associated with this key.
-     * @param name is the key name
-     * @param value is the value to set
-     * @return pointer to property value
+     * \param name is the key name
+     * \param value is the value to set
+     * \returns pointer to property value
      */
-    QgsProjectPropertyValue* setValue( const QString & name, const QVariant & value )
+    QgsProjectPropertyValue *setValue( const QString &name, const QVariant &value )
     {
       if ( mProperties.contains( name ) )
         delete mProperties.take( name );
 
-      QgsProjectPropertyValue* p = new QgsProjectPropertyValue( value );
+      QgsProjectPropertyValue *p = new QgsProjectPropertyValue( value );
       mProperties.insert( name, p );
 
       return p;
     }
 
-    /** Set the value associated with this key
+    /**
+     * Set the value associated with this key
      *
-     * @note that the single value node associated with each key is always
+     * \note that the single value node associated with each key is always
      * stored keyed by the current key name
      */
-    QgsProjectPropertyValue * setValue( const QVariant & value )
+    QgsProjectPropertyValue *setValue( const QVariant &value )
     {
       return setValue( name(), value );
     }
 
     void dump( int tabs = 0 ) const override;
-    bool readXml( const QDomNode& keyNode ) override;
-    bool writeXml( const QString &nodeName, QDomElement & element, QDomDocument & document ) override;
+    bool readXml( const QDomNode &keyNode ) override;
+    bool writeXml( const QString &nodeName, QDomElement &element, QDomDocument &document ) override;
 
     /**
      * Returns the number of sub-keys contained by this property.
@@ -278,15 +279,15 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
 
     /**
      * Returns any sub-keys contained by this property that do not contain other keys.
-     * @see subkeyList()
+     * \see subkeyList()
      */
-    void entryList( QStringList & entries ) const;
+    void entryList( QStringList &entries ) const;
 
     /**
      * Return any sub-keys contained by this property which themselves contain other keys.
-     * @see entryList()
+     * \see entryList()
      */
-    void subkeyList( QStringList & entries ) const;
+    void subkeyList( QStringList &entries ) const;
 
     /**
      * Resets the property to a default, empty state.
@@ -309,7 +310,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     /**
      * Attempts to find a property with a matching sub-key name.
      */
-    QgsProjectProperty* find( const QString& propertyName ) const
+    QgsProjectProperty *find( const QString &propertyName ) const
     {
       return mProperties.value( propertyName );
     }
@@ -320,7 +321,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     QString mName;
 
     //! Sub-keys
-    QHash < QString, QgsProjectProperty* > mProperties;
+    QHash < QString, QgsProjectProperty * > mProperties;
 
 };
 

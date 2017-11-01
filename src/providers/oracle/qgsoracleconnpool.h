@@ -20,34 +20,34 @@
 #include "qgsoracleconn.h"
 
 
-inline QString qgsConnectionPool_ConnectionToName( QgsOracleConn* c )
+inline QString qgsConnectionPool_ConnectionToName( QgsOracleConn *c )
 {
   return c->connInfo();
 }
 
-inline void qgsConnectionPool_ConnectionCreate( const QgsDataSourceUri& uri, QgsOracleConn*& c )
+inline void qgsConnectionPool_ConnectionCreate( const QgsDataSourceUri &uri, QgsOracleConn *&c )
 {
   c = QgsOracleConn::connectDb( uri );
 }
 
-inline void qgsConnectionPool_ConnectionDestroy( QgsOracleConn* c )
+inline void qgsConnectionPool_ConnectionDestroy( QgsOracleConn *c )
 {
   c->disconnect(); // will delete itself
 }
 
-inline void qgsConnectionPool_InvalidateConnection( QgsOracleConn* c )
+inline void qgsConnectionPool_InvalidateConnection( QgsOracleConn *c )
 {
   Q_UNUSED( c );
 }
 
-inline bool qgsConnectionPool_ConnectionIsValid( QgsOracleConn* c )
+inline bool qgsConnectionPool_ConnectionIsValid( QgsOracleConn *c )
 {
   Q_UNUSED( c );
   return true;
 }
 
 
-class QgsOracleConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOracleConn*>
+class QgsOracleConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOracleConn *>
 {
     Q_OBJECT
 
@@ -65,10 +65,10 @@ class QgsOracleConnPoolGroup : public QObject, public QgsConnectionPoolGroup<Qgs
 };
 
 //! Oracle connection pool - singleton
-class QgsOracleConnPool : public QgsConnectionPool<QgsOracleConn*, QgsOracleConnPoolGroup>
+class QgsOracleConnPool : public QgsConnectionPool<QgsOracleConn *, QgsOracleConnPoolGroup>
 {
   public:
-    static QgsOracleConnPool* instance();
+    static QgsOracleConnPool *instance();
 
     static void cleanupInstance();
 
@@ -79,7 +79,7 @@ class QgsOracleConnPool : public QgsConnectionPool<QgsOracleConn*, QgsOracleConn
     QgsOracleConnPool();
     ~QgsOracleConnPool();
 
-    static QgsOracleConnPool* sInstance;
+    static QgsOracleConnPool *sInstance;
 };
 
 

@@ -25,13 +25,9 @@
 #include <QMessageBox>
 
 
-QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode )
-    : QgsSourceSelectDialog( QStringLiteral( "ArcGisMapServer" ), QgsSourceSelectDialog::MapService, parent, fl )
+QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+  : QgsArcGisServiceSourceSelect( QStringLiteral( "ArcGisMapServer" ), QgsArcGisServiceSourceSelect::MapService, parent, fl, widgetMode )
 {
-  if ( embeddedMode )
-  {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
-  }
 
   // import/export of connections not supported yet
   btnLoad->hide();
@@ -51,7 +47,7 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
   populateImageEncodings( serviceInfoMap[QStringLiteral( "supportedImageFormatTypes" )].toString().split( QStringLiteral( "," ) ) );
 
   QStringList layerErrors;
-  foreach ( const QVariant& layerInfo, serviceInfoMap["layers"].toList() )
+  foreach ( const QVariant &layerInfo, serviceInfoMap["layers"].toList() )
   {
     QVariantMap layerInfoMap = layerInfo.toMap();
     if ( !layerInfoMap[QStringLiteral( "id" )].isValid() )
@@ -67,9 +63,9 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
       continue;
     }
     // insert the typenames, titles and abstracts into the tree view
-    QStandardItem* idItem = new QStandardItem( layerData[QStringLiteral( "id" )].toString() );
-    QStandardItem* nameItem = new QStandardItem( layerData[QStringLiteral( "name" )].toString() );
-    QStandardItem* abstractItem = new QStandardItem( layerData[QStringLiteral( "description" )].toString() );
+    QStandardItem *idItem = new QStandardItem( layerData[QStringLiteral( "id" )].toString() );
+    QStandardItem *nameItem = new QStandardItem( layerData[QStringLiteral( "name" )].toString() );
+    QStandardItem *abstractItem = new QStandardItem( layerData[QStringLiteral( "description" )].toString() );
     abstractItem->setToolTip( layerData[QStringLiteral( "description" )].toString() );
 
     QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::parseSpatialReference( serviceInfoMap[QStringLiteral( "spatialReference" )].toMap() );
@@ -80,7 +76,7 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
     }
     mAvailableCRS[layerData[QStringLiteral( "name" )].toString()] = QList<QString>()  << crs.authid();
 
-    mModel->appendRow( QList<QStandardItem*>() << idItem << nameItem << abstractItem );
+    mModel->appendRow( QList<QStandardItem *>() << idItem << nameItem << abstractItem );
   }
   if ( !layerErrors.isEmpty() )
   {
@@ -89,15 +85,20 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
   return true;
 }
 
-QString QgsAmsSourceSelect::getLayerURI( const QgsOwsConnection& connection,
-    const QString& layerTitle, const QString& /*layerName*/,
-    const QString& crs,
-    const QString& /*filter*/,
-    const QgsRectangle& /*bBox*/ ) const
+QString QgsAmsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
+    const QString &layerTitle, const QString & /*layerName*/,
+    const QString &crs,
+    const QString & /*filter*/,
+    const QgsRectangle & /*bBox*/ ) const
 {
   QgsDataSourceUri ds = connection.uri();
   ds.setParam( QStringLiteral( "layer" ), layerTitle );
   ds.setParam( QStringLiteral( "crs" ), crs );
   ds.setParam( QStringLiteral( "format" ), getSelectedImageEncoding() );
   return ds.uri();
+}
+
+void QgsAmsSourceSelect::addServiceLayer( QString uri, QString typeName )
+{
+  emit addRasterLayer( uri, typeName, QStringLiteral( "arcgismapserver" ) );
 }

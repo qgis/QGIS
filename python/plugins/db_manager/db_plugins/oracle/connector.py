@@ -35,6 +35,8 @@ from qgis.core import Qgis, QgsApplication, NULL, QgsWkbTypes
 from . import QtSqlDB
 import sqlite3
 
+from functools import cmp_to_key
+
 
 def classFactory():
     if QSqlDatabase.isDriverAvailable("QOCISPATIAL"):
@@ -473,16 +475,16 @@ class OracleDBConnector(DBConnector):
 
     def singleGeomTypes(self, geomtypes, srids):
         """Intelligent wkbtype grouping (multi with non multi)"""
-        if (QgsWkbTypes.Polygon in geomtypes
-                and QgsWkbTypes.MultiPolygon in geomtypes):
+        if (QgsWkbTypes.Polygon in geomtypes and
+                QgsWkbTypes.MultiPolygon in geomtypes):
             srids.pop(geomtypes.index(QgsWkbTypes.Polygon))
             geomtypes.pop(geomtypes.index(QgsWkbTypes.Polygon))
-        if (QgsWkbTypes.Point in geomtypes
-                and QgsWkbTypes.MultiPoint in geomtypes):
+        if (QgsWkbTypes.Point in geomtypes and
+                QgsWkbTypes.MultiPoint in geomtypes):
             srids.pop(geomtypes.index(QgsWkbTypes.Point))
             geomtypes.pop(geomtypes.index(QgsWkbTypes.Point))
-        if (QgsWkbTypes.LineString in geomtypes
-                and QgsWkbTypes.MultiLineString in geomtypes):
+        if (QgsWkbTypes.LineString in geomtypes and
+                QgsWkbTypes.MultiLineString in geomtypes):
             srids.pop(geomtypes.index(QgsWkbTypes.LineString))
             geomtypes.pop(geomtypes.index(QgsWkbTypes.LineString))
         if QgsWkbTypes.Unknown in geomtypes and len(geomtypes) > 1:
@@ -717,7 +719,7 @@ class OracleDBConnector(DBConnector):
         res = self._fetchall(c)
         c.close()
 
-        # Analyse return values
+        # Analyze return values
         if not res:
             return False
         else:
@@ -1431,8 +1433,8 @@ class OracleDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         if not (self.getRawTablePrivileges('USER_SDO_GEOM_METADATA',
                                            'MDSYS',
-                                           'PUBLIC')[3]
-                and schema == self.user):
+                                           'PUBLIC')[3] and
+                schema == self.user):
             return False
 
         where = u"WHERE TABLE_NAME = {}".format(self.quoteString(tablename))
@@ -1451,8 +1453,8 @@ class OracleDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         if not (self.getRawTablePrivileges('USER_SDO_GEOM_METADATA',
                                            'MDSYS',
-                                           'PUBLIC')[2]
-                and schema == self.user):
+                                           'PUBLIC')[2] and
+                schema == self.user):
             return False
 
         where = u"WHERE TABLE_NAME = {}".format(self.quoteString(tablename))
@@ -1501,8 +1503,8 @@ class OracleDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         if not (self.getRawTablePrivileges('USER_SDO_GEOM_METADATA',
                                            'MDSYS',
-                                           'PUBLIC')[1]
-                and schema == self.user):
+                                           'PUBLIC')[1] and
+                schema == self.user):
             return False
 
         # in Metadata view, geographic column is always in uppercase
@@ -1696,12 +1698,11 @@ class OracleDBConnector(DBConnector):
             if self.userTablesOnly:
                 sql = u"""
                 SELECT DISTINCT tablename
-                FROM "oracle_{0}" WHERE ownername = '{1}'
+                FROM "oracle_{conn}" WHERE ownername = '{user}'
                 UNION
                 SELECT DISTINCT ownername
-                FROM "oracle_{0}" WHERE ownername = '{1}'
-                """.format(self.connName, self.user, self.connName,
-                           self.user)
+                FROM "oracle_{conn}" WHERE ownername = '{user}'
+                """.format(conn=self.connName, user=self.user)
 
             c = self.cache_connection.cursor()
             c.execute(sql)

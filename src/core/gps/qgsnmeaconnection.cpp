@@ -31,13 +31,8 @@
 
 #define KNOTS_TO_KMH 1.852
 
-QgsNMEAConnection::QgsNMEAConnection( QIODevice* dev ): QgsGPSConnection( dev )
+QgsNMEAConnection::QgsNMEAConnection( QIODevice *dev ): QgsGPSConnection( dev )
 {
-}
-
-QgsNMEAConnection::~QgsNMEAConnection()
-{
-  //connection will be closed by base class
 }
 
 void QgsNMEAConnection::parseData()
@@ -79,7 +74,7 @@ void QgsNMEAConnection::processStringBuffer()
   int endSentenceIndex = 0;
   int dollarIndex;
 
-  while (( endSentenceIndex = mStringBuffer.indexOf( QLatin1String( "\r\n" ) ) ) && endSentenceIndex != -1 )
+  while ( ( endSentenceIndex = mStringBuffer.indexOf( QLatin1String( "\r\n" ) ) ) && endSentenceIndex != -1 )
   {
     endSentenceIndex = mStringBuffer.indexOf( QLatin1String( "\r\n" ) );
 
@@ -138,7 +133,7 @@ void QgsNMEAConnection::processStringBuffer()
   }
 }
 
-void QgsNMEAConnection::processGGASentence( const char* data, int len )
+void QgsNMEAConnection::processGGASentence( const char *data, int len )
 {
   nmeaGPGGA result;
   if ( nmea_parse_GPGGA( data, len, &result ) )
@@ -163,7 +158,7 @@ void QgsNMEAConnection::processGGASentence( const char* data, int len )
   }
 }
 
-void QgsNMEAConnection::processRMCSentence( const char* data, int len )
+void QgsNMEAConnection::processRMCSentence( const char *data, int len )
 {
   nmeaGPRMC result;
   if ( nmea_parse_GPRMC( data, len, &result ) )
@@ -200,7 +195,7 @@ void QgsNMEAConnection::processRMCSentence( const char* data, int len )
   }
 }
 
-void QgsNMEAConnection::processGSVSentence( const char* data, int len )
+void QgsNMEAConnection::processGSVSentence( const char *data, int len )
 {
   nmeaGPGSV result;
   if ( nmea_parse_GPGSV( data, len, &result ) )
@@ -229,7 +224,7 @@ void QgsNMEAConnection::processGSVSentence( const char* data, int len )
   }
 }
 
-void QgsNMEAConnection::processVTGSentence( const char* data, int len )
+void QgsNMEAConnection::processVTGSentence( const char *data, int len )
 {
   nmeaGPVTG result;
   if ( nmea_parse_GPVTG( data, len, &result ) )
@@ -238,7 +233,7 @@ void QgsNMEAConnection::processVTGSentence( const char* data, int len )
   }
 }
 
-void QgsNMEAConnection::processGSASentence( const char* data, int len )
+void QgsNMEAConnection::processGSASentence( const char *data, int len )
 {
   nmeaGPGSA result;
   if ( nmea_parse_GPGSA( data, len, &result ) )

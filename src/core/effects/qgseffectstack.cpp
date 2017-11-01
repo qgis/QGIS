@@ -20,14 +20,8 @@
 #include "qgsrendercontext.h"
 #include <QPicture>
 
-QgsEffectStack::QgsEffectStack()
-    : QgsPaintEffect()
-{
-
-}
-
 QgsEffectStack::QgsEffectStack( const QgsEffectStack &other )
-    : QgsPaintEffect( other )
+  : QgsPaintEffect( other )
 {
   //deep copy
   for ( int i = 0; i < other.count(); ++i )
@@ -37,7 +31,6 @@ QgsEffectStack::QgsEffectStack( const QgsEffectStack &other )
 }
 
 QgsEffectStack::QgsEffectStack( const QgsPaintEffect &effect )
-    : QgsPaintEffect()
 {
   appendEffect( effect.clone() );
 }
@@ -47,7 +40,7 @@ QgsEffectStack::~QgsEffectStack()
   clearStack();
 }
 
-QgsEffectStack &QgsEffectStack::operator=( const QgsEffectStack & rhs )
+QgsEffectStack &QgsEffectStack::operator=( const QgsEffectStack &rhs )
 {
   if ( &rhs == this )
     return *this;
@@ -64,30 +57,30 @@ QgsEffectStack &QgsEffectStack::operator=( const QgsEffectStack & rhs )
 
 QgsPaintEffect *QgsEffectStack::create( const QgsStringMap &map )
 {
-  QgsEffectStack* effect = new QgsEffectStack();
+  QgsEffectStack *effect = new QgsEffectStack();
   effect->readProperties( map );
   return effect;
 }
 
 void QgsEffectStack::draw( QgsRenderContext &context )
 {
-  QPainter* destPainter = context.painter();
+  QPainter *destPainter = context.painter();
 
   //first, we build up a list of rendered effects
   //we do this moving backwards through the stack, so that each effect's results
   //becomes the source of the previous effect
-  QPicture* sourcePic = new QPicture( *source() );
-  QPicture* currentPic = sourcePic;
-  QList< QPicture* > results;
+  QPicture *sourcePic = new QPicture( *source() );
+  QPicture *currentPic = sourcePic;
+  QList< QPicture * > results;
   for ( int i = mEffectList.count() - 1; i >= 0; --i )
   {
-    QgsPaintEffect* effect = mEffectList.at( i );
+    QgsPaintEffect *effect = mEffectList.at( i );
     if ( !effect->enabled() )
     {
       continue;
     }
 
-    QPicture* pic;
+    QPicture *pic = nullptr;
     if ( effect->type() == QLatin1String( "drawSource" ) )
     {
       //draw source is always the original source, regardless of previous effect results
@@ -126,7 +119,7 @@ void QgsEffectStack::draw( QgsRenderContext &context )
       continue;
     }
 
-    QPicture* pic = results.takeLast();
+    QPicture *pic = results.takeLast();
     if ( mEffectList.at( i )->drawMode() != QgsPaintEffect::Modifier )
     {
       context.painter()->save();
@@ -139,7 +132,7 @@ void QgsEffectStack::draw( QgsRenderContext &context )
   }
 }
 
-QgsEffectStack* QgsEffectStack::clone() const
+QgsEffectStack *QgsEffectStack::clone() const
 {
   return new QgsEffectStack( *this );
 }
@@ -157,7 +150,7 @@ bool QgsEffectStack::saveProperties( QDomDocument &doc, QDomElement &element ) c
   effectElement.setAttribute( QStringLiteral( "enabled" ), mEnabled );
 
   bool ok = true;
-  Q_FOREACH ( QgsPaintEffect* effect, mEffectList )
+  for ( QgsPaintEffect *effect : mEffectList )
   {
     if ( effect )
       ok = ok && effect->saveProperties( doc, effectElement );
@@ -183,7 +176,7 @@ bool QgsEffectStack::readProperties( const QDomElement &element )
   for ( int i = 0; i < childNodes.size(); ++i )
   {
     QDomElement childElement = childNodes.at( i ).toElement();
-    QgsPaintEffect* effect = QgsApplication::paintEffectRegistry()->createEffect( childElement );
+    QgsPaintEffect *effect = QgsApplication::paintEffectRegistry()->createEffect( childElement );
     if ( effect )
       mEffectList << effect;
   }

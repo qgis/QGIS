@@ -18,17 +18,17 @@
 
 
 QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent )
-    : QComboBox( parent )
+  : QComboBox( parent )
 {
   mProxyModel = new QgsMapLayerProxyModel( this );
   setModel( mProxyModel );
 
-  connect( this, SIGNAL( activated( int ) ), this, SLOT( indexChanged( int ) ) );
-  connect( mProxyModel, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
-  connect( mProxyModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
+  connect( this, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsMapLayerComboBox::indexChanged );
+  connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, &QgsMapLayerComboBox::rowsChanged );
+  connect( mProxyModel, &QAbstractItemModel::rowsRemoved, this, &QgsMapLayerComboBox::rowsChanged );
 }
 
-void QgsMapLayerComboBox::setExcludedProviders( const QStringList& providers )
+void QgsMapLayerComboBox::setExcludedProviders( const QStringList &providers )
 {
   mProxyModel->setExcludedProviders( providers );
 }
@@ -58,7 +58,7 @@ bool QgsMapLayerComboBox::showCrs() const
   return mProxyModel->sourceLayerModel()->showCrs();
 }
 
-void QgsMapLayerComboBox::setAdditionalItems( const QStringList& items )
+void QgsMapLayerComboBox::setAdditionalItems( const QStringList &items )
 {
   mProxyModel->sourceLayerModel()->setAdditionalItems( items );
 }
@@ -91,7 +91,7 @@ void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
   emit layerChanged( currentLayer() );
 }
 
-QgsMapLayer* QgsMapLayerComboBox::currentLayer() const
+QgsMapLayer *QgsMapLayerComboBox::currentLayer() const
 {
   return layer( currentIndex() );
 }
@@ -110,7 +110,7 @@ QgsMapLayer *QgsMapLayerComboBox::layer( int layerIndex ) const
     return nullptr;
   }
 
-  QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
+  QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
   if ( layer )
   {
     return layer;
@@ -121,7 +121,7 @@ QgsMapLayer *QgsMapLayerComboBox::layer( int layerIndex ) const
 void QgsMapLayerComboBox::indexChanged( int i )
 {
   Q_UNUSED( i );
-  QgsMapLayer* layer = currentLayer();
+  QgsMapLayer *layer = currentLayer();
   emit layerChanged( layer );
 }
 
