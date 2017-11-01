@@ -101,7 +101,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
      * Thread local proj context storage. A new proj context will be created
      * for every thread.
      */
-    static QThreadStorage< QgsProjContextStore* > mProjContext;
+    static QThreadStorage< QgsProjContextStore * > mProjContext;
 
     QReadWriteLock mProjLock;
     QMap < uintptr_t, QPair< projPJ, projPJ > > mProjProjections;
