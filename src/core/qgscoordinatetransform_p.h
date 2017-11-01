@@ -31,6 +31,7 @@
 //
 
 #include <QSharedData>
+#include <QThreadStorage>
 #include "qgscoordinatereferencesystem.h"
 
 typedef void *projPJ;
@@ -100,7 +101,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
      * Thread local proj context storage. A new proj context will be created
      * for every thread.
      */
-    static thread_local QgsProjContextStore mProjContext;
+    static QThreadStorage< QgsProjContextStore* > mProjContext;
 
     QReadWriteLock mProjLock;
     QMap < uintptr_t, QPair< projPJ, projPJ > > mProjProjections;
