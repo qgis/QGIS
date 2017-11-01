@@ -100,7 +100,6 @@ QgsSearchWidgetWrapper::FilterFlags QgsSearchWidgetWrapper::defaultFlags() const
   return FilterFlags();
 }
 
-
 void QgsSearchWidgetWrapper::setFeature( const QgsFeature &feature )
 {
   Q_UNUSED( feature )

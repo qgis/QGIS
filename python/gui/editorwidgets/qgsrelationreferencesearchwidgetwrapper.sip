@@ -40,7 +40,7 @@ class QgsRelationReferenceSearchWidgetWrapper : QgsSearchWidgetWrapper
 
     virtual bool applyDirectly();
 
-    virtual QString expression();
+    virtual QString expression() const;
 
     virtual bool valid() const;
 
@@ -69,7 +69,7 @@ Called when current value of search widget changes
 %End
 
   protected slots:
-    virtual void setExpression( QString exp );
+    virtual void setExpression( const QString &exp );
 
 
 };

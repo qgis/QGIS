@@ -40,7 +40,7 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
   public:
     explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
     bool applyDirectly() override;
-    QString expression() override;
+    QString expression() const override;
     bool valid() const override;
     QVariant value() const;
     QgsSearchWidgetWrapper::FilterFlags supportedFlags() const override;
@@ -59,7 +59,7 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
     //! Called when current value of search widget changes
     void onValueChanged();
 
-    void setExpression( QString exp ) override;
+    void setExpression( const QString &exp ) override;
 
   private:
     QComboBox *mComboBox = nullptr;
