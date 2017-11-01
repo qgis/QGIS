@@ -26,7 +26,6 @@
 
 from qgis.PyQt.QtCore import QByteArray
 from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
-from qgis.core import QgsSettings
 
 from .ui_qgsplugininstallerfetchingbase import Ui_QgsPluginInstallerFetchingDialogBase
 from .installer_data import repositories
@@ -53,14 +52,6 @@ class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDia
         self.treeWidget.resizeColumnToContents(0)
         repositories.repositoryFetched.connect(self.repositoryFetched)
         repositories.anythingChanged.connect(self.displayState)
-
-        settings = QgsSettings()
-        self.restoreGeometry(settings.value("/Qgis/plugin-installer/fetching_geometry", QByteArray()))
-
-    def closeEvent(self, event):
-        settings = QgsSettings()
-        settings.setValue("/Qgis/plugin-installer/fetching_geometry", self.saveGeometry())
-        super(QgsPluginInstallerFetchingDialog, self).closeEvent(event)
 
     # ----------------------------------------- #
     def displayState(self, key, state, state2=None):
