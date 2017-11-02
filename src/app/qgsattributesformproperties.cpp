@@ -118,8 +118,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
 }
 
 
-void QgsAttributesFormProperties::storeAttributeTypeDialog()
-{
+void QgsAttributesFormProperties::storeAttributeTypeDialog(){
   FieldConfig cfg;
 
   cfg.mEditable = mAttributeTypeDialog->fieldEditable();
@@ -194,8 +193,17 @@ void QgsAttributesFormProperties::loadAttributeRelationEdit()
     RelationConfig cfg = currentItem->data( 0, RelationConfigRole ).value<RelationConfig>();
 
     mAttributeRelationEdit = new QgsAttributeRelationEdit( currentItem->data( 0, FieldNameRole ).toString(), mAttributeTypeFrame );
-    mAttributeRelationEdit->setCardinalityCombo( "testoption 1" );
-    mAttributeRelationEdit->setCardinalityCombo( "testoption 2" );
+
+    mAttributeRelationEdit->setCardinalityCombo( tr( "Many to one relation" ) );
+
+    QgsRelation relation = QgsProject::instance()->relationManager()->relation( currentItem->data( 0, FieldNameRole ).toString() );
+
+    Q_FOREACH ( const QgsRelation &nmrel, QgsProject::instance()->relationManager()->referencingRelations( relation.referencingLayer() ) )
+    {
+      if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
+       mAttributeRelationEdit->setCardinalityCombo( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
+    }
+
     mAttributeRelationEdit->setCardinality( cfg.mCardinality );
 
     mAttributeRelationEdit->layout()->setMargin( 0 );
@@ -501,14 +509,9 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
 
 void QgsAttributesFormProperties::apply()
 {
-  if ( mAttributeTypeDialog )
-  {
-    storeAttributeTypeDialog();
-  }
-  else
-  {
-    storeAttributeRelationEdit();
-  }
+
+  storeAttributeTypeDialog();
+  storeAttributeRelationEdit();
 
   QgsEditFormConfig editFormConfig = mLayer->editFormConfig();
 

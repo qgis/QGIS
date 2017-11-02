@@ -45,7 +45,7 @@ class APP_EXPORT QgsAttributeRelationEdit: public QWidget, private Ui::QgsAttrib
     /**
      * Setter for combo cardinality item
      */
-    void setCardinalityCombo( const QString &cardinalityComboItem );
+    void setCardinalityCombo( const QString &cardinalityComboItem, const QVariant &auserData = QVariant()  );
 
     /**
      * Setter for combo cardinality

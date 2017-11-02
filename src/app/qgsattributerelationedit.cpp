@@ -12,9 +12,9 @@ QgsAttributeRelationEdit::~QgsAttributeRelationEdit()
 {
 }
 
-void QgsAttributeRelationEdit::setCardinalityCombo( const QString &cardinalityComboItem )
+void QgsAttributeRelationEdit::setCardinalityCombo( const QString &cardinalityComboItem, const QVariant &auserData )
 {
-  coCardinality->addItem( cardinalityComboItem );
+  coCardinality->addItem( cardinalityComboItem, auserData );
 }
 
 void QgsAttributeRelationEdit::setCardinality( const QString &cardinality )
