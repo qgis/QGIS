@@ -11,6 +11,13 @@
 
 class QgsAttributeFormWidget : QWidget /Abstract/
 {
+%Docstring
+
+ Base class for all widgets shown on a QgsAttributeForm.
+ Consists of the widget which is visible in edit mode as well as the widget visible in search mode.
+
+.. versionadded:: 3.2
+%End
 
 %TypeHeaderCode
 #include "qgsattributeformwidget.h"
@@ -61,11 +68,13 @@ class QgsAttributeFormWidget : QWidget /Abstract/
 
     QgsVectorLayer *layer();
 %Docstring
+ The layer for which this widget and its form is shown.
  :rtype: QgsVectorLayer
 %End
 
     QgsAttributeForm *form() const;
 %Docstring
+ The form on which this widget is shown.
  :rtype: QgsAttributeForm
 %End
 
@@ -108,15 +117,7 @@ class QgsAttributeFormWidget : QWidget /Abstract/
 
 
 
-    QgsSearchWidgetToolButton *searchWidgetToolButton();
-%Docstring
- Returns a pointer to the search widget tool button in the widget.
-.. note::
 
-   this method is in place for unit testing only, and is not considered
- stable API
- :rtype: QgsSearchWidgetToolButton
-%End
 
 };
 

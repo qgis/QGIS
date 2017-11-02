@@ -22,25 +22,65 @@
 #include "qgsaggregatecalculator.h"
 #include "qgis_gui.h"
 
+/**
+ * \ingroup gui
+ *
+ * Offers a toolbutton to choose between different aggregate functions.
+ * Functions are filtered based on the type.
+ *
+ * \since QGIS 3.2
+ */
 class GUI_EXPORT QgsAggregateToolButton : public QToolButton
 {
     Q_OBJECT
 
   public:
+
+    /**
+     * Constructor
+     */
     QgsAggregateToolButton();
 
+    /**
+     * Based on the \a type of underlying data, some aggregates will be available or not.
+     */
     void setType( QVariant::Type type );
 
+    /**
+     * Based on the \a type of underlying data, some aggregates will be available or not.
+     */
     QVariant::Type type() const;
 
+    /**
+     * When this flag is false, the aggregate will be deactivated. I.e. no aggregate is chosen.
+     */
     void setActive( bool active );
+
+    /**
+     * When this flag is false, the aggregate will be deactivated. I.e. no aggregate is chosen.
+     */
     bool active() const;
 
+    /**
+     * The function name of the selected aggregate or a Null String if none is chosen.
+     */
     QString aggregate() const;
+
+    /**
+     * The function name of the selected aggregate or a Null String if none is chosen.
+     */
     void setAggregate( const QString &aggregate );
 
   signals:
+
+    /**
+     * The function name of the selected aggregate has changed.
+     */
     void aggregateChanged();
+
+    /**
+     * A function has been selected or unselected.
+     */
     void activeChanged();
 
   private slots:

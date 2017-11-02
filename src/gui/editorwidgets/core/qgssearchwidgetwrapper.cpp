@@ -119,16 +119,6 @@ void QgsSearchWidgetWrapper::clearExpression()
   mExpression = QStringLiteral( "TRUE" );
 }
 
-QgsRelation QgsSearchWidgetWrapper::aggregateRelation() const
-{
-  return mAggregateRelation;
-}
-
-void QgsSearchWidgetWrapper::setAggregateRelation( const QgsRelation &aggregateRelation )
-{
-  mAggregateRelation = aggregateRelation;
-}
-
 QString QgsSearchWidgetWrapper::aggregate() const
 {
   return mAggregate;

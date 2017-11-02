@@ -27,6 +27,7 @@ QgsAttributeFormRelationEditorWidget::QgsAttributeFormRelationEditorWidget( QgsR
 
 void QgsAttributeFormRelationEditorWidget::createSearchWidgetWrappers( const QgsAttributeEditorContext &context )
 {
+  Q_UNUSED( context )
   mSearchWidget = new QgsRelationAggregateSearchWidgetWrapper( layer(), mWrapper, form() );
 
   setSearchWidgetWrapper( mSearchWidget );

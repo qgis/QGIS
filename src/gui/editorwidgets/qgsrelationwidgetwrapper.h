@@ -79,6 +79,11 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      */
     void setShowUnlinkButton( bool showUnlinkButton );
 
+    /**
+     * The relation for which this wrapper is created.
+     *
+     * \since QGIS 3.2
+     */
     QgsRelation relation() const;
 
   protected:

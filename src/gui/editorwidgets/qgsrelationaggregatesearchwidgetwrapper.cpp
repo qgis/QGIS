@@ -17,6 +17,7 @@
 #include "qgsrelationaggregatesearchwidgetwrapper.h"
 #include "qgsattributeform.h"
 #include "qgsrelationwidgetwrapper.h"
+#include "qgslogger.h"
 
 #include <QLabel>
 
@@ -57,5 +58,6 @@ bool QgsRelationAggregateSearchWidgetWrapper::applyDirectly()
 
 void QgsRelationAggregateSearchWidgetWrapper::setExpression( const QString &value )
 {
-
+  Q_UNUSED( value )
+  QgsDebugMsg( "Not supported" );
 }
