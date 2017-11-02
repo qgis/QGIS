@@ -25,7 +25,7 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout">
+  <layout class="QGridLayout" name="grLayout1">
    <property name="leftMargin">
     <number>9</number>
    </property>
@@ -95,7 +95,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Type</string>
+         <string>&amp;Type</string>
         </property>
         <property name="buddy">
          <cstring>cmbDatabaseTypes</cstring>
@@ -125,7 +125,7 @@
       <item row="3" column="0">
        <widget class="QLabel" name="TextLabel2">
         <property name="text">
-         <string>Database</string>
+         <string>&amp;Database</string>
         </property>
         <property name="buddy">
          <cstring>txtDatabase</cstring>

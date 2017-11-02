@@ -48,7 +48,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   , mFilterFidsIt( mFilterFids.constBegin() )
 {
   //QgsDebugMsg( "Feature iterator of " + mSource->mLayerName + ": acquiring connection");
-  mConn = QgsOgrConnPool::instance()->acquireConnection( QgsOgrProviderUtils::connectionPoolId( mSource->mDataSource ) );
+  mConn = QgsOgrConnPool::instance()->acquireConnection( mSource->mDataSource );
   if ( !mConn->ds )
   {
     return;
@@ -422,7 +422,7 @@ bool QgsOgrFeatureIterator::readFeature( gdal::ogr_feature_unique_ptr fet, QgsFe
 
 
 QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
-  : mDataSource( p->dataSourceUri() )
+  : mDataSource( QgsOgrProviderUtils::expandAuthConfig( p->dataSourceUri() ) )
   , mLayerName( p->layerName() )
   , mLayerIndex( p->layerIndex() )
   , mSubsetString( p->mSubsetString )

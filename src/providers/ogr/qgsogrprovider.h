@@ -325,6 +325,10 @@ class QgsOgrProviderUtils
     static bool canUseOpenedDatasets( const QString &dsName );
 
   public:
+
+    //! Inject credentials into the dsName (if any)
+    static QString expandAuthConfig( const QString &dsName );
+
     static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes, bool firstAttrIsFid );
     static OGRLayerH setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString, bool &origFidAdded );
     static QByteArray quotedIdentifier( QByteArray field, const QString &driverName );
