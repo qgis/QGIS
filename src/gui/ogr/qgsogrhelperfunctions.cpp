@@ -18,11 +18,30 @@
 
 #include "qgsogrhelperfunctions.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include <QRegExp>
 
-QString createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &user, const QString &password )
+QString createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &configId, QString username,  QString password )
 {
   QString uri;
+
+  // If an auth configuration is set, override username and password
+  // Note that only Basic auth (username/password) is for now supported for OGR connections
+  if ( ! configId.isEmpty() )
+  {
+    // Pass to updateDataSourceUriItems empty user/password in the format it likes
+    QStringList connectionItems;
+    connectionItems << QStringLiteral( "user=''" ) <<  QStringLiteral( "password=''" );
+    if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, QStringLiteral( "ogr" ) ) )
+    {
+      QRegExp userRe( "^user='([^']+)'" );
+      QRegExp passRe( "^password='([^']+)'" );
+      // Extracts the username and password
+      username = QString( connectionItems.at( 0 ) ).replace( userRe, "\\1" );
+      password = QString( connectionItems.at( 1 ) ).replace( passRe, "\\1" );
+    }
+  }
 
   //todo:add default ports for all kind of databases
   if ( connectionType == QLatin1String( "ESRI Personal GeoDatabase" ) )
@@ -34,7 +53,7 @@ QString createDatabaseURI( const QString &connectionType, const QString &host, c
     if ( port.isEmpty() )
       port = QStringLiteral( "5151" );
 
-    uri = "SDE:" + host + ",PORT:" + port + ',' + database + ',' + user + ',' + password;
+    uri = "SDE:" + host + ",PORT:" + port + ',' + database + ',' + username + ',' + password;
   }
   else if ( connectionType == QLatin1String( "Informix DataBlade" ) )
   {
@@ -44,9 +63,9 @@ QString createDatabaseURI( const QString &connectionType, const QString &host, c
     if ( !host.isEmpty() )
       uri += QStringLiteral( " server=%1" ).arg( host );
 
-    if ( !user.isEmpty() )
+    if ( !username.isEmpty() )
     {
-      uri += QStringLiteral( " user=%1" ).arg( user );
+      uri += QStringLiteral( " user=%1" ).arg( username );
 
       if ( !password.isEmpty() )
         uri += QStringLiteral( " pass=%1" ).arg( password );
@@ -56,9 +75,9 @@ QString createDatabaseURI( const QString &connectionType, const QString &host, c
   {
     //not tested
     uri = "@driver=ingres,dbname=" + database;
-    if ( !user.isEmpty() )
+    if ( !username.isEmpty() )
     {
-      uri += QStringLiteral( ",userid=%1" ).arg( user );
+      uri += QStringLiteral( ",userid=%1" ).arg( username );
 
       if ( !password.isEmpty() )
         uri += QStringLiteral( ",password=%1" ).arg( password );
@@ -76,9 +95,9 @@ QString createDatabaseURI( const QString &connectionType, const QString &host, c
         uri += QStringLiteral( ",port=%1" ).arg( port );
     }
 
-    if ( !user.isEmpty() )
+    if ( !username.isEmpty() )
     {
-      uri += QStringLiteral( ",user=%1" ).arg( user );
+      uri += QStringLiteral( ",user=%1" ).arg( username );
 
       if ( !password.isEmpty() )
         uri += QStringLiteral( ",password=%1" ).arg( password );
@@ -96,9 +115,9 @@ QString createDatabaseURI( const QString &connectionType, const QString &host, c
         uri += QStringLiteral( ",%1" ).arg( port );
     }
 
-    if ( !user.isEmpty() )
+    if ( !username.isEmpty() )
     {
-      uri += QStringLiteral( ";uid=%1" ).arg( user );
+      uri += QStringLiteral( ";uid=%1" ).arg( username );
 
       if ( !password.isEmpty() )
         uri += QStringLiteral( ";pwd=%1" ).arg( password );
@@ -111,10 +130,10 @@ QString createDatabaseURI( const QString &connectionType, const QString &host, c
   }
   else if ( connectionType == QLatin1String( "Oracle Spatial" ) )
   {
-    uri = "OCI:" + user;
+    uri = "OCI:" + username;
 
-    if ( ( !user.isEmpty() && !password.isEmpty() ) ||
-         ( user.isEmpty() && password.isEmpty() ) )
+    if ( ( !username.isEmpty() && !password.isEmpty() ) ||
+         ( username.isEmpty() && password.isEmpty() ) )
     {
       uri += '/';
       if ( !password.isEmpty() )
@@ -142,15 +161,15 @@ QString createDatabaseURI( const QString &connectionType, const QString &host, c
   }
   else if ( connectionType == QLatin1String( "ODBC" ) )
   {
-    if ( !user.isEmpty() )
+    if ( !username.isEmpty() )
     {
       if ( password.isEmpty() )
       {
-        uri = "ODBC:" + user + '@' + database;
+        uri = "ODBC:" + username + '@' + database;
       }
       else
       {
-        uri = "ODBC:" + user + '/' + password + '@' + database;
+        uri = "ODBC:" + username + '/' + password + '@' + database;
       }
 
     }
@@ -174,9 +193,9 @@ QString createDatabaseURI( const QString &connectionType, const QString &host, c
         uri += QStringLiteral( " port='%1'" ).arg( port );
     }
 
-    if ( !user.isEmpty() )
+    if ( !username.isEmpty() )
     {
-      uri += QStringLiteral( " user='%1'" ).arg( user );
+      uri += QStringLiteral( " user='%1'" ).arg( username );
 
       if ( !password.isEmpty() )
         uri += QStringLiteral( " password='%1'" ).arg( password );
@@ -190,7 +209,7 @@ QString createDatabaseURI( const QString &connectionType, const QString &host, c
 }
 
 
-QString createProtocolURI( const QString &type, const QString &url )
+QString createProtocolURI( const QString &type, const QString &url,  const QString &configId, const QString &username, const QString &password )
 {
   QString uri;
   if ( type == QLatin1String( "GeoJSON" ) )
@@ -206,5 +225,19 @@ QString createProtocolURI( const QString &type, const QString &url )
     uri = QStringLiteral( "DODS:%1" ).arg( url );
   }
   QgsDebugMsg( "Connection type is=" + type + " and uri=" + uri );
+  // Update URI with authentication information
+  if ( ! configId.isEmpty() )
+  {
+    QStringList connectionItems;
+    connectionItems << uri;
+    if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, QStringLiteral( "ogr" ) ) )
+    {
+      uri = connectionItems.join( QString() );
+    }
+  }
+  else if ( !( username.isEmpty() || password.isEmpty( ) ) )
+  {
+    uri.replace( QStringLiteral( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );
+  }
   return uri;
 }
