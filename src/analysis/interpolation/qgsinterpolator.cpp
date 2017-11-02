@@ -39,29 +39,30 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
   mCachedBaseData.clear();
   mCachedBaseData.reserve( 100000 );
 
-  Q_FOREACH ( const LayerData &layer, mLayerData )
+  double layerStep = !mLayerData.empty() ? 100.0 / mLayerData.count() : 1;
+  int layerCount = 0;
+  for ( const LayerData &layer : qgis::as_const( mLayerData ) )
   {
     if ( feedback && feedback->isCanceled() )
       return Canceled;
 
-    QgsVectorLayer *vlayer = layer.vectorLayer;
-    if ( !vlayer )
+    QgsFeatureSource *source = layer.source;
+    if ( !source )
     {
       return 2;
     }
 
     QgsAttributeList attList;
-    if ( !layer.zCoordInterpolation )
+    if ( !layer.useZValue )
     {
       attList.push_back( layer.interpolationAttribute );
     }
-
 
     double attributeValue = 0.0;
     bool attributeConversionOk = false;
     double progress = layerCount * layerStep;
 
-    QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
+    QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
     double featureStep = source->featureCount() > 0 ? layerStep / source->featureCount() : layerStep;
 
     QgsFeature feature;
@@ -74,7 +75,7 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
       if ( feedback )
         feedback->setProgress( progress );
 
-      if ( !layer.zCoordInterpolation )
+      if ( !layer.useZValue )
       {
         QVariant attributeVariant = feature.attribute( layer.interpolationAttribute );
         if ( !attributeVariant.isValid() ) //attribute not found, something must be wrong (e.g. NULL value)
@@ -88,11 +89,10 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
         }
       }
 
-      if ( addVerticesToCache( feature.geometry(), layer.zCoordInterpolation, attributeValue ) != 0 )
-      {
-        return 3;
-      }
+      if ( !addVerticesToCache( feature.geometry(), layer.useZValue, attributeValue ) )
+        return FeatureGeometryError;
     }
+    layerCount++;
   }
 
   return 0;

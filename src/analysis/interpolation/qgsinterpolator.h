@@ -22,7 +22,7 @@
 #include "qgis_sip.h"
 #include "qgis_analysis.h"
 
-class QgsVectorLayer;
+class QgsFeatureSource;
 class QgsGeometry;
 class QgsFeedback;
 
@@ -58,9 +58,12 @@ class ANALYSIS_EXPORT QgsInterpolator
     //! A layer together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)
     struct LayerData
     {
-      QgsVectorLayer *vectorLayer = nullptr;
-      bool zCoordInterpolation;
-      int interpolationAttribute;
+      //! Feature source
+      QgsFeatureSource *source = nullptr;
+      //! True if feature geometry z values should be used for interpolation
+      bool useZValue = false;
+      //! Index of feature attribute to use for interpolation
+      int interpolationAttribute = -1;
       //! Source type
       QgsInterpolator::SourceType sourceType = SourcePoints;
     };
@@ -85,16 +88,22 @@ class ANALYSIS_EXPORT QgsInterpolator
 
     /**
      * Caches the vertex and value data from the provider. All the vertex data
-     will be held in virtual memory
-    \returns 0 in case of success*/
-    int cacheBaseData();
+     * will be held in virtual memory.
+     *
+     * An optional \a feedback argument may be specified to allow cancelation and
+     * progress reports from the cache operation.
+     *
+     * \returns Success in case of success
+    */
+    Result cacheBaseData( QgsFeedback *feedback = nullptr );
 
-    QVector<vertexData> mCachedBaseData;
+    //! Cached vertex data for input sources
+    QVector<QgsInterpolatorVertexData> mCachedBaseData;
 
     //! Flag that tells if the cache already has been filled
     bool mDataIsCached = false;
 
-    //Information about the input vector layers and the attributes (or z-values) that are used for interpolation
+    //! Information about the input vector layers and the attributes (or z-values) that are used for interpolation
     QList<LayerData> mLayerData;
 
   private:

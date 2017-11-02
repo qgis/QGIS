@@ -87,8 +87,8 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
   // create prj file
   QgsInterpolator::LayerData ld;
   ld = mInterpolator->layerData().at( 0 );
-  QgsVectorLayer *vl = ld.vectorLayer;
-  QString crs = vl->crs().toWkt();
+  QgsFeatureSource *source = ld.source;
+  QString crs = source->sourceCrs().toWkt();
   QFileInfo fi( mOutputFilePath );
   QString fileName = fi.absolutePath() + '/' + fi.completeBaseName() + ".prj";
   QFile prjFile( fileName );

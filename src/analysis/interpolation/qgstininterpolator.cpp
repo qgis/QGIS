@@ -95,9 +95,9 @@ void QgsTINInterpolator::initialize()
   {
     Q_FOREACH ( const LayerData &layer, mLayerData )
     {
-      if ( layer.vectorLayer )
+      if ( layer.source )
       {
-        nFeatures += layer.vectorLayer->featureCount();
+        nFeatures += layer.source->featureCount();
       }
     }
   }
@@ -105,15 +105,15 @@ void QgsTINInterpolator::initialize()
   QgsFeature f;
   Q_FOREACH ( const LayerData &layer, mLayerData )
   {
-    if ( layer.vectorLayer )
+    if ( layer.source )
     {
       QgsAttributeList attList;
-      if ( !layer.zCoordInterpolation )
+      if ( !layer.useZValue )
       {
         attList.push_back( layer.interpolationAttribute );
       }
 
-      QgsFeatureIterator fit = layer.vectorLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
+      QgsFeatureIterator fit = layer.source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
 
       while ( fit.nextFeature( f ) )
       {
@@ -126,7 +126,7 @@ void QgsTINInterpolator::initialize()
           if ( nFeatures > 0 )
             mFeedback->setProgress( 100.0 * static_cast< double >( nProcessedFeatures ) / nFeatures );
         }
-        insertData( &f, layer.zCoordInterpolation, layer.interpolationAttribute, layer.mInputType );
+        insertData( &f, layer.useZValue, layer.interpolationAttribute, layer.sourceType );
         ++nProcessedFeatures;
       }
     }
