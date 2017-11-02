@@ -35,6 +35,7 @@ email                : sherman at mrcc.com
 #include "qgsogrdataitems.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgswkbtypes.h"
+#include "qgsauthmanager.h"
 
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"
@@ -3647,6 +3648,9 @@ void QgsOgrProvider::open( OpenMode mode )
   Q_ASSERT( !mOgrLayer );
   Q_ASSERT( !mOgrOrigLayer );
 
+  // Expand authentication
+  setDataSourceUri( QgsOgrProviderUtils::expandAuthConfig( mFilePath ) );
+
   // Try to open using VSIFileHandler
   //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
   QString vsiPrefix = QgsZipItem::vsiPrefix( dataSourceUri() );
@@ -3948,7 +3952,7 @@ static GDALDatasetH OpenHelper( const QString &dsName,
                                      option.toUtf8().constData() );
   }
   GDALDatasetH hDS = QgsOgrProviderUtils::GDALOpenWrapper(
-                       dsName.toUtf8().constData(), updateMode, papszOpenOptions, nullptr );
+                       QgsOgrProviderUtils::expandAuthConfig( dsName ).toUtf8().constData(), updateMode, papszOpenOptions, nullptr );
   CSLDestroy( papszOpenOptions );
   return hDS;
 }
@@ -4098,6 +4102,7 @@ QgsOgrLayer *QgsOgrProviderUtils::getLayer( const QString &dsName,
     QString &errCause )
 {
   QMutexLocker locker( &globalMutex );
+
   for ( auto iter = mapSharedDS.begin(); iter != mapSharedDS.end(); ++iter )
   {
     if ( iter.key().dsName == dsName )
@@ -4145,6 +4150,26 @@ static QDateTime getLastModified( const QString &dsName )
       return info.lastModified();
   }
   return QFileInfo( dsName ).lastModified();
+}
+
+QString QgsOgrProviderUtils::expandAuthConfig( const QString &dsName )
+{
+  QString uri( dsName );
+  // Check for authcfg
+  QRegularExpression authcfgRe( " authcfg='([^']+)'" );
+  QRegularExpressionMatch match;
+  if ( uri.contains( authcfgRe, &match ) )
+  {
+    uri = uri.replace( match.captured( 0 ), QString() );
+    QString configId( match.captured( 1 ) );
+    QStringList connectionItems;
+    connectionItems << uri;
+    if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, QStringLiteral( "ogr" ) ) )
+    {
+      uri = connectionItems.first( );
+    }
+  }
+  return uri;
 }
 
 // Must be called under the globalMutex

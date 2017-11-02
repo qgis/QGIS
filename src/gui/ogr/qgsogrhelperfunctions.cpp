@@ -22,7 +22,7 @@
 #include "qgsauthmanager.h"
 #include <QRegExp>
 
-QString createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &configId, QString username,  QString password )
+QString createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &configId, QString username,  QString password, bool expandAuthConfig )
 {
   QString uri;
 
@@ -30,17 +30,10 @@ QString createDatabaseURI( const QString &connectionType, const QString &host, c
   // Note that only Basic auth (username/password) is for now supported for OGR connections
   if ( ! configId.isEmpty() )
   {
-    // Pass to updateDataSourceUriItems empty user/password in the format it likes
-    QStringList connectionItems;
-    connectionItems << QStringLiteral( "user=''" ) <<  QStringLiteral( "password=''" );
-    if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, QStringLiteral( "ogr" ) ) )
-    {
-      QRegExp userRe( "^user='([^']+)'" );
-      QRegExp passRe( "^password='([^']+)'" );
-      // Extracts the username and password
-      username = QString( connectionItems.at( 0 ) ).replace( userRe, "\\1" );
-      password = QString( connectionItems.at( 1 ) ).replace( passRe, "\\1" );
-    }
+    // Blank credentials: we are using authcfg!
+    username = QString();
+    password = QString();
+    // append authcfg is at the end, because we want to append the authcfg as last argument
   }
 
   //todo:add default ports for all kind of databases
@@ -203,13 +196,29 @@ QString createDatabaseURI( const QString &connectionType, const QString &host, c
 
     uri += ' ';
   }
-
+  // Append authentication configuration to the URI
+  if ( !( configId.isEmpty() ) )
+  {
+    if ( ! expandAuthConfig )
+    {
+      uri += QStringLiteral( " authcfg='%1'" ).arg( configId );
+    }
+    else
+    {
+      QStringList connectionItems;
+      connectionItems << uri;
+      if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, QStringLiteral( "ogr" ) ) )
+      {
+        uri = connectionItems.join( QString() );
+      }
+    }
+  }
   QgsDebugMsg( "Connection type is=" + connectionType + " and uri=" + uri );
   return uri;
 }
 
 
-QString createProtocolURI( const QString &type, const QString &url,  const QString &configId, const QString &username, const QString &password )
+QString createProtocolURI( const QString &type, const QString &url,  const QString &configId, const QString &username, const QString &password, bool expandAuthConfig )
 {
   QString uri;
   if ( type == QLatin1String( "GeoJSON" ) )
@@ -228,11 +237,18 @@ QString createProtocolURI( const QString &type, const QString &url,  const QStri
   // Update URI with authentication information
   if ( ! configId.isEmpty() )
   {
-    QStringList connectionItems;
-    connectionItems << uri;
-    if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, QStringLiteral( "ogr" ) ) )
+    if ( expandAuthConfig )
     {
-      uri = connectionItems.join( QString() );
+      QStringList connectionItems;
+      connectionItems << uri;
+      if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, QStringLiteral( "ogr" ) ) )
+      {
+        uri = connectionItems.join( QString() );
+      }
+    }
+    else
+    {
+      uri += QStringLiteral( " authcfg='%1'" ).arg( configId );
     }
   }
   else if ( !( username.isEmpty() || password.isEmpty( ) ) )

@@ -93,7 +93,8 @@ void QgsNewOgrConnection::testConnection()
                            txtPort->text(),
                            mAuthSettingsDatabase->configId(),
                            mAuthSettingsDatabase->username(),
-                           mAuthSettingsDatabase->password() );
+                           mAuthSettingsDatabase->password(),
+                           true );
   QgsDebugMsg( "Connecting using uri = " + uri );
   OGRRegisterAll();
   OGRDataSourceH       poDS;
