@@ -167,6 +167,11 @@ class CORE_EXPORT QgsAggregateCalculator
      */
     static Aggregate stringToAggregate( const QString &string, bool *ok = nullptr );
 
+    /**
+     * Structured information for available aggregates.
+     *
+     * \since QGIS 3.2
+     */
     static QList< QgsAggregateCalculator::AggregateInfo > aggregates();
 
   private:

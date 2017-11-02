@@ -71,7 +71,7 @@ class QgsAggregateToolButton : QToolButton
 
     void activeChanged();
 %Docstring
- A function has been selected or unselected.
+ A function has been selected or deselected.
 %End
 
 };

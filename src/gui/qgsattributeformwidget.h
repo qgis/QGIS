@@ -36,6 +36,9 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
       AggregateSearchMode, //!< Embedded in a search form, show additional aggregate function toolbutton
     };
 
+    /**
+     * A new form widget for the wrapper \a widget on \a form.
+     */
     explicit QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAttributeForm *form );
 
     /**
@@ -98,6 +101,10 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
      */
     void setSearchWidgetWrapper( QgsSearchWidgetWrapper *wrapper );
 
+    /**
+     * Adds an additional search widget wrapper.
+     * Used to register a secondary search widget as used for "between" searches.
+     */
     void addAdditionalSearchWidgetWrapper( QgsSearchWidgetWrapper *wrapper );
 
     /**

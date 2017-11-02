@@ -79,7 +79,7 @@ class GUI_EXPORT QgsAggregateToolButton : public QToolButton
     void aggregateChanged();
 
     /**
-     * A function has been selected or unselected.
+     * A function has been selected or deselected.
      */
     void activeChanged();
 

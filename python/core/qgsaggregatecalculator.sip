@@ -147,6 +147,9 @@ class QgsAggregateCalculator
 
     static QList< QgsAggregateCalculator::AggregateInfo > aggregates();
 %Docstring
+ Structured information for available aggregates.
+
+.. versionadded:: 3.2
  :rtype: list of QgsAggregateCalculator.AggregateInfo
 %End
 
