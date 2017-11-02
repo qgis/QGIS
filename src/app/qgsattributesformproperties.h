@@ -218,6 +218,8 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
   private slots:
     void addTabOrGroupButton();
     void removeTabOrGroupButton();
+    void mEditorLayoutComboBox_currentIndexChanged( int index );
+    void pbnSelectEditForm_clicked();
 };
 
 

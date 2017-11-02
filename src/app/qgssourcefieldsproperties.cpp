@@ -61,10 +61,6 @@ QgsSourceFieldsProperties::~QgsSourceFieldsProperties()
 void QgsSourceFieldsProperties::init()
 {
   loadRows();
-
-  //not used here: mEditorLayoutComboBox->setCurrentIndex( mLayer->editFormConfig().layout() );
-  //used here????? mFormSuppressCmbBx->setCurrentIndex( mLayer->editFormConfig().suppress() );
-  //not used here: loadAttributeEditorTree();
 }
 
 void QgsSourceFieldsProperties::loadRows()

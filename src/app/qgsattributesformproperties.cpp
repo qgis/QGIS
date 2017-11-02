@@ -44,6 +44,8 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   connect( mAvailableWidgetsTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
   connect( mAddTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::addTabOrGroupButton );
   connect( mRemoveTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::removeTabOrGroupButton );
+  connect( mEditorLayoutComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged );
+  connect( pbnSelectEditForm, &QToolButton::clicked, this, &QgsAttributesFormProperties::pbnSelectEditForm_clicked );
 }
 
 
@@ -56,6 +58,12 @@ void QgsAttributesFormProperties::init()
 {
   initAvailableWidgetsTree();
   initFormLayoutTree();
+
+  mEditorLayoutComboBox->setCurrentIndex( mLayer->editFormConfig().layout() );
+  mEditorLayoutComboBox_currentIndexChanged( mEditorLayoutComboBox->currentIndex() );
+
+  QgsEditFormConfig cfg = mLayer->editFormConfig();
+  mEditFormLineEdit->setText( cfg.uiForm() );
 
   mAttributeTypeDialog->setEnabled( false );
   mAttributeRelationEdit->setEnabled( false );
@@ -118,7 +126,8 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
 }
 
 
-void QgsAttributesFormProperties::storeAttributeTypeDialog(){
+void QgsAttributesFormProperties::storeAttributeTypeDialog()
+{
   FieldConfig cfg;
 
   cfg.mEditable = mAttributeTypeDialog->fieldEditable();
@@ -201,7 +210,7 @@ void QgsAttributesFormProperties::loadAttributeRelationEdit()
     Q_FOREACH ( const QgsRelation &nmrel, QgsProject::instance()->relationManager()->referencingRelations( relation.referencingLayer() ) )
     {
       if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
-       mAttributeRelationEdit->setCardinalityCombo( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
+        mAttributeRelationEdit->setCardinalityCombo( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
     }
 
     mAttributeRelationEdit->setCardinality( cfg.mCardinality );
@@ -353,13 +362,13 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged()
   {
     case DnDTreeItemData::Relation:
     {
-      mAttributeTypeDialog->setEnabled( false );
+      mAttributeTypeDialog->setVisible( false );
       loadAttributeRelationEdit();
       break;
     }
     case DnDTreeItemData::Field:
     {
-      mAttributeRelationEdit->setEnabled( false );
+      mAttributeRelationEdit->setVisible( false );
       loadAttributeTypeDialog();
       break;
     }
@@ -506,6 +515,40 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
   return widgetDef;
 }
 
+void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int index )
+{
+  switch ( index )
+  {
+    case 0:
+      mFormLayoutWidget->setVisible( false );
+      mUiFileFrame->setVisible( false );
+      break;
+
+    case 1:
+      mFormLayoutWidget->setVisible( true );
+      mUiFileFrame->setVisible( false );
+      break;
+
+    case 2:
+      mFormLayoutWidget->setVisible( false );
+      mUiFileFrame->setVisible( true );
+      break;
+  }
+}
+
+void QgsAttributesFormProperties::pbnSelectEditForm_clicked()
+{
+  QgsSettings myQSettings;
+  QString lastUsedDir = myQSettings.value( QStringLiteral( "style/lastUIDir" ), QDir::homePath() ).toString();
+  QString uifilename = QFileDialog::getOpenFileName( this, tr( "Select edit form" ), lastUsedDir, tr( "UI file" )  + " (*.ui)" );
+
+  if ( uifilename.isNull() )
+    return;
+
+  QFileInfo fi( uifilename );
+  myQSettings.setValue( QStringLiteral( "style/lastUIDir" ), fi.path() );
+  mEditFormLineEdit->setText( uifilename );
+}
 
 void QgsAttributesFormProperties::apply()
 {
@@ -570,10 +613,11 @@ void QgsAttributesFormProperties::apply()
     editFormConfig.addTab( createAttributeEditorWidget( tabItem, nullptr, false ) );
   }
 
-  /*
   editFormConfig.setUiForm( mEditFormLineEdit->text() );
+
   editFormConfig.setLayout( ( QgsEditFormConfig::EditorLayout ) mEditorLayoutComboBox->currentIndex() );
 
+  /*
   // Init function configuration
   editFormConfig.setInitFunction( mInitFunctionLineEdit->text() );
   editFormConfig.setInitCode( mInitCodeEditorPython->text() );
