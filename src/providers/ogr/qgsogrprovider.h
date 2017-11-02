@@ -64,6 +64,18 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     virtual ~QgsOgrProvider();
 
+    /**
+     * Get the data source specification. This may be a path or database
+     * connection string
+     * \param expandAuthConfig Whether to expand any assigned authentication configuration
+     * \returns data source specification
+     * \note The default authentication configuration expansion is FALSE. This keeps credentials
+     * out of layer data source URIs and project files. Expansion should be specifically done
+     * only when needed within a provider
+     */
+    QString dataSourceUri( bool expandAuthConfig = false ) const override;
+
+
     virtual QgsAbstractFeatureSource *featureSource() const override;
 
     virtual QgsCoordinateReferenceSystem crs() const override;
