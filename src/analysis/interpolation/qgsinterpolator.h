@@ -26,7 +26,11 @@ class QgsVectorLayer;
 class QgsGeometry;
 class QgsFeedback;
 
-struct ANALYSIS_EXPORT vertexData
+/**
+ * Interpolation data for an individual source vertex.
+ * \since QGIS 3.0
+ */
+struct ANALYSIS_EXPORT QgsInterpolatorVertexData
 {
   double x;
   double y;
@@ -36,17 +40,19 @@ struct ANALYSIS_EXPORT vertexData
 /**
  * \ingroup analysis
  * Interface class for interpolations. Interpolators take
-the vertices of a vector layer as base data. The z-Value
-can be an attribute or the z-coordinates in case of 25D types*/
+ * the vertices of a vector layer as base data. The z-Value
+ * can be an attribute or the z-coordinates in case of 3D types.
+*/
 class ANALYSIS_EXPORT QgsInterpolator
 {
   public:
+
     //! Describes the type of input data
-    enum InputType
+    enum SourceType
     {
-      POINTS,
-      STRUCTURE_LINES,
-      BREAK_LINES
+      SourcePoints, //!< Point source
+      SourceStructureLines, //!< Structure lines
+      SourceBreakLines, //!< Break lines
     };
 
     //! A layer together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)
@@ -55,7 +61,8 @@ class ANALYSIS_EXPORT QgsInterpolator
       QgsVectorLayer *vectorLayer = nullptr;
       bool zCoordInterpolation;
       int interpolationAttribute;
-      QgsInterpolator::InputType mInputType;
+      //! Source type
+      QgsInterpolator::SourceType sourceType = SourcePoints;
     };
 
     QgsInterpolator( const QList<QgsInterpolator::LayerData> &layerData );

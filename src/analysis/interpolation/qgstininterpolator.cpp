@@ -157,7 +157,7 @@ void QgsTINInterpolator::initialize()
   }
 }
 
-int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputType type )
+int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, SourceType type )
 {
   if ( !f )
   {
@@ -249,7 +249,7 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
       FALLTHROUGH;
     case QgsWkbTypes::LineString:
     {
-      if ( type != POINTS )
+      if ( type != SourcePoints )
       {
         line = new Line3D();
       }
@@ -267,7 +267,7 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
           z = attributeValue;
         }
 
-        if ( type == POINTS )
+        if ( type == SourcePoints )
         {
           //todo: handle error code -100
           mTriangulation->addPoint( new QgsPoint( x, y, z ) );
@@ -278,9 +278,9 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
         }
       }
 
-      if ( type != POINTS )
+      if ( type != SourcePoints )
       {
-        mTriangulation->addLine( line, type == BREAK_LINES );
+        mTriangulation->addLine( line, type == SourceBreakLines );
       }
       break;
     }
@@ -293,7 +293,7 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
       currentWkbPtr >> nLines;
       for ( int index = 0; index < nLines; ++index )
       {
-        if ( type != POINTS )
+        if ( type != SourcePoints )
         {
           line = new Line3D();
         }
@@ -311,7 +311,7 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
             z = attributeValue;
           }
 
-          if ( type == POINTS )
+          if ( type == SourcePoints )
           {
             //todo: handle error code -100
             mTriangulation->addPoint( new QgsPoint( x, y, z ) );
@@ -321,9 +321,9 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
             line->insertPoint( new QgsPoint( x, y, z ) );
           }
         }
-        if ( type != POINTS )
+        if ( type != SourcePoints )
         {
-          mTriangulation->addLine( line, type == BREAK_LINES );
+          mTriangulation->addLine( line, type == SourceBreakLines );
         }
       }
       break;
@@ -337,7 +337,7 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
       currentWkbPtr >> nRings;
       for ( int index = 0; index < nRings; ++index )
       {
-        if ( type != POINTS )
+        if ( type != SourcePoints )
         {
           line = new Line3D();
         }
@@ -355,7 +355,7 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
           {
             z = attributeValue;
           }
-          if ( type == POINTS )
+          if ( type == SourcePoints )
           {
             //todo: handle error code -100
             mTriangulation->addPoint( new QgsPoint( x, y, z ) );
@@ -366,9 +366,9 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
           }
         }
 
-        if ( type != POINTS )
+        if ( type != SourcePoints )
         {
-          mTriangulation->addLine( line, type == BREAK_LINES );
+          mTriangulation->addLine( line, type == SourceBreakLines );
         }
       }
       break;
@@ -388,7 +388,7 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
         currentWkbPtr >> nRings;
         for ( int index2 = 0; index2 < nRings; ++index2 )
         {
-          if ( type != POINTS )
+          if ( type != SourcePoints )
           {
             line = new Line3D();
           }
@@ -405,7 +405,7 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
             {
               z = attributeValue;
             }
-            if ( type == POINTS )
+            if ( type == SourcePoints )
             {
               //todo: handle error code -100
               mTriangulation->addPoint( new QgsPoint( x, y, z ) );
@@ -415,9 +415,9 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, InputT
               line->insertPoint( new QgsPoint( x, y, z ) );
             }
           }
-          if ( type != POINTS )
+          if ( type != SourcePoints )
           {
-            mTriangulation->addLine( line, type == BREAK_LINES );
+            mTriangulation->addLine( line, type == SourceBreakLines );
           }
         }
       }
