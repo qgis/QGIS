@@ -98,9 +98,8 @@ mPlugins = dict of dicts {id : {
 
 translatableAttributes = ["name", "description", "about", "tags"]
 
-reposGroup = "/Qgis/plugin-repos"
-settingsGroup = "/Qgis/plugin-installer"
-seenPluginGroup = "/Qgis/plugin-seen"
+settingsGroup = "app/plugin_installer"
+reposGroup = "app/plugin_repositories"
 
 officialRepo = (QCoreApplication.translate("QgsPluginInstaller", "QGIS Official Plugin Repository"), "https://plugins.qgis.org/plugins/plugins.xml")
 
@@ -790,7 +789,7 @@ class Plugins(QObject):
     def markNews(self):
         """ mark all new plugins as new """
         settings = QgsSettings()
-        seenPlugins = settings.value(seenPluginGroup, list(self.mPlugins.keys()), type=str)
+        seenPlugins = settings.value(settingsGroup + '/seen_plugins', list(self.mPlugins.keys()), type=str)
         if len(seenPlugins) > 0:
             for i in list(self.mPlugins.keys()):
                 if seenPlugins.count(i) == 0 and self.mPlugins[i]["status"] == "not installed":
@@ -800,11 +799,11 @@ class Plugins(QObject):
     def updateSeenPluginsList(self):
         """ update the list of all seen plugins """
         settings = QgsSettings()
-        seenPlugins = settings.value(seenPluginGroup, list(self.mPlugins.keys()), type=str)
+        seenPlugins = settings.value(settingsGroup + '/seen_plugins', list(self.mPlugins.keys()), type=str)
         for i in list(self.mPlugins.keys()):
             if seenPlugins.count(i) == 0:
                 seenPlugins += [i]
-        settings.setValue(seenPluginGroup, seenPlugins)
+        settings.setValue(settingsGroup + '/seen_plugins', seenPlugins)
 
     # ----------------------------------------- #
     def isThereAnythingNew(self):
