@@ -43,9 +43,16 @@ void QgsAggregateToolButton::aboutToShowMenu()
 {
   mMenu->clear();
 
+  QAction *action = mMenu->addAction( tr( "Exclude" ) );
+  connect( action, &QAction::triggered, [ this ]
+  {
+    setActive( false );
+  } );
+
   for ( const auto &aggregate : qgis::as_const( mAvailableAggregates ) )
   {
-    mMenu->addAction( aggregate.name, this, [ this, aggregate ]
+    QAction *action = mMenu->addAction( aggregate.name );
+    connect( action, &QAction::triggered, [ this, aggregate ]
     {
       setText( aggregate.name );
       setAggregate( aggregate.function );
@@ -95,6 +102,7 @@ void QgsAggregateToolButton::setAggregate( const QString &aggregate )
     if ( agg.function == aggregate )
     {
       mAggregate = aggregate;
+      setText( agg.name );
       break;
     }
   }
