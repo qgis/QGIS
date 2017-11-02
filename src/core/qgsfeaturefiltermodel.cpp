@@ -254,7 +254,7 @@ void QgsFeatureFilterModel::updateCompleter()
       if ( currentEntryInNewList != 0 )
       {
         beginInsertRows( QModelIndex(), 0, currentEntryInNewList - 1 );
-        mEntries = entries.mid( 0, currentEntryInNewList );
+        mEntries = entries.mid( 0, currentEntryInNewList ) + mEntries;
         endInsertRows();
       }
       else
