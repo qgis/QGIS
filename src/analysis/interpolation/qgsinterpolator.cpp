@@ -53,9 +53,15 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
     }
 
     QgsAttributeList attList;
-    if ( !layer.useZValue )
+    switch ( layer.valueSource )
     {
-      attList.push_back( layer.interpolationAttribute );
+      case ValueAttribute:
+        attList.push_back( layer.interpolationAttribute );
+        break;
+
+      case ValueZ:
+      case ValueM:
+        break;
     }
 
     double attributeValue = 0.0;
@@ -75,21 +81,29 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
       if ( feedback )
         feedback->setProgress( progress );
 
-      if ( !layer.useZValue )
+      switch ( layer.valueSource )
       {
-        QVariant attributeVariant = feature.attribute( layer.interpolationAttribute );
-        if ( !attributeVariant.isValid() ) //attribute not found, something must be wrong (e.g. NULL value)
+        case ValueAttribute:
         {
-          continue;
+          QVariant attributeVariant = feature.attribute( layer.interpolationAttribute );
+          if ( !attributeVariant.isValid() ) //attribute not found, something must be wrong (e.g. NULL value)
+          {
+            continue;
+          }
+          attributeValue = attributeVariant.toDouble( &attributeConversionOk );
+          if ( !attributeConversionOk || std::isnan( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
+          {
+            continue;
+          }
+          break;
         }
-        attributeValue = attributeVariant.toDouble( &attributeConversionOk );
-        if ( !attributeConversionOk || std::isnan( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
-        {
-          continue;
-        }
+
+        case ValueZ:
+        case ValueM:
+          break;
       }
 
-      if ( !addVerticesToCache( feature.geometry(), layer.useZValue, attributeValue ) )
+      if ( !addVerticesToCache( feature.geometry(), layer.valueSource, attributeValue ) )
         return FeatureGeometryError;
     }
     layerCount++;
@@ -98,21 +112,45 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
   return Success;
 }
 
-bool QgsInterpolator::addVerticesToCache( const QgsGeometry &geom, bool zCoord, double attributeValue )
+bool QgsInterpolator::addVerticesToCache( const QgsGeometry &geom, ValueSource source, double attributeValue )
 {
   if ( !geom || geom.isEmpty() )
     return true; // nothing to do
 
-  bool hasZ = geom.constGet()->is3D();
+  //validate source
+  switch ( source )
+  {
+    case ValueAttribute:
+      break;
+
+    case ValueM:
+      if ( !geom.constGet()->isMeasure() )
+        return false;
+      else
+        break;
+
+    case ValueZ:
+      if ( !geom.constGet()->is3D() )
+        return false;
+      else
+        break;
+  }
+
   for ( auto point = geom.vertices_begin(); point != geom.vertices_end(); ++point )
   {
-    if ( hasZ && zCoord )
+    switch ( source )
     {
-      mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), ( *point ).z() ) );
-    }
-    else
-    {
-      mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), attributeValue ) );
+      case ValueM:
+        mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), ( *point ).m() ) );
+        break;
+
+      case ValueZ:
+        mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), ( *point ).z() ) );
+        break;
+
+      case ValueAttribute:
+        mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), attributeValue ) );
+        break;
     }
   }
   mDataIsCached = true;

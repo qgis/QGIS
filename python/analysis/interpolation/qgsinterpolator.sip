@@ -58,6 +58,13 @@ class QgsInterpolator
       SourceBreakLines,
     };
 
+    enum ValueSource
+    {
+      ValueAttribute,
+      ValueZ,
+      ValueM,
+    };
+
     enum Result
     {
       Success,
@@ -72,9 +79,9 @@ class QgsInterpolator
 %Docstring
 Feature source
 %End
-      bool useZValue;
+      ValueSource valueSource;
 %Docstring
-True if feature geometry z values should be used for interpolation
+Source for feature values to interpolate
 %End
       int interpolationAttribute;
 %Docstring

@@ -93,7 +93,7 @@ void QgsTINInterpolator::initialize()
   int nProcessedFeatures = 0;
   if ( mFeedback )
   {
-    Q_FOREACH ( const LayerData &layer, mLayerData )
+    for ( const LayerData &layer :  qgis::as_const( mLayerData ) )
     {
       if ( layer.source )
       {
@@ -103,14 +103,20 @@ void QgsTINInterpolator::initialize()
   }
 
   QgsFeature f;
-  Q_FOREACH ( const LayerData &layer, mLayerData )
+  for ( const LayerData &layer : qgis::as_const( mLayerData ) )
   {
     if ( layer.source )
     {
       QgsAttributeList attList;
-      if ( !layer.useZValue )
+      switch ( layer.valueSource )
       {
-        attList.push_back( layer.interpolationAttribute );
+        case QgsInterpolator::ValueAttribute:
+          attList.push_back( layer.interpolationAttribute );
+          break;
+
+        case QgsInterpolator::ValueM:
+        case QgsInterpolator::ValueZ:
+          break;
       }
 
       QgsFeatureIterator fit = layer.source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
@@ -126,7 +132,7 @@ void QgsTINInterpolator::initialize()
           if ( nFeatures > 0 )
             mFeedback->setProgress( 100.0 * static_cast< double >( nProcessedFeatures ) / nFeatures );
         }
-        insertData( &f, layer.useZValue, layer.interpolationAttribute, layer.sourceType );
+        insertData( f, layer.valueSource, layer.interpolationAttribute, layer.sourceType );
         ++nProcessedFeatures;
       }
     }
@@ -157,16 +163,11 @@ void QgsTINInterpolator::initialize()
   }
 }
 
-int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, SourceType type )
+int QgsTINInterpolator::insertData( const QgsFeature &f, bool zCoord, int attr, SourceType type )
 {
-  if ( !f )
+  QgsGeometry g = f.geometry();
   {
-    return 1;
-  }
-
-  QgsGeometry g = f->geometry();
-  {
-    if ( g.isNull() )
+    if ( g.isNull() || g.isEmpty() )
     {
       return 2;
     }
@@ -177,7 +178,7 @@ int QgsTINInterpolator::insertData( QgsFeature *f, bool zCoord, int attr, Source
   bool attributeConversionOk = false;
   if ( !zCoord )
   {
-    QVariant attributeVariant = f->attribute( attr );
+    QVariant attributeVariant = f.attribute( attr );
     if ( !attributeVariant.isValid() ) //attribute not found, something must be wrong (e.g. NULL value)
     {
       return 3;

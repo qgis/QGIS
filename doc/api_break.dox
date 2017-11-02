@@ -1490,7 +1490,7 @@ QgsInterpolator        {#qgis_api_break_3_0_QgsInterpolator}
 
 - The InputType enum was renamed to SourceType and the enum values were renamed.
 - LayerData.vectorLayer was renamed to LayerData.source
-- LayerData.zCoordInterpolation was renamed to LayerData.useZValue
+- LayerData.zCoordInterpolation was renamed to LayerData.valueSource and now takes a QgsInterpolator.ValueSource enum value.
 - LayerData.mInputType was renamed to LayerData.sourceType
 
 

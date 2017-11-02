@@ -181,7 +181,7 @@ class TinInterpolation(QgisAlgorithm):
             if not crs.isValid():
                 crs = layer.sourceCrs()
 
-            data.useZValue = bool(v[1])
+            data.valueSource = int(v[1])
             data.interpolationAttribute = int(v[2])
             if v[3] == '0':
                 data.sourceType = QgsInterpolator.SourcePoints

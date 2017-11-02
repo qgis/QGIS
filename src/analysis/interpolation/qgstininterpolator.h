@@ -93,7 +93,7 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
       \param attr interpolation attribute index (if zCoord is false)
       \param type point/structure line, break line
       \returns 0 in case of success, -1 if the feature could not be inserted because of numerical problems*/
-    int insertData( QgsFeature *f, bool zCoord, int attr, SourceType type );
+    int insertData( const QgsFeature &f, bool zCoord, int attr, SourceType type );
 };
 
 #endif

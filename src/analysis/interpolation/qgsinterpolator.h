@@ -72,6 +72,14 @@ class ANALYSIS_EXPORT QgsInterpolator
       SourceBreakLines, //!< Break lines
     };
 
+    //! Source for interpolated values from features
+    enum ValueSource
+    {
+      ValueAttribute, //!< Take value from feature's attribute
+      ValueZ, //!< Use feature's geometry Z values for interpolation
+      ValueM, //!< Use feature's geometry M values for interpolation
+    };
+
     //! Result of an interpolation operation
     enum Result
     {
@@ -86,8 +94,8 @@ class ANALYSIS_EXPORT QgsInterpolator
     {
       //! Feature source
       QgsFeatureSource *source = nullptr;
-      //! True if feature geometry z values should be used for interpolation
-      bool useZValue = false;
+      //! Source for feature values to interpolate
+      ValueSource valueSource = ValueAttribute;
       //! Index of feature attribute to use for interpolation
       int interpolationAttribute = -1;
       //! Source type
@@ -138,11 +146,11 @@ class ANALYSIS_EXPORT QgsInterpolator
     /**
      * Helper method that adds the vertices of a geometry to the mCachedBaseData
      * \param geom the geometry
-     * \param zCoord true if the z-coordinate of the geometry is to be interpolated
-     * \param attributeValue the attribute value for interpolation (if not interpolated from z-coordinate)
+     * \param source source for values to interpolate from the feature
+     * \param attributeValue the attribute value for interpolation (if interpolating from attribute value)
      *\returns 0 in case of success
     */
-    bool addVerticesToCache( const QgsGeometry &geom, bool zCoord, double attributeValue );
+    bool addVerticesToCache( const QgsGeometry &geom, ValueSource source, double attributeValue );
 };
 
 #endif

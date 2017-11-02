@@ -136,11 +136,11 @@ class InterpolationDataWidget(BASE, WIDGET):
                     continue
 
                 interpolationAttribute = item.text(1)
+                interpolationSource = QgsInterpolator.ValueAttribute
                 if interpolationAttribute == 'Z_COORD':
-                    zCoord = True
+                    interpolationSource = QgsInterpolator.ValueZ
                     fieldIndex = -1
                 else:
-                    zCoord = False
                     fieldIndex = layer.fields().indexFromName(interpolationAttribute)
 
                 comboBox = self.layersTree.itemWidget(self.layersTree.topLevelItem(i), 2)
@@ -152,10 +152,10 @@ class InterpolationDataWidget(BASE, WIDGET):
                 else:
                     inputType = QgsInterpolator.SourceBreakLines
 
-            layers += '{},{},{:d},{:d};'.format(layer.source(),
-                                                zCoord,
-                                                fieldIndex,
-                                                inputType)
+            layers += '{},{:d},{:d},{:d};'.format(layer.source(),
+                                                  interpolationSource,
+                                                  fieldIndex,
+                                                  inputType)
         return layers[:-1]
 
 
