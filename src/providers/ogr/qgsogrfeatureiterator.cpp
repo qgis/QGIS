@@ -48,7 +48,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   , mFilterFidsIt( mFilterFids.constBegin() )
 {
   //QgsDebugMsg( "Feature iterator of " + mSource->mLayerName + ": acquiring connection");
-  mConn = QgsOgrConnPool::instance()->acquireConnection( mSource->mDataSource );
+  mConn = QgsOgrConnPool::instance()->acquireConnection( QgsOgrProviderUtils::connectionPoolId( mSource->mDataSource ) );
   if ( !mConn->ds )
   {
     return;
