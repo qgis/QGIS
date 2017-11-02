@@ -183,7 +183,7 @@
           <string>On Notification</string>
          </property>
          <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If not empty, this will enable provider notification listening and the action will be executed when hte notification message matched the specified value. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If not empty, this will enable provider notification listening and the action will be executed when the notification message matched the specified value. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </column>
        </widget>

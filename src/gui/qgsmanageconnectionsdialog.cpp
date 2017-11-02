@@ -297,7 +297,7 @@ bool QgsManageConnectionsDialog::populateConnections()
       case WFS:
         if ( root.tagName() != QLatin1String( "qgsWFSConnections" ) )
         {
-          QMessageBox::information( this, tr( "Loading Cnnections" ),
+          QMessageBox::information( this, tr( "Loading Connections" ),
                                     tr( "The file is not a WFS connections exchange file." ) );
           return false;
         }
