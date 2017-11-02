@@ -60,7 +60,7 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
     currentXValue = mInterpolationExtent.xMinimum() + mCellSizeX / 2.0; //calculate value in the center of the cell
     for ( int j = 0; j < mNumColumns; ++j )
     {
-      if ( mInterpolator->interpolatePoint( currentXValue, currentYValue, interpolatedValue ) == 0 )
+      if ( mInterpolator->interpolatePoint( currentXValue, currentYValue, interpolatedValue, feedback ) == 0 )
       {
         outStream << interpolatedValue << ' ';
       }

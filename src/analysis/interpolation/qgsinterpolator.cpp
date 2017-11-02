@@ -20,7 +20,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
-#include "qgswkbptr.h"
+#include "qgsfeedback.h"
 
 QgsInterpolator::QgsInterpolator( const QList<LayerData> &layerData )
   : mLayerData( layerData )
@@ -28,7 +28,7 @@ QgsInterpolator::QgsInterpolator( const QList<LayerData> &layerData )
 
 }
 
-int QgsInterpolator::cacheBaseData()
+QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
 {
   if ( mLayerData.empty() )
   {
@@ -41,10 +41,8 @@ int QgsInterpolator::cacheBaseData()
 
   Q_FOREACH ( const LayerData &layer, mLayerData )
   {
-    if ( !layer.vectorLayer )
-    {
-      continue;
-    }
+    if ( feedback && feedback->isCanceled() )
+      return Canceled;
 
     QgsVectorLayer *vlayer = layer.vectorLayer;
     if ( !vlayer )
@@ -61,12 +59,21 @@ int QgsInterpolator::cacheBaseData()
 
     double attributeValue = 0.0;
     bool attributeConversionOk = false;
+    double progress = layerCount * layerStep;
 
     QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
+    double featureStep = source->featureCount() > 0 ? layerStep / source->featureCount() : layerStep;
 
     QgsFeature feature;
     while ( fit.nextFeature( feature ) )
     {
+      if ( feedback && feedback->isCanceled() )
+        return Canceled;
+
+      progress += featureStep;
+      if ( feedback )
+        feedback->setProgress( progress );
+
       if ( !layer.zCoordInterpolation )
       {
         QVariant attributeVariant = feature.attribute( layer.interpolationAttribute );

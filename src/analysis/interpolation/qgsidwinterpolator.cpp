@@ -31,11 +31,11 @@ QgsIDWInterpolator::QgsIDWInterpolator()
 
 }
 
-int QgsIDWInterpolator::interpolatePoint( double x, double y, double &result )
+int QgsIDWInterpolator::interpolatePoint( double x, double y, double &result, QgsFeedback *feedback )
 {
   if ( !mDataIsCached )
   {
-    cacheBaseData();
+    cacheBaseData( feedback );
   }
 
   double currentWeight;

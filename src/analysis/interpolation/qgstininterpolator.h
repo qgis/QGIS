@@ -50,13 +50,7 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
     QgsTINInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TINInterpolation interpolation = Linear, QgsFeedback *feedback = nullptr );
     ~QgsTINInterpolator();
 
-    /**
-     * Calculates interpolation value for map coordinates x, y
-       \param x x-coordinate (in map units)
-       \param y y-coordinate (in map units)
-       \param result out: interpolation result
-       \returns 0 in case of success*/
-    int interpolatePoint( double x, double y, double &result ) override;
+    int interpolatePoint( double x, double y, double &result, QgsFeedback *feedback ) override;
 
     /**
      * Returns the fields output by features when saving the triangulation.

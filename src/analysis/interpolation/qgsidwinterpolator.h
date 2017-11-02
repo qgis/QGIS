@@ -30,6 +30,8 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
   public:
     QgsIDWInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
 
+    int interpolatePoint( double x, double y, double &result, QgsFeedback *feedback = nullptr ) override;
+
     /**
      * Calculates interpolation value for map coordinates x, y
        \param x x-coordinate (in map units)

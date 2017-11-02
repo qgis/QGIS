@@ -43,7 +43,7 @@ QgsTINInterpolator::~QgsTINInterpolator()
   delete mTriangleInterpolator;
 }
 
-int QgsTINInterpolator::interpolatePoint( double x, double y, double &result )
+int QgsTINInterpolator::interpolatePoint( double x, double y, double &result, QgsFeedback * )
 {
   if ( !mIsInitialized )
   {
