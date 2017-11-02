@@ -51,10 +51,8 @@ class GUI_EXPORT QgsRelationAggregateSearchWidgetWrapper : public QgsSearchWidge
     virtual void setExpression( const QString &value ) override;
 
   private:
-    QgsRelationWidgetWrapper *mWrapper;
-    QgsAttributeForm *mAttributeForm;
-
-
+    QgsRelationWidgetWrapper *mWrapper = nullptr;
+    QgsAttributeForm *mAttributeForm = nullptr;
 };
 
 #endif // QGSRELATIONAGGREGATESEARCHWIDGETWRAPPER_H

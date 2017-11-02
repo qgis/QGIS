@@ -30,7 +30,10 @@ QgsRelationAggregateSearchWidgetWrapper::QgsRelationAggregateSearchWidgetWrapper
 
 QString QgsRelationAggregateSearchWidgetWrapper::expression() const
 {
-  QString aggregateFilter = mAttributeForm->aggregateFilter();
+  QString aggregateFilter;
+
+  if ( mAttributeForm )
+    aggregateFilter = mAttributeForm->aggregateFilter();
 
   if ( aggregateFilter.isEmpty() )
     return QStringLiteral( "TRUE" );
@@ -45,10 +48,22 @@ bool QgsRelationAggregateSearchWidgetWrapper::valid() const
 
 QWidget *QgsRelationAggregateSearchWidgetWrapper::createWidget( QWidget *parent )
 {
-  QgsAttributeEditorContext subContext = QgsAttributeEditorContext( context(), mWrapper->relation(), QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed );
-  mAttributeForm = new QgsAttributeForm( mWrapper->relation().referencingLayer(), QgsFeature(), subContext, parent );
-  mAttributeForm->setMode( QgsAttributeForm::AggregateSearchMode );
-  return mAttributeForm;
+  QWidget *widget;
+  QgsRelation relation = mWrapper->relation();
+
+  if ( !relation.isValid() )
+  {
+    widget = new QLabel( tr( "Relation not valid" ) );
+  }
+  else
+  {
+    QgsAttributeEditorContext subContext = QgsAttributeEditorContext( context(), mWrapper->relation(), QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed );
+    mAttributeForm = new QgsAttributeForm( mWrapper->relation().referencingLayer(), QgsFeature(), subContext, parent );
+    mAttributeForm->setMode( QgsAttributeForm::AggregateSearchMode );
+    widget = mAttributeForm;
+  }
+
+  return widget;
 }
 
 bool QgsRelationAggregateSearchWidgetWrapper::applyDirectly()
