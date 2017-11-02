@@ -34,16 +34,8 @@ class QgsTINInterpolator: QgsInterpolator
 %End
     ~QgsTINInterpolator();
 
-    virtual int interpolatePoint( double x, double y, double &result );
+    virtual int interpolatePoint( double x, double y, double &result, QgsFeedback *feedback );
 
-%Docstring
- Calculates interpolation value for map coordinates x, y
-\param x x-coordinate (in map units)
-\param y y-coordinate (in map units)
-\param result out: interpolation result
-:return: 0 in case of success*
- :rtype: int
-%End
 
     static QgsFields triangulationFields();
 %Docstring
