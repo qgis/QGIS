@@ -42,6 +42,7 @@
 #include "qgsaddtaborgroup.h"
 #include "qgsattributetypedialog.h"
 #include "qgsattributerelationedit.h"
+#include "qgsattributesforminitcode.h"
 #include "qgsgui.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
@@ -187,6 +188,9 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
 
     void initAvailableWidgetsTree();
     void initFormLayoutTree();
+    void initLayoutConfig();
+    void initInitPython();
+
     QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, DnDTree *tree );
 
   protected:
@@ -206,7 +210,6 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
     QgsAttributeRelationEdit *mAttributeRelationEdit = nullptr;
 
-
   private:
     void loadAttributeTypeDialog();
     void storeAttributeTypeDialog( );
@@ -214,12 +217,17 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     void loadAttributeRelationEdit();
     void storeAttributeRelationEdit( );
 
+    QgsEditFormConfig::PythonInitCodeSource mInitCodeSource;
+    QString mInitFunction;
+    QString mInitFilePath;
+    QString mInitCode;
 
   private slots:
     void addTabOrGroupButton();
     void removeTabOrGroupButton();
     void mEditorLayoutComboBox_currentIndexChanged( int index );
     void pbnSelectEditForm_clicked();
+    void pBInitCode_clicked();
 };
 
 

@@ -1,6 +1,7 @@
 #include "qgsattributesformproperties.h"
 #include "qgsattributetypedialog.h"
 #include "qgsattributerelationedit.h"
+#include "qgsattributesforminitcode.h"
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -46,6 +47,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   connect( mRemoveTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::removeTabOrGroupButton );
   connect( mEditorLayoutComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged );
   connect( pbnSelectEditForm, &QToolButton::clicked, this, &QgsAttributesFormProperties::pbnSelectEditForm_clicked );
+  connect( pBInitCode, &QPushButton::clicked, this, &QgsAttributesFormProperties::pBInitCode_clicked );
 }
 
 
@@ -59,14 +61,118 @@ void QgsAttributesFormProperties::init()
   initAvailableWidgetsTree();
   initFormLayoutTree();
 
+  initLayoutConfig();
+  initInitPython();
+
+  mAttributeTypeDialog->setEnabled( false );
+  mAttributeRelationEdit->setEnabled( false );
+}
+
+void QgsAttributesFormProperties::initAvailableWidgetsTree()
+{
+  mAvailableWidgetsTree->clear();
+  mAvailableWidgetsTree->setSortingEnabled( false );
+  mAvailableWidgetsTree->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mAvailableWidgetsTree->setAcceptDrops( false );
+  mAvailableWidgetsTree->setDragDropMode( QAbstractItemView::DragOnly );
+
+  //load Fields
+
+  DnDTreeItemData catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Fields" );
+  QTreeWidgetItem *catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
+
+  const QgsFields fields = mLayer->fields();
+  for ( int i = 0; i < fields.size(); ++i )
+  {
+    const QgsField field = fields.at( i );
+    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, field.name() );
+    //should we load here stuff like in im loadAttributeEditorTreeItem other stuff like itemData.setShowLabel( true );?
+    itemData.setShowLabel( true );
+
+    FieldConfig cfg( mLayer, i );
+
+    QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
+    //QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), itemData );
+
+    item->setData( 0, FieldConfigRole, cfg );
+    item->setData( 0, FieldNameRole, field.name() );
+  }
+
+  /* stuff
+  itemData.setIcon(i, mLayer->fields().iconForField( i ));
+  itemData.setText(i, QString::number( i+1 ) );
+  itemData.setText(i, fields.at( i ).name() );
+  */
+
+  //load Relations
+  catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Relations" );
+  catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
+
+  const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );
+
+  for ( const QgsRelation &relation : relations )
+  {
+    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, QStringLiteral( "%1" ).arg( relation.id() ) ); //relation.name() );
+    itemData.setShowLabel( true );
+
+    RelationConfig cfg( mLayer, relation.id() );
+
+    QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
+    item->setData( 0, RelationConfigRole, cfg );
+    item->setData( 0, FieldNameRole, QStringLiteral( "%1" ).arg( relation.id() ) ); //relation.name() );
+  }
+}
+
+void QgsAttributesFormProperties::initFormLayoutTree()
+{
+  // tabs and groups info
+  mFormLayoutTree->clear();
+  mFormLayoutTree->setSortingEnabled( false );
+  mFormLayoutTree->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mFormLayoutTree->setAcceptDrops( true );
+  mFormLayoutTree->setDragDropMode( QAbstractItemView::DragDrop );
+
+  Q_FOREACH ( QgsAttributeEditorElement *wdg, mLayer->editFormConfig().tabs() )
+  {
+    loadAttributeEditorTreeItem( wdg, mFormLayoutTree->invisibleRootItem(), mFormLayoutTree );
+  }
+}
+
+void QgsAttributesFormProperties::initLayoutConfig()
+{
   mEditorLayoutComboBox->setCurrentIndex( mLayer->editFormConfig().layout() );
   mEditorLayoutComboBox_currentIndexChanged( mEditorLayoutComboBox->currentIndex() );
 
   QgsEditFormConfig cfg = mLayer->editFormConfig();
   mEditFormLineEdit->setText( cfg.uiForm() );
+}
 
-  mAttributeTypeDialog->setEnabled( false );
-  mAttributeRelationEdit->setEnabled( false );
+void QgsAttributesFormProperties::initInitPython()
+{
+  QgsEditFormConfig cfg = mLayer->editFormConfig();
+
+  mInitCodeSource = cfg.initCodeSource();
+  mInitFunction = cfg.initFunction();
+  mInitFilePath = cfg.initFilePath();
+  mInitCode = cfg.initCode();
+
+  if ( mInitCode.isEmpty() )
+  {
+    mInitCode.append( tr( "# -*- coding: utf-8 -*-\n\"\"\"\n"
+                          "QGIS forms can have a Python function that is called when the form is\n"
+                          "opened.\n"
+                          "\n"
+                          "Use this function to add extra logic to your forms.\n"
+                          "\n"
+                          "Enter the name of the function in the \"Python Init function\"\n"
+                          "field.\n"
+                          "An example follows:\n"
+                          "\"\"\"\n"
+                          "from qgis.PyQt.QtWidgets import QWidget\n\n"
+                          "def my_form_open(dialog, layer, feature):\n"
+                          "\tgeom = feature.geometry()\n"
+                          "\tcontrol = dialog.findChild(QWidget, \"MyLineEdit\")\n" ) );
+  }
 }
 
 void QgsAttributesFormProperties::loadAttributeTypeDialog()
@@ -332,21 +438,6 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
   return newWidget;
 }
 
-void QgsAttributesFormProperties::initFormLayoutTree()
-{
-  // tabs and groups info
-  mFormLayoutTree->clear();
-  mFormLayoutTree->setSortingEnabled( false );
-  mFormLayoutTree->setSelectionBehavior( QAbstractItemView::SelectRows );
-  mFormLayoutTree->setAcceptDrops( true );
-  mFormLayoutTree->setDragDropMode( QAbstractItemView::DragDrop );
-
-  Q_FOREACH ( QgsAttributeEditorElement *wdg, mLayer->editFormConfig().tabs() )
-  {
-    loadAttributeEditorTreeItem( wdg, mFormLayoutTree->invisibleRootItem(), mFormLayoutTree );
-  }
-}
-
 
 void QgsAttributesFormProperties::onAttributeSelectionChanged()
 {
@@ -372,62 +463,6 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged()
       loadAttributeTypeDialog();
       break;
     }
-  }
-}
-
-void QgsAttributesFormProperties::initAvailableWidgetsTree()
-{
-  mAvailableWidgetsTree->clear();
-  mAvailableWidgetsTree->setSortingEnabled( false );
-  mAvailableWidgetsTree->setSelectionBehavior( QAbstractItemView::SelectRows );
-  mAvailableWidgetsTree->setAcceptDrops( false );
-  mAvailableWidgetsTree->setDragDropMode( QAbstractItemView::DragOnly );
-
-  //load Fields
-
-  DnDTreeItemData catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Fields" );
-  QTreeWidgetItem *catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
-
-  const QgsFields fields = mLayer->fields();
-  for ( int i = 0; i < fields.size(); ++i )
-  {
-    const QgsField field = fields.at( i );
-    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, field.name() );
-    //should we load here stuff like in im loadAttributeEditorTreeItem other stuff like itemData.setShowLabel( true );?
-    itemData.setShowLabel( true );
-
-    FieldConfig cfg( mLayer, i );
-
-    QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
-    //QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), itemData );
-
-    item->setData( 0, FieldConfigRole, cfg );
-    item->setData( 0, FieldNameRole, field.name() );
-  }
-
-  /* stuff
-  itemData.setIcon(i, mLayer->fields().iconForField( i ));
-  itemData.setText(i, QString::number( i+1 ) );
-  itemData.setText(i, fields.at( i ).name() );
-  */
-
-
-  //load Relations
-  catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Relations" );
-  catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
-
-  const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );
-
-  for ( const QgsRelation &relation : relations )
-  {
-    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, QStringLiteral( "%1" ).arg( relation.id() ) ); //relation.name() );
-    itemData.setShowLabel( true );
-
-    RelationConfig cfg( mLayer, relation.id() );
-
-    QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
-    item->setData( 0, RelationConfigRole, cfg );
-    item->setData( 0, FieldNameRole, QStringLiteral( "%1" ).arg( relation.id() ) ); //relation.name() );
   }
 }
 
@@ -536,6 +571,26 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
   }
 }
 
+void QgsAttributesFormProperties::pBInitCode_clicked()
+{
+  QgsAttributesFormInitCode attributesFormInitCode;
+
+  attributesFormInitCode.setCodeSource( mInitCodeSource );
+  attributesFormInitCode.setInitCode( mInitCode );
+  attributesFormInitCode.setInitFilePath( mInitFilePath );
+  attributesFormInitCode.setInitFunction( mInitFunction );
+
+  if ( !attributesFormInitCode.exec() )
+    return;
+
+  mInitCodeSource = attributesFormInitCode.codeSource();
+  mInitCode = attributesFormInitCode.initCode();
+  mInitFilePath = attributesFormInitCode.initFilePath();
+  mInitFunction = attributesFormInitCode.initFunction();
+
+}
+
+
 void QgsAttributesFormProperties::pbnSelectEditForm_clicked()
 {
   QgsSettings myQSettings;
@@ -617,12 +672,27 @@ void QgsAttributesFormProperties::apply()
 
   editFormConfig.setLayout( ( QgsEditFormConfig::EditorLayout ) mEditorLayoutComboBox->currentIndex() );
 
+  editFormConfig.setInitCodeSource( mInitCodeSource );
+  editFormConfig.setInitFunction( mInitFunction );
+  editFormConfig.setInitFilePath( mInitFilePath );
+  editFormConfig.setInitCode( mInitCode );
+
   /*
+  Das heisst wir brauchen von Python-Dialog:
+    mInitCodeSource
+    mInitFunction
+    mInitFilePath
+    mInitCode
+  Das heisst, beim init lesen wir die alle...
+
   // Init function configuration
-  editFormConfig.setInitFunction( mInitFunctionLineEdit->text() );
-  editFormConfig.setInitCode( mInitCodeEditorPython->text() );
-  editFormConfig.setInitFilePath( mInitFilePathLineEdit->text() );
   editFormConfig.setInitCodeSource( ( QgsEditFormConfig::PythonInitCodeSource )mInitCodeSourceComboBox->currentIndex() );
+  editFormConfig.setInitFunction( mInitFunctionLineEdit->text() );
+  editFormConfig.setInitFilePath( mInitFilePathLineEdit->text() );
+  editFormConfig.setInitCode( mInitCodeEditorPython->text() );
+  */
+
+  /*
   editFormConfig.setSuppress( ( QgsEditFormConfig::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
   */
 

@@ -16,6 +16,7 @@ SET(QGIS_APP_SRCS
   qgsattributeactionpropertiesdialog.cpp
   qgsattributetypedialog.cpp
   qgsattributerelationedit.cpp
+  qgsattributesforminitcode.cpp
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
   qgsclipboard.cpp
@@ -222,6 +223,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributeactionpropertiesdialog.h
   qgsattributetypedialog.h
   qgsattributerelationedit.h
+  qgsattributesforminitcode.h
   qgsattributetabledialog.h
   qgsbookmarks.h
   qgsclipboard.h

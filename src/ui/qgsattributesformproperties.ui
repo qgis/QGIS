@@ -49,6 +49,13 @@
         </item>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="pBInitCode">
+        <property name="text">
+         <string>Python</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -71,9 +78,7 @@
         </widget>
        </item>
        <item row="0" column="1" rowspan="6">
-        <widget class="QWidget" name="mFormLayoutWidget" native="true">
-         <zorder>pushButton</zorder>
-        </widget>
+        <widget class="QWidget" name="mFormLayoutWidget" native="true"/>
        </item>
        <item row="2" column="2">
         <widget class="QToolButton" name="mRemoveTabOrGroupButton">
