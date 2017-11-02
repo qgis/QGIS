@@ -41,6 +41,7 @@ QgsAuthBasicMethod::QgsAuthBasicMethod()
                     << QStringLiteral( "wfs" )  // convert to lowercase
                     << QStringLiteral( "wcs" )
                     << QStringLiteral( "wms" )
+                    << QStringLiteral( "ogr" )
                     << QStringLiteral( "proxy" ) );
 }
 
@@ -84,7 +85,6 @@ bool QgsAuthBasicMethod::updateNetworkRequest( QNetworkRequest &request, const Q
 bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
     const QString &dataprovider )
 {
-  Q_UNUSED( dataprovider )
   QgsAuthMethodConfig mconfig = getMethodConfig( authcfg );
   if ( !mconfig.isValid() )
   {
@@ -101,6 +101,21 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     return false;
   }
 
+  // Branch for OGR protocol:
+  if ( dataprovider == QStringLiteral( "ogr" ) )
+  {
+    if ( ! password.isEmpty() )
+    {
+      // inject username and password into the URL
+      connectionItems.replaceInStrings( QStringLiteral( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );
+    }
+    else
+    {
+      QgsDebugMsg( QString( "Update URI items FAILED for authcfg: %1: password empty" ).arg( authcfg ) );
+    }
+  }
+
+  // OGR database might use the standard URI way, we need to process this part in all cases
   QString userparam = "user='" + escapeUserPass( username ) + '\'';
   int userindx = connectionItems.indexOf( QRegExp( "^user='.*" ) );
   if ( userindx != -1 )
