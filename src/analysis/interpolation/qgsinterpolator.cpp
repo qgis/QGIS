@@ -32,7 +32,7 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
 {
   if ( mLayerData.empty() )
   {
-    return 0;
+    return Success;
   }
 
   //reserve initial memory for 100000 vertices
@@ -49,7 +49,7 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
     QgsFeatureSource *source = layer.source;
     if ( !source )
     {
-      return 2;
+      return InvalidSource;
     }
 
     QgsAttributeList attList;
@@ -95,237 +95,26 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
     layerCount++;
   }
 
-  return 0;
+  return Success;
 }
 
-int QgsInterpolator::addVerticesToCache( const QgsGeometry &geom, bool zCoord, double attributeValue )
+bool QgsInterpolator::addVerticesToCache( const QgsGeometry &geom, bool zCoord, double attributeValue )
 {
-  if ( geom.isNull() )
-    return 1;
+  if ( !geom || geom.isEmpty() )
+    return true; // nothing to do
 
-  bool hasZValue = false;
-  QByteArray wkb( geom.exportToWkb() );
-  QgsConstWkbPtr currentWkbPtr( wkb );
-  currentWkbPtr.readHeader();
-  vertexData vertex; //the current vertex
-
-  QgsWkbTypes::Type wkbType = geom.wkbType();
-  switch ( wkbType )
+  bool hasZ = geom.constGet()->is3D();
+  for ( auto point = geom.vertices_begin(); point != geom.vertices_end(); ++point )
   {
-    case QgsWkbTypes::Point25D:
-      hasZValue = true;
-      //intentional fall-through
-      FALLTHROUGH;
-    case QgsWkbTypes::Point:
+    if ( hasZ && zCoord )
     {
-      currentWkbPtr >> vertex.x >> vertex.y;
-      if ( zCoord && hasZValue )
-      {
-        currentWkbPtr >> vertex.z;
-      }
-      else
-      {
-        vertex.z = attributeValue;
-      }
-      mCachedBaseData.push_back( vertex );
-      break;
+      mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), ( *point ).z() ) );
     }
-    case QgsWkbTypes::LineString25D:
-      hasZValue = true;
-      //intentional fall-through
-      FALLTHROUGH;
-    case QgsWkbTypes::LineString:
+    else
     {
-      int nPoints;
-      currentWkbPtr >> nPoints;
-      for ( int index = 0; index < nPoints; ++index )
-      {
-        currentWkbPtr >> vertex.x >> vertex.y;
-        if ( zCoord && hasZValue ) //skip z-coordinate for 25D geometries
-        {
-          currentWkbPtr >> vertex.z;
-        }
-        else
-        {
-          vertex.z = attributeValue;
-        }
-        mCachedBaseData.push_back( vertex );
-      }
-      break;
+      mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), attributeValue ) );
     }
-#if 0
-    case QgsWkbTypes::Polygon25D:
-      hasZValue = true;
-    //intentional fall-through
-    case QgsWkbTypes::Polygon:
-    {
-      int nRings;
-      wkbPtr >> nRings;
-      for ( int index = 0; index < nRings; ++index )
-      {
-        int nPoints;
-        wkbPtr >> nPoints;
-        for ( int index2 = 0; index2 < *npoints; ++index2 )
-        {
-          double x, y;
-          wkbPtr >> x >> y;
-          if ( point.sqrDist( x, y ) < actdist )
-          {
-            actdist = point.sqrDist( x, y );
-            vertexnr = vertexcounter;
-            //assign the rubber band indices
-            if ( index2 == 0 )
-            {
-              beforeVertex = vertexcounter + ( *npoints - 2 );
-              afterVertex = vertexcounter + 1;
-            }
-            else if ( index2 == ( *npoints - 1 ) )
-            {
-              beforeVertex = vertexcounter - 1;
-              afterVertex = vertexcounter - ( *npoints - 2 );
-            }
-            else
-            {
-              beforeVertex = vertexcounter - 1;
-              afterVertex = vertexcounter + 1;
-            }
-          }
-          if ( hasZValue ) //skip z-coordinate for 25D geometries
-          {
-            wkbPtr += sizeof( double );
-          }
-          ++vertexcounter;
-        }
-      }
-      break;
-    }
-    case QgsWkbTypes::MultiPoint25D:
-      hasZValue = true;
-    //intentional fall-through
-    case QgsWkbTypes::MultiPoint:
-    {
-      int nPoints;
-      wkbPtr >> nPoints;
-      for ( int index = 0; index < nPoints; ++index )
-      {
-        wkbPtr += 1 + sizeof( int ); //skip endian and point type
-
-        double x, y;
-        wkbPtr >> x >> y;
-        if ( point.sqrDist( x, y ) < actdist )
-        {
-          actdist = point.sqrDist( x, y );
-          vertexnr = index;
-        }
-        if ( hasZValue ) //skip z-coordinate for 25D geometries
-        {
-          wkbPtr += sizeof( double );
-        }
-      }
-      break;
-    }
-    case QgsWkbTypes::MultiLineString25D:
-      hasZValue = true;
-    //intentional fall-through
-    case QgsWkbTypes::MultiLineString:
-    {
-      int nLines;
-      wkbPtr >> nLines;
-      for ( int index = 0; index < nLines; ++index )
-      {
-        int nPoints;
-        wkbPtr >> nPoints;
-        for ( int index2 = 0; index2 < nPoints; ++index2 )
-        {
-          double x, y;
-          wkbPtr >> x >> y;
-          if ( point.sqrDist( x, y ) < actdist )
-          {
-            actdist = point.sqrDist( x, y );
-            vertexnr = vertexcounter;
-
-            if ( index2 == 0 )//assign the rubber band indices
-            {
-              beforeVertex = -1;
-            }
-            else
-            {
-              beforeVertex = vertexnr - 1;
-            }
-            if ( index2 == nPoints - 1 )
-            {
-              afterVertex = -1;
-            }
-            else
-            {
-              afterVertex = vertexnr + 1;
-            }
-          }
-          if ( hasZValue ) //skip z-coordinate for 25D geometries
-          {
-            wkbPtr += sizeof( double );
-          }
-          ++vertexcounter;
-        }
-      }
-      break;
-    }
-    case QgsWkbTypes::MultiPolygon25D:
-      hasZValue = true;
-    //intentional fall-through
-    case QgsWkbTypes::MultiPolygon:
-    {
-      int nPolys;
-      wkbPtr >> nPolys;
-      for ( int index = 0; index < nPolys; ++index )
-      {
-        wkbPtr += 1 + sizeof( int ); //skip endian and polygon type
-        int nRings;
-        wkbPtr >> nRings;
-        for ( int index2 = 0; index2 < nRings; ++index2 )
-        {
-          int nPoints;
-          wkbPtr >> nPoints;
-          for ( int index3 = 0; index3 < nPoints; ++index3 )
-          {
-            double x, y;
-            wkbPtr >> x >> y;
-            if ( point.sqrDist( x, y ) < actdist )
-            {
-              actdist = point.sqrDist( x, y );
-              vertexnr = vertexcounter;
-
-              //assign the rubber band indices
-              if ( index3 == 0 )
-              {
-                beforeVertex = vertexcounter + ( nPoints - 2 );
-                afterVertex = vertexcounter + 1;
-              }
-              else if ( index3 == ( *npoints - 1 ) )
-              {
-                beforeVertex = vertexcounter - 1;
-                afterVertex = vertexcounter - ( nPoints - 2 );
-              }
-              else
-              {
-                beforeVertex = vertexcounter - 1;
-                afterVertex = vertexcounter + 1;
-              }
-            }
-            if ( hasZValue ) //skip z-coordinate for 25D geometries
-            {
-              wkbPtr += sizeof( double );
-            }
-            ++vertexcounter;
-          }
-        }
-      }
-      break;
-    }
-#endif //0
-    default:
-      break;
   }
   mDataIsCached = true;
-  return 0;
+  return true;
 }

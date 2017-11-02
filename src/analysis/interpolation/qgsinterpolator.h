@@ -32,9 +32,26 @@ class QgsFeedback;
  */
 struct ANALYSIS_EXPORT QgsInterpolatorVertexData
 {
-  double x;
-  double y;
-  double z;
+
+  /**
+   * Constructor for QgsInterpolatorVertexData with the specified
+   * \a x, \a y, and \a z coordinate.
+   */
+  QgsInterpolatorVertexData( double x, double y, double z )
+    : x( x )
+    , y( y )
+    , z( z )
+  {}
+
+  //! Constructor for QgsInterpolatorVertexData
+  QgsInterpolatorVertexData() = default;
+
+  //! X-coordinate
+  double x = 0.0;
+  //! Y-coordinate
+  double y = 0.0;
+  //! Z-coordinate
+  double z = 0.0;
 };
 
 /**
@@ -55,7 +72,16 @@ class ANALYSIS_EXPORT QgsInterpolator
       SourceBreakLines, //!< Break lines
     };
 
-    //! A layer together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)
+    //! Result of an interpolation operation
+    enum Result
+    {
+      Success = 0, //!< Operation was successful
+      Canceled, //!< Operation was manually canceled
+      InvalidSource, //!< Operation failed due to invalid source
+      FeatureGeometryError, //!< Operation failed due to invalid feature geometry
+    };
+
+    //! A source together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)
     struct LayerData
     {
       //! Feature source
@@ -111,11 +137,12 @@ class ANALYSIS_EXPORT QgsInterpolator
 
     /**
      * Helper method that adds the vertices of a geometry to the mCachedBaseData
-       \param geom the geometry
-       \param zCoord true if the z-coordinate of the geometry is to be interpolated
-       \param attributeValue the attribute value for interpolation (if not interpolated from z-coordinate)
-     \returns 0 in case of success*/
-    int addVerticesToCache( const QgsGeometry &geom, bool zCoord, double attributeValue );
+     * \param geom the geometry
+     * \param zCoord true if the z-coordinate of the geometry is to be interpolated
+     * \param attributeValue the attribute value for interpolation (if not interpolated from z-coordinate)
+     *\returns 0 in case of success
+    */
+    bool addVerticesToCache( const QgsGeometry &geom, bool zCoord, double attributeValue );
 };
 
 #endif
