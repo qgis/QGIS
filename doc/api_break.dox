@@ -210,6 +210,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsVectorRandomColorRampV2<td>QgsLimitedRandomColorRamp
 <tr><td>QgsVectorRandomColorRampV2Dialog<td>QgsLimitedRandomColorRampDialog
 <tr><td>QgsVectorRandomColorRampV2DialogBase<td>QgsLimitedRandomColorRampDialogBase
+<tr><td>vertexData<td>QgsInterpolatorVertexData
 </table>
 
 <table>
@@ -1482,6 +1483,16 @@ QgsIFeatureSelectionManager        {#qgis_api_break_3_0_QgsIFeatureSelectionMana
 ---------------------------
 
 - selectedFeaturesIds() has been renamed to selectedFeatureIds()
+
+
+QgsInterpolator        {#qgis_api_break_3_0_QgsInterpolator}
+---------------
+
+- The InputType enum was renamed to SourceType and the enum values were renamed.
+- LayerData.vectorLayer was renamed to LayerData.source
+- LayerData.zCoordInterpolation was renamed to LayerData.useZValue
+- LayerData.mInputType was renamed to LayerData.sourceType
+
 
 
 QgsJSONExporter        {#qgis_api_break_3_0_QgsJSONExporter}
