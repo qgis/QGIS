@@ -271,44 +271,46 @@ void QgsBrowserDockWidget::removeFavorite()
 
 void QgsBrowserDockWidget::refresh()
 {
-  if ( mModel )
-    refreshModel( QModelIndex() );
+  refreshModel( QModelIndex() );
 }
 
 void QgsBrowserDockWidget::refreshModel( const QModelIndex &index )
 {
-  QgsDataItem *item = mModel->dataItem( index );
-  if ( item )
+  if ( mModel && mProxyModel )
   {
-    QgsDebugMsg( "path = " + item->path() );
-  }
-  else
-  {
-    QgsDebugMsg( "invalid item" );
-  }
-
-  if ( item && ( item->capabilities2() & QgsDataItem::Fertile ) )
-  {
-    mModel->refresh( index );
-  }
-
-  for ( int i = 0; i < mModel->rowCount( index ); i++ )
-  {
-    QModelIndex idx = mModel->index( i, 0, index );
-    QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
-    QgsDataItem *child = mModel->dataItem( idx );
-
-    // Check also expanded descendants so that the whole expanded path does not get collapsed if one item is collapsed.
-    // Fast items (usually root items) are refreshed so that when collapsed, it is obvious they are if empty (no expand symbol).
-    if ( mBrowserView->isExpanded( proxyIdx ) || mBrowserView->hasExpandedDescendant( proxyIdx ) || ( child && child->capabilities2() & QgsDataItem::Fast ) )
+    QgsDataItem *item = mModel->dataItem( index );
+    if ( item )
     {
-      refreshModel( idx );
+      QgsDebugMsg( "path = " + item->path() );
     }
     else
     {
-      if ( child && ( child->capabilities2() & QgsDataItem::Fertile ) )
+      QgsDebugMsg( "invalid item" );
+    }
+
+    if ( item && ( item->capabilities2() & QgsDataItem::Fertile ) )
+    {
+      mModel->refresh( index );
+    }
+
+    for ( int i = 0; i < mModel->rowCount( index ); i++ )
+    {
+      QModelIndex idx = mModel->index( i, 0, index );
+      QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
+      QgsDataItem *child = mModel->dataItem( idx );
+
+      // Check also expanded descendants so that the whole expanded path does not get collapsed if one item is collapsed.
+      // Fast items (usually root items) are refreshed so that when collapsed, it is obvious they are if empty (no expand symbol).
+      if ( mBrowserView->isExpanded( proxyIdx ) || mBrowserView->hasExpandedDescendant( proxyIdx ) || ( child && child->capabilities2() & QgsDataItem::Fast ) )
       {
-        child->depopulate();
+        refreshModel( idx );
+      }
+      else
+      {
+        if ( child && ( child->capabilities2() & QgsDataItem::Fertile ) )
+        {
+          child->depopulate();
+        }
       }
     }
   }
