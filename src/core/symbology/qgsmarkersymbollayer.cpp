@@ -2009,8 +2009,8 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   if ( !context.renderContext().forceVectorOutput() && !rotated )
   {
     usePict = false;
-    const QImage &img = QgsApplication::svgCache()->svgAsImage( path, size, fillColor, strokeColor, strokeWidth,
-                        context.renderContext().scaleFactor(), fitsInCache, aspectRatio );
+    QImage img = QgsApplication::svgCache()->svgAsImage( path, size, fillColor, strokeColor, strokeWidth,
+                 context.renderContext().scaleFactor(), fitsInCache, aspectRatio );
     if ( fitsInCache && img.width() > 1 )
     {
       //consider transparency
@@ -2032,9 +2032,8 @@ void QgsSvgMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext
   if ( usePict || !fitsInCache )
   {
     p->setOpacity( context.opacity() );
-    const QPicture &pct = QgsApplication::svgCache()->svgAsPicture( path, size, fillColor, strokeColor, strokeWidth,
-                          context.renderContext().scaleFactor(), context.renderContext().forceVectorOutput(), aspectRatio );
-
+    QPicture pct = QgsApplication::svgCache()->svgAsPicture( path, size, fillColor, strokeColor, strokeWidth,
+                   context.renderContext().scaleFactor(), context.renderContext().forceVectorOutput(), aspectRatio );
     if ( pct.width() > 1 )
     {
       p->save();

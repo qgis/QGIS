@@ -90,8 +90,8 @@ class ShortestPathPointToPoint(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.DIRECTIONS = OrderedDict([
             (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
-            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
-            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionForward)])
+            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionBackward),
+            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionBoth)])
 
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
@@ -217,20 +217,18 @@ class ShortestPathPointToPoint(QgisAlgorithm):
         idxStart = graph.findVertex(snappedPoints[0])
         idxEnd = graph.findVertex(snappedPoints[1])
 
-        tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
+        tree, costs = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
         if tree[idxEnd] == -1:
             raise QgsProcessingException(
                 self.tr('There is no route from start point to end point.'))
 
-        route = []
-        cost = 0.0
+        route = [graph.vertex(idxEnd).point()]
+        cost = costs[idxEnd]
         current = idxEnd
         while current != idxStart:
-            cost += graph.edge(tree[current]).cost(0)
-            route.append(graph.vertex(graph.edge(tree[current]).inVertex()).point())
-            current = graph.edge(tree[current]).outVertex()
+            current = graph.edge(tree[current]).fromVertex()
+            route.append(graph.vertex(current).point())
 
-        route.append(snappedPoints[0])
         route.reverse()
 
         feedback.pushInfo(self.tr('Writing results...'))

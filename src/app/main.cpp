@@ -302,7 +302,7 @@ void qgisCrash( int signal )
 #endif
     if ( len < 0 )
     {
-      myPrint( "Could not read link (%d:%s)\n", errno, strerror( errno ) );
+      myPrint( "Could not read link (%d: %s)\n", errno, strerror( errno ) );
     }
     else
     {
@@ -327,7 +327,7 @@ void qgisCrash( int signal )
       }
       else
       {
-        myPrint( "Cannot fork (%d:%s)\n", errno, strerror( errno ) );
+        myPrint( "Cannot fork (%d: %s)\n", errno, strerror( errno ) );
         dumpBacktrace( 256 );
       }
     }
@@ -859,12 +859,11 @@ int main( int argc, char *argv[] )
   // Settings migration is only supported on the default profile for now.
   if ( profileName == "default" )
   {
-    QgsVersionMigration *migration = QgsVersionMigration::canMigrate( 20000, Qgis::QGIS_VERSION_INT );
+    std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::QGIS_VERSION_INT ) );
     if ( migration && ( mySettingsMigrationForce || migration->requiresMigration() ) )
     {
       QgsDebugMsg( "RUNNING MIGRATION" );
       migration->runMigration();
-      delete migration;
     }
   }
 

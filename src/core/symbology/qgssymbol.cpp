@@ -914,6 +914,9 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
 
           context.setGeometry( geomCollection.geometryN( i ) );
           const QgsPolygon &polygon = dynamic_cast<const QgsPolygon &>( *geomCollection.geometryN( i ) );
+          if ( !polygon.exteriorRing() )
+            break;
+
           _getPolygon( pts, holes, context, polygon, !tileMapRendering && clipFeaturesToExtent() );
           static_cast<QgsFillSymbol *>( this )->renderPolygon( pts, ( !holes.isEmpty() ? &holes : nullptr ), &feature, context, layer, selected );
 

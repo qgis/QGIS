@@ -302,7 +302,7 @@ void QgsAuthIdentitiesEditor::btnAddIdentity_clicked()
       const QPair<QSslCertificate, QSslKey> &bundle( dlg->certBundleToImport() );
       if ( !QgsApplication::authManager()->storeCertIdentity( bundle.first, bundle.second ) )
       {
-        messageBar()->pushMessage( tr( "ERROR storing identity bundle in authentication database" ),
+        messageBar()->pushMessage( tr( "ERROR storing identity bundle in authentication database." ),
                                    QgsMessageBar::CRITICAL );
       }
       populateIdentitiesView();
@@ -326,7 +326,7 @@ void QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked()
 
   if ( digest.isEmpty() )
   {
-    messageBar()->pushMessage( tr( "Certificate id missing" ),
+    messageBar()->pushMessage( tr( "Certificate id missing." ),
                                QgsMessageBar::WARNING );
     return;
   }
@@ -372,7 +372,7 @@ void QgsAuthIdentitiesEditor::btnGroupByOrg_toggled( bool checked )
 {
   if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "identitiessortby" ), QVariant( checked ) ) )
   {
-    authMessageOut( QObject::tr( "Could not store sort by preference" ),
+    authMessageOut( QObject::tr( "Could not store sort by preference." ),
                     QObject::tr( "Authentication Identities" ),
                     QgsAuthManager::WARNING );
   }

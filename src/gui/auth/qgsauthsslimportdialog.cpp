@@ -159,7 +159,7 @@ void QgsAuthSslImportDialog::updateEnabledState()
   bool connected = mSocket && mSocket->state() == QAbstractSocket::ConnectedState;
   if ( connected && !mSocket->peerName().isEmpty() )
   {
-    appendString( tr( "Connected to %1:%2" ).arg( mSocket->peerName() ).arg( mSocket->peerPort() ) );
+    appendString( tr( "Connected to %1: %2" ).arg( mSocket->peerName() ).arg( mSocket->peerPort() ) );
   }
 }
 

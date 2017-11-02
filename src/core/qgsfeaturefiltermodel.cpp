@@ -254,7 +254,7 @@ void QgsFeatureFilterModel::updateCompleter()
       if ( currentEntryInNewList != 0 )
       {
         beginInsertRows( QModelIndex(), 0, currentEntryInNewList - 1 );
-        mEntries = entries.mid( 0, currentEntryInNewList );
+        mEntries = entries.mid( 0, currentEntryInNewList ) + mEntries;
         endInsertRows();
       }
       else
@@ -379,8 +379,8 @@ void QgsFeatureFilterModel::setExtraIdentifierValueUnguarded( const QVariant &ex
       mEntries.prepend( Entry( QVariant( QVariant::Int ), QStringLiteral( "%1" ).arg( tr( "NULL" ) ) ) );
     else
       mEntries.prepend( Entry( extraIdentifierValue, QStringLiteral( "(%1)" ).arg( extraIdentifierValue.toString() ) ) );
-    setExtraIdentifierValueIndex( 0 );
     endInsertRows();
+    setExtraIdentifierValueIndex( 0 );
 
     reloadCurrentFeature();
   }
@@ -447,11 +447,11 @@ QVariant QgsFeatureFilterModel::extraIdentifierValue() const
 
 void QgsFeatureFilterModel::setExtraIdentifierValue( const QVariant &extraIdentifierValue )
 {
-  if ( extraIdentifierValue == mExtraIdentifierValue && extraIdentifierValue.isNull() == mExtraIdentifierValue.isNull() && mExtraIdentifierValue.isValid() == extraIdentifierValue.isValid() )
+  if ( extraIdentifierValue == mExtraIdentifierValue && extraIdentifierValue.isNull() == mExtraIdentifierValue.isNull() && mExtraIdentifierValue.isValid() )
     return;
 
-  mExtraIdentifierValue = extraIdentifierValue;
   setExtraIdentifierValueUnguarded( extraIdentifierValue );
 
+  mExtraIdentifierValue = extraIdentifierValue;
   emit extraIdentifierValueChanged();
 }

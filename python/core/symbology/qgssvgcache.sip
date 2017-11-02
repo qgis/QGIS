@@ -11,69 +11,6 @@
 
 
 
-class QgsSvgCacheEntry
-{
-
-%TypeHeaderCode
-#include "qgssvgcache.h"
-%End
-  public:
-
-    QgsSvgCacheEntry();
-
-    QgsSvgCacheEntry( const QString &path, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke,
-                      double fixedAspectRatio = 0 ) ;
-%Docstring
- Constructor.
- \param path Absolute path to SVG file (relative paths are not resolved).
- \param size
- \param strokeWidth width of stroke
- \param widthScaleFactor width scale factor
- \param fill color of fill
- \param stroke color of stroke
- \param fixedAspectRatio fixed aspect ratio (optional)
-%End
-    ~QgsSvgCacheEntry();
-
-
-    QString path;
-%Docstring
-Absolute path to SVG file
-%End
-    double size;
-    double strokeWidth;
-    double widthScaleFactor;
-
-    double fixedAspectRatio;
-%Docstring
-Fixed aspect ratio
-%End
-
-    QSizeF viewboxSize;
-%Docstring
- SVG viewbox size.
-.. versionadded:: 2.14
-%End
-
-    QColor fill;
-    QColor stroke;
-    QImage *image;
-    QPicture *picture;
-    QByteArray svgContent;
-
-    QgsSvgCacheEntry *nextEntry;
-    QgsSvgCacheEntry *previousEntry;
-
-    bool operator==( const QgsSvgCacheEntry &other ) const;
-    int dataSize() const;
-%Docstring
-Return memory usage in bytes
- :rtype: int
-%End
-
-  private:
-    QgsSvgCacheEntry( const QgsSvgCacheEntry &rh );
-};
 
 class QgsSvgCache : QObject
 {
@@ -199,39 +136,6 @@ Get SVG content
 %Docstring
 Emit a signal to be caught by qgisapp and display a msg on status bar
 %End
-
-  protected:
-
-    QgsSvgCacheEntry *insertSvg( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                 double widthScaleFactor, double fixedAspectRatio = 0 );
-%Docstring
- Creates new cache entry and returns pointer to it
- \param path Absolute path to SVG file
- \param size size of cached image
- \param fill color of fill
- \param stroke color of stroke
- \param strokeWidth width of stroke
- \param widthScaleFactor width scale factor
- \param fixedAspectRatio fixed aspect ratio (optional)
- :rtype: QgsSvgCacheEntry
-%End
-
-    void replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry );
-    void cacheImage( QgsSvgCacheEntry *entry );
-    void cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput = false );
-    QgsSvgCacheEntry *cacheEntry( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                  double widthScaleFactor, double fixedAspectRatio = 0 );
-%Docstring
-Returns entry from cache or creates a new entry if it does not exist already
- :rtype: QgsSvgCacheEntry
-%End
-
-    void trimToMaximumSize();
-%Docstring
-Removes the least used items until the maximum size is under the limit
-%End
-
-    void takeEntryFromList( QgsSvgCacheEntry *entry );
 
 };
 

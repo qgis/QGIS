@@ -36,15 +36,11 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 
-QgsSvgCacheEntry::QgsSvgCacheEntry()
-  : path( QString() )
-  , fill( Qt::black )
-  , stroke( Qt::black )
-{
-}
+///@cond PRIVATE
 
 QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &p, double s, double ow, double wsf, const QColor &fi, const QColor &ou, double far )
   : path( p )
+  , fileModified( QFileInfo( p ).lastModified() )
   , size( s )
   , strokeWidth( ow )
   , widthScaleFactor( wsf )
@@ -52,19 +48,18 @@ QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &p, double s, double ow, doubl
   , fill( fi )
   , stroke( ou )
 {
-}
-
-
-QgsSvgCacheEntry::~QgsSvgCacheEntry()
-{
-  delete image;
-  delete picture;
+  fileModifiedLastCheckTimer.start();
 }
 
 bool QgsSvgCacheEntry::operator==( const QgsSvgCacheEntry &other ) const
 {
-  return other.path == path && qgsDoubleNear( other.size, size ) && qgsDoubleNear( other.strokeWidth, strokeWidth ) && qgsDoubleNear( other.widthScaleFactor, widthScaleFactor )
-         && other.fill == fill && other.stroke == stroke;
+  bool equal = other.path == path && qgsDoubleNear( other.size, size ) && qgsDoubleNear( other.strokeWidth, strokeWidth ) && qgsDoubleNear( other.widthScaleFactor, widthScaleFactor )
+               && other.fixedAspectRatio == fixedAspectRatio && other.fill == fill && other.stroke == stroke;
+
+  if ( equal && ( mFileModifiedCheckTimeout <= 0 || fileModifiedLastCheckTimer.hasExpired( mFileModifiedCheckTimeout ) ) )
+    equal = other.fileModified == fileModified;
+
+  return equal;
 }
 
 int QgsSvgCacheEntry::dataSize() const
@@ -80,6 +75,8 @@ int QgsSvgCacheEntry::dataSize() const
   }
   return size;
 }
+///@endcond
+
 
 QgsSvgCache::QgsSvgCache( QObject *parent )
   : QObject( parent )
@@ -100,6 +97,8 @@ QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &
 
   fitsInCache = true;
   QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, stroke, strokeWidth, widthScaleFactor, fixedAspectRatio );
+
+  QImage result;
 
   //if current entry image is 0: cache image for entry
   // checks to see if image will fit into cache
@@ -125,24 +124,30 @@ QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &
     if ( cachedDataSize > MAXIMUM_SIZE / 2 )
     {
       fitsInCache = false;
-      delete currentEntry->image;
-      currentEntry->image = nullptr;
-      //currentEntry->image = new QImage( 0, 0 );
+      currentEntry->image.reset();
 
       // instead cache picture
       if ( !currentEntry->picture )
       {
         cachePicture( currentEntry, false );
       }
+
+      // ...and render cached picture to result image
+      result = imageFromCachedPicture( *currentEntry );
     }
     else
     {
       cacheImage( currentEntry );
+      result = *( currentEntry->image );
     }
     trimToMaximumSize();
   }
+  else
+  {
+    result = *( currentEntry->image );
+  }
 
-  return *( currentEntry->image );
+  return result;
 }
 
 QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
@@ -160,7 +165,9 @@ QPicture QgsSvgCache::svgAsPicture( const QString &path, double size, const QCol
     trimToMaximumSize();
   }
 
-  return *( currentEntry->picture );
+  QPicture p = *( currentEntry->picture );
+  p.detach();
+  return p;
 }
 
 QByteArray QgsSvgCache::svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
@@ -186,6 +193,7 @@ QgsSvgCacheEntry *QgsSvgCache::insertSvg( const QString &path, double size, cons
     double widthScaleFactor, double fixedAspectRatio )
 {
   QgsSvgCacheEntry *entry = new QgsSvgCacheEntry( path, size, strokeWidth, widthScaleFactor, fill, stroke, fixedAspectRatio );
+  entry->mFileModifiedCheckTimeout = mFileModifiedCheckTimeout;
 
   replaceParamsAndCacheSvg( entry );
 
@@ -476,55 +484,32 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
     return;
   }
 
-  delete entry->image;
-  entry->image = nullptr;
+  entry->image.reset();
 
-  bool isFixedAR = entry->fixedAspectRatio > 0;
+  QSizeF viewBoxSize;
+  QSizeF scaledSize;
+  QSize imageSize = sizeForImage( *entry, viewBoxSize, scaledSize );
 
-  QSvgRenderer r( entry->svgContent );
-  double hwRatio = 1.0;
-  if ( r.viewBoxF().width() > 0 )
-  {
-    if ( isFixedAR )
-    {
-      hwRatio = entry->fixedAspectRatio;
-    }
-    else
-    {
-      hwRatio = r.viewBoxF().height() / r.viewBoxF().width();
-    }
-  }
-  double wSize = entry->size;
-  int wImgSize = static_cast< int >( wSize );
-  if ( wImgSize < 1 )
-  {
-    wImgSize = 1;
-  }
-  double hSize = wSize * hwRatio;
-  int hImgSize = static_cast< int >( hSize );
-  if ( hImgSize < 1 )
-  {
-    hImgSize = 1;
-  }
   // cast double image sizes to int for QImage
-  QImage *image = new QImage( wImgSize, hImgSize, QImage::Format_ARGB32_Premultiplied );
+  std::unique_ptr< QImage > image = qgis::make_unique< QImage >( imageSize, QImage::Format_ARGB32_Premultiplied );
   image->fill( 0 ); // transparent background
 
-  QPainter p( image );
-  if ( qgsDoubleNear( r.viewBoxF().width(), r.viewBoxF().height() ) )
+  QPainter p( image.get() );
+  QSvgRenderer r( entry->svgContent );
+  if ( qgsDoubleNear( viewBoxSize.width(), viewBoxSize.height() ) )
   {
     r.render( &p );
   }
   else
   {
-    QSizeF s( r.viewBoxF().size() );
-    s.scale( wSize, hSize, Qt::KeepAspectRatio );
-    QRectF rect( ( wImgSize - s.width() ) / 2, ( hImgSize - s.height() ) / 2, s.width(), s.height() );
+    QSizeF s( viewBoxSize );
+    s.scale( scaledSize.width(), scaledSize.height(), Qt::KeepAspectRatio );
+    QRectF rect( ( imageSize.width() - s.width() ) / 2, ( imageSize.height() - s.height() ) / 2, s.width(), s.height() );
     r.render( &p, rect );
   }
 
-  entry->image = image;
   mTotalSize += ( image->width() * image->height() * 32 );
+  entry->image = std::move( image );
 }
 
 void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput )
@@ -535,13 +520,12 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
     return;
   }
 
-  delete entry->picture;
-  entry->picture = nullptr;
+  entry->picture.reset();
 
   bool isFixedAR = entry->fixedAspectRatio > 0;
 
   //correct QPictures dpi correction
-  QPicture *picture = new QPicture();
+  std::unique_ptr< QPicture > picture = qgis::make_unique< QPicture >();
   QRectF rect;
   QSvgRenderer r( entry->svgContent );
   double hwRatio = 1.0;
@@ -564,9 +548,9 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
   s.scale( wSize, hSize, isFixedAR ? Qt::IgnoreAspectRatio : Qt::KeepAspectRatio );
   rect = QRectF( -s.width() / 2.0, -s.height() / 2.0, s.width(), s.height() );
 
-  QPainter p( picture );
+  QPainter p( picture.get() );
   r.render( &p, rect );
-  entry->picture = picture;
+  entry->picture = std::move( picture );
   mTotalSize += entry->picture->size();
 }
 
@@ -576,7 +560,7 @@ QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, con
   //search entries in mEntryLookup
   QgsSvgCacheEntry *currentEntry = nullptr;
   QList<QgsSvgCacheEntry *> entries = mEntryLookup.values( path );
-
+  QDateTime modified;
   QList<QgsSvgCacheEntry *>::iterator entryIt = entries.begin();
   for ( ; entryIt != entries.end(); ++entryIt )
   {
@@ -585,6 +569,14 @@ QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, con
          qgsDoubleNear( cacheEntry->strokeWidth, strokeWidth ) && qgsDoubleNear( cacheEntry->widthScaleFactor, widthScaleFactor ) &&
          qgsDoubleNear( cacheEntry->fixedAspectRatio, fixedAspectRatio ) )
     {
+      if ( mFileModifiedCheckTimeout <= 0 || cacheEntry->fileModifiedLastCheckTimer.hasExpired( mFileModifiedCheckTimeout ) )
+      {
+        if ( !modified.isValid() )
+          modified = QFileInfo( path ).lastModified();
+
+        if ( cacheEntry->fileModified != modified )
+          continue;
+      }
       currentEntry = cacheEntry;
       break;
     }
@@ -904,6 +896,53 @@ void QgsSvgCache::printEntryList()
     QgsDebugMsg( "Width scale factor" + QString::number( entry->widthScaleFactor ) );
     entry = entry->nextEntry;
   }
+}
+
+QSize QgsSvgCache::sizeForImage( const QgsSvgCacheEntry &entry, QSizeF &viewBoxSize, QSizeF &scaledSize ) const
+{
+  bool isFixedAR = entry.fixedAspectRatio > 0;
+
+  QSvgRenderer r( entry.svgContent );
+  double hwRatio = 1.0;
+  viewBoxSize = r.viewBoxF().size();
+  if ( viewBoxSize.width() > 0 )
+  {
+    if ( isFixedAR )
+    {
+      hwRatio = entry.fixedAspectRatio;
+    }
+    else
+    {
+      hwRatio = viewBoxSize.height() / viewBoxSize.width();
+    }
+  }
+
+  // cast double image sizes to int for QImage
+  scaledSize.setWidth( entry.size );
+  int wImgSize = static_cast< int >( scaledSize.width() );
+  if ( wImgSize < 1 )
+  {
+    wImgSize = 1;
+  }
+  scaledSize.setHeight( scaledSize.width() * hwRatio );
+  int hImgSize = static_cast< int >( scaledSize.height() );
+  if ( hImgSize < 1 )
+  {
+    hImgSize = 1;
+  }
+  return QSize( wImgSize, hImgSize );
+}
+
+QImage QgsSvgCache::imageFromCachedPicture( const QgsSvgCacheEntry &entry ) const
+{
+  QSizeF viewBoxSize;
+  QSizeF scaledSize;
+  QImage image( sizeForImage( entry, viewBoxSize, scaledSize ), QImage::Format_ARGB32_Premultiplied );
+  image.fill( 0 ); // transparent background
+
+  QPainter p( &image );
+  p.drawPicture( QPoint( 0, 0 ), *entry.picture );
+  return image;
 }
 
 void QgsSvgCache::trimToMaximumSize()

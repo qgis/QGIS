@@ -210,6 +210,7 @@ sub remove_following_body_or_initializerlist {
 sub fix_annotations {
     my $line = $_[0];
     # printed annotations
+    $line =~ s/\/\/\s*SIP_ABSTRACT\b/\/Abstract\//;
     $line =~ s/\bSIP_ABSTRACT\b/\/Abstract\//;
     $line =~ s/\bSIP_ALLOWNONE\b/\/AllowNone\//;
     $line =~ s/\bSIP_ARRAY\b/\/Array\//g;
@@ -512,7 +513,7 @@ while ($LINE_IDX < $LINE_COUNT){
 
     # class declaration started
     # https://regex101.com/r/6FWntP/10
-    if ( $LINE =~ m/^(\s*class)\s+([A-Z]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
+    if ( $LINE =~ m/^(\s*class)\s+([A-Z]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
         dbg_info("class definition started");
         push @ACCESS, PUBLIC;
         push @EXPORTED, 0;

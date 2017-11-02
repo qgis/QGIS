@@ -279,7 +279,7 @@ int main( int argc, char **argv )
       }
       else if ( geometryType == QgsWkbTypes::Polygon )
       {
-        QgsPolygonXYpolygon = geometry.asPolygon();
+        QgsPolygonXY polygon = geometry.asPolygon();
         Q_FOREACH ( const QgsPolylineXY &polyline, polygon )
         {
           writePolyline( map, GV_BOUNDARY, polyline, cats );

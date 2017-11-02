@@ -82,7 +82,7 @@ void QgsMssqlNewConnection::accept()
        ( settings.contains( baseKey + txtName->text() + "/service" ) ||
          settings.contains( baseKey + txtName->text() + "/host" ) ) &&
        QMessageBox::question( this,
-                              tr( "Save connection" ),
+                              tr( "Save Connection" ),
                               tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
@@ -155,7 +155,7 @@ bool QgsMssqlNewConnection::testConnection( const QString &testDatabase )
   if ( txtService->text().isEmpty() && txtHost->text().isEmpty() )
   {
     bar->clearWidgets();
-    bar->pushWarning( tr( "Connection Failed" ), tr( "Host name hasn't been specified" ) );
+    bar->pushWarning( tr( "Connection Failed" ), tr( "Host name hasn't been specified." ) );
     return false;
   }
 

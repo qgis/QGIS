@@ -170,7 +170,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      *
      * \returns The current value the widget represents
      */
-    virtual QString expression() = 0;
+    virtual QString expression() const = 0;
 
     /**
      * If this is true, then this search widget should take effect directly
@@ -225,7 +225,11 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
   protected slots:
 
-    virtual void setExpression( QString value ) = 0;
+    /**
+     * Set the \a expression which is currently used as filter for this widget.
+     */
+    virtual void setExpression( const QString &expression ) = 0;
+
     void setFeature( const QgsFeature &feature ) override;
 
   protected:

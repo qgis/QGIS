@@ -78,7 +78,7 @@ static int cmpfunc( const void *a, const void *b )
   double v2 = ( *( areanode ** )b )->area;
 
   /* qsort gives unpredictable results when comaping identical values.
-   * If two values is the same we force returning the last point in hte point array.
+   * If two values is the same we force returning the last point in the point array.
    * That way we get the same ordering on diffreent machines and pllatforms
    */
   if ( v1 == v2 )

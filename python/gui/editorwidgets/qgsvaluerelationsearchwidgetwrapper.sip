@@ -26,7 +26,7 @@ class QgsValueRelationSearchWidgetWrapper : QgsSearchWidgetWrapper
     explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
     virtual bool applyDirectly();
 
-    virtual QString expression();
+    virtual QString expression() const;
 
     virtual bool valid() const;
 
@@ -56,7 +56,7 @@ class QgsValueRelationSearchWidgetWrapper : QgsSearchWidgetWrapper
 Called when current value of search widget changes
 %End
 
-    virtual void setExpression( QString exp );
+    virtual void setExpression( const QString &exp );
 
 
 };

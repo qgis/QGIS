@@ -180,7 +180,7 @@ bool QgsStyleExportImportDialog::populateStyles( QgsStyle *style )
     // NOTE mTempStyle is style here
     if ( !style->importXml( mFileName ) )
     {
-      QMessageBox::warning( this, tr( "Import error" ),
+      QMessageBox::warning( this, tr( "Import Error" ),
                             tr( "An error occurred during import:\n%1" ).arg( style->errorString() ) );
       return false;
     }
@@ -278,7 +278,7 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList *selection, QgsStyl
     {
       if ( dst->symbolNames().contains( symbolName ) && prompt )
       {
-        int res = QMessageBox::warning( this, tr( "Duplicate names" ),
+        int res = QMessageBox::warning( this, tr( "Duplicate Names" ),
                                         tr( "Symbol with name '%1' already exists.\nOverwrite?" )
                                         .arg( symbolName ),
                                         QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
@@ -322,7 +322,7 @@ void QgsStyleExportImportDialog::moveStyles( QModelIndexList *selection, QgsStyl
     {
       if ( dst->colorRampNames().contains( symbolName ) && prompt )
       {
-        int res = QMessageBox::warning( this, tr( "Duplicate names" ),
+        int res = QMessageBox::warning( this, tr( "Duplicate Names" ),
                                         tr( "Color ramp with name '%1' already exists.\nOverwrite?" )
                                         .arg( symbolName ),
                                         QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );

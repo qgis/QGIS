@@ -87,6 +87,7 @@ for my $dist (@dists) {
 	push @dep, $dep;
 	push @dep, "cmake-curses-gui";
 	push @dep, "expect";  # for unbuffer
+	push @dep, "qt5-default";  # to avoid having to select Qt5 manually
 
 	print O "| $dist | ``apt-get install" . join( " ", @dep ) . "`` |\n";
 }

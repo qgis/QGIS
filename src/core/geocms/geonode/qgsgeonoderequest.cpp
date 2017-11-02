@@ -235,7 +235,7 @@ void QgsGeoNodeRequest::replyFinished()
 
         if ( mHttpGeoNodeResponse.isEmpty() )
         {
-          mError = tr( "empty of capabilities: %1" ).arg( mGeoNodeReply->errorString() );
+          mError = tr( "Empty capabilities: %1" ).arg( mGeoNodeReply->errorString() );
         }
       }
     }

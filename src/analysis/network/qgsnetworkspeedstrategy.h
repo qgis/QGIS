@@ -35,14 +35,8 @@ class ANALYSIS_EXPORT QgsNetworkSpeedStrategy : public QgsNetworkStrategy
      */
     QgsNetworkSpeedStrategy( int attributeId, double defaultValue, double toMetricFactor );
 
-    //! Returns edge cost
     QVariant cost( double distance, const QgsFeature &f ) const override;
-
-    /**
-     * Returns list of the source layer attributes needed for cost calculation.
-     * This method called by QgsGraphDirector.
-     */
-    QgsAttributeList requiredAttributes() const override;
+    QSet< int > requiredAttributes() const override;
 
   private:
     int mAttributeId;

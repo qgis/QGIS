@@ -942,7 +942,7 @@
                <string>Geometry is read as a well known text string from the selected fields</string>
               </property>
               <property name="text">
-               <string>Well known text (WKT) </string>
+               <string>Well known text (WKT)</string>
               </property>
              </widget>
             </item>

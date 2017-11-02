@@ -1285,7 +1285,6 @@ QgisApp::~QgisApp()
   delete mMapTools.mZoomIn;
   delete mMapTools.mZoomOut;
   delete mMapTools.mPan;
-  delete mMapTools.mAddFeature;
   delete mMapTools.mAddPart;
   delete mMapTools.mAddRing;
   delete mMapTools.mFillRing;
@@ -1338,6 +1337,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mRegularPolygon2Points;
   delete mMapTools.mRegularPolygonCenterPoint;
   delete mMapTools.mRegularPolygonCenterCorner;
+  delete mMapTools.mAddFeature;
   delete mpMaptip;
 
   delete mpGpsWidget;
@@ -1358,10 +1358,9 @@ QgisApp::~QgisApp()
   QgsApplication::setFileOpenEventReceiver( nullptr );
 
   delete mPythonUtils;
-
   delete mTray;
-
   delete mDataSourceManagerDialog;
+  qDeleteAll( mCustomDropHandlers );
 
   // This function *MUST* be the last one called, as it destroys in
   // particular GDAL. As above objects can hold GDAL/OGR objects, it is not
@@ -1658,6 +1657,7 @@ void QgisApp::readRecentProjects()
   }
   std::sort( projectKeys.begin(), projectKeys.end() );
 
+  int pinPos = 0;
   Q_FOREACH ( int key, projectKeys )
   {
     QgsWelcomePageItemsModel::RecentProjectData data;
@@ -1670,7 +1670,8 @@ void QgisApp::readRecentProjects()
     settings.endGroup();
     if ( data.pin )
     {
-      mRecentProjects.prepend( data );
+      mRecentProjects.insert( pinPos, data );
+      pinPos++;
     }
     else
     {
@@ -1809,7 +1810,7 @@ void QgisApp::createActions()
   connect( mActionCopyStyle, &QAction::triggered, this, [ = ] { copyStyle(); } );
   connect( mActionPasteStyle, &QAction::triggered, this, [ = ] { pasteStyle(); } );
   connect( mActionAddFeature, &QAction::triggered, this, &QgisApp::addFeature );
-  connect( mActionCircularStringCurvePoint, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircularStringRadius ); } );
+  connect( mActionCircularStringCurvePoint, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircularStringCurvePoint ); } );
   connect( mActionCircularStringRadius, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircularStringRadius ); } );
   connect( mActionCircle2Points, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircle2Points, true ); } );
   connect( mActionCircle3Points, &QAction::triggered, this, [ = ] { setMapTool( mMapTools.mCircle3Points, true ); } );
@@ -3808,6 +3809,10 @@ void QgisApp::updateRecentProjectPaths()
                       QDir::toNativeSeparators( recentProject.path ) ) );
     //action->setEnabled( QFile::exists( ( recentProject.path ) ) );
     action->setData( recentProject.path );
+    if ( recentProject.pin )
+    {
+      action->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/pin.svg" ) ) );
+    }
   }
 
   if ( mWelcomePage )
@@ -4042,7 +4047,7 @@ void QgisApp::about()
 #ifdef HAVE_POSTGRESQL
     versionString += PG_VERSION;
 #else
-    versionString += tr( "No support." );
+    versionString += tr( "No support" );
 #endif
     versionString += QLatin1String( "</td>" );
 
@@ -4200,14 +4205,14 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       }
       else
       {
-        QString msg = tr( "%1 doesn't have any layers" ).arg( src );
+        QString msg = tr( "%1 doesn't have any layers." ).arg( src );
         messageBar()->pushMessage( tr( "Invalid Data Source" ), msg, QgsMessageBar::CRITICAL, messageTimeout() );
         delete layer;
       }
     }
     else
     {
-      QString msg = tr( "%1 is not a valid or recognized data source" ).arg( src );
+      QString msg = tr( "%1 is not a valid or recognized data source." ).arg( src );
       messageBar()->pushMessage( tr( "Invalid Data Source" ), msg, QgsMessageBar::CRITICAL, messageTimeout() );
 
       // since the layer is bad, stomp on it
@@ -7601,7 +7606,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   {
     messageBar()->pushMessage(
       tr( "Not enough features selected" ),
-      tr( "The merge tool requires at least two selected features" ),
+      tr( "The merge tool requires at least two selected features." ),
       QgsMessageBar::WARNING );
     return;
   }
@@ -7756,7 +7761,7 @@ void QgisApp::mergeSelectedFeatures()
     {
       messageBar()->pushMessage(
         tr( "Merge failed" ),
-        tr( "An error occurred during the merge operation" ),
+        tr( "An error occurred during the merge operation." ),
         QgsMessageBar::CRITICAL );
     }
     return;
@@ -7792,7 +7797,7 @@ void QgisApp::mergeSelectedFeatures()
       {
         messageBar()->pushMessage(
           tr( "Merge failed" ),
-          tr( "An error occurred during the merge operation" ),
+          tr( "An error occurred during the merge operation." ),
           QgsMessageBar::CRITICAL );
       }
       return;
@@ -7818,7 +7823,7 @@ void QgisApp::mergeSelectedFeatures()
     {
       messageBar()->pushMessage(
         tr( "Invalid result" ),
-        tr( "Could not store value '%1' in field of type %2" ).arg( attrs.at( i ).toString(), vl->fields().at( i ).typeName() ),
+        tr( "Could not store value '%1' in field of type %2." ).arg( attrs.at( i ).toString(), vl->fields().at( i ).typeName() ),
         QgsMessageBar::WARNING );
     }
     attrs[i] = val;
@@ -7948,7 +7953,7 @@ void QgisApp::selectAll()
   {
     messageBar()->pushMessage(
       tr( "No active vector layer" ),
-      tr( "To select all, choose a vector layer in the legend" ),
+      tr( "To select all, choose a vector layer in the legend." ),
       QgsMessageBar::INFO,
       messageTimeout() );
     return;
@@ -7972,7 +7977,7 @@ void QgisApp::selectByExpression()
   {
     messageBar()->pushMessage(
       tr( "No active vector layer" ),
-      tr( "To select features, choose a vector layer in the legend" ),
+      tr( "To select features, choose a vector layer in the legend." ),
       QgsMessageBar::INFO,
       messageTimeout() );
     return;
@@ -7992,7 +7997,7 @@ void QgisApp::selectByForm()
   {
     messageBar()->pushMessage(
       tr( "No active vector layer" ),
-      tr( "To select features, choose a vector layer in the legend" ),
+      tr( "To select features, choose a vector layer in the legend." ),
       QgsMessageBar::INFO,
       messageTimeout() );
     return;

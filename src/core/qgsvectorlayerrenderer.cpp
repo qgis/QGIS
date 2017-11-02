@@ -271,7 +271,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
         break;
       }
 
-      if ( !fet.hasGeometry() )
+      if ( !fet.hasGeometry() || fet.geometry().isEmpty() )
         continue; // skip features without geometry
 
       mContext.expressionContext().setFeature( fet );

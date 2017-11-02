@@ -122,7 +122,7 @@
         <item>
          <widget class="QLineEdit" name="mNotificationMessage">
           <property name="toolTip">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If specified, listen to data source notification and performs action if notification message matches the specified value.&lt;/p&gt;&lt;p&gt;E.g. to match messag beginning with &lt;span style=&quot; font-weight:600;&quot;&gt;wathever &lt;/span&gt;use &lt;span style=&quot; font-weight:600;&quot;&gt;^whatever&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If specified, listen to data source notification and performs action if notification message matches the specified value.&lt;/p&gt;&lt;p&gt;E.g. to match message beginning with &lt;span style=&quot; font-weight:600;&quot;&gt;whatever &lt;/span&gt;use &lt;span style=&quot; font-weight:600;&quot;&gt;^whatever&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
         </item>

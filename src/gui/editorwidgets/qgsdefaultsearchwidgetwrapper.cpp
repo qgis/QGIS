@@ -29,7 +29,7 @@ QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl
 {
 }
 
-QString QgsDefaultSearchWidgetWrapper::expression()
+QString QgsDefaultSearchWidgetWrapper::expression() const
 {
   return mExpression;
 }
@@ -51,12 +51,12 @@ void QgsDefaultSearchWidgetWrapper::setCaseString( int caseSensitiveCheckState )
     emit expressionChanged( mExpression );
 }
 
-void QgsDefaultSearchWidgetWrapper::setExpression( QString exp )
+void QgsDefaultSearchWidgetWrapper::setExpression( const QString &expression )
 {
   QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
   bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
 
-  QgsSettings settings;
+  QString exp = expression;
   QString nullValue = QgsApplication::nullRepresentation();
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
