@@ -82,6 +82,16 @@ if os.environ.get('QGIS_SERVER_HTTP_BASIC_AUTH') is not None:
 
     class HTTPBasicFilter(QgsServerFilter):
 
+        def requestReady(self):
+            handler = self.serverInterface().requestHandler()
+            auth = self.serverInterface().requestHandler().requestHeader('HTTP_AUTHORIZATION')
+            if auth:
+                username, password = base64.b64decode(auth[6:]).split(b':')
+                if (username.decode('utf-8') == os.environ.get('QGIS_SERVER_USERNAME', 'username') and
+                        password.decode('utf-8') == os.environ.get('QGIS_SERVER_PASSWORD', 'password')):
+                    return
+            handler.setParameter('SERVICE', 'ACCESS_DENIED')
+
         def responseComplete(self):
             handler = self.serverInterface().requestHandler()
             auth = self.serverInterface().requestHandler().requestHeader('HTTP_AUTHORIZATION')
