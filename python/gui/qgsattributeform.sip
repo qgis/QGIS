@@ -126,6 +126,11 @@ class QgsAttributeForm : QWidget
 
     QString aggregateFilter() const;
 %Docstring
+ The aggregate filter is only useful if the form is in AggregateFilter mode.
+ In this case it will return a combined expression according to the chosen filters
+ on all attribute widgets.
+
+.. versionadded:: 3.2
  :rtype: str
 %End
 

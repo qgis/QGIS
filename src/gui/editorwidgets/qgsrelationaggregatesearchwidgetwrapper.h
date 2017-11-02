@@ -23,12 +23,25 @@
 
 class QgsRelationWidgetWrapper;
 
+/**
+ * \ingroup gui
+ *
+ * Search widget for the children of a relation.
+ * For each attribute of the child, an additional QgsAggregateToolButton will be shown
+ * to determine how the values should be aggregated for searching.
+ *
+ * \since QGIS 3.2
+ */
 class GUI_EXPORT QgsRelationAggregateSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
 
   public:
-    explicit QgsRelationAggregateSearchWidgetWrapper( QgsVectorLayer *vl, QgsRelationWidgetWrapper *wrapper, QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    /**
+     * Constructor
+     */
+    explicit QgsRelationAggregateSearchWidgetWrapper( QgsVectorLayer *layer, QgsRelationWidgetWrapper *wrapper, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     virtual QString expression() const override;
 

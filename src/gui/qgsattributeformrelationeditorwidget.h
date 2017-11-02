@@ -22,11 +22,23 @@
 class QgsRelationWidgetWrapper;
 class QgsRelationAggregateSearchWidgetWrapper;
 
+
+/**
+ * \ingroup gui
+ *
+ * Widget to show for child relations on an attribute form.
+ *
+ * \since QGIS 3.2
+ */
 class GUI_EXPORT QgsAttributeFormRelationEditorWidget : public QgsAttributeFormWidget
 {
     Q_OBJECT
 
   public:
+
+    /**
+     * Constructor
+     */
     explicit QgsAttributeFormRelationEditorWidget( QgsRelationWidgetWrapper *wrapper, QgsAttributeForm *form );
 
     virtual void createSearchWidgetWrappers( const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() ) override;

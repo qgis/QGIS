@@ -60,14 +60,8 @@
 class QgsSearchWidgetWrapper : QgsWidgetWrapper
 {
 %Docstring
- Manages an editor widget
- Widget and wrapper share the same parent
 
- A wrapper controls one attribute editor widget and is able to create a default
- widget or use a pre-existent widget. It is able to set the widget to the value implied
- by a field of a vector layer, or return the value it currently holds. Every time it is changed
- it has to emit a valueChanged signal. If it fails to do so, there is no guarantee that the
- changed status of the widget will be saved.
+ Shows a search widget on a filter form.
 %End
 
 %TypeHeaderCode
@@ -171,22 +165,30 @@ class QgsSearchWidgetWrapper : QgsWidgetWrapper
 
     QString createFieldIdentifier() const;
 %Docstring
+ Get a field name or expression to use as field comparison.
+ If in SearchMode returns a quoted field identifier.
+ If in AggregateSearchMode returns an appropriate aggregate expression.
+
+.. versionadded:: 3.2
  :rtype: str
 %End
-
-
 
     QString aggregate() const;
 %Docstring
+ If in AggregateSearch mode, which aggregate should be used to construct
+ the filter expression. Is a Null String if none.
+
+.. versionadded:: 3.2
  :rtype: str
 %End
-    void setAggregate( const QString &aggregate );
 
-    QgsRelation aggregateRelation() const;
+    void setAggregate( const QString &aggregate );
 %Docstring
- :rtype: QgsRelation
+ If in AggregateSearch mode, which aggregate should be used to construct
+ the filter expression. Is a Null String if none.
+
+.. versionadded:: 3.2
 %End
-    void setAggregateRelation( const QgsRelation &aggregateRelation );
 
   public slots:
 

@@ -12,50 +12,67 @@
 class QgsAggregateToolButton : QToolButton
 {
 %Docstring
-*************************************************************************
-qgsaggregatetoolbutton.h
---------------------------------------
-Date                 : Nov 2017
-Copyright            : (C) 2017 Matthias Kuhn
-Email                : matthias@opengis.ch
-**************************************************************************
-                                                                         *
-   This program is free software; you can redistribute it and/or modify  *
-   it under the terms of the GNU General Public License as published by  *
-   the Free Software Foundation; either version 2 of the License, or     *
-   (at your option) any later version.                                   *
-                                                                         *
-**************************************************************************
+
+ Offers a toolbutton to choose between different aggregate functions.
+ Functions are filtered based on the type.
+
+.. versionadded:: 3.2
 %End
 
 %TypeHeaderCode
 #include "qgsaggregatetoolbutton.h"
 %End
   public:
+
     QgsAggregateToolButton();
+%Docstring
+ Constructor
+%End
 
     void setType( QVariant::Type type );
+%Docstring
+ Based on the ``type`` of underlying data, some aggregates will be available or not.
+%End
 
     QVariant::Type type() const;
 %Docstring
+ Based on the ``type`` of underlying data, some aggregates will be available or not.
  :rtype: QVariant.Type
 %End
 
     void setActive( bool active );
+%Docstring
+ When this flag is false, the aggregate will be deactivated. I.e. no aggregate is chosen.
+%End
+
     bool active() const;
 %Docstring
+ When this flag is false, the aggregate will be deactivated. I.e. no aggregate is chosen.
  :rtype: bool
 %End
 
     QString aggregate() const;
 %Docstring
+ The function name of the selected aggregate or a Null String if none is chosen.
  :rtype: str
 %End
+
     void setAggregate( const QString &aggregate );
+%Docstring
+ The function name of the selected aggregate or a Null String if none is chosen.
+%End
 
   signals:
+
     void aggregateChanged();
+%Docstring
+ The function name of the selected aggregate has changed.
+%End
+
     void activeChanged();
+%Docstring
+ A function has been selected or unselected.
+%End
 
 };
 

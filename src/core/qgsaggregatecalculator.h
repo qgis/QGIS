@@ -43,11 +43,16 @@ class CORE_EXPORT QgsAggregateCalculator
 {
   public:
 
+    /**
+     * Structured information about the available aggregates.
+     *
+     * \since QGIS 3.0
+     */
     struct AggregateInfo
     {
-      QString function;
-      QString name;
-      QSet<QVariant::Type> supportedTypes;
+      QString function; //!< The expression function
+      QString name; //!< A translated, human readable name
+      QSet<QVariant::Type> supportedTypes; //!< This aggregate function can only be used with these datatypes
     };
 
     /**

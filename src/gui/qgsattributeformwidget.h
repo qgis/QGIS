@@ -13,6 +13,14 @@ class QgsAttributeForm;
 class QStackedWidget;
 class QgsSearchWidgetToolButton;
 
+/**
+ * \ingroup gui
+ *
+ * Base class for all widgets shown on a QgsAttributeForm.
+ * Consists of the widget which is visible in edit mode as well as the widget visible in search mode.
+ *
+ * \since QGIS 3.2
+ */
 class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
 {
     Q_OBJECT
@@ -25,7 +33,7 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
       DefaultMode, //!< Default mode, only the editor widget is shown
       MultiEditMode, //!< Multi edit mode, both the editor widget and a QgsMultiEditToolButton is shown
       SearchMode, //!< Layer search/filter mode
-      AggregateSearchMode,
+      AggregateSearchMode, //!< Embedded in a search form, show additional aggregate function toolbutton
     };
 
     explicit QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAttributeForm *form );
@@ -60,8 +68,14 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
      */
     Mode mode() const { return mMode; }
 
+    /**
+     * The layer for which this widget and its form is shown.
+     */
     QgsVectorLayer *layer();
 
+    /**
+     * The form on which this widget is shown.
+     */
     QgsAttributeForm *form() const;
 
     /**
@@ -100,10 +114,29 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
     void resetSearch();
 
   protected:
+
+    /**
+     * Returns a pointer to the EDIT page widget.
+     * \note this method is in place for unit testing only, and is not considered
+     * stable API
+     * \note not available in Python bindings
+     */
     QWidget *editPage() const SIP_SKIP;
 
+    /**
+     * Returns a pointer to the stacked widget managing edit and search page.
+     * \note this method is in place for unit testing only, and is not considered
+     * stable API
+     * \note not available in Python bindings
+     */
     QStackedWidget *stack() const SIP_SKIP;
 
+    /**
+     * Returns a pointer to the search page widget.
+     * \note this method is in place for unit testing only, and is not considered
+     * stable API
+     * \note not available in Python bindings
+     */
     QWidget *searchPage() const SIP_SKIP;
 
     /**
@@ -111,7 +144,7 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
      * \note this method is in place for unit testing only, and is not considered
      * stable API
      */
-    QgsSearchWidgetToolButton *searchWidgetToolButton();
+    QgsSearchWidgetToolButton *searchWidgetToolButton() SIP_SKIP;
 
   private slots:
 

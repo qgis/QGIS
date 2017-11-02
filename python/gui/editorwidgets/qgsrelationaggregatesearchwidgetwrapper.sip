@@ -13,27 +13,23 @@
 class QgsRelationAggregateSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
 %Docstring
-*************************************************************************
-qgsrelationaggregatesearchwidget.h
------------------------------
-Date                 : Nov 2017
-Copyright            : (C) 2017 Matthias Kuhn
-Email                : matthias@opengis.ch
-**************************************************************************
-                                                                         *
-   This program is free software; you can redistribute it and/or modify  *
-   it under the terms of the GNU General Public License as published by  *
-   the Free Software Foundation; either version 2 of the License, or     *
-   (at your option) any later version.                                   *
-                                                                         *
-**************************************************************************
+
+ Search widget for the children of a relation.
+ For each attribute of the child, an additional QgsAggregateToolButton will be shown
+ to determine how the values should be aggregated for searching.
+
+.. versionadded:: 3.2
 %End
 
 %TypeHeaderCode
 #include "qgsrelationaggregatesearchwidgetwrapper.h"
 %End
   public:
-    explicit QgsRelationAggregateSearchWidgetWrapper( QgsVectorLayer *vl, QgsRelationWidgetWrapper *wrapper, QWidget *parent /TransferThis/ = 0 );
+
+    explicit QgsRelationAggregateSearchWidgetWrapper( QgsVectorLayer *layer, QgsRelationWidgetWrapper *wrapper, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor
+%End
 
     virtual QString expression() const;
 

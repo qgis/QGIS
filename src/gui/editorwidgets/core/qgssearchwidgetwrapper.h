@@ -79,14 +79,8 @@ class QgsField;
 
 /**
  * \ingroup gui
- * Manages an editor widget
- * Widget and wrapper share the same parent
  *
- * A wrapper controls one attribute editor widget and is able to create a default
- * widget or use a pre-existent widget. It is able to set the widget to the value implied
- * by a field of a vector layer, or return the value it currently holds. Every time it is changed
- * it has to emit a valueChanged signal. If it fails to do so, there is no guarantee that the
- * changed status of the widget will be saved.
+ * Shows a search widget on a filter form.
  */
 class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 {
@@ -188,15 +182,30 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     // TODO QGIS 3.0 - make pure virtual
     virtual QString createExpression( FilterFlags flags ) const { Q_UNUSED( flags ); return QStringLiteral( "TRUE" ); }
 
+    /**
+     * Get a field name or expression to use as field comparison.
+     * If in SearchMode returns a quoted field identifier.
+     * If in AggregateSearchMode returns an appropriate aggregate expression.
+     *
+     * \since QGIS 3.2
+     */
     QString createFieldIdentifier() const;
 
-
-
+    /**
+     * If in AggregateSearch mode, which aggregate should be used to construct
+     * the filter expression. Is a Null String if none.
+     *
+     * \since QGIS 3.2
+     */
     QString aggregate() const;
-    void setAggregate( const QString &aggregate );
 
-    QgsRelation aggregateRelation() const;
-    void setAggregateRelation( const QgsRelation &aggregateRelation );
+    /**
+     * If in AggregateSearch mode, which aggregate should be used to construct
+     * the filter expression. Is a Null String if none.
+     *
+     * \since QGIS 3.2
+     */
+    void setAggregate( const QString &aggregate );
 
   public slots:
 
