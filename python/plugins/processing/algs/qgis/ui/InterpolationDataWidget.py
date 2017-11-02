@@ -146,11 +146,11 @@ class InterpolationDataWidget(BASE, WIDGET):
                 comboBox = self.layersTree.itemWidget(self.layersTree.topLevelItem(i), 2)
                 inputTypeName = comboBox.currentText()
                 if inputTypeName == self.tr('Points'):
-                    inputType = QgsInterpolator.POINTS
+                    inputType = QgsInterpolator.SourcePoints
                 elif inputTypeName == self.tr('Structure lines'):
-                    inputType = QgsInterpolator.STRUCTURE_LINES
+                    inputType = QgsInterpolator.SourceStructureLines
                 else:
-                    inputType = QgsInterpolator.BREAK_LINES
+                    inputType = QgsInterpolator.SourceBreakLines
 
             layers += '{},{},{:d},{:d};'.format(layer.source(),
                                                 zCoord,
