@@ -33,6 +33,9 @@ class QgsAttributeFormWidget : QWidget /Abstract/
     };
 
     explicit QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAttributeForm *form );
+%Docstring
+ A new form widget for the wrapper ``widget`` on ``form``.
+%End
 
     virtual void createSearchWidgetWrappers() = 0;
 %Docstring
@@ -96,6 +99,10 @@ class QgsAttributeFormWidget : QWidget /Abstract/
 %End
 
     void addAdditionalSearchWidgetWrapper( QgsSearchWidgetWrapper *wrapper );
+%Docstring
+ Adds an additional search widget wrapper.
+ Used to register a secondary search widget as used for "between" searches.
+%End
 
     QList< QgsSearchWidgetWrapper * > searchWidgetWrappers();
 %Docstring
