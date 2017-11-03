@@ -417,7 +417,7 @@ void QgsMssqlProvider::loadFields()
         }
         if ( sqlType == QVariant::String )
         {
-          int length = query.value( 7 ).toInt();
+          int length = query.value( ( sqlTypeName == "uniqueidentifier" ) ? 6 : 7 ).toInt();
           if ( sqlTypeName.startsWith( QLatin1String( "n" ) ) )
           {
             length = length / 2;
