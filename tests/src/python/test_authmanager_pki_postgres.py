@@ -162,10 +162,14 @@ class TestAuthManager(unittest.TestCase):
         cls.setUpAuth()
         subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'initdb'), '-D', cls.data_path])
 
+        # Disable SSL verification for setup operations
+        env = dict(os.environ)
+        env['PGSSLMODE'] = 'disable'
+
         cls.server = subprocess.Popen([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'postgres'), '-D',
                                        cls.data_path, '-c',
                                        "config_file=%s" % cls.pg_conf],
-                                      env=os.environ,
+                                      env=env,
                                       stdout=subprocess.PIPE,
                                       stderr=subprocess.PIPE)
         # Wait max 10 secs for the server to start
@@ -178,12 +182,12 @@ class TestAuthManager(unittest.TestCase):
             if time.time() > end:
                 raise Exception("Timeout connecting to PostgreSQL")
         # Create a DB
-        subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'createdb'), '-h', 'localhost', '-p', cls.port, 'test_pki'])
+        subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'createdb'), '-h', 'localhost', '-p', cls.port, 'test_pki'], env=env)
         # Inject test SQL from test path
         test_sql = os.path.join(unitTestDataPath('provider'), 'testdata_pg.sql')
-        subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'psql'), '-h', 'localhost', '-p', cls.port, '-f', test_sql, cls.dbname])
+        subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'psql'), '-h', 'localhost', '-p', cls.port, '-f', test_sql, cls.dbname], env=env)
         # Create a role
-        subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'psql'), '-h', 'localhost', '-p', cls.port, '-c', 'CREATE ROLE "%s" WITH SUPERUSER LOGIN' % cls.username, cls.dbname])
+        subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'psql'), '-h', 'localhost', '-p', cls.port, '-c', 'CREATE ROLE "%s" WITH SUPERUSER LOGIN' % cls.username, cls.dbname], env=env)
 
     @classmethod
     def tearDownClass(cls):
