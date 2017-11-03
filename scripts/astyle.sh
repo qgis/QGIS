@@ -16,14 +16,13 @@
 
 min_version="3"
 astyle_version_check() {
-	$1 --version
 	[ `printf "$($1 --version | cut -d ' ' -f4)\n$min_version" | sort -V | head -n1` = "$min_version" ]
 }
 
 for ASTYLE in ${QGISSTYLE} $(dirname $0)/qgisstyle $(dirname $0)/RelWithDebInfo/qgisstyle astyle
 do
-	if type -p $ASTYLE >/dev/null ; then
-		if astyle_version_check $ASTYLE ; then
+	if type -p $ASTYLE >/dev/null; then
+		if astyle_version_check $ASTYLE; then
 			break
 		fi
 	fi
