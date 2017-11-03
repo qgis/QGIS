@@ -21,10 +21,18 @@
   });
 
   $.getJSON($('link[rel="points"]').attr("href"), function(data) {
+    var nameString = '';
     var geojson = L.geoJson(data, {
       onEachFeature: function (feature, layer) {
-        layer.bindPopup("<b>Name:</b> " + feature.properties.Name +
-                        "<br><b>Status:</b> " + (feature.properties.Committer == "Yes" ?
+        if (feature.properties['GIT Nickname'] !== undefined){
+          nameString = "<a href='https://github.com/" +
+                       feature.properties['GIT Nickname'] + "' target='_blank' >" +
+                       feature.properties.Name + "</a>";
+        } else {
+          nameString = feature.properties.Name;
+        }
+        layer.bindPopup("<b>Name:</b> " + nameString + "<br><b>Status:</b> " +
+                        (feature.properties.Committer == "Yes" ?
                         "Core committer" : "Core contributor" ));
       }
     });
