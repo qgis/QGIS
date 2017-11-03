@@ -31,7 +31,7 @@
         } else {
           nameString = feature.properties.Name;
         }
-        layer.bindPopup("<b>Name:</b> " + nameString + "<br><b>Status:</b> " +
+        layer.bindPopup(nameString + "<br>" +
                         (feature.properties.Committer == "Yes" ?
                         "Core committer" : "Core contributor" ));
       }
