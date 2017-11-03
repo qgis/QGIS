@@ -155,18 +155,18 @@ class IdwInterpolation(QgisAlgorithm):
             data = QgsInterpolator.LayerData()
 
             # need to keep a reference until interpolation is complete
-            layer = QgsProcessingUtils.mapLayerFromString(v[0], context)
-            data.vectorLayer = layer
+            layer = QgsProcessingUtils.variantToSource(v[0], context)
+            data.source = layer
             layers.append(layer)
 
-            data.zCoordInterpolation = bool(v[1])
+            data.valueSource = int(v[1])
             data.interpolationAttribute = int(v[2])
             if v[3] == '0':
-                data.mInputType = QgsInterpolator.POINTS
+                data.sourceType = QgsInterpolator.SourcePoints
             elif v[3] == '1':
-                data.mInputType = QgsInterpolator.STRUCTURE_LINES
+                data.sourceType = QgsInterpolator.SourceStructureLines
             else:
-                data.mInputType = QgsInterpolator.BREAK_LINES
+                data.sourceType = QgsInterpolator.SourceBreakLines
             layerData.append(data)
 
         interpolator = QgsIDWInterpolator(layerData)

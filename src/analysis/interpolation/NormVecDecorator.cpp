@@ -40,7 +40,7 @@ NormVecDecorator::~NormVecDecorator()
   }
 }
 
-int NormVecDecorator::addPoint( QgsPoint *p )
+int NormVecDecorator::addPoint( const QgsPoint &p )
 {
   if ( mTIN )
   {
@@ -232,7 +232,7 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector
 
 }
 
-bool NormVecDecorator::calcPoint( double x, double y, QgsPoint *result )
+bool NormVecDecorator::calcPoint( double x, double y, QgsPoint &result )
 {
 
   if ( !alreadyestimated )

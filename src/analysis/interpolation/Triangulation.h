@@ -22,9 +22,9 @@
 #include <QPainter>
 #include "TriangleInterpolator.h"
 #include "qgis_analysis.h"
+#include "qgsinterpolator.h"
 
 class QgsFeatureSink;
-class Line3D;
 class QgsFields;
 class QgsFeedback;
 
@@ -48,16 +48,17 @@ class ANALYSIS_EXPORT Triangulation
     virtual ~Triangulation();
 
     /**
-     * Adds a line (e.g. a break-, structure- or an isoline) to the triangulation.
-     * The class takes ownership of the line object and its points
+     * Adds a line (e.g. a break-, structure- or an isoline) to the triangulation, by specifying
+     * a list of source \a points.
      */
-    virtual void addLine( Line3D *line SIP_TRANSFER, bool breakline ) = 0;
+    virtual void addLine( const QVector< QgsPoint > &points, QgsInterpolator::SourceType lineType ) = 0;
 
     /**
-     * Adds a point to the triangulation
-     * Ownership is transferred to this class
+     * Adds a \a point to the triangulation.
+     *
+     * The point should have a z-value matching the value to interpolate.
      */
-    virtual int addPoint( QgsPoint *p ) = 0;
+    virtual int addPoint( const QgsPoint &point ) = 0;
 
     /**
      * Calculates the normal at a point on the surface and assigns it to 'result'.
@@ -72,7 +73,7 @@ class ANALYSIS_EXPORT Triangulation
      * Calculates x-, y and z-value of the point on the surface and assigns it to 'result'.
      * Returns true in case of success and flase in case of failure
      */
-    virtual bool calcPoint( double x, double y, QgsPoint *result SIP_OUT ) = 0;
+    virtual bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) = 0;
 
     //! Returns a pointer to the point with number i. Any virtual points must have the number -1
     virtual QgsPoint *getPoint( unsigned int i ) const = 0;

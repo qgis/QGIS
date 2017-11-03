@@ -47,16 +47,13 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     DualEdgeTriangulation( int nop, Triangulation *decorator );
     virtual ~DualEdgeTriangulation();
     void setDecorator( Triangulation *d ) {mDecorator = d;}
-    //! Adds a line (e.g. a break-, structure- or an isoline) to the triangulation. The class takes ownership of the line object and its points
-    void addLine( Line3D *line SIP_TRANSFER, bool breakline ) override;
-    //! Adds a point to the triangulation and returns the number of this point in case of success or -100 in case of failure
-    int addPoint( QgsPoint *p SIP_TRANSFER ) override;
+    void addLine( const QVector< QgsPoint > &points, QgsInterpolator::SourceType lineType ) override;
+    int addPoint( const QgsPoint &p ) override;
     //! Performs a consistency check, remove this later
     virtual void performConsistencyTest() override;
     //! Calculates the normal at a point on the surface
     virtual bool calcNormal( double x, double y, Vector3D *result SIP_OUT ) override;
-    //! Calculates x-, y and z-value of the point on the surface
-    virtual bool calcPoint( double x, double y, QgsPoint *result SIP_OUT ) override;
+    bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
     //! Draws the points, edges and the forced lines
     //virtual void draw(QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height) const;
     //! Returns a pointer to the point with number i
@@ -138,7 +135,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Inserts an edge and makes sure, everything is OK with the storage of the edge. The number of the HalfEdge is returned
     unsigned int insertEdge( int dual, int next, int point, bool mbreak, bool forced );
     //! Inserts a forced segment between the points with the numbers p1 and p2 into the triangulation and returns the number of a HalfEdge belonging to this forced edge or -100 in case of failure
-    int insertForcedSegment( int p1, int p2, bool breakline );
+    int insertForcedSegment( int p1, int p2, QgsInterpolator::SourceType segmentType );
     //! Threshold for the leftOfTest to handle numerical instabilities
     //const static double leftOfTresh=0.00001;
     //! Security to prevent endless loops in 'baseEdgeOfTriangle'. It there are more iteration then this number, the point will not be inserted
@@ -146,7 +143,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Returns the number of an edge which points to the point with number 'point' or -1 if there is an error
     int baseEdgeOfPoint( int point );
     //! Returns the number of a HalfEdge from a triangle in which 'point' is in. If the number -10 is returned, this means, that 'point' is outside the convex hull. If -5 is returned, then numerical problems with the leftOfTest occurred (and the value of the possible edge is stored in the variable 'mUnstableEdge'. -20 means, that the inserted point is exactly on an edge (the number is stored in the variable 'mEdgeWithPoint'). -25 means, that the point is already in the triangulation (the number of the point is stored in the member 'mTwiceInsPoint'. If -100 is returned, this means that something else went wrong
-    int baseEdgeOfTriangle( QgsPoint *point );
+    int baseEdgeOfTriangle( const QgsPoint &point );
     //! Checks, if 'edge' has to be swapped because of the empty circle criterion. If so, doSwap(...) is called.
     bool checkSwap( unsigned int edge, unsigned int recursiveDeep );
     //! Swaps 'edge' and test recursively for other swaps (delaunay criterion)
