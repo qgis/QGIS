@@ -1825,26 +1825,26 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
       }
       else //raster layer
       {
+        QgsRasterLayer* rasterLayer = qobject_cast<QgsRasterLayer*>( currentLayer );
+        if ( !rasterLayer )
+        {
+          continue;
+        }
+        if ( !infoPoint.data() )
+        {
+          continue;
+        }
+        QgsPoint layerInfoPoint = mMapRenderer->mapToLayerCoordinates( currentLayer, *( infoPoint.data() ) );
+        if ( !rasterLayer->extent().contains( layerInfoPoint ) )
+        {
+          continue;
+        }
         if ( infoFormat.startsWith( "application/vnd.ogc.gml" ) )
         {
           layerElement = result.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
           getFeatureInfoElement.appendChild( layerElement );
         }
-
-        QgsRasterLayer* rasterLayer = qobject_cast<QgsRasterLayer*>( currentLayer );
-        if ( rasterLayer )
-        {
-          if ( !infoPoint.data() )
-          {
-            continue;
-          }
-          QgsPoint layerInfoPoint = mMapRenderer->mapToLayerCoordinates( currentLayer, *( infoPoint.data() ) );
-          if ( featureInfoFromRasterLayer( rasterLayer, &layerInfoPoint, result, layerElement, version, infoFormat ) != 0 )
-          {
-            continue;
-          }
-        }
-        else
+        if ( featureInfoFromRasterLayer( rasterLayer, &layerInfoPoint, result, layerElement, version, infoFormat ) != 0 )
         {
           continue;
         }
