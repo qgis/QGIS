@@ -22,6 +22,7 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsinterpolator.h"
 
 double leftOfTresh = 0.00000001;
 
@@ -66,7 +67,7 @@ void DualEdgeTriangulation::performConsistencyTest()
   QgsDebugMsg( "consistency test finished" );
 }
 
-void DualEdgeTriangulation::addLine( Line3D *line, bool breakline )
+void DualEdgeTriangulation::addLine( Line3D *line, QgsInterpolator::SourceType lineType )
 {
   int actpoint = -10;//number of the last point, which has been inserted from the line
   int currentpoint = -10;//number of the point, which is currently inserted from the line
@@ -101,7 +102,7 @@ void DualEdgeTriangulation::addLine( Line3D *line, bool breakline )
       currentpoint = mDecorator->addPoint( QgsPoint( *line->getPoint() ) );
       if ( currentpoint != -100 && actpoint != -100 && currentpoint != actpoint )//-100 is the return value if the point could not be not inserted
       {
-        insertForcedSegment( actpoint, currentpoint, breakline );
+        insertForcedSegment( actpoint, currentpoint, lineType );
       }
       actpoint = currentpoint;
     }
@@ -1166,7 +1167,7 @@ unsigned int DualEdgeTriangulation::insertEdge( int dual, int next, int point, b
 
 }
 
-int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
+int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, QgsInterpolator::SourceType segmentType )
 {
   if ( p1 == p2 )
   {
@@ -1210,9 +1211,9 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
     if ( mHalfEdge[actedge]->getPoint() == p2 )
     {
       mHalfEdge[actedge]->setForced( true );
-      mHalfEdge[actedge]->setBreak( breakline );
+      mHalfEdge[actedge]->setBreak( segmentType == QgsInterpolator::SourceBreakLines );
       mHalfEdge[mHalfEdge[actedge]->getDual()]->setForced( true );
-      mHalfEdge[mHalfEdge[actedge]->getDual()]->setBreak( breakline );
+      mHalfEdge[mHalfEdge[actedge]->getDual()]->setBreak( segmentType == QgsInterpolator::SourceBreakLines );
       return actedge;
     }
 
@@ -1221,10 +1222,10 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
     {
       //mark actedge and Dual(actedge) as forced, reset p1 and start the method from the beginning
       mHalfEdge[actedge]->setForced( true );
-      mHalfEdge[actedge]->setBreak( breakline );
+      mHalfEdge[actedge]->setBreak( segmentType == QgsInterpolator::SourceBreakLines );
       mHalfEdge[mHalfEdge[actedge]->getDual()]->setForced( true );
-      mHalfEdge[mHalfEdge[actedge]->getDual()]->setBreak( breakline );
-      int a = insertForcedSegment( mHalfEdge[actedge]->getPoint(), p2, breakline );
+      mHalfEdge[mHalfEdge[actedge]->getDual()]->setBreak( segmentType == QgsInterpolator::SourceBreakLines );
+      int a = insertForcedSegment( mHalfEdge[actedge]->getPoint(), p2, segmentType );
       return a;
     }
 
@@ -1247,14 +1248,14 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
         double distb = std::sqrt( ( crosspoint.x() - mPointVector[p4]->x() ) * ( crosspoint.x() - mPointVector[p4]->x() ) + ( crosspoint.y() - mPointVector[p4]->y() ) * ( crosspoint.y() - mPointVector[p4]->y() ) );
         if ( dista <= distb )
         {
-          insertForcedSegment( p1, p3, breakline );
-          int e = insertForcedSegment( p3, p2, breakline );
+          insertForcedSegment( p1, p3, segmentType );
+          int e = insertForcedSegment( p3, p2, segmentType );
           return e;
         }
         else if ( distb <= dista )
         {
-          insertForcedSegment( p1, p4, breakline );
-          int e = insertForcedSegment( p4, p2, breakline );
+          insertForcedSegment( p1, p4, segmentType );
+          int e = insertForcedSegment( p4, p2, segmentType );
           return e;
         }
       }
@@ -1275,22 +1276,22 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
           {
             //mark actedge and Dual(actedge) as forced, reset p1 and start the method from the beginning
             mHalfEdge[actedge]->setForced( true );
-            mHalfEdge[actedge]->setBreak( breakline );
+            mHalfEdge[actedge]->setBreak( segmentType == QgsInterpolator::SourceBreakLines );
             mHalfEdge[mHalfEdge[actedge]->getDual()]->setForced( true );
-            mHalfEdge[mHalfEdge[actedge]->getDual()]->setBreak( breakline );
-            int a = insertForcedSegment( p4, p2, breakline );
+            mHalfEdge[mHalfEdge[actedge]->getDual()]->setBreak( segmentType == QgsInterpolator::SourceBreakLines );
+            int a = insertForcedSegment( p4, p2, segmentType );
             return a;
           }
           else if ( frac == 1 )
           {
             //mark actedge and Dual(actedge) as forced, reset p1 and start the method from the beginning
             mHalfEdge[actedge]->setForced( true );
-            mHalfEdge[actedge]->setBreak( breakline );
+            mHalfEdge[actedge]->setBreak( segmentType == QgsInterpolator::SourceBreakLines );
             mHalfEdge[mHalfEdge[actedge]->getDual()]->setForced( true );
-            mHalfEdge[mHalfEdge[actedge]->getDual()]->setBreak( breakline );
+            mHalfEdge[mHalfEdge[actedge]->getDual()]->setBreak( segmentType == QgsInterpolator::SourceBreakLines );
             if ( p3 != p2 )
             {
-              int a = insertForcedSegment( p3, p2, breakline );
+              int a = insertForcedSegment( p3, p2, segmentType );
               return a;
             }
             else
@@ -1305,8 +1306,8 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
         else
         {
           int newpoint = splitHalfEdge( mHalfEdge[actedge]->getNext(), frac );
-          insertForcedSegment( p1, newpoint, breakline );
-          int e = insertForcedSegment( newpoint, p2, breakline );
+          insertForcedSegment( p1, newpoint, segmentType );
+          int e = insertForcedSegment( newpoint, p2, segmentType );
           return e;
         }
       }
@@ -1335,14 +1336,14 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
         double distb = std::sqrt( ( crosspoint.x() - mPointVector[p4]->x() ) * ( crosspoint.x() - mPointVector[p4]->x() ) + ( crosspoint.y() - mPointVector[p4]->y() ) * ( crosspoint.y() - mPointVector[p4]->y() ) );
         if ( dista <= distb )
         {
-          insertForcedSegment( p1, p3, breakline );
-          int e = insertForcedSegment( p3, p2, breakline );
+          insertForcedSegment( p1, p3, segmentType );
+          int e = insertForcedSegment( p3, p2, segmentType );
           return e;
         }
         else if ( distb <= dista )
         {
-          insertForcedSegment( p1, p4, breakline );
-          int e = insertForcedSegment( p4, p2, breakline );
+          insertForcedSegment( p1, p4, segmentType );
+          int e = insertForcedSegment( p4, p2, segmentType );
           return e;
         }
       }
@@ -1361,8 +1362,8 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
           break;//seems that a roundoff error occurred. We found the endpoint
         }
         int newpoint = splitHalfEdge( mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext(), frac );
-        insertForcedSegment( p1, newpoint, breakline );
-        int e = insertForcedSegment( newpoint, p2, breakline );
+        insertForcedSegment( p1, newpoint, segmentType );
+        int e = insertForcedSegment( newpoint, p2, segmentType );
         return e;
       }
 
@@ -1382,14 +1383,14 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
         double distb = std::sqrt( ( crosspoint.x() - mPointVector[p4]->x() ) * ( crosspoint.x() - mPointVector[p4]->x() ) + ( crosspoint.y() - mPointVector[p4]->y() ) * ( crosspoint.y() - mPointVector[p4]->y() ) );
         if ( dista <= distb )
         {
-          insertForcedSegment( p1, p3, breakline );
-          int e = insertForcedSegment( p3, p2, breakline );
+          insertForcedSegment( p1, p3, segmentType );
+          int e = insertForcedSegment( p3, p2, segmentType );
           return e;
         }
         else if ( distb <= dista )
         {
-          insertForcedSegment( p1, p4, breakline );
-          int e = insertForcedSegment( p4, p2, breakline );
+          insertForcedSegment( p1, p4, segmentType );
+          int e = insertForcedSegment( p4, p2, segmentType );
           return e;
         }
       }
@@ -1408,8 +1409,8 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
           break;//seems that a roundoff error occurred. We found the endpoint
         }
         int newpoint = splitHalfEdge( mHalfEdge[mHalfEdge[mHalfEdge[crossedEdges.last()]->getDual()]->getNext()]->getNext(), frac );
-        insertForcedSegment( p1, newpoint, breakline );
-        int e = insertForcedSegment( newpoint, p2, breakline );
+        insertForcedSegment( p1, newpoint, segmentType );
+        int e = insertForcedSegment( newpoint, p2, segmentType );
         return e;
       }
 
@@ -1444,11 +1445,11 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
   //insert the forced edge and enter the corresponding halfedges as the first edges in the left and right polygons. The nexts and points are set later because of the algorithm to build two polygons from 'crossedEdges'
   int firstedge = freelist.first();//edge pointing from p1 to p2
   mHalfEdge[firstedge]->setForced( true );
-  mHalfEdge[firstedge]->setBreak( breakline );
+  mHalfEdge[firstedge]->setBreak( segmentType == QgsInterpolator::SourceBreakLines );
   leftPolygon.append( firstedge );
   int dualfirstedge = mHalfEdge[freelist.first()]->getDual();//edge pointing from p2 to p1
   mHalfEdge[dualfirstedge]->setForced( true );
-  mHalfEdge[dualfirstedge]->setBreak( breakline );
+  mHalfEdge[dualfirstedge]->setBreak( segmentType == QgsInterpolator::SourceBreakLines );
   rightPolygon.append( dualfirstedge );
   freelist.pop_front();//delete the first entry from the freelist
 

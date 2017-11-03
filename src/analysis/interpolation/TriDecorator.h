@@ -34,7 +34,7 @@ class ANALYSIS_EXPORT TriDecorator : public Triangulation
     TriDecorator();
     explicit TriDecorator( Triangulation *t );
     virtual ~TriDecorator();
-    virtual void addLine( Line3D *line, bool breakline ) override;
+    void addLine( Line3D *line, QgsInterpolator::SourceType lineType ) override;
     int addPoint( const QgsPoint &p ) override;
     //! Adds an association to a triangulation
     virtual void addTriangulation( Triangulation *t );

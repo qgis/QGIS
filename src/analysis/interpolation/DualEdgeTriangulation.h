@@ -47,8 +47,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     DualEdgeTriangulation( int nop, Triangulation *decorator );
     virtual ~DualEdgeTriangulation();
     void setDecorator( Triangulation *d ) {mDecorator = d;}
-    //! Adds a line (e.g. a break-, structure- or an isoline) to the triangulation. The class takes ownership of the line object and its points
-    void addLine( Line3D *line SIP_TRANSFER, bool breakline ) override;
+    void addLine( Line3D *line SIP_TRANSFER, QgsInterpolator::SourceType lineType ) override;
     int addPoint( const QgsPoint &p ) override;
     //! Performs a consistency check, remove this later
     virtual void performConsistencyTest() override;
@@ -136,7 +135,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Inserts an edge and makes sure, everything is OK with the storage of the edge. The number of the HalfEdge is returned
     unsigned int insertEdge( int dual, int next, int point, bool mbreak, bool forced );
     //! Inserts a forced segment between the points with the numbers p1 and p2 into the triangulation and returns the number of a HalfEdge belonging to this forced edge or -100 in case of failure
-    int insertForcedSegment( int p1, int p2, bool breakline );
+    int insertForcedSegment( int p1, int p2, QgsInterpolator::SourceType segmentType );
     //! Threshold for the leftOfTest to handle numerical instabilities
     //const static double leftOfTresh=0.00001;
     //! Security to prevent endless loops in 'baseEdgeOfTriangle'. It there are more iteration then this number, the point will not be inserted

@@ -308,7 +308,7 @@ int QgsTINInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
               line->insertPoint( new QgsPoint( p.x(), p.y(), z ) );
             }
 
-            mTriangulation->addLine( line, type == SourceBreakLines );
+            mTriangulation->addLine( line, type );
           }
           break;
         }
