@@ -227,7 +227,7 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
 
   if ( mTIN )
   {
-    mTIN->getTriangle( x, y, &point1, &ptn1, &v1, &state1, &point2, &ptn2, &v2, &state2, &point3, &ptn3, &v3, &state3 );
+    mTIN->getTriangle( x, y, point1, ptn1, &v1, &state1, point2, ptn2, &v2, &state2, point3, ptn3, &v3, &state3 );
 
     if ( point1 == lpoint1 && point2 == lpoint2 && point3 == lpoint3 )//if we are in the same triangle as at the last run, we can leave 'init'
     {

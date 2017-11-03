@@ -42,12 +42,12 @@ class ANALYSIS_EXPORT TriDecorator : public Triangulation
     void performConsistencyTest() override;
     bool calcNormal( double x, double y, Vector3D *result SIP_OUT ) override;
     bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
-    QgsPoint *getPoint( unsigned int i ) const override;
+    QgsPoint *getPoint( int i ) const override;
     int getNumberOfPoints() const override;
-    bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, int *n1 SIP_OUT, QgsPoint *p2 SIP_OUT, int *n2 SIP_OUT, QgsPoint *p3 SIP_OUT, int *n3 SIP_OUT )  SIP_PYNAME( getTriangleVertices ) override;
-    bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, QgsPoint *p2 SIP_OUT, QgsPoint *p3 SIP_OUT ) override;
+    bool getTriangle( double x, double y, QgsPoint &p1 SIP_OUT, int &n1 SIP_OUT, QgsPoint &p2 SIP_OUT, int &n2 SIP_OUT, QgsPoint &p3 SIP_OUT, int &n3 SIP_OUT )  SIP_PYNAME( getTriangleVertices ) override;
+    bool getTriangle( double x, double y, QgsPoint &p1 SIP_OUT, QgsPoint &p2 SIP_OUT, QgsPoint &p3 SIP_OUT ) override;
     int getOppositePoint( int p1, int p2 ) override;
-    QList<int> *getSurroundingTriangles( int pointno ) override;
+    QList<int> getSurroundingTriangles( int pointno ) override;
     double getXMax() const override;
     double getXMin() const override;
     double getYMax() const override;

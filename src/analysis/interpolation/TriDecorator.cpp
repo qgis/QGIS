@@ -83,7 +83,7 @@ bool TriDecorator::calcPoint( double x, double y, QgsPoint &result )
   }
 }
 
-QgsPoint *TriDecorator::getPoint( unsigned int i ) const
+QgsPoint *TriDecorator::getPoint( int i ) const
 {
   if ( mTIN )
   {
@@ -97,7 +97,7 @@ QgsPoint *TriDecorator::getPoint( unsigned int i ) const
   }
 }
 
-bool TriDecorator::getTriangle( double x, double y, QgsPoint *p1, int *n1, QgsPoint *p2, int *n2, QgsPoint *p3, int *n3 )
+bool TriDecorator::getTriangle( double x, double y, QgsPoint &p1, int &n1, QgsPoint &p2, int &n2, QgsPoint &p3, int &n3 )
 {
   if ( mTIN )
   {
@@ -111,7 +111,7 @@ bool TriDecorator::getTriangle( double x, double y, QgsPoint *p1, int *n1, QgsPo
   }
 }
 
-bool TriDecorator::getTriangle( double x, double y, QgsPoint *p1, QgsPoint *p2, QgsPoint *p3 )
+bool TriDecorator::getTriangle( double x, double y, QgsPoint &p1, QgsPoint &p2, QgsPoint &p3 )
 {
   if ( mTIN )
   {
@@ -152,17 +152,15 @@ int TriDecorator::getOppositePoint( int p1, int p2 )
   }
 }
 
-QList<int> *TriDecorator::getSurroundingTriangles( int pointno )
+QList<int> TriDecorator::getSurroundingTriangles( int pointno )
 {
   if ( mTIN )
   {
-    QList<int> *vl = mTIN->getSurroundingTriangles( pointno );
-    return vl;
+    return mTIN->getSurroundingTriangles( pointno );
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
-    return nullptr;
+    return QList< int >();
   }
 }
 

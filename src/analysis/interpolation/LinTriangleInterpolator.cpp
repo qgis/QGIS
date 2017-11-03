@@ -26,7 +26,7 @@ bool LinTriangleInterpolator::calcFirstDerX( double x, double y, Vector3D *vec )
     QgsPoint pt2( 0, 0, 0 );
     QgsPoint pt3( 0, 0, 0 );
 
-    if ( !mTIN->getTriangle( x, y, &pt1, &pt2, &pt3 ) )
+    if ( !mTIN->getTriangle( x, y, pt1, pt2, pt3 ) )
     {
       return false;//point outside the convex hull or numerical problems
     }
@@ -52,7 +52,7 @@ bool LinTriangleInterpolator::calcFirstDerY( double x, double y, Vector3D *vec )
     QgsPoint pt2( 0, 0, 0 );
     QgsPoint pt3( 0, 0, 0 );
 
-    if ( !mTIN->getTriangle( x, y, &pt1, &pt2, &pt3 ) )
+    if ( !mTIN->getTriangle( x, y, pt1, pt2, pt3 ) )
     {
       return false;
     }
@@ -105,7 +105,7 @@ bool LinTriangleInterpolator::calcPoint( double x, double y, QgsPoint &point )
     QgsPoint pt2( 0, 0, 0 );
     QgsPoint pt3( 0, 0, 0 );
 
-    if ( !mTIN->getTriangle( x, y, &pt1, &pt2, &pt3 ) )
+    if ( !mTIN->getTriangle( x, y, pt1, pt2, pt3 ) )
     {
       return false;//point is outside the convex hull or numerical problems
     }
