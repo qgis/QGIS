@@ -17,14 +17,15 @@
   <script>
   var developersMapTiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     maxZooom: 18,
-    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'  
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
   });
 
   $.getJSON($('link[rel="points"]').attr("href"), function(data) {
     var geojson = L.geoJson(data, {
       onEachFeature: function (feature, layer) {
         layer.bindPopup("<b>Name:</b> " + feature.properties.Name +
-			"<br><b>Committer:</b> " + feature.properties.Committer);
+                        "<br><b>Status:</b> " + (feature.properties.Committer == "Yes" ?
+                        "Core committer" : "Core contributor" ));
       }
     });
     var map = L.map('developers-map').fitBounds(geojson.getBounds());
