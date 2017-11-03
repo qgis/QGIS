@@ -113,7 +113,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
                          QgsAuthCertUtils::certsToPemText( cas ) );
   if ( ! caFilePath.isEmpty() )
   {
-    QString caparam = "sslrootcert='" + caFilePath + "'";
+    caparam = "sslrootcert='" + caFilePath + "'";
   }
 
   // Branch for OGR
