@@ -102,6 +102,20 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     return false;
   }
 
+  // SSL Extra CAs
+  QString caparam;
+  QList<QSslCertificate> cas;
+  cas = QgsApplication::authManager()->trustedCaCerts();
+  // save CAs to temp file
+  QString tempFileBase = QStringLiteral( "tmp_basic_%1.pem" );
+  QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
+                         tempFileBase.arg( QUuid::createUuid().toString() ),
+                         QgsAuthCertUtils::certsToPemText( cas ) );
+  if ( ! caFilePath.isEmpty() )
+  {
+    QString caparam = "sslrootcert='" + caFilePath + "'";
+  }
+
   // Branch for OGR
   if ( dataprovider == QStringLiteral( "ogr" ) )
   {
@@ -126,6 +140,11 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
 
             if ( !password.isEmpty() )
               uri += QStringLiteral( " password='%1'" ).arg( password );
+          }
+          // add extra CAs
+          if ( ! caparam.isEmpty() )
+          {
+            uri += ' ' + caparam;
           }
         }
         else if ( uri.startsWith( QStringLiteral( "SDE:" ) ) )
@@ -226,9 +245,23 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     {
       connectionItems.append( passparam );
     }
+    // add extra CAs
+    if ( ! caparam.isEmpty() )
+    {
+      int sslcaindx = connectionItems.indexOf( QRegExp( "^sslrootcert='.*" ) );
+      if ( sslcaindx != -1 )
+      {
+        connectionItems.replace( sslcaindx, caparam );
+      }
+      else
+      {
+        connectionItems.append( caparam );
+      }
+    }
   }
 
- return true;
+
+  return true;
 }
 
 bool QgsAuthBasicMethod::updateNetworkProxy( QNetworkProxy &proxy, const QString &authcfg, const QString &dataprovider )
