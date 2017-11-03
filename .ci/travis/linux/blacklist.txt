@@ -24,3 +24,8 @@ qgis_openstreetmaptest
 qgis_wcsprovidertest
 PyQgsWFSProviderGUI
 qgis_ziplayertest
+
+# Temporary until PG is back
+PyQgsAuthManagerPKIPostgresTest
+PyQgsAuthManagerPasswordPostgresTest
+
