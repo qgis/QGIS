@@ -22,6 +22,7 @@
 
 #include <QNetworkProxy>
 #include <QMutexLocker>
+#include <QUuid>
 
 static const QString AUTH_METHOD_KEY = "Basic";
 static const QString AUTH_METHOD_DESCRIPTION = "Basic authentication";
@@ -124,6 +125,26 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
   else
   {
     connectionItems.append( passparam );
+  }
+
+  // add extra CAs
+  // save CAs to temp file
+  QString tempFileBase = QLatin1String( "tmp_basic_%1.pem" );
+  QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
+                         tempFileBase.arg( QUuid::createUuid().toString() ),
+                         QgsAuthManager::instance()->getTrustedCaCertsPemText( ) );
+  if ( ! caFilePath.isEmpty() )
+  {
+    QString caparam = "sslrootcert='" + caFilePath + "'";
+    int sslcaindx = connectionItems.indexOf( QRegExp( "^sslrootcert='.*" ) );
+    if ( sslcaindx != -1 )
+    {
+      connectionItems.replace( sslcaindx, caparam );
+    }
+    else
+    {
+      connectionItems.append( caparam );
+    }
   }
 
   return true;
