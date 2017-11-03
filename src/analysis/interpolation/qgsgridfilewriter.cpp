@@ -22,14 +22,14 @@
 #include <QFile>
 #include <QFileInfo>
 
-QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows, double cellSizeX, double cellSizeY )
+QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows )
   : mInterpolator( i )
   , mOutputFilePath( outputPath )
   , mInterpolationExtent( extent )
   , mNumColumns( nCols )
   , mNumRows( nRows )
-  , mCellSizeX( cellSizeX )
-  , mCellSizeY( cellSizeY )
+  , mCellSizeX( extent.width() / nCols )
+  , mCellSizeY( extent.height() / nRows )
 {}
 
 int QgsGridFileWriter::writeFile( QgsFeedback *feedback )

@@ -89,8 +89,6 @@ class IdwInterpolation(QgisAlgorithm):
     DISTANCE_COEFFICIENT = 'DISTANCE_COEFFICIENT'
     COLUMNS = 'COLUMNS'
     ROWS = 'ROWS'
-    CELLSIZE_X = 'CELLSIZE_X'
-    CELLSIZE_Y = 'CELLSIZE_Y'
     EXTENT = 'EXTENT'
     OUTPUT = 'OUTPUT'
 
@@ -116,12 +114,6 @@ class IdwInterpolation(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.ROWS,
                                                        self.tr('Number of rows'),
                                                        minValue=0, maxValue=10000000, defaultValue=300))
-        self.addParameter(QgsProcessingParameterNumber(self.CELLSIZE_X,
-                                                       self.tr('Cell Size X'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.0, maxValue=999999.000000, defaultValue=0.0))
-        self.addParameter(QgsProcessingParameterNumber(self.CELLSIZE_Y,
-                                                       self.tr('Cell Size Y'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.0, maxValue=999999.000000, defaultValue=0.0))
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
                                                        self.tr('Extent'),
                                                        optional=False))
@@ -139,8 +131,6 @@ class IdwInterpolation(QgisAlgorithm):
         coefficient = self.parameterAsDouble(parameters, self.DISTANCE_COEFFICIENT, context)
         columns = self.parameterAsInt(parameters, self.COLUMNS, context)
         rows = self.parameterAsInt(parameters, self.ROWS, context)
-        cellsizeX = self.parameterAsDouble(parameters, self.CELLSIZE_X, context)
-        cellsizeY = self.parameterAsDouble(parameters, self.CELLSIZE_Y, context)
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
@@ -176,9 +166,7 @@ class IdwInterpolation(QgisAlgorithm):
                                    output,
                                    bbox,
                                    columns,
-                                   rows,
-                                   cellsizeX,
-                                   cellsizeY)
+                                   rows)
 
         writer.writeFile(feedback)
         return {self.OUTPUT: output}

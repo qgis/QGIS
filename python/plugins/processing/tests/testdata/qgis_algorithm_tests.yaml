@@ -1497,8 +1497,6 @@ tests:
   - algorithm: qgis:idwinterpolation
     name: IDW interpolation using attribute
     params:
-      CELLSIZE_X: 0.02667
-      CELLSIZE_Y: 0.02667
       COLUMNS: 300
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0, 8, -5, 3
@@ -1508,14 +1506,14 @@ tests:
       ROWS: 300
     results:
       OUTPUT:
-        hash: 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
+        hash:
+        - 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
+        - 2ae62aca803e6864ac75e47b4357292b0637d811cb510ed19471f422
         type: rasterhash
 
   - algorithm: qgis:idwinterpolation
     name: IDW interpolation using Z value
     params:
-      CELLSIZE_X: 0.02667
-      CELLSIZE_Y: 0.02667
       COLUMNS: 300
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0, 8, -5, 3
@@ -1525,14 +1523,14 @@ tests:
       ROWS: 300
     results:
       OUTPUT:
-        hash: 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
+        hash:
+        - 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
+        - 2ae62aca803e6864ac75e47b4357292b0637d811cb510ed19471f422
         type: rasterhash
 
   - algorithm: qgis:tininterpolation
     name: TIN interpolation using attribute
     params:
-      CELLSIZE_X: 0.02667
-      CELLSIZE_Y: 0.02667
       COLUMNS: 300
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
@@ -1542,7 +1540,9 @@ tests:
       ROWS: 300
     results:
       OUTPUT:
-        hash: 87f40be6ec08f3fcbb5707762de71f6be35bb265c61f594335562a26
+        hash:
+        - 87f40be6ec08f3fcbb5707762de71f6be35bb265c61f594335562a26
+        - a31f0faf918ebe0902e5c9c5c8cf606d30f52eb4094bf24e4f8ac67a
         type: rasterhash
       #TRIANGULATION_FILE:
       #  name: expected/triangulation.gml
@@ -1551,8 +1551,6 @@ tests:
   - algorithm: qgis:tininterpolation
     name: TIN interpolation using Z value
     params:
-      CELLSIZE_X: 0.02667
-      CELLSIZE_Y: 0.02667
       COLUMNS: 300
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
@@ -1562,7 +1560,9 @@ tests:
       ROWS: 300
     results:
       OUTPUT:
-        hash: 5e14dd0b879884b8b8da56c082947dad681feb4e9f1137f5cda126f8
+        hash:
+        - 5e14dd0b879884b8b8da56c082947dad681feb4e9f1137f5cda126f8
+        - b8389559d6a85e7a672d72254228473fae71af2d89e5a5dd73d1b0d7
         type: rasterhash
       #TRIANULATION_FILE:
       #  name: expected/triangulation.gml
