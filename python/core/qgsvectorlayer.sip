@@ -314,9 +314,29 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
       RemoveFromSelection,
     };
 
-    QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
-                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true,
-                    bool readExtentFromXml = false );
+    struct LayerOptions
+    {
+
+      explicit LayerOptions( bool loadDefaultStyle = true, bool readExtentFromXml = false );
+%Docstring
+ Constructor for LayerOptions.
+%End
+
+      bool loadDefaultStyle;
+%Docstring
+Set to true if the default layer style should be loaded
+%End
+
+      bool readExtentFromXml;
+%Docstring
+ If true, the layer extent will be read from XML (i.e. stored in the
+ project file). If false, the extent will be determined by the provider on layer load.
+%End
+
+    };
+
+    explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
+                             const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
 %Docstring
  Constructor - creates a vector layer
 
@@ -324,12 +344,11 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
  interprets the supplied path (url) of the data source to connect to and access the
  data.
 
- \param  path  The path or url of the parameter.  Typically this encodes
+ \param path  The path or url of the parameter.  Typically this encodes
                parameters used by the data provider as url query items.
- \param  baseName The name used to represent the layer in the legend
- \param  providerLib  The name of the data provider, e.g., "memory", "postgres"
- \param  loadDefaultStyleFlag whether to load the default style
- \param  readExtentFromXml Read extent from XML if true or let provider determine it if false
+ \param baseName The name used to represent the layer in the legend
+ \param providerLib  The name of the data provider, e.g., "memory", "postgres"
+ \param options layer load options
 %End
 
 
