@@ -31,24 +31,27 @@ class QgsFields;
 
 /**
  * \ingroup analysis
- *  Interpolation in a triangular irregular network*/
-class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
+ *  Interpolation in a triangular irregular network
+ * \since QGIS 3.0
+*/
+class ANALYSIS_EXPORT QgsTinInterpolator: public QgsInterpolator
 {
   public:
-    //describes the type of interpolation
-    enum TINInterpolation
+
+    //! Indicates the type of interpolation to be performed
+    enum TinInterpolation
     {
-      Linear,
-      CloughTocher
+      Linear, //!< Linear interpolation
+      CloughTocher, //!< Clough-Tocher interpolation
     };
 
     /**
-     * Constructor for QgsTINInterpolator.
+     * Constructor for QgsTinInterpolator.
      * The \a feedback object specifies an optional QgsFeedback object for progress reports and cancelation support.
      * Ownership of \a feedback is not transferred and callers must ensure that it exists for the lifetime of this object.
      */
-    QgsTINInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TINInterpolation interpolation = Linear, QgsFeedback *feedback = nullptr );
-    ~QgsTINInterpolator();
+    QgsTinInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TinInterpolation interpolation = Linear, QgsFeedback *feedback = nullptr );
+    ~QgsTinInterpolator();
 
     int interpolatePoint( double x, double y, double &result, QgsFeedback *feedback ) override;
 
@@ -81,7 +84,7 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
     //! Feature sink for triangulation
     QgsFeatureSink *mTriangulationSink = nullptr;
     //! Type of interpolation
-    TINInterpolation mInterpolation;
+    TinInterpolation mInterpolation;
 
     //! Create dual edge triangulation
     void initialize();

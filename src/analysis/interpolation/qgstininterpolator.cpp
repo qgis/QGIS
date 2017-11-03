@@ -32,7 +32,7 @@
 #include "qgscurvepolygon.h"
 #include "qgsmultisurface.h"
 
-QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData> &inputData, TINInterpolation interpolation, QgsFeedback *feedback )
+QgsTinInterpolator::QgsTinInterpolator( const QList<LayerData> &inputData, TinInterpolation interpolation, QgsFeedback *feedback )
   : QgsInterpolator( inputData )
   , mIsInitialized( false )
   , mFeedback( feedback )
@@ -40,13 +40,13 @@ QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData> &inputData, TINIn
 {
 }
 
-QgsTINInterpolator::~QgsTINInterpolator()
+QgsTinInterpolator::~QgsTinInterpolator()
 {
   delete mTriangulation;
   delete mTriangleInterpolator;
 }
 
-int QgsTINInterpolator::interpolatePoint( double x, double y, double &result, QgsFeedback * )
+int QgsTinInterpolator::interpolatePoint( double x, double y, double &result, QgsFeedback * )
 {
   if ( !mIsInitialized )
   {
@@ -67,17 +67,17 @@ int QgsTINInterpolator::interpolatePoint( double x, double y, double &result, Qg
   return 0;
 }
 
-QgsFields QgsTINInterpolator::triangulationFields()
+QgsFields QgsTinInterpolator::triangulationFields()
 {
   return Triangulation::triangulationFields();
 }
 
-void QgsTINInterpolator::setTriangulationSink( QgsFeatureSink *sink )
+void QgsTinInterpolator::setTriangulationSink( QgsFeatureSink *sink )
 {
   mTriangulationSink = sink;
 }
 
-void QgsTINInterpolator::initialize()
+void QgsTinInterpolator::initialize()
 {
   DualEdgeTriangulation *dualEdgeTriangulation = new DualEdgeTriangulation( 100000, nullptr );
   if ( mInterpolation == CloughTocher )
@@ -166,7 +166,7 @@ void QgsTINInterpolator::initialize()
   }
 }
 
-int QgsTINInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueSource source, int attr, SourceType type )
+int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueSource source, int attr, SourceType type )
 {
   QgsGeometry g = f.geometry();
   if ( g.isNull() || g.isEmpty() )
@@ -323,7 +323,7 @@ int QgsTINInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
 }
 
 
-int QgsTINInterpolator::addPointsFromGeometry( const QgsGeometry &g, ValueSource source, double attributeValue )
+int QgsTinInterpolator::addPointsFromGeometry( const QgsGeometry &g, ValueSource source, double attributeValue )
 {
   // loop through all vertices and add to triangulation
   for ( auto point = g.vertices_begin(); point != g.vertices_end(); ++point )

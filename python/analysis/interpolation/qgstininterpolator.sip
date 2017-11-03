@@ -10,29 +10,31 @@
 
 
 
-class QgsTINInterpolator: QgsInterpolator
+class QgsTinInterpolator: QgsInterpolator
 {
 %Docstring
-  Interpolation in a triangular irregular network*
+  Interpolation in a triangular irregular network
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
 #include "qgstininterpolator.h"
 %End
   public:
-    enum TINInterpolation
+
+    enum TinInterpolation
     {
       Linear,
-      CloughTocher
+      CloughTocher,
     };
 
-    QgsTINInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TINInterpolation interpolation = Linear, QgsFeedback *feedback = 0 );
+    QgsTinInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TinInterpolation interpolation = Linear, QgsFeedback *feedback = 0 );
 %Docstring
- Constructor for QgsTINInterpolator.
+ Constructor for QgsTinInterpolator.
  The ``feedback`` object specifies an optional QgsFeedback object for progress reports and cancelation support.
  Ownership of ``feedback`` is not transferred and callers must ensure that it exists for the lifetime of this object.
 %End
-    ~QgsTINInterpolator();
+    ~QgsTinInterpolator();
 
     virtual int interpolatePoint( double x, double y, double &result, QgsFeedback *feedback );
 

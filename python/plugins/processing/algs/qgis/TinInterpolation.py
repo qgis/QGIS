@@ -41,7 +41,7 @@ from qgis.core import (QgsProcessingUtils,
                        QgsProcessingException,
                        QgsCoordinateReferenceSystem)
 from qgis.analysis import (QgsInterpolator,
-                           QgsTINInterpolator,
+                           QgsTinInterpolator,
                            QgsGridFileWriter)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -192,14 +192,14 @@ class TinInterpolation(QgisAlgorithm):
             layerData.append(data)
 
         if method == 0:
-            interpolationMethod = QgsTINInterpolator.Linear
+            interpolationMethod = QgsTinInterpolator.Linear
         else:
-            interpolationMethod = QgsTINInterpolator.CloughTocher
+            interpolationMethod = QgsTinInterpolator.CloughTocher
 
         (triangulation_sink, triangulation_dest_id) = self.parameterAsSink(parameters, self.TRIANGULATION, context,
-                                                                           QgsTINInterpolator.triangulationFields(), QgsWkbTypes.LineString, crs)
+                                                                           QgsTinInterpolator.triangulationFields(), QgsWkbTypes.LineString, crs)
 
-        interpolator = QgsTINInterpolator(layerData, interpolationMethod, feedback)
+        interpolator = QgsTinInterpolator(layerData, interpolationMethod, feedback)
         if triangulation_sink is not None:
             interpolator.setTriangulationSink(triangulation_sink)
 
