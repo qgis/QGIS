@@ -146,13 +146,6 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
      */
     QWidget *searchPage() const SIP_SKIP;
 
-    /**
-     * Returns a pointer to the search widget tool button in the widget.
-     * \note this method is in place for unit testing only, and is not considered
-     * stable API
-     */
-    QgsSearchWidgetToolButton *searchWidgetToolButton() SIP_SKIP;
-
   private slots:
 
     //! Triggered when search button flags are changed
