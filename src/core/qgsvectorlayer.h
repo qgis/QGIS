@@ -382,23 +382,46 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     };
 
     /**
+     * Setting options for loading vector layers.
+     * \since QGIS 3.0
+     */
+    struct LayerOptions
+    {
+
+      /**
+       * Constructor for LayerOptions.
+       */
+      explicit LayerOptions( bool loadDefaultStyle = true, bool readExtentFromXml = false )
+        : loadDefaultStyle( loadDefaultStyle )
+        , readExtentFromXml( readExtentFromXml )
+      {}
+
+      //! Set to true if the default layer style should be loaded
+      bool loadDefaultStyle = true;
+
+      /**
+       * If true, the layer extent will be read from XML (i.e. stored in the
+       * project file). If false, the extent will be determined by the provider on layer load.
+       */
+      bool readExtentFromXml = false;
+
+    };
+
+    /**
      * Constructor - creates a vector layer
      *
      * The QgsVectorLayer is constructed by instantiating a data provider.  The provider
      * interprets the supplied path (url) of the data source to connect to and access the
      * data.
      *
-     * \param  path  The path or url of the parameter.  Typically this encodes
+     * \param path  The path or url of the parameter.  Typically this encodes
      *               parameters used by the data provider as url query items.
-     * \param  baseName The name used to represent the layer in the legend
-     * \param  providerLib  The name of the data provider, e.g., "memory", "postgres"
-     * \param  loadDefaultStyleFlag whether to load the default style
-     * \param  readExtentFromXml Read extent from XML if true or let provider determine it if false
-     *
+     * \param baseName The name used to represent the layer in the legend
+     * \param providerLib  The name of the data provider, e.g., "memory", "postgres"
+     * \param options layer load options
      */
-    QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
-                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true,
-                    bool readExtentFromXml = false );
+    explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
+                             const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
 
 
     virtual ~QgsVectorLayer();

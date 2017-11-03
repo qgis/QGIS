@@ -146,10 +146,24 @@ class QgsRasterLayer : QgsMapLayer
  Constructor. Provider is not set.
 %End
 
-    QgsRasterLayer( const QString &uri,
-                    const QString &baseName = QString(),
-                    const QString &providerKey = "gdal",
-                    bool loadDefaultStyleFlag = true );
+    struct LayerOptions
+    {
+
+      explicit LayerOptions( bool loadDefaultStyle = true );
+%Docstring
+ Constructor for LayerOptions.
+%End
+
+      bool loadDefaultStyle;
+%Docstring
+Set to true if the default layer style should be loaded
+%End
+    };
+
+    explicit QgsRasterLayer( const QString &uri,
+                             const QString &baseName = QString(),
+                             const QString &providerKey = "gdal",
+                             const QgsRasterLayer::LayerOptions &options = QgsRasterLayer::LayerOptions() );
 %Docstring
  This is the constructor for the RasterLayer class.
 
