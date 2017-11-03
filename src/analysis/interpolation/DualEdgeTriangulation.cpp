@@ -887,34 +887,33 @@ int DualEdgeTriangulation::getOppositePoint( int p1, int p2 )
 
 }
 
-QList<int> *DualEdgeTriangulation::getSurroundingTriangles( int pointno )
+QList<int> DualEdgeTriangulation::getSurroundingTriangles( int pointno )
 {
   int firstedge = baseEdgeOfPoint( pointno );
 
+  QList<int> vlist;
   if ( firstedge == -1 )//an error occurred
   {
-    return nullptr;
+    return vlist;
   }
-
-  QList<int> *vlist = new QList<int>();//create the value list on the heap
 
   int actedge = firstedge;
   int edge, nextedge, nextnextedge;
   do
   {
     edge = mHalfEdge[actedge]->getDual();
-    vlist->append( mHalfEdge[edge]->getPoint() );//add the number of the endpoint of the first edge to the value list
+    vlist.append( mHalfEdge[edge]->getPoint() );//add the number of the endpoint of the first edge to the value list
     nextedge = mHalfEdge[edge]->getNext();
-    vlist->append( mHalfEdge[nextedge]->getPoint() );//add the number of the endpoint of the second edge to the value list
+    vlist.append( mHalfEdge[nextedge]->getPoint() );//add the number of the endpoint of the second edge to the value list
     nextnextedge = mHalfEdge[nextedge]->getNext();
-    vlist->append( mHalfEdge[nextnextedge]->getPoint() );//add the number of endpoint of the third edge to the value list
+    vlist.append( mHalfEdge[nextnextedge]->getPoint() );//add the number of endpoint of the third edge to the value list
     if ( mHalfEdge[nextnextedge]->getBreak() )//add, whether the third edge is a breakline or not
     {
-      vlist->append( -10 );
+      vlist.append( -10 );
     }
     else
     {
-      vlist->append( -20 );
+      vlist.append( -20 );
     }
     actedge = nextnextedge;
   }
@@ -924,224 +923,207 @@ QList<int> *DualEdgeTriangulation::getSurroundingTriangles( int pointno )
 
 }
 
-bool DualEdgeTriangulation::getTriangle( double x, double y, QgsPoint *p1, int *n1, QgsPoint *p2, int *n2, QgsPoint *p3, int *n3 )
+bool DualEdgeTriangulation::getTriangle( double x, double y, QgsPoint &p1, int &n1, QgsPoint &p2, int &n2, QgsPoint &p3, int &n3 )
 {
   if ( mPointVector.size() < 3 )
   {
     return false;
   }
 
-  if ( p1 && p2 && p3 )
+  QgsPoint point( x, y, 0 );
+  int edge = baseEdgeOfTriangle( point );
+  if ( edge == -10 )//the point is outside the convex hull
   {
-    QgsPoint point( x, y, 0 );
-    int edge = baseEdgeOfTriangle( point );
-    if ( edge == -10 )//the point is outside the convex hull
-    {
-      return false;
-    }
-
-    else if ( edge >= 0 )//the point is inside the convex hull
-    {
-      int ptnr1 = mHalfEdge[edge]->getPoint();
-      int ptnr2 = mHalfEdge[mHalfEdge[edge]->getNext()]->getPoint();
-      int ptnr3 = mHalfEdge[mHalfEdge[mHalfEdge[edge]->getNext()]->getNext()]->getPoint();
-      p1->setX( mPointVector[ptnr1]->x() );
-      p1->setY( mPointVector[ptnr1]->y() );
-      p1->setZ( mPointVector[ptnr1]->z() );
-      p2->setX( mPointVector[ptnr2]->x() );
-      p2->setY( mPointVector[ptnr2]->y() );
-      p2->setZ( mPointVector[ptnr2]->z() );
-      p3->setX( mPointVector[ptnr3]->x() );
-      p3->setY( mPointVector[ptnr3]->y() );
-      p3->setZ( mPointVector[ptnr3]->z() );
-      ( *n1 ) = ptnr1;
-      ( *n2 ) = ptnr2;
-      ( *n3 ) = ptnr3;
-      return true;
-    }
-    else if ( edge == -20 )//the point is exactly on an edge
-    {
-      int ptnr1 = mHalfEdge[mEdgeWithPoint]->getPoint();
-      int ptnr2 = mHalfEdge[mHalfEdge[mEdgeWithPoint]->getNext()]->getPoint();
-      int ptnr3 = mHalfEdge[mHalfEdge[mHalfEdge[mEdgeWithPoint]->getNext()]->getNext()]->getPoint();
-      if ( ptnr1 == -1 || ptnr2 == -1 || ptnr3 == -1 )
-      {
-        return false;
-      }
-      p1->setX( mPointVector[ptnr1]->x() );
-      p1->setY( mPointVector[ptnr1]->y() );
-      p1->setZ( mPointVector[ptnr1]->z() );
-      p2->setX( mPointVector[ptnr2]->x() );
-      p2->setY( mPointVector[ptnr2]->y() );
-      p2->setZ( mPointVector[ptnr2]->z() );
-      p3->setX( mPointVector[ptnr3]->x() );
-      p3->setY( mPointVector[ptnr3]->y() );
-      p3->setZ( mPointVector[ptnr3]->z() );
-      ( *n1 ) = ptnr1;
-      ( *n2 ) = ptnr2;
-      ( *n3 ) = ptnr3;
-      return true;
-    }
-    else if ( edge == -25 )//x and y are the coordinates of an existing point
-    {
-      int edge1 = baseEdgeOfPoint( mTwiceInsPoint );
-      int edge2 = mHalfEdge[edge1]->getNext();
-      int edge3 = mHalfEdge[edge2]->getNext();
-      int ptnr1 = mHalfEdge[edge1]->getPoint();
-      int ptnr2 = mHalfEdge[edge2]->getPoint();
-      int ptnr3 = mHalfEdge[edge3]->getPoint();
-      p1->setX( mPointVector[ptnr1]->x() );
-      p1->setY( mPointVector[ptnr1]->y() );
-      p1->setZ( mPointVector[ptnr1]->z() );
-      p2->setX( mPointVector[ptnr2]->x() );
-      p2->setY( mPointVector[ptnr2]->y() );
-      p2->setZ( mPointVector[ptnr2]->z() );
-      p3->setX( mPointVector[ptnr3]->x() );
-      p3->setY( mPointVector[ptnr3]->y() );
-      p3->setZ( mPointVector[ptnr3]->z() );
-      ( *n1 ) = ptnr1;
-      ( *n2 ) = ptnr2;
-      ( *n3 ) = ptnr3;
-      return true;
-    }
-    else if ( edge == -5 )//numerical problems in 'baseEdgeOfTriangle'
-    {
-      int ptnr1 = mHalfEdge[mUnstableEdge]->getPoint();
-      int ptnr2 = mHalfEdge[mHalfEdge[mUnstableEdge]->getNext()]->getPoint();
-      int ptnr3 = mHalfEdge[mHalfEdge[mHalfEdge[mUnstableEdge]->getNext()]->getNext()]->getPoint();
-      if ( ptnr1 == -1 || ptnr2 == -1 || ptnr3 == -1 )
-      {
-        return false;
-      }
-      p1->setX( mPointVector[ptnr1]->x() );
-      p1->setY( mPointVector[ptnr1]->y() );
-      p1->setZ( mPointVector[ptnr1]->z() );
-      p2->setX( mPointVector[ptnr2]->x() );
-      p2->setY( mPointVector[ptnr2]->y() );
-      p2->setZ( mPointVector[ptnr2]->z() );
-      p3->setX( mPointVector[ptnr3]->x() );
-      p3->setY( mPointVector[ptnr3]->y() );
-      p3->setZ( mPointVector[ptnr3]->z() );
-      ( *n1 ) = ptnr1;
-      ( *n2 ) = ptnr2;
-      ( *n3 ) = ptnr3;
-      return true;
-    }
-    else//problems
-    {
-      QgsDebugMsg( QString( "problem: the edge is: %1" ).arg( edge ) );
-      return false;
-    }
+    return false;
   }
 
-  else
+  else if ( edge >= 0 )//the point is inside the convex hull
   {
-    QgsDebugMsg( "warning, null pointer" );
+    int ptnr1 = mHalfEdge[edge]->getPoint();
+    int ptnr2 = mHalfEdge[mHalfEdge[edge]->getNext()]->getPoint();
+    int ptnr3 = mHalfEdge[mHalfEdge[mHalfEdge[edge]->getNext()]->getNext()]->getPoint();
+    p1.setX( mPointVector[ptnr1]->x() );
+    p1.setY( mPointVector[ptnr1]->y() );
+    p1.setZ( mPointVector[ptnr1]->z() );
+    p2.setX( mPointVector[ptnr2]->x() );
+    p2.setY( mPointVector[ptnr2]->y() );
+    p2.setZ( mPointVector[ptnr2]->z() );
+    p3.setX( mPointVector[ptnr3]->x() );
+    p3.setY( mPointVector[ptnr3]->y() );
+    p3.setZ( mPointVector[ptnr3]->z() );
+    n1 = ptnr1;
+    n2 = ptnr2;
+    n3 = ptnr3;
+    return true;
+  }
+  else if ( edge == -20 )//the point is exactly on an edge
+  {
+    int ptnr1 = mHalfEdge[mEdgeWithPoint]->getPoint();
+    int ptnr2 = mHalfEdge[mHalfEdge[mEdgeWithPoint]->getNext()]->getPoint();
+    int ptnr3 = mHalfEdge[mHalfEdge[mHalfEdge[mEdgeWithPoint]->getNext()]->getNext()]->getPoint();
+    if ( ptnr1 == -1 || ptnr2 == -1 || ptnr3 == -1 )
+    {
+      return false;
+    }
+    p1.setX( mPointVector[ptnr1]->x() );
+    p1.setY( mPointVector[ptnr1]->y() );
+    p1.setZ( mPointVector[ptnr1]->z() );
+    p2.setX( mPointVector[ptnr2]->x() );
+    p2.setY( mPointVector[ptnr2]->y() );
+    p2.setZ( mPointVector[ptnr2]->z() );
+    p3.setX( mPointVector[ptnr3]->x() );
+    p3.setY( mPointVector[ptnr3]->y() );
+    p3.setZ( mPointVector[ptnr3]->z() );
+    n1 = ptnr1;
+    n2 = ptnr2;
+    n3 = ptnr3;
+    return true;
+  }
+  else if ( edge == -25 )//x and y are the coordinates of an existing point
+  {
+    int edge1 = baseEdgeOfPoint( mTwiceInsPoint );
+    int edge2 = mHalfEdge[edge1]->getNext();
+    int edge3 = mHalfEdge[edge2]->getNext();
+    int ptnr1 = mHalfEdge[edge1]->getPoint();
+    int ptnr2 = mHalfEdge[edge2]->getPoint();
+    int ptnr3 = mHalfEdge[edge3]->getPoint();
+    p1.setX( mPointVector[ptnr1]->x() );
+    p1.setY( mPointVector[ptnr1]->y() );
+    p1.setZ( mPointVector[ptnr1]->z() );
+    p2.setX( mPointVector[ptnr2]->x() );
+    p2.setY( mPointVector[ptnr2]->y() );
+    p2.setZ( mPointVector[ptnr2]->z() );
+    p3.setX( mPointVector[ptnr3]->x() );
+    p3.setY( mPointVector[ptnr3]->y() );
+    p3.setZ( mPointVector[ptnr3]->z() );
+    n1 = ptnr1;
+    n2 = ptnr2;
+    n3 = ptnr3;
+    return true;
+  }
+  else if ( edge == -5 )//numerical problems in 'baseEdgeOfTriangle'
+  {
+    int ptnr1 = mHalfEdge[mUnstableEdge]->getPoint();
+    int ptnr2 = mHalfEdge[mHalfEdge[mUnstableEdge]->getNext()]->getPoint();
+    int ptnr3 = mHalfEdge[mHalfEdge[mHalfEdge[mUnstableEdge]->getNext()]->getNext()]->getPoint();
+    if ( ptnr1 == -1 || ptnr2 == -1 || ptnr3 == -1 )
+    {
+      return false;
+    }
+    p1.setX( mPointVector[ptnr1]->x() );
+    p1.setY( mPointVector[ptnr1]->y() );
+    p1.setZ( mPointVector[ptnr1]->z() );
+    p2.setX( mPointVector[ptnr2]->x() );
+    p2.setY( mPointVector[ptnr2]->y() );
+    p2.setZ( mPointVector[ptnr2]->z() );
+    p3.setX( mPointVector[ptnr3]->x() );
+    p3.setY( mPointVector[ptnr3]->y() );
+    p3.setZ( mPointVector[ptnr3]->z() );
+    n1 = ptnr1;
+    n2 = ptnr2;
+    n3 = ptnr3;
+    return true;
+  }
+  else//problems
+  {
+    QgsDebugMsg( QString( "problem: the edge is: %1" ).arg( edge ) );
     return false;
   }
 }
 
-bool DualEdgeTriangulation::getTriangle( double x, double y, QgsPoint *p1, QgsPoint *p2, QgsPoint *p3 )
+bool DualEdgeTriangulation::getTriangle( double x, double y, QgsPoint &p1, QgsPoint &p2, QgsPoint &p3 )
 {
   if ( mPointVector.size() < 3 )
   {
     return false;
   }
 
-  if ( p1 && p2 && p3 )
+  QgsPoint point( x, y, 0 );
+  int edge = baseEdgeOfTriangle( point );
+  if ( edge == -10 )//the point is outside the convex hull
   {
-    QgsPoint point( x, y, 0 );
-    int edge = baseEdgeOfTriangle( point );
-    if ( edge == -10 )//the point is outside the convex hull
-    {
-      return false;
-    }
-    else if ( edge >= 0 )//the point is inside the convex hull
-    {
-      int ptnr1 = mHalfEdge[edge]->getPoint();
-      int ptnr2 = mHalfEdge[mHalfEdge[edge]->getNext()]->getPoint();
-      int ptnr3 = mHalfEdge[mHalfEdge[mHalfEdge[edge]->getNext()]->getNext()]->getPoint();
-      p1->setX( mPointVector[ptnr1]->x() );
-      p1->setY( mPointVector[ptnr1]->y() );
-      p1->setZ( mPointVector[ptnr1]->z() );
-      p2->setX( mPointVector[ptnr2]->x() );
-      p2->setY( mPointVector[ptnr2]->y() );
-      p2->setZ( mPointVector[ptnr2]->z() );
-      p3->setX( mPointVector[ptnr3]->x() );
-      p3->setY( mPointVector[ptnr3]->y() );
-      p3->setZ( mPointVector[ptnr3]->z() );
-      return true;
-    }
-    else if ( edge == -20 )//the point is exactly on an edge
-    {
-      int ptnr1 = mHalfEdge[mEdgeWithPoint]->getPoint();
-      int ptnr2 = mHalfEdge[mHalfEdge[mEdgeWithPoint]->getNext()]->getPoint();
-      int ptnr3 = mHalfEdge[mHalfEdge[mHalfEdge[mEdgeWithPoint]->getNext()]->getNext()]->getPoint();
-      if ( ptnr1 == -1 || ptnr2 == -1 || ptnr3 == -1 )
-      {
-        return false;
-      }
-      p1->setX( mPointVector[ptnr1]->x() );
-      p1->setY( mPointVector[ptnr1]->y() );
-      p1->setZ( mPointVector[ptnr1]->z() );
-      p2->setX( mPointVector[ptnr2]->x() );
-      p2->setY( mPointVector[ptnr2]->y() );
-      p2->setZ( mPointVector[ptnr2]->z() );
-      p3->setX( mPointVector[ptnr3]->x() );
-      p3->setY( mPointVector[ptnr3]->y() );
-      p3->setZ( mPointVector[ptnr3]->z() );
-      return true;
-    }
-    else if ( edge == -25 )//x and y are the coordinates of an existing point
-    {
-      int edge1 = baseEdgeOfPoint( mTwiceInsPoint );
-      int edge2 = mHalfEdge[edge1]->getNext();
-      int edge3 = mHalfEdge[edge2]->getNext();
-      int ptnr1 = mHalfEdge[edge1]->getPoint();
-      int ptnr2 = mHalfEdge[edge2]->getPoint();
-      int ptnr3 = mHalfEdge[edge3]->getPoint();
-      if ( ptnr1 == -1 || ptnr2 == -1 || ptnr3 == -1 )
-      {
-        return false;
-      }
-      p1->setX( mPointVector[ptnr1]->x() );
-      p1->setY( mPointVector[ptnr1]->y() );
-      p1->setZ( mPointVector[ptnr1]->z() );
-      p2->setX( mPointVector[ptnr2]->x() );
-      p2->setY( mPointVector[ptnr2]->y() );
-      p2->setZ( mPointVector[ptnr2]->z() );
-      p3->setX( mPointVector[ptnr3]->x() );
-      p3->setY( mPointVector[ptnr3]->y() );
-      p3->setZ( mPointVector[ptnr3]->z() );
-      return true;
-    }
-    else if ( edge == -5 )//numerical problems in 'baseEdgeOfTriangle'
-    {
-      int ptnr1 = mHalfEdge[mUnstableEdge]->getPoint();
-      int ptnr2 = mHalfEdge[mHalfEdge[mUnstableEdge]->getNext()]->getPoint();
-      int ptnr3 = mHalfEdge[mHalfEdge[mHalfEdge[mUnstableEdge]->getNext()]->getNext()]->getPoint();
-      if ( ptnr1 == -1 || ptnr2 == -1 || ptnr3 == -1 )
-      {
-        return false;
-      }
-      p1->setX( mPointVector[ptnr1]->x() );
-      p1->setY( mPointVector[ptnr1]->y() );
-      p1->setZ( mPointVector[ptnr1]->z() );
-      p2->setX( mPointVector[ptnr2]->x() );
-      p2->setY( mPointVector[ptnr2]->y() );
-      p2->setZ( mPointVector[ptnr2]->z() );
-      p3->setX( mPointVector[ptnr3]->x() );
-      p3->setY( mPointVector[ptnr3]->y() );
-      p3->setZ( mPointVector[ptnr3]->z() );
-      return true;
-    }
-    else//problems
-    {
-      return false;
-    }
+    return false;
   }
-
-  else
+  else if ( edge >= 0 )//the point is inside the convex hull
+  {
+    int ptnr1 = mHalfEdge[edge]->getPoint();
+    int ptnr2 = mHalfEdge[mHalfEdge[edge]->getNext()]->getPoint();
+    int ptnr3 = mHalfEdge[mHalfEdge[mHalfEdge[edge]->getNext()]->getNext()]->getPoint();
+    p1.setX( mPointVector[ptnr1]->x() );
+    p1.setY( mPointVector[ptnr1]->y() );
+    p1.setZ( mPointVector[ptnr1]->z() );
+    p2.setX( mPointVector[ptnr2]->x() );
+    p2.setY( mPointVector[ptnr2]->y() );
+    p2.setZ( mPointVector[ptnr2]->z() );
+    p3.setX( mPointVector[ptnr3]->x() );
+    p3.setY( mPointVector[ptnr3]->y() );
+    p3.setZ( mPointVector[ptnr3]->z() );
+    return true;
+  }
+  else if ( edge == -20 )//the point is exactly on an edge
+  {
+    int ptnr1 = mHalfEdge[mEdgeWithPoint]->getPoint();
+    int ptnr2 = mHalfEdge[mHalfEdge[mEdgeWithPoint]->getNext()]->getPoint();
+    int ptnr3 = mHalfEdge[mHalfEdge[mHalfEdge[mEdgeWithPoint]->getNext()]->getNext()]->getPoint();
+    if ( ptnr1 == -1 || ptnr2 == -1 || ptnr3 == -1 )
+    {
+      return false;
+    }
+    p1.setX( mPointVector[ptnr1]->x() );
+    p1.setY( mPointVector[ptnr1]->y() );
+    p1.setZ( mPointVector[ptnr1]->z() );
+    p2.setX( mPointVector[ptnr2]->x() );
+    p2.setY( mPointVector[ptnr2]->y() );
+    p2.setZ( mPointVector[ptnr2]->z() );
+    p3.setX( mPointVector[ptnr3]->x() );
+    p3.setY( mPointVector[ptnr3]->y() );
+    p3.setZ( mPointVector[ptnr3]->z() );
+    return true;
+  }
+  else if ( edge == -25 )//x and y are the coordinates of an existing point
+  {
+    int edge1 = baseEdgeOfPoint( mTwiceInsPoint );
+    int edge2 = mHalfEdge[edge1]->getNext();
+    int edge3 = mHalfEdge[edge2]->getNext();
+    int ptnr1 = mHalfEdge[edge1]->getPoint();
+    int ptnr2 = mHalfEdge[edge2]->getPoint();
+    int ptnr3 = mHalfEdge[edge3]->getPoint();
+    if ( ptnr1 == -1 || ptnr2 == -1 || ptnr3 == -1 )
+    {
+      return false;
+    }
+    p1.setX( mPointVector[ptnr1]->x() );
+    p1.setY( mPointVector[ptnr1]->y() );
+    p1.setZ( mPointVector[ptnr1]->z() );
+    p2.setX( mPointVector[ptnr2]->x() );
+    p2.setY( mPointVector[ptnr2]->y() );
+    p2.setZ( mPointVector[ptnr2]->z() );
+    p3.setX( mPointVector[ptnr3]->x() );
+    p3.setY( mPointVector[ptnr3]->y() );
+    p3.setZ( mPointVector[ptnr3]->z() );
+    return true;
+  }
+  else if ( edge == -5 )//numerical problems in 'baseEdgeOfTriangle'
+  {
+    int ptnr1 = mHalfEdge[mUnstableEdge]->getPoint();
+    int ptnr2 = mHalfEdge[mHalfEdge[mUnstableEdge]->getNext()]->getPoint();
+    int ptnr3 = mHalfEdge[mHalfEdge[mHalfEdge[mUnstableEdge]->getNext()]->getNext()]->getPoint();
+    if ( ptnr1 == -1 || ptnr2 == -1 || ptnr3 == -1 )
+    {
+      return false;
+    }
+    p1.setX( mPointVector[ptnr1]->x() );
+    p1.setY( mPointVector[ptnr1]->y() );
+    p1.setZ( mPointVector[ptnr1]->z() );
+    p2.setX( mPointVector[ptnr2]->x() );
+    p2.setY( mPointVector[ptnr2]->y() );
+    p2.setZ( mPointVector[ptnr2]->z() );
+    p3.setX( mPointVector[ptnr3]->x() );
+    p3.setY( mPointVector[ptnr3]->y() );
+    p3.setZ( mPointVector[ptnr3]->z() );
+    return true;
+  }
+  else//problems
   {
     return false;
   }

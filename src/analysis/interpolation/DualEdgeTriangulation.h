@@ -57,15 +57,11 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Draws the points, edges and the forced lines
     //virtual void draw(QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height) const;
     //! Returns a pointer to the point with number i
-    virtual QgsPoint *getPoint( unsigned int i ) const override;
-    //! Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge)
+    virtual QgsPoint *getPoint( int i ) const override;
     int getOppositePoint( int p1, int p2 ) override;
-    //! Finds out, in which triangle the point with coordinates x and y is and assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'
-    virtual bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, int *n1 SIP_OUT, QgsPoint *p2 SIP_OUT, int *n2 SIP_OUT, QgsPoint *p3 SIP_OUT, int *n3 SIP_OUT ) SIP_PYNAME( getTriangleVertices ) override;
-    //! Finds out, in which triangle the point with coordinates x and y is and assigns addresses to the points at the vertices to 'p1', 'p2' and 'p3
-    virtual bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, QgsPoint *p2 SIP_OUT, QgsPoint *p3 SIP_OUT ) override;
-    //! Returns a pointer to a value list with the information of the triangles surrounding (counterclockwise) a point. Four integer values describe a triangle, the first three are the number of the half edges of the triangle and the fourth is -10, if the third (and most counterclockwise) edge is a breakline, and -20 otherwise. The value list has to be deleted by the code which called the method
-    QList<int> *getSurroundingTriangles( int pointno ) override;
+    bool getTriangle( double x, double y, QgsPoint &p1 SIP_OUT, int &n1 SIP_OUT, QgsPoint &p2 SIP_OUT, int &n2 SIP_OUT, QgsPoint &p3 SIP_OUT, int &n3 SIP_OUT ) SIP_PYNAME( getTriangleVertices ) override;
+    bool getTriangle( double x, double y, QgsPoint &p1 SIP_OUT, QgsPoint &p2 SIP_OUT, QgsPoint &p3 SIP_OUT ) override;
+    QList<int> getSurroundingTriangles( int pointno ) override;
     //! Returns the largest x-coordinate value of the bounding box
     virtual double getXMax() const override { return xMax; }
     //! Returns the smallest x-coordinate value of the bounding box
@@ -174,6 +170,8 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     bool edgeOnConvexHull( int edge );
     //! Function needed for the ruppert algorithm. Tests, if point is in the circle through both endpoints of edge and the endpoint of edge->dual->next->point. If so, the function calls itself recursively for edge->next and edge->next->next. Stops, if it finds a forced edge or a convex hull edge
     void evaluateInfluenceRegion( QgsPoint *point, int edge, QSet<int> &set );
+
+    friend class TestQgsInterpolator;
 };
 
 #ifndef SIP_RUN
@@ -203,8 +201,11 @@ inline int DualEdgeTriangulation::getNumberOfPoints() const
   return mPointVector.count();
 }
 
-inline QgsPoint *DualEdgeTriangulation::getPoint( unsigned int i ) const
+inline QgsPoint *DualEdgeTriangulation::getPoint( int i ) const
 {
+  if ( i < 0 || i >= mPointVector.count() )
+    return nullptr;
+
   return mPointVector.at( i );
 }
 

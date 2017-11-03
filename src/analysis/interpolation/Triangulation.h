@@ -76,18 +76,23 @@ class ANALYSIS_EXPORT Triangulation
     virtual bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) = 0;
 
     //! Returns a pointer to the point with number i. Any virtual points must have the number -1
-    virtual QgsPoint *getPoint( unsigned int i ) const = 0;
+    virtual QgsPoint *getPoint( int i ) const = 0;
 
     /**
      * Finds out in which triangle the point with coordinates x and y is and
      * assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'
      */
-    virtual bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, int *n1 SIP_OUT, QgsPoint *p2 SIP_OUT, int *n2 SIP_OUT, QgsPoint *p3 SIP_OUT, int *n3 SIP_OUT ) = 0 SIP_PYNAME( getTriangleVertices );
+    virtual bool getTriangle( double x, double y, QgsPoint &p1 SIP_OUT, int &n1 SIP_OUT, QgsPoint &p2 SIP_OUT, int &n2 SIP_OUT, QgsPoint &p3 SIP_OUT, int &n3 SIP_OUT ) = 0 SIP_PYNAME( getTriangleVertices );
 
     //! Finds out, in which triangle the point with coordinates x and y is and assigns the  points at the vertices to 'p1', 'p2' and 'p3
-    virtual bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, QgsPoint *p2 SIP_OUT, QgsPoint *p3 SIP_OUT ) = 0;
+    virtual bool getTriangle( double x, double y, QgsPoint &p1 SIP_OUT, QgsPoint &p2 SIP_OUT, QgsPoint &p3 SIP_OUT ) = 0;
 
-    //! Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge)
+    /**
+     * Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge).
+     *
+     * Returns -1 if point is a virtual point.
+     * Returns -10 if point crosses over edges.
+     */
     virtual int getOppositePoint( int p1, int p2 ) = 0;
 
     //! Returns the largest x-coordinate value of the bounding box
@@ -109,10 +114,9 @@ class ANALYSIS_EXPORT Triangulation
      * Returns a pointer to a value list with the information of the triangles surrounding (counterclockwise) a point.
      * Four integer values describe a triangle, the first three are the number of the half edges of the triangle
      * and the fourth is -10, if the third (and most counterclockwise) edge is a breakline, and -20 otherwise.
-     * The value list has to be deleted by the code which called the method.
      * Any virtual point needs to have the number -1
      */
-    virtual QList<int> *getSurroundingTriangles( int pointno ) = 0;
+    virtual QList<int> getSurroundingTriangles( int pointno ) = 0;
 
     /**
      * Returns a value list with the numbers of the four points, which would be affected by an edge swap.

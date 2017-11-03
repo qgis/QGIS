@@ -92,8 +92,6 @@ class TinInterpolation(QgisAlgorithm):
     METHOD = 'METHOD'
     COLUMNS = 'COLUMNS'
     ROWS = 'ROWS'
-    CELLSIZE_X = 'CELLSIZE_X'
-    CELLSIZE_Y = 'CELLSIZE_Y'
     EXTENT = 'EXTENT'
     OUTPUT = 'OUTPUT'
     TRIANGULATION = 'TRIANGULATION'
@@ -124,12 +122,6 @@ class TinInterpolation(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.ROWS,
                                                        self.tr('Number of rows'),
                                                        minValue=0, maxValue=10000000, defaultValue=300))
-        self.addParameter(QgsProcessingParameterNumber(self.CELLSIZE_X,
-                                                       self.tr('Cell size X'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.0, maxValue=999999.000000, defaultValue=0.0))
-        self.addParameter(QgsProcessingParameterNumber(self.CELLSIZE_Y,
-                                                       self.tr('Cell size Y'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.0, maxValue=999999.000000, defaultValue=0.0))
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
                                                        self.tr('Extent'),
                                                        optional=False))
@@ -154,18 +146,12 @@ class TinInterpolation(QgisAlgorithm):
         method = self.parameterAsEnum(parameters, self.METHOD, context)
         columns = self.parameterAsInt(parameters, self.COLUMNS, context)
         rows = self.parameterAsInt(parameters, self.ROWS, context)
-        cellsizeX = self.parameterAsDouble(parameters, self.CELLSIZE_X, context)
-        cellsizeY = self.parameterAsDouble(parameters, self.CELLSIZE_Y, context)
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         if interpolationData is None:
             raise QgsProcessingException(
                 self.tr('You need to specify at least one input layer.'))
-
-        if cellsizeX == 0.0 or cellsizeY == 0.0:
-            raise QgsProcessingException(
-                self.tr('Cellsize should be greater than 0.'))
 
         layerData = []
         layers = []
@@ -207,9 +193,7 @@ class TinInterpolation(QgisAlgorithm):
                                    output,
                                    bbox,
                                    columns,
-                                   rows,
-                                   cellsizeX,
-                                   cellsizeY)
+                                   rows)
 
         writer.writeFile(feedback)
         return {self.OUTPUT: output, self.TRIANGULATION: triangulation_dest_id}
