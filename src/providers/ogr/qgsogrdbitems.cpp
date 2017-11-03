@@ -401,7 +401,7 @@ void QgsGeoPackageCollectionItem::addTable()
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "Cannot add Table: connection %1 does not exists or the path is empy!" ).arg( connName ) );
+    QgsDebugMsg( QStringLiteral( "Cannot add Table: connection %1 does not exists or the path is empty!" ).arg( connName ) );
   }
 }
 
