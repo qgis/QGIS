@@ -30,6 +30,7 @@ QgsAttributeFormWidget::QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAtt
   mSearchPage->setLayout( l );
   l->addWidget( mSearchFrame, 1 );
   mSearchWidgetToolButton = new QgsSearchWidgetToolButton();
+  mSearchWidgetToolButton->setObjectName( QStringLiteral( "SearchWidgetToolButton" ) );
   connect( mSearchWidgetToolButton, &QgsSearchWidgetToolButton::activeFlagsChanged,
            this, &QgsAttributeFormWidget::searchWidgetFlagsChanged );
   l->addWidget( mSearchWidgetToolButton, 0 );
@@ -129,15 +130,9 @@ void QgsAttributeFormWidget::resetSearch()
   }
 }
 
-QgsSearchWidgetToolButton *QgsAttributeFormWidget::searchWidgetToolButton() SIP_SKIP
-{
-  return mSearchWidgetToolButton;
-}
-
 QgsVectorLayer *QgsAttributeFormWidget::layer()
 {
-  QgsAttributeForm *aform = form();
-  return aform ? aform->layer() : nullptr;
+  return mWidget->layer();
 }
 
 void QgsAttributeFormWidget::searchWidgetFlagsChanged( QgsSearchWidgetWrapper::FilterFlags flags )

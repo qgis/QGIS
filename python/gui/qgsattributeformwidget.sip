@@ -125,7 +125,6 @@ class QgsAttributeFormWidget : QWidget /Abstract/
 
 
 
-
 };
 
 /************************************************************************
