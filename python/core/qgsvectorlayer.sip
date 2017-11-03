@@ -333,6 +333,24 @@ Set to true if the default layer style should be loaded
  project file). If false, the extent will be determined by the provider on layer load.
 %End
 
+      QgsCoordinateReferenceSystem *crs;
+%Docstring
+ Pointer to an explicit coordinate reference system to use while loading this layer.
+ If set, this CRS will be used when the actual CRS from the
+ data provider could not be determined, and instead of triggering the user's default
+ unknown CRS handling method (e.g. opening the 'select layer CRS' dialog).
+
+ A pointer to an invalid QgsCoordinateReferenceSystem object can be used to indicate
+ that the layer does not require a valid CRS and that no user prompts for the
+ layer's CRS should be triggered.
+
+ Ownership of this pointer is not transferred to the layer, and callers must ensure
+ that the pointer lifetime exists for the duration of the layer construction only.
+
+ If the crs argument is None (the default), the default missing CRS
+ handling method will be used intead.
+%End
+
     };
 
     explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
@@ -419,11 +437,6 @@ Set to true if the default layer style should be loaded
     void setProviderEncoding( const QString &encoding );
 %Docstring
 Sets the textencoding of the data provider
-%End
-
-    void setCoordinateSystem();
-%Docstring
-Setup the coordinate system transformation for the layer
 %End
 
     bool addJoin( const QgsVectorLayerJoinInfo &joinInfo );
@@ -896,7 +909,8 @@ Return the provider type for this layer
  :rtype: long
 %End
 
-    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider,
+                        bool loadDefaultStyleFlag = false, QgsCoordinateReferenceSystem *crs = 0 );
 %Docstring
  Update the data source of the layer. The layer's renderer and legend will be preserved only
  if the geometry type of the new data source matches the current geometry type of the layer.
@@ -905,6 +919,21 @@ Return the provider type for this layer
  \param provider provider string
  \param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
  data source
+ \param crs Pointer to an explicit coordinate reference system for this layer.
+ If set, this CRS will be used instead when the actual CRS could not be detected from the
+ data provider, and instead of triggering the user's default CRS handling method (e.g. opening the
+ 'select layer CRS' dialog).
+
+ A pointer to an invalid QgsCoordinateReferenceSystem object can be used to indicate
+ that the layer does not require a valid CRS and that no user prompts for the
+ layer's CRS should be triggered.
+
+ Ownership of this pointer is not transferred to the layer, and callers must ensure
+ that the pointer lifetime exists for the duration of function only.
+
+ If the crs argument is None (the default), the default missing CRS
+ handling method will be used intead.
+
 .. versionadded:: 2.10
 %End
 

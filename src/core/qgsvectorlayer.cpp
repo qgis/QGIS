@@ -152,7 +152,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   // if we're given a provider type, try to create and bind one to this layer
   if ( !vectorLayerPath.isEmpty() && !mProviderKey.isEmpty() )
   {
-    setDataSource( vectorLayerPath, baseName, providerKey, options.loadDefaultStyle );
+    setDataSource( vectorLayerPath, baseName, providerKey, options.loadDefaultStyle, options.crs );
   }
 
   connect( this, &QgsVectorLayer::selectionChanged, this, [ = ] { emit repaintRequested(); } );
@@ -1470,7 +1470,7 @@ bool QgsVectorLayer::readXml( const QDomNode &layer_node, const QgsReadWriteCont
 } // void QgsVectorLayer::readXml
 
 
-void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag )
+void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag, QgsCoordinateReferenceSystem *crs )
 {
   QgsWkbTypes::GeometryType geomType = mValid && mDataProvider ? geometryType() : QgsWkbTypes::UnknownGeometry;
 
@@ -1483,7 +1483,7 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
     return;
 
   // Always set crs
-  setCoordinateSystem();
+  setCoordinateSystem( crs );
 
   // reset style if loading default style, style is missing, or geometry type has changed
   if ( !renderer() || !legend() || geomType != geometryType() || loadDefaultStyleFlag )
@@ -2720,19 +2720,27 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList &features, Flags )
   return res;
 }
 
-void QgsVectorLayer::setCoordinateSystem()
+void QgsVectorLayer::setCoordinateSystem( QgsCoordinateReferenceSystem *crs )
 {
-  QgsDebugMsgLevel( "----- Computing Coordinate System", 4 );
-
-  //
-  // Get the layers project info and set up the QgsCoordinateTransform
-  // for this layer
-  //
-
+  // auto detect or prompt for crs
   if ( isSpatial() )
   {
-    // get CRS directly from provider
-    setCrs( mDataProvider->crs() );
+    QgsCoordinateReferenceSystem providerCrs = mDataProvider->crs();
+    if ( providerCrs.isValid() )
+    {
+      setCrs( providerCrs );
+    }
+    else if ( crs )
+    {
+      // using explicit crs
+      mCRS = *crs;
+      emit crsChanged();
+    }
+    else
+    {
+      // trigger default 'unknown crs' behavior
+      setCrs( QgsCoordinateReferenceSystem() );
+    }
   }
   else
   {
