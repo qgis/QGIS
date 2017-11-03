@@ -23,6 +23,7 @@
 
 #include <QNetworkProxy>
 #include <QMutexLocker>
+#include <QUuid>
 
 static const QString AUTH_METHOD_KEY = QStringLiteral( "Basic" );
 static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "Basic authentication" );
@@ -41,6 +42,7 @@ QgsAuthBasicMethod::QgsAuthBasicMethod()
                     << QStringLiteral( "wfs" )  // convert to lowercase
                     << QStringLiteral( "wcs" )
                     << QStringLiteral( "wms" )
+                    << QStringLiteral( "ogr" )
                     << QStringLiteral( "proxy" ) );
 }
 
@@ -84,7 +86,6 @@ bool QgsAuthBasicMethod::updateNetworkRequest( QNetworkRequest &request, const Q
 bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
     const QString &dataprovider )
 {
-  Q_UNUSED( dataprovider )
   QgsAuthMethodConfig mconfig = getMethodConfig( authcfg );
   if ( !mconfig.isValid() )
   {
@@ -101,28 +102,152 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     return false;
   }
 
-  QString userparam = "user='" + escapeUserPass( username ) + '\'';
-  int userindx = connectionItems.indexOf( QRegExp( "^user='.*" ) );
-  if ( userindx != -1 )
+  // Branch for OGR
+  if ( dataprovider == QStringLiteral( "ogr" ) )
   {
-    connectionItems.replace( userindx, userparam );
-  }
-  else
-  {
-    connectionItems.append( userparam );
-  }
+    if ( ! password.isEmpty() )
+    {
+      QString fullUri( connectionItems.first() );
+      QString uri( fullUri );
+      // Handle sub-layers
+      if ( fullUri.contains( '|' ) )
+      {
+        uri = uri.left( uri.indexOf( '|' ) );
+      }
+      // At least username must be set... password can be empty
+      if ( ! username.isEmpty() )
+      {
+        // Inject credentials
+        if ( uri.startsWith( QStringLiteral( "PG:" ) ) )
+        {
+          if ( !username.isEmpty() )
+          {
+            uri += QStringLiteral( " user='%1'" ).arg( username );
 
-  QString passparam = "password='" + escapeUserPass( password ) + '\'';
-  int passindx = connectionItems.indexOf( QRegExp( "^password='.*" ) );
-  if ( passindx != -1 )
-  {
-    connectionItems.replace( passindx, passparam );
-  }
-  else
-  {
-    connectionItems.append( passparam );
-  }
+            if ( !password.isEmpty() )
+              uri += QStringLiteral( " password='%1'" ).arg( password );
+          }
+        }
+        else if ( uri.startsWith( QStringLiteral( "SDE:" ) ) )
+        {
+          uri = uri.replace( QRegExp( ",$" ), QStringLiteral( ",%1,%2" ).arg( username, password ) );
+        }
+        else if ( uri.startsWith( QStringLiteral( "IDB" ) ) )
+        {
+          uri += QStringLiteral( " user=%1" ).arg( username );
+          if ( !password.isEmpty() )
+            uri += QStringLiteral( " pass=%1" ).arg( password );
+        }
+        else if ( uri.startsWith( QStringLiteral( "@driver=ingres" ) ) )
+        {
+          uri += QStringLiteral( ",userid=%1" ).arg( username );
+          if ( !password.isEmpty() )
+            uri += QStringLiteral( ",password=%1" ).arg( password );
+        }
+        else if ( uri.startsWith( QStringLiteral( "MySQL:" ) ) )
+        {
+          uri += QStringLiteral( ",userid=%1" ).arg( username );
+          if ( !password.isEmpty() )
+            uri += QStringLiteral( ",password=%1" ).arg( password );
+        }
+        else if ( uri.startsWith( QStringLiteral( "MSSQL:" ) ) )
+        {
+          uri += QStringLiteral( ";uid=%1" ).arg( username );
+          uri = uri.replace( QLatin1String( ";trusted_connection=yes" ), QString() );
 
+          if ( !password.isEmpty() )
+            uri += QStringLiteral( ";pwd=%1" ).arg( password );
+        }
+        else if ( uri.startsWith( QStringLiteral( "OCI:" ) ) )
+        {
+          // OCI:userid/password@database_instance:table,table
+          uri = uri.replace( QStringLiteral( "OCI:/" ),  QStringLiteral( "OCI:%1/%2" ).arg( username, password ) );
+        }
+        else if ( uri.startsWith( QStringLiteral( "ODBC:" ) ) )
+        {
+          if ( password.isEmpty() )
+          {
+            uri = uri.replace( QRegExp( "^ODBC:[^@]+" ),  "ODBC:" + username + '@' );
+          }
+          else
+          {
+            uri = uri.replace( QRegExp( "^ODBC:[^@]+" ), "ODBC:" + username + '/' + password + '@' );
+          }
+        }
+        else if ( uri.startsWith( QStringLiteral( "MSSQL:" ) ) )
+        {
+          uri += QStringLiteral( ";uid=%1" ).arg( username );
+          if ( !password.isEmpty() )
+            uri += QStringLiteral( ";pwd=%1" ).arg( password );
+        }
+        else if ( uri.startsWith( QStringLiteral( "couchdb" ) )
+                  || uri.startsWith( QStringLiteral( "DODS" ) )
+                  || uri.startsWith( "http://" )
+                  || uri.startsWith( "https://" )
+                  || uri.startsWith( "ftp://" ) // not really sure that this is supported ...
+                )
+        {
+          uri = uri.replace( QStringLiteral( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );
+        }
+      }
+      // Handle sub-layers
+      if ( fullUri.contains( '|' ) )
+      {
+        uri += '|' + fullUri.right( fullUri.indexOf( '|' ) );
+      }
+      connectionItems.replace( 0, uri );
+    }
+    else
+    {
+      QgsDebugMsg( QString( "Update URI items FAILED for authcfg: %1: password empty" ).arg( authcfg ) );
+    }
+
+  }
+  else // Not-ogr (looks like Postgis only)
+  {
+    QString userparam = "user='" + escapeUserPass( username ) + '\'';
+    int userindx = connectionItems.indexOf( QRegExp( "^user='.*" ) );
+    if ( userindx != -1 )
+    {
+      connectionItems.replace( userindx, userparam );
+    }
+    else
+    {
+      connectionItems.append( userparam );
+    }
+
+    QString passparam = "password='" + escapeUserPass( password ) + '\'';
+    int passindx = connectionItems.indexOf( QRegExp( "^password='.*" ) );
+    if ( passindx != -1 )
+    {
+      connectionItems.replace( passindx, passparam );
+    }
+    else
+    {
+      connectionItems.append( passparam );
+    }
+    // add extra CAs
+    QList<QSslCertificate> cas;
+    cas = QgsApplication::authManager()->trustedCaCerts();
+    // save CAs to temp file
+    QString tempFileBase = QStringLiteral( "tmp_basic_%1.pem" );
+    QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
+                           tempFileBase.arg( QUuid::createUuid().toString() ),
+                           QgsAuthCertUtils::certsToPemText( cas ) );
+    if ( ! caFilePath.isEmpty() )
+    {
+      QString caparam = "sslrootcert='" + caFilePath + "'";
+      int sslcaindx = connectionItems.indexOf( QRegExp( "^sslrootcert='.*" ) );
+      if ( sslcaindx != -1 )
+      {
+        connectionItems.replace( sslcaindx, caparam );
+      }
+      else
+      {
+        connectionItems.append( caparam );
+      }
+    }
+  }
   return true;
 }
 

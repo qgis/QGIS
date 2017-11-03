@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Tests for auth manager PKI access to postgres.
+Tests for auth manager Password access to postgres.
 
 This is an integration test for QGIS Desktop Auth Manager postgres provider that
 checks if QGIS can use a stored auth manager auth configuration to access
-a PKI protected postgres.
+a Password protected postgres.
 
 Configuration from the environment:
 
@@ -12,12 +12,12 @@ Configuration from the environment:
     * QGIS_POSTGRES_EXECUTABLE_PATH (default: /usr/lib/postgresql/9.4/bin)
 
 
-From build dir, run: ctest -R PyQgsAuthManagerPKIPostgresTest -V
+From build dir, run: ctest -R PyQgsAuthManagerPasswordPostgresTest -V
 
 or, if your PostgreSQL path differs from the default:
 
 QGIS_POSTGRES_EXECUTABLE_PATH=/usr/lib/postgresql/<your_version_goes_here>/bin \
-    ctest -R PyQgsAuthManagerPKIPostgresTest -V
+    ctest -R PyQgsAuthManagerPasswordPostgresTest -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -86,8 +86,8 @@ password_encryption = on
 """
 
 QGIS_POSTGRES_HBA_TEMPLATE = """
-hostssl    all           all             0.0.0.0/0              cert clientcert=1
-hostssl    all           all             ::1/0                  cert clientcert=1
+hostssl    all           all             0.0.0.0/0              md5
+hostssl    all           all             ::1/0                  md5
 host       all           all             127.0.0.1/32           trust
 host       all           all             ::1/32                 trust
 """
@@ -104,19 +104,12 @@ class TestAuthManager(unittest.TestCase):
         cls.pg_hba = os.path.join(cls.tempfolder, 'pg_hba.conf')
         # Client side
         cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'chains_subissuer-issuer-root_issuer2-root2.pem')
-        cls.sslcert = os.path.join(cls.certsdata_path, 'gerardus_cert.pem')
-        cls.sslkey = os.path.join(cls.certsdata_path, 'gerardus_key.pem')
-        assert os.path.isfile(cls.sslcert)
-        assert os.path.isfile(cls.sslkey)
         assert os.path.isfile(cls.sslrootcert_path)
-        os.chmod(cls.sslcert, stat.S_IRUSR)
-        os.chmod(cls.sslkey, stat.S_IRUSR)
         os.chmod(cls.sslrootcert_path, stat.S_IRUSR)
-        cls.auth_config = QgsAuthMethodConfig("PKI-Paths")
-        cls.auth_config.setConfig('certpath', cls.sslcert)
-        cls.auth_config.setConfig('keypath', cls.sslkey)
-        cls.auth_config.setName('test_pki_auth_config')
-        cls.username = 'Gerardus'
+        cls.auth_config = QgsAuthMethodConfig("Basic")
+        cls.auth_config.setConfig('username', cls.username)
+        cls.auth_config.setConfig('password', cls.password)
+        cls.auth_config.setName('test_password_auth_config')
         cls.sslrootcert = QSslCertificate.fromPath(cls.sslrootcert_path)
         assert cls.sslrootcert is not None
         authm.storeCertAuthorities(cls.sslrootcert)
@@ -152,19 +145,21 @@ class TestAuthManager(unittest.TestCase):
         """Run before all tests:
         Creates an auth configuration"""
         cls.port = QGIS_POSTGRES_SERVER_PORT
-        cls.dbname = 'test_pki'
+        cls.username = 'username'
+        cls.password = 'password'
+        cls.dbname = 'test_password'
         cls.tempfolder = QGIS_PG_TEST_PATH
         cls.certsdata_path = os.path.join(unitTestDataPath('auth_system'), 'certs_keys')
         cls.hostname = 'localhost'
         cls.data_path = os.path.join(cls.tempfolder, 'data')
         os.mkdir(cls.data_path)
 
-        cls.setUpAuth()
-        subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'initdb'), '-D', cls.data_path])
-
         # Disable SSL verification for setup operations
         env = dict(os.environ)
         env['PGSSLMODE'] = 'disable'
+
+        cls.setUpAuth()
+        subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'initdb'), '-D', cls.data_path])
 
         cls.server = subprocess.Popen([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'postgres'), '-D',
                                        cls.data_path, '-c',
@@ -182,12 +177,12 @@ class TestAuthManager(unittest.TestCase):
             if time.time() > end:
                 raise Exception("Timeout connecting to PostgreSQL")
         # Create a DB
-        subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'createdb'), '-h', 'localhost', '-p', cls.port, 'test_pki'], env=env)
+        subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'createdb'), '-h', 'localhost', '-p', cls.port, 'test_password'], env=env)
         # Inject test SQL from test path
         test_sql = os.path.join(unitTestDataPath('provider'), 'testdata_pg.sql')
         subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'psql'), '-h', 'localhost', '-p', cls.port, '-f', test_sql, cls.dbname], env=env)
         # Create a role
-        subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'psql'), '-h', 'localhost', '-p', cls.port, '-c', 'CREATE ROLE "%s" WITH SUPERUSER LOGIN' % cls.username, cls.dbname], env=env)
+        subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'psql'), '-h', 'localhost', '-p', cls.port, '-c', 'CREATE ROLE "%s" WITH SUPERUSER LOGIN PASSWORD \'%s\'' % (cls.username, cls.password), cls.dbname], env=env)
 
     @classmethod
     def tearDownClass(cls):

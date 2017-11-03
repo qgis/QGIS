@@ -422,7 +422,7 @@ bool QgsOgrFeatureIterator::readFeature( gdal::ogr_feature_unique_ptr fet, QgsFe
 
 
 QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
-  : mDataSource( p->dataSourceUri() )
+  : mDataSource( p->dataSourceUri( true ) )
   , mLayerName( p->layerName() )
   , mLayerIndex( p->layerIndex() )
   , mSubsetString( p->mSubsetString )

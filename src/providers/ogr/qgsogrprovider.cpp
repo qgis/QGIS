@@ -35,6 +35,7 @@ email                : sherman at mrcc.com
 #include "qgsogrdataitems.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgswkbtypes.h"
+#include "qgsauthmanager.h"
 
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"
@@ -451,19 +452,31 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri )
 
   setNativeTypes( nativeTypes );
 
-  QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri() ) );
+  QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
 }
 
 QgsOgrProvider::~QgsOgrProvider()
 {
-  QgsOgrConnPool::instance()->unref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri() ) );
+  QgsOgrConnPool::instance()->unref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
   // We must also make sure to flush unusef cached connections so that
   // the file can be removed (#15137)
-  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri() ) );
+  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
 
   // Do that as last step for final cleanup that might be prevented by
   // still opened datasets.
   close();
+}
+
+QString QgsOgrProvider::dataSourceUri( bool expandAuthConfig ) const
+{
+  if ( expandAuthConfig && QgsDataProvider::dataSourceUri( ).contains( QLatin1String( "authcfg" ) ) )
+  {
+    return QgsOgrProviderUtils::expandAuthConfig( QgsDataProvider::dataSourceUri( ) );
+  }
+  else
+  {
+    return QgsDataProvider::dataSourceUri( );
+  }
 }
 
 QgsAbstractFeatureSource *QgsOgrProvider::featureSource() const
@@ -531,9 +544,9 @@ bool QgsOgrProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
 
   if ( uri != dataSourceUri() )
   {
-    QgsOgrConnPool::instance()->unref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri() ) );
+    QgsOgrConnPool::instance()->unref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
     setDataSourceUri( uri );
-    QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri() ) );
+    QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
   }
 
   mOgrLayer->ResetReading();
@@ -883,7 +896,7 @@ OGRwkbGeometryType QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
 
 void QgsOgrProvider::loadFields()
 {
-  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri() ) );
+  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
   //the attribute fields need to be read again when the encoding changes
   mAttributeFields.clear();
   mDefaultValues.clear();
@@ -1452,7 +1465,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
   {
     // adding attributes in mapinfo requires to be able to delete the .dat file
     // so drop any cached connections.
-    QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri() ) );
+    QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
   }
 
   bool returnvalue = true;
@@ -1786,7 +1799,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   {
     pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
   }
-  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri() ) );
+  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
   return true;
 }
 
@@ -1862,7 +1875,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     commitTransaction();
   }
 
-  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri() ) );
+  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
   return syncToDisc();
 }
 
@@ -3155,7 +3168,7 @@ QByteArray QgsOgrProvider::quotedIdentifier( const QByteArray &field ) const
 
 void QgsOgrProvider::forceReload()
 {
-  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri() ) );
+  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
 }
 
 QString QgsOgrProviderUtils::connectionPoolId( const QString &dataSourceURI )
@@ -3433,7 +3446,7 @@ QString QgsOgrProviderUtils::quotedValue( const QVariant &value )
 bool QgsOgrProvider::syncToDisc()
 {
   //for shapefiles, remove spatial index files and create a new index
-  QgsOgrConnPool::instance()->unref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri() ) );
+  QgsOgrConnPool::instance()->unref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
   bool shapeIndex = false;
   if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
   {
@@ -3448,7 +3461,7 @@ bool QgsOgrProvider::syncToDisc()
     {
       shapeIndex = true;
       close();
-      QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri() ) );
+      QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
       QFile::remove( sbnIndexFile );
       open( OpenModeSameAsCurrent );
       if ( !mValid )
@@ -3472,7 +3485,7 @@ bool QgsOgrProvider::syncToDisc()
   }
 #endif
 
-  QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri() ) );
+  QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
   if ( shapeIndex )
   {
     return createSpatialIndex();
@@ -3534,7 +3547,7 @@ void QgsOgrProvider::recalculateFeatureCount()
     mOgrLayer->SetSpatialFilter( filter );
   }
 
-  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri() ) );
+  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
 }
 
 bool QgsOgrProvider::doesStrictFeatureTypeCheck() const
@@ -3948,7 +3961,7 @@ static GDALDatasetH OpenHelper( const QString &dsName,
                                      option.toUtf8().constData() );
   }
   GDALDatasetH hDS = QgsOgrProviderUtils::GDALOpenWrapper(
-                       dsName.toUtf8().constData(), updateMode, papszOpenOptions, nullptr );
+                       QgsOgrProviderUtils::expandAuthConfig( dsName ).toUtf8().constData(), updateMode, papszOpenOptions, nullptr );
   CSLDestroy( papszOpenOptions );
   return hDS;
 }
@@ -4098,6 +4111,7 @@ QgsOgrLayer *QgsOgrProviderUtils::getLayer( const QString &dsName,
     QString &errCause )
 {
   QMutexLocker locker( &globalMutex );
+
   for ( auto iter = mapSharedDS.begin(); iter != mapSharedDS.end(); ++iter )
   {
     if ( iter.key().dsName == dsName )
@@ -4145,6 +4159,26 @@ static QDateTime getLastModified( const QString &dsName )
       return info.lastModified();
   }
   return QFileInfo( dsName ).lastModified();
+}
+
+QString QgsOgrProviderUtils::expandAuthConfig( const QString &dsName )
+{
+  QString uri( dsName );
+  // Check for authcfg
+  QRegularExpression authcfgRe( " authcfg='([^']+)'" );
+  QRegularExpressionMatch match;
+  if ( uri.contains( authcfgRe, &match ) )
+  {
+    uri = uri.replace( match.captured( 0 ), QString() );
+    QString configId( match.captured( 1 ) );
+    QStringList connectionItems;
+    connectionItems << uri;
+    if ( QgsApplication::authManager()->updateDataSourceUriItems( connectionItems, configId, QStringLiteral( "ogr" ) ) )
+    {
+      uri = connectionItems.first( );
+    }
+  }
+  return uri;
 }
 
 // Must be called under the globalMutex
