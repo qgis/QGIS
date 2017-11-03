@@ -54,10 +54,11 @@ class ANALYSIS_EXPORT Triangulation
     virtual void addLine( Line3D *line SIP_TRANSFER, bool breakline ) = 0;
 
     /**
-     * Adds a point to the triangulation
-     * Ownership is transferred to this class
+     * Adds a \a point to the triangulation.
+     *
+     * The point should have a z-value matching the value to interpolate.
      */
-    virtual int addPoint( QgsPoint *p ) = 0;
+    virtual int addPoint( const QgsPoint &point ) = 0;
 
     /**
      * Calculates the normal at a point on the surface and assigns it to 'result'.
@@ -72,7 +73,7 @@ class ANALYSIS_EXPORT Triangulation
      * Calculates x-, y and z-value of the point on the surface and assigns it to 'result'.
      * Returns true in case of success and flase in case of failure
      */
-    virtual bool calcPoint( double x, double y, QgsPoint *result SIP_OUT ) = 0;
+    virtual bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) = 0;
 
     //! Returns a pointer to the point with number i. Any virtual points must have the number -1
     virtual QgsPoint *getPoint( unsigned int i ) const = 0;

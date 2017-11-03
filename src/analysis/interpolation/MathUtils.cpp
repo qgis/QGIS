@@ -289,14 +289,14 @@ bool MathUtils::inDiametral( QgsPoint *p1, QgsPoint *p2, QgsPoint *point )
 }
 #endif // 0
 
-double MathUtils::leftOf( QgsPoint *thepoint, QgsPoint *p1, QgsPoint *p2 )
+double MathUtils::leftOf( const QgsPoint &thepoint, const QgsPoint *p1, const QgsPoint *p2 )
 {
-  if ( thepoint && p1 && p2 )
+  if ( p1 && p2 )
   {
     //just for debugging
-    double f1 = thepoint->x() - p1->x();
+    double f1 = thepoint.x() - p1->x();
     double f2 = p2->y() - p1->y();
-    double f3 = thepoint->y() - p1->y();
+    double f3 = thepoint.y() - p1->y();
     double f4 = p2->x() - p1->x();
     return f1 * f2 - f3 * f4;
     //return thepoint->getX()-p1->getX())*(p2->getY()-p1->getY())-(thepoint->getY()-p1->getY())*(p2->getX()-p1->getX();//calculating the vectorproduct
@@ -556,7 +556,7 @@ bool MathUtils::normalLeft( Vector3D *v1, Vector3D *result, double length )
     QgsPoint point2( v1->getX(), v1->getY(), 0 );
     QgsPoint point3( result->getX(), result->getY(), 0 );
 
-    if ( !( leftOf( &point1, &point2, &point3 ) < 0 ) )//if we took the solution on the right side, change the sign of the components of the result
+    if ( !( leftOf( point1, &point2, &point3 ) < 0 ) )//if we took the solution on the right side, change the sign of the components of the result
     {
       result->setX( -result->getX() );
       result->setY( -result->getY() );
@@ -613,7 +613,7 @@ bool MathUtils::normalRight( Vector3D *v1, Vector3D *result, double length )
     QgsPoint point2( v1->getX(), v1->getY(), 0 );
     QgsPoint point3( result->getX(), result->getY(), 0 );
 
-    if ( ( leftOf( &point1, &point2, &point3 ) < 0 ) ) //if we took the solution on the right side, change the sign of the components of the result
+    if ( ( leftOf( point1, &point2, &point3 ) < 0 ) ) //if we took the solution on the right side, change the sign of the components of the result
     {
       result->setX( -result->getX() );
       result->setY( -result->getY() );
@@ -680,15 +680,15 @@ double MathUtils::crossVec( QgsPoint *first, Vector3D *vec1, QgsPoint *second, V
 bool MathUtils::pointInsideTriangle( double x, double y, QgsPoint *p1, QgsPoint *p2, QgsPoint *p3 )
 {
   QgsPoint thepoint( x, y, 0 );
-  if ( MathUtils::leftOf( &thepoint, p1, p2 ) > 0 )
+  if ( MathUtils::leftOf( thepoint, p1, p2 ) > 0 )
   {
     return false;
   }
-  if ( MathUtils::leftOf( &thepoint, p2, p3 ) > 0 )
+  if ( MathUtils::leftOf( thepoint, p2, p3 ) > 0 )
   {
     return false;
   }
-  if ( MathUtils::leftOf( &thepoint, p3, p1 ) > 0 )
+  if ( MathUtils::leftOf( thepoint, p3, p1 ) > 0 )
   {
     return false;
   }

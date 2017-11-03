@@ -29,7 +29,7 @@ void TriDecorator::addLine( Line3D *line, bool breakline )
   }
 }
 
-int TriDecorator::addPoint( QgsPoint *p )
+int TriDecorator::addPoint( const QgsPoint &p )
 {
   if ( mTIN )
   {
@@ -69,7 +69,7 @@ bool TriDecorator::calcNormal( double x, double y, Vector3D *result )
   }
 }
 
-bool TriDecorator::calcPoint( double x, double y, QgsPoint *result )
+bool TriDecorator::calcPoint( double x, double y, QgsPoint &result )
 {
   if ( mTIN )
   {

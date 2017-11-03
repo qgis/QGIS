@@ -42,14 +42,12 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     NormVecDecorator();
     NormVecDecorator( Triangulation *tin );
     virtual ~NormVecDecorator();
-    //! Adds a point to the triangulation
-    int addPoint( QgsPoint *p ) override;
+    int addPoint( const QgsPoint &p ) override;
     //! Calculates the normal at a point on the surface and assigns it to 'result'. Returns true in case of success and false in case of failure
     bool calcNormal( double x, double y, Vector3D *result SIP_OUT ) override;
     //! Calculates the normal of a triangle-point for the point with coordinates x and y. This is needed, if a point is on a break line and there is no unique normal stored in 'mNormVec'. Returns false, it something went wrong and true otherwise
     bool calcNormalForPoint( double x, double y, int point, Vector3D *result SIP_OUT );
-    //! Calculates x-, y and z-value of the point on the surface and assigns it to 'result'. Returns true in case of success and flase in case of failure
-    bool calcPoint( double x, double y, QgsPoint *result SIP_OUT ) override;
+    bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
     //! Eliminates the horizontal triangles by swapping or by insertion of new points. If alreadyestimated is true, a re-estimation of the normals will be done
     virtual void eliminateHorizontalTriangles() override;
     //! Estimates the first derivative a point. Return true in case of succes and false otherwise

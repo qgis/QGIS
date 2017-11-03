@@ -88,12 +88,15 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
 
     /**
      * Inserts the vertices of a feature into the triangulation
-      \param f the feature
-      \param zCoord true if the z coordinate is the interpolation attribute
-      \param attr interpolation attribute index (if zCoord is false)
-      \param type point/structure line, break line
-      \returns 0 in case of success, -1 if the feature could not be inserted because of numerical problems*/
-    int insertData( const QgsFeature &f, bool zCoord, int attr, SourceType type );
+     * \param f the feature
+     * \param source source for feature values to interpolate
+     * \param attr interpolation attribute index (if zCoord is false)
+     * \param type point/structure line, break line
+     * \returns 0 in case of success, -1 if the feature could not be inserted because of numerical problems
+    */
+    int insertData( const QgsFeature &f, QgsInterpolator::ValueSource source, int attr, SourceType type );
+
+    int addPointsFromGeometry( const QgsGeometry &g, ValueSource source, double attributeValue );
 };
 
 #endif
