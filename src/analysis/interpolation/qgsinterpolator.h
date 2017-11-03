@@ -95,7 +95,7 @@ class ANALYSIS_EXPORT QgsInterpolator
       //! Feature source
       QgsFeatureSource *source = nullptr;
       //! Source for feature values to interpolate
-      ValueSource valueSource = ValueAttribute;
+      QgsInterpolator::ValueSource valueSource = QgsInterpolator::ValueAttribute;
       //! Index of feature attribute to use for interpolation
       int interpolationAttribute = -1;
       //! Source type

@@ -79,7 +79,7 @@ class QgsInterpolator
 %Docstring
 Feature source
 %End
-      ValueSource valueSource;
+      QgsInterpolator::ValueSource valueSource;
 %Docstring
 Source for feature values to interpolate
 %End
