@@ -716,10 +716,10 @@ class Plugins(QObject):
                         # failedToLoad = settings.value("/PythonPlugins/watchDog/" + key) is not None
                         testLoadThis = testLoad and key not in qgis.utils.plugins
                         plugin = self.getInstalledPlugin(key, path=path, readOnly=readOnly, testLoad=testLoadThis)
-                        self.localCache[key] = plugin
                         if key in self.localCache.keys() and compareVersions(self.localCache[key]["version_installed"], plugin["version_installed"]) == 1:
                             # An obsolete plugin in the "user" location is masking a newer one in the "system" location!
                             self.obsoletePlugins += [key]
+                        self.localCache[key] = plugin
             except:
                 # it's not necessary to stop if one of the dirs is inaccessible
                 pass
