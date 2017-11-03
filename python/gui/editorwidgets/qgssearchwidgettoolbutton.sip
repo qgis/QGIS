@@ -8,6 +8,10 @@
 
 
 
+%ModuleHeaderCode
+#include "qgssearchwidgettoolbutton.h"
+%End
+
 class QgsSearchWidgetToolButton : QToolButton
 {
 %Docstring
@@ -19,6 +23,12 @@ class QgsSearchWidgetToolButton : QToolButton
 
 %TypeHeaderCode
 #include "qgssearchwidgettoolbutton.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsSearchWidgetToolButton *>( sipCpp ) )
+      sipType = sipType_QgsSearchWidgetToolButton;
+    else
+      sipType = nullptr;
 %End
   public:
 
