@@ -17,11 +17,11 @@
 #include "TriDecorator.h"
 #include "qgslogger.h"
 
-void TriDecorator::addLine( Line3D *line, QgsInterpolator::SourceType lineType )
+void TriDecorator::addLine( const QVector<QgsPoint> &points, QgsInterpolator::SourceType lineType )
 {
   if ( mTIN )
   {
-    mTIN->addLine( line, lineType );
+    mTIN->addLine( points, lineType );
   }
   else
   {

@@ -10,11 +10,9 @@ SET(QGIS_ANALYSIS_SRCS
   interpolation/CloughTocherInterpolator.cpp
   interpolation/DualEdgeTriangulation.cpp
   interpolation/HalfEdge.cpp
-  interpolation/Line3D.cpp
   interpolation/LinTriangleInterpolator.cpp
   interpolation/MathUtils.cpp
   interpolation/NormVecDecorator.cpp
-  interpolation/Node.cpp
   interpolation/ParametricLine.cpp
   interpolation/TriangleInterpolator.cpp
   interpolation/Triangulation.cpp
@@ -217,13 +215,11 @@ SET(QGIS_ANALYSIS_HDRS
   interpolation/Vector3D.h
   interpolation/DualEdgeTriangulation.h
   interpolation/MathUtils.h
-  interpolation/Node.h
   interpolation/TriDecorator.h
   interpolation/Triangulation.h
   interpolation/HalfEdge.h
   interpolation/LinTriangleInterpolator.h
   interpolation/NormVecDecorator.h
-  interpolation/Line3D.h
 
   network/qgsgraph.h
   network/qgsgraphbuilderinterface.h

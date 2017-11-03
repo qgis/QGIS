@@ -47,7 +47,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     DualEdgeTriangulation( int nop, Triangulation *decorator );
     virtual ~DualEdgeTriangulation();
     void setDecorator( Triangulation *d ) {mDecorator = d;}
-    void addLine( Line3D *line SIP_TRANSFER, QgsInterpolator::SourceType lineType ) override;
+    void addLine( const QVector< QgsPoint > &points, QgsInterpolator::SourceType lineType ) override;
     int addPoint( const QgsPoint &p ) override;
     //! Performs a consistency check, remove this later
     virtual void performConsistencyTest() override;

@@ -21,7 +21,6 @@
 #include "DualEdgeTriangulation.h"
 #include "NormVecDecorator.h"
 #include "LinTriangleInterpolator.h"
-#include "Line3D.h"
 #include "qgspoint.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
@@ -286,7 +285,7 @@ int QgsTINInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
             if ( !curve )
               continue;
 
-            Line3D *line = new Line3D();
+            QVector< QgsPoint > linePoints;
             for ( auto point = g.vertices_begin(); point != g.vertices_end(); ++point )
             {
               QgsPoint p = *point;
@@ -305,10 +304,10 @@ int QgsTINInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
                   z = p.m();
                   break;
               }
-              line->insertPoint( new QgsPoint( p.x(), p.y(), z ) );
-            }
 
-            mTriangulation->addLine( line, type );
+              linePoints.append( QgsPoint( p.x(), p.y(), z ) );
+            }
+            mTriangulation->addLine( linePoints, type );
           }
           break;
         }

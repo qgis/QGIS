@@ -25,7 +25,6 @@
 #include "qgsinterpolator.h"
 
 class QgsFeatureSink;
-class Line3D;
 class QgsFields;
 class QgsFeedback;
 
@@ -49,10 +48,10 @@ class ANALYSIS_EXPORT Triangulation
     virtual ~Triangulation();
 
     /**
-     * Adds a \a line (e.g. a break-, structure- or an isoline) to the triangulation.
-     * The class takes ownership of the line object and its points
+     * Adds a line (e.g. a break-, structure- or an isoline) to the triangulation, by specifying
+     * a list of source \a points.
      */
-    virtual void addLine( Line3D *line SIP_TRANSFER, QgsInterpolator::SourceType lineType ) = 0;
+    virtual void addLine( const QVector< QgsPoint > &points, QgsInterpolator::SourceType lineType ) = 0;
 
     /**
      * Adds a \a point to the triangulation.

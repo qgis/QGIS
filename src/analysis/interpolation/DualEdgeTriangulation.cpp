@@ -17,7 +17,6 @@
 
 #include "DualEdgeTriangulation.h"
 #include <map>
-#include "Line3D.h"
 #include "MathUtils.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
@@ -67,47 +66,36 @@ void DualEdgeTriangulation::performConsistencyTest()
   QgsDebugMsg( "consistency test finished" );
 }
 
-void DualEdgeTriangulation::addLine( Line3D *line, QgsInterpolator::SourceType lineType )
+void DualEdgeTriangulation::addLine( const QVector<QgsPoint> &points, QgsInterpolator::SourceType lineType )
 {
   int actpoint = -10;//number of the last point, which has been inserted from the line
   int currentpoint = -10;//number of the point, which is currently inserted from the line
-  if ( line )
+
+  int i = 0;
+  for ( const QgsPoint &point : points )
   {
-    //first, find the first point
-    unsigned int i;
-    line->goToBegin();
-
-    for ( i = 0; i < line->getSize(); i++ )
+    actpoint = mDecorator->addPoint( point );
+    i++;
+    if ( actpoint != -100 )
     {
-      line->goToNext();
-      // Use copy ctor since line can be deleted as well as its
-      // associated Node and QgsPoint
-      actpoint = mDecorator->addPoint( QgsPoint( *line->getPoint() ) );
-      if ( actpoint != -100 )
-      {
-        i++;
-        break;
-      }
-    }
-
-    if ( actpoint == -100 )//no point of the line could be inserted
-    {
-      delete line;
-      return;
-    }
-
-    for ( ; i < line->getSize(); i++ )
-    {
-      line->goToNext();
-      currentpoint = mDecorator->addPoint( QgsPoint( *line->getPoint() ) );
-      if ( currentpoint != -100 && actpoint != -100 && currentpoint != actpoint )//-100 is the return value if the point could not be not inserted
-      {
-        insertForcedSegment( actpoint, currentpoint, lineType );
-      }
-      actpoint = currentpoint;
+      break;
     }
   }
-  delete line;
+
+  if ( actpoint == -100 )//no point of the line could be inserted
+  {
+    return;
+  }
+
+  for ( ; i < points.size(); ++i )
+  {
+    currentpoint = mDecorator->addPoint( points.at( i ) );
+    if ( currentpoint != -100 && actpoint != -100 && currentpoint != actpoint )//-100 is the return value if the point could not be not inserted
+    {
+      insertForcedSegment( actpoint, currentpoint, lineType );
+    }
+    actpoint = currentpoint;
+  }
 }
 
 int DualEdgeTriangulation::addPoint( const QgsPoint &p )
