@@ -82,7 +82,7 @@ class QgsPluginInstaller(QObject):
             for key in repositories.allEnabled():
                 repositories.setRepositoryData(key, "state", 3)
 
-        # look for obsolete plugins (the user-installed one is newer than core one)
+        # look for obsolete plugins updates (the user-installed one is older than the core one)
         for key in plugins.obsoletePlugins:
             plugin = plugins.localCache[key]
             msg = QMessageBox()
@@ -93,7 +93,7 @@ class QgsPluginInstaller(QObject):
             msg.setText("%s <b>%s</b><br/><br/>%s" % (self.tr("Obsolete plugin:"), plugin["name"], self.tr("QGIS has detected an obsolete plugin that masks its more recent version shipped with this copy of QGIS. This is likely due to files associated with a previous installation of QGIS. Do you want to remove the old plugin right now and unmask the more recent version?")))
             msg.exec_()
             if not msg.result():
-                # uninstall, update utils and reload if enabled
+                # uninstall the update, update utils and reload if enabled
                 self.uninstallPlugin(key, quiet=True)
                 updateAvailablePlugins()
                 settings = QgsSettings()
