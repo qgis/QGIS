@@ -23,6 +23,7 @@
 
 #include <QNetworkProxy>
 #include <QMutexLocker>
+#include <QUuid>
 
 static const QString AUTH_METHOD_KEY = QStringLiteral( "Basic" );
 static const QString AUTH_METHOD_DESCRIPTION = QStringLiteral( "Basic authentication" );
@@ -202,7 +203,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     }
 
   }
-  else // Not-ogr
+  else // Not-ogr (looks like Postgis only)
   {
     QString userparam = "user='" + escapeUserPass( username ) + '\'';
     int userindx = connectionItems.indexOf( QRegExp( "^user='.*" ) );
@@ -224,6 +225,27 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     else
     {
       connectionItems.append( passparam );
+    }
+    // add extra CAs
+    QList<QSslCertificate> cas;
+    cas = QgsApplication::authManager()->trustedCaCerts();
+    // save CAs to temp file
+    QString tempFileBase = QStringLiteral( "tmp_basic_%1.pem" );
+    QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
+                           tempFileBase.arg( QUuid::createUuid().toString() ),
+                           QgsAuthCertUtils::certsToPemText( cas ) );
+    if ( ! caFilePath.isEmpty() )
+    {
+      QString caparam = "sslrootcert='" + caFilePath + "'";
+      int sslcaindx = connectionItems.indexOf( QRegExp( "^sslrootcert='.*" ) );
+      if ( sslcaindx != -1 )
+      {
+        connectionItems.replace( sslcaindx, caparam );
+      }
+      else
+      {
+        connectionItems.append( caparam );
+      }
     }
   }
   return true;
