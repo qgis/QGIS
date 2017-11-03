@@ -544,6 +544,7 @@ QgsAuthConfigUriEdit        {#qgis_api_break_3_0_QgsAuthConfigUriEdit}
 QgsAuthManager        {#qgis_api_break_3_0_QgsAuthManager}
 --------------
 
+- instance() was removed in favor of QgsApplication::authManager() that returns an instance of the Auth Manager
 - authDbConnection() was renamed to authDatabaseConnection()
 - authDbConfigTable() was renamed to authDatabaseConfigTable()
 - authDbServersTable() was renamed to authDatabaseServersTable()
