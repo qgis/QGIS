@@ -3885,6 +3885,11 @@ void QgisApp::createMapTips()
   mpMaptip = new QgsMapTip();
 }
 
+void QgisApp::setMapTipsDelay( int timerInterval )
+{
+  mpMapTipsTimer->setInterval( timerInterval );
+}
+
 void QgisApp::createDecorations()
 {
   QgsDecorationCopyright *mDecorationCopyright = new QgsDecorationCopyright( this );
