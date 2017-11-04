@@ -143,17 +143,17 @@ void QgsAttributeFormEditorWidget::setConstraintStatus( const QString &constrain
   switch ( result )
   {
     case QgsEditorWidgetWrapper::ConstraintResultFailHard:
-      mConstraintResultLabel->setText( QStringLiteral( "<font color=\"#FF9800\">✘</font>" ) );
+      mConstraintResultLabel->setText( QStringLiteral( "<font color=\"#FF9800\">\u2718</font>" ) );
       mConstraintResultLabel->setToolTip( description.isEmpty() ? QStringLiteral( "<b>%1</b>: %2" ).arg( constraint, err ) : description );
       break;
 
     case QgsEditorWidgetWrapper::ConstraintResultFailSoft:
-      mConstraintResultLabel->setText( QStringLiteral( "<font color=\"#FFC107\">✘</font>" ) );
+      mConstraintResultLabel->setText( QStringLiteral( "<font color=\"#FFC107\">\u2718</font>" ) );
       mConstraintResultLabel->setToolTip( description.isEmpty() ? QStringLiteral( "<b>%1</b>: %2" ).arg( constraint, err ) : description );
       break;
 
     case QgsEditorWidgetWrapper::ConstraintResultPass:
-      mConstraintResultLabel->setText( QStringLiteral( "<font color=\"#259b24\">✔</font>" ) );
+      mConstraintResultLabel->setText( QStringLiteral( "<font color=\"#259b24\">\u2714</font>" ) );
       mConstraintResultLabel->setToolTip( QString() );
       break;
   }
