@@ -399,10 +399,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     layerName = '{}_{}'.format(paramName, idx)
                     # Add a raster layer
                     if layer.type() == QgsMapLayer.RasterLayer:
-                        self.exportRasterLayer(layerName, layer)
+                        self.loadRasterLayer(layerName, layer)
                     # Add a vector layer
                     elif layer.type() == QgsMapLayer.VectorLayer:
-                        self.exportVectorLayer(layerName, layer)
+                        self.loadVectorLayer(layerName, layer)
 
         self.postInputs()
 
@@ -531,7 +531,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                             self.parameterAsFileOutput(
                                 parameters, outName, context))
                 # For folders destination
-                if isinstance(out, QgsProcessingParameterFolderDestination):
+                elif isinstance(out, QgsProcessingParameterFolderDestination):
                     # We need to add a unique temporary basename
                     uniqueBasename = outName + self.uniqueSuffix
                     command += ' {}={}'.format(outName, uniqueBasename)

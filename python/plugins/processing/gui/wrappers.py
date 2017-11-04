@@ -97,6 +97,7 @@ from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant, Qt
 from qgis.utils import iface
 
 from processing.gui.NumberInputPanel import NumberInputPanel, ModellerNumberInputPanel
+from processing.gui.RangePanel import RangePanel
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
 from processing.gui.PointSelectionPanel import PointSelectionPanel
 from processing.core.parameters import (ParameterBoolean,
@@ -692,6 +693,23 @@ class NumberWidgetWrapper(WidgetWrapper):
             return widget
         else:
             return ModellerNumberInputPanel(self.param, self.dialog)
+
+    def setValue(self, value):
+        self.widget.setValue(value)
+
+    def value(self):
+        return self.widget.getValue()
+
+
+class RangeWidgetWrapper(WidgetWrapper):
+
+    def createWidget(self):
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
+            widget = RangePanel(self.param)
+            widget.hasChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            return widget
+        #else:
+        #    return ModellerNumberInputPanel(self.param, self.dialog)
 
     def setValue(self, value):
         self.widget.setValue(value)
@@ -1463,6 +1481,7 @@ class BandWidgetWrapper(WidgetWrapper):
 
 
 class WidgetWrapperFactory:
+
     """
     Factory for parameter widget wrappers
     """
@@ -1529,6 +1548,8 @@ class WidgetWrapperFactory:
             wrapper = BandWidgetWrapper
         elif param.type() == 'layer':
             wrapper = MapLayerWidgetWrapper
+        elif param.type() == 'range':
+            wrapper = RangeWidgetWrapper
         else:
             assert False, param.type()
         return wrapper(param, dialog, row, col)

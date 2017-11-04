@@ -1,6 +1,0 @@
-r.median
-Finds the median of values in a cover layer within areas assigned the same category value in a user-specified base layer.
-Raster (r.*)
-QgsProcessingParameterRasterLayer|base|Base raster layer|None|False
-QgsProcessingParameterRasterLayer|cover|Cover layer|None|False
-QgsProcessingParameterRasterDestination|output|Median

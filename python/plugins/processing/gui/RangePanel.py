@@ -28,6 +28,10 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt import uic
+from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtWidgets import QDialog
+
+from qgis.core import QgsProcessingParameterNumber
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -36,26 +40,52 @@ WIDGET, BASE = uic.loadUiType(
 
 class RangePanel(BASE, WIDGET):
 
+    hasChanged = pyqtSignal()
+
     def __init__(self, param):
         super(RangePanel, self).__init__(None)
         self.setupUi(self)
 
-        self.isInteger = param.isInteger
-        if self.isInteger:
+        self.param = param
+        # Integer or Double range
+        if self.param.dataType() == QgsProcessingParameterNumber.Integer:
             self.spnMin.setDecimals(0)
             self.spnMax.setDecimals(0)
 
-        values = param.default.split(',')
-        minVal = float(values[0])
-        maxVal = float(values[1])
-        self.spnMin.setValue(minVal)
-        self.spnMax.setValue(maxVal)
+        if param.defaultValue() is not None:
+            self.setValue(param.defaultValue())
+            values = self.getValues()
 
-        self.spnMin.setMaximum(maxVal)
-        self.spnMin.setMinimum(minVal)
+        # Spin range logic
+        self.spnMin.valueChanged.connect(lambda: self.setMinMax())
+        self.spnMax.valueChanged.connect(lambda: self.setMaxMin())
 
-        self.spnMax.setMaximum(maxVal)
-        self.spnMax.setMinimum(minVal)
+    def setMinMax(self):
+        values = self.getValues()
+        if values[0] >= values[1]:
+            self.spnMax.setValue(values[0])
+            self.hasChanged.emit()
+
+    def setMaxMin(self):
+        values = self.getValues()
+        if values[0] >= values[1]:
+            self.spnMin.setValue(values[1])
+            self.hasChanged.emit()
 
     def getValue(self):
         return '{},{}'.format(self.spnMin.value(), self.spnMax.value())
+
+    def getValues(self):
+        value = self.getValue()
+        if value:
+            return [float(a) for a in value.split(',')]
+
+    def setValue(self, value):
+        try:
+            values = value.split(',')
+            minVal = float(values[0])
+            maxVal = float(values[1])
+            self.spnMin.setValue(float(minVal))
+            self.spnMax.setValue(float(maxVal))
+        except:
+            return
