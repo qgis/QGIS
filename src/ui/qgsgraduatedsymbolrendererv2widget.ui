@@ -384,7 +384,7 @@ Negative rounds to powers of 10</string>
          <item>
           <widget class="QCheckBox" name="cbxAstride">
            <property name="text">
-            <string>with a class astride on that value</string>
+            <string>with a class astride that value</string>
            </property>
           </widget>
          </item>

@@ -268,7 +268,31 @@ Moves the category at index position from to index position to.
 %End
     void setMode( Mode mode );
 
-    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode, double symmetryPoint, bool astride );
+    bool useSymmetricMode();
+%Docstring
+ :rtype: bool
+%End
+    void setUseSymmetricMode( bool useSymmetricMode );
+
+    double symmetryPoint();
+%Docstring
+ :rtype: float
+%End
+    void setSymmetryPoint( double symmetryPoint );
+
+    QStringList listForCboPrettyBreaks();
+%Docstring
+ :rtype: list of str
+%End
+    void setListForCboPrettyBreaks( QStringList listForCboPrettyBreaks );
+
+    bool astride();
+%Docstring
+ :rtype: bool
+%End
+    void setAstride( bool astride );
+
+    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false );
 %Docstring
  Recalculate classes for a layer
  \param vlayer  The layer being rendered (from which data values are calculated)
@@ -308,6 +332,10 @@ Moves the category at index position from to index position to.
         const QString &attrName,
         int classes,
         Mode mode,
+        bool useSymmetricMode,
+        double symmetryPoint,
+        QStringList listForCboPrettyBreaks,
+        bool astride,
         QgsSymbol *symbol /Transfer/,
         QgsColorRamp *ramp /Transfer/,
         const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat() );
@@ -317,6 +345,9 @@ Moves the category at index position from to index position to.
  \param attrName attribute to classify
  \param classes number of classes
  \param mode classification mode
+ \param useSymmetricMode A bool indicating if we want to have classes and hence colors ramp symmetric around a value
+ \param symmetryPoint The value around which the classes will be symmetric if useSymmetricMode is checked
+ \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
  \param symbol base symbol
  \param ramp color ramp for classes
  \param legendFormat

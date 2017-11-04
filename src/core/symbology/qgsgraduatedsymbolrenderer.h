@@ -222,7 +222,20 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     Mode mode() const { return mMode; }
     void setMode( Mode mode ) { mMode = mode; }
 
-    /** Recalculate classes for a layer
+    bool useSymmetricMode() { return mUseSymmetricMode; }
+    void setUseSymmetricMode( bool useSymmetricMode ) { mUseSymmetricMode = useSymmetricMode; }
+
+    double symmetryPoint() { return mSymmetryPoint; }
+    void setSymmetryPoint( double symmetryPoint ) { mSymmetryPoint = symmetryPoint; }
+
+    QStringList listForCboPrettyBreaks() { return mListForCboPrettyBreaks; }
+    void setListForCboPrettyBreaks( QStringList listForCboPrettyBreaks ) { mListForCboPrettyBreaks = listForCboPrettyBreaks; }
+
+    bool astride() { return mAstride; }
+    void setAstride( bool astride ) { mAstride = astride; }
+
+    /**
+     * Recalculate classes for a layer
      * \param vlayer  The layer being rendered (from which data values are calculated)
      * \param mode    The calculation mode
      * \param nclasses The number of classes to calculate (approximate for some modes)
@@ -232,7 +245,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
      * \since QGIS 3.0
      */
-    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode, double symmetryPoint, bool astride );
+    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false );
 
 
     /**
@@ -262,6 +275,9 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param attrName attribute to classify
      * \param classes number of classes
      * \param mode classification mode
+     * \param useSymmetricMode A bool indicating if we want to have classes and hence colors ramp symmetric around a value
+     * \param symmetryPoint The value around which the classes will be symmetric if useSymmetricMode is checked
+     * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
      * \param symbol base symbol
      * \param ramp color ramp for classes
      * \param legendFormat
@@ -271,6 +287,10 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
         const QString &attrName,
         int classes,
         Mode mode,
+        bool useSymmetricMode,
+        double symmetryPoint,
+        QStringList listForCboPrettyBreaks,
+        bool astride,
         QgsSymbol *symbol SIP_TRANSFER,
         QgsColorRamp *ramp SIP_TRANSFER,
         const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat() );
@@ -400,6 +420,10 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QString mAttrName;
     QgsRangeList mRanges;
     Mode mMode = Custom;
+    bool mUseSymmetricMode;
+    double mSymmetryPoint;
+    QStringList mListForCboPrettyBreaks;
+    bool mAstride;
     std::unique_ptr<QgsSymbol> mSourceSymbol;
     std::unique_ptr<QgsColorRamp> mSourceColorRamp;
     QgsRendererRangeLabelFormat mLabelFormat;
@@ -407,7 +431,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     std::unique_ptr<QgsExpression> mExpression;
     GraduatedMethod mGraduatedMethod = GraduatedColor;
     //! attribute index (derived from attribute name in startRender)
-    
+
     int mAttrNum = -1;
     bool mCounting = false;
 

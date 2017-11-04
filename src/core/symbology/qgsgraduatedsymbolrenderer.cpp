@@ -479,6 +479,11 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::clone() const
 {
   QgsGraduatedSymbolRenderer *r = new QgsGraduatedSymbolRenderer( mAttrName, mRanges );
   r->setMode( mMode );
+  r->setUseSymmetricMode( mUseSymmetricMode );
+  r->setSymmetryPoint( mSymmetryPoint );
+  r->setListForCboPrettyBreaks( mListForCboPrettyBreaks );
+  r->setAstride( mAstride );
+
   if ( mSourceSymbol )
     r->setSourceSymbol( mSourceSymbol->clone() );
   if ( mSourceColorRamp )
@@ -679,14 +684,8 @@ static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList
   }
   stdDev = std::sqrt( stdDev / n );
 
-  if ( true == useSymmetricMode )
-  {
-    symmetryPoint = symmetryPoint;
-  }
-  else
-  {
-    symmetryPoint = mean;
-  }
+  if ( false == useSymmetricMode )
+    symmetryPoint = mean; // otherwise symmetryPoint = symmetryPoint
 
   QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( ( minimum - symmetryPoint ) / stdDev, ( maximum - symmetryPoint ) / stdDev, classes );
 
@@ -836,6 +835,10 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::createRenderer(
   const QString &attrName,
   int classes,
   Mode mode,
+  bool useSymmetricMode,
+  double symmetryPoint,
+  QStringList listForCboPrettyBreaks,
+  bool astride,
   QgsSymbol *symbol,
   QgsColorRamp *ramp,
   const QgsRendererRangeLabelFormat &labelFormat
@@ -846,8 +849,12 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::createRenderer(
   r->setSourceSymbol( symbol->clone() );
   r->setSourceColorRamp( ramp->clone() );
   r->setMode( mode );
+  r->setUseSymmetricMode( useSymmetricMode );
+  r->setSymmetryPoint( symmetryPoint );
+  r->setListForCboPrettyBreaks( listForCboPrettyBreaks );
+  r->setAstride( astride );
   r->setLabelFormat( labelFormat );
-  r->updateClasses( vlayer, mode, classes, false, 0.0, false );
+  r->updateClasses( vlayer, mode, classes, useSymmetricMode, symmetryPoint, astride );
   return r;
 }
 
@@ -856,8 +863,11 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
 {
   if ( mAttrName.isEmpty() )
     return;
-
   setMode( mode );
+  setSymmetryPoint( symmetryPoint );
+  setUseSymmetricMode( useSymmetricMode );
+  setAstride( astride );
+
   // Custom classes are not recalculated
   if ( mode == Custom )
     return;
@@ -895,16 +905,21 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
   QList<double> labels;
   if ( mode == EqualInterval )
   {
-    breaks = _calcEqualIntervalBreaks( minimum, maximum, nclasses, useSymmetricMode, symmetryPoint, astride );
+    breaks = _calcEqualIntervalBreaks( minimum, maximum, nclasses, mUseSymmetricMode, symmetryPoint, astride );
   }
   else if ( mode == Pretty )
   {
     breaks = QgsSymbolLayerUtils::prettyBreaks( minimum, maximum, nclasses );
+    // get QStringList from QList<double> without maxi break (min is not in)
+    QStringList breaks2put;
+    for ( int i = 0; i < breaks.count() - 1; i++ )
+    {
+      breaks2put << QString::number( breaks.at( i ), 'f', 2 );
+    }
+    setListForCboPrettyBreaks( breaks2put );
 
     if ( true == useSymmetricMode )
-    {
       _makeBreaksSymmetric( breaks, symmetryPoint, astride );
-    }
   }
   else if ( mode == Quantile || mode == Jenks || mode == StdDev )
   {
@@ -913,20 +928,13 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
     {
       values = vlayer->getDoubleValues( mAttrName, ok );
     }
-
     // calculate the breaks
     if ( mode == Quantile )
-    {
       breaks = _calcQuantileBreaks( values, nclasses );
-    }
     else if ( mode == Jenks )
-    {
       breaks = _calcJenksBreaks( values, nclasses, minimum, maximum );
-    }
     else if ( mode == StdDev )
-    {
-      breaks = _calcStdDevBreaks( values, nclasses, labels, useSymmetricMode, symmetryPoint, astride );
-    }
+      breaks = _calcStdDevBreaks( values, nclasses, labels, mUseSymmetricMode, symmetryPoint, astride );
   }
   else
   {
@@ -1057,6 +1065,17 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
       r->setMode( Pretty );
   }
 
+  QDomElement symmetricModeElem = element.firstChildElement( QStringLiteral( "symmetricMode" ) );
+  if ( !symmetricModeElem.isNull() )
+  {
+    QString symmetricEnabled = symmetricModeElem.attribute( QStringLiteral( "enabled" ) );
+    symmetricEnabled == QLatin1String( "true" ) ? r->setUseSymmetricMode( true ) : r->setUseSymmetricMode( false );
+    QString symmetricPointString = symmetricModeElem.attribute( QStringLiteral( "symmetryPoint" ) );
+    r->setSymmetryPoint( symmetricPointString.toDouble() );
+    QString astrideEnabled = symmetricModeElem.attribute( QStringLiteral( "astride" ) );
+    astrideEnabled == QLatin1String( "true" ) ? r->setAstride( true ) : r->setAstride( false );
+  }
+
   QDomElement rotationElem = element.firstChildElement( QStringLiteral( "rotation" ) );
   if ( !rotationElem.isNull() && !rotationElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
   {
@@ -1175,6 +1194,12 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
     modeElem.setAttribute( QStringLiteral( "name" ), modeString );
     rendererElem.appendChild( modeElem );
   }
+
+  QDomElement symmetricModeElem = doc.createElement( QStringLiteral( "symmetricMode" ) );
+  symmetricModeElem.setAttribute( QStringLiteral( "enabled" ), mUseSymmetricMode ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  symmetricModeElem.setAttribute( QStringLiteral( "symmetryPoint" ), mSymmetryPoint );
+  symmetricModeElem.setAttribute( QStringLiteral( "astride" ), mAstride ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  rendererElem.appendChild( symmetricModeElem );
 
   QDomElement rotationElem = doc.createElement( QStringLiteral( "rotation" ) );
   rendererElem.appendChild( rotationElem );
