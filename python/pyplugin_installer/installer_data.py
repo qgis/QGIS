@@ -548,7 +548,7 @@ class Plugins(QObject):
             del self.repoCache[repo]
 
     # ----------------------------------------- #
-    def getInstalledPlugin(self, key, path, readOnly, testLoad=True):
+    def getInstalledPlugin(self, key, path, readOnly, testLoad=False):
         """ get the metadata of an installed plugin """
         def metadataParser(fct):
             """ plugin metadata parser reimplemented from qgis.utils
@@ -683,8 +683,11 @@ class Plugins(QObject):
         return plugin
 
     # ----------------------------------------- #
-    def getAllInstalled(self, testLoad=True):
-        """ Build the localCache """
+    def getAllInstalled(self, testLoad=False):
+        """ Build the localCache
+            Note: Currently testLoad is always disabled in order to speed up QGIS startup.
+                  The related code will be probably removed.
+        """
         self.localCache = {}
 
         # reversed list of the plugin paths: first system plugins -> then user plugins -> finally custom path(s)
