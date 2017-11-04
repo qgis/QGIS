@@ -38,7 +38,8 @@ import tempfile
 from utilities import unitTestDataPath, waitServer
 from qgis.core import (
     QgsVectorLayer,
-    QgsAuthManager
+    QgsAuthManager,
+    QgsApplication
 )
 
 from qgis.testing import (
