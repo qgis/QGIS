@@ -548,7 +548,7 @@ class Plugins(QObject):
             del self.repoCache[repo]
 
     # ----------------------------------------- #
-    def getInstalledPlugin(self, key, path, readOnly, testLoad=False):
+    def getInstalledPlugin(self, key, path, readOnly):
         """ get the metadata of an installed plugin """
         def metadataParser(fct):
             """ plugin metadata parser reimplemented from qgis.utils
@@ -602,21 +602,6 @@ class Plugins(QObject):
             if not isCompatible(Qgis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
                 error = "incompatible"
                 errorDetails = "%s - %s" % (qgisMinimumVersion, qgisMaximumVersion)
-            elif testLoad:
-                # only testLoad if compatible version
-                try:
-                    pkg = __import__(key)
-                    reload(pkg)
-                    pkg.classFactory(iface)
-                except Exception as e:
-                    error = "broken"
-                    errorDetails = str(e.args[0])
-                except SystemExit as e:
-                    error = "broken"
-                    errorDetails = QCoreApplication.translate("QgsPluginInstaller", "The plugin exited with error status: {0}").format(e.args[0])
-                except:
-                    error = "broken"
-                    errorDetails = QCoreApplication.translate("QgsPluginInstaller", "Unknown error")
         elif not os.path.exists(metadataFile):
             error = "broken"
             errorDetails = QCoreApplication.translate("QgsPluginInstaller", "Missing metadata file")
@@ -683,11 +668,8 @@ class Plugins(QObject):
         return plugin
 
     # ----------------------------------------- #
-    def getAllInstalled(self, testLoad=False):
-        """ Build the localCache
-            Note: Currently testLoad is always disabled in order to speed up QGIS startup.
-                  The related code will be probably removed.
-        """
+    def getAllInstalled(self):
+        """ Build the localCache """
         self.localCache = {}
 
         # reversed list of the plugin paths: first system plugins -> then user plugins -> finally custom path(s)
@@ -707,10 +689,8 @@ class Plugins(QObject):
                         path = QDir.toNativeSeparators(pluginsPath + "/" + key)
                         # readOnly = not QFileInfo(pluginsPath).isWritable() # On windows testing the writable status isn't reliable.
                         readOnly = isTheSystemDir                            # Assume only the system plugins are not writable.
-                        # only test those not yet loaded. Loaded plugins already proved they're o.k.
                         # failedToLoad = settings.value("/PythonPlugins/watchDog/" + key) is not None
-                        testLoadThis = testLoad and key not in qgis.utils.plugins
-                        plugin = self.getInstalledPlugin(key, path=path, readOnly=readOnly, testLoad=testLoadThis)
+                        plugin = self.getInstalledPlugin(key, path=path, readOnly=readOnly)
                         if key in list(self.localCache.keys()) and compareVersions(self.localCache[key]["version_installed"], plugin["version_installed"]) == 1:
                             # An obsolete plugin in the "user" location is masking a newer one in the "system" location!
                             self.obsoletePlugins += [key]
