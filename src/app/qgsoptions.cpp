@@ -255,14 +255,18 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   //local directories to search when loading c++ plugins
   QStringList pathList = mSettings->value( QStringLiteral( "plugins/searchPathsForPlugins" ) ).toStringList();
-  Q_FOREACH ( const QString &path, pathList )
+  if ( !pathList.isEmpty() )
   {
-    QListWidgetItem *newItem = new QListWidgetItem( mListPluginPaths );
-    newItem->setText( path );
-    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    mListPluginPaths->addItem( newItem );
+    Q_FOREACH ( const QString &path, pathList )
+    {
+      QListWidgetItem *newItem = new QListWidgetItem( mListPluginPaths );
+      newItem->setText( path );
+      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      mListPluginPaths->addItem( newItem );
+    }
   }
   connect( mBtnAddPluginPath, &QAbstractButton::clicked, this, &QgsOptions::addPluginPath );
+  connect( mBtnRemovePluginPath, &QAbstractButton::clicked, this, &QgsOptions::removePluginPath );
 
   //local directories to search when looking for an SVG with a given basename
   pathList = QgsApplication::svgPaths();
@@ -1181,7 +1185,7 @@ void QgsOptions::saveOptions()
   {
     pathsList << mListPluginPaths->item( i )->text();
   }
-  mSettings->setValue( QStringLiteral( "help/helpSearchPath" ), pathsList );
+  mSettings->setValue( QStringLiteral( "plugins/searchPathsForPlugins" ), pathsList );
 
   //search directories for svgs
   pathsList.clear();
