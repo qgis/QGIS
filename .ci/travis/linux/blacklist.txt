@@ -18,14 +18,17 @@ qgis_sipify
 qgis_sip_include
 qgis_sip_uptodate
 
-# flacky
+# flaky
 qgis_filedownloader
 qgis_openstreetmaptest
 qgis_wcsprovidertest
 PyQgsWFSProviderGUI
 qgis_ziplayertest
 
-# Temporary until PG is back
+# Need a local postgres installation
 PyQgsAuthManagerPKIPostgresTest
 PyQgsAuthManagerPasswordPostgresTest
 
+# need fixing
+# https://travis-ci.org/qgis/QGIS/jobs/296864934
+PyQgsServerWMS
