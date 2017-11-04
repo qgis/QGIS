@@ -279,7 +279,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   {
     if ( layer->isEditable() )
     {
-      QMessageBox::critical( this, tr( "Editable Input Layer" ), tr( "Input layer are not allowed to be in editing mode." ) );
+      QMessageBox::critical( this, tr( "Editable Input Layer" ), tr( "Input layer '%1' is not allowed to be in editing mode." ).arg( layer->name() ) );
       return;
     }
   }
