@@ -34,6 +34,12 @@ bool QgsCoordinateTransformContext::addSourceDatumTransform( const QgsCoordinate
   if ( !crs.isValid() )
     return false;
 
+  if ( transform == -1 )
+  {
+    mSourceDatumTransforms.remove( crs.authid() );
+    return true;
+  }
+
   mSourceDatumTransforms.insert( crs.authid(), transform );
   return true;
 }
@@ -48,6 +54,12 @@ bool QgsCoordinateTransformContext::addDestinationDatumTransform( const QgsCoord
   if ( !crs.isValid() )
     return false;
 
+  if ( transform == -1 )
+  {
+    mDestDatumTransforms.remove( crs.authid() );
+    return true;
+  }
+
   mDestDatumTransforms.insert( crs.authid(), transform );
   return true;
 }
@@ -61,6 +73,12 @@ bool QgsCoordinateTransformContext::addSourceDestinationDatumTransform( const Qg
 {
   if ( !sourceCrs.isValid() || !destinationCrs.isValid() )
     return false;
+
+  if ( sourceTransform == -1 || destinationTransform == -1 )
+  {
+    mSourceDestDatumTransforms.remove( qMakePair( sourceCrs.authid(), destinationCrs.authid() ) );
+    return true;
+  }
 
   mSourceDestDatumTransforms.insert( qMakePair( sourceCrs.authid(), destinationCrs.authid() ), qMakePair( sourceTransform, destinationTransform ) );
   return true;

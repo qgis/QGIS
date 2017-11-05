@@ -52,6 +52,8 @@ class QgsCoordinateTransformContext
  Adds a new ``transform`` to use when projecting coordinates from the specified source
  ``crs``.
 
+ If ``transform`` is -1, then any existing source transform for the ``crs`` will be removed.
+
  Returns true if the new transform was added successfully.
 
  \warning Transforms set using this method may be overridden by specific source/destination
@@ -80,6 +82,8 @@ class QgsCoordinateTransformContext
 %Docstring
  Adds a new ``transform`` to use when projecting coordinates to the specified destination
  ``crs``.
+
+ If ``transform`` is -1, then any existing destination transform for the ``crs`` will be removed.
 
  Returns true if the new transform was added successfully.
 
@@ -111,6 +115,9 @@ class QgsCoordinateTransformContext
 %Docstring
  Adds a new ``sourceTransform`` and ``destinationTransform`` to use when projecting coordinates
  from the the specified ``sourceCrs`` to the specified ``destinationCrs``.
+
+ If either ``sourceTransform`` or ``destinationTransform`` is -1, then any existing source to destination
+ transform for the crs pair will be removed.
 
  Returns true if the new transform pair was added successfully.
 

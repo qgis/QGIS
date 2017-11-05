@@ -61,6 +61,8 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * Adds a new \a transform to use when projecting coordinates from the specified source
      * \a crs.
      *
+     * If \a transform is -1, then any existing source transform for the \a crs will be removed.
+     *
      * Returns true if the new transform was added successfully.
      *
      * \warning Transforms set using this method may be overridden by specific source/destination
@@ -88,6 +90,8 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * Adds a new \a transform to use when projecting coordinates to the specified destination
      * \a crs.
      *
+     * If \a transform is -1, then any existing destination transform for the \a crs will be removed.
+     *
      * Returns true if the new transform was added successfully.
      *
      * \warning Transforms set using this method may be overridden by specific source/destination
@@ -113,6 +117,9 @@ class CORE_EXPORT QgsCoordinateTransformContext
     /**
      * Adds a new \a sourceTransform and \a destinationTransform to use when projecting coordinates
      * from the the specified \a sourceCrs to the specified \a destinationCrs.
+     *
+     * If either \a sourceTransform or \a destinationTransform is -1, then any existing source to destination
+     * transform for the crs pair will be removed.
      *
      * Returns true if the new transform pair was added successfully.
      *
