@@ -29,7 +29,7 @@ extern "C"
 
 /// @cond PRIVATE
 
-thread_local QgsProjContextStore QgsCoordinateTransformPrivate::mProjContext;
+QThreadStorage< QgsProjContextStore * > QgsCoordinateTransformPrivate::mProjContext;
 
 QgsProjContextStore::QgsProjContextStore()
 {
@@ -184,8 +184,18 @@ bool QgsCoordinateTransformPrivate::initialize()
 QPair<projPJ, projPJ> QgsCoordinateTransformPrivate::threadLocalProjData()
 {
   mProjLock.lockForRead();
+  projCtx pContext = nullptr;
+  if ( mProjContext.hasLocalData() )
+  {
+    pContext = mProjContext.localData()->get();
+  }
+  else
+  {
+    mProjContext.setLocalData( new QgsProjContextStore() );
+    pContext = mProjContext.localData()->get();
+  }
 
-  QMap < uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constFind( reinterpret_cast< uintptr_t>( mProjContext.get() ) );
+  QMap < uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constFind( reinterpret_cast< uintptr_t>( pContext ) );
   if ( it != mProjProjections.constEnd() )
   {
     QPair<projPJ, projPJ> res = it.value();
@@ -196,9 +206,9 @@ QPair<projPJ, projPJ> QgsCoordinateTransformPrivate::threadLocalProjData()
   // proj projections don't exist yet, so we need to create
   mProjLock.unlock();
   mProjLock.lockForWrite();
-  QPair<projPJ, projPJ> res = qMakePair( pj_init_plus_ctx( mProjContext.get(), mSourceProjString.toUtf8() ),
-                                         pj_init_plus_ctx( mProjContext.get(), mDestProjString.toUtf8() ) );
-  mProjProjections.insert( reinterpret_cast< uintptr_t>( mProjContext.get() ), res );
+  QPair<projPJ, projPJ> res = qMakePair( pj_init_plus_ctx( pContext, mSourceProjString.toUtf8() ),
+                                         pj_init_plus_ctx( pContext, mDestProjString.toUtf8() ) );
+  mProjProjections.insert( reinterpret_cast< uintptr_t>( pContext ), res );
   mProjLock.unlock();
   return res;
 }
@@ -335,4 +345,3 @@ void QgsCoordinateTransformPrivate::freeProj()
 }
 
 ///@endcond
-
