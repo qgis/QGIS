@@ -930,7 +930,7 @@ plugins calling these methods will need to be updated.
 - 'p' argument in transform() has been renamed to 'point', 'theRect' to 'rectangle', 'poly' to 'polygon'
 - setDestCRSID has been removed, use setDestinationCrs() instead
 - 'theNode', 'theDoc' parameters in readXML and writeXML have been renamed to 'node' and 'document' respectively
-- readXML() and writeXML() have been renamed to readXml() and writeXml() for consistency
+- readXML() and writeXML() have been removed.
 
 
 QgsCoordinateTransformCache        {#qgis_api_break_3_0_QgsCoordinateTransformCache}

@@ -279,23 +279,6 @@ class CORE_EXPORT QgsCoordinateTransform
     //!initialize is used to actually create the Transformer instance
     void initialize();
 
-    /**
-     * Restores state from the given Dom node.
-     * \param node The node from which state will be restored
-     * \returns bool True on success, False on failure
-     * \see writeXml()
-     */
-    bool readXml( const QDomNode &node );
-
-    /**
-     * Stores state to the given Dom node in the given document
-     * \param node The node in which state will be restored
-     * \param document The document in which state will be stored
-     * \returns bool True on success, False on failure
-     * \see readXml()
-     */
-    bool writeXml( QDomNode &node, QDomDocument &document ) const;
-
   private:
 
     static void searchDatumTransform( const QString &sql, QList< int > &transforms );
