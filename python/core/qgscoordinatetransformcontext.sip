@@ -11,6 +11,7 @@
 
 
 
+
 class QgsCoordinateTransformContext
 {
 %Docstring
@@ -167,6 +168,19 @@ class QgsCoordinateTransformContext
  destination.
  :rtype: QPair< int, int >
 %End
+
+    void readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+%Docstring
+ Reads the context's state from a DOM ``element``.
+.. seealso:: writeXml()
+%End
+
+    void writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+ Writes the context's state to a DOM ``element``.
+.. seealso:: readXml()
+%End
+
 
 };
 

@@ -22,6 +22,8 @@
 #include "qgis.h"
 #include "qgscoordinatetransformcontext_p.h"
 
+class QgsReadWriteContext;
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfeature.cpp.
@@ -174,6 +176,19 @@ class CORE_EXPORT QgsCoordinateTransformContext
      */
     QPair< int, int > calculateDatumTransforms( const QgsCoordinateReferenceSystem &source,
         const QgsCoordinateReferenceSystem &destination ) const;
+
+    /**
+     * Reads the context's state from a DOM \a element.
+     * \see writeXml()
+     */
+    void readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+
+    /**
+     * Writes the context's state to a DOM \a element.
+     * \see readXml()
+     */
+    void writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
 
   private:
 

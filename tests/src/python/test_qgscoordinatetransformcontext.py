@@ -15,8 +15,10 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.core import (QgsCoordinateReferenceSystem,
-                       QgsCoordinateTransformContext)
+                       QgsCoordinateTransformContext,
+                       QgsReadWriteContext)
 from qgis.testing import start_app, unittest
+from qgis.PyQt.QtXml import QDomDocument
 
 app = start_app()
 
@@ -179,6 +181,38 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:28356'),
                                                           QgsCoordinateReferenceSystem('EPSG:3111')),
                          (1, -1))
+
+    def testWriteReadXml(self):
+        # setup a context
+        context = QgsCoordinateTransformContext()
+        self.assertTrue(context.addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'), 1))
+        self.assertTrue(context.addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'), 2))
+        self.assertTrue(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:3113'), 11))
+        self.assertTrue(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28355'), 12))
+        self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'),
+                                                                   QgsCoordinateReferenceSystem('EPSG:4283'), 1, 2))
+        self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                                                   QgsCoordinateReferenceSystem(4283), 3, 4))
+
+        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 2})
+        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3113': 11, 'EPSG:28355': 12})
+        self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (1, 2),
+                                                                      ('EPSG:28356', 'EPSG:4283'): (3, 4)})
+
+        # save to xml
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        context.writeXml(elem, doc, QgsReadWriteContext())
+
+        # restore from xml
+        context2 = QgsCoordinateTransformContext()
+        context2.readXml(elem, doc, QgsReadWriteContext())
+
+        # check result
+        self.assertEqual(context2.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 2})
+        self.assertEqual(context2.destinationDatumTransforms(), {'EPSG:3113': 11, 'EPSG:28355': 12})
+        self.assertEqual(context2.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (1, 2),
+                                                                       ('EPSG:28356', 'EPSG:4283'): (3, 4)})
 
 
 if __name__ == '__main__':

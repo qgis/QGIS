@@ -147,3 +147,108 @@ QPair<int, int> QgsCoordinateTransformContext::calculateDatumTransforms( const Q
   d->mLock.unlock();
   return qMakePair( srcTransform, destTransform );
 }
+
+void QgsCoordinateTransformContext::readXml( const QDomElement &element, const QDomDocument &, const QgsReadWriteContext & )
+{
+  d.detach();
+  d->mLock.lockForWrite();
+
+  d->mSourceDestDatumTransforms.clear();
+  d->mSourceDatumTransforms.clear();
+  d->mDestDatumTransforms.clear();
+
+  const QDomNodeList contextNodes = element.elementsByTagName( QStringLiteral( "transformContext" ) );
+  if ( contextNodes.count() < 1 )
+  {
+    d->mLock.unlock();
+    return;
+  }
+
+  const QDomElement contextElem = contextNodes.at( 0 ).toElement();
+
+  // src/dest transforms
+  const QDomNodeList srcDestNodes = contextElem.elementsByTagName( QStringLiteral( "srcDest" ) );
+  for ( int i = 0; i < srcDestNodes.size(); ++i )
+  {
+    const QDomElement transformElem = srcDestNodes.at( i ).toElement();
+    QString key1 = transformElem.attribute( QStringLiteral( "source" ) );
+    QString key2 = transformElem.attribute( QStringLiteral( "dest" ) );
+    bool ok = false;
+    int value1 = transformElem.attribute( QStringLiteral( "sourceTransform" ) ).toInt( &ok );
+    bool ok2 = false;
+    int value2 = transformElem.attribute( QStringLiteral( "destTransform" ) ).toInt( &ok2 );
+    if ( ok && ok2 )
+    {
+      d->mSourceDestDatumTransforms.insert( qMakePair( key1, key2 ), qMakePair( value1, value2 ) );
+    }
+  }
+
+  // src transforms
+  const QDomNodeList srcNodes = contextElem.elementsByTagName( QStringLiteral( "source" ) );
+  for ( int i = 0; i < srcNodes .size(); ++i )
+  {
+    const QDomElement transformElem = srcNodes.at( i ).toElement();
+    QString key = transformElem.attribute( QStringLiteral( "crs" ) );
+    bool ok = false;
+    int value = transformElem.attribute( QStringLiteral( "transform" ) ).toInt( &ok );
+    if ( ok )
+    {
+      d->mSourceDatumTransforms.insert( key, value );
+    }
+  }
+
+  // dest transforms
+  const QDomNodeList destNodes = contextElem.elementsByTagName( QStringLiteral( "dest" ) );
+  for ( int i = 0; i < destNodes.size(); ++i )
+  {
+    const QDomElement transformElem = destNodes.at( i ).toElement();
+    QString key = transformElem.attribute( QStringLiteral( "crs" ) );
+    bool ok = false;
+    int value = transformElem.attribute( QStringLiteral( "transform" ) ).toInt( &ok );
+    if ( ok )
+    {
+      d->mDestDatumTransforms.insert( key, value );
+    }
+  }
+
+  d->mLock.unlock();
+}
+
+void QgsCoordinateTransformContext::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext & ) const
+{
+  d->mLock.lockForRead();
+
+  QDomElement contextElem = document.createElement( QStringLiteral( "transformContext" ) );
+
+  //src/dest transforms
+  for ( auto it = d->mSourceDestDatumTransforms.constBegin(); it != d->mSourceDestDatumTransforms.constEnd(); ++ it )
+  {
+    QDomElement transformElem = document.createElement( QStringLiteral( "srcDest" ) );
+    transformElem.setAttribute( QStringLiteral( "source" ), it.key().first );
+    transformElem.setAttribute( QStringLiteral( "dest" ), it.key().second );
+    transformElem.setAttribute( QStringLiteral( "sourceTransform" ), it.value().first );
+    transformElem.setAttribute( QStringLiteral( "destTransform" ), it.value().second );
+    contextElem.appendChild( transformElem );
+  }
+
+  // src transforms
+  for ( auto it = d->mSourceDatumTransforms.constBegin(); it != d->mSourceDatumTransforms.constEnd(); ++ it )
+  {
+    QDomElement transformElem = document.createElement( QStringLiteral( "source" ) );
+    transformElem.setAttribute( QStringLiteral( "crs" ), it.key() );
+    transformElem.setAttribute( QStringLiteral( "transform" ), it.value() );
+    contextElem.appendChild( transformElem );
+  }
+
+  // dest transforms
+  for ( auto it = d->mDestDatumTransforms.constBegin(); it != d->mDestDatumTransforms.constEnd(); ++ it )
+  {
+    QDomElement transformElem = document.createElement( QStringLiteral( "dest" ) );
+    transformElem.setAttribute( QStringLiteral( "crs" ), it.key() );
+    transformElem.setAttribute( QStringLiteral( "transform" ), it.value() );
+    contextElem.appendChild( transformElem );
+  }
+
+  element.appendChild( contextElem );
+  d->mLock.unlock();
+}
