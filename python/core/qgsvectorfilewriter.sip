@@ -145,6 +145,14 @@ Some formats require a compulsory encoding, typically UTF-8. If no compulsory en
       SymbolLayerSymbology
     };
 
+
+    enum VectorFormatOption
+    {
+      SortRecommended,
+    };
+    typedef QFlags<QgsVectorFileWriter::VectorFormatOption> VectorFormatOptions;
+
+
     class FieldValueConverter
 {
 %Docstring
@@ -460,27 +468,41 @@ Create a new vector file writer
 
 
 
-    static QMap< QString, QString> supportedFiltersAndFormats();
+    static QList< QPair< QString, QString > > supportedFiltersAndFormats( VectorFormatOptions options = SortRecommended );
 %Docstring
- Returns a map with format filter string as key and OGR format key as value.
+ Returns a list or pairs, with format filter string as first element and OGR format key as second element.
+
+ The ``options`` argument can be used to control the sorting and filtering of
+ returned formats.
+
 .. seealso:: supportedOutputVectorLayerExtensions()
- :rtype: QMap< str, QString>
+ :rtype: list of QPair< str, QString >
 %End
 
-    static QStringList supportedFormatExtensions();
+    static QStringList supportedFormatExtensions( VectorFormatOptions options = SortRecommended );
 %Docstring
  Returns a list of file extensions for supported formats.
+
+ The ``options`` argument can be used to control the sorting and filtering of
+ returned formats.
+
 .. versionadded:: 3.0
 .. seealso:: supportedFiltersAndFormats()
  :rtype: list of str
 %End
 
-    static QMap< QString, QString> ogrDriverList();
+    static QList< QPair< QString, QString > > ogrDriverList( VectorFormatOptions options = SortRecommended );
 %Docstring
  Returns driver list that can be used for dialogs. It contains all OGR drivers
- + some additional internal QGIS driver names to distinguish between more
- supported formats of the same OGR driver
- :rtype: QMap< str, QString>
+ plus some additional internal QGIS driver names to distinguish between more
+ supported formats of the same OGR driver.
+
+ The returned list consists of pairs of driver long name (e.g. user-friendly
+ display name for the format) to internal driver short name.
+
+ The ``options`` argument can be used to control the sorting and filtering of
+ returned drivers.
+ :rtype: list of QPair< str, QString >
 %End
 
     static QString driverForExtension( const QString &extension );
@@ -492,9 +514,12 @@ Create a new vector file writer
  :rtype: str
 %End
 
-    static QString fileFilterString();
+    static QString fileFilterString( VectorFormatOptions options = SortRecommended );
 %Docstring
-Returns filter string that can be used for dialogs
+ Returns filter string that can be used for dialogs.
+
+ The ``options`` argument can be used to control the sorting and filtering of
+ returned drivers.
  :rtype: str
 %End
 
@@ -638,6 +663,8 @@ Close opened shapefile for writing
 };
 
 QFlags<QgsVectorFileWriter::EditionCapability> operator|(QgsVectorFileWriter::EditionCapability f1, QFlags<QgsVectorFileWriter::EditionCapability> f2);
+
+QFlags<QgsVectorFileWriter::VectorFormatOption> operator|(QgsVectorFileWriter::VectorFormatOption f1, QFlags<QgsVectorFileWriter::VectorFormatOption> f2);
 
 
 

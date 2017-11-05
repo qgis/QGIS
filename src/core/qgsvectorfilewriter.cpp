@@ -2681,12 +2681,15 @@ void QgsVectorFileWriter::setSymbologyScale( double d )
   mRenderContext.setRendererScale( mSymbologyScale );
 }
 
-QMap< QString, QString> QgsVectorFileWriter::supportedFiltersAndFormats()
+QList< QPair< QString, QString > > QgsVectorFileWriter::supportedFiltersAndFormats( const VectorFormatOptions options )
 {
-  QMap<QString, QString> resultMap;
+  QList< QPair< QString, QString > > resultMap;
 
   QgsApplication::registerOgrDrivers();
   int const drvCount = OGRGetDriverCount();
+
+  QPair< QString, QString > shapeFormat;
+  QPair< QString, QString > gpkgFormat;
 
   for ( int i = 0; i < drvCount; ++i )
   {
@@ -2700,51 +2703,68 @@ QMap< QString, QString> QgsVectorFileWriter::supportedFiltersAndFormats()
         if ( filterString.isEmpty() )
           continue;
 
-        resultMap.insert( filterString, drvName );
+        if ( options & SortRecommended )
+        {
+          if ( drvName == QStringLiteral( "ESRI Shapefile" ) )
+          {
+            shapeFormat = qMakePair( filterString, drvName );
+            continue;
+          }
+          else if ( drvName == QStringLiteral( "GPKG" ) )
+          {
+            gpkgFormat = qMakePair( filterString, drvName );
+            continue;
+          }
+        }
+        resultMap << qMakePair( filterString, drvName );
       }
+    }
+  }
+
+  std::sort( resultMap.begin(), resultMap.end(), []( const QPair< QString, QString > &a, const QPair< QString, QString > &b ) -> bool
+  {
+    return a.second < b.second;
+  } );
+
+  if ( options & SortRecommended )
+  {
+    if ( !shapeFormat.first.isEmpty() )
+    {
+      resultMap.insert( 0, shapeFormat );
+    }
+    if ( !gpkgFormat.first.isEmpty() )
+    {
+      resultMap.insert( 0, gpkgFormat );
     }
   }
 
   return resultMap;
 }
 
-QStringList QgsVectorFileWriter::supportedFormatExtensions()
+QStringList QgsVectorFileWriter::supportedFormatExtensions( const VectorFormatOptions options )
 {
-  QgsStringMap formats = supportedFiltersAndFormats();
+  const auto formats = supportedFiltersAndFormats( options );
   QStringList extensions;
 
   QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9]*)" ) );
 
-  QgsStringMap::const_iterator formatIt = formats.constBegin();
+  auto formatIt = formats.constBegin();
   for ( ; formatIt != formats.constEnd(); ++formatIt )
   {
-    QString ext = formatIt.key();
+    QString ext = formatIt->first;
     QRegularExpressionMatch match = rx.match( ext );
     if ( !match.hasMatch() )
       continue;
 
     QString matched = match.captured( 1 );
-
-    // special handling for the two main contenders for glory
-    if ( matched.compare( QStringLiteral( "gpkg" ), Qt::CaseInsensitive ) == 0 )
-      continue;
-    if ( matched.compare( QStringLiteral( "shp" ), Qt::CaseInsensitive ) == 0 )
-      continue;
-
     extensions << matched;
   }
-
-  std::sort( extensions.begin(), extensions.end() );
-
-  // Make https://twitter.com/shapefiIe a sad little fellow
-  extensions.insert( 0, QStringLiteral( "gpkg" ) );
-  extensions.insert( 1, QStringLiteral( "shp" ) );
   return extensions;
 }
 
-QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
+QList< QPair< QString, QString> > QgsVectorFileWriter::ogrDriverList( const VectorFormatOptions options )
 {
-  QMap<QString, QString> resultMap;
+  QList< QPair< QString, QString> > resultMap;
 
   QgsApplication::registerOgrDrivers();
   int const drvCount = OGRGetDriverCount();
@@ -2756,6 +2776,10 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
     if ( drv )
     {
       QString drvName = OGR_Dr_GetName( drv );
+      if ( drvName == QLatin1String( "ESRI Shapefile" ) )
+      {
+        writableDrivers << QStringLiteral( "DBF file" );
+      }
       if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )
       {
         // Add separate format for Mapinfo MIF (MITAB is OGR default)
@@ -2786,24 +2810,35 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
           }
           CPLFree( options[0] );
         }
-        else if ( drvName == QLatin1String( "ESRI Shapefile" ) )
-        {
-          writableDrivers << QStringLiteral( "DBF file" );
-        }
         writableDrivers << drvName;
       }
     }
   }
+  std::sort( writableDrivers.begin(), writableDrivers.end() );
+  if ( options & SortRecommended )
+  {
+    // recommended order sorting, so we shift certain formats to the top
+    if ( writableDrivers.contains( QStringLiteral( "ESRI Shapefile" ) ) )
+    {
+      writableDrivers.removeAll( QStringLiteral( "ESRI Shapefile" ) );
+      writableDrivers.insert( 0, QStringLiteral( "ESRI Shapefile" ) );
+    }
+    if ( writableDrivers.contains( QStringLiteral( "GPKG" ) ) )
+    {
+      // Make https://twitter.com/shapefiIe a sad little fellow
+      writableDrivers.removeAll( QStringLiteral( "GPKG" ) );
+      writableDrivers.insert( 0, QStringLiteral( "GPKG" ) );
+    }
+  }
 
-  Q_FOREACH ( const QString &drvName, writableDrivers )
+  for ( const QString &drvName : qgis::as_const( writableDrivers ) )
   {
     MetaData metadata;
     if ( driverMetadata( drvName, metadata ) && !metadata.trLongName.isEmpty() )
     {
-      resultMap.insert( metadata.trLongName, drvName );
+      resultMap << qMakePair( metadata.trLongName, drvName );
     }
   }
-
   return resultMap;
 }
 
@@ -2841,17 +2876,16 @@ QString QgsVectorFileWriter::driverForExtension( const QString &extension )
   return QString();
 }
 
-QString QgsVectorFileWriter::fileFilterString()
+QString QgsVectorFileWriter::fileFilterString( const VectorFormatOptions options )
 {
   QString filterString;
-  QMap< QString, QString> driverFormatMap = supportedFiltersAndFormats();
-  QMap< QString, QString>::const_iterator it = driverFormatMap.constBegin();
-  for ( ; it != driverFormatMap.constEnd(); ++it )
+  const auto driverFormatMap = supportedFiltersAndFormats( options );
+  for ( auto it = driverFormatMap.constBegin(); it != driverFormatMap.constEnd(); ++it )
   {
     if ( !filterString.isEmpty() )
       filterString += QLatin1String( ";;" );
 
-    filterString += it.key();
+    filterString += it->first;
   }
   return filterString;
 }

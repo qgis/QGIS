@@ -54,10 +54,10 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QD
   mAbortButton = new QPushButton( tr( "Abort" ) );
   mRunButton->setEnabled( false );
 
-  QMap<QString, QString> filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
-  for ( const QString &filter : filterFormatMap.keys() )
+  const auto filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
+  for ( const auto &filter : filterFormatMap )
   {
-    QString driverName = filterFormatMap.value( filter );
+    QString driverName = filter.second;
     ui.comboBoxOutputFormat->addItem( driverName );
     if ( driverName == QLatin1String( "ESRI Shapefile" ) )
     {
@@ -216,13 +216,13 @@ void QgsGeometryCheckerSetupTab::validateInput()
 void QgsGeometryCheckerSetupTab::selectOutputDirectory()
 {
   QString filterString = QgsVectorFileWriter::filterForDriver( QStringLiteral( "GPKG" ) );
-  QMap<QString, QString> filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
-  for ( const QString &filter : filterFormatMap.keys() )
+  const auto filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
+  for ( const auto &filter : filterFormatMap )
   {
-    QString driverName = filterFormatMap.value( filter );
+    QString driverName = filter.second;
     if ( driverName != QLatin1String( "ESRI Shapefile" ) ) // Default entry, first in list (see above)
     {
-      filterString += ";;" + filter;
+      filterString += ";;" + filter.first;
     }
   }
   QString initialdir = ui.lineEditOutputDirectory->text();
