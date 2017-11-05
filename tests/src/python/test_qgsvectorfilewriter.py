@@ -726,8 +726,8 @@ class TestQgsVectorFileWriter(unittest.TestCase):
     def testSupportedFiltersAndFormat(self):
         # test with formats in recommended order
         formats = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.SortRecommended)
-        self.assertEqual(formats[0], ('GeoPackage [OGR] (*.gpkg *.GPKG)', 'GPKG'))
-        self.assertEqual(formats[1], ('ESRI Shapefile [OGR] (*.shp *.SHP)', 'ESRI Shapefile'))
+        self.assertEqual(formats[0], ('GeoPackage (*.gpkg *.GPKG)', 'GPKG'))
+        self.assertEqual(formats[1], ('ESRI Shapefile (*.shp *.SHP)', 'ESRI Shapefile'))
         # alphabetical sorting
         formats2 = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.VectorFormatOptions())
         self.assertTrue(formats2[0][0] < formats2[1][0])

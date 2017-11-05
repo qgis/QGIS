@@ -2894,9 +2894,11 @@ QString QgsVectorFileWriter::filterForDriver( const QString &driverName )
 {
   MetaData metadata;
   if ( !driverMetadata( driverName, metadata ) || metadata.trLongName.isEmpty() || metadata.glob.isEmpty() )
-    return QLatin1String( "" );
+    return QString();
 
-  return metadata.trLongName + " [OGR] (" + metadata.glob.toLower() + ' ' + metadata.glob.toUpper() + ')';
+  return QStringLiteral( "%1 (%2 %3)" ).arg( metadata.trLongName,
+         metadata.glob.toLower(),
+         metadata.glob.toUpper() );
 }
 
 QString QgsVectorFileWriter::convertCodecNameForEncodingOption( const QString &codecName )
