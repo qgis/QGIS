@@ -782,11 +782,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   setZoomFactorValue();
 
   // predefined scales for scale combobox
-  QString myPaths = mSettings->value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
-  if ( !myPaths.isEmpty() )
+  QString scalePaths = mSettings->value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
+  if ( !scalePaths.isEmpty() )
   {
-    QStringList myScalesList = myPaths.split( ',' );
-    Q_FOREACH ( const QString &scale, myScalesList )
+    QStringList ScalesList = scalePaths.split( ',' );
+    for ( const QString &scale : ScalesList )
     {
       addScaleToScaleList( scale );
     }
