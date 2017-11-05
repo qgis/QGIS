@@ -1565,7 +1565,9 @@ bool QgsWFSProvider::getCapabilities()
         if ( mShared->mCaps.featureTypes[i].bboxSRSIsWGS84 )
         {
           QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
+          Q_NOWARN_DEPRECATED_PUSH
           QgsCoordinateTransform ct( src, mShared->mSourceCRS );
+          Q_NOWARN_DEPRECATED_POP
 
           QgsDebugMsg( "latlon ext:" + r.toString() );
           QgsDebugMsg( "src:" + src.authid() );

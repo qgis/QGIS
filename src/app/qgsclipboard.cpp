@@ -38,6 +38,7 @@
 #include "qgssettings.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
 
 QgsClipboard::QgsClipboard()
 {
@@ -277,7 +278,7 @@ QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSyst
   }
   else
   {
-    ct = QgsCoordinateTransform( crs(), destCRS );
+    ct = QgsCoordinateTransform( crs(), destCRS, QgsProject::instance() );
   }
 
   QgsDebugMsg( "transforming clipboard." );

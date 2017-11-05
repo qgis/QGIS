@@ -5759,7 +5759,7 @@ void QgisApp::dxfExport()
       //extent
       if ( d.exportMapExtent() )
       {
-        QgsCoordinateTransform t( mapCanvas()->mapSettings().destinationCrs(), d.crs() );
+        QgsCoordinateTransform t( mapCanvas()->mapSettings().destinationCrs(), d.crs(), QgsProject::instance() );
         dxfExport.setExtent( t.transformBoundingBox( mapCanvas()->extent() ) );
       }
     }
@@ -7019,7 +7019,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
 
     if ( destCRS.isValid() && destCRS != vlayer->crs() )
     {
-      ct = QgsCoordinateTransform( vlayer->crs(), destCRS );
+      ct = QgsCoordinateTransform( vlayer->crs(), destCRS, QgsProject::instance() );
 
       //ask user about datum transformation
       QgsSettings settings;
@@ -9493,7 +9493,7 @@ void QgisApp::legendLayerZoomNative()
     QSize s = mMapCanvas->mapSettings().outputSize();
     QgsPointXY p1( e.center().x(), e.center().y() );
     QgsPointXY p2( e.center().x() + e.width() / s.width(), e.center().y() + e.height() / s.height() );
-    QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), layer->crs() );
+    QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), layer->crs(), QgsProject::instance() );
     p1 = ct.transform( p1 );
     p2 = ct.transform( p2 );
     double width = std::sqrt( p1.sqrDist( p2 ) ); // width (actually the diagonal) of reprojected pixel

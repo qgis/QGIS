@@ -44,7 +44,9 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
 
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+    Q_NOWARN_DEPRECATED_POP
   }
   try
   {

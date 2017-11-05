@@ -226,7 +226,9 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       QgsRasterProjector *projector = pipe->projector();
       if ( projector && projector->destinationCrs() != projector->sourceCrs() )
       {
+        Q_NOWARN_DEPRECATED_PUSH
         QgsCoordinateTransform ct( projector->destinationCrs(), projector->sourceCrs() );
+        Q_NOWARN_DEPRECATED_POP
         srcExtent = ct.transformBoundingBox( outputExtent );
       }
       if ( !srcProvider->extent().contains( srcExtent ) )

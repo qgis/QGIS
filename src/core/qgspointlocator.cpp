@@ -626,7 +626,9 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateRefe
 {
   if ( destCRS.isValid() )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     mTransform = QgsCoordinateTransform( layer->crs(), destCRS );
+    Q_NOWARN_DEPRECATED_POP
   }
 
   setExtent( extent );

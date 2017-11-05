@@ -354,7 +354,7 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   QgsRectangle rect;
   if ( !mSettings.visibleExtent().isEmpty() )
   {
-    QgsCoordinateTransform transform( mSettings.destinationCrs(), crs );
+    QgsCoordinateTransform transform( mSettings.destinationCrs(), crs, QgsProject::instance() );
     try
     {
       rect = transform.transformBoundingBox( mSettings.visibleExtent() );

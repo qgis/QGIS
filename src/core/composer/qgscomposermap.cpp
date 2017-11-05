@@ -1890,7 +1890,7 @@ QPointF QgsComposerMap::composerMapPosForItem( const QgsAnnotation *annotation )
   if ( annotationCrs != crs() )
   {
     //need to reproject
-    QgsCoordinateTransform t( annotationCrs, crs() );
+    QgsCoordinateTransform t( annotationCrs, crs(), mComposition->project() );
     double z = 0.0;
     t.transformInPlace( mapX, mapY, z );
   }

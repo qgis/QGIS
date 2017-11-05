@@ -41,7 +41,9 @@ QgsAfsFeatureIterator::QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool 
 {
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->sharedData()->crs() )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     mTransform = QgsCoordinateTransform( mSource->sharedData()->crs(), mRequest.destinationCrs() );
+    Q_NOWARN_DEPRECATED_POP
   }
   try
   {

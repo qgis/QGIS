@@ -154,7 +154,9 @@ namespace QgsWfs
         }
         else
         {
+          Q_NOWARN_DEPRECATED_PUSH
           QgsCoordinateTransform transform( layer->crs(), requestCrs );
+          Q_NOWARN_DEPRECATED_POP
           try
           {
             if ( requestRect.isEmpty() )
@@ -1223,7 +1225,9 @@ namespace QgsWfs
 
         int prec = params.precision;
         QgsCoordinateReferenceSystem crs = params.crs;
+        Q_NOWARN_DEPRECATED_PUSH
         QgsCoordinateTransform mTransform( crs, params.outputCrs );
+        Q_NOWARN_DEPRECATED_POP
         try
         {
           QgsGeometry transformed = geom;
@@ -1324,7 +1328,9 @@ namespace QgsWfs
 
         int prec = params.precision;
         QgsCoordinateReferenceSystem crs = params.crs;
+        Q_NOWARN_DEPRECATED_PUSH
         QgsCoordinateTransform mTransform( crs, params.outputCrs );
+        Q_NOWARN_DEPRECATED_POP
         try
         {
           QgsGeometry transformed = geom;

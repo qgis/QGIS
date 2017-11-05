@@ -163,7 +163,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   {
     // reproject extent
     QgsCoordinateTransform ct( QgsProject::instance()->crs(),
-                               QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+                               QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
 
     g = g.densifyByCount( 5 );
     try

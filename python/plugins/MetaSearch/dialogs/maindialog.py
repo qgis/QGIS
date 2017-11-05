@@ -39,7 +39,7 @@ from qgis.PyQt.QtGui import QColor, QCursor
 
 from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform, QgsGeometry, QgsPointXY,
-                       QgsProviderRegistry, QgsSettings)
+                       QgsProviderRegistry, QgsSettings, QgsProject)
 from qgis.gui import QgsRubberBand
 from qgis.utils import OverrideCursor
 
@@ -400,7 +400,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         if crsid != 4326:  # reproject to EPSG:4326
             src = QgsCoordinateReferenceSystem(crsid)
             dest = QgsCoordinateReferenceSystem(4326)
-            xform = QgsCoordinateTransform(src, dest)
+            xform = QgsCoordinateTransform(src, dest, QgsProject.instance())
             minxy = xform.transform(QgsPointXY(extent.xMinimum(),
                                                extent.yMinimum()))
             maxxy = xform.transform(QgsPointXY(extent.xMaximum(),
@@ -570,7 +570,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 dst = self.map.mapSettings().destinationCrs()
                 geom = QgsGeometry.fromWkt(points)
                 if src.postgisSrid() != dst.postgisSrid():
-                    ctr = QgsCoordinateTransform(src, dst)
+                    ctr = QgsCoordinateTransform(src, dst, QgsProject.instance())
                     try:
                         geom.transform(ctr)
                     except Exception as err:

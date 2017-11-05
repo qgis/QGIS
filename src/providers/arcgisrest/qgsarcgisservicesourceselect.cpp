@@ -315,7 +315,9 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
   {
     try
     {
+      Q_NOWARN_DEPRECATED_PUSH
       extent = QgsCoordinateTransform( canvasCrs, pCrs ).transform( extent );
+      Q_NOWARN_DEPRECATED_POP
       QgsDebugMsg( QString( "canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3" )
                    .arg( canvasCrs.authid(), pCrs.authid(), extent.asWktCoordinates() ) );
     }

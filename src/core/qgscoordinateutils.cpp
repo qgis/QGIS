@@ -73,7 +73,9 @@ QString QgsCoordinateUtils::formatCoordinateForProject( const QgsPointXY &point,
     if ( destCrs.isValid() && !destCrs.isGeographic() )
     {
       // need to transform to geographic coordinates
+      Q_NOWARN_DEPRECATED_PUSH
       QgsCoordinateTransform ct( destCrs, QgsCoordinateReferenceSystem( GEOSRID ) );
+      Q_NOWARN_DEPRECATED_POP
       try
       {
         geo = ct.transform( point );

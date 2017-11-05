@@ -18,6 +18,7 @@
 #include "qgsapplication.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgsproject.h"
 #include <QObject>
 #include "qgstest.h"
 #include "qgsexception.h"
@@ -64,7 +65,7 @@ void TestQgsCoordinateTransform::copy()
   QgsCoordinateReferenceSystem destination;
   destination.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
 
-  QgsCoordinateTransform original( source, destination );
+  QgsCoordinateTransform original( source, destination, QgsProject::instance() );
   QVERIFY( original.isValid() );
 
   QgsCoordinateTransform copy( original );
@@ -93,7 +94,7 @@ void TestQgsCoordinateTransform::assignment()
   QgsCoordinateReferenceSystem destination;
   destination.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
 
-  QgsCoordinateTransform original( source, destination );
+  QgsCoordinateTransform original( source, destination, QgsProject::instance() );
   QVERIFY( original.isValid() );
 
   QgsCoordinateTransform copy;
@@ -127,22 +128,22 @@ void TestQgsCoordinateTransform::isValid()
   srs2.createFromSrid( 4326 );
 
   // valid source, invalid destination
-  QgsCoordinateTransform tr2( srs1, QgsCoordinateReferenceSystem() );
+  QgsCoordinateTransform tr2( srs1, QgsCoordinateReferenceSystem(), QgsProject::instance() );
   QVERIFY( !tr2.isValid() );
 
   // invalid source, valid destination
-  QgsCoordinateTransform tr3( QgsCoordinateReferenceSystem(), srs2 );
+  QgsCoordinateTransform tr3( QgsCoordinateReferenceSystem(), srs2, QgsProject::instance() );
   QVERIFY( !tr3.isValid() );
 
   // valid source, valid destination
-  QgsCoordinateTransform tr4( srs1, srs2 );
+  QgsCoordinateTransform tr4( srs1, srs2, QgsProject::instance() );
   QVERIFY( tr4.isValid() );
 
   // try to invalidate by setting source as invalid
   tr4.setSourceCrs( QgsCoordinateReferenceSystem() );
   QVERIFY( !tr4.isValid() );
 
-  QgsCoordinateTransform tr5( srs1, srs2 );
+  QgsCoordinateTransform tr5( srs1, srs2, QgsProject::instance() );
   // try to invalidate by setting destination as invalid
   tr5.setDestinationCrs( QgsCoordinateReferenceSystem() );
   QVERIFY( !tr5.isValid() );
@@ -160,19 +161,19 @@ void TestQgsCoordinateTransform::isShortCircuited()
   srs2.createFromSrid( 4326 );
 
   // valid source, invalid destination
-  QgsCoordinateTransform tr2( srs1, QgsCoordinateReferenceSystem() );
+  QgsCoordinateTransform tr2( srs1, QgsCoordinateReferenceSystem(), QgsProject::instance() );
   QVERIFY( tr2.isShortCircuited() );
 
   // invalid source, valid destination
-  QgsCoordinateTransform tr3( QgsCoordinateReferenceSystem(), srs2 );
+  QgsCoordinateTransform tr3( QgsCoordinateReferenceSystem(), srs2, QgsProject::instance() );
   QVERIFY( tr3.isShortCircuited() );
 
   // equal, valid source and destination
-  QgsCoordinateTransform tr4( srs1, srs1 );
+  QgsCoordinateTransform tr4( srs1, srs1, QgsProject::instance() );
   QVERIFY( tr4.isShortCircuited() );
 
   // valid but different source and destination
-  QgsCoordinateTransform tr5( srs1, srs2 );
+  QgsCoordinateTransform tr5( srs1, srs2, QgsProject::instance() );
   QVERIFY( !tr5.isShortCircuited() );
 
   // try to short circuit by changing dest
@@ -221,7 +222,7 @@ void TestQgsCoordinateTransform::transformBoundingBox()
   QgsCoordinateReferenceSystem destSrs;
   destSrs.createFromSrid( 4326 );
 
-  QgsCoordinateTransform tr( sourceSrs, destSrs );
+  QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
   QgsRectangle crossingRect( 6374985, -3626584, 7021195, -3272435 );
   QgsRectangle resultRect = tr.transformBoundingBox( crossingRect, QgsCoordinateTransform::ForwardTransform, true );
   QgsRectangle expectedRect;

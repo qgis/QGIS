@@ -504,7 +504,7 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
     QgsReferencedRectangle rr = val.value<QgsReferencedRectangle>();
     if ( crs.isValid() && rr.crs().isValid() && crs != rr.crs() )
     {
-      QgsCoordinateTransform ct( rr.crs(), crs );
+      QgsCoordinateTransform ct( rr.crs(), crs, context.project() );
       try
       {
         return ct.transformBoundingBox( rr );
@@ -544,7 +544,7 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
       QgsCoordinateReferenceSystem rectCrs( match.captured( 5 ) );
       if ( crs.isValid() && rectCrs.isValid() && crs != rectCrs )
       {
-        QgsCoordinateTransform ct( rectCrs, crs );
+        QgsCoordinateTransform ct( rectCrs, crs, context.project() );
         try
         {
           return ct.transformBoundingBox( rect );
@@ -564,7 +564,7 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
     QgsRectangle rect = layer->extent();
     if ( crs.isValid() && layer->crs().isValid() && crs != layer->crs() )
     {
-      QgsCoordinateTransform ct( layer->crs(), crs );
+      QgsCoordinateTransform ct( layer->crs(), crs, context.project() );
       try
       {
         return ct.transformBoundingBox( rect );
@@ -593,7 +593,7 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
     if ( crs.isValid() && rr.crs().isValid() && crs != rr.crs() )
     {
       g = g.densifyByCount( 20 );
-      QgsCoordinateTransform ct( rr.crs(), crs );
+      QgsCoordinateTransform ct( rr.crs(), crs, context.project() );
       try
       {
         g.transform( ct );
@@ -634,7 +634,7 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
         if ( crs.isValid() && rectCrs.isValid() && crs != rectCrs )
         {
           g = g.densifyByCount( 20 );
-          QgsCoordinateTransform ct( rectCrs, crs );
+          QgsCoordinateTransform ct( rectCrs, crs, context.project() );
           try
           {
             g.transform( ct );
@@ -657,7 +657,7 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
     if ( crs.isValid() && layer->crs().isValid() && crs != layer->crs() )
     {
       g = g.densifyByCount( 20 );
-      QgsCoordinateTransform ct( layer->crs(), crs );
+      QgsCoordinateTransform ct( layer->crs(), crs, context.project() );
       try
       {
         g.transform( ct );
@@ -724,7 +724,7 @@ QgsPointXY QgsProcessingParameters::parameterAsPoint( const QgsProcessingParamet
     QgsReferencedPointXY rp = val.value<QgsReferencedPointXY>();
     if ( crs.isValid() && rp.crs().isValid() && crs != rp.crs() )
     {
-      QgsCoordinateTransform ct( rp.crs(), crs );
+      QgsCoordinateTransform ct( rp.crs(), crs, context.project() );
       try
       {
         return ct.transform( rp );
@@ -762,7 +762,7 @@ QgsPointXY QgsProcessingParameters::parameterAsPoint( const QgsProcessingParamet
       QgsCoordinateReferenceSystem pointCrs( match.captured( 3 ) );
       if ( crs.isValid() && pointCrs.isValid() && crs != pointCrs )
       {
-        QgsCoordinateTransform ct( pointCrs, crs );
+        QgsCoordinateTransform ct( pointCrs, crs, context.project() );
         try
         {
           return ct.transform( pt );

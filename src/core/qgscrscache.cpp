@@ -44,7 +44,9 @@ QgsCoordinateTransform QgsCoordinateTransformCache::transform( const QString &sr
   //not found, insert new value
   QgsCoordinateReferenceSystem srcCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( srcAuthId );
   QgsCoordinateReferenceSystem destCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( destAuthId );
+  Q_NOWARN_DEPRECATED_PUSH
   QgsCoordinateTransform ct = QgsCoordinateTransform( srcCrs, destCrs );
+  Q_NOWARN_DEPRECATED_POP
   ct.setSourceDatumTransform( srcDatumTransform );
   ct.setDestinationDatumTransform( destDatumTransform );
   ct.initialize();

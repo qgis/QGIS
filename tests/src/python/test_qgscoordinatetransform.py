@@ -33,7 +33,7 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         myGeoCrs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
         myUtmCrs = QgsCoordinateReferenceSystem()
         myUtmCrs.createFromId(32756, QgsCoordinateReferenceSystem.EpsgCrsId)
-        myXForm = QgsCoordinateTransform(myUtmCrs, myGeoCrs)
+        myXForm = QgsCoordinateTransform(myUtmCrs, myGeoCrs, QgsProject.instance())
         myProjectedExtent = myXForm.transformBoundingBox(myExtent)
         myExpectedExtent = ('150.1509239873580270,-35.7176936443908772 : '
                             '150.1964384662953194,-35.6971885216629090')

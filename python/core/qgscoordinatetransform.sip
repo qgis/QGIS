@@ -45,13 +45,6 @@ class QgsCoordinateTransform
 Default constructor, creates an invalid QgsCoordinateTransform.
 %End
 
-    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
-                                     const QgsCoordinateReferenceSystem &destination );
-%Docstring
- Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
- \param source source CRS, typically of the layer's coordinate system
- \param destination CRS, typically of the map canvas coordinate system
-%End
 
     explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
                                      const QgsCoordinateReferenceSystem &destination,

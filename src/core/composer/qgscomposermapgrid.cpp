@@ -2349,7 +2349,7 @@ int QgsComposerMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTrans
 
   try
   {
-    QgsCoordinateTransform tr( mComposerMap->crs(), mCRS );
+    QgsCoordinateTransform tr( mComposerMap->crs(), mCRS, mComposerMap->composition()->project() );
     QPolygonF mapPolygon = mComposerMap->transformedMapPolygon();
     QRectF mbr = mapPolygon.boundingRect();
     QgsRectangle mapBoundingRect( mbr.left(), mbr.bottom(), mbr.right(), mbr.top() );

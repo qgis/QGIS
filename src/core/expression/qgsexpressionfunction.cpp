@@ -3369,7 +3369,9 @@ static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpre
   if ( ! d.isValid() )
     return QVariant::fromValue( fGeom );
 
+  Q_NOWARN_DEPRECATED_PUSH
   QgsCoordinateTransform t( s, d );
+  Q_NOWARN_DEPRECATED_POP
   try
   {
     if ( fGeom.transform( t ) == 0 )

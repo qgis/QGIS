@@ -19,6 +19,7 @@
 #include <qgsgeometry.h>
 #include <qgstracer.h>
 #include <qgsvectorlayer.h>
+#include "qgsproject.h"
 
 class TestQgsTracer : public QObject
 {
@@ -306,7 +307,7 @@ void TestQgsTracer::testReprojection()
   QgsVectorLayer *vl = make_layer( wkts );
 
   QgsCoordinateReferenceSystem dstCrs( QStringLiteral( "EPSG:3857" ) );
-  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), dstCrs );
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), dstCrs, QgsProject::instance() );
   QgsPointXY p1 = ct.transform( QgsPointXY( 1, 0 ) );
   QgsPointXY p2 = ct.transform( QgsPointXY( 2, 0 ) );
 

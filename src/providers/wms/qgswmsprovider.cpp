@@ -1188,7 +1188,10 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri )
   QgsDataSourceUri parsedUri;
   parsedUri.setEncodedUri( uri );
 
+  Q_NOWARN_DEPRECATED_PUSH
   QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( mSettings.mCrsId ) );
+  Q_NOWARN_DEPRECATED_POP
+
   // the whole world is projected to a square:
   // X going from 180 W to 180 E
   // Y going from ~85 N to ~85 S  (=atan(sinh(pi)) ... to get a square)
@@ -1318,7 +1321,10 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString &layerName, const QSt
   if ( !wgs.isValid() || !dst.isValid() )
     return false;
 
+  Q_NOWARN_DEPRECATED_PUSH
   QgsCoordinateTransform xform( wgs, dst );
+  Q_NOWARN_DEPRECATED_POP
+
   QgsDebugMsg( QString( "transforming layer extent %1" ).arg( extent.toString( true ) ) );
   try
   {
@@ -1548,7 +1554,9 @@ bool QgsWmsProvider::calculateExtent() const
         {
           QgsCoordinateReferenceSystem qgisSrsSource = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mTileLayer->boundingBoxes[i].crs );
 
+          Q_NOWARN_DEPRECATED_PUSH
           QgsCoordinateTransform ct( qgisSrsSource, qgisSrsDest );
+          Q_NOWARN_DEPRECATED_POP
 
           QgsDebugMsg( QString( "ct: %1 => %2" ).arg( mTileLayer->boundingBoxes.at( i ).crs, mImageCrs ) );
 
@@ -2928,7 +2936,9 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
           QgsCoordinateTransform coordinateTransform;
           if ( featuresCrs.isValid() && featuresCrs != crs() )
           {
+            Q_NOWARN_DEPRECATED_PUSH
             coordinateTransform = QgsCoordinateTransform( featuresCrs, crs() );
+            Q_NOWARN_DEPRECATED_POP
           }
           QgsFeatureStore featureStore( fields, crs() );
           QMap<QString, QVariant> params;
@@ -3004,7 +3014,9 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
 
             if ( featuresCrs.isValid() && featuresCrs != crs() )
             {
+              Q_NOWARN_DEPRECATED_PUSH
               coordinateTransform = QgsCoordinateTransform( featuresCrs, crs() );
+              Q_NOWARN_DEPRECATED_POP
             }
           }
 
