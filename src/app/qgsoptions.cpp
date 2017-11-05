@@ -806,8 +806,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   //
   // Color palette
   //
-  connect( mButtonCopyColors, &QAbstractButton::clicked, mTreeCustomColors, &QgsColorSchemeList::copyColors );
+  connect( mButtonAddColor, &QAbstractButton::clicked, this, &QgsOptions::addColor );
   connect( mButtonRemoveColor, &QAbstractButton::clicked, mTreeCustomColors, &QgsColorSchemeList::removeSelection );
+  connect( mButtonCopyColors, &QAbstractButton::clicked, mTreeCustomColors, &QgsColorSchemeList::copyColors );
   connect( mButtonPasteColors, &QAbstractButton::clicked, mTreeCustomColors, &QgsColorSchemeList::pasteColors );
   connect( mButtonImportColors, &QAbstractButton::clicked, mTreeCustomColors, &QgsColorSchemeList::showImportColorsDialog );
   connect( mButtonExportColors, &QAbstractButton::clicked, mTreeCustomColors, &QgsColorSchemeList::showExportColorsDialog );
