@@ -171,7 +171,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     mRemoveCustomVarBtn->setEnabled( false );
     mCustomVariablesTable->setEnabled( false );
   }
-  QStringList customVarsList = mSettings->value( QStringLiteral( "qgis/customEnvVars" ) ).toStringList();
+  const QStringList customVarsList = mSettings->value( QStringLiteral( "qgis/customEnvVars" ) ).toStringList();
   for ( const QString &varStr : customVarsList )
   {
     int pos = varStr.indexOf( QLatin1Char( '|' ) );
@@ -204,7 +204,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // current environment variables
   mCurrentVariablesTable->horizontalHeader()->setFixedHeight( fmCustomVarH );
   QMap<QString, QString> sysVarsMap = QgsApplication::systemEnvVars();
-  QStringList currentVarsList = QProcess::systemEnvironment();
+  const QStringList currentVarsList = QProcess::systemEnvironment();
 
   for ( const QString &varStr : currentVarsList )
   {
@@ -254,8 +254,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     mCurrentVariablesTable->resizeColumnToContents( 0 );
 
   //local directories to search when loading c++ plugins
-  QStringList pathList = mSettings->value( QStringLiteral( "plugins/searchPathsForPlugins" ) ).toStringList();
-  for ( const QString &path : pathList )
+  const QStringList pluginsPathList = mSettings->value( QStringLiteral( "plugins/searchPathsForPlugins" ) ).toStringList();
+  for ( const QString &path : pluginsPathList )
   {
     QListWidgetItem *newItem = new QListWidgetItem( mListPluginPaths );
     newItem->setText( path );
@@ -266,8 +266,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mBtnRemovePluginPath, &QAbstractButton::clicked, this, &QgsOptions::removePluginPath );
 
   //local directories to search when looking for an SVG with a given basename
-  pathList = QgsApplication::svgPaths();
-  for ( const QString &path : pathList )
+  const QStringList svgPathList = QgsApplication::svgPaths();
+  for ( const QString &path : svgPathList )
   {
     QListWidgetItem *newItem = new QListWidgetItem( mListSVGPaths );
     newItem->setText( path );
@@ -278,8 +278,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mBtnRemoveSVGPath, &QAbstractButton::clicked, this, &QgsOptions::removeSVGPath );
 
   //local directories to search when looking for a composer templates
-  pathList = QgsApplication::composerTemplatePaths();
-  for ( const QString &path : pathList )
+  const QStringList composerTemplatePathList = QgsApplication::composerTemplatePaths();
+  for ( const QString &path : composerTemplatePathList )
   {
     QListWidgetItem *newItem = new QListWidgetItem( mListComposerTemplatePaths );
     newItem->setText( path );
@@ -290,8 +290,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mBtnRemoveTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::removeTemplatePath );
 
   //paths hidden from browser
-  pathList = mSettings->value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
-  for ( const QString &path : pathList )
+  const QStringList hiddenPathList = mSettings->value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
+  for ( const QString &path : hiddenPathList )
   {
     QListWidgetItem *newItem = new QListWidgetItem( mListHiddenBrowserPaths );
     newItem->setText( path );
@@ -350,8 +350,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mProxyTypeComboBox->setCurrentIndex( mProxyTypeComboBox->findText( settingProxyType ) );
 
   //URLs excluded not going through proxies
-  pathList = mSettings->value( QStringLiteral( "proxy/proxyExcludedUrls" ) ).toStringList();
-  for ( const QString &path : pathList )
+  const QStringList excludedUrlPathList = mSettings->value( QStringLiteral( "proxy/proxyExcludedUrls" ) ).toStringList();
+  for ( const QString &path : excludedUrlPathList )
   {
     QListWidgetItem *newItem = new QListWidgetItem( mExcludeUrlListWidget );
     newItem->setText( path );
@@ -785,7 +785,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QString scalePaths = mSettings->value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
   if ( !scalePaths.isEmpty() )
   {
-    QStringList ScalesList = scalePaths.split( ',' );
+    const QStringList ScalesList = scalePaths.split( ',' );
     for ( const QString &scale : ScalesList )
     {
       addScaleToScaleList( scale );
