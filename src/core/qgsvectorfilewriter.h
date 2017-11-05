@@ -528,17 +528,30 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     static QStringList supportedFormatExtensions( VectorFormatOptions options = SortRecommended );
 
     /**
-     * Returns driver list that can be used for dialogs. It contains all OGR drivers
+     * Details of available driver formats.
+     * \since QGIS 3.0
+     */
+    struct DriverDetails
+    {
+      //! Descriptive, user friendly name for the driver
+      QString longName;
+
+      //! Unique driver name
+      QString driverName;
+    };
+
+    /**
+     * Returns the driver list that can be used for dialogs. It contains all OGR drivers
      * plus some additional internal QGIS driver names to distinguish between more
      * supported formats of the same OGR driver.
      *
-     * The returned list consists of pairs of driver long name (e.g. user-friendly
-     * display name for the format) to internal driver short name.
+     * The returned list consists of structs containing the driver long name (e.g. user-friendly
+     * display name for the format) and internal driver short name.
      *
      * The \a options argument can be used to control the sorting and filtering of
      * returned drivers.
      */
-    static QList< QPair< QString, QString > > ogrDriverList( VectorFormatOptions options = SortRecommended );
+    static QList< QgsVectorFileWriter::DriverDetails > ogrDriverList( VectorFormatOptions options = SortRecommended );
 
     /**
      * Returns the OGR driver name for a specified file \a extension. E.g. the

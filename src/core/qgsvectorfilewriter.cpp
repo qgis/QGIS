@@ -2762,12 +2762,12 @@ QStringList QgsVectorFileWriter::supportedFormatExtensions( const VectorFormatOp
   return extensions;
 }
 
-QList< QPair< QString, QString> > QgsVectorFileWriter::ogrDriverList( const VectorFormatOptions options )
+QList< QgsVectorFileWriter::DriverDetails > QgsVectorFileWriter::ogrDriverList( const VectorFormatOptions options )
 {
-  QList< QPair< QString, QString> > resultMap;
+  QList< QgsVectorFileWriter::DriverDetails > results;
 
   QgsApplication::registerOgrDrivers();
-  int const drvCount = OGRGetDriverCount();
+  const int drvCount = OGRGetDriverCount();
 
   QStringList writableDrivers;
   for ( int i = 0; i < drvCount; ++i )
@@ -2836,10 +2836,13 @@ QList< QPair< QString, QString> > QgsVectorFileWriter::ogrDriverList( const Vect
     MetaData metadata;
     if ( driverMetadata( drvName, metadata ) && !metadata.trLongName.isEmpty() )
     {
-      resultMap << qMakePair( metadata.trLongName, drvName );
+      DriverDetails details;
+      details.driverName = drvName;
+      details.longName = metadata.trLongName;
+      results << details;
     }
   }
-  return resultMap;
+  return results;
 }
 
 QString QgsVectorFileWriter::driverForExtension( const QString &extension )

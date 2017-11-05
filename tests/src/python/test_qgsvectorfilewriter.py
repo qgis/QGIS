@@ -737,13 +737,15 @@ class TestQgsVectorFileWriter(unittest.TestCase):
     def testOgrDriverList(self):
         # test with drivers in recommended order
         drivers = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.SortRecommended)
-        self.assertEqual(drivers[0], ('GeoPackage', 'GPKG'))
-        self.assertEqual(drivers[1], ('ESRI Shapefile', 'ESRI Shapefile'))
+        self.assertEqual(drivers[0].longName, 'GeoPackage')
+        self.assertEqual(drivers[0].driverName, 'GPKG')
+        self.assertEqual(drivers[1].longName, 'ESRI Shapefile')
+        self.assertEqual(drivers[1].driverName, 'ESRI Shapefile')
         # alphabetical sorting
         drivers2 = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.VectorFormatOptions())
-        self.assertTrue(drivers2[0][0] < drivers2[1][0])
-        self.assertCountEqual(drivers, drivers2)
-        self.assertNotEqual(drivers2[0], ('GeoPackage', 'GPKG'))
+        self.assertTrue(drivers2[0].longName < drivers2[1].longName)
+        self.assertCountEqual([d.driverName for d in drivers], [d.driverName for d in drivers2])
+        self.assertNotEqual(drivers2[0].driverName, 'GPKG')
 
     def testSupportedFormatExtensions(self):
         formats = QgsVectorFileWriter.supportedFormatExtensions()

@@ -491,18 +491,31 @@ Create a new vector file writer
  :rtype: list of str
 %End
 
-    static QList< QPair< QString, QString > > ogrDriverList( VectorFormatOptions options = SortRecommended );
+    struct DriverDetails
+    {
+      QString longName;
 %Docstring
- Returns driver list that can be used for dialogs. It contains all OGR drivers
+Descriptive, user friendly name for the driver
+%End
+
+      QString driverName;
+%Docstring
+Unique driver name
+%End
+    };
+
+    static QList< QgsVectorFileWriter::DriverDetails > ogrDriverList( VectorFormatOptions options = SortRecommended );
+%Docstring
+ Returns the driver list that can be used for dialogs. It contains all OGR drivers
  plus some additional internal QGIS driver names to distinguish between more
  supported formats of the same OGR driver.
 
- The returned list consists of pairs of driver long name (e.g. user-friendly
- display name for the format) to internal driver short name.
+ The returned list consists of structs containing the driver long name (e.g. user-friendly
+ display name for the format) and internal driver short name.
 
  The ``options`` argument can be used to control the sorting and filtering of
  returned drivers.
- :rtype: list of QPair< str, QString >
+ :rtype: list of QgsVectorFileWriter.DriverDetails
 %End
 
     static QString driverForExtension( const QString &extension );
