@@ -44,6 +44,8 @@
  * addSourceDatumTransform() then this datum transform will be used. The same logic
  * applies for destination CRS transforms set using addDestinationDatumTransform().
  *
+ * \note QgsCoordinateTransformContext objects are thread safe for read and write.
+ *
  * \note QgsCoordinateTransformContext objects are implicitly shared.
  *
  * \since QGIS 3.0

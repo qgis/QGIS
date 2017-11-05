@@ -47,10 +47,12 @@ class QgsCoordinateTransformContextPrivate : public QSharedData
 
     QgsCoordinateTransformContextPrivate( const QgsCoordinateTransformContextPrivate &other )
       : QSharedData( other )
-      , mSourceDestDatumTransforms( other.mSourceDestDatumTransforms )
-      , mSourceDatumTransforms( other.mSourceDatumTransforms )
-      , mDestDatumTransforms( other.mDestDatumTransforms )
     {
+      other.mLock.lockForRead();
+      mSourceDestDatumTransforms = other.mSourceDestDatumTransforms;
+      mSourceDatumTransforms = other.mSourceDatumTransforms;
+      mDestDatumTransforms = other.mDestDatumTransforms;
+      other.mLock.unlock();
     }
 
     /**
@@ -64,6 +66,9 @@ class QgsCoordinateTransformContextPrivate : public QSharedData
 
     //! Mapping for datum transforms to use for destination CRS
     QMap< QString, int > mDestDatumTransforms;
+
+    //! Mutex for making QgsCoordinateTransformContextPrivate thread safe
+    mutable QReadWriteLock mLock;
 
 };
 

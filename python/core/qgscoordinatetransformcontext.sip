@@ -29,6 +29,10 @@ class QgsCoordinateTransformContext
 
 .. note::
 
+   QgsCoordinateTransformContext objects are thread safe for read and write.
+
+.. note::
+
    QgsCoordinateTransformContext objects are implicitly shared.
 
 .. versionadded:: 3.0
