@@ -417,7 +417,9 @@ void QgsMssqlProvider::loadFields()
         }
         if ( sqlType == QVariant::String )
         {
-          int length = query.value( ( sqlTypeName == "uniqueidentifier" ) ? 6 : 7 ).toInt();
+          // Field length in chars is column 7 ("Length") of the sp_columns output,
+          // except for uniqueidentifiers which must use column 6 ("Precision").
+          int length = query.value( sqlTypeName.startsWith( QLatin1String( "uniqueidentifier" ), Qt::CaseInsensitive ) ? 6 : 7 ).toInt();
           if ( sqlTypeName.startsWith( QLatin1String( "n" ) ) )
           {
             length = length / 2;
