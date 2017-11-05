@@ -10,6 +10,7 @@
 
 
 
+
 class QgsCoordinateTransformContext
 {
 %Docstring
@@ -26,6 +27,10 @@ class QgsCoordinateTransformContext
  addSourceDatumTransform() then this datum transform will be used. The same logic
  applies for destination CRS transforms set using addDestinationDatumTransform().
 
+.. note::
+
+   QgsCoordinateTransformContext objects are implicitly shared.
+
 .. versionadded:: 3.0
 %End
 
@@ -38,6 +43,13 @@ class QgsCoordinateTransformContext
 %Docstring
  Constructor for QgsCoordinateTransformContext.
 %End
+
+    QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs );
+%Docstring
+ Copy constructor
+%End
+
+
 
     void clear();
 %Docstring

@@ -16,17 +16,32 @@
  ***************************************************************************/
 
 #include "qgscoordinatetransformcontext.h"
+#include "qgscoordinatetransformcontext_p.h"
+QgsCoordinateTransformContext::QgsCoordinateTransformContext()
+  : d( new QgsCoordinateTransformContextPrivate() )
+{}
+
+QgsCoordinateTransformContext::QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs ) //NOLINT
+  : d( rhs.d )
+{}
+
+QgsCoordinateTransformContext &QgsCoordinateTransformContext::operator=( const QgsCoordinateTransformContext &rhs ) //NOLINT
+{
+  d = rhs.d;
+  return *this;
+}
 
 void QgsCoordinateTransformContext::clear()
 {
-  mSourceDestDatumTransforms.clear();
-  mSourceDatumTransforms.clear();
-  mDestDatumTransforms.clear();
+  d.detach();
+  d->mSourceDestDatumTransforms.clear();
+  d->mSourceDatumTransforms.clear();
+  d->mDestDatumTransforms.clear();
 }
 
 QMap<QString, int> QgsCoordinateTransformContext::sourceDatumTransforms() const
 {
-  return mSourceDatumTransforms;
+  return d->mSourceDatumTransforms;
 }
 
 bool QgsCoordinateTransformContext::addSourceDatumTransform( const QgsCoordinateReferenceSystem &crs, int transform )
@@ -34,19 +49,20 @@ bool QgsCoordinateTransformContext::addSourceDatumTransform( const QgsCoordinate
   if ( !crs.isValid() )
     return false;
 
+  d.detach();
   if ( transform == -1 )
   {
-    mSourceDatumTransforms.remove( crs.authid() );
+    d->mSourceDatumTransforms.remove( crs.authid() );
     return true;
   }
 
-  mSourceDatumTransforms.insert( crs.authid(), transform );
+  d->mSourceDatumTransforms.insert( crs.authid(), transform );
   return true;
 }
 
 QMap<QString, int> QgsCoordinateTransformContext::destinationDatumTransforms() const
 {
-  return mDestDatumTransforms;
+  return d->mDestDatumTransforms;
 }
 
 bool QgsCoordinateTransformContext::addDestinationDatumTransform( const QgsCoordinateReferenceSystem &crs, int transform )
@@ -54,19 +70,20 @@ bool QgsCoordinateTransformContext::addDestinationDatumTransform( const QgsCoord
   if ( !crs.isValid() )
     return false;
 
+  d.detach();
   if ( transform == -1 )
   {
-    mDestDatumTransforms.remove( crs.authid() );
+    d->mDestDatumTransforms.remove( crs.authid() );
     return true;
   }
 
-  mDestDatumTransforms.insert( crs.authid(), transform );
+  d->mDestDatumTransforms.insert( crs.authid(), transform );
   return true;
 }
 
 QMap<QPair<QString, QString>, QPair<int, int> > QgsCoordinateTransformContext::sourceDestinationDatumTransforms() const
 {
-  return mSourceDestDatumTransforms;
+  return d->mSourceDestDatumTransforms;
 }
 
 bool QgsCoordinateTransformContext::addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, int sourceTransform, int destinationTransform )
@@ -74,13 +91,14 @@ bool QgsCoordinateTransformContext::addSourceDestinationDatumTransform( const Qg
   if ( !sourceCrs.isValid() || !destinationCrs.isValid() )
     return false;
 
+  d.detach();
   if ( sourceTransform == -1 || destinationTransform == -1 )
   {
-    mSourceDestDatumTransforms.remove( qMakePair( sourceCrs.authid(), destinationCrs.authid() ) );
+    d->mSourceDestDatumTransforms.remove( qMakePair( sourceCrs.authid(), destinationCrs.authid() ) );
     return true;
   }
 
-  mSourceDestDatumTransforms.insert( qMakePair( sourceCrs.authid(), destinationCrs.authid() ), qMakePair( sourceTransform, destinationTransform ) );
+  d->mSourceDestDatumTransforms.insert( qMakePair( sourceCrs.authid(), destinationCrs.authid() ), qMakePair( sourceTransform, destinationTransform ) );
   return true;
 }
 

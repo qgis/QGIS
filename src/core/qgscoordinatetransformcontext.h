@@ -20,7 +20,13 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext_p.h"
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfeature.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
 
 /**
  * \class QgsCoordinateTransformContext
@@ -38,6 +44,8 @@
  * addSourceDatumTransform() then this datum transform will be used. The same logic
  * applies for destination CRS transforms set using addDestinationDatumTransform().
  *
+ * \note QgsCoordinateTransformContext objects are implicitly shared.
+ *
  * \since QGIS 3.0
 */
 
@@ -48,7 +56,18 @@ class CORE_EXPORT QgsCoordinateTransformContext
     /**
      * Constructor for QgsCoordinateTransformContext.
      */
-    QgsCoordinateTransformContext() = default;
+    QgsCoordinateTransformContext();
+
+    /**
+     * Copy constructor
+     */
+    QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs );
+
+    /**
+     * Assignment operator
+     */
+    QgsCoordinateTransformContext &operator=( const QgsCoordinateTransformContext &rhs ) SIP_SKIP;
+
 
     /**
      * Clears all stored transform information from the context.
@@ -156,17 +175,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
 
   private:
 
-    /**
-     * Mapping for datum transforms to use for source/destination CRS pairs.
-     * Matching records from this map will take precedence over other transform maps.
-     */
-    QMap< QPair< QString, QString >, QPair< int, int > > mSourceDestDatumTransforms;
-
-    //! Mapping for datum transforms to use for source CRS
-    QMap< QString, int > mSourceDatumTransforms;
-
-    //! Mapping for datum transforms to use for destination CRS
-    QMap< QString, int > mDestDatumTransforms;
+    QExplicitlySharedDataPointer<QgsCoordinateTransformContextPrivate> d;
 
 };
 

@@ -17,6 +17,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsapplication.h"
 #include "qgsrectangle.h"
+#include "qgscoordinatetransformcontext.h"
 #include <QObject>
 #include "qgstest.h"
 #include "qgsexception.h"
@@ -33,6 +34,7 @@ class TestQgsCoordinateTransform: public QObject
     void assignment();
     void isValid();
     void isShortCircuited();
+    void contextShared();
 
   private:
 
@@ -176,6 +178,38 @@ void TestQgsCoordinateTransform::isShortCircuited()
   // try to short circuit by changing dest
   tr5.setDestinationCrs( srs1 );
   QVERIFY( tr5.isShortCircuited() );
+}
+
+void TestQgsCoordinateTransform::contextShared()
+{
+  //test implicit sharing of QgsCoordinateTransformContext
+  QgsCoordinateTransformContext original;
+  original.addDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), 1 );
+
+  QgsCoordinateTransformContext copy( original );
+  QMap< QString, int > expected;
+  expected.insert( "EPSG:3111", 1 );
+  QCOMPARE( original.destinationDatumTransforms(), expected );
+  QCOMPARE( copy.destinationDatumTransforms(), expected );
+
+  // trigger detach
+  copy.addDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), 2 );
+  QCOMPARE( original.destinationDatumTransforms(), expected );
+
+  expected.insert( "EPSG:3111", 2 );
+  QCOMPARE( copy.destinationDatumTransforms(), expected );
+
+  // copy via assignment
+  QgsCoordinateTransformContext copy2;
+  copy2 = original;
+  expected.insert( "EPSG:3111", 1 );
+  QCOMPARE( original.destinationDatumTransforms(), expected );
+  QCOMPARE( copy2.destinationDatumTransforms(), expected );
+
+  copy2.addDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), 3 );
+  QCOMPARE( original.destinationDatumTransforms(), expected );
+  expected.insert( "EPSG:3111", 3 );
+  QCOMPARE( copy2.destinationDatumTransforms(), expected );
 }
 
 
