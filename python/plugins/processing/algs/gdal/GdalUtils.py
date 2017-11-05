@@ -175,8 +175,8 @@ class GdalUtils(object):
 
         formats = QgsVectorFileWriter.supportedFiltersAndFormats()
         for format in formats:
-            if ext in format[0]:
-                return format[1]
+            if ext in format.filterString:
+                return format.driverName
         return 'ESRI Shapefile'
 
     @staticmethod

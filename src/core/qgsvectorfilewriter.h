@@ -29,9 +29,6 @@
 #include "qgsogrutils.h"
 #include <ogr_api.h>
 
-#include <QPair>
-
-
 class QgsSymbolLayer;
 class QTextCodec;
 class QgsFeatureIterator;
@@ -507,6 +504,19 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     QgsVectorFileWriter &operator=( const QgsVectorFileWriter &rh ) = delete;
 
     /**
+     * Details of available filters and formats.
+     * \since QGIS 3.0
+     */
+    struct FilterFormatDetails
+    {
+      //! Unique driver name
+      QString driverName;
+
+      //! Filter string for file picker dialogs
+      QString filterString;
+    };
+
+    /**
      * Returns a list or pairs, with format filter string as first element and OGR format key as second element.
      *
      * The \a options argument can be used to control the sorting and filtering of
@@ -514,7 +524,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      *
      * \see supportedOutputVectorLayerExtensions()
      */
-    static QList< QPair< QString, QString > > supportedFiltersAndFormats( VectorFormatOptions options = SortRecommended );
+    static QList< QgsVectorFileWriter::FilterFormatDetails > supportedFiltersAndFormats( VectorFormatOptions options = SortRecommended );
 
     /**
      * Returns a list of file extensions for supported formats.

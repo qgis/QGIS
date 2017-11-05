@@ -55,9 +55,9 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QD
   mRunButton->setEnabled( false );
 
   const auto filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
-  for ( const auto &filter : filterFormatMap )
+  for ( const QgsVectorFileWriter::FilterFormatDetails &filter : filterFormatMap )
   {
-    QString driverName = filter.second;
+    QString driverName = filter.driverName;
     ui.comboBoxOutputFormat->addItem( driverName );
     if ( driverName == QLatin1String( "ESRI Shapefile" ) )
     {
@@ -217,12 +217,12 @@ void QgsGeometryCheckerSetupTab::selectOutputDirectory()
 {
   QString filterString = QgsVectorFileWriter::filterForDriver( QStringLiteral( "GPKG" ) );
   const auto filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
-  for ( const auto &filter : filterFormatMap )
+  for ( const QgsVectorFileWriter::FilterFormatDetails &filter : filterFormatMap )
   {
-    QString driverName = filter.second;
+    QString driverName = filter.driverName;
     if ( driverName != QLatin1String( "ESRI Shapefile" ) ) // Default entry, first in list (see above)
     {
-      filterString += ";;" + filter.first;
+      filterString += ";;" + filter.filterString;
     }
   }
   QString initialdir = ui.lineEditOutputDirectory->text();

@@ -2681,15 +2681,15 @@ void QgsVectorFileWriter::setSymbologyScale( double d )
   mRenderContext.setRendererScale( mSymbologyScale );
 }
 
-QList< QPair< QString, QString > > QgsVectorFileWriter::supportedFiltersAndFormats( const VectorFormatOptions options )
+QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supportedFiltersAndFormats( const VectorFormatOptions options )
 {
-  QList< QPair< QString, QString > > resultMap;
+  QList< FilterFormatDetails > results;
 
   QgsApplication::registerOgrDrivers();
   int const drvCount = OGRGetDriverCount();
 
-  QPair< QString, QString > shapeFormat;
-  QPair< QString, QString > gpkgFormat;
+  FilterFormatDetails shapeFormat;
+  FilterFormatDetails gpkgFormat;
 
   for ( int i = 0; i < drvCount; ++i )
   {
@@ -2703,42 +2703,47 @@ QList< QPair< QString, QString > > QgsVectorFileWriter::supportedFiltersAndForma
         if ( filterString.isEmpty() )
           continue;
 
+        FilterFormatDetails details;
+        details.driverName = drvName;
+        details.filterString = filterString;
+
         if ( options & SortRecommended )
         {
           if ( drvName == QStringLiteral( "ESRI Shapefile" ) )
           {
-            shapeFormat = qMakePair( filterString, drvName );
+            shapeFormat = details;
             continue;
           }
           else if ( drvName == QStringLiteral( "GPKG" ) )
           {
-            gpkgFormat = qMakePair( filterString, drvName );
+            gpkgFormat = details;
             continue;
           }
         }
-        resultMap << qMakePair( filterString, drvName );
+
+        results << details;
       }
     }
   }
 
-  std::sort( resultMap.begin(), resultMap.end(), []( const QPair< QString, QString > &a, const QPair< QString, QString > &b ) -> bool
+  std::sort( results.begin(), results.end(), []( const FilterFormatDetails & a, const FilterFormatDetails & b ) -> bool
   {
-    return a.second < b.second;
+    return a.driverName < b.driverName;
   } );
 
   if ( options & SortRecommended )
   {
-    if ( !shapeFormat.first.isEmpty() )
+    if ( !shapeFormat.filterString.isEmpty() )
     {
-      resultMap.insert( 0, shapeFormat );
+      results.insert( 0, shapeFormat );
     }
-    if ( !gpkgFormat.first.isEmpty() )
+    if ( !gpkgFormat.filterString.isEmpty() )
     {
-      resultMap.insert( 0, gpkgFormat );
+      results.insert( 0, gpkgFormat );
     }
   }
 
-  return resultMap;
+  return results;
 }
 
 QStringList QgsVectorFileWriter::supportedFormatExtensions( const VectorFormatOptions options )
@@ -2748,10 +2753,9 @@ QStringList QgsVectorFileWriter::supportedFormatExtensions( const VectorFormatOp
 
   QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9]*)" ) );
 
-  auto formatIt = formats.constBegin();
-  for ( ; formatIt != formats.constEnd(); ++formatIt )
+  for ( const FilterFormatDetails &format : formats )
   {
-    QString ext = formatIt->first;
+    QString ext = format.filterString;
     QRegularExpressionMatch match = rx.match( ext );
     if ( !match.hasMatch() )
       continue;
@@ -2882,13 +2886,13 @@ QString QgsVectorFileWriter::driverForExtension( const QString &extension )
 QString QgsVectorFileWriter::fileFilterString( const VectorFormatOptions options )
 {
   QString filterString;
-  const auto driverFormatMap = supportedFiltersAndFormats( options );
-  for ( auto it = driverFormatMap.constBegin(); it != driverFormatMap.constEnd(); ++it )
+  const auto driverFormats = supportedFiltersAndFormats( options );
+  for ( const FilterFormatDetails &details : driverFormats )
   {
     if ( !filterString.isEmpty() )
       filterString += QLatin1String( ";;" );
 
-    filterString += it->first;
+    filterString += details.filterString;
   }
   return filterString;
 }

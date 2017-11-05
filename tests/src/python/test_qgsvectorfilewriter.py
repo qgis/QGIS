@@ -726,13 +726,15 @@ class TestQgsVectorFileWriter(unittest.TestCase):
     def testSupportedFiltersAndFormat(self):
         # test with formats in recommended order
         formats = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.SortRecommended)
-        self.assertEqual(formats[0], ('GeoPackage (*.gpkg *.GPKG)', 'GPKG'))
-        self.assertEqual(formats[1], ('ESRI Shapefile (*.shp *.SHP)', 'ESRI Shapefile'))
+        self.assertEqual(formats[0].filterString, 'GeoPackage (*.gpkg *.GPKG)')
+        self.assertEqual(formats[0].driverName, 'GPKG')
+        self.assertEqual(formats[1].filterString, 'ESRI Shapefile (*.shp *.SHP)')
+        self.assertEqual(formats[1].driverName, 'ESRI Shapefile')
         # alphabetical sorting
         formats2 = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.VectorFormatOptions())
-        self.assertTrue(formats2[0][0] < formats2[1][0])
-        self.assertCountEqual(formats, formats2)
-        self.assertNotEqual(formats2[0], ('GeoPackage', 'GPKG'))
+        self.assertTrue(formats2[0].driverName < formats2[1].driverName)
+        self.assertCountEqual([f.driverName for f in formats], [f.driverName for f in formats2])
+        self.assertNotEqual(formats2[0].driverName, 'GeoPackage')
 
     def testOgrDriverList(self):
         # test with drivers in recommended order

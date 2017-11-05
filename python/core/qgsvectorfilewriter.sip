@@ -10,8 +10,6 @@
 
 
 
-
-
 class QgsVectorFileWriter : QgsFeatureSink
 {
 %Docstring
@@ -468,7 +466,20 @@ Create a new vector file writer
 
 
 
-    static QList< QPair< QString, QString > > supportedFiltersAndFormats( VectorFormatOptions options = SortRecommended );
+    struct FilterFormatDetails
+    {
+      QString driverName;
+%Docstring
+Unique driver name
+%End
+
+      QString filterString;
+%Docstring
+Filter string for file picker dialogs
+%End
+    };
+
+    static QList< QgsVectorFileWriter::FilterFormatDetails > supportedFiltersAndFormats( VectorFormatOptions options = SortRecommended );
 %Docstring
  Returns a list or pairs, with format filter string as first element and OGR format key as second element.
 
@@ -476,7 +487,7 @@ Create a new vector file writer
  returned formats.
 
 .. seealso:: supportedOutputVectorLayerExtensions()
- :rtype: list of QPair< str, QString >
+ :rtype: list of QgsVectorFileWriter.FilterFormatDetails
 %End
 
     static QStringList supportedFormatExtensions( VectorFormatOptions options = SortRecommended );

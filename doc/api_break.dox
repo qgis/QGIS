@@ -2673,6 +2673,7 @@ for consistency with other parts of the QGIS API.
 - static `writeAsVectorFormat` calls no longer take a errorMessage argument in
   python and instead return a `(errorCode, errorMessage)` tuple.
 - ogrDriverList now returns a list of QgsVectorFileWriter.DriverDetails structs, instead of a map
+- supportedFiltersAndFormats now returns a list of QgsVectorFileWriter.FilterFormatDetails structs, instead of a map
 
 
 QgsWMSLegendNode        {#qgis_api_break_3_0_QgsWMSLegendNode}
