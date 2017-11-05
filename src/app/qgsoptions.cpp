@@ -172,7 +172,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     mCustomVariablesTable->setEnabled( false );
   }
   QStringList customVarsList = mSettings->value( QStringLiteral( "qgis/customEnvVars" ) ).toStringList();
-  Q_FOREACH ( const QString &varStr, customVarsList )
+  for ( const QString &varStr : customVarsList )
   {
     int pos = varStr.indexOf( QLatin1Char( '|' ) );
     if ( pos == -1 )
@@ -206,7 +206,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QMap<QString, QString> sysVarsMap = QgsApplication::systemEnvVars();
   QStringList currentVarsList = QProcess::systemEnvironment();
 
-  Q_FOREACH ( const QString &varStr, currentVarsList )
+  for ( const QString &varStr : currentVarsList )
   {
     int pos = varStr.indexOf( QLatin1Char( '=' ) );
     if ( pos == -1 )
@@ -255,52 +255,43 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   //local directories to search when loading c++ plugins
   QStringList pathList = mSettings->value( QStringLiteral( "plugins/searchPathsForPlugins" ) ).toStringList();
-  if ( !pathList.isEmpty() )
+  for ( const QString &path : pathList )
   {
-    Q_FOREACH ( const QString &path, pathList )
-    {
-      QListWidgetItem *newItem = new QListWidgetItem( mListPluginPaths );
-      newItem->setText( path );
-      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-      mListPluginPaths->addItem( newItem );
-    }
+    QListWidgetItem *newItem = new QListWidgetItem( mListPluginPaths );
+    newItem->setText( path );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mListPluginPaths->addItem( newItem );
   }
   connect( mBtnAddPluginPath, &QAbstractButton::clicked, this, &QgsOptions::addPluginPath );
   connect( mBtnRemovePluginPath, &QAbstractButton::clicked, this, &QgsOptions::removePluginPath );
 
   //local directories to search when looking for an SVG with a given basename
   pathList = QgsApplication::svgPaths();
-  if ( !pathList.isEmpty() )
+  for ( const QString &path : pathList )
   {
-    Q_FOREACH ( const QString &path, pathList )
-    {
-      QListWidgetItem *newItem = new QListWidgetItem( mListSVGPaths );
-      newItem->setText( path );
-      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-      mListSVGPaths->addItem( newItem );
-    }
+    QListWidgetItem *newItem = new QListWidgetItem( mListSVGPaths );
+    newItem->setText( path );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mListSVGPaths->addItem( newItem );
   }
   connect( mBtnAddSVGPath, &QAbstractButton::clicked, this, &QgsOptions::addSVGPath );
   connect( mBtnRemoveSVGPath, &QAbstractButton::clicked, this, &QgsOptions::removeSVGPath );
 
   //local directories to search when looking for a composer templates
   pathList = QgsApplication::composerTemplatePaths();
-  if ( !pathList.isEmpty() )
+  for ( const QString &path : pathList )
   {
-    Q_FOREACH ( const QString &path, pathList )
-    {
-      QListWidgetItem *newItem = new QListWidgetItem( mListComposerTemplatePaths );
-      newItem->setText( path );
-      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-      mListComposerTemplatePaths->addItem( newItem );
-    }
+    QListWidgetItem *newItem = new QListWidgetItem( mListComposerTemplatePaths );
+    newItem->setText( path );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mListComposerTemplatePaths->addItem( newItem );
   }
   connect( mBtnAddTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::addTemplatePath );
   connect( mBtnRemoveTemplatePath, &QAbstractButton::clicked, this, &QgsOptions::removeTemplatePath );
 
   //paths hidden from browser
   pathList = mSettings->value( QStringLiteral( "/browser/hiddenPaths" ) ).toStringList();
-  Q_FOREACH ( const QString &path, pathList )
+  for ( const QString &path : pathList )
   {
     QListWidgetItem *newItem = new QListWidgetItem( mListHiddenBrowserPaths );
     newItem->setText( path );
@@ -309,8 +300,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mBtnRemoveHiddenPath, &QAbstractButton::clicked, this, &QgsOptions::removeHiddenPath );
 
   //locations of the QGIS help
-  QStringList helpPathList = mSettings->value( QStringLiteral( "help/helpSearchPath" ), "http://docs.qgis.org/$qgis_short_version/$qgis_locale/docs/user_manual/" ).toStringList();
-  Q_FOREACH ( const QString &path, helpPathList )
+  const QStringList helpPathList = mSettings->value( QStringLiteral( "help/helpSearchPath" ), "http://docs.qgis.org/$qgis_short_version/$qgis_locale/docs/user_manual/" ).toStringList();
+  for ( const QString &path : helpPathList )
   {
     QTreeWidgetItem *item = new QTreeWidgetItem();
     item->setText( 0, path );
@@ -360,7 +351,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   //URLs excluded not going through proxies
   pathList = mSettings->value( QStringLiteral( "proxy/proxyExcludedUrls" ) ).toStringList();
-  Q_FOREACH ( const QString &path, pathList )
+  for ( const QString &path : pathList )
   {
     QListWidgetItem *newItem = new QListWidgetItem( mExcludeUrlListWidget );
     newItem->setText( path );
