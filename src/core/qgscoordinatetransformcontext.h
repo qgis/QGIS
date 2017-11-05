@@ -27,6 +27,17 @@
  * \ingroup core
  * Contains information about the context in which a coordinate transform is executed.
  *
+ * The context stores various information regarding which coordinate transforms should
+ * be used when transforming points from a source to destination coordinate reference
+ * system.
+ *
+ * The highest priority transforms are those set using addSourceDestinationDatumTransform()
+ * and which the transform has a matching source to destination CRS pair.
+ *
+ * Failing this, if the source CRS has a matching transform specified by
+ * addSourceDatumTransform() then this datum transform will be used. The same logic
+ * applies for destination CRS transforms set using addDestinationDatumTransform().
+ *
  * \since QGIS 3.0
 */
 
