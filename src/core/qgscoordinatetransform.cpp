@@ -54,11 +54,17 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsCoordinateTransformContext &context )
 {
   d = new QgsCoordinateTransformPrivate( source, destination, context );
+#ifdef QGISDEBUG
+  d->mHasContext = true;
+#endif
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsProject *project )
 {
   d = new QgsCoordinateTransformPrivate( source, destination, project ? project->transformContext() : QgsCoordinateTransformContext() );
+#ifdef QGISDEBUG
+  d->mHasContext = true;
+#endif
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform &o )
@@ -93,6 +99,9 @@ void QgsCoordinateTransform::setContext( const QgsCoordinateTransformContext &co
 {
   d.detach();
   d->mContext = context;
+#ifdef QGISDEBUG
+  d->mHasContext = true;
+#endif
   d->calculateTransforms();
   d->initialize();
 }

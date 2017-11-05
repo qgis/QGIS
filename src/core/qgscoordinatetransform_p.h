@@ -103,6 +103,10 @@ class QgsCoordinateTransformPrivate : public QSharedData
     //! Transform context
     QgsCoordinateTransformContext mContext;
 
+#ifdef QGISDEBUG
+    bool mHasContext = false;
+#endif
+
     QString mSourceProjString;
     QString mDestProjString;
 

@@ -69,6 +69,9 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mSourceCRS( other.mSourceCRS )
   , mDestCRS( other.mDestCRS )
   , mContext( other.mContext )
+#ifdef QGISDEBUG
+  , mHasContext( other.mHasContext )
+#endif
   , mSourceDatumTransform( other.mSourceDatumTransform )
   , mDestinationDatumTransform( other.mDestinationDatumTransform )
 {
@@ -105,6 +108,11 @@ bool QgsCoordinateTransformPrivate::initialize()
   }
 
   mIsValid = true;
+
+#ifdef QGISDEBUG
+  if ( !mHasContext )
+    qWarning( "No QgsCoordinateTransformContext context set for transform" );
+#endif
 
   int sourceDatumTransform = mSourceDatumTransform;
   int destDatumTransform = mDestinationDatumTransform;
