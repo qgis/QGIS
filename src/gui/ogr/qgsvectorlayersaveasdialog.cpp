@@ -87,11 +87,11 @@ void QgsVectorLayerSaveAsDialog::setup()
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/VectorLayerSaveAs/geometry" ) ).toByteArray() );
 
-  QMap<QString, QString> map = QgsVectorFileWriter::ogrDriverList();
+  const QList< QgsVectorFileWriter::DriverDetails > drivers = QgsVectorFileWriter::ogrDriverList();
   mFormatComboBox->blockSignals( true );
-  for ( QMap< QString, QString>::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
+  for ( const QgsVectorFileWriter::DriverDetails &driver : drivers )
   {
-    mFormatComboBox->addItem( it.key(), it.value() );
+    mFormatComboBox->addItem( driver.longName, driver.driverName );
   }
 
   QString format = settings.value( QStringLiteral( "UI/lastVectorFormat" ), "GPKG" ).toString();

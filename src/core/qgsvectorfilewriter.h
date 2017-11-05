@@ -29,9 +29,6 @@
 #include "qgsogrutils.h"
 #include <ogr_api.h>
 
-#include <QPair>
-
-
 class QgsSymbolLayer;
 class QTextCodec;
 class QgsFeatureIterator;
@@ -185,6 +182,18 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       FeatureSymbology, //Keeps the number of features and export symbology per feature
       SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
     };
+
+
+    /**
+     * Options for sorting and filtering vector formats.
+     * \since QGIS 3.0
+     */
+    enum VectorFormatOption
+    {
+      SortRecommended = 1 << 1, //!< Use recommended sort order, with extremely commonly used formats listed first
+      SkipNonSpatialFormats = 1 << 2, //!< Filter out any formats which do not have spatial support (e.g. those which cannot save geometries)
+    };
+    Q_DECLARE_FLAGS( VectorFormatOptions, VectorFormatOption )
 
     /**
      * \ingroup core
@@ -496,24 +505,64 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     QgsVectorFileWriter &operator=( const QgsVectorFileWriter &rh ) = delete;
 
     /**
-     * Returns a map with format filter string as key and OGR format key as value.
+     * Details of available filters and formats.
+     * \since QGIS 3.0
+     */
+    struct FilterFormatDetails
+    {
+      //! Unique driver name
+      QString driverName;
+
+      //! Filter string for file picker dialogs
+      QString filterString;
+    };
+
+    /**
+     * Returns a list or pairs, with format filter string as first element and OGR format key as second element.
+     *
+     * The \a options argument can be used to control the sorting and filtering of
+     * returned formats.
+     *
      * \see supportedOutputVectorLayerExtensions()
      */
-    static QMap< QString, QString> supportedFiltersAndFormats();
+    static QList< QgsVectorFileWriter::FilterFormatDetails > supportedFiltersAndFormats( VectorFormatOptions options = SortRecommended );
 
     /**
      * Returns a list of file extensions for supported formats.
+     *
+     * The \a options argument can be used to control the sorting and filtering of
+     * returned formats.
+     *
      * \since QGIS 3.0
      * \see supportedFiltersAndFormats()
      */
-    static QStringList supportedFormatExtensions();
+    static QStringList supportedFormatExtensions( VectorFormatOptions options = SortRecommended );
 
     /**
-     * Returns driver list that can be used for dialogs. It contains all OGR drivers
-     * + some additional internal QGIS driver names to distinguish between more
-     * supported formats of the same OGR driver
+     * Details of available driver formats.
+     * \since QGIS 3.0
      */
-    static QMap< QString, QString> ogrDriverList();
+    struct DriverDetails
+    {
+      //! Descriptive, user friendly name for the driver
+      QString longName;
+
+      //! Unique driver name
+      QString driverName;
+    };
+
+    /**
+     * Returns the driver list that can be used for dialogs. It contains all OGR drivers
+     * plus some additional internal QGIS driver names to distinguish between more
+     * supported formats of the same OGR driver.
+     *
+     * The returned list consists of structs containing the driver long name (e.g. user-friendly
+     * display name for the format) and internal driver short name.
+     *
+     * The \a options argument can be used to control the sorting and filtering of
+     * returned drivers.
+     */
+    static QList< QgsVectorFileWriter::DriverDetails > ogrDriverList( VectorFormatOptions options = SortRecommended );
 
     /**
      * Returns the OGR driver name for a specified file \a extension. E.g. the
@@ -523,8 +572,13 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      */
     static QString driverForExtension( const QString &extension );
 
-    //! Returns filter string that can be used for dialogs
-    static QString fileFilterString();
+    /**
+     * Returns filter string that can be used for dialogs.
+     *
+     * The \a options argument can be used to control the sorting and filtering of
+     * returned drivers.
+     */
+    static QString fileFilterString( VectorFormatOptions options = SortRecommended );
 
     //! Creates a filter for an OGR driver key
     static QString filterForDriver( const QString &driverName );
@@ -701,6 +755,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorFileWriter::EditionCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorFileWriter::VectorFormatOptions )
 
 // clazy:excludeall=qstring-allocations
 
