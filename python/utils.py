@@ -598,8 +598,6 @@ using the "mod_spatialite" extension (python3)"""
     libs = [
         # SpatiaLite >= 4.2 and Sqlite >= 3.7.17, should work on all platforms
         ("mod_spatialite", "sqlite3_modspatialite_init"),
-        # SpatiaLite >= 4.2 (windows)
-        ("spatialite4.dll", "sqlite3_modspatialite_init"),
         # SpatiaLite >= 4.2 and Sqlite < 3.7.17 (Travis)
         ("mod_spatialite.so", "sqlite3_modspatialite_init"),
         # SpatiaLite < 4.2 (linux)
