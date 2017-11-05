@@ -220,6 +220,7 @@ class WidgetWrapper(QObject):
         else:
             path = ''
 
+        # TODO: should use selectedFilter argument for default file format
         filename, selected_filter = QFileDialog.getOpenFileName(self.widget, self.tr('Select file'),
                                                                 path, getFileFilter(self.param))
         if filename:

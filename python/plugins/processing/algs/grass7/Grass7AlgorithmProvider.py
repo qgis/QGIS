@@ -38,7 +38,6 @@ from .Grass7Utils import Grass7Utils
 from .Grass7Algorithm import Grass7Algorithm
 from processing.tools.system import isWindows, isMac
 #from .nviz7 import nviz7
-from processing.algs.gdal.GdalUtils import GdalUtils
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -146,11 +145,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return QgsVectorFileWriter.supportedFormatExtensions()
 
     def supportedOutputRasterLayerExtensions(self):
-        # We use the same extensions than GDAL because:
-        # - GRASS is also using GDAL for raster imports.
-        # - Chances that GRASS is compiled with another version of
-        # GDAL than QGIS are very limited!
-        return GdalUtils.getSupportedRasterExtensions()
+        return Grass7Utils.getSupportedOutputRasterExtensions()
 
     def canBeActivated(self):
         return not bool(Grass7Utils.checkGrass7IsInstalled())

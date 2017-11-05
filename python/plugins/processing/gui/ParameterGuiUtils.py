@@ -59,9 +59,7 @@ def getFileFilter(param):
     elif param.type() == 'raster':
         return QgsProviderRegistry.instance().fileRasterFilters()
     elif param.type() == 'rasterDestination':
-        exts = dataobjects.getSupportedOutputRasterLayerExtensions()
-        for i in range(len(exts)):
-            exts[i] = tr('{0} files (*.{1})', 'QgsProcessingParameterRasterDestination').format(exts[i].upper(), exts[i].lower())
+        exts = dataobjects.getSupportedOutputRasterFilters()
         return ';;'.join(exts) + ';;' + tr('All files (*.*)')
     elif param.type() == 'table':
         exts = ['csv', 'dbf']

@@ -86,6 +86,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
     GRASS_REGION_EXTENT_PARAMETER = 'GRASS_REGION_PARAMETER'
     GRASS_REGION_CELLSIZE_PARAMETER = 'GRASS_REGION_CELLSIZE_PARAMETER'
     GRASS_REGION_ALIGN_TO_RESOLUTION = 'GRASS_REGION_ALIGN_TO_RESOLUTION'
+    GRASS_RASTER_FORMAT_OPT = 'GRASS_RASTER_FORMAT_OPT'
+    GRASS_RASTER_FORMAT_META = 'GRASS_RASTER_FORMAT_META'
 
     OUTPUT_TYPES = ['auto', 'point', 'line', 'area']
     QGIS_OUTPUT_TYPES = {QgsProcessing.TypeVectorAnyGeometry: 'auto',
@@ -227,11 +229,30 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.params.append(param)
 
         if hasRasterOutput:
+            # Add a cellsize parameter
             param = QgsProcessingParameterNumber(
                 self.GRASS_REGION_CELLSIZE_PARAMETER,
                 self.tr('GRASS GIS 7 region cellsize (leave 0 for default)'),
                 type=QgsProcessingParameterNumber.Double,
                 minValue=0.0, maxValue=sys.float_info.max + 1, defaultValue=0.0
+            )
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            self.params.append(param)
+
+            # Add a createopt parameter for format export
+            param = QgsProcessingParameterString(
+                self.GRASS_RASTER_FORMAT_OPT,
+                self.tr('Output Rasters format options (createopt)'),
+                multiLine=True, optional=True
+            )
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            self.params.append(param)
+
+            # Add a metadata parameter for format export
+            param = QgsProcessingParameterString(
+                self.GRASS_RASTER_FORMAT_META,
+                self.tr('Output Rasters format metadata options (metaopt)'),
+                multiLine=True, optional=True
             )
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.params.append(param)
@@ -459,7 +480,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                              self.GRASS_MIN_AREA_PARAMETER,
                              self.GRASS_SNAP_TOLERANCE_PARAMETER,
                              self.GRASS_OUTPUT_TYPE_PARAMETER,
-                             self.GRASS_REGION_ALIGN_TO_RESOLUTION]:
+                             self.GRASS_REGION_ALIGN_TO_RESOLUTION,
+                             self.GRASS_RASTER_FORMAT_OPT,
+                             self.GRASS_RASTER_FORMAT_META]:
                 continue
 
             # Raster and vector layers
@@ -622,24 +645,39 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         fileName = os.path.normpath(
             self.parameterAsOutputLayer(parameters, name, context))
         grassName = '{}{}'.format(name, self.uniqueSuffix)
-        self.exportRasterLayer(grassName, fileName, colorTable)
+        outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
+        createOpt = self.parameterAsString(parameters, self.GRASS_RASTER_FORMAT_OPT, context)
+        metaOpt = self.parameterAsString(parameters, self.GRASS_RASTER_FORMAT_META, context)
+        self.exportRasterLayer(grassName, fileName, colorTable, outFormat, createOpt, metaOpt)
 
-    def exportRasterLayer(self, grassName, fileName, colorTable=True):
+    def exportRasterLayer(self, grassName, fileName,
+                          colorTable=True, outFormat='GTiff',
+                          createOpt=None,
+                          metaOpt=None):
         """
         Creates a dedicated command to export a raster from
         temporary GRASS DB into a file via gdal.
-        :param grassName: name of the parameter
-        :param fileName: file path of raster layer
+        :param grassName: name of the raster to export.
+        :param fileName: file path of raster layer.
         :param colorTable: preserve color Table.
+        :param outFormat: file format for export.
+        :param createOpt: creation options for format.
+        :param metatOpt: metadata options for export.
         """
+        if not createOpt:
+            if outFormat in Grass7Utils.GRASS_RASTER_FORMATS_CREATEOPTS:
+                createOpt = Grass7Utils.GRASS_RASTER_FORMATS_CREATEOPTS[outFormat]
+
         for cmd in [self.commands, self.outputCommands]:
             # Adjust region to layer before exporting
             cmd.append('g.region raster={}'.format(grassName))
             cmd.append(
-                'r.out.gdal -m{0} {3} input="{1}" output="{2}"'.format(
+                'r.out.gdal -c -m{0} input="{1}" output="{2}" format="{3}" {4}{5} --overwrite'.format(
                     ' -t' if colorTable else '',
                     grassName, fileName,
-                    '--overwrite -c createopt="TFW=YES,COMPRESS=LZW"'
+                    outFormat,
+                    ' createopt="{}"'.format(createOpt) if createOpt else '',
+                    ' metaopt="{}"'.format(metaOpt) if metaOpt else ''
                 )
             )
 

@@ -17,7 +17,6 @@ QGIS3 Processing Port
 * TODO Improve unit tests.
 * TODO Use prepareAlgorithm for algorithm preparation.
 * TODO Support ParameterTable.
-* TODO Support multiple output raster formats.
 * TODO Support multiple output vector formats.
   * TODO Try to use v.external.out on simple algorithms.
   * TODO Add an optional/advanced 'format option' textbox if vector output is detected.
@@ -231,6 +230,10 @@ QGIS3 Processing Port
   * v_net_steiner.py
   * v_net_visibility.py
   
+* DONE Support multiple output file raster formats.
+  * DONE Add an optional/advanced 'format option' textbox if raster output is detected.
+  * DONE Detext file format from extension.
+  * DONE Improve GdalUtils to report raster formats that can be created with GDAL.
 * DONE Add GRASS 7.2 new algorithms.
   * DONE Remove r.aspect => r.slope.aspect.
   * DONE Remove r.median.

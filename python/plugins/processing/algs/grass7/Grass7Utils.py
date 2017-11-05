@@ -40,6 +40,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import userFolder, isWindows, isMac, mkdir
 from processing.tests.TestData import points
+from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class Grass7Utils(object):
@@ -54,6 +55,13 @@ class Grass7Utils(object):
     GRASS_LOG_CONSOLE = 'GRASS7_LOG_CONSOLE'
     GRASS_HELP_PATH = 'GRASS_HELP_PATH'
     GRASS_USE_VEXTERNAL = 'GRASS_USE_VEXTERNAL'
+
+    # TODO Review all default options formats
+    GRASS_RASTER_FORMATS_CREATEOPTS = {
+        'GTiff': 'TFW=YES,COMPRESS=LZW',
+        'PNG': 'ZLEVEL=9',
+        'WEBP': 'QUALITY=85'
+    }
 
     sessionRunning = False
     sessionLayers = {}
@@ -515,3 +523,27 @@ class Grass7Utils(object):
         else:
             # GRASS not available!
             return 'https://grass.osgeo.org/grass72/manuals/'
+
+    @staticmethod
+    def getSupportedOutputRasterExtensions():
+        # We use the same extensions than GDAL because:
+        # - GRASS is also using GDAL for raster imports.
+        # - Chances that GRASS is compiled with another version of
+        # GDAL than QGIS are very limited!
+        return GdalUtils.getSupportedOutputRasterExtensions()
+
+    @staticmethod
+    def getRasterFormatFromFilename(filename):
+        """
+        Returns Raster format name from a raster filename.
+        :param filename: The name with extension of the raster.
+        :return: The Gdal short format name for extension.
+        """
+        ext = os.path.splitext(filename)[1].lower()
+        ext = ext.lstrip('.')
+        supported = GdalUtils.getSupportedRasters()
+        for name in list(supported.keys()):
+            exts = supported[name]
+            if ext in exts:
+                return name
+        return 'GTiff'
