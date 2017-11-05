@@ -45,12 +45,40 @@ class QgsCoordinateTransform
 Default constructor, creates an invalid QgsCoordinateTransform.
 %End
 
-    QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
-                            const QgsCoordinateReferenceSystem &destination );
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination );
 %Docstring
  Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
  \param source source CRS, typically of the layer's coordinate system
  \param destination CRS, typically of the map canvas coordinate system
+%End
+
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     const QgsCoordinateTransformContext &context );
+%Docstring
+ Constructs a QgsCoordinateTransform to transform from the ``source``
+ to ``destination`` coordinate reference system.
+
+ The ``context`` argument specifies the context under which the transform
+ will be applied, and is used for calculating necessary datum transforms
+ to utilise.
+
+.. versionadded:: 3.0
+%End
+
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     const QgsProject *project );
+%Docstring
+ Constructs a QgsCoordinateTransform to transform from the ``source``
+ to ``destination`` coordinate reference system, when used with the
+ given ``project``.
+
+ No reference to ``project`` is stored or utilised outside of the constructor,
+ and it is used to retrieve the project's transform context only.
+
+.. versionadded:: 3.0
 %End
 
     QgsCoordinateTransform( const QgsCoordinateTransform &o );
@@ -86,6 +114,13 @@ Default constructor, creates an invalid QgsCoordinateTransform.
  \param crs CRS to transform coordinates to
 .. seealso:: :py:func:`destinationCrs()`
 .. seealso:: :py:func:`setSourceCrs()`
+%End
+
+    void setContext( const QgsCoordinateTransformContext &context );
+%Docstring
+ Sets the ``context`` in which the coordinate transform should be
+ calculated.
+.. versionadded:: 3.0
 %End
 
     QgsCoordinateReferenceSystem sourceCrs() const;
@@ -213,14 +248,53 @@ Default constructor, creates an invalid QgsCoordinateTransform.
 
     int sourceDatumTransform() const;
 %Docstring
+ Returns the index of the datum transform to use when projecting from the source
+ CRS.
+
+ This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
+ but can be manually overwritten by a call to setSourceDatumTransform().
+
+.. seealso:: setSourceDatumTransform()
+.. seealso:: destinationDatumTransform()
  :rtype: int
 %End
-    void setSourceDatumTransform( int dt );
+
+    void setSourceDatumTransform( int datum );
+%Docstring
+ Sets the index of the ``datum`` transform to use when projecting from the source
+ CRS.
+
+ This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
+ Calling this method will overwrite any automatically calculated datum transform.
+
+.. seealso:: sourceDatumTransform()
+.. seealso:: setDestinationDatumTransform()
+%End
+
     int destinationDatumTransform() const;
 %Docstring
+ Returns the index of the datum transform to use when projecting to the destination
+ CRS.
+
+ This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
+ but can be manually overwritten by a call to setDestinationDatumTransform().
+
+.. seealso:: setDestinationDatumTransform()
+.. seealso:: sourceDatumTransform()
  :rtype: int
 %End
-    void setDestinationDatumTransform( int dt );
+
+    void setDestinationDatumTransform( int datum );
+%Docstring
+ Sets the index of the ``datum`` transform to use when projecting to the destination
+ CRS.
+
+ This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
+ Calling this method will overwrite any automatically calculated datum transform.
+
+.. seealso:: destinationDatumTransform()
+.. seealso:: setSourceDatumTransform()
+%End
 
     void initialize();
 %Docstring

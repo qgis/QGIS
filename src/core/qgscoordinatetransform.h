@@ -27,6 +27,8 @@ class QgsCoordinateTransformPrivate;
 class QgsPointXY;
 class QgsRectangle;
 class QPolygonF;
+class QgsCoordinateTransformContext;
+class QgsProject;
 
 /**
  * \ingroup core
@@ -63,8 +65,36 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param source source CRS, typically of the layer's coordinate system
      * \param destination CRS, typically of the map canvas coordinate system
      */
-    QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
-                            const QgsCoordinateReferenceSystem &destination );
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination );
+
+    /**
+     * Constructs a QgsCoordinateTransform to transform from the \a source
+     * to \a destination coordinate reference system.
+     *
+     * The \a context argument specifies the context under which the transform
+     * will be applied, and is used for calculating necessary datum transforms
+     * to utilise.
+     *
+     * \since QGIS 3.0
+     */
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     const QgsCoordinateTransformContext &context );
+
+    /**
+     * Constructs a QgsCoordinateTransform to transform from the \a source
+     * to \a destination coordinate reference system, when used with the
+     * given \a project.
+     *
+     * No reference to \a project is stored or utilised outside of the constructor,
+     * and it is used to retrieve the project's transform context only.
+     *
+     * \since QGIS 3.0
+     */
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     const QgsProject *project );
 
     /**
      * Copy constructor
@@ -100,6 +130,13 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see setSourceCrs()
      */
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Sets the \a context in which the coordinate transform should be
+     * calculated.
+     * \since QGIS 3.0
+     */
+    void setContext( const QgsCoordinateTransformContext &context );
 
     /**
      * Returns the source coordinate reference system, which the transform will
@@ -271,10 +308,53 @@ class CORE_EXPORT QgsCoordinateTransform
         \returns epsgNr epsg code of the transformation (or 0 if not in epsg db)*/
     static bool datumTransformCrsInfo( int datumTransform, int &epsgNr, QString &srcProjection, QString &dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated );
 
+    /**
+     * Returns the index of the datum transform to use when projecting from the source
+     * CRS.
+     *
+     * This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
+     * but can be manually overwritten by a call to setSourceDatumTransform().
+     *
+     * \see setSourceDatumTransform()
+     * \see destinationDatumTransform()
+     */
     int sourceDatumTransform() const;
-    void setSourceDatumTransform( int dt );
+
+    /**
+     * Sets the index of the \a datum transform to use when projecting from the source
+     * CRS.
+     *
+     * This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
+     * Calling this method will overwrite any automatically calculated datum transform.
+     *
+     * \see sourceDatumTransform()
+     * \see setDestinationDatumTransform()
+     */
+    void setSourceDatumTransform( int datum );
+
+    /**
+     * Returns the index of the datum transform to use when projecting to the destination
+     * CRS.
+     *
+     * This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
+     * but can be manually overwritten by a call to setDestinationDatumTransform().
+     *
+     * \see setDestinationDatumTransform()
+     * \see sourceDatumTransform()
+     */
     int destinationDatumTransform() const;
-    void setDestinationDatumTransform( int dt );
+
+    /**
+     * Sets the index of the \a datum transform to use when projecting to the destination
+     * CRS.
+     *
+     * This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
+     * Calling this method will overwrite any automatically calculated datum transform.
+     *
+     * \see destinationDatumTransform()
+     * \see setSourceDatumTransform()
+     */
+    void setDestinationDatumTransform( int datum );
 
     //!initialize is used to actually create the Transformer instance
     void initialize();

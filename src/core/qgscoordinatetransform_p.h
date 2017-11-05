@@ -38,6 +38,7 @@
 #endif
 
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 
 typedef void *projPJ;
 typedef void *projCtx;
@@ -68,13 +69,16 @@ class QgsCoordinateTransformPrivate : public QSharedData
     explicit QgsCoordinateTransformPrivate();
 
     QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source,
-                                   const QgsCoordinateReferenceSystem &destination );
+                                   const QgsCoordinateReferenceSystem &destination,
+                                   const QgsCoordinateTransformContext &context );
 
     QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate &other );
 
     ~QgsCoordinateTransformPrivate();
 
     bool initialize();
+
+    void calculateTransforms();
 
     QPair< projPJ, projPJ > threadLocalProjData();
 
@@ -95,6 +99,9 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
     //! QgsCoordinateReferenceSystem of the destination (map canvas) coordinate system
     QgsCoordinateReferenceSystem mDestCRS;
+
+    //! Transform context
+    QgsCoordinateTransformContext mContext;
 
     QString mSourceProjString;
     QString mDestProjString;
@@ -123,7 +130,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
     QString stripDatumTransform( const QString &proj4 ) const;
 
     //! In certain situations, null grid shifts have to be added to src / dst proj string
-    void addNullGridShifts( QString &srcProjString, QString &destProjString ) const;
+    void addNullGridShifts( QString &srcProjString, QString &destProjString, int sourceDatumTransform, int destinationDatumTransform ) const;
 
     void setFinder();
 

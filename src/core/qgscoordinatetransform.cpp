@@ -22,6 +22,7 @@
 #include "qgspointxy.h"
 #include "qgsrectangle.h"
 #include "qgsexception.h"
+#include "qgsproject.h"
 
 //qt includes
 #include <QDomNode>
@@ -47,7 +48,17 @@ QgsCoordinateTransform::QgsCoordinateTransform()
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
 {
-  d = new QgsCoordinateTransformPrivate( source, destination );
+  d = new QgsCoordinateTransformPrivate( source, destination, QgsCoordinateTransformContext() );
+}
+
+QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsCoordinateTransformContext &context )
+{
+  d = new QgsCoordinateTransformPrivate( source, destination, context );
+}
+
+QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsProject *project )
+{
+  d = new QgsCoordinateTransformPrivate( source, destination, project ? project->transformContext() : QgsCoordinateTransformContext() );
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform &o )
@@ -67,12 +78,22 @@ void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem &c
 {
   d.detach();
   d->mSourceCRS = crs;
+  d->calculateTransforms();
   d->initialize();
 }
 void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
   d.detach();
   d->mDestCRS = crs;
+  d->calculateTransforms();
+  d->initialize();
+}
+
+void QgsCoordinateTransform::setContext( const QgsCoordinateTransformContext &context )
+{
+  d.detach();
+  d->mContext = context;
+  d->calculateTransforms();
   d->initialize();
 }
 
