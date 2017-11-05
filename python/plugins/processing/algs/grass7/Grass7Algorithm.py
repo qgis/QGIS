@@ -194,6 +194,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             line = lines.readline().strip('\n').strip()
             self._group = QCoreApplication.translate("GrassAlgorithm", line)
             hasRasterOutput = False
+            hasRasterInput = False
             hasVectorInput = False
             vectorOutputs = False
             # Then you have parameters/output definition
@@ -208,9 +209,13 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                         self.params.append(parameter)
                         if isinstance(parameter, QgsProcessingParameterVectorLayer):
                             hasVectorInput = True
-                        elif isinstance(parameter, QgsProcessingParameterMultipleLayers) \
-                                and parameter.layerType() < 3:
-                            hasVectorInput = True
+                        elif isinstance(parameter, QgsProcessingParameterRasterLayer):
+                            hasRasterInput = True
+                        elif isinstance(parameter, QgsProcessingParameterMultipleLayers):
+                            if parameter.layerType() < 3 or parameter.layerType() == 5:
+                                hasVectorInput = True
+                            elif parameter.layerType() == 3:
+                                hasRasterInput = True
                         elif isinstance(parameter, QgsProcessingParameterVectorDestination):
                             vectorOutputs = True
                         elif isinstance(parameter, QgsProcessingParameterRasterDestination):
@@ -228,7 +233,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.params.append(param)
 
-        if hasRasterOutput:
+        if hasRasterOutput or hasRasterInput:
             # Add a cellsize parameter
             param = QgsProcessingParameterNumber(
                 self.GRASS_REGION_CELLSIZE_PARAMETER,
@@ -239,6 +244,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.params.append(param)
 
+        if hasRasterOutput:
             # Add a createopt parameter for format export
             param = QgsProcessingParameterString(
                 self.GRASS_RASTER_FORMAT_OPT,
