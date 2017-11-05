@@ -127,6 +127,18 @@ Returns the QgsProject singleton instance
 .. versionadded:: 3.0
 %End
 
+
+
+    QgsCoordinateTransformContext &transformContext();
+%Docstring
+ Returns a modifiable reference to the project's coordinate transform context, which stores various
+ information regarding which datum transforms should be used when transforming points
+ from a source to destination coordinate reference system.
+
+.. versionadded:: 3.0
+ :rtype: QgsCoordinateTransformContext
+%End
+
     void clear();
 %Docstring
  Clear the project - removes all settings and resets it back to an empty, default state.

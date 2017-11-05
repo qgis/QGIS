@@ -16,7 +16,8 @@ import qgis  # NOQA
 
 from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsCoordinateTransformContext,
-                       QgsReadWriteContext)
+                       QgsReadWriteContext,
+                       QgsProject)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -213,6 +214,14 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         self.assertEqual(context2.destinationDatumTransforms(), {'EPSG:3113': 11, 'EPSG:28355': 12})
         self.assertEqual(context2.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (1, 2),
                                                                        ('EPSG:28356', 'EPSG:4283'): (3, 4)})
+
+    def testProject(self):
+        """
+        Test project's transform context
+        """
+        project = QgsProject()
+        project.transformContext().addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'), 1)
+        self.assertEqual(project.transformContext().sourceDatumTransforms(), {'EPSG:3111': 1})
 
 
 if __name__ == '__main__':

@@ -37,6 +37,7 @@
 #include "qgsprojectversion.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgsprojectproperty.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerstore.h"
@@ -177,6 +178,25 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.0
      */
     void setEllipsoid( const QString &ellipsoid );
+
+
+    /**
+     * Returns a copy of the project's coordinate transform context, which stores various
+     * information regarding which datum transforms should be used when transforming points
+     * from a source to destination coordinate reference system.
+     *
+     * \since QGIS 3.0
+     */
+    QgsCoordinateTransformContext transformContext() const SIP_SKIP;
+
+    /**
+     * Returns a modifiable reference to the project's coordinate transform context, which stores various
+     * information regarding which datum transforms should be used when transforming points
+     * from a source to destination coordinate reference system.
+     *
+     * \since QGIS 3.0
+     */
+    QgsCoordinateTransformContext &transformContext();
 
     /**
      * Clear the project - removes all settings and resets it back to an empty, default state.
@@ -1164,6 +1184,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsCoordinateReferenceSystem mCrs;
     bool mDirty = false;                 // project has been modified since it has been read or saved
     bool mTrustLayerMetadata = false;
+
+    QgsCoordinateTransformContext mTransformContext;
 };
 
 /**
