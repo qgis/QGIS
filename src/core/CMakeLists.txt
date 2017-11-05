@@ -150,6 +150,7 @@ SET(QGIS_CORE_SRCS
   qgscoordinatereferencesystem.cpp
   qgscoordinatetransform.cpp
   qgscoordinatetransform_p.cpp
+  qgscoordinatetransformcontext.cpp
   qgscoordinateutils.cpp
   qgscredentials.cpp
   qgscrscache.cpp
@@ -854,6 +855,7 @@ SET(QGIS_CORE_HDRS
   qgsconditionalstyle.h
   qgscoordinateformatter.h
   qgscoordinatetransform.h
+  qgscoordinatetransformcontext.h
   qgscoordinateutils.h
   qgscrscache.h
   qgsdartmeasurement.h

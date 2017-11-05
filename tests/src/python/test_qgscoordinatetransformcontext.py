@@ -1,0 +1,102 @@
+# -*- coding: utf-8 -*-
+"""QGIS Unit tests for QgsCoordinateTransformContext
+
+.. note:: This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+"""
+__author__ = 'Nyall Dawson'
+__date__ = '11/5/2017'
+__copyright__ = 'Copyright 2017, The QGIS Project'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
+import qgis  # NOQA
+
+from qgis.core import (QgsCoordinateReferenceSystem,
+                       QgsCoordinateTransformContext)
+from qgis.testing import start_app, unittest
+
+app = start_app()
+
+
+class TestQgsCoordinateTransformContext(unittest.TestCase):
+
+    def testSourceDatumTransforms(self):
+        context = QgsCoordinateTransformContext()
+        self.assertEqual(context.sourceDatumTransforms(), {})
+        self.assertTrue(context.addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'), 1))
+        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1})
+        self.assertTrue(context.addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'), 2))
+        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 2})
+        self.assertTrue(context.addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'), 3))
+        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3})
+        self.assertTrue(context.addSourceDatumTransform(QgsCoordinateReferenceSystem(28356), 3))
+        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3})
+
+        # invalid crs should fail
+        self.assertFalse(context.addSourceDatumTransform(QgsCoordinateReferenceSystem(), 4))
+        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3})
+
+        context.clear()
+        self.assertEqual(context.sourceDatumTransforms(), {})
+
+    def testDestDatumTransforms(self):
+        context = QgsCoordinateTransformContext()
+        self.assertEqual(context.destinationDatumTransforms(), {})
+        self.assertTrue(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'), 1))
+        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1})
+        self.assertTrue(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'), 2))
+        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 2})
+        self.assertTrue(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'), 3))
+        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3})
+        self.assertTrue(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem(28356), 3))
+        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3})
+
+        # invalid crs should fail
+        self.assertFalse(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem(), 4))
+        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3})
+
+        context.clear()
+        self.assertEqual(context.destinationDatumTransforms(), {})
+
+    def testSourceDestinationDatumTransforms(self):
+        context = QgsCoordinateTransformContext()
+        self.assertEqual(context.sourceDestinationDatumTransforms(), {})
+        self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'),
+                                                                   QgsCoordinateReferenceSystem('EPSG:4283'), 1, 2))
+        self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (1, 2)})
+        self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                                                   QgsCoordinateReferenceSystem(4283), 3, 4))
+        self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (1, 2),
+                                                                      ('EPSG:28356', 'EPSG:4283'): (3, 4)})
+        self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                                                   QgsCoordinateReferenceSystem(28357), 7, 8))
+        self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (1, 2),
+                                                                      ('EPSG:28356', 'EPSG:4283'): (3, 4),
+                                                                      ('EPSG:28356', 'EPSG:28357'): (7, 8)})
+        self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                                                   QgsCoordinateReferenceSystem('EPSG:28357'), 9, 11))
+        self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (1, 2),
+                                                                      ('EPSG:28356', 'EPSG:4283'): (3, 4),
+                                                                      ('EPSG:28356', 'EPSG:28357'): (9, 11)})
+
+        # invalid additions
+        self.assertFalse(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(),
+                                                                    QgsCoordinateReferenceSystem('EPSG:28357'), 9, 11))
+        self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (1, 2),
+                                                                      ('EPSG:28356', 'EPSG:4283'): (3, 4),
+                                                                      ('EPSG:28356', 'EPSG:28357'): (9, 11)})
+        self.assertFalse(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'),
+                                                                    QgsCoordinateReferenceSystem(), 9, 11))
+        self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (1, 2),
+                                                                      ('EPSG:28356', 'EPSG:4283'): (3, 4),
+                                                                      ('EPSG:28356', 'EPSG:28357'): (9, 11)})
+
+        context.clear()
+        self.assertEqual(context.sourceDestinationDatumTransforms(), {})
+
+
+if __name__ == '__main__':
+    unittest.main()
