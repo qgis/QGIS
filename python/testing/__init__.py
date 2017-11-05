@@ -32,7 +32,7 @@ import functools
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsApplication, QgsFeatureRequest
-from nose2.compat import unittest
+import unittest
 
 # Get a backup, we will patch this one later
 _TestCase = unittest.TestCase
