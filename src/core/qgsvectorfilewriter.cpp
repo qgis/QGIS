@@ -2703,7 +2703,7 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
         {
           // skip non-spatial formats
           // TODO - use GDAL metadata to determine this, when support exists in GDAL
-          if ( drvName == QStringLiteral( "ODS" ) || drvName == QStringLiteral( "XLSX" ) || drvName == QStringLiteral( "XLS" ) )
+          if ( drvName == QLatin1String( "ODS" ) || drvName == QLatin1String( "XLSX" ) || drvName == QLatin1String( "XLS" ) )
             continue;
         }
 
@@ -2717,12 +2717,12 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
 
         if ( options & SortRecommended )
         {
-          if ( drvName == QStringLiteral( "ESRI Shapefile" ) )
+          if ( drvName == QLatin1String( "ESRI Shapefile" ) )
           {
             shapeFormat = details;
             continue;
           }
-          else if ( drvName == QStringLiteral( "GPKG" ) )
+          else if ( drvName == QLatin1String( "GPKG" ) )
           {
             gpkgFormat = details;
             continue;
@@ -2793,7 +2793,7 @@ QList< QgsVectorFileWriter::DriverDetails > QgsVectorFileWriter::ogrDriverList( 
       {
         // skip non-spatial formats
         // TODO - use GDAL metadata to determine this, when support exists in GDAL
-        if ( drvName == QStringLiteral( "ODS" ) || drvName == QStringLiteral( "XLSX" ) || drvName == QStringLiteral( "XLS" ) )
+        if ( drvName == QLatin1String( "ODS" ) || drvName == QLatin1String( "XLSX" ) || drvName == QLatin1String( "XLS" ) )
           continue;
       }
 
