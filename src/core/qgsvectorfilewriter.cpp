@@ -2699,6 +2699,14 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
       QString drvName = OGR_Dr_GetName( drv );
       if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )
       {
+        if ( options & SkipNonSpatialFormats )
+        {
+          // skip non-spatial formats
+          // TODO - use GDAL metadata to determine this, when support exists in GDAL
+          if ( drvName == QStringLiteral( "ODS" ) || drvName == QStringLiteral( "XLSX" ) || drvName == QStringLiteral( "XLS" ) )
+            continue;
+        }
+
         QString filterString = filterForDriver( drvName );
         if ( filterString.isEmpty() )
           continue;
@@ -2780,6 +2788,15 @@ QList< QgsVectorFileWriter::DriverDetails > QgsVectorFileWriter::ogrDriverList( 
     if ( drv )
     {
       QString drvName = OGR_Dr_GetName( drv );
+
+      if ( options & SkipNonSpatialFormats )
+      {
+        // skip non-spatial formats
+        // TODO - use GDAL metadata to determine this, when support exists in GDAL
+        if ( drvName == QStringLiteral( "ODS" ) || drvName == QStringLiteral( "XLSX" ) || drvName == QStringLiteral( "XLS" ) )
+          continue;
+      }
+
       if ( drvName == QLatin1String( "ESRI Shapefile" ) )
       {
         writableDrivers << QStringLiteral( "DBF file" );

@@ -147,6 +147,7 @@ Some formats require a compulsory encoding, typically UTF-8. If no compulsory en
     enum VectorFormatOption
     {
       SortRecommended,
+      SkipNonSpatialFormats,
     };
     typedef QFlags<QgsVectorFileWriter::VectorFormatOption> VectorFormatOptions;
 

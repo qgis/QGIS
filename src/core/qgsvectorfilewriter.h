@@ -191,6 +191,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     enum VectorFormatOption
     {
       SortRecommended = 1 << 1, //!< Use recommended sort order, with extremely commonly used formats listed first
+      SkipNonSpatialFormats = 1 << 2, //!< Filter out any formats which do not have spatial support (e.g. those which cannot save geometries)
     };
     Q_DECLARE_FLAGS( VectorFormatOptions, VectorFormatOption )
 

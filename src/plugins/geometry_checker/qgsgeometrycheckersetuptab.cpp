@@ -54,7 +54,7 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QD
   mAbortButton = new QPushButton( tr( "Abort" ) );
   mRunButton->setEnabled( false );
 
-  const auto filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
+  const auto filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats( QgsVectorFileWriter::SortRecommended | QgsVectorFileWriter::SkipNonSpatialFormats );
   for ( const QgsVectorFileWriter::FilterFormatDetails &filter : filterFormatMap )
   {
     QString driverName = filter.driverName;
@@ -216,7 +216,7 @@ void QgsGeometryCheckerSetupTab::validateInput()
 void QgsGeometryCheckerSetupTab::selectOutputDirectory()
 {
   QString filterString = QgsVectorFileWriter::filterForDriver( QStringLiteral( "GPKG" ) );
-  const auto filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
+  const auto filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats( QgsVectorFileWriter::SortRecommended | QgsVectorFileWriter::SkipNonSpatialFormats );
   for ( const QgsVectorFileWriter::FilterFormatDetails &filter : filterFormatMap )
   {
     QString driverName = filter.driverName;
