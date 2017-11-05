@@ -31,7 +31,7 @@
 
 QgsVectorLayerUndoPassthroughCommand::QgsVectorLayerUndoPassthroughCommand( QgsVectorLayerEditBuffer *buffer, const QString &text, bool autocreate )
   : QgsVectorLayerUndoCommand( buffer )
-  , mSavePointId( mBuffer->L->isEditCommandActive() && !mBuffer->L->dataProvider()->transaction()->savePoints().isEmpty()
+  , mSavePointId( ( mBuffer->L->isEditCommandActive() && !mBuffer->L->dataProvider()->transaction()->savePoints().isEmpty() )
                   || !autocreate
                   ? mBuffer->L->dataProvider()->transaction()->savePoints().last()
                   : mBuffer->L->dataProvider()->transaction()->createSavepoint( mError ) )
