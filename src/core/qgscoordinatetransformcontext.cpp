@@ -129,5 +129,21 @@ bool QgsCoordinateTransformContext::addSourceDestinationDatumTransform( const Qg
 
 QPair<int, int> QgsCoordinateTransformContext::calculateDatumTransforms( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
 {
+  QString srcKey = source.authid();
+  QString destKey = destination.authid();
 
+  d->mLock.lockForRead();
+  // highest priority is exact match for source/dest pair
+  QPair< int, int > res = d->mSourceDestDatumTransforms.value( qMakePair( srcKey, destKey ), qMakePair( -1, -1 ) );
+  if ( res.first != -1 && res.second != -1 )
+  {
+    d->mLock.unlock();
+    return res;
+  }
+
+  // fallback to checking src and dest separately
+  int srcTransform = d->mSourceDatumTransforms.value( srcKey, -1 );
+  int destTransform = d->mDestDatumTransforms.value( destKey, -1 );
+  d->mLock.unlock();
+  return qMakePair( srcTransform, destTransform );
 }

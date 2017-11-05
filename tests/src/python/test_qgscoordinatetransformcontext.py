@@ -134,6 +134,52 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         context.clear()
         self.assertEqual(context.sourceDestinationDatumTransforms(), {})
 
+    def testCalculate(self):
+        context = QgsCoordinateTransformContext()
+
+        #empty context
+        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:3111'),
+                                                          QgsCoordinateReferenceSystem('EPSG:4283')),
+                         (-1, -1))
+
+        #add src transform
+        context.addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'), 1)
+        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:3111'),
+                                                          QgsCoordinateReferenceSystem('EPSG:4283')),
+                         (-1, -1))
+        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                                          QgsCoordinateReferenceSystem('EPSG:4283')),
+                         (1, -1))
+        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:4283'),
+                                                          QgsCoordinateReferenceSystem('EPSG:28356')),
+                         (-1, -1))
+
+        #add dest transform
+        context.addDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:4283'), 2)
+        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:3111'),
+                                                          QgsCoordinateReferenceSystem('EPSG:4326')),
+                         (-1, -1))
+        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:3111'),
+                                                          QgsCoordinateReferenceSystem('EPSG:4283')),
+                         (-1, 2))
+        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:4283'),
+                                                          QgsCoordinateReferenceSystem('EPSG:3111')),
+                         (-1, -1))
+
+        #add specific source/dest pair - should take precedence
+        context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                                   QgsCoordinateReferenceSystem('EPSG:4283'),
+                                                   3, 4)
+        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                                          QgsCoordinateReferenceSystem('EPSG:4283')),
+                         (3, 4))
+        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:3111'),
+                                                          QgsCoordinateReferenceSystem('EPSG:4283')),
+                         (-1, 2))
+        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                                          QgsCoordinateReferenceSystem('EPSG:3111')),
+                         (1, -1))
+
 
 if __name__ == '__main__':
     unittest.main()
