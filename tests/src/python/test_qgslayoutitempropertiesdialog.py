@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsUnitTypes, QgsLayoutSize, QgsLayoutPoint, QgsLayoutItem
+from qgis.core import QgsUnitTypes, QgsLayoutSize, QgsLayoutPoint, QgsLayoutItem, QgsProject, QgsLayout
 from qgis.gui import QgsLayoutItemPropertiesDialog
 
 from qgis.testing import start_app, unittest
@@ -27,6 +27,10 @@ class TestQgsLayoutItemPropertiesDialog(unittest.TestCase):
     def testGettersSetters(self):
         """ test dialog getters/setters """
         dlg = qgis.gui.QgsLayoutItemPropertiesDialog()
+
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+        dlg.setLayout(l)
 
         dlg.setItemPosition(QgsLayoutPoint(5, 6, QgsUnitTypes.LayoutPixels))
         self.assertEqual(dlg.itemPosition().x(), 5.0)
