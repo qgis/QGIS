@@ -46,7 +46,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mFormLayoutTree->setType( DnDTree::Type::Drop );
 
   // AttributeTypeDialog
-  mAttributeTypeDialog = new QgsAttributeTypeDialog( mLayer, 0, mAttributeTypeFrame );
+  mAttributeTypeDialog = new QgsAttributeTypeDialog( mLayer, -1, mAttributeTypeFrame );
   mAttributeTypeDialog->layout()->setMargin( 0 );
   mAttributeTypeFrame->layout()->setMargin( 0 );
   mAttributeTypeFrame->layout()->addWidget( mAttributeTypeDialog );
@@ -79,8 +79,8 @@ void QgsAttributesFormProperties::init()
   initLayoutConfig();
   initInitPython();
 
-  //mAttributeTypeDialog->setEnabled( false );
-  //mAttributeRelationEdit->setEnabled( false );
+  mAttributeTypeDialog->setEnabled( false );
+  mAttributeRelationEdit->setEnabled( false );
 }
 
 void QgsAttributesFormProperties::initAvailableWidgetsTree()
@@ -264,6 +264,9 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
 
 void QgsAttributesFormProperties::storeAttributeTypeDialog()
 {
+  if ( mAttributeTypeDialog->fieldIdx() < 0 )
+    return;
+
   FieldConfig cfg;
 
   cfg.mEditable = mAttributeTypeDialog->fieldEditable();
