@@ -186,17 +186,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * from a source to destination coordinate reference system.
      *
      * \since QGIS 3.0
+     * \see setTransformContext()
+     * \see transformContextChanged()
      */
-    QgsCoordinateTransformContext transformContext() const SIP_SKIP;
+    QgsCoordinateTransformContext transformContext() const;
 
     /**
-     * Returns a modifiable reference to the project's coordinate transform context, which stores various
+     * Sets the project's coordinate transform \a context, which stores various
      * information regarding which datum transforms should be used when transforming points
      * from a source to destination coordinate reference system.
      *
      * \since QGIS 3.0
+     * \see transformContext()
+     * \see transformContextChanged()
      */
-    QgsCoordinateTransformContext &transformContext();
+    void setTransformContext( const QgsCoordinateTransformContext &context );
 
     /**
      * Clear the project - removes all settings and resets it back to an empty, default state.
@@ -919,6 +923,15 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see ellipsoid()
      */
     void ellipsoidChanged( const QString &ellipsoid );
+
+
+    /**
+     * Emitted when the project transformContext() is changed.
+     *
+     * \since QGIS 3.0
+     * \see transformContext()
+     */
+    void transformContextChanged();
 
     /**
      * Emitted whenever a new transaction group has been created or a

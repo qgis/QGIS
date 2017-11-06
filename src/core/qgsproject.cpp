@@ -476,9 +476,10 @@ QgsCoordinateTransformContext QgsProject::transformContext() const
   return mTransformContext;
 }
 
-QgsCoordinateTransformContext &QgsProject::transformContext()
+void QgsProject::setTransformContext( const QgsCoordinateTransformContext &context )
 {
-  return mTransformContext;
+  mTransformContext = context;
+  emit transformContextChanged();
 }
 
 void QgsProject::clear()

@@ -138,7 +138,9 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         Test creating transform using convenience constructor which takes project reference
         """
         p = QgsProject()
-        p.transformContext().addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'), 1)
+        context = p.transformContext()
+        context.addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'), 1)
+        p.setTransformContext(context)
 
         transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'), QgsCoordinateReferenceSystem('EPSG:28353'), p)
         self.assertEqual(transform.sourceDatumTransform(), 1)

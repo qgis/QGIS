@@ -20,6 +20,7 @@ from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsProject)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtTest import QSignalSpy
 
 app = start_app()
 
@@ -220,7 +221,11 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         Test project's transform context
         """
         project = QgsProject()
-        project.transformContext().addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'), 1)
+        context_changed_spy = QSignalSpy(project.transformContextChanged)
+        context = project.transformContext()
+        context.addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'), 1)
+        project.setTransformContext(context)
+        self.assertEqual(len(context_changed_spy), 1)
         self.assertEqual(project.transformContext().sourceDatumTransforms(), {'EPSG:3111': 1})
 
 

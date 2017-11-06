@@ -128,15 +128,27 @@ Returns the QgsProject singleton instance
 %End
 
 
-
-    QgsCoordinateTransformContext &transformContext();
+    QgsCoordinateTransformContext transformContext() const;
 %Docstring
- Returns a modifiable reference to the project's coordinate transform context, which stores various
+ Returns a copy of the project's coordinate transform context, which stores various
  information regarding which datum transforms should be used when transforming points
  from a source to destination coordinate reference system.
 
 .. versionadded:: 3.0
+.. seealso:: setTransformContext()
+.. seealso:: transformContextChanged()
  :rtype: QgsCoordinateTransformContext
+%End
+
+    void setTransformContext( const QgsCoordinateTransformContext &context );
+%Docstring
+ Sets the project's coordinate transform ``context``, which stores various
+ information regarding which datum transforms should be used when transforming points
+ from a source to destination coordinate reference system.
+
+.. versionadded:: 3.0
+.. seealso:: transformContext()
+.. seealso:: transformContextChanged()
 %End
 
     void clear();
@@ -922,6 +934,15 @@ emitted whenever the configuration for snapping has changed
 .. versionadded:: 3.0
 .. seealso:: :py:func:`setEllipsoid()`
 .. seealso:: :py:func:`ellipsoid()`
+%End
+
+
+    void transformContextChanged();
+%Docstring
+ Emitted when the project transformContext() is changed.
+
+.. versionadded:: 3.0
+.. seealso:: transformContext()
 %End
 
     void transactionGroupsChanged();
