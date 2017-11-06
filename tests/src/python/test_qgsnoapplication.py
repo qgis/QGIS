@@ -13,7 +13,8 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
-
+import sys
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsApplication)
 from qgis.testing import unittest
 
@@ -27,6 +28,8 @@ falls back to static members, which this test is designed to check.
 So don't add start_app here or anything else which creates a
 QgsApplication instance!
 """
+
+app = QCoreApplication(sys.argv)
 
 
 class TestQgsNoApplication(unittest.TestCase):
