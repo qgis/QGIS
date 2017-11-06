@@ -273,14 +273,15 @@ QgsError Qgs2To3Migration::migrateAuthDb()
   // Do not overwrite!
   if ( QFile( newAuthDbFilePath ).exists( ) )
   {
-    QString msg = QString( "Could not copy old auth DB to %1: file already exists!" ).arg( newAuthDbFilePath );
+    QString msg = QStringLiteral( "Could not copy old auth DB to %1: file already exists!" ).arg( newAuthDbFilePath );
     QgsDebugMsg( msg );
     error.append( msg );
 
   }
   else
   {
-    QgsDebugMsg( QString( "OLD AUTH DB FILE %1" ).arg( oldAuthDbFilePath ) );
+    QgsDebugMsg( QStringLiteral( "OLD AUTH DB FILE %1" ).arg( oldAuthDbFilePath ) );
+    QgsDebugMsg( QStringLiteral( "NEW AUTH DB FILE %1" ).arg( newAuthDbFilePath ) );
     QFile oldDbFile( oldAuthDbFilePath );
     if ( oldDbFile.exists( ) )
     {
@@ -290,14 +291,14 @@ QgsError Qgs2To3Migration::migrateAuthDb()
       }
       else
       {
-        QString msg = QString( "Could not copy auth DB %1 to %2" ).arg( oldAuthDbFilePath, newAuthDbFilePath );
+        QString msg = QStringLiteral( "Could not copy auth DB %1 to %2" ).arg( oldAuthDbFilePath, newAuthDbFilePath );
         QgsDebugMsg( msg );
         error.append( msg );
       }
     }
     else
     {
-      QString msg = QString( "Could not copy auth DB %1 to %2: old DB does not exists!" ).arg( oldAuthDbFilePath, newAuthDbFilePath );
+      QString msg = QStringLiteral( "Could not copy auth DB %1 to %2: old DB does not exists!" ).arg( oldAuthDbFilePath, newAuthDbFilePath );
       QgsDebugMsg( msg );
       error.append( msg );
     }
