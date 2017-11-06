@@ -19,6 +19,7 @@
 #define QGSDATUMTRANSFORMDIALOG_H
 
 #include "ui_qgsdatumtransformdialogbase.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgis_gui.h"
 
 #define SIP_NO_FILE
@@ -32,13 +33,14 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
 {
     Q_OBJECT
   public:
-
-    //! Constructor for QgsDatumTransformDialog
-    QgsDatumTransformDialog( const QString &layerName, const QList< QList< int > > &dt, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsDatumTransformDialog( const QList< QList< int > > &dt, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsDatumTransformDialog();
 
-    //! \since QGIS 2.4
-    void setDatumTransformInfo( const QString &srcCRSauthId, const QString &destCRSauthId );
+    /**
+     * Sets the \a source and \a destination coordinate reference systems.
+     * \since QGIS 3.0
+     */
+    void setCrs( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
 
     //! getter for selected datum transformations
     QList< int > selectedDatumTransform();
@@ -49,6 +51,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
   private slots:
     void mHideDeprecatedCheckBox_stateChanged( int state );
     void mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * );
+    void accepted();
 
   private:
     QgsDatumTransformDialog();
@@ -58,9 +61,9 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     bool testGridShiftFileAvailability( QTreeWidgetItem *item, int col ) const;
     void load();
 
-    const QList< QList< int > > &mDt;
-    QString mLayerName;
-    QString mSrcCRSauthId, mDestCRSauthId;
+    QList< QList< int > > mDt;
+    QgsCoordinateReferenceSystem mSrcCrs;
+    QgsCoordinateReferenceSystem mDestCrs;
 };
 
 #endif // QGSDATUMTRANSFORMDIALOG_H

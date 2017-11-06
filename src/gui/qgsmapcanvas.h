@@ -677,7 +677,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void writeProject( QDomDocument & );
 
     //! ask user about datum transformation
-    void getDatumTransformInfo( const QgsMapLayer *ml, const QString &srcAuthId, const QString &destAuthId );
+    void getDatumTransformInfo( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
 
     /**
      * Sets the factor of magnification to apply to the map canvas. Indeed, we

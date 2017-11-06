@@ -162,7 +162,6 @@ SET(QGIS_CORE_SRCS
   qgsdatasourceuri.cpp
   qgsdataprovider.cpp
   qgsdatetimestatisticalsummary.cpp
-  qgsdatumtransformstore.cpp
   qgsdbfilterproxymodel.cpp
   qgsdefaultvalue.cpp
   qgsdiagramrenderer.cpp
@@ -864,7 +863,6 @@ SET(QGIS_CORE_HDRS
   qgsdataitemproviderregistry.h
   qgsdatasourceuri.h
   qgsdatetimestatisticalsummary.h
-  qgsdatumtransformstore.h
   qgsdbfilterproxymodel.h
   qgsdefaultvalue.h
   qgsdiagramrenderer.h

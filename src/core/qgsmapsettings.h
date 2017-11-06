@@ -26,7 +26,6 @@
 
 #include "qgsabstractgeometry.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsdatumtransformstore.h"
 #include "qgslabelingenginesettings.h"
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
@@ -268,12 +267,6 @@ class CORE_EXPORT QgsMapSettings
      */
     const QgsExpressionContext &expressionContext() const { return mExpressionContext; }
 
-    // -- utility functions --
-
-    //! \note not available in Python bindings
-    const QgsDatumTransformStore &datumTransformStore() const { return mDatumTransformStore; } SIP_SKIP
-    QgsDatumTransformStore &datumTransformStore() { return mDatumTransformStore; }
-
     /**
      * Returns the coordinate transform context, which stores various
      * information regarding which datum transforms should be used when transforming points
@@ -406,7 +399,6 @@ class CORE_EXPORT QgsMapSettings
     QgsCoordinateReferenceSystem mDestCRS;
     //! ellipsoid acronym (from table tbl_ellipsoids)
     QString mEllipsoid;
-    QgsDatumTransformStore mDatumTransformStore;
 
     QColor mBackgroundColor;
     QColor mSelectionColor;

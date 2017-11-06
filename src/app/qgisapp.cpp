@@ -7019,28 +7019,15 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
 
     if ( destCRS.isValid() && destCRS != vlayer->crs() )
     {
-      ct = QgsCoordinateTransform( vlayer->crs(), destCRS, QgsProject::instance() );
-
       //ask user about datum transformation
       QgsSettings settings;
       QList< QList< int > > dt = QgsCoordinateTransform::datumTransformations( vlayer->crs(), destCRS );
       if ( dt.size() > 1 && settings.value( QStringLiteral( "Projections/showDatumTransformDialog" ), false ).toBool() )
       {
-        QgsDatumTransformDialog d( vlayer->name(), dt );
-        if ( d.exec() == QDialog::Accepted )
-        {
-          QList< int > sdt = d.selectedDatumTransform();
-          if ( !sdt.isEmpty() )
-          {
-            ct.setSourceDatumTransform( sdt.at( 0 ) );
-          }
-          if ( sdt.size() > 1 )
-          {
-            ct.setDestinationDatumTransform( sdt.at( 1 ) );
-          }
-          ct.initialize();
-        }
+        QgsDatumTransformDialog d( dt );
+        d.exec();
       }
+      ct = QgsCoordinateTransform( vlayer->crs(), destCRS, QgsProject::instance() );
     }
 
     QgsRectangle filterExtent = dialog->filterExtent();

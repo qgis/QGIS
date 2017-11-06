@@ -304,12 +304,6 @@ Return the distance in geographical coordinates that equals to one pixel in the 
  :rtype: QgsExpressionContext
 %End
 
-
-    QgsDatumTransformStore &datumTransformStore();
-%Docstring
- :rtype: QgsDatumTransformStore
-%End
-
     QgsCoordinateTransformContext transformContext() const;
 %Docstring
  Returns the coordinate transform context, which stores various

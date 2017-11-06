@@ -727,7 +727,7 @@ called to read map canvas settings from project
 called to write map canvas settings to project
 %End
 
-    void getDatumTransformInfo( const QgsMapLayer *ml, const QString &srcAuthId, const QString &destAuthId );
+    void getDatumTransformInfo( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
 %Docstring
 ask user about datum transformation
 %End

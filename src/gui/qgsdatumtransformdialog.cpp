@@ -19,17 +19,19 @@
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
 
 #include <QDir>
 
-QgsDatumTransformDialog::QgsDatumTransformDialog( const QString &layerName, const QList< QList< int > > &dt, QWidget *parent, Qt::WindowFlags f )
+QgsDatumTransformDialog::QgsDatumTransformDialog( const QList< QList< int > > &dt, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mDt( dt )
-  , mLayerName( layerName )
 {
   setupUi( this );
   connect( mHideDeprecatedCheckBox, &QCheckBox::stateChanged, this, &QgsDatumTransformDialog::mHideDeprecatedCheckBox_stateChanged );
   connect( mDatumTransformTreeWidget, &QTreeWidget::currentItemChanged, this, &QgsDatumTransformDialog::mDatumTransformTreeWidget_currentItemChanged );
+
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDatumTransformDialog::accepted );
 
   QApplication::setOverrideCursor( Qt::ArrowCursor );
 
@@ -140,10 +142,10 @@ QgsDatumTransformDialog::~QgsDatumTransformDialog()
   QApplication::restoreOverrideCursor();
 }
 
-void QgsDatumTransformDialog::setDatumTransformInfo( const QString &srcCRSauthId, const QString &destCRSauthId )
+void QgsDatumTransformDialog::setCrs( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
 {
-  mSrcCRSauthId = srcCRSauthId;
-  mDestCRSauthId = destCRSauthId;
+  mSrcCrs = source;
+  mDestCrs = destination;
   updateTitle();
 }
 
@@ -240,12 +242,30 @@ void QgsDatumTransformDialog::mDatumTransformTreeWidget_currentItemChanged( QTre
   mLabelDstDescription->setText( current->toolTip( 1 ) );
 }
 
+void QgsDatumTransformDialog::accepted()
+{
+  if ( !mSrcCrs.isValid() || !mDestCrs.isValid() )
+    return;
+
+  int srcTransform = -1;
+  int destTransform = -1;
+  const QList<int> t = selectedDatumTransform();
+  if ( !t.isEmpty() )
+  {
+    srcTransform = t.at( 0 );
+  }
+  if ( t.size() > 1 )
+  {
+    destTransform = t.at( 1 );
+  }
+
+  QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
+  context.addSourceDestinationDatumTransform( mSrcCrs, mDestCrs, srcTransform, destTransform );
+  QgsProject::instance()->setTransformContext( context );
+}
+
 void QgsDatumTransformDialog::updateTitle()
 {
-  mLabelLayer->setText( mLayerName );
-  QgsCoordinateReferenceSystem crs;
-  crs.createFromString( mSrcCRSauthId );
-  mLabelSrcCrs->setText( QStringLiteral( "%1 - %2" ).arg( mSrcCRSauthId, crs.isValid() ? crs.description() : tr( "unknown" ) ) );
-  crs.createFromString( mDestCRSauthId );
-  mLabelDstCrs->setText( QStringLiteral( "%1 - %2" ).arg( mDestCRSauthId, crs.isValid() ? crs.description() : tr( "unknown" ) ) );
+  mLabelSrcCrs->setText( QStringLiteral( "%1 - %2" ).arg( mSrcCrs.authid(), mSrcCrs.isValid() ? mSrcCrs.description() : tr( "unknown" ) ) );
+  mLabelDstCrs->setText( QStringLiteral( "%1 - %2" ).arg( mDestCrs.authid(), mDestCrs.isValid() ? mDestCrs.description() : tr( "unknown" ) ) );
 }

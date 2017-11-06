@@ -270,16 +270,12 @@ QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSyst
 {
   QgsFeatureList featureList = copyOf( fields );
 
-  QgsCoordinateTransform ct;
   if ( mSrcLayer )
   {
-    QgisApp::instance()->mapCanvas()->getDatumTransformInfo( mSrcLayer, crs().authid(), destCRS.authid() );
-    ct = QgisApp::instance()->mapCanvas()->mapSettings().datumTransformStore().transformation( mSrcLayer, crs().authid(), destCRS.authid() );
+    QgisApp::instance()->mapCanvas()->getDatumTransformInfo( crs(), destCRS );
   }
-  else
-  {
-    ct = QgsCoordinateTransform( crs(), destCRS, QgsProject::instance() );
-  }
+
+  QgsCoordinateTransform ct = QgsCoordinateTransform( crs(), destCRS, QgsProject::instance() );
 
   QgsDebugMsg( "transforming clipboard." );
   for ( QgsFeatureList::iterator iter = featureList.begin(); iter != featureList.end(); ++iter )

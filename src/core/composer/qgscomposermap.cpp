@@ -204,9 +204,6 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle &extent, QSizeF s
   jobMapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
   jobMapSettings.setFlag( QgsMapSettings::DrawSelection, false );
   jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mComposition->useAdvancedEffects() ); // respect the composition's useAdvancedEffects flag
-
-  jobMapSettings.datumTransformStore().setDestinationCrs( renderCrs );
-
   jobMapSettings.setLabelingEngineSettings( mComposition->project()->labelingEngineSettings() );
 
   return jobMapSettings;
