@@ -187,7 +187,7 @@ if ( @ARGV && $ARGV[0] eq "site") {
 	for my $l (sort { $b->{percentage} <=> $a->{percentage} } @lang) {
 		last if $l->{percentage} < 35;
 		printf "\n<tr>"
-			. '<td><img src="flags/%s.png"></td><td nowrap>%s</td>'
+			. '<td><img src="flags/%s.svg" height="20"></td><td nowrap>%s</td>'
 			. '<td nowrap>%s</td><td>%d</td><td>%d</td><td>%d</td>'
 			. '<td><div class="bartodo"><div class="bardone" style="width:%dpx">%.1f</div></div></td>'
 			. '<td>%s</td>'
@@ -211,7 +211,7 @@ if ( @ARGV && $ARGV[0] eq "site") {
 	for my $l (sort { $b->{percentage} <=> $a->{percentage} } @lang) {
 		last if $l->{percentage} < 35;
 		printf "\n<tr>"
-			. '<td><img src="qrc:/images/flags/%s.png"></td><td>%s</td>'
+			. '<td><img src="qrc:/images/flags/%s.svg" height="20"></td><td>%s</td>'
 			. '<td><div title="finished:%d unfinished:%d untranslated:%d" class="bartodo"><div class="bardone" style="width:%dpx">%.1f</div></div></td>'
 			. '<td>%s</td>'
 			. '</tr>',
