@@ -276,6 +276,7 @@ Use QgsComposerAttributeTableV2 instead.
 - QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,
 so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).
+- QgsCoordinateTransformCache was removed. QgsCoordinateTransform now transparently caches transforms.
 - QgsDataDefined was removed. Use the QgsProperty framework instead.
 - QgsDataDefinedButton was removed. Use QgsPropertyOverrideButton instead.
 - QgsDataDefinedSymbolDialog was removed. Code using this dialog should be reworked to use QgsPropertyOverrideButton
@@ -933,7 +934,7 @@ plugins calling these methods will need to be updated.
 - setDestCRSID has been removed, use setDestinationCrs() instead
 - 'theNode', 'theDoc' parameters in readXML and writeXML have been renamed to 'node' and 'document' respectively
 - readXML() and writeXML() have been removed.
-
+- initialize() was removed.
 
 QgsCoordinateTransformCache        {#qgis_api_break_3_0_QgsCoordinateTransformCache}
 ---------------------------

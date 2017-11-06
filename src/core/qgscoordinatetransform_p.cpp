@@ -59,7 +59,6 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
 {
   setFinder();
   calculateTransforms();
-  initialize();
 }
 
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, int sourceDatumTransform, int destDatumTransform )
@@ -69,7 +68,6 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mDestinationDatumTransform( destDatumTransform )
 {
   setFinder();
-  initialize();
 }
 
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate &other )

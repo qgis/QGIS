@@ -42,7 +42,7 @@ extern "C"
 // #define COORDINATE_TRANSFORM_VERBOSE
 
 QReadWriteLock QgsCoordinateTransform::sCacheLock;
-QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > QgsCoordinateTransform::sTransforms;
+QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > QgsCoordinateTransform::sTransforms; //same auth_id pairs might have different datum transformations
 
 QgsCoordinateTransform::QgsCoordinateTransform()
 {
@@ -52,6 +52,11 @@ QgsCoordinateTransform::QgsCoordinateTransform()
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
 {
   d = new QgsCoordinateTransformPrivate( source, destination, QgsCoordinateTransformContext() );
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+  {
+    d->initialize();
+    addToCache();
+  }
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsCoordinateTransformContext &context )
@@ -60,6 +65,11 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 #ifdef QGISDEBUG
   d->mHasContext = true;
 #endif
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+  {
+    d->initialize();
+    addToCache();
+  }
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsProject *project )
@@ -68,6 +78,11 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 #ifdef QGISDEBUG
   d->mHasContext = true;
 #endif
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+  {
+    d->initialize();
+    addToCache();
+  }
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, int sourceDatumTransform, int destinationDatumTransform )
@@ -76,6 +91,11 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 #ifdef QGISDEBUG
   d->mHasContext = true; // not strictly true, but we don't need to worry if datums have been explicitly set
 #endif
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+  {
+    d->initialize();
+    addToCache();
+  }
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform &o )
@@ -96,14 +116,22 @@ void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem &c
   d.detach();
   d->mSourceCRS = crs;
   d->calculateTransforms();
-  d->initialize();
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+  {
+    d->initialize();
+    addToCache();
+  }
 }
 void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
   d.detach();
   d->mDestCRS = crs;
   d->calculateTransforms();
-  d->initialize();
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+  {
+    d->initialize();
+    addToCache();
+  }
 }
 
 void QgsCoordinateTransform::setContext( const QgsCoordinateTransformContext &context )
@@ -114,7 +142,11 @@ void QgsCoordinateTransform::setContext( const QgsCoordinateTransformContext &co
   d->mHasContext = true;
 #endif
   d->calculateTransforms();
-  d->initialize();
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+  {
+    d->initialize();
+    addToCache();
+  }
 }
 
 QgsCoordinateReferenceSystem QgsCoordinateTransform::sourceCrs() const
@@ -727,6 +759,37 @@ void QgsCoordinateTransform::searchDatumTransform( const QString &sql, QList< in
   }
 }
 
+bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &src, const QgsCoordinateReferenceSystem &dest, int srcDatumTransform, int destDatumTransform )
+{
+  if ( !src.isValid() || !dest.isValid() )
+    return false;
+
+  sCacheLock.lockForRead();
+  const QList< QgsCoordinateTransform > values = sTransforms.values( qMakePair( src.authid(), dest.authid() ) );
+  for ( auto valIt = values.constBegin(); valIt != values.constEnd(); ++valIt )
+  {
+    if ( ( *valIt ).sourceDatumTransform() == srcDatumTransform &&
+         ( *valIt ).destinationDatumTransform() == destDatumTransform )
+    {
+      *this = *valIt;
+      sCacheLock.unlock();
+      return true;
+    }
+  }
+  sCacheLock.unlock();
+  return false;
+}
+
+void QgsCoordinateTransform::addToCache()
+{
+  if ( !d->mSourceCRS.isValid() || !d->mDestCRS.isValid() )
+    return;
+
+  sCacheLock.lockForWrite();
+  sTransforms.insertMulti( qMakePair( d->mSourceCRS.authid(), d->mDestCRS.authid() ), *this );
+  sCacheLock.unlock();
+}
+
 QString QgsCoordinateTransform::datumTransformString( int datumTransform )
 {
   return QgsCoordinateTransformPrivate::datumTransformString( datumTransform );
@@ -792,12 +855,6 @@ void QgsCoordinateTransform::setDestinationDatumTransform( int dt )
 {
   d.detach();
   d->mDestinationDatumTransform = dt;
-}
-
-void QgsCoordinateTransform::initialize()
-{
-  d.detach();
-  d->initialize();
 }
 
 void QgsCoordinateTransform::invalidateCache()

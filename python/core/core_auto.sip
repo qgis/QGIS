@@ -24,7 +24,6 @@
 %Include qgscoordinateformatter.sip
 %Include qgscoordinatetransform.sip
 %Include qgscoordinatetransformcontext.sip
-%Include qgscrscache.sip
 %Include qgsdartmeasurement.sip
 %Include qgsdatadefinedsizelegend.sip
 %Include qgsdataitemprovider.sip

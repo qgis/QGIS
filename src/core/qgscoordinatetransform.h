@@ -64,7 +64,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
      * \param source source CRS, typically of the layer's coordinate system
      * \param destination CRS, typically of the map canvas coordinate system
-     * \warning Use of this constructor is strongly discouraged, as it will not
+     * \deprecated Use of this constructor is strongly discouraged, as it will not
      * correctly handle the user's datum transform setup. Instead the constructor
      * variant which accepts a QgsCoordinateTransformContext or QgsProject
      * argument should be used instead. It is highly likely that this constructor
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsCoordinateTransform
      *
      * The \a context argument specifies the context under which the transform
      * will be applied, and is used for calculating necessary datum transforms
-     * to utilise.
+     * to utilize.
      *
      * \since QGIS 3.0
      */
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * to \a destination coordinate reference system, when used with the
      * given \a project.
      *
-     * No reference to \a project is stored or utilised outside of the constructor,
+     * No reference to \a project is stored or utilized outside of the constructor,
      * and it is used to retrieve the project's transform context only.
      *
      * \since QGIS 3.0
@@ -373,9 +373,6 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     void setDestinationDatumTransform( int datum );
 
-    //!initialize is used to actually create the Transformer instance
-    void initialize();
-
     /**
      * Clears the internal cache used to initialize QgsCoordinateTransform objects.
      * This should be called whenever the srs database has
@@ -389,6 +386,12 @@ class CORE_EXPORT QgsCoordinateTransform
     static void searchDatumTransform( const QString &sql, QList< int > &transforms );
 
     mutable QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
+
+    bool setFromCache( const QgsCoordinateReferenceSystem &src,
+                       const QgsCoordinateReferenceSystem &dest,
+                       int srcDatumTransform,
+                       int destDatumTransform );
+    void addToCache();
 
     // cache
     static QReadWriteLock sCacheLock;

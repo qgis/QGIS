@@ -1756,7 +1756,7 @@ template<int, TYPE2*>
   if ( ( d = PyDict_New() ) == NULL )
     return NULL;
 
-  for ( const auto it = sipCpp->constBegin(); it != sipCpp->constEnd(); ++ it )
+  for ( auto it = sipCpp->constBegin(); it != sipCpp->constEnd(); ++ it )
   {
     PyObject *keyobj;
     if ( ( keyobj = PyTuple_New( 2 ) ) == NULL )

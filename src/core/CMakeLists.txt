@@ -153,7 +153,6 @@ SET(QGIS_CORE_SRCS
   qgscoordinatetransformcontext.cpp
   qgscoordinateutils.cpp
   qgscredentials.cpp
-  qgscrscache.cpp
   qgsdartmeasurement.cpp
   qgsdatadefinedsizelegend.cpp
   qgsdataitem.cpp
@@ -856,7 +855,6 @@ SET(QGIS_CORE_HDRS
   qgscoordinatetransform.h
   qgscoordinatetransformcontext.h
   qgscoordinateutils.h
-  qgscrscache.h
   qgsdartmeasurement.h
   qgsdatadefinedsizelegend.h
   qgsdataitemprovider.h
