@@ -109,11 +109,6 @@ bool QgsCoordinateTransformPrivate::initialize()
 
   mIsValid = true;
 
-#ifdef QGISDEBUG
-  if ( !mHasContext )
-    qWarning( "No QgsCoordinateTransformContext context set for transform" );
-#endif
-
   int sourceDatumTransform = mSourceDatumTransform;
   int destDatumTransform = mDestinationDatumTransform;
   bool useDefaultDatumTransform = ( sourceDatumTransform == - 1 && destDatumTransform == -1 );

@@ -506,6 +506,11 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   QgsDebugMsg( QString( "[[[[[[ Number of points to transform: %1 ]]]]]]" ).arg( numPoints ) );
 #endif
 
+#ifdef QGISDEBUG
+  if ( !d->mHasContext )
+    qWarning( "No QgsCoordinateTransformContext context set for transform" );
+#endif
+
   // use proj4 to do the transform
 
   // if the source/destination projection is lat/long, convert the points to radians
