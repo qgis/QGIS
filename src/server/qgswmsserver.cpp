@@ -2563,17 +2563,36 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
   if ( !identifyResult.isValid() )
     return 1;
 
-  QMap<int, QVariant> attributes = identifyResult.results();
+  QMap<int, QVariant> values = identifyResult.results();
   if ( infoFormat == "application/vnd.ogc.gml" )
   {
     QgsFeature feature;
     QgsFields fields;
-    feature.initAttributes( attributes.count() );
+    feature.initAttributes( values.count() );
     int index = 0;
-    for ( QMap<int, QVariant>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )
+    Q_FOREACH ( int bandNo, values.keys() )
     {
-      fields.append( QgsField( layer->bandName( it.key() ), QVariant::Double ) );
-      feature.setAttribute( index++, QString::number( it.value().toDouble() ) );
+      if ( values.value( bandNo ).isNull() )
+      {
+        fields.append( QgsField( layer->bandName( bandNo ), QVariant::String ) );
+        feature.setAttribute( index++, "no data" );
+      }
+      else
+      {
+        QVariant value( values.value( bandNo ) );
+        fields.append( QgsField( layer->bandName( bandNo ), QVariant::Double ) );
+        // The cast is legit. Quoting QT doc :
+        // "Although this function is declared as returning QVariant::Type,
+        // the return value should be interpreted as QMetaType::Type"
+        if ( static_cast<QMetaType::Type>( value.type() ) == QMetaType::Float )
+        {
+          feature.setAttribute( index++, QString::number( value.toFloat() ) );
+        }
+        else
+        {
+          feature.setAttribute( index++, QString::number( value.toDouble() ) );
+        }
+      }
     }
     feature.setFields( fields );
 
@@ -2590,11 +2609,31 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
   }
   else
   {
-    for ( QMap<int, QVariant>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )
+    Q_FOREACH ( int bandNo, values.keys() )
     {
+      QString valueString;
+      if ( values.value( bandNo ).isNull() )
+      {
+        valueString = "no data";
+      }
+      else
+      {
+        QVariant value( values.value( bandNo ) );
+        // The cast is legit. Quoting QT doc :
+        // "Although this function is declared as returning QVariant::Type,
+        // the return value should be interpreted as QMetaType::Type"
+        if ( static_cast<QMetaType::Type>( value.type() ) == QMetaType::Float )
+        {
+          valueString = QgsRasterBlock::printValue( value.toFloat() );
+        }
+        else
+        {
+          valueString = QgsRasterBlock::printValue( value.toDouble() );
+        }
+      }
       QDomElement attributeElement = infoDocument.createElement( "Attribute" );
-      attributeElement.setAttribute( "name", layer->bandName( it.key() ) );
-      attributeElement.setAttribute( "value", QString::number( it.value().toDouble() ) );
+      attributeElement.setAttribute( "name", layer->bandName( bandNo ) );
+      attributeElement.setAttribute( "value", valueString );
       layerElement.appendChild( attributeElement );
     }
   }
