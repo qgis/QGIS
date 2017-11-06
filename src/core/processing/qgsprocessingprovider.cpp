@@ -45,6 +45,11 @@ QString QgsProcessingProvider::longName() const
   return name();
 }
 
+QStringList QgsProcessingProvider::supportedOutputRasterLayerExtensions() const
+{
+  return QStringList() << QStringLiteral( "tif" );
+}
+
 void QgsProcessingProvider::refreshAlgorithms()
 {
   qDeleteAll( mAlgorithms );

@@ -106,7 +106,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see supportedOutputVectorLayerExtensions()
      * \see supportedOutputTableExtensions()
      */
-    virtual QStringList supportedOutputRasterLayerExtensions() const { return QStringList() << QStringLiteral( "tif" ); }
+    virtual QStringList supportedOutputRasterLayerExtensions() const;
 
     /**
      * Returns a list of the vector format file extensions supported by this provider.
