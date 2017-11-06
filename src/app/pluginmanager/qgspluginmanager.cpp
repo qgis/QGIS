@@ -89,6 +89,10 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( true );
 
+  // QgsOptionsDialogBase::initOptionsBase() connected a signal from mOptionsStackedWidget to mOptionsListWidget
+  // for mutual synchronization. Revert it now, because tab indexes and page indexes don't match in QgsPluginManager.
+  disconnect( mOptionsStackedWidget, &QStackedWidget::currentChanged, this, &QgsPluginManager::optionsStackedWidget_CurrentChanged );
+
   // Don't let QgsOptionsDialogBase to narrow the vertical tab list widget
   mOptListWidget->setMaximumWidth( 16777215 );
 
