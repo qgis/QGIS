@@ -161,8 +161,8 @@
            <string>Source Fields</string>
           </property>
           <property name="icon">
-           <iconset>
-            <normaloff>../../images/themes/default/mSourceFields.svg</normaloff>../../images/themes/default/mSourceFields.svg</iconset>
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mSourceFields.svg</normaloff>:/images/themes/default/mSourceFields.svg</iconset>
           </property>
          </item>
          <item>
@@ -409,8 +409,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>662</width>
-                <height>534</height>
+                <width>302</width>
+                <height>416</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -698,8 +698,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>662</width>
-                <height>534</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -784,8 +784,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>646</width>
-                <height>518</height>
+                <width>70</width>
+                <height>22</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_3">
@@ -817,8 +817,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>646</width>
-                <height>518</height>
+                <width>70</width>
+                <height>22</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_11">
@@ -866,7 +866,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>725</width>
-                <height>520</height>
+                <height>394</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1289,8 +1289,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>662</width>
-                <height>534</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1355,8 +1355,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>662</width>
-                <height>534</height>
+                <width>113</width>
+                <height>110</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1635,7 +1635,7 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>648</width>
+                <width>371</width>
                 <height>608</height>
                </rect>
               </property>
