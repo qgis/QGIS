@@ -391,6 +391,12 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      */
     virtual QStringList dependsOnOtherParameters() const { return QStringList(); }
 
+    /**
+     * Returns a pointer to the algorithm which owns this parameter. May be nullptr
+     * for non-owned parameters.
+     */
+    QgsProcessingAlgorithm *algorithm() const;
+
   protected:
 
     //! Parameter name
@@ -407,6 +413,12 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     //! Freeform metadata for parameter. Mostly used by widget wrappers to customise their appearance and behavior.
     QVariantMap mMetadata;
+
+    //! Pointer to algorithm which owns this parameter
+    QgsProcessingAlgorithm *mAlgorithm = nullptr;
+
+    // To allow access to mAlgorithm. We don't want a public setter for this!
+    friend class QgsProcessingAlgorithm;
 
 };
 

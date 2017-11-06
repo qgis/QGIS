@@ -1237,6 +1237,11 @@ bool QgsProcessingParameterDefinition::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
+QgsProcessingAlgorithm *QgsProcessingParameterDefinition::algorithm() const
+{
+  return mAlgorithm;
+}
+
 QgsProcessingParameterBoolean::QgsProcessingParameterBoolean( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {}

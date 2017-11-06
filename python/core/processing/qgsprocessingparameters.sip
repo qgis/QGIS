@@ -353,7 +353,16 @@ class QgsProcessingParameterDefinition
  :rtype: list of str
 %End
 
+    QgsProcessingAlgorithm *algorithm() const;
+%Docstring
+ Returns a pointer to the algorithm which owns this parameter. May be None
+ for non-owned parameters.
+ :rtype: QgsProcessingAlgorithm
+%End
+
   protected:
+
+
 
 
 

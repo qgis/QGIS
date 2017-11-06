@@ -75,6 +75,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QVERIFY( addParameter( new QgsProcessingParameterBoolean( "p1" ) ) );
       QCOMPARE( parameterDefinitions().count(), 1 );
       QCOMPARE( parameterDefinitions().at( 0 )->name(), QString( "p1" ) );
+      QCOMPARE( parameterDefinitions().at( 0 )->algorithm(), this );
 
       QVERIFY( !addParameter( nullptr ) );
       QCOMPARE( parameterDefinitions().count(), 1 );
