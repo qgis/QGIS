@@ -123,6 +123,13 @@ class QgsError
 Clear error messages
 %End
 
+    const QList<QgsErrorMessage> messageList();
+%Docstring
+ messageList return the list of current error messages
+ :return: current list of error messages
+ :rtype: list of QgsErrorMessage
+%End
+
 };
 
 /************************************************************************
