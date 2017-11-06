@@ -128,8 +128,8 @@ class QgsOptionsDialogBase : QDialog
 
   protected slots:
     virtual void updateOptionsListVerticalTabs();
-    virtual void optionsStackedWidget_CurrentChanged( int indx );
-    virtual void optionsStackedWidget_WidgetRemoved( int indx );
+    virtual void optionsStackedWidget_CurrentChanged( int index );
+    virtual void optionsStackedWidget_WidgetRemoved( int index );
 
     void warnAboutMissingObjects();
 
