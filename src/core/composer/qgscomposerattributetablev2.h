@@ -27,9 +27,13 @@
 class QgsComposerMap;
 class QgsVectorLayer;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
- * Helper class for sorting tables, takes into account sorting column and ascending / descending
+ * Helper class for sorting tables, takes into account sorting column and ascending / descending.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
 */
 class CORE_EXPORT QgsComposerAttributeTableCompareV2
 {

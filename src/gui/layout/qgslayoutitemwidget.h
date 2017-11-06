@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QPointer>
 
+#define SIP_NO_FILE
 
 class QgsPropertyOverrideButton;
 
@@ -54,6 +55,8 @@ class QgsPropertyOverrideButton;
  * inherit from QgsLayoutItemBaseWidget (rather then directly working with QgsLayoutConfigObject).
  *
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
 */
 class GUI_EXPORT QgsLayoutConfigObject: public QObject
 {
@@ -107,6 +110,8 @@ class GUI_EXPORT QgsLayoutConfigObject: public QObject
  *
  *
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
 */
 class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
 {

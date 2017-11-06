@@ -31,6 +31,7 @@ class QDomElement;
 class QRectF;
 class QPainter;
 
+#define SIP_NO_FILE
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -45,6 +46,8 @@ class QPainter;
  * \class QgsComposerMultiFrame
  * Abstract base class for composer items with the ability to distribute the content to several frames
  * (QgsComposerFrame items).
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 
 class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject

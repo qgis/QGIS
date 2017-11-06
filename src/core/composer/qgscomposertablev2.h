@@ -28,11 +28,16 @@
 
 class QgsComposerTableColumn;
 
+
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * List of QVariants, representing a the contents of a single row in
  * a QgsComposerTable
  * \since QGIS 2.5
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
 */
 typedef QList< QVariant > QgsComposerTableRow;
 

@@ -29,11 +29,15 @@ class QGraphicsEllipseItem;
 class QGraphicsPolygonItem;
 class QgsLayout;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup gui
  * QgsLayoutViewRubberBand is an abstract base class for temporary rubber band items
  * in various shapes, for use within QgsLayoutView widgets.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class GUI_EXPORT QgsLayoutViewRubberBand
 {

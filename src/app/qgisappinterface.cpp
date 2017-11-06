@@ -58,6 +58,7 @@ QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
            this, &QgisInterface::currentLayerChanged );
   connect( qgis, &QgisApp::currentThemeChanged,
            this, &QgisAppInterface::currentThemeChanged );
+#if 0
   connect( qgis, &QgisApp::composerOpened, this, &QgisAppInterface::composerOpened );
   connect( qgis, &QgisApp::composerWillBeClosed, this, &QgisAppInterface::composerWillBeClosed );
   connect( qgis, &QgisApp::composerClosed, this, &QgisAppInterface::composerClosed );
@@ -65,6 +66,7 @@ QgisAppInterface::QgisAppInterface( QgisApp *_qgis )
   connect( qgis, &QgisApp::layoutDesignerOpened, this, &QgisAppInterface::layoutDesignerOpened );
   connect( qgis, &QgisApp::layoutDesignerWillBeClosed, this, &QgisAppInterface::layoutDesignerWillBeClosed );
   connect( qgis, &QgisApp::layoutDesignerClosed, this, &QgisAppInterface::layoutDesignerClosed );
+#endif
 
   connect( qgis, &QgisApp::initializationCompleted,
            this, &QgisInterface::initializationCompleted );
@@ -387,6 +389,7 @@ void QgisAppInterface::addUserInputWidget( QWidget *widget )
   qgis->addUserInputWidget( widget );
 }
 
+#if 0
 QList<QgsComposerInterface *> QgisAppInterface::openComposers()
 {
   QList<QgsComposerInterface *> composerInterfaceList;
@@ -467,6 +470,8 @@ QgsLayoutDesignerInterface *QgisAppInterface::openLayoutDesigner( QgsLayout *lay
   }
   return nullptr;
 }
+
+#endif
 
 void QgisAppInterface::showOptionsDialog( QWidget *parent, const QString &currentPage )
 {
@@ -614,8 +619,10 @@ QAction *QgisAppInterface::actionSaveProject() { return qgis->actionSaveProject(
 QAction *QgisAppInterface::actionSaveProjectAs() { return qgis->actionSaveProjectAs(); }
 QAction *QgisAppInterface::actionSaveMapAsImage() { return qgis->actionSaveMapAsImage(); }
 QAction *QgisAppInterface::actionProjectProperties() { return qgis->actionProjectProperties(); }
+#if 0
 QAction *QgisAppInterface::actionPrintComposer() { return qgis->actionNewPrintComposer(); }
 QAction *QgisAppInterface::actionShowComposerManager() { return qgis->actionShowComposerManager(); }
+#endif
 QAction *QgisAppInterface::actionExit() { return qgis->actionExit(); }
 
 QAction *QgisAppInterface::actionCutFeatures() { return qgis->actionCutFeatures(); }

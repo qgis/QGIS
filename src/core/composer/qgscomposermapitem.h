@@ -23,10 +23,14 @@
 
 class QgsComposerMap;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  *  \class QgsComposerMapItem
  *  \brief An item which is drawn inside a QgsComposerMap, e.g., a grid or map overview.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
 {

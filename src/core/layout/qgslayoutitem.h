@@ -30,11 +30,15 @@ class QgsLayout;
 class QPainter;
 class QgsLayoutItemGroup;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * \class QgsLayoutItem
  * \brief Base class for graphical items within a QgsLayout.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectItem, public QgsLayoutUndoObjectInterface
 {

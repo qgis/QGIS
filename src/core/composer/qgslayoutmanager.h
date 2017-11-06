@@ -23,6 +23,8 @@
 
 class QgsProject;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * \class QgsLayoutManager
@@ -36,6 +38,7 @@ class QgsProject;
  *
  * QgsLayoutManager retains ownership of all the compositions contained
  * in the manager.
+ * \note Not available in Python bindings
  */
 
 class CORE_EXPORT QgsLayoutManager : public QObject

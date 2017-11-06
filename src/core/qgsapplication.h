@@ -559,11 +559,15 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QgsSymbolLayerRegistry *symbolLayerRegistry();
 
+#ifndef SIP_RUN
+
     /**
      * Returns the application's layout item registry, used for layout item types.
      * \since QGIS 3.0
+     * \note Not available in Python bindings.
      */
     static QgsLayoutItemRegistry *layoutItemRegistry();
+#endif
 
     /**
      * Returns the application's GPS connection registry, used for managing GPS connections.
@@ -598,11 +602,15 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static QgsProcessingRegistry *processingRegistry();
 
+#ifndef SIP_RUN
+
     /**
      * Returns the application's page size registry, used for managing layout page sizes.
      * \since QGIS 3.0
+     * \note Not available in Python bindings.
      */
     static QgsPageSizeRegistry *pageSizeRegistry();
+#endif
 
     /**
      * Returns the application's annotation registry, used for managing annotation types.

@@ -20,10 +20,14 @@
 #include "qgis_core.h"
 #include "qgslayoutitem.h"
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * A container for grouping several QgsLayoutItems.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
 {

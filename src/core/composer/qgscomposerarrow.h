@@ -26,9 +26,13 @@
 
 class QgsLineSymbol;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * An item that draws an arrow between two points.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
 */
 class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
 {

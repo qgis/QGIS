@@ -24,6 +24,8 @@
 #include "qgslayoutpoint.h"
 #include "qgslayoutitem.h"
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup gui
  * \brief A dialog for configuring properties like the size and position of layout items.
@@ -32,6 +34,8 @@
  * enter their sizes and positions.
  *
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class GUI_EXPORT QgsLayoutItemPropertiesDialog : public QDialog, private Ui::QgsLayoutNewItemPropertiesDialog
 {

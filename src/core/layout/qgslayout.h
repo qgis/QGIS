@@ -29,11 +29,15 @@
 class QgsLayoutItemMap;
 class QgsLayoutModel;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * \class QgsLayout
  * \brief Base class for layouts, which can contain items such as maps, labels, scalebars, etc.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContextGenerator, public QgsLayoutUndoObjectInterface
 {

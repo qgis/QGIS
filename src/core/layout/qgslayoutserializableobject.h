@@ -27,10 +27,14 @@ class QDomDocument;
 class QgsReadWriteContext;
 class QgsAbstractLayoutUndoCommand;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * An interface for layout objects which can be stored and read from DOM elements.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
 */
 class CORE_EXPORT QgsLayoutSerializableObject : public QgsLayoutUndoObjectInterface
 {

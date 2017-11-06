@@ -30,6 +30,8 @@
 #include <QFont>
 #include <QGraphicsRectItem>
 
+#define SIP_NO_FILE
+
 class QgsComposition;
 class QgsComposerMapOverviewStack;
 class QgsComposerMapOverview;
@@ -49,6 +51,8 @@ class QgsMapRendererCustomPainterJob;
  * \ingroup core
  *  \class QgsComposerMap
  *  \brief Object representing map window.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 
 class CORE_EXPORT QgsComposerMap : public QgsComposerItem

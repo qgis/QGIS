@@ -22,6 +22,8 @@
 
 #include "qgsunittypes.h"
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * \class QgsLayoutMeasurement
@@ -29,6 +31,8 @@
  * using a variety of different measurement units.
  * \see QgsLayoutMeasurementConverter
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutMeasurement
 {

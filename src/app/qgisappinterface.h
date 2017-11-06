@@ -221,12 +221,14 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Adds a widget to the user input tool bar.
     void addUserInputWidget( QWidget *widget ) override;
 
+#if 0
     QList<QgsComposerInterface *> openComposers() override;
     QgsComposerInterface *openComposer( QgsComposition *composition ) override;
     void closeComposer( QgsComposition *composition ) override;
 
     QList<QgsLayoutDesignerInterface *> openLayoutDesigners() override;
     QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) override;
+#endif
 
     virtual void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) override;
 
@@ -375,8 +377,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QAction *actionSaveProjectAs() override;
     virtual QAction *actionSaveMapAsImage() override;
     virtual QAction *actionProjectProperties() override;
+#if 0
     virtual QAction *actionPrintComposer() override;
     virtual QAction *actionShowComposerManager() override;
+#endif
     virtual QAction *actionExit() override;
 
     //! Edit menu actions

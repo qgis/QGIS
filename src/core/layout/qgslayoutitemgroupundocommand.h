@@ -29,6 +29,7 @@
  * \ingroup core
  * A layout undo command class for grouping / ungrouping layout items.
  * \since QGIS 3.0
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutItemGroupUndoCommand: public QObject, public QUndoCommand
 {

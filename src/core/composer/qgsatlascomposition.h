@@ -33,6 +33,8 @@ class QgsComposition;
 class QgsVectorLayer;
 class QgsExpressionContext;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * Class used to render an Atlas, iterating over geometry features.
@@ -41,6 +43,8 @@ class QgsExpressionContext;
  * \note This class should not be created directly. For the atlas to function correctly
  * the atlasComposition() property for QgsComposition should be used to retrieve a
  * QgsAtlasComposition which is automatically created and attached to the composition.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class CORE_EXPORT QgsAtlasComposition : public QObject
 {

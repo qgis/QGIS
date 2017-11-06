@@ -25,11 +25,15 @@
 class QgsFeature;
 class QgsVectorLayer;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * \class QgsLayoutContext
  * \brief Stores information relating to the current context and rendering settings for a layout.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutContext
 {

@@ -82,10 +82,14 @@ class GUI_EXPORT QgsGui
      */
     static QgsMapLayerActionRegistry *mapLayerActionRegistry();
 
+#ifndef SIP_RUN
+
     /**
      * Returns the global layout item GUI registry, used for registering the GUI behavior of layout items.
+     * \note Not available in Python bindings.
      */
     static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry();
+#endif
 
     ~QgsGui();
 

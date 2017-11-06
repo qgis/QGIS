@@ -31,6 +31,8 @@ class QgsLayoutView;
 class QgsLayoutItem;
 class QgsFillSymbol;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * \brief Stores metadata about one layout item class.
@@ -40,6 +42,8 @@ class QgsFillSymbol;
  *
  * \note In C++ you can use QgsLayoutItemMetadata convenience class.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutItemAbstractMetadata
 {

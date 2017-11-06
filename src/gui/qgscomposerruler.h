@@ -21,9 +21,14 @@
 class QgsComposition;
 class QGraphicsLineItem;
 
+#define SIP_NO_FILE
+
+
 /**
  * \ingroup gui
- * A class to show paper scale and the current cursor position
+ * A class to show paper scale and the current cursor position.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
 */
 class GUI_EXPORT QgsComposerRuler: public QWidget
 {

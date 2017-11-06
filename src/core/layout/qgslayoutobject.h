@@ -31,10 +31,14 @@ class QgsLayout;
 class QPainter;
 class QgsReadWriteContext;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * A base class for objects which belong to a layout.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGenerator
 {

@@ -27,6 +27,8 @@
 #include <QGraphicsRectItem>
 #include <memory>
 
+#define SIP_NO_FILE
+
 class QMenu;
 class QgsLayout;
 class QgsLayoutViewTool;
@@ -44,6 +46,8 @@ class QgsLayoutViewSnapMarker;
  * QgsLayoutView manages the layout interaction tools and mouse/key events.
  *
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class GUI_EXPORT QgsLayoutView: public QGraphicsView
 {

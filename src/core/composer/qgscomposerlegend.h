@@ -30,6 +30,7 @@ class QgsSymbol;
 class QgsComposerMap;
 class QgsLegendRenderer;
 
+#define SIP_NO_FILE
 
 /**
  * \ingroup core
@@ -37,6 +38,8 @@ class QgsLegendRenderer;
  * Overrides some functionality of QgsLayerTreeModel to better fit the needs of composer legend.
  *
  * \since QGIS 2.6
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 {

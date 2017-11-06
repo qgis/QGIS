@@ -146,20 +146,6 @@ Return the message bar of the main app
  :rtype: QgsMessageBar
 %End
 
-    virtual QList<QgsComposerInterface *> openComposers() = 0;
-%Docstring
- Returns all currently open composer windows.
-.. versionadded:: 3.0
- :rtype: list of QgsComposerInterface
-%End
-
-    virtual QList<QgsLayoutDesignerInterface *> openLayoutDesigners() = 0;
-%Docstring
- Returns all currently open layout designers.
-.. versionadded:: 3.0
- :rtype: list of QgsLayoutDesignerInterface
-%End
-
 
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
 %Docstring
@@ -313,14 +299,6 @@ Get reference font for initial qApp (may not be same as QgisApp)
  :rtype: QAction
 %End
     virtual QAction *actionProjectProperties() = 0;
-%Docstring
- :rtype: QAction
-%End
-    virtual QAction *actionPrintComposer() = 0;
-%Docstring
- :rtype: QAction
-%End
-    virtual QAction *actionShowComposerManager() = 0;
 %Docstring
  :rtype: QAction
 %End
@@ -899,33 +877,6 @@ Open the message log dock widget *
 Adds a widget to the user input tool bar.
 %End
 
-    virtual QgsComposerInterface *openComposer( QgsComposition *composition ) = 0;
-%Docstring
- Opens a new composer window for the specified ``composition``, or
- brings an already open composer window to the foreground if one
- is already created for the composition.
-.. versionadded:: 3.0
-.. seealso:: closeComposer()
- :rtype: QgsComposerInterface
-%End
-
-    virtual void closeComposer( QgsComposition *composition ) = 0;
-%Docstring
- Closes an open composer window showing the specified ``composition``.
- The composition remains unaffected.
-.. versionadded:: 3.0
-.. seealso:: openComposer()
-%End
-
-    virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) = 0;
-%Docstring
- Opens a new layout designer dialog for the specified ``layout``, or
- brings an already open designer window to the foreground if one
- is already created for the layout.
-.. versionadded:: 3.0
-.. seealso:: closeComposer()
- :rtype: QgsLayoutDesignerInterface
-%End
 
     virtual void showOptionsDialog( QWidget *parent = 0, const QString &currentPage = QString() ) = 0;
 %Docstring
@@ -1188,45 +1139,6 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
 .. versionadded:: 3.0
 %End
 
-    void composerOpened( QgsComposerInterface *composer );
-%Docstring
- This signal is emitted when a new composer window has been opened.
-.. versionadded:: 3.0
-.. seealso:: composerWillBeClosed()
-%End
-
-    void composerWillBeClosed( QgsComposerInterface *composer );
-%Docstring
- This signal is emitted before a composer window is going to be closed
- and deleted.
-.. versionadded:: 3.0
-.. seealso:: composerClosed()
-.. seealso:: composerOpened()
-%End
-
-    void composerClosed( QgsComposerInterface *composer );
-%Docstring
- This signal is emitted after a composer window is closed.
-.. versionadded:: 3.0
-.. seealso:: composerWillBeClosed()
-.. seealso:: composerOpened()
-%End
-
-    void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
-%Docstring
- This signal is emitted when a new layout ``designer`` has been opened.
-.. versionadded:: 3.0
-.. seealso:: layoutDesignerWillBeClosed()
-%End
-
-    void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
-%Docstring
- This signal is emitted before a layout ``designer`` is going to be closed
- and deleted.
-.. versionadded:: 3.0
-.. seealso:: layoutDesignerClosed()
-.. seealso:: layoutDesignerOpened()
-%End
 
     void layoutDesignerClosed();
 %Docstring

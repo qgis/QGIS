@@ -22,6 +22,8 @@
 #include "qgsunittypes.h"
 #include <QPointF>
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * \class QgsLayoutPoint
@@ -35,6 +37,8 @@
  * to believe that addition of two QgsLayoutPoints with different unit types would automatically convert
  * units. Instead, all unit conversion must be handled by a QgsLayoutMeasurementConverter so that
  * conversion between paper and screen units can be correctly performed.
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutPoint
 {

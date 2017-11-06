@@ -21,6 +21,9 @@
 #include "qgis.h"
 #include <memory>
 
+
+#define SIP_NO_FILE
+
 #include <QDomDocument>
 #include <QGraphicsScene>
 #include <QLinkedList>
@@ -73,6 +76,8 @@ class QgsPaperItem;
  * is the item in the back (z-value 0). It maintains the z-Values of the items and stores
  * them in a list in ascending z-Order. This list can be changed to lower/raise items one position
  * or to bring them to front/back.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  * */
 class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionContextGenerator
 {

@@ -26,12 +26,16 @@
 class QgsLayout;
 class QgsReadWriteContext;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * \class QgsLayoutSnapper
  * \brief Manages snapping grids and preset snap lines in a layout, and handles
  * snapping points to the nearest grid coordinate/snap line when possible.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
 {

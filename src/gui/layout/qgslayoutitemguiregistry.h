@@ -32,6 +32,8 @@ class QgsLayoutItem;
 class QgsLayoutViewRubberBand;
 class QgsLayoutItemBaseWidget;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup gui
  * \brief Stores GUI metadata about one layout item class.
@@ -41,6 +43,8 @@ class QgsLayoutItemBaseWidget;
  *
  * \note In C++ you can use QgsLayoutItemGuiMetadata convenience class.
  * \since QGIS 3.0
+ * \note Not part of stable API, and may be revised for 3.2
+ * \note Not available in Python bindings.
  */
 class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
 {
