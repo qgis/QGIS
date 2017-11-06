@@ -121,7 +121,10 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
 
   QgsGui::layoutItemGuiRegistry()->newItemAddedToLayout( mItemMetadataId, item );
 
-  layout()->addLayoutItem( item );
+  // it's possible (in certain circumstances, e.g. when adding frame items) that this item
+  // has already been added to the layout
+  if ( item->layout() != layout() )
+    layout()->addLayoutItem( item );
   layout()->setSelectedItem( item );
   emit createdItem();
 }

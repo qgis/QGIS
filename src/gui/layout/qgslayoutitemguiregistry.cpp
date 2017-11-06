@@ -17,6 +17,8 @@
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutviewrubberband.h"
 #include "qgslayoutitemregistry.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutmultiframe.h"
 #include <QPainter>
 
 
@@ -106,9 +108,16 @@ QgsLayoutItemBaseWidget *QgsLayoutItemGuiRegistry::createItemWidget( QgsLayoutIt
   if ( !item )
     return nullptr;
 
+  int type = item->type();
+  if ( type == QgsLayoutItemRegistry::LayoutFrame )
+  {
+    QgsLayoutMultiFrame *multiFrame = qobject_cast< QgsLayoutFrame * >( item )->multiFrame();
+    if ( multiFrame )
+      type = multiFrame->type();
+  }
   for ( auto it = mMetadata.constBegin(); it != mMetadata.constEnd(); ++it )
   {
-    if ( it.value()->type() == item->type() )
+    if ( it.value()->type() == type )
       return it.value()->createItemWidget( item );
   }
 
