@@ -1572,7 +1572,7 @@ void QgsPluginManager::updateWindowTitle()
   if ( curitem )
   {
     QString title = QStringLiteral( "%1 | %2" ).arg( tr( "Plugins" ), curitem->text() );
-    if ( mOptionsListWidget->currentRow() < mOptionsListWidget->count() - 1 && mModelPlugins )
+    if ( mOptionsListWidget->currentRow() < mOptionsListWidget->count() - 2 && mModelPlugins )
     {
       // if it's not the Settings tab, add the plugin count
       title += QStringLiteral( " (%3)" ).arg( mModelProxy->countWithCurrentStatus() );
