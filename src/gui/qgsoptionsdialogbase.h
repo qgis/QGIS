@@ -158,9 +158,10 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     void searchText( const QString &text );
 
   protected slots:
-    void updateOptionsListVerticalTabs();
-    void optionsStackedWidget_CurrentChanged( int indx );
-    void optionsStackedWidget_WidgetRemoved( int indx );
+    virtual void updateOptionsListVerticalTabs();
+    virtual void optionsStackedWidget_CurrentChanged( int indx );
+    virtual void optionsStackedWidget_WidgetRemoved( int indx );
+
     void warnAboutMissingObjects();
 
   protected:
