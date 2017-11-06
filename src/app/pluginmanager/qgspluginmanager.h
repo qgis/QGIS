@@ -171,9 +171,6 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Open help browser
     void showHelp();
 
-    //! Reimplement QgsOptionsDialogBase method to prevent modifying the tab list by signals from the stacked widget
-    void optionsStackedWidget_CurrentChanged( int indx ) { Q_UNUSED( indx ) }
-
     //! Only show plugins from selected repository (e.g. for inspection)
     void setRepositoryFilter();
 
