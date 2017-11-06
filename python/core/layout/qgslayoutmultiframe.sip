@@ -33,6 +33,9 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
 
     enum UndoCommand
     {
+      UndoHtmlBreakDistance,
+      UndoHtmlSource,
+      UndoHtmlStylesheet,
       UndoNone,
     };
 
