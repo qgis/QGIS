@@ -148,11 +148,12 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
   if ( sorted )
     mFieldsList->setSortingEnabled( true );
 
-  for ( int i = 0; i < 7; i++ )     // mFieldsList->columnCount()
+  for ( int i = 0; i < mFieldsList->columnCount(); i++ )
   {
     switch ( mLayer->fields().fieldOrigin( idx ) )
     {
       case QgsFields::OriginExpression:
+        if ( i == 7 ) continue;
         mFieldsList->item( idx, i )->setBackgroundColor( QColor( 200, 200, 255 ) );
         break;
 
@@ -218,6 +219,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
     expressionWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
     expressionWidget->layout()->addWidget( editExpressionButton );
     expressionWidget->layout()->addWidget( new QLabel( mLayer->expressionField( idx ) ) );
+    expressionWidget->setStyleSheet( "background-color: rgb( 200, 200, 255 )" );
     mFieldsList->setCellWidget( row, AttrCommentCol, expressionWidget );
   }
   else
@@ -234,9 +236,11 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
                                << AttrLengthCol
                                << AttrPrecCol
                                << AttrCommentCol;
+
   Q_FOREACH ( int i, notEditableCols )
   {
-    mFieldsList->item( row, i )->setFlags( mFieldsList->item( row, i )->flags() & ~Qt::ItemIsEditable );
+    if ( notEditableCols[i] != AttrCommentCol || mLayer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression )
+      mFieldsList->item( row, i )->setFlags( mFieldsList->item( row, i )->flags() & ~Qt::ItemIsEditable );
     if ( notEditableCols[i] == AttrAliasCol )
       mFieldsList->item( row, i )->setToolTip( tr( "Edit alias in the Form config tab" ) );
   }
@@ -359,33 +363,6 @@ void QgsSourceFieldsProperties::calculateFieldClicked()
 
 void QgsSourceFieldsProperties::attributesListCellChanged( int row, int column )
 {
-  /* this is made read only
-  if ( column == AttrAliasCol && mLayer )
-  {
-    int idx = mFieldsList->item( row, AttrIdCol )->text().toInt();
-
-    const QgsFields &fields = mLayer->fields();
-
-    if ( idx >= fields.count() )
-    {
-      return; // index must be wrong
-    }
-
-    QTableWidgetItem *aliasItem = mFieldsList->item( row, column );
-    if ( aliasItem )
-    {
-      if ( !aliasItem->text().trimmed().isEmpty() )
-      {
-        mLayer->setFieldAlias( idx, aliasItem->text() );
-      }
-      else
-      {
-        mLayer->removeFieldAlias( idx );
-      }
-    }
-  }
-  else
-  */
   if ( column == AttrNameCol && mLayer && mLayer->isEditable() )
   {
     QTableWidgetItem *nameItem = mFieldsList->item( row, column );

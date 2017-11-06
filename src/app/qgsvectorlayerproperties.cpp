@@ -30,7 +30,6 @@
 #include "qgsdiagramrenderer.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldcalculator.h"
-#include "qgsfieldsproperties.h"
 #include "qgssourcefieldsproperties.h"
 #include "qgsattributesformproperties.h"
 #include "qgslabelingwidget.h"
@@ -88,15 +87,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   : QgsOptionsDialogBase( QStringLiteral( "VectorLayerProperties" ), parent, fl )
   , mLayer( lyr )
   , mOriginalSubsetSQL( lyr->subsetString() )
-  , mSaveAsMenu( nullptr )
-  , mLoadStyleMenu( nullptr )
-  , mRendererDialog( nullptr )
-  , labelingDialog( nullptr )
-  , mActionDialog( nullptr )
-  , diagramPropertiesDialog( nullptr )
-  , mFieldsPropertiesDialog( nullptr )
-  , mSourceFieldsPropertiesDialog( nullptr )
-  , mAttributesFormPropertiesDialog( nullptr )
 {
   setupUi( this );
   connect( mLayerOrigNameLineEdit, &QLineEdit::textEdited, this, &QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited );
@@ -209,16 +199,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( mSaveAsMenu, &QMenu::triggered,
            this, &QgsVectorLayerProperties::saveStyleAsMenuTriggered );
 
-  mFieldsPropertiesDialog = new QgsFieldsProperties( mLayer, mFieldsFrame );
-  mFieldsPropertiesDialog->layout()->setMargin( 0 );
-  mFieldsFrame->setLayout( new QVBoxLayout( mFieldsFrame ) );
-  mFieldsFrame->layout()->setMargin( 0 );
-  mFieldsFrame->layout()->addWidget( mFieldsPropertiesDialog );
-
-  connect( mFieldsPropertiesDialog, &QgsFieldsProperties::toggleEditing, this, static_cast<void ( QgsVectorLayerProperties::* )()>( &QgsVectorLayerProperties::toggleEditing ) );
-  connect( this, static_cast<void ( QgsVectorLayerProperties::* )( QgsMapLayer * )>( &QgsVectorLayerProperties::toggleEditing ),
-  QgisApp::instance(), [ = ]( QgsMapLayer * layer ) { QgisApp::instance()->toggleEditing( layer ); } );
-
   mSourceFieldsPropertiesDialog = new QgsSourceFieldsProperties( mLayer, mSourceFieldsFrame );
   mSourceFieldsPropertiesDialog->layout()->setMargin( 0 );
   mSourceFieldsFrame->setLayout( new QVBoxLayout( mSourceFieldsFrame ) );
@@ -226,9 +206,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mSourceFieldsFrame->layout()->addWidget( mSourceFieldsPropertiesDialog );
 
   connect( mSourceFieldsPropertiesDialog, &QgsSourceFieldsProperties::toggleEditing, this, static_cast<void ( QgsVectorLayerProperties::* )()>( &QgsVectorLayerProperties::toggleEditing ) );
-  //davinfo2 irgendwie in quere mit dem fieldsproperties, wo da selbe gemacht wird
-  //connect( this, static_cast<void ( QgsVectorLayerProperties::* )( QgsMapLayer * )>( &QgsVectorLayerProperties::toggleEditing ),
-  //QgisApp::instance(), [ = ]( QgsMapLayer * layer ) { QgisApp::instance()->toggleEditing( layer ); } );
+  connect( this, static_cast<void ( QgsVectorLayerProperties::* )( QgsMapLayer * )>( &QgsVectorLayerProperties::toggleEditing ),
+  QgisApp::instance(), [ = ]( QgsMapLayer * layer ) { QgisApp::instance()->toggleEditing( layer ); } );
 
   mAttributesFormPropertiesDialog = new QgsAttributesFormProperties( mLayer, mAttributesFormFrame );
   mAttributesFormPropertiesDialog->layout()->setMargin( 0 );
@@ -544,19 +523,13 @@ void QgsVectorLayerProperties::syncToLayer()
   if ( labelingDialog )
     labelingDialog->adaptToLayer();
 
-  mFieldsPropertiesDialog->init();
   mSourceFieldsPropertiesDialog->init();
   mAttributesFormPropertiesDialog->init();
 
   // set initial state for variable editor
   updateVariableEditor();
 
-  // updates the init python code and ui
-  updateFieldsPropertiesDialog();
-
 } // syncToLayer()
-
-
 
 void QgsVectorLayerProperties::apply()
 {
@@ -626,9 +599,6 @@ void QgsVectorLayerProperties::apply()
 
   mLayer->setName( mLayerOrigNameLineEdit->text() );
 
-  // Apply fields settings
-  mFieldsPropertiesDialog->apply();
-  // has to be done then mSourceFieldsPropertiesDialog->apply();
   mAttributesFormPropertiesDialog->apply();
   mSourceFieldsPropertiesDialog->apply();
 
@@ -1225,7 +1195,6 @@ void QgsVectorLayerProperties::mButtonAddJoin_clicked()
     mLayer->addJoin( info );
     addJoinToTreeWidget( info );
     setPbnQueryBuilderEnabled();
-    mFieldsPropertiesDialog->init();
     mSourceFieldsPropertiesDialog->init();
     mAttributesFormPropertiesDialog->init();
   }
@@ -1296,7 +1265,6 @@ void QgsVectorLayerProperties::mJoinTreeWidget_itemDoubleClicked( QTreeWidgetIte
     addJoinToTreeWidget( info, idx );
 
     setPbnQueryBuilderEnabled();
-    mFieldsPropertiesDialog->init();
     mSourceFieldsPropertiesDialog->init();
     mAttributesFormPropertiesDialog->init();
   }
@@ -1425,7 +1393,6 @@ void QgsVectorLayerProperties::mButtonRemoveJoin_clicked()
   mLayer->removeJoin( currentJoinItem->data( 0, Qt::UserRole ).toString() );
   mJoinTreeWidget->takeTopLevelItem( mJoinTreeWidget->indexOfTopLevelItem( currentJoinItem ) );
   setPbnQueryBuilderEnabled();
-  mFieldsPropertiesDialog->init();
   mSourceFieldsPropertiesDialog->init();
   mAttributesFormPropertiesDialog->init();
 }
@@ -1518,12 +1485,6 @@ void QgsVectorLayerProperties::updateVariableEditor()
   mVariableEditor->context()->appendScope( QgsExpressionContextUtils::layerScope( mLayer ) );
   mVariableEditor->reloadContext();
   mVariableEditor->setEditableScopeIndex( 2 );
-}
-
-void QgsVectorLayerProperties::updateFieldsPropertiesDialog()
-{
-  QgsEditFormConfig cfg = mLayer->editFormConfig();
-  mFieldsPropertiesDialog->setEditFormInit( cfg.uiForm(), cfg.initFunction(), cfg.initCode(), cfg.initFilePath(), cfg.initCodeSource() );
 }
 
 void QgsVectorLayerProperties::showHelp()
@@ -1756,6 +1717,6 @@ void QgsVectorLayerProperties::deleteAuxiliaryField( int index )
     }
 
     updateAuxiliaryStoragePage( true );
-    mFieldsPropertiesDialog->init();
+    mSourceFieldsPropertiesDialog->init();
   }
 }
