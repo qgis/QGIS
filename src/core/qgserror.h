@@ -132,7 +132,7 @@ class CORE_EXPORT QgsError
      * \brief messageList return the list of current error messages
      * \return current list of error messages
      */
-    const QList<QgsErrorMessage> messageList() { return mMessageList; }
+    const QList<QgsErrorMessage> messageList() const { return mMessageList; }
 
   private:
     //! List of messages

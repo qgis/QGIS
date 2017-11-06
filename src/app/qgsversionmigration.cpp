@@ -58,7 +58,8 @@ QgsError Qgs2To3Migration::runMigration()
   QgsError settingsErrors = migrateSettings();
   if ( !settingsErrors.isEmpty() )
   {
-    for ( const auto &err : settingsErrors.messageList( ) )
+    const QList<QgsErrorMessage> errorList( settingsErrors.messageList( ) );
+    for ( const auto &err : errorList )
     {
       errors.append( err );
     }
@@ -66,7 +67,8 @@ QgsError Qgs2To3Migration::runMigration()
   QgsError stylesErrors = migrateStyles();
   if ( !stylesErrors.isEmpty() )
   {
-    for ( const auto &err : stylesErrors.messageList( ) )
+    const QList<QgsErrorMessage> errorList( stylesErrors.messageList( ) );
+    for ( const auto &err : errorList )
     {
       errors.append( err );
     }
@@ -74,7 +76,8 @@ QgsError Qgs2To3Migration::runMigration()
   QgsError authDbErrors = migrateAuthDb();
   if ( !authDbErrors.isEmpty() )
   {
-    for ( const auto &err : authDbErrors.messageList( ) )
+    const QList<QgsErrorMessage> errorList( authDbErrors.messageList( ) );
+    for ( const auto &err : errorList )
     {
       errors.append( err );
     }
@@ -280,8 +283,6 @@ QgsError Qgs2To3Migration::migrateAuthDb()
   }
   else
   {
-    QgsDebugMsg( QStringLiteral( "OLD AUTH DB FILE %1" ).arg( oldAuthDbFilePath ) );
-    QgsDebugMsg( QStringLiteral( "NEW AUTH DB FILE %1" ).arg( newAuthDbFilePath ) );
     QFile oldDbFile( oldAuthDbFilePath );
     if ( oldDbFile.exists( ) )
     {
