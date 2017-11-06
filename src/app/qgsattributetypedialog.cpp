@@ -341,33 +341,20 @@ void QgsAttributeTypeDialog::setAlias( const QString &alias )
   leAlias->setText( alias );
 }
 
-QString QgsAttributeTypeDialog::alias()
+QString QgsAttributeTypeDialog::alias() const
 {
   return leAlias->text();
 }
 
 void QgsAttributeTypeDialog::setComment( const QString &comment )
 {
-  leComment->setText( comment );
+  laComment->setText( comment );
 }
-
-QString QgsAttributeTypeDialog::comment()
-{
-  return leComment->text();
-}
-
 
 void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )
 {
   labelOnTopCheckBox->setChecked( onTop );
 }
-
-//removed selectionListWidget: void QgsAttributeTypeDialog::selectionListWidget_currentRowChanged( int index )
-//removed selectionListWidget: {
-//removed selectionListWidget:   const QString editType = selectionListWidget->item( index )->data( Qt::UserRole ).toString();
-//removed selectionListWidget:
-//removed selectionListWidget:   setEditorWidgetType( editType );
-//removed selectionListWidget: }
 
 void QgsAttributeTypeDialog::defaultExpressionChanged()
 {

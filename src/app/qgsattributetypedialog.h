@@ -71,17 +71,12 @@ class APP_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     /**
      * Getter for lable alias
      */
-    QString alias();
+    QString alias() const;
 
     /**
      * Setter for lable comment
      */
     void setComment( const QString &comment );
-
-    /**
-     * Getter for lable comment
-     */
-    QString comment();
 
     /**
      * Setter for checkbox for editable state of field

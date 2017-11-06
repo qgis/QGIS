@@ -25,15 +25,6 @@
 #include "qgis_app.h"
 #include <QWidget>
 
-/*
-namespace Ui {
-class QgsAttributeRelationEdit;
-}
-
-class QgsAttributeRelationEdit : public QWidget
-{
-*/
-
 class APP_EXPORT QgsAttributeRelationEdit: public QWidget, private Ui::QgsAttributeRelationEdit
 {
     Q_OBJECT

@@ -630,6 +630,7 @@ void QgsVectorLayerProperties::apply()
   mFieldsPropertiesDialog->apply();
   // has to be done then mSourceFieldsPropertiesDialog->apply();
   mAttributesFormPropertiesDialog->apply();
+  mSourceFieldsPropertiesDialog->apply();
 
   if ( mLayer->renderer() )
   {

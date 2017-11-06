@@ -1,3 +1,19 @@
+/***************************************************************************
+    qgssourcefieldsproperties.cpp
+    ---------------------
+    begin                : July 2017
+    copyright            : (C) 2017 by David Signer
+    email                : david at opengis dot ch
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgssourcefieldsproperties.h"
 
 QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWidget *parent )
@@ -185,6 +201,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
 
   mIndexedWidgets.insert( idx, mFieldsList->item( row, 0 ) );
   mFieldsList->setItem( row, AttrNameCol, new QTableWidgetItem( field.name() ) );
+  mFieldsList->setItem( row, AttrAliasCol, new QTableWidgetItem( field.alias() ) );
   mFieldsList->setItem( row, AttrTypeCol, new QTableWidgetItem( QVariant::typeToName( field.type() ) ) );
   mFieldsList->setItem( row, AttrTypeNameCol, new QTableWidgetItem( field.typeName() ) );
   mFieldsList->setItem( row, AttrLengthCol, new QTableWidgetItem( QString::number( field.length() ) ) );
@@ -211,21 +228,23 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
   QList<int> notEditableCols = QList<int>()
                                << AttrIdCol
                                << AttrNameCol
+                               << AttrAliasCol
                                << AttrTypeCol
                                << AttrTypeNameCol
                                << AttrLengthCol
-                               << AttrPrecCol;
+                               << AttrPrecCol
+                               << AttrCommentCol;
   Q_FOREACH ( int i, notEditableCols )
+  {
     mFieldsList->item( row, i )->setFlags( mFieldsList->item( row, i )->flags() & ~Qt::ItemIsEditable );
-
+    if ( notEditableCols[i] == AttrAliasCol )
+      mFieldsList->item( row, i )->setToolTip( tr( "Edit alias in the Form config tab" ) );
+  }
   bool canRenameFields = mLayer->isEditable() && ( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::RenameAttributes ) && !mLayer->readOnly();
   if ( canRenameFields )
     mFieldsList->item( row, AttrNameCol )->setFlags( mFieldsList->item( row, AttrNameCol )->flags() | Qt::ItemIsEditable );
   else
     mFieldsList->item( row, AttrNameCol )->setFlags( mFieldsList->item( row, AttrNameCol )->flags() & ~Qt::ItemIsEditable );
-
-  //set the alias for the attribute
-  mFieldsList->setItem( row, AttrAliasCol, new QTableWidgetItem( field.alias() ) );
 
   //published WMS/WFS attributes
   QTableWidgetItem *wmsAttrItem = new QTableWidgetItem();
@@ -255,6 +274,27 @@ bool QgsSourceFieldsProperties::addAttribute( const QgsField &field )
   }
 }
 
+void QgsSourceFieldsProperties::apply()
+{
+  // Disabled: we deal with the configuration in the new tabs
+  QSet<QString> excludeAttributesWMS, excludeAttributesWFS;
+
+  for ( int i = 0; i < mFieldsList->rowCount(); i++ )
+  {
+    if ( mFieldsList->item( i, AttrWMSCol )->checkState() == Qt::Unchecked )
+    {
+      excludeAttributesWMS.insert( mFieldsList->item( i, AttrNameCol )->text() );
+    }
+    if ( mFieldsList->item( i, AttrWFSCol )->checkState() == Qt::Unchecked )
+    {
+      excludeAttributesWFS.insert( mFieldsList->item( i, AttrNameCol )->text() );
+    }
+  }
+
+  mLayer->setExcludeAttributesWms( excludeAttributesWMS );
+  mLayer->setExcludeAttributesWfs( excludeAttributesWFS );
+
+}
 
 //SLOTS
 
@@ -319,6 +359,7 @@ void QgsSourceFieldsProperties::calculateFieldClicked()
 
 void QgsSourceFieldsProperties::attributesListCellChanged( int row, int column )
 {
+  /* this is made read only
   if ( column == AttrAliasCol && mLayer )
   {
     int idx = mFieldsList->item( row, AttrIdCol )->text().toInt();
@@ -343,7 +384,9 @@ void QgsSourceFieldsProperties::attributesListCellChanged( int row, int column )
       }
     }
   }
-  else if ( column == AttrNameCol && mLayer && mLayer->isEditable() )
+  else
+  */
+  if ( column == AttrNameCol && mLayer && mLayer->isEditable() )
   {
     QTableWidgetItem *nameItem = mFieldsList->item( row, column );
     if ( !nameItem ||

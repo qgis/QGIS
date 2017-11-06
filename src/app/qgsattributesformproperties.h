@@ -190,8 +190,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     void initFormLayoutTree();
     void initLayoutConfig();
     void initInitPython();
-
-    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, DnDTree *tree );
+    void initSuppressCombo();
 
   protected:
     void updateButtons();
@@ -222,12 +221,14 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     QString mInitFilePath;
     QString mInitCode;
 
+    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, DnDTree *tree );
+
   private slots:
     void addTabOrGroupButton();
     void removeTabOrGroupButton();
     void mEditorLayoutComboBox_currentIndexChanged( int index );
     void pbnSelectEditForm_clicked();
-    void pBInitCode_clicked();
+    void mTbInitCode_clicked();
 };
 
 

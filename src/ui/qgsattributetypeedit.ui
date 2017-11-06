@@ -35,10 +35,18 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="leAlias"/>
+       <widget class="QLineEdit" name="leAlias">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="leComment"/>
+       <widget class="QLabel" name="laComment">
+        <property name="text">
+         <string> </string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

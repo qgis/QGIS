@@ -1,3 +1,18 @@
+/***************************************************************************
+    qgsattributesformproperties.cpp
+    ---------------------
+    begin                : August 2017
+    copyright            : (C) 2017 by David Signer
+    email                : david at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgsattributesformproperties.h"
 #include "qgsattributetypedialog.h"
 #include "qgsattributerelationedit.h"
@@ -47,7 +62,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   connect( mRemoveTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::removeTabOrGroupButton );
   connect( mEditorLayoutComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged );
   connect( pbnSelectEditForm, &QToolButton::clicked, this, &QgsAttributesFormProperties::pbnSelectEditForm_clicked );
-  connect( pBInitCode, &QPushButton::clicked, this, &QgsAttributesFormProperties::pBInitCode_clicked );
+  connect( mTbInitCode, &QPushButton::clicked, this, &QgsAttributesFormProperties::mTbInitCode_clicked );
 }
 
 
@@ -64,8 +79,8 @@ void QgsAttributesFormProperties::init()
   initLayoutConfig();
   initInitPython();
 
-  mAttributeTypeDialog->setEnabled( false );
-  mAttributeRelationEdit->setEnabled( false );
+  //mAttributeTypeDialog->setEnabled( false );
+  //mAttributeRelationEdit->setEnabled( false );
 }
 
 void QgsAttributesFormProperties::initAvailableWidgetsTree()
@@ -97,6 +112,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
     item->setData( 0, FieldConfigRole, cfg );
     item->setData( 0, FieldNameRole, field.name() );
   }
+  catitem->setExpanded( true );
 
   /* stuff
   itemData.setIcon(i, mLayer->fields().iconForField( i ));
@@ -119,8 +135,9 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
 
     QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
     item->setData( 0, RelationConfigRole, cfg );
-    item->setData( 0, FieldNameRole, QStringLiteral( "%1" ).arg( relation.id() ) ); //relation.name() );
+    item->setData( 0, FieldNameRole, relation.id() );
   }
+  catitem->setExpanded( true );
 }
 
 void QgsAttributesFormProperties::initFormLayoutTree()
@@ -138,6 +155,17 @@ void QgsAttributesFormProperties::initFormLayoutTree()
   }
 }
 
+
+void QgsAttributesFormProperties::initSuppressCombo()
+{
+  //mFormSuppressCmbBx->addItem( tr( "" ) );
+  //mFormSuppressCmbBx->addItem( tr( "Load from external file" ) );
+  //mFormSuppressCmbBx->addItem( tr( "Provide code in this dialog" ) );
+  //mFormSuppressCmbBx->addItem( tr( "Load from the environment" ) );
+  mFormSuppressCmbBx->setCurrentIndex( mLayer->editFormConfig().suppress() );
+
+
+}
 void QgsAttributesFormProperties::initLayoutConfig()
 {
   mEditorLayoutComboBox->setCurrentIndex( mLayer->editFormConfig().layout() );
@@ -194,9 +222,11 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
     mAttributeTypeFrame->layout()->removeWidget( mAttributeTypeDialog );
     delete mAttributeTypeDialog;
 
+
     //
     mAttributeTypeDialog = new QgsAttributeTypeDialog( mLayer, index, mAttributeTypeFrame );
     mAttributeTypeDialog->setAlias( cfg.mAlias );
+    mAttributeTypeDialog->setComment( mLayer->fields().at( index ).comment() );
     mAttributeTypeDialog->setFieldEditable( cfg.mEditable );
     mAttributeTypeDialog->setLabelOnTop( cfg.mLabelOnTop );
     mAttributeTypeDialog->setNotNull( cfg.mConstraints & QgsFieldConstraints::ConstraintNotNull );
@@ -239,7 +269,6 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
   cfg.mEditable = mAttributeTypeDialog->fieldEditable();
   cfg.mLabelOnTop = mAttributeTypeDialog->labelOnTop();
   cfg.mAlias = mAttributeTypeDialog->alias();
-  cfg.mComment = mAttributeTypeDialog->comment();
 
   //confustion (will be removed): wir laden teilweise sachen einfach beim store anstelle des applys auf die mLayer - eingie Sachen laden wir auch vom layer anstatt über das cfg. wieso
   QgsFieldConstraints constraints = mLayer->fields().at( mAttributeTypeDialog->fieldIdx() ).constraints();
@@ -571,7 +600,7 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
   }
 }
 
-void QgsAttributesFormProperties::pBInitCode_clicked()
+void QgsAttributesFormProperties::mTbInitCode_clicked()
 {
   QgsAttributesFormInitCode attributesFormInitCode;
 
@@ -589,7 +618,6 @@ void QgsAttributesFormProperties::pBInitCode_clicked()
   mInitFunction = attributesFormInitCode.initFunction();
 
 }
-
 
 void QgsAttributesFormProperties::pbnSelectEditForm_clicked()
 {
@@ -677,25 +705,7 @@ void QgsAttributesFormProperties::apply()
   editFormConfig.setInitFilePath( mInitFilePath );
   editFormConfig.setInitCode( mInitCode );
 
-  /*
-  Das heisst wir brauchen von Python-Dialog:
-    mInitCodeSource
-    mInitFunction
-    mInitFilePath
-    mInitCode
-  Das heisst, beim init lesen wir die alle...
-
-  // Init function configuration
-  editFormConfig.setInitCodeSource( ( QgsEditFormConfig::PythonInitCodeSource )mInitCodeSourceComboBox->currentIndex() );
-  editFormConfig.setInitFunction( mInitFunctionLineEdit->text() );
-  editFormConfig.setInitFilePath( mInitFilePathLineEdit->text() );
-  editFormConfig.setInitCode( mInitCodeEditorPython->text() );
-  */
-
-  /*
   editFormConfig.setSuppress( ( QgsEditFormConfig::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
-  */
-
 
   // relations
   QTreeWidgetItem *relationContainer = mAvailableWidgetsTree->invisibleRootItem()->child( 1 );

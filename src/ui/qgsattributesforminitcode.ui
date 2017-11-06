@@ -11,83 +11,9 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Python Init Code Configuration</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0">
-    <widget class="QgsCodeEditorPython" name="mInitCodeEditorPython" native="true"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QWidget" name="mInitCodeSourceContainter" native="true">
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>40</height>
-      </size>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="label_3">
-        <property name="toolTip">
-         <string>QGIS forms can have a Python function that is called when the form is opened.
-Use this function to add extra logic to your forms.
-The function code of the function can be loaded from the source code entered 
-in this dialog,  from an external python file or from the environment (for example 
-from a plugin or from startup.py).
-
-An example is:
-
-          from PyQt4.QtGui import QWidget
-
-          def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
-
-Reference in function name: my_form_open
-
-</string>
-        </property>
-        <property name="text">
-         <string>Python Init function</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="mInitCodeSourceComboBox">
-        <property name="toolTip">
-         <string>QGIS forms can have a Python function that is called when the form is opened.
-Use this function to add extra logic to your forms.
-The function code of the function can be loaded from the source code entered 
-in this dialog,  from an external python file or from the environment (for example 
-from a plugin or from startup.py).
-
-An example is:
-
-          from PyQt4.QtGui import QWidget
-
-          def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
-
-Reference in function name: my_form_open
-
-</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QWidget" name="mInitFunctionContainer" native="true">
      <property name="sizePolicy">
@@ -99,7 +25,7 @@ Reference in function name: my_form_open
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>40</height>
+       <height>50</height>
       </size>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -162,6 +88,95 @@ Reference in function name: my_form_open
      </layout>
     </widget>
    </item>
+   <item row="4" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QgsCodeEditorPython" name="mInitCodeEditorPython" native="true"/>
+   </item>
+   <item row="0" column="0">
+    <widget class="QWidget" name="mInitCodeSourceContainter" native="true">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="toolTip">
+         <string>The function code of the function can be loaded from the source code entered 
+in this dialog,  from an external python file or from the environment (for example 
+from a plugin or from startup.py).
+
+An example is:
+
+          rom qgis.PyQt.QtWidgets import QWidget
+
+          def my_form_open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
+
+Reference in function name: my_form_open
+
+</string>
+        </property>
+        <property name="text">
+         <string>Python Init function</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="mInitCodeSourceComboBox">
+        <property name="toolTip">
+         <string>The function code of the function can be loaded from the source code entered 
+in this dialog,  from an external python file or from the environment (for example 
+from a plugin or from startup.py).
+
+An example is:
+
+          rom qgis.PyQt.QtWidgets import QWidget
+
+          def my_form_open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
+
+Reference in function name: my_form_open
+
+</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -181,8 +196,8 @@ Reference in function name: my_form_open
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>254</x>
+     <y>293</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>

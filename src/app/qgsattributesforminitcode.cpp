@@ -1,3 +1,18 @@
+/***************************************************************************
+    qgsattributesforminitcode.cpp
+    ---------------------
+    begin                : October 2017
+    copyright            : (C) 2017 by David Signer
+    email                : david at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgsattributesforminitcode.h"
 #include "ui_qgsattributesforminitcode.h"
 #include "qgssettings.h"
@@ -9,7 +24,7 @@ QgsAttributesFormInitCode::QgsAttributesFormInitCode()
   setupUi( this );
 
   // Init function stuff
-  mInitCodeSourceComboBox->addItem( tr( "" ) );
+  mInitCodeSourceComboBox->addItem( QString() );
   mInitCodeSourceComboBox->addItem( tr( "Load from external file" ) );
   mInitCodeSourceComboBox->addItem( tr( "Provide code in this dialog" ) );
   mInitCodeSourceComboBox->addItem( tr( "Load from the environment" ) );
