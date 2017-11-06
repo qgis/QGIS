@@ -65,21 +65,6 @@ Use this function to add extra logic to your forms.</string>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <item>
-         <property name="text">
-          <string>Use default show form config</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Show form on add feature</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Hide form on add feature</string>
-         </property>
-        </item>
        </widget>
       </item>
      </layout>

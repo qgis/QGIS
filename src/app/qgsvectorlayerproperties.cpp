@@ -1528,7 +1528,14 @@ void QgsVectorLayerProperties::updateFieldsPropertiesDialog()
 
 void QgsVectorLayerProperties::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html" ) );
+  if ( mOptionsListWidget->currentIndex().data().toString() == "Form" )
+  {
+    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#configure-the-field-behavior" ) );
+  }
+  else
+  {
+    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html" ) );
+  }
 }
 
 void QgsVectorLayerProperties::updateAuxiliaryStoragePage( bool reset )

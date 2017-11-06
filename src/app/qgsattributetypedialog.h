@@ -200,8 +200,6 @@ class APP_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
 
     void defaultExpressionChanged();
 
-    void showHelp();
-
   private:
     QgsVectorLayer *mLayer = nullptr;
     int mFieldIdx;

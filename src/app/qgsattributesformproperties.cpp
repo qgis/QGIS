@@ -78,6 +78,7 @@ void QgsAttributesFormProperties::init()
 
   initLayoutConfig();
   initInitPython();
+  initSuppressCombo();
 
   mAttributeTypeDialog->setEnabled( false );
   mAttributeRelationEdit->setEnabled( false );
@@ -158,10 +159,19 @@ void QgsAttributesFormProperties::initFormLayoutTree()
 
 void QgsAttributesFormProperties::initSuppressCombo()
 {
-  //mFormSuppressCmbBx->addItem( tr( "" ) );
-  //mFormSuppressCmbBx->addItem( tr( "Load from external file" ) );
-  //mFormSuppressCmbBx->addItem( tr( "Provide code in this dialog" ) );
-  //mFormSuppressCmbBx->addItem( tr( "Load from the environment" ) );
+  QgsSettings settings;
+
+  if ( settings.value( QStringLiteral( "qgis/digitizing/disable_enter_attribute_values_dialog" ), false ).toBool() )
+  {
+    mFormSuppressCmbBx->addItem( tr( "Hide form on add feature (global settings)" ) );
+  }
+  else
+  {
+    mFormSuppressCmbBx->addItem( tr( "Show form on add feature (global settings)" ) );
+  }
+  mFormSuppressCmbBx->addItem( tr( "Hide form on add feature" ) );
+  mFormSuppressCmbBx->addItem( tr( "Show form on add feature" ) );
+
   mFormSuppressCmbBx->setCurrentIndex( mLayer->editFormConfig().suppress() );
 
 

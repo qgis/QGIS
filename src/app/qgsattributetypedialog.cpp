@@ -400,8 +400,3 @@ QStandardItem *QgsAttributeTypeDialog::currentItem() const
   QStandardItemModel *widgetTypeModel = qobject_cast<QStandardItemModel *>( mWidgetTypeComboBox->model() );
   return widgetTypeModel->item( mWidgetTypeComboBox->currentIndex() );
 }
-
-void QgsAttributeTypeDialog::showHelp()
-{
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#configure-the-field-behavior" ) );
-}
