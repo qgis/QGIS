@@ -24,7 +24,6 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgisinterface.h"
-#include "qgscrscache.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"

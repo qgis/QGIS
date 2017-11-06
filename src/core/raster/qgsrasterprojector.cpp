@@ -17,7 +17,6 @@
 #include <algorithm>
 
 #include "qgsrasterdataprovider.h"
-#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsrasterprojector.h"
 #include "qgscoordinatetransform.h"

@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscrscache.h"
 #include "qgsgeometryfollowboundariescheck.h"
 #include "qgsgeometryengine.h"
 #include "qgsproject.h"

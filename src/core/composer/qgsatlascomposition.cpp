@@ -29,7 +29,6 @@
 #include "qgsproject.h"
 #include "qgsmessagelog.h"
 #include "qgsexpressioncontext.h"
-#include "qgscrscache.h"
 #include "qgsmapsettings.h"
 
 QgsAtlasComposition::QgsAtlasComposition( QgsComposition *composition )

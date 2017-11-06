@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-#include "qgscrscache.h"
 #include "qgsfeature.h"
 #include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"

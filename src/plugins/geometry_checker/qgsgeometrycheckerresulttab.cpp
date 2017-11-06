@@ -28,7 +28,6 @@
 #include "qgsgeometrycheck.h"
 #include "qgsfeaturepool.h"
 
-#include "qgscrscache.h"
 #include "qgsgeometry.h"
 #include "qgisinterface.h"
 #include "qgsmapcanvas.h"

@@ -24,7 +24,6 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsprojectionselectiondialog.h"
-#include "qgscrscache.h"
 #include "qgssettings.h"
 #include "qgssqliteutils.h"
 

@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscrscache.h"
 #include "qgsgeometrychecker.h"
 #include "qgsgeometrycheck.h"
 #include "qgsfeaturepool.h"
