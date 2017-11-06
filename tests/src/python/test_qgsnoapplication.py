@@ -56,6 +56,15 @@ class TestQgsNoApplication(unittest.TestCase):
     def testAuthManager(self):
         self.assertTrue(QgsApplication.authManager())
 
+    def testDataItemProviderRegistry(self):
+        self.assertTrue(QgsApplication.dataItemProviderRegistry())
+
+    def testInit(self):
+        """
+        Test calling QgsApplication.initQgis() without QgsApplication instance
+        """
+        QgsApplication.initQgis()
+
 
 if __name__ == '__main__':
     unittest.main()

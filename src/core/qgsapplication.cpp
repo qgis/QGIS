@@ -112,6 +112,7 @@ const char *QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
 
 QgsApplication::ApplicationMembers *QgsApplication::sApplicationMembers = nullptr;
 QgsAuthManager *QgsApplication::sAuthManager = nullptr;
+QgsDataItemProviderRegistry *QgsApplication::sDataItemProviderRegistry = nullptr;
 
 QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder, const QString &platformName )
   : QApplication( argc, argv, GUIenabled )
@@ -871,7 +872,8 @@ void QgsApplication::initQgis()
   // set the provider plugin path (this creates provider registry)
   QgsProviderRegistry::instance( pluginPath() );
 
-  instance()->mDataItemProviderRegistry = new QgsDataItemProviderRegistry();
+  // create data item provider registry
+  ( void )QgsApplication::dataItemProviderRegistry();
 
   // create project instance if doesn't exist
   QgsProject::instance();
@@ -1559,7 +1561,21 @@ QgsRasterRendererRegistry *QgsApplication::rasterRendererRegistry()
 
 QgsDataItemProviderRegistry *QgsApplication::dataItemProviderRegistry()
 {
-  return instance()->mDataItemProviderRegistry;
+  if ( instance() )
+  {
+    if ( !instance()->mDataItemProviderRegistry )
+    {
+      instance()->mDataItemProviderRegistry = new QgsDataItemProviderRegistry();
+    }
+    return instance()->mDataItemProviderRegistry;
+  }
+  else
+  {
+    // no QgsApplication instance
+    if ( !sDataItemProviderRegistry )
+      sDataItemProviderRegistry = new QgsDataItemProviderRegistry();
+    return sDataItemProviderRegistry;
+  }
 }
 
 QgsSvgCache *QgsApplication::svgCache()
