@@ -61,7 +61,7 @@ void QgsLayoutItemPropertiesDialog::setItemPosition( QgsLayoutPoint position )
   position = mLayout->convertFromLayoutUnits( mLayout->pageCollection()->positionOnPage( layoutPoint ), position.units() );
 
   mPageSpin->setValue( page + 1 );
-  mPosUnitsComboBox->setUnit( position.units() );
+  whileBlocking( mPosUnitsComboBox )->setUnit( position.units() );
   mXPosSpin->setValue( position.x() );
   mYPosSpin->setValue( position.y() );
 }
@@ -80,7 +80,7 @@ void QgsLayoutItemPropertiesDialog::setItemSize( QgsLayoutSize size )
 {
   mWidthSpin->setValue( size.width() );
   mHeightSpin->setValue( size.height() );
-  mSizeUnitsComboBox->setUnit( size.units() );
+  whileBlocking( mSizeUnitsComboBox )->setUnit( size.units() );
 }
 
 QgsLayoutSize QgsLayoutItemPropertiesDialog::itemSize() const
