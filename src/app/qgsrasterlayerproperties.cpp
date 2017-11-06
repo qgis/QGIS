@@ -122,8 +122,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsRasterLayerProperties::apply );
 
-  connect( mOptionsStackedWidget, &QStackedWidget::currentChanged, this, &QgsRasterLayerProperties::mOptionsStackedWidget_CurrentChanged );
-
   // brightness/contrast controls
   connect( mSliderBrightness, &QAbstractSlider::valueChanged, mBrightnessSpinBox, &QSpinBox::setValue );
   connect( mBrightnessSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mSliderBrightness, &QAbstractSlider::setValue );
@@ -1483,21 +1481,23 @@ void QgsRasterLayerProperties::setTransparencyToEdited( int row )
   mTransparencyToEdited[row] = true;
 }
 
-void QgsRasterLayerProperties::mOptionsStackedWidget_CurrentChanged( int indx )
+void QgsRasterLayerProperties::optionsStackedWidget_CurrentChanged( int index )
 {
+  QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( index );
+
   if ( !mHistogramWidget )
     return;
 
-  if ( indx == 5 )
+  if ( index == 5 )
   {
-    mHistogramWidget->setActive( true );
+    mHistogramWidget->setActive( false );
   }
   else
   {
     mHistogramWidget->setActive( false );
   }
 
-  if ( indx == mOptStackedWidget->indexOf( mOptsPage_Information ) || !mMetadataFilled )
+  if ( index == mOptStackedWidget->indexOf( mOptsPage_Information ) || !mMetadataFilled )
     //set the metadata contents (which can be expensive)
     teMetadataViewer->clear();
   teMetadataViewer->setHtml( mRasterLayer->htmlMetadata() );

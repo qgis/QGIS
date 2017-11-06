@@ -95,7 +95,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mProxyTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsOptions::mProxyTypeComboBox_currentIndexChanged );
   connect( mCustomVariablesChkBx, &QCheckBox::toggled, this, &QgsOptions::mCustomVariablesChkBx_toggled );
   connect( mCurrentVariablesQGISChxBx, &QCheckBox::toggled, this, &QgsOptions::mCurrentVariablesQGISChxBx_toggled );
-  connect( mOptionsStackedWidget, &QStackedWidget::currentChanged, this, &QgsOptions::mOptionsStackedWidget_currentChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOptions::showHelp );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -1998,9 +1997,11 @@ void QgsOptions::clearAccessCache()
   QMessageBox::information( this, tr( "Cache cleared" ), tr( "Connection authentication cache has been cleared" ) );
 }
 
-void QgsOptions::mOptionsStackedWidget_currentChanged( int indx )
+void QgsOptions::optionsStackedWidget_CurrentChanged( int index )
 {
-  Q_UNUSED( indx );
+  QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( index );
+
+  Q_UNUSED( index );
   // load gdal driver list when gdal tab is first opened
   if ( mOptionsStackedWidget->currentWidget()->objectName() == QLatin1String( "mOptionsPageGDAL" )
        && ! mLoadedGdalDriverList )

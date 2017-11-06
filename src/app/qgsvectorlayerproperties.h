@@ -116,7 +116,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void saveDefaultStyle_clicked();
     void loadStyle_clicked();
     void saveStyleAs_clicked();
-    void mOptionsStackedWidget_CurrentChanged( int indx );
+    void optionsStackedWidget_CurrentChanged( int index ) override;
     void pbnUpdateExtents_clicked();
 
     void mButtonAddJoin_clicked();
