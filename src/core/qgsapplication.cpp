@@ -111,6 +111,7 @@ const char *QgsApplication::QGIS_ORGANIZATION_DOMAIN = "qgis.org";
 const char *QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
 
 QgsApplication::ApplicationMembers *QgsApplication::sApplicationMembers = nullptr;
+QgsAuthManager *QgsApplication::sAuthManager = nullptr;
 
 QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder, const QString &platformName )
   : QApplication( argc, argv, GUIenabled )
@@ -889,11 +890,21 @@ void QgsApplication::initQgis()
 
 QgsAuthManager *QgsApplication::authManager()
 {
-  if ( ! instance()->mAuthManager )
+  if ( instance() )
   {
-    instance()->mAuthManager = QgsAuthManager::instance();
+    if ( !instance()->mAuthManager )
+    {
+      instance()->mAuthManager = QgsAuthManager::instance();
+    }
+    return instance()->mAuthManager;
   }
-  return instance()->mAuthManager;
+  else
+  {
+    // no QgsApplication instance
+    if ( !sAuthManager )
+      sAuthManager = QgsAuthManager::instance();
+    return sAuthManager;
+  }
 }
 
 

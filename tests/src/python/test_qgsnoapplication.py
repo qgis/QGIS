@@ -53,6 +53,9 @@ class TestQgsNoApplication(unittest.TestCase):
         QgsApplication.setNullRepresentation(nr)
         self.assertEqual(QgsApplication.nullRepresentation(), nr)
 
+    def testAuthManager(self):
+        self.assertTrue(QgsApplication.authManager())
+
 
 if __name__ == '__main__':
     unittest.main()
