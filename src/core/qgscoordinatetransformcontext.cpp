@@ -115,7 +115,7 @@ bool QgsCoordinateTransformContext::addSourceDestinationDatumTransform( const Qg
 
   d.detach();
   d->mLock.lockForWrite();
-  if ( sourceTransform == -1 || destinationTransform == -1 )
+  if ( sourceTransform == -1 && destinationTransform == -1 )
   {
     d->mSourceDestDatumTransforms.remove( qMakePair( sourceCrs.authid(), destinationCrs.authid() ) );
   }
