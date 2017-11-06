@@ -754,7 +754,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
     return mInput->block( bandNo, extent, width, height, feedback );
   }
 
-  QgsCoordinateTransform inverseCt = QgsCoordinateTransformCache::instance()->transform( mDestCRS.authid(), mSrcCRS.authid(), mDestDatumTransform, mSrcDatumTransform );
+  QgsCoordinateTransform inverseCt( mDestCRS, mSrcCRS, mDestDatumTransform, mSrcDatumTransform );
 
   ProjectorData pd( extent, width, height, mInput, inverseCt, mPrecision );
 
@@ -852,7 +852,7 @@ bool QgsRasterProjector::destExtentSize( const QgsRectangle &srcExtent, int srcX
   {
     return false;
   }
-  QgsCoordinateTransform ct = QgsCoordinateTransformCache::instance()->transform( mSrcCRS.authid(), mDestCRS.authid(), mSrcDatumTransform, mDestDatumTransform );
+  QgsCoordinateTransform ct( mSrcCRS, mDestCRS, mSrcDatumTransform, mDestDatumTransform );
 
   return extentSize( ct, srcExtent, srcXSize, srcYSize, destExtent, destXSize, destYSize );
 }

@@ -62,6 +62,16 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   initialize();
 }
 
+QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, int sourceDatumTransform, int destDatumTransform )
+  : mSourceCRS( source )
+  , mDestCRS( destination )
+  , mSourceDatumTransform( sourceDatumTransform )
+  , mDestinationDatumTransform( destDatumTransform )
+{
+  setFinder();
+  initialize();
+}
+
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate &other )
   : QSharedData( other )
   , mIsValid( other.mIsValid )

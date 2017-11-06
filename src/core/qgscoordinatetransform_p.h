@@ -72,6 +72,11 @@ class QgsCoordinateTransformPrivate : public QSharedData
                                    const QgsCoordinateReferenceSystem &destination,
                                    const QgsCoordinateTransformContext &context );
 
+    QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source,
+                                   const QgsCoordinateReferenceSystem &destination,
+                                   int sourceDatumTransform,
+                                   int destDatumTransform );
+
     QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate &other );
 
     ~QgsCoordinateTransformPrivate();

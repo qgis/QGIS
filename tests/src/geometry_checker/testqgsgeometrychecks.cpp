@@ -39,6 +39,7 @@
 #include "qgsgeometryselfcontactcheck.h"
 #include "qgsgeometryselfintersectioncheck.h"
 #include "qgsgeometrysliverpolygoncheck.h"
+#include "qgsproject.h"
 
 #include "qgsgeometrytypecheck.h"
 
@@ -55,9 +56,9 @@ class TestQgsGeometryChecks: public QObject
       QgsGeometryCheck::ChangeType type;
       QgsVertexId vidx;
     };
-    double layerToMapUnits( const QgsMapLayer *layer, const QString &mapCrs ) const;
-    QgsFeaturePool *createFeaturePool( QgsVectorLayer *layer, const QString &mapCrs, bool selectedOnly = false ) const;
-    QgsGeometryCheckerContext *createTestContext( QTemporaryDir &tempDir, QMap<QString, QString> &layers, const QString &mapCrs = "EPSG:4326", double prec = 8 ) const;
+    double layerToMapUnits( const QgsMapLayer *layer, const QgsCoordinateReferenceSystem &mapCrs ) const;
+    QgsFeaturePool *createFeaturePool( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &mapCrs, bool selectedOnly = false ) const;
+    QgsGeometryCheckerContext *createTestContext( QTemporaryDir &tempDir, QMap<QString, QString> &layers, const QgsCoordinateReferenceSystem &mapCrs = QgsCoordinateReferenceSystem( "EPSG:4326" ), double prec = 8 ) const;
     void cleanupTestContext( QgsGeometryCheckerContext *ctx ) const;
     void listErrors( const QList<QgsGeometryCheckError *> &checkErrors, const QStringList &messages ) const;
     QList<QgsGeometryCheckError *> searchCheckErrors( const QList<QgsGeometryCheckError *> &checkErrors, const QString &layerId, const QgsFeatureId &featureId = -1, const QgsPointXY &pos = QgsPointXY(), const QgsVertexId &vid = QgsVertexId(), const QVariant &value = QVariant(), double tol = 1E-4 ) const;
@@ -958,9 +959,9 @@ void TestQgsGeometryChecks::testSliverPolygonCheck()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-double TestQgsGeometryChecks::layerToMapUnits( const QgsMapLayer *layer, const QString &mapCrs ) const
+double TestQgsGeometryChecks::layerToMapUnits( const QgsMapLayer *layer, const QgsCoordinateReferenceSystem &mapCrs ) const
 {
-  QgsCoordinateTransform crst = QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mapCrs );
+  QgsCoordinateTransform crst = QgsCoordinateTransform( layer->crs(), mapCrs, QgsProject::instance() );
   QgsRectangle extent = layer->extent();
   QgsPointXY l1( extent.xMinimum(), extent.yMinimum() );
   QgsPointXY l2( extent.xMaximum(), extent.yMaximum() );
@@ -971,14 +972,14 @@ double TestQgsGeometryChecks::layerToMapUnits( const QgsMapLayer *layer, const Q
   return distMapUnits / distLayerUnits;
 }
 
-QgsFeaturePool *TestQgsGeometryChecks::createFeaturePool( QgsVectorLayer *layer, const QString &mapCrs, bool selectedOnly ) const
+QgsFeaturePool *TestQgsGeometryChecks::createFeaturePool( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &mapCrs, bool selectedOnly ) const
 {
   double layerToMapUntis = layerToMapUnits( layer, mapCrs );
-  QgsCoordinateTransform layerToMapTransform = QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mapCrs );
+  QgsCoordinateTransform layerToMapTransform = QgsCoordinateTransform( layer->crs(), mapCrs, QgsProject::instance() );
   return new QgsFeaturePool( layer, layerToMapUntis, layerToMapTransform, selectedOnly );
 }
 
-QgsGeometryCheckerContext *TestQgsGeometryChecks::createTestContext( QTemporaryDir &tempDir, QMap<QString, QString> &layers, const QString &mapCrs, double prec ) const
+QgsGeometryCheckerContext *TestQgsGeometryChecks::createTestContext( QTemporaryDir &tempDir, QMap<QString, QString> &layers, const QgsCoordinateReferenceSystem &mapCrs, double prec ) const
 {
   QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
   QDir tmpDir( tempDir.path() );

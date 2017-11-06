@@ -41,6 +41,9 @@ extern "C"
 // if defined shows all information about transform to stdout
 // #define COORDINATE_TRANSFORM_VERBOSE
 
+QReadWriteLock QgsCoordinateTransform::sCacheLock;
+QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > QgsCoordinateTransform::sTransforms;
+
 QgsCoordinateTransform::QgsCoordinateTransform()
 {
   d = new QgsCoordinateTransformPrivate();
@@ -64,6 +67,14 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
   d = new QgsCoordinateTransformPrivate( source, destination, project ? project->transformContext() : QgsCoordinateTransformContext() );
 #ifdef QGISDEBUG
   d->mHasContext = true;
+#endif
+}
+
+QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, int sourceDatumTransform, int destinationDatumTransform )
+{
+  d = new QgsCoordinateTransformPrivate( source, destination, sourceDatumTransform, destinationDatumTransform );
+#ifdef QGISDEBUG
+  d->mHasContext = true; // not strictly true, but we don't need to worry if datums have been explicitly set
 #endif
 }
 
@@ -787,4 +798,11 @@ void QgsCoordinateTransform::initialize()
 {
   d.detach();
   d->initialize();
+}
+
+void QgsCoordinateTransform::invalidateCache()
+{
+  sCacheLock.lockForWrite();
+  sTransforms.clear();
+  sCacheLock.unlock();
 }

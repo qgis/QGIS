@@ -16,7 +16,9 @@
 #include "qgscrscache.h"
 #include "qgsgeometryfollowboundariescheck.h"
 #include "qgsgeometryengine.h"
+#include "qgsproject.h"
 #include "qgsspatialindex.h"
+
 
 QgsGeometryFollowBoundariesCheck::QgsGeometryFollowBoundariesCheck( QgsGeometryCheckerContext *context, QgsVectorLayer *checkLayer )
   : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::PolygonGeometry}, context )
@@ -48,7 +50,7 @@ void QgsGeometryFollowBoundariesCheck::collectErrors( QList<QgsGeometryCheckErro
     const QgsAbstractGeometry *geom = layerFeature.geometry();
 
     // The geometry to crs of the check layer
-    QgsCoordinateTransform crst = QgsCoordinateTransformCache::instance()->transform( layerFeature.layer().crs().authid(), mCheckLayer->crs().authid() );
+    QgsCoordinateTransform crst( layerFeature.layer().crs(), mCheckLayer->crs(), QgsProject::instance() );
     QgsGeometry geomt( geom->clone() );
     geomt.transform( crst );
 

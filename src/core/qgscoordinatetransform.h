@@ -102,6 +102,18 @@ class CORE_EXPORT QgsCoordinateTransform
                                      const QgsProject *project );
 
     /**
+     * Constructs a QgsCoordinateTransform to transform from the \a source
+     * to \a destination coordinate reference system, with the specified
+     * datum transforms.
+     *
+     * \since QGIS 3.0
+     */
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     int sourceDatumTransform,
+                                     int destinationDatumTransform );
+
+    /**
      * Copy constructor
      */
     QgsCoordinateTransform( const QgsCoordinateTransform &o );
@@ -364,11 +376,24 @@ class CORE_EXPORT QgsCoordinateTransform
     //!initialize is used to actually create the Transformer instance
     void initialize();
 
+    /**
+     * Clears the internal cache used to initialize QgsCoordinateTransform objects.
+     * This should be called whenever the srs database has
+     * been modified in order to ensure that outdated CRS transforms are not created.
+     * \since QGIS 3.0
+     */
+    static void invalidateCache();
+
   private:
 
     static void searchDatumTransform( const QString &sql, QList< int > &transforms );
 
     mutable QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
+
+    // cache
+    static QReadWriteLock sCacheLock;
+    static QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > sTransforms; //same auth_id pairs might have different datum transformations
+
 };
 
 //! Output stream operator

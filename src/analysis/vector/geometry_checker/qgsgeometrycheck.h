@@ -35,10 +35,10 @@ class QgsFeaturePool;
 
 struct ANALYSIS_EXPORT QgsGeometryCheckerContext
 {
-  QgsGeometryCheckerContext( int _precision, const QString &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools );
+  QgsGeometryCheckerContext( int _precision, const QgsCoordinateReferenceSystem &_mapCrs, const QMap<QString, QgsFeaturePool *> &_featurePools );
   const double tolerance;
   const double reducedTolerance;
-  const QString mapCrs;
+  const QgsCoordinateReferenceSystem mapCrs;
   const QMap<QString, QgsFeaturePool *> featurePools;
 };
 

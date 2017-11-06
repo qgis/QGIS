@@ -18,6 +18,7 @@
 #include "qgsgeometrychecker.h"
 #include "qgsgeometrycheck.h"
 #include "qgsfeaturepool.h"
+#include "qgsproject.h"
 
 #include <QtConcurrentMap>
 #include <QFutureWatcher>
@@ -144,7 +145,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   {
     const QMap<QgsFeatureId, QList<QgsGeometryCheck::Change>> &layerChanges = changes[layerId];
     QgsFeaturePool *featurePool = mContext->featurePools[layerId];
-    QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( featurePool->getLayer()->crs().authid(), mContext->mapCrs );
+    QgsCoordinateTransform t( featurePool->getLayer()->crs(), mContext->mapCrs, QgsProject::instance() );
     for ( QgsFeatureId id : layerChanges.keys() )
     {
       bool removed = false;
@@ -183,7 +184,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   for ( const QString &layerId : mContext->featurePools.keys() )
   {
     QgsFeaturePool *featurePool = mContext->featurePools[layerId];
-    QgsCoordinateTransform t = QgsCoordinateTransformCache::instance()->transform( mContext->mapCrs, featurePool->getLayer()->crs().authid() );
+    QgsCoordinateTransform t( mContext->mapCrs, featurePool->getLayer()->crs(), QgsProject::instance() );
     recheckAreaFeatures[layerId] = featurePool->getIntersects( t.transform( recheckArea ) );
   }
 
