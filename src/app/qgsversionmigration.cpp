@@ -279,7 +279,6 @@ QgsError Qgs2To3Migration::migrateAuthDb()
     QString msg = QStringLiteral( "Could not copy old auth DB to %1: file already exists!" ).arg( newAuthDbFilePath );
     QgsDebugMsg( msg );
     error.append( msg );
-
   }
   else
   {
