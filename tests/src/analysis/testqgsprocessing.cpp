@@ -130,6 +130,41 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QgsProcessingParameterVectorDestination *p8 = new QgsProcessingParameterVectorDestination( "p8" );
       // this should fail - it would result in a duplicate output name
       QVERIFY( !addParameter( p8 ) );
+
+      // default vector format extension
+      QgsProcessingParameterFeatureSink *sinkParam = new QgsProcessingParameterFeatureSink( "sink" );
+      QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "shp" ) ); // before alg is accessible
+      QVERIFY( !sinkParam->algorithm() );
+      QVERIFY( !sinkParam->provider() );
+      addParameter( sinkParam );
+      QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "shp" ) );
+      QCOMPARE( sinkParam->algorithm(), this );
+      QVERIFY( !sinkParam->provider() );
+
+      // default raster format extension
+      QgsProcessingParameterRasterDestination *rasterParam = new QgsProcessingParameterRasterDestination( "raster" );
+      QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) ); // before alg is accessible
+      addParameter( rasterParam );
+      QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) );
+    }
+
+    void runParameterChecks2()
+    {
+      // default vector format extension, taken from provider
+      QgsProcessingParameterFeatureSink *sinkParam = new QgsProcessingParameterFeatureSink( "sink2" );
+      QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "shp" ) ); // before alg is accessible
+      QVERIFY( !sinkParam->algorithm() );
+      QVERIFY( !sinkParam->provider() );
+      addParameter( sinkParam );
+      QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "xshp" ) );
+      QCOMPARE( sinkParam->algorithm(), this );
+      QCOMPARE( sinkParam->provider(), provider() );
+
+      // default raster format extension
+      QgsProcessingParameterRasterDestination *rasterParam = new QgsProcessingParameterRasterDestination( "raster2" );
+      QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) ); // before alg is accessible
+      addParameter( rasterParam );
+      QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "pcx" ) );
     }
 
     void runOutputChecks()
@@ -254,6 +289,16 @@ class DummyProvider : public QgsProcessingProvider
 
     void unload() override { if ( unloaded ) { *unloaded = true; } }
 
+    QString defaultVectorFileExtension( bool ) const override
+    {
+      return "xshp"; // shape-X. Just like shapefiles, but to the max!
+    }
+
+    QString defaultRasterFileExtension() const override
+    {
+      return "pcx"; // next-gen raster storage
+    }
+
     bool *unloaded = nullptr;
 
   protected:
@@ -273,7 +318,7 @@ class DummyProvider : public QgsProcessingProvider
 
     QString mId;
 
-
+    friend class TestQgsProcessing;
 };
 
 class DummyProviderNoLoad : public DummyProvider
@@ -1419,8 +1464,12 @@ void TestQgsProcessing::parameters()
 
 void TestQgsProcessing::algorithmParameters()
 {
-  DummyAlgorithm alg( "test" );
-  alg.runParameterChecks();
+  DummyAlgorithm *alg = new DummyAlgorithm( "test" );
+  DummyProvider p( "test" );
+  alg->runParameterChecks();
+
+  p.addAlgorithm( alg );
+  alg->runParameterChecks2();
 }
 
 void TestQgsProcessing::algorithmOutputs()

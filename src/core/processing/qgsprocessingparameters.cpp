@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingprovider.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingutils.h"
+#include "qgsprocessingalgorithm.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsprocessingoutputs.h"
 #include "qgssettings.h"
@@ -1240,6 +1242,11 @@ bool QgsProcessingParameterDefinition::fromVariantMap( const QVariantMap &map )
 QgsProcessingAlgorithm *QgsProcessingParameterDefinition::algorithm() const
 {
   return mAlgorithm;
+}
+
+QgsProcessingProvider *QgsProcessingParameterDefinition::provider() const
+{
+  return mAlgorithm ? mAlgorithm->provider() : nullptr;
 }
 
 QgsProcessingParameterBoolean::QgsProcessingParameterBoolean( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -3092,14 +3099,21 @@ QgsProcessingOutputDefinition *QgsProcessingParameterFeatureSink::toOutputDefini
 
 QString QgsProcessingParameterFeatureSink::defaultFileExtension() const
 {
-  QgsSettings settings;
-  if ( hasGeometry() )
+  if ( QgsProcessingProvider *p = provider() )
   {
-    return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+    return p->defaultVectorFileExtension( hasGeometry() );
   }
   else
   {
-    return QStringLiteral( "dbf" );
+    QgsSettings settings;
+    if ( hasGeometry() )
+    {
+      return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+    }
+    else
+    {
+      return QStringLiteral( "dbf" );
+    }
   }
 }
 
@@ -3245,8 +3259,15 @@ QgsProcessingOutputDefinition *QgsProcessingParameterRasterDestination::toOutput
 
 QString QgsProcessingParameterRasterDestination::defaultFileExtension() const
 {
-  QgsSettings settings;
-  return settings.value( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "tif" ), QgsSettings::Core ).toString();
+  if ( QgsProcessingProvider *p = provider() )
+  {
+    return p->defaultRasterFileExtension();
+  }
+  else
+  {
+    QgsSettings settings;
+    return settings.value( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "tif" ), QgsSettings::Core ).toString();
+  }
 }
 
 QgsProcessingParameterRasterDestination *QgsProcessingParameterRasterDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
@@ -3541,14 +3562,21 @@ QgsProcessingOutputDefinition *QgsProcessingParameterVectorDestination::toOutput
 
 QString QgsProcessingParameterVectorDestination::defaultFileExtension() const
 {
-  QgsSettings settings;
-  if ( hasGeometry() )
+  if ( QgsProcessingProvider *p = provider() )
   {
-    return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+    return p->defaultVectorFileExtension( hasGeometry() );
   }
   else
   {
-    return QStringLiteral( "dbf" );
+    QgsSettings settings;
+    if ( hasGeometry() )
+    {
+      return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+    }
+    else
+    {
+      return QStringLiteral( "dbf" );
+    }
   }
 }
 

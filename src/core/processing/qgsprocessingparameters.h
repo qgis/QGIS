@@ -34,6 +34,7 @@ class QgsFeatureSink;
 class QgsProcessingFeatureSource;
 class QgsProcessingOutputDefinition;
 class QgsProcessingFeedback;
+class QgsProcessingProvider;
 
 /**
  * \class QgsProcessingFeatureSourceDefinition
@@ -394,8 +395,16 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     /**
      * Returns a pointer to the algorithm which owns this parameter. May be nullptr
      * for non-owned parameters.
+     * \see provider()
      */
     QgsProcessingAlgorithm *algorithm() const;
+
+    /**
+     * Returns a pointer to the provider for the algorithm which owns this parameter. May be nullptr
+     * for non-owned parameters or algorithms.
+     * \see algorithm()
+     */
+    QgsProcessingProvider *provider() const;
 
   protected:
 

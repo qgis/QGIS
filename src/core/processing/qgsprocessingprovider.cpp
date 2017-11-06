@@ -18,6 +18,7 @@
 #include "qgsprocessingprovider.h"
 #include "qgsapplication.h"
 #include "qgsvectorfilewriter.h"
+#include "qgssettings.h"
 
 QgsProcessingProvider::QgsProcessingProvider( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
@@ -82,5 +83,24 @@ bool QgsProcessingProvider::addAlgorithm( QgsProcessingAlgorithm *algorithm )
 QStringList QgsProcessingProvider::supportedOutputVectorLayerExtensions() const
 {
   return QgsVectorFileWriter::supportedFormatExtensions();
+}
+
+QString QgsProcessingProvider::defaultVectorFileExtension( bool hasGeometry ) const
+{
+  QgsSettings settings;
+  if ( hasGeometry )
+  {
+    return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+  }
+  else
+  {
+    return QStringLiteral( "dbf" );
+  }
+}
+
+QString QgsProcessingProvider::defaultRasterFileExtension() const
+{
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "tif" ), QgsSettings::Core ).toString();
 }
 

@@ -110,6 +110,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
 
     /**
      * Returns a list of the vector format file extensions supported by this provider.
+     * \see defaultVectorFileExtension()
      * \see supportedOutputRasterLayerExtensions()
      * \see supportedOutputTableExtensions()
      * \see supportsNonFileBasedOutput()
@@ -122,6 +123,33 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \see supportedOutputVectorLayerExtensions()
      */
     virtual QStringList supportedOutputTableExtensions() const { return QStringList() << QStringLiteral( "csv" ); }
+
+    /**
+     * Returns the default file extension to use for vector outputs created by the
+     * provider.
+     *
+     * If \a hasGeometry is true then the output file format must have support for
+     * geometry. If \a hasGeometry is false then non-spatial formats can be used.
+     *
+     * The default implementation returns the user's default Processing vector output format
+     * setting.
+     *
+     * \see supportedOutputVectorLayerExtensions()
+     * \see defaultRasterFileExtension()
+     */
+    virtual QString defaultVectorFileExtension( bool hasGeometry = true ) const;
+
+    /**
+     * Returns the default file extension to use for raster outputs created by the
+     * provider.
+     *
+     * The default implementation returns the user's default Processing raster output format
+     * setting.
+     *
+     * \see supportedOutputRasterLayerExtensions()
+     * \see defaultVectorFileExtension()
+     */
+    virtual QString defaultRasterFileExtension() const;
 
     /**
      * Returns true if the provider supports non-file based outputs (such as memory layers
