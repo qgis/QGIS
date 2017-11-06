@@ -158,8 +158,11 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     void searchText( const QString &text );
 
   protected slots:
+    //! Update tabs on the splitter move
     virtual void updateOptionsListVerticalTabs();
+    //! Select relevant tab on current page change
     virtual void optionsStackedWidget_CurrentChanged( int index );
+    //! Remove tab and unregister widgets on page remove
     virtual void optionsStackedWidget_WidgetRemoved( int index );
 
     void warnAboutMissingObjects();
