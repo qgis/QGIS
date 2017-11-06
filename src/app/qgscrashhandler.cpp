@@ -99,7 +99,7 @@ LONG WINAPI QgsCrashHandler::handle( LPEXCEPTION_POINTERS exception )
 
   QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : QApplication::applicationDirPath() );
   QString path = prefixPath + "/qgiscrashhandler.exe";
-  QgsDebugMsg(path);
+  QgsDebugMsg( path );
   QProcess::execute( path, args );
 
   return TRUE;
