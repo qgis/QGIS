@@ -81,6 +81,10 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
     ~QgsCoordinateTransformPrivate();
 
+    bool checkValidity();
+
+    void invalidate();
+
     bool initialize();
 
     void calculateTransforms();

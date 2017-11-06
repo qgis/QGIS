@@ -93,11 +93,25 @@ QgsCoordinateTransformPrivate::~QgsCoordinateTransformPrivate()
   freeProj();
 }
 
-bool QgsCoordinateTransformPrivate::initialize()
+bool QgsCoordinateTransformPrivate::checkValidity()
+{
+  if ( !mSourceCRS.isValid() || !mDestCRS.isValid() )
+  {
+    invalidate();
+    return false;
+  }
+  return true;
+}
+
+void QgsCoordinateTransformPrivate::invalidate()
 {
   mShortCircuit = true;
   mIsValid = false;
+}
 
+bool QgsCoordinateTransformPrivate::initialize()
+{
+  invalidate();
   if ( !mSourceCRS.isValid() )
   {
     // Pass through with no projection since we have no idea what the layer
