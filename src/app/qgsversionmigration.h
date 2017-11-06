@@ -58,6 +58,7 @@ class Qgs2To3Migration : public QgsVersionMigration
   private:
     QgsError migrateStyles();
     QgsError migrateSettings();
+    QgsError migrateAuthDb();
 
     QList<QPair<QString, QString>> walk( QString group, QString newkey );
     QPair<QString, QString> transformKey( QString fullOldKey, QString newKeyPart );
