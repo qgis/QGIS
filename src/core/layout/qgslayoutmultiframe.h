@@ -64,6 +64,9 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     //! Multiframe item undo commands, used for collapsing undo commands
     enum UndoCommand
     {
+      UndoHtmlBreakDistance, //!< HTML page break distance
+      UndoHtmlSource, //!< HTML source
+      UndoHtmlStylesheet, //!< HTML stylesheet
       UndoNone = -1, //!< No command suppression
     };
 

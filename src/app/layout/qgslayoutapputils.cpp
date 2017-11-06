@@ -35,6 +35,7 @@
 #include "qgslayoutlegendwidget.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutitemhtml.h"
+#include "qgslayouthtmlwidget.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 
@@ -207,7 +208,7 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
   auto htmlItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutHtml, QObject::tr( "HTML" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddHtml.svg" ) ),
                           [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
-    return nullptr; //new QgsLayoutMapWidget( qobject_cast< QgsLayoutItemMap * >( item ) );
+    return new QgsLayoutHtmlWidget( qobject_cast< QgsLayoutFrame * >( item ) );
   }, createRubberBand );
   htmlItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem*
   {
@@ -215,7 +216,9 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     QgsLayoutItemHtml *html = htmlMultiFrame.get();
     layout->addMultiFrame( htmlMultiFrame.release() );
     std::unique_ptr< QgsLayoutFrame > frame = qgis::make_unique< QgsLayoutFrame >( layout, html );
-    return frame.release();
+    QgsLayoutFrame *f = frame.get();
+    html->addFrame( frame.release() );
+    return f;
   } );
   registry->addLayoutItemGuiMetadata( htmlItemMetadata.release() );
 
