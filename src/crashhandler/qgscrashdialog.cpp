@@ -18,7 +18,7 @@
 #include "qgscrashdialog.h"
 
 #include <QClipboard>
-
+#include <QProcess>
 
 QgsCrashDialog::QgsCrashDialog( QWidget *parent )
   : QDialog( parent )
@@ -28,6 +28,7 @@ QgsCrashDialog::QgsCrashDialog( QWidget *parent )
 
   mCrashHeaderMessage->setText( tr( "Oh Uh!" ) );
   mCrashMessage->setText( tr( "Sorry. It looks something unexpected happened that we didn't handle and QGIS crashed." ) );
+  connect( mReloadQGISButton, &QPushButton::clicked, this, &QgsCrashDialog::reloadQGIS );
   connect( mCopyReportButton, &QPushButton::clicked, this, &QgsCrashDialog::createBugReport );
 
   mHelpLabel->setText( tr( "Keen to help us fix bugs? "
@@ -46,6 +47,11 @@ void QgsCrashDialog::setBugReport( const QString &reportData )
   mReportDetailsText->setHtml( reportData );
 }
 
+void QgsCrashDialog::setReloadArgs( const QString &reloadArgs )
+{
+  mReloadArgs = reloadArgs;
+}
+
 void QgsCrashDialog::showReportWidget()
 {
 }
@@ -58,6 +64,15 @@ void QgsCrashDialog::createBugReport()
   QString finalText = userText + "\n\n" + details;
   QString markdown = htmlToMarkdown( finalText );
   clipboard->setText( markdown );
+}
+
+void QgsCrashDialog::reloadQGIS()
+{
+  bool loaded = QProcess::startDetached( mReloadArgs );
+  if ( loaded )
+  {
+    accept();
+  }
 }
 
 QString QgsCrashDialog::htmlToMarkdown( const QString &html )

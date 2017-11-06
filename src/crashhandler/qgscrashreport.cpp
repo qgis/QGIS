@@ -15,13 +15,14 @@
  ***************************************************************************/
 #include "qgscrashreport.h"
 
+#include <QDir>
+#include <QFile>
+#include <QTextStream>
+#include <QUuid>
+#include <QStandardPaths>
 #include <QSysInfo>
 #include <QFileInfo>
 #include <QCryptographicHash>
-
-#include "qgis.h"
-#include "gdal_version.h"
-#include "ogr_core.h"
 
 QgsCrashReport::QgsCrashReport()
 {
@@ -33,6 +34,16 @@ void QgsCrashReport::setFlags( QgsCrashReport::Flags flags )
   mFlags = flags;
 }
 
+const QString QgsCrashReport::toMarkdown()
+{
+  QString markdown = toHtml();
+  markdown.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
+  markdown.replace( QLatin1String( "<b>" ), QLatin1String( "*" ) );
+  markdown.replace( QLatin1String( "</b>" ), QLatin1String( "*" ) );
+  markdown.replace( QLatin1String( "QGIS code revision: " ), QLatin1String( "QGIS code revision: commit:" ) );
+  return markdown;
+}
+
 const QString QgsCrashReport::toHtml() const
 {
   QStringList reportData;
@@ -42,18 +53,18 @@ const QString QgsCrashReport::toHtml() const
   {
     reportData.append( QStringLiteral( "<br>" ) );
     reportData.append( QStringLiteral( "<b>Stack Trace</b>" ) );
-    if ( mStackTrace.isEmpty() )
+    if ( mStackTrace->lines.isEmpty() )
     {
-      reportData.append( QStringLiteral( "Stack trace unable to be generated." ) );
+      reportData.append( QStringLiteral( "Stack trace could not be generated." ) );
     }
     else
     {
       reportData.append( QStringLiteral( "<pre>" ) );
-      Q_FOREACH ( const QgsStackTrace::StackLine &line, mStackTrace )
+      Q_FOREACH ( const QgsStackTrace::StackLine &line, mStackTrace->lines )
       {
         QFileInfo fileInfo( line.fileName );
         QString filename( fileInfo.fileName() );
-        reportData.append( QStringLiteral( "(%1) %2 %3:%4" ).arg( line.moduleName, line.symbolName, filename, line.lineNumber ) );
+        reportData.append( QStringLiteral( "%2 %3:%4" ).arg( line.symbolName, filename, line.lineNumber ) );
       }
       reportData.append( QStringLiteral( "</pre>" ) );
     }
@@ -79,23 +90,7 @@ const QString QgsCrashReport::toHtml() const
   {
     reportData.append( QStringLiteral( "<br>" ) );
     reportData.append( QStringLiteral( "<b>QGIS Info</b>" ) );
-    reportData.append( QStringLiteral( "QGIS Version: %1" ).arg( Qgis::QGIS_VERSION ) );
-
-    if ( QString( Qgis::QGIS_DEV_VERSION ) == QLatin1String( "exported" ) )
-    {
-      reportData.append( QStringLiteral( "QGIS code branch: Release %1.%2" )
-                         .arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 ) );
-    }
-    else
-    {
-      reportData.append( QStringLiteral( "QGIS code revision: %1" ).arg( Qgis::QGIS_DEV_VERSION ) );
-    }
-
-    reportData.append( QStringLiteral( "Compiled against Qt: %1" ).arg( QT_VERSION_STR ) );
-    reportData.append( QStringLiteral( "Running against Qt: %1" ).arg( qVersion() ) );
-
-    reportData.append( QStringLiteral( "Compiled against GDAL: %1" ).arg( GDAL_RELEASE_NAME ) );
-    reportData.append( QStringLiteral( "Running against GDAL: %1" ).arg( GDALVersionInfo( "RELEASE_NAME" ) ) );
+    reportData.append( mVersionInfo );
   }
 
   if ( flags().testFlag( QgsCrashReport::SystemInfo ) )
@@ -117,13 +112,15 @@ const QString QgsCrashReport::toHtml() const
 
 const QString QgsCrashReport::crashID() const
 {
-  if ( mStackTrace.isEmpty() )
-    return QStringLiteral( "ID not generated due to missing information\n\n Your version of QGIS install might not have debug information included." );
+  if ( !mStackTrace->symbolsLoaded || mStackTrace->lines.isEmpty() )
+    return QStringLiteral( "ID not generated due to missing information.<br><br> "
+                           "Your version of QGIS install might not have debug information included or "
+                           "we couldn't get crash information." );
 
   QString data = QString();
 
   // Hashes the full stack.
-  Q_FOREACH ( const QgsStackTrace::StackLine &line, mStackTrace )
+  Q_FOREACH ( const QgsStackTrace::StackLine &line, mStackTrace->lines )
   {
 #if 0
     QFileInfo fileInfo( line.fileName );
@@ -137,4 +134,42 @@ const QString QgsCrashReport::crashID() const
 
   QString hash = QString( QCryptographicHash::hash( data.toAscii(), QCryptographicHash::Sha1 ).toHex() );
   return hash;
+}
+
+
+void QgsCrashReport::exportToCrashFolder()
+{
+  QString folder = QgsCrashReport::crashReportFolder();
+  QDir dir( folder );
+  if ( !dir.exists() )
+  {
+    QDir().mkdir( folder );
+  }
+
+  QString fileName = folder + "/stack.txt";
+
+  QFile file( fileName );
+  if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  {
+    QTextStream stream( &file );
+    stream << mStackTrace->fullStack << endl;
+  }
+  file.close();
+
+  fileName = folder + "/report.txt";
+
+  file.setFileName( fileName );
+  if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  {
+    QTextStream stream( &file );
+    stream << toMarkdown() << endl;
+  }
+  file.close();
+}
+
+QString QgsCrashReport::crashReportFolder()
+{
+  return QStandardPaths::standardLocations( QStandardPaths::AppLocalDataLocation ).value( 0 ) +
+         "/crashes/" +
+         QUuid::createUuid().toString().replace( "{", "" ).replace( "}", "" );
 }
