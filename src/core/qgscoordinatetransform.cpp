@@ -52,6 +52,10 @@ QgsCoordinateTransform::QgsCoordinateTransform()
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
 {
   d = new QgsCoordinateTransformPrivate( source, destination, QgsCoordinateTransformContext() );
+
+  if ( !d->mSourceCRS.isValid() || !d->mDestCRS.isValid() )
+    return;
+
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
   {
     d->initialize();
@@ -65,6 +69,10 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 #ifdef QGISDEBUG
   d->mHasContext = true;
 #endif
+
+  if ( !d->mSourceCRS.isValid() || !d->mDestCRS.isValid() )
+    return;
+
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
   {
     d->initialize();
@@ -78,6 +86,10 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 #ifdef QGISDEBUG
   d->mHasContext = true;
 #endif
+
+  if ( !d->mSourceCRS.isValid() || !d->mDestCRS.isValid() )
+    return;
+
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
   {
     d->initialize();
@@ -91,6 +103,10 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 #ifdef QGISDEBUG
   d->mHasContext = true; // not strictly true, but we don't need to worry if datums have been explicitly set
 #endif
+
+  if ( !d->mSourceCRS.isValid() || !d->mDestCRS.isValid() )
+    return;
+
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
   {
     d->initialize();
@@ -115,6 +131,9 @@ void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem &c
 {
   d.detach();
   d->mSourceCRS = crs;
+  if ( !d->mSourceCRS.isValid() || !d->mDestCRS.isValid() )
+    return;
+
   d->calculateTransforms();
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
   {
@@ -126,6 +145,9 @@ void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSyst
 {
   d.detach();
   d->mDestCRS = crs;
+  if ( !d->mSourceCRS.isValid() || !d->mDestCRS.isValid() )
+    return;
+
   d->calculateTransforms();
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
   {
@@ -141,6 +163,9 @@ void QgsCoordinateTransform::setContext( const QgsCoordinateTransformContext &co
 #ifdef QGISDEBUG
   d->mHasContext = true;
 #endif
+  if ( !d->mSourceCRS.isValid() || !d->mDestCRS.isValid() )
+    return;
+
   d->calculateTransforms();
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
   {

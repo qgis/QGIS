@@ -33,6 +33,10 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
 {
     Q_OBJECT
   public:
+
+    /**
+     * Constructor for QgsDatumTransformDialog.
+     */
     QgsDatumTransformDialog( const QList< QList< int > > &dt, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsDatumTransformDialog();
 
