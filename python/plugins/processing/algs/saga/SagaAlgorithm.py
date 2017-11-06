@@ -143,6 +143,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
         self.preProcessInputs()
         extent = None
+        crs = None
 
         # 1: Export rasters to sgrd and vectors to shp
         # Tables must be in dbf format. We check that.
@@ -272,8 +273,6 @@ class SagaAlgorithm(SagaAlgorithmBase):
         output_layers = []
         output_files = {}
         for out in self.destinationParameterDefinitions():
-            # TODO
-            # command += ' -' + out.name() + ' "' + out.getCompatibleFileName(self) + '"'
             filePath = self.parameterAsOutputLayer(parameters, out.name(), context)
             if isinstance(out, (QgsProcessingParameterRasterDestination, QgsProcessingParameterVectorDestination)):
                 output_layers.append(filePath)
