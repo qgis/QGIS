@@ -137,6 +137,12 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   {
     mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
   } );
+  mSettings.setTransformContext( QgsProject::instance()->transformContext() );
+  connect( QgsProject::instance(), &QgsProject::transformContextChanged,
+           this, [ = ]
+  {
+    mSettings.setTransformContext( QgsProject::instance()->transformContext() );
+  } );
 
   //segmentation parameters
   QgsSettings settings;

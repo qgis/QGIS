@@ -295,6 +295,7 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   mapSettings.setBackgroundColor( mMapCanvas->canvasColor() );
   mapSettings.setRotation( mMapCanvas->rotation() );
   mapSettings.setLayers( mMapCanvas->layers() );
+  mapSettings.setTransformContext( QgsProject::instance()->transformContext() );
 
   //build the expression context
   QgsExpressionContext expressionContext;

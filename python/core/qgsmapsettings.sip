@@ -310,6 +310,27 @@ Return the distance in geographical coordinates that equals to one pixel in the 
  :rtype: QgsDatumTransformStore
 %End
 
+    QgsCoordinateTransformContext transformContext() const;
+%Docstring
+ Returns the coordinate transform context, which stores various
+ information regarding which datum transforms should be used when transforming points
+ from a source to destination coordinate reference system.
+
+.. versionadded:: 3.0
+.. seealso:: setTransformContext()
+ :rtype: QgsCoordinateTransformContext
+%End
+
+    void setTransformContext( const QgsCoordinateTransformContext &context );
+%Docstring
+ Sets the coordinate transform ``context``, which stores various
+ information regarding which datum transforms should be used when transforming points
+ from a source to destination coordinate reference system.
+
+.. versionadded:: 3.0
+.. seealso:: transformContext()
+%End
+
     const QgsMapToPixel &mapToPixel() const;
 %Docstring
  :rtype: QgsMapToPixel
@@ -428,6 +449,7 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
 %End
 
   protected:
+
 
 
 

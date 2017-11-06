@@ -362,6 +362,23 @@ double QgsMapSettings::scale() const
   return mScale;
 }
 
+QgsCoordinateTransformContext QgsMapSettings::transformContext() const
+{
+#ifdef QGISDEBUG
+  if ( !mHasTransformContext )
+    qWarning( "No QgsCoordinateTransformContext context set for transform" );
+#endif
+
+  return mTransformContext;
+}
+
+void QgsMapSettings::setTransformContext( const QgsCoordinateTransformContext &context )
+{
+  mTransformContext = context;
+#ifdef QGISDEBUG
+  mHasTransformContext = true;
+#endif
+}
 
 QgsCoordinateTransform QgsMapSettings::layerTransform( const QgsMapLayer *layer ) const
 {

@@ -110,6 +110,27 @@ class QgsRenderContext
  :rtype: QgsDistanceArea
 %End
 
+    QgsCoordinateTransformContext transformContext() const;
+%Docstring
+ Returns the context's coordinate transform context, which stores various
+ information regarding which datum transforms should be used when transforming points
+ from a source to destination coordinate reference system.
+
+.. versionadded:: 3.0
+.. seealso:: setTransformContext()
+ :rtype: QgsCoordinateTransformContext
+%End
+
+    void setTransformContext( const QgsCoordinateTransformContext &context );
+%Docstring
+ Sets the context's coordinate transform ``context``, which stores various
+ information regarding which datum transforms should be used when transforming points
+ from a source to destination coordinate reference system.
+
+.. versionadded:: 3.0
+.. seealso:: transformContext()
+%End
+
     const QgsRectangle &extent() const;
 %Docstring
  :rtype: QgsRectangle
