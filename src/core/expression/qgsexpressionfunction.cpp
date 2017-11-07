@@ -3435,15 +3435,13 @@ static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressi
 {
   QVariant result;
   QString fieldName;
-  if ( values.size() == 1 )
+  if ( !values.isEmpty() )
   {
     QgsExpressionNodeColumnRef *col = dynamic_cast<QgsExpressionNodeColumnRef *>( node->args()->at( 0 ) );
-    if ( col )
+    if ( col && ( values.size() == 1 || !values.at( 1 ).isValid() ) )
       fieldName = col->name();
-  }
-  else
-  {
-    fieldName = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+    else if ( values.size() == 2 )
+      fieldName = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   }
   QVariant value = values.at( 0 );
 
