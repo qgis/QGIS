@@ -381,25 +381,26 @@ class SagaAlgorithm(SagaAlgorithmBase):
         supported by SAGA, and that raster layers have the same grid extent
         """
         extent = None
+        layers = []
         for param in self.parameterDefinitions():
-            layers = []
             if isinstance(param, QgsProcessingParameterRasterLayer):
                 layers.append(parameters[param.name()])
             elif (isinstance(param, QgsProcessingParameterMultipleLayers) and
-                    param.datatype == QgsProcessing.TypeRaster):
-                if parameters[param.name()] is not None:
-                    layers.append(parameters[param.name()])
-            for layer in layers:
-                if layer is None:
-                    continue
-                if layer.bandCount() > 1:
-                    return False, self.tr('Input layer {0} has more than one band.\n'
-                                          'Multiband layers are not supported by SAGA').format(layer.name())
-                if not self.allow_nonmatching_grid_extents:
-                    if extent is None:
-                        extent = (layer.extent(), layer.height(), layer.width())
-                    else:
-                        extent2 = (layer.extent(), layer.height(), layer.width())
-                        if extent != extent2:
-                            return False, self.tr("Input layers do not have the same grid extent.")
+                    param.layerType() == QgsProcessing.TypeRaster):
+                if parameters[param.name()]:
+                    layers.extend(parameters[param.name()])
+
+        for layer in layers:
+            if layer is None or layer == '':
+                continue
+            if layer.bandCount() > 1:
+                return False, self.tr('Input layer {0} has more than one band.\n'
+                                      'Multiband layers are not supported by SAGA').format(layer.name())
+            if not self.allow_nonmatching_grid_extents:
+                if extent is None:
+                    extent = (layer.extent(), layer.height(), layer.width())
+                else:
+                    extent2 = (layer.extent(), layer.height(), layer.width())
+                    if extent != extent2:
+                        return False, self.tr("Input layers do not have the same grid extent.")
         return super(SagaAlgorithm, self).checkParameterValues(parameters, context)
