@@ -1034,7 +1034,7 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent" ), QVariant::fromValue( QgsGeometry::fromRect( currentExtent ) ), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent_width" ), currentExtent.width(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent_height" ), currentExtent.height(), true ) );
-  QgsGeometry centerPoint = QgsGeometry::fromPoint( currentExtent.center() );
+  QgsGeometry centerPoint = QgsGeometry::fromPointXY( currentExtent.center() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent_center" ), QVariant::fromValue( centerPoint ), true ) );
 
   QgsCoordinateReferenceSystem mapCrs = crs();
