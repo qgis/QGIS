@@ -28,6 +28,7 @@
 #include "qgsproject.h"
 #include "qgstransactiongroup.h"
 #include "qgslogger.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -351,19 +352,28 @@ void QgsRelationEditorWidget::linkFeature()
       QgsFeature relatedFeature;
 
       QgsFeatureList newFeatures;
-      QgsFeature linkFeature( mRelation.referencingLayer()->fields() );
 
+      // Fields of the linking table
+      const QgsFields fields = mRelation.referencingLayer()->fields();
+
+      // Expression context for the linking table
+      QgsExpressionContext context = mRelation.referencingLayer()->createExpressionContext();
+
+      QgsAttributeMap linkAttributes;
       Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mRelation.fieldPairs() )
       {
-        linkFeature.setAttribute( fieldPair.first, mFeature.attribute( fieldPair.second ) );
+        int index = fields.indexOf( fieldPair.first );
+        linkAttributes.insert( index,  mFeature.attribute( fieldPair.second ) );
       }
 
       while ( it.nextFeature( relatedFeature ) )
       {
         Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mNmRelation.fieldPairs() )
         {
-          linkFeature.setAttribute( fieldPair.first, relatedFeature.attribute( fieldPair.second ) );
+          int index = fields.indexOf( fieldPair.first );
+          linkAttributes.insert( index, relatedFeature.attribute( fieldPair.second ) );
         }
+        const QgsFeature linkFeature = QgsVectorLayerUtils::createFeature( mRelation.referencingLayer(), QgsGeometry(), linkAttributes, &context );
 
         newFeatures << linkFeature;
       }
