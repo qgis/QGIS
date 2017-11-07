@@ -177,8 +177,8 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
 
   // testing stuff
   QSignalSpy spy( &form, SIGNAL( attributeChanged( QString, QVariant ) ) );
-  QString val = QStringLiteral( "<font color=\"#259B24\">%1</font>" ).arg( 0x2714 );
-  QString inv = QStringLiteral( "<font color=\"#FF9800\">%1</font>" ).arg( 0x2718 );
+  QString val = QStringLiteral( "<font color=\"#259B24\">%1</font>" ).arg( QChar( 0x2714 ) );
+  QString inv = QStringLiteral( "<font color=\"#FF9800\">%1</font>" ).arg( QChar( 0x2718 ) );
 
   // get wrappers for each widget
   QgsEditorWidgetWrapper *ww0, *ww1, *ww2, *ww3;
