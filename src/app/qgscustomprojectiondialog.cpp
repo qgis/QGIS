@@ -68,10 +68,10 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   }
 
   populateList();
-  if ( !customCRSnames.empty() )
+  if ( !mCustomCRSnames.empty() )
   {
-    leName->setText( customCRSnames[0] );
-    teParameters->setPlainText( customCRSparameters[0] );
+    leName->setText( mCustomCRSnames[0] );
+    teParameters->setPlainText( mCustomCRSparameters[0] );
     leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
   }
 
@@ -117,8 +117,8 @@ void QgsCustomProjectionDialog::populateList()
       parameters = QString::fromUtf8( ( char * ) sqlite3_column_text( preparedStatement, 2 ) );
 
       crs.createFromProj4( parameters );
-      existingCRSnames[id] = name;
-      existingCRSparameters[id] = crs.toProj4();
+      mExistingCRSnames[id] = name;
+      mExistingCRSparameters[id] = crs.toProj4();
 
       newItem = new QTreeWidgetItem( leNameList, QStringList() );
       newItem->setText( QgisCrsNameColumn, name );
@@ -139,9 +139,9 @@ void QgsCustomProjectionDialog::populateList()
   while ( *it )
   {
     QString id = ( *it )->text( QgisCrsIdColumn );
-    customCRSids.push_back( id );
-    customCRSnames.push_back( existingCRSnames[id] );
-    customCRSparameters.push_back( existingCRSparameters[id] );
+    mCustomCRSids.push_back( id );
+    mCustomCRSnames.push_back( mExistingCRSnames[id] );
+    mCustomCRSparameters.push_back( mExistingCRSparameters[id] );
     it++;
   }
 }
@@ -293,8 +293,8 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem parameters
     if ( result != SQLITE_OK )
       return false;
   }
-  existingCRSparameters[id] = parameters.toProj4();
-  existingCRSnames[id] = name;
+  mExistingCRSparameters[id] = parameters.toProj4();
+  mExistingCRSnames[id] = name;
 
   QgsCoordinateReferenceSystem::invalidateCache();
   QgsCoordinateTransformCache::instance()->invalidateCrs( QStringLiteral( "USER:%1" ).arg( id ) );
@@ -319,9 +319,9 @@ void QgsCustomProjectionDialog::pbnAdd_clicked()
   newItem->setText( QgisCrsNameColumn, name );
   newItem->setText( QgisCrsIdColumn, id );
   newItem->setText( QgisCrsParametersColumn, parameters.toProj4() );
-  customCRSnames.push_back( name );
-  customCRSids.push_back( id );
-  customCRSparameters.push_back( parameters.toProj4() );
+  mCustomCRSnames.push_back( name );
+  mCustomCRSids.push_back( id );
+  mCustomCRSparameters.push_back( parameters.toProj4() );
   leNameList->setCurrentItem( newItem );
 }
 
@@ -334,13 +334,13 @@ void QgsCustomProjectionDialog::pbnRemove_clicked()
   }
   QTreeWidgetItem *item = leNameList->takeTopLevelItem( i );
   delete item;
-  if ( !customCRSids[i].isEmpty() )
+  if ( !mCustomCRSids[i].isEmpty() )
   {
-    deletedCRSs.push_back( customCRSids[i] );
+    mDeletedCRSs.push_back( mCustomCRSids[i] );
   }
-  customCRSids.erase( customCRSids.begin() + i );
-  customCRSnames.erase( customCRSnames.begin() + i );
-  customCRSparameters.erase( customCRSparameters.begin() + i );
+  mCustomCRSids.erase( mCustomCRSids.begin() + i );
+  mCustomCRSnames.erase( mCustomCRSnames.begin() + i );
+  mCustomCRSparameters.erase( mCustomCRSparameters.begin() + i );
 }
 
 void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
@@ -350,15 +350,15 @@ void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *
   if ( previous )
   {
     previousIndex = leNameList->indexOfTopLevelItem( previous );
-    customCRSnames[previousIndex] = leName->text();
-    customCRSparameters[previousIndex] = teParameters->toPlainText();
+    mCustomCRSnames[previousIndex] = leName->text();
+    mCustomCRSparameters[previousIndex] = teParameters->toPlainText();
     previous->setText( QgisCrsNameColumn, leName->text() );
     previous->setText( QgisCrsParametersColumn, teParameters->toPlainText() );
   }
   if ( current )
   {
     currentIndex = leNameList->indexOfTopLevelItem( current );
-    leName->setText( customCRSnames[currentIndex] );
+    leName->setText( mCustomCRSnames[currentIndex] );
     teParameters->setPlainText( current->text( QgisCrsParametersColumn ) );
   }
   else
@@ -381,7 +381,7 @@ void QgsCustomProjectionDialog::pbnCopyCRS_clicked()
       pbnAdd_clicked();
     }
     teParameters->setPlainText( srs.toProj4() );
-    customCRSparameters[leNameList->currentIndex().row()] = srs.toProj4();
+    mCustomCRSparameters[leNameList->currentIndex().row()] = srs.toProj4();
     leNameList->currentItem()->setText( QgisCrsParametersColumn, srs.toProj4() );
 
   }
@@ -394,53 +394,53 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
   int i = leNameList->currentIndex().row();
   if ( i != -1 )
   {
-    customCRSnames[i] = leName->text();
-    customCRSparameters[i] = teParameters->toPlainText();
+    mCustomCRSnames[i] = leName->text();
+    mCustomCRSparameters[i] = teParameters->toPlainText();
   }
 
   QgsDebugMsg( "We save the modified CRS." );
 
   //Check if all CRS are valid:
   QgsCoordinateReferenceSystem CRS;
-  for ( int i = 0; i < customCRSids.size(); ++i )
+  for ( int i = 0; i < mCustomCRSids.size(); ++i )
   {
-    CRS.createFromProj4( customCRSparameters[i] );
+    CRS.createFromProj4( mCustomCRSparameters[i] );
     if ( !CRS.isValid() )
     {
       QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                                tr( "The proj4 definition of '%1' is not valid." ).arg( customCRSnames[i] ) );
+                                tr( "The proj4 definition of '%1' is not valid." ).arg( mCustomCRSnames[i] ) );
       return;
     }
   }
   //Modify the CRS changed:
   bool save_success = true;
-  for ( int i = 0; i < customCRSids.size(); ++i )
+  for ( int i = 0; i < mCustomCRSids.size(); ++i )
   {
-    CRS.createFromProj4( customCRSparameters[i] );
+    CRS.createFromProj4( mCustomCRSparameters[i] );
     //Test if we just added this CRS (if it has no existing ID)
-    if ( !customCRSids[i].isEmpty() )
+    if ( !mCustomCRSids[i].isEmpty() )
     {
-      save_success &= saveCrs( CRS, customCRSnames[i], QLatin1String( "" ), true );
+      save_success &= saveCrs( CRS, mCustomCRSnames[i], QLatin1String( "" ), true );
     }
     else
     {
-      if ( existingCRSnames[customCRSids[i]] != customCRSnames[i] || existingCRSparameters[customCRSids[i]] != customCRSparameters[i] )
+      if ( mExistingCRSnames[mCustomCRSids[i]] != mCustomCRSnames[i] || mExistingCRSparameters[mCustomCRSids[i]] != mCustomCRSparameters[i] )
       {
-        save_success &= saveCrs( CRS, customCRSnames[i], customCRSids[i], false );
+        save_success &= saveCrs( CRS, mCustomCRSnames[i], mCustomCRSids[i], false );
       }
     }
     if ( ! save_success )
     {
-      QgsDebugMsg( QString( "Error when saving CRS '%1'" ).arg( customCRSnames[i] ) );
+      QgsDebugMsg( QString( "Error when saving CRS '%1'" ).arg( mCustomCRSnames[i] ) );
     }
   }
   QgsDebugMsg( "We remove the deleted CRS." );
-  for ( int i = 0; i < deletedCRSs.size(); ++i )
+  for ( int i = 0; i < mDeletedCRSs.size(); ++i )
   {
-    save_success &= deleteCrs( deletedCRSs[i] );
+    save_success &= deleteCrs( mDeletedCRSs[i] );
     if ( ! save_success )
     {
-      QgsDebugMsg( QString( "Problem for layer '%1'" ).arg( customCRSparameters[i] ) );
+      QgsDebugMsg( QString( "Problem for layer '%1'" ).arg( mCustomCRSparameters[i] ) );
     }
   }
   if ( save_success )
