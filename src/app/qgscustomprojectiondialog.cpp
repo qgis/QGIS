@@ -339,8 +339,9 @@ void  QgsCustomProjectionDialog::insertProjection( const QString &projectionAcro
   }
 }
 
-bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem parameters, const QString &name, QString id, bool newEntry )
+bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem parameters, const QString &name, const QString &existingId, bool newEntry )
 {
+  QString id = existingId;
   QString sql;
   int returnId;
   QString projectionAcronym = parameters.projectionAcronym();
@@ -504,23 +505,23 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
     }
   }
   //Modify the CRS changed:
-  bool save_success = true;
+  bool saveSuccess = true;
   for ( int i = 0; i < mCustomCRSids.size(); ++i )
   {
     CRS.createFromProj4( mCustomCRSparameters[i] );
     //Test if we just added this CRS (if it has no existing ID)
-    if ( !mCustomCRSids[i].isEmpty() )
+    if ( mCustomCRSids[i].isEmpty() )
     {
-      save_success &= saveCrs( CRS, mCustomCRSnames[i], QLatin1String( "" ), true );
+      saveSuccess &= saveCrs( CRS, mCustomCRSnames[i], QString(), true );
     }
     else
     {
       if ( mExistingCRSnames[mCustomCRSids[i]] != mCustomCRSnames[i] || mExistingCRSparameters[mCustomCRSids[i]] != mCustomCRSparameters[i] )
       {
-        save_success &= saveCrs( CRS, mCustomCRSnames[i], mCustomCRSids[i], false );
+        saveSuccess &= saveCrs( CRS, mCustomCRSnames[i], mCustomCRSids[i], false );
       }
     }
-    if ( ! save_success )
+    if ( ! saveSuccess )
     {
       QgsDebugMsg( QString( "Error when saving CRS '%1'" ).arg( mCustomCRSnames[i] ) );
     }
@@ -528,13 +529,13 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
   QgsDebugMsg( "We remove the deleted CRS." );
   for ( int i = 0; i < mDeletedCRSs.size(); ++i )
   {
-    save_success &= deleteCrs( mDeletedCRSs[i] );
-    if ( ! save_success )
+    saveSuccess &= deleteCrs( mDeletedCRSs[i] );
+    if ( ! saveSuccess )
     {
       QgsDebugMsg( QString( "Problem for layer '%1'" ).arg( mCustomCRSparameters[i] ) );
     }
   }
-  if ( save_success )
+  if ( saveSuccess )
   {
     accept();
   }

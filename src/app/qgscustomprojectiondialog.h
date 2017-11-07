@@ -49,7 +49,7 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     void populateList();
     QString quotedValue( QString value );
     bool deleteCrs( const QString &id );
-    bool saveCrs( QgsCoordinateReferenceSystem parameters, const QString &name, QString id, bool newEntry );
+    bool saveCrs( QgsCoordinateReferenceSystem parameters, const QString &name, const QString &id, bool newEntry );
     void insertProjection( const QString &projectionAcronym );
     void showHelp();
 
