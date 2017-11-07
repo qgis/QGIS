@@ -419,6 +419,8 @@ void QgsCustomProjectionDialog::pbnAdd_clicked()
   mCustomCRSids.push_back( id );
   mCustomCRSparameters.push_back( parameters.toProj4() );
   leNameList->setCurrentItem( newItem );
+  leName->selectAll();
+  leName->setFocus();
 }
 
 void QgsCustomProjectionDialog::pbnRemove_clicked()
