@@ -1445,7 +1445,7 @@ void QgsProject::dumpProperties() const
 
 
 // return the absolute path from a filename read from project file
-QString QgsProject::readPath( QString src ) const
+QString QgsProject::readPath( QString src, const QString& relativeBasePath ) const
 {
   if ( readBoolEntry( "Paths", "/Absolute", false ) )
   {
@@ -1505,6 +1505,11 @@ QString QgsProject::readPath( QString src ) const
 
   QString srcPath = src;
   QString projPath = fileName();
+
+  if ( !relativeBasePath.isNull() )
+  {
+    projPath = relativeBasePath;
+  }
 
   if ( projPath.isEmpty() )
   {

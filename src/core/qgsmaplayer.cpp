@@ -169,7 +169,7 @@ void QgsMapLayer::drawLabels( QgsRenderContext& rendererContext )
   Q_UNUSED( rendererContext );
 }
 
-bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
+bool QgsMapLayer::readLayerXML( const QDomElement& layerElement, const QString& relativeBasePath )
 {
   QgsCoordinateReferenceSystem savedCRS;
   CUSTOM_CRS_VALIDATION savedValidation;
@@ -202,19 +202,19 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   if ( provider == "spatialite" )
   {
     QgsDataSourceURI uri( mDataSource );
-    uri.setDatabase( QgsProject::instance()->readPath( uri.database() ) );
+    uri.setDatabase( QgsProject::instance()->readPath( uri.database(), relativeBasePath ) );
     mDataSource = uri.uri();
   }
   else if ( provider == "ogr" )
   {
     QStringList theURIParts = mDataSource.split( '|' );
-    theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0] );
+    theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0], relativeBasePath );
     mDataSource = theURIParts.join( "|" );
   }
   else if ( provider == "gpx" )
   {
     QStringList theURIParts = mDataSource.split( '?' );
-    theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0] );
+    theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0], relativeBasePath );
     mDataSource = theURIParts.join( "?" );
   }
   else if ( provider == "delimitedtext" )
@@ -228,7 +228,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
       urlSource.setPath( file.path() );
     }
 
-    QUrl urlDest = QUrl::fromLocalFile( QgsProject::instance()->readPath( urlSource.toLocalFile() ) );
+    QUrl urlDest = QUrl::fromLocalFile( QgsProject::instance()->readPath( urlSource.toLocalFile(), relativeBasePath ) );
     urlDest.setQueryItems( urlSource.queryItems() );
     mDataSource = QString::fromAscii( urlDest.toEncoded() );
   }
@@ -324,7 +324,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
           QString filename = r.cap( 1 );
           if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
             filename = filename.mid( 1, filename.length() - 2 );
-          mDataSource = "NETCDF:\"" + QgsProject::instance()->readPath( filename ) + "\":" + r.cap( 2 );
+          mDataSource = "NETCDF:\"" + QgsProject::instance()->readPath( filename, relativeBasePath ) + "\":" + r.cap( 2 );
           handled = true;
         }
       }
@@ -338,7 +338,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
           QString filename = r.cap( 2 );
           if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
             filename = filename.mid( 1, filename.length() - 2 );
-          mDataSource = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + QgsProject::instance()->readPath( filename ) + "\":" + r.cap( 3 );
+          mDataSource = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + QgsProject::instance()->readPath( filename, relativeBasePath ) + "\":" + r.cap( 3 );
           handled = true;
         }
       }
@@ -352,7 +352,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
           QString filename = r.cap( 1 );
           if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
             filename = filename.mid( 1, filename.length() - 2 );
-          mDataSource = "HDF5:\"" + QgsProject::instance()->readPath( filename ) + "\":" + r.cap( 2 );
+          mDataSource = "HDF5:\"" + QgsProject::instance()->readPath( filename, relativeBasePath ) + "\":" + r.cap( 2 );
           handled = true;
         }
       }
@@ -363,14 +363,14 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
         QRegExp r( "([^:]+):([^:]+):(.+)" );
         if ( r.exactMatch( mDataSource ) )
         {
-          mDataSource = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + QgsProject::instance()->readPath( r.cap( 3 ) );
+          mDataSource = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + QgsProject::instance()->readPath( r.cap( 3 ), relativeBasePath );
           handled = true;
         }
       }
     }
 
     if ( !handled )
-      mDataSource = QgsProject::instance()->readPath( mDataSource );
+      mDataSource = QgsProject::instance()->readPath( mDataSource, relativeBasePath );
   }
 
   // Set the CRS from project file, asking the user if necessary.
@@ -809,7 +809,7 @@ QDomDocument QgsMapLayer::asLayerDefinition( const QList<QgsMapLayer *>& layers,
   return doc;
 }
 
-QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document, bool addToRegistry, bool addToLegend )
+QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document, bool addToRegistry, bool addToLegend, const QString& relativeBasePath )
 {
   QList<QgsMapLayer*> layers;
   QDomNodeList layernodes = document.elementsByTagName( "maplayer" );
@@ -839,7 +839,7 @@ QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document, bo
     if ( !layer )
       continue;
 
-    bool ok = layer->readLayerXML( layerElem );
+    bool ok = layer->readLayerXML( layerElem, relativeBasePath );
     if ( ok )
     {
       layers << layer;
