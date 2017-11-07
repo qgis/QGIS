@@ -41,7 +41,7 @@ QgsLayoutHtmlWidget::QgsLayoutHtmlWidget( QgsLayoutFrame *frame )
   connect( mRadioUrlSource, &QRadioButton::clicked, this, &QgsLayoutHtmlWidget::mRadioUrlSource_clicked );
   connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsLayoutHtmlWidget::mInsertExpressionButton_clicked );
   connect( mReloadPushButton, &QPushButton::clicked, this, &QgsLayoutHtmlWidget::mReloadPushButton_clicked );
-  connect( mReloadPushButton2, &QPushButton::clicked, this, &QgsLayoutHtmlWidget::mReloadPushButton2_clicked );
+  connect( mReloadPushButton2, &QPushButton::clicked, this, &QgsLayoutHtmlWidget::mReloadPushButton_clicked );
   connect( mAddFramePushButton, &QPushButton::clicked, this, &QgsLayoutHtmlWidget::mAddFramePushButton_clicked );
   connect( mEmptyFrameCheckBox, &QCheckBox::toggled, this, &QgsLayoutHtmlWidget::mEmptyFrameCheckBox_toggled );
   connect( mHideEmptyBgCheckBox, &QCheckBox::toggled, this, &QgsLayoutHtmlWidget::mHideEmptyBgCheckBox_toggled );
@@ -296,7 +296,6 @@ void QgsLayoutHtmlWidget::mRadioManualSource_clicked( bool checked )
   blockSignals( true );
   mHtml->beginCommand( tr( "Change HTML Source" ) );
   mHtml->setContentMode( checked ? QgsLayoutItemHtml::ManualHtml : QgsLayoutItemHtml::Url );
-  mHtml->endCommand();
   blockSignals( false );
 
   mHtmlEditor->setEnabled( checked );
@@ -305,6 +304,7 @@ void QgsLayoutHtmlWidget::mRadioManualSource_clicked( bool checked )
   mFileToolButton->setEnabled( !checked );
 
   mHtml->loadHtml();
+  mHtml->endCommand();
 }
 
 void QgsLayoutHtmlWidget::mRadioUrlSource_clicked( bool checked )
@@ -317,7 +317,6 @@ void QgsLayoutHtmlWidget::mRadioUrlSource_clicked( bool checked )
   blockSignals( true );
   mHtml->beginCommand( tr( "Change HTML Source" ) );
   mHtml->setContentMode( checked ? QgsLayoutItemHtml::Url : QgsLayoutItemHtml::ManualHtml );
-  mHtml->endCommand();
   blockSignals( false );
 
   mHtmlEditor->setEnabled( !checked );
@@ -326,6 +325,7 @@ void QgsLayoutHtmlWidget::mRadioUrlSource_clicked( bool checked )
   mFileToolButton->setEnabled( checked );
 
   mHtml->loadHtml();
+  mHtml->endCommand();
 }
 
 void QgsLayoutHtmlWidget::mInsertExpressionButton_clicked()
@@ -390,17 +390,11 @@ void QgsLayoutHtmlWidget::mReloadPushButton_clicked()
     return;
   }
 
+  if ( mHtml->layout() )
+    mHtml->layout()->undoStack()->blockCommands( true );
   mHtml->loadHtml();
-}
-
-void QgsLayoutHtmlWidget::mReloadPushButton2_clicked()
-{
-  if ( !mHtml )
-  {
-    return;
-  }
-
-  mHtml->loadHtml();
+  if ( mHtml->layout() )
+    mHtml->layout()->undoStack()->blockCommands( false );
 }
 
 void QgsLayoutHtmlWidget::mAddFramePushButton_clicked()

@@ -42,7 +42,7 @@ QgsLayout::QgsLayout( QgsProject *project )
 QgsLayout::~QgsLayout()
 {
   // no need for undo commands when we're destroying the layout
-  mBlockUndoCommandCount++;
+  mUndoStack->blockCommands( true );
 
   deleteAndRemoveMultiFrames();
 
@@ -410,14 +410,14 @@ void QgsLayout::addLayoutItem( QgsLayoutItem *item )
   {
     undoText = tr( "Create Item" );
   }
-  if ( mBlockUndoCommandCount == 0 )
-    mUndoStack->stack()->push( new QgsLayoutItemAddItemCommand( item, undoText ) );
+  if ( !mUndoStack->isBlocked() )
+    mUndoStack->push( new QgsLayoutItemAddItemCommand( item, undoText ) );
 }
 
 void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
 {
   std::unique_ptr< QgsLayoutItemDeleteUndoCommand > deleteCommand;
-  if ( mBlockUndoCommandCount == 0 )
+  if ( !mUndoStack->isBlocked() )
   {
     mUndoStack->beginMacro( tr( "Delete Items" ) );
     deleteCommand.reset( new QgsLayoutItemDeleteUndoCommand( item, tr( "Delete Item" ) ) );
@@ -425,7 +425,7 @@ void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
   removeLayoutItemPrivate( item );
   if ( deleteCommand )
   {
-    mUndoStack->stack()->push( deleteCommand.release() );
+    mUndoStack->push( deleteCommand.release() );
     mUndoStack->endMacro();
   }
 }
@@ -518,7 +518,7 @@ QgsLayoutItemGroup *QgsLayout::groupItems( const QList<QgsLayoutItem *> &items )
   addLayoutItem( itemGroup.release() );
 
   std::unique_ptr< QgsLayoutItemGroupUndoCommand > c( new QgsLayoutItemGroupUndoCommand( QgsLayoutItemGroupUndoCommand::Grouped, returnGroup, this, tr( "Group Items" ) ) );
-  mUndoStack->stack()->push( c.release() );
+  mUndoStack->push( c.release() );
   mProject->setDirty( true );
 
 #if 0
@@ -542,7 +542,7 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
   // Call this before removing group items so it can keep note
   // of contents
   std::unique_ptr< QgsLayoutItemGroupUndoCommand > c( new QgsLayoutItemGroupUndoCommand( QgsLayoutItemGroupUndoCommand::Ungrouped, group, this, tr( "Ungroup Items" ) ) );
-  mUndoStack->stack()->push( c.release() );
+  mUndoStack->push( c.release() );
 
   mProject->setDirty( true );
 

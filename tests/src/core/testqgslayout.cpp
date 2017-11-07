@@ -469,6 +469,39 @@ void TestQgsLayout::undoRedoOccurred()
   items = qvariant_cast< QSet< QString > >( spyOccurred.at( 3 ).at( 0 ) );
   QCOMPARE( items, QSet< QString >() << item->uuid() << item2->uuid() );
 
+  // blocking undo
+  int before = l.undoStack()->stack()->count();
+  item->setId( "xxx" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 1 );
+  l.undoStack()->blockCommands( true );
+  QVERIFY( l.undoStack()->isBlocked() );
+  item->setId( "yyy" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 1 ); // no new command
+  l.undoStack()->blockCommands( true ); // second stacked command
+  QVERIFY( l.undoStack()->isBlocked() );
+  item->setId( "ZZZ" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 1 ); // no new command
+  l.undoStack()->blockCommands( false ); // one stacked command left
+  QVERIFY( l.undoStack()->isBlocked() );
+  item->setId( "sss" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 1 ); // no new command
+  l.undoStack()->blockCommands( false ); // unblocked
+  QVERIFY( !l.undoStack()->isBlocked() );
+  item->setId( "ttt" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 2 ); // new command
+  l.undoStack()->blockCommands( false ); // don't allow negative stack size
+  QVERIFY( !l.undoStack()->isBlocked() );
+  item->setId( "uuu" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 3 ); // new command
+  l.undoStack()->blockCommands( true ); // should be blocked again
+  QVERIFY( l.undoStack()->isBlocked() );
+  item->setId( "vvv" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 3 ); // no new command
+  // blocked macro
+  l.undoStack()->beginMacro( "macro" );
+  item->setId( "lll" );
+  l.undoStack()->endMacro();
+  QCOMPARE( l.undoStack()->stack()->count(), before + 3 ); // no new command
 }
 
 void TestQgsLayout::itemsOnPage()

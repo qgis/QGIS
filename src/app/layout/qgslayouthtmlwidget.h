@@ -53,7 +53,6 @@ class QgsLayoutHtmlWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayout
     void mInsertExpressionButton_clicked();
 
     void mReloadPushButton_clicked();
-    void mReloadPushButton2_clicked();
     void mAddFramePushButton_clicked();
     void mEmptyFrameCheckBox_toggled( bool checked );
     void mHideEmptyBgCheckBox_toggled( bool checked );

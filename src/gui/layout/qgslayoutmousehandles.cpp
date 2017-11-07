@@ -616,7 +616,7 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
       item->attemptMove( itemPos );
 
       command->saveAfterState();
-      mLayout->undoStack()->stack()->push( command.release() );
+      mLayout->undoStack()->push( command.release() );
     }
     mLayout->undoStack()->endMacro();
   }
@@ -662,7 +662,7 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
       item->attemptMove( itemPos, false, true );
 
       command->saveAfterState();
-      mLayout->undoStack()->stack()->push( command.release() );
+      mLayout->undoStack()->push( command.release() );
     }
     mLayout->undoStack()->endMacro();
   }
