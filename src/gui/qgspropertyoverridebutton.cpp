@@ -440,7 +440,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
     if ( expString.length() > 35 )
     {
       expString.truncate( 35 );
-      expString.append( "\u2026" );
+      expString.append( QChar( 0x2026 ) );
     }
 
     expString.prepend( tr( "Current: " ) );
@@ -711,7 +711,7 @@ void QgsPropertyOverrideButton::updateGui()
   if ( deftip.length() > 75 )
   {
     deftip.truncate( 75 );
-    deftip.append( "\u2026" );
+    deftip.append( QChar( 0x2026 ) );
   }
 
   mFullDescription += tr( "<b>Current definition %1:</b><br>%2" ).arg( deftype, deftip );

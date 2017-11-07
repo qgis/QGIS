@@ -134,7 +134,7 @@ class SERVER_EXPORT QgsServer
     static bool sInitialized;
 
     //! service registry
-    static QgsServiceRegistry sServiceRegistry;
+    static QgsServiceRegistry *sServiceRegistry;
 
     static QgsServerSettings sSettings;
 
@@ -142,4 +142,3 @@ class SERVER_EXPORT QgsServer
     QgsConfigCache *mConfigCache = nullptr;
 };
 #endif // QGSSERVER_H
-

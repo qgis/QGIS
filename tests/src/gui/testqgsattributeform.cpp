@@ -92,9 +92,9 @@ void TestQgsAttributeForm::testFieldConstraint()
   form.setFeature( ft );
 
   // testing stuff
-  QString validLabel = QStringLiteral( "<font color=\"#259b24\">\u2714</font>" );
-  QString invalidLabel = QStringLiteral( "<font color=\"#FF9800\">\u2718</font>" );
-  QString warningLabel = QStringLiteral( "<font color=\"#FFC107\">\u2718</font>" );
+  QString validLabel = QStringLiteral( "<font color=\"#259B24\">%1</font>" ).arg( QChar( 0x2714 ) );
+  QString invalidLabel = QStringLiteral( "<font color=\"#FF9800\">%1</font>" ).arg( QChar( 0x2718 ) );
+  QString warningLabel = QStringLiteral( "<font color=\"#FFC107\">%1</font>" ).arg( QChar( 0x2718 ) );
 
   // set constraint
   layer->setConstraintExpression( 0, QString() );
@@ -177,8 +177,8 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
 
   // testing stuff
   QSignalSpy spy( &form, SIGNAL( attributeChanged( QString, QVariant ) ) );
-  QString val = QStringLiteral( "<font color=\"#259b24\">\u2714</font>" );
-  QString inv = QStringLiteral( "<font color=\"#FF9800\">\u2718</font>" );
+  QString val = QStringLiteral( "<font color=\"#259B24\">%1</font>" ).arg( 0x2714 );
+  QString inv = QStringLiteral( "<font color=\"#FF9800\">%1</font>" ).arg( 0x2718 );
 
   // get wrappers for each widget
   QgsEditorWidgetWrapper *ww0, *ww1, *ww2, *ww3;
@@ -440,8 +440,8 @@ void TestQgsAttributeForm::testDynamicForm()
 
 void TestQgsAttributeForm::testConstraintsOnJoinedFields()
 {
-  QString validLabel = QStringLiteral( "<font color=\"#259b24\">\u2714</font>" );
-  QString warningLabel = QStringLiteral( "<font color=\"#FFC107\">\u2718</font>" );
+  QString validLabel = QStringLiteral( "<font color=\"#259B24\">%1</font>" ).arg( QChar( 0x2714 ) );
+  QString warningLabel = QStringLiteral( "<font color=\"#FFC107\">%1</font>" ).arg( QChar( 0x2718 ) );
 
   // make temporary layers
   QString defA = QStringLiteral( "Point?field=id_a:integer" );

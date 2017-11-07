@@ -63,7 +63,7 @@ QgsServerInterfaceImpl *QgsServer::sServerInterface = nullptr;
 bool QgsServer::sInitialized = false;
 QgsServerSettings QgsServer::sSettings;
 
-QgsServiceRegistry QgsServer::sServiceRegistry;
+QgsServiceRegistry *QgsServer::sServiceRegistry = nullptr;
 
 QgsServer::QgsServer()
 {
@@ -271,12 +271,14 @@ bool QgsServer::init()
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Roman" ) << QStringLiteral( "Bold" ) );
 #endif
 
-  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache, &sServiceRegistry, &sSettings );
+  sServiceRegistry = new QgsServiceRegistry();
+
+  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache, sServiceRegistry, &sSettings );
 
   // Load service module
   QString modulePath = QgsApplication::libexecPath() + "server";
   qDebug() << "Initializing server modules from " << modulePath << endl;
-  sServiceRegistry.init( modulePath,  sServerInterface );
+  sServiceRegistry->init( modulePath,  sServerInterface );
 
   sInitialized = true;
   QgsMessageLog::logMessage( QStringLiteral( "Server initialized" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
@@ -386,7 +388,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       }
 
       // Lookup for service
-      QgsService *service = sServiceRegistry.getService( serviceString, versionString );
+      QgsService *service = sServiceRegistry->getService( serviceString, versionString );
       if ( service )
       {
         service->executeRequest( request, responseDecorator, project );

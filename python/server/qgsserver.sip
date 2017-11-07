@@ -70,7 +70,6 @@ Returns a pointer to the server interface
  :rtype: QgsServer
 %End
 };
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

@@ -1412,7 +1412,6 @@ QgsLayoutItemMapOverview *QgsLayoutMapWidget::currentOverview()
   }
 
   return mMapItem->overviews()->overview( item->data( Qt::UserRole ).toString() );
-  return nullptr;
 }
 
 void QgsLayoutMapWidget::mOverviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )

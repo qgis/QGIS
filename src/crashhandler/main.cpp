@@ -32,7 +32,7 @@ int main( int argc, char *argv[] )
   if ( argc < 2 )
   {
     std::cout << "QGIS Crash Handler Usage: \n"
-              << "qgscrashhandler {infofile}" << std::endl;
+              << "qgiscrashhandler {infofile}" << std::endl;
     return -1;
   }
 
@@ -73,7 +73,7 @@ int main( int argc, char *argv[] )
   sscanf_s( exceptionPointersString.toLocal8Bit().constData(), "%p", &exception );
 
   std::cout << "Process ID: " << processIdString.toLocal8Bit().constData() << std::endl;
-  std::cout << "Trhead ID:" << threadIdString.toLocal8Bit().constData() << std::endl;
+  std::cout << "Thread ID:" << threadIdString.toLocal8Bit().constData() << std::endl;
   std::cout << "Exception Pointer: " << exceptionPointersString.toLocal8Bit().constData() << std::endl;
   std::cout << "Symbol Path :" << symbolPaths.toUtf8().data() << std::endl;
 

@@ -54,7 +54,7 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  int xCol, yCol;
+  int xCol = -1, yCol = -1;
 
   if ( !mCurrentLabel.pos.isDiagram &&  !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
   {

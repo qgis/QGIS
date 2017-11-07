@@ -561,7 +561,7 @@ QString QgsExpression::helpText( QString name )
 
         if ( v.mVariableLenArguments )
         {
-          helpContents += QStringLiteral( "\u2026" );
+          helpContents += QChar( 0x2026 );
         }
 
         helpContents += ')';
