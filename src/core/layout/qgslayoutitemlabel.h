@@ -209,7 +209,7 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     QRectF boundingRect() const override;
 
     // Reimplemented to call prepareGeometryChange after toggling frame
-    void setFrameEnabled( const bool drawFrame ) override;
+    void setFrameEnabled( bool drawFrame ) override;
 
     // Reimplemented to call prepareGeometryChange after changing stroke width
     void setFrameStrokeWidth( const QgsLayoutMeasurement &strokeWidth ) override;

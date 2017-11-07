@@ -202,7 +202,7 @@ class QgsLayoutItemLabel: QgsLayoutItem
     virtual QRectF boundingRect() const;
 
 
-    virtual void setFrameEnabled( const bool drawFrame );
+    virtual void setFrameEnabled( bool drawFrame );
 
 
     virtual void setFrameStrokeWidth( const QgsLayoutMeasurement &strokeWidth );
