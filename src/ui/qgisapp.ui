@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1018</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -852,6 +852,10 @@
    </property>
    <property name="text">
     <string>Move Feature(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Move Feature(s)
+&lt;p&gt;Try the Node Tool if snapping is needed&lt;/p&gt;</string>
    </property>
   </action>
   <action name="mActionReshapeFeatures">
