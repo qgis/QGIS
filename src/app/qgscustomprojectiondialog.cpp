@@ -89,12 +89,11 @@ QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
 void QgsCustomProjectionDialog::populateList()
 {
   //Setup connection to the existing custom CRS database:
-  sqlite3      *myDatabase = nullptr;
-  const char   *myTail = nullptr;
+  sqlite3 *myDatabase = nullptr;
+  const char *myTail = nullptr;
   sqlite3_stmt *myPreparedStatement = nullptr;
-  int           myResult;
   //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::qgisUserDatabaseFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
+  int myResult = sqlite3_open_v2( QgsApplication::qgisUserDatabaseFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
   if ( myResult != SQLITE_OK )
   {
     QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
@@ -149,15 +148,14 @@ void QgsCustomProjectionDialog::populateList()
 
 bool  QgsCustomProjectionDialog::deleteCrs( const QString &id )
 {
-  sqlite3      *myDatabase = nullptr;
-  const char   *myTail = nullptr;
+  sqlite3 *myDatabase = nullptr;
+  const char *myTail = nullptr;
   sqlite3_stmt *myPreparedStatement = nullptr;
-  int           myResult;
 
   QString mySql = "delete from tbl_srs where srs_id=" + quotedValue( id );
   QgsDebugMsg( mySql );
   //check the db is available
-  myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8(), &myDatabase );
+  int myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8(), &myDatabase );
   if ( myResult != SQLITE_OK )
   {
     QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ), QgsApplication::qgisUserDatabaseFilePath() ) );
@@ -181,13 +179,13 @@ bool  QgsCustomProjectionDialog::deleteCrs( const QString &id )
 
 void  QgsCustomProjectionDialog::insertProjection( const QString &myProjectionAcronym )
 {
-  sqlite3      *myDatabase = nullptr;
+  sqlite3 *myDatabase = nullptr;
   sqlite3_stmt *myPreparedStatement = nullptr;
-  sqlite3      *srsDatabase = nullptr;
+  sqlite3 *srsDatabase = nullptr;
   QString mySql;
-  const char   *myTail = nullptr;
+  const char *myTail = nullptr;
   //check the db is available
-  int           myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8(), &myDatabase );
+  int myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8(), &myDatabase );
   if ( myResult != SQLITE_OK )
   {
     QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ), QgsApplication::qgisUserDatabaseFilePath() ) );
@@ -205,7 +203,7 @@ void  QgsCustomProjectionDialog::insertProjection( const QString &myProjectionAc
     // Set up the query to retrieve the projection information needed to populate the PROJECTION list
     QString srsSql = "select acronym,name,notes,parameters from tbl_projection where acronym=" + quotedValue( myProjectionAcronym );
 
-    const char   *srsTail = nullptr;
+    const char *srsTail = nullptr;
     sqlite3_stmt *srsPreparedStatement = nullptr;
     srsResult = sqlite3_prepare( srsDatabase, srsSql.toUtf8(), srsSql.length(), &srsPreparedStatement, &srsTail );
     // XXX Need to free memory from the error msg if one is set
@@ -247,17 +245,17 @@ void  QgsCustomProjectionDialog::insertProjection( const QString &myProjectionAc
 bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem myCRS, const QString &myName, QString myId, bool newEntry )
 {
   QString mySql;
-  int return_id;
-  QString myProjectionAcronym  = myCRS.projectionAcronym();
-  QString myEllipsoidAcronym   = myCRS.ellipsoidAcronym();
+  int returnId;
+  QString myProjectionAcronym = myCRS.projectionAcronym();
+  QString myEllipsoidAcronym = myCRS.ellipsoidAcronym();
   QgsDebugMsg( QString( "Saving a CRS:%1, %2, %3" ).arg( myName, myCRS.toProj4() ).arg( newEntry ) );
   if ( newEntry )
   {
-    return_id = myCRS.saveAsUserCrs( myName );
-    if ( return_id == -1 )
+    returnId = myCRS.saveAsUserCrs( myName );
+    if ( returnId == -1 )
       return false;
     else
-      myId = QString::number( return_id );
+      myId = QString::number( returnId );
   }
   else
   {
@@ -270,12 +268,11 @@ bool QgsCustomProjectionDialog::saveCrs( QgsCoordinateReferenceSystem myCRS, con
             + " where srs_id=" + quotedValue( myId )
             ;
     QgsDebugMsg( mySql );
-    sqlite3      *myDatabase = nullptr;
-    const char   *myTail = nullptr;
+    sqlite3 *myDatabase = nullptr;
+    const char *myTail = nullptr;
     sqlite3_stmt *myPreparedStatement = nullptr;
-    int           myResult;
     //check if the db is available
-    myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8(), &myDatabase );
+    int myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8(), &myDatabase );
     if ( myResult != SQLITE_OK )
     {
       QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ), QgsApplication::qgisUserDatabaseFilePath() ) );
@@ -454,11 +451,7 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
 
 void QgsCustomProjectionDialog::pbnCalculate_clicked()
 {
-
-
-  //
   // We must check the prj def is valid!
-  //
   projCtx pContext = pj_ctx_alloc();
   projPJ myProj = pj_init_plus_ctx( pContext, teParameters->toPlainText().toLocal8Bit().data() );
 
@@ -523,13 +516,10 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
     projectedY->setText( tmp );
   }
 
-  //
   pj_free( myProj );
   pj_free( wgs84Proj );
   pj_ctx_free( pContext );
-
 }
-
 
 QString QgsCustomProjectionDialog::quotedValue( QString value )
 {
