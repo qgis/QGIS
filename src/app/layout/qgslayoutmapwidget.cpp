@@ -1189,7 +1189,6 @@ QgsLayoutItemMapGrid *QgsLayoutMapWidget::currentGrid()
     return nullptr;
   }
   return mMapItem->grids()->grid( item->data( Qt::UserRole ).toString() );
-  return nullptr;
 }
 
 void QgsLayoutMapWidget::mGridListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
