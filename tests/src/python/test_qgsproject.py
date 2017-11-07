@@ -764,7 +764,7 @@ class TestQgsProject(unittest.TestCase):
 
     def testRelativePaths(self):
         """
-        Test wether paths to layer sources are stored as relative to the project path
+        Test whether paths to layer sources are stored as relative to the project path
         """
         tmpDir = QTemporaryDir()
         tmpFile = "{}/project.qgs".format(tmpDir.path())
