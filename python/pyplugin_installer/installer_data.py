@@ -41,7 +41,7 @@ try:
 except ImportError:
     from imp import reload
 import qgis.utils
-from qgis.core import Qgis, QgsNetworkAccessManager, QgsAuthManager
+from qgis.core import Qgis, QgsNetworkAccessManager, QgsApplication
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface, plugin_paths
 from .version_compare import compareVersions, normalizeVersion, isCompatible
@@ -333,7 +333,7 @@ class Repositories(QObject):
         self.mRepositories[key]["QRequest"] = QNetworkRequest(url)
         authcfg = self.mRepositories[key]["authcfg"]
         if authcfg and isinstance(authcfg, str):
-            if not QgsAuthManager.instance().updateNetworkRequest(
+            if not QgsApplication.authManager().updateNetworkRequest(
                     self.mRepositories[key]["QRequest"], authcfg.strip()):
                 msg = QCoreApplication.translate(
                     "QgsPluginInstaller",
