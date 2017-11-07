@@ -21,10 +21,11 @@
 #include <QUndoStack>
 
 QgsLayoutUndoStack::QgsLayoutUndoStack( QgsLayout *layout )
-  : mLayout( layout )
+  : QObject()
+  , mLayout( layout )
   , mUndoStack( new QUndoStack( layout ) )
 {
-
+  connect( mUndoStack.get(), &QUndoStack::indexChanged, this, &QgsLayoutUndoStack::indexChanged );
 }
 
 void QgsLayoutUndoStack::beginMacro( const QString &commandText )
@@ -75,4 +76,18 @@ QUndoStack *QgsLayoutUndoStack::stack()
 {
   return mUndoStack.get();
 
+}
+
+void QgsLayoutUndoStack::notifyUndoRedoOccurred( QgsLayoutItem *item )
+{
+  mUndoRedoOccurredItemUuids.insert( item->uuid() );
+}
+
+void QgsLayoutUndoStack::indexChanged()
+{
+  if ( mUndoRedoOccurredItemUuids.empty() )
+    return;
+
+  emit undoRedoOccurredForItems( mUndoRedoOccurredItemUuids );
+  mUndoRedoOccurredItemUuids.clear();
 }

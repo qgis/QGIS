@@ -174,11 +174,22 @@ SET(QGIS_APP_SRCS
   composer/qgsatlascompositionwidget.cpp
 
   layout/qgslayoutaddpagesdialog.cpp
+  layout/qgslayoutapputils.cpp
   layout/qgslayoutdesignerdialog.cpp
   layout/qgslayoutguidewidget.cpp
+  layout/qgslayoutitemslistview.cpp
   layout/qgslayoutappmenuprovider.cpp
+  layout/qgslayoutlabelwidget.cpp
+  layout/qgslayoutlegendlayersdialog.cpp
+  layout/qgslayoutlegendwidget.cpp
+  layout/qgslayoutmapwidget.cpp
+  layout/qgslayoutmapgridwidget.cpp
   layout/qgslayoutpagepropertieswidget.cpp
+  layout/qgslayoutpicturewidget.cpp
+  layout/qgslayoutpolygonwidget.cpp
+  layout/qgslayoutpolylinewidget.cpp
   layout/qgslayoutpropertieswidget.cpp
+  layout/qgslayoutshapewidget.cpp
 
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
@@ -372,8 +383,18 @@ SET (QGIS_APP_MOC_HDRS
   layout/qgslayoutappmenuprovider.h
   layout/qgslayoutdesignerdialog.h
   layout/qgslayoutguidewidget.h
+  layout/qgslayoutitemslistview.h
+  layout/qgslayoutlabelwidget.h
+  layout/qgslayoutlegendwidget.h
+  layout/qgslayoutlegendlayersdialog.h
+  layout/qgslayoutmapwidget.h
+  layout/qgslayoutmapgridwidget.h
   layout/qgslayoutpagepropertieswidget.h
+  layout/qgslayoutpicturewidget.h
+  layout/qgslayoutpolygonwidget.h
+  layout/qgslayoutpolylinewidget.h
   layout/qgslayoutpropertieswidget.h
+  layout/qgslayoutshapewidget.h
 
   locator/qgsinbuiltlocatorfilters.h
   locator/qgslocatoroptionswidget.h

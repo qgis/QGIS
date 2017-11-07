@@ -287,6 +287,7 @@
 %Include layertree/qgslayertreeview.sip
 %Include layertree/qgslayertreeviewdefaultactions.sip
 %Include layout/qgslayoutdesignerinterface.sip
+%Include layout/qgslayoutitemcombobox.sip
 %Include layout/qgslayoutitemguiregistry.sip
 %Include layout/qgslayoutitemwidget.sip
 %Include layout/qgslayoutnewitempropertiesdialog.sip
@@ -295,6 +296,9 @@
 %Include layout/qgslayoutview.sip
 %Include layout/qgslayoutviewtool.sip
 %Include layout/qgslayoutviewtooladditem.sip
+%Include layout/qgslayoutviewtooladdnodeitem.sip
+%Include layout/qgslayoutviewtooleditnodes.sip
+%Include layout/qgslayoutviewtoolmoveitemcontent.sip
 %Include layout/qgslayoutviewtoolpan.sip
 %Include layout/qgslayoutviewtoolselect.sip
 %Include layout/qgslayoutviewtooltemporarykeypan.sip

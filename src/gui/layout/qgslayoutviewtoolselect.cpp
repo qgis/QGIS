@@ -62,11 +62,12 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
   QgsLayoutItem *selectedItem = nullptr;
   QgsLayoutItem *previousSelectedItem = nullptr;
 
+  QList<QgsLayoutItem *> selectedItems = layout()->selectedLayoutItems();
+
   if ( event->modifiers() & Qt::ControlModifier )
   {
     //CTRL modifier, so we are trying to select the next item below the current one
     //first, find currently selected item
-    QList<QgsLayoutItem *> selectedItems = layout()->selectedLayoutItems();
     if ( !selectedItems.isEmpty() )
     {
       previousSelectedItem = selectedItems.at( 0 );
@@ -100,12 +101,6 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
     return;
   }
 
-  if ( ( !selectedItem->isSelected() ) &&       //keep selection if an already selected item pressed
-       !( event->modifiers() & Qt::ShiftModifier ) ) //keep selection if shift key pressed
-  {
-    layout()->deselectAll();
-  }
-
   if ( ( event->modifiers() & Qt::ShiftModifier ) && ( selectedItem->isSelected() ) )
   {
     //SHIFT-clicking a selected item deselects it
@@ -117,10 +112,22 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
     {
       emit itemFocused( selectedItems.at( 0 ) );
     }
+    else
+    {
+      emit itemFocused( nullptr );
+    }
   }
   else
   {
-    selectedItem->setSelected( true );
+    if ( ( !selectedItem->isSelected() ) &&       //keep selection if an already selected item pressed
+         !( event->modifiers() & Qt::ShiftModifier ) ) //keep selection if shift key pressed
+    {
+      layout()->setSelectedItem( selectedItem ); // clears existing selection
+    }
+    else
+    {
+      selectedItem->setSelected( true );
+    }
     event->ignore();
     emit itemFocused( selectedItem );
   }
@@ -170,7 +177,7 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
   else
   {
     //not adding to or removing from selection, so clear current selection
-    layout()->deselectAll();
+    whileBlocking( layout() )->deselectAll();
   }
 
   //determine item selection mode, default to intersection
@@ -218,6 +225,11 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
   {
     emit itemFocused( selectedItemList.at( 0 ) );
   }
+  else
+  {
+    emit itemFocused( nullptr );
+  }
+  mMouseHandles->selectionChanged();
 }
 
 void QgsLayoutViewToolSelect::wheelEvent( QWheelEvent *event )

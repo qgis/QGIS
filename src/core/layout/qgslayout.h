@@ -25,6 +25,7 @@
 #include "qgslayoutgridsettings.h"
 #include "qgslayoutguidecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgslayoutexporter.h"
 
 class QgsLayoutItemMap;
 class QgsLayoutModel;
@@ -50,7 +51,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
       ZGuide = 9998, //!< Z-value for page guides
       ZSmartGuide = 9999, //!< Z-value for smart (item bounds based) guides
       ZMouseHandles = 10000, //!< Z-value for mouse handles
-      ZMapTool = 10001, //!< Z-value for temporary map tool items
+      ZViewTool = 10001, //!< Z-value for temporary view tool items
       ZSnapIndicator = 10002, //!< Z-value for snapping indicator
     };
 
@@ -82,6 +83,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns the items model attached to the layout.
      */
     QgsLayoutModel *itemsModel();
+
+    /**
+     * Returns the layout's exporter, which is used for rendering the layout and exporting
+     * to various formats.
+     */
+    QgsLayoutExporter &exporter();
 
     /**
      * Returns the layout's name.
@@ -468,6 +475,16 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
   public slots:
 
     /**
+     * Forces the layout, and all items contained within it, to refresh. For instance, this causes maps to redraw
+     * and rebuild cached images, html items to reload their source url, and attribute tables
+     * to refresh their contents. Calling this also triggers a recalculation of all data defined
+     * attributes within the layout.
+     *
+     * \see refreshed()
+     */
+    void refresh();
+
+    /**
      * Updates the scene bounds of the layout.
      */
     void updateBounds();
@@ -485,6 +502,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     void selectedItemChanged( QgsLayoutItem *selected );
 
+    /**
+     * Is emitted when the layout has been refreshed and items should also be refreshed
+     * and updated.
+     */
+    void refreshed();
+
   private:
 
     QgsProject *mProject = nullptr;
@@ -501,6 +524,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     std::unique_ptr< QgsLayoutPageCollection > mPageCollection;
     std::unique_ptr< QgsLayoutUndoStack > mUndoStack;
+    QgsLayoutExporter mExporter;
 
     bool mBlockUndoCommands = false;
 

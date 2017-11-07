@@ -72,6 +72,7 @@ void QgsLayoutItemUndoCommand::restoreState( QDomDocument &stateDoc )
 
   item->readXml( stateDoc.documentElement().firstChild().toElement(), stateDoc, QgsReadWriteContext() );
   mLayout->project()->setDirty( true );
+  mLayout->undoStack()->notifyUndoRedoOccurred( item );
 }
 
 QgsLayoutItem *QgsLayoutItemUndoCommand::recreateItem( int itemType, QgsLayout *layout )

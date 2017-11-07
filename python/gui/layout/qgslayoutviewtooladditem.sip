@@ -22,17 +22,21 @@ class QgsLayoutViewToolAddItem : QgsLayoutViewTool
 
     QgsLayoutViewToolAddItem( QgsLayoutView *view /TransferThis/ );
 
-    int itemType() const;
+    int itemMetadataId() const;
 %Docstring
- Returns the item type for items created by the tool.
-.. seealso:: setItemType()
+ Returns the item metadata id for items created by the tool.
+.. seealso:: setItemMetadataId()
  :rtype: int
 %End
 
-    void setItemType( int type );
+    void setItemMetadataId( int metadataId );
 %Docstring
- Sets the item ``type`` for items created by the tool.
-.. seealso:: itemType()
+ Sets the item metadata ``metadataId`` for items created by the tool.
+
+ The ``metadataId`` associates the current tool behavior with a metadata entry
+ from QgsLayoutItemGuiRegistry.
+
+.. seealso:: itemMetadataId()
 %End
 
     virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );
@@ -43,6 +47,13 @@ class QgsLayoutViewToolAddItem : QgsLayoutViewTool
 
     virtual void deactivate();
 
+
+  signals:
+
+    void createdItem();
+%Docstring
+ Emitted when an item has been created using the tool.
+%End
 
 };
 

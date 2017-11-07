@@ -88,6 +88,11 @@ QgsLayoutObject::QgsLayoutObject( QgsLayout *layout )
   , mLayout( layout )
 {
   initPropertyDefinitions();
+
+  if ( mLayout )
+  {
+    connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutObject::refresh );
+  }
 }
 
 const QgsLayout *QgsLayoutObject::layout() const

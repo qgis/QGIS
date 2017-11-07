@@ -34,6 +34,7 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgslayoutitemlegend.h"
 
 #include <QMessageBox>
 #include <QInputDialog>

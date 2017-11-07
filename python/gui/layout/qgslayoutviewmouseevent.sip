@@ -39,12 +39,15 @@ class QgsLayoutViewMouseEvent : QMouseEvent
  \param snap set to true to snap the point using the layout's snapping settings
 %End
 
-    void snapPoint( QGraphicsLineItem *horizontalSnapLine = 0, QGraphicsLineItem *verticalSnapLine = 0 );
+    void snapPoint( QGraphicsLineItem *horizontalSnapLine = 0, QGraphicsLineItem *verticalSnapLine = 0,
+                    const QList<QgsLayoutItem *> &ignoreItems = QList< QgsLayoutItem * >() );
 %Docstring
  Manually triggers a snap for the mouse event position using the layout's snapper.
 
  If the ``horizontalSnapLine`` and ``verticalSnapLine`` arguments are specified, then the snapper
  will automatically display and position these lines to indicate snapping positions to item bounds.
+
+ The ``ignoreItems`` argument can be used to specify a list of items to avoid snapping to.
 %End
 
     QPointF layoutPoint() const;

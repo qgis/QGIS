@@ -28,7 +28,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
       ZGuide,
       ZSmartGuide,
       ZMouseHandles,
-      ZMapTool,
+      ZViewTool,
       ZSnapIndicator,
     };
 
@@ -60,6 +60,13 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Returns the items model attached to the layout.
  :rtype: QgsLayoutModel
+%End
+
+    QgsLayoutExporter &exporter();
+%Docstring
+ Returns the layout's exporter, which is used for rendering the layout and exporting
+ to various formats.
+ :rtype: QgsLayoutExporter
 %End
 
     QString name() const;
@@ -419,6 +426,16 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 
   public slots:
 
+    void refresh();
+%Docstring
+ Forces the layout, and all items contained within it, to refresh. For instance, this causes maps to redraw
+ and rebuild cached images, html items to reload their source url, and attribute tables
+ to refresh their contents. Calling this also triggers a recalculation of all data defined
+ attributes within the layout.
+
+.. seealso:: refreshed()
+%End
+
     void updateBounds();
 %Docstring
  Updates the scene bounds of the layout.
@@ -435,6 +452,12 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Emitted whenever the selected item changes.
  If None, no item is selected.
+%End
+
+    void refreshed();
+%Docstring
+ Is emitted when the layout has been refreshed and items should also be refreshed
+ and updated.
 %End
 
 };

@@ -33,7 +33,7 @@ class QgsLayoutItemGroup: QgsLayoutItem
     virtual QString displayName() const;
 
 
-    static QgsLayoutItemGroup *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
+    static QgsLayoutItemGroup *create( QgsLayout *layout ) /Factory/;
 %Docstring
  Returns a new group item for the specified ``layout``.
 
@@ -62,14 +62,9 @@ class QgsLayoutItemGroup: QgsLayoutItem
     virtual void setVisibility( const bool visible );
 
 
-    virtual void attemptMove( const QgsLayoutPoint &point );
+    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false );
 
-    virtual void attemptResize( const QgsLayoutSize &size );
-
-
-    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
-
-    virtual bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
+    virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
 
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
@@ -77,6 +72,10 @@ class QgsLayoutItemGroup: QgsLayoutItem
 
   protected:
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
+
+    virtual bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
 
 };

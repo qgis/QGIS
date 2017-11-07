@@ -72,6 +72,12 @@ class QgsLayoutObject: QObject, QgsExpressionContextGenerator
       ScalebarLineWidth,
     };
 
+    enum PropertyValueType
+    {
+      EvaluatedValue,
+      OriginalValue
+    };
+
     static const QgsPropertiesDefinition &propertyDefinitions();
 %Docstring
  Returns the layout object property definitions.
@@ -164,6 +170,13 @@ class QgsLayoutObject: QObject, QgsExpressionContextGenerator
     virtual void refresh();
 %Docstring
  Refreshes the object, causing a recalculation of any property overrides.
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+ Emitted when the object's properties change.
 %End
 
   protected:

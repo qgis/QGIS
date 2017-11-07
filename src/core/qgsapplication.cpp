@@ -43,6 +43,7 @@
 #include "qgsuserprofilemanager.h"
 #include "qgsreferencedgeometry.h"
 #include "qgs3drendererregistry.h"
+#include "qgslayoutcontext.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -152,6 +153,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsMessageLog::MessageLevel>( "QgsMessageLog::MessageLevel" );
   qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
   qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
+  qRegisterMetaType<QgsLayoutContext::Flags>( "QgsLayoutContext::Flags" );
 
   QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
   // QgsDebugMsg( QString( "prefixPath(): %1" ).arg( prefixPath ) );

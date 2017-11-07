@@ -24,9 +24,12 @@
 class QgsLayoutDesignerDialog;
 class QgsLayoutView;
 class QgsLayoutViewToolAddItem;
+class QgsLayoutViewToolAddNodeItem;
 class QgsLayoutViewToolPan;
 class QgsLayoutViewToolZoom;
 class QgsLayoutViewToolSelect;
+class QgsLayoutViewToolEditNodes;
+class QgsLayoutViewToolMoveItemContent;
 class QgsLayoutRuler;
 class QComboBox;
 class QSlider;
@@ -37,6 +40,7 @@ class QgsPanelWidgetStack;
 class QgsDockWidget;
 class QUndoView;
 class QTreeView;
+class QgsLayoutItemsListView;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -204,6 +208,14 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      */
     void moveSelectedItemsToBottom();
 
+    /**
+     * Forces the layout, and all items contained within it, to refresh. For instance, this causes maps to redraw
+     * and rebuild cached images, html items to reload their source url, and attribute tables
+     * to refresh their contents. Calling this also triggers a recalculation of all data defined
+     * attributes within the layout.
+     */
+    void refreshLayout();
+
   signals:
 
     /**
@@ -217,7 +229,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
   private slots:
 
-    void itemTypeAdded( int type );
+    void itemTypeAdded( int id );
     void statusZoomCombo_currentIndexChanged( int index );
     void statusZoomCombo_zoomEntered();
     void sliderZoomChanged( int value );
@@ -233,6 +245,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void addPages();
     void statusMessageReceived( const QString &message );
     void dockVisibilityChanged( bool visible );
+    void undoRedoOccurredForItems( const QSet< QString > itemUuids );
 
   private:
 
@@ -261,9 +274,12 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     static QList<double> sStatusZoomLevelsList;
 
     QgsLayoutViewToolAddItem *mAddItemTool = nullptr;
+    QgsLayoutViewToolAddNodeItem *mAddNodeItemTool = nullptr;
     QgsLayoutViewToolPan *mPanTool = nullptr;
     QgsLayoutViewToolZoom *mZoomTool = nullptr;
     QgsLayoutViewToolSelect *mSelectTool = nullptr;
+    QgsLayoutViewToolEditNodes *mNodesTool = nullptr;
+    QgsLayoutViewToolMoveItemContent *mMoveContentTool = nullptr;
 
     QMap< QString, QToolButton * > mItemGroupToolButtons;
     QMap< QString, QMenu * > mItemGroupSubmenus;
@@ -281,7 +297,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsDockWidget *mUndoDock = nullptr;
 
     QgsDockWidget *mItemsDock = nullptr;
-    QTreeView *mItemsTreeView = nullptr;
+    QgsLayoutItemsListView *mItemsTreeView = nullptr;
 
     QAction *mUndoAction = nullptr;
     QAction *mRedoAction = nullptr;
@@ -297,14 +313,16 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     };
     QMap< QString, PanelStatus > mPanelStatus;
 
+    bool mBlockItemOptions = false;
+
     //! Save window state
     void saveWindowState();
 
     //! Restore the window and toolbar state
     void restoreWindowState();
 
-    //! Switch to new item creation tool, for a new item of the specified \a type.
-    void activateNewItemCreationTool( int type );
+    //! Switch to new item creation tool, for a new item of the specified \a id.
+    void activateNewItemCreationTool( int id, bool nodeBasedItem );
 
     void createLayoutPropertiesWidget();
 

@@ -160,6 +160,7 @@ SET(QGIS_GUI_SRCS
   layertree/qgslayertreeviewdefaultactions.cpp
 
   layout/qgslayoutitemguiregistry.cpp
+  layout/qgslayoutitemcombobox.cpp
   layout/qgslayoutitemwidget.cpp
   layout/qgslayoutmousehandles.cpp
   layout/qgslayoutnewitempropertiesdialog.cpp
@@ -170,6 +171,9 @@ SET(QGIS_GUI_SRCS
   layout/qgslayoutviewrubberband.cpp
   layout/qgslayoutviewtool.cpp
   layout/qgslayoutviewtooladditem.cpp
+  layout/qgslayoutviewtooladdnodeitem.cpp
+  layout/qgslayoutviewtooleditnodes.cpp
+  layout/qgslayoutviewtoolmoveitemcontent.cpp
   layout/qgslayoutviewtoolpan.cpp
   layout/qgslayoutviewtoolselect.cpp
   layout/qgslayoutviewtooltemporarykeypan.cpp
@@ -664,6 +668,7 @@ SET(QGIS_GUI_MOC_HDRS
   layertree/qgslayertreeviewdefaultactions.h
 
   layout/qgslayoutdesignerinterface.h
+  layout/qgslayoutitemcombobox.h
   layout/qgslayoutitemguiregistry.h
   layout/qgslayoutitemwidget.h
   layout/qgslayoutmousehandles.h
@@ -673,6 +678,9 @@ SET(QGIS_GUI_MOC_HDRS
   layout/qgslayoutview.h
   layout/qgslayoutviewtool.h
   layout/qgslayoutviewtooladditem.h
+  layout/qgslayoutviewtooladdnodeitem.h
+  layout/qgslayoutviewtooleditnodes.h
+  layout/qgslayoutviewtoolmoveitemcontent.h
   layout/qgslayoutviewtoolpan.h
   layout/qgslayoutviewtoolselect.h
   layout/qgslayoutviewtooltemporarykeypan.h

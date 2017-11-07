@@ -47,6 +47,9 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
   mLockAspectRatio->setWidthSpinBox( mWidthSpin );
   mLockAspectRatio->setHeightSpinBox( mHeightSpin );
 
+  mSymbolButton->setSymbolType( QgsSymbol::Fill );
+  mSymbolButton->setSymbol( mPage->layout()->pageCollection()->pageStyleSymbol()->clone() );
+
   connect( mPageSizeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutPagePropertiesWidget::pageSizeChanged );
   connect( mPageOrientationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutPagePropertiesWidget::orientationChanged );
 
@@ -55,6 +58,7 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
   connect( mWidthSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPagePropertiesWidget::setToCustomSize );
   connect( mHeightSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPagePropertiesWidget::setToCustomSize );
 
+  connect( mSymbolButton, &QgsSymbolButton::changed, this, &QgsLayoutPagePropertiesWidget::symbolChanged );
   registerDataDefinedButton( mPaperSizeDDBtn, QgsLayoutObject::PresetPaperSize );
   registerDataDefinedButton( mWidthDDBtn, QgsLayoutObject::ItemWidth );
   registerDataDefinedButton( mHeightDDBtn, QgsLayoutObject::ItemHeight );
@@ -140,6 +144,13 @@ void QgsLayoutPagePropertiesWidget::setToCustomSize()
     return;
   whileBlocking( mPageSizeComboBox )->setCurrentIndex( mPageSizeComboBox->count() - 1 );
   mPageOrientationComboBox->setEnabled( false );
+}
+
+void QgsLayoutPagePropertiesWidget::symbolChanged()
+{
+  mPage->layout()->undoStack()->beginCommand( mPage->layout()->pageCollection(), tr( "Change Page Background" ), QgsLayoutItemPage::UndoPageSymbol );
+  mPage->layout()->pageCollection()->setPageStyleSymbol( static_cast< QgsFillSymbol * >( mSymbolButton->symbol() )->clone() );
+  mPage->layout()->undoStack()->endCommand();
 }
 
 void QgsLayoutPagePropertiesWidget::showCurrentPageSize()

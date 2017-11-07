@@ -208,6 +208,12 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void resizeSelectedItems( QgsLayoutAligner::Resize resize );
 
+    /**
+     * Returns the delta (in layout coordinates) by which to move items
+     * for the given key \a event.
+     */
+    QPointF deltaForKeyEvent( QKeyEvent *event );
+
   public slots:
 
     /**
@@ -445,6 +451,8 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 
   private slots:
 
+    void invalidateCachedRenders();
+
   private:
 
     //! Zoom layout from a mouse wheel event
@@ -462,10 +470,10 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     QgsLayoutRuler *mVerticalRuler = nullptr;
     std::unique_ptr< QgsLayoutViewMenuProvider > mMenuProvider;
 
-    std::unique_ptr< QgsLayoutViewSnapMarker > mSnapMarker;
+    QgsLayoutViewSnapMarker *mSnapMarker = nullptr;
 
-    std::unique_ptr< QGraphicsLineItem > mHorizontalSnapLine;
-    std::unique_ptr< QGraphicsLineItem > mVerticalSnapLine;
+    QGraphicsLineItem *mHorizontalSnapLine = nullptr;
+    QGraphicsLineItem *mVerticalSnapLine = nullptr;
 
     int mCurrentPage = 0;
 

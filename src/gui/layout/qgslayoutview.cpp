@@ -54,10 +54,12 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   mSpacePanTool = new QgsLayoutViewToolTemporaryKeyPan( this );
   mMidMouseButtonPanTool = new QgsLayoutViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsLayoutViewToolTemporaryKeyZoom( this );
-  mSnapMarker.reset( new QgsLayoutViewSnapMarker() );
+  mSnapMarker = new QgsLayoutViewSnapMarker();
 
   mPreviewEffect = new QgsPreviewEffect( this );
   viewport()->setGraphicsEffect( mPreviewEffect );
+
+  connect( this, &QgsLayoutView::zoomLevelChanged, this, &QgsLayoutView::invalidateCachedRenders );
 }
 
 QgsLayout *QgsLayoutView::currentLayout()
@@ -79,16 +81,19 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
 
   viewChanged();
 
-  mSnapMarker.reset( new QgsLayoutViewSnapMarker() );
+  delete mSnapMarker;
+  mSnapMarker = new QgsLayoutViewSnapMarker();
   mSnapMarker->hide();
-  layout->addItem( mSnapMarker.get() );
+  layout->addItem( mSnapMarker );
 
-  mHorizontalSnapLine.reset( createSnapLine() );
+  delete mHorizontalSnapLine;
+  mHorizontalSnapLine = createSnapLine();
   mHorizontalSnapLine->hide();
-  layout->addItem( mHorizontalSnapLine.get() );
-  mVerticalSnapLine.reset( createSnapLine() );
+  layout->addItem( mHorizontalSnapLine );
+  delete mVerticalSnapLine;
+  mVerticalSnapLine = createSnapLine();
   mVerticalSnapLine->hide();
-  layout->addItem( mVerticalSnapLine.get() );
+  layout->addItem( mVerticalSnapLine );
 
   if ( mHorizontalRuler )
   {
@@ -272,6 +277,48 @@ void QgsLayoutView::resizeSelectedItems( QgsLayoutAligner::Resize resize )
 {
   const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
   QgsLayoutAligner::resizeItems( currentLayout(), selectedItems, resize );
+}
+
+QPointF QgsLayoutView::deltaForKeyEvent( QKeyEvent *event )
+{
+  // increment used for cursor key item movement
+  double increment = 1.0;
+  if ( event->modifiers() & Qt::ShiftModifier )
+  {
+    //holding shift while pressing cursor keys results in a big step
+    increment = 10.0;
+  }
+  else if ( event->modifiers() & Qt::AltModifier )
+  {
+    //holding alt while pressing cursor keys results in a 1 pixel step
+    double viewScale = transform().m11();
+    if ( viewScale > 0 )
+    {
+      increment = 1 / viewScale;
+    }
+  }
+
+  double deltaX = 0;
+  double deltaY = 0;
+  switch ( event->key() )
+  {
+    case Qt::Key_Left:
+      deltaX = -increment;
+      break;
+    case Qt::Key_Right:
+      deltaX = increment;
+      break;
+    case Qt::Key_Up:
+      deltaY = -increment;
+      break;
+    case Qt::Key_Down:
+      deltaY = increment;
+      break;
+    default:
+      break;
+  }
+
+  return QPointF( deltaX, deltaY );
 }
 
 void QgsLayoutView::zoomFull()
@@ -727,7 +774,7 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
     std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, false ) );
     if ( mTool->flags() & QgsLayoutViewTool::FlagSnaps )
     {
-      me->snapPoint( mHorizontalSnapLine.get(), mVerticalSnapLine.get() );
+      me->snapPoint( mHorizontalSnapLine, mVerticalSnapLine, mTool->ignoredSnapItems() );
     }
     if ( mTool->flags() & QgsLayoutViewTool::FlagSnaps )
     {
@@ -811,47 +858,11 @@ void QgsLayoutView::keyPressEvent( QKeyEvent *event )
     QgsLayout *l = currentLayout();
     const QList<QgsLayoutItem *> layoutItemList = l->selectedLayoutItems();
 
-    // increment used for cursor key item movement
-    double increment = 1.0;
-    if ( event->modifiers() & Qt::ShiftModifier )
-    {
-      //holding shift while pressing cursor keys results in a big step
-      increment = 10.0;
-    }
-    else if ( event->modifiers() & Qt::AltModifier )
-    {
-      //holding alt while pressing cursor keys results in a 1 pixel step
-      double viewScale = transform().m11();
-      if ( viewScale > 0 )
-      {
-        increment = 1 / viewScale;
-      }
-    }
-
-    double deltaX = 0;
-    double deltaY = 0;
-    switch ( event->key() )
-    {
-      case Qt::Key_Left:
-        deltaX = -increment;
-        break;
-      case Qt::Key_Right:
-        deltaX = increment;
-        break;
-      case Qt::Key_Up:
-        deltaY = -increment;
-        break;
-      case Qt::Key_Down:
-        deltaY = increment;
-        break;
-      default:
-        break;
-    }
-
-    auto moveItem = [ l, deltaX, deltaY ]( QgsLayoutItem * item )
+    QPointF delta = deltaForKeyEvent( event );
+    auto moveItem = [ l, delta ]( QgsLayoutItem * item )
     {
       QgsLayoutPoint itemPos = item->positionWithUnits();
-      QgsLayoutPoint deltaPos = l->convertFromLayoutUnits( QPointF( deltaX, deltaY ), itemPos.units() );
+      QgsLayoutPoint deltaPos = l->convertFromLayoutUnits( delta, itemPos.units() );
       itemPos.setX( itemPos.x() + deltaPos.x() );
       itemPos.setY( itemPos.y() + deltaPos.y() );
       item->attemptMove( itemPos );
@@ -891,6 +902,21 @@ void QgsLayoutView::scrollContentsBy( int dx, int dy )
 {
   QGraphicsView::scrollContentsBy( dx, dy );
   viewChanged();
+}
+
+void QgsLayoutView::invalidateCachedRenders()
+{
+  if ( !currentLayout() )
+    return;
+
+  //redraw cached map items
+  QList< QgsLayoutItem *> items;
+  currentLayout()->layoutItems( items );
+
+  for ( QgsLayoutItem *item : qgis::as_const( items ) )
+  {
+    item->invalidateCache();
+  }
 }
 
 void QgsLayoutView::viewChanged()

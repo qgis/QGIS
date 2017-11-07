@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>468</width>
-    <height>263</height>
+    <width>848</width>
+    <height>439</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,86 +35,8 @@
       </item>
       <item row="1" column="1">
        <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="1">
-         <widget class="QCheckBox" name="mUpperMiddleCheckBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QCheckBox" name="mMiddleRightCheckBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QCheckBox" name="mMiddleCheckBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QCheckBox" name="mUpperRightCheckBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QCheckBox" name="mLowerMiddleCheckBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="2">
-         <widget class="QCheckBox" name="mLowerRightCheckBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="0">
-         <widget class="QCheckBox" name="mUpperLeftCheckBox">
+         <widget class="QRadioButton" name="mUpperLeftRadioButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -129,8 +51,21 @@
           </property>
          </widget>
         </item>
-        <item row="2" column="0">
-         <widget class="QCheckBox" name="mLowerLeftCheckBox">
+        <item row="0" column="1">
+         <widget class="QRadioButton" name="mUpperMiddleRadioButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QRadioButton" name="mUpperRightRadioButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -143,7 +78,72 @@
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QCheckBox" name="mMiddleLeftCheckBox">
+         <widget class="QRadioButton" name="mMiddleLeftRadioButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QRadioButton" name="mMiddleRadioButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QRadioButton" name="mMiddleRightRadioButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2">
+         <widget class="QRadioButton" name="mLowerRightRadioButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QRadioButton" name="mLowerMiddleRadioButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QRadioButton" name="mLowerLeftRadioButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -381,15 +381,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsRatioLockButton</class>
    <extends>QToolButton</extends>
    <header>qgsratiolockbutton.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsLayoutUnitsComboBox</class>
@@ -405,15 +405,15 @@
   <tabstop>mHeightSpin</tabstop>
   <tabstop>mLockAspectRatio</tabstop>
   <tabstop>mSizeUnitsComboBox</tabstop>
-  <tabstop>mUpperLeftCheckBox</tabstop>
-  <tabstop>mUpperMiddleCheckBox</tabstop>
-  <tabstop>mUpperRightCheckBox</tabstop>
-  <tabstop>mMiddleLeftCheckBox</tabstop>
-  <tabstop>mMiddleCheckBox</tabstop>
-  <tabstop>mMiddleRightCheckBox</tabstop>
-  <tabstop>mLowerLeftCheckBox</tabstop>
-  <tabstop>mLowerMiddleCheckBox</tabstop>
-  <tabstop>mLowerRightCheckBox</tabstop>
+  <tabstop>mUpperLeftRadioButton</tabstop>
+  <tabstop>mUpperMiddleRadioButton</tabstop>
+  <tabstop>mUpperRightRadioButton</tabstop>
+  <tabstop>mMiddleLeftRadioButton</tabstop>
+  <tabstop>mMiddleRadioButton</tabstop>
+  <tabstop>mMiddleRightRadioButton</tabstop>
+  <tabstop>mLowerLeftRadioButton</tabstop>
+  <tabstop>mLowerMiddleRadioButton</tabstop>
+  <tabstop>mLowerRightRadioButton</tabstop>
  </tabstops>
  <resources/>
  <connections>

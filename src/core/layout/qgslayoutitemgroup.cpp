@@ -59,7 +59,7 @@ QString QgsLayoutItemGroup::displayName() const
   return tr( "<Group>" );
 }
 
-QgsLayoutItemGroup *QgsLayoutItemGroup::create( QgsLayout *layout, const QVariantMap & )
+QgsLayoutItemGroup *QgsLayoutItemGroup::create( QgsLayout *layout )
 {
   return new QgsLayoutItemGroup( layout );
 }
@@ -127,8 +127,9 @@ void QgsLayoutItemGroup::setVisibility( const bool visible )
     mLayout->undoStack()->endMacro();
 }
 
-void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point )
+void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useReferencePoint, bool includesFrame )
 {
+  Q_UNUSED( useReferencePoint ); //groups should always have reference point in top left
   if ( !mLayout )
     return;
 
@@ -157,7 +158,7 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point )
     QgsLayoutPoint deltaPos = mLayout->convertFromLayoutUnits( QPointF( deltaX, deltaY ), itemPos.units() );
     itemPos.setX( itemPos.x() + deltaPos.x() );
     itemPos.setY( itemPos.y() + deltaPos.y() );
-    item->attemptMove( itemPos );
+    item->attemptMove( itemPos, true, includesFrame );
 
     if ( command )
     {
@@ -166,13 +167,13 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point )
     }
   }
   //lastly move group item itself
-  QgsLayoutItem::attemptMove( point );
+  QgsLayoutItem::attemptMove( point, includesFrame );
   if ( !shouldBlockUndoCommands() )
     mLayout->undoStack()->endMacro();
   resetBoundingRect();
 }
 
-void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size )
+void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size, bool includesFrame )
 {
   if ( !mLayout )
     return;
@@ -204,12 +205,12 @@ void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size )
     itemRect = itemRect.normalized();
     QPointF newPos = mapToScene( itemRect.topLeft() );
 
+    QgsLayoutSize itemSize = mLayout->convertFromLayoutUnits( itemRect.size(), item->sizeWithUnits().units() );
+    item->attemptResize( itemSize, includesFrame );
+
     // translate new position to current item units
     QgsLayoutPoint itemPos = mLayout->convertFromLayoutUnits( newPos, item->positionWithUnits().units() );
-    item->attemptMove( itemPos );
-
-    QgsLayoutSize itemSize = mLayout->convertFromLayoutUnits( itemRect.size(), item->sizeWithUnits().units() );
-    item->attemptResize( itemSize );
+    item->attemptMove( itemPos, false );
 
     if ( command )
     {
@@ -224,12 +225,10 @@ void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size )
   resetBoundingRect();
 }
 
-bool QgsLayoutItemGroup::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const
+bool QgsLayoutItemGroup::writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const
 {
   QDomElement element = document.createElement( QStringLiteral( "LayoutItem" ) );
   element.setAttribute( QStringLiteral( "type" ), stringType() );
-
-  writePropertiesToElement( element, document, context );
 
   for ( QgsLayoutItem *item : mItems )
   {
@@ -246,14 +245,12 @@ bool QgsLayoutItemGroup::writeXml( QDomElement &parentElement, QDomDocument &doc
   return true;
 }
 
-bool QgsLayoutItemGroup::readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context )
+bool QgsLayoutItemGroup::readPropertiesFromElement( const QDomElement &itemElement, const QDomDocument &, const QgsReadWriteContext & )
 {
   if ( itemElement.nodeName() != QStringLiteral( "LayoutItem" ) || itemElement.attribute( QStringLiteral( "type" ) ) != stringType() )
   {
     return false;
   }
-
-  bool result = readPropertiesFromElement( itemElement, document, context );
 
   QList<QgsLayoutItem *> items;
   mLayout->layoutItems( items );
@@ -279,7 +276,7 @@ bool QgsLayoutItemGroup::readXml( const QDomElement &itemElement, const QDomDocu
 
   resetBoundingRect();
 
-  return result;
+  return true;
 }
 
 void QgsLayoutItemGroup::paint( QPainter *, const QStyleOptionGraphicsItem *, QWidget * )
@@ -308,14 +305,14 @@ void QgsLayoutItemGroup::updateBoundingRect( QgsLayoutItem *item )
     mBoundingRectangle = QRectF( 0, 0, item->rect().width(), item->rect().height() );
     setSceneRect( QRectF( item->pos().x(), item->pos().y(), item->rect().width(), item->rect().height() ) );
 
-    if ( !qgsDoubleNear( item->itemRotation(), 0.0 ) )
+    if ( !qgsDoubleNear( item->rotation(), 0.0 ) )
     {
-      setItemRotation( item->itemRotation() );
+      setItemRotation( item->rotation() );
     }
   }
   else
   {
-    if ( !qgsDoubleNear( item->itemRotation(), itemRotation() ) )
+    if ( !qgsDoubleNear( item->rotation(), rotation() ) )
     {
       //items have mixed rotation, so reset rotation of group
       mBoundingRectangle = mapRectToScene( mBoundingRectangle );

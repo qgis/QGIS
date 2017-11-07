@@ -145,6 +145,12 @@ class QgsLayoutViewTool : QObject
  :rtype: QgsLayout
 %End
 
+    virtual QList< QgsLayoutItem * > ignoredSnapItems() const;
+%Docstring
+ Returns a list of items which should be ignored while snapping events
+ for this tool.
+ :rtype: list of QgsLayoutItem
+%End
 
   signals:
 

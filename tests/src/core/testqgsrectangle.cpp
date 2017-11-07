@@ -27,6 +27,7 @@ class TestQgsRectangle: public QObject
   private slots:
     void isEmpty();
     void fromWkt();
+    void fromCenter();
     void manipulate();
     void regression6194();
     void operators();
@@ -74,6 +75,28 @@ void TestQgsRectangle::fromWkt()
   QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 1))" ) ).isEmpty() );
   QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 1))" ) ).isEmpty() );
   QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1))" ) ).isEmpty() );
+}
+
+void TestQgsRectangle::fromCenter()
+{
+  QgsRectangle rect = QgsRectangle::fromCenterAndSize( QgsPointXY( 12, 21 ), 20, 40 );
+  QVERIFY( ! rect.isEmpty() );
+  QCOMPARE( rect.xMinimum(), 2.0 );
+  QCOMPARE( rect.yMinimum(), 1.0 );
+  QCOMPARE( rect.xMaximum(), 22.0 );
+  QCOMPARE( rect.yMaximum(), 41.0 );
+
+  rect = QgsRectangle::fromCenterAndSize( QgsPointXY( 12, 21 ), 0, 40 );
+  QCOMPARE( rect.xMinimum(), 12.0 );
+  QCOMPARE( rect.yMinimum(), 1.0 );
+  QCOMPARE( rect.xMaximum(), 12.0 );
+  QCOMPARE( rect.yMaximum(), 41.0 );
+
+  rect = QgsRectangle::fromCenterAndSize( QgsPointXY( 12, 21 ), 20, 0 );
+  QCOMPARE( rect.xMinimum(), 2.0 );
+  QCOMPARE( rect.yMinimum(), 21.0 );
+  QCOMPARE( rect.xMaximum(), 22.0 );
+  QCOMPARE( rect.yMaximum(), 21.0 );
 }
 
 void TestQgsRectangle::manipulate()

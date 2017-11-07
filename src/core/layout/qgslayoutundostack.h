@@ -21,6 +21,8 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgslayoutundocommand.h"
+#include "qgslayoutitem.h"
+
 #include <memory>
 
 class QgsLayout;
@@ -31,8 +33,10 @@ class QUndoStack;
  * An undo stack for QgsLayouts.
  * \since QGIS 3.0
 */
-class CORE_EXPORT QgsLayoutUndoStack
+class CORE_EXPORT QgsLayoutUndoStack : public QObject
 {
+    Q_OBJECT
+
   public:
 
     /**
@@ -98,6 +102,23 @@ class CORE_EXPORT QgsLayoutUndoStack
      */
     QUndoStack *stack();
 
+    /**
+     * Notifies the stack that an undo or redo action occurred for a specified \a item.
+     */
+    void notifyUndoRedoOccurred( QgsLayoutItem *item );
+
+  signals:
+
+    /**
+     * Emitted when an undo or redo action has occurred, which affected a
+     * set of layout \a itemUuids.
+     */
+    void undoRedoOccurredForItems( const QSet< QString > itemUuids );
+
+  private slots:
+
+    void indexChanged();
+
   private:
 
     QgsLayout *mLayout = nullptr;
@@ -105,6 +126,8 @@ class CORE_EXPORT QgsLayoutUndoStack
     std::unique_ptr< QUndoStack > mUndoStack;
 
     std::vector< std::unique_ptr< QgsAbstractLayoutUndoCommand > > mActiveCommands;
+
+    QSet< QString > mUndoRedoOccurredItemUuids;
 
 #ifdef SIP_RUN
     QgsLayoutUndoStack( const QgsLayoutUndoStack &other );

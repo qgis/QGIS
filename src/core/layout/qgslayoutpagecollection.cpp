@@ -44,6 +44,12 @@ void QgsLayoutPageCollection::setPageStyleSymbol( QgsFillSymbol *symbol )
     return;
 
   mPageStyleSymbol.reset( static_cast<QgsFillSymbol *>( symbol->clone() ) );
+
+  for ( QgsLayoutItemPage *page : qgis::as_const( mPages ) )
+  {
+    page->update();
+  }
+
 }
 
 void QgsLayoutPageCollection::reflow()

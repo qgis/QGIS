@@ -24,15 +24,26 @@ QgsLayoutContext::QgsLayoutContext()
 
 void QgsLayoutContext::setFlags( const QgsLayoutContext::Flags flags )
 {
+  if ( flags == mFlags )
+    return;
+
   mFlags = flags;
+  emit flagsChanged( mFlags );
 }
 
 void QgsLayoutContext::setFlag( const QgsLayoutContext::Flag flag, const bool on )
 {
+  Flags newFlags = mFlags;
   if ( on )
-    mFlags |= flag;
+    newFlags |= flag;
   else
-    mFlags &= ~flag;
+    newFlags &= ~flag;
+
+  if ( newFlags == mFlags )
+    return;
+
+  mFlags = newFlags;
+  emit flagsChanged( mFlags );
 }
 
 QgsLayoutContext::Flags QgsLayoutContext::flags() const

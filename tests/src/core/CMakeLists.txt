@@ -135,9 +135,15 @@ SET(TESTS
  testqgslayoutcontext.cpp
  testqgslayoutitem.cpp
  testqgslayoutitemgroup.cpp
+ testqgslayoutlabel.cpp
+ testqgslayoutmap.cpp
+ testqgslayoutmapgrid.cpp
+ testqgslayoutmapoverview.cpp
  testqgslayoutmodel.cpp
  testqgslayoutobject.cpp
  testqgslayoutpage.cpp
+ testqgslayoutpicture.cpp
+ testqgslayoutshapes.cpp
  testqgslayoutunits.cpp
  testqgslayoututils.cpp
  testqgslegendrenderer.cpp

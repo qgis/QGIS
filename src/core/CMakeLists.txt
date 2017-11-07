@@ -362,13 +362,24 @@ SET(QGIS_CORE_SRCS
   layout/qgslayout.cpp
   layout/qgslayoutaligner.cpp
   layout/qgslayoutcontext.cpp
+  layout/qgslayouteffect.cpp
+  layout/qgslayoutexporter.cpp
   layout/qgslayoutgridsettings.cpp
   layout/qgslayoutguidecollection.cpp
   layout/qgslayoutitem.cpp
   layout/qgslayoutitemgroup.cpp
   layout/qgslayoutitemgroupundocommand.cpp
+  layout/qgslayoutitemlabel.cpp
+  layout/qgslayoutitemlegend.cpp
   layout/qgslayoutitemmap.cpp
+  layout/qgslayoutitemmapgrid.cpp
+  layout/qgslayoutitemmapitem.cpp
+  layout/qgslayoutitemmapoverview.cpp
+  layout/qgslayoutitemnodeitem.cpp
   layout/qgslayoutitempage.cpp
+  layout/qgslayoutitempicture.cpp
+  layout/qgslayoutitempolygon.cpp
+  layout/qgslayoutitempolyline.cpp
   layout/qgslayoutitemregistry.cpp
   layout/qgslayoutitemshape.cpp
   layout/qgslayoutitemundocommand.cpp
@@ -713,17 +724,29 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsgpsdconnection.h
 
   layout/qgslayout.h
+  layout/qgslayoutcontext.h
+  layout/qgslayouteffect.h
   layout/qgslayoutguidecollection.h
   layout/qgslayoutitem.h
   layout/qgslayoutitemgroup.h
   layout/qgslayoutitemgroupundocommand.h
+  layout/qgslayoutitemlabel.h
+  layout/qgslayoutitemlegend.h
   layout/qgslayoutitemmap.h
+  layout/qgslayoutitemmapgrid.h
+  layout/qgslayoutitemmapitem.h
+  layout/qgslayoutitemmapoverview.h
+  layout/qgslayoutitemnodeitem.h
   layout/qgslayoutitempage.h
+  layout/qgslayoutitempicture.h
+  layout/qgslayoutitempolygon.h
+  layout/qgslayoutitempolyline.h
   layout/qgslayoutitemregistry.h
   layout/qgslayoutitemshape.h
   layout/qgslayoutmodel.h
   layout/qgslayoutpagecollection.h
   layout/qgslayoutobject.h
+  layout/qgslayoutundostack.h
 
   symbology/qgscptcityarchive.h
   symbology/qgssvgcache.h
@@ -972,7 +995,7 @@ SET(QGIS_CORE_HDRS
   composer/qgspaperitem.h
 
   layout/qgslayoutaligner.h
-  layout/qgslayoutcontext.h
+  layout/qgslayoutexporter.h
   layout/qgslayoutgridsettings.h
   layout/qgslayoutitemundocommand.h
   layout/qgslayoutmeasurement.h
@@ -983,7 +1006,6 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutsize.h
   layout/qgslayoutsnapper.h
   layout/qgslayoutundocommand.h
-  layout/qgslayoutundostack.h
   layout/qgslayoututils.h
 
   metadata/qgslayermetadata.h

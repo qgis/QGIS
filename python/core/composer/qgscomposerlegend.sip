@@ -11,31 +11,6 @@
 
 
 
-class QgsLegendModel : QgsLayerTreeModel
-{
-%Docstring
- Item model implementation based on layer tree model for composer legend.
- Overrides some functionality of QgsLayerTreeModel to better fit the needs of composer legend.
-
-.. versionadded:: 2.6
-%End
-
-%TypeHeaderCode
-#include "qgscomposerlegend.h"
-%End
-  public:
-    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent /TransferThis/ = 0 );
-%Docstring
-Construct the model based on the given layer tree
-%End
-
-    virtual QVariant data( const QModelIndex &index, int role ) const;
-
-
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-
-};
-
 
 class QgsComposerLegend : QgsComposerItem
 {
@@ -48,6 +23,7 @@ class QgsComposerLegend : QgsComposerItem
 %End
   public:
     QgsComposerLegend( QgsComposition *composition /TransferThis/ );
+    ~QgsComposerLegend();
 
     virtual int type() const;
 %Docstring

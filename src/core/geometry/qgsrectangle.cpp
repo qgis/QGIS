@@ -80,6 +80,15 @@ QgsRectangle QgsRectangle::fromWkt( const QString &wkt )
     return QgsRectangle();
 }
 
+QgsRectangle QgsRectangle::fromCenterAndSize( QgsPointXY center, double width, double height )
+{
+  double xMin = center.x() - width / 2.0;
+  double xMax = xMin + width;
+  double yMin = center.y() - height / 2.0;
+  double yMax = yMin + height;
+  return QgsRectangle( xMin, yMin, xMax, yMax );
+}
+
 void QgsRectangle::set( const QgsPointXY &p1, const QgsPointXY &p2 )
 {
   mXmin = p1.x();

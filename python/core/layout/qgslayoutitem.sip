@@ -52,7 +52,60 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 
     enum UndoCommand
     {
+      UndoNone,
       UndoIncrementalMove,
+      UndoIncrementalResize,
+      UndoStrokeColor,
+      UndoStrokeWidth,
+      UndoBackgroundColor,
+      UndoOpacity,
+      UndoSetId,
+      UndoRotation,
+      UndoShapeStyle,
+      UndoShapeCornerRadius,
+      UndoNodeMove,
+      UndoAtlasMargin,
+      UndoMapRotation,
+      UndoZoomContent,
+      UndoOverviewStyle,
+      UndoGridFramePenColor,
+      UndoMapGridFrameFill1Color,
+      UndoMapGridFrameFill2Color,
+      UndoMapAnnotationDistance,
+      UndoMapGridAnnotationFontColor,
+      UndoMapGridLineSymbol,
+      UndoMapGridMarkerSymbol,
+      UndoPictureRotation,
+      UndoPictureFillColor,
+      UndoPictureStrokeColor,
+      UndoPictureStrokeWidth,
+      UndoPictureNorthOffset,
+      UndoLabelText,
+      UndoLabelFont,
+      UndoLabelMargin,
+      UndoLabelFontColor,
+      UndoLegendText,
+      UndoLegendColumnCount,
+      UndoLegendSymbolWidth,
+      UndoLegendSymbolHeight,
+      UndoLegendWmsLegendWidth,
+      UndoLegendWmsLegendHeight,
+      UndoLegendTitleSpaceBottom,
+      UndoLegendGroupSpace,
+      UndoLegendLayerSpace,
+      UndoLegendSymbolSpace,
+      UndoLegendIconSymbolSpace,
+      UndoLegendFontColor,
+      UndoLegendBoxSpace,
+      UndoLegendColumnSpace,
+      UndoLegendLineSpacing,
+      UndoLegendRasterStrokeWidth,
+      UndoLegendRasterStrokeColor,
+      UndoLegendTitleFont,
+      UndoLegendGroupFont,
+      UndoLegendLayerFont,
+      UndoLegendItemFont,
+      UndoCustomCommand,
     };
 
     explicit QgsLayoutItem( QgsLayout *layout, bool manageZValue = true );
@@ -173,6 +226,17 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: parentGroup()
 %End
 
+    virtual int numberExportLayers() const;
+%Docstring
+ Returns the number of layers that this item requires for exporting during layered exports (e.g. SVG).
+ Returns 0 if this item is to be placed on the same layer as the previous item,
+ 1 if it should be placed on its own layer, and >1 if it requires multiple export layers.
+
+ Items which require multiply layers should check QgsLayoutContext.currentExportLayer() during
+ their rendering to determine which layer should be drawn.
+ :rtype: int
+%End
+
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
 %Docstring
@@ -216,26 +280,58 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  :rtype: QgsLayoutSize
 %End
 
-    virtual void attemptResize( const QgsLayoutSize &size );
+    virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
 %Docstring
  Attempts to resize the item to a specified target ``size``. Note that the final size of the
  item may not match the specified target size, as items with a fixed or minimum
  size will place restrictions on the allowed item size. Data defined item size overrides
  will also override the specified target size.
+
+ If ``includesFrame`` is true, then the size specified by ``size`` includes the
+ item's frame.
+
 .. seealso:: minimumSize()
 .. seealso:: fixedSize()
 .. seealso:: attemptMove()
 .. seealso:: sizeWithUnits()
 %End
 
-    virtual void attemptMove( const QgsLayoutPoint &point );
+    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false );
 %Docstring
- Attempts to move the item to a specified ``point``. This method respects the item's
+ Attempts to move the item to a specified ``point``.
+
+ If ``useReferencePoint`` is true, this method will respect the item's
  reference point, in that the item will be moved so that its current reference
  point is placed at the specified target point.
+
+ If ``useReferencePoint`` is false, the item will be moved so that ``point``
+ falls at the top-left corner of the item.
+
+ If ``includesFrame`` is true, then the position specified by ``point`` represents the
+ point at which to place the outside of the item's frame.
+
  Note that the final position of the item may not match the specified target position,
  as data defined item position may override the specified value.
+
 .. seealso:: attemptResize()
+.. seealso:: referencePoint()
+.. seealso:: positionWithUnits()
+%End
+
+
+    void attemptSetSceneRect( const QRectF &rect, bool includesFrame = false );
+%Docstring
+ Attempts to update the item's position and size to match the passed ``rect`` in layout
+ coordinates.
+
+ If ``includesFrame`` is true, then the position and size specified by ``rect`` represents the
+ position and size at for the outside of the item's frame.
+
+ Note that the final position and size of the item may not match the specified target rect,
+ as data defined item position and size may override the specified value.
+
+.. seealso:: attemptResize()
+.. seealso:: attemptMove()
 .. seealso:: referencePoint()
 .. seealso:: positionWithUnits()
 %End
@@ -261,32 +357,34 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 
     double itemRotation() const;
 %Docstring
+ Returns the current rotation for the item, in degrees clockwise.
+
+ Note that this method will always return the user-set rotation for the item,
+ which may differ from the current item rotation (if data defined rotation
+ settings are present). Use QGraphicsItem.rotation() to obtain the current
+ item rotation.
+
+.. seealso:: setItemRotation()
  :rtype: float
 %End
 
-    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
  Stores the item state in a DOM element.
  \param parentElement parent DOM element (e.g. 'Layout' element)
  \param document DOM document
  \param context read write context
 .. seealso:: readXml()
-.. note::
-
-   Subclasses should ensure that they call writePropertiesToElement() in their implementation.
  :rtype: bool
 %End
 
-    virtual bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
+    bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
 %Docstring
  Sets the item state from a DOM element.
  \param itemElement is the DOM node corresponding to item (e.g. 'LayoutItem' element)
  \param document DOM document
  \param context read write context
 .. seealso:: writeXml()
-.. note::
-
-   Subclasses should ensure that they call readPropertiesFromElement() in their implementation.
  :rtype: bool
 %End
 
@@ -400,6 +498,51 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: setBackgroundEnabled()
 %End
 
+    QPainter::CompositionMode blendMode() const;
+%Docstring
+ Returns the item's composition blending mode.
+.. seealso:: setBlendMode()
+ :rtype: QPainter.CompositionMode
+%End
+
+    void setBlendMode( const QPainter::CompositionMode mode );
+%Docstring
+ Sets the item's composition blending ``mode``.
+.. seealso:: blendMode()
+%End
+
+    double itemOpacity() const;
+%Docstring
+ Returns the item's opacity. This method should be used instead of
+ QGraphicsItem.opacity() as any data defined overrides will be
+ respected.
+ :return: opacity as double between 1.0 (opaque) and 0 (transparent).
+.. seealso:: setItemOpacity()
+ :rtype: float
+%End
+
+    void setItemOpacity( double opacity );
+%Docstring
+ Sets the item's ``opacity``. This method should be used instead of
+ QGraphicsItem.setOpacity() as any data defined overrides will be
+ respected.
+ \param opacity double between 1.0 (opaque) and 0 (transparent).
+.. seealso:: itemOpacity()
+%End
+
+    bool excludeFromExports() const;
+%Docstring
+ Returns whether the item should be excluded from layout exports and prints.
+.. seealso:: setExcludeFromExports()
+ :rtype: bool
+%End
+
+    void setExcludeFromExports( bool exclude );
+%Docstring
+ Sets whether the item should be excluded from composer exports and prints.
+.. seealso:: excludeFromExports()
+%End
+
     virtual double estimatedFrameBleed() const;
 %Docstring
  Returns the estimated amount the item's frame bleeds outside the item's
@@ -425,6 +568,54 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  :rtype: QRectF
 %End
 
+    virtual void moveContent( double dx, double dy );
+%Docstring
+ Moves the content of the item, by a specified ``dx`` and ``dy`` in layout units.
+ The default implementation has no effect.
+.. seealso:: setMoveContentPreviewOffset()
+.. seealso:: zoomContent()
+%End
+
+    virtual void setMoveContentPreviewOffset( double dx, double dy );
+%Docstring
+ Sets temporary offset for the item, by a specified ``dx`` and ``dy`` in layout units.
+ This is useful for live updates when moving item content in a QgsLayoutView.
+ The default implementation has no effect.
+.. seealso:: moveContent()
+%End
+
+    virtual void zoomContent( double factor, QPointF point );
+%Docstring
+ Zooms content of item. Does nothing by default.
+ \param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
+ \param point item point for zoom center
+.. seealso:: moveContent()
+%End
+
+    void beginCommand( const QString &commandText, UndoCommand command = UndoNone );
+%Docstring
+ Starts new undo command for this item.
+ The ``commandText`` should be a capitalized, imperative tense description (e.g. "Add Map Item").
+ If specified, multiple consecutive commands for this item with the same ``command`` will
+ be collapsed into a single undo command in the layout history.
+.. seealso:: endCommand()
+.. seealso:: cancelCommand()
+%End
+
+    void endCommand();
+%Docstring
+ Completes the current item command and push it onto the layout's undo stack.
+.. seealso:: beginCommand()
+.. seealso:: cancelCommand()
+%End
+
+    void cancelCommand();
+%Docstring
+ Cancels the current item command and discards it.
+.. seealso:: beginCommand()
+.. seealso:: endCommand()
+%End
+
   public slots:
 
     virtual void refresh();
@@ -432,6 +623,11 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 %Docstring
  Refreshes the item, causing a recalculation of any property overrides and
  recalculation of its position and size.
+%End
+
+    virtual void invalidateCache();
+%Docstring
+ Forces a deferred update of any cached image the item uses.
 %End
 
     virtual void redraw();
@@ -447,9 +643,13 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  refreshed.
 %End
 
-    virtual void setItemRotation( const double rotation );
+    virtual void setItemRotation( double rotation, bool adjustPosition = true );
 %Docstring
- Sets the layout item's ``rotation``, in degrees clockwise. This rotation occurs around the center of the item.
+ Sets the layout item's ``rotation``, in degrees clockwise.
+
+ If ``adjustPosition`` is true, then this rotation occurs around the center of the item.
+ If ``adjustPosition`` is false, rotation occurs around the item origin.
+
 .. seealso:: itemRotation()
 .. seealso:: rotateItem()
 %End
@@ -527,6 +727,17 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: setFixedSize()
 %End
 
+    virtual QSizeF applyItemSizeConstraint( const QSizeF &targetSize );
+%Docstring
+ Applies any item-specific size constraint handling to a given ``targetSize`` in layout units.
+ Subclasses can override this method if they need to apply advanced logic regarding item
+ sizes, which cannot be covered by setFixedSize() or setMinimumSize().
+ Item size constraints are applied after fixed, minimum and data defined size constraints.
+.. seealso:: setFixedSize()
+.. seealso:: setMinimumSize()
+ :rtype: QSizeF
+%End
+
     void refreshItemSize();
 %Docstring
  Refreshes an item's size by rechecking it against any possible item fixed
@@ -543,12 +754,23 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 .. seealso:: refreshItemSize()
 %End
 
-    void refreshItemRotation();
+    void refreshItemRotation( QPointF *origin = 0 );
 %Docstring
  Refreshes an item's rotation by rechecking it against any possible overrides
  such as data defined rotation.
+
+ The optional ``origin`` point specifies the origin (in item coordinates)
+ around which the rotation should be applied.
+
 .. seealso:: refreshItemSize()
 .. seealso:: refreshItemPosition()
+%End
+
+    void refreshOpacity( bool updateItem = true );
+%Docstring
+ Refresh item's opacity, considering data defined opacity.
+ If ``updateItem`` is set to false the item will not be automatically
+ updated after the opacity is set and a later call to update() must be made.
 %End
 
     void refreshFrame( bool updateItem = true );
@@ -565,10 +787,15 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  after the frame color is set and a later call to update() must be made.
 %End
 
+    void refreshBlendMode();
+%Docstring
+ Refresh item's blend mode, considering data defined blend mode.
+%End
+
     QPointF adjustPointForReferencePosition( const QPointF &point, const QSizeF &size, const ReferencePoint &reference ) const;
 %Docstring
  Adjusts the specified ``point`` at which a ``reference`` position of the item
- sits and returns the top left corner of the item, if reference point where placed at the specified position.
+ sits and returns the top left corner of the item, if reference point were placed at the specified position.
  :rtype: QPointF
 %End
 
@@ -576,6 +803,13 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 %Docstring
  Returns the current position (in layout units) of a ``reference`` point for the item.
  :rtype: QPointF
+%End
+
+    QgsLayoutPoint topLeftToReferencePoint( const QgsLayoutPoint &point ) const;
+%Docstring
+ Returns the position for the reference point of the item, if the top-left of the item
+ was placed at the specified ``point``.
+ :rtype: QgsLayoutPoint
 %End
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
@@ -586,9 +820,6 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  \param context read write context
 .. seealso:: writeXml()
 .. seealso:: readPropertiesFromElement()
-.. note::
-
-   derived classes must call this base implementation when overriding this method
  :rtype: bool
 %End
 
@@ -600,10 +831,19 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  \param context read write context
 .. seealso:: writePropertiesToElement()
 .. seealso:: readXml()
-.. note::
-
-   derived classes must call this base implementation when overriding this method
  :rtype: bool
+%End
+
+    bool shouldDrawItem() const;
+%Docstring
+ Returns whether the item should be drawn in the current context.
+ :rtype: bool
+%End
+
+    QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );
+%Docstring
+ Applies any present data defined size overrides to the specified layout ``size``.
+ :rtype: QgsLayoutSize
 %End
 
 };

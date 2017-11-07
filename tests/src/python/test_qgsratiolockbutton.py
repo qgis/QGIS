@@ -99,6 +99,37 @@ class TestQgsRatioLockButton(unittest.TestCase):
         self.assertEqual(spin_width.value(), 200)
         self.assertEqual(spin_height.value(), 1000)
 
+    def testResetRatio(self):
+        w = qgis.gui.QgsRatioLockButton()
+
+        spin_width = QDoubleSpinBox()
+        spin_width.setMaximum(100000)
+        spin_height = QDoubleSpinBox()
+        spin_height.setMaximum(100000)
+
+        spin_width.setValue(1000)
+        w.setWidthSpinBox(spin_width)
+        spin_height.setValue(500)
+        w.setHeightSpinBox(spin_height)
+
+        w.setLocked(True)
+        spin_width.setValue(2000)
+        self.assertEqual(spin_height.value(), 1000)
+
+        spin_width.blockSignals(True)
+        spin_width.setValue(1000)
+        spin_width.blockSignals(False)
+
+        spin_height.setValue(2000)
+        self.assertEqual(spin_width.value(), 4000)  # signals were blocked, so ratio wasn't updated
+
+        spin_width.blockSignals(True)
+        spin_width.setValue(2000)
+        spin_width.blockSignals(False)
+        w.resetRatio() # since signals were blocked, we need to manually reset ratio
+        spin_height.setValue(1000)
+        self.assertEqual(spin_width.value(), 1000)
+
 
 if __name__ == '__main__':
     unittest.main()

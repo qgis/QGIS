@@ -1712,6 +1712,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Deletes all the composer objects and clears mPrintComposers
     void deletePrintComposers();
 
+    //! Deletes all the layout designer windows
+    void deleteLayoutDesigners();
+
     void setupLayoutManagerConnections();
 
     void setupAtlasMapLayerAction( QgsComposition *composition, bool enableAction );
@@ -1752,6 +1755,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createDecorations();
     void init3D();
     void initNativeProcessing();
+    void initLayouts();
 
     //! Creates a new 3D map dock without initializing its position or contents
     Qgs3DMapCanvasDockWidget *createNew3DMapCanvasDock( const QString &name );

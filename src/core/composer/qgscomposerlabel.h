@@ -170,6 +170,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     virtual void setFrameStrokeWidth( const double strokeWidth ) override;
 
   public slots:
+
     void refreshExpressionContext();
 
 

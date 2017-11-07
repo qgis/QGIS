@@ -44,12 +44,12 @@ QgsLayoutMouseHandles::QgsLayoutMouseHandles( QgsLayout *layout, QgsLayoutView *
   //accept hover events, required for changing cursor to resize cursors
   setAcceptHoverEvents( true );
 
-  mHorizontalSnapLine.reset( mView->createSnapLine() );
+  mHorizontalSnapLine = mView->createSnapLine();
   mHorizontalSnapLine->hide();
-  layout->addItem( mHorizontalSnapLine.get() );
-  mVerticalSnapLine.reset( mView->createSnapLine() );
+  layout->addItem( mHorizontalSnapLine );
+  mVerticalSnapLine = mView->createSnapLine();
   mVerticalSnapLine->hide();
-  layout->addItem( mVerticalSnapLine.get() );
+  layout->addItem( mVerticalSnapLine );
 }
 
 void QgsLayoutMouseHandles::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
@@ -57,14 +57,11 @@ void QgsLayoutMouseHandles::paint( QPainter *painter, const QStyleOptionGraphics
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
 
-  //TODO
-#if 0
-  if ( mLayout->plotStyle() != QgsComposition::Preview )
+  if ( !mLayout->context().isPreviewRender() )
   {
-    //don't draw selection handles in composition outputs
+    //don't draw selection handles in layout outputs
     return;
   }
-#endif
 
   if ( mLayout->context().boundingBoxesVisible() )
   {
@@ -295,12 +292,12 @@ bool QgsLayoutMouseHandles::selectionRotation( double &rotation ) const
   auto itemIter = selectedItems.constBegin();
 
   //start with rotation of first selected item
-  double firstItemRotation = ( *itemIter )->itemRotation();
+  double firstItemRotation = ( *itemIter )->rotation();
 
   //iterate through remaining items, checking if they have same rotation
   for ( ++itemIter; itemIter != selectedItems.end(); ++itemIter )
   {
-    if ( !qgsDoubleNear( ( *itemIter )->itemRotation(), firstItemRotation ) )
+    if ( !qgsDoubleNear( ( *itemIter )->rotation(), firstItemRotation ) )
     {
       //item has a different rotation, so return false
       return false;
@@ -657,12 +654,12 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
       itemRect = itemRect.normalized();
       QPointF newPos = mapToScene( itemRect.topLeft() );
 
+      QgsLayoutSize itemSize = mLayout->convertFromLayoutUnits( itemRect.size(), item->sizeWithUnits().units() );
+      item->attemptResize( itemSize, true );
+
       // translate new position to current item units
       QgsLayoutPoint itemPos = mLayout->convertFromLayoutUnits( newPos, item->positionWithUnits().units() );
-      item->attemptMove( itemPos );
-
-      QgsLayoutSize itemSize = mLayout->convertFromLayoutUnits( itemRect.size(), item->sizeWithUnits().units() );
-      item->attemptResize( itemSize );
+      item->attemptMove( itemPos, false, true );
 
       command->saveAfterState();
       mLayout->undoStack()->stack()->push( command.release() );
@@ -692,11 +689,13 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 
 void QgsLayoutMouseHandles::resetStatusBar()
 {
+  if ( !mView )
+    return;
+
   const QList<QgsLayoutItem *> selectedItems = mLayout->selectedLayoutItems( false );
   int selectedCount = selectedItems.size();
   if ( selectedCount > 1 )
   {
-
     //set status bar message to count of selected items
     mView->pushStatusMessage( tr( "%1 items selected" ).arg( selectedCount ) );
   }
@@ -725,12 +724,12 @@ QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseH
   switch ( mode )
   {
     case Item:
-      snappedPoint = mLayout->snapper().snapRect( rect().translated( originalPoint ), mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine.get() : nullptr,
-                     snapVertical ? mVerticalSnapLine.get() : nullptr, &itemsToExclude ).topLeft();
+      snappedPoint = mLayout->snapper().snapRect( rect().translated( originalPoint ), mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine : nullptr,
+                     snapVertical ? mVerticalSnapLine : nullptr, &itemsToExclude ).topLeft();
       break;
     case Point:
-      snappedPoint = mLayout->snapper().snapPoint( originalPoint, mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine.get() : nullptr,
-                     snapVertical ? mVerticalSnapLine.get() : nullptr, &itemsToExclude );
+      snappedPoint = mLayout->snapper().snapPoint( originalPoint, mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine : nullptr,
+                     snapVertical ? mVerticalSnapLine : nullptr, &itemsToExclude );
       break;
   }
 

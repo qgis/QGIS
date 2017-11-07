@@ -24,9 +24,12 @@
 #include "qgslayoutappmenuprovider.h"
 #include "qgslayoutview.h"
 #include "qgslayoutviewtooladditem.h"
+#include "qgslayoutviewtooladdnodeitem.h"
 #include "qgslayoutviewtoolpan.h"
+#include "qgslayoutviewtoolmoveitemcontent.h"
 #include "qgslayoutviewtoolzoom.h"
 #include "qgslayoutviewtoolselect.h"
+#include "qgslayoutviewtooleditnodes.h"
 #include "qgslayoutitemwidget.h"
 #include "qgsgui.h"
 #include "qgslayoutitemguiregistry.h"
@@ -40,6 +43,7 @@
 #include "qgslayoutguidewidget.h"
 #include "qgslayoutmousehandles.h"
 #include "qgslayoutmodel.h"
+#include "qgslayoutitemslistview.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
@@ -141,6 +145,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mHorizontalRuler->setContextMenu( rulerMenu );
   mVerticalRuler->setContextMenu( rulerMenu );
 
+  connect( mActionRefreshView, &QAction::triggered, this, &QgsLayoutDesignerDialog::refreshLayout );
+
   connect( mActionShowGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGrid );
   connect( mActionSnapGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGrid );
 
@@ -166,9 +172,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionClose, &QAction::triggered, this, &QWidget::close );
 
   // populate with initial items...
-  Q_FOREACH ( int type,  QgsGui::layoutItemGuiRegistry()->itemTypes() )
+  const QList< int > itemMetadataIds = QgsGui::layoutItemGuiRegistry()->itemMetadataIds();
+  for ( int id : itemMetadataIds )
   {
-    itemTypeAdded( type );
+    itemTypeAdded( id );
   }
   //..and listen out for new item types
   connect( QgsGui::layoutItemGuiRegistry(), &QgsLayoutItemGuiRegistry::typeAdded, this, &QgsLayoutDesignerDialog::itemTypeAdded );
@@ -223,6 +230,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionsToolbar->addWidget( resizeToolButton );
 
   mAddItemTool = new QgsLayoutViewToolAddItem( mView );
+  mAddNodeItemTool = new QgsLayoutViewToolAddNodeItem( mView );
   mPanTool = new QgsLayoutViewToolPan( mView );
   mPanTool->setAction( mActionPan );
   mToolsActionGroup->addAction( mActionPan );
@@ -235,6 +243,19 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mSelectTool->setAction( mActionSelectMoveItem );
   mToolsActionGroup->addAction( mActionSelectMoveItem );
   connect( mActionSelectMoveItem, &QAction::triggered, mSelectTool, [ = ] { mView->setTool( mSelectTool ); } );
+  // after creating an item with the add item tool, switch immediately to select tool
+  connect( mAddItemTool, &QgsLayoutViewToolAddItem::createdItem, this, [ = ] { mView->setTool( mSelectTool ); } );
+  connect( mAddNodeItemTool, &QgsLayoutViewToolAddNodeItem::createdItem, this, [ = ] { mView->setTool( mSelectTool ); } );
+
+  mNodesTool = new QgsLayoutViewToolEditNodes( mView );
+  mNodesTool->setAction( mActionEditNodesItem );
+  mToolsActionGroup->addAction( mActionEditNodesItem );
+  connect( mActionEditNodesItem, &QAction::triggered, mNodesTool, [ = ] { mView->setTool( mNodesTool ); } );
+
+  mMoveContentTool = new QgsLayoutViewToolMoveItemContent( mView );
+  mMoveContentTool->setAction( mActionMoveItemContent );
+  mToolsActionGroup->addAction( mActionMoveItemContent );
+  connect( mActionMoveItemContent, &QAction::triggered, mMoveContentTool, [ = ] { mView->setTool( mMoveContentTool ); } );
 
   //Ctrl+= should also trigger zoom in
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
@@ -370,7 +391,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   connect( mActionDeleteSelection, &QAction::triggered, this, [ = ]
   {
-    mView->deleteSelectedItems();
+    if ( mView->tool() == mNodesTool )
+      mNodesTool->deleteSelectedNode();
+    else
+      mView->deleteSelectedItems();
   } );
   connect( mActionGroupItems, &QAction::triggered, this, [ = ]
   {
@@ -495,16 +519,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mPanelsMenu->addAction( mItemsDock->toggleViewAction() );
 
   //items tree widget
-  mItemsTreeView = new QTreeView( mItemsDock );
-
-  mItemsTreeView->setColumnWidth( 0, 30 );
-  mItemsTreeView->setColumnWidth( 1, 30 );
-  mItemsTreeView->setDragEnabled( true );
-  mItemsTreeView->setAcceptDrops( true );
-  mItemsTreeView->setDropIndicatorShown( true );
-  mItemsTreeView->setDragDropMode( QAbstractItemView::InternalMove );
-
-  mItemsTreeView->setIndentation( 0 );
+  mItemsTreeView = new QgsLayoutItemsListView( mItemsDock, this );
   mItemsDock->setWidget( mItemsTreeView );
 
   const QList<QDockWidget *> docks = findChildren<QDockWidget *>();
@@ -566,6 +581,7 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   mLayoutToolbar->addAction( mUndoAction );
   mLayoutToolbar->addAction( mRedoAction );
 
+  connect( mLayout->undoStack(), &QgsLayoutUndoStack::undoRedoOccurredForItems, this, &QgsLayoutDesignerDialog::undoRedoOccurredForItems );
   connect( mActionClearGuides, &QAction::triggered, &mLayout->guides(), [ = ]
   {
     mLayout->guides().clear();
@@ -582,19 +598,10 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   mUndoView->setStack( mLayout->undoStack()->stack() );
 
   mSelectTool->setLayout( layout );
-
-  mItemsTreeView->setModel( mLayout->itemsModel() );
+  mItemsTreeView->setCurrentLayout( mLayout );
 #ifdef ENABLE_MODELTEST
   new ModelTest( mLayout->itemsModel(), this );
 #endif
-  mItemsTreeView->header()->setSectionResizeMode( 0, QHeaderView::Fixed );
-  mItemsTreeView->header()->setSectionResizeMode( 1, QHeaderView::Fixed );
-  mItemsTreeView->setColumnWidth( 0, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "xxxx" ) ) );
-  mItemsTreeView->setColumnWidth( 1, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "xxxx" ) ) );
-  mItemsTreeView->header()->setSectionsMovable( false );
-
-  connect( mItemsTreeView->selectionModel(), &QItemSelectionModel::currentChanged, mLayout->itemsModel(), &QgsLayoutModel::setSelected );
-
 
   createLayoutPropertiesWidget();
 }
@@ -614,19 +621,44 @@ void QgsLayoutDesignerDialog::setIconSizes( int size )
 
 void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item, bool bringPanelToFront )
 {
+  if ( mBlockItemOptions )
+    return;
+
   if ( !item )
   {
     delete mItemPropertiesStack->takeMainPanel();
     return;
   }
 
-  std::unique_ptr< QgsLayoutItemBaseWidget > widget( QgsGui::layoutItemGuiRegistry()->createItemWidget( item ) );
-  if ( ! widget )
+  if ( auto widget = qobject_cast< QgsLayoutItemBaseWidget * >( mItemPropertiesStack->mainPanel() ) )
   {
-    return;
+    if ( widget->layoutObject() == item )
+    {
+      // already showing properties for this item - we don't want to create a new panel
+      if ( bringPanelToFront )
+        mItemDock->setUserVisible( true );
+
+      return;
+    }
+    else
+    {
+      // try to reuse
+      if ( widget->setItem( item ) )
+      {
+        if ( bringPanelToFront )
+          mItemDock->setUserVisible( true );
+
+        return;
+      }
+    }
   }
 
+  std::unique_ptr< QgsLayoutItemBaseWidget > widget( QgsGui::layoutItemGuiRegistry()->createItemWidget( item ) );
   delete mItemPropertiesStack->takeMainPanel();
+
+  if ( ! widget )
+    return;
+
   widget->setDockMode( true );
   connect( item, &QgsLayoutItem::destroyed, widget.get(), [this]
   {
@@ -802,19 +834,42 @@ void QgsLayoutDesignerDialog::moveSelectedItemsToBottom()
   mView->moveSelectedItemsToBottom();
 }
 
+void QgsLayoutDesignerDialog::refreshLayout()
+{
+  if ( !currentLayout() )
+  {
+    return;
+  }
+
+#if 0 //TODO
+  //refresh atlas feature first, to update attributes
+  if ( mComposition->atlasMode() == QgsComposition::PreviewAtlas )
+  {
+    //block signals from atlas, since the later call to mComposition->refreshItems() will
+    //also trigger items to refresh atlas dependent properties
+    mComposition->atlasComposition().blockSignals( true );
+    mComposition->atlasComposition().refreshFeature();
+    mComposition->atlasComposition().blockSignals( false );
+  }
+#endif
+
+  currentLayout()->refresh();
+}
+
 void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )
 {
   emit aboutToClose();
   saveWindowState();
 }
 
-void QgsLayoutDesignerDialog::itemTypeAdded( int type )
+void QgsLayoutDesignerDialog::itemTypeAdded( int id )
 {
-  if ( QgsGui::layoutItemGuiRegistry()->itemMetadata( type )->flags() & QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools )
+  if ( QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->flags() & QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools )
     return;
 
-  QString name = QgsApplication::layoutItemRegistry()->itemMetadata( type )->visibleName();
-  QString groupId = QgsGui::layoutItemGuiRegistry()->itemMetadata( type )->groupId();
+  QString name = QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->visibleName();
+  QString groupId = QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->groupId();
+  bool nodeBased = QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->isNodeBased();
   QToolButton *groupButton = nullptr;
   QMenu *itemSubmenu = nullptr;
   if ( !groupId.isEmpty() )
@@ -859,8 +914,8 @@ void QgsLayoutDesignerDialog::itemTypeAdded( int type )
   QAction *action = new QAction( tr( "Add %1" ).arg( name ), this );
   action->setToolTip( tr( "Adds a new %1 to the layout" ).arg( name ) );
   action->setCheckable( true );
-  action->setData( type );
-  action->setIcon( QgsGui::layoutItemGuiRegistry()->itemMetadata( type )->creationIcon() );
+  action->setData( id );
+  action->setIcon( QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->creationIcon() );
 
   mToolsActionGroup->addAction( action );
   if ( itemSubmenu )
@@ -873,9 +928,9 @@ void QgsLayoutDesignerDialog::itemTypeAdded( int type )
   else
     mToolsToolbar->addAction( action );
 
-  connect( action, &QAction::triggered, this, [this, type]()
+  connect( action, &QAction::triggered, this, [this, id, nodeBased]()
   {
-    activateNewItemCreationTool( type );
+    activateNewItemCreationTool( id, nodeBased );
   } );
 }
 
@@ -1022,6 +1077,27 @@ void QgsLayoutDesignerDialog::dockVisibilityChanged( bool visible )
   }
 }
 
+void QgsLayoutDesignerDialog::undoRedoOccurredForItems( const QSet<QString> itemUuids )
+{
+  mBlockItemOptions = true;
+
+  mLayout->deselectAll();
+  QgsLayoutItem *focusItem = nullptr;
+  for ( const QString &uuid : itemUuids )
+  {
+    QgsLayoutItem *item = mLayout->itemByUuid( uuid );
+    if ( !item )
+      continue;
+
+    item->setSelected( true );
+    focusItem = item;
+  }
+  mBlockItemOptions = false;
+
+  if ( focusItem )
+    showItemOptions( focusItem );
+}
+
 QgsLayoutView *QgsLayoutDesignerDialog::view()
 {
   return mView;
@@ -1052,12 +1128,19 @@ void QgsLayoutDesignerDialog::restoreWindowState()
   }
 }
 
-void QgsLayoutDesignerDialog::activateNewItemCreationTool( int type )
+void QgsLayoutDesignerDialog::activateNewItemCreationTool( int id, bool nodeBasedItem )
 {
-  mAddItemTool->setItemType( type );
-  if ( mView )
+  if ( !nodeBasedItem )
   {
-    mView->setTool( mAddItemTool );
+    mAddItemTool->setItemMetadataId( id );
+    if ( mView )
+      mView->setTool( mAddItemTool );
+  }
+  else
+  {
+    mAddNodeItemTool->setItemMetadataId( id );
+    if ( mView )
+      mView->setTool( mAddNodeItemTool );
   }
 }
 
@@ -1069,8 +1152,8 @@ void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
   }
 
   // update layout based widgets
-  QgsLayoutPropertiesWidget *oldCompositionWidget = qobject_cast<QgsLayoutPropertiesWidget *>( mGeneralPropertiesStack->takeMainPanel() );
-  delete oldCompositionWidget;
+  QgsLayoutPropertiesWidget *oldLayoutWidget = qobject_cast<QgsLayoutPropertiesWidget *>( mGeneralPropertiesStack->takeMainPanel() );
+  delete oldLayoutWidget;
   QgsLayoutGuideWidget *oldGuideWidget = qobject_cast<QgsLayoutGuideWidget *>( mGuideStack->takeMainPanel() );
   delete oldGuideWidget;
 
@@ -1091,7 +1174,7 @@ void QgsLayoutDesignerDialog::initializeRegistry()
     return new QgsLayoutPagePropertiesWidget( nullptr, item );
   } );
 
-  QgsGui::layoutItemGuiRegistry()->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPage, QIcon(), createPageWidget, nullptr, QString(), QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools ) );
+  QgsGui::layoutItemGuiRegistry()->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPage, QObject::tr( "Page" ), QIcon(), createPageWidget, nullptr, QString(), false, QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools ) );
 
 }
 
