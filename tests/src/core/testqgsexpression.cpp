@@ -420,9 +420,12 @@ class TestQgsExpression: public QObject
       if ( expression3.hasEvalError() )
         qDebug() << expression3.evalErrorString();
       Q_ASSERT( !expression3.hasEvalError() );
-      expression3.prepare( &context );
+
       mPointsLayer->getFeatures( QgsFeatureRequest().setFilterExpression( "Pilots = 1" ) ).nextFeature( feature );
       context.setFeature( feature );
+
+      QCOMPARE( expression.evaluate( &context ).toString(), QStringLiteral( "one" ) );
+      expression3.prepare( &context );
       QCOMPARE( expression.evaluate( &context ).toString(), QStringLiteral( "one" ) );
 
 
