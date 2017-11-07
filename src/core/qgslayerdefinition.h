@@ -30,11 +30,11 @@ class CORE_EXPORT QgsLayerDefinition
     /** Loads the QLR at path into QGIS.  New layers are added to rootGroup and the map layer registry*/
     static bool loadLayerDefinition( const QString & path, QgsLayerTreeGroup* rootGroup, QString &errorMessage );
     /** Loads the QLR from the XML document.  New layers are added to rootGroup and the map layer registry */
-    static bool loadLayerDefinition( QDomDocument doc, QgsLayerTreeGroup* rootGroup, QString &errorMessage );
+    static bool loadLayerDefinition( QDomDocument doc, QgsLayerTreeGroup* rootGroup, QString &errorMessage, const QString& relativeBasePath = QString() );
     /** Export the selected layer tree nodes to a QLR file */
     static bool exportLayerDefinition( QString path, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage );
     /** Export the selected layer tree nodes to a QLR-XML document */
-    static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage, const QString& relativeBasePath = QString::null );
+    static bool exportLayerDefinition( QDomDocument doc, const QList<QgsLayerTreeNode*>& selectedTreeNodes, QString &errorMessage, const QString& relativeBasePath = QString() );
 
     /**
      * \ingroup core

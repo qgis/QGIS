@@ -310,6 +310,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Sets state from Dom document
        @param layerElement The Dom element corresponding to ``maplayer'' tag
+       @param relativeBasePath base path for relative paths
        @note
 
        The Dom node corresponds to a Dom document project file XML element read
@@ -322,7 +323,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
        @returns true if successful
      */
-    bool readLayerXML( const QDomElement& layerElement );
+    bool readLayerXML( const QDomElement& layerElement, const QString& relativeBasePath = QString() );
 
 
     /** Stores state in Dom node
@@ -341,18 +342,18 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * @returns true if successful
      */
-    bool writeLayerXML( QDomElement& layerElement, QDomDocument& document, const QString& relativeBasePath = QString::null );
+    bool writeLayerXML( QDomElement& layerElement, QDomDocument& document, const QString& relativeBasePath = QString() );
 
     /** Returns the given layer as a layer definition document
      *  Layer definitions store the data source as well as styling and custom properties.
      *
      *  Layer definitions can be used to load a layer and styling all from a single file.
      */
-    static QDomDocument asLayerDefinition( const QList<QgsMapLayer*>& layers, const QString& relativeBasePath = QString::null );
+    static QDomDocument asLayerDefinition( const QList<QgsMapLayer*>& layers, const QString& relativeBasePath = QString() );
 
     /** Creates a new layer from a layer defininition document
      */
-    static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document, bool addToRegistry = false, bool addToLegend = false );
+    static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document, bool addToRegistry = false, bool addToLegend = false, const QString& relativeBasePath = QString() );
     static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString &qlrfile );
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file. */

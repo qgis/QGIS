@@ -198,10 +198,10 @@ class QgsProject : QObject
     void dumpProperties() const;
 
     /** Prepare a filename to save it to the project file */
-    QString writePath( const QString& filename, const QString& relativeBasePath = QString::null ) const;
+    QString writePath( const QString& filename, const QString& relativeBasePath = QString() ) const;
 
     /** Turn filename read from the project file to an absolute path */
-    QString readPath( QString filename ) const;
+    QString readPath( QString filename, const QString& relativeBasePath = QString() ) const;
 
     /** Return error message from previous read/write */
     QString error() const;
