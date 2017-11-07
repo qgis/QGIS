@@ -216,7 +216,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void exportScales();
 
     //! Auto slot executed when the active page in the option section widget is changed
-    void mOptionsStackedWidget_currentChanged( int indx );
+    void optionsStackedWidget_CurrentChanged( int index ) override;
 
     //! A scale in the list of predefined scales changed
     void scaleItemChanged( QListWidgetItem *changedScaleItem );

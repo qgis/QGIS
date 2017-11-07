@@ -127,9 +127,19 @@ class QgsOptionsDialogBase : QDialog
 %End
 
   protected slots:
-    void updateOptionsListVerticalTabs();
-    void optionsStackedWidget_CurrentChanged( int indx );
-    void optionsStackedWidget_WidgetRemoved( int indx );
+    virtual void updateOptionsListVerticalTabs();
+%Docstring
+Update tabs on the splitter move
+%End
+    virtual void optionsStackedWidget_CurrentChanged( int index );
+%Docstring
+Select relevant tab on current page change
+%End
+    virtual void optionsStackedWidget_WidgetRemoved( int index );
+%Docstring
+Remove tab and unregister widgets on page remove
+%End
+
     void warnAboutMissingObjects();
 
   protected:

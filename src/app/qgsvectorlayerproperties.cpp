@@ -122,8 +122,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( this, &QDialog::accepted, this, &QgsVectorLayerProperties::apply );
   connect( this, &QDialog::rejected, this, &QgsVectorLayerProperties::onCancel );
 
-  connect( mOptionsStackedWidget, &QStackedWidget::currentChanged, this, &QgsVectorLayerProperties::mOptionsStackedWidget_CurrentChanged );
-
   mContext << QgsExpressionContextUtils::globalScope()
            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
            << QgsExpressionContextUtils::atlasScope( nullptr )
@@ -1447,9 +1445,11 @@ void QgsVectorLayerProperties::pbnUpdateExtents_clicked()
   mMetadataFilled = false;
 }
 
-void QgsVectorLayerProperties::mOptionsStackedWidget_CurrentChanged( int indx )
+void QgsVectorLayerProperties::optionsStackedWidget_CurrentChanged( int index )
 {
-  if ( indx != mOptStackedWidget->indexOf( mOptsPage_Information ) || mMetadataFilled )
+  QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( index );
+
+  if ( index != mOptStackedWidget->indexOf( mOptsPage_Information ) || mMetadataFilled )
     return;
 
   //set the metadata contents (which can be expensive)
