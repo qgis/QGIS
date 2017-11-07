@@ -3454,7 +3454,7 @@ static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressi
 
     if ( index == -1 )
     {
-      parent->setEvalErrorString( QStringLiteral( "%1: Field not found %2" ).arg( QStringLiteral( "represent_value" ), fieldName ) );
+      parent->setEvalErrorString( QCoreApplication::translate( "expression", "%1: Field not found %2" ).arg( QStringLiteral( "represent_value" ), fieldName ) );
     }
     else
     {
