@@ -163,7 +163,7 @@ void QgsLayoutItem::setVisibility( const bool visible )
   if ( command )
   {
     command->saveAfterState();
-    mLayout->undoStack()->stack()->push( command.release() );
+    mLayout->undoStack()->push( command.release() );
   }
 
   //inform model that visibility has changed

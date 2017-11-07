@@ -74,8 +74,10 @@ void QgsLayoutMultiFrame::setResizeMode( ResizeMode mode )
 {
   if ( mode != mResizeMode )
   {
+    mLayout->undoStack()->beginMacro( tr( "Change Resize Mode" ) );
     mResizeMode = mode;
     recalculateFrameSizes();
+    mLayout->undoStack()->endMacro();
     emit changed();
   }
 }
@@ -101,7 +103,7 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
   }
 
   if ( mBlockUndoCommands )
-    mLayout->mBlockUndoCommandCount++;
+    mLayout->undoStack()->blockCommands( true );
 
   double currentY = 0;
   double currentHeight = 0;
@@ -213,7 +215,7 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
   }
 
   if ( mBlockUndoCommands )
-    mLayout->mBlockUndoCommandCount--;
+    mLayout->undoStack()->blockCommands( false );
 }
 
 void QgsLayoutMultiFrame::recalculateFrameRects()
@@ -376,14 +378,14 @@ void QgsLayoutMultiFrame::removeFrame( int i, const bool removeEmptyPages )
     mIsRecalculatingSize = true;
     int pageNumber = frameItem->page();
     //remove item, but don't create undo command
-    mLayout->mBlockUndoCommandCount++;
+    mLayout->undoStack()->blockCommands( true );
     mLayout->removeLayoutItem( frameItem );
     //if frame was the only item on the page, remove the page
     if ( removeEmptyPages && mLayout->pageCollection()->pageIsEmpty( pageNumber ) )
     {
       mLayout->pageCollection()->deletePage( pageNumber );
     }
-    mLayout->mBlockUndoCommandCount--;
+    mLayout->undoStack()->blockCommands( false );
     mIsRecalculatingSize = false;
   }
   mFrameItems.removeAt( i );
@@ -402,12 +404,12 @@ void QgsLayoutMultiFrame::deleteFrames()
   mBlockUpdates = true;
   ResizeMode bkResizeMode = mResizeMode;
   mResizeMode = UseExistingFrames;
-  mLayout->mBlockUndoCommandCount++;
+  mLayout->undoStack()->blockCommands( true );
   for ( QgsLayoutFrame *frame : qgis::as_const( mFrameItems ) )
   {
     mLayout->removeLayoutItem( frame );
   }
-  mLayout->mBlockUndoCommandCount--;
+  mLayout->undoStack()->blockCommands( false );
   mFrameItems.clear();
   mResizeMode = bkResizeMode;
   mBlockUpdates = false;
@@ -460,6 +462,7 @@ bool QgsLayoutMultiFrame::readXml( const QDomElement &element, const QDomDocumen
   }
 
   mBlockUndoCommands = true;
+  mLayout->undoStack()->blockCommands( true );
 
   readObjectPropertiesFromElement( element, doc, context );
 
@@ -491,6 +494,7 @@ bool QgsLayoutMultiFrame::readXml( const QDomElement &element, const QDomDocumen
   bool result = readPropertiesFromElement( element, doc, context );
 
   mBlockUndoCommands = false;
+  mLayout->undoStack()->blockCommands( false );
   return result;
 }
 

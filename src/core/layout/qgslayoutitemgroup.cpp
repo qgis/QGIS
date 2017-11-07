@@ -168,7 +168,7 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useRefer
     if ( command )
     {
       command->saveAfterState();
-      mLayout->undoStack()->stack()->push( command.release() );
+      mLayout->undoStack()->push( command.release() );
     }
   }
   //lastly move group item itself
@@ -220,7 +220,7 @@ void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size, bool includes
     if ( command )
     {
       command->saveAfterState();
-      mLayout->undoStack()->stack()->push( command.release() );
+      mLayout->undoStack()->push( command.release() );
     }
   }
   QgsLayoutItem::attemptResize( size );
