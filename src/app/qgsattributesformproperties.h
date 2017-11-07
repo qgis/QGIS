@@ -195,9 +195,6 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
   protected:
     void updateButtons();
 
-    FieldConfig configForChild( int index );
-    void setConfigForChild( int index, const FieldConfig &cfg );
-
     RelationConfig configForRelation( const QString &relationName );
 
     //QList<QgsRelation> mRelations;
@@ -215,6 +212,8 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
 
     void loadAttributeRelationEdit();
     void storeAttributeRelationEdit( );
+
+    int getFieldIndexByName( const QString &name );
 
     QgsEditFormConfig::PythonInitCodeSource mInitCodeSource;
     QString mInitFunction;

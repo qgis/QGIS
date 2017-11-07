@@ -215,9 +215,9 @@ void QgsAttributesFormProperties::initInitPython()
 
 void QgsAttributesFormProperties::loadAttributeTypeDialog()
 {
-  QTreeWidgetItem *currentItem = mAvailableWidgetsTree->currentItem();
-
-  if ( !currentItem )
+  //check if item or field with the items name for some reason not available anymore
+  if ( !mAvailableWidgetsTree->currentItem() ||
+       getFieldIndexByName( mAvailableWidgetsTree->currentItem()->data( 0, FieldNameRole ).toString() ) < 0 )
     mAttributeTypeDialog->setEnabled( false );
   else
   {
@@ -227,16 +227,13 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
 
     mAttributeTypeDialog->setEnabled( true );
 
-    // AttributeTypeDialog
-
+    // AttributeTypeDialog delete and recreate
     mAttributeTypeFrame->layout()->removeWidget( mAttributeTypeDialog );
     delete mAttributeTypeDialog;
-
-
-    //
     mAttributeTypeDialog = new QgsAttributeTypeDialog( mLayer, index, mAttributeTypeFrame );
+
     mAttributeTypeDialog->setAlias( cfg.mAlias );
-    mAttributeTypeDialog->setComment( mLayer->fields().at( index ).comment() );
+    mAttributeTypeDialog->setComment( cfg.mComment );
     mAttributeTypeDialog->setFieldEditable( cfg.mEditable );
     mAttributeTypeDialog->setLabelOnTop( cfg.mLabelOnTop );
     mAttributeTypeDialog->setNotNull( cfg.mConstraints & QgsFieldConstraints::ConstraintNotNull );
@@ -391,24 +388,6 @@ void QgsAttributesFormProperties::storeAttributeRelationEdit()
       relationItem->setData( 0, RelationConfigRole, QVariant::fromValue<RelationConfig>( cfg ) );
     }
   }
-}
-
-QgsAttributesFormProperties::FieldConfig QgsAttributesFormProperties::configForChild( int index )
-{
-  QString fieldName = mLayer->fields().at( index ).name();
-
-  QTreeWidgetItemIterator itemIt( mAvailableWidgetsTree );
-  while ( *itemIt )
-  {
-    QTreeWidgetItem *item = *itemIt;
-    if ( item->data( 0, FieldNameRole ).toString() == fieldName )
-      return item->data( 0, FieldConfigRole ).value<FieldConfig>();
-    ++itemIt;
-  }
-
-  // Should never get here
-  Q_ASSERT( false );
-  return FieldConfig();
 }
 
 QgsAttributesFormProperties::RelationConfig QgsAttributesFormProperties::configForRelation( const QString &relationName )
@@ -646,6 +625,18 @@ void QgsAttributesFormProperties::pbnSelectEditForm_clicked()
   mEditFormLineEdit->setText( uifilename );
 }
 
+int QgsAttributesFormProperties::getFieldIndexByName( const QString &name )
+{
+  for ( int idx = 0; idx < mLayer->fields().size(); idx++ )
+  {
+    //only save the files that are still existing in fields
+    if ( mLayer->fields().at( idx ).name() == name )
+      return idx;
+  }
+
+  return -1;
+}
+
 void QgsAttributesFormProperties::apply()
 {
 
@@ -656,15 +647,15 @@ void QgsAttributesFormProperties::apply()
 
   QTreeWidgetItem *fieldContainer = mAvailableWidgetsTree->invisibleRootItem()->child( 0 );
 
-  int idx;
-
   for ( int i = 0; i < fieldContainer->childCount(); i++ )
   {
     QTreeWidgetItem *fieldItem = fieldContainer->child( i );
-    idx = fieldContainer->indexOfChild( fieldItem );
+    FieldConfig cfg = fieldItem->data( 0, FieldConfigRole ).value<FieldConfig>();
 
-    QString name = mLayer->fields().at( idx ).name();
-    FieldConfig cfg = configForChild( idx );
+    int idx = getFieldIndexByName( fieldItem->data( 0, FieldNameRole ).toString() );
+
+    //continue in case field does not exist anymore
+    if ( idx < 0 ) continue;
 
     editFormConfig.setReadOnly( idx, !cfg.mEditable );
     editFormConfig.setLabelOnTop( idx, cfg.mLabelOnTop );
@@ -697,7 +688,6 @@ void QgsAttributesFormProperties::apply()
     }
 
     mLayer->setFieldAlias( idx, cfg.mAlias );
-    //wo?? ( idx, cfg.mComment );
   }
 
   // tabs and groups
@@ -736,28 +726,6 @@ void QgsAttributesFormProperties::apply()
     editFormConfig.setWidgetConfig( itemData.name(), cfg );
   }
 
-  /*
-
-    for ( int i = 0; i < mRelationsList->rowCount(); ++i )
-    {
-      QVariantMap cfg;
-
-      QComboBox *cb = qobject_cast<QComboBox *>( mRelationsList->cellWidget( i, RelNmCol ) );
-      QVariant otherRelation = cb->currentData();
-
-      if ( otherRelation.isValid() )
-      {
-        cfg[QStringLiteral( "nm-rel" )] = otherRelation.toString();
-      }
-
-      DesignerTreeItemData itemData = mRelationsList->item( i, RelNameCol )->data( DesignerTreeRole ).value<DesignerTreeItemData>();
-
-      QString relationName = itemData.name();
-
-      editFormConfig.setWidgetConfig( relationName, cfg );
-    }
-  */
-
   mLayer->setEditFormConfig( editFormConfig );
 }
 
@@ -780,6 +748,7 @@ QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, in
   : mButton( nullptr )
 {
   mAlias = layer->fields().at( idx ).alias();
+  mComment = layer->fields().at( idx ).comment();
   mEditable = !layer->editFormConfig().readOnly( idx );
   mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin
                      && layer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression;

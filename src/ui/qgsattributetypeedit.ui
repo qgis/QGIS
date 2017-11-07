@@ -34,17 +34,37 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="0" column="2">
        <widget class="QLineEdit" name="leAlias">
         <property name="text">
          <string/>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="1" column="2">
        <widget class="QLabel" name="laComment">
         <property name="text">
-         <string> </string>
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="isFieldEditableCheckBox">
+        <property name="text">
+         <string>Editable</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QCheckBox" name="labelOnTopCheckBox">
+        <property name="text">
+         <string>Label on top</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -158,26 +178,6 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout_4">
-     <item row="0" column="0">
-      <widget class="QCheckBox" name="isFieldEditableCheckBox">
-       <property name="text">
-        <string>Editable</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QCheckBox" name="labelOnTopCheckBox">
-       <property name="text">
-        <string>Label on top</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="0">
       <widget class="QGroupBox" name="groupBox_2">
        <property name="title">
@@ -250,8 +250,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>isFieldEditableCheckBox</tabstop>
-  <tabstop>labelOnTopCheckBox</tabstop>
   <tabstop>mExpressionWidget</tabstop>
   <tabstop>groupBox</tabstop>
   <tabstop>notNullCheckBox</tabstop>

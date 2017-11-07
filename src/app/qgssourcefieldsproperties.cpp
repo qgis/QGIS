@@ -281,6 +281,7 @@ bool QgsSourceFieldsProperties::addAttribute( const QgsField &field )
 void QgsSourceFieldsProperties::apply()
 {
   // Disabled: we deal with the configuration in the new tabs
+
   QSet<QString> excludeAttributesWMS, excludeAttributesWFS;
 
   for ( int i = 0; i < mFieldsList->rowCount(); i++ )
@@ -314,7 +315,7 @@ void QgsSourceFieldsProperties::addAttributeClicked()
   if ( dialog.exec() == QDialog::Accepted )
   {
     addAttribute( dialog.field() );
-
+    loadRows();
   }
 }
 
@@ -358,7 +359,10 @@ void QgsSourceFieldsProperties::calculateFieldClicked()
   }
 
   QgsFieldCalculator calc( mLayer, this );
-  calc.exec();
+  if ( calc.exec() == QDialog::Accepted )
+  {
+    loadRows();
+  }
 }
 
 void QgsSourceFieldsProperties::attributesListCellChanged( int row, int column )
