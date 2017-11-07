@@ -213,8 +213,6 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     void loadAttributeRelationEdit();
     void storeAttributeRelationEdit( );
 
-    int getFieldIndexByName( const QString &name );
-
     QgsEditFormConfig::PythonInitCodeSource mInitCodeSource;
     QString mInitFunction;
     QString mInitFilePath;

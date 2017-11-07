@@ -280,8 +280,6 @@ bool QgsSourceFieldsProperties::addAttribute( const QgsField &field )
 
 void QgsSourceFieldsProperties::apply()
 {
-  // Disabled: we deal with the configuration in the new tabs
-
   QSet<QString> excludeAttributesWMS, excludeAttributesWFS;
 
   for ( int i = 0; i < mFieldsList->rowCount(); i++ )
@@ -373,7 +371,8 @@ void QgsSourceFieldsProperties::attributesListCellChanged( int row, int column )
     if ( !nameItem ||
          nameItem->text().isEmpty() ||
          !mLayer->fields().exists( row ) ||
-         mLayer->fields().at( row ).name() == nameItem->text() )
+         mLayer->fields().at( mFieldsList->item( row, AttrIdCol )->text().toInt() ).name() == nameItem->text()
+       )
       return;
 
     mLayer->beginEditCommand( tr( "Rename attribute" ) );

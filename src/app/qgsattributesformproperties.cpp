@@ -217,7 +217,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
 {
   //check if item or field with the items name for some reason not available anymore
   if ( !mAvailableWidgetsTree->currentItem() ||
-       getFieldIndexByName( mAvailableWidgetsTree->currentItem()->data( 0, FieldNameRole ).toString() ) < 0 )
+       mLayer->fields().indexOf( mAvailableWidgetsTree->currentItem()->data( 0, FieldNameRole ).toString() ) < 0 )
     mAttributeTypeDialog->setEnabled( false );
   else
   {
@@ -625,18 +625,6 @@ void QgsAttributesFormProperties::pbnSelectEditForm_clicked()
   mEditFormLineEdit->setText( uifilename );
 }
 
-int QgsAttributesFormProperties::getFieldIndexByName( const QString &name )
-{
-  for ( int idx = 0; idx < mLayer->fields().size(); idx++ )
-  {
-    //only save the files that are still existing in fields
-    if ( mLayer->fields().at( idx ).name() == name )
-      return idx;
-  }
-
-  return -1;
-}
-
 void QgsAttributesFormProperties::apply()
 {
 
@@ -652,10 +640,11 @@ void QgsAttributesFormProperties::apply()
     QTreeWidgetItem *fieldItem = fieldContainer->child( i );
     FieldConfig cfg = fieldItem->data( 0, FieldConfigRole ).value<FieldConfig>();
 
-    int idx = getFieldIndexByName( fieldItem->data( 0, FieldNameRole ).toString() );
+    int idx = mLayer->fields().indexOf( fieldItem->data( 0, FieldNameRole ).toString() );
 
     //continue in case field does not exist anymore
-    if ( idx < 0 ) continue;
+    if ( idx < 0 )
+      continue;
 
     editFormConfig.setReadOnly( idx, !cfg.mEditable );
     editFormConfig.setLabelOnTop( idx, cfg.mLabelOnTop );
