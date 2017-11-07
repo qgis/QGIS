@@ -242,6 +242,7 @@ bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *def
   }
 
   mParameters << definition;
+  definition->mAlgorithm = this;
 
   if ( createOutput )
     return createAutoOutputForParameter( definition );

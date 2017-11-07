@@ -34,6 +34,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsxmlutils.h"
 #include "qgsreferencedgeometry.h"
+#include "qgssettings.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -75,6 +76,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QVERIFY( addParameter( new QgsProcessingParameterBoolean( "p1" ) ) );
       QCOMPARE( parameterDefinitions().count(), 1 );
       QCOMPARE( parameterDefinitions().at( 0 )->name(), QString( "p1" ) );
+      QCOMPARE( parameterDefinitions().at( 0 )->algorithm(), this );
 
       QVERIFY( !addParameter( nullptr ) );
       QCOMPARE( parameterDefinitions().count(), 1 );
@@ -129,6 +131,41 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QgsProcessingParameterVectorDestination *p8 = new QgsProcessingParameterVectorDestination( "p8" );
       // this should fail - it would result in a duplicate output name
       QVERIFY( !addParameter( p8 ) );
+
+      // default vector format extension
+      QgsProcessingParameterFeatureSink *sinkParam = new QgsProcessingParameterFeatureSink( "sink" );
+      QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "shp" ) ); // before alg is accessible
+      QVERIFY( !sinkParam->algorithm() );
+      QVERIFY( !sinkParam->provider() );
+      addParameter( sinkParam );
+      QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "shp" ) );
+      QCOMPARE( sinkParam->algorithm(), this );
+      QVERIFY( !sinkParam->provider() );
+
+      // default raster format extension
+      QgsProcessingParameterRasterDestination *rasterParam = new QgsProcessingParameterRasterDestination( "raster" );
+      QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) ); // before alg is accessible
+      addParameter( rasterParam );
+      QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) );
+    }
+
+    void runParameterChecks2()
+    {
+      // default vector format extension, taken from provider
+      QgsProcessingParameterFeatureSink *sinkParam = new QgsProcessingParameterFeatureSink( "sink2" );
+      QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "shp" ) ); // before alg is accessible
+      QVERIFY( !sinkParam->algorithm() );
+      QVERIFY( !sinkParam->provider() );
+      addParameter( sinkParam );
+      QCOMPARE( sinkParam->defaultFileExtension(), QStringLiteral( "xshp" ) );
+      QCOMPARE( sinkParam->algorithm(), this );
+      QCOMPARE( sinkParam->provider(), provider() );
+
+      // default raster format extension
+      QgsProcessingParameterRasterDestination *rasterParam = new QgsProcessingParameterRasterDestination( "raster2" );
+      QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) ); // before alg is accessible
+      addParameter( rasterParam );
+      QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "pcx" ) );
     }
 
     void runOutputChecks()
@@ -253,6 +290,16 @@ class DummyProvider : public QgsProcessingProvider
 
     void unload() override { if ( unloaded ) { *unloaded = true; } }
 
+    QString defaultVectorFileExtension( bool ) const override
+    {
+      return "xshp"; // shape-X. Just like shapefiles, but to the max!
+    }
+
+    QString defaultRasterFileExtension() const override
+    {
+      return "pcx"; // next-gen raster storage
+    }
+
     bool *unloaded = nullptr;
 
   protected:
@@ -272,7 +319,7 @@ class DummyProvider : public QgsProcessingProvider
 
     QString mId;
 
-
+    friend class TestQgsProcessing;
 };
 
 class DummyProviderNoLoad : public DummyProvider
@@ -285,6 +332,28 @@ class DummyProviderNoLoad : public DummyProvider
     {
       return false;
     }
+
+};
+
+class DummyProvider3 : public QgsProcessingProvider
+{
+  public:
+
+    DummyProvider3()  = default;
+    QString id() const override { return QStringLiteral( "dummy3" ); }
+    QString name() const override { return QStringLiteral( "dummy3" ); }
+
+    QStringList supportedOutputVectorLayerExtensions() const override
+    {
+      return QStringList() << QStringLiteral( "mif" ) << QStringLiteral( "tab" );
+    }
+
+    QStringList supportedOutputRasterLayerExtensions() const override
+    {
+      return QStringList() << QStringLiteral( "mig" ) << QStringLiteral( "asc" );
+    }
+
+    void loadAlgorithms() override {}
 
 };
 
@@ -355,6 +424,7 @@ class TestQgsProcessing: public QObject
     void create();
     void combineFields();
     void stringToPythonLiteral();
+    void defaultExtensionsForProvider();
 
   private:
 
@@ -1418,8 +1488,12 @@ void TestQgsProcessing::parameters()
 
 void TestQgsProcessing::algorithmParameters()
 {
-  DummyAlgorithm alg( "test" );
-  alg.runParameterChecks();
+  DummyAlgorithm *alg = new DummyAlgorithm( "test" );
+  DummyProvider p( "test" );
+  alg->runParameterChecks();
+
+  p.addAlgorithm( alg );
+  alg->runParameterChecks2();
 }
 
 void TestQgsProcessing::algorithmOutputs()
@@ -5626,6 +5700,26 @@ void TestQgsProcessing::stringToPythonLiteral()
   QCOMPARE( QgsProcessingUtils::stringToPythonLiteral( QString() ), QStringLiteral( "''" ) );
   QCOMPARE( QgsProcessingUtils::stringToPythonLiteral( QStringLiteral( "a 'string'" ) ), QStringLiteral( "'a \\'string\\''" ) );
   QCOMPARE( QgsProcessingUtils::stringToPythonLiteral( QStringLiteral( "a \"string\"" ) ), QStringLiteral( "'a \\\"string\\\"'" ) );
+}
+
+void TestQgsProcessing::defaultExtensionsForProvider()
+{
+  DummyProvider3 provider;
+  // default implementation should return first supported format for provider
+  QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
+  QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
+  // unless the user has set a default format, which IS supported by that provider
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "tab" ), QgsSettings::Core );
+  settings.setValue( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "asc" ), QgsSettings::Core );
+  QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "tab" ) );
+  QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "asc" ) );
+
+  // but if default is not supported by provider, we use a supported format
+  settings.setValue( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "gpkg" ), QgsSettings::Core );
+  settings.setValue( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "ecw" ), QgsSettings::Core );
+  QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
+  QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

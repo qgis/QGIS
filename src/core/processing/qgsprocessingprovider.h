@@ -104,24 +104,45 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     /**
      * Returns a list of the raster format file extensions supported by this provider.
      * \see supportedOutputVectorLayerExtensions()
-     * \see supportedOutputTableExtensions()
      */
-    virtual QStringList supportedOutputRasterLayerExtensions() const { return QStringList() << QStringLiteral( "tif" ); }
+    virtual QStringList supportedOutputRasterLayerExtensions() const;
 
     /**
      * Returns a list of the vector format file extensions supported by this provider.
+     * \see defaultVectorFileExtension()
      * \see supportedOutputRasterLayerExtensions()
-     * \see supportedOutputTableExtensions()
      * \see supportsNonFileBasedOutput()
      */
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 
     /**
-     * Returns a list of the table format file extensions supported by this provider.
-     * \see supportedOutputRasterLayerExtensions()
+     * Returns the default file extension to use for vector outputs created by the
+     * provider.
+     *
+     * If \a hasGeometry is true then the output file format must have support for
+     * geometry. If \a hasGeometry is false then non-spatial formats can be used.
+     *
+     * The default implementation returns the user's default Processing vector output format
+     * setting, if it's supported by the provider (see supportedOutputVectorLayerExtensions()).
+     * Otherwise the first reported supported vector format will be used.
+     *
      * \see supportedOutputVectorLayerExtensions()
+     * \see defaultRasterFileExtension()
      */
-    virtual QStringList supportedOutputTableExtensions() const { return QStringList() << QStringLiteral( "csv" ); }
+    virtual QString defaultVectorFileExtension( bool hasGeometry = true ) const;
+
+    /**
+     * Returns the default file extension to use for raster outputs created by the
+     * provider.
+     *
+     * The default implementation returns the user's default Processing raster output format
+     * setting, if it's supported by the provider (see supportedOutputRasterLayerExtensions()).
+     * Otherwise the first reported supported raster format will be used.
+     *
+     * \see supportedOutputRasterLayerExtensions()
+     * \see defaultVectorFileExtension()
+     */
+    virtual QString defaultRasterFileExtension() const;
 
     /**
      * Returns true if the provider supports non-file based outputs (such as memory layers
