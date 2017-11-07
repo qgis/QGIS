@@ -307,7 +307,7 @@ class QgsPluginInstaller(QObject):
             updateAvailablePlugins()
             # try to load the plugin
             loadPlugin(plugin["id"])
-            plugins.getAllInstalled(testLoad=True)
+            plugins.getAllInstalled()
             plugins.rebuild()
             plugin = plugins.all()[key]
             if not plugin["error"]:
@@ -565,7 +565,7 @@ class QgsPluginInstaller(QObject):
         if infoString is None:
             updateAvailablePlugins()
             loadPlugin(pluginName)
-            plugins.getAllInstalled(testLoad=True)
+            plugins.getAllInstalled()
             plugins.rebuild()
 
             if settings.contains('/PythonPlugins/' + pluginName):
