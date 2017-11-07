@@ -143,6 +143,12 @@ void QgsComposerItem::setSelected( bool s )
 
 bool QgsComposerItem::_writeXml( QDomElement &itemElem, QDomDocument &doc ) const
 {
+  QgsPathResolver pathResolver;
+  if ( composition() )
+    pathResolver = composition()->project()->pathResolver();
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver );
+
   if ( itemElem.isNull() )
   {
     return false;

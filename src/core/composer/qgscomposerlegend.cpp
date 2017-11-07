@@ -344,6 +344,12 @@ bool QgsComposerLegend::writeXml( QDomElement &elem, QDomDocument &doc ) const
     return false;
   }
 
+  QgsPathResolver  pathResolver;
+  if ( mComposition )
+    pathResolver = mComposition->project()->pathResolver();
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver );
+
   QDomElement composerLegendElem = doc.createElement( QStringLiteral( "ComposerLegend" ) );
   elem.appendChild( composerLegendElem );
 
@@ -389,7 +395,7 @@ bool QgsComposerLegend::writeXml( QDomElement &elem, QDomDocument &doc ) const
   if ( mCustomLayerTree )
   {
     // if not using auto-update - store the custom layer tree
-    mCustomLayerTree->writeXml( composerLegendElem );
+    mCustomLayerTree->writeXml( composerLegendElem, context );
   }
 
   if ( mLegendFilterByMap )
@@ -407,6 +413,12 @@ bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument
   {
     return false;
   }
+
+  QgsPathResolver  pathResolver;
+  if ( mComposition )
+    pathResolver = mComposition->project()->pathResolver();
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver );
 
   //read general properties
   mTitle = itemElem.attribute( QStringLiteral( "title" ) );
@@ -479,7 +491,7 @@ bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument
 
   if ( !layerTreeElem.isNull() )
   {
-    std::unique_ptr< QgsLayerTree > tree( QgsLayerTree::readXml( layerTreeElem ) );
+    std::unique_ptr< QgsLayerTree > tree( QgsLayerTree::readXml( layerTreeElem, context ) );
     if ( mComposition )
       tree->resolveReferences( mComposition->project(), true );
     setCustomLayerTree( tree.release() );

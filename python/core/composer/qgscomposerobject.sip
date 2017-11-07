@@ -9,6 +9,7 @@
 
 
 
+
 class QgsComposerObject: QObject, QgsExpressionContextGenerator
 {
 %Docstring

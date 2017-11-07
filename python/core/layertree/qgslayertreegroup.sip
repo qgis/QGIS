@@ -138,14 +138,14 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
  :rtype: QgsLayerTreeGroup
 %End
 
-    static QgsLayerTreeGroup *readXml( QDomElement &element ) /Factory/;
+    static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
  Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
  Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
  :rtype: QgsLayerTreeGroup
 %End
 
-    static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsProject *project ) /Factory/;
+    static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
  Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
  Also resolves textual references to layers from the project (calls resolveReferences() internally).
@@ -153,12 +153,12 @@ class QgsLayerTreeGroup : QgsLayerTreeNode
  :rtype: QgsLayerTreeGroup
 %End
 
-    virtual void writeXml( QDomElement &parentElement );
+    virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
 %Docstring
  Write group (tree) as XML element <layer-tree-group> and add it to the given parent element
 %End
 
-    void readChildrenFromXml( QDomElement &element );
+    void readChildrenFromXml( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
  Read children from XML and append them to the group.
  Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.

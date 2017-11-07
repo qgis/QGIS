@@ -20,6 +20,8 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgscomposeritem.h"
+#include "qgsreadwritecontext.h"
+
 #include <QSet>
 
 /**

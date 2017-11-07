@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgslayertreenode.h"
 #include "qgsmaplayerref.h"
+#include "qgsreadwritecontext.h"
 
 class QgsMapLayer;
 
@@ -73,16 +74,16 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      * Read layer node from XML. Returns new instance.
      * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
      */
-    static QgsLayerTreeLayer *readXml( QDomElement &element ) SIP_FACTORY;
+    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     /**
      * Read layer node from XML. Returns new instance.
      * Also resolves textual references to layers from the project (calls resolveReferences() internally).
      * \since QGIS 3.0
      */
-    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsProject *project ) SIP_FACTORY;
+    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    virtual void writeXml( QDomElement &parentElement ) override;
+    virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) override;
 
     virtual QString dump() const override;
 

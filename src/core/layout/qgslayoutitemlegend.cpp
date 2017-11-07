@@ -448,8 +448,9 @@ void QgsLayoutItemLegend::updateLegend()
   updateFilterByMap( false );
 }
 
-bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &composerLegendElem, QDomDocument &doc, const QgsReadWriteContext & ) const
+bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &composerLegendElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
+
   //write general properties
   composerLegendElem.setAttribute( QStringLiteral( "title" ), mTitle );
   composerLegendElem.setAttribute( QStringLiteral( "titleAlignment" ), QString::number( static_cast< int >( mSettings.titleAlignment() ) ) );
@@ -492,7 +493,7 @@ bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &composerLegendE
   if ( mCustomLayerTree )
   {
     // if not using auto-update - store the custom layer tree
-    mCustomLayerTree->writeXml( composerLegendElem );
+    mCustomLayerTree->writeXml( composerLegendElem, context );
   }
 
   if ( mLegendFilterByMap )
@@ -504,7 +505,7 @@ bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &composerLegendE
   return true;
 }
 
-bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext & )
+bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
   //read general properties
   mTitle = itemElem.attribute( QStringLiteral( "title" ) );
@@ -586,7 +587,7 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
 
   if ( !layerTreeElem.isNull() )
   {
-    std::unique_ptr< QgsLayerTree > tree( QgsLayerTree::readXml( layerTreeElem ) );
+    std::unique_ptr< QgsLayerTree > tree( QgsLayerTree::readXml( layerTreeElem, context ) );
     if ( mLayout )
       tree->resolveReferences( mLayout->project(), true );
     setCustomLayerTree( tree.release() );
