@@ -111,8 +111,6 @@ const char *QgsApplication::QGIS_ORGANIZATION_DOMAIN = "qgis.org";
 const char *QgsApplication::QGIS_APPLICATION_NAME = "QGIS3";
 
 QgsApplication::ApplicationMembers *QgsApplication::sApplicationMembers = nullptr;
-QgsAuthManager *QgsApplication::sAuthManager = nullptr;
-QgsDataItemProviderRegistry *QgsApplication::sDataItemProviderRegistry = nullptr;
 
 QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const QString &profileFolder, const QString &platformName )
   : QApplication( argc, argv, GUIenabled )
@@ -903,6 +901,7 @@ QgsAuthManager *QgsApplication::authManager()
   else
   {
     // no QgsApplication instance
+    static QgsAuthManager *sAuthManager = nullptr;
     if ( !sAuthManager )
       sAuthManager = QgsAuthManager::instance();
     return sAuthManager;
@@ -1572,6 +1571,7 @@ QgsDataItemProviderRegistry *QgsApplication::dataItemProviderRegistry()
   else
   {
     // no QgsApplication instance
+    static QgsDataItemProviderRegistry *sDataItemProviderRegistry = nullptr;
     if ( !sDataItemProviderRegistry )
       sDataItemProviderRegistry = new QgsDataItemProviderRegistry();
     return sDataItemProviderRegistry;

@@ -749,12 +749,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     QMap<QString, QIcon> mIconCache;
 
     QgsDataItemProviderRegistry *mDataItemProviderRegistry = nullptr;
-    // ... but in case QgsApplication is never instantiated (eg with custom designer widgets), we fall back to static instance
-    static QgsDataItemProviderRegistry *sDataItemProviderRegistry;
-
     QgsAuthManager *mAuthManager = nullptr;
-    // ... but in case QgsApplication is never instantiated (eg with custom designer widgets), we fall back to static instance
-    static QgsAuthManager *sAuthManager;
 
     struct ApplicationMembers
     {
