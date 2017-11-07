@@ -870,7 +870,8 @@ void QgsApplication::initQgis()
   // set the provider plugin path (this creates provider registry)
   QgsProviderRegistry::instance( pluginPath() );
 
-  instance()->mDataItemProviderRegistry = new QgsDataItemProviderRegistry();
+  // create data item provider registry
+  ( void )QgsApplication::dataItemProviderRegistry();
 
   // create project instance if doesn't exist
   QgsProject::instance();
@@ -889,11 +890,22 @@ void QgsApplication::initQgis()
 
 QgsAuthManager *QgsApplication::authManager()
 {
-  if ( ! instance()->mAuthManager )
+  if ( instance() )
   {
-    instance()->mAuthManager = QgsAuthManager::instance();
+    if ( !instance()->mAuthManager )
+    {
+      instance()->mAuthManager = QgsAuthManager::instance();
+    }
+    return instance()->mAuthManager;
   }
-  return instance()->mAuthManager;
+  else
+  {
+    // no QgsApplication instance
+    static QgsAuthManager *sAuthManager = nullptr;
+    if ( !sAuthManager )
+      sAuthManager = QgsAuthManager::instance();
+    return sAuthManager;
+  }
 }
 
 
@@ -1548,7 +1560,22 @@ QgsRasterRendererRegistry *QgsApplication::rasterRendererRegistry()
 
 QgsDataItemProviderRegistry *QgsApplication::dataItemProviderRegistry()
 {
-  return instance()->mDataItemProviderRegistry;
+  if ( instance() )
+  {
+    if ( !instance()->mDataItemProviderRegistry )
+    {
+      instance()->mDataItemProviderRegistry = new QgsDataItemProviderRegistry();
+    }
+    return instance()->mDataItemProviderRegistry;
+  }
+  else
+  {
+    // no QgsApplication instance
+    static QgsDataItemProviderRegistry *sDataItemProviderRegistry = nullptr;
+    if ( !sDataItemProviderRegistry )
+      sDataItemProviderRegistry = new QgsDataItemProviderRegistry();
+    return sDataItemProviderRegistry;
+  }
 }
 
 QgsSvgCache *QgsApplication::svgCache()
