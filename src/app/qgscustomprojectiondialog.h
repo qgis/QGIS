@@ -43,6 +43,10 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     void leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
     void buttonBox_accepted();
 
+  private slots:
+
+    void updateListFromCurrentItem();
+
   private:
 
     //helper functions

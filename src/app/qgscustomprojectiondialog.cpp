@@ -185,13 +185,15 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   populateList();
   if ( !mCustomCRSnames.empty() )
   {
-    leName->setText( mCustomCRSnames[0] );
-    teParameters->setPlainText( mCustomCRSparameters[0] );
+    whileBlocking( leName )->setText( mCustomCRSnames[0] );
+    whileBlocking( teParameters )->setPlainText( mCustomCRSparameters[0] );
     leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
   }
 
   leNameList->hideColumn( QgisCrsIdColumn );
 
+  connect( leName, &QLineEdit::textChanged, this, &QgsCustomProjectionDialog::updateListFromCurrentItem );
+  connect( teParameters, &QPlainTextEdit::textChanged, this, &QgsCustomProjectionDialog::updateListFromCurrentItem );
 }
 
 QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
@@ -451,8 +453,8 @@ void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *
   if ( current )
   {
     currentIndex = leNameList->indexOfTopLevelItem( current );
-    leName->setText( mCustomCRSnames[currentIndex] );
-    teParameters->setPlainText( current->text( QgisCrsParametersColumn ) );
+    whileBlocking( leName )->setText( mCustomCRSnames[currentIndex] );
+    whileBlocking( teParameters )->setPlainText( current->text( QgisCrsParametersColumn ) );
   }
   else
   {
@@ -539,6 +541,22 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
   {
     accept();
   }
+}
+
+void QgsCustomProjectionDialog::updateListFromCurrentItem()
+{
+  QTreeWidgetItem *item = leNameList->currentItem();
+  if ( !item )
+    return;
+
+  int currentIndex = leNameList->indexOfTopLevelItem( item );
+  if ( currentIndex < 0 )
+    return;
+
+  mCustomCRSnames[currentIndex] = leName->text();
+  mCustomCRSparameters[currentIndex] = teParameters->toPlainText();
+  item->setText( QgisCrsNameColumn, leName->text() );
+  item->setText( QgisCrsParametersColumn, teParameters->toPlainText() );
 }
 
 void QgsCustomProjectionDialog::pbnCalculate_clicked()
