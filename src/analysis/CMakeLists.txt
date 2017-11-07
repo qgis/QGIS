@@ -246,11 +246,11 @@ INCLUDE_DIRECTORIES(
   network
 )
 INCLUDE_DIRECTORIES(SYSTEM
+  ${SPATIALINDEX_INCLUDE_DIR} # before GEOS for case-insensitive filesystems
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
-  ${SPATIALINDEX_INCLUDE_DIR}
 )
 
 #############################################################
