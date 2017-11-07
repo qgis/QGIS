@@ -80,7 +80,8 @@ RUN  apt-get update \
     xfonts-75dpi \
     xfonts-base \
     xfonts-scalable \
-    xvfb \
+    libxine2 \
+    xvfb \    
   && pip3 install \
     psycopg2 \
     numpy \
