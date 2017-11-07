@@ -1530,12 +1530,8 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
     dataSource = uri.uri( false );
   }
 
-  // XXX when execution gets here.
-
-  //XXX - This was a dynamic cast but that kills the Windows
-  //      version big-time with an abnormal termination error
   delete mDataProvider;
-  mDataProvider = ( QgsVectorDataProvider * )( QgsProviderRegistry::instance()->createProvider( provider, dataSource ) );
+  mDataProvider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource ) );
   if ( !mDataProvider )
   {
     QgsDebugMsg( " unable to get data provider" );
