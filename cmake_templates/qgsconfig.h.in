@@ -60,5 +60,7 @@
 
 #cmakedefine HAVE_3D
 
+#cmakedefine USE_THREAD_LOCAL
+
 #endif
 

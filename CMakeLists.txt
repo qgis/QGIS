@@ -142,6 +142,24 @@ IF(WITH_CORE)
     ENDIF (OSGEARTHQT_LIBRARY)
   ENDIF (WITH_GLOBE)
 
+  SET (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
+  MARK_AS_ADVANCED(WITH_THREAD_LOCAL)
+
+  IF (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+    # MingW has broken support for thread_local, so force disabling it
+    # see
+    # https://sourceforge.net/p/mingw-w64/bugs/445/
+    # https://sourceforge.net/p/mingw-w64/bugs/527/
+    # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80816
+
+    # also OpenBSD has no thread_local support, see https://issues.qgis.org/issues/17351
+
+  ELSE (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+    IF (WITH_THREAD_LOCAL)
+      SET (USE_THREAD_LOCAL TRUE)  # used in qgsconfig.h
+    ENDIF (WITH_THREAD_LOCAL)
+  ENDIF (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+
   # Compile flag. Make it possible to turn it off.
   SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile in pedantic mode.")
 
@@ -736,7 +754,7 @@ ENDIF (WITH_CORE)
 ####################################################
 # clang-tidy
 SET (WITH_CLANG_TIDY FALSE CACHE BOOL "Use Clang tidy")
-MARK_AS_ADVANCED(WITH_CORE)
+MARK_AS_ADVANCED(WITH_CLANG_TIDY)
 IF (WITH_CORE)
   IF(WITH_CLANG_TIDY)
     FIND_PROGRAM(
