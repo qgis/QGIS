@@ -94,7 +94,6 @@ class QgsProcessingProvider : QObject
 %Docstring
  Returns a list of the raster format file extensions supported by this provider.
 .. seealso:: supportedOutputVectorLayerExtensions()
-.. seealso:: supportedOutputTableExtensions()
  :rtype: list of str
 %End
 
@@ -103,16 +102,7 @@ class QgsProcessingProvider : QObject
  Returns a list of the vector format file extensions supported by this provider.
 .. seealso:: defaultVectorFileExtension()
 .. seealso:: supportedOutputRasterLayerExtensions()
-.. seealso:: supportedOutputTableExtensions()
 .. seealso:: supportsNonFileBasedOutput()
- :rtype: list of str
-%End
-
-    virtual QStringList supportedOutputTableExtensions() const;
-%Docstring
- Returns a list of the table format file extensions supported by this provider.
-.. seealso:: supportedOutputRasterLayerExtensions()
-.. seealso:: supportedOutputVectorLayerExtensions()
  :rtype: list of str
 %End
 
@@ -125,7 +115,8 @@ class QgsProcessingProvider : QObject
  geometry. If ``hasGeometry`` is false then non-spatial formats can be used.
 
  The default implementation returns the user's default Processing vector output format
- setting.
+ setting, if it's supported by the provider (see supportedOutputVectorLayerExtensions()).
+ Otherwise the first reported supported vector format will be used.
 
 .. seealso:: supportedOutputVectorLayerExtensions()
 .. seealso:: defaultRasterFileExtension()
@@ -138,7 +129,8 @@ class QgsProcessingProvider : QObject
  provider.
 
  The default implementation returns the user's default Processing raster output format
- setting.
+ setting, if it's supported by the provider (see supportedOutputRasterLayerExtensions()).
+ Otherwise the first reported supported raster format will be used.
 
 .. seealso:: supportedOutputRasterLayerExtensions()
 .. seealso:: defaultVectorFileExtension()

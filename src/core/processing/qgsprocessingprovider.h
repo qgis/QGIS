@@ -104,7 +104,6 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     /**
      * Returns a list of the raster format file extensions supported by this provider.
      * \see supportedOutputVectorLayerExtensions()
-     * \see supportedOutputTableExtensions()
      */
     virtual QStringList supportedOutputRasterLayerExtensions() const;
 
@@ -112,17 +111,9 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * Returns a list of the vector format file extensions supported by this provider.
      * \see defaultVectorFileExtension()
      * \see supportedOutputRasterLayerExtensions()
-     * \see supportedOutputTableExtensions()
      * \see supportsNonFileBasedOutput()
      */
     virtual QStringList supportedOutputVectorLayerExtensions() const;
-
-    /**
-     * Returns a list of the table format file extensions supported by this provider.
-     * \see supportedOutputRasterLayerExtensions()
-     * \see supportedOutputVectorLayerExtensions()
-     */
-    virtual QStringList supportedOutputTableExtensions() const { return QStringList() << QStringLiteral( "csv" ); }
 
     /**
      * Returns the default file extension to use for vector outputs created by the
@@ -132,7 +123,8 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * geometry. If \a hasGeometry is false then non-spatial formats can be used.
      *
      * The default implementation returns the user's default Processing vector output format
-     * setting.
+     * setting, if it's supported by the provider (see supportedOutputVectorLayerExtensions()).
+     * Otherwise the first reported supported vector format will be used.
      *
      * \see supportedOutputVectorLayerExtensions()
      * \see defaultRasterFileExtension()
@@ -144,7 +136,8 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * provider.
      *
      * The default implementation returns the user's default Processing raster output format
-     * setting.
+     * setting, if it's supported by the provider (see supportedOutputRasterLayerExtensions()).
+     * Otherwise the first reported supported raster format will be used.
      *
      * \see supportedOutputRasterLayerExtensions()
      * \see defaultVectorFileExtension()

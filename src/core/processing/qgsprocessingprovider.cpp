@@ -93,19 +93,47 @@ QStringList QgsProcessingProvider::supportedOutputVectorLayerExtensions() const
 QString QgsProcessingProvider::defaultVectorFileExtension( bool hasGeometry ) const
 {
   QgsSettings settings;
-  if ( hasGeometry )
+  const QString defaultExtension = hasGeometry ? QStringLiteral( "shp" ) : QStringLiteral( "dbf" );
+  const QString userDefault = settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), defaultExtension, QgsSettings::Core ).toString();
+
+  const QStringList supportedExtensions = supportedOutputVectorLayerExtensions();
+  if ( supportedExtensions.contains( userDefault, Qt::CaseInsensitive ) )
   {
-    return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+    // user set default is supported by provider, use that
+    return userDefault;
+  }
+  else if ( !supportedExtensions.empty() )
+  {
+    return supportedExtensions.at( 0 );
   }
   else
   {
-    return QStringLiteral( "dbf" );
+    // who knows? provider says it has no file support at all...
+    // let's say shp. even MapInfo supports shapefiles.
+    return defaultExtension;
   }
 }
 
 QString QgsProcessingProvider::defaultRasterFileExtension() const
 {
   QgsSettings settings;
-  return settings.value( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "tif" ), QgsSettings::Core ).toString();
+  const QString defaultExtension = QStringLiteral( "tif" );
+  const QString userDefault = settings.value( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), defaultExtension, QgsSettings::Core ).toString();
+
+  const QStringList supportedExtensions = supportedOutputRasterLayerExtensions();
+  if ( supportedExtensions.contains( userDefault, Qt::CaseInsensitive ) )
+  {
+    // user set default is supported by provider, use that
+    return userDefault;
+  }
+  else if ( !supportedExtensions.empty() )
+  {
+    return supportedExtensions.at( 0 );
+  }
+  else
+  {
+    // who knows? provider says it has no file support at all...
+    return defaultExtension;
+  }
 }
 

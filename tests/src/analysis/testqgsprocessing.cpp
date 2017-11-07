@@ -34,6 +34,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsxmlutils.h"
 #include "qgsreferencedgeometry.h"
+#include "qgssettings.h"
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
@@ -334,6 +335,28 @@ class DummyProviderNoLoad : public DummyProvider
 
 };
 
+class DummyProvider3 : public QgsProcessingProvider
+{
+  public:
+
+    DummyProvider3()  = default;
+    QString id() const override { return QStringLiteral( "dummy3" ); }
+    QString name() const override { return QStringLiteral( "dummy3" ); }
+
+    QStringList supportedOutputVectorLayerExtensions() const override
+    {
+      return QStringList() << QStringLiteral( "mif" ) << QStringLiteral( "tab" );
+    }
+
+    QStringList supportedOutputRasterLayerExtensions() const override
+    {
+      return QStringList() << QStringLiteral( "mig" ) << QStringLiteral( "asc" );
+    }
+
+    void loadAlgorithms() override {}
+
+};
+
 class TestQgsProcessing: public QObject
 {
     Q_OBJECT
@@ -401,6 +424,7 @@ class TestQgsProcessing: public QObject
     void create();
     void combineFields();
     void stringToPythonLiteral();
+    void defaultExtensionsForProvider();
 
   private:
 
@@ -5676,6 +5700,26 @@ void TestQgsProcessing::stringToPythonLiteral()
   QCOMPARE( QgsProcessingUtils::stringToPythonLiteral( QString() ), QStringLiteral( "''" ) );
   QCOMPARE( QgsProcessingUtils::stringToPythonLiteral( QStringLiteral( "a 'string'" ) ), QStringLiteral( "'a \\'string\\''" ) );
   QCOMPARE( QgsProcessingUtils::stringToPythonLiteral( QStringLiteral( "a \"string\"" ) ), QStringLiteral( "'a \\\"string\\\"'" ) );
+}
+
+void TestQgsProcessing::defaultExtensionsForProvider()
+{
+  DummyProvider3 provider;
+  // default implementation should return first supported format for provider
+  QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
+  QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
+  // unless the user has set a default format, which IS supported by that provider
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "tab" ), QgsSettings::Core );
+  settings.setValue( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "asc" ), QgsSettings::Core );
+  QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "tab" ) );
+  QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "asc" ) );
+
+  // but if default is not supported by provider, we use a supported format
+  settings.setValue( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "gpkg" ), QgsSettings::Core );
+  settings.setValue( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "ecw" ), QgsSettings::Core );
+  QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
+  QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )
