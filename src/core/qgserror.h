@@ -128,6 +128,12 @@ class CORE_EXPORT QgsError
     //! Clear error messages
     void clear() { mMessageList.clear(); }
 
+    /**
+     * \brief messageList return the list of current error messages
+     * \return current list of error messages
+     */
+    QList<QgsErrorMessage> messageList() const { return mMessageList; }
+
   private:
     //! List of messages
     QList<QgsErrorMessage> mMessageList;

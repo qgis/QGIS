@@ -23,6 +23,7 @@
 #include "qgsstyle.h"
 #include "qgssymbollayerutils.h"
 #include "qgsreadwritecontext.h"
+#include "qgsuserprofilemanager.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -53,14 +54,35 @@ QgsVersionMigration *QgsVersionMigration::canMigrate( int fromVersion, int toVer
 
 QgsError Qgs2To3Migration::runMigration()
 {
-  QgsError error;
+  QgsError errors;
   QgsError settingsErrors = migrateSettings();
   if ( !settingsErrors.isEmpty() )
   {
-    // TODO Merge error messages
+    const QList<QgsErrorMessage> errorList( settingsErrors.messageList( ) );
+    for ( const auto &err : errorList )
+    {
+      errors.append( err );
+    }
   }
-  QgsError stylesError = migrateStyles();
-  return error;
+  QgsError stylesErrors = migrateStyles();
+  if ( !stylesErrors.isEmpty() )
+  {
+    const QList<QgsErrorMessage> errorList( stylesErrors.messageList( ) );
+    for ( const auto &err : errorList )
+    {
+      errors.append( err );
+    }
+  }
+  QgsError authDbErrors = migrateAuthDb();
+  if ( !authDbErrors.isEmpty() )
+  {
+    const QList<QgsErrorMessage> errorList( authDbErrors.messageList( ) );
+    for ( const auto &err : errorList )
+    {
+      errors.append( err );
+    }
+  }
+  return errors;
 }
 
 bool Qgs2To3Migration::requiresMigration()
@@ -237,6 +259,48 @@ QgsError Qgs2To3Migration::migrateSettings()
         QgsDebugMsg( QString( " -> %1 -> %2" ).arg( oldKey, newKey ) );
         newSettings.setValue( newKey, mOldSettings->value( oldKey ) );
       }
+    }
+  }
+  return error;
+}
+
+QgsError Qgs2To3Migration::migrateAuthDb()
+{
+  QgsError error;
+  QString oldHome = QStringLiteral( "%1/.qgis2" ).arg( QDir::homePath() );
+  QString oldAuthDbFilePath = QStringLiteral( "%1/qgis-auth.db" ).arg( oldHome );
+  // Try to retrieve the current profile folder (I didn't find an QgsApplication API for it)
+  QDir settingsDir = QFileInfo( QgsSettings().fileName() ).absoluteDir();
+  settingsDir.cdUp();
+  QString newAuthDbFilePath = QStringLiteral( "%1/qgis-auth.db" ).arg( settingsDir.absolutePath() );
+  // Do not overwrite!
+  if ( QFile( newAuthDbFilePath ).exists( ) )
+  {
+    QString msg = QStringLiteral( "Could not copy old auth DB to %1: file already exists!" ).arg( newAuthDbFilePath );
+    QgsDebugMsg( msg );
+    error.append( msg );
+  }
+  else
+  {
+    QFile oldDbFile( oldAuthDbFilePath );
+    if ( oldDbFile.exists( ) )
+    {
+      if ( oldDbFile.copy( newAuthDbFilePath ) )
+      {
+        QgsDebugMsg( QStringLiteral( "Old auth DB successfully copied to %1" ).arg( newAuthDbFilePath ) );
+      }
+      else
+      {
+        QString msg = QStringLiteral( "Could not copy auth DB %1 to %2" ).arg( oldAuthDbFilePath, newAuthDbFilePath );
+        QgsDebugMsg( msg );
+        error.append( msg );
+      }
+    }
+    else
+    {
+      QString msg = QStringLiteral( "Could not copy auth DB %1 to %2: old DB does not exists!" ).arg( oldAuthDbFilePath, newAuthDbFilePath );
+      QgsDebugMsg( msg );
+      error.append( msg );
     }
   }
   return error;
