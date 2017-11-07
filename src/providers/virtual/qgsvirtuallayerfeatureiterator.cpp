@@ -63,6 +63,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     QString tableName = mSource->mTableName;
 
     QStringList wheres;
+    QString offset;
     QString subset = mSource->mSubset;
     if ( !subset.isNull() )
     {
@@ -103,6 +104,13 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
         }
         values += QLatin1String( ")" );
         wheres << values;
+      }
+    }
+    else
+    {
+      if ( request.filterType() == QgsFeatureRequest::FilterFid )
+      {
+        offset = QStringLiteral( " LIMIT 1 OFFSET %1" ).arg( request.filterFid() );
       }
     }
 
@@ -150,7 +158,14 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       }
       else
       {
-        columns = QStringLiteral( "0" );
+        if ( request.filterType() == QgsFeatureRequest::FilterFid )
+        {
+          columns = QStringLiteral( "%1" ).arg( request.filterFid() );
+        }
+        else
+        {
+          columns = QStringLiteral( "0" );
+        }
       }
       Q_FOREACH ( int i, mAttributes )
       {
@@ -171,6 +186,11 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     if ( !wheres.isEmpty() )
     {
       mSqlQuery += " WHERE " + wheres.join( QStringLiteral( " AND " ) );
+    }
+
+    if ( !offset.isEmpty() )
+    {
+      mSqlQuery += offset;
     }
 
     mQuery.reset( new Sqlite::Query( mSource->mSqlite, mSqlQuery ) );
@@ -232,8 +252,15 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
 
   if ( mSource->mDefinition.uid().isNull() )
   {
-    // no id column => autoincrement
-    feature.setId( mFid++ );
+    if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
+    {
+      feature.setId( mQuery->columnInt64( 0 ) );
+    }
+    else
+    {
+      // no id column => autoincrement
+      feature.setId( mFid++ );
+    }
   }
   else
   {
