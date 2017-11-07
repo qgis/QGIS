@@ -71,15 +71,13 @@ class QgsStackTrace
 #ifdef _MSC_VER
     HANDLE process;
     HANDLE thread;
-#endif
 
-#ifdef Q_OS_WIN
     /**
      * Return a demangled stack backtrace of the caller function.
      *
      * \since QGIS 3.0
      */
-    static QgsStackTrace* trace( DWORD processID, DWORD threadID, struct _EXCEPTION_POINTERS *ExceptionInfo, QString symbolPath );
+    static QgsStackTrace *trace( DWORD processID, DWORD threadID, struct _EXCEPTION_POINTERS *ExceptionInfo, QString symbolPath );
 #endif
 
 #ifdef Q_OS_LINUX
