@@ -581,7 +581,7 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
   // Get the WGS84 coordinates
   bool okN, okE;
   double northing = northWGS84->text().toDouble( &okN ) * DEG_TO_RAD;
-  double easthing = eastWGS84->text().toDouble( &okE )  * DEG_TO_RAD;
+  double easting = eastWGS84->text().toDouble( &okE )  * DEG_TO_RAD;
 
   if ( !okN || !okE )
   {
@@ -609,7 +609,7 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
 
   double z = 0.0;
 
-  int projResult = pj_transform( wgs84Proj, proj, 1, 0, &easthing, &northing, &z );
+  int projResult = pj_transform( wgs84Proj, proj, 1, 0, &easting, &northing, &z );
   if ( projResult != 0 )
   {
     projectedX->setText( tr( "Error" ) );
@@ -620,9 +620,18 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
   {
     QString tmp;
 
-    tmp = QLocale::system().toString( northing, 'f', 4 );
+    int precision = 4;
+
+    if ( pj_is_latlong( proj ) )
+    {
+      northing *= RAD_TO_DEG;
+      easting *= RAD_TO_DEG;
+      precision = 7;
+    }
+
+    tmp = QLocale::system().toString( northing, 'f', precision );
     projectedX->setText( tmp );
-    tmp = QLocale::system().toString( easthing, 'f', 4 );
+    tmp = QLocale::system().toString( easting, 'f', precision );
     projectedY->setText( tmp );
   }
 
