@@ -28,10 +28,6 @@ qgis_ziplayertest
 # Flaky, see https://travis-ci.org/qgis/QGIS/jobs/297708174
 PyQgsServerAccessControl
 
-# Need a local postgres installation
-PyQgsAuthManagerPKIPostgresTest
-PyQgsAuthManagerPasswordPostgresTest
-
 # need fixing
 # https://travis-ci.org/qgis/QGIS/jobs/296864934
 PyQgsServerWMS

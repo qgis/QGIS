@@ -47,6 +47,7 @@ RUN  apt-get update \
     pkg-config \
     poppler-utils \
     postgresql-client \
+    postgresql-9.5-postgis-2.3 \
     pyqt5-dev \
     pyqt5-dev-tools \
     pyqt5.qsci-dev \
@@ -79,7 +80,8 @@ RUN  apt-get update \
     xfonts-75dpi \
     xfonts-base \
     xfonts-scalable \
-    xvfb \
+    libxine2 \
+    xvfb \    
   && pip3 install \
     psycopg2 \
     numpy \
