@@ -107,20 +107,18 @@ void QgsCustomProjectionDialog::populateList()
   // XXX Need to free memory from the error msg if one is set
   if ( result == SQLITE_OK )
   {
-    QTreeWidgetItem *newItem = nullptr;
-    QString id, name, parameters;
     QgsCoordinateReferenceSystem crs;
     while ( sqlite3_step( preparedStatement ) == SQLITE_ROW )
     {
-      id = QString::fromUtf8( ( char * ) sqlite3_column_text( preparedStatement, 0 ) );
-      name = QString::fromUtf8( ( char * ) sqlite3_column_text( preparedStatement, 1 ) );
-      parameters = QString::fromUtf8( ( char * ) sqlite3_column_text( preparedStatement, 2 ) );
+      QString id = QString::fromUtf8( ( char * ) sqlite3_column_text( preparedStatement, 0 ) );
+      QString name = QString::fromUtf8( ( char * ) sqlite3_column_text( preparedStatement, 1 ) );
+      QString parameters = QString::fromUtf8( ( char * ) sqlite3_column_text( preparedStatement, 2 ) );
 
       crs.createFromProj4( parameters );
       mExistingCRSnames[id] = name;
       mExistingCRSparameters[id] = crs.toProj4();
 
-      newItem = new QTreeWidgetItem( leNameList, QStringList() );
+      QTreeWidgetItem *newItem = new QTreeWidgetItem( leNameList, QStringList() );
       newItem->setText( QgisCrsNameColumn, name );
       newItem->setText( QgisCrsIdColumn, id );
       newItem->setText( QgisCrsParametersColumn, crs.toProj4() );
@@ -332,8 +330,7 @@ void QgsCustomProjectionDialog::pbnRemove_clicked()
   {
     return;
   }
-  QTreeWidgetItem *item = leNameList->takeTopLevelItem( i );
-  delete item;
+  delete leNameList->takeTopLevelItem( i );
   if ( !mCustomCRSids[i].isEmpty() )
   {
     mDeletedCRSs.push_back( mCustomCRSids[i] );
@@ -372,7 +369,7 @@ void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *
 
 void QgsCustomProjectionDialog::pbnCopyCRS_clicked()
 {
-  QgsProjectionSelectionDialog *selector = new QgsProjectionSelectionDialog( this );
+  std::unique_ptr< QgsProjectionSelectionDialog > selector = qgis::make_unique< QgsProjectionSelectionDialog >( this );
   if ( selector->exec() )
   {
     QgsCoordinateReferenceSystem srs = selector->crs();
@@ -385,7 +382,6 @@ void QgsCustomProjectionDialog::pbnCopyCRS_clicked()
     leNameList->currentItem()->setText( QgisCrsParametersColumn, srs.toProj4() );
 
   }
-  delete selector;
 }
 
 void QgsCustomProjectionDialog::buttonBox_accepted()
