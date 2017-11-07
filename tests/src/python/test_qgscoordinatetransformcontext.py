@@ -43,13 +43,17 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         self.assertFalse(context.addSourceDatumTransform(QgsCoordinateReferenceSystem(), 4))
         self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3})
 
-        # removing non-existing
+        # indicate no transform required
         self.assertTrue(context.addSourceDatumTransform(QgsCoordinateReferenceSystem(28357), -1))
-        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3})
+        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3, 'EPSG:28357': -1})
+
+        # removing non-existing
+        context.removeSourceDatumTransform(QgsCoordinateReferenceSystem(28354))
+        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3, 'EPSG:28357': -1})
 
         # remove existing
-        self.assertTrue(context.addSourceDatumTransform(QgsCoordinateReferenceSystem(28356), -1))
-        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1})
+        context.removeSourceDatumTransform(QgsCoordinateReferenceSystem(28356))
+        self.assertEqual(context.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28357': -1})
 
         context.clear()
         self.assertEqual(context.sourceDatumTransforms(), {})
@@ -70,13 +74,17 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         self.assertFalse(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem(), 4))
         self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3})
 
-        # removing non-existing
+        # indicate no transform required
         self.assertTrue(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem(28357), -1))
-        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3})
+        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3, 'EPSG:28357': -1})
+
+        # removing non-existing
+        context.removeSourceDatumTransform(QgsCoordinateReferenceSystem(28354))
+        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 3, 'EPSG:28357': -1})
 
         # remove existing
-        self.assertTrue(context.addDestinationDatumTransform(QgsCoordinateReferenceSystem(28356), -1))
-        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1})
+        context.removeDestinationDatumTransform(QgsCoordinateReferenceSystem(28356))
+        self.assertEqual(context.destinationDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28357': -1})
 
         context.clear()
         self.assertEqual(context.destinationDatumTransforms(), {})
@@ -114,33 +122,51 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
                                                                       ('EPSG:28356', 'EPSG:4283'): (3, 4),
                                                                       ('EPSG:28356', 'EPSG:28357'): (9, 11)})
 
-        # removing non-existing
+        # indicate no transform required
         self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(28357),
                                                                    QgsCoordinateReferenceSystem(28356), -1, -1))
         self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (1, 2),
                                                                       ('EPSG:28356', 'EPSG:4283'): (3, 4),
-                                                                      ('EPSG:28356', 'EPSG:28357'): (9, 11)})
+                                                                      ('EPSG:28356', 'EPSG:28357'): (9, 11),
+                                                                      ('EPSG:28357', 'EPSG:28356'): (-1, -1)})
         self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(3111),
-                                                                   QgsCoordinateReferenceSystem(28356), -1, -1))
+                                                                   QgsCoordinateReferenceSystem(28356), 17, -1))
         self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (1, 2),
                                                                       ('EPSG:28356', 'EPSG:4283'): (3, 4),
-                                                                      ('EPSG:28356', 'EPSG:28357'): (9, 11)})
+                                                                      ('EPSG:28356', 'EPSG:28357'): (9, 11),
+                                                                      ('EPSG:28357', 'EPSG:28356'): (-1, -1),
+                                                                      ('EPSG:3111', 'EPSG:28356'): (17, -1)})
+        self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(3113),
+                                                                   QgsCoordinateReferenceSystem(28356), -1, 18))
+        self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (1, 2),
+                                                                      ('EPSG:28356', 'EPSG:4283'): (3, 4),
+                                                                      ('EPSG:28356', 'EPSG:28357'): (9, 11),
+                                                                      ('EPSG:28357', 'EPSG:28356'): (-1, -1),
+                                                                      ('EPSG:3111', 'EPSG:28356'): (17, -1),
+                                                                      ('EPSG:3113', 'EPSG:28356'): (-1, 18)})
+        # remove non-existing
+        context.removeSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(3113), QgsCoordinateReferenceSystem(3111))
+        self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (1, 2),
+                                                                      ('EPSG:28356', 'EPSG:4283'): (3, 4),
+                                                                      ('EPSG:28356', 'EPSG:28357'): (9, 11),
+                                                                      ('EPSG:28357', 'EPSG:28356'): (-1, -1),
+                                                                      ('EPSG:3111', 'EPSG:28356'): (17, -1),
+                                                                      ('EPSG:3113', 'EPSG:28356'): (-1, 18)})
 
         # remove existing
-        self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(3111),
-                                                                   QgsCoordinateReferenceSystem(4283), -1, 3))
-        self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (-1, 3),
-                                                                      ('EPSG:28356', 'EPSG:4283'): (3, 4),
-                                                                      ('EPSG:28356', 'EPSG:28357'): (9, 11)})
-        self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(28356),
-                                                                   QgsCoordinateReferenceSystem(28357), 1, -1))
-        self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (-1, 3),
-                                                                      ('EPSG:28356', 'EPSG:4283'): (3, 4),
-                                                                      ('EPSG:28356', 'EPSG:28357'): (1, -1)})
-        self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(28356),
-                                                                   QgsCoordinateReferenceSystem(28357), -1, -1))
-        self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (-1, 3),
-                                                                      ('EPSG:28356', 'EPSG:4283'): (3, 4)})
+        context.removeSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(3111),
+                                                      QgsCoordinateReferenceSystem(4283))
+        self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:28356', 'EPSG:4283'): (3, 4),
+                                                                      ('EPSG:28356', 'EPSG:28357'): (9, 11),
+                                                                      ('EPSG:28357', 'EPSG:28356'): (-1, -1),
+                                                                      ('EPSG:3111', 'EPSG:28356'): (17, -1),
+                                                                      ('EPSG:3113', 'EPSG:28356'): (-1, 18)})
+        context.removeSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(3111),
+                                                      QgsCoordinateReferenceSystem(28356))
+        self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:28356', 'EPSG:4283'): (3, 4),
+                                                                      ('EPSG:28356', 'EPSG:28357'): (9, 11),
+                                                                      ('EPSG:28357', 'EPSG:28356'): (-1, -1),
+                                                                      ('EPSG:3113', 'EPSG:28356'): (-1, 18)})
 
         context.clear()
         self.assertEqual(context.sourceDestinationDatumTransforms(), {})

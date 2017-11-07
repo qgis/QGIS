@@ -66,6 +66,9 @@ class QgsCoordinateTransformContext
  Returns the stored mapping for source CRS to associated datum transform to use.
  The map keys will be QgsCoordinateReferenceSystems.authid()s.
 
+ A datum transform of -1 indicates that no datum transform is required for the
+ source CRS.
+
  \warning This method should not be used to calculate the corresponding datum transforms
  to use for a coordinate transform. Instead, always use calculateDatumTransforms()
  to determine this.
@@ -80,7 +83,8 @@ class QgsCoordinateTransformContext
  Adds a new ``transform`` to use when projecting coordinates from the specified source
  ``crs``.
 
- If ``transform`` is -1, then any existing source transform for the ``crs`` will be removed.
+ A datum ``transform`` of -1 indicates that no datum transform is required for the
+ source CRS.
 
  Returns true if the new transform was added successfully.
 
@@ -89,13 +93,24 @@ class QgsCoordinateTransformContext
 
 .. seealso:: sourceDatumTransforms()
 .. seealso:: addDestinationDatumTransform()
+.. seealso:: removeSourceDatumTransform()
  :rtype: bool
+%End
+
+    void removeSourceDatumTransform( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+ Removes the source datum transform for the specified ``crs``.
+.. seealso:: addSourceDatumTransform()
+.. seealso:: removeDestinationDatumTransform()
 %End
 
     QMap< QString, int > destinationDatumTransforms() const;
 %Docstring
  Returns the stored mapping for destination CRS to associated datum transform to use.
  The map keys will be QgsCoordinateReferenceSystems.authid()s.
+
+ A datum transform of -1 indicates that no datum transform is required for the
+ destination CRS.
 
  \warning This method should not be used to calculate the corresponding datum transforms
  to use for a coordinate transform. Instead, always use calculateDatumTransforms()
@@ -111,7 +126,8 @@ class QgsCoordinateTransformContext
  Adds a new ``transform`` to use when projecting coordinates to the specified destination
  ``crs``.
 
- If ``transform`` is -1, then any existing destination transform for the ``crs`` will be removed.
+ A datum ``transform`` of -1 indicates that no datum transform is required for the
+ destination CRS.
 
  Returns true if the new transform was added successfully.
 
@@ -120,13 +136,24 @@ class QgsCoordinateTransformContext
 
 .. seealso:: destinationDatumTransforms()
 .. seealso:: addSourceDatumTransform()
+.. seealso:: removeDestinationDatumTransform()
  :rtype: bool
+%End
+
+    void removeDestinationDatumTransform( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+ Removes the destination datum transform for the specified ``crs``.
+.. seealso:: addDestinationDatumTransform()
+.. seealso:: removeSourceDatumTransform()
 %End
 
     QMap< QPair< QString, QString>, QPair< int, int > > sourceDestinationDatumTransforms() const;
 %Docstring
  Returns the stored mapping for source to destination CRS pairs to associated datum transforms to use.
  The map keys will be QgsCoordinateReferenceSystems.authid()s.
+
+ If either the source transform or destination transform is -1, then no datum transform is
+ required for transformations for that source or destination.
 
  \warning This method should not be used to calculate the corresponding datum transforms
  to use for a coordinate transform. Instead, always use calculateDatumTransforms()
@@ -144,8 +171,8 @@ class QgsCoordinateTransformContext
  Adds a new ``sourceTransform`` and ``destinationTransform`` to use when projecting coordinates
  from the the specified ``sourceCrs`` to the specified ``destinationCrs``.
 
- If either ``sourceTransform`` or ``destinationTransform`` is -1, then any existing source to destination
- transform for the crs pair will be removed.
+ If either ``sourceTransform`` or ``destinationTransform`` is -1, then no datum transform is
+ required for transformations for that source or destination.
 
  Returns true if the new transform pair was added successfully.
 
@@ -155,7 +182,16 @@ class QgsCoordinateTransformContext
  transforms set by addSourceDatumTransform() or addDestinationDatumTransform().
 
 .. seealso:: sourceDestinationDatumTransforms()
+.. seealso:: removeSourceDestinationDatumTransform()
  :rtype: bool
+%End
+
+    void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs );
+%Docstring
+ Removes the source to destination datum transform pair for the specified ``sourceCrs`` and
+ ``destinationCrs``.
+.. seealso:: addSourceDestinationDatumTransform()
 %End
 
     QPair< int, int > calculateDatumTransforms( const QgsCoordinateReferenceSystem &source,

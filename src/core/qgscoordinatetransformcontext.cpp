@@ -58,16 +58,14 @@ bool QgsCoordinateTransformContext::addSourceDatumTransform( const QgsCoordinate
 
   d.detach();
   d->mLock.lockForWrite();
-  if ( transform == -1 )
-  {
-    d->mSourceDatumTransforms.remove( crs.authid() );
-  }
-  else
-  {
-    d->mSourceDatumTransforms.insert( crs.authid(), transform );
-  }
+  d->mSourceDatumTransforms.insert( crs.authid(), transform );
   d->mLock.unlock();
   return true;
+}
+
+void QgsCoordinateTransformContext::removeSourceDatumTransform( const QgsCoordinateReferenceSystem &crs )
+{
+  d->mSourceDatumTransforms.remove( crs.authid() );
 }
 
 QMap<QString, int> QgsCoordinateTransformContext::destinationDatumTransforms() const
@@ -87,16 +85,14 @@ bool QgsCoordinateTransformContext::addDestinationDatumTransform( const QgsCoord
   d.detach();
 
   d->mLock.lockForWrite();
-  if ( transform == -1 )
-  {
-    d->mDestDatumTransforms.remove( crs.authid() );
-  }
-  else
-  {
-    d->mDestDatumTransforms.insert( crs.authid(), transform );
-  }
+  d->mDestDatumTransforms.insert( crs.authid(), transform );
   d->mLock.unlock();
   return true;
+}
+
+void QgsCoordinateTransformContext::removeDestinationDatumTransform( const QgsCoordinateReferenceSystem &crs )
+{
+  d->mDestDatumTransforms.remove( crs.authid() );
 }
 
 QMap<QPair<QString, QString>, QPair<int, int> > QgsCoordinateTransformContext::sourceDestinationDatumTransforms() const
@@ -115,16 +111,14 @@ bool QgsCoordinateTransformContext::addSourceDestinationDatumTransform( const Qg
 
   d.detach();
   d->mLock.lockForWrite();
-  if ( sourceTransform == -1 && destinationTransform == -1 )
-  {
-    d->mSourceDestDatumTransforms.remove( qMakePair( sourceCrs.authid(), destinationCrs.authid() ) );
-  }
-  else
-  {
-    d->mSourceDestDatumTransforms.insert( qMakePair( sourceCrs.authid(), destinationCrs.authid() ), qMakePair( sourceTransform, destinationTransform ) );
-  }
+  d->mSourceDestDatumTransforms.insert( qMakePair( sourceCrs.authid(), destinationCrs.authid() ), qMakePair( sourceTransform, destinationTransform ) );
   d->mLock.unlock();
   return true;
+}
+
+void QgsCoordinateTransformContext::removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs )
+{
+  d->mSourceDestDatumTransforms.remove( qMakePair( sourceCrs.authid(), destinationCrs.authid() ) );
 }
 
 QPair<int, int> QgsCoordinateTransformContext::calculateDatumTransforms( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
