@@ -14,6 +14,8 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 import os
+import tempfile
+import shutil
 
 from qgis.PyQt.QtCore import (
     QSize,
@@ -28,7 +30,7 @@ from qgis.core import (
     QgsVectorLayer,
     QgsProject,
     QgsRectangle,
-    QgsMultiRenderChecker
+    QgsRenderChecker
 )
 from qgis.gui import QgsHighlight
 from qgis.testing import start_app, unittest
@@ -44,55 +46,49 @@ class TestQgsHighlight(unittest.TestCase):
     def setUp(self):
         self.iface = get_iface()
 
-        lines_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
-        self.lines_layer = QgsVectorLayer(lines_shp, 'Lines', 'ogr')
-        QgsProject.instance().addMapLayer(self.lines_layer)
-        polys_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
-        self.polys_layer = QgsVectorLayer(polys_shp, 'Polygons', 'ogr')
-        QgsProject.instance().addMapLayer(self.polys_layer)
-
         self.iface.mapCanvas().resize(QSize(400, 400))
-
-        self.iface.mapCanvas().setExtent(QgsRectangle(-113, 28, -91, 40))
-
-        self.mapsettings = self.iface.mapCanvas().mapSettings()
-        self.mapsettings.setOutputSize(QSize(400, 400))
-        self.mapsettings.setOutputDpi(96)
-        self.mapsettings.setExtent(QgsRectangle(-113, 28, -91, 40))
-        self.mapsettings.setBackgroundColor(QColor("white"))
 
     def tearDown(self):
         QgsProject.instance().removeAllMapLayers()
 
-    def testLine(self):
-        line = next(self.lines_layer.getFeatures()).geometry()
-        highlight = QgsHighlight(self.iface.mapCanvas(), line, self.lines_layer)
+    def runTestForLayer(self, layer, testname):
+        tempdir = tempfile.mkdtemp()
+
+        layer = QgsVectorLayer(layer, 'Layer', 'ogr')
+        QgsProject.instance().addMapLayer(layer)
+        self.iface.mapCanvas().setExtent(layer.extent())
+
+        geom = next(layer.getFeatures()).geometry()
+
+        highlight = QgsHighlight(self.iface.mapCanvas(), geom, layer)
         color = QColor(Qt.red)
         highlight.setColor(color)
         color.setAlpha(50)
         highlight.setFillColor(color)
         highlight.show()
+
         image = QImage(QSize(400, 400), QImage.Format_ARGB32)
         painter = QPainter()
         painter.begin(image)
         self.iface.mapCanvas().render(painter)
         painter.end()
+        control_image = os.path.join(tempdir, 'highlight_{}.png'.format(testname))
+        image.save(control_image)
+        checker = QgsRenderChecker()
+        checker.setControlPathPrefix("highlight")
+        checker.setControlName("expected_highlight_{}".format(testname))
+        checker.setRenderedImage(control_image)
+        checker.setSizeTolerance(10, 10)
+        self.assertTrue(checker.compareImages("highlight_{}".format(testname), 10))
+        shutil.rmtree(tempdir)
+
+    def testLine(self):
+        lines_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        self.runTestForLayer(lines_shp, 'lines')
 
     def testPolygon(self):
-        poly = next(self.polys_layer.getFeatures()).geometry()
-        self.iface.mapCanvas().setExtent(self.polys_layer.extent())
-        highlight = QgsHighlight(self.iface.mapCanvas(), poly, self.polys_layer)
-        color = QColor(Qt.red)
-        highlight.setColor(color)
-        color.setAlpha(50)
-        highlight.setFillColor(color)
-        highlight.show()
-        image = QImage(QSize(400, 400), QImage.Format_ARGB32)
-        painter = QPainter()
-        painter.begin(image)
-        self.iface.mapCanvas().render(painter)
-        painter.end()
-
+        polys_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        self.runTestForLayer(polys_shp, 'polygons')
 
 
 if __name__ == '__main__':
