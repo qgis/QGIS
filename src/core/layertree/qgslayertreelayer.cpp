@@ -99,7 +99,6 @@ void QgsLayerTreeLayer::setName( const QString &n )
 
 QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context );
   if ( element.tagName() != QLatin1String( "layer-tree-layer" ) )
     return nullptr;
 
