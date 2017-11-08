@@ -400,8 +400,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! Flag to prevent refreshFeature() to change mFeature
     bool mPreventFeatureRefresh;
 
-    //! Set to true while setting feature to prevent attributeChanged signal
-    bool mIsSettingFeature;
     bool mIsSettingMultiEditFeatures;
 
     QgsFeatureIds mMultiEditFeatureIds;

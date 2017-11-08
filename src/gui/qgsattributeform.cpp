@@ -61,7 +61,6 @@ QgsAttributeForm::QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &featur
   , mFormNr( sFormCounter++ )
   , mIsSaving( false )
   , mPreventFeatureRefresh( false )
-  , mIsSettingFeature( false )
   , mIsSettingMultiEditFeatures( false )
   , mUnsavedMultiEditChanges( false )
   , mEditCommandMessage( tr( "Attributes changed" ) )
@@ -222,7 +221,6 @@ void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &va
 
 void QgsAttributeForm::setFeature( const QgsFeature &feature )
 {
-  mIsSettingFeature = true;
   mFeature = feature;
 
   switch ( mMode )
@@ -247,7 +245,6 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
       break;
     }
   }
-  mIsSettingFeature = false;
 }
 
 bool QgsAttributeForm::saveEdits()
@@ -641,19 +638,20 @@ QString QgsAttributeForm::createFilterExpression() const
 void QgsAttributeForm::onAttributeChanged( const QVariant &value )
 {
   QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( sender() );
-
   Q_ASSERT( eww );
+
+  const QVariant oldValue = mFeature.attribute( eww->fieldIdx() );
+
+  // Safetey check, if we receive the same value again, no reason to do anything
+  if ( oldValue == value && oldValue.isNull() == value.isNull() )
+    return;
 
   switch ( mMode )
   {
     case SingleEditMode:
     case AddFeatureMode:
     {
-      // don't emit signal if it was triggered by a feature change
-      if ( !mIsSettingFeature )
-      {
-        emit attributeChanged( eww->field().name(), value );
-      }
+      emit attributeChanged( eww->field().name(), value );
 
       updateJoinedFields( *eww );
 
@@ -684,7 +682,6 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
 
   updateConstraints( eww );
 
-  // emit
   emit attributeChanged( eww->field().name(), value );
 }
 
