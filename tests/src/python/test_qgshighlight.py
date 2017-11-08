@@ -24,7 +24,8 @@ from qgis.PyQt.QtCore import (
 from qgis.PyQt.QtGui import (
     QColor,
     QImage,
-    QPainter
+    QPainter,
+    QResizeEvent
 )
 from qgis.core import (
     QgsVectorLayer,
@@ -46,7 +47,9 @@ class TestQgsHighlight(unittest.TestCase):
     def setUp(self):
         self.iface = get_iface()
 
-        self.iface.mapCanvas().resize(QSize(400, 400))
+        self.iface.mapCanvas().viewport().resize(400, 400)
+        # For some reason the resizeEvent is not delivered, fake it
+        self.iface.mapCanvas().resizeEvent(QResizeEvent(QSize(400, 400), self.iface.mapCanvas().size()))
 
     def tearDown(self):
         QgsProject.instance().removeAllMapLayers()
@@ -63,11 +66,13 @@ class TestQgsHighlight(unittest.TestCase):
         highlight = QgsHighlight(self.iface.mapCanvas(), geom, layer)
         color = QColor(Qt.red)
         highlight.setColor(color)
+        highlight.setWidth(1)
         color.setAlpha(50)
         highlight.setFillColor(color)
         highlight.show()
 
         image = QImage(QSize(400, 400), QImage.Format_ARGB32)
+        image.fill(Qt.white)
         painter = QPainter()
         painter.begin(image)
         self.iface.mapCanvas().render(painter)
@@ -78,8 +83,7 @@ class TestQgsHighlight(unittest.TestCase):
         checker.setControlPathPrefix("highlight")
         checker.setControlName("expected_highlight_{}".format(testname))
         checker.setRenderedImage(control_image)
-        checker.setSizeTolerance(10, 10)
-        self.assertTrue(checker.compareImages("highlight_{}".format(testname), 10))
+        self.assertTrue(checker.compareImages("highlight_{}".format(testname)))
         shutil.rmtree(tempdir)
 
     def testLine(self):
