@@ -1994,7 +1994,7 @@ border-radius: 2px;</string>
              <height>551</height>
             </rect>
            </property>
-           <layout class="QGridLayout" name="gridLayout">
+           <layout class="QGridLayout" name="gridLayout_2000">
             <item row="1" column="0">
              <widget class="QgsCollapsibleGroupBox" name="mAuxiliaryStorageInformationGrpBox">
               <property name="title">
