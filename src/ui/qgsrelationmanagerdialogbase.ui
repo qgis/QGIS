@@ -45,12 +45,12 @@
      </column>
      <column>
       <property name="text">
-       <string>Referenced Field</string>
+       <string>Referenced Layer</string>
       </property>
      </column>
      <column>
       <property name="text">
-       <string>Referenced Layer</string>
+       <string>Referenced Field</string>
       </property>
      </column>
      <column>

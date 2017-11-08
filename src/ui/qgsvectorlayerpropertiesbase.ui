@@ -333,7 +333,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>8</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -409,8 +409,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>302</width>
-                <height>416</height>
+                <width>662</width>
+                <height>534</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -698,8 +698,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>662</width>
+                <height>534</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -775,32 +775,13 @@ border-radius: 2px;</string>
          <widget class="QWidget" name="mOptsPage_SourceFields">
           <layout class="QVBoxLayout" name="verticalLayout_29">
            <item>
-            <widget class="QScrollArea" name="scrollArea_2">
-             <property name="widgetResizable">
-              <bool>true</bool>
+            <widget class="QFrame" name="mSourceFieldsFrame">
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
              </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_2">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>70</width>
-                <height>22</height>
-               </rect>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_3">
-               <item row="0" column="0">
-                <widget class="QFrame" name="mSourceFieldsFrame">
-                 <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
             </widget>
            </item>
           </layout>
@@ -808,32 +789,13 @@ border-radius: 2px;</string>
          <widget class="QWidget" name="mOptsPage_AttributesForm">
           <layout class="QVBoxLayout" name="verticalLayout">
            <item>
-            <widget class="QScrollArea" name="scrollArea_8">
-             <property name="widgetResizable">
-              <bool>true</bool>
+            <widget class="QFrame" name="mAttributesFormFrame">
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
              </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_8">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>70</width>
-                <height>22</height>
-               </rect>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_11">
-               <item row="0" column="0">
-                <widget class="QFrame" name="mAttributesFormFrame">
-                 <property name="frameShape">
-                  <enum>QFrame::StyledPanel</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Raised</enum>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
             </widget>
            </item>
           </layout>
@@ -1289,8 +1251,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>662</width>
+                <height>534</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1355,8 +1317,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>113</width>
-                <height>110</height>
+                <width>662</width>
+                <height>534</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1635,7 +1597,7 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>371</width>
+                <width>648</width>
                 <height>608</height>
                </rect>
               </property>

@@ -102,24 +102,16 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   {
     const QgsField field = fields.at( i );
     DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Field, field.name() );
-    //should we load here stuff like in im loadAttributeEditorTreeItem other stuff like itemData.setShowLabel( true );?
     itemData.setShowLabel( true );
 
     FieldConfig cfg( mLayer, i );
 
     QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
-    //QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), itemData );
 
     item->setData( 0, FieldConfigRole, cfg );
     item->setData( 0, FieldNameRole, field.name() );
   }
   catitem->setExpanded( true );
-
-  /* stuff
-  itemData.setIcon(i, mLayer->fields().iconForField( i ));
-  itemData.setText(i, QString::number( i+1 ) );
-  itemData.setText(i, fields.at( i ).name() );
-  */
 
   //load Relations
   catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Relations" );
@@ -455,6 +447,9 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       }
     }
     break;
+    default:
+      //should not happen
+      break;
   }
   return newWidget;
 }
@@ -484,6 +479,13 @@ void QgsAttributesFormProperties::onAttributeSelectionChanged()
       loadAttributeTypeDialog();
       break;
     }
+    case DnDTreeItemData::Container:
+    {
+      mAttributeRelationEdit->setVisible( false );
+      mAttributeTypeDialog->setVisible( false );
+      break;
+    }
+
   }
 }
 
@@ -578,16 +580,22 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
     case 0:
       mFormLayoutWidget->setVisible( false );
       mUiFileFrame->setVisible( false );
+      mAddTabOrGroupButton->setVisible( false );
+      mRemoveTabOrGroupButton->setVisible( false );
       break;
 
     case 1:
       mFormLayoutWidget->setVisible( true );
       mUiFileFrame->setVisible( false );
+      mAddTabOrGroupButton->setVisible( true );
+      mRemoveTabOrGroupButton->setVisible( true );
       break;
 
     case 2:
       mFormLayoutWidget->setVisible( false );
       mUiFileFrame->setVisible( true );
+      mAddTabOrGroupButton->setVisible( false );
+      mRemoveTabOrGroupButton->setVisible( false );
       break;
   }
 }

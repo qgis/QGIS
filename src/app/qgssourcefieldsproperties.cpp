@@ -374,7 +374,7 @@ void QgsSourceFieldsProperties::attributesListCellChanged( int row, int column )
     //avoiding that something will be changed, just because this is triggered by simple re-sorting
     if ( !nameItem ||
          nameItem->text().isEmpty() ||
-         !mLayer->fields().exists( row ) ||
+         !mLayer->fields().exists( idx ) ||
          mLayer->fields().at( idx ).name() == nameItem->text()
        )
       return;
