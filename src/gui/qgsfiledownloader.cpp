@@ -114,6 +114,8 @@ void QgsFileDownloader::error( QStringList errorMessages )
   {
     QMessageBox::warning( nullptr, tr( "Download failed" ), mErrors.join( "<br>" ) );
   }
+  if ( mReply )
+    mReply->abort();
   emit downloadError( mErrors );
 }
 
