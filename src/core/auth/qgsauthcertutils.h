@@ -108,10 +108,9 @@ class CORE_EXPORT QgsAuthCertUtils
     /**
      * Return data from a local file via a read-only operation
      * \param path Path to file to read
-     * \param astext Whether to open the file as text, otherwise as binary
      * \returns All data contained in file or empty contents if file does not exist
      */
-    static QByteArray fileData( const QString &path, bool astext = false );
+    static QByteArray fileData( const QString &path );
 
     //! Return list of concatenated certs from a PEM or DER formatted file
     static QList<QSslCertificate> certsFromFile( const QString &certspath );
