@@ -1,8 +1,8 @@
 r.in.lidar
 r.in.lidar.info - Extract information from LAS file
 Raster (r.*)
-ParameterFile|input|LAS input file|False|False
+QgsProcessingParameterFile|input|LAS input file|0|txt|None|False
 Hardcoded|-p
 Hardcoded|-g
 Hardcoded|-s
-OutputHTML|html|LAS information
+QgsProcessingParameterFileDestination|html|LAS information|Html files (*.html)|report.html|False

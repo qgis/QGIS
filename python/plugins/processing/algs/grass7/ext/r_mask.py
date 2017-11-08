@@ -26,24 +26,14 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def processCommand(alg, parameters):
-    # Remove output and input
-    clipped = alg.getParameterFromName('input')
-    out = alg.getOutputFromName('output')
-    alg.exportedLayers[out.value] = alg.exportedLayers[clipped.value]
-    alg.removeOutputFromName('output')
-    alg.parameters.remove(clipped)
-
-    alg.processCommand()
-
-    # Re-add the output !
-    alg.addOutput(out)
+def processCommand(alg, parameters, context):
+    # Remove input
+    alg.removeParameter('input')
+    alg.processCommand(parameters, context, True)
 
 
-def processOutputs(alg):
-    out = alg.getOutputValue('output')
-    inputRaster = alg.exportedLayers[out]
-    command = u"r.out.gdal --overwrite -c createopt=\"TFW=YES,COMPRESS=LZW\" input={} output=\"{}\"".format(
-        inputRaster, out)
-    alg.commands.append(command)
-    alg.outputCommands.append(command)
+def processOutputs(alg, parameters, context):
+    # We need to add the initial input raster layer to output
+    fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
+    grassName = '{}{}'.format('input', alg.uniqueSuffix)
+    alg.exportRasterLayer(grassName, fileNam)

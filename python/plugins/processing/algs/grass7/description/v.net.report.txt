@@ -1,7 +1,6 @@
 v.net
 v.net.report - Reports lines information of a network
 Vector (v.*)
-ParameterVector|input|Input vector line layer (arcs)|1|False
+QgsProcessingParameterVectorLayer|input|Input vector line layer (arcs)|1|None|False
 Hardcoded|operation=report
-OutputFile|output|Report
-
+QgsProcessingParameterFileDestination|output|Report|Txt files (*.txt)|None|False

@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    i_aster_toar.py
-    ---------------
-    Date                 : March 2016
-    Copyright            : (C) 2016 by Médéric Ribreux
+    r_horizon.py
+    ------------
+    Date                 : September 2017
+    Copyright            : (C) 2017 by Médéric Ribreux
     Email                : medspx at medspx dot fr
 ***************************************************************************
 *                                                                         *
@@ -18,35 +18,24 @@
 """
 
 __author__ = 'Médéric Ribreux'
-__date__ = 'March 2016'
-__copyright__ = '(C) 2016, Médéric Ribreux'
+__date__ = 'September 2017'
+__copyright__ = '(C) 2017, Médéric Ribreux'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
 __revision__ = '$Format:%H$'
-
-from .i import multipleOutputDir
-from processing.core.parameters import getParameterFromString
+import os
 
 
-def processCommand(alg, parameters):
-    # Remove output
-    output = alg.getOutputFromName('output')
-    alg.removeOutputFromName('output')
-
-    # Create output parameter
-    param = getParameterFromString("ParameterString|output|output basename|None|False|False")
-    param.value = alg.getTempFilename()
-    alg.addParameter(param)
-
-    alg.processCommand()
-    # re-add output
-    alg.addOutput(output)
-
-
-def processOutputs(alg):
-    param = alg.getParameterFromName('output')
-    multipleOutputDir(alg, 'output', param.value)
-
-    # Delete output parameter
-    alg.parameters.remove(param)
+def processOutputs(alg, parameters, context):
+    # There will be as outputs as the difference between start and end divided by steps
+    start = alg.parameterAsDouble(parameters, 'start', context)
+    end = alg.parameterAsDouble(parameters, 'end', context)
+    step = alg.parameterAsDouble(parameters, 'step', context)
+    num = start + step
+    directory = alg.parameterAsString(parameters, 'output', context)
+    while num < end:
+        grassName = '{}_{}'.format(alg.exportedLayers['output'], int(num))
+        fileName = '{}.tif'.format(os.path.join(directory, '{0:0>3}'.format(int(num))))
+        alg.exportRasterLayer(grassName, fileName)
+        num += step

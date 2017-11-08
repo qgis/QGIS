@@ -1,7 +1,6 @@
 v.delaunay
 Creates a Delaunay triangulation from an input vector map containing points or centroids.
 Vector (v.*)
-ParameterVector|input|Input vector layer|0|False
-ParameterBoolean|-r|Use only points in current region|True
-OutputVector|output|Delaunay triangulation
-
+QgsProcessingParameterVectorLayer|input|Input vector layer|0|None|False
+QgsProcessingParameterBoolean|-r|Use only points in current region|True
+QgsProcessingParameterVectorDestination|output|Delaunay triangulation

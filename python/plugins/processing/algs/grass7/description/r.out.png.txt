@@ -1,0 +1,8 @@
+r.out.png
+Export a GRASS raster map as a non-georeferenced PNG image
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster|None|False
+QgsProcessingParameterNumber|compression|Compression level of PNG file (0 = none, 1 = fastest, 9 = best)|QgsProcessingParameterNumber.Integer|6|True|0|9
+*QgsProcessingParameterBoolean|-t|Make NULL cells transparent|False|True
+*QgsProcessingParameterBoolean|-w|Output world file|False|True
+QgsProcessingParameterFileDestination|output|PNG File|PNG files (*.png)|None|False

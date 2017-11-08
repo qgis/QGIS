@@ -25,41 +25,14 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-# Damn layer naming, I am forced to make a dict to handle this !
-methodRef = {'asm': 'ASM', 'contrast': 'Contr', 'corr': 'Corr',
-             'var': 'Var', 'idm': 'IDM', 'sa': 'SA', 'se': 'SE',
-             'sv': 'SV', 'entr': 'Entr', 'dv': 'DV', 'de': 'DE',
-             'moc1': 'MOC-2', 'moc2': 'MOC-2'}
+methodRef = ['asm', 'contrast', 'corr', 'var', 'idm',
+             'sa', 'se', 'sv', 'entr', 'dv', 'de',
+             'moc1', 'moc2']
 
 
-def checkParameterValuesBeforeExecuting(alg):
-    methodList = alg.getParameterValue('method').split(",")
-    if len([f for f in methodList if f not in list(methodRef.keys())]) > 0 and not alg.getParameterValue('-a'):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
+    methodList = alg.parameterAsString(parameters, 'method', context).split(",")
+    if len([f for f in methodList if f not in methodRef]) > 0 and not alg.getParameterValue('-a'):
         return alg.tr("You need to set the method list with the following values only: asm, contrast, corr, var, idm, sa, se, sv, entr, dv, de, moc1, moc2!")
 
     return None
-
-
-def processOutputs(alg):
-    # The name of the output depends on the method
-    if alg.getParameterValue('-a'):
-        methodList = list(methodRef.keys())
-    else:
-        methodList = alg.getParameterValue('method').split(",")
-
-    # handle -s option
-    if alg.getParameterValue('-s'):
-        angles = ['_0', '_45', '_90', '_135']
-    else:
-        angles = ['']
-
-    ext = alg.provider().getSupportedOutputRasterLayerExtensions()[0]
-    for method in methodList:
-        out = alg.getOutputValue(u'output')
-        for angle in angles:
-            inputRaster = "{}_{}{}".format(alg.exportedLayers[out], methodRef[method], angle)
-            outputFile = "{}/{}.{}".format(out, inputRaster, ext)
-            command = u"r.out.gdal --overwrite -c createopt=\"TFW=YES,COMPRESS=LZW\" input={} output=\"{}\"".format(
-                inputRaster, outputFile)
-            alg.commands.append(command)
-            alg.outputCommands.append(command)

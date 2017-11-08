@@ -1,9 +1,9 @@
 r.contour
 r.contour.step - Create vector contours from raster at specified steps
 Raster (r.*)
-ParameterRaster|input|Input raster|False
-ParameterString|minlevel|Minimum contour level|0
-ParameterString|maxlevel|Maximum contour level|10000
-ParameterString|step|Increment between contour levels|100
-ParameterString|cut|Minimum number of points for a contour line (0 -> no limit)|0
-OutputVector|output|Contours
+QgsProcessingParameterRasterLayer|input|Input raster|None|False
+QgsProcessingParameterNumber|minlevel|Minimum contour level|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterNumber|maxlevel|Maximum contour level|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterNumber|step|Increment between contour levels|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterNumber|cut|Minimum number of points for a contour line (0 -> no limit)|QgsProcessingParameterNumber.Integer|0|True|0|None
+QgsProcessingParameterVectorDestination|output|Contours

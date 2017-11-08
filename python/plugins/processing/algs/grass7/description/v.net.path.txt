@@ -1,16 +1,15 @@
 v.net.path
 Finds shortest path on vector network
 Vector (v.*)
-ParameterVector|input|Input vector line layer (arcs)|1|False
-ParameterVector|points|Centers point layer (nodes)|0|False
-ParameterFile|file|Name of file containing start and end points|False|False
-ParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|0.0|None|50.0|False
-*ParameterSelection|type|Arc type|line;boundary;line,boundary|2
-*ParameterTableField|arc_column|Arc forward/both direction(s) cost column (number)|input|0|True
-*ParameterTableField|arc_backward_column|Arc backward direction cost column (number)|input|0|True
-*ParameterTableField|node_column|Node cost column (number)|points|0|True
-*ParameterNumber|dmax|Maximum distance to the network|None|None|1000.0|True
-*ParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
-*ParameterBoolean|-s|Write output as original input segments, not each path as one line|False|True
-OutputVector|output|Network_Path
-
+QgsProcessingParameterVectorLayer|input|Input vector line layer (arcs)|1|None|False
+QgsProcessingParameterVectorLayer|points|Centers point layer (nodes)|0|None|False
+QgsProcessingParameterFile|file|Name of file containing start and end points|0|txt|None|False
+QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|QgsProcessingParameterNumber.Double|50.0|False|0.0|None
+*QgsProcessingParameterEnum|type|Arc type|line;boundary;line,boundary|False|2
+*QgsProcessingParameterField|arc_column|Arc forward/both direction(s) cost column (number)|None|input|0|False|True
+*QgsProcessingParameterField|arc_backward_column|Arc backward direction cost column (number)|None|input|0|False|True
+*QgsProcessingParameterField|node_column|Node cost column (number)|None|points|0|False|True
+*QgsProcessingParameterNumber|dmax|Maximum distance to the network|QgsProcessingParameterNumber.Double|1000.0|True|0.0|None
+*QgsProcessingParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
+*QgsProcessingParameterBoolean|-s|Write output as original input segments, not each path as one line|False|True
+QgsProcessingParameterVectorDestination|output|Network_Path

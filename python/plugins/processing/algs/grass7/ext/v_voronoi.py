@@ -2,8 +2,8 @@
 
 """
 ***************************************************************************
-    r_tile.py
-    ---------
+    v_voronoi.py
+    ------------
     Date                 : February 2016
     Copyright            : (C) 2016 by Médéric Ribreux
     Email                : medspx at medspx dot fr
@@ -26,21 +26,21 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def processCommand(alg, parameters):
-    # Remove output for command
-    output_dir = alg.getOutputFromName('output_dir')
-    alg.removeOutputFromName('output_dir')
-    alg.processCommand()
-    alg.addOutput(output_dir)
+def processInputs(alg, parameters, context):
+    if 'input' in alg.exportedLayers:
+        return
+
+    # We need to use v.in.ogr instead of v.external
+    alg.loadVectorLayerFromParameter('input', parameters, context, False)
+    alg.processInputs(parameters, context)
 
 
-def processOutputs(alg):
-    # All the named rasters should be extracted to output_dir
-    basename = alg.getParameterValue('output')
-    output_dir = alg.getOutputValue('output_dir')
+def processOutputs(alg, parameters, context):
+    fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
+    grassName = '{}{}'.format('output', alg.uniqueSuffix)
+    dataType = 'auto'
+    # if we export a graph, output type will be a line
+    if alg.parameterAsBool(parameters, '-l', context):
+        dataType = 'line'
 
-    # Get the list of rasters matching the basename
-    commands = ["for r in $(g.list type=rast pattern='{}*'); do".format(basename)]
-    commands.append("  r.out.gdal -t input=${{r}} output={}/${{r}}.tif createopt=\"TFW=YES,COMPRESS=LZW\"".format(output_dir))
-    commands.append("done")
-    alg.commands.extend(commands)
+    alg.exportVectorLayer(grassName, fileName, dataType)

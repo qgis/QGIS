@@ -1,12 +1,12 @@
 v.transform
 Performs an affine transformation on a vector layer.
 Vector (v.*)
-ParameterVector|input|Input vector layer|-1|False
-ParameterNumber|xshift|X shift|None|None|0.0
-ParameterNumber|yshift|Y shift|None|None|0.0
-ParameterNumber|zshift|Z shift|None|None|0.0
-ParameterNumber|xscale|X scale|None|None|1.0
-ParameterNumber|yscale|Y scale|None|None|1.0
-ParameterNumber|zscale|Z scale|None|None|1.0
-ParameterNumber|zrotation|Rotation around z axis in degrees counterclockwise|None|None|0.0
-OutputVector|output|Transformed
+QgsProcessingParameterVectorLayer|input|Input vector layer|-1|None|False
+QgsProcessingParameterNumber|xshift|X shift|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterNumber|yshift|Y shift|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterNumber|zshift|Z shift|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterNumber|xscale|X scale|QgsProcessingParameterNumber.Double|1.0|False|None|None
+QgsProcessingParameterNumber|yscale|Y scale|QgsProcessingParameterNumber.Double|1.0|False|None|None
+QgsProcessingParameterNumber|zscale|Z scale|QgsProcessingParameterNumber.Double|1.0|False|None|None
+QgsProcessingParameterNumber|zrotation|Rotation around z axis in degrees counterclockwise|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterVectorDestination|output|Transformed
