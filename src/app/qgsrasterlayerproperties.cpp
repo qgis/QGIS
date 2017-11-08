@@ -1488,9 +1488,9 @@ void QgsRasterLayerProperties::optionsStackedWidget_CurrentChanged( int index )
   if ( !mHistogramWidget )
     return;
 
-  if ( index == 5 )
+  if ( index == mOptStackedWidget->indexOf( mOptsPage_Histogram ) )
   {
-    mHistogramWidget->setActive( false );
+    mHistogramWidget->setActive( true );
   }
   else
   {
