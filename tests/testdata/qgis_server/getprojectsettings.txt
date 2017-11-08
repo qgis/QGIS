@@ -114,8 +114,8 @@ Content-Type: text/xml; charset=utf-8
    <WFSLayer name="testlayer èé"/>
   </WFSLayers>
   <Layer>
-   <Name>QGIS Test Project</Name>
    <Title>QGIS Test Project</Title>
+   <Abstract>QGIS Test Project</Abstract>
    <CRS>CRS:84</CRS>
    <CRS>EPSG:4326</CRS>
    <CRS>EPSG:3857</CRS>
