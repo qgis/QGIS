@@ -88,7 +88,7 @@ LONG WINAPI QgsCrashHandler::handle( LPEXCEPTION_POINTERS exception )
     stream << QString::number( processID ) << endl;
     stream << QString::number( threadID ) << endl;
     stream << ptrStr << endl;
-    stream << '"' + symbolPath + '"' << endl;
+    stream << symbolPath << endl;
     stream << arguments.join( " " ) << endl;
     stream << reportData.join( "\n" ) << endl;
   }
