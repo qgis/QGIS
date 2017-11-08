@@ -113,6 +113,8 @@ void QgsFileDownloader::error( const QStringList &errorMessages )
   {
     mErrors << errorMessages[i];
   }
+  if ( mReply )
+    mReply->abort();
   emit downloadError( mErrors );
 }
 
