@@ -142,6 +142,7 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
   setRow( row, idx, fields.at( idx ) );
   mFieldsList->setCurrentCell( row, idx );
 
+  //in case there are rows following, there is increased the id to the correct ones
   for ( int i = idx + 1; i < mIndexedWidgets.count(); i++ )
     mIndexedWidgets.at( i )->setData( Qt::DisplayRole, i );
 
@@ -154,15 +155,15 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
     {
       case QgsFields::OriginExpression:
         if ( i == 7 ) continue;
-        mFieldsList->item( idx, i )->setBackgroundColor( QColor( 200, 200, 255 ) );
+        mFieldsList->item( row, i )->setBackgroundColor( QColor( 200, 200, 255 ) );
         break;
 
       case QgsFields::OriginJoin:
-        mFieldsList->item( idx, i )->setBackgroundColor( QColor( 200, 255, 200 ) );
+        mFieldsList->item( row, i )->setBackgroundColor( QColor( 200, 255, 200 ) );
         break;
 
       default:
-        mFieldsList->item( idx, i )->setBackgroundColor( QColor( 255, 255, 200 ) );
+        mFieldsList->item( row, i )->setBackgroundColor( QColor( 255, 255, 200 ) );
         break;
     }
   }
@@ -367,16 +368,19 @@ void QgsSourceFieldsProperties::attributesListCellChanged( int row, int column )
 {
   if ( column == AttrNameCol && mLayer && mLayer->isEditable() )
   {
+    int idx = mIndexedWidgets.indexOf( mFieldsList->item( row, AttrIdCol ) );
+
     QTableWidgetItem *nameItem = mFieldsList->item( row, column );
+    //avoiding that something will be changed, just because this is triggered by simple re-sorting
     if ( !nameItem ||
          nameItem->text().isEmpty() ||
          !mLayer->fields().exists( row ) ||
-         mLayer->fields().at( mFieldsList->item( row, AttrIdCol )->text().toInt() ).name() == nameItem->text()
+         mLayer->fields().at( idx ).name() == nameItem->text()
        )
       return;
 
     mLayer->beginEditCommand( tr( "Rename attribute" ) );
-    if ( mLayer->renameAttribute( row,  nameItem->text() ) )
+    if ( mLayer->renameAttribute( idx,  nameItem->text() ) )
     {
       mLayer->endEditCommand();
     }
