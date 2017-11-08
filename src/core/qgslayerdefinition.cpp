@@ -45,10 +45,10 @@ bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsLayerTreeG
   QFileInfo fileinfo( file );
   QDir::setCurrent( fileinfo.absoluteDir().path() );
 
-  return loadLayerDefinition( doc, rootGroup, errorMessage );
+  return loadLayerDefinition( doc, rootGroup, errorMessage, fileinfo.canonicalFilePath() );
 }
 
-bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGroup *rootGroup, QString &errorMessage )
+bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGroup *rootGroup, QString &errorMessage, const QString& relativeBasePath )
 {
   Q_UNUSED( errorMessage );
 
@@ -121,7 +121,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
     loadInLegend = false;
   }
 
-  QList<QgsMapLayer*> layers = QgsMapLayer::fromLayerDefinition( doc, /*addToRegistry*/ true, loadInLegend );
+  QList<QgsMapLayer*> layers = QgsMapLayer::fromLayerDefinition( doc, /*addToRegistry*/ true, loadInLegend, relativeBasePath );
 
   // Now that all layers are loaded, refresh the vectorjoins to get the joined fields
   Q_FOREACH ( QgsMapLayer* layer, layers )
