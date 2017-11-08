@@ -776,15 +776,17 @@ void QgsFieldsProperties::attributesListCellChanged( int row, int column )
   }
   else if ( column == attrNameCol && mLayer && mLayer->isEditable() )
   {
+    int idx = mIndexedWidgets.indexOf( mFieldsList->item( row, attrIdCol ) );
+
     QTableWidgetItem *nameItem = mFieldsList->item( row, column );
     if ( !nameItem ||
          nameItem->text().isEmpty() ||
-         !mLayer->fields().exists( row ) ||
-         mLayer->fields().at( row ).name() == nameItem->text() )
+         !mLayer->fields().exists( idx ) ||
+         mLayer->fields().at( idx ).name() == nameItem->text() )
       return;
 
     mLayer->beginEditCommand( tr( "Rename attribute" ) );
-    if ( mLayer->renameAttribute( row,  nameItem->text() ) )
+    if ( mLayer->renameAttribute( idx,  nameItem->text() ) )
     {
       mLayer->endEditCommand();
     }
