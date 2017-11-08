@@ -20,6 +20,7 @@
 
 
 QgsPoint3DSymbol::QgsPoint3DSymbol()
+  : mAltClamping( AltClampRelative )
 {
 }
 
@@ -31,6 +32,10 @@ QgsAbstract3DSymbol *QgsPoint3DSymbol::clone() const
 void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   QDomDocument doc = elem.ownerDocument();
+
+  QDomElement elemDataProperties = doc.createElement( QStringLiteral( "data" ) );
+  elemDataProperties.setAttribute( QStringLiteral( "alt-clamping" ), Qgs3DUtils::altClampingToString( mAltClamping ) );
+  elem.appendChild( elemDataProperties );
 
   QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
   mMaterial.writeXml( elemMaterial );
@@ -52,6 +57,9 @@ void QgsPoint3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &c
 
 void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
+  QDomElement elemDataProperties = elem.firstChildElement( QStringLiteral( "data" ) );
+  mAltClamping = Qgs3DUtils::altClampingFromString( elemDataProperties.attribute( QStringLiteral( "alt-clamping" ) ) );
+
   QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
   mMaterial.readXml( elemMaterial );
 

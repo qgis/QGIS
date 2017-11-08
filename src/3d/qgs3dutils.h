@@ -77,7 +77,7 @@ class _3D_EXPORT Qgs3DUtils
     /**
      * Calculates (x,y,z) position of point in the Point vector layers
      */
-    static QList<QVector3D> positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req );
+    static QList<QVector3D> positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, AltitudeClamping altClamp );
 
     /**
         Returns true if bbox is completely outside the current viewing volume.
