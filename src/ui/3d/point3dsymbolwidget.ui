@@ -151,24 +151,50 @@
      </item>
     </layout>
    </item>
-   <item row="8" column="0" colspan="2">
-    <widget class="QgsPhongMaterialWidget" name="widgetMaterial" native="true"/>
+   <item row="8" column="0">
+    <widget class="QLabel" name="labelAltClamping">
+     <property name="text">
+      <string>Altitude Clamping</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QComboBox" name="cboAltClamping">
+     <item>
+      <property name="text">
+       <string>Absolute</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Relative</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Terrain</string>
+      </property>
+     </item>
+    </widget>
    </item>
    <item row="9" column="0" colspan="2">
+    <widget class="QgsPhongMaterialWidget" name="widgetMaterial" native="true"/>
+   </item>
+   <item row="10" column="0" colspan="2">
     <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="10" column="0" colspan="2">
+   <item row="11" column="0" colspan="2">
     <widget class="Line" name="line_2">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="11" column="0" colspan="2">
+   <item row="12" column="0" colspan="2">
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="1">
       <widget class="QLabel" name="label_5">

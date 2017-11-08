@@ -161,7 +161,7 @@ QMatrix4x4 Qgs3DUtils::stringToMatrix4x4( const QString &str )
   return m;
 }
 
-QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &request )
+QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &request, AltitudeClamping altClamp )
 {
   QList<QVector3D> positions;
   QgsFeature f;
@@ -174,8 +174,25 @@ QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLa
     const QgsAbstractGeometry *g = f.geometry().constGet();
     if ( const QgsPoint *pt = qgsgeometry_cast< const QgsPoint *>( g ) )
     {
-      // TODO: use Z coordinates if the point is 3D
-      float h = map.terrainGenerator()->heightAt( pt->x(), pt->y(), map ) * map.terrainVerticalScale();
+      float geomZ = 0;
+      if ( pt->is3D() )
+      {
+        geomZ = pt->z();
+      }
+      float terrainZ = map.terrainGenerator()->heightAt( pt->x(), pt->y(), map ) * map.terrainVerticalScale();
+      float h;
+      switch ( altClamp )
+      {
+        case AltClampAbsolute:
+          h = geomZ;
+          break;
+        case AltClampTerrain:
+          h = terrainZ;
+          break;
+        case AltClampRelative:
+          h = terrainZ + geomZ;
+          break;
+      }
       positions.append( QVector3D( pt->x() - map.originX(), h, -( pt->y() - map.originY() ) ) );
       //qDebug() << positions.last();
     }
