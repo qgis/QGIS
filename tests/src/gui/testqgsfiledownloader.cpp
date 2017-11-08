@@ -17,6 +17,7 @@
 #include "qgstest.h"
 #include <QObject>
 #include <QTemporaryFile>
+#include <QTemporaryDir>
 #include <QUrl>
 #include <QEventLoop>
 #include <QTimer>
@@ -73,6 +74,7 @@ class TestQgsFileDownloader: public QObject
     void testCanceledDownload();
     void testInvalidUrl();
     void testBlankUrl();
+    void testLacksWritePermissionsError();
 #ifndef QT_NO_SSL
     void testSslError_data();
     void testSslError();
@@ -235,6 +237,22 @@ void TestQgsFileDownloader::testSslError()
   QVERIFY( mError );
   QVERIFY( !mCanceled );
 }
+
+void TestQgsFileDownloader::testLacksWritePermissionsError()
+{
+  QTemporaryDir dir;
+  QFile tmpDir( dir.path( ) );
+  tmpDir.setPermissions( tmpDir.permissions() & !( QFile::Permission::WriteGroup |  QFile::Permission::WriteUser | QFile::Permission::WriteOther | QFile::Permission::WriteOwner ) );
+  QVERIFY( ! tmpDir.isWritable() );
+  QString fileName( dir.path() + '/' + QStringLiteral( "tmp.bin" ) );
+  makeCall( QUrl( QStringLiteral( "http://www.qgis.org" ) ), fileName );
+  QVERIFY( mExited );
+  QVERIFY( !mCompleted );
+  QVERIFY( mError );
+  QVERIFY( !mCanceled );
+  QVERIFY( ! QFileInfo( fileName ).exists( ) );
+}
+
 
 #endif
 
