@@ -49,18 +49,6 @@
 QgsHighlight::QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsMapLayer *layer )
   : QgsMapCanvasItem( mapCanvas )
   , mLayer( layer )
-  , mBuffer( 0 )
-  , mMinWidth( 0 )
-{
-  mGeometry = !geom.isNull() ? new QgsGeometry( geom ) : nullptr;
-  init();
-}
-
-QgsHighlight::QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsVectorLayer *layer )
-  : QgsMapCanvasItem( mapCanvas )
-  , mLayer( static_cast<QgsMapLayer *>( layer ) )
-  , mBuffer( 0 )
-  , mMinWidth( 0 )
 {
   mGeometry = !geom.isNull() ? new QgsGeometry( geom ) : nullptr;
   init();
@@ -68,10 +56,8 @@ QgsHighlight::QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, Qg
 
 QgsHighlight::QgsHighlight( QgsMapCanvas *mapCanvas, const QgsFeature &feature, QgsVectorLayer *layer )
   : QgsMapCanvasItem( mapCanvas )
-  , mLayer( static_cast<QgsMapLayer *>( layer ) )
+  , mLayer( layer )
   , mFeature( feature )
-  , mBuffer( 0 )
-  , mMinWidth( 0 )
 {
   init();
 }
