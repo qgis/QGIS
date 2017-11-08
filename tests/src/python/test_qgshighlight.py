@@ -66,7 +66,7 @@ class TestQgsHighlight(unittest.TestCase):
         highlight = QgsHighlight(self.iface.mapCanvas(), geom, layer)
         color = QColor(Qt.red)
         highlight.setColor(color)
-        highlight.setWidth(1)
+        highlight.setWidth(2)
         color.setAlpha(50)
         highlight.setFillColor(color)
         highlight.show()
