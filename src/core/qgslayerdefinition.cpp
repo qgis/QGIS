@@ -141,7 +141,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
   bool loadInLegend = true;
   if ( !layerTreeElem.isNull() )
   {
-    root->readChildrenFromXml( layerTreeElem );
+    root->readChildrenFromXml( layerTreeElem, context );
     loadInLegend = false;
   }
 
@@ -208,7 +208,7 @@ bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<Qg
     QgsLayerTreeNode *newnode = node->clone();
     root->addChildNode( newnode );
   }
-  root->writeXml( qgiselm );
+  root->writeXml( qgiselm, context );
 
   QDomElement layerselm = doc.createElement( QStringLiteral( "maplayers" ) );
   QList<QgsLayerTreeLayer *> layers = root->findLayers();

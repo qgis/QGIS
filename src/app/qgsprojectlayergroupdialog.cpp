@@ -170,7 +170,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   QDomElement layerTreeElem = projectDom.documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
-    mRootGroup->readChildrenFromXml( layerTreeElem );
+    mRootGroup->readChildrenFromXml( layerTreeElem, QgsReadWriteContext() );
   }
   else
   {

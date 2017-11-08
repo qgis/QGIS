@@ -99,18 +99,18 @@ void QgsLayerTree::setHasCustomLayerOrder( bool hasCustomLayerOrder )
   emit layerOrderChanged();
 }
 
-QgsLayerTree *QgsLayerTree::readXml( QDomElement &element )
+QgsLayerTree *QgsLayerTree::readXml( QDomElement &element, const QgsReadWriteContext &context )
 {
   QgsLayerTree *tree = new QgsLayerTree();
 
   tree->readCommonXml( element );
 
-  tree->readChildrenFromXml( element );
+  tree->readChildrenFromXml( element, context );
 
   return tree;
 }
 
-void QgsLayerTree::writeXml( QDomElement &parentElement )
+void QgsLayerTree::writeXml( QDomElement &parentElement, const QgsReadWriteContext &context )
 {
   QDomDocument doc = parentElement.ownerDocument();
   QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-group" ) );
@@ -118,7 +118,7 @@ void QgsLayerTree::writeXml( QDomElement &parentElement )
   writeCommonXml( elem );
 
   Q_FOREACH ( QgsLayerTreeNode *node, mChildren )
-    node->writeXml( elem );
+    node->writeXml( elem, context );
 
   QDomElement customOrderElem = doc.createElement( QStringLiteral( "custom-order" ) );
   customOrderElem.setAttribute( QStringLiteral( "enabled" ), mHasCustomLayerOrder ? 1 : 0 );

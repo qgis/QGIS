@@ -924,7 +924,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   QDomElement layerTreeElem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
-    mRootGroup->readChildrenFromXml( layerTreeElem );
+    mRootGroup->readChildrenFromXml( layerTreeElem, context );
   }
   else
   {
@@ -1040,6 +1040,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 
 void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
 {
+
   Q_FOREACH ( QgsLayerTreeNode *child, group->children() )
   {
     if ( QgsLayerTree::isGroup( child ) )
@@ -1050,7 +1051,6 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
         // make sure to convert the path from relative to absolute
         QString projectPath = readPath( childGroup->customProperty( QStringLiteral( "embedded_project" ) ).toString() );
         childGroup->setCustomProperty( QStringLiteral( "embedded_project" ), projectPath );
-
         QgsLayerTreeGroup *newGroup = createEmbeddedGroup( childGroup->name(), projectPath, childGroup->customProperty( QStringLiteral( "embedded-invisible-layers" ) ).toStringList() );
         if ( newGroup )
         {
@@ -1344,7 +1344,8 @@ bool QgsProject::writeProjectFile( const QString &filename )
   QgsLayerTreeNode *clonedRoot = mRootGroup->clone();
   QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
   QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( clonedRoot ), this ); // convert absolute paths to relative paths if required
-  clonedRoot->writeXml( qgisNode );
+
+  clonedRoot->writeXml( qgisNode, context );
   delete clonedRoot;
 
   mSnappingConfig.writeProject( *doc );
@@ -1860,6 +1861,9 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
     return nullptr;
   }
 
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver() );
+
   // store identify disabled layers of the embedded project
   QSet<QString> embeddedIdentifyDisabledLayers;
   QDomElement disabledLayersElem = projectDocument.documentElement().firstChildElement( QStringLiteral( "properties" ) ).firstChildElement( QStringLiteral( "Identify" ) ).firstChildElement( QStringLiteral( "disabledLayers" ) );
@@ -1877,7 +1881,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   QDomElement layerTreeElem = projectDocument.documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
-    root->readChildrenFromXml( layerTreeElem );
+    root->readChildrenFromXml( layerTreeElem, context );
   }
   else
   {

@@ -23,6 +23,7 @@ from qgis.core import (QgsProject,
                        QgsUnitTypes,
                        QgsCoordinateReferenceSystem,
                        QgsVectorLayer,
+                       QgsRasterLayer,
                        QgsMapLayer)
 from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
@@ -33,6 +34,7 @@ import sip
 
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
+from shutil import copyfile
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -759,6 +761,55 @@ class TestQgsProject(unittest.TestCase):
         prj.read(os.path.join(TEST_DATA_DIR, 'projects', 'test_memory_layer_proj.qgs'))
         self.assertTrue(prj.crs().isValid())
         self.assertEqual(prj.crs().authid(), 'EPSG:2056')
+
+    def testRelativePaths(self):
+        """
+        Test whether paths to layer sources are stored as relative to the project path
+        """
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgs".format(tmpDir.path())
+        copyfile(os.path.join(TEST_DATA_DIR, "points.shp"), os.path.join(tmpDir.path(), "points.shp"))
+        copyfile(os.path.join(TEST_DATA_DIR, "points.dbf"), os.path.join(tmpDir.path(), "points.dbf"))
+        copyfile(os.path.join(TEST_DATA_DIR, "points.shx"), os.path.join(tmpDir.path(), "points.shx"))
+        copyfile(os.path.join(TEST_DATA_DIR, "lines.shp"), os.path.join(tmpDir.path(), "lines.shp"))
+        copyfile(os.path.join(TEST_DATA_DIR, "lines.dbf"), os.path.join(tmpDir.path(), "lines.dbf"))
+        copyfile(os.path.join(TEST_DATA_DIR, "lines.shx"), os.path.join(tmpDir.path(), "lines.shx"))
+        copyfile(os.path.join(TEST_DATA_DIR, "landsat_4326.tif"), os.path.join(tmpDir.path(), "landsat_4326.tif"))
+
+        project = QgsProject()
+
+        l0 = QgsVectorLayer(os.path.join(tmpDir.path(), "points.shp"), "points", "ogr")
+        l1 = QgsVectorLayer(os.path.join(tmpDir.path(), "lines.shp"), "lines", "ogr")
+        l2 = QgsRasterLayer(os.path.join(tmpDir.path(), "landsat_4326.tif"), "landsat", "gdal")
+        self.assertTrue(l0.isValid())
+        self.assertTrue(l1.isValid())
+        self.assertTrue(l2.isValid())
+        self.assertTrue(project.addMapLayers([l0, l1, l2]))
+        self.assertTrue(project.write(tmpFile))
+        del project
+
+        with open(tmpFile, 'r') as f:
+            content = ''.join(f.readlines())
+            self.assertTrue('source="./lines.shp"' in content)
+            self.assertTrue('source="./points.shp"' in content)
+            self.assertTrue('source="./landsat_4326.tif"' in content)
+
+        # Re-read the project and store absolute
+        project = QgsProject()
+        self.assertTrue(project.read(tmpFile))
+        store = project.layerStore()
+        self.assertEquals(set([l.name() for l in store.mapLayers().values()]), set(['lines', 'landsat', 'points']))
+        project.writeEntryBool('Paths', '/Absolute', True)
+        tmpFile2 = "{}/project2.qgs".format(tmpDir.path())
+        self.assertTrue(project.write(tmpFile2))
+
+        with open(tmpFile2, 'r') as f:
+            content = ''.join(f.readlines())
+            self.assertTrue('source="{}/lines.shp"'.format(tmpDir.path()) in content)
+            self.assertTrue('source="{}/points.shp"'.format(tmpDir.path()) in content)
+            self.assertTrue('source="{}/landsat_4326.tif"'.format(tmpDir.path()) in content)
+
+        del project
 
 
 if __name__ == '__main__':

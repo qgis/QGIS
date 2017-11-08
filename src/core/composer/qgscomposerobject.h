@@ -22,6 +22,8 @@
 #include "qgsobjectcustomproperties.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgspropertycollection.h"
+#include "qgsreadwritecontext.h"
+
 #include <QObject>
 #include <QDomNode>
 #include <QMap>

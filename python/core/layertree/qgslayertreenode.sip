@@ -111,7 +111,7 @@ Get list of children of the node. Children are owned by the parent
 .. versionadded:: 3.0
 %End
 
-    static QgsLayerTreeNode *readXml( QDomElement &element ) /Factory/;
+    static QgsLayerTreeNode *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
  Read layer tree from XML. Returns new instance.
  Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
@@ -126,7 +126,7 @@ Get list of children of the node. Children are owned by the parent
  :rtype: QgsLayerTreeNode
 %End
 
-    virtual void writeXml( QDomElement &parentElement ) = 0;
+    virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) = 0;
 %Docstring
 Write layer tree to XML
 %End

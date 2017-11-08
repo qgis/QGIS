@@ -8,6 +8,7 @@
 
 
 
+
 class QgsComposerItemGroup: QgsComposerItem
 {
 %Docstring

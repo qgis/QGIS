@@ -999,7 +999,7 @@ QMimeData *QgsLayerTreeModel::mimeData( const QModelIndexList &indexes ) const
   QDomDocument doc;
   QDomElement rootElem = doc.createElement( QStringLiteral( "layer_tree_model_data" ) );
   Q_FOREACH ( QgsLayerTreeNode *node, nodesFinal )
-    node->writeXml( rootElem );
+    node->writeXml( rootElem, QgsReadWriteContext() );
   doc.appendChild( rootElem );
   QString txt = doc.toString();
 
