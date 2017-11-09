@@ -2732,7 +2732,7 @@ QGISEXTERN QgsGdalProvider *create(
   //create dataset
   CPLErrorReset();
   char **papszOptions = papszFromStringList( createOptions );
-  GDALDatasetH dataset = GDALCreate( driver, uri.toUtf8().constData(), width, height, nBands, ( GDALDataType )type, papszOptions );
+  gdal::dataset_unique_ptr dataset( GDALCreate( driver, uri.toUtf8().constData(), width, height, nBands, ( GDALDataType )type, papszOptions ) );
   CSLDestroy( papszOptions );
   if ( !dataset )
   {
@@ -2741,10 +2741,10 @@ QGISEXTERN QgsGdalProvider *create(
     return new QgsGdalProvider( uri, error );
   }
 
-  GDALSetGeoTransform( dataset, geoTransform );
-  GDALSetProjection( dataset, crs.toWkt().toLocal8Bit().data() );
+  GDALSetGeoTransform( dataset.get(), geoTransform );
+  GDALSetProjection( dataset.get(), crs.toWkt().toLocal8Bit().data() );
 
-  return new QgsGdalProvider( uri, true, dataset );
+  return new QgsGdalProvider( uri, true, dataset.release() );
 }
 
 bool QgsGdalProvider::write( void *data, int band, int width, int height, int xOffset, int yOffset )
