@@ -25,6 +25,16 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
 {
   setupUi( this );
 
+  spinTX->setClearValue( 0.0 );
+  spinTY->setClearValue( 0.0 );
+  spinTZ->setClearValue( 0.0 );
+  spinSX->setClearValue( 1.0 );
+  spinSY->setClearValue( 1.0 );
+  spinSZ->setClearValue( 1.0 );
+  spinRX->setClearValue( 0.0 );
+  spinRY->setClearValue( 0.0 );
+  spinRZ->setClearValue( 0.0 );
+
   cboShape->addItem( tr( "Sphere" ), QgsPoint3DSymbol::Sphere );
   cboShape->addItem( tr( "Cylinder" ), QgsPoint3DSymbol::Cylinder );
   cboShape->addItem( tr( "Cube" ), QgsPoint3DSymbol::Cube );

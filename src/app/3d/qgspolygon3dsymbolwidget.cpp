@@ -22,6 +22,8 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   : QWidget( parent )
 {
   setupUi( this );
+  spinHeight->setClearValue( 0.0 );
+  spinExtrusion->setClearValue( 0.0 );
 
   setSymbol( QgsPolygon3DSymbol(), nullptr );
 
