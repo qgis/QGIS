@@ -6,7 +6,7 @@ This script launches a QGIS Server listening on port 8081 or on the port
 specified on the environment variable QGIS_SERVER_PORT.
 QGIS_SERVER_HOST (defaults to 127.0.0.1)
 
-A XYZ slippy maps service is also available for multithreading testing:
+A XYZ map service is also available for multithreading testing:
 
   ?MAP=/path/to/projects.qgs&SERVICE=XYZ&X=1&Y=0&Z=1&LAYERS=world
 
