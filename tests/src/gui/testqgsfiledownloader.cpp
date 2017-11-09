@@ -242,7 +242,7 @@ void TestQgsFileDownloader::testLacksWritePermissionsError()
 {
   QTemporaryDir dir;
   QFile tmpDir( dir.path( ) );
-  tmpDir.setPermissions( tmpDir.permissions() & !( QFile::Permission::WriteGroup |  QFile::Permission::WriteUser | QFile::Permission::WriteOther | QFile::Permission::WriteOwner ) );
+  tmpDir.setPermissions( tmpDir.permissions() & ~( QFile::Permission::WriteGroup |  QFile::Permission::WriteUser | QFile::Permission::WriteOther | QFile::Permission::WriteOwner ) );
   QVERIFY( ! tmpDir.isWritable() );
   QString fileName( dir.path() + '/' + QStringLiteral( "tmp.bin" ) );
   makeCall( QUrl( QStringLiteral( "http://www.qgis.org" ) ), fileName );
