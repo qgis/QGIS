@@ -1846,7 +1846,7 @@ bool QgsPostgresProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstrain
 {
   if ( providerProperty( EvaluateDefaultValues, false ).toBool() )
   {
-    return mDefaultValues.contains( fieldIndex );
+    return !mDefaultValues.value( fieldIndex ).isEmpty();
   }
   else
   {
