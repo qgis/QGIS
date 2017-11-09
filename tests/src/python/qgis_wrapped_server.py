@@ -61,7 +61,7 @@ from socketserver import ThreadingMixIn
 import threading
 
 from qgis.core import QgsApplication, QgsCoordinateTransform, QgsCoordinateReferenceSystem
-from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
+from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse, QgsServerFilter
 
 QGIS_SERVER_PORT = int(os.environ.get('QGIS_SERVER_PORT', '8081'))
 QGIS_SERVER_HOST = os.environ.get('QGIS_SERVER_HOST', '127.0.0.1')
@@ -86,7 +86,6 @@ qgs_server = QgsServer()
 
 
 if os.environ.get('QGIS_SERVER_HTTP_BASIC_AUTH') is not None:
-    from qgis.server import QgsServerFilter
     import base64
 
     class HTTPBasicFilter(QgsServerFilter):
