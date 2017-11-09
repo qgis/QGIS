@@ -63,11 +63,12 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /**
      * Constructor for the provider.
      *
-     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
-     *                otherwise we contact the host directly.
+     * \param   uri         file name
+     * \param   update      whether to open in update mode
+     * \param   newDataset  handle of newly created dataset.
      *
      */
-    QgsGdalProvider( QString const &uri = QString(), bool update = false );
+    QgsGdalProvider( QString const &uri = QString(), bool update = false, GDALDatasetH newDataset = nullptr );
 
     //! Create invalid provider with error
     QgsGdalProvider( QString const &uri, const QgsError &error );

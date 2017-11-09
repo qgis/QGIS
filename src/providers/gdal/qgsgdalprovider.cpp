@@ -117,7 +117,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
   setError( error );
 }
 
-QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
+QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update, GDALDatasetH dataset )
   : QgsRasterDataProvider( uri )
   , mUpdate( update )
 {
@@ -156,29 +156,35 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
   }
 
   mGdalDataset = nullptr;
-
-  // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
-  QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
-  if ( !vsiPrefix.isEmpty() )
+  if ( dataset )
   {
-    if ( !uri.startsWith( vsiPrefix ) )
-      setDataSourceUri( vsiPrefix + uri );
-    QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix, dataSourceUri() ) );
+    mGdalBaseDataset = dataset;
   }
-
-  QString gdalUri = dataSourceUri();
-
-  CPLErrorReset();
-  mGdalBaseDataset = gdalOpen( gdalUri.toUtf8().constData(), mUpdate ? GA_Update : GA_ReadOnly );
-
-  if ( !mGdalBaseDataset )
+  else
   {
-    QString msg = QStringLiteral( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    appendError( ERRMSG( msg ) );
-    return;
-  }
+    // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
+    QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
+    if ( !vsiPrefix.isEmpty() )
+    {
+      if ( !uri.startsWith( vsiPrefix ) )
+        setDataSourceUri( vsiPrefix + uri );
+      QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix, dataSourceUri() ) );
+    }
 
-  QgsDebugMsg( "GdalDataset opened" );
+    QString gdalUri = dataSourceUri();
+
+    CPLErrorReset();
+    mGdalBaseDataset = gdalOpen( gdalUri.toUtf8().constData(), mUpdate ? GA_Update : GA_ReadOnly );
+
+    if ( !mGdalBaseDataset )
+    {
+      QString msg = QStringLiteral( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
+      appendError( ERRMSG( msg ) );
+      return;
+    }
+
+    QgsDebugMsg( "GdalDataset opened" );
+  }
   initBaseDataset();
 }
 
@@ -2726,7 +2732,7 @@ QGISEXTERN QgsGdalProvider *create(
   //create dataset
   CPLErrorReset();
   char **papszOptions = papszFromStringList( createOptions );
-  gdal::dataset_unique_ptr dataset( GDALCreate( driver, uri.toUtf8().constData(), width, height, nBands, ( GDALDataType )type, papszOptions ) );
+  GDALDatasetH dataset = GDALCreate( driver, uri.toUtf8().constData(), width, height, nBands, ( GDALDataType )type, papszOptions );
   CSLDestroy( papszOptions );
   if ( !dataset )
   {
@@ -2735,11 +2741,10 @@ QGISEXTERN QgsGdalProvider *create(
     return new QgsGdalProvider( uri, error );
   }
 
-  GDALSetGeoTransform( dataset.get(), geoTransform );
-  GDALSetProjection( dataset.get(), crs.toWkt().toLocal8Bit().data() );
-  dataset.reset();
+  GDALSetGeoTransform( dataset, geoTransform );
+  GDALSetProjection( dataset, crs.toWkt().toLocal8Bit().data() );
 
-  return new QgsGdalProvider( uri, true );
+  return new QgsGdalProvider( uri, true, dataset );
 }
 
 bool QgsGdalProvider::write( void *data, int band, int width, int height, int xOffset, int yOffset )
