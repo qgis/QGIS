@@ -66,7 +66,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     {
       if ( item.value == mLineEdit->text() )
       {
-        v = item.value;
+        v = item.key;
         break;
       }
     }
