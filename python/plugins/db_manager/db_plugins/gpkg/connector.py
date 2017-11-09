@@ -185,7 +185,7 @@ class GPKGDBConnector(DBConnector):
         return DBConnector._execute(self, cursor, sql)
 
     def _commit(self):
-        if self.gdal2:
+        if self.connection is None:
             return
 
         try:
