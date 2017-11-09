@@ -1189,8 +1189,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "FORMAT": "png",
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country,Hello",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857"
         }.items())])
 
@@ -1206,8 +1204,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "FORMAT": "png",
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "LAYERS": "Country,Hello",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857"
         }.items())])
 
@@ -1224,8 +1220,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country,Hello",
             "LAYERS": "Country,Hello",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857"
         }.items())])
 
@@ -1243,8 +1237,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "FORMAT": "png",
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country_Labels",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857"
         }.items())])
 
@@ -1263,8 +1255,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country_Labels",
             "map0:STYLES": "custom",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857"
         }.items())])
 
@@ -1281,8 +1271,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "FORMAT": "png",
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "LAYERS": "Country_Labels",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857"
         }.items())])
 
@@ -1300,8 +1288,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "LAYERS": "Country_Labels",
             "STYLES": "custom",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857"
         }.items())])
 
@@ -1319,8 +1305,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country_Labels",
             "LAYERS": "Country_Labels",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857"
         }.items())])
 
@@ -1339,8 +1323,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "map0:LAYERS": "Country_Labels",
             "map0:STYLES": "custom",
             "LAYERS": "Country_Labels",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857"
         }.items())])
 
@@ -1357,8 +1339,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "FORMAT": "png",
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country,Hello",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857"
         }.items())])
 
@@ -1375,8 +1355,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "FORMAT": "png",
             "map0:EXTENT": "-309.015,-133.011,312.179,133.949",
             "map0:LAYERS": "Country,Hello",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:4326"
         }.items())])
 
@@ -1394,8 +1372,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country,Hello",
             "map0:SCALE": "36293562",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857"
         }.items())])
 
@@ -1414,8 +1390,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "map0:LAYERS": "Country,Hello",
             "map0:GRID_INTERVAL_X": "1000000",
             "map0:GRID_INTERVAL_Y": "2000000",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857"
         }.items())])
 
@@ -1433,8 +1407,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country,Hello",
             "map0:ROTATION": "45",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857"
         }.items())])
 
@@ -1451,8 +1423,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "FORMAT": "png",
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country,Hello",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857",
             "SELECTION": "Country: 4"
         }.items())])
@@ -1470,8 +1440,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "FORMAT": "png",
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country,Hello",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857",
             "SELECTION": "Country: 4",
             "LAYERS": "Country,Hello",
@@ -1490,8 +1458,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "FORMAT": "png",
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country,Hello",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857",
             "SELECTION": "Country: 4",
             "LAYERS": "Country,Hello",
@@ -1519,8 +1485,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "map0:HIGHLIGHT_LABELCOLOR": "%2300FF0000",
             "map0:HIGHLIGHT_LABELBUFFERCOLOR": "%232300FF00",
             "map0:HIGHLIGHT_LABELBUFFERSIZE": "1.5",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857"
         }.items())])
 
@@ -1538,8 +1502,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "FORMAT": "png",
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country,Hello",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857",
             "IDTEXTBOX": "Updated QGIS composer label"
         }.items())])
@@ -1556,8 +1518,6 @@ class TestQgsServerWMS(QgsServerTestBase):
             "FORMAT": "png",
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country,Hello",
-            "HEIGHT": "500",
-            "WIDTH": "500",
             "CRS": "EPSG:3857",
             "IDTEXTBOX": ""
         }.items())])
