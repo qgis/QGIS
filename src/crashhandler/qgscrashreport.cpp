@@ -143,7 +143,7 @@ void QgsCrashReport::exportToCrashFolder()
   QDir dir( folder );
   if ( !dir.exists() )
   {
-    QDir().mkdir( folder );
+    QDir().mkpath( folder );
   }
 
   QString fileName = folder + "/stack.txt";
