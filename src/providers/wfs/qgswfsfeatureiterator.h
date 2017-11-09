@@ -24,6 +24,8 @@
 
 #include <QProgressDialog>
 #include <QPushButton>
+#include <QMutex>
+#include <QWaitCondition>
 
 class QgsWFSProvider;
 class QgsWFSSharedData;
@@ -164,13 +166,11 @@ class QgsWFSThreadedFeatureDownloader: public QThread
     /** Return downloader object */
     QgsWFSFeatureDownloader* downloader() { return mDownloader; }
 
-    /** Stops (synchronously) the download */
+    //! Starts thread and wait for it to be started
+    void startAndWait();
+
+    //! Stops (synchronously) the download
     void stop();
-
-  signals:
-    /** Emitted when the thread is ready */
-    void ready();
-
   protected:
     /** Inherited from QThread. Starts the download */
     void run() override;
@@ -178,6 +178,8 @@ class QgsWFSThreadedFeatureDownloader: public QThread
   private:
     QgsWFSSharedData* mShared;  //!< Mutable data shared between provider and feature sources
     QgsWFSFeatureDownloader* mDownloader;
+    QWaitCondition mWaitCond;
+    QMutex mWaitMutex;
 };
 
 class QgsWFSFeatureSource;

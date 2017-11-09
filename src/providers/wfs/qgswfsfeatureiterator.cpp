@@ -759,11 +759,25 @@ void QgsWFSThreadedFeatureDownloader::stop()
   }
 }
 
+void QgsWFSThreadedFeatureDownloader::startAndWait()
+{
+  start();
+
+  QMutexLocker locker( &mWaitMutex );
+  while ( !mDownloader )
+  {
+    mWaitCond.wait( &mWaitMutex );
+  }
+}
+
 void QgsWFSThreadedFeatureDownloader::run()
 {
   // We need to construct it in the run() method (i.e. in the new thread)
   mDownloader = new QgsWFSFeatureDownloader( mShared );
-  emit ready();
+  {
+    QMutexLocker locker( &mWaitMutex );
+    mWaitCond.wakeOne();
+  }
   mDownloader->run( true, /* serialize features */
                     0 /* user max features */ );
 }
