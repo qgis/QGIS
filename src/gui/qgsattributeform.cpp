@@ -642,7 +642,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
 
   const QVariant oldValue = mFeature.attribute( eww->fieldIdx() );
 
-  // Safetey check, if we receive the same value again, no reason to do anything
+  // Safety check, if we receive the same value again, no reason to do anything
   if ( oldValue == value && oldValue.isNull() == value.isNull() )
     return;
 
