@@ -159,6 +159,11 @@ void QgsAttributeFormEditorWidget::setConstraintStatus( const QString &constrain
   }
 }
 
+void QgsAttributeFormEditorWidget::setConstraintResultVisibility( bool editable )
+{
+  mConstraintResultLabel->setHidden( !editable );
+}
+
 void QgsAttributeFormEditorWidget::setMode( QgsAttributeFormEditorWidget::Mode mode )
 {
   mMode = mode;
