@@ -186,6 +186,16 @@ bool QgisAppInterface::setActiveLayer( QgsMapLayer *layer )
   return qgis->setActiveLayer( layer );
 }
 
+void QgisAppInterface::copyFeatures( QgsMapLayer *layer )
+{
+  return qgis->editCopy( layer );
+}
+
+void QgisAppInterface::pasteFeatures( QgsMapLayer *layer )
+{
+  return qgis->editPaste( layer );
+}
+
 void QgisAppInterface::addPluginToMenu( const QString &name, QAction *action )
 {
   qgis->addPluginToMenu( name, action );

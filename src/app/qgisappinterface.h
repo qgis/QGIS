@@ -96,6 +96,12 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! set the active layer (layer selected in the legend)
     bool setActiveLayer( QgsMapLayer *layer ) override;
 
+    //! Copy selected features from the layer to clipboard
+    virtual void copyFeatures( QgsMapLayer *layer ) override;
+
+    //! Paste features from clipboard to the layer
+    virtual void pasteFeatures( QgsMapLayer *layer ) override;
+
     //! Add an icon to the plugins toolbar
     int addToolBarIcon( QAction *qAction ) override;
 
