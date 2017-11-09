@@ -2080,9 +2080,9 @@ QgsRasterInterface        {#qgis_api_break_3_0_QgsRasterInterface}
 QgsRasterLayer        {#qgis_api_break_3_0_QgsRasterLayer}
 --------------
 
-- The constructor variant with loadDefaultStyleFlag as the 3rd parameter was removed. Use the
-constructor variant which accepts a data provider string and loadDefaultStyleFlag as the
-4th parameter instead.
+- The QgsRasterLayer constructor now takes a QgsRasterLayer.LayerOptions argument instead of the old
+loadDefaultStyle argument.
+setCoordinateSystem- The constructor variant with loadDefaultStyleFlag as the 3rd parameter was removed.
 - setDrawingStyle() was removed. Use setRendererForDrawingStyle() or setRenderer() instead.
 - previewAsPixmap() was removed. Use previewAsImage() instead.
 - updateProgress() had no effect and was removed.
@@ -2551,6 +2551,8 @@ QgsVectorJoinInfo   {#qgis_api_break_3_0_QgsVectorJoinInfo}
 QgsVectorLayer        {#qgis_api_break_3_0_QgsVectorLayer}
 --------------
 
+- The QgsVectorLayer constructor now takes a QgsVectorLayer.LayerOptions argument instead of the old
+loadDefaultStyle argument.
 - excludeAttributesWMS() and setExcludeAttributesWMS() have been renamed to excludeAttributesWms() and
 setExcludeAttributesWms()
 - excludeAttributesWFS() and setExcludeAttributesWFS() have been renamed to excludeAttributesWfs() and
@@ -2601,6 +2603,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - setLayerTransparency, layerTransparency, and layerTransparencyChanged were removed. Use opacity, setOpacity and opacityChanged instead.
 - The c++ signature for uniqueValues() has changed (the PyQGIS method remains unchanged)
 - hasGeometryType() has been removed, replaced by QgsMapLayer::isSpatial()
+- setCoordinateSystem() was removed.
 
 
 QgsVectorLayerEditBuffer        {#qgis_api_break_3_0_QgsVectorLayerEditBuffer}

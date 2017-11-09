@@ -167,6 +167,24 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QgsRasterLayer();
 
     /**
+     * Setting options for loading raster layers.
+     * \since QGIS 3.0
+     */
+    struct LayerOptions
+    {
+
+      /**
+       * Constructor for LayerOptions.
+       */
+      explicit LayerOptions( bool loadDefaultStyle = true )
+        : loadDefaultStyle( loadDefaultStyle )
+      {}
+
+      //! Set to true if the default layer style should be loaded
+      bool loadDefaultStyle = true;
+    };
+
+    /**
      * \brief This is the constructor for the RasterLayer class.
      *
      * The main tasks carried out by the constructor are:
@@ -183,10 +201,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *
      * -
      * */
-    QgsRasterLayer( const QString &uri,
-                    const QString &baseName = QString(),
-                    const QString &providerKey = "gdal",
-                    bool loadDefaultStyleFlag = true );
+    explicit QgsRasterLayer( const QString &uri,
+                             const QString &baseName = QString(),
+                             const QString &providerKey = "gdal",
+                             const QgsRasterLayer::LayerOptions &options = QgsRasterLayer::LayerOptions() );
 
     ~QgsRasterLayer();
 

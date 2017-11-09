@@ -174,12 +174,16 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string )
   QString name = fi.baseName();
 
   // brute force attempt to load a matching layer
-  std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( string, name, QStringLiteral( "ogr" ), false ) );
+  QgsVectorLayer::LayerOptions options;
+  options.loadDefaultStyle = false;
+  std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( string, name, QStringLiteral( "ogr" ), options ) );
   if ( layer->isValid() )
   {
     return layer.release();
   }
-  std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, name, QStringLiteral( "gdal" ), false ) );
+  QgsRasterLayer::LayerOptions rasterOptions;
+  rasterOptions.loadDefaultStyle = false;
+  std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, name, QStringLiteral( "gdal" ), rasterOptions ) );
   if ( rasterLayer->isValid() )
   {
     return rasterLayer.release();

@@ -4162,7 +4162,9 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
 
     // create the layer
 
-    QgsVectorLayer *layer = new QgsVectorLayer( src, base, QStringLiteral( "ogr" ), false );
+    QgsVectorLayer::LayerOptions options;
+    options.loadDefaultStyle = false;
+    QgsVectorLayer *layer = new QgsVectorLayer( src, base, QStringLiteral( "ogr" ), options );
     Q_CHECK_PTR( layer );
 
     if ( ! layer )
@@ -4636,7 +4638,9 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     QString name = fileName + " " + def.layerName;
     if ( !layerGeometryType.isEmpty() )
       name += " " + layerGeometryType;
-    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, QStringLiteral( "ogr" ), false );
+    QgsVectorLayer::LayerOptions options;
+    options.loadDefaultStyle = false;
+    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, QStringLiteral( "ogr" ), options );
     if ( layer && layer->isValid() )
     {
       myList << layer;
@@ -4714,7 +4718,9 @@ void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const
     // create the layer
     QgsDataSourceUri uri( layerPath );
 
-    QgsVectorLayer *layer = new QgsVectorLayer( uri.uri( false ), uri.table(), providerKey, false );
+    QgsVectorLayer::LayerOptions options;
+    options.loadDefaultStyle = false;
+    QgsVectorLayer *layer = new QgsVectorLayer( uri.uri( false ), uri.table(), providerKey, options );
     Q_CHECK_PTR( layer );
 
     if ( ! layer )
@@ -9968,7 +9974,9 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
   }
 
   // create the layer
-  QgsVectorLayer *layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey, false );
+  QgsVectorLayer::LayerOptions options;
+  options.loadDefaultStyle = false;
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey, options );
 
   if ( authok && layer && layer->isValid() )
   {

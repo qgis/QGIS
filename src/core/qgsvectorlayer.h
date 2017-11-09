@@ -382,23 +382,64 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     };
 
     /**
+     * Setting options for loading vector layers.
+     * \since QGIS 3.0
+     */
+    struct LayerOptions
+    {
+
+      /**
+       * Constructor for LayerOptions.
+       */
+      explicit LayerOptions( bool loadDefaultStyle = true, bool readExtentFromXml = false )
+        : loadDefaultStyle( loadDefaultStyle )
+        , readExtentFromXml( readExtentFromXml )
+      {}
+
+      //! Set to true if the default layer style should be loaded
+      bool loadDefaultStyle = true;
+
+      /**
+       * If true, the layer extent will be read from XML (i.e. stored in the
+       * project file). If false, the extent will be determined by the provider on layer load.
+       */
+      bool readExtentFromXml = false;
+
+      /**
+       * Pointer to an explicit coordinate reference system to use while loading this layer.
+       * If set, this CRS will be used when the actual CRS from the
+       * data provider could not be determined, and instead of triggering the user's default
+       * unknown CRS handling method (e.g. opening the 'select layer CRS' dialog).
+       *
+       * A pointer to an invalid QgsCoordinateReferenceSystem object can be used to indicate
+       * that the layer does not require a valid CRS and that no user prompts for the
+       * layer's CRS should be triggered.
+       *
+       * Ownership of this pointer is not transferred to the layer, and callers must ensure
+       * that the pointer lifetime exists for the duration of the layer construction only.
+       *
+       * If the crs argument is nullptr (the default), the default missing CRS
+       * handling method will be used intead.
+       */
+      QgsCoordinateReferenceSystem *crs = nullptr;
+
+    };
+
+    /**
      * Constructor - creates a vector layer
      *
      * The QgsVectorLayer is constructed by instantiating a data provider.  The provider
      * interprets the supplied path (url) of the data source to connect to and access the
      * data.
      *
-     * \param  path  The path or url of the parameter.  Typically this encodes
+     * \param path  The path or url of the parameter.  Typically this encodes
      *               parameters used by the data provider as url query items.
-     * \param  baseName The name used to represent the layer in the legend
-     * \param  providerLib  The name of the data provider, e.g., "memory", "postgres"
-     * \param  loadDefaultStyleFlag whether to load the default style
-     * \param  readExtentFromXml Read extent from XML if true or let provider determine it if false
-     *
+     * \param baseName The name used to represent the layer in the legend
+     * \param providerLib  The name of the data provider, e.g., "memory", "postgres"
+     * \param options layer load options
      */
-    QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
-                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true,
-                    bool readExtentFromXml = false );
+    explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
+                             const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
 
 
     virtual ~QgsVectorLayer();
@@ -465,9 +506,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Sets the textencoding of the data provider
     void setProviderEncoding( const QString &encoding );
-
-    //! Setup the coordinate system transformation for the layer
-    void setCoordinateSystem();
 
     /**
      * Joins another vector layer to this layer
@@ -890,9 +928,25 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param provider provider string
      * \param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
      * data source
+     * \param crs Pointer to an explicit coordinate reference system for this layer.
+     * If set, this CRS will be used instead when the actual CRS could not be detected from the
+     * data provider, and instead of triggering the user's default CRS handling method (e.g. opening the
+     * 'select layer CRS' dialog).
+     *
+     * A pointer to an invalid QgsCoordinateReferenceSystem object can be used to indicate
+     * that the layer does not require a valid CRS and that no user prompts for the
+     * layer's CRS should be triggered.
+     *
+     * Ownership of this pointer is not transferred to the layer, and callers must ensure
+     * that the pointer lifetime exists for the duration of function only.
+     *
+     * If the crs argument is nullptr (the default), the default missing CRS
+     * handling method will be used intead.
+     *
      * \since QGIS 2.10
      */
-    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
+    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider,
+                        bool loadDefaultStyleFlag = false, QgsCoordinateReferenceSystem *crs = nullptr );
 
     /**
      * Count features for symbols.
@@ -2087,6 +2141,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * @todo XXX should this return bool?  Throw exceptions?
      */
     bool setDataProvider( QString const &provider );
+
+    //! Setup the coordinate system transformation for the layer
+    void setCoordinateSystem( QgsCoordinateReferenceSystem *crs = nullptr );
 
     //! Read labeling from SLD
     void readSldLabeling( const QDomNode &node );

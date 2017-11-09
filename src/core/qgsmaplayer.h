@@ -1162,6 +1162,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     bool mIsRefreshOnNofifyEnabled = false;
     QString mRefreshOnNofifyMessage;
 
+    /**
+     * Layer's spatial reference system.
+     * Usually this should be set by calling setCrs() instead of by directly manipulating this member.
+    */
+    QgsCoordinateReferenceSystem mCRS;
+
   private:
 
     /**
@@ -1169,11 +1175,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * that a certain layer is writable.
      */
     virtual bool isReadOnly() const;
-
-    /**
-     * Layer's spatial reference system.
-        private to make sure setCrs must be used and crsChanged() is emitted */
-    QgsCoordinateReferenceSystem mCRS;
 
     //! Unique ID of this layer - used to refer to this layer in map layer registry
     QString mID;

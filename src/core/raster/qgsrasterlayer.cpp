@@ -108,7 +108,7 @@ QgsRasterLayer::QgsRasterLayer()
 QgsRasterLayer::QgsRasterLayer( const QString &uri,
                                 const QString &baseName,
                                 const QString &providerKey,
-                                bool loadDefaultStyleFlag )
+                                const LayerOptions &options )
   : QgsMapLayer( RasterLayer, baseName, uri )
     // Constant that signals property not used.
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
@@ -122,7 +122,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
 
   // load default style
   bool defaultLoadedFlag = false;
-  if ( mValid && loadDefaultStyleFlag )
+  if ( mValid && options.loadDefaultStyle )
   {
     loadDefaultStyle( defaultLoadedFlag );
   }

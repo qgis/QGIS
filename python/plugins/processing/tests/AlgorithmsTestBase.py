@@ -239,10 +239,14 @@ class AlgorithmsTest(object):
             if filepath in self.vector_layer_params:
                 return self.vector_layer_params[filepath]
 
-            lyr = QgsVectorLayer(filepath, param['name'], 'ogr', False)
+            options = QgsVectorLayer.LayerOptions
+            options.loadDefaultStyle = False
+            lyr = QgsVectorLayer(filepath, param['name'], 'ogr', options)
             self.vector_layer_params[filepath] = lyr
         elif param['type'] == 'raster':
-            lyr = QgsRasterLayer(filepath, param['name'], 'gdal', False)
+            options = QgsRasterLayer.LayerOptions
+            options.loadDefaultStyle = False
+            lyr = QgsRasterLayer(filepath, param['name'], 'gdal', options)
 
         self.assertTrue(lyr.isValid(), 'Could not load layer "{}" from param {}'.format(filepath, param))
         QgsProject.instance().addMapLayer(lyr)
