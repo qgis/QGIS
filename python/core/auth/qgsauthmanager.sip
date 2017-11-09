@@ -704,12 +704,6 @@ Rebuild trusted certificate authorities cache
 %End
 
 
-    QMutex *mutex();
-%Docstring
-Return pointer to mutex
- :rtype: QMutex
-%End
-
 
 
 

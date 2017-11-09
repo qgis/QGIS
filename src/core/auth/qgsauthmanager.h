@@ -627,9 +627,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
 #endif
 
-    //! Return pointer to mutex
-    QMutex *mutex() { return mMutex; }
-
     /**
      * Error message getter
      * \note not available in Python bindings
