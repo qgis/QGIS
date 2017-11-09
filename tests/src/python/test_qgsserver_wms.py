@@ -207,6 +207,16 @@ class TestQgsServerWMS(QgsServerTestBase):
                                  'FEATURE_COUNT=10&FILTER_GEOM=POLYGON((8.2035381 44.901459,8.2035562 44.901459,8.2035562 44.901418,8.2035381 44.901418,8.2035381 44.901459))',
                                  'wms_getfeatureinfo_invalid_query_layers')
 
+        # Test feature info request with '+' instead of ' ' in layers and
+        # query_layers parameters
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer+%C3%A8%C3%A9&styles=&' +
+                                 'info_format=text%2Fxml&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer+%C3%A8%C3%A9&X=190&Y=320',
+                                 'wms_getfeatureinfo-text-xml')
+
     def test_describelayer(self):
         # Test DescribeLayer
         self.wms_request_compare('DescribeLayer',
