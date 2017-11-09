@@ -292,7 +292,7 @@ namespace QgsWms
     QList<QgsWmsParametersLayer> params = mWmsParameters.layersParameters();
 
     // create the output image
-    std::unique_ptr<QImage> image( createImage() );
+    std::unique_ptr<QImage> image( new QImage() );
 
     // configure map settings (background, DPI, ...)
     QgsMapSettings mapSettings;
