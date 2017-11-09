@@ -31,3 +31,6 @@ PyQgsServerAccessControl
 # Need a local postgres installation
 PyQgsAuthManagerPKIPostgresTest
 PyQgsAuthManagerPasswordPostgresTest
+
+# Flaky, see https://dash.orfeo-toolbox.org/testDetails.php?test=62199676&build=297410
+PyQgsRulebasedRenderer
