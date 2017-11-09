@@ -171,7 +171,7 @@ bool QgsTransaction::supportsTransaction( const QgsVectorLayer *layer )
 
 void QgsTransaction::onLayerDeleted()
 {
-  mLayers.remove( qobject_cast<QgsVectorLayer *>( sender() ) );
+  mLayers.remove( static_cast<QgsVectorLayer *>( sender() ) );
 }
 
 void QgsTransaction::setLayerTransactionIds( QgsTransaction *transaction )
