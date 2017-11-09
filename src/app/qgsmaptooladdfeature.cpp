@@ -154,15 +154,15 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       {
         g = QgsGeometry::fromPointXY( savePoint );
       }
-      else if ( layerWKBType == QgsWkbTypes::Point25D )
+      else if ( !QgsWkbTypes::isMultiType( layerWKBType ) && QgsWkbTypes::hasZ( layerWKBType ) )
       {
         g = QgsGeometry( new QgsPoint( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
       }
-      else if ( layerWKBType == QgsWkbTypes::MultiPoint )
+      else if ( QgsWkbTypes::isMultiType( layerWKBType ) && !QgsWkbTypes::hasZ( layerWKBType ) )
       {
         g = QgsGeometry::fromMultiPointXY( QgsMultiPointXY() << savePoint );
       }
-      else if ( layerWKBType == QgsWkbTypes::MultiPoint25D )
+      else if ( QgsWkbTypes::isMultiType( layerWKBType ) && QgsWkbTypes::hasZ( layerWKBType ) )
       {
         QgsMultiPoint *mp = new QgsMultiPoint();
         mp->addGeometry( new QgsPoint( QgsWkbTypes::PointZ, savePoint.x(), savePoint.y(), defaultZValue() ) );
@@ -172,6 +172,11 @@ void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       {
         // if layer supports more types (mCheckGeometryType is false)
         g = QgsGeometry::fromPointXY( savePoint );
+      }
+
+      if ( QgsWkbTypes::hasM( layerWKBType ) )
+      {
+        g.get()->addMValue();
       }
 
       f.setGeometry( g );
