@@ -16,6 +16,7 @@ ccache -z
 # Setup the (c)test environment
 ############################
 export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+export SEGFAULT_SIGNALS="abrt segv"
 export CTEST_BUILD_COMMAND="/usr/bin/ninja"
 export CTEST_PARALLEL_LEVEL=1
 
