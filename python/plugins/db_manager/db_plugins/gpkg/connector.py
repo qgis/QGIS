@@ -51,6 +51,9 @@ class GPKGDBConnector(DBConnector):
 
     def _opendb(self):
 
+        # Keep this explicit assignment to None to make sure the file is
+        # properly closed before being re-opened
+        self.gdal_ds = None
         self.gdal_ds = gdal.OpenEx(self.dbname, gdal.OF_UPDATE)
         if self.gdal_ds is None:
             self.gdal_ds = gdal.OpenEx(self.dbname)
