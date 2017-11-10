@@ -352,8 +352,8 @@ void QgsVectorLayerUndoPassthroughCommandRenameAttribute::redo()
   }
 }
 
-QgsVectorLayerUndoPassthroughCommandUpdate::QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer, QgsTransaction *transaction, const QString &sql )
-  : QgsVectorLayerUndoPassthroughCommand( buffer, QObject::tr( "custom transaction" ), false )
+QgsVectorLayerUndoPassthroughCommandUpdate::QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer, QgsTransaction *transaction, const QString &sql, const QString &name )
+  : QgsVectorLayerUndoPassthroughCommand( buffer, name.isEmpty() ? QObject::tr( "custom transaction" ) : name, false )
   , mTransaction( transaction )
   , mSql( sql )
 {

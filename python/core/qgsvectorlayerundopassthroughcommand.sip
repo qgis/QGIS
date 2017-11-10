@@ -303,13 +303,14 @@ class QgsVectorLayerUndoPassthroughCommandUpdate : QgsVectorLayerUndoPassthrough
 %End
   public:
 
-    QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsTransaction *transaction, const QString &sql );
+    QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsTransaction *transaction, const QString &sql, const QString &name );
 %Docstring
 Constructor for :py:class:`QgsVectorLayerUndoCommandUpdate`
 
 :param buffer: associated edit buffer
 :param transaction: transaction running the sql query
 :param sql: the query
+:param name: The name of the command
 %End
 
     virtual void undo();

@@ -84,13 +84,14 @@ Commit transaction.
 Roll back transaction.
 %End
 
-    virtual bool executeSql( const QString &sql, QString &error /Out/, bool isDirty = false ) = 0;
+    virtual bool executeSql( const QString &sql, QString &error /Out/, bool isDirty = false, const QString &name = QString() ) = 0;
 %Docstring
 Execute the ``sql`` string.
 
 :param sql: The sql query to execute
 :param error: The error message
 :param isDirty: Flag to indicate if the underlying data will be modified
+:param name: Name of the transaction ( only used if `isDirty` is true)
 
 :return: true if everything is OK, false otherwise
 %End
@@ -152,7 +153,7 @@ returns the last created savepoint
 Emitted after a rollback
 %End
 
-    void dirtied( const QString &sql );
+    void dirtied( const QString &sql, const QString &name );
 %Docstring
 Emitted if a sql query is executed and the underlying data is modified
 %End
