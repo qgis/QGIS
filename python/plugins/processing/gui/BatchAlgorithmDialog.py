@@ -104,7 +104,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                 count_visible_outputs += 1
                 widget = self.mainWidget.tblParameters.cellWidget(row, col)
                 text = widget.getValue()
-                if param.checkValueIsAcceptable(text, context):
+                if out.checkValueIsAcceptable(text, context):
                     if isinstance(out, (QgsProcessingParameterRasterDestination,
                                         QgsProcessingParameterFeatureSink)):
                         # load rasters and sinks on completion
