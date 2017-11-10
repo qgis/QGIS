@@ -24,6 +24,7 @@ email                : sherman at mrcc.com
 #include "qgsfeedback.h"
 #include "qgssettings.h"
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include "qgsdataitem.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
@@ -35,6 +36,7 @@ email                : sherman at mrcc.com
 #include "qgsogrdataitems.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgswkbtypes.h"
+#include "qgsnetworkaccessmanager.h"
 
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"
@@ -418,6 +420,10 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri )
 
   QgsSettings settings;
   CPLSetConfigOption( "SHAPE_ENCODING", settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() ? "" : nullptr );
+
+#ifndef QT_NO_NETWORKPROXY
+  setupProxy();
+#endif
 
   // make connection to the data source
 
@@ -1971,6 +1977,56 @@ bool QgsOgrProvider::doInitialActionsForEdition()
 
   return true;
 }
+
+#ifndef QT_NO_NETWORKPROXY
+void QgsOgrProvider::setupProxy()
+{
+  // Check proxy configuration, they are application level but
+  // instead of adding an API and complex signal/slot connections
+  // given the limited cost of checking them on every provider instanciation
+  // we can do it here so that new settings are applied whenever a new layer
+  // is created.
+  QgsSettings settings;
+  // Check that proxy is enabled
+  if ( settings.value( QStringLiteral( "proxy/proxyEnabled" ), false ).toBool() )
+  {
+    // Get the first configured proxy
+    QList<QNetworkProxy> proxyes( QgsNetworkAccessManager::instance()->proxyFactory()->queryProxy( ) );
+    if ( ! proxyes.isEmpty() )
+    {
+      QNetworkProxy proxy( proxyes.first() );
+      // TODO/FIXME: check excludes (the GDAL config options are global, we need a per-connection config option)
+      //QStringList excludes;
+      //excludes = settings.value( QStringLiteral( "proxy/proxyExcludedUrls" ), "" ).toString().split( '|', QString::SkipEmptyParts );
+
+      QString proxyHost( proxy.hostName() );
+      qint16 proxyPort( proxy.port() );
+
+      QString proxyUser( proxy.user() );
+      QString proxyPassword( proxy.password() );
+
+      if ( ! proxyHost.isEmpty() )
+      {
+        QString connection( proxyHost );
+        if ( proxyPort )
+        {
+          connection += ':' +  QString::number( proxyPort );
+        }
+        CPLSetConfigOption( "GDAL_HTTP_PROXY", connection.toUtf8() );
+        if ( !  proxyUser.isEmpty( ) )
+        {
+          QString credentials( proxyUser );
+          if ( !  proxyPassword.isEmpty( ) )
+          {
+            credentials += ':' + proxyPassword;
+          }
+          CPLSetConfigOption( "GDAL_HTTP_PROXYUSERPWD", credentials.toUtf8() );
+        }
+      }
+    }
+  }
+}
+#endif
 
 QgsVectorDataProvider::Capabilities QgsOgrProvider::capabilities() const
 {
