@@ -744,12 +744,16 @@ class TestQgsAuthManager(unittest.TestCase):
         self.assertFalse(QgsAuthCertUtils.certIsViable(cert))
 
     def test_170_pki_key_encoding(self):
-        """Test that a DER or PEM key can be opened whatever the extension is"""
+        """Test that a DER/PEM RSA/DSA/EC keys can be opened whatever the extension is"""
 
         self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'ptolemy_key.pem').isNull())
         self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'ptolemy_key.der').isNull())
         self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'ptolemy_key_pem.key').isNull())
         self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'ptolemy_key_der.key').isNull())
+        self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_DSA.pem').isNull())
+        self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_DSA.der').isNull())
+        self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_EC.pem').isNull())
+        self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_EC.der').isNull())
 
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(self.mkPEMBundle('ptolemy_cert.pem', 'ptolemy_key.pem', 'password', 'chain_subissuer-issuer-root.pem'), True, True), [])
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(self.mkPEMBundle('ptolemy_cert.pem', 'ptolemy_key.der', 'password', 'chain_subissuer-issuer-root.pem'), True, True), [])
