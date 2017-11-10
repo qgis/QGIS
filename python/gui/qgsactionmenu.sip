@@ -73,6 +73,21 @@ class QgsActionMenu : QMenu
                  as long as the menu is displayed and the action is running.
 %End
 
+    void setExpressionContextScope( const QgsExpressionContextScope &scope );
+%Docstring
+ Sets an expression context scope used to resolve underlying actions.
+
+.. versionadded:: 3.0
+%End
+
+    QgsExpressionContextScope expressionContextScope() const;
+%Docstring
+ Returns an expression context scope used to resolve underlying actions.
+
+.. versionadded:: 3.0
+ :rtype: QgsExpressionContextScope
+%End
+
   signals:
     void reinit();
 

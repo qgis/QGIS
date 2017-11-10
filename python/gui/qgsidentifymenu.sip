@@ -71,6 +71,21 @@ define if the menu will be shown with a single idetify result
  :rtype: bool
 %End
 
+    void setExpressionContextScope( const QgsExpressionContextScope &scope );
+%Docstring
+ Sets an expression context scope used to resolve underlying actions.
+
+.. versionadded:: 3.0
+%End
+
+    QgsExpressionContextScope expressionContextScope() const;
+%Docstring
+ Returns an expression context scope used to resolve underlying actions.
+
+.. versionadded:: 3.0
+ :rtype: QgsExpressionContextScope
+%End
+
     void setShowFeatureActions( bool showFeatureActions );
 %Docstring
  define if attribute actions(1) and map layer actions(2) can be listed and run from the menu

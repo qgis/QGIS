@@ -184,6 +184,21 @@ Checks if the action is runable on the current platform
 .. versionadded:: 3.0
 %End
 
+    void setExpressionContextScope( const QgsExpressionContextScope &scope );
+%Docstring
+ Sets an expression context scope to use for running the action.
+
+.. versionadded:: 3.0
+%End
+
+    QgsExpressionContextScope expressionContextScope() const;
+%Docstring
+ Returns an expression context scope used for running the action.
+
+.. versionadded:: 3.0
+ :rtype: QgsExpressionContextScope
+%End
+
 };
 
 

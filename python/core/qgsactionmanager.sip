@@ -62,10 +62,15 @@ Constructor
 .. versionadded:: 3.0
 %End
 
-    void doAction( const QUuid &actionId, const QgsFeature &feature, int defaultValueIndex = 0 ) /PyName=doActionFeature/;
+    void doAction( const QUuid &actionId, const QgsFeature &feature, int defaultValueIndex = 0, const QgsExpressionContextScope &scope = QgsExpressionContextScope() ) /PyName=doActionFeature/;
 %Docstring
- Does the given action. defaultValueIndex is the index of the
-  field to be used if the action has a $currfield placeholder.
+ Does the given action.
+
+ \param actionId action id
+ \param feature feature to run action for
+ \param defaultValueIndex index of the field to be used if the action has a $currfield placeholder.
+ \param scope expression context scope to add during expression evaluation
+
 .. note::
 
    available in Python bindings as doActionFeature

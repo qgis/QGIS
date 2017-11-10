@@ -25,6 +25,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaptoolidentify.h"
 #include "qgswebview.h"
+#include "qgsexpressioncontext.h"
 
 #include <QWidget>
 #include <QList>
@@ -150,6 +151,22 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     //! Map tool was activated
     void activate();
 
+    /**
+     * Sets an expression context scope to consider for resolving underlying
+     * actions.
+     *
+     * \since QGIS 3.0
+     */
+    void setExpressionContextScope( const QgsExpressionContextScope &scope );
+
+    /**
+     * Returns an expression context scope used for resolving underlying
+     * actions.
+     *
+     * \since QGIS 3.0
+     */
+    QgsExpressionContextScope expressionContextScope() const;
+
   signals:
     void selectedFeatureChanged( QgsVectorLayer *, QgsFeatureId featureId );
 
@@ -233,6 +250,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QgsMapCanvas *mCanvas = nullptr;
     QList<QgsFeature> mFeatures;
     QMap< QString, QMap< QString, QVariant > > mWidgetCaches;
+    QgsExpressionContextScope mExpressionContextScope;
 
     QgsMapLayer *layer( QTreeWidgetItem *item );
     QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );

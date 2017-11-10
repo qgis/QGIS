@@ -1164,6 +1164,8 @@ void QgsIdentifyResultsDialog::clear()
     delete curve;
   mPlotCurves.clear();
 
+  mExpressionContextScope = QgsExpressionContextScope();
+
   // keep it visible but disabled, it can switch from disabled/enabled
   // after raster format change
   mActionPrint->setDisabled( true );
@@ -1245,7 +1247,7 @@ void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, const QString &a
   }
 
   int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
-  layer->actions()->doAction( action, mFeatures[ featIdx ], idx );
+  layer->actions()->doAction( action, mFeatures[ featIdx ], idx, mExpressionContextScope );
 }
 
 void QgsIdentifyResultsDialog::doMapLayerAction( QTreeWidgetItem *item, QgsMapLayerAction *action )
@@ -1977,4 +1979,14 @@ void QgsIdentifyResultsDialogMapLayerAction::execute()
 void QgsIdentifyResultsDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#identify" ) );
+}
+
+void QgsIdentifyResultsDialog::setExpressionContextScope( const QgsExpressionContextScope &scope )
+{
+  mExpressionContextScope = scope;
+}
+
+QgsExpressionContextScope QgsIdentifyResultsDialog::expressionContextScope() const
+{
+  return mExpressionContextScope;
 }
