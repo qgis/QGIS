@@ -266,6 +266,11 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QgsVectorDataProvider::Capabilities mCapabilities;
 
     bool doInitialActionsForEdition();
+
+#ifndef QT_NO_NETWORKPROXY
+    void setupProxy();
+#endif
+
 };
 
 /**
