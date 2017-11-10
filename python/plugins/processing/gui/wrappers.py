@@ -229,36 +229,6 @@ class WidgetWrapper(QObject):
         return filename, selected_filter
 
 
-class ExpressionWidgetWrapperMixin():
-
-    def wrapWithExpressionButton(self, basewidget):
-        expr_button = QToolButton()
-        expr_button.clicked.connect(self.showExpressionsBuilder)
-        expr_button.setText('…')
-
-        layout = QHBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.addWidget(basewidget)
-        layout.addWidget(expr_button)
-
-        widget = QWidget()
-        widget.setLayout(layout)
-
-        return widget
-
-    def showExpressionsBuilder(self):
-        context = dataobjects.createExpressionContext()
-        value = self.value()
-        if not isinstance(value, str):
-            value = ''
-        dlg = QgsExpressionBuilderDialog(None, value, self.widget, 'generic', context)
-        dlg.setWindowTitle(self.tr('Expression based input'))
-        if dlg.exec_() == QDialog.Accepted:
-            exp = QgsExpression(dlg.expressionText())
-            if not exp.hasParserError():
-                self.setValue(dlg.expressionText())
-
-
 class BasicWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
@@ -1032,7 +1002,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             return self.comboValue(validator, combobox=self.combo)
 
 
-class StringWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
+class StringWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
@@ -1040,7 +1010,7 @@ class StringWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
                 widget = QPlainTextEdit()
             else:
                 self._lineedit = QLineEdit()
-                return self.wrapWithExpressionButton(self._lineedit)
+                widget = self._lineedit
 
         elif self.dialogType == DIALOG_BATCH:
             widget = QLineEdit()
