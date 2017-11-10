@@ -115,6 +115,20 @@ void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
+  // Store clicked x & y into identify menu.
+  if ( mIdentifyMenu )
+  {
+    QgsPointXY point = toMapCoordinates( e->pos() );
+
+    QgsExpressionContextScope contextScope;
+
+    contextScope.addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_x" ), point.x(), true ) );
+    contextScope.addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_y" ), point.y(), true ) );
+
+    mIdentifyMenu->setExpressionContextScope( contextScope );
+    resultsDialog()->setExpressionContextScope( contextScope );
+  }
+
   resultsDialog()->clear();
   connect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
   connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );

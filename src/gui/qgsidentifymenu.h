@@ -146,6 +146,11 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
      */
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> &idResults, QPoint pos );
 
+    /**
+     * \brief Set expression context scope.
+     */
+    void setExpressionContextScope( const QgsExpressionContextScope &expressionContextScope );
+
   protected:
     virtual void closeEvent( QCloseEvent *e ) override;
 
@@ -186,6 +191,9 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
 
     // map layers with their results, this is the odering of the menu
     QMap <QgsMapLayer *, QList<QgsMapToolIdentify::IdentifyResult> > mLayerIdResults;
+
+    // expression context scope.
+    QgsExpressionContextScope   mExpressionContextScope;
 };
 
 Q_DECLARE_METATYPE( QgsIdentifyMenu::ActionData )

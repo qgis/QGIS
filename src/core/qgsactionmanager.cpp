@@ -123,6 +123,19 @@ void QgsActionManager::removeAction( const QUuid &actionId )
   }
 }
 
+void QgsActionManager::doActionWithContext( const QUuid &actionId, const QgsFeature &feature, QgsExpressionContextScope *ctxScope, int defaultValueIndex )
+{
+  QgsExpressionContext context = createExpressionContext();
+  QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
+  actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "field_index" ), defaultValueIndex, true ) );
+  if ( defaultValueIndex >= 0 && defaultValueIndex < feature.fields().size() )
+    actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "field_name" ), feature.fields().at( defaultValueIndex ).name(), true ) );
+  actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "field_value" ), feature.attribute( defaultValueIndex ), true ) );
+  context << actionScope;
+  context << ctxScope;
+  doAction( actionId, feature, context );
+}
+
 void QgsActionManager::doAction( const QUuid &actionId, const QgsFeature &feature, int defaultValueIndex )
 {
   QgsExpressionContext context = createExpressionContext();

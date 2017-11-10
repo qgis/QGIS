@@ -91,6 +91,11 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      */
     void setFeature( const QgsFeature &feature );
 
+    /**
+     * \brief Set expression context scope.
+     */
+    void setExpressionContextScope( const QgsExpressionContextScope &expressionContextScope );
+
   signals:
     void reinit();
 
@@ -107,6 +112,9 @@ class GUI_EXPORT QgsActionMenu : public QMenu
     QgsFeature mFeature;
     QgsFeatureId mFeatureId;
     QString mActionScope;
+
+    // expression context scope.
+    QgsExpressionContextScope   mExpressionContextScope;
 };
 
 

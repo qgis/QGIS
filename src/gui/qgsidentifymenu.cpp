@@ -25,6 +25,7 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgscontextaction.h"
 
 QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas *canvas )
   : QMenu( canvas )
@@ -260,6 +261,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     if ( !createMenu && mShowFeatureActions )
     {
       QgsActionMenu *featureActionMenu = new QgsActionMenu( layer, results[0].mFeature, QStringLiteral( "Feature" ), this );
+      featureActionMenu->setExpressionContextScope( mExpressionContextScope );
       createMenu  = !featureActionMenu->actions().isEmpty();
       delete featureActionMenu;
     }
@@ -272,7 +274,10 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     QString featureTitle = results[0].mFeature.attribute( layer->displayField() ).toString();
     if ( featureTitle.isEmpty() )
       featureTitle = QStringLiteral( "%1" ).arg( results[0].mFeature.id() );
-    layerAction = new QAction( QStringLiteral( "%1 (%2)" ).arg( layer->name(), featureTitle ), this );
+    QgsContextAction *lAction = new QgsContextAction( QStringLiteral( "%1 (%2)" ).arg( layer->name(), featureTitle ), this );
+    lAction->setExpressionContextScope( mExpressionContextScope );
+
+    layerAction = lAction;
   }
   else
   {
@@ -345,6 +350,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     if ( mShowFeatureActions )
     {
       featureActionMenu = new QgsActionMenu( layer, result.mFeature, QStringLiteral( "Feature" ), layerMenu );
+      featureActionMenu->setExpressionContextScope( mExpressionContextScope );
     }
 
     // feature title
@@ -354,7 +360,10 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
 
     if ( customFeatureActions.isEmpty() && ( !featureActionMenu || featureActionMenu->actions().isEmpty() ) )
     {
-      featureAction = new QAction( featureTitle, layerMenu );
+      QgsContextAction *fAction = new QgsContextAction( featureTitle, layerMenu );
+      fAction->setExpressionContextScope( mExpressionContextScope );
+      featureAction = fAction;
+
       // add the feature action (or menu) to the layer menu
       featureAction->setData( QVariant::fromValue<ActionData>( ActionData( layer, result.mFeature.id() ) ) );
       connect( featureAction, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
@@ -384,7 +393,9 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
       continue;
 
     // add default identify action
-    QAction *identifyFeatureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ), mDefaultActionName, featureMenu );
+    QgsContextAction *identifyFeatureAction = new QgsContextAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ), mDefaultActionName, featureMenu );
+    identifyFeatureAction->setExpressionContextScope( mExpressionContextScope );
+
     connect( identifyFeatureAction, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
     identifyFeatureAction->setData( QVariant::fromValue<ActionData>( ActionData( layer, result.mFeature.id() ) ) );
     featureMenu->addAction( identifyFeatureAction );
@@ -393,7 +404,9 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     // custom action at feature level
     Q_FOREACH ( QgsMapLayerAction *mapLayerAction, customFeatureActions )
     {
-      QAction *action = new QAction( mapLayerAction->icon(), mapLayerAction->text(), featureMenu );
+      QgsContextAction *action = new QgsContextAction( mapLayerAction->icon(), mapLayerAction->text(), featureMenu );
+      action->setExpressionContextScope( mExpressionContextScope );
+
       action->setData( QVariant::fromValue<ActionData>( ActionData( layer, result.mFeature.id(), mapLayerAction ) ) );
       connect( action, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
       connect( action, &QAction::triggered, this, &QgsIdentifyMenu::triggerMapLayerAction );
@@ -416,7 +429,9 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
   if ( mAllowMultipleReturn && results.count() > 1 )
   {
     layerMenu->addSeparator();
-    QAction *allAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ), tr( "%1 all (%2)" ).arg( mDefaultActionName ).arg( results.count() ), layerMenu );
+    QgsContextAction *allAction = new QgsContextAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ), tr( "%1 all (%2)" ).arg( mDefaultActionName ).arg( results.count() ), layerMenu );
+    allAction->setExpressionContextScope( mExpressionContextScope );
+
     allAction->setData( QVariant::fromValue<ActionData>( ActionData( layer ) ) );
     connect( allAction, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
     layerMenu->addAction( allAction );
@@ -428,7 +443,9 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     QString title = mapLayerAction->text();
     if ( mapLayerAction->targets().testFlag( QgsMapLayerAction::MultipleFeatures ) )
       title.append( QStringLiteral( " (%1)" ).arg( results.count() ) );
-    QAction *action = new QAction( mapLayerAction->icon(), title, layerMenu );
+    QgsContextAction *action = new QgsContextAction( mapLayerAction->icon(), title, layerMenu );
+    action->setExpressionContextScope( mExpressionContextScope );
+
     action->setData( QVariant::fromValue<ActionData>( ActionData( layer, mapLayerAction ) ) );
     connect( action, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
     connect( action, &QAction::triggered, this, &QgsIdentifyMenu::triggerMapLayerAction );
@@ -571,6 +588,11 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::results( QAction *act
 
   QgsDebugMsg( "Identify menu: could not retrieve results from menu entry (don't know what happened')" );
   return idResults;
+}
+
+void QgsIdentifyMenu::setExpressionContextScope( const QgsExpressionContextScope &expressionContextScope )
+{
+  mExpressionContextScope = expressionContextScope;
 }
 
 void QgsIdentifyMenu::handleMenuHover()

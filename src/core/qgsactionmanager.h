@@ -89,6 +89,15 @@ class CORE_EXPORT QgsActionManager: public QObject
     void removeAction( const QUuid &actionId );
 
     /**
+     * Does the action like doAction() providing
+     *  action context scope.
+     */
+    void doActionWithContext( const QUuid &actionId,
+                              const QgsFeature &feat,
+                              QgsExpressionContextScope *actionScope,
+                              int defaultValueIndex = 0 );
+
+    /**
      * Does the given action. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
      *  \note available in Python bindings as doActionFeature

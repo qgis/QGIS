@@ -73,6 +73,11 @@ class QgsActionMenu : QMenu
                  as long as the menu is displayed and the action is running.
 %End
 
+    void setExpressionContextScope( const QgsExpressionContextScope &expressionContextScope );
+%Docstring
+ Set expression context scope.
+%End
+
   signals:
     void reinit();
 
