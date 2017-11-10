@@ -17,13 +17,12 @@ import shutil
 import sys
 import tempfile
 
-from qgis.core import QgsVectorLayer, QgsVectorDataProvider, QgsWkbTypes, QgsFeature, QgsFeatureRequest
-from qgis.testing import (
-    start_app,
-    unittest
-)
-from utilities import unitTestDataPath
 from osgeo import gdal, ogr  # NOQA
+from qgis.core import (QgsFeature, QgsFeatureRequest, QgsSettings,
+                       QgsVectorDataProvider, QgsVectorLayer, QgsWkbTypes, QgsNetworkAccessManager)
+from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -291,6 +290,33 @@ class PyQgsOGRProvider(unittest.TestCase):
     """PolyhedralSurface, Tin => mapped to MultiPolygon
           Triangle => mapped to Polygon
       """
+
+    def testSetupProxy(self):
+        """Test proxy setup"""
+        settings = QgsSettings()
+        settings.setValue("proxy/proxyEnabled", True)
+        settings.setValue("proxy/proxyPort", '1234')
+        settings.setValue("proxy/proxyHost", 'myproxyhostname.com')
+        settings.setValue("proxy/proxyUser", 'username')
+        settings.setValue("proxy/proxyPassword", 'password')
+        settings.setValue("proxy/proxyExcludedUrls", "http://www.myhost.com|http://www.myotherhost.com")
+        QgsNetworkAccessManager.instance().setupDefaultProxyAndCache()
+        vl = QgsVectorLayer(TEST_DATA_DIR + '/' + 'lines.shp', 'proxy_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXY"), "myproxyhostname.com:1234")
+        self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXYUSERPWD"), "username:password")
+
+        settings.setValue("proxy/proxyEnabled", True)
+        settings.remove("proxy/proxyPort")
+        settings.setValue("proxy/proxyHost", 'myproxyhostname.com')
+        settings.setValue("proxy/proxyUser", 'username')
+        settings.remove("proxy/proxyPassword")
+        settings.setValue("proxy/proxyExcludedUrls", "http://www.myhost.com|http://www.myotherhost.com")
+        QgsNetworkAccessManager.instance().setupDefaultProxyAndCache()
+        vl = QgsVectorLayer(TEST_DATA_DIR + '/' + 'lines.shp', 'proxy_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXY"), "myproxyhostname.com")
+        self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXYUSERPWD"), "username")
 
 
 if __name__ == '__main__':
