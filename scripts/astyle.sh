@@ -14,9 +14,15 @@
 #                                                                         #
 ###########################################################################
 
+# sort by version option
+SV=V
+if [[ "$OSTYPE" =~ darwin* ]]; then
+	SV=n
+fi
+
 min_version="3"
 astyle_version_check() {
-	[ `printf "$($1 --version | cut -d ' ' -f4)\n$min_version" | sort -V | head -n1` = "$min_version" ]
+	[ `printf "$($1 --version | cut -d ' ' -f4)\n$min_version" | sort -${SV} | head -n1` = "$min_version" ]
 }
 
 for ASTYLE in ${QGISSTYLE} $(dirname $0)/qgisstyle $(dirname $0)/RelWithDebInfo/qgisstyle astyle
