@@ -129,9 +129,8 @@ class BatchPanel(BASE, WIDGET):
             self.tblParameters.setHorizontalHeaderItem(
                 column, QTableWidgetItem(self.tr('Load in QGIS')))
 
-        # Add two empty rows by default
-        for i in range(2):
-            self.addRow()
+        # Add an empty row to begin
+        self.addRow()
 
         self.tblParameters.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
         self.tblParameters.horizontalHeader().setDefaultSectionSize(250)
@@ -265,7 +264,7 @@ class BatchPanel(BASE, WIDGET):
             wrapper.postInitialize(list(wrappers.values()))
 
     def removeRows(self):
-        if self.tblParameters.rowCount() > 2:
+        if self.tblParameters.rowCount() > 1:
             self.wrappers.pop()
             self.tblParameters.setRowCount(self.tblParameters.rowCount() - 1)
 
