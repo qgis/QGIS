@@ -66,7 +66,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
           return proxies;
       }
 
-      // no proxies from the proxy factor list check for excludes
+      // no proxies from the proxy factory list check for excludes
       if ( query.queryType() != QNetworkProxyQuery::UrlRequest )
         return QList<QNetworkProxy>() << nam->fallbackProxy();
 
@@ -364,16 +364,15 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
                  );
       proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
     }
-  }
-
-  // Setup network proxy authentication configuration
-  QString authcfg = settings.value( QStringLiteral( "proxy/authcfg" ), "" ).toString();
-  if ( !authcfg.isEmpty( ) )
-  {
-    QgsDebugMsg( QStringLiteral( "setting proxy from stored authentication configuration %1" ).arg( authcfg ) );
-    // Never crash! Never.
-    if ( QgsApplication::authManager() )
-      QgsApplication::authManager()->updateNetworkProxy( proxy, authcfg );
+    // Setup network proxy authentication configuration
+    QString authcfg = settings.value( QStringLiteral( "proxy/authcfg" ), "" ).toString();
+    if ( !authcfg.isEmpty( ) )
+    {
+      QgsDebugMsg( QStringLiteral( "setting proxy from stored authentication configuration %1" ).arg( authcfg ) );
+      // Never crash! Never.
+      if ( QgsApplication::authManager() )
+        QgsApplication::authManager()->updateNetworkProxy( proxy, authcfg );
+    }
   }
 
   setFallbackProxyAndExcludes( proxy, excludes );
