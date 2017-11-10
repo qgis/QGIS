@@ -95,8 +95,19 @@ class QgsConnectionPoolGroup
     T acquire( int timeout )
     {
       // we are going to acquire a resource - if no resource is available, we will block here
-      if ( !sem.tryAcquire( 1, timeout ) )
-        return nullptr;
+      if ( timeout >= 0 )
+      {
+        if ( !sem.tryAcquire( 1, timeout ) )
+          return nullptr;
+      }
+      else
+      {
+        // we should still be able to use tryAcquire with a negative timeout here, but
+        // tryAcquire is broken on Qt > 5.8 with negative timeouts - see
+        // https://bugreports.qt.io/browse/QTBUG-64413
+        // https://lists.osgeo.org/pipermail/qgis-developer/2017-November/050456.html
+        sem.acquire( 1 );
+      }
 
       // quick (preferred) way - use cached connection
       {
