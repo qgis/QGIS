@@ -58,10 +58,10 @@ from qgis.core import (QgsRasterLayer, QgsVectorLayer, QgsMapLayer, QgsCoordinat
                        QgsProcessingParameterMatrix,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterField,
-                       QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterVectorDestination,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFolderDestination,
+                       QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterString,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterFeatureSource,
@@ -668,7 +668,7 @@ def getParameterFromString(s):
                     params[5] = True if params[5].lower() == 'true' else False
             elif clazz == QgsProcessingParameterNumber:
                 if len(params) > 2:
-                    params[2] = QgsProcessingParameterNumber.Integer if params[2].lower().endswith('integer') else QgsProcessingParameterNumber.Double
+                    params[2] = QgsProcessingParameterNumber.Integer if params[2].lower().endswith('int') else QgsProcessingParameterNumber.Double
                 if len(params) > 3:
                     params[3] = float(params[3].strip()) if params[3] is not None else 0
                 if len(params) > 4:

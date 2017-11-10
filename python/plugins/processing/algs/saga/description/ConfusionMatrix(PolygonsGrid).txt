@@ -1,12 +1,12 @@
 Confusion Matrix (Polygons / Grid)
 imagery_classification
-ParameterRaster|GRID|Classification|False
-ParameterTable|GRID_LUT|Look-up Table|True
-ParameterTable|GRID_LUT_MIN|Value|False
-ParameterTable|GRID_LUT_MAX|Value (Maximum)|False
-ParameterTable|GRID_LUT_NAM|Name|False
-ParameterVector|POLYGONS|Polygons|-1|False
-ParameterTable|FIELD|Classes|False
-ParameterTable|CONFUSION|Confusion Matrix|False
-ParameterTable|CLASSES|Class Values|False
-ParameterTable|SUMMARY|Summary|False
+QgsProcessingParameterRasterLayer|GRID|Classification|None|False
+QgsProcessingParameterFeatureSource|GRID_LUT|Look-up Table|5|None|True
+QgsProcessingParameterFeatureSource|GRID_LUT_MIN|Value|5|None|False
+QgsProcessingParameterFeatureSource|GRID_LUT_MAX|Value (Maximum)|5|None|False
+QgsProcessingParameterFeatureSource|GRID_LUT_NAM|Name|5|None|False
+QgsProcessingParameterFeatureSource|POLYGONS|Polygons|-1|None|False
+QgsProcessingParameterFeatureSource|FIELD|Classes|5|None|False
+QgsProcessingParameterFeatureSource|CONFUSION|Confusion Matrix|5|None|False
+QgsProcessingParameterFeatureSource|CLASSES|Class Values|5|None|False
+QgsProcessingParameterFeatureSource|SUMMARY|Summary|5|None|False

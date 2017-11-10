@@ -1,25 +1,25 @@
 Simple Kriging
 statistics_kriging
-ParameterVector|POINTS|Points|0|False
-ParameterTable|FIELD|Attribute|False
-ParameterSelection|TQUALITY|Type of Quality Measure|[0] standard deviation;[1] variance| 0
-ParameterBoolean|LOG|Logarithmic Transformation|False
-ParameterBoolean|BLOCK|Block Kriging|False
-ParameterNumber|DBLOCK|Block Size| 0.000000|None| 100.000000
-ParameterNumber|VAR_MAXDIST|Maximum Distance|None|None| -1.000000
-ParameterNumber|VAR_NCLASSES|Lag Distance Classes| 1|None| 100
-ParameterNumber|VAR_NSKIP|Skip| 1|None| 1
-ParameterString|VAR_MODEL|Model
+QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
+QgsProcessingParameterFeatureSource|FIELD|Attribute|5|None|False
+QgsProcessingParameterEnum|TQUALITY|Type of Quality Measure|[0] standard deviation;[1] variance|False|0
+QgsProcessingParameterBoolean|LOG|Logarithmic Transformation|False
+QgsProcessingParameterBoolean|BLOCK|Block Kriging|False
+QgsProcessingParameterNumber|DBLOCK|Block Size|QgsProcessingParameterNumber.Double|100.000000|False| 0.000000|None
+QgsProcessingParameterNumber|VAR_MAXDIST|Maximum Distance|QgsProcessingParameterNumber.Integer|-1.000000|False|None|None
+QgsProcessingParameterNumber|VAR_NCLASSES|Lag Distance Classes|QgsProcessingParameterNumber.Integer|100|False| 1|None
+QgsProcessingParameterNumber|VAR_NSKIP|Skip|QgsProcessingParameterNumber.Integer|1|False| 1|None
+QgsProcessingParameterString|VAR_MODEL|Model
 Hardcoded|-TARGET_DEFINITION 0
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
-ParameterNumber|TARGET_USER_SIZE|Cellsize|None|None|100.0
-ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells| 0
-ParameterRaster|TARGET_TEMPLATE|Target System|True
-OutputRaster|PREDICTION|Prediction
-OutputRaster|VARIANCE|Quality Measure
-ParameterSelection|SEARCH_RANGE|Search Range|[0] local;[1] global| 0
-ParameterNumber|SEARCH_RADIUS|Maximum Search Distance| 0.000000|None| 1000.000000
-ParameterSelection|SEARCH_POINTS_ALL|Number of Points|[0] maximum number of nearest points;[1] all points within search distance| 0
-ParameterNumber|SEARCH_POINTS_MIN|Minimum| 1|None| 16
-ParameterNumber|SEARCH_POINTS_MAX|Maximum| 1|None| 20
-ParameterSelection|SEARCH_DIRECTION|Direction|[0] all directions;[1] quadrants| 0
+QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None
+QgsProcessingParameterEnum|TARGET_USER_FITS|Fit|[0] nodes;[1] cells|False|0
+QgsProcessingParameterRasterLayer|TARGET_TEMPLATE|Target System|None|True
+QgsProcessingParameterRasterDestination|PREDICTION|Prediction
+QgsProcessingParameterRasterDestination|VARIANCE|Quality Measure
+QgsProcessingParameterEnum|SEARCH_RANGE|Search Range|[0] local;[1] global|False|0
+QgsProcessingParameterNumber|SEARCH_RADIUS|Maximum Search Distance|QgsProcessingParameterNumber.Double|1000.000000|False| 0.000000|None
+QgsProcessingParameterEnum|SEARCH_POINTS_ALL|Number of Points|[0] maximum number of nearest points;[1] all points within search distance|False|0
+QgsProcessingParameterNumber|SEARCH_POINTS_MIN|Minimum|QgsProcessingParameterNumber.Integer|16|False| 1|None
+QgsProcessingParameterNumber|SEARCH_POINTS_MAX|Maximum|QgsProcessingParameterNumber.Integer|20|False| 1|None
+QgsProcessingParameterEnum|SEARCH_DIRECTION|Direction|[0] all directions;[1] quadrants|False|0

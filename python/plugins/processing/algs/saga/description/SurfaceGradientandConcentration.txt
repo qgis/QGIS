@@ -1,12 +1,12 @@
 Surface, Gradient and Concentration
 sim_hydrology
-ParameterRaster|MASK|Mask|False
-OutputRaster|SURF|Surface
-OutputRaster|GRAD|Gradient
-OutputRaster|CONC|Concentration
-ParameterNumber|SURF_E|Surface Approximation Threshold| 0.000000|None| 0.001000
-ParameterNumber|CONC_IN|Inlet Concentration| 0.000000|None| 5.000000
-ParameterNumber|CONC_OUT|Outlet Concentration| 0.000000|None| 3.000000
-ParameterNumber|CONC_E|Concentration Approximation Threshold| 0.000000|None| 0.001000
-ParameterNumber|GRAD_MIN|Minimum Gradient| 0.000000|None| 0.000000
-ParameterSelection|NEIGHBOURS|Neighbourhood|[0] Moore (8);[1] Neumann (4);[2] Optimised| 0
+QgsProcessingParameterRasterLayer|MASK|Mask|None|False
+QgsProcessingParameterRasterDestination|SURF|Surface
+QgsProcessingParameterRasterDestination|GRAD|Gradient
+QgsProcessingParameterRasterDestination|CONC|Concentration
+QgsProcessingParameterNumber|SURF_E|Surface Approximation Threshold|QgsProcessingParameterNumber.Double|0.001000|False| 0.000000|None
+QgsProcessingParameterNumber|CONC_IN|Inlet Concentration|QgsProcessingParameterNumber.Double|5.000000|False| 0.000000|None
+QgsProcessingParameterNumber|CONC_OUT|Outlet Concentration|QgsProcessingParameterNumber.Double|3.000000|False| 0.000000|None
+QgsProcessingParameterNumber|CONC_E|Concentration Approximation Threshold|QgsProcessingParameterNumber.Double|0.001000|False| 0.000000|None
+QgsProcessingParameterNumber|GRAD_MIN|Minimum Gradient|QgsProcessingParameterNumber.Double|0.000000|False| 0.000000|None
+QgsProcessingParameterEnum|NEIGHBOURS|Neighbourhood|[0] Moore (8);[1] Neumann (4);[2] Optimised|False|0

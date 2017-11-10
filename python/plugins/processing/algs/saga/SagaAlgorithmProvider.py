@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -116,13 +115,13 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
     def id(self):
         return 'saga'
 
-    def supportedOutputVectorLayerExtensions(self):
-        return ['shp']
+    def defaultVectorFileExtension(self, hasGeometry=True):
+        return 'shp'
 
-    def supportedOutputRasterLayerExtensions(self):
-        return ['sdat']
+    def defaultRasterFileExtension(self):
+        return 'sdat'
 
-    def getSupportedOutputTableLayerExtensions(self):
+    def supportedOutputTableExtensions(self):
         return ['dbf']
 
     def icon(self):
