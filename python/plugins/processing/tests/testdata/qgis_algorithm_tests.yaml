@@ -3396,6 +3396,24 @@ tests:
         name: expected/add_field.gml
         type: vector
 
+  - algorithm: native:orderbyexpression
+    name: Order by expression
+    params:
+      ASCENDING: true
+      EXPRESSION: intval
+      INPUT:
+        name: polys.gml
+        type: vector
+      NULLS_FIRST: false
+    results:
+      OUTPUT:
+        name: expected/order_by_expression.gml
+        type: vector
+        compare:
+          fields:
+            __all__:
+              precision: 4
+
   - algorithm: qgis:randompointsinextent
     name: Random point in extent, don't check result
     params:

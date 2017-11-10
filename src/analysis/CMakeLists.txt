@@ -46,6 +46,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmmergelines.cpp
   processing/qgsalgorithmminimumenclosingcircle.cpp
   processing/qgsalgorithmmultiparttosinglepart.cpp
+  processing/qgsalgorithmorderbyexpression.cpp
   processing/qgsalgorithmorientedminimumboundingbox.cpp
   processing/qgsalgorithmpackage.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
