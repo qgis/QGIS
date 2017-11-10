@@ -285,6 +285,10 @@ class BatchPanel(BASE, WIDGET):
 
     def fillParameterValues(self, column):
         wrapper = self.wrappers[0][column]
+        if wrapper is None:
+            # e.g. double clicking on a destination header
+            return
+
         for row in range(1, self.tblParameters.rowCount()):
             self.wrappers[row][column].setValue(wrapper.value())
 
