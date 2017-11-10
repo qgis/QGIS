@@ -87,6 +87,10 @@ class BatchPanel(BASE, WIDGET):
         self.tblParameters.horizontalHeader().sectionDoubleClicked.connect(
             self.fillParameterValues)
 
+        self.tblParameters.horizontalHeader().resizeSections(QHeaderView.ResizeToContents)
+        self.tblParameters.horizontalHeader().setDefaultSectionSize(250)
+        self.tblParameters.horizontalHeader().setMinimumSectionSize(150)
+
         self.initWidgets()
 
     def layerRegistryChanged(self):
@@ -133,10 +137,7 @@ class BatchPanel(BASE, WIDGET):
         for i in range(2):
             self.addRow()
 
-        self.tblParameters.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
-        self.tblParameters.horizontalHeader().setDefaultSectionSize(250)
-        self.tblParameters.horizontalHeader().setMinimumSectionSize(150)
-        self.tblParameters.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.tblParameters.horizontalHeader().resizeSections(QHeaderView.ResizeToContents)
         self.tblParameters.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.tblParameters.horizontalHeader().setStretchLastSection(True)
 
