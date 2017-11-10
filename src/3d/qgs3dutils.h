@@ -75,7 +75,7 @@ class _3D_EXPORT Qgs3DUtils
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
 
     /**
-     * Calculates (x,y,z) position of point in the Point vector layers
+     * Calculates (x,y,z) positions of a (multi)point in the Point vector layers
      */
     static QList<QVector3D> positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, AltitudeClamping altClamp );
 

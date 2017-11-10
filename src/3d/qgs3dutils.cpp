@@ -172,14 +172,15 @@ QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLa
       continue;
 
     const QgsAbstractGeometry *g = f.geometry().constGet();
-    if ( const QgsPoint *pt = qgsgeometry_cast< const QgsPoint *>( g ) )
+    for ( auto it = g->vertices_begin(); it != g->vertices_end(); ++it )
     {
+      QgsPoint pt = *it;
       float geomZ = 0;
-      if ( pt->is3D() )
+      if ( pt.is3D() )
       {
-        geomZ = pt->z();
+        geomZ = pt.z();
       }
-      float terrainZ = map.terrainGenerator()->heightAt( pt->x(), pt->y(), map ) * map.terrainVerticalScale();
+      float terrainZ = map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) * map.terrainVerticalScale();
       float h;
       switch ( altClamp )
       {
@@ -193,11 +194,9 @@ QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLa
           h = terrainZ + geomZ;
           break;
       }
-      positions.append( QVector3D( pt->x() - map.originX(), h, -( pt->y() - map.originY() ) ) );
+      positions.append( QVector3D( pt.x() - map.originX(), h, -( pt.y() - map.originY() ) ) );
       //qDebug() << positions.last();
     }
-    else
-      qDebug() << "not a point";
   }
 
   return positions;
