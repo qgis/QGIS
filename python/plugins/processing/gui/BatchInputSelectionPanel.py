@@ -94,7 +94,7 @@ class BatchInputSelectionPanel(QWidget):
             popupmenu.addAction(selectLayerAction)
 
         selectFileAction = QAction(
-            self.tr('Select from filesystem'), self.pushButton)
+            self.tr('Select from file system'), self.pushButton)
         selectFileAction.triggered.connect(self.showFileSelectionDialog)
         popupmenu.addAction(selectFileAction)
 
@@ -150,7 +150,7 @@ class BatchInputSelectionPanel(QWidget):
             path = ''
 
         ret, selected_filter = QFileDialog.getOpenFileNames(self, self.tr('Open file'), path,
-                                                            self.tr('All files (*.*);;') + getFileFilter(self.param))
+                                                            getFileFilter(self.param))
         if ret:
             files = list(ret)
             settings.setValue('/Processing/LastInputPath',
