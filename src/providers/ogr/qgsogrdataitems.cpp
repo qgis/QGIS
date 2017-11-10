@@ -598,8 +598,10 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 
   // Fast track: return item without testing if:
   // scanExtSetting or zipfile and scan zip == "Basic scan"
-  if ( scanExtSetting ||
-       ( ( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) )
+  // netCDF files can be both raster or vector, so fallback to opening
+  if ( ( scanExtSetting ||
+         ( ( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) ) &&
+       suffix != QLatin1String( "nc" ) )
   {
     // if this is a VRT file make sure it is vector VRT to avoid duplicates
     if ( suffix == QLatin1String( "vrt" ) )

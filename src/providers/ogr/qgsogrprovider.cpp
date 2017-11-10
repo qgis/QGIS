@@ -2239,6 +2239,9 @@ QString createFilters( const QString &type )
     // open datasets with no explicitly defined file name extension.
     QgsDebugMsg( QString( "Driver count: %1" ).arg( OGRGetDriverCount() ) );
 
+    bool kmlFound = false;
+    bool dwgFound = false;
+    bool dgnFound = false;
     for ( int i = 0; i < OGRGetDriverCount(); ++i )
     {
       driver = OGRGetDriver( i );
@@ -2319,10 +2322,14 @@ QString createFilters( const QString &type )
         sFileFilters += createFileFilter_( QObject::tr( "GeoRSS" ), QStringLiteral( "*.xml" ) );
         sExtensions << QStringLiteral( "xml" );
       }
-      else if ( driverName.startsWith( QLatin1String( "GML" ) ) )
+      else if ( driverName == QLatin1String( "GML" ) )
       {
         sFileFilters += createFileFilter_( QObject::tr( "Geography Markup Language [GML]" ), QStringLiteral( "*.gml" ) );
         sExtensions << QStringLiteral( "gml" );
+      }
+      else if ( driverName == QLatin1String( "GMLAS" ) )
+      {
+        continue;
       }
       else if ( driverName.startsWith( QLatin1String( "GMT" ) ) )
       {
@@ -2361,8 +2368,11 @@ QString createFilters( const QString &type )
       {
         sDatabaseDrivers += QObject::tr( "Ingres" ) + ",Ingres;";
       }
-      else if ( driverName.startsWith( QLatin1String( "KML" ) ) )
+      else if ( driverName == QLatin1String( "KML" ) || driverName == QLatin1String( "LIBKML" ) )
       {
+        if ( kmlFound )
+          continue;
+        kmlFound = true;
         sFileFilters += createFileFilter_( QObject::tr( "Keyhole Markup Language [KML]" ), QStringLiteral( "*.kml *.kmz" ) );
         sExtensions << QStringLiteral( "kml" ) << QStringLiteral( "kmz" );
       }
@@ -2371,8 +2381,11 @@ QString createFilters( const QString &type )
         sFileFilters += createFileFilter_( QObject::tr( "Mapinfo File" ), QStringLiteral( "*.mif *.tab" ) );
         sExtensions << QStringLiteral( "mif" ) << QStringLiteral( "tab" );
       }
-      else if ( driverName.startsWith( QLatin1String( "DGN" ) ) )
+      else if ( driverName == QLatin1String( "DGN" ) || driverName == QLatin1String( "DGNV8" ) )
       {
+        if ( dgnFound )
+          continue;
+        dgnFound = true;
         sFileFilters += createFileFilter_( QObject::tr( "Microstation DGN" ), QStringLiteral( "*.dgn" ) );
         sExtensions << QStringLiteral( "dgn" );
       }
@@ -2561,9 +2574,46 @@ QString createFilters( const QString &type )
       }
       else
       {
-        // NOP, we don't know anything about the current driver
-        // with regards to a proper file filter string
-        QgsDebugMsg( QString( "Unknown driver %1 for file filters." ).arg( driverName ) );
+        if ( driverName == QLatin1String( "CAD" ) || driverName == QLatin1String( "DWG" ) )
+        {
+          if ( dwgFound )
+            continue;
+          dwgFound = true;
+        }
+
+        QString myGdalDriverExtensions = GDALGetMetadataItem( driver, GDAL_DMD_EXTENSIONS, "" );
+        QString myGdalDriverLongName = GDALGetMetadataItem( driver, GDAL_DMD_LONGNAME, "" );
+        if ( !( myGdalDriverExtensions.isEmpty() || myGdalDriverLongName.isEmpty() ) )
+        {
+          const QStringList splitExtensions = myGdalDriverExtensions.split( ' ', QString::SkipEmptyParts );
+
+          QString glob;
+
+          for ( const QString &ext : splitExtensions )
+          {
+            sExtensions << ext;
+            if ( !glob.isEmpty() )
+              glob += QLatin1String( " " );
+            glob += "*." + ext;
+          }
+
+          if ( driverName == QLatin1String( "JPEG2000" ) ||
+               driverName.startsWith( QLatin1String( "JP2" ) ) )
+          {
+            // Skip over JPEG2000 drivers, as their vector capabilities are just
+            // a marginal use case
+            continue;
+          }
+
+          sFileFilters += createFileFilter_( myGdalDriverLongName, glob );
+
+        }
+        else
+        {
+          // NOP, we don't know anything about the current driver
+          // with regards to a proper file filter string
+          QgsDebugMsg( QString( "Unknown driver %1 for file filters." ).arg( driverName ) );
+        }
       }
 
     }                          // each loaded OGR driver

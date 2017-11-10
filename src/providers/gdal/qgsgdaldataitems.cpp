@@ -256,8 +256,10 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   // return item without testing if:
   // scanExtSetting
   // or zipfile and scan zip == "Basic scan"
-  if ( scanExtSetting ||
-       ( ( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) )
+  // netCDF files can be both raster or vector, so fallback to opening
+  if ( ( scanExtSetting ||
+         ( ( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) ) &&
+       suffix != QLatin1String( "nc" ) )
   {
     // Skip this layer if it's handled by ogr:
     if ( ogrSupportedDbLayersExtensions.contains( suffix ) )
