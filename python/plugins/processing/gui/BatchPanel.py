@@ -31,8 +31,9 @@ import json
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QHeaderView, QFileDialog, QMessageBox
-
+from qgis.PyQt.QtCore import QDir, QFileInfo
 from qgis.core import (QgsApplication,
+                       QgsSettings,
                        QgsProcessingParameterDefinition)
 from qgis.gui import QgsMessageBar
 from processing.gui.wrappers import WidgetWrapperFactory
@@ -142,10 +143,14 @@ class BatchPanel(BASE, WIDGET):
         self.tblParameters.horizontalHeader().setStretchLastSection(True)
 
     def load(self):
+        settings = QgsSettings()
+        last_path = settings.value("/Processing/LastBatchPath", QDir.homePath())
         filename, selected_filter = QFileDialog.getOpenFileName(self,
-                                                                self.tr('Open Batch'), None,
+                                                                self.tr('Open Batch'), last_path,
                                                                 self.tr('JSON files (*.json)'))
         if filename:
+            last_path = QFileInfo(filename).path()
+            settings.setValue('/Processing/LastBatchPath', last_path)
             with open(filename) as f:
                 values = json.load(f)
         else:
@@ -216,13 +221,17 @@ class BatchPanel(BASE, WIDGET):
                     return
             toSave.append({self.PARAMETERS: algParams, self.OUTPUTS: algOutputs})
 
+        settings = QgsSettings()
+        last_path = settings.value("/Processing/LastBatchPath", QDir.homePath())
         filename, __ = QFileDialog.getSaveFileName(self,
                                                    self.tr('Save Batch'),
-                                                   None,
+                                                   last_path,
                                                    self.tr('JSON files (*.json)'))
         if filename:
             if not filename.endswith('.json'):
                 filename += '.json'
+            last_path = QFileInfo(filename).path()
+            settings.setValue('/Processing/LastBatchPath', last_path)
             with open(filename, 'w') as f:
                 json.dump(toSave, f)
 
