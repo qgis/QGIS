@@ -43,6 +43,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProject)
 
 from qgis.gui import QgsMessageBar
+from qgis.utils import OverrideCursor
 
 from processing.gui.BatchPanel import BatchPanel
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
@@ -119,47 +120,48 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
             alg_parameters.append(parameters)
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        self.mainWidget.setEnabled(False)
-        self.buttonCancel.setEnabled(True)
+        with OverrideCursor(Qt.WaitCursor):
 
-        # Make sure the Log tab is visible before executing the algorithm
-        try:
-            self.tabWidget.setCurrentIndex(1)
-            self.repaint()
-        except:
-            pass
+            self.mainWidget.setEnabled(False)
+            self.buttonCancel.setEnabled(True)
 
-        start_time = time.time()
+            # Make sure the Log tab is visible before executing the algorithm
+            try:
+                self.tabWidget.setCurrentIndex(1)
+                self.repaint()
+            except:
+                pass
 
-        algorithm_results = []
-        for count, parameters in enumerate(alg_parameters):
-            if feedback.isCanceled():
-                break
-            self.setText(self.tr('\nProcessing algorithm {0}/{1}...').format(count + 1, len(alg_parameters)))
-            self.setInfo(self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()), escape_html=False)
+            start_time = time.time()
 
-            feedback.pushInfo(self.tr('Input parameters:'))
-            feedback.pushCommandInfo(pformat(parameters))
-            feedback.pushInfo('')
+            algorithm_results = []
+            for count, parameters in enumerate(alg_parameters):
+                if feedback.isCanceled():
+                    break
+                self.setText(self.tr('\nProcessing algorithm {0}/{1}...').format(count + 1, len(alg_parameters)))
+                self.setInfo(self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()), escape_html=False)
 
-            alg_start_time = time.time()
-            ret, results = execute(self.alg, parameters, context, feedback)
-            if ret:
-                self.setInfo(self.tr('Algorithm {0} correctly executed...').format(self.alg.displayName()), escape_html=False)
-                feedback.setProgress(100)
-                feedback.pushInfo(
-                    self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - alg_start_time)))
-                feedback.pushInfo(self.tr('Results:'))
-                feedback.pushCommandInfo(pformat(results))
+                feedback.pushInfo(self.tr('Input parameters:'))
+                feedback.pushCommandInfo(pformat(parameters))
                 feedback.pushInfo('')
-                algorithm_results.append(results)
-            else:
-                break
 
-        feedback.pushInfo(self.tr('Batch execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
+                alg_start_time = time.time()
+                ret, results = execute(self.alg, parameters, context, feedback)
+                if ret:
+                    self.setInfo(self.tr('Algorithm {0} correctly executed...').format(self.alg.displayName()), escape_html=False)
+                    feedback.setProgress(100)
+                    feedback.pushInfo(
+                        self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - alg_start_time)))
+                    feedback.pushInfo(self.tr('Results:'))
+                    feedback.pushCommandInfo(pformat(results))
+                    feedback.pushInfo('')
+                    algorithm_results.append(results)
+                else:
+                    break
 
-        handleAlgorithmResults(self.alg, context, feedback, False)
+            feedback.pushInfo(self.tr('Batch execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
+
+            handleAlgorithmResults(self.alg, context, feedback, False)
 
         self.finish(algorithm_results)
         self.buttonCancel.setEnabled(False)
@@ -169,8 +171,6 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
             self.loadHTMLResults(results, count)
 
         self.createSummaryTable(algorithm_results)
-        QApplication.restoreOverrideCursor()
-
         self.mainWidget.setEnabled(True)
         QMessageBox.information(self, self.tr('Batch processing'),
                                 self.tr('Batch processing completed'))
