@@ -217,9 +217,14 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     mFeatureSaved = mLayer->addFeature( *mFeature );
 
     if ( mFeatureSaved )
+    {
       mLayer->endEditCommand();
+      mLayer->triggerRepaint();
+    }
     else
+    {
       mLayer->destroyEditCommand();
+    }
   }
   else
   {
