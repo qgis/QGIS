@@ -2923,6 +2923,12 @@ long QgsPostgresProvider::featureCount() const
   if ( featuresCounted >= 0 )
     return featuresCounted;
 
+  // See: https://issues.qgis.org/issues/17388 - QGIS crashes on featureCount())
+  if ( ! connectionRO() )
+  {
+    return 0;
+  }
+
   // get total number of features
   QString sql;
 
