@@ -34,6 +34,9 @@
        <property name="checked">
         <bool>true</bool>
        </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_2</string>
+       </attribute>
       </widget>
      </item>
      <item>
@@ -47,6 +50,9 @@
        <property name="checked">
         <bool>false</bool>
        </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup_2</string>
+       </attribute>
       </widget>
      </item>
      <item>
@@ -177,6 +183,12 @@ datasets with maximum width and height specified below.</string>
        <property name="text">
         <string>Nearest Neigbbour</string>
        </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup</string>
+       </attribute>
       </widget>
      </item>
      <item>
@@ -184,6 +196,19 @@ datasets with maximum width and height specified below.</string>
        <property name="text">
         <string>Bilinear</string>
        </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup</string>
+       </attribute>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="mCubicRadioButton">
+       <property name="text">
+        <string>Cubic</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">buttonGroup</string>
+       </attribute>
       </widget>
      </item>
     </layout>
@@ -811,4 +836,8 @@ datasets with maximum width and height specified below.</string>
    </hints>
   </connection>
  </connections>
+ <buttongroups>
+  <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup"/>
+ </buttongroups>
 </ui>

@@ -380,6 +380,13 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 // Editor widgets
 #include "qgseditorwidgetregistry.h"
+
+//Resamplers
+#include "qgsrasterresamplefilter.h"
+#include "qgsrasterresampler.h"
+#include "qgsbilinearrasterresampler.h"
+#include "qgscubicrasterresampler.h"
+
 //
 // Conditional Includes
 //
@@ -6505,6 +6512,31 @@ void QgisApp::saveAsRasterFile()
         return;
       }
     }
+
+
+	if (d.resample()!= QgsRasterLayerSaveAsDialog::NearestNeighbour)
+	{
+		QgsRasterResampleFilter *resampler = new QgsRasterResampleFilter;
+		QgsRasterResampler *r = nullptr;
+		QgsRasterResampler *avg = new QgsBilinearRasterResampler();
+		switch(d.resample())
+		{
+			case QgsRasterLayerSaveAsDialog::Bilinear:
+				r = new QgsBilinearRasterResampler();
+				break;
+			case QgsRasterLayerSaveAsDialog::Cubic:
+				r = new QgsCubicRasterResampler();
+
+		}
+		resampler->setZoomedInResampler(r);
+		resampler->setZoomedOutResampler(avg);
+
+		if (!pipe->insert(3, resampler))
+		{
+			QgsDebugMsg("Cannot set pipe resampler");
+			return;
+		}
+	}
   }
   else // RenderedImageMode
   {
