@@ -1273,6 +1273,9 @@ QgisApp::QgisApp()
   mUndoWidget = new QgsUndoWidget( nullptr, mMapCanvas );
   mInfoBar = new QgsMessageBar( centralWidget() );
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
+  mPanelMenu = new QMenu( this );
+  mProgressBar = new QProgressBar( this );
+  mStatusBar = new QgsStatusBar( this );
   // More tests may need more members to be initialized
 }
 
