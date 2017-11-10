@@ -81,6 +81,9 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
         feedback = self.createFeedback()
 
+        load_layers = self.mainWidget.checkLoadLayersOnCompletion.isChecked()
+        project = QgsProject.instance() if load_layers else None
+
         for row in range(self.mainWidget.tblParameters.rowCount()):
             col = 0
             parameters = {}
@@ -107,7 +110,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                     if isinstance(out, (QgsProcessingParameterRasterDestination,
                                         QgsProcessingParameterFeatureSink)):
                         # load rasters and sinks on completion
-                        parameters[out.name()] = QgsProcessingOutputLayerDefinition(text, QgsProject.instance())
+                        parameters[out.name()] = QgsProcessingOutputLayerDefinition(text, project)
                     else:
                         parameters[out.name()] = text
                     col += 1
