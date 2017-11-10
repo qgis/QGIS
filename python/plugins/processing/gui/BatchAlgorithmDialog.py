@@ -80,7 +80,9 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         load = []
 
         feedback = self.createFeedback()
-        context = dataobjects.createContext(feedback)
+
+        load_layers = self.mainWidget.checkLoadLayersOnCompletion.isChecked()
+        project = QgsProject.instance() if load_layers else None
 
         for row in range(self.mainWidget.tblParameters.rowCount()):
             col = 0
@@ -90,7 +92,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                     continue
                 wrapper = self.mainWidget.wrappers[row][col]
                 parameters[param.name()] = wrapper.value()
-                if not param.checkValueIsAcceptable(wrapper.value(), context):
+                if not param.checkValueIsAcceptable(wrapper.value()):
                     self.bar.pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
                                          param.description(), row + 1),
                                          level=QgsMessageBar.WARNING, duration=5)
@@ -104,11 +106,11 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                 count_visible_outputs += 1
                 widget = self.mainWidget.tblParameters.cellWidget(row, col)
                 text = widget.getValue()
-                if out.checkValueIsAcceptable(text, context):
+                if out.checkValueIsAcceptable(text):
                     if isinstance(out, (QgsProcessingParameterRasterDestination,
                                         QgsProcessingParameterFeatureSink)):
                         # load rasters and sinks on completion
-                        parameters[out.name()] = QgsProcessingOutputLayerDefinition(text, context.project())
+                        parameters[out.name()] = QgsProcessingOutputLayerDefinition(text, project)
                     else:
                         parameters[out.name()] = text
                     col += 1
@@ -145,6 +147,12 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                 feedback.pushCommandInfo(pformat(parameters))
                 feedback.pushInfo('')
 
+                # important - we create a new context for each iteration
+                # this avoids holding onto resources and layers from earlier iterations,
+                # and allows batch processing of many more items then is possible
+                # if we hold on to these layers
+                context = dataobjects.createContext(feedback)
+
                 alg_start_time = time.time()
                 ret, results = execute(self.alg, parameters, context, feedback)
                 if ret:
@@ -159,9 +167,9 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                 else:
                     break
 
-            feedback.pushInfo(self.tr('Batch execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
+                handleAlgorithmResults(self.alg, context, feedback, False)
 
-            handleAlgorithmResults(self.alg, context, feedback, False)
+        feedback.pushInfo(self.tr('Batch execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
 
         self.finish(algorithm_results)
         self.buttonCancel.setEnabled(False)
