@@ -191,51 +191,49 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
 {
   // The approach here is to try all possible encodings and algorithms
   QByteArray keydata( QgsAuthCertUtils::fileData( keypath ) );
-
   QSslKey clientkey;
-  clientkey = QSslKey( keydata,
-                       QSsl::Rsa,
-                       QSsl::Pem,
-                       QSsl::PrivateKey,
-                       !keypass.isEmpty() ? keypass.toUtf8() : QByteArray() );
-  if ( ! clientkey.isNull() )
+
+  QSsl::EncodingFormat keyEncoding( keydata.contains( QByteArrayLiteral( "-----BEGIN " ) ) ?
+                                    QSsl::Pem :
+                                    QSsl::Der );
+
+  const std::vector<QSsl::KeyAlgorithm> algs
   {
-    if ( algtype )
-      *algtype = QStringLiteral( "rsa" );
-    return clientkey;
-  }
-  clientkey = QSslKey( keydata,
-                       QSsl::Dsa,
-                       QSsl::Pem,
-                       QSsl::PrivateKey,
-                       !keypass.isEmpty() ? keypass.toUtf8() : QByteArray() );
-  if ( ! clientkey.isNull() )
+    QSsl::KeyAlgorithm::Rsa,
+    QSsl::KeyAlgorithm::Dsa,
+    QSsl::KeyAlgorithm::Ec,
+    QSsl::KeyAlgorithm::Opaque
+  };
+
+  for ( const auto &alg : algs )
   {
-    if ( algtype )
-      *algtype = QStringLiteral( "dsa" );
-    return clientkey;
-  }
-  clientkey = QSslKey( keydata,
-                       QSsl::Rsa,
-                       QSsl::Der,
-                       QSsl::PrivateKey,
-                       !keypass.isEmpty() ? keypass.toUtf8() : QByteArray() );
-  if ( ! clientkey.isNull() )
-  {
-    if ( algtype )
-      *algtype = QStringLiteral( "rsa" );
-    return clientkey;
-  }
-  clientkey = QSslKey( keydata,
-                       QSsl::Dsa,
-                       QSsl::Der,
-                       QSsl::PrivateKey,
-                       !keypass.isEmpty() ? keypass.toUtf8() : QByteArray() );
-  if ( ! clientkey.isNull() )
-  {
-    if ( algtype )
-      *algtype = QStringLiteral( "dsa" );
-    return clientkey;
+    clientkey = QSslKey( keydata,
+                         alg,
+                         keyEncoding,
+                         QSsl::PrivateKey,
+                         !keypass.isEmpty() ? keypass.toUtf8() : QByteArray() );
+    if ( ! clientkey.isNull() )
+    {
+      if ( algtype )
+      {
+        switch ( alg )
+        {
+          case QSsl::KeyAlgorithm::Rsa:
+            *algtype = QStringLiteral( "rsa" );
+            break;
+          case QSsl::KeyAlgorithm::Dsa:
+            *algtype = QStringLiteral( "dsa" );
+            break;
+          case QSsl::KeyAlgorithm::Ec:
+            *algtype = QStringLiteral( "ec" );
+            break;
+          case QSsl::KeyAlgorithm::Opaque:
+            *algtype = QStringLiteral( "opaque" );
+            break;
+        }
+      }
+      return clientkey;
+    }
   }
   return QSslKey();
 }
