@@ -43,6 +43,7 @@
 #include "qgsalgorithmmergelines.h"
 #include "qgsalgorithmminimumenclosingcircle.h"
 #include "qgsalgorithmmultiparttosinglepart.h"
+#include "qgsalgorithmorderbyexpression.h"
 #include "qgsalgorithmorientedminimumboundingbox.h"
 #include "qgsalgorithmpackage.h"
 #include "qgsalgorithmpromotetomultipart.h"
@@ -122,6 +123,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMergeLinesAlgorithm() );
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
+  addAlgorithm( new QgsOrderByExpressionAlgorithm() );
   addAlgorithm( new QgsOrientedMinimumBoundingBoxAlgorithm() );
   addAlgorithm( new QgsPackageAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
