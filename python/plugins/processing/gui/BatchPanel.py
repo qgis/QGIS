@@ -167,17 +167,19 @@ class BatchPanel(BASE, WIDGET):
                 for param in self.alg.parameterDefinitions():
                     if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                         continue
+                    if param.isDestination():
+                        continue
                     if param.name() in params:
-                        value = params[param.name()].strip('"')
+                        value = params[param.name()].strip("'")
                         wrapper = self.wrappers[row][column]
                         wrapper.setValue(value)
                     column += 1
 
-                for out in self.alg.outputs:
+                for out in self.alg.destinationParameterDefinitions():
                     if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
                         continue
                     if out.name() in outputs:
-                        value = outputs[out.name()].strip('"')
+                        value = outputs[out.name()].strip("'")
                         widget = self.tblParameters.cellWidget(row, column)
                         widget.setValue(value)
                     column += 1
@@ -198,26 +200,28 @@ class BatchPanel(BASE, WIDGET):
             for param in alg.parameterDefinitions():
                 if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     continue
+                if param.isDestination():
+                    continue
                 wrapper = self.wrappers[row][col]
-                if not param.checkValueIsAcceptable(wrapper.value, context):
+                if not param.checkValueIsAcceptable(wrapper.value(), context):
                     self.parent.bar.pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
-                                                param.description(), row + 1),
-                                                level=QgsMessageBar.WARNING, duration=5)
+                        param.description(), row + 1),
+                        level=QgsMessageBar.WARNING, duration=5)
                     return
-                algParams[param.name()] = param.getValueAsCommandLineParameter()
+                algParams[param.name()] = param.valueAsPythonString(wrapper.value(), context)
                 col += 1
-            for out in alg.outputs:
+            for out in alg.destinationParameterDefinitions():
                 if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     continue
                 widget = self.tblParameters.cellWidget(row, col)
                 text = widget.getValue()
                 if text.strip() != '':
-                    algOutputs[out.name] = text.strip()
+                    algOutputs[out.name()] = text.strip()
                     col += 1
                 else:
                     self.parent.bar.pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
-                                                out.description(), row + 1),
-                                                level=QgsMessageBar.WARNING, duration=5)
+                        out.description(), row + 1),
+                        level=QgsMessageBar.WARNING, duration=5)
                     return
             toSave.append({self.PARAMETERS: algParams, self.OUTPUTS: algOutputs})
 
