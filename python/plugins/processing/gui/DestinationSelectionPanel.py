@@ -122,11 +122,6 @@ class DestinationSelectionPanel(BASE, WIDGET):
             actionSaveToFile.triggered.connect(self.selectFile)
             popupMenu.addAction(actionSaveToFile)
 
-            actionShowExpressionsBuilder = QAction(
-                self.tr('Use expression...'), self.btnSelect)
-            actionShowExpressionsBuilder.triggered.connect(self.showExpressionsBuilder)
-            popupMenu.addAction(actionShowExpressionsBuilder)
-
             if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
                     and self.alg.provider().supportsNonFileBasedOutput():
                 actionSaveToSpatialite = QAction(
@@ -144,15 +139,6 @@ class DestinationSelectionPanel(BASE, WIDGET):
                 popupMenu.addAction(actionSaveToPostGIS)
 
             popupMenu.exec_(QCursor.pos())
-
-    def showExpressionsBuilder(self):
-        context = self.alg.createExpressionContext({}, createContext())
-        dlg = QgsExpressionBuilderDialog(None, self.leText.text(), self, 'generic',
-                                         context)
-        dlg.setWindowTitle(self.tr('Expression based output'))
-        if dlg.exec_() == QDialog.Accepted:
-            expression = QgsExpression(dlg.expressionText())
-            self.leText.setText(expression.evaluate(context))
 
     def saveToTemporary(self):
         if isinstance(self.parameter, QgsProcessingParameterFeatureSink) and self.alg.provider().supportsNonFileBasedOutput():

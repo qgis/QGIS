@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import math
+import sip
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
@@ -123,9 +124,7 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
 
     """
     Number input panel for use outside the modeller - this input panel
-    contains a user friendly spin box for entering values. It also
-    allows expressions to be evaluated, but these expressions are evaluated
-    immediately after entry and are not stored anywhere.
+    contains a user friendly spin box for entering values.
     """
 
     hasChanged = pyqtSignal()
@@ -172,24 +171,13 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
         else:
             self.setValue(0)
             self.spnValue.setClearValue(0)
-        self.btnSelect.setFixedHeight(self.spnValue.height())
 
-        self.btnSelect.clicked.connect(self.showExpressionsBuilder)
+        # we don't show the expression button outside of modeler
+        self.layout().removeWidget(self.btnSelect)
+        sip.delete(self.btnSelect)
+        self.btnSelect = None
+
         self.spnValue.valueChanged.connect(lambda: self.hasChanged.emit())
-
-    def showExpressionsBuilder(self):
-        context = createExpressionContext()
-        dlg = QgsExpressionBuilderDialog(None, str(self.spnValue.value()), self, 'generic', context)
-
-        dlg.setWindowTitle(self.tr('Expression based input'))
-        if dlg.exec_() == QDialog.Accepted:
-            exp = QgsExpression(dlg.expressionText())
-            if not exp.hasParserError():
-                try:
-                    val = float(exp.evaluate(context))
-                    self.setValue(val)
-                except:
-                    return
 
     def getValue(self):
         return self.spnValue.value()
