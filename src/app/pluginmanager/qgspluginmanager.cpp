@@ -92,10 +92,6 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   // Don't let QgsOptionsDialogBase to narrow the vertical tab list widget
   mOptListWidget->setMaximumWidth( 16777215 );
 
-  // Restiore UI state for widgets not handled by QgsOptionsDialogBase
-  QgsSettings settings;
-  mPluginsDetailsSplitter->restoreState( settings.value( QStringLiteral( "Windows/PluginManager/secondSplitterState" ) ).toByteArray() );
-
   // load translated description strings from qgspluginmanager_texts
   initTabDescriptions();
 
@@ -118,15 +114,18 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   leFilter->setFocus( Qt::MouseFocusReason );
   wvDetails->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
 
-  // Don't restore the last used tab from QgsSettings
-  mOptionsListWidget->setCurrentRow( 0 );
-
   // Connect other signals
   connect( mOptionsListWidget, &QListWidget::currentRowChanged, this, &QgsPluginManager::setCurrentTab );
   connect( vwPlugins->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsPluginManager::currentPluginChanged );
   connect( mModelPlugins, &QStandardItemModel::itemChanged, this, &QgsPluginManager::pluginItemChanged );
-  // Force setting the status filter (if the active tab was 0, the setCurrentRow( 0 ) above doesn't take any action)
-  setCurrentTab( 0 );
+
+  // Restiore UI state for widgets not handled by QgsOptionsDialogBase
+  QgsSettings settings;
+  // 1) The second splitter state:
+  mPluginsDetailsSplitter->restoreState( settings.value( QStringLiteral( "Windows/PluginManager/secondSplitterState" ) ).toByteArray() );
+  // 2) The current mOptionsListWidget index (it will overwrite the "tab" setting of QgsOptionsDialogBase that handles the stackedWidget page
+  // instead of the mOptionsListWidget index). Then the signal connected above will update the relevant page as well.
+  mOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "Windows/PluginManager/option" ), 0 ).toInt() );
 
   // Hide widgets only suitable with Python support enabled (they will be uncovered back in setPythonUtils)
   buttonUpgradeAll->hide();
@@ -158,6 +157,7 @@ QgsPluginManager::~QgsPluginManager()
 
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/PluginManager/secondSplitterState" ), mPluginsDetailsSplitter->saveState() );
+  settings.setValue( QStringLiteral( "Windows/PluginManager/option" ), mOptionsListWidget->currentRow() );
 }
 
 
