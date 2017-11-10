@@ -46,8 +46,8 @@ class TestQgsServerWMS(QgsServerTestBase):
     # Set to True to re-generate reference files for this class
     regenerate_reference = False
 
-    def wms_request_compare(self, request, extra=None, reference_file=None):
-        project = self.testdata_path + "test_project.qgs"
+    def wms_request_compare(self, request, extra=None, reference_file=None, project='test_project.qgs'):
+        project = self.testdata_path + project
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = 'https://www.qgis.org/?MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.parse.quote(project), request)
@@ -216,6 +216,21 @@ class TestQgsServerWMS(QgsServerTestBase):
                                  '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
                                  'query_layers=testlayer+%C3%A8%C3%A9&X=190&Y=320',
                                  'wms_getfeatureinfo-text-xml')
+
+        # layer1 is a clone of layer0 but with a scale visibility. Thus,
+        # GetFeatureInfo response contains only a feature for layer0 and layer1
+        # is ignored for the required bbox. Without the scale visibility option,
+        # the feature for layer1 would have been in the response too.
+        mypath = self.testdata_path + "test_project_scalevisibility.qgs"
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=layer0,layer1&styles=&' +
+                                 'VERSION=1.1.0&' +
+                                 'info_format=text%2Fxml&' +
+                                 'width=500&height=500&srs=EPSG%3A4326' +
+                                 '&bbox=8.1976,44.8998,8.2100,44.9027&' +
+                                 'query_layers=layer0,layer1&X=235&Y=243',
+                                 'wms_getfeatureinfo_notvisible',
+                                 'test_project_scalevisibility.qgs')
 
     def test_describelayer(self):
         # Test DescribeLayer
