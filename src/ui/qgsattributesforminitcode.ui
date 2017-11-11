@@ -101,7 +101,7 @@ Reference in function name: my_form_open
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -143,6 +143,10 @@ Reference in function name: my_form_open
    <header>qgsfilewidget.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mInitCodeSourceComboBox</tabstop>
+  <tabstop>mInitFunctionLineEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
