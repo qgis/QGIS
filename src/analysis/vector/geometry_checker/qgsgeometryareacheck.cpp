@@ -173,7 +173,7 @@ bool QgsGeometryAreaCheck::mergeWithNeighbor( const QString &layerId, QgsFeature
 
   if ( !matchFound && maxVal == 0. )
   {
-    return method == MergeIdenticalAttribute ? true : false;
+    return method == MergeIdenticalAttribute;
   }
 
   // Merge geometries

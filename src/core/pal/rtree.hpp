@@ -389,11 +389,7 @@ namespace pal
           fclose( m_file );
 
         m_file = fopen( a_fileName, "rb" );
-        if ( !m_file )
-        {
-          return false;
-        }
-        return true;
+        return m_file != nullptr;
       }
 
       bool OpenWrite( const char *a_fileName )
@@ -402,11 +398,7 @@ namespace pal
           fclose( m_file );
 
         m_file = fopen( a_fileName, "wb" );
-        if ( !m_file )
-        {
-          return false;
-        }
-        return true;
+        return m_file != nullptr;
       }
 
       void Close()

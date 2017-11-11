@@ -209,7 +209,7 @@ void TestQgsAuthManager::testMasterPassword()
   QCOMPARE( spy.count(), 1 );
   spyargs = spy.takeFirst();
   QVERIFY( spyargs.at( 0 ).type() == QVariant::Bool );
-  QVERIFY( spyargs.at( 0 ).toBool() == true );
+  QVERIFY( spyargs.at( 0 ).toBool() );
 
   authm->clearMasterPassword();
   QVERIFY( !authm->masterPasswordIsSet() );
@@ -218,7 +218,7 @@ void TestQgsAuthManager::testMasterPassword()
   QCOMPARE( spy.count(), 1 );
   spyargs = spy.takeFirst();
   QVERIFY( spyargs.at( 0 ).type() == QVariant::Bool );
-  QVERIFY( spyargs.at( 0 ).toBool() == false );
+  QVERIFY( !spyargs.at( 0 ).toBool() );
 
   authm->clearMasterPassword();
   QVERIFY( !authm->masterPasswordIsSet() );
@@ -227,7 +227,7 @@ void TestQgsAuthManager::testMasterPassword()
   QCOMPARE( spy.count(), 1 );
   spyargs = spy.takeFirst();
   QVERIFY( spyargs.at( 0 ).type() == QVariant::Bool );
-  QVERIFY( spyargs.at( 0 ).toBool() == true );
+  QVERIFY( spyargs.at( 0 ).toBool() );
 }
 
 void TestQgsAuthManager::testAuthConfigs()
