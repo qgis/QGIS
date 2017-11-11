@@ -29,6 +29,8 @@ class QgsApplyDialog: public QDialog
     Q_OBJECT
 
   public:
+
+    //! Constructor for QgsApplyDialog
     QgsApplyDialog() = default;
 
     /**

@@ -84,6 +84,7 @@ class CORE_EXPORT QgsError
 {
   public:
 
+    //! Constructor for QgsError
     QgsError() = default;
 
     /**

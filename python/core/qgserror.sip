@@ -78,6 +78,9 @@ class QgsError
   public:
 
     QgsError();
+%Docstring
+Constructor for QgsError
+%End
 
     QgsError( const QString &message, const QString &tag );
 %Docstring
