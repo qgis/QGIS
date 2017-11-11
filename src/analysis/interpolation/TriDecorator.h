@@ -31,9 +31,9 @@
 class ANALYSIS_EXPORT TriDecorator : public Triangulation
 {
   public:
-    TriDecorator();
+    //! Constructor for TriDecorator
+    TriDecorator() = default;
     explicit TriDecorator( Triangulation *t );
-    virtual ~TriDecorator();
     void addLine( const QVector< QgsPoint> &points, QgsInterpolator::SourceType lineType ) override;
     int addPoint( const QgsPoint &p ) override;
     //! Adds an association to a triangulation
@@ -69,18 +69,8 @@ class ANALYSIS_EXPORT TriDecorator : public Triangulation
 
 #ifndef SIP_RUN
 
-inline TriDecorator::TriDecorator()
-{
-
-}
-
 inline TriDecorator::TriDecorator( Triangulation *t )
   : mTIN( t )
-{
-
-}
-
-inline TriDecorator::~TriDecorator()
 {
 
 }

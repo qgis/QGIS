@@ -73,7 +73,7 @@ class CORE_EXPORT QgsRelation
     {
       public:
         //! Default constructor: NULL strings
-        FieldPair() {}
+        FieldPair() = default;
 
         //! Constructor which takes two fields
         FieldPair( const QString &referencingField, const QString &referencedField )
@@ -370,7 +370,7 @@ class CORE_EXPORT QgsRelation
     //! The parent layer
     QgsVectorLayer *mReferencedLayer = nullptr;
 
-    RelationStrength mRelationStrength;
+    RelationStrength mRelationStrength = Association;
 
     /**
      * A list of fields which define the relation.

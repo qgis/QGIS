@@ -26,23 +26,6 @@
 #include "qgssymbollayerutils.h"
 #include "qgsrasterlayer.h"
 
-
-Qgs3DMapSettings::Qgs3DMapSettings()
-  : mOriginX( 0 )
-  , mOriginY( 0 )
-  , mOriginZ( 0 )
-  , mBackgroundColor( Qt::black )
-  , mTerrainVerticalScale( 1 )
-  , mMapTileResolution( 512 )
-  , mMaxTerrainScreenError( 3.f )
-  , mMaxTerrainGroundError( 1.f )
-  , mShowTerrainBoundingBoxes( false )
-  , mShowTerrainTileInfo( false )
-  , mShowLabels( false )
-  , mSkyboxEnabled( false )
-{
-}
-
 Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   : QObject()
   , mOriginX( other.mOriginX )

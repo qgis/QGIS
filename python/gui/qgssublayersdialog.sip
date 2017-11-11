@@ -25,8 +25,6 @@ class QgsSublayersDialog : QDialog
 
     struct LayerDefinition
     {
-      LayerDefinition();
-
       int layerId;
       QString layerName;  //!< Name of the layer (not necessarily unique)
       int count;

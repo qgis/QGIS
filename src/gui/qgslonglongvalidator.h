@@ -46,9 +46,6 @@ class GUI_EXPORT QgsLongLongValidator : public QValidator
       , t( top )
     {}
 
-    ~QgsLongLongValidator()
-    {}
-
     QValidator::State validate( QString &input, int & ) const override
     {
       if ( input.isEmpty() )

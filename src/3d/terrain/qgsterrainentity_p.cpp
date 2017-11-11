@@ -57,7 +57,6 @@ QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Q
                       map.terrainGenerator()->rootChunkError( map ),
                       map.maxTerrainScreenError(), maxLevel, map.terrainGenerator(), parent )
   , mMap( map )
-  , mTerrainPicker( nullptr )
 {
   map.terrainGenerator()->setTerrain( this );
 

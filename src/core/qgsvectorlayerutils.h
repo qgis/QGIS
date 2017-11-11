@@ -43,7 +43,8 @@ class CORE_EXPORT QgsVectorLayerUtils
     {
       public:
 
-        QgsDuplicateFeatureContext() {}
+        //! Constructor for QgsDuplicateFeatureContext
+        QgsDuplicateFeatureContext() = default;
 
         /**
          * Returns all the layers on which features have been duplicated

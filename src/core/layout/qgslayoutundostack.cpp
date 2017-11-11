@@ -21,8 +21,7 @@
 #include <QUndoStack>
 
 QgsLayoutUndoStack::QgsLayoutUndoStack( QgsLayout *layout )
-  : QObject()
-  , mLayout( layout )
+  : mLayout( layout )
   , mUndoStack( new QUndoStack( layout ) )
 {
   connect( mUndoStack.get(), &QUndoStack::indexChanged, this, &QgsLayoutUndoStack::indexChanged );
@@ -75,7 +74,6 @@ void QgsLayoutUndoStack::cancelCommand()
 QUndoStack *QgsLayoutUndoStack::stack()
 {
   return mUndoStack.get();
-
 }
 
 void QgsLayoutUndoStack::notifyUndoRedoOccurred( QgsLayoutItem *item )

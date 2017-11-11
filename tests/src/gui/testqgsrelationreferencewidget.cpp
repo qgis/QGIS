@@ -79,7 +79,7 @@ void TestQgsRelationReferenceWidget::init()
   mRelation->setReferencedLayer( mLayer2->id() );
   mRelation->addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
   QVERIFY( mRelation->isValid() );
-  QgsProject::instance()->relationManager()->addRelation( *mRelation.get() );
+  QgsProject::instance()->relationManager()->addRelation( *mRelation );
 
   // add features
   QgsFeature ft0( mLayer1->fields() );

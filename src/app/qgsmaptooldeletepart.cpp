@@ -112,7 +112,6 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     emit messageEmitted( tr( "Couldn't remove the selected part." ) );
   }
-  return;
 }
 
 QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fid, int &partNum )

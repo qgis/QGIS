@@ -225,7 +225,7 @@ class CORE_EXPORT QgsFeatureRequest
         /**
          * Create a new empty order by
          */
-        CORE_EXPORT OrderBy() {}
+        CORE_EXPORT OrderBy() = default;
 
         /**
          * Create a new order by from a list of clauses

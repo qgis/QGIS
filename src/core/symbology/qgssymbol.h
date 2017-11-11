@@ -444,6 +444,9 @@ class CORE_EXPORT QgsSymbolRenderContext
      */
     QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 
+    //! QgsSymbolRenderContext cannot be copied.
+    QgsSymbolRenderContext( const QgsSymbolRenderContext &rh ) = delete;
+
     QgsRenderContext &renderContext() { return mRenderContext; }
     const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
 
@@ -569,7 +572,10 @@ class CORE_EXPORT QgsSymbolRenderContext
     void setExpressionContextScope( QgsExpressionContextScope *contextScope SIP_TRANSFER );
 
   private:
+
+#ifdef SIP_RUN
     QgsSymbolRenderContext( const QgsSymbolRenderContext &rh ) SIP_FORCE;
+#endif
 
     QgsRenderContext &mRenderContext;
     std::unique_ptr< QgsExpressionContextScope > mExpressionContextScope;

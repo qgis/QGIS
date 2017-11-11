@@ -4458,10 +4458,6 @@ QgsOgrLayer::QgsOgrLayer()
   oFDefn.layer = this;
 }
 
-QgsOgrLayer::~QgsOgrLayer()
-{
-}
-
 QgsOgrLayer *QgsOgrLayer::CreateForLayer(
   const QgsOgrProviderUtils::DatasetIdentification &ident,
   const QString &layerName,
@@ -4685,14 +4681,6 @@ QgsOgrLayer *QgsOgrLayer::ExecuteSQL( const QByteArray &sql )
                                     QString::fromUtf8( sql ),
                                     ds,
                                     hSqlLayer );
-}
-
-QgsOgrFeatureDefn::QgsOgrFeatureDefn()
-{
-}
-
-QgsOgrFeatureDefn::~QgsOgrFeatureDefn()
-{
 }
 
 QMutex &QgsOgrFeatureDefn::mutex()

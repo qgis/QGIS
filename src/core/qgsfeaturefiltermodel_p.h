@@ -46,10 +46,6 @@ class QgsFieldExpressionValuesGatherer: public QThread
     {
     }
 
-    ~QgsFieldExpressionValuesGatherer()
-    {
-    }
-
     virtual void run() override
     {
       mWasCanceled = false;

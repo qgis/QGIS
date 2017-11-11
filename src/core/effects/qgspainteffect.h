@@ -326,7 +326,8 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
 {
   public:
 
-    QgsDrawSourceEffect();
+    //! Constructor for QgsDrawSourceEffect
+    QgsDrawSourceEffect() = default;
 
     /**
      * Creates a new QgsDrawSource effect from a properties string map.

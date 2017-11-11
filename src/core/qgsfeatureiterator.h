@@ -288,7 +288,7 @@ class CORE_EXPORT QgsFeatureIterator
 #endif
 
     //! construct invalid iterator
-    QgsFeatureIterator();
+    QgsFeatureIterator() = default;
 #ifndef SIP_RUN
     //! construct a valid iterator
     QgsFeatureIterator( QgsAbstractFeatureIterator *iter );
@@ -344,10 +344,6 @@ class CORE_EXPORT QgsFeatureIterator
 };
 
 #ifndef SIP_RUN
-
-inline QgsFeatureIterator::QgsFeatureIterator()
-{
-}
 
 inline QgsFeatureIterator::QgsFeatureIterator( QgsAbstractFeatureIterator *iter )
   : mIter( iter )

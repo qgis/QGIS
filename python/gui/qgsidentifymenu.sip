@@ -32,6 +32,9 @@ class QgsIdentifyMenu : QMenu
     struct ActionData
     {
       ActionData();
+%Docstring
+Constructor for ActionData
+%End
 
       ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = 0 );
 

@@ -564,7 +564,8 @@ class CORE_EXPORT QgsExpression
 
     struct Help SIP_SKIP
     {
-      Help() {}
+      //! Constructor for expression help
+      Help() = default;
 
       Help( const QString &name, const QString &type, const QString &description, const QList<QgsExpression::HelpVariant> &variants )
         : mName( name )

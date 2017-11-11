@@ -8,10 +8,6 @@ QgsAttributeRelationEdit::QgsAttributeRelationEdit( const QString &relationid, Q
   setupUi( this );
 }
 
-QgsAttributeRelationEdit::~QgsAttributeRelationEdit()
-{
-}
-
 void QgsAttributeRelationEdit::setCardinalityCombo( const QString &cardinalityComboItem, const QVariant &auserData )
 {
   coCardinality->addItem( cardinalityComboItem, auserData );

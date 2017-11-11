@@ -388,6 +388,7 @@ static bool ring_make_geos_friendly( QgsCurve *ring )
 
   // earlier we allowed in only geometries with straight segments
   QgsLineString *linestring = qgsgeometry_cast<QgsLineString *>( ring );
+  Q_ASSERT_X( linestring, "ring_make_geos_friendly", "ring was not a linestring" );
 
   // close the ring if not already closed (2d only)
 

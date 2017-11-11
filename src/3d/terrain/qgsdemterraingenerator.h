@@ -36,7 +36,8 @@ class QgsDemHeightMapGenerator;
 class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
 {
   public:
-    QgsDemTerrainGenerator();
+    //! Constructor for QgsDemTerrainGenerator
+    QgsDemTerrainGenerator() = default;
     ~QgsDemTerrainGenerator();
 
     //! Sets raster layer with elevation model to be used for terrain generation
@@ -75,9 +76,9 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     //! source layer for heights
     QgsMapLayerRef mLayer;
     //! how many vertices to place on one side of the tile
-    int mResolution;
+    int mResolution = 16;
     //! height of the "skirts" at the edges of tiles to hide cracks between adjacent cracks
-    float mSkirtHeight;
+    float mSkirtHeight = 10.f;
 };
 
 

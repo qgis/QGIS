@@ -33,7 +33,6 @@ class APP_EXPORT QgsAttributesFormInitCode: public QDialog, private Ui::QgsAttri
 
   public:
     explicit QgsAttributesFormInitCode();
-    ~QgsAttributesFormInitCode();
 
     void setCodeSource( QgsEditFormConfig::PythonInitCodeSource initCodeSourceComboBoxIndex );
     void setInitFunction( const QString &initFunction );

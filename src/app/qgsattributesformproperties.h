@@ -66,12 +66,8 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
 
     struct RelationEditorConfiguration
     {
-      RelationEditorConfiguration()
-        : showLinkButton( true )
-        , showUnlinkButton( true )
-      {}
-      bool showLinkButton;
-      bool showUnlinkButton;
+      bool showLinkButton = true;
+      bool showUnlinkButton = true;
     };
 
     class DnDTreeItemData : public QTreeWidgetItem
@@ -85,12 +81,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         };
 
         //do we need that
-        DnDTreeItemData()
-          : mType( Field )
-          , mColumnCount( 1 )
-          , mShowAsGroupBox( false )
-          , mShowLabel( true )
-        {}
+        DnDTreeItemData() = default;
 
         DnDTreeItemData( Type type, const QString &name )
           : mType( type )
@@ -124,11 +115,11 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         void setRelationEditorConfiguration( RelationEditorConfiguration relationEditorConfiguration );
 
       private:
-        Type mType;
+        Type mType = Field;
         QString mName;
-        int mColumnCount;
-        bool mShowAsGroupBox;
-        bool mShowLabel;
+        int mColumnCount = 1;
+        bool mShowAsGroupBox = false;
+        bool mShowLabel = true;
         QgsOptionalExpression mVisibilityExpression;
         RelationEditorConfiguration mRelationEditorConfiguration;
     };
@@ -139,14 +130,14 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
      */
     struct FieldConfig
     {
-      FieldConfig();
+      FieldConfig() = default;
       FieldConfig( QgsVectorLayer *layer, int idx );
 
-      bool mEditable;
-      bool mEditableEnabled;
-      bool mLabelOnTop;
+      bool mEditable =  true ;
+      bool mEditableEnabled =  true ;
+      bool mLabelOnTop =  false ;
       QgsFieldConstraints mFieldConstraints;
-      QgsFieldConstraints::Constraints mConstraints;
+      QgsFieldConstraints::Constraints mConstraints = 0;
       QHash< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength > mConstraintStrength;
       QString mConstraint;
       QString mConstraintDescription;
@@ -175,7 +166,6 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
 
   public:
     explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );
-    ~QgsAttributesFormProperties();
 
     QgsAttributeEditorElement *createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool forceGroup = true );
 

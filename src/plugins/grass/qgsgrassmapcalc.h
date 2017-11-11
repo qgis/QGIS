@@ -504,7 +504,7 @@ class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalc
     std::vector<QPoint> mPoints;
 
     // Selected end, -1 for whole connector
-    int mSelectedEnd;
+    int mSelectedEnd = -1;
 
     // Connected objects
     std::vector<QgsGrassMapcalcObject *> mSocketObjects;

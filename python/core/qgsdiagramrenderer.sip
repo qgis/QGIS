@@ -319,6 +319,9 @@ class QgsDiagramSettings
     };
 
     QgsDiagramSettings();
+%Docstring
+Constructor for QgsDiagramSettings
+%End
 
     bool enabled;
     QFont font;
@@ -614,7 +617,11 @@ class QgsSingleCategoryDiagramRenderer : QgsDiagramRenderer
 #include "qgsdiagramrenderer.h"
 %End
   public:
+
     QgsSingleCategoryDiagramRenderer();
+%Docstring
+Constructor for QgsSingleCategoryDiagramRenderer
+%End
 
     virtual QgsSingleCategoryDiagramRenderer *clone() const /Factory/;
 

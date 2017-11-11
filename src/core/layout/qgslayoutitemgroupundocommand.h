@@ -64,7 +64,8 @@ class CORE_EXPORT QgsLayoutItemGroupUndoCommand: public QObject, public QUndoCom
     QSet<QString> mItemUuids;
     QgsLayout *mLayout = nullptr;
     State mState;
-    bool mFirstRun = true; //flag to prevent execution when the command is pushed to the QUndoStack
+    //! Flag to prevent execution when the command is pushed to the QUndoStack
+    bool mFirstRun = true;
 
     //changes between added / removed state
     void switchState();

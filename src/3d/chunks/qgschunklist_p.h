@@ -64,7 +64,8 @@ struct QgsChunkListEntry
 class QgsChunkList
 {
   public:
-    QgsChunkList();
+    //! Constructor for QgsChunkList
+    QgsChunkList() = default;
 
     //! Counts the real number of entries by walking the list (for debugging purposes only)
     int trueCount() const;
@@ -99,7 +100,7 @@ class QgsChunkList
   private:
     QgsChunkListEntry *mHead = nullptr;
     QgsChunkListEntry *mTail = nullptr;
-    int mCount;
+    int mCount = 0;
 };
 
 /// @endcond

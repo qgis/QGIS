@@ -290,7 +290,7 @@ class QgsOgrProviderUtils
         QString dsName;
         bool    updateMode = false;
         QStringList options;
-        DatasetIdentification() {}
+        DatasetIdentification() = default;
 
         bool operator< ( const DatasetIdentification &other ) const;
     };
@@ -390,8 +390,8 @@ class QgsOgrFeatureDefn
     OGRFeatureDefnH hDefn = nullptr;
     QgsOgrLayer *layer = nullptr;
 
-    QgsOgrFeatureDefn();
-    ~QgsOgrFeatureDefn();
+    QgsOgrFeatureDefn() = default;
+    ~QgsOgrFeatureDefn() = default;
 
     OGRFeatureDefnH get();
     QMutex &mutex();
@@ -438,7 +438,7 @@ class QgsOgrLayer
     QgsOgrFeatureDefn oFDefn;
 
     QgsOgrLayer();
-    ~QgsOgrLayer();
+    ~QgsOgrLayer() = default;
 
     static QgsOgrLayer *CreateForLayer(
       const QgsOgrProviderUtils::DatasetIdentification &ident,

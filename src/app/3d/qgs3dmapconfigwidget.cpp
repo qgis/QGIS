@@ -68,10 +68,6 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   updateMaxZoomLevel();
 }
 
-Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
-{
-}
-
 void Qgs3DMapConfigWidget::apply()
 {
   QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() );

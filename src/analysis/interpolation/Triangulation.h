@@ -45,7 +45,7 @@ class ANALYSIS_EXPORT Triangulation
       DeleteFirst,        //!< The status of the first inserted forced line is reset to that of a normal edge (so that the second inserted forced line remain and the first not)
       InsertVertex
     };
-    virtual ~Triangulation();
+    virtual ~Triangulation() = default;
 
     /**
      * Adds a line (e.g. a break-, structure- or an isoline) to the triangulation, by specifying
@@ -184,11 +184,5 @@ class ANALYSIS_EXPORT Triangulation
      */
     virtual bool saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback = nullptr ) const = 0;
 };
-
-#ifndef SIP_RUN
-inline Triangulation::~Triangulation()
-{
-}
-#endif
 
 #endif

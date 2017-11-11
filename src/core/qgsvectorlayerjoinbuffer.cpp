@@ -667,8 +667,5 @@ bool QgsVectorLayerJoinBuffer::isAuxiliaryJoin( const QgsVectorLayerJoinInfo &in
 {
   const QgsAuxiliaryLayer *al = mLayer->auxiliaryLayer();
 
-  if ( al && al->id() == info.joinLayerId() )
-    return true;
-  else
-    return false;
+  return al && al->id() == info.joinLayerId();
 }

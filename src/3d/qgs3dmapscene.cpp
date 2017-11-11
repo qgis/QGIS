@@ -42,7 +42,6 @@
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph, Qt3DRender::QRenderSettings *renderSettings, Qt3DRender::QCamera *camera, const QRect &viewportRect, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
   , mMap( map )
-  , mTerrain( nullptr )
   , mForwardRenderer( defaultFrameGraph )
 {
 

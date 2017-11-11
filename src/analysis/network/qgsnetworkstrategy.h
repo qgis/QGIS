@@ -58,7 +58,7 @@ class ANALYSIS_EXPORT QgsNetworkStrategy
     /**
      * Default constructor
      */
-    QgsNetworkStrategy() {}
+    QgsNetworkStrategy() = default;
 
     virtual ~QgsNetworkStrategy() = default;
 

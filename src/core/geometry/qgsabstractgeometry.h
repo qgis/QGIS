@@ -521,18 +521,18 @@ class CORE_EXPORT QgsAbstractGeometry
          */
         struct Level
         {
-          const QgsAbstractGeometry *g;  //!< Current geometry
-          int index;               //!< Ptr in the current geometry
+          const QgsAbstractGeometry *g = nullptr;  //!< Current geometry
+          int index = 0;               //!< Ptr in the current geometry
         };
 
         Level levels[3];  //!< Stack of levels - three levels should be sufficient (e.g. part index, ring index, vertex index)
-        int depth;        //!< At what depth level are we right now
+        int depth = -1;        //!< At what depth level are we right now
 
         void digDown();   //!< Prepare the stack of levels so that it points to a leaf child geometry
 
       public:
         //! Create invalid iterator
-        vertex_iterator() : depth( -1 ) {}
+        vertex_iterator() = default;
 
         //! Create vertex iterator for a geometry
         vertex_iterator( const QgsAbstractGeometry *g, int index );
@@ -720,7 +720,8 @@ inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 class CORE_EXPORT QgsVertexIterator
 {
   public:
-    QgsVertexIterator(): g( nullptr ) {}
+    //! Constructor for QgsVertexIterator
+    QgsVertexIterator() = default;
 
     //! Constructs iterator for the given geometry
     QgsVertexIterator( const QgsAbstractGeometry *geometry )
@@ -755,7 +756,7 @@ class CORE_EXPORT QgsVertexIterator
 #endif
 
   private:
-    const QgsAbstractGeometry *g;
+    const QgsAbstractGeometry *g = nullptr;
     QgsAbstractGeometry::vertex_iterator i, n;
 
 };

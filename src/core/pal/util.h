@@ -50,8 +50,8 @@ namespace pal
   class Feats
   {
     public:
-      Feats()
-      {}
+      //! Constructor for Feats
+      Feats() = default;
 
       FeaturePart *feature = nullptr;
       PointSet *shape = nullptr;

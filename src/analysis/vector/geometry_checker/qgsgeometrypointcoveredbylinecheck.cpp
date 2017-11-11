@@ -53,12 +53,12 @@ void QgsGeometryPointCoveredByLineCheck::collectErrors( QList<QgsGeometryCheckEr
             break;
           }
         }
-        if ( touches == true )
+        if ( touches )
         {
           break;
         }
       }
-      if ( touches == true )
+      if ( touches )
       {
         continue;
       }

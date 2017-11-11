@@ -55,7 +55,7 @@ class QgsGeometryCheckFactoryRegistry
     }
   private:
     QList<const QgsGeometryCheckFactory *> mFactories;
-    QgsGeometryCheckFactoryRegistry() {}
+    QgsGeometryCheckFactoryRegistry() = default;
     ~QgsGeometryCheckFactoryRegistry() { qDeleteAll( mFactories ); }
 
     static QgsGeometryCheckFactoryRegistry *instance()

@@ -38,6 +38,9 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
 
     QgsBufferServerResponse();
 
+    //! QgsBufferServerResponse cannot be copied
+    QgsBufferServerResponse( const QgsBufferServerResponse & ) = delete;
+
     /**
      *  Set Header entry
      *  Add Header entry to the response
@@ -137,7 +140,10 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
 
   private:
 
+#ifdef SIP_RUN
     QgsBufferServerResponse( const QgsBufferServerResponse & ) SIP_FORCE;
+#endif
+
     QMap<QString, QString> mHeaders;
     QBuffer                mBuffer;
     QByteArray             mBody;

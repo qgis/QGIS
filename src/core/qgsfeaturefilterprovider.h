@@ -44,7 +44,7 @@ class CORE_EXPORT QgsFeatureFilterProvider
 #ifndef SIP_RUN
 
     //! Constructor
-    QgsFeatureFilterProvider() {}
+    QgsFeatureFilterProvider() = default;
 
     virtual ~QgsFeatureFilterProvider() = default;
 

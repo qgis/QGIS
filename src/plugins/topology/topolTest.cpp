@@ -1732,14 +1732,7 @@ ErrorList topolTest::runTest( const QString &testName, QgsVectorLayer *layer1, Q
 
   //call test routine
   bool isValidatingExtent;
-  if ( type == ValidateExtent )
-  {
-    isValidatingExtent = true;
-  }
-  else
-  {
-    isValidatingExtent = false;
-  }
+  isValidatingExtent = type == ValidateExtent;
 
   return ( this->*( mTopologyRuleMap[testName].f ) )( tolerance, layer1, layer2, isValidatingExtent );
 }

@@ -317,7 +317,7 @@ namespace QgsWms
     removeUnwantedLayers( layers );
 
     // configure each layer with opacity, selection filter, ...
-    bool updateMapExtent = mWmsParameters.bbox().isEmpty() ? true : false;
+    bool updateMapExtent = mWmsParameters.bbox().isEmpty();
     Q_FOREACH ( QgsMapLayer *layer, layers )
     {
       Q_FOREACH ( QgsWmsParametersLayer param, params )
@@ -720,7 +720,7 @@ namespace QgsWms
     removeUnwantedLayers( layers );
 
     // configure each layer with opacity, selection filter, ...
-    bool updateMapExtent = mWmsParameters.bbox().isEmpty() ? true : false;
+    bool updateMapExtent = mWmsParameters.bbox().isEmpty();
     Q_FOREACH ( QgsMapLayer *layer, layers )
     {
       Q_FOREACH ( QgsWmsParametersLayer param, params )
@@ -760,7 +760,7 @@ namespace QgsWms
     mapSettings.setLayers( layers );
 
     // rendering step for layers
-    painter.reset( layersRendering( mapSettings, *image.get(), hitTest ) );
+    painter.reset( layersRendering( mapSettings, *image, hitTest ) );
 
     // rendering step for annotations
     annotationsRendering( painter.get() );

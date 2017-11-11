@@ -22,6 +22,7 @@ class QgsBufferServerResponse: QgsServerResponse
 
     QgsBufferServerResponse();
 
+
     virtual void setHeader( const QString &key, const QString &value );
 
 %Docstring

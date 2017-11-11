@@ -548,8 +548,7 @@ void QgsGrassVectorMapLayer::executeSql( const QString &sql, QString &error )
     QgsDebugMsg( error );
   }
 
-  db_free_string( &dbstr );  //if ( index < 0 || index > )
-  return;
+  db_free_string( &dbstr );
 }
 
 void QgsGrassVectorMapLayer::createTable( const QgsFields &fields, QString &error )

@@ -39,8 +39,8 @@ class CORE_EXPORT QgsErrorMessage
       Html
     };
 
-    QgsErrorMessage()
-    {}
+    //! Constructor for QgsErrorMessage
+    QgsErrorMessage() = default;
 
     /**
      * Constructor.
@@ -84,7 +84,8 @@ class CORE_EXPORT QgsError
 {
   public:
 
-    QgsError() {}
+    //! Constructor for QgsError
+    QgsError() = default;
 
     /**
      * Constructor with single message.

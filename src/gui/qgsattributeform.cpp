@@ -897,7 +897,8 @@ void QgsAttributeForm::onConstraintStatusChanged( const QString &constraint,
 
   QgsAttributeFormEditorWidget *formEditorWidget = mFormEditorWidgets.value( eww->fieldIdx() );
 
-  formEditorWidget->setConstraintStatus( constraint, description, err, result );
+  if ( formEditorWidget )
+    formEditorWidget->setConstraintStatus( constraint, description, err, result );
 }
 
 QList<QgsEditorWidgetWrapper *> QgsAttributeForm::constraintDependencies( QgsEditorWidgetWrapper *w )

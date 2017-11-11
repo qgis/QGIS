@@ -136,9 +136,6 @@ namespace pal
 
           struct StackElement
           {
-            StackElement()
-            {}
-
             Node *m_node = nullptr;
             int m_branchIndex = 0;
           };
@@ -383,17 +380,18 @@ namespace pal
         Close();
       }
 
+      //! RTFileStream cannot be copied
+      RTFileStream( const RTFileStream &other ) = delete;
+      //! RTFileStream cannot be copied
+      RTFileStream &operator=( const RTFileStream &other ) = delete;
+
       bool OpenRead( const char *a_fileName )
       {
         if ( m_file )
           fclose( m_file );
 
         m_file = fopen( a_fileName, "rb" );
-        if ( !m_file )
-        {
-          return false;
-        }
-        return true;
+        return m_file != nullptr;
       }
 
       bool OpenWrite( const char *a_fileName )
@@ -402,11 +400,7 @@ namespace pal
           fclose( m_file );
 
         m_file = fopen( a_fileName, "wb" );
-        if ( !m_file )
-        {
-          return false;
-        }
-        return true;
+        return m_file != nullptr;
       }
 
       void Close()
@@ -446,10 +440,6 @@ namespace pal
         return fread( static_cast< void * >( a_array ), sizeof( TYPE ) * a_count, 1, m_file );
       }
 
-    private:
-
-      RTFileStream( const RTFileStream &other );
-      RTFileStream &operator=( const RTFileStream &other );
   };
 
 

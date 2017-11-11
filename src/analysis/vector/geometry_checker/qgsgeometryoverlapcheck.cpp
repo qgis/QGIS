@@ -98,7 +98,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
     error->setObsolete();
     return;
   }
-  QgsAbstractGeometry *interGeom = geomEngineA->intersection( layerFeatureB.geometry(), &errMsg );
+  std::unique_ptr< QgsAbstractGeometry > interGeom( geomEngineA->intersection( layerFeatureB.geometry(), &errMsg ) );
   if ( !interGeom )
   {
     error->setFixFailed( tr( "Failed to compute intersection between overlapping features: %1" ).arg( errMsg ) );
@@ -109,7 +109,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
   QgsAbstractGeometry *interPart = nullptr;
   for ( int iPart = 0, nParts = interGeom->partCount(); iPart < nParts; ++iPart )
   {
-    QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( interGeom, iPart );
+    QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( interGeom.get(), iPart );
     if ( std::fabs( part->area() - overlapError->value().toDouble() ) < mContext->reducedTolerance &&
          QgsGeometryCheckerUtils::pointsFuzzyEqual( part->centroid(), overlapError->location(), mContext->reducedTolerance ) )
     {
@@ -119,7 +119,6 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
   }
   if ( !interPart || interPart->isEmpty() )
   {
-    delete interGeom;
     error->setObsolete();
     return;
   }
@@ -131,30 +130,28 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
   }
   else if ( method == Subtract )
   {
-    QgsAbstractGeometry *diff1 = geomEngineA->difference( interPart, &errMsg );
+    std::unique_ptr< QgsAbstractGeometry > diff1( geomEngineA->difference( interPart, &errMsg ) );
     if ( !diff1 || diff1->isEmpty() )
     {
-      delete diff1;
-      diff1 = nullptr;
+      diff1.reset();
     }
     else
     {
-      QgsGeometryCheckerUtils::filter1DTypes( diff1 );
+      QgsGeometryCheckerUtils::filter1DTypes( diff1.get() );
     }
     std::unique_ptr< QgsGeometryEngine > geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureB.geometry(), mContext->reducedTolerance );
-    QgsAbstractGeometry *diff2 = geomEngineB->difference( interPart, &errMsg );
+    std::unique_ptr< QgsAbstractGeometry > diff2( geomEngineB->difference( interPart, &errMsg ) );
     if ( !diff2 || diff2->isEmpty() )
     {
-      delete diff2;
-      diff2 = nullptr;
+      diff2.reset();
     }
     else
     {
-      QgsGeometryCheckerUtils::filter1DTypes( diff2 );
+      QgsGeometryCheckerUtils::filter1DTypes( diff2.get() );
     }
-    double shared1 = diff1 ? QgsGeometryCheckerUtils::sharedEdgeLength( diff1, interPart, mContext->reducedTolerance ) : 0;
-    double shared2 = diff2 ? QgsGeometryCheckerUtils::sharedEdgeLength( diff2, interPart, mContext->reducedTolerance ) : 0;
-    if ( shared1 == 0. || shared2 == 0. )
+    double shared1 = diff1 ? QgsGeometryCheckerUtils::sharedEdgeLength( diff1.get(), interPart, mContext->reducedTolerance ) : 0;
+    double shared2 = diff2 ? QgsGeometryCheckerUtils::sharedEdgeLength( diff2.get(), interPart, mContext->reducedTolerance ) : 0;
+    if ( !diff1 || !diff2 || shared1 == 0. || shared2 == 0. )
     {
       error->setFixFailed( tr( "Could not find shared edges between intersection and overlapping features" ) );
     }
@@ -163,8 +160,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
       if ( shared1 < shared2 )
       {
         diff1->transform( featurePoolA->getLayerToMapTransform(), QgsCoordinateTransform::ReverseTransform );
-        featureA.setGeometry( QgsGeometry( diff1 ) );
-        diff1 = 0;
+        featureA.setGeometry( QgsGeometry( std::move( diff1 ) ) );
 
         changes[error->layerId()][featureA.id()].append( Change( ChangeFeature, ChangeChanged ) );
         featurePoolA->updateFeature( featureA );
@@ -172,8 +168,7 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
       else
       {
         diff2->transform( featurePoolB->getLayerToMapTransform(), QgsCoordinateTransform::ReverseTransform );
-        featureB.setGeometry( QgsGeometry( diff2 ) );
-        diff2 = 0;
+        featureB.setGeometry( QgsGeometry( std::move( diff2 ) ) );
 
         changes[overlapError->overlappedFeature().first][featureB.id()].append( Change( ChangeFeature, ChangeChanged ) );
         featurePoolB->updateFeature( featureB );
@@ -181,14 +176,11 @@ void QgsGeometryOverlapCheck::fixError( QgsGeometryCheckError *error, int method
 
       error->setFixed( method );
     }
-    delete diff1;
-    delete diff2;
   }
   else
   {
     error->setFixFailed( tr( "Unknown method" ) );
   }
-  delete interGeom;
 }
 
 QStringList QgsGeometryOverlapCheck::getResolutionMethods() const

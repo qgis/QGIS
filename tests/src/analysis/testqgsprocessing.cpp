@@ -1173,7 +1173,7 @@ void TestQgsProcessing::createIndex()
   // disable selected features check
   std::unique_ptr< QgsFeatureSource > source( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   QVERIFY( source.get() );
-  QgsSpatialIndex index( *source.get() );
+  QgsSpatialIndex index( *source );
   QList<QgsFeatureId> ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
 
@@ -1183,7 +1183,7 @@ void TestQgsProcessing::createIndex()
   bool caught = false;
   try
   {
-    index = QgsSpatialIndex( *source.get() );
+    index = QgsSpatialIndex( *source );
     ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   }
   catch ( ... )
@@ -1195,14 +1195,14 @@ void TestQgsProcessing::createIndex()
   // create selection
   layer->selectByIds( QgsFeatureIds() << 4 << 5 );
   source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
-  index = QgsSpatialIndex( *source.get() );
+  index = QgsSpatialIndex( *source );
   ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 4 );
 
   // selection but not using selection mode
   params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( layer->id(), false ) ) );
   source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
-  index = QgsSpatialIndex( *source.get() );
+  index = QgsSpatialIndex( *source );
   ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
 }

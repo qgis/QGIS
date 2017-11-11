@@ -30,8 +30,8 @@ class QgsSettings;
 class APP_EXPORT QgsVersionMigration
 {
   public:
-    QgsVersionMigration();
-    virtual ~QgsVersionMigration();
+    QgsVersionMigration() = default;
+    virtual ~QgsVersionMigration() = default;
 
     /**
      * Check if two version has a migration options.

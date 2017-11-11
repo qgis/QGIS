@@ -27,11 +27,7 @@
 
 QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( QNode *parent )
   : Qt3DRender::QGeometry( parent )
-  , mPositionAttribute( nullptr )
-  , mNormalAttribute( nullptr )
 {
-  mWithNormals = true;
-
   mVertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
 
   QgsTessellator tmpTess( 0, 0, mWithNormals );

@@ -111,7 +111,7 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     //! Set to true, if geometry is in the requested columns
     bool mFetchGeometry;
 
-    bool mIsTransactionConnection;
+    bool mIsTransactionConnection = false;
 
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
 

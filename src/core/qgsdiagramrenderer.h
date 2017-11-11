@@ -392,8 +392,8 @@ class CORE_EXPORT QgsDiagramSettings
       Right
     };
 
-    QgsDiagramSettings()
-    {}
+    //! Constructor for QgsDiagramSettings
+    QgsDiagramSettings() = default;
 
     bool enabled = true;
     QFont font;
@@ -646,7 +646,9 @@ class CORE_EXPORT QgsDiagramRenderer
 class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 {
   public:
-    QgsSingleCategoryDiagramRenderer();
+
+    //! Constructor for QgsSingleCategoryDiagramRenderer
+    QgsSingleCategoryDiagramRenderer() = default;
 
     QgsSingleCategoryDiagramRenderer *clone() const override SIP_FACTORY;
 

@@ -93,7 +93,6 @@ class QgsImageOperation
 
     struct DistanceTransformProperties
     {
-      DistanceTransformProperties();
 
       bool shadeExterior;
 %Docstring

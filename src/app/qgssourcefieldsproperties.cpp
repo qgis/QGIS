@@ -24,7 +24,7 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
     return;
 
   setupUi( this );
-  layout()->setContentsMargins( 0, 0,0 ,0 );
+  layout()->setContentsMargins( 0, 0, 0, 0 );
   layout()->setMargin( 0 );
 
   //button appearance
@@ -68,12 +68,6 @@ QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWi
 
   //load buttons and field list
   updateButtons();
-}
-
-
-QgsSourceFieldsProperties::~QgsSourceFieldsProperties()
-{
-
 }
 
 void QgsSourceFieldsProperties::init()

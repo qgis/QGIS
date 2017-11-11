@@ -103,7 +103,6 @@ void QgsGrassVectorMap::close()
   closeMap();
   mOpen = false;
   unlockOpenClose();
-  return;
 }
 
 bool QgsGrassVectorMap::openMap()

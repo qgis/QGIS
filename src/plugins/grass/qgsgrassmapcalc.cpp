@@ -1384,7 +1384,6 @@ void QgsGrassMapcalc::clear()
 /**************************** OBJECT ************************/
 QgsGrassMapcalcObject::QgsGrassMapcalcObject( int type )
   : QGraphicsRectItem( -1000, -1000, 50, 20, 0 )
-  , QgsGrassMapcalcItem()
   , mType( type )
   , mRound( 0. )
   , mCenter( -1000, -1000 )
@@ -1794,10 +1793,7 @@ QString QgsGrassMapcalcObject::expression()
 
 /************************* CONNECTOR **********************************/
 QgsGrassMapcalcConnector::QgsGrassMapcalcConnector( QGraphicsScene *canvas )
-  : QgsGrassMapcalcItem()
-  , mSelectedEnd( -1 )
 {
-
   canvas->addItem( this );
 
   QGraphicsLineItem::setZValue( 10 );

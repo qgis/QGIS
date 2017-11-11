@@ -27,6 +27,9 @@ class QgsEditorWidgetSetup
 %End
 
     QgsEditorWidgetSetup();
+%Docstring
+Constructor for QgsEditorWidgetSetup
+%End
 
     QString type() const;
 %Docstring

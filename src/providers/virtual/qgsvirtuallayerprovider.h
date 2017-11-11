@@ -64,7 +64,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     // underlying vector layers
     struct SourceLayer
     {
-      SourceLayer() {}
+      SourceLayer() = default;
       SourceLayer( QgsVectorLayer *l, const QString &n = QString() )
         : layer( l )
         , name( n )

@@ -65,12 +65,6 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   connect( mTbInitCode, &QPushButton::clicked, this, &QgsAttributesFormProperties::mTbInitCode_clicked );
 }
 
-
-QgsAttributesFormProperties::~QgsAttributesFormProperties()
-{
-
-}
-
 void QgsAttributesFormProperties::init()
 {
   initAvailableWidgetsTree();
@@ -731,18 +725,7 @@ void QgsAttributesFormProperties::apply()
  * FieldConfig implementation
  */
 
-QgsAttributesFormProperties::FieldConfig::FieldConfig()
-  : mEditable( true )
-  , mEditableEnabled( true )
-  , mLabelOnTop( false )
-  , mConstraints( 0 )
-  , mConstraintDescription( QString() )
-  , mButton( nullptr )
-{
-}
-
 QgsAttributesFormProperties::FieldConfig::FieldConfig( QgsVectorLayer *layer, int idx )
-  : mButton( nullptr )
 {
   mAlias = layer->fields().at( idx ).alias();
   mComment = layer->fields().at( idx ).comment();

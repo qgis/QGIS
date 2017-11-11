@@ -374,7 +374,8 @@ class CORE_EXPORT QgsExpressionContext
 {
   public:
 
-    QgsExpressionContext() {}
+    //! Constructor for QgsExpressionContext
+    QgsExpressionContext() = default;
 
     /**
      * Initializes the context with given list of scopes.

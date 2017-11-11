@@ -347,7 +347,6 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
       mCachedImage = mCachedImage.convertToFormat( QImage::Format_ARGB32 );
     }
   }
-  return;
 }
 
 QImage QgsAmsProvider::getLegendGraphic( double /*scale*/, bool forceRefresh, const QgsRectangle * /*visibleExtent*/ )

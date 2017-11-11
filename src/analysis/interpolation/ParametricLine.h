@@ -43,13 +43,13 @@ class ANALYSIS_EXPORT ParametricLine
     QVector<QgsPoint *> *mControlPoly = nullptr;
   public:
     //! Default constructor
-    ParametricLine();
+    ParametricLine() = default;
 
     /**
      * Constructor, par is a pointer to the parent object, controlpoly the controlpolygon
       */
     ParametricLine( ParametricLine *par SIP_TRANSFER, QVector<QgsPoint *> *controlpoly );
-    virtual ~ParametricLine();
+    virtual ~ParametricLine() = default;
     virtual void add( ParametricLine *pl SIP_TRANSFER ) = 0;
     virtual void calcFirstDer( float t, Vector3D *v SIP_OUT ) = 0;
     virtual void calcSecDer( float t, Vector3D *v SIP_OUT ) = 0;
@@ -71,21 +71,11 @@ class ANALYSIS_EXPORT ParametricLine
 
 //-----------------------------------------constructors and destructor----------------------
 
-inline ParametricLine::ParametricLine()
-{
-
-}
-
 inline ParametricLine::ParametricLine( ParametricLine *par, QVector<QgsPoint *> *controlpoly )
   : mParent( par )
   , mControlPoly( controlpoly )
 {
 
-}
-
-inline ParametricLine::~ParametricLine()
-{
-  //delete mParent;
 }
 
 #endif

@@ -76,7 +76,7 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
   public:
 
     //! Constructor
-    QgsOptionsWidgetFactory() {}
+    QgsOptionsWidgetFactory() = default;
 
     //! Constructor
     QgsOptionsWidgetFactory( const QString &title, const QIcon &icon )

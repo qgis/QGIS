@@ -508,7 +508,7 @@ bool QgsMetadataWidget::checkMetadata() const
   bool results = validator.validate( metadata, validationResults );
 
   QString errors;
-  if ( results == false )
+  if ( !results )
   {
     for ( const QgsMetadataValidator::ValidationResult &result : qgis::as_const( validationResults ) )
     {

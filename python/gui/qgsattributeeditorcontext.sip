@@ -39,6 +39,9 @@ class QgsAttributeEditorContext
     };
 
     QgsAttributeEditorContext();
+%Docstring
+Constructor for QgsAttributeEditorContext
+%End
 
     QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, FormMode formMode );
 

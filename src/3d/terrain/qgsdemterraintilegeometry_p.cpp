@@ -141,8 +141,6 @@ class PlaneVertexBufferFunctor : public QBufferDataGenerator
       , mHeightMap( heightMap )
     {}
 
-    ~PlaneVertexBufferFunctor() {}
-
     QByteArray operator()() final
     {
       return createPlaneVertexData( mResolution, mSkirtHeight, mHeightMap );
@@ -174,8 +172,6 @@ class PlaneIndexBufferFunctor : public QBufferDataGenerator
     explicit PlaneIndexBufferFunctor( int resolution )
       : mResolution( resolution )
     {}
-
-    ~PlaneIndexBufferFunctor() {}
 
     QByteArray operator()() final
     {

@@ -38,7 +38,6 @@ class ANALYSIS_EXPORT Bezier3D: public ParametricLine
     //! Constructor, par is a pointer to the parent, controlpoly a controlpolygon
     Bezier3D( ParametricLine *par, QVector<QgsPoint *> *controlpoly );
 
-    virtual ~Bezier3D();
     //! Do not use this method, since a Bezier curve does not consist of other curves
     virtual void add( ParametricLine *pl SIP_TRANSFER ) override;
     //! Calculates the first derivative and assigns it to v
@@ -81,11 +80,6 @@ inline Bezier3D::Bezier3D() : ParametricLine()//default constructor
 inline Bezier3D::Bezier3D( ParametricLine *parent, QVector<QgsPoint *> *controlpoly ) : ParametricLine( parent, controlpoly )
 {
   mDegree = mControlPoly->count() - 1;
-}
-
-inline Bezier3D::~Bezier3D()
-{
-
 }
 
 //----------------------------------------------invalid methods add and remove (because of inheritance from ParametricLine)

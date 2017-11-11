@@ -44,8 +44,6 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
      */
     struct LayerDefinition
     {
-      LayerDefinition() {}
-
       int layerId = -1 ;        //!< Identifier of the layer (one unique layer id may have multiple types though)
       QString layerName;  //!< Name of the layer (not necessarily unique)
       int count = -1 ;          //!< Number of features (might be unused)

@@ -36,6 +36,9 @@ class QgsVectorLayerUtils
       public:
 
         QgsDuplicateFeatureContext();
+%Docstring
+Constructor for QgsDuplicateFeatureContext
+%End
 
         QList<QgsVectorLayer *> layers() const;
 %Docstring
