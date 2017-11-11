@@ -2,13 +2,13 @@ r.sunmask
 r.sunmask.datetime - Calculates cast shadow areas from sun position and elevation raster map.
 Raster (r.*)
 QgsProcessingParameterRasterLayer|elevation|Elevation raster layer [meters]|None|False
-QgsProcessingParameterNumber|year|year|QgsProcessingParameterNumber.Double|2000|False|2050|1950
-QgsProcessingParameterNumber|month|month|QgsProcessingParameterNumber.Double|1|False|12|0
-QgsProcessingParameterNumber|day|day|QgsProcessingParameterNumber.Double|1|False|31|0
-QgsProcessingParameterNumber|hour|hour|QgsProcessingParameterNumber.Double|1|False|24|0
-QgsProcessingParameterNumber|minute|minute|QgsProcessingParameterNumber.Double|0|False|60|0
-QgsProcessingParameterNumber|second|second|QgsProcessingParameterNumber.Double|0|False|60|0
-QgsProcessingParameterNumber|timezone|East positive, offset from GMT|QgsProcessingParameterNumber.Double|0.0|False|None|0
+QgsProcessingParameterNumber|year|year|QgsProcessingParameterNumber.Integer|2000|True|1950|2050
+QgsProcessingParameterNumber|month|month|QgsProcessingParameterNumber.Integer|1|True|0|12
+QgsProcessingParameterNumber|day|day|QgsProcessingParameterNumber.Integer|1|True|0|31
+QgsProcessingParameterNumber|hour|hour|QgsProcessingParameterNumber.Integer|1|True|0|24
+QgsProcessingParameterNumber|minute|minute|QgsProcessingParameterNumber.Integer|0|True|0|60
+QgsProcessingParameterNumber|second|second|QgsProcessingParameterNumber.Integer|0|True|0|60
+QgsProcessingParameterNumber|timezone|East positive, offset from GMT|QgsProcessingParameterNumber.Integer|0|True|None|None
 QgsProcessingParameterString|east|Easting coordinate (point of interest)|
 QgsProcessingParameterString|north|Northing coordinate (point of interest)|
 QgsProcessingParameterBoolean|-z|Do not ignore zero elevation|True

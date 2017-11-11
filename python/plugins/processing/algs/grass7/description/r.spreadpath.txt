@@ -3,5 +3,5 @@ Recursively traces the least cost path backwards to cells from which the cumulat
 Raster (r.*)
 QgsProcessingParameterRasterLayer|x_input|x_input|None|False
 QgsProcessingParameterRasterLayer|y_input|y_input|None|False
-QgsProcessingParameterPoint|coordinates|coordinate|0,0
+QgsProcessingParameterPoint|coordinates|coordinate|0,0|True
 QgsProcessingParameterRasterDestination|output|Backward least cost

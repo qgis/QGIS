@@ -6,10 +6,10 @@ QgsProcessingParameterRasterLayer|depression|Locations of real depressions|None|
 QgsProcessingParameterRasterLayer|flow|Amount of overland flow per cell|None|True
 QgsProcessingParameterRasterLayer|disturbed_land|Percent of disturbed land, for USLE|None|True
 QgsProcessingParameterRasterLayer|blocking|Terrain blocking overland surface flow, for USLE|None|True
-QgsProcessingParameterNumber|threshold|Minimum size of exterior watershed basin|QgsProcessingParameterNumber.Double|0|False|None|None
-QgsProcessingParameterNumber|max_slope_length|Maximum length of surface flow, for USLE|QgsProcessingParameterNumber.Double|0|False|None|None
-QgsProcessingParameterNumber|convergence|Convergence factor for MFD (1-10)|QgsProcessingParameterNumber.Double|5|False|10|1
-QgsProcessingParameterNumber|memory|Maximum memory to be used with -m flag (in MB)|QgsProcessingParameterNumber.Double|300|False|None|1
+QgsProcessingParameterNumber|threshold|Minimum size of exterior watershed basin|QgsProcessingParameterNumber.Integer|0|True|None|None
+QgsProcessingParameterNumber|max_slope_length|Maximum length of surface flow, for USLE|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterNumber|convergence|Convergence factor for MFD (1-10)|QgsProcessingParameterNumber.Integer|5|True|1|10
+QgsProcessingParameterNumber|memory|Maximum memory to be used with -m flag (in MB)|QgsProcessingParameterNumber.Integer|300|True|1|None
 QgsProcessingParameterBoolean|-s|Enable Single Flow Direction (D8) flow (default is Multiple Flow Direction)|False
 QgsProcessingParameterBoolean|-m|Enable disk swap memory option (-m): Operation is slow|False
 QgsProcessingParameterBoolean|-4|Allow only horizontal and vertical flow of water|False
@@ -23,3 +23,4 @@ QgsProcessingParameterRasterDestination|half_basin|Half-basins
 QgsProcessingParameterRasterDestination|length_slope|Slope length and steepness (LS) factor for USLE
 QgsProcessingParameterRasterDestination|slope_steepness|Slope steepness (S) factor for USLE
 QgsProcessingParameterRasterDestination|tci|Topographic index ln(a / tan(b))
+QgsProcessingParameterRasterDestination|spi|Stream power index a * tan(b)

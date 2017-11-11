@@ -7,6 +7,6 @@ QgsProcessingParameterBoolean|-k|Use the 'Knight's move'; slower, but more accur
 QgsProcessingParameterBoolean|-n|Keep null values in output raster layer|True
 QgsProcessingParameterNumber|max_cost|Maximum cumulative cost|QgsProcessingParameterNumber.Double|0|False|None|0
 QgsProcessingParameterNumber|null_cost|Cost assigned to null cells. By default, null cells are excluded|QgsProcessingParameterNumber.Double|0|False|None|None
-QgsProcessingParameterNumber|memory|Maximum memory to be used in MB|QgsProcessingParameterNumber.Double|300|False|None|0
+QgsProcessingParameterNumber|memory|Maximum memory to be used in MB|QgsProcessingParameterNumber.Integer|300|False|1|None
 QgsProcessingParameterRasterDestination|output|Cumulative cost
 QgsProcessingParameterRasterDestination|nearest|Cost allocation map

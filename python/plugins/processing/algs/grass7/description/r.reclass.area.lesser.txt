@@ -1,7 +1,0 @@
-r.reclass.area
-r.reclass.area.lesser - Reclassifies a raster layer, selecting areas lower than a user specified size
-Raster (r.*)
-QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
-QgsProcessingParameterEnum|mode|Lesser or greater than specified value|lesser
-QgsProcessingParameterNumber|value|Value option that sets the area size limit [hectares]|QgsProcessingParameterNumber.Double|1.0|False|None|0
-QgsProcessingParameterRasterDestination|output|Reclassified
