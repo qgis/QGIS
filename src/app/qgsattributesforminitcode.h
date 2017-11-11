@@ -49,7 +49,6 @@ class APP_EXPORT QgsAttributesFormInitCode: public QDialog, private Ui::QgsAttri
 
   private slots:
     void mInitCodeSourceComboBox_currentIndexChanged( int codeSource );
-    void pbtnSelectInitFilePath_clicked();
 };
 
 #endif // QGSATTRIBUTESFORMINITCODE_H
