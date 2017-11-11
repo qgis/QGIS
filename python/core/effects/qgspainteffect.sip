@@ -300,6 +300,9 @@ class QgsDrawSourceEffect : QgsPaintEffect
   public:
 
     QgsDrawSourceEffect();
+%Docstring
+Constructor for QgsDrawSourceEffect
+%End
 
     static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
 %Docstring

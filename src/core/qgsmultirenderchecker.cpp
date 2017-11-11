@@ -108,8 +108,7 @@ QString QgsMultiRenderChecker::controlImagePath() const
 ///@cond PRIVATE
 
 QgsCompositionChecker::QgsCompositionChecker( const QString &testName, QgsComposition *composition )
-  : QgsMultiRenderChecker()
-  , mTestName( testName )
+  : mTestName( testName )
   , mComposition( composition )
   , mSize( 1122, 794 )
   , mDotsPerMeter( 96 / 25.4 * 1000 )
@@ -178,8 +177,7 @@ bool QgsCompositionChecker::testComposition( QString &checkedReport, int page, i
 //
 
 QgsLayoutChecker::QgsLayoutChecker( const QString &testName, QgsLayout *layout )
-  : QgsMultiRenderChecker()
-  , mTestName( testName )
+  : mTestName( testName )
   , mLayout( layout )
   , mSize( 1122, 794 )
   , mDotsPerMeter( 96 / 25.4 * 1000 )
