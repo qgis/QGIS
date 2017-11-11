@@ -76,6 +76,7 @@ class TestQgsGML : public QObject
     void testThroughOGRGeometry();
     void testThroughOGRGeometry_urn_EPSG_4326();
     void testAccents();
+    void testSameTypeameAsGeomName();
 };
 
 const QString data1( "<myns:FeatureCollection "
@@ -1136,6 +1137,51 @@ void TestQgsGML::testAccents()
                                    "</gml:MultiSurface>"
                                    "</myns:my\xc3\xa9geom>"
                                    "</myns:my\xc3\xa9typename>"
+                                   "</gml:featureMember>"
+                                   "</myns:FeatureCollection>" ), true ), true );
+  QCOMPARE( gmlParser.wkbType(), QGis::WKBMultiPolygon );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  QVERIFY( features[0].first->constGeometry() != nullptr );
+  QCOMPARE( features[0].first->constGeometry()->wkbType(), QGis::WKBMultiPolygon );
+  QgsMultiPolygon multi = features[0].first->constGeometry()->asMultiPolygon();
+  QCOMPARE( multi.size(), 2 );
+  QCOMPARE( multi[0].size(), 1 );
+  QCOMPARE( multi[0][0].size(), 5 );
+  delete features[0].first;
+}
+void TestQgsGML::testSameTypeameAsGeomName()
+{
+  QgsFields fields;
+  QgsGmlStreamingParser gmlParser( "foo", "foo", fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                   "xmlns:myns='http://myns' "
+                                   "xmlns:gml='http://www.opengis.net/gml'>"
+                                   "<gml:featureMember>"
+                                   "<myns:foo fid='foo.1'>"
+                                   "<myns:foo>"
+                                   "<gml:MultiSurface srsName='EPSG:27700'>"
+                                   "<gml:surfaceMember>"
+                                   "<gml:Polygon srsName='EPSG:27700'>"
+                                   "<gml:exterior>"
+                                   "<gml:LinearRing>"
+                                   "<gml:posList>0 0 0 10 10 10 10 0 0 0</gml:posList>"
+                                   "</gml:LinearRing>"
+                                   "</gml:exterior>"
+                                   "</gml:Polygon>"
+                                   "</gml:surfaceMember>"
+                                   "<gml:surfaceMember>"
+                                   "<gml:Polygon srsName='EPSG:27700'>"
+                                   "<gml:exterior>"
+                                   "<gml:LinearRing>"
+                                   "<gml:posList>0 0 0 10 10 10 10 0 0 0</gml:posList>"
+                                   "</gml:LinearRing>"
+                                   "</gml:exterior>"
+                                   "</gml:Polygon>"
+                                   "</gml:surfaceMember>"
+                                   "</gml:MultiSurface>"
+                                   "</myns:foo>"
+                                   "</myns:foo>"
                                    "</gml:featureMember>"
                                    "</myns:FeatureCollection>" ), true ), true );
   QCOMPARE( gmlParser.wkbType(), QGis::WKBMultiPolygon );
