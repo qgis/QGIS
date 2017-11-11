@@ -7,95 +7,96 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>283</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Python Init Code Configuration</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="toolTip">
+      <string>The function code of the function can be loaded from the source code entered 
+in this dialog, from an external python file or from the environment (for example 
+from a plugin or from startup.py).
+
+An example is:
+
+          from qgis.PyQt.QtWidgets import QWidget
+
+          def my_form_open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
+
+Reference in function name: my_form_open
+
+</string>
+     </property>
+     <property name="text">
+      <string>Python Init function</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QComboBox" name="mInitCodeSourceComboBox">
+     <property name="toolTip">
+      <string>The function code of the function can be loaded from the source code entered 
+in this dialog,  from an external python file or from the environment (for example 
+from a plugin or from startup.py).
+
+An example is:
+
+          rom qgis.PyQt.QtWidgets import QWidget
+
+          def my_form_open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
+
+Reference in function name: my_form_open
+
+</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3">
     <widget class="QWidget" name="mInitFunctionContainer" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>50</height>
-      </size>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <layout class="QGridLayout" name="gridLayout">
       <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
        <number>0</number>
       </property>
       <property name="rightMargin">
        <number>0</number>
       </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="mInitFunctionLabel">
-        <property name="text">
-         <string>Function name</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="mInitFunctionLineEdit">
-        <property name="toolTip">
-         <string>Enter the name of the form init function.</string>
-        </property>
-       </widget>
-      </item>
-      <item>
+      <item row="0" column="0">
        <widget class="QLabel" name="mInitFilePathLabel">
         <property name="text">
          <string>External file</string>
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QLineEdit" name="mInitFilePathLineEdit"/>
+      <item row="0" column="1">
+       <widget class="QgsFileWidget" name="mInitFileWidget" native="true"/>
       </item>
-      <item>
-       <widget class="QToolButton" name="pbtnSelectInitFilePath">
+      <item row="1" column="0">
+       <widget class="QLabel" name="mInitFunctionLabel">
         <property name="text">
-         <string>…</string>
+         <string>Function name</string>
         </property>
        </widget>
       </item>
-      <item>
-       <spacer name="horizontalSpacer_4">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="mInitFunctionLineEdit">
+        <property name="toolTip">
+         <string>Enter the name of the form init function.</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-       </spacer>
+       </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0" colspan="3">
     <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>50</height>
-      </size>
-     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -104,67 +105,17 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QgsCodeEditorPython" name="mInitCodeEditorPython" native="true"/>
-   </item>
-   <item row="0" column="0">
-    <widget class="QWidget" name="mInitCodeSourceContainter" native="true">
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>50</height>
-      </size>
+   <item row="3" column="0" colspan="3">
+    <widget class="QgsCodeEditorPython" name="mInitCodeEditorPython" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="label_3">
-        <property name="toolTip">
-         <string>The function code of the function can be loaded from the source code entered 
-in this dialog,  from an external python file or from the environment (for example 
-from a plugin or from startup.py).
-
-An example is:
-
-          rom qgis.PyQt.QtWidgets import QWidget
-
-          def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
-
-Reference in function name: my_form_open
-
-</string>
-        </property>
-        <property name="text">
-         <string>Python Init function</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="mInitCodeSourceComboBox">
-        <property name="toolTip">
-         <string>The function code of the function can be loaded from the source code entered 
-in this dialog,  from an external python file or from the environment (for example 
-from a plugin or from startup.py).
-
-An example is:
-
-          rom qgis.PyQt.QtWidgets import QWidget
-
-          def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
-
-Reference in function name: my_form_open
-
-</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="4" column="1">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -172,7 +123,7 @@ Reference in function name: my_form_open
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>0</height>
       </size>
      </property>
     </spacer>
@@ -186,6 +137,11 @@ Reference in function name: my_form_open
    <header>qgscodeeditorpython.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+  </customwidget>
  </customwidgets>
  <resources/>
  <connections>
@@ -196,8 +152,8 @@ Reference in function name: my_form_open
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>254</x>
-     <y>293</y>
+     <x>248</x>
+     <y>254</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>

@@ -29,9 +29,12 @@ QgsAttributesFormInitCode::QgsAttributesFormInitCode()
   mInitCodeSourceComboBox->addItem( tr( "Provide code in this dialog" ) );
   mInitCodeSourceComboBox->addItem( tr( "Load from the environment" ) );
 
-  connect( mInitCodeSourceComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributesFormInitCode::mInitCodeSourceComboBox_currentIndexChanged );
-  connect( pbtnSelectInitFilePath, &QToolButton::clicked, this, &QgsAttributesFormInitCode::pbtnSelectInitFilePath_clicked );
+  QgsSettings settings;
+  mInitFileWidget->setDefaultRoot( settings.value( QStringLiteral( "style/lastInitFilePathDir" ), "." ).toString() );
+  mInitFileWidget->setDialogTitle( tr( "Select Python File" ) );
+  mInitFileWidget->setFilter( tr( "Python files (*.py *.PY)" ) );
 
+  connect( mInitCodeSourceComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributesFormInitCode::mInitCodeSourceComboBox_currentIndexChanged );
 }
 
 void QgsAttributesFormInitCode::setCodeSource( QgsEditFormConfig::PythonInitCodeSource initCodeSource )
@@ -46,7 +49,7 @@ void QgsAttributesFormInitCode::setInitFunction( const QString &initFunction )
 }
 void QgsAttributesFormInitCode::setInitFilePath( const QString &initFilePath )
 {
-  mInitFilePathLineEdit->setText( initFilePath );
+  mInitFileWidget->setFilePath( initFilePath );
 }
 void QgsAttributesFormInitCode::setInitCode( const QString &initCode )
 {
@@ -64,7 +67,7 @@ QString QgsAttributesFormInitCode::initFunction() const
 }
 QString QgsAttributesFormInitCode::initFilePath() const
 {
-  return mInitFilePathLineEdit->text();
+  return mInitFileWidget->filePath();
 }
 QString QgsAttributesFormInitCode::initCode() const
 {
@@ -74,23 +77,7 @@ QString QgsAttributesFormInitCode::initCode() const
 void QgsAttributesFormInitCode::mInitCodeSourceComboBox_currentIndexChanged( int codeSource )
 {
   mInitFunctionContainer->setVisible( codeSource != QgsEditFormConfig::CodeSourceNone );
-  mInitFilePathLineEdit->setVisible( codeSource == QgsEditFormConfig::CodeSourceFile );
   mInitFilePathLabel->setVisible( codeSource == QgsEditFormConfig::CodeSourceFile );
-  pbtnSelectInitFilePath->setVisible( codeSource == QgsEditFormConfig::CodeSourceFile );
+  mInitFileWidget->setVisible( codeSource == QgsEditFormConfig::CodeSourceFile );
   mInitCodeEditorPython->setVisible( codeSource == QgsEditFormConfig::CodeSourceDialog );
 }
-
-void QgsAttributesFormInitCode::pbtnSelectInitFilePath_clicked( )
-{
-  QgsSettings myQSettings;
-  QString lastUsedDir = myQSettings.value( QStringLiteral( "style/lastInitFilePathDir" ), "." ).toString();
-  QString pyfilename = QFileDialog::getOpenFileName( this, tr( "Select Python file" ), lastUsedDir, tr( "Python file" )  + " (*.py)" );
-
-  if ( pyfilename.isNull() )
-    return;
-
-  QFileInfo fi( pyfilename );
-  myQSettings.setValue( QStringLiteral( "style/lastInitFilePathDir" ), fi.path() );
-  mInitFilePathLineEdit->setText( pyfilename );
-}
-
