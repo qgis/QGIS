@@ -65,12 +65,6 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   connect( mTbInitCode, &QPushButton::clicked, this, &QgsAttributesFormProperties::mTbInitCode_clicked );
 }
 
-
-QgsAttributesFormProperties::~QgsAttributesFormProperties()
-{
-
-}
-
 void QgsAttributesFormProperties::init()
 {
   initAvailableWidgetsTree();

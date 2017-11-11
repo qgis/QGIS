@@ -34,8 +34,8 @@ class CORE_EXPORT QgsDartMeasurement
       Integer
     };
 
-    QgsDartMeasurement()
-    {}
+    //! Constructor for QgsDartMeasurement
+    QgsDartMeasurement() = default;
 
     QgsDartMeasurement( const QString &name, Type type, const QString &value );
 

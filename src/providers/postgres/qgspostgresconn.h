@@ -157,6 +157,8 @@ class QgsPostgresResult
     QgsPostgresResult &operator=( PGresult *result );
     QgsPostgresResult &operator=( const QgsPostgresResult &src );
 
+    QgsPostgresResult( const QgsPostgresResult &rh ) = delete;
+
     ExecStatusType PQresultStatus();
     QString PQresultErrorMessage();
 
@@ -177,7 +179,6 @@ class QgsPostgresResult
   private:
     PGresult *mRes = nullptr;
 
-    QgsPostgresResult( const QgsPostgresResult &rh );
 };
 
 

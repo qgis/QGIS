@@ -299,9 +299,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     struct WidgetInfo
     {
-      WidgetInfo()
-      {}
-
       QWidget *widget = nullptr;
       QString labelText;
       QString hint;

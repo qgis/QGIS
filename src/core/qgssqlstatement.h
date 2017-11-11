@@ -285,7 +285,7 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         //! Constructor
-        NodeList()  {}
+        NodeList() = default;
         virtual ~NodeList() { qDeleteAll( mList ); }
 
         //! Takes ownership of the provided node
@@ -788,7 +788,7 @@ class CORE_EXPORT QgsSQLStatement
     {
       public:
         //! Constructor
-        RecursiveVisitor() {}
+        RecursiveVisitor() = default;
 
         void visit( const QgsSQLStatement::NodeUnaryOperator &n ) override { n.operand()->accept( *this ); }
         void visit( const QgsSQLStatement::NodeBinaryOperator &n ) override { n.opLeft()->accept( *this ); n.opRight()->accept( *this ); }

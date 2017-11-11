@@ -78,8 +78,8 @@ class CORE_EXPORT QgsLegendRenderer
     class Nucleon
     {
       public:
-        Nucleon()
-        {}
+        //! Constructor for Nuclean
+        Nucleon() = default;
 
         QObject *item = nullptr;
         // Symbol size size without any space around for symbol item

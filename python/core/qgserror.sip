@@ -27,6 +27,9 @@ class QgsErrorMessage
     };
 
     QgsErrorMessage();
+%Docstring
+Constructor for QgsErrorMessage
+%End
 
     QgsErrorMessage( const QString &message, const QString &tag = QString(), const QString &file = QString(), const QString &function = QString(), int line = 0 );
 %Docstring

@@ -85,7 +85,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     struct ColorRampItem
     {
       //! default constructor
-      ColorRampItem() {}
+      ColorRampItem() = default;
       //! convenience constructor
       ColorRampItem( double val, const QColor &col, const QString &lbl = QString() )
         : label( lbl )

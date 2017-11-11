@@ -38,9 +38,8 @@ class QgsCPLErrorHandler
       CPLPopErrorHandler();
     }
 
-  private:
-    QgsCPLErrorHandler( const QgsCPLErrorHandler &other );
-    QgsCPLErrorHandler &operator=( const QgsCPLErrorHandler &other );
+    QgsCPLErrorHandler( const QgsCPLErrorHandler &other ) = delete;
+    QgsCPLErrorHandler &operator=( const QgsCPLErrorHandler &other ) = delete;
 
 };
 

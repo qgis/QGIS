@@ -25,8 +25,14 @@ class QgsValueRelationFieldFormatter : QgsFieldFormatter
     struct ValueRelationItem
     {
       ValueRelationItem( const QVariant &key, const QString &value );
+%Docstring
+Constructor for ValueRelationItem
+%End
 
       ValueRelationItem();
+%Docstring
+Constructor for ValueRelationItem
+%End
 
       QVariant key;
       QString value;

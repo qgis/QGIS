@@ -345,6 +345,9 @@ class QgsExpressionContext
   public:
 
     QgsExpressionContext();
+%Docstring
+Constructor for QgsExpressionContext
+%End
 
     explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes /Transfer/ );
 %Docstring

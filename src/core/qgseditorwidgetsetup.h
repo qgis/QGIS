@@ -37,7 +37,8 @@ class CORE_EXPORT QgsEditorWidgetSetup
       , mConfig( config )
     {}
 
-    QgsEditorWidgetSetup() {}
+    //! Constructor for QgsEditorWidgetSetup
+    QgsEditorWidgetSetup() = default;
 
     /**
      * \returns the widget type to use

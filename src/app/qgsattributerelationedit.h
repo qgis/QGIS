@@ -31,7 +31,6 @@ class APP_EXPORT QgsAttributeRelationEdit: public QWidget, private Ui::QgsAttrib
 
   public:
     explicit QgsAttributeRelationEdit( const QString &relationid, QWidget *parent = 0 );
-    ~QgsAttributeRelationEdit();
 
     /**
      * Setter for combo cardinality item

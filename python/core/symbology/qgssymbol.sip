@@ -404,6 +404,7 @@ class QgsSymbolRenderContext
  \param mapUnitScale
 %End
 
+
     QgsRenderContext &renderContext();
 %Docstring
  :rtype: QgsRenderContext

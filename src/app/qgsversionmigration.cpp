@@ -33,16 +33,6 @@
 #include <QSqlError>
 #include <QDomDocument>
 
-QgsVersionMigration::QgsVersionMigration()
-{
-
-}
-
-QgsVersionMigration::~QgsVersionMigration()
-{
-
-}
-
 QgsVersionMigration *QgsVersionMigration::canMigrate( int fromVersion, int toVersion )
 {
   if ( fromVersion == 20000 && toVersion >= 29900 )

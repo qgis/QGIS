@@ -69,7 +69,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     struct IdentifyResult
     {
-      IdentifyResult() {}
+      //! Constructor for IdentifyResult
+      IdentifyResult() = default;
 
       IdentifyResult( QgsMapLayer *layer, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes )
         : mLayer( layer ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}

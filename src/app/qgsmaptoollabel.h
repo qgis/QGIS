@@ -85,7 +85,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
 
     struct LabelDetails
     {
-      LabelDetails() {}
+      LabelDetails() = default;
       explicit LabelDetails( const QgsLabelPosition &p );
       bool valid = false;
       QgsLabelPosition pos;

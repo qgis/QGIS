@@ -57,10 +57,6 @@ QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, Qgs
   mSkirtHeight = generator->skirtHeight();
 }
 
-QgsDemTerrainTileLoader::~QgsDemTerrainTileLoader()
-{
-}
-
 Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *parent )
 {
   QgsTerrainTileEntity *entity = new QgsTerrainTileEntity;

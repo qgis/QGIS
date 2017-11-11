@@ -76,11 +76,6 @@ QgsTerrainTextureImage::QgsTerrainTextureImage( const QImage &image, const QgsRe
 {
 }
 
-
-QgsTerrainTextureImage::~QgsTerrainTextureImage()
-{
-}
-
 Qt3DRender::QTextureImageDataGeneratorPtr QgsTerrainTextureImage::dataGenerator() const
 {
   return Qt3DRender::QTextureImageDataGeneratorPtr( new TerrainTextureImageDataGenerator( mExtent, mDebugText, mImage, mVersion ) );

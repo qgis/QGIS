@@ -266,8 +266,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     void setExtraIdentifierValueUnguarded( const QVariant &extraIdentifierValue );
     struct Entry
     {
-      Entry()
-      {}
+      Entry() = default;
 
       Entry( QVariant _identifierValue, const QString &_value )
         : identifierValue( _identifierValue )

@@ -166,7 +166,6 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
 
   public:
     explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );
-    ~QgsAttributesFormProperties();
 
     QgsAttributeEditorElement *createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool forceGroup = true );
 

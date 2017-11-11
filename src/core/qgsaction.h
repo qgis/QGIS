@@ -48,8 +48,7 @@ class CORE_EXPORT QgsAction
     /**
      * Default constructor
      */
-    QgsAction()
-    {}
+    QgsAction() = default;
 
     /**
      * Create a new QgsAction

@@ -53,8 +53,8 @@ class GUI_EXPORT QgsAttributeEditorContext
       Popup             //!< A widget was opened as a popup (e.g. attribute table editor widget)
     };
 
-    QgsAttributeEditorContext()
-    {}
+    //! Constructor for QgsAttributeEditorContext
+    QgsAttributeEditorContext() = default;
 
     QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, FormMode formMode )
       : mParentContext( &parentContext )

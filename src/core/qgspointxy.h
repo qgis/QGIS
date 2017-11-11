@@ -49,8 +49,7 @@ class CORE_EXPORT QgsPointXY
 
   public:
     /// Default constructor
-    QgsPointXY()
-    {}
+    QgsPointXY() = default;
 
     //! Create a point from another point
     QgsPointXY( const QgsPointXY &p );

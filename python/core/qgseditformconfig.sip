@@ -29,6 +29,9 @@ class QgsEditFormConfig
     struct GroupData
     {
       GroupData();
+%Docstring
+Constructor for GroupData
+%End
       GroupData( const QString &name, const QList<QString> &fields );
       QString mName;
       QList<QString> mFields;
@@ -37,6 +40,9 @@ class QgsEditFormConfig
     struct TabData
     {
       TabData();
+%Docstring
+Constructor for TabData
+%End
       TabData( const QString &name, const QList<QString> &fields, const QList<QgsEditFormConfig::GroupData> &groups );
       QString mName;
       QList<QString> mFields;

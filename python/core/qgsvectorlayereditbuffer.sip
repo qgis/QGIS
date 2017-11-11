@@ -249,6 +249,9 @@ Signals emitted after committing changes
   protected:
 
     QgsVectorLayerEditBuffer();
+%Docstring
+Constructor for QgsVectorLayerEditBuffer
+%End
 
     void updateFields( QgsFields &fields );
 

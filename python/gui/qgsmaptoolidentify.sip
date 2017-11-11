@@ -47,6 +47,9 @@ after selecting a point, performs the identification:
     struct IdentifyResult
     {
       IdentifyResult();
+%Docstring
+Constructor for IdentifyResult
+%End
 
       IdentifyResult( QgsMapLayer *layer, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes );
       IdentifyResult( QgsMapLayer *layer, const QString &label, const QMap< QString, QString > &attributes, const QMap< QString, QString > &derivedAttributes );

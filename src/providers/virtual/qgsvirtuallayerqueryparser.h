@@ -38,8 +38,7 @@ namespace QgsVirtualLayerQueryParser
   class ColumnDef
   {
     public:
-      ColumnDef()
-      {}
+      ColumnDef() = default;
       ColumnDef( const QString &name, QgsWkbTypes::Type aWkbType, long aSrid )
         : mName( name )
         , mType( QVariant::UserType )

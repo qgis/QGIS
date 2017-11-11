@@ -95,8 +95,9 @@ class CORE_EXPORT QgsLabelPosition
       , isPinned( pinned )
       , providerID( providerId )
     {}
-    QgsLabelPosition()
-    {}
+
+    //! Constructor for QgsLabelPosition
+    QgsLabelPosition() = default;
 
     int featureId = -1;
     double rotation = 0;

@@ -1385,9 +1385,6 @@ class CORE_EXPORT QgsTextRenderer
 
     struct Component
     {
-      Component()
-      {}
-
       //! Component text
       QString text;
       //! Current origin point for painting (generally current painter rotation point)

@@ -45,6 +45,11 @@ class SERVER_EXPORT QgsOWSServerFilterRestorer
       restoreLayerFilters( mOriginalLayerFilters );
     }
 
+    //! QgsOWSServerFilterRestorer cannot be copied
+    QgsOWSServerFilterRestorer( const QgsOWSServerFilterRestorer &rh ) = delete;
+    //! QgsOWSServerFilterRestorer cannot be copied
+    QgsOWSServerFilterRestorer &operator=( const QgsOWSServerFilterRestorer &rh ) = delete;
+
     void restoreLayerFilters( const QHash<QgsMapLayer *, QString> &filterMap );
 
     /**
@@ -70,8 +75,6 @@ class SERVER_EXPORT QgsOWSServerFilterRestorer
     const QgsAccessControl *mAccessControl = nullptr;
     QHash<QgsMapLayer *, QString> mOriginalLayerFilters;
 
-    QgsOWSServerFilterRestorer( const QgsOWSServerFilterRestorer &rh );
-    QgsOWSServerFilterRestorer &operator=( const QgsOWSServerFilterRestorer &rh );
 };
 
 #endif // QGSFILTERRESTORER_H

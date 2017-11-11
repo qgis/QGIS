@@ -34,9 +34,6 @@ QgsAttributesFormInitCode::QgsAttributesFormInitCode()
 
 }
 
-QgsAttributesFormInitCode::~QgsAttributesFormInitCode()
-{
-}
 void QgsAttributesFormInitCode::setCodeSource( QgsEditFormConfig::PythonInitCodeSource initCodeSource )
 {
   mInitCodeSourceComboBox->setCurrentIndex( initCodeSource );

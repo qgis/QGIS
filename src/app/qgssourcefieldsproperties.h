@@ -46,7 +46,6 @@ class APP_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourc
 
   public:
     explicit QgsSourceFieldsProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );
-    ~QgsSourceFieldsProperties();
 
     void init();
     void apply();

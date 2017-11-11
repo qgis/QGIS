@@ -212,7 +212,7 @@ class CORE_EXPORT QgsOgcUtils
     {
       public:
         //! Constructor
-        LayerProperties() {}
+        LayerProperties() = default;
 
         //! Layer name
         QString mName;

@@ -92,11 +92,6 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
 
 // ---------------
 
-
-QgsFlatTerrainGenerator::QgsFlatTerrainGenerator()
-{
-}
-
 QgsChunkLoader *QgsFlatTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
   return new FlatTerrainChunkLoader( mTerrain, node );

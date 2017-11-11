@@ -98,7 +98,7 @@ class ANALYSIS_EXPORT QgsGraphVertex
     /**
      * Default constructor. It is needed for Qt's container, e.g. QVector
      */
-    QgsGraphVertex() {}
+    QgsGraphVertex() = default;
 
     /**
      * This constructor initializes QgsGraphVertex object and associates a vertex with a point

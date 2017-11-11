@@ -36,10 +36,6 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
       mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
     }
 
-    virtual ~QgsGeorefMapToolEmitPoint()
-    {
-    }
-
     void canvasMoveEvent( QgsMapMouseEvent *e ) override
     {
       mSnapIndicator->setMatch( mapPointMatch( e ) );

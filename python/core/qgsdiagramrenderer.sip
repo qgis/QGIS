@@ -319,6 +319,9 @@ class QgsDiagramSettings
     };
 
     QgsDiagramSettings();
+%Docstring
+Constructor for QgsDiagramSettings
+%End
 
     bool enabled;
     QFont font;

@@ -37,8 +37,7 @@ class CORE_EXPORT QgsProjectVersion
     /**
      * Creates a new NULL version
      */
-    QgsProjectVersion()
-    {}
+    QgsProjectVersion() = default;
 
     QgsProjectVersion( int major, int minor, int sub, const QString &name = "" );
     QgsProjectVersion( const QString &string );

@@ -392,8 +392,8 @@ class CORE_EXPORT QgsDiagramSettings
       Right
     };
 
-    QgsDiagramSettings()
-    {}
+    //! Constructor for QgsDiagramSettings
+    QgsDiagramSettings() = default;
 
     bool enabled = true;
     QFont font;

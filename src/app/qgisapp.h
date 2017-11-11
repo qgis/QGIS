@@ -1865,8 +1865,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     {
       public:
 
-        Tools()
-        {}
+        Tools() = default;
 
         QgsMapTool *mZoomIn = nullptr;
         QgsMapTool *mZoomOut = nullptr;
