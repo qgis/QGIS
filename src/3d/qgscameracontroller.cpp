@@ -23,7 +23,6 @@
 
 QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
-  , mLastPressedHeight( 0 )
   , mMouseDevice( new Qt3DInput::QMouseDevice() )
   , mKeyboardDevice( new Qt3DInput::QKeyboardDevice() )
   , mMouseHandler( new Qt3DInput::QMouseHandler )

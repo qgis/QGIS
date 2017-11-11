@@ -32,7 +32,8 @@
 class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
 {
   public:
-    QgsPoint3DSymbol();
+    //! Constructor for QgsPoint3DSymbol.
+    QgsPoint3DSymbol() = default;
 
     QString type() const override { return "point"; }
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
@@ -84,7 +85,8 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     void setTransform( const QMatrix4x4 &transform ) { mTransform = transform; }
 
   private:
-    AltitudeClamping mAltClamping;  //! how to handle altitude of vector features
+    //! how to handle altitude of vector features
+    AltitudeClamping mAltClamping = AltClampRelative;
 
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
     Shape mShape = Cylinder;  //!< What kind of shape to use

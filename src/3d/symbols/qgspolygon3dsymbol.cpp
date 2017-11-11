@@ -15,14 +15,6 @@
 
 #include "qgspolygon3dsymbol.h"
 
-QgsPolygon3DSymbol::QgsPolygon3DSymbol()
-  : mAltClamping( AltClampRelative )
-  , mAltBinding( AltBindCentroid )
-  , mHeight( 0 )
-  , mExtrusionHeight( 0 )
-{
-}
-
 QgsAbstract3DSymbol *QgsPolygon3DSymbol::clone() const
 {
   return new QgsPolygon3DSymbol( *this );

@@ -76,7 +76,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! used for computation of translation when dragging mouse
     QRect mViewport;
     //! height of terrain when mouse button was last pressed - for camera control
-    float mLastPressedHeight;
+    float mLastPressedHeight = 0;
 
     struct CameraData
     {

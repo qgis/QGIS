@@ -26,7 +26,6 @@ QgsLayoutItemGroupUndoCommand::QgsLayoutItemGroupUndoCommand( State s, QgsLayout
   , mGroupUuid( group->uuid() )
   , mLayout( layout )
   , mState( s )
-  , mFirstRun( true )
 {
   const QList< QgsLayoutItem * > items = group->items();
   for ( QgsLayoutItem *i : items )

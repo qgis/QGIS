@@ -19,13 +19,6 @@
 
 ///@cond PRIVATE
 
-QgsChunkList::QgsChunkList()
-  : mHead( nullptr )
-  , mTail( nullptr )
-  , mCount( 0 )
-{
-}
-
 int QgsChunkList::trueCount() const
 {
   int len = 0;

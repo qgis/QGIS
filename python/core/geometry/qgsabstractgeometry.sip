@@ -646,6 +646,9 @@ class QgsVertexIterator
 %End
   public:
     QgsVertexIterator();
+%Docstring
+Constructor for QgsVertexIterator
+%End
 
     QgsVertexIterator( const QgsAbstractGeometry *geometry );
 %Docstring

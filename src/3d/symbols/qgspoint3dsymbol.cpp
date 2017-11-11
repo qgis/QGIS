@@ -18,12 +18,6 @@
 #include "qgsreadwritecontext.h"
 #include "qgsxmlutils.h"
 
-
-QgsPoint3DSymbol::QgsPoint3DSymbol()
-  : mAltClamping( AltClampRelative )
-{
-}
-
 QgsAbstract3DSymbol *QgsPoint3DSymbol::clone() const
 {
   return new QgsPoint3DSymbol( *this );

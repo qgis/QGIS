@@ -19,14 +19,6 @@
 
 #include "qgsrasterlayer.h"
 
-
-
-QgsDemTerrainGenerator::QgsDemTerrainGenerator()
-  : mResolution( 16 )
-  , mSkirtHeight( 10.f )
-{
-}
-
 QgsDemTerrainGenerator::~QgsDemTerrainGenerator()
 {
   delete mHeightMapGenerator;

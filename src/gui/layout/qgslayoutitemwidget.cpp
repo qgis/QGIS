@@ -195,11 +195,6 @@ void QgsLayoutItemPropertiesWidget::updateVariables()
 QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, QgsLayoutItem *item )
   : QWidget( parent )
   , mConfigObject( new QgsLayoutConfigObject( this, item ) )
-  , mFreezeXPosSpin( false )
-  , mFreezeYPosSpin( false )
-  , mFreezeWidthSpin( false )
-  , mFreezeHeightSpin( false )
-  , mFreezePageSpin( false )
 {
   setupUi( this );
 

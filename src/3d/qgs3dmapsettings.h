@@ -47,7 +47,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
 {
     Q_OBJECT
   public:
-    Qgs3DMapSettings();
+
+    //! Constructor for Qgs3DMapSettings
+    Qgs3DMapSettings() = default;
     //! Copy constructor
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings();
@@ -206,23 +208,28 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     void showLabelsChanged();
 
   private:
-    double mOriginX, mOriginY, mOriginZ;   //!< Coordinates in map CRS at which our 3D world has origin (0,0,0)
+    //! X coordinate in map CRS at which our 3D world has origin (0,0,0)
+    double mOriginX = 0;
+    //! Y coordinate in map CRS at which our 3D world has origin (0,0,0)
+    double mOriginY = 0;
+    //! Z coordinate in map CRS at which our 3D world has origin (0,0,0)
+    double mOriginZ = 0;
     QgsCoordinateReferenceSystem mCrs;   //!< Destination coordinate system of the world
-    QColor mBackgroundColor;   //!< Background color of the scene
-    QColor mSelectionColor;    //!< Color to be used for selected map features
-    double mTerrainVerticalScale;   //!< Multiplier of terrain heights to make the terrain shape more pronounced
+    QColor mBackgroundColor = Qt::black;   //!< Background color of the scene
+    QColor mSelectionColor; //!< Color to be used for selected map features
+    double mTerrainVerticalScale = 1;   //!< Multiplier of terrain heights to make the terrain shape more pronounced
     std::unique_ptr<QgsTerrainGenerator> mTerrainGenerator;  //!< Implementation of the terrain generation
-    int mMapTileResolution;   //!< Size of map textures of tiles in pixels (width/height)
-    float mMaxTerrainScreenError;   //!< Maximum allowed terrain error in pixels (determines when tiles are switched to more detailed ones)
-    float mMaxTerrainGroundError;  //!< Maximum allowed horizontal map error in map units (determines how many zoom levels will be used)
-    bool mShowTerrainBoundingBoxes;  //!< Whether to show bounding boxes of entities - useful for debugging
-    bool mShowTerrainTileInfo;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
-    bool mShowLabels; //!< Whether to display labels on terrain tiles
+    int mMapTileResolution = 512;   //!< Size of map textures of tiles in pixels (width/height)
+    float mMaxTerrainScreenError = 3.f;   //!< Maximum allowed terrain error in pixels (determines when tiles are switched to more detailed ones)
+    float mMaxTerrainGroundError = 1.f;  //!< Maximum allowed horizontal map error in map units (determines how many zoom levels will be used)
+    bool mShowTerrainBoundingBoxes = false;  //!< Whether to show bounding boxes of entities - useful for debugging
+    bool mShowTerrainTileInfo = false;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
+    bool mShowLabels = false; //!< Whether to display labels on terrain tiles
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object
-    bool mSkyboxEnabled;  //!< Whether to render skybox
-    QString mSkyboxFileBase;   //!< Base part of the files with skybox textures
-    QString mSkyboxFileExtension;  //!< Extension part of the files with skybox textures
+    bool mSkyboxEnabled = false;  //!< Whether to render skybox
+    QString mSkyboxFileBase; //!< Base part of the files with skybox textures
+    QString mSkyboxFileExtension; //!< Extension part of the files with skybox textures
 };
 
 

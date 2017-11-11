@@ -51,7 +51,7 @@ class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
     Qt3DRender::QAttribute *mNormalAttribute = nullptr;
     Qt3DRender::QBuffer *mVertexBuffer = nullptr;
 
-    bool mWithNormals;
+    bool mWithNormals = true;
 };
 
 #endif // QGSTESSELLATEDPOLYGONGEOMETRY_H
