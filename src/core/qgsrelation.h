@@ -370,7 +370,7 @@ class CORE_EXPORT QgsRelation
     //! The parent layer
     QgsVectorLayer *mReferencedLayer = nullptr;
 
-    RelationStrength mRelationStrength;
+    RelationStrength mRelationStrength = Association;
 
     /**
      * A list of fields which define the relation.

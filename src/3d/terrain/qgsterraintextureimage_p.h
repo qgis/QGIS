@@ -64,8 +64,7 @@ class QgsTerrainTextureImage : public Qt3DRender::QAbstractTextureImage
     QgsRectangle mExtent;
     QString mDebugText;
     QImage mImage;
-    int mVersion;
-    int mJobId;
+    int mVersion = 1;
 };
 
 /// @endcond

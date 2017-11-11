@@ -72,7 +72,6 @@ QgsTerrainTextureImage::QgsTerrainTextureImage( const QImage &image, const QgsRe
   , mExtent( extent )
   , mDebugText( debugText )
   , mImage( image )
-  , mVersion( 1 )
 {
 }
 
