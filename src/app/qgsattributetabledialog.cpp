@@ -510,7 +510,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
     context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), rownum, true ) );
 
     QVariant value = exp.evaluate( &context );
-    fld.convertCompatible( value );
+    ( void )fld.convertCompatible( value );
     // Bail if we have a update error
     if ( exp.hasEvalError() )
     {
