@@ -35,6 +35,7 @@ QgsAttributesFormInitCode::QgsAttributesFormInitCode()
   mInitFileWidget->setFilter( tr( "Python files (*.py *.PY)" ) );
 
   connect( mInitCodeSourceComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributesFormInitCode::mInitCodeSourceComboBox_currentIndexChanged );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsAttributesFormInitCode::showHelp );
 }
 
 void QgsAttributesFormInitCode::setCodeSource( QgsEditFormConfig::PythonInitCodeSource initCodeSource )
@@ -80,4 +81,9 @@ void QgsAttributesFormInitCode::mInitCodeSourceComboBox_currentIndexChanged( int
   mInitFilePathLabel->setVisible( codeSource == QgsEditFormConfig::CodeSourceFile );
   mInitFileWidget->setVisible( codeSource == QgsEditFormConfig::CodeSourceFile );
   mInitCodeEditorPython->setVisible( codeSource == QgsEditFormConfig::CodeSourceDialog );
+}
+
+void QgsAttributesFormInitCode::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#enhance-your-form-with-custom-functions" ) );
 }
