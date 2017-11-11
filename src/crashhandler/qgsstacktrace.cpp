@@ -508,27 +508,34 @@ bool printType( StackTrace *stackTrace, PSYMBOL_INFOW pSymInfo, void *valueLocat
   return printGivenType( stackTrace, pSymInfo, symbolTag, pSymInfo->TypeIndex, valueLocation, false );
 }
 
+
 BOOL CALLBACK enumParams(
   _In_ PSYMBOL_INFOW pSymInfo,
   _In_ ULONG SymbolSize,
   _In_opt_ PVOID UserContext )
 {
-  if ( ( pSymInfo->Flags & SYMFLAG_PARAMETER ) == 0 )
+  if ( ( pSymInfo->Flags & SYMFLAG_LOCAL ) == 0 )
   {
     return TRUE;
   }
 
   StackTrace *stackTrace = ( StackTrace * )UserContext;
 
-  if ( stackTrace->isFirstParameter )
-  {
-    stackTrace->isFirstParameter = false;
-  }
-  else
+  stackTrace->written +=
+    swprintf_s( stackTrace->message + stackTrace->written, sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written,
+                L"\n" );
+
+  if ( pSymInfo->Flags & SYMFLAG_PARAMETER )
   {
     stackTrace->written +=
       swprintf_s( stackTrace->message + stackTrace->written, sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written,
-                  L", " );
+                  L"Parm: " );
+  }
+  else if ( pSymInfo->Flags & SYMFLAG_LOCAL )
+  {
+    stackTrace->written +=
+      swprintf_s( stackTrace->message + stackTrace->written, sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written,
+                  L"Local: " );
   }
 
   stackTrace->written +=
@@ -611,6 +618,14 @@ BOOL CALLBACK enumParams(
                       L"<Unknown register %lu>", pSymInfo->Register );
         return TRUE;
     }
+  }
+  else if ( pSymInfo->Flags & SYMFLAG_LOCAL )
+  {
+#ifndef _WIN64
+    valueLocation = ( ( char * )stackTrace->contextRecord->Ebp ) + pSymInfo->Address;
+#else
+    valueLocation = ( ( char * )stackTrace->contextRecord->Rbp ) + pSymInfo->Address;
+#endif
   }
   else if ( pSymInfo->Flags & SYMFLAG_REGREL )
   {
@@ -711,7 +726,7 @@ void getStackTrace( StackTrace *stackTrace, QString symbolPath, QgsStackTrace *t
 
       stackTrace->written +=
         swprintf_s( &stackTrace->message[stackTrace->written], sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written - 1,
-                    L">%02i: 0x%08llX %ls (", i, symbol->Address, symbol->Name );
+                    L">%02i: 0x%08llX %ls", i, symbol->Address, symbol->Name );
 
       IMAGEHLP_STACK_FRAME stackFrame = { 0 };
       stackFrame.InstructionOffset = symbol->Address;
@@ -720,9 +735,6 @@ void getStackTrace( StackTrace *stackTrace, QString symbolPath, QgsStackTrace *t
         stackTrace->isFirstParameter = true;
         SymEnumSymbolsW( stackTrace->process, 0, NULL, enumParams, stackTrace );
       }
-
-      swprintf_s( &stackTrace->message[stackTrace->written], sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written,
-                  L")" );
 
       DWORD pos;
       IMAGEHLP_LINEW64 lineInfo = { 0 };
@@ -734,7 +746,7 @@ void getStackTrace( StackTrace *stackTrace, QString symbolPath, QgsStackTrace *t
 
         stackTrace->written +=
           swprintf_s( &stackTrace->message[stackTrace->written], sizeof( stackTrace->message ) / sizeof( stackTrace->message[0] ) - stackTrace->written,
-                      L" at %ls:%lu", lineInfo.FileName, lineInfo.LineNumber );
+                      L"\nSource: %ls:%lu", lineInfo.FileName, lineInfo.LineNumber );
       }
 
       stackTrace->written +=
