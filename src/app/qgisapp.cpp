@@ -4157,6 +4157,7 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       QFileInfo fi( src );
       base = fi.completeBaseName();
     }
+    base = QgsMapLayer::formatLayerName( base );
 
     QgsDebugMsg( "completeBaseName: " + base );
 
@@ -4200,8 +4201,10 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       {
         //set friendly name for datasources with only one layer
         QStringList elements = sublayers.at( 0 ).split( ':' );
+        QString subLayerNameFormatted = elements.size() >= 2 ? QgsMapLayer::formatLayerName( elements.at( 1 ) ) : QString();
 
-        if ( elements.size() >= 4 && layer->name() != elements.at( 1 ) )
+        if ( elements.size() >= 4 && layer->name().compare( elements.at( 1 ), Qt::CaseInsensitive ) != 0
+             && layer->name().compare( subLayerNameFormatted, Qt::CaseInsensitive ) != 0 )
         {
           layer->setName( QStringLiteral( "%1 %2" ).arg( layer->name(), elements.at( 1 ) ) );
         }
@@ -9994,8 +9997,10 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
       if ( !sublayers.isEmpty() )
       {
         QStringList elements = sublayers.at( 0 ).split( ':' );
+        QString subLayerNameFormatted = elements.size() >= 2 ? QgsMapLayer::formatLayerName( elements.at( 1 ) ) : QString();
 
-        if ( elements.size() >= 4 && layer->name() != elements.at( 1 ) )
+        if ( elements.size() >= 4 && layer->name().compare( elements.at( 1 ), Qt::CaseInsensitive ) != 0
+             && layer->name().compare( subLayerNameFormatted, Qt::CaseInsensitive ) != 0 )
         {
           layer->setName( QStringLiteral( "%1 %2" ).arg( layer->name(), elements.at( 1 ) ) );
         }
