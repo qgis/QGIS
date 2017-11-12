@@ -297,7 +297,12 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
           title = layer->name();
         title = "<b>" + title + "</b>";
         if ( layer->crs().isValid() )
-          title = tr( "%1 (%2)" ).arg( title, layer->crs().authid() );
+        {
+          if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+            title = tr( "%1 (%2 - %3)" ).arg( title, QgsWkbTypes::displayString( vl->wkbType() ), layer->crs().authid() );
+          else
+            title = tr( "%1 (%2) " ).arg( title, layer->crs().authid() );
+        }
 
         parts << title;
 
