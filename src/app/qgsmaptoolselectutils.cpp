@@ -229,9 +229,12 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
   context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
-  QgsFeatureRenderer *r = vlayer->renderer();
-  if ( r )
+  std::unique_ptr< QgsFeatureRenderer > r;
+  if ( vlayer->renderer() )
+  {
+    r.reset( vlayer->renderer()->clone() );
     r->startRender( context, vlayer->fields() );
+  }
 
   QgsFeatureRequest request;
   request.setFilterRect( selectGeomTrans.boundingBox() );
