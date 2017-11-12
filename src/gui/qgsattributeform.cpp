@@ -969,6 +969,8 @@ void QgsAttributeForm::synchronizeEnabledState()
     {
       mFormEditorWidgets.value( eww->fieldIdx() )->setConstraintResultVisibility( isEditable );
 
+      eww->resetConstraintWidgetStatus( isEditable );
+
       bool enabled = isEditable && fieldIsEditable( eww->fieldIdx() );
       ww->setEnabled( enabled );
 

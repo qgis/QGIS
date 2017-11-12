@@ -266,6 +266,19 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
  Will call the value() method to determine the emitted value
 %End
 
+    virtual void resetConstraintWidgetStatus( bool editable );
+%Docstring
+ It cleans background color (and any other style) in case the feature is not
+ editable. In case it is, it resets it to the stored constraint status.
+
+ This could be overwritten in subclasses in case individual widgets need other
+ behavior.
+
+ \param editable if editable or not
+
+.. versionadded:: 3.0
+%End
+
   protected:
 
     virtual void updateConstraintWidgetStatus( ConstraintResult status );
