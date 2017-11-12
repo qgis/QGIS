@@ -49,7 +49,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsxmlutils.h"
 #include "qgssettings.h" // TODO: get rid of it [MD]
-
+#include "qgsstringutils.h"
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           const QString &lyrname,
@@ -60,7 +60,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   , mStyleManager( new QgsMapLayerStyleManager( this ) )
 {
   // Set the display name = internal name
-  mLayerName = capitalizeLayerName( mLayerOrigName );
+  mLayerName = lyrname;
 
   //mShortName.replace( QRegExp( "[\\W]" ), "_" );
 
@@ -137,12 +137,11 @@ QString QgsMapLayer::id() const
 
 void QgsMapLayer::setName( const QString &name )
 {
-  QString newName = capitalizeLayerName( name );
-  if ( name == mLayerOrigName && newName == mLayerName )
+  if ( name == mLayerOrigName && name == mLayerName )
     return;
 
-  mLayerOrigName = name; // store the new original name
-  mLayerName = newName;
+  mLayerOrigName = name;
+  mLayerName = name;
 
   emit nameChanged();
 }
@@ -1027,17 +1026,14 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
     emit crsChanged();
 }
 
-QString QgsMapLayer::capitalizeLayerName( const QString &name )
+QString QgsMapLayer::formatLayerName( const QString &name )
 {
-  // Capitalize the first letter of the layer name if requested
-  QgsSettings settings;
-  bool capitalizeLayerName =
-    settings.value( QStringLiteral( "qgis/capitalizeLayerName" ), QVariant( false ) ).toBool();
-
   QString layerName( name );
 
-  if ( capitalizeLayerName && !layerName.isEmpty() )
-    layerName = layerName.at( 0 ).toUpper() + layerName.mid( 1 );
+  if ( !layerName.isEmpty() )
+    layerName = QgsStringUtils::capitalize( name, QgsStringUtils::ForceFirstLetterToCapital );
+
+  layerName.replace( '_', ' ' );
 
   return layerName;
 }

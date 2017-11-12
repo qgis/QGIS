@@ -1666,6 +1666,7 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 - setMaximumScale() and setMinimumScale(), maximumScale() and minimumScale() had the opposite meaning to other min/max scales in the API, and their definitions have now been swapped. setMaximumScale
 now sets the maximum (i.e. largest scale, or most zoomed in) at which the layer will appear, and setMinimumScale now sets the minimum (i.e. smallest scale,
 or most zoomed out) at which the layer will appear. The same is true for the maximumScale and minimumScale getters.
+- capitalizeLayerName() was removed. Use formatLayerName() instead.
 
 
 QgsMapLayerActionRegistry        {#qgis_api_break_3_0_QgsMapLayerActionRegistry}
