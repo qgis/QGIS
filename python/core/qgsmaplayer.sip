@@ -512,9 +512,11 @@ Invoked by QgsProject.read().
 Sets layer's spatial reference system
 %End
 
-    static QString capitalizeLayerName( const QString &name );
+    static QString formatLayerName( const QString &name );
 %Docstring
-A convenience function to (un)capitalize the layer name
+ A convenience function to capitalize and format a layer ``name``.
+
+.. versionadded:: 3.0
  :rtype: str
 %End
 

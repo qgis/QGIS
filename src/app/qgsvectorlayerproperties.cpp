@@ -804,7 +804,7 @@ QString QgsVectorLayerProperties::htmlMetadata()
 
 void QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited( const QString &text )
 {
-  txtDisplayName->setText( mLayer->capitalizeLayerName( text ) );
+  txtDisplayName->setText( mLayer->formatLayerName( text ) );
 }
 
 void QgsVectorLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )

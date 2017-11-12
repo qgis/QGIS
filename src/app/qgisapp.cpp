@@ -9620,8 +9620,6 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
   QgsSettings mySettings;
   QString oldScales = mySettings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
 
-  bool oldCapitalize = mySettings.value( QStringLiteral( "qgis/capitalizeLayerName" ), QVariant( false ) ).toBool();
-
   QList< QgsOptionsWidgetFactory * > factories;
   Q_FOREACH ( const QPointer< QgsOptionsWidgetFactory > &f, mOptionsWidgetFactories )
   {
@@ -9644,13 +9642,6 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
     Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
     {
       applyDefaultSettingsToCanvas( canvas );
-    }
-
-    if ( oldCapitalize != mySettings.value( QStringLiteral( "qgis/capitalizeLayerName" ), QVariant( false ) ).toBool() )
-    {
-      // if the layer capitalization has changed, we need to update all layer names
-      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
-        layer->setName( layer->originalName() );
     }
 
     //update any open compositions so they reflect new composer settings
@@ -9944,7 +9935,7 @@ void QgisApp::reloadConnections()
 }
 
 
-QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey )
+QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const QString &name, const QString &providerKey )
 {
   bool wasfrozen = mMapCanvas->isFrozen();
 
@@ -9952,6 +9943,13 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
 
 // Let render() do its own cursor management
 //  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+  QString baseName = name;
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "qgis/capitalizeLayerName" ), QVariant( false ) ).toBool() )
+  {
+    baseName = QgsMapLayer::formatLayerName( baseName );
+  }
 
   /* Eliminate the need to instantiate the layer based on provider type.
      The caller is responsible for cobbling together the needed information to
@@ -11849,7 +11847,7 @@ bool QgisApp::addRasterLayer( QgsRasterLayer *rasterLayer )
 // this method is a blend of addRasterLayer() functions (with and without provider)
 // and addRasterLayers()
 QgsRasterLayer *QgisApp::addRasterLayerPrivate(
-  const QString &uri, const QString &baseName, const QString &providerKey,
+  const QString &uri, const QString &name, const QString &providerKey,
   bool guiWarning, bool guiUpdate )
 {
   if ( guiUpdate )
@@ -11857,6 +11855,13 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
     // let the user know we're going to possibly be taking a while
     // QApplication::setOverrideCursor( Qt::WaitCursor );
     freezeCanvases();
+  }
+
+  QString baseName = name;
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "qgis/capitalizeLayerName" ), QVariant( false ) ).toBool() )
+  {
+    baseName = QgsMapLayer::formatLayerName( baseName );
   }
 
   QgsDebugMsg( "Creating new raster layer using " + uri
