@@ -138,7 +138,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns the display name of the layer.
-     * \returns the layer name
      * \see setName()
      */
     QString name() const;
@@ -153,11 +152,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \note not available in Python bindings
      */
     virtual const QgsDataProvider *dataProvider() const SIP_SKIP;
-
-    /**
-     * Returns the original name of the layer.
-     */
-    QString originalName() const;
 
     /**
      * Sets the short name of the layer
@@ -1124,11 +1118,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Name of the layer - used for display
     QString mLayerName;
-
-    /**
-     * Original name of the layer
-     */
-    QString mLayerOrigName;
 
     QString mShortName;
     QString mTitle;

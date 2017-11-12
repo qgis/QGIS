@@ -724,7 +724,7 @@ void QgsRasterLayerProperties::sync()
    */
 
   //these properties (layer name and label) are provided by the qgsmaplayer superclass
-  mLayerOrigNameLineEd->setText( mRasterLayer->originalName() );
+  mLayerOrigNameLineEd->setText( mRasterLayer->name() );
   leDisplayName->setText( mRasterLayer->name() );
 
   //get the thumbnail for the layer
