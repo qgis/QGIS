@@ -673,7 +673,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cbxAddPostgisDC->setChecked( mSettings->value( QStringLiteral( "/qgis/addPostgisDC" ), false ).toBool() );
   cbxAddOracleDC->setChecked( mSettings->value( QStringLiteral( "/qgis/addOracleDC" ), false ).toBool() );
   cbxCompileExpressions->setChecked( mSettings->value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() );
-  cbxCreateRasterLegendIcons->setChecked( mSettings->value( QStringLiteral( "/qgis/createRasterLegendIcons" ), false ).toBool() );
 
   mComboCopyFeatureFormat->addItem( tr( "Plain text, no geometry" ), QgsClipboard::AttributesOnly );
   mComboCopyFeatureFormat->addItem( tr( "Plain text, WKT geometry" ), QgsClipboard::AttributesWithWKT );
@@ -1283,8 +1282,6 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/addOracleDC" ), cbxAddOracleDC->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/compileExpressions" ), cbxCompileExpressions->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/defaultLegendGraphicResolution" ), mLegendGraphicResolutionSpinBox->value() );
-  bool createRasterLegendIcons = mSettings->value( QStringLiteral( "/qgis/createRasterLegendIcons" ), false ).toBool();
-  mSettings->setValue( QStringLiteral( "/qgis/createRasterLegendIcons" ), cbxCreateRasterLegendIcons->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/copyFeatureFormat" ), mComboCopyFeatureFormat->currentData().toInt() );
 
   mSettings->setValue( QStringLiteral( "/qgis/new_layers_visible" ), chkAddedVisibility->isChecked() );
@@ -1549,8 +1546,7 @@ void QgsOptions::saveOptions()
     saveGdalDriverList();
 
   // refresh symbology for any legend items, only if needed
-  if ( showLegendClassifiers != cbxLegendClassifiers->isChecked()
-       || createRasterLegendIcons != cbxCreateRasterLegendIcons->isChecked() )
+  if ( showLegendClassifiers != cbxLegendClassifiers->isChecked() )
   {
     // TODO[MD] QgisApp::instance()->legend()->updateLegendItemSymbologies();
   }

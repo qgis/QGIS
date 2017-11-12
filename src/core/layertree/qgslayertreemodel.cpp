@@ -195,15 +195,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       // icons possibly overriding default icon
       if ( layer->type() == QgsMapLayer::RasterLayer )
       {
-        if ( testFlag( ShowRasterPreviewIcon ) )
-        {
-          QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
-          return QIcon( QPixmap::fromImage( rlayer->previewAsImage( QSize( 32, 32 ) ) ) );
-        }
-        else
-        {
-          return QgsLayerItem::iconRaster();
-        }
+        return QgsLayerItem::iconRaster();
       }
 
       QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( layer );
