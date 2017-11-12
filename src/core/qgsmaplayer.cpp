@@ -55,7 +55,6 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           const QString &lyrname,
                           const QString &source )
   : mDataSource( source )
-  , mLayerOrigName( lyrname ) // store the original name
   , mLayerType( type )
   , mStyleManager( new QgsMapLayerStyleManager( this ) )
 {
@@ -137,10 +136,9 @@ QString QgsMapLayer::id() const
 
 void QgsMapLayer::setName( const QString &name )
 {
-  if ( name == mLayerOrigName && name == mLayerName )
+  if ( name == mLayerName )
     return;
 
-  mLayerOrigName = name;
   mLayerName = name;
 
   emit nameChanged();
@@ -160,11 +158,6 @@ QgsDataProvider *QgsMapLayer::dataProvider()
 const QgsDataProvider *QgsMapLayer::dataProvider() const
 {
   return nullptr;
-}
-
-QString QgsMapLayer::originalName() const
-{
-  return mLayerOrigName;
 }
 
 QString QgsMapLayer::publicSource() const
@@ -720,7 +713,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   // layer name
   QDomElement layerName = document.createElement( QStringLiteral( "layername" ) );
-  QDomText layerNameText = document.createTextNode( originalName() );
+  QDomText layerNameText = document.createTextNode( name() );
   layerName.appendChild( layerNameText );
   layerElement.appendChild( layerName );
 

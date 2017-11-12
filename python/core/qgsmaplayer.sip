@@ -97,7 +97,6 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
     QString name() const;
 %Docstring
  Returns the display name of the layer.
- :return: the layer name
 .. seealso:: setName()
  :rtype: str
 %End
@@ -108,12 +107,6 @@ Returns the layer's unique ID, which is used to access this layer from QgsProjec
  :rtype: QgsDataProvider
 %End
 
-
-    QString originalName() const;
-%Docstring
- Returns the original name of the layer.
- :rtype: str
-%End
 
     void setShortName( const QString &shortName );
 %Docstring
@@ -1171,7 +1164,6 @@ Add error message
 %Docstring
 Set error message
 %End
-
 
 
 
