@@ -151,16 +151,28 @@ class CORE_EXPORT QgsFeatureRenderer
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
 
     /**
-     * Needs to be called when a new render cycle is started
+     * Must be called when a new render cycle is started. A call to startRender() must always
+     * be followed by a corresponding call to stopRender() after all features have been rendered.
      *
      * \param context  Additional information passed to the renderer about the job which will be rendered
      * \param fields   The fields available for rendering
-     * \returns         Information passed back from the renderer that can e.g. be used to reduce the amount of requested features
+     *
+     * \see stopRender()
+     *
+     * \warning This method is not thread safe. Before calling startRender() in a non-main thread,
+     * the renderer should instead be cloned and startRender()/stopRender() called on the clone.
      */
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) = 0;
 
     /**
-     * Needs to be called when a render cycle has finished to clean up.
+     * Must be called when a render cycle has finished, to allow the renderer to clean up.
+     *
+     * Calls to stopRender() must always be preceeded by a call to startRender().
+     *
+     * \warning This method is not thread safe. Before calling startRender() in a non-main thread,
+     * the renderer should instead be cloned and startRender()/stopRender() called on the clone.
+     *
+     * \see startRender()
      */
     virtual void stopRender( QgsRenderContext &context ) = 0;
 
@@ -209,6 +221,9 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * If layer is not -1, the renderer should draw only a particula layer from symbols
      * (in order to support symbol level rendering).
+     *
+     * \see startRender()
+     * \see stopRender()
      */
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
