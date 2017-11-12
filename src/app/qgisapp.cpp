@@ -3686,8 +3686,6 @@ void QgisApp::setupLayerTreeViewFromSettings()
   QgsSettings s;
 
   QgsLayerTreeModel *model = mLayerTreeView->layerTreeModel();
-  model->setFlag( QgsLayerTreeModel::ShowRasterPreviewIcon, s.value( QStringLiteral( "/qgis/createRasterLegendIcons" ), false ).toBool() );
-
   QFont fontLayer, fontGroup;
   fontLayer.setBold( true );
   fontGroup.setBold( false );

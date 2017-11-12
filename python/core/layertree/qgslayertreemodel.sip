@@ -77,7 +77,6 @@ class QgsLayerTreeModel : QAbstractItemModel
     {
       // display
       ShowLegend,
-      ShowRasterPreviewIcon,
       ShowLegendAsTree,
       DeferredLegendInvalidation,
       UseEmbeddedWidgets,
