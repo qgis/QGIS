@@ -589,6 +589,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
 
+        self.assertTrue(vl.extent().isNull())
+
         time.sleep(1) # so timestamp gets updated
         ds = ogr.Open(tmpfile, update=1)
         ds.CreateLayer('test2', geom_type=ogr.wkbPoint)

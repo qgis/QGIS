@@ -1097,6 +1097,11 @@ QgsRectangle QgsOgrProvider::extent() const
     }
 #endif
 
+    mExtent->MinX = std::numeric_limits<double>::max();
+    mExtent->MinY = std::numeric_limits<double>::max();
+    mExtent->MaxX = -std::numeric_limits<double>::max();
+    mExtent->MaxY = -std::numeric_limits<double>::max();
+
     // TODO: This can be expensive, do we really need it!
     if ( mOgrLayer == mOgrOrigLayer )
     {
@@ -1104,18 +1109,13 @@ QgsRectangle QgsOgrProvider::extent() const
     }
     else
     {
-      mExtent->MinX = std::numeric_limits<double>::max();
-      mExtent->MinY = std::numeric_limits<double>::max();
-      mExtent->MaxX = -std::numeric_limits<double>::max();
-      mExtent->MaxY = -std::numeric_limits<double>::max();
-
       gdal::ogr_feature_unique_ptr f;
 
       mOgrLayer->ResetReading();
       while ( f.reset( mOgrLayer->GetNextFeature() ), f )
       {
         OGRGeometryH g = OGR_F_GetGeometryRef( f.get() );
-        if ( g )
+        if ( g && !OGR_G_IsEmpty( g ) )
         {
           OGREnvelope env;
           OGR_G_GetEnvelope( g, &env );
