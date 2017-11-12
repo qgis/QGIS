@@ -53,16 +53,17 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
   mToolTip = uri;
   setState( Populated ); // children are not expected
 
-  OGRRegisterAll();
-  gdal::dataset_unique_ptr hDataSource( GDALOpenEx( mPath.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
-
-  if ( hDataSource )
+  if ( mPath.toLower().endsWith( QLatin1String( ".shp" ) ) )
   {
-    GDALDriverH hDriver = GDALGetDatasetDriver( hDataSource.get() );
-    QString driverName = GDALGetDriverShortName( hDriver );
-
-    if ( driverName == QLatin1String( "ESRI Shapefile" ) )
+    if ( OGRGetDriverCount() == 0 )
+    {
+      OGRRegisterAll();
+    }
+    gdal::dataset_unique_ptr hDataSource( GDALOpenEx( mPath.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr ) );
+    if ( hDataSource )
+    {
       mCapabilities |= SetCrs;
+    }
 
     // It it is impossible to assign a crs to an existing layer
     // No OGR_L_SetSpatialRef : http://trac.osgeo.org/gdal/ticket/4032
@@ -640,7 +641,10 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   QgsDataItem *item = nullptr;
 
   // test that file is valid with OGR
-  OGRRegisterAll();
+  if ( OGRGetDriverCount() == 0 )
+  {
+    OGRRegisterAll();
+  }
   // do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
