@@ -451,11 +451,6 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
 
 void QgsAttributesFormProperties::onAttributeSelectionChanged()
 {
-  bool isAddPossible = false;
-  if ( mFormLayoutTree->selectedItems().count() == 1 && !mAvailableWidgetsTree->selectedItems().isEmpty() )
-    if ( mFormLayoutTree->selectedItems()[0]->data( 0, DnDTreeRole ).value<DnDTreeItemData>().type() == DnDTreeItemData::Container )
-      isAddPossible = true;
-
   storeAttributeTypeDialog();
   storeAttributeRelationEdit();
 

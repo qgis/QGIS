@@ -472,14 +472,14 @@ class Grass7Utils(object):
                         'it before running GRASS GIS 7 algorithms.')
                 if Grass7Utils.command is None:
                     return Grass7Utils.tr(
-                        'GRASS GIS 7 binary {0} can\t be found on this system from a shell.'
+                        'GRASS GIS 7 binary {0} can\'t be found on this system from a shell. '
                         'Please install it or configure your PATH {1} environment variable.'.format(
                             '(grass.bat)' if isWindows() else '(grass.sh)',
                             'or OSGEO4W_ROOT' if isWindows() else ''))
             # GNU/Linux
             else:
                 return Grass7Utils.tr(
-                    'GRASS 7 can\'t be found on this system from a shell.'
+                    'GRASS 7 can\'t be found on this system from a shell. '
                     'Please install it or configure your PATH environment variable.')
 
     @staticmethod
