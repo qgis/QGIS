@@ -115,16 +115,28 @@ return a new renderer - used by default in vector layers
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) = 0;
 %Docstring
- Needs to be called when a new render cycle is started
+ Must be called when a new render cycle is started. A call to startRender() must always
+ be followed by a corresponding call to stopRender() after all features have been rendered.
 
  \param context  Additional information passed to the renderer about the job which will be rendered
  \param fields   The fields available for rendering
- :return:         Information passed back from the renderer that can e.g. be used to reduce the amount of requested features
+
+.. seealso:: stopRender()
+
+ \warning This method is not thread safe. Before calling startRender() in a non-main thread,
+ the renderer should instead be cloned and startRender()/stopRender() called on the clone.
 %End
 
     virtual void stopRender( QgsRenderContext &context ) = 0;
 %Docstring
- Needs to be called when a render cycle has finished to clean up.
+ Must be called when a render cycle has finished, to allow the renderer to clean up.
+
+ Calls to stopRender() must always be preceeded by a call to startRender().
+
+ \warning This method is not thread safe. Before calling startRender() in a non-main thread,
+ the renderer should instead be cloned and startRender()/stopRender() called on the clone.
+
+.. seealso:: startRender()
 %End
 
     virtual QString filter( const QgsFields &fields = QgsFields() );
@@ -177,6 +189,9 @@ return a new renderer - used by default in vector layers
 
  If layer is not -1, the renderer should draw only a particula layer from symbols
  (in order to support symbol level rendering).
+
+.. seealso:: startRender()
+.. seealso:: stopRender()
  :rtype: bool
 %End
 
