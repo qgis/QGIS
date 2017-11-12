@@ -101,8 +101,19 @@ void QgsEditorWidgetWrapper::valueChanged()
   emit valueChanged( value() );
 }
 
+void QgsEditorWidgetWrapper::resetConstraintWidgetStatus( bool editable )
+{
+  if ( editable )
+    updateConstraintWidgetStatus( mConstraintResult );
+  else
+    widget()->setStyleSheet( QString() );
+}
+
 void QgsEditorWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult constraintResult )
 {
+  //set the constraint result
+  mConstraintResult = constraintResult;
+
   switch ( constraintResult )
   {
     case ConstraintResultPass:

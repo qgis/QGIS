@@ -283,6 +283,19 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     void valueChanged();
 
+    /**
+     * It cleans background color (and any other style) in case the feature is not
+     * editable. In case it is, it resets it to the stored constraint status.
+     *
+     * This could be overwritten in subclasses in case individual widgets need other
+     * behavior.
+     *
+     * \param editable if editable or not
+     *
+     * \since QGIS 3.0
+     */
+    virtual void resetConstraintWidgetStatus( bool editable );
+
   protected:
 
     /**
@@ -313,6 +326,9 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
 
     //! Contains the string explanation of why a constraint check failed
     QString mConstraintFailureReason;
+
+    //! The current constraint result
+    ConstraintResult mConstraintResult;
 
     int mFieldIdx;
     QgsFeature mFeature;
