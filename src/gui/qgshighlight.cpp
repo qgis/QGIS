@@ -103,13 +103,13 @@ void QgsHighlight::setFillColor( const QColor &fillColor )
   mBrush.setStyle( Qt::SolidPattern );
 }
 
-QgsFeatureRenderer *QgsHighlight::getRenderer( QgsRenderContext &context, const QColor &color, const QColor &fillColor )
+std::unique_ptr<QgsFeatureRenderer> QgsHighlight::createRenderer( QgsRenderContext &context, const QColor &color, const QColor &fillColor )
 {
-  QgsFeatureRenderer *renderer = nullptr;
+  std::unique_ptr<QgsFeatureRenderer> renderer;
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mLayer );
   if ( layer && layer->renderer() )
   {
-    renderer = layer->renderer()->clone();
+    renderer.reset( layer->renderer()->clone() );
   }
   if ( renderer )
   {
@@ -328,23 +328,23 @@ void QgsHighlight::paint( QPainter *p )
     QColor tmpColor( 255, 0, 0, 255 );
     QColor tmpFillColor( 0, 255, 0, 255 );
 
-    QgsFeatureRenderer *renderer = getRenderer( context, tmpColor, tmpFillColor );
+    std::unique_ptr< QgsFeatureRenderer > renderer = createRenderer( context, tmpColor, tmpFillColor );
     if ( layer && renderer )
     {
 
       QSize imageSize( mMapCanvas->mapSettings().outputSize() );
       QImage image = QImage( imageSize.width(), imageSize.height(), QImage::Format_ARGB32 );
       image.fill( 0 );
-      QPainter *imagePainter = new QPainter( &image );
-      imagePainter->setRenderHint( QPainter::Antialiasing, true );
+      QPainter imagePainter( &image );
+      imagePainter.setRenderHint( QPainter::Antialiasing, true );
 
-      context.setPainter( imagePainter );
+      context.setPainter( &imagePainter );
 
       renderer->startRender( context, layer->fields() );
       renderer->renderFeature( mFeature, context );
       renderer->stopRender( context );
 
-      imagePainter->end();
+      imagePainter.end();
 
       QColor color( mPen.color() );  // true output color
       // coefficient to subtract alpha using green (temporary fill)
@@ -366,9 +366,6 @@ void QgsHighlight::paint( QPainter *p )
       }
 
       p->drawImage( 0, 0, image );
-
-      delete imagePainter;
-      delete renderer;
     }
   }
 }

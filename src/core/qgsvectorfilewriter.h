@@ -729,6 +729,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                QgsVectorFileWriter::ActionOnExistingFile action );
     void resetMap( const QgsAttributeList &attributes );
 
+    std::unique_ptr< QgsFeatureRenderer > mRenderer;
     QgsRenderContext mRenderContext;
 
     bool mUsingTransaction = false;
@@ -744,8 +745,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
 
     void startRender( QgsVectorLayer *vl );
-    void stopRender( QgsVectorLayer *vl );
-    QgsFeatureRenderer *symbologyRenderer( QgsVectorLayer *vl ) const;
+    void stopRender();
+    std::unique_ptr< QgsFeatureRenderer > createSymbologyRenderer( QgsVectorLayer *vl ) const;
     //! Adds attributes needed for classification
     void addRendererAttributes( QgsVectorLayer *vl, QgsAttributeList &attList );
     static QMap<QString, MetaData> sDriverMetadata;

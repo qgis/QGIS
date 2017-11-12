@@ -982,13 +982,14 @@ void QgsDxfExport::writeEntities()
     }
 
     QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, 0, nullptr );
-    QgsFeatureRenderer *renderer = vl->renderer();
-    if ( !renderer )
+    if ( !vl->renderer() )
     {
       if ( hasStyleOverride )
         vl->styleManager()->restoreOverrideStyle();
       continue;
     }
+
+    std::unique_ptr< QgsFeatureRenderer > renderer( vl->renderer()->clone() );
     renderer->startRender( ctx, vl->fields() );
 
     QSet<QString> attributes = renderer->usedAttributes( ctx );
@@ -1118,12 +1119,12 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer *layer )
     return;
   }
 
-  QgsFeatureRenderer *renderer = layer->renderer();
-  if ( !renderer )
+  if ( !layer->renderer() )
   {
     // TODO return error
     return;
   }
+  std::unique_ptr< QgsFeatureRenderer > renderer( layer->renderer()->clone() );
   QHash< QgsSymbol *, QList<QgsFeature> > features;
 
   QgsRenderContext ctx = renderContext();
