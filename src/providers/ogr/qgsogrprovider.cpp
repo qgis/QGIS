@@ -583,7 +583,7 @@ QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
     return geom;
   }
 
-  switch ( type )
+  switch ( static_cast<unsigned>( type ) )
   {
     case wkbUnknown:
       geom = QStringLiteral( "Unknown" );
@@ -642,28 +642,28 @@ QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
     case wkbNone:
       geom = QStringLiteral( "None" );
       break;
-    case wkbUnknown | wkb25DBit:
+    case static_cast<unsigned>( wkbUnknown ) | static_cast<unsigned>( wkb25DBit ):
       geom = QStringLiteral( "Unknown25D" );
       break;
-    case wkbPoint25D:
+    case static_cast<unsigned>( wkbPoint25D ):
       geom = QStringLiteral( "Point25D" );
       break;
-    case wkbLineString25D:
+    case static_cast<unsigned>( wkbLineString25D ):
       geom = QStringLiteral( "LineString25D" );
       break;
-    case wkbPolygon25D:
+    case static_cast<unsigned>( wkbPolygon25D ):
       geom = QStringLiteral( "Polygon25D" );
       break;
-    case wkbMultiPoint25D:
+    case static_cast<unsigned>( wkbMultiPoint25D ):
       geom = QStringLiteral( "MultiPoint25D" );
       break;
-    case wkbMultiLineString25D:
+    case static_cast<unsigned>( wkbMultiLineString25D ):
       geom = QStringLiteral( "MultiLineString25D" );
       break;
-    case wkbMultiPolygon25D:
+    case static_cast<unsigned>( wkbMultiPolygon25D ):
       geom = QStringLiteral( "MultiPolygon25D" );
       break;
-    case wkbGeometryCollection25D:
+    case static_cast<unsigned>( wkbGeometryCollection25D ):
       geom = QStringLiteral( "GeometryCollection25D" );
       break;
     default:
