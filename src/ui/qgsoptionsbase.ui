@@ -308,7 +308,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>12</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -337,8 +337,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>580</width>
-                <height>804</height>
+                <width>1159</width>
+                <height>1434</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1032,8 +1032,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>537</width>
-                <height>1128</height>
+                <width>1092</width>
+                <height>1502</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1562,8 +1562,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>499</width>
-                <height>754</height>
+                <width>1010</width>
+                <height>1266</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1930,8 +1930,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>672</width>
-                <height>1043</height>
+                <width>1351</width>
+                <height>1933</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2681,8 +2681,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>130</width>
-                <height>322</height>
+                <width>741</width>
+                <height>779</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2832,8 +2832,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>500</width>
-                <height>340</height>
+                <width>813</width>
+                <height>751</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2992,16 +2992,43 @@
                   </item>
                   <item>
                    <layout class="QGridLayout" name="gridLayout_3">
-                    <item row="1" column="2">
-                     <widget class="Line" name="line_4">
-                      <property name="minimumSize">
-                       <size>
-                        <width>12</width>
-                        <height>0</height>
-                       </size>
+                    <item row="3" column="1" colspan="2">
+                     <widget class="QCheckBox" name="cbxCreateRasterLegendIcons">
+                      <property name="text">
+                       <string>Create raster icons (may be slow)</string>
                       </property>
-                      <property name="orientation">
-                       <enum>Qt::Vertical</enum>
+                     </widget>
+                    </item>
+                    <item row="2" column="1" colspan="2">
+                     <widget class="QCheckBox" name="cbxLegendClassifiers">
+                      <property name="text">
+                       <string>Display classification attribute names</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QCheckBox" name="capitalizeCheckBox">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>Capitalize layer names</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0" colspan="3">
+                     <widget class="QLabel" name="label_53">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>Legend item styles</string>
                       </property>
                      </widget>
                     </item>
@@ -3020,66 +3047,6 @@
                        </size>
                       </property>
                      </spacer>
-                    </item>
-                    <item row="1" column="1">
-                     <widget class="QCheckBox" name="capitalizeCheckBox">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Capitalize layer names</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="3">
-                     <widget class="QCheckBox" name="mLegendLayersBoldChkBx">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Bold layer names</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="3" column="1" colspan="3">
-                     <widget class="QCheckBox" name="cbxLegendClassifiers">
-                      <property name="text">
-                       <string>Display classification attribute names</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="1" colspan="3">
-                     <widget class="QCheckBox" name="mLegendGroupsBoldChkBx">
-                      <property name="text">
-                       <string>Bold group names</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="4" column="1" colspan="3">
-                     <widget class="QCheckBox" name="cbxCreateRasterLegendIcons">
-                      <property name="text">
-                       <string>Create raster icons (may be slow)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="0" colspan="4">
-                     <widget class="QLabel" name="label_53">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Legend item styles</string>
-                      </property>
-                     </widget>
                     </item>
                    </layout>
                   </item>
@@ -3175,8 +3142,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>623</width>
-                <height>734</height>
+                <width>1081</width>
+                <height>1164</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3619,8 +3586,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>491</width>
-                <height>610</height>
+                <width>920</width>
+                <height>924</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3888,8 +3855,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>548</width>
-                <height>785</height>
+                <width>1072</width>
+                <height>1551</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4483,8 +4450,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>431</width>
-                <height>376</height>
+                <width>823</width>
+                <height>576</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4622,8 +4589,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>418</width>
-                <height>544</height>
+                <width>838</width>
+                <height>855</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4845,8 +4812,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>866</width>
-                <height>930</height>
+                <width>1258</width>
+                <height>1349</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5374,21 +5341,10 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
@@ -5401,6 +5357,17 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsVariableEditorWidget</class>
@@ -5572,8 +5539,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mLegendGrpBx</tabstop>
   <tabstop>cmbLegendDoubleClickAction</tabstop>
   <tabstop>capitalizeCheckBox</tabstop>
-  <tabstop>mLegendLayersBoldChkBx</tabstop>
-  <tabstop>mLegendGroupsBoldChkBx</tabstop>
   <tabstop>cbxLegendClassifiers</tabstop>
   <tabstop>cbxCreateRasterLegendIcons</tabstop>
   <tabstop>mLegendGraphicResolutionSpinBox</tabstop>
@@ -5678,6 +5643,32 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mDefaultZValueSpinBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>
