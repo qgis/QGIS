@@ -131,7 +131,7 @@ return a new renderer - used by default in vector layers
 %Docstring
  Must be called when a render cycle has finished, to allow the renderer to clean up.
 
- Calls to stopRender() must always be preceeded by a call to startRender().
+ Calls to stopRender() must always be preceded by a call to startRender().
 
  \warning This method is not thread safe. Before calling startRender() in a non-main thread,
  the renderer should instead be cloned and startRender()/stopRender() called on the clone.
