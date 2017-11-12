@@ -171,6 +171,14 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   info.setFile( path );
   QString name = info.fileName();
 
+  // If a .tab exists, then the corresponding .map/.dat is very likely a
+  // side-car file of the .tab
+  if ( suffix == QLatin1String( "map" ) || suffix == QLatin1String( "dat" ) )
+  {
+    if ( QFileInfo( QDir( info.path() ), info.baseName() + ".tab" ).exists() )
+      return nullptr;
+  }
+
   QgsDebugMsgLevel( "path= " + path + " tmpPath= " + tmpPath + " name= " + name
                     + " suffix= " + suffix + " vsiPrefix= " + vsiPrefix, 3 );
 
