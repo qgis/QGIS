@@ -583,7 +583,7 @@ QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
     return geom;
   }
 
-  switch ( ( long )type )
+  switch ( type )
   {
     case wkbUnknown:
       geom = QStringLiteral( "Unknown" );
