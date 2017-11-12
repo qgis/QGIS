@@ -4203,7 +4203,7 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
 
         if ( elements.size() >= 4 && layer->name() != elements.at( 1 ) )
         {
-          layer->setName( QStringLiteral( "%1 %2 %3" ).arg( layer->name(), elements.at( 1 ), elements.at( 3 ) ) );
+          layer->setName( QStringLiteral( "%1 %2" ).arg( layer->name(), elements.at( 1 ) ) );
         }
 
         myList << layer;
@@ -4636,8 +4636,6 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
 
     QgsDebugMsg( "Creating new vector layer using " + composedURI );
     QString name = fileName + " " + def.layerName;
-    if ( !layerGeometryType.isEmpty() )
-      name += " " + layerGeometryType;
     QgsVectorLayer::LayerOptions options;
     options.loadDefaultStyle = false;
     QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, QStringLiteral( "ogr" ), options );
@@ -9999,7 +9997,7 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
 
         if ( elements.size() >= 4 && layer->name() != elements.at( 1 ) )
         {
-          layer->setName( QStringLiteral( "%1 %2 %3" ).arg( layer->name(), elements.at( 1 ), elements.at( 3 ) ) );
+          layer->setName( QStringLiteral( "%1 %2" ).arg( layer->name(), elements.at( 1 ) ) );
         }
       }
 
