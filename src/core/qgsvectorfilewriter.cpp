@@ -2655,7 +2655,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
     n++;
   }
 
-  writer->stopRender( layer );
+  writer->stopRender();
   delete writer;
 
   if ( errors > 0 && errorMessage && n > 0 )
@@ -3135,7 +3135,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
     }
   }
 
-  stopRender( layer );
+  stopRender();
 
   if ( nErrors > 0 && errorMessage )
   {
@@ -3181,46 +3181,44 @@ double QgsVectorFileWriter::mapUnitScaleFactor( double scale, QgsUnitTypes::Rend
 
 void QgsVectorFileWriter::startRender( QgsVectorLayer *vl )
 {
-  QgsFeatureRenderer *renderer = symbologyRenderer( vl );
-  if ( !renderer )
+  mRenderer = createSymbologyRenderer( vl );
+  if ( !mRenderer )
   {
     return;
   }
 
-  renderer->startRender( mRenderContext, vl->fields() );
+  mRenderer->startRender( mRenderContext, vl->fields() );
 }
 
-void QgsVectorFileWriter::stopRender( QgsVectorLayer *vl )
+void QgsVectorFileWriter::stopRender()
 {
-  QgsFeatureRenderer *renderer = symbologyRenderer( vl );
-  if ( !renderer )
+  if ( !mRenderer )
   {
     return;
   }
 
-  renderer->stopRender( mRenderContext );
+  mRenderer->stopRender( mRenderContext );
 }
 
-QgsFeatureRenderer *QgsVectorFileWriter::symbologyRenderer( QgsVectorLayer *vl ) const
+std::unique_ptr<QgsFeatureRenderer> QgsVectorFileWriter::createSymbologyRenderer( QgsVectorLayer *vl ) const
 {
   if ( mSymbologyExport == NoSymbology )
   {
     return nullptr;
   }
-  if ( !vl )
+  if ( !vl || !vl->renderer() )
   {
     return nullptr;
   }
 
-  return vl->renderer();
+  return std::unique_ptr< QgsFeatureRenderer >( vl->renderer()->clone() );
 }
 
 void QgsVectorFileWriter::addRendererAttributes( QgsVectorLayer *vl, QgsAttributeList &attList )
 {
-  QgsFeatureRenderer *renderer = symbologyRenderer( vl );
-  if ( renderer )
+  if ( mRenderer )
   {
-    const QSet<QString> rendererAttributes = renderer->usedAttributes( mRenderContext );
+    const QSet<QString> rendererAttributes = mRenderer->usedAttributes( mRenderContext );
     for ( const QString &attr : rendererAttributes )
     {
       int index = vl->fields().lookupField( attr );

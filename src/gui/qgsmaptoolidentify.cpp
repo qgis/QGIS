@@ -253,8 +253,8 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
   QgsRenderContext context( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
   context.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
-  QgsFeatureRenderer *renderer = layer->renderer();
-  if ( renderer && renderer->capabilities() & QgsFeatureRenderer::ScaleDependent )
+  std::unique_ptr< QgsFeatureRenderer > renderer( layer->renderer() ? layer->renderer()->clone() : nullptr );
+  if ( renderer )
   {
     // setup scale for scale dependent visibility (rule based)
     renderer->startRender( context, layer->fields() );
@@ -280,7 +280,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), *f_it, derivedAttributes ) );
   }
 
-  if ( renderer && renderer->capabilities() & QgsFeatureRenderer::ScaleDependent )
+  if ( renderer )
   {
     renderer->stopRender( context );
   }

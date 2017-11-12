@@ -255,7 +255,7 @@ namespace QgsWms
 
   void QgsRenderer::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, QgsRenderContext &context ) const
   {
-    QgsFeatureRenderer *r = vl->renderer();
+    std::unique_ptr< QgsFeatureRenderer > r( vl->renderer()->clone() );
     bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
     r->startRender( context, vl->pendingFields() );
     QgsFeature f;
@@ -1476,7 +1476,7 @@ namespace QgsWms
 #endif
 
     QgsFeatureIterator fit = layer->getFeatures( fReq );
-    QgsFeatureRenderer *r2 = layer->renderer();
+    std::unique_ptr< QgsFeatureRenderer > r2( layer->renderer() ? layer->renderer()->clone() : nullptr );
     if ( r2 )
     {
       r2->startRender( renderContext, layer->pendingFields() );
