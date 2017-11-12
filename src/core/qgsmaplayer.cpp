@@ -1022,12 +1022,8 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
 QString QgsMapLayer::formatLayerName( const QString &name )
 {
   QString layerName( name );
-
-  if ( !layerName.isEmpty() )
-    layerName = QgsStringUtils::capitalize( name, QgsStringUtils::ForceFirstLetterToCapital );
-
   layerName.replace( '_', ' ' );
-
+  layerName = QgsStringUtils::capitalize( layerName, QgsStringUtils::ForceFirstLetterToCapital );
   return layerName;
 }
 
