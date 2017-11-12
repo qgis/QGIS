@@ -24,12 +24,12 @@
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaplayerref.h"
+#include "qgsterraingenerator.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;
 
 class QgsAbstract3DRenderer;
-class QgsTerrainGenerator;
 
 
 class QgsReadWriteContext;
