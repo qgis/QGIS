@@ -600,6 +600,38 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         vl2.subLayers()
         self.assertEqual(vl2.dataProvider().subLayers(), ['0:test:0:Point:geom', '1:test2:0:Point:geom'])
 
+    def testGeopackageLargeFID(self):
+
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageLargeFID.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        ds = None
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        f = QgsFeature()
+        f.setAttributes([1234567890123, None])
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.dataProvider().addFeatures([f]))
+        self.assertTrue(vl.commitChanges())
+
+        got = [feat for feat in vl.getFeatures()][0]
+        self.assertEqual(got['fid'], 1234567890123)
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.changeGeometry(1234567890123, QgsGeometry.fromWkt('Point (3 50)')))
+        self.assertTrue(vl.changeAttributeValue(1234567890123, 1, 'foo'))
+        self.assertTrue(vl.commitChanges())
+
+        got = [feat for feat in vl.getFeatures()][0]
+        self.assertEqual(got['str_field'], 'foo')
+        got_geom = got.geometry()
+        self.assertIsNotNone(got_geom)
+
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.deleteFeature(1234567890123))
+        self.assertTrue(vl.commitChanges())
+
 
 if __name__ == '__main__':
     unittest.main()
