@@ -1656,17 +1656,19 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   {
     QgsFeatureId fid = it.key();
 
+#if !(defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,0,0))
     if ( FID_TO_NUMBER( fid ) > std::numeric_limits<long>::max() )
     {
       pushError( tr( "OGR error on feature %1: id too large" ).arg( fid ) );
       continue;
     }
+#endif
 
     const QgsAttributeMap &attr = it.value();
     if ( attr.isEmpty() )
       continue;
 
-    OGRFeatureH of = OGR_L_GetFeature( ogrLayer, static_cast<long>( FID_TO_NUMBER( fid ) ) );
+    OGRFeatureH of = OGR_L_GetFeature( ogrLayer, FID_TO_NUMBER( fid ) );
     if ( !of )
     {
       pushError( tr( "Feature %1 for attribute update not found." ).arg( fid ) );
@@ -1803,13 +1805,15 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 
   for ( QgsGeometryMap::const_iterator it = geometry_map.constBegin(); it != geometry_map.constEnd(); ++it )
   {
+#if !(defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,0,0))
     if ( FID_TO_NUMBER( it.key() ) > std::numeric_limits<long>::max() )
     {
       pushError( tr( "OGR error on feature %1: id too large" ).arg( it.key() ) );
       continue;
     }
+#endif
 
-    OGRFeatureH theOGRFeature = OGR_L_GetFeature( ogrLayer, static_cast<long>( FID_TO_NUMBER( it.key() ) ) );
+    OGRFeatureH theOGRFeature = OGR_L_GetFeature( ogrLayer, FID_TO_NUMBER( it.key() ) );
     if ( !theOGRFeature )
     {
       pushError( tr( "OGR error changing geometry: feature %1 not found" ).arg( it.key() ) );
@@ -1959,11 +1963,13 @@ bool QgsOgrProvider::deleteFeature( QgsFeatureId id )
   if ( !doInitialActionsForEdition() )
     return false;
 
+#if !(defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,0,0))
   if ( FID_TO_NUMBER( id ) > std::numeric_limits<long>::max() )
   {
     pushError( tr( "OGR error on feature %1: id too large" ).arg( id ) );
     return false;
   }
+#endif
 
   if ( OGR_L_DeleteFeature( ogrLayer, FID_TO_NUMBER( id ) ) != OGRERR_NONE )
   {
