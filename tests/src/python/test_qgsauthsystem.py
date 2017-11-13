@@ -754,6 +754,8 @@ class TestQgsAuthManager(unittest.TestCase):
         self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_DSA.der').isNull())
         self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_EC.pem').isNull())
         self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_EC.der').isNull())
+        self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_DSA_crlf.pem').isNull())
+        self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_DSA_nonl.pem').isNull())
 
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(self.mkPEMBundle('ptolemy_cert.pem', 'ptolemy_key.pem', 'password', 'chain_subissuer-issuer-root.pem'), True, True), [])
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(self.mkPEMBundle('ptolemy_cert.pem', 'ptolemy_key.der', 'password', 'chain_subissuer-issuer-root.pem'), True, True), [])
