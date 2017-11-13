@@ -579,6 +579,15 @@ void QgsVectorFileWriter::init( QString vectorFileName,
       OGR_Fld_SetPrecision( fld.get(), ogrPrecision );
     }
 
+    switch ( attrField.type() )
+    {
+      case QVariant::Bool:
+        OGR_Fld_SetSubType( fld.get(), OFSTBoolean );
+        break;
+      default:
+        break;
+    }
+
     // create the field
     QgsDebugMsg( "creating field " + attrField.name() +
                  " type " + QString( QVariant::typeToName( attrField.type() ) ) +
@@ -2047,7 +2056,6 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
         break;
       case QVariant::Bool:
         OGR_F_SetFieldInteger( poFeature.get(), ogrField, attrValue.toInt() );
-        OGR_Fld_SetSubType( OGR_F_GetFieldDefnRef( poFeature.get(), ogrField ), OFSTBoolean );
         break;
       case QVariant::String:
         OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
