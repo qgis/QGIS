@@ -31,7 +31,7 @@ import difflib
 import functools
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsApplication, QgsFeatureRequest
+from qgis.core import QgsApplication, QgsFeatureRequest, NULL
 import unittest
 
 # Get a backup, we will patch this one later
@@ -170,8 +170,10 @@ class TestCase(_TestCase):
 
                 # Round field (only numeric so it works with __all__)
                 if 'precision' in cmp and field_expected.type() in [QVariant.Int, QVariant.Double, QVariant.LongLong]:
-                    attr_expected = round(attr_expected, cmp['precision'])
-                    attr_result = round(attr_result, cmp['precision'])
+                    if not attr_expected == NULL:
+                        attr_expected = round(attr_expected, cmp['precision'])
+                    if not attr_result == NULL:
+                        attr_result = round(attr_result, cmp['precision'])
 
                 if use_asserts:
                     _TestCase.assertEqual(
