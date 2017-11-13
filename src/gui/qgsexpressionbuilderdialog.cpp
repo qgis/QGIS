@@ -15,12 +15,15 @@
 
 #include "qgsexpressionbuilderdialog.h"
 #include "qgssettings.h"
+#include "qgsguiutils.h"
+#include "qgsgui.h"
 
 QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent, const QString &key, const QgsExpressionContext &context )
   : QDialog( parent )
   , mRecentKey( key )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 
   QPushButton *okButton = buttonBox->button( QDialogButtonBox::Ok );
   connect( builder, &QgsExpressionBuilderWidget::expressionParsed, okButton, &QWidget::setEnabled );
@@ -31,8 +34,6 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
   builder->loadFieldNames();
   builder->loadRecent( mRecentKey );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/ExpressionBuilderDialog/geometry" ) ).toByteArray() );
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsExpressionBuilderDialog::showHelp );
 }
@@ -65,9 +66,6 @@ void QgsExpressionBuilderDialog::setExpressionContext( const QgsExpressionContex
 void QgsExpressionBuilderDialog::done( int r )
 {
   QDialog::done( r );
-
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/ExpressionBuilderDialog/geometry" ), saveGeometry() );
 }
 
 void QgsExpressionBuilderDialog::accept()
