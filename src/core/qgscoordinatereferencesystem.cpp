@@ -1714,6 +1714,8 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
   }
   else
     returnId = -1;
+
+  invalidateCache();
   return returnId;
 }
 

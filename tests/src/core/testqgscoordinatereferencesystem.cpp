@@ -106,6 +106,7 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   //
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init( mTempFolder );
+  QgsApplication::createDatabase();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
@@ -820,6 +821,13 @@ void TestQgsCoordinateReferenceSystem::saveAsUserCrs()
 
   long newId = userCrs.saveAsUserCrs( QStringLiteral( "babies first projection" ) );
   QCOMPARE( newId, static_cast< long >( USER_CRS_START_ID ) );
+  QCOMPARE( userCrs.srsid(), newId );
+
+  // new CRS with same definition, check that it's matched to user crs
+  QgsCoordinateReferenceSystem userCrs2 = QgsCoordinateReferenceSystem::fromProj4( madeUpProjection );
+  QVERIFY( userCrs2.isValid() );
+  QCOMPARE( userCrs2.toProj4(), madeUpProjection );
+  QCOMPARE( userCrs2.srsid(), userCrs.srsid() );
 }
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )
