@@ -1698,6 +1698,9 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
 
     returnId = sqlite3_last_insert_rowid( myDatabase );
     setInternalId( returnId );
+    if ( authid().isEmpty() )
+      setAuthId( QStringLiteral( "USER:%1" ).arg( returnId ) );
+    setDescription( name );
 
     //We add the just created user CRS to the list of recently used CRS
     QgsSettings settings;

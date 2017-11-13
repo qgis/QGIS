@@ -822,12 +822,16 @@ void TestQgsCoordinateReferenceSystem::saveAsUserCrs()
   long newId = userCrs.saveAsUserCrs( QStringLiteral( "babies first projection" ) );
   QCOMPARE( newId, static_cast< long >( USER_CRS_START_ID ) );
   QCOMPARE( userCrs.srsid(), newId );
+  QCOMPARE( userCrs.authid(), QStringLiteral( "USER:100000" ) );
+  QCOMPARE( userCrs.description(), QStringLiteral( "babies first projection" ) );
 
   // new CRS with same definition, check that it's matched to user crs
   QgsCoordinateReferenceSystem userCrs2 = QgsCoordinateReferenceSystem::fromProj4( madeUpProjection );
   QVERIFY( userCrs2.isValid() );
   QCOMPARE( userCrs2.toProj4(), madeUpProjection );
   QCOMPARE( userCrs2.srsid(), userCrs.srsid() );
+  QCOMPARE( userCrs2.authid(), QStringLiteral( "USER:100000" ) );
+  QCOMPARE( userCrs2.description(), QStringLiteral( "babies first projection" ) );
 }
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )
