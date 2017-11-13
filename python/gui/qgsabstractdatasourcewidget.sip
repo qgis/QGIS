@@ -53,11 +53,6 @@ Destructor
  being added.
 %End
 
-    virtual void okButtonClicked();
-%Docstring
- Triggered when the dialog is accepted, call addButtonClicked() and
- emit the accepted() signal
-%End
 
   signals:
 

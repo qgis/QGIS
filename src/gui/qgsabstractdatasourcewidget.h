@@ -69,11 +69,6 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      */
     virtual void addButtonClicked() { }
 
-    /**
-     * Triggered when the dialog is accepted, call addButtonClicked() and
-     * emit the accepted() signal
-     */
-    virtual void okButtonClicked();
 
   signals:
 
