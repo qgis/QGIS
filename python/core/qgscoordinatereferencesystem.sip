@@ -636,11 +636,12 @@ Returns whether this CRS is correctly initialized and usable
 %End
 
 
-    bool saveAsUserCrs( const QString &name );
+    long saveAsUserCrs( const QString &name );
 %Docstring
- Save the proj4-string as a custom CRS
- :return: bool true if success else false
- :rtype: bool
+ Save the proj4-string as a custom CRS.
+
+ Returns the new CRS srsid(), or -1 if the CRS could not be saved.
+ :rtype: long
 %End
 
     QString geographicCrsAuthId() const;

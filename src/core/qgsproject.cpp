@@ -451,9 +451,6 @@ QgsCoordinateReferenceSystem QgsProject::crs() const
 void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mCrs = crs;
-  writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSProj4String" ), crs.toProj4() );
-  writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), static_cast< int >( crs.srsid() ) );
-  writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCrs" ), crs.authid() );
   writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), crs.isValid() ? 1 : 0 );
   setDirty( true );
   emit crsChanged();
@@ -884,14 +881,34 @@ bool QgsProject::readProjectFile( const QString &filename )
   QgsCoordinateReferenceSystem projectCrs;
   if ( readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), 0 ) )
   {
-    long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
-    if ( currentCRS != -1 )
+    // first preference - dedicated projectCrs node
+    QDomNode srsNode = doc->documentElement().namedItem( QStringLiteral( "projectCrs" ) );
+    if ( !srsNode.isNull() )
     {
-      projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
+      projectCrs.readXml( srsNode );
+    }
+
+    if ( !projectCrs.isValid() )
+    {
+      // else we try using the stored proj4 string - it's consistent across different QGIS installs,
+      // whereas the srsid can vary (e.g. for custom projections)
+      QString projCrsString = readEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSProj4String" ) );
+      if ( !projCrsString.isEmpty() )
+      {
+        projectCrs = QgsCoordinateReferenceSystem::fromProj4( projCrsString );
+      }
+      // last try using crs id - most fragile
+      if ( !projectCrs.isValid() )
+      {
+        long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
+        if ( currentCRS != -1 && currentCRS < USER_CRS_START_ID )
+        {
+          projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
+        }
+      }
     }
   }
   mCrs = projectCrs;
-  emit crsChanged();
 
   QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );
   if ( nl.count() )
@@ -1339,6 +1356,11 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   QDomText titleText = doc->createTextNode( title() );  // XXX why have title TWICE?
   titleNode.appendChild( titleText );
+
+  // write project CRS
+  QDomElement srsNode = doc->createElement( QStringLiteral( "projectCrs" ) );
+  mCrs.writeXml( srsNode, *doc );
+  qgisNode.appendChild( srsNode );
 
   // write layer tree - make sure it is without embedded subgroups
   QgsLayerTreeNode *clonedRoot = mRootGroup->clone();

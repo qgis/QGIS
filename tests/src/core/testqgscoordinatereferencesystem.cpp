@@ -15,17 +15,19 @@ Email                : sherman at mrcc dot com
 #include "qgstest.h"
 #include <QPixmap>
 
-#include <qgsapplication.h>
+#include "qgsapplication.h"
 #include "qgslogger.h"
 
 //header for class being tested
-#include <qgscoordinatereferencesystem.h>
-#include <qgis.h>
-#include <qgsvectorlayer.h>
+#include "qgscoordinatereferencesystem.h"
+#include "qgis.h"
+#include "qgsvectorlayer.h"
+#include "qgsproject.h"
 
 #include <proj_api.h>
 #include <gdal.h>
 #include <cpl_conv.h>
+#include <QtTest/QSignalSpy>
 
 class TestQgsCoordinateReferenceSystem: public QObject
 {
@@ -76,6 +78,8 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void validSrsIds();
     void asVariant();
     void bounds();
+    void saveAsUserCrs();
+    void projectWithCustomCrs();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -86,19 +90,30 @@ class TestQgsCoordinateReferenceSystem: public QObject
     QStringList myProj4Strings;
     QStringList myTOWGS84Strings;
     QStringList myAuthIdStrings;
+    QString mTempFolder;
     QString testESRIWkt( int i, QgsCoordinateReferenceSystem &crs );
 };
 
 
 void TestQgsCoordinateReferenceSystem::initTestCase()
 {
+  // we start from a clean profile - we don't want to mess with user custom srses
+  // create temporary folder
+  QString subPath = QUuid::createUuid().toString().remove( '-' ).remove( '{' ).remove( '}' );
+  mTempFolder = QDir::tempPath() + '/' + subPath;
+  if ( !QDir( mTempFolder ).exists() )
+    QDir().mkpath( mTempFolder );
+
   //
   // Runs once before any tests are run
   //
   // init QGIS's paths - true means that all path will be inited from prefix
-  QgsApplication::init();
+  QgsApplication::init( mTempFolder );
+  QgsApplication::createDatabase();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
+
+  QgsDebugMsg( QString( "Custom srs database: %1" ).arg( QgsApplication::qgisUserDatabaseFilePath() ) );
 
   qDebug() << "GEOPROJ4 constant:      " << GEOPROJ4;
   qDebug() << "GDAL version (build):   " << GDAL_RELEASE_NAME;
@@ -797,6 +812,40 @@ void TestQgsCoordinateReferenceSystem::bounds()
   QGSCOMPARENEAR( bounds.xMaximum(), 180.000000, 0.0001 );
   QGSCOMPARENEAR( bounds.yMinimum(), -90.00000, 0.0001 );
   QGSCOMPARENEAR( bounds.yMaximum(), 90.00000, 0.0001 );
+}
+
+void TestQgsCoordinateReferenceSystem::saveAsUserCrs()
+{
+  QString madeUpProjection = QStringLiteral( "+proj=aea +lat_1=20 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs" );
+  QgsCoordinateReferenceSystem userCrs = QgsCoordinateReferenceSystem::fromProj4( madeUpProjection );
+  QVERIFY( userCrs.isValid() );
+  QCOMPARE( userCrs.toProj4(), madeUpProjection );
+  QCOMPARE( userCrs.srsid(), 0L ); // not saved to database yet
+
+  long newId = userCrs.saveAsUserCrs( QStringLiteral( "babies first projection" ) );
+  QCOMPARE( newId, static_cast< long >( USER_CRS_START_ID ) );
+  QCOMPARE( userCrs.srsid(), newId );
+  QCOMPARE( userCrs.authid(), QStringLiteral( "USER:100000" ) );
+  QCOMPARE( userCrs.description(), QStringLiteral( "babies first projection" ) );
+
+  // new CRS with same definition, check that it's matched to user crs
+  QgsCoordinateReferenceSystem userCrs2 = QgsCoordinateReferenceSystem::fromProj4( madeUpProjection );
+  QVERIFY( userCrs2.isValid() );
+  QCOMPARE( userCrs2.toProj4(), madeUpProjection );
+  QCOMPARE( userCrs2.srsid(), userCrs.srsid() );
+  QCOMPARE( userCrs2.authid(), QStringLiteral( "USER:100000" ) );
+  QCOMPARE( userCrs2.description(), QStringLiteral( "babies first projection" ) );
+}
+
+void TestQgsCoordinateReferenceSystem::projectWithCustomCrs()
+{
+  // tests loading a 2.x project with a custom CRS defined
+  QgsProject p;
+  QSignalSpy spyCrsChanged( &p, &QgsProject::crsChanged );
+  QVERIFY( p.read( TEST_DATA_DIR + QStringLiteral( "/projects/custom_crs.qgs" ) ) );
+  QVERIFY( p.crs().isValid() );
+  QCOMPARE( p.crs().toProj4(), QStringLiteral( "+proj=ortho +lat_0=42.1 +lon_0=12.8 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs" ) );
+  QCOMPARE( spyCrsChanged.count(), 1 );
 }
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )

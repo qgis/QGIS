@@ -1637,12 +1637,12 @@ QString QgsCoordinateReferenceSystem::validationHint()
 /// Copied from QgsCustomProjectionDialog ///
 /// Please refactor into SQL handler !!!  ///
 
-bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
+long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
 {
   if ( !d->mIsValid )
   {
     QgsDebugMsgLevel( "Can't save an invalid CRS!", 4 );
-    return false;
+    return -1;
   }
 
   QString mySql;
@@ -1691,13 +1691,16 @@ bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
   }
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
 
-  qint64 return_id;
+  qint64 returnId;
   if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_DONE )
   {
     QgsMessageLog::logMessage( QObject::tr( "Saved user CRS [%1]" ).arg( toProj4() ), QObject::tr( "CRS" ) );
 
-    return_id = sqlite3_last_insert_rowid( myDatabase );
-    setInternalId( return_id );
+    returnId = sqlite3_last_insert_rowid( myDatabase );
+    setInternalId( returnId );
+    if ( authid().isEmpty() )
+      setAuthId( QStringLiteral( "USER:%1" ).arg( returnId ) );
+    setDescription( name );
 
     //We add the just created user CRS to the list of recently used CRS
     QgsSettings settings;
@@ -1713,8 +1716,10 @@ bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
 
   }
   else
-    return_id = -1;
-  return return_id;
+    returnId = -1;
+
+  invalidateCache();
+  return returnId;
 }
 
 long QgsCoordinateReferenceSystem::getRecordCount()

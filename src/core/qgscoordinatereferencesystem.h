@@ -613,10 +613,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
 
     /**
-     * Save the proj4-string as a custom CRS
-     * \returns bool true if success else false
+     * Save the proj4-string as a custom CRS.
+     *
+     * Returns the new CRS srsid(), or -1 if the CRS could not be saved.
      */
-    bool saveAsUserCrs( const QString &name );
+    long saveAsUserCrs( const QString &name );
 
     //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;
