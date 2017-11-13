@@ -975,6 +975,23 @@ double QgsCircularString::vertexAngle( QgsVertexId vId ) const
   return 0.0;
 }
 
+double QgsCircularString::segmentLength( QgsVertexId startVertex ) const
+{
+  if ( startVertex.vertex < 0 || startVertex.vertex >= mX.count() - 2 )
+    return 0.0;
+
+  if ( startVertex.vertex % 2 == 1 )
+    return 0.0; // curve point?
+
+  double x1 = mX.at( startVertex.vertex );
+  double y1 = mY.at( startVertex.vertex );
+  double x2 = mX.at( startVertex.vertex + 1 );
+  double y2 = mY.at( startVertex.vertex + 1 );
+  double x3 = mX.at( startVertex.vertex + 2 );
+  double y3 = mY.at( startVertex.vertex + 2 );
+  return QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 );
+}
+
 QgsCircularString *QgsCircularString::reversed() const
 {
   QgsCircularString *copy = clone();

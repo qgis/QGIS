@@ -800,6 +800,17 @@ double QgsCompoundCurve::vertexAngle( QgsVertexId vertex ) const
   }
 }
 
+double QgsCompoundCurve::segmentLength( QgsVertexId startVertex ) const
+{
+  QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( startVertex );
+  double length = 0.0;
+  for ( auto it = curveIds.constBegin(); it != curveIds.constEnd(); ++it )
+  {
+    length += mCurves.at( it->first )->segmentLength( it->second );
+  }
+  return length;
+}
+
 QgsCompoundCurve *QgsCompoundCurve::reversed() const
 {
   QgsCompoundCurve *clone = new QgsCompoundCurve();

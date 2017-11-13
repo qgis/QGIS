@@ -47,6 +47,7 @@ class QgsMultiPoint: QgsGeometryCollection
 
     virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
 
+    virtual double segmentLength( QgsVertexId startVertex ) const;
 
 
   protected:

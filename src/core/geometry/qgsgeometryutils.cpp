@@ -133,24 +133,14 @@ double QgsGeometryUtils::distanceToVertex( const QgsAbstractGeometry &geom, QgsV
   double currentDist = 0;
   QgsVertexId vertexId;
   QgsPoint vertex;
-  QgsPoint previousVertex;
-
-  bool first = true;
   while ( geom.nextVertex( vertexId, vertex ) )
   {
-    if ( !first )
-    {
-      currentDist += std::sqrt( QgsGeometryUtils::sqrDistance2D( previousVertex, vertex ) );
-    }
-
-    previousVertex = vertex;
-    first = false;
-
     if ( vertexId == id )
     {
       //found target vertex
       return currentDist;
     }
+    currentDist += geom.segmentLength( vertexId );
   }
 
   //could not find target vertex

@@ -138,15 +138,9 @@ Appends first point if not already closed.
 
     virtual bool hasCurvedSegments() const;
 
-
     virtual double vertexAngle( QgsVertexId vertex ) const;
 
-%Docstring
- Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-\param vertex the vertex id
-:return: rotation in radians, clockwise from north*
- :rtype: float
-%End
+    virtual double segmentLength( QgsVertexId startVertex ) const;
 
     virtual QgsCompoundCurve *reversed() const /Factory/;
 

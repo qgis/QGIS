@@ -689,6 +689,22 @@ double QgsGeometryCollection::vertexAngle( QgsVertexId vertex ) const
   return geom->vertexAngle( vertex );
 }
 
+double QgsGeometryCollection::segmentLength( QgsVertexId startVertex ) const
+{
+  if ( startVertex.part < 0 || startVertex.part >= mGeometries.size() )
+  {
+    return 0.0;
+  }
+
+  const QgsAbstractGeometry *geom = mGeometries[startVertex.part];
+  if ( !geom )
+  {
+    return 0.0;
+  }
+
+  return geom->segmentLength( startVertex );
+}
+
 int QgsGeometryCollection::vertexCount( int part, int ring ) const
 {
   if ( part < 0 || part >= mGeometries.size() )

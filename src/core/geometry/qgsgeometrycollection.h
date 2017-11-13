@@ -125,13 +125,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     QgsAbstractGeometry *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
-    /**
-     * Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-     * \param vertex the vertex id
-     * \returns rotation in radians, clockwise from north
-     */
     double vertexAngle( QgsVertexId vertex ) const override;
-
+    double segmentLength( QgsVertexId startVertex ) const override;
     int vertexCount( int part = 0, int ring = 0 ) const override;
     int ringCount( int part = 0 ) const override;
     int partCount() const override;

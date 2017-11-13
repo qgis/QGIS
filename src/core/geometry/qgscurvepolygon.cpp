@@ -1046,6 +1046,17 @@ QgsPoint QgsCurvePolygon::vertexAt( QgsVertexId id ) const
   return id.ring == 0 ? mExteriorRing->vertexAt( id ) : mInteriorRings[id.ring - 1]->vertexAt( id );
 }
 
+double QgsCurvePolygon::segmentLength( QgsVertexId startVertex ) const
+{
+  if ( !mExteriorRing || startVertex.ring < 0 || startVertex.ring >= 1 + mInteriorRings.size() )
+  {
+    return 0.0;
+  }
+
+  const QgsCurve *ring = startVertex.ring == 0 ? mExteriorRing.get() : mInteriorRings[startVertex.ring - 1];
+  return ring->segmentLength( startVertex );
+}
+
 bool QgsCurvePolygon::addZValue( double zValue )
 {
   if ( QgsWkbTypes::hasZ( mWkbType ) )
