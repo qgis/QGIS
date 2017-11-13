@@ -66,6 +66,9 @@ class ExtractSpecificNodes(QgisAlgorithm):
     def displayName(self):
         return self.tr('Extract specific nodes')
 
+    def tags(self):
+        return self.tr('points,vertex,vertices').split(',')
+
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         fields = source.fields()

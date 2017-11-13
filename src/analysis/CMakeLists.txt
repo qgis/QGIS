@@ -35,6 +35,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmextractbyexpression.cpp
   processing/qgsalgorithmextractbyextent.cpp
   processing/qgsalgorithmextractbylocation.cpp
+  processing/qgsalgorithmextractnodes.cpp
   processing/qgsalgorithmfiledownloader.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmjoinbyattribute.cpp
