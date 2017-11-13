@@ -365,6 +365,7 @@ void QgsMssqlProvider::loadMetadata()
 
 void QgsMssqlProvider::loadFields()
 {
+  bool isIdentity = false;
   mAttributeFields.clear();
   mDefaultValues.clear();
   mComputedColumns.clear();
@@ -410,7 +411,10 @@ void QgsMssqlProvider::loadFields()
       {
         QVariant::Type sqlType = DecodeSqlType( sqlTypeName );
         if ( sqlTypeName == QLatin1String( "int identity" ) || sqlTypeName == QLatin1String( "bigint identity" ) )
+        {
           mFidColName = query.value( 3 ).toString();
+          isIdentity = true;
+        }
         else if ( sqlTypeName == QLatin1String( "int" ) || sqlTypeName == QLatin1String( "bigint" ) )
         {
           pkCandidates << query.value( 3 ).toString();
@@ -499,7 +503,7 @@ void QgsMssqlProvider::loadFields()
       setLastError( error );
     }
 
-    if ( !mFidColName.isEmpty() )
+    if ( !mFidColName.isEmpty() && !isIdentity )
     {
       mFidColIdx = mAttributeFields.indexFromName( mFidColName );
       if ( mFidColIdx >= 0 )
