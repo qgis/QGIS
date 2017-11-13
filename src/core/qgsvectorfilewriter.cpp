@@ -496,6 +496,12 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         ogrPrecision = 0;
         break;
 
+      case QVariant::Bool:
+        ogrType = OFTInteger;
+        ogrWidth = 1;
+        ogrPrecision = 0;
+        break;
+
       case QVariant::Double:
         ogrType = OFTReal;
         break;
@@ -2038,6 +2044,10 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
       case QVariant::LongLong:
       case QVariant::ULongLong:
         OGR_F_SetFieldInteger64( poFeature.get(), ogrField, attrValue.toLongLong() );
+        break;
+      case QVariant::Bool:
+        OGR_F_SetFieldInteger( poFeature.get(), ogrField, attrValue.toInt() );
+        OGR_Fld_SetSubType( OGR_F_GetFieldDefnRef( poFeature.get(), ogrField ), OFSTBoolean );
         break;
       case QVariant::String:
         OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
