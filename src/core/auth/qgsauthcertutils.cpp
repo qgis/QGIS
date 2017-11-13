@@ -101,7 +101,7 @@ QMap<QString, QList<QgsAuthConfigSslServer> > QgsAuthCertUtils::sslConfigsGroupe
   return orgconfigs;
 }
 
-QByteArray QgsAuthCertUtils::fileData( const QString &path, bool astext )
+QByteArray QgsAuthCertUtils::fileData( const QString &path )
 {
   QByteArray data;
   QFile file( path );
@@ -112,8 +112,6 @@ QByteArray QgsAuthCertUtils::fileData( const QString &path, bool astext )
   }
   // TODO: add checks for locked file, etc., to ensure it can be read
   QFile::OpenMode openflags( QIODevice::ReadOnly );
-  if ( astext )
-    openflags |= QIODevice::Text;
   bool ret = file.open( openflags );
   if ( ret )
   {
@@ -128,7 +126,7 @@ QList<QSslCertificate> QgsAuthCertUtils::certsFromFile( const QString &certspath
 {
   QList<QSslCertificate> certs;
   bool pem = certspath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-  certs = QSslCertificate::fromData( QgsAuthCertUtils::fileData( certspath, pem ), pem ? QSsl::Pem : QSsl::Der );
+  certs = QSslCertificate::fromData( QgsAuthCertUtils::fileData( certspath ), pem ? QSsl::Pem : QSsl::Der );
   if ( certs.isEmpty() )
   {
     QgsDebugMsg( QString( "Parsed cert(s) EMPTY for path: %1" ).arg( certspath ) );
@@ -191,37 +189,53 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
                                        const QString &keypass,
                                        QString *algtype )
 {
-  bool pem = keypath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-  QByteArray keydata( QgsAuthCertUtils::fileData( keypath, pem ) );
-
+  // The approach here is to try all possible encodings and algorithms
+  QByteArray keydata( QgsAuthCertUtils::fileData( keypath ) );
   QSslKey clientkey;
-  clientkey = QSslKey( keydata,
-                       QSsl::Rsa,
-                       pem ? QSsl::Pem : QSsl::Der,
-                       QSsl::PrivateKey,
-                       !keypass.isEmpty() ? keypass.toUtf8() : QByteArray() );
-  if ( clientkey.isNull() )
+
+  QSsl::EncodingFormat keyEncoding( keydata.contains( QByteArrayLiteral( "-----BEGIN " ) ) ?
+                                    QSsl::Pem :
+                                    QSsl::Der );
+
+  const std::vector<QSsl::KeyAlgorithm> algs
   {
-    // try DSA algorithm, since Qt can't seem to determine it otherwise
+    QSsl::KeyAlgorithm::Rsa,
+    QSsl::KeyAlgorithm::Dsa,
+    QSsl::KeyAlgorithm::Ec,
+    QSsl::KeyAlgorithm::Opaque
+  };
+
+  for ( const auto &alg : algs )
+  {
     clientkey = QSslKey( keydata,
-                         QSsl::Dsa,
-                         pem ? QSsl::Pem : QSsl::Der,
+                         alg,
+                         keyEncoding,
                          QSsl::PrivateKey,
                          !keypass.isEmpty() ? keypass.toUtf8() : QByteArray() );
-    if ( clientkey.isNull() )
+    if ( ! clientkey.isNull() )
     {
-      return QSslKey();
+      if ( algtype )
+      {
+        switch ( alg )
+        {
+          case QSsl::KeyAlgorithm::Rsa:
+            *algtype = QStringLiteral( "rsa" );
+            break;
+          case QSsl::KeyAlgorithm::Dsa:
+            *algtype = QStringLiteral( "dsa" );
+            break;
+          case QSsl::KeyAlgorithm::Ec:
+            *algtype = QStringLiteral( "ec" );
+            break;
+          case QSsl::KeyAlgorithm::Opaque:
+            *algtype = QStringLiteral( "opaque" );
+            break;
+        }
+      }
+      return clientkey;
     }
-    if ( algtype )
-      *algtype = QStringLiteral( "dsa" );
   }
-  else
-  {
-    if ( algtype )
-      *algtype = QStringLiteral( "rsa" );
-  }
-
-  return clientkey;
+  return QSslKey();
 }
 
 QList<QSslCertificate> QgsAuthCertUtils::certsFromString( const QString &pemtext )

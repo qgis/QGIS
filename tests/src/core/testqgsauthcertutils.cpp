@@ -95,12 +95,12 @@ void TestQgsAuthCertUtils::testPkcsUtils()
 {
   QByteArray pkcs;
 
-  pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key.pem", false );
+  pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key.pem" );
   QVERIFY( !pkcs.isEmpty() );
   QVERIFY( !QgsAuthCertUtils::pemIsPkcs8( QString( pkcs ) ) );
 
   pkcs.clear();
-  pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key-pkcs8-rsa.pem", false );
+  pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key-pkcs8-rsa.pem" );
   QVERIFY( !pkcs.isEmpty() );
   QVERIFY( QgsAuthCertUtils::pemIsPkcs8( QString( pkcs ) ) );
 
@@ -116,7 +116,7 @@ void TestQgsAuthCertUtils::testPkcsUtils()
   pkcs.clear();
   pkcs1.clear();
   // Is actually a PKCS#1 key, not #8
-  pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key.der", false );
+  pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key.der" );
   QVERIFY( !pkcs.isEmpty() );
   pkcs1 = QgsAuthCertUtils::pkcs8PrivateKey( pkcs );
   QVERIFY( pkcs1.isEmpty() );
@@ -124,7 +124,7 @@ void TestQgsAuthCertUtils::testPkcsUtils()
   pkcs.clear();
   pkcs1.clear();
   // Is PKCS#1 PEM text, not DER
-  pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key.pem", false );
+  pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key.pem" );
   QVERIFY( !pkcs.isEmpty() );
   pkcs1 = QgsAuthCertUtils::pkcs8PrivateKey( pkcs );
   QVERIFY( pkcs1.isEmpty() );
@@ -132,7 +132,7 @@ void TestQgsAuthCertUtils::testPkcsUtils()
   pkcs.clear();
   pkcs1.clear();
   // Is PKCS#8 PEM text, not DER
-  pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key-pkcs8-rsa.pem", false );
+  pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key-pkcs8-rsa.pem" );
   QVERIFY( !pkcs.isEmpty() );
   pkcs1 = QgsAuthCertUtils::pkcs8PrivateKey( pkcs );
   QVERIFY( pkcs1.isEmpty() );
@@ -140,7 +140,7 @@ void TestQgsAuthCertUtils::testPkcsUtils()
   pkcs.clear();
   pkcs1.clear();
   // Correct PKCS#8 DER input
-  pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key-pkcs8-rsa.der", false );
+  pkcs = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key-pkcs8-rsa.der" );
   QVERIFY( !pkcs.isEmpty() );
   pkcs1 = QgsAuthCertUtils::pkcs8PrivateKey( pkcs );
   QVERIFY( !pkcs1.isEmpty() );
@@ -156,7 +156,7 @@ void TestQgsAuthCertUtils::testPkcsUtils()
   QVERIFY( !pkcs1Key.isNull() );
 
   // Converted PKCS#8 DER should match PKCS#1 PEM
-  QByteArray pkcs1PemRef = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key.pem", true );
+  QByteArray pkcs1PemRef = QgsAuthCertUtils::fileData( sPkiData + "/gerardus_key.pem" );
   QVERIFY( !pkcs1PemRef.isEmpty() );
   QCOMPARE( pkcs1Key.toPem(), pkcs1PemRef );
 #endif

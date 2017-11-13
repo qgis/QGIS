@@ -288,7 +288,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPaths()
 
   // check for valid private key and that any supplied password works
   bool keypem = keypath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-  QByteArray keydata( QgsAuthCertUtils::fileData( keypath, keypem ) );
+  QByteArray keydata( QgsAuthCertUtils::fileData( keypath ) );
 
   QSslKey clientkey;
   QString keypass = lePkiPathsKeyPass->text();

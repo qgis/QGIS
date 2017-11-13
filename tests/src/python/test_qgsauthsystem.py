@@ -71,6 +71,14 @@ class TestQgsAuthManager(unittest.TestCase):
         dlg.setLayout(layout)
         return dlg
 
+    def mkPEMBundle(self, client_cert, client_key, password, chain):
+        return QgsPkiBundle.fromPemPaths(PKIDATA + '/' + client_cert,
+                                         PKIDATA + '/' + client_key,
+                                         password,
+                                         QgsAuthCertUtils.certsFromFile(
+                                             PKIDATA + '/' + chain
+                                         ))
+
     def show_editors_widget(self):
         editors = QgsAuthEditorWidgets()
         dlg = self.widget_dialog(editors)
@@ -648,16 +656,8 @@ class TestQgsAuthManager(unittest.TestCase):
     def test_validate_pki_bundle(self):
         """Text the pki bundle validation"""
 
-        def mkPEMBundle(client_cert, client_key, password, chain):
-            return QgsPkiBundle.fromPemPaths(PKIDATA + '/' + client_cert,
-                                             PKIDATA + '/' + client_key,
-                                             password,
-                                             QgsAuthCertUtils.certsFromFile(
-                                                 PKIDATA + '/' + chain
-                                             ))
-
         # Valid bundle:
-        bundle = mkPEMBundle('fra_cert.pem', 'fra_key.pem', 'password', 'chain_subissuer-issuer-root.pem')
+        bundle = self.mkPEMBundle('fra_cert.pem', 'fra_key.pem', 'password', 'chain_subissuer-issuer-root.pem')
 
         # Test valid bundle with intermediates and without trusted root
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle), ['The root certificate of the certificate chain is self-signed, and untrusted'])
@@ -667,7 +667,7 @@ class TestQgsAuthManager(unittest.TestCase):
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), [])
 
         # Wrong chain
-        bundle = mkPEMBundle('fra_cert.pem', 'fra_key.pem', 'password', 'chain_issuer2-root2.pem')
+        bundle = self.mkPEMBundle('fra_cert.pem', 'fra_key.pem', 'password', 'chain_issuer2-root2.pem')
         # Test invalid bundle with intermediates and without trusted root
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle), ['The issuer certificate of a locally looked up certificate could not be found', 'No certificates could be verified'])
         # Test valid without intermediates
@@ -676,7 +676,7 @@ class TestQgsAuthManager(unittest.TestCase):
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), ['The issuer certificate of a locally looked up certificate could not be found', 'No certificates could be verified'])
 
         # Wrong key
-        bundle = mkPEMBundle('fra_cert.pem', 'ptolemy_key.pem', 'password', 'chain_subissuer-issuer-root.pem')
+        bundle = self.mkPEMBundle('fra_cert.pem', 'ptolemy_key.pem', 'password', 'chain_subissuer-issuer-root.pem')
         # Test invalid bundle with intermediates and without trusted root
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle), ['The root certificate of the certificate chain is self-signed, and untrusted', 'Private key does not match client certificate public key.'])
         # Test invalid without intermediates
@@ -685,25 +685,25 @@ class TestQgsAuthManager(unittest.TestCase):
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), ['Private key does not match client certificate public key.'])
 
         # Expired root CA
-        bundle = mkPEMBundle('piri_cert.pem', 'piri_key.pem', 'password', 'chain_issuer3-root3-EXPIRED.pem')
+        bundle = self.mkPEMBundle('piri_cert.pem', 'piri_key.pem', 'password', 'chain_issuer3-root3-EXPIRED.pem')
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle), ['The root certificate of the certificate chain is self-signed, and untrusted', 'The certificate has expired'])
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, False), ['The issuer certificate of a locally looked up certificate could not be found', 'No certificates could be verified'])
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), ['The root certificate of the certificate chain is self-signed, and untrusted', 'The certificate has expired'])
 
         # Expired intermediate CA
-        bundle = mkPEMBundle('marinus_cert-EXPIRED.pem', 'marinus_key_w-pass.pem', 'password', 'chain_issuer2-root2.pem')
+        bundle = self.mkPEMBundle('marinus_cert-EXPIRED.pem', 'marinus_key_w-pass.pem', 'password', 'chain_issuer2-root2.pem')
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle), ['The root certificate of the certificate chain is self-signed, and untrusted', 'The certificate has expired'])
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, False), ['The issuer certificate of a locally looked up certificate could not be found', 'No certificates could be verified'])
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), ['The certificate has expired'])
 
         # Expired client cert
-        bundle = mkPEMBundle('henricus_cert.pem', 'henricus_key_w-pass.pem', 'password', 'chain_issuer4-EXPIRED-root2.pem')
+        bundle = self.mkPEMBundle('henricus_cert.pem', 'henricus_key_w-pass.pem', 'password', 'chain_issuer4-EXPIRED-root2.pem')
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle), ['The root certificate of the certificate chain is self-signed, and untrusted', 'The certificate has expired'])
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, False), ['The issuer certificate of a locally looked up certificate could not be found', 'No certificates could be verified'])
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), ['The certificate has expired'])
 
         # Untrusted root, positive test before untrust is applied
-        bundle = mkPEMBundle('nicholas_cert.pem', 'nicholas_key.pem', 'password', 'chain_issuer2-root2.pem')
+        bundle = self.mkPEMBundle('nicholas_cert.pem', 'nicholas_key.pem', 'password', 'chain_issuer2-root2.pem')
         # Test valid with intermediates and trusted root
         self.assertEqual(QgsAuthCertUtils.validatePKIBundle(bundle, True, True), [])
         # Untrust this root
@@ -742,6 +742,29 @@ class TestQgsAuthManager(unittest.TestCase):
         self.assertTrue(len(res) > 0)
         self.assertTrue(QSslError(QSslError.CertificateExpired, cert) in res)
         self.assertFalse(QgsAuthCertUtils.certIsViable(cert))
+
+    def test_170_pki_key_encoding(self):
+        """Test that a DER/PEM RSA/DSA/EC keys can be opened whatever the extension is"""
+
+        self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'ptolemy_key.pem').isNull())
+        self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'ptolemy_key.der').isNull())
+        self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'ptolemy_key_pem.key').isNull())
+        self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'ptolemy_key_der.key').isNull())
+        self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_EC.pem').isNull())
+        self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_EC.der').isNull())
+        self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_DSA.pem').isNull())
+        self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_DSA.der').isNull())
+        self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_DSA_crlf.pem').isNull())
+        self.assertFalse(QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_DSA_nonl.pem').isNull())
+        donald_dsa = QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_DSA.pem').toPem()
+        self.assertEqual(donald_dsa, QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_DSA.der').toPem())
+        self.assertEqual(donald_dsa, QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_DSA_crlf.pem').toPem())
+        self.assertEqual(donald_dsa, QgsAuthCertUtils.keyFromFile(PKIDATA + '/' + 'donald_key_DSA_nonl.pem').toPem())
+
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(self.mkPEMBundle('ptolemy_cert.pem', 'ptolemy_key.pem', 'password', 'chain_subissuer-issuer-root.pem'), True, True), [])
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(self.mkPEMBundle('ptolemy_cert.pem', 'ptolemy_key.der', 'password', 'chain_subissuer-issuer-root.pem'), True, True), [])
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(self.mkPEMBundle('ptolemy_cert.pem', 'ptolemy_key_pem.key', 'password', 'chain_subissuer-issuer-root.pem'), True, True), [])
+        self.assertEqual(QgsAuthCertUtils.validatePKIBundle(self.mkPEMBundle('ptolemy_cert.pem', 'ptolemy_key_der.key', 'password', 'chain_subissuer-issuer-root.pem'), True, True), [])
 
 
 if __name__ == '__main__':

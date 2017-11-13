@@ -183,35 +183,16 @@ const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath,
   if ( !certPath.isEmpty() && !keyPath.isEmpty()
        && ( certPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive )
             || certPath.endsWith( QLatin1String( ".der" ), Qt::CaseInsensitive ) )
-       && ( keyPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive )
-            || keyPath.endsWith( QLatin1String( ".der" ), Qt::CaseInsensitive ) )
        && QFile::exists( certPath ) && QFile::exists( keyPath )
      )
   {
     // client cert
     bool pem = certPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-    QSslCertificate clientcert( QgsAuthCertUtils::fileData( certPath, pem ), pem ? QSsl::Pem : QSsl::Der );
+    QSslCertificate clientcert( QgsAuthCertUtils::fileData( certPath ), pem ? QSsl::Pem : QSsl::Der );
     pkibundle.setClientCert( clientcert );
 
-    // client key
-    bool pem_key = keyPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-    QByteArray keydata( QgsAuthCertUtils::fileData( keyPath, pem_key ) );
-
     QSslKey clientkey;
-    clientkey = QSslKey( keydata,
-                         QSsl::Rsa,
-                         pem_key ? QSsl::Pem : QSsl::Der,
-                         QSsl::PrivateKey,
-                         !keyPass.isNull() ? keyPass.toUtf8() : QByteArray() );
-    if ( clientkey.isNull() )
-    {
-      // try DSA algorithm, since Qt can't seem to determine it otherwise
-      clientkey = QSslKey( keydata,
-                           QSsl::Dsa,
-                           pem_key ? QSsl::Pem : QSsl::Der,
-                           QSsl::PrivateKey,
-                           !keyPass.isNull() ? keyPass.toUtf8() : QByteArray() );
-    }
+    clientkey = QgsAuthCertUtils::keyFromFile( keyPath, keyPass );
     pkibundle.setClientKey( clientkey );
     if ( !caChain.isEmpty() )
     {
