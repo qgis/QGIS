@@ -60,7 +60,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserModel *browser
 
   // Add provider dialogs
   const QList<QgsSourceSelectProvider *> sourceSelectProviders = QgsGui::sourceSelectProviderRegistry()->providers( );
-  for ( const auto provider : sourceSelectProviders )
+  for ( const auto &provider : sourceSelectProviders )
   {
     QgsAbstractDataSourceWidget *dlg = provider->createDataSourceWidget( this );
     if ( !dlg )
