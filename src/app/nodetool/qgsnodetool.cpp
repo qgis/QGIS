@@ -126,11 +126,8 @@ static QgsGeometry geometryToMultiPoint( const QgsGeometry &geom )
 {
   QgsMultiPoint *multiPoint = new QgsMultiPoint();
   QgsGeometry outputGeom( multiPoint );
-  const QgsAbstractGeometry *g = geom.constGet();
-  for ( int i = 0; i < g->partCount(); ++i )
-    for ( int j = 0; j < g->ringCount( i ); ++j )
-      for ( int k = 0; k < g->vertexCount( i, j ); ++k )
-        multiPoint->addGeometry( new QgsPoint( g->vertexAt( QgsVertexId( i, j, k ) ) ) );
+  for ( auto pointIt = geom.vertices_begin(); pointIt != geom.vertices_end(); ++pointIt )
+    multiPoint->addGeometry( ( *pointIt ).clone() );
   return outputGeom;
 }
 
