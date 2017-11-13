@@ -363,6 +363,12 @@ void QgsMssqlProvider::loadMetadata()
   }
 }
 
+void QgsMssqlProvider::setLastError( const QString &error )
+{
+  appendError( error );
+  mLastError = error;
+}
+
 void QgsMssqlProvider::loadFields()
 {
   bool isIdentity = false;
