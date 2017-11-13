@@ -38,13 +38,6 @@ const QgsMapCanvas *QgsAbstractDataSourceWidget::mapCanvas() const
 void QgsAbstractDataSourceWidget::setupButtons( QDialogButtonBox *buttonBox )
 {
 
-  if ( mWidgetMode == QgsProviderRegistry::WidgetMode::None )
-  {
-    QPushButton *closeButton = new QPushButton( tr( "&Close" ) );
-    buttonBox->addButton( closeButton, QDialogButtonBox::ApplyRole );
-    connect( closeButton, &QPushButton::clicked, this, &QgsAbstractDataSourceWidget::addButtonClicked );
-  }
-
   mAddButton = new QPushButton( tr( "&Add" ) );
   mAddButton->setToolTip( tr( "Add selected layers to map" ) );
   mAddButton->setEnabled( false );
