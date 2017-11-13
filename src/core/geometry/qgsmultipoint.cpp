@@ -177,6 +177,11 @@ int QgsMultiPoint::vertexNumberFromVertexId( QgsVertexId id ) const
   return id.part; // can shortcut the calculation, since each part will have 1 vertex
 }
 
+double QgsMultiPoint::segmentLength( QgsVertexId ) const
+{
+  return 0.0;
+}
+
 bool QgsMultiPoint::wktOmitChildType() const
 {
   return true;

@@ -382,6 +382,12 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual double area() const;
 
+    /**
+     * Returns the length of the segment of the geometry which begins at \a startVertex.
+     * \since QGIS 3.0
+     */
+    virtual double segmentLength( QgsVertexId startVertex ) const = 0;
+
     //! Returns the centroid of the geometry
     virtual QgsPoint centroid() const;
 

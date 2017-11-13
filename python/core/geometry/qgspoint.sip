@@ -403,6 +403,8 @@ class QgsPoint: QgsAbstractGeometry
 
     virtual QgsPoint *toCurveType() const /Factory/;
 
+    virtual double segmentLength( QgsVertexId startVertex ) const;
+
 
     virtual bool addZValue( double zValue = 0 );
 

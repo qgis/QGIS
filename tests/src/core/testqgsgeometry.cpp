@@ -1044,6 +1044,13 @@ void TestQgsGeometry::point()
   QCOMPARE( QgsPoint( 1, 2 ).vertexNumberFromVertexId( QgsVertexId( 0, 0, -1 ) ), -1 );
   QCOMPARE( QgsPoint( 1, 2 ).vertexNumberFromVertexId( QgsVertexId( 0, 0, 1 ) ), -1 );
   QCOMPARE( QgsPoint( 1, 2 ).vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), 0 );
+
+  //segmentLength
+  QCOMPARE( QgsPoint( 1, 2 ).segmentLength( QgsVertexId() ), 0.0 );
+  QCOMPARE( QgsPoint( 1, 2 ).segmentLength( QgsVertexId( -1, 0, 0 ) ), 0.0 );
+  QCOMPARE( QgsPoint( 1, 2 ).segmentLength( QgsVertexId( -1, 0, 1 ) ), 0.0 );
+  QCOMPARE( QgsPoint( 1, 2 ).segmentLength( QgsVertexId( -1, 0, -1 ) ), 0.0 );
+  QCOMPARE( QgsPoint( 1, 2 ).segmentLength( QgsVertexId( 0, 0, 0 ) ), 0.0 );
 }
 
 void TestQgsGeometry::circularString()
@@ -2324,6 +2331,29 @@ void TestQgsGeometry::circularString()
   QCOMPARE( curveType->vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( 1, 2 ) );
   QCOMPARE( curveType->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( 11, 12 ) );
   QCOMPARE( curveType->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( 1, 22 ) );
+
+  //segmentLength
+  QgsCircularString curveLine2;
+  QCOMPARE( curveLine2.segmentLength( QgsVertexId( -1, 0, 0 ) ), 0.0 );
+  QCOMPARE( curveLine2.segmentLength( QgsVertexId( 0, 0, 0 ) ), 0.0 );
+  QCOMPARE( curveLine2.segmentLength( QgsVertexId( 1, 0, 0 ) ), 0.0 );
+  curveLine2.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
+  QCOMPARE( curveLine2.segmentLength( QgsVertexId() ), 0.0 );
+  QCOMPARE( curveLine2.segmentLength( QgsVertexId( 0, 0, -1 ) ), 0.0 );
+  QGSCOMPARENEAR( curveLine2.segmentLength( QgsVertexId( 0, 0, 0 ) ), 31.4159, 0.001 );
+  QCOMPARE( curveLine2.segmentLength( QgsVertexId( 0, 0, 1 ) ), 0.0 );
+  QCOMPARE( curveLine2.segmentLength( QgsVertexId( 0, 0, 2 ) ), 0.0 );
+  QCOMPARE( curveLine2.segmentLength( QgsVertexId( -1, 0, -1 ) ), 0.0 );
+  QGSCOMPARENEAR( curveLine2.segmentLength( QgsVertexId( -1, 0, 0 ) ), 31.4159, 0.001 );
+  QCOMPARE( curveLine2.segmentLength( QgsVertexId( 1, 0, 1 ) ), 0.0 );
+  QGSCOMPARENEAR( curveLine2.segmentLength( QgsVertexId( 1, 1, 0 ) ), 31.4159, 0.001 );
+  curveLine2.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) << QgsPoint( -9, 32 ) << QgsPoint( 1, 42 ) );
+  QCOMPARE( curveLine2.segmentLength( QgsVertexId() ), 0.0 );
+  QCOMPARE( curveLine2.segmentLength( QgsVertexId( 0, 0, -1 ) ), 0.0 );
+  QGSCOMPARENEAR( curveLine2.segmentLength( QgsVertexId( 0, 0, 0 ) ), 31.4159, 0.001 );
+  QCOMPARE( curveLine2.segmentLength( QgsVertexId( 0, 0, 1 ) ), 0.0 );
+  QGSCOMPARENEAR( curveLine2.segmentLength( QgsVertexId( 0, 0, 2 ) ), 31.4159, 0.001 );
+  QCOMPARE( curveLine2.segmentLength( QgsVertexId( 0, 0, 3 ) ), 0.0 );
 }
 
 
@@ -4046,6 +4076,22 @@ void TestQgsGeometry::lineString()
   QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( 0, 0, 1 ) ), 1 );
   QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( 0, 0, 2 ) ), 2 );
   QCOMPARE( vertexLine2.vertexNumberFromVertexId( QgsVertexId( 0, 0, 3 ) ), -1 );
+
+  //segmentLength
+  QgsLineString vertexLine3;
+  QCOMPARE( vertexLine3.segmentLength( QgsVertexId( -1, 0, 0 ) ), 0.0 );
+  QCOMPARE( vertexLine3.segmentLength( QgsVertexId( 0, 0, 0 ) ), 0.0 );
+  QCOMPARE( vertexLine3.segmentLength( QgsVertexId( 1, 0, 0 ) ), 0.0 );
+  vertexLine3.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) );
+  QCOMPARE( vertexLine3.segmentLength( QgsVertexId() ), 0.0 );
+  QCOMPARE( vertexLine3.segmentLength( QgsVertexId( 0, 0, -1 ) ), 0.0 );
+  QCOMPARE( vertexLine3.segmentLength( QgsVertexId( 0, 0, 0 ) ), 10.0 );
+  QCOMPARE( vertexLine3.segmentLength( QgsVertexId( 0, 0, 1 ) ), 100.0 );
+  QCOMPARE( vertexLine3.segmentLength( QgsVertexId( 0, 0, 2 ) ), 0.0 );
+  QCOMPARE( vertexLine3.segmentLength( QgsVertexId( -1, 0, -1 ) ), 0.0 );
+  QCOMPARE( vertexLine3.segmentLength( QgsVertexId( -1, 0, 0 ) ), 10.0 );
+  QCOMPARE( vertexLine3.segmentLength( QgsVertexId( 1, 0, 1 ) ), 100.0 );
+  QCOMPARE( vertexLine3.segmentLength( QgsVertexId( 1, 1, 1 ) ), 100.0 );
 }
 
 void TestQgsGeometry::polygon()
@@ -5714,6 +5760,56 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 1, 3 ) ), 8 );
   QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 1, 4 ) ), 9 );
   QCOMPARE( p29.vertexNumberFromVertexId( QgsVertexId( 0, 1, 5 ) ), -1 );
+
+
+  //segmentLength
+  QgsPolygon p30;
+  QgsLineString vertexLine3;
+  QCOMPARE( p30.segmentLength( QgsVertexId( -1, 0, 0 ) ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 0, 0 ) ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 1, 0, 0 ) ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, -1, 0 ) ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 1, 0 ) ), 0.0 );
+  vertexLine3.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 )
+                         << QgsPoint( 111, 2 ) << QgsPoint( 11, 2 ) );
+  p30.setExteriorRing( vertexLine3.clone() );
+  QCOMPARE( p30.segmentLength( QgsVertexId() ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 0, -1 ) ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 0, 0 ) ), 10.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 0, 1 ) ), 100.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 0, 2 ) ), 10.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 0, 3 ) ), 100.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 0, 4 ) ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( -1, 0, -1 ) ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( -1, 0, 0 ) ), 10.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, -1, 0 ) ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 1, 0 ) ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 1, 1 ) ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 1, 0, 1 ) ), 100.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 1, 1, 1 ) ), 0.0 );
+
+  // add interior ring
+  vertexLine3.setPoints( QgsPointSequence() << QgsPoint( 30, 6 ) << QgsPoint( 34, 6 ) << QgsPoint( 34, 8 )
+                         << QgsPoint( 30, 8 ) << QgsPoint( 30, 6 ) );
+  p30.addInteriorRing( vertexLine3.clone() );
+  QCOMPARE( p30.segmentLength( QgsVertexId() ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 0, -1 ) ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 0, 0 ) ), 10.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 0, 1 ) ), 100.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 0, 2 ) ), 10.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 0, 3 ) ), 100.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 0, 4 ) ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( -1, 0, -1 ) ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( -1, 0, 0 ) ), 10.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, -1, 0 ) ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 1, -1 ) ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 1, 0 ) ), 4.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 1, 1 ) ), 2.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 1, 2 ) ), 4.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 1, 3 ) ), 2.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 0, 1, 4 ) ), 0.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 1, 0, 1 ) ), 100.0 );
+  QCOMPARE( p30.segmentLength( QgsVertexId( 1, 1, 1 ) ), 2.0 );
 }
 
 void TestQgsGeometry::triangle()
@@ -10315,6 +10411,43 @@ void TestQgsGeometry::compoundCurve()
   QCOMPARE( closeCc1.numPoints(), 4 );
   QVERIFY( closeCc1.isClosed() );
 
+  //segmentLength
+  QgsCircularString curveLine2;
+  QgsCompoundCurve slc1;
+  QCOMPARE( slc1.segmentLength( QgsVertexId( -1, 0, 0 ) ), 0.0 );
+  QCOMPARE( slc1.segmentLength( QgsVertexId( 0, 0, 0 ) ), 0.0 );
+  QCOMPARE( slc1.segmentLength( QgsVertexId( 1, 0, 0 ) ), 0.0 );
+  curveLine2.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
+  slc1.addCurve( curveLine2.clone() );
+  QCOMPARE( slc1.segmentLength( QgsVertexId() ), 0.0 );
+  QCOMPARE( slc1.segmentLength( QgsVertexId( 0, 0, -1 ) ), 0.0 );
+  QGSCOMPARENEAR( slc1.segmentLength( QgsVertexId( 0, 0, 0 ) ), 31.4159, 0.001 );
+  QCOMPARE( slc1.segmentLength( QgsVertexId( 0, 0, 1 ) ), 0.0 );
+  QCOMPARE( slc1.segmentLength( QgsVertexId( 0, 0, 2 ) ), 0.0 );
+  QCOMPARE( slc1.segmentLength( QgsVertexId( -1, 0, -1 ) ), 0.0 );
+  QGSCOMPARENEAR( slc1.segmentLength( QgsVertexId( -1, 0, 0 ) ), 31.4159, 0.001 );
+  QCOMPARE( slc1.segmentLength( QgsVertexId( 1, 0, 1 ) ), 0.0 );
+  QGSCOMPARENEAR( slc1.segmentLength( QgsVertexId( 1, 1, 0 ) ), 31.4159, 0.001 );
+  curveLine2.setPoints( QgsPointSequence() << QgsPoint( 1, 22 ) << QgsPoint( -9, 32 ) << QgsPoint( 1, 42 ) );
+  slc1.addCurve( curveLine2.clone() );
+  QCOMPARE( slc1.segmentLength( QgsVertexId() ), 0.0 );
+  QCOMPARE( slc1.segmentLength( QgsVertexId( 0, 0, -1 ) ), 0.0 );
+  QGSCOMPARENEAR( slc1.segmentLength( QgsVertexId( 0, 0, 0 ) ), 31.4159, 0.001 );
+  QCOMPARE( slc1.segmentLength( QgsVertexId( 0, 0, 1 ) ), 0.0 );
+  QGSCOMPARENEAR( slc1.segmentLength( QgsVertexId( 0, 0, 2 ) ), 31.4159, 0.001 );
+  QCOMPARE( slc1.segmentLength( QgsVertexId( 0, 0, 3 ) ), 0.0 );
+  QCOMPARE( slc1.segmentLength( QgsVertexId( 0, 0, 4 ) ), 0.0 );
+  QgsLineString curveLine3;
+  curveLine3.setPoints( QgsPointSequence() << QgsPoint( 1, 42 ) << QgsPoint( 10, 42 ) );
+  slc1.addCurve( curveLine3.clone() );
+  QCOMPARE( slc1.segmentLength( QgsVertexId() ), 0.0 );
+  QCOMPARE( slc1.segmentLength( QgsVertexId( 0, 0, -1 ) ), 0.0 );
+  QGSCOMPARENEAR( slc1.segmentLength( QgsVertexId( 0, 0, 0 ) ), 31.4159, 0.001 );
+  QCOMPARE( slc1.segmentLength( QgsVertexId( 0, 0, 1 ) ), 0.0 );
+  QGSCOMPARENEAR( slc1.segmentLength( QgsVertexId( 0, 0, 2 ) ), 31.4159, 0.001 );
+  QCOMPARE( slc1.segmentLength( QgsVertexId( 0, 0, 3 ) ), 0.0 );
+  QCOMPARE( slc1.segmentLength( QgsVertexId( 0, 0, 4 ) ), 9.0 );
+  QCOMPARE( slc1.segmentLength( QgsVertexId( 0, 0, 5 ) ), 0.0 );
 }
 
 void TestQgsGeometry::multiPoint()
@@ -11372,6 +11505,55 @@ void TestQgsGeometry::multiLineString()
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 3 ) )->y(), 20.0 );
   QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 3 ) )->z(), 200.0 );
   delete boundary;
+
+  //segmentLength
+  QgsMultiLineString multiLine3;
+  QgsLineString vertexLine3;
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( -1, 0, 0 ) ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, 0, 0 ) ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 1, 0, 0 ) ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, -1, 0 ) ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, 1, 0 ) ), 0.0 );
+  vertexLine3.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 )
+                         << QgsPoint( 111, 2 ) << QgsPoint( 11, 2 ) );
+  multiLine3.addGeometry( vertexLine3.clone() );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId() ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, 0, -1 ) ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, 0, 0 ) ), 10.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, 0, 1 ) ), 100.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, 0, 2 ) ), 10.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, 0, 3 ) ), 100.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, 0, 4 ) ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( -1, 0, -1 ) ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( -1, 0, 0 ) ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, -1, 0 ) ), 10.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 1, 1, 0 ) ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 1, 1, 1 ) ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 1, 0, 1 ) ), 0.0 );
+
+  // add another line
+  vertexLine3.setPoints( QgsPointSequence() << QgsPoint( 30, 6 ) << QgsPoint( 34, 6 ) << QgsPoint( 34, 8 )
+                         << QgsPoint( 30, 8 ) << QgsPoint( 30, 6 ) );
+  multiLine3.addGeometry( vertexLine3.clone() );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId() ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, 0, -1 ) ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, 0, 0 ) ), 10.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, 0, 1 ) ), 100.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, 0, 2 ) ), 10.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, 0, 3 ) ), 100.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, 0, 4 ) ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( -1, 0, -1 ) ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( -1, 0, 0 ) ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 0, -1, 0 ) ), 10.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 1, 0, -1 ) ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 1, 0, 0 ) ), 4.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 1, 0, 1 ) ), 2.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 1, 0, 2 ) ), 4.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 1, 0, 3 ) ), 2.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 1, 0, 4 ) ), 0.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 1, 1, 1 ) ), 2.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 1, 1, 2 ) ), 4.0 );
+  QCOMPARE( multiLine3.segmentLength( QgsVertexId( 2, 0, 0 ) ), 0.0 );
 }
 
 void TestQgsGeometry::multiCurve()

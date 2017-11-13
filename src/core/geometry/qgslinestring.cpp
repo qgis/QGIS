@@ -1081,6 +1081,16 @@ double QgsLineString::vertexAngle( QgsVertexId vertex ) const
   }
 }
 
+double QgsLineString::segmentLength( QgsVertexId startVertex ) const
+{
+  if ( startVertex.vertex < 0 || startVertex.vertex >= mX.count() - 1 )
+    return 0.0;
+
+  double dx = mX.at( startVertex.vertex + 1 ) - mX.at( startVertex.vertex );
+  double dy = mY.at( startVertex.vertex + 1 ) - mY.at( startVertex.vertex );
+  return std::sqrt( dx * dx + dy * dy );
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.

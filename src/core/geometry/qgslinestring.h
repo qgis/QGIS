@@ -228,7 +228,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     void sumUpArea( double &sum SIP_OUT ) const override;
     double vertexAngle( QgsVertexId vertex ) const override;
-
+    double segmentLength( QgsVertexId startVertex ) const override;
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;
 

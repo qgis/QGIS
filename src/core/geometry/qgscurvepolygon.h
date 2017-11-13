@@ -144,6 +144,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     int ringCount( int part = 0 ) const override;
     int partCount() const override;
     QgsPoint vertexAt( QgsVertexId id ) const override;
+    double segmentLength( QgsVertexId startVertex ) const override;
 
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;

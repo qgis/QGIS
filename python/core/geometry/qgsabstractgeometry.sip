@@ -366,6 +366,13 @@ class QgsAbstractGeometry
  :rtype: float
 %End
 
+    virtual double segmentLength( QgsVertexId startVertex ) const = 0;
+%Docstring
+ Returns the length of the segment of the geometry which begins at ``startVertex``.
+.. versionadded:: 3.0
+ :rtype: float
+%End
+
     virtual QgsPoint centroid() const;
 %Docstring
 Returns the centroid of the geometry

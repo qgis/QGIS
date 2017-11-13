@@ -44,7 +44,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
-
+    double segmentLength( QgsVertexId startVertex ) const override;
 
 #ifndef SIP_RUN
 

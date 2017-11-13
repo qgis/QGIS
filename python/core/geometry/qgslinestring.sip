@@ -255,6 +255,7 @@ Closes the line string by appending the first point to the end of the line, if i
 
     virtual double vertexAngle( QgsVertexId vertex ) const;
 
+    virtual double segmentLength( QgsVertexId startVertex ) const;
 
     virtual bool addZValue( double zValue = 0 );
 

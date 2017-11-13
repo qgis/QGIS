@@ -185,6 +185,8 @@ Adds an interior ring to the geometry (takes ownership)
 
     virtual QgsPoint vertexAt( QgsVertexId id ) const;
 
+    virtual double segmentLength( QgsVertexId startVertex ) const;
+
 
     virtual bool addZValue( double zValue = 0 );
 
