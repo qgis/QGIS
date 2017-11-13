@@ -47,7 +47,7 @@ QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer* vl
 
   Q_FOREACH ( const QgsRelation& relation, vl->referencingRelations( fieldIdx ) )
   {
-    mComboRelation->addItem( QString( "%1 (%2)" ).arg( relation.id(), relation.referencedLayerId() ), relation.id() );
+    mComboRelation->addItem( QString( "%1 (%2)" ).arg( relation.name(), relation.referencedLayerId() ), relation.id() );
     if ( relation.referencedLayer() )
     {
       mExpressionWidget->setField( relation.referencedLayer()->displayExpression() );
