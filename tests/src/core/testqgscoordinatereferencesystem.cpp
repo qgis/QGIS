@@ -15,13 +15,14 @@ Email                : sherman at mrcc dot com
 #include "qgstest.h"
 #include <QPixmap>
 
-#include <qgsapplication.h>
+#include "qgsapplication.h"
 #include "qgslogger.h"
 
 //header for class being tested
-#include <qgscoordinatereferencesystem.h>
-#include <qgis.h>
-#include <qgsvectorlayer.h>
+#include "qgscoordinatereferencesystem.h"
+#include "qgis.h"
+#include "qgsvectorlayer.h"
+#include "qgsproject.h"
 
 #include <proj_api.h>
 #include <gdal.h>
@@ -77,6 +78,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void asVariant();
     void bounds();
     void saveAsUserCrs();
+    void projectWithCustomCrs();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -832,6 +834,15 @@ void TestQgsCoordinateReferenceSystem::saveAsUserCrs()
   QCOMPARE( userCrs2.srsid(), userCrs.srsid() );
   QCOMPARE( userCrs2.authid(), QStringLiteral( "USER:100000" ) );
   QCOMPARE( userCrs2.description(), QStringLiteral( "babies first projection" ) );
+}
+
+void TestQgsCoordinateReferenceSystem::projectWithCustomCrs()
+{
+  // tests loading a 2.x project with a custom CRS defined
+  QgsProject p;
+  QVERIFY( p.read( TEST_DATA_DIR + QStringLiteral( "/projects/custom_crs.qgs" ) ) );
+  QVERIFY( p.crs().isValid() );
+  QCOMPARE( p.crs().toProj4(), QStringLiteral( "+proj=ortho +lat_0=42.1 +lon_0=12.8 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs" ) );
 }
 
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )
