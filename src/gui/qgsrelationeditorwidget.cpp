@@ -306,12 +306,27 @@ void QgsRelationEditorWidget::addFeature()
     QgsFeature f;
     if ( vlTools->addFeature( mNmRelation.referencedLayer(), QgsAttributeMap(), QgsGeometry(), &f ) )
     {
-      QgsFeature flink( mRelation.referencingLayer()->fields() ); // Linking feature
+      // Fields of the linking table
+      const QgsFields fields = mRelation.referencingLayer()->fields();
 
-      flink.setAttribute( mRelation.fieldPairs().at( 0 ).first, mFeature.attribute( mRelation.fieldPairs().at( 0 ).second ) );
-      flink.setAttribute( mNmRelation.referencingFields().at( 0 ), f.attribute( mNmRelation.referencedFields().at( 0 ) ) );
+      // Expression context for the linking table
+      QgsExpressionContext context = mRelation.referencingLayer()->createExpressionContext();
 
-      mRelation.referencingLayer()->addFeature( flink );
+      QgsAttributeMap linkAttributes;
+      Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mRelation.fieldPairs() )
+      {
+        int index = fields.indexOf( fieldPair.first );
+        linkAttributes.insert( index,  mFeature.attribute( fieldPair.second ) );
+      }
+
+      Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mNmRelation.fieldPairs() )
+      {
+        int index = fields.indexOf( fieldPair.first );
+        linkAttributes.insert( index, f.attribute( fieldPair.second ) );
+      }
+      QgsFeature linkFeature = QgsVectorLayerUtils::createFeature( mRelation.referencingLayer(), QgsGeometry(), linkAttributes, &context );
+
+      mRelation.referencingLayer()->addFeature( linkFeature );
 
       updateUi();
     }
