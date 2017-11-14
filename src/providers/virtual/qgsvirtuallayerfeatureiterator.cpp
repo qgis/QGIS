@@ -163,7 +163,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       {
         if ( request.filterType() == QgsFeatureRequest::FilterFid )
         {
-          columns = QStringLiteral( "%1" ).arg( request.filterFid() );
+          columns = QString::number( request.filterFid() );
         }
         else
         {
