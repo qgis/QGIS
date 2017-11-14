@@ -25,12 +25,11 @@ email                : a.furieri@lqt.it
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsvectorlayerexporter.h"
-#include "qgsslconnect.h"
+#include "qgsspatialiteutils.h"
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnpool.h"
 #include "qgsspatialitefeatureiterator.h"
 #include "qgsfeedback.h"
-#include "qgsspatialiteutils.h"
 
 #include "qgsjsonutils.h"
 #include "qgsvectorlayer.h"

@@ -18,6 +18,8 @@
 #include <QStringList>
 #include <QObject>
 
+#include "qgsspatialiteutils.h"
+
 extern "C"
 {
 #include <sqlite3.h>
@@ -137,15 +139,15 @@ class QgsSqliteHandle
   public:
     QgsSqliteHandle( sqlite3 *handle, const QString &dbPath, bool shared )
       : ref( shared ? 1 : -1 )
-      , sqlite_handle( handle )
       , mDbPath( dbPath )
       , mIsValid( true )
     {
+      mDatabase.reset( handle );
     }
 
     sqlite3 *handle()
     {
-      return sqlite_handle;
+      return mDatabase.get();
     }
 
     QString dbPath() const
@@ -162,12 +164,6 @@ class QgsSqliteHandle
     {
       mIsValid = false;
     }
-
-    //
-    // libsqlite3 wrapper
-    //
-    void sqliteClose();
-
     static QgsSqliteHandle *openDb( const QString &dbPath, bool shared = true );
     static bool checkMetadata( sqlite3 *handle );
     static void closeDb( QgsSqliteHandle *&handle );
@@ -181,7 +177,7 @@ class QgsSqliteHandle
 
   private:
     int ref;
-    sqlite3 *sqlite_handle = nullptr;
+    spatialite_database_unique_ptr mDatabase;
     QString mDbPath;
     bool mIsValid;
 

@@ -28,7 +28,11 @@ struct sqlite3;
 struct sqlite3_stmt;
 
 /**
+ * \ingroup core
+ *
  * Closes a sqlite3 database.
+ *
+ * \since QGIS 3.0
  */
 struct CORE_EXPORT QgsSqlite3Closer
 {
@@ -52,8 +56,12 @@ struct CORE_EXPORT  QgsSqlite3StatementFinalizer
 };
 
 /**
+ * \ingroup core
+ *
  * Unique pointer for sqlite3 prepared statements, which automatically finalizes
  * the statement when the pointer goes out of scope or is reset.
+ *
+ * \since QGIS 3.0
  */
 class CORE_EXPORT sqlite3_statement_unique_ptr : public std::unique_ptr< sqlite3_stmt, QgsSqlite3StatementFinalizer>
 {
@@ -73,8 +81,12 @@ class CORE_EXPORT sqlite3_statement_unique_ptr : public std::unique_ptr< sqlite3
 
 
 /**
+ * \ingroup core
+ *
  * Unique pointer for sqlite3 databases, which automatically closes
  * the database when the pointer goes out of scope or is reset.
+ *
+ * \since QGIS 3.0
  */
 class CORE_EXPORT sqlite3_database_unique_ptr : public std::unique_ptr< sqlite3, QgsSqlite3Closer>
 {
