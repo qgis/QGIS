@@ -211,7 +211,7 @@ class Union(QgisAlgorithm):
                 request.setDestinationCrs(sourceA.sourceCrs())
 
                 # use prepared geometries for faster intersection tests
-                engine = QgsGeometry.createGeometryEngine(diff_geom.constGet.ge())
+                engine = QgsGeometry.createGeometryEngine(diff_geom.constGet())
                 engine.prepareGeometry()
 
                 for featB in sourceA.getFeatures(request):
