@@ -20,7 +20,8 @@
 
 #include <QString>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCoordinateFormatter
  * \brief Contains methods for converting coordinates for display in various formats.
  *
@@ -31,57 +32,63 @@
  * ensuring that only geographic coordinates and not projected coordinates are formatted to degree
  * based formats.
  *
- * \note Added in version 2.14
+ * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsCoordinateFormatter
 {
   public:
 
-    /** Available formats for displaying coordinates.
+    /**
+     * Available formats for displaying coordinates.
      */
     enum Format
     {
-      Pair, /*!< Formats coordinates as an "x,y" pair */
-      DegreesMinutesSeconds, /*!< Degrees, minutes and seconds, eg 30 degrees 45'30" */
-      DegreesMinutes, /*!< Degrees and decimal minutes, eg 30degrees 45.55' */
-      DecimalDegrees, /*!< Decimal degrees, eg 30.7555 degrees */
+      FormatPair, //!< Formats coordinates as an "x,y" pair
+      FormatDegreesMinutesSeconds, //!< Degrees, minutes and seconds, eg 30 degrees 45'30"
+      FormatDegreesMinutes, //!< Degrees and decimal minutes, eg 30degrees 45.55'
+      FormatDecimalDegrees, //!< Decimal degrees, eg 30.7555 degrees
     };
 
-    /** Flags for controlling formatting of coordinates.
+    /**
+     * Flags for controlling formatting of coordinates.
      */
     enum FormatFlag
     {
-      DegreesUseStringSuffix = 0x01, /*!< include a direction suffix (eg 'N', 'E', 'S' or 'W'), otherwise a "-" prefix is used for west and south coordinates */
-      DegreesPadMinutesSeconds = 0x02, /*!< pad minute and second values with leading zeros, eg '05' instead of '5' */
+      FlagDegreesUseStringSuffix = 1 << 1, //!< Include a direction suffix (eg 'N', 'E', 'S' or 'W'), otherwise a "-" prefix is used for west and south coordinates
+      FlagDegreesPadMinutesSeconds = 1 << 2, //!< Pad minute and second values with leading zeros, eg '05' instead of '5'
     };
     Q_DECLARE_FLAGS( FormatFlags, FormatFlag )
 
-    /** Formats an X coordinate value according to the specified parameters.
-     * @param x x-coordinate
-     * @param format string format to use for coordinate
-     * @param precision number of decimal places to include
-     * @param flags flags controlling format options
-     * @returns formatted X coordinate string
-     * @see formatY()
+    /**
+     * Formats an \a x coordinate value according to the specified parameters.
+     *
+     * The \a format argument indicates the desired display format for the coordinate.
+     *
+     * The \a precision argument gives the number of decimal places to include for coordinates.
+     *
+     * Optional \a flags can be specified to control the output format.
+     *
+     * \see formatY()
      */
-    static QString formatX( double x, Format format, int precision = 12, FormatFlags flags = DegreesUseStringSuffix );
+    static QString formatX( double x, Format format, int precision = 12, FormatFlags flags = FlagDegreesUseStringSuffix );
 
-    /** Formats an Y coordinate value according to the specified parameters.
-     * @param y y-coordinate
-     * @param format string format to use for coordinate
-     * @param precision number of decimal places to include
-     * @param flags flags controlling format options
-     * @returns formatted Y coordinate string
-     * @see formatX()
+    /**
+     * Formats a \a y coordinate value according to the specified parameters.
+     *
+     * The \a format argument indicates the desired display format for the coordinate.
+     *
+     * The \a precision argument gives the number of decimal places to include for coordinates.
+     *
+     * Optional \a flags can be specified to control the output format.
+     *
+     * \see formatX()
      */
-    static QString formatY( double y, Format format, int precision = 12, FormatFlags flags = DegreesUseStringSuffix );
+    static QString formatY( double y, Format format, int precision = 12, FormatFlags flags = FlagDegreesUseStringSuffix );
 
-    /** Formats coordinates as an "x,y" pair, with optional decimal precision.
-     * @param x x-coordinate
-     * @param y y-coordinate
-     * @param precision number of decimal places to include
-     * @returns formatted coordinate string
+    /**
+     * Formats coordinates as an "\a x,\a y" pair, with optional decimal \a precision (number
+     * of decimal places to include).
      */
     static QString asPair( double x, double y, int precision = 12 );
 

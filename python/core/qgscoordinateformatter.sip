@@ -22,9 +22,7 @@ class QgsCoordinateFormatter
  ensuring that only geographic coordinates and not projected coordinates are formatted to degree
  based formats.
 
-.. note::
-
-   Added in version 2.14
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -34,51 +32,52 @@ class QgsCoordinateFormatter
 
     enum Format
     {
-      Pair,
-      DegreesMinutesSeconds,
-      DegreesMinutes,
-      DecimalDegrees,
+      FormatPair,
+      FormatDegreesMinutesSeconds,
+      FormatDegreesMinutes,
+      FormatDecimalDegrees,
     };
 
     enum FormatFlag
     {
-      DegreesUseStringSuffix,
-      DegreesPadMinutesSeconds,
+      FlagDegreesUseStringSuffix,
+      FlagDegreesPadMinutesSeconds,
     };
     typedef QFlags<QgsCoordinateFormatter::FormatFlag> FormatFlags;
 
 
-    static QString formatX( double x, Format format, int precision = 12, FormatFlags flags = DegreesUseStringSuffix );
+    static QString formatX( double x, Format format, int precision = 12, FormatFlags flags = FlagDegreesUseStringSuffix );
 %Docstring
- Formats an X coordinate value according to the specified parameters.
- @param x x-coordinate
- @param format string format to use for coordinate
- @param precision number of decimal places to include
- @param flags flags controlling format options
- @returns formatted X coordinate string
- @see formatY()
+ Formats an ``x`` coordinate value according to the specified parameters.
+
+ The ``format`` argument indicates the desired display format for the coordinate.
+
+ The ``precision`` argument gives the number of decimal places to include for coordinates.
+
+ Optional ``flags`` can be specified to control the output format.
+
+.. seealso:: formatY()
  :rtype: str
 %End
 
-    static QString formatY( double y, Format format, int precision = 12, FormatFlags flags = DegreesUseStringSuffix );
+    static QString formatY( double y, Format format, int precision = 12, FormatFlags flags = FlagDegreesUseStringSuffix );
 %Docstring
- Formats an Y coordinate value according to the specified parameters.
- @param y y-coordinate
- @param format string format to use for coordinate
- @param precision number of decimal places to include
- @param flags flags controlling format options
- @returns formatted Y coordinate string
- @see formatX()
+ Formats a ``y`` coordinate value according to the specified parameters.
+
+ The ``format`` argument indicates the desired display format for the coordinate.
+
+ The ``precision`` argument gives the number of decimal places to include for coordinates.
+
+ Optional ``flags`` can be specified to control the output format.
+
+.. seealso:: formatX()
  :rtype: str
 %End
 
     static QString asPair( double x, double y, int precision = 12 );
 %Docstring
- Formats coordinates as an "x,y" pair, with optional decimal precision.
- @param x x-coordinate
- @param y y-coordinate
- @param precision number of decimal places to include
- @returns formatted coordinate string
+ Formats coordinates as an "``x``,``y``" pair, with optional decimal ``precision`` (number
+ of decimal places to include).
  :rtype: str
 %End
 
