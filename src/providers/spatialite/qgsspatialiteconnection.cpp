@@ -731,7 +731,7 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
 
   QgsDebugMsg( "Connection to the database was successful" );
 
-  QgsSqliteHandle *handle = new QgsSqliteHandle( database.release(), dbPath, shared );
+  QgsSqliteHandle *handle = new QgsSqliteHandle( std::move( database ), dbPath, shared );
   if ( shared )
     sHandles.insert( dbPath, handle );
 
