@@ -110,7 +110,10 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     {
       if ( request.filterType() == QgsFeatureRequest::FilterFid )
       {
-        offset = QStringLiteral( " LIMIT 1 OFFSET %1" ).arg( request.filterFid() );
+        if ( request.filterFid() >= 0 )
+          offset = QStringLiteral( " LIMIT 1 OFFSET %1" ).arg( request.filterFid() );
+        else // never return a feature if the id is negative
+          offset = QStringLiteral( " LIMIT 0" );
       }
     }
 
