@@ -453,14 +453,26 @@ void TestQgsLayoutMultiFrame::undoRedoRemovedFrame()
 
   QCOMPARE( htmlItem->frameCount(), 1 );
 
+  auto dumpStack = [ = ]
+  {
+    // dump stack
+    for ( int i = 0; i < mLayout->undoStack()->stack()->count(); ++i )
+    {
+      QgsDebugMsg( QString( "%1: %2 %3" ).arg( i ).arg( mLayout->undoStack()->stack()->command( i )->text(), i + 1 == mLayout->undoStack()->stack()->index() ? QString( "<---" ) : QString() ) );
+    }
+  };
+  dumpStack();
   //undo changes
 
   //multiframe command
   mLayout->undoStack()->stack()->undo();
+  dumpStack();
   //frame 2 command
   mLayout->undoStack()->stack()->undo();
+  dumpStack();
   //frame 1 command
   mLayout->undoStack()->stack()->undo();
+  dumpStack();
   //check result
   QVERIFY( htmlItem->frameCount() > 1 );
   QCOMPARE( htmlItem->frame( 0 )->frameStrokeWidth().length(), 0.3 );
@@ -470,8 +482,10 @@ void TestQgsLayoutMultiFrame::undoRedoRemovedFrame()
 
   //frame 1 command
   mLayout->undoStack()->stack()->redo();
+  dumpStack();
   //frame 2 command
   mLayout->undoStack()->stack()->redo();
+  dumpStack();
 
   //check result
   QVERIFY( htmlItem->frameCount() > 1 );
