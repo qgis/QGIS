@@ -253,17 +253,11 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
 
   feature.setFields( mSource->mFields, /* init */ true );
 
-  if ( mSource->mDefinition.uid().isNull() )
+  if ( mSource->mDefinition.uid().isNull() &&
+       mRequest.filterType() != QgsFeatureRequest::FilterFid )
   {
-    if ( mRequest.filterType() == QgsFeatureRequest::FilterFid )
-    {
-      feature.setId( mQuery->columnInt64( 0 ) );
-    }
-    else
-    {
-      // no id column => autoincrement
-      feature.setId( mFid++ );
-    }
+    // no id column => autoincrement
+    feature.setId( mFid++ );
   }
   else
   {
