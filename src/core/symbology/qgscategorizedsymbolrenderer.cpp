@@ -377,6 +377,8 @@ void QgsCategorizedSymbolRenderer::sortByLabel( Qt::SortOrder order )
 
 void QgsCategorizedSymbolRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
+  QgsFeatureRenderer::startRender( context, fields );
+
   mCounting = context.rendererScale() == 0.0;
 
   // make sure that the hash table is up to date
@@ -398,6 +400,8 @@ void QgsCategorizedSymbolRenderer::startRender( QgsRenderContext &context, const
 
 void QgsCategorizedSymbolRenderer::stopRender( QgsRenderContext &context )
 {
+  QgsFeatureRenderer::stopRender( context );
+
   Q_FOREACH ( const QgsRendererCategory &cat, mCategories )
   {
     cat.symbol()->stopRender( context );

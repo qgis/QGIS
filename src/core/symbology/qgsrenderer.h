@@ -162,7 +162,7 @@ class CORE_EXPORT QgsFeatureRenderer
      * \warning This method is not thread safe. Before calling startRender() in a non-main thread,
      * the renderer should instead be cloned and startRender()/stopRender() called on the clone.
      */
-    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) = 0;
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
     /**
      * Must be called when a render cycle has finished, to allow the renderer to clean up.
@@ -174,7 +174,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * \see startRender()
      */
-    virtual void stopRender( QgsRenderContext &context ) = 0;
+    virtual void stopRender( QgsRenderContext &context );
 
     /**
      * If a renderer does not require all the features this method may be overridden
@@ -522,6 +522,11 @@ class CORE_EXPORT QgsFeatureRenderer
 #ifdef SIP_RUN
     QgsFeatureRenderer( const QgsFeatureRenderer & );
     QgsFeatureRenderer &operator=( const QgsFeatureRenderer & );
+#endif
+
+#ifdef QGISDEBUG
+    //! Pointer to thread in which startRender was first called
+    QThread *mThread = nullptr;
 #endif
 
     Q_DISABLE_COPY( QgsFeatureRenderer )

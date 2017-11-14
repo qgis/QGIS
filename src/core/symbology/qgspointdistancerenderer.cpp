@@ -287,6 +287,8 @@ bool QgsPointDistanceRenderer::willRenderFeature( QgsFeature &feat, QgsRenderCon
 
 void QgsPointDistanceRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
+  QgsFeatureRenderer::startRender( context, fields );
+
   mRenderer->startRender( context, fields );
 
   mClusteredGroups.clear();
@@ -315,6 +317,8 @@ void QgsPointDistanceRenderer::startRender( QgsRenderContext &context, const Qgs
 
 void QgsPointDistanceRenderer::stopRender( QgsRenderContext &context )
 {
+  QgsFeatureRenderer::stopRender( context );
+
   //printInfoDisplacementGroups(); //just for debugging
 
   Q_FOREACH ( const ClusteredGroup &group, mClusteredGroups )

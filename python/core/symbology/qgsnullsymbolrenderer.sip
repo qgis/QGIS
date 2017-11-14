@@ -27,7 +27,6 @@ class QgsNullSymbolRenderer : QgsFeatureRenderer
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context );
 
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
-    virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
     virtual void stopRender( QgsRenderContext &context );
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context );
 

@@ -826,6 +826,8 @@ bool QgsRuleBasedRenderer::renderFeature( QgsFeature &feature,
 
 void QgsRuleBasedRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
+  QgsFeatureRenderer::startRender( context, fields );
+
   // prepare active children
   mRootRule->startRender( context, fields, mFilter );
 
@@ -849,6 +851,8 @@ void QgsRuleBasedRenderer::startRender( QgsRenderContext &context, const QgsFiel
 
 void QgsRuleBasedRenderer::stopRender( QgsRenderContext &context )
 {
+  QgsFeatureRenderer::stopRender( context );
+
   //
   // do the actual rendering
   //

@@ -54,7 +54,8 @@ void QgsHeatmapRenderer::initializeValues( QgsRenderContext &context )
 
 void QgsHeatmapRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
-  Q_UNUSED( fields );
+  QgsFeatureRenderer::startRender( context, fields );
+
   if ( !context.painter() )
   {
     return;
@@ -212,6 +213,8 @@ double QgsHeatmapRenderer::triangularKernel( const double distance, const int ba
 
 void QgsHeatmapRenderer::stopRender( QgsRenderContext &context )
 {
+  QgsFeatureRenderer::stopRender( context );
+
   renderImage( context );
   mWeightExpression.reset();
 }
