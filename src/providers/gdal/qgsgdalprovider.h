@@ -33,6 +33,8 @@
 #include <QMap>
 #include <QVector>
 
+class QMutex;
+
 class QgsRasterPyramid;
 
 /**
@@ -76,6 +78,12 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     ~QgsGdalProvider();
 
+    /**
+     * Clone the provider.
+     *
+     * The underlying GDAL dataset is shared among the main provider and its
+     * clones.
+     */
     QgsGdalProvider *clone() const override;
 
     QString name() const override;
@@ -142,9 +150,6 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
                            QgsRasterBlockFeedback *feedback = nullptr ) override;
     QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() ) override;
 
-    //! \brief Close data set and release related data
-    void closeDataset();
-
     static QMap<QString, QString> supportedMimes();
 
     bool isEditable() const override;
@@ -158,6 +163,15 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
                                            const QStringList &configOptions, const QString &fileFormat ) override;
   private:
+
+    QgsGdalProvider( const QgsGdalProvider &other );
+
+    // reference counter to know how many main and cloned provider instances are linked
+    int *mpRefCounter = nullptr;
+
+    // mutex to protect access to mGdalDataset among main and cloned provider instances
+    QMutex *mpMutex = nullptr;
+
     // update mode
     bool mUpdate;
 
@@ -217,6 +231,9 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     //! Wrapper for GDALGetRasterBand() that takes into account mMaskBandExposedAsAlpha.
     GDALRasterBandH getBand( int bandNo ) const;
+
+    //! \brief Close data set and release related data
+    void closeDataset();
 };
 
 #endif
