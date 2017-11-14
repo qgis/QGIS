@@ -220,8 +220,8 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
 
   if ( mNmRelation.isValid() )
   {
-    connect( mNmRelation.referencingLayer(), &QgsVectorLayer::editingStarted, this, &QgsRelationEditorWidget::updateButtons );
-    connect( mNmRelation.referencingLayer(), &QgsVectorLayer::editingStopped, this, &QgsRelationEditorWidget::updateButtons );
+    connect( mNmRelation.referencedLayer(), &QgsVectorLayer::editingStarted, this, &QgsRelationEditorWidget::updateButtons );
+    connect( mNmRelation.referencedLayer(), &QgsVectorLayer::editingStopped, this, &QgsRelationEditorWidget::updateButtons );
   }
 
   setTitle( relation.name() );
