@@ -10,9 +10,9 @@
 
 
 
-typedef QList< QgsPoint > QgsPointSequence;
-typedef QList< QList< QgsPoint > > QgsRingSequence;
-typedef QList< QList< QList< QgsPoint > > > QgsCoordinateSequence;
+typedef QVector< QgsPoint > QgsPointSequence;
+typedef QVector< QVector< QgsPoint > > QgsRingSequence;
+typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 
 class QgsAbstractGeometry
 {

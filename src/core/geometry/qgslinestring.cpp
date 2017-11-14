@@ -124,7 +124,7 @@ QgsLineString::QgsLineString( const QVector<double> &x, const QVector<double> &y
   }
 }
 
-QgsLineString::QgsLineString( const QList<QgsPointXY> &points )
+QgsLineString::QgsLineString( const QVector<QgsPointXY> &points )
 {
   mWkbType = QgsWkbTypes::LineString;
   mX.reserve( points.size() );

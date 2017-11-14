@@ -62,7 +62,7 @@ class QgsVectorLayerEditUtils
  :rtype: QgsVectorLayer.EditResult
 %End
 
-    QgsGeometry::OperationResult addRing( const QList<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 );
+    QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 );
 %Docstring
  Adds a ring to polygon/multipolygon features
  \param ring ring to add
@@ -142,7 +142,7 @@ class QgsVectorLayerEditUtils
  :rtype: int
 %End
 
-    QgsGeometry::OperationResult splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 %Docstring
  Splits parts cut by the given line
  \param splitLine line that splits the layer feature parts
@@ -158,7 +158,7 @@ class QgsVectorLayerEditUtils
  :rtype: QgsGeometry.OperationResult
 %End
 
-    QgsGeometry::OperationResult splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 %Docstring
  Splits features cut by the given line
  \param splitLine line that splits the layer features

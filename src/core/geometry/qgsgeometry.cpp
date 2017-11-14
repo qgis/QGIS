@@ -236,7 +236,7 @@ QgsGeometry QgsGeometry::fromRect( const QgsRectangle &rect )
   return fromPolygonXY( polygon );
 }
 
-QgsGeometry QgsGeometry::collectGeometry( const QList< QgsGeometry > &geometries )
+QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometries )
 {
   QgsGeometry collected;
 
@@ -614,7 +614,7 @@ double QgsGeometry::closestSegmentWithContext(
   return sqrDist;
 }
 
-QgsGeometry::OperationResult QgsGeometry::addRing( const QList<QgsPointXY> &ring )
+QgsGeometry::OperationResult QgsGeometry::addRing( const QVector<QgsPointXY> &ring )
 {
   std::unique_ptr< QgsLineString > ringLine = qgis::make_unique< QgsLineString >( ring );
   return addRing( ringLine.release() );
@@ -633,7 +633,7 @@ QgsGeometry::OperationResult QgsGeometry::addRing( QgsCurve *ring )
   return QgsGeometryEditUtils::addRing( d->geometry.get(), std::move( r ) );
 }
 
-QgsGeometry::OperationResult QgsGeometry::addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType )
+QgsGeometry::OperationResult QgsGeometry::addPart( const QVector<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType )
 {
   QgsPointSequence l;
   convertPointList( points, l );
@@ -709,8 +709,8 @@ QgsGeometry QgsGeometry::removeInteriorRings( double minimumRingArea ) const
 
   if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    const QList<QgsGeometry> parts = asGeometryCollection();
-    QList<QgsGeometry> results;
+    const QVector<QgsGeometry> parts = asGeometryCollection();
+    QVector<QgsGeometry> results;
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.removeInteriorRings( minimumRingArea );
@@ -781,14 +781,14 @@ QgsGeometry::OperationResult QgsGeometry::rotate( double rotation, const QgsPoin
   return QgsGeometry::Success;
 }
 
-QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QList<QgsPointXY> &splitLine, QList<QgsGeometry> &newGeometries, bool topological, QList<QgsPointXY> &topologyTestPoints )
+QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints )
 {
   if ( !d->geometry )
   {
     return InvalidBaseGeometry;
   }
 
-  QList<QgsGeometry > newGeoms;
+  QVector<QgsGeometry > newGeoms;
   QgsLineString splitLineString( splitLine );
   QgsPointSequence tp;
 
@@ -1619,8 +1619,8 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
 
   if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    const QList<QgsGeometry> parts = asGeometryCollection();
-    QList<QgsGeometry> results;
+    const QVector<QgsGeometry> parts = asGeometryCollection();
+    QVector<QgsGeometry> results;
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.offsetCurve( distance, segments, joinStyle, miterLimit );
@@ -1661,8 +1661,8 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
 
   if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    const QList<QgsGeometry> parts = asGeometryCollection();
-    QList<QgsGeometry> results;
+    const QVector<QgsGeometry> parts = asGeometryCollection();
+    QVector<QgsGeometry> results;
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.singleSidedBuffer( distance, segments, side, joinStyle, miterLimit );
@@ -1704,8 +1704,8 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
 
   if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    const QList<QgsGeometry> parts = asGeometryCollection();
-    QList<QgsGeometry> results;
+    const QVector<QgsGeometry> parts = asGeometryCollection();
+    QVector<QgsGeometry> results;
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.extendLine( startDistance, endDistance );
@@ -2086,9 +2086,9 @@ QByteArray QgsGeometry::exportToWkb() const
   return d->geometry ? d->geometry->asWkb() : QByteArray();
 }
 
-QList<QgsGeometry> QgsGeometry::asGeometryCollection() const
+QVector<QgsGeometry> QgsGeometry::asGeometryCollection() const
 {
-  QList<QgsGeometry> geometryList;
+  QVector<QgsGeometry> geometryList;
   if ( !d->geometry )
   {
     return geometryList;
@@ -2206,7 +2206,7 @@ QgsGeometry QgsGeometry::makeValid() const
 }
 
 
-void QgsGeometry::validateGeometry( QList<QgsGeometry::Error> &errors, ValidationMethod method ) const
+void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, ValidationMethod method ) const
 {
   QgsGeometryValidator::validateGeometry( *this, errors, method );
 }
@@ -2245,7 +2245,7 @@ bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
   return geos.isEqual( g.d->geometry.get(), &mLastError );
 }
 
-QgsGeometry QgsGeometry::unaryUnion( const QList<QgsGeometry> &geometries )
+QgsGeometry QgsGeometry::unaryUnion( const QVector<QgsGeometry> &geometries )
 {
   QgsGeos geos( nullptr );
 
@@ -2256,11 +2256,11 @@ QgsGeometry QgsGeometry::unaryUnion( const QList<QgsGeometry> &geometries )
   return result;
 }
 
-QgsGeometry QgsGeometry::polygonize( const QList<QgsGeometry> &geometryList )
+QgsGeometry QgsGeometry::polygonize( const QVector<QgsGeometry> &geometryList )
 {
   QgsGeos geos( nullptr );
 
-  QList<const QgsAbstractGeometry *> geomV2List;
+  QVector<const QgsAbstractGeometry *> geomV2List;
   for ( const QgsGeometry &g : geometryList )
   {
     if ( !( g.isNull() ) )
@@ -2483,7 +2483,7 @@ QString QgsGeometry::lastError() const
   return mLastError;
 }
 
-void QgsGeometry::convertPointList( const QList<QgsPointXY> &input, QgsPointSequence &output )
+void QgsGeometry::convertPointList( const QVector<QgsPointXY> &input, QgsPointSequence &output )
 {
   output.clear();
   for ( const QgsPointXY &p : input )
@@ -2492,7 +2492,7 @@ void QgsGeometry::convertPointList( const QList<QgsPointXY> &input, QgsPointSequ
   }
 }
 
-void QgsGeometry::convertPointList( const QgsPointSequence &input, QList<QgsPointXY> &output )
+void QgsGeometry::convertPointList( const QgsPointSequence &input, QVector<QgsPointXY> &output )
 {
   output.clear();
   for ( const QgsPoint &p : input )

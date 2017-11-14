@@ -88,7 +88,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     vlayer->beginEditCommand( tr( "Ring added and filled" ) );
 
-    QList< QgsPointXY > pointList = points();
+    QVector< QgsPointXY > pointList = points();
 
     int addRingReturnCode = vlayer->addRing( pointList, &fid );
     if ( addRingReturnCode != 0 )
@@ -125,7 +125,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       return;
     }
 
-    g = QgsGeometry::fromPolygonXY( QgsPolygonXY() << pointList.toVector() );
+    g = QgsGeometry::fromPolygonXY( QgsPolygonXY() << pointList );
   }
   else
   {

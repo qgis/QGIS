@@ -149,14 +149,14 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
   // and adding moving point at the end
   if ( mMeasureArea && mTool->points().size() >= 2 )
   {
-    QList<QgsPointXY> tmpPoints = mTool->points();
+    QVector<QgsPointXY> tmpPoints = mTool->points();
     tmpPoints.append( point );
     double area = mDa.measurePolygon( tmpPoints );
     editTotal->setText( formatArea( area ) );
   }
   else if ( !mMeasureArea && !mTool->points().empty() )
   {
-    QList< QgsPointXY > tmpPoints = mTool->points();
+    QVector< QgsPointXY > tmpPoints = mTool->points();
     QgsPointXY p1( tmpPoints.at( tmpPoints.size() - 1 ) ), p2( point );
     double d = mDa.measureLine( p1, p2 );
 
@@ -205,7 +205,7 @@ void QgsMeasureDialog::removeLastPoint()
   {
     if ( numPoints > 1 )
     {
-      QList<QgsPointXY> tmpPoints = mTool->points();
+      QVector<QgsPointXY> tmpPoints = mTool->points();
       tmpPoints.append( mLastMousePoint );
       double area = mDa.measurePolygon( tmpPoints );
       editTotal->setText( formatArea( area ) );
@@ -225,7 +225,7 @@ void QgsMeasureDialog::removeLastPoint()
     if ( !mTool->done() )
     {
       // need to add the distance for the temporary mouse cursor point
-      QList< QgsPointXY > tmpPoints = mTool->points();
+      QVector< QgsPointXY > tmpPoints = mTool->points();
       QgsPointXY p1( tmpPoints.at( tmpPoints.size() - 1 ) );
       double d = mDa.measureLine( p1, mLastMousePoint );
 
@@ -478,12 +478,12 @@ void QgsMeasureDialog::updateUi()
   }
   else
   {
-    QList<QgsPointXY>::const_iterator it;
+    QVector<QgsPointXY>::const_iterator it;
     bool b = true; // first point
 
     QgsPointXY p1, p2;
     mTotal = 0;
-    QList< QgsPointXY > tmpPoints = mTool->points();
+    QVector< QgsPointXY > tmpPoints = mTool->points();
     for ( it = tmpPoints.constBegin(); it != tmpPoints.constEnd(); ++it )
     {
       p2 = *it;

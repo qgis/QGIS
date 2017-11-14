@@ -250,7 +250,7 @@ class CORE_EXPORT QgsGeometry
     //! Creates a new geometry from a QgsRectangle
     static QgsGeometry fromRect( const QgsRectangle &rect );
     //! Creates a new multipart geometry from a list of QgsGeometry objects
-    static QgsGeometry collectGeometry( const QList< QgsGeometry > &geometries );
+    static QgsGeometry collectGeometry( const QVector<QgsGeometry> &geometries );
 
     /**
      * Set the geometry, feeding in a geometry in GEOS format.
@@ -567,7 +567,7 @@ class CORE_EXPORT QgsGeometry
      * \param ring The ring to be added
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult addRing( const QList<QgsPointXY> &ring );
+    OperationResult addRing( const QVector<QgsPointXY> &ring );
 
     /**
      * Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
@@ -582,7 +582,7 @@ class CORE_EXPORT QgsGeometry
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPointsXY );
+    OperationResult addPart( const QVector<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPointsXY );
 
     /**
      * Adds a new part to a the geometry.
@@ -657,7 +657,7 @@ class CORE_EXPORT QgsGeometry
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult splitGeometry( const QList<QgsPointXY> &splitLine, QList<QgsGeometry> &newGeometries SIP_OUT, bool topological, QList<QgsPointXY> &topologyTestPoints SIP_OUT );
+    OperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QVector<QgsPointXY> &topologyTestPoints SIP_OUT );
 
     /**
      * Replaces a part of this geometry with another line
@@ -1176,7 +1176,7 @@ class CORE_EXPORT QgsGeometry
      * Return contents of the geometry as a list of geometries
      * \since QGIS 1.1
      */
-    QList<QgsGeometry> asGeometryCollection() const;
+    QVector<QgsGeometry> asGeometryCollection() const;
 
     /**
      * Returns contents of the geometry as a QPointF if wkbType is WKBPoint,
@@ -1306,14 +1306,14 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 1.5
      * \note Available in Python bindings since QGIS 1.6
      **/
-    void validateGeometry( QList<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal ) const;
+    void validateGeometry( QVector<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal ) const;
 
     /**
      * Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
      * The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
      * input geometries. An empty geometry will be returned in the case of errors.
      */
-    static QgsGeometry unaryUnion( const QList<QgsGeometry> &geometries );
+    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries );
 
     /**
      * Creates a GeometryCollection geometry containing possible polygons formed from the constituent
@@ -1323,7 +1323,7 @@ class CORE_EXPORT QgsGeometry
      * An empty geometry will be returned in the case of errors.
      * \since QGIS 3.0
      */
-    static QgsGeometry polygonize( const QList< QgsGeometry> &geometries );
+    static QgsGeometry polygonize( const QVector<QgsGeometry> &geometries );
 
     /**
      * Converts the geometry to straight line segments, if it is a curved geometry type.
@@ -1609,14 +1609,14 @@ class CORE_EXPORT QgsGeometry
      * \param input list of QgsPointXY objects to be upgraded
      * \param output destination for list of points converted to QgsPoint
      */
-    static void convertPointList( const QList<QgsPointXY> &input, QgsPointSequence &output );
+    static void convertPointList( const QVector<QgsPointXY> &input, QgsPointSequence &output );
 
     /**
      * Downgrades a point list from QgsPoint to QgsPointXY
      * \param input list of QgsPoint objects to be downgraded
      * \param output destination for list of points converted to QgsPointXY
      */
-    static void convertPointList( const QgsPointSequence &input, QList<QgsPointXY> &output );
+    static void convertPointList( const QgsPointSequence &input, QVector<QgsPointXY> &output );
 
     //! Allows direct construction of QVariants from geometry.
     operator QVariant() const

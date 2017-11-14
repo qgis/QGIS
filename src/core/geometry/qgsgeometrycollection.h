@@ -177,7 +177,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     /**
      * Reads a collection from a WKT string.
      */
-    bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
+    bool fromCollectionWkt( const QString &wkt, const QVector<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
 
     QgsRectangle calculateBoundingBox() const override;
     void clearCache() const override;

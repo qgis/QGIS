@@ -35,13 +35,13 @@ class QPainter;
 class QDomDocument;
 class QDomElement;
 
-typedef QList< QgsPoint > QgsPointSequence;
+typedef QVector< QgsPoint > QgsPointSequence;
 #ifndef SIP_RUN
-typedef QList< QgsPointSequence > QgsRingSequence;
-typedef QList< QgsRingSequence > QgsCoordinateSequence;
+typedef QVector< QgsPointSequence > QgsRingSequence;
+typedef QVector< QgsRingSequence > QgsCoordinateSequence;
 #else
-typedef QList< QList< QgsPoint > > QgsRingSequence;
-typedef QList< QList< QList< QgsPoint > > > QgsCoordinateSequence;
+typedef QVector< QVector< QgsPoint > > QgsRingSequence;
+typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 #endif
 
 /**

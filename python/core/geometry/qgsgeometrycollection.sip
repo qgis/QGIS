@@ -190,7 +190,7 @@ Adds a geometry and takes ownership. Returns true in case of success.
  :rtype: bool
 %End
 
-    bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
+    bool fromCollectionWkt( const QString &wkt, const QVector<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
 %Docstring
  Reads a collection from a WKT string.
  :rtype: bool

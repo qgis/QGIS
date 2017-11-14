@@ -299,7 +299,7 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
 
 bool QgsGeometryCollection::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry *>() << new QgsPoint << new QgsLineString << new QgsPolygon
+  return fromCollectionWkt( wkt, QVector<QgsAbstractGeometry *>() << new QgsPoint << new QgsLineString << new QgsPolygon
                             << new QgsCircularString << new QgsCompoundCurve
                             << new QgsCurvePolygon
                             << new QgsMultiPoint << new QgsMultiLineString
@@ -310,7 +310,7 @@ bool QgsGeometryCollection::fromWkt( const QString &wkt )
 QByteArray QgsGeometryCollection::asWkb() const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
-  QList<QByteArray> wkbForGeometries;
+  QVector<QByteArray> wkbForGeometries;
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( geom )
@@ -582,7 +582,7 @@ double QgsGeometryCollection::perimeter() const
   return perimeter;
 }
 
-bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType )
+bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType )
 {
   clear();
 

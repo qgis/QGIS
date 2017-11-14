@@ -910,7 +910,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   TestQgsGrassFeature grassFeature;
   QgsLineString *line = nullptr;
   QgsGeometry *geometry = nullptr;
-  QList<QgsPoint> pointList;
+  QVector<QgsPoint> pointList;
 
   // Start editing
   command = TestQgsGrassCommand( TestQgsGrassCommand::StartEditing );

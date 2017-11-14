@@ -52,7 +52,7 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     void addPoint( const QgsPointXY &point );
 
     //! Returns reference to array of the points
-    QList<QgsPointXY> points();
+    QVector<QgsPointXY> points();
 
     // Inherited from QgsMapTool
 
@@ -79,7 +79,7 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
   protected:
 
-    QList<QgsPointXY> mPoints;
+    QVector<QgsPointXY> mPoints;
 
     QgsMeasureDialog *mDialog = nullptr;
 

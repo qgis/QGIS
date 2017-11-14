@@ -160,7 +160,7 @@ Constructor
  :rtype: float
 %End
 
-    double measureLine( const QList<QgsPointXY> &points ) const;
+    double measureLine( const QVector<QgsPointXY> &points ) const;
 %Docstring
  Measures the length of a line with multiple segments.
  \param points list of points in line
@@ -213,7 +213,7 @@ Constructor
  :rtype: QgsUnitTypes.AreaUnit
 %End
 
-    double measurePolygon( const QList<QgsPointXY> &points ) const;
+    double measurePolygon( const QVector<QgsPointXY> &points ) const;
 %Docstring
  Measures the area of the polygon described by a set of points.
  :rtype: float

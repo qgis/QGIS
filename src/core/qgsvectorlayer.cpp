@@ -1116,7 +1116,7 @@ bool QgsVectorLayer::deleteSelectedFeatures( int *deletedCount )
   return deleted == count;
 }
 
-int QgsVectorLayer::addRing( const QList<QgsPointXY> &ring, QgsFeatureId *featureId )
+int QgsVectorLayer::addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return 6;
@@ -1268,7 +1268,7 @@ int QgsVectorLayer::translateFeature( QgsFeatureId featureId, double dx, double 
   return result;
 }
 
-int QgsVectorLayer::splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing )
+int QgsVectorLayer::splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return -1;
@@ -1277,7 +1277,7 @@ int QgsVectorLayer::splitParts( const QList<QgsPointXY> &splitLine, bool topolog
   return utils.splitParts( splitLine, topologicalEditing );
 }
 
-int QgsVectorLayer::splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing )
+int QgsVectorLayer::splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing )
 {
   if ( !mValid || !mEditBuffer || !mDataProvider )
     return -1;

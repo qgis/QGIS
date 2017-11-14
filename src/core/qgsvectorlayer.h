@@ -1059,7 +1059,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  6 layer not editable
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( const QList<QgsPointXY> &ring, QgsFeatureId *featureId = nullptr );
+    int addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId = nullptr );
 
     /**
      * Adds a ring to polygon/multipolygon features (takes ownership)
@@ -1127,7 +1127,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *   4 if there is a selection but no feature split
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    int splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
     /**
      * Splits features cut by the given line
@@ -1138,7 +1138,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *   4 if there is a selection but no feature split
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    int splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
     /**
      * Adds topological points for every vertex of the geometry.

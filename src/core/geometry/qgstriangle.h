@@ -86,7 +86,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      * Inherited method not used. You cannot add an interior ring into a triangle.
      * \note not available in Python bindings
      */
-    void setInteriorRings( const QList< QgsCurve *> &rings ) = delete;
+    void setInteriorRings( const QVector< QgsCurve *> &rings ) = delete;
     //! Inherited method not used. You cannot delete or insert a vertex directly. Returns always false.
     bool deleteVertex( QgsVertexId position ) override;
     //! Inherited method not used. You cannot delete or insert a vertex directly. Returns always false.
