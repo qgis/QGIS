@@ -28,7 +28,7 @@
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsprojectionselectiondialog.h"
-#include "qgsslconnect.h"
+#include "qgsspatialiteutils.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 
@@ -382,8 +382,8 @@ bool QgsNewSpatialiteLayerDialog::apply()
                                  quotedValue( leGeometryColumn->text() ) );
   QgsDebugMsg( sqlCreateIndex ); // OK
 
-  sqlite3 *db = nullptr;
-  int rc = QgsSLConnect::sqlite3_open( mDatabaseComboBox->currentText().toUtf8(), &db );
+  spatialite_database_unique_ptr database;
+  int rc = database.open( mDatabaseComboBox->currentText() );
   if ( rc != SQLITE_OK )
   {
     QMessageBox::warning( this,
@@ -393,7 +393,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
   else
   {
     char *errmsg = nullptr;
-    rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, &errmsg );
+    rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errmsg );
     if ( rc != SQLITE_OK )
     {
       QMessageBox::warning( this,
@@ -404,7 +404,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
     else
     {
       // create the geometry column and the spatial index
-      rc = sqlite3_exec( db, sqlAddGeom.toUtf8(), nullptr, nullptr, &errmsg );
+      rc = sqlite3_exec( database.get(), sqlAddGeom.toUtf8(), nullptr, nullptr, &errmsg );
       if ( rc != SQLITE_OK )
       {
         QMessageBox::warning( this,
@@ -415,7 +415,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
       else
       {
         // create the spatial index
-        rc = sqlite3_exec( db, sqlCreateIndex.toUtf8(), nullptr, nullptr, &errmsg );
+        rc = sqlite3_exec( database.get(), sqlCreateIndex.toUtf8(), nullptr, nullptr, &errmsg );
         if ( rc != SQLITE_OK )
         {
           QMessageBox::warning( this,
@@ -446,8 +446,6 @@ bool QgsNewSpatialiteLayerDialog::apply()
         }
       }
     }
-
-    QgsSLConnect::sqlite3_close( db );
   }
 
   return false;

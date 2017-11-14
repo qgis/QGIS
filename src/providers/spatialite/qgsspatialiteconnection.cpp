@@ -16,6 +16,7 @@
 #include "qgsslconnect.h"
 #include "qgssettings.h"
 #include "qgslogger.h"
+#include "qgsspatialiteutils.h"
 
 #include <QFileInfo>
 #include <cstdlib> // atoi
@@ -65,11 +66,12 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
   if ( !fi.exists() )
     return NotExists;
 
-  sqlite3 *handle = openSpatiaLiteDb( fi.canonicalFilePath() );
-  if ( !handle )
+  spatialite_database_unique_ptr database;
+  int ret = database.open( fi.canonicalFilePath() );
+  if ( ret )
     return FailedToOpen;
 
-  int ret = checkHasMetadataTables( handle );
+  ret = checkHasMetadataTables( handle );
   if ( !mErrorMsg.isNull() || ret == LayoutUnknown )
   {
     // unexpected error; invalid SpatiaLite DB
@@ -92,15 +94,14 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
 #ifdef SPATIALITE_VERSION_GE_4_0_0
   // only if libspatialite version is >= 4.0.0
   // using v.4.0 Abstract Interface
-  if ( !getTableInfoAbstractInterface( handle, loadGeometrylessTables ) )
+  if ( !getTableInfoAbstractInterface( database.get(), loadGeometrylessTables ) )
 #else
   // obsolete library: still using the traditional approach
-  if ( !getTableInfo( handle, loadGeometrylessTables ) )
+  if ( !getTableInfo( database.get(), loadGeometrylessTables ) )
 #endif
   {
     return FailedToGetTables;
   }
-  closeSpatiaLiteDb( handle );
 
   return NoError;
 }
@@ -112,39 +113,17 @@ bool QgsSpatiaLiteConnection::updateStatistics()
   if ( !fi.exists() )
     return false;
 
-  sqlite3 *handle = openSpatiaLiteDb( fi.canonicalFilePath() );
-  if ( !handle )
+  spatialite_database_unique_ptr database;
+  int ret = database.open( fi.canonicalFilePath() );
+  if ( ret )
     return false;
 
-  bool ret = update_layer_statistics( handle, nullptr, nullptr );
-
-  closeSpatiaLiteDb( handle );
+  ret = update_layer_statistics( database.get(), nullptr, nullptr );
 
   return ret;
 #else
   return false;
 #endif
-}
-
-sqlite3 *QgsSpatiaLiteConnection::openSpatiaLiteDb( const QString &path )
-{
-  sqlite3 *handle = nullptr;
-  int ret;
-  // trying to open the SQLite DB
-  ret = QgsSLConnect::sqlite3_open_v2( path.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, nullptr );
-  if ( ret )
-  {
-    // failure
-    mErrorMsg = sqlite3_errmsg( handle );
-    return nullptr;
-  }
-  return handle;
-}
-
-void QgsSpatiaLiteConnection::closeSpatiaLiteDb( sqlite3 *handle )
-{
-  if ( handle )
-    QgsSLConnect::sqlite3_close( handle );
 }
 
 int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3 *handle )

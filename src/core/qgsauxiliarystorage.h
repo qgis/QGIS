@@ -24,9 +24,7 @@
 #include "qgsdiagramrenderer.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsproperty.h"
-
-#include <sqlite3.h>
-
+#include "qgsspatialiteutils.h"
 #include <QString>
 
 class QgsProject;
@@ -385,15 +383,14 @@ class CORE_EXPORT QgsAuxiliaryStorage
     static QString extension();
 
   private:
-    sqlite3 *open( const QString &filename = QString() );
-    sqlite3 *open( const QgsProject &project );
+    spatialite_database_unique_ptr open( const QString &filename = QString() );
+    spatialite_database_unique_ptr open( const QgsProject &project );
 
     void initTmpFileName();
 
     static QString filenameForProject( const QgsProject &project );
-    static sqlite3 *createDB( const QString &filename );
-    static sqlite3 *openDB( const QString &filename );
-    static void close( sqlite3 *handler );
+    static spatialite_database_unique_ptr createDB( const QString &filename );
+    static spatialite_database_unique_ptr openDB( const QString &filename );
     static bool tableExists( const QString &table, sqlite3 *handler );
     static bool createTable( const QString &type, const QString &table, sqlite3 *handler );
 

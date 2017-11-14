@@ -10,8 +10,6 @@
 
 
 
-
-
 class QgsAuxiliaryLayer : QgsVectorLayer
 {
 %Docstring

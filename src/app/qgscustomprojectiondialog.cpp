@@ -26,6 +26,7 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgscrscache.h"
 #include "qgssettings.h"
+#include "qgssqliteutils.h"
 
 //qt includes
 #include <QFileInfo>
@@ -41,121 +42,6 @@ extern "C"
 {
 #include <proj_api.h>
 }
-
-/**
- * Closes a sqlite3 database.
- */
-struct QgsSqlite3Closer
-{
-
-  /**
-   * Closes an sqlite \a database.
-   */
-  void operator()( sqlite3 *database )
-  {
-    sqlite3_close( database );
-  }
-};
-
-/**
- * Finalizes an sqlite3 statement.
- */
-struct QgsSqlite3StatementFinalizer
-{
-
-  /**
-   * Finalizes an sqlite3 \a statement.
-   */
-  void operator()( sqlite3_stmt *statement )
-  {
-    sqlite3_finalize( statement );
-  }
-};
-
-/**
- * Unique pointer for sqlite3 prepared statements, which automatically finalizes
- * the statement when the pointer goes out of scope or is reset.
- */
-class sqlite3_statement_unique_ptr : public std::unique_ptr< sqlite3_stmt, QgsSqlite3StatementFinalizer>
-{
-  public:
-
-    /**
-     * Steps to the next record in the statement, returning the sqlite3 result code.
-     */
-    int step()
-    {
-      return sqlite3_step( get() );
-    }
-
-    /**
-     * Returns the column value from the current statement row as a string.
-     */
-    QString columnAsText( int column )
-    {
-      return QString::fromUtf8( ( char * ) sqlite3_column_text( get(), column ) );
-    }
-
-};
-
-
-/**
- * Unique pointer for sqlite3 databases, which automatically closes
- * the database when the pointer goes out of scope or is reset.
- */
-class sqlite3_database_unique_ptr : public std::unique_ptr< sqlite3, QgsSqlite3Closer>
-{
-  public:
-
-    /**
-     * Opens the database at the specified file \a path.
-     *
-     * Returns the sqlite error code, or SQLITE_OK if open was successful.
-     */
-    int open( const QString &path )
-    {
-      sqlite3 *database = nullptr;
-      int result = sqlite3_open( path.toUtf8(), &database );
-      reset( database );
-      return result;
-    }
-
-    /**
-     * Opens the database at the specified file \a path.
-     *
-     * Returns the sqlite error code, or SQLITE_OK if open was successful.
-     */
-    int open_v2( const QString &path, int flags, const char *zVfs )
-    {
-      sqlite3 *database = nullptr;
-      int result = sqlite3_open_v2( path.toUtf8(), &database, flags, zVfs );
-      reset( database );
-      return result;
-    }
-
-    /**
-     * Returns the most recent error message encountered by the database.
-     */
-    QString errorMessage() const
-    {
-      return QString( sqlite3_errmsg( get() ) );
-    }
-
-    /**
-     * Prepares a \a sql statement, returning the result. The \a resultCode
-     * argument will be filled with the sqlite3 result code.
-     */
-    sqlite3_statement_unique_ptr prepare( const QString &sql, int &resultCode )
-    {
-      sqlite3_stmt *preparedStatement = nullptr;
-      const char *tail = nullptr;
-      resultCode = sqlite3_prepare( get(), sql.toUtf8(), sql.toUtf8().length(), &preparedStatement, &tail );
-      sqlite3_statement_unique_ptr s;
-      s.reset( preparedStatement );
-      return s;
-    }
-
-};
 
 
 QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::WindowFlags fl )

@@ -267,12 +267,13 @@ SET(QGIS_CORE_SRCS
   qgsscalecalculator.cpp
   qgsscaleutils.cpp
   qgssimplifymethod.cpp
-  qgsslconnect.cpp
   qgssnappingutils.cpp
   qgsspatialindex.cpp
   qgssqlexpressioncompiler.cpp
   qgssqliteexpressioncompiler.cpp
   qgssqlstatement.cpp
+  qgssqliteutils.cpp
+  qgsspatialiteutils.cpp
   qgsstatisticalsummary.cpp
   qgsstringstatisticalsummary.cpp
   qgsstringutils.cpp
@@ -924,6 +925,9 @@ SET(QGIS_CORE_HDRS
   qgssimplifymethod.h
   qgssnappingutils.h
   qgsspatialindex.h
+  qgsspatialiteutils.h
+  qgssqlstatement.h
+  qgssqliteutils.h
   qgssqlexpressioncompiler.h
   qgssqlstatement.h
   qgsstatisticalsummary.h
