@@ -92,10 +92,7 @@ class Q_EXPORT_SQLDRIVER_SQLITE QSpatiaLiteDriver : public QSqlDriver
     friend class QSpatiaLiteResult;
 public:
     explicit QSpatiaLiteDriver(QObject *parent = 0);
-    /**
-     * Ownership of \a connection is taken.
-     */
-    explicit QSpatiaLiteDriver(sqlite3 *connection, QObject *parent = 0);
+
     ~QSpatiaLiteDriver();
     bool hasFeature(DriverFeature f) const;
     bool open(const QString & db,
