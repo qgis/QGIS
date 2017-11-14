@@ -666,8 +666,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // but the checkbox is true to use QPixmap
   chkAddedVisibility->setChecked( mSettings->value( QStringLiteral( "/qgis/new_layers_visible" ), true ).toBool() );
   cbxLegendClassifiers->setChecked( mSettings->value( QStringLiteral( "/qgis/showLegendClassifiers" ), false ).toBool() );
-  mLegendLayersBoldChkBx->setChecked( mSettings->value( QStringLiteral( "/qgis/legendLayersBold" ), true ).toBool() );
-  mLegendGroupsBoldChkBx->setChecked( mSettings->value( QStringLiteral( "/qgis/legendGroupsBold" ), false ).toBool() );
   cbxHideSplash->setChecked( mSettings->value( QStringLiteral( "/qgis/hideSplash" ), false ).toBool() );
   mDataSourceManagerNonModal->setChecked( mSettings->value( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), false ).toBool() );
   cbxCheckVersion->setChecked( mSettings->value( QStringLiteral( "/qgis/checkVersion" ), true ).toBool() );
@@ -1268,10 +1266,6 @@ void QgsOptions::saveOptions()
 
   bool showLegendClassifiers = mSettings->value( QStringLiteral( "/qgis/showLegendClassifiers" ), false ).toBool();
   mSettings->setValue( QStringLiteral( "/qgis/showLegendClassifiers" ), cbxLegendClassifiers->isChecked() );
-  bool legendLayersBold = mSettings->value( QStringLiteral( "/qgis/legendLayersBold" ), true ).toBool();
-  mSettings->setValue( QStringLiteral( "/qgis/legendLayersBold" ), mLegendLayersBoldChkBx->isChecked() );
-  bool legendGroupsBold = mSettings->value( QStringLiteral( "/qgis/legendGroupsBold" ), false ).toBool();
-  mSettings->setValue( QStringLiteral( "/qgis/legendGroupsBold" ), mLegendGroupsBoldChkBx->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/hideSplash" ), cbxHideSplash->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), mDataSourceManagerNonModal->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/checkVersion" ), cbxCheckVersion->isChecked() );
@@ -1559,9 +1553,7 @@ void QgsOptions::saveOptions()
     saveGdalDriverList();
 
   // refresh legend if any legend item's state is to be changed
-  if ( legendLayersBold != mLegendLayersBoldChkBx->isChecked()
-       || legendGroupsBold != mLegendGroupsBoldChkBx->isChecked()
-       || legendLayersCapitalize != capitalizeCheckBox->isChecked() )
+  if ( legendLayersCapitalize != capitalizeCheckBox->isChecked() )
   {
     // TODO[MD] QgisApp::instance()->legend()->updateLegendItemStyles();
   }
