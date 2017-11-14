@@ -234,11 +234,13 @@ void QgsExpressionBuilderWidget::newFunctionFile( const QString &fileName )
   if ( !items.isEmpty() )
     return;
 
+  QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "console/iconTabEditorConsole.png" ) ), fileName );
+  cmbFileNames->insertItem( 0, item );
+  cmbFileNames->setCurrentRow( 0 );
+
   QString templatetxt;
   QgsPythonRunner::eval( QStringLiteral( "qgis.user.expressions.template" ), templatetxt );
   txtPython->setText( templatetxt );
-  cmbFileNames->insertItem( 0, fileName );
-  cmbFileNames->setCurrentRow( 0 );
   saveFunctionFile( fileName );
 }
 
