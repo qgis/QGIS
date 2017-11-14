@@ -30,7 +30,6 @@ class QgsLayerTreeView : QTreeView
 %TypeHeaderCode
 #include "qgslayertreeview.h"
 %End
-
 %ConvertToSubClassCode
     if ( sipCpp->inherits( "QgsLayerTreeView" ) )
       sipType = sipType_QgsLayerTreeView;
@@ -98,7 +97,8 @@ Get current group node. If a layer is current node, the function will return par
 
     QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
 %Docstring
-@arg skipInternal If true, will ignore nodes which have an ancestor in the selection
+ Return list of selected nodes
+ \param skipInternal If true, will ignore nodes which have an ancestor in the selection
  :rtype: list of QgsLayerTreeNode
 %End
     QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
@@ -121,11 +121,13 @@ Force refresh of layer symbology. Normally not needed as the changes of layer's 
 
     void expandAllNodes();
 %Docstring
+ Enhancement of QTreeView.expandAll() that also records expanded state in layer tree nodes
 .. versionadded:: 2.18
 %End
 
     void collapseAllNodes();
 %Docstring
+ Enhancement of QTreeView.collapseAll() that also records expanded state in layer tree nodes
 .. versionadded:: 2.18
 %End
 

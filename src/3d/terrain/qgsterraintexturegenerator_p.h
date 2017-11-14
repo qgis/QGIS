@@ -38,7 +38,8 @@ class QgsRasterLayer;
 
 class Qgs3DMapSettings;
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Class responsible for rendering map images in background for the purposes of their use
  * as textures for terrain's tiles.
  *
@@ -55,8 +56,10 @@ class QgsTerrainTextureGenerator : public QObject
     //! Initializes the object
     QgsTerrainTextureGenerator( const Qgs3DMapSettings &map );
 
-    //! Starts async rendering of a map for the given extent (must be a square!).
-    //! Returns job ID. The class will emit tileReady() signal with the job ID when rendering is done.
+    /**
+     * Starts async rendering of a map for the given extent (must be a square!).
+     * Returns job ID. The class will emit tileReady() signal with the job ID when rendering is done.
+     */
     int render( const QgsRectangle &extent, const QString &debugText = QString() );
 
     //! Cancels a rendering job
@@ -80,7 +83,7 @@ class QgsTerrainTextureGenerator : public QObject
     struct JobData
     {
       int jobId;
-      QgsMapRendererSequentialJob *job;
+      QgsMapRendererSequentialJob *job = nullptr;
       QgsRectangle extent;
       QString debugText;
     };

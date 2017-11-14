@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLayoutViewToolSelect : QgsLayoutViewTool
 {
 %Docstring
@@ -31,8 +32,16 @@ class QgsLayoutViewToolSelect : QgsLayoutViewTool
 
     virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
 
+    virtual void wheelEvent( QWheelEvent *event );
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
     virtual void deactivate();
 
+
+
+
+    void setLayout( QgsLayout *layout );
 
 };
 

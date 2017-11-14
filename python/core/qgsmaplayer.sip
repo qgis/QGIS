@@ -22,7 +22,6 @@ class QgsMapLayer : QObject
 %TypeHeaderCode
 #include "qgsmaplayer.h"
 %End
-
 %ConvertToSubClassCode
     QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sipCpp );
 
@@ -906,6 +905,22 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
  :rtype: set of QgsMapLayerDependency
 %End
 
+    QString refreshOnNotifyMessage() const;
+%Docstring
+ Returns the message that should be notified by the provider to triggerRepaint
+
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    bool isRefreshOnNotifyEnabled() const;
+%Docstring
+ Returns true if the refresh on provider nofification is enabled
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
   public slots:
 
     void setMinimumScale( double scale );
@@ -987,23 +1002,6 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
 
 .. versionadded:: 3.0
 %End
-
-    QString refreshOnNotifyMessage() const;
-%Docstring
- Returns the message that should be notified by the provider to triggerRepaint
-
-.. versionadded:: 3.0
- :rtype: str
-%End
-
-    bool isRefreshOnNotifyEnabled() const;
-%Docstring
- Returns true if the refresh on provider nofification is enabled
-
-.. versionadded:: 3.0
- :rtype: bool
-%End
-
 
   signals:
 

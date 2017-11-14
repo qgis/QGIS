@@ -35,6 +35,10 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( mAddAttributeButton, &QToolButton::clicked, this, &QgsNewVectorLayerDialog::mAddAttributeButton_clicked );
+  connect( mRemoveAttributeButton, &QToolButton::clicked, this, &QgsNewVectorLayerDialog::mRemoveAttributeButton_clicked );
+  connect( mFileFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewVectorLayerDialog::mFileFormatComboBox_currentIndexChanged );
+  connect( mTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewVectorLayerDialog::showHelp );
 
   QgsSettings settings;
@@ -98,7 +102,7 @@ QgsNewVectorLayerDialog::~QgsNewVectorLayerDialog()
   settings.setValue( QStringLiteral( "Windows/NewVectorLayer/geometry" ), saveGeometry() );
 }
 
-void QgsNewVectorLayerDialog::on_mFileFormatComboBox_currentIndexChanged( int index )
+void QgsNewVectorLayerDialog::mFileFormatComboBox_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
   if ( mFileFormatComboBox->currentText() == tr( "ESRI Shapefile" ) )
@@ -107,7 +111,7 @@ void QgsNewVectorLayerDialog::on_mFileFormatComboBox_currentIndexChanged( int in
     mNameEdit->setMaxLength( 32767 );
 }
 
-void QgsNewVectorLayerDialog::on_mTypeBox_currentIndexChanged( int index )
+void QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged( int index )
 {
   // FIXME: sync with providers/ogr/qgsogrprovider.cpp
   switch ( index )
@@ -171,7 +175,7 @@ void QgsNewVectorLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
   mCrsSelector->setCrs( crs );
 }
 
-void QgsNewVectorLayerDialog::on_mAddAttributeButton_clicked()
+void QgsNewVectorLayerDialog::mAddAttributeButton_clicked()
 {
   QString myName = mNameEdit->text();
   QString myWidth = mWidth->text();
@@ -186,7 +190,7 @@ void QgsNewVectorLayerDialog::on_mAddAttributeButton_clicked()
   mNameEdit->clear();
 }
 
-void QgsNewVectorLayerDialog::on_mRemoveAttributeButton_clicked()
+void QgsNewVectorLayerDialog::mRemoveAttributeButton_clicked()
 {
   delete mAttributeView->currentItem();
   if ( mAttributeView->topLevelItemCount() == 0 )

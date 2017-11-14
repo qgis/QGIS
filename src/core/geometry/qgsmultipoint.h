@@ -20,19 +20,20 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis.h"
 #include "qgsgeometrycollection.h"
 
-/** \ingroup core
- * \class QgsMultiPointV2
+/**
+ * \ingroup core
+ * \class QgsMultiPoint
  * \brief Multi point geometry collection.
  * \since QGIS 2.10
  */
-class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollection
+class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
 {
   public:
-    QgsMultiPointV2();
+    QgsMultiPoint();
 
     QString geometryType() const override;
-    QgsMultiPointV2 *clone() const override SIP_FACTORY;
-    QgsMultiPointV2 *toCurveType() const override SIP_FACTORY;
+    QgsMultiPoint *clone() const override SIP_FACTORY;
+    QgsMultiPoint *toCurveType() const override SIP_FACTORY;
     bool fromWkt( const QString &wkt ) override;
     void clear() override;
     QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
@@ -42,6 +43,8 @@ class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollection
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    int vertexNumberFromVertexId( QgsVertexId id ) const override;
+
 
 #ifndef SIP_RUN
 
@@ -52,15 +55,15 @@ class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollection
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      * \since QGIS 3.0
      */
-    inline const QgsMultiPointV2 *cast( const QgsAbstractGeometry *geom ) const
+    inline const QgsMultiPoint *cast( const QgsAbstractGeometry *geom ) const
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPoint )
-        return static_cast<const QgsMultiPointV2 *>( geom );
+        return static_cast<const QgsMultiPoint *>( geom );
       return nullptr;
     }
 #endif
   protected:
-
+    QgsMultiPoint *createEmptyWithSameType() const override SIP_FACTORY;
     bool wktOmitChildType() const override;
 
 };

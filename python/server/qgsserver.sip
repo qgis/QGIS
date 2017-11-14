@@ -35,7 +35,7 @@ class QgsServer
 .. versionadded:: 2.14
 %End
 
-    void handleRequest( QgsServerRequest &request, QgsServerResponse &response );
+    void handleRequest( QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project = 0 );
 %Docstring
  Handles the request.
  The query string is normally read from environment
@@ -44,6 +44,9 @@ class QgsServer
 
  \param request a QgsServerRequest holding request parameters
  \param response a QgsServerResponse for handling response I/O)
+ \param project a QgsProject or None, if it is None the project
+        is created from the MAP param specified in request or from
+        the QGIS_PROJECT_FILE setting
 %End
 
 
@@ -53,9 +56,11 @@ Returns a pointer to the server interface
  :rtype: QgsServerInterfaceImpl
 %End
 
+
     void initPython();
 %Docstring
-Note: not in Python bindings
+ Initialize Python
+ Note: not in Python bindings
 %End
 
   private:
@@ -65,7 +70,6 @@ Note: not in Python bindings
  :rtype: QgsServer
 %End
 };
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

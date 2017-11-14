@@ -66,6 +66,9 @@ class ExtractSpecificNodes(QgisAlgorithm):
     def displayName(self):
         return self.tr('Extract specific nodes')
 
+    def tags(self):
+        return self.tr('points,vertex,vertices').split(',')
+
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         fields = source.fields()
@@ -104,7 +107,7 @@ class ExtractSpecificNodes(QgisAlgorithm):
             if not input_geometry:
                 sink.addFeature(f, QgsFeatureSink.FastInsert)
             else:
-                total_nodes = input_geometry.geometry().nCoordinates()
+                total_nodes = input_geometry.constGet().nCoordinates()
 
                 for node in indices:
                     if node < 0:

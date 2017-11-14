@@ -23,7 +23,8 @@
 #include "ui_qgsauthmethodplugins.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Dialog for viewing available authentication method plugins
  */
 class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMethodPlugins
@@ -49,7 +50,8 @@ class GUI_EXPORT QgsAuthMethodPlugins : public QDialog, private Ui::QgsAuthMetho
 };
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wrapper widget for available authentication editors
  */
 class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEditors
@@ -65,8 +67,8 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     explicit QgsAuthEditorWidgets( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
   private slots:
-    void on_btnCertManager_clicked();
-    void on_btnAuthPlugins_clicked();
+    void btnCertManager_clicked();
+    void btnAuthPlugins_clicked();
 
     //! Sets the cached master password (and verifies it if its hash is in authentication database)
     void setMasterPassword();
@@ -118,6 +120,8 @@ class GUI_EXPORT QgsAuthEditorWidgets : public QWidget, private Ui::QgsAuthEdito
     QAction *mActionPasswordHelperSync = nullptr;
     QAction *mActionPasswordHelperEnable = nullptr;
     QAction *mActionPasswordHelperLoggingEnable = nullptr;
+    QAction *mActionClearAccessCacheNow = nullptr;
+    QAction *mActionAutoClearAccessCache = nullptr;
 };
 
 #endif // QGSAUTHEDITORWIDGETS_H

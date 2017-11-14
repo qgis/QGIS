@@ -72,19 +72,29 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
 void QgsVectorLayerSaveAsDialog::setup()
 {
   setupUi( this );
+  connect( mFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged );
+  connect( leFilename, &QLineEdit::textChanged, this, &QgsVectorLayerSaveAsDialog::leFilename_textChanged );
+  connect( browseFilename, &QPushButton::clicked, this, &QgsVectorLayerSaveAsDialog::browseFilename_clicked );
+  connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsVectorLayerSaveAsDialog::mCrsSelector_crsChanged );
+  connect( mSymbologyExportComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayerSaveAsDialog::mSymbologyExportComboBox_currentIndexChanged );
+  connect( mGeometryTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayerSaveAsDialog::mGeometryTypeComboBox_currentIndexChanged );
+  connect( mSelectAllAttributes, &QPushButton::clicked, this, &QgsVectorLayerSaveAsDialog::mSelectAllAttributes_clicked );
+  connect( mDeselectAllAttributes, &QPushButton::clicked, this, &QgsVectorLayerSaveAsDialog::mDeselectAllAttributes_clicked );
+  connect( mReplaceRawFieldValues, &QCheckBox::stateChanged, this, &QgsVectorLayerSaveAsDialog::mReplaceRawFieldValues_stateChanged );
+  connect( mAttributeTable, &QTableWidget::itemChanged, this, &QgsVectorLayerSaveAsDialog::mAttributeTable_itemChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsVectorLayerSaveAsDialog::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/VectorLayerSaveAs/geometry" ) ).toByteArray() );
 
-  QMap<QString, QString> map = QgsVectorFileWriter::ogrDriverList();
+  const QList< QgsVectorFileWriter::DriverDetails > drivers = QgsVectorFileWriter::ogrDriverList();
   mFormatComboBox->blockSignals( true );
-  for ( QMap< QString, QString>::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
+  for ( const QgsVectorFileWriter::DriverDetails &driver : drivers )
   {
-    mFormatComboBox->addItem( it.key(), it.value() );
+    mFormatComboBox->addItem( driver.longName, driver.driverName );
   }
 
-  QString format = settings.value( QStringLiteral( "UI/lastVectorFormat" ), "ESRI Shapefile" ).toString();
+  QString format = settings.value( QStringLiteral( "UI/lastVectorFormat" ), "GPKG" ).toString();
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( format ) );
   mFormatComboBox->blockSignals( false );
 
@@ -114,13 +124,13 @@ void QgsVectorLayerSaveAsDialog::setup()
                                           "The data points will be transformed from the layer coordinate reference system." ) );
 
   mEncodingComboBox->setCurrentIndex( idx );
-  on_mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
+  mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
 
   //symbology export combo box
   mSymbologyExportComboBox->addItem( tr( "No symbology" ), QgsVectorFileWriter::NoSymbology );
   mSymbologyExportComboBox->addItem( tr( "Feature symbology" ), QgsVectorFileWriter::FeatureSymbology );
   mSymbologyExportComboBox->addItem( tr( "Symbol layer symbology" ), QgsVectorFileWriter::SymbolLayerSymbology );
-  on_mSymbologyExportComboBox_currentIndexChanged( mSymbologyExportComboBox->currentText() );
+  mSymbologyExportComboBox_currentIndexChanged( mSymbologyExportComboBox->currentText() );
 
   // extent group box
   mExtentGroupBox->setOutputCrs( srs );
@@ -338,7 +348,7 @@ void QgsVectorLayerSaveAsDialog::accept()
   QDialog::accept();
 }
 
-void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx )
+void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
 {
   Q_UNUSED( idx );
 
@@ -530,7 +540,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
   }
 }
 
-void QgsVectorLayerSaveAsDialog::on_mReplaceRawFieldValues_stateChanged( int )
+void QgsVectorLayerSaveAsDialog::mReplaceRawFieldValues_stateChanged( int )
 {
   if ( !mReplaceRawFieldValuesStateChangedSlotEnabled )
     return;
@@ -555,7 +565,7 @@ void QgsVectorLayerSaveAsDialog::on_mReplaceRawFieldValues_stateChanged( int )
   mReplaceRawFieldValuesStateChangedSlotEnabled = true;
 }
 
-void QgsVectorLayerSaveAsDialog::on_mAttributeTable_itemChanged( QTableWidgetItem *item )
+void QgsVectorLayerSaveAsDialog::mAttributeTable_itemChanged( QTableWidgetItem *item )
 {
   if ( !mAttributeTableItemChangedSlotEnabled )
     return;
@@ -616,7 +626,7 @@ void QgsVectorLayerSaveAsDialog::on_mAttributeTable_itemChanged( QTableWidgetIte
   mReplaceRawFieldValuesStateChangedSlotEnabled = true;
 }
 
-void QgsVectorLayerSaveAsDialog::on_leFilename_textChanged( const QString &text )
+void QgsVectorLayerSaveAsDialog::leFilename_textChanged( const QString &text )
 {
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled(
     !text.isEmpty() && QFileInfo( text ).absoluteDir().exists() );
@@ -628,7 +638,7 @@ void QgsVectorLayerSaveAsDialog::on_leFilename_textChanged( const QString &text 
   }
 }
 
-void QgsVectorLayerSaveAsDialog::on_browseFilename_clicked()
+void QgsVectorLayerSaveAsDialog::browseFilename_clicked()
 {
   QgsSettings settings;
   QString dirName = leFilename->text().isEmpty() ? settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() : leFilename->text();
@@ -640,7 +650,7 @@ void QgsVectorLayerSaveAsDialog::on_browseFilename_clicked()
   }
 }
 
-void QgsVectorLayerSaveAsDialog::on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
+void QgsVectorLayerSaveAsDialog::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
   mCRS = crs.srsid();
   mExtentGroupBox->setOutputCrs( crs );
@@ -894,7 +904,7 @@ void QgsVectorLayerSaveAsDialog::setIncludeZ( bool checked )
   mIncludeZCheckBox->setChecked( checked );
 }
 
-void QgsVectorLayerSaveAsDialog::on_mSymbologyExportComboBox_currentIndexChanged( const QString &text )
+void QgsVectorLayerSaveAsDialog::mSymbologyExportComboBox_currentIndexChanged( const QString &text )
 {
   bool scaleEnabled = true;
   if ( text == tr( "No symbology" ) )
@@ -905,7 +915,7 @@ void QgsVectorLayerSaveAsDialog::on_mSymbologyExportComboBox_currentIndexChanged
   mScaleLabel->setEnabled( scaleEnabled );
 }
 
-void QgsVectorLayerSaveAsDialog::on_mGeometryTypeComboBox_currentIndexChanged( int index )
+void QgsVectorLayerSaveAsDialog::mGeometryTypeComboBox_currentIndexChanged( int index )
 {
   int currentIndexData = mGeometryTypeComboBox->itemData( index ).toInt();
 
@@ -923,7 +933,7 @@ void QgsVectorLayerSaveAsDialog::on_mGeometryTypeComboBox_currentIndexChanged( i
   }
 }
 
-void QgsVectorLayerSaveAsDialog::on_mSelectAllAttributes_clicked()
+void QgsVectorLayerSaveAsDialog::mSelectAllAttributes_clicked()
 {
   mAttributeTableItemChangedSlotEnabled = false;
   mReplaceRawFieldValuesStateChangedSlotEnabled = false;
@@ -947,7 +957,7 @@ void QgsVectorLayerSaveAsDialog::on_mSelectAllAttributes_clicked()
   mReplaceRawFieldValuesStateChangedSlotEnabled = true;
 }
 
-void QgsVectorLayerSaveAsDialog::on_mDeselectAllAttributes_clicked()
+void QgsVectorLayerSaveAsDialog::mDeselectAllAttributes_clicked()
 {
   mAttributeTableItemChangedSlotEnabled = false;
   mReplaceRawFieldValuesStateChangedSlotEnabled = false;

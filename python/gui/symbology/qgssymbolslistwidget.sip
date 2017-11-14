@@ -19,7 +19,16 @@ class QgsSymbolsListWidget : QWidget
 #include "qgssymbolslistwidget.h"
 %End
   public:
-    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent /TransferThis/, const QgsVectorLayer *layer = 0 );
+
+    QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent /TransferThis/, QgsVectorLayer *layer = 0 );
+%Docstring
+ Constructor for QgsSymbolsListWidget.
+ \param symbol the symbol
+ \param style the style
+ \param menu the menu where to show it
+ \param parent parent widget
+ \param layer associated vector layer
+%End
 
 
     virtual ~QgsSymbolsListWidget();
@@ -59,13 +68,10 @@ class QgsSymbolsListWidget : QWidget
 
     void symbolAddedToStyle( const QString &name, QgsSymbol *symbol );
 
-    void on_mSymbolUnitWidget_changed();
-
     void populateGroups();
 %Docstring
 Pupulates the groups combo box with available tags and smartgroups
 %End
-    void on_groupsCombo_currentIndexChanged( int index );
 
     void openStyleManager();
     void clipFeaturesToggled( bool checked );

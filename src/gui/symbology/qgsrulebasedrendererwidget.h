@@ -36,7 +36,8 @@ struct QgsRuleBasedRendererCount SIP_SKIP
   QHash<QgsRuleBasedRenderer::Rule *, int> duplicateCountMap;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
 Tree model for the rules:
 
 (invalid)  == root node
@@ -97,7 +98,8 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
 
 #include "ui_qgsrulebasedrendererv2widget.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRuleBasedRendererWidget
  */
 class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private Ui::QgsRuleBasedRendererWidget
@@ -175,7 +177,8 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
 #include "ui_qgsrendererrulepropsdialogbase.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRendererRulePropsWidget
  */
 class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui::QgsRendererRulePropsWidget
@@ -237,7 +240,8 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
     QgsSymbolWidgetContext mContext;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRendererRulePropsDialog
  */
 class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
@@ -246,7 +250,8 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
 
   public:
 
-    /** Constructor for QgsRendererRulePropsDialog
+    /**
+     * Constructor for QgsRendererRulePropsDialog
      * \param rule associated rule based renderer rule
      * \param layer source vector layer
      * \param style style collection

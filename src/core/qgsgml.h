@@ -36,7 +36,8 @@ class QgsCoordinateReferenceSystem;
 
 #ifndef SIP_RUN
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class builds features from GML data in a streaming way. The caller must call processData()
  * as soon it has new content from the source. At any point, it can call
  * getAndStealReadyFeatures() to collect the features that have been completely
@@ -50,14 +51,15 @@ class CORE_EXPORT QgsGmlStreamingParser
 
     typedef QPair<QgsFeature *, QString> QgsGmlFeaturePtrGmlIdPair;
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Layer properties
     */
     class LayerProperties
     {
       public:
         //! Constructor
-        LayerProperties() {}
+        LayerProperties() = default;
 
         //! Layer name
         QString mName;
@@ -96,15 +98,18 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! QgsGmlStreamingParser cannot be copied.
     QgsGmlStreamingParser &operator=( const QgsGmlStreamingParser &other ) = delete;
 
-    /** Process a new chunk of data. atEnd must be set to true when this is
+    /**
+     * Process a new chunk of data. atEnd must be set to true when this is
         the last chunk of data. */
     bool processData( const QByteArray &data, bool atEnd, QString &errorMsg );
 
-    /** Process a new chunk of data. atEnd must be set to true when this is
+    /**
+     * Process a new chunk of data. atEnd must be set to true when this is
         the last chunk of data. */
     bool processData( const QByteArray &data, bool atEnd );
 
-    /** Returns the list of features that have been completely parsed. This
+    /**
+     * Returns the list of features that have been completely parsed. This
         can be called at any point. This will empty the list maintained internally
         by the parser, so that features already returned will no longer be returned
         by later calls. */
@@ -184,14 +189,16 @@ class CORE_EXPORT QgsGmlStreamingParser
 
     //helper routines
 
-    /** Reads attribute srsName="EpsgCrsId:..."
+    /**
+     * Reads attribute srsName="EpsgCrsId:..."
        \param epsgNr result
        \param attr attribute strings
        \returns 0 in case of success
       */
     int readEpsgFromAttribute( int &epsgNr, const XML_Char **attr );
 
-    /** Reads attribute as string
+    /**
+     * Reads attribute as string
        \param attributeName
        \param attr
        \returns attribute value or an empty string if no such attribute
@@ -200,14 +207,16 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! Creates a rectangle from a coordinate string.
     bool createBBoxFromCoordinateString( QgsRectangle &bb, const QString &coordString ) const;
 
-    /** Creates a set of points from a coordinate string.
+    /**
+     * Creates a set of points from a coordinate string.
        \param points list that will contain the created points
        \param coordString the text containing the coordinates
        \returns 0 in case of success
       */
     int pointsFromCoordinateString( QList<QgsPointXY> &points, const QString &coordString ) const;
 
-    /** Creates a set of points from a gml:posList or gml:pos coordinate string.
+    /**
+     * Creates a set of points from a gml:posList or gml:pos coordinate string.
        \param points list that will contain the created points
        \param coordString the text containing the coordinates
        \param dimension number of dimensions
@@ -220,7 +229,8 @@ class CORE_EXPORT QgsGmlStreamingParser
     int getLineWKB( QgsWkbPtr &wkbPtr, const QList<QgsPointXY> &lineCoordinates ) const;
     int getRingWKB( QgsWkbPtr &wkbPtr, const QList<QgsPointXY> &ringCoordinates ) const;
 
-    /** Creates a multiline from the information in mCurrentWKBFragments and
+    /**
+     * Creates a multiline from the information in mCurrentWKBFragments and
      * mCurrentWKBFragmentSizes. Assign the result. The multiline is in
      * mCurrentWKB. The function deletes the memory in
      * mCurrentWKBFragments. Returns 0 in case of success.
@@ -287,7 +297,8 @@ class CORE_EXPORT QgsGmlStreamingParser
     QgsRectangle mCurrentExtent;
     bool mBoundedByNullFound;
 
-    /** WKB intermediate storage during parsing. For points and lines, no
+    /**
+     * WKB intermediate storage during parsing. For points and lines, no
      * intermediate WKB is stored at all. For multipoints and multilines and
      * polygons, only one nested list is used. For multipolygons, both nested lists
      * are used*/
@@ -331,7 +342,8 @@ class CORE_EXPORT QgsGmlStreamingParser
 
 #endif
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class reads data from a WFS server or alternatively from a GML file. It
  * uses the expat XML parser and an event based model to keep performance high.
  * The parsing starts when the first data arrives, it does not wait until the
@@ -345,7 +357,8 @@ class CORE_EXPORT QgsGml : public QObject
       const QString &geometryAttribute,
       const QgsFields &fields );
 
-    /** Does the Http GET request to the wfs server
+    /**
+     * Does the Http GET request to the wfs server
      *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
      *  \param uri GML URL
      *  \param wkbType wkbType to retrieve
@@ -363,7 +376,8 @@ class CORE_EXPORT QgsGml : public QObject
                      const QString &password = QString(),
                      const QString &authcfg = QString() ) SIP_PYNAME( getFeaturesUri );
 
-    /** Read from GML data. Constructor uri param is ignored
+    /**
+     * Read from GML data. Constructor uri param is ignored
      *  Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
      */
     int getFeatures( const QByteArray &data, QgsWkbTypes::Type *wkbType, QgsRectangle *extent = nullptr );
@@ -374,7 +388,8 @@ class CORE_EXPORT QgsGml : public QObject
     //! Get feature ids map
     QMap<QgsFeatureId, QString > idsMap() const { return mIdMap; }
 
-    /** Returns features spatial reference system
+    /**
+     * Returns features spatial reference system
       \since QGIS 2.1 */
     QgsCoordinateReferenceSystem crs() const;
 
@@ -393,7 +408,8 @@ class CORE_EXPORT QgsGml : public QObject
 
   private:
 
-    /** This function evaluates the layer bounding box from the features and
+    /**
+     * This function evaluates the layer bounding box from the features and
      * sets it to mExtent.  Less efficient compared to reading the bbox from
      * the provider, so it is only done if the wfs server does not provider
      * extent information.

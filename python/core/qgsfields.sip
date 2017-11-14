@@ -115,9 +115,18 @@ Return number of items
  :rtype: int
 %End
 
+    QStringList names() const;
+%Docstring
+ Returns a list with field names
+.. versionadded:: 3.0
+ :rtype: list of str
+%End
+
     bool exists( int i ) const;
 %Docstring
-:return:   True if the field exists
+ Return if a field index is valid
+ \param i  Index of the field which needs to be checked
+ :return:   True if the field exists
  :rtype: bool
 %End
 
@@ -264,6 +273,7 @@ Get field's origin index (its meaning is specific to each type of origin)
 
     QgsAttributeList allAttributesList() const;
 %Docstring
+ Utility function to get list of attribute indexes
 .. versionadded:: 2.4
  :rtype: QgsAttributeList
 %End

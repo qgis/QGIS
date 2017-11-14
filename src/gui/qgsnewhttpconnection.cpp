@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewhttpconnection.h"
-#include "qgsauthconfigselect.h"
+#include "qgsauthsettingswidget.h"
 #include "qgssettings.h"
 #include "qgshelp.h"
 
@@ -60,9 +60,6 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   cmbVersion->addItem( tr( "1.1" ) );
   cmbVersion->addItem( tr( "2.0" ) );
 
-  mAuthConfigSelect = new QgsAuthConfigSelect( this );
-  tabAuth->insertTab( 1, mAuthConfigSelect, tr( "Configurations" ) );
-
   if ( !connectionName.isEmpty() )
   {
     // populate the dialog with the information stored for the connection
@@ -77,15 +74,10 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
 
     updateServiceSpecificSettings();
 
-    txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
-    txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
-
-    QString authcfg = settings.value( credentialsKey + "/authcfg" ).toString();
-    mAuthConfigSelect->setConfigId( authcfg );
-    if ( !authcfg.isEmpty() )
-    {
-      tabAuth->setCurrentIndex( tabAuth->indexOf( mAuthConfigSelect ) );
-    }
+    // Authentication
+    mAuthSettings->setUsername( settings.value( credentialsKey + "/username" ).toString() );
+    mAuthSettings->setPassword( settings.value( credentialsKey + "/password" ).toString() );
+    mAuthSettings->setConfigId( settings.value( credentialsKey + "/authcfg" ).toString() );
   }
 
   if ( !( mTypes & ConnectionWms ) && !( mTypes & ConnectionWcs ) )
@@ -181,16 +173,16 @@ bool QgsNewHttpConnection::validate()
   if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
        settings.contains( key + "/url" ) &&
        QMessageBox::question( this,
-                              tr( "Save connection" ),
+                              tr( "Save Connection" ),
                               tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return false;
   }
 
-  if ( !txtPassword->text().isEmpty() &&
+  if ( ! mAuthSettings->password().isEmpty() &&
        QMessageBox::question( this,
-                              tr( "Saving passwords" ),
+                              tr( "Saving Passwords" ),
                               trUtf8( "WARNING: You have entered a password. It will be stored in unsecured plain text in your project files and your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't provide a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
@@ -372,10 +364,10 @@ void QgsNewHttpConnection::accept()
     settings.setValue( wfsKey + "/maxnumfeatures", txtMaxNumFeatures->text() );
   }
 
-  settings.setValue( credentialsKey + "/username", txtUserName->text() );
-  settings.setValue( credentialsKey + "/password", txtPassword->text() );
+  settings.setValue( credentialsKey + "/username", mAuthSettings->username() );
+  settings.setValue( credentialsKey + "/password", mAuthSettings->password() );
 
-  settings.setValue( credentialsKey + "/authcfg", mAuthConfigSelect->configId() );
+  settings.setValue( credentialsKey + "/authcfg", mAuthSettings->configId() );
 
   settings.setValue( mBaseKey + "/selected", txtName->text() );
 

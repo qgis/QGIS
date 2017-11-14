@@ -75,9 +75,10 @@ void QgsWelcomePageItemDelegate::paint( QPainter *painter, const QStyleOptionVie
   int titleSize = QApplication::fontMetrics().height() * 1.1;
   int textSize = titleSize * 0.85;
 
-  doc.setHtml( QStringLiteral( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize )
+  doc.setHtml( QStringLiteral( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>" ).arg( textSize ).arg( titleSize )
                .arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString(),
-                     index.data( QgsWelcomePageItemsModel::PathRole ).toString(),
+                     index.data( QgsWelcomePageItemsModel::PinRole ).toBool() ? QStringLiteral( "<img src=\"qrc:/images/themes/default/pin.svg\">" ) : QString(),
+                     index.data( QgsWelcomePageItemsModel::NativePathRole ).toString(),
                      index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
   doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? icon.width() + 35 : 35 ) );
 
@@ -111,9 +112,10 @@ QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem &option, 
   int titleSize = QApplication::fontMetrics().height() * 1.1;
   int textSize = titleSize * 0.85;
 
-  doc.setHtml( QStringLiteral( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize )
+  doc.setHtml( QStringLiteral( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>" ).arg( textSize ).arg( titleSize )
                .arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString(),
-                     index.data( QgsWelcomePageItemsModel::PathRole ).toString(),
+                     index.data( QgsWelcomePageItemsModel::PinRole ).toBool() ? QStringLiteral( "<img src=\"qrc:/images/themes/default/pin.svg\">" ) : QString(),
+                     index.data( QgsWelcomePageItemsModel::NativePathRole ).toString(),
                      index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
   doc.setTextWidth( width - ( !icon.isNull() ? icon.width() + 35 : 35 ) );
 
@@ -148,6 +150,8 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex &index, int role ) co
     case TitleRole:
       return mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QFileInfo( mRecentProjects.at( index.row() ).path ).completeBaseName();
     case PathRole:
+      return mRecentProjects.at( index.row() ).path;
+    case NativePathRole:
       return QDir::toNativeSeparators( mRecentProjects.at( index.row() ).path );
     case CrsRole:
       if ( !mRecentProjects.at( index.row() ).crs.isEmpty() )
@@ -159,6 +163,8 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex &index, int role ) co
       {
         return QString();
       }
+    case PinRole:
+      return mRecentProjects.at( index.row() ).pin;
     case Qt::DecorationRole:
     {
       QString filename( mRecentProjects.at( index.row() ).previewImagePath );
@@ -199,8 +205,37 @@ Qt::ItemFlags QgsWelcomePageItemsModel::flags( const QModelIndex &index ) const
 
   const RecentProjectData &projectData = mRecentProjects.at( index.row() );
 
-  if ( !QFile::exists( ( projectData.path ) ) )
+  // This check can be slow for network based projects, so only run it the first time
+  if ( !projectData.checkedExists )
+  {
+    projectData.exists = QFile::exists( ( projectData.path ) );
+    projectData.checkedExists = true;
+  }
+
+  if ( !projectData.exists )
     flags &= ~Qt::ItemIsEnabled;
 
   return flags;
+}
+
+void QgsWelcomePageItemsModel::pinProject( const QModelIndex &index )
+{
+  mRecentProjects.at( index.row() ).pin = true;
+}
+
+void QgsWelcomePageItemsModel::unpinProject( const QModelIndex &index )
+{
+  mRecentProjects.at( index.row() ).pin = false;
+}
+
+void QgsWelcomePageItemsModel::removeProject( const QModelIndex &index )
+{
+  mRecentProjects.removeAt( index.row() );
+}
+
+void QgsWelcomePageItemsModel::recheckProject( const QModelIndex &index )
+{
+  const RecentProjectData &projectData = mRecentProjects.at( index.row() );
+  projectData.exists = QFile::exists( ( projectData.path ) );
+  projectData.checkedExists = true;
 }

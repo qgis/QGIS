@@ -36,6 +36,14 @@ class QgsDockWidget : QDockWidget
  \param flags window flags
 %End
 
+    bool isUserVisible() const;
+%Docstring
+ Returns true if the dock is both opened and raised to the front (ie not hidden by
+ any other tabs.
+.. seealso:: setUserVisible()
+ :rtype: bool
+%End
+
   public slots:
 
     void setUserVisible( bool visible );
@@ -51,14 +59,6 @@ class QgsDockWidget : QDockWidget
  be closed
  - hiding a dock which is closed has no effect and raises no signals
 .. seealso:: isUserVisible()
-%End
-
-    bool isUserVisible() const;
-%Docstring
- Returns true if the dock is both opened and raised to the front (ie not hidden by
- any other tabs.
-.. seealso:: setUserVisible()
- :rtype: bool
 %End
 
   protected:

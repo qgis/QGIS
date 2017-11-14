@@ -27,7 +27,8 @@
 class QgsDateTimeEditFactory;
 class QgsDateTimeEdit;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsDateTimeSearchWidgetWrapper
  * Wraps a date/time edit widget for searching.
  * \since QGIS 2.16
@@ -39,20 +40,22 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
 
   public:
 
-    /** Constructor for QgsDateTimeSearchWidgetWrapper.
+    /**
+     * Constructor for QgsDateTimeSearchWidgetWrapper.
      * \param vl associated vector layer
      * \param fieldIdx index of associated field
      * \param parent parent widget
      */
     explicit QgsDateTimeSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
-    /** Returns a variant representing the current state of the widget, respecting
+    /**
+     * Returns a variant representing the current state of the widget, respecting
      * the editor widget's configured field format for date/time values.
      */
     QVariant value() const;
 
     bool applyDirectly() override;
-    QString expression() override;
+    QString expression() const override;
     bool valid() const override;
     QgsSearchWidgetWrapper::FilterFlags supportedFlags() const override;
     QgsSearchWidgetWrapper::FilterFlags defaultFlags() const override;
@@ -68,7 +71,7 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
     void initWidget( QWidget *editor ) override;
 
   protected slots:
-    void setExpression( QString exp ) override;
+    void setExpression( const QString &exp ) override;
 
   private slots:
     void dateTimeChanged( const QDateTime &date );

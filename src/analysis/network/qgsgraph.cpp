@@ -22,29 +22,29 @@
 
 int QgsGraph::addVertex( const QgsPointXY &pt )
 {
-  mGraphVertexes.append( QgsGraphVertex( pt ) );
-  return mGraphVertexes.size() - 1;
+  mGraphVertices.append( QgsGraphVertex( pt ) );
+  return mGraphVertices.size() - 1;
 }
 
-int QgsGraph::addEdge( int outVertexIdx, int inVertexIdx, const QVector< QVariant > &strategies )
+int QgsGraph::addEdge( int fromVertexIdx, int toVertexIdx, const QVector< QVariant > &strategies )
 {
   QgsGraphEdge e;
 
   e.mStrategies = strategies;
-  e.mOut = outVertexIdx;
-  e.mIn  = inVertexIdx;
+  e.mToIdx = toVertexIdx;
+  e.mFromIdx  = fromVertexIdx;
   mGraphEdges.push_back( e );
   int edgeIdx = mGraphEdges.size() - 1;
 
-  mGraphVertexes[ outVertexIdx ].mOutEdges.push_back( edgeIdx );
-  mGraphVertexes[ inVertexIdx ].mInEdges.push_back( edgeIdx );
+  mGraphVertices[ toVertexIdx ].mIncomingEdges.push_back( edgeIdx );
+  mGraphVertices[ fromVertexIdx ].mOutgoingEdges.push_back( edgeIdx );
 
   return mGraphEdges.size() - 1;
 }
 
 const QgsGraphVertex &QgsGraph::vertex( int idx ) const
 {
-  return mGraphVertexes[ idx ];
+  return mGraphVertices[ idx ];
 }
 
 const QgsGraphEdge &QgsGraph::edge( int idx ) const
@@ -54,7 +54,7 @@ const QgsGraphEdge &QgsGraph::edge( int idx ) const
 
 int QgsGraph::vertexCount() const
 {
-  return mGraphVertexes.size();
+  return mGraphVertices.size();
 }
 
 int QgsGraph::edgeCount() const
@@ -65,9 +65,9 @@ int QgsGraph::edgeCount() const
 int QgsGraph::findVertex( const QgsPointXY &pt ) const
 {
   int i = 0;
-  for ( i = 0; i < mGraphVertexes.size(); ++i )
+  for ( i = 0; i < mGraphVertices.size(); ++i )
   {
-    if ( mGraphVertexes[ i ].point() == pt )
+    if ( mGraphVertices[ i ].point() == pt )
     {
       return i;
     }
@@ -85,14 +85,14 @@ QVector< QVariant > QgsGraphEdge::strategies() const
   return mStrategies;
 }
 
-int QgsGraphEdge::inVertex() const
+int QgsGraphEdge::fromVertex() const
 {
-  return mIn;
+  return mFromIdx;
 }
 
-int QgsGraphEdge::outVertex() const
+int QgsGraphEdge::toVertex() const
 {
-  return mOut;
+  return mToIdx;
 }
 
 QgsGraphVertex::QgsGraphVertex( const QgsPointXY &point )
@@ -101,14 +101,14 @@ QgsGraphVertex::QgsGraphVertex( const QgsPointXY &point )
 
 }
 
-QgsGraphEdgeIds QgsGraphVertex::outEdges() const
+QgsGraphEdgeIds QgsGraphVertex::incomingEdges() const
 {
-  return mOutEdges;
+  return mIncomingEdges;
 }
 
-QgsGraphEdgeIds QgsGraphVertex::inEdges() const
+QgsGraphEdgeIds QgsGraphVertex::outgoingEdges() const
 {
-  return mInEdges;
+  return mOutgoingEdges;
 }
 
 QgsPointXY QgsGraphVertex::point() const

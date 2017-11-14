@@ -44,6 +44,22 @@ Copy constructor
 
     ~QgsRectangle();
 
+    static QgsRectangle fromWkt( const QString &wkt );
+%Docstring
+ Creates a new rectangle from a ``wkt`` string.
+ The WKT must contain only 5 vertices, representing a rectangle aligned with X and Y axes.
+.. versionadded:: 3.0
+ :rtype: QgsRectangle
+%End
+
+    static QgsRectangle fromCenterAndSize( QgsPointXY center, double width, double height );
+%Docstring
+ Creates a new rectangle, given the specified ``center`` point
+ and ``width`` and ``height``.
+.. versionadded:: 3.0
+ :rtype: QgsRectangle
+%End
+
     void set( const QgsPointXY &p1, const QgsPointXY &p2 );
 %Docstring
  Sets the rectangle from two QgsPoints. The rectangle is

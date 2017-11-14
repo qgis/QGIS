@@ -30,6 +30,7 @@ Constructs URI from encoded data
 
       bool isValid() const;
 %Docstring
+ Returns whether the object contains valid data
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -60,9 +61,12 @@ Returns encoded representation of the object
 %Docstring
 Type of URI. Recognized types: "vector" / "raster" / "plugin" / "custom"
 %End
+
       QString providerKey;
 %Docstring
-For "custom" type: key of its QgsCustomDropHandler
+ For "vector" / "raster" type: provider id.
+ For "plugin" type: plugin layer type name.
+ For "custom" type: key of its QgsCustomDropHandler
 %End
       QString name;
 %Docstring

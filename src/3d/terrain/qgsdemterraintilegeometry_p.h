@@ -42,22 +42,27 @@ namespace Qt3DRender
 } // Qt3DRender
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Stores attributes and vertex/index buffers for one terrain tile based on DEM.
  * \since QGIS 3.0
  */
 class DemTerrainTileGeometry : public Qt3DRender::QGeometry
 {
   public:
-    //! Constructs a terrain tile geometry. Resolution is the number of vertices on one side of the tile,
-    //! heightMap is array of float values with one height value for each vertex
-    explicit DemTerrainTileGeometry( int resolution, const QByteArray &heightMap, QNode *parent = nullptr );
+
+    /**
+     * Constructs a terrain tile geometry. Resolution is the number of vertices on one side of the tile,
+     * heightMap is array of float values with one height value for each vertex
+     */
+    explicit DemTerrainTileGeometry( int resolution, float skirtHeight, const QByteArray &heightMap, QNode *parent = nullptr );
     ~DemTerrainTileGeometry() = default;
 
   private:
     void init();
 
     int mResolution;
+    float mSkirtHeight;
     QByteArray mHeightMap;
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QAttribute *mNormalAttribute = nullptr;

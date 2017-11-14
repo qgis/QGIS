@@ -19,13 +19,18 @@
 #include "qgslayoututils.h"
 #include "qgspagesizeregistry.h"
 #include "qgslayoutitemundocommand.h"
+#include "qgslayoutmodel.h"
+#include "qgssymbollayerutils.h"
+#include "qgslayoutitemgroup.h"
+#include "qgspainting.h"
+#include "qgslayouteffect.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>
 
 #define CACHE_SIZE_LIMIT 5000
 
-QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
+QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
   : QgsLayoutObject( layout )
   , QGraphicsRectItem( nullptr )
   , mUuid( QUuid::createUuid().toString() )
@@ -33,7 +38,8 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   setZValue( QgsLayout::ZItem );
 
   // needed to access current view transform during paint operations
-  setFlags( flags() | QGraphicsItem::ItemUsesExtendedStyleOption );
+  setFlags( flags() | QGraphicsItem::ItemUsesExtendedStyleOption | QGraphicsItem::ItemIsSelectable );
+
   setCacheMode( QGraphicsItem::DeviceCoordinateCache );
 
   //record initial position
@@ -41,7 +47,64 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout )
   mItemPosition = QgsLayoutPoint( scenePos().x(), scenePos().y(), initialUnits );
   mItemSize = QgsLayoutSize( rect().width(), rect().height(), initialUnits );
 
+  // required to initially setup background/frame style
+  refreshBackgroundColor( false );
+  refreshFrame( false );
+
   initConnectionsToLayout();
+
+  //let z-Value be managed by layout
+  if ( mLayout && manageZValue )
+  {
+    mLayoutManagesZValue = true;
+    mLayout->itemsModel()->addItemAtTop( this );
+  }
+  else
+  {
+    mLayoutManagesZValue = false;
+  }
+
+  // Setup layout effect
+  mEffect.reset( new QgsLayoutEffect() );
+  if ( mLayout )
+  {
+    mEffect->setEnabled( mLayout->context().flags() & QgsLayoutContext::FlagUseAdvancedEffects );
+    connect( &mLayout->context(), &QgsLayoutContext::flagsChanged, this, [ = ]( QgsLayoutContext::Flags flags )
+    {
+      mEffect->setEnabled( flags & QgsLayoutContext::FlagUseAdvancedEffects );
+    } );
+  }
+  setGraphicsEffect( mEffect.get() );
+}
+
+QgsLayoutItem::~QgsLayoutItem()
+{
+  if ( mLayout && mLayoutManagesZValue )
+  {
+    mLayout->itemsModel()->removeItem( this );
+  }
+}
+
+QString QgsLayoutItem::displayName() const
+{
+  //return id, if it's not empty
+  if ( !id().isEmpty() )
+  {
+    return id();
+  }
+
+  //for unnamed items, default to item type
+  if ( QgsLayoutItemAbstractMetadata *metadata = QgsApplication::layoutItemRegistry()->itemMetadata( type() ) )
+  {
+    return tr( "<%1>" ).arg( metadata->visibleName() );
+  }
+
+  return tr( "<item>" );
+}
+
+int QgsLayoutItem::type() const
+{
+  return QgsLayoutItemRegistry::LayoutItem;
 }
 
 void QgsLayoutItem::setId( const QString &id )
@@ -51,24 +114,117 @@ void QgsLayoutItem::setId( const QString &id )
     return;
   }
 
+  if ( !shouldBlockUndoCommands() )
+    mLayout->undoStack()->beginCommand( this, tr( "Change Item ID" ) );
+
   mId = id;
+
+  if ( !shouldBlockUndoCommands() )
+    mLayout->undoStack()->endCommand();
+
   setToolTip( id );
 
-  //TODO
-#if 0
   //inform model that id data has changed
-  if ( mComposition )
+  if ( mLayout )
   {
-    mComposition->itemsModel()->updateItemDisplayName( this );
+    mLayout->itemsModel()->updateItemDisplayName( this );
   }
 
+#if 0 //TODO
   emit itemChanged();
 #endif
 }
 
+void QgsLayoutItem::setSelected( bool selected )
+{
+  QGraphicsRectItem::setSelected( selected );
+  //inform model that id data has changed
+  if ( mLayout )
+  {
+    mLayout->itemsModel()->updateItemSelectStatus( this );
+  }
+}
+
+void QgsLayoutItem::setVisibility( const bool visible )
+{
+  if ( visible == isVisible() )
+  {
+    //nothing to do
+    return;
+  }
+
+  std::unique_ptr< QgsAbstractLayoutUndoCommand > command;
+  if ( !shouldBlockUndoCommands() )
+  {
+    command.reset( createCommand( visible ? tr( "Show Item" ) : tr( "Hide Item" ), 0 ) );
+    command->saveBeforeState();
+  }
+
+  QGraphicsItem::setVisible( visible );
+
+  if ( command )
+  {
+    command->saveAfterState();
+    mLayout->undoStack()->stack()->push( command.release() );
+  }
+
+  //inform model that visibility has changed
+  if ( mLayout )
+  {
+    mLayout->itemsModel()->updateItemVisibility( this );
+  }
+}
+
+void QgsLayoutItem::setLocked( const bool locked )
+{
+  if ( locked == mIsLocked )
+  {
+    return;
+  }
+
+  if ( !shouldBlockUndoCommands() )
+    mLayout->undoStack()->beginCommand( this, locked ? tr( "Lock Item" ) : tr( "Unlock Item" ) );
+
+  mIsLocked = locked;
+
+  if ( !shouldBlockUndoCommands() )
+    mLayout->undoStack()->endCommand();
+
+  //inform model that id data has changed
+  if ( mLayout )
+  {
+    mLayout->itemsModel()->updateItemLockStatus( this );
+  }
+
+  update();
+  emit lockChanged();
+}
+
+bool QgsLayoutItem::isGroupMember() const
+{
+  return !mParentGroupUuid.isEmpty() && mLayout && static_cast< bool >( mLayout->itemByUuid( mParentGroupUuid ) );
+}
+
+QgsLayoutItemGroup *QgsLayoutItem::parentGroup() const
+{
+  if ( !mLayout || mParentGroupUuid.isEmpty() )
+    return nullptr;
+
+  return qobject_cast< QgsLayoutItemGroup * >( mLayout->itemByUuid( mParentGroupUuid ) );
+}
+
+void QgsLayoutItem::setParentGroup( QgsLayoutItemGroup *group )
+{
+  if ( !group )
+    mParentGroupUuid.clear();
+  else
+    mParentGroupUuid = group->uuid();
+  setFlag( QGraphicsItem::ItemIsSelectable, !static_cast< bool>( group ) ); //item in groups cannot be selected
+}
+
 void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget * )
 {
-  if ( !painter || !painter->device() )
+  if ( !painter || !painter->device() || !shouldDrawItem() )
   {
     return;
   }
@@ -136,7 +292,9 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       // painter is already scaled to dots
       // need to translate so that item origin is at 0,0 in painter coordinates (not bounding rect origin)
       p.translate( -boundingRect().x() * context.scaleFactor(), -boundingRect().y() * context.scaleFactor() );
+      drawBackground( context );
       draw( context, itemStyle );
+      drawFrame( context );
       p.end();
 
       painter->save();
@@ -153,9 +311,16 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
     painter->save();
     preparePainter( painter );
     QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, destinationDpi );
+    context.setExpressionContext( createExpressionContext() );
+    drawBackground( context );
+
     // scale painter from mm to dots
     painter->scale( 1.0 / context.scaleFactor(), 1.0 / context.scaleFactor() );
     draw( context, itemStyle );
+
+    painter->scale( context.scaleFactor(), context.scaleFactor() );
+    drawFrame( context );
+
     painter->restore();
   }
 }
@@ -174,19 +339,30 @@ void QgsLayoutItem::setReferencePoint( const QgsLayoutItem::ReferencePoint &poin
   refreshItemPosition();
 }
 
-void QgsLayoutItem::attemptResize( const QgsLayoutSize &size )
+void QgsLayoutItem::attemptResize( const QgsLayoutSize &s, bool includesFrame )
 {
   if ( !mLayout )
   {
-    mItemSize = size;
-    setRect( 0, 0, size.width(), size.height() );
+    mItemSize = s;
+    setRect( 0, 0, s.width(), s.height() );
     return;
+  }
+
+  QgsLayoutSize size = s;
+
+  if ( includesFrame )
+  {
+    //adjust position to account for frame size
+    double bleed = mLayout->convertFromLayoutUnits( estimatedFrameBleed(), size.units() ).length();
+    size.setWidth( size.width() - 2 * bleed );
+    size.setHeight( size.height() - 2 * bleed );
   }
 
   QgsLayoutSize evaluatedSize = applyDataDefinedSize( size );
   QSizeF targetSizeLayoutUnits = mLayout->convertToLayoutUnits( evaluatedSize );
   QSizeF actualSizeLayoutUnits = applyMinimumSize( targetSizeLayoutUnits );
   actualSizeLayoutUnits = applyFixedSize( actualSizeLayoutUnits );
+  actualSizeLayoutUnits = applyItemSizeConstraint( actualSizeLayoutUnits );
 
   if ( actualSizeLayoutUnits == rect().size() )
   {
@@ -198,18 +374,35 @@ void QgsLayoutItem::attemptResize( const QgsLayoutSize &size )
 
   setRect( 0, 0, actualSizeLayoutUnits.width(), actualSizeLayoutUnits.height() );
   refreshItemPosition();
+  emit sizePositionChanged();
 }
 
-void QgsLayoutItem::attemptMove( const QgsLayoutPoint &point )
+void QgsLayoutItem::attemptMove( const QgsLayoutPoint &p, bool useReferencePoint, bool includesFrame )
 {
   if ( !mLayout )
   {
-    mItemPosition = point;
-    setPos( point.toQPointF() );
+    mItemPosition = p;
+    setPos( p.toQPointF() );
     return;
   }
 
-  QgsLayoutPoint evaluatedPoint = applyDataDefinedPosition( point );
+  QgsLayoutPoint point = p;
+
+  if ( includesFrame )
+  {
+    //adjust position to account for frame size
+    double bleed = mLayout->convertFromLayoutUnits( estimatedFrameBleed(), point.units() ).length();
+    point.setX( point.x() + bleed );
+    point.setY( point.y() + bleed );
+  }
+
+  QgsLayoutPoint evaluatedPoint = point;
+  if ( !useReferencePoint )
+  {
+    evaluatedPoint = topLeftToReferencePoint( point );
+  }
+
+  evaluatedPoint = applyDataDefinedPosition( evaluatedPoint );
   QPointF evaluatedPointLayoutUnits = mLayout->convertToLayoutUnits( evaluatedPoint );
   QPointF topLeftPointLayoutUnits = adjustPointForReferencePosition( evaluatedPointLayoutUnits, rect().size(), mReferencePoint );
   if ( topLeftPointLayoutUnits == scenePos() && point.units() == mItemPosition.units() )
@@ -220,8 +413,24 @@ void QgsLayoutItem::attemptMove( const QgsLayoutPoint &point )
 
   QgsLayoutPoint referencePointTargetUnits = mLayout->convertFromLayoutUnits( evaluatedPointLayoutUnits, point.units() );
   mItemPosition = referencePointTargetUnits;
-
   setScenePos( topLeftPointLayoutUnits );
+  emit sizePositionChanged();
+}
+
+void QgsLayoutItem::attemptSetSceneRect( const QRectF &rect, bool includesFrame )
+{
+  QPointF newPos = rect.topLeft();
+
+  blockSignals( true );
+  // translate new size to current item units
+  QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( rect.size(), mItemSize.units() );
+  attemptResize( newSize, includesFrame );
+
+  // translate new position to current item units
+  QgsLayoutPoint itemPos = mLayout->convertFromLayoutUnits( newPos, mItemPosition.units() );
+  attemptMove( itemPos, false, includesFrame );
+  blockSignals( false );
+  emit sizePositionChanged();
 }
 
 void QgsLayoutItem::setScenePos( const QPointF &destinationPos )
@@ -235,9 +444,26 @@ void QgsLayoutItem::setScenePos( const QPointF &destinationPos )
     setPos( pos() + ( destinationPos - scenePos() ) );
 }
 
+bool QgsLayoutItem::shouldBlockUndoCommands() const
+{
+  return !mLayout || mLayout != scene() || mBlockUndoCommands;
+}
+
+bool QgsLayoutItem::shouldDrawItem() const
+{
+  if ( !mLayout || mLayout->context().isPreviewRender() )
+  {
+    //preview mode so OK to draw item
+    return true;
+  }
+
+  //exporting layout, so check if item is excluded from exports
+  return !mEvaluatedExcludeFromExports;
+}
+
 double QgsLayoutItem::itemRotation() const
 {
-  return rotation();
+  return mItemRotation;
 }
 
 bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -245,25 +471,366 @@ bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, con
   QDomElement element = doc.createElement( QStringLiteral( "LayoutItem" ) );
   element.setAttribute( QStringLiteral( "type" ), stringType() );
 
+  element.setAttribute( QStringLiteral( "uuid" ), mUuid );
+  element.setAttribute( QStringLiteral( "id" ), mId );
+  element.setAttribute( QStringLiteral( "referencePoint" ), QString::number( static_cast< int >( mReferencePoint ) ) );
+  element.setAttribute( QStringLiteral( "position" ), mItemPosition.encodePoint() );
+  element.setAttribute( QStringLiteral( "size" ), mItemSize.encodeSize() );
+  element.setAttribute( QStringLiteral( "itemRotation" ), QString::number( mItemRotation ) );
+  element.setAttribute( QStringLiteral( "groupUuid" ), mParentGroupUuid );
+
+  element.setAttribute( "zValue", QString::number( zValue() ) );
+  element.setAttribute( "visibility", isVisible() );
+  //position lock for mouse moves/resizes
+  if ( mIsLocked )
+  {
+    element.setAttribute( "positionLock", "true" );
+  }
+  else
+  {
+    element.setAttribute( "positionLock", "false" );
+  }
+
+  //frame
+  if ( mFrame )
+  {
+    element.setAttribute( QStringLiteral( "frame" ), QStringLiteral( "true" ) );
+  }
+  else
+  {
+    element.setAttribute( QStringLiteral( "frame" ), QStringLiteral( "false" ) );
+  }
+
+  //background
+  if ( mBackground )
+  {
+    element.setAttribute( QStringLiteral( "background" ), QStringLiteral( "true" ) );
+  }
+  else
+  {
+    element.setAttribute( QStringLiteral( "background" ), QStringLiteral( "false" ) );
+  }
+
+  //frame color
+  QDomElement frameColorElem = doc.createElement( QStringLiteral( "FrameColor" ) );
+  frameColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mFrameColor.red() ) );
+  frameColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mFrameColor.green() ) );
+  frameColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mFrameColor.blue() ) );
+  frameColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mFrameColor.alpha() ) );
+  element.appendChild( frameColorElem );
+  element.setAttribute( QStringLiteral( "outlineWidthM" ), mFrameWidth.encodeMeasurement() );
+  element.setAttribute( QStringLiteral( "frameJoinStyle" ), QgsSymbolLayerUtils::encodePenJoinStyle( mFrameJoinStyle ) );
+
+  //background color
+  QDomElement bgColorElem = doc.createElement( QStringLiteral( "BackgroundColor" ) );
+  bgColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mBackgroundColor.red() ) );
+  bgColorElem.setAttribute( QStringLiteral( "green" ), QString::number( mBackgroundColor.green() ) );
+  bgColorElem.setAttribute( QStringLiteral( "blue" ), QString::number( mBackgroundColor.blue() ) );
+  bgColorElem.setAttribute( QStringLiteral( "alpha" ), QString::number( mBackgroundColor.alpha() ) );
+  element.appendChild( bgColorElem );
+
+  //blend mode
+  element.setAttribute( "blendMode", QgsPainting::getBlendModeEnum( mBlendMode ) );
+
+  //opacity
+  element.setAttribute( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
+
+  element.setAttribute( "excludeFromExports", mExcludeFromExports );
+
+  writeObjectPropertiesToElement( element, doc, context );
+
   writePropertiesToElement( element, doc, context );
   parentElement.appendChild( element );
 
   return true;
 }
 
-bool QgsLayoutItem::readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
+bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  if ( itemElem.nodeName() != QStringLiteral( "LayoutItem" ) || itemElem.attribute( QStringLiteral( "type" ) ) != stringType() )
+  if ( element.nodeName() != QStringLiteral( "LayoutItem" ) || element.attribute( QStringLiteral( "type" ) ) != stringType() )
   {
     return false;
   }
 
-  return readPropertiesFromElement( itemElem, doc, context );
+  readObjectPropertiesFromElement( element, doc, context );
+
+  mBlockUndoCommands = true;
+  mUuid = element.attribute( QStringLiteral( "uuid" ), QUuid::createUuid().toString() );
+  setId( element.attribute( QStringLiteral( "id" ) ) );
+  mReferencePoint = static_cast< ReferencePoint >( element.attribute( QStringLiteral( "referencePoint" ) ).toInt() );
+  attemptMove( QgsLayoutPoint::decodePoint( element.attribute( QStringLiteral( "position" ) ) ) );
+  attemptResize( QgsLayoutSize::decodeSize( element.attribute( QStringLiteral( "size" ) ) ) );
+  setItemRotation( element.attribute( QStringLiteral( "itemRotation" ), QStringLiteral( "0" ) ).toDouble() );
+
+  mParentGroupUuid = element.attribute( QStringLiteral( "groupUuid" ) );
+  if ( !mParentGroupUuid.isEmpty() )
+  {
+    if ( QgsLayoutItemGroup *group = parentGroup() )
+    {
+      group->addItem( this );
+    }
+  }
+
+  //TODO
+  /*
+  // temporary for groups imported from templates
+  mTemplateUuid = itemElem.attribute( "templateUuid" );
+  */
+
+  //position lock for mouse moves/resizes
+  QString positionLock = element.attribute( "positionLock" );
+  if ( positionLock.compare( "true", Qt::CaseInsensitive ) == 0 )
+  {
+    setLocked( true );
+  }
+  else
+  {
+    setLocked( false );
+  }
+  //visibility
+  setVisibility( element.attribute( "visibility", "1" ) != "0" );
+  setZValue( element.attribute( "zValue" ).toDouble() );
+
+  //frame
+  QString frame = element.attribute( QStringLiteral( "frame" ) );
+  if ( frame.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  {
+    mFrame = true;
+  }
+  else
+  {
+    mFrame = false;
+  }
+
+  //frame
+  QString background = element.attribute( QStringLiteral( "background" ) );
+  if ( background.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  {
+    mBackground = true;
+  }
+  else
+  {
+    mBackground = false;
+  }
+
+  //pen
+  mFrameWidth = QgsLayoutMeasurement::decodeMeasurement( element.attribute( QStringLiteral( "outlineWidthM" ) ) );
+  mFrameJoinStyle = QgsSymbolLayerUtils::decodePenJoinStyle( element.attribute( QStringLiteral( "frameJoinStyle" ), QStringLiteral( "miter" ) ) );
+  QDomNodeList frameColorList = element.elementsByTagName( QStringLiteral( "FrameColor" ) );
+  if ( !frameColorList.isEmpty() )
+  {
+    QDomElement frameColorElem = frameColorList.at( 0 ).toElement();
+    bool redOk = false;
+    bool greenOk = false;
+    bool blueOk = false;
+    bool alphaOk = false;
+    int penRed, penGreen, penBlue, penAlpha;
+
+#if 0 // TODO, old style
+    double penWidth;
+    penWidth = element.attribute( QStringLiteral( "outlineWidth" ) ).toDouble( &widthOk );
+#endif
+    penRed = frameColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    penGreen = frameColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    penBlue = frameColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    penAlpha = frameColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+
+    if ( redOk && greenOk && blueOk && alphaOk )
+    {
+      mFrameColor = QColor( penRed, penGreen, penBlue, penAlpha );
+    }
+  }
+  refreshFrame( false );
+
+  //brush
+  QDomNodeList bgColorList = element.elementsByTagName( QStringLiteral( "BackgroundColor" ) );
+  if ( !bgColorList.isEmpty() )
+  {
+    QDomElement bgColorElem = bgColorList.at( 0 ).toElement();
+    bool redOk, greenOk, blueOk, alphaOk;
+    int bgRed, bgGreen, bgBlue, bgAlpha;
+    bgRed = bgColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    bgGreen = bgColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    bgBlue = bgColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    bgAlpha = bgColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+    if ( redOk && greenOk && blueOk && alphaOk )
+    {
+      mBackgroundColor = QColor( bgRed, bgGreen, bgBlue, bgAlpha );
+      setBrush( QBrush( mBackgroundColor, Qt::SolidPattern ) );
+    }
+    //apply any data defined settings
+    refreshBackgroundColor( false );
+  }
+
+  //blend mode
+  setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( element.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
+
+  //opacity
+  if ( element.hasAttribute( QStringLiteral( "opacity" ) ) )
+  {
+    setItemOpacity( element.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1" ) ).toDouble() );
+  }
+  else
+  {
+    setItemOpacity( 1.0 - element.attribute( QStringLiteral( "transparency" ), QStringLiteral( "0" ) ).toInt() / 100.0 );
+  }
+
+  mExcludeFromExports = element.attribute( QStringLiteral( "excludeFromExports" ), QStringLiteral( "0" ) ).toInt();
+  mEvaluatedExcludeFromExports = mExcludeFromExports;
+
+  bool result = readPropertiesFromElement( element, doc, context );
+
+  mBlockUndoCommands = false;
+
+  emit changed();
+  update();
+  return result;
 }
 
 QgsAbstractLayoutUndoCommand *QgsLayoutItem::createCommand( const QString &text, int id, QUndoCommand *parent )
 {
   return new QgsLayoutItemUndoCommand( this, text, id, parent );
+}
+
+void QgsLayoutItem::setFrameEnabled( bool drawFrame )
+{
+  if ( drawFrame == mFrame )
+  {
+    //no change
+    return;
+  }
+
+  mFrame = drawFrame;
+  refreshFrame( true );
+  emit frameChanged();
+}
+
+void QgsLayoutItem::setFrameStrokeColor( const QColor &color )
+{
+  if ( mFrameColor == color )
+  {
+    //no change
+    return;
+  }
+  mFrameColor = color;
+  // apply any datadefined overrides
+  refreshFrame( true );
+  emit frameChanged();
+}
+
+void QgsLayoutItem::setFrameStrokeWidth( const QgsLayoutMeasurement &width )
+{
+  if ( mFrameWidth == width )
+  {
+    //no change
+    return;
+  }
+  mFrameWidth = width;
+  refreshFrame();
+  emit frameChanged();
+}
+
+void QgsLayoutItem::setFrameJoinStyle( const Qt::PenJoinStyle style )
+{
+  if ( mFrameJoinStyle == style )
+  {
+    //no change
+    return;
+  }
+  mFrameJoinStyle = style;
+
+  QPen itemPen = pen();
+  itemPen.setJoinStyle( mFrameJoinStyle );
+  setPen( itemPen );
+  emit frameChanged();
+}
+
+void QgsLayoutItem::setBackgroundEnabled( bool drawBackground )
+{
+  mBackground = drawBackground;
+  update();
+}
+
+void QgsLayoutItem::setBackgroundColor( const QColor &color )
+{
+  mBackgroundColor = color;
+  // apply any datadefined overrides
+  refreshBackgroundColor( true );
+}
+
+void QgsLayoutItem::setBlendMode( const QPainter::CompositionMode mode )
+{
+  mBlendMode = mode;
+  // Update the item effect to use the new blend mode
+  refreshBlendMode();
+}
+
+void QgsLayoutItem::setItemOpacity( double opacity )
+{
+  mOpacity = opacity;
+  refreshOpacity( true );
+}
+
+bool QgsLayoutItem::excludeFromExports() const
+{
+  return mExcludeFromExports;
+}
+
+void QgsLayoutItem::setExcludeFromExports( bool exclude )
+{
+  mExcludeFromExports = exclude;
+  refreshDataDefinedProperty( QgsLayoutObject::ExcludeFromExports );
+}
+
+double QgsLayoutItem::estimatedFrameBleed() const
+{
+  if ( !hasFrame() )
+  {
+    return 0;
+  }
+
+  return pen().widthF() / 2.0;
+}
+
+QRectF QgsLayoutItem::rectWithFrame() const
+{
+  double frameBleed = estimatedFrameBleed();
+  return rect().adjusted( -frameBleed, -frameBleed, frameBleed, frameBleed );
+}
+
+void QgsLayoutItem::moveContent( double, double )
+{
+
+}
+
+void QgsLayoutItem::setMoveContentPreviewOffset( double, double )
+{
+
+}
+
+void QgsLayoutItem::zoomContent( double, QPointF )
+{
+
+}
+
+void QgsLayoutItem::beginCommand( const QString &commandText, UndoCommand command )
+{
+  if ( !mLayout )
+    return;
+
+  mLayout->undoStack()->beginCommand( this, commandText, command );
+}
+
+void QgsLayoutItem::endCommand()
+{
+  if ( mLayout )
+    mLayout->undoStack()->endCommand();
+}
+
+void QgsLayoutItem::cancelCommand()
+{
+  if ( mLayout )
+    mLayout->undoStack()->cancelCommand();
 }
 
 QgsLayoutPoint QgsLayoutItem::applyDataDefinedPosition( const QgsLayoutPoint &position )
@@ -285,6 +852,12 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
   {
     return size;
   }
+
+  if ( !mDataDefinedProperties.isActive( QgsLayoutObject::PresetPaperSize ) &&
+       !mDataDefinedProperties.isActive( QgsLayoutObject::ItemWidth ) &&
+       !mDataDefinedProperties.isActive( QgsLayoutObject::ItemHeight ) )
+    return size;
+
 
   QgsExpressionContext context = createExpressionContext();
 
@@ -337,13 +910,45 @@ void QgsLayoutItem::refreshDataDefinedProperty( const QgsLayoutObject::DataDefin
   {
     refreshItemRotation();
   }
+  if ( property == QgsLayoutObject::Opacity || property == QgsLayoutObject::AllProperties )
+  {
+    refreshOpacity( false );
+  }
+  if ( property == QgsLayoutObject::FrameColor || property == QgsLayoutObject::AllProperties )
+  {
+    refreshFrame( false );
+  }
+  if ( property == QgsLayoutObject::BackgroundColor || property == QgsLayoutObject::AllProperties )
+  {
+    refreshBackgroundColor( false );
+  }
+  if ( property == QgsLayoutObject::BlendMode || property == QgsLayoutObject::AllProperties )
+  {
+    refreshBlendMode();
+  }
+  if ( property == QgsLayoutObject::ExcludeFromExports || property == QgsLayoutObject::AllProperties )
+  {
+    bool exclude = mExcludeFromExports;
+    //data defined exclude from exports set?
+    mEvaluatedExcludeFromExports = mDataDefinedProperties.valueAsBool( QgsLayoutObject::ExcludeFromExports, createExpressionContext(), exclude );
+  }
+
+  update();
 }
 
-void QgsLayoutItem::setItemRotation( const double angle )
+void QgsLayoutItem::setItemRotation( double angle, const bool adjustPosition )
 {
-  QPointF itemCenter = positionAtReferencePoint( QgsLayoutItem::Middle );
-  double rotationRequired = angle - itemRotation();
-  rotateItem( rotationRequired, itemCenter );
+  if ( angle >= 360.0 || angle <= -360.0 )
+  {
+    angle = std::fmod( angle, 360.0 );
+  }
+
+  QPointF point = adjustPosition ? positionAtReferencePoint( QgsLayoutItem::Middle )
+                  : pos();
+  double rotationRequired = angle - rotation();
+  rotateItem( rotationRequired, point );
+
+  mItemRotation = angle;
 }
 
 void QgsLayoutItem::updateStoredItemPosition()
@@ -356,21 +961,11 @@ void QgsLayoutItem::rotateItem( const double angle, const QPointF &transformOrig
 {
   double evaluatedAngle = angle + rotation();
   evaluatedAngle = QgsLayoutUtils::normalizedAngle( evaluatedAngle, true );
-  evaluatedAngle = applyDataDefinedRotation( evaluatedAngle );
+  mItemRotation = evaluatedAngle;
 
   QPointF itemTransformOrigin = mapFromScene( transformOrigin );
-  setTransformOriginPoint( itemTransformOrigin );
-  setRotation( evaluatedAngle );
 
-  //adjust stored position of item to match scene pos of reference point
-  updateStoredItemPosition();
-
-  //TODO
-  //  emit itemRotationChanged( rotation );
-
-  //TODO
-  //update bounds of scene, since rotation may affect this
-  //mLayout->updateBounds();
+  refreshItemRotation( &itemTransformOrigin );
 }
 
 
@@ -380,6 +975,16 @@ void QgsLayoutItem::refresh()
   refreshItemSize();
 
   refreshDataDefinedProperty();
+}
+
+void QgsLayoutItem::invalidateCache()
+{
+  if ( !mItemCachedImage.isNull() )
+  {
+    mItemCachedImage = QImage();
+    mItemCacheDpi = -1;
+    update();
+  }
 }
 
 void QgsLayoutItem::redraw()
@@ -402,6 +1007,32 @@ void QgsLayoutItem::drawDebugRect( QPainter *painter )
   painter->restore();
 }
 
+void QgsLayoutItem::drawFrame( QgsRenderContext &context )
+{
+  if ( !mFrame || !context.painter() )
+    return;
+
+  QPainter *p = context.painter();
+  p->save();
+  p->setPen( pen() );
+  p->setBrush( Qt::NoBrush );
+  p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
+  p->restore();
+}
+
+void QgsLayoutItem::drawBackground( QgsRenderContext &context )
+{
+  if ( !mBackground || !context.painter() )
+    return;
+
+  QPainter *p = context.painter();
+  p->save();
+  p->setBrush( brush() );
+  p->setPen( Qt::NoPen );
+  p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
+  p->restore();
+}
+
 void QgsLayoutItem::setFixedSize( const QgsLayoutSize &size )
 {
   mFixedSize = size;
@@ -412,6 +1043,11 @@ void QgsLayoutItem::setMinimumSize( const QgsLayoutSize &size )
 {
   mMinimumSize = size;
   refreshItemSize();
+}
+
+QSizeF QgsLayoutItem::applyItemSizeConstraint( const QSizeF &targetSize )
+{
+  return targetSize;
 }
 
 void QgsLayoutItem::refreshItemSize()
@@ -464,77 +1100,21 @@ QPointF QgsLayoutItem::positionAtReferencePoint( const QgsLayoutItem::ReferenceP
   return mapToScene( pointWithinItem );
 }
 
-bool QgsLayoutItem::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
+QgsLayoutPoint QgsLayoutItem::topLeftToReferencePoint( const QgsLayoutPoint &point ) const
 {
-  element.setAttribute( QStringLiteral( "uuid" ), mUuid );
-  element.setAttribute( QStringLiteral( "id" ), mId );
-  element.setAttribute( QStringLiteral( "referencePoint" ), QString::number( static_cast< int >( mReferencePoint ) ) );
-  element.setAttribute( QStringLiteral( "position" ), mItemPosition.encodePoint() );
-  element.setAttribute( QStringLiteral( "size" ), mItemSize.encodeSize() );
-  element.setAttribute( QStringLiteral( "rotation" ), QString::number( rotation() ) );
+  QPointF topLeft = mLayout->convertToLayoutUnits( point );
+  QPointF refPoint = topLeft + itemPositionAtReferencePoint( mReferencePoint, rect().size() );
+  return mLayout->convertFromLayoutUnits( refPoint, point.units() );
+}
 
-  //TODO
-  /*
-  composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
-  composerItemElem.setAttribute( "visibility", isVisible() );
-  //position lock for mouse moves/resizes
-  if ( mItemPositionLocked )
-  {
-    composerItemElem.setAttribute( "positionLock", "true" );
-  }
-  else
-  {
-    composerItemElem.setAttribute( "positionLock", "false" );
-  }
-  */
-
-  //blend mode
-  //  composerItemElem.setAttribute( "blendMode", QgsMapRenderer::getBlendModeEnum( mBlendMode ) );
-
-  //transparency
-  //  composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
-
-  //  composerItemElem.setAttribute( "excludeFromExports", mExcludeFromExports );
-
-  writeObjectPropertiesToElement( element, document, context );
+bool QgsLayoutItem::writePropertiesToElement( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const
+{
   return true;
 }
 
-bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context )
+bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &, const QDomDocument &, const QgsReadWriteContext & )
 {
-  readObjectPropertiesFromElement( element, document, context );
 
-  mUuid = element.attribute( QStringLiteral( "uuid" ), QUuid::createUuid().toString() );
-  setId( element.attribute( QStringLiteral( "id" ) ) );
-  mReferencePoint = static_cast< ReferencePoint >( element.attribute( QStringLiteral( "referencePoint" ) ).toInt() );
-  attemptMove( QgsLayoutPoint::decodePoint( element.attribute( QStringLiteral( "position" ) ) ) );
-  attemptResize( QgsLayoutSize::decodeSize( element.attribute( QStringLiteral( "size" ) ) ) );
-  setItemRotation( element.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble() );
-
-  //TODO
-  /*
-  // temporary for groups imported from templates
-  mTemplateUuid = itemElem.attribute( "templateUuid" );
-  //position lock for mouse moves/resizes
-  QString positionLock = itemElem.attribute( "positionLock" );
-  if ( positionLock.compare( "true", Qt::CaseInsensitive ) == 0 )
-  {
-    setPositionLock( true );
-  }
-  else
-  {
-    setPositionLock( false );
-  }
-  //visibility
-  setVisibility( itemElem.attribute( "visibility", "1" ) != "0" );
-  setZValue( itemElem.attribute( "zValue" ).toDouble() );
-  //blend mode
-  setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode", "0" ).toUInt() ) );
-  //transparency
-  setTransparency( itemElem.attribute( "transparency", "0" ).toInt() );
-  mExcludeFromExports = itemElem.attribute( "excludeFromExports", "0" ).toInt();
-  mEvaluatedExcludeFromExports = mExcludeFromExports;
-  */
   return true;
 }
 
@@ -589,7 +1169,127 @@ QSizeF QgsLayoutItem::applyFixedSize( const QSizeF &targetSize )
   return targetSize.expandedTo( fixedSizeLayoutUnits );
 }
 
-void QgsLayoutItem::refreshItemRotation()
+void QgsLayoutItem::refreshItemRotation( QPointF *origin )
 {
-  setItemRotation( itemRotation() );
+  double r = mItemRotation;
+
+  //data defined rotation set?
+  r = mDataDefinedProperties.valueAsDouble( QgsLayoutItem::ItemRotation, createExpressionContext(), r );
+
+  if ( qgsDoubleNear( r, rotation() ) && !origin )
+  {
+    return;
+  }
+
+  QPointF transformPoint = origin ? *origin : mapFromScene( positionAtReferencePoint( QgsLayoutItem::Middle ) );
+
+  if ( !transformPoint.isNull() )
+  {
+    //adjustPosition set, so shift the position of the item so that rotation occurs around item center
+    //create a line from the transform point to the item's origin, in scene coordinates
+    QLineF refLine = QLineF( mapToScene( transformPoint ), mapToScene( QPointF( 0, 0 ) ) );
+    //rotate this line by the current rotation angle
+    refLine.setAngle( refLine.angle() - r + rotation() );
+    //get new end point of line - this is the new item position
+    QPointF rotatedReferencePoint = refLine.p2();
+    setPos( rotatedReferencePoint );
+  }
+
+  setTransformOriginPoint( 0, 0 );
+  QGraphicsItem::setRotation( r );
+
+  //adjust stored position of item to match scene pos of reference point
+  updateStoredItemPosition();
+  emit sizePositionChanged();
+
+  emit rotationChanged( r );
+
+  //update bounds of scene, since rotation may affect this
+  mLayout->updateBounds();
+}
+
+void QgsLayoutItem::refreshOpacity( bool updateItem )
+{
+  //data defined opacity set?
+  double opacity = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::Opacity, createExpressionContext(), mOpacity * 100.0 );
+
+  // Set the QGraphicItem's opacity
+  setOpacity( opacity / 100.0 );
+
+  if ( updateItem )
+  {
+    update();
+  }
+}
+
+void QgsLayoutItem::refreshFrame( bool updateItem )
+{
+  if ( !mFrame )
+  {
+    setPen( Qt::NoPen );
+    return;
+  }
+
+  //data defined stroke color set?
+  bool ok = false;
+  QColor frameColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::FrameColor, createExpressionContext(), mFrameColor, &ok );
+  QPen itemPen;
+  if ( ok )
+  {
+    itemPen = QPen( frameColor );
+  }
+  else
+  {
+    itemPen = QPen( mFrameColor );
+  }
+  itemPen.setJoinStyle( mFrameJoinStyle );
+
+  if ( mLayout )
+    itemPen.setWidthF( mLayout->convertToLayoutUnits( mFrameWidth ) );
+  else
+    itemPen.setWidthF( mFrameWidth.length() );
+
+  setPen( itemPen );
+
+  if ( updateItem )
+  {
+    update();
+  }
+}
+
+void QgsLayoutItem::refreshBackgroundColor( bool updateItem )
+{
+  //data defined fill color set?
+  bool ok = false;
+  QColor backgroundColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::BackgroundColor, createExpressionContext(), mBackgroundColor, &ok );
+  if ( ok )
+  {
+    setBrush( QBrush( backgroundColor, Qt::SolidPattern ) );
+  }
+  else
+  {
+    setBrush( QBrush( mBackgroundColor, Qt::SolidPattern ) );
+  }
+  if ( updateItem )
+  {
+    update();
+  }
+}
+
+void QgsLayoutItem::refreshBlendMode()
+{
+  QPainter::CompositionMode blendMode = mBlendMode;
+
+  //data defined blend mode set?
+  bool ok = false;
+  QString blendStr = mDataDefinedProperties.valueAsString( QgsLayoutObject::BlendMode, createExpressionContext(), QString(), &ok );
+  if ( ok && !blendStr.isEmpty() )
+  {
+    QString blendstr = blendStr.trimmed();
+    QPainter::CompositionMode blendModeD = QgsSymbolLayerUtils::decodeBlendMode( blendstr );
+    blendMode = blendModeD;
+  }
+
+  // Update the item effect to use the new blend mode
+  mEffect->setCompositionMode( blendMode );
 }

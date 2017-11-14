@@ -61,7 +61,7 @@ class RasterOptionsWidgetWrapper(WidgetWrapper):
         elif self.dialogType == DIALOG_BATCH:
             self.widget.setText(value)
         else:
-            self.widget.setValue(value)
+            self.widget.setOptions(value)
 
     def value(self):
         if self.dialogType == DIALOG_MODELER:

@@ -57,15 +57,15 @@ class QgsAuthPkiPathsEdit : public QgsAuthMethodEdit, private Ui::QgsAuthPkiPath
     void clearPkiPathsKeyPath();
     void clearPkiPathsKeyPass();
 
-    void on_chkPkiPathsPassShow_stateChanged( int state );
+    void chkPkiPathsPassShow_stateChanged( int state );
 
-    void on_btnPkiPathsCert_clicked();
+    void btnPkiPathsCert_clicked();
 
-    void on_btnPkiPathsKey_clicked();
+    void btnPkiPathsKey_clicked();
 
   private:
     bool validityChange( bool curvalid );
-
+    bool populateCas();
     QgsStringMap mConfigMap;
     bool mValid = 0;
 };

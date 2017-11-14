@@ -47,7 +47,7 @@ class ConnectionWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
         for group in self.items():
             self._combo.addItem(*group)
         self._combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
-        return self.wrapWithExpressionButton(self._combo)
+        return self._combo
 
     def items(self):
         settings = QgsSettings()
@@ -86,7 +86,7 @@ class SchemaWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
         self._combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
         self._combo.lineEdit().editingFinished.connect(lambda: self.widgetValueHasChanged.emit(self))
 
-        return self.wrapWithExpressionButton(self._combo)
+        return self._combo
 
     def postInitialize(self, wrappers):
         for wrapper in wrappers:
@@ -158,7 +158,7 @@ class TableWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
         self._combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
         self._combo.lineEdit().editingFinished.connect(lambda: self.widgetValueHasChanged.emit(self))
 
-        return self.wrapWithExpressionButton(self._combo)
+        return self._combo
 
     def postInitialize(self, wrappers):
         for wrapper in wrappers:

@@ -157,6 +157,8 @@ class QgsPostgresResult
     QgsPostgresResult &operator=( PGresult *result );
     QgsPostgresResult &operator=( const QgsPostgresResult &src );
 
+    QgsPostgresResult( const QgsPostgresResult &rh ) = delete;
+
     ExecStatusType PQresultStatus();
     QString PQresultErrorMessage();
 
@@ -177,7 +179,6 @@ class QgsPostgresResult
   private:
     PGresult *mRes = nullptr;
 
-    QgsPostgresResult( const QgsPostgresResult &rh );
 };
 
 
@@ -244,11 +245,11 @@ class QgsPostgresConn : public QObject
     //
 
     // run a query and check for errors
-    PGresult *PQexec( const QString &query, bool logError = true );
+    PGresult *PQexec( const QString &query, bool logError = true ) const;
     void PQfinish();
-    QString PQerrorMessage();
+    QString PQerrorMessage() const;
     int PQsendQuery( const QString &query );
-    int PQstatus();
+    int PQstatus() const;
     PGresult *PQgetResult();
     PGresult *PQprepare( const QString &stmtName, const QString &query, int nParams, const Oid *paramTypes );
     PGresult *PQexecPrepared( const QString &stmtName, const QStringList &params );
@@ -261,15 +262,18 @@ class QgsPostgresConn : public QObject
     // cancel running query
     bool cancel();
 
-    /** Double quote a PostgreSQL identifier for placement in a SQL string.
+    /**
+     * Double quote a PostgreSQL identifier for placement in a SQL string.
      */
     static QString quotedIdentifier( const QString &ident );
 
-    /** Quote a value for placement in a SQL string.
+    /**
+     * Quote a value for placement in a SQL string.
      */
     static QString quotedValue( const QVariant &value );
 
-    /** Get the list of supported layers
+    /**
+     * Get the list of supported layers
      * \param layers list to store layers in
      * \param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
@@ -284,7 +288,8 @@ class QgsPostgresConn : public QObject
                           bool allowGeometrylessTables = false,
                           const QString &schema = QString() );
 
-    /** Get the list of database schemas
+    /**
+     * Get the list of database schemas
      * \param schemas list to store schemas in
      * \returns true if schemas where fetched successfully
      * \since QGIS 2.7
@@ -293,7 +298,8 @@ class QgsPostgresConn : public QObject
 
     void retrieveLayerTypes( QgsPostgresLayerProperty &layerProperty, bool useEstimatedMetadata );
 
-    /** Gets information about the spatial tables
+    /**
+     * Gets information about the spatial tables
      * \param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
      * \param searchPublicOnly
@@ -309,6 +315,13 @@ class QgsPostgresConn : public QObject
     QString fieldExpression( const QgsField &fld, QString expr = "%1" );
 
     QString connInfo() const { return mConnInfo; }
+
+    /**
+     * Returns the underlying database.
+     *
+     * \since QGIS 3.0
+     */
+    QString currentDatabase() const;
 
     static const int GEOM_TYPE_SELECT_LIMIT;
 

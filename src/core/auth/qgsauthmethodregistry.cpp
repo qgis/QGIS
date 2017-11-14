@@ -167,7 +167,8 @@ QgsAuthMethodRegistry::~QgsAuthMethodRegistry()
 }
 
 
-/** Convenience function for finding any existing auth methods that match "authMethodKey"
+/**
+ * Convenience function for finding any existing auth methods that match "authMethodKey"
 
   Necessary because [] map operator will create a QgsProviderMetadata
   instance.  Also you cannot use the map [] operator in const members for that

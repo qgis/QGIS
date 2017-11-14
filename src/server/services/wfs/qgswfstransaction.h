@@ -52,6 +52,8 @@ namespace QgsWfs
 
     QgsFeatureRequest featureRequest;
 
+    int totalUpdated = 0;
+
     bool error;
 
     QString errorMsg;
@@ -64,6 +66,8 @@ namespace QgsWfs
     QString handle;
 
     QgsFeatureRequest featureRequest;
+
+    int totalDeleted = 0;
 
     bool error;
 
@@ -79,29 +83,35 @@ namespace QgsWfs
     QList< transactionDelete > deletes;
   };
 
-  /** Transform Insert element to transactionInsert
+  /**
+   * Transform Insert element to transactionInsert
    */
   transactionInsert parseInsertActionElement( QDomElement &actionElem );
 
-  /** Transform Update element to transactionUpdate
+  /**
+   * Transform Update element to transactionUpdate
    */
   transactionUpdate parseUpdateActionElement( QDomElement &actionElem );
 
-  /** Transform Delete element to transactionDelete
+  /**
+   * Transform Delete element to transactionDelete
    */
   transactionDelete parseDeleteActionElement( QDomElement &actionElem );
 
-  /** Transform RequestBody root element to getFeatureRequest
+  /**
+   * Transform RequestBody root element to getFeatureRequest
    */
   transactionRequest parseTransactionRequestBody( QDomElement &docElem );
 
   transactionRequest parseTransactionParameters( QgsServerRequest::Parameters parameters );
 
-  /** Transform GML feature nodes to features
+  /**
+   * Transform GML feature nodes to features
    */
   QgsFeatureList featuresFromGML( QDomNodeList featureNodeList, QgsVectorDataProvider *provider );
 
-  /** Perform the transaction
+  /**
+   * Perform the transaction
    */
   void performTransaction( transactionRequest &aRequest, QgsServerInterface *serverIface, const QgsProject *project );
 

@@ -1,0 +1,9 @@
+r.out.mpeg
+Converts raster map series to MPEG movie
+Raster (r.*)
+QgsProcessingParameterMultipleLayers|view1|Name of input raster map(s) for view no.1|3|None|False
+QgsProcessingParameterMultipleLayers|view2|Name of input raster map(s) for view no.2|3|None|True
+QgsProcessingParameterMultipleLayers|view3|Name of input raster map(s) for view no.3|3|None|True
+QgsProcessingParameterMultipleLayers|view4|Name of input raster map(s) for view no.4|3|None|True
+QgsProcessingParameterNumber|quality|Quality factor (1 = highest quality, lowest compression)|QgsProcessingParameterNumber.Integer|3|True|1|5
+QgsProcessingParameterFileDestination|output|MPEG file|MPEG files (*.mpeg;*.mpg)|None|False

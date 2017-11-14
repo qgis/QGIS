@@ -19,7 +19,8 @@
 #include "qgis_core.h"
 #include "qgsrenderchecker.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class allows checking rendered images against comparison images.
  * Its main purpose is for the unit testing framework.
  *
@@ -121,7 +122,8 @@ class CORE_EXPORT QgsMultiRenderChecker
      */
     QString controlImagePath() const;
 
-    /** Draws a checkboard pattern for image backgrounds, so that opacity is visible
+    /**
+     * Draws a checkboard pattern for image backgrounds, so that opacity is visible
      * without requiring a transparent background for the image
      */
     static void drawBackground( QImage *image ) { QgsRenderChecker::drawBackground( image ); }
@@ -141,7 +143,8 @@ SIP_IF_FEATURE( TESTS )
 
 ///@cond PRIVATE
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCompositionChecker
  * Renders a composition to an image and compares with an expected output
  */
@@ -159,6 +162,48 @@ class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
 
     QString mTestName;
     QgsComposition *mComposition = nullptr;
+    QSize mSize;
+    int mDotsPerMeter;
+};
+
+/**
+ * \ingroup core
+ * \class QgsLayoutChecker
+ * Renders a layout to an image and compares with an expected output
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsLayoutChecker : public QgsMultiRenderChecker
+{
+  public:
+
+    /**
+     * Constructor for QgsLayoutChecker.
+     */
+    QgsLayoutChecker( const QString &testName, QgsLayout *layout );
+
+    /**
+     * Sets the output (reference) image \a size.
+     */
+    void setSize( QSize size ) { mSize = size; }
+
+    /**
+     * Runs a render check on the layout, adding results to the specified \a report.
+     *
+     * The maximum number of allowable pixels differing from the reference image is
+     * specified via the \a pixelDiff argument.
+     *
+     * The page number is specified via \a page, where 0 corresponds to the first
+     * page in the layout.
+     *
+     * Returns false if the rendered layout differs from the expected reference image.
+     */
+    bool testLayout( QString &report, int page = 0, int pixelDiff = 0 );
+
+  private:
+    QgsLayoutChecker() = delete;
+
+    QString mTestName;
+    QgsLayout *mLayout = nullptr;
     QSize mSize;
     int mDotsPerMeter;
 };

@@ -59,11 +59,13 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       MaterializedView, // m
       CompositeType, // c
       ToastTable, // t
-      ForeignTable // f
+      ForeignTable, // f
+      PartitionedTable // p - PostgreSQL 10
     };
     Q_ENUM( Relkind );
 
-    /** Import a vector layer into the database
+    /**
+     * Import a vector layer into the database
      * \param options options for provider, specified via a map of option name
      * to value. Valid options are lowercaseFieldNames (set to true to convert
      * field names to lowercase), dropStringConstraints (set to true to remove
@@ -97,7 +99,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     QgsWkbTypes::Type wkbType() const override;
 
-    /** Return the number of layers for the current data source
+    /**
+     * Return the number of layers for the current data source
      * \note Should this be subLayerCount() instead?
      */
     size_t layerCount() const;
@@ -173,7 +176,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     virtual bool supportsSubsetString() const override { return true; }
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
-    /** The Postgres provider does its own transforms so we return
+    /**
+     * The Postgres provider does its own transforms so we return
      * true for the following three functions to indicate that transforms
      * should not be handled by the QgsCoordinateTransform object. See the
      * documentation on QgsVectorDataProvider for details on these functions.
@@ -198,7 +202,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
     virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
 
-    /** Returns true if the data source has metadata, false otherwise. For
+    /**
+     * Returns true if the data source has metadata, false otherwise. For
      * example, if the kind of relation for the layer is a view or a
      * materialized view, then no metadata are associated with the data
      * source.
@@ -247,7 +252,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QString geomParam( int offset ) const;
 
-    /** Get parametrized primary key clause
+    /**
+     * Get parametrized primary key clause
      * \param offset specifies offset to use for the pk value parameter
      * \param alias specifies an optional alias given to the subject table
      */
@@ -260,31 +266,36 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QgsField field( int index ) const;
 
-    /** Load the field list
+    /**
+     * Load the field list
      */
     bool loadFields();
 
-    /** Set the default widget type for the fields
+    /**
+     * Set the default widget type for the fields
      */
     void setEditorWidgets();
 
     //! Convert a QgsField to work with PG
     static bool convertField( QgsField &field, const QMap<QString, QVariant> *options = nullptr );
 
-    /** Parses the enum_range of an attribute and inserts the possible values into a stringlist
+    /**
+     * Parses the enum_range of an attribute and inserts the possible values into a stringlist
     \param enumValues the stringlist where the values are appended
     \param attributeName the name of the enum attribute
     \returns true in case of success and fals in case of error (e.g. if the type is not an enum type)*/
     bool parseEnumRange( QStringList &enumValues, const QString &attributeName ) const;
 
-    /** Parses the possible enum values of a domain type (given in the check constraint of the domain type)
+    /**
+     * Parses the possible enum values of a domain type (given in the check constraint of the domain type)
      * \param enumValues Reference to list that receives enum values
      * \param attributeName Name of the domain type attribute
      * \returns true in case of success and false in case of error (e.g. if the attribute is not a domain type or does not have a check constraint)
      */
     bool parseDomainCheckConstraint( QStringList &enumValues, const QString &attributeName ) const;
 
-    /** Return the type of primary key for a PK field
+    /**
+     * Return the type of primary key for a PK field
      *
      * \param fld the field to determine PK type of
      * \returns the PrimaryKeyType
@@ -477,7 +488,8 @@ class QgsPostgresUtils
     }
 };
 
-/** Data shared between provider class and its feature sources. Ideally there should
+/**
+ * Data shared between provider class and its feature sources. Ideally there should
  *  be as few members as possible because there could be simultaneous reads/writes
  *  from different threads and therefore locking has to be involved. */
 class QgsPostgresSharedData

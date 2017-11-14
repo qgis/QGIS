@@ -514,7 +514,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
           {
             QgsFeature f;
             f.setId( mFile->recordId() );
-            f.setGeometry( QgsGeometry::fromPoint( pt ) );
+            f.setGeometry( QgsGeometry::fromPointXY( pt ) );
             mSpatialIndex->insertFeature( f );
           }
         }
@@ -1149,7 +1149,8 @@ QGISEXTERN QgsDelimitedTextProvider *classFactory( const QString *uri )
   return new QgsDelimitedTextProvider( *uri );
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {

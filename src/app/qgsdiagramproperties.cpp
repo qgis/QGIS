@@ -39,6 +39,8 @@
 #include "qgslogger.h"
 #include "qgisapp.h"
 #include "qgssettings.h"
+#include "qgsnewauxiliarylayerdialog.h"
+#include "qgsauxiliarystorage.h"
 
 #include <QList>
 #include <QMessageBox>
@@ -68,6 +70,14 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   }
 
   setupUi( this );
+  connect( mDiagramTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged );
+  connect( mAddCategoryPushButton, &QPushButton::clicked, this, &QgsDiagramProperties::mAddCategoryPushButton_clicked );
+  connect( mAttributesTreeWidget, &QTreeWidget::itemDoubleClicked, this, &QgsDiagramProperties::mAttributesTreeWidget_itemDoubleClicked );
+  connect( mFindMaximumValueButton, &QPushButton::clicked, this, &QgsDiagramProperties::mFindMaximumValueButton_clicked );
+  connect( mRemoveCategoryPushButton, &QPushButton::clicked, this, &QgsDiagramProperties::mRemoveCategoryPushButton_clicked );
+  connect( mDiagramAttributesTreeWidget, &QTreeWidget::itemDoubleClicked, this, &QgsDiagramProperties::mDiagramAttributesTreeWidget_itemDoubleClicked );
+  connect( mEngineSettingsButton, &QPushButton::clicked, this, &QgsDiagramProperties::mEngineSettingsButton_clicked );
+  connect( mDiagramStackedWidget, &QStackedWidget::currentChanged, this, &QgsDiagramProperties::mDiagramStackedWidget_currentChanged );
 
   // get rid of annoying outer focus rect on Mac
   mDiagramOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
@@ -257,7 +267,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
     }
     mBackgroundColorButton->setColor( QColor( 255, 255, 255, 255 ) );
     //force a refresh of widget status to match diagram type
-    on_mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
+    mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
   }
   else // already a diagram renderer present
   {
@@ -440,7 +450,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       mDiagramTypeComboBox->setCurrentIndex( settingList.at( 0 ).enabled ? mDiagramTypeComboBox->findData( mDiagramType ) : 0 );
       mDiagramTypeComboBox->blockSignals( false );
       //force a refresh of widget status to match diagram type
-      on_mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
+      mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
       if ( mDiagramTypeComboBox->currentIndex() == -1 )
       {
         QMessageBox::warning( this, tr( "Unknown diagram type." ),
@@ -476,8 +486,9 @@ QgsDiagramProperties::~QgsDiagramProperties()
 
 void QgsDiagramProperties::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsDiagramLayerSettings::Property key )
 {
-  button->init( key, mDataDefinedProperties, QgsDiagramLayerSettings::propertyDefinitions(), mLayer );
+  button->init( key, mDataDefinedProperties, QgsDiagramLayerSettings::propertyDefinitions(), mLayer, true );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsDiagramProperties::updateProperty );
+  connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsDiagramProperties::createAuxiliaryField );
   button->registerExpressionContextGenerator( this );
 }
 
@@ -488,7 +499,7 @@ void QgsDiagramProperties::updateProperty()
   mDataDefinedProperties.setProperty( key, button->toProperty() );
 }
 
-void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int index )
+void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
 {
   if ( index == 0 )
   {
@@ -594,7 +605,7 @@ void QgsDiagramProperties::addAttribute( QTreeWidgetItem *item )
   mDiagramAttributesTreeWidget->addTopLevelItem( newItem );
 }
 
-void QgsDiagramProperties::on_mAddCategoryPushButton_clicked()
+void QgsDiagramProperties::mAddCategoryPushButton_clicked()
 {
   Q_FOREACH ( QTreeWidgetItem *attributeItem, mAttributesTreeWidget->selectedItems() )
   {
@@ -602,13 +613,13 @@ void QgsDiagramProperties::on_mAddCategoryPushButton_clicked()
   }
 }
 
-void QgsDiagramProperties::on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column )
+void QgsDiagramProperties::mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column )
 {
   Q_UNUSED( column );
   addAttribute( item );
 }
 
-void QgsDiagramProperties::on_mRemoveCategoryPushButton_clicked()
+void QgsDiagramProperties::mRemoveCategoryPushButton_clicked()
 {
   Q_FOREACH ( QTreeWidgetItem *attributeItem, mDiagramAttributesTreeWidget->selectedItems() )
   {
@@ -616,7 +627,7 @@ void QgsDiagramProperties::on_mRemoveCategoryPushButton_clicked()
   }
 }
 
-void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
+void QgsDiagramProperties::mFindMaximumValueButton_clicked()
 {
   if ( !mLayer )
     return;
@@ -659,7 +670,7 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
   mMaxValueSpinBox->setValue( maxValue );
 }
 
-void QgsDiagramProperties::on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column )
+void QgsDiagramProperties::mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column )
 {
   switch ( column )
   {
@@ -691,7 +702,7 @@ void QgsDiagramProperties::on_mDiagramAttributesTreeWidget_itemDoubleClicked( QT
   }
 }
 
-void QgsDiagramProperties::on_mEngineSettingsButton_clicked()
+void QgsDiagramProperties::mEngineSettingsButton_clicked()
 {
   QgsLabelEngineConfigDialog dlg( this );
   dlg.exec();
@@ -974,7 +985,7 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
   activateWindow(); // set focus back parent
 }
 
-void QgsDiagramProperties::on_mDiagramStackedWidget_currentChanged( int index )
+void QgsDiagramProperties::mDiagramStackedWidget_currentChanged( int index )
 {
   mDiagramOptionsListWidget->blockSignals( true );
   mDiagramOptionsListWidget->setCurrentRow( index );
@@ -1039,4 +1050,36 @@ void QgsDiagramProperties::showSizeLegendDialog()
 void QgsDiagramProperties::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#legend" ) );
+}
+
+void QgsDiagramProperties::createAuxiliaryField()
+{
+  // try to create an auxiliary layer if not yet created
+  if ( !mLayer->auxiliaryLayer() )
+  {
+    QgsNewAuxiliaryLayerDialog dlg( mLayer, this );
+    dlg.exec();
+  }
+
+  // return if still not exists
+  if ( !mLayer->auxiliaryLayer() )
+    return;
+
+  QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
+  const QgsDiagramLayerSettings::Property key = static_cast< QgsDiagramLayerSettings::Property >( button->propertyKey() );
+  const QgsPropertyDefinition def = QgsDiagramLayerSettings::propertyDefinitions()[key];
+
+  // create property in auxiliary storage if necessary
+  if ( !mLayer->auxiliaryLayer()->exists( def ) )
+    mLayer->auxiliaryLayer()->addAuxiliaryField( def );
+
+  // update property with join field name from auxiliary storage
+  QgsProperty property = button->toProperty();
+  property.setField( QgsAuxiliaryLayer::nameFromProperty( def, true ) );
+  property.setActive( true );
+  button->updateFieldLists();
+  button->setToProperty( property );
+  mDataDefinedProperties.setProperty( key, button->toProperty() );
+
+  emit auxiliaryFieldCreated();
 }

@@ -28,7 +28,6 @@ class QgsNetworkStrategy
 %TypeHeaderCode
 #include "qgsnetworkstrategy.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast< QgsNetworkDistanceStrategy * >( sipCpp ) != NULL )
       sipType = sipType_QgsNetworkDistanceStrategy;
@@ -46,12 +45,11 @@ class QgsNetworkStrategy
 
     virtual ~QgsNetworkStrategy();
 
-    virtual QgsAttributeList requiredAttributes() const;
+    virtual QSet< int > requiredAttributes() const;
 %Docstring
- Returns list of the source layer attributes needed for cost calculation.
- This method called by QgsGraphDirector.
- :return: list of required attributes
- :rtype: QgsAttributeList
+ Returns a list of the source layer attributes needed for cost calculation.
+ This is method called by QgsGraphDirector.
+ :rtype: set of int
 %End
 
     virtual QVariant cost( double distance, const QgsFeature &f ) const = 0;

@@ -593,6 +593,14 @@ void QgsExpressionContextUtils::setGlobalVariables( const QVariantMap &variables
   QgsApplication::setCustomVariables( variables );
 }
 
+void QgsExpressionContextUtils::removeGlobalVariable( const QString &name )
+{
+  QVariantMap vars = QgsApplication::customVariables();
+  if ( vars.remove( name ) )
+    QgsApplication::setCustomVariables( vars );
+}
+
+
 /// @cond PRIVATE
 
 class GetNamedProjectColor : public QgsScopedExpressionFunction
@@ -796,6 +804,18 @@ void QgsExpressionContextUtils::setProjectVariables( QgsProject *project, const 
   project->setCustomVariables( variables );
 }
 
+void QgsExpressionContextUtils::removeProjectVariable( QgsProject *project, const QString &name )
+{
+  if ( !project )
+  {
+    return;
+  }
+
+  QVariantMap vars = project->customVariables();
+  if ( vars.remove( name ) )
+    project->setCustomVariables( vars );
+}
+
 QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLayer *layer )
 {
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layer" ) );
@@ -901,7 +921,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent" ), QVariant::fromValue( extent ), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent_width" ), mapSettings.visibleExtent().width(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent_height" ), mapSettings.visibleExtent().height(), true ) );
-  QgsGeometry centerPoint = QgsGeometry::fromPoint( mapSettings.visibleExtent().center() );
+  QgsGeometry centerPoint = QgsGeometry::fromPointXY( mapSettings.visibleExtent().center() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_extent_center" ), QVariant::fromValue( centerPoint ), true ) );
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs" ), mapSettings.destinationCrs().authid(), true ) );

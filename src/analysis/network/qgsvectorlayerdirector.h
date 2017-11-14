@@ -36,7 +36,8 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
 
   public:
 
-    /** Edge direction
+    /**
+     * Edge direction
      * Edge can be one-way with direct flow (one can move only from the start
      * point to the end point), one-way with reversed flow (one can move only
      * from the end point to the start point) and bidirectional or two-way
@@ -81,11 +82,14 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
 
   private:
     QgsFeatureSource *mSource = nullptr;
-    int mDirectionFieldId;
+    int mDirectionFieldId = -1;
     QString mDirectDirectionValue;
     QString mReverseDirectionValue;
     QString mBothDirectionValue;
-    Direction mDefaultDirection;
+    Direction mDefaultDirection = DirectionBoth;
+
+    QgsAttributeList requiredAttributes() const;
+    Direction directionForFeature( const QgsFeature &feature ) const;
 };
 
 #endif // QGSVECTORLAYERDIRECTOR_H

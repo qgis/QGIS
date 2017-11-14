@@ -49,6 +49,7 @@
 #include "qgslayoutmanager.h"
 #include "qgsmaplayerstore.h"
 #include "qgsziputils.h"
+#include "qgsauxiliarystorage.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -59,10 +60,10 @@
 #include <QDir>
 #include <QUrl>
 
-#ifdef Q_OS_UNIX
-#include <utime.h>
-#elif _MSC_VER
+#ifdef _MSC_VER
 #include <sys/utime.h>
+#else
+#include <utime.h>
 #endif
 
 // canonical project instance
@@ -186,7 +187,8 @@ QgsProjectProperty *findKey_( const QString &scope,
 
 
 
-/** Add the given key and value
+/**
+ * Add the given key and value
 
 @param scope scope of key
 @param key key name
@@ -334,6 +336,7 @@ QgsProject::QgsProject( QObject *parent )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
   , mArchive( new QgsProjectArchive() )
+  , mAuxiliaryStorage( new QgsAuxiliaryStorage() )
 {
   mProperties.setName( QStringLiteral( "properties" ) );
   clear();
@@ -370,6 +373,10 @@ QgsProject::~QgsProject()
   delete mRelationManager;
   delete mLayerTreeRegistryBridge;
   delete mRootGroup;
+  if ( this == sProject )
+  {
+    sProject = nullptr;
+  }
 }
 
 
@@ -423,8 +430,6 @@ void QgsProject::setFileName( const QString &name )
   if ( newHomePath != oldHomePath )
     emit homePathChanged();
 
-  mArchive->clear();
-
   setDirty( true );
 }
 
@@ -446,9 +451,6 @@ QgsCoordinateReferenceSystem QgsProject::crs() const
 void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mCrs = crs;
-  writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSProj4String" ), crs.toProj4() );
-  writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), static_cast< int >( crs.srsid() ) );
-  writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCrs" ), crs.authid() );
   writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), crs.isValid() ? 1 : 0 );
   setDirty( true );
   emit crsChanged();
@@ -492,6 +494,7 @@ void QgsProject::clear()
 
   mLabelingEngineSettings->clear();
 
+  mAuxiliaryStorage.reset( new QgsAuxiliaryStorage() );
   mArchive->clear();
 
   emit labelingEngineSettingsChanged();
@@ -775,9 +778,14 @@ bool QgsProject::read()
   bool rc;
 
   if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
+  {
     rc = unzip( mFile.fileName() );
+  }
   else
+  {
+    mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( *this ) );
     rc = readProjectFile( mFile.fileName() );
+  }
 
   mFile.setFileName( filename );
   return rc;
@@ -849,9 +857,11 @@ bool QgsProject::readProjectFile( const QString &filename )
     projectFile.updateRevision( thisVersion );
   }
 
-  // start new project, just keep the file name
+  // start new project, just keep the file name and auxiliary storage
   QString fileName = mFile.fileName();
+  std::unique_ptr<QgsAuxiliaryStorage> aStorage = std::move( mAuxiliaryStorage );
   clear();
+  mAuxiliaryStorage = std::move( aStorage );
   mFile.setFileName( fileName );
 
   // now get any properties
@@ -871,14 +881,34 @@ bool QgsProject::readProjectFile( const QString &filename )
   QgsCoordinateReferenceSystem projectCrs;
   if ( readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), 0 ) )
   {
-    long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
-    if ( currentCRS != -1 )
+    // first preference - dedicated projectCrs node
+    QDomNode srsNode = doc->documentElement().namedItem( QStringLiteral( "projectCrs" ) );
+    if ( !srsNode.isNull() )
     {
-      projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
+      projectCrs.readXml( srsNode );
+    }
+
+    if ( !projectCrs.isValid() )
+    {
+      // else we try using the stored proj4 string - it's consistent across different QGIS installs,
+      // whereas the srsid can vary (e.g. for custom projections)
+      QString projCrsString = readEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSProj4String" ) );
+      if ( !projCrsString.isEmpty() )
+      {
+        projectCrs = QgsCoordinateReferenceSystem::fromProj4( projCrsString );
+      }
+      // last try using crs id - most fragile
+      if ( !projectCrs.isValid() )
+      {
+        long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
+        if ( currentCRS != -1 && currentCRS < USER_CRS_START_ID )
+        {
+          projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
+        }
+      }
     }
   }
   mCrs = projectCrs;
-  emit crsChanged();
 
   QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );
   if ( nl.count() )
@@ -911,7 +941,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   QDomElement layerTreeElem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
-    mRootGroup->readChildrenFromXml( layerTreeElem );
+    mRootGroup->readChildrenFromXml( layerTreeElem, context );
   }
   else
   {
@@ -1027,6 +1057,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 
 void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
 {
+
   Q_FOREACH ( QgsLayerTreeNode *child, group->children() )
   {
     if ( QgsLayerTree::isGroup( child ) )
@@ -1037,7 +1068,6 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
         // make sure to convert the path from relative to absolute
         QString projectPath = readPath( childGroup->customProperty( QStringLiteral( "embedded_project" ) ).toString() );
         childGroup->setCustomProperty( QStringLiteral( "embedded_project" ), projectPath );
-
         QgsLayerTreeGroup *newGroup = createEmbeddedGroup( childGroup->name(), projectPath, childGroup->customProperty( QStringLiteral( "embedded-invisible-layers" ) ).toStringList() );
         if ( newGroup )
         {
@@ -1257,9 +1287,22 @@ bool QgsProject::write( const QString &filename )
 bool QgsProject::write()
 {
   if ( QgsZipUtils::isZipFile( mFile.fileName() ) )
+  {
     return zip( mFile.fileName() );
+  }
   else
-    return writeProjectFile( mFile.fileName() );
+  {
+    // write project file even if the auxiliary storage is not correctly
+    // saved
+    const bool asOk = saveAuxiliaryStorage();
+    const bool writeOk = writeProjectFile( mFile.fileName() );
+
+    // errors raised during writing project file are more important
+    if ( !asOk && writeOk )
+      setError( tr( "Unable to save auxiliary storage" ) );
+
+    return asOk && writeOk;
+  }
 }
 
 bool QgsProject::writeProjectFile( const QString &filename )
@@ -1314,11 +1357,17 @@ bool QgsProject::writeProjectFile( const QString &filename )
   QDomText titleText = doc->createTextNode( title() );  // XXX why have title TWICE?
   titleNode.appendChild( titleText );
 
+  // write project CRS
+  QDomElement srsNode = doc->createElement( QStringLiteral( "projectCrs" ) );
+  mCrs.writeXml( srsNode, *doc );
+  qgisNode.appendChild( srsNode );
+
   // write layer tree - make sure it is without embedded subgroups
   QgsLayerTreeNode *clonedRoot = mRootGroup->clone();
   QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
   QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( clonedRoot ), this ); // convert absolute paths to relative paths if required
-  clonedRoot->writeXml( qgisNode );
+
+  clonedRoot->writeXml( qgisNode, context );
   delete clonedRoot;
 
   mSnappingConfig.writeProject( *doc );
@@ -1834,6 +1883,9 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
     return nullptr;
   }
 
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver() );
+
   // store identify disabled layers of the embedded project
   QSet<QString> embeddedIdentifyDisabledLayers;
   QDomElement disabledLayersElem = projectDocument.documentElement().firstChildElement( QStringLiteral( "properties" ) ).firstChildElement( QStringLiteral( "Identify" ) ).firstChildElement( QStringLiteral( "disabledLayers" ) );
@@ -1851,7 +1903,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   QDomElement layerTreeElem = projectDocument.documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
-    root->readChildrenFromXml( layerTreeElem );
+    root->readChildrenFromXml( layerTreeElem, context );
   }
   else
   {
@@ -2131,6 +2183,18 @@ bool QgsProject::unzip( const QString &filename )
     return false;
   }
 
+  // load auxiliary storage
+  if ( !archive->auxiliaryStorageFile().isEmpty() )
+  {
+    // database file is already a copy as it's been unzipped. So we don't open
+    // auxiliary storage in copy mode in this case
+    mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( archive->auxiliaryStorageFile(), false ) );
+  }
+  else
+  {
+    mAuxiliaryStorage.reset( new QgsAuxiliaryStorage( *this ) );
+  }
+
   // read the project file
   if ( ! readProjectFile( archive->projectFile() ) )
   {
@@ -2169,8 +2233,19 @@ bool QgsProject::zip( const QString &filename )
     return false;
   }
 
+  // save auxiliary storage
+  const QFileInfo info( qgsFile );
+  const QString asFileName = info.path() + QDir::separator() + info.completeBaseName() + "." + QgsAuxiliaryStorage::extension();
+
+  if ( ! saveAuxiliaryStorage( asFileName ) )
+  {
+    setError( tr( "Unable to save auxiliary storage" ) );
+    return false;
+  }
+
   // create the archive
   archive->addFile( qgsFile.fileName() );
+  archive->addFile( asFileName );
 
   // zip
   if ( !archive->zip( filename ) )
@@ -2198,6 +2273,22 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
     if ( addToLegend )
       emit legendLayersAdded( myResultList );
   }
+
+  if ( mAuxiliaryStorage )
+  {
+    for ( QgsMapLayer *mlayer : myResultList )
+    {
+      if ( mlayer->type() != QgsMapLayer::VectorLayer )
+        continue;
+
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mlayer );
+      if ( vl )
+      {
+        vl->loadAuxiliaryLayer( *mAuxiliaryStorage );
+      }
+    }
+  }
+
   return myResultList;
 }
 
@@ -2291,4 +2382,38 @@ void QgsProject::setTrustLayerMetadata( bool trust )
       vl->setReadExtentFromXml( trust );
     }
   }
+}
+
+bool QgsProject::saveAuxiliaryStorage( const QString &filename )
+{
+  for ( QgsMapLayer *l : mapLayers().values() )
+  {
+    if ( l->type() != QgsMapLayer::VectorLayer )
+      continue;
+
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
+    if ( vl && vl->auxiliaryLayer() )
+    {
+      vl->auxiliaryLayer()->save();
+    }
+  }
+
+  if ( !filename.isEmpty() )
+  {
+    return mAuxiliaryStorage->saveAs( filename );
+  }
+  else
+  {
+    return mAuxiliaryStorage->saveAs( *this );
+  }
+}
+
+const QgsAuxiliaryStorage *QgsProject::auxiliaryStorage() const
+{
+  return mAuxiliaryStorage.get();
+}
+
+QgsAuxiliaryStorage *QgsProject::auxiliaryStorage()
+{
+  return mAuxiliaryStorage.get();
 }

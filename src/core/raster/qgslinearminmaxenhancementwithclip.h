@@ -22,7 +22,8 @@ email                : ersts@amnh.org
 #include "qgis_core.h"
 #include "qgscontrastenhancementfunction.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A linear enhanceContrast enhancement that first clips to min max and then enhanceContrastes
  * linearly between min and max.
  */

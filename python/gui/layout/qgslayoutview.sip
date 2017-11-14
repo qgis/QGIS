@@ -68,6 +68,37 @@ class QgsLayoutView: QGraphicsView
  You don't have to call it manually, QgsLayoutViewTool takes care of it.
 %End
 
+    void setPreviewModeEnabled( bool enabled );
+%Docstring
+ Sets whether a preview effect should be used to alter the view's appearance.
+ \param enabled Set to true to enable the preview effect on the view.
+.. seealso:: setPreviewMode()
+%End
+
+    bool previewModeEnabled() const;
+%Docstring
+ Returns true if a preview effect is being used to alter the view's appearance.
+.. seealso:: setPreviewModeEnabled()
+ :rtype: bool
+%End
+
+    void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
+%Docstring
+ Sets the preview ``mode`` which should be used to modify the view's appearance. Preview modes are only used
+ if previewModeEnabled() is true.
+.. seealso:: setPreviewModeEnabled()
+.. seealso:: previewMode()
+%End
+
+    QgsPreviewEffect::PreviewMode previewMode() const;
+%Docstring
+ Returns the preview mode which may be used to modify the view's appearance. Preview modes are only used
+ if previewModeEnabled() is true.
+.. seealso:: setPreviewMode()
+.. seealso:: previewModeEnabled()
+ :rtype: QgsPreviewEffect.PreviewMode
+%End
+
     void scaleSafe( double scale );
 %Docstring
  Scales the view in a safe way, by limiting the acceptable range
@@ -127,6 +158,34 @@ class QgsLayoutView: QGraphicsView
  :rtype: list of int
 %End
 
+    void alignSelectedItems( QgsLayoutAligner::Alignment alignment );
+%Docstring
+ Aligns all selected items using the specified ``alignment``.
+.. seealso:: distributeSelectedItems()
+.. seealso:: resizeSelectedItems()
+%End
+
+    void distributeSelectedItems( QgsLayoutAligner::Distribution distribution );
+%Docstring
+ Distributes all selected items using the specified ``distribution``.
+.. seealso:: alignSelectedItems()
+.. seealso:: resizeSelectedItems()
+%End
+
+    void resizeSelectedItems( QgsLayoutAligner::Resize resize );
+%Docstring
+ Resizes all selected items using the specified ``resize`` mode.
+.. seealso:: alignSelectedItems()
+.. seealso:: distributeSelectedItems()
+%End
+
+    QPointF deltaForKeyEvent( QKeyEvent *event );
+%Docstring
+ Returns the delta (in layout coordinates) by which to move items
+ for the given key ``event``.
+ :rtype: QPointF
+%End
+
   public slots:
 
     void zoomFull();
@@ -171,12 +230,123 @@ class QgsLayoutView: QGraphicsView
 
     void emitZoomLevelChanged();
 
+
+    void selectAll();
+%Docstring
+ Selects all items in the view.
+.. seealso:: deselectAll()
+.. seealso:: invertSelection()
+.. seealso:: selectNextItemAbove()
+.. seealso:: selectNextItemBelow()
+%End
+
+    void deselectAll();
+%Docstring
+ Deselects all items in the view.
+.. seealso:: selectAll()
+.. seealso:: invertSelection()
+%End
+
+    void invertSelection();
+%Docstring
+ Inverts the current selection, selecting deselected items
+ and deselecting and selected items.
+.. seealso:: selectAll()
+.. seealso:: deselectAll()
+%End
+
+    void selectNextItemAbove();
+%Docstring
+ Selects the next item above the existing selection, by item z order.
+.. seealso:: selectNextItemBelow()
+.. seealso:: selectAll()
+.. seealso:: deselectAll()
+%End
+
+    void selectNextItemBelow();
+%Docstring
+ Selects the next item below the existing selection, by item z order.
+.. seealso:: selectNextItemAbove()
+.. seealso:: selectAll()
+.. seealso:: deselectAll()
+%End
+
+    void raiseSelectedItems();
+%Docstring
+ Raises the selected items up the z-order.
+.. seealso:: lowerSelectedItems()
+.. seealso:: moveSelectedItemsToTop()
+.. seealso:: moveSelectedItemsToBottom()
+%End
+
+    void lowerSelectedItems();
+%Docstring
+ Lowers the selected items down the z-order.
+.. seealso:: raiseSelectedItems()
+.. seealso:: moveSelectedItemsToTop()
+.. seealso:: moveSelectedItemsToBottom()
+%End
+
+    void moveSelectedItemsToTop();
+%Docstring
+ Raises the selected items to the top of the z-order.
+.. seealso:: raiseSelectedItems()
+.. seealso:: lowerSelectedItems()
+.. seealso:: moveSelectedItemsToBottom()
+%End
+
+    void moveSelectedItemsToBottom();
+%Docstring
+ Lowers the selected items to the bottom of the z-order.
+.. seealso:: raiseSelectedItems()
+.. seealso:: lowerSelectedItems()
+.. seealso:: moveSelectedItemsToTop()
+%End
+
+    void lockSelectedItems();
+%Docstring
+ Locks any selected items, preventing them from being interacted with
+ by mouse interactions.
+.. seealso:: unlockAllItems()
+%End
+
+    void unlockAllItems();
+%Docstring
+ Unlocks all locked items in the layout.
+.. seealso:: lockSelectedItems()
+%End
+
+    void deleteSelectedItems();
+%Docstring
+ Deletes all selected items.
+%End
+
+    void groupSelectedItems();
+%Docstring
+ Groups all selected items.
+.. seealso:: ungroupSelectedItems()
+%End
+
+    void ungroupSelectedItems();
+%Docstring
+ Ungroups all selected items.
+.. seealso:: groupSelectedItems()
+%End
+
     void viewChanged();
 %Docstring
  Updates associated rulers and other widgets after view extent or zoom has changed.
  This should be called after calling any of the QGraphicsView
  base class methods which alter the view's zoom level or extent,
  i.e. QGraphicsView.fitInView().
+%End
+
+    void pushStatusMessage( const QString &message );
+%Docstring
+ Pushes a new status bar ``message`` to the view. This causes statusMessage()
+ to be emitted, which should cause the message to appear in the status bar
+ for the parent window.
+.. seealso:: statusMessage()
 %End
 
   signals:
@@ -212,6 +382,19 @@ class QgsLayoutView: QGraphicsView
  considers the page at the center of the view as the current visible
  page.
 .. seealso:: currentPage()
+%End
+
+    void statusMessage( const QString &message );
+%Docstring
+ Emitted when the view has a ``message`` for display in a parent window's
+ status bar.
+.. seealso:: pushStatusMessage()
+%End
+
+    void itemFocused( QgsLayoutItem *item );
+%Docstring
+ Emitted when an ``item`` is "focused" in the view, i.e. it becomes the active
+ item and should have its properties displayed in any designer windows.
 %End
 
   protected:

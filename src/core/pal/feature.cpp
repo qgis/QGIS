@@ -1684,20 +1684,18 @@ bool FeaturePart::mergeWithFeaturePart( FeaturePart *other )
     GEOSGeometry *g1 = GEOSGeom_clone_r( ctxt, mGeos );
     GEOSGeometry *g2 = GEOSGeom_clone_r( ctxt, other->mGeos );
     GEOSGeometry *geoms[2] = { g1, g2 };
-    GEOSGeometry *g = GEOSGeom_createCollection_r( ctxt, GEOS_MULTILINESTRING, geoms, 2 );
-    GEOSGeometry *gTmp = GEOSLineMerge_r( ctxt, g );
-    GEOSGeom_destroy_r( ctxt, g );
+    geos::unique_ptr g( GEOSGeom_createCollection_r( ctxt, GEOS_MULTILINESTRING, geoms, 2 ) );
+    geos::unique_ptr gTmp( GEOSLineMerge_r( ctxt, g.get() ) );
 
-    if ( GEOSGeomTypeId_r( ctxt, gTmp ) != GEOS_LINESTRING )
+    if ( GEOSGeomTypeId_r( ctxt, gTmp.get() ) != GEOS_LINESTRING )
     {
       // sometimes it's not possible to merge lines (e.g. they don't touch at endpoints)
-      GEOSGeom_destroy_r( ctxt, gTmp );
       return false;
     }
     invalidateGeos();
 
     // set up new geometry
-    mGeos = gTmp;
+    mGeos = gTmp.release();
     mOwnsGeom = true;
 
     deleteCoords();

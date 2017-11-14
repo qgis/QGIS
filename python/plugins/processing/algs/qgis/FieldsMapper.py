@@ -30,6 +30,7 @@ from qgis.core import (
     QgsExpression,
     QgsField,
     QgsFields,
+    QgsProcessing,
     QgsProcessingException,
     QgsProcessingParameterDefinition)
 
@@ -102,6 +103,9 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
 
     def outputName(self):
         return self.tr('Refactored')
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVector]
 
     def parameterAsFieldsMapping(self, parameters, name, context):
         return parameters[name]

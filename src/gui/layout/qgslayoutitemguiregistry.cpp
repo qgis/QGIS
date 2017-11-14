@@ -25,6 +25,20 @@ QgsLayoutViewRubberBand *QgsLayoutItemAbstractGuiMetadata::createRubberBand( Qgs
   return new QgsLayoutViewRectangularRubberBand( view );
 }
 
+QAbstractGraphicsShapeItem *QgsLayoutItemAbstractGuiMetadata::createNodeRubberBand( QgsLayoutView * )
+{
+  return nullptr;
+}
+
+QgsLayoutItem *QgsLayoutItemAbstractGuiMetadata::createItem( QgsLayout * )
+{
+  return nullptr;
+}
+
+void QgsLayoutItemAbstractGuiMetadata::newItemAddedToLayout( QgsLayoutItem * )
+{
+
+}
 
 QgsLayoutItemGuiRegistry::QgsLayoutItemGuiRegistry( QObject *parent )
   : QObject( parent )
@@ -36,45 +50,19 @@ QgsLayoutItemGuiRegistry::~QgsLayoutItemGuiRegistry()
   qDeleteAll( mMetadata );
 }
 
-bool QgsLayoutItemGuiRegistry::populate()
+QgsLayoutItemAbstractGuiMetadata *QgsLayoutItemGuiRegistry::itemMetadata( int metadataId ) const
 {
-  if ( !mMetadata.isEmpty() )
-    return false;
-
-  addItemGroup( QgsLayoutItemGuiGroup( QStringLiteral( "shapes" ), tr( "Shape" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicShape.svg" ) ) ) );
-
-  auto createRubberBand = ( []( QgsLayoutView * view )->QgsLayoutViewRubberBand *
-  {
-    return new QgsLayoutViewRectangularRubberBand( view );
-  } );
-  auto createEllipseBand = ( []( QgsLayoutView * view )->QgsLayoutViewRubberBand *
-  {
-    return new QgsLayoutViewEllipticalRubberBand( view );
-  } );
-  auto createTriangleBand = ( []( QgsLayoutView * view )->QgsLayoutViewRubberBand *
-  {
-    return new QgsLayoutViewTriangleRubberBand( view );
-  } );
-
-  addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( 101, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), nullptr, createRubberBand ) );
-  addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutRectangle, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), nullptr, createRubberBand, QStringLiteral( "shapes" ) ) );
-  addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutEllipse, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicCircle.svg" ) ), nullptr, createEllipseBand, QStringLiteral( "shapes" ) ) );
-  addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutTriangle, QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicTriangle.svg" ) ), nullptr, createTriangleBand, QStringLiteral( "shapes" ) ) );
-  return true;
-}
-
-QgsLayoutItemAbstractGuiMetadata *QgsLayoutItemGuiRegistry::itemMetadata( int type ) const
-{
-  return mMetadata.value( type );
+  return mMetadata.value( metadataId );
 }
 
 bool QgsLayoutItemGuiRegistry::addLayoutItemGuiMetadata( QgsLayoutItemAbstractGuiMetadata *metadata )
 {
-  if ( !metadata || mMetadata.contains( metadata->type() ) )
+  if ( !metadata )
     return false;
 
-  mMetadata[metadata->type()] = metadata;
-  emit typeAdded( metadata->type() );
+  int id = mMetadata.count();
+  mMetadata[id] = metadata;
+  emit typeAdded( id );
   return true;
 }
 
@@ -92,26 +80,69 @@ const QgsLayoutItemGuiGroup &QgsLayoutItemGuiRegistry::itemGroup( const QString 
   return mItemGroups[ id ];
 }
 
+QgsLayoutItem *QgsLayoutItemGuiRegistry::createItem( int metadataId, QgsLayout *layout ) const
+{
+  if ( !mMetadata.contains( metadataId ) )
+    return nullptr;
+
+  std::unique_ptr< QgsLayoutItem > item( mMetadata.value( metadataId )->createItem( layout ) );
+  if ( item )
+    return item.release();
+
+  int type = mMetadata.value( metadataId )->type();
+  return QgsApplication::layoutItemRegistry()->createItem( type, layout );
+}
+
+void QgsLayoutItemGuiRegistry::newItemAddedToLayout( int metadataId, QgsLayoutItem *item )
+{
+  if ( !mMetadata.contains( metadataId ) )
+    return;
+
+  mMetadata.value( metadataId )->newItemAddedToLayout( item );
+}
+
 QgsLayoutItemBaseWidget *QgsLayoutItemGuiRegistry::createItemWidget( QgsLayoutItem *item ) const
 {
   if ( !item )
     return nullptr;
 
-  if ( !mMetadata.contains( item->type() ) )
-    return nullptr;
+  for ( auto it = mMetadata.constBegin(); it != mMetadata.constEnd(); ++it )
+  {
+    if ( it.value()->type() == item->type() )
+      return it.value()->createItemWidget( item );
+  }
 
-  return mMetadata[item->type()]->createItemWidget( item );
+  return nullptr;
 }
 
-QgsLayoutViewRubberBand *QgsLayoutItemGuiRegistry::createItemRubberBand( int type, QgsLayoutView *view ) const
+QgsLayoutViewRubberBand *QgsLayoutItemGuiRegistry::createItemRubberBand( int metadataId, QgsLayoutView *view ) const
 {
-  if ( !mMetadata.contains( type ) )
+  if ( !mMetadata.contains( metadataId ) )
     return nullptr;
 
-  return mMetadata[type]->createRubberBand( view );
+  return mMetadata[metadataId]->createRubberBand( view );
 }
 
-QList<int> QgsLayoutItemGuiRegistry::itemTypes() const
+QAbstractGraphicsShapeItem *QgsLayoutItemGuiRegistry::createNodeItemRubberBand( int metadataId, QgsLayoutView *view )
+{
+  if ( !mMetadata.contains( metadataId ) )
+    return nullptr;
+
+  return mMetadata[metadataId]->createNodeRubberBand( view );
+}
+
+QList<int> QgsLayoutItemGuiRegistry::itemMetadataIds() const
 {
   return mMetadata.keys();
+}
+
+QgsLayoutItem *QgsLayoutItemGuiMetadata::createItem( QgsLayout *layout )
+{
+  return mCreateFunc ? mCreateFunc( layout ) : QgsLayoutItemAbstractGuiMetadata::createItem( layout );
+}
+
+void QgsLayoutItemGuiMetadata::newItemAddedToLayout( QgsLayoutItem *item )
+{
+  if ( mAddedToLayoutFunc )
+    mAddedToLayoutFunc( item );
 }

@@ -42,7 +42,8 @@ class QgsChunkQueueJobFactory;
 
 #include <QTime>
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Implementation of entity that handles chunks of data organized in quadtree with loading data when necessary
  * based on data error and unloading of data when data are not necessary anymore
  * \since QGIS 3.0
@@ -100,30 +101,30 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
   protected:
     //! root node of the quadtree hierarchy
-    QgsChunkNode *mRootNode;
+    QgsChunkNode *mRootNode = nullptr;
     //! A chunk has been loaded recently? let's display it!
-    bool mNeedsUpdate;
+    bool mNeedsUpdate = false;
     //! max. allowed screen space error
     float mTau;
     //! maximum allowed depth of quad tree
     int mMaxLevel;
     //! factory that creates loaders for individual chunk nodes
-    QgsChunkLoaderFactory *mChunkLoaderFactory;
+    QgsChunkLoaderFactory *mChunkLoaderFactory = nullptr;
     //! queue of chunks to be loaded
-    QgsChunkList *mChunkLoaderQueue;
+    QgsChunkList *mChunkLoaderQueue = nullptr;
     //! queue of chunk to be eventually replaced
-    QgsChunkList *mReplacementQueue;
+    QgsChunkList *mReplacementQueue = nullptr;
     //! list of nodes that are being currently used for rendering
     QList<QgsChunkNode *> mActiveNodes;
     //! number of nodes omitted during frustum culling - for the curious ones
-    int mFrustumCulled;
+    int mFrustumCulled = 0;
 
     // TODO: max. length for loading queue
 
     QTime mCurrentTime;
 
     //! max. length for replacement queue
-    int mMaxLoadedChunks;
+    int mMaxLoadedChunks = 512;
 
     //! Entity that shows bounding boxes of active chunks (null if not enabled)
     QgsChunkBoundsEntity *mBboxesEntity = nullptr;

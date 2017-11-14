@@ -85,7 +85,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertIsNotNone(myProvider)
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPointXY(10, 10)))
+        ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
         ft.setAttributes(['Johny', 20, 0.3])
         myResult, myFeatures = myProvider.addFeatures([ft])
         self.assertTrue(myResult)
@@ -106,7 +106,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertIsNotNone(provider)
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPointXY(10, 10)))
+        ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
         ft.setAttributes([1, QDate(2014, 3, 5), QTime(13, 45, 22), QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22))])
         res, features = provider.addFeatures([ft])
         self.assertTrue(res)
@@ -211,7 +211,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertIsNotNone(provider)
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPointXY(10, 10)))
+        ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
         ft.setAttributes([1, QDate(2014, 3, 5), QTime(13, 45, 22), QDateTime(QDate(2014, 3, 5), QTime(13, 45, 22))])
         res, features = provider.addFeatures([ft])
         self.assertTrue(res)
@@ -723,11 +723,74 @@ class TestQgsVectorFileWriter(unittest.TestCase):
 
         gdal.Unlink(filename)
 
+    def testSupportedFiltersAndFormat(self):
+        # test with formats in recommended order
+        formats = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.SortRecommended)
+        self.assertEqual(formats[0].filterString, 'GeoPackage (*.gpkg *.GPKG)')
+        self.assertEqual(formats[0].driverName, 'GPKG')
+        self.assertEqual(formats[1].filterString, 'ESRI Shapefile (*.shp *.SHP)')
+        self.assertEqual(formats[1].driverName, 'ESRI Shapefile')
+        self.assertTrue('ODS' in [f.driverName for f in formats])
+
+        # alphabetical sorting
+        formats2 = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.VectorFormatOptions())
+        self.assertTrue(formats2[0].driverName < formats2[1].driverName)
+        self.assertCountEqual([f.driverName for f in formats], [f.driverName for f in formats2])
+        self.assertNotEqual(formats2[0].driverName, 'GeoPackage')
+
+        # skip non-spatial
+        formats = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.SkipNonSpatialFormats)
+        self.assertFalse('ODS' in [f.driverName for f in formats])
+
+    def testOgrDriverList(self):
+        # test with drivers in recommended order
+        drivers = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.SortRecommended)
+        self.assertEqual(drivers[0].longName, 'GeoPackage')
+        self.assertEqual(drivers[0].driverName, 'GPKG')
+        self.assertEqual(drivers[1].longName, 'ESRI Shapefile')
+        self.assertEqual(drivers[1].driverName, 'ESRI Shapefile')
+        self.assertTrue('ODS' in [f.driverName for f in drivers])
+        # alphabetical sorting
+        drivers2 = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.VectorFormatOptions())
+        self.assertTrue(drivers2[0].longName < drivers2[1].longName)
+        self.assertCountEqual([d.driverName for d in drivers], [d.driverName for d in drivers2])
+        self.assertNotEqual(drivers2[0].driverName, 'GPKG')
+
+        # skip non-spatial
+        formats = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.SkipNonSpatialFormats)
+        self.assertFalse('ODS' in [f.driverName for f in formats])
+
     def testSupportedFormatExtensions(self):
         formats = QgsVectorFileWriter.supportedFormatExtensions()
         self.assertTrue('gpkg' in formats)
         self.assertFalse('exe' in formats)
-        self.assertEqual(formats[0], 'shp')
+        self.assertEqual(formats[0], 'gpkg')
+        self.assertEqual(formats[1], 'shp')
+        self.assertTrue('ods' in formats)
+
+        # alphabetical sorting
+        formats2 = QgsVectorFileWriter.supportedFormatExtensions(QgsVectorFileWriter.VectorFormatOptions())
+        self.assertTrue(formats2[0] < formats2[1])
+        self.assertCountEqual(formats, formats2)
+        self.assertNotEqual(formats2[0], 'gpkg')
+
+        formats = QgsVectorFileWriter.supportedFormatExtensions(QgsVectorFileWriter.SkipNonSpatialFormats)
+        self.assertFalse('ods' in formats)
+
+    def testFileFilterString(self):
+        formats = QgsVectorFileWriter.fileFilterString()
+        self.assertTrue('gpkg' in formats)
+        self.assertTrue('shp' in formats)
+        self.assertTrue(formats.index('gpkg') < formats.index('shp'))
+        self.assertTrue('ods' in formats)
+
+        # alphabetical sorting
+        formats2 = QgsVectorFileWriter.fileFilterString(QgsVectorFileWriter.VectorFormatOptions())
+        self.assertNotEqual(formats.index('gpkg'), formats2.index('gpkg'))
+
+        # hide non spatial
+        formats = QgsVectorFileWriter.fileFilterString(QgsVectorFileWriter.SkipNonSpatialFormats)
+        self.assertFalse('ods' in formats)
 
     def testDriverForExtension(self):
         self.assertEqual(QgsVectorFileWriter.driverForExtension('shp'), 'ESRI Shapefile')

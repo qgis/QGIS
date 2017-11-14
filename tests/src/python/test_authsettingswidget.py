@@ -18,7 +18,7 @@ from shutil import rmtree
 import tempfile
 import random
 
-from qgis.core import QgsAuthManager, QgsAuthMethodConfig, QgsNetworkAccessManager, QgsSettings
+from qgis.core import QgsAuthMethodConfig, QgsNetworkAccessManager, QgsSettings, QgsApplication
 from qgis.gui import QgsAuthSettingsWidget
 from qgis.testing import start_app, unittest
 
@@ -46,7 +46,7 @@ class TestAuthenticationWidget(unittest.TestCase):
         Creates an auth configuration"""
         # Enable auth
         # os.environ['QGIS_AUTH_PASSWORD_FILE'] = QGIS_AUTH_PASSWORD_FILE
-        authm = QgsAuthManager.instance()
+        authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
         cls.auth_config = QgsAuthMethodConfig('Basic')
         cls.auth_config.setName('test_auth_config')
@@ -77,7 +77,7 @@ class TestAuthenticationWidget(unittest.TestCase):
         self.assertEqual(w.username(), '')
         self.assertEqual(w.password(), '')
         self.assertEqual(w.configId(), '')
-        self.assertEqual(w.currentTabIndex(), 0)
+        self.assertTrue(w.configurationTabIsSelected())
         self.assertFalse(w.btnConvertToEncryptedIsEnabled())
 
     def testWidgetConfigId(self):
@@ -88,7 +88,7 @@ class TestAuthenticationWidget(unittest.TestCase):
         self.assertEqual(w.username(), '')
         self.assertEqual(w.password(), '')
         self.assertEqual(w.configId(), self.auth_config.id())
-        self.assertEqual(w.currentTabIndex(), 0)
+        self.assertTrue(w.configurationTabIsSelected())
         self.assertFalse(w.btnConvertToEncryptedIsEnabled())
 
     def testWidgetUsername(self):
@@ -99,7 +99,7 @@ class TestAuthenticationWidget(unittest.TestCase):
         self.assertEqual(w.username(), 'username')
         self.assertEqual(w.password(), '')
         self.assertEqual(w.configId(), '')
-        self.assertEqual(w.currentTabIndex(), 1)
+        self.assertFalse(w.configurationTabIsSelected())
 
     def testWidgetPassword(self):
         """
@@ -109,7 +109,7 @@ class TestAuthenticationWidget(unittest.TestCase):
         self.assertEqual(w.username(), '')
         self.assertEqual(w.password(), 'password')
         self.assertEqual(w.configId(), '')
-        self.assertEqual(w.currentTabIndex(), 1)
+        self.assertFalse(w.configurationTabIsSelected())
 
     def testWidgetUsernameAndPassword(self):
         """
@@ -119,7 +119,7 @@ class TestAuthenticationWidget(unittest.TestCase):
         self.assertEqual(w.username(), 'username')
         self.assertEqual(w.password(), 'password')
         self.assertEqual(w.configId(), '')
-        self.assertEqual(w.currentTabIndex(), 1)
+        self.assertFalse(w.configurationTabIsSelected())
         self.assertTrue(w.btnConvertToEncryptedIsEnabled())
 
     def testConvertToEncrypted(self):
@@ -130,14 +130,68 @@ class TestAuthenticationWidget(unittest.TestCase):
         self.assertEqual(w.username(), 'username')
         self.assertEqual(w.password(), 'password')
         self.assertEqual(w.configId(), '')
-        self.assertEqual(w.currentTabIndex(), 1)
+        self.assertFalse(w.configurationTabIsSelected())
         self.assertTrue(w.btnConvertToEncryptedIsEnabled())
         self.assertTrue(w.convertToEncrypted())
         self.assertNotEqual(w.configId(), '')
         self.assertEqual(w.username(), '')
         self.assertEqual(w.password(), '')
-        self.assertEqual(w.currentTabIndex(), 0)
+        self.assertTrue(w.configurationTabIsSelected())
         self.assertFalse(w.btnConvertToEncryptedIsEnabled())
+
+    def test_setters(self):
+        """
+        Test setters
+        """
+        w = QgsAuthSettingsWidget()
+        w.setUsername('username')
+        self.assertFalse(w.configurationTabIsSelected())
+        self.assertEqual(w.username(), 'username')
+
+        w = QgsAuthSettingsWidget()
+        w.setPassword('password')
+        self.assertEqual(w.password(), 'password')
+        self.assertFalse(w.configurationTabIsSelected())
+
+        w = QgsAuthSettingsWidget()
+        w.setConfigId(self.auth_config.id())
+        self.assertEqual(w.configId(), self.auth_config.id())
+        self.assertTrue(w.configurationTabIsSelected())
+
+        w = QgsAuthSettingsWidget()
+        w.setUsername('username')
+        w.setPassword('password')
+        w.setConfigId(self.auth_config.id())
+        self.assertEqual(w.configId(), self.auth_config.id())
+        self.assertTrue(w.configurationTabIsSelected())
+
+        w = QgsAuthSettingsWidget()
+        w.setDataprovider('db2')
+        self.assertEqual(w.dataprovider(), 'db2')
+
+    def test_storeCheckBoxes(self):
+        """
+        Test store cb setters and getters
+        """
+        w = QgsAuthSettingsWidget()
+        self.assertFalse(w.storePasswordIsChecked())
+        self.assertFalse(w.storeUsernameIsChecked())
+
+        w = QgsAuthSettingsWidget()
+        w.setStorePasswordChecked(True)
+        self.assertTrue(w.storePasswordIsChecked())
+        self.assertFalse(w.storeUsernameIsChecked())
+
+        w = QgsAuthSettingsWidget()
+        w.setStoreUsernameChecked(True)
+        self.assertFalse(w.storePasswordIsChecked())
+        self.assertTrue(w.storeUsernameIsChecked())
+
+        w = QgsAuthSettingsWidget()
+        w.setStoreUsernameChecked(True)
+        w.setStorePasswordChecked(True)
+        self.assertTrue(w.storePasswordIsChecked())
+        self.assertTrue(w.storeUsernameIsChecked())
 
 
 if __name__ == '__main__':

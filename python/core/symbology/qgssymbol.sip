@@ -19,7 +19,6 @@ class QgsSymbol
 %TypeHeaderCode
 #include "qgssymbol.h"
 %End
-
 %ConvertToSubClassCode
     switch ( sipCpp->type() )
     {
@@ -165,6 +164,8 @@ delete layer at specified index and set a new one
 
     void drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext *customContext = 0 );
 %Docstring
+ Draw icon of the symbol that occupyies area given by size using the painter.
+ Optionally custom context may be given in order to get rendering of symbols that use map units right.
 .. versionadded:: 2.6
 %End
 
@@ -341,9 +342,9 @@ Generate symbol as image
  :rtype: QPolygonF
 %End
 
-    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygonV2 &polygon, bool clipToExtent = true );
+    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true );
 %Docstring
- Creates a polygon in screen coordinates from a QgsPolygon in map coordinates
+ Creates a polygon in screen coordinates from a QgsPolygonXYin map coordinates
 %End
 
     QgsSymbolLayerList cloneLayers() const /Factory/;
@@ -366,6 +367,7 @@ Generate symbol as image
 
     void renderVertexMarker( QPointF pt, QgsRenderContext &context, int currentVertexMarkerType, int currentVertexMarkerSize );
 %Docstring
+ Render editing vertex marker at specified point
 .. versionadded:: 2.16
 %End
 
@@ -401,6 +403,7 @@ class QgsSymbolRenderContext
  \param fields
  \param mapUnitScale
 %End
+
 
     QgsRenderContext &renderContext();
 %Docstring
@@ -493,6 +496,9 @@ Current feature being rendered - may be null
 
     QgsFields fields() const;
 %Docstring
+ Fields of the layer. Currently only available in startRender() calls
+ to allow symbols with data-defined properties prepare the expressions
+ (other times fields() returns null)
 .. versionadded:: 2.4
  :rtype: QgsFields
 %End

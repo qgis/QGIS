@@ -1,11 +1,11 @@
 Channel Network and Drainage Basins
 ta_channels
-ParameterRaster|DEM|Elevation|False
-ParameterNumber|THRESHOLD|Threshold|None|None|5.0
-OutputRaster|DIRECTION|Flow Direction
-OutputRaster|CONNECTION|Flow Connectivity
-OutputRaster|ORDER|Strahler Order
-OutputRaster|BASIN|Drainage Basins
-OutputVector|SEGMENTS|Channels
-OutputVector|BASINS|Drainage Basins
-OutputVector|NODES|Junctions
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
+QgsProcessingParameterNumber|THRESHOLD|Threshold|QgsProcessingParameterNumber.Double|5.0|False|None|None
+QgsProcessingParameterRasterDestination|DIRECTION|Flow Direction
+QgsProcessingParameterRasterDestination|CONNECTION|Flow Connectivity
+QgsProcessingParameterRasterDestination|ORDER|Strahler Order
+QgsProcessingParameterRasterDestination|BASIN|Drainage Basins
+QgsProcessingParameterVectorDestination|SEGMENTS|Channels
+QgsProcessingParameterVectorDestination|BASINS|Drainage Basins
+QgsProcessingParameterVectorDestination|NODES|Junctions

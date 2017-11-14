@@ -25,6 +25,9 @@ QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager *relation
   , mRelationManager( relationMgr )
 {
   setupUi( this );
+  connect( mBtnAddRelation, &QPushButton::clicked, this, &QgsRelationManagerDialog::mBtnAddRelation_clicked );
+  connect( mBtnDiscoverRelations, &QPushButton::clicked, this, &QgsRelationManagerDialog::mBtnDiscoverRelations_clicked );
+  connect( mBtnRemoveRelation, &QPushButton::clicked, this, &QgsRelationManagerDialog::mBtnRemoveRelation_clicked );
 
   mBtnRemoveRelation->setEnabled( false );
   connect( mRelationsTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsRelationManagerDialog::onSelectionChanged );
@@ -74,10 +77,23 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   item = new QTableWidgetItem( rel.id() );
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 5, item );
+
+
+  if ( rel.strength() == QgsRelation::RelationStrength::Composition )
+  {
+    item = new QTableWidgetItem( QStringLiteral( "Composition" ) );
+  }
+  else
+  {
+    item = new QTableWidgetItem( QStringLiteral( "Association" ) );
+  }
+  item->setFlags( Qt::ItemIsEditable );
+  mRelationsTable->setItem( row, 6, item );
+
   mRelationsTable->setSortingEnabled( true );
 }
 
-void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
+void QgsRelationManagerDialog::mBtnAddRelation_clicked()
 {
   QgsRelationAddDlg addDlg;
 
@@ -113,12 +129,13 @@ void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
     relation.setId( relationId );
     relation.addFieldPair( addDlg.references().at( 0 ).first, addDlg.references().at( 0 ).second );
     relation.setName( addDlg.relationName() );
+    relation.setStrength( addDlg.relationStrength() );
 
     addRelation( relation );
   }
 }
 
-void QgsRelationManagerDialog::on_mBtnDiscoverRelations_clicked()
+void QgsRelationManagerDialog::mBtnDiscoverRelations_clicked()
 {
   QgsDiscoverRelationsDlg discoverDlg( relations(), mLayers, this );
   if ( discoverDlg.exec() )
@@ -130,7 +147,7 @@ void QgsRelationManagerDialog::on_mBtnDiscoverRelations_clicked()
   }
 }
 
-void QgsRelationManagerDialog::on_mBtnRemoveRelation_clicked()
+void QgsRelationManagerDialog::mBtnRemoveRelation_clicked()
 {
   const QModelIndexList rows = mRelationsTable->selectionModel()->selectedRows();
   for ( int i = rows.size() - 1; i >= 0; --i )

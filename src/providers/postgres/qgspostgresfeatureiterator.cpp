@@ -36,6 +36,13 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   , mLastFetch( false )
   , mFilterRequiresGeometry( false )
 {
+  if ( request.filterType() == QgsFeatureRequest::FilterFids && request.filterFids().isEmpty() )
+  {
+    mClosed = true;
+    iteratorClosed();
+    return;
+  }
+
   if ( !source->mTransactionConnection )
   {
     mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo );
@@ -65,7 +72,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   catch ( QgsCsException & )
   {
     // can't reproject mFilterRect
-    mClosed = true;
+    close();
     return;
   }
 
@@ -136,98 +143,99 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     }
   }
 
-  QStringList orderByParts;
+  if ( !mClosed )
+  {
+    QStringList orderByParts;
 
-  mOrderByCompiled = true;
+    mOrderByCompiled = true;
 
-  // THIS CODE IS BROKEN - since every retrieved column is cast as text during declareCursor, this method of sorting will always be
-  // performed using a text sort.
-  // TODO - fix ordering by so that instead of
-  //     SELECT my_int_col::text FROM some_table ORDER BY my_int_col
-  // we instead use
-  //     SELECT my_int_col::text FROM some_table ORDER BY some_table.my_int_col
-  // but that's non-trivial
+    // THIS CODE IS BROKEN - since every retrieved column is cast as text during declareCursor, this method of sorting will always be
+    // performed using a text sort.
+    // TODO - fix ordering by so that instead of
+    //     SELECT my_int_col::text FROM some_table ORDER BY my_int_col
+    // we instead use
+    //     SELECT my_int_col::text FROM some_table ORDER BY some_table.my_int_col
+    // but that's non-trivial
 #if 0
-  if ( QgsSettings().value( "qgis/compileExpressions", true ).toBool() )
-  {
-    Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
+    if ( QgsSettings().value( "qgis/compileExpressions", true ).toBool() )
     {
-      QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
-      QgsExpression expression = clause.expression();
-      if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
+      Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
       {
-        QString part;
-        part = compiler.result();
-        part += clause.ascending() ? " ASC" : " DESC";
-        part += clause.nullsFirst() ? " NULLS FIRST" : " NULLS LAST";
-        orderByParts << part;
-      }
-      else
-      {
-        // Bail out on first non-complete compilation.
-        // Most important clauses at the beginning of the list
-        // will still be sent and used to pre-sort so the local
-        // CPU can use its cycles for fine-tuning.
-        mOrderByCompiled = false;
-        break;
+        QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
+        QgsExpression expression = clause.expression();
+        if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
+        {
+          QString part;
+          part = compiler.result();
+          part += clause.ascending() ? " ASC" : " DESC";
+          part += clause.nullsFirst() ? " NULLS FIRST" : " NULLS LAST";
+          orderByParts << part;
+        }
+        else
+        {
+          // Bail out on first non-complete compilation.
+          // Most important clauses at the beginning of the list
+          // will still be sent and used to pre-sort so the local
+          // CPU can use its cycles for fine-tuning.
+          mOrderByCompiled = false;
+          break;
+        }
       }
     }
-  }
-  else
+    else
 #endif
-  {
-    mOrderByCompiled = false;
-  }
-
-  // ensure that all attributes required for order by are fetched
-  if ( !mOrderByCompiled && mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
-  {
-    QgsAttributeList attrs = mRequest.subsetOfAttributes();
-    Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
     {
-      int attrIndex = mSource->mFields.lookupField( attr );
-      if ( !attrs.contains( attrIndex ) )
-        attrs << attrIndex;
+      mOrderByCompiled = mRequest.orderBy().isEmpty();
     }
-    mRequest.setSubsetOfAttributes( attrs );
-  }
 
-  if ( !mOrderByCompiled )
-    limitAtProvider = false;
-
-  bool success = declareCursor( whereClause, limitAtProvider ? mRequest.limit() : -1, false, orderByParts.join( QStringLiteral( "," ) ) );
-  if ( !success && useFallbackWhereClause )
-  {
-    //try with the fallback where clause, e.g., for cases when using compiled expression failed to prepare
-    success = declareCursor( fallbackWhereClause, -1, false, orderByParts.join( QStringLiteral( "," ) ) );
-    if ( success )
-      mExpressionCompiled = false;
-  }
-
-  if ( !success && !orderByParts.isEmpty() )
-  {
-    //try with no order by clause
-    success = declareCursor( whereClause, -1, false );
-    if ( success )
-      mOrderByCompiled = false;
-  }
-
-  if ( !success && useFallbackWhereClause && !orderByParts.isEmpty() )
-  {
-    //try with no expression compilation AND no order by clause
-    success = declareCursor( fallbackWhereClause, -1, false );
-    if ( success )
+    // ensure that all attributes required for order by are fetched
+    if ( !mOrderByCompiled && mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
     {
-      mExpressionCompiled = false;
-      mOrderByCompiled = false;
+      QgsAttributeList attrs = mRequest.subsetOfAttributes();
+      Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+      {
+        int attrIndex = mSource->mFields.lookupField( attr );
+        if ( !attrs.contains( attrIndex ) )
+          attrs << attrIndex;
+      }
+      mRequest.setSubsetOfAttributes( attrs );
     }
-  }
 
-  if ( !success )
-  {
-    close();
-    mClosed = true;
-    iteratorClosed();
+    if ( !mOrderByCompiled )
+      limitAtProvider = false;
+
+    bool success = declareCursor( whereClause, limitAtProvider ? mRequest.limit() : -1, false, orderByParts.join( QStringLiteral( "," ) ) );
+    if ( !success && useFallbackWhereClause )
+    {
+      //try with the fallback where clause, e.g., for cases when using compiled expression failed to prepare
+      success = declareCursor( fallbackWhereClause, -1, false, orderByParts.join( QStringLiteral( "," ) ) );
+      if ( success )
+        mExpressionCompiled = false;
+    }
+
+    if ( !success && !orderByParts.isEmpty() )
+    {
+      //try with no order by clause
+      success = declareCursor( whereClause, -1, false );
+      if ( success )
+        mOrderByCompiled = false;
+    }
+
+    if ( !success && useFallbackWhereClause && !orderByParts.isEmpty() )
+    {
+      //try with no expression compilation AND no order by clause
+      success = declareCursor( fallbackWhereClause, -1, false );
+      if ( success )
+      {
+        mExpressionCompiled = false;
+        mOrderByCompiled = false;
+      }
+    }
+
+    if ( !success )
+    {
+      close();
+    }
   }
 
   mFetched = 0;

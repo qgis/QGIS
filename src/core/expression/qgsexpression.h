@@ -44,7 +44,8 @@ class QgsExpressionPrivate;
 class QgsExpressionNode;
 class QgsExpressionFunction;
 
-/** \ingroup core
+/**
+ * \ingroup core
 Class for parsing and evaluation of expressions (formerly called "search strings").
 The expressions try to follow both syntax and semantics of SQL expressions.
 
@@ -169,7 +170,8 @@ class CORE_EXPORT QgsExpression
     //! Returns root node of the expression. Root node is null is parsing has failed
     const QgsExpressionNode *rootNode() const;
 
-    /** Get the expression ready for evaluation - find out column indexes.
+    /**
+     * Get the expression ready for evaluation - find out column indexes.
      * \param context context for preparing expression
      * \since QGIS 2.12
      */
@@ -207,13 +209,15 @@ class CORE_EXPORT QgsExpression
 
     // evaluation
 
-    /** Evaluate the feature and return the result.
+    /**
+     * Evaluate the feature and return the result.
      * \note this method does not expect that prepare() has been called on this instance
      * \since QGIS 2.12
      */
     QVariant evaluate();
 
-    /** Evaluate the expression against the specified context and return the result.
+    /**
+     * Evaluate the expression against the specified context and return the result.
      * \param context context for evaluating expression
      * \note prepare() should be called before calling this method.
      * \since QGIS 2.12
@@ -227,12 +231,14 @@ class CORE_EXPORT QgsExpression
     //! Set evaluation error (used internally by evaluation functions)
     void setEvalErrorString( const QString &str );
 
-    /** Checks whether an expression consists only of a single field reference
+    /**
+     * Checks whether an expression consists only of a single field reference
      * \since QGIS 2.9
      */
     bool isField() const;
 
-    /** Tests whether a string is a valid expression.
+    /**
+     * Tests whether a string is a valid expression.
      * \param text string to test
      * \param context optional expression context
      * \param errorMessage will be filled with any error message from the validation
@@ -248,18 +254,23 @@ class CORE_EXPORT QgsExpression
      */
     void setExpression( const QString &expression );
 
-    //! Return the original, unmodified expression string.
-    //! If there was none supplied because it was constructed by sole
-    //! API calls, dump() will be used to create one instead.
+    /**
+     * Return the original, unmodified expression string.
+     * If there was none supplied because it was constructed by sole
+     * API calls, dump() will be used to create one instead.
+     */
     QString expression() const;
 
-    //! Return an expression string, constructed from the internal
-    //! abstract syntax tree. This does not contain any nice whitespace
-    //! formatting or comments. In general it is preferable to use
-    //! expression() instead.
+    /**
+     * Return an expression string, constructed from the internal
+     * abstract syntax tree. This does not contain any nice whitespace
+     * formatting or comments. In general it is preferable to use
+     * expression() instead.
+     */
     QString dump() const;
 
-    /** Return calculator used for distance and area calculations
+    /**
+     * Return calculator used for distance and area calculations
      * (used by $length, $area and $perimeter functions only)
      * \see setGeomCalculator()
      * \see distanceUnits()
@@ -267,7 +278,8 @@ class CORE_EXPORT QgsExpression
      */
     QgsDistanceArea *geomCalculator();
 
-    /** Sets the geometry calculator used for distance and area calculations in expressions.
+    /**
+     * Sets the geometry calculator used for distance and area calculations in expressions.
      * (used by $length, $area and $perimeter functions only). By default, no geometry
      * calculator is set and all distance and area calculations are performed using simple
      * Cartesian methods (ie no ellipsoidal calculations).
@@ -277,7 +289,8 @@ class CORE_EXPORT QgsExpression
      */
     void setGeomCalculator( const QgsDistanceArea *calc );
 
-    /** Returns the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
+    /**
+     * Returns the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
      * \note distances are only converted when a geomCalculator() has been set
      * \since QGIS 2.14
      * \see setDistanceUnits()
@@ -285,7 +298,8 @@ class CORE_EXPORT QgsExpression
      */
     QgsUnitTypes::DistanceUnit distanceUnits() const;
 
-    /** Sets the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
+    /**
+     * Sets the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
      * \note distances are only converted when a geomCalculator() has been set
      * \since QGIS 2.14
      * \see distanceUnits()
@@ -293,7 +307,8 @@ class CORE_EXPORT QgsExpression
      */
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 
-    /** Returns the desired areal units for calculations involving geomCalculator(), e.g., "$area".
+    /**
+     * Returns the desired areal units for calculations involving geomCalculator(), e.g., "$area".
      * \note areas are only converted when a geomCalculator() has been set
      * \since QGIS 2.14
      * \see setAreaUnits()
@@ -301,7 +316,8 @@ class CORE_EXPORT QgsExpression
      */
     QgsUnitTypes::AreaUnit areaUnits() const;
 
-    /** Sets the desired areal units for calculations involving geomCalculator(), e.g., "$area".
+    /**
+     * Sets the desired areal units for calculations involving geomCalculator(), e.g., "$area".
      * \note areas are only converted when a geomCalculator() has been set
      * \since QGIS 2.14
      * \see areaUnits()
@@ -309,7 +325,8 @@ class CORE_EXPORT QgsExpression
      */
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 
-    /** This function replaces each expression between [% and %]
+    /**
+     * This function replaces each expression between [% and %]
      * in the string with the result of its evaluation with the specified context
      *
      * Additional substitutions can be passed through the substitutionMap parameter
@@ -322,7 +339,8 @@ class CORE_EXPORT QgsExpression
     static QString replaceExpressionText( const QString &action, const QgsExpressionContext *context,
                                           const QgsDistanceArea *distanceArea = nullptr );
 
-    /** Attempts to evaluate a text string as an expression to a resultant double
+    /**
+     * Attempts to evaluate a text string as an expression to a resultant double
      * value.
      * \param text text to evaluate as expression
      * \param fallbackValue value to return if text can not be evaluated as a double
@@ -354,7 +372,8 @@ class CORE_EXPORT QgsExpression
     static QStringList sBuiltinFunctions SIP_SKIP;
     static const QStringList &BuiltinFunctions();
 
-    /** Registers a function to the expression engine. This is required to allow expressions to utilize the function.
+    /**
+     * Registers a function to the expression engine. This is required to allow expressions to utilize the function.
      * \param function function to register
      * \param transferOwnership set to true to transfer ownership of function to expression engine
      * \returns true on successful registration
@@ -362,17 +381,21 @@ class CORE_EXPORT QgsExpression
      */
     static bool registerFunction( QgsExpressionFunction *function, bool transferOwnership = false );
 
-    /** Unregisters a function from the expression engine. The function will no longer be usable in expressions.
+    /**
+     * Unregisters a function from the expression engine. The function will no longer be usable in expressions.
      * \param name function name
      * \see registerFunction
      */
     static bool unregisterFunction( const QString &name );
 
-    //! List of functions owned by the expression engine
-    //! \note not available in Python bindings
+    /**
+     * List of functions owned by the expression engine
+     * \note not available in Python bindings
+     */
     static QList<QgsExpressionFunction *> sOwnedFunctions SIP_SKIP;
 
-    /** Deletes all registered functions whose ownership have been transferred to the expression engine.
+    /**
+     * Deletes all registered functions whose ownership have been transferred to the expression engine.
      * \since QGIS 2.12
      */
     static void cleanRegisteredFunctions();
@@ -383,24 +406,28 @@ class CORE_EXPORT QgsExpression
     //! return index of the function in Functions array
     static int functionIndex( const QString &name );
 
-    /** Returns the number of functions defined in the parser
+    /**
+     * Returns the number of functions defined in the parser
      *  \returns The number of function defined in the parser.
      */
     static int functionCount();
 
-    /** Returns a quoted column reference (in double quotes)
+    /**
+     * Returns a quoted column reference (in double quotes)
      * \see quotedString()
      * \see quotedValue()
      */
     static QString quotedColumnRef( QString name );
 
-    /** Returns a quoted version of a string (in single quotes)
+    /**
+     * Returns a quoted version of a string (in single quotes)
      * \see quotedValue()
      * \see quotedColumnRef()
      */
     static QString quotedString( QString text );
 
-    /** Returns a string representation of a literal value, including appropriate
+    /**
+     * Returns a string representation of a literal value, including appropriate
      * quotations where required.
      * \param value value to convert to a string representation
      * \since QGIS 2.14
@@ -409,7 +436,8 @@ class CORE_EXPORT QgsExpression
      */
     static QString quotedValue( const QVariant &value );
 
-    /** Returns a string representation of a literal value, including appropriate
+    /**
+     * Returns a string representation of a literal value, including appropriate
      * quotations where required.
      * \param value value to convert to a string representation
      * \param type value type
@@ -421,14 +449,16 @@ class CORE_EXPORT QgsExpression
 
     //////
 
-    /** Returns the help text for a specified function.
+    /**
+     * Returns the help text for a specified function.
      * \param name function name
      * \see variableHelpText()
      * \see formatVariableHelp()
      */
     static QString helpText( QString name );
 
-    /** Returns the help text for a specified variable.
+    /**
+     * Returns the help text for a specified variable.
      * \param variableName name of variable
      * \param showValue set to true to include current value of variable in help text
      * \param value current value of variable to show in help text
@@ -448,12 +478,14 @@ class CORE_EXPORT QgsExpression
      */
     static QString formatVariableHelp( const QString &description, bool showValue = true, const QVariant &value = QVariant() );
 
-    /** Returns the translated name for a function group.
+    /**
+     * Returns the translated name for a function group.
      * \param group untranslated group name
      */
     static QString group( const QString &group );
 
-    /** Formats an expression result for friendly display to the user. Truncates the result to a sensible
+    /**
+     * Formats an expression result for friendly display to the user. Truncates the result to a sensible
      * length, and presents text representations of non numeric/text types (e.g., geometries and features).
      * \param value expression result to format
      * \returns formatted string, may contain HTML formatting characters
@@ -461,7 +493,8 @@ class CORE_EXPORT QgsExpression
      */
     static QString formatPreviewString( const QVariant &value );
 
-    /** Create an expression allowing to evaluate if a field is equal to a
+    /**
+     * Create an expression allowing to evaluate if a field is equal to a
      *  value. The value may be null.
      * \param fieldName the name of the field
      * \param value the value of the field
@@ -531,7 +564,8 @@ class CORE_EXPORT QgsExpression
 
     struct Help SIP_SKIP
     {
-      Help() {}
+      //! Constructor for expression help
+      Help() = default;
 
       Help( const QString &name, const QString &type, const QString &description, const QList<QgsExpression::HelpVariant> &variants )
         : mName( name )

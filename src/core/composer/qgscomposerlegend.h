@@ -25,33 +25,16 @@
 #include "qgslegendsettings.h"
 #include "qgslayertreegroup.h"
 
+
 class QgsLayerTreeModel;
 class QgsSymbol;
 class QgsComposerMap;
 class QgsLegendRenderer;
+class QgsLegendModel;
 
 
-/** \ingroup core
- * Item model implementation based on layer tree model for composer legend.
- * Overrides some functionality of QgsLayerTreeModel to better fit the needs of composer legend.
- *
- * \since QGIS 2.6
- */
-class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
-{
-    Q_OBJECT
-
-  public:
-    //! Construct the model based on the given layer tree
-    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = 0 );
-
-    QVariant data( const QModelIndex &index, int role ) const override;
-
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-};
-
-
-/** \ingroup core
+/**
+ * \ingroup core
  * A legend that can be placed onto a map composition
  */
 class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
@@ -60,6 +43,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
   public:
     QgsComposerLegend( QgsComposition *composition SIP_TRANSFERTHIS );
+    ~QgsComposerLegend();
 
     //! Return correct graphics item type.
     virtual int type() const override { return ComposerLegend; }
@@ -73,7 +57,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     //! Sets item box to the whole content
     void adjustBoxSize();
 
-    /** Sets whether the legend should automatically resize to fit its contents.
+    /**
+     * Sets whether the legend should automatically resize to fit its contents.
      * \param enabled set to false to disable automatic resizing. The legend frame will not
      * be expanded to fit legend items, and items may be cropped from display.
      * \see resizeToContents()
@@ -81,7 +66,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      */
     void setResizeToContents( bool enabled );
 
-    /** Returns whether the legend should automatically resize to fit its contents.
+    /**
+     * Returns whether the legend should automatically resize to fit its contents.
      * \see setResizeToContents()
      * \since QGIS 3.0
      */
@@ -91,46 +77,59 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     /**
      * Returns the legend model
      */
-    QgsLegendModel *model() { return mLegendModel.get(); }
+    QgsLegendModel *model();
 
     //! \since QGIS 2.6
     void setAutoUpdateModel( bool autoUpdate );
     //! \since QGIS 2.6
     bool autoUpdateModel() const;
 
-    //! Set whether legend items should be filtered to show just the ones visible in the associated map
-    //! \since QGIS 2.6
+    /**
+     * Set whether legend items should be filtered to show just the ones visible in the associated map
+     * \since QGIS 2.6
+     */
     void setLegendFilterByMapEnabled( bool enabled );
-    //! Find out whether legend items are filtered to show just the ones visible in the associated map
-    //! \since QGIS 2.6
+
+    /**
+     * Find out whether legend items are filtered to show just the ones visible in the associated map
+     * \since QGIS 2.6
+     */
     bool legendFilterByMapEnabled() const { return mLegendFilterByMap; }
 
-    //! Update() overloading. Use it rather than update()
-    //! \since QGIS 2.12
+    /**
+     * Update() overloading. Use it rather than update()
+     * \since QGIS 2.12
+     */
     virtual void updateItem() override;
 
-    //! When set to true, during an atlas rendering, it will filter out legend elements
-    //! where features are outside the current atlas feature.
-    //! \since QGIS 2.14
+    /**
+     * When set to true, during an atlas rendering, it will filter out legend elements
+     * where features are outside the current atlas feature.
+     * \since QGIS 2.14
+     */
     void setLegendFilterOutAtlas( bool doFilter );
 
-    //! Whether to filter out legend elements outside of the current atlas feature
-    //! \see setLegendFilterOutAtlas()
-    //! \since QGIS 2.14
+    /**
+     * Whether to filter out legend elements outside of the current atlas feature
+     * \see setLegendFilterOutAtlas()
+     * \since QGIS 2.14
+     */
     bool legendFilterOutAtlas() const;
 
     //setters and getters
     void setTitle( const QString &t );
     QString title() const;
 
-    /** Returns the alignment of the legend title
+    /**
+     * Returns the alignment of the legend title
      * \returns Qt::AlignmentFlag for the legend title
      * \since QGIS 2.3
      * \see setTitleAlignment
      */
     Qt::AlignmentFlag titleAlignment() const;
 
-    /** Sets the alignment of the legend title
+    /**
+     * Sets the alignment of the legend title
      * \param alignment Text alignment for drawing the legend title
      * \since QGIS 2.3
      * \see titleAlignment
@@ -151,13 +150,15 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setStyleMargin( QgsLegendStyle::Style s, double margin );
     void setStyleMargin( QgsLegendStyle::Style s, QgsLegendStyle::Side side, double margin );
 
-    /** Returns the spacing in-between lines in mm
+    /**
+     * Returns the spacing in-between lines in mm
      * \since QGIS 3.0
      * \see setLineSpacing
      */
     double lineSpacing() const;
 
-    /** Sets the spacing in-between multiple lines
+    /**
+     * Sets the spacing in-between multiple lines
      * \param spacing Double value to use as spacing in between multiple lines
      * \since QGIS 3.0
      * \see lineSpacing
@@ -197,7 +198,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     bool equalColumnWidth() const;
     void setEqualColumnWidth( bool s );
 
-    /** Returns whether a stroke will be drawn around raster symbol items.
+    /**
+     * Returns whether a stroke will be drawn around raster symbol items.
      * \see setDrawRasterStroke()
      * \see rasterStrokeColor()
      * \see rasterStrokeWidth()
@@ -205,7 +207,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      */
     bool drawRasterStroke() const;
 
-    /** Sets whether a stroke will be drawn around raster symbol items.
+    /**
+     * Sets whether a stroke will be drawn around raster symbol items.
      * \param enabled set to true to draw borders
      * \see drawRasterStroke()
      * \see setRasterStrokeColor()
@@ -214,7 +217,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      */
     void setDrawRasterStroke( bool enabled );
 
-    /** Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
+    /**
+     * Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
      * \see setRasterStrokeColor()
      * \see drawRasterStroke()
@@ -223,7 +227,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      */
     QColor rasterStrokeColor() const;
 
-    /** Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
+    /**
+     * Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
      * \param color stroke color
      * \see rasterStrokeColor()
@@ -233,7 +238,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      */
     void setRasterStrokeColor( const QColor &color );
 
-    /** Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
+    /**
+     * Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
      * \see setRasterStrokeWidth()
      * \see drawRasterStroke()
@@ -242,7 +248,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      */
     double rasterStrokeWidth() const;
 
-    /** Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
+    /**
+     * Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
      * only drawn if drawRasterStroke() is true.
      * \param width stroke width in millimeters
      * \see rasterStrokeWidth()
@@ -258,13 +265,15 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     //! Updates the model and all legend entries
     void updateLegend();
 
-    /** Stores state in Dom node
+    /**
+     * Stores state in Dom node
        * \param elem is Dom element corresponding to 'Composer' tag
        * \param doc Dom document
        */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
-    /** Sets state from Dom document
+    /**
+     * Sets state from Dom document
        * \param itemElem is Dom node corresponding to item tag
        * \param doc is Dom document
        */
@@ -309,7 +318,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     //! use new custom layer tree and update model. if new root is null pointer, will use project's tree
     void setCustomLayerTree( QgsLayerTree *rootGroup );
 
-    std::unique_ptr< QgsLegendModel > mLegendModel;
+    QgsLegendModel *mLegendModel = nullptr;
     std::unique_ptr< QgsLayerTreeGroup > mCustomLayerTree;
 
     QgsLegendSettings mSettings;

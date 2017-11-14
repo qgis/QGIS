@@ -15,11 +15,6 @@
 
 #include "qgsaabb.h"
 
-QgsAABB::QgsAABB()
-  : xMin( 0 ), yMin( 0 ), zMin( 0 ), xMax( 0 ), yMax( 0 ), zMax( 0 )
-{
-}
-
 QgsAABB::QgsAABB( float xMin, float yMin, float zMin, float xMax, float yMax, float zMax )
   : xMin( xMin ), yMin( yMin ), zMin( zMin ), xMax( xMax ), yMax( yMax ), zMax( zMax )
 {

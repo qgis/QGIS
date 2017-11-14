@@ -222,7 +222,8 @@ class QgsGrassModuleInputSelectedView : public QTreeView
 };
 
 
-/** \class QgsGrassModuleInput
+/**
+ * \class QgsGrassModuleInput
  *  \brief Class representing raster or vector module input
  */
 class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
@@ -231,7 +232,8 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
 
   public:
 
-    /** \brief Constructor
+    /**
+     * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */

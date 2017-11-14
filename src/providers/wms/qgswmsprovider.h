@@ -154,7 +154,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
 #if 0
 
-    /** Returns true if layer has tile set profiles
+    /**
+     * Returns true if layer has tile set profiles
      */
     virtual bool hasTiles() const;
 #endif
@@ -339,7 +340,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! Get tiles from a different resolution to cover the missing areas
     void fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangle &viewExtent, int imageWidth, QList<QRectF> &missing, double tres, int resOffset, QList<TileImage> &otherResTiles );
 
-    /** Return the full url to request legend graphic
+    /**
+     * Return the full url to request legend graphic
      * The visibleExtent isi only used if provider supports contextual
      * legends according to the QgsWmsSettings
      * \since QGIS 2.8
@@ -429,7 +431,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString mError;
 
 
-    /** The mime type of the message
+    /**
+     * The mime type of the message
      */
     QString mErrorFormat;
 

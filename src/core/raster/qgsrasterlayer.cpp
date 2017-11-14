@@ -108,7 +108,7 @@ QgsRasterLayer::QgsRasterLayer()
 QgsRasterLayer::QgsRasterLayer( const QString &uri,
                                 const QString &baseName,
                                 const QString &providerKey,
-                                bool loadDefaultStyleFlag )
+                                const LayerOptions &options )
   : QgsMapLayer( RasterLayer, baseName, uri )
     // Constant that signals property not used.
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
@@ -122,7 +122,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
 
   // load default style
   bool defaultLoadedFlag = false;
-  if ( mValid && loadDefaultStyleFlag )
+  if ( mValid && options.loadDefaultStyle )
   {
     loadDefaultStyle( defaultLoadedFlag );
   }
@@ -1390,7 +1390,7 @@ bool QgsRasterLayer::readStyle( const QDomNode &node, QString &errorMessage, con
 
   Raster layer project file XML of form:
 
-  @note Called by QgsMapLayer::readXml().
+  \note Called by QgsMapLayer::readXml().
 */
 bool QgsRasterLayer::readXml( const QDomNode &layer_node, const QgsReadWriteContext &context )
 {
@@ -1568,7 +1568,7 @@ bool QgsRasterLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
 
 /*
  *  virtual
- *  @note Called by QgsMapLayer::writeXml().
+ *  \note Called by QgsMapLayer::writeXml().
  */
 bool QgsRasterLayer::writeXml( QDomNode &layer_node,
                                QDomDocument &document,

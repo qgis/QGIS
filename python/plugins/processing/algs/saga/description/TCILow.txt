@@ -1,5 +1,5 @@
 TCI Low
 ta_hydrology
-ParameterRaster|DISTANCE|Vertical Distance to Channel Network|False
-ParameterRaster|TWI|Topographic Wetness Index|False
-OutputRaster|TCILOW|TCI Low
+QgsProcessingParameterRasterLayer|DISTANCE|Vertical Distance to Channel Network|None|False
+QgsProcessingParameterRasterLayer|TWI|Topographic Wetness Index|None|False
+QgsProcessingParameterRasterDestination|TCILOW|TCI Low

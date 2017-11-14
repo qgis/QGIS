@@ -341,7 +341,7 @@ static GEOSGeometry *LWGEOM_GEOS_getPointN( const GEOSGeometry *g_in, uint32_t n
 
 
 static bool lwline_make_geos_friendly( QgsLineString *line );
-static bool lwpoly_make_geos_friendly( QgsPolygonV2 *poly );
+static bool lwpoly_make_geos_friendly( QgsPolygon *poly );
 static bool lwcollection_make_geos_friendly( QgsGeometryCollection *g );
 
 
@@ -364,7 +364,7 @@ static bool lwgeom_make_geos_friendly( QgsAbstractGeometry *geom )
 
     case QgsWkbTypes::Polygon:
       // polygons need all rings closed and with npoints > 3
-      return lwpoly_make_geos_friendly( qgsgeometry_cast<QgsPolygonV2 *>( geom ) );
+      return lwpoly_make_geos_friendly( qgsgeometry_cast<QgsPolygon *>( geom ) );
       break;
 
     case QgsWkbTypes::MultiLineString:
@@ -388,6 +388,7 @@ static bool ring_make_geos_friendly( QgsCurve *ring )
 
   // earlier we allowed in only geometries with straight segments
   QgsLineString *linestring = qgsgeometry_cast<QgsLineString *>( ring );
+  Q_ASSERT_X( linestring, "ring_make_geos_friendly", "ring was not a linestring" );
 
   // close the ring if not already closed (2d only)
 
@@ -404,7 +405,7 @@ static bool ring_make_geos_friendly( QgsCurve *ring )
 }
 
 // Make sure all rings are closed and have > 3 points.
-static bool lwpoly_make_geos_friendly( QgsPolygonV2 *poly )
+static bool lwpoly_make_geos_friendly( QgsPolygon *poly )
 {
   // If the polygon has no rings there's nothing to do
   // TODO: in qgis representation there always is exterior ring
@@ -897,7 +898,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValid( const GEOSGeometry *gin, QString &er
 }
 
 
-QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_in, QString &errorMessage )
+std::unique_ptr< QgsAbstractGeometry > _qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_in, QString &errorMessage )
 {
   //bool is3d = FLAGS_GET_Z(lwgeom_in->flags);
 
@@ -905,7 +906,7 @@ QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_
   // otherwise (adding only duplicates of existing points)
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
-  GEOSGeometry *geosgeom = QgsGeos::asGeos( lwgeom_in );
+  geos::unique_ptr geosgeom = QgsGeos::asGeos( lwgeom_in );
   if ( !geosgeom )
   {
     QgsDebugMsg( "Original geom can't be converted to GEOS - will try cleaning that up first" );
@@ -931,12 +932,11 @@ QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_
     QgsDebugMsgLevel( "original geom converted to GEOS", 4 );
   }
 
-  GEOSGeometry *geosout = LWGEOM_GEOS_makeValid( geosgeom, errorMessage );
-  GEOSGeom_destroy_r( handle, geosgeom );
+  GEOSGeometry *geosout = LWGEOM_GEOS_makeValid( geosgeom.get(), errorMessage );
   if ( !geosout )
     return nullptr;
 
-  QgsAbstractGeometry *lwgeom_out = QgsGeos::fromGeos( geosout );
+  std::unique_ptr< QgsAbstractGeometry > lwgeom_out = QgsGeos::fromGeos( geosout );
   GEOSGeom_destroy_r( handle, geosout );
   if ( !lwgeom_out )
     return nullptr;
@@ -948,20 +948,20 @@ QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_
     switch ( QgsWkbTypes::multiType( lwgeom_out->wkbType() ) )
     {
       case QgsWkbTypes::MultiPoint:
-        collection = new QgsMultiPointV2();
+        collection = new QgsMultiPoint();
         break;
       case QgsWkbTypes::MultiLineString:
         collection = new QgsMultiLineString();
         break;
       case QgsWkbTypes::MultiPolygon:
-        collection = new QgsMultiPolygonV2();
+        collection = new QgsMultiPolygon();
         break;
       default:
         collection = new QgsGeometryCollection();
         break;
     }
-    collection->addGeometry( lwgeom_out ); // takes ownership
-    lwgeom_out = collection;
+    collection->addGeometry( lwgeom_out.release() ); // takes ownership
+    lwgeom_out.reset( collection );
   }
 
   return lwgeom_out;

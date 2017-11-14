@@ -97,7 +97,16 @@ returns if the items can be checked or not
     QModelIndex indexFromLayer( QgsMapLayer *layer ) const;
 %Docstring
  indexFromLayer returns the model index for a given layer
+.. seealso:: layerFromIndex()
  :rtype: QModelIndex
+%End
+
+    QgsMapLayer *layerFromIndex( const QModelIndex &index ) const;
+%Docstring
+ Returns the map layer corresponding to the specified ``index``.
+.. versionadded:: 3.0
+.. seealso:: indexFromLayer()
+ :rtype: QgsMapLayer
 %End
 
     void setAdditionalItems( const QStringList &items );

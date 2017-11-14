@@ -25,12 +25,15 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from .v_what_rast import removeOutput, outputInput
+
+def processCommand(alg, parameters, context):
+    # Exclude outputs from commands
+    alg.processCommand(parameters, context, True)
 
 
-def processCommand(alg, parameters):
-    removeOutput(alg)
-
-
-def processOutputs(alg):
-    outputInput(alg)
+def processOutputs(alg, parameters, context):
+    # We need to add the initial vector layer to outputs:
+    fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
+    grassName = '{}{}'.format('map', alg.uniqueSuffix)
+    dataType = 'auto'
+    alg.exportVectorLayer(grassName, fileName, dataType)

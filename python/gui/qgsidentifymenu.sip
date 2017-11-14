@@ -32,6 +32,9 @@ class QgsIdentifyMenu : QMenu
     struct ActionData
     {
       ActionData();
+%Docstring
+Constructor for ActionData
+%End
 
       ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = 0 );
 
@@ -97,6 +100,7 @@ define if the menu will be shown with a single idetify result
 
     void setMaxLayerDisplay( int maxLayerDisplay );
 %Docstring
+ Defines the maximum number of layers displayed in the menu (default is 10).
 .. note::
 
    0 is unlimited.
@@ -108,6 +112,7 @@ define if the menu will be shown with a single idetify result
 
     void setMaxFeatureDisplay( int maxFeatureDisplay );
 %Docstring
+ Defines the maximum number of features displayed in the menu for vector layers (default is 10).
 .. note::
 
    0 is unlimited.

@@ -31,9 +31,11 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     Qgs3DMapCanvasDockWidget( QWidget *parent = nullptr );
 
     //! takes ownership
-    void setMap( Qgs3DMapSettings *map );
+    void setMapSettings( Qgs3DMapSettings *map );
 
     void setMainCanvas( QgsMapCanvas *canvas );
+
+    Qgs3DMapCanvas *mapCanvas3D() { return mCanvas; }
 
   private slots:
     void resetView();
@@ -43,8 +45,8 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     void onMainCanvasColorChanged();
 
   private:
-    Qgs3DMapCanvas *mCanvas;
-    QgsMapCanvas *mMainCanvas;
+    Qgs3DMapCanvas *mCanvas = nullptr;
+    QgsMapCanvas *mMainCanvas = nullptr;
 };
 
 #endif // QGS3DMAPCANVASDOCKWIDGET_H

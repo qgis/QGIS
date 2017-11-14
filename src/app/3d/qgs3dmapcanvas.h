@@ -47,13 +47,13 @@ class Qgs3DMapCanvas : public QWidget
 
   private:
     //! 3D window with all the 3D magic inside
-    Qt3DExtras::Qt3DWindow *mWindow3D;
+    Qt3DExtras::Qt3DWindow *mWindow3D = nullptr;
     //! Container QWidget that encapsulates mWindow3D so we can use it embedded in ordinary widgets app
-    QWidget *mContainer;
+    QWidget *mContainer = nullptr;
     //! Description of the 3D scene
-    Qgs3DMapSettings *mMap;
+    Qgs3DMapSettings *mMap = nullptr;
     //! Root entity of the 3D scene
-    Qgs3DMapScene *mScene;
+    Qgs3DMapScene *mScene = nullptr;
 };
 
 #endif // QGS3DMAPCANVAS_H

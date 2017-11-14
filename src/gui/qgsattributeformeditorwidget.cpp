@@ -37,6 +37,10 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
   , mIsMixed( false )
   , mIsChanged( false )
 {
+  mConstraintResultLabel = new QLabel( this );
+  mConstraintResultLabel->setObjectName( QStringLiteral( "ConstraintStatus" ) );
+  mConstraintResultLabel->setSizePolicy( QSizePolicy::Fixed, mConstraintResultLabel->sizePolicy().verticalPolicy() );
+
   mEditPage = new QWidget();
   QHBoxLayout *l = new QHBoxLayout();
   l->setMargin( 0 );
@@ -132,6 +136,27 @@ QWidget *QgsAttributeFormEditorWidget::searchWidgetFrame()
 QList< QgsSearchWidgetWrapper * > QgsAttributeFormEditorWidget::searchWidgetWrappers()
 {
   return mSearchWidgets;
+}
+
+void QgsAttributeFormEditorWidget::setConstraintStatus( const QString &constraint, const QString &description, const QString &err, QgsEditorWidgetWrapper::ConstraintResult result )
+{
+  switch ( result )
+  {
+    case QgsEditorWidgetWrapper::ConstraintResultFailHard:
+      mConstraintResultLabel->setText( QStringLiteral( "<font color=\"#FF9800\">%1</font>" ).arg( QChar( 0x2718 ) ) );
+      mConstraintResultLabel->setToolTip( description.isEmpty() ? QStringLiteral( "<b>%1</b>: %2" ).arg( constraint, err ) : description );
+      break;
+
+    case QgsEditorWidgetWrapper::ConstraintResultFailSoft:
+      mConstraintResultLabel->setText( QStringLiteral( "<font color=\"#FFC107\">%1</font>" ).arg( QChar( 0x2718 ) ) );
+      mConstraintResultLabel->setToolTip( description.isEmpty() ? QStringLiteral( "<b>%1</b>: %2" ).arg( constraint, err ) : description );
+      break;
+
+    case QgsEditorWidgetWrapper::ConstraintResultPass:
+      mConstraintResultLabel->setText( QStringLiteral( "<font color=\"#259B24\">%1</font>" ).arg( QChar( 0x2714 ) ) );
+      mConstraintResultLabel->setToolTip( QString() );
+      break;
+  }
 }
 
 void QgsAttributeFormEditorWidget::setMode( QgsAttributeFormEditorWidget::Mode mode )
@@ -316,6 +341,9 @@ void QgsAttributeFormEditorWidget::updateWidgets()
     case MultiEditMode:
     {
       mStack->setCurrentWidget( mEditPage );
+
+      mEditPage->layout()->addWidget( mConstraintResultLabel );
+
       break;
     }
 

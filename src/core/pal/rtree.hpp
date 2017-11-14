@@ -44,7 +44,8 @@ namespace pal
   class RTFileStream;  // File I/O helper class, look below for implementation and notes.
 
 
-  /** \ingroup core
+  /**
+   * \ingroup core
      Implementation of RTree, a multidimensional bounding rectangle tree.
      Example usage: For a 3-dimensional tree use RTree<Object*, float, 3> myTree;
 
@@ -123,7 +124,8 @@ namespace pal
       /// Save tree contents to stream
       bool Save( RTFileStream &a_stream );
 
-      /** \ingroup core
+      /**
+       * \ingroup core
        * Iterator is not remove safe.
        */
       class Iterator
@@ -134,9 +136,6 @@ namespace pal
 
           struct StackElement
           {
-            StackElement()
-            {}
-
             Node *m_node = nullptr;
             int m_branchIndex = 0;
           };
@@ -361,7 +360,8 @@ namespace pal
   // Because there is not stream support, this is a quick and dirty file I/O helper.
   // Users will likely replace its usage with a Stream implementation from their favorite API.
 
-  /** \ingroup core
+  /**
+   * \ingroup core
    */
   class RTFileStream
   {
@@ -380,17 +380,18 @@ namespace pal
         Close();
       }
 
+      //! RTFileStream cannot be copied
+      RTFileStream( const RTFileStream &other ) = delete;
+      //! RTFileStream cannot be copied
+      RTFileStream &operator=( const RTFileStream &other ) = delete;
+
       bool OpenRead( const char *a_fileName )
       {
         if ( m_file )
           fclose( m_file );
 
         m_file = fopen( a_fileName, "rb" );
-        if ( !m_file )
-        {
-          return false;
-        }
-        return true;
+        return m_file != nullptr;
       }
 
       bool OpenWrite( const char *a_fileName )
@@ -399,11 +400,7 @@ namespace pal
           fclose( m_file );
 
         m_file = fopen( a_fileName, "wb" );
-        if ( !m_file )
-        {
-          return false;
-        }
-        return true;
+        return m_file != nullptr;
       }
 
       void Close()
@@ -443,10 +440,6 @@ namespace pal
         return fread( static_cast< void * >( a_array ), sizeof( TYPE ) * a_count, 1, m_file );
       }
 
-    private:
-
-      RTFileStream( const RTFileStream &other );
-      RTFileStream &operator=( const RTFileStream &other );
   };
 
 

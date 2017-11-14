@@ -20,7 +20,11 @@ class QgsLabelPosition
 %End
   public:
     QgsLabelPosition( int id, double r, const QVector< QgsPointXY > &corners, const QgsRectangle &rect, double w, double h, const QString &layer, const QString &labeltext, const QFont &labelfont, bool upside_down, bool diagram = false, bool pinned = false, const QString &providerId = QString() );
+
     QgsLabelPosition();
+%Docstring
+Constructor for QgsLabelPosition
+%End
 
     int featureId;
     double rotation;
@@ -764,6 +768,7 @@ class QgsPalLabeling
 
     static bool staticWillUseLayer( QgsVectorLayer *layer );
 %Docstring
+ called to find out whether the layer is used for labeling
 .. versionadded:: 2.4
  :rtype: bool
 %End

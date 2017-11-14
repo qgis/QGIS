@@ -87,13 +87,16 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     //! Get current group node. If a layer is current node, the function will return parent group. May be null.
     QgsLayerTreeGroup *currentGroupNode() const;
 
-    /** Get current legend node. May be null if current node is not a legend node.
+    /**
+     * Get current legend node. May be null if current node is not a legend node.
      * \since QGIS 2.14
      */
     QgsLayerTreeModelLegendNode *currentLegendNode() const;
 
-    //! Return list of selected nodes
-    //! @arg skipInternal If true, will ignore nodes which have an ancestor in the selection
+    /**
+     * Return list of selected nodes
+     * \param skipInternal If true, will ignore nodes which have an ancestor in the selection
+     */
     QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
     //! Return list of selected nodes filtered to just layer nodes
     QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
@@ -105,12 +108,16 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     //! Force refresh of layer symbology. Normally not needed as the changes of layer's renderer are monitored by the model
     void refreshLayerSymbology( const QString &layerId );
 
-    //! Enhancement of QTreeView::expandAll() that also records expanded state in layer tree nodes
-    //! \since QGIS 2.18
+    /**
+     * Enhancement of QTreeView::expandAll() that also records expanded state in layer tree nodes
+     * \since QGIS 2.18
+     */
     void expandAllNodes();
 
-    //! Enhancement of QTreeView::collapseAll() that also records expanded state in layer tree nodes
-    //! \since QGIS 2.18
+    /**
+     * Enhancement of QTreeView::collapseAll() that also records expanded state in layer tree nodes
+     * \since QGIS 2.18
+     */
     void collapseAllNodes();
 
   signals:
@@ -151,7 +158,8 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 };
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Implementation of this interface can be implemented to allow QgsLayerTreeView
  * instance to provide custom context menus (opened upon right-click).
  *

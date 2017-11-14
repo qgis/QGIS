@@ -89,6 +89,7 @@ void QgsActionMenu::triggerAction()
   {
     // define custom substitutions: layer id and clicked coords
     QgsExpressionContext context = mLayer->createExpressionContext();
+    context.setFeature( mFeature );
 
     QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
     actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), mActionScope, true ) );

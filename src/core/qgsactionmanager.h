@@ -39,7 +39,8 @@ class QgsVectorLayer;
 class QgsExpressionContextScope;
 class QgsExpressionContext;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsActionManager
  * Storage and management of actions associated with a layer.
  *
@@ -57,7 +58,8 @@ class CORE_EXPORT QgsActionManager: public QObject
       : mLayer( layer )
     {}
 
-    /** Add an action with the given name and action details.
+    /**
+     * Add an action with the given name and action details.
      * Will happily have duplicate names and actions. If
      * capture is true, when running the action using doAction(),
      * any stdout from the process will be captured and displayed in a
@@ -65,7 +67,8 @@ class CORE_EXPORT QgsActionManager: public QObject
      */
     QUuid addAction( QgsAction::ActionType type, const QString &name, const QString &command, bool capture = false );
 
-    /** Add an action with the given name and action details.
+    /**
+     * Add an action with the given name and action details.
      * Will happily have duplicate names and actions. If
      * capture is true, when running the action using doAction(),
      * any stdout from the process will be captured and displayed in a
@@ -85,13 +88,15 @@ class CORE_EXPORT QgsActionManager: public QObject
      */
     void removeAction( const QUuid &actionId );
 
-    /** Does the given action. defaultValueIndex is the index of the
+    /**
+     * Does the given action. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
      *  \note available in Python bindings as doActionFeature
      */
     void doAction( const QUuid &actionId, const QgsFeature &feature, int defaultValueIndex = 0 ) SIP_PYNAME( doActionFeature );
 
-    /** Does the action using the expression engine to replace any embedded expressions
+    /**
+     * Does the action using the expression engine to replace any embedded expressions
      * in the action definition.
      * \param actionId action id
      * \param feature feature to run action for

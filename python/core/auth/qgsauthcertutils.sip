@@ -81,9 +81,23 @@ Map certificate sha1 to certificate as simple cache
 %End
 
 
+    static QByteArray fileData( const QString &path );
+%Docstring
+ Return data from a local file via a read-only operation
+ \param path Path to file to read
+ :return: All data contained in file or empty contents if file does not exist
+ :rtype: QByteArray
+%End
+
     static QList<QSslCertificate> certsFromFile( const QString &certspath );
 %Docstring
 Return list of concatenated certs from a PEM or DER formatted file
+ :rtype: list of QSslCertificate
+%End
+
+    static QList<QSslCertificate> casFromFile( const QString &certspath );
+%Docstring
+Return list of concatenated CAs from a PEM or DER formatted file
  :rtype: list of QSslCertificate
 %End
 
@@ -91,6 +105,17 @@ Return list of concatenated certs from a PEM or DER formatted file
 %Docstring
 Return first cert from a PEM or DER formatted file
  :rtype: QSslCertificate
+%End
+
+    static QList<QSslCertificate> casMerge( const QList<QSslCertificate> &bundle1,
+                                            const QList<QSslCertificate> &bundle2 );
+%Docstring
+ casMerge merges two certificate bundles in a single one removing duplicates, the certificates
+ from the ``bundle2`` are appended to ``bundle1`` if not already there
+ \param bundle1 first bundle
+ \param bundle2 second bundle
+ :return: a list of unique certificates
+ :rtype: list of QSslCertificate
 %End
 
     static QSslKey keyFromFile( const QString &keypath,
@@ -110,6 +135,15 @@ Return list of concatenated certs from a PEM Base64 text block
  :rtype: list of QSslCertificate
 %End
 
+
+    static QList<QSslCertificate> casRemoveSelfSigned( const QList<QSslCertificate> &caList );
+%Docstring
+ casRemoveSelfSigned remove self-signed CA certificates from ``caList``
+ \param caList list of CA certificates
+ :return: a list of non self-signed certificates
+ :rtype: list of QSslCertificate
+%End
+
     static QStringList certKeyBundleToPem( const QString &certpath,
                                            const QString &keypath,
                                            const QString &keypass = QString(),
@@ -124,6 +158,16 @@ Return list of concatenated certs from a PEM Base64 text block
  :rtype: list of str
 %End
 
+    static bool pemIsPkcs8( const QString &keyPemTxt );
+%Docstring
+ Determine if the PEM-encoded text of a key is PKCS#8 format
+ \param keyPemTxt PEM-encoded text
+ :return: True if PKCS#8, otherwise false
+ :rtype: bool
+%End
+
+
+
     static QStringList pkcs12BundleToPem( const QString &bundlepath,
                                           const QString &bundlepass = QString(),
                                           bool reencrypt = true );
@@ -134,6 +178,25 @@ Return list of concatenated certs from a PEM Base64 text block
  \param reencrypt Whether to re-encrypt the private key with the passphrase
  :return: certificate, private key, key's algorithm type
  :rtype: list of str
+%End
+
+    static QList<QSslCertificate> pkcs12BundleCas( const QString &bundlepath,
+        const QString &bundlepass = QString() );
+%Docstring
+ Return list of CA certificates (as QSslCertificate) for a PKCS#12 bundle
+ \param bundlepath File path to the PKCS bundle
+ \param bundlepass Passphrase for bundle
+ :return: list of certificate
+ :rtype: list of QSslCertificate
+%End
+
+
+    static QByteArray certsToPemText( const QList<QSslCertificate> &certs );
+%Docstring
+ certsToPemText dump a list of QSslCertificates to PEM text
+ \param certs list of certs
+ :return: a byte array of concatenated certificates as PEM text
+ :rtype: QByteArray
 %End
 
     static QString pemTextToTempFile( const QString &name, const QByteArray &pemtext );
@@ -229,6 +292,53 @@ Get short strings describing an SSL error
  :rtype: str
 %End
 
+
+    static bool certIsCurrent( const QSslCertificate &cert );
+%Docstring
+ certIsCurrent checks if ``cert`` is viable for its not before and not after dates
+ \param cert certificate to be checked
+ :rtype: bool
+%End
+
+    static QList<QSslError> certViabilityErrors( const QSslCertificate &cert );
+%Docstring
+ certViabilityErrors checks basic characteristics (validity dates, blacklisting, etc.) of given ``cert``
+ \param cert certificate to be checked
+ :return: list of QSslError (will return NO ERRORS if a null QSslCertificate is passed)
+ :rtype: list of QSslError
+%End
+
+    static bool certIsViable( const QSslCertificate &cert );
+%Docstring
+ certIsViable checks for viability errors of ``cert`` and whether it is NULL
+ \param cert certificate to be checked
+ :return: false if cert is NULL or has viability errors
+ :rtype: bool
+%End
+
+    static QList<QSslError> validateCertChain( const QList<QSslCertificate> &certificateChain,
+        const QString &hostName = QString(),
+        bool trustRootCa = false ) ;
+%Docstring
+ validateCertChain validates the given ``certificateChain``
+ \param certificateChain list of certificates to be checked, with leaf first and with optional root CA last
+ \param hostName (optional) name of the host to be verified
+ \param trustRootCa if true the CA will be added to the trusted CAs for this validation check
+ :return: list of QSslError, if the list is empty then the cert chain is valid
+ :rtype: list of QSslError
+%End
+
+    static QStringList validatePKIBundle( QgsPkiBundle &bundle, bool useIntermediates = true, bool trustRootCa = false );
+%Docstring
+ validatePKIBundle validate the PKI bundle by checking the certificate chain, the
+ expiration and effective dates, optionally trusts the root CA
+ \param bundle
+ \param useIntermediates if true the intermediate certs are also checked
+ \param trustRootCa if true the CA will be added to the trusted CAs for this validation check (if useIntermediates is false)
+ this option is ignored and set to false
+ :return: a list of error strings, if the list is empty then the PKI bundle is valid
+ :rtype: list of str
+%End
 
 };
 

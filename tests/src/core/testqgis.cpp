@@ -22,7 +22,8 @@
 //qgis includes...
 #include <qgis.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * Includes unit tests for the Qgis namespace
  */
 class TestQgis : public QObject
@@ -301,7 +302,7 @@ void TestQgis::testQgsAsConst()
   ConstTester ct;
   ct.doSomething();
   QCOMPARE( ct.mVal, 1 );
-  qgsAsConst( ct ).doSomething();
+  qgis::as_const( ct ).doSomething();
   QCOMPARE( ct.mVal, 2 );
 }
 

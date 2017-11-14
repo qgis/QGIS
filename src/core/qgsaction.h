@@ -28,7 +28,8 @@
 
 class QgsExpressionContextScope;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Utility class that encapsulates an action based on vector attributes.
  */
 class CORE_EXPORT QgsAction
@@ -47,8 +48,7 @@ class CORE_EXPORT QgsAction
     /**
      * Default constructor
      */
-    QgsAction()
-    {}
+    QgsAction() = default;
 
     /**
      * Create a new QgsAction

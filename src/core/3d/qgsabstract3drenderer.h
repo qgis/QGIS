@@ -33,7 +33,8 @@ namespace Qt3DCore
 }
 #endif
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Base class for all renderers that may to participate in 3D view.
  *
  * 3D renderers implement the method createEntity() that returns a new 3D entity - that entity

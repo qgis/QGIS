@@ -26,7 +26,8 @@
 class QString;
 class QgsRectangle;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Calculates scale for a given combination of canvas size, map extent,
  * and monitor dpi.
  */

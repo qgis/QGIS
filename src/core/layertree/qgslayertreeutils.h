@@ -31,7 +31,8 @@ class QgsLayerTreeLayer;
 class QgsMapLayer;
 class QgsProject;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Assorted functions for dealing with layer trees.
  *
  * \since QGIS 2.4
@@ -76,11 +77,13 @@ class CORE_EXPORT QgsLayerTreeUtils
     //! Test if one of the layers in a group has an expression filter
     static bool hasLegendFilterExpression( const QgsLayerTreeGroup &group );
 
-    //! Insert a QgsMapLayer just below another one
-    //! \param group the tree group where layers are (can be the root group)
-    //! \param refLayer the reference layer
-    //! \param layerToInsert the new layer to insert just below the reference layer
-    //! \returns the new tree layer
+    /**
+     * Insert a QgsMapLayer just below another one
+     * \param group the tree group where layers are (can be the root group)
+     * \param refLayer the reference layer
+     * \param layerToInsert the new layer to insert just below the reference layer
+     * \returns the new tree layer
+     */
     static QgsLayerTreeLayer *insertLayerBelow( QgsLayerTreeGroup *group, const QgsMapLayer *refLayer, QgsMapLayer *layerToInsert );
 };
 

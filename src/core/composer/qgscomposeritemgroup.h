@@ -20,9 +20,12 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgscomposeritem.h"
+#include "qgsreadwritecontext.h"
+
 #include <QSet>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A container for grouping several QgsComposerItems
  */
 class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
@@ -35,7 +38,8 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
     //! Return correct graphics item type.
     virtual int type() const override { return ComposerItemGroup; }
 
-    /** Adds an item to the group. All the group members are deleted
+    /**
+     * Adds an item to the group. All the group members are deleted
      if the group is deleted*/
     void addItem( QgsComposerItem *item ) override;
     //! Removes the items but does not delete them
@@ -43,20 +47,23 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
     //! Draw stroke and ev. selection handles
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
-    /** Sets this items bound in scene coordinates such that 1 item size units
+    /**
+     * Sets this items bound in scene coordinates such that 1 item size units
        corresponds to 1 scene size unit*/
     void setSceneRect( const QRectF &rectangle ) override;
 
     //overridden to also hide grouped items
     virtual void setVisibility( const bool visible ) override;
 
-    /** Stores state in Dom node
+    /**
+     * Stores state in Dom node
        * \param elem is Dom element corresponding to 'Composer' tag
        * \param doc is the Dom document
        */
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
-    /** Sets state from Dom document
+    /**
+     * Sets state from Dom document
        * \param itemElem is Dom node corresponding to item tag
        * \param doc is the Dom document
        */

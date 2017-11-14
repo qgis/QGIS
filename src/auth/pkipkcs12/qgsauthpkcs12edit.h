@@ -56,13 +56,15 @@ class QgsAuthPkcs12Edit : public QgsAuthMethodEdit, private Ui::QgsAuthPkcs12Edi
     void clearPkcs12BundlePath();
     void clearPkcs12BundlePass();
 
-    void on_lePkcs12KeyPass_textChanged( const QString &pass );
-    void on_chkPkcs12PassShow_stateChanged( int state );
+    void lePkcs12KeyPass_textChanged( const QString &pass );
+    void chkPkcs12PassShow_stateChanged( int state );
 
-    void on_btnPkcs12Bundle_clicked();
+    void btnPkcs12Bundle_clicked();
 
   private:
     bool validityChange( bool curvalid );
+
+    bool populateCas( );
 
     QgsStringMap mConfigMap;
     bool mValid = 0;

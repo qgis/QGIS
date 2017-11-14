@@ -15,15 +15,17 @@
 
 
 
-typedef QVector<QgsPointXY> QgsPolyline;
+typedef QVector<QgsPointXY> QgsPolylineXY;
 
-typedef QVector<QVector<QgsPointXY>> QgsPolygon;
+typedef QVector<QgsPoint> QgsPolyline;
 
-typedef QVector<QgsPointXY> QgsMultiPoint;
+typedef QVector<QVector<QgsPointXY>> QgsPolygonXY;
 
-typedef QVector<QVector<QgsPointXY>> QgsMultiPolyline;
+typedef QVector<QgsPointXY> QgsMultiPointXY;
 
-typedef QVector<QVector<QVector<QgsPointXY>>> QgsMultiPolygon;
+typedef QVector<QVector<QgsPointXY>> QgsMultiPolylineXY;
+
+typedef QVector<QVector<QVector<QgsPointXY>>> QgsMultiPolygonXY;
 
 
 
@@ -82,19 +84,50 @@ Copy constructor will prompt a deep copy of the object
 
     ~QgsGeometry();
 
-    QgsAbstractGeometry *geometry() const;
+    const QgsAbstractGeometry *constGet() const;
 %Docstring
- Returns the underlying geometry store.
-.. versionadded:: 2.10
-.. seealso:: setGeometry
+ Returns a non-modifiable (const) reference to the underlying abstract geometry primitive.
+
+ This is much faster then calling the non-const get() method.
+
+.. note::
+
+   In QGIS 2.x this method was named geometry().
+
+.. versionadded:: 3.0
+.. seealso:: primitive()
+.. seealso:: set()
  :rtype: QgsAbstractGeometry
 %End
 
-    void setGeometry( QgsAbstractGeometry *geometry /Transfer/ );
+    QgsAbstractGeometry *get();
+%Docstring
+ Returns a modifiable (non-const) reference to the underlying abstract geometry primitive.
+
+ This method can be slow to call, as it may trigger a detachment of the geometry
+ and a deep copy. Where possible, use constGet() instead.
+
+.. note::
+
+   In QGIS 2.x this method was named geometry().
+
+.. versionadded:: 3.0
+.. seealso:: constGet()
+.. seealso:: set()
+ :rtype: QgsAbstractGeometry
+%End
+
+    void set( QgsAbstractGeometry *geometry /Transfer/ );
 %Docstring
  Sets the underlying geometry store. Ownership of geometry is transferred.
-.. versionadded:: 2.10
-.. seealso:: geometry
+
+.. note::
+
+   In QGIS 2.x this method was named setGeometry().
+
+.. versionadded:: 3.0
+.. seealso:: get()
+.. seealso:: constGet()
 %End
 
     bool isNull() const;
@@ -112,32 +145,56 @@ Copy constructor will prompt a deep copy of the object
 Creates a new geometry from a WKT string
  :rtype: QgsGeometry
 %End
-    static QgsGeometry fromPoint( const QgsPointXY &point );
+    static QgsGeometry fromPointXY( const QgsPointXY &point );
 %Docstring
 Creates a new geometry from a QgsPointXY object
  :rtype: QgsGeometry
 %End
-    static QgsGeometry fromMultiPoint( const QgsMultiPoint &multipoint );
+    static QgsGeometry fromMultiPointXY( const QgsMultiPointXY &multipoint );
 %Docstring
-Creates a new geometry from a QgsMultiPoint object
+Creates a new geometry from a QgsMultiPointXY object
  :rtype: QgsGeometry
 %End
+
+    static QgsGeometry fromPolylineXY( const QgsPolylineXY &polyline );
+%Docstring
+ Creates a new LineString geometry from a list of QgsPointXY points.
+
+ Using fromPolyline() is preferred, as fromPolyline() is more efficient
+ and will respect any Z or M dimensions present in the input points.
+
+.. note::
+
+   In QGIS 2.x this method was available as fromPolyline().
+
+.. versionadded:: 3.0
+.. seealso:: fromPolyline()
+ :rtype: QgsGeometry
+%End
+
     static QgsGeometry fromPolyline( const QgsPolyline &polyline );
 %Docstring
-Creates a new geometry from a QgsPolyline object
+ Creates a new LineString geometry from a list of QgsPoint points.
+
+ This method will respect any Z or M dimensions present in the input points.
+ E.g. if input points are PointZ type, the resultant linestring will be
+ a LineStringZ type.
+
+.. versionadded:: 3.0
  :rtype: QgsGeometry
 %End
-    static QgsGeometry fromMultiPolyline( const QgsMultiPolyline &multiline );
+
+    static QgsGeometry fromMultiPolylineXY( const QgsMultiPolylineXY &multiline );
 %Docstring
-Creates a new geometry from a QgsMultiPolyline object
+Creates a new geometry from a QgsMultiPolylineXY object
  :rtype: QgsGeometry
 %End
-    static QgsGeometry fromPolygon( const QgsPolygon &polygon );
+    static QgsGeometry fromPolygonXY( const QgsPolygonXY &polygon );
 %Docstring
 Creates a new geometry from a QgsPolygon
  :rtype: QgsGeometry
 %End
-    static QgsGeometry fromMultiPolygon( const QgsMultiPolygon &multipoly );
+    static QgsGeometry fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly );
 %Docstring
 Creates a new geometry from a QgsMultiPolygon
  :rtype: QgsGeometry
@@ -239,6 +296,14 @@ Returns true if WKB of the geometry is of WKBMulti* type
 
  \param geom geometry to find minimum distance to
  :rtype: float
+%End
+
+
+    QgsVertexIterator vertices() const;
+%Docstring
+ Returns Java-style iterator for traversal of vertices of the geometry
+.. versionadded:: 3.0
+ :rtype: QgsVertexIterator
 %End
 
     double hausdorffDistance( const QgsGeometry &geom ) const;
@@ -454,7 +519,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: OperationResult
 %End
 
-    OperationResult addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPoints/;
+    OperationResult addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPointsXY/;
 %Docstring
  Adds a new part to a the geometry.
  \param points points describing part to add
@@ -463,7 +528,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: OperationResult
 %End
 
-    OperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPointsV2/;
+    OperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPoints/;
 %Docstring
  Adds a new part to a the geometry.
  \param points points describing part to add
@@ -596,6 +661,21 @@ Returns true if WKB of the geometry is of WKBMulti* type
  either the vertices are within a specified tolerance of right angles or a set number of maximum
  iterations is reached. The angle threshold parameter specifies how close to a right angle or
  straight line an angle must be before it is attempted to be straightened.
+.. versionadded:: 3.0
+ :rtype: QgsGeometry
+%End
+
+    QgsGeometry snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const;
+%Docstring
+ Returns a new geometry with all points or vertices snapped to the closest point of the grid.
+
+ If the gridified geometry could not be calculated (or was totally collapsed) an empty geometry will be returned.
+ Note that snapping to grid may generate an invalid geometry in some corner cases.
+ It can also be thought as rounding the edges and it may be useful for removing errors.
+ \param hSpacing Horizontal spacing of the grid (x axis). 0 to disable.
+ \param vSpacing Vertical spacing of the grid (y axis). 0 to disable.
+ \param dSpacing Depth spacing of the grid (z axis). 0 (default) to disable.
+ \param mSpacing Custom dimension spacing of the grid (m axis). 0 (default) to disable.
 .. versionadded:: 3.0
  :rtype: QgsGeometry
 %End
@@ -1057,39 +1137,39 @@ Returns an extruded version of this geometry.
  :rtype: QgsPointXY
 %End
 
-    QgsPolyline asPolyline() const;
+    QgsPolylineXY asPolyline() const;
 %Docstring
  Returns contents of the geometry as a polyline
  if wkbType is WKBLineString, otherwise an empty list
- :rtype: QgsPolyline
+ :rtype: QgsPolylineXY
 %End
 
-    QgsPolygon asPolygon() const;
+    QgsPolygonXY asPolygon() const;
 %Docstring
  Returns contents of the geometry as a polygon
  if wkbType is WKBPolygon, otherwise an empty list
- :rtype: QgsPolygon
+ :rtype: QgsPolygonXY
 %End
 
-    QgsMultiPoint asMultiPoint() const;
+    QgsMultiPointXY asMultiPoint() const;
 %Docstring
  Returns contents of the geometry as a multi point
  if wkbType is WKBMultiPoint, otherwise an empty list
- :rtype: QgsMultiPoint
+ :rtype: QgsMultiPointXY
 %End
 
-    QgsMultiPolyline asMultiPolyline() const;
+    QgsMultiPolylineXY asMultiPolyline() const;
 %Docstring
  Returns contents of the geometry as a multi linestring
  if wkbType is WKBMultiLineString, otherwise an empty list
- :rtype: QgsMultiPolyline
+ :rtype: QgsMultiPolylineXY
 %End
 
-    QgsMultiPolygon asMultiPolygon() const;
+    QgsMultiPolygonXY asMultiPolygon() const;
 %Docstring
  Returns contents of the geometry as a multi polygon
  if wkbType is WKBMultiPolygon, otherwise an empty list
- :rtype: QgsMultiPolygon
+ :rtype: QgsMultiPolygonXY
 %End
 
     QList<QgsGeometry> asGeometryCollection() const;
@@ -1170,7 +1250,7 @@ Returns an extruded version of this geometry.
  :rtype: int
 %End
 
-    QgsGeometry makeValid();
+    QgsGeometry makeValid() const;
 %Docstring
  Attempts to make an invalid geometry valid without losing vertices.
 
@@ -1225,7 +1305,7 @@ Returns an extruded version of this geometry.
       ValidatorGeos,
     };
 
-    void validateGeometry( QList<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal );
+    void validateGeometry( QList<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal ) const;
 %Docstring
  Validates geometry and produces a list of geometry errors.
  The ``method`` argument dictates which validator to utilize.
@@ -1285,24 +1365,30 @@ Returns an extruded version of this geometry.
 .. versionadded:: 2.10
 %End
 
-    bool vertexIdFromVertexNr( int nr, QgsVertexId &id /Out/ ) const;
+    bool vertexIdFromVertexNr( int number, QgsVertexId &id /Out/ ) const;
 %Docstring
- Calculates the vertex ID from a vertex number
- \param nr vertex number
- \param id reference to QgsVertexId for storing result
- :return: true if vertex was found
+ Calculates the vertex ID from a vertex ``number``.
+
+ If a matching vertex was found, it will be stored in ``id``.
+
+ Returns true if vertex was found.
+
 .. versionadded:: 2.10
-.. seealso:: vertexNrFromVertexId
+.. seealso:: vertexNrFromVertexId()
  :rtype: bool
 %End
 
-    int vertexNrFromVertexId( QgsVertexId i ) const;
+    int vertexNrFromVertexId( QgsVertexId id ) const;
 %Docstring
- Returns the vertex number corresponding to a vertex idd
- \param i vertex id
- :return: vertex number
+ Returns the vertex number corresponding to a vertex ``id``.
+
+ The vertex numbers start at 0, so a return value of 0 corresponds
+ to the first vertex.
+
+ Returns -1 if a corresponding vertex could not be found.
+
 .. versionadded:: 2.10
-.. seealso:: vertexIdFromVertexNr
+.. seealso:: vertexIdFromVertexNr()
  :rtype: int
 %End
 
@@ -1335,29 +1421,29 @@ Returns an extruded version of this geometry.
  :rtype: QgsGeometry
 %End
 
-    static QgsPolyline createPolylineFromQPolygonF( const QPolygonF &polygon ) /Factory/;
+    static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) /Factory/;
 %Docstring
- Creates a QgsPolyline from a QPolygonF.
+ Creates a QgsPolylineXY from a QPolygonF.
  \param polygon source polygon
- :return: QgsPolyline
+ :return: QgsPolylineXY
 .. seealso:: createPolygonFromQPolygonF
- :rtype: QgsPolyline
+ :rtype: QgsPolylineXY
 %End
 
-    static QgsPolygon createPolygonFromQPolygonF( const QPolygonF &polygon ) /Factory/;
+    static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) /Factory/;
 %Docstring
- Creates a QgsPolygon from a QPolygonF.
+ Creates a QgsPolygonXYfrom a QPolygonF.
  \param polygon source polygon
  :return: QgsPolygon
 .. seealso:: createPolylineFromQPolygonF
- :rtype: QgsPolygon
+ :rtype: QgsPolygonXY
 %End
 
 
     static bool compare( PyObject *obj1, PyObject *obj2, double epsilon = 4 * DBL_EPSILON );
 %Docstring
  Compares two geometry objects for equality within a specified tolerance.
- The objects can be of type QgsPolyline, QgsPolygon or QgsMultiPolygon.
+ The objects can be of type QgsPolylineXY, QgsPolygonXYor QgsMultiPolygon.
  The 2 types should match.
  \param p1 first geometry object
  \param p2 second geometry object
@@ -1394,10 +1480,10 @@ Returns an extruded version of this geometry.
                sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
                sipCanConvertToType( a1, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
           {
-            QgsPolyline *p0;
-            QgsPolyline *p1;
-            p0 = reinterpret_cast<QgsPolyline *>( sipConvertToType( a0, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-            p1 = reinterpret_cast<QgsPolyline *>( sipConvertToType( a1, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+            QgsPolylineXY *p0;
+            QgsPolylineXY *p1;
+            p0 = reinterpret_cast<QgsPolylineXY *>( sipConvertToType( a0, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+            p1 = reinterpret_cast<QgsPolylineXY *>( sipConvertToType( a1, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
             if ( sipIsErr )
             {
               sipReleaseType( p0, sipType_QVector_0100QgsPointXY, state0 );
@@ -1421,10 +1507,10 @@ Returns an extruded version of this geometry.
                    sipCanConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
                    sipCanConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
               {
-                QgsPolygon *p0;
-                QgsPolygon *p1;
-                p0 = reinterpret_cast<QgsPolygon *>( sipConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-                p1 = reinterpret_cast<QgsPolygon *>( sipConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+                QgsPolygonXY *p0;
+                QgsPolygonXY *p1;
+                p0 = reinterpret_cast<QgsPolygonXY *>( sipConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+                p1 = reinterpret_cast<QgsPolygonXY *>( sipConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
                 if ( sipIsErr )
                 {
                   sipReleaseType( p0, sipType_QVector_0600QVector_0100QgsPointXY, state0 );
@@ -1448,10 +1534,10 @@ Returns an extruded version of this geometry.
                        sipCanConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
                        sipCanConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
                   {
-                    QgsMultiPolygon *p0;
-                    QgsMultiPolygon *p1;
-                    p0 = reinterpret_cast<QgsMultiPolygon *>( sipConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-                    p1 = reinterpret_cast<QgsMultiPolygon *>( sipConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+                    QgsMultiPolygonXY *p0;
+                    QgsMultiPolygonXY *p1;
+                    p0 = reinterpret_cast<QgsMultiPolygonXY *>( sipConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+                    p1 = reinterpret_cast<QgsMultiPolygonXY *>( sipConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
                     if ( sipIsErr )
                     {
                       sipReleaseType( p0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, state0 );
@@ -1495,16 +1581,16 @@ Returns an extruded version of this geometry.
 
     static void convertPointList( const QList<QgsPointXY> &input, QgsPointSequence &output );
 %Docstring
- Upgrades a point list from QgsPointXY to QgsPointV2
+ Upgrades a point list from QgsPointXY to QgsPoint
  \param input list of QgsPointXY objects to be upgraded
- \param output destination for list of points converted to QgsPointV2
+ \param output destination for list of points converted to QgsPoint
 %End
 
     static void convertPointList( const QgsPointSequence &input, QList<QgsPointXY> &output );
 %Docstring
- Downgrades a point list from QgsPoint to QgsPoint
+ Downgrades a point list from QgsPoint to QgsPointXY
  \param input list of QgsPoint objects to be downgraded
- \param output destination for list of points converted to QgsPoint
+ \param output destination for list of points converted to QgsPointXY
 %End
 
     operator QVariant() const;

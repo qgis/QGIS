@@ -58,8 +58,8 @@ QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
   mRemoveButton->setToolTip( tr( "Remove variable" ) );
   horizontalLayout->addWidget( mRemoveButton );
   verticalLayout->addLayout( horizontalLayout );
-  connect( mRemoveButton, &QAbstractButton::clicked, this, &QgsVariableEditorWidget::on_mRemoveButton_clicked );
-  connect( mAddButton, &QAbstractButton::clicked, this, &QgsVariableEditorWidget::on_mAddButton_clicked );
+  connect( mRemoveButton, &QAbstractButton::clicked, this, &QgsVariableEditorWidget::mRemoveButton_clicked );
+  connect( mAddButton, &QAbstractButton::clicked, this, &QgsVariableEditorWidget::mAddButton_clicked );
   connect( mTreeWidget, &QTreeWidget::itemSelectionChanged, this, &QgsVariableEditorWidget::selectionChanged );
   connect( mTreeWidget, &QgsVariableEditorTree::scopeChanged, this, &QgsVariableEditorWidget::scopeChanged );
 
@@ -161,7 +161,7 @@ QString QgsVariableEditorWidget::saveKey() const
   return saveKey;
 }
 
-void QgsVariableEditorWidget::on_mAddButton_clicked()
+void QgsVariableEditorWidget::mAddButton_clicked()
 {
   if ( mEditableScopeIndex < 0 || mEditableScopeIndex >= mContext->scopeCount() )
     return;
@@ -177,7 +177,7 @@ void QgsVariableEditorWidget::on_mAddButton_clicked()
   emit scopeChanged();
 }
 
-void QgsVariableEditorWidget::on_mRemoveButton_clicked()
+void QgsVariableEditorWidget::mRemoveButton_clicked()
 {
   if ( mEditableScopeIndex < 0 || mEditableScopeIndex >= mContext->scopeCount() )
     return;

@@ -27,65 +27,31 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    if alg.getParameterValue(u'setnull') or alg.getParameterValue(u'null'):
+    if (alg.parameterAsString(parameters, 'setnull', context)
+            or alg.parameterAsString(parameters, 'null', context)):
         return None
 
     return alg.tr("You need to set at least 'setnull' or 'null' parameters for this algorithm!")
 
 
-def processInputs(alg):
+def processInputs(alg, parameters, context):
     """Prepare the GRASS import commands"""
-    inputRaster = alg.getParameterValue(u'map')
-    if inputRaster in list(alg.exportedLayers.keys()):
+    if 'map' in alg.exportedLayers:
         return
-    else:
-        alg.setSessionProjectionFromLayer(inputRaster, alg.commands)
 
-    destFilename = alg.getTempFilename()
-    alg.exportedLayers[inputRaster] = destFilename
-    command = 'r.in.gdal input={} output={} band=1 --overwrite -o'.format(inputRaster, destFilename)
-    alg.commands.append(command)
-
-    alg.setSessionProjectionFromProject(alg.commands)
-
-    region = str(alg.getParameterValue(alg.GRASS_REGION_EXTENT_PARAMETER))
-    regionCoords = region.split(',')
-    command = 'g.region'
-    command += ' -a'
-    command += ' n=' + str(regionCoords[3])
-    command += ' s=' + str(regionCoords[2])
-    command += ' e=' + str(regionCoords[1])
-    command += ' w=' + str(regionCoords[0])
-    cellsize = alg.getParameterValue(alg.GRASS_REGION_CELLSIZE_PARAMETER)
-    if cellsize:
-        command += ' res=' + str(cellsize)
-    else:
-        command += ' res=' + str(alg.getDefaultCellsize(parameters, context))
-    alignToResolution = alg.getParameterValue(alg.GRASS_REGION_ALIGN_TO_RESOLUTION)
-    if alignToResolution:
-        command += ' -a'
-    alg.commands.append(command)
+    # We need to import all the bands and color tables of the input raster
+    alg.loadRasterLayerFromParameter('map', parameters, context, False)
+    alg.postInputs()
 
 
-def processCommand(alg, parameters):
+def processCommand(alg, parameters, context):
     # We temporary remove the output 'sequence'
-    output = alg.getOutputFromName(u'output')
-    alg.removeOutputFromName(u'output')
-
-    # Launch the algorithm
-    alg.processCommand()
-
-    # We re-add the previous output
-    alg.addOutput(output)
+    alg.processCommand(parameters, context, True)
 
 
-def processOutputs(alg):
-    output = alg.getOutputValue(u'output')
-    command = u"r.out.gdal -c createopt=\"TFW=YES,COMPRESS=LZW\" input={} output=\"{}\" --overwrite".format(
-        alg.exportedLayers[alg.getParameterValue(u'map')],
-        output
-    )
-    alg.commands.append(command)
-    alg.outputCommands.append(command)
+def processOutputs(alg, parameters, context):
+    fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
+    grassName = '{}{}'.format('map', alg.uniqueSuffix)
+    alg.exportRasterLayer(grassName, fileName, False)

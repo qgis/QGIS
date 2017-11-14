@@ -20,6 +20,7 @@
 
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3drenderer.h"
+#include "qgsabstract3dsymbol.h"
 
 #include "qgsphongmaterialsettings.h"
 #include "qgs3dutils.h"
@@ -30,10 +31,9 @@
 
 class QgsVectorLayer;
 
-class QgsAbstract3DSymbol;
 
-
-/** \ingroup core
+/**
+ * \ingroup core
  * Metadata for vector layer 3D renderer to allow creation of its instances from XML
  * \since QGIS 3.0
  */
@@ -47,7 +47,8 @@ class _3D_EXPORT QgsVectorLayer3DRendererMetadata : public Qgs3DRendererAbstract
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * 3D renderer that renders all features of a vector layer with the same 3D symbol.
  * The appearance is completely defined by the symbol.
  * \since QGIS 3.0

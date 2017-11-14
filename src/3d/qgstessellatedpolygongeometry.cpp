@@ -27,11 +27,7 @@
 
 QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( QNode *parent )
   : Qt3DRender::QGeometry( parent )
-  , mPositionAttribute( nullptr )
-  , mNormalAttribute( nullptr )
 {
-  mWithNormals = true;
-
   mVertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
 
   QgsTessellator tmpTess( 0, 0, mWithNormals );
@@ -65,17 +61,17 @@ QgsTessellatedPolygonGeometry::~QgsTessellatedPolygonGeometry()
   qDeleteAll( mPolygons );
 }
 
-void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygonV2 *> &polygons, const QgsPointXY &origin, float extrusionHeight )
+void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &polygons, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon )
 {
   qDeleteAll( mPolygons );
   mPolygons = polygons;
 
-  int i = 0;
   QgsTessellator tesselator( origin.x(), origin.y(), mWithNormals );
-  Q_FOREACH ( QgsPolygonV2 *polygon, polygons )
+  for ( int i = 0; i < polygons.count(); ++i )
   {
-    tesselator.addPolygon( *polygon, extrusionHeight );
-    ++i;
+    QgsPolygon *polygon = polygons.at( i );
+    float extr = extrusionHeightPerPolygon.isEmpty() ? extrusionHeight : extrusionHeightPerPolygon.at( i );
+    tesselator.addPolygon( *polygon, extr );
   }
 
   QByteArray data( ( const char * )tesselator.data().constData(), tesselator.data().count() * sizeof( float ) );

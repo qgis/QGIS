@@ -27,7 +27,8 @@ class QCheckBox;
 
 class QgsCheckboxWidgetFactory;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsCheckboxSearchWidgetWrapper
  * Wraps a checkbox edit widget for searching.
  * \since QGIS 2.16
@@ -39,14 +40,16 @@ class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper
 
   public:
 
-    /** Constructor for QgsCheckboxSearchWidgetWrapper.
+    /**
+     * Constructor for QgsCheckboxSearchWidgetWrapper.
      * \param vl associated vector layer
      * \param fieldIdx index of associated field
      * \param parent parent widget
      */
     explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
-    /** Returns a variant representing the current state of the widget.
+    /**
+     * Returns a variant representing the current state of the widget.
      * \note this will not be a boolean true or false value, it will instead
      * be the values configured to represent checked and unchecked states in
      * the editor widget configuration.
@@ -54,7 +57,7 @@ class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper
     QVariant value() const;
 
     bool applyDirectly() override;
-    QString expression() override;
+    QString expression() const override;
     bool valid() const override;
     QgsSearchWidgetWrapper::FilterFlags supportedFlags() const override;
     QgsSearchWidgetWrapper::FilterFlags defaultFlags() const override;
@@ -70,7 +73,7 @@ class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper
     void initWidget( QWidget *editor ) override;
 
   protected slots:
-    void setExpression( QString exp ) override;
+    void setExpression( const QString &expression ) override;
 
   private slots:
     void stateChanged( int state );

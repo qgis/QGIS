@@ -90,18 +90,18 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     sqlite3_stmt *sqliteStatement = nullptr;
 
     //! Geometry column index used when fetching geometry
-    int mGeomColIdx;
+    int mGeomColIdx = 1;
 
     //! Set to true, if geometry is in the requested columns
-    bool mFetchGeometry;
+    bool mFetchGeometry = true;
 
     bool mHasPrimaryKey;
     QgsFeatureId mRowNumber;
 
     bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
-    bool mOrderByCompiled;
-    bool mExpressionCompiled;
+    bool mOrderByCompiled = false;
+    bool mExpressionCompiled = false;
 
     QgsRectangle mFilterRect;
     QgsCoordinateTransform mTransform;

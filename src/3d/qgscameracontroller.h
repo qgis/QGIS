@@ -23,7 +23,8 @@
 #include <Qt3DRender>
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Object that controls camera movement based on user input
  * \since QGIS 3.0
  */
@@ -41,8 +42,10 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! Returns viewport rectangle
     QRect viewport() const { return mViewport; }
 
-    //! Connects to object picker attached to terrain entity. Called internally from 3D scene.
-    //! This allows camera controller understand how far from the camera is the terrain under mouse cursor
+    /**
+     * Connects to object picker attached to terrain entity. Called internally from 3D scene.
+     * This allows camera controller understand how far from the camera is the terrain under mouse cursor
+     */
     void addTerrainPicker( Qt3DRender::QObjectPicker *picker );
     //! Assigns camera that should be controlled by this class. Called internally from 3D scene.
     void setCamera( Qt3DRender::QCamera *camera );
@@ -69,11 +72,11 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
   private:
     //! Camera that is being controlled
-    Qt3DRender::QCamera *mCamera;
+    Qt3DRender::QCamera *mCamera = nullptr;
     //! used for computation of translation when dragging mouse
     QRect mViewport;
     //! height of terrain when mouse button was last pressed - for camera control
-    float mLastPressedHeight;
+    float mLastPressedHeight = 0;
 
     struct CameraData
     {
@@ -114,37 +117,39 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     QPoint mLastMousePos;
 
     //! Delegates mouse events to the attached MouseHandler objects
-    Qt3DInput::QMouseDevice *mMouseDevice;
+    Qt3DInput::QMouseDevice *mMouseDevice = nullptr;
 
-    Qt3DInput::QKeyboardDevice *mKeyboardDevice;
+    Qt3DInput::QKeyboardDevice *mKeyboardDevice = nullptr;
 
-    Qt3DInput::QMouseHandler *mMouseHandler;
+    Qt3DInput::QMouseHandler *mMouseHandler = nullptr;
 
-    //! Allows us to define a set of actions that we wish to use
-    //! (it is a component that can be attached to 3D scene)
-    Qt3DInput::QLogicalDevice *mLogicalDevice;
+    /**
+     * Allows us to define a set of actions that we wish to use
+     * (it is a component that can be attached to 3D scene)
+     */
+    Qt3DInput::QLogicalDevice *mLogicalDevice = nullptr;
 
-    Qt3DInput::QAction *mLeftMouseButtonAction;
-    Qt3DInput::QActionInput *mLeftMouseButtonInput;
+    Qt3DInput::QAction *mLeftMouseButtonAction = nullptr;
+    Qt3DInput::QActionInput *mLeftMouseButtonInput = nullptr;
 
-    Qt3DInput::QAction *mMiddleMouseButtonAction;
-    Qt3DInput::QActionInput *mMiddleMouseButtonInput;
+    Qt3DInput::QAction *mMiddleMouseButtonAction = nullptr;
+    Qt3DInput::QActionInput *mMiddleMouseButtonInput = nullptr;
 
-    Qt3DInput::QAction *mRightMouseButtonAction;
-    Qt3DInput::QActionInput *mRightMouseButtonInput;
+    Qt3DInput::QAction *mRightMouseButtonAction = nullptr;
+    Qt3DInput::QActionInput *mRightMouseButtonInput = nullptr;
 
-    Qt3DInput::QAction *mShiftAction;
-    Qt3DInput::QActionInput *mShiftInput;
+    Qt3DInput::QAction *mShiftAction = nullptr;
+    Qt3DInput::QActionInput *mShiftInput = nullptr;
 
-    Qt3DInput::QAxis *mWheelAxis;
-    Qt3DInput::QAnalogAxisInput *mMouseWheelInput;
+    Qt3DInput::QAxis *mWheelAxis = nullptr;
+    Qt3DInput::QAnalogAxisInput *mMouseWheelInput = nullptr;
 
-    Qt3DInput::QAxis *mTxAxis;
-    Qt3DInput::QAxis *mTyAxis;
-    Qt3DInput::QButtonAxisInput *mKeyboardTxPosInput;
-    Qt3DInput::QButtonAxisInput *mKeyboardTyPosInput;
-    Qt3DInput::QButtonAxisInput *mKeyboardTxNegInput;
-    Qt3DInput::QButtonAxisInput *mKeyboardTyNegInput;
+    Qt3DInput::QAxis *mTxAxis = nullptr;
+    Qt3DInput::QAxis *mTyAxis = nullptr;
+    Qt3DInput::QButtonAxisInput *mKeyboardTxPosInput = nullptr;
+    Qt3DInput::QButtonAxisInput *mKeyboardTyPosInput = nullptr;
+    Qt3DInput::QButtonAxisInput *mKeyboardTxNegInput = nullptr;
+    Qt3DInput::QButtonAxisInput *mKeyboardTyNegInput = nullptr;
 };
 
 #endif // QGSCAMERACONTROLLER_H

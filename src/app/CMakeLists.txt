@@ -15,12 +15,13 @@ SET(QGIS_APP_SRCS
   qgsattributeactiondialog.cpp
   qgsattributeactionpropertiesdialog.cpp
   qgsattributetypedialog.cpp
+  qgsattributerelationedit.cpp
+  qgsattributesforminitcode.cpp
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
   qgsclipboard.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
-  qgscrashreport.cpp
   qgsdecorationitem.cpp
   qgsdecorationcopyright.cpp
   qgsdecorationcopyrightdialog.cpp
@@ -41,7 +42,8 @@ SET(QGIS_APP_SRCS
   qgsdiagramproperties.cpp
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
-  qgsfieldsproperties.cpp
+  qgssourcefieldsproperties.cpp
+  qgsattributesformproperties.cpp
   qgsidentifyresultsdialog.cpp
   qgsfeatureaction.cpp
   qgslabelpropertydialog.cpp
@@ -52,6 +54,7 @@ SET(QGIS_APP_SRCS
   qgsmapcanvasdockwidget.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmapsavedialog.cpp
+  qgsversionmigration.cpp
   qgsrulebasedlabelingwidget.cpp
   qgssavestyletodbdialog.cpp
   qgssnappinglayertreemodel.cpp
@@ -131,6 +134,25 @@ SET(QGIS_APP_SRCS
   qgsmaptooladdcircularstring.cpp
   qgsmaptoolcircularstringcurvepoint.cpp
   qgsmaptoolcircularstringradius.cpp
+  qgsmaptooladdcircle.cpp
+  qgsmaptoolcircle2points.cpp
+  qgsmaptoolcircle3points.cpp
+  qgsmaptoolcircle3tangents.cpp
+  qgsmaptoolcircle2tangentspoint.cpp
+  qgsmaptoolcirclecenterpoint.cpp
+  qgsmaptooladdellipse.cpp
+  qgsmaptoolellipsefoci.cpp
+  qgsmaptoolellipseextent.cpp
+  qgsmaptoolellipsecenterpoint.cpp
+  qgsmaptoolellipsecenter2points.cpp
+  qgsmaptooladdrectangle.cpp
+  qgsmaptooladdregularpolygon.cpp
+  qgsmaptoolrectanglecenter.cpp
+  qgsmaptoolrectangleextent.cpp
+  qgsmaptoolrectangle3points.cpp
+  qgsmaptoolregularpolygon2points.cpp
+  qgsmaptoolregularpolygoncenterpoint.cpp
+  qgsmaptoolregularpolygoncentercorner.cpp
 
   composer/qgsattributeselectiondialog.cpp
   composer/qgscomposer.cpp
@@ -155,21 +177,28 @@ SET(QGIS_APP_SRCS
   composer/qgsatlascompositionwidget.cpp
 
   layout/qgslayoutaddpagesdialog.cpp
+  layout/qgslayoutapputils.cpp
   layout/qgslayoutdesignerdialog.cpp
   layout/qgslayoutguidewidget.cpp
+  layout/qgslayoutitemslistview.cpp
   layout/qgslayoutappmenuprovider.cpp
+  layout/qgslayoutlabelwidget.cpp
+  layout/qgslayoutlegendlayersdialog.cpp
+  layout/qgslayoutlegendwidget.cpp
+  layout/qgslayoutmapwidget.cpp
+  layout/qgslayoutmapgridwidget.cpp
   layout/qgslayoutpagepropertieswidget.cpp
+  layout/qgslayoutpicturewidget.cpp
+  layout/qgslayoutpolygonwidget.cpp
+  layout/qgslayoutpolylinewidget.cpp
   layout/qgslayoutpropertieswidget.cpp
+  layout/qgslayoutshapewidget.cpp
 
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
 
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
-
-  openstreetmap/qgsosmdownloaddialog.cpp
-  openstreetmap/qgsosmimportdialog.cpp
-  openstreetmap/qgsosmexportdialog.cpp
 
   dwg/qgsdwgimportdialog.cpp
   dwg/qgsdwgimporter.cpp
@@ -184,7 +213,6 @@ SET(QGIS_APP_SRCS
 
   qgssettingstree.cpp
   qgsvariantdelegate.cpp
-  qgscrashdialog.cpp
   qgscrashhandler.cpp
 )
 
@@ -203,6 +231,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributeactiondialog.h
   qgsattributeactionpropertiesdialog.h
   qgsattributetypedialog.h
+  qgsattributerelationedit.h
+  qgsattributesforminitcode.h
   qgsattributetabledialog.h
   qgsbookmarks.h
   qgsclipboard.h
@@ -226,7 +256,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsdxfexportdialog.h
   qgsfeatureaction.h
   qgsfieldcalculator.h
-  qgsfieldsproperties.h
+  qgssourcefieldsproperties.h
+  qgsattributesformproperties.h
   qgsformannotationdialog.h
   qgsguivectorlayertools.h
   qgshtmlannotationdialog.h
@@ -288,6 +319,25 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooltextannotation.h
   qgsmaptooladdcircularstring.h
   qgsmaptoolcircularstringcurvepoint.h
+  qgsmaptooladdcircle.h
+  qgsmaptoolcircle2points.h
+  qgsmaptoolcircle3points.h
+  qgsmaptoolcircle3tangents.h
+  qgsmaptoolcircle2tangentspoint.h
+  qgsmaptoolcirclecenterpoint.h
+  qgsmaptooladdellipse.h
+  qgsmaptoolellipsefoci.h
+  qgsmaptoolellipseextent.h
+  qgsmaptoolellipsecenterpoint.h
+  qgsmaptoolellipsecenter2points.h
+  qgsmaptooladdrectangle.h
+  qgsmaptooladdregularpolygon.h
+  qgsmaptoolrectanglecenter.h
+  qgsmaptoolrectangleextent.h
+  qgsmaptoolrectangle3points.h
+  qgsmaptoolregularpolygon2points.h
+  qgsmaptoolregularpolygoncenterpoint.h
+  qgsmaptoolregularpolygoncentercorner.h
 
   nodetool/qgsselectedfeature.h
   nodetool/qgsnodeeditor.h
@@ -339,17 +389,23 @@ SET (QGIS_APP_MOC_HDRS
   layout/qgslayoutappmenuprovider.h
   layout/qgslayoutdesignerdialog.h
   layout/qgslayoutguidewidget.h
+  layout/qgslayoutitemslistview.h
+  layout/qgslayoutlabelwidget.h
+  layout/qgslayoutlegendwidget.h
+  layout/qgslayoutlegendlayersdialog.h
+  layout/qgslayoutmapwidget.h
+  layout/qgslayoutmapgridwidget.h
   layout/qgslayoutpagepropertieswidget.h
+  layout/qgslayoutpicturewidget.h
+  layout/qgslayoutpolygonwidget.h
+  layout/qgslayoutpolylinewidget.h
   layout/qgslayoutpropertieswidget.h
+  layout/qgslayoutshapewidget.h
 
   locator/qgsinbuiltlocatorfilters.h
   locator/qgslocatoroptionswidget.h
 
   gps/qgsgpsinformationwidget.h
-
-  openstreetmap/qgsosmdownloaddialog.h
-  openstreetmap/qgsosmimportdialog.h
-  openstreetmap/qgsosmexportdialog.h
 
   dwg/qgsdwgimportdialog.h
 
@@ -362,7 +418,6 @@ SET (QGIS_APP_MOC_HDRS
 
   qgssettingstree.h
   qgsvariantdelegate.h
-  qgscrashdialog.h
   )
 
 
@@ -525,12 +580,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app/layout
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/app/gps
-  ${CMAKE_SOURCE_DIR}/src/app/openstreetmap
   ${CMAKE_SOURCE_DIR}/src/app/dwg
   ${CMAKE_SOURCE_DIR}/src/app/dwg/libdxfrw
   ${CMAKE_SOURCE_DIR}/src/app/locator
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
-  ${CMAKE_SOURCE_DIR}/src/analysis/openstreetmap
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
@@ -589,8 +642,8 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QEXTSERIALPORT_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
+  ../analysis/processing
   ../analysis/raster
-  ../analysis/openstreetmap
   ../core
   ../core/annotations
   ../core/auth
@@ -602,6 +655,7 @@ INCLUDE_DIRECTORIES(
   ../core/layout
   ../core/metadata
   ../core/layertree
+  ../core/processing
   ../core/providers/memory
   ../core/raster
   ../core/scalebar
@@ -619,7 +673,6 @@ INCLUDE_DIRECTORIES(
   ../plugins
   ../python
   gps
-  openstreetmap
   dwg
   dwg/libdxfrw
   ${CMAKE_SOURCE_DIR}/src/native

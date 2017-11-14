@@ -34,7 +34,8 @@
 #include <QTextBrowser>
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QWebSettings class is a collection of stubs to mimic the API of a QWebSettings on systems
  * where QtWebkit is not available.
  */
@@ -205,7 +206,8 @@ class CORE_EXPORT QWebPage : public QObject
 };
 #endif
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsWebPage
  * \brief QWebPage subclass which redirects JavaScript errors and console output to the QGIS message log.
  * \since QGIS 2.16
@@ -217,14 +219,16 @@ class CORE_EXPORT QgsWebPage : public QWebPage
 
   public:
 
-    /** Constructor for QgsWebPage.
+    /**
+     * Constructor for QgsWebPage.
      * \param parent parent object
      */
     explicit QgsWebPage( QObject *parent = 0 )
       : QWebPage( parent )
     {}
 
-    /** Sets an identifier for the QgsWebPage. The page's identifier is included in messages written to the
+    /**
+     * Sets an identifier for the QgsWebPage. The page's identifier is included in messages written to the
      * log, and should be set to a user-friendly string so that users can identify which QgsWebPage has
      * logged the message.
      * \param identifier identifier string
@@ -232,7 +236,8 @@ class CORE_EXPORT QgsWebPage : public QWebPage
      */
     void setIdentifier( const QString &identifier ) { mIdentifier = identifier; }
 
-    /** Returns the QgsWebPage's identifier. The page's identifier is included in messages written to the
+    /**
+     * Returns the QgsWebPage's identifier. The page's identifier is included in messages written to the
      * log so that users can identify which QgsWebPage has logged the message.
      * \see setIdentifier()
      */

@@ -39,9 +39,9 @@ QgsLayoutViewToolAddItem::QgsLayoutViewToolAddItem( QgsLayoutView *view )
   setCursor( QCursor( crosshairQPixmap, 8, 8 ) );
 }
 
-void QgsLayoutViewToolAddItem::setItemType( int itemType )
+void QgsLayoutViewToolAddItem::setItemMetadataId( int metadataId )
 {
-  mItemType = itemType;
+  mItemMetadataId = metadataId;
 }
 
 void QgsLayoutViewToolAddItem::layoutPressEvent( QgsLayoutViewMouseEvent *event )
@@ -54,7 +54,7 @@ void QgsLayoutViewToolAddItem::layoutPressEvent( QgsLayoutViewMouseEvent *event 
 
   mDrawing = true;
   mMousePressStartPos = event->pos();
-  mRubberBand.reset( QgsGui::layoutItemGuiRegistry()->createItemRubberBand( mItemType, view() ) );
+  mRubberBand.reset( QgsGui::layoutItemGuiRegistry()->createItemRubberBand( mItemMetadataId, view() ) );
   if ( mRubberBand )
   {
     mRubberBand->start( event->snappedPoint(), event->modifiers() );
@@ -84,7 +84,9 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
 
   QRectF rect = mRubberBand->finish( event->snappedPoint(), event->modifiers() );
 
-  QgsLayoutItem *item = QgsApplication::layoutItemRegistry()->createItem( mItemType, layout() );
+  QgsLayoutItem *item = QgsGui::layoutItemGuiRegistry()->createItem( mItemMetadataId, layout() );
+  if ( !item )
+    return;
 
   // click? or click-and-drag?
   bool clickOnly = !isClickAndDrag( mMousePressStartPos, event->pos() );
@@ -117,7 +119,11 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   settings.setValue( QStringLiteral( "LayoutDesigner/lastItemHeight" ), item->sizeWithUnits().height() );
   settings.setValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), static_cast< int >( item->sizeWithUnits().units() ) );
 
+  QgsGui::layoutItemGuiRegistry()->newItemAddedToLayout( mItemMetadataId, item );
+
   layout()->addLayoutItem( item );
+  layout()->setSelectedItem( item );
+  emit createdItem();
 }
 
 void QgsLayoutViewToolAddItem::deactivate()
@@ -131,7 +137,7 @@ void QgsLayoutViewToolAddItem::deactivate()
   QgsLayoutViewTool::deactivate();
 }
 
-int QgsLayoutViewToolAddItem::itemType() const
+int QgsLayoutViewToolAddItem::itemMetadataId() const
 {
-  return mItemType;
+  return mItemMetadataId;
 }

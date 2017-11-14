@@ -25,8 +25,10 @@
 #include "qgslayoutgridsettings.h"
 #include "qgslayoutguidecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgslayoutexporter.h"
 
 class QgsLayoutItemMap;
+class QgsLayoutModel;
 
 /**
  * \ingroup core
@@ -45,10 +47,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     {
       ZPage = 0, //!< Z-value for page (paper) items
       ZItem = 1, //!< Minimum z value for items
-      ZGrid = 9998, //!< Z-value for page grids
-      ZGuide = 9999, //!< Z-value for page guides
-      ZMapTool = 10000, //!< Z-value for temporary map tool items
-      ZSnapIndicator = 10001, //!< Z-value for snapping indicator
+      ZGrid = 9997, //!< Z-value for page grids
+      ZGuide = 9998, //!< Z-value for page guides
+      ZSmartGuide = 9999, //!< Z-value for smart (item bounds based) guides
+      ZMouseHandles = 10000, //!< Z-value for mouse handles
+      ZViewTool = 10001, //!< Z-value for temporary view tool items
+      ZSnapIndicator = 10002, //!< Z-value for snapping indicator
     };
 
     /**
@@ -59,6 +63,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * called on the new layout.
      */
     QgsLayout( QgsProject *project );
+
+    ~QgsLayout();
 
     /**
      * Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
@@ -72,6 +78,17 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      *
      */
     QgsProject *project() const;
+
+    /**
+     * Returns the items model attached to the layout.
+     */
+    QgsLayoutModel *itemsModel();
+
+    /**
+     * Returns the layout's exporter, which is used for rendering the layout and exporting
+     * to various formats.
+     */
+    QgsLayoutExporter &exporter();
 
     /**
      * Returns the layout's name.
@@ -105,10 +122,105 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     }
 
     /**
+     * Returns list of selected layout items.
+     *
+     * If \a includeLockedItems is set to true, then locked items will also be included
+     * in the returned list.
+     */
+    QList<QgsLayoutItem *> selectedLayoutItems( const bool includeLockedItems = true );
+
+    /**
+     * Clears any selected items and sets \a item as the current selection.
+    */
+    void setSelectedItem( QgsLayoutItem *item );
+
+    /**
+     * Clears any selected items in the layout.
+     *
+     * Call this method rather than QGraphicsScene::clearSelection, as the latter does
+     * not correctly emit signals to allow the layout's model to update.
+    */
+    void deselectAll();
+
+    /**
+     * Raises an \a item up the z-order.
+     * Returns true if the item was successfully raised.
+     *
+     * If \a deferUpdate is true, the scene will not be visibly updated
+     * to reflect the new stacking order. This allows multiple
+     * raiseItem() calls to be made in sequence without the cost of
+     * updating the scene for each one.
+     *
+     * \see lowerItem()
+     * \see updateZValues()
+     */
+    bool raiseItem( QgsLayoutItem *item, bool deferUpdate = false );
+
+    /**
+     * Lowers an \a item down the z-order.
+     * Returns true if the item was successfully lowered.
+     *
+     * If \a deferUpdate is true, the scene will not be visibly updated
+     * to reflect the new stacking order. This allows multiple
+     * raiseItem() calls to be made in sequence without the cost of
+     * updating the scene for each one.
+     *
+     * \see raiseItem()
+     * \see updateZValues()
+     */
+    bool lowerItem( QgsLayoutItem *item, bool deferUpdate = false );
+
+    /**
+     * Raises an \a item up to the top of the z-order.
+     * Returns true if the item was successfully raised.
+     *
+     * If \a deferUpdate is true, the scene will not be visibly updated
+     * to reflect the new stacking order. This allows multiple
+     * raiseItem() calls to be made in sequence without the cost of
+     * updating the scene for each one.
+     *
+     * \see moveItemToBottom()
+     * \see updateZValues()
+     */
+    bool moveItemToTop( QgsLayoutItem *item, bool deferUpdate = false );
+
+    /**
+     * Lowers an \a item down to the bottom of the z-order.
+     * Returns true if the item was successfully lowered.
+     * If \a deferUpdate is true, the scene will not be visibly updated
+     * to reflect the new stacking order. This allows multiple
+     * raiseItem() calls to be made in sequence without the cost of
+     * updating the scene for each one.
+     *
+     * \see moveItemToTop()
+     * \see updateZValues()
+     */
+    bool moveItemToBottom( QgsLayoutItem *item, bool deferUpdate = false );
+
+    /**
+     * Resets the z-values of items based on their position in the internal
+     * z order list. This should be called after any stacking changes
+     * which deferred z-order updates.
+     */
+    void updateZValues( const bool addUndoCommands = true );
+
+    /**
      * Returns the layout item with matching \a uuid unique identifier, or a nullptr
      * if a matching item could not be found.
      */
     QgsLayoutItem *itemByUuid( const QString &uuid );
+
+    /**
+     * Returns the topmost layout item at a specified \a position. Ignores paper items.
+     * If \a ignoreLocked is set to true any locked items will be ignored.
+     */
+    QgsLayoutItem *layoutItemAt( QPointF position, const bool ignoreLocked = false ) const;
+
+    /**
+     * Returns the topmost composer item at a specified \a position which is below a specified \a item. Ignores paper items.
+     * If \a ignoreLocked is set to true any locked items will be ignored.
+     */
+    QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, const bool ignoreLocked = false ) const;
 
     /**
      * Sets the native measurement \a units for the layout. These also form the default unit
@@ -310,6 +422,13 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     void addLayoutItem( QgsLayoutItem *item SIP_TRANSFER );
 
     /**
+     * Removes an \a item from the layout. This should be called instead of the base class removeItem()
+     * method.
+     * The item will also be deleted.
+     */
+    void removeLayoutItem( QgsLayoutItem *item );
+
+    /**
      * Returns the layout's state encapsulated in a DOM element.
      * \see readXml()
      */
@@ -335,8 +454,35 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id = 0, QUndoCommand *parent = nullptr ) SIP_FACTORY override;
 
+    /**
+     * Creates a new group from a list of layout \a items and adds the group to the layout.
+     * If grouping was not possible, a nullptr will be returned.
+     * \see ungroupItems()
+     */
+    QgsLayoutItemGroup *groupItems( const QList<QgsLayoutItem *> &items );
+
+    /**
+     * Ungroups items by removing them from an item \a group and removing the group from the
+     * layout. Child items will remain in the layout and will not be deleted.
+     *
+     * Returns a list of the items removed from the group, or an empty list if ungrouping
+     * was not successful.
+     *
+     * \see groupItems()
+     */
+    QList<QgsLayoutItem *> ungroupItems( QgsLayoutItemGroup *group );
 
   public slots:
+
+    /**
+     * Forces the layout, and all items contained within it, to refresh. For instance, this causes maps to redraw
+     * and rebuild cached images, html items to reload their source url, and attribute tables
+     * to refresh their contents. Calling this also triggers a recalculation of all data defined
+     * attributes within the layout.
+     *
+     * \see refreshed()
+     */
+    void refresh();
 
     /**
      * Updates the scene bounds of the layout.
@@ -350,9 +496,22 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     void variablesChanged();
 
+    /**
+     * Emitted whenever the selected item changes.
+     * If nullptr, no item is selected.
+     */
+    void selectedItemChanged( QgsLayoutItem *selected );
+
+    /**
+     * Is emitted when the layout has been refreshed and items should also be refreshed
+     * and updated.
+     */
+    void refreshed();
+
   private:
 
     QgsProject *mProject = nullptr;
+    std::unique_ptr< QgsLayoutModel > mItemsModel;
 
     QString mName;
 
@@ -365,13 +524,31 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     std::unique_ptr< QgsLayoutPageCollection > mPageCollection;
     std::unique_ptr< QgsLayoutUndoStack > mUndoStack;
+    QgsLayoutExporter mExporter;
+
+    bool mBlockUndoCommands = false;
 
     //! Writes only the layout settings (not member settings like grid settings, etc) to XML
     void writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
     //! Reads only the layout settings (not member settings like grid settings, etc) from XML
     bool readXmlLayoutSettings( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
+    /**
+     * Adds a layout item to the layout, without adding the corresponding undo commands.
+     */
+    void addLayoutItemPrivate( QgsLayoutItem *item );
+
+    /**
+     * Removes an item from the layout, without adding the corresponding undo commands.
+     */
+    void removeLayoutItemPrivate( QgsLayoutItem *item );
+
+    friend class QgsLayoutItemAddItemCommand;
+    friend class QgsLayoutItemDeleteUndoCommand;
+    friend class QgsLayoutItemUndoCommand;
     friend class QgsLayoutUndoCommand;
+    friend class QgsLayoutItemGroupUndoCommand;
+    friend class QgsLayoutModel;
 };
 
 #endif //QGSLAYOUT_H

@@ -38,7 +38,7 @@ def createLayerWithOnePoint():
     pr = layer.dataProvider()
     f = QgsFeature()
     f.setAttributes(["test", 123])
-    f.setGeometry(QgsGeometry.fromPoint(QgsPointXY(100, 200)))
+    f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
     assert pr.addFeatures([f])
     assert layer.pendingFeatureCount() == 1
     return layer
@@ -64,12 +64,12 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         # add two features
         f1 = QgsFeature(layer.fields(), 1)
-        f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(1, 2)))
+        f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
         f1.setAttributes(["test", 123])
         self.assertTrue(layer.addFeature(f1))
 
         f2 = QgsFeature(layer.fields(), 2)
-        f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 4)))
+        f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(2, 4)))
         f2.setAttributes(["test2", 246])
 
         self.assertTrue(layer.addFeature(f2))
@@ -101,7 +101,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
             [QgsPointXY(3, 3), QgsPointXY(4, 4)],
         ]
         f1 = QgsFeature(layer.fields(), 1)
-        f1.setGeometry(QgsGeometry.fromMultiPolyline(multiline))
+        f1.setGeometry(QgsGeometry.fromMultiPolylineXY(multiline))
         f1.setAttributes(["test", 123])
         self.assertTrue(layer.addFeatures([f1]))
         self.assertFalse(layer.commitChanges())
@@ -117,10 +117,10 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         # add two features
         f1 = QgsFeature(layer.fields(), 1)
-        f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(1, 2)))
+        f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
         f1.setAttributes(["test", 123])
         f2 = QgsFeature(layer.fields(), 2)
-        f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 4)))
+        f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(2, 4)))
         f2.setAttributes(["test2", 246])
 
         self.assertTrue(layer.addFeatures([f1, f2]))
@@ -145,12 +145,12 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         # add two features
         f1 = QgsFeature(layer.fields(), 1)
-        f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(1, 2)))
+        f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
         f1.setAttributes(["test", 123])
         self.assertTrue(layer.addFeature(f1))
 
         f2 = QgsFeature(layer.fields(), 2)
-        f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 4)))
+        f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(2, 4)))
         f2.setAttributes(["test2", 246])
         self.assertTrue(layer.addFeature(f2))
 
@@ -186,12 +186,12 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         # add two features
         f1 = QgsFeature(layer.fields(), 1)
-        f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(1, 2)))
+        f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
         f1.setAttributes(["test", 123])
         self.assertTrue(layer.addFeature(f1))
 
         f2 = QgsFeature(layer.fields(), 2)
-        f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 4)))
+        f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(2, 4)))
         f2.setAttributes(["test2", 246])
         self.assertTrue(layer.addFeature(f2))
 
@@ -219,12 +219,12 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         # add two features
         f1 = QgsFeature(layer.fields(), 1)
-        f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(1, 2)))
+        f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
         f1.setAttributes(["test", 123])
         self.assertTrue(layer.addFeature(f1))
 
         f2 = QgsFeature(layer.fields(), 2)
-        f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 4)))
+        f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(2, 4)))
         f2.setAttributes(["test2", 246])
         self.assertTrue(layer.addFeature(f2))
 
@@ -262,12 +262,12 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
 
         # add two features
         f1 = QgsFeature(layer.fields(), 1)
-        f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(1, 2)))
+        f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
         f1.setAttributes(["test", 123])
         self.assertTrue(layer.addFeature(f1))
 
         f2 = QgsFeature(layer.fields(), 2)
-        f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 4)))
+        f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(2, 4)))
         f2.setAttributes(["test2", 246])
         self.assertTrue(layer.addFeature(f2))
 
@@ -279,20 +279,20 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
 
         # change attribute values
-        layer.changeGeometry(1, QgsGeometry.fromPoint(QgsPointXY(10, 20)))
+        layer.changeGeometry(1, QgsGeometry.fromPointXY(QgsPointXY(10, 20)))
 
         # test contents of buffer
         self.assertEqual(list(layer.editBuffer().changedGeometries().keys()), [1])
-        self.assertEqual(layer.editBuffer().changedGeometries()[1].geometry().x(), 10)
+        self.assertEqual(layer.editBuffer().changedGeometries()[1].constGet().x(), 10)
         self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(1))
         self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
 
-        layer.changeGeometry(2, QgsGeometry.fromPoint(QgsPointXY(20, 40)))
+        layer.changeGeometry(2, QgsGeometry.fromPointXY(QgsPointXY(20, 40)))
 
         # test contents of buffer
         self.assertEqual(set(layer.editBuffer().changedGeometries().keys()), set([1, 2]))
-        self.assertEqual(layer.editBuffer().changedGeometries()[1].geometry().x(), 10)
-        self.assertEqual(layer.editBuffer().changedGeometries()[2].geometry().x(), 20)
+        self.assertEqual(layer.editBuffer().changedGeometries()[1].constGet().x(), 10)
+        self.assertEqual(layer.editBuffer().changedGeometries()[2].constGet().x(), 20)
         self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(1))
         self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(2))
 

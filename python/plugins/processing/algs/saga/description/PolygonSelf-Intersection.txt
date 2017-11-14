@@ -1,5 +1,5 @@
 Polygon Self-Intersection
 shapes_polygons
-ParameterVector|POLYGONS|Polygons|-1|False
-ParameterTable|ID|Identifier|False
-OutputVector|INTERSECT|Intersection
+QgsProcessingParameterFeatureSource|POLYGONS|Polygons|-1|None|False
+QgsProcessingParameterFeatureSource|ID|Identifier|5|None|False
+QgsProcessingParameterVectorDestination|INTERSECT|Intersection

@@ -1,13 +1,13 @@
 v.net.alloc
 Allocates subnets for nearest centers (direction from center)
 Vector (v.*)
-ParameterVector|input|Input vector line layer (arcs)|1|False
-ParameterVector|points|Centers point layer (nodes)|0|False
-ParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|0.0|None|50.0|False
-*ParameterString|center_cats|Category values|1-100000|False|False
-*ParameterSelection|arc_type|Arc type|line;boundary;line,boundary|2
-*ParameterTableField|arc_column|Arc forward/both direction(s) cost column (number)|input|0|True
-*ParameterTableField|arc_backward_column|Arc backward direction cost column (number)|input|0|True
-*ParameterTableField|node_column|Node cost column (number)|points|0|True
-*ParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
-OutputVector|output|Network_Alloc
+QgsProcessingParameterVectorLayer|input|Input vector line layer (arcs)|1|None|False
+QgsProcessingParameterVectorLayer|points|Centers point layer (nodes)|0|None|False
+QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|QgsProcessingParameterNumber.Double|50.0|False|0.0|None
+*QgsProcessingParameterString|center_cats|Category values|1-100000|False|False
+*QgsProcessingParameterEnum|arc_type|Arc type|line;boundary;line,boundary|False|2
+*QgsProcessingParameterField|arc_column|Arc forward/both direction(s) cost column (number)|None|input|0|False|True
+*QgsProcessingParameterField|arc_backward_column|Arc backward direction cost column (number)|None|input|0|False|True
+*QgsProcessingParameterField|node_column|Node cost column (number)|None|points|0|False|True
+*QgsProcessingParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
+QgsProcessingParameterVectorDestination|output|Network_Alloc

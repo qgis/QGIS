@@ -32,6 +32,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
+#include "qgslayoutitemlegend.h"
 
 QgsComposerLegend::QgsComposerLegend( QgsComposition *composition )
   : QgsComposerItem( composition )
@@ -43,6 +44,11 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition *composition )
   // Connect to the main layertreeroot.
   // It serves in "auto update mode" as a medium between the main app legend and this one
   connect( mComposition->project()->layerTreeRoot(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsComposerLegend::nodeCustomPropertyChanged );
+}
+
+QgsComposerLegend::~QgsComposerLegend()
+{
+  delete mLegendModel;
 }
 
 QgsComposerLegend::QgsComposerLegend()
@@ -91,7 +97,7 @@ void QgsComposerLegend::paint( QPainter *painter, const QStyleOptionGraphicsItem
   }
   mInitialMapScaleCalculated = true;
 
-  QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
+  QgsLegendRenderer legendRenderer( mLegendModel, mSettings );
   legendRenderer.setLegendSize( mForceResize && mSizeToContents ? QSize() : rect().size() );
 
   //adjust box if width or height is too small
@@ -152,7 +158,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter *painter )
     doUpdateFilterByMap();
   }
 
-  QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
+  QgsLegendRenderer legendRenderer( mLegendModel, mSettings );
   QSizeF size = legendRenderer.minimumSize();
   if ( painter )
     legendRenderer.drawLegend( painter );
@@ -174,7 +180,7 @@ void QgsComposerLegend::adjustBoxSize()
     return;
   }
 
-  QgsLegendRenderer legendRenderer( mLegendModel.get(), mSettings );
+  QgsLegendRenderer legendRenderer( mLegendModel, mSettings );
   QSizeF size = legendRenderer.minimumSize();
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
@@ -193,6 +199,11 @@ void QgsComposerLegend::setResizeToContents( bool enabled )
 bool QgsComposerLegend::resizeToContents() const
 {
   return mSizeToContents;
+}
+
+QgsLegendModel *QgsComposerLegend::model()
+{
+  return mLegendModel;
 }
 
 void QgsComposerLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
@@ -333,6 +344,12 @@ bool QgsComposerLegend::writeXml( QDomElement &elem, QDomDocument &doc ) const
     return false;
   }
 
+  QgsPathResolver  pathResolver;
+  if ( mComposition )
+    pathResolver = mComposition->project()->pathResolver();
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver );
+
   QDomElement composerLegendElem = doc.createElement( QStringLiteral( "ComposerLegend" ) );
   elem.appendChild( composerLegendElem );
 
@@ -378,7 +395,7 @@ bool QgsComposerLegend::writeXml( QDomElement &elem, QDomDocument &doc ) const
   if ( mCustomLayerTree )
   {
     // if not using auto-update - store the custom layer tree
-    mCustomLayerTree->writeXml( composerLegendElem );
+    mCustomLayerTree->writeXml( composerLegendElem, context );
   }
 
   if ( mLegendFilterByMap )
@@ -396,6 +413,12 @@ bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument
   {
     return false;
   }
+
+  QgsPathResolver  pathResolver;
+  if ( mComposition )
+    pathResolver = mComposition->project()->pathResolver();
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver );
 
   //read general properties
   mTitle = itemElem.attribute( QStringLiteral( "title" ) );
@@ -468,7 +491,7 @@ bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument
 
   if ( !layerTreeElem.isNull() )
   {
-    std::unique_ptr< QgsLayerTree > tree( QgsLayerTree::readXml( layerTreeElem ) );
+    std::unique_ptr< QgsLayerTree > tree( QgsLayerTree::readXml( layerTreeElem, context ) );
     if ( mComposition )
       tree->resolveReferences( mComposition->project(), true );
     setCustomLayerTree( tree.release() );
@@ -716,46 +739,4 @@ void QgsComposerLegend::onAtlasEnded()
 {
   mInAtlas = false;
   updateFilterByMap();
-}
-
-// -------------------------------------------------------------------------
-#include "qgslayertreemodellegendnode.h"
-#include "qgsvectorlayer.h"
-
-QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent )
-  : QgsLayerTreeModel( rootNode, parent )
-{
-  setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
-  setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
-}
-
-QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
-{
-  // handle custom layer node labels
-  if ( QgsLayerTreeNode *node = index2node( index ) )
-  {
-    if ( QgsLayerTree::isLayer( node ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) && !node->customProperty( QStringLiteral( "legend/title-label" ) ).isNull() )
-    {
-      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-      QString name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
-      if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() && role == Qt::DisplayRole )
-      {
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
-        if ( vlayer && vlayer->featureCount() >= 0 )
-          name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
-      }
-      return name;
-    }
-  }
-
-  return QgsLayerTreeModel::data( index, role );
-}
-
-Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
-{
-  // make the legend nodes selectable even if they are not by default
-  if ( index2legendNode( index ) )
-    return QgsLayerTreeModel::flags( index ) | Qt::ItemIsSelectable;
-
-  return QgsLayerTreeModel::flags( index );
 }

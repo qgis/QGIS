@@ -314,9 +314,29 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
       RemoveFromSelection,
     };
 
-    QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
-                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true,
-                    bool readExtentFromXml = false );
+    struct LayerOptions
+    {
+
+      explicit LayerOptions( bool loadDefaultStyle = true, bool readExtentFromXml = false );
+%Docstring
+ Constructor for LayerOptions.
+%End
+
+      bool loadDefaultStyle;
+%Docstring
+Set to true if the default layer style should be loaded
+%End
+
+      bool readExtentFromXml;
+%Docstring
+ If true, the layer extent will be read from XML (i.e. stored in the
+ project file). If false, the extent will be determined by the provider on layer load.
+%End
+
+    };
+
+    explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
+                             const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
 %Docstring
  Constructor - creates a vector layer
 
@@ -324,12 +344,11 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
  interprets the supplied path (url) of the data source to connect to and access the
  data.
 
- \param  path  The path or url of the parameter.  Typically this encodes
+ \param path  The path or url of the parameter.  Typically this encodes
                parameters used by the data provider as url query items.
- \param  baseName The name used to represent the layer in the legend
- \param  providerLib  The name of the data provider, e.g., "memory", "postgres"
- \param  loadDefaultStyleFlag whether to load the default style
- \param  readExtentFromXml Read extent from XML if true or let provider determine it if false
+ \param baseName The name used to represent the layer in the legend
+ \param providerLib  The name of the data provider, e.g., "memory", "postgres"
+ \param options layer load options
 %End
 
 
@@ -774,6 +793,41 @@ Return the provider type for this layer
  :rtype: str
 %End
 
+    bool loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage, const QString &key = QString() );
+%Docstring
+ Loads the auxiliary layer for this vector layer. If there's no
+ corresponding table in the database, then nothing happens and false is
+ returned. The key is optional because if this layer has been read from
+ a XML document, then the key read in this document is used by default.
+
+ \param storage The auxiliary storage where to look for the table
+ \param key The key to use for joining.
+
+ :return: true if the auxiliary layer is well loaded, false otherwise
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void setAuxiliaryLayer( QgsAuxiliaryLayer *layer /Transfer/ = 0 );
+%Docstring
+ Sets the current auxiliary layer. The auxiliary layer is automatically
+ put in editable mode and fields are updated. Moreover, a join is created
+ between the current layer and the auxiliary layer. Ownership is
+ transferred.
+
+.. versionadded:: 3.0
+%End
+
+    QgsAuxiliaryLayer *auxiliaryLayer();
+%Docstring
+ Returns the current auxiliary layer.
+
+.. versionadded:: 3.0
+ :rtype: QgsAuxiliaryLayer
+%End
+
+
     virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage, const QgsReadWriteContext &context );
 
 %Docstring
@@ -1059,7 +1113,8 @@ Return the provider type for this layer
  :rtype: int
 %End
 
-    const QgsAbstractVectorLayerLabeling *labeling() const;
+
+    QgsAbstractVectorLayerLabeling *labeling();
 %Docstring
  Access to labeling configuration. May be null if labeling is not used.
 .. versionadded:: 3.0
@@ -1087,6 +1142,15 @@ Returns true if this is a geometry layer and false in case of NoGeometry (table 
     virtual bool isModified() const;
 %Docstring
 Returns true if the provider has been modified since the last commit
+ :rtype: bool
+%End
+
+    bool isAuxiliaryField( int index, int &srcIndex ) const;
+%Docstring
+ Returns true if the field comes from the auxiliary layer,
+ false otherwise.
+
+.. versionadded:: 3.0
  :rtype: bool
 %End
 
@@ -1269,7 +1333,7 @@ Returns a map of field name to attribute alias
  A set of attributes that are not advertised in WFS requests with QGIS server.
 %End
 
-    bool deleteAttribute( int attr );
+    virtual bool deleteAttribute( int attr );
 %Docstring
 Delete an attribute field (but does not commit it)
  :rtype: bool
@@ -1759,6 +1823,14 @@ Returns the current blending mode for features
  :rtype: bool
 %End
 
+    bool isEditCommandActive() const;
+%Docstring
+ Test if an edit command is active
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
   public slots:
 
     void select( QgsFeatureId featureId );
@@ -1818,14 +1890,6 @@ Returns the current blending mode for features
  This starts an edit session on this layer. Changes made in this edit session will not
  be made persistent until commitChanges() is called and can be reverted by calling
  rollBack().
- :rtype: bool
-%End
-
-    bool isEditCommandActive() const;
-%Docstring
- Test if an edit command is active
-
-.. versionadded:: 3.0
  :rtype: bool
 %End
 

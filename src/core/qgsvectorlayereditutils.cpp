@@ -105,10 +105,10 @@ QgsVectorLayer::EditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId f
   if ( !geometry.deleteVertex( vertex ) )
     return QgsVectorLayer::EditFailed;
 
-  if ( geometry.geometry() && geometry.geometry()->nCoordinates() == 0 )
+  if ( geometry.constGet() && geometry.constGet()->nCoordinates() == 0 )
   {
     //last vertex deleted, set geometry to null
-    geometry.setGeometry( nullptr );
+    geometry.set( nullptr );
   }
 
   mLayer->editBuffer()->changeGeometry( featureId, geometry );
@@ -519,8 +519,8 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
     case QgsWkbTypes::LineString25D:
     case QgsWkbTypes::LineString:
     {
-      QgsPolyline line = geom.asPolyline();
-      QgsPolyline::const_iterator line_it = line.constBegin();
+      QgsPolylineXY line = geom.asPolyline();
+      QgsPolylineXY::const_iterator line_it = line.constBegin();
       for ( ; line_it != line.constEnd(); ++line_it )
       {
         if ( addTopologicalPoints( *line_it ) != 0 )
@@ -535,12 +535,12 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
     case QgsWkbTypes::MultiLineString25D:
     case QgsWkbTypes::MultiLineString:
     {
-      QgsMultiPolyline multiLine = geom.asMultiPolyline();
-      QgsPolyline currentPolyline;
+      QgsMultiPolylineXY multiLine = geom.asMultiPolyline();
+      QgsPolylineXY currentPolyline;
 
       for ( int i = 0; i < multiLine.size(); ++i )
       {
-        QgsPolyline::const_iterator line_it = currentPolyline.constBegin();
+        QgsPolylineXY::const_iterator line_it = currentPolyline.constBegin();
         for ( ; line_it != currentPolyline.constEnd(); ++line_it )
         {
           if ( addTopologicalPoints( *line_it ) != 0 )
@@ -556,13 +556,13 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
     case QgsWkbTypes::Polygon25D:
     case QgsWkbTypes::Polygon:
     {
-      QgsPolygon polygon = geom.asPolygon();
-      QgsPolyline currentRing;
+      QgsPolygonXY polygon = geom.asPolygon();
+      QgsPolylineXY currentRing;
 
       for ( int i = 0; i < polygon.size(); ++i )
       {
         currentRing = polygon.at( i );
-        QgsPolyline::const_iterator line_it = currentRing.constBegin();
+        QgsPolylineXY::const_iterator line_it = currentRing.constBegin();
         for ( ; line_it != currentRing.constEnd(); ++line_it )
         {
           if ( addTopologicalPoints( *line_it ) != 0 )
@@ -578,9 +578,9 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
     case QgsWkbTypes::MultiPolygon25D:
     case QgsWkbTypes::MultiPolygon:
     {
-      QgsMultiPolygon multiPolygon = geom.asMultiPolygon();
-      QgsPolygon currentPolygon;
-      QgsPolyline currentRing;
+      QgsMultiPolygonXY multiPolygon = geom.asMultiPolygon();
+      QgsPolygonXY currentPolygon;
+      QgsPolylineXY currentRing;
 
       for ( int i = 0; i < multiPolygon.size(); ++i )
       {
@@ -588,7 +588,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsGeometry &geom )
         for ( int j = 0; j < currentPolygon.size(); ++j )
         {
           currentRing = currentPolygon.at( j );
-          QgsPolyline::const_iterator line_it = currentRing.constBegin();
+          QgsPolylineXY::const_iterator line_it = currentRing.constBegin();
           for ( ; line_it != currentRing.constEnd(); ++line_it )
           {
             if ( addTopologicalPoints( *line_it ) != 0 )

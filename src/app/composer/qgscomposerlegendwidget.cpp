@@ -34,6 +34,7 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgslayoutitemlegend.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -61,6 +62,42 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend *legend )
   , mLegend( legend )
 {
   setupUi( this );
+  connect( mWrapCharLineEdit, &QLineEdit::textChanged, this, &QgsComposerLegendWidget::mWrapCharLineEdit_textChanged );
+  connect( mTitleLineEdit, &QLineEdit::textChanged, this, &QgsComposerLegendWidget::mTitleLineEdit_textChanged );
+  connect( mTitleAlignCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsComposerLegendWidget::mTitleAlignCombo_currentIndexChanged );
+  connect( mColumnCountSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mColumnCountSpinBox_valueChanged );
+  connect( mSplitLayerCheckBox, &QCheckBox::toggled, this, &QgsComposerLegendWidget::mSplitLayerCheckBox_toggled );
+  connect( mEqualColumnWidthCheckBox, &QCheckBox::toggled, this, &QgsComposerLegendWidget::mEqualColumnWidthCheckBox_toggled );
+  connect( mSymbolWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mSymbolWidthSpinBox_valueChanged );
+  connect( mSymbolHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mSymbolHeightSpinBox_valueChanged );
+  connect( mWmsLegendWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mWmsLegendWidthSpinBox_valueChanged );
+  connect( mWmsLegendHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mWmsLegendHeightSpinBox_valueChanged );
+  connect( mTitleSpaceBottomSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mTitleSpaceBottomSpinBox_valueChanged );
+  connect( mGroupSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mGroupSpaceSpinBox_valueChanged );
+  connect( mLayerSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mLayerSpaceSpinBox_valueChanged );
+  connect( mSymbolSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mSymbolSpaceSpinBox_valueChanged );
+  connect( mIconLabelSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mIconLabelSpaceSpinBox_valueChanged );
+  connect( mFontColorButton, &QgsColorButton::colorChanged, this, &QgsComposerLegendWidget::mFontColorButton_colorChanged );
+  connect( mBoxSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mBoxSpaceSpinBox_valueChanged );
+  connect( mColumnSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mColumnSpaceSpinBox_valueChanged );
+  connect( mLineSpacingSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mLineSpacingSpinBox_valueChanged );
+  connect( mCheckBoxAutoUpdate, &QCheckBox::stateChanged, this, &QgsComposerLegendWidget::mCheckBoxAutoUpdate_stateChanged );
+  connect( mCheckboxResizeContents, &QCheckBox::toggled, this, &QgsComposerLegendWidget::mCheckboxResizeContents_toggled );
+  connect( mRasterStrokeGroupBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsComposerLegendWidget::mRasterStrokeGroupBox_toggled );
+  connect( mRasterStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mRasterStrokeWidthSpinBox_valueChanged );
+  connect( mRasterStrokeColorButton, &QgsColorButton::colorChanged, this, &QgsComposerLegendWidget::mRasterStrokeColorButton_colorChanged );
+  connect( mMoveDownToolButton, &QToolButton::clicked, this, &QgsComposerLegendWidget::mMoveDownToolButton_clicked );
+  connect( mMoveUpToolButton, &QToolButton::clicked, this, &QgsComposerLegendWidget::mMoveUpToolButton_clicked );
+  connect( mRemoveToolButton, &QToolButton::clicked, this, &QgsComposerLegendWidget::mRemoveToolButton_clicked );
+  connect( mAddToolButton, &QToolButton::clicked, this, &QgsComposerLegendWidget::mAddToolButton_clicked );
+  connect( mEditPushButton, &QToolButton::clicked, this, &QgsComposerLegendWidget::mEditPushButton_clicked );
+  connect( mCountToolButton, &QToolButton::clicked, this, &QgsComposerLegendWidget::mCountToolButton_clicked );
+  connect( mExpressionFilterButton, &QgsLegendFilterButton::toggled, this, &QgsComposerLegendWidget::mExpressionFilterButton_toggled );
+  connect( mFilterByMapToolButton, &QToolButton::toggled, this, &QgsComposerLegendWidget::mFilterByMapToolButton_toggled );
+  connect( mUpdateAllPushButton, &QToolButton::clicked, this, &QgsComposerLegendWidget::mUpdateAllPushButton_clicked );
+  connect( mAddGroupToolButton, &QToolButton::clicked, this, &QgsComposerLegendWidget::mAddGroupToolButton_clicked );
+  connect( mFilterLegendByAtlasCheckBox, &QCheckBox::toggled, this, &QgsComposerLegendWidget::mFilterLegendByAtlasCheckBox_toggled );
+  connect( mItemTreeView, &QgsLayerTreeView::doubleClicked, this, &QgsComposerLegendWidget::mItemTreeView_doubleClicked );
   setPanelTitle( tr( "Legend properties" ) );
 
   mTitleFontButton->setMode( QgsFontButton::ModeQFont );
@@ -122,6 +159,42 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend *legend )
 QgsComposerLegendWidget::QgsComposerLegendWidget(): QgsComposerItemBaseWidget( nullptr, nullptr )
 {
   setupUi( this );
+  connect( mWrapCharLineEdit, &QLineEdit::textChanged, this, &QgsComposerLegendWidget::mWrapCharLineEdit_textChanged );
+  connect( mTitleLineEdit, &QLineEdit::textChanged, this, &QgsComposerLegendWidget::mTitleLineEdit_textChanged );
+  connect( mTitleAlignCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsComposerLegendWidget::mTitleAlignCombo_currentIndexChanged );
+  connect( mColumnCountSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mColumnCountSpinBox_valueChanged );
+  connect( mSplitLayerCheckBox, &QCheckBox::toggled, this, &QgsComposerLegendWidget::mSplitLayerCheckBox_toggled );
+  connect( mEqualColumnWidthCheckBox, &QCheckBox::toggled, this, &QgsComposerLegendWidget::mEqualColumnWidthCheckBox_toggled );
+  connect( mSymbolWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mSymbolWidthSpinBox_valueChanged );
+  connect( mSymbolHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mSymbolHeightSpinBox_valueChanged );
+  connect( mWmsLegendWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mWmsLegendWidthSpinBox_valueChanged );
+  connect( mWmsLegendHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mWmsLegendHeightSpinBox_valueChanged );
+  connect( mTitleSpaceBottomSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mTitleSpaceBottomSpinBox_valueChanged );
+  connect( mGroupSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mGroupSpaceSpinBox_valueChanged );
+  connect( mLayerSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mLayerSpaceSpinBox_valueChanged );
+  connect( mSymbolSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mSymbolSpaceSpinBox_valueChanged );
+  connect( mIconLabelSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mIconLabelSpaceSpinBox_valueChanged );
+  connect( mFontColorButton, &QgsColorButton::colorChanged, this, &QgsComposerLegendWidget::mFontColorButton_colorChanged );
+  connect( mBoxSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mBoxSpaceSpinBox_valueChanged );
+  connect( mColumnSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mColumnSpaceSpinBox_valueChanged );
+  connect( mLineSpacingSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mLineSpacingSpinBox_valueChanged );
+  connect( mCheckBoxAutoUpdate, &QCheckBox::stateChanged, this, &QgsComposerLegendWidget::mCheckBoxAutoUpdate_stateChanged );
+  connect( mCheckboxResizeContents, &QCheckBox::toggled, this, &QgsComposerLegendWidget::mCheckboxResizeContents_toggled );
+  connect( mRasterStrokeGroupBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsComposerLegendWidget::mRasterStrokeGroupBox_toggled );
+  connect( mRasterStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerLegendWidget::mRasterStrokeWidthSpinBox_valueChanged );
+  connect( mRasterStrokeColorButton, &QgsColorButton::colorChanged, this, &QgsComposerLegendWidget::mRasterStrokeColorButton_colorChanged );
+  connect( mMoveDownToolButton, &QToolButton::clicked, this, &QgsComposerLegendWidget::mMoveDownToolButton_clicked );
+  connect( mMoveUpToolButton, &QToolButton::clicked, this, &QgsComposerLegendWidget::mMoveUpToolButton_clicked );
+  connect( mRemoveToolButton, &QToolButton::clicked, this, &QgsComposerLegendWidget::mRemoveToolButton_clicked );
+  connect( mAddToolButton, &QToolButton::clicked, this, &QgsComposerLegendWidget::mAddToolButton_clicked );
+  connect( mEditPushButton, &QToolButton::clicked, this, &QgsComposerLegendWidget::mEditPushButton_clicked );
+  connect( mCountToolButton, &QToolButton::clicked, this, &QgsComposerLegendWidget::mCountToolButton_clicked );
+  connect( mExpressionFilterButton, &QgsLegendFilterButton::toggled, this, &QgsComposerLegendWidget::mExpressionFilterButton_toggled );
+  connect( mFilterByMapToolButton, &QToolButton::toggled, this, &QgsComposerLegendWidget::mFilterByMapToolButton_toggled );
+  connect( mUpdateAllPushButton, &QToolButton::clicked, this, &QgsComposerLegendWidget::mUpdateAllPushButton_clicked );
+  connect( mAddGroupToolButton, &QToolButton::clicked, this, &QgsComposerLegendWidget::mAddGroupToolButton_clicked );
+  connect( mFilterLegendByAtlasCheckBox, &QCheckBox::toggled, this, &QgsComposerLegendWidget::mFilterLegendByAtlasCheckBox_toggled );
+  connect( mItemTreeView, &QgsLayerTreeView::doubleClicked, this, &QgsComposerLegendWidget::mItemTreeView_doubleClicked );
 }
 
 void QgsComposerLegendWidget::setGuiElements()
@@ -173,12 +246,12 @@ void QgsComposerLegendWidget::setGuiElements()
 
   blockAllSignals( false );
 
-  on_mCheckBoxAutoUpdate_stateChanged( mLegend->autoUpdateModel() ? Qt::Checked : Qt::Unchecked );
+  mCheckBoxAutoUpdate_stateChanged( mLegend->autoUpdateModel() ? Qt::Checked : Qt::Unchecked );
   updateDataDefinedButton( mLegendTitleDDBtn );
   updateDataDefinedButton( mColumnsDDBtn );
 }
 
-void QgsComposerLegendWidget::on_mWrapCharLineEdit_textChanged( const QString &text )
+void QgsComposerLegendWidget::mWrapCharLineEdit_textChanged( const QString &text )
 {
   if ( mLegend )
   {
@@ -190,7 +263,7 @@ void QgsComposerLegendWidget::on_mWrapCharLineEdit_textChanged( const QString &t
   }
 }
 
-void QgsComposerLegendWidget::on_mTitleLineEdit_textChanged( const QString &text )
+void QgsComposerLegendWidget::mTitleLineEdit_textChanged( const QString &text )
 {
   if ( mLegend )
   {
@@ -202,7 +275,7 @@ void QgsComposerLegendWidget::on_mTitleLineEdit_textChanged( const QString &text
   }
 }
 
-void QgsComposerLegendWidget::on_mTitleAlignCombo_currentIndexChanged( int index )
+void QgsComposerLegendWidget::mTitleAlignCombo_currentIndexChanged( int index )
 {
   if ( mLegend )
   {
@@ -214,7 +287,7 @@ void QgsComposerLegendWidget::on_mTitleAlignCombo_currentIndexChanged( int index
   }
 }
 
-void QgsComposerLegendWidget::on_mColumnCountSpinBox_valueChanged( int c )
+void QgsComposerLegendWidget::mColumnCountSpinBox_valueChanged( int c )
 {
   if ( mLegend )
   {
@@ -228,7 +301,7 @@ void QgsComposerLegendWidget::on_mColumnCountSpinBox_valueChanged( int c )
   mEqualColumnWidthCheckBox->setEnabled( c > 1 );
 }
 
-void QgsComposerLegendWidget::on_mSplitLayerCheckBox_toggled( bool checked )
+void QgsComposerLegendWidget::mSplitLayerCheckBox_toggled( bool checked )
 {
   if ( mLegend )
   {
@@ -240,7 +313,7 @@ void QgsComposerLegendWidget::on_mSplitLayerCheckBox_toggled( bool checked )
   }
 }
 
-void QgsComposerLegendWidget::on_mEqualColumnWidthCheckBox_toggled( bool checked )
+void QgsComposerLegendWidget::mEqualColumnWidthCheckBox_toggled( bool checked )
 {
   if ( mLegend )
   {
@@ -252,7 +325,7 @@ void QgsComposerLegendWidget::on_mEqualColumnWidthCheckBox_toggled( bool checked
   }
 }
 
-void QgsComposerLegendWidget::on_mSymbolWidthSpinBox_valueChanged( double d )
+void QgsComposerLegendWidget::mSymbolWidthSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
@@ -264,7 +337,7 @@ void QgsComposerLegendWidget::on_mSymbolWidthSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerLegendWidget::on_mSymbolHeightSpinBox_valueChanged( double d )
+void QgsComposerLegendWidget::mSymbolHeightSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
@@ -276,7 +349,7 @@ void QgsComposerLegendWidget::on_mSymbolHeightSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerLegendWidget::on_mWmsLegendWidthSpinBox_valueChanged( double d )
+void QgsComposerLegendWidget::mWmsLegendWidthSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
@@ -288,7 +361,7 @@ void QgsComposerLegendWidget::on_mWmsLegendWidthSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerLegendWidget::on_mWmsLegendHeightSpinBox_valueChanged( double d )
+void QgsComposerLegendWidget::mWmsLegendHeightSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
@@ -300,7 +373,7 @@ void QgsComposerLegendWidget::on_mWmsLegendHeightSpinBox_valueChanged( double d 
   }
 }
 
-void QgsComposerLegendWidget::on_mTitleSpaceBottomSpinBox_valueChanged( double d )
+void QgsComposerLegendWidget::mTitleSpaceBottomSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
@@ -312,7 +385,7 @@ void QgsComposerLegendWidget::on_mTitleSpaceBottomSpinBox_valueChanged( double d
   }
 }
 
-void QgsComposerLegendWidget::on_mGroupSpaceSpinBox_valueChanged( double d )
+void QgsComposerLegendWidget::mGroupSpaceSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
@@ -324,7 +397,7 @@ void QgsComposerLegendWidget::on_mGroupSpaceSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerLegendWidget::on_mLayerSpaceSpinBox_valueChanged( double d )
+void QgsComposerLegendWidget::mLayerSpaceSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
@@ -336,7 +409,7 @@ void QgsComposerLegendWidget::on_mLayerSpaceSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerLegendWidget::on_mSymbolSpaceSpinBox_valueChanged( double d )
+void QgsComposerLegendWidget::mSymbolSpaceSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
@@ -350,7 +423,7 @@ void QgsComposerLegendWidget::on_mSymbolSpaceSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerLegendWidget::on_mIconLabelSpaceSpinBox_valueChanged( double d )
+void QgsComposerLegendWidget::mIconLabelSpaceSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
@@ -410,7 +483,7 @@ void QgsComposerLegendWidget::itemFontChanged()
   }
 }
 
-void QgsComposerLegendWidget::on_mFontColorButton_colorChanged( const QColor &newFontColor )
+void QgsComposerLegendWidget::mFontColorButton_colorChanged( const QColor &newFontColor )
 {
   if ( !mLegend )
   {
@@ -423,7 +496,7 @@ void QgsComposerLegendWidget::on_mFontColorButton_colorChanged( const QColor &ne
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mBoxSpaceSpinBox_valueChanged( double d )
+void QgsComposerLegendWidget::mBoxSpaceSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
@@ -435,7 +508,7 @@ void QgsComposerLegendWidget::on_mBoxSpaceSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerLegendWidget::on_mColumnSpaceSpinBox_valueChanged( double d )
+void QgsComposerLegendWidget::mColumnSpaceSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
@@ -447,7 +520,7 @@ void QgsComposerLegendWidget::on_mColumnSpaceSpinBox_valueChanged( double d )
   }
 }
 
-void QgsComposerLegendWidget::on_mLineSpacingSpinBox_valueChanged( double d )
+void QgsComposerLegendWidget::mLineSpacingSpinBox_valueChanged( double d )
 {
   if ( mLegend )
   {
@@ -475,7 +548,7 @@ static void _moveLegendNode( QgsLayerTreeLayer *nodeLayer, int legendNodeIndex, 
 }
 
 
-void QgsComposerLegendWidget::on_mMoveDownToolButton_clicked()
+void QgsComposerLegendWidget::mMoveDownToolButton_clicked()
 {
   if ( !mLegend )
   {
@@ -512,7 +585,7 @@ void QgsComposerLegendWidget::on_mMoveDownToolButton_clicked()
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mMoveUpToolButton_clicked()
+void QgsComposerLegendWidget::mMoveUpToolButton_clicked()
 {
   if ( !mLegend )
   {
@@ -549,7 +622,7 @@ void QgsComposerLegendWidget::on_mMoveUpToolButton_clicked()
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mCheckBoxAutoUpdate_stateChanged( int state )
+void QgsComposerLegendWidget::mCheckBoxAutoUpdate_stateChanged( int state )
 {
   mLegend->beginCommand( QStringLiteral( "Auto update changed" ) );
 
@@ -596,7 +669,7 @@ void QgsComposerLegendWidget::composerMapChanged( QgsComposerItem *item )
   }
 }
 
-void QgsComposerLegendWidget::on_mCheckboxResizeContents_toggled( bool checked )
+void QgsComposerLegendWidget::mCheckboxResizeContents_toggled( bool checked )
 {
   if ( !mLegend )
   {
@@ -611,7 +684,7 @@ void QgsComposerLegendWidget::on_mCheckboxResizeContents_toggled( bool checked )
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mRasterStrokeGroupBox_toggled( bool state )
+void QgsComposerLegendWidget::mRasterStrokeGroupBox_toggled( bool state )
 {
   if ( !mLegend )
   {
@@ -625,7 +698,7 @@ void QgsComposerLegendWidget::on_mRasterStrokeGroupBox_toggled( bool state )
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mRasterStrokeWidthSpinBox_valueChanged( double d )
+void QgsComposerLegendWidget::mRasterStrokeWidthSpinBox_valueChanged( double d )
 {
   if ( !mLegend )
   {
@@ -639,7 +712,7 @@ void QgsComposerLegendWidget::on_mRasterStrokeWidthSpinBox_valueChanged( double 
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mRasterStrokeColorButton_colorChanged( const QColor &newColor )
+void QgsComposerLegendWidget::mRasterStrokeColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mLegend )
   {
@@ -652,7 +725,7 @@ void QgsComposerLegendWidget::on_mRasterStrokeColorButton_colorChanged( const QC
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mAddToolButton_clicked()
+void QgsComposerLegendWidget::mAddToolButton_clicked()
 {
   if ( !mLegend )
   {
@@ -684,7 +757,7 @@ void QgsComposerLegendWidget::on_mAddToolButton_clicked()
   }
 }
 
-void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
+void QgsComposerLegendWidget::mRemoveToolButton_clicked()
 {
   if ( !mLegend )
   {
@@ -741,7 +814,7 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mEditPushButton_clicked()
+void QgsComposerLegendWidget::mEditPushButton_clicked()
 {
   if ( !mLegend )
   {
@@ -749,7 +822,7 @@ void QgsComposerLegendWidget::on_mEditPushButton_clicked()
   }
 
   QModelIndex idx = mItemTreeView->selectionModel()->currentIndex();
-  on_mItemTreeView_doubleClicked( idx );
+  mItemTreeView_doubleClicked( idx );
 }
 
 void QgsComposerLegendWidget::resetLayerNodeToDefaults()
@@ -795,7 +868,7 @@ void QgsComposerLegendWidget::resetLayerNodeToDefaults()
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mCountToolButton_clicked( bool checked )
+void QgsComposerLegendWidget::mCountToolButton_clicked( bool checked )
 {
   QgsDebugMsg( "Entered." );
   if ( !mLegend )
@@ -821,7 +894,7 @@ void QgsComposerLegendWidget::on_mCountToolButton_clicked( bool checked )
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mFilterByMapToolButton_toggled( bool checked )
+void QgsComposerLegendWidget::mFilterByMapToolButton_toggled( bool checked )
 {
   mLegend->beginCommand( tr( "Legend updated" ) );
   mLegend->setLegendFilterByMapEnabled( checked );
@@ -829,7 +902,7 @@ void QgsComposerLegendWidget::on_mFilterByMapToolButton_toggled( bool checked )
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mExpressionFilterButton_toggled( bool checked )
+void QgsComposerLegendWidget::mExpressionFilterButton_toggled( bool checked )
 {
   if ( !mLegend )
   {
@@ -857,12 +930,12 @@ void QgsComposerLegendWidget::on_mExpressionFilterButton_toggled( bool checked )
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mUpdateAllPushButton_clicked()
+void QgsComposerLegendWidget::mUpdateAllPushButton_clicked()
 {
   updateLegend();
 }
 
-void QgsComposerLegendWidget::on_mAddGroupToolButton_clicked()
+void QgsComposerLegendWidget::mAddGroupToolButton_clicked()
 {
   if ( mLegend )
   {
@@ -873,7 +946,7 @@ void QgsComposerLegendWidget::on_mAddGroupToolButton_clicked()
   }
 }
 
-void QgsComposerLegendWidget::on_mFilterLegendByAtlasCheckBox_toggled( bool toggled )
+void QgsComposerLegendWidget::mFilterLegendByAtlasCheckBox_toggled( bool toggled )
 {
   if ( mLegend )
   {
@@ -988,7 +1061,7 @@ void QgsComposerLegendWidget::updateFilterLegendByAtlasButton()
   mFilterLegendByAtlasCheckBox->setEnabled( atlas.enabled() && atlas.coverageLayer() && atlas.coverageLayer()->geometryType() == QgsWkbTypes::PolygonGeometry );
 }
 
-void QgsComposerLegendWidget::on_mItemTreeView_doubleClicked( const QModelIndex &idx )
+void QgsComposerLegendWidget::mItemTreeView_doubleClicked( const QModelIndex &idx )
 {
   if ( !mLegend || !idx.isValid() )
   {

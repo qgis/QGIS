@@ -43,7 +43,8 @@ class QgsFeedback;
 
 #include "qgsfeaturerequest.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This is the base class for vector data providers.
  *
  * Data providers abstract the retrieval and writing (where supported)
@@ -201,7 +202,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
         QgsFeedback *feedback = nullptr ) const;
 
-    /** Calculates an aggregated value from the layer's features. The base implementation does nothing,
+    /**
+     * Calculates an aggregated value from the layer's features. The base implementation does nothing,
      * but subclasses can override this method to handoff calculation of aggregates to the provider.
      * \param aggregate aggregate to calculate
      * \param index the index of the attribute to calculate aggregate over
@@ -349,7 +351,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     //! Create an attribute index on the datasource
     virtual bool createAttributeIndex( int field );
 
-    /** Returns flags containing the supported capabilities
+    /**
+     * Returns flags containing the supported capabilities
         \note, some capabilities may change depending on whether
         a spatial filter is active on this provider, so it may
         be prudent to check this value per intended operation.
@@ -516,13 +519,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const { Q_UNUSED( mdKey ); return value.toString(); }
 
-    /** Returns true if the data source has metadata, false otherwise.
+    /**
+     * Returns true if the data source has metadata, false otherwise.
      *
      * \returns true if data source has metadata, false otherwise.
      *
      * \since QGIS 3.0
      */
-    virtual bool hasMetadata() const { return true; };
+    virtual bool hasMetadata() const { return true; }
 
   signals:
 

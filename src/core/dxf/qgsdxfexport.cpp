@@ -499,6 +499,9 @@ int QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
   mTextStream.setDevice( d );
   mTextStream.setCodec( encoding.toLocal8Bit() );
 
+  if ( mCrs.isValid() )
+    mMapSettings.setDestinationCrs( mCrs );
+
   if ( mExtent.isEmpty() )
   {
     const QList< QgsMapLayer * > layers = mMapSettings.layers();
@@ -529,8 +532,6 @@ int QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
   mFactor = 1000 * dpi / mSymbologyScale / 25.4 * QgsUnitTypes::fromUnitToUnitFactor( mapUnits, QgsUnitTypes::DistanceMeters );
   mMapSettings.setOutputSize( QSize( mExtent.width() * mFactor, mExtent.height() * mFactor ) );
   mMapSettings.setOutputDpi( dpi );
-  if ( mCrs.isValid() )
-    mMapSettings.setDestinationCrs( mCrs );
 
   writeHeader( dxfEncoding( encoding ) );
   writeTables();
@@ -801,7 +802,7 @@ void QgsDxfExport::writeTables()
   writeGroup( 6, QStringLiteral( "CONTINUOUS" ) );
   writeHandle( 390, DXF_HANDPLOTSTYLE );
 
-  for ( const QString &layerName : qgsAsConst( layerNames ) )
+  for ( const QString &layerName : qgis::as_const( layerNames ) )
   {
     writeGroup( 0, QStringLiteral( "LAYER" ) );
     writeHandle();
@@ -3676,7 +3677,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
   if ( !fet->hasGeometry() )
     return;
 
-  std::unique_ptr<QgsAbstractGeometry> geom( fet->geometry().geometry()->clone() );
+  std::unique_ptr<QgsAbstractGeometry> geom( fet->geometry().constGet()->clone() );
   if ( ct.isValid() )
   {
     geom->transform( ct );

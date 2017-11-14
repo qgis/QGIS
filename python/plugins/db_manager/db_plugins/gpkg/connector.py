@@ -51,31 +51,16 @@ class GPKGDBConnector(DBConnector):
 
     def _opendb(self):
 
+        # Keep this explicit assignment to None to make sure the file is
+        # properly closed before being re-opened
         self.gdal_ds = None
-        if hasattr(gdal, 'OpenEx'):
-            # GDAL >= 2
-            self.gdal_ds = gdal.OpenEx(self.dbname, gdal.OF_UPDATE)
-            if self.gdal_ds is None:
-                self.gdal_ds = gdal.OpenEx(self.dbname)
-            if self.gdal_ds is None or self.gdal_ds.GetDriver().ShortName != 'GPKG':
-                raise ConnectionError(QApplication.translate("DBManagerPlugin", '"{0}" not found').format(self.dbname))
-            self.has_raster = self.gdal_ds.RasterCount != 0 or self.gdal_ds.GetMetadata('SUBDATASETS') is not None
-            self.connection = None
-            self.gdal2 = True
-        else:
-            # GDAL 1.X compat. To be removed at some point
-            self.gdal_ds = ogr.Open(self.dbname, update=1)
-            if self.gdal_ds is None:
-                self.gdal_ds = ogr.Open(self.dbname)
-            if self.gdal_ds is None or self.gdal_ds.GetDriver().GetName() != 'GPKG':
-                raise ConnectionError(QApplication.translate("DBManagerPlugin", '"{0}" not found').format(self.dbname))
-            # For GDAL 1.X, we cannot issue direct SQL SELECT to the OGR datasource
-            # so we need a direct sqlite connection
-            try:
-                self.connection = spatialite_connect(str(self.dbname))
-            except self.connection_error_types() as e:
-                raise ConnectionError(e)
-            self.gdal2 = False
+        self.gdal_ds = gdal.OpenEx(self.dbname, gdal.OF_UPDATE)
+        if self.gdal_ds is None:
+            self.gdal_ds = gdal.OpenEx(self.dbname)
+        if self.gdal_ds is None or self.gdal_ds.GetDriver().ShortName != 'GPKG':
+            raise ConnectionError(QApplication.translate("DBManagerPlugin", '"{0}" not found').format(self.dbname))
+        self.has_raster = self.gdal_ds.RasterCount != 0 or self.gdal_ds.GetMetadata('SUBDATASETS') is not None
+        self.connection = None
 
     def unquoteId(self, quotedId):
         if len(quotedId) <= 2 or quotedId[0] != '"' or quotedId[len(quotedId) - 1] != '"':
@@ -92,56 +77,40 @@ class GPKGDBConnector(DBConnector):
         return unquoted
 
     def _fetchOne(self, sql):
-        if not self.gdal2:
-            # GDAL 1.X compat. To be removed at some point
-            c = self._get_cursor()
-            self._execute(c, sql)
-            res = c.fetchone()
-            if res is not None:
-                return res
-            else:
-                return None
+        sql_lyr = self.gdal_ds.ExecuteSQL(sql)
+        if sql_lyr is None:
+            return None
+        f = sql_lyr.GetNextFeature()
+        if f is None:
+            ret = None
         else:
-            sql_lyr = self.gdal_ds.ExecuteSQL(sql)
-            if sql_lyr is None:
-                return None
-            f = sql_lyr.GetNextFeature()
-            if f is None:
-                ret = None
-            else:
-                ret = [f.GetField(i) for i in range(f.GetFieldCount())]
-            self.gdal_ds.ReleaseResultSet(sql_lyr)
-            return ret
+            ret = [f.GetField(i) for i in range(f.GetFieldCount())]
+        self.gdal_ds.ReleaseResultSet(sql_lyr)
+        return ret
 
     def _fetchAll(self, sql, include_fid_and_geometry=False):
-        if not self.gdal2:
-            # GDAL 1.X compat. To be removed at some point
-            c = self._get_cursor()
-            self._execute(c, sql)
-            return c.fetchall()
-        else:
-            sql_lyr = self.gdal_ds.ExecuteSQL(sql)
-            if sql_lyr is None:
-                return None
-            ret = []
-            while True:
-                f = sql_lyr.GetNextFeature()
-                if f is None:
-                    break
+        sql_lyr = self.gdal_ds.ExecuteSQL(sql)
+        if sql_lyr is None:
+            return None
+        ret = []
+        while True:
+            f = sql_lyr.GetNextFeature()
+            if f is None:
+                break
+            else:
+                if include_fid_and_geometry:
+                    field_vals = [f.GetFID()]
+                    if sql_lyr.GetLayerDefn().GetGeomType() != ogr.wkbNone:
+                        geom = f.GetGeometryRef()
+                        if geom is not None:
+                            geom = geom.ExportToWkt()
+                        field_vals += [geom]
+                    field_vals += [f.GetField(i) for i in range(f.GetFieldCount())]
+                    ret.append(field_vals)
                 else:
-                    if include_fid_and_geometry:
-                        field_vals = [f.GetFID()]
-                        if sql_lyr.GetLayerDefn().GetGeomType() != ogr.wkbNone:
-                            geom = f.GetGeometryRef()
-                            if geom is not None:
-                                geom = geom.ExportToWkt()
-                            field_vals += [geom]
-                        field_vals += [f.GetField(i) for i in range(f.GetFieldCount())]
-                        ret.append(field_vals)
-                    else:
-                        ret.append([f.GetField(i) for i in range(f.GetFieldCount())])
-            self.gdal_ds.ReleaseResultSet(sql_lyr)
-            return ret
+                    ret.append([f.GetField(i) for i in range(f.GetFieldCount())])
+        self.gdal_ds.ReleaseResultSet(sql_lyr)
+        return ret
 
     def _fetchAllFromLayer(self, table):
 
@@ -167,15 +136,12 @@ class GPKGDBConnector(DBConnector):
         return ret
 
     def _execute_and_commit(self, sql):
-        if not self.gdal2:
-            DBConnector._execute_and_commit(self, sql)
-        else:
-            sql_lyr = self.gdal_ds.ExecuteSQL(sql)
-            self.gdal_ds.ReleaseResultSet(sql_lyr)
+        sql_lyr = self.gdal_ds.ExecuteSQL(sql)
+        self.gdal_ds.ReleaseResultSet(sql_lyr)
 
     def _execute(self, cursor, sql):
 
-        if self.gdal2 and self.connection is None:
+        if self.connection is None:
             # Needed when evaluating a SQL query
             try:
                 self.connection = spatialite_connect(str(self.dbname))
@@ -185,7 +151,7 @@ class GPKGDBConnector(DBConnector):
         return DBConnector._execute(self, cursor, sql)
 
     def _commit(self):
-        if self.gdal2:
+        if self.connection is None:
             return
 
         try:
@@ -200,9 +166,9 @@ class GPKGDBConnector(DBConnector):
             raise DbError(e)
 
     @classmethod
-    def isValidDatabase(self, path):
+    def isValidDatabase(cls, path):
         if hasattr(gdal, 'OpenEx'):
-            ds = gdal.OpenEx(self.dbname)
+            ds = gdal.OpenEx(path)
             if ds is None or ds.GetDriver().ShortName != 'GPKG':
                 return False
         else:
@@ -315,17 +281,16 @@ class GPKGDBConnector(DBConnector):
                 geomname = 'MULTIPOLYGON'
             elif geomtype_flatten == ogr.wkbGeometryCollection:
                 geomname = 'GEOMETRYCOLLECTION'
-            if self.gdal2:
-                if geomtype_flatten == ogr.wkbCircularString:
-                    geomname = 'CIRCULARSTRING'
-                elif geomtype_flatten == ogr.wkbCompoundCurve:
-                    geomname = 'COMPOUNDCURVE'
-                elif geomtype_flatten == ogr.wkbCurvePolygon:
-                    geomname = 'CURVEPOLYGON'
-                elif geomtype_flatten == ogr.wkbMultiCurve:
-                    geomname = 'MULTICURVE'
-                elif geomtype_flatten == ogr.wkbMultiSurface:
-                    geomname = 'MULTISURFACE'
+            elif geomtype_flatten == ogr.wkbCircularString:
+                geomname = 'CIRCULARSTRING'
+            elif geomtype_flatten == ogr.wkbCompoundCurve:
+                geomname = 'COMPOUNDCURVE'
+            elif geomtype_flatten == ogr.wkbCurvePolygon:
+                geomname = 'CURVEPOLYGON'
+            elif geomtype_flatten == ogr.wkbMultiCurve:
+                geomname = 'MULTICURVE'
+            elif geomtype_flatten == ogr.wkbMultiSurface:
+                geomname = 'MULTISURFACE'
             geomdim = 'XY'
             if hasattr(ogr, 'GT_HasZ') and ogr.GT_HasZ(lyr.GetGeomType()):
                 geomdim += 'Z'
@@ -631,9 +596,9 @@ class GPKGDBConnector(DBConnector):
             return True
 
         if tablename.find('"') >= 0:
-            tablename = self.quotedId(tablename)
+            tablename = self.quoteId(tablename)
         if new_table.find('"') >= 0:
-            new_table = self.quotedId(new_table)
+            new_table = self.quoteId(new_table)
 
         gdal.ErrorReset()
         self.gdal_ds.ExecuteSQL('ALTER TABLE %s RENAME TO %s' % (tablename, new_table))
@@ -826,14 +791,13 @@ class GPKGDBConnector(DBConnector):
         if self.isRasterTable(table) or geom_column is None:
             return False
         _, tablename = self.getSchemaTableName(table)
-        if self.gdal2:
-            # Only try this for GDAL >= 2 (but only available in >= 2.1.2)
-            sql = u"SELECT HasSpatialIndex(%s, %s)" % (self.quoteString(tablename), self.quoteString(geom_column))
-            gdal.PushErrorHandler()
-            ret = self._fetchOne(sql)
-            gdal.PopErrorHandler()
-        else:
-            ret = None
+
+        # (only available in >= 2.1.2)
+        sql = u"SELECT HasSpatialIndex(%s, %s)" % (self.quoteString(tablename), self.quoteString(geom_column))
+        gdal.PushErrorHandler()
+        ret = self._fetchOne(sql)
+        gdal.PopErrorHandler()
+
         if ret is None:
             # might be the case for GDAL < 2.1.2
             sql = u"SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name LIKE %s" % self.quoteString("%%rtree_" + tablename + "_%%")

@@ -26,7 +26,8 @@
 #include "qgis_sip.h"
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsBusyIndicatorDialog
  * A simple dialog to show an indeterminate busy progress indicator.
  */
@@ -35,7 +36,8 @@ class GUI_EXPORT QgsBusyIndicatorDialog : public QDialog
     Q_OBJECT
   public:
 
-    /** Constructor
+    /**
+     * Constructor
      * Modal busy indicator dialog with no buttons.
      * \param message Text to show above busy progress indicator.
      * \param parent parent object (owner)

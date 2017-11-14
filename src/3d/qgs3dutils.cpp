@@ -113,7 +113,7 @@ void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, AltitudeClamping alt
 }
 
 
-bool Qgs3DUtils::clampAltitudes( QgsPolygonV2 *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Qgs3DMapSettings &map )
+bool Qgs3DUtils::clampAltitudes( QgsPolygon *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Qgs3DMapSettings &map )
 {
   if ( !polygon->is3D() )
     polygon->addZValue( 0 );
@@ -161,7 +161,7 @@ QMatrix4x4 Qgs3DUtils::stringToMatrix4x4( const QString &str )
   return m;
 }
 
-QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &request )
+QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &request, AltitudeClamping altClamp )
 {
   QList<QVector3D> positions;
   QgsFeature f;
@@ -171,24 +171,42 @@ QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLa
     if ( f.geometry().isNull() )
       continue;
 
-    const QgsAbstractGeometry *g = f.geometry().geometry();
-    if ( const QgsPoint *pt = qgsgeometry_cast< const QgsPoint *>( g ) )
+    const QgsAbstractGeometry *g = f.geometry().constGet();
+    for ( auto it = g->vertices_begin(); it != g->vertices_end(); ++it )
     {
-      // TODO: use Z coordinates if the point is 3D
-      float h = map.terrainGenerator()->heightAt( pt->x(), pt->y(), map ) * map.terrainVerticalScale();
-      positions.append( QVector3D( pt->x() - map.originX(), h, -( pt->y() - map.originY() ) ) );
+      QgsPoint pt = *it;
+      float geomZ = 0;
+      if ( pt.is3D() )
+      {
+        geomZ = pt.z();
+      }
+      float terrainZ = map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) * map.terrainVerticalScale();
+      float h;
+      switch ( altClamp )
+      {
+        case AltClampAbsolute:
+          h = geomZ;
+          break;
+        case AltClampTerrain:
+          h = terrainZ;
+          break;
+        case AltClampRelative:
+          h = terrainZ + geomZ;
+          break;
+      }
+      positions.append( QVector3D( pt.x() - map.originX(), h, -( pt.y() - map.originY() ) ) );
       //qDebug() << positions.last();
     }
-    else
-      qDebug() << "not a point";
   }
 
   return positions;
 }
 
-//! copied from https://searchcode.com/codesearch/view/35195518/
-//! qt3d /src/threed/painting/qglpainter.cpp
-//! no changes in the code
+/**
+ * copied from https://searchcode.com/codesearch/view/35195518/
+ * qt3d /src/threed/painting/qglpainter.cpp
+ * no changes in the code
+ */
 static inline uint outcode( const QVector4D &v )
 {
   // For a discussion of outcodes see pg 388 Dunn & Parberry.
@@ -209,14 +227,16 @@ static inline uint outcode( const QVector4D &v )
 }
 
 
-//! coarse box vs frustum test for culling.
-//! corners of oriented box are transformed to clip space
-//! and there is a test that all points are on the wrong side of the same plane
-//! see http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-boxes/
-//!
-//! should be equivalent to https://searchcode.com/codesearch/view/35195518/
-//! qt3d /src/threed/painting/qglpainter.cpp
-//! bool QGLPainter::isCullable(const QBox3D& box) const
+/**
+ * coarse box vs frustum test for culling.
+ * corners of oriented box are transformed to clip space
+ * and there is a test that all points are on the wrong side of the same plane
+ * see http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-boxes/
+ *
+ * should be equivalent to https://searchcode.com/codesearch/view/35195518/
+ * qt3d /src/threed/painting/qglpainter.cpp
+ * bool QGLPainter::isCullable(const QBox3D& box) const
+ */
 bool Qgs3DUtils::isCullable( const QgsAABB &bbox, const QMatrix4x4 &viewProjectionMatrix )
 {
   uint out = 0xff;

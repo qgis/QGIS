@@ -338,6 +338,7 @@ class QgsPoint: QgsAbstractGeometry
 
     virtual QgsPoint *clone() const /Factory/;
 
+    virtual QgsPoint *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
     virtual void clear();
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
@@ -364,6 +365,8 @@ class QgsPoint: QgsAbstractGeometry
 
     virtual int nCoordinates() const;
 
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
+
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
 
@@ -377,6 +380,8 @@ class QgsPoint: QgsAbstractGeometry
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
 
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const;
+
+    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const;
 
 
     virtual double vertexAngle( QgsVertexId vertex ) const;
@@ -408,6 +413,15 @@ class QgsPoint: QgsAbstractGeometry
     virtual bool dropMValue();
 
     virtual bool convertTo( QgsWkbTypes::Type type );
+
+
+
+  protected:
+    virtual QgsPoint *createEmptyWithSameType() const /Factory/;
+
+    virtual int childCount() const;
+
+    virtual QgsPoint childPoint( int index ) const;
 
 
 };

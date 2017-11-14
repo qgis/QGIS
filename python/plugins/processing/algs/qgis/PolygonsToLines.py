@@ -67,6 +67,9 @@ class PolygonsToLines(QgisFeatureBasedAlgorithm):
     def outputType(self):
         return QgsProcessing.TypeVectorLine
 
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorPolygon]
+
     def outputWkbType(self, input_wkb_type):
         return self.convertWkbToLines(input_wkb_type)
 
@@ -89,7 +92,7 @@ class PolygonsToLines(QgisFeatureBasedAlgorithm):
         return multi_wkb
 
     def convertToLines(self, geometry):
-        rings = self.getRings(geometry.geometry())
+        rings = self.getRings(geometry.constGet())
         output_wkb = self.convertWkbToLines(geometry.wkbType())
         out_geom = None
         if QgsWkbTypes.flatType(output_wkb) == QgsWkbTypes.MultiLineString:

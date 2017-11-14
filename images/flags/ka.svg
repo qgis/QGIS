@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="900" height="600" viewBox="0 0 300 200">
+<defs>
+<g id="smallcross"><clipPath id="vclip"><path d="M-109,104 a104,104 0 0,0 0,-208 H109 a104,104 0 0,0 0,208 z"/></clipPath><path id="varm" d="M-55,74 a55,55 0 0,1 110,0 V-74 a55,55 0 0,1 -110,0 z" clip-path="url(#vclip)"/>
+<use xlink:href="#varm" transform="rotate(90)"/></g>
+</defs>
+<rect width="300" height="200" style="fill:#fff"/>
+<path d="m 130,0 0,80 -130,0 L 0,120 l 130,0 0,80 40,0 0,-80 130,0 0,-40 -130,0 L 170,0 130,0 z" style="fill:#ff0000" />
+<use xlink:href="#smallcross" transform="translate(64.45,39.45)" fill="#f00"/>
+<use xlink:href="#smallcross" transform="translate(235.55,160.55)" fill="#f00"/>
+<use xlink:href="#smallcross" transform="translate(235.55,39.45)" fill="#f00"/>
+<use xlink:href="#smallcross" transform="translate(64.45,160.55)" fill="#f00"/>
+</svg>

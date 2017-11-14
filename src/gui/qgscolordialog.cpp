@@ -36,6 +36,9 @@ QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColo
   , mPreviousColor( color )
 {
   setupUi( this );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsColorDialog::mButtonBox_accepted );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsColorDialog::mButtonBox_rejected );
+  connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsColorDialog::mButtonBox_clicked );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/ColorDialog/geometry" ) ).toByteArray() );
@@ -151,19 +154,19 @@ QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, co
   }
 }
 
-void QgsColorDialog::on_mButtonBox_accepted()
+void QgsColorDialog::mButtonBox_accepted()
 {
   saveSettings();
   accept();
 }
 
-void QgsColorDialog::on_mButtonBox_rejected()
+void QgsColorDialog::mButtonBox_rejected()
 {
   saveSettings();
   reject();
 }
 
-void QgsColorDialog::on_mButtonBox_clicked( QAbstractButton *button )
+void QgsColorDialog::mButtonBox_clicked( QAbstractButton *button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ResetRole && mPreviousColor.isValid() )
   {

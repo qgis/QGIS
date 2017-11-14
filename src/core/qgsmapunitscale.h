@@ -24,7 +24,8 @@
 
 class QgsRenderContext;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMapUnitScale
  * \brief Struct for storing maximum and minimum scales for measurements in map units
  *
@@ -69,7 +70,8 @@ class CORE_EXPORT QgsMapUnitScale
     //! The maximum size in millimeters, or 0.0 if unset
     double maxSizeMM = 0.0;
 
-    /** Computes a map units per pixel scaling factor, respecting the minimum and maximum scales
+    /**
+     * Computes a map units per pixel scaling factor, respecting the minimum and maximum scales
      * set for the object.
      * \param c render context
      * \returns map units per pixel, limited between minimum and maximum scales

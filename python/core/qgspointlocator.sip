@@ -32,31 +32,40 @@ class QgsPointLocator : QObject
     explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
                               const QgsRectangle *extent = 0 );
 %Docstring
- Construct point locator for a layer.
-  @arg destinationCrs if a valid QgsCoordinateReferenceSystem is passed then the locator will
-  do the searches on data reprojected to the given CRS
-  @arg extent  if not null, will index only a subset of the layer
+ Construct point locator for a ``layer``.
+
+  If a valid QgsCoordinateReferenceSystem is passed for ``destinationCrs`` then the locator will
+  do the searches on data reprojected to the given CRS.
+
+  If ``extent`` is not null, the locator will index only a subset of the layer which falls within that extent.
 %End
 
     ~QgsPointLocator();
 
     QgsVectorLayer *layer() const;
 %Docstring
+ Get associated layer
 .. versionadded:: 2.14
  :rtype: QgsVectorLayer
 %End
+
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
+ Get destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
 .. versionadded:: 2.14
  :rtype: QgsCoordinateReferenceSystem
 %End
+
     const QgsRectangle *extent() const;
 %Docstring
+ Get extent of the area point locator covers - if null then it caches the whole layer
 .. versionadded:: 2.14
  :rtype: QgsRectangle
 %End
+
     void setExtent( const QgsRectangle *extent );
 %Docstring
+ Configure extent - if not null, it will index only that area
 .. versionadded:: 2.14
 %End
 
@@ -120,13 +129,15 @@ construct invalid match
 
         double distance() const;
 %Docstring
-units depending on what class returns it (geom.cache: layer units, map canvas snapper: dest crs units)
+ for vertex / edge match
+ units depending on what class returns it (geom.cache: layer units, map canvas snapper: dest crs units)
  :rtype: float
 %End
 
         QgsPointXY point() const;
 %Docstring
-coords depending on what class returns it (geom.cache: layer coords, map canvas snapper: dest coords)
+ for vertex / edge match
+ coords depending on what class returns it (geom.cache: layer coords, map canvas snapper: dest coords)
  :rtype: QgsPointXY
 %End
 
@@ -173,17 +184,22 @@ Only for a valid edge match - obtain endpoints of the edge
 
     Match nearestVertex( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
 %Docstring
-Optional filter may discard unwanted matches.
+ Find nearest vertex to the specified point - up to distance specified by tolerance
+ Optional filter may discard unwanted matches.
  :rtype: Match
 %End
+
     Match nearestEdge( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
 %Docstring
-Optional filter may discard unwanted matches.
+ Find nearest edge to the specified point - up to distance specified by tolerance
+ Optional filter may discard unwanted matches.
  :rtype: Match
 %End
+
     MatchList edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0 );
 %Docstring
-Optional filter may discard unwanted matches.
+ Find edges within a specified recangle
+ Optional filter may discard unwanted matches.
  :rtype: MatchList
 %End
     MatchList edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
@@ -202,6 +218,7 @@ find out if the point is in any polygons
 
     int cachedGeometryCount() const;
 %Docstring
+ Return how many geometries are cached in the index
 .. versionadded:: 2.14
  :rtype: int
 %End

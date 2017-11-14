@@ -22,6 +22,8 @@
 #include "qgsobjectcustomproperties.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgspropertycollection.h"
+#include "qgsreadwritecontext.h"
+
 #include <QObject>
 #include <QDomNode>
 #include <QMap>
@@ -29,7 +31,8 @@
 class QgsComposition;
 class QPainter;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A base class for objects which belong to a map composition.
  */
 class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContextGenerator
@@ -37,7 +40,8 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     Q_OBJECT
   public:
 
-    /** Data defined properties for different item types
+    /**
+     * Data defined properties for different item types
      */
     enum DataDefinedProperty
     {
@@ -90,7 +94,8 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
       ScalebarLineWidth, //!< Scalebar line width
     };
 
-    /** Specifies whether the value returned by a function should be the original, user
+    /**
+     * Specifies whether the value returned by a function should be the original, user
      * set value, or the current evaluated value for the property. This may differ if
      * a property has a data defined expression active.
      */
@@ -106,13 +111,15 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
 
-    /** Constructor
+    /**
+     * Constructor
      * \param composition parent composition
      */
     QgsComposerObject( QgsComposition *composition );
     virtual ~QgsComposerObject() = default;
 
-    /** Returns the composition the item is attached to.
+    /**
+     * Returns the composition the item is attached to.
      * \returns QgsComposition for item.
      */
     const QgsComposition *composition() const { return mComposition; }
@@ -120,38 +127,44 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     //! \note not available in Python bindings
     QgsComposition *composition() { return mComposition; } SIP_SKIP
 
-    /** Stores item state in DOM element
+    /**
+     * Stores item state in DOM element
      * \param elem is DOM element corresponding to item tag
      * \param doc is the DOM document
      */
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
-    /** Sets item state from DOM element
+    /**
+     * Sets item state from DOM element
      * \param itemElem is DOM node corresponding to item tag
      * \param doc is DOM document
      */
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
-    /** Returns a reference to the object's property collection, used for data defined overrides.
+    /**
+     * Returns a reference to the object's property collection, used for data defined overrides.
      * \since QGIS 3.0
      * \see setDataDefinedProperties()
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
-    /** Returns a reference to the object's property collection, used for data defined overrides.
+    /**
+     * Returns a reference to the object's property collection, used for data defined overrides.
      * \since QGIS 3.0
      * \see setDataDefinedProperties()
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
-    /** Sets the objects's property collection, used for data defined overrides.
+    /**
+     * Sets the objects's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
      * \since QGIS 3.0
      * \see dataDefinedProperties()
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
-    /** Set a custom property for the object.
+    /**
+     * Set a custom property for the object.
      * \param key property key. If a property with the same key already exists it will be overwritten.
      * \param value property value
      * \see customProperty()
@@ -161,7 +174,8 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      */
     void setCustomProperty( const QString &key, const QVariant &value );
 
-    /** Read a custom property from the object.
+    /**
+     * Read a custom property from the object.
      * \param key property key
      * \param defaultValue default value to return if property with matching key does not exist
      * \returns value of matching property
@@ -172,7 +186,8 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      */
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 
-    /** Remove a custom property from the object.
+    /**
+     * Remove a custom property from the object.
      * \param key property key
      * \see setCustomProperty()
      * \see customProperty()
@@ -181,7 +196,8 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      */
     void removeCustomProperty( const QString &key );
 
-    /** Return list of keys stored in custom properties for the object.
+    /**
+     * Return list of keys stored in custom properties for the object.
      * \see setCustomProperty()
      * \see customProperty()
      * \see removeCustomProperty()
@@ -189,7 +205,8 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      */
     QStringList customProperties() const;
 
-    /** Creates an expression context relating to the objects' current state. The context includes
+    /**
+     * Creates an expression context relating to the objects' current state. The context includes
      * scopes for global, project and composition properties.
      * \since QGIS 2.12
      */
@@ -200,7 +217,8 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
     //! Triggers a redraw for the item
     virtual void repaint();
 
-    /** Refreshes a data defined property for the item by reevaluating the property's value
+    /**
+     * Refreshes a data defined property for the item by reevaluating the property's value
      * and redrawing the item with this new value.
      * \param property data defined property to refresh. If property is set to
      * QgsComposerItem::AllProperties then all data defined properties for the item will be
@@ -221,7 +239,8 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
 
   signals:
 
-    /** Emitted when the item changes. Signifies that the item widgets must update the
+    /**
+     * Emitted when the item changes. Signifies that the item widgets must update the
      * gui elements.
      */
     void itemChanged();

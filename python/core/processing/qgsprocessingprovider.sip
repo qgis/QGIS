@@ -56,8 +56,22 @@ class QgsProcessingProvider : QObject
 
     virtual QString name() const = 0;
 %Docstring
- Returns the full provider name, which is used to describe the provider within the GUI.
+ Returns the provider name, which is used to describe the provider within the GUI.
+ This string should be short (e.g. "Lastools") and localised.
+.. seealso:: longName()
+.. seealso:: id()
+ :rtype: str
+%End
+
+    virtual QString longName() const;
+%Docstring
+ Returns the a longer version of the provider name, which can include extra details
+ such as version numbers. E.g. "Lastools LIDAR tools (version 2.2.1)".
  This string should be localised.
+
+ The default implementation returns the same string as name().
+
+.. seealso:: name()
 .. seealso:: id()
  :rtype: str
 %End
@@ -80,25 +94,47 @@ class QgsProcessingProvider : QObject
 %Docstring
  Returns a list of the raster format file extensions supported by this provider.
 .. seealso:: supportedOutputVectorLayerExtensions()
-.. seealso:: supportedOutputTableExtensions()
  :rtype: list of str
 %End
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 %Docstring
  Returns a list of the vector format file extensions supported by this provider.
+.. seealso:: defaultVectorFileExtension()
 .. seealso:: supportedOutputRasterLayerExtensions()
-.. seealso:: supportedOutputTableExtensions()
 .. seealso:: supportsNonFileBasedOutput()
  :rtype: list of str
 %End
 
-    virtual QStringList supportedOutputTableExtensions() const;
+    virtual QString defaultVectorFileExtension( bool hasGeometry = true ) const;
 %Docstring
- Returns a list of the table format file extensions supported by this provider.
-.. seealso:: supportedOutputRasterLayerExtensions()
+ Returns the default file extension to use for vector outputs created by the
+ provider.
+
+ If ``hasGeometry`` is true then the output file format must have support for
+ geometry. If ``hasGeometry`` is false then non-spatial formats can be used.
+
+ The default implementation returns the user's default Processing vector output format
+ setting, if it's supported by the provider (see supportedOutputVectorLayerExtensions()).
+ Otherwise the first reported supported vector format will be used.
+
 .. seealso:: supportedOutputVectorLayerExtensions()
- :rtype: list of str
+.. seealso:: defaultRasterFileExtension()
+ :rtype: str
+%End
+
+    virtual QString defaultRasterFileExtension() const;
+%Docstring
+ Returns the default file extension to use for raster outputs created by the
+ provider.
+
+ The default implementation returns the user's default Processing raster output format
+ setting, if it's supported by the provider (see supportedOutputRasterLayerExtensions()).
+ Otherwise the first reported supported raster format will be used.
+
+.. seealso:: supportedOutputRasterLayerExtensions()
+.. seealso:: defaultVectorFileExtension()
+ :rtype: str
 %End
 
     virtual bool supportsNonFileBasedOutput() const;

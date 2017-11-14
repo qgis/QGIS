@@ -33,6 +33,13 @@ QString QgsMultiCurve::geometryType() const
   return QStringLiteral( "MultiCurve" );
 }
 
+QgsMultiCurve *QgsMultiCurve::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsMultiCurve >();
+  result->mWkbType = mWkbType;
+  return result.release();
+}
+
 QgsMultiCurve *QgsMultiCurve::clone() const
 {
   return new QgsMultiCurve( *this );
@@ -60,6 +67,10 @@ QDomElement QgsMultiCurve::asGML2( QDomDocument &doc, int precision, const QStri
 {
   // GML2 does not support curves
   QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
+
+  if ( isEmpty() )
+    return elemMultiLineString;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
@@ -78,6 +89,10 @@ QDomElement QgsMultiCurve::asGML2( QDomDocument &doc, int precision, const QStri
 QDomElement QgsMultiCurve::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiCurve" ) );
+
+  if ( isEmpty() )
+    return elemMultiCurve;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
@@ -165,7 +180,7 @@ QgsMultiCurve *QgsMultiCurve::reversed() const
 
 QgsAbstractGeometry *QgsMultiCurve::boundary() const
 {
-  std::unique_ptr< QgsMultiPointV2 > multiPoint( new QgsMultiPointV2() );
+  std::unique_ptr< QgsMultiPoint > multiPoint( new QgsMultiPoint() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
     if ( QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( mGeometries.at( i ) ) )

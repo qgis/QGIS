@@ -35,7 +35,8 @@ class QgsVectorLayer;
 % End
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Manages an editor widget
  * Widget and wrapper share the same parent
  *
@@ -173,7 +174,8 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     virtual bool valid() const = 0;
 
 
-    /** Returns a reference to the editor widget's property collection, used for data defined overrides.
+    /**
+     * Returns a reference to the editor widget's property collection, used for data defined overrides.
      * \since QGIS 3.0
      * \see setDataDefinedProperties()
      *
@@ -181,13 +183,15 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      */
     QgsPropertyCollection &dataDefinedProperties() { return mPropertyCollection; } SIP_SKIP
 
-    /** Returns a reference to the editor widget's property collection, used for data defined overrides.
+    /**
+     * Returns a reference to the editor widget's property collection, used for data defined overrides.
      * \since QGIS 3.0
      * \see setDataDefinedProperties()
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mPropertyCollection; }
 
-    /** Sets the editor widget's property collection, used for data defined overrides.
+    /**
+     * Sets the editor widget's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
      * \since QGIS 3.0
      * \see dataDefinedProperties()

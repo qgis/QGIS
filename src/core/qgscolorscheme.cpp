@@ -287,8 +287,7 @@ bool QgsGplColorScheme::setColors( const QgsNamedColorList &colors, const QStrin
 //
 
 QgsUserColorScheme::QgsUserColorScheme( const QString &filename )
-  : QgsGplColorScheme()
-  , mFilename( filename )
+  : mFilename( filename )
 {
   QFile sourceFile( gplFilePath() );
 

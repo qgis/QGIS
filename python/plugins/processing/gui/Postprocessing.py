@@ -82,7 +82,8 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
             wrongLayers.append(str(l))
         i += 1
 
-    QApplication.restoreOverrideCursor()
+    feedback.setProgress(100)
+
     if wrongLayers:
         msg = "The following layers were not correctly generated.<ul>"
         msg += "".join(["<li>%s</li>" % lay for lay in wrongLayers]) + "</ul>"

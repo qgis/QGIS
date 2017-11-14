@@ -875,12 +875,12 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromLibrary()
   int matched = matchToSymbols( QgsStyle::defaultStyle() );
   if ( matched > 0 )
   {
-    QMessageBox::information( this, tr( "Matched symbols" ),
+    QMessageBox::information( this, tr( "Matched Symbols" ),
                               tr( "Matched %1 categories to symbols." ).arg( matched ) );
   }
   else
   {
-    QMessageBox::warning( this, tr( "Matched symbols" ),
+    QMessageBox::warning( this, tr( "Matched Symbols" ),
                           tr( "No categories could be matched to symbols in library." ) );
   }
 }
@@ -926,20 +926,20 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
   QgsStyle importedStyle;
   if ( !importedStyle.importXml( fileName ) )
   {
-    QMessageBox::warning( this, tr( "Matching error" ),
-                          tr( "An error occurred reading file:\n%1" ).arg( importedStyle.errorString() ) );
+    QMessageBox::warning( this, tr( "Matching Error" ),
+                          tr( "An error occurred while reading file:\n%1" ).arg( importedStyle.errorString() ) );
     return;
   }
 
   int matched = matchToSymbols( &importedStyle );
   if ( matched > 0 )
   {
-    QMessageBox::information( this, tr( "Matched symbols" ),
+    QMessageBox::information( this, tr( "Matched Symbols" ),
                               tr( "Matched %1 categories to symbols from file." ).arg( matched ) );
   }
   else
   {
-    QMessageBox::warning( this, tr( "Matched symbols" ),
+    QMessageBox::warning( this, tr( "Matched Symbols" ),
                           tr( "No categories could be matched to symbols in file." ) );
   }
 }

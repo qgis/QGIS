@@ -30,7 +30,8 @@ class QgsGenericFeatureSelectionManager;
 % End
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFeatureSelectionDlg
  */
 class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeatureSelectionDlg

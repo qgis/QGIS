@@ -24,7 +24,8 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
     Bilinear Raster Resampler
 */
 class CORE_EXPORT QgsBilinearRasterResampler: public QgsRasterResampler

@@ -36,7 +36,7 @@ class TestQgsRangeWidget(unittest.TestCase):
         pr = self.layer.dataProvider()  # NOQA
         f = QgsFeature()
         f.setAttributes(["Hello World", 123])
-        f.setGeometry(QgsGeometry.fromPoint(QgsPointXY(600000, 200000)))
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(600000, 200000)))
 
     def __createRangeWidget(self, allownull=False):
         """

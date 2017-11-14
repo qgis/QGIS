@@ -30,9 +30,10 @@ import os
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsApplication,
                        QgsProcessingProvider,
+                       QgsVectorFileWriter,
                        QgsMessageLog,
                        QgsProcessingUtils)
-from processing.core.ProcessingConfig import ProcessingConfig, Setting
+from processing.core.ProcessingConfig import (ProcessingConfig, Setting)
 from .Grass7Utils import Grass7Utils
 from .Grass7Algorithm import Grass7Algorithm
 from processing.tools.system import isWindows, isMac
@@ -70,6 +71,12 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
             Grass7Utils.GRASS_HELP_PATH,
             self.tr('Location of GRASS docs'),
             Grass7Utils.grassHelpPath()))
+        # Add a setting for using v.external instead of v.in.ogr
+        ProcessingConfig.addSetting(Setting(
+            self.name(),
+            Grass7Utils.GRASS_USE_VEXTERNAL,
+            self.tr('For vector layers, use v.external (faster) instead of v.in.ogr'),
+            True))
         ProcessingConfig.readSettings()
         self.refreshAlgorithms()
         return True
@@ -81,6 +88,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_CONSOLE)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_HELP_PATH)
+        ProcessingConfig.removeSetting(Grass7Utils.GRASS_USE_VEXTERNAL)
 
     def isActive(self):
         return ProcessingConfig.getSetting('ACTIVATE_GRASS7')
@@ -123,8 +131,21 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGrass.svg")
 
+    def supportsNonFileBasedOutput(self):
+        """
+        GRASS7 Provider doesn't support non file based outputs
+        """
+        return False
+
     def supportedOutputVectorLayerExtensions(self):
-        return ['shp']
+        # We use the same extensions than QGIS because:
+        # - QGIS is using OGR like GRASS
+        # - There are very chances than OGR version used in GRASS is
+        # different from QGIS OGR version.
+        return QgsVectorFileWriter.supportedFormatExtensions()
+
+    def supportedOutputRasterLayerExtensions(self):
+        return Grass7Utils.getSupportedOutputRasterExtensions()
 
     def canBeActivated(self):
         return not bool(Grass7Utils.checkGrass7IsInstalled())

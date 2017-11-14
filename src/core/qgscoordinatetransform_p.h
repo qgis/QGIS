@@ -18,6 +18,7 @@
 #define QGSCOORDINATETRANSFORMPRIVATE_H
 
 #define SIP_NO_FILE
+#include "qgsconfig.h"
 
 /// @cond PRIVATE
 
@@ -31,6 +32,11 @@
 //
 
 #include <QSharedData>
+
+#ifndef USE_THREAD_LOCAL
+#include <QThreadStorage>
+#endif
+
 #include "qgscoordinatereferencesystem.h"
 
 typedef void *projPJ;
@@ -72,8 +78,10 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
     QPair< projPJ, projPJ > threadLocalProjData();
 
-    //! Flag to indicate whether the transform is valid (ie has a valid
-    //! source and destination crs)
+    /**
+     * Flag to indicate whether the transform is valid (ie has a valid
+     * source and destination crs)
+     */
     bool mIsValid = false;
 
     /**
@@ -98,7 +106,11 @@ class QgsCoordinateTransformPrivate : public QSharedData
      * Thread local proj context storage. A new proj context will be created
      * for every thread.
      */
+#ifdef USE_THREAD_LOCAL
     static thread_local QgsProjContextStore mProjContext;
+#else
+    static QThreadStorage< QgsProjContextStore * > mProjContext;
+#endif
 
     QReadWriteLock mProjLock;
     QMap < uintptr_t, QPair< projPJ, projPJ > > mProjProjections;

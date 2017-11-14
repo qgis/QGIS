@@ -38,7 +38,8 @@
 class QgsRasterDataProvider;
 class QgsRasterLayer;
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Chunk loader for DEM terrain tiles.
  * \since QGIS 3.0
  */
@@ -48,7 +49,6 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
   public:
     //! Constructs loader for the given chunk node
     QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node );
-    ~QgsDemTerrainTileLoader();
 
     virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent );
 
@@ -60,11 +60,13 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
     int mHeightMapJobId;
     QByteArray mHeightMap;
     int mResolution;
+    float mSkirtHeight;
 };
 
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Utility class to asynchronously create heightmaps from DEM raster for given tiles of terrain.
  * \since QGIS 3.0
  */
@@ -72,8 +74,11 @@ class QgsDemHeightMapGenerator : public QObject
 {
     Q_OBJECT
   public:
-    //! Constructs height map generator based on a raster layer with elevation model,
-    //! terrain's tiling scheme and height map resolution (number of height values on each side of tile)
+
+    /**
+     * Constructs height map generator based on a raster layer with elevation model,
+     * terrain's tiling scheme and height map resolution (number of height values on each side of tile)
+     */
     QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution );
     ~QgsDemHeightMapGenerator();
 
@@ -98,10 +103,10 @@ class QgsDemHeightMapGenerator : public QObject
 
   private:
     //! raster used to build terrain
-    QgsRasterLayer *mDtm;
+    QgsRasterLayer *mDtm = nullptr;
 
     //! cloned provider to be used in worker thread
-    QgsRasterDataProvider *mClonedProvider;
+    QgsRasterDataProvider *mClonedProvider = nullptr;
 
     QgsTilingScheme mTilingScheme;
 

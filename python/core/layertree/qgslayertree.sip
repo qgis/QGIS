@@ -122,7 +122,7 @@ class QgsLayerTree : QgsLayerTreeGroup
 .. versionadded:: 3.0
 %End
 
-    static QgsLayerTree *readXml( QDomElement &element );
+    static QgsLayerTree *readXml( QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
  Load the layer tree from an XML element.
  It is not required that layers are loaded at this point.
@@ -141,7 +141,7 @@ class QgsLayerTree : QgsLayerTreeGroup
 .. versionadded:: 3.0
 %End
 
-    virtual void writeXml( QDomElement &parentElement );
+    virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
 
     virtual QgsLayerTree *clone() const /Factory/;
 

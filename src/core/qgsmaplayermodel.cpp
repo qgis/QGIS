@@ -101,6 +101,11 @@ QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
   return index( r, 0 );
 }
 
+QgsMapLayer *QgsMapLayerModel::layerFromIndex( const QModelIndex &index ) const
+{
+  return static_cast<QgsMapLayer *>( index.internalPointer() );
+}
+
 void QgsMapLayerModel::setAdditionalItems( const QStringList &items )
 {
   if ( items == mAdditionalItems )

@@ -24,6 +24,9 @@ class QgsDartMeasurement
     };
 
     QgsDartMeasurement();
+%Docstring
+Constructor for QgsDartMeasurement
+%End
 
     QgsDartMeasurement( const QString &name, Type type, const QString &value );
 

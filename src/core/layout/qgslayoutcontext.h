@@ -31,8 +31,10 @@ class QgsVectorLayer;
  * \brief Stores information relating to the current context and rendering settings for a layout.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutContext
+class CORE_EXPORT QgsLayoutContext : public QObject
 {
+
+    Q_OBJECT
 
   public:
 
@@ -140,6 +142,13 @@ class CORE_EXPORT QgsLayoutContext
     QgsLayoutMeasurementConverter &measurementConverter() { return mMeasurementConverter; }
 
     /**
+     * Returns true if the render current being conducted is a preview render,
+     * i.e. it is being rendered inside a QGraphicsView widget as opposed to a destination
+     * device (such as an image).
+     */
+    bool isPreviewRender() const { return mIsPreviewRender; }
+
+    /**
      * Returns true if the page grid should be drawn.
      * \see setGridVisible()
      */
@@ -151,19 +160,86 @@ class CORE_EXPORT QgsLayoutContext
      */
     void setGridVisible( bool visible );
 
+    /**
+     * Returns true if the item bounding boxes should be drawn.
+     * \see setBoundingBoxesVisible()
+     */
+    bool boundingBoxesVisible() const;
+
+    /**
+     * Sets whether the item bounding boxes should be \a visible.
+     * \see boundingBoxesVisible()
+     */
+    void setBoundingBoxesVisible( bool visible );
+
+    /**
+     * Sets whether the page items should be \a visible in the layout. Removing
+     * them will prevent both display of the page boundaries in layout views and
+     * will also prevent them from being rendered in layout exports.
+     * \see pagesVisible()
+     */
+    void setPagesVisible( bool visible );
+
+    /**
+     * Returns whether the page items are be visible in the layout. This setting
+     * effects both display of the page boundaries in layout views and
+     * whether they will be rendered in layout exports.
+     * \see setPagesVisible()
+     */
+    bool pagesVisible() const { return mPagesVisible; }
+
+    /**
+     * Sets the current item \a layer to draw while exporting. QgsLayoutItem subclasses
+     * which support multi-layer SVG exports must check the currentExportLayer()
+     * and customise their rendering based on the layer.
+     *
+     * If \a layer is -1, all item layers will be rendered.
+     *
+     * \see currentExportLayer()
+     */
+    void setCurrentExportLayer( int layer = -1 ) { mCurrentExportLayer = layer; }
+
+    /**
+     * Returns the current item layer to draw while exporting. QgsLayoutItem subclasses
+     * which support multi-layer SVG exports must check this
+     * and customise their rendering based on the layer.
+     *
+     * If \a layer is -1, all item layers should be rendered.
+     *
+     * \see setCurrentExportLayer()
+     */
+    int currentExportLayer() const { return mCurrentExportLayer; }
+
+  signals:
+
+    /**
+     * Emitted whenever the context's \a flags change.
+     * \see setFlags()
+     */
+    void flagsChanged( QgsLayoutContext::Flags flags );
+
   private:
 
     Flags mFlags = 0;
+
+    int mCurrentExportLayer = -1;
 
     QgsFeature mFeature;
     QPointer< QgsVectorLayer > mLayer;
 
     QgsLayoutMeasurementConverter mMeasurementConverter;
 
+    bool mIsPreviewRender = true;
     bool mGridVisible = false;
+    bool mBoundingBoxesVisible = true;
+    bool mPagesVisible = true;
+
+    friend class QgsLayoutExporter;
 
 
 };
+
+Q_DECLARE_METATYPE( QgsLayoutContext::Flags )
 
 #endif //QGSLAYOUTCONTEXT_H
 

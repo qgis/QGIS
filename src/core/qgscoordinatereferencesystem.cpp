@@ -1061,6 +1061,49 @@ QgsUnitTypes::DistanceUnit QgsCoordinateReferenceSystem::mapUnits() const
   return d->mMapUnits;
 }
 
+QgsRectangle QgsCoordinateReferenceSystem::bounds() const
+{
+  if ( !d->mIsValid )
+    return QgsRectangle();
+
+  //check the db is available
+  QString databaseFileName = QgsApplication::srsDatabaseFilePath();
+
+  sqlite3 *database = nullptr;
+  const char *tail = nullptr;
+  sqlite3_stmt *stmt = nullptr;
+
+  int result = openDatabase( databaseFileName, &database );
+  if ( result != SQLITE_OK )
+  {
+    return QgsRectangle();
+  }
+
+  QString sql = QStringLiteral( "select west_bound_lon, north_bound_lat, east_bound_lon, south_bound_lat from tbl_srs "
+                                "where srs_id=%1" )
+                .arg( d->mSrsId );
+  result = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
+
+  QgsRectangle rect;
+  if ( result == SQLITE_OK )
+  {
+    if ( sqlite3_step( stmt ) == SQLITE_ROW )
+    {
+      double west = sqlite3_column_double( stmt, 0 );
+      double north = sqlite3_column_double( stmt, 1 );
+      double east = sqlite3_column_double( stmt, 2 );
+      double south = sqlite3_column_double( stmt, 3 );
+      rect = QgsRectangle( west, north, east, south );
+    }
+  }
+
+  // close the sqlite3 statement
+  sqlite3_finalize( stmt );
+  sqlite3_close( database );
+
+  return rect;
+}
+
 
 // Mutators -----------------------------------
 
@@ -1594,12 +1637,12 @@ QString QgsCoordinateReferenceSystem::validationHint()
 /// Copied from QgsCustomProjectionDialog ///
 /// Please refactor into SQL handler !!!  ///
 
-bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
+long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
 {
   if ( !d->mIsValid )
   {
     QgsDebugMsgLevel( "Can't save an invalid CRS!", 4 );
-    return false;
+    return -1;
   }
 
   QString mySql;
@@ -1648,13 +1691,16 @@ bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
   }
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
 
-  qint64 return_id;
+  qint64 returnId;
   if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_DONE )
   {
     QgsMessageLog::logMessage( QObject::tr( "Saved user CRS [%1]" ).arg( toProj4() ), QObject::tr( "CRS" ) );
 
-    return_id = sqlite3_last_insert_rowid( myDatabase );
-    setInternalId( return_id );
+    returnId = sqlite3_last_insert_rowid( myDatabase );
+    setInternalId( returnId );
+    if ( authid().isEmpty() )
+      setAuthId( QStringLiteral( "USER:%1" ).arg( returnId ) );
+    setDescription( name );
 
     //We add the just created user CRS to the list of recently used CRS
     QgsSettings settings;
@@ -1670,8 +1716,10 @@ bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
 
   }
   else
-    return_id = -1;
-  return return_id;
+    returnId = -1;
+
+  invalidateCache();
+  return returnId;
 }
 
 long QgsCoordinateReferenceSystem::getRecordCount()
@@ -1856,6 +1904,13 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     sqlite3_close( database );
     return -1;
   }
+
+  QString boundsColumns( "ALTER TABLE tbl_srs ADD west_bound_lon REAL;"
+                         "ALTER TABLE tbl_srs ADD north_bound_lat REAL;"
+                         "ALTER TABLE tbl_srs ADD east_bound_lon REAL;"
+                         "ALTER TABLE tbl_srs ADD south_bound_lat REAL;" );
+
+  sqlite3_exec( database, boundsColumns.toUtf8(), nullptr, nullptr, nullptr );
 
   // fix up database, if not done already //
   if ( sqlite3_exec( database, "alter table tbl_srs add noupdate boolean", nullptr, nullptr, nullptr ) == SQLITE_OK )
@@ -2102,6 +2157,58 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   }
   sqlite3_finalize( select );
 #endif
+
+  QFile csv( QgsApplication::pkgDataPath() + "/resources/epsg_areas.csv" );
+  if ( !csv.open( QIODevice::ReadOnly ) )
+  {
+    return false;
+  }
+
+  QTextStream lines( &csv );
+  ( void )lines.readLine(); // header line
+
+  for ( ;; )
+  {
+    QString line = lines.readLine();
+    if ( line.isNull() )
+      break;
+
+    if ( line.startsWith( '#' ) )
+    {
+      continue;
+    }
+    const QStringList data = line.split( ',' );
+    if ( data[0] == QStringLiteral( "None" ) )
+      continue;
+
+    double west_bound_lon = data[1].toDouble();
+    double north_bound_lat = data[2].toDouble();
+    double east_bound_lon = data[3].toDouble();
+    double south_bound_lat = data[4].toDouble();
+    sql = QStringLiteral( "UPDATE tbl_srs "
+                          "SET west_bound_lon=%1, "
+                          "north_bound_lat=%2, "
+                          "east_bound_lon=%3, "
+                          "south_bound_lat=%4 "
+                          "WHERE auth_name='EPSG' AND auth_id=%5" )
+          .arg( west_bound_lon )
+          .arg( north_bound_lat )
+          .arg( east_bound_lon )
+          .arg( south_bound_lat )
+          .arg( data[0] );
+
+    if ( sqlite3_exec( database, sql.toUtf8(), nullptr, nullptr, &errMsg ) != SQLITE_OK )
+    {
+      qCritical( "Could not execute: %s [%s/%s]\n",
+                 sql.toLocal8Bit().constData(),
+                 sqlite3_errmsg( database ),
+                 errMsg ? errMsg : "(unknown error)" );
+      if ( errMsg )
+        sqlite3_free( errMsg );
+      errors++;
+
+    }
+  }
 
   pj_ctx_free( pContext );
 

@@ -45,7 +45,7 @@ class PYTHON_EXPORT QgsPythonUtils
 {
   public:
 
-    virtual ~QgsPythonUtils() {}
+    virtual ~QgsPythonUtils() = default;
 
     //! returns true if Python support is ready to use (must be inited first)
     virtual bool isEnabled() = 0;
@@ -66,18 +66,24 @@ class PYTHON_EXPORT QgsPythonUtils
 
     /* console */
 
-    //! run a statement, show an error message on error
-    //! \returns true if no error occurred
+    /**
+     * run a statement, show an error message on error
+     * \returns true if no error occurred
+     */
     virtual bool runString( const QString &command, QString msgOnError = QString(), bool single = true ) = 0;
 
-    //! run a statement, error reporting is not done
-    //! \returns true if no error occurred
+    /**
+     * run a statement, error reporting is not done
+     * \returns true if no error occurred
+     */
     virtual bool runStringUnsafe( const QString &command, bool single = true ) = 0;
 
     virtual bool evalString( const QString &command, QString &result ) = 0;
 
-    //! get information about error to the supplied arguments
-    //! \returns false if there was no Python error
+    /**
+     * get information about error to the supplied arguments
+     * \returns false if there was no Python error
+     */
     virtual bool getError( QString &errorClassName, QString &errorText ) = 0;
 
     /* plugins */
@@ -97,8 +103,10 @@ class PYTHON_EXPORT QgsPythonUtils
     //! start plugin: add to active plugins and call initGui()
     virtual bool startPlugin( const QString &packageName ) = 0;
 
-    //! helper function to get some information about plugin
-    //! \param function one of these strings: name, tpye, version, description
+    /**
+     * helper function to get some information about plugin
+     * \param function one of these strings: name, tpye, version, description
+     */
     virtual QString getPluginMetadata( const QString &pluginName, const QString &function ) = 0;
 
     //! confirm that the plugin can be uninstalled

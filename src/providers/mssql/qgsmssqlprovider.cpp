@@ -363,8 +363,15 @@ void QgsMssqlProvider::loadMetadata()
   }
 }
 
+void QgsMssqlProvider::setLastError( const QString &error )
+{
+  appendError( error );
+  mLastError = error;
+}
+
 void QgsMssqlProvider::loadFields()
 {
+  bool isIdentity = false;
   mAttributeFields.clear();
   mDefaultValues.clear();
   mComputedColumns.clear();
@@ -410,14 +417,19 @@ void QgsMssqlProvider::loadFields()
       {
         QVariant::Type sqlType = DecodeSqlType( sqlTypeName );
         if ( sqlTypeName == QLatin1String( "int identity" ) || sqlTypeName == QLatin1String( "bigint identity" ) )
+        {
           mFidColName = query.value( 3 ).toString();
+          isIdentity = true;
+        }
         else if ( sqlTypeName == QLatin1String( "int" ) || sqlTypeName == QLatin1String( "bigint" ) )
         {
           pkCandidates << query.value( 3 ).toString();
         }
         if ( sqlType == QVariant::String )
         {
-          int length = query.value( 7 ).toInt();
+          // Field length in chars is column 7 ("Length") of the sp_columns output,
+          // except for uniqueidentifiers which must use column 6 ("Precision").
+          int length = query.value( sqlTypeName.startsWith( QLatin1String( "uniqueidentifier" ), Qt::CaseInsensitive ) ? 6 : 7 ).toInt();
           if ( sqlTypeName.startsWith( QLatin1String( "n" ) ) )
           {
             length = length / 2;
@@ -497,7 +509,7 @@ void QgsMssqlProvider::loadFields()
       setLastError( error );
     }
 
-    if ( !mFidColName.isEmpty() )
+    if ( !mFidColName.isEmpty() && !isIdentity )
     {
       mFidColIdx = mAttributeFields.indexFromName( mFidColName );
       if ( mFidColIdx >= 0 )
@@ -1931,7 +1943,8 @@ QGISEXTERN QgsMssqlProvider *classFactory( const QString *uri )
   return new QgsMssqlProvider( *uri );
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {

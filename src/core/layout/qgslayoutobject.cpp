@@ -88,8 +88,22 @@ QgsLayoutObject::QgsLayoutObject( QgsLayout *layout )
   , mLayout( layout )
 {
   initPropertyDefinitions();
+
+  if ( mLayout )
+  {
+    connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutObject::refresh );
+  }
 }
 
+const QgsLayout *QgsLayoutObject::layout() const
+{
+  return mLayout.data();
+}
+
+QgsLayout *QgsLayoutObject::layout()
+{
+  return mLayout.data();
+}
 
 void QgsLayoutObject::setCustomProperty( const QString &key, const QVariant &value )
 {

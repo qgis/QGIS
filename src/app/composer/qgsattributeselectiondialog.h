@@ -118,15 +118,16 @@ class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelec
     ~QgsAttributeSelectionDialog();
 
   private slots:
-    void on_mRemoveColumnPushButton_clicked();
-    void on_mAddColumnPushButton_clicked();
-    void on_mColumnUpPushButton_clicked();
-    void on_mColumnDownPushButton_clicked();
-    void on_mResetColumnsPushButton_clicked();
-    void on_mAddSortColumnPushButton_clicked();
-    void on_mRemoveSortColumnPushButton_clicked();
-    void on_mSortColumnUpPushButton_clicked();
-    void on_mSortColumnDownPushButton_clicked();
+    void mRemoveColumnPushButton_clicked();
+    void mAddColumnPushButton_clicked();
+    void mColumnUpPushButton_clicked();
+    void mColumnDownPushButton_clicked();
+    void mResetColumnsPushButton_clicked();
+    void mClearColumnsPushButton_clicked();
+    void mAddSortColumnPushButton_clicked();
+    void mRemoveSortColumnPushButton_clicked();
+    void mSortColumnUpPushButton_clicked();
+    void mSortColumnDownPushButton_clicked();
 
   private:
     QgsComposerAttributeTableV2 *mComposerTable = nullptr;

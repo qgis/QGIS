@@ -436,7 +436,7 @@ QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList &
 
   if ( ok && wantGeometry( pt ) )
   {
-    return QgsGeometry::fromPoint( pt );
+    return QgsGeometry::fromPointXY( pt );
   }
   return QgsGeometry();
 }

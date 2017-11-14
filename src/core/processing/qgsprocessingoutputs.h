@@ -55,6 +55,8 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputString;
     else if ( sipCpp->type() == QgsProcessingOutputFolder::typeName() )
       sipType = sipType_QgsProcessingOutputFolder;
+    else if ( sipCpp->type() == QgsProcessingOutputFile::typeName() )
+      sipType = sipType_QgsProcessingOutputFile;
     else
       sipType = nullptr;
     SIP_END
@@ -268,6 +270,30 @@ class CORE_EXPORT QgsProcessingOutputFolder : public QgsProcessingOutputDefiniti
     QString type() const override { return typeName(); }
 
 };
+
+/**
+ * \class QgsProcessingOutputFile
+ * \ingroup core
+ * A file output for processing algorithms.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingOutputFile : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputFile.
+     */
+    QgsProcessingOutputFile( const QString &name, const QString &description = QString() );
+
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputFile" ); }
+    QString type() const override { return typeName(); }
+
+};
+
 
 #endif // QGSPROCESSINGOUTPUTS_H
 

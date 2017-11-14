@@ -66,6 +66,9 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( mBrowseButton, &QPushButton::clicked, this, &QgsOfflineEditingPluginGui::mBrowseButton_clicked );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsOfflineEditingPluginGui::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsOfflineEditingPluginGui::buttonBox_rejected );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOfflineEditingPluginGui::showHelp );
 
   restoreState();
@@ -108,7 +111,7 @@ bool QgsOfflineEditingPluginGui::onlySelected() const
   return mOnlySelectedCheckBox->checkState() == Qt::Checked;
 }
 
-void QgsOfflineEditingPluginGui::on_mBrowseButton_clicked()
+void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
 {
   QString fileName = QFileDialog::getSaveFileName( this,
                      tr( "Select target database for offline data" ),
@@ -128,7 +131,7 @@ void QgsOfflineEditingPluginGui::on_mBrowseButton_clicked()
   }
 }
 
-void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
+void QgsOfflineEditingPluginGui::buttonBox_accepted()
 {
   if ( QFile( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) ).exists() )
   {
@@ -156,7 +159,7 @@ void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
   accept();
 }
 
-void QgsOfflineEditingPluginGui::on_buttonBox_rejected()
+void QgsOfflineEditingPluginGui::buttonBox_rejected()
 {
   reject();
 }

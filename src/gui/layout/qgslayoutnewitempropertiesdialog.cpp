@@ -25,15 +25,15 @@ QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Q
 
   //make button exclusive
   QButtonGroup *buttonGroup = new QButtonGroup( this );
-  buttonGroup->addButton( mUpperLeftCheckBox );
-  buttonGroup->addButton( mUpperMiddleCheckBox );
-  buttonGroup->addButton( mUpperRightCheckBox );
-  buttonGroup->addButton( mMiddleLeftCheckBox );
-  buttonGroup->addButton( mMiddleCheckBox );
-  buttonGroup->addButton( mMiddleRightCheckBox );
-  buttonGroup->addButton( mLowerLeftCheckBox );
-  buttonGroup->addButton( mLowerMiddleCheckBox );
-  buttonGroup->addButton( mLowerRightCheckBox );
+  buttonGroup->addButton( mUpperLeftRadioButton );
+  buttonGroup->addButton( mUpperMiddleRadioButton );
+  buttonGroup->addButton( mUpperRightRadioButton );
+  buttonGroup->addButton( mMiddleLeftRadioButton );
+  buttonGroup->addButton( mMiddleRadioButton );
+  buttonGroup->addButton( mMiddleRightRadioButton );
+  buttonGroup->addButton( mLowerLeftRadioButton );
+  buttonGroup->addButton( mLowerMiddleRadioButton );
+  buttonGroup->addButton( mLowerRightRadioButton );
   buttonGroup->setExclusive( true );
 
   QgsSettings settings;
@@ -77,39 +77,39 @@ QgsLayoutSize QgsLayoutItemPropertiesDialog::itemSize() const
 
 QgsLayoutItem::ReferencePoint QgsLayoutItemPropertiesDialog::referencePoint() const
 {
-  if ( mUpperLeftCheckBox->checkState() == Qt::Checked )
+  if ( mUpperLeftRadioButton->isChecked() )
   {
     return QgsLayoutItem::UpperLeft;
   }
-  else if ( mUpperMiddleCheckBox->checkState() == Qt::Checked )
+  else if ( mUpperMiddleRadioButton->isChecked() )
   {
     return QgsLayoutItem::UpperMiddle;
   }
-  else if ( mUpperRightCheckBox->checkState() == Qt::Checked )
+  else if ( mUpperRightRadioButton->isChecked() )
   {
     return QgsLayoutItem::UpperRight;
   }
-  else if ( mMiddleLeftCheckBox->checkState() == Qt::Checked )
+  else if ( mMiddleLeftRadioButton->isChecked() )
   {
     return QgsLayoutItem::MiddleLeft;
   }
-  else if ( mMiddleCheckBox->checkState() == Qt::Checked )
+  else if ( mMiddleRadioButton->isChecked() )
   {
     return QgsLayoutItem::Middle;
   }
-  else if ( mMiddleRightCheckBox->checkState() == Qt::Checked )
+  else if ( mMiddleRightRadioButton->isChecked() )
   {
     return QgsLayoutItem::MiddleRight;
   }
-  else if ( mLowerLeftCheckBox->checkState() == Qt::Checked )
+  else if ( mLowerLeftRadioButton->isChecked() )
   {
     return QgsLayoutItem::LowerLeft;
   }
-  else if ( mLowerMiddleCheckBox->checkState() == Qt::Checked )
+  else if ( mLowerMiddleRadioButton->isChecked() )
   {
     return QgsLayoutItem::LowerMiddle;
   }
-  else if ( mLowerRightCheckBox->checkState() == Qt::Checked )
+  else if ( mLowerRightRadioButton->isChecked() )
   {
     return QgsLayoutItem::LowerRight;
   }
@@ -121,39 +121,39 @@ void QgsLayoutItemPropertiesDialog::setReferencePoint( QgsLayoutItem::ReferenceP
   switch ( point )
   {
     case QgsLayoutItem::UpperLeft:
-      mUpperLeftCheckBox->setChecked( true );
+      mUpperLeftRadioButton->setChecked( true );
       break;
 
     case QgsLayoutItem::UpperMiddle:
-      mUpperMiddleCheckBox->setChecked( true );
+      mUpperMiddleRadioButton->setChecked( true );
       break;
 
     case QgsLayoutItem::UpperRight:
-      mUpperRightCheckBox->setChecked( true );
+      mUpperRightRadioButton->setChecked( true );
       break;
 
     case QgsLayoutItem::MiddleLeft:
-      mMiddleLeftCheckBox->setChecked( true );
+      mMiddleLeftRadioButton->setChecked( true );
       break;
 
     case QgsLayoutItem::Middle:
-      mMiddleCheckBox->setChecked( true );
+      mMiddleRadioButton->setChecked( true );
       break;
 
     case QgsLayoutItem::MiddleRight:
-      mMiddleRightCheckBox->setChecked( true );
+      mMiddleRightRadioButton->setChecked( true );
       break;
 
     case QgsLayoutItem::LowerLeft:
-      mLowerLeftCheckBox->setChecked( true );
+      mLowerLeftRadioButton->setChecked( true );
       break;
 
     case QgsLayoutItem::LowerMiddle:
-      mLowerMiddleCheckBox->setChecked( true );
+      mLowerMiddleRadioButton->setChecked( true );
       break;
 
     case QgsLayoutItem::LowerRight:
-      mLowerRightCheckBox->setChecked( true );
+      mLowerRightRadioButton->setChecked( true );
       break;
   }
 }

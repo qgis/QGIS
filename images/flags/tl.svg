@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="900" height="450" viewBox="0 0 180 90">
+<title>Flag of the Philippines</title>
+<desc>Coding according to the official "description and specification of the FILIPINO flag" in Executive Order No. 23 from 1936</desc>
+<rect width="180" height="90" fill="#0038a8"/>
+<rect y="45" width="180" height="45" fill="#ce1126"/>
+<path d="M 77.942286,45 0,90 0,0" fill="#fff"/> <!-- 45*Sqrt(3) -->
+<g transform="translate(28,45)" fill="#fcd116">
+	<circle r="9"/>
+	<g id="j">
+		<g id="i">
+			<g id="h">
+<!-- these coordinates are  -1/(1+tan(k*Pi/48)),1-1/(1+tan(k*Pi/48)) -->
+<!-- k in {1,2,3}.  2nd scaling factor is 85/0.88366349...  -->
+				<path d="M -1,0 L -0.93848823,0.06151177 L 0,0 L -0.93848823,-0.06151177 z" transform="scale(19)"/>
+				<path id="g" d="M -0.88366349,0.11633651 L -0.83408932,0.16591068 L 0,0 z" transform="scale(19.238092)"/>
+				<use xlink:href="#g" transform="scale(1,-1)"/>
+			</g>
+			<use xlink:href="#h" transform="rotate(45)"/>
+		</g>
+		<use xlink:href="#i" transform="rotate(90)"/>
+	</g>
+	<use xlink:href="#j" transform="rotate(180)"/>
+	<g transform="translate(-2.019238)"> <!-- 15*Sqrt(3)-28  -->
+		<g id="s" transform="translate(37.961524,0)"> <!-- 30*Sqrt(3)-14  -->
+<!-- 5-pointed star with ri=2 and rc=5, not(!) r2/r1 = 0.381966...  -->
+			<path id="t" d="M 5,0 L 1.618034,1.175571 1.545085,4.755283 -0.618034,1.902113 -4.045085,2.938926 -2,0 z"/>
+		<use xlink:href="#t" transform="scale(1,-1)"/>
+		</g>
+		<use xlink:href="#s" transform="rotate(120)"/>
+		<use xlink:href="#s" transform="rotate(-120)"/>
+	</g>
+</g>
+</svg>

@@ -42,12 +42,15 @@ Access to action that user may use to toggle tracing on/off. May be null if no a
 
     void setActionEnableTracing( QAction *action );
 %Docstring
-The action is used to determine whether tracing is currently enabled by the user
+ Assign "enable tracing" checkable action to the tracer.
+ The action is used to determine whether tracing is currently enabled by the user
 %End
 
     static QgsMapCanvasTracer *tracerForCanvas( QgsMapCanvas *canvas );
 %Docstring
-instances for easier access to the common tracer by various map tools
+ Retrieve instance of this class associated with given canvas (if any).
+ The class keeps a simple registry of tracers associated with map canvas
+ instances for easier access to the common tracer by various map tools
  :rtype: QgsMapCanvasTracer
 %End
 

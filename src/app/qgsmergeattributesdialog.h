@@ -48,22 +48,24 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
 
     QgsAttributes mergedAttributes() const;
 
-    /** Returns a list of attribute indexes which should be skipped when merging (e.g., attributes
+    /**
+     * Returns a list of attribute indexes which should be skipped when merging (e.g., attributes
      * which have been set to "skip"
      */
     QSet<int> skippedAttributeIndexes() const;
 
   public slots:
 
-    /** Resets all columns to "skip"
+    /**
+     * Resets all columns to "skip"
      */
     void setAllToSkip();
 
   private slots:
     void comboValueChanged( const QString &text );
     void selectedRowChanged();
-    void on_mFromSelectedPushButton_clicked();
-    void on_mRemoveFeatureFromSelectionButton_clicked();
+    void mFromSelectedPushButton_clicked();
+    void mRemoveFeatureFromSelectionButton_clicked();
     void tableWidgetCellChanged( int row, int column );
 
   private:
@@ -72,7 +74,8 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     //! Create new combo box with the options for featureXX / mean / min / max
     QComboBox *createMergeComboBox( QVariant::Type columnType ) const;
 
-    /** Returns the table widget column index of a combo box
+    /**
+     * Returns the table widget column index of a combo box
     \returns the column index or -1 in case of error*/
     int findComboColumn( QComboBox *c ) const;
     //! Calculates the merged value of a column (depending on the selected merge behavior) and inserts the value in the corresponding cell
@@ -82,7 +85,8 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
     //! Appends the values of the features for the final value
     QVariant concatenationAttribute( int col );
 
-    /** Calculates a summary statistic for a column. Returns null if no valid numerical
+    /**
+     * Calculates a summary statistic for a column. Returns null if no valid numerical
      * values found in column.
      */
     QVariant calcStatistic( int col, QgsStatisticalSummary::Statistic stat );

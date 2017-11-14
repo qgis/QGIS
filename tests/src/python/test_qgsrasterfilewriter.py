@@ -16,7 +16,9 @@ import qgis  # NOQA
 
 import os
 import glob
+import tempfile
 
+from osgeo import gdal
 from qgis.PyQt.QtCore import QTemporaryFile, QDir
 from qgis.core import (QgsRasterLayer,
                        QgsRasterChecker,
@@ -106,6 +108,40 @@ class TestQgsRasterFileWriter(unittest.TestCase):
         self.assertEqual(QgsRasterFileWriter.driverForExtension('.vrt'), 'VRT')
         self.assertEqual(QgsRasterFileWriter.driverForExtension('not a format'), '')
         self.assertEqual(QgsRasterFileWriter.driverForExtension(''), '')
+
+    def testImportIntoGpkg(self):
+        # init target file
+        test_gpkg = tempfile.mktemp(suffix='.gpkg', dir=self.testDataDir)
+        gdal.GetDriverByName('GPKG').Create(test_gpkg, 1, 1, 1)
+        source = QgsRasterLayer(os.path.join(self.testDataDir, 'raster', 'band3_byte_noct_epsg4326.tif'), 'my', 'gdal')
+        self.assertTrue(source.isValid())
+        provider = source.dataProvider()
+        fw = QgsRasterFileWriter(test_gpkg)
+        fw.setOutputFormat('gpkg')
+        fw.setCreateOptions(['RASTER_TABLE=imported_table', 'APPEND_SUBDATASET=YES'])
+
+        pipe = QgsRasterPipe()
+        self.assertTrue(pipe.set(provider.clone()))
+
+        projector = QgsRasterProjector()
+        projector.setCrs(provider.crs(), provider.crs())
+        self.assertTrue(pipe.insert(2, projector))
+
+        self.assertEqual(fw.writeRaster(pipe,
+                                        provider.xSize(),
+                                        provider.ySize(),
+                                        provider.extent(),
+                                        provider.crs()), 0)
+
+        # Check that the test geopackage contains the raster layer and compare
+        rlayer = QgsRasterLayer('GPKG:%s:imported_table' % test_gpkg)
+        self.assertTrue(rlayer.isValid())
+        out_provider = rlayer.dataProvider()
+        self.assertEqual(provider.block(1, provider.extent(), source.width(), source.height()).data(),
+                         out_provider.block(1, out_provider.extent(), rlayer.width(), rlayer.height()).data())
+
+        # remove result file
+        os.unlink(test_gpkg)
 
 
 if __name__ == '__main__':

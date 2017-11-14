@@ -117,6 +117,24 @@ def getSupportedOutputRasterLayerExtensions():
     return allexts
 
 
+def getSupportedOutputRasterFilters():
+    """
+    Return a list of file filters for supported raster formats.
+    Supported formats come from Gdal.
+    :return: a list of strings for Qt file filters.
+    """
+    allFilters = []
+    supported = GdalUtils.getSupportedOutputRasters()
+    formatList = sorted(supported.keys())
+    # Place GTiff as the first format
+    if 'GTiff' in formatList:
+        formatList.pop(formatList.index('GTiff'))
+    formatList.insert(0, 'GTiff')
+    for f in formatList:
+        allFilters.append('{0} files (*.{1})'.format(f, ' *.'.join(supported[f])))
+    return allFilters
+
+
 def load(fileName, name=None, crs=None, style=None, isRaster=False):
     """Loads a layer/table into the current project, given its file.
     """

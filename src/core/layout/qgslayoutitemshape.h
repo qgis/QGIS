@@ -26,7 +26,7 @@
 /**
  * \ingroup core
  * \class QgsLayoutItemShape
- * \brief Base class for layout items which are basic shapes (e.g. rectangles, ellipses).
+ * \brief Layout item for basic filled shapes (e.g. rectangles, ellipses).
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
@@ -34,6 +34,38 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
     Q_OBJECT
 
   public:
+
+    //! Shape type
+    enum Shape
+    {
+      Ellipse, //!< Ellipse shape
+      Rectangle, //!< Rectangle shape
+      Triangle //!< Triangle shape
+    };
+
+
+    /**
+     * Constructor for QgsLayoutItemShape, with the specified parent \a layout.
+     */
+    explicit QgsLayoutItemShape( QgsLayout *layout );
+
+    int type() const override { return QgsLayoutItemRegistry::LayoutShape; }
+    QString stringType() const override { return QStringLiteral( "ItemShape" ); }
+
+    //Overridden to return shape type
+    virtual QString displayName() const override;
+
+    /**
+     * Returns the type of shape (e.g. rectangle, ellipse, etc).
+     * \see setShapeType()
+     */
+    QgsLayoutItemShape::Shape shapeType() const { return mShape; }
+
+    /**
+     * Sets the \a type of shape (e.g. rectangle, ellipse, etc).
+     * \see shapeType()
+     */
+    void setShapeType( QgsLayoutItemShape::Shape type );
 
     /**
      * Sets the fill \a symbol used to draw the shape. Ownership is not transferred
@@ -48,45 +80,6 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
      */
     QgsFillSymbol *symbol() { return mShapeStyleSymbol.get(); }
 
-  protected:
-
-    /**
-     * Constructor for QgsLayoutItemShape, with the specified parent \a layout.
-     */
-    explicit QgsLayoutItemShape( QgsLayout *layout );
-
-  private:
-    std::unique_ptr< QgsFillSymbol > mShapeStyleSymbol;
-};
-
-
-/**
- * \ingroup core
- * \class QgsLayoutItemRectangularShape
- * \brief A rectangular shape item for layouts.
- * \since QGIS 3.0
- */
-class CORE_EXPORT QgsLayoutItemRectangularShape : public QgsLayoutItemShape
-{
-
-    Q_OBJECT
-
-  public:
-
-    /**
-     * Constructor for QgsLayoutItemRectangularShape, with the specified parent \a layout.
-     */
-    explicit QgsLayoutItemRectangularShape( QgsLayout *layout );
-    int type() const override { return QgsLayoutItemRegistry::LayoutRectangle; }
-    QString stringType() const override { return QStringLiteral( "ItemRect" ); }
-
-    /**
-     * Returns a new rectangular item for the specified \a layout.
-     *
-     * The caller takes responsibility for deleting the returned object.
-     */
-    static QgsLayoutItemRectangularShape *create( QgsLayout *layout, const QVariantMap &settings ) SIP_FACTORY;
-
     /**
      * Sets the corner \a radius for rounded rectangle corners.
      * \see cornerRadius()
@@ -99,78 +92,43 @@ class CORE_EXPORT QgsLayoutItemRectangularShape : public QgsLayoutItemShape
      */
     QgsLayoutMeasurement cornerRadius() const { return mCornerRadius; }
 
+    // Depending on the symbol style, the bounding rectangle can be larger than the shape
+    QRectF boundingRect() const override;
+
+    // Reimplement estimatedFrameBleed, since frames on shapes are drawn using symbology
+    // rather than the item's pen
+    double estimatedFrameBleed() const override;
+
   protected:
 
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
 
+    bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
+
+  private slots:
+
+    /**
+     * Should be called after the shape's symbol is changed. Redraws the shape and recalculates
+     * its selection bounds.
+    */
+    void refreshSymbol();
+
+    //! Updates the bounding rect of this item
+    void updateBoundingRect();
+
   private:
+
+    Shape mShape = Rectangle;
+
+    std::unique_ptr< QgsFillSymbol > mShapeStyleSymbol;
+
+    double mMaxSymbolBleed = 0.0;
+    //! Current bounding rectangle of shape
+    QRectF mCurrentRectangle;
+
     QgsLayoutMeasurement mCornerRadius;
 };
 
-/**
- * \ingroup core
- * \class QgsLayoutItemEllipseShape
- * \brief A ellipse shape item for layouts.
- * \since QGIS 3.0
- */
-class CORE_EXPORT QgsLayoutItemEllipseShape : public QgsLayoutItemShape
-{
-
-    Q_OBJECT
-
-  public:
-
-    /**
-     * Constructor for QgsLayoutItemEllipseShape, with the specified parent \a layout.
-     */
-    explicit QgsLayoutItemEllipseShape( QgsLayout *layout );
-    virtual int type() const override { return QgsLayoutItemRegistry::LayoutEllipse; }
-    QString stringType() const override { return QStringLiteral( "ItemEllipse" ); }
-
-    /**
-     * Returns a new ellipse item for the specified \a layout.
-     *
-     * The caller takes responsibility for deleting the returned object.
-     */
-    static QgsLayoutItemEllipseShape *create( QgsLayout *layout, const QVariantMap &settings ) SIP_FACTORY;
-
-  protected:
-
-    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
-
-};
-
-/**
- * \ingroup core
- * \class QgsLayoutItemTriangleShape
- * \brief A triangle shape item for layouts.
- * \since QGIS 3.0
- */
-class CORE_EXPORT QgsLayoutItemTriangleShape : public QgsLayoutItemShape
-{
-
-    Q_OBJECT
-
-  public:
-
-    /**
-     * Constructor for QgsLayoutItemTriangleShape, with the specified parent \a layout.
-     */
-    explicit QgsLayoutItemTriangleShape( QgsLayout *layout );
-    virtual int type() const override { return QgsLayoutItemRegistry::LayoutTriangle; }
-    QString stringType() const override { return QStringLiteral( "ItemTriangle" ); }
-
-    /**
-     * Returns a new triangle item for the specified \a layout.
-     *
-     * The caller takes responsibility for deleting the returned object.
-     */
-    static QgsLayoutItemTriangleShape *create( QgsLayout *layout, const QVariantMap &settings ) SIP_FACTORY;
-
-  protected:
-
-    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
-
-};
 
 #endif //QGSLAYOUTITEMSHAPE_H

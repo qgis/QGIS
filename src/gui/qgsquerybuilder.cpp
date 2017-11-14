@@ -32,6 +32,25 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   , mLayer( layer )
 {
   setupUi( this );
+  connect( btnEqual, &QPushButton::clicked, this, &QgsQueryBuilder::btnEqual_clicked );
+  connect( btnLessThan, &QPushButton::clicked, this, &QgsQueryBuilder::btnLessThan_clicked );
+  connect( btnGreaterThan, &QPushButton::clicked, this, &QgsQueryBuilder::btnGreaterThan_clicked );
+  connect( btnPct, &QPushButton::clicked, this, &QgsQueryBuilder::btnPct_clicked );
+  connect( btnIn, &QPushButton::clicked, this, &QgsQueryBuilder::btnIn_clicked );
+  connect( btnNotIn, &QPushButton::clicked, this, &QgsQueryBuilder::btnNotIn_clicked );
+  connect( btnLike, &QPushButton::clicked, this, &QgsQueryBuilder::btnLike_clicked );
+  connect( btnILike, &QPushButton::clicked, this, &QgsQueryBuilder::btnILike_clicked );
+  connect( lstFields, &QListView::clicked, this, &QgsQueryBuilder::lstFields_clicked );
+  connect( lstFields, &QListView::doubleClicked, this, &QgsQueryBuilder::lstFields_doubleClicked );
+  connect( lstValues, &QListView::doubleClicked, this, &QgsQueryBuilder::lstValues_doubleClicked );
+  connect( btnLessEqual, &QPushButton::clicked, this, &QgsQueryBuilder::btnLessEqual_clicked );
+  connect( btnGreaterEqual, &QPushButton::clicked, this, &QgsQueryBuilder::btnGreaterEqual_clicked );
+  connect( btnNotEqual, &QPushButton::clicked, this, &QgsQueryBuilder::btnNotEqual_clicked );
+  connect( btnAnd, &QPushButton::clicked, this, &QgsQueryBuilder::btnAnd_clicked );
+  connect( btnNot, &QPushButton::clicked, this, &QgsQueryBuilder::btnNot_clicked );
+  connect( btnOr, &QPushButton::clicked, this, &QgsQueryBuilder::btnOr_clicked );
+  connect( btnGetAllValues, &QPushButton::clicked, this, &QgsQueryBuilder::btnGetAllValues_clicked );
+  connect( btnSampleValues, &QPushButton::clicked, this, &QgsQueryBuilder::btnSampleValues_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsQueryBuilder::showHelp );
 
   QgsSettings settings;
@@ -142,7 +161,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
   }
 }
 
-void QgsQueryBuilder::on_btnSampleValues_clicked()
+void QgsQueryBuilder::btnSampleValues_clicked()
 {
   lstValues->setCursor( Qt::WaitCursor );
 
@@ -169,7 +188,7 @@ void QgsQueryBuilder::on_btnSampleValues_clicked()
   lstValues->setCursor( Qt::ArrowCursor );
 }
 
-void QgsQueryBuilder::on_btnGetAllValues_clicked()
+void QgsQueryBuilder::btnGetAllValues_clicked()
 {
   lstValues->setCursor( Qt::WaitCursor );
 
@@ -258,43 +277,43 @@ void QgsQueryBuilder::reject()
   QDialog::reject();
 }
 
-void QgsQueryBuilder::on_btnEqual_clicked()
+void QgsQueryBuilder::btnEqual_clicked()
 {
   txtSQL->insertText( QStringLiteral( " = " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnLessThan_clicked()
+void QgsQueryBuilder::btnLessThan_clicked()
 {
   txtSQL->insertText( QStringLiteral( " < " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnGreaterThan_clicked()
+void QgsQueryBuilder::btnGreaterThan_clicked()
 {
   txtSQL->insertText( QStringLiteral( " > " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnPct_clicked()
+void QgsQueryBuilder::btnPct_clicked()
 {
   txtSQL->insertText( QStringLiteral( "%" ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnIn_clicked()
+void QgsQueryBuilder::btnIn_clicked()
 {
   txtSQL->insertText( QStringLiteral( " IN " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnNotIn_clicked()
+void QgsQueryBuilder::btnNotIn_clicked()
 {
   txtSQL->insertText( QStringLiteral( " NOT IN " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnLike_clicked()
+void QgsQueryBuilder::btnLike_clicked()
 {
   txtSQL->insertText( QStringLiteral( " LIKE " ) );
   txtSQL->setFocus();
@@ -310,7 +329,7 @@ void QgsQueryBuilder::setSql( const QString &sqlStatement )
   txtSQL->setText( sqlStatement );
 }
 
-void QgsQueryBuilder::on_lstFields_clicked( const QModelIndex &index )
+void QgsQueryBuilder::lstFields_clicked( const QModelIndex &index )
 {
   if ( mPreviousFieldRow != index.row() )
   {
@@ -323,13 +342,13 @@ void QgsQueryBuilder::on_lstFields_clicked( const QModelIndex &index )
   }
 }
 
-void QgsQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
+void QgsQueryBuilder::lstFields_doubleClicked( const QModelIndex &index )
 {
   txtSQL->insertText( '\"' + mLayer->fields().at( mModelFields->data( index, Qt::UserRole + 1 ).toInt() ).name() + '\"' );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
+void QgsQueryBuilder::lstValues_doubleClicked( const QModelIndex &index )
 {
   QVariant value = mModelValues->data( index, Qt::UserRole + 1 );
   if ( value.isNull() )
@@ -344,37 +363,37 @@ void QgsQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnLessEqual_clicked()
+void QgsQueryBuilder::btnLessEqual_clicked()
 {
   txtSQL->insertText( QStringLiteral( " <= " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnGreaterEqual_clicked()
+void QgsQueryBuilder::btnGreaterEqual_clicked()
 {
   txtSQL->insertText( QStringLiteral( " >= " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnNotEqual_clicked()
+void QgsQueryBuilder::btnNotEqual_clicked()
 {
   txtSQL->insertText( QStringLiteral( " != " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnAnd_clicked()
+void QgsQueryBuilder::btnAnd_clicked()
 {
   txtSQL->insertText( QStringLiteral( " AND " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnNot_clicked()
+void QgsQueryBuilder::btnNot_clicked()
 {
   txtSQL->insertText( QStringLiteral( " NOT " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnOr_clicked()
+void QgsQueryBuilder::btnOr_clicked()
 {
   txtSQL->insertText( QStringLiteral( " OR " ) );
   txtSQL->setFocus();
@@ -387,7 +406,7 @@ void QgsQueryBuilder::clear()
   mUseUnfilteredLayer->setDisabled( true );
 }
 
-void QgsQueryBuilder::on_btnILike_clicked()
+void QgsQueryBuilder::btnILike_clicked()
 {
   txtSQL->insertText( QStringLiteral( " ILIKE " ) );
   txtSQL->setFocus();

@@ -32,6 +32,13 @@ QString QgsMultiLineString::geometryType() const
   return QStringLiteral( "MultiLineString" );
 }
 
+QgsMultiLineString *QgsMultiLineString::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsMultiLineString >();
+  result->mWkbType = mWkbType;
+  return result.release();
+}
+
 QgsMultiLineString *QgsMultiLineString::clone() const
 {
   return new QgsMultiLineString( *this );
@@ -51,6 +58,10 @@ bool QgsMultiLineString::fromWkt( const QString &wkt )
 QDomElement QgsMultiLineString::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
+
+  if ( isEmpty() )
+    return elemMultiLineString;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )
@@ -67,6 +78,10 @@ QDomElement QgsMultiLineString::asGML2( QDomDocument &doc, int precision, const 
 QDomElement QgsMultiLineString::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiCurve" ) );
+
+  if ( isEmpty() )
+    return elemMultiCurve;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )

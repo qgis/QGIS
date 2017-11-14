@@ -31,7 +31,8 @@
 
 #include <gdal.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test to verify that zip vector layers work
  */
 class TestZipLayer: public QObject

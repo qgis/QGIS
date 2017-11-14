@@ -11,31 +11,6 @@
 
 
 
-class QgsLegendModel : QgsLayerTreeModel
-{
-%Docstring
- Item model implementation based on layer tree model for composer legend.
- Overrides some functionality of QgsLayerTreeModel to better fit the needs of composer legend.
-
-.. versionadded:: 2.6
-%End
-
-%TypeHeaderCode
-#include "qgscomposerlegend.h"
-%End
-  public:
-    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent /TransferThis/ = 0 );
-%Docstring
-Construct the model based on the given layer tree
-%End
-
-    virtual QVariant data( const QModelIndex &index, int role ) const;
-
-
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-
-};
-
 
 class QgsComposerLegend : QgsComposerItem
 {
@@ -48,6 +23,7 @@ class QgsComposerLegend : QgsComposerItem
 %End
   public:
     QgsComposerLegend( QgsComposition *composition /TransferThis/ );
+    ~QgsComposerLegend();
 
     virtual int type() const;
 %Docstring
@@ -108,26 +84,34 @@ Sets item box to the whole content
 
     void setLegendFilterByMapEnabled( bool enabled );
 %Docstring
+ Set whether legend items should be filtered to show just the ones visible in the associated map
 .. versionadded:: 2.6
 %End
+
     bool legendFilterByMapEnabled() const;
 %Docstring
+ Find out whether legend items are filtered to show just the ones visible in the associated map
 .. versionadded:: 2.6
  :rtype: bool
 %End
 
     virtual void updateItem();
 %Docstring
+ Update() overloading. Use it rather than update()
 .. versionadded:: 2.12
 %End
 
     void setLegendFilterOutAtlas( bool doFilter );
 %Docstring
+ When set to true, during an atlas rendering, it will filter out legend elements
+ where features are outside the current atlas feature.
 .. versionadded:: 2.14
 %End
 
     bool legendFilterOutAtlas() const;
 %Docstring
+ Whether to filter out legend elements outside of the current atlas feature
+.. seealso:: setLegendFilterOutAtlas()
 .. versionadded:: 2.14
  :rtype: bool
 %End

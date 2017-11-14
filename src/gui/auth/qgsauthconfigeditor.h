@@ -27,7 +27,8 @@
 
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for editing authentication configuration database
  */
 class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfigEditor
@@ -85,11 +86,11 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
     //! Update UI based upon current selection
     void checkSelection();
 
-    void on_btnAddConfig_clicked();
+    void btnAddConfig_clicked();
 
-    void on_btnEditConfig_clicked();
+    void btnEditConfig_clicked();
 
-    void on_btnRemoveConfig_clicked();
+    void btnRemoveConfig_clicked();
 
   private:
     bool mRelayMessages;

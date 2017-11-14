@@ -61,7 +61,8 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     QgsAttributeList attributesAsDisplayedValues() const;
     bool addToCanvas() const;
 
-    /** Returns type of symbology export.
+    /**
+     * Returns type of symbology export.
         0: No symbology
         1: Feature symbology
         2: Symbol level symbology*/
@@ -83,33 +84,39 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
 
     bool onlySelected() const;
 
-    /** Returns the selected flat geometry type for the export.
+    /**
+     * Returns the selected flat geometry type for the export.
      * \see automaticGeometryType()
      * \see forceMulti()
      * \see includeZ()
      */
     QgsWkbTypes::Type geometryType() const;
 
-    /** Returns true if geometry type is set to automatic.
+    /**
+     * Returns true if geometry type is set to automatic.
      * \see geometryType()
      */
     bool automaticGeometryType() const;
 
-    /** Returns true if force multi geometry type is checked.
+    /**
+     * Returns true if force multi geometry type is checked.
      * \see includeZ()
      */
     bool forceMulti() const;
 
-    /** Sets whether the force multi geometry checkbox should be checked.
+    /**
+     * Sets whether the force multi geometry checkbox should be checked.
      */
     void setForceMulti( bool checked );
 
-    /** Returns true if include z dimension is checked.
+    /**
+     * Returns true if include z dimension is checked.
      * \see forceMulti()
      */
     bool includeZ() const;
 
-    /** Sets whether the include z dimension checkbox should be checked.
+    /**
+     * Sets whether the include z dimension checkbox should be checked.
      */
     void setIncludeZ( bool checked );
 
@@ -118,18 +125,18 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
 
   private slots:
 
-    void on_mFormatComboBox_currentIndexChanged( int idx );
-    void on_leFilename_textChanged( const QString &text );
-    void on_browseFilename_clicked();
-    void on_mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
+    void mFormatComboBox_currentIndexChanged( int idx );
+    void leFilename_textChanged( const QString &text );
+    void browseFilename_clicked();
+    void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
     void showHelp();
-    void on_mSymbologyExportComboBox_currentIndexChanged( const QString &text );
-    void on_mGeometryTypeComboBox_currentIndexChanged( int index );
+    void mSymbologyExportComboBox_currentIndexChanged( const QString &text );
+    void mGeometryTypeComboBox_currentIndexChanged( int index );
     void accept() override;
-    void on_mSelectAllAttributes_clicked();
-    void on_mDeselectAllAttributes_clicked();
-    void on_mReplaceRawFieldValues_stateChanged( int state );
-    void on_mAttributeTable_itemChanged( QTableWidgetItem *item );
+    void mSelectAllAttributes_clicked();
+    void mDeselectAllAttributes_clicked();
+    void mReplaceRawFieldValues_stateChanged( int state );
+    void mAttributeTable_itemChanged( QTableWidgetItem *item );
 
   private:
     void setup();

@@ -66,6 +66,13 @@ bool QgsCircularString::operator!=( const QgsCurve &other ) const
   return !operator==( other );
 }
 
+QgsCircularString *QgsCircularString::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsCircularString >();
+  result->mWkbType = mWkbType;
+  return result.release();
+}
+
 QString QgsCircularString::geometryType() const
 {
   return QStringLiteral( "CircularString" );
@@ -313,6 +320,10 @@ QDomElement QgsCircularString::asGML3( QDomDocument &doc, int precision, const Q
   points( pts );
 
   QDomElement elemCurve = doc.createElementNS( ns, QStringLiteral( "Curve" ) );
+
+  if ( isEmpty() )
+    return elemCurve;
+
   QDomElement elemSegments = doc.createElementNS( ns, QStringLiteral( "segments" ) );
   QDomElement elemArcString = doc.createElementNS( ns, QStringLiteral( "ArcString" ) );
   elemArcString.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D() ) );
@@ -377,6 +388,19 @@ QgsLineString *QgsCircularString::curveToLine( double tolerance, SegmentationTol
 
   line->setPoints( points );
   return line;
+}
+
+QgsCircularString *QgsCircularString::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+{
+  // prepare result
+  std::unique_ptr<QgsCircularString> result { createEmptyWithSameType() };
+
+  bool res = snapToGridPrivate( hSpacing, vSpacing, dSpacing, mSpacing, mX, mY, mZ, mM,
+                                result->mX, result->mY, result->mZ, result->mM );
+  if ( res )
+    return result.release();
+  else
+    return nullptr;
 }
 
 int QgsCircularString::numPoints() const

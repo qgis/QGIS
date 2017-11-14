@@ -20,7 +20,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis.h"
 #include "qgsgeometrycollection.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMultiCurve
  * \brief Multi curve geometry collection.
  * \since QGIS 2.10
@@ -40,7 +41,8 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
 
-    /** Returns a copy of the multi curve, where each component curve has had its line direction reversed.
+    /**
+     * Returns a copy of the multi curve, where each component curve has had its line direction reversed.
      * \since QGIS 2.14
      */
     QgsMultiCurve *reversed() const SIP_FACTORY;
@@ -68,6 +70,10 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
       return nullptr;
     }
 #endif
+
+  protected:
+
+    QgsMultiCurve *createEmptyWithSameType() const override SIP_FACTORY;
 
 };
 

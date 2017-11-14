@@ -15,7 +15,8 @@ class CORE_EXPORT QgsPainting
 {
   public:
 
-    /** Blending modes enum defining the available composition modes that can
+    /**
+     * Blending modes enum defining the available composition modes that can
      * be used when rendering a layer
      */
     enum BlendMode

@@ -33,6 +33,7 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString &connTy
   , mOriginalConnName( connName )
 {
   setupUi( this );
+  connect( btnConnect, &QPushButton::clicked, this, &QgsNewOgrConnection::btnConnect_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewOgrConnection::showHelp );
 
   QgsSettings settings;
@@ -115,7 +116,7 @@ void QgsNewOgrConnection::accept()
   if ( ( mOriginalConnName.isNull() || mOriginalConnName != txtName->text() ) &&
        settings.contains( baseKey + txtName->text() + "/host" ) &&
        QMessageBox::question( this,
-                              tr( "Save connection" ),
+                              tr( "Save Connection" ),
                               tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
@@ -139,7 +140,7 @@ void QgsNewOgrConnection::accept()
   QDialog::accept();
 }
 
-void QgsNewOgrConnection::on_btnConnect_clicked()
+void QgsNewOgrConnection::btnConnect_clicked()
 {
   testConnection();
 }

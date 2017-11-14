@@ -107,6 +107,8 @@ end of iterating: free the resources / lock
     };
 
 
+    virtual bool isValid() const;
+
   protected:
     virtual bool fetchFeature( QgsFeature &feature );
 %Docstring
@@ -116,7 +118,8 @@ fetch next feature, return true on success
 
     virtual bool nextFeatureFilterExpression( QgsFeature &f );
 %Docstring
-while for others filtering is left to the provider implementation.
+ Overrides default method as we only need to filter features in the edit buffer
+ while for others filtering is left to the provider implementation.
  :rtype: bool
 %End
 

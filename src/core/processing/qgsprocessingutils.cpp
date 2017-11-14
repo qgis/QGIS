@@ -155,26 +155,38 @@ class ProjectionSettingRestorer
 
 QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string )
 {
+  QStringList components = string.split( '|' );
+  if ( components.isEmpty() )
+    return nullptr;
+
+  QFileInfo fi;
   if ( QFileInfo::exists( string ) )
+    fi = QFileInfo( string );
+  else if ( QFileInfo::exists( components.at( 0 ) ) )
+    fi = QFileInfo( components.at( 0 ) );
+  else
+    return nullptr;
+
+  // TODO - remove when there is a cleaner way to block the unknown projection dialog!
+  ProjectionSettingRestorer restorer;
+  ( void )restorer; // no warnings
+
+  QString name = fi.baseName();
+
+  // brute force attempt to load a matching layer
+  QgsVectorLayer::LayerOptions options;
+  options.loadDefaultStyle = false;
+  std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( string, name, QStringLiteral( "ogr" ), options ) );
+  if ( layer->isValid() )
   {
-    // TODO - remove when there is a cleaner way to block the unknown projection dialog!
-    ProjectionSettingRestorer restorer;
-    ( void )restorer; // no warnings
-
-    QFileInfo fi( string );
-    QString name = fi.baseName();
-
-    // brute force attempt to load a matching layer
-    std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( string, name, QStringLiteral( "ogr" ), false ) );
-    if ( layer->isValid() )
-    {
-      return layer.release();
-    }
-    std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, name, QStringLiteral( "gdal" ), false ) );
-    if ( rasterLayer->isValid() )
-    {
-      return rasterLayer.release();
-    }
+    return layer.release();
+  }
+  QgsRasterLayer::LayerOptions rasterOptions;
+  rasterOptions.loadDefaultStyle = false;
+  std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, name, QStringLiteral( "gdal" ), rasterOptions ) );
+  if ( rasterLayer->isValid() )
+  {
+    return rasterLayer.release();
   }
   return nullptr;
 }
@@ -322,8 +334,8 @@ void parseDestinationString( QString &destination, QString &providerKey, QString
 
     if ( format.isEmpty() )
     {
-      format = QStringLiteral( "ESRI Shapefile" );
-      destination = destination + QStringLiteral( ".shp" );
+      format = QStringLiteral( "GPKG" );
+      destination = destination + QStringLiteral( ".gpkg" );
     }
 
     options.insert( QStringLiteral( "driverName" ), format );
@@ -505,7 +517,7 @@ QString QgsProcessingUtils::formatHelpMapAsHtml( const QVariantMap &map, const Q
     return QString();
   };
 
-  QString s = QObject::tr( "<html><body><h2>Algorithm description</h2>\n " );
+  QString s = QObject::tr( "<html><body><h2>Algorithm description</h2>\n" );
   s += QStringLiteral( "<p>" ) + getText( QStringLiteral( "ALG_DESC" ) ) + QStringLiteral( "</p>\n" );
   s += QObject::tr( "<h2>Input parameters</h2>\n" );
 

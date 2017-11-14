@@ -129,11 +129,11 @@ class eVisImageDisplayWidget : public QWidget
     int ZOOM_STEPS;
 
   private slots:
-    void on_pbtnZoomIn_clicked();
+    void pbtnZoomIn_clicked();
 
-    void on_pbtnZoomOut_clicked();
+    void pbtnZoomOut_clicked();
 
-    void on_pbtnZoomFull_clicked();
+    void pbtnZoomFull_clicked();
 
     //! \brief Slot called when the http request is completed
     void displayUrlImage( int, bool );

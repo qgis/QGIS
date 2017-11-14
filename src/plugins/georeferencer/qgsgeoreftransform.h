@@ -28,7 +28,7 @@
 class QgsGeorefTransformInterface
 {
   public:
-    virtual ~QgsGeorefTransformInterface() { }
+    virtual ~QgsGeorefTransformInterface() = default;
 
     virtual bool updateParametersFromGCPs( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords ) = 0;
 

@@ -178,9 +178,9 @@ QgsPointSequence QgsRegularPolygon::points() const
   return pts;
 }
 
-QgsPolygonV2 *QgsRegularPolygon::toPolygon() const
+QgsPolygon *QgsRegularPolygon::toPolygon() const
 {
-  std::unique_ptr<QgsPolygonV2> polygon( new QgsPolygonV2() );
+  std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
   if ( isEmpty() )
   {
     return polygon.release();
@@ -203,6 +203,7 @@ QgsLineString *QgsRegularPolygon::toLineString() const
   pts = points();
 
   ext->setPoints( pts );
+  ext->addVertex( pts.at( 0 ) ); //close regular polygon
 
   return ext.release();
 }

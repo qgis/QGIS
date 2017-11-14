@@ -63,14 +63,14 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
 .. versionadded:: 3.0
 %End
 
-    static QgsLayerTreeLayer *readXml( QDomElement &element ) /Factory/;
+    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
  Read layer node from XML. Returns new instance.
  Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
  :rtype: QgsLayerTreeLayer
 %End
 
-    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsProject *project ) /Factory/;
+    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
  Read layer node from XML. Returns new instance.
  Also resolves textual references to layers from the project (calls resolveReferences() internally).
@@ -78,7 +78,7 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
  :rtype: QgsLayerTreeLayer
 %End
 
-    virtual void writeXml( QDomElement &parentElement );
+    virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
 
     virtual QString dump() const;
 

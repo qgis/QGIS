@@ -80,11 +80,11 @@ class TestQgsPointLocator : public QObject
       //           + (1,0)
       mVL = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature ff( 0 );
-      QgsPolygon polygon;
-      QgsPolyline polyline;
+      QgsPolygonXY polygon;
+      QgsPolylineXY polyline;
       polyline << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 0 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 0, 1 );
       polygon << polyline;
-      QgsGeometry ffGeom = QgsGeometry::fromPolygon( polygon );
+      QgsGeometry ffGeom = QgsGeometry::fromPolygonXY( polygon );
       ff.setGeometry( ffGeom );
       QgsFeatureList flist;
       flist << ff;
@@ -198,11 +198,11 @@ class TestQgsPointLocator : public QObject
 
       // add a new feature
       QgsFeature ff( 0 );
-      QgsPolygon polygon;
-      QgsPolyline polyline;
+      QgsPolygonXY polygon;
+      QgsPolylineXY polyline;
       polyline << QgsPointXY( 10, 11 ) << QgsPointXY( 11, 10 ) << QgsPointXY( 11, 11 ) << QgsPointXY( 10, 11 );
       polygon << polyline;
-      QgsGeometry ffGeom = QgsGeometry::fromPolygon( polygon ) ;
+      QgsGeometry ffGeom = QgsGeometry::fromPolygonXY( polygon ) ;
       ff.setGeometry( ffGeom );
       QgsFeatureList flist;
       flist << ff;
@@ -286,7 +286,7 @@ class TestQgsPointLocator : public QObject
       QgsVectorLayer *vlEmptyGeom = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature ff( 0 );
       QgsGeometry g;
-      g.setGeometry( new QgsPolygonV2() );
+      g.set( new QgsPolygon() );
       ff.setGeometry( g );
       QgsFeatureList flist;
       flist << ff;

@@ -22,7 +22,8 @@
 #include <qgsogcutils.h>
 #include "qgsapplication.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for OGC utilities
  */
 class TestQgsOgcUtils : public QObject
@@ -210,7 +211,7 @@ static QDomElement comparableElement( const QString &xmlText )
 void TestQgsOgcUtils::testGeometryToGML()
 {
   QDomDocument doc;
-  QgsGeometry geomPoint( QgsGeometry::fromPoint( QgsPointXY( 111, 222 ) ) );
+  QgsGeometry geomPoint( QgsGeometry::fromPointXY( QgsPointXY( 111, 222 ) ) );
   QgsGeometry geomLine( QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(111 222, 222 222)" ) ) );
 
   // Elements to compare

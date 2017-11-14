@@ -57,10 +57,6 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsVectorLayer *
   connect( widgetPolygon, &QgsPolygon3DSymbolWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
 }
 
-QgsVectorLayer3DRendererWidget::~QgsVectorLayer3DRendererWidget()
-{
-}
-
 void QgsVectorLayer3DRendererWidget::setLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;
@@ -118,11 +114,11 @@ void QgsVectorLayer3DRendererWidget::setRenderer( const QgsVectorLayer3DRenderer
       pageIndex = 3;
       if ( mRenderer && mRenderer->symbol() && mRenderer->symbol()->type() == "polygon" )
       {
-        whileBlocking( widgetPolygon )->setSymbol( *static_cast<const QgsPolygon3DSymbol *>( mRenderer->symbol() ) );
+        whileBlocking( widgetPolygon )->setSymbol( *static_cast<const QgsPolygon3DSymbol *>( mRenderer->symbol() ), vlayer );
       }
       else
       {
-        whileBlocking( widgetPolygon )->setSymbol( QgsPolygon3DSymbol() );
+        whileBlocking( widgetPolygon )->setSymbol( QgsPolygon3DSymbol(), vlayer );
       }
       break;
 
@@ -140,7 +136,7 @@ QgsVectorLayer3DRenderer *QgsVectorLayer3DRendererWidget::renderer()
     int pageIndex = widgetStack->currentIndex();
     if ( pageIndex == 1 || pageIndex == 2 || pageIndex == 3 )
     {
-      QgsAbstract3DSymbol *sym;
+      QgsAbstract3DSymbol *sym = nullptr;
       if ( pageIndex == 1 )
         sym = new QgsLine3DSymbol( widgetLine->symbol() );
       else if ( pageIndex == 2 )

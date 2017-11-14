@@ -22,6 +22,41 @@ class QgsVectorLayerUtils
 %End
   public:
 
+    class QgsDuplicateFeatureContext
+{
+%Docstring
+ Contains mainly the QMap with QgsVectorLayer and QgsFeatureIds do list all the duplicated features
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayerutils.h"
+%End
+      public:
+
+        QgsDuplicateFeatureContext();
+%Docstring
+Constructor for QgsDuplicateFeatureContext
+%End
+
+        QList<QgsVectorLayer *> layers() const;
+%Docstring
+ Returns all the layers on which features have been duplicated
+.. versionadded:: 3.0
+ :rtype: list of QgsVectorLayer
+%End
+
+        QgsFeatureIds duplicatedFeatures( QgsVectorLayer *layer ) const;
+%Docstring
+ Returns the duplicated features in the given layer
+.. versionadded:: 3.0
+ :rtype: QgsFeatureIds
+%End
+
+
+    };
+
     static bool valueExists( const QgsVectorLayer *layer, int fieldIndex, const QVariant &value, const QgsFeatureIds &ignoreIds = QgsFeatureIds() );
 %Docstring
  Returns true if the specified value already exists within a field. This method can be used to test for uniqueness
@@ -62,7 +97,19 @@ class QgsVectorLayerUtils
  :rtype: QgsFeature
 %End
 
+    static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, int depth, QgsDuplicateFeatureContext &duplicateFeatureContext /Out/ );
+%Docstring
+ Duplicates a feature and it's children (one level deep). It calls CreateFeature, so
+ default values and constraints (e.g., unique constraints) will automatically be handled.
+ The duplicated feature will be automatically inserted into the layer.
+ ``depth`` the higher this number the deeper the level - With depth > 0 the children of the feature are not duplicated
+ ``duplicateFeatureContext`` stores all the layers and the featureids of the duplicated features (incl. children)
+.. versionadded:: 3.0
+ :rtype: QgsFeature
+%End
+
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

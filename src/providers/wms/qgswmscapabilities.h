@@ -25,6 +25,7 @@
 #include "qgsraster.h"
 #include "qgsrectangle.h"
 #include "qgsrasteriterator.h"
+#include "qgsapplication.h"
 
 class QNetworkReply;
 
@@ -324,16 +325,22 @@ struct QgsWmtsTileMatrix
   int matrixHeight;  //!< Number of tiles vertically
   double tres;       //!< Pixel span in map units
 
-  //! Returns extent of a tile in map coordinates.
-  //! (same function as tileBBox() but returns QRectF instead of QgsRectangle)
+  /**
+   * Returns extent of a tile in map coordinates.
+   * (same function as tileBBox() but returns QRectF instead of QgsRectangle)
+   */
   QRectF tileRect( int col, int row ) const;
 
-  //! Returns extent of a tile in map coordinates
-  //! (same function as tileRect() but returns QgsRectangle instead of QRectF)
+  /**
+   * Returns extent of a tile in map coordinates
+   * (same function as tileRect() but returns QgsRectangle instead of QRectF)
+   */
   QgsRectangle tileBBox( int col, int row ) const;
 
-  //! Returns range of tiles that intersects with the view extent
-  //! (tml may be null)
+  /**
+   * Returns range of tiles that intersects with the view extent
+   * (tml may be null)
+   */
   void viewExtentIntersection( const QgsRectangle &viewExtent, const QgsWmtsTileMatrixLimits *tml, int &col0, int &row0, int &col1, int &row1 ) const;
 
 };
@@ -500,14 +507,14 @@ struct QgsWmsAuthorization
   {
     if ( !mAuthCfg.isEmpty() )
     {
-      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
+      return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
     }
-    else if ( !mUserName.isNull() || !mPassword.isNull() )
+    else if ( !mUserName.isEmpty() || !mPassword.isEmpty() )
     {
       request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toLatin1().toBase64() );
     }
 
-    if ( !mReferer.isNull() )
+    if ( !mReferer.isEmpty() )
     {
       request.setRawHeader( "Referer", QStringLiteral( "%1" ).arg( mReferer ).toLatin1() );
     }
@@ -518,7 +525,7 @@ struct QgsWmsAuthorization
   {
     if ( !mAuthCfg.isEmpty() )
     {
-      return QgsAuthManager::instance()->updateNetworkReply( reply, mAuthCfg );
+      return QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
     }
     return true;
   }
@@ -756,7 +763,8 @@ class QgsWmsCapabilities
 
 
 
-/** Class that handles download of capabilities.
+/**
+ * Class that handles download of capabilities.
  */
 class QgsWmsCapabilitiesDownload : public QObject
 {

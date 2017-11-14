@@ -29,7 +29,11 @@ extern "C"
 
 /// @cond PRIVATE
 
+#ifdef USE_THREAD_LOCAL
 thread_local QgsProjContextStore QgsCoordinateTransformPrivate::mProjContext;
+#else
+QThreadStorage< QgsProjContextStore * > QgsCoordinateTransformPrivate::mProjContext;
+#endif
 
 QgsProjContextStore::QgsProjContextStore()
 {
@@ -185,7 +189,22 @@ QPair<projPJ, projPJ> QgsCoordinateTransformPrivate::threadLocalProjData()
 {
   mProjLock.lockForRead();
 
+#ifdef USE_THREAD_LOCAL
   QMap < uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constFind( reinterpret_cast< uintptr_t>( mProjContext.get() ) );
+#else
+  projCtx pContext = nullptr;
+  if ( mProjContext.hasLocalData() )
+  {
+    pContext = mProjContext.localData()->get();
+  }
+  else
+  {
+    mProjContext.setLocalData( new QgsProjContextStore() );
+    pContext = mProjContext.localData()->get();
+  }
+  QMap < uintptr_t, QPair< projPJ, projPJ > >::const_iterator it = mProjProjections.constFind( reinterpret_cast< uintptr_t>( pContext ) );
+#endif
+
   if ( it != mProjProjections.constEnd() )
   {
     QPair<projPJ, projPJ> res = it.value();
@@ -196,9 +215,16 @@ QPair<projPJ, projPJ> QgsCoordinateTransformPrivate::threadLocalProjData()
   // proj projections don't exist yet, so we need to create
   mProjLock.unlock();
   mProjLock.lockForWrite();
+
+#ifdef USE_THREAD_LOCAL
   QPair<projPJ, projPJ> res = qMakePair( pj_init_plus_ctx( mProjContext.get(), mSourceProjString.toUtf8() ),
                                          pj_init_plus_ctx( mProjContext.get(), mDestProjString.toUtf8() ) );
   mProjProjections.insert( reinterpret_cast< uintptr_t>( mProjContext.get() ), res );
+#else
+  QPair<projPJ, projPJ> res = qMakePair( pj_init_plus_ctx( pContext, mSourceProjString.toUtf8() ),
+                                         pj_init_plus_ctx( pContext, mDestProjString.toUtf8() ) );
+  mProjProjections.insert( reinterpret_cast< uintptr_t>( pContext ), res );
+#endif
   mProjLock.unlock();
   return res;
 }
@@ -335,4 +361,3 @@ void QgsCoordinateTransformPrivate::freeProj()
 }
 
 ///@endcond
-

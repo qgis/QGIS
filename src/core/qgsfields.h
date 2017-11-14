@@ -29,7 +29,8 @@ class QgsFieldsPrivate;
  * See details in QEP #17
  ****************************************************************************/
 
-/** \class QgsFields
+/**
+ * \class QgsFields
  * \ingroup core
  * Container of fields for a vector layer.
  *
@@ -76,15 +77,18 @@ class CORE_EXPORT QgsFields
 
 #endif
 
-    /** Constructor for an empty field container
+    /**
+     * Constructor for an empty field container
      */
     QgsFields();
 
-    /** Copy constructor
+    /**
+     * Copy constructor
      */
     QgsFields( const QgsFields &other );
 
-    /** Assignment operator
+    /**
+     * Assignment operator
      */
     QgsFields &operator =( const QgsFields &other ) SIP_SKIP;
 
@@ -134,9 +138,17 @@ class CORE_EXPORT QgsFields
     //! Return number of items
     int size() const;
 
-    //! Return if a field index is valid
-    //! \param i  Index of the field which needs to be checked
-    //! \returns   True if the field exists
+    /**
+     * Returns a list with field names
+     * \since QGIS 3.0
+     */
+    QStringList names() const;
+
+    /**
+     * Return if a field index is valid
+     * \param i  Index of the field which needs to be checked
+     * \returns   True if the field exists
+     */
     bool exists( int i ) const;
 
 #ifndef SIP_RUN
@@ -279,8 +291,10 @@ class CORE_EXPORT QgsFields
      */
     int lookupField( const QString &fieldName ) const;
 
-    //! Utility function to get list of attribute indexes
-    //! \since QGIS 2.4
+    /**
+     * Utility function to get list of attribute indexes
+     * \since QGIS 2.4
+     */
     QgsAttributeList allAttributesList() const;
 
     //! Utility function to return a list of QgsField instances
@@ -291,7 +305,8 @@ class CORE_EXPORT QgsFields
     //! \since QGIS 2.6
     bool operator!=( const QgsFields &other ) const { return !( *this == other ); }
 
-    /** Returns an icon corresponding to a field index, based on the field's type and source
+    /**
+     * Returns an icon corresponding to a field index, based on the field's type and source
      * \since QGIS 2.14
      */
     QIcon iconForField( int fieldIdx ) const SIP_FACTORY;

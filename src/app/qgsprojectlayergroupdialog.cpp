@@ -31,6 +31,9 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
   , mRootGroup( new QgsLayerTree )
 {
   setupUi( this );
+  connect( mBrowseFileToolButton, &QToolButton::clicked, this, &QgsProjectLayerGroupDialog::mBrowseFileToolButton_clicked );
+  connect( mProjectFileLineEdit, &QLineEdit::editingFinished, this, &QgsProjectLayerGroupDialog::mProjectFileLineEdit_editingFinished );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProjectLayerGroupDialog::mButtonBox_accepted );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/EmbedLayer/geometry" ) ).toByteArray() );
@@ -106,7 +109,7 @@ bool QgsProjectLayerGroupDialog::isValid() const
   return nullptr != mTreeView->layerTreeModel();
 }
 
-void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
+void QgsProjectLayerGroupDialog::mBrowseFileToolButton_clicked()
 {
   //line edit might emit editingFinished signal when losing focus
   mProjectFileLineEdit->blockSignals( true );
@@ -124,7 +127,7 @@ void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
   mProjectFileLineEdit->blockSignals( false );
 }
 
-void QgsProjectLayerGroupDialog::on_mProjectFileLineEdit_editingFinished()
+void QgsProjectLayerGroupDialog::mProjectFileLineEdit_editingFinished()
 {
   changeProjectFile();
 }
@@ -167,7 +170,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   QDomElement layerTreeElem = projectDom.documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
-    mRootGroup->readChildrenFromXml( layerTreeElem );
+    mRootGroup->readChildrenFromXml( layerTreeElem, QgsReadWriteContext() );
   }
   else
   {
@@ -223,7 +226,7 @@ void QgsProjectLayerGroupDialog::deselectChildren( const QModelIndex &index )
   }
 }
 
-void QgsProjectLayerGroupDialog::on_mButtonBox_accepted()
+void QgsProjectLayerGroupDialog::mButtonBox_accepted()
 {
   QgsSettings s;
   QFileInfo fi( mProjectPath );

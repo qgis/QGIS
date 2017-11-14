@@ -27,7 +27,8 @@
 #include "ui_qgssymbollevelsdialogbase.h"
 #include "qgis_gui.h"
 
-/** \class QgsSymbolLevelsWidget
+/**
+ * \class QgsSymbolLevelsWidget
  * \ingroup gui
  * A widget which allows the user to modify the rendering order of symbol layers.
  * \see QgsSymbolLevelsDialog
@@ -43,7 +44,8 @@ class GUI_EXPORT QgsSymbolLevelsWidget : public QgsPanelWidget, private Ui::QgsS
     //! Returns whether the level ordering is enabled
     bool usingLevels() const;
 
-    /** Sets whether the level ordering is always forced on and hide the checkbox (used by rule-based renderer)
+    /**
+     * Sets whether the level ordering is always forced on and hide the checkbox (used by rule-based renderer)
      * \param enabled toggle level ordering
      */
     void setForceOrderingEnabled( bool enabled );
@@ -66,7 +68,7 @@ class GUI_EXPORT QgsSymbolLevelsWidget : public QgsPanelWidget, private Ui::QgsS
     //! maximal number of layers from all symbols
     int mMaxLayers;
 
-    QgsFeatureRenderer *mRenderer;
+    QgsFeatureRenderer *mRenderer = nullptr;
     QgsLegendSymbolList mList;
 
     //! whether symbol layers always should be used (default false)
@@ -79,7 +81,8 @@ class GUI_EXPORT QgsSymbolLevelsWidget : public QgsPanelWidget, private Ui::QgsS
 #endif
 };
 
-/** \class QgsSymbolLevelsDialog
+/**
+ * \class QgsSymbolLevelsDialog
  * \ingroup gui
  * A dialog which allows the user to modify the rendering order of symbol layers.
  * \see QgsSymbolLevelsWidget

@@ -416,7 +416,7 @@ bool QgsLayerTreeModel::setData( const QModelIndex &index, const QVariant &value
 
 QModelIndex QgsLayerTreeModel::node2index( QgsLayerTreeNode *node ) const
 {
-  if ( !node->parent() )
+  if ( !node || !node->parent() )
     return QModelIndex(); // this is the only root item -> invalid index
 
   QModelIndex parentIndex = node2index( node->parent() );
@@ -999,7 +999,7 @@ QMimeData *QgsLayerTreeModel::mimeData( const QModelIndexList &indexes ) const
   QDomDocument doc;
   QDomElement rootElem = doc.createElement( QStringLiteral( "layer_tree_model_data" ) );
   Q_FOREACH ( QgsLayerTreeNode *node, nodesFinal )
-    node->writeXml( rootElem );
+    node->writeXml( rootElem, QgsReadWriteContext() );
   doc.appendChild( rootElem );
   QString txt = doc.toString();
 
@@ -1171,7 +1171,7 @@ void QgsLayerTreeModel::removeLegendFromLayer( QgsLayerTreeLayer *nodeLayer )
 
 void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
 {
-  if ( !nodeL->layer() )
+  if ( !nodeL || !nodeL->layer() )
     return;
 
   QgsMapLayer *ml = nodeL->layer();

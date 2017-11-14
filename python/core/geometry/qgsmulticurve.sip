@@ -52,6 +52,11 @@ class QgsMultiCurve: QgsGeometryCollection
 
 
 
+  protected:
+
+    virtual QgsMultiCurve *createEmptyWithSameType() const /Factory/;
+
+
 };
 
 

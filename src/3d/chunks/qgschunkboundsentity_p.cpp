@@ -39,8 +39,8 @@ class LineMeshGeometry : public Qt3DRender::QGeometry
     void setVertices( QList<QVector3D> vertices );
 
   private:
-    Qt3DRender::QAttribute *mPositionAttribute;
-    Qt3DRender::QBuffer *mVertexBuffer;
+    Qt3DRender::QAttribute *mPositionAttribute = nullptr;
+    Qt3DRender::QBuffer *mVertexBuffer = nullptr;
     QList<QVector3D> mVertices;
 
 };

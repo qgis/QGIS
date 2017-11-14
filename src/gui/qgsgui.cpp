@@ -96,5 +96,4 @@ QgsGui::QgsGui()
   mMapLayerActionRegistry = new QgsMapLayerActionRegistry();
   mSourceSelectProviderRegistry = new QgsSourceSelectProviderRegistry();
   mLayoutItemGuiRegistry = new QgsLayoutItemGuiRegistry();
-  mLayoutItemGuiRegistry->populate();
 }

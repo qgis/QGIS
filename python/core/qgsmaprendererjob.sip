@@ -49,12 +49,14 @@ class QgsMapRendererJob : QObject
 
     virtual void start() = 0;
 %Docstring
-Does nothing if the rendering is already in progress.
+ Start the rendering job and immediately return.
+ Does nothing if the rendering is already in progress.
 %End
 
     virtual void cancel() = 0;
 %Docstring
-Does nothing if the rendering is not active.
+ Stop the rendering job - does not return until the job has terminated.
+ Does nothing if the rendering is not active.
 %End
 
     virtual void cancelWithoutBlocking() = 0;
@@ -95,12 +97,18 @@ Tell whether the rendering job is currently running in background.
 
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *f );
 %Docstring
-before the render job.
+.. versionadded:: 3.0
+ Set the feature filter provider used by the QgsRenderContext of
+ each LayerRenderJob.
+ Ownership is not transferred and the provider must not be deleted
+ before the render job.
 %End
 
     const QgsFeatureFilterProvider *featureFilterProvider() const;
 %Docstring
-each LayerRenderJob.
+.. versionadded:: 3.0
+ Returns the feature filter provider used by the QgsRenderContext of
+ each LayerRenderJob.
  :rtype: QgsFeatureFilterProvider
 %End
 
@@ -123,7 +131,8 @@ List of errors that happened during the rendering job - available when the rende
 
     void setCache( QgsMapRendererCache *cache );
 %Docstring
-Does not take ownership of the object.
+ Assign a cache to be used for reading and storing rendered images of individual layers.
+ Does not take ownership of the object.
 %End
 
     int renderingTime() const;

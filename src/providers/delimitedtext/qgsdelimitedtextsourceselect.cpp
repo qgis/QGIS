@@ -40,6 +40,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 {
 
   setupUi( this );
+  connect( btnBrowseForFile, &QPushButton::clicked, this, &QgsDelimitedTextSourceSelect::btnBrowseForFile_clicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDelimitedTextSourceSelect::showHelp );
 
@@ -101,7 +102,7 @@ QgsDelimitedTextSourceSelect::~QgsDelimitedTextSourceSelect()
   delete mFile;
 }
 
-void QgsDelimitedTextSourceSelect::on_btnBrowseForFile_clicked()
+void QgsDelimitedTextSourceSelect::btnBrowseForFile_clicked()
 {
   getOpenFileName();
 }
@@ -435,7 +436,8 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     for ( int i = 0; i < tblSample->columnCount(); i++ )
     {
       QString value = i < nv ? values[i] : QLatin1String( "" );
-      if ( value.length() > MAX_SAMPLE_LENGTH ) value = value.mid( 0, MAX_SAMPLE_LENGTH ) + "…";
+      if ( value.length() > MAX_SAMPLE_LENGTH )
+        value = value.mid( 0, MAX_SAMPLE_LENGTH ) + QChar( 0x2026 );
       QTableWidgetItem *item = new QTableWidgetItem( value );
       tblSample->setItem( counter - 1, i, item );
       if ( ! value.isEmpty() )

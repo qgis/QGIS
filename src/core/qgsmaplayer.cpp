@@ -220,7 +220,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
   // if the layer needs authentication, ensure the master password is set
   QRegExp rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
   if ( ( rx.indexIn( mDataSource ) != -1 )
-       && !QgsAuthManager::instance()->setMasterPassword( true ) )
+       && !QgsApplication::authManager()->setMasterPassword( true ) )
   {
     return false;
   }

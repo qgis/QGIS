@@ -28,12 +28,17 @@ class QgsLayoutItemPage : QgsLayoutItem
       Landscape
     };
 
+    enum UndoCommand
+    {
+      UndoPageSymbol,
+    };
+
     explicit QgsLayoutItemPage( QgsLayout *layout /TransferThis/ );
 %Docstring
  Constructor for QgsLayoutItemPage, with the specified parent ``layout``.
 %End
 
-    static QgsLayoutItemPage *create( QgsLayout *layout, const QVariantMap &settings ) /Factory/;
+    static QgsLayoutItemPage *create( QgsLayout *layout ) /Factory/;
 %Docstring
  Returns a new page item for the specified ``layout``.
 
@@ -87,7 +92,7 @@ class QgsLayoutItemPage : QgsLayoutItem
  :rtype: QgsLayoutItemPage.Orientation
 %End
 
-    virtual void attemptResize( const QgsLayoutSize &size );
+    virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
 
 
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;
@@ -101,6 +106,10 @@ class QgsLayoutItemPage : QgsLayoutItem
   protected:
 
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
+
+    virtual void drawFrame( QgsRenderContext &context );
+
+    virtual void drawBackground( QgsRenderContext &context );
 
 
 };

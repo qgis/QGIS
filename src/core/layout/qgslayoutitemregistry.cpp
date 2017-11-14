@@ -16,7 +16,14 @@
 
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemshape.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitempolygon.h"
+#include "qgslayoutitempolyline.h"
 #include "qgslayoutitempage.h"
+#include "qgslayoutitempicture.h"
+#include "qgslayoutitemgroup.h"
 #include "qgsgloweffect.h"
 #include "qgseffectstack.h"
 #include <QPainter>
@@ -37,17 +44,26 @@ bool QgsLayoutItemRegistry::populate()
     return false;
 
   // add temporary item to register
-  auto createTemporaryItem = []( QgsLayout * layout, const QVariantMap & )->QgsLayoutItem*
+  auto createTemporaryItem = []( QgsLayout * layout )->QgsLayoutItem*
   {
     return new TestLayoutItem( layout );
   };
 
-  addLayoutItemType( new QgsLayoutItemMetadata( 101, QStringLiteral( "temp type" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), createTemporaryItem ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( QgsLayoutItemRegistry::LayoutItem + 1002, QStringLiteral( "temp type" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), createTemporaryItem ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutGroup, QStringLiteral( "Group" ), QIcon(), QgsLayoutItemGroup::create ) );
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutPage, QStringLiteral( "Page" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileNew.svg" ) ), QgsLayoutItemPage::create ) );
-
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutRectangle, QStringLiteral( "Rectangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), QgsLayoutItemRectangularShape::create ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutEllipse, QStringLiteral( "Ellipse" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicCircle.svg" ) ), QgsLayoutItemEllipseShape::create ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutTriangle, QStringLiteral( "Triangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicTriangle.svg" ) ), QgsLayoutItemTriangleShape::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutMap, QStringLiteral( "Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMap.svg" ) ), QgsLayoutItemMap::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPicture, QStringLiteral( "Picture" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ), QgsLayoutItemPicture::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutLabel, QStringLiteral( "Label" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabel.svg" ) ), QgsLayoutItemLabel::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutLegend, QStringLiteral( "Legend" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLegend.svg" ) ), QgsLayoutItemLegend::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutShape, QStringLiteral( "Shape" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), []( QgsLayout * layout )
+  {
+    QgsLayoutItemShape *shape = new QgsLayoutItemShape( layout );
+    shape->setShapeType( QgsLayoutItemShape::Rectangle );
+    return shape;
+  } ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPolygon, QStringLiteral( "Polygon" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolygon.svg" ) ), QgsLayoutItemPolygon::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPolyline, QStringLiteral( "Polyline" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolyline.svg" ) ), QgsLayoutItemPolyline::create ) );
 
   return true;
 }
@@ -67,12 +83,12 @@ bool QgsLayoutItemRegistry::addLayoutItemType( QgsLayoutItemAbstractMetadata *me
   return true;
 }
 
-QgsLayoutItem *QgsLayoutItemRegistry::createItem( int type, QgsLayout *layout, const QVariantMap &properties ) const
+QgsLayoutItem *QgsLayoutItemRegistry::createItem( int type, QgsLayout *layout ) const
 {
   if ( !mMetadata.contains( type ) )
     return nullptr;
 
-  return mMetadata[type]->createItem( layout, properties );
+  return mMetadata[type]->createItem( layout );
 }
 
 void QgsLayoutItemRegistry::resolvePaths( int type, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const

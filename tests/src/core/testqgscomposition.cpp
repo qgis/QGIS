@@ -34,6 +34,7 @@
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
 #include "qgslayertree.h"
+#include "qgslayoutitemlegend.h"
 
 #include <QObject>
 #include "qgstest.h"

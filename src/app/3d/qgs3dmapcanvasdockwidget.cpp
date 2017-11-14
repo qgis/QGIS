@@ -15,6 +15,7 @@
 
 #include "qgs3dmapcanvasdockwidget.h"
 
+#include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapconfigwidget.h"
 #include "qgsmapcanvas.h"
@@ -28,13 +29,13 @@
 
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
-  , mMainCanvas( nullptr )
 {
   setAttribute( Qt::WA_DeleteOnClose );  // removes the dock widget from main window when
 
   QWidget *contentsWidget = new QWidget( this );
 
   QToolBar *toolBar = new QToolBar( contentsWidget );
+  toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ), "Reset view", this, &Qgs3DMapCanvasDockWidget::resetView );
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconProperties.svg" ) ), "Configure", this, &Qgs3DMapCanvasDockWidget::configure );
 
@@ -50,7 +51,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   setWidget( contentsWidget );
 }
 
-void Qgs3DMapCanvasDockWidget::setMap( Qgs3DMapSettings *map )
+void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 {
   mCanvas->setMap( map );
 }

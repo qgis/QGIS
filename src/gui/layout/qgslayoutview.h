@@ -21,6 +21,7 @@
 #include "qgsprevieweffect.h" // for QgsPreviewEffect::PreviewMode
 #include "qgis_gui.h"
 #include "qgslayoutitempage.h"
+#include "qgslayoutaligner.h"
 #include <QPointer>
 #include <QGraphicsView>
 #include <QGraphicsRectItem>
@@ -103,6 +104,35 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void unsetTool( QgsLayoutViewTool *tool );
 
     /**
+     * Sets whether a preview effect should be used to alter the view's appearance.
+     * \param enabled Set to true to enable the preview effect on the view.
+     * \see setPreviewMode()
+     */
+    void setPreviewModeEnabled( bool enabled );
+
+    /**
+     * Returns true if a preview effect is being used to alter the view's appearance.
+     * \see setPreviewModeEnabled()
+     */
+    bool previewModeEnabled() const;
+
+    /**
+     * Sets the preview \a mode which should be used to modify the view's appearance. Preview modes are only used
+     * if previewModeEnabled() is true.
+     * \see setPreviewModeEnabled()
+     * \see previewMode()
+     */
+    void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
+
+    /**
+     * Returns the preview mode which may be used to modify the view's appearance. Preview modes are only used
+     * if previewModeEnabled() is true.
+     * \see setPreviewMode()
+     * \see previewModeEnabled()
+     */
+    QgsPreviewEffect::PreviewMode previewMode() const;
+
+    /**
      * Scales the view in a safe way, by limiting the acceptable range
      * of the scale applied. The \a scale parameter specifies the zoom factor to scale the view by.
      */
@@ -157,6 +187,33 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     QList< int > visiblePageNumbers() const;
 
+    /**
+     * Aligns all selected items using the specified \a alignment.
+     * \see distributeSelectedItems()
+     * \see resizeSelectedItems()
+     */
+    void alignSelectedItems( QgsLayoutAligner::Alignment alignment );
+
+    /**
+     * Distributes all selected items using the specified \a distribution.
+     * \see alignSelectedItems()
+     * \see resizeSelectedItems()
+     */
+    void distributeSelectedItems( QgsLayoutAligner::Distribution distribution );
+
+    /**
+     * Resizes all selected items using the specified \a resize mode.
+     * \see alignSelectedItems()
+     * \see distributeSelectedItems()
+     */
+    void resizeSelectedItems( QgsLayoutAligner::Resize resize );
+
+    /**
+     * Returns the delta (in layout coordinates) by which to move items
+     * for the given key \a event.
+     */
+    QPointF deltaForKeyEvent( QKeyEvent *event );
+
   public slots:
 
     /**
@@ -210,6 +267,113 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     // methods also adds noise to the API.
     void emitZoomLevelChanged();
 
+    // Why are these select methods in the view and not in the scene (QgsLayout)?
+    // Well, in my opinion selections are purely a GUI concept. Ideally
+    // NONE of the selection handling would be done in core, but we're restrained
+    // by the QGraphicsScene API here.
+
+    /**
+     * Selects all items in the view.
+     * \see deselectAll()
+     * \see invertSelection()
+     * \see selectNextItemAbove()
+     * \see selectNextItemBelow()
+     */
+    void selectAll();
+
+    /**
+     * Deselects all items in the view.
+     * \see selectAll()
+     * \see invertSelection()
+     */
+    void deselectAll();
+
+    /**
+     * Inverts the current selection, selecting deselected items
+     * and deselecting and selected items.
+     * \see selectAll()
+     * \see deselectAll()
+     */
+    void invertSelection();
+
+    /**
+     * Selects the next item above the existing selection, by item z order.
+     * \see selectNextItemBelow()
+     * \see selectAll()
+     * \see deselectAll()
+     */
+    void selectNextItemAbove();
+
+    /**
+     * Selects the next item below the existing selection, by item z order.
+     * \see selectNextItemAbove()
+     * \see selectAll()
+     * \see deselectAll()
+     */
+    void selectNextItemBelow();
+
+    /**
+     * Raises the selected items up the z-order.
+     * \see lowerSelectedItems()
+     * \see moveSelectedItemsToTop()
+     * \see moveSelectedItemsToBottom()
+     */
+    void raiseSelectedItems();
+
+    /**
+     * Lowers the selected items down the z-order.
+     * \see raiseSelectedItems()
+     * \see moveSelectedItemsToTop()
+     * \see moveSelectedItemsToBottom()
+     */
+    void lowerSelectedItems();
+
+    /**
+     * Raises the selected items to the top of the z-order.
+     * \see raiseSelectedItems()
+     * \see lowerSelectedItems()
+     * \see moveSelectedItemsToBottom()
+     */
+    void moveSelectedItemsToTop();
+
+    /**
+     * Lowers the selected items to the bottom of the z-order.
+     * \see raiseSelectedItems()
+     * \see lowerSelectedItems()
+     * \see moveSelectedItemsToTop()
+     */
+    void moveSelectedItemsToBottom();
+
+    /**
+     * Locks any selected items, preventing them from being interacted with
+     * by mouse interactions.
+     * \see unlockAllItems()
+     */
+    void lockSelectedItems();
+
+    /**
+     * Unlocks all locked items in the layout.
+     * \see lockSelectedItems()
+     */
+    void unlockAllItems();
+
+    /**
+     * Deletes all selected items.
+     */
+    void deleteSelectedItems();
+
+    /**
+     * Groups all selected items.
+     * \see ungroupSelectedItems()
+     */
+    void groupSelectedItems();
+
+    /**
+     * Ungroups all selected items.
+     * \see groupSelectedItems()
+     */
+    void ungroupSelectedItems();
+
     /**
      * Updates associated rulers and other widgets after view extent or zoom has changed.
      * This should be called after calling any of the QGraphicsView
@@ -217,6 +381,14 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * i.e. QGraphicsView::fitInView().
      */
     void viewChanged();
+
+    /**
+     * Pushes a new status bar \a message to the view. This causes statusMessage()
+     * to be emitted, which should cause the message to appear in the status bar
+     * for the parent window.
+     * \see statusMessage()
+     */
+    void pushStatusMessage( const QString &message );
 
   signals:
 
@@ -253,6 +425,19 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void pageChanged( int page );
 
+    /**
+     * Emitted when the view has a \a message for display in a parent window's
+     * status bar.
+     * \see pushStatusMessage()
+     */
+    void statusMessage( const QString &message );
+
+    /**
+     * Emitted when an \a item is "focused" in the view, i.e. it becomes the active
+     * item and should have its properties displayed in any designer windows.
+     */
+    void itemFocused( QgsLayoutItem *item );
+
   protected:
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
@@ -265,6 +450,8 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void scrollContentsBy( int dx, int dy ) override;
 
   private slots:
+
+    void invalidateCachedRenders();
 
   private:
 
@@ -283,12 +470,19 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     QgsLayoutRuler *mVerticalRuler = nullptr;
     std::unique_ptr< QgsLayoutViewMenuProvider > mMenuProvider;
 
-    std::unique_ptr< QgsLayoutViewSnapMarker > mSnapMarker;
+    QgsLayoutViewSnapMarker *mSnapMarker = nullptr;
+
+    QGraphicsLineItem *mHorizontalSnapLine = nullptr;
+    QGraphicsLineItem *mVerticalSnapLine = nullptr;
 
     int mCurrentPage = 0;
 
-    friend class TestQgsLayoutView;
+    QgsPreviewEffect *mPreviewEffect = nullptr;
 
+    friend class TestQgsLayoutView;
+    friend class QgsLayoutMouseHandles;
+
+    QGraphicsLineItem *createSnapLine() const;
 };
 
 

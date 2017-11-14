@@ -45,7 +45,7 @@ class TerrainMapUpdateJobFactory : public QgsChunkQueueJobFactory
     }
 
   private:
-    QgsTerrainTextureGenerator *mTextureGenerator;
+    QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
 };
 
 
@@ -57,12 +57,12 @@ QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Q
                       map.terrainGenerator()->rootChunkError( map ),
                       map.maxTerrainScreenError(), maxLevel, map.terrainGenerator(), parent )
   , mMap( map )
-  , mTerrainPicker( nullptr )
 {
   map.terrainGenerator()->setTerrain( this );
 
   connect( &map, &Qgs3DMapSettings::showTerrainBoundingBoxesChanged, this, &QgsTerrainEntity::onShowBoundingBoxesChanged );
   connect( &map, &Qgs3DMapSettings::showTerrainTilesInfoChanged, this, &QgsTerrainEntity::invalidateMapImages );
+  connect( &map, &Qgs3DMapSettings::showLabelsChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( &map, &Qgs3DMapSettings::layersChanged, this, &QgsTerrainEntity::onLayersChanged );
   connect( &map, &Qgs3DMapSettings::backgroundColorChanged, this, &QgsTerrainEntity::invalidateMapImages );
 

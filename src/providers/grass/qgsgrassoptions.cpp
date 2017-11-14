@@ -35,6 +35,8 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
   , mModulesSettingsPath( QStringLiteral( "/GRASS/modules/config" ) )
 {
   setupUi( this );
+  connect( mGisbaseBrowseButton, &QPushButton::clicked, this, &QgsGrassOptions::mGisbaseBrowseButton_clicked );
+  connect( mModulesConfigBrowseButton, &QPushButton::clicked, this, &QgsGrassOptions::mModulesConfigBrowseButton_clicked );
   initOptionsBase( false );
 
   connect( this, &QDialog::accepted, this, &QgsGrassOptions::saveOptions );
@@ -88,7 +90,7 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
   restoreOptionsBaseUi();
 }
 
-void QgsGrassOptions::on_mGisbaseBrowseButton_clicked()
+void QgsGrassOptions::mGisbaseBrowseButton_clicked()
 {
   QString gisbase = mGisbaseLineEdit->text();
   // For Mac, GISBASE folder may be inside GRASS bundle. Use Qt file dialog
@@ -125,7 +127,7 @@ void QgsGrassOptions::gisbaseChanged()
   }
 }
 
-void QgsGrassOptions::on_mModulesConfigBrowseButton_clicked()
+void QgsGrassOptions::mModulesConfigBrowseButton_clicked()
 {
   QString dir = QFileDialog::getExistingDirectory( this,
                 tr( "Choose a directory with configuration files (default.qgc, *.qgm)" ),

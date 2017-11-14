@@ -26,9 +26,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsvectorlayer.h"
 #include <limits>
 
-QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry *geom, QgsCurve *r )
+QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry *geom, std::unique_ptr<QgsCurve> ring )
 {
-  std::unique_ptr<QgsCurve> ring( r );
   if ( !ring )
   {
     return QgsGeometry::InvalidInput;
@@ -96,9 +95,8 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry 
   return QgsGeometry::AddRingNotInExistingFeature; //not contained in any outer ring
 }
 
-QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry *geom, QgsAbstractGeometry *p )
+QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry *geom, std::unique_ptr<QgsAbstractGeometry> part )
 {
-  std::unique_ptr<QgsAbstractGeometry> part( p );
   if ( !geom )
   {
     return QgsGeometry::InvalidBaseGeometry;
@@ -127,11 +125,11 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry 
       std::unique_ptr<QgsCurvePolygon> poly;
       if ( QgsWkbTypes::flatType( curve->wkbType() ) == QgsWkbTypes::LineString )
       {
-        poly.reset( new QgsPolygonV2() );
+        poly = qgis::make_unique< QgsPolygon >();
       }
       else
       {
-        poly.reset( new QgsCurvePolygon() );
+        poly = qgis::make_unique< QgsCurvePolygon >();
       }
       // Ownership is still with part, curve points to the same object and is transferred
       // to poly here.
@@ -242,7 +240,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
   if ( avoidIntersectionsLayers.isEmpty() )
     return nullptr; //no intersections stored in project does not mean error
 
-  QList< QgsAbstractGeometry * > nearGeometries;
+  QList< QgsGeometry > nearGeometries;
 
   //go through list, convert each layer to vector layer and call QgsVectorLayer::removePolygonIntersections for each
   for ( QgsVectorLayer *currentLayer : avoidIntersectionsLayers )
@@ -264,7 +262,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
       if ( !f.hasGeometry() )
         continue;
 
-      nearGeometries << f.geometry().geometry()->clone();
+      nearGeometries << f.geometry();
     }
   }
 
@@ -273,9 +271,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
     return nullptr;
   }
 
-
   std::unique_ptr< QgsAbstractGeometry > combinedGeometries( geomEngine->combine( nearGeometries ) );
-  qDeleteAll( nearGeometries );
   if ( !combinedGeometries )
   {
     return nullptr;

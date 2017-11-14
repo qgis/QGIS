@@ -22,24 +22,26 @@
 #include "qgis.h"
 #include "qgscurvepolygon.h"
 
-/** \ingroup core
- * \class QgsPolygonV2
+/**
+ * \ingroup core
+ * \class QgsPolygon
  * \brief Polygon geometry type.
  * \since QGIS 2.10
  */
-class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
+class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
 {
   public:
-    QgsPolygonV2();
+    QgsPolygon();
 
     QString geometryType() const override;
-    QgsPolygonV2 *clone() const override SIP_FACTORY;
+    QgsPolygon *clone() const override SIP_FACTORY;
     void clear() override;
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     QByteArray asWkb() const override;
-    QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
+    QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
 
-    /** Returns the geometry converted to the more generic curve type QgsCurvePolygon
+    /**
+     * Returns the geometry converted to the more generic curve type QgsCurvePolygon
      \returns the converted geometry. Caller takes ownership*/
     QgsCurvePolygon *toCurveType() const override SIP_FACTORY;
 
@@ -61,12 +63,12 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
 
     /**
      * Cast the \a geom to a QgsPolygonV2.
-     * Should be used by qgsgeometry_cast<QgsPolygonV2 *>( geometry ).
+     * Should be used by qgsgeometry_cast<QgsPolygon *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      * \since QGIS 3.0
      */
-    inline const QgsPolygonV2 *cast( const QgsAbstractGeometry *geom ) const
+    inline const QgsPolygon *cast( const QgsAbstractGeometry *geom ) const
     {
       if ( !geom )
         return nullptr;
@@ -75,9 +77,16 @@ class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
 
       if ( flatType == QgsWkbTypes::Polygon
            || flatType == QgsWkbTypes::Triangle )
-        return static_cast<const QgsPolygonV2 *>( geom );
+        return static_cast<const QgsPolygon *>( geom );
       return nullptr;
     }
 #endif
+
+  protected:
+
+    QgsPolygon *createEmptyWithSameType() const override SIP_FACTORY;
+
+    friend class QgsCurvePolygon;
+
 };
 #endif // QGSPOLYGONV2_H

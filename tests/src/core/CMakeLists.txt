@@ -74,6 +74,7 @@ SET(TESTS
  testqgsapplication.cpp
  testqgsatlascomposition.cpp
  testqgsauthcrypto.cpp
+ testqgsauthcertutils.cpp
  testqgsauthconfig.cpp
  testqgsauthmanager.cpp
  testqgsblendmodes.cpp
@@ -133,8 +134,16 @@ SET(TESTS
  testqgslayout.cpp
  testqgslayoutcontext.cpp
  testqgslayoutitem.cpp
+ testqgslayoutitemgroup.cpp
+ testqgslayoutlabel.cpp
+ testqgslayoutmap.cpp
+ testqgslayoutmapgrid.cpp
+ testqgslayoutmapoverview.cpp
+ testqgslayoutmodel.cpp
  testqgslayoutobject.cpp
  testqgslayoutpage.cpp
+ testqgslayoutpicture.cpp
+ testqgslayoutshapes.cpp
  testqgslayoutunits.cpp
  testqgslayoututils.cpp
  testqgslegendrenderer.cpp
@@ -159,7 +168,6 @@ SET(TESTS
  testqgspointlocator.cpp
  testqgspointpatternfillsymbol.cpp
  testqgspoint.cpp
- testqgsprocessing.cpp
  testqgsproject.cpp
  testqgsproperty.cpp
  testqgis.cpp
@@ -178,6 +186,7 @@ SET(TESTS
  testqgsstatisticalsummary.cpp
  testqgsstringutils.cpp
  testqgsstyle.cpp
+ testqgssvgcache.cpp
  testqgssvgmarker.cpp
  testqgssymbol.cpp
  testqgstaskmanager.cpp

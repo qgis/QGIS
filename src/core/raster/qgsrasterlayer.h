@@ -49,7 +49,8 @@ class QSlider;
 
 typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 
-/** \ingroup core
+/**
+ * \ingroup core
  *  This class provides qgis with the ability to render raster datasets
  *  onto the mapcanvas.
  *
@@ -165,7 +166,26 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! \brief Constructor. Provider is not set.
     QgsRasterLayer();
 
-    /** \brief This is the constructor for the RasterLayer class.
+    /**
+     * Setting options for loading raster layers.
+     * \since QGIS 3.0
+     */
+    struct LayerOptions
+    {
+
+      /**
+       * Constructor for LayerOptions.
+       */
+      explicit LayerOptions( bool loadDefaultStyle = true )
+        : loadDefaultStyle( loadDefaultStyle )
+      {}
+
+      //! Set to true if the default layer style should be loaded
+      bool loadDefaultStyle = true;
+    };
+
+    /**
+     * \brief This is the constructor for the RasterLayer class.
      *
      * The main tasks carried out by the constructor are:
      *
@@ -181,14 +201,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *
      * -
      * */
-    QgsRasterLayer( const QString &uri,
-                    const QString &baseName = QString(),
-                    const QString &providerKey = "gdal",
-                    bool loadDefaultStyleFlag = true );
+    explicit QgsRasterLayer( const QString &uri,
+                             const QString &baseName = QString(),
+                             const QString &providerKey = "gdal",
+                             const QgsRasterLayer::LayerOptions &options = QgsRasterLayer::LayerOptions() );
 
     ~QgsRasterLayer();
 
-    /** Returns a new instance equivalent to this one. A new provider is
+    /**
+     * Returns a new instance equivalent to this one. A new provider is
      *  created for the same data source and renderer is cloned too.
      * \returns a new layer instance
      * \since QGIS 3.0
@@ -214,7 +235,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       ColorLayer
     };
 
-    /** This helper checks to see whether the file name appears to be a valid
+    /**
+     * This helper checks to see whether the file name appears to be a valid
      *  raster file name.  If the file name looks like it could be valid,
      *  but some sort of error occurs in processing the file, the error is
      *  returned in retError.
@@ -258,7 +280,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     QgsRasterDataProvider *dataProvider() override;
 
-    /** Returns the data provider in a const-correct manner
+    /**
+     * Returns the data provider in a const-correct manner
       \note available in Python bindings as constDataProvider()
      */
     const QgsRasterDataProvider *dataProvider() const SIP_PYNAME( constDataProvider ) override;
@@ -266,7 +289,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! Synchronises with changes in the datasource
     virtual void reload() override;
 
-    /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+    /**
+     * Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * \since QGIS 2.4
      */
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
@@ -294,7 +318,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! \brief Returns the number of raster units per each raster pixel in Y axis. In a world file, this is normally the first row (without the sign)
     double rasterUnitsPerPixelY() const;
 
-    /** \brief Set contrast enhancement algorithm
+    /**
+     * \brief Set contrast enhancement algorithm
      *  \param algorithm Contrast enhancement algorithm
      *  \param limits Limits
      *  \param extent Extent used to calculate limits, if empty, use full layer extent
@@ -308,19 +333,22 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                                  int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                  bool generateLookupTableFlag = true );
 
-    /** \brief Refresh contrast enhancement with new extent.
+    /**
+     * \brief Refresh contrast enhancement with new extent.
      *  \note not available in Python bindings
      */
     // Used by QgisApp::legendLayerStretchUsingCurrentExtent()
     void refreshContrastEnhancement( const QgsRectangle &extent ) SIP_SKIP;
 
-    /** \brief Refresh renderer with new extent, if needed
+    /**
+     * \brief Refresh renderer with new extent, if needed
      *  \note not available in Python bindings
      */
     // Used by QgsRasterLayerRenderer
     void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent ) SIP_SKIP;
 
-    /** \brief Return default contrast enhancemnt settings for that type of raster.
+    /**
+     * \brief Return default contrast enhancemnt settings for that type of raster.
      *  \note not available in Python bindings
      */
     bool defaultContrastEnhancementSettings(
@@ -333,7 +361,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS
     virtual QStringList subLayers() const override;
 
-    /** \brief Draws a preview of the rasterlayer into a QImage
+    /**
+     * \brief Draws a preview of the rasterlayer into a QImage
      \since QGIS 2.4 */
     QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );

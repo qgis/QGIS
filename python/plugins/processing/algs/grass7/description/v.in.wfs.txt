@@ -1,5 +1,5 @@
 v.in.wfs
 Import GetFeature from WFS
 Vector (v.*)
-ParameterString|url|GetFeature URL starting with 'http'|http://
-OutputVector|output|Converted
+QgsProcessingParameterString|url|GetFeature URL starting with 'http'|http://
+QgsProcessingParameterVectorDestination|output|Converted

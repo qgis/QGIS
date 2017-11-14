@@ -28,6 +28,7 @@ class QKeyEvent;
 class QgsLayoutView;
 class QgsLayoutViewMouseEvent;
 class QgsLayout;
+class QgsLayoutItem;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -165,6 +166,11 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
      */
     QgsLayout *layout() const;
 
+    /**
+     * Returns a list of items which should be ignored while snapping events
+     * for this tool.
+     */
+    virtual QList< QgsLayoutItem * > ignoredSnapItems() const;
 
   signals:
 
@@ -177,6 +183,12 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
      * Emitted when the tool is deactivated.
      */
     void deactivated();
+
+    /**
+     * Emitted when an \a item is "focused" by the tool, i.e. it should become the active
+     * item and should have its properties displayed in any designer windows.
+     */
+    void itemFocused( QgsLayoutItem *item );
 
   protected:
 

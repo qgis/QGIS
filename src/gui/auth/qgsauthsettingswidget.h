@@ -23,9 +23,14 @@
 
 #include <QWidget>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for entering authentication credentials both in the form username/password
  * and by using QGIS Authentication Database and its authentication configurations.
+ *
+ * The widget also offers the functionality to convert username/password credentials
+ * to an authentication configuration.
+ *
  * \since QGIS 3.0
  */
 class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSettingsWidget
@@ -34,6 +39,20 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     Q_OBJECT
 
   public:
+
+    /**
+     * \brief The WarningType enum is used to determine the text
+     * of the message shown to the user about the destination of
+     * the stored clear-text credentials from the "Basic" tab:
+     * depending on the provider or the settings, the credentials
+     * are stored in the user settings and/or in the project file.
+     */
+    enum WarningType
+    {
+      ProjectFile,
+      UserSettings
+    };
+    Q_ENUM( WarningType )
 
     /**
      * Create a dialog for setting an associated authentication config, either
@@ -53,6 +72,7 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     /**
      * \brief setWarningText set the text of the warning label
      * \param warningText the text of the warning label
+     * \see formattedWarning()
      */
     void setWarningText( const QString &warningText );
 
@@ -69,10 +89,22 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     const QString username( ) const;
 
     /**
+     * \brief setUsername set the username
+     * \param username the user name
+     */
+    void setUsername( const QString &username );
+
+    /**
      * \brief password
      * \return basic authentication password
      */
     const QString password( ) const;
+
+    /**
+     * \brief setPassword set the password
+     * \param password the password
+     */
+    void setPassword( const QString &password );
 
     /**
      * \brief configId
@@ -81,16 +113,76 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     const QString configId( ) const;
 
     /**
-     * \brief currentTabIndex, mainly useful for unit tests
-     * \return active tab index
+     * \brief setConfigId set the authentication configuration id
+     *  param configId the authentication configuration id
      */
-    int currentTabIndex( ) const;
+    void setConfigId( const QString &configId );
+
+    /**
+     * \brief setDataprovider set the data provider key for filtering compatible authentication configurations
+     * \param dataprovider data provider key
+     */
+    void setDataprovider( const QString &dataprovider );
+
+    /**
+     * \brief dataprovider
+     * \return the data provider key used to filter compatible authentication configurations
+     */
+    const QString dataprovider( ) const;
+
+    /**
+     * \brief warning text message based upon where credentials are stored
+     * \param warning enum of warning type
+     * \return pre-formatted warning text
+     */
+    static const QString formattedWarning( WarningType warning );
 
     /**
      * \brief convertButtonEnabled, mainly useful for unit tests
      * \return true if the convert button is enabled
      */
     bool btnConvertToEncryptedIsEnabled( ) const;
+
+    /**
+     * \brief showStoreCheckboxes show the "Store" checkboxes for basic auth.
+     *        Some connection configurations allow the user to enter credentials
+     *        for testing the connection without storing them in the project.
+     *        "Store" checkboxes are disabled by default.
+     * \param enabled
+     */
+    void showStoreCheckboxes( bool enabled );
+
+    /**
+     * \brief setStoreUsernameChecked check the "Store" checkbox for the username
+     * \param checked
+     * \see showStoreCheckboxes
+     */
+    void setStoreUsernameChecked( bool checked );
+
+    /**
+     * \brief setStorePasswordCheched check the "Store" checkbox for the password
+     * \param checked
+     * \see showStoreCheckboxes
+     */
+    void setStorePasswordChecked( bool checked );
+
+    /**
+     * \brief storePassword
+     * \return true if "Store" checkbox for the password is checked
+     */
+    bool storePasswordIsChecked( ) const;
+
+    /**
+     * \brief storeUsername
+     * \return true if "Store" checkbox for the username is checked
+     */
+    bool storeUsernameIsChecked( ) const;
+
+    /**
+     * \brief configurationTabIsSelected
+     * \return true if the configuration tab is the currently selected tab
+     */
+    bool configurationTabIsSelected( );
 
   public slots:
 
@@ -103,23 +195,26 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     bool convertToEncrypted( );
 
     /**
-     * \brief on_txtUserName_textChanged set convert button state
-     * \param text the changet text
+     * Called when user name \a text is changed.
      * \note Not available in Python bindings
      */
-    void on_txtUserName_textChanged( const QString &text ) SIP_SKIP;
+    void userNameTextChanged( const QString &text ) SIP_SKIP;
 
     /**
-     * \brief on_txtPassword_textChanged set convert button state
-     * \param text the changed text
+     * Called when password \a text is changed.
      * \note Not available in Python bindings
      */
-    void on_txtPassword_textChanged( const QString &text ) SIP_SKIP;
+    void passwordTextChanged( const QString &text ) SIP_SKIP;
 
 
   private:
 
+    // Mainly for tests
+    QString mDataprovider;
+
     void updateConvertBtnState( );
+
+    void updateSelectedTab( );
 
 };
 

@@ -31,7 +31,8 @@ class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
   protected:
     QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey );
 
-    /** Subclasses need to implement this function with
+    /**
+     * Subclasses need to implement this function with
      * the real deletion implementation
      */
     virtual bool executeDeleteLayer( QString &errCause );

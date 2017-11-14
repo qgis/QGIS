@@ -26,70 +26,40 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def processInputs(alg):
-    # We need to import all the bands and color tables of the input raster
-    raster = alg.getParameterValue('input')
-    if raster in list(alg.exportedLayers.keys()):
+def processInputs(alg, parameters, context):
+    if 'input' in alg.exportedLayers:
         return
 
-    alg.setSessionProjectionFromLayer(raster, alg.commands)
-    destFilename = alg.getTempFilename()
-    alg.exportedLayers[raster] = destFilename
-    command = 'r.in.gdal input={} output={} --overwrite -o'.format(raster, destFilename)
-    alg.commands.append(command)
-
-    alg.setSessionProjectionFromProject(alg.commands)
-
-    region = str(alg.getParameterValue(alg.GRASS_REGION_EXTENT_PARAMETER))
-    regionCoords = region.split(',')
-    command = 'g.region'
-    command += ' -a'
-    command += ' n=' + str(regionCoords[3])
-    command += ' s=' + str(regionCoords[2])
-    command += ' e=' + str(regionCoords[1])
-    command += ' w=' + str(regionCoords[0])
-    cellsize = alg.getParameterValue(alg.GRASS_REGION_CELLSIZE_PARAMETER)
-    if cellsize:
-        command += ' res=' + str(cellsize)
-    else:
-        command += ' res=' + str(alg.getDefaultCellsize(parameters, context))
-    alignToResolution = alg.getParameterValue(alg.GRASS_REGION_ALIGN_TO_RESOLUTION)
-    if alignToResolution:
-        command += ' -a'
-    alg.commands.append(command)
+    # We need to import all the bands and color tables of the input raster
+    alg.loadRasterLayerFromParameter('input', parameters, context, False, None)
+    alg.postInputs()
 
 
-def processCommand(alg, parameters):
-    # We need to introduce something clever:
+def processCommand(alg, parameters, context):
     # if the input raster is multiband: export each component directly
-    raster = alg.exportedLayers[alg.getParameterValue('input')]
+    rasterInput = alg.exportedLayers['input']
+    raster = alg.parameterAsRasterLayer(parameters, 'input', context)
     for color in ['red', 'green', 'blue']:
-        alg.exportedLayers[alg.getOutputValue(color)] = color + alg.uniqueSuffix
+        alg.exportedLayers[color] = color + alg.uniqueSuffix
 
-    commands = ["if [ $(g.list type=rast pattern='{}.*' | wc -l) -eq \"0\" ]; then".format(raster)]
-    commands.append("  r.rgb input={} red={} green={} blue={} --overwrite".format(
-        raster,
-        alg.exportedLayers[alg.getOutputValue('red')],
-        alg.exportedLayers[alg.getOutputValue('green')],
-        alg.exportedLayers[alg.getOutputValue('blue')]
-    ))
-    commands.append("fi")
-    alg.commands.extend(commands)
-
-
-def processOutputs(alg):
-    raster = alg.exportedLayers[alg.getParameterValue('input')]
-    commands = ["if [ $(g.list type=rast pattern='{}.*' | wc -l) -eq \"0\" ]; then".format(raster)]
-    for color in ['red', 'green', 'blue']:
-        commands.append("  r.out.gdal -t input={} output={} createopt=\"TFW=YES,COMPRESS=LZW\" --overwrite".format(
-            alg.exportedLayers[alg.getOutputValue(color)],
-            alg.getOutputValue(color)
+    # If the raster is not multiband, really do r.rgb
+    if raster.bandCount() == 1:
+        alg.commands.append("  r.rgb input={} red={} green={} blue={} --overwrite".format(
+            rasterInput,
+            alg.exportedLayers['red'],
+            alg.exportedLayers['green'],
+            alg.exportedLayers['blue']
         ))
-    commands.append("else")
+
+
+def processOutputs(alg, parameters, context):
+    raster = alg.parameterAsRasterLayer(parameters, 'input', context)
+
+    # if the raster was monoband, export from r.rgb
     for color in ['red', 'green', 'blue']:
-        commands.append("  r.out.gdal -t input={} output={} createopt=\"TFW=YES,COMPRESS=LZW\" --overwrite".format(
-            '{}.{}'.format(raster, color),
-            alg.getOutputValue(color)
-        ))
-    commands.append("fi")
-    alg.commands.extend(commands)
+        fileName = alg.parameterAsOutputLayer(parameters, color, context)
+        if raster.bandCount() == 1:
+            grassName = '{}{}'.format(color, alg.uniqueSuffix)
+        else:
+            grassName = '{}{}'.format(alg.exportedLayers['input'], color)
+        alg.exportRasterLayer(grassName, fileName, True)

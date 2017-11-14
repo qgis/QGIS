@@ -38,6 +38,9 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
 
     QgsBufferServerResponse();
 
+    //! QgsBufferServerResponse cannot be copied
+    QgsBufferServerResponse( const QgsBufferServerResponse & ) = delete;
+
     /**
      *  Set Header entry
      *  Add Header entry to the response
@@ -66,12 +69,14 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
      */
     bool headersSent() const override;
 
-    /** Set the http status code
+    /**
+     * Set the http status code
      * \param code HTTP status code value
      */
     void setStatusCode( int code ) override;
 
-    /** Return the http status code
+    /**
+     * Return the http status code
      */
     int statusCode() const override { return mStatusCode; }
 
@@ -135,7 +140,10 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
 
   private:
 
+#ifdef SIP_RUN
     QgsBufferServerResponse( const QgsBufferServerResponse & ) SIP_FORCE;
+#endif
+
     QMap<QString, QString> mHeaders;
     QBuffer                mBuffer;
     QByteArray             mBody;

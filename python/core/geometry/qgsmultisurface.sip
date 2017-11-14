@@ -44,6 +44,10 @@ class QgsMultiSurface: QgsGeometryCollection
 
 
 
+  protected:
+    virtual QgsMultiSurface *createEmptyWithSameType() const /Factory/;
+
+
 };
 
 

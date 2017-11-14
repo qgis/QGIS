@@ -43,6 +43,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProject)
 
 from qgis.gui import QgsMessageBar
+from qgis.utils import OverrideCursor
 
 from processing.gui.BatchPanel import BatchPanel
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
@@ -79,7 +80,9 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         load = []
 
         feedback = self.createFeedback()
-        context = dataobjects.createContext(feedback)
+
+        load_layers = self.mainWidget.checkLoadLayersOnCompletion.isChecked()
+        project = QgsProject.instance() if load_layers else None
 
         for row in range(self.mainWidget.tblParameters.rowCount()):
             col = 0
@@ -89,7 +92,7 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                     continue
                 wrapper = self.mainWidget.wrappers[row][col]
                 parameters[param.name()] = wrapper.value()
-                if not param.checkValueIsAcceptable(wrapper.value(), context):
+                if not param.checkValueIsAcceptable(wrapper.value()):
                     self.bar.pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
                                          param.description(), row + 1),
                                          level=QgsMessageBar.WARNING, duration=5)
@@ -103,11 +106,11 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                 count_visible_outputs += 1
                 widget = self.mainWidget.tblParameters.cellWidget(row, col)
                 text = widget.getValue()
-                if param.checkValueIsAcceptable(text, context):
+                if out.checkValueIsAcceptable(text):
                     if isinstance(out, (QgsProcessingParameterRasterDestination,
                                         QgsProcessingParameterFeatureSink)):
                         # load rasters and sinks on completion
-                        parameters[out.name()] = QgsProcessingOutputLayerDefinition(text, context.project())
+                        parameters[out.name()] = QgsProcessingOutputLayerDefinition(text, project)
                     else:
                         parameters[out.name()] = text
                     col += 1
@@ -119,47 +122,54 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
 
             alg_parameters.append(parameters)
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        self.mainWidget.setEnabled(False)
-        self.buttonCancel.setEnabled(True)
+        with OverrideCursor(Qt.WaitCursor):
 
-        # Make sure the Log tab is visible before executing the algorithm
-        try:
-            self.tabWidget.setCurrentIndex(1)
-            self.repaint()
-        except:
-            pass
+            self.mainWidget.setEnabled(False)
+            self.buttonCancel.setEnabled(True)
 
-        start_time = time.time()
+            # Make sure the Log tab is visible before executing the algorithm
+            try:
+                self.tabWidget.setCurrentIndex(1)
+                self.repaint()
+            except:
+                pass
 
-        algorithm_results = []
-        for count, parameters in enumerate(alg_parameters):
-            if feedback.isCanceled():
-                break
-            self.setText(self.tr('\nProcessing algorithm {0}/{1}...').format(count + 1, len(alg_parameters)))
-            self.setInfo(self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()), escape_html=False)
+            start_time = time.time()
 
-            feedback.pushInfo(self.tr('Input parameters:'))
-            feedback.pushCommandInfo(pformat(parameters))
-            feedback.pushInfo('')
+            algorithm_results = []
+            for count, parameters in enumerate(alg_parameters):
+                if feedback.isCanceled():
+                    break
+                self.setText(self.tr('\nProcessing algorithm {0}/{1}...').format(count + 1, len(alg_parameters)))
+                self.setInfo(self.tr('<b>Algorithm {0} starting...</b>').format(self.alg.displayName()), escape_html=False)
 
-            alg_start_time = time.time()
-            ret, results = execute(self.alg, parameters, context, feedback)
-            if ret:
-                self.setInfo(self.tr('Algorithm {0} correctly executed...').format(self.alg.displayName()), escape_html=False)
-                feedback.setProgress(100)
-                feedback.pushInfo(
-                    self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - alg_start_time)))
-                feedback.pushInfo(self.tr('Results:'))
-                feedback.pushCommandInfo(pformat(results))
+                feedback.pushInfo(self.tr('Input parameters:'))
+                feedback.pushCommandInfo(pformat(parameters))
                 feedback.pushInfo('')
-                algorithm_results.append(results)
-            else:
-                break
+
+                # important - we create a new context for each iteration
+                # this avoids holding onto resources and layers from earlier iterations,
+                # and allows batch processing of many more items then is possible
+                # if we hold on to these layers
+                context = dataobjects.createContext(feedback)
+
+                alg_start_time = time.time()
+                ret, results = execute(self.alg, parameters, context, feedback)
+                if ret:
+                    self.setInfo(self.tr('Algorithm {0} correctly executed...').format(self.alg.displayName()), escape_html=False)
+                    feedback.setProgress(100)
+                    feedback.pushInfo(
+                        self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - alg_start_time)))
+                    feedback.pushInfo(self.tr('Results:'))
+                    feedback.pushCommandInfo(pformat(results))
+                    feedback.pushInfo('')
+                    algorithm_results.append(results)
+                else:
+                    break
+
+                handleAlgorithmResults(self.alg, context, feedback, False)
 
         feedback.pushInfo(self.tr('Batch execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
-
-        handleAlgorithmResults(self.alg, context, feedback, False)
 
         self.finish(algorithm_results)
         self.buttonCancel.setEnabled(False)
@@ -169,8 +179,6 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
             self.loadHTMLResults(results, count)
 
         self.createSummaryTable(algorithm_results)
-        QApplication.restoreOverrideCursor()
-
         self.mainWidget.setEnabled(True)
         QMessageBox.information(self, self.tr('Batch processing'),
                                 self.tr('Batch processing completed'))

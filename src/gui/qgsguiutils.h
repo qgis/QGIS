@@ -25,7 +25,8 @@
 
 class QFont;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \namespace QgsGuiUtils
  * The QgsGuiUtils namespace contains constants and helper functions used throughout the QGIS GUI.
  * \note not available in Python bindings
@@ -94,7 +95,8 @@ namespace QgsGuiUtils
       QString const &filters, QStringList &selectedFiles, QString &enc, QString &title,
       bool cancelAll = false );
 
-  /** A helper function to get an image name from the user. It will nicely
+  /**
+   * A helper function to get an image name from the user. It will nicely
    * provide filters with all available writable image formats.
    * \param parent widget that should act as the parent for the file dialog
    * \param message the message to display to the user

@@ -49,7 +49,8 @@ typedef QMap<int, QgsField> QgsFieldMap;
 #endif
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A vector of attributes. Mostly equal to QVector<QVariant>.
  \note QgsAttributes is implemented as a Python list of Python objects.
  */
@@ -57,7 +58,9 @@ typedef QMap<int, QgsField> QgsFieldMap;
 class CORE_EXPORT QgsAttributes : public QVector<QVariant>
 {
   public:
-    QgsAttributes() {}
+
+    //! Constructor for QgsAttributes
+    QgsAttributes() = default;
 
     /**
      * Create a new vector of attributes with the given size

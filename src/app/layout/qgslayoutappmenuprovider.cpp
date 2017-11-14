@@ -15,6 +15,7 @@
 
 #include "qgslayoutappmenuprovider.h"
 #include "qgslayoutitempage.h"
+#include "qgslayoutitemgroup.h"
 #include "qgslayoutdesignerdialog.h"
 #include "qgslayout.h"
 #include <QMenu>
@@ -30,6 +31,52 @@ QgsLayoutAppMenuProvider::QgsLayoutAppMenuProvider( QgsLayoutDesignerDialog *des
 QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *layout, QPointF layoutPoint ) const
 {
   QMenu *menu = new QMenu( parent );
+
+  //undo/redo
+  menu->addAction( layout->undoStack()->stack()->createUndoAction( menu ) );
+  menu->addAction( layout->undoStack()->stack()->createRedoAction( menu ) );
+  menu->addSeparator();
+
+
+  const QList< QgsLayoutItem * > selectedItems = layout->selectedLayoutItems();
+  if ( !selectedItems.empty() )
+  {
+    bool addedGroupAction = false;
+    if ( selectedItems.count() > 1 )
+    {
+      QAction *groupAction = new QAction( tr( "Group" ), menu );
+      connect( groupAction, &QAction::triggered, this, [this]()
+      {
+        mDesigner->view()->groupSelectedItems();
+      } );
+      menu->addAction( groupAction );
+      addedGroupAction = true;
+    }
+    bool foundSelectedGroup = false;
+    QList< QgsLayoutItemGroup * > groups;
+    layout->layoutItems( groups );
+    for ( QgsLayoutItemGroup *group : qgis::as_const( groups ) )
+    {
+      if ( group->isSelected() )
+      {
+        foundSelectedGroup = true;
+        break;
+      }
+    }
+    if ( foundSelectedGroup )
+    {
+      QAction *ungroupAction = new QAction( tr( "Ungroup" ), menu );
+      connect( ungroupAction, &QAction::triggered, this, [this]()
+      {
+        mDesigner->view()->ungroupSelectedItems();
+      } );
+      menu->addAction( ungroupAction );
+      addedGroupAction = true;
+    }
+
+    if ( addedGroupAction )
+      menu->addSeparator();
+  }
 
   // is a page under the mouse?
   QgsLayoutItemPage *page = layout->pageCollection()->pageAtPoint( layoutPoint );
@@ -52,6 +99,19 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
       }
     } );
     menu->addAction( removePageAction );
+
+    menu->addSeparator();
+  }
+
+  if ( !selectedItems.empty() )
+  {
+    QAction *itemPropertiesAction = new QAction( tr( "Item Properties…" ), menu );
+    QgsLayoutItem *item = selectedItems.at( 0 );
+    connect( itemPropertiesAction, &QAction::triggered, this, [this, item]()
+    {
+      mDesigner->showItemOptions( item, true );
+    } );
+    menu->addAction( itemPropertiesAction );
   }
 
   return menu;

@@ -20,22 +20,25 @@
 
 #include "qgsterraingenerator.h"
 
+
 #include <memory>
 
-class QgsDemHeightMapGenerator;
-
 class QgsRasterLayer;
+class QgsDemHeightMapGenerator;
 
 #include "qgsmaplayerref.h"
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Implementation of terrain generator that uses a raster layer with DEM to build terrain.
  * \since QGIS 3.0
  */
 class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
 {
   public:
-    QgsDemTerrainGenerator();
+    //! Constructor for QgsDemTerrainGenerator
+    QgsDemTerrainGenerator() = default;
+    ~QgsDemTerrainGenerator();
 
     //! Sets raster layer with elevation model to be used for terrain generation
     void setLayer( QgsRasterLayer *layer );
@@ -47,8 +50,13 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     //! Returns resolution of the generator (how many elevation samples on one side of a terrain tile)
     int resolution() const { return mResolution; }
 
+    //! Sets skirt height (in world units). Skirts at the edges of terrain tiles help hide cracks between adjacent tiles.
+    void setSkirtHeight( float skirtHeight ) { mSkirtHeight = skirtHeight; }
+    //! Returns skirt height (in world units). Skirts at the edges of terrain tiles help hide cracks between adjacent tiles.
+    float skirtHeight() const { return mSkirtHeight; }
+
     //! Returns height map generator object - takes care of extraction of elevations from the layer)
-    QgsDemHeightMapGenerator *heightMapGenerator() { return mHeightMapGenerator.get(); }
+    QgsDemHeightMapGenerator *heightMapGenerator() { return mHeightMapGenerator; }
 
     virtual QgsTerrainGenerator *clone() const override SIP_FACTORY;
     Type type() const override;
@@ -63,12 +71,14 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
   private:
     void updateGenerator();
 
-    std::unique_ptr<QgsDemHeightMapGenerator> mHeightMapGenerator;
+    QgsDemHeightMapGenerator *mHeightMapGenerator = nullptr;
 
     //! source layer for heights
     QgsMapLayerRef mLayer;
     //! how many vertices to place on one side of the tile
-    int mResolution;
+    int mResolution = 16;
+    //! height of the "skirts" at the edges of tiles to hide cracks between adjacent cracks
+    float mSkirtHeight = 10.f;
 };
 
 

@@ -23,7 +23,8 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * QgsInvertedPolygonRenderer is a polygon-only feature renderer used to
  * display features inverted, where the exterior is turned to an interior
  * and where the exterior theoretically spans the entire plane, allowing
@@ -41,7 +42,8 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
 {
   public:
 
-    /** Constructor
+    /**
+     * Constructor
      * \param embeddedRenderer optional embeddedRenderer. If null, a default one will be assigned.
      * Ownership will be transferred.
      */
@@ -55,7 +57,8 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     virtual QgsInvertedPolygonRenderer *clone() const override SIP_FACTORY;
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
 
-    /** Renders a given feature.
+    /**
+     * Renders a given feature.
      * This will here collect features. The actual rendering will be postponed to stopRender()
      * \param feature the feature to render
      * \param context the rendering context
@@ -79,31 +82,38 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     //! Proxy that will call this method on the embedded renderer.
     virtual QgsFeatureRenderer::Capabilities capabilities() override;
 
-    /** Proxy that will call this method on the embedded renderer.
+    /**
+     * Proxy that will call this method on the embedded renderer.
      */
     virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
 
-    /** Proxy that will call this method on the embedded renderer.
+    /**
+     * Proxy that will call this method on the embedded renderer.
      */
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
 
-    /** Proxy that will call this method on the embedded renderer.
+    /**
+     * Proxy that will call this method on the embedded renderer.
      */
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
 
-    /** Proxy that will call this method on the embedded renderer.
+    /**
+     * Proxy that will call this method on the embedded renderer.
      */
     virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
 
-    /** Proxy that will call this method on the embedded renderer.
+    /**
+     * Proxy that will call this method on the embedded renderer.
      */
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
 
-    /** Proxy that will call this method on the embedded renderer.
+    /**
+     * Proxy that will call this method on the embedded renderer.
      */
     virtual QgsLegendSymbolList legendSymbolItems() const override;
 
-    /** Proxy that will call this method on the embedded renderer.
+    /**
+     * Proxy that will call this method on the embedded renderer.
      */
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
 
@@ -132,7 +142,8 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
      */
     void setPreprocessingEnabled( bool enabled ) { mPreprocessingEnabled = enabled; }
 
-    /** Creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
+    /**
+     * Creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
      * \since QGIS 2.5
      * \returns a new renderer if the conversion was possible, otherwise 0.
      */
@@ -157,7 +168,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     QMap<QByteArray, int> mSymbolCategories;
 
     //! The polygon used as exterior ring that covers the current extent
-    QgsPolygon mExtentPolygon;
+    QgsPolygonXY mExtentPolygon;
 
     //! The context used for rendering
     QgsRenderContext mContext;
@@ -165,7 +176,8 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRenderer
     //! Fields of each feature
     QgsFields mFields;
 
-    /** Class used to represent features that must be rendered
+    /**
+     * Class used to represent features that must be rendered
      *  with decorations (selection, vertex markers)
      */
     struct FeatureDecoration

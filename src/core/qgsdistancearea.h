@@ -93,7 +93,8 @@ class CORE_EXPORT QgsDistanceArea
      */
     bool setEllipsoid( double semiMajor, double semiMinor );
 
-    /** Returns ellipsoid's acronym. Calculations will only use the
+    /**
+     * Returns ellipsoid's acronym. Calculations will only use the
      * ellipsoid if a valid ellipsoid has been set.
      * \see setEllipsoid()
      * \see willUseEllipsoid()

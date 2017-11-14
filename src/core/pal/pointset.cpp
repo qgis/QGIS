@@ -248,9 +248,8 @@ bool PointSet::containsPoint( double x, double y ) const
     GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
     GEOSCoordSeq_setX_r( geosctxt, seq, 0, x );
     GEOSCoordSeq_setY_r( geosctxt, seq, 0, y );
-    GEOSGeometry *point = GEOSGeom_createPoint_r( geosctxt, seq );
-    bool result = ( GEOSPreparedContainsProperly_r( geosctxt, preparedGeom(), point ) == 1 );
-    GEOSGeom_destroy_r( geosctxt, point );
+    geos::unique_ptr point( GEOSGeom_createPoint_r( geosctxt, seq ) );
+    bool result = ( GEOSPreparedContainsProperly_r( geosctxt, preparedGeom(), point.get() ) == 1 );
 
     return result;
   }
@@ -706,7 +705,7 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
     GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
     GEOSCoordSeq_setX_r( geosctxt, coord, 0, px );
     GEOSCoordSeq_setY_r( geosctxt, coord, 0, py );
-    GEOSGeometry *geosPt = GEOSGeom_createPoint_r( geosctxt, coord );
+    geos::unique_ptr geosPt( GEOSGeom_createPoint_r( geosctxt, coord ) );
 
     int type = GEOSGeomTypeId_r( geosctxt, mGeos );
     const GEOSGeometry *extRing = nullptr;
@@ -719,13 +718,11 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
       //for polygons, we want distance to exterior ring (not an interior point)
       extRing = GEOSGetExteriorRing_r( geosctxt, mGeos );
     }
-    GEOSCoordSequence *nearestCoord = GEOSNearestPoints_r( geosctxt, extRing, geosPt );
+    geos::coord_sequence_unique_ptr nearestCoord( GEOSNearestPoints_r( geosctxt, extRing, geosPt.get() ) );
     double nx;
     double ny;
-    ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord, 0, &nx );
-    ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord, 0, &ny );
-    GEOSCoordSeq_destroy_r( geosctxt, nearestCoord );
-    GEOSGeom_destroy_r( geosctxt, geosPt );
+    ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord.get(), 0, &nx );
+    ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord.get(), 0, &ny );
 
     if ( rx )
       *rx = nx;
@@ -752,10 +749,10 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
   try
   {
     GEOSContextHandle_t geosctxt = geosContext();
-    GEOSGeometry *centroidGeom = GEOSGetCentroid_r( geosctxt, mGeos );
+    geos::unique_ptr centroidGeom( GEOSGetCentroid_r( geosctxt, mGeos ) );
     if ( centroidGeom )
     {
-      const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, centroidGeom );
+      const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, centroidGeom.get() );
       GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
       GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
     }
@@ -763,18 +760,15 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
     // check if centroid inside in polygon
     if ( forceInside && !containsPoint( px, py ) )
     {
-      GEOSGeometry *pointGeom = GEOSPointOnSurface_r( geosctxt, mGeos );
+      geos::unique_ptr pointGeom( GEOSPointOnSurface_r( geosctxt, mGeos ) );
 
       if ( pointGeom )
       {
-        const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom );
+        const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom.get() );
         GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
         GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
-        GEOSGeom_destroy_r( geosctxt, pointGeom );
       }
     }
-
-    GEOSGeom_destroy_r( geosctxt, centroidGeom );
   }
   catch ( GEOSException &e )
   {

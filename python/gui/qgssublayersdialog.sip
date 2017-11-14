@@ -25,8 +25,6 @@ class QgsSublayersDialog : QDialog
 
     struct LayerDefinition
     {
-      LayerDefinition();
-
       int layerId;
       QString layerName;  //!< Name of the layer (not necessarily unique)
       int count;
@@ -44,34 +42,40 @@ class QgsSublayersDialog : QDialog
 
     void populateLayerTable( const LayerDefinitionList &list );
 %Docstring
+ Populate the table with layers
 .. versionadded:: 2.16
 %End
 
     LayerDefinitionList selection();
 %Docstring
+ Returns list of selected layers
 .. versionadded:: 2.16
  :rtype: LayerDefinitionList
 %End
 
     void setShowAddToGroupCheckbox( bool showAddToGroupCheckbox );
 %Docstring
+ Set if we should display the add to group checkbox
 .. versionadded:: 3.0
 %End
 
     bool showAddToGroupCheckbox() const;
 %Docstring
+ If we should display the add to group checkbox
 .. versionadded:: 3.0
  :rtype: bool
 %End
 
     bool addToGroupCheckbox() const;
 %Docstring
+ If we should add layers in a group
 .. versionadded:: 3.0
  :rtype: bool
 %End
 
     int countColumn() const;
 %Docstring
+ Return column with count or -1
 .. versionadded:: 3.0
  :rtype: int
 %End

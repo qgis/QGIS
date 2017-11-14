@@ -79,6 +79,7 @@ QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyle *style, QWidget *
   , mStyle( style )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsSmartGroupEditorDialog::buttonBox_accepted );
 
   mCondCount = 0;
 
@@ -189,11 +190,11 @@ void QgsSmartGroupEditorDialog::setSmartgroupName( const QString &name )
   mNameLineEdit->setText( name );
 }
 
-void QgsSmartGroupEditorDialog::on_buttonBox_accepted()
+void QgsSmartGroupEditorDialog::buttonBox_accepted()
 {
   if ( mNameLineEdit->text().isEmpty() )
   {
-    QMessageBox::critical( this, tr( "Invalid name" ), tr( "The smart group name field is empty. Kindly provide a name" ) );
+    QMessageBox::critical( this, tr( "Invalid name" ), tr( "The smart group name field is empty. Kindly provide a name." ) );
     return;
   }
   accept();

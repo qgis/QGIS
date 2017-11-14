@@ -121,7 +121,8 @@ namespace pal
       //! Problem cannot be copied
       Problem &operator=( const Problem &other ) = delete;
 
-      /** Adds a candidate label position to the problem.
+      /**
+       * Adds a candidate label position to the problem.
        * \param position label candidate position. Ownership is transferred to Problem.
        * \since QGIS 2.12
        */

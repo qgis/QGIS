@@ -25,7 +25,6 @@ class QgsLayoutViewTool : QObject
 %TypeHeaderCode
 #include "qgslayoutviewtool.h"
 %End
-
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsLayoutViewToolAddItem *>( sipCpp ) != NULL )
       sipType = sipType_QgsLayoutViewToolAddItem;
@@ -146,6 +145,12 @@ class QgsLayoutViewTool : QObject
  :rtype: QgsLayout
 %End
 
+    virtual QList< QgsLayoutItem * > ignoredSnapItems() const;
+%Docstring
+ Returns a list of items which should be ignored while snapping events
+ for this tool.
+ :rtype: list of QgsLayoutItem
+%End
 
   signals:
 
@@ -157,6 +162,12 @@ class QgsLayoutViewTool : QObject
     void deactivated();
 %Docstring
  Emitted when the tool is deactivated.
+%End
+
+    void itemFocused( QgsLayoutItem *item );
+%Docstring
+ Emitted when an ``item`` is "focused" by the tool, i.e. it should become the active
+ item and should have its properties displayed in any designer windows.
 %End
 
   protected:

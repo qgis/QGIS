@@ -25,7 +25,8 @@
 #include <QPointer>
 class QDoubleSpinBox;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRatioLockButton
  * A cross platform button subclass used to represent a locked / unlocked ratio state.
  * \since QGIS 3.0
@@ -37,18 +38,21 @@ class GUI_EXPORT QgsRatioLockButton : public QToolButton
 
   public:
 
-    /** Construct a new ratio lock button.
+    /**
+     * Construct a new ratio lock button.
      * Use \a parent to attach a parent QWidget to the button.
      */
     QgsRatioLockButton( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Sets whether the button state is locked.
+    /**
+     * Sets whether the button state is locked.
      * \param locked locked state
      * \see locked
      */
     void setLocked( const bool locked );
 
-    /** Returns whether the button state is locked.
+    /**
+     * Returns whether the button state is locked.
      * \returns true if the button state is locked.
      * \see setLocked
      */
@@ -78,9 +82,16 @@ class GUI_EXPORT QgsRatioLockButton : public QToolButton
      */
     void setHeightSpinBox( QDoubleSpinBox *widget );
 
+    /**
+     * Resets the current width/height ratio, taking the width and height
+     * from the current values of the width and height spin boxes.
+     */
+    void resetRatio();
+
   signals:
 
-    /** Emitted whenever the lock state changes.
+    /**
+     * Emitted whenever the lock state changes.
      */
     void lockChanged( const bool locked );
 

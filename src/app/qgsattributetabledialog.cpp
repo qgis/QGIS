@@ -87,6 +87,24 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QWidget
 {
   setObjectName( QStringLiteral( "QgsAttributeTableDialog/" ) + layer->id() );
   setupUi( this );
+  connect( mActionCopySelectedRows, &QAction::triggered, this, &QgsAttributeTableDialog::mActionCopySelectedRows_triggered );
+  connect( mActionPasteFeatures, &QAction::triggered, this, &QgsAttributeTableDialog::mActionPasteFeatures_triggered );
+  connect( mActionToggleEditing, &QAction::toggled, this, &QgsAttributeTableDialog::mActionToggleEditing_toggled );
+  connect( mActionSaveEdits, &QAction::triggered, this, &QgsAttributeTableDialog::mActionSaveEdits_triggered );
+  connect( mActionReload, &QAction::triggered, this, &QgsAttributeTableDialog::mActionReload_triggered );
+  connect( mActionInvertSelection, &QAction::triggered, this, &QgsAttributeTableDialog::mActionInvertSelection_triggered );
+  connect( mActionRemoveSelection, &QAction::triggered, this, &QgsAttributeTableDialog::mActionRemoveSelection_triggered );
+  connect( mActionSelectAll, &QAction::triggered, this, &QgsAttributeTableDialog::mActionSelectAll_triggered );
+  connect( mActionZoomMapToSelectedRows, &QAction::triggered, this, &QgsAttributeTableDialog::mActionZoomMapToSelectedRows_triggered );
+  connect( mActionPanMapToSelectedRows, &QAction::triggered, this, &QgsAttributeTableDialog::mActionPanMapToSelectedRows_triggered );
+  connect( mActionSelectedToTop, &QAction::toggled, this, &QgsAttributeTableDialog::mActionSelectedToTop_toggled );
+  connect( mActionAddAttribute, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddAttribute_triggered );
+  connect( mActionRemoveAttribute, &QAction::triggered, this, &QgsAttributeTableDialog::mActionRemoveAttribute_triggered );
+  connect( mActionOpenFieldCalculator, &QAction::triggered, this, &QgsAttributeTableDialog::mActionOpenFieldCalculator_triggered );
+  connect( mActionDeleteSelected, &QAction::triggered, this, &QgsAttributeTableDialog::mActionDeleteSelected_triggered );
+  connect( mMainView, &QgsDualView::currentChanged, this, &QgsAttributeTableDialog::mMainView_currentChanged );
+  connect( mActionAddFeature, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeature_triggered );
+  connect( mActionExpressionSelect, &QAction::triggered, this, &QgsAttributeTableDialog::mActionExpressionSelect_triggered );
 
   Q_FOREACH ( const QgsField &field, mLayer->fields() )
   {
@@ -492,7 +510,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
     context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), rownum, true ) );
 
     QVariant value = exp.evaluate( &context );
-    fld.convertCompatible( value );
+    ( void )fld.convertCompatible( value );
     // Bail if we have a update error
     if ( exp.hasEvalError() )
     {
@@ -515,10 +533,17 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
   {
     QMessageBox::critical( nullptr, tr( "Error" ), tr( "An error occurred while evaluating the calculation string:\n%1" ).arg( error ) );
     mLayer->destroyEditCommand();
-    return;
   }
+  else
+  {
+    mLayer->endEditCommand();
 
-  mLayer->endEditCommand();
+    // refresh table with updated values
+    // fixes https://issues.qgis.org/issues/17312
+    QgsAttributeTableModel *masterModel = mMainView->masterModel();
+    int modelColumn = masterModel->fieldCol( fieldindex );
+    masterModel->reload( masterModel->index( 0, modelColumn ), masterModel->index( masterModel->rowCount() - 1, modelColumn ) );
+  }
 }
 
 void QgsAttributeTableDialog::replaceSearchWidget( QWidget *oldw, QWidget *neww )
@@ -643,7 +668,7 @@ void QgsAttributeTableDialog::filterEdited()
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowEdited );
 }
 
-void QgsAttributeTableDialog::on_mActionSelectedToTop_toggled( bool checked )
+void QgsAttributeTableDialog::mActionSelectedToTop_toggled( bool checked )
 {
   if ( checked )
   {
@@ -655,7 +680,7 @@ void QgsAttributeTableDialog::on_mActionSelectedToTop_toggled( bool checked )
   }
 }
 
-void QgsAttributeTableDialog::on_mActionOpenFieldCalculator_triggered()
+void QgsAttributeTableDialog::mActionOpenFieldCalculator_triggered()
 {
   QgsAttributeTableModel *masterModel = mMainView->masterModel();
 
@@ -671,17 +696,17 @@ void QgsAttributeTableDialog::on_mActionOpenFieldCalculator_triggered()
   }
 }
 
-void QgsAttributeTableDialog::on_mActionSaveEdits_triggered()
+void QgsAttributeTableDialog::mActionSaveEdits_triggered()
 {
   QgisApp::instance()->saveEdits( mLayer, true, true );
 }
 
-void QgsAttributeTableDialog::on_mActionReload_triggered()
+void QgsAttributeTableDialog::mActionReload_triggered()
 {
   mMainView->masterModel()->layer()->dataProvider()->forceReload();
 }
 
-void QgsAttributeTableDialog::on_mActionAddFeature_triggered()
+void QgsAttributeTableDialog::mActionAddFeature_triggered()
 {
   if ( !mLayer->isEditable() )
     return;
@@ -696,55 +721,55 @@ void QgsAttributeTableDialog::on_mActionAddFeature_triggered()
   }
 }
 
-void QgsAttributeTableDialog::on_mActionExpressionSelect_triggered()
+void QgsAttributeTableDialog::mActionExpressionSelect_triggered()
 {
   QgsExpressionSelectionDialog *dlg = new QgsExpressionSelectionDialog( mLayer );
   dlg->setAttribute( Qt::WA_DeleteOnClose );
   dlg->show();
 }
 
-void QgsAttributeTableDialog::on_mActionCopySelectedRows_triggered()
+void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
 {
   QgisApp::instance()->editCopy( mLayer );
 }
 
-void QgsAttributeTableDialog::on_mActionPasteFeatures_triggered()
+void QgsAttributeTableDialog::mActionPasteFeatures_triggered()
 {
   QgisApp::instance()->editPaste( mLayer );
 }
 
 
-void QgsAttributeTableDialog::on_mActionZoomMapToSelectedRows_triggered()
+void QgsAttributeTableDialog::mActionZoomMapToSelectedRows_triggered()
 {
   QgisApp::instance()->mapCanvas()->zoomToSelected( mLayer );
 }
 
-void QgsAttributeTableDialog::on_mActionPanMapToSelectedRows_triggered()
+void QgsAttributeTableDialog::mActionPanMapToSelectedRows_triggered()
 {
   QgisApp::instance()->mapCanvas()->panToSelected( mLayer );
 }
 
-void QgsAttributeTableDialog::on_mActionInvertSelection_triggered()
+void QgsAttributeTableDialog::mActionInvertSelection_triggered()
 {
   mLayer->invertSelection();
 }
 
-void QgsAttributeTableDialog::on_mActionRemoveSelection_triggered()
+void QgsAttributeTableDialog::mActionRemoveSelection_triggered()
 {
   mLayer->removeSelection();
 }
 
-void QgsAttributeTableDialog::on_mActionSelectAll_triggered()
+void QgsAttributeTableDialog::mActionSelectAll_triggered()
 {
   mLayer->selectAll();
 }
 
-void QgsAttributeTableDialog::on_mActionDeleteSelected_triggered()
+void QgsAttributeTableDialog::mActionDeleteSelected_triggered()
 {
   QgisApp::instance()->deleteSelected( mLayer, this );
 }
 
-void QgsAttributeTableDialog::on_mMainView_currentChanged( int viewMode )
+void QgsAttributeTableDialog::mMainView_currentChanged( int viewMode )
 {
   mMainViewButtonGroup->button( viewMode )->click();
   updateMultiEditButtonState();
@@ -756,7 +781,7 @@ void QgsAttributeTableDialog::on_mMainView_currentChanged( int viewMode )
   s.setValue( QStringLiteral( "/qgis/attributeTableLastView" ), static_cast< int >( viewMode ) );
 }
 
-void QgsAttributeTableDialog::on_mActionToggleEditing_toggled( bool )
+void QgsAttributeTableDialog::mActionToggleEditing_toggled( bool )
 {
   if ( !mLayer )
     return;
@@ -800,7 +825,7 @@ void QgsAttributeTableDialog::editingToggled()
   // because model always reflects actual state when returning item flags
 }
 
-void QgsAttributeTableDialog::on_mActionAddAttribute_triggered()
+void QgsAttributeTableDialog::mActionAddAttribute_triggered()
 {
   if ( !mLayer )
   {
@@ -830,7 +855,7 @@ void QgsAttributeTableDialog::on_mActionAddAttribute_triggered()
   }
 }
 
-void QgsAttributeTableDialog::on_mActionRemoveAttribute_triggered()
+void QgsAttributeTableDialog::mActionRemoveAttribute_triggered()
 {
   if ( !mLayer )
   {

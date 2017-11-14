@@ -125,10 +125,6 @@ License: public-domain
  is used when saving/restoring a QGIS project.
  This file is in the public domain
 
-Files: python/ext-libs/pyspatialite/*
-Copyright: 2004-2010, Gerhard Häring <gh@ghaering.de>
-License: Zlib
-
 Files: python/plugins/processing/modeler/ModelerArrowItem.py
  src/app/qgssettingstree.cpp
  src/app/qgssettingstree.h

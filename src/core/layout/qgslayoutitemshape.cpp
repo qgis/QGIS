@@ -17,12 +17,17 @@
 #include "qgslayoutitemshape.h"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
+#include "qgssymbollayerutils.h"
+#include "qgslayoutmodel.h"
 
 #include <QPainter>
 
 QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   : QgsLayoutItem( layout )
+  , mCornerRadius( 0 )
 {
+  setBackgroundEnabled( false );
+  setFrameEnabled( false );
   QgsStringMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
   properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
@@ -31,6 +36,83 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
   properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
   mShapeStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
+  refreshSymbol();
+
+  connect( this, &QgsLayoutItemShape::sizePositionChanged, this, [ = ]
+  {
+    updateBoundingRect();
+    update();
+  } );
+
+#if 0 //TODO
+  if ( mComposition )
+  {
+    //connect to atlas feature changes
+    //to update symbol style (in case of data-defined symbology)
+    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerItem::repaint );
+  }
+#endif
+}
+
+QString QgsLayoutItemShape::displayName() const
+{
+  if ( !id().isEmpty() )
+  {
+    return id();
+  }
+
+  switch ( mShape )
+  {
+    case Ellipse:
+      return tr( "<Ellipse>" );
+    case Rectangle:
+      return tr( "<Rectangle>" );
+    case Triangle:
+      return tr( "<Triangle>" );
+  }
+
+  return tr( "<Shape>" );
+}
+
+void QgsLayoutItemShape::setShapeType( QgsLayoutItemShape::Shape type )
+{
+  if ( type == mShape )
+  {
+    return;
+  }
+
+  mShape = type;
+
+  if ( mLayout && id().isEmpty() )
+  {
+    //notify the model that the display name has changed
+    mLayout->itemsModel()->updateItemDisplayName( this );
+  }
+}
+
+void QgsLayoutItemShape::refreshSymbol()
+{
+  if ( layout() )
+  {
+    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( layout(), nullptr, layout()->context().dpi() );
+    mMaxSymbolBleed = ( 25.4 / layout()->context().dpi() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol.get(), rc );
+  }
+
+  updateBoundingRect();
+
+  update();
+  emit frameChanged();
+}
+
+void QgsLayoutItemShape::updateBoundingRect()
+{
+  QRectF rectangle = rect();
+  rectangle.adjust( -mMaxSymbolBleed, -mMaxSymbolBleed, mMaxSymbolBleed, mMaxSymbolBleed );
+  if ( rectangle != mCurrentRectangle )
+  {
+    prepareGeometryChange();
+    mCurrentRectangle = rectangle;
+  }
 }
 
 void QgsLayoutItemShape::setSymbol( QgsFillSymbol *symbol )
@@ -39,26 +121,20 @@ void QgsLayoutItemShape::setSymbol( QgsFillSymbol *symbol )
     return;
 
   mShapeStyleSymbol.reset( symbol->clone() );
+  refreshSymbol();
 }
 
-//
-// QgsLayoutItemRectangularShape
-//
-
-QgsLayoutItemRectangularShape::QgsLayoutItemRectangularShape( QgsLayout *layout )
-  : QgsLayoutItemShape( layout )
-  , mCornerRadius( 0.0 )
+QRectF QgsLayoutItemShape::boundingRect() const
 {
-
+  return mCurrentRectangle;
 }
 
-QgsLayoutItemRectangularShape *QgsLayoutItemRectangularShape::create( QgsLayout *layout, const QVariantMap &settings )
+double QgsLayoutItemShape::estimatedFrameBleed() const
 {
-  Q_UNUSED( settings );
-  return new QgsLayoutItemRectangularShape( layout );
+  return mMaxSymbolBleed;
 }
 
-void QgsLayoutItemRectangularShape::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemShape::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
 {
   QPainter *painter = context.painter();
   painter->setPen( Qt::NoPen );
@@ -67,56 +143,6 @@ void QgsLayoutItemRectangularShape::draw( QgsRenderContext &context, const QStyl
   double scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
 
   QPolygonF shapePolygon;
-  if ( mCornerRadius.length() > 0 )
-  {
-    //shapes with curves must be enlarged before conversion to QPolygonF, or
-    //the curves are approximated too much and appear jaggy
-    QTransform t = QTransform::fromScale( 100, 100 );
-    //inverse transform used to scale created polygons back to expected size
-    QTransform ti = t.inverted();
-
-    QPainterPath roundedRectPath;
-    double radius = mLayout->convertToLayoutUnits( mCornerRadius ) * scale;
-    roundedRectPath.addRoundedRect( QRectF( 0, 0, rect().width() * scale, rect().height() * scale ), radius, radius );
-    QPolygonF roundedPoly = roundedRectPath.toFillPolygon( t );
-    shapePolygon = ti.map( roundedPoly );
-  }
-  else
-  {
-    shapePolygon = QPolygonF( QRectF( 0, 0, rect().width() * scale, rect().height() * scale ) );
-  }
-
-  QList<QPolygonF> rings; //empty list
-
-  symbol()->startRender( context );
-  symbol()->renderPolygon( shapePolygon, &rings, nullptr, context );
-  symbol()->stopRender( context );
-}
-
-
-//
-// QgsLayoutItemEllipseShape
-//
-
-QgsLayoutItemEllipseShape::QgsLayoutItemEllipseShape( QgsLayout *layout )
-  : QgsLayoutItemShape( layout )
-{
-
-}
-
-QgsLayoutItemEllipseShape *QgsLayoutItemEllipseShape::create( QgsLayout *layout, const QVariantMap &settings )
-{
-  Q_UNUSED( settings );
-  return new QgsLayoutItemEllipseShape( layout );
-}
-
-void QgsLayoutItemEllipseShape::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
-{
-  QPainter *painter = context.painter();
-  painter->setPen( Qt::NoPen );
-  painter->setBrush( Qt::NoBrush );
-
-  double scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
 
   //shapes with curves must be enlarged before conversion to QPolygonF, or
   //the curves are approximated too much and appear jaggy
@@ -124,11 +150,43 @@ void QgsLayoutItemEllipseShape::draw( QgsRenderContext &context, const QStyleOpt
   //inverse transform used to scale created polygons back to expected size
   QTransform ti = t.inverted();
 
-  //create an ellipse
-  QPainterPath ellipsePath;
-  ellipsePath.addEllipse( QRectF( 0, 0, rect().width() * scale, rect().height() * scale ) );
-  QPolygonF ellipsePoly = ellipsePath.toFillPolygon( t );
-  QPolygonF shapePolygon = ti.map( ellipsePoly );
+  switch ( mShape )
+  {
+    case Ellipse:
+    {
+      //create an ellipse
+      QPainterPath ellipsePath;
+      ellipsePath.addEllipse( QRectF( 0, 0, rect().width() * scale, rect().height() * scale ) );
+      QPolygonF ellipsePoly = ellipsePath.toFillPolygon( t );
+      shapePolygon = ti.map( ellipsePoly );
+      break;
+    }
+    case Rectangle:
+    {
+      //if corner radius set, then draw a rounded rectangle
+      if ( mCornerRadius.length() > 0 )
+      {
+        QPainterPath roundedRectPath;
+        double radius = mLayout->convertToLayoutUnits( mCornerRadius ) * scale;
+        roundedRectPath.addRoundedRect( QRectF( 0, 0, rect().width() * scale, rect().height() * scale ), radius, radius );
+        QPolygonF roundedPoly = roundedRectPath.toFillPolygon( t );
+        shapePolygon = ti.map( roundedPoly );
+      }
+      else
+      {
+        shapePolygon = QPolygonF( QRectF( 0, 0, rect().width() * scale, rect().height() * scale ) );
+      }
+      break;
+    }
+    case Triangle:
+    {
+      shapePolygon << QPointF( 0, rect().height() * scale );
+      shapePolygon << QPointF( rect().width() * scale, rect().height() * scale );
+      shapePolygon << QPointF( rect().width() / 2.0 * scale, 0 );
+      shapePolygon << QPointF( 0, rect().height() * scale );
+      break;
+    }
+  }
 
   QList<QPolygonF> rings; //empty list
 
@@ -137,37 +195,30 @@ void QgsLayoutItemEllipseShape::draw( QgsRenderContext &context, const QStyleOpt
   symbol()->stopRender( context );
 }
 
-//
-// QgsLayoutItemTriangleShape
-//
-
-QgsLayoutItemTriangleShape::QgsLayoutItemTriangleShape( QgsLayout *layout )
-  : QgsLayoutItemShape( layout )
+bool QgsLayoutItemShape::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
+  element.setAttribute( QStringLiteral( "shapeType" ), mShape );
+  element.setAttribute( QStringLiteral( "cornerRadiusMeasure" ), mCornerRadius.encodeMeasurement() );
 
+  QDomElement shapeStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mShapeStyleSymbol.get(), document, context );
+  element.appendChild( shapeStyleElem );
+
+  return true;
 }
 
-QgsLayoutItemTriangleShape *QgsLayoutItemTriangleShape::create( QgsLayout *layout, const QVariantMap &settings )
+bool QgsLayoutItemShape::readPropertiesFromElement( const QDomElement &element, const QDomDocument &, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( settings );
-  return new QgsLayoutItemTriangleShape( layout );
-}
+  mShape = static_cast< Shape >( element.attribute( QStringLiteral( "shapeType" ), QStringLiteral( "0" ) ).toInt() );
+  if ( element.hasAttribute( QStringLiteral( "cornerRadiusMeasure" ) ) )
+    mCornerRadius = QgsLayoutMeasurement::decodeMeasurement( element.attribute( QStringLiteral( "cornerRadiusMeasure" ), QStringLiteral( "0" ) ) );
+  else
+    mCornerRadius = QgsLayoutMeasurement( element.attribute( QStringLiteral( "cornerRadius" ), QStringLiteral( "0" ) ).toDouble() );
 
-void QgsLayoutItemTriangleShape::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
-{
-  QPainter *painter = context.painter();
-  painter->setPen( Qt::NoPen );
-  painter->setBrush( Qt::NoBrush );
+  QDomElement shapeStyleSymbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
+  if ( !shapeStyleSymbolElem.isNull() )
+  {
+    mShapeStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( shapeStyleSymbolElem, context ) );
+  }
 
-  double scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
-  QPolygonF shapePolygon = QPolygonF() << QPointF( 0, rect().height() * scale )
-                           << QPointF( rect().width() * scale, rect().height() * scale )
-                           << QPointF( rect().width() / 2.0 * scale, 0 )
-                           << QPointF( 0, rect().height() * scale );
-
-  QList<QPolygonF> rings; //empty list
-
-  symbol()->startRender( context );
-  symbol()->renderPolygon( shapePolygon, &rings, nullptr, context );
-  symbol()->stopRender( context );
+  return true;
 }

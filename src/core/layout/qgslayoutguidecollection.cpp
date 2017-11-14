@@ -25,7 +25,7 @@
 // QgsLayoutGuide
 //
 
-QgsLayoutGuide::QgsLayoutGuide( Orientation orientation, const QgsLayoutMeasurement &position, QgsLayoutItemPage *page )
+QgsLayoutGuide::QgsLayoutGuide( Qt::Orientation orientation, const QgsLayoutMeasurement &position, QgsLayoutItemPage *page )
   : QObject( nullptr )
   , mOrientation( orientation )
   , mPosition( position )
@@ -84,7 +84,7 @@ void QgsLayoutGuide::update()
   bool showGuide = mLayout->guides().visible();
   switch ( mOrientation )
   {
-    case Horizontal:
+    case Qt::Horizontal:
       if ( layoutPos > mPage->rect().height() )
       {
         mLineItem->hide();
@@ -97,7 +97,7 @@ void QgsLayoutGuide::update()
 
       break;
 
-    case Vertical:
+    case Qt::Vertical:
       if ( layoutPos > mPage->rect().width() )
       {
         mLineItem->hide();
@@ -124,10 +124,10 @@ double QgsLayoutGuide::layoutPosition() const
 
   switch ( mOrientation )
   {
-    case Horizontal:
+    case Qt::Horizontal:
       return mLineItem->mapToScene( mLineItem->line().p1() ).y();
 
-    case Vertical:
+    case Qt::Vertical:
       return mLineItem->mapToScene( mLineItem->line().p1() ).x();
   }
   return -999; // avoid warning
@@ -141,11 +141,11 @@ void QgsLayoutGuide::setLayoutPosition( double position )
   double p = 0;
   switch ( mOrientation )
   {
-    case Horizontal:
+    case Qt::Horizontal:
       p = mLineItem->mapFromScene( QPointF( 0, position ) ).y();
       break;
 
-    case Vertical:
+    case Qt::Vertical:
       p = mLineItem->mapFromScene( QPointF( position, 0 ) ).x();
       break;
   }
@@ -180,7 +180,7 @@ void QgsLayoutGuide::setLayout( QgsLayout *layout )
   update();
 }
 
-QgsLayoutGuide::Orientation QgsLayoutGuide::orientation() const
+Qt::Orientation QgsLayoutGuide::orientation() const
 {
   return mOrientation;
 }
@@ -286,7 +286,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
 
       QgsLayoutMeasurement m = guide->position();
       m.setLength( newPos );
-      mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guide moved" ), Move + index.row() );
+      mLayout->undoStack()->beginCommand( mPageCollection, tr( "Move Guide" ), Move + index.row() );
       whileBlocking( guide )->setPosition( m );
       guide->update();
       mLayout->undoStack()->endCommand();
@@ -302,7 +302,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
 
       QgsLayoutMeasurement m = guide->position();
       m.setLength( newPos );
-      mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guide moved" ), Move + index.row() );
+      mLayout->undoStack()->beginCommand( mPageCollection, tr( "Move Guide" ), Move + index.row() );
       whileBlocking( guide )->setPosition( m );
       guide->update();
       mLayout->undoStack()->endCommand();
@@ -317,7 +317,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
       if ( !ok )
         return false;
 
-      mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guide moved" ), Move + index.row() );
+      mLayout->undoStack()->beginCommand( mPageCollection, tr( "Move Guide" ), Move + index.row() );
       whileBlocking( guide )->setLayoutPosition( newPos );
       mLayout->undoStack()->endCommand();
       emit dataChanged( index, index, QVector<int>() << role );
@@ -333,7 +333,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
 
       QgsLayoutMeasurement m = guide->position();
       m.setUnits( static_cast< QgsUnitTypes::LayoutUnit >( units ) );
-      mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guide moved" ), Move + index.row() );
+      mLayout->undoStack()->beginCommand( mPageCollection, tr( "Move Guide" ), Move + index.row() );
       whileBlocking( guide )->setPosition( m );
       guide->update();
       mLayout->undoStack()->endCommand();
@@ -369,7 +369,7 @@ bool QgsLayoutGuideCollection::removeRows( int row, int count, const QModelIndex
     return false;
 
   if ( !mBlockUndoCommands )
-    mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guide(s) removed" ), Remove + row );
+    mLayout->undoStack()->beginCommand( mPageCollection, tr( "Remove Guide(s)" ), Remove + row );
   beginRemoveRows( parent, row, row + count - 1 );
   for ( int i = 0; i < count; ++ i )
   {
@@ -386,7 +386,7 @@ void QgsLayoutGuideCollection::addGuide( QgsLayoutGuide *guide )
   guide->setLayout( mLayout );
 
   if ( !mBlockUndoCommands )
-    mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guide created" ) );
+    mLayout->undoStack()->beginCommand( mPageCollection, tr( "Create Guide" ) );
   beginInsertRows( QModelIndex(), mGuides.count(), mGuides.count() );
   mGuides.append( guide );
   endInsertRows();
@@ -420,7 +420,7 @@ void QgsLayoutGuideCollection::setGuideLayoutPosition( QgsLayoutGuide *guide, do
 
 void QgsLayoutGuideCollection::clear()
 {
-  mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guides cleared" ) );
+  mLayout->undoStack()->beginCommand( mPageCollection, tr( "Clear Guides" ) );
   beginResetModel();
   qDeleteAll( mGuides );
   mGuides.clear();
@@ -430,7 +430,7 @@ void QgsLayoutGuideCollection::clear()
 
 void QgsLayoutGuideCollection::applyGuidesToAllOtherPages( int sourcePage )
 {
-  mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guides applied" ) );
+  mLayout->undoStack()->beginCommand( mPageCollection, tr( "Apply Guides" ) );
   mBlockUndoCommands = true;
   QgsLayoutItemPage *page = mPageCollection->page( sourcePage );
   // remove other page's guides
@@ -469,7 +469,7 @@ void QgsLayoutGuideCollection::update()
   }
 }
 
-QList<QgsLayoutGuide *> QgsLayoutGuideCollection::guides( QgsLayoutGuide::Orientation orientation, int page )
+QList<QgsLayoutGuide *> QgsLayoutGuideCollection::guides( Qt::Orientation orientation, int page )
 {
   QList<QgsLayoutGuide *> res;
   Q_FOREACH ( QgsLayoutGuide *guide, mGuides )
@@ -499,7 +499,7 @@ bool QgsLayoutGuideCollection::visible() const
 
 void QgsLayoutGuideCollection::setVisible( bool visible )
 {
-  mLayout->undoStack()->beginCommand( mPageCollection, tr( "Guide visibility changed" ) );
+  mLayout->undoStack()->beginCommand( mPageCollection, tr( "Change Guide Visibility" ) );
   mGuidesVisible = visible;
   mLayout->undoStack()->endCommand();
   update();
@@ -556,7 +556,7 @@ bool QgsLayoutGuideCollection::readXml( const QDomElement &e, const QDomDocument
   for ( int i = 0; i < guideNodeList.size(); ++i )
   {
     QDomElement element = guideNodeList.at( i ).toElement();
-    QgsLayoutGuide::Orientation orientation = static_cast< QgsLayoutGuide::Orientation >( element.attribute( QStringLiteral( "orientation" ), QStringLiteral( "0" ) ).toInt() );
+    Qt::Orientation orientation = static_cast< Qt::Orientation >( element.attribute( QStringLiteral( "orientation" ), QStringLiteral( "1" ) ).toInt() );
     double pos = element.attribute( QStringLiteral( "position" ), QStringLiteral( "0" ) ).toDouble();
     QgsUnitTypes::LayoutUnit unit = QgsUnitTypes::decodeLayoutUnit( element.attribute( QStringLiteral( "units" ) ) );
     int page = element.attribute( QStringLiteral( "page" ), QStringLiteral( "0" ) ).toInt();
@@ -574,7 +574,7 @@ bool QgsLayoutGuideCollection::readXml( const QDomElement &e, const QDomDocument
 // QgsLayoutGuideProxyModel
 //
 
-QgsLayoutGuideProxyModel::QgsLayoutGuideProxyModel( QObject *parent, QgsLayoutGuide::Orientation orientation, int page )
+QgsLayoutGuideProxyModel::QgsLayoutGuideProxyModel( QObject *parent, Qt::Orientation orientation, int page )
   : QSortFilterProxyModel( parent )
   , mOrientation( orientation )
   , mPage( page )
@@ -592,7 +592,7 @@ void QgsLayoutGuideProxyModel::setPage( int page )
 bool QgsLayoutGuideProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
-  QgsLayoutGuide::Orientation orientation = static_cast< QgsLayoutGuide::Orientation>( sourceModel()->data( index, QgsLayoutGuideCollection::OrientationRole ).toInt() );
+  Qt::Orientation orientation = static_cast< Qt::Orientation>( sourceModel()->data( index, QgsLayoutGuideCollection::OrientationRole ).toInt() );
   if ( orientation != mOrientation )
     return false;
 

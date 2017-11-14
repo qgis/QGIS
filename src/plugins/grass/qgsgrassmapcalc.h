@@ -124,11 +124,11 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     void mapChanged( const QString &text );
 
     //! Constant changed
-    void on_mConstantLineEdit_textChanged() { constantChanged(); }
+    void mConstantLineEdit_textChanged() { constantChanged(); }
     void constantChanged();
 
     //! Function selection changed
-    void on_mFunctionComboBox_activated() { functionChanged(); }
+    void mFunctionComboBox_activated() { functionChanged(); }
     void functionChanged();
 
     //! Save current state to file
@@ -504,7 +504,7 @@ class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalc
     std::vector<QPoint> mPoints;
 
     // Selected end, -1 for whole connector
-    int mSelectedEnd;
+    int mSelectedEnd = -1;
 
     // Connected objects
     std::vector<QgsGrassMapcalcObject *> mSocketObjects;

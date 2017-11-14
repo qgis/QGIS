@@ -34,6 +34,7 @@
 #include "qgsrasterpyramid.h"
 #include "qgspointxy.h"
 #include "qgssettings.h"
+#include "qgsogrutils.h"
 
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"
@@ -116,7 +117,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
   setError( error );
 }
 
-QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
+QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update, GDALDatasetH dataset )
   : QgsRasterDataProvider( uri )
   , mUpdate( update )
 {
@@ -155,29 +156,35 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
   }
 
   mGdalDataset = nullptr;
-
-  // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
-  QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
-  if ( !vsiPrefix.isEmpty() )
+  if ( dataset )
   {
-    if ( !uri.startsWith( vsiPrefix ) )
-      setDataSourceUri( vsiPrefix + uri );
-    QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix, dataSourceUri() ) );
+    mGdalBaseDataset = dataset;
   }
-
-  QString gdalUri = dataSourceUri();
-
-  CPLErrorReset();
-  mGdalBaseDataset = gdalOpen( gdalUri.toUtf8().constData(), mUpdate ? GA_Update : GA_ReadOnly );
-
-  if ( !mGdalBaseDataset )
+  else
   {
-    QString msg = QStringLiteral( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    appendError( ERRMSG( msg ) );
-    return;
-  }
+    // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
+    QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
+    if ( !vsiPrefix.isEmpty() )
+    {
+      if ( !uri.startsWith( vsiPrefix ) )
+        setDataSourceUri( vsiPrefix + uri );
+      QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix, dataSourceUri() ) );
+    }
 
-  QgsDebugMsg( "GdalDataset opened" );
+    QString gdalUri = dataSourceUri();
+
+    CPLErrorReset();
+    mGdalBaseDataset = gdalOpen( gdalUri.toUtf8().constData(), mUpdate ? GA_Update : GA_ReadOnly );
+
+    if ( !mGdalBaseDataset )
+    {
+      QString msg = QStringLiteral( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
+      appendError( ERRMSG( msg ) );
+      return;
+    }
+
+    QgsDebugMsg( "GdalDataset opened" );
+  }
   initBaseDataset();
 }
 
@@ -754,9 +761,8 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   if ( !myWarpOptions->pTransformerArg )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot GDALCreateGenImgProjTransformer: " )
-                          + QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    return;
+                          QObject::tr( "Cannot GDALCreateGenImgProjTransformer: %1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ); // missing word?
+                          return;
 
   }
 
@@ -785,9 +791,8 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   if ( myOperation.Initialize( myWarpOptions ) != CE_None )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot inittialize GDALWarpOperation : " )
-                          + QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    return;
+                          QObject::tr( "Cannot initialize GDAL Warp operation : %1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+                          return;
 
   }
   CPLErrorReset();
@@ -796,7 +801,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   if ( myErr != CPLE_None )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot ChunkAndWarpImage: %1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+                          QObject::tr( "Cannot chunk and warp image: %1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     return;
   }
 
@@ -1861,7 +1866,8 @@ QGISEXTERN QgsGdalProvider *classFactory( const QString *uri )
   return new QgsGdalProvider( *uri );
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
@@ -1894,11 +1900,11 @@ QGISEXTERN bool isProvider()
   call.  The regular express, glob, will have both all lower and upper
   case versions added.
 
-  @note
+  \note
 
   Copied from qgisapp.cpp.
 
-  @todo XXX This should probably be generalized and moved to a standard
+  \todo XXX This should probably be generalized and moved to a standard
             utility type thingy.
 
 */
@@ -1916,14 +1922,6 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 
   GDALDriverH myGdalDriver;           // current driver
 
-  char **myGdalDriverMetadata;        // driver metadata strings
-
-  QString myGdalDriverLongName( QLatin1String( "" ) ); // long name for the given driver
-  QString myGdalDriverExtension( QLatin1String( "" ) );  // file name extension for given driver
-  QString myGdalDriverDescription;    // QString wrapper of GDAL driver description
-
-  QStringList metadataTokens;   // essentially the metadata string delimited by '='
-
   QStringList catchallFilter;   // for Any file(*.*), but also for those
   // drivers with no specific file filter
 
@@ -1937,10 +1935,6 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
   // theoreticaly we can open those files because there exists a
   // driver for them, the user will have to use the "All Files" to
   // open datasets with no explicitly defined file name extension.
-  // Note that file name extension strings are of the form
-  // "DMD_EXTENSION=.*".  We'll also store the long name of the
-  // driver, which will be found in DMD_LONGNAME, which will have the
-  // same form.
 
   fileFiltersString.clear();
 
@@ -1959,100 +1953,75 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
     }
 
     // in GDAL 2.0 vector and mixed drivers are returned by GDALGetDriver, so filter out non-raster drivers
-    // TODO also make sure drivers are not loaded unnecessarily (as GDALAllRegister() and OGRRegisterAll load all drivers)
     if ( QString( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_RASTER, nullptr ) ) != QLatin1String( "YES" ) )
       continue;
 
     // now we need to see if the driver is for something currently
     // supported; if not, we give it a miss for the next driver
 
-    myGdalDriverDescription = GDALGetDescription( myGdalDriver );
+    QString myGdalDriverDescription = GDALGetDescription( myGdalDriver );
+    if ( myGdalDriverDescription == QLatin1String( "BIGGIF" ) )
+    {
+      // BIGGIF is a technical driver. The plain GIF driver will do
+      continue;
+    }
+
     // QgsDebugMsg(QString("got driver string %1").arg(myGdalDriverDescription));
 
-    myGdalDriverExtension.clear();
-    myGdalDriverLongName.clear();
+    QString myGdalDriverExtensions = GDALGetMetadataItem( myGdalDriver, GDAL_DMD_EXTENSIONS, "" );
+    QString myGdalDriverLongName = GDALGetMetadataItem( myGdalDriver, GDAL_DMD_LONGNAME, "" );
+    // remove any superfluous (.*) strings at the end as
+    // they'll confuse QFileDialog::getOpenFileNames()
+    myGdalDriverLongName.remove( QRegExp( "\\(.*\\)$" ) );
 
-    myGdalDriverMetadata = GDALGetMetadata( myGdalDriver, nullptr );
-
-    // presumably we know we've run out of metadta if either the
-    // address is 0, or the first character is null
-    while ( myGdalDriverMetadata && myGdalDriverMetadata[0] )
+    // if we have both the file name extension and the long name,
+    // then we've all the information we need for the current
+    // driver; therefore emit a file filter string and move to
+    // the next driver
+    if ( !( myGdalDriverExtensions.isEmpty() || myGdalDriverLongName.isEmpty() ) )
     {
-      metadataTokens = QString( *myGdalDriverMetadata ).split( '=', QString::SkipEmptyParts );
-      // QgsDebugMsg(QString("\t%1").arg(*myGdalDriverMetadata));
+      const QStringList splitExtensions = myGdalDriverExtensions.split( ' ', QString::SkipEmptyParts );
 
-      // XXX add check for malformed metadataTokens
+      // XXX add check for SDTS; in that case we want (*CATD.DDF)
+      QString glob;
 
-      // Note that it's oddly possible for there to be a
-      // DMD_EXTENSION with no corresponding defined extension
-      // string; so we check that there're more than two tokens.
-
-      if ( metadataTokens.count() > 1 )
+      for ( const QString &ext : splitExtensions )
       {
-        if ( "DMD_EXTENSION" == metadataTokens[0] )
-        {
-          myGdalDriverExtension = metadataTokens[1];
-
-        }
-        else if ( "DMD_LONGNAME" == metadataTokens[0] )
-        {
-          myGdalDriverLongName = metadataTokens[1];
-
-          // remove any superfluous (.*) strings at the end as
-          // they'll confuse QFileDialog::getOpenFileNames()
-
-          myGdalDriverLongName.remove( QRegExp( "\\(.*\\)$" ) );
-        }
+        // This hacking around that removes '/' is no longer necessary with GDAL 2.3
+        extensions << QString( ext ).remove( '/' ).remove( '*' ).remove( '.' );
+        if ( !glob.isEmpty() )
+          glob += QLatin1String( " " );
+        glob += "*." + QString( ext ).replace( '/', QLatin1String( " *." ) );
       }
 
-      // if we have both the file name extension and the long name,
-      // then we've all the information we need for the current
-      // driver; therefore emit a file filter string and move to
-      // the next driver
-      if ( !( myGdalDriverExtension.isEmpty() || myGdalDriverLongName.isEmpty() ) )
+      // Add only the first JP2 driver found to the filter list (it's the one GDAL uses)
+      if ( myGdalDriverDescription == QLatin1String( "JPEG2000" ) ||
+           myGdalDriverDescription.startsWith( QLatin1String( "JP2" ) ) ) // JP2ECW, JP2KAK, JP2MrSID
       {
-        // XXX add check for SDTS; in that case we want (*CATD.DDF)
-        QString glob = "*." + myGdalDriverExtension.replace( '/', QLatin1String( " *." ) );
-        extensions << myGdalDriverExtension.remove( '/' ).remove( '*' ).remove( '.' );
-        // Add only the first JP2 driver found to the filter list (it's the one GDAL uses)
-        if ( myGdalDriverDescription == QLatin1String( "JPEG2000" ) ||
-             myGdalDriverDescription.startsWith( QLatin1String( "JP2" ) ) ) // JP2ECW, JP2KAK, JP2MrSID
-        {
-          if ( jp2Driver )
-            break; // skip if already found a JP2 driver
+        if ( jp2Driver )
+          continue; // skip if already found a JP2 driver
 
-          jp2Driver = myGdalDriver;   // first JP2 driver found
+        jp2Driver = myGdalDriver;   // first JP2 driver found
+        if ( !glob.contains( "j2k" ) )
+        {
           glob += QLatin1String( " *.j2k" );         // add alternate extension
           extensions << QStringLiteral( "j2k" );
         }
-        else if ( myGdalDriverDescription == QLatin1String( "GTiff" ) )
-        {
-          glob += QLatin1String( " *.tiff" );
-          extensions << QStringLiteral( "tiff" );
-        }
-        else if ( myGdalDriverDescription == QLatin1String( "JPEG" ) )
-        {
-          glob += QLatin1String( " *.jpeg" );
-          extensions << QStringLiteral( "jpeg" );
-        }
-        else if ( myGdalDriverDescription == QLatin1String( "VRT" ) )
-        {
-          glob += QLatin1String( " *.ovr" );
-          extensions << QStringLiteral( "ovr" );
-        }
-
-        fileFiltersString += createFileFilter_( myGdalDriverLongName, glob );
-
-        break;            // ... to next driver, if any.
+      }
+      else if ( myGdalDriverDescription == QLatin1String( "VRT" ) )
+      {
+        glob += QLatin1String( " *.ovr" );
+        extensions << QStringLiteral( "ovr" );
       }
 
-      ++myGdalDriverMetadata;
+      fileFiltersString += createFileFilter_( myGdalDriverLongName, glob );
 
-    }                       // each metadata item
+    }
+
 
     //QgsDebugMsg(QString("got driver Desc=%1 LongName=%2").arg(myGdalDriverDescription).arg(myGdalDriverLongName));
 
-    if ( myGdalDriverExtension.isEmpty() && !myGdalDriverLongName.isEmpty() )
+    if ( myGdalDriverExtensions.isEmpty() && !myGdalDriverLongName.isEmpty() )
     {
       // Then what we have here is a driver with no corresponding
       // file extension; e.g., GRASS.  In which case we append the
@@ -2065,29 +2034,9 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
       // DMD_EXTENSION; so let's check for them here and handle
       // them appropriately
 
-      // USGS DEMs use "*.dem"
-      if ( myGdalDriverDescription.startsWith( QLatin1String( "USGSDEM" ) ) )
+      if ( myGdalDriverDescription.startsWith( QLatin1String( "EHdr" ) ) )
       {
-        fileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "*.dem" ) );
-        extensions << QStringLiteral( "dem" );
-      }
-      else if ( myGdalDriverDescription.startsWith( QLatin1String( "DTED" ) ) )
-      {
-        // DTED use "*.dt0, *.dt1, *.dt2"
-        QString glob = QStringLiteral( "*.dt0" );
-        glob += QLatin1String( " *.dt1" );
-        glob += QLatin1String( " *.dt2" );
-        fileFiltersString += createFileFilter_( myGdalDriverLongName, glob );
-        extensions << QStringLiteral( "dt0" ) << QStringLiteral( "dt1" ) << QStringLiteral( "dt2" );
-      }
-      else if ( myGdalDriverDescription.startsWith( QLatin1String( "MrSID" ) ) )
-      {
-        // MrSID use "*.sid"
-        fileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "*.sid" ) );
-        extensions << QStringLiteral( "sid" );
-      }
-      else if ( myGdalDriverDescription.startsWith( QLatin1String( "EHdr" ) ) )
-      {
+        // Fixed in GDAL 2.3
         fileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "*.bil" ) );
         extensions << QStringLiteral( "bil" );
       }
@@ -2095,12 +2044,6 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
       {
         fileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "hdr.adf" ) );
         wildcards << QStringLiteral( "hdr.adf" );
-      }
-      else if ( myGdalDriverDescription == QLatin1String( "HDF4" ) )
-      {
-        // HDF4 extension missing in driver metadata
-        fileFiltersString += createFileFilter_( myGdalDriverLongName, QStringLiteral( "*.hdf" ) );
-        extensions << QStringLiteral( "hdf" );
       }
       else
       {
@@ -2135,7 +2078,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString &fileFiltersString, QS
 
 QGISEXTERN bool isValidRasterFileName( QString const &fileNameQString, QString &retErrMsg )
 {
-  GDALDatasetH myDataset;
+  gdal::dataset_unique_ptr myDataset;
 
   QgsGdalProviderBase::registerGdalDrivers();
 
@@ -2155,18 +2098,16 @@ QGISEXTERN bool isValidRasterFileName( QString const &fileNameQString, QString &
 
   //open the file using gdal making sure we have handled locale properly
   //myDataset = GDALOpen( QFile::encodeName( fileNameQString ).constData(), GA_ReadOnly );
-  myDataset = QgsGdalProviderBase::gdalOpen( fileName.toUtf8().constData(), GA_ReadOnly );
+  myDataset.reset( QgsGdalProviderBase::gdalOpen( fileName.toUtf8().constData(), GA_ReadOnly ) );
   if ( !myDataset )
   {
     if ( CPLGetLastErrorNo() != CPLE_OpenFailed )
       retErrMsg = QString::fromUtf8( CPLGetLastErrorMsg() );
     return false;
   }
-  else if ( GDALGetRasterCount( myDataset ) == 0 )
+  else if ( GDALGetRasterCount( myDataset.get() ) == 0 )
   {
-    QStringList layers = QgsGdalProvider::subLayers( myDataset );
-    GDALClose( myDataset );
-    myDataset = nullptr;
+    QStringList layers = QgsGdalProvider::subLayers( myDataset.get() );
     if ( layers.isEmpty() )
     {
       retErrMsg = QObject::tr( "This raster file has no bands and is invalid as a raster layer." );
@@ -2176,7 +2117,6 @@ QGISEXTERN bool isValidRasterFileName( QString const &fileNameQString, QString &
   }
   else
   {
-    GDALClose( myDataset );
     return true;
   }
 }
@@ -2729,7 +2669,7 @@ QGISEXTERN QgsGdalProvider *create(
   //create dataset
   CPLErrorReset();
   char **papszOptions = papszFromStringList( createOptions );
-  GDALDatasetH dataset = GDALCreate( driver, uri.toUtf8().constData(), width, height, nBands, ( GDALDataType )type, papszOptions );
+  gdal::dataset_unique_ptr dataset( GDALCreate( driver, uri.toUtf8().constData(), width, height, nBands, ( GDALDataType )type, papszOptions ) );
   CSLDestroy( papszOptions );
   if ( !dataset )
   {
@@ -2738,11 +2678,10 @@ QGISEXTERN QgsGdalProvider *create(
     return new QgsGdalProvider( uri, error );
   }
 
-  GDALSetGeoTransform( dataset, geoTransform );
-  GDALSetProjection( dataset, crs.toWkt().toLocal8Bit().data() );
-  GDALClose( dataset );
+  GDALSetGeoTransform( dataset.get(), geoTransform );
+  GDALSetProjection( dataset.get(), crs.toWkt().toLocal8Bit().data() );
 
-  return new QgsGdalProvider( uri, true );
+  return new QgsGdalProvider( uri, true, dataset.release() );
 }
 
 bool QgsGdalProvider::write( void *data, int band, int width, int height, int xOffset, int yOffset )

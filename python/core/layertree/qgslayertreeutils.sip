@@ -101,7 +101,11 @@ Test if one of the layers in a group has an expression filter
 
     static QgsLayerTreeLayer *insertLayerBelow( QgsLayerTreeGroup *group, const QgsMapLayer *refLayer, QgsMapLayer *layerToInsert );
 %Docstring
-:return: the new tree layer
+ Insert a QgsMapLayer just below another one
+ \param group the tree group where layers are (can be the root group)
+ \param refLayer the reference layer
+ \param layerToInsert the new layer to insert just below the reference layer
+ :return: the new tree layer
  :rtype: QgsLayerTreeLayer
 %End
 };

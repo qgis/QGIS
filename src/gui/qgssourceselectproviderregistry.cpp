@@ -97,7 +97,7 @@ void QgsSourceSelectProviderRegistry::init()
     {
       QList<QgsSourceSelectProvider *> *providerList = sourceSelectProvidersFn();
       // the function is a factory - we keep ownership of the returned providers
-      for ( auto provider : qgsAsConst( *providerList ) )
+      for ( auto provider : qgis::as_const( *providerList ) )
       {
         addProvider( provider );
       }

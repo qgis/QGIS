@@ -36,7 +36,8 @@ class QgsTerrainEntity;
 class QgsTerrainTileEntity;
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Base class for chunk loaders for terrain tiles.
  * Adds functionality for asynchronous rendering of terrain tile map texture and access to the terrain entity.
  * \since QGIS 3.0
@@ -59,10 +60,10 @@ class QgsTerrainTileLoader : public QgsChunkLoader
     void onImageReady( int jobId, const QImage &image );
 
   private:
-    QgsTerrainEntity *mTerrain;
+    QgsTerrainEntity *mTerrain = nullptr;
     QgsRectangle mExtentMapCrs;
     QString mTileDebugText;
-    int mTextureJobId;
+    int mTextureJobId = -1;
     QImage mTextureImage;
 };
 

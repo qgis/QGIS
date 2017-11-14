@@ -116,6 +116,7 @@ return index of category with specified value (-1 if not found)
 
     int categoryIndexForLabel( const QString &val );
 %Docstring
+ return index of category with specified label (-1 if not found or not unique)
 .. versionadded:: 2.5
  :rtype: int
 %End
@@ -220,7 +221,9 @@ create renderer from XML element
 
     static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
-:return: a new renderer if the conversion was possible, otherwise 0.
+ creates a QgsCategorizedSymbolRenderer from an existing renderer.
+.. versionadded:: 2.5
+ :return: a new renderer if the conversion was possible, otherwise 0.
  :rtype: QgsCategorizedSymbolRenderer
 %End
 

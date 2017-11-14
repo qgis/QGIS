@@ -21,7 +21,8 @@
 #include <QToolButton>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSearchWidgetToolButton
  * A tool button widget which is displayed next to search widgets in forms, and
  * allows for controlling how the widget behaves and how the filtering/searching
@@ -34,12 +35,14 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
 
   public:
 
-    /** Constructor for QgsSearchWidgetToolButton.
+    /**
+     * Constructor for QgsSearchWidgetToolButton.
      * \param parent parent object
      */
     explicit QgsSearchWidgetToolButton( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
-    /** Sets the available filter flags to show in the widget. Any active flags
+    /**
+     * Sets the available filter flags to show in the widget. Any active flags
      * (see activeFlags()) which are not present in the new available filter
      * flags will be cleared;
      * \param flags available flags to show in widget
@@ -49,20 +52,23 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
      */
     void setAvailableFlags( QgsSearchWidgetWrapper::FilterFlags flags );
 
-    /** Sets the default filter flags to show in the widget.
+    /**
+     * Sets the default filter flags to show in the widget.
      * \param flags default flags to show in widget
      * \see setAvailableFlags()
      * \see setActiveFlags()
      */
     void setDefaultFlags( QgsSearchWidgetWrapper::FilterFlags flags );
 
-    /** Returns the available filter flags shown in the widget.
+    /**
+     * Returns the available filter flags shown in the widget.
      * \see setAvailableFlags()
      * \see activeFlags()
      */
     QgsSearchWidgetWrapper::FilterFlags availableFlags() const { return mAvailableFilterFlags; }
 
-    /** Sets the current active filter flags for the widget. Any flags
+    /**
+     * Sets the current active filter flags for the widget. Any flags
      * which are not present in the available filter flags (see availableFlags())
      * will not be set.
      * \param flags active flags to show in widget
@@ -72,7 +78,8 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
      */
     void setActiveFlags( QgsSearchWidgetWrapper::FilterFlags flags );
 
-    /** Toggles an individual active filter flag for the widget. Any flags
+    /**
+     * Toggles an individual active filter flag for the widget. Any flags
      * which are not present in the available filter flags (see availableFlags())
      * will be ignore. Other flags may be cleared if they conflict with the newly
      * toggled flag.
@@ -82,14 +89,16 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
      */
     void toggleFlag( QgsSearchWidgetWrapper::FilterFlag flag );
 
-    /** Returns the active filter flags shown in the widget.
+    /**
+     * Returns the active filter flags shown in the widget.
      * \see setActiveFlags()
      * \see toggleFlag()
      * \see availableFlags()
      */
     QgsSearchWidgetWrapper::FilterFlags activeFlags() const { return mFilterFlags; }
 
-    /** Returns true if the widget is set to be included in the search.
+    /**
+     * Returns true if the widget is set to be included in the search.
      * \see setInactive()
      * \see setActive()
      */
@@ -97,13 +106,15 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
 
   public slots:
 
-    /** Sets the search widget as inactive, ie do not search the corresponding field.
+    /**
+     * Sets the search widget as inactive, ie do not search the corresponding field.
      * \see isActive()
      * \see setActive()
      */
     void setInactive();
 
-    /** Sets the search widget as active by selecting the first available search type.
+    /**
+     * Sets the search widget as active by selecting the first available search type.
      * \see isActive()
      * \see setInactive()
      */
@@ -111,7 +122,8 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
 
   signals:
 
-    /** Emitted when the active flags selected in the widget is changed
+    /**
+     * Emitted when the active flags selected in the widget is changed
      * \param flags active flags
      */
     void activeFlagsChanged( QgsSearchWidgetWrapper::FilterFlags flags );

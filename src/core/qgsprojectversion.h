@@ -22,7 +22,8 @@
 #include <QStringList>
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A class to describe the version of a project.
  * Used in places where you need to check if the current version
  * of QGIS is greater than the one used to create a project file.
@@ -36,8 +37,7 @@ class CORE_EXPORT QgsProjectVersion
     /**
      * Creates a new NULL version
      */
-    QgsProjectVersion()
-    {}
+    QgsProjectVersion() = default;
 
     QgsProjectVersion( int major, int minor, int sub, const QString &name = "" );
     QgsProjectVersion( const QString &string );
@@ -51,19 +51,23 @@ class CORE_EXPORT QgsProjectVersion
      */
     bool isNull() const;
 
-    /** Boolean equal operator
+    /**
+     * Boolean equal operator
      */
     bool operator==( const QgsProjectVersion &other ) const;
 
-    /** Boolean not equal operator
+    /**
+     * Boolean not equal operator
      */
     bool operator!=( const QgsProjectVersion &other ) const;
 
-    /** Boolean >= operator
+    /**
+     * Boolean >= operator
      */
     bool operator>=( const QgsProjectVersion &other ) const;
 
-    /** Boolean > operator
+    /**
+     * Boolean > operator
      */
     bool operator>( const QgsProjectVersion &other ) const;
 

@@ -34,6 +34,7 @@ class QgsFeatureSink;
 class QgsProcessingFeatureSource;
 class QgsProcessingOutputDefinition;
 class QgsProcessingFeedback;
+class QgsProcessingProvider;
 
 /**
  * \class QgsProcessingFeatureSourceDefinition
@@ -137,7 +138,7 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
      * to automatically load the resulting sink/layer after completing processing.
      * The default behavior is not to load the result into any project (nullptr).
      */
-    QgsProject *destinationProject;
+    QgsProject *destinationProject = nullptr;
 
     /**
      * Name to use for sink if it's to be loaded into a destination project.
@@ -391,6 +392,20 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      */
     virtual QStringList dependsOnOtherParameters() const { return QStringList(); }
 
+    /**
+     * Returns a pointer to the algorithm which owns this parameter. May be nullptr
+     * for non-owned parameters.
+     * \see provider()
+     */
+    QgsProcessingAlgorithm *algorithm() const;
+
+    /**
+     * Returns a pointer to the provider for the algorithm which owns this parameter. May be nullptr
+     * for non-owned parameters or algorithms.
+     * \see algorithm()
+     */
+    QgsProcessingProvider *provider() const;
+
   protected:
 
     //! Parameter name
@@ -407,6 +422,12 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     //! Freeform metadata for parameter. Mostly used by widget wrappers to customise their appearance and behavior.
     QVariantMap mMetadata;
+
+    //! Pointer to algorithm which owns this parameter
+    QgsProcessingAlgorithm *mAlgorithm = nullptr;
+
+    // To allow access to mAlgorithm. We don't want a public setter for this!
+    friend class QgsProcessingAlgorithm;
 
 };
 

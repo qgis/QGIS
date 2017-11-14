@@ -223,6 +223,7 @@ Try to find a rule given its unique key
  :rtype: QgsRuleBasedLabeling.Rule
 %End
 
+
         QgsRuleBasedLabeling::Rule *clone() const /Factory/;
 %Docstring
 clone this rule, return new instance
@@ -285,8 +286,19 @@ Create the instance from a DOM element with saved configuration
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
     virtual QStringList subProviders() const;
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const;
+
+    virtual void setSettings( QgsPalLayerSettings *settings /Transfer/, const QString &providerId = QString() );
+%Docstring
+ Set pal settings for a specific provider (takes ownership).
+
+ \param settings Pal layer settings
+ \param providerId The id of the provider
+
+.. versionadded:: 3.0
+%End
     virtual bool requiresAdvancedEffects() const;
 
+    virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const;
 
   protected:
 };

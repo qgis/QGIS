@@ -151,7 +151,7 @@ void QgsWCSSourceSelect::addButtonClicked()
 }
 
 
-void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
+void QgsWCSSourceSelect::mLayersTreeWidget_itemSelectionChanged()
 {
 
   QString identifier = selectedIdentifier();

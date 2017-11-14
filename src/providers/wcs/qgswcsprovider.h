@@ -29,6 +29,8 @@
 #include "qgsgdalproviderbase.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatetransform.h"
+#include "qgsogrutils.h"
+#include "qgsapplication.h"
 
 #include <QString>
 #include <QStringList>
@@ -63,7 +65,7 @@ struct QgsWcsAuthorization
   {
     if ( !mAuthCfg.isEmpty() )
     {
-      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
+      return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
     }
     else if ( !mUserName.isNull() || !mPassword.isNull() )
     {
@@ -77,7 +79,7 @@ struct QgsWcsAuthorization
   {
     if ( !mAuthCfg.isEmpty() )
     {
-      return QgsAuthManager::instance()->updateNetworkReply( reply, mAuthCfg );
+      return QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
     }
     return true;
   }
@@ -153,7 +155,8 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     bool isValid() const override;
 
-    /** Returns the base url
+    /**
+     * Returns the base url
      */
     virtual QString baseUrl() const;
 
@@ -285,7 +288,8 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Number of bands
     int mBandCount = 0;
 
-    /** \brief Gdal data types used to represent data in in QGIS,
+    /**
+     * \brief Gdal data types used to represent data in in QGIS,
                may be longer than source data type to keep nulls
                indexed from 0 */
     QList<GDALDataType> mGdalDataType;
@@ -328,7 +332,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     mutable VSILFILE *mCachedMemFile = nullptr;
 
     //! Pointer to cached GDAL dataset
-    mutable GDALDatasetH mCachedGdalDataset = nullptr;
+    mutable gdal::dataset_unique_ptr mCachedGdalDataset;
 
     //! Current cache error last getCache() error.
     mutable QgsError mCachedError;

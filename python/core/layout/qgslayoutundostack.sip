@@ -10,7 +10,8 @@
 
 
 
-class QgsLayoutUndoStack
+
+class QgsLayoutUndoStack : QObject
 {
 %Docstring
  An undo stack for QgsLayouts.
@@ -84,6 +85,19 @@ class QgsLayoutUndoStack
 %Docstring
  Returns a pointer to the internal QUndoStack.
  :rtype: QUndoStack
+%End
+
+    void notifyUndoRedoOccurred( QgsLayoutItem *item );
+%Docstring
+ Notifies the stack that an undo or redo action occurred for a specified ``item``.
+%End
+
+  signals:
+
+    void undoRedoOccurredForItems( const QSet< QString > itemUuids );
+%Docstring
+ Emitted when an undo or redo action has occurred, which affected a
+ set of layout ``itemUuids``.
 %End
 
   private:

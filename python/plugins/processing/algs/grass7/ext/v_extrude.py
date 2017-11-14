@@ -26,10 +26,10 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    height = alg.getParameterValue('height')
-    height_column = alg.getParameterValue('height_column')
+    height = alg.parameterAsDouble(parameters, 'height', context)
+    height_column = alg.parameterAsString(parameters, 'height_column', context)
     if (height and height_column) or (not height and not height_column):
         return alg.tr("You need to set either a fixed height value or the height column!")
 

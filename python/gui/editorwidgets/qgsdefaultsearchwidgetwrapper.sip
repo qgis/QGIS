@@ -23,7 +23,7 @@ class QgsDefaultSearchWidgetWrapper : QgsSearchWidgetWrapper
     explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
 
   public:
-    virtual QString expression();
+    virtual QString expression() const;
 
     virtual bool applyDirectly();
 
@@ -40,7 +40,7 @@ class QgsDefaultSearchWidgetWrapper : QgsSearchWidgetWrapper
     virtual void setEnabled( bool enabled );
 
   protected slots:
-    virtual void setExpression( QString exp );
+    virtual void setExpression( const QString &exp );
 
 
   protected:

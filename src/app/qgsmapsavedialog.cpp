@@ -322,8 +322,8 @@ void QgsMapSaveDialog::copyToClipboard()
   QgsMapSettings ms = QgsMapSettings();
   applyMapSettings( ms );
 
-  QPainter *p;
-  QImage *img;
+  QPainter *p = nullptr;
+  QImage *img = nullptr;
 
   img = new QImage( ms.outputSize(), QImage::Format_ARGB32 );
   if ( img->isNull() )

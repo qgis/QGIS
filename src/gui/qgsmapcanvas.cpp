@@ -68,9 +68,10 @@ email                : sherman at mrcc.com
 #include <cmath>
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Deprecated to be deleted, stuff from here should be moved elsewhere.
- * @note not available in Python bindings
+ * \note not available in Python bindings
 */
 //TODO QGIS 3.0 - remove
 class QgsMapCanvas::CanvasProperties
@@ -1017,7 +1018,7 @@ bool QgsMapCanvas::boundingBoxOfFeatureIds( const QgsFeatureIds &ids, QgsVectorL
     {
       errorMsg = tr( "Feature does not have a geometry" );
     }
-    else if ( geom.geometry()->isEmpty() )
+    else if ( geom.constGet()->isEmpty() )
     {
       errorMsg = tr( "Feature geometry is empty" );
     }
@@ -1521,6 +1522,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
                         mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * signedWheelFactor ) );
 
   zoomByFactor( signedWheelFactor, &newCenter );
+  e->accept();
 }
 
 void QgsMapCanvas::setWheelFactor( double factor )
@@ -1599,13 +1601,16 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent *e )
   emit xyCoordinates( coord );
 }
 
-void QgsMapCanvas::setMapTool( QgsMapTool *tool )
+void QgsMapCanvas::setMapTool( QgsMapTool *tool, bool clean )
 {
   if ( !tool )
     return;
 
   if ( mMapTool )
   {
+    if ( clean )
+      mMapTool->clean();
+
     disconnect( mMapTool, &QObject::destroyed, this, &QgsMapCanvas::mapToolDestroyed );
     mMapTool->deactivate();
   }
@@ -2264,6 +2269,7 @@ void QgsMapCanvas::startPreviewJob( int number )
 
   jobSettings.setExtent( jobExtent );
   jobSettings.setFlag( QgsMapSettings::DrawLabeling, false );
+  jobSettings.setFlag( QgsMapSettings::RenderPreviewJob, true );
 
   QgsMapRendererQImageJob *job = new QgsMapRendererSequentialJob( jobSettings );
   mPreviewJobs.append( job );

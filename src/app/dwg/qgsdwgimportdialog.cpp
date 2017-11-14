@@ -64,6 +64,15 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDwgImportDialog::buttonBox_accepted );
+  connect( pbBrowseDatabase, &QPushButton::clicked, this, &QgsDwgImportDialog::pbBrowseDatabase_clicked );
+  connect( pbBrowseDrawing, &QPushButton::clicked, this, &QgsDwgImportDialog::pbBrowseDrawing_clicked );
+  connect( pbImportDrawing, &QPushButton::clicked, this, &QgsDwgImportDialog::pbImportDrawing_clicked );
+  connect( pbLoadDatabase, &QPushButton::clicked, this, &QgsDwgImportDialog::pbLoadDatabase_clicked );
+  connect( pbSelectAll, &QPushButton::clicked, this, &QgsDwgImportDialog::pbSelectAll_clicked );
+  connect( pbDeselectAll, &QPushButton::clicked, this, &QgsDwgImportDialog::pbDeselectAll_clicked );
+  connect( leDatabase, &QLineEdit::textChanged, this, &QgsDwgImportDialog::leDatabase_textChanged );
+  connect( leLayerGroup, &QLineEdit::textChanged, this, &QgsDwgImportDialog::leLayerGroup_textChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDwgImportDialog::showHelp );
 
   QgsSettings s;
@@ -84,7 +93,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   mCrsSelector->dialog()->setMessage( tr( "Select the coordinate reference system for the dxf file. "
                                           "The data points will be transformed from the layer coordinate reference system." ) );
 
-  on_pbLoadDatabase_clicked();
+  pbLoadDatabase_clicked();
   updateUI();
 
   restoreGeometry( s.value( QStringLiteral( "/Windows/DwgImport/geometry" ) ).toByteArray() );
@@ -127,7 +136,7 @@ void QgsDwgImportDialog::updateUI()
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( mLayers->rowCount() > 0 && !leLayerGroup->text().isEmpty() );
 }
 
-void QgsDwgImportDialog::on_pbBrowseDatabase_clicked()
+void QgsDwgImportDialog::pbBrowseDatabase_clicked()
 {
   QString dir( leDatabase->text().isEmpty() ? QDir::homePath() : QFileInfo( leDatabase->text() ).canonicalPath() );
   QString filename = QFileDialog::getSaveFileName( this, tr( "Specify GeoPackage database" ), dir, tr( "GeoPackage database" ) + " (*.gpkg *.GPKG)", nullptr, QFileDialog::DontConfirmOverwrite );
@@ -137,19 +146,19 @@ void QgsDwgImportDialog::on_pbBrowseDatabase_clicked()
   updateUI();
 }
 
-void QgsDwgImportDialog::on_leDatabase_textChanged( const QString &text )
+void QgsDwgImportDialog::leDatabase_textChanged( const QString &text )
 {
   Q_UNUSED( text );
   updateUI();
 }
 
-void QgsDwgImportDialog::on_leLayerGroup_textChanged( const QString &text )
+void QgsDwgImportDialog::leLayerGroup_textChanged( const QString &text )
 {
   Q_UNUSED( text );
   updateUI();
 }
 
-void QgsDwgImportDialog::on_pbLoadDatabase_clicked()
+void QgsDwgImportDialog::pbLoadDatabase_clicked()
 {
   if ( !QFileInfo::exists( leDatabase->text() ) )
     return;
@@ -158,7 +167,9 @@ void QgsDwgImportDialog::on_pbLoadDatabase_clicked()
 
   bool lblVisible = false;
 
-  std::unique_ptr<QgsVectorLayer> d( new QgsVectorLayer( QStringLiteral( "%1|layername=drawing" ).arg( leDatabase->text() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), false ) );
+  QgsVectorLayer::LayerOptions options;
+  options.loadDefaultStyle = false;
+  std::unique_ptr<QgsVectorLayer> d( new QgsVectorLayer( QStringLiteral( "%1|layername=drawing" ).arg( leDatabase->text() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options ) );
   if ( d && d->isValid() )
   {
     int idxPath = d->fields().lookupField( QStringLiteral( "path" ) );
@@ -193,7 +204,7 @@ void QgsDwgImportDialog::on_pbLoadDatabase_clicked()
 
   lblMessage->setVisible( lblVisible );
 
-  std::unique_ptr<QgsVectorLayer> l( new QgsVectorLayer( QStringLiteral( "%1|layername=layers" ).arg( leDatabase->text() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), false ) );
+  std::unique_ptr<QgsVectorLayer> l( new QgsVectorLayer( QStringLiteral( "%1|layername=layers" ).arg( leDatabase->text() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options ) );
   if ( l && l->isValid() )
   {
     int idxName = l->fields().lookupField( QStringLiteral( "name" ) );
@@ -236,7 +247,7 @@ void QgsDwgImportDialog::on_pbLoadDatabase_clicked()
   }
 }
 
-void QgsDwgImportDialog::on_pbBrowseDrawing_clicked()
+void QgsDwgImportDialog::pbBrowseDrawing_clicked()
 {
   QString dir( leDrawing->text().isEmpty() ? QDir::homePath() : QFileInfo( leDrawing->text() ).canonicalPath() );
   QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Select DWG/DXF file" ), dir, tr( "DXF/DWG files" ) + " (*.dwg *.DWG *.dxf *.DXF)" );
@@ -245,10 +256,10 @@ void QgsDwgImportDialog::on_pbBrowseDrawing_clicked()
 
   leDrawing->setText( filename );
 
-  on_pbImportDrawing_clicked();
+  pbImportDrawing_clicked();
 }
 
-void QgsDwgImportDialog::on_pbImportDrawing_clicked()
+void QgsDwgImportDialog::pbImportDrawing_clicked()
 {
   CursorOverride waitCursor;
 
@@ -264,12 +275,14 @@ void QgsDwgImportDialog::on_pbImportDrawing_clicked()
     QgisApp::instance()->messageBar()->pushMessage( tr( "Drawing import failed (%1)" ).arg( error ), QgsMessageBar::CRITICAL, 4 );
   }
 
-  on_pbLoadDatabase_clicked();
+  pbLoadDatabase_clicked();
 }
 
 QgsVectorLayer *QgsDwgImportDialog::layer( QgsLayerTreeGroup *layerGroup, const QString &layerFilter, const QString &table )
 {
-  QgsVectorLayer *l = new QgsVectorLayer( QStringLiteral( "%1|layername=%2" ).arg( leDatabase->text(), table ), table, QStringLiteral( "ogr" ), false );
+  QgsVectorLayer::LayerOptions options;
+  options.loadDefaultStyle = false;
+  QgsVectorLayer *l = new QgsVectorLayer( QStringLiteral( "%1|layername=%2" ).arg( leDatabase->text(), table ), table, QStringLiteral( "ogr" ), options );
   l->setSubsetString( QStringLiteral( "%1space=0 AND block=-1" ).arg( layerFilter ) );
 
   if ( l->featureCount() == 0 )
@@ -431,17 +444,17 @@ void QgsDwgImportDialog::updateCheckState( Qt::CheckState state )
     mLayers->item( i, 0 )->setCheckState( state );
 }
 
-void QgsDwgImportDialog::on_pbSelectAll_clicked()
+void QgsDwgImportDialog::pbSelectAll_clicked()
 {
   updateCheckState( Qt::Checked );
 }
 
-void QgsDwgImportDialog::on_pbDeselectAll_clicked()
+void QgsDwgImportDialog::pbDeselectAll_clicked()
 {
   updateCheckState( Qt::Unchecked );
 }
 
-void QgsDwgImportDialog::on_buttonBox_accepted()
+void QgsDwgImportDialog::buttonBox_accepted()
 {
   CursorOverride waitCursor;
 

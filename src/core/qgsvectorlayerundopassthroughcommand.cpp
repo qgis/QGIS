@@ -29,9 +29,10 @@
 //@todo use setObsolete instead of mHasError when upgrading qt version, this will allow auto removal of the command
 // for the moment a errored command is left on the stack
 
-QgsVectorLayerUndoPassthroughCommand::QgsVectorLayerUndoPassthroughCommand( QgsVectorLayerEditBuffer *buffer, const QString &text )
+QgsVectorLayerUndoPassthroughCommand::QgsVectorLayerUndoPassthroughCommand( QgsVectorLayerEditBuffer *buffer, const QString &text, bool autocreate )
   : QgsVectorLayerUndoCommand( buffer )
-  , mSavePointId( mBuffer->L->isEditCommandActive()
+  , mSavePointId( ( mBuffer->L->isEditCommandActive() && !mBuffer->L->dataProvider()->transaction()->savePoints().isEmpty() )
+                  || !autocreate
                   ? mBuffer->L->dataProvider()->transaction()->savePoints().last()
                   : mBuffer->L->dataProvider()->transaction()->createSavepoint( mError ) )
   , mHasError( !mError.isEmpty() )
@@ -54,18 +55,35 @@ void QgsVectorLayerUndoPassthroughCommand::setError()
   }
 }
 
-bool QgsVectorLayerUndoPassthroughCommand::setSavePoint()
+void QgsVectorLayerUndoPassthroughCommand::setErrorMessage( const QString &errorMessage )
+{
+  mError = errorMessage;
+}
+
+QString QgsVectorLayerUndoPassthroughCommand::errorMessage() const
+{
+  return mError;
+}
+
+bool QgsVectorLayerUndoPassthroughCommand::setSavePoint( const QString &savePointId )
 {
   if ( !hasError() )
   {
-    // re-create savepoint only if mRecreateSavePoint and rollBackToSavePoint as occurred
-    if ( mRecreateSavePoint && mBuffer->L->dataProvider()->transaction()->savePoints().indexOf( mSavePointId ) == -1 )
+    if ( savePointId.isEmpty() )
     {
-      mSavePointId = mBuffer->L->dataProvider()->transaction()->createSavepoint( mSavePointId, mError );
-      if ( mSavePointId.isEmpty() )
+      // re-create savepoint only if mRecreateSavePoint and rollBackToSavePoint as occurred
+      if ( mRecreateSavePoint && mBuffer->L->dataProvider()->transaction()->savePoints().indexOf( mSavePointId ) == -1 )
       {
-        setError();
+        mSavePointId = mBuffer->L->dataProvider()->transaction()->createSavepoint( mSavePointId, mError );
+        if ( mSavePointId.isEmpty() )
+        {
+          setError();
+        }
       }
+    }
+    else
+    {
+      mSavePointId = savePointId;
     }
   }
   return !hasError();
@@ -89,7 +107,7 @@ QgsVectorLayerUndoPassthroughCommandAddFeatures::QgsVectorLayerUndoPassthroughCo
   : QgsVectorLayerUndoPassthroughCommand( buffer, QObject::tr( "add features" ) )
 {
   static int sAddedIdLowWaterMark = -1;
-  for ( const QgsFeature &f : qgsAsConst( features ) )
+  for ( const QgsFeature &f : qgis::as_const( features ) )
   {
     mInitialFeatures << f;
     //assign a temporary id to the feature (use negative numbers)
@@ -103,7 +121,7 @@ void QgsVectorLayerUndoPassthroughCommandAddFeatures::undo()
 {
   if ( rollBackToSavePoint() )
   {
-    for ( const QgsFeature &f : qgsAsConst( mFeatures ) )
+    for ( const QgsFeature &f : qgis::as_const( mFeatures ) )
     {
       emit mBuffer->featureDeleted( f.id() );
     }
@@ -116,7 +134,7 @@ void QgsVectorLayerUndoPassthroughCommandAddFeatures::redo()
   mFeatures = mInitialFeatures;
   if ( setSavePoint() && mBuffer->L->dataProvider()->addFeatures( mFeatures ) )
   {
-    for ( const QgsFeature &f : qgsAsConst( mFeatures ) )
+    for ( const QgsFeature &f : qgis::as_const( mFeatures ) )
     {
       emit mBuffer->featureAdded( f.id() );
     }
@@ -331,5 +349,57 @@ void QgsVectorLayerUndoPassthroughCommandRenameAttribute::redo()
   else
   {
     setError();
+  }
+}
+
+QgsVectorLayerUndoPassthroughCommandUpdate::QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer, QgsTransaction *transaction, const QString &sql )
+  : QgsVectorLayerUndoPassthroughCommand( buffer, QObject::tr( "custom transaction" ), false )
+  , mTransaction( transaction )
+  , mSql( sql )
+{
+}
+
+void QgsVectorLayerUndoPassthroughCommandUpdate::undo()
+{
+  if ( rollBackToSavePoint() )
+  {
+    mUndone = true;
+    emit mBuffer->L->layerModified();
+  }
+  else
+  {
+    setError();
+  }
+}
+
+void QgsVectorLayerUndoPassthroughCommandUpdate::redo()
+{
+  // the first time that the sql query is execute is within QgsTransaction
+  // itself. So the redo has to be executed only after an undo action.
+  if ( mUndone )
+  {
+    QString errorMessage;
+
+    QString savePointId = mTransaction->createSavepoint( errorMessage );
+
+    if ( errorMessage.isEmpty() )
+    {
+      setSavePoint( savePointId );
+
+      if ( mTransaction->executeSql( mSql, errorMessage ) )
+      {
+        mUndone = false;
+      }
+      else
+      {
+        setErrorMessage( errorMessage );
+        setError();
+      }
+    }
+    else
+    {
+      setErrorMessage( errorMessage );
+      setError();
+    }
   }
 }

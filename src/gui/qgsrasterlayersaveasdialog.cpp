@@ -42,6 +42,23 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   , mResolutionState( OriginalResolution )
 {
   setupUi( this );
+  connect( mRawModeRadioButton, &QRadioButton::toggled, this, &QgsRasterLayerSaveAsDialog::mRawModeRadioButton_toggled );
+  connect( mBrowseButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mBrowseButton_clicked );
+  connect( mSaveAsLineEdit, &QLineEdit::textChanged, this, &QgsRasterLayerSaveAsDialog::mSaveAsLineEdit_textChanged );
+  connect( mFormatComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged );
+  connect( mResolutionRadioButton, &QRadioButton::toggled, this, &QgsRasterLayerSaveAsDialog::mResolutionRadioButton_toggled );
+  connect( mOriginalResolutionPushButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mOriginalResolutionPushButton_clicked );
+  connect( mXResolutionLineEdit, &QLineEdit::textEdited, this, &QgsRasterLayerSaveAsDialog::mXResolutionLineEdit_textEdited );
+  connect( mYResolutionLineEdit, &QLineEdit::textEdited, this, &QgsRasterLayerSaveAsDialog::mYResolutionLineEdit_textEdited );
+  connect( mOriginalSizePushButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mOriginalSizePushButton_clicked );
+  connect( mColumnsLineEdit, &QLineEdit::textEdited, this, &QgsRasterLayerSaveAsDialog::mColumnsLineEdit_textEdited );
+  connect( mRowsLineEdit, &QLineEdit::textEdited, this, &QgsRasterLayerSaveAsDialog::mRowsLineEdit_textEdited );
+  connect( mAddNoDataManuallyToolButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mAddNoDataManuallyToolButton_clicked );
+  connect( mLoadTransparentNoDataToolButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mLoadTransparentNoDataToolButton_clicked );
+  connect( mRemoveSelectedNoDataToolButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mRemoveSelectedNoDataToolButton_clicked );
+  connect( mRemoveAllNoDataToolButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mRemoveAllNoDataToolButton_clicked );
+  connect( mTileModeCheckBox, &QCheckBox::toggled, this, &QgsRasterLayerSaveAsDialog::mTileModeCheckBox_toggled );
+  connect( mPyramidsGroupBox, &QgsCollapsibleGroupBox::toggled, this, &QgsRasterLayerSaveAsDialog::mPyramidsGroupBox_toggled );
   mAddNoDataManuallyToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
   mLoadTransparentNoDataToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
   mRemoveSelectedNoDataToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyRemove.svg" ) ) );
@@ -51,7 +68,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   mNoDataTableWidget->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "From" ) ) );
   mNoDataTableWidget->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "To" ) ) );
 
-  on_mRawModeRadioButton_toggled( true );
+  mRawModeRadioButton_toggled( true );
 
   setValidators();
 
@@ -158,7 +175,7 @@ void QgsRasterLayerSaveAsDialog::setValidators()
   mMaximumSizeYLineEdit->setValidator( new QIntValidator( this ) );
 }
 
-void QgsRasterLayerSaveAsDialog::on_mBrowseButton_clicked()
+void QgsRasterLayerSaveAsDialog::mBrowseButton_clicked()
 {
   QString fileName;
 
@@ -210,7 +227,7 @@ void QgsRasterLayerSaveAsDialog::on_mBrowseButton_clicked()
   }
 }
 
-void QgsRasterLayerSaveAsDialog::on_mSaveAsLineEdit_textChanged( const QString &text )
+void QgsRasterLayerSaveAsDialog::mSaveAsLineEdit_textChanged( const QString &text )
 {
   QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( !okButton )
@@ -222,7 +239,7 @@ void QgsRasterLayerSaveAsDialog::on_mSaveAsLineEdit_textChanged( const QString &
 }
 
 
-void QgsRasterLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( const QString &text )
+void QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( const QString &text )
 {
   //gdal-specific
   if ( mDataProvider && mDataProvider->name() == QLatin1String( "gdal" ) )
@@ -479,17 +496,18 @@ QgsRasterLayerSaveAsDialog::ResampleAlgo QgsRasterLayerSaveAsDialog::resample() 
 	return NearestNeighbour;
 }
 
-void QgsRasterLayerSaveAsDialog::on_mRawModeRadioButton_toggled( bool checked )
+
+void QgsRasterLayerSaveAsDialog::mRawModeRadioButton_toggled( bool checked )
 {
   mNoDataGroupBox->setEnabled( checked && mDataProvider->bandCount() == 1 );
 }
 
-void QgsRasterLayerSaveAsDialog::on_mAddNoDataManuallyToolButton_clicked()
+void QgsRasterLayerSaveAsDialog::mAddNoDataManuallyToolButton_clicked()
 {
   addNoDataRow( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() );
 }
 
-void QgsRasterLayerSaveAsDialog::on_mLoadTransparentNoDataToolButton_clicked()
+void QgsRasterLayerSaveAsDialog::mLoadTransparentNoDataToolButton_clicked()
 {
   if ( !mRasterLayer->renderer() ) return;
   const QgsRasterTransparency *rasterTransparency = mRasterLayer->renderer()->rasterTransparency();
@@ -508,12 +526,12 @@ void QgsRasterLayerSaveAsDialog::on_mLoadTransparentNoDataToolButton_clicked()
   }
 }
 
-void QgsRasterLayerSaveAsDialog::on_mRemoveSelectedNoDataToolButton_clicked()
+void QgsRasterLayerSaveAsDialog::mRemoveSelectedNoDataToolButton_clicked()
 {
   mNoDataTableWidget->removeRow( mNoDataTableWidget->currentRow() );
 }
 
-void QgsRasterLayerSaveAsDialog::on_mRemoveAllNoDataToolButton_clicked()
+void QgsRasterLayerSaveAsDialog::mRemoveAllNoDataToolButton_clicked()
 {
   while ( mNoDataTableWidget->rowCount() > 0 )
   {
@@ -600,7 +618,7 @@ void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString &text )
   }
 }
 
-void QgsRasterLayerSaveAsDialog::on_mTileModeCheckBox_toggled( bool toggled )
+void QgsRasterLayerSaveAsDialog::mTileModeCheckBox_toggled( bool toggled )
 {
   if ( toggled )
   {
@@ -627,7 +645,7 @@ void QgsRasterLayerSaveAsDialog::on_mTileModeCheckBox_toggled( bool toggled )
   }
 }
 
-void QgsRasterLayerSaveAsDialog::on_mPyramidsGroupBox_toggled( bool toggled )
+void QgsRasterLayerSaveAsDialog::mPyramidsGroupBox_toggled( bool toggled )
 {
   Q_UNUSED( toggled );
   populatePyramidsLevels();

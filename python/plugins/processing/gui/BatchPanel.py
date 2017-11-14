@@ -31,8 +31,9 @@ import json
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QHeaderView, QFileDialog, QMessageBox
-
+from qgis.PyQt.QtCore import QDir, QFileInfo
 from qgis.core import (QgsApplication,
+                       QgsSettings,
                        QgsProcessingParameterDefinition)
 from qgis.gui import QgsMessageBar
 from processing.gui.wrappers import WidgetWrapperFactory
@@ -87,6 +88,10 @@ class BatchPanel(BASE, WIDGET):
         self.tblParameters.horizontalHeader().sectionDoubleClicked.connect(
             self.fillParameterValues)
 
+        self.tblParameters.horizontalHeader().resizeSections(QHeaderView.ResizeToContents)
+        self.tblParameters.horizontalHeader().setDefaultSectionSize(250)
+        self.tblParameters.horizontalHeader().setMinimumSectionSize(150)
+
         self.initWidgets()
 
     def layerRegistryChanged(self):
@@ -129,22 +134,22 @@ class BatchPanel(BASE, WIDGET):
             self.tblParameters.setHorizontalHeaderItem(
                 column, QTableWidgetItem(self.tr('Load in QGIS')))
 
-        # Add two empty rows by default
-        for i in range(2):
-            self.addRow()
+        # Add an empty row to begin
+        self.addRow()
 
-        self.tblParameters.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
-        self.tblParameters.horizontalHeader().setDefaultSectionSize(250)
-        self.tblParameters.horizontalHeader().setMinimumSectionSize(150)
-        self.tblParameters.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.tblParameters.horizontalHeader().resizeSections(QHeaderView.ResizeToContents)
         self.tblParameters.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
         self.tblParameters.horizontalHeader().setStretchLastSection(True)
 
     def load(self):
+        settings = QgsSettings()
+        last_path = settings.value("/Processing/LastBatchPath", QDir.homePath())
         filename, selected_filter = QFileDialog.getOpenFileName(self,
-                                                                self.tr('Open batch'), None,
+                                                                self.tr('Open Batch'), last_path,
                                                                 self.tr('JSON files (*.json)'))
         if filename:
+            last_path = QFileInfo(filename).path()
+            settings.setValue('/Processing/LastBatchPath', last_path)
             with open(filename) as f:
                 values = json.load(f)
         else:
@@ -161,17 +166,19 @@ class BatchPanel(BASE, WIDGET):
                 for param in self.alg.parameterDefinitions():
                     if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                         continue
+                    if param.isDestination():
+                        continue
                     if param.name() in params:
-                        value = params[param.name()].strip('"')
+                        value = params[param.name()].strip("'")
                         wrapper = self.wrappers[row][column]
                         wrapper.setValue(value)
                     column += 1
 
-                for out in self.alg.outputs:
+                for out in self.alg.destinationParameterDefinitions():
                     if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
                         continue
                     if out.name() in outputs:
-                        value = outputs[out.name()].strip('"')
+                        value = outputs[out.name()].strip("'")
                         widget = self.tblParameters.cellWidget(row, column)
                         widget.setValue(value)
                     column += 1
@@ -192,36 +199,42 @@ class BatchPanel(BASE, WIDGET):
             for param in alg.parameterDefinitions():
                 if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     continue
+                if param.isDestination():
+                    continue
                 wrapper = self.wrappers[row][col]
-                if not param.checkValueIsAcceptable(wrapper.value, context):
+                if not param.checkValueIsAcceptable(wrapper.value(), context):
                     self.parent.bar.pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
-                                                param.description(), row + 1),
-                                                level=QgsMessageBar.WARNING, duration=5)
+                        param.description(), row + 1),
+                        level=QgsMessageBar.WARNING, duration=5)
                     return
-                algParams[param.name()] = param.getValueAsCommandLineParameter()
+                algParams[param.name()] = param.valueAsPythonString(wrapper.value(), context)
                 col += 1
-            for out in alg.outputs:
+            for out in alg.destinationParameterDefinitions():
                 if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     continue
                 widget = self.tblParameters.cellWidget(row, col)
                 text = widget.getValue()
                 if text.strip() != '':
-                    algOutputs[out.name] = text.strip()
+                    algOutputs[out.name()] = text.strip()
                     col += 1
                 else:
                     self.parent.bar.pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
-                                                out.description(), row + 1),
-                                                level=QgsMessageBar.WARNING, duration=5)
+                        out.description(), row + 1),
+                        level=QgsMessageBar.WARNING, duration=5)
                     return
             toSave.append({self.PARAMETERS: algParams, self.OUTPUTS: algOutputs})
 
+        settings = QgsSettings()
+        last_path = settings.value("/Processing/LastBatchPath", QDir.homePath())
         filename, __ = QFileDialog.getSaveFileName(self,
-                                                   self.tr('Save batch'),
-                                                   None,
+                                                   self.tr('Save Batch'),
+                                                   last_path,
                                                    self.tr('JSON files (*.json)'))
         if filename:
             if not filename.endswith('.json'):
                 filename += '.json'
+            last_path = QFileInfo(filename).path()
+            settings.setValue('/Processing/LastBatchPath', last_path)
             with open(filename, 'w') as f:
                 json.dump(toSave, f)
 
@@ -265,12 +278,16 @@ class BatchPanel(BASE, WIDGET):
             wrapper.postInitialize(list(wrappers.values()))
 
     def removeRows(self):
-        if self.tblParameters.rowCount() > 2:
+        if self.tblParameters.rowCount() > 1:
             self.wrappers.pop()
             self.tblParameters.setRowCount(self.tblParameters.rowCount() - 1)
 
     def fillParameterValues(self, column):
         wrapper = self.wrappers[0][column]
+        if wrapper is None:
+            # e.g. double clicking on a destination header
+            return
+
         for row in range(1, self.tblParameters.rowCount()):
             self.wrappers[row][column].setValue(wrapper.value())
 

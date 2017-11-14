@@ -25,6 +25,7 @@
 #include <QObject>
 #include <QDomNode>
 #include <QMap>
+#include <QPointer>
 
 class QgsLayout;
 class QPainter;
@@ -40,7 +41,8 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     Q_OBJECT
   public:
 
-    /** Data defined properties for different item types
+    /**
+     * Data defined properties for different item types
      */
     enum DataDefinedProperty
     {
@@ -94,6 +96,17 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     };
 
     /**
+     * Specifies whether the value returned by a function should be the original, user
+     * set value, or the current evaluated value for the property. This may differ if
+     * a property has a data defined expression active.
+     */
+    enum PropertyValueType
+    {
+      EvaluatedValue = 0, //!< Return the current evaluated value for the property
+      OriginalValue //!< Return the original, user set value
+    };
+
+    /**
      * Returns the layout object property definitions.
      */
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -109,12 +122,12 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     /**
      * Returns the layout the object is attached to.
      */
-    SIP_SKIP const QgsLayout *layout() const { return mLayout; }
+    SIP_SKIP const QgsLayout *layout() const;
 
     /**
      * Returns the layout the object is attached to.
      */
-    QgsLayout *layout() { return mLayout; }
+    QgsLayout *layout();
 
     /**
      * Returns a reference to the object's property collection, used for data defined overrides.
@@ -187,6 +200,13 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      */
     virtual void refresh() {}
 
+  signals:
+
+    /**
+     * Emitted when the object's properties change.
+     */
+    void changed();
+
   protected:
 
     /**
@@ -209,7 +229,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      */
     bool readObjectPropertiesFromElement( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
-    QgsLayout *mLayout = nullptr;
+    QPointer< QgsLayout > mLayout;
 
     QgsPropertyCollection mDataDefinedProperties;
 

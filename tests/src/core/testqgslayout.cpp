@@ -41,6 +41,7 @@ class TestQgsLayout: public QObject
     void addItem();
     void layoutItems();
     void layoutItemByUuid();
+    void undoRedoOccurred();
 
   private:
     QString mReport;
@@ -258,12 +259,12 @@ void TestQgsLayout::bounds()
   QgsLayout l( &p );
   l.initializeDefaults();
 
-  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
   shape1->attemptResize( QgsLayoutSize( 90, 50 ) );
   shape1->attemptMove( QgsLayoutPoint( 90, 50 ) );
   shape1->setItemRotation( 45 );
   l.addLayoutItem( shape1 );
-  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   shape2->attemptResize( QgsLayoutSize( 110, 50 ) );
   shape2->attemptMove( QgsLayoutPoint( 100, 150 ) );
   l.addLayoutItem( shape2 );
@@ -299,10 +300,10 @@ void TestQgsLayout::bounds()
   QGSCOMPARENEAR( layoutBounds.top(), 0.00000, 0.01 );
 
   QRectF compositionBoundsNoPage = l.layoutBounds( true );
-  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 175.704581, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 125.704581, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 84.795419, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 24.795419, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 174.859607, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 124.859607, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 85.290393, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 25.290393, 0.01 );
 
 #if 0
   QRectF page1Bounds = composition->pageItemBounds( 0, true );
@@ -331,35 +332,37 @@ void TestQgsLayout::addItem()
   QgsLayout l( &p );
   l.pageCollection()->deletePage( 0 );
 
-  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
+  shape1->setFrameEnabled( false );
   shape1->attemptResize( QgsLayoutSize( 140, 70 ) );
   shape1->attemptMove( QgsLayoutPoint( 90, 50 ) );
 
   l.addLayoutItem( shape1 );
   QVERIFY( l.items().contains( shape1 ) );
   // bounds should be updated to include item
-  QGSCOMPARENEAR( l.sceneRect().left(), 89.5, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().top(), 49.5, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().width(), 141, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().height(), 71, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().left(), 89.850, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().top(), 49.85, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().width(), 140.30, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().height(), 70.3, 0.001 );
 
-  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   shape2->attemptResize( QgsLayoutSize( 240, 170 ) );
   shape2->attemptMove( QgsLayoutPoint( 30, 20 ) );
+  shape2->setFrameEnabled( false );
 
   // don't use addLayoutItem - we want to manually trigger a bounds update
   l.addItem( shape2 );
-  QGSCOMPARENEAR( l.sceneRect().left(), 89.5, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().top(), 49.5, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().width(), 141, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().height(), 71, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().left(), 89.85, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().top(), 49.85, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().width(), 140.3, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().height(), 70.3, 0.001 );
 
   l.updateBounds();
   // bounds should be updated to include item
-  QGSCOMPARENEAR( l.sceneRect().left(), 29.5, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().top(), 19.5, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().width(), 241, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().height(), 171, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().left(), 29.85, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().top(), 19.85, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().width(), 240.3, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().height(), 170.3, 0.001 );
 }
 
 void TestQgsLayout::layoutItems()
@@ -368,10 +371,10 @@ void TestQgsLayout::layoutItems()
   QgsLayout l( &p );
   l.pageCollection()->deletePage( 0 );
 
-  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape1 );
 
-  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape2 );
 
   QgsLayoutItemMap *map1 = new QgsLayoutItemMap( &l );
@@ -384,7 +387,7 @@ void TestQgsLayout::layoutItems()
   QVERIFY( items.contains( shape2 ) );
   QVERIFY( items.contains( map1 ) );
 
-  QList< QgsLayoutItemRectangularShape * > shapes;
+  QList< QgsLayoutItemShape * > shapes;
   l.layoutItems( shapes );
   QCOMPARE( shapes.count(), 2 );
   QVERIFY( shapes.contains( shape1 ) );
@@ -402,10 +405,10 @@ void TestQgsLayout::layoutItemByUuid()
   QgsLayout l( &p );
   l.pageCollection()->deletePage( 0 );
 
-  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape1 );
 
-  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape2 );
 
   QgsLayoutItemMap *map1 = new QgsLayoutItemMap( &l );
@@ -415,6 +418,55 @@ void TestQgsLayout::layoutItemByUuid()
   QCOMPARE( l.itemByUuid( shape1->uuid() ), shape1 );
   QCOMPARE( l.itemByUuid( shape2->uuid() ), shape2 );
   QCOMPARE( l.itemByUuid( map1->uuid() ), map1 );
+}
+
+void TestQgsLayout::undoRedoOccurred()
+{
+  // test emitting undo/redo occurred signal
+  QgsProject proj;
+  QgsLayout l( &proj );
+
+  QSignalSpy spyOccurred( l.undoStack(), &QgsLayoutUndoStack::undoRedoOccurredForItems );
+
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( item );
+
+  QCOMPARE( spyOccurred.count(), 0 );
+  //adds a new undo command
+  item->setId( "test" );
+  QCOMPARE( spyOccurred.count(), 0 );
+
+  QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( item2 );
+  item2->setId( "test2" );
+  QCOMPARE( spyOccurred.count(), 0 );
+
+  l.undoStack()->stack()->undo();
+  QCOMPARE( spyOccurred.count(), 1 );
+  QSet< QString > items = qvariant_cast< QSet< QString > >( spyOccurred.at( 0 ).at( 0 ) );
+  QCOMPARE( items, QSet< QString >() << item2->uuid() );
+
+  l.undoStack()->stack()->redo();
+  QCOMPARE( spyOccurred.count(), 2 );
+  items = qvariant_cast< QSet< QString> >( spyOccurred.at( 1 ).at( 0 ) );
+  QCOMPARE( items, QSet< QString >() << item2->uuid() );
+
+  // macro undo
+  l.undoStack()->beginMacro( QString() );
+  item->setId( "new id" );
+  item2->setId( "new id2" );
+  l.undoStack()->endMacro();
+  QCOMPARE( spyOccurred.count(), 2 );
+
+  l.undoStack()->stack()->undo();
+  QCOMPARE( spyOccurred.count(), 3 );
+  items = qvariant_cast< QSet< QString > >( spyOccurred.at( 2 ).at( 0 ) );
+  QCOMPARE( items, QSet< QString >() << item->uuid() << item2->uuid() );
+  l.undoStack()->stack()->redo();
+  QCOMPARE( spyOccurred.count(), 4 );
+  items = qvariant_cast< QSet< QString > >( spyOccurred.at( 3 ).at( 0 ) );
+  QCOMPARE( items, QSet< QString >() << item->uuid() << item2->uuid() );
+
 }
 
 

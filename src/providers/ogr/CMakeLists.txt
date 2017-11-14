@@ -1,16 +1,13 @@
-
 SET (OGR_SRCS
     qgsogrprovider.cpp
     qgsogrdataitems.cpp
     qgsogrfeatureiterator.cpp
     qgsogrconnpool.cpp
     qgsogrexpressioncompiler.cpp
-    qgsogrsourceselect.cpp
     qgsgeopackagedataitems.cpp
     qgsgeopackagerasterwriter.cpp
     qgsgeopackagerasterwritertask.cpp
     qgsogrdbconnection.cpp
-    qgsogrdbsourceselect.cpp
     qgsogrdbtablemodel.cpp
 )
 
@@ -18,13 +15,22 @@ SET(OGR_MOC_HDRS
     qgsogrprovider.h
     qgsogrdataitems.h
     qgsogrconnpool.h
-    qgsogrsourceselect.h
     qgsgeopackagedataitems.h
     qgsgeopackagerasterwritertask.h
     qgsogrdbconnection.h
-    qgsogrdbsourceselect.h
     qgsogrdbtablemodel.h
 )
+
+IF (WITH_GUI)
+  SET(OGR_SRCS ${OGR_SRCS}
+    qgsogrdbsourceselect.cpp
+    qgsogrsourceselect.cpp
+  )
+  SET(OGR_MOC_HDRS ${OGR_MOC_HDRS}
+    qgsogrsourceselect.h
+    qgsogrdbsourceselect.h
+  )
+ENDIF ()
 
 ########################################################
 # Build
@@ -33,12 +39,14 @@ QT5_WRAP_CPP(OGR_MOC_SRCS ${OGR_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/auth
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -47,6 +55,8 @@ INCLUDE_DIRECTORIES(
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
+  ${QTKEYCHAIN_INCLUDE_DIR}
+  ${QCA_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
 )
 
@@ -79,5 +89,4 @@ ENDIF(CLANG_TIDY_EXE)
 
 INSTALL (TARGETS ogrprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
-  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
-
+LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

@@ -29,7 +29,7 @@
 #include <queue>
 
 QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry &geometry )
-  : mGeometry( geometry.geometry() )
+  : mGeometry( geometry.constGet() )
 {
 
 }
@@ -59,13 +59,13 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
     linesToProcess << static_cast<QgsLineString *>( curve->segmentize() );
   }
 
-  std::unique_ptr<QgsMultiPolygonV2> multipolygon( linesToProcess.size() > 1 ? new QgsMultiPolygonV2() : nullptr );
-  QgsPolygonV2 *polygon = nullptr;
+  std::unique_ptr<QgsMultiPolygon> multipolygon( linesToProcess.size() > 1 ? new QgsMultiPolygon() : nullptr );
+  QgsPolygon *polygon = nullptr;
 
   if ( !linesToProcess.empty() )
   {
     std::unique_ptr< QgsLineString > secondline;
-    for ( QgsLineString *line : qgsAsConst( linesToProcess ) )
+    for ( QgsLineString *line : qgis::as_const( linesToProcess ) )
     {
       QTransform transform = QTransform::fromTranslate( x, y );
 
@@ -75,7 +75,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
       line->append( secondline.get() );
       line->addVertex( line->pointN( 0 ) );
 
-      polygon = new QgsPolygonV2();
+      polygon = new QgsPolygon();
       polygon->setExteriorRing( line );
 
       if ( multipolygon )
@@ -101,7 +101,7 @@ QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
 class Cell
 {
   public:
-    Cell( double x, double y, double h, const QgsPolygonV2 *polygon )
+    Cell( double x, double y, double h, const QgsPolygon *polygon )
       : x( x )
       , y( y )
       , h( h )
@@ -129,7 +129,7 @@ struct GreaterThanByMax
   }
 };
 
-Cell *getCentroidCell( const QgsPolygonV2 *polygon )
+Cell *getCentroidCell( const QgsPolygon *polygon )
 {
   double area = 0;
   double x = 0;
@@ -156,11 +156,11 @@ Cell *getCentroidCell( const QgsPolygonV2 *polygon )
 
 QgsPoint surfacePoleOfInaccessibility( const QgsSurface *surface, double precision, double &distanceFromBoundary )
 {
-  std::unique_ptr< QgsPolygonV2 > segmentizedPoly;
-  const QgsPolygonV2 *polygon = qgsgeometry_cast< const QgsPolygonV2 * >( surface );
+  std::unique_ptr< QgsPolygon > segmentizedPoly;
+  const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( surface );
   if ( !polygon )
   {
-    segmentizedPoly.reset( static_cast< QgsPolygonV2 *>( surface->segmentize() ) );
+    segmentizedPoly.reset( static_cast< QgsPolygon *>( surface->segmentize() ) );
     polygon = segmentizedPoly.get();
   }
 
@@ -467,8 +467,8 @@ QgsAbstractGeometry *orthogonalizeGeom( const QgsAbstractGeometry *geom, int max
   else
   {
     // polygon
-    const QgsPolygonV2 *polygon = static_cast< const QgsPolygonV2 * >( geom );
-    QgsPolygonV2 *result = new QgsPolygonV2();
+    const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
+    QgsPolygon *result = new QgsPolygon();
 
     result->setExteriorRing( doOrthogonalize( static_cast< QgsLineString * >( polygon->exteriorRing()->clone() ),
                              maxIterations, tolerance, lowerThreshold, upperThreshold ) );
@@ -504,7 +504,7 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    for ( QgsAbstractGeometry *g : qgsAsConst( geometryList ) )
+    for ( QgsAbstractGeometry *g : qgis::as_const( geometryList ) )
     {
       first.addPart( g );
     }
@@ -624,8 +624,8 @@ QgsAbstractGeometry *densifyGeometry( const QgsAbstractGeometry *geom, int extra
   else
   {
     // polygon
-    const QgsPolygonV2 *polygon = static_cast< const QgsPolygonV2 * >( geom );
-    QgsPolygonV2 *result = new QgsPolygonV2();
+    const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
+    QgsPolygon *result = new QgsPolygon();
 
     result->setExteriorRing( doDensify( static_cast< QgsLineString * >( polygon->exteriorRing()->clone() ),
                                         extraNodesPerSegment, distance ) );
@@ -662,7 +662,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment 
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    for ( QgsAbstractGeometry *g : qgsAsConst( geometryList ) )
+    for ( QgsAbstractGeometry *g : qgis::as_const( geometryList ) )
     {
       first.addPart( g );
     }
@@ -697,7 +697,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
     }
 
     QgsGeometry first = QgsGeometry( geometryList.takeAt( 0 ) );
-    for ( QgsAbstractGeometry *g : qgsAsConst( geometryList ) )
+    for ( QgsAbstractGeometry *g : qgis::as_const( geometryList ) )
     {
       first.addPart( g );
     }

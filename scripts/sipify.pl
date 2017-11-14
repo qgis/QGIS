@@ -210,6 +210,7 @@ sub remove_following_body_or_initializerlist {
 sub fix_annotations {
     my $line = $_[0];
     # printed annotations
+    $line =~ s/\/\/\s*SIP_ABSTRACT\b/\/Abstract\//;
     $line =~ s/\bSIP_ABSTRACT\b/\/Abstract\//;
     $line =~ s/\bSIP_ALLOWNONE\b/\/AllowNone\//;
     $line =~ s/\bSIP_ARRAY\b/\/Array\//g;
@@ -374,7 +375,8 @@ while ($LINE_IDX < $LINE_COUNT){
             $SIP_RUN = 1;
             if ($ACCESS[$#ACCESS] == PRIVATE){
                 dbg_info("writing private content");
-                write_output("PRV1", $PRIVATE_SECTION_LINE."\n");
+                write_output("PRV1", $PRIVATE_SECTION_LINE."\n") if $PRIVATE_SECTION_LINE ne '';
+                $PRIVATE_SECTION_LINE = '';
             }
             next;
         }
@@ -424,7 +426,8 @@ while ($LINE_IDX < $LINE_COUNT){
                     # code here will be printed out
                     if ($ACCESS[$#ACCESS] == PRIVATE){
                         dbg_info("writing private content");
-                        write_output("PRV2", $PRIVATE_SECTION_LINE."\n");
+                        write_output("PRV2", $PRIVATE_SECTION_LINE."\n") if $PRIVATE_SECTION_LINE ne '';
+                        $PRIVATE_SECTION_LINE = '';
                     }
                     $SIP_RUN = 1;
                     last;
@@ -510,7 +513,7 @@ while ($LINE_IDX < $LINE_COUNT){
 
     # class declaration started
     # https://regex101.com/r/6FWntP/10
-    if ( $LINE =~ m/^(\s*class)\s+([A-Z]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
+    if ( $LINE =~ m/^(\s*class)\s+([A-Z]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
         dbg_info("class definition started");
         push @ACCESS, PUBLIC;
         push @EXPORTED, 0;
@@ -649,7 +652,8 @@ while ($LINE_IDX < $LINE_COUNT){
     }
     elsif ( $ACCESS[$#ACCESS] == PRIVATE && $LINE =~ m/SIP_FORCE/){
         dbg_info("private with SIP_FORCE");
-        write_output("PRV3", $PRIVATE_SECTION_LINE."\n");
+        write_output("PRV3", $PRIVATE_SECTION_LINE."\n") if $PRIVATE_SECTION_LINE ne '';
+        $PRIVATE_SECTION_LINE = '';
     }
     elsif ( PRIVATE ~~ @ACCESS && $SIP_RUN == 0 ) {
         $COMMENT = '';

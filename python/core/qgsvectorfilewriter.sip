@@ -10,8 +10,6 @@
 
 
 
-
-
 class QgsVectorFileWriter : QgsFeatureSink
 {
 %Docstring
@@ -109,6 +107,9 @@ There are two possibilities how to use this class:
     struct MetaData
     {
       MetaData();
+%Docstring
+Constructor for MetaData
+%End
 
       MetaData( const QString &longName, const QString &trLongName, const QString &glob, const QString &ext, const QMap<QString, QgsVectorFileWriter::Option *> &driverOptions, const QMap<QString, QgsVectorFileWriter::Option *> &layerOptions, const QString &compulsoryEncoding = QString() );
 
@@ -144,6 +145,15 @@ Some formats require a compulsory encoding, typically UTF-8. If no compulsory en
       FeatureSymbology,
       SymbolLayerSymbology
     };
+
+
+    enum VectorFormatOption
+    {
+      SortRecommended,
+      SkipNonSpatialFormats,
+    };
+    typedef QFlags<QgsVectorFileWriter::VectorFormatOption> VectorFormatOptions;
+
 
     class FieldValueConverter
 {
@@ -224,7 +234,7 @@ Constructor
         const QString &fileName,
         const QString &fileEncoding,
         const QgsCoordinateReferenceSystem &destCRS = QgsCoordinateReferenceSystem(),
-        const QString &driverName = "ESRI Shapefile",
+        const QString &driverName = "GPKG",
         bool onlySelected = false,
         QString *errorMessage /Out/ = 0,
         const QStringList &datasourceOptions = QStringList(),
@@ -269,7 +279,7 @@ Constructor
         const QString &fileName,
         const QString &fileEncoding,
         const QgsCoordinateTransform &ct,
-        const QString &driverName = "ESRI Shapefile",
+        const QString &driverName = "GPKG",
         bool onlySelected = false,
         QString *errorMessage /Out/ = 0,
         const QStringList &datasourceOptions = QStringList(),
@@ -448,7 +458,7 @@ Optional feedback object allowing cancelation of layer save
                          const QgsFields &fields,
                          QgsWkbTypes::Type geometryType,
                          const QgsCoordinateReferenceSystem &srs = QgsCoordinateReferenceSystem(),
-                         const QString &driverName = "ESRI Shapefile",
+                         const QString &driverName = "GPKG",
                          const QStringList &datasourceOptions = QStringList(),
                          const QStringList &layerOptions = QStringList(),
                          QString *newFilename = 0,
@@ -460,27 +470,67 @@ Create a new vector file writer
 
 
 
-    static QMap< QString, QString> supportedFiltersAndFormats();
+    struct FilterFormatDetails
+    {
+      QString driverName;
 %Docstring
- Returns a map with format filter string as key and OGR format key as value.
-.. seealso:: supportedOutputVectorLayerExtensions()
- :rtype: QMap< str, QString>
+Unique driver name
 %End
 
-    static QStringList supportedFormatExtensions();
+      QString filterString;
+%Docstring
+Filter string for file picker dialogs
+%End
+    };
+
+    static QList< QgsVectorFileWriter::FilterFormatDetails > supportedFiltersAndFormats( VectorFormatOptions options = SortRecommended );
+%Docstring
+ Returns a list or pairs, with format filter string as first element and OGR format key as second element.
+
+ The ``options`` argument can be used to control the sorting and filtering of
+ returned formats.
+
+.. seealso:: supportedOutputVectorLayerExtensions()
+ :rtype: list of QgsVectorFileWriter.FilterFormatDetails
+%End
+
+    static QStringList supportedFormatExtensions( VectorFormatOptions options = SortRecommended );
 %Docstring
  Returns a list of file extensions for supported formats.
+
+ The ``options`` argument can be used to control the sorting and filtering of
+ returned formats.
+
 .. versionadded:: 3.0
 .. seealso:: supportedFiltersAndFormats()
  :rtype: list of str
 %End
 
-    static QMap< QString, QString> ogrDriverList();
+    struct DriverDetails
+    {
+      QString longName;
 %Docstring
- Returns driver list that can be used for dialogs. It contains all OGR drivers
- + some additional internal QGIS driver names to distinguish between more
- supported formats of the same OGR driver
- :rtype: QMap< str, QString>
+Descriptive, user friendly name for the driver
+%End
+
+      QString driverName;
+%Docstring
+Unique driver name
+%End
+    };
+
+    static QList< QgsVectorFileWriter::DriverDetails > ogrDriverList( VectorFormatOptions options = SortRecommended );
+%Docstring
+ Returns the driver list that can be used for dialogs. It contains all OGR drivers
+ plus some additional internal QGIS driver names to distinguish between more
+ supported formats of the same OGR driver.
+
+ The returned list consists of structs containing the driver long name (e.g. user-friendly
+ display name for the format) and internal driver short name.
+
+ The ``options`` argument can be used to control the sorting and filtering of
+ returned drivers.
+ :rtype: list of QgsVectorFileWriter.DriverDetails
 %End
 
     static QString driverForExtension( const QString &extension );
@@ -492,9 +542,12 @@ Create a new vector file writer
  :rtype: str
 %End
 
-    static QString fileFilterString();
+    static QString fileFilterString( VectorFormatOptions options = SortRecommended );
 %Docstring
-Returns filter string that can be used for dialogs
+ Returns filter string that can be used for dialogs.
+
+ The ``options`` argument can be used to control the sorting and filtering of
+ returned drivers.
  :rtype: str
 %End
 
@@ -638,6 +691,8 @@ Close opened shapefile for writing
 };
 
 QFlags<QgsVectorFileWriter::EditionCapability> operator|(QgsVectorFileWriter::EditionCapability f1, QFlags<QgsVectorFileWriter::EditionCapability> f2);
+
+QFlags<QgsVectorFileWriter::VectorFormatOption> operator|(QgsVectorFileWriter::VectorFormatOption f1, QFlags<QgsVectorFileWriter::VectorFormatOption> f2);
 
 
 

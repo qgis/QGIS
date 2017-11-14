@@ -19,6 +19,7 @@
 #include <memory>
 
 #include "qgsmaplayerconfigwidget.h"
+#include "qgsvectorlayer3drenderer.h"
 
 class QCheckBox;
 class QLabel;
@@ -29,7 +30,6 @@ class QgsPoint3DSymbolWidget;
 class QgsPolygon3DSymbolWidget;
 class QgsVectorLayer;
 class QgsMapCanvas;
-class QgsVectorLayer3DRenderer;
 
 
 //! Widget for configuration of 3D renderer of a vector layer
@@ -38,7 +38,6 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
     Q_OBJECT
   public:
     explicit QgsVectorLayer3DRendererWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
-    ~QgsVectorLayer3DRendererWidget();
 
     void setLayer( QgsVectorLayer *layer );
 
@@ -54,12 +53,12 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
     void onEnabledClicked();
 
   private:
-    QCheckBox *chkEnabled;
-    QStackedWidget *widgetStack;
-    QgsLine3DSymbolWidget *widgetLine;
-    QgsPoint3DSymbolWidget *widgetPoint;
-    QgsPolygon3DSymbolWidget *widgetPolygon;
-    QLabel *widgetUnsupported;
+    QCheckBox *chkEnabled = nullptr;
+    QStackedWidget *widgetStack = nullptr;
+    QgsLine3DSymbolWidget *widgetLine = nullptr;
+    QgsPoint3DSymbolWidget *widgetPoint = nullptr;
+    QgsPolygon3DSymbolWidget *widgetPolygon = nullptr;
+    QLabel *widgetUnsupported = nullptr;
 
     std::unique_ptr<QgsVectorLayer3DRenderer> mRenderer;
 };

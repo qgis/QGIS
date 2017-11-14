@@ -58,6 +58,11 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget
 
 {
   setupUi( this );
+  connect( mSaveAsImageButton, &QToolButton::clicked, this, &QgsRasterHistogramWidget::mSaveAsImageButton_clicked );
+  connect( cboHistoBand, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterHistogramWidget::cboHistoBand_currentIndexChanged );
+  connect( btnHistoMin, &QToolButton::toggled, this, &QgsRasterHistogramWidget::btnHistoMin_toggled );
+  connect( btnHistoMax, &QToolButton::toggled, this, &QgsRasterHistogramWidget::btnHistoMax_toggled );
+  connect( btnHistoCompute, &QPushButton::clicked, this, &QgsRasterHistogramWidget::btnHistoCompute_clicked );
 
   mSaveAsImageButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileSave.svg" ) ) );
 
@@ -245,7 +250,7 @@ void QgsRasterHistogramWidget::setRendererWidget( const QString &name, QgsRaster
   mRendererName = name;
   mRendererWidget = rendererWidget;
   refreshHistogram();
-  on_cboHistoBand_currentIndexChanged( -1 );
+  cboHistoBand_currentIndexChanged( -1 );
 }
 
 void QgsRasterHistogramWidget::setActive( bool activeFlag )
@@ -253,7 +258,7 @@ void QgsRasterHistogramWidget::setActive( bool activeFlag )
   if ( activeFlag )
   {
     refreshHistogram();
-    on_cboHistoBand_currentIndexChanged( -1 );
+    cboHistoBand_currentIndexChanged( -1 );
   }
   else
   {
@@ -264,7 +269,7 @@ void QgsRasterHistogramWidget::setActive( bool activeFlag )
   }
 }
 
-void QgsRasterHistogramWidget::on_btnHistoCompute_clicked()
+void QgsRasterHistogramWidget::btnHistoCompute_clicked()
 {
 // Histogram computation can be called either by clicking the "Compute Histogram" button
 // which is only visible if there is no cached histogram or by calling the
@@ -618,11 +623,11 @@ void QgsRasterHistogramWidget::refreshHistogram()
   stackedWidget2->setCurrentIndex( 0 );
   // icon from http://findicons.com/icon/169577/14_zoom?id=171427
   mpPlot->canvas()->setCursor( QCursor( QgsApplication::getThemePixmap( QStringLiteral( "/mIconZoom.svg" ) ) ) );
-  //  on_cboHistoBand_currentIndexChanged( -1 );
+  //  cboHistoBand_currentIndexChanged( -1 );
   QApplication::restoreOverrideCursor();
 }
 
-void QgsRasterHistogramWidget::on_mSaveAsImageButton_clicked()
+void QgsRasterHistogramWidget::mSaveAsImageButton_clicked()
 {
   if ( !mpPlot )
     return;
@@ -674,7 +679,7 @@ void QgsRasterHistogramWidget::setSelectedBand( int bandNo )
   cboHistoBand->setCurrentIndex( bandNo - 1 );
 }
 
-void QgsRasterHistogramWidget::on_cboHistoBand_currentIndexChanged( int index )
+void QgsRasterHistogramWidget::cboHistoBand_currentIndexChanged( int index )
 {
   if ( mHistoShowBands == ShowSelected )
     refreshHistogram();
@@ -763,7 +768,7 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
     mHistoDrawLines = actionFlag;
     QgsSettings settings;
     settings.setValue( QStringLiteral( "Raster/histogram/drawLines" ), mHistoDrawLines );
-    on_btnHistoCompute_clicked(); // refresh
+    btnHistoCompute_clicked(); // refresh
     return;
   }
 #if 0
@@ -869,7 +874,7 @@ void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool acti
   }
   else if ( actionName == QLatin1String( "Compute histogram" ) )
   {
-    on_btnHistoCompute_clicked();
+    btnHistoCompute_clicked();
   }
   else
   {
@@ -948,7 +953,7 @@ void QgsRasterHistogramWidget::applyHistoMax()
   emit widgetChanged();
 }
 
-void QgsRasterHistogramWidget::on_btnHistoMin_toggled()
+void QgsRasterHistogramWidget::btnHistoMin_toggled()
 {
   if ( mpPlot && mHistoPicker )
   {
@@ -966,7 +971,7 @@ void QgsRasterHistogramWidget::on_btnHistoMin_toggled()
   updateHistoMarkers();
 }
 
-void QgsRasterHistogramWidget::on_btnHistoMax_toggled()
+void QgsRasterHistogramWidget::btnHistoMax_toggled()
 {
   if ( mpPlot && mHistoPicker )
   {

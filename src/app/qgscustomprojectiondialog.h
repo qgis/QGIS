@@ -36,12 +36,16 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     ~QgsCustomProjectionDialog();
 
   public slots:
-    void on_pbnCalculate_clicked();
-    void on_pbnAdd_clicked();
-    void on_pbnRemove_clicked();
-    void on_pbnCopyCRS_clicked();
-    void on_leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
-    void on_buttonBox_accepted();
+    void pbnCalculate_clicked();
+    void pbnAdd_clicked();
+    void pbnRemove_clicked();
+    void pbnCopyCRS_clicked();
+    void leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
+    void buttonBox_accepted();
+
+  private slots:
+
+    void updateListFromCurrentItem();
 
   private:
 
@@ -49,21 +53,21 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     void populateList();
     QString quotedValue( QString value );
     bool deleteCrs( const QString &id );
-    bool saveCrs( QgsCoordinateReferenceSystem myParameters, const QString &myName, QString myId, bool newEntry );
-    void insertProjection( const QString &myProjectionAcronym );
+    bool saveCrs( QgsCoordinateReferenceSystem parameters, const QString &name, const QString &id, bool newEntry );
+    void insertProjection( const QString &projectionAcronym );
     void showHelp();
 
     //These two QMap store the values as they are on the database when loading
-    QMap <QString, QString> existingCRSparameters;
-    QMap <QString, QString> existingCRSnames;
+    QMap <QString, QString> mExistingCRSparameters;
+    QMap <QString, QString> mExistingCRSnames;
 
     //These three list store the value updated with the current modifications
-    QStringList customCRSnames;
-    QStringList customCRSids;
-    QStringList customCRSparameters;
+    QStringList mCustomCRSnames;
+    QStringList mCustomCRSids;
+    QStringList mCustomCRSparameters;
 
     //vector saving the CRS to be deleted
-    QStringList deletedCRSs;
+    QStringList mDeletedCRSs;
 
     //Columns in the tree widget
     enum Columns { QgisCrsNameColumn, QgisCrsIdColumn, QgisCrsParametersColumn };

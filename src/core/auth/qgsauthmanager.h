@@ -53,7 +53,8 @@ class QgsAuthProvider;
 class QTimer;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Singleton offering an interface to manage the authentication configuration database
  * and to utilize configurations through various authentication method plugins
  */
@@ -72,10 +73,15 @@ class CORE_EXPORT QgsAuthManager : public QObject
     };
     Q_ENUM( MessageLevel );
 
-    /** Enforce singleton pattern
-     * \note To set up the manager instance and initialize everything use QgsAuthManager::instance()->init()
+    /**
+     * \brief init initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
+     * \param pluginPath the plugin path
+     * \param authDatabasePath the authentication DB path
+     * \return true on success
+     * \see QgsApplication::pluginPath
+     * \see QgsApplication::qgisAuthDatabaseFilePath
      */
-    static QgsAuthManager *instance();
+    bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
 
     ~QgsAuthManager();
 
@@ -88,8 +94,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Name of the authentication database table that stores server exceptions/configs
     const QString authDatabaseServersTable() const { return AUTH_SERVERS_TABLE; }
 
-    //! Initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
-    bool init( const QString &pluginPath = QString() );
 
     //! Whether QCA has the qca-ossl plugin, which a base run-time requirement
     bool isDisabled() const;
@@ -97,25 +101,29 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Standard message for when QCA's qca-ossl plugin is missing and system is disabled
     const QString disabledMessage() const;
 
-    /** The standard authentication database file in ~/.qgis3/ or defined location
+    /**
+     * The standard authentication database file in ~/.qgis3/ or defined location
      * \see QgsApplication::qgisAuthDatabaseFilePath
      */
     const QString authenticationDatabasePath() const { return mAuthDbPath; }
 
-    /** Main call to initially set or continually check master password is set
+    /**
+     * Main call to initially set or continually check master password is set
      * \note If it is not set, the user is asked for its input
      * \param verify Whether password's hash was saved in authentication database
      */
     bool setMasterPassword( bool verify = false );
 
-    /** Overloaded call to reset master password or set it initially without user interaction
+    /**
+     * Overloaded call to reset master password or set it initially without user interaction
      * \note Only use this in trusted reset functions, unit tests or user/app setup scripts!
      * \param pass Password to use
      * \param verify Whether password's hash was saved in authentication database
      */
     bool setMasterPassword( const QString &pass, bool verify = false );
 
-    /** Verify the supplied master password against any existing hash in authentication database
+    /**
+     * Verify the supplied master password against any existing hash in authentication database
      * \note Do not emit verification signals when only comparing
      * \param compare Password to compare against
      */
@@ -127,17 +135,20 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Verify a password hash existing in authentication database
     bool masterPasswordHashInDatabase() const;
 
-    /** Clear supplied master password
+    /**
+     * Clear supplied master password
      * \note This will not necessarily clear authenticated connections cached in network connection managers
      */
     void clearMasterPassword() { mMasterPass = QString(); }
 
-    /** Check whether supplied password is the same as the one already set
+    /**
+     * Check whether supplied password is the same as the one already set
      * \param pass Password to verify
      */
     bool masterPasswordSame( const QString &pass ) const;
 
-    /** Reset the master password to a new one, then re-encrypt all previous
+    /**
+     * Reset the master password to a new one, then re-encrypt all previous
      * configs in a new database file, optionally backup curren database
      * \param newpass New master password to replace existing
      * \param oldpass Current master password to replace existing
@@ -146,12 +157,14 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     bool resetMasterPassword( const QString &newpass, const QString &oldpass, bool keepbackup, QString *backuppath SIP_INOUT = nullptr );
 
-    /** Whether there is a scheduled opitonal erase of authentication database.
+    /**
+     * Whether there is a scheduled opitonal erase of authentication database.
      * \note not available in Python bindings
      */
     bool scheduledAuthDatabaseErase() { return mScheduledDbErase; } SIP_SKIP
 
-    /** Schedule an optional erase of authentication database, starting when mutex is lockable.
+    /**
+     * Schedule an optional erase of authentication database, starting when mutex is lockable.
      * \note When an erase is scheduled, any attempt to set the master password,
      * e.g. password input dialog, is effectively canceled.
      * For example: In a GUI app, this keeps excess password input dialogs from popping
@@ -164,7 +177,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     void setScheduledAuthDatabaseErase( bool scheduleErase ) SIP_SKIP;
 
-    /** Re-emit a signal to schedule an optional erase of authentication database.
+    /**
+     * Re-emit a signal to schedule an optional erase of authentication database.
      * \note This can be called from the slot connected to a previously emitted scheduling signal,
      * so that the slot can ask for another emit later, if the slot noticies the current GUI
      * processing state is not ready for interacting with the user, e.g. project is still loading
@@ -347,8 +361,15 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Store an authentication setting (stored as string via QVariant( value ).toString() )
     bool storeAuthSetting( const QString &key, const QVariant &value, bool encrypt = false );
 
-    //! Get an authentication setting (retrieved as string and returned as QVariant( QString ))
-    QVariant getAuthSetting( const QString &key, const QVariant &defaultValue = QVariant(), bool decrypt = false );
+    /**
+     * \brief authSetting get an authentication setting (retrieved as string and returned as QVariant( QString ))
+     * \param key setting key
+     * \param defaultValue
+     * \param decrypt if the value needs decrypted
+     * \return QVariant( QString ) authentication setting
+     * \since QGIS 3.0
+     */
+    QVariant authSetting( const QString &key, const QVariant &defaultValue = QVariant(), bool decrypt = false );
 
     //! Check if an authentication setting exists
     bool existsAuthSetting( const QString &key );
@@ -365,22 +386,46 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Store a certificate identity
     bool storeCertIdentity( const QSslCertificate &cert, const QSslKey &key );
 
-    //! Get a certificate identity by id (sha hash)
-    const QSslCertificate getCertIdentity( const QString &id );
-
-    /** Get a certificate identity bundle by id (sha hash).
-     * \note not available in Python bindings
+    /**
+     * \brief certIdentity get a certificate identity by \a id (sha hash)
+     * \param id sha hash of the cert
+     * \return the certificate
+     * \since QGIS 3.0
      */
-    const QPair<QSslCertificate, QSslKey> getCertIdentityBundle( const QString &id ) SIP_SKIP;
+    const QSslCertificate certIdentity( const QString &id );
 
-    //! Get a certificate identity bundle by id (sha hash) returned as PEM text
-    const QStringList getCertIdentityBundleToPem( const QString &id );
+    /**
+     * Get a certificate identity bundle by \a id (sha hash).
+     * \param id sha shash
+     * \return a pair with the certificate and its SSL key
+     * \note not available in Python bindings
+     * \since QGIS 3.0
+     */
+    const QPair<QSslCertificate, QSslKey> certIdentityBundle( const QString &id ) SIP_SKIP;
 
-    //! Get certificate identities
-    const QList<QSslCertificate> getCertIdentities();
+    /**
+     * \brief certIdentityBundleToPem get a certificate identity bundle by \a id (sha hash) returned as PEM text
+     * \param id sha hash
+     * \return a list of strings
+     * \since QGIS 3.0
+     */
+    const QStringList certIdentityBundleToPem( const QString &id );
 
-    //! Get list of certificate identity ids from database
-    QStringList getCertIdentityIds() const;
+    /**
+     * \brief certIdentities get certificate identities
+     * \return list of certificates
+     * \since QGIS 3.0
+     */
+    const QList<QSslCertificate> certIdentities();
+
+    //!
+
+    /**
+     * \brief certIdentityIds get list of certificate identity ids from database
+     * \return list of certificate ids
+     * \since QGIS 3.0
+     */
+    QStringList certIdentityIds() const;
 
     //! Check if a certificate identity exists
     bool existsCertIdentity( const QString &id );
@@ -392,14 +437,29 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Store an SSL certificate custom config
     bool storeSslCertCustomConfig( const QgsAuthConfigSslServer &config );
 
-    //! Get an SSL certificate custom config by id (sha hash) and host:port
-    const QgsAuthConfigSslServer getSslCertCustomConfig( const QString &id, const QString &hostport );
+    /**
+     * \brief sslCertCustomConfig get an SSL certificate custom config by \a id (sha hash) and \a hostport (host:port)
+     * \param id sha hash
+     * \param hostport string host:port
+     * \return a SSL certificate custom config
+     * \since QGIS 3.0
+     */
+    const QgsAuthConfigSslServer sslCertCustomConfig( const QString &id, const QString &hostport );
 
-    //! Get an SSL certificate custom config by host:port
-    const QgsAuthConfigSslServer getSslCertCustomConfigByHost( const QString &hostport );
+    /**
+     * \brief sslCertCustomConfigByHost get an SSL certificate custom config by \a hostport (host:port)
+     * \param hostport host:port
+     * \return a SSL certificate custom config
+     * \since QGIS 3.0
+     */
+    const QgsAuthConfigSslServer sslCertCustomConfigByHost( const QString &hostport );
 
-    //! Get SSL certificate custom configs
-    const QList<QgsAuthConfigSslServer> getSslCertCustomConfigs();
+    /**
+     * \brief sslCertCustomConfigs get SSL certificate custom configs
+     * \return list of SSL certificate custom config
+     * \since QGIS 3.0
+     */
+    const QList<QgsAuthConfigSslServer> sslCertCustomConfigs();
 
     //! Check if SSL certificate custom config exists
     bool existsSslCertCustomConfig( const QString &id, const QString &hostport );
@@ -407,10 +467,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Remove an SSL certificate custom config
     bool removeSslCertCustomConfig( const QString &id, const QString &hostport );
 
-    /** Get ignored SSL error cache, keyed with cert/connection's sha:host:port.
+    /**
+     * \brief ignoredSslErrorCache Get ignored SSL error cache, keyed with cert/connection's sha:host:port.
      * \note not available in Python bindings
+     * \return hash keyed with cert/connection's sha:host:port.
+     * \since QGIS 3.0
      */
-    QHash<QString, QSet<QSslError::SslError> > getIgnoredSslErrorCache() { return mIgnoredSslErrorsCache; } SIP_SKIP
+    QHash<QString, QSet<QSslError::SslError> > ignoredSslErrorCache() { return mIgnoredSslErrorsCache; } SIP_SKIP
 
     //! Utility function to dump the cache for debug purposes
     void dumpIgnoredSslErrorsCache_();
@@ -432,7 +495,14 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool storeCertAuthority( const QSslCertificate &cert );
 
     //! Get a certificate authority by id (sha hash)
-    const QSslCertificate getCertAuthority( const QString &id );
+
+    /**
+     * \brief certAuthority get a certificate authority by \a id (sha hash)
+     * \param id sha hash
+     * \return a certificate
+     * \since QGIS 3.0
+     */
+    const QSslCertificate certAuthority( const QString &id );
 
     //! Check if a certificate authority exists
     bool existsCertAuthority( const QSslCertificate &cert );
@@ -440,22 +510,41 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Remove a certificate authority
     bool removeCertAuthority( const QSslCertificate &cert );
 
-    //! Get root system certificate authorities
-    const QList<QSslCertificate> getSystemRootCAs();
-
-    //! Get extra file-based certificate authorities
-    const QList<QSslCertificate> getExtraFileCAs();
-
-    //! Get database-stored certificate authorities
-    const QList<QSslCertificate> getDatabaseCAs();
-
-    //! Get sha1-mapped database-stored certificate authorities
-    const QMap<QString, QSslCertificate> getMappedDatabaseCAs();
-
-    /** Get all CA certs mapped to their sha1 from cache.
-     * \note not available in Python bindings
+    /**
+     * \brief systemRootCAs get root system certificate authorities
+     * \return list of certificate authorities
+     * \since QGIS 3.0
      */
-    const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > getCaCertsCache() SIP_SKIP
+    const QList<QSslCertificate> systemRootCAs();
+
+    /**
+     * \brief extraFileCAs extra file-based certificate authorities
+     * \return list of certificate authorities
+     * \since QGIS 3.0
+     */
+    const QList<QSslCertificate> extraFileCAs();
+
+    /**
+     * \brief databaseCAs get database-stored certificate authorities
+     * \return list of certificate authorities
+     * \since QGIS 3.0
+     */
+    const QList<QSslCertificate> databaseCAs();
+
+    /**
+     * \brief mappedDatabaseCAs get sha1-mapped database-stored certificate authorities
+     * \return sha1-mapped certificate authorities
+     * \since QGIS 3.0
+     */
+    const QMap<QString, QSslCertificate> mappedDatabaseCAs();
+
+    /**
+     * \brief caCertsCache get all CA certs mapped to their sha1 from cache.
+     * \return map of sha1 <source, certificates>
+     * \note not available in Python bindings
+     * \since QGIS 3.0
+     */
+    const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > caCertsCache() SIP_SKIP
     {
       return mCaCertsCache;
     }
@@ -466,10 +555,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Store user trust value for a certificate
     bool storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy policy );
 
-    /** Get a whether certificate is trusted by user
-        \returns DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
+    /**
+     * \brief certTrustPolicy get whether certificate \a cert is trusted by user
+     * \param cert
+     * \return DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
+     * \since QGIS 3.0
      */
-    QgsAuthCertUtils::CertTrustPolicy getCertTrustPolicy( const QSslCertificate &cert );
+    QgsAuthCertUtils::CertTrustPolicy certTrustPolicy( const QSslCertificate &cert );
 
     //! Remove a group certificate authorities
     bool removeCertTrustPolicies( const QList<QSslCertificate> &certs );
@@ -477,8 +569,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Remove a certificate authority
     bool removeCertTrustPolicy( const QSslCertificate &cert );
 
-    //! Get trust policy for a particular certificate
-    QgsAuthCertUtils::CertTrustPolicy getCertificateTrustPolicy( const QSslCertificate &cert );
+    /**
+     * \brief certificateTrustPolicy get trust policy for a particular certificate \a cert
+     * \param cert
+     * \return DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
+     * \since QGIS 3.0
+     */
+    QgsAuthCertUtils::CertTrustPolicy certificateTrustPolicy( const QSslCertificate &cert );
 
     //! Set the default certificate trust policy perferred by user
     bool setDefaultCertTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy );
@@ -486,58 +583,90 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Get the default certificate trust policy perferred by user
     QgsAuthCertUtils::CertTrustPolicy defaultCertTrustPolicy();
 
-    //! Get cache of certificate sha1s, per trust policy
-    const QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > getCertTrustCache() { return mCertTrustCache; }
+    /**
+     * \brief certTrustCache get cache of certificate sha1s, per trust policy
+     * \return trust-policy-mapped certificate sha1s
+     * \since QGIS 3.0
+     */
+    const QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > certTrustCache() { return mCertTrustCache; }
 
     //! Rebuild certificate authority cache
     bool rebuildCertTrustCache();
 
-    //! Get list of all trusted CA certificates
-    const QList<QSslCertificate> getTrustedCaCerts( bool includeinvalid = false );
+    /**
+     * \brief trustedCaCerts get list of all trusted CA certificates
+     * \param includeinvalid whether invalid certs needs to be returned
+     * \return list of certificates
+     * \since QGIS 3.0
+     */
+    const QList<QSslCertificate> trustedCaCerts( bool includeinvalid = false );
 
-    //! Get list of all untrusted CA certificates
-    const QList<QSslCertificate> getUntrustedCaCerts( QList<QSslCertificate> trustedCAs = QList<QSslCertificate>() );
+    /**
+     * \brief untrustedCaCerts get list of untrusted certificate authorities
+     * \return list of certificates
+     * \since QGIS 3.0
+     */
+    const QList<QSslCertificate> untrustedCaCerts( QList<QSslCertificate> trustedCAs = QList<QSslCertificate>() );
 
     //! Rebuild trusted certificate authorities cache
     bool rebuildTrustedCaCertsCache();
 
-    //! Get cache of trusted certificate authorities, ready for network connections
-    const QList<QSslCertificate> getTrustedCaCertsCache() { return mTrustedCaCertsCache; }
+    /**
+     * \brief trustedCaCertsCache cache of trusted certificate authorities, ready for network connections
+     * \return list of certificates
+     * \since QGIS 3.0
+     */
+    const QList<QSslCertificate> trustedCaCertsCache() { return mTrustedCaCertsCache; }
 
-    //! Get concatenated string of all trusted CA certificates
-    const QByteArray getTrustedCaCertsPemText();
+    /**
+     * \brief trustedCaCertsPemText get concatenated string of all trusted CA certificates
+     * \return bye array with all PEM encoded trusted CAs
+     * \since QGIS 3.0
+     */
+    const QByteArray trustedCaCertsPemText();
 
 #endif
 
-    //! Return pointer to mutex
-    QMutex *mutex() { return mMutex; }
-
-    //! Error message getter
-    //! @note not available in Python bindings
+    /**
+     * Error message getter
+     * \note not available in Python bindings
+     */
     const QString passwordHelperErrorMessage() { return mPasswordHelperErrorMessage; } SIP_SKIP
 
-    //! Delete master password from wallet
-    //! @note not available in Python bindings
+    /**
+     * Delete master password from wallet
+     * \note not available in Python bindings
+     */
     bool passwordHelperDelete() SIP_SKIP;
 
-    //! Password helper enabled getter
-    //! @note not available in Python bindings
+    /**
+     * Password helper enabled getter
+     * \note not available in Python bindings
+     */
     bool passwordHelperEnabled() const SIP_SKIP;
 
-    //! Password helper enabled setter
-    //! @note not available in Python bindings
+    /**
+     * Password helper enabled setter
+     * \note not available in Python bindings
+     */
     void setPasswordHelperEnabled( const bool enabled ) SIP_SKIP;
 
-    //! Password helper logging enabled getter
-    //! @note not available in Python bindings
+    /**
+     * Password helper logging enabled getter
+     * \note not available in Python bindings
+     */
     bool passwordHelperLoggingEnabled() const SIP_SKIP;
 
-    //! Password helper logging enabled setter
-    //! @note not available in Python bindings
+    /**
+     * Password helper logging enabled setter
+     * \note not available in Python bindings
+     */
     void setPasswordHelperLoggingEnabled( const bool enabled ) SIP_SKIP;
 
-    //! Store the password manager into the wallet
-    //! @note not available in Python bindings
+    /**
+     * Store the password manager into the wallet
+     * \note not available in Python bindings
+     */
     bool passwordHelperSync() SIP_SKIP;
 
     //! The display name of the password helper (platform dependent)
@@ -572,24 +701,24 @@ class CORE_EXPORT QgsAuthManager : public QObject
     /**
      * Custom logging signal to inform the user about master password <-> password manager interactions
      * @see QgsMessageLog
-     * @param message Message to send
-     * @param tag Associated tag (title)
-     * @param level Message log level
+     * \param message Message to send
+     * \param tag Associated tag (title)
+     * \param level Message log level
      */
-    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const;
+    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO );
 
 
     /**
      * Emitted when a password has been verify (or not)
      * \param verified The state of password's verification
      */
-    void masterPasswordVerified( bool verified ) const;
+    void masterPasswordVerified( bool verified );
 
     //! Emitted when a user has indicated they may want to erase the authentication db.
-    void authDatabaseEraseRequested() const;
+    void authDatabaseEraseRequested();
 
     //! Emitted when the authentication db is significantly changed, e.g. large record removal, erased, etc.
-    void authDatabaseChanged() const;
+    void authDatabaseChanged();
 
   public slots:
     //! Clear all authentication configs from authentication method caches
@@ -601,7 +730,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
   private slots:
     void writeToConsole( const QString &message, const QString &tag = QString(), QgsAuthManager::MessageLevel level = INFO );
 
-    /** This slot emits the authDatabaseEraseRequested signal, instead of attempting
+    /**
+     * This slot emits the authDatabaseEraseRequested signal, instead of attempting
      * the erase. It relies upon a slot connected to the signal in calling application
      * (the one that initiated the erase) to initiate the erase, when it is ready.
      * Upon activation, a receiving slot should get confimation from the user, then
@@ -612,7 +742,14 @@ class CORE_EXPORT QgsAuthManager : public QObject
     void tryToStartDbErase();
 
   protected:
-    explicit QgsAuthManager();
+
+    /**
+     * Enforce singleton pattern
+     * \note To set up the manager instance and initialize everything use QgsAuthManager::instance()->init()
+     */
+    static QgsAuthManager *instance() SIP_SKIP;
+
+    explicit QgsAuthManager() SIP_SKIP;
 
   private:
 
@@ -637,8 +774,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Clear error code and message
     void passwordHelperClearErrors();
 
-    //! Process the error: show it and/or disable the password helper system in case of
-    //! access denied or no backend, reset error flags at the end
+    /**
+     * Process the error: show it and/or disable the password helper system in case of
+     * access denied or no backend, reset error flags at the end
+     */
     void passwordHelperProcessError();
 
     bool createConfigTables();
@@ -757,6 +896,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     //! password helper folder in the wallets
     static const QLatin1String AUTH_PASSWORD_HELPER_FOLDER_NAME;
+
+    friend class QgsApplication;
 
 };
 

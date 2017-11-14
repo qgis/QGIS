@@ -26,6 +26,23 @@
 #include "qgsmultipolygon.h"
 
 
+static QgsExpressionContext _expressionContext3D()
+{
+  QgsExpressionContext ctx;
+  ctx << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  return ctx;
+}
+
+static QSet<QString> _requiredAttributes( const QgsPolygon3DSymbol &symbol, QgsVectorLayer *layer )
+{
+  QgsExpressionContext ctx( _expressionContext3D() );
+  ctx.setFields( layer->fields() );
+  //symbol.dataDefinedProperties().prepare( ctx );
+  return symbol.dataDefinedProperties().referencedFields( ctx );
+}
+
+
 /// @cond PRIVATE
 
 QgsPolygon3DSymbolEntity::QgsPolygon3DSymbolEntity( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsPolygon3DSymbol &symbol, Qt3DCore::QNode *parent )
@@ -51,7 +68,7 @@ void QgsPolygon3DSymbolEntity::addEntityForSelectedPolygons( const Qgs3DMapSetti
   // build the feature request to select features
   QgsFeatureRequest req;
   req.setDestinationCrs( map.crs() );
-  req.setSubsetOfAttributes( QgsAttributeList() );
+  req.setSubsetOfAttributes( _requiredAttributes( symbol, layer ), layer->fields() );
   req.setFilterFids( layer->selectedFeatureIds() );
 
   // build the entity
@@ -72,7 +89,7 @@ void QgsPolygon3DSymbolEntity::addEntityForNotSelectedPolygons( const Qgs3DMapSe
 
   // build the feature request to select features
   QgsFeatureRequest req;
-  req.setSubsetOfAttributes( QgsAttributeList() );
+  req.setSubsetOfAttributes( _requiredAttributes( symbol, layer ), layer->fields() );
   req.setDestinationCrs( map.crs() );
 
   QgsFeatureIds notSelected = layer->allFeatureIds();
@@ -105,7 +122,16 @@ QgsPolygon3DSymbolEntityNode::QgsPolygon3DSymbolEntityNode( const Qgs3DMapSettin
 Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs3DMapSettings &map, const QgsPolygon3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
   QgsPointXY origin( map.originX(), map.originY() );
-  QList<QgsPolygonV2 *> polygons;
+  QList<QgsPolygon *> polygons;
+  QList<float> extrusionHeightPerPolygon;  // will stay empty if not needed per polygon
+
+  QgsExpressionContext ctx( _expressionContext3D() );
+  ctx.setFields( layer->fields() );
+
+  const QgsPropertyCollection &ddp = symbol.dataDefinedProperties();
+  bool hasDDHeight = ddp.isActive( QgsAbstract3DSymbol::PropertyHeight );
+  bool hasDDExtrusion = ddp.isActive( QgsAbstract3DSymbol::PropertyExtrusionHeight );
+
   QgsFeature f;
   QgsFeatureIterator fi = layer->getFeatures( request );
   while ( fi.nextFeature( f ) )
@@ -116,33 +142,38 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
     QgsGeometry geom = f.geometry();
 
     // segmentize curved geometries if necessary
-    if ( QgsWkbTypes::isCurvedType( geom.geometry()->wkbType() ) )
-      geom = QgsGeometry( geom.geometry()->segmentize() );
+    if ( QgsWkbTypes::isCurvedType( geom.constGet()->wkbType() ) )
+      geom = QgsGeometry( geom.constGet()->segmentize() );
 
-    if ( !geom.isGeosValid() )
+    const QgsAbstractGeometry *g = geom.constGet();
+
+    ctx.setFeature( f );
+    float height = symbol.height();
+    float extrusionHeight = symbol.extrusionHeight();
+    if ( hasDDHeight )
+      height = ddp.valueAsDouble( QgsAbstract3DSymbol::PropertyHeight, ctx, height );
+    if ( hasDDExtrusion )
+      extrusionHeight = ddp.valueAsDouble( QgsAbstract3DSymbol::PropertyExtrusionHeight, ctx, extrusionHeight );
+
+    if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon *>( g ) )
     {
-      // invalid geometries break tessellation
-      qDebug() << "skipping invalid geometry" << f.id();
-      continue;
-    }
-
-    const QgsAbstractGeometry *g = geom.geometry();
-
-    if ( const QgsPolygonV2 *poly = qgsgeometry_cast< const QgsPolygonV2 *>( g ) )
-    {
-      QgsPolygonV2 *polyClone = poly->clone();
-      Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), map );
+      QgsPolygon *polyClone = poly->clone();
+      Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), height, map );
       polygons.append( polyClone );
+      if ( hasDDExtrusion )
+        extrusionHeightPerPolygon.append( extrusionHeight );
     }
-    else if ( const QgsMultiPolygonV2 *mpoly = qgsgeometry_cast< const QgsMultiPolygonV2 *>( g ) )
+    else if ( const QgsMultiPolygon *mpoly = qgsgeometry_cast< const QgsMultiPolygon *>( g ) )
     {
       for ( int i = 0; i < mpoly->numGeometries(); ++i )
       {
         const QgsAbstractGeometry *g2 = mpoly->geometryN( i );
         Q_ASSERT( QgsWkbTypes::flatType( g2->wkbType() ) == QgsWkbTypes::Polygon );
-        QgsPolygonV2 *polyClone = static_cast< const QgsPolygonV2 *>( g2 )->clone();
-        Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), map );
+        QgsPolygon *polyClone = static_cast< const QgsPolygon *>( g2 )->clone();
+        Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), height, map );
         polygons.append( polyClone );
+        if ( hasDDExtrusion )
+          extrusionHeightPerPolygon.append( extrusionHeight );
       }
     }
     else
@@ -150,7 +181,7 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
   }
 
   mGeometry = new QgsTessellatedPolygonGeometry;
-  mGeometry->setPolygons( polygons, origin, symbol.extrusionHeight() );
+  mGeometry->setPolygons( polygons, origin, symbol.extrusionHeight(), extrusionHeightPerPolygon );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( mGeometry );

@@ -59,11 +59,13 @@ Saves mVectorJoins to xml under the layer node
 
     void readXml( const QDomNode &layer_node );
 %Docstring
-Does not resolve layer IDs to layers - call resolveReferences() afterwards
+ Reads joins from project file.
+ Does not resolve layer IDs to layers - call resolveReferences() afterwards
 %End
 
     void resolveReferences( QgsProject *project );
 %Docstring
+ Resolves layer IDs of joined layers using given project's available layers
 .. versionadded:: 3.0
 %End
 
@@ -89,12 +91,14 @@ Quick way to test if there is any join at all
 
     int joinedFieldsOffset( const QgsVectorLayerJoinInfo *info, const QgsFields &fields );
 %Docstring
+ Find out what is the first index of the join within fields. Returns -1 if join is not present
 .. versionadded:: 2.6
  :rtype: int
 %End
 
     static QVector<int> joinSubsetIndices( QgsVectorLayer *joinLayer, const QStringList &joinFieldsSubset );
 %Docstring
+ Return a vector of indices for use in join based on field names from the layer
 .. versionadded:: 2.6
  :rtype: list of int
 %End
@@ -126,8 +130,21 @@ Quick way to test if there is any join at all
  :rtype: QgsFeature
 %End
 
+    bool isAuxiliaryJoin( const QgsVectorLayerJoinInfo &info ) const;
+%Docstring
+ Returns true if the join information is about auxiliary layer, false otherwise
+
+ \param info The join information
+
+ :return: true if the join information is about auxiliary layer, false otherwise
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
     QgsVectorLayerJoinBuffer *clone() const /Factory/;
 %Docstring
+ Create a copy of the join buffer
 .. versionadded:: 2.6
  :rtype: QgsVectorLayerJoinBuffer
 %End
@@ -195,8 +212,10 @@ Quick way to test if there is any join at all
 %End
 
   signals:
+
     void joinedFieldsChanged();
 %Docstring
+ Emitted whenever the list of joined fields changes (e.g. added join or joined layer's fields change)
 .. versionadded:: 2.6
 %End
 

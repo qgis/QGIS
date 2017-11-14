@@ -2028,6 +2028,67 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
 }
 %End
 
+// Mapped type for QList<QgsWkbTypes::GeometryType>.
+%MappedType QList<QgsWkbTypes::GeometryType>
+{
+%TypeHeaderCode
+#include <qgswkbtypes.h>
+%End
+
+%ConvertFromTypeCode
+    // Create the list.
+    PyObject *l;
+
+    if ((l = PyList_New(sipCpp->size())) == NULL)
+        return NULL;
+
+    // Set the list elements.
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+       QgsWkbTypes::GeometryType e = sipCpp->at(i);
+        PyObject *eobj;
+
+        if ((eobj = sipConvertFromEnum(e, sipType_QgsWkbTypes_GeometryType)) == NULL)
+        {
+            Py_DECREF(l);
+
+            return NULL;
+        }
+
+        PyList_SET_ITEM(l, i, eobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    // Check the type if that is all that is required.
+    if (sipIsErr == NULL)
+    {
+        if (!PyList_Check(sipPy))
+            return 0;
+
+        for (SIP_SSIZE_T i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+            if (PyObject_TypeCheck(PyList_GET_ITEM(sipPy, i), sipTypeAsPyTypeObject(sipType_QgsWkbTypes_GeometryType)))
+                return 0;
+
+        return 1;
+    }
+
+    QList<QgsWkbTypes::GeometryType> *ql = new QList<QgsWkbTypes::GeometryType>;
+
+    for (SIP_SSIZE_T i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+    {
+        long l = SIPLong_AsLong(PyList_GET_ITEM(sipPy, i));
+        ql->append(static_cast<QgsWkbTypes::GeometryType>(l));
+    }
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
 %PostInitialisationCode  //#spellok
 
 // Import the Chimera helper registration functions.

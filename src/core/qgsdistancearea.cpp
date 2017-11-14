@@ -158,7 +158,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
       if ( !surface )
         return 0.0;
 
-      QgsPolygonV2 *polygon = surface->surfaceToPolygon();
+      QgsPolygon *polygon = surface->surfaceToPolygon();
 
       double area = 0;
       const QgsCurve *outerRing = polygon->exteriorRing();
@@ -180,7 +180,7 @@ double QgsDistanceArea::measureArea( const QgsGeometry &geometry ) const
   if ( geometry.isNull() )
     return 0.0;
 
-  const QgsAbstractGeometry *geomV2 = geometry.geometry();
+  const QgsAbstractGeometry *geomV2 = geometry.constGet();
   return measure( geomV2, Area );
 }
 
@@ -189,7 +189,7 @@ double QgsDistanceArea::measureLength( const QgsGeometry &geometry ) const
   if ( geometry.isNull() )
     return 0.0;
 
-  const QgsAbstractGeometry *geomV2 = geometry.geometry();
+  const QgsAbstractGeometry *geomV2 = geometry.constGet();
   return measure( geomV2, Length );
 }
 
@@ -198,7 +198,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
   if ( geometry.isNull() )
     return 0.0;
 
-  const QgsAbstractGeometry *geomV2 = geometry.geometry();
+  const QgsAbstractGeometry *geomV2 = geometry.constGet();
   if ( !geomV2 || geomV2->dimension() < 2 )
   {
     return 0.0;
@@ -235,7 +235,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
       continue;
     }
 
-    QgsPolygonV2 *poly = ( *surfaceIt )->surfaceToPolygon();
+    QgsPolygon *poly = ( *surfaceIt )->surfaceToPolygon();
     const QgsCurve *outerRing = poly->exteriorRing();
     if ( outerRing )
     {

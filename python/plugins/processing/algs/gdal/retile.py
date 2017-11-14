@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'January 2016'
@@ -26,96 +25,128 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsProcessingParameterDefinition
-
+from qgis.core import (QgsProcessing,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingOutputFolder,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingParameterFolderDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterMultipleInput
-from processing.core.parameters import ParameterCrs
-from processing.core.parameters import ParameterBoolean
-from processing.core.outputs import OutputDirectory
-from processing.tools.system import isWindows
-from processing.tools import dataobjects
 from processing.algs.gdal.GdalUtils import GdalUtils
-import re
+from processing.tools.system import isWindows
 
 
 class retile(GdalAlgorithm):
 
     INPUT = 'INPUT'
-    RTYPE = 'RTYPE'
-    ONLYPYRAMIDS = 'ONLYPYRAMIDS'
-    PYRAMIDLEVELS = 'PYRAMIDLEVELS'
-    PIXELSIZE = 'PIXELSIZE'
-    ALGORITHM = 'ALGORITHM'
-    USEDIRFOREACHROW = 'USEDIRFOREACHROW'
-    S_SRS = 'S_SRS'
-    TARGETDIR = 'TARGETDIR'
-    CSVFILE = 'CSVFILE'
-    CSVDELIM = 'CSVDELIM'
-    TILEINDEX = 'TILEINDEX'
-    TILEINDEXFIELD = 'TILEINDEXFIELD'
+    TILE_SIZE_X = 'TILE_SIZE_X'
+    TILE_SIZE_Y = 'TILE_SIZE_Y'
+    OVERLAP = 'OVERLAP'
+    LEVELS = 'LEVELS'
+
+    SOURCE_CRS = 'SOURCE_CRS'
     FORMAT = 'FORMAT'
+    RESAMPLING = 'RESAMPLING'
+    OPTIONS = 'OPTIONS'
+    DATA_TYPE = 'DATA_TYPE'
+    DELIMITER = 'DELIMITER'
+    ONLY_PYRAMIDS = 'ONLY_PYRAMIDS'
+    DIR_FOR_ROW = 'DIR_FOR_ROW'
+    OUTPUT = 'OUTPUT'
+    OUTPUT_CSV = 'OUTPUT_CSV'
 
-    TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
-    ALGO = ['near', 'bilinear', 'cubic', 'cubicspline', 'lanczos']
-
-    def commandName(self):
-        return "gdal_retile"
+    TYPES = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        # Required parameters
-        self.addParameter(ParameterMultipleInput(self.INPUT,
-                                                 self.tr('Input layers'),
-                                                 dataobjects.TYPE_RASTER))
-        # Advanced parameters
+        self.methods = ((self.tr('Nearest neighbour'), 'near'),
+                        (self.tr('Bilinear'), 'bilinear'),
+                        (self.tr('Cubic'), 'cubic'),
+                        (self.tr('Cubic spline'), 'cubicspline'),
+                        (self.tr('Lanczos windowed sinc'), 'lanczos'),)
+
+        self.addParameter(QgsProcessingParameterMultipleLayers(self.INPUT,
+                                                               self.tr('Input files'),
+                                                               QgsProcessing.TypeRaster))
+        self.addParameter(QgsProcessingParameterNumber(self.TILE_SIZE_X,
+                                                       self.tr('Tile width'),
+                                                       type=QgsProcessingParameterNumber.Integer,
+                                                       minValue=0,
+                                                       defaultValue=256))
+        self.addParameter(QgsProcessingParameterNumber(self.TILE_SIZE_Y,
+                                                       self.tr('Tile height'),
+                                                       type=QgsProcessingParameterNumber.Integer,
+                                                       minValue=0,
+                                                       defaultValue=256))
+        self.addParameter(QgsProcessingParameterNumber(self.OVERLAP,
+                                                       self.tr('Overlap in pixels between consecutive tiles'),
+                                                       type=QgsProcessingParameterNumber.Integer,
+                                                       minValue=0,
+                                                       defaultValue=0))
+        self.addParameter(QgsProcessingParameterNumber(self.LEVELS,
+                                                       self.tr('Number of pyramids levels to build'),
+                                                       type=QgsProcessingParameterNumber.Integer,
+                                                       minValue=0,
+                                                       defaultValue=1))
+
         params = []
-        params.append(ParameterString(self.PIXELSIZE,
-                                      self.tr('Pixel size to be used for the output file (XSIZE YSIZE like 512 512)'),
-                                      None, False, True))
-        params.append(ParameterSelection(self.ALGORITHM,
-                                         self.tr('Resampling algorithm'), self.ALGO, 0, False, optional=True))
-        params.append(ParameterCrs(self.S_SRS,
-                                   self.tr('Override source CRS'), None, True))
-        params.append(ParameterNumber(self.PYRAMIDLEVELS,
-                                      self.tr('Number of pyramids levels to build'),
-                                      None, None, None, True))
-        params.append(ParameterBoolean(self.ONLYPYRAMIDS,
-                                       self.tr('Build only the pyramids'),
-                                       False, True))
-        params.append(ParameterSelection(self.RTYPE,
-                                         self.tr('Output raster type'),
-                                         self.TYPE, 5, False, optional=True))
-        params.append(ParameterSelection(self.FORMAT,
-                                         self.tr('Output raster format'),
-                                         list(GdalUtils.getSupportedRasters().keys()), 0, False, optional=True))
-        params.append(ParameterBoolean(self.USEDIRFOREACHROW,
-                                       self.tr('Use a directory for each row'),
-                                       False, True))
-        params.append(ParameterString(self.CSVFILE,
-                                      self.tr('Name of the csv file containing the tile(s) georeferencing information'),
-                                      None, False, True))
-        params.append(ParameterString(self.CSVDELIM,
-                                      self.tr('Column delimiter used in the CSV file'),
-                                      None, False, True))
-        params.append(ParameterString(self.TILEINDEX,
-                                      self.tr('name of shape file containing the result tile(s) index'),
-                                      None, False, True))
-        params.append(ParameterString(self.TILEINDEXFIELD,
-                                      self.tr('name of the attribute containing the tile name in the result shape file'),
-                                      None, False, True))
+        params.append(QgsProcessingParameterCrs(self.SOURCE_CRS,
+                                                self.tr('Source coordinate reference system'),
+                                                optional=True))
+        params.append(QgsProcessingParameterEnum(self.RESAMPLING,
+                                                 self.tr('Resampling method'),
+                                                 options=[i[0] for i in self.methods],
+                                                 allowMultiple=False,
+                                                 defaultValue=0))
+        params.append(QgsProcessingParameterString(self.DELIMITER,
+                                                   self.tr('Column delimiter used in the CSV file'),
+                                                   defaultValue=';',
+                                                   optional=True))
+
+        options_param = QgsProcessingParameterString(self.OPTIONS,
+                                                     self.tr('Additional creation parameters'),
+                                                     defaultValue='',
+                                                     optional=True)
+        options_param.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
+        params.append(options_param)
+
+        params.append(QgsProcessingParameterEnum(self.DATA_TYPE,
+                                                 self.tr('Output data type'),
+                                                 self.TYPES,
+                                                 allowMultiple=False,
+                                                 defaultValue=5))
+
+        params.append(QgsProcessingParameterBoolean(self.ONLY_PYRAMIDS,
+                                                    self.tr('Build only the pyramids'),
+                                                    defaultValue=False))
+        params.append(QgsProcessingParameterBoolean(self.DIR_FOR_ROW,
+                                                    self.tr('Use separate directory for each tiles row'),
+                                                    defaultValue=False))
 
         for param in params:
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(param)
 
-        self.addOutput(OutputDirectory(self.TARGETDIR,
-                                       self.tr('The directory where the tile result is created')))
+        self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT,
+                                                                  self.tr('Output directory')))
+
+        self.addOutput(QgsProcessingOutputFolder(self.OUTPUT, self.tr('Output directory')))
+
+        output_csv_param = QgsProcessingParameterFileDestination(self.OUTPUT_CSV,
+                                                                 self.tr('CSV file containing the tile(s) georeferencing information'),
+                                                                 'CSV files (*.csv)',
+                                                                 optional=True)
+        output_csv_param.setCreateByDefault(False)
+        self.addParameter(output_csv_param)
 
     def name(self):
         return 'retile'
@@ -126,65 +157,58 @@ class retile(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def commandName(self):
+        return "gdal_retile"
 
+    def getConsoleCommands(self, parameters, context, feedback):
         arguments = []
 
-        if self.getParameterValue(self.RTYPE):
-            arguments.append('-ot')
-            arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
+        arguments.append('-ps')
+        arguments.append(str(self.parameterAsInt(parameters, self.TILE_SIZE_X, context)))
+        arguments.append(str(self.parameterAsInt(parameters, self.TILE_SIZE_Y, context)))
 
-        arguments.append('-of')
-        arguments.append(list(GdalUtils.getSupportedRasters().keys())[self.getParameterValue(self.FORMAT)])
+        arguments.append('-overlap')
+        arguments.append(str(self.parameterAsInt(parameters, self.OVERLAP, context)))
 
-        if self.getParameterValue(self.PIXELSIZE):
-            pixelSize = self.getParameterValue(self.PIXELSIZE)
-            if re.match(r'\d+ \d+', pixelSize):
-                xsize, ysize = pixelSize.split(' ')
-                arguments.append('-ps')
-                arguments.append(xsize)
-                arguments.append(ysize)
+        arguments.append('-levels')
+        arguments.append(str(self.parameterAsInt(parameters, self.LEVELS, context)))
 
-        if self.getParameterValue(self.ONLYPYRAMIDS):
-            arguments.append('-pyramidOnly')
-
-        if self.getParameterValue(self.USEDIRFOREACHROW):
-            arguments.append('-useDirForEachRow')
-
-        ssrs = str(self.getParameterValue(self.S_SRS))
-        if len(ssrs) > 0:
+        crs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
+        if crs.isValid():
             arguments.append('-s_srs')
-            arguments.append(ssrs)
-
-        if self.getParameterValue(self.PYRAMIDLEVELS):
-            arguments.append('-levels')
-            arguments.append(str(self.getParameterValue(self.PYRAMIDLEVELS)))
+            arguments.append(crs.authid())
 
         arguments.append('-r')
-        arguments.append(self.ALGO[self.getParameterValue(self.ALGORITHM)])
+        arguments.append(self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1])
 
-        # Handle CSV
-        if self.getParameterValue(self.CSVFILE):
+        arguments.append('-ot')
+        arguments.append(self.TYPES[self.parameterAsEnum(parameters, self.DATA_TYPE, context)])
+
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.append('-co')
+            arguments.append(options)
+
+        if self.parameterAsBool(parameters, self.DIR_FOR_ROW, context):
+            arguments.append('-pyramidOnly')
+
+        if self.parameterAsBool(parameters, self.ONLY_PYRAMIDS, context):
+            arguments.append('-useDirForEachRow')
+
+        csvFile = self.parameterAsFileOutput(parameters, self.OUTPUT_CSV, context)
+        if csvFile:
             arguments.append('-csv')
-            arguments.append(self.getParameterValue(self.CSVFILE))
-
-        if self.getParameterValue(self.CSVFILE) and self.getParameterValue(self.CSVDELIM):
-            arguments.append('-csvDelim')
-            arguments.append(self.getParameterValue(self.CSVDELIM))
-
-        # Handle Shp
-        if self.getParameterValue(self.TILEINDEX):
-            arguments.append('-tileIndex')
-            arguments.append(self.getParameterValue(self.TILEINDEX))
-
-        if self.getParameterValue(self.TILEINDEX) and self.getParameterValue(self.TILEINDEXFIELD):
-            arguments.append('-tileIndexField')
-            arguments.append(self.getParameterValue(self.TILEINDEXFIELD))
+            arguments.append(csvFile)
+            delimiter = self.parameterAsString(parameters, self.DELIMITER, context)
+            if delimiter:
+                arguments.append('-csvDelim')
+                arguments.append('"{}"'.format(delimiter))
 
         arguments.append('-targetDir')
-        arguments.append(self.getOutputValue(self.TARGETDIR))
+        arguments.append(self.parameterAsString(parameters, self.OUTPUT, context))
 
-        arguments.extend(self.getParameterValue(self.INPUT).split(';'))
+        layers = [l.source() for l in self.parameterAsLayerList(parameters, self.INPUT, context)]
+        arguments.extend(layers)
 
         commands = []
         if isWindows():

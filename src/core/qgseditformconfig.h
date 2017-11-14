@@ -30,7 +30,8 @@ class QgsReadWriteContext;
 class QgsRelationManager;
 class QgsEditFormConfigPrivate;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsEditFormConfig
  */
 class CORE_EXPORT QgsEditFormConfig
@@ -47,7 +48,8 @@ class CORE_EXPORT QgsEditFormConfig
 
     struct GroupData
     {
-      GroupData() {}
+      //! Constructor for GroupData
+      GroupData() = default;
       GroupData( const QString &name, const QList<QString> &fields )
         : mName( name )
         , mFields( fields )
@@ -58,7 +60,8 @@ class CORE_EXPORT QgsEditFormConfig
 
     struct TabData
     {
-      TabData() {}
+      //! Constructor for TabData
+      TabData() = default;
       TabData( const QString &name, const QList<QString> &fields, const QList<QgsEditFormConfig::GroupData> &groups )
         : mName( name )
         , mFields( fields )
@@ -249,7 +252,8 @@ class CORE_EXPORT QgsEditFormConfig
      */
     void setInitFilePath( const QString &filePath );
 
-    /** Return Python code source for edit form initialization
+    /**
+     * Return Python code source for edit form initialization
      *  (if it shall be loaded from a file, read from the
      *  provided dialog editor or inherited from the environment)
      */

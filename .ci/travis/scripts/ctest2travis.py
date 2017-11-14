@@ -77,7 +77,7 @@ for line in p.stdout:
     updated_line = line.decode('utf-8')
     if re.match('Run dashboard with model Experimental', updated_line):
         start_fold('build')
-        updated_line = 'Compiling\n{}'.format(updated_line)
+        updated_line = '{title}\n{line}'.format(title=colored('Running tests...', 'yellow', attrs=['bold']), line=updated_line)
 
     elif re.match('Test project /home/travis/build/qgis/QGIS/build', updated_line):
         end_fold() # tag=build
@@ -110,6 +110,9 @@ for line in p.stdout:
 
     if not in_failing_test and re.search('[0-9]+% tests passed, [0-9]+ tests failed out of', updated_line):
         end_fold()
+
+        if re.search('100% tests passed', updated_line):
+            updated_line = colored(updated_line, 'green')
 
     if re.match('Submit files', updated_line):
         start_fold('submit')

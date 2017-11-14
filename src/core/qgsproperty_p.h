@@ -38,8 +38,7 @@ class QgsPropertyPrivate : public QSharedData
 {
   public:
 
-    QgsPropertyPrivate()
-    {}
+    QgsPropertyPrivate() = default;
 
     QgsPropertyPrivate( const QgsPropertyPrivate &other )
       : QSharedData( other )

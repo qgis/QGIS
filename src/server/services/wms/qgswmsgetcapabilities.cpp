@@ -769,7 +769,6 @@ namespace QgsWms
     const QgsLayerTree *projectLayerTreeRoot = project->layerTreeRoot();
 
     QDomElement layerParentElem = doc.createElement( QStringLiteral( "Layer" ) );
-    layerParentElem.setAttribute( QStringLiteral( "queryable" ), QStringLiteral( "1" ) );
 
     // Root Layer name
     QDomElement layerParentNameElem = doc.createElement( QStringLiteral( "Name" ) );
@@ -829,6 +828,12 @@ namespace QgsWms
       {
         QgsLayerTreeNode *treeNode = layerTreeGroupChildren.at( i );
         QDomElement layerElem = doc.createElement( QStringLiteral( "Layer" ) );
+
+        if ( projectSettings )
+        {
+          layerElem.setAttribute( QStringLiteral( "visible" ), treeNode->isVisible() );
+        }
+
         if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
         {
           QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
@@ -841,7 +846,6 @@ namespace QgsWms
 
           if ( projectSettings )
           {
-            layerElem.setAttribute( QStringLiteral( "visible" ), treeGroupChild->isVisible() );
             layerElem.setAttribute( QStringLiteral( "mutuallyExclusive" ), treeGroupChild->isMutuallyExclusive() );
           }
 
@@ -1692,6 +1696,41 @@ namespace QgsWms
         layerElem.setAttribute( QStringLiteral( "geometryType" ), QgsWkbTypes::displayString( vLayer->wkbType() ) );
 
         layerElem.appendChild( attributesElem );
+      }
+      else if ( currentLayer->type() == QgsMapLayer::RasterLayer )
+      {
+        const QgsDataProvider *provider = currentLayer->dataProvider();
+        if ( provider && provider->name() == "wms" )
+        {
+          //advertise as web map background layer
+          QVariant wmsBackgroundLayer = currentLayer->customProperty( QStringLiteral( "WMSBackgroundLayer" ), false );
+          QDomElement wmsBackgroundLayerElem = doc.createElement( "WMSBackgroundLayer" );
+          QDomText wmsBackgroundLayerText = doc.createTextNode( wmsBackgroundLayer.toBool() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+          wmsBackgroundLayerElem.appendChild( wmsBackgroundLayerText );
+          layerElem.appendChild( wmsBackgroundLayerElem );
+
+          //publish datasource
+          QVariant wmsPublishDataSourceUrl = currentLayer->customProperty( QStringLiteral( "WMSPublishDataSourceUrl" ), false );
+          if ( wmsPublishDataSourceUrl.toBool() )
+          {
+            QList< QVariant > resolutionList = provider->property( "resolutions" ).toList();
+            bool tiled = resolutionList.size() > 0;
+
+            QDomElement dataSourceElem = doc.createElement( tiled ? QStringLiteral( "WMTSDataSource" ) : QStringLiteral( "WMSDataSource" ) );
+            QDomText dataSourceUri = doc.createTextNode( provider->dataSourceUri() );
+            dataSourceElem.appendChild( dataSourceUri );
+            layerElem.appendChild( dataSourceElem );
+          }
+        }
+
+        QVariant wmsPrintLayer = currentLayer->customProperty( QStringLiteral( "WMSPrintLayer" ) );
+        if ( wmsPrintLayer.isValid() )
+        {
+          QDomElement wmsPrintLayerElem = doc.createElement( "WMSPrintLayer" );
+          QDomText wmsPrintLayerText = doc.createTextNode( wmsPrintLayer.toString() );
+          wmsPrintLayerElem.appendChild( wmsPrintLayerText );
+          layerElem.appendChild( wmsPrintLayerElem );
+        }
       }
     }
 

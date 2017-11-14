@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgspathresolver.h"
+#include "qgslayoutitemregistry.h"
 #include <QGraphicsItem> //for QGraphicsItem::UserType
 #include <QIcon>
 #include <functional>
@@ -56,11 +57,17 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
     /**
      * Constructor for QgsLayoutItemAbstractGuiMetadata with the specified class \a type.
      *
+     * \a visibleName should be set to a translated, user visible name identifying the corresponding layout item.
+     *
      * An optional \a groupId can be set, which allows grouping of related layout item classes. See QgsLayoutItemGuiMetadata for details.
+     *
+     * If \a isNodeBased is true, then the corresponding item is a node based item.
      */
-    QgsLayoutItemAbstractGuiMetadata( int type, const QString &groupId = QString(), Flags flags = 0 )
+    QgsLayoutItemAbstractGuiMetadata( int type, const QString &visibleName, const QString &groupId = QString(), bool isNodeBased = false, Flags flags = 0 )
       : mType( type )
       , mGroupId( groupId )
+      , mIsNodeBased( isNodeBased )
+      , mName( visibleName )
       , mFlags( flags )
     {}
 
@@ -82,6 +89,16 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
     QString groupId() const { return mGroupId; }
 
     /**
+     * Returns true if the associated item is a node based item.
+     */
+    bool isNodeBased() const { return mIsNodeBased; }
+
+    /**
+     * Returns a translated, user visible name identifying the corresponding layout item.
+     */
+    QString visibleName() const { return mName; }
+
+    /**
      * Returns an icon representing creation of the layout item type.
      */
     virtual QIcon creationIcon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
@@ -94,13 +111,36 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
     /**
      * Creates a rubber band for use when creating layout items of this type. Can return nullptr if no rubber band
      * should be created. The default behavior is to create a rectangular rubber band.
+     * \see createNodeRubberBand()
      */
     virtual QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) SIP_FACTORY;
+
+    /**
+     * Creates a rubber band for use when creating layout node based items of this type. Can return nullptr if no rubber band
+     * should be created. The default behavior is to return nullptr.
+     * \see createRubberBand()
+     */
+    virtual QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) SIP_FACTORY;
+
+    /**
+     * Creates an instance of the corresponding item type.
+     */
+    virtual QgsLayoutItem *createItem( QgsLayout *layout ) SIP_FACTORY;
+
+    /**
+     * Called when a newly created item of the associated type has been added to a layout.
+     *
+     * This is only called for additions which result from GUI operations - i.e. it is not
+     * called for items added from templates.
+     */
+    virtual void newItemAddedToLayout( QgsLayoutItem *item );
 
   private:
 
     int mType = -1;
     QString mGroupId;
+    bool mIsNodeBased = false;
+    QString mName;
     Flags mFlags;
 
 };
@@ -110,6 +150,12 @@ typedef std::function<QgsLayoutItemBaseWidget *( QgsLayoutItem * )> QgsLayoutIte
 
 //! Layout rubber band creation function
 typedef std::function<QgsLayoutViewRubberBand *( QgsLayoutView * )> QgsLayoutItemRubberBandFunc SIP_SKIP;
+
+//! Layout node based rubber band creation function
+typedef std::function<QAbstractGraphicsShapeItem *( QgsLayoutView * )> QgsLayoutNodeItemRubberBandFunc SIP_SKIP;
+
+//! Layout item added to layout callback
+typedef std::function<void ( QgsLayoutItem * )> QgsLayoutItemAddedToLayoutFunc SIP_SKIP;
 
 #ifndef SIP_RUN
 
@@ -128,15 +174,23 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      * and \a creationIcon, and function pointers for the various
      * configuration widget creation functions.
      *
+     * \a visibleName should be set to a translated, user visible name identifying the corresponding layout item.
+     *
      * An optional \a groupId can be set, which allows grouping of related layout item classes. See QgsLayoutItemGuiMetadata for details.
+     *
+     * If \a isNodeBased is true, then the corresponding item is a node based item.
      */
-    QgsLayoutItemGuiMetadata( int type, const QIcon &creationIcon,
+    QgsLayoutItemGuiMetadata( int type, const QString &visibleName, const QIcon &creationIcon,
                               QgsLayoutItemWidgetFunc pfWidget = nullptr,
-                              QgsLayoutItemRubberBandFunc pfRubberBand = nullptr, const QString &groupId = QString(), QgsLayoutItemAbstractGuiMetadata::Flags flags = 0 )
-      : QgsLayoutItemAbstractGuiMetadata( type, groupId, flags )
+                              QgsLayoutItemRubberBandFunc pfRubberBand = nullptr, const QString &groupId = QString(),
+                              bool isNodeBased = false,
+                              QgsLayoutItemAbstractGuiMetadata::Flags flags = 0,
+                              QgsLayoutItemCreateFunc pfCreateFunc = nullptr )
+      : QgsLayoutItemAbstractGuiMetadata( type, visibleName, groupId, isNodeBased, flags )
       , mIcon( creationIcon )
       , mWidgetFunc( pfWidget )
       , mRubberBandFunc( pfRubberBand )
+      , mCreateFunc( pfCreateFunc )
     {}
 
     /**
@@ -163,14 +217,56 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      */
     void setRubberBandCreationFunction( QgsLayoutItemRubberBandFunc function ) { mRubberBandFunc = function; }
 
+    /**
+     * Returns the classes' node based rubber band creation function.
+     * \see setNodeRubberBandCreationFunction()
+     */
+    QgsLayoutNodeItemRubberBandFunc nodeRubberBandCreationFunction() const { return mNodeRubberBandFunc; }
+
+    /**
+     * Sets the classes' node based rubber band creation \a function.
+     * \see nodeRubberBandCreationFunction()
+     */
+    void setNodeRubberBandCreationFunction( QgsLayoutNodeItemRubberBandFunc function ) { mNodeRubberBandFunc = function; }
+
+    /**
+     * Returns the classes' item creation function.
+     * \see setItemCreationFunction()
+     */
+    QgsLayoutItemCreateFunc itemCreationFunction() const { return mCreateFunc; }
+
+    /**
+     * Sets the classes' item creation \a function.
+     * \see itemCreationFunction()
+     */
+    void setItemCreationFunction( QgsLayoutItemCreateFunc function ) { mCreateFunc = function; }
+
+    /**
+     * Returns the classes' item added to layout function.
+     * \see setItemAddedToLayoutFunction()
+     */
+    QgsLayoutItemAddedToLayoutFunc itemAddToLayoutFunction() const { return mAddedToLayoutFunc; }
+
+    /**
+     * Sets the classes' item creation \a function.
+     * \see itemAddToLayoutFunction()
+     */
+    void setItemAddedToLayoutFunction( QgsLayoutItemAddedToLayoutFunc function ) { mAddedToLayoutFunc = function; }
+
     QIcon creationIcon() const override { return mIcon.isNull() ? QgsLayoutItemAbstractGuiMetadata::creationIcon() : mIcon; }
     QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) override { return mWidgetFunc ? mWidgetFunc( item ) : nullptr; }
     QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) override { return mRubberBandFunc ? mRubberBandFunc( view ) : nullptr; }
+    QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) override { return mNodeRubberBandFunc ? mNodeRubberBandFunc( view ) : nullptr; }
+    QgsLayoutItem *createItem( QgsLayout *layout ) override;
+    void newItemAddedToLayout( QgsLayoutItem *item ) override;
 
   protected:
     QIcon mIcon;
     QgsLayoutItemWidgetFunc mWidgetFunc = nullptr;
     QgsLayoutItemRubberBandFunc mRubberBandFunc = nullptr;
+    QgsLayoutNodeItemRubberBandFunc mNodeRubberBandFunc = nullptr;
+    QgsLayoutItemCreateFunc mCreateFunc = nullptr;
+    QgsLayoutItemAddedToLayoutFunc mAddedToLayoutFunc = nullptr;
 
 };
 
@@ -250,22 +346,16 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
 
     ~QgsLayoutItemGuiRegistry();
 
-    /**
-     * Populates the registry with standard item types. If called on a non-empty registry
-     * then this will have no effect and will return false.
-     */
-    bool populate();
-
     //! QgsLayoutItemGuiRegistry cannot be copied.
     QgsLayoutItemGuiRegistry( const QgsLayoutItemGuiRegistry &rh ) = delete;
     //! QgsLayoutItemGuiRegistry cannot be copied.
     QgsLayoutItemGuiRegistry &operator=( const QgsLayoutItemGuiRegistry &rh ) = delete;
 
     /**
-     * Returns the metadata for the specified item \a type. Returns nullptr if
-     * a corresponding type was not found in the registry.
+     * Returns the metadata for the specified item \a metadataId. Returns nullptr if
+     * a corresponding \a metadataId was not found in the registry.
      */
-    QgsLayoutItemAbstractGuiMetadata *itemMetadata( int type ) const;
+    QgsLayoutItemAbstractGuiMetadata *itemMetadata( int metadataId ) const;
 
     /**
      * Registers the gui metadata for a new layout item type. Takes ownership of the metadata instance.
@@ -290,35 +380,57 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     const QgsLayoutItemGuiGroup &itemGroup( const QString &id );
 
     /**
+     * Creates a new instance of a layout item given the item metadata \a metadataId, target \a layout.
+     */
+    QgsLayoutItem *createItem( int metadataId, QgsLayout *layout ) const SIP_FACTORY;
+
+    /**
+     * Called when a newly created item of the associated metadata \a metadataId has been added to a layout.
+     *
+     * This is only called for additions which result from GUI operations - i.e. it is not
+     * called for items added from templates.
+     */
+    void newItemAddedToLayout( int metadataId, QgsLayoutItem *item );
+
+    /**
      * Creates a new instance of a layout item configuration widget for the specified \a item.
      */
     QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) const SIP_FACTORY;
 
     /**
-     * Creates a new rubber band item for the specified item \a type and destination \a view.
+     * Creates a new rubber band item for the specified item \a metadataId and destination \a view.
      * \note not available from Python bindings
+     * \see createNodeItemRubberBand()
      */
-    QgsLayoutViewRubberBand *createItemRubberBand( int type, QgsLayoutView *view ) const SIP_SKIP;
+    QgsLayoutViewRubberBand *createItemRubberBand( int metadataId, QgsLayoutView *view ) const SIP_SKIP;
 
     /**
-     * Returns a list of available item types handled by the registry.
+     * Creates a rubber band for the specified item \a metadataId and destination \a view.
+     * Can return nullptr if no node based rubber band should be created or is applicable for the item.
+     * \see createItemRubberBand()
+     * \note not available from Python bindings
      */
-    QList< int > itemTypes() const;
+    QAbstractGraphicsShapeItem *createNodeItemRubberBand( int metadataId, QgsLayoutView *view ) SIP_SKIP;
+
+    /**
+     * Returns a list of available item metadata ids handled by the registry.
+     */
+    QList< int > itemMetadataIds() const;
 
   signals:
 
     /**
      * Emitted whenever a new item type is added to the registry, with the specified
-     * \a type.
+     * \a metadataId.
      */
-    void typeAdded( int type );
+    void typeAdded( int metadataId );
 
   private:
 #ifdef SIP_RUN
     QgsLayoutItemGuiRegistry( const QgsLayoutItemGuiRegistry &rh );
 #endif
 
-    QMap<int, QgsLayoutItemAbstractGuiMetadata *> mMetadata;
+    QMap< int, QgsLayoutItemAbstractGuiMetadata *> mMetadata;
 
     QMap< QString, QgsLayoutItemGuiGroup > mItemGroups;
 

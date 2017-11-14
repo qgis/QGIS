@@ -27,10 +27,10 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeature,
                        QgsGeometry,
-                       QgsMultiPointV2,
+                       QgsMultiPoint,
                        QgsMultiLineString,
                        QgsLineString,
-                       QgsPolygonV2,
+                       QgsPolygon,
                        QgsFeatureSink,
                        QgsWkbTypes,
                        QgsProcessingException,
@@ -148,10 +148,10 @@ class GeometryConvert(QgisAlgorithm):
         return [geom.centroid()]
 
     def convertToNodes(self, geom):
-        mp = QgsMultiPointV2()
+        mp = QgsMultiPoint()
         # TODO: mega inefficient - needs rework when geometry iterators land
         # (but at least it doesn't lose Z/M values)
-        for g in geom.geometry().coordinateSequence():
+        for g in geom.constGet().coordinateSequence():
             for r in g:
                 for p in r:
                     mp.addGeometry(p)
@@ -170,7 +170,7 @@ class GeometryConvert(QgisAlgorithm):
         else:
             # polygons to lines
             # we just use the boundary here - that consists of all rings in the (multi)polygon
-            boundary = QgsGeometry(geom.geometry().boundary())
+            boundary = QgsGeometry(geom.constGet().boundary())
             # boundary will be multipart
             return boundary.asGeometryCollection()
 
@@ -184,15 +184,15 @@ class GeometryConvert(QgisAlgorithm):
             else:
                 # line to multiLine
                 ml = QgsMultiLineString()
-                ml.addGeometry(geom.geometry().clone())
+                ml.addGeometry(geom.constGet().clone())
                 return [QgsGeometry(ml)]
         else:
             # polygons to multilinestring
             # we just use the boundary here - that consists of all rings in the (multi)polygon
-            return [QgsGeometry(geom.geometry().boundary())]
+            return [QgsGeometry(geom.constGet().boundary())]
 
     def convertToPolygon(self, geom):
-        if QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.PointGeometry and geom.geometry().nCoordinates() < 3:
+        if QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.PointGeometry and geom.constGet().nCoordinates() < 3:
             raise QgsProcessingException(
                 self.tr('Cannot convert from Point to Polygon').format(QgsWkbTypes.displayString(geom.wkbType())))
         elif QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.PointGeometry:
@@ -200,29 +200,29 @@ class GeometryConvert(QgisAlgorithm):
             # TODO: mega inefficient - needs rework when geometry iterators land
             # (but at least it doesn't lose Z/M values)
             points = []
-            for g in geom.geometry().coordinateSequence():
+            for g in geom.constGet().coordinateSequence():
                 for r in g:
                     for p in r:
                         points.append(p)
             linestring = QgsLineString(points)
             linestring.close()
-            p = QgsPolygonV2()
+            p = QgsPolygon()
             p.setExteriorRing(linestring)
             return [QgsGeometry(p)]
         elif QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.LineGeometry:
             if QgsWkbTypes.isMultiType(geom):
                 parts = []
-                for i in range(geom.geometry().numGeometries()):
-                    p = QgsPolygonV2()
-                    linestring = geom.geometry().geometryN(i).clone()
+                for i in range(geom.constGet().numGeometries()):
+                    p = QgsPolygon()
+                    linestring = geom.constGet().geometryN(i).clone()
                     linestring.close()
                     p.setExteriorRing(linestring)
                     parts.append(QgsGeometry(p))
                 return QgsGeometry.collectGeometry(parts)
             else:
                 # linestring to polygon
-                p = QgsPolygonV2()
-                linestring = geom.geometry().clone()
+                p = QgsPolygon()
+                linestring = geom.constGet().clone()
                 linestring.close()
                 p.setExteriorRing(linestring)
                 return [QgsGeometry(p)]

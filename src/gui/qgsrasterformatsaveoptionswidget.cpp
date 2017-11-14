@@ -42,6 +42,12 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
   , mProvider( provider )
 {
   setupUi( this );
+  connect( mProfileNewButton, &QPushButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::mProfileNewButton_clicked );
+  connect( mProfileDeleteButton, &QPushButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::mProfileDeleteButton_clicked );
+  connect( mProfileResetButton, &QPushButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::mProfileResetButton_clicked );
+  connect( mOptionsAddButton, &QPushButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::mOptionsAddButton_clicked );
+  connect( mOptionsDeleteButton, &QPushButton::clicked, this, &QgsRasterFormatSaveOptionsWidget::mOptionsDeleteButton_clicked );
+  connect( mOptionsLineEdit, &QLineEdit::editingFinished, this, &QgsRasterFormatSaveOptionsWidget::mOptionsLineEdit_editingFinished );
 
   setType( type );
 
@@ -417,12 +423,12 @@ void QgsRasterFormatSaveOptionsWidget::optionsTableChanged()
   mOptionsLineEdit->setCursorPosition( 0 );
 }
 
-void QgsRasterFormatSaveOptionsWidget::on_mOptionsLineEdit_editingFinished()
+void QgsRasterFormatSaveOptionsWidget::mOptionsLineEdit_editingFinished()
 {
   mOptionsMap[ currentProfileKey()] = mOptionsLineEdit->text().trimmed();
 }
 
-void QgsRasterFormatSaveOptionsWidget::on_mProfileNewButton_clicked()
+void QgsRasterFormatSaveOptionsWidget::mProfileNewButton_clicked()
 {
   QString profileName = QInputDialog::getText( this, QLatin1String( "" ), tr( "Profile name:" ) );
   if ( ! profileName.isEmpty() )
@@ -434,7 +440,7 @@ void QgsRasterFormatSaveOptionsWidget::on_mProfileNewButton_clicked()
   }
 }
 
-void QgsRasterFormatSaveOptionsWidget::on_mProfileDeleteButton_clicked()
+void QgsRasterFormatSaveOptionsWidget::mProfileDeleteButton_clicked()
 {
   int index = mProfileComboBox->currentIndex();
   QString profileKey = currentProfileKey();
@@ -445,7 +451,7 @@ void QgsRasterFormatSaveOptionsWidget::on_mProfileDeleteButton_clicked()
   }
 }
 
-void QgsRasterFormatSaveOptionsWidget::on_mProfileResetButton_clicked()
+void QgsRasterFormatSaveOptionsWidget::mProfileResetButton_clicked()
 {
   QString profileKey = currentProfileKey();
   if ( sBuiltinProfiles.contains( profileKey ) )
@@ -466,7 +472,7 @@ void QgsRasterFormatSaveOptionsWidget::optionsTableEnableDeleteButton()
   mOptionsDeleteButton->setEnabled( mOptionsTable->currentRow() >= 0 );
 }
 
-void QgsRasterFormatSaveOptionsWidget::on_mOptionsAddButton_clicked()
+void QgsRasterFormatSaveOptionsWidget::mOptionsAddButton_clicked()
 {
   mOptionsTable->insertRow( mOptionsTable->rowCount() );
   // select the added row
@@ -476,7 +482,7 @@ void QgsRasterFormatSaveOptionsWidget::on_mOptionsAddButton_clicked()
   mOptionsTable->setCurrentItem( item );
 }
 
-void QgsRasterFormatSaveOptionsWidget::on_mOptionsDeleteButton_clicked()
+void QgsRasterFormatSaveOptionsWidget::mOptionsDeleteButton_clicked()
 {
   if ( mOptionsTable->currentRow() >= 0 )
   {

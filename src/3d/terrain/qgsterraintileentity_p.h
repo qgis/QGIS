@@ -31,7 +31,8 @@ class QgsTerrainTextureImage;
 
 #include <Qt3DCore/QEntity>
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Base class for 3D entities representing one tile of terrain.
  * It contains pointer to tile's texture image.
  *
@@ -47,8 +48,10 @@ class QgsTerrainTileEntity : public Qt3DCore::QEntity
     {
     }
 
-    //! Assigns texture image. Should be called when the class is being initialized.
-    //! Texture image is owned by the texture used by the entity.
+    /**
+     * Assigns texture image. Should be called when the class is being initialized.
+     * Texture image is owned by the texture used by the entity.
+     */
     void setTextureImage( QgsTerrainTextureImage *textureImage ) { mTextureImage = textureImage; }
     //! Returns assigned texture image
     QgsTerrainTextureImage *textureImage() { return mTextureImage; }

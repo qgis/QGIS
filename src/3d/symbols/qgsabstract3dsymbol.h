@@ -19,6 +19,8 @@
 #include "qgis_3d.h"
 #include "qgis_sip.h"
 
+#include "qgspropertycollection.h"
+
 class QDomElement;
 class QString;
 
@@ -47,6 +49,34 @@ class _3D_EXPORT QgsAbstract3DSymbol
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const = 0;
     //! Reads symbol configuration from the given DOM element
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) = 0;
+
+    //! Data definable properties.
+    enum Property
+    {
+      PropertyHeight = 0,       //!< Height (altitude)
+      PropertyExtrusionHeight,  //!< Extrusion height (zero means no extrusion)
+    };
+
+    //! Returns the symbol layer property definitions.
+    static const QgsPropertiesDefinition &propertyDefinitions();
+
+    //! Returns a reference to the symbol layer's property collection, used for data defined overrides.
+    QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
+
+    //! Returns a reference to the symbol layer's property collection, used for data defined overrides.
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+
+    //! Sets the symbol layer's property collection, used for data defined overrides.
+    void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
+
+  protected:
+    QgsPropertyCollection mDataDefinedProperties;
+
+  private:
+    static void initPropertyDefinitions();
+
+    //! Property definitions
+    static QgsPropertiesDefinition sPropertyDefinitions;
 };
 
 

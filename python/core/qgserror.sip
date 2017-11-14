@@ -27,6 +27,9 @@ class QgsErrorMessage
     };
 
     QgsErrorMessage();
+%Docstring
+Constructor for QgsErrorMessage
+%End
 
     QgsErrorMessage( const QString &message, const QString &tag = QString(), const QString &file = QString(), const QString &function = QString(), int line = 0 );
 %Docstring
@@ -75,6 +78,9 @@ class QgsError
   public:
 
     QgsError();
+%Docstring
+Constructor for QgsError
+%End
 
     QgsError( const QString &message, const QString &tag );
 %Docstring
@@ -121,6 +127,13 @@ class QgsError
     void clear();
 %Docstring
 Clear error messages
+%End
+
+    QList<QgsErrorMessage> messageList() const;
+%Docstring
+ messageList return the list of current error messages
+ :return: current list of error messages
+ :rtype: list of QgsErrorMessage
 %End
 
 };

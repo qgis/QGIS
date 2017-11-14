@@ -33,6 +33,14 @@ QgsLayoutViewMouseEvent::QgsLayoutViewMouseEvent( QgsLayoutView *view, QMouseEve
   }
 }
 
+void QgsLayoutViewMouseEvent::snapPoint( QGraphicsLineItem *horizontalSnapLine, QGraphicsLineItem *verticalSnapLine, const QList<QgsLayoutItem *> &excludeItems )
+{
+  if ( mView->currentLayout() )
+  {
+    mSnappedPoint = mView->currentLayout()->snapper().snapPoint( mLayoutPoint, mView->transform().m11(), mSnapped, horizontalSnapLine, verticalSnapLine, &excludeItems );
+  }
+}
+
 QPointF QgsLayoutViewMouseEvent::layoutPoint() const
 {
   return mLayoutPoint;

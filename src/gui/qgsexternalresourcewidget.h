@@ -38,7 +38,8 @@ class QgsPixmapLabel;
 #endif
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget to display file path with a push button for an "open file" dialog
  * It can also be used to display a picture or a web page.
  **/

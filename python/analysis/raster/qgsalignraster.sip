@@ -25,7 +25,6 @@ class QgsAlignRaster
 
 %TypeHeaderCode
 #include "qgsalignraster.h"
-
 #include <gdal_version.h>
 %End
   public:
@@ -38,7 +37,6 @@ class QgsAlignRaster
 %Docstring
 Construct raster info with a path to a raster file
 %End
-        ~RasterInfo();
 
 
         bool isValid() const;
@@ -148,9 +146,12 @@ used for rescaling of values (if necessary)
 
     struct ProgressHandler
     {
+
       virtual bool progress( double complete ) = 0;
 %Docstring
-:return: false if the execution should be canceled, true otherwise
+ Method to be overridden for progress reporting.
+ \param complete Overall progress of the alignment operation
+ :return: false if the execution should be canceled, true otherwise
  :rtype: bool
 %End
 
@@ -209,44 +210,63 @@ Get the output CRS in WKT format
 
     void setClipExtent( double xmin, double ymin, double xmax, double ymax );
 %Docstring
-No extra clipping is done if the rectangle is null
+ Configure clipping extent (region of interest).
+ No extra clipping is done if the rectangle is null
 %End
+
     void setClipExtent( const QgsRectangle &extent );
 %Docstring
-No extra clipping is done if the rectangle is null
+ Configure clipping extent (region of interest).
+ No extra clipping is done if the rectangle is null
 %End
+
     QgsRectangle clipExtent() const;
 %Docstring
-No extra clipping is done if the rectangle is null
+ Get clipping extent (region of interest).
+ No extra clipping is done if the rectangle is null
  :rtype: QgsRectangle
 %End
 
     bool setParametersFromRaster( const RasterInfo &rasterInfo, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
 %Docstring
-:return: true on success (may fail if it is not possible to reproject raster to given CRS)
+ Set destination CRS, cell size and grid offset from a raster file.
+ The user may provide custom values for some of the parameters - in such case
+ only the remaining parameters are calculated.
+
+ If default CRS is used, the parameters are set according to the raster file's geo-transform.
+ If a custom CRS is provided, suggested reprojection is calculated first (using GDAL) in order
+ to determine suitable defaults for cell size and grid offset.
+
+ :return: true on success (may fail if it is not possible to reproject raster to given CRS)
  :rtype: bool
 %End
+
     bool setParametersFromRaster( const QString &filename, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
 %Docstring
-See the other variant for details.
+ Overridden variant for convenience, taking filename instead RasterInfo object.
+ See the other variant for details.
  :rtype: bool
 %End
 
     bool checkInputParameters();
 %Docstring
-:return: true on success, sets error on error (see errorMessage())
+ Determine destination extent from the input rasters and calculate derived values
+ :return: true on success, sets error on error (see errorMessage())
  :rtype: bool
 %End
 
     QSize alignedRasterSize() const;
 %Docstring
+ Return expected size of the resulting aligned raster
 .. note::
 
    first need to run checkInputParameters() which returns with success
  :rtype: QSize
 %End
+
     QgsRectangle alignedRasterExtent() const;
 %Docstring
+ Return expected extent of the resulting aligned raster
 .. note::
 
    first need to run checkInputParameters() which returns with success
@@ -255,13 +275,15 @@ See the other variant for details.
 
     bool run();
 %Docstring
-:return: true on success, sets error on error (see errorMessage())
+ Run the alignment process
+ :return: true on success, sets error on error (see errorMessage())
  :rtype: bool
 %End
 
     QString errorMessage() const;
 %Docstring
-Error message is empty if run() succeeded (returned true)
+ Return error from a previous run() call.
+ Error message is empty if run() succeeded (returned true)
  :rtype: str
 %End
 

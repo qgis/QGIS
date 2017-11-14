@@ -54,9 +54,9 @@ class QgsLayoutItemAbstractMetadata
  :rtype: str
 %End
 
-    virtual QgsLayoutItem *createItem( QgsLayout *layout, const QVariantMap &properties ) = 0 /Factory/;
+    virtual QgsLayoutItem *createItem( QgsLayout *layout ) = 0 /Factory/;
 %Docstring
- Creates a layout item of this class for a specified ``layout``, given the map of ``properties``.
+ Creates a layout item of this class for a specified ``layout``.
  :rtype: QgsLayoutItem
 %End
 
@@ -98,13 +98,17 @@ class QgsLayoutItemRegistry : QObject
     enum ItemType
     {
       LayoutItem,
+      LayoutGroup,
 
       // known
       LayoutPage,
       LayoutMap,
-      LayoutRectangle,
-      LayoutEllipse,
-      LayoutTriangle,
+      LayoutPicture,
+      LayoutLabel,
+      LayoutLegend,
+      LayoutShape,
+      LayoutPolygon,
+      LayoutPolyline,
 
       // item
       PluginItem,
@@ -143,9 +147,9 @@ class QgsLayoutItemRegistry : QObject
  :rtype: bool
 %End
 
-    QgsLayoutItem *createItem( int type, QgsLayout *layout, const QVariantMap &properties = QVariantMap() ) const /Factory/;
+    QgsLayoutItem *createItem( int type, QgsLayout *layout ) const /Factory/;
 %Docstring
- Creates a new instance of a layout item given the item ``type``, target ``layout`` and ``properties``.
+ Creates a new instance of a layout item given the item ``type``, and target ``layout``.
  :rtype: QgsLayoutItem
 %End
 

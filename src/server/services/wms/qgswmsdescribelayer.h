@@ -22,7 +22,8 @@
 namespace QgsWms
 {
 
-  /** Output GetMap response in DXF format
+  /**
+   * Output GetMap response in DXF format
    */
   void writeDescribeLayer( QgsServerInterface *serverIface, const QgsProject *project,
                            const QString &version, const QgsServerRequest &request,

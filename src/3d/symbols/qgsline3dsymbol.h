@@ -23,14 +23,16 @@
 #include "qgs3dutils.h"
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * 3D symbol that draws linestring geometries as planar polygons (created from lines using a buffer with given thickness).
  * \since QGIS 3.0
  */
 class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol
 {
   public:
-    QgsLine3DSymbol();
+    //! Constructor for QgsLine3DSymbol
+    QgsLine3DSymbol() = default;
 
     QString type() const override { return "line"; }
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
@@ -69,12 +71,14 @@ class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol
     void setMaterial( const QgsPhongMaterialSettings &material ) { mMaterial = material; }
 
   private:
-    AltitudeClamping mAltClamping;  //! how to handle altitude of vector features
-    AltitudeBinding mAltBinding;    //! how to handle clamping of vertices of individual features
+    //! how to handle altitude of vector features
+    AltitudeClamping mAltClamping = AltClampRelative;
+    //! how to handle clamping of vertices of individual features
+    AltitudeBinding mAltBinding = AltBindCentroid;
 
-    float mWidth;            //!< Line width (horizontally)
-    float mHeight;           //!< Base height of polygons
-    float mExtrusionHeight;  //!< How much to extrude (0 means no walls)
+    float mWidth = 2.0f;            //!< Line width (horizontally)
+    float mHeight = 0.0f;           //!< Base height of polygons
+    float mExtrusionHeight = 0.0f;  //!< How much to extrude (0 means no walls)
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
 };
 

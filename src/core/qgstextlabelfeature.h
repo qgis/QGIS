@@ -19,7 +19,8 @@
 
 #include "qgslabelfeature.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Class that adds extra information to QgsLabelFeature for text labels
  *
  * \note not part of public API
@@ -33,7 +34,8 @@ class QgsTextLabelFeature : public QgsLabelFeature
     //! Clean up
     ~QgsTextLabelFeature();
 
-    /** Returns the text component corresponding to a specified label part
+    /**
+     * Returns the text component corresponding to a specified label part
      * \param partId Set to -1 for labels which are not broken into parts (e.g., non-curved labels), or the required
      * part index for labels which are broken into parts (curved labels)
      * \since QGIS 2.10

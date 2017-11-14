@@ -205,7 +205,7 @@ void QgsMetadataWidget::addContact() const
 {
   int row = tabContacts->rowCount();
   tabContacts->setRowCount( row + 1 );
-  QTableWidgetItem *pCell;
+  QTableWidgetItem *pCell = nullptr;
 
   // Name
   pCell = new QTableWidgetItem( QString( tr( "unnamed %1" ) ).arg( row + 1 ) );
@@ -508,9 +508,9 @@ bool QgsMetadataWidget::checkMetadata() const
   bool results = validator.validate( metadata, validationResults );
 
   QString errors;
-  if ( results == false )
+  if ( !results )
   {
-    for ( const QgsMetadataValidator::ValidationResult &result : qgsAsConst( validationResults ) )
+    for ( const QgsMetadataValidator::ValidationResult &result : qgis::as_const( validationResults ) )
     {
       errors += QLatin1String( "<b>" ) % result.section;
       if ( ! result.identifier.isNull() )

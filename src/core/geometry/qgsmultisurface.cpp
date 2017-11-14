@@ -39,6 +39,13 @@ void QgsMultiSurface::clear()
   mWkbType = QgsWkbTypes::MultiSurface;
 }
 
+QgsMultiSurface *QgsMultiSurface::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsMultiSurface >();
+  result->mWkbType = mWkbType;
+  return result.release();
+}
+
 QgsMultiSurface *QgsMultiSurface::clone() const
 {
   return new QgsMultiSurface( *this );
@@ -52,7 +59,7 @@ QgsMultiSurface *QgsMultiSurface::toCurveType() const
 bool QgsMultiSurface::fromWkt( const QString &wkt )
 {
   return fromCollectionWkt( wkt,
-                            QList<QgsAbstractGeometry *>() << new QgsPolygonV2 << new QgsCurvePolygon,
+                            QList<QgsAbstractGeometry *>() << new QgsPolygon << new QgsCurvePolygon,
                             QStringLiteral( "Polygon" ) );
 }
 
@@ -60,11 +67,15 @@ QDomElement QgsMultiSurface::asGML2( QDomDocument &doc, int precision, const QSt
 {
   // GML2 does not support curves
   QDomElement elemMultiPolygon = doc.createElementNS( ns, QStringLiteral( "MultiPolygon" ) );
+
+  if ( isEmpty() )
+    return elemMultiPolygon;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
     {
-      std::unique_ptr< QgsPolygonV2 > polygon( static_cast<const QgsSurface *>( geom )->surfaceToPolygon() );
+      std::unique_ptr< QgsPolygon > polygon( static_cast<const QgsSurface *>( geom )->surfaceToPolygon() );
 
       QDomElement elemPolygonMember = doc.createElementNS( ns, QStringLiteral( "polygonMember" ) );
       elemPolygonMember.appendChild( polygon->asGML2( doc, precision, ns ) );
@@ -78,6 +89,10 @@ QDomElement QgsMultiSurface::asGML2( QDomDocument &doc, int precision, const QSt
 QDomElement QgsMultiSurface::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiSurface = doc.createElementNS( ns, QStringLiteral( "MultiSurface" ) );
+
+  if ( isEmpty() )
+    return elemMultiSurface;
+
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
@@ -101,7 +116,7 @@ QString QgsMultiSurface::asJSON( int precision ) const
     {
       json += '[';
 
-      QgsPolygonV2 *polygon = static_cast<const QgsSurface *>( geom )->surfaceToPolygon();
+      std::unique_ptr< QgsPolygon >polygon( static_cast<const QgsSurface *>( geom )->surfaceToPolygon() );
 
       std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;

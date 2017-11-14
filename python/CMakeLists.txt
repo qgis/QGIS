@@ -224,11 +224,13 @@ ENDIF (WITH_SERVER AND WITH_SERVER_PLUGINS)
 
 # additional analysis includes
 INCLUDE_DIRECTORIES(BEFORE
+  ../src/analysis/processing
   ../src/analysis/vector
   ../src/analysis/raster
   ../src/analysis/network
   ../src/analysis/interpolation
   ../src/analysis/openstreetmap
+  ${CMAKE_BINARY_DIR}/src/analysis/processing
   ${CMAKE_BINARY_DIR}/src/analysis/vector
   ${CMAKE_BINARY_DIR}/src/analysis/raster
   ${CMAKE_BINARY_DIR}/src/analysis/network

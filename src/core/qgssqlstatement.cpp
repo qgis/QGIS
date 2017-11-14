@@ -189,9 +189,10 @@ void QgsSQLStatement::RecursiveVisitor::visit( const QgsSQLStatement::NodeJoin &
     expr->accept( *this );
 }
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Internal use.
- *  @note not available in Python bindings
+ *  \note not available in Python bindings
  */
 class QgsSQLStatementCollectTableNames: public QgsSQLStatement::RecursiveVisitor
 {
@@ -461,7 +462,7 @@ QString QgsSQLStatement::NodeLiteral::dump() const
     case QVariant::Bool:
       return mValue.toBool() ? "TRUE" : "FALSE";
     default:
-      return tr( "[unsupported type;%1; value:%2]" ).arg( mValue.typeName(), mValue.toString() );
+      return tr( "[unsupported type: %1; value: %2]" ).arg( mValue.typeName(), mValue.toString() );
   }
 }
 

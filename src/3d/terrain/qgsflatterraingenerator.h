@@ -23,7 +23,8 @@
 #include "qgsrectangle.h"
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Terrain generator that creates a simple square flat area.
  *
  * \since QGIS 3.0
@@ -32,7 +33,7 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
 {
   public:
     //! Creates flat terrain generator object
-    QgsFlatTerrainGenerator();
+    QgsFlatTerrainGenerator() = default;
 
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 

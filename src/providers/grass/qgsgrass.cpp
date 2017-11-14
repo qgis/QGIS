@@ -2258,7 +2258,7 @@ QMap<QString, QString> QgsGrass::query( const QString &gisdbase, const QString &
   }
   catch ( QgsGrass::Exception &e )
   {
-    warning( tr( "Cannot query raster " ) + "\n" + e.what() );
+    warning( tr( "Cannot query raster\n%1" ).arg( e.what() ) );
   }
   return result;
 }
@@ -2321,7 +2321,7 @@ bool QgsGrass::deleteObject( const QgsGrassObject &object )
   }
   catch ( QgsGrass::Exception &e )
   {
-    warning( tr( "Cannot delete" ) + " " + object.elementName() + " " + object.name() + ": " + e.what() );
+    warning( tr( "Cannot delete %1 %2: %3" ).arg( object.elementName(), object.name(), e.what() ) );
     return false;
   }
   return true;
@@ -2412,7 +2412,7 @@ void QgsGrass::createTable( dbDriver *driver, const QString &tableName, const Qg
   db_free_string( &dbstr );
   if ( result != DB_OK )
   {
-    throw QgsGrass::Exception( QObject::tr( "Cannot create table" ) + ": " + QString::fromLatin1( db_get_error_msg() ) );
+    throw QgsGrass::Exception( QObject::tr( "Cannot create table: %1" ).arg( QString::fromLatin1( db_get_error_msg() ) ) );
   }
 }
 

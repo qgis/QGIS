@@ -18,10 +18,6 @@
 %Include interpolation/qgsgridfilewriter.sip
 %Include interpolation/qgsidwinterpolator.sip
 %Include interpolation/qgstininterpolator.sip
-%Include openstreetmap/qgsosmbase.sip
-%Include openstreetmap/qgsosmdatabase.sip
-%Include openstreetmap/qgsosmdownload.sip
-%Include openstreetmap/qgsosmimport.sip
 %Include network/qgsgraph.sip
 %Include network/qgsgraphbuilderinterface.sip
 %Include network/qgsgraphbuilder.sip
@@ -30,4 +26,5 @@
 %Include network/qgsnetworkdistancestrategy.sip
 %Include network/qgsgraphanalyzer.sip
 %Include network/qgsvectorlayerdirector.sip
+%Include processing/qgsnativealgorithms.sip
 %Include network/qgsgraphdirector.sip

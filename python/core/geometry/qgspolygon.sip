@@ -9,7 +9,7 @@
 
 
 
-class QgsPolygonV2: QgsCurvePolygon
+class QgsPolygon: QgsCurvePolygon
 {
 %Docstring
  Polygon geometry type.
@@ -20,11 +20,11 @@ class QgsPolygonV2: QgsCurvePolygon
 #include "qgspolygon.h"
 %End
   public:
-    QgsPolygonV2();
+    QgsPolygon();
 
     virtual QString geometryType() const;
 
-    virtual QgsPolygonV2 *clone() const /Factory/;
+    virtual QgsPolygon *clone() const /Factory/;
 
     virtual void clear();
 
@@ -32,7 +32,7 @@ class QgsPolygonV2: QgsCurvePolygon
 
     virtual QByteArray asWkb() const;
 
-    virtual QgsPolygonV2 *surfaceToPolygon() const /Factory/;
+    virtual QgsPolygon *surfaceToPolygon() const /Factory/;
 
 
     virtual QgsCurvePolygon *toCurveType() const /Factory/;
@@ -59,6 +59,13 @@ class QgsPolygonV2: QgsCurvePolygon
 .. versionadded:: 3.0
  :rtype: float
 %End
+
+
+  protected:
+
+    virtual QgsPolygon *createEmptyWithSameType() const /Factory/;
+
+
 
 };
 /************************************************************************

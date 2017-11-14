@@ -74,7 +74,7 @@ class SetZValue(QgisFeatureBasedAlgorithm):
     def processFeature(self, feature, feedback):
         input_geometry = feature.geometry()
         if input_geometry:
-            new_geom = input_geometry.geometry().clone()
+            new_geom = input_geometry.constGet().clone()
             if QgsWkbTypes.hasZ(new_geom.wkbType()):
                 # addZValue won't alter existing Z values, so drop them first
                 new_geom.dropZValue()

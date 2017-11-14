@@ -26,7 +26,8 @@
 class QgsVectorLayer;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsHistogram
  * \brief Calculator for a numeric histogram from a list of values.
  *
@@ -44,12 +45,14 @@ class CORE_EXPORT QgsHistogram
 
     virtual ~QgsHistogram() = default;
 
-    /** Assigns numeric source values for the histogram.
+    /**
+     * Assigns numeric source values for the histogram.
      * \param values list of doubles
      */
     void setValues( const QList<double> &values );
 
-    /** Assigns numeric source values for the histogram from a vector layer's field or as the
+    /**
+     * Assigns numeric source values for the histogram from a vector layer's field or as the
      * result of an expression.
      * \param layer vector layer
      * \param fieldOrExpression field name or expression to be evaluated
@@ -58,7 +61,8 @@ class CORE_EXPORT QgsHistogram
      */
     bool setValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, QgsFeedback *feedback = nullptr );
 
-    /** Calculates the optimal bin width using the Freedman-Diaconis rule. Bins widths are
+    /**
+     * Calculates the optimal bin width using the Freedman-Diaconis rule. Bins widths are
      * determined by the inter-quartile range of values and the number of values.
      * \returns optimal width for bins
      * \see optimalNumberBins
@@ -66,7 +70,8 @@ class CORE_EXPORT QgsHistogram
      */
     double optimalBinWidth() const;
 
-    /** Returns the optimal number of bins for the source values, calculated using the
+    /**
+     * Returns the optimal number of bins for the source values, calculated using the
      * Freedman-Diaconis rule. The number of bins are determined by the inter-quartile range
      * of values and the number of values.
      * \returns optimal number of bins
@@ -75,7 +80,8 @@ class CORE_EXPORT QgsHistogram
      */
     int optimalNumberBins() const;
 
-    /** Returns a list of edges for the histogram for a specified number of bins. This list
+    /**
+     * Returns a list of edges for the histogram for a specified number of bins. This list
      * will be length bins + 1, as both the first and last value are also included.
      * \param bins number of bins
      * \returns list of bin edges
@@ -83,7 +89,8 @@ class CORE_EXPORT QgsHistogram
      */
     QList<double> binEdges( int bins ) const;
 
-    /** Returns the calculated list of the counts for the histogram bins.
+    /**
+     * Returns the calculated list of the counts for the histogram bins.
      * \param bins number of histogram bins
      * \returns list of histogram counts
      * \note values must first be specified using setValues()

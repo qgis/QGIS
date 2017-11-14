@@ -1,10 +1,10 @@
 Shapes Buffer (Attribute distance)|Shapes Buffer
 shapes_tools
-ParameterVector|SHAPES|Shapes|-1|False
-ParameterTableField|DIST_FIELD|Buffer Distance|SHAPES|-1|False
-ParameterNumber|DIST_SCALE|Scaling Factor for Attribute Value|None|None|1.0
-ParameterNumber|NZONES|Number of Buffer Zones|1.0|None|1.0
-ParameterNumber|DARC|Arc Vertex Distance [Degree]|0.01|45.0|5.0
-ParameterBoolean|DISSOLVE       |Dissolve Buffers|True
-ParameterBoolean|POLY_INNER       |Inner Buffer|False
-OutputVector|BUFFER|Buffer
+QgsProcessingParameterFeatureSource|SHAPES|Shapes|-1|None|False
+QgsProcessingParameterField|DIST_FIELD|Buffer Distance|None|SHAPES|-1|False|False
+QgsProcessingParameterNumber|DIST_SCALE|Scaling Factor for Attribute Value|QgsProcessingParameterNumber.Double|1.0|False|None|None
+QgsProcessingParameterNumber|NZONES|Number of Buffer Zones|QgsProcessingParameterNumber.Double|1.0|False|1.0|None
+QgsProcessingParameterNumber|DARC|Arc Vertex Distance [Degree]|QgsProcessingParameterNumber.Double|5.0|False|0.01|45.0
+QgsProcessingParameterBoolean|DISSOLVE       |Dissolve Buffers|True
+QgsProcessingParameterBoolean|POLY_INNER       |Inner Buffer|False
+QgsProcessingParameterVectorDestination|BUFFER|Buffer

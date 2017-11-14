@@ -82,11 +82,6 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     painter->setPen( option.palette.text().color() );
   }
 
-  if ( index.data( PLUGIN_TRUSTED_ROLE ).toBool() )
-  {
-    painter->setPen( Qt::darkGreen );
-  }
-
   if ( ! index.data( PLUGIN_ERROR_ROLE ).toString().isEmpty() )
   {
     painter->setPen( Qt::red );

@@ -26,7 +26,8 @@
 class QgsMapLayer;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsMapLayerModel class is a model to display layers in widgets.
  * \see QgsMapLayerProxyModel to sort and/filter the layers
  * \see QgsFieldModel to combine in with a field selector.
@@ -109,8 +110,16 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
 
     /**
      * \brief indexFromLayer returns the model index for a given layer
+     * \see layerFromIndex()
      */
     QModelIndex indexFromLayer( QgsMapLayer *layer ) const;
+
+    /**
+     * Returns the map layer corresponding to the specified \a index.
+     * \since QGIS 3.0
+     * \see indexFromLayer()
+     */
+    QgsMapLayer *layerFromIndex( const QModelIndex &index ) const;
 
     /**
      * Sets a list of additional (non map layer) items to include at the end of the model.

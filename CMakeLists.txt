@@ -142,6 +142,24 @@ IF(WITH_CORE)
     ENDIF (OSGEARTHQT_LIBRARY)
   ENDIF (WITH_GLOBE)
 
+  SET (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
+  MARK_AS_ADVANCED(WITH_THREAD_LOCAL)
+
+  IF (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+    # MingW has broken support for thread_local, so force disabling it
+    # see
+    # https://sourceforge.net/p/mingw-w64/bugs/445/
+    # https://sourceforge.net/p/mingw-w64/bugs/527/
+    # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80816
+
+    # also OpenBSD has no thread_local support, see https://issues.qgis.org/issues/17351
+
+  ELSE (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+    IF (WITH_THREAD_LOCAL)
+      SET (USE_THREAD_LOCAL TRUE)  # used in qgsconfig.h
+    ENDIF (WITH_THREAD_LOCAL)
+  ENDIF (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+
   # Compile flag. Make it possible to turn it off.
   SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile in pedantic mode.")
 
@@ -261,9 +279,10 @@ IF(WITH_CORE)
   #############################################################
   # search for Qt5
   IF (WITH_3D)
-    # for 3D support we strictly require Qt >= 5.8
+    # for 3D support we strictly require Qt >= 5.9
     # (Qt 3D was introduced in 5.7 but it is not stable enough in that branch)
-    SET(QT_MIN_VERSION 5.8.0)
+    # Qt 5.8 is missing some classes, https://github.com/qgis/QGIS/pull/5203#discussion_r142319862
+    SET(QT_MIN_VERSION 5.9.0)
   ELSE ()
     SET(QT_MIN_VERSION 5.2.0)
   ENDIF()
@@ -318,6 +337,11 @@ IF(WITH_CORE)
   include(QCAMacros)
   FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
   ENDIF(NOT MSVC)
+
+  IF (APPLE)
+    # Libtasn1 is for DER-encoded PKI ASN.1 parsing/extracting workarounds
+    FIND_PACKAGE(Libtasn1 REQUIRED)
+  ENDIF (APPLE)
 
   IF (SUPPRESS_QT_WARNINGS)
     # Newer versions of UseQt4.cmake include Qt with -isystem automatically
@@ -494,13 +518,6 @@ IF (WITH_CORE)
       # Turn off deprecation warnings
       ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
       ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_WARNINGS)
-
-      IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
-        IF (NOT USING_NMAKE AND NOT USING_NINJA)
-          MESSAGE (STATUS "Generating browse files")
-          ADD_DEFINITIONS( /FR )
-        ENDIF (NOT USING_NMAKE AND NOT USING_NINJA)
-      ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 
       IF (INSTALL_DEPS)
         INSTALL(DIRECTORY ${INSTALL_DEPS} DESTINATION .)
@@ -729,18 +746,22 @@ ENDIF (WITH_CORE)
 
 ####################################################
 # clang-tidy
+SET (WITH_CLANG_TIDY FALSE CACHE BOOL "Use Clang tidy")
+MARK_AS_ADVANCED(WITH_CLANG_TIDY)
 IF (WITH_CORE)
-  FIND_PROGRAM(
-    CLANG_TIDY_EXE
-    NAMES "clang-tidy"
-    DOC "Path to clang-tidy executable"
-    )
-  IF(NOT CLANG_TIDY_EXE)
-    MESSAGE(STATUS "clang-tidy not found.")
-  ELSE(NOT CLANG_TIDY_EXE)
-    MESSAGE(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
-    SET(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-clang-analyzer-alpha.*,-cppcoreguidelines*,-readability-implicit-bool-cast,-llvm-include-order,-cert-err58-cpp,-modernize-pass-by-value,-google-readability-braces-around-statements,-modernize-use-auto,-modernize-loop-convert,-readability-else-after-return,-readability-braces-around-statements,-google-runtime-references,-readability-named-parameter,-google-default-arguments,-google-readability-todo,-readability-inconsistent-declaration-parameter-name,-cert-flp30-c,-google-readability-casting,-clang-analyzer-security.FloatLoopCounter,-google-runtime-int,-modernize-use-using,-google-explicit-constructor,-google-build-using-namespace,-cert-err34-c,-clang-analyzer-core.CallAndMessage,-google-readability-function-size,-modernize-make-shared,-modernize-use-nullptr,-clang-analyzer-cplusplus.NewDeleteLeaks,-clang-analyzer-core.NonNullParamChecker,performance-unnecessary-copy-initialization,-readability-simplify-boolean-expr,-modernize-raw-string-literal,-performance-unnecessary-copy-initialization")
-  ENDIF(NOT CLANG_TIDY_EXE)
+  IF(WITH_CLANG_TIDY)
+    FIND_PROGRAM(
+      CLANG_TIDY_EXE
+      NAMES "clang-tidy"
+      DOC "Path to clang-tidy executable"
+      )
+    IF(NOT CLANG_TIDY_EXE)
+      MESSAGE(STATUS "clang-tidy not found.")
+    ELSE(NOT CLANG_TIDY_EXE)
+      MESSAGE(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
+      SET(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-clang-analyzer-alpha.*,-cppcoreguidelines*,-readability-implicit-bool-cast,-llvm-include-order,-cert-err58-cpp,-modernize-pass-by-value,-google-readability-braces-around-statements,-modernize-use-auto,-modernize-loop-convert,-readability-else-after-return,-readability-braces-around-statements,-google-runtime-references,-readability-named-parameter,-google-default-arguments,-google-readability-todo,-readability-inconsistent-declaration-parameter-name,-cert-flp30-c,-google-readability-casting,-clang-analyzer-security.FloatLoopCounter,-google-runtime-int,-modernize-use-using,-google-explicit-constructor,-google-build-using-namespace,-cert-err34-c,-clang-analyzer-core.CallAndMessage,-google-readability-function-size,-modernize-make-shared,-modernize-use-nullptr,-clang-analyzer-cplusplus.NewDeleteLeaks,-clang-analyzer-core.NonNullParamChecker,performance-unnecessary-copy-initialization,-readability-simplify-boolean-expr,-modernize-raw-string-literal,-performance-unnecessary-copy-initialization")
+    ENDIF(NOT CLANG_TIDY_EXE)
+  ENDIF(WITH_CLANG_TIDY)
 ENDIF (WITH_CORE)
 
 #############################################################
@@ -838,7 +859,7 @@ IF (WITH_CORE)
     SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} QGIS")
     SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\qgis.org")
     SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\qgis.org")
-    SET(CPACK_NSIS_CONTACT "tim@linfiniti.com")
+    SET(CPACK_NSIS_CONTACT "info@qgis.org")
     SET(CPACK_NSIS_MODIFY_PATH ON)
 
   #  SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "  !include \\\"${CMAKE_SOURCE_DIR}\\\\win_build\\\\extra.nsh\\\"")

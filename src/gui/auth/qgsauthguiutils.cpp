@@ -25,6 +25,7 @@
 #include "qgsauthmasterpassresetdialog.h"
 #include "qgslogger.h"
 #include "qgsmessagebar.h"
+#include "qgsapplication.h"
 
 
 QColor QgsAuthGuiUtils::greenColor()
@@ -64,7 +65,7 @@ QString QgsAuthGuiUtils::redTextStyleSheet( const QString &selector )
 
 bool QgsAuthGuiUtils::isDisabled( QgsMessageBar *msgbar, int timeout )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     msgbar->pushMessage( QObject::tr( "Authentication System" ),
                          QObject::tr( "DISABLED. Resources authenticating via the system can not be accessed" ),
@@ -79,14 +80,14 @@ void QgsAuthGuiUtils::setMasterPassword( QgsMessageBar *msgbar, int timeout )
   if ( QgsAuthGuiUtils::isDisabled( msgbar, timeout ) )
     return;
 
-  if ( QgsAuthManager::instance()->masterPasswordIsSet() )
+  if ( QgsApplication::authManager()->masterPasswordIsSet() )
   {
-    msgbar->pushMessage( QgsAuthManager::instance()->authManTag(),
-                         QObject::tr( "Master password already set" ),
+    msgbar->pushMessage( QgsApplication::authManager()->authManTag(),
+                         QObject::tr( "Master password already set." ),
                          QgsMessageBar::INFO, timeout );
     return;
   }
-  ( void )QgsAuthManager::instance()->setMasterPassword( true );
+  ( void )QgsApplication::authManager()->setMasterPassword( true );
 }
 
 void QgsAuthGuiUtils::clearCachedMasterPassword( QgsMessageBar *msgbar, int timeout )
@@ -94,21 +95,21 @@ void QgsAuthGuiUtils::clearCachedMasterPassword( QgsMessageBar *msgbar, int time
   if ( QgsAuthGuiUtils::isDisabled( msgbar, timeout ) )
     return;
 
-  QString msg( QObject::tr( "Master password not cleared because it is not set" ) );
+  QString msg( QObject::tr( "Master password not cleared because it is not set." ) );
   QgsMessageBar::MessageLevel level( QgsMessageBar::INFO );
 
-  if ( QgsAuthManager::instance()->masterPasswordIsSet() )
+  if ( QgsApplication::authManager()->masterPasswordIsSet() )
   {
-    QgsAuthManager::instance()->clearMasterPassword();
-    msg = QObject::tr( "Master password cleared (NOTE: network connections may be cached)" );
-    if ( QgsAuthManager::instance()->masterPasswordIsSet() )
+    QgsApplication::authManager()->clearMasterPassword();
+    msg = QObject::tr( "Master password cleared (NOTE: network connections may be cached)." );
+    if ( QgsApplication::authManager()->masterPasswordIsSet() )
     {
-      msg = QObject::tr( "Master password FAILED to be cleared" );
+      msg = QObject::tr( "Master password FAILED to be cleared." );
       level = QgsMessageBar::WARNING;
     }
   }
 
-  msgbar->pushMessage( QgsAuthManager::instance()->authManTag(), msg, level, timeout );
+  msgbar->pushMessage( QgsApplication::authManager()->authManTag(), msg, level, timeout );
 }
 
 void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar, int timeout, QWidget *parent )
@@ -120,10 +121,10 @@ void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar, int timeout, Q
   QgsMessageBar::MessageLevel level( QgsMessageBar::INFO );
 
   // check that a master password is even set in auth db
-  if ( !QgsAuthManager::instance()->masterPasswordHashInDatabase() )
+  if ( !QgsApplication::authManager()->masterPasswordHashInDatabase() )
   {
     msg = QObject::tr( "Master password reset: NO current password hash in database" );
-    msgbar->pushMessage( QgsAuthManager::instance()->authManTag(), msg, QgsMessageBar::WARNING, 0 );
+    msgbar->pushMessage( QgsApplication::authManager()->authManTag(), msg, QgsMessageBar::WARNING, 0 );
     return;
   }
 
@@ -140,7 +141,7 @@ void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar, int timeout, Q
   }
 
   QString backuppath;
-  if ( !QgsAuthManager::instance()->resetMasterPassword( newpass, oldpass, keepbackup, &backuppath ) )
+  if ( !QgsApplication::authManager()->resetMasterPassword( newpass, oldpass, keepbackup, &backuppath ) )
   {
     msg = QObject::tr( "Master password FAILED to be reset" );
     level = QgsMessageBar::WARNING;
@@ -152,7 +153,7 @@ void QgsAuthGuiUtils::resetMasterPassword( QgsMessageBar *msgbar, int timeout, Q
     timeout = 0; // no timeout, so user can read backup message
   }
 
-  msgbar->pushMessage( QgsAuthManager::instance()->authManTag(), msg, level, timeout );
+  msgbar->pushMessage( QgsApplication::authManager()->authManTag(), msg, level, timeout );
 }
 
 void QgsAuthGuiUtils::clearCachedAuthenticationConfigs( QgsMessageBar *msgbar, int timeout )
@@ -160,9 +161,9 @@ void QgsAuthGuiUtils::clearCachedAuthenticationConfigs( QgsMessageBar *msgbar, i
   if ( QgsAuthGuiUtils::isDisabled( msgbar, timeout ) )
     return;
 
-  QgsAuthManager::instance()->clearAllCachedConfigs();
+  QgsApplication::authManager()->clearAllCachedConfigs();
   QString msg = QObject::tr( "Cached authentication configurations for session cleared" );
-  msgbar->pushMessage( QgsAuthManager::instance()->authManTag(), msg, QgsMessageBar::INFO, timeout );
+  msgbar->pushMessage( QgsApplication::authManager()->authManTag(), msg, QgsMessageBar::INFO, timeout );
 }
 
 void QgsAuthGuiUtils::removeAuthenticationConfigs( QgsMessageBar *msgbar, int timeout, QWidget *parent )
@@ -180,16 +181,16 @@ void QgsAuthGuiUtils::removeAuthenticationConfigs( QgsMessageBar *msgbar, int ti
     return;
   }
 
-  QString msg( QObject::tr( "Authentication configurations removed" ) );
+  QString msg( QObject::tr( "Authentication configurations removed." ) );
   QgsMessageBar::MessageLevel level( QgsMessageBar::INFO );
 
-  if ( !QgsAuthManager::instance()->removeAllAuthenticationConfigs() )
+  if ( !QgsApplication::authManager()->removeAllAuthenticationConfigs() )
   {
-    msg = QObject::tr( "Authentication configurations FAILED to be removed" );
+    msg = QObject::tr( "Authentication configurations FAILED to be removed." );
     level = QgsMessageBar::WARNING;
   }
 
-  msgbar->pushMessage( QgsAuthManager::instance()->authManTag(), msg, level, timeout );
+  msgbar->pushMessage( QgsApplication::authManager()->authManTag(), msg, level, timeout );
 }
 
 void QgsAuthGuiUtils::eraseAuthenticationDatabase( QgsMessageBar *msgbar, int timeout, QWidget *parent )
@@ -206,20 +207,20 @@ void QgsAuthGuiUtils::eraseAuthenticationDatabase( QgsMessageBar *msgbar, int ti
                                       QMessageBox::Ok | QMessageBox::Cancel,
                                       QMessageBox::Cancel );
 
-  QgsAuthManager::instance()->setScheduledAuthDatabaseErase( false );
+  QgsApplication::authManager()->setScheduledAuthDatabaseErase( false );
 
   if ( btn == QMessageBox::Cancel )
   {
     return;
   }
 
-  QString msg( QObject::tr( "Active authentication database erased" ) );
+  QString msg( QObject::tr( "Active authentication database erased." ) );
   QgsMessageBar::MessageLevel level( QgsMessageBar::WARNING );
 
   QString backuppath;
-  if ( !QgsAuthManager::instance()->eraseAuthenticationDatabase( true, &backuppath ) )
+  if ( !QgsApplication::authManager()->eraseAuthenticationDatabase( true, &backuppath ) )
   {
-    msg = QObject::tr( "Authentication database FAILED to be erased" );
+    msg = QObject::tr( "Authentication database FAILED to be erased." );
     level = QgsMessageBar::WARNING;
   }
   else
@@ -274,9 +275,9 @@ void QgsAuthGuiUtils::passwordHelperDelete( QgsMessageBar *msgbar, int timeout, 
   }
   QString msg;
   QgsMessageBar::MessageLevel level;
-  if ( ! QgsAuthManager::instance()->passwordHelperDelete() )
+  if ( ! QgsApplication::authManager()->passwordHelperDelete() )
   {
-    msg = QgsAuthManager::instance()->passwordHelperErrorMessage();
+    msg = QgsApplication::authManager()->passwordHelperErrorMessage();
     level = QgsMessageBar::WARNING;
   }
   else
@@ -293,20 +294,20 @@ void QgsAuthGuiUtils::passwordHelperSync( QgsMessageBar *msgbar, int timeout )
 {
   QString msg;
   QgsMessageBar::MessageLevel level;
-  if ( ! QgsAuthManager::instance()->masterPasswordIsSet() )
+  if ( ! QgsApplication::authManager()->masterPasswordIsSet() )
   {
-    msg = QObject::tr( "Master password is not set and cannot be stored in your %1" )
+    msg = QObject::tr( "Master password is not set and cannot be stored in your %1." )
           .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
     level = QgsMessageBar::WARNING;
   }
-  else if ( ! QgsAuthManager::instance()->passwordHelperSync() )
+  else if ( ! QgsApplication::authManager()->passwordHelperSync() )
   {
-    msg = QgsAuthManager::instance()->passwordHelperErrorMessage();
+    msg = QgsApplication::authManager()->passwordHelperErrorMessage();
     level = QgsMessageBar::WARNING;
   }
   else
   {
-    msg = QObject::tr( "Master password has been successfully stored in your %1" )
+    msg = QObject::tr( "Master password has been successfully stored in your %1." )
           .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME );
 
     level = QgsMessageBar::INFO;
@@ -316,7 +317,7 @@ void QgsAuthGuiUtils::passwordHelperSync( QgsMessageBar *msgbar, int timeout )
 
 void QgsAuthGuiUtils::passwordHelperEnable( bool enabled, QgsMessageBar *msgbar, int timeout )
 {
-  QgsAuthManager::instance()->setPasswordHelperEnabled( enabled );
+  QgsApplication::authManager()->setPasswordHelperEnabled( enabled );
   QString msg = enabled ? QObject::tr( "Your %1 will be <b>used from now</b> on to store and retrieve the master password." )
                 .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ) :
                 QObject::tr( "Your %1 will <b>not be used anymore</b> to store and retrieve the master password." )
@@ -328,5 +329,5 @@ void QgsAuthGuiUtils::passwordHelperLoggingEnable( bool enabled, QgsMessageBar *
 {
   Q_UNUSED( msgbar );
   Q_UNUSED( timeout );
-  QgsAuthManager::instance()->setPasswordHelperLoggingEnabled( enabled );
+  QgsApplication::authManager()->setPasswordHelperLoggingEnabled( enabled );
 }

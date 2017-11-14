@@ -25,7 +25,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the measure tool
  */
 class TestQgsMeasureTool : public QObject

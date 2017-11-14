@@ -1,7 +1,7 @@
 Watershed Basins
 ta_channels
-ParameterRaster|ELEVATION|Elevation|False
-ParameterRaster|CHANNELS|Channel Network|False
-ParameterRaster|SINKROUTE|Sink Route|True
-ParameterNumber|MINSIZE|Min. Size|None|None|0
-OutputRaster|BASINS|Watershed Basins
+QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
+QgsProcessingParameterRasterLayer|CHANNELS|Channel Network|None|False
+QgsProcessingParameterRasterLayer|SINKROUTE|Sink Route|None|True
+QgsProcessingParameterNumber|MINSIZE|Min. Size|QgsProcessingParameterNumber.Integer|0|False|None|None
+QgsProcessingParameterRasterDestination|BASINS|Watershed Basins

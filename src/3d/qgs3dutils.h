@@ -17,7 +17,7 @@
 #define QGS3DUTILS_H
 
 class QgsLineString;
-class QgsPolygonV2;
+class QgsPolygon;
 
 #include "qgs3dmapsettings.h"
 #include "qgsaabb.h"
@@ -39,7 +39,8 @@ enum AltitudeBinding
 };
 
 
-/** \ingroup 3d
+/**
+ * \ingroup 3d
  * Miscellaneous utility functions used from 3D code.
  * \since QGIS 3.0
  */
@@ -66,7 +67,7 @@ class _3D_EXPORT Qgs3DUtils
     //! Clamps altitude of vertices of a linestring according to the settings
     static void clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp, AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map );
     //! Clamps altitude of vertices of a polygon according to the settings
-    static bool clampAltitudes( QgsPolygonV2 *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Qgs3DMapSettings &map );
+    static bool clampAltitudes( QgsPolygon *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Qgs3DMapSettings &map );
 
     //! Converts a 4x4 transform matrix to a string
     static QString matrix4x4toString( const QMatrix4x4 &m );
@@ -74,9 +75,9 @@ class _3D_EXPORT Qgs3DUtils
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
 
     /**
-     * Calculates (x,y,z) position of point in the Point vector layers
+     * Calculates (x,y,z) positions of a (multi)point in the Point vector layers
      */
-    static QList<QVector3D> positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req );
+    static QList<QVector3D> positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, AltitudeClamping altClamp );
 
     /**
         Returns true if bbox is completely outside the current viewing volume.

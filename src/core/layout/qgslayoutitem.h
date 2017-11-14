@@ -23,10 +23,14 @@
 #include "qgslayoutpoint.h"
 #include "qgsrendercontext.h"
 #include "qgslayoutundocommand.h"
+#include "qgslayoutmeasurement.h"
 #include <QGraphicsRectItem>
+#include <QPainter>
 
 class QgsLayout;
 class QPainter;
+class QgsLayoutItemGroup;
+class QgsLayoutEffect;
 
 /**
  * \ingroup core
@@ -60,6 +64,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 #endif
 
     Q_OBJECT
+    Q_PROPERTY( bool locked READ isLocked WRITE setLocked NOTIFY lockChanged )
 
   public:
 
@@ -77,16 +82,80 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       LowerRight, //!< Lower right corner of item
     };
 
+    //! Layout item undo commands, used for collapsing undo commands
+    enum UndoCommand
+    {
+      UndoNone = -1, //!< No command suppression
+      UndoIncrementalMove = 1, //!< Layout item incremental movement, e.g. as a result of a keypress
+      UndoIncrementalResize, //!< Incremental resize
+      UndoStrokeColor, //!< Stroke color adjustment
+      UndoStrokeWidth, //!< Stroke width adjustment
+      UndoBackgroundColor, //!< Background color adjustment
+      UndoOpacity, //!< Opacity adjustment
+      UndoSetId, //!< Change item ID
+      UndoRotation, //!< Rotation adjustment
+      UndoShapeStyle, //!< Shape symbol style
+      UndoShapeCornerRadius, //!< Shape corner radius
+      UndoNodeMove, //!< Node move
+      UndoAtlasMargin, //!< Map atlas margin changed
+      UndoMapRotation, //!< Map rotation changed
+      UndoZoomContent, //!< Item content zoomed
+      UndoOverviewStyle, //!< Map overview style
+      UndoGridFramePenColor, //!< Map grid frame pen color
+      UndoMapGridFrameFill1Color, //!< Map grid frame fill color 1
+      UndoMapGridFrameFill2Color, //!< Map grid frame fill color 2
+      UndoMapAnnotationDistance, //!< Map frame annotation distance
+      UndoMapGridAnnotationFontColor, //!< Map frame annotation color
+      UndoMapGridLineSymbol, //!< Grid line symbol
+      UndoMapGridMarkerSymbol, //!< Grid marker symbol
+      UndoPictureRotation, //!< Picture rotation
+      UndoPictureFillColor, //!< Picture fill color
+      UndoPictureStrokeColor, //!< Picture stroke color
+      UndoPictureStrokeWidth, //!< Picture stroke width
+      UndoPictureNorthOffset, //!< Picture north offset
+      UndoLabelText, //!< Label text
+      UndoLabelFont, //!< Label font
+      UndoLabelMargin, //!< Label margin
+      UndoLabelFontColor, //!< Label color
+      UndoLegendText, //!< Legend text
+      UndoLegendColumnCount, //!< Legend column count
+      UndoLegendSymbolWidth, //!< Legend symbol width
+      UndoLegendSymbolHeight, //!< Legend symbol height
+      UndoLegendWmsLegendWidth, //!< Legend WMS width
+      UndoLegendWmsLegendHeight, //!< Legend WMS height
+      UndoLegendTitleSpaceBottom, //!< Legend title space
+      UndoLegendGroupSpace, //!< Legend group spacing
+      UndoLegendLayerSpace, //!< Legend layer spacing
+      UndoLegendSymbolSpace, //!< Legend symbol spacing
+      UndoLegendIconSymbolSpace, //!< Legend icon symbol space
+      UndoLegendFontColor, //!< Legend font color
+      UndoLegendBoxSpace, //!< Legend box space
+      UndoLegendColumnSpace, //!< Legend column space
+      UndoLegendLineSpacing, //!< Legend line spacing
+      UndoLegendRasterStrokeWidth, //!< Legend raster stroke width
+      UndoLegendRasterStrokeColor, //!< Legend raster stroke color
+      UndoLegendTitleFont, //!< Legend title font
+      UndoLegendGroupFont, //!< Legend group font
+      UndoLegendLayerFont, //!< Legend layer font
+      UndoLegendItemFont, //!< Legend item font
+      UndoCustomCommand, //!< Base id for plugin based item undo commands
+    };
+
     /**
      * Constructor for QgsLayoutItem, with the specified parent \a layout.
+     *
+     * If \a manageZValue is true, the z-Value of this item will be managed by the layout.
+     * Generally this is the desired behavior.
      */
-    explicit QgsLayoutItem( QgsLayout *layout );
+    explicit QgsLayoutItem( QgsLayout *layout, bool manageZValue = true );
+
+    ~QgsLayoutItem();
 
     /**
      * Return correct graphics item type
      * \see stringType()
      */
-    virtual int type() const override = 0;
+    int type() const override;
 
     /**
      * Return the item type as a string.
@@ -120,6 +189,72 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see uuid()
      */
     virtual void setId( const QString &id );
+
+    /**
+     * Get item display name. This is the item's id if set, and if
+     * not, a user-friendly string identifying item type.
+     * \see id()
+     * \see setId()
+     */
+    virtual QString displayName() const;
+
+    /**
+     * Sets whether the item should be selected.
+     */
+    virtual void setSelected( bool selected );
+
+    /**
+     * Sets whether the item is \a visible.
+     * \note QGraphicsItem::setVisible should not be called directly
+     * on a QgsLayoutItem, as some item types (e.g., groups) need to override
+     * the visibility toggle.
+     */
+    virtual void setVisibility( const bool visible );
+
+    /**
+     * Sets whether the item is \a locked, preventing mouse interactions with the item.
+     * \see isLocked()
+     * \see lockChanged()
+     */
+    void setLocked( const bool locked );
+
+    /**
+     * Returns true if the item is locked, and cannot be interacted with using the mouse.
+     * \see setLocked()
+     * \see lockChanged()
+     */
+    bool isLocked() const { return mIsLocked; }
+
+    /**
+     * Returns true if the item is part of a QgsLayoutItemGroup group.
+     * \see parentGroup()
+     * \see setParentGroup()
+     */
+    bool isGroupMember() const;
+
+    /**
+     * Returns the item's parent group, if the item is part of a QgsLayoutItemGroup group.
+     * \see isGroupMember()
+     * \see setParentGroup()
+     */
+    QgsLayoutItemGroup *parentGroup() const;
+
+    /**
+     * Sets the item's parent \a group.
+     * \see isGroupMember()
+     * \see parentGroup()
+     */
+    void setParentGroup( QgsLayoutItemGroup *group );
+
+    /**
+     * Returns the number of layers that this item requires for exporting during layered exports (e.g. SVG).
+     * Returns 0 if this item is to be placed on the same layer as the previous item,
+     * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers.
+     *
+     * Items which require multiply layers should check QgsLayoutContext::currentExportLayer() during
+     * their rendering to determine which layer should be drawn.
+     */
+    virtual int numberExportLayers() const { return 0; }
 
     /**
      * Handles preparing a paint surface for the layout item and painting the item's
@@ -165,24 +300,56 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * item may not match the specified target size, as items with a fixed or minimum
      * size will place restrictions on the allowed item size. Data defined item size overrides
      * will also override the specified target size.
+     *
+     * If \a includesFrame is true, then the size specified by \a size includes the
+     * item's frame.
+     *
      * \see minimumSize()
      * \see fixedSize()
      * \see attemptMove()
      * \see sizeWithUnits()
     */
-    virtual void attemptResize( const QgsLayoutSize &size );
+    virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
 
     /**
-     * Attempts to move the item to a specified \a point. This method respects the item's
+     * Attempts to move the item to a specified \a point.
+     *
+     * If \a useReferencePoint is true, this method will respect the item's
      * reference point, in that the item will be moved so that its current reference
      * point is placed at the specified target point.
+     *
+     * If \a useReferencePoint is false, the item will be moved so that \a point
+     * falls at the top-left corner of the item.
+     *
+     * If \a includesFrame is true, then the position specified by \a point represents the
+     * point at which to place the outside of the item's frame.
+     *
      * Note that the final position of the item may not match the specified target position,
      * as data defined item position may override the specified value.
+     *
      * \see attemptResize()
      * \see referencePoint()
      * \see positionWithUnits()
     */
-    virtual void attemptMove( const QgsLayoutPoint &point );
+    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false );
+
+
+    /**
+     * Attempts to update the item's position and size to match the passed \a rect in layout
+     * coordinates.
+     *
+     * If \a includesFrame is true, then the position and size specified by \a rect represents the
+     * position and size at for the outside of the item's frame.
+     *
+     * Note that the final position and size of the item may not match the specified target rect,
+     * as data defined item position and size may override the specified value.
+     *
+     * \see attemptResize()
+     * \see attemptMove()
+     * \see referencePoint()
+     * \see positionWithUnits()
+     */
+    void attemptSetSceneRect( const QRectF &rect, bool includesFrame = false );
 
     /**
      * Returns the item's current position, including units. The position returned
@@ -203,9 +370,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     /**
      * Returns the current rotation for the item, in degrees clockwise.
+     *
+     * Note that this method will always return the user-set rotation for the item,
+     * which may differ from the current item rotation (if data defined rotation
+     * settings are present). Use QGraphicsItem::rotation() to obtain the current
+     * item rotation.
+     *
      * \see setItemRotation()
      */
-    //TODO
     double itemRotation() const;
 
     /**
@@ -214,9 +386,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \param document DOM document
      * \param context read write context
      * \see readXml()
-     * \note Subclasses should ensure that they call writePropertiesToElement() in their implementation.
      */
-    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     /**
      * Sets the item state from a DOM element.
@@ -224,11 +395,224 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \param document DOM document
      * \param context read write context
      * \see writeXml()
-     * \note Subclasses should ensure that they call readPropertiesFromElement() in their implementation.
      */
-    virtual bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
+    bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
     QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
+
+    /**
+     * Returns true if the item includes a frame.
+     * \see setFrameEnabled()
+     * \see frameStrokeWidth()
+     * \see frameJoinStyle()
+     * \see frameStrokeColor()
+     */
+    bool hasFrame() const { return mFrame; }
+
+    /**
+     * Sets whether this item has a frame drawn around it or not.
+     * \see hasFrame()
+     * \see setFrameStrokeWidth()
+     * \see setFrameJoinStyle()
+     * \see setFrameStrokeColor()
+     */
+    virtual void setFrameEnabled( bool drawFrame );
+
+    /**
+     * Sets the frame stroke \a color.
+     * \see frameStrokeColor()
+     * \see setFrameEnabled()
+     * \see setFrameJoinStyle()
+     * \see setFrameStrokeWidth()
+     */
+    void setFrameStrokeColor( const QColor &color );
+
+    /**
+     * Returns the frame's stroke color. This is only used if hasFrame() returns true.
+     * \see hasFrame()
+     * \see setFrameStrokeColor()
+     * \see frameJoinStyle()
+     * \see setFrameStrokeColor()
+     */
+    QColor frameStrokeColor() const { return mFrameColor; }
+
+    /**
+     * Sets the frame stroke \a width.
+     * \see frameStrokeWidth()
+     * \see setFrameEnabled()
+     * \see setFrameJoinStyle()
+     * \see setFrameStrokeColor()
+     */
+    virtual void setFrameStrokeWidth( const QgsLayoutMeasurement &width );
+
+    /**
+     * Returns the frame's stroke width. This is only used if hasFrame() returns true.
+     * \see hasFrame()
+     * \see setFrameStrokeWidth()
+     * \see frameJoinStyle()
+     * \see frameStrokeColor()
+     */
+    QgsLayoutMeasurement frameStrokeWidth() const { return mFrameWidth; }
+
+    /**
+     * Returns the join style used for drawing the item's frame.
+     * \see hasFrame()
+     * \see setFrameJoinStyle()
+     * \see frameStrokeWidth()
+     * \see frameStrokeColor()
+     */
+    Qt::PenJoinStyle frameJoinStyle() const { return mFrameJoinStyle; }
+
+    /**
+     * Sets the join \a style used when drawing the item's frame.
+     * \see setFrameEnabled()
+     * \see frameJoinStyle()
+     * \see setFrameStrokeWidth()
+     * \see setFrameStrokeColor()
+     */
+    void setFrameJoinStyle( const Qt::PenJoinStyle style );
+
+    /**
+     * Returns true if the item has a background.
+     * \see setBackgroundEnabled()
+     * \see backgroundColor()
+     */
+    bool hasBackground() const { return mBackground; }
+
+    /**
+     * Sets whether this item has a background drawn under it or not.
+     * \see hasBackground()
+     * \see setBackgroundColor()
+     */
+    void setBackgroundEnabled( bool drawBackground );
+
+    /**
+     * Returns the background color for this item. This is only used if hasBackground()
+     * returns true.
+     * \see setBackgroundColor()
+     * \see hasBackground()
+     */
+    QColor backgroundColor() const { return mBackgroundColor; }
+
+    /**
+     * Sets the background \a color for this item.
+     * \see backgroundColor()
+     * \see setBackgroundEnabled()
+     */
+    void setBackgroundColor( const QColor &color );
+
+    /**
+     * Returns the item's composition blending mode.
+     * \see setBlendMode()
+     */
+    QPainter::CompositionMode blendMode() const { return mBlendMode; }
+
+    /**
+     * Sets the item's composition blending \a mode.
+     * \see blendMode()
+     */
+    void setBlendMode( const QPainter::CompositionMode mode );
+
+    /**
+     * Returns the item's opacity. This method should be used instead of
+     * QGraphicsItem::opacity() as any data defined overrides will be
+     * respected.
+     * \returns opacity as double between 1.0 (opaque) and 0 (transparent).
+     * \see setItemOpacity()
+     */
+    double itemOpacity() const { return mOpacity; }
+
+    /**
+     * Sets the item's \a opacity. This method should be used instead of
+     * QGraphicsItem::setOpacity() as any data defined overrides will be
+     * respected.
+     * \param opacity double between 1.0 (opaque) and 0 (transparent).
+     * \see itemOpacity()
+     */
+    void setItemOpacity( double opacity );
+
+    /**
+     * Returns whether the item should be excluded from layout exports and prints.
+     * \see setExcludeFromExports()
+     */
+    bool excludeFromExports() const;
+
+    /**
+     * Sets whether the item should be excluded from composer exports and prints.
+     * \see excludeFromExports()
+     */
+    void setExcludeFromExports( bool exclude );
+
+    /**
+     * Returns the estimated amount the item's frame bleeds outside the item's
+     * actual rectangle. For instance, if the item has a 2mm frame stroke, then
+     * 1mm of this frame is drawn outside the item's rect. In this case the
+     * return value will be 1.0.
+     *
+     * Returned values are in layout units.
+
+     * \see rectWithFrame()
+     */
+    virtual double estimatedFrameBleed() const;
+
+    /**
+     * Returns the item's rectangular bounds, including any bleed caused by the item's frame.
+     * The bounds are returned in the item's coordinate system (see Qt's QGraphicsItem docs for
+     * more details about QGraphicsItem coordinate systems). The results differ from Qt's rect()
+     * function, as rect() makes no allowances for the portion of outlines which are drawn
+     * outside of the item.
+     *
+     * \see estimatedFrameBleed()
+     */
+    virtual QRectF rectWithFrame() const;
+
+    /**
+     * Moves the content of the item, by a specified \a dx and \a dy in layout units.
+     * The default implementation has no effect.
+     * \see setMoveContentPreviewOffset()
+     * \see zoomContent()
+     */
+    virtual void moveContent( double dx, double dy );
+
+    /**
+     * Sets temporary offset for the item, by a specified \a dx and \a dy in layout units.
+     * This is useful for live updates when moving item content in a QgsLayoutView.
+     * The default implementation has no effect.
+     * \see moveContent()
+     */
+    virtual void setMoveContentPreviewOffset( double dx, double dy );
+
+    /**
+     * Zooms content of item. Does nothing by default.
+     * \param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
+     * \param point item point for zoom center
+     * \see moveContent()
+     */
+    virtual void zoomContent( double factor, QPointF point );
+
+    /**
+     * Starts new undo command for this item.
+     * The \a commandText should be a capitalized, imperative tense description (e.g. "Add Map Item").
+     * If specified, multiple consecutive commands for this item with the same \a command will
+     * be collapsed into a single undo command in the layout history.
+     * \see endCommand()
+     * \see cancelCommand()
+    */
+    void beginCommand( const QString &commandText, UndoCommand command = UndoNone );
+
+    /**
+     * Completes the current item command and push it onto the layout's undo stack.
+     * \see beginCommand()
+     * \see cancelCommand()
+     */
+    void endCommand();
+
+    /**
+     * Cancels the current item command and discards it.
+     * \see beginCommand()
+     * \see endCommand()
+     */
+    void cancelCommand();
 
   public slots:
 
@@ -237,6 +621,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * recalculation of its position and size.
      */
     void refresh() override;
+
+    /**
+     * Forces a deferred update of any cached image the item uses.
+     */
+    virtual void invalidateCache();
 
     /**
      * Triggers a redraw (update) of the item.
@@ -252,11 +641,15 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
     /**
-     * Sets the layout item's \a rotation, in degrees clockwise. This rotation occurs around the center of the item.
+     * Sets the layout item's \a rotation, in degrees clockwise.
+     *
+     * If \a adjustPosition is true, then this rotation occurs around the center of the item.
+     * If \a adjustPosition is false, rotation occurs around the item origin.
+     *
      * \see itemRotation()
      * \see rotateItem()
     */
-    virtual void setItemRotation( const double rotation );
+    virtual void setItemRotation( double rotation, bool adjustPosition = true );
 
     /**
      * Rotates the item by a specified \a angle in degrees clockwise around a specified reference point.
@@ -265,9 +658,34 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     */
     virtual void rotateItem( const double angle, const QPointF &transformOrigin );
 
+  signals:
+
+    /**
+     * Emitted if the item's frame style changes.
+     */
+    void frameChanged();
+
+    /**
+     * Emitted if the item's lock status changes.
+     * \see isLocked()
+     * \see setLocked()
+     */
+    void lockChanged();
+
+    /**
+     * Emitted on item rotation change.
+     */
+    void rotationChanged( double newRotation );
+
+    /**
+     * Emitted when the item's size or position changes.
+     */
+    void sizePositionChanged();
+
   protected:
 
-    /** Draws a debugging rectangle of the item's current bounds within the specified
+    /**
+     * Draws a debugging rectangle of the item's current bounds within the specified
      * painter.
      * @param painter destination QPainter
      */
@@ -279,6 +697,16 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * Use the QgsRenderContext methods to convert from millimeters or other units to the painter's units.
      */
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) = 0;
+
+    /**
+     * Draws the frame around the item.
+     */
+    virtual void drawFrame( QgsRenderContext &context );
+
+    /**
+     * Draws the background for the item.
+     */
+    virtual void drawBackground( QgsRenderContext &context );
 
     /**
      * Sets a fixed \a size for the layout item, which prevents it from being freely
@@ -295,6 +723,16 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see setFixedSize()
     */
     virtual void setMinimumSize( const QgsLayoutSize &size );
+
+    /**
+     * Applies any item-specific size constraint handling to a given \a targetSize in layout units.
+     * Subclasses can override this method if they need to apply advanced logic regarding item
+     * sizes, which cannot be covered by setFixedSize() or setMinimumSize().
+     * Item size constraints are applied after fixed, minimum and data defined size constraints.
+     * \see setFixedSize()
+     * \see setMinimumSize()
+     */
+    virtual QSizeF applyItemSizeConstraint( const QSizeF &targetSize );
 
     /**
      * Refreshes an item's size by rechecking it against any possible item fixed
@@ -315,14 +753,44 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     /**
      * Refreshes an item's rotation by rechecking it against any possible overrides
      * such as data defined rotation.
+     *
+     * The optional \a origin point specifies the origin (in item coordinates)
+     * around which the rotation should be applied.
+     *
      * \see refreshItemSize()
      * \see refreshItemPosition()
      */
-    void refreshItemRotation();
+    void refreshItemRotation( QPointF *origin = nullptr );
+
+    /**
+     * Refresh item's opacity, considering data defined opacity.
+      * If \a updateItem is set to false the item will not be automatically
+      * updated after the opacity is set and a later call to update() must be made.
+     */
+    void refreshOpacity( bool updateItem = true );
+
+    /**
+     * Refresh item's frame, considering data defined colors and frame size.
+     * If \a updateItem is set to false, the item will not be automatically updated
+     * after the frame is set and a later call to update() must be made.
+     */
+    void refreshFrame( bool updateItem = true );
+
+    /**
+     * Refresh item's background color, considering data defined colors.
+     * If \a updateItem is set to false, the item will not be automatically updated
+     * after the frame color is set and a later call to update() must be made.
+     */
+    void refreshBackgroundColor( bool updateItem = true );
+
+    /**
+     * Refresh item's blend mode, considering data defined blend mode.
+     */
+    void refreshBlendMode();
 
     /**
      * Adjusts the specified \a point at which a \a reference position of the item
-     * sits and returns the top left corner of the item, if reference point where placed at the specified position.
+     * sits and returns the top left corner of the item, if reference point were placed at the specified position.
      */
     QPointF adjustPointForReferencePosition( const QPointF &point, const QSizeF &size, const ReferencePoint &reference ) const;
 
@@ -332,13 +800,18 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QPointF positionAtReferencePoint( const ReferencePoint &reference ) const;
 
     /**
+     * Returns the position for the reference point of the item, if the top-left of the item
+     * was placed at the specified \a point.
+    */
+    QgsLayoutPoint topLeftToReferencePoint( const QgsLayoutPoint &point ) const;
+
+    /**
      * Stores item state within an XML DOM element.
      * \param element is the DOM element to store the item's properties in
      * \param document DOM document
      * \param context read write context
      * \see writeXml()
      * \see readPropertiesFromElement()
-     * \note derived classes must call this base implementation when overriding this method
      */
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
@@ -349,17 +822,32 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \param context read write context
      * \see writePropertiesToElement()
      * \see readXml()
-     * \note derived classes must call this base implementation when overriding this method
      */
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
+    /**
+     * Returns whether the item should be drawn in the current context.
+     */
+    bool shouldDrawItem() const;
+
+    /**
+     * Applies any present data defined size overrides to the specified layout \a size.
+     */
+    QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );
+
   private:
+
+    // true if layout manages the z value for this item
+    bool mLayoutManagesZValue = false;
 
     //! id (not necessarily unique)
     QString mId;
 
     //! Unique id
     QString mUuid;
+
+    //! Parent group unique id
+    QString mParentGroupUuid;
 
     ReferencePoint mReferencePoint = UpperLeft;
     QgsLayoutSize mFixedSize;
@@ -369,8 +857,42 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QgsLayoutPoint mItemPosition;
     double mItemRotation = 0.0;
 
+    //! Whether item should be excluded in exports
+    bool mExcludeFromExports = false;
+
+    /**
+     * Temporary evaluated item exclusion. Data defined properties may mean
+     * this value differs from mExcludeFromExports.
+     */
+    bool mEvaluatedExcludeFromExports = false;
+
+    //! Composition blend mode for item
+    QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
+    std::unique_ptr< QgsLayoutEffect > mEffect;
+
+    //! Item opacity, between 0 and 1
+    double mOpacity = 1.0;
+
     QImage mItemCachedImage;
     double mItemCacheDpi = -1;
+
+    bool mIsLocked = false;
+
+    //! True if item has a frame
+    bool mFrame = false;
+    //! Item frame color
+    QColor mFrameColor = QColor( 0, 0, 0 );
+    //! Item frame width
+    QgsLayoutMeasurement mFrameWidth = QgsLayoutMeasurement( 0.3, QgsUnitTypes::LayoutMillimeters );
+    //! Frame join style
+    Qt::PenJoinStyle mFrameJoinStyle = Qt::MiterJoin;
+
+    //! True if item has a background
+    bool mBackground = true;
+    //! Background color
+    QColor mBackgroundColor = QColor( 255, 255, 255 );
+
+    bool mBlockUndoCommands = false;
 
     void initConnectionsToLayout();
 
@@ -382,13 +904,16 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QSizeF applyMinimumSize( const QSizeF &targetSize );
     QSizeF applyFixedSize( const QSizeF &targetSize );
     QgsLayoutPoint applyDataDefinedPosition( const QgsLayoutPoint &position );
-    QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );
+
     double applyDataDefinedRotation( const double rotation );
     void updateStoredItemPosition();
     QPointF itemPositionAtReferencePoint( const ReferencePoint reference, const QSizeF &size ) const;
     void setScenePos( const QPointF &destinationPos );
+    bool shouldBlockUndoCommands() const;
 
     friend class TestQgsLayoutItem;
+    friend class TestQgsLayoutView;
+    friend class QgsLayoutItemGroup;
 };
 
 #endif //QGSLAYOUTITEM_H

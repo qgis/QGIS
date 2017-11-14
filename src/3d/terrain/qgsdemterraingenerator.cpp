@@ -19,11 +19,9 @@
 
 #include "qgsrasterlayer.h"
 
-
-
-QgsDemTerrainGenerator::QgsDemTerrainGenerator()
-  : mResolution( 16 )
+QgsDemTerrainGenerator::~QgsDemTerrainGenerator()
 {
+  delete mHeightMapGenerator;
 }
 
 void QgsDemTerrainGenerator::setLayer( QgsRasterLayer *layer )
@@ -42,6 +40,7 @@ QgsTerrainGenerator *QgsDemTerrainGenerator::clone() const
   QgsDemTerrainGenerator *cloned = new QgsDemTerrainGenerator;
   cloned->mLayer = mLayer;
   cloned->mResolution = mResolution;
+  cloned->mSkirtHeight = mSkirtHeight;
   cloned->updateGenerator();
   return cloned;
 }
@@ -66,12 +65,14 @@ void QgsDemTerrainGenerator::writeXml( QDomElement &elem ) const
 {
   elem.setAttribute( "layer", mLayer.layerId );
   elem.setAttribute( "resolution", mResolution );
+  elem.setAttribute( "skirt-height", mSkirtHeight );
 }
 
 void QgsDemTerrainGenerator::readXml( const QDomElement &elem )
 {
   mLayer = QgsMapLayerRef( elem.attribute( "layer" ) );
   mResolution = elem.attribute( "resolution" ).toInt();
+  mSkirtHeight = elem.attribute( "skirt-height" ).toFloat();
 }
 
 void QgsDemTerrainGenerator::resolveReferences( const QgsProject &project )
@@ -91,11 +92,13 @@ void QgsDemTerrainGenerator::updateGenerator()
   if ( dem )
   {
     mTerrainTilingScheme = QgsTilingScheme( dem->extent(), dem->crs() );
-    mHeightMapGenerator.reset( new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution ) );
+    delete mHeightMapGenerator;
+    mHeightMapGenerator = new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution );
   }
   else
   {
     mTerrainTilingScheme = QgsTilingScheme();
-    mHeightMapGenerator.reset();
+    delete mHeightMapGenerator;
+    mHeightMapGenerator = nullptr;
   }
 }
