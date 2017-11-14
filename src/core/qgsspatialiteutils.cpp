@@ -87,14 +87,14 @@ sqlite3_statement_unique_ptr spatialite_database_unique_ptr::prepare( const QStr
 
 void QgsSpatialiteCloser::operator()( sqlite3 *handle )
 {
-#if defined(SPATIALITE_HAS_INIT_EX)
-  spatialite_cleanup_ex( mSpatialiteContext );
-  mSpatialiteContext = nullptr;
-#endif
-
   int res = sqlite3_close( handle );
   if ( res != SQLITE_OK )
   {
     QgsDebugMsg( QStringLiteral( "sqlite3_close() failed: %1" ).arg( res ) );
   }
+#if defined(SPATIALITE_HAS_INIT_EX)
+  spatialite_cleanup_ex( mSpatialiteContext );
+  mSpatialiteContext = nullptr;
+#endif
+
 }
