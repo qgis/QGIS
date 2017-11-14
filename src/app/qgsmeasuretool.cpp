@@ -63,7 +63,7 @@ QgsMeasureTool::~QgsMeasureTool()
 }
 
 
-QList<QgsPointXY> QgsMeasureTool::points()
+QVector<QgsPointXY> QgsMeasureTool::points()
 {
   return mPoints;
 }
@@ -130,7 +130,7 @@ void QgsMeasureTool::updateSettings()
   // Reproject the points to the new destination CoordinateReferenceSystem
   if ( mRubberBand->size() > 0 && mDestinationCrs != mCanvas->mapSettings().destinationCrs() && mCanvas->mapSettings().destinationCrs().isValid() )
   {
-    QList<QgsPointXY> points = mPoints;
+    QVector<QgsPointXY> points = mPoints;
     bool lastDone = mDone;
 
     mDialog->restart();

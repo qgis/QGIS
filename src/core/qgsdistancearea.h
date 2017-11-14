@@ -17,7 +17,7 @@
 #define QGSDISTANCEAREA_H
 
 #include "qgis_core.h"
-#include <QList>
+#include <QVector>
 #include <QReadWriteLock>
 #include "qgscoordinatetransform.h"
 #include "qgsunittypes.h"
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsDistanceArea
      * \returns length of line. The units for the returned length can be retrieved by calling lengthUnits().
      * \see lengthUnits()
      */
-    double measureLine( const QList<QgsPointXY> &points ) const;
+    double measureLine( const QVector<QgsPointXY> &points ) const;
 
     /**
      * Measures the distance between two points.
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsDistanceArea
     /**
      * Measures the area of the polygon described by a set of points.
      */
-    double measurePolygon( const QList<QgsPointXY> &points ) const;
+    double measurePolygon( const QVector<QgsPointXY> &points ) const;
 
     /**
      * Computes the bearing (in radians) between two points.
@@ -308,9 +308,9 @@ class CORE_EXPORT QgsDistanceArea
      * Calculates area of polygon on ellipsoid
      * algorithm has been taken from GRASS: gis/area_poly1.c
      */
-    double computePolygonArea( const QList<QgsPointXY> &points ) const;
+    double computePolygonArea( const QVector<QgsPointXY> &points ) const;
 
-    double computePolygonFlatArea( const QList<QgsPointXY> &points ) const;
+    double computePolygonFlatArea( const QVector<QgsPointXY> &points ) const;
 
     /**
      * Precalculates some values

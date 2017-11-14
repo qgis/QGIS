@@ -365,7 +365,7 @@ void TestQgsDistanceArea::emptyPolygon()
   da.setEllipsoid( QStringLiteral( "WGS84" ) );
 
   //test that measuring an empty polygon doesn't crash
-  da.measurePolygon( QList< QgsPointXY >() );
+  da.measurePolygon( QVector< QgsPointXY >() );
 }
 
 void TestQgsDistanceArea::regression14675()

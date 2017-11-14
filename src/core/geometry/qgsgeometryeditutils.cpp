@@ -33,7 +33,7 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry 
     return QgsGeometry::InvalidInput;
   }
 
-  QList< QgsCurvePolygon * > polygonList;
+  QVector< QgsCurvePolygon * > polygonList;
   QgsCurvePolygon *curvePoly = qgsgeometry_cast< QgsCurvePolygon * >( geom );
   QgsGeometryCollection *multiGeom = qgsgeometry_cast< QgsGeometryCollection * >( geom );
   if ( curvePoly )
@@ -67,7 +67,7 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry 
   ringGeom->prepareGeometry();
 
   //for each polygon, test if inside outer ring and no intersection with other interior ring
-  QList< QgsCurvePolygon * >::const_iterator polyIter = polygonList.constBegin();
+  QVector< QgsCurvePolygon * >::const_iterator polyIter = polygonList.constBegin();
   for ( ; polyIter != polygonList.constEnd(); ++polyIter )
   {
     if ( ringGeom->within( *polyIter ) )
@@ -240,7 +240,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
   if ( avoidIntersectionsLayers.isEmpty() )
     return nullptr; //no intersections stored in project does not mean error
 
-  QList< QgsGeometry > nearGeometries;
+  QVector< QgsGeometry > nearGeometries;
 
   //go through list, convert each layer to vector layer and call QgsVectorLayer::removePolygonIntersections for each
   for ( QgsVectorLayer *currentLayer : avoidIntersectionsLayers )

@@ -468,7 +468,7 @@ QVariant QgsAggregateCalculator::calculateGeometryAggregate( QgsFeatureIterator 
   Q_ASSERT( expression );
 
   QgsFeature f;
-  QList< QgsGeometry > geometries;
+  QVector< QgsGeometry > geometries;
   while ( fit.nextFeature( f ) )
   {
     Q_ASSERT( context );

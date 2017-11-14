@@ -69,7 +69,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * or repeatedly calling addVertex()
      * \since QGIS 3.0
      */
-    QgsLineString( const QList<QgsPointXY> &points );
+    QgsLineString( const QVector<QgsPointXY> &points );
 
     bool operator==( const QgsCurve &other ) const override;
     bool operator!=( const QgsCurve &other ) const override;

@@ -96,7 +96,7 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
   double step = count > 0 ? 100.0 / count : 1;
   int current = 0;
 
-  QList< QgsGeometry > bufferedGeometriesForDissolve;
+  QVector< QgsGeometry > bufferedGeometriesForDissolve;
   QgsAttributes dissolveAttrs;
 
   while ( it.nextFeature( f ) )

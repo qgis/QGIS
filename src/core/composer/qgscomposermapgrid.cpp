@@ -2391,10 +2391,10 @@ QList<QPolygonF> QgsComposerMapGrid::trimLinesToMap( const QPolygonF &line, cons
   QgsGeometry rectGeom = QgsGeometry::fromRect( rect );
 
   QgsGeometry intersected = lineGeom.intersection( rectGeom );
-  QList<QgsGeometry> intersectedParts = intersected.asGeometryCollection();
+  QVector<QgsGeometry> intersectedParts = intersected.asGeometryCollection();
 
   QList<QPolygonF> trimmedLines;
-  QList<QgsGeometry>::const_iterator geomIt = intersectedParts.constBegin();
+  QVector<QgsGeometry>::const_iterator geomIt = intersectedParts.constBegin();
   for ( ; geomIt != intersectedParts.constEnd(); ++geomIt )
   {
     trimmedLines << ( *geomIt ).asQPolygonF();

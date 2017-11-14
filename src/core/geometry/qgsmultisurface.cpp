@@ -59,7 +59,7 @@ QgsMultiSurface *QgsMultiSurface::toCurveType() const
 bool QgsMultiSurface::fromWkt( const QString &wkt )
 {
   return fromCollectionWkt( wkt,
-                            QList<QgsAbstractGeometry *>() << new QgsPolygon << new QgsCurvePolygon,
+                            QVector<QgsAbstractGeometry *>() << new QgsPolygon << new QgsCurvePolygon,
                             QStringLiteral( "Polygon" ) );
 }
 

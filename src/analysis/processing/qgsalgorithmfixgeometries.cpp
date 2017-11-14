@@ -86,8 +86,8 @@ QgsFeature QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feature,
        QgsWkbTypes::flatType( outputGeometry.wkbType() ) == QgsWkbTypes::GeometryCollection )
   {
     // keep only the parts of the geometry collection with correct type
-    const QList< QgsGeometry > tmpGeometries = outputGeometry.asGeometryCollection();
-    QList< QgsGeometry > matchingParts;
+    const QVector< QgsGeometry > tmpGeometries = outputGeometry.asGeometryCollection();
+    QVector< QgsGeometry > matchingParts;
     for ( const QgsGeometry &g : tmpGeometries )
     {
       if ( g.type() == feature.geometry().type() )

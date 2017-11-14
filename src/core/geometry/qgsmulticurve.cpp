@@ -59,7 +59,7 @@ QgsMultiCurve *QgsMultiCurve::toCurveType() const
 bool QgsMultiCurve::fromWkt( const QString &wkt )
 {
   return fromCollectionWkt( wkt,
-                            QList<QgsAbstractGeometry *>() << new QgsLineString << new QgsCircularString << new QgsCompoundCurve,
+                            QVector<QgsAbstractGeometry *>() << new QgsLineString << new QgsCircularString << new QgsCompoundCurve,
                             QStringLiteral( "LineString" ) );
 }
 

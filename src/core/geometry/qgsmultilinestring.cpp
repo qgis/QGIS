@@ -52,7 +52,7 @@ void QgsMultiLineString::clear()
 
 bool QgsMultiLineString::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry *>() << new QgsLineString, QStringLiteral( "LineString" ) );
+  return fromCollectionWkt( wkt, QVector<QgsAbstractGeometry *>() << new QgsLineString, QStringLiteral( "LineString" ) );
 }
 
 QDomElement QgsMultiLineString::asGML2( QDomDocument &doc, int precision, const QString &ns ) const

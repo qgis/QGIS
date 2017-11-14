@@ -27,13 +27,13 @@ email                : marco.hugentobler at sourcepole dot com
 #include <QVector>
 #include <QRegularExpression>
 
-QList<QgsLineString *> QgsGeometryUtils::extractLineStrings( const QgsAbstractGeometry *geom )
+QVector<QgsLineString *> QgsGeometryUtils::extractLineStrings( const QgsAbstractGeometry *geom )
 {
-  QList< QgsLineString * > linestrings;
+  QVector< QgsLineString * > linestrings;
   if ( !geom )
     return linestrings;
 
-  QList< const QgsAbstractGeometry * > geometries;
+  QVector< const QgsAbstractGeometry * > geometries;
   geometries << geom;
   while ( ! geometries.isEmpty() )
   {
@@ -287,9 +287,9 @@ bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &
   return !( lambdaw < 0. + tolerance || lambdaw >= wl - tolerance );
 }
 
-QList<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance )
+QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance )
 {
-  QList<SelfIntersection> intersections;
+  QVector<SelfIntersection> intersections;
 
   int n = geom->vertexCount( part, ring );
   bool isClosed = geom->vertexAt( QgsVertexId( part, ring, 0 ) ) == geom->vertexAt( QgsVertexId( part, ring, n - 1 ) );
@@ -626,7 +626,7 @@ void QgsGeometryUtils::segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, co
   double z = 0;
   double m = 0;
 
-  QList<QgsPoint> stringPoints;
+  QVector<QgsPoint> stringPoints;
   stringPoints.insert( 0, circlePoint1 );
   if ( circlePoint2 != circlePoint3 && circlePoint1 != circlePoint2 ) //draw straight line segment if two points have the same position
   {

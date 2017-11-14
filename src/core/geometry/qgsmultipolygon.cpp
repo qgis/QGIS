@@ -52,7 +52,7 @@ QgsMultiPolygon *QgsMultiPolygon::clone() const
 
 bool QgsMultiPolygon::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry *>() << new QgsPolygon, QStringLiteral( "Polygon" ) );
+  return fromCollectionWkt( wkt, QVector<QgsAbstractGeometry *>() << new QgsPolygon, QStringLiteral( "Polygon" ) );
 }
 
 QDomElement QgsMultiPolygon::asGML2( QDomDocument &doc, int precision, const QString &ns ) const

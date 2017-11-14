@@ -42,7 +42,7 @@ QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry &geometr
 
 QgsGeometry QgsInternalGeometryEngine::extrude( double x, double y ) const
 {
-  QList<QgsLineString *> linesToProcess;
+  QVector<QgsLineString *> linesToProcess;
 
   const QgsMultiCurve *multiCurve = qgsgeometry_cast< const QgsMultiCurve * >( mGeometry );
   if ( multiCurve )
@@ -496,7 +496,7 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
   if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
   {
     int numGeom = gc->numGeometries();
-    QList< QgsAbstractGeometry * > geometryList;
+    QVector< QgsAbstractGeometry * > geometryList;
     geometryList.reserve( numGeom );
     for ( int i = 0; i < numGeom; ++i )
     {
@@ -654,7 +654,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByCount( int extraNodesPerSegment 
   if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
   {
     int numGeom = gc->numGeometries();
-    QList< QgsAbstractGeometry * > geometryList;
+    QVector< QgsAbstractGeometry * > geometryList;
     geometryList.reserve( numGeom );
     for ( int i = 0; i < numGeom; ++i )
     {
@@ -689,7 +689,7 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
   if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
   {
     int numGeom = gc->numGeometries();
-    QList< QgsAbstractGeometry * > geometryList;
+    QVector< QgsAbstractGeometry * > geometryList;
     geometryList.reserve( numGeom );
     for ( int i = 0; i < numGeom; ++i )
     {

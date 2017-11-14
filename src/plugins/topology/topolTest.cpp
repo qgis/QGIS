@@ -695,7 +695,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
 
   //qDebug() << "difference gometry - " << diffGeoms->exportToWkt();
 
-  QList<QgsGeometry> geomColl = diffGeoms.asGeometryCollection();
+  QVector<QgsGeometry> geomColl = diffGeoms.asGeometryCollection();
 
   QgsGeometry canvasExtentPoly = QgsGeometry::fromWkt( qgsInterface->mapCanvas()->extent().asWktPolygon() );
 

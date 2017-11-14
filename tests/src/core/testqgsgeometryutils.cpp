@@ -60,24 +60,24 @@ class TestQgsGeometryUtils: public QObject
 void TestQgsGeometryUtils::testExtractLinestrings()
 {
   QgsLineString *outerRing1 = new QgsLineString();
-  outerRing1->setPoints( QList<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
+  outerRing1->setPoints( QVector<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
   QgsPolygon *polygon1 = new QgsPolygon();
   polygon1->setExteriorRing( outerRing1 );
 
   QgsLineString *outerRing2 = new QgsLineString();
-  outerRing2->setPoints( QList<QgsPoint>() << QgsPoint( 10, 10 ) << QgsPoint( 10, 20 ) << QgsPoint( 20, 20 ) << QgsPoint( 20, 10 ) << QgsPoint( 10, 10 ) );
+  outerRing2->setPoints( QVector<QgsPoint>() << QgsPoint( 10, 10 ) << QgsPoint( 10, 20 ) << QgsPoint( 20, 20 ) << QgsPoint( 20, 10 ) << QgsPoint( 10, 10 ) );
   QgsPolygon *polygon2 = new QgsPolygon();
   polygon2->setExteriorRing( outerRing2 );
 
   QgsLineString *innerRing2 = new QgsLineString();
-  innerRing2->setPoints( QList<QgsPoint>() << QgsPoint( 14, 14 ) << QgsPoint( 14, 16 ) << QgsPoint( 16, 16 ) << QgsPoint( 16, 14 ) << QgsPoint( 14, 14 ) );
-  polygon2->setInteriorRings( QList<QgsCurve *>() << innerRing2 );
+  innerRing2->setPoints( QVector<QgsPoint>() << QgsPoint( 14, 14 ) << QgsPoint( 14, 16 ) << QgsPoint( 16, 16 ) << QgsPoint( 16, 14 ) << QgsPoint( 14, 14 ) );
+  polygon2->setInteriorRings( QVector<QgsCurve *>() << innerRing2 );
 
   QgsMultiPolygon mpg;
   mpg.addGeometry( polygon1 );
   mpg.addGeometry( polygon2 );
 
-  QList<QgsLineString *> linestrings = QgsGeometryUtils::extractLineStrings( &mpg );
+  QVector<QgsLineString *> linestrings = QgsGeometryUtils::extractLineStrings( &mpg );
   QCOMPARE( linestrings.count(), 3 );
   qDeleteAll( linestrings );
 }
@@ -345,7 +345,7 @@ void TestQgsGeometryUtils::testDistanceToVertex()
 {
   //test with linestring
   QgsLineString *outerRing1 = new QgsLineString();
-  outerRing1->setPoints( QList<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
+  outerRing1->setPoints( QVector<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
   QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 0 ) ), 0.0 );
   QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 1 ) ), 1.0 );
   QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 2 ) ), 2.0 );
@@ -379,7 +379,7 @@ void TestQgsGeometryUtils::testVerticesAtDistance()
   QgsVertexId next;
   QVERIFY( !QgsGeometryUtils::verticesAtDistance( *outerRing1, .5, previous, next ) );
 
-  outerRing1->setPoints( QList<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 3, 1 ) );
+  outerRing1->setPoints( QVector<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 3, 1 ) );
   QVERIFY( QgsGeometryUtils::verticesAtDistance( *outerRing1, .5, previous, next ) );
   QCOMPARE( previous, QgsVertexId( 0, 0, 0 ) );
   QCOMPARE( next, QgsVertexId( 0, 0, 1 ) );
@@ -414,7 +414,7 @@ void TestQgsGeometryUtils::testVerticesAtDistance()
 
   // test closed line
   QgsLineString *closedRing1 = new QgsLineString();
-  closedRing1->setPoints( QList<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
+  closedRing1->setPoints( QVector<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
   QVERIFY( QgsGeometryUtils::verticesAtDistance( *closedRing1, 0, previous, next ) );
   QCOMPARE( previous, QgsVertexId( 0, 0, 0 ) );
   QCOMPARE( next, QgsVertexId( 0, 0, 0 ) );

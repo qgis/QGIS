@@ -45,7 +45,7 @@ class QgsLineString: QgsCurve
 .. versionadded:: 3.0
 %End
 
-    QgsLineString( const QList<QgsPointXY> &points );
+    QgsLineString( const QVector<QgsPointXY> &points );
 %Docstring
  Construct a linestring from list of points.
  This constructor is more efficient then calling setPoints()

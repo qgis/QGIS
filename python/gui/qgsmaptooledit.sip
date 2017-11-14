@@ -69,7 +69,7 @@ Returns the current vector layer of the map canvas or 0
  :rtype: QgsVectorLayer
 %End
 
-    int addTopologicalPoints( const QList<QgsPointXY> &geom );
+    int addTopologicalPoints( const QVector<QgsPointXY> &geom );
 %Docstring
  Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
  \param geom list of points (in layer coordinate system)

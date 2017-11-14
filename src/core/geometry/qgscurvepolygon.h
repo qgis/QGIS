@@ -87,7 +87,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     virtual void setExteriorRing( QgsCurve *ring SIP_TRANSFER );
 
     //! Sets all interior rings (takes ownership)
-    void setInteriorRings( const QList<QgsCurve *> &rings SIP_TRANSFER );
+    void setInteriorRings( const QVector<QgsCurve *> &rings SIP_TRANSFER );
     //! Adds an interior ring to the geometry (takes ownership)
     virtual void addInteriorRing( QgsCurve *ring SIP_TRANSFER );
 
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
   protected:
 
     std::unique_ptr< QgsCurve > mExteriorRing;
-    QList<QgsCurve *> mInteriorRings;
+    QVector<QgsCurve *> mInteriorRings;
 
     QgsRectangle calculateBoundingBox() const override;
 };

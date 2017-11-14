@@ -277,7 +277,7 @@ QgsRectangle QgsCurvePolygon::calculateBoundingBox() const
 QByteArray QgsCurvePolygon::asWkb() const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
-  QList<QByteArray> wkbForRings;
+  QVector<QByteArray> wkbForRings;
   if ( mExteriorRing )
   {
     QByteArray wkb( mExteriorRing->asWkb() );
@@ -434,13 +434,12 @@ double QgsCurvePolygon::area() const
     totalArea += std::fabs( area );
   }
 
-  QList<QgsCurve *>::const_iterator ringIt = mInteriorRings.constBegin();
-  for ( ; ringIt != mInteriorRings.constEnd(); ++ringIt )
+  for ( const QgsCurve *ring : mInteriorRings )
   {
     double area = 0.0;
-    if ( ( *ringIt )->isRing() )
+    if ( ring->isRing() )
     {
-      ( *ringIt )->sumUpArea( area );
+      ring->sumUpArea( area );
       totalArea -= std::fabs( area );
     }
   }
@@ -454,10 +453,9 @@ double QgsCurvePolygon::perimeter() const
 
   //sum perimeter of rings
   double perimeter = mExteriorRing->length();
-  QList<QgsCurve *>::const_iterator ringIt = mInteriorRings.constBegin();
-  for ( ; ringIt != mInteriorRings.constEnd(); ++ringIt )
+  for ( const QgsCurve *ring : mInteriorRings )
   {
-    perimeter += ( *ringIt )->length();
+    perimeter += ring->length();
   }
   return perimeter;
 }
@@ -469,7 +467,7 @@ QgsPolygon *QgsCurvePolygon::surfaceToPolygon() const
     return polygon.release();
 
   polygon->setExteriorRing( exteriorRing()->curveToLine() );
-  QList<QgsCurve *> interiors;
+  QVector<QgsCurve *> interiors;
   int n = numInteriorRings();
   interiors.reserve( n );
   for ( int i = 0; i < n; ++i )
@@ -546,11 +544,10 @@ QgsPolygon *QgsCurvePolygon::toPolygon( double tolerance, SegmentationToleranceT
 
   poly->setExteriorRing( mExteriorRing->curveToLine( tolerance, toleranceType ) );
 
-  QList<QgsCurve *> rings;
-  QList<QgsCurve *>::const_iterator it = mInteriorRings.constBegin();
-  for ( ; it != mInteriorRings.constEnd(); ++it )
+  QVector<QgsCurve *> rings;
+  for ( const QgsCurve *ring : mInteriorRings )
   {
-    rings.push_back( ( *it )->curveToLine( tolerance, toleranceType ) );
+    rings.push_back( ring->curveToLine( tolerance, toleranceType ) );
   }
   poly->setInteriorRings( rings );
   return poly.release();
@@ -609,7 +606,7 @@ void QgsCurvePolygon::setExteriorRing( QgsCurve *ring )
   clearCache();
 }
 
-void QgsCurvePolygon::setInteriorRings( const QList<QgsCurve *> &rings )
+void QgsCurvePolygon::setInteriorRings( const QVector<QgsCurve *> &rings )
 {
   qDeleteAll( mInteriorRings );
   mInteriorRings.clear();
@@ -685,10 +682,9 @@ void QgsCurvePolygon::draw( QPainter &p ) const
     QPainterPath path;
     mExteriorRing->addToPainterPath( path );
 
-    QList<QgsCurve *>::const_iterator it = mInteriorRings.constBegin();
-    for ( ; it != mInteriorRings.constEnd(); ++it )
+    for ( const QgsCurve *ring : mInteriorRings )
     {
-      ( *it )->addToPainterPath( path );
+      ring->addToPainterPath( path );
     }
     p.drawPath( path );
   }
@@ -733,11 +729,10 @@ QgsCoordinateSequence QgsCurvePolygon::coordinateSequence() const
     mExteriorRing->points( sequence.back().back() );
   }
 
-  QList<QgsCurve *>::const_iterator it = mInteriorRings.constBegin();
-  for ( ; it != mInteriorRings.constEnd(); ++it )
+  for ( const QgsCurve *ring : mInteriorRings )
   {
     sequence.back().append( QgsPointSequence() );
-    ( *it )->points( sequence.back().back() );
+    ring->points( sequence.back().back() );
   }
 
   return sequence;
@@ -752,10 +747,9 @@ int QgsCurvePolygon::nCoordinates() const
     count += mExteriorRing->nCoordinates();
   }
 
-  QList<QgsCurve *>::const_iterator it = mInteriorRings.constBegin();
-  for ( ; it != mInteriorRings.constEnd(); ++it )
+  for ( const QgsCurve *ring : mInteriorRings )
   {
-    count += ( *it )->nCoordinates();
+    count += ring->nCoordinates();
   }
 
   return count;
@@ -810,7 +804,7 @@ double QgsCurvePolygon::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,
   {
     return -1;
   }
-  QList<QgsCurve *> segmentList;
+  QVector<QgsCurve *> segmentList;
   segmentList.append( mExteriorRing.get() );
   segmentList.append( mInteriorRings );
   return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::Ring, pt, segmentPt,  vertexAfter, leftOf, epsilon );
@@ -1005,10 +999,9 @@ bool QgsCurvePolygon::hasCurvedSegments() const
     return true;
   }
 
-  QList<QgsCurve *>::const_iterator it = mInteriorRings.constBegin();
-  for ( ; it != mInteriorRings.constEnd(); ++it )
+  for ( const QgsCurve *ring : mInteriorRings )
   {
-    if ( ( *it )->hasCurvedSegments() )
+    if ( ring->hasCurvedSegments() )
     {
       return true;
     }

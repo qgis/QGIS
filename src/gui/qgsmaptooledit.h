@@ -72,7 +72,7 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
      * \param geom list of points (in layer coordinate system)
      * \returns 0 in case of success
      */
-    int addTopologicalPoints( const QList<QgsPointXY> &geom );
+    int addTopologicalPoints( const QVector<QgsPointXY> &geom );
 
     //! Display a timed message bar noting the active layer is not vector.
     void notifyNotVectorLayer();
