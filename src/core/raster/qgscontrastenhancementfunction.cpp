@@ -49,12 +49,8 @@ int QgsContrastEnhancementFunction::enhance( double theValue )
 bool QgsContrastEnhancementFunction::isValueInDisplayableRange( double theValue )
 {
   //A default check is to see if the provided value is with the range for the data type
-  if ( theValue < QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) || theValue > QgsContrastEnhancement::maximumValuePossible( mQgsRasterDataType ) )
-  {
-    return false;
-  }
-
-  return true;
+  // Write the test as ( v >= min && v <= max ) so that v = NaN returns false
+  return theValue >= QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) && theValue <= QgsContrastEnhancement::maximumValuePossible( mQgsRasterDataType );
 }
 
 void QgsContrastEnhancementFunction::setMaximumValue( double theValue )
