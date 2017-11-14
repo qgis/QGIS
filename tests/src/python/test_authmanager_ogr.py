@@ -2,13 +2,7 @@
 """
 Tests for auth manager Basic Auth OGR connection credentials injection
 
-
 From build dir, run: ctest -R PyQgsAuthManagerOgrTest -V
-
-or, if your PostgreSQL path differs from the default:
-
-QGIS_POSTGRES_EXECUTABLE_PATH=/usr/lib/postgresql/<your_version_goes_here>/bin \
-    ctest -R PyQgsAuthManagerOgrTest -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,9 +15,7 @@ from qgis.core import (
     QgsApplication,
     QgsAuthManager,
     QgsAuthMethodConfig,
-    QgsVectorLayer,
     QgsDataSourceUri,
-    QgsWkbTypes,
     QgsProviderRegistry,
 )
 

@@ -33,3 +33,4 @@ PyQgsServerAccessControl
 # Need a local postgres installation
 PyQgsAuthManagerPKIPostgresTest
 PyQgsAuthManagerPasswordPostgresTest
+PyQgsAuthManagerOgrPostgresTest

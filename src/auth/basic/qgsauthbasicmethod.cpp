@@ -135,7 +135,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
         if ( uri.startsWith( QStringLiteral( "PG:" ) ) )
         {
           bool chopped = false;
-          if ( uri.endsWith('"'))
+          if ( uri.endsWith( '"' ) )
           {
             uri.chop( 1 );
             chopped = true;
@@ -162,7 +162,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
         else if ( uri.startsWith( QStringLiteral( "IDB" ) ) )
         {
           bool chopped = false;
-          if ( uri.endsWith('"'))
+          if ( uri.endsWith( '"' ) )
           {
             uri.chop( 1 );
             chopped = true;
@@ -222,7 +222,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
       // Handle sub-layers
       if ( fullUri.contains( '|' ) )
       {
-        uri += '|' + fullUri.right( fullUri.length() - fullUri.lastIndexOf( '|' ) - 1);
+        uri += '|' + fullUri.right( fullUri.length() - fullUri.lastIndexOf( '|' ) - 1 );
       }
       connectionItems.replace( 0, uri );
     }
