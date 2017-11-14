@@ -364,6 +364,8 @@ QgsSymbol *QgsGraduatedSymbolRenderer::originalSymbolForFeature( QgsFeature &fea
 
 void QgsGraduatedSymbolRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
+  QgsFeatureRenderer::startRender( context, fields );
+
   mCounting = context.rendererScale() == 0.0;
 
   // find out classification attribute index from name
@@ -386,6 +388,8 @@ void QgsGraduatedSymbolRenderer::startRender( QgsRenderContext &context, const Q
 
 void QgsGraduatedSymbolRenderer::stopRender( QgsRenderContext &context )
 {
+  QgsFeatureRenderer::stopRender( context );
+
   Q_FOREACH ( const QgsRendererRange &range, mRanges )
   {
     if ( !range.symbol() )

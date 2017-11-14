@@ -60,14 +60,10 @@ bool QgsNullSymbolRenderer::renderFeature( QgsFeature &feature, QgsRenderContext
   return true;
 }
 
-void QgsNullSymbolRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
-{
-  Q_UNUSED( context );
-  Q_UNUSED( fields );
-}
-
 void QgsNullSymbolRenderer::stopRender( QgsRenderContext &context )
 {
+  QgsFeatureRenderer::stopRender( context );
+
   if ( mSymbol )
   {
     mSymbol->stopRender( context );

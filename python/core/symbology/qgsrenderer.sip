@@ -113,7 +113,7 @@ return a new renderer - used by default in vector layers
  :rtype: set of str
 %End
 
-    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) = 0;
+    virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 %Docstring
  Must be called when a new render cycle is started. A call to startRender() must always
  be followed by a corresponding call to stopRender() after all features have been rendered.
@@ -127,7 +127,7 @@ return a new renderer - used by default in vector layers
  the renderer should instead be cloned and startRender()/stopRender() called on the clone.
 %End
 
-    virtual void stopRender( QgsRenderContext &context ) = 0;
+    virtual void stopRender( QgsRenderContext &context );
 %Docstring
  Must be called when a render cycle has finished, to allow the renderer to clean up.
 

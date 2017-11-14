@@ -54,6 +54,8 @@ QgsSymbol *QgsSingleSymbolRenderer::originalSymbolForFeature( QgsFeature &featur
 
 void QgsSingleSymbolRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
+  QgsFeatureRenderer::startRender( context, fields );
+
   if ( !mSymbol )
     return;
 
@@ -62,6 +64,8 @@ void QgsSingleSymbolRenderer::startRender( QgsRenderContext &context, const QgsF
 
 void QgsSingleSymbolRenderer::stopRender( QgsRenderContext &context )
 {
+  QgsFeatureRenderer::stopRender( context );
+
   if ( !mSymbol )
     return;
 
