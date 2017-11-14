@@ -29,6 +29,8 @@
 #include <sqlite3.h>
 
 #include "qgssqliteutils.h"
+
+#include "qgssqliteutils.h"
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3drenderer.h"
 #include "qgsapplication.h"
@@ -1342,12 +1344,10 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
     QString qml = myDocument.toString();
 
     // read from database
-    sqlite3 *myDatabase = nullptr;
-    sqlite3_stmt *myPreparedStatement = nullptr;
-    const char *myTail = nullptr;
-    int myResult;
+    sqlite3_database_unique_ptr database;
+    sqlite3_statement_unique_ptr statement;
 
-    myResult = sqlite3_open( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ).toUtf8().data(), &myDatabase );
+    int myResult = database.open( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ) );
     if ( myResult != SQLITE_OK )
     {
       return tr( "User database could not be opened." );
@@ -1357,44 +1357,39 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
     QByteArray param1 = qml.toUtf8();
 
     QString mySql = QStringLiteral( "create table if not exists tbl_styles(style varchar primary key,qml varchar)" );
-    myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
+    database.prepare( mySql, myResult );
     if ( myResult == SQLITE_OK )
     {
-      if ( sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
+      if ( sqlite3_step( statement.get() ) != SQLITE_DONE )
       {
-        sqlite3_finalize( myPreparedStatement );
-        sqlite3_close( myDatabase );
         resultFlag = false;
         return tr( "The style table could not be created." );
       }
     }
 
-    sqlite3_finalize( myPreparedStatement );
-
     mySql = QStringLiteral( "insert into tbl_styles(style,qml) values (?,?)" );
-    myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
+    database.prepare( mySql, myResult );
     if ( myResult == SQLITE_OK )
     {
-      if ( sqlite3_bind_text( myPreparedStatement, 1, param0.data(), param0.length(), SQLITE_STATIC ) == SQLITE_OK &&
-           sqlite3_bind_text( myPreparedStatement, 2, param1.data(), param1.length(), SQLITE_STATIC ) == SQLITE_OK &&
-           sqlite3_step( myPreparedStatement ) == SQLITE_DONE )
+      if ( sqlite3_bind_text( statement.get(), 1, param0.data(), param0.length(), SQLITE_STATIC ) == SQLITE_OK &&
+           sqlite3_bind_text( statement.get(), 2, param1.data(), param1.length(), SQLITE_STATIC ) == SQLITE_OK &&
+           sqlite3_step( statement.get() ) == SQLITE_DONE )
       {
         resultFlag = true;
         myErrorMessage = tr( "The style %1 was saved to database" ).arg( uri );
       }
     }
 
-    sqlite3_finalize( myPreparedStatement );
-
     if ( !resultFlag )
     {
       QString mySql = QStringLiteral( "update tbl_styles set qml=? where style=?" );
-      myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
+      database.prepare( mySql, myResult );
+
       if ( myResult == SQLITE_OK )
       {
-        if ( sqlite3_bind_text( myPreparedStatement, 2, param0.data(), param0.length(), SQLITE_STATIC ) == SQLITE_OK &&
-             sqlite3_bind_text( myPreparedStatement, 1, param1.data(), param1.length(), SQLITE_STATIC ) == SQLITE_OK &&
-             sqlite3_step( myPreparedStatement ) == SQLITE_DONE )
+        if ( sqlite3_bind_text( statement.get(), 2, param0.data(), param0.length(), SQLITE_STATIC ) == SQLITE_OK &&
+             sqlite3_bind_text( statement.get(), 1, param1.data(), param1.length(), SQLITE_STATIC ) == SQLITE_OK &&
+             sqlite3_step( statement.get() ) == SQLITE_DONE )
         {
           resultFlag = true;
           myErrorMessage = tr( "The style %1 was updated in the database." ).arg( uri );
@@ -1410,11 +1405,7 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
         resultFlag = false;
         myErrorMessage = tr( "The style %1 could not be inserted into database." ).arg( uri );
       }
-
-      sqlite3_finalize( myPreparedStatement );
     }
-
-    sqlite3_close( myDatabase );
   }
 
   return myErrorMessage;
