@@ -4499,3 +4499,16 @@ tests:
             __all__:
               precision: 7
 
+  - algorithm: qgis:union
+    name: Union simple
+    params:
+      INPUT:
+        name: custom/polygon_mask.gml
+        type: vector
+      OVERLAY:
+        name: custom/for_union.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/union.gml
+        type: vector
