@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsspatialiteconnection.h"
-#include "qgsslconnect.h"
 #include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgsspatialiteutils.h"
@@ -71,7 +70,7 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
   if ( ret )
     return FailedToOpen;
 
-  ret = checkHasMetadataTables( handle );
+  ret = checkHasMetadataTables( database.get() );
   if ( !mErrorMsg.isNull() || ret == LayoutUnknown )
   {
     // unexpected error; invalid SpatiaLite DB
@@ -700,8 +699,6 @@ skip:
 
 QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
 {
-  sqlite3 *sqlite_handle = nullptr;
-
   //QMap < QString, QgsSqliteHandle* >&handles = QgsSqliteHandle::handles;
 
   if ( shared && sHandles.contains( dbPath ) )
@@ -712,29 +709,29 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
   }
 
   QgsDebugMsg( QString( "New sqlite connection for " ) + dbPath );
-  if ( QgsSLConnect::sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, shared ? SQLITE_OPEN_READWRITE : SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, nullptr ) )
+  spatialite_database_unique_ptr database;
+  if ( database.open_v2( dbPath, shared ? SQLITE_OPEN_READWRITE : SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, nullptr ) )
   {
     // failure
     QgsDebugMsg( QString( "Failure while connecting to: %1\n%2" )
                  .arg( dbPath,
-                       QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) ) ) );
+                       QString::fromUtf8( sqlite3_errmsg( database.get() ) ) ) );
     return nullptr;
   }
 
   // checking the DB for sanity
-  if ( !checkMetadata( sqlite_handle ) )
+  if ( !checkMetadata( database.get() ) )
   {
     // failure
     QgsDebugMsg( QString( "Failure while connecting to: %1\n\ninvalid metadata tables" ).arg( dbPath ) );
-    QgsSLConnect::sqlite3_close( sqlite_handle );
     return nullptr;
   }
   // activating Foreign Key constraints
-  ( void )sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", nullptr, nullptr, nullptr );
+  ( void )sqlite3_exec( database.get(), "PRAGMA foreign_keys = 1", nullptr, nullptr, nullptr );
 
   QgsDebugMsg( "Connection to the database was successful" );
 
-  QgsSqliteHandle *handle = new QgsSqliteHandle( sqlite_handle, dbPath, shared );
+  QgsSqliteHandle *handle = new QgsSqliteHandle( database.release(), dbPath, shared );
   if ( shared )
     sHandles.insert( dbPath, handle );
 
@@ -746,7 +743,6 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle *&handle )
   if ( handle->ref == -1 )
   {
     // not shared
-    handle->sqliteClose();
     delete handle;
   }
   else
@@ -760,7 +756,6 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle *&handle )
 
     if ( --i.value()->ref == 0 )
     {
-      i.value()->sqliteClose();
       delete i.value();
       sHandles.remove( i.key() );
     }
@@ -771,22 +766,6 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle *&handle )
 
 void QgsSqliteHandle::closeAll()
 {
-  QMap < QString, QgsSqliteHandle * >::iterator i;
-  for ( i = sHandles.begin(); i != sHandles.end(); ++i )
-  {
-    i.value()->sqliteClose();
-    delete i.value();
-  }
-
+  qDeleteAll( sHandles );
   sHandles.clear();
 }
-
-void QgsSqliteHandle::sqliteClose()
-{
-  if ( sqlite_handle )
-  {
-    QgsSLConnect::sqlite3_close( sqlite_handle );
-    sqlite_handle = nullptr;
-  }
-}
-
