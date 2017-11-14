@@ -222,7 +222,7 @@ void QgsNewSpatialiteLayerDialog::pbnFindSRID_clicked()
     // get the first row of the result set
     while ( sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
-      myCRSs.insert( QString::fromUtf8( ( const char * )sqlite3_column_text( statement.get(), 0 ) ) );
+      myCRSs.insert( statement.columnAsText( 0 ) );
     }
   }
   else

@@ -1357,7 +1357,7 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
     QByteArray param1 = qml.toUtf8();
 
     QString mySql = QStringLiteral( "create table if not exists tbl_styles(style varchar primary key,qml varchar)" );
-    database.prepare( mySql, myResult );
+    statement = database.prepare( mySql, myResult );
     if ( myResult == SQLITE_OK )
     {
       if ( sqlite3_step( statement.get() ) != SQLITE_DONE )
@@ -1368,7 +1368,7 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
     }
 
     mySql = QStringLiteral( "insert into tbl_styles(style,qml) values (?,?)" );
-    database.prepare( mySql, myResult );
+    statement = database.prepare( mySql, myResult );
     if ( myResult == SQLITE_OK )
     {
       if ( sqlite3_bind_text( statement.get(), 1, param0.data(), param0.length(), SQLITE_STATIC ) == SQLITE_OK &&
@@ -1383,7 +1383,7 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
     if ( !resultFlag )
     {
       QString mySql = QStringLiteral( "update tbl_styles set qml=? where style=?" );
-      database.prepare( mySql, myResult );
+      statement = database.prepare( mySql, myResult );
 
       if ( myResult == SQLITE_OK )
       {

@@ -373,8 +373,8 @@ bool QgsStyle::load( const QString &filename )
   while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
     QDomDocument doc;
-    QString symbol_name = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), SymbolName ) ) );
-    QString xmlstring = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), SymbolXML ) ) );
+    QString symbol_name = statement.columnAsText( SymbolName );
+    QString xmlstring = statement.columnAsText( SymbolXML );
     if ( !doc.setContent( xmlstring ) )
     {
       QgsDebugMsg( "Cannot open symbol " + symbol_name );
@@ -392,8 +392,8 @@ bool QgsStyle::load( const QString &filename )
   while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
     QDomDocument doc;
-    QString ramp_name = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), ColorrampName ) ) );
-    QString xmlstring = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), ColorrampXML ) ) );
+    QString ramp_name = statement.columnAsText( ColorrampName );
+    QString xmlstring = statement.columnAsText( ColorrampXML );
     if ( !doc.setContent( xmlstring ) )
     {
       QgsDebugMsg( "Cannot open symbol " + ramp_name );
@@ -547,7 +547,7 @@ QStringList QgsStyle::symbolsOfFavorite( StyleEntity type ) const
   QStringList symbols;
   while ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    symbols << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
+    symbols << statement.columnAsText( 0 );
   }
 
   return symbols;
@@ -636,7 +636,7 @@ QStringList QgsStyle::tags() const
   QStringList tagList;
   while ( nError == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    tagList << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
+    tagList << statement.columnAsText( 0 );
   }
 
   return tagList;
@@ -803,7 +803,7 @@ QStringList QgsStyle::findSymbols( StyleEntity type, const QString &qword )
   QSet< QString > symbols;
   while ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    symbols << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
+    symbols << statement.columnAsText( 0 );
   }
 
   // next add symbols with matching tags
@@ -1076,7 +1076,7 @@ QString QgsStyle::tag( int id ) const
   QString tag;
   if ( nError == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    tag = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
+    tag = statement.columnAsText( 0 );
   }
 
   return tag;
@@ -1108,7 +1108,7 @@ QString QgsStyle::getName( const QString &table, int id ) const
   QString name;
   if ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    name = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
+    name = statement.columnAsText( 0 );
   }
 
   return name;
@@ -1191,12 +1191,12 @@ QgsSymbolGroupMap QgsStyle::smartgroupsListMap()
   // Now run the query and retrieve the group names
   sqlite3_statement_unique_ptr statement;
   int nError;
-  mCurrentDB.prepare( query, nError );
+  statement = mCurrentDB.prepare( query, nError );
 
   QgsSymbolGroupMap groupNames;
   while ( nError == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    QString group = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), SmartgroupName ) ) );
+    QString group = statement.columnAsText( SmartgroupName );
     groupNames.insert( sqlite3_column_int( statement.get(), SmartgroupId ), group );
   }
 
@@ -1221,7 +1221,7 @@ QStringList QgsStyle::smartgroupNames()
   QStringList groups;
   while ( nError == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    groups << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
+    groups << statement.columnAsText( 0 );
   }
 
   return groups;
@@ -1242,7 +1242,7 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
   else
   {
     QDomDocument doc;
-    QString xmlstr = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
+    QString xmlstr = statement.columnAsText( 0 );
     if ( !doc.setContent( xmlstr ) )
     {
       QgsDebugMsg( QString( "Cannot open smartgroup id: %1" ).arg( id ) );
@@ -1341,7 +1341,7 @@ QgsSmartConditionMap QgsStyle::smartgroup( int id )
   if ( nError == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
     QDomDocument doc;
-    QString xmlstr = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
+    QString xmlstr = statement.columnAsText( 0 );
     if ( !doc.setContent( xmlstr ) )
     {
       QgsDebugMsg( QString( "Cannot open smartgroup id: %1" ).arg( id ) );
@@ -1381,7 +1381,7 @@ QString QgsStyle::smartgroupOperator( int id )
   if ( nError == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
     QDomDocument doc;
-    QString xmlstr = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
+    QString xmlstr = statement.columnAsText( 0 );
     if ( !doc.setContent( xmlstr ) )
     {
       QgsDebugMsg( QString( "Cannot open smartgroup id: %1" ).arg( id ) );
