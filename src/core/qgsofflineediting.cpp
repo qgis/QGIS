@@ -28,7 +28,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayerjoinbuffer.h"
-#include "qgsslconnect.h"
+#include "qgsspatialiteutils.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsvectorlayerutils.h"
@@ -87,8 +87,8 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
   QString dbPath = QDir( offlineDataPath ).absoluteFilePath( offlineDbFile );
   if ( createSpatialiteDB( dbPath ) )
   {
-    sqlite3 *db = nullptr;
-    int rc = QgsSLConnect::sqlite3_open( dbPath.toUtf8().constData(), &db );
+    spatialite_database_unique_ptr database;
+    int rc = database.open( dbPath );
     if ( rc != SQLITE_OK )
     {
       showWarning( tr( "Could not open the SpatiaLite database" ) );
@@ -96,7 +96,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
     else
     {
       // create logging tables
-      createLoggingTables( db );
+      createLoggingTables( database.get() );
 
       emit progressStarted();
 
@@ -140,7 +140,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
         if ( vl )
         {
           QString origLayerId = vl->id();
-          QgsVectorLayer *newLayer = copyVectorLayer( vl, db, dbPath, onlySelected );
+          QgsVectorLayer *newLayer = copyVectorLayer( vl, database.get(), dbPath, onlySelected );
           if ( newLayer )
           {
             layerIdMapping.insert( origLayerId, newLayer );
@@ -174,8 +174,6 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
 
 
       emit progressStopped();
-
-      QgsSLConnect::sqlite3_close( db );
 
       // save offline project
       QString projectTitle = QgsProject::instance()->title();
@@ -394,7 +392,6 @@ void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
 bool QgsOfflineEditing::createSpatialiteDB( const QString &offlineDbPath )
 {
   int ret;
-  sqlite3 *sqlite_handle = nullptr;
   char *errMsg = nullptr;
   QFile newDb( offlineDbPath );
   if ( newDb.exists() )
@@ -412,30 +409,25 @@ bool QgsOfflineEditing::createSpatialiteDB( const QString &offlineDbPath )
 
   // creating/opening the new database
   QString dbPath = newDb.fileName();
-  ret = QgsSLConnect::sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
+  spatialite_database_unique_ptr database;
+  ret = database.open_v2( dbPath, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
   if ( ret )
   {
     // an error occurred
     QString errCause = tr( "Could not create a new database\n" );
-    errCause += QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) );
-    sqlite3_close( sqlite_handle );
+    errCause += database.errorMessage();
     showWarning( errCause );
     return false;
   }
   // activating Foreign Key constraints
-  ret = sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", nullptr, nullptr, &errMsg );
+  ret = sqlite3_exec( database.get(), "PRAGMA foreign_keys = 1", nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
     showWarning( tr( "Unable to activate FOREIGN_KEY constraints" ) );
     sqlite3_free( errMsg );
-    QgsSLConnect::sqlite3_close( sqlite_handle );
     return false;
   }
-  initializeSpatialMetadata( sqlite_handle );
-
-  // all done: closing the DB connection
-  QgsSLConnect::sqlite3_close( sqlite_handle );
-
+  initializeSpatialMetadata( database.get() );
   return true;
 }
 

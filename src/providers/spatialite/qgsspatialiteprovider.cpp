@@ -30,6 +30,7 @@ email                : a.furieri@lqt.it
 #include "qgsspatialiteconnpool.h"
 #include "qgsspatialitefeatureiterator.h"
 #include "qgsfeedback.h"
+#include "qgsspatialiteutils.h"
 
 #include "qgsjsonutils.h"
 #include "qgsvectorlayer.h"
@@ -5352,30 +5353,25 @@ QGISEXTERN bool createDb( const QString &dbPath, QString &errCause )
   QDir().mkpath( path.absolutePath() );
 
   // creating/opening the new database
-  sqlite3 *sqlite_handle = nullptr;
-  int ret = QgsSLConnect::sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
+  spatialite_database_unique_ptr database;
+  int ret = database.open_v2( dbPath, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
   if ( ret )
   {
     // an error occurred
     errCause = QObject::tr( "Could not create a new database\n" );
-    errCause += QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) );
-    QgsSLConnect::sqlite3_close( sqlite_handle );
+    errCause += database.errorMessage();
     return false;
   }
   // activating Foreign Key constraints
   char *errMsg = nullptr;
-  ret = sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", nullptr, nullptr, &errMsg );
+  ret = sqlite3_exec( database.get(), "PRAGMA foreign_keys = 1", nullptr, nullptr, &errMsg );
   if ( ret != SQLITE_OK )
   {
     errCause = QObject::tr( "Unable to activate FOREIGN_KEY constraints [%1]" ).arg( errMsg );
     sqlite3_free( errMsg );
-    QgsSLConnect::sqlite3_close( sqlite_handle );
     return false;
   }
-  bool init_res = ::initializeSpatialMetadata( sqlite_handle, errCause );
-
-  // all done: closing the DB connection
-  QgsSLConnect::sqlite3_close( sqlite_handle );
+  bool init_res = ::initializeSpatialMetadata( database.get(), errCause );
 
   return init_res;
 }
