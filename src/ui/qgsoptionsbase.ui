@@ -2991,31 +2991,11 @@
                    </layout>
                   </item>
                   <item>
-                   <layout class="QGridLayout" name="gridLayout_3">
-                    <item row="3" column="1" colspan="2">
-                     <widget class="QCheckBox" name="cbxCreateRasterLegendIcons">
-                      <property name="text">
-                       <string>Create raster icons (may be slow)</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="1" colspan="2">
+                   <layout class="QGridLayout" name="gridLayout_3" columnminimumwidth="0,1,0">
+                    <item row="1" column="1" colspan="2">
                      <widget class="QCheckBox" name="cbxLegendClassifiers">
                       <property name="text">
                        <string>Display classification attribute names</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1">
-                     <widget class="QCheckBox" name="capitalizeCheckBox">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="text">
-                       <string>Capitalize layer names</string>
                       </property>
                      </widget>
                     </item>
@@ -3047,6 +3027,13 @@
                        </size>
                       </property>
                      </spacer>
+                    </item>
+                    <item row="2" column="1" colspan="2">
+                     <widget class="QCheckBox" name="cbxCreateRasterLegendIcons">
+                      <property name="text">
+                       <string>Create raster icons (may be slow)</string>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </item>
@@ -5538,7 +5525,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>mLegendGrpBx</tabstop>
   <tabstop>cmbLegendDoubleClickAction</tabstop>
-  <tabstop>capitalizeCheckBox</tabstop>
   <tabstop>cbxLegendClassifiers</tabstop>
   <tabstop>cbxCreateRasterLegendIcons</tabstop>
   <tabstop>mLegendGraphicResolutionSpinBox</tabstop>
