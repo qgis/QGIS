@@ -15,6 +15,10 @@ This can be automated by setting up the pre-commit hook properly.
 
     ln -s ../../scripts/prepare-commit.sh .git/hooks/pre-commit
 
+Windows equivalent for a symlink using PowerShell in elevated priviledges mode from the .git\hooks folder. This will create hardlink which can be used from git-bash shell.
+
+    cmd /c mklink /H pre-commit ..\..\scripts\prepare-commit.sh
+
 Getting your pull request merged
 --------------------------------
 
