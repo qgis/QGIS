@@ -45,14 +45,12 @@ bool QgsCurve::isRing() const
 
 QgsCoordinateSequence QgsCurve::coordinateSequence() const
 {
-  if ( !mCoordinateSequence.isEmpty() )
-    return mCoordinateSequence;
+  QgsCoordinateSequence sequence;
+  sequence.append( QgsRingSequence() );
+  sequence.back().append( QgsPointSequence() );
+  points( sequence.back().back() );
 
-  mCoordinateSequence.append( QgsRingSequence() );
-  mCoordinateSequence.back().append( QgsPointSequence() );
-  points( mCoordinateSequence.back().back() );
-
-  return mCoordinateSequence;
+  return sequence;
 }
 
 bool QgsCurve::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
@@ -191,7 +189,6 @@ QPolygonF QgsCurve::asQPolygonF() const
 void QgsCurve::clearCache() const
 {
   mBoundingBox = QgsRectangle();
-  mCoordinateSequence.clear();
   QgsAbstractGeometry::clearCache();
 }
 

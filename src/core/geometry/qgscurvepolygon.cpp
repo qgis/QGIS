@@ -724,32 +724,27 @@ void QgsCurvePolygon::transform( const QTransform &t )
 
 QgsCoordinateSequence QgsCurvePolygon::coordinateSequence() const
 {
-  if ( !mCoordinateSequence.isEmpty() )
-    return mCoordinateSequence;
-
-  mCoordinateSequence.append( QgsRingSequence() );
+  QgsCoordinateSequence sequence;
+  sequence.append( QgsRingSequence() );
 
   if ( mExteriorRing )
   {
-    mCoordinateSequence.back().append( QgsPointSequence() );
-    mExteriorRing->points( mCoordinateSequence.back().back() );
+    sequence.back().append( QgsPointSequence() );
+    mExteriorRing->points( sequence.back().back() );
   }
 
   QList<QgsCurve *>::const_iterator it = mInteriorRings.constBegin();
   for ( ; it != mInteriorRings.constEnd(); ++it )
   {
-    mCoordinateSequence.back().append( QgsPointSequence() );
-    ( *it )->points( mCoordinateSequence.back().back() );
+    sequence.back().append( QgsPointSequence() );
+    ( *it )->points( sequence.back().back() );
   }
 
-  return mCoordinateSequence;
+  return sequence;
 }
 
 int QgsCurvePolygon::nCoordinates() const
 {
-  if ( !mCoordinateSequence.isEmpty() )
-    return QgsAbstractGeometry::nCoordinates();
-
   int count = 0;
 
   if ( mExteriorRing )

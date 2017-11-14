@@ -421,15 +421,12 @@ QgsRectangle QgsGeometryCollection::calculateBoundingBox() const
 void QgsGeometryCollection::clearCache() const
 {
   mBoundingBox = QgsRectangle();
-  mCoordinateSequence.clear();
   QgsAbstractGeometry::clearCache();
 }
 
 QgsCoordinateSequence QgsGeometryCollection::coordinateSequence() const
 {
-  if ( !mCoordinateSequence.isEmpty() )
-    return mCoordinateSequence;
-
+  QgsCoordinateSequence sequence;
   QVector< QgsAbstractGeometry * >::const_iterator geomIt = mGeometries.constBegin();
   for ( ; geomIt != mGeometries.constEnd(); ++geomIt )
   {
@@ -438,18 +435,15 @@ QgsCoordinateSequence QgsGeometryCollection::coordinateSequence() const
     QgsCoordinateSequence::const_iterator cIt = geomCoords.constBegin();
     for ( ; cIt != geomCoords.constEnd(); ++cIt )
     {
-      mCoordinateSequence.push_back( *cIt );
+      sequence.push_back( *cIt );
     }
   }
 
-  return mCoordinateSequence;
+  return sequence;
 }
 
 int QgsGeometryCollection::nCoordinates() const
 {
-  if ( !mCoordinateSequence.isEmpty() )
-    return QgsAbstractGeometry::nCoordinates();
-
   int count = 0;
 
   QVector< QgsAbstractGeometry * >::const_iterator geomIt = mGeometries.constBegin();

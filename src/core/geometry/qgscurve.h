@@ -203,7 +203,6 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
   private:
 
     mutable QgsRectangle mBoundingBox;
-    mutable QgsCoordinateSequence mCoordinateSequence;
 };
 
 #endif // QGSCURVEV2_H

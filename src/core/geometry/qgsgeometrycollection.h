@@ -185,7 +185,6 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
   private:
 
     mutable QgsRectangle mBoundingBox;
-    mutable QgsCoordinateSequence mCoordinateSequence;
 };
 
 // clazy:excludeall=qstring-allocations
