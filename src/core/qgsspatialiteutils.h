@@ -22,22 +22,7 @@
 
 #include "qgis_core.h"
 #include "qgssqliteutils.h"
-
-/**
- * \ingroup core
- *
- * Closes a spatialite database.
- *
- * \since QGIS 3.0
- */
-struct CORE_EXPORT QgsSpatialiteCloser
-{
-
-  /**
-   * Closes an spatialite \a database.
-   */
-  void operator()( sqlite3 *database );
-};
+#include <functional>
 
 /**
  * \ingroup core
@@ -47,9 +32,11 @@ struct CORE_EXPORT QgsSpatialiteCloser
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT spatialite_database_unique_ptr : public std::unique_ptr< sqlite3, QgsSpatialiteCloser>
+class CORE_EXPORT spatialite_database_unique_ptr : public std::unique_ptr< sqlite3, std::function<void( sqlite3 * )>>
 {
   public:
+
+    spatialite_database_unique_ptr();
 
     /**
      * Opens the database at the specified file \a path.
@@ -76,6 +63,17 @@ class CORE_EXPORT spatialite_database_unique_ptr : public std::unique_ptr< sqlit
      */
     sqlite3_statement_unique_ptr prepare( const QString &sql, int &resultCode );
 
+  private:
+
+    /**
+     * Will be set as deleter for this pointer in the constructor.
+     */
+    void deleter( sqlite3 *handle );
+
+    /**
+     * Keep track of the spatialite context. Set in open(_v2), unset in deleter.
+     */
+    void *mSpatialiteContext = nullptr;
 };
 
 #endif // QGSSPATIALITEUTILS_H
