@@ -127,7 +127,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
 
         # test type of converted field
         idx = fields.indexFromName('fld1')
-        self.assertEqual(fields.at(idx).type(), QVariant.Int)
+        self.assertEqual(fields.at(idx).type(), QVariant.Bool)
 
         # test values
         self.assertEqual(vl.getFeature(1).attributes()[idx], 1)
