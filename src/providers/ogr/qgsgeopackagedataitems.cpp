@@ -13,8 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "sqlite3.h"
+#include <sqlite3.h>
 
+#include "qgssqliteutils.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgsogrdbconnection.h"
 #include "qgslogger.h"
@@ -358,11 +359,11 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
     {
       QString baseUri = pieces.at( 1 );
       QString layerName = pieces.at( 2 );
-      sqlite3 *handle = nullptr;
-      int status = sqlite3_open_v2( baseUri.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, nullptr );
+      sqlite3_database_unique_ptr database;
+      int status = database.open_v2( baseUri, SQLITE_OPEN_READWRITE, nullptr );
       if ( status != SQLITE_OK )
       {
-        errCause = sqlite3_errmsg( handle );
+        errCause = sqlite3_errmsg( database.get() );
       }
       else
       {
@@ -378,7 +379,7 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
                       layerName.toUtf8().constData(),
                       layerName.toUtf8().constData() );
         status = sqlite3_exec(
-                   handle,                              /* An open database */
+                   database.get(),                              /* An open database */
                    sql,                                 /* SQL to be evaluated */
                    nullptr,                                /* Callback function */
                    nullptr,                                /* 1st argument to callback */
@@ -395,7 +396,7 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
                                        tableName.toUtf8().constData(),
                                        layerName.toUtf8().constData() );
           ( void )sqlite3_exec(
-            handle,                              /* An open database */
+            database.get(),                              /* An open database */
             sql,                                 /* SQL to be evaluated */
             nullptr,                                /* Callback function */
             nullptr,                                /* 1st argument to callback */
@@ -408,7 +409,7 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
           char *sql = sqlite3_mprintf( "DELETE FROM gpkg_2d_gridded_coverage_ancillary WHERE tile_matrix_set_name = '%q'",
                                        layerName.toUtf8().constData() );
           ( void )sqlite3_exec(
-            handle,                              /* An open database */
+            database.get(),                              /* An open database */
             sql,                                 /* SQL to be evaluated */
             nullptr,                                /* Callback function */
             nullptr,                                /* 1st argument to callback */
@@ -420,7 +421,7 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
           char *sql = sqlite3_mprintf( "DELETE FROM gpkg_2d_gridded_tile_ancillary WHERE tpudt_name = '%q'",
                                        layerName.toUtf8().constData() );
           ( void )sqlite3_exec(
-            handle,                              /* An open database */
+            database.get(),                              /* An open database */
             sql,                                 /* SQL to be evaluated */
             nullptr,                                /* Callback function */
             nullptr,                                /* 1st argument to callback */
@@ -431,7 +432,7 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
         // Vacuum
         {
           ( void )sqlite3_exec(
-            handle,                              /* An open database */
+            database.get(),                              /* An open database */
             "VACUUM",                            /* SQL to be evaluated */
             nullptr,                                /* Callback function */
             nullptr,                                /* 1st argument to callback */
@@ -449,7 +450,6 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
         }
         sqlite3_free( errmsg );
       }
-      sqlite3_close( handle );
     }
   }
   else
