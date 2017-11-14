@@ -9941,15 +9941,7 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
 
   freezeCanvases();
 
-// Let render() do its own cursor management
-//  QApplication::setOverrideCursor(Qt::WaitCursor);
-
-  QString baseName = name;
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/capitalizeLayerName" ), QVariant( false ) ).toBool() )
-  {
-    baseName = QgsMapLayer::formatLayerName( baseName );
-  }
+  QString baseName = QgsMapLayer::formatLayerName( name );
 
   /* Eliminate the need to instantiate the layer based on provider type.
      The caller is responsible for cobbling together the needed information to
@@ -11857,12 +11849,7 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
     freezeCanvases();
   }
 
-  QString baseName = name;
-  QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/capitalizeLayerName" ), QVariant( false ) ).toBool() )
-  {
-    baseName = QgsMapLayer::formatLayerName( baseName );
-  }
+  QString baseName =  QgsMapLayer::formatLayerName( name );
 
   QgsDebugMsg( "Creating new raster layer using " + uri
                + " with baseName of " + baseName );
