@@ -281,7 +281,6 @@ bool QgsStyle::openDatabase( const QString &filename )
   if ( rc )
   {
     mErrorString = QStringLiteral( "Couldn't open the style database: %1" ).arg( mCurrentDB.errorMessage() );
-    mCurrentDB.release();
     return false;
   }
 
@@ -614,7 +613,6 @@ int QgsStyle::addTag( const QString &tagname )
   statement = mCurrentDB.prepare( query, nErr );
   if ( nErr == SQLITE_OK )
     ( void )sqlite3_step( statement.get() );
-  statement.release();
 
   QgsSettings settings;
   settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 );
@@ -640,8 +638,6 @@ QStringList QgsStyle::tags() const
   {
     tagList << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
   }
-
-  statement.release();
 
   return tagList;
 }
@@ -820,9 +816,6 @@ QStringList QgsStyle::findSymbols( StyleEntity type, const QString &qword )
     tagids << QString::fromUtf8( ( const char * ) sqlite3_column_text( statement.get(), 0 ) );
   }
 
-  statement.release();
-
-
   QString dummy = tagids.join( QStringLiteral( ", " ) );
 
   if ( type == SymbolEntity )
@@ -892,8 +885,6 @@ bool QgsStyle::tagSymbol( StyleEntity type, const QString &symbol, const QString
         tagid = addTag( tag );
       }
 
-      statement.release();
-
       // Now map the tag to the symbol if it's not already tagged
       if ( !symbolHasTag( type, symbol, tag ) )
       {
@@ -937,8 +928,6 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol, const QStri
   {
     return false;
   }
-
-  statement.release();
 
   Q_FOREACH ( const QString &tag, tags )
   {
@@ -1040,8 +1029,6 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString &symbol )
     }
   }
 
-  statement.release();
-
   return tagList;
 }
 
@@ -1092,8 +1079,6 @@ QString QgsStyle::tag( int id ) const
     tag = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
   }
 
-  statement.release();
-
   return tag;
 }
 
@@ -1110,8 +1095,6 @@ int QgsStyle::getId( const QString &table, const QString &name )
     id = sqlite3_column_int( statement.get(), 0 );
   }
 
-  statement.release();
-
   return id;
 }
 
@@ -1127,8 +1110,6 @@ QString QgsStyle::getName( const QString &table, int id ) const
   {
     name = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
   }
-
-  statement.release();
 
   return name;
 }
@@ -1219,8 +1200,6 @@ QgsSymbolGroupMap QgsStyle::smartgroupsListMap()
     groupNames.insert( sqlite3_column_int( statement.get(), SmartgroupId ), group );
   }
 
-  statement.release();
-
   return groupNames;
 }
 
@@ -1245,8 +1224,6 @@ QStringList QgsStyle::smartgroupNames()
     groups << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
   }
 
-  statement.release();
-
   return groups;
 }
 
@@ -1260,7 +1237,6 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
   int nErr; statement = mCurrentDB.prepare( query, nErr );
   if ( !( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW ) )
   {
-    statement.release();
     return QStringList();
   }
   else
@@ -1384,8 +1360,6 @@ QgsSmartConditionMap QgsStyle::smartgroup( int id )
     }
   }
 
-  statement.release();
-
   return condition;
 }
 
@@ -1415,8 +1389,6 @@ QString QgsStyle::smartgroupOperator( int id )
     QDomElement smartEl = doc.documentElement();
     op = smartEl.attribute( QStringLiteral( "operator" ) );
   }
-
-  statement.release();
 
   return op;
 }
