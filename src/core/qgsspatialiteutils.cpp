@@ -22,18 +22,10 @@
 #include <sqlite3.h>
 #include <spatialite.h>
 
-spatialite_database_unique_ptr::spatialite_database_unique_ptr()
-  : std::unique_ptr< sqlite3, std::function<void( sqlite3 * )>> ( nullptr, [this]( sqlite3 * handle )->void
-{
-  deleter( handle );
-} )
-{
-}
-
 int spatialite_database_unique_ptr::open( const QString &path )
 {
 #if defined(SPATIALITE_HAS_INIT_EX)
-  mSpatialiteContext = spatialite_alloc_connection();
+  get_deleter().mSpatialiteContext = spatialite_alloc_connection();
 #else
   spatialite_init( 0 );
 #endif
@@ -44,7 +36,7 @@ int spatialite_database_unique_ptr::open( const QString &path )
 
 #if defined(SPATIALITE_HAS_INIT_EX)
   if ( result == SQLITE_OK )
-    spatialite_init_ex( database, mSpatialiteContext, 0 );
+    spatialite_init_ex( database, get_deleter().mSpatialiteContext, 0 );
 #endif
 
   return result;
@@ -53,7 +45,7 @@ int spatialite_database_unique_ptr::open( const QString &path )
 int spatialite_database_unique_ptr::open_v2( const QString &path, int flags, const char *zVfs )
 {
 #if defined(SPATIALITE_HAS_INIT_EX)
-  void *conn = spatialite_alloc_connection();
+  get_deleter().mSpatialiteContext = spatialite_alloc_connection();
 #else
   spatialite_init( 0 );
 #endif
@@ -64,7 +56,7 @@ int spatialite_database_unique_ptr::open_v2( const QString &path, int flags, con
 
 #if defined(SPATIALITE_HAS_INIT_EX)
   if ( result == SQLITE_OK )
-    spatialite_init_ex( database, conn, 0 );
+    spatialite_init_ex( database, get_deleter().mSpatialiteContext, 0 );
 #endif
 
   return result;
@@ -79,21 +71,24 @@ sqlite3_statement_unique_ptr spatialite_database_unique_ptr::prepare( const QStr
 {
   sqlite3_stmt *preparedStatement = nullptr;
   const char *tail = nullptr;
-  resultCode = sqlite3_prepare( get(), sql.toUtf8(), sql.toUtf8().length(), &preparedStatement, &tail );
+  const QByteArray sqlUtf8 = sql.toUtf8();
+  resultCode = sqlite3_prepare( get(), sqlUtf8, sqlUtf8.length(), &preparedStatement, &tail );
   sqlite3_statement_unique_ptr s;
   s.reset( preparedStatement );
   return s;
 }
 
-void spatialite_database_unique_ptr::deleter( sqlite3 *handle )
+void QgsSpatialiteCloser::operator()( sqlite3 *handle )
 {
+
 #if defined(SPATIALITE_HAS_INIT_EX)
   spatialite_cleanup_ex( mSpatialiteContext );
+  mSpatialiteContext = nullptr;
 #endif
 
   int res = sqlite3_close( handle );
   if ( res != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "sqlite3_close() failed: %1" ).arg( res ) );
+    QgsDebugMsg( QStringLiteral( "sqlite3_close() failed: %1" ).arg( res ) );
   }
 }

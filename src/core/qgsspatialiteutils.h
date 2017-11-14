@@ -27,16 +27,35 @@
 /**
  * \ingroup core
  *
+ * Closes a spatialite database.
+ *
+ * \since QGIS 3.0
+ */
+struct CORE_EXPORT QgsSpatialiteCloser
+{
+
+  /**
+   * Closes an spatialite \a database.
+   */
+  void operator()( sqlite3 *database );
+
+  /**
+   * Keep track of the spatialite context. Set in open(_v2)
+   */
+  void *mSpatialiteContext = nullptr;
+};
+
+/**
+ * \ingroup core
+ *
  * Unique pointer for spatialite databases, which automatically closes
  * the database when the pointer goes out of scope or is reset.
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT spatialite_database_unique_ptr : public std::unique_ptr< sqlite3, std::function<void( sqlite3 * )>>
+class CORE_EXPORT spatialite_database_unique_ptr : public std::unique_ptr< sqlite3, QgsSpatialiteCloser>
 {
   public:
-
-    spatialite_database_unique_ptr();
 
     /**
      * Opens the database at the specified file \a path.
@@ -62,18 +81,6 @@ class CORE_EXPORT spatialite_database_unique_ptr : public std::unique_ptr< sqlit
      * argument will be filled with the sqlite3 result code.
      */
     sqlite3_statement_unique_ptr prepare( const QString &sql, int &resultCode );
-
-  private:
-
-    /**
-     * Will be set as deleter for this pointer in the constructor.
-     */
-    void deleter( sqlite3 *handle );
-
-    /**
-     * Keep track of the spatialite context. Set in open(_v2), unset in deleter.
-     */
-    void *mSpatialiteContext = nullptr;
 };
 
 #endif // QGSSPATIALITEUTILS_H
