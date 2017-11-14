@@ -115,7 +115,7 @@ class CORE_EXPORT sqlite3_database_unique_ptr : public std::unique_ptr< sqlite3,
      * Prepares a \a sql statement, returning the result. The \a resultCode
      * argument will be filled with the sqlite3 result code.
      */
-    sqlite3_statement_unique_ptr prepare( const QString &sql, int &resultCode );
+    sqlite3_statement_unique_ptr prepare( const QString &sql, int &resultCode ) const;
 
 };
 

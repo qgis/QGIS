@@ -60,7 +60,7 @@ QString sqlite3_database_unique_ptr::errorMessage() const
   return QString( sqlite3_errmsg( get() ) );
 }
 
-sqlite3_statement_unique_ptr sqlite3_database_unique_ptr::prepare( const QString &sql, int &resultCode )
+sqlite3_statement_unique_ptr sqlite3_database_unique_ptr::prepare( const QString &sql, int &resultCode ) const
 {
   sqlite3_stmt *preparedStatement = nullptr;
   const char *tail = nullptr;
