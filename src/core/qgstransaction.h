@@ -103,8 +103,7 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     bool rollback( QString &errorMsg SIP_OUT );
 
     /**
-     * Execute the \a sql string. The result must not be a tuple, so running a
-     * ``SELECT`` query will return an error.
+     * Execute the \a sql string.
      *
      * \param sql The sql query to execute
      * \param error The error message
