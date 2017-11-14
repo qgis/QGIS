@@ -499,7 +499,7 @@ void QgsPluginManager::reloadModelData()
       QString status = it->value( "status" );
       QString error = it->value( "error" );
 
-      QStandardItem * mypDetailItem = new QStandardItem( pluginName.left( 32 ) );
+      QStandardItem * mypDetailItem = new QStandardItem( pluginName );
 
       mypDetailItem->setData( baseName, PLUGIN_BASE_NAME_ROLE );
       mypDetailItem->setData( status, PLUGIN_STATUS_ROLE );
