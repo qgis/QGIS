@@ -125,8 +125,8 @@ QByteArray QgsAuthCertUtils::fileData( const QString &path )
 QList<QSslCertificate> QgsAuthCertUtils::certsFromFile( const QString &certspath )
 {
   QList<QSslCertificate> certs;
-  bool pem = certspath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-  certs = QSslCertificate::fromData( QgsAuthCertUtils::fileData( certspath ), pem ? QSsl::Pem : QSsl::Der );
+  const QByteArray payload( QgsAuthCertUtils::fileData( certspath ) );
+  certs = QSslCertificate::fromData( payload, sniffEncoding( payload ) );
   if ( certs.isEmpty() )
   {
     QgsDebugMsg( QString( "Parsed cert(s) EMPTY for path: %1" ).arg( certspath ) );
@@ -193,9 +193,7 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
   QByteArray keydata( QgsAuthCertUtils::fileData( keypath ) );
   QSslKey clientkey;
 
-  QSsl::EncodingFormat keyEncoding( keydata.contains( QByteArrayLiteral( "-----BEGIN " ) ) ?
-                                    QSsl::Pem :
-                                    QSsl::Der );
+  QSsl::EncodingFormat keyEncoding( sniffEncoding( keydata ) );
 
   const std::vector<QSsl::KeyAlgorithm> algs
   {
@@ -650,6 +648,13 @@ void QgsAuthCertUtils::appendDirSegment_( QStringList &dirname,
   {
     dirname.append( segment + '=' + value.replace( ',', QLatin1String( "\\," ) ) );
   }
+}
+
+QSsl::EncodingFormat QgsAuthCertUtils::sniffEncoding( const QByteArray &payload )
+{
+  return payload.contains( QByteArrayLiteral( "-----BEGIN " ) ) ?
+         QSsl::Pem :
+         QSsl::Der;
 }
 
 QString QgsAuthCertUtils::getCertDistinguishedName( const QSslCertificate &qcert,
