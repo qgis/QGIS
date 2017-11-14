@@ -137,12 +137,12 @@ class QgsSqliteHandle
     // a class allowing to reuse the same sqlite handle for more layers
     //
   public:
-    QgsSqliteHandle( sqlite3 *handle, const QString &dbPath, bool shared )
+    QgsSqliteHandle( spatialite_database_unique_ptr &&database, const QString &dbPath, bool shared )
       : ref( shared ? 1 : -1 )
       , mDbPath( dbPath )
       , mIsValid( true )
     {
-      mDatabase.reset( handle );
+      mDatabase = std::move( database );
     }
 
     sqlite3 *handle()
