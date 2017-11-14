@@ -134,6 +134,12 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
         // Inject credentials
         if ( uri.startsWith( QStringLiteral( "PG:" ) ) )
         {
+          bool chopped = false;
+          if ( uri.endsWith('"'))
+          {
+            uri.chop( 1 );
+            chopped = true;
+          }
           if ( !username.isEmpty() )
           {
             uri += QStringLiteral( " user='%1'" ).arg( username );
@@ -146,6 +152,8 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
           {
             uri += ' ' + caparam;
           }
+          if ( chopped )
+            uri += '"';
         }
         else if ( uri.startsWith( QStringLiteral( "SDE:" ) ) )
         {
@@ -153,9 +161,17 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
         }
         else if ( uri.startsWith( QStringLiteral( "IDB" ) ) )
         {
+          bool chopped = false;
+          if ( uri.endsWith('"'))
+          {
+            uri.chop( 1 );
+            chopped = true;
+          }
           uri += QStringLiteral( " user=%1" ).arg( username );
           if ( !password.isEmpty() )
             uri += QStringLiteral( " pass=%1" ).arg( password );
+          if ( chopped )
+            uri += '"';
         }
         else if ( uri.startsWith( QStringLiteral( "@driver=ingres" ) ) )
         {
@@ -165,7 +181,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
         }
         else if ( uri.startsWith( QStringLiteral( "MySQL:" ) ) )
         {
-          uri += QStringLiteral( ",userid=%1" ).arg( username );
+          uri += QStringLiteral( ",user=%1" ).arg( username );
           if ( !password.isEmpty() )
             uri += QStringLiteral( ",password=%1" ).arg( password );
         }
@@ -186,18 +202,12 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
         {
           if ( password.isEmpty() )
           {
-            uri = uri.replace( QRegExp( "^ODBC:[^@]+" ),  "ODBC:" + username + '@' );
+            uri = uri.replace( QRegExp( "^ODBC:@?" ),  "ODBC:" + username + '@' );
           }
           else
           {
-            uri = uri.replace( QRegExp( "^ODBC:[^@]+" ), "ODBC:" + username + '/' + password + '@' );
+            uri = uri.replace( QRegExp( "^ODBC:@?" ), "ODBC:" + username + '/' + password + '@' );
           }
-        }
-        else if ( uri.startsWith( QStringLiteral( "MSSQL:" ) ) )
-        {
-          uri += QStringLiteral( ";uid=%1" ).arg( username );
-          if ( !password.isEmpty() )
-            uri += QStringLiteral( ";pwd=%1" ).arg( password );
         }
         else if ( uri.startsWith( QStringLiteral( "couchdb" ) )
                   || uri.startsWith( QStringLiteral( "DODS" ) )
@@ -212,7 +222,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
       // Handle sub-layers
       if ( fullUri.contains( '|' ) )
       {
-        uri += '|' + fullUri.right( fullUri.indexOf( '|' ) );
+        uri += '|' + fullUri.right( fullUri.length() - fullUri.lastIndexOf( '|' ) - 1);
       }
       connectionItems.replace( 0, uri );
     }
