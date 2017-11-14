@@ -108,6 +108,7 @@ QMap< QString, QDateTime > QgsOgrProviderUtils::mapDSNameToLastModifiedDate;
 bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
 {
   OGRFieldType ogrType = OFTString; //default to string
+  OGRFieldSubType ogrSubType = OFSTNone;
   int ogrWidth = field.length();
   int ogrPrecision = field.precision();
   if ( ogrPrecision > 0 )
@@ -132,6 +133,13 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
       ogrPrecision = 0;
       break;
 
+    case QVariant::Bool:
+      ogrType = OFTInteger;
+      ogrSubType = OFSTBoolean;
+      ogrWidth = 1;
+      ogrPrecision = 0;
+      break;
+
     case QVariant::Double:
       ogrType = OFTReal;
       break;
@@ -152,7 +160,11 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
       return false;
   }
 
-  field.setTypeName( encoding.toUnicode( OGR_GetFieldTypeName( ogrType ) ) );
+  if ( ogrSubType != OFSTNone )
+    field.setTypeName( encoding.toUnicode( OGR_GetFieldSubTypeName( ogrSubType ) ) );
+  else
+    field.setTypeName( encoding.toUnicode( OGR_GetFieldTypeName( ogrType ) ) );
+
   field.setLength( ogrWidth );
   field.setPrecision( ogrPrecision );
   return true;
@@ -929,11 +941,19 @@ void QgsOgrProvider::loadFields()
   {
     OGRFieldDefnH fldDef = fdef.GetFieldDefn( i );
     OGRFieldType ogrType = OGR_Fld_GetType( fldDef );
+    OGRFieldSubType ogrSubType = OFSTNone;
+
     QVariant::Type varType;
     switch ( ogrType )
     {
       case OFTInteger:
-        varType = QVariant::Int;
+        if ( OGR_Fld_GetSubType( fldDef ) == OFSTBoolean )
+        {
+          varType = QVariant::Bool;
+          ogrSubType = OFSTBoolean;
+        }
+        else
+          varType = QVariant::Int;
         break;
       case OFTInteger64:
         varType = QVariant::LongLong;
@@ -979,13 +999,17 @@ void QgsOgrProvider::loadFields()
     if ( prec > 0 )
       width -= 1;
 
+    QString typeName = OGR_GetFieldTypeName( ogrType );
+    if ( ogrSubType != OFSTNone )
+      typeName = OGR_GetFieldSubTypeName( ogrSubType );
+
     QgsField newField = QgsField(
                           name,
                           varType,
 #ifdef ANDROID
-                          OGR_GetFieldTypeName( ogrType ),
+                          typeName,
 #else
-                          textEncoding()->toUnicode( OGR_GetFieldTypeName( ogrType ) ),
+                          textEncoding()->toUnicode( typeName.toStdString().c_str() ),
 #endif
                           width, prec
                         );
@@ -1474,6 +1498,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
     switch ( iter->type() )
     {
       case QVariant::Int:
+      case QVariant::Bool:
         type = OFTInteger;
         break;
       case QVariant::LongLong:
@@ -1514,6 +1539,14 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
       width += 1;
     OGR_Fld_SetWidth( fielddefn.get(), width );
     OGR_Fld_SetPrecision( fielddefn.get(), iter->precision() );
+
+    switch ( iter->type() )
+    {
+      case QVariant::Bool:
+        OGR_Fld_SetSubType( fielddefn.get(), OFSTBoolean );
+      default:
+        break;
+    }
 
     if ( mOgrLayer->CreateField( fielddefn.get(), true ) != OGRERR_NONE )
     {
