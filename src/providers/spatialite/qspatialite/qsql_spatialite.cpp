@@ -494,16 +494,6 @@ QSpatiaLiteDriver::QSpatiaLiteDriver(QObject * parent)
     d = new QSpatiaLiteDriverPrivate();
 }
 
-QSpatiaLiteDriver::QSpatiaLiteDriver(sqlite3 *connection, QObject *parent)
-    : QSqlDriver(parent)
-{
-    d = new QSpatiaLiteDriverPrivate();
-    d->access.reset( connection );
-    setOpen(true);
-    setOpenError(false);
-}
-
-
 QSpatiaLiteDriver::~QSpatiaLiteDriver()
 {
     delete d;

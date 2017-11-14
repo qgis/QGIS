@@ -65,6 +65,20 @@ class CORE_EXPORT spatialite_database_unique_ptr : public std::unique_ptr< sqlit
     int open( const QString &path );
 
     /**
+     * Will close the connection and set the internal pointer to nullptr.
+     */
+    void reset();
+
+    /**
+     * It is not allowed to set an arbitrary sqlite3 handle on this object.
+     *
+     * A dedicated spatialite context (connection) is created when calling open or
+     * open_v2. This context needs to be kept together with the handle, hence it is
+     * not allowed to reset to a handle with missing context.
+     */
+    void reset( sqlite3 *handle ) = delete;
+
+    /**
      * Opens the database at the specified file \a path.
      *
      * Returns the sqlite error code, or SQLITE_OK if open was successful.
